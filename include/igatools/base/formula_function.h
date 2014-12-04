@@ -21,7 +21,7 @@
 #ifndef FORMULA_FUNCTIONS_H
 #define FORMULA_FUNCTIONS_H
 
-#include <igatools/base/new_function.h>
+#include <igatools/base/function.h>
 
 IGA_NAMESPACE_OPEN
 

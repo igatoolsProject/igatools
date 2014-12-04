@@ -22,7 +22,7 @@
 #define NEW_MAPPING_H_
 
 #include <igatools/base/config.h>
-#include <igatools/base/new_function.h>
+#include <igatools/base/function.h>
 
 IGA_NAMESPACE_OPEN
 

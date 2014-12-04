@@ -21,7 +21,7 @@
 #ifndef IG_FUNCTIONS_H
 #define IG_FUNCTIONS_H
 
-#include <igatools/base/new_function.h>
+#include <igatools/base/function.h>
 //#include <igatools/linear_algebra/distributed_vector.h>
 
 IGA_NAMESPACE_OPEN

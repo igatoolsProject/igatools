@@ -23,7 +23,7 @@
 #include "../tests.h"
 
 
-#include <igatools/base/new_function.h>
+#include <igatools/base/function.h>
 #include <igatools/base/function_element.h>
 
 

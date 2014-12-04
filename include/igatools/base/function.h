@@ -18,75 +18,91 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef _FUNCTIONS_H
-#define _FUNCTIONS_H
+#ifndef NEW_FUNCTIONS_H
+#define NEW_FUNCTIONS_H
 
 #include <igatools/base/config.h>
 #include <igatools/base/tensor.h>
 #include <igatools/utils/value_vector.h>
+#include <igatools/geometry/grid_forward_iterator.h>
+#include <igatools/geometry/grid_element_handler.h>
+#include <igatools/base/quadrature.h>
 
-#if 0
+#include <boost/variant.hpp>
+#include <boost/mpl/vector.hpp>
 IGA_NAMESPACE_OPEN
 
-/**
- *  @brief Scalar, vector or tensor valued function
- *
- *  Function
- *  \f$ f: \mathbb{R}^n \to \mathbb{R}^{\underbrace{m \times \dots \times m}_{r_{times}}}. \f$
- *
- *  For example:
- *  - Function<n> is a scalar valued function on <i> R <sup> n </sup> </i>.
- *  - Function<n,m> is an m-dimensional vector valued function on
- *    <i> R <sup> n </sup> </i>.
- *  - Function<n,m,2> is a tensor valued function on <i> R <sup> n </sup> </i>.
- *
- *  This is a pure abstract class and cannot be instantiated.
- *  Its purpose is to give an unified interface for concrete classes implementing
- *  function evaluation through the specialization of Function::evaluate().
- *
- *  For example to define a linear function from R^m to R^n
- *  \code
- *  template<int m, int n>
- *  class LinearFunction : public Function<m, n>
- *  {
- *  public:
- *  using Function<m, n>::
- *    LinearFunction();
- *    void evaluate(ValueVector< typename LinearFunction<dim,rdim>::Point >  & points,
- *                  ValueVector< typename LinearFunction<dim,rdim>::Value >  & values
- *                 ) const
- *    {
- *      for (int i=0; i<points.size(); i++)
- *          values[i] = action(A,points[i]) + b;
- *    }
- *  private:
- *    Tensor <dim, 1, tensor::covariant, Tensor<rdim, 1, tensor::contravariant, Real> > A;
- *    Tensor<rdim, 1, tensor::contravariant, Real> b;
- *  };
- *  \endcode
- */
-
-template<int dim, int range = 1, int rank = 1>
-class Function
+template<int k_>
+struct Int
 {
+    static const int k = k_;
+};
+
+template<template<int> class Q, int start, std::size_t N>
+struct seq;
+
+template<template<int> class Q, int start>
+struct seq<Q, start, start>
+{
+    using type = boost::mpl::vector<Q<start>>;
+};
+
+template<template<int> class Q, int start, std::size_t N>
+struct seq
+{
+    using v1 = typename seq<Q, start, N-1>::type;
+    using type = typename boost::mpl::push_back<v1, Q<N>>::type;
+};
+
+template <int, int, int, int> class FunctionElement;
+
+
+
+/**
+ * Function Class
+ */
+template<int dim, int codim = 0, int range = 1, int rank = 1>
+class Function : public GridElementHandler<dim>
+{
+private:
+    using base_t = Function<dim, codim, range, rank>;
+    using self_t = Function<dim, codim, range, rank>;
+    using parent_t = GridElementHandler<dim>;
+
 public:
+    using typename parent_t::GridType;
+
+public:
+    static const int l= iga::max(0, dim-num_sub_elem);
+    using v1 = typename seq<Quadrature, l, dim>::type;
+    using variant_1 = typename boost::make_variant_over<v1>::type;
+
+    using v2 = typename seq<Int, l, dim>::type;
+    using variant_2 = typename boost::make_variant_over<v2>::type;
+
+public:
+    using ElementAccessor = FunctionElement<dim, codim, range, rank>;
+    using ElementIterator = GridForwardIterator<ElementAccessor>;
+
+    static const int space_dim = dim + codim;
+
     /** Types for the input/output evaluation arguments */
     ///@{
     /**
      * Type for the input argument of the function.
      */
-    using Point = Points<dim>;
+    using Point = Points<space_dim>;
 
     /**
      * Type for the return of the function.
      */
-    using Value = Values<dim, range, rank>;
+    using Value = Values<space_dim, range, rank>;
 
     /**
      * Type for the derivative of the function.
      */
     template <int order>
-    using Derivative = Derivatives<dim, range, rank, order>;
+    using Derivative = Derivatives<space_dim, range, rank, order>;
 
     /**
      * Type for the gradient of the function.
@@ -99,63 +115,150 @@ public:
     using Hessian = Derivative<2>;
 
     /**
-     * Typedef for specifying the divergence of the basis function.
+     * Type for the divergence of function.
      */
-    using Div = Values<dim, range, rank-1>;
+    using Div = Values<space_dim, range, rank-1>;
     ///@}
 
     /** @name Constructors and destructor. */
     ///@{
     /** Constructor */
-    Function() = default;
+    Function(std::shared_ptr<GridType> grid);
 
     /** Destructor */
-    virtual ~Function();
+    virtual ~Function() = default;
     ///@}
 
-    /** @name Evaluations of the Function at some points */
-    ///@{
-    /** Compute the @p values of Function at some @p points. */
-    virtual void evaluate(const ValueVector<Point> &points,
-                          ValueVector<Value> &values) const = 0;
+    Function(const self_t &) = default;
 
-    /** Compute the @p gradients of Function at some @p points. */
-    virtual void evaluate_gradients(const ValueVector<Point> &points,
-                                    ValueVector<Gradient> &gradient) const;
+    virtual std::shared_ptr<base_t> clone() const
+    {
+        Assert(false, ExcNotImplemented());
+        return std::make_shared<self_t>(self_t(*this));
+    }
 
-    /** Compute the @p hessians of Function at some @p points. */
-    virtual void evaluate_hessians(const ValueVector<Point> &points,
-                                   ValueVector<Hessian> &hessians) const;
+    virtual void reset(const NewValueFlags &flag, const variant_1 &quad)
+    {
+        reset_impl.flag = flag;
+        reset_impl.grid_handler = this;
+        reset_impl.flags_ = &flags_;
+        boost::apply_visitor(reset_impl, quad);
+    }
 
-    /** Compute the @p values and the @p gradients of Function at some
-     *  @p points. */
-    virtual void evaluate_values_and_gradients(const ValueVector<Point> &points,
-                                               ValueVector<Value> &values,
-                                               ValueVector<Gradient> &gradients) const;
-    ///@}
+
+    virtual void init_cache(ElementAccessor &elem, const variant_2 &k)
+    {
+        init_cache_impl.grid_handler = this;
+        init_cache_impl.elem = &elem;
+        init_cache_impl.flags_ = &flags_;
+        init_cache_impl.quad_ = &(this->quad_);
+        boost::apply_visitor(init_cache_impl, k);
+    }
+
+
+    virtual void fill_cache(ElementAccessor &elem, const int j, const variant_2 &k)
+    {
+        fill_cache_impl.j = j;
+        fill_cache_impl.grid_handler = this;
+        fill_cache_impl.elem = &elem;
+        boost::apply_visitor(fill_cache_impl, k);
+    }
+
+    void fill_cache(ElementIterator &elem, const int j, const variant_2 &k)
+    {
+        fill_cache(elem.get_accessor(), j, k);
+    }
+
+    void init_cache(ElementIterator &elem, const variant_2 &k)
+    {
+        init_cache(elem.get_accessor(), k);
+    }
+
+    auto begin()  const -> ElementIterator
+    {
+        return ElementIterator(this->get_grid(), 0);
+    }
+
+    auto end() const -> ElementIterator
+    {
+        return ElementIterator(this->get_grid(),
+                               IteratorState::pass_the_end);
+    }
+
+private:
+    struct ResetDispatcher : boost::static_visitor<void>
+    {
+        template<class T>
+        void operator()(const T &quad)
+        {
+            (*flags_)[T::dim] = flag;
+
+            grid_handler->template reset<T::dim>(FunctionFlags::to_grid_flags(flag), quad);
+        }
+
+        NewValueFlags flag;
+        parent_t *grid_handler;
+        std::array<FunctionFlags, dim + 1> *flags_;
+    };
+
+    struct FillCacheDispatcher : boost::static_visitor<void>
+    {
+        template<class T>
+        void operator()(const T &quad)
+        {
+            grid_handler->template fill_cache<T::k>(*elem, j);
+        }
+
+        int j;
+        parent_t *grid_handler;
+        ElementAccessor *elem;
+    };
+
+    struct InitCacheDispatcher : boost::static_visitor<void>
+    {
+        template<class T>
+        void operator()(const T &quad)
+        {
+            grid_handler->template init_cache<T::k>(*elem);
+
+            auto &cache = elem->local_cache_;
+            if (cache == nullptr)
+            {
+                using Cache = typename ElementAccessor::LocalCache;
+                cache = std::shared_ptr<Cache>(new Cache);
+            }
+
+            for (auto &s_id: UnitElement<dim>::template elems_ids<T::k>())
+            {
+                auto &s_cache = cache->template get_value_cache<T::k>(s_id);
+                auto &quad = std::get<T::k>(*quad_);
+                s_cache.resize((*flags_)[T::k], quad.get_num_points());
+            }
+        }
+
+        parent_t *grid_handler;
+        ElementAccessor *elem;
+        std::array<FunctionFlags, dim + 1> *flags_;
+        QuadList<dim> *quad_;
+    };
+
+    ResetDispatcher reset_impl;
+    FillCacheDispatcher fill_cache_impl;
+    InitCacheDispatcher init_cache_impl;
+
+
+public:
+    std::shared_ptr<typename ElementAccessor::CacheType>
+    &get_cache(ElementAccessor &elem);
+
+protected:
+    std::array<FunctionFlags, dim + 1> flags_;
 };
 
 
-/**
- * Scalar Function.
- */
-template<int dim>
-using ScalarFunction = Function<dim, 1, 1>;
-
-/**
- * Vector Function.
- */
-template<int dim>
-using VectorFunction = Function<dim, dim, 1>;
-
-/**
- * Tensor Function.
- */
-template<int dim>
-using TensorFunction = Function<dim, dim, 2>;
-
+template<int dim, int space_dim>
+using MapFunction = Function<dim, 0, space_dim, 1>;
 
 IGA_NAMESPACE_CLOSE
 
-#endif /* __FUNCTIONS_H */
 #endif

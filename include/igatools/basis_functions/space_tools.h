@@ -21,7 +21,7 @@
 #ifndef SPACE_TOOLS_H_
 #define SPACE_TOOLS_H_
 
-#include <igatools/base/new_function.h>
+#include <igatools/base/function.h>
 #include <igatools/base/ig_function.h>
 
 #include <igatools/linear_algebra/distributed_matrix.h>

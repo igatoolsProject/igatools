@@ -21,7 +21,7 @@
 #ifndef SUB_FUNCTION_H_
 #define SUB_FUNCTION_H_
 
-#include <igatools/base/new_function.h>
+#include <igatools/base/function.h>
 #include <igatools/base/function_element.h>
 #include <boost/variant/get.hpp>
 //#include<igatools/../../source/geometry/grid_forward_iterator.cpp>

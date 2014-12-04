@@ -21,7 +21,7 @@
 #ifndef FUNCTION_ELEMENT_H
 #define FUNCTION_ELEMENT_H
 
-#include <igatools/base/new_function.h>
+#include <igatools/base/function.h>
 #include <igatools/geometry/cartesian_grid_element.h>
 
 IGA_NAMESPACE_OPEN
