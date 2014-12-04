@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/basis_functions/new_physical_space.h>
+#include <igatools/basis_functions/physical_space.h>
 #include <igatools/base/sub_function.h>
 #include <igatools/basis_functions/space_manager.h>
 
@@ -33,13 +33,13 @@ IGA_NAMESPACE_OPEN
 
 
 template <class RefSpace_,int codim_, Transformation type_>
-const std::array<int, NewPhysicalSpace<RefSpace_, codim_, type_>::n_components>
-NewPhysicalSpace<RefSpace_, codim_, type_>::components = sequence<NewPhysicalSpace<RefSpace_, codim_, type_>::n_components>();
+const std::array<int, PhysicalSpace<RefSpace_, codim_, type_>::n_components>
+PhysicalSpace<RefSpace_, codim_, type_>::components = sequence<PhysicalSpace<RefSpace_, codim_, type_>::n_components>();
 
 
 template <class RefSpace_,int codim_, Transformation type_>
-NewPhysicalSpace<RefSpace_, codim_, type_>::
-NewPhysicalSpace(shared_ptr<RefSpace> ref_space,
+PhysicalSpace<RefSpace_, codim_, type_>::
+PhysicalSpace(shared_ptr<RefSpace> ref_space,
                  shared_ptr<MapFunc> map_func)
     :
     BaseSpace(ref_space->get_grid()),
@@ -58,7 +58,7 @@ NewPhysicalSpace(shared_ptr<RefSpace> ref_space,
 
 template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_, codim_, type_>::
+PhysicalSpace<RefSpace_, codim_, type_>::
 create(shared_ptr<RefSpace> ref_space,
        shared_ptr<MapFunc> map_func) -> shared_ptr<self_t>
 {
@@ -69,7 +69,7 @@ create(shared_ptr<RefSpace> ref_space,
 
 template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_, codim_, type_>::
+PhysicalSpace<RefSpace_, codim_, type_>::
 begin() const -> ElementIterator
 {
     return ElementIterator(this->shared_from_this(), 0);
@@ -79,7 +79,7 @@ begin() const -> ElementIterator
 
 template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_, codim_, type_>::
+PhysicalSpace<RefSpace_, codim_, type_>::
 last() const -> ElementIterator
 {
     return ElementIterator(this->shared_from_this(),
@@ -90,7 +90,7 @@ last() const -> ElementIterator
 
 template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_, codim_, type_>::
+PhysicalSpace<RefSpace_, codim_, type_>::
 end() const -> ElementIterator
 {
     return ElementIterator(this->shared_from_this(),
@@ -100,7 +100,7 @@ end() const -> ElementIterator
 #if 0
 template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_, codim_, type_>::
+PhysicalSpace<RefSpace_, codim_, type_>::
 get_element(const Index elem_flat_id) const -> ElementAccessor
 {
     Assert(elem_flat_id >= 0 && elem_flat_id < ref_space_->get_grid()->get_num_active_elems(),
@@ -117,7 +117,7 @@ get_element(const Index elem_flat_id) const -> ElementAccessor
 
 template <class RefSpace_,int codim_, Transformation type_>
 Index
-NewPhysicalSpace<RefSpace_, codim_, type_>::
+PhysicalSpace<RefSpace_, codim_, type_>::
 get_num_basis() const
 {
     return ref_space_->get_num_basis();
@@ -127,7 +127,7 @@ get_num_basis() const
 #if 0
 template <class RefSpace_,int codim_, Transformation type_>
 int
-NewPhysicalSpace<RefSpace_, codim_, type_>::
+PhysicalSpace<RefSpace_, codim_, type_>::
 get_num_basis_per_element() const
 {
     return ref_space_->get_num_basis_per_element();
@@ -137,7 +137,7 @@ get_num_basis_per_element() const
 
 template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_, codim_, type_>::
+PhysicalSpace<RefSpace_, codim_, type_>::
 get_push_forward() const -> shared_ptr<const PushForwardType>
 {
     return shared_ptr<const PushForwardType>(push_forward_);
@@ -147,7 +147,7 @@ get_push_forward() const -> shared_ptr<const PushForwardType>
 #endif
 template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_, codim_, type_>::
+PhysicalSpace<RefSpace_, codim_, type_>::
 get_reference_space() const -> shared_ptr<const RefSpace>
 {
     return shared_ptr<const RefSpace>(ref_space_);
@@ -157,7 +157,7 @@ get_reference_space() const -> shared_ptr<const RefSpace>
 
 template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_, codim_, type_>::
+PhysicalSpace<RefSpace_, codim_, type_>::
 get_reference_space() -> shared_ptr<RefSpace>
 {
     return ref_space_;
@@ -168,7 +168,7 @@ get_reference_space() -> shared_ptr<RefSpace>
 template <class RefSpace_,int codim_, Transformation type_>
 template<int k>
 auto
-NewPhysicalSpace<RefSpace_, codim_, type_>::
+PhysicalSpace<RefSpace_, codim_, type_>::
 get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
               std::shared_ptr<CartesianGrid<k>> sub_grid,
               std::shared_ptr<InterGridMap<k>> elem_map) const
@@ -188,7 +188,7 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
 #if 0
 template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_, codim_, type_>::
+PhysicalSpace<RefSpace_, codim_, type_>::
 get_face_space(const Index face_id,
                vector<Index> &face_to_element_dofs) const -> shared_ptr<FaceSpace>
 {
@@ -207,7 +207,7 @@ get_face_space(const Index face_id,
 
 template <class RefSpace_,int codim_, Transformation type_>
 Index
-NewPhysicalSpace<RefSpace_, codim_, type_>::
+PhysicalSpace<RefSpace_, codim_, type_>::
 get_id() const
 {
     return ref_space_->get_id();
@@ -216,7 +216,7 @@ get_id() const
 
 template <class RefSpace_,int codim_, Transformation type_>
 vector<Index>
-NewPhysicalSpace<RefSpace_, codim_, type_>::
+PhysicalSpace<RefSpace_, codim_, type_>::
 get_loc_to_global(const CartesianGridElement<dim> &element) const
 {
     return ref_space_->get_loc_to_global(element);
@@ -225,7 +225,7 @@ get_loc_to_global(const CartesianGridElement<dim> &element) const
 
 template <class RefSpace_,int codim_, Transformation type_>
 vector<Index>
-NewPhysicalSpace<RefSpace_, codim_, type_>::
+PhysicalSpace<RefSpace_, codim_, type_>::
 get_loc_to_patch(const CartesianGridElement<dim> &element) const
 {
     return ref_space_->get_loc_to_patch(element);
@@ -235,7 +235,7 @@ get_loc_to_patch(const CartesianGridElement<dim> &element) const
 
 template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_, codim_, type_>::
+PhysicalSpace<RefSpace_, codim_, type_>::
 get_space_manager() -> shared_ptr<SpaceManager>
 {
     auto space_manager = make_shared<SpaceManager>(SpaceManager());
@@ -256,7 +256,7 @@ get_space_manager() -> shared_ptr<SpaceManager>
 
 template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_, codim_, type_>::
+PhysicalSpace<RefSpace_, codim_, type_>::
 get_space_manager() const -> std::shared_ptr<const SpaceManager>
 {
     return const_cast<self_t &>(*this).get_space_manager();
@@ -266,7 +266,7 @@ get_space_manager() const -> std::shared_ptr<const SpaceManager>
 
 template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_, codim_, type_>::
+PhysicalSpace<RefSpace_, codim_, type_>::
 get_dof_distribution_global() const -> const DofDistribution<dim, range, rank> &
 {
     return ref_space_->get_dof_distribution_global();
@@ -276,7 +276,7 @@ get_dof_distribution_global() const -> const DofDistribution<dim, range, rank> &
 
 template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_, codim_, type_>::
+PhysicalSpace<RefSpace_, codim_, type_>::
 get_dof_distribution_global() -> DofDistribution<dim, range, rank> &
 {
     return ref_space_->get_dof_distribution_global();
@@ -286,7 +286,7 @@ get_dof_distribution_global() -> DofDistribution<dim, range, rank> &
 
 template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_, codim_, type_>::
+PhysicalSpace<RefSpace_, codim_, type_>::
 get_dof_distribution_patch() const -> const DofDistribution<dim, range, rank> &
 {
     return ref_space_->get_dof_distribution_patch();
@@ -296,7 +296,7 @@ get_dof_distribution_patch() const -> const DofDistribution<dim, range, rank> &
 
 template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_, codim_, type_>::
+PhysicalSpace<RefSpace_, codim_, type_>::
 get_dof_distribution_patch() -> DofDistribution<dim, range, rank> &
 {
     return ref_space_->get_dof_distribution_patch();
@@ -305,7 +305,7 @@ get_dof_distribution_patch() -> DofDistribution<dim, range, rank> &
 #if 0
 template <class RefSpace_,int codim_, Transformation type_>
 auto
-NewPhysicalSpace<RefSpace_, codim_, type_>::
+PhysicalSpace<RefSpace_, codim_, type_>::
 get_degree() const -> const DegreeTable &
 {
     return ref_space_->get_degree();
@@ -315,7 +315,7 @@ get_degree() const -> const DegreeTable &
 
 template <class RefSpace_,int codim_, Transformation type_>
 void
-NewPhysicalSpace<RefSpace_, codim_, type_>::
+PhysicalSpace<RefSpace_, codim_, type_>::
 print_info(LogStream &out) const
 {
     out.begin_item("Reference space:");
@@ -326,6 +326,6 @@ print_info(LogStream &out) const
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/basis_functions/new_physical_space.inst>
+#include <igatools/basis_functions/physical_space.inst>
 
 

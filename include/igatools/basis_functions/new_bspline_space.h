@@ -29,7 +29,7 @@
 #include <igatools/basis_functions/bernstein_extraction.h>
 #include <igatools/geometry/new_mapping.h>
 #include <igatools/geometry/new_push_forward.h>
-#include <igatools/basis_functions/new_physical_space.h>
+#include <igatools/basis_functions/physical_space.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -283,7 +283,7 @@ public:
     using SubRefSpace = NewBSplineSpace<k, range, rank>;
 
     template <int k>
-    using SubSpace = NewPhysicalSpace<SubRefSpace<k>, dim-k, Transformation::h_grad>;
+    using SubSpace = PhysicalSpace<SubRefSpace<k>, dim-k, Transformation::h_grad>;
 
     /**
      * Construct a sub space of dimension k conforming to

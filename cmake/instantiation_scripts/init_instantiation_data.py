@@ -330,14 +330,14 @@ class InstantiationInfo:
   
    def create_PhysSpaces(self):
        
-      self.PhysSpaces   = unique( [PhysSpace(x,sp,'NewPhysicalSpace')
+      self.PhysSpaces   = unique( [PhysSpace(x,sp,'PhysicalSpace')
                                  for sp in self.ig_spaces
                                  for x in self.phy_sp_dims] )
-      self.AllPhysSpaces = unique( [PhysSpace(x,sp,'NewPhysicalSpace')
+      self.AllPhysSpaces = unique( [PhysSpace(x,sp,'PhysicalSpace')
                                  for sp in self.ig_spaces
                                  for x in self.all_phy_sp_dims] )
       
-      self.SubPhysSpaces = unique( [PhysSpace(x,sp,'NewPhysicalSpace')
+      self.SubPhysSpaces = unique( [PhysSpace(x,sp,'PhysicalSpace')
                                  for sp in self.ig_spaces
                                  for x in self.sub_phy_sp_dims] )
       

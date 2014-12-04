@@ -36,7 +36,7 @@ IGA_NAMESPACE_OPEN
 
 
 template <class RefSpace_, int codim_, Transformation type_>
-class NewPhysicalSpace;
+class PhysicalSpace;
 
 
 template<int dim, int codim = 0, class T = double>

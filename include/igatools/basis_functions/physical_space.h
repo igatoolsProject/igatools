@@ -44,13 +44,13 @@ template <class> class SpaceElementHandler;
  * @ingroup containers
  */
 template <class RefSpace_, int codim_, Transformation type_= Transformation::h_grad>
-class NewPhysicalSpace :
-    public std::enable_shared_from_this<NewPhysicalSpace<RefSpace_, codim_, type_>>,
+class PhysicalSpace :
+    public std::enable_shared_from_this<PhysicalSpace<RefSpace_, codim_, type_>>,
             public FunctionSpaceOnGrid<CartesianGrid<RefSpace_::dim> >
 {
 private:
     using BaseSpace = FunctionSpaceOnGrid<CartesianGrid<RefSpace_::dim> >;
-    using self_t = NewPhysicalSpace<RefSpace_, codim_, type_>;
+    using self_t = PhysicalSpace<RefSpace_, codim_, type_>;
 
 public:
     ///@{
@@ -111,7 +111,7 @@ public:
     using ElementIterator = GridForwardIterator<ElementAccessor>;
 
 
-    NewPhysicalSpace(const self_t &phys_space) = delete;
+    PhysicalSpace(const self_t &phys_space) = delete;
 
     static std::shared_ptr<self_t>
     create(std::shared_ptr<RefSpace> ref_space,
@@ -156,7 +156,7 @@ public:
 
 
     template <int k>
-    using SubSpace = NewPhysicalSpace<typename RefSpace::template SubRefSpace<k>, codim + dim-k, type_>;
+    using SubSpace = PhysicalSpace<typename RefSpace::template SubRefSpace<k>, codim + dim-k, type_>;
 
     template <int k>
     using InterGridMap = typename RefSpace::GridType::template InterGridMap<k>;
@@ -261,7 +261,7 @@ public:
 #endif
 
 private:
-    NewPhysicalSpace(std::shared_ptr<RefSpace> ref_space,
+    PhysicalSpace(std::shared_ptr<RefSpace> ref_space,
                      std::shared_ptr<MapFunc>  map_func);
 
 

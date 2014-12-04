@@ -106,7 +106,7 @@ template<int dim, int codim, int range, int rank, LAPack la_pack>
 void do_test(const int p, const int num_knots = 10)
 {
     using RefSpace =  NewBSplineSpace<dim,range,rank>;
-    using Space = NewPhysicalSpace<RefSpace, codim>;
+    using Space = PhysicalSpace<RefSpace, codim>;
 
     auto knots = CartesianGrid<dim>::create(num_knots);
     auto ref_space = RefSpace::create(p, knots);

@@ -68,7 +68,7 @@ void elem_values(const int n_knots = 5, const int deg=1)
     OUTSTART
     const int k = dim;
     using RefSpace = NewBSplineSpace<dim, range, rank>;
-    using Space = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
+    using Space = PhysicalSpace<RefSpace, codim, Transformation::h_grad>;
     using ElementHandler = typename Space::ElementHandler;
 
     auto grid  = CartesianGrid<dim>::create(n_knots);

@@ -49,7 +49,7 @@ void loc_stiff_matrix(const int n_knots, const int deg)
     using RefSpace = NewBSplineSpace<dim>;
     auto ref_space = RefSpace::create(deg, grid) ;
 
-    using PhysSpace = NewPhysicalSpace<RefSpace,0,Transformation::h_grad>;
+    using PhysSpace = PhysicalSpace<RefSpace,0,Transformation::h_grad>;
     auto phys_space = PhysSpace::create(ref_space, IdentityFunction<dim>::create(grid)) ;
 
     using ElementHandler = typename PhysSpace::ElementHandler;
