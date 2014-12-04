@@ -56,7 +56,7 @@ Real ball_volume(const int n_knots)
     auto grid = CartesianGrid<dim>::create(box, n_knots);
     auto F = Function::create(grid, IdentityFunction<dim>::create(grid));
 
-    using Mapping   = NewMapping<dim, 0>;
+    using Mapping   = Mapping<dim, 0>;
     using ElementIt = typename Mapping::ElementIterator;
     Mapping map(F);
     map.template reset<dim>(flag, quad);

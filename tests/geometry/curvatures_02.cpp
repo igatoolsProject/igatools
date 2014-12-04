@@ -59,7 +59,7 @@ void normal_derivatives()
     auto F = Function::create(grid, IdentityFunction<dim>::create(grid));
 
 
-    using Mapping   = NewMapping<dim, 1>;
+    using Mapping   = Mapping<dim, 1>;
     Mapping map(F);
     map.reset(flag, quad);
 

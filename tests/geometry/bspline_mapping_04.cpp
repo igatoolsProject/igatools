@@ -47,7 +47,7 @@ void bspline_map(const int deg = 2)
 
     using Space = BSplineSpace<dim, dim+codim, rank>;
     using Function = IgFunction<Space>;
-    using Mapping   = NewMapping<dim, codim>;
+    using Mapping   = Mapping<dim, codim>;
 
 
 

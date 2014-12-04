@@ -40,7 +40,7 @@ void test()
 
     const int space_dim = dim+codim;
     using Function = functions::LinearFunction<dim, 0, space_dim>;
-    using Mapping  = NewMapping<dim, codim>;
+    using Mapping  = Mapping<dim, codim>;
 
     typename Function::Value    b;
     typename Function::Gradient A;

@@ -28,7 +28,7 @@ IGA_NAMESPACE_OPEN
 
 template<int dim, int codim>
 auto
-NewMapping<dim, codim>::
+Mapping<dim, codim>::
 get_cache(ElementAccessor &elem)
 -> std::shared_ptr<typename ElementAccessor::CacheType> &
 {
@@ -38,8 +38,8 @@ get_cache(ElementAccessor &elem)
 
 
 template<int dim, int codim>
-NewMapping<dim, codim>::
-NewMapping(std::shared_ptr<FuncType> F)
+Mapping<dim, codim>::
+Mapping(std::shared_ptr<FuncType> F)
     :
     F_(F->clone())
 {}
@@ -47,15 +47,15 @@ NewMapping(std::shared_ptr<FuncType> F)
 
 
 template<int dim, int codim>
-NewMapping<dim, codim>::
-~NewMapping()
+Mapping<dim, codim>::
+~Mapping()
 {}
 
 
 
 template<int dim, int codim>
 auto
-NewMapping<dim, codim>::
+Mapping<dim, codim>::
 create(std::shared_ptr<FuncType> F)-> std::shared_ptr<self_t>
 {
     return std::shared_ptr<self_t>(new self_t(F));
@@ -65,7 +65,7 @@ create(std::shared_ptr<FuncType> F)-> std::shared_ptr<self_t>
 template<int dim, int codim>
 template <int k>
 auto
-NewMapping<dim, codim>::
+Mapping<dim, codim>::
 reset(const NewValueFlags flag, const Quadrature<k> &quad) -> void
 {
     F_->reset(MappingFlags::to_function_flags(flag), quad);
@@ -77,7 +77,7 @@ reset(const NewValueFlags flag, const Quadrature<k> &quad) -> void
 template<int dim, int codim>
 template <int k>
 auto
-NewMapping<dim, codim>::
+Mapping<dim, codim>::
 fill_cache(ElementAccessor &elem, const int j) -> void
 {
     F_->template fill_cache(elem, j, Int<k>());
@@ -150,7 +150,7 @@ fill_cache(ElementAccessor &elem, const int j) -> void
 template<int dim, int codim>
 template <int k>
 auto
-NewMapping<dim, codim>::
+Mapping<dim, codim>::
 init_cache(ElementAccessor &elem) -> void
 {
     F_->init_cache(elem, Int<k>());

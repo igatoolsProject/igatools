@@ -204,10 +204,10 @@ get_subelements(
     // here we evaluate the position of the evaluation points in the physical domain
     for (int ipt = 0; ipt < n_points_per_iga_element_; ++ipt)
     {
-        for (int i = 0; i < NewMapping<dim,codim>::space_dim; ++i)
+        for (int i = 0; i < Mapping<dim,codim>::space_dim; ++i)
             points_phys_iga_element[ipt][i] = element_vertices_tmp[ipt][i];
 
-        for (int i = NewMapping<dim,codim>::space_dim; i < 3; ++i)
+        for (int i = Mapping<dim,codim>::space_dim; i < 3; ++i)
             points_phys_iga_element[ipt][i] = zero;
     }
 

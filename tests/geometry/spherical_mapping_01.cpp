@@ -54,7 +54,7 @@ void mapping_values()
     auto F = Function::create(grid, IdentityFunction<dim>::create(grid));
 
 
-    using Mapping   = NewMapping<dim, 0>;
+    using Mapping   = Mapping<dim, 0>;
     using ElementIt = typename Mapping::ElementIterator;
     Mapping map(F);
     map.reset(flag, quad);

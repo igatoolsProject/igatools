@@ -122,7 +122,7 @@ template<Transformation type, int dim, int codim>
 NewPushForward<type, dim, codim>::
 NewPushForward(std::shared_ptr<FuncType> F)
     :
-    MapType::NewMapping(F)
+    MapType(F)
 {}
 
 

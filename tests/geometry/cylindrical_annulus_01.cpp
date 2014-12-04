@@ -53,7 +53,7 @@ void mapping_values()
                               1, 2, 0, 2.0, 0.0, numbers::PI/2.0);
 
 
-    using Mapping   = NewMapping<dim, 0>;
+    using Mapping   = Mapping<dim, 0>;
     using ElementIt = typename Mapping::ElementIterator;
     Mapping map(F);
     map.reset(flag, quad);

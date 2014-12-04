@@ -42,7 +42,7 @@ void ig_mapping(const int deg = 1)
 
     using Space = BSplineSpace<dim, dim+codim>;
     using Function = IgFunction<Space>;
-    using Mapping   = NewMapping<dim, codim>;
+    using Mapping   = Mapping<dim, codim>;
 
 
     auto flag =  NewValueFlags::value| NewValueFlags::gradient

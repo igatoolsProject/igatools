@@ -39,7 +39,7 @@ template <int dim, int sub_dim = dim-1>
 void test_evaluate()
 {
     using Function = functions::CylindricalAnnulus<dim>;
-    using Mapping   = NewMapping<dim, 0>;
+    using Mapping   = Mapping<dim, 0>;
 
     auto grid = CartesianGrid<dim>::create();
 

@@ -55,7 +55,7 @@ auto create_mapping2(shared_ptr<const CartesianGrid<dim>> grid)
 template <int sub_dim, int dim, int codim =0 >
 void boundary_normals()
 {
-    using Mapping = NewMapping<dim, codim>;
+    using Mapping = Mapping<dim, codim>;
 
     auto grid = CartesianGrid<dim>::create();
     auto map_func =  create_mapping1<dim>(grid);

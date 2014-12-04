@@ -46,10 +46,10 @@ template <int, int> class MappingElement;
  * @author pauletti 2014
  */
 template<int dim, int codim = 0>
-class NewMapping
+class Mapping
 {
 private:
-    using self_t = NewMapping<dim, codim>;
+    using self_t = Mapping<dim, codim>;
     using FuncType = MapFunction<dim, dim + codim>;
 public:
     using ElementAccessor = MappingElement<dim, codim>;
@@ -85,11 +85,11 @@ public:
 
 public:
 
-    NewMapping(std::shared_ptr<FuncType> F);
+    Mapping(std::shared_ptr<FuncType> F);
 
-    NewMapping() = delete;
+    Mapping() = delete;
 
-    ~NewMapping();
+    ~Mapping();
 
     static std::shared_ptr<self_t>  create(std::shared_ptr<FuncType> F);
 

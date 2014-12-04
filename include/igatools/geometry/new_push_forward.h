@@ -36,11 +36,11 @@ int physical_range(const int ref_range, const int space_dim, const Transformatio
 template <Transformation, int, int> class PushForwardElement;
 
 template<Transformation type_, int dim_, int codim_ = 0>
-class NewPushForward : public NewMapping<dim_, codim_>
+class NewPushForward : public Mapping<dim_, codim_>
 {
 private:
     using self_t = NewPushForward<type_, dim_, codim_>;
-    using MapType = NewMapping<dim_, codim_>;
+    using MapType = Mapping<dim_, codim_>;
     using typename MapType::FuncType;
 public:
     using ElementAccessor = PushForwardElement<type_, dim_, codim_>;
