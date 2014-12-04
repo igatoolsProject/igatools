@@ -23,7 +23,7 @@
 #include <igatools/base/function_lib.h>
 // [functions]
 // [old includes]
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/base/quadrature_lib.h>
 

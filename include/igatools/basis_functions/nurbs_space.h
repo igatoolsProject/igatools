@@ -26,7 +26,7 @@
 
 #include <igatools/base/config.h>
 
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/base/ig_function.h>
 

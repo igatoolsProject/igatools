@@ -21,7 +21,7 @@
 # QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
 
-include_files = ['basis_functions/new_bspline_space.h',
+include_files = ['basis_functions/bspline_space.h',
                  'basis_functions/nurbs_space.h',
                  'geometry/new_push_forward.h',
                  'geometry/cartesian_grid_element.h',

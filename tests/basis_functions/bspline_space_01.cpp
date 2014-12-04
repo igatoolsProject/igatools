@@ -28,7 +28,7 @@
 
 #include "../tests.h"
 
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 
 namespace grid
 {

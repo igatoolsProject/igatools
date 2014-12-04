@@ -25,7 +25,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/new_function.h>
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/nurbs_space.h>
 
 #include <boost/property_tree/ptree.hpp>

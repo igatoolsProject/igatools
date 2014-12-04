@@ -20,7 +20,7 @@
 
 // [includes]
 #include <igatools/geometry/cartesian_grid.h>
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 // [includes]
 // [include_writer]
 #include <igatools/io/writer.h>

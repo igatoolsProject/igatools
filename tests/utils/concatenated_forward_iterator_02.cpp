@@ -29,7 +29,7 @@
 // TODO (pauletti, Nov 24, 2014): divide in two different tests
 #include "../tests.h"
 
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/utils/concatenated_iterator.h>
 
 #include <memory>

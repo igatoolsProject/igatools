@@ -33,7 +33,7 @@
 
 #include "../tests.h"
 
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/geometry/unit_element.h>
 

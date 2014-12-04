@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/space_manager.h>
 #include <igatools/base/sub_function.h>
 #include <igatools/base/identity_function.h>
@@ -441,4 +441,4 @@ print_info(LogStream &out) const
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/basis_functions/new_bspline_space.inst>
+#include <igatools/basis_functions/bspline_space.inst>

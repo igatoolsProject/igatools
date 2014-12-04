@@ -31,7 +31,7 @@
 
 #include <igatools/utils/value_table.h>
 #include <igatools/geometry/grid_element_handler.h>
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element_scalar_evaluator.h>
 
 
