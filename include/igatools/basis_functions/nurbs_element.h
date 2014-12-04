@@ -46,11 +46,11 @@ template <typename Accessor> class GridForwardIterator;
  */
 template <int dim, int range, int rank>
 class NURBSElement :
-    public SpaceElement<NURBSSpace<dim,range,rank>>
+    public SpaceElement<ReferenceSpace<dim,range,rank>>
 {
 private:
     using self_t = NURBSElement<dim,range,rank>;
-    using parent_t = SpaceElement<NURBSSpace<dim,range,rank>>;
+    using parent_t = SpaceElement<ReferenceSpace<dim,range,rank>>;
 
 public:
     /** Type for the grid accessor. */

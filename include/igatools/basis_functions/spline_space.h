@@ -34,10 +34,26 @@
 IGA_NAMESPACE_OPEN
 
 
-template<int dim, int range = 1, int rank = 1>
-class ReferenceSpace : public FunctionSpaceOnGrid<CartesianGrid<dim>>
+template<int dim_, int range_ = 1, int rank_ = 1>
+class ReferenceSpace : public FunctionSpaceOnGrid<CartesianGrid<dim_>>
 {
 public:
+    static const int dim       = dim_;
+    static const int codim     = 0;
+    static const int space_dim = dim_;
+    static const int range     = range_;
+    static const int rank      = rank_;
+
+    using Func = Function<dim, 0, range, rank>;
+
+    template <int order>
+    using Derivative = typename Func::template Derivative<order>;
+    using Point = typename Func::Point;
+    using Value = typename Func::Value;
+    using Div   = typename Func::Div;
+    using RefPoint = Point;
+
+
     using GridSpace = FunctionSpaceOnGrid<CartesianGrid<dim>>;
     using typename GridSpace::GridType;
 
@@ -45,6 +61,167 @@ public:
 
     using GridSpace::GridSpace;
 
+    /**
+     *  Class to manage the component quantities with the knowledge of
+     * uniform range spaces
+     */
+    template<class T>
+    class ComponentContainer : public StaticMultiArray<T,range,rank>
+    {
+        using base_t = StaticMultiArray<T,range,rank>;
+    public:
+        /** Type of the iterator. */
+        using iterator =  MultiArrayIterator<ComponentContainer<T>>;
+
+        /** Type of the const iterator. */
+        using const_iterator =  MultiArrayConstIterator<ComponentContainer<T>>;
+    public:
+        using base_t::n_entries;
+
+        using  ComponentMap = std::array <Index, n_entries>;
+
+        ComponentContainer(const ComponentMap &comp_map =
+                               sequence<n_entries>());
+
+        ComponentContainer(const ComponentMap &comp_map, const T &val);
+
+        /**
+         * Construct a homogenous range table with val value
+         */
+        ComponentContainer(const T &val);
+
+        ComponentContainer(std::initializer_list<T> list);
+
+        const_iterator
+        cbegin() const
+        {
+            return const_iterator(*this,0);
+        }
+
+        const_iterator
+        cend() const
+        {
+            return const_iterator(*this,IteratorState::pass_the_end);
+        }
+
+
+        const_iterator
+        begin() const
+        {
+            return cbegin();
+        }
+
+        const_iterator
+        end() const
+        {
+            return cend();
+        }
+
+        iterator
+        begin()
+        {
+            return iterator(*this,0);
+        }
+
+        iterator
+        end()
+        {
+            return iterator(*this,IteratorState::pass_the_end);
+        }
+
+        /**
+         *  Flat index access operator (non-const version).
+         */
+        T &operator[](const Index i);
+
+        /**
+         *  Flat index access operator (const version).
+         */
+        const T &operator[](const Index i) const;
+
+        const Index active(const Index i) const
+        {
+            return comp_map_[i];
+        }
+
+        const vector<Index> &get_active_components_id() const
+        {
+            return active_components_id_;
+        }
+
+        const vector<Index> &get_inactive_components_id() const
+        {
+            return inactive_components_id_;
+        }
+
+        void
+        print_info(LogStream &out) const
+        {
+            out.begin_item("Raw componets: ");
+            base_t::print_info(out);
+            out.end_item();
+            out.begin_item("Active componets ids: ");
+            active_components_id_.print_info(out);
+            out.end_item();
+            out.begin_item("Inactive componets ids: ");
+            inactive_components_id_.print_info(out);
+            out.end_item();
+        }
+
+        const std::array <Index, n_entries> &get_comp_map() const
+        {
+            return comp_map_;
+        }
+
+    private:
+        /** For each component return the index of the active component */
+        std::array <Index, n_entries> comp_map_;
+
+        /** list of the active components */
+        vector<Index> active_components_id_;
+
+        /** list of the inactive components */
+        vector<Index> inactive_components_id_;
+
+
+    };
+
+
+    /**
+     * Component holding the number of basis functions
+     */
+    class SpaceDimensionTable : public ComponentContainer<TensorSize<dim> >
+    {
+        using base_t = ComponentContainer<TensorSize<dim>>;
+    public:
+        //using base_t::ComponentContainer;
+
+        SpaceDimensionTable() = default;
+
+        SpaceDimensionTable(const base_t &n_basis)
+            :
+            base_t(n_basis),
+            comp_dimension(n_basis.get_comp_map()),
+            total_dimension(0)
+        {
+            for (auto comp : this->get_active_components_id())
+            {
+                auto size = (*this)[comp].flat_size();
+                comp_dimension[comp] = size;
+            }
+            for (auto size : comp_dimension)
+                total_dimension += size;
+        }
+
+        //TODO(pauletti, Sep 8, 2014): make this private and write some getters
+        ComponentContainer<Size> comp_dimension;
+        Size total_dimension;
+    };
+
+    /*
+        static constexpr int n_components = ComponentContainer<Size>::n_entries;
+        static const std::array<Size, n_components> components;
+    //*/
 
     virtual bool is_bspline() const = 0;
 };
@@ -97,8 +274,7 @@ public:
     using Div   = typename Func::Div;
 
 public:
-    template<class> class ComponentContainer;
-    static constexpr int n_components = ComponentContainer<Size>::n_entries;
+    static constexpr int n_components = RefSpace::template ComponentContainer<Size>::n_entries;
     static const std::array<Size, n_components> components;
 
 
@@ -108,51 +284,22 @@ public:
     using Degrees  = TensorIndex<dim>;
     using Multiplicity = CartesianProductArray<Size, dim>;
 
-    using DegreeTable = ComponentContainer<Degrees>;
-    using MultiplicityTable = ComponentContainer<Multiplicity>;
-    using BoundaryKnotsTable = ComponentContainer<BoundaryKnots>;
-    using KnotsTable = ComponentContainer<KnotCoordinates>;
-    using PeriodicTable = ComponentContainer<std::array<bool, dim> >;
+    using DegreeTable = typename RefSpace::template ComponentContainer<Degrees>;
+    using MultiplicityTable = typename RefSpace::template ComponentContainer<Multiplicity>;
+    using BoundaryKnotsTable = typename RefSpace::template ComponentContainer<BoundaryKnots>;
+    using KnotsTable = typename RefSpace::template ComponentContainer<KnotCoordinates>;
+    using PeriodicTable = typename RefSpace::template ComponentContainer<std::array<bool, dim> >;
 
-    using IndexSpaceTable = ComponentContainer<DynamicMultiArray<Index,dim>>;
+    using IndexSpaceTable = typename RefSpace::template ComponentContainer<DynamicMultiArray<Index,dim>>;
     using IndexSpaceMarkTable = Multiplicity;
 
     /**
      * Type alias for the boundary conditions on each face of each scalar component of the space.
      */
-    using BCTable = ComponentContainer<std::array<BoundaryConditionType,UnitElement<dim>::n_faces>>;
+    using BCTable =  typename RefSpace::template ComponentContainer<std::array<BoundaryConditionType,UnitElement<dim>::n_faces>>;
 
+    using SpaceDimensionTable = typename RefSpace::SpaceDimensionTable;
 
-    /**
-     * Component holding the number of basis functions
-     */
-    class SpaceDimensionTable : public ComponentContainer<TensorSize<dim> >
-    {
-        using base_t = ComponentContainer<TensorSize<dim>>;
-    public:
-        //using base_t::ComponentContainer;
-
-        SpaceDimensionTable() = default;
-
-        SpaceDimensionTable(const base_t &n_basis)
-            :
-            base_t(n_basis),
-            comp_dimension(n_basis.get_comp_map()),
-            total_dimension(0)
-        {
-            for (auto comp : this->get_active_components_id())
-            {
-                auto size = (*this)[comp].flat_size();
-                comp_dimension[comp] = size;
-            }
-            for (auto size : comp_dimension)
-                total_dimension += size;
-        }
-
-        //TODO(pauletti, Sep 8, 2014): make this private and write some getters
-        ComponentContainer<Size> comp_dimension;
-        Size total_dimension;
-    };
 
     enum class EndBehaviour
     {
@@ -165,7 +312,7 @@ public:
 
         end_knots
     };
-    using EndBehaviourTable = ComponentContainer<std::array<EndBehaviour, dim> >;
+    using EndBehaviourTable = typename RefSpace::template ComponentContainer<std::array<EndBehaviour, dim> >;
 
     // For the interior multiplicities
     // maximum regularity
@@ -235,14 +382,14 @@ public:
      * Component-direction indexed table with the number of basis functions
      * in each direction and component
      */
-    const SpaceDimensionTable &get_num_basis_table() const
+    SpaceDimensionTable &get_num_basis_table() const
     {
         return space_dim_;
     }
 
     SpaceDimensionTable get_num_all_element_basis() const
     {
-        ComponentContainer<TensorSize<dim>> n_basis(deg_.get_comp_map());
+        typename RefSpace::template ComponentContainer<TensorSize<dim>> n_basis(deg_.get_comp_map());
         for (auto comp : deg_.get_active_components_id())
             n_basis[comp] = TensorSize<dim>(deg_[comp]+1);
 
@@ -253,9 +400,9 @@ public:
      * Component table with the offset of basis functions
      * in each component.
      */
-    ComponentContainer<Size> get_basis_offset() const
+    typename RefSpace::template ComponentContainer<Size> get_basis_offset() const
     {
-        ComponentContainer<Size> offset;
+        typename RefSpace::template ComponentContainer<Size> offset;
         offset[0] = 0;
         for (int comp = 1; comp < n_components; ++comp)
             offset[comp] = offset[comp-1] + space_dim_.comp_dimension[comp];
@@ -394,130 +541,7 @@ public:
         return boundary_conditions_table_;
     }
 
-    /**
-     *  Class to manage the component quantities with the knowledge of
-     * uniform range spaces
-     */
-    template<class T>
-    class ComponentContainer : public StaticMultiArray<T,range,rank>
-    {
-        using base_t = StaticMultiArray<T,range,rank>;
-    public:
-        /** Type of the iterator. */
-        using iterator =  MultiArrayIterator<ComponentContainer<T>>;
 
-        /** Type of the const iterator. */
-        using const_iterator =  MultiArrayConstIterator<ComponentContainer<T>>;
-    public:
-        using base_t::n_entries;
-
-        using  ComponentMap = std::array <Index, n_entries>;
-
-        ComponentContainer(const ComponentMap &comp_map =
-                               sequence<n_entries>());
-
-        ComponentContainer(const ComponentMap &comp_map, const T &val);
-
-        /**
-         * Construct a homogenous range table with val value
-         */
-        ComponentContainer(const T &val);
-
-        ComponentContainer(std::initializer_list<T> list);
-
-        const_iterator
-        cbegin() const
-        {
-            return const_iterator(*this,0);
-        }
-
-        const_iterator
-        cend() const
-        {
-            return const_iterator(*this,IteratorState::pass_the_end);
-        }
-
-
-        const_iterator
-        begin() const
-        {
-            return cbegin();
-        }
-
-        const_iterator
-        end() const
-        {
-            return cend();
-        }
-
-        iterator
-        begin()
-        {
-            return iterator(*this,0);
-        }
-
-        iterator
-        end()
-        {
-            return iterator(*this,IteratorState::pass_the_end);
-        }
-
-        /**
-         *  Flat index access operator (non-const version).
-         */
-        T &operator[](const Index i);
-
-        /**
-         *  Flat index access operator (const version).
-         */
-        const T &operator[](const Index i) const;
-
-        const Index active(const Index i) const
-        {
-            return comp_map_[i];
-        }
-
-        const vector<Index> &get_active_components_id() const
-        {
-            return active_components_id_;
-        }
-
-        const vector<Index> &get_inactive_components_id() const
-        {
-            return inactive_components_id_;
-        }
-
-        void
-        print_info(LogStream &out) const
-        {
-            out.begin_item("Raw componets: ");
-            base_t::print_info(out);
-            out.end_item();
-            out.begin_item("Active componets ids: ");
-            active_components_id_.print_info(out);
-            out.end_item();
-            out.begin_item("Inactive componets ids: ");
-            inactive_components_id_.print_info(out);
-            out.end_item();
-        }
-
-        const std::array <Index, n_entries> &get_comp_map() const
-        {
-            return comp_map_;
-        }
-
-    private:
-        /** For each component return the index of the active component */
-        std::array <Index, n_entries> comp_map_;
-
-        /** list of the active components */
-        vector<Index> active_components_id_;
-
-        /** list of the inactive components */
-        vector<Index> inactive_components_id_;
-
-
-    };
 
     /**
      * Refines the function space after a grid uniform refinement.
