@@ -23,7 +23,7 @@
 #define BSPLINE_ELEMENT_H_
 
 #include <igatools/base/config.h>
-#include <igatools/basis_functions/space_element.h>
+#include <igatools/basis_functions/reference_element.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
 
 #include <igatools/linear_algebra/dense_matrix.h>

@@ -18,21 +18,30 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-# QA (pauletti, Jun 27, 2014):
+# QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
+data = Instantiation()
+f = data.file_output
+inst = data.inst
 
-include_files = ['geometry/cartesian_grid.h',
-                 'geometry/cartesian_grid_element.h',
-                 'basis_functions/bspline_space.h',
-                 '../../source/geometry/grid_forward_iterator.cpp']
-data = Instantiation(include_files)
-(f, inst) = (data.file_output, data.inst)
+sub_dim_members = \
+ ['std::shared_ptr<typename class::template SubSpace<k>::MultiplicityTable> class::get_sub_space_mult<k>(const Index s_id) const;', 
+  'typename class::template SubSpace<k>::DegreeTable class::get_sub_space_degree<k>(const Index s_id) const;']         
 
-accessors = [('BSplineElement<%d, %d, %d>' %(x.dim, x.range, x.rank), x.dim)
-             for x in inst.all_ref_sp_dims]
 
-for acc in accessors:
-    f.write('template class %s ;\n' %acc[0])
-    f.write('template class GridForwardIterator<%s> ;\n' %acc[0])
+for x in inst.sub_ref_sp_dims:
+    space = 'ReferenceSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
+    f.write('template class %s ;\n' %space)
+#    for fun in sub_dim_members:
+#        k = x.dim
+#        s = fun.replace('class', space).replace('k', '%d' % (k));
+#        f.write('template ' + s + '\n')
 
+for x in inst.ref_sp_dims:
+    space = 'ReferenceSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
+    f.write('template class %s ;\n' %space)
+#    for fun in sub_dim_members:
+#        for k in inst.sub_dims(x.dim):
+#            s = fun.replace('class', space).replace('k', '%d' % (k));
+#            f.write('template ' + s + '\n')
 

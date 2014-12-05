@@ -29,14 +29,6 @@ sub_dim_members = \
   'typename class::template SubSpace<k>::DegreeTable class::get_sub_space_degree<k>(const Index s_id) const;']         
 
 
-for x in inst.sub_ref_sp_dims:
-    space = 'ReferenceSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    f.write('template class %s ;\n' %space)
-
-for x in inst.ref_sp_dims:
-    space = 'ReferenceSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    f.write('template class %s ;\n' %space)
-
 
 for x in inst.sub_ref_sp_dims:
     space = 'SplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)

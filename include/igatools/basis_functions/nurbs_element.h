@@ -26,7 +26,7 @@
 
 #ifdef NURBS
 
-#include <igatools/basis_functions/space_element.h>
+#include <igatools/basis_functions/reference_element.h>
 #include <igatools/basis_functions/nurbs_element_handler.h>
 
 

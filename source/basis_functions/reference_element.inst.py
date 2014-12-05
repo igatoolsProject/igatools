@@ -23,12 +23,12 @@ from init_instantiation_data import *
 
 include_files = ['geometry/cartesian_grid.h',
                  'geometry/cartesian_grid_element.h',
-                 'basis_functions/bspline_space.h',
+                 'basis_functions/spline_space.h',
                  '../../source/geometry/grid_forward_iterator.cpp']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-accessors = [('BSplineElement<%d, %d, %d>' %(x.dim, x.range, x.rank), x.dim)
+accessors = [('ReferenceElement<%d, %d, %d>' %(x.dim, x.range, x.rank), x.dim)
              for x in inst.all_ref_sp_dims]
 
 for acc in accessors:
