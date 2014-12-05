@@ -1,5 +1,5 @@
 ========================================================================
-void elem_derivatives(int, typename iga::SplineSpace<dim, range, rank>::DegreeTable&) [with int der = 0; int dim = 2; int range = 2; int rank = 1; typename iga::SplineSpace<dim, range, rank>::DegreeTable = iga::SplineSpace<2, 2, 1>::ComponentContainer<iga::TensorIndex<2> >]
+void elem_derivatives(int, typename iga::SplineSpace<dim, range, rank>::DegreeTable&) [with int der = 0; int dim = 2; int range = 2; int rank = 1; typename iga::SplineSpace<dim, range, rank>::DegreeTable = iga::ReferenceSpace<2, 2, 1>::ComponentContainer<iga::TensorIndex<2> >]
 ========================================================================
  (num_functions=24,num_points=4) :
 Function 0
@@ -200,7 +200,7 @@ Function 23
 ========================================================================
 
 ========================================================================
-void elem_derivatives(int, typename iga::SplineSpace<dim, range, rank>::DegreeTable&) [with int der = 1; int dim = 2; int range = 2; int rank = 1; typename iga::SplineSpace<dim, range, rank>::DegreeTable = iga::SplineSpace<2, 2, 1>::ComponentContainer<iga::TensorIndex<2> >]
+void elem_derivatives(int, typename iga::SplineSpace<dim, range, rank>::DegreeTable&) [with int der = 1; int dim = 2; int range = 2; int rank = 1; typename iga::SplineSpace<dim, range, rank>::DegreeTable = iga::ReferenceSpace<2, 2, 1>::ComponentContainer<iga::TensorIndex<2> >]
 ========================================================================
  (num_functions=24,num_points=4) :
 Function 0
@@ -401,7 +401,7 @@ Function 23
 ========================================================================
 
 ========================================================================
-void elem_derivatives(int, typename iga::SplineSpace<dim, range, rank>::DegreeTable&) [with int der = 2; int dim = 2; int range = 2; int rank = 1; typename iga::SplineSpace<dim, range, rank>::DegreeTable = iga::SplineSpace<2, 2, 1>::ComponentContainer<iga::TensorIndex<2> >]
+void elem_derivatives(int, typename iga::SplineSpace<dim, range, rank>::DegreeTable&) [with int der = 2; int dim = 2; int range = 2; int rank = 1; typename iga::SplineSpace<dim, range, rank>::DegreeTable = iga::ReferenceSpace<2, 2, 1>::ComponentContainer<iga::TensorIndex<2> >]
 ========================================================================
  (num_functions=24,num_points=4) :
 Function 0
@@ -602,7 +602,7 @@ Function 23
 ========================================================================
 
 ========================================================================
-void elem_derivatives(int, typename iga::SplineSpace<dim, range, rank>::DegreeTable&) [with int der = 0; int dim = 3; int range = 3; int rank = 1; typename iga::SplineSpace<dim, range, rank>::DegreeTable = iga::SplineSpace<3, 3, 1>::ComponentContainer<iga::TensorIndex<3> >]
+void elem_derivatives(int, typename iga::SplineSpace<dim, range, rank>::DegreeTable&) [with int der = 0; int dim = 3; int range = 3; int rank = 1; typename iga::SplineSpace<dim, range, rank>::DegreeTable = iga::ReferenceSpace<3, 3, 1>::ComponentContainer<iga::TensorIndex<3> >]
 ========================================================================
  (num_functions=108,num_points=8) :
 Function 0
@@ -2343,7 +2343,7 @@ Function 107
 ========================================================================
 
 ========================================================================
-void elem_derivatives(int, typename iga::SplineSpace<dim, range, rank>::DegreeTable&) [with int der = 1; int dim = 3; int range = 3; int rank = 1; typename iga::SplineSpace<dim, range, rank>::DegreeTable = iga::SplineSpace<3, 3, 1>::ComponentContainer<iga::TensorIndex<3> >]
+void elem_derivatives(int, typename iga::SplineSpace<dim, range, rank>::DegreeTable&) [with int der = 1; int dim = 3; int range = 3; int rank = 1; typename iga::SplineSpace<dim, range, rank>::DegreeTable = iga::ReferenceSpace<3, 3, 1>::ComponentContainer<iga::TensorIndex<3> >]
 ========================================================================
  (num_functions=108,num_points=8) :
 Function 0
@@ -4084,7 +4084,7 @@ Function 107
 ========================================================================
 
 ========================================================================
-void elem_derivatives(int, typename iga::SplineSpace<dim, range, rank>::DegreeTable&) [with int der = 2; int dim = 3; int range = 3; int rank = 1; typename iga::SplineSpace<dim, range, rank>::DegreeTable = iga::SplineSpace<3, 3, 1>::ComponentContainer<iga::TensorIndex<3> >]
+void elem_derivatives(int, typename iga::SplineSpace<dim, range, rank>::DegreeTable&) [with int der = 2; int dim = 3; int range = 3; int rank = 1; typename iga::SplineSpace<dim, range, rank>::DegreeTable = iga::ReferenceSpace<3, 3, 1>::ComponentContainer<iga::TensorIndex<3> >]
 ========================================================================
  (num_functions=108,num_points=8) :
 Function 0

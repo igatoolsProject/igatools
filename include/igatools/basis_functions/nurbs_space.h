@@ -308,7 +308,7 @@ public:
     std::shared_ptr<const MultiplicityTable> get_interior_mult() const;
 #endif
 
-    vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;
+    virtual vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const override final;
 
     vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const;
     ///@}

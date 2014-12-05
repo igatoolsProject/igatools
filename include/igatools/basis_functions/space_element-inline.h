@@ -182,7 +182,7 @@ as_cartesian_grid_element_accessor() const -> const CartesianGridElement<dim> &
 }
 
 
-
+#if 0
 template<class Space>
 inline
 auto
@@ -202,7 +202,7 @@ as_derived_element_accessor() const -> const DerivedElementAccessor &
 {
     return static_cast<const DerivedElementAccessor &>(*this);
 }
-
+#endif
 
 
 template<class Space>

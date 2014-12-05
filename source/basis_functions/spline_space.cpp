@@ -29,13 +29,13 @@ using std::const_pointer_cast;
 IGA_NAMESPACE_OPEN
 
 template<int dim, int range, int rank>
-const Size SplineSpace<dim, range, rank>::n_components;
+const Size ReferenceSpace<dim, range, rank>::n_components;
 
 
 template<int dim, int range, int rank>
-const std::array<Size, SplineSpace<dim, range, rank>::n_components>
-SplineSpace<dim, range, rank>::components =
-    sequence<SplineSpace<dim, range, rank>::n_components>();
+const std::array<Size, ReferenceSpace<dim, range, rank>::n_components>
+ReferenceSpace<dim, range, rank>::components =
+    sequence<ReferenceSpace<dim, range, rank>::n_components>();
 
 template<int dim, int range, int rank>
 SplineSpace<dim, range, rank>::

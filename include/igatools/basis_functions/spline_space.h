@@ -45,6 +45,9 @@ unique_container(std::array <T, dim> a)
 }
 
 
+template <int, int, int> class ReferenceElement;
+
+
 template<int dim_, int range_ = 1, int rank_ = 1>
 class ReferenceSpace : public FunctionSpaceOnGrid<CartesianGrid<dim_>>
 {
@@ -71,6 +74,13 @@ public:
     using GridSpace::dims;
 
     using GridSpace::GridSpace;
+
+    /** Type for the element accessor. */
+    using ElementAccessor = ReferenceElement<dim,range,rank>;
+
+    /** Type for iterator over the elements.  */
+    using ElementIterator = GridForwardIterator<ElementAccessor>;
+
 
     /**
      *  Class to manage the component quantities with the knowledge of
@@ -286,12 +296,15 @@ public:
         Size total_dimension;
     };
 
-    /*
-        static constexpr int n_components = ComponentContainer<Size>::n_entries;
-        static const std::array<Size, n_components> components;
-    //*/
+    static constexpr int n_components = ComponentContainer<Size>::n_entries;
+    static const std::array<Size, n_components> components;
 
     virtual bool is_bspline() const = 0;
+
+    virtual vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const = 0;
+
+    virtual SpaceDimensionTable get_num_all_element_basis() const = 0 ;
+
 };
 
 
@@ -342,8 +355,9 @@ public:
     using Div   = typename Func::Div;
 
 public:
-    static constexpr int n_components = RefSpace::template ComponentContainer<Size>::n_entries;
-    static const std::array<Size, n_components> components;
+    using RefSpace::n_components;
+//    static constexpr int n_components = RefSpace::template ComponentContainer<Size>::n_entries;
+//    static const std::array<Size, n_components> components;
 
 
 public:
@@ -450,12 +464,12 @@ public:
      * Component-direction indexed table with the number of basis functions
      * in each direction and component
      */
-    SpaceDimensionTable &get_num_basis_table() const
+    const SpaceDimensionTable &get_num_basis_table() const
     {
         return space_dim_;
     }
 
-    SpaceDimensionTable get_num_all_element_basis() const
+    virtual SpaceDimensionTable get_num_all_element_basis() const override
     {
         typename RefSpace::template ComponentContainer<TensorSize<dim>> n_basis(deg_.get_comp_map());
         for (auto comp : deg_.get_active_components_id())
@@ -648,6 +662,13 @@ public:
         Assert(false,ExcMessage("This class should not have this function."))
         return true;
     }
+
+    virtual vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const override
+    {
+        Assert(false,ExcMessage("This class should not have this function."))
+        return vector<Index>();
+    }
+
 };
 
 

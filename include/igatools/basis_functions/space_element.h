@@ -589,13 +589,13 @@ public:
     const CartesianGridElement<dim> &as_cartesian_grid_element_accessor() const;
 
 private:
-
+#if 0
     /** Return a reference to "*this" as being an object of type DerivedElementAccessor.*/
     DerivedElementAccessor &as_derived_element_accessor();
 
     /** Return a const-reference to "*this" as being an object of type DerivedElementAccessor.*/
     const DerivedElementAccessor &as_derived_element_accessor() const;
-
+#endif
 };
 
 
