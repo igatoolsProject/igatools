@@ -251,7 +251,7 @@ public:
     // TODO (pauletti, Oct 16, 2014): need to be documented or deleted, check!
     virtual vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const override final;
 
-    vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const;
+    virtual vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const override final;
 
     /** @name Functions involving the element iterator */
     ///@{
@@ -314,21 +314,21 @@ public:
 
 
     /** Returns the container with the global dof distribution (const version). */
-    const DofDistribution<dim, range, rank> &
-    get_dof_distribution_global() const;
+    virtual const DofDistribution<dim, range, rank> &
+    get_dof_distribution_global() const override final;
 
     /** Returns the container with the global dof distribution (non const version). */
-    DofDistribution<dim, range, rank> &
-    get_dof_distribution_global();
+    virtual DofDistribution<dim, range, rank> &
+    get_dof_distribution_global() override final;
 
     /** Returns the container with the patch dof distribution (const version). */
-    const DofDistribution<dim, range, rank> &
-    get_dof_distribution_patch() const;
+    virtual const DofDistribution<dim, range, rank> &
+    get_dof_distribution_patch() const override final;
 
 
     /** Returns the container with the patch dof distribution (non const version). */
-    DofDistribution<dim, range, rank> &
-    get_dof_distribution_patch();
+    virtual DofDistribution<dim, range, rank> &
+    get_dof_distribution_patch() override final;
     ///@}
 
     /**
@@ -348,7 +348,7 @@ public:
      * Prints internal information about the space.
      * @note Mostly used for debugging and testing.
      */
-    void print_info(LogStream &out) const;
+    virtual void print_info(LogStream &out) const override final;
 
 private:
 

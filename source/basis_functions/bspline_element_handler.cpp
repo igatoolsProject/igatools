@@ -153,8 +153,7 @@ template<int dim_, int range_ , int rank_>
 BSplineElementHandler<dim_, range_, rank_>::
 BSplineElementHandler(shared_ptr<const Space> space)
     :
-    base_t(space->get_grid()),
-    space_(space),
+    base_t(space),
     n_basis_(space_->get_num_all_element_basis())
 {
 
@@ -296,7 +295,7 @@ void
 BSplineElementHandler<dim_, range_, rank_>::
 init_element_cache(ElementIterator &elem)
 {
-    init_cache<dim>(elem.get_accessor());
+    init_cache<dim>(static_cast<BSplineElement<dim_,range_,rank_> &>(elem.get_accessor()));
 }
 
 
@@ -499,7 +498,7 @@ void
 BSplineElementHandler<dim_, range_, rank_>::
 fill_element_cache(ElementIterator &elem)
 {
-    fill_cache<dim>(elem.get_accessor(), 0);
+    fill_cache<dim>(static_cast<BSplineElement<dim_,range_,rank_> &>(elem.get_accessor()), 0);
 }
 
 

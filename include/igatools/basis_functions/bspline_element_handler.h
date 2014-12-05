@@ -37,15 +37,37 @@
 
 IGA_NAMESPACE_OPEN
 
+template<int dim_, int range_ = 1, int rank_ = 1>
+class ReferenceElementHandler : public GridElementHandler<dim_>
+{
+    using base_t = GridElementHandler<dim_>;
+    using Space = ReferenceSpace<dim_,range_,rank_>;
+//    static const Size n_components =  Space::n_components;
+
+public:
+    //Allocates and fill the (global) cache
+    ReferenceElementHandler(std::shared_ptr<const Space> space)
+        :
+        base_t(space->get_grid()),
+        space_(space)
+    {};
+
+private:
+    std::shared_ptr<const Space> space_;
+
+
+};
+
+
 /**
  * Global BSplineSpace uniform quadrature
  * computational optimization cache, storing the interval length
  * in each direction
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
-class BSplineElementHandler : public GridElementHandler<dim_>
+class BSplineElementHandler : public ReferenceElementHandler<dim_,range_,rank_>
 {
-    using base_t = GridElementHandler<dim_>;
+    using base_t = ReferenceElementHandler<dim_,range_,rank_>;
     using Space = BSplineSpace<dim_,range_,rank_>;
     static const Size n_components =  Space::n_components;
 

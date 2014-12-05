@@ -30,6 +30,7 @@
 #include <igatools/utils/dynamic_multi_array.h>
 #include <igatools/basis_functions/function_space.h>
 #include <igatools/geometry/cartesian_grid.h>
+#include <igatools/basis_functions/space_element.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -45,8 +46,13 @@ unique_container(std::array <T, dim> a)
 }
 
 
-template <int, int, int> class ReferenceElement;
+template <class,int,Transformation> class PhysicalSpace;
 
+//template <int, int, int> class ReferenceElement;
+
+template <int,int,int> class ReferenceElementHandler;
+
+template <int,int,int> class DofDistribution;
 
 template<int dim_, int range_ = 1, int rank_ = 1>
 class ReferenceSpace : public FunctionSpaceOnGrid<CartesianGrid<dim_>>
@@ -80,6 +86,8 @@ public:
 
     /** Type for iterator over the elements.  */
     using ElementIterator = GridForwardIterator<ElementAccessor>;
+
+    using ElementHandler = ReferenceElementHandler<dim_, range_, rank_>;
 
 
     /**
@@ -299,11 +307,64 @@ public:
     static constexpr int n_components = ComponentContainer<Size>::n_entries;
     static const std::array<Size, n_components> components;
 
+
+    using Degrees  = TensorIndex<dim>;
+    using DegreeTable = ComponentContainer<Degrees>;
+
+    /**
+     * Type alias for the boundary conditions on each face of each scalar component of the space.
+     */
+    using BCTable = ComponentContainer<std::array<BoundaryConditionType,UnitElement<dim>::n_faces>>;
+
+
+
+    template <int k>
+    using InterGridMap = typename GridType::template InterGridMap<k>;
+
+    template <int k>
+    using InterSpaceMap = vector<Index>;
+
+    template <int k>
+    using SubRefSpace = ReferenceSpace<k, range, rank>;
+
+    template <int k>
+    using SubSpace = PhysicalSpace<ReferenceSpace<k>, dim-k, Transformation::h_grad>;
+
+
+
     virtual bool is_bspline() const = 0;
 
     virtual vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const = 0;
+    virtual vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const = 0;
 
     virtual SpaceDimensionTable get_num_all_element_basis() const = 0 ;
+
+    virtual const SpaceDimensionTable &get_num_basis_table() const = 0;
+
+    virtual Size get_num_basis() const = 0;
+
+    virtual Size get_num_basis(const int comp) const = 0;
+    virtual Size get_num_basis(const int comp, const int dir) const = 0;
+
+    virtual const std::array<Index,n_components> &get_components_map() const = 0;
+
+    /** Returns the container with the global dof distribution (const version). */
+    virtual const DofDistribution<dim, range, rank> &
+    get_dof_distribution_global() const = 0;
+
+    /** Returns the container with the global dof distribution (non const version). */
+    virtual DofDistribution<dim, range, rank> &
+    get_dof_distribution_global() = 0;
+
+    /** Returns the container with the patch dof distribution (const version). */
+    virtual const DofDistribution<dim, range, rank> &
+    get_dof_distribution_patch() const = 0;
+
+
+    /** Returns the container with the patch dof distribution (non const version). */
+    virtual DofDistribution<dim, range, rank> &
+    get_dof_distribution_patch() = 0;
+
 
 
     /** @name Functions involving the element iterator */
@@ -325,7 +386,32 @@ public:
     virtual ElementIterator end() const = 0;
     ///@}
 
+
+    virtual void print_info(LogStream &out) const = 0;
+
+
+    template<int k>
+    std::shared_ptr<SubRefSpace<k> >
+    get_ref_sub_space(const int sub_elem_id,
+                      InterSpaceMap<k> &dof_map,
+                      std::shared_ptr<CartesianGrid<k>> sub_grid = nullptr) const
+    {
+        Assert(false,ExcNotImplemented());
+        return nullptr;
+    }
+
+    template<int k>
+    std::shared_ptr<SubSpace<k> >
+    get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
+                  std::shared_ptr<CartesianGrid<k>> sub_grid,
+                  std::shared_ptr<typename GridType::template InterGridMap<k>> elem_map) const
+    {
+        Assert(false,ExcNotImplemented());
+        return nullptr;
+    }
+
 };
+
 
 
 
@@ -349,9 +435,7 @@ public:
  */
 template<int dim, int range = 1, int rank = 1>
 class SplineSpace :
-    public ReferenceSpace<dim,range,rank>,
-//    public FunctionSpaceOnGrid<CartesianGrid<dim>>
-    public std::enable_shared_from_this<SplineSpace<dim,range,rank> >
+    public ReferenceSpace<dim,range,rank>
 {
 
 private:
@@ -384,10 +468,10 @@ public:
 public:
     using KnotCoordinates = typename GridType::KnotCoordinates;
     using BoundaryKnots = std::array<CartesianProductArray<Real,2>, dim>;
-    using Degrees  = TensorIndex<dim>;
     using Multiplicity = CartesianProductArray<Size, dim>;
 
-    using DegreeTable = typename RefSpace::template ComponentContainer<Degrees>;
+    using DegreeTable = typename RefSpace::DegreeTable;
+
     using MultiplicityTable = typename RefSpace::template ComponentContainer<Multiplicity>;
     using BoundaryKnotsTable = typename RefSpace::template ComponentContainer<BoundaryKnots>;
     using KnotsTable = typename RefSpace::template ComponentContainer<KnotCoordinates>;
@@ -396,13 +480,10 @@ public:
     using IndexSpaceTable = typename RefSpace::template ComponentContainer<DynamicMultiArray<Index,dim>>;
     using IndexSpaceMarkTable = Multiplicity;
 
-    /**
-     * Type alias for the boundary conditions on each face of each scalar component of the space.
-     */
-    using BCTable =  typename RefSpace::template ComponentContainer<std::array<BoundaryConditionType,UnitElement<dim>::n_faces>>;
 
     using SpaceDimensionTable = typename RefSpace::SpaceDimensionTable;
 
+    using BCTable = typename RefSpace::BCTable;
 
     enum class EndBehaviour
     {
@@ -447,7 +528,7 @@ public:
     }
 
 
-    const std::array<Index,n_components> &get_components_map() const
+    virtual const std::array<Index,n_components> &get_components_map() const override final
     {
         return interior_mult_->get_comp_map();
     }
@@ -458,7 +539,7 @@ public:
      * Total number of basis functions. This is the dimensionality
      * of the space.
      */
-    Size get_num_basis() const
+    virtual Size get_num_basis() const override final
     {
         return space_dim_.total_dimension;
     }
@@ -467,7 +548,7 @@ public:
      * Total number of basis functions
      * for the comp space component.
      */
-    Size get_num_basis(const int comp) const
+    virtual Size get_num_basis(const int comp) const override final
     {
         return space_dim_.comp_dimension[comp];
     }
@@ -476,7 +557,7 @@ public:
      *  Total number of basis functions for the comp space component
      *  and the dir direction.
      */
-    Size get_num_basis(const int comp, const int dir) const
+    virtual Size get_num_basis(const int comp, const int dir) const override final
     {
         return  space_dim_[comp][dir];
     }
@@ -485,7 +566,7 @@ public:
      * Component-direction indexed table with the number of basis functions
      * in each direction and component
      */
-    const SpaceDimensionTable &get_num_basis_table() const
+    virtual const SpaceDimensionTable &get_num_basis_table() const override final
     {
         return space_dim_;
     }
@@ -555,7 +636,7 @@ public:
 
 
 
-    void print_info(LogStream &out) const;
+    virtual void print_info(LogStream &out) const override;
 
 
 private:
@@ -690,24 +771,64 @@ public:
         return vector<Index>();
     }
 
+    virtual vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const override
+    {
+        Assert(false,ExcMessage("This class should not have this function."))
+        return vector<Index>();
+    }
+
     using ElementIterator = GridForwardIterator<ReferenceElement<dim,range,rank>>;
 
     virtual ElementIterator begin() const override
     {
         Assert(false,ExcMessage("This class should not have this function."));
-        return ElementIterator(this->shared_from_this(), 0);
+        return ElementIterator(nullptr, 0);
     }
 
     virtual ElementIterator end() const override
     {
         Assert(false,ExcMessage("This class should not have this function."));
-        return ElementIterator(this->shared_from_this(), 0);
+        return ElementIterator(nullptr, 0);
     }
 
     virtual ElementIterator last() const override
     {
         Assert(false,ExcMessage("This class should not have this function."));
-        return ElementIterator(this->shared_from_this(), 0);
+        return ElementIterator(nullptr, 0);
+    }
+
+
+    /** Returns the container with the global dof distribution (const version). */
+    virtual const DofDistribution<dim, range, rank> &
+    get_dof_distribution_global() const override
+    {
+        Assert(false,ExcMessage("This class should not have this function."));
+        return *reinterpret_cast<const DofDistribution<dim,range,rank> *>(this);
+    }
+
+    /** Returns the container with the global dof distribution (non const version). */
+    virtual DofDistribution<dim, range, rank> &
+    get_dof_distribution_global() override
+    {
+        Assert(false,ExcMessage("This class should not have this function."));
+        return *reinterpret_cast<DofDistribution<dim,range,rank> *>(this);
+    }
+
+    /** Returns the container with the patch dof distribution (const version). */
+    virtual const DofDistribution<dim, range, rank> &
+    get_dof_distribution_patch() const override
+    {
+        Assert(false,ExcMessage("This class should not have this function."));
+        return *reinterpret_cast<const DofDistribution<dim,range,rank> *>(this);
+    }
+
+
+    /** Returns the container with the patch dof distribution (non const version). */
+    virtual DofDistribution<dim, range, rank> &
+    get_dof_distribution_patch() override
+    {
+        Assert(false,ExcMessage("This class should not have this function."));
+        return *reinterpret_cast<DofDistribution<dim,range,rank> *>(this);
     }
 
 };

@@ -286,7 +286,8 @@ BSplineElement<dim, range, rank>::
 BSplineElement(const std::shared_ptr<ContainerType> space,
                const TensorIndex<dim> &index)
     :
-    parent_t(space,index)
+    parent_t(space,index),
+    space_(space)
 {}
 
 
@@ -295,7 +296,8 @@ BSplineElement<dim, range, rank>::
 BSplineElement(const self_t &elem,
                const CopyPolicy &copy_policy)
     :
-    parent_t(elem,copy_policy)
+    parent_t(elem,copy_policy),
+    space_(elem.space_)
 {}
 
 

@@ -36,16 +36,7 @@ template <int dim, int range, int rank> class BSplineSpace;
 template <typename Accessor> class GridForwardIterator;
 
 
-template <int dim, int range, int rank>
-class ReferenceElement
-{
-public:
-    /** Type for the grid accessor. */
-    using GridAccessor = CartesianGridElement<dim>;
 
-    /** Type required by the GridForwardIterator templated iterator */
-    using ContainerType = const ReferenceSpace<dim,range,rank> ;
-};
 
 
 /**
@@ -54,11 +45,11 @@ public:
  */
 template <int dim, int range, int rank>
 class BSplineElement :
-    public SpaceElement<BSplineSpace<dim,range,rank>>
+    public ReferenceElement<dim,range,rank>
 {
 private:
     using self_t = BSplineElement<dim,range,rank>;
-    using parent_t = SpaceElement<BSplineSpace<dim,range,rank>>;
+    using parent_t = ReferenceElement<dim,range,rank>;
 
 public:
     /** Type for the grid accessor. */
@@ -190,7 +181,7 @@ private:
     template <typename Accessor> friend class GridForwardIterator;
     friend class BSplineElementHandler<dim, range, rank>;
 
-
+    std::shared_ptr<const Space> space_;
 
 public:
     /*

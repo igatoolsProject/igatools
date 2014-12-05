@@ -207,8 +207,10 @@ class InstantiationInfo:
       self.all_domain_dims = []
       
       
-      self.ig_spaces = ['BSplineSpace'] if nurbs == 'OFF' \
-      else ['BSplineSpace', 'NURBSSpace']
+      self.ig_spaces = ['ReferenceSpace']
+#      self.ig_spaces = ['BSplineSpace'] if nurbs == 'OFF' \
+#      else ['BSplineSpace', 'NURBSSpace']
+
       self.deriv_order = range(int(max_der_order)+1)
       self.derivatives=[]  # allderivative classes
       self.values=[]

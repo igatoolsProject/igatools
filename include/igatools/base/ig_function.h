@@ -22,7 +22,9 @@
 #define IG_FUNCTIONS_H
 
 #include <igatools/base/function.h>
+#include <igatools/basis_functions/spline_space.h>
 //#include <igatools/linear_algebra/distributed_vector.h>
+
 
 IGA_NAMESPACE_OPEN
 
@@ -87,6 +89,7 @@ public:
     void print_info(LogStream &out) const;
 
 private:
+
     std::shared_ptr<const Space> space_;
 
     CoeffType coeff_;

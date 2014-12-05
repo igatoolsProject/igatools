@@ -274,17 +274,23 @@ public:
      *  Return the total number of dofs for the i-th space component
      *  and the j-th direction.
      */
-    Size get_num_basis(const int comp, const int dir) const;
+    virtual Size get_num_basis(const int comp, const int dir) const override final;
 
     /**
      * Component-direction indexed table with the number of basis functions
      * in each direction and component
      */
-    const SpaceDimensionTable &get_num_basis_table() const;
+    virtual const SpaceDimensionTable &get_num_basis_table() const override final;
 
     SpaceDimensionTable get_num_all_element_basis() const
     {
         return sp_space_->get_num_all_element_basis();
+    }
+
+
+    virtual const std::array<Index,n_components> &get_components_map() const override final
+    {
+        return sp_space_->get_components_map();
     }
 
     /**
@@ -388,7 +394,7 @@ public:
      * Prints internal information about the space.
      * @note Mostly used for debugging and testing.
      */
-    void print_info(LogStream &out) const;
+    virtual void print_info(LogStream &out) const override final;
 
 #if 0
     /**

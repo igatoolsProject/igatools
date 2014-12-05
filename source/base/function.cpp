@@ -45,5 +45,5 @@ get_cache(ElementAccessor &elem)
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/base/new_function.inst>
+#include <igatools/base/function.inst>
 

@@ -38,6 +38,9 @@ IGA_NAMESPACE_OPEN
 
 template <typename Accessor> class GridForwardIterator;
 
+
+
+
 template<class Space>
 class SpaceElement : public CartesianGridElement<Space::dim>
 {
@@ -597,6 +600,52 @@ private:
     const DerivedElementAccessor &as_derived_element_accessor() const;
 #endif
 };
+
+
+template <int, int, int> class ReferenceSpace;
+
+template <int dim, int range, int rank>
+class ReferenceElement : public SpaceElement<ReferenceSpace<dim,range,rank>>
+{
+public:
+    /** Type for the grid accessor. */
+    using GridAccessor = CartesianGridElement<dim>;
+
+    /** Type required by the GridForwardIterator templated iterator */
+    using ContainerType = const ReferenceSpace<dim,range,rank> ;
+
+    using Space = ReferenceSpace<dim,range,rank>;
+    using ConstSpace = const ReferenceSpace<dim,range,rank>;
+
+    using parent_t = SpaceElement<ReferenceSpace<dim,range,rank>>;
+
+    ReferenceElement() = default;
+
+    ReferenceElement(const ReferenceElement<dim,range,rank> &elem,
+                     const iga::CopyPolicy &copy_policy = CopyPolicy::deep)
+        :
+        parent_t(elem,copy_policy)
+    {}
+
+    /**
+     * Constructs an accessor to element number index of a
+     * ReferenceSpace space.
+     */
+    ReferenceElement(const std::shared_ptr<ConstSpace> space,
+                     const Index elem_index)
+        :
+        parent_t(space,elem_index)
+    {};
+
+    ReferenceElement(const std::shared_ptr<ConstSpace> space,
+                     const TensorIndex<dim> &elem_index)
+        :
+        parent_t(space,elem_index)
+    {};
+
+
+};
+
 
 
 IGA_NAMESPACE_CLOSE
