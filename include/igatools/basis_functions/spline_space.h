@@ -305,6 +305,26 @@ public:
 
     virtual SpaceDimensionTable get_num_all_element_basis() const = 0 ;
 
+
+    /** @name Functions involving the element iterator */
+    ///@{
+    /**
+     * Returns a element iterator to the first element of the patch
+     */
+    virtual ElementIterator begin() const = 0;
+
+    /**
+     * Returns a element iterator to the last element of the patch
+     */
+    virtual ElementIterator last() const = 0;
+
+
+    /**
+     * Returns a element iterator to one-pass the end of patch.
+     */
+    virtual ElementIterator end() const = 0;
+    ///@}
+
 };
 
 
@@ -329,8 +349,9 @@ public:
  */
 template<int dim, int range = 1, int rank = 1>
 class SplineSpace :
-    public ReferenceSpace<dim,range,rank>
+    public ReferenceSpace<dim,range,rank>,
 //    public FunctionSpaceOnGrid<CartesianGrid<dim>>
+    public std::enable_shared_from_this<SplineSpace<dim,range,rank> >
 {
 
 private:
@@ -667,6 +688,26 @@ public:
     {
         Assert(false,ExcMessage("This class should not have this function."))
         return vector<Index>();
+    }
+
+    using ElementIterator = GridForwardIterator<ReferenceElement<dim,range,rank>>;
+
+    virtual ElementIterator begin() const override
+    {
+        Assert(false,ExcMessage("This class should not have this function."));
+        return ElementIterator(this->shared_from_this(), 0);
+    }
+
+    virtual ElementIterator end() const override
+    {
+        Assert(false,ExcMessage("This class should not have this function."));
+        return ElementIterator(this->shared_from_this(), 0);
+    }
+
+    virtual ElementIterator last() const override
+    {
+        Assert(false,ExcMessage("This class should not have this function."));
+        return ElementIterator(this->shared_from_this(), 0);
     }
 
 };

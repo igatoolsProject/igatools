@@ -133,7 +133,8 @@ public:
     using ElementAccessor = BSplineElement<dim,range,rank>;
 
     /** Type for iterator over the elements.  */
-    using ElementIterator = GridForwardIterator<ElementAccessor>;
+    using ElementIterator = GridForwardIterator<ReferenceElement<dim,range,rank> >;
+//    using ElementIterator = GridForwardIterator<ElementAccessor>;
 
 
     using typename BaseSpace::InteriorReg;
@@ -248,7 +249,7 @@ protected:
 
 public:
     // TODO (pauletti, Oct 16, 2014): need to be documented or deleted, check!
-    vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;
+    virtual vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const override final;
 
     vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const;
 
@@ -257,18 +258,18 @@ public:
     /**
      * Returns a element iterator to the first element of the patch
      */
-    ElementIterator begin() const;
+    virtual ElementIterator begin() const override final;
 
     /**
      * Returns a element iterator to the last element of the patch
      */
-    ElementIterator last() const;
+    virtual ElementIterator last() const override final;
 
 
     /**
      * Returns a element iterator to one-pass the end of patch.
      */
-    ElementIterator end() const;
+    virtual ElementIterator end() const override final;
     ///@}
 
     ElementHandler get_element_handler() const;

@@ -35,6 +35,19 @@ IGA_NAMESPACE_OPEN
 template <int dim, int range, int rank> class BSplineSpace;
 template <typename Accessor> class GridForwardIterator;
 
+
+template <int dim, int range, int rank>
+class ReferenceElement
+{
+public:
+    /** Type for the grid accessor. */
+    using GridAccessor = CartesianGridElement<dim>;
+
+    /** Type required by the GridForwardIterator templated iterator */
+    using ContainerType = const ReferenceSpace<dim,range,rank> ;
+};
+
+
 /**
  * See module on \ref accessors_iterators for a general overview.
  * @ingroup accessors
