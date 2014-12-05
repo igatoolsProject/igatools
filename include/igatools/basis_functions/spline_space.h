@@ -34,6 +34,17 @@
 IGA_NAMESPACE_OPEN
 
 
+
+template <class T, int dim>
+inline
+vector<T>
+unique_container(std::array <T, dim> a)
+{
+    auto it = std::unique(a.begin(), a.end());
+    return vector<T>(a.begin(), it);
+}
+
+
 template<int dim_, int range_ = 1, int rank_ = 1>
 class ReferenceSpace : public FunctionSpaceOnGrid<CartesianGrid<dim_>>
 {
@@ -81,16 +92,64 @@ public:
         using  ComponentMap = std::array <Index, n_entries>;
 
         ComponentContainer(const ComponentMap &comp_map =
-                               sequence<n_entries>());
+                               sequence<n_entries>())
+            :
+            base_t(),
+            comp_map_(comp_map),
+            active_components_id_(unique_container<Index, n_entries>(comp_map)),
+            inactive_components_id_(n_entries)
+        {
+            auto all = sequence<n_entries>();
+            auto it=std::set_difference(all.begin(), all.end(),
+                                        active_components_id_.begin(),active_components_id_.end(),
+                                        inactive_components_id_.begin());
 
-        ComponentContainer(const ComponentMap &comp_map, const T &val);
+            inactive_components_id_.resize(it-inactive_components_id_.begin());
+        }
+
+
+        ComponentContainer(const ComponentMap &comp_map, const T &val)
+            :
+            base_t(),
+            comp_map_(comp_map),
+            active_components_id_(unique_container<Index, n_entries>(comp_map)),
+            inactive_components_id_(n_entries)
+        {
+            auto all = sequence<n_entries>();
+            auto it=std::set_difference(all.begin(), all.end(),
+                                        active_components_id_.begin(),active_components_id_.end(),
+                                        inactive_components_id_.begin());
+
+            inactive_components_id_.resize(it-inactive_components_id_.begin());
+
+            for (auto i : active_components_id_)
+                base_t::operator[](i) = val;
+        }
+
 
         /**
          * Construct a homogenous range table with val value
          */
-        ComponentContainer(const T &val);
+        ComponentContainer(const T &val)
+            :
+            comp_map_(filled_array<Index, n_entries>(0)),
+            active_components_id_(1,0),
+            inactive_components_id_(n_entries-1)
+        {
+            for (int i=1; i<n_entries; ++i)
+                inactive_components_id_[i-1] = i;
 
-        ComponentContainer(std::initializer_list<T> list);
+            base_t::operator[](0) = val;
+        }
+
+
+        ComponentContainer(std::initializer_list<T> list)
+            :
+            base_t(list),
+            comp_map_(sequence<n_entries>()),
+            active_components_id_(unique_container<Index, n_entries>(comp_map_))
+        {};
+
 
         const_iterator
         cbegin() const
@@ -132,12 +191,21 @@ public:
         /**
          *  Flat index access operator (non-const version).
          */
-        T &operator[](const Index i);
+        T &operator[](const Index i)
+        {
+            return base_t::operator[](comp_map_[i]);
+        }
 
         /**
          *  Flat index access operator (const version).
          */
-        const T &operator[](const Index i) const;
+        const T &operator[](const Index i) const
+        {
+            return base_t::operator[](comp_map_[i]);
+        }
+
+
+
 
         const Index active(const Index i) const
         {
@@ -583,111 +651,12 @@ public:
 };
 
 
-template <class T, int dim>
-inline
-vector<T>
-unique_container(std::array <T, dim> a)
-{
-    auto it = std::unique(a.begin(), a.end());
-    return vector<T>(a.begin(), it);
-}
 
 
 
-template<int dim, int range, int rank>
-template<class T>
-SplineSpace<dim, range, rank>::
-ComponentContainer<T>::
-ComponentContainer(const ComponentMap &comp_map)
-    :
-    base_t(),
-    comp_map_(comp_map),
-    active_components_id_(unique_container<Index, n_entries>(comp_map)),
-    inactive_components_id_(n_entries)
-{
-    auto all = sequence<n_entries>();
-    auto it=std::set_difference(all.begin(), all.end(),
-                                active_components_id_.begin(),active_components_id_.end(),
-                                inactive_components_id_.begin());
-
-    inactive_components_id_.resize(it-inactive_components_id_.begin());
-}
 
 
 
-template<int dim, int range, int rank>
-template<class T>
-SplineSpace<dim, range, rank>::ComponentContainer<T>::
-ComponentContainer(const ComponentMap &comp_map, const T &val)
-    :
-    base_t(),
-    comp_map_(comp_map),
-    active_components_id_(unique_container<Index, n_entries>(comp_map)),
-    inactive_components_id_(n_entries)
-{
-    auto all = sequence<n_entries>();
-    auto it=std::set_difference(all.begin(), all.end(),
-                                active_components_id_.begin(),active_components_id_.end(),
-                                inactive_components_id_.begin());
-
-    inactive_components_id_.resize(it-inactive_components_id_.begin());
-
-    for (auto i : active_components_id_)
-        base_t::operator[](i) = val;
-}
-
-
-
-template<int dim, int range, int rank>
-template<class T>
-SplineSpace<dim, range, rank>::ComponentContainer<T>::
-ComponentContainer(std::initializer_list<T> list)
-    :
-    base_t(list),
-    comp_map_(sequence<n_entries>()),
-    active_components_id_(unique_container<Index, n_entries>(comp_map_))
-{}
-
-
-
-template<int dim, int range, int rank>
-template<class T>
-SplineSpace<dim, range, rank>::
-ComponentContainer<T>::
-ComponentContainer(const T &val)
-    :
-    comp_map_(filled_array<Index, n_entries>(0)),
-    active_components_id_(1,0),
-    inactive_components_id_(n_entries-1)
-{
-    for (int i=1; i<n_entries; ++i)
-        inactive_components_id_[i-1] = i;
-
-    base_t::operator[](0) = val;
-}
-
-
-
-template<int dim, int range, int rank>
-template<class T>
-T &
-SplineSpace<dim, range, rank>::
-ComponentContainer<T>::
-operator[](const Index i)
-{
-    return base_t::operator[](comp_map_[i]);
-}
-
-
-template<int dim, int range, int rank>
-template<class T>
-const T &
-SplineSpace<dim, range, rank>::
-ComponentContainer<T>::
-operator[](const Index i) const
-{
-    return base_t::operator[](comp_map_[i]);
-}
 
 IGA_NAMESPACE_CLOSE
 
