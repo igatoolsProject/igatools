@@ -29,7 +29,7 @@ template<int dim, int codim, int range, int rank>
 FormulaFunction<dim, codim, range, rank>::
 FormulaFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map)
     :
-    parent_t::NewFunction(grid),
+    parent_t::Function(grid),
     mapping_(map),
     map_elem_(mapping_->begin())
 {}

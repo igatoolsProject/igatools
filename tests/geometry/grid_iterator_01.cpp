@@ -40,7 +40,7 @@ void elem_measure(const int n_knots = 5)
     OUTSTART
 
     auto grid = CartesianGrid<dim>::create(n_knots);
-    auto flag = NewValueFlags::measure|NewValueFlags::w_measure;
+    auto flag = ValueFlags::measure|ValueFlags::w_measure;
 
     QGauss<dim> quad(2);
     GridElementHandler<dim> cache(grid);

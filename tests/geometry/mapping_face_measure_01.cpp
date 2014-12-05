@@ -31,7 +31,7 @@
 #include <igatools/base/function_lib.h>
 #include <igatools/base/identity_function.h>
 #include <igatools/base/function_element.h>
-#include <igatools/geometry/new_mapping.h>
+#include <igatools/geometry/mapping.h>
 #include <igatools/geometry/mapping_element.h>
 
 // TODO (pauletti, Nov 20, 2014): this test is more about cylindrical annulus
@@ -39,7 +39,7 @@ template <int dim, int sub_dim = dim-1>
 void test_evaluate()
 {
     using Function = functions::CylindricalAnnulus<dim>;
-    using Mapping   = NewMapping<dim, 0>;
+    using Mapping   = Mapping<dim, 0>;
 
     auto grid = CartesianGrid<dim>::create();
 
@@ -47,7 +47,7 @@ void test_evaluate()
                               1., 2., 0., 1.0, 0.0, numbers::PI/2.0);
     Mapping map(F);
 
-    auto flag = NewValueFlags::point | NewValueFlags::w_measure;
+    auto flag = ValueFlags::point | ValueFlags::w_measure;
     auto quad = QGauss<sub_dim>(3);
 
     map.reset(flag, quad);

@@ -24,7 +24,7 @@
 #include <igatools/base/config.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
 #include <igatools/basis_functions/nurbs_element_handler.h>
-#include <igatools/geometry/new_push_forward.h>
+#include <igatools/geometry/push_forward.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -54,7 +54,7 @@ public:
     SpaceElementHandler(std::shared_ptr<const PhysSpace> space);
 
     template<int k>
-    void reset(const NewValueFlags flag, const Quadrature<k> &quad);
+    void reset(const ValueFlags flag, const Quadrature<k> &quad);
 
     //protected:
     template <int k>

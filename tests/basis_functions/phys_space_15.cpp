@@ -39,7 +39,7 @@
 
 
 template<int dim, int codim>
-using MapFunc = NewFunction<dim, 0, dim+codim>;
+using MapFunc = Function<dim, 0, dim+codim>;
 
 
 template<int dim, int codim=0>
@@ -67,8 +67,8 @@ void elem_values(const int n_knots = 5, const int deg=1)
 {
     OUTSTART
     const int k = dim;
-    using RefSpace = NewBSplineSpace<dim, range, rank>;
-    using Space = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
+    using RefSpace = BSplineSpace<dim, range, rank>;
+    using Space = PhysicalSpace<RefSpace, codim, Transformation::h_grad>;
     using ElementHandler = typename Space::ElementHandler;
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
@@ -78,17 +78,17 @@ void elem_values(const int n_knots = 5, const int deg=1)
 
     auto space = Space::create(ref_space, map_func);
 
-    auto flag = NewValueFlags::none;
+    auto flag = ValueFlags::none;
     switch (order)
     {
         case 0:
-            flag |= NewValueFlags::value;
+            flag |= ValueFlags::value;
             break;
         case 1:
-            flag |= NewValueFlags::gradient;
+            flag |= ValueFlags::gradient;
             break;
         case 2:
-            flag |= NewValueFlags::hessian;
+            flag |= ValueFlags::hessian;
             break;
     }
 

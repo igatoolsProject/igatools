@@ -30,7 +30,7 @@
 #include <igatools/base/function_lib.h>
 #include <igatools/base/identity_function.h>
 #include <igatools/base/function_element.h>
-#include <igatools/geometry/new_mapping.h>
+#include <igatools/geometry/mapping.h>
 #include <igatools/geometry/mapping_element.h>
 
 
@@ -55,13 +55,13 @@ auto create_mapping2(shared_ptr<const CartesianGrid<dim>> grid)
 template <int sub_dim, int dim, int codim =0 >
 void boundary_normals()
 {
-    using Mapping = NewMapping<dim, codim>;
+    using Mapping = Mapping<dim, codim>;
 
     auto grid = CartesianGrid<dim>::create();
     auto map_func =  create_mapping1<dim>(grid);
 
-    auto flag = NewValueFlags::w_measure|NewValueFlags::point|
-                NewValueFlags::boundary_normal;
+    auto flag = ValueFlags::w_measure|ValueFlags::point|
+                ValueFlags::boundary_normal;
     auto quad = QGauss<sub_dim>(1);
 
     Mapping map(map_func);

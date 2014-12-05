@@ -60,7 +60,7 @@ template<int dim_, int range_ , int rank_>
 template<int k>
 void
 NURBSElementHandler<dim_, range_, rank_>::
-reset(const NewValueFlags flag,
+reset(const ValueFlags flag,
       const Quadrature<k> &quad1)
 {
     //--------------------------------------
@@ -72,32 +72,32 @@ reset(const NewValueFlags flag,
     //--------------------------------------------------
     // resetting the Function for the weight (for the denominator)
     int max_deriv_order = -1;
-    if (contains(flag, NewValueFlags::point) ||
-        contains(flag, NewValueFlags::value))
+    if (contains(flag, ValueFlags::point) ||
+        contains(flag, ValueFlags::value))
         max_deriv_order = 0;
 
-    if (contains(flag, NewValueFlags::measure) ||
-        contains(flag, NewValueFlags::w_measure) ||
-        contains(flag, NewValueFlags::boundary_normal) ||
-        contains(flag, NewValueFlags::outer_normal) ||
-        contains(flag, NewValueFlags::gradient) ||
-        contains(flag, NewValueFlags::inv_gradient))
+    if (contains(flag, ValueFlags::measure) ||
+        contains(flag, ValueFlags::w_measure) ||
+        contains(flag, ValueFlags::boundary_normal) ||
+        contains(flag, ValueFlags::outer_normal) ||
+        contains(flag, ValueFlags::gradient) ||
+        contains(flag, ValueFlags::inv_gradient))
         max_deriv_order = 1;
 
 
-    if (contains(flag, NewValueFlags::curvature) ||
-        contains(flag, NewValueFlags::hessian) ||
-        contains(flag, NewValueFlags::inv_hessian))
+    if (contains(flag, ValueFlags::curvature) ||
+        contains(flag, ValueFlags::hessian) ||
+        contains(flag, ValueFlags::inv_hessian))
         max_deriv_order = 2;
 
 
-    NewValueFlags weight_flag;
+    ValueFlags weight_flag;
     if (max_deriv_order == 0)
-        weight_flag = NewValueFlags::value;
+        weight_flag = ValueFlags::value;
     else if (max_deriv_order == 1)
-        weight_flag = NewValueFlags::value | NewValueFlags::gradient;
+        weight_flag = ValueFlags::value | ValueFlags::gradient;
     else if (max_deriv_order == 2)
-        weight_flag = NewValueFlags::value | NewValueFlags::gradient | NewValueFlags::hessian;
+        weight_flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::hessian;
     else
         Assert(false,ExcMessage("Not a right value flag."));
 

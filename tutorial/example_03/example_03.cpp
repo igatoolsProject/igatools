@@ -20,7 +20,7 @@
 
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/geometry/cartesian_grid_element.h>
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 // [quad include]
 #include <igatools/base/quadrature_lib.h>
@@ -43,7 +43,7 @@ void loop_on_grid_with_cache()
     auto elem_handler = grid->get_element_handler();
 
     auto quad = QGauss<dim>(2);
-    auto flag = NewValueFlags::w_measure;
+    auto flag = ValueFlags::w_measure;
 
     elem_handler.template reset<dim>(flag, quad);
 
@@ -81,11 +81,11 @@ void loop_on_space_with_cache()
     const int n_knots = 3;
     auto grid = CartesianGrid<dim>::create(n_knots);
     const int degree = 2;
-    auto space = NewBSplineSpace<dim>::create(degree, grid);
+    auto space = BSplineSpace<dim>::create(degree, grid);
 
     auto elem_handler = space->get_element_handler();
     auto quad = QGauss<dim>(1);
-    auto flag = NewValueFlags::value;
+    auto flag = ValueFlags::value;
 
     elem_handler.template reset<dim>(flag, quad);
 

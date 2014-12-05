@@ -41,19 +41,19 @@ template<int dim>
 class BoundaryFunction : public FormulaFunction<dim>
 {
 private:
-   using base_t = NewFunction<dim>;
+    using base_t = Function<dim>;
     using parent_t = FormulaFunction<dim>;
-   using self_t = BoundaryFunction<dim>;
+    using self_t = BoundaryFunction<dim>;
     using typename base_t::GridType;
 public:
     using typename parent_t::Point;
     using typename parent_t::Value;
     template <int order>
-        using Derivative = typename parent_t::template Derivative<order>;
+    using Derivative = typename parent_t::template Derivative<order>;
 public:
     BoundaryFunction(std::shared_ptr<GridType> grid)
-    : FormulaFunction<dim>(grid, IdentityFunction<dim>::create(grid))
-      {}
+        : FormulaFunction<dim>(grid, IdentityFunction<dim>::create(grid))
+    {}
 
     static std::shared_ptr<base_t>
     create(std::shared_ptr<GridType> grid)
@@ -75,7 +75,7 @@ public:
     }
 
     void evaluate_0(const ValueVector<Point> &points,
-                       ValueVector<Value> &values) const override
+                    ValueVector<Value> &values) const override
     {
         for (int i = 0; i<points.size(); ++i)
         {
@@ -84,12 +84,12 @@ public:
         }
     }
     void evaluate_1(const ValueVector<Point> &points,
-                       ValueVector<Derivative<1>> &values) const override
-                               {}
+                    ValueVector<Derivative<1>> &values) const override
+    {}
 
-       void evaluate_2(const ValueVector<Point> &points,
-                       ValueVector<Derivative<2>> &values) const override
-                               {}
+    void evaluate_2(const ValueVector<Point> &points,
+                    ValueVector<Derivative<2>> &values) const override
+    {}
 };
 
 
@@ -102,7 +102,7 @@ template<int dim, int codim=0, int range = 1, int rank = 1>
 class ProductFunction : public FormulaFunction<dim>
 {
 private:
-    using base_t = NewFunction<dim, codim, range, rank>;
+    using base_t = Function<dim, codim, range, rank>;
     using parent_t = FormulaFunction<dim, codim, range, rank>;
     using self_t = ProductFunction<dim, codim, range, rank>;
 public:
@@ -152,7 +152,7 @@ class NormFunction : public FormulaFunction<dim, 0, 1, 1>
 {
 
 public:
-    using base_t = NewFunction<dim, 0, 1, 1>;
+    using base_t = Function<dim, 0, 1, 1>;
     using parent_t = FormulaFunction<dim, 0, 1, 1>;
     using self_t = NormFunction<dim>;
     using typename base_t::GridType;
@@ -168,10 +168,10 @@ public:
     static std::shared_ptr<base_t>
     create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
            const Real p=2.)
-           {
+    {
         return std::shared_ptr<base_t>(new self_t(grid, map, p));
 
-           }
+    }
 
 
     std::shared_ptr<base_t> clone() const override
@@ -184,32 +184,32 @@ public:
 protected:
     NormFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
                  const Real p)
-:
-    parent_t(grid, map),
-    p_(p)
-{}
+        :
+        parent_t(grid, map),
+        p_(p)
+    {}
 
 
 
 private:
     void evaluate_0(const ValueVector<Point> &points,
                     ValueVector<Value> &values) const override
-                    {
+    {
         auto pt = points.begin();
         for (auto &val : values)
         {
             val = std::pow(pt->norm_square(), p_/2.);
             ++pt;
         }
-                    }
+    }
 
     void evaluate_1(const ValueVector<Point> &points,
                     ValueVector<Derivative<1>> &values) const override
-                            {}
+    {}
 
     void evaluate_2(const ValueVector<Point> &points,
                     ValueVector<Derivative<2>> &values) const override
-                            {}
+    {}
 
 private:
     const Real p_;

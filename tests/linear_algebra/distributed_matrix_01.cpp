@@ -35,7 +35,7 @@
 
 #include <igatools/geometry/cartesian_grid.h>
 
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/geometry/unit_element.h>
 
@@ -69,7 +69,7 @@ int main()
 
     auto knots = CartesianGrid<dim_domain>::create(coord);
 
-    auto bspline_space = NewBSplineSpace< dim_domain, dim_range, rank>::create(p, knots) ;
+    auto bspline_space = BSplineSpace< dim_domain, dim_range, rank>::create(p, knots) ;
 
 #if defined(USE_TRILINOS)
     const auto la_pack = LAPack::trilinos;

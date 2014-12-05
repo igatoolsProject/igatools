@@ -29,9 +29,9 @@
 
 #include "../tests.h"
 
-#include <igatools/basis_functions/new_physical_space.h>
+#include <igatools/basis_functions/physical_space.h>
 #include <igatools/basis_functions/space_element_handler.h>
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/physical_space_element.h>
 //#include <igatools/basis_functions/space_uniform_quad_cache.h>
 #include <igatools/base/quadrature_lib.h>
@@ -46,17 +46,17 @@ void loc_stiff_matrix(const int n_knots, const int deg)
     OUTSTART
 
     auto grid = CartesianGrid<dim>::create(n_knots);
-    using RefSpace = NewBSplineSpace<dim>;
+    using RefSpace = BSplineSpace<dim>;
     auto ref_space = RefSpace::create(deg, grid) ;
 
-    using PhysSpace = NewPhysicalSpace<RefSpace,0,Transformation::h_grad>;
+    using PhysSpace = PhysicalSpace<RefSpace,0,Transformation::h_grad>;
     auto phys_space = PhysSpace::create(ref_space, IdentityFunction<dim>::create(grid)) ;
 
     using ElementHandler = typename PhysSpace::ElementHandler;
     ElementHandler elem_handler(phys_space);
 
     auto quad = QGauss<dim>(deg+1);
-    auto flag = NewValueFlags::value | NewValueFlags::gradient | NewValueFlags::w_measure;
+    auto flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::w_measure;
     elem_handler.reset(flag,quad);
 
     const int n_qpoints =  quad.get_num_points();

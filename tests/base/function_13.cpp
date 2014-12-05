@@ -34,7 +34,7 @@
 
 
 template<int dim, int codim, int range>
-void values_of_F(NewFunction<dim, codim, range> &F)
+void values_of_F(Function<dim, codim, range> &F)
 {
     auto elem = F.begin();
     auto end  = F.end();
@@ -70,8 +70,8 @@ void create_fun()
         b[i] = i;
     }
 
-    auto flag = NewValueFlags::point | NewValueFlags::value |
-                NewValueFlags::gradient;
+    auto flag = ValueFlags::point | ValueFlags::value |
+                ValueFlags::gradient;
 
     auto grid = CartesianGrid<dim>::create(3);
     auto F = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);

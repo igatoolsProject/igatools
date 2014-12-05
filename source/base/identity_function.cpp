@@ -29,7 +29,7 @@ template<int dim,int space_dim>
 IdentityFunction<dim,space_dim>::
 IdentityFunction(std::shared_ptr<GridType> grid)
     :
-    parent_t::NewFunction(grid)
+    parent_t::Function(grid)
 {}
 
 

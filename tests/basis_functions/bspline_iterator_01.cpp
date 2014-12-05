@@ -30,7 +30,7 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
 #include <igatools/basis_functions/bspline_element.h>
 
@@ -40,14 +40,14 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
     OUTSTART
 
     auto grid = CartesianGrid<dim>::create();
-    using Space = NewBSplineSpace<dim, range, rank>;
+    using Space = BSplineSpace<dim, range, rank>;
     using ElementHandler = typename Space::ElementHandler;
     auto space = Space::create(deg, grid);
 
 
     QGauss<k> quad(n_qp);
-    auto flag = NewValueFlags::value|NewValueFlags::gradient
-                |NewValueFlags::hessian;
+    auto flag = ValueFlags::value|ValueFlags::gradient
+                |ValueFlags::hessian;
     ElementHandler cache(space);
     cache.template reset<k>(flag, quad);
 

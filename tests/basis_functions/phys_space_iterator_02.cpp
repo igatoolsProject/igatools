@@ -31,7 +31,7 @@
 
 #include <igatools/base/ig_function.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/new_physical_space.h>
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/basis_functions/space_element_handler.h>
@@ -39,9 +39,9 @@
 
 template<int dim, int codim=0>
 auto
-create_function(shared_ptr<NewBSplineSpace<dim, dim + codim>> space)
+create_function(shared_ptr<BSplineSpace<dim, dim + codim>> space)
 {
-    using Space = NewBSplineSpace<dim, dim + codim>;
+    using Space = BSplineSpace<dim, dim + codim>;
     using Function = IgFunction<Space>;
 
     typename Function::CoeffType control_pts(space->get_num_basis());
@@ -116,8 +116,8 @@ template <int dim, int order = 0, int range=dim, int rank=1, int codim = 0>
 void elem_values(const int n_knots = 2, const int deg=1)
 {
     const int k = dim;
-    using RefSpace = NewBSplineSpace<dim, range, rank>;
-    using Space = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
+    using RefSpace = BSplineSpace<dim, range, rank>;
+    using Space = PhysicalSpace<RefSpace, codim, Transformation::h_grad>;
     using ElementHandler = typename Space::ElementHandler;
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
@@ -130,9 +130,9 @@ void elem_values(const int n_knots = 2, const int deg=1)
     const int n_qp = 3;
     auto quad = QGauss<k>(n_qp);
 
-    auto flag = NewValueFlags::value |
-                NewValueFlags::gradient |
-                NewValueFlags::w_measure;
+    auto flag = ValueFlags::value |
+                ValueFlags::gradient |
+                ValueFlags::w_measure;
 
     ElementHandler sp_values(space);
     sp_values.template reset<k> (flag, quad);

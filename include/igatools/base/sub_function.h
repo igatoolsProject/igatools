@@ -21,7 +21,7 @@
 #ifndef SUB_FUNCTION_H_
 #define SUB_FUNCTION_H_
 
-#include <igatools/base/new_function.h>
+#include <igatools/base/function.h>
 #include <igatools/base/function_element.h>
 #include <boost/variant/get.hpp>
 //#include<igatools/../../source/geometry/grid_forward_iterator.cpp>
@@ -33,13 +33,13 @@ IGA_NAMESPACE_OPEN
  * @author pauletti 2014
  */
 template<int sub_dim, int dim, int codim, int range, int rank>
-class SubFunction : public NewFunction<sub_dim, codim + (dim-sub_dim), range, rank>
+class SubFunction : public Function<sub_dim, codim + (dim-sub_dim), range, rank>
 {
 private:
     using self_t = SubFunction<sub_dim, dim, codim, range, rank>;
 public:
-    using base_t  = NewFunction<sub_dim, codim + (dim-sub_dim), range, rank>;
-    using SupFunc = NewFunction<dim, codim, range, rank>;
+    using base_t  = Function<sub_dim, codim + (dim-sub_dim), range, rank>;
+    using SupFunc = Function<dim, codim, range, rank>;
 
     using typename base_t::GridType;
 
@@ -91,7 +91,7 @@ public:
         return std::make_shared<self_t>(self_t(*this));
     }
 
-    void reset(const NewValueFlags &flag, const variant_1 &quad) override
+    void reset(const ValueFlags &flag, const variant_1 &quad) override
     {
         base_t::reset(flag, quad);
         auto q = boost::get<Quadrature<sub_dim>>(quad);
@@ -202,19 +202,19 @@ public:
     {}
 
     SubMapFunction(const self_t &sub_f)
-            :
-            base_t(sub_f),
-            sup_func_(sub_f.sup_func_->clone()),
-            s_id_(sub_f.s_id_),
-            elem_map_(sub_f.elem_map_),
-            sup_elem_(sub_f.sup_func_->begin())
-        {}
+        :
+        base_t(sub_f),
+        sup_func_(sub_f.sup_func_->clone()),
+        s_id_(sub_f.s_id_),
+        elem_map_(sub_f.elem_map_),
+        sup_elem_(sub_f.sup_func_->begin())
+    {}
 
     std::shared_ptr<base_t> clone() const override
-        {
+    {
 
-            return std::make_shared<self_t>(self_t(*this));
-        }
+        return std::make_shared<self_t>(self_t(*this));
+    }
 
 
     static std::shared_ptr<base_t>
@@ -233,7 +233,7 @@ public:
         return std::shared_ptr<base_t>(new self_t(grid, func, s_id, elem_map));
     }
 
-    void reset(const NewValueFlags &flag, const variant_1 &quad) override
+    void reset(const ValueFlags &flag, const variant_1 &quad) override
     {
         base_t::reset(flag, quad);
         auto q = boost::get<Quadrature<sub_dim>>(quad);

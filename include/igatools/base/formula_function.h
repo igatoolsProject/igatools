@@ -21,7 +21,7 @@
 #ifndef FORMULA_FUNCTIONS_H
 #define FORMULA_FUNCTIONS_H
 
-#include <igatools/base/new_function.h>
+#include <igatools/base/function.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -29,10 +29,10 @@ IGA_NAMESPACE_OPEN
  *
  */
 template<int dim, int codim=0, int range = 1, int rank = 1>
-class FormulaFunction : public NewFunction<dim, codim, range, rank>
+class FormulaFunction : public Function<dim, codim, range, rank>
 {
 private:
-    using parent_t = NewFunction<dim, codim, range, rank>;
+    using parent_t = Function<dim, codim, range, rank>;
     using self_t = FormulaFunction<dim, codim, range, rank>;
 protected:
     using typename parent_t::GridType;
@@ -55,15 +55,15 @@ public:
 
     FormulaFunction(const self_t &func)
         :
-        parent_t::NewFunction(func),
+        parent_t::Function(func),
         mapping_(func.mapping_->clone()),
         map_elem_(func.mapping_->begin())
     {}
 
-    void reset(const NewValueFlags &flag, const variant_1 &quad) override
+    void reset(const ValueFlags &flag, const variant_1 &quad) override
     {
         parent_t::reset(flag, quad);
-        mapping_->reset(NewValueFlags::value|NewValueFlags::point, quad);
+        mapping_->reset(ValueFlags::value|ValueFlags::point, quad);
     }
 
     void init_cache(ElementAccessor &elem, const variant_2 &k) override

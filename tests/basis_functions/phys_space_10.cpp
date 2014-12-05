@@ -39,13 +39,13 @@
 
 
 template <int dim, int range=1, int rank=1, int codim = 0>
-void cache_init(const NewValueFlags flag,
+void cache_init(const ValueFlags flag,
                 const int n_knots = 5, const int deg=1)
 {
     OUTSTART
 
-    using RefSpace = NewBSplineSpace<dim, range, rank>;
-    using Space    = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
+    using RefSpace = BSplineSpace<dim, range, rank>;
+    using Space    = PhysicalSpace<RefSpace, codim, Transformation::h_grad>;
     using ElementHandler = typename Space::ElementHandler;
     auto grid      = CartesianGrid<dim>::create(n_knots);
     auto ref_space = RefSpace::create(deg, grid);
@@ -76,14 +76,14 @@ void cache_init(const NewValueFlags flag,
 
 
 template <int dim, int range=1, int rank=1, int codim = 0>
-void cache_init_elem(const NewValueFlags flag,
+void cache_init_elem(const ValueFlags flag,
                      const int n_knots = 5, const int deg=1)
 {
     const int k = dim;
     OUTSTART
 
-    using RefSpace = NewBSplineSpace<dim, range, rank>;
-    using Space = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
+    using RefSpace = BSplineSpace<dim, range, rank>;
+    using Space = PhysicalSpace<RefSpace, codim, Transformation::h_grad>;
     using ElementHandler = typename Space::ElementHandler;
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
@@ -116,14 +116,14 @@ void cache_init_elem(const NewValueFlags flag,
 
 
 template <int dim, int range=1, int rank=1, int codim = 0>
-void cache_fill_elem(const NewValueFlags flag,
+void cache_fill_elem(const ValueFlags flag,
                      const int n_knots = 5, const int deg=1)
 {
     OUTSTART
 
     const int k = dim;
-    using RefSpace = NewBSplineSpace<dim, range, rank>;
-    using Space = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
+    using RefSpace = BSplineSpace<dim, range, rank>;
+    using Space = PhysicalSpace<RefSpace, codim, Transformation::h_grad>;
     using ElementHandler = typename Space::ElementHandler;
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
@@ -162,13 +162,13 @@ void cache_fill_elem(const NewValueFlags flag,
 
 
 template <int dim, int range=1, int rank=1, int codim = 0>
-void cache_get_elem_values(const NewValueFlags flag,
+void cache_get_elem_values(const ValueFlags flag,
                            const int n_knots = 5, const int deg=1)
 {
     OUTSTART
     const int k = dim;
-    using RefSpace = NewBSplineSpace<dim, range, rank>;
-    using Space = NewPhysicalSpace<RefSpace, codim, Transformation::h_grad>;
+    using RefSpace = BSplineSpace<dim, range, rank>;
+    using Space = PhysicalSpace<RefSpace, codim, Transformation::h_grad>;
     using ElementHandler = typename Space::ElementHandler;
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
@@ -210,10 +210,10 @@ int main()
 {
     out.depth_console(10);
 
-    cache_init<1>(NewValueFlags::value);
-    cache_init_elem<1>(NewValueFlags::value);
-    cache_fill_elem<1>(NewValueFlags::value);
-    cache_get_elem_values<1>(NewValueFlags::value);
+    cache_init<1>(ValueFlags::value);
+    cache_init_elem<1>(ValueFlags::value);
+    cache_fill_elem<1>(ValueFlags::value);
+    cache_get_elem_values<1>(ValueFlags::value);
 
     return  0;
 }

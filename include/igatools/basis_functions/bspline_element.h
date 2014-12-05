@@ -32,7 +32,7 @@
 
 IGA_NAMESPACE_OPEN
 
-template <int dim, int range, int rank> class NewBSplineSpace;
+template <int dim, int range, int rank> class BSplineSpace;
 template <typename Accessor> class GridForwardIterator;
 
 /**
@@ -41,21 +41,21 @@ template <typename Accessor> class GridForwardIterator;
  */
 template <int dim, int range, int rank>
 class BSplineElement :
-    public SpaceElement<NewBSplineSpace<dim,range,rank>>
+    public SpaceElement<BSplineSpace<dim,range,rank>>
 {
 private:
     using self_t = BSplineElement<dim,range,rank>;
-    using parent_t = SpaceElement<NewBSplineSpace<dim,range,rank>>;
+    using parent_t = SpaceElement<BSplineSpace<dim,range,rank>>;
 
 public:
     /** Type for the grid accessor. */
     using GridAccessor = CartesianGridElement<dim>;
 
     /** Type required by the GridForwardIterator templated iterator */
-    using ContainerType = const NewBSplineSpace<dim, range, rank> ;
+    using ContainerType = const BSplineSpace<dim, range, rank> ;
 
     /** Type required for the generic algorithm on the spaces (plots??) */
-    using Space = NewBSplineSpace<dim, range, rank> ;
+    using Space = BSplineSpace<dim, range, rank> ;
 
     using ValuesCache = typename parent_t::ValuesCache;
 

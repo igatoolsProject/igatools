@@ -30,7 +30,7 @@
 
 #include "../tests.h"
 
-#include <igatools/geometry/new_push_forward.h>
+#include <igatools/geometry/push_forward.h>
 #include <igatools/geometry/push_forward_element.h>
 #include <igatools/geometry/mapping_element.h>
 
@@ -39,7 +39,7 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/function_element.h>
 
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
 
@@ -48,8 +48,8 @@ void test()
 {
     const int space_dim = dim + codim;
     using Function = functions::LinearFunction<dim, codim, space_dim>;
-    using Space = NewBSplineSpace<dim>;
-    using PForward  = NewPushForward<Transformation::h_grad, dim, codim>;
+    using Space = BSplineSpace<dim>;
+    using PForward  = PushForward<Transformation::h_grad, dim, codim>;
 
     typename Function::Value    b;
     typename Function::Gradient A;
@@ -65,7 +65,7 @@ void test()
     auto grid = CartesianGrid<dim>::create(3);
 
     auto space  = Space::create(1, grid);
-    auto sp_flag = NewValueFlags::value | NewValueFlags::gradient | NewValueFlags::hessian;
+    auto sp_flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::hessian;
     typename Space::ElementHandler sp_values(space);
     sp_values.template reset<dim>(sp_flag, quad);
     auto sp_elem = space->begin();
@@ -74,10 +74,10 @@ void test()
     auto F = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
     PForward pf(F);
 
-    auto flag = NewValueFlags::point |
-                NewValueFlags::tran_value |
-                NewValueFlags::tran_gradient|
-                NewValueFlags::tran_hessian;
+    auto flag = ValueFlags::point |
+                ValueFlags::tran_value |
+                ValueFlags::tran_gradient|
+                ValueFlags::tran_hessian;
 
     pf.template reset<dim>(flag, quad);
 

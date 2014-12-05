@@ -21,14 +21,14 @@
 #ifndef IG_FUNCTIONS_H
 #define IG_FUNCTIONS_H
 
-#include <igatools/base/new_function.h>
+#include <igatools/base/function.h>
 //#include <igatools/linear_algebra/distributed_vector.h>
 
 IGA_NAMESPACE_OPEN
 
 template<class Space>
 class IgFunction :
-    public NewFunction<Space::dim, Space::codim, Space::range, Space::rank>
+    public Function<Space::dim, Space::codim, Space::range, Space::rank>
 {
 public:
     static const int dim = Space::dim;
@@ -39,8 +39,8 @@ public:
     using CoeffType = vector<Real>;
 
 private:
-    using base_t = NewFunction<dim, codim, range, rank>;
-    using parent_t = NewFunction<dim, codim, range, rank>;
+    using base_t = Function<dim, codim, range, rank>;
+    using parent_t = Function<dim, codim, range, rank>;
     using self_t = IgFunction<Space>;
 
 public:
@@ -72,7 +72,7 @@ public:
     }
 
 
-    void reset(const NewValueFlags &flag, const variant_1 &quad) override;
+    void reset(const ValueFlags &flag, const variant_1 &quad) override;
 
     void init_cache(ElementAccessor &elem, const variant_2 &k) override;
 
@@ -105,7 +105,7 @@ private:
             space_handler_->template reset<T::dim>(flag, quad);
         }
 
-        NewValueFlags flag;
+        ValueFlags flag;
         typename Space::ElementHandler *space_handler_;
         std::array<FunctionFlags, dim + 1> *flags_;
     };

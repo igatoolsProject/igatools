@@ -27,9 +27,9 @@
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/basis_functions/bernstein_extraction.h>
-#include <igatools/geometry/new_mapping.h>
-#include <igatools/geometry/new_push_forward.h>
-#include <igatools/basis_functions/new_physical_space.h>
+#include <igatools/geometry/mapping.h>
+#include <igatools/geometry/push_forward.h>
+#include <igatools/basis_functions/physical_space.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -47,16 +47,16 @@ template <int, int, int> class BSplineElementHandler;
  * - the multiplicity vectors
  * - and the degree
  *
- * NewBSplineSpace allows the use of different multiplicity vectors
+ * BSplineSpace allows the use of different multiplicity vectors
  * and degrees for each direction and for each component.
  *
- * \section const Constructing a NewBSplineSpace
+ * \section const Constructing a BSplineSpace
  * Similar to the mechanism use in CartesianGrid we use
  * the create technique to create a smartpointer for each constructor
  * the class provides.
  * @todo enter a glossary for create idiom technique and refer from here
  * \code
- * auto space = NewBSplineSpace<dim>::create();
+ * auto space = BSplineSpace<dim>::create();
  * \endcode
  *
  * \section eval Evaluating basis function
@@ -93,15 +93,15 @@ template <int, int, int> class BSplineElementHandler;
  * @ingroup containers
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
-class NewBSplineSpace :
-    public std::enable_shared_from_this<NewBSplineSpace<dim_,range_,rank_> >,
+class BSplineSpace :
+    public std::enable_shared_from_this<BSplineSpace<dim_,range_,rank_> >,
     public SplineSpace<dim_, range_, rank_>
 {
 private:
     using BaseSpace = SplineSpace<dim_, range_, rank_>;
 
     /** Type for current class. */
-    using self_t = NewBSplineSpace<dim_,range_,rank_>;
+    using self_t = BSplineSpace<dim_,range_,rank_>;
 
 public:
     /** see documentation in \ref FunctionSpaceOnGrid */
@@ -192,7 +192,7 @@ public:
     ///@}
 
     /** Destructor. */
-    ~NewBSplineSpace() = default;
+    ~BSplineSpace() = default;
 
 protected:
     /** @name Constructors */
@@ -202,24 +202,24 @@ protected:
      * @p knots for the given @p degree in all directions and homogeneous
      * in all components.
      */
-    explicit NewBSplineSpace(const int degree, std::shared_ptr<GridType> knots);
+    explicit BSplineSpace(const int degree, std::shared_ptr<GridType> knots);
 
     /**
      * Constructs a maximum regularity BSpline space over CartesianGrid
      * @p knots for the given @p degree[i] in the i-th direction and homogeneous
      * in all components.
      */
-    explicit NewBSplineSpace(const TensorIndex<dim> &degree,
-                             std::shared_ptr<GridType> knots);
+    explicit BSplineSpace(const TensorIndex<dim> &degree,
+                          std::shared_ptr<GridType> knots);
 
     /**
      * Constructs a maximum regularity BSpline space over CartesianGrid
      * @p knots for the given @p degree for each direction and for each
      * component.
      */
-    explicit NewBSplineSpace(const DegreeTable &degree,
-                             std::shared_ptr<GridType> knots,
-                             const bool homogeneous_range = false);
+    explicit BSplineSpace(const DegreeTable &degree,
+                          std::shared_ptr<GridType> knots,
+                          const bool homogeneous_range = false);
 
     /**
      * Constructs a BSpline space over the CartesianGrid
@@ -228,15 +228,15 @@ protected:
      * and the given @p degree for each direction and for each
      * component.
      */
-    explicit NewBSplineSpace(const DegreeTable &deg,
-                             std::shared_ptr<GridType> knots,
-                             std::shared_ptr<const MultiplicityTable> interior_mult,
-                             const EndBehaviourTable &ends);
+    explicit BSplineSpace(const DegreeTable &deg,
+                          std::shared_ptr<GridType> knots,
+                          std::shared_ptr<const MultiplicityTable> interior_mult,
+                          const EndBehaviourTable &ends);
 
     /**
      * Copy constructor. Not allowed to be used.
      */
-    NewBSplineSpace(const self_t &space) = delete;
+    BSplineSpace(const self_t &space) = delete;
     ///@}
 
     /** @name Assignment operators */
@@ -280,10 +280,10 @@ public:
     using InterSpaceMap = vector<Index>;
 
     template <int k>
-    using SubRefSpace = NewBSplineSpace<k, range, rank>;
+    using SubRefSpace = BSplineSpace<k, range, rank>;
 
     template <int k>
-    using SubSpace = NewPhysicalSpace<SubRefSpace<k>, dim-k, Transformation::h_grad>;
+    using SubSpace = PhysicalSpace<SubRefSpace<k>, dim-k, Transformation::h_grad>;
 
     /**
      * Construct a sub space of dimension k conforming to
