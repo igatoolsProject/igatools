@@ -159,7 +159,7 @@ fill_points_and_connectivity(
     vector<vector<special_array<int,n_vertices_per_vtk_element_> > >
     &vtk_elements_connectivity) const
 {
-    map_->reset(NewValueFlags::value | NewValueFlags::point, *quad_plot_);
+    map_->reset(ValueFlags::value | ValueFlags::point, *quad_plot_);
 
     auto m_elem = map_->begin();
     auto m_end  = map_->end();
@@ -204,10 +204,10 @@ get_subelements(
     // here we evaluate the position of the evaluation points in the physical domain
     for (int ipt = 0; ipt < n_points_per_iga_element_; ++ipt)
     {
-        for (int i = 0; i < NewMapping<dim,codim>::space_dim; ++i)
+        for (int i = 0; i < Mapping<dim,codim>::space_dim; ++i)
             points_phys_iga_element[ipt][i] = element_vertices_tmp[ipt][i];
 
-        for (int i = NewMapping<dim,codim>::space_dim; i < 3; ++i)
+        for (int i = Mapping<dim,codim>::space_dim; i < 3; ++i)
             points_phys_iga_element[ipt][i] = zero;
     }
 

@@ -25,7 +25,7 @@
 
 #include "../tests.h"
 
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/base/quadrature_lib.h>
 
@@ -36,14 +36,14 @@ void sub_elem_values(const int n_knots, const int deg)
     OUTSTART
 
     auto grid = CartesianGrid<dim>::create(n_knots);
-    using Space = NewBSplineSpace<dim>;
+    using Space = BSplineSpace<dim>;
     using ElementHandler = typename Space::ElementHandler;
     auto space = Space::create(deg, grid);
 
     const int n_qp = 2;
     QGauss<k>   k_quad(n_qp);
     QGauss<dim> quad(n_qp);
-    auto flag = NewValueFlags::value;//|NewValueFlags::gradient|NewValueFlags::hessian;
+    auto flag = ValueFlags::value;//|ValueFlags::gradient|ValueFlags::hessian;
     ElementHandler cache(space);
     cache.template reset<k>(flag, k_quad);
     cache.template reset<dim>(flag, quad);

@@ -21,9 +21,9 @@
 # QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
 
-include_files = ['basis_functions/new_bspline_space.h',
+include_files = ['basis_functions/bspline_space.h',
                  'basis_functions/nurbs_space.h',
-                 'geometry/new_push_forward.h',
+                 'geometry/push_forward.h',
                  'geometry/cartesian_grid_element.h',
                  'geometry/mapping_element.h',
                  'geometry/push_forward_element.h',
@@ -46,7 +46,7 @@ sub_dim_members = \
 
 
 # for x in inst.sub_ref_sp_dims:
-#     space = 'NewBSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
+#     space = 'BSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
 #     f.write('template class %s ;\n' %space)
 #     for fun in sub_dim_members:
 #         k = x.dim
@@ -55,7 +55,7 @@ sub_dim_members = \
 
 
 # for x in inst.ref_sp_dims:
-#     space = 'NewBSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
+#     space = 'BSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
 #     f.write('template class %s ;\n' %space)
 #     for fun in sub_dim_members:
 #         for k in inst.sub_dims(x.dim):

@@ -21,7 +21,7 @@
 #ifndef IDENTITY_FUNCTIONS_H
 #define IDENTITY_FUNCTIONS_H
 
-#include <igatools/base/new_function.h>
+#include <igatools/base/function.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -29,7 +29,7 @@ template<int dim,int space_dim>
 auto
 create_id_tensor()
 {
-    typename NewFunction<dim, 0, space_dim, 1>::Gradient res;
+    typename Function<dim, 0, space_dim, 1>::Gradient res;
     for (int i=0; i<dim; ++i)
         res[i][i] = 1.;
     return res;
@@ -38,10 +38,10 @@ create_id_tensor()
 
 
 template<int dim,int space_dim = dim>
-class IdentityFunction : public NewFunction<dim, 0, space_dim, 1>
+class IdentityFunction : public Function<dim, 0, space_dim, 1>
 {
 private:
-    using parent_t = NewFunction<dim, 0, space_dim, 1>;
+    using parent_t = Function<dim, 0, space_dim, 1>;
     using self_t = IdentityFunction<dim,space_dim>;
 protected:
     using typename parent_t::GridType;

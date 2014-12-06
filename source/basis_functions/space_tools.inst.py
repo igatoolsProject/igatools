@@ -20,7 +20,7 @@
 
 
 from init_instantiation_data import *
-include_files = ['basis_functions/new_bspline_space.h',
+include_files = ['basis_functions/bspline_space.h',
 #                  'basis_functions/bspline_element_accessor.h',
 #                  'basis_functions/bspline_uniform_quad_cache.h',
 #                  'basis_functions/nurbs_space.h',

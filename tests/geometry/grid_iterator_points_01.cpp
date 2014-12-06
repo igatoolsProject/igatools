@@ -44,7 +44,7 @@ void elem_points(const int n_knots = 5)
 
     auto grid = Grid::create(n_knots);
 
-    auto flag = NewValueFlags::point;
+    auto flag = ValueFlags::point;
     QGauss<dim> quad(2);
     ElementHandler cache(grid);
     cache.template reset<dim>(flag, quad);

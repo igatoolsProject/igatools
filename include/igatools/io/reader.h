@@ -24,8 +24,8 @@
 #define READER_H_
 
 #include <igatools/base/config.h>
-#include <igatools/base/new_function.h>
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/base/function.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/nurbs_space.h>
 
 #include <boost/property_tree/ptree.hpp>
@@ -190,7 +190,7 @@ get_cartesian_grid_from_xml(const boost::property_tree::ptree &tree);
  * @date 04 Mar 2014
  */
 template <int dim, int range, int rank>
-std::shared_ptr< NewBSplineSpace<dim,range,rank> >
+std::shared_ptr< BSplineSpace<dim,range,rank> >
 get_bspline_space_from_xml(const boost::property_tree::ptree &tree);
 
 #ifdef NURBS

@@ -32,9 +32,9 @@
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
 
-const std::array<NewValueFlags, 3> der_flag = {NewValueFlags::value,
-                                               NewValueFlags::gradient, NewValueFlags::hessian
-                                              };
+const std::array<ValueFlags, 3> der_flag = {ValueFlags::value,
+                                            ValueFlags::gradient, ValueFlags::hessian
+                                           };
 
 template <int der, int dim, int range=1, int rank=1>
 void elem_derivatives(const int n_knots,
@@ -42,7 +42,7 @@ void elem_derivatives(const int n_knots,
 {
     OUTSTART
 
-    using Space = NewBSplineSpace<dim, range, rank>;
+    using Space = BSplineSpace<dim, range, rank>;
     auto grid  = CartesianGrid<dim>::create(n_knots);
     auto space = Space::create(deg, grid);
 

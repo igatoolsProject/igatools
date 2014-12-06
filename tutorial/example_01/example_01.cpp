@@ -20,7 +20,7 @@
 
 // [includes]
 #include <igatools/geometry/cartesian_grid.h>
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 // [includes]
 // [include_writer]
 #include <igatools/io/writer.h>
@@ -51,7 +51,7 @@ int main()
     // [space]
     const int degree = 2;
     cout << "Creating a spline space of degree " << degree << endl;
-    auto space = NewBSplineSpace<dim>::create(degree, grid);
+    auto space = BSplineSpace<dim>::create(degree, grid);
     cout << "Number of basis functions: ";
     cout << space->get_num_basis() << endl;
     // [space]

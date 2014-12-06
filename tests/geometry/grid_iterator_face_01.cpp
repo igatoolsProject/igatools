@@ -43,9 +43,9 @@ void face_values(const TensorSize<dim> &n_knots)
 
     auto grid = Grid::create(n_knots);
 
-    NewValueFlags flag = NewValueFlags::measure|
-                         NewValueFlags::w_measure|
-                         NewValueFlags::point;
+    ValueFlags flag = ValueFlags::measure|
+                      ValueFlags::w_measure|
+                      ValueFlags::point;
     QUniform<k> quad(2);
     ElementHandler cache(grid);
     cache.template reset<k>(flag, quad);

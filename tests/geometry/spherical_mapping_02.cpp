@@ -32,7 +32,7 @@
 #include <igatools/base/function_element.h>
 #include <igatools/base/function_lib.h>
 #include <igatools/base/identity_function.h>
-#include <igatools/geometry/new_mapping.h>
+#include <igatools/geometry/mapping.h>
 #include <igatools/geometry/mapping_element.h>
 
 
@@ -41,7 +41,7 @@ Real ball_volume(const int n_knots)
 {
     using Function = functions::BallFunction<dim>;
 
-    auto flag = NewValueFlags::w_measure|NewValueFlags::point;
+    auto flag = ValueFlags::w_measure|ValueFlags::point;
 
     auto quad = QGauss<dim>(3);
 
@@ -56,7 +56,7 @@ Real ball_volume(const int n_knots)
     auto grid = CartesianGrid<dim>::create(box, n_knots);
     auto F = Function::create(grid, IdentityFunction<dim>::create(grid));
 
-    using Mapping   = NewMapping<dim, 0>;
+    using Mapping   = Mapping<dim, 0>;
     using ElementIt = typename Mapping::ElementIterator;
     Mapping map(F);
     map.template reset<dim>(flag, quad);

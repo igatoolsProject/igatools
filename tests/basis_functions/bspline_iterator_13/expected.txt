@@ -1,5 +1,5 @@
 ========================================================================
-void space_cache_fill_elem(iga::NewValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
+void space_cache_fill_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
 ========================================================================
 Flat id = 0    Tensor id = [0]
 Number of element basis: 
@@ -159,7 +159,7 @@ Hessians:
 ========================================================================
 
 ========================================================================
-void space_cache_fill_elem(iga::NewValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
+void space_cache_fill_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
 ========================================================================
 Flat id = 0    Tensor id = [0]
 Number of element basis: 
@@ -319,7 +319,7 @@ Hessians:
 ========================================================================
 
 ========================================================================
-void space_cache_fill_elem(iga::NewValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
+void space_cache_fill_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
 ========================================================================
 Flat id = 0    Tensor id = [0]
 Number of element basis: 

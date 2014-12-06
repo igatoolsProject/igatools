@@ -28,7 +28,7 @@
 
 #include "../tests.h"
 
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 
 namespace grid
 {
@@ -47,7 +47,7 @@ template<int dim>
 void uniform_degree(const int deg, shared_ptr<CartesianGrid<dim>> grid)
 {
     OUTSTART
-    auto space = NewBSplineSpace<dim>::create(deg, grid);
+    auto space = BSplineSpace<dim>::create(deg, grid);
     space->print_info(out);
     out << endl;
     OUTEND
@@ -59,7 +59,7 @@ void direction_degree(const TensorIndex<dim> &deg,
                       shared_ptr<CartesianGrid<dim>> grid)
 {
     OUTSTART
-    auto space = NewBSplineSpace<dim>::create(deg, grid);
+    auto space = BSplineSpace<dim>::create(deg, grid);
     space->print_info(out);
     out << endl;
     OUTEND

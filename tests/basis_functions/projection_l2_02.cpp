@@ -32,7 +32,7 @@
 #include <igatools/base/identity_function.h>
 #include <igatools/base/function_lib.h>
 
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 
 #include <igatools/basis_functions/space_tools.h>
@@ -48,7 +48,7 @@ template<int dim>
 class BoundaryFunction : public FormulaFunction<dim>
 {
 private:
-    using base_t = NewFunction<dim>;
+    using base_t = Function<dim>;
     using parent_t = FormulaFunction<dim>;
     using self_t = BoundaryFunction<dim>;
     using typename base_t::GridType;
@@ -105,8 +105,8 @@ public:
 template<int dim, int codim, int range, int rank, LAPack la_pack>
 void do_test(const int p, const int num_knots = 10)
 {
-    using RefSpace =  NewBSplineSpace<dim,range,rank>;
-    using Space = NewPhysicalSpace<RefSpace, codim>;
+    using RefSpace =  BSplineSpace<dim,range,rank>;
+    using Space = PhysicalSpace<RefSpace, codim>;
 
     auto knots = CartesianGrid<dim>::create(num_knots);
     auto ref_space = RefSpace::create(p, knots);

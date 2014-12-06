@@ -23,7 +23,7 @@
 #include <igatools/base/function_lib.h>
 // [functions]
 // [old includes]
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/base/quadrature_lib.h>
 
@@ -70,7 +70,7 @@ private:
 
     // [members]
 private:
-    using Space = NewBSplineSpace<dim>;
+    using Space = BSplineSpace<dim>;
     shared_ptr<Space> space;
 
     const Quadrature<dim>   elem_quad;
@@ -114,11 +114,11 @@ void PoissonProblem<dim>::assemble()
 
     auto elem_handler = space->get_element_handler();
 
-    auto flag = NewValueFlags::value | NewValueFlags::gradient |
-                NewValueFlags::w_measure;
+    auto flag = ValueFlags::value | ValueFlags::gradient |
+                ValueFlags::w_measure;
 
     elem_handler.template reset<dim>(flag, elem_quad);
-    f->reset(NewValueFlags::value, elem_quad);
+    f->reset(ValueFlags::value, elem_quad);
 
     auto f_elem = f->begin();
     auto elem   = space->begin();

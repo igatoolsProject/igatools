@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/cache_status.h>
-#include <igatools/base/new_flags_handler.h>
+#include <igatools/base/flags_handler.h>
 #include <igatools/base/quadrature.h>
 
 //TODO(pauletti, Sep 9, 2014): should we instantiate the cartesian product instead
@@ -31,7 +31,7 @@
 
 #include <igatools/utils/value_table.h>
 #include <igatools/geometry/grid_element_handler.h>
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element_scalar_evaluator.h>
 
 
@@ -46,7 +46,7 @@ template<int dim_, int range_ = 1, int rank_ = 1>
 class BSplineElementHandler : public GridElementHandler<dim_>
 {
     using base_t = GridElementHandler<dim_>;
-    using Space = NewBSplineSpace<dim_,range_,rank_>;
+    using Space = BSplineSpace<dim_,range_,rank_>;
     static const Size n_components =  Space::n_components;
 
 
@@ -79,7 +79,7 @@ public:
     BSplineElementHandler(std::shared_ptr<const Space> space);
 
     template<int k>
-    void reset(const NewValueFlags flag, const Quadrature<k> &quad);
+    void reset(const ValueFlags flag, const Quadrature<k> &quad);
 
 //protected:
     template <int k>

@@ -30,7 +30,7 @@ IgFunction<Space>::
 IgFunction(std::shared_ptr<const Space> space,
            const CoeffType &coeff)
     :
-    parent_t::NewFunction(space->get_grid()),
+    parent_t::Function(space->get_grid()),
     space_(space),
     coeff_(coeff),
     elem_(space_->begin()),
@@ -45,7 +45,7 @@ template<class Space>
 IgFunction<Space>::
 IgFunction(const self_t &fun)
     :
-    parent_t::NewFunction(fun.space_->get_grid()),
+    parent_t::Function(fun.space_->get_grid()),
     space_(fun.space_),
     coeff_(fun.coeff_),
     elem_(space_->begin()),
@@ -70,7 +70,7 @@ create(std::shared_ptr<const Space> space,
 template<class Space>
 auto
 IgFunction<Space>::
-reset(const NewValueFlags &flag, const variant_1 &quad) -> void
+reset(const ValueFlags &flag, const variant_1 &quad) -> void
 {
     parent_t::reset(flag, quad);
     reset_impl.flag = flag;

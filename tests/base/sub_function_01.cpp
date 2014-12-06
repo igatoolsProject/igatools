@@ -43,7 +43,7 @@ void sub_function(const int n_knots = 3)
     auto grid = GridType::create(n_knots);
     auto func = Func::create(grid);
     QGauss<sub_dim> quad(1);
-    auto sub_func_flag = NewValueFlags::point | NewValueFlags::value;
+    auto sub_func_flag = ValueFlags::point | ValueFlags::value;
 
     for (auto &s_id : UnitElement<dim>::template elems_ids<sub_dim>())
     {

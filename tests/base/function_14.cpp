@@ -34,9 +34,9 @@
 
 
 template<int dim, int codim, int range>
-void test(NewFunction<dim, codim, range> &F, shared_ptr<CartesianGrid<dim>> grid)
+void test(Function<dim, codim, range> &F, shared_ptr<CartesianGrid<dim>> grid)
 {
-    using ElementIterator = typename  NewFunction<dim, codim, range>::ElementIterator;
+    using ElementIterator = typename  Function<dim, codim, range>::ElementIterator;
     ElementIterator elem(grid, 0);
     ElementIterator end(grid, IteratorState::pass_the_end);
 
@@ -71,8 +71,8 @@ void create_fun()
         b[i] = i;
     }
 
-    auto flag = NewValueFlags::point | NewValueFlags::value | NewValueFlags::gradient |
-                NewValueFlags::hessian;
+    auto flag = ValueFlags::point | ValueFlags::value | ValueFlags::gradient |
+                ValueFlags::hessian;
     auto quad = QGauss<dim>(2);
     auto grid = CartesianGrid<dim>::create(3);
     auto F = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);

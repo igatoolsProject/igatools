@@ -26,7 +26,7 @@
 
 #include "../tests.h"
 
-#include <igatools/geometry/new_mapping.h>
+#include <igatools/geometry/mapping.h>
 #include <igatools/geometry/mapping_element.h>
 #include <igatools/base/identity_function.h>
 #include <igatools/base/function_lib.h>
@@ -38,7 +38,7 @@ void test()
 {
     const int space_dim = dim + codim;
     using Function = functions::LinearFunction<dim, codim, space_dim>;
-    using Mapping   = NewMapping<dim, codim>;
+    using Mapping   = Mapping<dim, codim>;
 
     typename Function::Value    b;
     typename Function::Gradient A;
@@ -53,7 +53,7 @@ void test()
     auto grid = CartesianGrid<dim>::create(3);
     auto F = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
 
-    auto flag = NewValueFlags::inv_hessian|NewValueFlags::inv_gradient|NewValueFlags::point;
+    auto flag = ValueFlags::inv_hessian|ValueFlags::inv_gradient|ValueFlags::point;
     auto quad = QGauss<dim>(2);
 
     auto map = Mapping::create(F);

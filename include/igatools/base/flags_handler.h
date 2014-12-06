@@ -32,11 +32,11 @@ IGA_NAMESPACE_OPEN
 class GridFlags
 {
 public:
-    static const NewValueFlags valid_flags =
-        NewValueFlags::point|
-        NewValueFlags::measure |
-        NewValueFlags::w_measure |
-        NewValueFlags::length;
+    static const ValueFlags valid_flags =
+        ValueFlags::point|
+        ValueFlags::measure |
+        ValueFlags::w_measure |
+        ValueFlags::length;
 
     /** @name Constructors */
     ///@{
@@ -48,7 +48,7 @@ public:
      * the correspondent booleans
      * that specify the quantities that must be computed/filled.
      */
-    GridFlags(const NewValueFlags &flags);
+    GridFlags(const ValueFlags &flags);
 
     /** Copy constructor. */
     GridFlags(const GridFlags &in) = default;
@@ -136,13 +136,13 @@ protected:
 class FunctionFlags
 {
 public:
-    static const NewValueFlags valid_flags =
-        NewValueFlags::point|
-        NewValueFlags::value|
-        NewValueFlags::gradient|
-        NewValueFlags::hessian;
+    static const ValueFlags valid_flags =
+        ValueFlags::point|
+        ValueFlags::value|
+        ValueFlags::gradient|
+        ValueFlags::hessian;
 
-    static NewValueFlags to_grid_flags(const NewValueFlags &flag);
+    static ValueFlags to_grid_flags(const ValueFlags &flag);
 
     /** @name Constructors */
     ///@{
@@ -151,7 +151,7 @@ public:
      */
     FunctionFlags() = default;
 
-    FunctionFlags(const NewValueFlags &flag);
+    FunctionFlags(const ValueFlags &flag);
 
     /** Copy constructor. */
     FunctionFlags(const FunctionFlags &in) = default;
@@ -244,17 +244,17 @@ class MappingFlags :
 {
 public:
 
-    static const NewValueFlags valid_flags =
+    static const ValueFlags valid_flags =
         FunctionFlags::valid_flags |
-        NewValueFlags::inv_gradient|
-        NewValueFlags::inv_hessian |
-        NewValueFlags::measure|
-        NewValueFlags::w_measure|
-        NewValueFlags::boundary_normal|
-        NewValueFlags::outer_normal|
-        NewValueFlags::curvature;
+        ValueFlags::inv_gradient|
+        ValueFlags::inv_hessian |
+        ValueFlags::measure|
+        ValueFlags::w_measure|
+        ValueFlags::boundary_normal|
+        ValueFlags::outer_normal|
+        ValueFlags::curvature;
 
-    static NewValueFlags to_function_flags(const NewValueFlags &flag);
+    static ValueFlags to_function_flags(const ValueFlags &flag);
 
     /** @name Constructors */
     ///@{
@@ -265,7 +265,7 @@ public:
      * Constructor. Transforms the value flags for the mapping in the correspondent booleans
      * that specify the quantities that must be computed/filled.
      */
-    MappingFlags(const NewValueFlags &flags);
+    MappingFlags(const ValueFlags &flags);
 
     /** Copy constructor. */
     MappingFlags(const MappingFlags &in) = default;
@@ -368,7 +368,7 @@ public:
      * Constructor. Transforms the value flags for the mapping in the correspondent booleans
      * that specify the quantities that must be computed/filled.
      */
-    PushFowardFlags(const NewValueFlags &flags);
+    PushFowardFlags(const ValueFlags &flags);
 
     /** Copy constructor. */
     PushFowardFlags(const PushFowardFlags &in) = default;
@@ -382,7 +382,7 @@ public:
     ///@}
 
 
-    NewValueFlags to_mapping_flags(const NewValueFlags &flag);
+    ValueFlags to_mapping_flags(const ValueFlags &flag);
 
     /** @name Assignment operators */
     ///@{
@@ -436,11 +436,11 @@ protected:
 class SpaceFlags
 {
 public:
-    static const NewValueFlags valid_flags =
-        NewValueFlags::value|
-        NewValueFlags::gradient|
-        NewValueFlags::hessian |
-        NewValueFlags::w_measure;
+    static const ValueFlags valid_flags =
+        ValueFlags::value|
+        ValueFlags::gradient|
+        ValueFlags::hessian |
+        ValueFlags::w_measure;
 
 
     /** @name Constructors */
@@ -450,7 +450,7 @@ public:
      */
     SpaceFlags();
 
-    SpaceFlags(const NewValueFlags &flag);
+    SpaceFlags(const ValueFlags &flag);
 
     /** Copy constructor. */
     SpaceFlags(const SpaceFlags &in) = default;
@@ -463,9 +463,9 @@ public:
     ~SpaceFlags() = default;
     ///@}
 
-    NewValueFlags to_grid_flags(const NewValueFlags &flag);
-    NewValueFlags to_ref_space_flag(const NewValueFlags &flag);
-    NewValueFlags to_push_forward_flag(const NewValueFlags &flag);
+    ValueFlags to_grid_flags(const ValueFlags &flag);
+    ValueFlags to_ref_space_flag(const ValueFlags &flag);
+    ValueFlags to_push_forward_flag(const ValueFlags &flag);
 
     /** @name Assignment operators */
     ///@{

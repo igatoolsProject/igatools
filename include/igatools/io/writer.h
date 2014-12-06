@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/geometry/cartesian_grid.h>
-#include <igatools/geometry/new_mapping.h>
+#include <igatools/geometry/mapping.h>
 #include <igatools/geometry/unit_element.h>
 #include <igatools/base/quadrature.h>
 #include <igatools/base/function_element.h>
@@ -36,7 +36,7 @@ IGA_NAMESPACE_OPEN
 
 
 template <class RefSpace_, int codim_, Transformation type_>
-class NewPhysicalSpace;
+class PhysicalSpace;
 
 
 template<int dim, int codim = 0, class T = double>
@@ -139,7 +139,7 @@ public:
      * \brief Add a field to the output file.
      */
     template<int range, int rank>
-    void add_field(std::shared_ptr<const NewFunction<dim, codim, range, rank>> func,
+    void add_field(std::shared_ptr<const Function<dim, codim, range, rank>> func,
                    const std::string &name);
 
 
@@ -344,7 +344,7 @@ template<int range, int rank>
 inline
 void
 Writer<dim, codim, T>::
-add_field(shared_ptr<const NewFunction<dim, codim, range, rank>> function,
+add_field(shared_ptr<const Function<dim, codim, range, rank>> function,
           const string &name)
 {
     Assert(function != nullptr, ExcNullPtr());
@@ -362,7 +362,7 @@ add_field(shared_ptr<const NewFunction<dim, codim, range, rank>> function,
 
     //--------------------------------------------------------------------------
     // get the fields to write and assign them to the vtkUnstructuredGrid object
-    func->reset(NewValueFlags::value, *quad_plot_);
+    func->reset(ValueFlags::value, *quad_plot_);
 
     auto f_elem = func->begin();
     auto f_end  = func->end();

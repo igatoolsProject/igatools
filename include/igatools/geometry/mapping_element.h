@@ -22,7 +22,7 @@
 #define MAPPING_ELEMENT_H_
 
 #include <igatools/utils/array.h>
-#include <igatools/geometry/new_mapping.h>
+#include <igatools/geometry/mapping.h>
 #include <igatools/base/function_element.h>
 
 IGA_NAMESPACE_OPEN
@@ -35,7 +35,7 @@ class MappingElement
 private:
     using self_t  = MappingElement<dim_, codim_>;
     using paren_t = FunctionElement<dim_, 0, dim_+codim_>;
-    using Map = NewMapping<dim_, codim_>;
+    using Map = Mapping<dim_, codim_>;
 public:
     static const int dim = dim_;
     static const int codim = codim_;
@@ -203,7 +203,7 @@ public:
 
 private:
     template <typename Accessor> friend class GridForwardIterator;
-    friend class NewMapping<dim, codim>;
+    friend class Mapping<dim, codim>;
 
 };
 

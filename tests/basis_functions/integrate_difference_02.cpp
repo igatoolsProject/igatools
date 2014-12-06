@@ -29,13 +29,13 @@
 
 #include "common_functions.h"
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/space_tools.h>
 
 template<int dim, int range = 1, int rank = 1>
 void integrate(const int deg,  const int n_knots)
 {
-    using Space = NewBSplineSpace<dim, range, rank>;
+    using Space = BSplineSpace<dim, range, rank>;
 
     auto grid = CartesianGrid<dim>::create(n_knots);
     auto space = Space::create(deg, grid);

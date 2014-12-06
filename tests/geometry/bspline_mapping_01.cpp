@@ -28,11 +28,11 @@
 
 #include "../tests.h"
 
-#include <igatools/geometry/new_mapping.h>
+#include <igatools/geometry/mapping.h>
 #include <igatools/geometry/mapping_element.h>
 #include <igatools/base/ig_function.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/base/function_element.h>
 
@@ -43,9 +43,9 @@ void bspline_map(const int deg = 1)
     OUTSTART
 
     const int sub_dim = dim;
-    using Space = NewBSplineSpace<dim, dim+codim>;
+    using Space = BSplineSpace<dim, dim+codim>;
     using Function = IgFunction<Space>;
-    using Mapping   = NewMapping<dim, codim>;
+    using Mapping   = Mapping<dim, codim>;
 
     auto grid = CartesianGrid<dim>::create(2);
     auto space = Space::create(deg, grid);
@@ -118,8 +118,8 @@ void bspline_map(const int deg = 1)
     auto map = Mapping::create(F);
 
     auto quad = QGauss<dim>(3);
-    auto flag =  NewValueFlags::value| NewValueFlags::gradient
-                 | NewValueFlags::hessian;
+    auto flag =  ValueFlags::value| ValueFlags::gradient
+                 | ValueFlags::hessian;
 
     map->template reset<sub_dim>(flag, quad);
 

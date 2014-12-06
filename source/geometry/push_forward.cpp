@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 
-#include <igatools/geometry/new_push_forward.h>
+#include <igatools/geometry/push_forward.h>
 
 
 using std::array;
@@ -30,32 +30,32 @@ IGA_NAMESPACE_OPEN
 namespace
 {
 auto
-pushforward_to_mapping_flag(const Transformation type, const NewValueFlags flags)
--> NewValueFlags
+pushforward_to_mapping_flag(const Transformation type, const ValueFlags flags)
+-> ValueFlags
 {
-    NewValueFlags transfer_flag =
-    NewValueFlags::measure |
-    NewValueFlags::w_measure |
-    NewValueFlags::outer_normal|
-    NewValueFlags::boundary_normal|
-    NewValueFlags::point|
-    NewValueFlags::value|
-    NewValueFlags::gradient|
-    NewValueFlags::hessian;
+    ValueFlags transfer_flag =
+    ValueFlags::measure |
+    ValueFlags::w_measure |
+    ValueFlags::outer_normal|
+    ValueFlags::boundary_normal|
+    ValueFlags::point|
+    ValueFlags::value|
+    ValueFlags::gradient|
+    ValueFlags::hessian;
 
-    NewValueFlags map_flag = flags & transfer_flag;
+    ValueFlags map_flag = flags & transfer_flag;
 
     if (type == Transformation::h_grad)
     {
-        if (contains(flags, NewValueFlags::tran_value))
+        if (contains(flags, ValueFlags::tran_value))
         {}
 
-        if (contains(flags, NewValueFlags::tran_gradient))
-            map_flag|= (NewValueFlags::inv_gradient);
+        if (contains(flags, ValueFlags::tran_gradient))
+            map_flag|= (ValueFlags::inv_gradient);
 
-        if (contains(flags, NewValueFlags::tran_hessian))
+        if (contains(flags, ValueFlags::tran_hessian))
         {
-            map_flag |= (NewValueFlags::hessian | NewValueFlags::inv_gradient);
+            map_flag |= (ValueFlags::hessian | ValueFlags::inv_gradient);
         }
     }
 //    else if (type == Transformation::h_div)
@@ -119,10 +119,10 @@ pushforward_to_mapping_flag(const Transformation type, const NewValueFlags flags
 
 
 template<Transformation type, int dim, int codim>
-NewPushForward<type, dim, codim>::
-NewPushForward(std::shared_ptr<FuncType> F)
+PushForward<type, dim, codim>::
+PushForward(std::shared_ptr<FuncType> F)
     :
-    MapType::NewMapping(F)
+    MapType(F)
 {}
 
 
@@ -130,8 +130,8 @@ NewPushForward(std::shared_ptr<FuncType> F)
 template<Transformation type, int dim, int codim>
 template<int k>
 auto
-NewPushForward<type, dim, codim>::
-reset(const NewValueFlags flag, const Quadrature<k> &quad) -> void
+PushForward<type, dim, codim>::
+reset(const ValueFlags flag, const Quadrature<k> &quad) -> void
 {
     MapType::template reset<k>(pushforward_to_mapping_flag(type, flag), quad);
 }
@@ -140,6 +140,6 @@ reset(const NewValueFlags flag, const Quadrature<k> &quad) -> void
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/geometry/new_push_forward.inst>
+#include <igatools/geometry/push_forward.inst>
 
 

@@ -33,7 +33,7 @@
 #include <igatools/base/function_element.h>
 #include <igatools/base/function_lib.h>
 #include <igatools/base/identity_function.h>
-#include <igatools/geometry/new_mapping.h>
+#include <igatools/geometry/mapping.h>
 #include <igatools/geometry/mapping_element.h>
 
 
@@ -42,11 +42,11 @@ void mapping_values()
 {
     using Function = functions::BallFunction<dim>;
 
-    auto flag = NewValueFlags::point | NewValueFlags::value |
-                NewValueFlags::gradient |
-                NewValueFlags::hessian |
-                NewValueFlags::measure|
-                NewValueFlags::w_measure;
+    auto flag = ValueFlags::point | ValueFlags::value |
+                ValueFlags::gradient |
+                ValueFlags::hessian |
+                ValueFlags::measure|
+                ValueFlags::w_measure;
 
     auto quad = QUniform<dim>(3);
     auto grid = CartesianGrid<dim>::create();
@@ -54,7 +54,7 @@ void mapping_values()
     auto F = Function::create(grid, IdentityFunction<dim>::create(grid));
 
 
-    using Mapping   = NewMapping<dim, 0>;
+    using Mapping   = Mapping<dim, 0>;
     using ElementIt = typename Mapping::ElementIterator;
     Mapping map(F);
     map.reset(flag, quad);

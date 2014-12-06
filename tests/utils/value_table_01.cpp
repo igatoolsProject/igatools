@@ -29,7 +29,7 @@
 #include "../tests.h"
 
 #include <igatools/base/tensor.h>
-#include <igatools/base/new_function.h>
+#include <igatools/base/function.h>
 #include <igatools/base/function_element.h>
 #include <igatools/utils/value_table.h>
 
@@ -38,7 +38,7 @@ void do_test(Size n_funcs, Size n_pts)
     out << "========== BEGIN do_test (n_funcs=" << n_funcs
         << ",n_pts=" << n_pts <<") ==========" << endl ;
 
-    using Grad = typename NewFunction<1,0,1,1>::Gradient;
+    using Grad = typename Function<1,0,1,1>::Gradient;
     using ClassToTest = ValueTable<Grad>;
 
     out << "Default constructor" << endl;

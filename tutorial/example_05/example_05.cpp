@@ -20,7 +20,7 @@
 
 
 
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/base/quadrature_lib.h>
 // [new includes]
@@ -44,7 +44,7 @@ public:
 
 private:
     shared_ptr<CartesianGrid<dim>>  grid;
-    shared_ptr<NewBSplineSpace<dim>>   space;
+    shared_ptr<BSplineSpace<dim>>   space;
 };
 // [class declaration]
 
@@ -54,7 +54,7 @@ template <int dim>
 PoissonPreparation<dim>::PoissonPreparation(const int n_knots,  const int deg)
     :
     grid {CartesianGrid<dim>::create(n_knots)},
-     space {NewBSplineSpace<dim>::create(deg, grid)}
+     space {BSplineSpace<dim>::create(deg, grid)}
 {}
 // [constructor]
 
@@ -71,8 +71,8 @@ void  PoissonPreparation<dim>::local_assemble()
     // [iterate as before]
     auto elem_handler = space->get_element_handler();
     auto quad = QGauss<dim>(2);
-    auto flag = NewValueFlags::value | NewValueFlags::gradient |
-                NewValueFlags::w_measure;
+    auto flag = ValueFlags::value | ValueFlags::gradient |
+                ValueFlags::w_measure;
 
     elem_handler.template reset<dim>(flag, quad);
 

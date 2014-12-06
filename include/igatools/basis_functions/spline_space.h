@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/array_utils.h>
-#include <igatools/base/new_function.h>
+#include <igatools/base/function.h>
 #include <igatools/base/function_element.h>
 #include <igatools/utils/cartesian_product_array.h>
 #include <igatools/utils/static_multi_array.h>
@@ -66,7 +66,7 @@ public:
 
 
 
-    using Func = NewFunction<dim, 0, range, rank>;
+    using Func = Function<dim, 0, range, rank>;
 
 public:
     template <int order>

@@ -69,12 +69,12 @@ void do_test()
     auto  knots = CartesianGrid<dim>::create(coord);
     DegreeTable deg(degree);
 
-    auto  bsp = NewBSplineSpace<dim, range, rank >::create(deg, knots);
+    auto  bsp = BSplineSpace<dim, range, rank >::create(deg, knots);
     const auto n_basis = bsp->get_num_basis_table();
 
     DynamicMultiArray<Real,dim> weights(n_basis[0],1.0);
 
-    using ScalarBSplineSpace = NewBSplineSpace<dim>;
+    using ScalarBSplineSpace = BSplineSpace<dim>;
     using WeightFunc = IgFunction<ScalarBSplineSpace>;
     auto w_func = shared_ptr<WeightFunc>(new WeightFunc(
                                              ScalarBSplineSpace::create(degree,CartesianGrid<dim>::create(coord)),

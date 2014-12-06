@@ -27,7 +27,7 @@
 #ifdef NURBS
 
 #include <igatools/base/cache_status.h>
-#include <igatools/base/new_flags_handler.h>
+#include <igatools/base/flags_handler.h>
 #include <igatools/base/quadrature.h>
 
 //TODO(pauletti, Sep 9, 2014): should we instantiate the cartesian product instead
@@ -76,7 +76,7 @@ public:
     NURBSElementHandler(std::shared_ptr<const Space> space);
 
     template<int k>
-    void reset(const NewValueFlags flag, const Quadrature<k> &quad);
+    void reset(const ValueFlags flag, const Quadrature<k> &quad);
 
 //protected:
     template <int k>

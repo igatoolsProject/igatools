@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/basis_functions/new_bspline_space.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/space_manager.h>
 #include <igatools/base/sub_function.h>
 #include <igatools/base/identity_function.h>
@@ -33,17 +33,17 @@ using std::const_pointer_cast;
 IGA_NAMESPACE_OPEN
 
 template<int dim_, int range_, int rank_>
-NewBSplineSpace<dim_, range_, rank_>::
-NewBSplineSpace(const int degree, shared_ptr<GridType> grid)
+BSplineSpace<dim_, range_, rank_>::
+BSplineSpace(const int degree, shared_ptr<GridType> grid)
     :
-    NewBSplineSpace(TensorIndex<dim>(degree), grid)
+    BSplineSpace(TensorIndex<dim>(degree), grid)
 {}
 
 
 
 template<int dim_, int range_, int rank_>
 auto
-NewBSplineSpace<dim_, range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 create(const int degree, shared_ptr< GridType > knots) -> shared_ptr<self_t>
 {
     return shared_ptr<self_t>(new self_t(degree, knots));
@@ -52,17 +52,17 @@ create(const int degree, shared_ptr< GridType > knots) -> shared_ptr<self_t>
 
 
 template<int dim_, int range_, int rank_>
-NewBSplineSpace<dim_, range_, rank_>::
-NewBSplineSpace(const TensorIndex<dim> &degree, shared_ptr<GridType> knots)
+BSplineSpace<dim_, range_, rank_>::
+BSplineSpace(const TensorIndex<dim> &degree, shared_ptr<GridType> knots)
     :
-    NewBSplineSpace(DegreeTable(degree), knots, true)
+    BSplineSpace(DegreeTable(degree), knots, true)
 {}
 
 
 
 template<int dim_, int range_, int rank_>
 auto
-NewBSplineSpace<dim_, range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 create(const TensorIndex<dim> &degree, shared_ptr<GridType> knots)
 -> shared_ptr<self_t>
 {
@@ -72,10 +72,10 @@ create(const TensorIndex<dim> &degree, shared_ptr<GridType> knots)
 
 
 template<int dim_, int range_, int rank_>
-NewBSplineSpace<dim_, range_, rank_>::
-NewBSplineSpace(const DegreeTable &deg,
-                std::shared_ptr<GridType> knots,
-                const bool homogeneous_range)
+BSplineSpace<dim_, range_, rank_>::
+BSplineSpace(const DegreeTable &deg,
+             std::shared_ptr<GridType> knots,
+             const bool homogeneous_range)
     :
     BaseSpace(deg, knots, BaseSpace::InteriorReg::maximum),
     dof_distribution_global_(knots,BaseSpace::accumulated_interior_multiplicities(),
@@ -96,7 +96,7 @@ NewBSplineSpace(const DegreeTable &deg,
 
 template<int dim_, int range_, int rank_>
 auto
-NewBSplineSpace<dim_, range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 create(const DegreeTable &deg,
        std::shared_ptr<GridType> knots,
        const bool homogeneous_range) -> shared_ptr<self_t>
@@ -107,11 +107,11 @@ create(const DegreeTable &deg,
 
 
 template<int dim_, int range_, int rank_>
-NewBSplineSpace<dim_, range_, rank_>::
-NewBSplineSpace(const DegreeTable &deg,
-                std::shared_ptr<GridType> knots,
-                std::shared_ptr<const MultiplicityTable> interior_mult,
-                const EndBehaviourTable &ends)
+BSplineSpace<dim_, range_, rank_>::
+BSplineSpace(const DegreeTable &deg,
+             std::shared_ptr<GridType> knots,
+             std::shared_ptr<const MultiplicityTable> interior_mult,
+             const EndBehaviourTable &ends)
     :
     BaseSpace(deg, knots, interior_mult),
     dof_distribution_global_(knots,BaseSpace::accumulated_interior_multiplicities(),
@@ -132,7 +132,7 @@ NewBSplineSpace(const DegreeTable &deg,
 
 template<int dim_, int range_, int rank_>
 auto
-NewBSplineSpace<dim_, range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 create(const DegreeTable &deg,
        std::shared_ptr<GridType> knots,
        std::shared_ptr<const MultiplicityTable> interior_mult,
@@ -146,7 +146,7 @@ create(const DegreeTable &deg,
 
 template<int dim_, int range_, int rank_>
 auto
-NewBSplineSpace<dim_, range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 get_reference_space() const -> shared_ptr<const self_t>
 {
     return this->shared_from_this();
@@ -157,7 +157,7 @@ get_reference_space() const -> shared_ptr<const self_t>
 
 template<int dim_, int range_, int rank_>
 auto
-NewBSplineSpace<dim_, range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 begin() const -> ElementIterator
 {
     return ElementIterator(this->shared_from_this(), 0);
@@ -167,7 +167,7 @@ begin() const -> ElementIterator
 
 template<int dim_, int range_, int rank_>
 auto
-NewBSplineSpace<dim_, range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 last() const -> ElementIterator
 {
     return ElementIterator(this->shared_from_this(),
@@ -178,7 +178,7 @@ last() const -> ElementIterator
 
 template<int dim_, int range_, int rank_>
 auto
-NewBSplineSpace<dim_, range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 end() const -> ElementIterator
 {
     return ElementIterator(this->shared_from_this(),
@@ -189,7 +189,7 @@ end() const -> ElementIterator
 
 template<int dim_, int range_, int rank_>
 auto
-NewBSplineSpace<dim_, range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 get_element_handler() const -> ElementHandler
 {
     return ElementHandler(this->shared_from_this());
@@ -200,7 +200,7 @@ get_element_handler() const -> ElementHandler
 template<int dim_, int range_, int rank_>
 template<int k>
 auto
-NewBSplineSpace<dim_, range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 get_ref_sub_space(const int s_id,
                   InterSpaceMap<k> &dof_map,
                   std::shared_ptr<CartesianGrid<k>> sub_grid) const
@@ -258,7 +258,7 @@ get_ref_sub_space(const int s_id,
 template<int dim_, int range_, int rank_>
 template<int k>
 auto
-NewBSplineSpace<dim_, range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
               std::shared_ptr<CartesianGrid<k>> sub_grid,
               std::shared_ptr<typename GridType::template InterGridMap<k>> elem_map) const
@@ -282,7 +282,7 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
 
 template<int dim_, int range_, int rank_>
 void
-NewBSplineSpace<dim_, range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 refine_h_after_grid_refinement(
     const std::array<bool,dim> &refinement_directions,
     const GridType &grid_old)
@@ -312,7 +312,7 @@ refine_h_after_grid_refinement(
 
 template<int dim_, int range_, int rank_>
 void
-NewBSplineSpace<dim_, range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 add_dofs_offset(const Index offset)
 {
     dof_distribution_global_.add_dofs_offset(offset);
@@ -322,7 +322,7 @@ add_dofs_offset(const Index offset)
 
 template<int dim_, int range_, int rank_>
 auto
-NewBSplineSpace<dim_, range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 get_dof_distribution_global() const -> const DofDistribution<dim, range, rank> &
 {
     return dof_distribution_global_;
@@ -332,7 +332,7 @@ get_dof_distribution_global() const -> const DofDistribution<dim, range, rank> &
 
 template<int dim_, int range_, int rank_>
 auto
-NewBSplineSpace<dim_, range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 get_dof_distribution_global() -> DofDistribution<dim, range, rank> &
 {
     return dof_distribution_global_;
@@ -342,7 +342,7 @@ get_dof_distribution_global() -> DofDistribution<dim, range, rank> &
 
 template<int dim_, int range_, int rank_>
 auto
-NewBSplineSpace<dim_, range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 get_dof_distribution_patch() const -> const DofDistribution<dim, range, rank> &
 {
     return dof_distribution_patch_;
@@ -352,7 +352,7 @@ get_dof_distribution_patch() const -> const DofDistribution<dim, range, rank> &
 
 template<int dim_, int range_, int rank_>
 auto
-NewBSplineSpace<dim_, range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 get_dof_distribution_patch() -> DofDistribution<dim, range, rank> &
 {
     return dof_distribution_patch_;
@@ -361,7 +361,7 @@ get_dof_distribution_patch() -> DofDistribution<dim, range, rank> &
 
 template<int dim_, int range_, int rank_>
 Index
-NewBSplineSpace<dim_, range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 get_global_dof_id(const TensorIndex<dim> &tensor_index,
                   const Index comp) const
 {
@@ -371,7 +371,7 @@ get_global_dof_id(const TensorIndex<dim> &tensor_index,
 
 template<int dim_, int range_, int rank_>
 vector<Index>
-NewBSplineSpace<dim_, range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 get_loc_to_global(const CartesianGridElement<dim> &element) const
 {
     return dof_distribution_global_.get_loc_to_global_indices(element);
@@ -381,7 +381,7 @@ get_loc_to_global(const CartesianGridElement<dim> &element) const
 
 template<int dim_, int range_, int rank_>
 vector<Index>
-NewBSplineSpace<dim_, range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 get_loc_to_patch(const CartesianGridElement<dim> &element) const
 {
     return dof_distribution_patch_.get_loc_to_global_indices(element);
@@ -390,7 +390,7 @@ get_loc_to_patch(const CartesianGridElement<dim> &element) const
 
 template<int dim_, int range_, int rank_>
 auto
-NewBSplineSpace<dim_, range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 get_space_manager() -> shared_ptr<SpaceManager>
 {
     auto space_manager = make_shared<SpaceManager>(SpaceManager());
@@ -411,7 +411,7 @@ get_space_manager() -> shared_ptr<SpaceManager>
 
 template<int dim_, int range_, int rank_>
 auto
-NewBSplineSpace<dim_, range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 get_space_manager() const -> std::shared_ptr<const SpaceManager>
 {
     return const_cast<self_t &>(*this).get_space_manager();
@@ -419,7 +419,7 @@ get_space_manager() const -> std::shared_ptr<const SpaceManager>
 
 template<int dim_, int range_, int rank_>
 void
-NewBSplineSpace<dim_, range_, rank_>::
+BSplineSpace<dim_, range_, rank_>::
 print_info(LogStream &out) const
 {
     out.begin_item("Spline Space:");
@@ -441,4 +441,4 @@ print_info(LogStream &out) const
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/basis_functions/new_bspline_space.inst>
+#include <igatools/basis_functions/bspline_space.inst>
