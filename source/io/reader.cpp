@@ -315,7 +315,7 @@ get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
     if (is_nurbs_space)
     {
 #ifdef NURBS
-        using ref_space_t = NURBSSpace<dim,dim_phys,1>;
+        using ref_space_t = ReferenceSpace<dim,dim_phys,1>;
         auto ref_space = get_nurbs_space_from_xml<dim,dim_phys,1>(mapping_tree);
 
         map = IgFunction<ref_space_t>::create(ref_space,cntrl_pts);
@@ -326,7 +326,7 @@ get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
     }
     else
     {
-        using ref_space_t = BSplineSpace<dim,dim_phys,1>;
+        using ref_space_t = ReferenceSpace<dim,dim_phys,1>;
         auto ref_space = get_bspline_space_from_xml<dim,dim_phys,1>(mapping_tree);
 
         map = IgFunction<ref_space_t>::create(ref_space,cntrl_pts);
@@ -703,7 +703,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     //----------------------------------------
     // building the weight function table --- begin
     using ScalarBSplineSpace = BSplineSpace<dim>;
-    using WeightFunc = IgFunction<ScalarBSplineSpace>;
+    using WeightFunc = IgFunction<ReferenceSpace<dim,1,1> >;
 
     using ScalarDegreeTable = typename ScalarBSplineSpace::DegreeTable;
     const ScalarDegreeTable scalar_degree_table(degrees[0]);

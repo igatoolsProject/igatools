@@ -149,7 +149,7 @@ public:
     using SpaceDimensionTable = typename SpSpace::SpaceDimensionTable;
 
     using WeightSpace = BSplineSpace<dim_,1,1>;
-    using WeightFunction = IgFunction<WeightSpace>;
+    using WeightFunction = IgFunction<ReferenceSpace<dim_,1,1> >;
     using WeightFunctionPtr = std::shared_ptr<WeightFunction>;
     using WeightFunctionPtrTable = ComponentContainer<WeightFunctionPtr>;
     using Weights = DynamicMultiArray<Real,dim>;

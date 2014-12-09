@@ -214,7 +214,7 @@ get_ref_sub_space(const int s_id,
     auto sub_mult   = this->template get_sub_space_mult<k>(s_id);
     auto sub_degree = this->template get_sub_space_degree<k>(s_id);
 
-    auto sub_space = SubRefSpace<k>::create(sub_degree, sub_grid, sub_mult);
+    auto sub_space = BSplineSpace<k,range,rank>::create(sub_degree, sub_grid, sub_mult);
 
     auto &k_elem = UnitElement<dim>::template get_elem<k>(s_id);
 

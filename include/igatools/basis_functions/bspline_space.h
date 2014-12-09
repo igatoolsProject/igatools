@@ -281,7 +281,7 @@ public:
     using InterSpaceMap = vector<Index>;
 
     template <int k>
-    using SubRefSpace = BSplineSpace<k, range, rank>;
+    using SubRefSpace = ReferenceSpace<k, range, rank>;
 
     template <int k>
     using SubSpace = PhysicalSpace<SubRefSpace<k>, dim-k, Transformation::h_grad>;

@@ -19,17 +19,26 @@
 //-+--------------------------------------------------------------------
 
 
-#include <igatools/basis_functions/spline_space.h>
-#include <igatools/basis_functions/space_element.h>
+#include <igatools/basis_functions/reference_space.h>
 #include <igatools/basis_functions/reference_element.h>
+#include <igatools/base/array_utils.h>
 
+using std::shared_ptr;
+using std::make_shared;
+using std::const_pointer_cast;
 
 IGA_NAMESPACE_OPEN
 
+template<int dim, int range, int rank>
+const Size ReferenceSpace<dim, range, rank>::n_components;
 
+
+template<int dim, int range, int rank>
+const std::array<Size, ReferenceSpace<dim, range, rank>::n_components>
+ReferenceSpace<dim, range, rank>::components =
+    sequence<ReferenceSpace<dim, range, rank>::n_components>();
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/basis_functions/reference_element.inst>
-
+#include <igatools/basis_functions/reference_space.inst>
 
