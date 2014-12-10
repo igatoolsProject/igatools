@@ -32,8 +32,9 @@ IGA_NAMESPACE_OPEN
 //TODO(pauletti, Oct 11, 2014): the class name should be change to GridIterator
 
 /**
- * @brief Forward iterator on objects that have a "grid-like" structure.
+ * @brief Base class for iterator on objects that have a "grid-like" structure.
  *
+ * Its purpose is to iterate over the elements of a CartesianGrid.
  *
  * Its main features are:
  * - it takes an accessor's type as template parameter;
@@ -62,7 +63,7 @@ IGA_NAMESPACE_OPEN
  *
  * <h3>Purpose</h3>
  *
- * Iterators are used whenever a loop over all (some) elements
+ * Iterators are used whenever a loop over all (or some) elements
  * is to be performed. These loops can then be coded like this:
  * @code
    auto elem = grid.begin();
@@ -71,10 +72,10 @@ IGA_NAMESPACE_OPEN
      if (elem->at_boundary())
         elem->vertex(k);
   @endcode
- * Note the usage of <tt>++i</tt> instead of <tt>i++</tt> since this
+ * Note the usage of <tt>++elem</tt> instead of <tt>elem++</tt> since this
  * does not involve temporaries and copying. It is recommended to use
  * a fixed value <tt>end</tt> inside the loop instead of
- * <tt>patch.end()</tt>, since the creation and copying of these
+ * <tt>grid.end()</tt>, since the creation and copying of these
  * iterators is rather expensive compared to normal pointers.
  *
  * The same previous loop can be performed or using the C++11 syntax called
@@ -151,6 +152,8 @@ IGA_NAMESPACE_OPEN
  * </ul>
  *
  * @see IteratorState
+ *
+ * @sa CartesianGridIterator, CartesianGridConstIterator
  *
  * @tparam Accessor Type of the accessor.
  *
@@ -316,20 +319,15 @@ protected:
 
 
 
-#if 0
-template <typename Accessor>
-bool operator> (const CartesianGridIteratorBase<Accessor> &it1, const CartesianGridIteratorBase<Accessor> &it2)
-{
-    return it1.get_flat_index() > it2.get_flat_index();
-}
-
-template <typename Accessor>
-bool operator< (const CartesianGridIteratorBase<Accessor> &it1, const CartesianGridIteratorBase<Accessor> &it2)
-{
-    return it1.get_flat_index() < it2.get_flat_index();
-}
-#endif
-
+/**
+ * @brief Iterator on non-const objects that have a "grid-like" structure.
+ *
+ * @sa CartesianGridConstIterator, CartesianGridIteratorBase
+ *
+ * @ingroup iterators
+ *
+ * @author M.Martinelli, 2014
+ */
 template <typename Accessor>
 class CartesianGridIterator
     :
@@ -370,6 +368,15 @@ public:
 
 
 
+/**
+ * @brief Iterator on const objects that have a "grid-like" structure.
+ *
+ * @sa CartesianGridIterator, CartesianGridIteratorBase
+ *
+ * @ingroup iterators
+ *
+ * @author M.Martinelli, 2014
+ */
 template <typename Accessor>
 class CartesianGridConstIterator
     :

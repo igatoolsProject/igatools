@@ -52,6 +52,21 @@ PhysicalSpace | PhysicalSpaceElementAccessor
 Generally speaking, an iterator is an object that enables to traverse a container, while an accessor
 is an object that access information on a container.
 
+An <b>iterator</b> is an object that allows you to visit all (or a subset of) the elements contained in another object, 
+typically a <b>container</b>, without worrying about the details of a specific implementation.
+An <b>iterator</b> can be considered a specialized type of pointer that provides a point of sequential 
+access to elements of an object that contains a finite number of simpler objects, called <em>aggregate</em>.
+
+In igatools, the mechanism in which an iterator is pointing to a specific element in a <b>container</b> is
+by the use of an <b>accessor</b>.
+An <b>accessor</b> is a class associated to a container and representing a single element within the container,
+and contains the methods that are proper to the element.
+
+
+In order to clarify we can summarize as follows:
+  - the <b>container</b> is used to represent a set of elements;
+  - the <b>iterator</b> is used to handle the way in which a container is traversed;
+  - the <b>accessor</b> is used to represent the element (in a container) pointed by the iterator. 
 */
 
 
@@ -61,8 +76,21 @@ is an object that access information on a container.
 @defgroup iterators Iterators
 @ingroup iterators_accessors
 @{
+An iterator is an object that allows you to visit all (or a subset of) the elements contained in another object, 
+typically a container, without worrying about the details of a specific implementation.
 
-Currently, in igatools there is only one kind of iterator: the GridForwardIterator, that permits to
+An iterator can be considered a specialized type of pointer that provides a point of sequential 
+access to elements of an object that contains a finite number of simpler objects, called <em>aggregate</em>.
+
+The iterator offers two basic operations:
+   - Access to the element of the aggregate currently focused;
+   - Updating the pointer so that it points to the next element in the sequence.
+These simple operations provide access to the elements of an aggregate in a uniform and independent 
+of the internal structure of the aggregate, which can be much more complex sequences implemented by 
+linear arrays and lists.
+
+
+Currently, in igatools there is only one kind of iterator: the CartesianGridIterator, that permits to
 iterate sequentially over a container of elements with an underlying tensor-product structure,
 in a range in the direction that goes from its beginning towards its end.
 Its main features are:
@@ -94,12 +122,12 @@ there is an associated accessor, as shown in the following table:
 <center>
 Container     | Iterator/Accessor
 ------------- | -----------------
-CartesianGrid | CartesianGridElementAccessor 
-BSplineSpace  | BSplineElementAccessor 
-NURBSSpace    | NURBSElementAccessor
+CartesianGrid | CartesianGridElement 
+BSplineSpace  | BSplineElement 
+NURBSSpace    | NURBSElement
 Mapping       | MappingElementAccessor
-PushForward   | PushForwardElementAccessor
-PhysicalSpace | PhysicalSpaceElementAccessor
+PushForward   | PushForwardElement
+PhysicalSpace | PhysicalSpaceElement
 </center>
 - they have an identifier in order to specify which element in the associated container they are representing;
 - they have @subpage iterators as friend classes (because the an iterator must be able to modify the 
