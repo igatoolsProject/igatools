@@ -26,7 +26,7 @@ template <typename Accessor>
 inline
 CartesianGridIteratorBase<Accessor>::
 CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
-                    const Index index)
+                          const Index index)
     :
     accessor_(grid, index)
 {}
@@ -37,7 +37,7 @@ template <typename Accessor>
 inline
 CartesianGridIteratorBase<Accessor>::
 CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
-                    const TensorIndex<dim> &index)
+                          const TensorIndex<dim> &index)
     :
     accessor_(grid, index)
 {}
@@ -112,15 +112,6 @@ operator * () const
 
 
 
-template <typename Accessor>
-inline
-Accessor &
-CartesianGridIteratorBase<Accessor>::
-operator * ()
-{
-    return accessor_;
-}
-
 
 
 template <typename Accessor>
@@ -134,14 +125,7 @@ operator -> () const
 
 
 
-template <typename Accessor>
-inline
-Accessor *
-CartesianGridIteratorBase<Accessor>::
-operator -> ()
-{
-    return &(this->operator* ());
-}
+
 
 
 
@@ -181,6 +165,26 @@ CartesianGridIteratorBase<Accessor>::
 get_tensor_index() const -> TensorIndex<dim>
 {
     return accessor_.get_tensor_index();
+}
+
+
+
+template <typename Accessor>
+inline
+Accessor &
+CartesianGridIterator<Accessor>::
+operator * ()
+{
+    return this->accessor_;
+}
+
+template <typename Accessor>
+inline
+Accessor *
+CartesianGridIterator<Accessor>::
+operator -> ()
+{
+    return &(this->operator* ());
 }
 
 IGA_NAMESPACE_CLOSE

@@ -183,14 +183,14 @@ public:
      * grid pointing to the element of given index.
      */
     CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
-                        const Index index);
+                              const Index index);
 
     /**
      * Construct an iterator on a grid-type container
      * grid pointing to the element of given index.
      */
     CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
-                        const TensorIndex<dim> &index);
+                              const TensorIndex<dim> &index);
 
     /**
      * Copy constructor. It may be used with different CopyPolicy (i.e. shallow or deep).
@@ -235,11 +235,6 @@ public:
      */
     const Accessor &operator*() const;
 
-    /**
-     *  Dereferencing operator, returns a
-     *  reference to the accessor.
-     */
-    Accessor &operator*();
 
     /**
      *  Dereferencing operator, returns a
@@ -247,11 +242,7 @@ public:
      */
     const Accessor *operator->() const;
 
-    /**
-     *  Dereferencing operator, returns a
-     *  pointer to the accessor.
-     */
-    Accessor *operator->();
+
     ///@}
 
     /** @name Comparison operators */
@@ -343,13 +334,37 @@ bool operator< (const CartesianGridIteratorBase<Accessor> &it1, const CartesianG
 
 template <typename Accessor>
 class CartesianGridIterator
-	:
-	public CartesianGridIteratorBase<Accessor>
+    :
+    public CartesianGridIteratorBase<Accessor>
 {
 public:
-	using CartesianGridIteratorBase<Accessor>::CartesianGridIteratorBase;
+    using CartesianGridIteratorBase<Accessor>::CartesianGridIteratorBase;
+
+
+    /**
+     *  Dereferencing operator, returns a
+     *  reference to the accessor.
+     */
+    Accessor &operator*();
+
+    /**
+     *  Dereferencing operator, returns a
+     *  pointer to the accessor.
+     */
+    Accessor *operator->();
+
 };
 
+
+
+template <typename Accessor>
+class CartesianGridConstIterator
+    :
+    public CartesianGridIteratorBase<Accessor>
+{
+public:
+    using CartesianGridIteratorBase<Accessor>::CartesianGridIteratorBase;
+};
 
 
 
