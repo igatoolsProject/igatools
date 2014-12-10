@@ -38,7 +38,7 @@ IGA_NAMESPACE_OPEN
 
 
 template <int dim, int range, int rank> class NURBSSpace;
-template <typename Accessor> class GridForwardIterator;
+template <typename Accessor> class CartesianGridIterator;
 
 /**
  * See module on \ref accessors_iterators for a general overview.
@@ -56,7 +56,7 @@ public:
     /** Type for the grid accessor. */
     using GridAccessor = CartesianGridElement<dim>;
 
-    /** Type required by the GridForwardIterator templated iterator */
+    /** Type required by the CartesianGridIterator templated iterator */
     using ContainerType = const NURBSSpace<dim, range, rank> ;
 
     /** Type required for the generic algorithm on the spaces (plots??) */

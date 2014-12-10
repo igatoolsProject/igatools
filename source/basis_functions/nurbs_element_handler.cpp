@@ -152,7 +152,7 @@ void
 NURBSElementHandler<dim_, range_, rank_>::
 init_element_cache(ElementIterator &elem)
 {
-    init_cache<dim>(static_cast<NURBSElement<dim_,range_,rank_> &>(elem.get_accessor()));
+    init_cache<dim>(static_cast<NURBSElement<dim_,range_,rank_> &>(*elem));
 }
 
 
@@ -352,7 +352,7 @@ void
 NURBSElementHandler<dim_, range_, rank_>::
 fill_element_cache(ElementIterator &elem)
 {
-    fill_cache<dim>(static_cast<NURBSElement<dim_,range_,rank_> &>(elem.get_accessor()), 0);
+    fill_cache<dim>(static_cast<NURBSElement<dim_,range_,rank_> &>(*elem), 0);
 }
 
 

@@ -216,7 +216,9 @@ class InstantiationInfo:
       self.values=[]
       self.divs=[]
       
-      
+      self.iterators = ['CartesianGridIteratorBase<Accessor>',
+                        'CartesianGridIterator<Accessor>',
+                        'CartesianGridConstIterator<Accessor>']
 #---------------------------------------
       self.RefSpaces=[]     # all required reference spaces
       self.UserPhysSpaces=[]

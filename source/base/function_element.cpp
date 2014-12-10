@@ -74,5 +74,6 @@ get_hessians() const -> ValueVector<Hessian> const &
     return get_derivative<2>();
 }
 #endif
+
 IGA_NAMESPACE_CLOSE
 

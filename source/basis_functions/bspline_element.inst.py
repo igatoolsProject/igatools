@@ -24,7 +24,7 @@ from init_instantiation_data import *
 include_files = ['geometry/cartesian_grid.h',
                  'geometry/cartesian_grid_element.h',
                  'basis_functions/bspline_space.h',
-                 '../../source/geometry/grid_forward_iterator.cpp']
+                 '../../source/geometry/cartesian_grid_iterator.cpp']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
@@ -33,6 +33,6 @@ accessors = [('BSplineElement<%d, %d, %d>' %(x.dim, x.range, x.rank), x.dim)
 
 for acc in accessors:
     f.write('template class %s ;\n' %acc[0])
-    f.write('template class GridForwardIterator<%s> ;\n' %acc[0])
+    f.write('template class CartesianGridIterator<%s> ;\n' %acc[0])
 
 

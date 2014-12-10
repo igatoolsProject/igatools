@@ -33,7 +33,7 @@ include_files = ['basis_functions/bspline_space.h',
                  '../../source/basis_functions/bspline_element.cpp',
                  '../../source/basis_functions/nurbs_element.cpp',
                  'basis_functions/physical_space_element.h']
-#                 '../../source/geometry/grid_forward_iterator.cpp']
+#                 '../../source/geometry/cartesian_grid_iterator.cpp']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
@@ -46,7 +46,7 @@ sub_dim_members = \
 
 
 # for x in inst.sub_ref_sp_dims:
-#     space = 'NewBSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
+#     space = 'BSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
 #     f.write('template class %s ;\n' %space)
 #     for fun in sub_dim_members:
 #         k = x.dim
@@ -55,7 +55,7 @@ sub_dim_members = \
 
 
 # for x in inst.ref_sp_dims:
-#     space = 'NewBSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
+#     space = 'BSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
 #     f.write('template class %s ;\n' %space)
 #     for fun in sub_dim_members:
 #         for k in inst.sub_dims(x.dim):

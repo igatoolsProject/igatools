@@ -24,7 +24,7 @@
 #include <igatools/base/config.h>
 #include <igatools/geometry/mapping.h>
 #include <igatools/geometry/push_forward.h>
-#include <igatools/geometry/grid_forward_iterator.h>
+#include <igatools/geometry/cartesian_grid_iterator.h>
 #include <igatools/basis_functions/function_space.h>
 #include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/utils/static_multi_array.h>
@@ -108,7 +108,7 @@ public:
 
 
     using ElementAccessor = PhysicalSpaceElement<self_t>;
-    using ElementIterator = GridForwardIterator<ElementAccessor>;
+    using ElementIterator = CartesianGridIterator<ElementAccessor>;
 
 
     PhysicalSpace(const self_t &phys_space) = delete;

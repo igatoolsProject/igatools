@@ -23,7 +23,7 @@ from init_instantiation_data import *
 include_files = ['../../source/base/function_element.cpp',
                  '../../source/geometry/mapping_element.cpp',
                  '../../source/geometry/push_forward_element.cpp',
-                 '../../source/geometry/grid_forward_iterator.cpp']
+                 '../../source/geometry/cartesian_grid_iterator.cpp']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
@@ -32,12 +32,12 @@ sub_dim_members = \
 
 for x in inst.sub_mapping_dims:
     dims = '<Transformation::h_grad, %d, %d>' %(x.dim, x.codim)
-    s = 'template class PushForward%s ;\n' %(dims)
-    f.write(s)
-    s = 'template class PushForwardElement%s ;\n' %(dims)
-    f.write(s)
-    s = 'template class GridForwardIterator<PushForwardElement%s> ;\n' %(dims)
-    f.write(s)
+    f.write('template class PushForward%s ;\n' %(dims))
+    acc = 'PushForwardElement%s' % (dims)
+    f.write('template class %s ;\n' %(acc))
+    for it in inst.iterators:
+        iterator = it.replace('Accessor','%s' % (acc) )
+        f.write('template class %s; \n' %iterator)
     for fun in sub_dim_members:
         k = x.dim
         s = fun.replace('cod', '%d' % (x.codim)).replace('dim', '%d' % (x.dim)).replace('k', '%d' % (k));
@@ -45,12 +45,12 @@ for x in inst.sub_mapping_dims:
 
 for x in inst.mapping_dims:
     dims = '<Transformation::h_grad, %d, %d>' %(x.dim, x.codim)
-    s = 'template class PushForward%s ;\n' %(dims)
-    f.write(s)
-    s = 'template class PushForwardElement%s ;\n' %(dims)
-    f.write(s)
-    s = 'template class GridForwardIterator<PushForwardElement%s> ;\n' %(dims)
-    f.write(s)
+    f.write('template class PushForward%s ;\n' %(dims))
+    acc = 'PushForwardElement%s' % (dims)
+    f.write('template class %s ;\n' %(acc))
+    for it in inst.iterators:
+        iterator = it.replace('Accessor','%s' % (acc) )
+        f.write('template class %s; \n' %iterator)
     for fun in sub_dim_members:
         for k in inst.sub_dims(x.dim):
             s = fun.replace('cod', '%d' % (x.codim)).replace('dim', '%d' % (x.dim)).replace('k', '%d' % (k));

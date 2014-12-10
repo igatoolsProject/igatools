@@ -215,10 +215,10 @@ private:
     BSplineElementAccessor<dim,range,rank> bspline_element_accessor_;
 
 
-    template <typename Accessor> friend class GridForwardIterator ;
+    template <typename Accessor> friend class CartesianGridIterator ;
 
 
-    template <typename Accessor> friend class GridForwardIterator;
+    template <typename Accessor> friend class CartesianGridIterator;
     friend class NURBSUniformQuadCache<dim, range, rank>;
 
 } ;

@@ -128,7 +128,7 @@ void
 GridElementHandler<dim_>::
 init_element_cache(ElementIterator &elem)
 {
-    init_element_cache(elem.get_accessor());
+    init_element_cache(*elem);
 }
 
 
@@ -180,7 +180,7 @@ void
 GridElementHandler<dim_>::
 fill_element_cache(ElementIterator &elem)
 {
-    fill_element_cache(elem.get_accessor());
+    fill_element_cache(*elem);
 }
 
 

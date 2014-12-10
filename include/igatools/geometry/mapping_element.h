@@ -202,7 +202,7 @@ public:
     using CacheType = LocalCache;
 
 private:
-    template <typename Accessor> friend class GridForwardIterator;
+    template <typename Accessor> friend class CartesianGridIterator;
     friend class Mapping<dim, codim>;
 
 };
@@ -214,7 +214,7 @@ IGA_NAMESPACE_CLOSE
 
 
 #if 0
-/** Type required by the GridForwardIterator templated iterator */
+/** Type required by the CartesianGridIterator templated iterator */
 using ContainerType = const Mapping<dim_,codim_>;
 
 using GridIterator = typename ContainerType::GridIterator;

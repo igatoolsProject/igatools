@@ -33,7 +33,7 @@
 IGA_NAMESPACE_OPEN
 
 template <int dim, int range, int rank> class BSplineSpace;
-template <typename Accessor> class GridForwardIterator;
+template <typename Accessor> class CartesianGridIterator;
 
 
 
@@ -55,7 +55,7 @@ public:
     /** Type for the grid accessor. */
     using GridAccessor = CartesianGridElement<dim>;
 
-    /** Type required by the GridForwardIterator templated iterator */
+    /** Type required by the CartesianGridIterator templated iterator */
     using ContainerType = const BSplineSpace<dim, range, rank> ;
 
     /** Type required for the generic algorithm on the spaces (plots??) */
@@ -178,7 +178,7 @@ protected:
 private:
 
 
-    template <typename Accessor> friend class GridForwardIterator;
+    template <typename Accessor> friend class CartesianGridIterator;
     friend class BSplineElementHandler<dim, range, rank>;
 
     std::shared_ptr<const Space> space_;

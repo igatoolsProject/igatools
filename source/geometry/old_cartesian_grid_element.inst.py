@@ -21,11 +21,11 @@
 # QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
 
-include_files = ['../../source/geometry/grid_forward_iterator.cpp']
+include_files = ['../../source/geometry/cartesian_grid_iterator.cpp']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 accessors = ['CartesianGridElement<%d>' %(dim) for dim in inst.domain_dims]
 for row in accessors:
     f.write('template class %s; \n' %(row))
-#    f.write('template class GridForwardIterator<%s>;\n' %(row))
+#    f.write('template class CartesianGridIterator<%s>;\n' %(row))

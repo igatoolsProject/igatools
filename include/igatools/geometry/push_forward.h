@@ -44,7 +44,7 @@ private:
     using typename MapType::FuncType;
 public:
     using ElementAccessor = PushForwardElement<type_, dim_, codim_>;
-    using ElementIterator = GridForwardIterator<ElementAccessor>;
+    using ElementIterator = CartesianGridIterator<ElementAccessor>;
     using MapType::space_dim;
     static const int dim   = dim_;
     static const int codim = codim_;

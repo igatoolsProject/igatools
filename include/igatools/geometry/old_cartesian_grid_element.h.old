@@ -50,7 +50,7 @@ template <int dim_>
 class CartesianGridElement
 {
 public:
-//    /** Type required by the GridForwardIterator templated iterator */
+//    /** Type required by the CartesianGridIterator templated iterator */
 //    using ContainerType = const CartesianGrid<dim_>;
 //
 //    /** Dimension of the grid like container */

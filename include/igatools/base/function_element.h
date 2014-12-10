@@ -137,7 +137,7 @@ private:
 public:
     using CacheType = LocalCache;
 private:
-    template <typename Accessor> friend class GridForwardIterator;
+    template <typename Accessor> friend class CartesianGridIterator;
     friend class Function<dim, codim, range, rank>;
 };
 

@@ -24,7 +24,7 @@
 #include <igatools/base/config.h>
 #include <igatools/base/tensor.h>
 #include <igatools/utils/value_vector.h>
-#include <igatools/geometry/grid_forward_iterator.h>
+#include <igatools/geometry/cartesian_grid_iterator.h>
 #include <igatools/geometry/grid_element_handler.h>
 #include <igatools/base/quadrature.h>
 
@@ -82,7 +82,7 @@ public:
 
 public:
     using ElementAccessor = FunctionElement<dim, codim, range, rank>;
-    using ElementIterator = GridForwardIterator<ElementAccessor>;
+    using ElementIterator = CartesianGridIterator<ElementAccessor>;
 
     static const int space_dim = dim + codim;
 
@@ -166,12 +166,12 @@ public:
 
     void fill_cache(ElementIterator &elem, const int j, const variant_2 &k)
     {
-        fill_cache(elem.get_accessor(), j, k);
+        fill_cache(*elem, j, k);
     }
 
     void init_cache(ElementIterator &elem, const variant_2 &k)
     {
-        init_cache(elem.get_accessor(), k);
+        init_cache(*elem, k);
     }
 
     auto begin()  const -> ElementIterator

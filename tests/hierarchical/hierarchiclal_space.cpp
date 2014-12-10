@@ -92,7 +92,7 @@ class HierarchicalSpace
 public:
 
     using ElementAccessor  = HierarchicalSpaceElementAccessor<self_t>;
-    using ElementIterator  = GridForwardIterator<ElementAccessor>;
+    using ElementIterator  = CartesianGridIterator<ElementAccessor>;
 
     using SpaceElementIterator =  typename Space::ElementIterator;
 public:

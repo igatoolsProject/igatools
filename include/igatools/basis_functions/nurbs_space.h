@@ -98,8 +98,7 @@ public:
     using ElementAccessor = NURBSElement<dim, range, rank> ;
 
     /** Type for iterator over the elements.  */
-//    using ElementIterator = GridForwardIterator<ElementAccessor>;
-    using ElementIterator = GridForwardIterator<ReferenceElement<dim,range,rank> >;
+    using ElementIterator = CartesianGridIterator<ReferenceElement<dim,range,rank> >;
 
     using ElementHandler = NURBSElementHandler<dim_, range_, rank_>;
 

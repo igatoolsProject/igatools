@@ -133,8 +133,7 @@ public:
     using ElementAccessor = BSplineElement<dim,range,rank>;
 
     /** Type for iterator over the elements.  */
-    using ElementIterator = GridForwardIterator<ReferenceElement<dim,range,rank> >;
-//    using ElementIterator = GridForwardIterator<ElementAccessor>;
+    using ElementIterator = CartesianGridIterator<ReferenceElement<dim,range,rank> >;
 
 
     using typename BaseSpace::InteriorReg;

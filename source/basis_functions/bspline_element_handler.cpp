@@ -295,7 +295,7 @@ void
 BSplineElementHandler<dim_, range_, rank_>::
 init_element_cache(ElementIterator &elem)
 {
-    init_cache<dim>(static_cast<BSplineElement<dim_,range_,rank_> &>(elem.get_accessor()));
+    init_cache<dim>(static_cast<BSplineElement<dim_,range_,rank_> &>(*elem));
 }
 
 
@@ -498,7 +498,7 @@ void
 BSplineElementHandler<dim_, range_, rank_>::
 fill_element_cache(ElementIterator &elem)
 {
-    fill_cache<dim>(static_cast<BSplineElement<dim_,range_,rank_> &>(elem.get_accessor()), 0);
+    fill_cache<dim>(static_cast<BSplineElement<dim_,range_,rank_> &>(*elem), 0);
 }
 
 

@@ -228,7 +228,7 @@ set_active(const bool active_flag)
 template <int dim_>
 bool
 CartesianGridElement<dim_>::
-operator==(const CartesianGridElement<dim_> &elem) const
+operator ==(const CartesianGridElement<dim_> &elem) const
 {
     Assert(this->get_grid() == elem.get_grid(), ExcMessage("Cannot compare elements on different grid."));
     return (this->get_flat_index() == elem.get_flat_index());
@@ -239,12 +239,29 @@ operator==(const CartesianGridElement<dim_> &elem) const
 template <int dim_>
 bool
 CartesianGridElement<dim_>::
-operator!=(const CartesianGridElement<dim_> &elem) const
+operator !=(const CartesianGridElement<dim_> &elem) const
 {
     Assert(this->get_grid() == elem.get_grid(), ExcMessage("Cannot compare elements on different grid."));
     return (this->get_flat_index() != elem.get_flat_index());
 }
 
+template <int dim_>
+bool
+CartesianGridElement<dim_>::
+operator <(const CartesianGridElement<dim_> &elem) const
+{
+    Assert(this->get_grid() == elem.get_grid(), ExcMessage("Cannot compare elements on different grid."));
+    return (this->get_flat_index() < elem.get_flat_index());
+}
+
+template <int dim_>
+bool
+CartesianGridElement<dim_>::
+operator >(const CartesianGridElement<dim_> &elem) const
+{
+    Assert(this->get_grid() == elem.get_grid(), ExcMessage("Cannot compare elements on different grid."));
+    return (this->get_flat_index() > elem.get_flat_index());
+}
 
 
 template <int dim_>
