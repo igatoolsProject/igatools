@@ -394,7 +394,7 @@ public:
         return vector<Index>();
     }
 
-    using ElementIterator = GridForwardIterator<ReferenceElement<dim,range,rank>>;
+    using ElementIterator = CartesianGridIterator<ReferenceElement<dim,range,rank>>;
 
     virtual ElementIterator begin() const override
     {
