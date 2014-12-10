@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef GRID_FORWARD_ITERATOR_H_
-#define GRID_FORWARD_ITERATOR_H_
+#ifndef CARTESIAN_GRID_ITERATOR_H_
+#define CARTESIAN_GRID_ITERATOR_H_
 
 #include <igatools/base/config.h>
 #include <igatools/utils/tensor_index.h>
@@ -227,31 +227,34 @@ public:
     operator=(CartesianGridIteratorBase<Accessor> &&) = default;
     ///@}
 
-    /** @name Dereferencing operators */
-    ///@{
-    /**
-     *  Dereferencing operator, returns a
-     *  const reference to the accessor.
-     */
-    const Accessor &operator*() const;
-
-
-    /**
-     *  Dereferencing operator, returns a
-     *  const pointer to the accessor.
-     */
-    const Accessor *operator->() const;
-
-
-    ///@}
 
     /** @name Comparison operators */
     ///@{
-    /** Compare for equality.*/
+    /**
+     * Compares for equality.
+     * @note Internally uses the equality comparison operator implemented by the Accessor object.
+     */
     bool operator== (const CartesianGridIteratorBase &) const;
 
-    /** Compare for inequality.*/
+    /**
+     * Compares for inequality.
+     * @note Internally uses the inequality comparison operator implemented by the Accessor object.
+     */
     bool operator!= (const CartesianGridIteratorBase &) const;
+
+    /**
+     * "Greather than" comparison operator.
+     *
+     * @note Internally uses the "greather than" comparison operator implemented by the Accessor object.
+     */
+    bool operator> (const CartesianGridIteratorBase &) const;
+
+    /**
+     * "Smaller than" comparison operator.
+     *
+     * @note Internally uses the "smaller than" comparison operator implemented by the Accessor object.
+     */
+    bool operator< (const CartesianGridIteratorBase &) const;
     ///@}
 
 
@@ -294,11 +297,6 @@ public:
     CartesianGridIteratorBase<Accessor> &operator++();
     ///@}
 
-    Accessor &get_accessor()
-    {
-        return accessor_;
-    }
-
     /**
      * @name Functions related to the indices of the element in the CartesianGrid pointed
      * by the iterator.
@@ -318,7 +316,7 @@ protected:
 
 
 
-
+#if 0
 template <typename Accessor>
 bool operator> (const CartesianGridIteratorBase<Accessor> &it1, const CartesianGridIteratorBase<Accessor> &it2)
 {
@@ -330,7 +328,7 @@ bool operator< (const CartesianGridIteratorBase<Accessor> &it1, const CartesianG
 {
     return it1.get_flat_index() < it2.get_flat_index();
 }
-
+#endif
 
 template <typename Accessor>
 class CartesianGridIterator
@@ -341,17 +339,32 @@ public:
     using CartesianGridIteratorBase<Accessor>::CartesianGridIteratorBase;
 
 
+    /** @name Dereferencing operators */
+    ///@{
     /**
      *  Dereferencing operator, returns a
-     *  reference to the accessor.
+     *  reference to the Accessor object.
      */
     Accessor &operator*();
 
     /**
      *  Dereferencing operator, returns a
-     *  pointer to the accessor.
+     *  pointer to the Accessor object.
      */
     Accessor *operator->();
+
+    /**
+     *  Dereferencing operator, returns a
+     *  const reference to the Accessor object.
+     */
+    const Accessor &operator*() const ;
+
+    /**
+     *  Dereferencing operator, returns a
+     *  pointer to the const Accessor object.
+     */
+    const Accessor *operator->() const;
+    ///@}
 
 };
 
@@ -364,10 +377,29 @@ class CartesianGridConstIterator
 {
 public:
     using CartesianGridIteratorBase<Accessor>::CartesianGridIteratorBase;
+
+
+    /** @name Dereferencing operators */
+    ///@{
+    /**
+     *  Dereferencing operator, returns a
+     *  const reference to the Accessor object.
+     */
+    const Accessor &operator*() const;
+
+
+    /**
+     *  Dereferencing operator, returns a
+     *  pointer to the const Accessor object.
+     */
+    const Accessor *operator->() const;
+    ///@}
+
 };
 
 
 
 IGA_NAMESPACE_CLOSE
 
-#endif /* PATCH_ITERATORS_H_ */
+
+#endif /* CARTESIAN_GRID_ITERATOR_H_ */

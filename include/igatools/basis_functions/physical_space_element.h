@@ -374,6 +374,9 @@ protected:
 
     bool operator==(const PhysicalSpaceElement<PhysSpace> &a) const;
     bool operator!=(const PhysicalSpaceElement<PhysSpace> &a) const;
+    bool operator<(const PhysicalSpaceElement<PhysSpace> &a) const;
+    bool operator>(const PhysicalSpaceElement<PhysSpace> &a) const;
+
 #if 0
     /**
      * This function returns the ValueFlags needed to be passed to the ReferenceSpacePhysicalAccessor
@@ -399,7 +402,7 @@ protected:
 
 
 private:
-    template <typename Accessor> friend class CartesianGridIterator;
+    template <typename Accessor> friend class CartesianGridIteratorBase;
     template <typename PSpace> friend class SpaceElementHandler;
     RefElemAccessor ref_space_element_accessor_;
 };

@@ -18,12 +18,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/geometry/grid_forward_iterator.h>
+#include <igatools/geometry/cartesian_grid_iterator.h>
 
 IGA_NAMESPACE_OPEN
 
 template <typename Accessor>
-inline
 CartesianGridIteratorBase<Accessor>::
 CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
                           const Index index)
@@ -34,7 +33,6 @@ CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
 
 
 template <typename Accessor>
-inline
 CartesianGridIteratorBase<Accessor>::
 CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
                           const TensorIndex<dim> &index)
@@ -43,7 +41,6 @@ CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
 {}
 
 template <typename Accessor>
-inline
 CartesianGridIteratorBase<Accessor>::
 CartesianGridIteratorBase(const CartesianGridIteratorBase<Accessor> &it,const CopyPolicy &copy_policy)
     :
@@ -52,7 +49,6 @@ CartesianGridIteratorBase(const CartesianGridIteratorBase<Accessor> &it,const Co
 
 
 template <typename Accessor>
-inline
 CartesianGridIteratorBase<Accessor>::
 CartesianGridIteratorBase(const Accessor &acc,const CopyPolicy &copy_policy)
     :
@@ -62,7 +58,6 @@ CartesianGridIteratorBase(const Accessor &acc,const CopyPolicy &copy_policy)
 
 
 template <typename Accessor>
-inline
 bool
 CartesianGridIteratorBase<Accessor>::
 jump(const TensorIndex<dim> &increment)
@@ -71,8 +66,8 @@ jump(const TensorIndex<dim> &increment)
 }
 
 template <typename Accessor>
-inline
-void CartesianGridIteratorBase<Accessor>::
+void
+CartesianGridIteratorBase<Accessor>::
 move_to(const Index flat_index)
 {
     accessor_.move_to(flat_index);
@@ -80,7 +75,6 @@ move_to(const Index flat_index)
 
 
 template <typename Accessor>
-inline
 void
 CartesianGridIteratorBase<Accessor>::
 move_to(const TensorIndex<dim> &tensor_index)
@@ -90,7 +84,6 @@ move_to(const TensorIndex<dim> &tensor_index)
 
 
 template <typename Accessor>
-inline
 CartesianGridIteratorBase<Accessor> &
 CartesianGridIteratorBase<Accessor>::
 operator++()
@@ -99,10 +92,9 @@ operator++()
     return *this;
 }
 
-
+#if 0
 
 template <typename Accessor>
-inline
 const Accessor &
 CartesianGridIteratorBase<Accessor>::
 operator * () const
@@ -115,7 +107,6 @@ operator * () const
 
 
 template <typename Accessor>
-inline
 const Accessor *
 CartesianGridIteratorBase<Accessor>::
 operator -> () const
@@ -123,14 +114,13 @@ operator -> () const
     return &(this->operator* ());
 }
 
-
+#endif
 
 
 
 
 
 template <typename Accessor>
-inline
 bool
 CartesianGridIteratorBase<Accessor>::
 operator==(const CartesianGridIteratorBase<Accessor> &i) const
@@ -139,9 +129,25 @@ operator==(const CartesianGridIteratorBase<Accessor> &i) const
 }
 
 
+template <typename Accessor>
+bool
+CartesianGridIteratorBase<Accessor>::
+operator>(const CartesianGridIteratorBase<Accessor> &i) const
+{
+    return (accessor_ > i.accessor_);
+}
 
 template <typename Accessor>
-inline
+bool
+CartesianGridIteratorBase<Accessor>::
+operator<(const CartesianGridIteratorBase<Accessor> &i) const
+{
+    return (accessor_ < i.accessor_);
+}
+
+
+
+template <typename Accessor>
 bool
 CartesianGridIteratorBase<Accessor>::
 operator!=(const CartesianGridIteratorBase<Accessor> &i) const
@@ -150,7 +156,6 @@ operator!=(const CartesianGridIteratorBase<Accessor> &i) const
 }
 
 template <typename Accessor>
-inline
 Index
 CartesianGridIteratorBase<Accessor>::
 get_flat_index() const
@@ -159,7 +164,6 @@ get_flat_index() const
 }
 
 template <typename Accessor>
-inline
 auto
 CartesianGridIteratorBase<Accessor>::
 get_tensor_index() const -> TensorIndex<dim>
@@ -170,7 +174,6 @@ get_tensor_index() const -> TensorIndex<dim>
 
 
 template <typename Accessor>
-inline
 Accessor &
 CartesianGridIterator<Accessor>::
 operator * ()
@@ -178,11 +181,28 @@ operator * ()
     return this->accessor_;
 }
 
+
 template <typename Accessor>
-inline
 Accessor *
 CartesianGridIterator<Accessor>::
 operator -> ()
+{
+    return &(this->operator* ());
+}
+
+template <typename Accessor>
+const Accessor &
+CartesianGridIterator<Accessor>::
+operator * () const
+{
+    return this->accessor_;
+}
+
+
+template <typename Accessor>
+const Accessor *
+CartesianGridIterator<Accessor>::
+operator -> () const
 {
     return &(this->operator* ());
 }

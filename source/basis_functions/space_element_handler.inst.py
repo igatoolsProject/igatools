@@ -28,7 +28,7 @@ include_files = ['basis_functions/bspline_element.h',
                  '../../source/basis_functions/bspline_element.cpp',
                  '../../source/basis_functions/nurbs_element.cpp',
                  'basis_functions/space_element.h',
-                 '../../source/geometry/grid_forward_iterator.cpp']
+                 '../../source/geometry/cartesian_grid_iterator.cpp']
 
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
@@ -45,9 +45,11 @@ sub_dim_members = \
 
 for space in inst.SubPhysSpaces:
     x = space.spec
-    f.write('template class PhysicalSpaceElement<%s>; \n' %space.name)
-    f.write('template class CartesianGridIterator<PhysicalSpaceElement<%s>>; \n' 
-            %space.name)
+    acc = 'PhysicalSpaceElement<%s>' %(space.name)
+    f.write('template class %s; \n' %acc)
+    for it in inst.iterators:
+        iterator = it.replace('Accessor','%s' % (acc) )
+        f.write('template class %s; \n' %iterator)
     elemhandler = 'SpaceElementHandler<%s>' %space.name
     f.write('template class %s; \n' %elemhandler)
     for fun in sub_dim_members:
@@ -58,9 +60,11 @@ for space in inst.SubPhysSpaces:
 
 for space in inst.PhysSpaces:
     x = space.spec
-    f.write('template class PhysicalSpaceElement<%s>; \n' %space.name)
-    f.write('template class CartesianGridIterator<PhysicalSpaceElement<%s>>; \n' 
-            %space.name)
+    acc = 'PhysicalSpaceElement<%s>' %(space.name)
+    f.write('template class %s; \n' %acc)
+    for it in inst.iterators:
+        iterator = it.replace('Accessor','%s' % (acc) )
+        f.write('template class %s; \n' %iterator)
     elemhandler = 'SpaceElementHandler<%s>' %space.name
     f.write('template class %s; \n' %elemhandler)
     for fun in sub_dim_members:

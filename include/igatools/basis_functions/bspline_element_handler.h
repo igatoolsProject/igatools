@@ -93,18 +93,18 @@ public:
     template <int k>
     void fill_cache(ElementIterator &elem, const int j)
     {
-        fill_cache<k>(elem.get_accessor(), j);
+        fill_cache<k>(*elem, j);
     }
 
     template <int k>
     void init_cache(ElementIterator &elem)
     {
-        init_cache<k>(elem.get_accessor());
+        init_cache<k>(*elem);
     }
 
 //    void init_all_caches(ElementIterator &elem)
 //    {
-//        init_all_caches(elem.get_accessor());
+//        init_all_caches(*elem);
 //    }
 
 

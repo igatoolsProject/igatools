@@ -20,8 +20,8 @@
 
 from init_instantiation_data import *
 
-include_files = ['../../source/geometry/grid_forward_iterator.cpp',
-		         '../../source/base/new_function.cpp']
+include_files = ['../../source/geometry/cartesian_grid_iterator.cpp',
+		         '../../source/base/function.cpp']
 
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
@@ -29,5 +29,7 @@ data = Instantiation(include_files)
 accessors = ['FunctionElement<%d, %d, %d>' %(row.dim, row.range, row.rank) 
 			for row in inst.all_function_dims]
 for row in accessors:
-    f.write('template class %s; \n' %(row))
-    f.write('template class CartesianGridIterator<%s>;\n' %(row))
+	f.write('template class %s; \n' %(row))
+	for it in inst.iterators:
+		iterator = it.replace('Accessor','%s' % (row) )
+		f.write('template class %s; \n' %iterator)

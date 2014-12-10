@@ -28,7 +28,7 @@
 #include <igatools/utils/dynamic_multi_array.h>
 #include <igatools/geometry/unit_element.h>
 #include <igatools/base/array_utils.h>
-#include <igatools/geometry/grid_forward_iterator.h>
+#include <igatools/geometry/cartesian_grid_iterator.h>
 
 // TODO (pauletti, Oct 9, 2014): should we use iga array
 #include <array>

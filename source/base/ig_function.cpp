@@ -88,7 +88,7 @@ init_cache(ElementAccessor &elem, const variant_2 &k) -> void
 {
     parent_t::init_cache(elem, k);
     init_cache_impl.space_handler_ = &space_filler_;
-    init_cache_impl.space_elem = &(elem_.get_accessor());
+    init_cache_impl.space_elem = &(*elem_);
     boost::apply_visitor(init_cache_impl, k);
 }
 
@@ -104,7 +104,7 @@ fill_cache(ElementAccessor &elem, const int j, const variant_2 &k) -> void
     elem_.move_to(elem.get_flat_index());
 
     fill_cache_impl.space_handler_ = &space_filler_;
-    fill_cache_impl.space_elem = &(elem_.get_accessor());
+    fill_cache_impl.space_elem = &(*elem_);
     fill_cache_impl.func_elem = &elem;
     fill_cache_impl.function = this;
 

@@ -22,7 +22,7 @@ from init_instantiation_data import *
 
 include_files = ['basis_functions/bspline_space.h',
                  '../../source/basis_functions/bspline_element.cpp',
-                 '../../source/geometry/grid_forward_iterator.cpp'
+                 '../../source/geometry/cartesian_grid_iterator.cpp'
                  ]
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
@@ -33,12 +33,18 @@ sub_dim_members = \
 'void elhandler::init_cache<k>(ElementAccessor &elem);' ,
 'void elhandler::reset<k>(const ValueFlags flag, const Quadrature<k> &quad);']
 
+#iterators = ['CartesianGridIteratorBase<Accessor>',
+#             'CartesianGridIterator<Accessor>',
+#             'CartesianGridConstIterator<Accessor>']
+
 for x in inst.sub_ref_sp_dims:
     space = 'BSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class SpaceElement<%s>; \n' %space)
     acc = 'BSplineElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class %s; \n' %acc)
-    f.write('template class CartesianGridIterator<%s>; \n' %acc)
+    for it in inst.iterators:
+        iterator = it.replace('Accessor','%s' % (acc) )
+        f.write('template class %s; \n' %iterator)
     elemhandler = 'BSplineElementHandler<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class %s; \n'  %elemhandler)
     for fun in sub_dim_members:
@@ -53,7 +59,9 @@ for x in inst.ref_sp_dims:
     f.write('template class SpaceElement<%s>;' %space)
     acc = 'BSplineElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class %s; \n' %acc)
-    f.write('template class CartesianGridIterator<%s>; \n' %acc)
+    for it in inst.iterators:
+        iterator = it.replace('Accessor','%s' % (acc) )
+        f.write('template class %s; \n' %iterator)
     elemhandler = 'BSplineElementHandler<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class %s; \n'  %elemhandler)
     for fun in sub_dim_members:

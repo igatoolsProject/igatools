@@ -42,7 +42,7 @@ include_files = ['basis_functions/bspline_space.h',
 #                  'basis_functions/physical_space_element_accessor.h',
 #                  'basis_functions/space_uniform_quad_cache.h']
 #include_files = ['../../source/base/function_element.cpp',
-#                 '../../source/geometry/grid_forward_iterator.cpp']
+#                 '../../source/geometry/cartesian_grid_iterator.cpp']
 
 data = Instantiation(include_files)
 
