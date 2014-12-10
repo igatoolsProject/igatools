@@ -31,7 +31,7 @@
 
 IGA_NAMESPACE_OPEN
 
-template <typename Accessor> class GridForwardIterator;
+template <typename Accessor> class CartesianGridIterator;
 
 
 template<class PhysSpace>
@@ -48,7 +48,7 @@ public :
     using parent_t::get_values;
     using parent_t::is_boundary;
 
-    /** Type required by the GridForwardIterator templated iterator */
+    /** Type required by the CartesianGridIterator templated iterator */
     using ContainerType = const PhysSpace;
 
     using Space = PhysSpace;
@@ -399,7 +399,7 @@ protected:
 
 
 private:
-    template <typename Accessor> friend class GridForwardIterator;
+    template <typename Accessor> friend class CartesianGridIterator;
     template <typename PSpace> friend class SpaceElementHandler;
     RefElemAccessor ref_space_element_accessor_;
 };

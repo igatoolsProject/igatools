@@ -115,7 +115,7 @@ public:
     /**
      * Typedef for the element iterator
      */
-    typedef GridForwardIterator<ElementAccessor> ElementIterator;
+    typedef CartesianGridIterator<ElementAccessor> ElementIterator;
 
 
 

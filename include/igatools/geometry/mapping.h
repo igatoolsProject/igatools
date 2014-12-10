@@ -53,7 +53,7 @@ private:
     using FuncType = MapFunction<dim, dim + codim>;
 public:
     using ElementAccessor = MappingElement<dim, codim>;
-    using ElementIterator = GridForwardIterator<ElementAccessor>;
+    using ElementIterator = CartesianGridIterator<ElementAccessor>;
 
     static const int space_dim = dim + codim;
 

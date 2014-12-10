@@ -30,4 +30,4 @@ accessors = ['FunctionElement<%d, %d, %d>' %(row.dim, row.range, row.rank)
 			for row in inst.all_function_dims]
 for row in accessors:
     f.write('template class %s; \n' %(row))
-    f.write('template class GridForwardIterator<%s>;\n' %(row))
+    f.write('template class CartesianGridIterator<%s>;\n' %(row))

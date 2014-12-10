@@ -23,7 +23,7 @@
 
 #include <algorithm>
 
-//using std::shared_ptr;
+using std::shared_ptr;
 
 #ifdef NURBS
 

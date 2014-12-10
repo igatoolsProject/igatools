@@ -48,9 +48,9 @@ IGA_NAMESPACE_OPEN
  * - it is not default constructible;
  * - the postfix operator <tt>++</tt> is not defined.
  *
- * The object pointed to the GridForwardIterator is called <em>accessor</em>
+ * The object pointed to the CartesianGridIteratorBase is called <em>accessor</em>
  * and its type is passed as template argument <tt>Accessor</tt>
- * of the GridForwardIterator.
+ * of the CartesianGridIteratorBase.
  *
  * The <em>accessor</em> is an object that can fetch and use data stored in objects that have
  * a "grid-like" structure. The type of the object with this "grid-like" structure,
@@ -159,7 +159,7 @@ IGA_NAMESPACE_OPEN
  * @date 2012,2013,2014
  */
 template <typename Accessor>
-class GridForwardIterator
+class CartesianGridIteratorBase
     : public std::iterator<std::forward_iterator_tag, Accessor>
 {
 public:
@@ -176,20 +176,20 @@ public:
     /**
      * Default constructor. Not allowed to be used.
      */
-    GridForwardIterator() = default;
+    CartesianGridIteratorBase() = default;
 
     /**
      * Construct an iterator on a grid-type container
      * grid pointing to the element of given index.
      */
-    GridForwardIterator(std::shared_ptr<ContainerType> grid,
+    CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
                         const Index index);
 
     /**
      * Construct an iterator on a grid-type container
      * grid pointing to the element of given index.
      */
-    GridForwardIterator(std::shared_ptr<ContainerType> grid,
+    CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
                         const TensorIndex<dim> &index);
 
     /**
@@ -197,34 +197,34 @@ public:
      *
      * @note By default it uses the shallow copy.
      */
-    GridForwardIterator(const GridForwardIterator<Accessor> &it,const CopyPolicy &copy_policy = CopyPolicy::deep);
+    CartesianGridIteratorBase(const CartesianGridIteratorBase<Accessor> &it,const CopyPolicy &copy_policy = CopyPolicy::deep);
 
 
     /** Move constructor. */
-    GridForwardIterator(GridForwardIterator<Accessor> &&it) = default;
+    CartesianGridIteratorBase(CartesianGridIteratorBase<Accessor> &&it) = default;
 
 
-    GridForwardIterator(const Accessor &acc,const CopyPolicy &copy_policy = CopyPolicy::shallow);
+    CartesianGridIteratorBase(const Accessor &acc,const CopyPolicy &copy_policy = CopyPolicy::shallow);
 
     /** Destructor */
-    ~GridForwardIterator() = default ;
+    ~CartesianGridIteratorBase() = default ;
     ///@}
 
     /** @name Assignment operators */
     ///@{
     /**
-     * Copy assignment operator. It performs a shallow copy of the Accessor hold by the GridForwardIterator.
+     * Copy assignment operator. It performs a shallow copy of the Accessor hold by the CartesianGridIteratorBase.
      */
-    GridForwardIterator<Accessor> &
-    operator=(const GridForwardIterator<Accessor> &it)
+    CartesianGridIteratorBase<Accessor> &
+    operator=(const CartesianGridIteratorBase<Accessor> &it)
     {
         accessor_ = it.accessor_;
         return *this;
     }
 
     /** Move assignment operator. */
-    GridForwardIterator<Accessor> &
-    operator=(GridForwardIterator<Accessor> &&) = default;
+    CartesianGridIteratorBase<Accessor> &
+    operator=(CartesianGridIteratorBase<Accessor> &&) = default;
     ///@}
 
     /** @name Dereferencing operators */
@@ -257,10 +257,10 @@ public:
     /** @name Comparison operators */
     ///@{
     /** Compare for equality.*/
-    bool operator== (const GridForwardIterator &) const;
+    bool operator== (const CartesianGridIteratorBase &) const;
 
     /** Compare for inequality.*/
-    bool operator!= (const GridForwardIterator &) const;
+    bool operator!= (const CartesianGridIteratorBase &) const;
     ///@}
 
 
@@ -300,7 +300,7 @@ public:
      *  the next element and returns
      *  a reference to <tt>*this</tt>.
      */
-    GridForwardIterator<Accessor> &operator++();
+    CartesianGridIteratorBase<Accessor> &operator++();
     ///@}
 
     Accessor &get_accessor()
@@ -326,17 +326,32 @@ protected:
 };
 
 
+
+
 template <typename Accessor>
-bool operator> (const GridForwardIterator<Accessor> &it1, const GridForwardIterator<Accessor> &it2)
+bool operator> (const CartesianGridIteratorBase<Accessor> &it1, const CartesianGridIteratorBase<Accessor> &it2)
 {
     return it1.get_flat_index() > it2.get_flat_index();
 }
 
 template <typename Accessor>
-bool operator< (const GridForwardIterator<Accessor> &it1, const GridForwardIterator<Accessor> &it2)
+bool operator< (const CartesianGridIteratorBase<Accessor> &it1, const CartesianGridIteratorBase<Accessor> &it2)
 {
     return it1.get_flat_index() < it2.get_flat_index();
 }
+
+
+template <typename Accessor>
+class CartesianGridIterator
+	:
+	public CartesianGridIteratorBase<Accessor>
+{
+public:
+	using CartesianGridIteratorBase<Accessor>::CartesianGridIteratorBase;
+};
+
+
+
 
 IGA_NAMESPACE_CLOSE
 

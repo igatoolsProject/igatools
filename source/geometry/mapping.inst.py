@@ -41,7 +41,7 @@ for x in inst.sub_mapping_dims:
     f.write(s)
     s = 'template class MappingElement%s ;\n' %(dims)
     f.write(s)
-    s = 'template class GridForwardIterator<MappingElement%s> ;\n' %(dims)
+    s = 'template class CartesianGridIterator<MappingElement%s> ;\n' %(dims)
     f.write(s)
     for fun in sub_dim_members:
         k = x.dim
@@ -54,7 +54,7 @@ for x in inst.mapping_dims:
     f.write(s)
     s = 'template class MappingElement%s ;\n' %(dims)
     f.write(s)
-    s = 'template class GridForwardIterator<MappingElement%s> ;\n' %(dims)
+    s = 'template class CartesianGridIterator<MappingElement%s> ;\n' %(dims)
     f.write(s)
     for fun in sub_dim_members:
         for k in inst.sub_dims(x.dim):

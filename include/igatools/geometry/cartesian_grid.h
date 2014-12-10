@@ -98,7 +98,7 @@ public:
     using ElementAccessor = CartesianGridElement<dim>;
 
     /** Type for iterator over the elements.  */
-    using ElementIterator = GridForwardIterator<ElementAccessor>;
+    using ElementIterator = CartesianGridIterator<ElementAccessor>;
 
     using ElementHandler = GridElementHandler<dim>;
     /** Type for the vector of knot vectors */

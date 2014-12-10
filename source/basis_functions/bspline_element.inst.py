@@ -33,6 +33,6 @@ accessors = [('BSplineElement<%d, %d, %d>' %(x.dim, x.range, x.rank), x.dim)
 
 for acc in accessors:
     f.write('template class %s ;\n' %acc[0])
-    f.write('template class GridForwardIterator<%s> ;\n' %acc[0])
+    f.write('template class CartesianGridIterator<%s> ;\n' %acc[0])
 
 

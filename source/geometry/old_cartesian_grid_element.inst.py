@@ -28,4 +28,4 @@ data = Instantiation(include_files)
 accessors = ['CartesianGridElement<%d>' %(dim) for dim in inst.domain_dims]
 for row in accessors:
     f.write('template class %s; \n' %(row))
-#    f.write('template class GridForwardIterator<%s>;\n' %(row))
+#    f.write('template class CartesianGridIterator<%s>;\n' %(row))

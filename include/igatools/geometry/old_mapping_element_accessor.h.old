@@ -51,7 +51,7 @@ private:
     using self_t =  MappingElementAccessor<dim_ref_,codim_>;
 
 public:
-    /** Type required by the GridForwardIterator templated iterator */
+    /** Type required by the CartesianGridIterator templated iterator */
     using ContainerType = const Mapping<dim_ref_,codim_>;
 
     using GridIterator = typename ContainerType::GridIterator;

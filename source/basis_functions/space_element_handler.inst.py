@@ -46,7 +46,7 @@ sub_dim_members = \
 for space in inst.SubPhysSpaces:
     x = space.spec
     f.write('template class PhysicalSpaceElement<%s>; \n' %space.name)
-    f.write('template class GridForwardIterator<PhysicalSpaceElement<%s>>; \n' 
+    f.write('template class CartesianGridIterator<PhysicalSpaceElement<%s>>; \n' 
             %space.name)
     elemhandler = 'SpaceElementHandler<%s>' %space.name
     f.write('template class %s; \n' %elemhandler)
@@ -59,7 +59,7 @@ for space in inst.SubPhysSpaces:
 for space in inst.PhysSpaces:
     x = space.spec
     f.write('template class PhysicalSpaceElement<%s>; \n' %space.name)
-    f.write('template class GridForwardIterator<PhysicalSpaceElement<%s>>; \n' 
+    f.write('template class CartesianGridIterator<PhysicalSpaceElement<%s>>; \n' 
             %space.name)
     elemhandler = 'SpaceElementHandler<%s>' %space.name
     f.write('template class %s; \n' %elemhandler)

@@ -55,7 +55,7 @@ private:
     using self_t = CartesianGridElement<dim_>;
 
 public:
-    /** Type required by the GridForwardIterator templated iterator */
+    /** Type required by the CartesianGridIterator templated iterator */
     using ContainerType = const CartesianGrid<dim_>;
 
     /** Dimension of the grid like container */
@@ -369,7 +369,7 @@ private:
     };
 
 private:
-    template <typename Accessor> friend class GridForwardIterator;
+    template <typename Accessor> friend class CartesianGridIterator;
     friend class GridElementHandler<dim>;
     /** Cartesian grid from which the element belongs.*/
     std::shared_ptr<ContainerType> grid_;

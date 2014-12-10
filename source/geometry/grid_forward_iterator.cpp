@@ -24,8 +24,8 @@ IGA_NAMESPACE_OPEN
 
 template <typename Accessor>
 inline
-GridForwardIterator<Accessor>::
-GridForwardIterator(std::shared_ptr<ContainerType> grid,
+CartesianGridIteratorBase<Accessor>::
+CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
                     const Index index)
     :
     accessor_(grid, index)
@@ -35,8 +35,8 @@ GridForwardIterator(std::shared_ptr<ContainerType> grid,
 
 template <typename Accessor>
 inline
-GridForwardIterator<Accessor>::
-GridForwardIterator(std::shared_ptr<ContainerType> grid,
+CartesianGridIteratorBase<Accessor>::
+CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
                     const TensorIndex<dim> &index)
     :
     accessor_(grid, index)
@@ -44,8 +44,8 @@ GridForwardIterator(std::shared_ptr<ContainerType> grid,
 
 template <typename Accessor>
 inline
-GridForwardIterator<Accessor>::
-GridForwardIterator(const GridForwardIterator<Accessor> &it,const CopyPolicy &copy_policy)
+CartesianGridIteratorBase<Accessor>::
+CartesianGridIteratorBase(const CartesianGridIteratorBase<Accessor> &it,const CopyPolicy &copy_policy)
     :
     accessor_(it.accessor_,copy_policy)
 {}
@@ -53,8 +53,8 @@ GridForwardIterator(const GridForwardIterator<Accessor> &it,const CopyPolicy &co
 
 template <typename Accessor>
 inline
-GridForwardIterator<Accessor>::
-GridForwardIterator(const Accessor &acc,const CopyPolicy &copy_policy)
+CartesianGridIteratorBase<Accessor>::
+CartesianGridIteratorBase(const Accessor &acc,const CopyPolicy &copy_policy)
     :
     accessor_(acc,copy_policy)
 {}
@@ -64,7 +64,7 @@ GridForwardIterator(const Accessor &acc,const CopyPolicy &copy_policy)
 template <typename Accessor>
 inline
 bool
-GridForwardIterator<Accessor>::
+CartesianGridIteratorBase<Accessor>::
 jump(const TensorIndex<dim> &increment)
 {
     return accessor_.jump(increment);
@@ -72,7 +72,7 @@ jump(const TensorIndex<dim> &increment)
 
 template <typename Accessor>
 inline
-void GridForwardIterator<Accessor>::
+void CartesianGridIteratorBase<Accessor>::
 move_to(const Index flat_index)
 {
     accessor_.move_to(flat_index);
@@ -82,7 +82,7 @@ move_to(const Index flat_index)
 template <typename Accessor>
 inline
 void
-GridForwardIterator<Accessor>::
+CartesianGridIteratorBase<Accessor>::
 move_to(const TensorIndex<dim> &tensor_index)
 {
     accessor_.move_to(tensor_index);
@@ -91,8 +91,8 @@ move_to(const TensorIndex<dim> &tensor_index)
 
 template <typename Accessor>
 inline
-GridForwardIterator<Accessor> &
-GridForwardIterator<Accessor>::
+CartesianGridIteratorBase<Accessor> &
+CartesianGridIteratorBase<Accessor>::
 operator++()
 {
     ++accessor_;
@@ -104,7 +104,7 @@ operator++()
 template <typename Accessor>
 inline
 const Accessor &
-GridForwardIterator<Accessor>::
+CartesianGridIteratorBase<Accessor>::
 operator * () const
 {
     return accessor_;
@@ -115,7 +115,7 @@ operator * () const
 template <typename Accessor>
 inline
 Accessor &
-GridForwardIterator<Accessor>::
+CartesianGridIteratorBase<Accessor>::
 operator * ()
 {
     return accessor_;
@@ -126,7 +126,7 @@ operator * ()
 template <typename Accessor>
 inline
 const Accessor *
-GridForwardIterator<Accessor>::
+CartesianGridIteratorBase<Accessor>::
 operator -> () const
 {
     return &(this->operator* ());
@@ -137,7 +137,7 @@ operator -> () const
 template <typename Accessor>
 inline
 Accessor *
-GridForwardIterator<Accessor>::
+CartesianGridIteratorBase<Accessor>::
 operator -> ()
 {
     return &(this->operator* ());
@@ -148,8 +148,8 @@ operator -> ()
 template <typename Accessor>
 inline
 bool
-GridForwardIterator<Accessor>::
-operator==(const GridForwardIterator<Accessor> &i) const
+CartesianGridIteratorBase<Accessor>::
+operator==(const CartesianGridIteratorBase<Accessor> &i) const
 {
     return accessor_ == i.accessor_;
 }
@@ -159,8 +159,8 @@ operator==(const GridForwardIterator<Accessor> &i) const
 template <typename Accessor>
 inline
 bool
-GridForwardIterator<Accessor>::
-operator!=(const GridForwardIterator<Accessor> &i) const
+CartesianGridIteratorBase<Accessor>::
+operator!=(const CartesianGridIteratorBase<Accessor> &i) const
 {
     return accessor_.operator != (i.accessor_);
 }
@@ -168,7 +168,7 @@ operator!=(const GridForwardIterator<Accessor> &i) const
 template <typename Accessor>
 inline
 Index
-GridForwardIterator<Accessor>::
+CartesianGridIteratorBase<Accessor>::
 get_flat_index() const
 {
     return accessor_.get_flat_index();
@@ -177,7 +177,7 @@ get_flat_index() const
 template <typename Accessor>
 inline
 auto
-GridForwardIterator<Accessor>::
+CartesianGridIteratorBase<Accessor>::
 get_tensor_index() const -> TensorIndex<dim>
 {
     return accessor_.get_tensor_index();

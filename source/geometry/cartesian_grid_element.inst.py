@@ -38,7 +38,7 @@ sub_dim_members = [
 for dim in inst.sub_domain_dims:
     acc = 'CartesianGridElement<%d>' %(dim) 
     f.write('template class %s; \n' %(acc))
-    f.write('template class GridForwardIterator<%s>;\n' %(acc))
+    f.write('template class CartesianGridIterator<%s>;\n' %(acc))
     for fun in sub_dim_members:
         k = dim
         s = fun.replace('k', '%d' % (k)).replace('dim', '%d' % (dim));
@@ -48,7 +48,7 @@ for dim in inst.sub_domain_dims:
 for dim in inst.domain_dims:
     acc = 'CartesianGridElement<%d>' %(dim) 
     f.write('template class %s; \n' %(acc))
-    f.write('template class GridForwardIterator<%s>;\n' %(acc))
+    f.write('template class CartesianGridIterator<%s>;\n' %(acc))
     for fun in sub_dim_members:
         for k in inst.sub_dims(dim):
             s = fun.replace('k', '%d' % (k)).replace('dim', '%d' % (dim));

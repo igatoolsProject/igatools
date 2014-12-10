@@ -82,7 +82,7 @@ public:
 
 public:
     using ElementAccessor = FunctionElement<dim, codim, range, rank>;
-    using ElementIterator = GridForwardIterator<ElementAccessor>;
+    using ElementIterator = CartesianGridIterator<ElementAccessor>;
 
     static const int space_dim = dim + codim;
 

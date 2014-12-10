@@ -32,5 +32,5 @@ for row in inst.all_function_dims:
     f.write(s)
     s = 'template class FunctionElement%s ;\n' %(dims)
     f.write(s)
-    s = 'template class GridForwardIterator<FunctionElement%s> ;\n' %(dims)
+    s = 'template class CartesianGridIterator<FunctionElement%s> ;\n' %(dims)
     f.write(s)

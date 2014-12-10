@@ -108,7 +108,7 @@ public:
 
 
     using ElementAccessor = PhysicalSpaceElement<self_t>;
-    using ElementIterator = GridForwardIterator<ElementAccessor>;
+    using ElementIterator = CartesianGridIterator<ElementAccessor>;
 
 
     PhysicalSpace(const self_t &phys_space) = delete;
