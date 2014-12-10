@@ -92,29 +92,6 @@ operator++()
     return *this;
 }
 
-#if 0
-
-template <typename Accessor>
-const Accessor &
-CartesianGridIteratorBase<Accessor>::
-operator * () const
-{
-    return accessor_;
-}
-
-
-
-
-
-template <typename Accessor>
-const Accessor *
-CartesianGridIteratorBase<Accessor>::
-operator -> () const
-{
-    return &(this->operator* ());
-}
-
-#endif
 
 
 
@@ -206,5 +183,28 @@ operator -> () const
 {
     return &(this->operator* ());
 }
+
+
+
+template <typename Accessor>
+const Accessor &
+CartesianGridConstIterator<Accessor>::
+operator * () const
+{
+    return this->accessor_;
+}
+
+
+
+template <typename Accessor>
+const Accessor *
+CartesianGridConstIterator<Accessor>::
+operator -> () const
+{
+    return &(this->operator* ());
+}
+
+
+
 
 IGA_NAMESPACE_CLOSE

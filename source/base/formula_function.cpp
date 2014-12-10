@@ -42,7 +42,7 @@ FormulaFunction<dim, codim, range, rank>::
 fill_cache(ElementAccessor &elem, const int j, const variant_2 &k) -> void
 {
     parent_t::fill_cache(elem, j, k);
-    map_elem_->move_to(elem.get_flat_index());
+    map_elem_.move_to(elem.get_flat_index());
     mapping_->fill_cache(map_elem_, j, k);
     fill_cache_impl.j = j;
     fill_cache_impl.function = this;

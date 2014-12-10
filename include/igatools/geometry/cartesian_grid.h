@@ -97,10 +97,14 @@ public:
     /** Type for the element accessor. */
     using ElementAccessor = CartesianGridElement<dim>;
 
-    /** Type for iterator over the elements.  */
+    /** Type for the iterator over the elements of the grid (non-const version).  */
     using ElementIterator = CartesianGridIterator<ElementAccessor>;
 
+    /** Type for the iterator over the elements of the grid (const version).  */
+    using ElementConstIterator = CartesianGridConstIterator<ElementAccessor>;
+
     using ElementHandler = GridElementHandler<dim>;
+
     /** Type for the vector of knot vectors */
     using KnotCoordinates = CartesianProductArray<Real, dim>;
 
@@ -321,12 +325,32 @@ public:
     /**
      * This function returns a element iterator to the first element of the patch.
      */
-    ElementIterator begin() const;
+    ElementIterator begin();
 
     /**
      * This function returns a element iterator to one-pass the end of patch.
      */
-    ElementIterator end() const;
+    ElementIterator end();
+
+    /**
+     * This function returns a element (const) iterator to the first element of the patch.
+     */
+    ElementConstIterator begin() const;
+
+    /**
+     * This function returns a element (const) iterator to one-pass the end of patch.
+     */
+    ElementConstIterator end() const;
+
+    /**
+     * This function returns a element (const) iterator to the first element of the patch.
+     */
+    ElementConstIterator cbegin() const;
+
+    /**
+     * This function returns a element (const) iterator to one-pass the end of patch.
+     */
+    ElementConstIterator cend() const;
     ///@}
 
     ElementHandler get_element_handler() const;
@@ -368,7 +392,7 @@ public:
     BoundaryNormal<sub_dim> get_boundary_normals(const int s_id) const;
 
     template<int k>
-    using InterGridMap = std::map<typename CartesianGrid<k>::ElementIterator, ElementIterator>;
+    using InterGridMap = std::map<typename CartesianGrid<k>::ElementIterator, ElementConstIterator>;
 
     /**
      * Construct a sub grid of dimension k conforming to

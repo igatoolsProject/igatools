@@ -160,8 +160,12 @@ public:
     void set_active(const bool active_flag);
 
 
-
-    /** @name Functions/operators for moving the element in the CartesianGrid.*/
+//protected:
+    /**
+     * @name Functions/operators for moving the element in the CartesianGrid.
+     *
+     * @note They should be called only by the CartesianGridIterator.
+     */
     ///@{
     /**
      * Moves the element to the position that differs from the current one
@@ -195,7 +199,7 @@ public:
     void operator++();
     ///@}
 
-
+public:
     /** @name Comparison operators */
     ///@{
     /**
@@ -385,7 +389,7 @@ private:
     };
 
 private:
-    template <typename Accessor> friend class CartesianGridIterator;
+    template <typename Accessor> friend class CartesianGridIteratorBase;
     friend class GridElementHandler<dim>;
     /** Cartesian grid from which the element belongs.*/
     std::shared_ptr<ContainerType> grid_;
