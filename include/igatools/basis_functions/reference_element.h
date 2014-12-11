@@ -51,7 +51,9 @@ public:
                      const iga::CopyPolicy &copy_policy = CopyPolicy::deep)
         :
         parent_t(elem,copy_policy)
-    {}
+    {
+
+    }
 
     /**
      * Constructs an accessor to element number index of a

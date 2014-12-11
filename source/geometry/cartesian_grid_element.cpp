@@ -283,7 +283,6 @@ CartesianGridElement<dim_>::
 copy_from(const CartesianGridElement<dim_> &elem,
           const CopyPolicy &copy_policy)
 {
-    // TODO (pauletti, Oct 9, 2014): assert(equal_grids);
     Assert(this->get_grid() == elem.get_grid(), ExcMessage("Cannot copy from an element on different grid."));
 
     if (this != &elem)

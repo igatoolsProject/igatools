@@ -73,7 +73,7 @@ public:
     using typename parent_t::GridType;
 
 public:
-    static const int l= iga::max(0, dim-num_sub_elem);
+    static const int l = iga::max(0, dim-num_sub_elem);
     using v1 = typename seq<Quadrature, l, dim>::type;
     using variant_1 = typename boost::make_variant_over<v1>::type;
 

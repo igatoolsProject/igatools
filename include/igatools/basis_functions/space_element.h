@@ -153,6 +153,7 @@ public:
     auto
     get_values(const int j = 0) const
     {
+        Assert(local_cache_ != nullptr, ExcNullPtr());
         const auto &cache = local_cache_->template get_value_cache<k>(j);
         Assert(cache.is_filled() == true, ExcCacheNotFilled());
         return cache.template get_der<order>();

@@ -105,6 +105,7 @@ private:
         void operator()(const T &quad)
         {
             (*flags_)[T::dim] = flag;
+            Assert(space_handler_ != nullptr, ExcNullPtr());
             space_handler_->template reset<T::dim>(flag, quad);
         }
 
@@ -119,13 +120,12 @@ private:
         template<class T>
         void operator()(const T &quad)
         {
+            Assert(space_handler_ != nullptr, ExcNullPtr());
             space_handler_->template init_cache<T::k>(*space_elem);
         }
 
         typename Space::ElementHandler  *space_handler_;
         typename Space::ElementAccessor *space_elem;
-
-
     };
 
 
@@ -134,6 +134,7 @@ private:
         template<class T>
         void operator()(const T &quad)
         {
+            Assert(space_handler_ != nullptr, ExcNullPtr());
             space_handler_->template fill_cache<T::k>(*space_elem, j);
 
             auto &local_cache = function->get_cache(*func_elem);

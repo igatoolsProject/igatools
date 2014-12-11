@@ -38,10 +38,12 @@
 IGA_NAMESPACE_OPEN
 
 template<int dim_, int range_ = 1, int rank_ = 1>
-class ReferenceElementHandler : public GridElementHandler<dim_>
+class ReferenceElementHandler : protected GridElementHandler<dim_>
 {
     using base_t = GridElementHandler<dim_>;
     using Space = ReferenceSpace<dim_,range_,rank_>;
+    using ElementIterator = typename Space::ElementIterator;
+    using ElementAccessor = typename Space::ElementAccessor;
 //    static const Size n_components =  Space::n_components;
 
 public:
@@ -52,10 +54,59 @@ public:
         space_(space)
     {};
 
+
+    template<int k>
+    void reset(const ValueFlags flag, const Quadrature<k> &quad)
+    {
+        Assert(false,ExcNotImplemented());
+    }
+
+
+    template <int k>
+    void fill_cache(ElementAccessor &elem, const int j)
+    {
+        Assert(false,ExcNotImplemented());
+    }
+
+    template <int k>
+    void init_cache(ElementAccessor &elem)
+    {
+        Assert(false,ExcNotImplemented());
+    }
+
+    template <int k>
+    void fill_cache(ElementIterator &elem, const int j)
+    {
+        fill_cache<k>(*elem, j);
+    }
+
+    template <int k>
+    void init_cache(ElementIterator &elem)
+    {
+        init_cache<k>(*elem);
+    }
+
+    //Allocates the ElementIterator element_cache
+    void init_element_cache(ElementIterator &elem)
+    {
+        Assert(false,ExcNotImplemented());
+    }
+
+
+    //Fill the ElementIterator element_cache
+    void fill_element_cache(ElementIterator &elem)
+    {
+        Assert(false,ExcNotImplemented());
+    }
+
+
+    void print_info(LogStream &out) const
+    {
+        Assert(false,ExcNotImplemented());
+    }
+
 private:
     std::shared_ptr<const Space> space_;
-
-
 };
 
 
@@ -101,25 +152,25 @@ public:
     BSplineElementHandler(std::shared_ptr<const Space> space);
 
     template<int k>
-    void reset(const ValueFlags flag, const Quadrature<k> &quad);
+    void reset(const ValueFlags flag, const Quadrature<k> &quad) override;
 
 //protected:
     template <int k>
-    void fill_cache(ElementAccessor &elem, const int j);
+    void fill_cache(ElementAccessor &elem, const int j) override;
 
     template <int k>
-    void init_cache(ElementAccessor &elem);
+    void init_cache(ElementAccessor &elem) override;
 
 //    void init_all_caches(ElementAccessor &elem);
 public:
     template <int k>
-    void fill_cache(ElementIterator &elem, const int j)
+    void fill_cache(ElementIterator &elem, const int j) override
     {
         fill_cache<k>(*elem, j);
     }
 
     template <int k>
-    void init_cache(ElementIterator &elem)
+    void init_cache(ElementIterator &elem) override
     {
         init_cache<k>(*elem);
     }
@@ -131,12 +182,12 @@ public:
 
 
     //Allocates the ElementIterator element_cache
-    void init_element_cache(ElementIterator &elem);
+    void init_element_cache(ElementIterator &elem) override;
 
     //Fill the ElementIterator element_cache
-    void fill_element_cache(ElementIterator &elem);
+    void fill_element_cache(ElementIterator &elem) override ;
 
-    void print_info(LogStream &out) const;
+    void print_info(LogStream &out) const override;
 
 private:
     const Quadrature<dim> &get_quad() const;
