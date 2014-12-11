@@ -35,6 +35,7 @@ CartesianGridElement(const std::shared_ptr<ContainerType> grid,
     :
     grid_(grid)
 {
+    Assert(grid_ != nullptr,ExcNullPtr());
     move_to(index);
 }
 
@@ -47,6 +48,7 @@ CartesianGridElement(const std::shared_ptr<ContainerType> grid,
     :
     grid_(grid)
 {
+    Assert(grid_ != nullptr,ExcNullPtr());
     move_to(index);
 }
 
@@ -56,6 +58,7 @@ template <int dim_>
 CartesianGridElement<dim_>::
 CartesianGridElement(const CartesianGridElement<dim_> &elem, const CopyPolicy &copy_policy)
 {
+    grid_         = elem.grid_;
     flat_index_   = elem.flat_index_;
     tensor_index_ = elem.tensor_index_;
 
@@ -281,10 +284,13 @@ copy_from(const CartesianGridElement<dim_> &elem,
           const CopyPolicy &copy_policy)
 {
     // TODO (pauletti, Oct 9, 2014): assert(equal_grids);
-    flat_index_   = elem.flat_index_;
-    tensor_index_ = elem.tensor_index_;
+    Assert(this->get_grid() == elem.get_grid(), ExcMessage("Cannot copy from an element on different grid."));
+
     if (this != &elem)
     {
+        flat_index_   = elem.flat_index_;
+        tensor_index_ = elem.tensor_index_;
+
         if (copy_policy == CopyPolicy::deep)
         {
             Assert(elem.local_cache_ != nullptr, ExcNullPtr());
