@@ -70,11 +70,11 @@ void test()
     auto elem = pf.begin();
     auto end  = pf.end();
 
-    pf.template init_cache<dim>(elem.get_accessor());
+    pf.template init_cache<dim>(*elem);
 
     for (; elem != end; ++elem)
     {
-        pf.template fill_cache<dim>(elem.get_accessor(), 0);
+        pf.template fill_cache<dim>(*elem, 0);
         elem->get_points().print_info(out);
         out << endl;
         elem->template get_values<0,dim>(0).print_info(out);

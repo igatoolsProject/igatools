@@ -114,7 +114,7 @@ public:
      * Type for the element accessor.
      */
     using ElementAccessor = PushForwardElementAccessor<Self>;
-    using ElementIterator = GridForwardIterator<ElementAccessor>;
+    using ElementIterator = CartesianGridIterator<ElementAccessor>;
 
     /**
      * Default constructor. Not allowed to be used.

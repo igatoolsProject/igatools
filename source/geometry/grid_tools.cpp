@@ -79,14 +79,14 @@ build_map_elements_between_cartesian_grids(const CartesianGrid<dim> &grid_fine,
     auto c_elem = grid_coarse.begin();
     for (int elem_fine_fid = 0 ; elem_fine_fid < n_elems_fine ; ++elem_fine_fid)
     {
-        f_elem->move_to(elem_fine_fid);
+        f_elem.move_to(elem_fine_fid);
 
         TensorIndex<dim> elem_coarse_tid;
         for (int i = 0 ; i < dim ; ++i)
             elem_coarse_tid[i] = map_interv_fid_fine_coarse[i][f_elem.get_tensor_index()[i]];
 
 
-        c_elem->move_to(elem_coarse_tid);
+        c_elem.move_to(elem_coarse_tid);
 
         res.emplace(f_elem, c_elem);
 //        TensorIndex<dim> elem_fine_tid =

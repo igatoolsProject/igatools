@@ -57,7 +57,9 @@ PhysicalSpaceElement(const PhysicalSpaceElement<PhysSpace> &in,
 //    SpaceElementAccessor<PhysSpace>(in,copy_policy),
 //    PhysSpace::PushForwardType::ElementAccessor(in,copy_policy),
 //    ref_space_element_accessor_(in.ref_space_element_accessor_,copy_policy)
-{}
+{
+    Assert(false,ExcNotImplemented());
+}
 
 
 
@@ -68,6 +70,7 @@ PhysicalSpaceElement<PhysSpace>::
 copy_from(const PhysicalSpaceElement<PhysSpace> &element,
           const CopyPolicy &copy_policy)
 {
+    Assert(false,ExcNotImplemented());
 //    SpaceElementAccessor<PhysSpace>::copy_from(element,copy_policy);
 //
 //    PhysSpace::PushForwardType::ElementAccessor::copy_from(element,copy_policy);
@@ -87,6 +90,7 @@ void
 PhysicalSpaceElement<PhysSpace>::
 deep_copy_from(const PhysicalSpaceElement<PhysSpace> &element)
 {
+    Assert(false,ExcNotImplemented());
     //this->copy_from(element,CopyPolicy::deep);
 }
 
@@ -96,6 +100,7 @@ void
 PhysicalSpaceElement<PhysSpace>::
 shallow_copy_from(const PhysicalSpaceElement<PhysSpace> &element)
 {
+    Assert(false,ExcNotImplemented());
 //    this->copy_from(element,CopyPolicy::shallow);
 }
 
@@ -631,6 +636,23 @@ operator!=(const PhysicalSpaceElement <PhysSpace> &a) const
 {
     return this->as_cartesian_grid_element_accessor() != a.as_cartesian_grid_element_accessor();
 }
+
+template< class PhysSpace >
+bool
+PhysicalSpaceElement<PhysSpace>::
+operator>(const PhysicalSpaceElement <PhysSpace> &a) const
+{
+    return this->as_cartesian_grid_element_accessor() > a.as_cartesian_grid_element_accessor();
+}
+
+template< class PhysSpace >
+bool
+PhysicalSpaceElement<PhysSpace>::
+operator<(const PhysicalSpaceElement <PhysSpace> &a) const
+{
+    return this->as_cartesian_grid_element_accessor() < a.as_cartesian_grid_element_accessor();
+}
+
 
 template< class PhysSpace >
 auto

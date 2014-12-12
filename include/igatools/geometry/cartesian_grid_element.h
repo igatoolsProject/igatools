@@ -28,7 +28,7 @@
 
 
 #include <igatools/geometry/grid_element_handler.h>
-#include <igatools/geometry/grid_forward_iterator.h>
+#include <igatools/geometry/cartesian_grid_iterator.h>
 #include <igatools/utils/value_vector.h>
 
 IGA_NAMESPACE_OPEN
@@ -55,7 +55,7 @@ private:
     using self_t = CartesianGridElement<dim_>;
 
 public:
-    /** Type required by the GridForwardIterator templated iterator */
+    /** Type required by the CartesianGridIterator templated iterator */
     using ContainerType = const CartesianGrid<dim_>;
 
     /** Dimension of the grid like container */
@@ -160,8 +160,12 @@ public:
     void set_active(const bool active_flag);
 
 
-
-    /** @name Functions/operators for moving the element in the CartesianGrid.*/
+//protected:
+    /**
+     * @name Functions/operators for moving the element in the CartesianGrid.
+     *
+     * @note They should be called only by the CartesianGridIterator.
+     */
     ///@{
     /**
      * Moves the element to the position that differs from the current one
@@ -195,7 +199,7 @@ public:
     void operator++();
     ///@}
 
-
+public:
     /** @name Comparison operators */
     ///@{
     /**
@@ -206,11 +210,27 @@ public:
     bool operator==(const CartesianGridElement<dim_> &elem) const;
 
     /**
-     * True if the elements have different indeces.
+     * True if the elements have different index.
      *  @note In debug mode, it is also check they both refer to
      *  the same cartesian grid. No check is done on the cache.
      */
     bool operator!=(const CartesianGridElement<dim_> &elem) const;
+
+    /**
+     * True if the flat-index of the element on the left is smaller than
+     * the flat-index of the element on the right.
+     *  @note In debug mode, it is also check they both refer to
+     *  the same cartesian grid. No check is done on the cache.
+     */
+    bool operator<(const CartesianGridElement<dim_> &elem) const;
+
+    /**
+     * True if the flat-index of the element on the left is bigger than
+     * the flat-index of the element on the right.
+     *  @note In debug mode, it is also check they both refer to
+     *  the same cartesian grid. No check is done on the cache.
+     */
+    bool operator>(const CartesianGridElement<dim_> &elem) const;
     ///@}
 
     ///@name Query information that requires the use of the cache
@@ -369,7 +389,7 @@ private:
     };
 
 private:
-    template <typename Accessor> friend class GridForwardIterator;
+    template <typename Accessor> friend class CartesianGridIteratorBase;
     friend class GridElementHandler<dim>;
     /** Cartesian grid from which the element belongs.*/
     std::shared_ptr<ContainerType> grid_;

@@ -25,11 +25,11 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 cartesian_grids = ['CartesianGrid<%d>' % (dim) for dim in inst.all_domain_dims]
-for row in cartesian_grids:
-    f.write('template std::map<typename %s::ElementIterator, typename %s::ElementIterator>' % (row,row) +
+for grid in cartesian_grids:
+    it = 'typename %s::ElementConstIterator' % (grid)
+    map = "std::map<%s, %s>" % (it,it)
+    f.write('template %s' % (map) +
             ' grid_tools::build_map_elements_between_cartesian_grids('
-           'const %s &,const %s &); \n' % (row,row))
+           'const %s &,const %s &); \n' % (grid,grid))
     f.write('template std::shared_ptr<%s> grid_tools::build_cartesian_grid_union('
-            'const %s &,const %s &,'
-            'std::map<typename %s::ElementIterator, typename %s::ElementIterator> &,'
-            'std::map<typename %s::ElementIterator, typename %s::ElementIterator> &); \n' % (row,row,row, row,row,row,row))
+            'const %s &,const %s &,%s &,%s &); \n' % (grid,grid,grid, map,map))

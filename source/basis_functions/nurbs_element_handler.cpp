@@ -23,7 +23,7 @@
 
 #include <algorithm>
 
-//using std::shared_ptr;
+using std::shared_ptr;
 
 #ifdef NURBS
 
@@ -152,7 +152,7 @@ void
 NURBSElementHandler<dim_, range_, rank_>::
 init_element_cache(ElementIterator &elem)
 {
-    init_cache<dim>(elem.get_accessor());
+    init_cache<dim>(*elem);
 }
 
 
@@ -352,7 +352,7 @@ void
 NURBSElementHandler<dim_, range_, rank_>::
 fill_element_cache(ElementIterator &elem)
 {
-    fill_cache<dim>(elem.get_accessor(), 0);
+    fill_cache<dim>(*elem, 0);
 }
 
 

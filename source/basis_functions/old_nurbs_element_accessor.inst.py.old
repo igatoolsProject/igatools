@@ -31,7 +31,7 @@ data = Instantiation(include_files)
 #           for x in inst.really_all_ref_sp_dims ]
 # for accessor in accessors:
 #    f.write('template class %s ;\n' %accessor)
-#    f.write('template class GridForwardIterator<%s> ;\n' %accessor)
+#    f.write('template class CartesianGridIterator<%s> ;\n' %accessor)
 #    function = ('template  ValueTable< Conditional< deriv_order==0,'+
 #                accessor + '::Value,' +
 #                accessor + '::Derivative<deriv_order> > > ' + 

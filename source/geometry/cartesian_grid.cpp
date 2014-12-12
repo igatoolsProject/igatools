@@ -284,13 +284,13 @@ get_element_lengths() const -> KnotCoordinates
 
 template<int dim_>
 auto
-CartesianGrid<dim_>::begin() const -> ElementIterator
+CartesianGrid<dim_>::begin() -> ElementIterator
 {
     auto it = std::find(active_elems_.get_data().begin(),
-                        active_elems_.get_data().end(), true);
+    active_elems_.get_data().end(), true);
     if (it == active_elems_.get_data().end())
         return ElementIterator(this->shared_from_this(),
-                               IteratorState::pass_the_end);
+        IteratorState::pass_the_end);
 
     auto start = std::distance(active_elems_.get_data().begin(),it);
 
@@ -302,12 +302,66 @@ CartesianGrid<dim_>::begin() const -> ElementIterator
 template<int dim_>
 auto
 CartesianGrid<dim_>::
-end() const -> ElementIterator
+end() -> ElementIterator
 {
     return ElementIterator(this->shared_from_this(),
-                           IteratorState::pass_the_end);
+    IteratorState::pass_the_end);
 }
 
+
+template<int dim_>
+auto
+CartesianGrid<dim_>::
+begin() const -> ElementConstIterator
+{
+    auto it = std::find(active_elems_.get_data().begin(),
+                        active_elems_.get_data().end(), true);
+    if (it == active_elems_.get_data().end())
+        return ElementConstIterator(this->shared_from_this(),
+                                    IteratorState::pass_the_end);
+
+    auto start = std::distance(active_elems_.get_data().begin(),it);
+
+    return ElementConstIterator(this->shared_from_this(), start);
+}
+
+
+
+template<int dim_>
+auto
+CartesianGrid<dim_>::
+end() const -> ElementConstIterator
+{
+    return ElementConstIterator(this->shared_from_this(),
+                                IteratorState::pass_the_end);
+}
+
+template<int dim_>
+auto
+CartesianGrid<dim_>::
+cbegin() const -> ElementConstIterator
+{
+    auto it = std::find(active_elems_.get_data().begin(),
+                        active_elems_.get_data().end(), true);
+    if (it == active_elems_.get_data().end())
+        return ElementConstIterator(this->shared_from_this(),
+                                    IteratorState::pass_the_end);
+
+    auto start = std::distance(active_elems_.get_data().begin(),it);
+
+    return ElementConstIterator(this->shared_from_this(), start);
+}
+
+
+
+template<int dim_>
+auto
+CartesianGrid<dim_>::
+cend() const -> ElementConstIterator
+{
+    return ElementConstIterator(this->shared_from_this(),
+                                IteratorState::pass_the_end);
+}
 
 
 template<int dim_>
@@ -592,7 +646,7 @@ get_sub_grid(const int sub_elem_id, InterGridMap<k> &elem_map) const
         auto s_index = s_elem.get_tensor_index();
         for (int j=0; j<k; ++j)
             grid_index[active_dirs[j]] = s_index[j];
-        v_elem->move_to(grid_index);
+        v_elem.move_to(grid_index);
         elem_map.emplace(s_elem, v_elem);
     }
 

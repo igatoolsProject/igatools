@@ -119,7 +119,7 @@ public:
     using ElementAccessor = MappingElementAccessor<dim, codim>;
 
     /** Type of the element iterator */
-    using ElementIterator = GridForwardIterator<ElementAccessor>;
+    using ElementIterator = CartesianGridIterator<ElementAccessor>;
 
 public:
     /** @name Constructors and destructor */

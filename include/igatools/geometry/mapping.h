@@ -53,7 +53,7 @@ private:
     using FuncType = MapFunction<dim, dim + codim>;
 public:
     using ElementAccessor = MappingElement<dim, codim>;
-    using ElementIterator = GridForwardIterator<ElementAccessor>;
+    using ElementIterator = CartesianGridIterator<ElementAccessor>;
 
     static const int space_dim = dim + codim;
 
@@ -108,13 +108,13 @@ public:
     template <int k>
     void fill_cache(ElementIterator &elem, const int j)
     {
-        fill_cache<k>(elem.get_accessor(), j);
+        fill_cache<k>(*elem, j);
     }
 
     template <int k>
     void init_cache(ElementIterator &elem)
     {
-        init_cache<k>(elem.get_accessor());
+        init_cache<k>(*elem);
     }
 
     std::shared_ptr<const CartesianGrid<dim> > get_grid() const
