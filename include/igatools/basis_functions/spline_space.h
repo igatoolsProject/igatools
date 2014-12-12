@@ -63,9 +63,6 @@ private:
 public:
     using GridSpace::dims;
 
-
-
-
     using Func = Function<dim, 0, range, rank>;
 
 public:
@@ -91,7 +88,7 @@ public:
     using MultiplicityTable = ComponentContainer<Multiplicity>;
     using BoundaryKnotsTable = ComponentContainer<BoundaryKnots>;
     using KnotsTable = ComponentContainer<KnotCoordinates>;
-    using PeriodicTable = ComponentContainer<std::array<bool, dim> >;
+    //using PeriodicTable = ComponentContainer<std::array<bool, dim> >;
 
     using IndexSpaceTable = ComponentContainer<DynamicMultiArray<Index,dim>>;
     using IndexSpaceMarkTable = Multiplicity;
@@ -161,13 +158,13 @@ public:
     explicit SplineSpace(const DegreeTable &deg,
                          std::shared_ptr<GridType> knots,
                          std::shared_ptr<const MultiplicityTable> interior_mult,
-                         const PeriodicTable &periodic = PeriodicTable(filled_array<bool,dim>(false)));
+						 const EndBehaviourTable &end_behaviour = EndBehaviourTable(filled_array<EndBehaviour,dim>(EndBehaviour::interpolatory)));
 
     explicit SplineSpace(const DegreeTable &deg,
                          std::shared_ptr<GridType> knots,
                          const InteriorReg &interior_mult,
-                         const PeriodicTable &periodic = PeriodicTable(filled_array<bool,dim>(false)))
-        :SplineSpace(deg, knots, fill_max_regularity(deg, knots), periodic)
+                         const EndBehaviourTable &ebt = EndBehaviourTable(filled_array<EndBehaviour,dim>(EndBehaviour::interpolatory)))
+        :SplineSpace(deg, knots, fill_max_regularity(deg, knots), ebt)
     {}
 
     const DegreeTable &get_degree() const
@@ -256,20 +253,6 @@ public:
     get_sub_space_degree(const Index s_id) const;
 
 
-#if 0
-    /**
-     * Returns the multiplicity of the face space face_id
-     */
-    std::shared_ptr<typename FaceSpace::MultiplicityTable>
-    get_face_mult(const Index face_id) const;
-
-    /**
-     * Returns the multiplicity of the face space face_id
-     */
-    typename FaceSpace::DegreeTable
-    get_face_degree(const Index face_id) const;
-#endif
-
     KnotsTable compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots) const;
 
     KnotsTable compute_knots_with_repetition(const EndBehaviourTable &ends) const;
@@ -280,9 +263,6 @@ public:
      * function can be determined.
      */
     MultiplicityTable accumulated_interior_multiplicities() const;
-
-
-
 
     void print_info(LogStream &out) const;
 
@@ -311,10 +291,6 @@ private:
 
     EndBehaviourTable end_behaviour_;
 
-    PeriodicTable periodic_;
-
-
-
     /**
      * Boundary conditions on each face of each scalar component of the space.
      */
@@ -332,6 +308,11 @@ public:
     {
         return end_behaviour_;
     }
+
+
+    // TODO (pauletti, Dec 12, 2014): boundary condition is not a general property
+    // of the space, rather specific flag for some application, this should be
+    // done in some other layer
 
     /**
      * Returns a const-reference to the table containing

@@ -111,9 +111,9 @@ BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(const DegreeTable &deg,
              std::shared_ptr<GridType> knots,
              std::shared_ptr<const MultiplicityTable> interior_mult,
-             const EndBehaviourTable &ends)
+             const EndBehaviourTable &end_b)
     :
-    BaseSpace(deg, knots, interior_mult),
+    BaseSpace(deg, knots, interior_mult, end_b),
     dof_distribution_global_(knots,BaseSpace::accumulated_interior_multiplicities(),
                              BaseSpace::get_num_basis_table(),BaseSpace::get_degree()),
     dof_distribution_patch_(knots,BaseSpace::accumulated_interior_multiplicities(),

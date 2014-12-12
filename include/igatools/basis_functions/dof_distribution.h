@@ -38,8 +38,10 @@ IGA_NAMESPACE_OPEN
  * It is a helper class for the BSplineSpace.
  *
  * This class basically has two main (private) member:
- * - index_distribution_ that is the container for the basis function indices of a single-patch space
- * - elements_loc_to_global_flat_view_ that represent the views of the dofs that are active on each element of the space.
+ * - index_distribution_ that is the container for the basis function indices
+ *   of a single-patch space
+ * - elements_loc_to_global_flat_view_ that represent the views of the dofs
+ *   that are active on each element of the space.
  *
  *
  *
@@ -125,12 +127,14 @@ public:
 
 
     /**
-     * This function looks for a @p dof_id and (if found) gives back its component id @p comp
+     * This function looks for a @p dof_id and (if found) gives back its
+     * component id @p comp
      * and its TensorIndex<dim> @p tensor_index within the component.
      *
      * @returns TRUE if the @p dof_id is found in the DofDistribution.
      *
-     * @warning If the @p dof_id is NOT found in the DofDistribution the values @p comp_id and
+     * @warning If the @p dof_id is NOT found in the DofDistribution the values
+     *  @p comp_id and
      * @p tensor_id are UNDETERMINED.
      */
     bool find_dof_id(const Index dof_id, int &comp_id, TensorIndex<dim> &tensor_index) const;
