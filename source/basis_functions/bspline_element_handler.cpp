@@ -172,8 +172,8 @@ reset(const ValueFlags flag,
       const Quadrature<k> &quad1)
 {
 //    base_t::template reset<k>(FunctionFlags::to_grid_flags(flag), quad1);
-    base_t::reset(FunctionFlags::to_grid_flags(flag), quad1);
-    flags_[k] = flag;
+//    base_t::reset(FunctionFlags::to_grid_flags(flag), quad1);
+//    flags_[k] = flag;
 
     for (auto &s_id: UnitElement<dim>::template elems_ids<k>())
     {
@@ -244,6 +244,115 @@ reset(const ValueFlags flag,
 
         }
     }
+}
+
+
+template<int dim_, int range_ , int rank_>
+template<class T>
+void
+BSplineElementHandler<dim_, range_, rank_>::
+ResetDispatcher::
+operator()(const T &quad)
+{
+    Assert(grid_handler_ != nullptr,ExcNullPtr());
+    grid_handler_->reset(FunctionFlags::to_grid_flags(flag_),quad);
+
+
+    const auto k = T::dim;
+
+    Assert(flags_ != nullptr,ExcNullPtr());
+    (*flags_)[k] = flag_;
+
+
+    Assert(splines1d_ != nullptr,ExcNullPtr());
+
+    for (auto &s_id: UnitElement<dim>::template elems_ids<k>())
+    {
+        auto &g_cache = std::get<k>(*splines1d_)[s_id];
+        g_cache.clear();
+        g_cache.resize(space_->get_grid()->get_num_intervals(),
+                       BasisValues(space_->get_components_map()));
+        const auto &n_inter = space_->get_grid()->get_num_intervals();
+        const auto quad = extend_sub_elem_quad<k,dim>(quad, s_id);
+        const auto &n_points = quad.get_num_points_direction();
+
+        // Allocate space for the BasisValues1D
+        for (int dir = 0 ; dir < dim ; ++dir)
+        {
+            const auto &n_pts = n_points[dir];
+            for (int j = 0 ; j < n_inter[dir] ; ++j)
+            {
+                auto &splines1d = g_cache.entry(dir, j);
+                for (auto comp : splines1d.get_active_components_id())
+                    splines1d[comp].resize(max_der, n_basis_[comp][dir], n_pts);
+            }
+        }
+
+        /*
+         * For each direction, interval and component we compute the 1D bspline
+         * basis evaluate at the 1D component of the tensor product quadrature
+         */
+        const auto &degree      = space_->get_degree();
+        const auto &bezier_op   = space_->operators_;
+        const auto &points      = quad.get_points();
+        const auto &lengths = this->lengths_;
+
+        BasisValues bernstein_values(n_basis_.get_comp_map());
+
+        for (int dir = 0 ; dir < dim ; ++dir)
+        {
+            // fill values and derivatives of the Bernstein's polynomials at
+            // quad points in [0,1]
+            for (auto comp : bernstein_values.get_active_components_id())
+            {
+                const int deg = degree[comp][dir];
+                bernstein_values[comp].resize(max_der, deg+1, n_points[dir]);
+                const auto &pt_coords = points.get_data_direction(dir);
+                for (int order = 0; order < max_der; ++order)
+                    bernstein_values[comp].get_derivative(order) =
+                        BernsteinBasis::derivative(order, deg, pt_coords);
+            }
+
+            const auto &inter_lengths = lengths.get_data_direction(dir);
+            for (int j = 0 ; j < n_inter[dir] ; ++j)
+            {
+                auto &splines1d = g_cache.entry(dir, j);
+                for (auto comp : splines1d.get_active_components_id())
+                {
+                    const auto &berns_values = bernstein_values[comp];
+                    auto &basis = splines1d[comp];
+                    const auto &oper = bezier_op.get_operator(comp,dir)[j];
+                    const Real one_div_size = 1.0 / inter_lengths[j];
+                    for (int order = 0; order < max_der; ++order)
+                    {
+                        const Real scale = std::pow(one_div_size, order);
+                        const auto &b_values = berns_values.get_derivative(order);
+                        basis.get_derivative(order) =
+                            scale * prec_prod(oper, b_values);
+                    }
+                }
+            }
+
+        }
+    }
+    Assert(false,ExcNotImplemented());
+//            this->template reset<T::dim>(flag_,quad);
+}
+
+
+template<int dim_, int range_ , int rank_>
+void
+BSplineElementHandler<dim_, range_, rank_>::
+reset(const ValueFlags &flag, const variant_1 &quad)
+{
+//  GridElementHandler<dim_>::reset(FunctionFlags::to_grid_flags(flag), quad);
+
+    reset_impl_.grid_handler_ = this;
+    reset_impl_.flag_ = flag;
+    reset_impl_.flags_ = &flags_;
+    reset_impl_.splines1d_ = &splines1d_;
+    boost::apply_visitor(reset_impl_, quad);
+    Assert(false,ExcNotImplemented());
 }
 
 

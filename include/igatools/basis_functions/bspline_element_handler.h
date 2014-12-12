@@ -67,7 +67,12 @@ public:
 
     virtual void reset(const ValueFlags &flag, const variant_1 &quad)
     {
-        Assert(false,ExcNotImplemented());
+        Assert(false,ExcMessage("This function should not be called and should be pure virtual."));
+        /*
+        reset_impl_.grid_handler_ = this;
+        reset_impl_.flag_ = flag;
+        boost::apply_visitor(reset_impl_,quad);
+        //*/
     }
 
 
@@ -117,6 +122,23 @@ public:
 
 private:
     std::shared_ptr<const Space> space_;
+    /*
+        struct ResetDispatcher : boost::static_visitor<void>
+        {
+            template<class T>
+            void operator()(const T &quad)
+            {
+                Assert(grid_handler_ != nullptr,ExcNullPtr());
+                grid_handler_->reset(FunctionFlags::to_grid_flags(flag_),quad);
+                Assert(false,ExcNotImplemented());
+            }
+
+            GridElementHandler<dim_> *grid_handler_;
+            ValueFlags flag_;
+        };
+
+        ResetDispatcher reset_impl_;
+    //*/
 };
 
 
@@ -170,12 +192,7 @@ public:
 
     using variant_1 = typename base_t::variant_1;
 
-    virtual void reset(const ValueFlags &flag, const variant_1 &quad) override final
-    {
-        reset_impl_.flag_ = flag;
-        boost::apply_visitor(reset_impl_, quad);
-        Assert(false,ExcNotImplemented());
-    }
+    virtual void reset(const ValueFlags &flag, const variant_1 &quad) override final;
 
 
     template<int k>
@@ -297,14 +314,12 @@ private:
     struct ResetDispatcher : boost::static_visitor<void>
     {
         template<class T>
-        void operator()(const T &quad)
-        {
-            Assert(false,ExcNotImplemented());
-//            this->template reset<T::dim>(flag_,quad);
-        }
+        void operator()(const T &quad);
 
+        GridElementHandler<dim_> *grid_handler_;
         ValueFlags flag_;
-//        std::array<FunctionFlags, dim + 1> *flags_;
+        std::array<FunctionFlags, dim + 1> *flags_;
+        CacheList<GlobalCache, dim> *splines1d_;
     };
 
     ResetDispatcher reset_impl_;
