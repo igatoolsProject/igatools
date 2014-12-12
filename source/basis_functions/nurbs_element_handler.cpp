@@ -33,7 +33,8 @@ template<int dim_, int range_ , int rank_>
 NURBSElementHandler<dim_, range_, rank_>::
 NURBSElementHandler(shared_ptr<const Space> space)
     :
-    base_t(space->get_spline_space()),
+    base_t(space),
+    bspline_handler_(space->get_spline_space()),
     space_(space)
 {}
 
@@ -65,7 +66,7 @@ reset(const ValueFlags flag,
 {
     //--------------------------------------
     // resetting the BSplineElementHandler (for the numerator)
-    base_t::template reset<k>(flag, quad1);
+    bspline_handler_.template reset<k>(flag, quad1);
     //--------------------------------------
 
 
@@ -118,7 +119,7 @@ void
 NURBSElementHandler<dim_, range_, rank_>::
 init_cache(ElementAccessor &elem)
 {
-    base_t::template init_cache<k>(elem.bspline_elem_);
+    bspline_handler_.template init_cache<k>(elem.bspline_elem_);
 
     const auto topology = Int<k>();
     for (const auto &comp_id : space_->weight_func_table_.get_active_components_id())
@@ -313,7 +314,7 @@ void
 NURBSElementHandler<dim_, range_, rank_>::
 fill_cache(ElementAccessor &elem, const int j)
 {
-    base_t::template fill_cache<k>(elem.bspline_elem_, j);
+    bspline_handler_.template fill_cache<k>(elem.bspline_elem_, j);
 
     const auto topology = Int<k>();
     for (const auto &comp_id : space_->weight_func_table_.get_active_components_id())

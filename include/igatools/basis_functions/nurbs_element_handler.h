@@ -51,9 +51,10 @@ template<int,int,int> class NURBSSpace;
  * computational optimization cache.
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
-class NURBSElementHandler : public BSplineElementHandler<dim_,range_,rank_>
+class NURBSElementHandler : public ReferenceElementHandler<dim_,range_,rank_>
 {
-    using base_t = BSplineElementHandler<dim_,range_,rank_>;
+    using base_t = ReferenceElementHandler<dim_,range_,rank_>;
+    using self_t = NURBSElementHandler<dim_,range_,rank_>;
     using Space = NURBSSpace<dim_,range_,rank_>;
     static const Size n_components =  Space::n_components;
 
@@ -73,7 +74,26 @@ protected:
 public:
     static const int dim = dim_;
 
+
+
+
     NURBSElementHandler(std::shared_ptr<const Space> space);
+
+
+    static std::shared_ptr<self_t> create(std::shared_ptr<const Space> space)
+    {
+        return std::shared_ptr<self_t>(new self_t(space));
+    }
+
+    using variant_1 = typename base_t::variant_1;
+
+    virtual void reset(const ValueFlags &flag, const variant_1 &quad) override final
+    {
+//      reset_impl_.flag_ = flag;
+        boost::apply_visitor(reset_impl_, quad);
+        Assert(false,ExcNotImplemented());
+    }
+
 
     template<int k>
     void reset(const ValueFlags flag, const Quadrature<k> &quad);
@@ -114,6 +134,8 @@ public:
     void print_info(LogStream &out) const;
 
 private:
+    BSplineElementHandler<dim_,range_,rank_> bspline_handler_;
+
     std::shared_ptr<const Space> space_;
 
     std::array<FunctionFlags, dim + 1> flags_;
@@ -183,6 +205,20 @@ private:
      */
     vector<int> get_inactive_components_id() const;
 #endif
+
+
+    struct ResetDispatcher : boost::static_visitor<void>
+    {
+        template<class T>
+        void operator()(const T &quad)
+        {
+            Assert(false,ExcNotImplemented());
+        }
+    };
+
+    ResetDispatcher reset_impl_;
+
+
 };
 
 

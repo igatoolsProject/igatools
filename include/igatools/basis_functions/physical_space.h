@@ -270,6 +270,10 @@ private:
 
 
     friend ElementAccessor;
+
+public:
+    std::shared_ptr<ElementHandler> create_elem_handler() const;
+
 };
 
 IGA_NAMESPACE_CLOSE

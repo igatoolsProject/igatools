@@ -170,7 +170,8 @@ BSplineElementHandler<dim_, range_, rank_>::
 reset(const ValueFlags flag,
       const Quadrature<k> &quad1)
 {
-    base_t::template reset<k>(FunctionFlags::to_grid_flags(flag), quad1);
+//    base_t::template reset<k>(FunctionFlags::to_grid_flags(flag), quad1);
+    base_t::reset(FunctionFlags::to_grid_flags(flag), quad1);
     flags_[k] = flag;
 
     for (auto &s_id: UnitElement<dim>::template elems_ids<k>())

@@ -38,15 +38,23 @@
 IGA_NAMESPACE_OPEN
 
 template<int dim_, int range_ = 1, int rank_ = 1>
-class ReferenceElementHandler : protected GridElementHandler<dim_>
+class ReferenceElementHandler : public GridElementHandler<dim_>
 {
+public:
     using base_t = GridElementHandler<dim_>;
     using Space = ReferenceSpace<dim_,range_,rank_>;
     using ElementIterator = typename Space::ElementIterator;
     using ElementAccessor = typename Space::ElementAccessor;
-//    static const Size n_components =  Space::n_components;
 
-public:
+
+
+    static const int l = iga::max(0, dim_-num_sub_elem);
+    using v1 = typename seq<Quadrature, l, dim_>::type;
+    using variant_1 = typename boost::make_variant_over<v1>::type;
+
+    using v2 = typename seq<Int, l, dim_>::type;
+    using variant_2 = typename boost::make_variant_over<v2>::type;
+
     //Allocates and fill the (global) cache
     ReferenceElementHandler(std::shared_ptr<const Space> space)
         :
@@ -55,11 +63,8 @@ public:
     {};
 
 
-    template<int k>
-    void reset(const ValueFlags flag, const Quadrature<k> &quad)
-    {
-        Assert(false,ExcNotImplemented());
-    }
+    virtual void reset(const ValueFlags &flag, const variant_1 &quad) = 0;
+
 
 
     template <int k>
@@ -151,26 +156,37 @@ public:
     //Allocates and fill the (global) cache
     BSplineElementHandler(std::shared_ptr<const Space> space);
 
+
+    using variant_1 = typename base_t::variant_1;
+
+    virtual void reset(const ValueFlags &flag, const variant_1 &quad) override
+    {
+        reset_impl_.flag_ = flag;
+        boost::apply_visitor(reset_impl_, quad);
+        Assert(false,ExcNotImplemented());
+    }
+
+
     template<int k>
-    void reset(const ValueFlags flag, const Quadrature<k> &quad) override;
+    void reset(const ValueFlags flag, const Quadrature<k> &quad);
 
 //protected:
     template <int k>
-    void fill_cache(ElementAccessor &elem, const int j) override;
+    void fill_cache(ElementAccessor &elem, const int j);
 
     template <int k>
-    void init_cache(ElementAccessor &elem) override;
+    void init_cache(ElementAccessor &elem);
 
 //    void init_all_caches(ElementAccessor &elem);
 public:
     template <int k>
-    void fill_cache(ElementIterator &elem, const int j) override
+    void fill_cache(ElementIterator &elem, const int j)
     {
         fill_cache<k>(*elem, j);
     }
 
     template <int k>
-    void init_cache(ElementIterator &elem) override
+    void init_cache(ElementIterator &elem)
     {
         init_cache<k>(*elem);
     }
@@ -182,12 +198,12 @@ public:
 
 
     //Allocates the ElementIterator element_cache
-    void init_element_cache(ElementIterator &elem) override;
+    void init_element_cache(ElementIterator &elem) ;
 
     //Fill the ElementIterator element_cache
-    void fill_element_cache(ElementIterator &elem) override ;
+    void fill_element_cache(ElementIterator &elem)  ;
 
-    void print_info(LogStream &out) const override;
+    void print_info(LogStream &out) const ;
 
 private:
     const Quadrature<dim> &get_quad() const;
@@ -265,6 +281,23 @@ private:
     };
 
     CacheList<GlobalCache, dim> splines1d_;
+
+
+    struct ResetDispatcher : boost::static_visitor<void>
+    {
+        template<class T>
+        void operator()(const T &quad)
+        {
+            Assert(false,ExcNotImplemented());
+//            this->template reset<T::dim>(flag_,quad);
+        }
+
+        ValueFlags flag_;
+//        std::array<FunctionFlags, dim + 1> *flags_;
+    };
+
+    ResetDispatcher reset_impl_;
+
 };
 
 IGA_NAMESPACE_CLOSE

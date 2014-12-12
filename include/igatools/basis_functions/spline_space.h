@@ -448,6 +448,14 @@ public:
         return *reinterpret_cast<DofDistribution<dim,range,rank> *>(this);
     }
 
+
+public:
+    virtual std::shared_ptr<typename RefSpace::ElementHandler> create_elem_handler() const override
+    {
+        Assert(false,ExcMessage("This class should not have this function."));
+        return nullptr;
+    }
+
 };
 
 

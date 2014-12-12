@@ -96,7 +96,7 @@ private:
 
     typename Space::ElementIterator elem_;
 
-    typename Space::ElementHandler space_filler_;
+    std::shared_ptr<typename Space::ElementHandler> space_filler_;
 
 private:
     struct ResetDispatcher : boost::static_visitor<void>
@@ -106,7 +106,8 @@ private:
         {
             (*flags_)[T::dim] = flag;
             Assert(space_handler_ != nullptr, ExcNullPtr());
-            space_handler_->template reset<T::dim>(flag, quad);
+//            space_handler_->template reset<T::dim>(flag, quad);
+            space_handler_->reset(flag, quad);
         }
 
         ValueFlags flag;

@@ -33,7 +33,6 @@ IGA_NAMESPACE_OPEN
  */
 template<class PhysSpace>
 class SpaceElementHandler :
-    public PhysSpace::RefSpace::ElementHandler,
     public PhysSpace::PushForwardType
 {
 
@@ -45,6 +44,8 @@ class SpaceElementHandler :
     using ElementAccessor = typename PhysSpace::ElementAccessor;
     using PfElemAccessor = typename PhysSpace::PushForwardType::ElementAccessor;
 
+    using self_t = SpaceElementHandler<PhysSpace>;
+
 public:
     static const int dim = PhysSpace::dim;
 
@@ -52,6 +53,11 @@ public:
 
     //Allocates and fill the (global) cache
     SpaceElementHandler(std::shared_ptr<const PhysSpace> space);
+
+    static std::shared_ptr<self_t> create(std::shared_ptr<const PhysSpace> space)
+    {
+        return std::shared_ptr<self_t>(new self_t(space));
+    }
 
     template<int k>
     void reset(const ValueFlags flag, const Quadrature<k> &quad);
@@ -87,6 +93,8 @@ public:
 
 private:
     std::shared_ptr<const PhysSpace> space_;
+
+    std::shared_ptr<typename PhysSpace::RefSpace::ElementHandler> ref_space_handler_;
 
     std::array<FunctionFlags, dim + 1> flags_;
 

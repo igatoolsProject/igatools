@@ -410,6 +410,8 @@ public:
         return nullptr;
     }
 
+
+    virtual std::shared_ptr<ElementHandler> create_elem_handler() const = 0;
 };
 
 

@@ -21,7 +21,7 @@
 #include <igatools/basis_functions/physical_space.h>
 #include <igatools/base/sub_function.h>
 #include <igatools/basis_functions/space_manager.h>
-
+#include <igatools/basis_functions/space_element_handler.h>
 
 using std::array;
 using std::shared_ptr;
@@ -40,7 +40,7 @@ PhysicalSpace<RefSpace_, codim_, type_>::components = sequence<PhysicalSpace<Ref
 template <class RefSpace_,int codim_, Transformation type_>
 PhysicalSpace<RefSpace_, codim_, type_>::
 PhysicalSpace(shared_ptr<RefSpace> ref_space,
-                 shared_ptr<MapFunc> map_func)
+              shared_ptr<MapFunc> map_func)
     :
     BaseSpace(ref_space->get_grid()),
     ref_space_(ref_space),
@@ -323,6 +323,16 @@ print_info(LogStream &out) const
     out.end_item();
 }
 
+
+
+template <class RefSpace_,int codim_, Transformation type_>
+auto
+PhysicalSpace<RefSpace_, codim_, type_>::
+create_elem_handler() const -> std::shared_ptr<ElementHandler>
+{
+    const auto this_space = std::enable_shared_from_this<self_t>::shared_from_this();
+    return ElementHandler::create(this_space);
+}
 
 IGA_NAMESPACE_CLOSE
 

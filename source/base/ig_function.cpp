@@ -34,7 +34,7 @@ IgFunction(std::shared_ptr<const Space> space,
     space_(space),
     coeff_(coeff),
     elem_(space_->begin()),
-    space_filler_(space_)
+    space_filler_(space_->create_elem_handler())
 {
     Assert(!coeff_.empty(),ExcEmptyObject());
 }
@@ -49,7 +49,7 @@ IgFunction(const self_t &fun)
     space_(fun.space_),
     coeff_(fun.coeff_),
     elem_(space_->begin()),
-    space_filler_(space_)
+    space_filler_(space_->create_elem_handler())
 {
     Assert(!coeff_.empty(),ExcEmptyObject());
 }
@@ -74,7 +74,7 @@ reset(const ValueFlags &flag, const variant_1 &quad) -> void
 {
     parent_t::reset(flag, quad);
     reset_impl.flag = flag;
-    reset_impl.space_handler_ = &space_filler_;
+    reset_impl.space_handler_ = space_filler_.get();
     reset_impl.flags_ = &(this->flags_);
     boost::apply_visitor(reset_impl, quad);
 }
@@ -87,7 +87,7 @@ IgFunction<Space>::
 init_cache(ElementAccessor &elem, const variant_2 &k) -> void
 {
     parent_t::init_cache(elem, k);
-    init_cache_impl.space_handler_ = &space_filler_;
+    init_cache_impl.space_handler_ = space_filler_.get();
     init_cache_impl.space_elem = &(*elem_);
     boost::apply_visitor(init_cache_impl, k);
 }
@@ -103,7 +103,7 @@ fill_cache(ElementAccessor &elem, const int j, const variant_2 &k) -> void
 
     elem_.move_to(elem.get_flat_index());
 
-    fill_cache_impl.space_handler_ = &space_filler_;
+    fill_cache_impl.space_handler_ = space_filler_.get();
     fill_cache_impl.space_elem = &(*elem_);
     fill_cache_impl.func_elem = &elem;
     fill_cache_impl.function = this;

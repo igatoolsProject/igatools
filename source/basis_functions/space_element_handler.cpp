@@ -105,9 +105,9 @@ template<class PhysSpace>
 SpaceElementHandler<PhysSpace>::
 SpaceElementHandler(std::shared_ptr<const PhysSpace> space)
     :
-    RefSpaceElementHandler(space->get_reference_space()),
     PFCache(space->get_map_func()),
-    space_(space)
+    space_(space),
+    ref_space_handler_(space->get_reference_space()->create_elem_handler())
 {}
 
 
@@ -118,7 +118,8 @@ void
 SpaceElementHandler<PhysSpace>::
 reset(const ValueFlags flag, const Quadrature<k> &quad)
 {
-    RefSpaceElementHandler::template reset<k>(space_to_ref_flag(type, flag), quad);
+//    RefSpaceElementHandler::template reset<k>(space_to_ref_flag(type, flag), quad);
+    ref_space_handler_->reset(space_to_ref_flag(type, flag), quad);
     PFCache::template reset<k>(space_to_pf_flag(flag), quad);
     flags_[k] = flag;
 }
@@ -132,7 +133,7 @@ SpaceElementHandler<PhysSpace>::
 init_cache(ElementAccessor &elem)
 {
     auto &ref_elem = elem.get_ref_space_accessor();
-    RefSpaceElementHandler::template init_cache<k>(ref_elem);
+    ref_space_handler_->template init_cache<k>(ref_elem);
     PFCache::template init_cache<k>(elem);
 
     auto &cache = elem.PhysSpace::ElementAccessor::parent_t::local_cache_;
@@ -148,7 +149,7 @@ init_cache(ElementAccessor &elem)
     for (auto &s_id: UnitElement<dim>::template elems_ids<k>())
     {
         auto &s_cache = cache->template get_value_cache<k>(s_id);
-        const auto n_points = this->template get_num_points<k>();
+        const auto n_points = ref_space_handler_->template get_num_points<k>();
 
         s_cache.resize(flags_[k], n_points, n_basis);
     }
@@ -163,7 +164,7 @@ SpaceElementHandler<PhysSpace>::
 fill_cache(ElementAccessor &elem, const int j)
 {
     auto &ref_elem = elem.get_ref_space_accessor();
-    RefSpaceElementHandler::template fill_cache<k>(ref_elem, j);
+    ref_space_handler_->template fill_cache<k>(ref_elem, j);
     PFCache::template fill_cache<k>(elem, j);
 
     auto &local_cache = elem.PhysSpace::ElementAccessor::parent_t::local_cache_;
@@ -302,7 +303,7 @@ auto
 SpaceElementHandler<PhysSpace>::
 print_info(LogStream &out) const -> void
 {
-    RefSpaceElementHandler::print_info(out);
+    ref_space_handler_->print_info(out);
     //  PFCache::print_info(out);
 }
 

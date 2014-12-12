@@ -492,6 +492,14 @@ private:
      */
     Real get_weight_coef_from_basis_id(const Index basis_id) const;
 
+
+public:
+    virtual std::shared_ptr<typename BaseSpace::ElementHandler> create_elem_handler() const override final
+    {
+        const auto this_space = std::enable_shared_from_this<self_t>::shared_from_this();
+        return ElementHandler::create(this_space);
+    }
+
 };
 
 
