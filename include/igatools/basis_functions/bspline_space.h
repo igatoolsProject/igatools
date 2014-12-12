@@ -396,6 +396,13 @@ public:
     {
         return true;
     }
+
+    virtual std::shared_ptr<typename ReferenceSpace<dim_,range_,rank_>::ElementHandler> create_elem_handler() const override final
+    {
+        const auto this_space = std::enable_shared_from_this<self_t>::shared_from_this();
+        return ElementHandler::create(this_space);
+    }
+
 };
 
 IGA_NAMESPACE_CLOSE

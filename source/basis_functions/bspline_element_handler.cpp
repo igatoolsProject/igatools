@@ -154,6 +154,7 @@ BSplineElementHandler<dim_, range_, rank_>::
 BSplineElementHandler(shared_ptr<const Space> space)
     :
     base_t(space),
+    space_(space),
     n_basis_(space_->get_num_all_element_basis())
 {
 

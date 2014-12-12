@@ -60,10 +60,15 @@ public:
         :
         base_t(space->get_grid()),
         space_(space)
-    {};
+    {
+        Assert(space != nullptr, ExcNullPtr());
+    };
 
 
-    virtual void reset(const ValueFlags &flag, const variant_1 &quad) = 0;
+    virtual void reset(const ValueFlags &flag, const variant_1 &quad)
+    {
+        Assert(false,ExcNotImplemented());
+    }
 
 
 
@@ -124,6 +129,7 @@ template<int dim_, int range_ = 1, int rank_ = 1>
 class BSplineElementHandler : public ReferenceElementHandler<dim_,range_,rank_>
 {
     using base_t = ReferenceElementHandler<dim_,range_,rank_>;
+    using self_t = BSplineElementHandler<dim_,range_,rank_>;
     using Space = BSplineSpace<dim_,range_,rank_>;
     static const Size n_components =  Space::n_components;
 
@@ -157,9 +163,14 @@ public:
     BSplineElementHandler(std::shared_ptr<const Space> space);
 
 
+    static std::shared_ptr<self_t> create(std::shared_ptr<const Space> space)
+    {
+        return std::shared_ptr<self_t>(new self_t(space));
+    }
+
     using variant_1 = typename base_t::variant_1;
 
-    virtual void reset(const ValueFlags &flag, const variant_1 &quad) override
+    virtual void reset(const ValueFlags &flag, const variant_1 &quad) override final
     {
         reset_impl_.flag_ = flag;
         boost::apply_visitor(reset_impl_, quad);
