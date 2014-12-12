@@ -23,10 +23,8 @@
 
 #include <algorithm>
 
-using std::shared_ptr;
-
 #ifdef NURBS
-
+using std::shared_ptr;
 IGA_NAMESPACE_OPEN
 
 template<int dim_, int range_ , int rank_>
