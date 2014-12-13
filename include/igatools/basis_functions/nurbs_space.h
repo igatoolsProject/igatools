@@ -143,7 +143,7 @@ public:
     using DegreeTable = typename SpSpace::DegreeTable;
     using MultiplicityTable = typename SpSpace::MultiplicityTable;
 
-    using EndBehaviour = typename SpSpace::EndBehaviour;
+
     using EndBehaviourTable = typename SpSpace::EndBehaviourTable;
     using InteriorReg= typename SpSpace::InteriorReg;
     using SpaceDimensionTable = typename SpSpace::SpaceDimensionTable;
