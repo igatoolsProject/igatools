@@ -266,6 +266,30 @@ compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots) const
 
 
 template<int dim, int range, int rank>
+auto
+SplineSpace<dim, range, rank>::
+compute_knots_with_repetition(const EndBehaviourTable &ends) const -> KnotsTable
+{
+    BoundaryKnotsTable bdry_knots_table(deg_.get_comp_map());
+    for (int iComp : bdry_knots_table.get_active_components_id())
+    {
+        for (int j = 0; j < dim; ++j)
+        {
+            if (ends[iComp][j] == EndBehaviour::interpolatory)
+                bdry_knots_table[iComp][j] = interpolatory_end_knots(iComp,j);
+            else
+            {
+                Assert(false,ExcNotImplemented());
+                AssertThrow(false,ExcNotImplemented());
+            }
+        }
+    }
+    return compute_knots_with_repetition(bdry_knots_table);
+}
+
+
+
+template<int dim, int range, int rank>
 template<int k>
 auto
 SplineSpace<dim, range, rank>::
@@ -307,6 +331,28 @@ get_sub_space_degree(const Index sub_elem_id) const
             sub_degree[comp][j] = deg_[comp][active_dirs[j]];
 
     return sub_degree;
+}
+
+
+
+template<int dim, int range, int rank>
+template<int k>
+auto
+SplineSpace<dim, range, rank>::
+get_sub_space_end_b(const Index sub_elem_id) const
+-> typename SubSpace<k>::EndBehaviourTable
+{
+    using SubEndBehaviourT = typename SubSpace<k>::EndBehaviourTable;
+    auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
+    const auto &active_dirs = k_elem.active_directions;
+
+    SubEndBehaviourT sub_end_b(end_behaviour_.get_comp_map());
+
+    for (int comp : sub_end_b.get_active_components_id())
+        for (int j=0; j<k; ++j)
+            sub_end_b[comp][j] = end_behaviour_[comp][active_dirs[j]];
+
+    return sub_end_b;
 }
 
 
@@ -407,29 +453,6 @@ interpolatory_end_knots(const int comp_id,const int dir) const -> CartesianProdu
 
     return bdry_knots_dir;
 }
-
-template<int dim, int range, int rank>
-auto
-SplineSpace<dim, range, rank>::
-compute_knots_with_repetition(const EndBehaviourTable &ends) const -> KnotsTable
-{
-    BoundaryKnotsTable bdry_knots_table(deg_.get_comp_map());
-    for (int iComp : bdry_knots_table.get_active_components_id())
-    {
-        for (int j = 0; j < dim; ++j)
-        {
-            if (ends[iComp][j] == EndBehaviour::interpolatory)
-                bdry_knots_table[iComp][j] = interpolatory_end_knots(iComp,j);
-            else
-            {
-                Assert(false,ExcNotImplemented());
-                AssertThrow(false,ExcNotImplemented());
-            }
-        }
-    }
-    return compute_knots_with_repetition(bdry_knots_table);
-}
-
 
 template<int dim, int range, int rank>
 void

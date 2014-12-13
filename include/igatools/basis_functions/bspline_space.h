@@ -142,7 +142,7 @@ public:
     using typename BaseSpace::MultiplicityTable;
     using typename BaseSpace::KnotsTable;
     using typename BaseSpace::SpaceDimensionTable;
-    using typename BaseSpace::EndBehaviour;
+    //using typename BaseSpace::EndBehaviour;
     using typename BaseSpace::EndBehaviourTable;
 
 public:
@@ -188,7 +188,7 @@ public:
     create(const DegreeTable &deg,
            std::shared_ptr<GridType> knots,
            std::shared_ptr<const MultiplicityTable> interior_mult,
-           const EndBehaviourTable &ends = EndBehaviourTable());
+           const EndBehaviourTable &ends);
     ///@}
 
     /** Destructor. */

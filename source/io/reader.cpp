@@ -532,8 +532,8 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
     typename space_t::EndBehaviourTable end_behaviour(components_map);
     for (const auto comp_id : end_behaviour.get_active_components_id())
     {
-        end_behaviour[comp_id][0] = space_t::EndBehaviour::interpolatory;
-        end_behaviour[comp_id][1] = space_t::EndBehaviour::interpolatory;
+        end_behaviour[comp_id][0] = EndBehaviour::interpolatory;
+        end_behaviour[comp_id][1] = EndBehaviour::interpolatory;
     }
 
     auto ref_space = space_t::create(degrees,grid,multiplicities,end_behaviour);
