@@ -56,6 +56,8 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
 
 
 
+
+
     //-----------------------------------------------------------------------
     // creating the dofs view from the dofs components views -- begin
     vector<DofsComponentView> components_views;
@@ -145,7 +147,8 @@ find_dof_id(const Index dof_id, int &comp_id, TensorIndex<dim> &tensor_index) co
     return dof_is_found;
 }
 
-
+// TODO (pauletti, Dec 11, 2014): This code is not dimension independent, there
+// should be no need for this to be
 template<int dim, int range, int rank>
 void
 DofDistribution<dim, range, rank>::

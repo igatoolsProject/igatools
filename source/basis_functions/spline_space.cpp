@@ -36,21 +36,21 @@ SplineSpace<dim, range, rank>::
 SplineSpace(const DegreeTable &deg,
             std::shared_ptr<GridType> knots,
             shared_ptr<const MultiplicityTable> interior_mult,
-            const PeriodicTable &periodic)
+			const EndBehaviourTable &end_behaviour)
     :
     RefSpace(knots),
     interior_mult_(interior_mult),
     deg_(deg),
-    periodic_(periodic)
+	end_behaviour_(end_behaviour)
 {
 
-    //-------------------
-    const auto comp_map = interior_mult_->get_comp_map();
-
-    end_behaviour_ = EndBehaviourTable(comp_map);
-    for (const auto &comp : end_behaviour_.get_active_components_id())
-        end_behaviour_[comp] = filled_array<EndBehaviour,dim>(EndBehaviour::interpolatory);
-    //-------------------
+//    //-------------------
+//    const auto comp_map = interior_mult_->get_comp_map();
+//
+//    end_behaviour_ = EndBehaviourTable(comp_map);
+//    for (const auto &comp : end_behaviour_.get_active_components_id())
+//        end_behaviour_[comp] = filled_array<EndBehaviour,dim>(EndBehaviour::interpolatory);
+//    //-------------------
 
 
     this->init();
@@ -95,7 +95,7 @@ init()
             const auto deg = deg_[iComp][j];
             const auto &mult = (*interior_mult_)[iComp].get_data_direction(j);
 
-            Index size = periodic_[iComp][j]? 0 : deg + 1;
+            Index size = (end_behaviour_[iComp][j] == EndBehaviour::periodic) ? 0 : deg + 1;
 
             for (auto &n: mult)
                 size += n;
@@ -180,6 +180,8 @@ refine_h_after_grid_refinement(
     this->init();
 }
 
+
+
 template<int dim, int range, int rank>
 auto
 SplineSpace<dim, range, rank>::
@@ -197,7 +199,7 @@ compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots) const
             const auto &left_knts = boundary_knots[iComp][j].get_data_direction(0);
             const auto &right_knts = boundary_knots[iComp][j].get_data_direction(1);
 
-            if (periodic_[iComp][j])
+            if (end_behaviour_[iComp][j] == EndBehaviour::periodic)
             {
                 Assert((left_knts.size()==0) && (right_knts.size()==0),
                        ExcMessage("Periodic component has non zero size"));
@@ -301,42 +303,6 @@ get_sub_space_degree(const Index sub_elem_id) const
     return sub_degree;
 }
 
-#if 0
-template<int dim, int range, int rank>
-auto
-SplineSpace<dim, range, rank>::
-get_face_mult(const Index face_id) const
--> shared_ptr<typename FaceSpace::MultiplicityTable>
-{
-    const auto &v_mult = *interior_mult_;
-    const auto &active_dirs = UnitElement<dim>::face_active_directions[face_id];
-    auto f_int_mult = make_shared<typename FaceSpace::MultiplicityTable> (v_mult.get_comp_map());
-    auto &f_mult = *f_int_mult;
-    for (int comp : f_mult.get_active_components_id())
-    {
-        for (auto j : FaceSpace::dims)
-            f_mult[comp].copy_data_direction(j, v_mult[comp].get_data_direction(active_dirs[j]));
-    }
-    return f_int_mult;
-}
-
-
-
-template<int dim, int range, int rank>
-auto SplineSpace<dim, range, rank>::
-get_face_degree(const Index face_id) const
--> typename FaceSpace::DegreeTable
-{
-    const auto &active_dirs = UnitElement<dim>::face_active_directions[face_id];
-    typename FaceSpace::DegreeTable f_degree(deg_.get_comp_map());
-    for (int comp : f_degree.get_active_components_id())
-    {
-        for (auto j : FaceSpace::dims)
-            f_degree[comp][j] = deg_[comp][active_dirs[j]];
-    }
-    return f_degree;
-}
-#endif
 
 
 template<int dim, int range, int rank>
@@ -348,7 +314,7 @@ accumulated_interior_multiplicities() const -> MultiplicityTable
     {
         for (int j = 0; j < dim; ++j)
         {
-            Assert(!periodic_[iComp][j], ExcMessage("periodic needs to be implemented"));
+           // Assert(!periodic_[iComp][j], ExcMessage("periodic needs to be implemented"));
             const auto &mult  = (*interior_mult_)[iComp].get_data_direction(j);
 
             vector<Size> accum_mult;
