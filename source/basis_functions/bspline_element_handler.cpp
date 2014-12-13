@@ -164,6 +164,7 @@ BSplineElementHandler(shared_ptr<const Space> space)
         comp_offset_[j] = comp_offset_[j-1] + n_basis_.comp_dimension[j-1];
 }
 
+#if 0
 template<int dim_, int range_ , int rank_>
 template<int k>
 void
@@ -245,17 +246,17 @@ reset(const ValueFlags flag,
         }
     }
 }
-
+#endif
 
 template<int dim_, int range_ , int rank_>
 template<class T>
 void
 BSplineElementHandler<dim_, range_, rank_>::
 ResetDispatcher::
-operator()(const T &quad)
+operator()(const T &quad1)
 {
     Assert(grid_handler_ != nullptr,ExcNullPtr());
-    grid_handler_->reset(FunctionFlags::to_grid_flags(flag_),quad);
+    grid_handler_->reset(FunctionFlags::to_grid_flags(flag_),quad1);
 
 
     const auto k = T::dim;
@@ -273,7 +274,7 @@ operator()(const T &quad)
         g_cache.resize(space_->get_grid()->get_num_intervals(),
                        BasisValues(space_->get_components_map()));
         const auto &n_inter = space_->get_grid()->get_num_intervals();
-        const auto quad = extend_sub_elem_quad<k,dim>(quad, s_id);
+        const auto quad = extend_sub_elem_quad<k,dim>(quad1, s_id);
         const auto &n_points = quad.get_num_points_direction();
 
         // Allocate space for the BasisValues1D
@@ -284,7 +285,7 @@ operator()(const T &quad)
             {
                 auto &splines1d = g_cache.entry(dir, j);
                 for (auto comp : splines1d.get_active_components_id())
-                    splines1d[comp].resize(max_der, n_basis_[comp][dir], n_pts);
+                    splines1d[comp].resize(max_der, (*n_basis_)[comp][dir], n_pts);
             }
         }
 
@@ -295,9 +296,9 @@ operator()(const T &quad)
         const auto &degree      = space_->get_degree();
         const auto &bezier_op   = space_->operators_;
         const auto &points      = quad.get_points();
-        const auto &lengths = this->lengths_;
+        const auto &lengths = *lengths_;
 
-        BasisValues bernstein_values(n_basis_.get_comp_map());
+        BasisValues bernstein_values(n_basis_->get_comp_map());
 
         for (int dir = 0 ; dir < dim ; ++dir)
         {
@@ -329,14 +330,12 @@ operator()(const T &quad)
                         const auto &b_values = berns_values.get_derivative(order);
                         basis.get_derivative(order) =
                             scale * prec_prod(oper, b_values);
-                    }
-                }
-            }
+                    } // endl loop order
+                } // end loop comp
+            } // end loop j
 
-        }
-    }
-    Assert(false,ExcNotImplemented());
-//            this->template reset<T::dim>(flag_,quad);
+        } //end loop dir
+    } // end loop s_id
 }
 
 
@@ -345,14 +344,15 @@ void
 BSplineElementHandler<dim_, range_, rank_>::
 reset(const ValueFlags &flag, const variant_1 &quad)
 {
-//  GridElementHandler<dim_>::reset(FunctionFlags::to_grid_flags(flag), quad);
-
     reset_impl_.grid_handler_ = this;
     reset_impl_.flag_ = flag;
     reset_impl_.flags_ = &flags_;
     reset_impl_.splines1d_ = &splines1d_;
+    reset_impl_.space_ = space_.get();
+    reset_impl_.n_basis_ = &n_basis_;
+    reset_impl_.lengths_ = &(this->lengths_);
+
     boost::apply_visitor(reset_impl_, quad);
-    Assert(false,ExcNotImplemented());
 }
 
 

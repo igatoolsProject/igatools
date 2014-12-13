@@ -194,9 +194,10 @@ public:
 
     virtual void reset(const ValueFlags &flag, const variant_1 &quad) override final;
 
-
+#if 0
     template<int k>
     void reset(const ValueFlags flag, const Quadrature<k> &quad);
+#endif
 
 //protected:
     template <int k>
@@ -320,6 +321,9 @@ private:
         ValueFlags flag_;
         std::array<FunctionFlags, dim + 1> *flags_;
         CacheList<GlobalCache, dim> *splines1d_;
+        const Space * space_;
+        const SpaceDimensionTable * n_basis_;
+        const TensorProductArray<dim> * lengths_;
     };
 
     ResetDispatcher reset_impl_;

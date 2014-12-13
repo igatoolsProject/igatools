@@ -66,7 +66,7 @@ reset(const ValueFlags flag,
 {
     //--------------------------------------
     // resetting the BSplineElementHandler (for the numerator)
-    bspline_handler_.template reset<k>(flag, quad1);
+    bspline_handler_.reset(flag, quad1);
     //--------------------------------------
 
 
