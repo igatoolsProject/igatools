@@ -692,8 +692,8 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     typename space_t::EndBehaviourTable end_behaviour(components_map);
     for (const auto comp_id : end_behaviour.get_active_components_id())
     {
-        end_behaviour[comp_id][0] = space_t::EndBehaviour::interpolatory;
-        end_behaviour[comp_id][1] = space_t::EndBehaviour::interpolatory;
+        end_behaviour[comp_id][0] = EndBehaviour::interpolatory;
+        end_behaviour[comp_id][1] = EndBehaviour::interpolatory;
     }
 
     auto spline_space = space_t::SpSpace::create(degrees,grid,multiplicities,end_behaviour);
@@ -711,12 +711,12 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     auto new_grid = CartesianGrid<dim>::create(*grid);
 
     using ScalarMultiplicityTable = typename ScalarBSplineSpace::MultiplicityTable;
-    const shared_ptr<const ScalarMultiplicityTable> scalar_mult_table = shared_ptr<const ScalarMultiplicityTable>(new ScalarMultiplicityTable((*multiplicities)[0]));
+    const auto scalar_mult_table = shared_ptr<const ScalarMultiplicityTable>(new ScalarMultiplicityTable((*multiplicities)[0]));
 
-    std::shared_ptr<ScalarBSplineSpace> scalar_spline_space =
-        ScalarBSplineSpace::create(scalar_degree_table,
-                                   new_grid,
-                                   scalar_mult_table);
+    auto scalar_spline_space =
+    		ScalarBSplineSpace::create(scalar_degree_table, new_grid,
+    				scalar_mult_table,
+					typename ScalarBSplineSpace::EndBehaviourTable(filled_array<EndBehaviour,dim>(EndBehaviour::interpolatory)));
 
     using WeightFuncPtr = shared_ptr<WeightFunc>;
     using WeightFuncPtrTable = typename space_t::template ComponentContainer<WeightFuncPtr>;
