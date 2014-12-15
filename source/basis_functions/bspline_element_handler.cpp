@@ -461,6 +461,7 @@ init_element_cache(ElementIterator &elem)
 template <int dim, int range, int rank>
 void
 BSplineElementHandler<dim, range, rank>::
+FillCacheDispatcher::
 copy_to_inactive_components_values(const vector<Index> &inactive_comp,
                                    const std::array<Index, n_components> &active_map,
                                    ValueTable<Value> &D_phi) const
@@ -469,9 +470,9 @@ copy_to_inactive_components_values(const vector<Index> &inactive_comp,
     for (int comp : inactive_comp)
     {
         const auto act_comp = active_map[comp];
-        const auto n_basis = n_basis_.comp_dimension[comp];
-        const Size act_offset = comp_offset_[act_comp];
-        const Size offset     = comp_offset_[comp];
+        const auto n_basis = n_basis_->comp_dimension[comp];
+        const Size act_offset = (*comp_offset_)[act_comp];
+        const Size offset     = (*comp_offset_)[comp];
         for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
         {
             const auto act_D_phi = D_phi.get_function_view(act_offset+basis_i);
@@ -488,6 +489,7 @@ template <int dim, int range, int rank>
 template <int order>
 void
 BSplineElementHandler<dim, range, rank>::
+FillCacheDispatcher::
 copy_to_inactive_components(const vector<Index> &inactive_comp,
                             const std::array<Index, n_components> &active_map,
                             ValueTable<Derivative<order>> &D_phi) const
@@ -497,9 +499,9 @@ copy_to_inactive_components(const vector<Index> &inactive_comp,
     for (int comp : inactive_comp)
     {
         const auto act_comp = active_map[comp];
-        const auto n_basis = n_basis_.comp_dimension[comp];
-        const Size act_offset = comp_offset_[act_comp];
-        const Size offset     = comp_offset_[comp];
+        const auto n_basis = n_basis_->comp_dimension[comp];
+        const Size act_offset = (*comp_offset_)[act_comp];
+        const Size offset     = (*comp_offset_)[comp];
         for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
         {
             const auto act_D_phi = D_phi.get_function_view(act_offset+basis_i);
@@ -514,101 +516,9 @@ copy_to_inactive_components(const vector<Index> &inactive_comp,
 
 
 
-template <int dim, int range, int rank>
-void
-BSplineElementHandler<dim, range, rank>::
-evaluate_bspline_values(
-    const ComponentContainer<TensorProductFunctionEvaluator<dim>> &elem_values,
-    ValueTable<Value> &D_phi) const
-{
-    const Size n_points = D_phi.get_num_points();
-    const TensorIndex<dim> der_tensor_id; // [0,0,..,0] tensor index
-    for (int comp : elem_values.get_active_components_id())
-    {
-        auto &values = elem_values[comp];
-        const int total_n_basis = n_basis_.comp_dimension[comp];
-        const Size offset = comp_offset_[comp];
-
-        for (int func_id = 0; func_id < total_n_basis; ++func_id)
-        {
-            auto D_phi_i = D_phi.get_function_view(offset + func_id);
-            auto const &func = values.func_flat_to_tensor(func_id);
-            for (int point_id = 0; point_id < n_points; ++point_id)
-            {
-                auto const &pts  = values.points_flat_to_tensor(point_id);
-                D_phi_i[point_id](comp) = values.evaluate(der_tensor_id, func, pts);
-            }
-        } // end func_id loop
-    } // end comp loop
-
-    copy_to_inactive_components_values(elem_values.get_inactive_components_id(),
-                                       elem_values.get_comp_map(), D_phi);
-}
 
 
-
-template <int dim, int range, int rank>
-template <int order>
-void
-BSplineElementHandler<dim, range, rank>::
-evaluate_bspline_derivatives(
-    const ComponentContainer<TensorProductFunctionEvaluator<dim>> &elem_values,
-    ValueTable<Derivative<order>> &D_phi) const
-{
-    /*
-     * This code computes any order of derivatives for a multivariate
-     * B-spline on the current element
-     * We use the formula
-     * \partial_(\alpha_1,...,\alpha_n) B(qp) = \Pi d^{\alpha_i} B_i(qp_i)
-     */
-
-    Assert(D_phi.size() > 0, ExcEmptyObject());
-    //  Assert(D_phi.get_num_functions() == this->get_num_basis(),
-    //           ExcDimensionMismatch(D_phi.get_num_functions(),this->get_num_basis()));
-    const Size n_points = D_phi.get_num_points();
-
-
-    TensorFunctionDerivativesSymmetry<dim,order> sym;
-    const auto n_der =  TensorFunctionDerivativesSymmetry<dim,order>::num_entries_eval;
-
-    const auto &univariate_order = sym.univariate_order ;
-    const auto &copy_indices = sym.copy_indices;
-
-    for (int comp : elem_values.get_active_components_id())
-    {
-        auto &values = elem_values[comp];
-        const int total_n_basis = n_basis_.comp_dimension[comp];
-        const Size offset = comp_offset_[comp];
-
-        for (int func_id = 0; func_id < total_n_basis; ++func_id)
-        {
-            auto D_phi_i = D_phi.get_function_view(offset + func_id);
-            auto const &func = values.func_flat_to_tensor(func_id);
-            for (int der_id = 0; der_id<n_der; ++der_id)
-            {
-                const auto &copy_indices_der = copy_indices[der_id];
-                const auto copy_indices_der_size = copy_indices_der.size();
-
-                auto const &der_tensor_id = univariate_order[der_id];
-                for (int point_id = 0; point_id < n_points; ++point_id)
-                {
-                    auto const &pts  = values.points_flat_to_tensor(point_id);
-                    auto &der = D_phi_i[point_id];
-                    der(copy_indices_der[0])(comp) = values.evaluate(der_tensor_id, func, pts);
-                    for (int k=1; k<copy_indices_der_size; ++k)
-                        der(copy_indices_der[k])(comp) = der(copy_indices_der[0])(comp);
-                }
-            }
-
-        }
-    } // end comp loop
-
-    copy_to_inactive_components<order>(elem_values.get_inactive_components_id(),
-                                       elem_values.get_comp_map(), D_phi);
-}
-
-
-
+#if 0
 
 template<int dim_, int range_ , int rank_>
 template <int k>
@@ -659,7 +569,173 @@ fill_element_cache(ElementIterator &elem)
 {
     fill_cache<dim>(static_cast<BSplineElement<dim_,range_,rank_> &>(*elem), 0);
 }
+#endif
 
+
+template <int dim, int range, int rank>
+void
+BSplineElementHandler<dim, range, rank>::
+FillCacheDispatcher::
+evaluate_bspline_values(
+    const ComponentContainer<TensorProductFunctionEvaluator<dim>> &elem_values,
+    ValueTable<Value> &D_phi) const
+{
+    const Size n_points = D_phi.get_num_points();
+    const TensorIndex<dim> der_tensor_id; // [0,0,..,0] tensor index
+    for (int comp : elem_values.get_active_components_id())
+    {
+        auto &values = elem_values[comp];
+        const int total_n_basis = n_basis_->comp_dimension[comp];
+        const Size offset = (*comp_offset_)[comp];
+
+        for (int func_id = 0; func_id < total_n_basis; ++func_id)
+        {
+            auto D_phi_i = D_phi.get_function_view(offset + func_id);
+            auto const &func = values.func_flat_to_tensor(func_id);
+            for (int point_id = 0; point_id < n_points; ++point_id)
+            {
+                auto const &pts  = values.points_flat_to_tensor(point_id);
+                D_phi_i[point_id](comp) = values.evaluate(der_tensor_id, func, pts);
+            }
+        } // end func_id loop
+    } // end comp loop
+
+    copy_to_inactive_components_values(elem_values.get_inactive_components_id(),
+                                       elem_values.get_comp_map(), D_phi);
+}
+
+
+
+
+template <int dim, int range, int rank>
+template <int order>
+void
+BSplineElementHandler<dim, range, rank>::
+FillCacheDispatcher::
+evaluate_bspline_derivatives(
+    const ComponentContainer<TensorProductFunctionEvaluator<dim>> &elem_values,
+    ValueTable<Derivative<order>> &D_phi) const
+{
+    /*
+     * This code computes any order of derivatives for a multivariate
+     * B-spline on the current element
+     * We use the formula
+     * \partial_(\alpha_1,...,\alpha_n) B(qp) = \Pi d^{\alpha_i} B_i(qp_i)
+     */
+
+    Assert(D_phi.size() > 0, ExcEmptyObject());
+    //  Assert(D_phi.get_num_functions() == this->get_num_basis(),
+    //           ExcDimensionMismatch(D_phi.get_num_functions(),this->get_num_basis()));
+    const Size n_points = D_phi.get_num_points();
+
+
+    TensorFunctionDerivativesSymmetry<dim,order> sym;
+    const auto n_der =  TensorFunctionDerivativesSymmetry<dim,order>::num_entries_eval;
+
+    const auto &univariate_order = sym.univariate_order ;
+    const auto &copy_indices = sym.copy_indices;
+
+    for (int comp : elem_values.get_active_components_id())
+    {
+        auto &values = elem_values[comp];
+        const int total_n_basis = n_basis_->comp_dimension[comp];
+        const Size offset = (*comp_offset_)[comp];
+
+        for (int func_id = 0; func_id < total_n_basis; ++func_id)
+        {
+            auto D_phi_i = D_phi.get_function_view(offset + func_id);
+            auto const &func = values.func_flat_to_tensor(func_id);
+            for (int der_id = 0; der_id<n_der; ++der_id)
+            {
+                const auto &copy_indices_der = copy_indices[der_id];
+                const auto copy_indices_der_size = copy_indices_der.size();
+
+                auto const &der_tensor_id = univariate_order[der_id];
+                for (int point_id = 0; point_id < n_points; ++point_id)
+                {
+                    auto const &pts  = values.points_flat_to_tensor(point_id);
+                    auto &der = D_phi_i[point_id];
+                    der(copy_indices_der[0])(comp) = values.evaluate(der_tensor_id, func, pts);
+                    for (int k=1; k<copy_indices_der_size; ++k)
+                        der(copy_indices_der[k])(comp) = der(copy_indices_der[0])(comp);
+                }
+            }
+
+        }
+    } // end comp loop
+
+    copy_to_inactive_components<order>(elem_values.get_inactive_components_id(),
+                                       elem_values.get_comp_map(), D_phi);
+}
+
+
+template<int dim_, int range_ , int rank_>
+template<class T>
+void
+BSplineElementHandler<dim_, range_, rank_>::
+FillCacheDispatcher::
+operator()(const T &quad)
+{
+    Assert(grid_handler_ != nullptr,ExcNullPtr());
+    grid_handler_->template fill_cache<T::k>(*elem_,j_);
+
+    Assert(splines1d_ != nullptr, ExcNullPtr());
+    const auto &g_cache = std::get<T::k>(*splines1d_)[j_];
+
+    Assert(elem_ != nullptr, ExcNullPtr());
+    Assert(elem_->get_local_cache() != nullptr, ExcNullPtr());
+    auto &cache = elem_->get_local_cache()->template get_value_cache<T::k>(j_);
+
+    const auto &index = elem_->get_tensor_index();
+    //const TensorIndex<k> active(UnitElement<dim>::template get_elem<k>(j).active_directions);
+
+    auto &flags = cache.flags_handler_;
+    auto val_1d = g_cache.get_element_values(index);
+    if (flags.fill_values())
+    {
+        auto &values = cache.template get_der<0>();
+        evaluate_bspline_values(val_1d, values);
+        flags.set_values_filled(true);
+    }
+    if (flags.fill_gradients())
+    {
+        auto &values = cache.template get_der<1>();
+        evaluate_bspline_derivatives<1>(val_1d, values);
+        flags.set_gradients_filled(true);
+    }
+    if (flags.fill_hessians())
+    {
+        auto &values = cache.template get_der<2>();
+        evaluate_bspline_derivatives<2>(val_1d, values);
+        flags.set_hessians_filled(true);
+    }
+
+    cache.set_filled(true);
+}
+
+template<int dim_, int range_ , int rank_>
+void
+BSplineElementHandler<dim_, range_, rank_>::
+fill_cache(RefElementAccessor &elem, const topology_variant &topology, const int j)
+{
+    fill_cache_impl_.grid_handler_ = this;
+    fill_cache_impl_.j_ = j;
+    fill_cache_impl_.splines1d_ = &splines1d_;
+    fill_cache_impl_.elem_ = &elem;
+    fill_cache_impl_.n_basis_ = &n_basis_;
+    fill_cache_impl_.comp_offset_ = &comp_offset_;
+
+    /*
+    init_cache_impl_.grid_handler_ = this;
+
+    Assert(elem.get_space()->is_bspline(),ExcMessage("Not a BSplineElement."));
+    init_cache_impl_.elem_ = &elem;
+
+    init_cache_impl_.flags_ = &flags_;
+
+    //*/
+    boost::apply_visitor(fill_cache_impl_,topology);
+}
 
 
 //template <int dim_, int range_ , int rank_>

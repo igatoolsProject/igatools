@@ -74,6 +74,11 @@ public:
         init_cache(*elem,topology);
     }
 
+    void fill_cache(ElementAccessor &elem, const topology_variant &topology, const int j)
+    {
+        Assert(false,ExcNotImplemented());
+    }
+
 
     //protected:
     template <int k>

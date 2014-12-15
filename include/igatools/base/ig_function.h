@@ -138,7 +138,8 @@ private:
         void operator()(const T &quad)
         {
             Assert(space_handler_ != nullptr, ExcNullPtr());
-            space_handler_->template fill_cache<T::k>(*space_elem, j);
+            const auto topology = Int<T::k>();
+            space_handler_->fill_cache(*space_elem,topology,j);
 
             auto &local_cache = function->get_cache(*func_elem);
             auto &cache = local_cache->template get_value_cache<T::k>(j);

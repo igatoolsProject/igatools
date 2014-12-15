@@ -314,9 +314,10 @@ void
 NURBSElementHandler<dim_, range_, rank_>::
 fill_cache(ElementAccessor &elem, const int j)
 {
-    bspline_handler_.template fill_cache<k>(elem.bspline_elem_, j);
-
     const auto topology = Int<k>();
+
+    bspline_handler_.fill_cache(elem.bspline_elem_,topology,j);
+
     for (const auto &comp_id : space_->weight_func_table_.get_active_components_id())
         space_->weight_func_table_[comp_id]->fill_cache(elem.weight_elem_table_[comp_id],j,topology);
 

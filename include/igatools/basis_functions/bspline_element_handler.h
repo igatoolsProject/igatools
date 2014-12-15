@@ -83,6 +83,19 @@ public:
         Assert(false,ExcMessage("This function should not be called and should be pure virtual."));
     }
 
+    virtual void fill_cache(ElementAccessor &elem, const topology_variant &topology, const int j)
+    {
+        //TODO: (MM, Dec 15, 2014): this function should be pure virtual
+        Assert(false,ExcMessage("This function should not be called and should be pure virtual."));
+    }
+
+    virtual void fill_cache(ElementIterator &elem, const topology_variant &topology, const int j)
+    {
+        //TODO: (MM, Dec 15, 2014): this function should be pure virtual
+        Assert(false,ExcMessage("This function should not be called and should be pure virtual."));
+    }
+
+
 
     template <int k>
     void fill_cache(ElementAccessor &elem, const int j)
@@ -187,6 +200,13 @@ public:
         init_cache(*elem,topology);
     }
 
+    virtual void fill_cache(RefElementAccessor &elem, const topology_variant &topology, const int j) override final;
+
+    virtual void fill_cache(RefElementIterator &elem, const topology_variant &topology, const int j) override final
+    {
+        fill_cache(*elem,topology,j);
+    }
+
 #if 0
     template<int k>
     void reset(const ValueFlags flag, const Quadrature<k> &quad);
@@ -205,11 +225,13 @@ public:
 #endif
 
 //protected:
+#if 0
     template <int k>
     void fill_cache(ElementAccessor &elem, const int j);
-
+#endif
 
 public:
+#if 0
     template <int k>
     void fill_cache(ElementIterator &elem, const int j)
     {
@@ -220,28 +242,18 @@ public:
 
     //Fill the ElementIterator element_cache
     void fill_element_cache(ElementIterator &elem)  ;
+#endif
 
     void print_info(LogStream &out) const ;
 
 private:
     const Quadrature<dim> &get_quad() const;
 
-public:
-
-    void
-    copy_to_inactive_components_values(const vector<Index> &inactive_comp,
-                                       const std::array<Index, n_components> &active_map,
-                                       ValueTable<Value> &D_phi) const;
-
-    template <int order>
-    void
-    copy_to_inactive_components(const vector<Index> &inactive_comp,
-                                const std::array<Index, n_components> &active_map,
-                                ValueTable<Derivative<order>> &D_phi) const;
 
 
 private:
 
+#if 0
     /**
      * Computes the k-th order derivative of the non-zero B-spline basis
      * functions over the current element,
@@ -258,6 +270,7 @@ private:
     void evaluate_bspline_values(
         const  ComponentContainer<TensorProductFunctionEvaluator<dim>> &elem_values,
         ValueTable<Value> &D_phi) const;
+#endif
 
 private:
     std::shared_ptr<const Space> space_;
@@ -282,7 +295,7 @@ private:
     public:
         using DirectionTable<BasisValues>::DirectionTable;
         // TODO (pauletti, Sep 23, 2014): document and split definition
-        auto get_element_values(const TensorIndex<dim> &id)
+        auto get_element_values(const TensorIndex<dim> &id) const
         {
             ComponentContainer<TensorProductFunctionEvaluator<dim> >
             result((this->entry(0,0)).get_comp_map());
@@ -329,6 +342,54 @@ private:
     };
 
     InitCacheDispatcher init_cache_impl_;
+
+
+    struct FillCacheDispatcher : boost::static_visitor<void>
+    {
+        template<class T>
+        void operator()(const T &quad);
+
+        void evaluate_bspline_values(
+            const  ComponentContainer<TensorProductFunctionEvaluator<dim>> &elem_values,
+            ValueTable<Value> &D_phi) const;
+
+        /**
+         * Computes the k-th order derivative of the non-zero B-spline basis
+         * functions over the current element,
+         *   at the evaluation points pre-allocated in the cache.
+         *
+         * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
+         * an exception will be raised.
+         */
+        template <int order>
+        void evaluate_bspline_derivatives(
+            const  ComponentContainer<TensorProductFunctionEvaluator<dim>> &elem_values,
+            ValueTable<Derivative<order>> &D_phi) const;
+
+
+
+        GridElementHandler<dim_> *grid_handler_;
+        int j_;
+        const CacheList<GlobalCache, dim> *splines1d_;
+        ReferenceElement<dim_,range_,rank_> *elem_;
+        const SpaceDimensionTable *n_basis_;
+        const ComponentContainer<Size> *comp_offset_;
+
+    private:
+        void
+        copy_to_inactive_components_values(const vector<Index> &inactive_comp,
+                                           const std::array<Index, n_components> &active_map,
+                                           ValueTable<Value> &D_phi) const;
+
+        template <int order>
+        void
+        copy_to_inactive_components(const vector<Index> &inactive_comp,
+                                    const std::array<Index, n_components> &active_map,
+                                    ValueTable<Derivative<order>> &D_phi) const;
+
+    };
+
+    FillCacheDispatcher fill_cache_impl_;
 
 };
 
