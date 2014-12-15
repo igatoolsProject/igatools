@@ -122,7 +122,9 @@ private:
         void operator()(const T &quad)
         {
             Assert(space_handler_ != nullptr, ExcNullPtr());
-            space_handler_->template init_cache<T::k>(*space_elem);
+//            space_handler_->template init_cache<T::k>(*space_elem);
+            const auto topology = Int<T::k>();
+            space_handler_->init_cache(*space_elem,topology);
         }
 
         typename Space::ElementHandler  *space_handler_;

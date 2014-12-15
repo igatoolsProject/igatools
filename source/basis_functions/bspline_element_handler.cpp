@@ -356,14 +356,61 @@ reset(const ValueFlags &flag, const variant_1 &quad)
 }
 
 
+template<int dim_, int range_ , int rank_>
+template<class T>
+void
+BSplineElementHandler<dim_, range_, rank_>::
+InitCacheDispatcher::
+operator()(const T &quad)
+{
+    Assert(grid_handler_ != nullptr,ExcNullPtr());
+    Assert(elem_ != nullptr,ExcNullPtr());
+    grid_handler_->template init_cache<T::k>(*elem_);
 
+
+    auto &cache = elem_->get_local_cache();
+    if (cache == nullptr)
+    {
+        using Cache = typename ElementAccessor::LocalCache;
+        cache = shared_ptr<Cache>(new Cache);
+    }
+
+    const auto n_basis = elem_->get_num_basis();
+    const auto n_points = grid_handler_->template get_num_points<T::k>();
+    const auto flag = (*flags_)[T::k];
+
+    for (auto &s_id: UnitElement<dim>::template elems_ids<T::k>())
+    {
+        auto &s_cache = cache->template get_value_cache<T::k>(s_id);
+        s_cache.resize(flag, n_points, n_basis);
+    }
+}
+
+template<int dim_, int range_ , int rank_>
+void
+BSplineElementHandler<dim_, range_, rank_>::
+init_cache(RefElementAccessor &elem, const topology_variant &topology)
+{
+    init_cache_impl_.grid_handler_ = this;
+
+    Assert(elem.get_space()->is_bspline(),ExcMessage("Not a BSplineElement."));
+    init_cache_impl_.elem_ = &elem;
+
+    init_cache_impl_.flags_ = &flags_;
+
+    boost::apply_visitor(init_cache_impl_,topology);
+}
+
+
+#if 0
 template<int dim_, int range_ , int rank_>
 template<int k>
 void
 BSplineElementHandler<dim_, range_, rank_>::
 init_cache(ElementAccessor &elem)
 {
-    base_t::template init_cache<k>(elem);
+    const auto topology = Int<k>();
+    base_t::init_cache(elem,topology);
 
     auto &cache = elem.local_cache_;
     if (cache == nullptr)
@@ -381,7 +428,7 @@ init_cache(ElementAccessor &elem)
         s_cache.resize(flags_[k], n_points, n_basis);
     }
 }
-
+#endif
 
 
 //template<int dim_, int range_ , int rank_>
@@ -400,7 +447,7 @@ init_cache(ElementAccessor &elem)
 //}
 
 
-
+#if 0
 template<int dim_, int range_ , int rank_>
 void
 BSplineElementHandler<dim_, range_, rank_>::
@@ -408,6 +455,7 @@ init_element_cache(ElementIterator &elem)
 {
     init_cache<dim>(static_cast<BSplineElement<dim_,range_,rank_> &>(*elem));
 }
+#endif
 
 
 template <int dim, int range, int rank>

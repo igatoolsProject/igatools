@@ -53,7 +53,7 @@ public:
     using variant_1 = typename boost::make_variant_over<v1>::type;
 
     using v2 = typename seq<Int, l, dim_>::type;
-    using variant_2 = typename boost::make_variant_over<v2>::type;
+    using topology_variant = typename boost::make_variant_over<v2>::type;
 
     //Allocates and fill the (global) cache
     ReferenceElementHandler(std::shared_ptr<const Space> space)
@@ -67,14 +67,21 @@ public:
 
     virtual void reset(const ValueFlags &flag, const variant_1 &quad)
     {
+        //TODO: (MM, Dec 15, 2014): this function should be pure virtual
         Assert(false,ExcMessage("This function should not be called and should be pure virtual."));
-        /*
-        reset_impl_.grid_handler_ = this;
-        reset_impl_.flag_ = flag;
-        boost::apply_visitor(reset_impl_,quad);
-        //*/
     }
 
+    virtual void init_cache(ElementAccessor &elem, const topology_variant &topology)
+    {
+        //TODO: (MM, Dec 15, 2014): this function should be pure virtual
+        Assert(false,ExcMessage("This function should not be called and should be pure virtual."));
+    }
+
+    virtual void init_cache(ElementIterator &elem, const topology_variant &topology)
+    {
+        //TODO: (MM, Dec 15, 2014): this function should be pure virtual
+        Assert(false,ExcMessage("This function should not be called and should be pure virtual."));
+    }
 
 
     template <int k>
@@ -83,11 +90,6 @@ public:
         Assert(false,ExcNotImplemented());
     }
 
-    template <int k>
-    void init_cache(ElementAccessor &elem)
-    {
-        Assert(false,ExcNotImplemented());
-    }
 
     template <int k>
     void fill_cache(ElementIterator &elem, const int j)
@@ -95,11 +97,6 @@ public:
         fill_cache<k>(*elem, j);
     }
 
-    template <int k>
-    void init_cache(ElementIterator &elem)
-    {
-        init_cache<k>(*elem);
-    }
 
     //Allocates the ElementIterator element_cache
     void init_element_cache(ElementIterator &elem)
@@ -122,23 +119,6 @@ public:
 
 private:
     std::shared_ptr<const Space> space_;
-    /*
-        struct ResetDispatcher : boost::static_visitor<void>
-        {
-            template<class T>
-            void operator()(const T &quad)
-            {
-                Assert(grid_handler_ != nullptr,ExcNullPtr());
-                grid_handler_->reset(FunctionFlags::to_grid_flags(flag_),quad);
-                Assert(false,ExcNotImplemented());
-            }
-
-            GridElementHandler<dim_> *grid_handler_;
-            ValueFlags flag_;
-        };
-
-        ResetDispatcher reset_impl_;
-    //*/
 };
 
 
@@ -173,6 +153,11 @@ class BSplineElementHandler : public ReferenceElementHandler<dim_,range_,rank_>
     using Value = typename Space::Value;
 
 protected:
+
+    using BaseSpace = ReferenceSpace<dim_,range_,rank_>;
+    using RefElementIterator = typename BaseSpace::ElementIterator;
+    using RefElementAccessor = typename BaseSpace::ElementAccessor;
+
     using ElementIterator = typename Space::ElementIterator;
     using ElementAccessor = typename Space::ElementAccessor;
 
@@ -191,28 +176,23 @@ public:
     }
 
     using variant_1 = typename base_t::variant_1;
+    using topology_variant = typename base_t::topology_variant;
 
     virtual void reset(const ValueFlags &flag, const variant_1 &quad) override final;
+
+    virtual void init_cache(RefElementAccessor &elem, const topology_variant &topology) override final;
+
+    virtual void init_cache(RefElementIterator &elem, const topology_variant &topology) override final
+    {
+        init_cache(*elem,topology);
+    }
 
 #if 0
     template<int k>
     void reset(const ValueFlags flag, const Quadrature<k> &quad);
-#endif
-
-//protected:
-    template <int k>
-    void fill_cache(ElementAccessor &elem, const int j);
 
     template <int k>
     void init_cache(ElementAccessor &elem);
-
-//    void init_all_caches(ElementAccessor &elem);
-public:
-    template <int k>
-    void fill_cache(ElementIterator &elem, const int j)
-    {
-        fill_cache<k>(*elem, j);
-    }
 
     template <int k>
     void init_cache(ElementIterator &elem)
@@ -220,14 +200,23 @@ public:
         init_cache<k>(*elem);
     }
 
-//    void init_all_caches(ElementIterator &elem)
-//    {
-//        init_all_caches(*elem);
-//    }
-
-
     //Allocates the ElementIterator element_cache
     void init_element_cache(ElementIterator &elem) ;
+#endif
+
+//protected:
+    template <int k>
+    void fill_cache(ElementAccessor &elem, const int j);
+
+
+public:
+    template <int k>
+    void fill_cache(ElementIterator &elem, const int j)
+    {
+        fill_cache<k>(*elem, j);
+    }
+
+
 
     //Fill the ElementIterator element_cache
     void fill_element_cache(ElementIterator &elem)  ;
@@ -321,12 +310,25 @@ private:
         ValueFlags flag_;
         std::array<FunctionFlags, dim + 1> *flags_;
         CacheList<GlobalCache, dim> *splines1d_;
-        const Space * space_;
-        const SpaceDimensionTable * n_basis_;
-        const TensorProductArray<dim> * lengths_;
+        const Space *space_;
+        const SpaceDimensionTable *n_basis_;
+        const TensorProductArray<dim> *lengths_;
     };
 
     ResetDispatcher reset_impl_;
+
+
+    struct InitCacheDispatcher : boost::static_visitor<void>
+    {
+        template<class T>
+        void operator()(const T &quad);
+
+        GridElementHandler<dim_> *grid_handler_;
+        ReferenceElement<dim_,range_,rank_> *elem_;
+        std::array<FunctionFlags, dim + 1> *flags_;
+    };
+
+    InitCacheDispatcher init_cache_impl_;
 
 };
 

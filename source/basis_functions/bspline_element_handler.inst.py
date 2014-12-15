@@ -29,8 +29,9 @@ data = Instantiation(include_files)
 
 
 sub_dim_members = \
-['void elhandler::fill_cache<k>(ElementAccessor &elem, const int j);',
-'void elhandler::init_cache<k>(ElementAccessor &elem);']
+['void elhandler::fill_cache<k>(ElementAccessor &elem, const int j);']
+#,
+#'void elhandler::init_cache<k>(ElementAccessor &elem);']
 # ,
 #'void elhandler::reset<k>(const ValueFlags flag, const Quadrature<k> &quad);']
 

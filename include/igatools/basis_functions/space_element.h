@@ -573,7 +573,13 @@ protected:
     /** The local (element and face) cache. */
     std::shared_ptr<LocalCache> local_cache_;
 
+public:
+    std::shared_ptr<LocalCache> &get_local_cache()
+    {
+        return local_cache_;
+    }
 
+protected:
     /**
      * Performs a copy of the input @p element.
      * The type of copy (deep or shallow) is specified by the input parameter @p copy_policy.

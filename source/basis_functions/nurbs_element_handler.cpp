@@ -117,9 +117,11 @@ void
 NURBSElementHandler<dim_, range_, rank_>::
 init_cache(ElementAccessor &elem)
 {
-    bspline_handler_.template init_cache<k>(elem.bspline_elem_);
-
     const auto topology = Int<k>();
+
+    bspline_handler_.init_cache(elem.bspline_elem_,topology);
+
+
     for (const auto &comp_id : space_->weight_func_table_.get_active_components_id())
         space_->weight_func_table_[comp_id]->init_cache(elem.weight_elem_table_[comp_id],topology);
 
@@ -133,11 +135,11 @@ init_cache(ElementAccessor &elem)
     }
 
     const auto n_basis = elem.get_num_basis();
+    const auto n_points = this->template get_num_points<k>();
 
     for (auto &s_id: UnitElement<dim>::template elems_ids<k>())
     {
         auto &s_cache = cache->template get_value_cache<k>(s_id);
-        const auto n_points = this->template get_num_points<k>();
         s_cache.resize(flags_[k], n_points, n_basis);
     }
 }
