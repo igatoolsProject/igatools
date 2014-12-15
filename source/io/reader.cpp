@@ -714,9 +714,9 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     const auto scalar_mult_table = shared_ptr<const ScalarMultiplicityTable>(new ScalarMultiplicityTable((*multiplicities)[0]));
 
     auto scalar_spline_space =
-    		ScalarBSplineSpace::create(scalar_degree_table, new_grid,
-    				scalar_mult_table,
-					typename ScalarBSplineSpace::EndBehaviourTable(filled_array<EndBehaviour,dim>(EndBehaviour::interpolatory)));
+        ScalarBSplineSpace::create(scalar_degree_table, new_grid,
+                                   scalar_mult_table,
+                                   typename ScalarBSplineSpace::EndBehaviourTable(filled_array<EndBehaviour,dim>(EndBehaviour::interpolatory)));
 
     using WeightFuncPtr = shared_ptr<WeightFunc>;
     using WeightFuncPtrTable = typename space_t::template ComponentContainer<WeightFuncPtr>;

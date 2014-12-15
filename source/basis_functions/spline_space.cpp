@@ -36,12 +36,12 @@ SplineSpace<dim, range, rank>::
 SplineSpace(const DegreeTable &deg,
             std::shared_ptr<GridType> knots,
             shared_ptr<const MultiplicityTable> interior_mult,
-			const EndBehaviourTable &end_behaviour)
+            const EndBehaviourTable &end_behaviour)
     :
     RefSpace(knots),
     interior_mult_(interior_mult),
     deg_(deg),
-	end_behaviour_(end_behaviour)
+    end_behaviour_(end_behaviour)
 {
 
 //    //-------------------
@@ -360,7 +360,7 @@ accumulated_interior_multiplicities() const -> MultiplicityTable
     {
         for (int j = 0; j < dim; ++j)
         {
-           // Assert(!periodic_[iComp][j], ExcMessage("periodic needs to be implemented"));
+            // Assert(!periodic_[iComp][j], ExcMessage("periodic needs to be implemented"));
             const auto &mult  = (*interior_mult_)[iComp].get_data_direction(j);
 
             vector<Size> accum_mult;

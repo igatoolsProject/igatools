@@ -28,14 +28,14 @@ IGA_NAMESPACE_OPEN
 
 enum class EndBehaviour
 {
-	/**
-	 * Interpolatory basis functions at knots bounday (i.e. open knot vector).
-	 */
-	interpolatory,
+    /**
+     * Interpolatory basis functions at knots bounday (i.e. open knot vector).
+     */
+    interpolatory,
 
-	periodic,
+    periodic,
 
-	end_knots
+    end_knots
 };
 
 /**
@@ -123,7 +123,7 @@ public:
     explicit SplineSpace(const DegreeTable &deg,
                          std::shared_ptr<GridType> knots,
                          std::shared_ptr<const MultiplicityTable> interior_mult,
-						 const EndBehaviourTable &end_behaviour = EndBehaviourTable(filled_array<EndBehaviour,dim>(EndBehaviour::interpolatory)));
+                         const EndBehaviourTable &end_behaviour = EndBehaviourTable(filled_array<EndBehaviour,dim>(EndBehaviour::interpolatory)));
 
     explicit SplineSpace(const DegreeTable &deg,
                          std::shared_ptr<GridType> knots,
@@ -219,7 +219,7 @@ public:
 
     template<int k>
     typename SubSpace<k>::EndBehaviourTable
-	get_sub_space_end_b(const Index s_id) const;
+    get_sub_space_end_b(const Index s_id) const;
 
 
 public:
