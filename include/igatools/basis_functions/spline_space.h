@@ -26,11 +26,17 @@
 
 IGA_NAMESPACE_OPEN
 
+enum class EndBehaviour
+{
+	/**
+	 * Interpolatory basis functions at knots bounday (i.e. open knot vector).
+	 */
+	interpolatory,
 
+	periodic,
 
-
-
-
+	end_knots
+};
 
 /**
  * @brief Tensor product spline space
@@ -99,17 +105,7 @@ public:
 
     using BCTable = typename RefSpace::BCTable;
 
-    enum class EndBehaviour
-    {
-        /**
-         * Interpolatory basis functions at knots bounday (i.e. open knot vector).
-         */
-        interpolatory,
 
-        periodic,
-
-        end_knots
-    };
     using EndBehaviourTable = typename RefSpace::template ComponentContainer<std::array<EndBehaviour, dim> >;
 
     // For the interior multiplicities
@@ -221,6 +217,12 @@ public:
     typename SubSpace<k>::DegreeTable
     get_sub_space_degree(const Index s_id) const;
 
+    template<int k>
+    typename SubSpace<k>::EndBehaviourTable
+	get_sub_space_end_b(const Index s_id) const;
+
+
+public:
 
     KnotsTable compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots) const;
 
