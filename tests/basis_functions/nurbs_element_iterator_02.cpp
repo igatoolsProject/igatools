@@ -87,7 +87,7 @@ void test()
 
     for (; elem != end_element; ++elem)
     {
-        elem_filler.template fill_cache<dim>(elem,0);
+        elem_filler.fill_element_cache(elem);
         out << "Element flat id: " << elem->get_flat_index() << endl << endl;
 
         out.begin_item("Values basis functions:");

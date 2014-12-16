@@ -171,6 +171,7 @@ reset(const ValueFlags &flag, const quadrature_variant &quad)
 
 
     //--------------------------------------------------
+    reset_impl_.grid_handler_ = this;
     reset_impl_.flag_ = flag;
     reset_impl_.flags_ = &flags_;
 
@@ -186,7 +187,26 @@ NURBSElementHandler<dim_, range_, rank_>::
 InitCacheDispatcher::
 operator()(const T &quad1)
 {
-    Assert(false,ExcNotImplemented());
+    Assert(grid_handler_ != nullptr,ExcNullPtr());
+    Assert(elem_ != nullptr,ExcNullPtr());
+    grid_handler_->template init_cache<T::k>(*elem_);
+
+    auto &cache = elem_->get_local_cache();
+    if (cache == nullptr)
+    {
+        using Cache = typename ElementAccessor::LocalCache;
+        cache = shared_ptr<Cache>(new Cache);
+    }
+
+    const auto n_basis = elem_->get_num_basis();
+    const auto n_points = grid_handler_->template get_num_points<T::k>();
+    const auto flag = (*flags_)[T::k];
+
+    for (auto &s_id: UnitElement<dim>::template elems_ids<T::k>())
+    {
+        auto &s_cache = cache->template get_value_cache<T::k>(s_id);
+        s_cache.resize(flag, n_points, n_basis);
+    }
 }
 
 template<int dim_, int range_ , int rank_>
@@ -194,16 +214,22 @@ void
 NURBSElementHandler<dim_, range_, rank_>::
 init_cache(RefElementAccessor &elem, const topology_variant &topology)
 {
-    /*
+    Assert(!elem.get_space()->is_bspline(),ExcMessage("Not a NURBSElement."));
+
+    auto &nrb_elem = static_cast<NURBSElement<dim_,range_,rank_>&>(elem);
+    bspline_handler_.init_cache(nrb_elem.bspline_elem_,topology);
+
+    for (const auto &comp_id : space_->weight_func_table_.get_active_components_id())
+        space_->weight_func_table_[comp_id]->init_cache(nrb_elem.weight_elem_table_[comp_id],topology);
+
+
+    //-------------------------------------
     init_cache_impl_.grid_handler_ = this;
-
-    Assert(elem.get_space()->is_bspline(),ExcMessage("Not a BSplineElement."));
     init_cache_impl_.elem_ = &elem;
-
     init_cache_impl_.flags_ = &flags_;
-    //*/
-    Assert(false,ExcNotImplemented());
+
     boost::apply_visitor(init_cache_impl_,topology);
+    //-------------------------------------
 }
 
 template<int dim_, int range_ , int rank_>

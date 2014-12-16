@@ -548,7 +548,10 @@ fill_cache(RefElementAccessor &elem, const topology_variant &topology, const int
     fill_cache_impl_.grid_handler_ = this;
     fill_cache_impl_.j_ = j;
     fill_cache_impl_.splines1d_ = &splines1d_;
+
+    Assert(elem.get_space()->is_bspline(),ExcMessage("Not a BSplineElement."));
     fill_cache_impl_.elem_ = &elem;
+
     fill_cache_impl_.space_ = space_.get();
     fill_cache_impl_.comp_offset_ = &comp_offset_;
 

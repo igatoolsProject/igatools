@@ -112,6 +112,7 @@ public:
 
 //    void init_all_caches(ElementAccessor &elem);
 public:
+#if 0
     template <int k>
     void fill_cache(ElementIterator &elem, const int j)
     {
@@ -123,6 +124,7 @@ public:
     {
         init_cache<k>(*elem);
     }
+#endif
 
 //    void init_all_caches(ElementIterator &elem)
 //    {
@@ -218,6 +220,7 @@ private:
         template<class T>
         void operator()(const T &quad);
 
+        GridElementHandler<dim_> *grid_handler_;
         ValueFlags flag_;
         std::array<FunctionFlags, dim + 1> *flags_;
     };
@@ -228,6 +231,12 @@ private:
     {
         template<class T>
         void operator()(const T &quad);
+
+        GridElementHandler<dim_> *grid_handler_;
+        ReferenceElement<dim_,range_,rank_> *elem_;
+        int n_points_;
+        std::array<FunctionFlags, dim + 1> *flags_;
+
     };
 
     InitCacheDispatcher init_cache_impl_;
