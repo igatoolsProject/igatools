@@ -66,37 +66,33 @@ public:
 
 
     virtual void reset(const ValueFlags &flag, const quadrature_variant &quad) = 0;
-    /*
-    {
-        //TODO: (MM, Dec 15, 2014): this function should be pure virtual
-        Assert(false,ExcMessage("This function should not be called and should be pure virtual."));
-    }
-    //*/
 
-    virtual void init_cache(ElementAccessor &elem, const topology_variant &topology)
-    {
-        //TODO: (MM, Dec 15, 2014): this function should be pure virtual
-        Assert(false,ExcMessage("This function should not be called and should be pure virtual."));
-    }
-//*/
+    virtual void init_cache(ElementAccessor &elem, const topology_variant &topology) = 0;
+
     virtual void init_cache(ElementIterator &elem, const topology_variant &topology)
     {
-        //TODO: (MM, Dec 15, 2014): this function should be pure virtual
-        Assert(false,ExcMessage("This function should not be called and should be pure virtual."));
+        init_cache(*elem,topology);
     }
 
-    virtual void fill_cache(ElementAccessor &elem, const topology_variant &topology, const int j)
+    //Allocates the ElementIterator element_cache
+    void init_element_cache(ElementIterator &elem)
     {
-        //TODO: (MM, Dec 15, 2014): this function should be pure virtual
-        Assert(false,ExcMessage("This function should not be called and should be pure virtual."));
+        init_cache(*elem,Int<dim_>());
     }
+
+
+    virtual void fill_cache(ElementAccessor &elem, const topology_variant &topology, const int j) = 0;
 
     virtual void fill_cache(ElementIterator &elem, const topology_variant &topology, const int j)
     {
-        //TODO: (MM, Dec 15, 2014): this function should be pure virtual
-        Assert(false,ExcMessage("This function should not be called and should be pure virtual."));
+        fill_cache(*elem,topology,j);
     }
 
+    //Fill the ElementIterator element_cache
+    void fill_element_cache(ElementIterator &elem)
+    {
+        fill_cache(*elem,Int<dim_>(),0);
+    }
 
 
     template <int k>
@@ -113,24 +109,11 @@ public:
     }
 
 
-    //Allocates the ElementIterator element_cache
-    void init_element_cache(ElementIterator &elem)
-    {
-        Assert(false,ExcNotImplemented());
-    }
 
 
-    //Fill the ElementIterator element_cache
-    void fill_element_cache(ElementIterator &elem)
-    {
-        Assert(false,ExcNotImplemented());
-    }
 
 
-    void print_info(LogStream &out) const
-    {
-        Assert(false,ExcNotImplemented());
-    }
+    virtual void print_info(LogStream &out) const = 0;
 
 private:
     std::shared_ptr<const Space> space_;
@@ -197,22 +180,13 @@ public:
 
     virtual void init_cache(RefElementAccessor &elem, const topology_variant &topology) override final;
 
-    virtual void init_cache(RefElementIterator &elem, const topology_variant &topology) override final
-    {
-        init_cache(*elem,topology);
-    }
 
     virtual void fill_cache(RefElementAccessor &elem, const topology_variant &topology, const int j) override final;
-
-    virtual void fill_cache(RefElementIterator &elem, const topology_variant &topology, const int j) override final
-    {
-        fill_cache(*elem,topology,j);
-    }
 
 
 public:
 
-    void print_info(LogStream &out) const ;
+    virtual void print_info(LogStream &out) const override final ;
 
 private:
     const Quadrature<dim> &get_quad() const;

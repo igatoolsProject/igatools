@@ -180,6 +180,33 @@ reset(const ValueFlags &flag, const quadrature_variant &quad)
 
 
 template<int dim_, int range_ , int rank_>
+template<class T>
+void
+NURBSElementHandler<dim_, range_, rank_>::
+InitCacheDispatcher::
+operator()(const T &quad1)
+{
+    Assert(false,ExcNotImplemented());
+}
+
+template<int dim_, int range_ , int rank_>
+void
+NURBSElementHandler<dim_, range_, rank_>::
+init_cache(RefElementAccessor &elem, const topology_variant &topology)
+{
+    /*
+    init_cache_impl_.grid_handler_ = this;
+
+    Assert(elem.get_space()->is_bspline(),ExcMessage("Not a BSplineElement."));
+    init_cache_impl_.elem_ = &elem;
+
+    init_cache_impl_.flags_ = &flags_;
+    //*/
+    Assert(false,ExcNotImplemented());
+    boost::apply_visitor(init_cache_impl_,topology);
+}
+
+template<int dim_, int range_ , int rank_>
 template<int k>
 void
 NURBSElementHandler<dim_, range_, rank_>::
@@ -214,14 +241,26 @@ init_cache(ElementAccessor &elem)
 
 
 
+template<int dim_, int range_ , int rank_>
+template<class T>
+void
+NURBSElementHandler<dim_, range_, rank_>::
+FillCacheDispatcher::
+operator()(const T &quad1)
+{
+    Assert(false,ExcNotImplemented());
+}
+
 
 
 template<int dim_, int range_ , int rank_>
 void
 NURBSElementHandler<dim_, range_, rank_>::
-init_element_cache(ElementIterator &elem)
+fill_cache(RefElementAccessor &elem, const topology_variant &topology, const int j)
 {
-    init_cache<dim>(static_cast<NURBSElement<dim_,range_,rank_> &>(*elem));
+
+    Assert(false,ExcNotImplemented());
+    boost::apply_visitor(fill_cache_impl_,topology);
 }
 
 
@@ -416,7 +455,7 @@ fill_cache(ElementAccessor &elem, const int j)
 }
 
 
-
+#if 0
 template<int dim_, int range_ , int rank_>
 void
 NURBSElementHandler<dim_, range_, rank_>::
@@ -424,7 +463,7 @@ fill_element_cache(ElementIterator &elem)
 {
     fill_cache<dim>(static_cast<NURBSElement<dim_,range_,rank_> &>(*elem), 0);
 }
-
+#endif
 
 
 

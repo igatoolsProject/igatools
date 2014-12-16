@@ -45,7 +45,7 @@ void space_cache_fill_elem(const ValueFlags flag,
     auto quad = QGauss<dim>(2);
 
     typename Space::ElementHandler value_handler(space);
-    value_handler.template reset<dim>(flag, quad);
+    value_handler.reset(flag, quad);
     auto elem = space->begin();
     auto end = space->end();
 

@@ -70,6 +70,10 @@ protected:
     using ElementIterator = typename Space::ElementIterator;
     using ElementAccessor = typename Space::ElementAccessor;
 
+    using BaseSpace = ReferenceSpace<dim_,range_,rank_>;
+    using RefElementIterator = typename BaseSpace::ElementIterator;
+    using RefElementAccessor = typename BaseSpace::ElementAccessor;
+
 
 public:
     static const int dim = dim_;
@@ -86,8 +90,13 @@ public:
     }
 
     using quadrature_variant = typename base_t::quadrature_variant;
+    using topology_variant = typename base_t::topology_variant;
 
     virtual void reset(const ValueFlags &flag, const quadrature_variant &quad) override final;
+
+    virtual void init_cache(RefElementAccessor &elem, const topology_variant &topology) override final;
+
+    virtual void fill_cache(RefElementAccessor &elem, const topology_variant &topology, const int j) override final;
 
 #if 0
     template<int k>
@@ -120,12 +129,13 @@ public:
 //        init_all_caches(*elem);
 //    }
 
-
+#if 0
     //Allocates the ElementIterator element_cache
     void init_element_cache(ElementIterator &elem);
 
     //Fill the ElementIterator element_cache
     void fill_element_cache(ElementIterator &elem);
+#endif
 
     void print_info(LogStream &out) const;
 
@@ -217,10 +227,7 @@ private:
     struct InitCacheDispatcher : boost::static_visitor<void>
     {
         template<class T>
-        void operator()(const T &quad)
-        {
-            Assert(false,ExcNotImplemented());
-        }
+        void operator()(const T &quad);
     };
 
     InitCacheDispatcher init_cache_impl_;
@@ -228,10 +235,7 @@ private:
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
         template<class T>
-        void operator()(const T &quad)
-        {
-            Assert(false,ExcNotImplemented());
-        }
+        void operator()(const T &quad);
     };
 
     FillCacheDispatcher fill_cache_impl_;

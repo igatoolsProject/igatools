@@ -44,7 +44,7 @@ void uniform_space_cache(const ValueFlags flag,
 
     auto quad = QGauss<dim>(2);
     typename Space::ElementHandler value_handler(space);
-    value_handler.template reset<dim>(flag, quad);
+    value_handler.reset(flag, quad);
     value_handler.print_info(out);
 
     OUTEND
