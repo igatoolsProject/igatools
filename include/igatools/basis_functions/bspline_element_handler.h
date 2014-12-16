@@ -324,7 +324,6 @@ private:
         std::array<FunctionFlags, dim + 1> *flags_;
         CacheList<GlobalCache, dim> *splines1d_;
         const Space *space_;
-        const SpaceDimensionTable *n_basis_;
         const TensorProductArray<dim> *lengths_;
     };
 
@@ -349,6 +348,14 @@ private:
         template<class T>
         void operator()(const T &quad);
 
+        /**
+         * Computes the values (i.e. the 0-th order derivative) of the non-zero B-spline basis
+         * functions over the current element,
+         *   at the evaluation points pre-allocated in the cache.
+         *
+         * \warning If the output result @p D_phi is not correctly pre-allocated,
+         * an exception will be raised.
+         */
         void evaluate_bspline_values(
             const  ComponentContainer<TensorProductFunctionEvaluator<dim>> &elem_values,
             ValueTable<Value> &D_phi) const;
@@ -358,7 +365,7 @@ private:
          * functions over the current element,
          *   at the evaluation points pre-allocated in the cache.
          *
-         * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
+         * \warning If the output result @p D_phi is not correctly pre-allocated,
          * an exception will be raised.
          */
         template <int order>
@@ -372,7 +379,7 @@ private:
         int j_;
         const CacheList<GlobalCache, dim> *splines1d_;
         ReferenceElement<dim_,range_,rank_> *elem_;
-        const SpaceDimensionTable *n_basis_;
+        const Space *space_;
         const ComponentContainer<Size> *comp_offset_;
 
     private:
