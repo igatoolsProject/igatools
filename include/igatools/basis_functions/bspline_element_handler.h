@@ -69,7 +69,7 @@ public:
 
     virtual void init_cache(ElementAccessor &elem, const topology_variant &topology) = 0;
 
-    virtual void init_cache(ElementIterator &elem, const topology_variant &topology)
+    void init_cache(ElementIterator &elem, const topology_variant &topology)
     {
         init_cache(*elem,topology);
     }
@@ -80,10 +80,9 @@ public:
         init_cache(*elem,Int<dim_>());
     }
 
-
     virtual void fill_cache(ElementAccessor &elem, const topology_variant &topology, const int j) = 0;
 
-    virtual void fill_cache(ElementIterator &elem, const topology_variant &topology, const int j)
+    void fill_cache(ElementIterator &elem, const topology_variant &topology, const int j)
     {
         fill_cache(*elem,topology,j);
     }
@@ -100,16 +99,6 @@ public:
     {
         Assert(false,ExcNotImplemented());
     }
-
-
-    template <int k>
-    void fill_cache(ElementIterator &elem, const int j)
-    {
-        fill_cache<k>(*elem, j);
-    }
-
-
-
 
 
 
@@ -180,9 +169,31 @@ public:
 
     virtual void init_cache(RefElementAccessor &elem, const topology_variant &topology) override final;
 
+    void init_cache(ElementIterator &elem, const topology_variant &topology)
+    {
+        init_cache(*elem,topology);
+    }
+
+    //Allocates the ElementIterator element_cache
+    void init_element_cache(ElementIterator &elem)
+    {
+        init_cache(*elem,Int<dim_>());
+    }
+
 
     virtual void fill_cache(RefElementAccessor &elem, const topology_variant &topology, const int j) override final;
 
+
+    void fill_cache(ElementIterator &elem, const topology_variant &topology, const int j)
+    {
+        fill_cache(*elem,topology,j);
+    }
+
+    //Fill the ElementIterator element_cache
+    void fill_element_cache(ElementIterator &elem)
+    {
+        fill_cache(*elem,Int<dim_>(),0);
+    }
 
 public:
 
@@ -217,7 +228,7 @@ private:
 private:
     std::shared_ptr<const Space> space_;
 
-    SpaceDimensionTable n_basis_;
+//    SpaceDimensionTable n_basis_;
 
     ComponentContainer<Size> comp_offset_;
 

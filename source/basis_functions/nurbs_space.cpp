@@ -142,6 +142,9 @@ NURBSSpace(std::shared_ptr<SpSpace> bs_space,
 
         Assert(*this->get_grid() == *w_func->get_grid(),ExcMessage("Mismatching grids."));
 
+        Assert(w_func->get_iga_space()->is_bspline(),
+               ExcMessage("The space for the weight function is not BSplineSpace."));
+
         Assert(sp_space_->get_num_basis_table()[comp_id] ==
                w_func->get_iga_space()->get_num_basis_table()[0],
                ExcMessage("Mismatching number of basis functions and weight "

@@ -154,14 +154,15 @@ BSplineElementHandler<dim_, range_, rank_>::
 BSplineElementHandler(shared_ptr<const Space> space)
     :
     base_t(space),
-    space_(space),
-    n_basis_(space_->get_num_all_element_basis())
+    space_(space)
 {
+    Assert(space_ != nullptr, ExcNullPtr());
+    const auto n_basis = space_->get_num_all_element_basis();
 
     // Compute the component offsets
     comp_offset_[0] = 0;
     for (int j = 1; j < Space::n_components; ++j)
-        comp_offset_[j] = comp_offset_[j-1] + n_basis_.comp_dimension[j-1];
+        comp_offset_[j] = comp_offset_[j-1] + n_basis.comp_dimension[j-1];
 }
 
 
@@ -323,60 +324,6 @@ init_cache(RefElementAccessor &elem, const topology_variant &topology)
 }
 
 
-#if 0
-template<int dim_, int range_ , int rank_>
-template<int k>
-void
-BSplineElementHandler<dim_, range_, rank_>::
-init_cache(ElementAccessor &elem)
-{
-    const auto topology = Int<k>();
-    base_t::init_cache(elem,topology);
-
-    auto &cache = elem.local_cache_;
-    if (cache == nullptr)
-    {
-        using Cache = typename ElementAccessor::LocalCache;
-        cache = shared_ptr<Cache>(new Cache);
-    }
-
-    const auto n_basis = elem.get_num_basis();
-
-    for (auto &s_id: UnitElement<dim>::template elems_ids<k>())
-    {
-        auto &s_cache = cache->template get_value_cache<k>(s_id);
-        const auto n_points = this->template get_num_points<k>();
-        s_cache.resize(flags_[k], n_points, n_basis);
-    }
-}
-#endif
-
-
-//template<int dim_, int range_ , int rank_>
-//template<int k>
-//void
-//BSplineElementHandler<dim_, range_, rank_>::
-//init_all_caches(ElementAccessor &elem)
-//{
-//    auto &cache = elem.local_cache_;
-//    if (cache == nullptr)
-//    {
-//        using Cache = typename ElementAccessor::LocalCache;
-//        cache = shared_ptr<Cache>(new Cache);
-//    }
-//    init_unif_caches(flags_[dim], std::get<dim>(quad_), cache->values_);
-//}
-
-
-#if 0
-template<int dim_, int range_ , int rank_>
-void
-BSplineElementHandler<dim_, range_, rank_>::
-init_element_cache(ElementIterator &elem)
-{
-    init_cache<dim>(static_cast<BSplineElement<dim_,range_,rank_> &>(*elem));
-}
-#endif
 
 
 template <int dim, int range, int rank>
@@ -444,59 +391,6 @@ copy_to_inactive_components(const vector<Index> &inactive_comp,
 
 
 
-
-#if 0
-
-template<int dim_, int range_ , int rank_>
-template <int k>
-void
-BSplineElementHandler<dim_, range_, rank_>::
-fill_cache(ElementAccessor &elem, const int j)
-{
-    base_t::template fill_cache<k> (elem, j);
-
-    auto &g_cache = std::get<k>(splines1d_)[j];
-
-    Assert(elem.local_cache_ != nullptr, ExcNullPtr());
-    auto &cache = elem.local_cache_->template get_value_cache<k>(j);
-
-    const auto &index = elem.get_tensor_index();
-    //const TensorIndex<k> active(UnitElement<dim>::template get_elem<k>(j).active_directions);
-
-    auto &flags = cache.flags_handler_;
-    auto val_1d = g_cache.get_element_values(index);
-    if (flags.fill_values())
-    {
-        auto &values = cache.template get_der<0>();
-        evaluate_bspline_values(val_1d, values);
-        flags.set_values_filled(true);
-    }
-    if (flags.fill_gradients())
-    {
-        auto &values = cache.template get_der<1>();
-        evaluate_bspline_derivatives<1>(val_1d, values);
-        flags.set_gradients_filled(true);
-    }
-    if (flags.fill_hessians())
-    {
-        auto &values = cache.template get_der<2>();
-        evaluate_bspline_derivatives<2>(val_1d, values);
-        flags.set_hessians_filled(true);
-    }
-
-    cache.set_filled(true);
-}
-
-
-
-template<int dim_, int range_ , int rank_>
-void
-BSplineElementHandler<dim_, range_, rank_>::
-fill_element_cache(ElementIterator &elem)
-{
-    fill_cache<dim>(static_cast<BSplineElement<dim_,range_,rank_> &>(*elem), 0);
-}
-#endif
 
 
 template <int dim, int range, int rank>
@@ -713,13 +607,6 @@ fill_cache(RefElementAccessor &elem, const topology_variant &topology, const int
 //}
 
 
-//template<int dim_, int range_ , int rank_>
-//void
-//BSplineElementHandler<dim_, range_, rank_>::
-//fill_element_cache(ElementAccessor &elem)
-//{
-//    base_t::template fill_cache<dim>(elem, 0);
-//}
 
 
 

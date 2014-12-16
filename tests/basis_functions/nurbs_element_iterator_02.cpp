@@ -59,7 +59,7 @@ void test()
 
     const auto n_scalar_basis = scalar_bsp_space->get_num_basis_table()[0];
 
-    using WeightFunc = IgFunction<ScalarSpSpace>;
+    using WeightFunc = IgFunction<ReferenceSpace<dim,1,1>>;
     DynamicMultiArray<Real,dim> weights_coef(n_scalar_basis);
     const int n_entries = weights_coef.flat_size();
     for (int i = 0 ; i < n_entries ; ++i)
@@ -82,7 +82,8 @@ void test()
     auto elem_filler = ElemHandler(space);
     elem_filler.reset(flag,quad);
 
-    elem_filler.template init_cache<dim>(elem);
+
+    elem_filler.init_element_cache(elem);
 
     for (; elem != end_element; ++elem)
     {
