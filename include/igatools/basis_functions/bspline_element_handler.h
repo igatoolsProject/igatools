@@ -50,7 +50,7 @@ public:
 
     static const int l = iga::max(0, dim_-num_sub_elem);
     using v1 = typename seq<Quadrature, l, dim_>::type;
-    using variant_1 = typename boost::make_variant_over<v1>::type;
+    using quadrature_variant = typename boost::make_variant_over<v1>::type;
 
     using v2 = typename seq<Int, l, dim_>::type;
     using topology_variant = typename boost::make_variant_over<v2>::type;
@@ -65,18 +65,20 @@ public:
     };
 
 
-    virtual void reset(const ValueFlags &flag, const variant_1 &quad)
+    virtual void reset(const ValueFlags &flag, const quadrature_variant &quad) = 0;
+    /*
     {
         //TODO: (MM, Dec 15, 2014): this function should be pure virtual
         Assert(false,ExcMessage("This function should not be called and should be pure virtual."));
     }
+    //*/
 
     virtual void init_cache(ElementAccessor &elem, const topology_variant &topology)
     {
         //TODO: (MM, Dec 15, 2014): this function should be pure virtual
         Assert(false,ExcMessage("This function should not be called and should be pure virtual."));
     }
-
+//*/
     virtual void init_cache(ElementIterator &elem, const topology_variant &topology)
     {
         //TODO: (MM, Dec 15, 2014): this function should be pure virtual
@@ -188,10 +190,10 @@ public:
         return std::shared_ptr<self_t>(new self_t(space));
     }
 
-    using variant_1 = typename base_t::variant_1;
+    using quadrature_variant = typename base_t::quadrature_variant;
     using topology_variant = typename base_t::topology_variant;
 
-    virtual void reset(const ValueFlags &flag, const variant_1 &quad) override final;
+    virtual void reset(const ValueFlags &flag, const quadrature_variant &quad) override final;
 
     virtual void init_cache(RefElementAccessor &elem, const topology_variant &topology) override final;
 
@@ -207,42 +209,8 @@ public:
         fill_cache(*elem,topology,j);
     }
 
-#if 0
-    template<int k>
-    void reset(const ValueFlags flag, const Quadrature<k> &quad);
-
-    template <int k>
-    void init_cache(ElementAccessor &elem);
-
-    template <int k>
-    void init_cache(ElementIterator &elem)
-    {
-        init_cache<k>(*elem);
-    }
-
-    //Allocates the ElementIterator element_cache
-    void init_element_cache(ElementIterator &elem) ;
-#endif
-
-//protected:
-#if 0
-    template <int k>
-    void fill_cache(ElementAccessor &elem, const int j);
-#endif
 
 public:
-#if 0
-    template <int k>
-    void fill_cache(ElementIterator &elem, const int j)
-    {
-        fill_cache<k>(*elem, j);
-    }
-
-
-
-    //Fill the ElementIterator element_cache
-    void fill_element_cache(ElementIterator &elem)  ;
-#endif
 
     void print_info(LogStream &out) const ;
 

@@ -45,24 +45,26 @@ void sub_elem_values(const int n_knots, const int deg)
     QGauss<dim> quad(n_qp);
     auto flag = ValueFlags::value;//|ValueFlags::gradient|ValueFlags::hessian;
     ElementHandler cache(space);
-    cache.template reset<k>(flag, k_quad);
-    cache.template reset<dim>(flag, quad);
+    cache.reset(flag, k_quad);
+    cache.reset(flag, quad);
     auto elem = space->begin();
     auto end =  space->end();
-    cache.template init_cache<k>(elem);
-    cache.template init_cache<dim>(elem);
+    const auto topology_k = Int<k>();
+    const auto topology_dim = Int<dim>();
+    cache.init_cache(elem,topology_k);
+    cache.init_cache(elem,topology_dim);
     for (; elem != end; ++elem)
     {
         if (elem->is_boundary())
         {
-            cache.template fill_cache<dim>(elem, 0);
+            cache.fill_cache(elem, topology_dim, 0);
             out << "Element" << elem->get_flat_index() << endl;
             elem->template get_values<0,dim>(0).print_info(out);
             for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
             {
                 if (elem->is_boundary(s_id))
                 {
-                    cache.template fill_cache<k>(elem, s_id);
+                    cache.fill_cache(elem, topology_k, s_id);
                     out << "Sub Element: " << s_id << endl;
                     out.begin_item("Values basis functions:");
                     auto values = elem->template get_values<0,k>(s_id);

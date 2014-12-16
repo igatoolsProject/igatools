@@ -49,14 +49,16 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
     auto flag = ValueFlags::value|ValueFlags::gradient
                 |ValueFlags::hessian;
     ElementHandler cache(space);
-    cache.template reset<k>(flag, quad);
+    cache.reset(flag, quad);
+
+    const auto topology = Int<k>();
 
     auto elem = space->begin();
-    cache.template init_cache<k>(elem);
+    cache.init_cache(elem,topology);
 
     for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
     {
-        cache.template fill_cache<k>(elem, s_id);
+        cache.fill_cache(elem,topology, s_id);
 
         out << "Sub Element: " << s_id << endl;
         auto values    = elem->template get_values<0,k>(s_id);

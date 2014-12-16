@@ -55,6 +55,7 @@ NURBSElementHandler(shared_ptr<const Space> space)
 #endif
 
 
+#if 0
 template<int dim_, int range_ , int rank_>
 template<int k>
 void
@@ -108,7 +109,74 @@ reset(const ValueFlags flag,
 
     flags_[k] = flag;
 }
+#endif
 
+template<int dim_, int range_ , int rank_>
+template<class T>
+void
+NURBSElementHandler<dim_, range_, rank_>::
+ResetDispatcher::
+operator()(const T &quad1)
+{
+    (*flags_)[T::dim] = flag_;
+}
+
+
+template<int dim_, int range_ , int rank_>
+void
+NURBSElementHandler<dim_, range_, rank_>::
+reset(const ValueFlags &flag, const quadrature_variant &quad)
+{
+    //--------------------------------------
+    // resetting the BSplineElementHandler (for the numerator)
+    bspline_handler_.reset(flag, quad);
+    //--------------------------------------
+
+
+    //--------------------------------------------------
+    // resetting the Function for the weight (for the denominator)
+    int max_deriv_order = -1;
+    if (contains(flag, ValueFlags::point) ||
+        contains(flag, ValueFlags::value))
+        max_deriv_order = 0;
+
+    if (contains(flag, ValueFlags::measure) ||
+        contains(flag, ValueFlags::w_measure) ||
+        contains(flag, ValueFlags::boundary_normal) ||
+        contains(flag, ValueFlags::outer_normal) ||
+        contains(flag, ValueFlags::gradient) ||
+        contains(flag, ValueFlags::inv_gradient))
+        max_deriv_order = 1;
+
+
+    if (contains(flag, ValueFlags::curvature) ||
+        contains(flag, ValueFlags::hessian) ||
+        contains(flag, ValueFlags::inv_hessian))
+        max_deriv_order = 2;
+
+
+    ValueFlags weight_flag;
+    if (max_deriv_order == 0)
+        weight_flag = ValueFlags::value;
+    else if (max_deriv_order == 1)
+        weight_flag = ValueFlags::value | ValueFlags::gradient;
+    else if (max_deriv_order == 2)
+        weight_flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::hessian;
+    else
+        Assert(false,ExcMessage("Not a right value flag."));
+
+    for (const auto &comp_id : space_->weight_func_table_.get_active_components_id())
+        space_->weight_func_table_[comp_id]->reset(weight_flag,quad);
+    //--------------------------------------------------
+
+
+    //--------------------------------------------------
+    reset_impl_.flag_ = flag;
+    reset_impl_.flags_ = &flags_;
+
+    boost::apply_visitor(reset_impl_, quad);
+    //--------------------------------------------------
+}
 
 
 template<int dim_, int range_ , int rank_>

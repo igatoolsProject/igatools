@@ -64,7 +64,7 @@ void evaluate_field(const int deg = 1)
     const auto flag = ValueFlags::value|ValueFlags::gradient;
 
     ElementHandler cache1(space);
-    cache1.template reset<dim>(flag, quad);
+    cache1.reset(flag, quad);
 
     auto elem = space->begin();
     cache1.init_element_cache(elem);

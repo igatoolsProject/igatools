@@ -85,18 +85,14 @@ public:
         return std::shared_ptr<self_t>(new self_t(space));
     }
 
-    using variant_1 = typename base_t::variant_1;
+    using quadrature_variant = typename base_t::quadrature_variant;
 
-    virtual void reset(const ValueFlags &flag, const variant_1 &quad) override final
-    {
-//      reset_impl_.flag_ = flag;
-        boost::apply_visitor(reset_impl_, quad);
-        Assert(false,ExcNotImplemented());
-    }
+    virtual void reset(const ValueFlags &flag, const quadrature_variant &quad) override final;
 
-
+#if 0
     template<int k>
     void reset(const ValueFlags flag, const Quadrature<k> &quad);
+#endif
 
 //protected:
     template <int k>
@@ -210,13 +206,35 @@ private:
     struct ResetDispatcher : boost::static_visitor<void>
     {
         template<class T>
+        void operator()(const T &quad);
+
+        ValueFlags flag_;
+        std::array<FunctionFlags, dim + 1> *flags_;
+    };
+
+    ResetDispatcher reset_impl_;
+
+    struct InitCacheDispatcher : boost::static_visitor<void>
+    {
+        template<class T>
         void operator()(const T &quad)
         {
             Assert(false,ExcNotImplemented());
         }
     };
 
-    ResetDispatcher reset_impl_;
+    InitCacheDispatcher init_cache_impl_;
+
+    struct FillCacheDispatcher : boost::static_visitor<void>
+    {
+        template<class T>
+        void operator()(const T &quad)
+        {
+            Assert(false,ExcNotImplemented());
+        }
+    };
+
+    FillCacheDispatcher fill_cache_impl_;
 
 
 };

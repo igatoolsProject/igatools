@@ -347,7 +347,7 @@ operator()(const T &quad1)
 template<int dim_, int range_ , int rank_>
 void
 BSplineElementHandler<dim_, range_, rank_>::
-reset(const ValueFlags &flag, const variant_1 &quad)
+reset(const ValueFlags &flag, const quadrature_variant &quad)
 {
     reset_impl_.grid_handler_ = this;
     reset_impl_.flag_ = flag;
