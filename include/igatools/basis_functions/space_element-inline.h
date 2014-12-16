@@ -264,6 +264,7 @@ auto
 SpaceElement<Space>::
 get_space() const -> std::shared_ptr<const Space>
 {
+    Assert(space_ != nullptr,ExcNullPtr());
     return space_;
 }
 

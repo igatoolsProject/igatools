@@ -315,6 +315,8 @@ init_cache(RefElementAccessor &elem, const topology_variant &topology)
 {
     init_cache_impl_.grid_handler_ = this;
 
+    Assert(space_ == elem.get_space(),ExcMessage("The element accessor and the element handler cannot have different spaces."));
+
     Assert(elem.get_space()->is_bspline(),ExcMessage("Not a BSplineElement."));
     init_cache_impl_.elem_ = &elem;
 
@@ -548,6 +550,8 @@ fill_cache(RefElementAccessor &elem, const topology_variant &topology, const int
     fill_cache_impl_.grid_handler_ = this;
     fill_cache_impl_.j_ = j;
     fill_cache_impl_.splines1d_ = &splines1d_;
+
+    Assert(space_ == elem.get_space(),ExcMessage("The element accessor and the element handler cannot have different spaces."));
 
     Assert(elem.get_space()->is_bspline(),ExcMessage("Not a BSplineElement."));
     fill_cache_impl_.elem_ = &elem;

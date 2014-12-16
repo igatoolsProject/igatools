@@ -34,7 +34,8 @@ NURBSElementHandler(shared_ptr<const Space> space)
     base_t(space),
     bspline_handler_(space->get_spline_space()),
     space_(space)
-{}
+{
+}
 
 
 #if 0
