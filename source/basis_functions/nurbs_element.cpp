@@ -33,6 +33,7 @@ NURBSElement(const std::shared_ptr<ContainerType> space,
              const Index index)
     :
     parent_t(space,index),
+    space_(space),
     bspline_elem_(space->get_spline_space(),index),
     weight_elem_table_(space->weight_func_table_.get_comp_map())
 {
@@ -48,6 +49,7 @@ NURBSElement(const std::shared_ptr<ContainerType> space,
              const TensorIndex<dim> &index)
     :
     parent_t(space,index),
+    space_(space),
     bspline_elem_(space->get_spline_space(),index),
     weight_elem_table_(space->weight_func_table_.get_comp_map())
 {

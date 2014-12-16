@@ -45,14 +45,17 @@ public:
 
     using parent_t = SpaceElement<ReferenceSpace<dim,range,rank>>;
 
-    ReferenceElement() = default;
+    ReferenceElement()
+    {
+        Assert(false,ExcNotImplemented());
+    }
 
     ReferenceElement(const ReferenceElement<dim,range,rank> &elem,
                      const iga::CopyPolicy &copy_policy = CopyPolicy::deep)
         :
         parent_t(elem,copy_policy)
     {
-
+        Assert(false,ExcNotImplemented());
     }
 
     /**
@@ -65,6 +68,10 @@ public:
         parent_t(space,elem_index)
     {};
 
+    /**
+     * Constructs an accessor to element number index of a
+     * Reference space.
+     */
     ReferenceElement(const std::shared_ptr<ConstSpace> space,
                      const TensorIndex<dim> &elem_index)
         :

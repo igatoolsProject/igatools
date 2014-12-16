@@ -67,7 +67,7 @@ public:
     /**
      * Default constructor
      */
-    NURBSElement() = default;
+    NURBSElement() = delete;
 
     /**
      * Constructs an accessor to element number index of a
@@ -87,9 +87,14 @@ public:
      */
     NURBSElement(const self_t &elem,
                  const CopyPolicy &copy_policy = CopyPolicy::deep)
+        :
+        parent_t(elem,copy_policy),
+        bspline_elem_(elem.bspline_elem_,copy_policy),
+        weight_elem_table_(elem.weight_elem_table_)
     {
         Assert(false,ExcNotImplemented());
     }
+//*/
 
     /**
      * Move constructor.
@@ -152,6 +157,9 @@ public:
     ///@}
 
 private:
+
+    std::shared_ptr<const Space> space_;
+
     using SpSpace = typename Space::SpSpace;
 
     typename SpSpace::ElementAccessor bspline_elem_;

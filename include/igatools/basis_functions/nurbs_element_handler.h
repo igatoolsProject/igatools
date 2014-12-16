@@ -142,9 +142,8 @@ public:
     void print_info(LogStream &out) const;
 
 private:
-    BSplineElementHandler<dim_,range_,rank_> bspline_handler_;
-
     std::shared_ptr<const Space> space_;
+    std::shared_ptr<BSplineElementHandler<dim_,range_,rank_>> bspline_handler_;
 
     std::array<FunctionFlags, dim + 1> flags_;
 

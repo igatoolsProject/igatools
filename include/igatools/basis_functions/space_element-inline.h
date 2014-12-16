@@ -82,6 +82,8 @@ SpaceElement(const SpaceElement<Space> &elem,
     basis_functions_indexer_(elem.basis_functions_indexer_),
     comp_offset_(elem.comp_offset_)
 {
+    Assert(space_ != nullptr,ExcNullPtr());
+
     if (elem.local_cache_ != nullptr)
     {
         if (copy_policy == CopyPolicy::shallow)
@@ -103,9 +105,10 @@ SpaceElement<Space>::
 copy_from(const SpaceElement<Space> &elem,
           const CopyPolicy &copy_policy)
 {
-    CartesianGridElement<Space::dim>::copy_from(elem,copy_policy);
     if (this != &elem)
     {
+        CartesianGridElement<Space::dim>::copy_from(elem,copy_policy);
+
         space_ = elem.space_;
         n_basis_direction_ = elem.n_basis_direction_;
         basis_functions_indexer_ = elem.basis_functions_indexer_;

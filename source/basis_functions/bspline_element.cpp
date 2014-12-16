@@ -276,7 +276,8 @@ BSplineElement<dim, range, rank>::
 BSplineElement(const std::shared_ptr<ContainerType> space,
                const Index index)
     :
-    parent_t(space,index)
+    parent_t(space,index),
+    space_(space)
 {}
 
 
@@ -298,7 +299,9 @@ BSplineElement(const self_t &elem,
     :
     parent_t(elem,copy_policy),
     space_(elem.space_)
-{}
+{
+    Assert(false,ExcNotImplemented());
+}
 
 
 

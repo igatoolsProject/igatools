@@ -315,7 +315,13 @@ init_cache(RefElementAccessor &elem, const topology_variant &topology)
 {
     init_cache_impl_.grid_handler_ = this;
 
-    Assert(space_ == elem.get_space(),ExcMessage("The element accessor and the element handler cannot have different spaces."));
+    LogStream out;
+    auto ref_space = std::dynamic_pointer_cast<const BaseSpace>(space_);
+    auto elem_space = elem.get_space();
+    out << " ref space = " << ref_space <<std::endl;
+    out << "elem space = " << elem_space <<std::endl;
+    Assert(std::dynamic_pointer_cast<const BaseSpace>(space_) == elem.get_space(),
+           ExcMessage("The element accessor and the element handler cannot have different spaces."));
 
     Assert(elem.get_space()->is_bspline(),ExcMessage("Not a BSplineElement."));
     init_cache_impl_.elem_ = &elem;

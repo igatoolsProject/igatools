@@ -65,10 +65,12 @@ void test()
     for (int i = 0 ; i < n_entries ; ++i)
         weights_coef[i] = (i+1) * (1.0 / n_entries) ;
 
-    auto weight_function = std::shared_ptr<WeightFunc>(
-                               new WeightFunc(scalar_bsp_space,vector<Real>(weights_coef.get_data())));
+    auto w_func = WeightFunc::create(scalar_bsp_space,vector<Real>(weights_coef.get_data()));
+    auto weight_functions = typename Space::WeightFunctionPtrTable(w_func);
+//    for (auto & w_func : weight_functions)
+//          w_func = WeightFunc::create(scalar_bsp_space,vector<Real>(weights_coef.get_data()));
 
-    auto space = Space::create(bsp_space,weight_function);
+    auto space = Space::create(bsp_space,weight_functions);
 
     const int n_points = 3;
     QGauss<dim> quad(n_points);

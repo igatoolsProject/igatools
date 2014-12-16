@@ -153,10 +153,11 @@ protected:
 public:
     static const int dim = dim_;
 
+protected:
     //Allocates and fill the (global) cache
     BSplineElementHandler(std::shared_ptr<const Space> space);
 
-
+public:
     static std::shared_ptr<self_t> create(std::shared_ptr<const Space> space)
     {
         return std::shared_ptr<self_t>(new self_t(space));

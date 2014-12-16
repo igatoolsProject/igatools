@@ -271,7 +271,9 @@ public:
     virtual ElementIterator end() const override final;
     ///@}
 
+#if 0
     ElementHandler get_element_handler() const;
+#endif
 
     template <int k>
     using InterGridMap = typename GridType::template InterGridMap<k>;

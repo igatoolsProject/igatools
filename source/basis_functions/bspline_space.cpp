@@ -160,7 +160,9 @@ auto
 BSplineSpace<dim_, range_, rank_>::
 begin() const -> ElementIterator
 {
-    return ElementIterator(this->shared_from_this(), 0);
+    auto sp = this->shared_from_this();
+    Assert(sp != nullptr,ExcNullPtr());
+    return ElementIterator(sp, 0);
 }
 
 
@@ -170,8 +172,9 @@ auto
 BSplineSpace<dim_, range_, rank_>::
 last() const -> ElementIterator
 {
-    return ElementIterator(this->shared_from_this(),
-                           this->get_grid()->get_num_active_elems() - 1);
+    auto sp = this->shared_from_this();
+    Assert(sp != nullptr,ExcNullPtr());
+    return ElementIterator(sp,this->get_grid()->get_num_active_elems() - 1);
 }
 
 
@@ -181,12 +184,13 @@ auto
 BSplineSpace<dim_, range_, rank_>::
 end() const -> ElementIterator
 {
-    return ElementIterator(this->shared_from_this(),
-                           IteratorState::pass_the_end);
+    auto sp = this->shared_from_this();
+    Assert(sp != nullptr,ExcNullPtr());
+    return ElementIterator(sp,IteratorState::pass_the_end);
 }
 
 
-
+#if 0
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
@@ -194,7 +198,7 @@ get_element_handler() const -> ElementHandler
 {
     return ElementHandler(this->shared_from_this());
 }
-
+#endif
 
 
 template<int dim_, int range_, int rank_>

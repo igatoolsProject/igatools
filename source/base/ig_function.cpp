@@ -33,8 +33,8 @@ IgFunction(std::shared_ptr<const Space> space,
     parent_t::Function(space->get_grid()),
     space_(space),
     coeff_(coeff),
-    elem_(space_->begin()),
-    space_filler_(space_->create_elem_handler())
+    elem_(space->begin()),
+    space_filler_(space->create_elem_handler())
 {
     Assert(space_ != nullptr,ExcNullPtr());
     Assert(!coeff_.empty(),ExcEmptyObject());
@@ -61,9 +61,9 @@ template<class Space>
 auto
 IgFunction<Space>::
 create(std::shared_ptr<const Space> space,
-       const CoeffType &coeff) ->  std::shared_ptr<base_t>
+       const CoeffType &coeff) ->  std::shared_ptr<self_t>
 {
-    return std::shared_ptr<base_t>(new self_t(space, coeff));
+    return std::shared_ptr<self_t>(new self_t(space, coeff));
 }
 
 

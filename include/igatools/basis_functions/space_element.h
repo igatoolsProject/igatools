@@ -79,7 +79,10 @@ public:
     /**
      * Default constructor.
      */
-    SpaceElement() = default;
+    SpaceElement()
+    {
+        Assert(false,ExcNotImplemented());
+    }
 
     /**
      * Constructs an accessor to element number index of a
@@ -442,7 +445,7 @@ public:
     vector<Index> get_local_to_patch() const;
 
     /**
-     * Pointer to the BsplineSpace the accessor is iterating on.
+     * Pointer to the @p Space upon which the accessor is iterating on.
      */
     std::shared_ptr<const Space> get_space() const;
     ///@}
@@ -453,14 +456,14 @@ public:
     void print_cache_info(LogStream &out) const;
 
 
-
-protected:
+private:
     /**
      * Space for which the SpaceElement refers to.
      */
     std::shared_ptr<const Space> space_ = nullptr;
 
 
+protected:
     /** Number of scalar basis functions along each direction, for all space components. */
     typename Space::SpaceDimensionTable n_basis_direction_;
 

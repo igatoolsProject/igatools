@@ -179,7 +179,10 @@ public:
     /**
      * Default constructor. Not allowed to be used.
      */
-    CartesianGridIteratorBase() = default;
+    CartesianGridIteratorBase()
+    {
+        Assert(false,ExcNotInitialized());
+    }
 
     /**
      * Construct an iterator on a grid-type container
@@ -198,7 +201,7 @@ public:
     /**
      * Copy constructor. It may be used with different CopyPolicy (i.e. shallow or deep).
      *
-     * @note By default it uses the shallow copy.
+     * @note By default it uses the deep copy.
      */
     CartesianGridIteratorBase(const CartesianGridIteratorBase<Accessor> &it,const CopyPolicy &copy_policy = CopyPolicy::deep);
 
@@ -338,7 +341,54 @@ class CartesianGridIterator
     public CartesianGridIteratorBase<Accessor>
 {
 public:
-    using CartesianGridIteratorBase<Accessor>::CartesianGridIteratorBase;
+    /** Type of the accessor. */
+    using AccessorType = Accessor;
+
+    /** Type of the grid-like container . */
+    using ContainerType = typename Accessor::ContainerType;
+
+
+    /** @name Constructors & destructor */
+    ///@{
+    /**
+     * Default constructor. Not allowed to be used.
+     *
+     */
+    CartesianGridIterator()
+    {
+        Assert(false,ExcNotInitialized());
+    }
+
+    /**
+     * Construct an iterator on a grid-type container
+     * grid pointing to the element of given index.
+     */
+    CartesianGridIterator(std::shared_ptr<ContainerType> grid,
+                          const Index index);
+
+    /**
+     * Construct an iterator on a grid-type container
+     * grid pointing to the element of given index.
+     */
+    CartesianGridIterator(std::shared_ptr<ContainerType> grid,
+                          const TensorIndex<ContainerType::dim> &index);
+
+    /**
+     * Copy constructor. It may be used with different CopyPolicy (i.e. shallow or deep).
+     *
+     * @note By default it uses the deep copy.
+     */
+    CartesianGridIterator(const CartesianGridIterator<Accessor> &it,const CopyPolicy &copy_policy = CopyPolicy::deep);
+
+
+    /** Move constructor. */
+    CartesianGridIterator(CartesianGridIterator<Accessor> &&it) = default;
+
+//    CartesianGridIterator(const Accessor &acc,const CopyPolicy &copy_policy = CopyPolicy::shallow);
+
+    /** Destructor */
+    ~CartesianGridIterator() = default ;
+    ///@}
 
 
     /** @name Dereferencing operators */
@@ -387,8 +437,53 @@ class CartesianGridConstIterator
     public CartesianGridIteratorBase<Accessor>
 {
 public:
-    using CartesianGridIteratorBase<Accessor>::CartesianGridIteratorBase;
+    /** Type of the accessor. */
+    using AccessorType = Accessor;
 
+    /** Type of the grid-like container . */
+    using ContainerType = typename Accessor::ContainerType;
+
+
+    /** @name Constructors & destructor */
+    ///@{
+    /**
+     * Default constructor. Not allowed to be used.
+     */
+    CartesianGridConstIterator()
+    {
+        Assert(false,ExcNotInitialized());
+    }
+
+
+    /**
+     * Construct an iterator on a grid-type container
+     * grid pointing to the element of given index.
+     */
+    CartesianGridConstIterator(std::shared_ptr<ContainerType> grid,
+                               const Index index);
+
+    /**
+     * Construct an iterator on a grid-type container
+     * grid pointing to the element of given index.
+     */
+    CartesianGridConstIterator(std::shared_ptr<ContainerType> grid,
+                               const TensorIndex<ContainerType::dim> &index);
+
+    /**
+     * Copy constructor. It may be used with different CopyPolicy (i.e. shallow or deep).
+     *
+     * @note By default it uses the deep copy.
+     */
+    CartesianGridConstIterator(const CartesianGridConstIterator<Accessor> &it,const CopyPolicy &copy_policy = CopyPolicy::deep);
+
+
+    /** Move constructor. */
+    CartesianGridConstIterator(CartesianGridConstIterator<Accessor> &&it) = default;
+
+
+    /** Destructor */
+    ~CartesianGridConstIterator() = default ;
+    ///@}
 
     /** @name Dereferencing operators */
     ///@{

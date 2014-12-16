@@ -32,9 +32,12 @@ NURBSElementHandler<dim_, range_, rank_>::
 NURBSElementHandler(shared_ptr<const Space> space)
     :
     base_t(space),
-    bspline_handler_(space->get_spline_space()),
     space_(space)
+//  ,
+//    bspline_handler_(BSplineElementHandler<dim_,range_,rank_>::create(space->get_spline_space()))
 {
+    const auto bsp_space = space_->get_spline_space();
+    bspline_handler_ = BSplineElementHandler<dim_,range_,rank_>::create(bsp_space);
 }
 
 
@@ -66,7 +69,7 @@ reset(const ValueFlags flag,
 {
     //--------------------------------------
     // resetting the BSplineElementHandler (for the numerator)
-    bspline_handler_.reset(flag, quad1);
+    bspline_handler_->reset(flag, quad1);
     //--------------------------------------
 
 
@@ -130,7 +133,7 @@ reset(const ValueFlags &flag, const quadrature_variant &quad)
 {
     //--------------------------------------
     // resetting the BSplineElementHandler (for the numerator)
-    bspline_handler_.reset(flag, quad);
+    bspline_handler_->reset(flag, quad);
     //--------------------------------------
 
 
@@ -218,7 +221,7 @@ init_cache(RefElementAccessor &elem, const topology_variant &topology)
     Assert(!elem.get_space()->is_bspline(),ExcMessage("Not a NURBSElement."));
 
     auto &nrb_elem = static_cast<NURBSElement<dim_,range_,rank_>&>(elem);
-    bspline_handler_.init_cache(nrb_elem.bspline_elem_,topology);
+    bspline_handler_->init_cache(nrb_elem.bspline_elem_,topology);
 
     for (const auto &comp_id : space_->weight_func_table_.get_active_components_id())
         space_->weight_func_table_[comp_id]->init_cache(nrb_elem.weight_elem_table_[comp_id],topology);
@@ -241,7 +244,7 @@ init_cache(ElementAccessor &elem)
 {
     const auto topology = Int<k>();
 
-    bspline_handler_.init_cache(elem.bspline_elem_,topology);
+    bspline_handler_->init_cache(elem.bspline_elem_,topology);
 
 
     for (const auto &comp_id : space_->weight_func_table_.get_active_components_id())
@@ -450,7 +453,7 @@ fill_cache(ElementAccessor &elem, const int j)
 {
     const auto topology = Int<k>();
 
-    bspline_handler_.fill_cache(elem.bspline_elem_,topology,j);
+    bspline_handler_->fill_cache(elem.bspline_elem_,topology,j);
 
     for (const auto &comp_id : space_->weight_func_table_.get_active_components_id())
         space_->weight_func_table_[comp_id]->fill_cache(elem.weight_elem_table_[comp_id],j,topology);

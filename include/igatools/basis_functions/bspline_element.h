@@ -77,7 +77,7 @@ public:
     /**
      * Default constructor
      */
-    BSplineElement() = default;
+    BSplineElement() = delete;
 
     /**
      * Constructs an accessor to element number index of a

@@ -64,7 +64,7 @@ public:
 
 
 public:
-    static std::shared_ptr<base_t>
+    static std::shared_ptr<self_t>
     create(std::shared_ptr<const Space> space, const CoeffType &coeff);
 
 
