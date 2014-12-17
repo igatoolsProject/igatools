@@ -192,7 +192,7 @@ public:
     ///@}
 
     /** Destructor. */
-    ~BSplineSpace() = default;
+    virtual ~BSplineSpace() = default;
 
 protected:
     /** @name Constructors */

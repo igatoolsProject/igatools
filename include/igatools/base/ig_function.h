@@ -51,6 +51,8 @@ public:
 
     IgFunction(const self_t &);
 
+    virtual ~IgFunction() = default;
+
     using typename parent_t::variant_1;
     using typename parent_t::variant_2;
     using typename parent_t::Point;

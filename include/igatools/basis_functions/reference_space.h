@@ -90,6 +90,8 @@ public:
     using ElementHandler = ReferenceElementHandler<dim_, range_, rank_>;
 
 
+    virtual ~ReferenceSpace() = default;
+
     /**
      *  Class to manage the component quantities with the knowledge of
      * uniform range spaces

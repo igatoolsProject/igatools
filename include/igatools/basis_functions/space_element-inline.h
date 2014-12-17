@@ -40,6 +40,7 @@ SpaceElement(const std::shared_ptr<const Space> space,
     space_(space),
     n_basis_direction_(space->get_num_all_element_basis())
 {
+    Assert(space != nullptr, ExcNullPtr());
     Assert(space_ != nullptr, ExcNullPtr());
 
     using Indexer = CartesianProductIndexer<dim>;

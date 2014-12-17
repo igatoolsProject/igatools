@@ -202,7 +202,7 @@ public:
     ///@}
 
     /** Destructor */
-    ~NURBSSpace() = default;
+    virtual ~NURBSSpace() = default;
 
 
     std::shared_ptr<SpaceManager> get_space_manager();

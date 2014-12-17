@@ -132,6 +132,8 @@ public:
         :SplineSpace(deg, knots, fill_max_regularity(deg, knots), ebt)
     {}
 
+    virtual ~SplineSpace() = default;
+
     const DegreeTable &get_degree() const
     {
         return deg_;

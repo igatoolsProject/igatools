@@ -82,6 +82,7 @@ public:
 
 
     NURBSElementHandler(std::shared_ptr<const Space> space);
+    virtual ~NURBSElementHandler() = default;
 
 
     static std::shared_ptr<self_t> create(std::shared_ptr<const Space> space)

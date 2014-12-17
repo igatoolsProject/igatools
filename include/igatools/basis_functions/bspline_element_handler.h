@@ -64,6 +64,8 @@ public:
         Assert(space != nullptr, ExcNullPtr());
     };
 
+    virtual ~ReferenceElementHandler() = default;
+
 
     virtual void reset(const ValueFlags &flag, const quadrature_variant &quad) = 0;
 
@@ -158,6 +160,8 @@ protected:
     BSplineElementHandler(std::shared_ptr<const Space> space);
 
 public:
+    virtual ~BSplineElementHandler() = default;
+
     static std::shared_ptr<self_t> create(std::shared_ptr<const Space> space)
     {
         return std::shared_ptr<self_t>(new self_t(space));

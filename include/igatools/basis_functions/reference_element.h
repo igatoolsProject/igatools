@@ -66,7 +66,9 @@ public:
                      const Index elem_index)
         :
         parent_t(space,elem_index)
-    {};
+    {
+        Assert(this->get_space() != nullptr,ExcNullPtr());
+    };
 
     /**
      * Constructs an accessor to element number index of a
@@ -76,7 +78,9 @@ public:
                      const TensorIndex<dim> &elem_index)
         :
         parent_t(space,elem_index)
-    {};
+    {
+        Assert(this->get_space() != nullptr,ExcNullPtr());
+    };
 
 
 };
