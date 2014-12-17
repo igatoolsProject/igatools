@@ -75,13 +75,14 @@ void do_test()
     DynamicMultiArray<Real,dim> weights(n_basis[0],1.0);
 
     using ScalarBSplineSpace = BSplineSpace<dim>;
-    using WeightFunc = IgFunction<ScalarBSplineSpace>;
+    using WeightFunc = IgFunction<ReferenceSpace<dim>>;
     auto w_func = shared_ptr<WeightFunc>(new WeightFunc(
                                              ScalarBSplineSpace::create(degree,CartesianGrid<dim>::create(coord)),
                                              weights.get_data()));
 
-
-    auto nurbs_space = Space::create(bsp, w_func);
+    using WeightFuncPtrTable = typename Space::WeightFunctionPtrTable;
+    auto w_funcs_table = WeightFuncPtrTable(w_func);
+    auto nurbs_space = Space::create(bsp, w_funcs_table);
     nurbs_space->print_info(out);
 
     OUTEND

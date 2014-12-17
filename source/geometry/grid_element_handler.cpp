@@ -183,7 +183,13 @@ fill_element_cache(ElementIterator &elem)
     fill_element_cache(*elem);
 }
 
-
+template <int dim_>
+auto
+GridElementHandler<dim_>::
+get_lengths() const -> const TensorProductArray<dim> &
+{
+    return lengths_;
+}
 
 template <int dim_>
 void

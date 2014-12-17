@@ -157,12 +157,13 @@ BSplineElementHandler(shared_ptr<const Space> space)
     space_(space)
 {
     Assert(space_ != nullptr, ExcNullPtr());
-    const auto n_basis = space_->get_num_all_element_basis();
-
-    // Compute the component offsets
-    comp_offset_[0] = 0;
-    for (int j = 1; j < Space::n_components; ++j)
-        comp_offset_[j] = comp_offset_[j-1] + n_basis.comp_dimension[j-1];
+    /*
+        const auto n_basis = space_->get_num_all_element_basis();
+        // Compute the component offsets
+        comp_offset_[0] = 0;
+        for (int j = 1; j < Space::n_components; ++j)
+            comp_offset_[j] = comp_offset_[j-1] + n_basis.comp_dimension[j-1];
+    //*/
 }
 
 
@@ -219,7 +220,7 @@ operator()(const T &quad1)
         const auto &degree      = space_->get_degree();
         const auto &bezier_op   = space_->operators_;
         const auto &points      = quad.get_points();
-        const auto &lengths = *lengths_;
+        const auto &lengths = grid_handler_->get_lengths();
 
         BasisValues bernstein_values(n_basis.get_comp_map());
 
@@ -267,12 +268,13 @@ void
 BSplineElementHandler<dim_, range_, rank_>::
 reset(const ValueFlags &flag, const quadrature_variant &quad)
 {
-    reset_impl_.grid_handler_ = this;
+//    reset_impl_.grid_handler_ = this;
+    reset_impl_.grid_handler_ = &(this->grid_handler_);
     reset_impl_.flag_ = flag;
     reset_impl_.flags_ = &flags_;
     reset_impl_.splines1d_ = &splines1d_;
     reset_impl_.space_ = space_.get();
-    reset_impl_.lengths_ = &(this->lengths_);
+//    reset_impl_.lengths_ = &(this->grid_handler_.lengths_);
 
     boost::apply_visitor(reset_impl_, quad);
 }
@@ -313,7 +315,8 @@ void
 BSplineElementHandler<dim_, range_, rank_>::
 init_cache(RefElementAccessor &elem, const topology_variant &topology)
 {
-    init_cache_impl_.grid_handler_ = this;
+//    init_cache_impl_.grid_handler_ = this;
+    init_cache_impl_.grid_handler_ = &(this->grid_handler_);
 
     LogStream out;
     auto ref_space = std::dynamic_pointer_cast<const BaseSpace>(space_);
@@ -342,16 +345,23 @@ copy_to_inactive_components_values(const vector<Index> &inactive_comp,
                                    const std::array<Index, n_components> &active_map,
                                    ValueTable<Value> &D_phi) const
 {
-    Assert(space_ != nullptr,ExcNullPtr());
-    const auto n_basis = space_->get_num_all_element_basis();
+    //    Assert(space_ != nullptr,ExcNullPtr());
+    //    const auto n_basis = space_->get_num_all_element_basis();
+    //    Assert(D_phi.get_num_functions() == n_basis.total_dimension,
+    //          ExcDimensionMismatch(D_phi.get_num_functions(),n_basis.total_dimension));
+    Assert(D_phi.get_num_functions() == elem_->get_num_basis(),
+           ExcDimensionMismatch(D_phi.get_num_functions(),elem_->get_num_basis()));
+
+    const auto comp_offset = elem_->get_basis_offset();
 
     const Size n_points = D_phi.get_num_points();
     for (int comp : inactive_comp)
     {
         const auto act_comp = active_map[comp];
-        const auto n_basis_comp = n_basis.comp_dimension[comp];
-        const Size act_offset = (*comp_offset_)[act_comp];
-        const Size offset     = (*comp_offset_)[comp];
+        //        const auto n_basis_comp = n_basis.comp_dimension[comp];
+        const auto n_basis_comp = elem_->get_num_basis(comp);
+        const Size act_offset = comp_offset[act_comp];
+        const Size offset     = comp_offset[comp];
         for (Size basis_i = 0; basis_i < n_basis_comp;  ++basis_i)
         {
             const auto act_D_phi = D_phi.get_function_view(act_offset+basis_i);
@@ -373,17 +383,24 @@ copy_to_inactive_components(const vector<Index> &inactive_comp,
                             const std::array<Index, n_components> &active_map,
                             ValueTable<Derivative<order>> &D_phi) const
 {
-    Assert(space_ != nullptr,ExcNullPtr());
-    const auto n_basis = space_->get_num_all_element_basis();
+    //    Assert(space_ != nullptr,ExcNullPtr());
+    //    const auto n_basis = space_->get_num_all_element_basis();
+    //    Assert(D_phi.get_num_functions() == n_basis.total_dimension,
+    //          ExcDimensionMismatch(D_phi.get_num_functions(),n_basis.total_dimension));
+    Assert(D_phi.get_num_functions() == elem_->get_num_basis(),
+           ExcDimensionMismatch(D_phi.get_num_functions(),elem_->get_num_basis()));
+
+    const auto comp_offset = elem_->get_basis_offset();
 
     const Size n_points = D_phi.get_num_points();
     const Size n_ders = Derivative<order>::size;
     for (int comp : inactive_comp)
     {
         const auto act_comp = active_map[comp];
-        const auto n_basis_comp = n_basis.comp_dimension[comp];
-        const Size act_offset = (*comp_offset_)[act_comp];
-        const Size offset     = (*comp_offset_)[comp];
+//        const auto n_basis_comp = n_basis.comp_dimension[comp];
+        const auto n_basis_comp = elem_->get_num_basis(comp);
+        const Size act_offset = comp_offset[act_comp];
+        const Size offset     = comp_offset[comp];
         for (Size basis_i = 0; basis_i < n_basis_comp;  ++basis_i)
         {
             const auto act_D_phi = D_phi.get_function_view(act_offset+basis_i);
@@ -409,16 +426,23 @@ evaluate_bspline_values(
     const ComponentContainer<TensorProductFunctionEvaluator<dim>> &elem_values,
     ValueTable<Value> &D_phi) const
 {
-    Assert(space_ != nullptr,ExcNullPtr());
-    const auto n_basis = space_->get_num_all_element_basis();
+//    Assert(space_ != nullptr,ExcNullPtr());
+//    const auto n_basis = space_->get_num_all_element_basis();
+//    Assert(D_phi.get_num_functions() == n_basis.total_dimension,
+//          ExcDimensionMismatch(D_phi.get_num_functions(),n_basis.total_dimension));
+    Assert(D_phi.get_num_functions() == elem_->get_num_basis(),
+           ExcDimensionMismatch(D_phi.get_num_functions(),elem_->get_num_basis()));
+
+    const auto comp_offset = elem_->get_basis_offset();
 
     const Size n_points = D_phi.get_num_points();
     const TensorIndex<dim> der_tensor_id; // [0,0,..,0] tensor index
     for (int comp : elem_values.get_active_components_id())
     {
         auto &values = elem_values[comp];
-        const int n_basis_comp = n_basis.comp_dimension[comp];
-        const Size offset = (*comp_offset_)[comp];
+//        const int n_basis_comp = n_basis.comp_dimension[comp];
+        const int n_basis_comp = elem_->get_num_basis(comp);
+        const Size offset = comp_offset[comp];
 
         for (int func_id = 0; func_id < n_basis_comp; ++func_id)
         {
@@ -461,8 +485,11 @@ evaluate_bspline_derivatives(
     const Size n_points = D_phi.get_num_points();
 
 
-    Assert(space_ != nullptr,ExcNullPtr());
-    const auto n_basis = space_->get_num_all_element_basis();
+//    const auto n_basis = elem_->get_num_basis();
+    Assert(D_phi.get_num_functions() == elem_->get_num_basis(),
+           ExcDimensionMismatch(D_phi.get_num_functions(),elem_->get_num_basis()));
+
+    const auto comp_offset = elem_->get_basis_offset();
 
     TensorFunctionDerivativesSymmetry<dim,order> sym;
     const auto n_der =  TensorFunctionDerivativesSymmetry<dim,order>::num_entries_eval;
@@ -473,8 +500,9 @@ evaluate_bspline_derivatives(
     for (int comp : elem_values.get_active_components_id())
     {
         auto &values = elem_values[comp];
-        const int n_basis_comp = n_basis.comp_dimension[comp];
-        const Size offset = (*comp_offset_)[comp];
+//        const int n_basis_comp = n_basis.comp_dimension[comp];
+        const int n_basis_comp = elem_->get_num_basis(comp);
+        const Size offset = comp_offset[comp];
 
         for (int func_id = 0; func_id < n_basis_comp; ++func_id)
         {
@@ -553,7 +581,9 @@ void
 BSplineElementHandler<dim_, range_, rank_>::
 fill_cache(RefElementAccessor &elem, const topology_variant &topology, const int j)
 {
-    fill_cache_impl_.grid_handler_ = this;
+//    fill_cache_impl_.grid_handler_ = this;
+    fill_cache_impl_.grid_handler_ = &(this->grid_handler_);
+
     fill_cache_impl_.j_ = j;
     fill_cache_impl_.splines1d_ = &splines1d_;
 
@@ -563,7 +593,7 @@ fill_cache(RefElementAccessor &elem, const topology_variant &topology, const int
     fill_cache_impl_.elem_ = &elem;
 
     fill_cache_impl_.space_ = space_.get();
-    fill_cache_impl_.comp_offset_ = &comp_offset_;
+//    fill_cache_impl_.comp_offset_ = &comp_offset_;
 
     boost::apply_visitor(fill_cache_impl_,topology);
 }
@@ -629,7 +659,8 @@ BSplineElementHandler<dim_, range_, rank_>::
 print_info(LogStream &out) const
 {
     out.begin_item("Grid Cache:");
-    GridElementHandler<dim_>::print_info(out);
+//    GridElementHandler<dim_>::print_info(out);
+    this->grid_handler_.print_info(out);
 //    static_cast<const CartesianGridHandler<dim_> &>(base_t)::print_info(out);
     out.end_item();
 

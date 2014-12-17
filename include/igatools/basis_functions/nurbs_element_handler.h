@@ -80,8 +80,10 @@ public:
 
 
 
-
+private:
     NURBSElementHandler(std::shared_ptr<const Space> space);
+
+public:
     virtual ~NURBSElementHandler() = default;
 
 
@@ -143,7 +145,7 @@ public:
     void print_info(LogStream &out) const;
 
 private:
-    std::shared_ptr<const Space> space_;
+//    std::shared_ptr<const Space> space_;
     std::shared_ptr<BSplineElementHandler<dim_,range_,rank_>> bspline_handler_;
 
     std::array<FunctionFlags, dim + 1> flags_;
@@ -250,6 +252,10 @@ private:
     FillCacheDispatcher fill_cache_impl_;
 
 
+    /**
+     * Returns the NURBSSpace used to define the NURBSElementHandler object.
+     */
+    std::shared_ptr<const Space> get_nurbs_space() const;
 };
 
 

@@ -38,15 +38,16 @@
 IGA_NAMESPACE_OPEN
 
 template<int dim_, int range_ = 1, int rank_ = 1>
-class ReferenceElementHandler : public GridElementHandler<dim_>
+class ReferenceElementHandler
+//      : protected GridElementHandler<dim_>
 {
 public:
-    using base_t = GridElementHandler<dim_>;
+//    using base_t = GridElementHandler<dim_>;
     using Space = ReferenceSpace<dim_,range_,rank_>;
     using ElementIterator = typename Space::ElementIterator;
     using ElementAccessor = typename Space::ElementAccessor;
 
-
+//    using base_t::get_num_points;
 
     static const int l = iga::max(0, dim_-num_sub_elem);
     using v1 = typename seq<Quadrature, l, dim_>::type;
@@ -58,7 +59,8 @@ public:
     //Allocates and fill the (global) cache
     ReferenceElementHandler(std::shared_ptr<const Space> space)
         :
-        base_t(space->get_grid()),
+//        base_t(space->get_grid()),
+        grid_handler_(space->get_grid()),
         space_(space)
     {
         Assert(space != nullptr, ExcNullPtr());
@@ -66,6 +68,8 @@ public:
 
     virtual ~ReferenceElementHandler() = default;
 
+    ReferenceElementHandler(const ReferenceElementHandler<dim_,range_,rank_> &elem_handler) = delete;
+    ReferenceElementHandler(ReferenceElementHandler<dim_,range_,rank_> &&elem_handler) = delete;
 
     virtual void reset(const ValueFlags &flag, const quadrature_variant &quad) = 0;
 
@@ -102,12 +106,26 @@ public:
         Assert(false,ExcNotImplemented());
     }
 
-
-
     virtual void print_info(LogStream &out) const = 0;
+
+    template <int k = dim_>
+    Size get_num_points() const
+    {
+        return grid_handler_.template get_num_points<k>();
+    }
+
+protected:
+    GridElementHandler<dim_> grid_handler_;
 
 private:
     std::shared_ptr<const Space> space_;
+
+public:
+    std::shared_ptr<const Space> get_space() const
+    {
+        Assert(space_ != nullptr,ExcNullPtr());
+        return space_;
+    }
 };
 
 
@@ -204,38 +222,11 @@ public:
 
     virtual void print_info(LogStream &out) const override final ;
 
-private:
-    const Quadrature<dim> &get_quad() const;
-
-
-
-private:
-
-#if 0
-    /**
-     * Computes the k-th order derivative of the non-zero B-spline basis
-     * functions over the current element,
-     *   at the evaluation points pre-allocated in the cache.
-     *
-     * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
-     * an exception will be raised.
-     */
-    template <int order>
-    void evaluate_bspline_derivatives(
-        const  ComponentContainer<TensorProductFunctionEvaluator<dim>> &elem_values,
-        ValueTable<Derivative<order>> &D_phi) const;
-
-    void evaluate_bspline_values(
-        const  ComponentContainer<TensorProductFunctionEvaluator<dim>> &elem_values,
-        ValueTable<Value> &D_phi) const;
-#endif
 
 private:
     std::shared_ptr<const Space> space_;
 
-//    SpaceDimensionTable n_basis_;
-
-    ComponentContainer<Size> comp_offset_;
+//    ComponentContainer<Size> comp_offset_;
 
     std::array<FunctionFlags, dim + 1> flags_;
 
@@ -282,7 +273,6 @@ private:
         std::array<FunctionFlags, dim + 1> *flags_;
         CacheList<GlobalCache, dim> *splines1d_;
         const Space *space_;
-        const TensorProductArray<dim> *lengths_;
     };
 
     ResetDispatcher reset_impl_;
@@ -338,7 +328,7 @@ private:
         const CacheList<GlobalCache, dim> *splines1d_;
         ReferenceElement<dim_,range_,rank_> *elem_;
         const Space *space_;
-        const ComponentContainer<Size> *comp_offset_;
+//        const ComponentContainer<Size> *comp_offset_;
 
     private:
         void
@@ -355,7 +345,6 @@ private:
     };
 
     FillCacheDispatcher fill_cache_impl_;
-
 };
 
 IGA_NAMESPACE_CLOSE

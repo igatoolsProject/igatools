@@ -70,26 +70,26 @@ void test()
 //    for (auto & w_func : weight_functions)
 //          w_func = WeightFunc::create(scalar_bsp_space,vector<Real>(weights_coef.get_data()));
 
-    auto space = Space::create(bsp_space,weight_functions);
+    auto nrb_space = Space::create(bsp_space,weight_functions);
 
     const int n_points = 3;
     QGauss<dim> quad(n_points);
 
-    auto elem     = space->begin();
-    auto end_element = space->end();
+    auto elem     = nrb_space->begin();
+    auto end_element = nrb_space->end();
 
     const auto flag = ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian;
 
     using ElemHandler = typename Space::ElementHandler;
-    auto elem_filler = ElemHandler(space);
-    elem_filler.reset(flag,quad);
+    auto elem_handler = ElemHandler::create(nrb_space);
+    elem_handler->reset(flag,quad);
 
 
-    elem_filler.init_element_cache(elem);
+    elem_handler->init_element_cache(elem);
 
     for (; elem != end_element; ++elem)
     {
-        elem_filler.fill_element_cache(elem);
+        elem_handler->fill_element_cache(elem);
         out << "Element flat id: " << elem->get_flat_index() << endl << endl;
 
         out.begin_item("Values basis functions:");

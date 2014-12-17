@@ -177,11 +177,16 @@ protected:
 
 private:
 
+    /**
+     * Returns the BSplineSpace upon which the element is defined.
+     */
+    std::shared_ptr<const Space> get_bspline_space() const;
+
 
     template <typename Accessor> friend class CartesianGridIterator;
     friend class BSplineElementHandler<dim, range, rank>;
 
-    std::shared_ptr<const Space> space_;
+//    std::shared_ptr<const Space> space_;
 
 public:
     /*

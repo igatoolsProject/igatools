@@ -41,6 +41,8 @@ template <int dim, int range, int rank> class NURBSSpace;
 template <typename Accessor> class CartesianGridIterator;
 
 /**
+ * @brief NURBS element
+ *
  * See module on \ref accessors_iterators for a general overview.
  * @ingroup accessors
  */
@@ -157,8 +159,6 @@ public:
     ///@}
 
 private:
-
-    std::shared_ptr<const Space> space_;
 
     using SpSpace = typename Space::SpSpace;
 

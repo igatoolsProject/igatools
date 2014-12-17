@@ -276,8 +276,7 @@ BSplineElement<dim, range, rank>::
 BSplineElement(const std::shared_ptr<ContainerType> space,
                const Index index)
     :
-    parent_t(space,index),
-    space_(space)
+    parent_t(space,index)
 {}
 
 
@@ -287,8 +286,7 @@ BSplineElement<dim, range, rank>::
 BSplineElement(const std::shared_ptr<ContainerType> space,
                const TensorIndex<dim> &index)
     :
-    parent_t(space,index),
-    space_(space)
+    parent_t(space,index)
 {}
 
 
@@ -297,13 +295,21 @@ BSplineElement<dim, range, rank>::
 BSplineElement(const self_t &elem,
                const CopyPolicy &copy_policy)
     :
-    parent_t(elem,copy_policy),
-    space_(elem.space_)
+    parent_t(elem,copy_policy)
 {
     Assert(false,ExcNotImplemented());
 }
 
 
+template <int dim, int range, int rank>
+auto
+BSplineElement<dim, range, rank>::
+get_bspline_space() const -> std::shared_ptr<const Space>
+{
+    auto bsp_space = std::dynamic_pointer_cast<const Space>(this->get_space());
+    Assert(bsp_space != nullptr,ExcNullPtr());
+    return bsp_space;
+}
 
 
 template <int dim, int range, int rank>
@@ -324,10 +330,12 @@ evaluate_univariate_derivatives_at_points(
 
     const auto &element_tensor_id = this->get_tensor_index();
 
-    ComponentContainer< array<ValueTable<Real>,dim> > funcs1D_table(this->space_->get_components_map());
+    auto bsp_space = this->get_bspline_space();
 
-    const auto degree_table = this->space_->get_degree();
-    const auto &bezier_op_ = this->space_->operators_;
+    ComponentContainer< array<ValueTable<Real>,dim> > funcs1D_table(bsp_space->get_components_map());
+
+    const auto degree_table = bsp_space->get_degree();
+    const auto &bezier_op_ = bsp_space->operators_;
 
     const auto element_lengths = CartesianGridElement<dim>::template get_coordinate_lengths<dim>(0);
 
@@ -422,7 +430,9 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 
     return_t D_phi(n_basis,n_points);
 
-    const auto bezier_op = this->space_->operators_.get_element_operators(this->get_tensor_index());
+    auto bsp_space = this->get_bspline_space();
+
+    const auto bezier_op = bsp_space->operators_.get_element_operators(this->get_tensor_index());
 
     if (deriv_order == 0)
     {

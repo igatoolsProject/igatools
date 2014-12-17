@@ -27,6 +27,8 @@
 #include "../tests.h"
 #include <igatools/basis_functions/bernstein_extraction.h>
 
+#include <igatools/basis_functions/reference_element.h>
+
 using std::shared_ptr;
 
 int main()

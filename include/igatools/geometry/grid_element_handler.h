@@ -127,6 +127,8 @@ public:
         return grid_;
     }
 
+    const TensorProductArray<dim> &get_lengths() const;
+
 private:
     std::shared_ptr<GridType> grid_;
 
@@ -136,6 +138,7 @@ protected:
     QuadList<dim> quad_;
 
     TensorProductArray<dim> lengths_;
+
 };
 
 IGA_NAMESPACE_CLOSE
