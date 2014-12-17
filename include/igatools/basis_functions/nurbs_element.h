@@ -106,7 +106,7 @@ public:
     /**
      * Destructor.
      */
-    ~NURBSElement() = default;
+    virtual ~NURBSElement() = default;
     ///@}
 
     /** @name Assignment operators */

@@ -53,7 +53,7 @@ void test()
 
     const auto n_scalar_basis = scalar_bsp_space->get_num_basis_table()[0];
 
-    using WeightFunc = IgFunction<ScalarSpSpace>;
+    using WeightFunc = IgFunction<ReferenceSpace<dim,1,1>>;
     DynamicMultiArray<Real,dim> weights_coef(n_scalar_basis,1.0);
     auto weight_function = std::shared_ptr<WeightFunc>(
                                new WeightFunc(scalar_bsp_space,vector<Real>(weights_coef.get_data())));
@@ -69,13 +69,14 @@ void test()
     const auto flag = ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian;
 
     using ElemHandler = typename Space::ElementHandler;
-    auto elem_filler = ElemHandler(space);
-    elem_filler.reset(flag,quad);
+    auto elem_handler = ElemHandler::create(space);
+    elem_handler->reset(flag,quad);
 
-    elem_filler.template init_cache<dim>(elem);
+    const auto topology = Int<dim>();
+    elem_handler->init_cache(*elem,topology);
     for (; elem != end_element; ++elem)
     {
-        elem_filler.template fill_cache<dim>(elem,0);
+        elem_handler->fill_cache(*elem,topology,0);
         out << "Element flat id: " << elem->get_flat_index() << endl << endl;
 
         out.begin_item("Values basis functions:");

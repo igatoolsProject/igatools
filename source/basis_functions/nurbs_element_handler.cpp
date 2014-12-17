@@ -224,18 +224,19 @@ init_cache(RefElementAccessor &elem, const topology_variant &topology)
 {
     Assert(!elem.get_space()->is_bspline(),ExcMessage("Not a NURBSElement."));
 
-    auto &nrb_elem = static_cast<NURBSElement<dim_,range_,rank_>&>(elem);
-    bspline_handler_->init_cache(nrb_elem.bspline_elem_,topology);
+    auto nrb_elem = dynamic_cast<NURBSElement<dim_,range_,rank_>*>(&elem);
+    auto &bsp_elem = nrb_elem->bspline_elem_;
+    bspline_handler_->init_cache(bsp_elem,topology);
 
     const auto nrb_space = this->get_nurbs_space();
     for (const auto &comp_id : nrb_space->weight_func_table_.get_active_components_id())
-        nrb_space->weight_func_table_[comp_id]->init_cache(nrb_elem.weight_elem_table_[comp_id],topology);
+        nrb_space->weight_func_table_[comp_id]->init_cache(nrb_elem->weight_elem_table_[comp_id],topology);
 
 
     //-------------------------------------
 //    init_cache_impl_.grid_handler_ = this;
     init_cache_impl_.grid_handler_ = &(this->grid_handler_);
-    init_cache_impl_.elem_ = &elem;
+    init_cache_impl_.elem_ = nrb_elem;
     init_cache_impl_.flags_ = &flags_;
 
     boost::apply_visitor(init_cache_impl_,topology);

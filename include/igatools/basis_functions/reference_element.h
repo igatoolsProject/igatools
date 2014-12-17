@@ -82,6 +82,7 @@ public:
         Assert(this->get_space() != nullptr,ExcNullPtr());
     };
 
+    virtual ~ReferenceElement() = default;
 
 };
 

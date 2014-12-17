@@ -105,7 +105,7 @@ public:
     /**
      * Destructor.
      */
-    ~BSplineElement() = default;
+    virtual ~BSplineElement() = default;
     ///@}
 
     /** @name Assignment operators */
