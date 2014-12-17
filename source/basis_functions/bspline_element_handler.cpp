@@ -345,10 +345,6 @@ copy_to_inactive_components_values(const vector<Index> &inactive_comp,
                                    const std::array<Index, n_components> &active_map,
                                    ValueTable<Value> &D_phi) const
 {
-    //    Assert(space_ != nullptr,ExcNullPtr());
-    //    const auto n_basis = space_->get_num_all_element_basis();
-    //    Assert(D_phi.get_num_functions() == n_basis.total_dimension,
-    //          ExcDimensionMismatch(D_phi.get_num_functions(),n_basis.total_dimension));
     Assert(D_phi.get_num_functions() == elem_->get_num_basis(),
            ExcDimensionMismatch(D_phi.get_num_functions(),elem_->get_num_basis()));
 
@@ -358,7 +354,6 @@ copy_to_inactive_components_values(const vector<Index> &inactive_comp,
     for (int comp : inactive_comp)
     {
         const auto act_comp = active_map[comp];
-        //        const auto n_basis_comp = n_basis.comp_dimension[comp];
         const auto n_basis_comp = elem_->get_num_basis(comp);
         const Size act_offset = comp_offset[act_comp];
         const Size offset     = comp_offset[comp];
@@ -383,10 +378,6 @@ copy_to_inactive_components(const vector<Index> &inactive_comp,
                             const std::array<Index, n_components> &active_map,
                             ValueTable<Derivative<order>> &D_phi) const
 {
-    //    Assert(space_ != nullptr,ExcNullPtr());
-    //    const auto n_basis = space_->get_num_all_element_basis();
-    //    Assert(D_phi.get_num_functions() == n_basis.total_dimension,
-    //          ExcDimensionMismatch(D_phi.get_num_functions(),n_basis.total_dimension));
     Assert(D_phi.get_num_functions() == elem_->get_num_basis(),
            ExcDimensionMismatch(D_phi.get_num_functions(),elem_->get_num_basis()));
 
@@ -397,7 +388,6 @@ copy_to_inactive_components(const vector<Index> &inactive_comp,
     for (int comp : inactive_comp)
     {
         const auto act_comp = active_map[comp];
-//        const auto n_basis_comp = n_basis.comp_dimension[comp];
         const auto n_basis_comp = elem_->get_num_basis(comp);
         const Size act_offset = comp_offset[act_comp];
         const Size offset     = comp_offset[comp];
@@ -426,10 +416,6 @@ evaluate_bspline_values(
     const ComponentContainer<TensorProductFunctionEvaluator<dim>> &elem_values,
     ValueTable<Value> &D_phi) const
 {
-//    Assert(space_ != nullptr,ExcNullPtr());
-//    const auto n_basis = space_->get_num_all_element_basis();
-//    Assert(D_phi.get_num_functions() == n_basis.total_dimension,
-//          ExcDimensionMismatch(D_phi.get_num_functions(),n_basis.total_dimension));
     Assert(D_phi.get_num_functions() == elem_->get_num_basis(),
            ExcDimensionMismatch(D_phi.get_num_functions(),elem_->get_num_basis()));
 
@@ -440,7 +426,6 @@ evaluate_bspline_values(
     for (int comp : elem_values.get_active_components_id())
     {
         auto &values = elem_values[comp];
-//        const int n_basis_comp = n_basis.comp_dimension[comp];
         const int n_basis_comp = elem_->get_num_basis(comp);
         const Size offset = comp_offset[comp];
 
@@ -480,12 +465,9 @@ evaluate_bspline_derivatives(
      */
 
     Assert(D_phi.size() > 0, ExcEmptyObject());
-    //  Assert(D_phi.get_num_functions() == this->get_num_basis(),
-    //           ExcDimensionMismatch(D_phi.get_num_functions(),this->get_num_basis()));
     const Size n_points = D_phi.get_num_points();
 
 
-//    const auto n_basis = elem_->get_num_basis();
     Assert(D_phi.get_num_functions() == elem_->get_num_basis(),
            ExcDimensionMismatch(D_phi.get_num_functions(),elem_->get_num_basis()));
 
@@ -500,7 +482,6 @@ evaluate_bspline_derivatives(
     for (int comp : elem_values.get_active_components_id())
     {
         auto &values = elem_values[comp];
-//        const int n_basis_comp = n_basis.comp_dimension[comp];
         const int n_basis_comp = elem_->get_num_basis(comp);
         const Size offset = comp_offset[comp];
 
@@ -592,7 +573,7 @@ fill_cache(RefElementAccessor &elem, const topology_variant &topology, const int
     Assert(elem.get_space()->is_bspline(),ExcMessage("Not a BSplineElement."));
     fill_cache_impl_.elem_ = &elem;
 
-    fill_cache_impl_.space_ = space_.get();
+//    fill_cache_impl_.space_ = space_.get();
 //    fill_cache_impl_.comp_offset_ = &comp_offset_;
 
     boost::apply_visitor(fill_cache_impl_,topology);

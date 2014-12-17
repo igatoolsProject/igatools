@@ -327,8 +327,6 @@ private:
         int j_;
         const CacheList<GlobalCache, dim> *splines1d_;
         ReferenceElement<dim_,range_,rank_> *elem_;
-        const Space *space_;
-//        const ComponentContainer<Size> *comp_offset_;
 
     private:
         void

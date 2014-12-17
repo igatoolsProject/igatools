@@ -183,6 +183,11 @@ public:
         return space_dim_;
     }
 
+    //TODO (MM, Dec 17,2014): this function is misleading because refers to an element and not to the space. REMOVE IT!
+    /**
+     * Component table with the offset of basis functions
+     * in each component of an element.
+     */
     virtual SpaceDimensionTable get_num_all_element_basis() const override
     {
         typename RefSpace::template ComponentContainer<TensorSize<dim>> n_basis(deg_.get_comp_map());
@@ -194,7 +199,7 @@ public:
 
     /**
      * Component table with the offset of basis functions
-     * in each component.
+     * in each component of the space.
      */
     typename RefSpace::template ComponentContainer<Size> get_basis_offset() const
     {
