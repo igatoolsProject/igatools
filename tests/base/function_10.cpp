@@ -53,10 +53,11 @@ void test()
     auto elem = F->begin();
     auto end  = F->end();
 
-    F->init_cache(elem, Int<dim>());
+    const auto topology = Int<dim>();
+    F->init_cache(*elem,topology);
     for (; elem != end; ++elem)
     {
-        F->fill_cache(elem, 0, Int<dim>());
+        F->fill_cache(*elem, 0, topology);
 //        elem->get_points().print_info(out);
 //        out << endl;
         elem->template get_values<0, dim>(0).print_info(out);

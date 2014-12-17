@@ -49,9 +49,10 @@ IgFunction(const self_t &fun)
     parent_t::Function(fun.space_->get_grid()),
     space_(fun.space_),
     coeff_(fun.coeff_),
-    elem_(space_->begin()),
-    space_filler_(space_->create_elem_handler())
+    elem_(fun.space_->begin()),
+    space_filler_(fun.space_->create_elem_handler())
 {
+    Assert(space_ != nullptr,ExcNullPtr());
     Assert(!coeff_.empty(),ExcEmptyObject());
 }
 

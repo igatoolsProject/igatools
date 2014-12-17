@@ -48,17 +48,17 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
     QGauss<k> quad(n_qp);
     auto flag = ValueFlags::value|ValueFlags::gradient
                 |ValueFlags::hessian;
-    ElementHandler cache(space);
-    cache.reset(flag, quad);
+    auto cache = ElementHandler::create(space);
+    cache->reset(flag, quad);
 
     const auto topology = Int<k>();
 
     auto elem = space->begin();
-    cache.init_cache(elem,topology);
+    cache->init_cache(elem,topology);
 
     for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
     {
-        cache.fill_cache(elem,topology, s_id);
+        cache->fill_cache(elem,topology, s_id);
 
         out << "Sub Element: " << s_id << endl;
         auto values    = elem->template get_values<0,k>(s_id);
