@@ -32,7 +32,7 @@
 
 IGA_NAMESPACE_OPEN
 
-template <class Accessor, class Allocator> class CartesianGridIterator;
+template <class Accessor> class CartesianGridIterator;
 
 
 template<class PhysSpace>
@@ -403,7 +403,7 @@ protected:
 
 
 private:
-    template <class Accessor, class Allocator> friend class CartesianGridIteratorBase;
+    template <class Accessor> friend class CartesianGridIteratorBase;
     template <typename PSpace> friend class SpaceElementHandler;
     RefElemAccessor ref_space_element_accessor_;
 };

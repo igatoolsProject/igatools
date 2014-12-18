@@ -161,7 +161,7 @@ IGA_NAMESPACE_OPEN
  * @author M.Martinelli, S.Pauletti
  * @date 2012,2013,2014
  */
-template <class Accessor, class Allocator = Accessor>
+template <class Accessor>
 class CartesianGridIteratorBase
     : public std::iterator<std::forward_iterator_tag, Accessor>
 {
@@ -198,16 +198,23 @@ public:
     CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
                               const TensorIndex<dim> &index);
 
+
+    /**
+     * Construct an iterator using the underlying element pointer.
+     */
+    CartesianGridIteratorBase(std::shared_ptr<Accessor> accessor_ptr);
+
+
     /**
      * Copy constructor. It may be used with different CopyPolicy (i.e. shallow or deep).
      *
      * @note By default it uses the deep copy.
      */
-    CartesianGridIteratorBase(const CartesianGridIteratorBase<Accessor,Allocator> &it,const CopyPolicy &copy_policy = CopyPolicy::deep);
+    CartesianGridIteratorBase(const CartesianGridIteratorBase<Accessor> &it,const CopyPolicy &copy_policy = CopyPolicy::deep);
 
 
     /** Move constructor. */
-    CartesianGridIteratorBase(CartesianGridIteratorBase<Accessor,Allocator> &&it) = default;
+    CartesianGridIteratorBase(CartesianGridIteratorBase<Accessor> &&it) = default;
 
     CartesianGridIteratorBase(const Accessor &acc,const CopyPolicy &copy_policy = CopyPolicy::shallow);
 
@@ -220,16 +227,16 @@ public:
     /**
      * Copy assignment operator. It performs a shallow copy of the Accessor hold by the CartesianGridIteratorBase.
      */
-    CartesianGridIteratorBase<Accessor,Allocator> &
-    operator=(const CartesianGridIteratorBase<Accessor,Allocator> &it)
+    CartesianGridIteratorBase<Accessor> &
+    operator=(const CartesianGridIteratorBase<Accessor> &it)
     {
         accessor_ = it.accessor_;
         return *this;
     }
 
     /** Move assignment operator. */
-    CartesianGridIteratorBase<Accessor,Allocator> &
-    operator=(CartesianGridIteratorBase<Accessor,Allocator> &&) = default;
+    CartesianGridIteratorBase<Accessor> &
+    operator=(CartesianGridIteratorBase<Accessor> &&) = default;
     ///@}
 
 
@@ -299,7 +306,7 @@ public:
      *  the next element and returns
      *  a reference to <tt>*this</tt>.
      */
-    CartesianGridIteratorBase<Accessor,Allocator> &operator++();
+    CartesianGridIteratorBase<Accessor> &operator++();
     ///@}
 
     /**
@@ -335,10 +342,10 @@ protected:
  *
  * @author M.Martinelli, 2014
  */
-template <class Accessor, class Allocator = Accessor>
+template <class Accessor>
 class CartesianGridIterator
     :
-    public CartesianGridIteratorBase<Accessor,Allocator>
+    public CartesianGridIteratorBase<Accessor>
 {
 public:
     /** Type of the accessor. */
@@ -348,6 +355,9 @@ public:
     using ContainerType = typename Accessor::ContainerType;
 
 
+    using CartesianGridIteratorBase<Accessor>::CartesianGridIteratorBase;
+
+#if 0
     /** @name Constructors & destructor */
     ///@{
     /**
@@ -378,18 +388,18 @@ public:
      *
      * @note By default it uses the deep copy.
      */
-    CartesianGridIterator(const CartesianGridIterator<Accessor,Allocator> &it,const CopyPolicy &copy_policy = CopyPolicy::deep);
+    CartesianGridIterator(const CartesianGridIterator<Accessor> &it,const CopyPolicy &copy_policy = CopyPolicy::deep);
 
 
     /** Move constructor. */
-    CartesianGridIterator(CartesianGridIterator<Accessor,Allocator> &&it) = default;
+    CartesianGridIterator(CartesianGridIterator<Accessor> &&it) = default;
 
 //    CartesianGridIterator(const Accessor &acc,const CopyPolicy &copy_policy = CopyPolicy::shallow);
 
     /** Destructor */
     ~CartesianGridIterator() = default ;
     ///@}
-
+#endif
 
     /** @name Dereferencing operators */
     ///@{
@@ -431,10 +441,10 @@ public:
  *
  * @author M.Martinelli, 2014
  */
-template <class Accessor,class Allocator = Accessor>
+template <class Accessor>
 class CartesianGridConstIterator
     :
-    public CartesianGridIteratorBase<Accessor,Allocator>
+    public CartesianGridIteratorBase<Accessor>
 {
 public:
     /** Type of the accessor. */
@@ -443,7 +453,8 @@ public:
     /** Type of the grid-like container . */
     using ContainerType = typename Accessor::ContainerType;
 
-
+    using CartesianGridIteratorBase<Accessor>::CartesianGridIteratorBase;
+#if 0
     /** @name Constructors & destructor */
     ///@{
     /**
@@ -474,16 +485,17 @@ public:
      *
      * @note By default it uses the deep copy.
      */
-    CartesianGridConstIterator(const CartesianGridConstIterator<Accessor,Allocator> &it,const CopyPolicy &copy_policy = CopyPolicy::deep);
+    CartesianGridConstIterator(const CartesianGridConstIterator<Accessor> &it,const CopyPolicy &copy_policy = CopyPolicy::deep);
 
 
     /** Move constructor. */
-    CartesianGridConstIterator(CartesianGridConstIterator<Accessor,Allocator> &&it) = default;
+    CartesianGridConstIterator(CartesianGridConstIterator<Accessor> &&it) = default;
 
 
     /** Destructor */
     ~CartesianGridConstIterator() = default ;
     ///@}
+#endif
 
     /** @name Dereferencing operators */
     ///@{

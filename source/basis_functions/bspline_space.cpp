@@ -160,9 +160,12 @@ auto
 BSplineSpace<dim_, range_, rank_>::
 begin() const -> ElementIterator
 {
-    auto sp = this->shared_from_this();
-    Assert(sp != nullptr,ExcNullPtr());
-    return ElementIterator(sp, 0);
+    using Elem = BSplineElement<dim_,range_,rank_>;
+    /*
+    auto elem = std::make_shared<Elem>(Elem(this->shared_from_this(),0));
+    Assert(elem != nullptr,ExcNullPtr());
+    //*/
+    return ElementIterator(std::make_shared<Elem>(Elem(this->shared_from_this(),0)));
 }
 
 
@@ -172,9 +175,18 @@ auto
 BSplineSpace<dim_, range_, rank_>::
 last() const -> ElementIterator
 {
-    auto sp = this->shared_from_this();
-    Assert(sp != nullptr,ExcNullPtr());
-    return ElementIterator(sp,this->get_grid()->get_num_active_elems() - 1);
+    using Elem = BSplineElement<dim_,range_,rank_>;
+
+
+    /*
+    auto elem = std::make_shared<Elem>(Elem(this->shared_from_this(),this->get_grid()->get_num_active_elems()-1));
+    Assert(elem != nullptr,ExcNullPtr());
+    //*/
+
+    Assert(false,ExcNotImplemented());
+    //TODO: the index of the last element in the grid is not correct, because we need to use the
+    // index of the last ACTIVE element in the grid
+    return ElementIterator(std::make_shared<Elem>(Elem(this->shared_from_this(),this->get_grid()->get_num_active_elems()-1)));
 }
 
 
@@ -184,9 +196,12 @@ auto
 BSplineSpace<dim_, range_, rank_>::
 end() const -> ElementIterator
 {
-    auto sp = this->shared_from_this();
-    Assert(sp != nullptr,ExcNullPtr());
-    return ElementIterator(sp,IteratorState::pass_the_end);
+    using Elem = BSplineElement<dim_,range_,rank_>;
+    /*
+    auto elem = std::make_shared<Elem>(Elem(this->shared_from_this(),IteratorState::pass_the_end));
+    Assert(elem != nullptr,ExcNullPtr());
+    //*/
+    return ElementIterator(std::make_shared<Elem>(Elem(this->shared_from_this(),IteratorState::pass_the_end)));
 }
 
 

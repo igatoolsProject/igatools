@@ -38,7 +38,7 @@ IGA_NAMESPACE_OPEN
 
 
 template <int dim, int range, int rank> class NURBSSpace;
-template <class Accessor, class Allocator> class CartesianGridIterator;
+template <class Accessor> class CartesianGridIterator;
 
 /**
  * @brief NURBS element

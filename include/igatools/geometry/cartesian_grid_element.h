@@ -388,7 +388,7 @@ private:
     };
 
 private:
-    template <class Accessor, class Allocator> friend class CartesianGridIteratorBase;
+    template <class Accessor> friend class CartesianGridIteratorBase;
     friend class GridElementHandler<dim>;
     /** Cartesian grid from which the element belongs.*/
     std::shared_ptr<ContainerType> grid_;

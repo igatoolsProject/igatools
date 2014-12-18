@@ -158,7 +158,7 @@ public:
 #endif
 
 private:
-    template <class Accessor, class Allocator> friend class CartesianGridIterator;
+    template <class Accessor> friend class CartesianGridIterator;
     friend class PushForward<type_, dim_, codim_>;
 
 };

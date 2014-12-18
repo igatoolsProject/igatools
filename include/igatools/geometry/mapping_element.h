@@ -202,7 +202,7 @@ public:
     using CacheType = LocalCache;
 
 private:
-    template <class Accessor, class Allocator> friend class CartesianGridIterator;
+    template <class Accessor> friend class CartesianGridIterator;
     friend class Mapping<dim, codim>;
 
 };

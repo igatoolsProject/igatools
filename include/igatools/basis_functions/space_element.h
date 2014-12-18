@@ -36,7 +36,7 @@
 
 IGA_NAMESPACE_OPEN
 
-template <class Accessor, class Allocator> class CartesianGridIterator;
+template <class Accessor> class CartesianGridIterator;
 
 
 
