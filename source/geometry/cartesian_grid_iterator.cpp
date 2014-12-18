@@ -24,8 +24,8 @@ using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
-template <typename Accessor>
-CartesianGridIteratorBase<Accessor>::
+template <class Accessor, class Allocator>
+CartesianGridIteratorBase<Accessor,Allocator>::
 CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
                           const Index index)
     :
@@ -34,17 +34,17 @@ CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
 
 
 
-template <typename Accessor>
-CartesianGridIteratorBase<Accessor>::
+template <class Accessor, class Allocator>
+CartesianGridIteratorBase<Accessor,Allocator>::
 CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
                           const TensorIndex<dim> &index)
     :
     accessor_(new Accessor(grid, index))
 {}
 
-template <typename Accessor>
-CartesianGridIteratorBase<Accessor>::
-CartesianGridIteratorBase(const CartesianGridIteratorBase<Accessor> &it,const CopyPolicy &copy_policy)
+template <class Accessor, class Allocator>
+CartesianGridIteratorBase<Accessor,Allocator>::
+CartesianGridIteratorBase(const CartesianGridIteratorBase<Accessor,Allocator> &it,const CopyPolicy &copy_policy)
 {
     if (copy_policy == CopyPolicy::deep)
     {
@@ -62,8 +62,8 @@ CartesianGridIteratorBase(const CartesianGridIteratorBase<Accessor> &it,const Co
 }
 
 #if 0
-template <typename Accessor>
-CartesianGridIteratorBase<Accessor>::
+template <class Accessor, class Allocator>
+CartesianGridIteratorBase<Accessor,Allocator>::
 CartesianGridIteratorBase(const Accessor &acc,const CopyPolicy &copy_policy)
     :
     accessor_(acc,copy_policy)
@@ -71,35 +71,35 @@ CartesianGridIteratorBase(const Accessor &acc,const CopyPolicy &copy_policy)
 #endif
 
 
-template <typename Accessor>
+template <class Accessor, class Allocator>
 bool
-CartesianGridIteratorBase<Accessor>::
+CartesianGridIteratorBase<Accessor,Allocator>::
 jump(const TensorIndex<dim> &increment)
 {
     return accessor_->jump(increment);
 }
 
-template <typename Accessor>
+template <class Accessor, class Allocator>
 void
-CartesianGridIteratorBase<Accessor>::
+CartesianGridIteratorBase<Accessor,Allocator>::
 move_to(const Index flat_index)
 {
     accessor_->move_to(flat_index);
 }
 
 
-template <typename Accessor>
+template <class Accessor, class Allocator>
 void
-CartesianGridIteratorBase<Accessor>::
+CartesianGridIteratorBase<Accessor,Allocator>::
 move_to(const TensorIndex<dim> &tensor_index)
 {
     accessor_->move_to(tensor_index);
 }
 
 
-template <typename Accessor>
-CartesianGridIteratorBase<Accessor> &
-CartesianGridIteratorBase<Accessor>::
+template <class Accessor, class Allocator>
+CartesianGridIteratorBase<Accessor,Allocator> &
+CartesianGridIteratorBase<Accessor,Allocator>::
 operator++()
 {
     ++(*accessor_);
@@ -111,52 +111,52 @@ operator++()
 
 
 
-template <typename Accessor>
+template <class Accessor, class Allocator>
 bool
-CartesianGridIteratorBase<Accessor>::
-operator==(const CartesianGridIteratorBase<Accessor> &i) const
+CartesianGridIteratorBase<Accessor,Allocator>::
+operator==(const CartesianGridIteratorBase<Accessor,Allocator> &i) const
 {
     return *accessor_ == *i.accessor_;
 }
 
 
-template <typename Accessor>
+template <class Accessor, class Allocator>
 bool
-CartesianGridIteratorBase<Accessor>::
-operator>(const CartesianGridIteratorBase<Accessor> &i) const
+CartesianGridIteratorBase<Accessor,Allocator>::
+operator>(const CartesianGridIteratorBase<Accessor,Allocator> &i) const
 {
     return (*accessor_ > *i.accessor_);
 }
 
-template <typename Accessor>
+template <class Accessor, class Allocator>
 bool
-CartesianGridIteratorBase<Accessor>::
-operator<(const CartesianGridIteratorBase<Accessor> &i) const
+CartesianGridIteratorBase<Accessor,Allocator>::
+operator<(const CartesianGridIteratorBase<Accessor,Allocator> &i) const
 {
     return (*accessor_ < *i.accessor_);
 }
 
 
 
-template <typename Accessor>
+template <class Accessor, class Allocator>
 bool
-CartesianGridIteratorBase<Accessor>::
-operator!=(const CartesianGridIteratorBase<Accessor> &i) const
+CartesianGridIteratorBase<Accessor,Allocator>::
+operator!=(const CartesianGridIteratorBase<Accessor,Allocator> &i) const
 {
     return accessor_->operator != (*(i.accessor_));
 }
 
-template <typename Accessor>
+template <class Accessor, class Allocator>
 Index
-CartesianGridIteratorBase<Accessor>::
+CartesianGridIteratorBase<Accessor,Allocator>::
 get_flat_index() const
 {
     return accessor_->get_flat_index();
 }
 
-template <typename Accessor>
+template <class Accessor, class Allocator>
 auto
-CartesianGridIteratorBase<Accessor>::
+CartesianGridIteratorBase<Accessor,Allocator>::
 get_tensor_index() const -> TensorIndex<dim>
 {
     return accessor_->get_tensor_index();
@@ -165,92 +165,92 @@ get_tensor_index() const -> TensorIndex<dim>
 
 
 
-template <typename Accessor>
-CartesianGridIterator<Accessor>::
+template <class Accessor, class Allocator>
+CartesianGridIterator<Accessor,Allocator>::
 CartesianGridIterator(std::shared_ptr<ContainerType> grid,const Index index)
     :
-    CartesianGridIteratorBase<Accessor>(grid,index)
+    CartesianGridIteratorBase<Accessor,Allocator>(grid,index)
 {}
 
-template <typename Accessor>
-CartesianGridIterator<Accessor>::
+template <class Accessor, class Allocator>
+CartesianGridIterator<Accessor,Allocator>::
 CartesianGridIterator(std::shared_ptr<ContainerType> grid,
                       const TensorIndex<ContainerType::dim> &index)
     :
-    CartesianGridIteratorBase<Accessor>(grid,index)
+    CartesianGridIteratorBase<Accessor,Allocator>(grid,index)
 {}
 
 
-template <typename Accessor>
-CartesianGridIterator<Accessor>::
-CartesianGridIterator(const CartesianGridIterator<Accessor> &it,const CopyPolicy &copy_policy)
+template <class Accessor, class Allocator>
+CartesianGridIterator<Accessor,Allocator>::
+CartesianGridIterator(const CartesianGridIterator<Accessor,Allocator> &it,const CopyPolicy &copy_policy)
     :
-    CartesianGridIteratorBase<Accessor>(it,copy_policy)
+    CartesianGridIteratorBase<Accessor,Allocator>(it,copy_policy)
 {}
 
 
-template <typename Accessor>
+template <class Accessor, class Allocator>
 Accessor &
-CartesianGridIterator<Accessor>::
+CartesianGridIterator<Accessor,Allocator>::
 operator * ()
 {
     return *this->accessor_;
 }
 
 
-template <typename Accessor>
+template <class Accessor, class Allocator>
 Accessor *
-CartesianGridIterator<Accessor>::
+CartesianGridIterator<Accessor,Allocator>::
 operator -> ()
 {
     return this->accessor_.get();
 }
 
-template <typename Accessor>
+template <class Accessor, class Allocator>
 const Accessor &
-CartesianGridIterator<Accessor>::
+CartesianGridIterator<Accessor,Allocator>::
 operator * () const
 {
     return *this->accessor_;
 }
 
 
-template <typename Accessor>
+template <class Accessor, class Allocator>
 const Accessor *
-CartesianGridIterator<Accessor>::
+CartesianGridIterator<Accessor,Allocator>::
 operator -> () const
 {
     return this->accessor_.get();
 }
 
 
-template <typename Accessor>
-CartesianGridConstIterator<Accessor>::
+template <class Accessor, class Allocator>
+CartesianGridConstIterator<Accessor,Allocator>::
 CartesianGridConstIterator(std::shared_ptr<ContainerType> grid,const Index index)
     :
-    CartesianGridIteratorBase<Accessor>(grid,index)
+    CartesianGridIteratorBase<Accessor,Allocator>(grid,index)
 {}
 
-template <typename Accessor>
-CartesianGridConstIterator<Accessor>::
+template <class Accessor, class Allocator>
+CartesianGridConstIterator<Accessor,Allocator>::
 CartesianGridConstIterator(std::shared_ptr<ContainerType> grid,
                            const TensorIndex<ContainerType::dim> &index)
     :
-    CartesianGridIteratorBase<Accessor>(grid,index)
+    CartesianGridIteratorBase<Accessor,Allocator>(grid,index)
 {}
 
 
-template <typename Accessor>
-CartesianGridConstIterator<Accessor>::
-CartesianGridConstIterator(const CartesianGridConstIterator<Accessor> &it,const CopyPolicy &copy_policy)
+template <class Accessor, class Allocator>
+CartesianGridConstIterator<Accessor,Allocator>::
+CartesianGridConstIterator(const CartesianGridConstIterator<Accessor,Allocator> &it,const CopyPolicy &copy_policy)
     :
-    CartesianGridIteratorBase<Accessor>(it,copy_policy)
+    CartesianGridIteratorBase<Accessor,Allocator>(it,copy_policy)
 {}
 
 
-template <typename Accessor>
+template <class Accessor, class Allocator>
 const Accessor &
-CartesianGridConstIterator<Accessor>::
+CartesianGridConstIterator<Accessor,Allocator>::
 operator * () const
 {
     return *this->accessor_;
@@ -258,9 +258,9 @@ operator * () const
 
 
 
-template <typename Accessor>
+template <class Accessor, class Allocator>
 const Accessor *
-CartesianGridConstIterator<Accessor>::
+CartesianGridConstIterator<Accessor,Allocator>::
 operator -> () const
 {
     return this->accessor_.get();
