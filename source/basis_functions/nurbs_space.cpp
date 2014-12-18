@@ -198,7 +198,8 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 begin() const -> ElementIterator
 {
-    return ElementIterator(std::enable_shared_from_this<self_t>::shared_from_this(), 0);
+    using Elem = NURBSElement<dim_,range_,rank_>;
+    return ElementIterator(std::make_shared<Elem>(Elem(this->shared_from_this(),0)));
 }
 
 
@@ -208,8 +209,12 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 last() const -> ElementIterator
 {
-    return ElementIterator(std::enable_shared_from_this<self_t>::shared_from_this(),
-                           this->get_grid()->get_num_active_elems() - 1);
+    using Elem = NURBSElement<dim_,range_,rank_>;
+
+    Assert(false,ExcNotImplemented());
+    //TODO: the index of the last element in the grid is not correct, because we need to use the
+    // index of the last ACTIVE element in the grid
+    return ElementIterator(std::make_shared<Elem>(Elem(this->shared_from_this(),this->get_grid()->get_num_active_elems() - 1)));
 }
 
 
@@ -219,8 +224,8 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 end() const -> ElementIterator
 {
-    return ElementIterator(std::enable_shared_from_this<self_t>::shared_from_this(),
-                           IteratorState::pass_the_end);
+    using Elem = NURBSElement<dim_,range_,rank_>;
+    return ElementIterator(std::make_shared<Elem>(Elem(this->shared_from_this(),IteratorState::pass_the_end)));
 }
 
 

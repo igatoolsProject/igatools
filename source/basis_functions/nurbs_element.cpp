@@ -109,6 +109,16 @@ move_to(const TensorIndex<dim> &tensor_index)
         weight_elem_table_[comp_id].move_to(tensor_index);
 }
 
+template <int dim, int range, int rank>
+auto
+NURBSElement<dim, range, rank>::
+get_nurbs_space() const -> std::shared_ptr<const Space>
+{
+    const auto nrb_space = std::dynamic_pointer_cast<const Space>(this->get_space());
+    Assert(nrb_space != nullptr,ExcNullPtr());
+    return nrb_space;
+}
+
 IGA_NAMESPACE_CLOSE
 
 #endif // #ifdef NURBS

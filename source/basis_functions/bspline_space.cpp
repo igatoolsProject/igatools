@@ -161,10 +161,6 @@ BSplineSpace<dim_, range_, rank_>::
 begin() const -> ElementIterator
 {
     using Elem = BSplineElement<dim_,range_,rank_>;
-    /*
-    auto elem = std::make_shared<Elem>(Elem(this->shared_from_this(),0));
-    Assert(elem != nullptr,ExcNullPtr());
-    //*/
     return ElementIterator(std::make_shared<Elem>(Elem(this->shared_from_this(),0)));
 }
 
@@ -176,12 +172,6 @@ BSplineSpace<dim_, range_, rank_>::
 last() const -> ElementIterator
 {
     using Elem = BSplineElement<dim_,range_,rank_>;
-
-
-    /*
-    auto elem = std::make_shared<Elem>(Elem(this->shared_from_this(),this->get_grid()->get_num_active_elems()-1));
-    Assert(elem != nullptr,ExcNullPtr());
-    //*/
 
     Assert(false,ExcNotImplemented());
     //TODO: the index of the last element in the grid is not correct, because we need to use the
@@ -197,10 +187,6 @@ BSplineSpace<dim_, range_, rank_>::
 end() const -> ElementIterator
 {
     using Elem = BSplineElement<dim_,range_,rank_>;
-    /*
-    auto elem = std::make_shared<Elem>(Elem(this->shared_from_this(),IteratorState::pass_the_end));
-    Assert(elem != nullptr,ExcNullPtr());
-    //*/
     return ElementIterator(std::make_shared<Elem>(Elem(this->shared_from_this(),IteratorState::pass_the_end)));
 }
 

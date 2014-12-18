@@ -158,6 +158,12 @@ public:
     void operator++();
     ///@}
 
+
+    /**
+     * Returns the NURBSSpace in which the NURBSElement is defined.
+     */
+    std::shared_ptr<const Space> get_nurbs_space() const;
+
 private:
 
     using SpSpace = typename Space::SpSpace;

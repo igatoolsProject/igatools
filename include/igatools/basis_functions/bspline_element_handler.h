@@ -222,6 +222,10 @@ public:
 
     virtual void print_info(LogStream &out) const override final ;
 
+    const GridElementHandler<dim_> &get_grid_handler() const
+    {
+        return this->grid_handler_;
+    }
 
 private:
     std::shared_ptr<const Space> space_;

@@ -45,6 +45,7 @@ IGA_NAMESPACE_OPEN
 
 
 template<int,int,int> class NURBSSpace;
+template<int,int,int> class NURBSElement;
 
 /**
  * Global NURBSSpace uniform quadrature
@@ -106,13 +107,14 @@ public:
     void reset(const ValueFlags flag, const Quadrature<k> &quad);
 #endif
 
+#if 0
 //protected:
     template <int k>
     void fill_cache(ElementAccessor &elem, const int j);
 
     template <int k>
     void init_cache(ElementAccessor &elem);
-
+#endif
 //    void init_all_caches(ElementAccessor &elem);
 public:
 #if 0
@@ -154,44 +156,6 @@ private:
     using WeightElem = typename Space::WeightFunction::ElementAccessor;
     using WeightElemTable = typename Space::template ComponentContainer<WeightElem>;
 
-    /**
-     * Computes the value of the non-zero NURBS basis
-     * functions over the current element,
-     *   at the evaluation points pre-allocated in the cache.
-     *
-     * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
-     * an exception will be raised.
-     */
-    void evaluate_nurbs_values_from_bspline(
-        const typename Space::SpSpace::ElementAccessor &bspline_elem,
-        const WeightElemTable &weight_elem_table,
-        ValueTable<Value> &phi) const;
-
-    /**
-     * Computes the 1st order derivative of the non-zero NURBS basis
-     * functions over the current element,
-     *   at the evaluation points pre-allocated in the cache.
-     *
-     * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
-     * an exception will be raised.
-     */
-    void evaluate_nurbs_gradients_from_bspline(
-        const typename Space::SpSpace::ElementAccessor &bspline_elem,
-        const WeightElemTable &weight_elem_table,
-        ValueTable<Derivative<1>> &D1_phi) const;
-
-    /**
-     * Computes the 2nd order derivative of the non-zero NURBS basis
-     * functions over the current element,
-     *   at the evaluation points pre-allocated in the cache.
-     *
-     * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
-     * an exception will be raised.
-     */
-    void evaluate_nurbs_hessians_from_bspline(
-        const typename Space::SpSpace::ElementAccessor &bspline_elem,
-        const WeightElemTable &weight_elem_table,
-        ValueTable<Derivative<2>> &D2_phi) const;
 
 
 #if 0
@@ -247,9 +211,52 @@ private:
     {
         template<class T>
         void operator()(const T &quad);
+
+        /**
+         * Computes the value of the non-zero NURBS basis
+         * functions over the current element,
+         *   at the evaluation points pre-allocated in the cache.
+         *
+         * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
+         * an exception will be raised.
+         */
+        void evaluate_nurbs_values_from_bspline(
+            const typename Space::SpSpace::ElementAccessor &bspline_elem,
+            const WeightElemTable &weight_elem_table,
+            ValueTable<Value> &phi) const;
+
+        /**
+         * Computes the 1st order derivative of the non-zero NURBS basis
+         * functions over the current element,
+         *   at the evaluation points pre-allocated in the cache.
+         *
+         * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
+         * an exception will be raised.
+         */
+        void evaluate_nurbs_gradients_from_bspline(
+            const typename Space::SpSpace::ElementAccessor &bspline_elem,
+            const WeightElemTable &weight_elem_table,
+            ValueTable<Derivative<1>> &D1_phi) const;
+
+        /**
+         * Computes the 2nd order derivative of the non-zero NURBS basis
+         * functions over the current element,
+         *   at the evaluation points pre-allocated in the cache.
+         *
+         * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
+         * an exception will be raised.
+         */
+        void evaluate_nurbs_hessians_from_bspline(
+            const typename Space::SpSpace::ElementAccessor &bspline_elem,
+            const WeightElemTable &weight_elem_table,
+            ValueTable<Derivative<2>> &D2_phi) const;
+
+        int j_;
+        NURBSElement<dim_,range_,rank_> *nrb_elem_;
     };
 
     FillCacheDispatcher fill_cache_impl_;
+
 
 
     /**
