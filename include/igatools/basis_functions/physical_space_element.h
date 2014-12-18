@@ -299,10 +299,8 @@ private:
      * element accessor that is used as partial inheritance of the physical space element accessor.
      */
     const RefElemAccessor &get_ref_space_accessor() const;
-    RefElemAccessor &get_ref_space_accessor()
-    {
-        return ref_space_element_accessor_;
-    }
+    RefElemAccessor &get_ref_space_accessor();
+
 #if 0
 
     /**
@@ -405,7 +403,8 @@ protected:
 private:
     template <class Accessor> friend class CartesianGridIteratorBase;
     template <typename PSpace> friend class SpaceElementHandler;
-    RefElemAccessor ref_space_element_accessor_;
+
+    std::shared_ptr<RefElemAccessor> ref_space_element_accessor_;
 };
 
 

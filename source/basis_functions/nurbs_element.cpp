@@ -61,7 +61,7 @@ void
 NURBSElement<dim, range, rank>::
 operator++()
 {
-    parent_t::operator++();
+    CartesianGridElement<dim>::operator++();
 
     ++bspline_elem_;
 

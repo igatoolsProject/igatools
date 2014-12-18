@@ -118,6 +118,11 @@ public:
            std::shared_ptr<MapFunc> map_func);
 
     /**
+     * Create an element (defined on this grid) with a given flat_index.
+     */
+    std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const;
+
+    /**
      * Total number of dofs of the space.
      */
     Index get_num_basis() const;

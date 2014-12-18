@@ -183,7 +183,7 @@ public:
     {
         Assert(false,ExcNotInitialized());
     }
-
+#if 0
     /**
      * Construct an iterator on a grid-type container
      * grid pointing to the element of given index.
@@ -197,7 +197,7 @@ public:
      */
     CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
                               const TensorIndex<dim> &index);
-
+#endif
 
     /**
      * Construct an iterator using the underlying element pointer.

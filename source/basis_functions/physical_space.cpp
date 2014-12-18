@@ -66,13 +66,25 @@ create(shared_ptr<RefSpace> ref_space,
 }
 
 
+template <class RefSpace_,int codim_, Transformation type_>
+auto
+PhysicalSpace<RefSpace_, codim_, type_>::
+create_element(const Index flat_index) const -> std::shared_ptr<ElementAccessor>
+{
+    auto elem = shared_ptr<ElementAccessor>(new ElementAccessor(this->shared_from_this(),flat_index));
+    Assert(elem != nullptr, ExcNullPtr());
+
+    return elem;
+}
+
+
 
 template <class RefSpace_,int codim_, Transformation type_>
 auto
 PhysicalSpace<RefSpace_, codim_, type_>::
 begin() const -> ElementIterator
 {
-    return ElementIterator(this->shared_from_this(), 0);
+    return ElementIterator(this->create_element(0));
 }
 
 
@@ -82,8 +94,9 @@ auto
 PhysicalSpace<RefSpace_, codim_, type_>::
 last() const -> ElementIterator
 {
-    return ElementIterator(this->shared_from_this(),
-                           ref_space_->get_grid()->get_num_active_elems() - 1);
+    Assert(false,ExcNotImplemented());
+    //TODO (MM, Dec 18, 2014): fix the index of the last ACTIVE element
+    return ElementIterator(this->create_element(ref_space_->get_grid()->get_num_active_elems() - 1));
 }
 
 
@@ -93,8 +106,7 @@ auto
 PhysicalSpace<RefSpace_, codim_, type_>::
 end() const -> ElementIterator
 {
-    return ElementIterator(this->shared_from_this(),
-                           IteratorState::pass_the_end);
+    return ElementIterator(this->create_element(IteratorState::pass_the_end));
 }
 
 #if 0

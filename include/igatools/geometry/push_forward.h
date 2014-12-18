@@ -78,15 +78,23 @@ public:
     template<int k>
     void reset(const ValueFlags flag, const Quadrature<k> &quad);
 
+    std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const
+    {
+        auto elem = std::shared_ptr<ElementAccessor>(
+                        new ElementAccessor(this->get_function()->get_grid(),flat_index));
+        Assert(elem != nullptr,ExcNullPtr());
+
+        return elem;
+    }
+
     auto begin()  const -> ElementIterator
     {
-        return ElementIterator(this->get_function()->get_grid(), 0);
+        return ElementIterator(this->create_element(0));
     }
 
     auto end() const -> ElementIterator
     {
-        return ElementIterator(this->get_function()->get_grid(),
-                               IteratorState::pass_the_end);
+        return ElementIterator(this->create_element(IteratorState::pass_the_end));
     }
 
 };

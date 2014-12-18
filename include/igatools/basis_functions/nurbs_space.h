@@ -201,6 +201,11 @@ public:
 
     ///@}
 
+    /**
+     * Create an element (defined on this space) with a given flat_index.
+     */
+    virtual std::shared_ptr<ReferenceElement<dim_,range_,rank_> > create_element(const Index flat_index) const override final;
+
     /** Destructor */
     virtual ~NURBSSpace() = default;
 

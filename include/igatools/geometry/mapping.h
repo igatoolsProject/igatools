@@ -127,14 +127,23 @@ public:
         return F_;
     }
 
+    std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const
+    {
+        auto elem = std::shared_ptr<ElementAccessor>(new ElementAccessor(F_->get_grid(),flat_index));
+        Assert(elem != nullptr, ExcNullPtr());
+
+        return elem;
+    }
+
+
     auto begin()  const -> ElementIterator
     {
-        return ElementIterator(F_->get_grid(), 0);
+        return ElementIterator(this->create_element(0));
     }
 
     auto end() const -> ElementIterator
     {
-        return ElementIterator(F_->get_grid(), IteratorState::pass_the_end);
+        return ElementIterator(this->create_element(IteratorState::pass_the_end));
     }
 protected:
     std::shared_ptr<typename ElementAccessor::CacheType>

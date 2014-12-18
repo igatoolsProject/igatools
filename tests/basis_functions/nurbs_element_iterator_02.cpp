@@ -90,6 +90,7 @@ void test()
     for (; elem != end_element; ++elem)
     {
         elem_handler->fill_element_cache(elem);
+        std::cout << "Element flat id: " << elem->get_flat_index() << endl << endl;
         out << "Element flat id: " << elem->get_flat_index() << endl << endl;
 
         out.begin_item("Values basis functions:");

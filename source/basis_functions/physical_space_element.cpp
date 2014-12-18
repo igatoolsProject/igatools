@@ -33,8 +33,10 @@ PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
     :
     parent_t(phys_space,index),
     PfElemAccessor(phys_space->get_grid(), index),
-    ref_space_element_accessor_(phys_space->get_reference_space(),index)
-{}
+    ref_space_element_accessor_(phys_space->get_reference_space()->create_element(index))
+{
+    Assert(ref_space_element_accessor_ != nullptr, ExcNullPtr());
+}
 
 
 
@@ -44,9 +46,12 @@ PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
                      const TensorIndex<dim> &index)
     :
     parent_t(phys_space,index),
-    PfElemAccessor(phys_space->get_grid(), index),
-    ref_space_element_accessor_(phys_space->get_reference_space(),index)
-{}
+    PfElemAccessor(phys_space->get_grid(), index)
+{
+    const auto flat_index = phys_space->get_grid()->tensor_to_flat(index);
+    ref_space_element_accessor_ = phys_space->get_reference_space()->create_element(flat_index);
+    Assert(ref_space_element_accessor_ != nullptr, ExcNullPtr());
+}
 
 
 template< class PhysSpace >
@@ -77,9 +82,9 @@ copy_from(const PhysicalSpaceElement<PhysSpace> &element,
 //    PhysSpace::PushForwardType::ElementAccessor::copy_from(element,copy_policy);
 //
 //    if (copy_policy == CopyPolicy::deep)
-//        ref_space_element_accessor_.deep_copy_from(element.ref_space_element_accessor_);
+//        ref_space_element_accessor_->deep_copy_from(element.ref_space_element_accessor_);
 //    else if (copy_policy == CopyPolicy::shallow)
-//        ref_space_element_accessor_.deep_copy_from(element.ref_space_element_accessor_);
+//        ref_space_element_accessor_->deep_copy_from(element.ref_space_element_accessor_);
 //    else
 //    {
 //        Assert(false,ExcNotImplemented());
@@ -265,7 +270,7 @@ init_cache(const ValueFlags fill_flag,
     const ValueFlags ref_sp_flag =
         get_reference_space_accessor_fill_flags(fill_flag);
     // TODO (pauletti, Sep 12, 2014): fix next line
-    // ref_space_element_accessor_.init_cache(ref_sp_flag, quad);
+    // ref_space_element_accessor_->init_cache(ref_sp_flag, quad);
 
     //const ValueFlags pf_flag = get_push_forward_accessor_fill_flags(fill_flag);
     //PfElemAccessor::init_cache(pf_flag, quad);
@@ -302,7 +307,7 @@ fill_cache(const TopologyId<dim> &topology_id)
     {
         PfElemAccessor::fill_cache();
         // TODO (pauletti, Sep 12, 2014): fix next line
-        // ref_space_element_accessor_.fill_cache();
+        // ref_space_element_accessor_->fill_cache();
     }
     else
     {
@@ -310,14 +315,14 @@ fill_cache(const TopologyId<dim> &topology_id)
         // and RefSpaceElementAccessor accepting TopologyId
         PfElemAccessor::fill_face_cache(topology_id.get_id());
         // TODO (pauletti, Sep 12, 2014): fix next line
-        //ref_space_element_accessor_.fill_face_cache(topology_id.get_id());
+        //ref_space_element_accessor_->fill_face_cache(topology_id.get_id());
     }
 
     if (cache.flags_handler_.fill_values())
     {
         PfElemAccessor::
         template transform_values<RefSpace::range,RefSpace::rank>(
-            ref_space_element_accessor_.get_basis_values(topology_id),
+            ref_space_element_accessor_->get_basis_values(topology_id),
             cache.phi_,
             topology_id);
 
@@ -332,7 +337,7 @@ fill_cache(const TopologyId<dim> &topology_id)
             PfElemAccessor::
             template transform_gradients<PhysSpace::range,PhysSpace::rank>(
                 dummy,
-                ref_space_element_accessor_.get_basis_gradients(topology_id),
+                ref_space_element_accessor_->get_basis_gradients(topology_id),
                 cache.D1phi_,
                 topology_id);
         }
@@ -340,8 +345,8 @@ fill_cache(const TopologyId<dim> &topology_id)
         {
             PfElemAccessor::
             template transform_gradients<PhysSpace::range,PhysSpace::rank>(
-                ref_space_element_accessor_.get_basis_values(topology_id),
-                ref_space_element_accessor_.get_basis_gradients(topology_id),
+                ref_space_element_accessor_->get_basis_values(topology_id),
+                ref_space_element_accessor_->get_basis_gradients(topology_id),
                 cache.D1phi_,
                 topology_id);
         }
@@ -356,8 +361,8 @@ fill_cache(const TopologyId<dim> &topology_id)
             PfElemAccessor::
             template transform_hessians<PhysSpace::range,PhysSpace::rank>(
                 dummy,
-                ref_space_element_accessor_.get_basis_gradients(topology_id),
-                ref_space_element_accessor_.get_basis_hessians(topology_id),
+                ref_space_element_accessor_->get_basis_gradients(topology_id),
+                ref_space_element_accessor_->get_basis_hessians(topology_id),
                 cache.D2phi_,
                 topology_id);
 
@@ -421,7 +426,7 @@ evaluate_field(const vector<Real> &local_coefs,const TopologyId<dim> &topology_i
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(), local_coefs.size()));
 
-    auto field_hat = ref_space_element_accessor_.evaluate_field(local_coefs,topology_id);
+    auto field_hat = ref_space_element_accessor_->evaluate_field(local_coefs,topology_id);
 
     ValueVector<Value> field(field_hat.size());
 
@@ -441,13 +446,13 @@ evaluate_field_gradients(const vector<Real> &local_coefs,const TopologyId<dim> &
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(), local_coefs.size()));
 
-    auto D1field_hat = ref_space_element_accessor_.evaluate_field_gradients(local_coefs,topology_id);
+    auto D1field_hat = ref_space_element_accessor_->evaluate_field_gradients(local_coefs,topology_id);
 
     const auto n_quad_points = D1field_hat.size();
 
     ValueVector< typename RefElemAccessor::Value > D0field_hat(n_quad_points);
     if (transformation_type != Transformation::h_grad)
-        D0field_hat = ref_space_element_accessor_.evaluate_field(local_coefs,topology_id);
+        D0field_hat = ref_space_element_accessor_->evaluate_field(local_coefs,topology_id);
 
     ValueVector< Derivative<1> > D1field(n_quad_points);
     PfElemAccessor::
@@ -580,7 +585,7 @@ jump(const TensorIndex<dim> &increment)
 
     const bool jump_push_fwd_accessor = PfElemAccessor::jump(increment);
 
-    const bool jump_ref_space_accessor = ref_space_element_accessor_.jump(increment);
+    const bool jump_ref_space_accessor = ref_space_element_accessor_->jump(increment);
 
     return jump_grid_accessor && jump_push_fwd_accessor && jump_ref_space_accessor;
 }
@@ -592,7 +597,7 @@ move_to(const Index flat_index)
 {
     parent_t::move_to(flat_index);
     PfElemAccessor::move_to(flat_index);
-    ref_space_element_accessor_.move_to(flat_index);
+    ref_space_element_accessor_->move_to(flat_index);
 }
 
 
@@ -603,7 +608,7 @@ move_to(const TensorIndex<dim> &tensor_index)
 {
     parent_t::move_to(tensor_index);
     PfElemAccessor::move_to(tensor_index);
-    ref_space_element_accessor_.move_to(tensor_index);
+    ref_space_element_accessor_->move_to(tensor_index);
 }
 
 
@@ -615,7 +620,7 @@ operator++()
 {
     parent_t::operator++();
     PfElemAccessor::operator++();
-    ++ref_space_element_accessor_;
+    ++(*ref_space_element_accessor_);
 }
 
 
@@ -660,7 +665,15 @@ auto
 PhysicalSpaceElement<PhysSpace>::
 get_ref_space_accessor() const -> const RefElemAccessor &
 {
-    return ref_space_element_accessor_;
+    return *ref_space_element_accessor_;
+}
+
+template< class PhysSpace >
+auto
+PhysicalSpaceElement<PhysSpace>::
+get_ref_space_accessor() -> RefElemAccessor &
+{
+    return *ref_space_element_accessor_;
 }
 
 #if 0
@@ -713,15 +726,15 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 
     ValueTable<ref_values_t> phi_hat;
     if (contains(ref_space_flags,ValueFlags::value))
-        phi_hat = ref_space_element_accessor_.evaluate_basis_values_at_points(points);
+        phi_hat = ref_space_element_accessor_->evaluate_basis_values_at_points(points);
 
     ValueTable<ref_gradients_t> D1phi_hat;
     if (contains(ref_space_flags,ValueFlags::gradient))
-        D1phi_hat = ref_space_element_accessor_.evaluate_basis_gradients_at_points(points);
+        D1phi_hat = ref_space_element_accessor_->evaluate_basis_gradients_at_points(points);
 
     ValueTable<ref_hessians_t> D2phi_hat;
     if (contains(ref_space_flags,ValueFlags::hessian))
-        D2phi_hat = ref_space_element_accessor_.evaluate_basis_hessians_at_points(points);
+        D2phi_hat = ref_space_element_accessor_->evaluate_basis_hessians_at_points(points);
     // evaluation of the basis function values (or derivatives) using the reference space --- end
     //---------------------------------------------------------------------------------------------
 
@@ -751,7 +764,7 @@ PhysicalSpaceElement<PhysSpace>::
 print_info(LogStream &out) const
 {
     out.begin_item("Reference space:");
-    ref_space_element_accessor_.print_info(out);
+    ref_space_element_accessor_->print_info(out);
     out.end_item();
 
     out.begin_item("Pushforward:");
@@ -765,7 +778,7 @@ PhysicalSpaceElement<PhysSpace>::
 print_cache_info(LogStream &out) const
 {
     out.begin_item("Reference space:");
-    ref_space_element_accessor_.print_cache_info(out);
+    ref_space_element_accessor_->print_cache_info(out);
     out.end_item();
     out.begin_item("Pushforward:");
     PfElemAccessor::print_cache_info(out);

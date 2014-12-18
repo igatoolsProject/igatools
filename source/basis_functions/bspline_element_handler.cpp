@@ -153,17 +153,9 @@ template<int dim_, int range_ , int rank_>
 BSplineElementHandler<dim_, range_, rank_>::
 BSplineElementHandler(shared_ptr<const Space> space)
     :
-    base_t(space),
-    space_(space)
+    base_t(space)
 {
-    Assert(space_ != nullptr, ExcNullPtr());
-    /*
-        const auto n_basis = space_->get_num_all_element_basis();
-        // Compute the component offsets
-        comp_offset_[0] = 0;
-        for (int j = 1; j < Space::n_components; ++j)
-            comp_offset_[j] = comp_offset_[j-1] + n_basis.comp_dimension[j-1];
-    //*/
+    Assert(space != nullptr, ExcNullPtr());
 }
 
 
@@ -273,7 +265,7 @@ reset(const ValueFlags &flag, const quadrature_variant &quad)
     reset_impl_.flag_ = flag;
     reset_impl_.flags_ = &flags_;
     reset_impl_.splines1d_ = &splines1d_;
-    reset_impl_.space_ = space_.get();
+    reset_impl_.space_ = this->get_bspline_space().get();
 //    reset_impl_.lengths_ = &(this->grid_handler_.lengths_);
 
     boost::apply_visitor(reset_impl_, quad);
@@ -315,10 +307,10 @@ void
 BSplineElementHandler<dim_, range_, rank_>::
 init_cache(RefElementAccessor &elem, const topology_variant &topology)
 {
-//    init_cache_impl_.grid_handler_ = this;
     init_cache_impl_.grid_handler_ = &(this->grid_handler_);
 
-    Assert(space_ == elem.get_space(),ExcMessage("The element accessor and the element handler cannot have different spaces."));
+    Assert(this->get_space() == elem.get_space(),
+           ExcMessage("The element accessor and the element handler cannot have different spaces."));
 
     Assert(elem.get_space()->is_bspline(),ExcMessage("Not a BSplineElement."));
     init_cache_impl_.elem_ = &elem;
@@ -556,19 +548,16 @@ void
 BSplineElementHandler<dim_, range_, rank_>::
 fill_cache(RefElementAccessor &elem, const topology_variant &topology, const int j)
 {
-//    fill_cache_impl_.grid_handler_ = this;
     fill_cache_impl_.grid_handler_ = &(this->grid_handler_);
 
     fill_cache_impl_.j_ = j;
     fill_cache_impl_.splines1d_ = &splines1d_;
 
-    Assert(space_ == elem.get_space(),ExcMessage("The element accessor and the element handler cannot have different spaces."));
+    Assert(this->get_space() == elem.get_space(),
+           ExcMessage("The element accessor and the element handler cannot have different spaces."));
 
     Assert(elem.get_space()->is_bspline(),ExcMessage("Not a BSplineElement."));
     fill_cache_impl_.elem_ = &elem;
-
-//    fill_cache_impl_.space_ = space_.get();
-//    fill_cache_impl_.comp_offset_ = &comp_offset_;
 
     boost::apply_visitor(fill_cache_impl_,topology);
 }
@@ -623,6 +612,18 @@ fill_cache(RefElementAccessor &elem, const topology_variant &topology, const int
 //
 //    cache.set_filled(true);
 //}
+
+
+
+template<int dim_, int range_ , int rank_>
+auto
+BSplineElementHandler<dim_, range_, rank_>::
+get_bspline_space() const -> std::shared_ptr<const Space>
+{
+    auto bsp_space = std::dynamic_pointer_cast<const Space>(this->get_space());
+    Assert(bsp_space != nullptr,ExcNullPtr());
+    return bsp_space;
+}
 
 
 

@@ -93,6 +93,11 @@ public:
     virtual ~ReferenceSpace() = default;
 
     /**
+     * Create and element (defined on this space) with a given flat_index
+     */
+    virtual std::shared_ptr<ReferenceElement<dim_,range_,rank_> > create_element(const Index flat_index) const = 0;
+
+    /**
      *  Class to manage the component quantities with the knowledge of
      * uniform range spaces
      */

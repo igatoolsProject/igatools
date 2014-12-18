@@ -288,15 +288,27 @@ CartesianGrid<dim_>::begin() -> ElementIterator
 {
     auto it = std::find(active_elems_.get_data().begin(),
     active_elems_.get_data().end(), true);
+
+    int index = 0;
     if (it == active_elems_.get_data().end())
-        return ElementIterator(this->shared_from_this(),
-        IteratorState::pass_the_end);
+        index = IteratorState::pass_the_end;
+    else
+        index = std::distance(active_elems_.get_data().begin(),it);
 
-    auto start = std::distance(active_elems_.get_data().begin(),it);
-
-    return ElementIterator(this->shared_from_this(), start);
+    return ElementIterator(this->create_element(index));
 }
 
+template<int dim_>
+auto
+CartesianGrid<dim_>::
+create_element(const Index flat_index) const -> std::shared_ptr<ElementAccessor>
+{
+    using Elem = CartesianGridElement<dim_>;
+    auto elem = shared_ptr<Elem>(new Elem(this->shared_from_this(),flat_index));
+    Assert(elem != nullptr,ExcNullPtr());
+
+    return elem;
+}
 
 
 template<int dim_>
@@ -304,8 +316,7 @@ auto
 CartesianGrid<dim_>::
 end() -> ElementIterator
 {
-    return ElementIterator(this->shared_from_this(),
-    IteratorState::pass_the_end);
+    return ElementIterator(this->create_element(IteratorState::pass_the_end));
 }
 
 
@@ -314,15 +325,7 @@ auto
 CartesianGrid<dim_>::
 begin() const -> ElementConstIterator
 {
-    auto it = std::find(active_elems_.get_data().begin(),
-                        active_elems_.get_data().end(), true);
-    if (it == active_elems_.get_data().end())
-        return ElementConstIterator(this->shared_from_this(),
-                                    IteratorState::pass_the_end);
-
-    auto start = std::distance(active_elems_.get_data().begin(),it);
-
-    return ElementConstIterator(this->shared_from_this(), start);
+    return this->cbegin();
 }
 
 
@@ -332,8 +335,7 @@ auto
 CartesianGrid<dim_>::
 end() const -> ElementConstIterator
 {
-    return ElementConstIterator(this->shared_from_this(),
-                                IteratorState::pass_the_end);
+    return this->cend();
 }
 
 template<int dim_>
@@ -343,13 +345,14 @@ cbegin() const -> ElementConstIterator
 {
     auto it = std::find(active_elems_.get_data().begin(),
                         active_elems_.get_data().end(), true);
+
+    int index = 0;
     if (it == active_elems_.get_data().end())
-        return ElementConstIterator(this->shared_from_this(),
-                                    IteratorState::pass_the_end);
+        index = IteratorState::pass_the_end;
+    else
+        index = std::distance(active_elems_.get_data().begin(),it);
 
-    auto start = std::distance(active_elems_.get_data().begin(),it);
-
-    return ElementConstIterator(this->shared_from_this(), start);
+    return ElementConstIterator(this->create_element(index));
 }
 
 
@@ -359,8 +362,7 @@ auto
 CartesianGrid<dim_>::
 cend() const -> ElementConstIterator
 {
-    return ElementConstIterator(this->shared_from_this(),
-                                IteratorState::pass_the_end);
+    return ElementConstIterator(this->create_element(IteratorState::pass_the_end));
 }
 
 
@@ -703,8 +705,11 @@ find_elements_of_points(const ValueVector<Points<dim>> &points) const
 
             elem_t_id[i] = (j>0) ? j-1 : 0;
         }
+
+
+        const auto elem_f_id = this->tensor_to_flat(elem_t_id);
         auto ans =
-            res.emplace(ElementIterator(this->shared_from_this(), elem_t_id),
+            res.emplace(ElementIterator(this->create_element(elem_f_id)),
                         vector<int>(1,k));
         if (!ans.second)
             (ans.first)->second.push_back(k);

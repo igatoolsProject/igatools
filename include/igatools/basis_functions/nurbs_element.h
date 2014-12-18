@@ -124,7 +124,7 @@ public:
     self_t &operator=(self_t &&elem) = default;
     ///@}
 
-    /** @name Functions/operators for moving the element in the CartesianGrid.*/
+    /** @name Functions/operators for moving the element in the NURBSSpace.*/
     ///@{
     /**
      * Moves the element to the position that differs from the current one
@@ -133,7 +133,7 @@ public:
      * If the resulting position after the movement is valid (i.e. within the grid), then the function
      * returns true, otherwise it returns false.
      */
-    bool jump(const TensorIndex<dim> &increment);
+    virtual bool jump(const TensorIndex<dim> &increment) override final;
 
     /**
      * Sets the index of the element using the flatten representation.
@@ -142,7 +142,7 @@ public:
      * as it is easy to use incorrectly. Only use it if you know what you
      * are doing.
      */
-    void move_to(const Index flat_index);
+    virtual void move_to(const Index flat_index) override final;
 
 
     /**
@@ -152,10 +152,10 @@ public:
      * as it is easy to use incorrectly. Only use it if you know what you
      * are doing.
      */
-    void move_to(const TensorIndex<dim> &tensor_index);
+    virtual void move_to(const TensorIndex<dim> &tensor_index) override final;
 
     /** Moves the element to the next active element in the CartesianGrid. */
-    void operator++();
+    virtual void operator++() override final;
     ///@}
 
 

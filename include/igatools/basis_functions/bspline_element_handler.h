@@ -228,7 +228,7 @@ public:
     }
 
 private:
-    std::shared_ptr<const Space> space_;
+//    std::shared_ptr<const Space> space_;
 
 //    ComponentContainer<Size> comp_offset_;
 
@@ -347,6 +347,12 @@ private:
     };
 
     FillCacheDispatcher fill_cache_impl_;
+
+    /**
+     * Returns the BSplineSpace used to define the BSplineElementHandler object.
+     */
+    std::shared_ptr<const Space> get_bspline_space() const;
+
 };
 
 IGA_NAMESPACE_CLOSE

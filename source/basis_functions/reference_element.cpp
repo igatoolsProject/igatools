@@ -27,6 +27,40 @@
 IGA_NAMESPACE_OPEN
 
 
+
+template <int dim, int range, int rank>
+void
+ReferenceElement<dim, range, rank>::
+operator++()
+{
+    parent_t::operator++();
+}
+
+template <int dim, int range, int rank>
+bool
+ReferenceElement<dim, range, rank>::
+jump(const TensorIndex<dim> &increment)
+{
+    return parent_t::jump(increment);
+}
+
+template <int dim, int range, int rank>
+void
+ReferenceElement<dim, range, rank>::
+move_to(const Index flat_index)
+{
+    parent_t::move_to(flat_index);
+}
+
+
+template <int dim, int range, int rank>
+void
+ReferenceElement<dim, range, rank>::
+move_to(const TensorIndex<dim> &tensor_index)
+{
+    parent_t::move_to(tensor_index);
+}
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/reference_element.inst>

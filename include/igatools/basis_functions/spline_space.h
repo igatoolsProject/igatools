@@ -56,21 +56,21 @@ enum class EndBehaviour
  * @author pauletti, 2014
  *
  */
-template<int dim, int range = 1, int rank = 1>
+template<int dim_, int range_ = 1, int rank_ = 1>
 class SplineSpace :
-    public ReferenceSpace<dim,range,rank>
+    public ReferenceSpace<dim_,range_,rank_>
 {
 
 private:
-    using RefSpace = ReferenceSpace<dim,range,rank>;
-    using GridSpace = FunctionSpaceOnGrid<CartesianGrid<dim>>;
+    using RefSpace = ReferenceSpace<dim_,range_,rank_>;
+    using GridSpace = FunctionSpaceOnGrid<CartesianGrid<dim_>>;
     using typename GridSpace::GridType;
 
 
 public:
     using GridSpace::dims;
 
-    using Func = Function<dim, 0, range, rank>;
+    using Func = Function<dim_, 0, range_, rank_>;
 
 public:
     template <int order>
@@ -87,17 +87,17 @@ public:
 
 public:
     using KnotCoordinates = typename GridType::KnotCoordinates;
-    using BoundaryKnots = std::array<CartesianProductArray<Real,2>, dim>;
-    using Multiplicity = CartesianProductArray<Size, dim>;
+    using BoundaryKnots = std::array<CartesianProductArray<Real,2>, dim_>;
+    using Multiplicity = CartesianProductArray<Size, dim_>;
 
     using DegreeTable = typename RefSpace::DegreeTable;
 
     using MultiplicityTable = typename RefSpace::template ComponentContainer<Multiplicity>;
     using BoundaryKnotsTable = typename RefSpace::template ComponentContainer<BoundaryKnots>;
     using KnotsTable = typename RefSpace::template ComponentContainer<KnotCoordinates>;
-//    using PeriodicTable = typename RefSpace::template ComponentContainer<std::array<bool, dim> >;
+//    using PeriodicTable = typename RefSpace::template ComponentContainer<std::array<bool, dim_> >;
 
-    using IndexSpaceTable = typename RefSpace::template ComponentContainer<DynamicMultiArray<Index,dim>>;
+    using IndexSpaceTable = typename RefSpace::template ComponentContainer<DynamicMultiArray<Index,dim_>>;
     using IndexSpaceMarkTable = Multiplicity;
 
 
@@ -106,7 +106,7 @@ public:
     using BCTable = typename RefSpace::BCTable;
 
 
-    using EndBehaviourTable = typename RefSpace::template ComponentContainer<std::array<EndBehaviour, dim> >;
+    using EndBehaviourTable = typename RefSpace::template ComponentContainer<std::array<EndBehaviour, dim_> >;
 
     // For the interior multiplicities
     // maximum regularity
@@ -123,12 +123,12 @@ public:
     explicit SplineSpace(const DegreeTable &deg,
                          std::shared_ptr<GridType> knots,
                          std::shared_ptr<const MultiplicityTable> interior_mult,
-                         const EndBehaviourTable &end_behaviour = EndBehaviourTable(filled_array<EndBehaviour,dim>(EndBehaviour::interpolatory)));
+                         const EndBehaviourTable &end_behaviour = EndBehaviourTable(filled_array<EndBehaviour,dim_>(EndBehaviour::interpolatory)));
 
     explicit SplineSpace(const DegreeTable &deg,
                          std::shared_ptr<GridType> knots,
                          const InteriorReg &interior_mult,
-                         const EndBehaviourTable &ebt = EndBehaviourTable(filled_array<EndBehaviour,dim>(EndBehaviour::interpolatory)))
+                         const EndBehaviourTable &ebt = EndBehaviourTable(filled_array<EndBehaviour,dim_>(EndBehaviour::interpolatory)))
         :SplineSpace(deg, knots, fill_max_regularity(deg, knots), ebt)
     {}
 
@@ -190,9 +190,9 @@ public:
      */
     virtual SpaceDimensionTable get_num_all_element_basis() const override
     {
-        typename RefSpace::template ComponentContainer<TensorSize<dim>> n_basis(deg_.get_comp_map());
+        typename RefSpace::template ComponentContainer<TensorSize<dim_>> n_basis(deg_.get_comp_map());
         for (auto comp : deg_.get_active_components_id())
-            n_basis[comp] = TensorSize<dim>(deg_[comp]+1);
+            n_basis[comp] = TensorSize<dim_>(deg_[comp]+1);
 
         return SpaceDimensionTable(n_basis);
     }
@@ -214,7 +214,7 @@ public:
     ///@}
 
     template<int k>
-    using SubSpace = SplineSpace<k, range, rank>;
+    using SubSpace = SplineSpace<k, range_, rank_>;
 
     template<int k>
     std::shared_ptr<typename SubSpace<k>::MultiplicityTable>
@@ -347,13 +347,13 @@ public:
      * @ingroup h_refinement
      */
     void refine_h_after_grid_refinement(
-        const std::array<bool,dim> &refinement_directions,
+        const std::array<bool,dim_> &refinement_directions,
         const GridType &grid_old) ;
 
-    std::shared_ptr<const SplineSpace<dim,range,rank> > spline_space_previous_refinement_;
+    std::shared_ptr<const SplineSpace<dim_,range_,rank_> > spline_space_previous_refinement_;
 
 public:
-    std::shared_ptr<const SplineSpace<dim,range,rank> >
+    std::shared_ptr<const SplineSpace<dim_,range_,rank_> >
     get_spline_space_previous_refinement() const
     {
         return spline_space_previous_refinement_;
@@ -372,75 +372,81 @@ public:
         return true;
     }
 
-    virtual vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const override
+    virtual vector<Index> get_loc_to_global(const CartesianGridElement<dim_> &element) const override
     {
         Assert(false,ExcMessage("This class should not have this function."))
         return vector<Index>();
     }
 
-    virtual vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const override
+    virtual vector<Index> get_loc_to_patch(const CartesianGridElement<dim_> &element) const override
     {
         Assert(false,ExcMessage("This class should not have this function."))
         return vector<Index>();
     }
 
-    using ElementIterator = CartesianGridIterator<ReferenceElement<dim,range,rank>>;
+    using ElementIterator = CartesianGridIterator<ReferenceElement<dim_,range_,rank_>>;
 
     virtual ElementIterator begin() const override
     {
         Assert(false,ExcMessage("This class should not have this function."));
-        return ElementIterator(nullptr, 0);
+        return ElementIterator(nullptr);
     }
 
     virtual ElementIterator end() const override
     {
         Assert(false,ExcMessage("This class should not have this function."));
-        return ElementIterator(nullptr, 0);
+        return ElementIterator(nullptr);
     }
 
     virtual ElementIterator last() const override
     {
         Assert(false,ExcMessage("This class should not have this function."));
-        return ElementIterator(nullptr, 0);
+        return ElementIterator(nullptr);
     }
 
 
     /** Returns the container with the global dof distribution (const version). */
-    virtual const DofDistribution<dim, range, rank> &
+    virtual const DofDistribution<dim_, range_, rank_> &
     get_dof_distribution_global() const override
     {
         Assert(false,ExcMessage("This class should not have this function."));
-        return *reinterpret_cast<const DofDistribution<dim,range,rank> *>(this);
+        return *reinterpret_cast<const DofDistribution<dim_,range_,rank_> *>(this);
     }
 
     /** Returns the container with the global dof distribution (non const version). */
-    virtual DofDistribution<dim, range, rank> &
+    virtual DofDistribution<dim_, range_, rank_> &
     get_dof_distribution_global() override
     {
         Assert(false,ExcMessage("This class should not have this function."));
-        return *reinterpret_cast<DofDistribution<dim,range,rank> *>(this);
+        return *reinterpret_cast<DofDistribution<dim_,range_,rank_> *>(this);
     }
 
     /** Returns the container with the patch dof distribution (const version). */
-    virtual const DofDistribution<dim, range, rank> &
+    virtual const DofDistribution<dim_, range_, rank_> &
     get_dof_distribution_patch() const override
     {
         Assert(false,ExcMessage("This class should not have this function."));
-        return *reinterpret_cast<const DofDistribution<dim,range,rank> *>(this);
+        return *reinterpret_cast<const DofDistribution<dim_,range_,rank_> *>(this);
     }
 
 
     /** Returns the container with the patch dof distribution (non const version). */
-    virtual DofDistribution<dim, range, rank> &
+    virtual DofDistribution<dim_, range_, rank_> &
     get_dof_distribution_patch() override
     {
         Assert(false,ExcMessage("This class should not have this function."));
-        return *reinterpret_cast<DofDistribution<dim,range,rank> *>(this);
+        return *reinterpret_cast<DofDistribution<dim_,range_,rank_> *>(this);
     }
 
 
 public:
     virtual std::shared_ptr<typename RefSpace::ElementHandler> create_elem_handler() const override
+    {
+        Assert(false,ExcMessage("This class should not have this function."));
+        return nullptr;
+    }
+
+    virtual std::shared_ptr<ReferenceElement<dim_,range_,rank_> > create_element(const Index flat_index) const override
     {
         Assert(false,ExcMessage("This class should not have this function."));
         return nullptr;

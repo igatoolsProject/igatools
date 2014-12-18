@@ -24,6 +24,7 @@ using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
+/*
 template <class Accessor>
 CartesianGridIteratorBase<Accessor>::
 CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
@@ -41,6 +42,7 @@ CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
     :
     accessor_(new Accessor(grid, index))
 {}
+//*/
 
 template <class Accessor>
 CartesianGridIteratorBase<Accessor>::
@@ -57,7 +59,11 @@ CartesianGridIteratorBase(const CartesianGridIteratorBase<Accessor> &it,const Co
 {
     if (copy_policy == CopyPolicy::deep)
     {
-        accessor_ = shared_ptr<Accessor>(new Accessor(*it.accessor_));
+        Assert(false,ExcNotImplemented());
+        //TODO (MM, Dec 18, 2014): the freshly allocated accessor
+        // must be allocated from the grid using the create_element() function
+//        accessor_ =
+//              shared_ptr<Accessor>(new Accessor(*it.accessor_));
     }
     else if (copy_policy == CopyPolicy::shallow)
     {

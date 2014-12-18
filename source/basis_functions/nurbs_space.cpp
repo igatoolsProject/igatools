@@ -193,13 +193,24 @@ perform_post_construction_checks() const
 #endif
 
 
+template<int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+create_element(const Index flat_index) const -> std::shared_ptr<ReferenceElement<dim_,range_,rank_> >
+{
+    using Elem = NURBSElement<dim_,range_,rank_>;
+    auto elem = shared_ptr<Elem>(new Elem(this->shared_from_this(),flat_index));
+    Assert(elem != nullptr, ExcNullPtr());
+
+    return elem;
+}
+
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
 begin() const -> ElementIterator
 {
-    using Elem = NURBSElement<dim_,range_,rank_>;
-    return ElementIterator(std::make_shared<Elem>(Elem(this->shared_from_this(),0)));
+    return ElementIterator(this->create_element(0));
 }
 
 
@@ -209,12 +220,10 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 last() const -> ElementIterator
 {
-    using Elem = NURBSElement<dim_,range_,rank_>;
-
     Assert(false,ExcNotImplemented());
     //TODO: the index of the last element in the grid is not correct, because we need to use the
     // index of the last ACTIVE element in the grid
-    return ElementIterator(std::make_shared<Elem>(Elem(this->shared_from_this(),this->get_grid()->get_num_active_elems() - 1)));
+    return ElementIterator(this->create_element(this->get_grid()->get_num_active_elems() - 1));
 }
 
 
@@ -224,8 +233,7 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 end() const -> ElementIterator
 {
-    using Elem = NURBSElement<dim_,range_,rank_>;
-    return ElementIterator(std::make_shared<Elem>(Elem(this->shared_from_this(),IteratorState::pass_the_end)));
+    return ElementIterator(this->create_element(IteratorState::pass_the_end));
 }
 
 
