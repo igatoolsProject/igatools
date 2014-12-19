@@ -55,16 +55,16 @@ void mapping_values()
 
     using Mapping   = Mapping<dim, 0>;
     using ElementIt = typename Mapping::ElementIterator;
-    Mapping map(F);
-    map.reset(flag, quad);
+    auto map = Mapping::create(F);
+    map->reset(flag, quad);
 
-    ElementIt elem(grid, 0);
-    ElementIt end(grid, IteratorState::pass_the_end);
+    ElementIt elem(map, 0);
+    ElementIt end(map, IteratorState::pass_the_end);
 
-    map.template init_cache<dim>(elem);
+    map->template init_cache<dim>(elem);
     for (; elem != end; ++elem)
     {
-        map.template fill_cache<dim>(elem, 0);
+        map->template fill_cache<dim>(elem, 0);
 
         out << "Points:" << endl;
         elem->get_points().print_info(out);

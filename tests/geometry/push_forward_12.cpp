@@ -66,8 +66,9 @@ void test()
 
     auto space  = Space::create(1, grid);
     auto sp_flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::hessian;
-    typename Space::ElementHandler sp_values(space);
-    sp_values.template reset<dim>(sp_flag, quad);
+    using ElemHandler = typename Space::ElementHandler;
+    auto sp_values = ElemHandler::create(space);
+    sp_values->reset(sp_flag, quad);
     auto sp_elem = space->begin();
 
 
@@ -86,11 +87,13 @@ void test()
 
 
     pf.template init_cache<dim>(*elem);
-    sp_values.template init_cache<dim>(sp_elem);
+
+    const auto topology = Int<dim>();
+    sp_values->init_cache(sp_elem,topology);
 
     for (; elem != end; ++elem, ++sp_elem)
     {
-        sp_values.template fill_cache<dim>(sp_elem, 0);
+        sp_values->fill_cache(sp_elem, topology, 0);
         pf.template fill_cache<dim>(*elem, 0);
 
         const auto &ref_values = sp_elem->template get_values<0,dim>(0);

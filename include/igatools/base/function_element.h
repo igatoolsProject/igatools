@@ -49,10 +49,7 @@ public:
     /**
      * Default constructor.
      */
-    FunctionElement()
-    {
-        Assert(false,ExcNotImplemented());
-    }
+    FunctionElement() = default;
 
     /**
      * Construct an accessor pointing to the element with
