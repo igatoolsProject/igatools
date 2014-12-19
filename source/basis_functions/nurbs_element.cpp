@@ -47,13 +47,8 @@ NURBSElement<dim, range, rank>::
 NURBSElement(const std::shared_ptr<ContainerType> space,
              const TensorIndex<dim> &index)
     :
-    parent_t(space,index),
-    bspline_elem_(space->get_spline_space(),index),
-    weight_elem_table_(space->weight_func_table_.get_comp_map())
-{
-    for (const auto &comp_id : weight_elem_table_.get_active_components_id())
-        weight_elem_table_[comp_id] = WeightElem(space->weight_func_table_[comp_id]->get_grid(),index);
-}
+    NURBSElement(space,space->get_grid()->tensor_to_flat(index))
+{}
 
 
 template <int dim, int range, int rank>

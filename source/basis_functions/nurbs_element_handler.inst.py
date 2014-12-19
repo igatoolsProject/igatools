@@ -38,8 +38,9 @@ sub_dim_members = []
 for x in inst.sub_ref_sp_dims:
     space = 'NURBSSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class SpaceElement<%s>; \n' %space)
-    acc = 'NURBSElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    f.write('template class %s; \n' %acc)
+    elem = 'NURBSElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
+    f.write('template class %s; \n' %elem)
+    acc = 'ReferenceElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
     for it in inst.iterators:
         iterator = it.replace('Accessor','%s' % (acc) )
         f.write('template class %s; \n' %iterator)
@@ -56,8 +57,9 @@ for x in inst.sub_ref_sp_dims:
 for x in inst.ref_sp_dims:
     space = 'NURBSSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class SpaceElement<%s>;' %space)
-    acc = 'NURBSElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    f.write('template class %s; \n' %acc)
+    elem = 'NURBSElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
+    f.write('template class %s; \n' %elem)
+    acc = 'ReferenceElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
     for it in inst.iterators:
         iterator = it.replace('Accessor','%s' % (acc) )
         f.write('template class %s; \n' %iterator)

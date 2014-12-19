@@ -420,6 +420,17 @@ protected:
     DeclException1(ExcCacheInUse, int,
                    << "The global cache is being used by " << arg1
                    << " iterator. Changing its value not allowed.");
+
+
+private:
+    /**
+     * Creates a new object performing a deep copy of the current object using the CartesianGridElement
+     * copy constructor.
+     *
+     * @note For information on the local cache treatment, see the documentation
+     * of deep_copy_from().
+     */
+    std::shared_ptr<CartesianGridElement<dim_> > clone() const;
 };
 
 IGA_NAMESPACE_CLOSE

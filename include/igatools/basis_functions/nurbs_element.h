@@ -176,6 +176,15 @@ private:
 
     friend class NURBSElementHandler<dim, range, rank>;
 
+public:
+    virtual std::shared_ptr<ReferenceElement<dim,range,rank> > clone() const override final
+    {
+        auto elem = std::shared_ptr<NURBSElement<dim,range,rank> >(
+                        new NURBSElement(*this,CopyPolicy::deep));
+        Assert(elem != nullptr, ExcNullPtr());
+        return elem;
+    }
+
 };
 
 IGA_NAMESPACE_CLOSE

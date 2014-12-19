@@ -24,25 +24,25 @@ using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
-/*
+
 template <class Accessor>
 CartesianGridIteratorBase<Accessor>::
 CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
                           const Index index)
     :
-    accessor_(new Accessor(grid, index))
+    CartesianGridIteratorBase(grid->create_element(index))
 {}
 
 
-
+#if 0
 template <class Accessor>
 CartesianGridIteratorBase<Accessor>::
 CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
                           const TensorIndex<dim> &index)
     :
-    accessor_(new Accessor(grid, index))
+    CartesianGridIteratorBase(grid,grid->tensor_to_flat(index))
 {}
-//*/
+#endif
 
 template <class Accessor>
 CartesianGridIteratorBase<Accessor>::
@@ -59,11 +59,7 @@ CartesianGridIteratorBase(const CartesianGridIteratorBase<Accessor> &it,const Co
 {
     if (copy_policy == CopyPolicy::deep)
     {
-        Assert(false,ExcNotImplemented());
-        //TODO (MM, Dec 18, 2014): the freshly allocated accessor
-        // must be allocated from the grid using the create_element() function
-//        accessor_ =
-//              shared_ptr<Accessor>(new Accessor(*it.accessor_));
+        accessor_ = it.accessor_->clone();
     }
     else if (copy_policy == CopyPolicy::shallow)
     {
@@ -75,15 +71,6 @@ CartesianGridIteratorBase(const CartesianGridIteratorBase<Accessor> &it,const Co
         AssertThrow(false,ExcNotImplemented());
     }
 }
-
-#if 0
-template <class Accessor>
-CartesianGridIteratorBase<Accessor>::
-CartesianGridIteratorBase(const Accessor &acc,const CopyPolicy &copy_policy)
-    :
-    accessor_(acc,copy_policy)
-{}
-#endif
 
 
 template <class Accessor>

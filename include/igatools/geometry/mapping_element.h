@@ -34,13 +34,60 @@ class MappingElement
 {
 private:
     using self_t  = MappingElement<dim_, codim_>;
-    using paren_t = FunctionElement<dim_, 0, dim_+codim_>;
+    using parent_t = FunctionElement<dim_, 0, dim_+codim_>;
     using Map = Mapping<dim_, codim_>;
+
 public:
+    using ContainerType = Map;
     static const int dim = dim_;
     static const int codim = codim_;
     static const int space_dim = dim_+codim_;
-    using paren_t::FunctionElement;
+
+
+    /** @name Constructors */
+    ///@{
+    /**
+     * Default constructor.
+     */
+    MappingElement()
+    {
+        Assert(false,ExcNotImplemented());
+    }
+
+    /**
+     * Construct an accessor pointing to the element with
+     * flat index @p elem_index of the CartesianGrid @p grid.
+     */
+    MappingElement(const std::shared_ptr<const CartesianGrid<dim_>> grid,
+                   const Index elem_index)
+        :
+        parent_t(grid,elem_index)
+    {}
+
+    /**
+     * Copy constructor.
+     * It can be used with different copy policies
+     * (i.e. deep copy or shallow copy).
+     * The default behaviour (i.e. using the proper interface of a
+     * classic copy constructor)
+     * uses the deep copy.
+     */
+    MappingElement(const self_t &elem,
+                   const CopyPolicy &copy_policy = CopyPolicy::deep)
+    {
+        Assert(false,ExcNotImplemented());
+    }
+
+    /**
+     * Move constructor.
+     */
+    MappingElement(self_t &&elem) = default;
+
+    /**
+     * Destructor.
+     */
+    ~MappingElement() = default;
+    ///@}
 
     template<int order>
     using InvDerivative = typename Map::template InvDerivative<order>;
@@ -202,8 +249,20 @@ public:
     using CacheType = LocalCache;
 
 private:
-    template <class Accessor> friend class CartesianGridIterator;
+    template <class Accessor> friend class CartesianGridIteratorBase;
     friend class Mapping<dim, codim>;
+
+    /**
+     * Creates a new object performing a deep copy of the current object using the MappingElement
+     * copy constructor.
+     */
+    std::shared_ptr<MappingElement<dim_,codim_> > clone() const
+    {
+        auto elem = std::shared_ptr<MappingElement<dim_,codim_> >(
+                        new MappingElement(*this,CopyPolicy::deep));
+        Assert(elem != nullptr, ExcNullPtr());
+        return elem;
+    }
 
 };
 

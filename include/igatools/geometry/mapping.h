@@ -45,17 +45,18 @@ template <int, int> class MappingElement;
  *
  * @author pauletti 2014
  */
-template<int dim, int codim = 0>
+template<int dim_, int codim_ = 0>
 class Mapping
 {
 private:
-    using self_t = Mapping<dim, codim>;
-    using FuncType = MapFunction<dim, dim + codim>;
+    using self_t = Mapping<dim_, codim_>;
+    using FuncType = MapFunction<dim_, dim_ + codim_>;
 public:
-    using ElementAccessor = MappingElement<dim, codim>;
+    using ElementAccessor = MappingElement<dim_, codim_>;
     using ElementIterator = CartesianGridIterator<ElementAccessor>;
 
-    static const int space_dim = dim + codim;
+    static const int dim = dim_;
+    static const int space_dim = dim_ + codim_;
 
 public:
     /** Type for the given order derivatives of the
@@ -68,7 +69,7 @@ public:
      * the mapping
      */
     template<int order>
-    using InvDerivative = Derivatives<space_dim, dim, 1, order>;
+    using InvDerivative = Derivatives<space_dim, dim_, 1, order>;
 
 
     /** Type of the mapping evaluation point. */
@@ -117,7 +118,7 @@ public:
         init_cache<k>(*elem);
     }
 
-    std::shared_ptr<const CartesianGrid<dim> > get_grid() const
+    std::shared_ptr<const CartesianGrid<dim_> > get_grid() const
     {
         return F_->get_grid();
     }
@@ -152,7 +153,7 @@ protected:
 private:
     std::shared_ptr<FuncType> F_;
 
-    std::array<MappingFlags, dim + 1> flags_;
+    std::array<MappingFlags, dim_ + 1> flags_;
 
     friend ElementAccessor;
 };

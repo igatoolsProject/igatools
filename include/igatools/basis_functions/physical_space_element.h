@@ -405,6 +405,18 @@ private:
     template <typename PSpace> friend class SpaceElementHandler;
 
     std::shared_ptr<RefElemAccessor> ref_space_element_accessor_;
+
+    /**
+     * Creates a new object performing a deep copy of the current object using the PhysicalSpaceElement
+     * copy constructor.
+     */
+    std::shared_ptr<PhysicalSpaceElement<PhysSpace> > clone() const
+    {
+        auto elem = std::shared_ptr<PhysicalSpaceElement<PhysSpace> >(
+                        new PhysicalSpaceElement(*this,CopyPolicy::deep));
+        Assert(elem != nullptr, ExcNullPtr());
+        return elem;
+    }
 };
 
 

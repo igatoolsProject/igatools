@@ -76,6 +76,16 @@ CartesianGridElement(const CartesianGridElement<dim_> &elem, const CopyPolicy &c
 }
 
 
+template <int dim_>
+std::shared_ptr<CartesianGridElement<dim_> >
+CartesianGridElement<dim_>::
+clone() const
+{
+    auto elem = std::shared_ptr<CartesianGridElement<dim_> >(
+                    new CartesianGridElement(*this,CopyPolicy::deep));
+    Assert(elem != nullptr, ExcNullPtr());
+    return elem;
+}
 
 template <int dim_>
 auto

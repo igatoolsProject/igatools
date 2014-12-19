@@ -35,14 +35,107 @@ public:
     using Value = typename Func::Value;
     using Gradient = typename Func::Gradient;
     using Hessian  = typename Func::Hessian;
-    using ContainerType = const CartesianGrid<dim>;
+//    using ContainerType = const CartesianGrid<dim>;
+    using ContainerType = const Func;
 
 private:
     template <int order>
     using Derivative = typename Func::template Derivative<order>;
 
 public:
-    using CartesianGridElement<dim>::CartesianGridElement;
+
+    /** @name Constructors */
+    ///@{
+    /**
+     * Default constructor.
+     */
+    FunctionElement()
+    {
+        Assert(false,ExcNotImplemented());
+    }
+
+    /**
+     * Construct an accessor pointing to the element with
+     * flat index @p elem_index of the CartesianGrid @p grid.
+     */
+    FunctionElement(const std::shared_ptr<const CartesianGrid<dim>> grid,
+                    const Index elem_index)
+        :
+        CartesianGridElement<dim>(grid,elem_index)
+    {}
+
+    /**
+     * Copy constructor.
+     * It can be used with different copy policies
+     * (i.e. deep copy or shallow copy).
+     * The default behaviour (i.e. using the proper interface of a
+     * classic copy constructor)
+     * uses the deep copy.
+     */
+    FunctionElement(const FunctionElement<dim,codim,range,rank> &elem,
+                    const CopyPolicy &copy_policy = CopyPolicy::deep)
+    {
+        Assert(false,ExcNotImplemented());
+    }
+
+    /**
+     * Move constructor.
+     */
+    FunctionElement(FunctionElement<dim,codim,range,rank> &&elem) = default;
+
+    /**
+     * Destructor.
+     */
+    ~FunctionElement() = default;
+    ///@}
+
+    /**
+     * @name Functions for performing different kind of copy.
+     */
+    ///@{
+    /**
+     * Performs a deep copy of the input @p element,
+     * i.e. a new local cache is built using the copy constructor on the local cache of @p element.
+     *
+     * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
+     */
+    void deep_copy_from(const FunctionElement<dim,codim,range,rank> &element)
+    {
+        Assert(false,ExcNotImplemented());
+    }
+
+    /**
+     * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
+     * local cache used by the input @p element.
+     */
+    void shallow_copy_from(const FunctionElement<dim,codim,range,rank> &element)
+    {
+        Assert(false,ExcNotImplemented());
+    }
+
+    ///@}
+
+
+    /** @name Assignment operators */
+    ///@{
+    /**
+     * Copy assignment operator. Performs a <b>shallow copy</b> of the input @p element.
+     *
+     * @note Internally it uses the function shallow_copy_from().
+     */
+    FunctionElement<dim,codim,range,rank> &operator=(const FunctionElement<dim,codim,range,rank> &element)
+    {
+        shallow_copy_from(element);
+        return *this;
+    }
+
+    /**
+     * Move assignment operator.
+     */
+    FunctionElement<dim,codim,range,rank> &operator=(FunctionElement<dim,codim,range,rank> &&elem) = default;
+    ///@}
+
+
 
     template<int order, int k>
     auto
@@ -137,8 +230,20 @@ private:
 public:
     using CacheType = LocalCache;
 private:
-    template <class Accessor> friend class CartesianGridIterator;
+    template <class Accessor> friend class CartesianGridIteratorBase;
     friend class Function<dim, codim, range, rank>;
+
+    /**
+     * Creates a new object performing a deep copy of the current object using the FunctionElement
+     * copy constructor.
+     */
+    std::shared_ptr<FunctionElement<dim,codim,range,rank> > clone() const
+    {
+        auto elem = std::shared_ptr<FunctionElement<dim,codim,range,rank> >(
+                        new FunctionElement(*this,CopyPolicy::deep));
+        Assert(elem != nullptr, ExcNullPtr());
+        return elem;
+    }
 };
 
 IGA_NAMESPACE_CLOSE

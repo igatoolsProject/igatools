@@ -34,16 +34,16 @@
 
 
 template<int dim, int codim, int range>
-void test(Function<dim, codim, range> &F, shared_ptr<CartesianGrid<dim>> grid)
+void test(shared_ptr<Function<dim, codim, range>> F)
 {
     using ElementIterator = typename  Function<dim, codim, range>::ElementIterator;
-    ElementIterator elem(grid, 0);
-    ElementIterator end(grid, IteratorState::pass_the_end);
+    ElementIterator elem(F, 0);
+    ElementIterator end(F, IteratorState::pass_the_end);
 
-    F.init_cache(elem, Int<dim>());
+    F->init_cache(elem, Int<dim>());
     for (; elem != end; ++elem)
     {
-        F.fill_cache(elem, 0, Int<dim>());
+        F->fill_cache(elem, 0, Int<dim>());
         elem->get_points().print_info(out);
         out << endl;
         elem->template get_values<0, dim>(0).print_info(out);
@@ -77,7 +77,7 @@ void create_fun()
     auto grid = CartesianGrid<dim>::create(3);
     auto F = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
     F->reset(flag, quad);
-    test<dim, codim, range>(*F, grid);
+    test<dim, codim, range>(F);
 }
 
 

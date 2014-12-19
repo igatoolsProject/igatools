@@ -117,6 +117,13 @@ public:
     virtual void operator++() ;
     ///@}
 
+
+    /**
+     * Creates a new object performing a deep copy of the current object using the
+     * copy constructor of the derived class.
+     */
+    virtual std::shared_ptr<ReferenceElement<dim,range,rank> > clone() const = 0;
+
 };
 
 

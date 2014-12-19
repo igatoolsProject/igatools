@@ -258,6 +258,17 @@ private:
     evaluate_univariate_derivatives_at_points(
         const int deriv_order,
         const std::array<vector<Real>,dim> &points) const;
+
+
+public:
+    virtual std::shared_ptr<ReferenceElement<dim,range,rank> > clone() const override final
+    {
+        auto elem = std::shared_ptr<BSplineElement<dim,range,rank> >(
+                        new BSplineElement(*this,CopyPolicy::deep));
+        Assert(elem != nullptr, ExcNullPtr());
+        return elem;
+    }
+
 };
 
 IGA_NAMESPACE_CLOSE

@@ -45,13 +45,8 @@ PhysicalSpaceElement<PhysSpace>::
 PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
                      const TensorIndex<dim> &index)
     :
-    parent_t(phys_space,index),
-    PfElemAccessor(phys_space->get_grid(), index)
-{
-    const auto flat_index = phys_space->get_grid()->tensor_to_flat(index);
-    ref_space_element_accessor_ = phys_space->get_reference_space()->create_element(flat_index);
-    Assert(ref_space_element_accessor_ != nullptr, ExcNullPtr());
-}
+    PhysicalSpaceElement(phys_space,phys_space->get_grid()->tensor_to_flat(index))
+{}
 
 
 template< class PhysSpace >

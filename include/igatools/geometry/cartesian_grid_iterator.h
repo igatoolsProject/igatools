@@ -183,14 +183,14 @@ public:
     {
         Assert(false,ExcNotInitialized());
     }
-#if 0
+
     /**
      * Construct an iterator on a grid-type container
      * grid pointing to the element of given index.
      */
     CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
                               const Index index);
-
+#if 0
     /**
      * Construct an iterator on a grid-type container
      * grid pointing to the element of given index.
@@ -215,8 +215,6 @@ public:
 
     /** Move constructor. */
     CartesianGridIteratorBase(CartesianGridIteratorBase<Accessor> &&it) = default;
-
-    CartesianGridIteratorBase(const Accessor &acc,const CopyPolicy &copy_policy = CopyPolicy::shallow);
 
     /** Destructor */
     ~CartesianGridIteratorBase() = default ;

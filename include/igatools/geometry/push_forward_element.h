@@ -42,8 +42,12 @@ public:
     using parent_t::space_dim;
 
     static const Transformation type = type_;
-    // using ContainerType = const PF;
+    using ContainerType = const PF;
     using parent_t::MappingElement;
+
+
+
+
 
     template <int range, int rank>
     using RefValue = typename PF::template RefValue<range, rank>;
@@ -158,9 +162,20 @@ public:
 #endif
 
 private:
-    template <class Accessor> friend class CartesianGridIterator;
+    template <class Accessor> friend class CartesianGridIteratorBase;
     friend class PushForward<type_, dim_, codim_>;
 
+    /**
+     * Creates a new object performing a deep copy of the current object using the PushForwardElement
+     * copy constructor.
+     */
+    std::shared_ptr<PushForwardElement<type_,dim_,codim_> > clone() const
+    {
+        auto elem = std::shared_ptr<PushForwardElement<type_,dim_,codim_> >(
+                        new PushForwardElement(*this,CopyPolicy::deep));
+        Assert(elem != nullptr, ExcNullPtr());
+        return elem;
+    }
 };
 
 IGA_NAMESPACE_CLOSE
