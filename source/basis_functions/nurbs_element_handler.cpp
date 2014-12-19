@@ -300,8 +300,9 @@ fill_cache(RefElementAccessor &elem, const topology_variant &topology, const int
 
     bspline_handler_->fill_cache(nrb_elem->bspline_elem_,topology,j);
 
-    for (const auto &comp_id : nrb_space->weight_func_table_.get_active_components_id())
-        nrb_space->weight_func_table_[comp_id]->fill_cache(nrb_elem->weight_elem_table_[comp_id],j,topology);
+    const auto &weight_func_table = nrb_space->weight_func_table_;
+    for (const auto &comp_id : weight_func_table.get_active_components_id())
+        weight_func_table[comp_id]->fill_cache(nrb_elem->weight_elem_table_[comp_id],topology,j);
 
 
     //-----------------------------------------

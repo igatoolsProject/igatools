@@ -99,9 +99,9 @@ init_cache(ElementAccessor &elem, const variant_2 &k) -> void
 template<class Space>
 auto
 IgFunction<Space>::
-fill_cache(ElementAccessor &elem, const int j, const variant_2 &k) -> void
+fill_cache(ElementAccessor &elem, const variant_2 &k, const int j) -> void
 {
-    parent_t::fill_cache(elem, j, k);
+    parent_t::fill_cache(elem,k,j);
 
     elem_.move_to(elem.get_flat_index());
 

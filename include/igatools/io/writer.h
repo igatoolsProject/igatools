@@ -383,7 +383,7 @@ add_field(shared_ptr<const Function<dim, codim, range, rank>> function,
         int pos = 0;
         for (; f_elem != f_end; ++f_elem)
         {
-            func->fill_cache(f_elem,0,topology);
+            func->fill_cache(f_elem,topology,0);
 
             const auto &field_values = f_elem->template get_values<0,dim>(0);
 
@@ -399,7 +399,7 @@ add_field(shared_ptr<const Function<dim, codim, range, rank>> function,
         int pos = 0;
         for (; f_elem != f_end; ++f_elem)
         {
-            func->fill_cache(f_elem,0,topology);
+            func->fill_cache(f_elem,topology,0);
 
             const auto &field_values = f_elem->template get_values<0,dim>(0);
 
@@ -422,7 +422,7 @@ add_field(shared_ptr<const Function<dim, codim, range, rank>> function,
         {
             // TODO (pauletti, Sep 12, 2014): fix next line
             Assert(true, ExcMessage(" fix next line "));
-            func->fill_cache(f_elem,0,topology);
+            func->fill_cache(f_elem,topology,0);
 
             const auto &field_values = f_elem->template get_values<0,dim>(0);
 

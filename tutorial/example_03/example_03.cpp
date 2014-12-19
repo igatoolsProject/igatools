@@ -40,24 +40,25 @@ void loop_on_grid_with_cache()
     const int n_knots = 3;
     auto grid = CartesianGrid<dim>::create(n_knots);
 
-    auto elem_handler = grid->get_element_handler();
+    using ElementHandler = typename CartesianGrid<dim>::ElementHandler;
+    auto elem_handler = ElementHandler::create(grid);
 
     auto quad = QGauss<dim>(2);
     auto flag = ValueFlags::w_measure;
 
-    elem_handler.template reset<dim>(flag, quad);
+    elem_handler->template reset<dim>(flag, quad);
 
     auto elem = grid->begin();
     const auto elem_end = grid->end();
     // [loop as before]
     // [init cache]
-    elem_handler.template init_cache<dim>(elem);
+    elem_handler->template init_cache<dim>(elem);
     // [init cache]
 
     for (; elem != elem_end; ++elem)
     {
         // [fill cache]
-        elem_handler.template fill_cache<dim>(elem, 0);
+        elem_handler->template fill_cache<dim>(elem, 0);
         // [fill cache]
         out << "The tensor index of element: " << elem->get_flat_index();
         out << " is: "<< elem->get_tensor_index() << endl;
@@ -83,19 +84,20 @@ void loop_on_space_with_cache()
     const int degree = 2;
     auto space = BSplineSpace<dim>::create(degree, grid);
 
-    auto elem_handler = space->get_element_handler();
+    using ElementHandler = typename BSplineSpace<dim>::ElementHandler;
+    auto elem_handler = ElementHandler::create(space);
     auto quad = QGauss<dim>(1);
     auto flag = ValueFlags::value;
 
-    elem_handler.template reset<dim>(flag, quad);
+    elem_handler->reset(flag, quad);
 
     auto elem = space->begin();
     const auto elem_end = space->end();
-    elem_handler.template init_cache<dim>(elem);
+    elem_handler->init_element_cache(elem);
 
     for (; elem != elem_end; ++elem)
     {
-        elem_handler.template fill_cache<dim>(elem, 0);
+        elem_handler->fill_element_cache(elem);
         out << "Element: " << elem->get_flat_index();
         out << " has global basis: ";
         elem->get_local_to_global().print_info(out);

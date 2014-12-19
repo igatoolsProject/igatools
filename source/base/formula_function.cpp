@@ -39,11 +39,11 @@ FormulaFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map)
 template<int dim, int codim, int range, int rank>
 auto
 FormulaFunction<dim, codim, range, rank>::
-fill_cache(ElementAccessor &elem, const int j, const variant_2 &k) -> void
+fill_cache(ElementAccessor &elem, const variant_2 &k, const int j) -> void
 {
-    parent_t::fill_cache(elem, j, k);
+    parent_t::fill_cache(elem,k,j);
     map_elem_.move_to(elem.get_flat_index());
-    mapping_->fill_cache(map_elem_, j, k);
+    mapping_->fill_cache(map_elem_,k,j);
     fill_cache_impl.j = j;
     fill_cache_impl.function = this;
     fill_cache_impl.elem = &elem;

@@ -60,17 +60,20 @@ protected:
 public:
     static const int dim = dim_;
 
+    static std::shared_ptr<GridElementHandler<dim_>> create(std::shared_ptr<GridType> grid);
+
     //Allocates and fill the (global) cache
     GridElementHandler(std::shared_ptr<GridType> grid);
 
     GridElementHandler(const self_t &) = default;
 
 
+//protected:
+public:
+
     template<int k>
     void reset(const ValueFlags flag, const Quadrature<k> &quad);
 
-//protected:
-public:
     template <int k>
     void init_cache(ElementAccessor &elem);
 

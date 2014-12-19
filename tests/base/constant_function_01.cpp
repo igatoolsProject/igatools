@@ -43,7 +43,7 @@ test(shared_ptr<Function<dim,codim, range,rank>> F)
     F->init_cache(elem, Int<dim>());
     for (; elem != end; ++elem)
     {
-        F->fill_cache(elem, 0, Int<dim>());
+        F->fill_cache(elem, Int<dim>(),0);
         elem->get_points().print_info(out);
         out << endl;
         elem->template get_values<0, dim>(0).print_info(out);

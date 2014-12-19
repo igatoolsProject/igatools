@@ -58,6 +58,16 @@ GridElementHandler(shared_ptr<GridType> grid)
     lengths_(grid->get_element_lengths())
 {}
 
+template <int dim_>
+std::shared_ptr<GridElementHandler<dim_>>
+                                       GridElementHandler<dim_>::
+                                       create(std::shared_ptr<GridType> grid)
+{
+    using ElemHandler = GridElementHandler<dim_>;
+    auto elem_handler = std::shared_ptr<ElemHandler>(new ElemHandler(grid));
+    Assert(elem_handler != nullptr,ExcNullPtr());
+    return elem_handler;
+}
 
 
 template <int dim_>

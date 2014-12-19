@@ -121,8 +121,18 @@ public:
     /**
      * Creates a new object performing a deep copy of the current object using the
      * copy constructor of the derived class.
+     *
+     * @note This function should be not called directly, but it should be called its
+     * specialization on a derived class. It would be better to define this function
+     * <em>pure virtual</em> but this will not allow to dereference an iterator containing
+     * a pointer to an object of kind ReferenceElement.
      */
-    virtual std::shared_ptr<ReferenceElement<dim,range,rank> > clone() const = 0;
+    virtual std::shared_ptr<ReferenceElement<dim,range,rank> > clone() const
+    {
+        Assert(false,ExcMessage("This function must not be called. "
+                                "You should call the clone() funtion of a derived base class."));
+        return nullptr;
+    }
 
 };
 

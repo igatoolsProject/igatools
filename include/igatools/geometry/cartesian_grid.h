@@ -359,7 +359,6 @@ public:
     ElementConstIterator cend() const;
     ///@}
 
-    ElementHandler get_element_handler() const;
 
     /** @name Functions for the index transformations */
     ///@{

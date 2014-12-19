@@ -170,7 +170,7 @@ fill_points_and_connectivity(
 
     for (; m_elem != m_end; ++m_elem)
     {
-        map_->fill_cache(m_elem,0,topology);
+        map_->fill_cache(m_elem,topology,0);
 
         const auto elem_id = m_elem->get_flat_index();
 

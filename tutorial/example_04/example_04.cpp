@@ -39,7 +39,8 @@ template <int dim>
 void plot_basis(const int deg)
 {
     using Space  = BSplineSpace<dim>;
-    using Coeffs = typename IgFunction<Space>::CoeffType;
+    using Func = IgFunction<ReferenceSpace<dim>>;
+    using Coeffs = typename Func::CoeffType;
 
     const int n_knots = deg + 2;
     auto grid  = CartesianGrid<dim>::create(n_knots);
@@ -70,7 +71,7 @@ void plot_basis(const int deg)
 
     string field_name = "basis " + to_string(basis_index);
 
-    auto basis = IgFunction<Space>::create(space, coeffs);
+    auto basis = Func::create(space, coeffs);
     output.template add_field<1,1>(basis, field_name);
 
     string file_name = "bspline_basis-" + to_string(dim) + "d";

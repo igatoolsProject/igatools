@@ -112,19 +112,22 @@ void PoissonProblem<dim>::assemble()
     Value b = {5.};
     auto f = ConstantFunction<dim,0,1,1>::create(grid, IdentityFunction<dim>::create(grid), b);
 
-    auto elem_handler = space->get_element_handler();
+    using ElementHandler = typename Space::ElementHandler;
+    auto elem_handler = ElementHandler::create(space);
 
     auto flag = ValueFlags::value | ValueFlags::gradient |
                 ValueFlags::w_measure;
 
-    elem_handler.template reset<dim>(flag, elem_quad);
+    elem_handler->reset(flag, elem_quad);
     f->reset(ValueFlags::value, elem_quad);
 
     auto f_elem = f->begin();
     auto elem   = space->begin();
     const auto elem_end = space->end();
-    elem_handler.template init_cache<dim>(elem);
-    f->init_cache(f_elem, Int<dim>());
+
+    const auto topology = Int<dim>();
+    elem_handler->init_cache(elem,topology);
+    f->init_cache(f_elem,topology);
 
     const int n_qp = elem_quad.get_num_points();
 
@@ -138,12 +141,12 @@ void PoissonProblem<dim>::assemble()
         DenseVector loc_rhs(n_basis);
         loc_rhs = 0.0;
 
-        elem_handler.template fill_cache<dim>(elem, 0);
+        elem_handler->fill_cache(elem,topology,0);
         auto phi = elem->template get_values<0, dim>(0);
         auto grad_phi  = elem->template get_values<1, dim>(0);
         auto w_meas = elem->template get_w_measures<dim>(0);
 
-        f->template fill_cache<dim>(f_elem, 0, Int<dim>());
+        f->fill_cache(f_elem, 0, topology);
         auto f_values = f_elem->template get_values<0,dim>(0);
 
         for (int i = 0; i < n_basis; ++i)

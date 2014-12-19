@@ -43,8 +43,9 @@ public:
     void local_assemble();
 
 private:
+    using Space = BSplineSpace<dim>;
     shared_ptr<CartesianGrid<dim>>  grid;
-    shared_ptr<BSplineSpace<dim>>   space;
+    shared_ptr<Space>   space;
 };
 // [class declaration]
 
@@ -69,16 +70,17 @@ void  PoissonPreparation<dim>::local_assemble()
 
 
     // [iterate as before]
-    auto elem_handler = space->get_element_handler();
+    using ElementHandler = typename Space::ElementHandler;
+    auto elem_handler = ElementHandler::create(space);
     auto quad = QGauss<dim>(2);
     auto flag = ValueFlags::value | ValueFlags::gradient |
                 ValueFlags::w_measure;
 
-    elem_handler.template reset<dim>(flag, quad);
+    elem_handler->reset(flag, quad);
 
     auto elem = space->begin();
     const auto elem_end = space->end();
-    elem_handler.template init_cache<dim>(elem);
+    elem_handler->init_element_cache(elem);
 
     const int n_qp = quad.get_num_points();
     for (; elem != elem_end; ++elem)
@@ -96,7 +98,7 @@ void  PoissonPreparation<dim>::local_assemble()
         // [local matrix]
 
         // [get the values]
-        elem_handler.template fill_cache<dim>(elem, 0);
+        elem_handler->fill_element_cache(elem);
         auto values = elem->template get_values<0, dim>(0);
         auto grads  = elem->template get_values<1, dim>(0);
         auto w_meas = elem->template get_w_measures<dim>(0);

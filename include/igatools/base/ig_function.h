@@ -80,7 +80,7 @@ public:
 
     void init_cache(ElementAccessor &elem, const variant_2 &k) override;
 
-    void fill_cache(ElementAccessor &elem, const int j, const variant_2 &k) override;
+    void fill_cache(ElementAccessor &elem, const variant_2 &k, const int j) override;
 
     std::shared_ptr<const Space> get_iga_space() const;
 

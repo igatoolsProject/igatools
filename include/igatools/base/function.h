@@ -156,7 +156,7 @@ public:
     }
 
 
-    virtual void fill_cache(ElementAccessor &elem, const int j, const variant_2 &k)
+    virtual void fill_cache(ElementAccessor &elem, const variant_2 &k,const int j)
     {
         fill_cache_impl.j = j;
         fill_cache_impl.grid_handler = this;
@@ -164,9 +164,9 @@ public:
         boost::apply_visitor(fill_cache_impl, k);
     }
 
-    void fill_cache(ElementIterator &elem, const int j, const variant_2 &k)
+    void fill_cache(ElementIterator &elem, const variant_2 &k, const int j)
     {
-        fill_cache(*elem, j, k);
+        fill_cache(*elem, k, j);
     }
 
     void init_cache(ElementIterator &elem, const variant_2 &k)

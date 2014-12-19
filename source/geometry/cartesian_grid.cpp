@@ -366,13 +366,6 @@ cend() const -> ElementConstIterator
 }
 
 
-template<int dim_>
-auto
-CartesianGrid<dim_>::
-get_element_handler() const -> ElementHandler
-{
-    return ElementHandler(this->shared_from_this());
-}
 
 
 

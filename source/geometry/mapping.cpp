@@ -80,7 +80,7 @@ auto
 Mapping<dim, codim>::
 fill_cache(ElementAccessor &elem, const int j) -> void
 {
-    F_->template fill_cache(elem, j, Int<k>());
+    F_->template fill_cache(elem, Int<k>(),j);
 
     // TODO (pauletti, Nov 6, 2014): provide a lighter function for this
     const auto n_points = F_->template get_num_points<k>();
