@@ -175,6 +175,7 @@ public:
     static std::shared_ptr<self_t>
     create(const DegreeTable &degree,
            std::shared_ptr<GridType> knots,
+		   const EndBehaviour end_b = EndBehaviour::interpolatory,
            const bool homogeneous_range = false);
 
     /**
@@ -219,6 +220,7 @@ protected:
      */
     explicit BSplineSpace(const DegreeTable &degree,
                           std::shared_ptr<GridType> knots,
+						  const EndBehaviour end_b = EndBehaviour::interpolatory,
                           const bool homogeneous_range = false);
 
     /**

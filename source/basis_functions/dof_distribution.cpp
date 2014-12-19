@@ -31,8 +31,9 @@ template<int dim, int range, int rank>
 DofDistribution<dim, range, rank>::
 DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
                 const MultiplicityTable &accum_mult,
-                const SpaceDimensionTable &n_basis,
+                const SpaceDimensionTable &n_basis1,
                 const DegreeTable &degree_table,
+				const EndBehaviourTable &end_b,
                 DistributionPolicy pol)
     :
     TensorSizedContainer<dim>(grid->get_num_intervals()),
@@ -41,22 +42,31 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
     policy_(pol)
 {
     Assert(pol == DistributionPolicy::standard, ExcNotImplemented());
+    SpaceDimensionTable n_basis(n_basis1);
+    for (int comp = 0 ; comp < Space::n_components ; ++comp)
+        	for (int dir = 0 ; dir < dim ; ++dir)
+        		if (end_b[comp][dir] == EndBehaviour::periodic)
+        			n_basis[comp][dir] += degree_table[comp][dir] + 1;
 
     //-----------------------------------------------------------------------
     // fills the standard distribution, sorted by component and
     // by direction x moves faster
-    Index dof_id = 0;
     for (int comp = 0 ; comp < Space::n_components ; ++comp)
     {
-        index_table_[comp].resize(n_basis[comp]);
-        for (auto &x : index_table_[comp])
-            x = dof_id++;
+    	const auto size = n_basis[comp];
+    	const auto act_size = n_basis1[comp];
+    	auto &comp_table = index_table_[comp];
+    	comp_table.resize(size);
+        for (int i=0; i<n_basis.comp_dimension[comp]; ++i)
+        {
+        	auto t_ind = comp_table.flat_to_tensor(i);
+        	for (int dir = 0 ; dir < dim ; ++dir)
+        		t_ind[dir] = t_ind[dir] % n_basis1[comp][dir];
+        	auto f_ind = comp_table.tensor_to_flat(t_ind);
+        	comp_table[i] = f_ind;
+        }
     }
     //-----------------------------------------------------------------------
-
-
-
-
 
     //-----------------------------------------------------------------------
     // creating the dofs view from the dofs components views -- begin
@@ -70,7 +80,6 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
     // creating the dofs view from the dofs components views -- end
     //-----------------------------------------------------------------------
 
-
     //-----------------------------------------------------------------------
     SpaceDimensionTable n_elem_basis;
     for (int iComp = 0 ; iComp <  Space::n_components ; ++iComp)
@@ -79,6 +88,8 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
     this->create_element_loc_to_global_view(grid,accum_mult,n_elem_basis);
     //-----------------------------------------------------------------------
 }
+
+
 
 template<int dim, int range, int rank>
 Index

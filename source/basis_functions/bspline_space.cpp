@@ -55,7 +55,7 @@ template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(const TensorIndex<dim> &degree, shared_ptr<GridType> knots)
     :
-    BSplineSpace(DegreeTable(degree), knots, true)
+    BSplineSpace(DegreeTable(degree), knots, EndBehaviour::interpolatory, true)
 {}
 
 
@@ -75,13 +75,16 @@ template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(const DegreeTable &deg,
              std::shared_ptr<GridType> knots,
-             const bool homogeneous_range)
+			  const EndBehaviour end_b,
+			  const bool homogeneous_range)
     :
-    BaseSpace(deg, knots, BaseSpace::InteriorReg::maximum),
+    BaseSpace(deg, knots, BaseSpace::InteriorReg::maximum, end_b),
     dof_distribution_global_(knots,BaseSpace::accumulated_interior_multiplicities(),
-                             BaseSpace::get_num_basis_table(),BaseSpace::get_degree()),
+                             BaseSpace::get_num_basis_table(),BaseSpace::get_degree(),
+							 BaseSpace::get_end_behaviour()),
     dof_distribution_patch_(knots,BaseSpace::accumulated_interior_multiplicities(),
-                            BaseSpace::get_num_basis_table(),BaseSpace::get_degree()),
+                            BaseSpace::get_num_basis_table(),BaseSpace::get_degree(),
+							BaseSpace::get_end_behaviour()),
     operators_(knots,
                BaseSpace::compute_knots_with_repetition(this->get_end_behaviour()),
                BaseSpace::accumulated_interior_multiplicities(), deg)
@@ -99,9 +102,10 @@ auto
 BSplineSpace<dim_, range_, rank_>::
 create(const DegreeTable &deg,
        std::shared_ptr<GridType> knots,
+	   const EndBehaviour end_b,
        const bool homogeneous_range) -> shared_ptr<self_t>
 {
-    return shared_ptr<self_t>(new self_t(deg, knots, homogeneous_range));
+    return shared_ptr<self_t>(new self_t(deg, knots, end_b, homogeneous_range));
 }
 
 
@@ -115,9 +119,11 @@ BSplineSpace(const DegreeTable &deg,
     :
     BaseSpace(deg, knots, interior_mult, end_b),
     dof_distribution_global_(knots,BaseSpace::accumulated_interior_multiplicities(),
-                             BaseSpace::get_num_basis_table(),BaseSpace::get_degree()),
+                             BaseSpace::get_num_basis_table(),BaseSpace::get_degree(),
+								BaseSpace::get_end_behaviour()),
     dof_distribution_patch_(knots,BaseSpace::accumulated_interior_multiplicities(),
-                            BaseSpace::get_num_basis_table(),BaseSpace::get_degree()),
+                            BaseSpace::get_num_basis_table(),BaseSpace::get_degree(),
+							BaseSpace::get_end_behaviour()),
     operators_(knots,
                BaseSpace::compute_knots_with_repetition(this->get_end_behaviour()),
                BaseSpace::accumulated_interior_multiplicities(), deg)
@@ -292,13 +298,15 @@ refine_h_after_grid_refinement(
                                    this->get_grid(),
                                    BaseSpace::accumulated_interior_multiplicities(),
                                    BaseSpace::get_num_basis_table(),
-                                   BaseSpace::get_degree());
+                                   BaseSpace::get_degree(),
+									BaseSpace::get_end_behaviour());
 
     dof_distribution_patch_ = DofDistribution<dim, range, rank>(
                                   this->get_grid(),
                                   BaseSpace::accumulated_interior_multiplicities(),
                                   BaseSpace::get_num_basis_table(),
-                                  BaseSpace::get_degree());
+                                  BaseSpace::get_degree(),
+									BaseSpace::get_end_behaviour());
 
     operators_ = BernsteinExtraction<dim, range, rank>(
                      this->get_grid(),

@@ -56,6 +56,7 @@ public:
     using Space = SplineSpace<dim, range, rank>;
     using MultiplicityTable = typename Space::MultiplicityTable;
     using DegreeTable = typename Space::DegreeTable;
+    using EndBehaviourTable = typename Space::EndBehaviourTable;
     using SpaceDimensionTable = typename Space::SpaceDimensionTable;
     using DofsPerElementTable = typename Space::template ComponentContainer<Index>;
     using IndexDistributionTable =
@@ -102,6 +103,7 @@ public:
                     const MultiplicityTable &accum_mult,
                     const SpaceDimensionTable &n_basis,
                     const DegreeTable &degree_table,
+					const EndBehaviourTable &end_b,
                     DistributionPolicy pol = DistributionPolicy::standard);
 
     /** Copy constructor.*/

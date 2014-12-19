@@ -205,12 +205,7 @@ compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots) const
             const auto &left_knts = boundary_knots[iComp][j].get_data_direction(0);
             const auto &right_knts = boundary_knots[iComp][j].get_data_direction(1);
 
-            if (end_behaviour_[iComp][j] == EndBehaviour::periodic)
-            {
-                Assert((left_knts.size()==0) && (right_knts.size()==0),
-                       ExcMessage("Periodic component has non zero size"));
-            }
-            else
+
             {
                 Assert((left_knts.size() == order) && (right_knts.size() == order),
                        ExcMessage("Wrong number of boundary knots"));
@@ -241,21 +236,45 @@ compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots) const
             const auto &right_knts = boundary_knots[iComp][j].get_data_direction(1);
 
             int size = 2 * order;
+            const int m = order;
+            int K=0.;
             for (auto &n: mult)
-                size += n;
+                K += n;
+            size += K;
 
-            vector<Real> rep_knots;
-            rep_knots.reserve(size);
-            rep_knots.insert(rep_knots.end(), left_knts.begin(), left_knts.end());
+            vector<Real> rep_knots(size);
+           // rep_knots.reserve(size);
+
+            auto rep_it = rep_knots.begin() + m;
             auto m_it = mult.begin();
             auto k_it = ++knots.begin();
             auto end = mult.end();
             for (; m_it !=end; ++m_it, ++k_it)
             {
-                for (int iMult = 0; iMult < *m_it; ++iMult)
-                    rep_knots.push_back(*k_it);
+                for (int iMult = 0; iMult < *m_it; ++iMult, ++rep_it)
+                    *rep_it = *k_it;
             }
-            rep_knots.insert(rep_knots.end(), right_knts.begin(), right_knts.end());
+
+
+            {
+            	const Real a = knots.front();
+            	const Real b = knots.back();
+
+            	for (int i=0; i<m; ++i)
+            	{
+            		rep_knots[i] = a;
+            		rep_knots[K+i] = b;
+            	}
+            }
+
+            {
+            	for (int i=0; i<m; ++i)
+            	{
+            		rep_knots[i] = rep_knots[K+i] - L;
+            		rep_knots[K+m+i] = rep_knots[m+i] + L;
+            	}
+            }
+
 
             result[iComp].copy_data_direction(j,rep_knots);
         }
@@ -263,6 +282,7 @@ compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots) const
 
     return result;
 }
+
 
 
 template<int dim, int range, int rank>
@@ -279,9 +299,12 @@ compute_knots_with_repetition(const EndBehaviourTable &ends) const -> KnotsTable
                 bdry_knots_table[iComp][j] = interpolatory_end_knots(iComp,j);
             else
             {
-                Assert(false,ExcNotImplemented());
-                AssertThrow(false,ExcNotImplemented());
+            	if (ends[iComp][j] == EndBehaviour::periodic)
+            	{
+            		 bdry_knots_table[iComp][j] = periodic_end_knots(iComp,j);
+            	}
             }
+
         }
     }
     return compute_knots_with_repetition(bdry_knots_table);
@@ -450,6 +473,35 @@ interpolatory_end_knots(const int comp_id,const int dir) const -> CartesianProdu
     vector<Real> vec_right(order, b);
     bdry_knots_dir.copy_data_direction(0, vec_left);
     bdry_knots_dir.copy_data_direction(1, vec_right);
+
+    return bdry_knots_dir;
+}
+
+
+
+template<int dim, int range, int rank>
+auto
+SplineSpace<dim, range, rank>::
+periodic_end_knots(const int comp_id, const int dir) const -> CartesianProductArray<Real,2>
+{
+    CartesianProductArray<Real,2> bdry_knots_dir;
+
+    const auto &knots = this->get_grid()->get_knot_coordinates(dir);
+    const auto n_knots = knots.size();
+    const auto deg = deg_[comp_id][dir];
+    const auto order = deg + 1;
+    const Real a = knots.front();
+    const Real b = knots.back();
+    vector<Real> front(knots.begin()+(n_knots-order), knots.end());
+    const Real len = b-a;
+    for (auto &i : front)
+    	i-=len;
+    vector<Real> back(knots.begin(), knots.begin()+order);
+    for (auto &i : back)
+    	i+=len;
+
+    bdry_knots_dir.copy_data_direction(0, front);
+    bdry_knots_dir.copy_data_direction(1, back);
 
     return bdry_knots_dir;
 }

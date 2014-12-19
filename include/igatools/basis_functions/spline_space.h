@@ -162,6 +162,15 @@ public:
 						 const EndBehaviourTable &end_behaviour = EndBehaviourTable(filled_array<EndBehaviour,dim>(EndBehaviour::interpolatory)));
 
     explicit SplineSpace(const DegreeTable &deg,
+    		std::shared_ptr<GridType> knots,
+			const InteriorReg &interior_mult,
+			const EndBehaviour &eb)
+    :SplineSpace(deg, knots,interior_mult,
+    		EndBehaviourTable(filled_array<EndBehaviour,dim>(eb)))
+    {}
+
+
+    explicit SplineSpace(const DegreeTable &deg,
                          std::shared_ptr<GridType> knots,
                          const InteriorReg &interior_mult,
                          const EndBehaviourTable &ebt = EndBehaviourTable(filled_array<EndBehaviour,dim>(EndBehaviour::interpolatory)))
@@ -288,6 +297,7 @@ private:
 #endif
 
     CartesianProductArray<Real,2> interpolatory_end_knots(const int comp_id,const int dir) const;
+    CartesianProductArray<Real,2> periodic_end_knots(const int comp_id,const int dir) const;
 
 
 private:
