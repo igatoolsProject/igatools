@@ -86,6 +86,9 @@ public:
         init_cache(*elem,Int<dim_>());
     }
 
+
+
+
     virtual void fill_cache(ElementAccessor &elem, const topology_variant &topology, const int j) = 0;
 
     void fill_cache(ElementIterator &elem, const topology_variant &topology, const int j)
@@ -97,6 +100,13 @@ public:
     void fill_element_cache(ElementIterator &elem)
     {
         fill_cache(*elem,Int<dim_>(),0);
+    }
+
+    template<int k>
+    void fill_cache(ElementAccessor &elem, const int j)
+    {
+    	const auto topology = Int<k>();
+    	this->fill_cache(elem,topology,j);
     }
 
 

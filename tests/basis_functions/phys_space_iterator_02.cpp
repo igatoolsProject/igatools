@@ -32,7 +32,7 @@
 #include <igatools/base/ig_function.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/new_physical_space.h>
+#include <igatools/basis_functions/physical_space.h>
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/basis_functions/space_element_handler.h>
 
@@ -41,7 +41,7 @@ template<int dim, int codim=0>
 auto
 create_function(shared_ptr<BSplineSpace<dim, dim + codim>> space)
 {
-    using Space = BSplineSpace<dim, dim + codim>;
+    using Space = ReferenceSpace<dim, dim + codim>;
     using Function = IgFunction<Space>;
 
     typename Function::CoeffType control_pts(space->get_num_basis());
@@ -116,13 +116,14 @@ template <int dim, int order = 0, int range=dim, int rank=1, int codim = 0>
 void elem_values(const int n_knots = 2, const int deg=1)
 {
     const int k = dim;
-    using RefSpace = BSplineSpace<dim, range, rank>;
+    using BspSpace = BSplineSpace<dim, range, rank>;
+    using RefSpace = ReferenceSpace<dim, range,rank>;
     using Space = PhysicalSpace<RefSpace, codim, Transformation::h_grad>;
     using ElementHandler = typename Space::ElementHandler;
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
 
-    auto ref_space = RefSpace::create(deg, grid);
+    auto ref_space = BspSpace::create(deg, grid);
     auto map_func = create_function(ref_space);
 
     auto space = Space::create(ref_space, map_func);

@@ -33,7 +33,7 @@
 #include <igatools/base/function_lib.h>
 #include <igatools/base/identity_function.h>
 #include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/new_physical_space.h>
+#include <igatools/basis_functions/physical_space.h>
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/basis_functions/space_element_handler.h>
 
@@ -57,13 +57,14 @@ template <int dim, int order = 0, int range=1, int rank=1, int codim = 0>
 void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
 {
     const int k = dim;
-    using RefSpace = BSplineSpace<dim, range, rank>;
+    using BspSpace = BSplineSpace<dim, range, rank>;
+    using RefSpace = ReferenceSpace<dim, range,rank>;
     using Space = PhysicalSpace<RefSpace, codim, Transformation::h_grad>;
     using ElementHandler = typename Space::ElementHandler;
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
 
-    auto ref_space = RefSpace::create(deg, grid);
+    auto ref_space = BspSpace::create(deg, grid);
     auto map_func = create_function(grid);
 
     auto space = Space::create(ref_space, map_func);
