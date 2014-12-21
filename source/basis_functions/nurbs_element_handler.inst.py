@@ -40,10 +40,10 @@ for x in inst.sub_ref_sp_dims:
     f.write('template class SpaceElement<%s>; \n' %space)
     elem = 'NURBSElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class %s; \n' %elem)
-    acc = 'ReferenceElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    for it in inst.iterators:
-        iterator = it.replace('Accessor','%s' % (acc) )
-        f.write('template class %s; \n' %iterator)
+#    acc = 'ReferenceElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
+#    for it in inst.iterators:
+#        iterator = it.replace('Accessor','%s' % (acc) )
+#        f.write('template class %s; \n' %iterator)
 #    f.write('template class CartesianGridIterator<%s>; \n' %acc)
     elemhandler = 'NURBSElementHandler<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class %s; \n'  %elemhandler)
@@ -59,10 +59,10 @@ for x in inst.ref_sp_dims:
     f.write('template class SpaceElement<%s>;' %space)
     elem = 'NURBSElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class %s; \n' %elem)
-    acc = 'ReferenceElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    for it in inst.iterators:
-        iterator = it.replace('Accessor','%s' % (acc) )
-        f.write('template class %s; \n' %iterator)
+#    acc = 'ReferenceElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
+#    for it in inst.iterators:
+#        iterator = it.replace('Accessor','%s' % (acc) )
+#        f.write('template class %s; \n' %iterator)
 #    f.write('template class CartesianGridIterator<%s>; \n' %acc)
     elemhandler = 'NURBSElementHandler<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class %s; \n'  %elemhandler)

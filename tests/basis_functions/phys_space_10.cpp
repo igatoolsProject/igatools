@@ -44,11 +44,12 @@ void cache_init(const ValueFlags flag,
 {
     OUTSTART
 
-    using RefSpace = BSplineSpace<dim, range, rank>;
+    using BspSpace = BSplineSpace<dim, range, rank>;
+    using RefSpace = ReferenceSpace<dim, range,rank>;
     using Space    = PhysicalSpace<RefSpace, codim, Transformation::h_grad>;
     using ElementHandler = typename Space::ElementHandler;
     auto grid      = CartesianGrid<dim>::create(n_knots);
-    auto ref_space = RefSpace::create(deg, grid);
+    auto ref_space = BspSpace::create(deg, grid);
 
     using Function = functions::LinearFunction<dim, 0, dim+codim>;
     typename Function::Value    b;
@@ -82,12 +83,13 @@ void cache_init_elem(const ValueFlags flag,
     const int k = dim;
     OUTSTART
 
-    using RefSpace = BSplineSpace<dim, range, rank>;
+    using BspSpace = BSplineSpace<dim, range, rank>;
+    using RefSpace = ReferenceSpace<dim, range,rank>;
     using Space = PhysicalSpace<RefSpace, codim, Transformation::h_grad>;
     using ElementHandler = typename Space::ElementHandler;
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
-    auto ref_space = RefSpace::create(deg, grid);
+    auto ref_space = BspSpace::create(deg, grid);
 
     using Function = functions::LinearFunction<dim, 0, dim+codim>;
     typename Function::Value    b;
@@ -122,12 +124,13 @@ void cache_fill_elem(const ValueFlags flag,
     OUTSTART
 
     const int k = dim;
-    using RefSpace = BSplineSpace<dim, range, rank>;
+    using BspSpace = BSplineSpace<dim, range, rank>;
+    using RefSpace = ReferenceSpace<dim, range,rank>;
     using Space = PhysicalSpace<RefSpace, codim, Transformation::h_grad>;
     using ElementHandler = typename Space::ElementHandler;
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
-    auto ref_space = RefSpace::create(deg, grid);
+    auto ref_space = BspSpace::create(deg, grid);
 
     using Function = functions::LinearFunction<dim, 0, dim+codim>;
     typename Function::Value    b;
@@ -167,12 +170,13 @@ void cache_get_elem_values(const ValueFlags flag,
 {
     OUTSTART
     const int k = dim;
-    using RefSpace = BSplineSpace<dim, range, rank>;
+    using BspSpace = BSplineSpace<dim, range, rank>;
+    using RefSpace = ReferenceSpace<dim, range,rank>;
     using Space = PhysicalSpace<RefSpace, codim, Transformation::h_grad>;
     using ElementHandler = typename Space::ElementHandler;
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
-    auto ref_space = RefSpace::create(deg, grid);
+    auto ref_space = BspSpace::create(deg, grid);
 
     using Function = functions::LinearFunction<dim, 0, dim+codim>;
     typename Function::Value    b;

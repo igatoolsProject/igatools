@@ -23,6 +23,9 @@
 #include <igatools/basis_functions/bernstein_basis.h>
 #include <igatools/utils/multi_array_utils.h>
 
+#include <igatools/basis_functions/nurbs_space.h>
+#include <igatools/basis_functions/nurbs_element_handler.h>
+
 #include <algorithm>
 using std::shared_ptr;
 
@@ -148,6 +151,35 @@ public:
 };
 
 };
+
+
+template<int dim_, int range_ , int rank_>
+std::shared_ptr<ReferenceElementHandler<dim_,range_,rank_> >
+ReferenceElementHandler<dim_, range_, rank_>::
+create(std::shared_ptr<const Space> space)
+{
+	using BSplineSp = const BSplineSpace<dim_,range_,rank_>;
+	auto bsp_space = std::dynamic_pointer_cast< BSplineSp >(space);
+
+	using NURBSSp = const NURBSSpace<dim_,range_,rank_>;
+	auto nrb_space = std::dynamic_pointer_cast< NURBSSp >(space);
+
+	std::shared_ptr<ReferenceElementHandler<dim_,range_,rank_> > elem_handler = nullptr;
+	if (bsp_space)
+	{
+		elem_handler = BSplineElementHandler<dim_,range_,rank_>::create(bsp_space);
+	}
+	else if (nrb_space)
+	{
+		elem_handler = NURBSElementHandler<dim_,range_,rank_>::create(nrb_space);
+	}
+	else
+	{
+		Assert(false,ExcInvalidState());
+		AssertThrow(false,ExcInvalidState());
+	}
+    return elem_handler;
+}
 
 template<int dim_, int range_ , int rank_>
 BSplineElementHandler<dim_, range_, rank_>::

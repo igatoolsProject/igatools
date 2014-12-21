@@ -100,12 +100,6 @@ public:
     }
 
 
-    template <int k>
-    void fill_cache(ElementAccessor &elem, const int j)
-    {
-        Assert(false,ExcNotImplemented());
-    }
-
     virtual void print_info(LogStream &out) const = 0;
 
     template <int k = dim_>
@@ -113,6 +107,9 @@ public:
     {
         return grid_handler_.template get_num_points<k>();
     }
+
+    static std::shared_ptr<ReferenceElementHandler<dim_,range_,rank_> >
+    create(std::shared_ptr<const Space> space);
 
 protected:
     GridElementHandler<dim_> grid_handler_;

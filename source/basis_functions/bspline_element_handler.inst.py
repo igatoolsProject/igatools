@@ -75,10 +75,10 @@ for x in inst.sub_ref_sp_dims:
     f.write('template class SpaceElement<%s>; \n' %space)
     elem = 'BSplineElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class %s; \n' %elem)
-    acc = 'ReferenceElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    for it in inst.iterators:
-        iterator = it.replace('Accessor','%s' % (acc) )
-        f.write('template class %s; \n' %iterator)
+#    acc = 'ReferenceElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
+#    for it in inst.iterators:
+#        iterator = it.replace('Accessor','%s' % (acc) )
+#        f.write('template class %s; \n' %iterator)
     elemhandler = 'BSplineElementHandler<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class %s; \n'  %elemhandler)
     for fun in sub_dim_members:
@@ -93,10 +93,10 @@ for x in inst.ref_sp_dims:
     f.write('template class SpaceElement<%s>;' %space)
     elem = 'BSplineElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class %s; \n' %elem)
-    acc = 'ReferenceElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    for it in inst.iterators:
-        iterator = it.replace('Accessor','%s' % (acc) )
-        f.write('template class %s; \n' %iterator)
+#    acc = 'ReferenceElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
+#    for it in inst.iterators:
+#        iterator = it.replace('Accessor','%s' % (acc) )
+#        f.write('template class %s; \n' %iterator)
     elemhandler = 'BSplineElementHandler<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class %s; \n'  %elemhandler)
     for fun in sub_dim_members:

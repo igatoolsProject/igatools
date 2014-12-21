@@ -39,8 +39,9 @@ void run_test(std::string &file_name)
     OUTSTART
 
     // Reading input file.
-    using RefSpace = BSplineSpace<dim,dim,1>;
+    using RefSpace = ReferenceSpace<dim,dim,1>;
     auto map = dynamic_pointer_cast<IgFunction<RefSpace> >(get_mapping_from_file<dim,0>(file_name));
+//    auto map = get_mapping_from_file<dim,0>(file_name);
     out.begin_item("IgFunction infos:");
     map->print_info(out);
     out << endl;
@@ -58,16 +59,16 @@ void run_test(std::string &file_name)
     //------------------------------------------------------
     out.begin_item("Loop using the BSplineElement");
     using ElemHandler = typename RefSpace::ElementHandler;
-    ElemHandler sp_elem_handler(ref_space);
-    sp_elem_handler.reset(ValueFlags::value,quad);
+    auto sp_elem_handler = ElemHandler::create(ref_space);
+    sp_elem_handler->reset(ValueFlags::value,quad);
 
     auto sp_elem     = ref_space->begin();
     auto sp_elem_end = ref_space->end();
 
-    sp_elem_handler.template init_cache<dim>(sp_elem);
+    sp_elem_handler->init_element_cache(sp_elem);
     for (; sp_elem != sp_elem_end; ++sp_elem)
     {
-        sp_elem_handler.template fill_cache<dim>(sp_elem,0);
+        sp_elem_handler->fill_element_cache(sp_elem);
 
         out << "Element id: " << sp_elem->get_flat_index() << endl;
 
@@ -94,7 +95,7 @@ void run_test(std::string &file_name)
 
     for (; map_elem != map_elem_end; ++map_elem)
     {
-        map->fill_cache(*map_elem,0,topology);
+        map->fill_cache(*map_elem,topology,0);
         out << "Element id: " << map_elem->get_flat_index() << endl;
 
         const auto &points = map_elem->get_points();

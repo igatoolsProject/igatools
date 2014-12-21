@@ -102,49 +102,8 @@ public:
 
     virtual void fill_cache(RefElementAccessor &elem, const topology_variant &topology, const int j) override final;
 
-#if 0
-    template<int k>
-    void reset(const ValueFlags flag, const Quadrature<k> &quad);
-#endif
 
-#if 0
-//protected:
-    template <int k>
-    void fill_cache(ElementAccessor &elem, const int j);
-
-    template <int k>
-    void init_cache(ElementAccessor &elem);
-#endif
-//    void init_all_caches(ElementAccessor &elem);
-public:
-#if 0
-    template <int k>
-    void fill_cache(ElementIterator &elem, const int j)
-    {
-        fill_cache<k>(*elem, j);
-    }
-
-    template <int k>
-    void init_cache(ElementIterator &elem)
-    {
-        init_cache<k>(*elem);
-    }
-#endif
-
-//    void init_all_caches(ElementIterator &elem)
-//    {
-//        init_all_caches(*elem);
-//    }
-
-#if 0
-    //Allocates the ElementIterator element_cache
-    void init_element_cache(ElementIterator &elem);
-
-    //Fill the ElementIterator element_cache
-    void fill_element_cache(ElementIterator &elem);
-#endif
-
-    void print_info(LogStream &out) const;
+    virtual void print_info(LogStream &out) const override final;
 
 private:
 //    std::shared_ptr<const Space> space_;
