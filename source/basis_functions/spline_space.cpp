@@ -93,7 +93,7 @@ init()
         }
     }
 #endif
-    Index total_dim = 0;
+    typename SpaceDimensionTable::base_t aux;
     for (int iComp = 0; iComp < n_components; ++iComp)
     {
         for (int j = 0; j < dim; ++j)
@@ -105,12 +105,10 @@ init()
 
             for (auto &n: mult)
                 size += n;
-            space_dim_[iComp][j] = size;
+            aux[iComp][j] = size;
         }
-        space_dim_.comp_dimension[iComp] = space_dim_[iComp].flat_size();
-        total_dim += space_dim_.comp_dimension[iComp];
     }
-    space_dim_.total_dimension = total_dim;
+    space_dim_=aux;
 }
 
 
@@ -191,7 +189,8 @@ refine_h_after_grid_refinement(
 template<int dim, int range, int rank>
 auto
 SplineSpace<dim, range, rank>::
-compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots) const
+compute_knots_with_repetition(const EndBehaviourTable &ends,
+		const BoundaryKnotsTable &boundary_knots) const
 -> KnotsTable
 {
 #ifndef NDEBUG
@@ -199,24 +198,24 @@ compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots) const
     {
         for (int j = 0; j < dim; ++j)
         {
-            const auto deg = deg_[iComp][j];
-            const auto order = deg + 1;
+           // const auto deg = deg_[iComp][j];
+            //onst auto order = deg + 1;
             const auto &knots = this->get_grid()->get_knot_coordinates(j);
             const auto &left_knts = boundary_knots[iComp][j].get_data_direction(0);
             const auto &right_knts = boundary_knots[iComp][j].get_data_direction(1);
 
 
             {
-                Assert((left_knts.size() == order) && (right_knts.size() == order),
-                       ExcMessage("Wrong number of boundary knots"));
-                Assert(knots.front() >= left_knts.back(),
-                       ExcMessage("Boundary knots should be smaller or equal a"));
-                Assert(knots.back() <= right_knts.front(),
-                       ExcMessage("Boundary knots should be greater or equal b"));
-                Assert(std::is_sorted(left_knts.begin(), left_knts.end()),
-                       ExcMessage("Boundary knots is not sorted"));
-                Assert(std::is_sorted(right_knts.begin(), right_knts.end()),
-                       ExcMessage("Boundary knots is not sorted"));
+//                Assert((left_knts.size() == order) && (right_knts.size() == order),
+//                       ExcMessage("Wrong number of boundary knots"));
+//                Assert(knots.front() >= left_knts.back(),
+//                       ExcMessage("Boundary knots should be smaller or equal a"));
+//                Assert(knots.back() <= right_knts.front(),
+//                       ExcMessage("Boundary knots should be greater or equal b"));
+//                Assert(std::is_sorted(left_knts.begin(), left_knts.end()),
+//                       ExcMessage("Boundary knots is not sorted"));
+//                Assert(std::is_sorted(right_knts.begin(), right_knts.end()),
+//                       ExcMessage("Boundary knots is not sorted"));
             }
         }
     }
@@ -255,6 +254,7 @@ compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots) const
                     *rep_it = *k_it;
             }
 
+            if (ends[iComp][j] == EndBehaviour::interpolatory)
 
             {
             	const Real a = knots.front();
@@ -266,15 +266,20 @@ compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots) const
             		rep_knots[K+i] = b;
             	}
             }
-
+            else
             {
-            	for (int i=0; i<m; ++i)
+            	if (ends[iComp][j] == EndBehaviour::periodic)
             	{
-            		rep_knots[i] = rep_knots[K+i] - L;
-            		rep_knots[K+m+i] = rep_knots[m+i] + L;
+            		const Real a = knots.front();
+            		const Real b = knots.back();
+            		const Real L = b-a;
+            		for (int i=0; i<m; ++i)
+            		{
+            			rep_knots[i] = rep_knots[K+i] - L;
+            			rep_knots[K+m+i] = rep_knots[m+i] + L;
+            		}
             	}
             }
-
 
             result[iComp].copy_data_direction(j,rep_knots);
         }
@@ -284,11 +289,11 @@ compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots) const
 }
 
 
-
+#if 0
 template<int dim, int range, int rank>
 auto
 SplineSpace<dim, range, rank>::
-compute_knots_with_repetition(const EndBehaviourTable &ends) const -> KnotsTable
+compute_knots_with_repetition(const EndBehaviour &ends) const -> KnotsTable
 {
     BoundaryKnotsTable bdry_knots_table(deg_.get_comp_map());
     for (int iComp : bdry_knots_table.get_active_components_id())
@@ -309,7 +314,7 @@ compute_knots_with_repetition(const EndBehaviourTable &ends) const -> KnotsTable
     }
     return compute_knots_with_repetition(bdry_knots_table);
 }
-
+#endif
 
 
 template<int dim, int range, int rank>
@@ -456,7 +461,7 @@ interpolatory_end_knots() const -> BoundaryKnotsTable
     return result;
 }
 #endif
-
+#if 0
 template<int dim, int range, int rank>
 auto
 SplineSpace<dim, range, rank>::
@@ -505,6 +510,7 @@ periodic_end_knots(const int comp_id, const int dir) const -> CartesianProductAr
 
     return bdry_knots_dir;
 }
+#endif
 
 template<int dim, int range, int rank>
 void
@@ -529,11 +535,6 @@ print_info(LogStream &out) const
     space_dim_.print_info(out);
     out.end_item();
 
-    out.begin_item("Component Dimension:");
-    space_dim_.comp_dimension.print_info(out);
-    out.end_item();
-
-    out << "Total Dimension: " << space_dim_.total_dimension << std::endl;
 }
 
 IGA_NAMESPACE_CLOSE

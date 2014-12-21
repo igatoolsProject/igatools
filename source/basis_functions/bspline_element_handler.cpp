@@ -161,7 +161,7 @@ BSplineElementHandler(shared_ptr<const Space> space)
     // Compute the component offsets
     comp_offset_[0] = 0;
     for (int j = 1; j < Space::n_components; ++j)
-        comp_offset_[j] = comp_offset_[j-1] + n_basis_.comp_dimension[j-1];
+        comp_offset_[j] = comp_offset_[j-1] + n_basis_.get_component_size(j-1);
 }
 
 template<int dim_, int range_ , int rank_>
@@ -311,7 +311,7 @@ copy_to_inactive_components_values(const vector<Index> &inactive_comp,
     for (int comp : inactive_comp)
     {
         const auto act_comp = active_map[comp];
-        const auto n_basis = n_basis_.comp_dimension[comp];
+        const auto n_basis = n_basis_.get_component_size(comp);
         const Size act_offset = comp_offset_[act_comp];
         const Size offset     = comp_offset_[comp];
         for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
@@ -339,7 +339,7 @@ copy_to_inactive_components(const vector<Index> &inactive_comp,
     for (int comp : inactive_comp)
     {
         const auto act_comp = active_map[comp];
-        const auto n_basis = n_basis_.comp_dimension[comp];
+        const auto n_basis = n_basis_.get_component_size(comp);
         const Size act_offset = comp_offset_[act_comp];
         const Size offset     = comp_offset_[comp];
         for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
@@ -368,7 +368,7 @@ evaluate_bspline_values(
     for (int comp : elem_values.get_active_components_id())
     {
         auto &values = elem_values[comp];
-        const int total_n_basis = n_basis_.comp_dimension[comp];
+        const int total_n_basis = n_basis_.get_component_size(comp);
         const Size offset = comp_offset_[comp];
 
         for (int func_id = 0; func_id < total_n_basis; ++func_id)
@@ -419,7 +419,7 @@ evaluate_bspline_derivatives(
     for (int comp : elem_values.get_active_components_id())
     {
         auto &values = elem_values[comp];
-        const int total_n_basis = n_basis_.comp_dimension[comp];
+        const int total_n_basis = n_basis_.get_component_size(comp);
         const Size offset = comp_offset_[comp];
 
         for (int func_id = 0; func_id < total_n_basis; ++func_id)

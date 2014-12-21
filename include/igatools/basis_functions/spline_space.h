@@ -115,9 +115,8 @@ public:
      */
     class SpaceDimensionTable : public ComponentContainer<TensorSize<dim> >
     {
-        using base_t = ComponentContainer<TensorSize<dim>>;
     public:
-        //using base_t::ComponentContainer;
+    	using base_t = ComponentContainer<TensorSize<dim>>;
 
         SpaceDimensionTable() = default;
 
@@ -125,20 +124,51 @@ public:
             :
             base_t(n_basis),
             comp_dimension(n_basis.get_comp_map()),
-            total_dimension(0)
+            total_dimension_(0)
         {
-            for (auto comp : this->get_active_components_id())
-            {
-                auto size = (*this)[comp].flat_size();
-                comp_dimension[comp] = size;
-            }
-            for (auto size : comp_dimension)
-                total_dimension += size;
+        	 recompute_size();
         }
 
-        //TODO(pauletti, Sep 8, 2014): make this private and write some getters
+        SpaceDimensionTable operator=(const base_t &st)
+        {
+             base_t::operator=(st);
+             recompute_size();
+             return *this;
+
+        }
+
+        void print_info(LogStream &out) const
+        {
+        	out.begin_item("Component Dimension:");
+        	comp_dimension.print_info(out);
+            out.end_item();
+
+            out << "Total Dimension: " << total_dimension_ << std::endl;
+        }
+
+        Size total_dimension() const
+        {
+        	return total_dimension_;
+        }
+
+        Size get_component_size(const int comp) const
+        {
+        	return comp_dimension[comp];
+        }
+    private:
+        void recompute_size()
+        {
+        	for (auto comp : this->get_active_components_id())
+        	{
+        		auto size = (*this)[comp].flat_size();
+        		comp_dimension[comp] = size;
+        	}
+        	for (auto size : comp_dimension)
+        		total_dimension_ += size;
+        }
+
         ComponentContainer<Size> comp_dimension;
-        Size total_dimension;
+        Size total_dimension_;
     };
 
 
@@ -196,7 +226,7 @@ public:
      */
     Size get_num_basis() const
     {
-        return space_dim_.total_dimension;
+        return space_dim_.total_dimension();
     }
 
     /**
@@ -205,7 +235,7 @@ public:
      */
     Size get_num_basis(const int comp) const
     {
-        return space_dim_.comp_dimension[comp];
+        return space_dim_.get_component_size(comp);
     }
 
     /**
@@ -244,7 +274,7 @@ public:
         ComponentContainer<Size> offset;
         offset[0] = 0;
         for (int comp = 1; comp < n_components; ++comp)
-            offset[comp] = offset[comp-1] + space_dim_.comp_dimension[comp];
+            offset[comp] = offset[comp-1] + space_dim_.get_component_size(comp);
 
         return offset;
     }
@@ -269,9 +299,10 @@ public:
 
 public:
 
-    KnotsTable compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots) const;
+    KnotsTable compute_knots_with_repetition(const EndBehaviourTable &ends,
+    		const BoundaryKnotsTable &boundary_knots = BoundaryKnotsTable()) const;
 
-    KnotsTable compute_knots_with_repetition(const EndBehaviourTable &ends) const;
+   // KnotsTable compute_knots_with_repetition(const EndBehaviourTable &ends) const;
 
     /**
      * For each element and for each component there is an initial

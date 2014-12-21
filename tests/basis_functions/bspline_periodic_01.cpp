@@ -52,6 +52,8 @@ void plot_basis(const int deg)
 
     const int n_basis = space->get_num_basis();
     out << "Num basis: " << n_basis << endl;
+space->print_info(out);
+#if 1
     Coeffs coeffs(n_basis);
 
     for (int basis_index = 0; basis_index < space->get_num_basis(); ++basis_index)
@@ -71,6 +73,7 @@ void plot_basis(const int deg)
 
     	coeffs[basis_index] = 0.;
     }
+#endif
 
 }
 

@@ -54,7 +54,7 @@ SpaceElement(const std::shared_ptr<const Space> space,
     comp_offset_[0] = 0;
     for (int comp_id = 1; comp_id < Space::n_components; ++comp_id)
         comp_offset_[comp_id] = comp_offset_[comp_id-1] +
-                                n_basis_direction_.comp_dimension[comp_id-1];
+                                n_basis_direction_.get_component_size(comp_id-1);
 }
 
 

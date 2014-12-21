@@ -41,12 +41,15 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
         make_shared<map<Index,DofsConstView>>(map<Index,DofsConstView>())),
     policy_(pol)
 {
-    Assert(pol == DistributionPolicy::standard, ExcNotImplemented());
-    SpaceDimensionTable n_basis(n_basis1);
-    for (int comp = 0 ; comp < Space::n_components ; ++comp)
-        	for (int dir = 0 ; dir < dim ; ++dir)
-        		if (end_b[comp][dir] == EndBehaviour::periodic)
-        			n_basis[comp][dir] += degree_table[comp][dir] + 1;
+	Assert(pol == DistributionPolicy::standard, ExcNotImplemented());
+	typename SpaceDimensionTable::base_t aux;
+	for (int comp = 0 ; comp < Space::n_components ; ++comp)
+		for (int dir = 0 ; dir < dim ; ++dir)
+			if (end_b[comp][dir] == EndBehaviour::periodic)
+				aux[comp][dir] = n_basis1[comp][dir] + degree_table[comp][dir] + 1;
+
+	SpaceDimensionTable n_basis(aux);
+
 
     //-----------------------------------------------------------------------
     // fills the standard distribution, sorted by component and
@@ -57,7 +60,7 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
     	const auto act_size = n_basis1[comp];
     	auto &comp_table = index_table_[comp];
     	comp_table.resize(size);
-        for (int i=0; i<n_basis.comp_dimension[comp]; ++i)
+        for (int i=0; i<n_basis.get_component_size(comp); ++i)
         {
         	auto t_ind = comp_table.flat_to_tensor(i);
         	for (int dir = 0 ; dir < dim ; ++dir)
