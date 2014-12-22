@@ -49,8 +49,11 @@ unique_container(std::array <T, dim> a)
 template <class,int,Transformation> class PhysicalSpace;
 
 template <int, int, int> class ReferenceElement;
-
 template <int,int,int> class ReferenceElementHandler;
+
+template <int, int, int> class BSplineSpace;
+template <int, int, int> class NURBSSpace;
+
 
 template <int,int,int> class DofDistribution;
 
@@ -398,14 +401,28 @@ public:
 
 
     template<int k>
-    std::shared_ptr<SubRefSpace<k> >
+    std::shared_ptr< SubRefSpace<k> >
     get_ref_sub_space(const int sub_elem_id,
                       InterSpaceMap<k> &dof_map,
-                      std::shared_ptr<CartesianGrid<k>> sub_grid = nullptr) const
+                      std::shared_ptr<CartesianGrid<k>> sub_grid = nullptr) const;
+#if 0
     {
+        std::shared_ptr< SubRefSpace<k> > sub_ref_space;
+        if (this->is_bspline())
+        {
+            const auto bsp_space = dynamic_cast<const BSplineSpace<dim,range,rank> *>(this);
+            Assert(bsp_space != nullptr,ExcNullPtr());
+        }
+        else
+        {
+            const auto nrb_space = dynamic_cast<const NURBSSpace<dim,range,rank> *>(this);
+            Assert(nrb_space != nullptr,ExcNullPtr());
+        }
+
         Assert(false,ExcNotImplemented());
         return nullptr;
     }
+#endif
 
     template<int k>
     std::shared_ptr<SubSpace<k> >

@@ -38,7 +38,7 @@
 #include <igatools/basis_functions/space_tools.h>
 
 #include <igatools/io/writer.h>
-#include <igatools/basis_functions/new_physical_space.h>
+#include <igatools/basis_functions/physical_space.h>
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/basis_functions/space_element_handler.h>
 
@@ -105,11 +105,12 @@ public:
 template<int dim, int codim, int range, int rank, LAPack la_pack>
 void do_test(const int p, const int num_knots = 10)
 {
-    using RefSpace =  BSplineSpace<dim,range,rank>;
+    using RefSpace = ReferenceSpace<dim,range,rank>;
+    using BspSpace = BSplineSpace<dim,range,rank>;
     using Space = PhysicalSpace<RefSpace, codim>;
 
     auto knots = CartesianGrid<dim>::create(num_knots);
-    auto ref_space = RefSpace::create(p, knots);
+    auto ref_space = BspSpace::create(p, knots);
 
     using Function = functions::LinearFunction<dim, 0, dim + codim>;
     typename Function::Value    b;

@@ -25,23 +25,27 @@ f = data.file_output
 inst = data.inst
 
 sub_dim_members = \
- ['std::shared_ptr<typename class::template SubSpace<k>::MultiplicityTable> class::get_sub_space_mult<k>(const Index s_id) const;', 
-  'typename class::template SubSpace<k>::DegreeTable class::get_sub_space_degree<k>(const Index s_id) const;']         
+ ['std::shared_ptr<typename class::template SubRefSpace<k>> ' + 
+  'class::get_ref_sub_space<k>(const int sub_elem_id, ' + 
+  'InterSpaceMap<k> &dof_map, ' + 
+  'std::shared_ptr<CartesianGrid<k>> sub_grid) const;']
+#  'std::shared_ptr<typename class::template SubSpace<k>::MultiplicityTable> class::get_sub_space_mult<k>(const Index s_id) const;', 
+#  'typename class::template SubSpace<k>::DegreeTable class::get_sub_space_degree<k>(const Index s_id) const;']         
 
 
 for x in inst.sub_ref_sp_dims:
     space = 'ReferenceSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class %s ;\n' %space)
-#    for fun in sub_dim_members:
-#        k = x.dim
-#        s = fun.replace('class', space).replace('k', '%d' % (k));
-#        f.write('template ' + s + '\n')
+    for fun in sub_dim_members:
+        k = x.dim
+        s = fun.replace('class', space).replace('k', '%d' % (k));
+        f.write('template ' + s + '\n')
 
 for x in inst.ref_sp_dims:
     space = 'ReferenceSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class %s ;\n' %space)
-#    for fun in sub_dim_members:
-#        for k in inst.sub_dims(x.dim):
-#            s = fun.replace('class', space).replace('k', '%d' % (k));
-#            f.write('template ' + s + '\n')
+    for fun in sub_dim_members:
+        for k in inst.sub_dims(x.dim):
+            s = fun.replace('class', space).replace('k', '%d' % (k));
+            f.write('template ' + s + '\n')
 

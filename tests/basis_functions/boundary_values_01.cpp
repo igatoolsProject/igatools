@@ -37,7 +37,7 @@
 #include <igatools/linear_algebra/dof_tools.h>
 
 #include <igatools/base/identity_function.h>
-#include <igatools/basis_functions/new_physical_space.h>
+#include <igatools/basis_functions/physical_space.h>
 
 
 
@@ -45,12 +45,13 @@ template<int dim , int codim, int range ,int rank, LAPack la_pack>
 void do_test(const int p, const int num_knots = 10)
 {
     const int sub_dim = dim - 1;
-    using RefSpace = BSplineSpace<dim, range, rank>;
+    using RefSpace = ReferenceSpace<dim,range,rank>;
+    using BspSpace = BSplineSpace<dim,range,rank>;
     using Space = PhysicalSpace<RefSpace, codim, Transformation::h_grad>;
 
 
     auto grid = CartesianGrid<dim>::create(num_knots);
-    auto ref_space = RefSpace::create(p, grid) ;
+    auto ref_space = BspSpace::create(p, grid) ;
     auto map = IdentityFunction<dim>::create(grid);
     auto space = Space::create(ref_space, map);
 

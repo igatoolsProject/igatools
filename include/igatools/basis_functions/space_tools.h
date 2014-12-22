@@ -81,7 +81,7 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
 
     for (; elem != end; ++elem, ++f_elem)
     {
-        func->fill_cache(f_elem, 0, Int<dim>());
+        func->fill_cache(f_elem,Int<dim>(),0);
         sp_filler.template fill_cache<dim>(elem, 0);
 
         loc_mat = 0.;

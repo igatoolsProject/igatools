@@ -23,6 +23,9 @@
 #include <igatools/basis_functions/reference_element.h>
 #include <igatools/base/array_utils.h>
 
+#include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/nurbs_space.h>
+
 using std::shared_ptr;
 using std::make_shared;
 using std::const_pointer_cast;
@@ -37,6 +40,47 @@ template<int dim, int range, int rank>
 const std::array<Size, ReferenceSpace<dim, range, rank>::n_components>
 ReferenceSpace<dim, range, rank>::components =
     sequence<ReferenceSpace<dim, range, rank>::n_components>();
+
+
+
+
+
+
+
+
+template<int dim, int range, int rank>
+template<int k>
+auto
+ReferenceSpace<dim, range, rank>::
+get_ref_sub_space(const int sub_elem_id,
+                  InterSpaceMap<k> &dof_map,
+                  std::shared_ptr<CartesianGrid<k>> sub_grid) const
+-> std::shared_ptr< SubRefSpace<k> >
+{
+    std::shared_ptr< SubRefSpace<k> > sub_ref_space;
+    if (this->is_bspline())
+    {
+        const auto bsp_space = dynamic_cast<const BSplineSpace<dim,range,rank> *>(this);
+        Assert(bsp_space != nullptr,ExcNullPtr());
+        sub_ref_space = bsp_space->get_ref_sub_space(sub_elem_id,dof_map,sub_grid);
+    }
+    else
+    {
+        //TODO (MM, Dec 22, 2014): implement NURBSSpace::get_ref_sub_space()
+        const auto nrb_space = dynamic_cast<const NURBSSpace<dim,range,rank> *>(this);
+        Assert(nrb_space != nullptr,ExcNullPtr());
+        Assert(false,ExcNotImplemented());
+    }
+
+    Assert(sub_ref_space != nullptr,ExcNullPtr());
+    return sub_ref_space;
+}
+
+
+
+
+
+
 
 IGA_NAMESPACE_CLOSE
 
