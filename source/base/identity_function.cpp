@@ -37,7 +37,7 @@ IdentityFunction(std::shared_ptr<GridType> grid)
 template<int dim,int space_dim>
 auto
 IdentityFunction<dim,space_dim>::
-fill_cache(ElementAccessor &elem, const variant_2 &k, const int j) -> void
+fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) -> void
 {
     parent_t::fill_cache(elem, k, j);
     fill_cache_impl.j = j;

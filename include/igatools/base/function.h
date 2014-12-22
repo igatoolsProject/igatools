@@ -78,7 +78,7 @@ public:
     using variant_1 = typename boost::make_variant_over<v1>::type;
 
     using v2 = typename seq<Int, l, dim>::type;
-    using variant_2 = typename boost::make_variant_over<v2>::type;
+    using topology_variant = typename boost::make_variant_over<v2>::type;
 
 public:
     using ElementAccessor = FunctionElement<dim, codim, range, rank>;
@@ -146,7 +146,7 @@ public:
     }
 
 
-    virtual void init_cache(ElementAccessor &elem, const variant_2 &k)
+    virtual void init_cache(ElementAccessor &elem, const topology_variant &k)
     {
         init_cache_impl.grid_handler = this;
         init_cache_impl.elem = &elem;
@@ -156,7 +156,7 @@ public:
     }
 
 
-    virtual void fill_cache(ElementAccessor &elem, const variant_2 &k,const int j)
+    virtual void fill_cache(ElementAccessor &elem, const topology_variant &k,const int j)
     {
         fill_cache_impl.j = j;
         fill_cache_impl.grid_handler = this;
@@ -164,12 +164,12 @@ public:
         boost::apply_visitor(fill_cache_impl, k);
     }
 
-    void fill_cache(ElementIterator &elem, const variant_2 &k, const int j)
+    void fill_cache(ElementIterator &elem, const topology_variant &k, const int j)
     {
         fill_cache(*elem, k, j);
     }
 
-    void init_cache(ElementIterator &elem, const variant_2 &k)
+    void init_cache(ElementIterator &elem, const topology_variant &k)
     {
         init_cache(*elem, k);
     }

@@ -86,7 +86,7 @@ reset(const ValueFlags &flag, const variant_1 &quad) -> void
 template<class Space>
 auto
 IgFunction<Space>::
-init_cache(ElementAccessor &elem, const variant_2 &k) -> void
+init_cache(ElementAccessor &elem, const topology_variant &k) -> void
 {
     parent_t::init_cache(elem, k);
     init_cache_impl.space_handler_ = space_filler_.get();
@@ -99,7 +99,7 @@ init_cache(ElementAccessor &elem, const variant_2 &k) -> void
 template<class Space>
 auto
 IgFunction<Space>::
-fill_cache(ElementAccessor &elem, const variant_2 &k, const int j) -> void
+fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) -> void
 {
     parent_t::fill_cache(elem,k,j);
 

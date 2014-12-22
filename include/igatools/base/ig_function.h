@@ -54,7 +54,7 @@ public:
     virtual ~IgFunction() = default;
 
     using typename parent_t::variant_1;
-    using typename parent_t::variant_2;
+    using typename parent_t::topology_variant;
     using typename parent_t::Point;
     using typename parent_t::Value;
     using typename parent_t::Gradient;
@@ -78,9 +78,9 @@ public:
 
     void reset(const ValueFlags &flag, const variant_1 &quad) override;
 
-    void init_cache(ElementAccessor &elem, const variant_2 &k) override;
+    void init_cache(ElementAccessor &elem, const topology_variant &k) override;
 
-    void fill_cache(ElementAccessor &elem, const variant_2 &k, const int j) override;
+    void fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) override;
 
     std::shared_ptr<const Space> get_iga_space() const;
 

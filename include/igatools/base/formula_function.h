@@ -38,7 +38,7 @@ protected:
     using typename parent_t::GridType;
 public:
     using typename parent_t::variant_1;
-    using typename parent_t::variant_2;
+    using typename parent_t::topology_variant;
     using typename parent_t::Point;
     using typename parent_t::Value;
     using typename parent_t::Gradient;
@@ -66,13 +66,13 @@ public:
         mapping_->reset(ValueFlags::value|ValueFlags::point, quad);
     }
 
-    void init_cache(ElementAccessor &elem, const variant_2 &k) override
+    void init_cache(ElementAccessor &elem, const topology_variant &k) override
     {
         parent_t::init_cache(elem, k);
         mapping_->init_cache(map_elem_, k);
     }
 
-    void fill_cache(ElementAccessor &elem, const variant_2 &k, const int j) override;
+    void fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) override;
 
 private:
 

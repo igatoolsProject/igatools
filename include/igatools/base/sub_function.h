@@ -44,7 +44,7 @@ public:
     using typename base_t::GridType;
 
     using typename base_t::variant_1;
-    using typename base_t::variant_2;
+    using typename base_t::topology_variant;
     using typename base_t::ElementAccessor;
 
     using SuperGrid = typename SupFunc::GridType;
@@ -100,13 +100,13 @@ public:
     }
 
 
-    void init_cache(ElementAccessor &elem, const variant_2 &k1) override
+    void init_cache(ElementAccessor &elem, const topology_variant &k1) override
     {
         base_t::init_cache(elem, k1);
         sup_func_->init_cache(sup_elem_, Int<sub_dim>());
     }
 
-    void fill_cache(ElementAccessor &elem, const variant_2 &k1, const int j) override
+    void fill_cache(ElementAccessor &elem, const topology_variant &k1, const int j) override
     {
         Assert(j==0, ExcNotImplemented());
         using ElementIt = typename CartesianGrid<sub_dim>::ElementIterator;
@@ -172,7 +172,7 @@ public:
     using typename base_t::GridType;
 
     using typename base_t::variant_1;
-    using typename base_t::variant_2;
+    using typename base_t::topology_variant;
     using typename base_t::ElementAccessor;
 
     using SuperGrid = typename SupFunc::GridType;
@@ -243,13 +243,13 @@ public:
     }
 
 
-    void init_cache(ElementAccessor &elem, const variant_2 &k1) override
+    void init_cache(ElementAccessor &elem, const topology_variant &k1) override
     {
         base_t::init_cache(elem, k1);
         sup_func_->init_cache(sup_elem_, Int<sub_dim>());
     }
 
-    void fill_cache(ElementAccessor &elem, const variant_2 &k1, const int j) override
+    void fill_cache(ElementAccessor &elem, const topology_variant &k1, const int j) override
     {
         Assert(j==0, ExcNotImplemented());
 //        typename CartesianGrid<sub_dim>::ElementIterator el_it(elem);
