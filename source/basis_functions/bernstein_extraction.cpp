@@ -115,9 +115,12 @@ fill_extraction(const int m,
     const int n_elem = knots.size()-1;
 
     vector<matrix>  operators(n_elem, matrix(m,m));
-    const auto &x = knots;
+   // const auto &x = knots;
     const auto &y = rep_knots;
 
+    auto x = knots;
+    x[0] = y[m-1];
+    x[n_elem] = *(y.end()-m);
     for (int n=0; n < n_elem; ++n)
     {
         const auto a = x[n];
