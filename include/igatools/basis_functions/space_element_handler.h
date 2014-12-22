@@ -79,6 +79,12 @@ public:
         Assert(false,ExcNotImplemented());
     }
 
+    void fill_cache(ElementIterator &elem, const topology_variant &topology, const int j)
+    {
+        this->fill_cache(*elem,topology,j);
+    }
+
+
 
     //protected:
     template <int k>
