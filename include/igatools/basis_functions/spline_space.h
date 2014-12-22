@@ -452,6 +452,18 @@ public:
         return nullptr;
     }
 
+    virtual std::shared_ptr<SpaceManager> get_space_manager() override
+    {
+        Assert(false,ExcMessage("This class should not have this function."));
+        return nullptr;
+    }
+
+    virtual std::shared_ptr<const SpaceManager> get_space_manager() const override
+    {
+        Assert(false,ExcMessage("This class should not have this function."));
+        return nullptr;
+    }
+
 };
 
 

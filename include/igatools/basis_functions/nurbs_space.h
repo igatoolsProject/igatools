@@ -210,9 +210,8 @@ public:
     virtual ~NURBSSpace() = default;
 
 
-    std::shared_ptr<SpaceManager> get_space_manager();
-
-    std::shared_ptr<const SpaceManager> get_space_manager() const;
+    virtual std::shared_ptr<SpaceManager> get_space_manager() override final ;
+    virtual std::shared_ptr<const SpaceManager> get_space_manager() const override final;
 
 
 protected:

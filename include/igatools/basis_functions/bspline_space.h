@@ -314,10 +314,8 @@ public:
     std::shared_ptr<const self_t > get_reference_space() const;
 
 
-    std::shared_ptr<SpaceManager> get_space_manager();
-
-
-    std::shared_ptr<const SpaceManager> get_space_manager() const;
+    virtual std::shared_ptr<SpaceManager> get_space_manager() override final ;
+    virtual std::shared_ptr<const SpaceManager> get_space_manager() const override final;
 
 
     /** Returns the container with the global dof distribution (const version). */

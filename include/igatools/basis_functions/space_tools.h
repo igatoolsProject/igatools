@@ -62,17 +62,20 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
     auto func_flag = ValueFlags::point | ValueFlags::value;
     func->reset(func_flag, quad);
 
-    typename Space::ElementHandler sp_filler(space);
+    using ElementHandler = typename Space::ElementHandler;
+    auto sp_filler = ElementHandler::create(space);
     auto sp_flag = ValueFlags::point | ValueFlags::value |
                    ValueFlags::w_measure;
-    sp_filler.template reset<dim>(sp_flag, quad);
+    sp_filler->reset(sp_flag, quad);
 
     auto f_elem = func->begin();
     auto elem = space->begin();
     auto end  = space->end();
 
-    func->init_cache(f_elem, Int<dim>());
-    sp_filler.template init_cache<dim>(elem);
+    const auto topology = Int<dim>();
+
+    func->init_cache(f_elem, topology);
+    sp_filler->init_cache(elem,topology);
 
     const int n_qp = quad.get_num_points();
     const int n_basis = elem->get_num_basis();
@@ -81,8 +84,8 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
 
     for (; elem != end; ++elem, ++f_elem)
     {
-        func->fill_cache(f_elem,Int<dim>(),0);
-        sp_filler.template fill_cache<dim>(elem, 0);
+        func->fill_cache(f_elem,topology,0);
+        sp_filler->fill_cache(elem, topology,0);
 
         loc_mat = 0.;
         loc_rhs = 0.;

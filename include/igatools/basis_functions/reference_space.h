@@ -34,6 +34,7 @@
 
 IGA_NAMESPACE_OPEN
 
+class SpaceManager;
 
 
 template <class T, int dim>
@@ -375,6 +376,11 @@ public:
     virtual DofDistribution<dim, range, rank> &
     get_dof_distribution_patch() = 0;
 
+
+    //TODO (MM, Dec 22, 2014): implement ReferenceSpace::get_space_manager()
+    // instead of the two implementation in BSplineSpace and NURBSSpace
+    virtual std::shared_ptr<SpaceManager> get_space_manager() = 0;
+    virtual std::shared_ptr<const SpaceManager> get_space_manager() const = 0;
 
 
     /** @name Functions involving the element iterator */
