@@ -78,7 +78,7 @@ BSplineSpace(const DegreeTable &deg,
 			  const EndBehaviour end_b,
 			  const bool homogeneous_range)
     :
-    BaseSpace(deg, knots, BaseSpace::InteriorReg::maximum, end_b),
+    BaseSpace(deg, knots, InteriorReg::maximum, end_b),
     dof_distribution_global_(knots,BaseSpace::accumulated_interior_multiplicities(),
                              BaseSpace::get_num_basis_table(),BaseSpace::get_degree(),
 							 BaseSpace::get_end_behaviour()),

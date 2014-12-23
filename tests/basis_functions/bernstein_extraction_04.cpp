@@ -18,63 +18,70 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test for bernstein extraction class
+ *  Test for bernstein extraction class for periodic spaces
  *  author: pauletti
- *  date:
+ *  date: 2014-12-22
  *
  */
 
 #include "../tests.h"
 #include <igatools/basis_functions/bernstein_extraction.h>
 
-using std::shared_ptr;
+
+template <int dim>
+void
+test(const int deg = 1)
+{
+    using SplineSpace = SplineSpace<dim>;
+    using MultiplicityTable = typename SplineSpace::MultiplicityTable;
+
+    typename SplineSpace::DegreeTable degt {{deg}};
+
+    CartesianProductArray<Real,dim> knots({{0,1,2,3,4}});
+    auto grid = CartesianGrid<dim>::create(knots);
+
+    SplineSpace sp_spec(degt, grid, InteriorReg::maximum, EndBehaviour::periodic);
+
+
+    auto rep_knots = sp_spec.compute_knots_with_repetition(sp_spec.get_end_behaviour());
+    auto acum_mult = sp_spec.accumulated_interior_multiplicities();
+
+    rep_knots.print_info(out);
+    out << endl;
+    acum_mult.print_info(out);
+    out << endl;
+    BernsteinExtraction<dim> operators(grid, rep_knots, acum_mult, degt);
+    operators.print_info(out);
+}
+
 
 int main()
 {
     out.depth_console(10);
+    test<1>();
 
-    {
-        const int dim=1;
-        using SplineSpace = SplineSpace<dim>;
-        using MultiplicityTable = typename SplineSpace::MultiplicityTable;
+//    {
+//        const int dim=1;
+//        using SplineSpace = SplineSpace<dim>;
+//        using MultiplicityTable = typename SplineSpace::MultiplicityTable;
+//
+//        typename SplineSpace::DegreeTable deg {{2}};
+//
+//        auto grid = CartesianGrid<dim>::create(4);
+//
+//        auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable({ {{1,3}} }));
+//        SplineSpace sp_spec(deg, grid, int_mult);
+//
+//        CartesianProductArray<Real,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
+//        typename SplineSpace::BoundaryKnotsTable bdry_knots { {bn_x} };
+//        auto rep_knots = sp_spec.compute_knots_with_repetition(bdry_knots);
+//        auto acum_mult = sp_spec.accumulated_interior_multiplicities();
+//
+//
+//        BernsteinExtraction<dim> operators(grid, rep_knots, acum_mult, deg);
+//        operators.print_info(out);
+//    }
 
-        typename SplineSpace::DegreeTable deg {{2}};
-
-        auto grid = CartesianGrid<dim>::create(4);
-
-        auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable({ {{1,3}} }));
-        SplineSpace sp_spec(deg, grid, int_mult);
-
-        CartesianProductArray<Real,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
-        typename SplineSpace::BoundaryKnotsTable bdry_knots { {bn_x} };
-        auto rep_knots = sp_spec.compute_knots_with_repetition(bdry_knots);
-        auto acum_mult = sp_spec.accumulated_interior_multiplicities();
-
-
-        BernsteinExtraction<dim> operators(grid, rep_knots, acum_mult, deg);
-        operators.print_info(out);
-    }
-
-    {
-        const int dim=1;
-        using SplineSpace = SplineSpace<dim>;
-        using MultiplicityTable = typename SplineSpace::MultiplicityTable;
-
-        typename SplineSpace::DegreeTable deg {{3}};
-
-        CartesianProductArray<Real,dim> knots({{0,1,2,3,4}});
-        auto grid = CartesianGrid<dim>::create(knots);
-
-        SplineSpace sp_spec(deg, grid, SplineSpace::InteriorReg::maximum);
-
-
-        auto rep_knots = sp_spec.compute_knots_with_repetition(sp_spec.get_end_behaviour());
-        auto acum_mult = sp_spec.accumulated_interior_multiplicities();
-
-
-        BernsteinExtraction<dim> operators(grid, rep_knots, acum_mult, deg);
-        operators.print_info(out);
-    }
 
     return 0;
 }

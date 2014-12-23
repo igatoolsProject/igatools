@@ -135,14 +135,10 @@ public:
     /** Type for iterator over the elements.  */
     using ElementIterator = CartesianGridIterator<ElementAccessor>;
 
-
-    using typename BaseSpace::InteriorReg;
-
     using typename BaseSpace::DegreeTable;
     using typename BaseSpace::MultiplicityTable;
     using typename BaseSpace::KnotsTable;
     using typename BaseSpace::SpaceDimensionTable;
-    //using typename BaseSpace::EndBehaviour;
     using typename BaseSpace::EndBehaviourTable;
 
 public:

@@ -44,6 +44,17 @@ enum class EndBehaviour
 
 	end_knots
 };
+
+// For the interior multiplicities
+// maximum regularity
+// minimul regularity discontinous
+enum class InteriorReg
+{
+    maximum,
+    minimun
+};
+
+
 /**
  * @brief Tensor product spline space
  *
@@ -174,13 +185,7 @@ public:
 
     using EndBehaviourTable = ComponentContainer<std::array<EndBehaviour, dim> >;
 
-    // For the interior multiplicities
-    // maximum regularity
-    // minimul regularity discontinous
-    enum class InteriorReg
-    {
-        maximum, minimun
-    };
+
 
 public:
     /**
