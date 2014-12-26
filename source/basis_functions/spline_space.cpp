@@ -240,7 +240,6 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
             size += K;
 
             vector<Real> rep_knots(size);
-           // rep_knots.reserve(size);
 
             auto rep_it = rep_knots.begin() + m;
             auto m_it = mult.begin();

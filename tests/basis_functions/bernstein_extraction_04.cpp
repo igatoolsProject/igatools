@@ -43,14 +43,14 @@ int main()
         auto grid = CartesianGrid<dim>::create(4);
 
         auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable({ {{1,3}} }));
-        SplineSpace sp_spec(deg, grid, int_mult);
+        SplineSpace sp_spec(deg, grid, int_mult,  typename SplineSpace::EndBehaviourTable(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::end_knots)));
 
         CartesianProductArray<Real,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
         typename SplineSpace::BoundaryKnotsTable bdry_knots { {bn_x} };
         auto rep_knots = sp_spec.compute_knots_with_repetition(sp_spec.get_end_behaviour(), bdry_knots);
         auto acum_mult = sp_spec.accumulated_interior_multiplicities();
 
-
+        rep_knots.print_info(out);
         BernsteinExtraction<dim> operators(grid, rep_knots, acum_mult, deg);
         operators.print_info(out);
     }
