@@ -202,13 +202,22 @@ reset(const ValueFlags flag,
          */
         const auto &degree      = space_->get_degree();
         const auto &bezier_op   = space_->operators_;
+        const auto &end_interval = space_->end_interval_;
         const auto &points      = quad.get_points();
         const auto &lengths = this->lengths_;
 
         BasisValues bernstein_values(n_basis_.get_comp_map());
 
+
+
         for (int dir = 0 ; dir < dim ; ++dir)
         {
+        	const auto &pt_coords = points.get_data_direction(dir);
+        	vector<const vector<Real>*> point_vector(n_inter[dir]);
+        	for (int j = 0 ; j < n_inter[dir] ; ++j)
+        		point_vector[j] = &pt_coords;
+
+
             // fill values and derivatives of the Bernstein's polynomials at
             // quad points in [0,1]
             for (auto comp : bernstein_values.get_active_components_id())
@@ -222,6 +231,9 @@ reset(const ValueFlags flag,
             }
 
             const auto &inter_lengths = lengths.get_data_direction(dir);
+
+
+
             for (int j = 0 ; j < n_inter[dir] ; ++j)
             {
                 auto &splines1d = g_cache.entry(dir, j);

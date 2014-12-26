@@ -24,24 +24,17 @@ Interior multiplicities:
    [ 1 1 ]
 
 Dimensionality Table:
-   Raw componets: 
-      Size: [ 1 ]  Weights: [1]
-   [ [ 4 ] ]
-   Active componets ids: 
-   [ 0 ]
-   Inactive componets ids: 
-   [ ]
+   Component Dimension:
+      Raw componets: 
+         Size: [ 1 ]  Weights: [1]
+      [ 4 ]
+      Active componets ids: 
+      [ 0 ]
+      Inactive componets ids: 
+      [ ]
+   
+   Total Dimension: 4
 
-Component Dimension:
-   Raw componets: 
-      Size: [ 1 ]  Weights: [1]
-   [ 4 ]
-   Active componets ids: 
-   [ 0 ]
-   Inactive componets ids: 
-   [ ]
-
-Total Dimension: 4
 [ 0 ]
 [ 1 ]
 Knots without repetition:
@@ -71,24 +64,17 @@ Interior multiplicities:
    [ 1 1 ]
 
 Dimensionality Table:
-   Raw componets: 
-      Size: [ 2 ]  Weights: [2]
-   [ [ 4 ] [ 4 ] ]
-   Active componets ids: 
-   [ 0 1 ]
-   Inactive componets ids: 
-   [ ]
+   Component Dimension:
+      Raw componets: 
+         Size: [ 2 ]  Weights: [2]
+      [ 4 4 ]
+      Active componets ids: 
+      [ 0 1 ]
+      Inactive componets ids: 
+      [ ]
+   
+   Total Dimension: 8
 
-Component Dimension:
-   Raw componets: 
-      Size: [ 2 ]  Weights: [2]
-   [ 4 4 ]
-   Active componets ids: 
-   [ 0 1 ]
-   Inactive componets ids: 
-   [ ]
-
-Total Dimension: 8
 [ 0 ]
 [ 1 ]
 Knots without repetition:
@@ -124,24 +110,17 @@ Interior multiplicities:
    [ 1 1 ]
 
 Dimensionality Table:
-   Raw componets: 
-      Size: [ 2 ]  Weights: [2]
-   [ [ 6 6 ] [ 6 6 ] ]
-   Active componets ids: 
-   [ 0 1 ]
-   Inactive componets ids: 
-   [ ]
+   Component Dimension:
+      Raw componets: 
+         Size: [ 2 ]  Weights: [2]
+      [ 36 36 ]
+      Active componets ids: 
+      [ 0 1 ]
+      Inactive componets ids: 
+      [ ]
+   
+   Total Dimension: 72
 
-Component Dimension:
-   Raw componets: 
-      Size: [ 2 ]  Weights: [2]
-   [ 36 36 ]
-   Active componets ids: 
-   [ 0 1 ]
-   Inactive componets ids: 
-   [ ]
-
-Total Dimension: 72
 [ 0 ]
 [ 1 ]
 Knots without repetition:
@@ -177,21 +156,14 @@ Interior multiplicities:
    [ 1 1 ]
 
 Dimensionality Table:
-   Raw componets: 
-      Size: [ 2 ]  Weights: [2]
-   [ [ 5 5 ] [ 5 5 ] ]
-   Active componets ids: 
-   [ 0 1 ]
-   Inactive componets ids: 
-   [ ]
+   Component Dimension:
+      Raw componets: 
+         Size: [ 2 ]  Weights: [2]
+      [ 25 25 ]
+      Active componets ids: 
+      [ 0 1 ]
+      Inactive componets ids: 
+      [ ]
+   
+   Total Dimension: 50
 
-Component Dimension:
-   Raw componets: 
-      Size: [ 2 ]  Weights: [2]
-   [ 25 25 ]
-   Active componets ids: 
-   [ 0 1 ]
-   Inactive componets ids: 
-   [ ]
-
-Total Dimension: 50

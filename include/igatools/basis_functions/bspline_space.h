@@ -142,8 +142,9 @@ public:
     using typename BaseSpace::MultiplicityTable;
     using typename BaseSpace::KnotsTable;
     using typename BaseSpace::SpaceDimensionTable;
-    //using typename BaseSpace::EndBehaviour;
     using typename BaseSpace::EndBehaviourTable;
+
+    using BaseSpace::ComponentContainer;
 
 public:
     /**
@@ -368,6 +369,9 @@ private:
     /** @name Bezier extraction operator. */
     BernsteinExtraction<dim, range, rank> operators_;
 
+    /** If end knots are not in the repeated knot vector */
+    using EndIntervalTable = typename BaseSpace::template ComponentContainer<std::array<std::pair<Real, Real>, dim> >;
+    EndIntervalTable end_interval_;
 
     friend class BSplineElement<dim, range, rank>;
     friend class BSplineElementHandler<dim, range, rank>;

@@ -3,13 +3,16 @@ void space_cache_fill_elem(iga::ValueFlags, int, int) [with int dim = 1; int ran
 ========================================================================
 Flat id = 0    Tensor id = [0]
 Number of element basis: 
-   Raw componets: 
-      Size: [ 1 ]  Weights: [1]
-   [ [ 2 ] ]
-   Active componets ids: 
-   [ 0 ]
-   Inactive componets ids: 
-   [ ]
+   Component Dimension:
+      Raw componets: 
+         Size: [ 1 ]  Weights: [1]
+      [ 2 ]
+      Active componets ids: 
+      [ 0 ]
+      Inactive componets ids: 
+      [ ]
+   
+   Total Dimension: 2
 
 Fill flags:
      points     -->  fill = 0    filled = 0
@@ -163,13 +166,16 @@ void space_cache_fill_elem(iga::ValueFlags, int, int) [with int dim = 1; int ran
 ========================================================================
 Flat id = 0    Tensor id = [0]
 Number of element basis: 
-   Raw componets: 
-      Size: [ 1 ]  Weights: [1]
-   [ [ 2 ] ]
-   Active componets ids: 
-   [ 0 ]
-   Inactive componets ids: 
-   [ ]
+   Component Dimension:
+      Raw componets: 
+         Size: [ 1 ]  Weights: [1]
+      [ 2 ]
+      Active componets ids: 
+      [ 0 ]
+      Inactive componets ids: 
+      [ ]
+   
+   Total Dimension: 2
 
 Fill flags:
      points     -->  fill = 0    filled = 0
@@ -323,13 +329,16 @@ void space_cache_fill_elem(iga::ValueFlags, int, int) [with int dim = 1; int ran
 ========================================================================
 Flat id = 0    Tensor id = [0]
 Number of element basis: 
-   Raw componets: 
-      Size: [ 1 ]  Weights: [1]
-   [ [ 2 ] ]
-   Active componets ids: 
-   [ 0 ]
-   Inactive componets ids: 
-   [ ]
+   Component Dimension:
+      Raw componets: 
+         Size: [ 1 ]  Weights: [1]
+      [ 2 ]
+      Active componets ids: 
+      [ 0 ]
+      Inactive componets ids: 
+      [ ]
+   
+   Total Dimension: 2
 
 Fill flags:
      points     -->  fill = 0    filled = 0

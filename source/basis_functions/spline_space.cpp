@@ -263,7 +263,7 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
             	for (int i=0; i<m; ++i)
             	{
             		rep_knots[i] = a;
-            		rep_knots[K+i] = b;
+            		rep_knots[m+K+i] = b;
             	}
             }
             else

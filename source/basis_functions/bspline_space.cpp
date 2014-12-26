@@ -87,8 +87,24 @@ BSplineSpace(const DegreeTable &deg,
 							BaseSpace::get_end_behaviour()),
     operators_(knots,
                BaseSpace::compute_knots_with_repetition(this->get_end_behaviour()),
-               BaseSpace::accumulated_interior_multiplicities(), deg)
+               BaseSpace::accumulated_interior_multiplicities(), deg),
+    end_interval_(this->get_components_map())
 {
+	// TODO (pauletti, Dec 24, 2014): after it work it should be recoded properly
+	const auto rep_knots = BaseSpace::compute_knots_with_repetition(this->get_end_behaviour());
+	const auto &degt = this->get_degree();
+	for (auto i : end_interval_.get_active_components_id())
+		for (int dir=0; dir<dim; ++dir)
+		{
+			const auto p = degt[i][dir];
+			end_interval_[i][dir].first =
+					rep_knots[i].get_data_direction(dir)[p] -
+					knots->get_knot_coordinates().get_data_direction(dir)[1];
+			end_interval_[i][dir].second =
+					*(rep_knots[i].get_data_direction(dir).end() - (p+1)) -
+					*(knots->get_knot_coordinates().get_data_direction(dir).end()-2);
+		}
+
     // create a signal and a connection for the grid refinement
     this->connect_refinement_h_function(
         std::bind(&self_t::refine_h_after_grid_refinement, this,
@@ -126,9 +142,25 @@ BSplineSpace(const DegreeTable &deg,
 							BaseSpace::get_end_behaviour()),
     operators_(knots,
                BaseSpace::compute_knots_with_repetition(this->get_end_behaviour()),
-               BaseSpace::accumulated_interior_multiplicities(), deg)
+               BaseSpace::accumulated_interior_multiplicities(), deg),
+			   end_interval_(this->get_components_map())
 {
-    // create a signal and a connection for the grid refinement
+	// TODO (pauletti, Dec 24, 2014): after it work it should be recoded properly
+		const auto rep_knots = BaseSpace::compute_knots_with_repetition(this->get_end_behaviour());
+		const auto &degt = this->get_degree();
+		for (auto i : end_interval_.get_active_components_id())
+			for (int dir=0; dir<dim; ++dir)
+			{
+				const auto p = degt[i][dir];
+				end_interval_[i][dir].first =
+						knots->get_knot_coordinates().get_data_direction(dir)[1] -
+						rep_knots[i].get_data_direction(dir)[p];
+				end_interval_[i][dir].second =
+						*(rep_knots[i].get_data_direction(dir).end() - (p+1)) -
+						*(knots->get_knot_coordinates().get_data_direction(dir).end()-2);
+			}
+
+	// create a signal and a connection for the grid refinement
     this->connect_refinement_h_function(
         std::bind(&self_t::refine_h_after_grid_refinement, this,
                   std::placeholders::_1,std::placeholders::_2));

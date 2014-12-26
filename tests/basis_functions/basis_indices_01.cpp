@@ -46,13 +46,14 @@ int main()
 
         CartesianProductArray<Real,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
         typename SplineSpace::BoundaryKnotsTable bdry_knots { {bn_x} };
-        auto rep_knots = sp_spec.compute_knots_with_repetition(bdry_knots);
+        typename SplineSpace::EndBehaviourTable end_b(typename SplineSpace::EndBehaviourTable(filled_array<EndBehaviour,dim>(EndBehaviour::interpolatory)));
+        auto rep_knots = sp_spec.compute_knots_with_repetition(end_b,bdry_knots);
         auto acum_mult = sp_spec.accumulated_interior_multiplicities();
 
         auto n_basis = sp_spec.get_num_basis_table();
         auto degree = sp_spec.get_degree();
 
-        DofDistribution<dim> basis_index(grid, acum_mult, n_basis, degree);
+        DofDistribution<dim> basis_index(grid, acum_mult, n_basis, degree, end_b);
         basis_index.print_info(out);
     }
 
@@ -73,7 +74,7 @@ int main()
         auto n_basis = sp_spec.get_num_basis_table();
         auto degree = sp_spec.get_degree();
 
-        DofDistribution<dim> basis_index(grid, acum_mult, n_basis, degree);
+        DofDistribution<dim> basis_index(grid, acum_mult, n_basis, degree, sp_spec.get_end_behaviour());
         basis_index.print_info(out);
     }
 

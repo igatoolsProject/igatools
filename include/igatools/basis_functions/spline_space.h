@@ -44,6 +44,7 @@ enum class EndBehaviour
 
 	end_knots
 };
+
 /**
  * @brief Tensor product spline space
  *
@@ -163,6 +164,7 @@ public:
         		auto size = (*this)[comp].flat_size();
         		comp_dimension[comp] = size;
         	}
+        	total_dimension_ = 0;
         	for (auto size : comp_dimension)
         		total_dimension_ += size;
         }
