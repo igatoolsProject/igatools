@@ -47,7 +47,7 @@ void plot_basis(const int deg)
 
     const int n_knots = 6;//deg + 2;
     auto grid  = CartesianGrid<dim>::create(n_knots);
-    auto space = Space::create(degt, grid, EndBehaviour::periodic);
+    auto space = Space::create(degt, grid, BasisEndBehaviour::periodic);
 
 
     const int n_basis = space->get_num_basis();

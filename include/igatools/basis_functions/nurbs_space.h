@@ -145,7 +145,6 @@ public:
 
 
     using EndBehaviourTable = typename SpSpace::EndBehaviourTable;
-    using InteriorReg= typename SpSpace::InteriorReg;
     using SpaceDimensionTable = typename SpSpace::SpaceDimensionTable;
 
     using WeightSpace = BSplineSpace<dim_,1,1>;

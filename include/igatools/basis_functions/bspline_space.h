@@ -136,8 +136,6 @@ public:
     using ElementIterator = CartesianGridIterator<ElementAccessor>;
 
 
-    using typename BaseSpace::InteriorReg;
-
     using typename BaseSpace::DegreeTable;
     using typename BaseSpace::MultiplicityTable;
     using typename BaseSpace::KnotsTable;
@@ -176,7 +174,7 @@ public:
     static std::shared_ptr<self_t>
     create(const DegreeTable &degree,
            std::shared_ptr<GridType> knots,
-		   const EndBehaviour end_b = EndBehaviour::interpolatory,
+		   const BasisEndBehaviour end_b = BasisEndBehaviour::interpolatory,
            const bool homogeneous_range = false);
 
     /**
@@ -221,7 +219,7 @@ protected:
      */
     explicit BSplineSpace(const DegreeTable &degree,
                           std::shared_ptr<GridType> knots,
-						  const EndBehaviour end_b = EndBehaviour::interpolatory,
+						  const BasisEndBehaviour end_b = BasisEndBehaviour::interpolatory,
                           const bool homogeneous_range = false);
 
     /**

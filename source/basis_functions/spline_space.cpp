@@ -55,7 +55,7 @@ SplineSpace(const DegreeTable &deg,
 //
 //    end_behaviour_ = EndBehaviourTable(comp_map);
 //    for (const auto &comp : end_behaviour_.get_active_components_id())
-//        end_behaviour_[comp] = filled_array<EndBehaviour,dim>(EndBehaviour::interpolatory);
+//        end_behaviour_[comp] = filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::interpolatory);
 //    //-------------------
 
 
@@ -101,7 +101,7 @@ init()
             const auto deg = deg_[iComp][j];
             const auto &mult = (*interior_mult_)[iComp].get_data_direction(j);
 
-            Index size = (end_behaviour_[iComp][j] == EndBehaviour::periodic) ? 0 : deg + 1;
+            Index size = (end_behaviour_[iComp][j] == BasisEndBehaviour::periodic) ? 0 : deg + 1;
 
             for (auto &n: mult)
                 size += n;
@@ -231,8 +231,6 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
             const auto order = deg + 1;
             const auto &knots = this->get_grid()->get_knot_coordinates(j);
             const auto &mult  = (*interior_mult_)[iComp].get_data_direction(j);
-            const auto &left_knts = boundary_knots[iComp][j].get_data_direction(0);
-            const auto &right_knts = boundary_knots[iComp][j].get_data_direction(1);
 
             int size = 2 * order;
             const int m = order;
@@ -254,8 +252,10 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
                     *rep_it = *k_it;
             }
 
-            if (ends[iComp][j] == EndBehaviour::interpolatory)
-
+            const auto& endb = ends[iComp][j];
+            switch (endb)
+            {
+            case BasisEndBehaviour::interpolatory:
             {
             	const Real a = knots.front();
             	const Real b = knots.back();
@@ -266,19 +266,30 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
             		rep_knots[m+K+i] = b;
             	}
             }
-            else
+            break;
+            case BasisEndBehaviour::periodic:
             {
-            	if (ends[iComp][j] == EndBehaviour::periodic)
+            	const Real a = knots.front();
+            	const Real b = knots.back();
+            	const Real L = b-a;
+            	for (int i=0; i<m; ++i)
             	{
-            		const Real a = knots.front();
-            		const Real b = knots.back();
-            		const Real L = b-a;
-            		for (int i=0; i<m; ++i)
-            		{
-            			rep_knots[i] = rep_knots[K+i] - L;
-            			rep_knots[K+m+i] = rep_knots[m+i] + L;
-            		}
+            		rep_knots[i] = rep_knots[K+i] - L;
+            		rep_knots[K+m+i] = rep_knots[m+i] + L;
             	}
+            }
+            break;
+            case BasisEndBehaviour::end_knots:
+            {
+            	const auto &left_knts = boundary_knots[iComp][j].get_data_direction(0);
+            	const auto &right_knts = boundary_knots[iComp][j].get_data_direction(1);
+
+            	for (int i=0; i<m; ++i)
+            	{
+            		rep_knots[i]     = left_knts[i];
+            		rep_knots[K+m+i] = right_knts[i];
+            	}
+            }
             }
 
             result[iComp].copy_data_direction(j,rep_knots);
@@ -293,18 +304,18 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
 template<int dim, int range, int rank>
 auto
 SplineSpace<dim, range, rank>::
-compute_knots_with_repetition(const EndBehaviour &ends) const -> KnotsTable
+compute_knots_with_repetition(const BasisEndBehaviour &ends) const -> KnotsTable
 {
     BoundaryKnotsTable bdry_knots_table(deg_.get_comp_map());
     for (int iComp : bdry_knots_table.get_active_components_id())
     {
         for (int j = 0; j < dim; ++j)
         {
-            if (ends[iComp][j] == EndBehaviour::interpolatory)
+            if (ends[iComp][j] == BasisEndBehaviour::interpolatory)
                 bdry_knots_table[iComp][j] = interpolatory_end_knots(iComp,j);
             else
             {
-            	if (ends[iComp][j] == EndBehaviour::periodic)
+            	if (ends[iComp][j] == BasisEndBehaviour::periodic)
             	{
             		 bdry_knots_table[iComp][j] = periodic_end_knots(iComp,j);
             	}

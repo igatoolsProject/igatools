@@ -46,7 +46,7 @@ int main()
 
         CartesianProductArray<Real,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
         typename SplineSpace::BoundaryKnotsTable bdry_knots { {bn_x} };
-        typename SplineSpace::EndBehaviourTable end_b(typename SplineSpace::EndBehaviourTable(filled_array<EndBehaviour,dim>(EndBehaviour::interpolatory)));
+        typename SplineSpace::EndBehaviourTable end_b(typename SplineSpace::EndBehaviourTable(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::interpolatory)));
         auto rep_knots = sp_spec.compute_knots_with_repetition(end_b,bdry_knots);
         auto acum_mult = sp_spec.accumulated_interior_multiplicities();
 
@@ -65,7 +65,7 @@ int main()
 
         auto grid = CartesianGrid<dim>::create({4,3});
 
-        SplineSpace sp_spec(deg,grid, SplineSpace::InteriorReg::maximum);
+        SplineSpace sp_spec(deg, grid, InteriorReg::maximum);
 
 
         auto rep_knots = sp_spec.compute_knots_with_repetition(sp_spec.get_end_behaviour());

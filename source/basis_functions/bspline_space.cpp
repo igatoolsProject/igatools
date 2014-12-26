@@ -55,7 +55,7 @@ template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(const TensorIndex<dim> &degree, shared_ptr<GridType> knots)
     :
-    BSplineSpace(DegreeTable(degree), knots, EndBehaviour::interpolatory, true)
+    BSplineSpace(DegreeTable(degree), knots, BasisEndBehaviour::interpolatory, true)
 {}
 
 
@@ -75,10 +75,10 @@ template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(const DegreeTable &deg,
              std::shared_ptr<GridType> knots,
-			  const EndBehaviour end_b,
+			  const BasisEndBehaviour end_b,
 			  const bool homogeneous_range)
     :
-    BaseSpace(deg, knots, BaseSpace::InteriorReg::maximum, end_b),
+    BaseSpace(deg, knots, InteriorReg::maximum, end_b),
     dof_distribution_global_(knots,BaseSpace::accumulated_interior_multiplicities(),
                              BaseSpace::get_num_basis_table(),BaseSpace::get_degree(),
 							 BaseSpace::get_end_behaviour()),
@@ -118,7 +118,7 @@ auto
 BSplineSpace<dim_, range_, rank_>::
 create(const DegreeTable &deg,
        std::shared_ptr<GridType> knots,
-	   const EndBehaviour end_b,
+	   const BasisEndBehaviour end_b,
        const bool homogeneous_range) -> shared_ptr<self_t>
 {
     return shared_ptr<self_t>(new self_t(deg, knots, end_b, homogeneous_range));

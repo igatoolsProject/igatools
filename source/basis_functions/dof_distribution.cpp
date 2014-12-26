@@ -47,7 +47,7 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
 		for (int dir = 0 ; dir < dim ; ++dir)
 		{
 			aux[comp][dir] = n_basis1[comp][dir];
-			if (end_b[comp][dir] == EndBehaviour::periodic)
+			if (end_b[comp][dir] == BasisEndBehaviour::periodic)
 				aux[comp][dir] += degree_table[comp][dir] + 1;
 		}
 	SpaceDimensionTable n_basis(aux);

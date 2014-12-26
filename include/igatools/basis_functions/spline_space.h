@@ -33,16 +33,25 @@
 
 IGA_NAMESPACE_OPEN
 
-enum class EndBehaviour
+enum class BasisEndBehaviour
 {
 	/**
 	 * Interpolatory basis functions at knots bounday (i.e. open knot vector).
 	 */
 	interpolatory,
 
-	periodic,
+	end_knots,
 
-	end_knots
+	periodic
+};
+
+// For the interior multiplicities
+// maximum regularity
+// minimul regularity discontinous
+enum class InteriorReg
+{
+	maximum,
+	minimun
 };
 
 /**
@@ -95,15 +104,16 @@ public:
     using BoundaryKnots = std::array<CartesianProductArray<Real,2>, dim>;
     using Degrees  = TensorIndex<dim>;
     using Multiplicity = CartesianProductArray<Size, dim>;
+    using Periodicity = std::array<bool, dim>;
 
     using DegreeTable = ComponentContainer<Degrees>;
     using MultiplicityTable = ComponentContainer<Multiplicity>;
     using BoundaryKnotsTable = ComponentContainer<BoundaryKnots>;
     using KnotsTable = ComponentContainer<KnotCoordinates>;
-    //using PeriodicTable = ComponentContainer<std::array<bool, dim> >;
+    using PeriodicTable = ComponentContainer<Periodicity>;
 
     using IndexSpaceTable = ComponentContainer<DynamicMultiArray<Index,dim>>;
-    using IndexSpaceMarkTable = Multiplicity;
+    //using IndexSpaceMarkTable = Multiplicity;
 
     /**
      * Type alias for the boundary conditions on each face of each scalar component of the space.
@@ -174,15 +184,9 @@ public:
     };
 
 
-    using EndBehaviourTable = ComponentContainer<std::array<EndBehaviour, dim> >;
+    using EndBehaviourTable = ComponentContainer<std::array<BasisEndBehaviour, dim> >;
 
-    // For the interior multiplicities
-    // maximum regularity
-    // minimul regularity discontinous
-    enum class InteriorReg
-    {
-        maximum, minimun
-    };
+
 
 public:
     /**
@@ -191,21 +195,22 @@ public:
     explicit SplineSpace(const DegreeTable &deg,
                          std::shared_ptr<GridType> knots,
                          std::shared_ptr<const MultiplicityTable> interior_mult,
-						 const EndBehaviourTable &end_behaviour = EndBehaviourTable(filled_array<EndBehaviour,dim>(EndBehaviour::interpolatory)));
+						 const EndBehaviourTable &end_behaviour =
+								 EndBehaviourTable(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::interpolatory)));
 
     explicit SplineSpace(const DegreeTable &deg,
     		std::shared_ptr<GridType> knots,
 			const InteriorReg &interior_mult,
-			const EndBehaviour &eb)
+			const BasisEndBehaviour &eb)
     :SplineSpace(deg, knots,interior_mult,
-    		EndBehaviourTable(filled_array<EndBehaviour,dim>(eb)))
+    		EndBehaviourTable(filled_array<BasisEndBehaviour,dim>(eb)))
     {}
 
 
     explicit SplineSpace(const DegreeTable &deg,
                          std::shared_ptr<GridType> knots,
                          const InteriorReg &interior_mult,
-                         const EndBehaviourTable &ebt = EndBehaviourTable(filled_array<EndBehaviour,dim>(EndBehaviour::interpolatory)))
+                         const EndBehaviourTable &ebt = EndBehaviourTable(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::interpolatory)))
         :SplineSpace(deg, knots, fill_max_regularity(deg, knots), ebt)
     {}
 
