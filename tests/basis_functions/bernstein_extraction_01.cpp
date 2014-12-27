@@ -39,7 +39,7 @@ test()
 
 	auto grid = CartesianGrid<dim>::create(4);
 
-	auto int_mult = SplineSpace::multiplicity_regulcarity(InteriorReg::maximum,
+	auto int_mult = SplineSpace::multiplicity_regularity(InteriorReg::maximum,
 	    		deg, grid->get_num_intervals());
 	SplineSpace sp_spec(deg, grid, int_mult);
 

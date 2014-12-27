@@ -53,7 +53,8 @@ void test1()
 	auto n_basis = sp_spec.get_num_basis_table();
 	auto degree = sp_spec.get_degree();
 
-	DofDistribution<dim> dof_admin(grid, acum_mult, n_basis, degree, end_b);
+	DofDistribution<dim> dof_admin(grid, acum_mult, n_basis, degree
+			, sp_spec.get_periodic_table());
 	dof_admin.print_info(out);
 }
 
@@ -78,7 +79,7 @@ void test2()
 	auto n_basis = sp_spec.get_num_basis_table();
 	auto degree = sp_spec.get_degree();
 
-	DofDistribution<dim> basis_index(grid, acum_mult, n_basis, degree, end_b);
+	DofDistribution<dim> basis_index(grid, acum_mult, n_basis, degree, sp_spec.get_periodic_table());
 	basis_index.print_info(out);
 }
 
