@@ -51,14 +51,12 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
     auto cache = ElementHandler::create(space);
     cache->reset(flag, quad);
 
-    const auto topology = Int<k>();
-
     auto elem = space->begin();
-    cache->init_cache(elem,topology);
+    cache->template init_cache<k>(elem);
 
     for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
     {
-        cache->fill_cache(elem,topology, s_id);
+        cache->template fill_cache<k>(elem,s_id);
 
         out << "Sub Element: " << s_id << endl;
         auto values    = elem->template get_values<0,k>(s_id);

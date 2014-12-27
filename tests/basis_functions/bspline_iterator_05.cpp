@@ -49,22 +49,20 @@ void sub_elem_values(const int n_knots, const int deg)
     cache->reset(flag, quad);
     auto elem = space->begin();
     auto end =  space->end();
-    const auto topology_k = Int<k>();
-    const auto topology_dim = Int<dim>();
-    cache->init_cache(elem,topology_k);
-    cache->init_cache(elem,topology_dim);
+    cache->template init_cache<k>(elem);
+    cache->template init_cache<dim>(elem);
     for (; elem != end; ++elem)
     {
         if (elem->is_boundary())
         {
-            cache->fill_cache(elem, topology_dim, 0);
+            cache->template fill_cache<dim>(elem, 0);
             out << "Element" << elem->get_flat_index() << endl;
             elem->template get_values<0,dim>(0).print_info(out);
             for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
             {
                 if (elem->is_boundary(s_id))
                 {
-                    cache->fill_cache(elem, topology_k, s_id);
+                    cache->template fill_cache<k>(elem, s_id);
                     out << "Sub Element: " << s_id << endl;
                     out.begin_item("Values basis functions:");
                     auto values = elem->template get_values<0,k>(s_id);

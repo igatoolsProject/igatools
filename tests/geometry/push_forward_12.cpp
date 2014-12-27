@@ -88,12 +88,11 @@ void test()
 
     pf.template init_cache<dim>(*elem);
 
-    const auto topology = Int<dim>();
-    sp_values->init_cache(sp_elem,topology);
+    sp_values->template init_cache<dim>(sp_elem);
 
     for (; elem != end; ++elem, ++sp_elem)
     {
-        sp_values->fill_cache(sp_elem, topology, 0);
+        sp_values->template fill_cache<dim>(sp_elem, 0);
         pf.template fill_cache<dim>(*elem, 0);
 
         const auto &ref_values = sp_elem->template get_values<0,dim>(0);

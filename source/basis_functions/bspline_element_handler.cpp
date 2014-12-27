@@ -319,7 +319,7 @@ operator()(const T &quad)
     auto &cache = elem_->get_local_cache();
     if (cache == nullptr)
     {
-        using Cache = typename ElementAccessor::LocalCache;
+        using Cache = typename BSplineElement<dim_,range_,rank_>::LocalCache;
         cache = shared_ptr<Cache>(new Cache);
     }
 

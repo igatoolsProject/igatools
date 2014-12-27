@@ -134,8 +134,7 @@ init_cache(ElementAccessor &elem)
 {
     auto &ref_elem = elem.get_ref_space_accessor();
 
-    const auto topology = Int<k>();
-    ref_space_handler_->init_cache(ref_elem,topology);
+    ref_space_handler_->template init_cache<k>(ref_elem);
     PFCache::template init_cache<k>(elem);
 
     auto &cache = elem.PhysSpace::ElementAccessor::parent_t::local_cache_;
@@ -166,9 +165,9 @@ SpaceElementHandler<PhysSpace>::
 fill_cache(ElementAccessor &elem, const int j)
 {
     auto &ref_elem = elem.get_ref_space_accessor();
-    const auto topology = Int<k>();
+//    const auto topology = Int<k>();
 
-    ref_space_handler_->fill_cache(ref_elem, topology, j);
+    ref_space_handler_->template fill_cache<k>(ref_elem, j);
     PFCache::template fill_cache<k>(elem, j);
 
     auto &local_cache = elem.PhysSpace::ElementAccessor::parent_t::local_cache_;

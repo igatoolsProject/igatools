@@ -98,25 +98,24 @@ public:
     template<int k>
     void reset(const ValueFlags flag, const Quadrature<k> &quad);
 
-//protected:
-    template <int k>
-    void fill_cache(ElementAccessor &elem, const int j);
-
     template <int k>
     void init_cache(ElementAccessor &elem);
-
-public:
-    template <int k>
-    void fill_cache(ElementIterator &elem, const int j)
-    {
-        fill_cache<k>(*elem, j);
-    }
 
     template <int k>
     void init_cache(ElementIterator &elem)
     {
         init_cache<k>(*elem);
     }
+
+    template <int k>
+    void fill_cache(ElementAccessor &elem, const int j);
+
+    template <int k>
+    void fill_cache(ElementIterator &elem, const int j)
+    {
+        fill_cache<k>(*elem, j);
+    }
+
 
     std::shared_ptr<const CartesianGrid<dim_> > get_grid() const
     {

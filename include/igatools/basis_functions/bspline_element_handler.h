@@ -39,15 +39,11 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_, int range_ = 1, int rank_ = 1>
 class ReferenceElementHandler
-//      : protected GridElementHandler<dim_>
 {
 public:
-//    using base_t = GridElementHandler<dim_>;
     using Space = ReferenceSpace<dim_,range_,rank_>;
     using ElementIterator = typename Space::ElementIterator;
     using ElementAccessor = typename Space::ElementAccessor;
-
-//    using base_t::get_num_points;
 
     static const int l = iga::max(0, dim_-num_sub_elem);
     using v1 = typename seq<Quadrature, l, dim_>::type;
@@ -56,10 +52,8 @@ public:
     using v2 = typename seq<Int, l, dim_>::type;
     using topology_variant = typename boost::make_variant_over<v2>::type;
 
-    //Allocates and fill the (global) cache
     ReferenceElementHandler(std::shared_ptr<const Space> space)
         :
-//        base_t(space->get_grid()),
         grid_handler_(space->get_grid()),
         space_(space)
     {
@@ -73,25 +67,15 @@ public:
 
     virtual void reset(const ValueFlags &flag, const quadrature_variant &quad) = 0;
 
-
+protected:
     virtual void init_cache(ElementAccessor &elem, const topology_variant &topology) = 0;
 
-    void init_cache(ElementIterator &elem, const topology_variant &topology)
-    {
-        init_cache(*elem,topology);
-    }
 
-    //Allocates the ElementIterator element_cache
-    void init_element_cache(ElementIterator &elem)
-    {
-        init_cache(*elem,Int<dim_>());
-    }
-
+public:
     template <int k>
     void init_cache(ElementAccessor &elem)
     {
-    	const auto topology = Int<k>();
-    	this->init_cache(elem,topology);
+    	this->init_cache(elem,Int<k>());
     }
 
     template <int k>
@@ -100,31 +84,30 @@ public:
     	this->template init_cache<k>(*elem);
     }
 
+    void init_element_cache(ElementIterator &elem)
+    {
+        this->template init_cache<dim_>(*elem);
+    }
 
+protected:
     virtual void fill_cache(ElementAccessor &elem, const topology_variant &topology, const int j) = 0;
 
-    void fill_cache(ElementIterator &elem, const topology_variant &topology, const int j)
-    {
-        fill_cache(*elem,topology,j);
-    }
-
-    //Fill the ElementIterator element_cache
-    void fill_element_cache(ElementIterator &elem)
-    {
-        fill_cache(*elem,Int<dim_>(),0);
-    }
-
+public:
     template<int k>
     void fill_cache(ElementAccessor &elem, const int j)
     {
-    	const auto topology = Int<k>();
-    	this->fill_cache(elem,topology,j);
+    	this->fill_cache(elem,Int<k>(),j);
     }
 
     template<int k>
     void fill_cache(ElementIterator &elem, const int j)
     {
     	this->template fill_cache<k>(*elem,j);
+    }
+
+    void fill_element_cache(ElementIterator &elem)
+    {
+        this->template fill_cache<dim_>(*elem,0);
     }
 
 
@@ -146,6 +129,11 @@ private:
     std::shared_ptr<const Space> space_;
 
 public:
+    const GridElementHandler<dim_> &get_grid_handler() const
+    {
+        return this->grid_handler_;
+    }
+
     std::shared_ptr<const Space> get_space() const
     {
         Assert(space_ != nullptr,ExcNullPtr());
@@ -190,8 +178,8 @@ protected:
     using RefElementIterator = typename BaseSpace::ElementIterator;
     using RefElementAccessor = typename BaseSpace::ElementAccessor;
 
-    using ElementIterator = typename Space::ElementIterator;
-    using ElementAccessor = typename Space::ElementAccessor;
+//    using ElementIterator = typename Space::ElementIterator;
+//    using ElementAccessor = typename Space::ElementAccessor;
 
 
 
@@ -217,46 +205,37 @@ public:
 
     virtual void init_cache(RefElementAccessor &elem, const topology_variant &topology) override final;
 
-    void init_cache(ElementIterator &elem, const topology_variant &topology)
+    template <int k>
+    void init_cache(RefElementAccessor &elem)
     {
-        init_cache(*elem,topology);
+    	this->init_cache(elem,Int<k>());
     }
 
-    //Allocates the ElementIterator element_cache
-    void init_element_cache(ElementIterator &elem)
+    template <int k>
+    void init_cache(RefElementIterator &elem)
     {
-        init_cache(*elem,Int<dim_>());
+    	this->template init_cache<k>(*elem);
     }
 
 
     virtual void fill_cache(RefElementAccessor &elem, const topology_variant &topology, const int j) override final;
 
-
-    void fill_cache(ElementIterator &elem, const topology_variant &topology, const int j)
+    template<int k>
+    void fill_cache(RefElementAccessor &elem, const int j)
     {
-        fill_cache(*elem,topology,j);
+    	this->fill_cache(elem,Int<k>(),j);
     }
 
-    //Fill the ElementIterator element_cache
-    void fill_element_cache(ElementIterator &elem)
+    template<int k>
+    void fill_cache(RefElementIterator &elem, const int j)
     {
-        fill_cache(*elem,Int<dim_>(),0);
+    	this->template fill_cache<k>(*elem,j);
     }
-
-public:
 
     virtual void print_info(LogStream &out) const override final ;
 
-    const GridElementHandler<dim_> &get_grid_handler() const
-    {
-        return this->grid_handler_;
-    }
 
 private:
-//    std::shared_ptr<const Space> space_;
-
-//    ComponentContainer<Size> comp_offset_;
-
     std::array<FunctionFlags, dim + 1> flags_;
 
     template <class T>
