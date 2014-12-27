@@ -48,13 +48,11 @@ SplineSpace(const DegreeTable &deg,
             shared_ptr<const MultiplicityTable> interior_mult,
             const EndBehaviourTable &end_behaviour)
     :
-	grid_(knots),
+	GridWrapper<CartesianGrid<dim> >(knots),
     interior_mult_(interior_mult),
     deg_(deg),
     end_behaviour_(end_behaviour)
 {
-	Assert(grid_ != nullptr,ExcNullPtr());
-
 //    //-------------------
 //    const auto comp_map = interior_mult_->get_comp_map();
 //
@@ -67,14 +65,11 @@ SplineSpace(const DegreeTable &deg,
     this->init();
 
 
-    //TODO (MM, Dec 27, 2014): fix the refinement for the SplineSpace
     // create a signal and a connection for the grid refinement
-#if 0
     this->connect_refinement_h_function(
         std::bind(&SplineSpace<dim,range,rank>::refine_h_after_grid_refinement, this,
                   std::placeholders::_1,std::placeholders::_2));
 
-#endif
 }
 
 template<int dim, int range, int rank>

@@ -24,12 +24,10 @@
 #include <igatools/base/config.h>
 #include <igatools/utils/static_multi_array.h>
 #include <igatools/utils/dynamic_multi_array.h>
-//#include <igatools/geometry/cartesian_grid.h>
+#include <igatools/geometry/grid_wrapper.h>
 #include <igatools/base/function.h>
 #include <igatools/base/function_element.h>
 
-
-//#include <igatools/basis_functions/reference_space.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -75,7 +73,7 @@ enum class EndBehaviour
  *
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
-class SplineSpace
+class SplineSpace : public GridWrapper<CartesianGrid<dim_> >
 {
 public:
     /**
@@ -495,8 +493,6 @@ private:
 
 private:
 
-    std::shared_ptr<const CartesianGrid<dim_> > grid_;
-
     std::shared_ptr<const MultiplicityTable> interior_mult_;
 
     DegreeTable deg_;
@@ -512,11 +508,6 @@ private:
     BCTable boundary_conditions_table_;
 
 public:
-
-    std::shared_ptr<const CartesianGrid<dim_> > get_grid() const
-	{
-    	return grid_;
-	}
 
     /** Returns the multiplicity of the internal knots that defines the space. */
     std::shared_ptr<const MultiplicityTable> get_interior_mult() const
