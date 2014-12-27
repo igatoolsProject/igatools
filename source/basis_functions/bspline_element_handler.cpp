@@ -212,10 +212,10 @@ reset(const ValueFlags flag,
 
         for (int dir = 0 ; dir < dim ; ++dir)
         {
-        	const auto &pt_coords = points.get_data_direction(dir);
-        	vector<const vector<Real>*> point_vector(n_inter[dir]);
-        	for (int j = 0 ; j < n_inter[dir] ; ++j)
-        		point_vector[j] = &pt_coords;
+            const auto &pt_coords = points.get_data_direction(dir);
+            vector<const vector<Real>*> point_vector(n_inter[dir]);
+            for (int j = 0 ; j < n_inter[dir] ; ++j)
+                point_vector[j] = &pt_coords;
 
 
             // fill values and derivatives of the Bernstein's polynomials at

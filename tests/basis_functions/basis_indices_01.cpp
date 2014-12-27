@@ -33,54 +33,54 @@
 template <int dim>
 void test1()
 {
-	using SplineSpace = SplineSpace<dim>;
-	using MultiplicityTable = typename SplineSpace::MultiplicityTable;
+    using SplineSpace = SplineSpace<dim>;
+    using MultiplicityTable = typename SplineSpace::MultiplicityTable;
 
-	typename SplineSpace::DegreeTable deg {{2}};
+    typename SplineSpace::DegreeTable deg {{2}};
 
-	auto grid = CartesianGrid<dim>::create(4);
+    auto grid = CartesianGrid<dim>::create(4);
 
-	auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable({ {{1,3}} }));
-	SplineSpace sp_spec(deg, grid, int_mult);
+    auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable({ {{1,3}} }));
+    SplineSpace sp_spec(deg, grid, int_mult);
 
-	CartesianProductArray<Real,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
-	typename SplineSpace::BoundaryKnotsTable bdry_knots { {bn_x} };
-	typename SplineSpace::EndBehaviourTable end_b(typename SplineSpace::EndBehaviourTable(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::end_knots)));
+    CartesianProductArray<Real,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
+    typename SplineSpace::BoundaryKnotsTable bdry_knots { {bn_x} };
+    typename SplineSpace::EndBehaviourTable end_b(typename SplineSpace::EndBehaviourTable(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::end_knots)));
 
-	auto rep_knots = sp_spec.compute_knots_with_repetition(end_b,bdry_knots);
-	auto acum_mult = sp_spec.accumulated_interior_multiplicities();
+    auto rep_knots = sp_spec.compute_knots_with_repetition(end_b,bdry_knots);
+    auto acum_mult = sp_spec.accumulated_interior_multiplicities();
 
-	auto n_basis = sp_spec.get_num_basis_table();
-	auto degree = sp_spec.get_degree();
+    auto n_basis = sp_spec.get_num_basis_table();
+    auto degree = sp_spec.get_degree();
 
-	DofDistribution<dim> dof_admin(grid, acum_mult, n_basis, degree
-			, sp_spec.get_periodic_table());
-	dof_admin.print_info(out);
+    DofDistribution<dim> dof_admin(grid, acum_mult, n_basis, degree
+                                   , sp_spec.get_periodic_table());
+    dof_admin.print_info(out);
 }
 
 template <int dim>
 void test2()
 {
-	using SplineSpace = SplineSpace<dim>;
+    using SplineSpace = SplineSpace<dim>;
 
-	typename SplineSpace::DegreeTable deg {{1,2}};
+    typename SplineSpace::DegreeTable deg {{1,2}};
 
-	auto grid = CartesianGrid<dim>::create({4,3});
-	auto int_mult = SplineSpace::multiplicity_regularity(InteriorReg::maximum,
-	    		deg, grid->get_num_intervals());
-	SplineSpace sp_spec(deg, grid, int_mult);
+    auto grid = CartesianGrid<dim>::create({4,3});
+    auto int_mult = SplineSpace::multiplicity_regularity(InteriorReg::maximum,
+                                                         deg, grid->get_num_intervals());
+    SplineSpace sp_spec(deg, grid, int_mult);
 
-	typename SplineSpace::EndBehaviourTable end_b(typename SplineSpace::EndBehaviourTable(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::interpolatory)));
+    typename SplineSpace::EndBehaviourTable end_b(typename SplineSpace::EndBehaviourTable(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::interpolatory)));
 
-	auto rep_knots = sp_spec.compute_knots_with_repetition(end_b);
+    auto rep_knots = sp_spec.compute_knots_with_repetition(end_b);
 
-	auto acum_mult = sp_spec.accumulated_interior_multiplicities();
+    auto acum_mult = sp_spec.accumulated_interior_multiplicities();
 
-	auto n_basis = sp_spec.get_num_basis_table();
-	auto degree = sp_spec.get_degree();
+    auto n_basis = sp_spec.get_num_basis_table();
+    auto degree = sp_spec.get_degree();
 
-	DofDistribution<dim> basis_index(grid, acum_mult, n_basis, degree, sp_spec.get_periodic_table());
-	basis_index.print_info(out);
+    DofDistribution<dim> basis_index(grid, acum_mult, n_basis, degree, sp_spec.get_periodic_table());
+    basis_index.print_info(out);
 }
 
 int main()

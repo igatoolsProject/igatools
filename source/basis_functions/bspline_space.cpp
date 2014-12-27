@@ -34,14 +34,14 @@ IGA_NAMESPACE_OPEN
 template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(const int degree,
-		shared_ptr<GridType> grid,
-		const InteriorReg interior_reg,
-		const bool periodic,
-		const BasisEndBehaviour endb)
-		:
+             shared_ptr<GridType> grid,
+             const InteriorReg interior_reg,
+             const bool periodic,
+             const BasisEndBehaviour endb)
+    :
     BSplineSpace(Degrees(degree), grid, interior_reg,
-    		Periodicity(filled_array<bool, dim>(periodic)),
-    		EndBehaviour(filled_array<BasisEndBehaviour, dim>(endb)))
+                 Periodicity(filled_array<bool, dim>(periodic)),
+                 EndBehaviour(filled_array<BasisEndBehaviour, dim>(endb)))
 {}
 
 
@@ -50,10 +50,10 @@ template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
 create(const int degree,
-		shared_ptr<GridType> grid,
-		const InteriorReg interior_reg,
-		const bool periodic,
-		const BasisEndBehaviour endb) -> shared_ptr<self_t>
+       shared_ptr<GridType> grid,
+       const InteriorReg interior_reg,
+       const bool periodic,
+       const BasisEndBehaviour endb) -> shared_ptr<self_t>
 {
     return shared_ptr<self_t>(new self_t(degree, grid, interior_reg, periodic, endb));
 }
@@ -64,16 +64,16 @@ template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(const Degrees &deg,
              std::shared_ptr<GridType> knots,
-			 const InteriorReg interior_reg,
-			 const Periodicity &periodic,
-			 const EndBehaviour &end_b)
+             const InteriorReg interior_reg,
+             const Periodicity &periodic,
+             const EndBehaviour &end_b)
     :
     BSplineSpace(DegreeTable(true, deg),
-			     knots,
-				 BaseSpace::multiplicity_regularity(interior_reg, DegreeTable(true, deg),
-				    				knots->get_num_intervals()),
-				 PeriodicTable(true, periodic),
-			     EndBehaviourTable(true, end_b))
+                 knots,
+                 BaseSpace::multiplicity_regularity(interior_reg, DegreeTable(true, deg),
+                                                    knots->get_num_intervals()),
+                 PeriodicTable(true, periodic),
+                 EndBehaviourTable(true, end_b))
 {}
 
 
@@ -82,10 +82,10 @@ template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
 create(const Degrees &deg,
-        std::shared_ptr<GridType> knots,
-		 const InteriorReg interior_reg,
-		 const Periodicity &periodic,
-		 const EndBehaviour &end_b) -> shared_ptr<self_t>
+       std::shared_ptr<GridType> knots,
+       const InteriorReg interior_reg,
+       const Periodicity &periodic,
+       const EndBehaviour &end_b) -> shared_ptr<self_t>
 {
     return shared_ptr<self_t>(new self_t(deg, knots, interior_reg, periodic, end_b));
 }
@@ -97,44 +97,44 @@ BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(const DegreeTable &deg,
              std::shared_ptr<GridType> knots,
              std::shared_ptr<const MultiplicityTable> interior_mult,
-			 const PeriodicTable &periodic,
+             const PeriodicTable &periodic,
              const EndBehaviourTable &end_b)
     :
     BaseSpace(deg, knots, interior_mult, periodic),
-	end_b_(end_b),
-	dof_distribution_global_(knots,
-			BaseSpace::accumulated_interior_multiplicities(),
-			BaseSpace::get_num_basis_table(),
-			BaseSpace::get_degree(),
-			periodic),
-			dof_distribution_patch_(knots,
-					BaseSpace::accumulated_interior_multiplicities(),
-					BaseSpace::get_num_basis_table(),
-					BaseSpace::get_degree(),
-					periodic),
-					operators_(knots,
-							BaseSpace::compute_knots_with_repetition(end_b_),
-							BaseSpace::accumulated_interior_multiplicities(),
-							deg),
-	    end_interval_(this->get_components_map())
+    end_b_(end_b),
+    dof_distribution_global_(knots,
+                             BaseSpace::accumulated_interior_multiplicities(),
+                             BaseSpace::get_num_basis_table(),
+                             BaseSpace::get_degree(),
+                             periodic),
+    dof_distribution_patch_(knots,
+                            BaseSpace::accumulated_interior_multiplicities(),
+                            BaseSpace::get_num_basis_table(),
+                            BaseSpace::get_degree(),
+                            periodic),
+    operators_(knots,
+               BaseSpace::compute_knots_with_repetition(end_b_),
+               BaseSpace::accumulated_interior_multiplicities(),
+               deg),
+    end_interval_(this->get_components_map())
 {
-	// TODO (pauletti, Dec 24, 2014): after it work it should be recoded properly
-		const auto rep_knots =
-				BaseSpace::compute_knots_with_repetition(end_b_);
-		const auto &degt = this->get_degree();
-		for (auto i : end_interval_.get_active_components_id())
-			for (int dir=0; dir<dim; ++dir)
-			{
-				const auto p = degt[i][dir];
-				end_interval_[i][dir].first =
-						knots->get_knot_coordinates().get_data_direction(dir)[1] -
-						rep_knots[i].get_data_direction(dir)[p];
-				end_interval_[i][dir].second =
-						*(rep_knots[i].get_data_direction(dir).end() - (p+1)) -
-						*(knots->get_knot_coordinates().get_data_direction(dir).end()-2);
-			}
+    // TODO (pauletti, Dec 24, 2014): after it work it should be recoded properly
+    const auto rep_knots =
+        BaseSpace::compute_knots_with_repetition(end_b_);
+    const auto &degt = this->get_degree();
+    for (auto i : end_interval_.get_active_components_id())
+        for (int dir=0; dir<dim; ++dir)
+        {
+            const auto p = degt[i][dir];
+            end_interval_[i][dir].first =
+                knots->get_knot_coordinates().get_data_direction(dir)[1] -
+                rep_knots[i].get_data_direction(dir)[p];
+            end_interval_[i][dir].second =
+                *(rep_knots[i].get_data_direction(dir).end() - (p+1)) -
+                *(knots->get_knot_coordinates().get_data_direction(dir).end()-2);
+        }
 
-	// create a signal and a connection for the grid refinement
+    // create a signal and a connection for the grid refinement
     this->connect_refinement_h_function(
         std::bind(&self_t::refine_h_after_grid_refinement, this,
                   std::placeholders::_1,std::placeholders::_2));
@@ -146,10 +146,10 @@ template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
 create(const DegreeTable &deg,
-        std::shared_ptr<GridType> knots,
-        std::shared_ptr<const MultiplicityTable> interior_mult,
-		 const PeriodicTable &periodic,
-        const EndBehaviourTable &end_b)
+       std::shared_ptr<GridType> knots,
+       std::shared_ptr<const MultiplicityTable> interior_mult,
+       const PeriodicTable &periodic,
+       const EndBehaviourTable &end_b)
 -> shared_ptr<self_t>
 {
     return shared_ptr<self_t>(new self_t(deg, knots, interior_mult, periodic, end_b));
@@ -233,10 +233,10 @@ get_ref_sub_space(const int s_id,
 
     SubEndBT sub_end_b(end_b_.get_comp_map());
     for (int comp : end_b_.get_active_components_id())
-    	for (int j=0; j<k; ++j)
-    		sub_end_b[comp][j] = end_b_[comp][active_dirs[j]];
+        for (int j=0; j<k; ++j)
+            sub_end_b[comp][j] = end_b_[comp][active_dirs[j]];
     auto sub_space =
-    		SubRefSpace<k>::create(sub_degree, sub_grid, sub_mult, sub_periodic, sub_end_b);
+    SubRefSpace<k>::create(sub_degree, sub_grid, sub_mult, sub_periodic, sub_end_b);
 
     // Creating the mapping between the space degrees of freedom
     const int n_dir = k_elem.constant_directions.size();
@@ -308,14 +308,14 @@ refine_h_after_grid_refinement(
                                    BaseSpace::accumulated_interior_multiplicities(),
                                    BaseSpace::get_num_basis_table(),
                                    BaseSpace::get_degree(),
-								   BaseSpace::get_periodic_table());
+                                   BaseSpace::get_periodic_table());
 
     dof_distribution_patch_ = DofDistribution<dim, range, rank>(
                                   this->get_grid(),
                                   BaseSpace::accumulated_interior_multiplicities(),
                                   BaseSpace::get_num_basis_table(),
                                   BaseSpace::get_degree(),
-								  BaseSpace::get_periodic_table());
+                                  BaseSpace::get_periodic_table());
 
     operators_ = BernsteinExtraction<dim, range, rank>(
                      this->get_grid(),

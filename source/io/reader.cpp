@@ -531,7 +531,7 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
 
     // TODO (pauletti, Dec 26, 2014): read periodic, end_behaviour and boundary knots from file
     typename space_t::EndBehaviourTable
-	end_behaviour(components_map, filled_array<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory));
+    end_behaviour(components_map, filled_array<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory));
     typename space_t::PeriodicTable periodic(components_map, filled_array<bool, dim>(false));
 
     auto ref_space = space_t::create(degrees, grid, multiplicities, periodic, end_behaviour);
@@ -712,9 +712,9 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     const auto scalar_mult_table = shared_ptr<const ScalarMultiplicityTable>(new ScalarMultiplicityTable((*multiplicities)[0]));
 
     auto scalar_spline_space =
-    		ScalarBSplineSpace::create(scalar_degree_table, new_grid,
-    				scalar_mult_table,
-					typename ScalarBSplineSpace::EndBehaviourTable(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::interpolatory)));
+        ScalarBSplineSpace::create(scalar_degree_table, new_grid,
+                                   scalar_mult_table,
+                                   typename ScalarBSplineSpace::EndBehaviourTable(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::interpolatory)));
 
     using WeightFuncPtr = shared_ptr<WeightFunc>;
     using WeightFuncPtrTable = typename space_t::template ComponentContainer<WeightFuncPtr>;

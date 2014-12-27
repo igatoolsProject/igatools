@@ -100,7 +100,7 @@ public:
                     const MultiplicityTable &accum_mult,
                     const SpaceDimensionTable &n_basis,
                     const DegreeTable &degree_table,
-					const PeriodicTable &periodic,
+                    const PeriodicTable &periodic,
                     DistributionPolicy pol = DistributionPolicy::standard);
 
     /** Copy constructor.*/

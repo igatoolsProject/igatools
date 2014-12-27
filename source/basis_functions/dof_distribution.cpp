@@ -33,7 +33,7 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
                 const MultiplicityTable &accum_mult,
                 const SpaceDimensionTable &n_basis1,
                 const DegreeTable &degree_table,
-				const PeriodicTable &periodic,
+                const PeriodicTable &periodic,
                 DistributionPolicy pol)
     :
     TensorSizedContainer<dim>(grid->get_num_intervals()),
@@ -41,36 +41,36 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
         make_shared<map<Index,DofsConstView>>(map<Index,DofsConstView>())),
     policy_(pol)
 {
-	Assert(pol == DistributionPolicy::standard, ExcNotImplemented());
+    Assert(pol == DistributionPolicy::standard, ExcNotImplemented());
 
-	typename SpaceDimensionTable::base_t aux;
-	for (int comp = 0 ; comp < Space::n_components ; ++comp)
-		for (int dir = 0 ; dir < dim ; ++dir)
-		{
-			aux[comp][dir] = n_basis1[comp][dir];
-			if (periodic[comp][dir])
-				aux[comp][dir] += degree_table[comp][dir] + 1;
-		}
-	SpaceDimensionTable n_basis(aux);
+    typename SpaceDimensionTable::base_t aux;
+    for (int comp = 0 ; comp < Space::n_components ; ++comp)
+        for (int dir = 0 ; dir < dim ; ++dir)
+        {
+            aux[comp][dir] = n_basis1[comp][dir];
+            if (periodic[comp][dir])
+                aux[comp][dir] += degree_table[comp][dir] + 1;
+        }
+    SpaceDimensionTable n_basis(aux);
 
     //-----------------------------------------------------------------------
     // fills the standard distribution, sorted by component and
     // by direction x moves faster
-	int comp_offset = 0;
+    int comp_offset = 0;
     for (int comp = 0 ; comp < Space::n_components ; ++comp)
     {
-    	const auto size = n_basis[comp];
-    	const auto act_size = n_basis1[comp];
-    	auto &comp_table = index_table_[comp];
-    	comp_table.resize(size);
+        const auto size = n_basis[comp];
+        const auto act_size = n_basis1[comp];
+        auto &comp_table = index_table_[comp];
+        comp_table.resize(size);
 
         for (int i=0; i<n_basis.get_component_size(comp); ++i)
         {
-        	auto t_ind = comp_table.flat_to_tensor(i);
-        	for (int dir = 0 ; dir < dim ; ++dir)
-        		t_ind[dir] = t_ind[dir] % n_basis1[comp][dir];
-        	auto f_ind = comp_table.tensor_to_flat(t_ind);
-        	comp_table[i] = comp_offset + f_ind;
+            auto t_ind = comp_table.flat_to_tensor(i);
+            for (int dir = 0 ; dir < dim ; ++dir)
+                t_ind[dir] = t_ind[dir] % n_basis1[comp][dir];
+            auto f_ind = comp_table.tensor_to_flat(t_ind);
+            comp_table[i] = comp_offset + f_ind;
         }
         comp_offset += n_basis.get_component_size(comp);
     }

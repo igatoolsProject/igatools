@@ -77,7 +77,7 @@ void test_2d()
     typename SplineSpace::BoundaryKnotsTable bdry_knots { {bk_x, bk_y} };
 
     typename SplineSpace::EndBehaviour eb(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::end_knots));
-       typename SplineSpace::EndBehaviourTable ebt(eb);
+    typename SplineSpace::EndBehaviourTable ebt(eb);
 
     auto rep_knots = sp_spec.compute_knots_with_repetition(ebt, bdry_knots);
     out << "Boundary knots:\n";
@@ -111,7 +111,7 @@ void test_3d()
     typename SplineSpace::BoundaryKnotsTable bdry_knots { {bk_x, bk_y, bk_z} };
 
     typename SplineSpace::EndBehaviour eb(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::end_knots));
-       typename SplineSpace::EndBehaviourTable ebt(eb);
+    typename SplineSpace::EndBehaviourTable ebt(eb);
     auto rep_knots = sp_spec.compute_knots_with_repetition(ebt, bdry_knots);
     out << "Boundary knots:\n";
     for (const auto &v : bdry_knots)
@@ -144,7 +144,7 @@ void test_2d_2()
 
 
     typename SplineSpace::EndBehaviour eb(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::end_knots));
-       typename SplineSpace::EndBehaviourTable ebt(eb);
+    typename SplineSpace::EndBehaviourTable ebt(eb);
     auto rep_knots = sp_spec.compute_knots_with_repetition(ebt, bdry_knots);
     out << "Boundary knots:\n";
     for (const auto &v : bdry_knots)

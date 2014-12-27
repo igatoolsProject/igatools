@@ -50,8 +50,8 @@ void write_sphere()
 
     const int codim = 1;
     Writer<dim, codim> writer(F, 4);
-	writer.save("output");
-	writer.print_info(out);
+    writer.save("output");
+    writer.print_info(out);
 
     OUTEND
 }

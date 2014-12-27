@@ -35,14 +35,14 @@ IGA_NAMESPACE_OPEN
 
 enum class BasisEndBehaviour
 {
-	/**
-	 * Interpolatory basis functions at knots bounday (i.e. open knot vector).
-	 */
-	interpolatory,
+    /**
+     * Interpolatory basis functions at knots bounday (i.e. open knot vector).
+     */
+    interpolatory,
 
-	end_knots,
+    end_knots,
 
-	periodic
+    periodic
 };
 
 // For the interior multiplicities
@@ -50,8 +50,8 @@ enum class BasisEndBehaviour
 // minimul regularity discontinous
 enum class InteriorReg
 {
-	maximum,
-	minimun
+    maximum,
+    minimun
 };
 
 /**
@@ -130,7 +130,7 @@ public:
     class SpaceDimensionTable : public ComponentContainer<TensorSize<dim> >
     {
     public:
-    	using base_t = ComponentContainer<TensorSize<dim>>;
+        using base_t = ComponentContainer<TensorSize<dim>>;
 
         SpaceDimensionTable() = default;
 
@@ -140,21 +140,21 @@ public:
             comp_dimension(n_basis.get_comp_map()),
             total_dimension_(0)
         {
-        	 recompute_size();
+            recompute_size();
         }
 
         SpaceDimensionTable operator=(const base_t &st)
         {
-             base_t::operator=(st);
-             recompute_size();
-             return *this;
+            base_t::operator=(st);
+            recompute_size();
+            return *this;
 
         }
 
         void print_info(LogStream &out) const
         {
-        	out.begin_item("Component Dimension:");
-        	comp_dimension.print_info(out);
+            out.begin_item("Component Dimension:");
+            comp_dimension.print_info(out);
             out.end_item();
 
             out << "Total Dimension: " << total_dimension_ << std::endl;
@@ -162,24 +162,24 @@ public:
 
         Size total_dimension() const
         {
-        	return total_dimension_;
+            return total_dimension_;
         }
 
         Size get_component_size(const int comp) const
         {
-        	return comp_dimension[comp];
+            return comp_dimension[comp];
         }
     private:
         void recompute_size()
         {
-        	for (auto comp : this->get_active_components_id())
-        	{
-        		auto size = (*this)[comp].flat_size();
-        		comp_dimension[comp] = size;
-        	}
-        	total_dimension_ = 0;
-        	for (auto size : comp_dimension)
-        		total_dimension_ += size;
+            for (auto comp : this->get_active_components_id())
+            {
+                auto size = (*this)[comp].flat_size();
+                comp_dimension[comp] = size;
+            }
+            total_dimension_ = 0;
+            for (auto size : comp_dimension)
+                total_dimension_ += size;
         }
 
         ComponentContainer<Size> comp_dimension;
@@ -197,8 +197,8 @@ public:
     explicit SplineSpace(const DegreeTable &deg,
                          std::shared_ptr<GridType> knots,
                          std::shared_ptr<const MultiplicityTable> interior_mult,
-						 const PeriodicTable &periodic =
-								 PeriodicTable(filled_array<bool,dim>(false)));
+                         const PeriodicTable &periodic =
+                             PeriodicTable(filled_array<bool,dim>(false)));
 
 
 //    /**
@@ -206,13 +206,13 @@ public:
 //     * the same scalar space
 //     */
 //    explicit SplineSpace(const Degrees &deg,
-//    		std::shared_ptr<GridType> knots,
-//			const InteriorReg &interior_reg,
-//			const Periodicity periodic = filled_array<bool,dim>(false))
+//          std::shared_ptr<GridType> knots,
+//          const InteriorReg &interior_reg,
+//          const Periodicity periodic = filled_array<bool,dim>(false))
 //    :SplineSpace(DegreeTable(deg), knots,
-//    		multiplicity_regularity(interior_reg, DegreeTable(deg),
-//    				knots->get_num_intervals()),
-//					PeriodicTable(periodic))
+//          multiplicity_regularity(interior_reg, DegreeTable(deg),
+//                  knots->get_num_intervals()),
+//                  PeriodicTable(periodic))
 //    {}
 
 
@@ -303,15 +303,15 @@ public:
 
     template<int k>
     typename SubSpace<k>::PeriodicTable
-	get_sub_space_periodicity(const Index s_id) const;
+    get_sub_space_periodicity(const Index s_id) const;
 
 
 public:
 
     KnotsTable compute_knots_with_repetition(const EndBehaviourTable &ends,
-    		const BoundaryKnotsTable &boundary_knots = BoundaryKnotsTable()) const;
+                                             const BoundaryKnotsTable &boundary_knots = BoundaryKnotsTable()) const;
 
-   // KnotsTable compute_knots_with_repetition(const EndBehaviourTable &ends) const;
+    // KnotsTable compute_knots_with_repetition(const EndBehaviourTable &ends) const;
 
     /**
      * For each element and for each component there is an initial
@@ -327,8 +327,8 @@ public:
     static
     std::shared_ptr<MultiplicityTable>
     multiplicity_regularity(const InteriorReg reg,
-    		const DegreeTable &deg,
-			const TensorSize<dim> &n_elem);
+                            const DegreeTable &deg,
+                            const TensorSize<dim> &n_elem);
 
 public:
     void print_info(LogStream &out) const;
@@ -431,7 +431,7 @@ public:
         ComponentContainer(const ComponentMap &comp_map, const T &val);
 
         ComponentContainer(bool uniform, const T &val)
-        : ComponentContainer(filled_array<Index, n_entries>(0), val)
+            : ComponentContainer(filled_array<Index, n_entries>(0), val)
         {}
 
         /**

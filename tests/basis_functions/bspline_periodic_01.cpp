@@ -52,26 +52,26 @@ void plot_basis(const int deg)
 
     const int n_basis = space->get_num_basis();
     out << "Num basis: " << n_basis << endl;
-space->print_info(out);
+    space->print_info(out);
 #if 1
     Coeffs coeffs(n_basis);
 
     for (int basis_index = 0; basis_index < space->get_num_basis(); ++basis_index)
     {
-    	coeffs[basis_index] = 1.;
+        coeffs[basis_index] = 1.;
 
-    	const int n_plot_points = 10;
-    	Writer<dim> output(IdentityFunction<dim>::create(grid), n_plot_points);
+        const int n_plot_points = 10;
+        Writer<dim> output(IdentityFunction<dim>::create(grid), n_plot_points);
 
-    	string field_name = "basis " + to_string(basis_index);
+        string field_name = "basis " + to_string(basis_index);
 
-    	auto basis = IgFunction<Space>::create(space, coeffs);
-    	output.template add_field<1,1>(basis, field_name);
+        auto basis = IgFunction<Space>::create(space, coeffs);
+        output.template add_field<1,1>(basis, field_name);
 
-    	string file_name = "bspline_basis-" + to_string(basis_index);
-    	output.save(file_name);
+        string file_name = "bspline_basis-" + to_string(basis_index);
+        output.save(file_name);
 
-    	coeffs[basis_index] = 0.;
+        coeffs[basis_index] = 0.;
     }
 #endif
 

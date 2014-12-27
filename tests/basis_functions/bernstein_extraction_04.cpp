@@ -64,7 +64,7 @@ int main()
         CartesianProductArray<Real,dim> knots({{0,1,2,3,4}});
         auto grid = CartesianGrid<dim>::create(knots);
         auto int_mult = SplineSpace::multiplicity_regularity(InteriorReg::maximum,
-            		deg, grid->get_num_intervals());
+                                                             deg, grid->get_num_intervals());
         SplineSpace sp_spec(deg, grid, int_mult);
 
         typename SplineSpace::EndBehaviourTable end_b(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::interpolatory));

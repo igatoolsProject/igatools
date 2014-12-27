@@ -35,7 +35,7 @@ void test_1d()
     auto grid = CartesianGrid<dim>::create(4);
     typename SplineSpace::DegreeTable deg {{2}};
     auto int_mult = SplineSpace::multiplicity_regularity(InteriorReg::maximum,
-    		deg, grid->get_num_intervals());
+                                                         deg, grid->get_num_intervals());
     SplineSpace sp_spec(deg, grid, int_mult);
     sp_spec.print_info(out);
 
@@ -73,16 +73,16 @@ void test_2d()
 
 
     auto int_mult = SplineSpace::multiplicity_regularity(InteriorReg::maximum,
-        		deg, grid->get_num_intervals());
-        SplineSpace sp_spec(deg, grid, int_mult);
+                                                         deg, grid->get_num_intervals());
+    SplineSpace sp_spec(deg, grid, int_mult);
     sp_spec.print_info(out);
 
     iga::CartesianProductArray<double, 2> bk_x {{-0.5, 0}, {1.2, 1.3}};
     iga::CartesianProductArray<double, 2> bk_y {{-0.6,0,0,0}, {1,1.1,1.6, 1.6}};
     typename SplineSpace::BoundaryKnotsTable bdry_knots { {bk_x, bk_y} };
     typename SplineSpace::EndBehaviour eb(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::end_knots));
-        typename SplineSpace::EndBehaviourTable ebt(eb);
-        auto rep_knots = sp_spec.compute_knots_with_repetition(ebt, bdry_knots);
+    typename SplineSpace::EndBehaviourTable ebt(eb);
+    auto rep_knots = sp_spec.compute_knots_with_repetition(ebt, bdry_knots);
     out << "Boundary knots:\n";
     for (const auto &v : bdry_knots)
         for (const auto &w : v)
@@ -101,8 +101,8 @@ void test_3d()
     auto grid = CartesianGrid<dim>::create({3,4,5});
     typename SplineSpace::DegreeTable deg {{1,3,0}};
     auto int_mult = SplineSpace::multiplicity_regularity(InteriorReg::maximum,
-        		deg, grid->get_num_intervals());
-        SplineSpace sp_spec(deg, grid, int_mult);
+                                                         deg, grid->get_num_intervals());
+    SplineSpace sp_spec(deg, grid, int_mult);
     sp_spec.print_info(out);
 
 
@@ -112,8 +112,8 @@ void test_3d()
     typename SplineSpace::BoundaryKnotsTable bdry_knots { {bk_x, bk_y, bk_z} };
 
     typename SplineSpace::EndBehaviour eb(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::end_knots));
-        typename SplineSpace::EndBehaviourTable ebt(eb);
-        auto rep_knots = sp_spec.compute_knots_with_repetition(ebt, bdry_knots);
+    typename SplineSpace::EndBehaviourTable ebt(eb);
+    auto rep_knots = sp_spec.compute_knots_with_repetition(ebt, bdry_knots);
     out << "Boundary knots:\n";
     for (const auto &v : bdry_knots)
         for (const auto &w : v)
@@ -133,8 +133,8 @@ void test_2d_2()
     auto grid = CartesianGrid<dim>::create({3,4});
     typename SplineSpace::DegreeTable deg {{1,3},{3,1}};
     auto int_mult = SplineSpace::multiplicity_regularity(InteriorReg::maximum,
-        		deg, grid->get_num_intervals());
-        SplineSpace sp_spec(deg, grid, int_mult);
+                                                         deg, grid->get_num_intervals());
+    SplineSpace sp_spec(deg, grid, int_mult);
     sp_spec.print_info(out);
 
     iga::CartesianProductArray<double, 2> bk_x {{-0.5, 0}, {1.2, 1.3}};
@@ -144,8 +144,8 @@ void test_2d_2()
 
 
     typename SplineSpace::EndBehaviour eb(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::end_knots));
-        typename SplineSpace::EndBehaviourTable ebt(eb);
-        auto rep_knots = sp_spec.compute_knots_with_repetition(ebt, bdry_knots);
+    typename SplineSpace::EndBehaviourTable ebt(eb);
+    auto rep_knots = sp_spec.compute_knots_with_repetition(ebt, bdry_knots);
     out << "Boundary knots:\n";
     for (const auto &v : bdry_knots)
         for (const auto &w : v)

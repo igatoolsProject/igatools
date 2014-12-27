@@ -42,7 +42,7 @@ void test(const int deg1)
     out << endl;
 
     auto int_mult = SplineSpace::multiplicity_regularity(InteriorReg::maximum,
-        		deg, grid->get_num_intervals());
+                                                         deg, grid->get_num_intervals());
     SplineSpace sp_spec(deg, grid, int_mult);
     sp_spec.print_info(out);
 }

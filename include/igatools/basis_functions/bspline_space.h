@@ -161,9 +161,9 @@ public:
      */
     static std::shared_ptr<self_t>
     create(const int degree, std::shared_ptr<GridType> knots,
-    		const InteriorReg interior_reg = InteriorReg::maximum,
-    		const bool periodic = false,
-    		const BasisEndBehaviour endb = BasisEndBehaviour::interpolatory);
+           const InteriorReg interior_reg = InteriorReg::maximum,
+           const bool periodic = false,
+           const BasisEndBehaviour endb = BasisEndBehaviour::interpolatory);
 
     /**
      * Builds and returns a maximum regularity BSpline space over CartesianGrid
@@ -172,10 +172,10 @@ public:
      */
     static std::shared_ptr<self_t>
     create(const Degrees &degree, std::shared_ptr<GridType> knots,
-			 const InteriorReg interior_reg = InteriorReg::maximum,
-			 const Periodicity &periodic = filled_array<bool, dim>(false),
-			 const EndBehaviour &end_b =
-					 filled_array<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory));
+           const InteriorReg interior_reg = InteriorReg::maximum,
+           const Periodicity &periodic = filled_array<bool, dim>(false),
+           const EndBehaviour &end_b =
+               filled_array<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory));
 
 
 
@@ -190,7 +190,7 @@ public:
     create(const DegreeTable &deg,
            std::shared_ptr<GridType> knots,
            std::shared_ptr<const MultiplicityTable> interior_mult,
-		   const PeriodicTable &periodic,
+           const PeriodicTable &periodic,
            const EndBehaviourTable &end_b);
     ///@}
 
@@ -207,10 +207,10 @@ protected:
      */
     explicit
     BSplineSpace(const int degree,
-    		std::shared_ptr<GridType> grid,
-    		const InteriorReg interior_reg,
-    		const bool periodic,
-    		const BasisEndBehaviour endb);
+                 std::shared_ptr<GridType> grid,
+                 const InteriorReg interior_reg,
+                 const bool periodic,
+                 const BasisEndBehaviour endb);
 
     /**
      * Constructs a maximum regularity BSpline space over CartesianGrid
@@ -218,10 +218,10 @@ protected:
      * in all components.
      */
     explicit BSplineSpace(const Degrees &deg,
-                 std::shared_ptr<GridType> knots,
-    			 const InteriorReg interior_reg,
-    			 const Periodicity &periodic,
-    			 const EndBehaviour &end_b);
+                          std::shared_ptr<GridType> knots,
+                          const InteriorReg interior_reg,
+                          const Periodicity &periodic,
+                          const EndBehaviour &end_b);
 
     /**
      * Constructs a BSpline space over the CartesianGrid
@@ -231,10 +231,10 @@ protected:
      * component.
      */
     explicit BSplineSpace(const DegreeTable &deg,
-            std::shared_ptr<GridType> knots,
-            std::shared_ptr<const MultiplicityTable> interior_mult,
-			const PeriodicTable &periodic,
-            const EndBehaviourTable &end_b);
+                          std::shared_ptr<GridType> knots,
+                          std::shared_ptr<const MultiplicityTable> interior_mult,
+                          const PeriodicTable &periodic,
+                          const EndBehaviourTable &end_b);
 
     /**
      * Copy constructor. Not allowed to be used.
@@ -360,7 +360,7 @@ private:
      */
     EndBehaviourTable end_b_;
 
-DofDistribution<dim, range, rank> dof_distribution_global_;
+    DofDistribution<dim, range, rank> dof_distribution_global_;
 
     /** Container with the local to patch basis indices
      * @note The concept of patch indices refers to the numeration at patch
@@ -372,7 +372,7 @@ DofDistribution<dim, range, rank> dof_distribution_global_;
     BernsteinExtraction<dim, range, rank> operators_;
 
 
-        /** If end knots are not in the repeated knot vector */
+    /** If end knots are not in the repeated knot vector */
     using EndIntervalTable = typename BaseSpace::template ComponentContainer<std::array<std::pair<Real, Real>, dim> >;
     EndIntervalTable end_interval_;
 

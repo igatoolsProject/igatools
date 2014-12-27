@@ -40,7 +40,7 @@ PhysicalSpace<RefSpace_, codim_, type_>::components = sequence<PhysicalSpace<Ref
 template <class RefSpace_,int codim_, Transformation type_>
 PhysicalSpace<RefSpace_, codim_, type_>::
 PhysicalSpace(shared_ptr<RefSpace> ref_space,
-                 shared_ptr<MapFunc> map_func)
+              shared_ptr<MapFunc> map_func)
     :
     BaseSpace(ref_space->get_grid()),
     ref_space_(ref_space),
