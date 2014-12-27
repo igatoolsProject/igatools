@@ -63,26 +63,6 @@ public:
     void reset(const ValueFlags flag, const Quadrature<k> &quad);
 
 
-    using topology_variant = typename PhysSpace::RefSpace::ElementHandler::topology_variant;
-    void init_cache(ElementAccessor &elem, const topology_variant &topology)
-    {
-        Assert(false,ExcNotImplemented());
-    }
-
-    void init_cache(ElementIterator &elem, const topology_variant &topology)
-    {
-        init_cache(*elem,topology);
-    }
-
-    void fill_cache(ElementAccessor &elem, const topology_variant &topology, const int j)
-    {
-        Assert(false,ExcNotImplemented());
-    }
-
-    void fill_cache(ElementIterator &elem, const topology_variant &topology, const int j)
-    {
-        this->fill_cache(*elem,topology,j);
-    }
 
 
 

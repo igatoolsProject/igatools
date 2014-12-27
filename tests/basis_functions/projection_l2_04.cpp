@@ -100,6 +100,7 @@ template<int dim, int range=1, int rank = 1, LAPack la_pack>
 void test_proj(const int p, const int n_knots = 4)
 {
     using Space = BSplineSpace<dim,range,rank> ;
+    using RefSpace = ReferenceSpace<dim,range,rank> ;
     using Func = TestFunc<dim,range, rank>;
 
     auto grid = CartesianGrid<dim>::create(n_knots);
@@ -109,7 +110,7 @@ void test_proj(const int p, const int n_knots = 4)
     QGauss<dim> quad(n_qp);
 
     auto f = Func::create(grid);
-    auto proj_func = space_tools::projection_l2<Space,la_pack>(f, space, quad);
+    auto proj_func = space_tools::projection_l2<RefSpace,la_pack>(f, space, quad);
     proj_func->print_info(out);
 
 //    Writer<dim> writer(knots,4);

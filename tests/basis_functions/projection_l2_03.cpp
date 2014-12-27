@@ -40,6 +40,7 @@ template<int dim , int range=1 ,int rank = 1, LAPack la_pack>
 void test_proj(const int p, const int n_knots = 4)
 {
     using Space = BSplineSpace<dim,range,rank> ;
+    using RefSpace = ReferenceSpace<dim,range,rank> ;
     using Func = typename functions::ConstantFunction<dim, 0, range, rank>;
 
     auto grid = CartesianGrid<dim>::create(n_knots);
@@ -54,7 +55,7 @@ void test_proj(const int p, const int n_knots = 4)
 
     const int n_qp = 4;
     QGauss<dim> quad(n_qp);
-    auto proj_func = space_tools::projection_l2<Space,la_pack>(f, space, quad);
+    auto proj_func = space_tools::projection_l2<RefSpace,la_pack>(f, space, quad);
     proj_func->print_info(out);
 
 }

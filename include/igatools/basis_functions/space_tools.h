@@ -72,10 +72,8 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
     auto elem = space->begin();
     auto end  = space->end();
 
-    const auto topology = Int<dim>();
-
-    func->init_cache(f_elem, topology);
-    sp_filler->init_cache(elem,topology);
+    func->template init_cache<dim>(f_elem);
+    sp_filler->template init_cache<dim>(elem);
 
     const int n_qp = quad.get_num_points();
     const int n_basis = elem->get_num_basis();
@@ -84,8 +82,8 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
 
     for (; elem != end; ++elem, ++f_elem)
     {
-        func->fill_cache(f_elem,topology,0);
-        sp_filler->fill_cache(elem, topology,0);
+        func->template fill_cache<dim>(f_elem, 0);
+        sp_filler->template fill_cache<dim>(elem, 0);
 
         loc_mat = 0.;
         loc_rhs = 0.;

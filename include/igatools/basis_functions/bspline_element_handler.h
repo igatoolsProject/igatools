@@ -73,6 +73,7 @@ public:
 
     virtual void reset(const ValueFlags &flag, const quadrature_variant &quad) = 0;
 
+
     virtual void init_cache(ElementAccessor &elem, const topology_variant &topology) = 0;
 
     void init_cache(ElementIterator &elem, const topology_variant &topology)
@@ -86,7 +87,18 @@ public:
         init_cache(*elem,Int<dim_>());
     }
 
+    template <int k>
+    void init_cache(ElementAccessor &elem)
+    {
+    	const auto topology = Int<k>();
+    	this->init_cache(elem,topology);
+    }
 
+    template <int k>
+    void init_cache(ElementIterator &elem)
+    {
+    	this->template init_cache<k>(*elem);
+    }
 
 
     virtual void fill_cache(ElementAccessor &elem, const topology_variant &topology, const int j) = 0;
@@ -107,6 +119,12 @@ public:
     {
     	const auto topology = Int<k>();
     	this->fill_cache(elem,topology,j);
+    }
+
+    template<int k>
+    void fill_cache(ElementIterator &elem, const int j)
+    {
+    	this->template fill_cache<k>(*elem,j);
     }
 
 

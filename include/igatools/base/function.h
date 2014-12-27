@@ -155,6 +155,23 @@ public:
         boost::apply_visitor(init_cache_impl, k);
     }
 
+    void init_cache(ElementIterator &elem, const topology_variant &k)
+    {
+        init_cache(*elem, k);
+    }
+
+    template <int k>
+    void init_cache(ElementAccessor &elem)
+    {
+    	const auto topology = Int<k>();
+    	this->init_cache(elem, topology);
+    }
+
+    template <int k>
+    void init_cache(ElementIterator &elem)
+    {
+    	this->template init_cache<k>(*elem);
+    }
 
     virtual void fill_cache(ElementAccessor &elem, const topology_variant &k,const int j)
     {
@@ -169,9 +186,17 @@ public:
         fill_cache(*elem, k, j);
     }
 
-    void init_cache(ElementIterator &elem, const topology_variant &k)
+    template <int k>
+    void fill_cache(ElementAccessor &elem, const int j)
     {
-        init_cache(*elem, k);
+    	const auto topology = Int<k>();
+    	this->fill_cache(elem, topology,j);
+    }
+
+    template <int k>
+    void fill_cache(ElementIterator &elem, const int j)
+    {
+    	this->template fill_cache<k>(*elem,j);
     }
 
     std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const

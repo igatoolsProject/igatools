@@ -124,9 +124,9 @@ private:
         void operator()(const T &quad)
         {
             Assert(space_handler_ != nullptr, ExcNullPtr());
-//            space_handler_->template init_cache<T::k>(*space_elem);
-            const auto topology = Int<T::k>();
-            space_handler_->init_cache(*space_elem,topology);
+            space_handler_->template init_cache<T::k>(*space_elem);
+//            const auto topology = Int<T::k>();
+//            space_handler_->init_cache(*space_elem,topology);
         }
 
         typename Space::ElementHandler  *space_handler_;
@@ -140,8 +140,7 @@ private:
         void operator()(const T &quad)
         {
             Assert(space_handler_ != nullptr, ExcNullPtr());
-            const auto topology = Int<T::k>();
-            space_handler_->fill_cache(*space_elem,topology,j);
+            space_handler_->template fill_cache<T::k>(*space_elem,j);
 
             auto &local_cache = function->get_cache(*func_elem);
             auto &cache = local_cache->template get_value_cache<T::k>(j);
