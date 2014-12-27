@@ -349,6 +349,9 @@ public:
     };
 
 public:
+
+    SplineSpace() = delete;
+
     /**
      * Most general constructor
      */

@@ -242,6 +242,9 @@ protected:
                           std::shared_ptr<const MultiplicityTable> interior_mult,
                           const EndBehaviourTable &ends);
 
+
+    explicit BSplineSpace(std::shared_ptr<SpaceData> space_data);
+
     /**
      * Copy constructor. Not allowed to be used.
      */

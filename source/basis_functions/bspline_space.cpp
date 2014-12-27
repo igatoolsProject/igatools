@@ -77,25 +77,8 @@ BSplineSpace(const DegreeTable &deg,
              std::shared_ptr<GridType> knots,
              const bool homogeneous_range)
     :
-    BaseSpace(deg, knots, homogeneous_range),
-    dof_distribution_global_(knots,
-    		this->space_data_->accumulated_interior_multiplicities(),
-    		this->space_data_->get_num_basis_table(),
-			this->space_data_->get_degree()),
-    dof_distribution_patch_(knots,
-    		this->space_data_->accumulated_interior_multiplicities(),
-    		this->space_data_->get_num_basis_table(),
-			this->space_data_->get_degree()),
-    operators_(knots,
-    		this->space_data_->compute_knots_with_repetition(
-    				this->space_data_->get_end_behaviour()),
-			this->space_data_->accumulated_interior_multiplicities(), deg)
-{
-    // create a signal and a connection for the grid refinement
-    this->connect_refinement_h_function(
-        std::bind(&self_t::refine_h_after_grid_refinement, this,
-                  std::placeholders::_1,std::placeholders::_2));
-}
+    BSplineSpace(std::make_shared<SpaceData>(SpaceData(deg, knots, SpaceData::InteriorReg::maximum)))
+{}
 
 
 
@@ -118,24 +101,35 @@ BSplineSpace(const DegreeTable &deg,
              std::shared_ptr<const MultiplicityTable> interior_mult,
              const EndBehaviourTable &end_b)
     :
-    BaseSpace(deg, knots, interior_mult, end_b),
-    dof_distribution_global_(knots,
-    		this->space_data_->accumulated_interior_multiplicities(),
-			this->space_data_->get_num_basis_table(),
-			this->space_data_->get_degree()),
-    dof_distribution_patch_(knots,
-    		this->space_data_->accumulated_interior_multiplicities(),
-			this->space_data_->get_num_basis_table(),
-			this->space_data_->get_degree()),
-    operators_(knots,
-    		this->space_data_->compute_knots_with_repetition(
-    				this->space_data_->get_end_behaviour()),
-			this->space_data_->accumulated_interior_multiplicities(), deg)
+    BSplineSpace(std::make_shared<SpaceData>(SpaceData(deg, knots, interior_mult, end_b)))
+{}
+
+template<int dim_, int range_, int rank_>
+BSplineSpace<dim_, range_, rank_>::
+BSplineSpace(std::shared_ptr<SpaceData> space_data)
+	:
+	BaseSpace(space_data),
+	dof_distribution_global_(
+		this->space_data_->get_grid(),
+		this->space_data_->accumulated_interior_multiplicities(),
+		this->space_data_->get_num_basis_table(),
+		this->space_data_->get_degree()),
+	dof_distribution_patch_(
+		this->space_data_->get_grid(),
+		this->space_data_->accumulated_interior_multiplicities(),
+		this->space_data_->get_num_basis_table(),
+		this->space_data_->get_degree()),
+	operators_(
+		this->space_data_->get_grid(),
+		this->space_data_->compute_knots_with_repetition(
+				this->space_data_->get_end_behaviour()),
+		this->space_data_->accumulated_interior_multiplicities(),
+		this->space_data_->get_degree())
 {
-    // create a signal and a connection for the grid refinement
-    this->connect_refinement_h_function(
-        std::bind(&self_t::refine_h_after_grid_refinement, this,
-                  std::placeholders::_1,std::placeholders::_2));
+	// create a signal and a connection for the grid refinement
+	this->connect_refinement_h_function(
+			std::bind(&self_t::refine_h_after_grid_refinement, this,
+            std::placeholders::_1,std::placeholders::_2));
 }
 
 

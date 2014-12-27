@@ -73,7 +73,6 @@ public:
 
     using GridSpace::dims;
 
-//    using GridSpace::GridSpace;
 
     /** Type for the element accessor. */
     using ElementAccessor = ReferenceElement<dim,range,rank>;
@@ -103,16 +102,9 @@ public:
 
 protected:
 
-    explicit ReferenceSpace(const DegreeTable &degree,
-                          std::shared_ptr<GridType> knots,
-                          const bool homogeneous_range = false);
+    ReferenceSpace() = delete;
 
-    explicit ReferenceSpace(const DegreeTable &deg,
-                          std::shared_ptr<GridType> knots,
-                          std::shared_ptr<const MultiplicityTable> interior_mult,
-                          const EndBehaviourTable &ends);
-
-    explicit ReferenceSpace(const std::shared_ptr<const SpaceData> space_data);
+    explicit ReferenceSpace(const std::shared_ptr<SpaceData> space_data);
 
 public:
     virtual ~ReferenceSpace() = default;
@@ -155,6 +147,8 @@ public:
     	return space_data_->get_degree();
     }
 
+    /** @name Functions for retrieving information about the number of basis function. */
+    ///@{
     SpaceDimensionTable get_num_all_element_basis() const
     {
     	return space_data_->get_num_all_element_basis();
@@ -185,6 +179,7 @@ public:
     {
     	return space_data_->get_basis_offset();
     }
+    ///@}
 
     const ComponentMap &get_components_map() const
     {
@@ -283,11 +278,11 @@ public:
 
 
 protected:
-    std::shared_ptr<const SpaceData > space_data_;
+    std::shared_ptr<SpaceData > space_data_;
 
 
 public:
-    std::shared_ptr<const SpaceData> get_space_data() const
+    std::shared_ptr<SpaceData> get_space_data() const
 	{
     	Assert(space_data_ != nullptr,ExcNullPtr());
     	return space_data_;
