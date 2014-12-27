@@ -24,7 +24,7 @@
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
 
-#include <igatools/basis_functions/spline_space.h>
+#include <igatools/basis_functions/reference_space.h>
 #include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/basis_functions/bernstein_extraction.h>
 #include <igatools/geometry/mapping.h>
@@ -95,10 +95,10 @@ template <int, int, int> class BSplineElementHandler;
 template<int dim_, int range_ = 1, int rank_ = 1>
 class BSplineSpace :
     public std::enable_shared_from_this<BSplineSpace<dim_,range_,rank_> >,
-    public SplineSpace<dim_, range_, rank_>
+    public ReferenceSpace<dim_, range_, rank_>
 {
 private:
-    using BaseSpace = SplineSpace<dim_, range_, rank_>;
+    using BaseSpace = ReferenceSpace<dim_, range_, rank_>;
 
     /** Type for current class. */
     using self_t = BSplineSpace<dim_,range_,rank_>;
@@ -115,9 +115,9 @@ public:
     static const int range     = range_;
     static const int rank      = rank_;
 
-    using BaseSpace::n_components;
-    using BaseSpace::components;
-    using BaseSpace::dims;
+//    using BaseSpace::n_components;
+//    using BaseSpace::components;
+//    using BaseSpace::dims;
 
 public:
     using typename BaseSpace::Func;
@@ -136,14 +136,17 @@ public:
     using ElementIterator = CartesianGridIterator<ReferenceElement<dim,range,rank>>;
 
 
-    using typename BaseSpace::InteriorReg;
+    using SpaceData = SplineSpace<dim_,range_,rank_>;
+    using InteriorReg = typename SpaceData::InteriorReg;
 
-    using typename BaseSpace::DegreeTable;
-    using typename BaseSpace::MultiplicityTable;
-    using typename BaseSpace::KnotsTable;
-    using typename BaseSpace::SpaceDimensionTable;
+    using DegreeTable = typename SpaceData::DegreeTable;
+    using MultiplicityTable = typename SpaceData::MultiplicityTable;
+    using KnotsTable = typename SpaceData::KnotsTable;
+    using SpaceDimensionTable = typename SpaceData::SpaceDimensionTable;
     //using typename BaseSpace::EndBehaviour;
-    using typename BaseSpace::EndBehaviourTable;
+    using EndBehaviourTable = typename SpaceData::EndBehaviourTable;
+
+    using BCTable = typename SpaceData::BCTable;
 
 public:
     /**
@@ -356,6 +359,7 @@ public:
     virtual void print_info(LogStream &out) const override final;
 
 private:
+
 
     /** Container with the local to global basis indices
      * @note The concept of global indices refers to a global numeration of the

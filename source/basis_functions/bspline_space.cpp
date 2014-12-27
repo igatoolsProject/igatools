@@ -77,14 +77,19 @@ BSplineSpace(const DegreeTable &deg,
              std::shared_ptr<GridType> knots,
              const bool homogeneous_range)
     :
-    BaseSpace(deg, knots, BaseSpace::InteriorReg::maximum),
-    dof_distribution_global_(knots,BaseSpace::accumulated_interior_multiplicities(),
-                             BaseSpace::get_num_basis_table(),BaseSpace::get_degree()),
-    dof_distribution_patch_(knots,BaseSpace::accumulated_interior_multiplicities(),
-                            BaseSpace::get_num_basis_table(),BaseSpace::get_degree()),
+    BaseSpace(deg, knots, homogeneous_range),
+    dof_distribution_global_(knots,
+    		this->space_data_->accumulated_interior_multiplicities(),
+    		this->space_data_->get_num_basis_table(),
+			this->space_data_->get_degree()),
+    dof_distribution_patch_(knots,
+    		this->space_data_->accumulated_interior_multiplicities(),
+    		this->space_data_->get_num_basis_table(),
+			this->space_data_->get_degree()),
     operators_(knots,
-               BaseSpace::compute_knots_with_repetition(this->get_end_behaviour()),
-               BaseSpace::accumulated_interior_multiplicities(), deg)
+    		this->space_data_->compute_knots_with_repetition(
+    				this->space_data_->get_end_behaviour()),
+			this->space_data_->accumulated_interior_multiplicities(), deg)
 {
     // create a signal and a connection for the grid refinement
     this->connect_refinement_h_function(
@@ -114,13 +119,18 @@ BSplineSpace(const DegreeTable &deg,
              const EndBehaviourTable &end_b)
     :
     BaseSpace(deg, knots, interior_mult, end_b),
-    dof_distribution_global_(knots,BaseSpace::accumulated_interior_multiplicities(),
-                             BaseSpace::get_num_basis_table(),BaseSpace::get_degree()),
-    dof_distribution_patch_(knots,BaseSpace::accumulated_interior_multiplicities(),
-                            BaseSpace::get_num_basis_table(),BaseSpace::get_degree()),
+    dof_distribution_global_(knots,
+    		this->space_data_->accumulated_interior_multiplicities(),
+			this->space_data_->get_num_basis_table(),
+			this->space_data_->get_degree()),
+    dof_distribution_patch_(knots,
+    		this->space_data_->accumulated_interior_multiplicities(),
+			this->space_data_->get_num_basis_table(),
+			this->space_data_->get_degree()),
     operators_(knots,
-               BaseSpace::compute_knots_with_repetition(this->get_end_behaviour()),
-               BaseSpace::accumulated_interior_multiplicities(), deg)
+    		this->space_data_->compute_knots_with_repetition(
+    				this->space_data_->get_end_behaviour()),
+			this->space_data_->accumulated_interior_multiplicities(), deg)
 {
     // create a signal and a connection for the grid refinement
     this->connect_refinement_h_function(
@@ -223,9 +233,9 @@ get_ref_sub_space(const int s_id,
         typename GridType::template InterGridMap<k>  elem_map;
         sub_grid   = this->get_grid()->template get_sub_grid<k>(s_id, elem_map);
     }
-    auto sub_mult   = this->template get_sub_space_mult<k>(s_id);
-    auto sub_degree = this->template get_sub_space_degree<k>(s_id);
-    auto end_b      = this->template get_sub_space_end_b<k>(s_id);
+    auto sub_mult   = this->space_data_->template get_sub_space_mult<k>(s_id);
+    auto sub_degree = this->space_data_->template get_sub_space_degree<k>(s_id);
+    auto end_b      = this->space_data_->template get_sub_space_end_b<k>(s_id);
 
     auto sub_space = BSplineSpace<k,range,rank>::create(sub_degree, sub_grid, sub_mult,end_b);
 
@@ -238,7 +248,7 @@ get_ref_sub_space(const int s_id,
     TensorIndex<dim> tensor_index;
     int comp_i = 0;
     dof_map.resize(sub_space->get_num_basis());
-    for (auto comp : components)
+    for (auto comp : SpaceData::components)
     {
         const int n_basis = sub_space->get_num_basis(comp);
         const auto &sub_local_indices = sub_space->get_dof_distribution_patch().get_index_table()[comp];
@@ -302,20 +312,21 @@ refine_h_after_grid_refinement(
 {
     dof_distribution_global_ = DofDistribution<dim, range, rank>(
                                    this->get_grid(),
-                                   BaseSpace::accumulated_interior_multiplicities(),
-                                   BaseSpace::get_num_basis_table(),
-                                   BaseSpace::get_degree());
+								   this->space_data_->accumulated_interior_multiplicities(),
+								   this->space_data_->get_num_basis_table(),
+								   this->space_data_->get_degree());
 
     dof_distribution_patch_ = DofDistribution<dim, range, rank>(
                                   this->get_grid(),
-                                  BaseSpace::accumulated_interior_multiplicities(),
-                                  BaseSpace::get_num_basis_table(),
-                                  BaseSpace::get_degree());
+								  this->space_data_->accumulated_interior_multiplicities(),
+								  this->space_data_->get_num_basis_table(),
+								  this->space_data_->get_degree());
 
     operators_ = BernsteinExtraction<dim, range, rank>(
                      this->get_grid(),
-                     BaseSpace::compute_knots_with_repetition(this->get_end_behaviour()),
-                     BaseSpace::accumulated_interior_multiplicities(),
+					 this->space_data_->compute_knots_with_repetition(
+							 this->space_data_->get_end_behaviour()),
+					 this->space_data_->accumulated_interior_multiplicities(),
                      this->get_degree());
 }
 
@@ -436,7 +447,7 @@ BSplineSpace<dim_, range_, rank_>::
 print_info(LogStream &out) const
 {
     out.begin_item("Spline Space:");
-    BaseSpace::print_info(out);
+    this->space_data_->print_info(out);
     out.end_item();
 
     out.begin_item("Patch Basis Indices:");

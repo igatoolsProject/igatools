@@ -31,7 +31,7 @@ using std::make_shared;
 using std::const_pointer_cast;
 
 IGA_NAMESPACE_OPEN
-
+#if 0
 template<int dim, int range, int rank>
 const Size ReferenceSpace<dim, range, rank>::n_components;
 
@@ -40,7 +40,40 @@ template<int dim, int range, int rank>
 const std::array<Size, ReferenceSpace<dim, range, rank>::n_components>
 ReferenceSpace<dim, range, rank>::components =
     sequence<ReferenceSpace<dim, range, rank>::n_components>();
+#endif
 
+
+template<int dim, int range, int rank>
+ReferenceSpace<dim, range, rank>::
+ReferenceSpace(const std::shared_ptr<const SpaceData> space_data)
+	:
+	GridSpace(std::const_pointer_cast<CartesianGrid<dim>>(space_data->get_grid())),
+	space_data_(space_data)
+{
+	Assert(this->get_grid() != nullptr,ExcNullPtr());
+	Assert(space_data_ != nullptr,ExcNullPtr());
+}
+
+template<int dim, int range, int rank>
+ReferenceSpace<dim, range, rank>::
+ReferenceSpace(const DegreeTable &deg,
+             std::shared_ptr<GridType> knots,
+             const bool homogeneous_range)
+    :
+	ReferenceSpace(
+			std::make_shared<const SpaceData>(SpaceData(deg, knots, SpaceData::InteriorReg::maximum)))
+{}
+
+template<int dim, int range, int rank>
+ReferenceSpace<dim, range, rank>::
+ReferenceSpace(const DegreeTable &deg,
+                      std::shared_ptr<GridType> knots,
+                      std::shared_ptr<const MultiplicityTable> interior_mult,
+                      const EndBehaviourTable &ends)
+	:
+	ReferenceSpace(
+			std::make_shared<const SpaceData>(SpaceData(deg, knots, interior_mult,ends)))
+{}
 
 
 

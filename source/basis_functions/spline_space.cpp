@@ -20,8 +20,8 @@
 
 
 #include <igatools/basis_functions/spline_space.h>
-#include <igatools/basis_functions/reference_space.h>
-#include <igatools/basis_functions/reference_element.h>
+//#include <igatools/basis_functions/reference_space.h>
+//#include <igatools/basis_functions/reference_element.h>
 #include <igatools/base/array_utils.h>
 
 using std::shared_ptr;
@@ -32,17 +32,28 @@ IGA_NAMESPACE_OPEN
 
 
 template<int dim, int range, int rank>
+const Size SplineSpace<dim, range, rank>::n_components;
+
+
+template<int dim, int range, int rank>
+const std::array<Size, SplineSpace<dim, range, rank>::n_components>
+SplineSpace<dim, range, rank>::components =
+    sequence<SplineSpace<dim, range, rank>::n_components>();
+
+
+template<int dim, int range, int rank>
 SplineSpace<dim, range, rank>::
 SplineSpace(const DegreeTable &deg,
             std::shared_ptr<GridType> knots,
             shared_ptr<const MultiplicityTable> interior_mult,
             const EndBehaviourTable &end_behaviour)
     :
-    RefSpace(knots),
+	grid_(knots),
     interior_mult_(interior_mult),
     deg_(deg),
     end_behaviour_(end_behaviour)
 {
+	Assert(grid_ != nullptr,ExcNullPtr());
 
 //    //-------------------
 //    const auto comp_map = interior_mult_->get_comp_map();
@@ -55,11 +66,15 @@ SplineSpace(const DegreeTable &deg,
 
     this->init();
 
+
+    //TODO (MM, Dec 27, 2014): fix the refinement for the SplineSpace
     // create a signal and a connection for the grid refinement
+#if 0
     this->connect_refinement_h_function(
         std::bind(&SplineSpace<dim,range,rank>::refine_h_after_grid_refinement, this,
                   std::placeholders::_1,std::placeholders::_2));
 
+#endif
 }
 
 template<int dim, int range, int rank>

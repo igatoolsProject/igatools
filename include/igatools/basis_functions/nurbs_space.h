@@ -66,14 +66,10 @@ public:
     static const int range     = range_;
     static const int rank      = rank_;
 
-    static const auto n_components = SpSpace::n_components;
+    static const auto n_components = SplineSpace<dim_, range_, rank_>::n_components;
 //    static constexpr auto   components = SpSpace::components;
     static constexpr auto dims = SpSpace::dims;
 
-    static std::array<Size,n_components> get_components()
-    {
-        return SpSpace::components;
-    }
 
 
 public:
@@ -273,17 +269,7 @@ public:
     /** Return the total number of dofs for the i-th space component. */
     Size get_num_basis(const int i) const;
 
-    /**
-     *  Return the total number of dofs for the i-th space component
-     *  and the j-th direction.
-     */
-    virtual Size get_num_basis(const int comp, const int dir) const override final;
 
-    /**
-     * Component-direction indexed table with the number of basis functions
-     * in each direction and component
-     */
-    virtual const SpaceDimensionTable &get_num_basis_table() const override final;
 
     SpaceDimensionTable get_num_all_element_basis() const
     {
@@ -291,17 +277,7 @@ public:
     }
 
 
-    virtual const std::array<Index,n_components> &get_components_map() const override final
-    {
-        return sp_space_->get_components_map();
-    }
 
-    /**
-     * Returns the degree of the BSpline space for each component and for each coordinate direction.
-     * \return The degree of the BSpline space for each component and for each coordinate direction.
-     * The first index of the returned object is the component id, the second index is the direction id.
-     */
-    const DegreeTable &get_degree() const;
 
     virtual bool is_bspline() const override final
     {

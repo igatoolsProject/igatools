@@ -130,7 +130,7 @@ NURBSSpace<dim_, range_, rank_>::
 NURBSSpace(std::shared_ptr<SpSpace> bs_space,
            const WeightFunctionPtrTable &weight_func_table)
     :
-    BaseSpace(bs_space->get_grid()),
+    BaseSpace(bs_space->get_space_data()),
     sp_space_(bs_space),
     weight_func_table_(weight_func_table)
 {
@@ -444,30 +444,6 @@ get_num_basis(const int i) const
     return sp_space_->get_num_basis(i);
 }
 
-template <int dim_, int range_, int rank_>
-Size
-NURBSSpace<dim_, range_, rank_>::
-get_num_basis(const int comp, const int dir) const
-{
-    return sp_space_->get_num_basis(comp, dir);
-}
-
-template <int dim_, int range_, int rank_>
-auto
-NURBSSpace<dim_, range_, rank_>::
-get_num_basis_table() const ->
-const SpaceDimensionTable &
-{
-    return sp_space_->get_num_basis_table();
-}
-
-template <int dim_, int range_, int rank_>
-auto
-NURBSSpace<dim_, range_, rank_>::
-get_degree() const -> const DegreeTable &
-{
-    return sp_space_->get_degree();
-}
 
 #if 0
 template <int dim_, int range_, int rank_>

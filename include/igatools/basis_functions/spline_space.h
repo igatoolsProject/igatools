@@ -22,9 +22,27 @@
 #define SPLINE_SPACE_H_
 
 #include <igatools/base/config.h>
-#include <igatools/basis_functions/reference_space.h>
+#include <igatools/utils/static_multi_array.h>
+#include <igatools/utils/dynamic_multi_array.h>
+//#include <igatools/geometry/cartesian_grid.h>
+#include <igatools/base/function.h>
+#include <igatools/base/function_element.h>
+
+
+//#include <igatools/basis_functions/reference_space.h>
 
 IGA_NAMESPACE_OPEN
+
+template <int,int,int> class DofDistribution;
+
+template <class T, int dim>
+inline
+vector<T>
+unique_container(std::array <T, dim> a)
+{
+    auto it = std::unique(a.begin(), a.end());
+    return vector<T>(a.begin(), it);
+}
 
 enum class EndBehaviour
 {
@@ -57,18 +75,225 @@ enum class EndBehaviour
  *
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
-class SplineSpace :
-    public ReferenceSpace<dim_,range_,rank_>
+class SplineSpace
 {
+public:
+    /**
+     *  Class to manage the component quantities with the knowledge of
+     * uniform range spaces
+     */
+    template<class T>
+    class ComponentContainer : public StaticMultiArray<T,range_,rank_>
+    {
+        using base_t = StaticMultiArray<T,range_,rank_>;
+    public:
+        /** Type of the iterator. */
+        using iterator =  MultiArrayIterator<ComponentContainer<T>>;
+
+        /** Type of the const iterator. */
+        using const_iterator =  MultiArrayConstIterator<ComponentContainer<T>>;
+    public:
+        using base_t::n_entries;
+
+        using ComponentMap = std::array <Index, n_entries>;
+
+        ComponentContainer(const ComponentMap &comp_map =
+                               sequence<n_entries>())
+            :
+            base_t(),
+            comp_map_(comp_map),
+            active_components_id_(unique_container<Index, n_entries>(comp_map)),
+            inactive_components_id_(n_entries)
+        {
+            auto all = sequence<n_entries>();
+            auto it=std::set_difference(all.begin(), all.end(),
+                                        active_components_id_.begin(),active_components_id_.end(),
+                                        inactive_components_id_.begin());
+
+            inactive_components_id_.resize(it-inactive_components_id_.begin());
+        }
+
+
+        ComponentContainer(const ComponentMap &comp_map, const T &val)
+            :
+            base_t(),
+            comp_map_(comp_map),
+            active_components_id_(unique_container<Index, n_entries>(comp_map)),
+            inactive_components_id_(n_entries)
+        {
+            auto all = sequence<n_entries>();
+            auto it=std::set_difference(all.begin(), all.end(),
+                                        active_components_id_.begin(),active_components_id_.end(),
+                                        inactive_components_id_.begin());
+
+            inactive_components_id_.resize(it-inactive_components_id_.begin());
+
+            for (auto i : active_components_id_)
+                base_t::operator[](i) = val;
+        }
+
+
+        /**
+         * Construct a homogenous range table with val value
+         */
+        ComponentContainer(const T &val)
+            :
+            comp_map_(filled_array<Index, n_entries>(0)),
+            active_components_id_(1,0),
+            inactive_components_id_(n_entries-1)
+        {
+            for (int i=1; i<n_entries; ++i)
+                inactive_components_id_[i-1] = i;
+
+            base_t::operator[](0) = val;
+        }
+
+
+        ComponentContainer(std::initializer_list<T> list)
+            :
+            base_t(list),
+            comp_map_(sequence<n_entries>()),
+            active_components_id_(unique_container<Index, n_entries>(comp_map_))
+        {};
+
+
+        const_iterator
+        cbegin() const
+        {
+            return const_iterator(*this,0);
+        }
+
+        const_iterator
+        cend() const
+        {
+            return const_iterator(*this,IteratorState::pass_the_end);
+        }
+
+
+        const_iterator
+        begin() const
+        {
+            return cbegin();
+        }
+
+        const_iterator
+        end() const
+        {
+            return cend();
+        }
+
+        iterator
+        begin()
+        {
+            return iterator(*this,0);
+        }
+
+        iterator
+        end()
+        {
+            return iterator(*this,IteratorState::pass_the_end);
+        }
+
+        /**
+         *  Flat index access operator (non-const version).
+         */
+        T &operator[](const Index i)
+        {
+            return base_t::operator[](comp_map_[i]);
+        }
+
+        /**
+         *  Flat index access operator (const version).
+         */
+        const T &operator[](const Index i) const
+        {
+            return base_t::operator[](comp_map_[i]);
+        }
+
+        const Index active(const Index i) const
+        {
+            return comp_map_[i];
+        }
+
+        const vector<Index> &get_active_components_id() const
+        {
+            return active_components_id_;
+        }
+
+        const vector<Index> &get_inactive_components_id() const
+        {
+            return inactive_components_id_;
+        }
+
+        void
+        print_info(LogStream &out) const
+        {
+            out.begin_item("Raw componets: ");
+            base_t::print_info(out);
+            out.end_item();
+            out.begin_item("Active componets ids: ");
+            active_components_id_.print_info(out);
+            out.end_item();
+            out.begin_item("Inactive componets ids: ");
+            inactive_components_id_.print_info(out);
+            out.end_item();
+        }
+
+        const std::array <Index, n_entries> &get_comp_map() const
+        {
+            return comp_map_;
+        }
+
+    private:
+        /** For each component return the index of the active component */
+        ComponentMap comp_map_;
+
+        /** list of the active components */
+        vector<Index> active_components_id_;
+
+        /** list of the inactive components */
+        vector<Index> inactive_components_id_;
+    };
+
+
+    /**
+     * Component holding the number of basis functions
+     */
+    class SpaceDimensionTable : public ComponentContainer<TensorSize<dim_> >
+    {
+        using base_t = ComponentContainer<TensorSize<dim_>>;
+    public:
+        //using base_t::ComponentContainer;
+
+        SpaceDimensionTable() = default;
+
+        SpaceDimensionTable(const base_t &n_basis)
+            :
+            base_t(n_basis),
+            comp_dimension(n_basis.get_comp_map()),
+            total_dimension(0)
+        {
+            for (auto comp : this->get_active_components_id())
+            {
+                auto size = (*this)[comp].flat_size();
+                comp_dimension[comp] = size;
+            }
+            for (auto size : comp_dimension)
+                total_dimension += size;
+        }
+
+        //TODO(pauletti, Sep 8, 2014): make this private and write some getters
+        ComponentContainer<Size> comp_dimension;
+        Size total_dimension;
+    };
 
 private:
-    using RefSpace = ReferenceSpace<dim_,range_,rank_>;
-    using GridSpace = FunctionSpaceOnGrid<CartesianGrid<dim_>>;
-    using typename GridSpace::GridType;
+    using GridType = CartesianGrid<dim_>;
+//    using typename GridType::GridType;
 
 
 public:
-    using GridSpace::dims;
+//    using GridSpace::dims;
 
     using Func = Function<dim_, 0, range_, rank_>;
 
@@ -80,33 +305,42 @@ public:
     using Div   = typename Func::Div;
 
 public:
-    using RefSpace::n_components;
+//    using RefSpace::n_components;
 //    static constexpr int n_components = RefSpace::template ComponentContainer<Size>::n_entries;
 //    static const std::array<Size, n_components> components;
 
 
 public:
+    using Degrees  = TensorIndex<dim_>;
+    using DegreeTable = ComponentContainer<Degrees>;
+
     using KnotCoordinates = typename GridType::KnotCoordinates;
     using BoundaryKnots = std::array<CartesianProductArray<Real,2>, dim_>;
     using Multiplicity = CartesianProductArray<Size, dim_>;
 
-    using DegreeTable = typename RefSpace::DegreeTable;
+    using MultiplicityTable = ComponentContainer<Multiplicity>;
+    using BoundaryKnotsTable = ComponentContainer<BoundaryKnots>;
+    using KnotsTable = ComponentContainer<KnotCoordinates>;
 
-    using MultiplicityTable = typename RefSpace::template ComponentContainer<Multiplicity>;
-    using BoundaryKnotsTable = typename RefSpace::template ComponentContainer<BoundaryKnots>;
-    using KnotsTable = typename RefSpace::template ComponentContainer<KnotCoordinates>;
-//    using PeriodicTable = typename RefSpace::template ComponentContainer<std::array<bool, dim_> >;
-
-    using IndexSpaceTable = typename RefSpace::template ComponentContainer<DynamicMultiArray<Index,dim_>>;
+    using IndexSpaceTable = ComponentContainer<DynamicMultiArray<Index,dim_>>;
     using IndexSpaceMarkTable = Multiplicity;
 
+    static constexpr int n_components = ComponentContainer<Size>::n_entries;
 
-    using SpaceDimensionTable = typename RefSpace::SpaceDimensionTable;
+    using ComponentMap = typename ComponentContainer<Size>::ComponentMap;
 
-    using BCTable = typename RefSpace::BCTable;
+    /**
+     * Type alias for the boundary conditions on each face of each scalar component of the space.
+     */
+    using BCTable = ComponentContainer<std::array<BoundaryConditionType,UnitElement<dim_>::n_faces>>;
+
+public:
+    static const std::array<Size, n_components> components;
 
 
-    using EndBehaviourTable = typename RefSpace::template ComponentContainer<std::array<EndBehaviour, dim_> >;
+public:
+
+    using EndBehaviourTable = ComponentContainer<std::array<EndBehaviour, dim_> >;
 
     // For the interior multiplicities
     // maximum regularity
@@ -140,7 +374,7 @@ public:
     }
 
 
-    virtual const std::array<Index,n_components> &get_components_map() const override final
+    const ComponentMap &get_components_map() const
     {
         return interior_mult_->get_comp_map();
     }
@@ -151,7 +385,7 @@ public:
      * Total number of basis functions. This is the dimensionality
      * of the space.
      */
-    virtual Size get_num_basis() const override final
+    Size get_num_basis() const
     {
         return space_dim_.total_dimension;
     }
@@ -160,7 +394,7 @@ public:
      * Total number of basis functions
      * for the comp space component.
      */
-    virtual Size get_num_basis(const int comp) const override final
+    Size get_num_basis(const int comp) const
     {
         return space_dim_.comp_dimension[comp];
     }
@@ -169,7 +403,7 @@ public:
      *  Total number of basis functions for the comp space component
      *  and the dir direction.
      */
-    virtual Size get_num_basis(const int comp, const int dir) const override final
+    Size get_num_basis(const int comp, const int dir) const
     {
         return  space_dim_[comp][dir];
     }
@@ -178,7 +412,7 @@ public:
      * Component-direction indexed table with the number of basis functions
      * in each direction and component
      */
-    virtual const SpaceDimensionTable &get_num_basis_table() const override final
+    const SpaceDimensionTable &get_num_basis_table() const
     {
         return space_dim_;
     }
@@ -188,9 +422,9 @@ public:
      * Component table with the offset of basis functions
      * in each component of an element.
      */
-    virtual SpaceDimensionTable get_num_all_element_basis() const override
+    SpaceDimensionTable get_num_all_element_basis() const
     {
-        typename RefSpace::template ComponentContainer<TensorSize<dim_>> n_basis(deg_.get_comp_map());
+        ComponentContainer<TensorSize<dim_>> n_basis(deg_.get_comp_map());
         for (auto comp : deg_.get_active_components_id())
             n_basis[comp] = TensorSize<dim_>(deg_[comp]+1);
 
@@ -201,9 +435,9 @@ public:
      * Component table with the offset of basis functions
      * in each component of the space.
      */
-    typename RefSpace::template ComponentContainer<Size> get_basis_offset() const
+    ComponentContainer<Size> get_basis_offset() const
     {
-        typename RefSpace::template ComponentContainer<Size> offset;
+        ComponentContainer<Size> offset;
         offset[0] = 0;
         for (int comp = 1; comp < n_components; ++comp)
             offset[comp] = offset[comp-1] + space_dim_.comp_dimension[comp];
@@ -242,7 +476,7 @@ public:
      */
     MultiplicityTable accumulated_interior_multiplicities() const;
 
-    virtual void print_info(LogStream &out) const override;
+    void print_info(LogStream &out) const;
 
 
 private:
@@ -260,6 +494,9 @@ private:
 
 
 private:
+
+    std::shared_ptr<const CartesianGrid<dim_> > grid_;
+
     std::shared_ptr<const MultiplicityTable> interior_mult_;
 
     DegreeTable deg_;
@@ -275,6 +512,11 @@ private:
     BCTable boundary_conditions_table_;
 
 public:
+
+    std::shared_ptr<const CartesianGrid<dim_> > get_grid() const
+	{
+    	return grid_;
+	}
 
     /** Returns the multiplicity of the internal knots that defines the space. */
     std::shared_ptr<const MultiplicityTable> get_interior_mult() const
@@ -366,64 +608,39 @@ protected:
     void init();
 
 public:
-    virtual bool is_bspline() const override
-    {
-        Assert(false,ExcMessage("This class should not have this function."))
-        return true;
-    }
 
-    virtual vector<Index> get_loc_to_global(const CartesianGridElement<dim_> &element) const override
+    vector<Index> get_loc_to_global(const CartesianGridElement<dim_> &element) const
     {
         Assert(false,ExcMessage("This class should not have this function."))
         return vector<Index>();
     }
 
-    virtual vector<Index> get_loc_to_patch(const CartesianGridElement<dim_> &element) const override
+    vector<Index> get_loc_to_patch(const CartesianGridElement<dim_> &element) const
     {
         Assert(false,ExcMessage("This class should not have this function."))
         return vector<Index>();
-    }
-
-    using ElementIterator = CartesianGridIterator<ReferenceElement<dim_,range_,rank_>>;
-
-    virtual ElementIterator begin() const override
-    {
-        Assert(false,ExcMessage("This class should not have this function."));
-        return ElementIterator(nullptr);
-    }
-
-    virtual ElementIterator end() const override
-    {
-        Assert(false,ExcMessage("This class should not have this function."));
-        return ElementIterator(nullptr);
-    }
-
-    virtual ElementIterator last() const override
-    {
-        Assert(false,ExcMessage("This class should not have this function."));
-        return ElementIterator(nullptr);
     }
 
 
     /** Returns the container with the global dof distribution (const version). */
-    virtual const DofDistribution<dim_, range_, rank_> &
-    get_dof_distribution_global() const override
+    const DofDistribution<dim_, range_, rank_> &
+    get_dof_distribution_global() const
     {
         Assert(false,ExcMessage("This class should not have this function."));
         return *reinterpret_cast<const DofDistribution<dim_,range_,rank_> *>(this);
     }
 
     /** Returns the container with the global dof distribution (non const version). */
-    virtual DofDistribution<dim_, range_, rank_> &
-    get_dof_distribution_global() override
+    DofDistribution<dim_, range_, rank_> &
+    get_dof_distribution_global()
     {
         Assert(false,ExcMessage("This class should not have this function."));
         return *reinterpret_cast<DofDistribution<dim_,range_,rank_> *>(this);
     }
 
     /** Returns the container with the patch dof distribution (const version). */
-    virtual const DofDistribution<dim_, range_, rank_> &
-    get_dof_distribution_patch() const override
+    const DofDistribution<dim_, range_, rank_> &
+    get_dof_distribution_patch() const
     {
         Assert(false,ExcMessage("This class should not have this function."));
         return *reinterpret_cast<const DofDistribution<dim_,range_,rank_> *>(this);
@@ -431,37 +648,11 @@ public:
 
 
     /** Returns the container with the patch dof distribution (non const version). */
-    virtual DofDistribution<dim_, range_, rank_> &
-    get_dof_distribution_patch() override
+    DofDistribution<dim_, range_, rank_> &
+    get_dof_distribution_patch()
     {
         Assert(false,ExcMessage("This class should not have this function."));
         return *reinterpret_cast<DofDistribution<dim_,range_,rank_> *>(this);
-    }
-
-
-public:
-    virtual std::shared_ptr<typename RefSpace::ElementHandler> create_elem_handler() const override
-    {
-        Assert(false,ExcMessage("This class should not have this function."));
-        return nullptr;
-    }
-
-    virtual std::shared_ptr<ReferenceElement<dim_,range_,rank_> > create_element(const Index flat_index) const override
-    {
-        Assert(false,ExcMessage("This class should not have this function."));
-        return nullptr;
-    }
-
-    virtual std::shared_ptr<SpaceManager> get_space_manager() override
-    {
-        Assert(false,ExcMessage("This class should not have this function."));
-        return nullptr;
-    }
-
-    virtual std::shared_ptr<const SpaceManager> get_space_manager() const override
-    {
-        Assert(false,ExcMessage("This class should not have this function."));
-        return nullptr;
     }
 
 };

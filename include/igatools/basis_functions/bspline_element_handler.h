@@ -153,7 +153,7 @@ class BSplineElementHandler : public ReferenceElementHandler<dim_,range_,rank_>
     using base_t = ReferenceElementHandler<dim_,range_,rank_>;
     using self_t = BSplineElementHandler<dim_,range_,rank_>;
     using Space = BSplineSpace<dim_,range_,rank_>;
-    static const Size n_components =  Space::n_components;
+    static const Size n_components =  SplineSpace<dim_,range_,rank_>::n_components;
 
 
     template<class T>

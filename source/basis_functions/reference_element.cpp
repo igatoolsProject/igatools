@@ -20,7 +20,7 @@
 
 
 #include <igatools/basis_functions/reference_element.h>
-#include <igatools/basis_functions/spline_space.h>
+#include <igatools/basis_functions/reference_space.h>
 #include <igatools/basis_functions/space_element.h>
 
 
