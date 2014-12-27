@@ -20,15 +20,12 @@
 
 #include <igatools/io/reader.h>
 #include <igatools/base/exceptions.h>
-//#include <igatools/utils/array.h>
 #include <igatools/base/ig_function.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/nurbs_element.h>
 
-
 #include <boost/algorithm/string.hpp>
 #include <boost/property_tree/xml_parser.hpp>
-
 
 #include <set>
 
@@ -38,9 +35,7 @@ using std::set;
 
 using namespace iga::reader_utils;
 
-
 IGA_NAMESPACE_OPEN
-
 
 namespace reader_utils
 {
