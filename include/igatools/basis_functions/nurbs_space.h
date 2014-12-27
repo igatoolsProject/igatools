@@ -21,9 +21,6 @@
 #ifndef NURBS_SPACE_H_
 #define NURBS_SPACE_H_
 
-
-
-
 #include <igatools/base/config.h>
 
 #include <igatools/basis_functions/bspline_space.h>
@@ -31,7 +28,6 @@
 #include <igatools/base/ig_function.h>
 
 #ifdef NURBS
-
 
 IGA_NAMESPACE_OPEN
 
@@ -154,44 +150,7 @@ public:
     using Weights = DynamicMultiArray<Real,dim>;
     using WeightsTable = ComponentContainer<Weights>;
 
-
-
 public:
-#if 0
-    /** @name Creators*/
-    ///@{
-    /**
-     * Returns a shared_ptr wrapping a maximum regularity NURBSSpace over CartesianGrid
-     * @p knots for the given @p degree in all directions and homogeneous in all components.
-     * @note All weights are set to 1.0, so the resulting space has the same structure of a BSpline space.
-     */
-    static std::shared_ptr< self_t >
-    create(const int degree,
-           std::shared_ptr< GridType > knots,
-           const WeightsTable &weights);
-
-    /**
-     * Returns a shared_ptr wrapping a maximum regularity NURBSSpace over CartesianGrid
-     * @p knots for the given @p degree for each direction and for each component.
-     * @note All weights are set to 1.0, so the resulting space has the same structure of a BSpline space.
-     */
-    static std::shared_ptr< self_t >
-    create(const DegreeTable &degree,
-           std::shared_ptr<GridType> knots,
-           const WeightsTable &weights);
-
-    /**
-     * Returns a shared_ptr wrapping a NURBSSpace over the CartesianGrid @p knots with
-     * the given multiplicity vector @p mult_vector for each component
-     * and for the given @p degree for each direction and for each component.
-     */
-    static std::shared_ptr<self_t>
-    create(const DegreeTable &deg,
-           std::shared_ptr<GridType> knots,
-           std::shared_ptr<const MultiplicityTable> interior_mult,
-           const EndBehaviourTable &ends = EndBehaviourTable(),
-           const WeightsTable &weights = WeightsTable());
-#endif
     /**
      * Returns a shared_ptr wrapping a NURBSSpace from a BSplineSpace and a scalar weight function.
      */
@@ -204,46 +163,13 @@ public:
     /** Destructor */
     ~NURBSSpace() = default;
 
-
     std::shared_ptr<SpaceManager> get_space_manager();
 
     std::shared_ptr<const SpaceManager> get_space_manager() const;
 
-
 protected:
     /** @name Constructor */
     ///@{
-#if 0
-    /**
-     * Constructs a maximum regularity NURBSSpace over CartesianGrid
-     * @p knots for the given @p degree in all directions and homogeneous in all components.
-     * @note All weights are set to 1.0, so the resulting space has the same structure of a BSpline space.
-     */
-    explicit NURBSSpace(const int degree,
-                        std::shared_ptr< GridType > knots,
-                        const WeightsTable &weights);
-
-    /**
-     * Constructs a maximum regularity NURBSSpace over CartesianGrid
-     * @p knots for the given @p degree for each direction and for each component.
-     * @note All weights are set to 1.0, so the resulting space has the same structure of a BSpline space.
-     */
-    explicit NURBSSpace(const DegreeTable &degree,
-                        std::shared_ptr<GridType> knots,
-                        const WeightsTable &weights);
-
-    /**
-     * Construct a NURBSSpace over the CartesianGrid @p knots with
-     * the given multiplicity vector @p mult_vector for each component
-     * and for the given @p degree for each direction and for each component.
-     */
-    explicit  NURBSSpace(const DegreeTable &deg,
-                         std::shared_ptr<GridType> knots,
-                         std::shared_ptr<const MultiplicityTable> interior_mult,
-                         const EndBehaviourTable &ends,
-                         const WeightsTable &weights);
-
-#endif
     /**
      * Construct a NURBSSpace from a BSplineSpace and a table of weights.
      */
@@ -293,25 +219,12 @@ public:
      */
     const DegreeTable &get_degree() const;
 
-#if 0
-    /**
-     * Returns the multiplicity of the internal knots that defines the BSpline
-     * space for each component and for each coordinate direction.
-     * \return The multiplicity of the internal knots that defines the BSpline
-     * space for each component and for each coordinate direction.
-     */
-    std::shared_ptr<const MultiplicityTable> get_interior_mult() const;
-#endif
-
     vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;
 
     vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const;
     ///@}
 
-
-
     const std::shared_ptr<SpSpace> get_spline_space() const;
-
 
     /** Returns the container with the global dof distribution (const version). */
     const DofDistribution<dim, range, rank> &get_dof_distribution_global() const;
@@ -335,17 +248,6 @@ public:
 
     std::shared_ptr<const self_t >
     get_reference_space() const;
-
-
-    std::shared_ptr<RefFaceSpace>
-    get_ref_face_space(const Index face_id,
-                       vector<Index> &face_to_element_dofs,
-                       typename GridType::FaceGridMap &elem_map) const;
-
-    std::shared_ptr<FaceSpace>
-    get_face_space(const Index face_id,
-                   vector<Index> &face_to_element_dofs) const;
-
 #endif
 
     /**
@@ -368,16 +270,11 @@ public:
      */
     ElementIterator end() const;
 
-    /**
-     * Get the weights of the NURBSSpace.
-     */
-    const WeightsTable &get_weights() const;
-#if 0
-    /**
-     * Reset the weights of the NURBSSpace.
-     */
-    void reset_weights(const WeightsTable &weights);
-#endif
+//    /**
+//     * Get the weights of the NURBSSpace.
+//     */
+//    const WeightsTable &get_weights() const;
+
     /**
      * Prints internal information about the space.
      * @note Mostly used for debugging and testing.
@@ -471,10 +368,6 @@ private:
 #endif
     friend ElementAccessor;
     friend ElementHandler;
-//    friend class NURBSUniformQuadCache<dim_,range_,rank_>;
-
-
-
 
     /**
      * Returns the weight coefficient associated with a given basis function.
@@ -482,8 +375,6 @@ private:
     Real get_weight_coef_from_basis_id(const Index basis_id) const;
 
 };
-
-
 
 IGA_NAMESPACE_CLOSE
 #endif /* #ifdef NURBS */
