@@ -33,7 +33,7 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
                 const MultiplicityTable &accum_mult,
                 const SpaceDimensionTable &n_basis1,
                 const DegreeTable &degree_table,
-				const EndBehaviourTable &end_b,
+				const PeriodicTable &periodic,
                 DistributionPolicy pol)
     :
     TensorSizedContainer<dim>(grid->get_num_intervals()),
@@ -42,16 +42,16 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
     policy_(pol)
 {
 	Assert(pol == DistributionPolicy::standard, ExcNotImplemented());
+
 	typename SpaceDimensionTable::base_t aux;
 	for (int comp = 0 ; comp < Space::n_components ; ++comp)
 		for (int dir = 0 ; dir < dim ; ++dir)
 		{
 			aux[comp][dir] = n_basis1[comp][dir];
-			if (end_b[comp][dir] == BasisEndBehaviour::periodic)
+			if (periodic[comp][dir])
 				aux[comp][dir] += degree_table[comp][dir] + 1;
 		}
 	SpaceDimensionTable n_basis(aux);
-
 
     //-----------------------------------------------------------------------
     // fills the standard distribution, sorted by component and
@@ -106,6 +106,8 @@ get_min_dof_id() const
 {
     return *std::min_element(dofs_view_.cbegin(),dofs_view_.cend());
 }
+
+
 
 template<int dim, int range, int rank>
 Index
@@ -286,6 +288,8 @@ add_dofs_offset(const Index offset)
             dof_id += offset;
 }
 
+
+
 template<int dim, int range, int rank>
 auto
 DofDistribution<dim, range, rank>::
@@ -293,6 +297,8 @@ get_index_table() const -> const IndexDistributionTable &
 {
     return index_table_;
 }
+
+
 
 template<int dim, int range, int rank>
 auto

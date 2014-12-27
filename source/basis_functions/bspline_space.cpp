@@ -25,7 +25,6 @@
 
 using std::endl;
 using std::array;
-
 using std::shared_ptr;
 using std::make_shared;
 using std::const_pointer_cast;
@@ -107,12 +106,12 @@ BSplineSpace(const DegreeTable &deg,
 			BaseSpace::accumulated_interior_multiplicities(),
 			BaseSpace::get_num_basis_table(),
 			BaseSpace::get_degree(),
-			end_b_),
+			periodic),
 			dof_distribution_patch_(knots,
 					BaseSpace::accumulated_interior_multiplicities(),
 					BaseSpace::get_num_basis_table(),
 					BaseSpace::get_degree(),
-					end_b_),
+					periodic),
 					operators_(knots,
 							BaseSpace::compute_knots_with_repetition(end_b_),
 							BaseSpace::accumulated_interior_multiplicities(),
@@ -165,7 +164,6 @@ get_reference_space() const -> shared_ptr<const self_t>
 {
     return this->shared_from_this();
 }
-
 
 
 
@@ -229,7 +227,6 @@ get_ref_sub_space(const int s_id,
     auto sub_degree = this->template get_sub_space_degree<k>(s_id);
     auto sub_periodic = this->template get_sub_space_periodicity<k>(s_id);
 
-
     using SubEndBT = typename SubRefSpace<k>::EndBehaviourTable;
     auto &k_elem = UnitElement<dim>::template get_elem<k>(s_id);
     const auto &active_dirs = k_elem.active_directions;
@@ -269,7 +266,6 @@ get_ref_sub_space(const int s_id,
             }
             dof_map[comp_i] = elem_global_indices(tensor_index);
         }
-
     }
 
     return sub_space;
@@ -288,8 +284,6 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
 {
     using SubMap = SubMapFunction<k, dim, space_dim>;
     auto grid =  this->get_grid();
-//    typename GridType::template InterGridMap<k> elem_map;
-//    auto sub_grid = this->get_grid()->template get_sub_grid<k>(s_id, elem_map);
 
     auto sub_ref_space = get_ref_sub_space(s_id, dof_map, sub_grid);
     auto F = IdentityFunction<dim>::create(grid);
@@ -314,14 +308,14 @@ refine_h_after_grid_refinement(
                                    BaseSpace::accumulated_interior_multiplicities(),
                                    BaseSpace::get_num_basis_table(),
                                    BaseSpace::get_degree(),
-								   end_b_);
+								   BaseSpace::get_periodic_table());
 
     dof_distribution_patch_ = DofDistribution<dim, range, rank>(
                                   this->get_grid(),
                                   BaseSpace::accumulated_interior_multiplicities(),
                                   BaseSpace::get_num_basis_table(),
                                   BaseSpace::get_degree(),
-								  end_b_);
+								  BaseSpace::get_periodic_table());
 
     operators_ = BernsteinExtraction<dim, range, rank>(
                      this->get_grid(),
@@ -329,8 +323,6 @@ refine_h_after_grid_refinement(
                      BaseSpace::accumulated_interior_multiplicities(),
                      this->get_degree());
 }
-
-
 
 
 
@@ -383,6 +375,7 @@ get_dof_distribution_patch() -> DofDistribution<dim, range, rank> &
 }
 
 
+
 template<int dim_, int range_, int rank_>
 Index
 BSplineSpace<dim_, range_, rank_>::
@@ -391,6 +384,7 @@ get_global_dof_id(const TensorIndex<dim> &tensor_index,
 {
     return dof_distribution_global_.get_index_table()[comp](tensor_index);
 }
+
 
 
 template<int dim_, int range_, int rank_>
@@ -410,6 +404,7 @@ get_loc_to_patch(const CartesianGridElement<dim> &element) const
 {
     return dof_distribution_patch_.get_loc_to_global_indices(element);
 }
+
 
 
 template<int dim_, int range_, int rank_>
@@ -433,6 +428,8 @@ get_space_manager() -> shared_ptr<SpaceManager>
     return space_manager;
 }
 
+
+
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
@@ -440,6 +437,8 @@ get_space_manager() const -> std::shared_ptr<const SpaceManager>
 {
     return const_cast<self_t &>(*this).get_space_manager();
 }
+
+
 
 template<int dim_, int range_, int rank_>
 void

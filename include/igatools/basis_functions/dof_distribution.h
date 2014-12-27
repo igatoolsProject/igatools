@@ -56,7 +56,7 @@ public:
     using Space = SplineSpace<dim, range, rank>;
     using MultiplicityTable = typename Space::MultiplicityTable;
     using DegreeTable = typename Space::DegreeTable;
-    using EndBehaviourTable = typename Space::EndBehaviourTable;
+    using PeriodicTable = typename Space::PeriodicTable;
     using SpaceDimensionTable = typename Space::SpaceDimensionTable;
     using DofsPerElementTable = typename Space::template ComponentContainer<Index>;
     using IndexDistributionTable =
@@ -84,9 +84,6 @@ public:
     /** Type alias for the ConstView on the dofs held by the single-patch space. */
     using DofsConstView = ConstView<DofsIterator,DofsConstIterator>;
 
-
-
-
     enum class DistributionPolicy
     {
         standard, component, other
@@ -103,7 +100,7 @@ public:
                     const MultiplicityTable &accum_mult,
                     const SpaceDimensionTable &n_basis,
                     const DegreeTable &degree_table,
-					const EndBehaviourTable &end_b,
+					const PeriodicTable &periodic,
                     DistributionPolicy pol = DistributionPolicy::standard);
 
     /** Copy constructor.*/
