@@ -448,10 +448,10 @@ auto
 SplineSpace<dim, range, rank>::
 multiplicity_regularity(const InteriorReg reg,
 		const DegreeTable &deg,
-		const TensorSize<dim> &n_elem) const
+		const TensorSize<dim> &n_elem)
 		-> std::shared_ptr<MultiplicityTable>
 {
-	auto  res = std::make_shared<MultiplicityTable>(deg_.get_comp_map());
+	auto  res = std::make_shared<MultiplicityTable>(deg.get_comp_map());
 
 
     for (int comp : res->get_active_components_id())

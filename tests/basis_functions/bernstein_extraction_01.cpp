@@ -33,13 +33,15 @@ void
 test()
 {
 	using SplineSpace = SplineSpace<dim>;
-	using MultiplicityTable = typename SplineSpace::MultiplicityTable;
+
 
 	typename SplineSpace::DegreeTable deg {{2}};
 
 	auto grid = CartesianGrid<dim>::create(4);
 
-	SplineSpace sp_spec(deg, grid, InteriorReg::maximum, BasisEndBehaviour::interpolatory);
+	auto int_mult = SplineSpace::multiplicity_regularity(InteriorReg::maximum,
+	    		deg, grid->get_num_intervals());
+	SplineSpace sp_spec(deg, grid, int_mult);
 
 	//CartesianProductArray<Real,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
 	//typename SplineSpace::BoundaryKnotsTable bdry_knots { {bn_x} };

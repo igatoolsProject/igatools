@@ -26,8 +26,7 @@
 
 #include "../tests.h"
 #include <igatools/basis_functions/bernstein_extraction.h>
-
-using std::shared_ptr;
+// TODO (pauletti, Dec 26, 2014): this test needs to be update to current standards
 
 int main()
 {
@@ -43,11 +42,12 @@ int main()
         auto grid = CartesianGrid<dim>::create(4);
 
         auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable({ {{1,3}} }));
-        SplineSpace sp_spec(deg, grid, int_mult,  typename SplineSpace::EndBehaviourTable(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::end_knots)));
+        SplineSpace sp_spec(deg, grid, int_mult);
 
         CartesianProductArray<Real,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
         typename SplineSpace::BoundaryKnotsTable bdry_knots { {bn_x} };
-        auto rep_knots = sp_spec.compute_knots_with_repetition(sp_spec.get_end_behaviour(), bdry_knots);
+        typename SplineSpace::EndBehaviourTable end_b(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::end_knots));
+        auto rep_knots = sp_spec.compute_knots_with_repetition(end_b, bdry_knots);
         auto acum_mult = sp_spec.accumulated_interior_multiplicities();
 
         rep_knots.print_info(out);
@@ -58,17 +58,18 @@ int main()
     {
         const int dim=1;
         using SplineSpace = SplineSpace<dim>;
-        using MultiplicityTable = typename SplineSpace::MultiplicityTable;
 
         typename SplineSpace::DegreeTable deg {{3}};
 
         CartesianProductArray<Real,dim> knots({{0,1,2,3,4}});
         auto grid = CartesianGrid<dim>::create(knots);
+        auto int_mult = SplineSpace::multiplicity_regularity(InteriorReg::maximum,
+            		deg, grid->get_num_intervals());
+        SplineSpace sp_spec(deg, grid, int_mult);
 
-        SplineSpace sp_spec(deg, grid, InteriorReg::maximum);
+        typename SplineSpace::EndBehaviourTable end_b(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::interpolatory));
 
-
-        auto rep_knots = sp_spec.compute_knots_with_repetition(sp_spec.get_end_behaviour());
+        auto rep_knots = sp_spec.compute_knots_with_repetition(end_b);
         auto acum_mult = sp_spec.accumulated_interior_multiplicities();
 
 

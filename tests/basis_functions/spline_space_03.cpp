@@ -23,7 +23,7 @@
  *  date:
  *
  */
-
+// TODO (pauletti, Dec 26, 2014): remove this test
 #include "../tests.h"
 #include <igatools/basis_functions/spline_space.h>
 

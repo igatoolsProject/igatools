@@ -24,6 +24,7 @@
  *
  */
 
+// TODO (pauletti, Dec 26, 2014): make this test dim independent
 #include "../tests.h"
 #include <igatools/basis_functions/spline_space.h>
 
@@ -42,7 +43,11 @@ void test_1d()
 
     CartesianProductArray<Real,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
     typename SplineSpace::BoundaryKnotsTable bdry_knots { {bn_x} };
-    auto rep_knots = sp_spec.compute_knots_with_repetition(bdry_knots);
+
+    typename SplineSpace::EndBehaviour eb(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::end_knots));
+    typename SplineSpace::EndBehaviourTable ebt(eb);
+
+    auto rep_knots = sp_spec.compute_knots_with_repetition(ebt, bdry_knots);
     out << "Boundary knots:\n";
     for (const auto &v : bdry_knots)
         for (const auto &w : v)
@@ -70,7 +75,11 @@ void test_2d()
     iga::CartesianProductArray<double, 2> bk_x {{-0.5, 0}, {1.2, 1.3}};
     iga::CartesianProductArray<double, 2> bk_y {{-0.6,0,0,0}, {1,1.1,1.6, 1.6}};
     typename SplineSpace::BoundaryKnotsTable bdry_knots { {bk_x, bk_y} };
-    auto rep_knots = sp_spec.compute_knots_with_repetition(bdry_knots);
+
+    typename SplineSpace::EndBehaviour eb(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::end_knots));
+       typename SplineSpace::EndBehaviourTable ebt(eb);
+
+    auto rep_knots = sp_spec.compute_knots_with_repetition(ebt, bdry_knots);
     out << "Boundary knots:\n";
     for (const auto &v : bdry_knots)
         for (const auto &w : v)
@@ -101,7 +110,9 @@ void test_3d()
     iga::CartesianProductArray<double, 2> bk_z {{-0.6}, {1.6}};
     typename SplineSpace::BoundaryKnotsTable bdry_knots { {bk_x, bk_y, bk_z} };
 
-    auto rep_knots = sp_spec.compute_knots_with_repetition(bdry_knots);
+    typename SplineSpace::EndBehaviour eb(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::end_knots));
+       typename SplineSpace::EndBehaviourTable ebt(eb);
+    auto rep_knots = sp_spec.compute_knots_with_repetition(ebt, bdry_knots);
     out << "Boundary knots:\n";
     for (const auto &v : bdry_knots)
         for (const auto &w : v)
@@ -130,7 +141,11 @@ void test_2d_2()
     iga::CartesianProductArray<double, 2> bk_y {{-0.6,0,0,0}, {1,1,1.6, 1.6}};
 
     typename SplineSpace::BoundaryKnotsTable bdry_knots { {bk_x, bk_y}, {bk_y, bk_x} };
-    auto rep_knots = sp_spec.compute_knots_with_repetition(bdry_knots);
+
+
+    typename SplineSpace::EndBehaviour eb(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::end_knots));
+       typename SplineSpace::EndBehaviourTable ebt(eb);
+    auto rep_knots = sp_spec.compute_knots_with_repetition(ebt, bdry_knots);
     out << "Boundary knots:\n";
     for (const auto &v : bdry_knots)
         for (const auto &w : v)

@@ -201,19 +201,19 @@ public:
 								 PeriodicTable(filled_array<bool,dim>(false)));
 
 
-    /**
-     * Component uniform constructor, it assumes all component belong to
-     * the same scalar space
-     */
-    explicit SplineSpace(const Degrees &deg,
-    		std::shared_ptr<GridType> knots,
-			const InteriorReg &interior_reg,
-			const Periodicity periodic = filled_array<bool,dim>(false))
-    :SplineSpace(DegreeTable(deg), knots,
-    		multiplicity_regularity(interior_reg, DegreeTable(deg),
-    				knots->get_num_intervals()),
-					PeriodicTable(periodic))
-    {}
+//    /**
+//     * Component uniform constructor, it assumes all component belong to
+//     * the same scalar space
+//     */
+//    explicit SplineSpace(const Degrees &deg,
+//    		std::shared_ptr<GridType> knots,
+//			const InteriorReg &interior_reg,
+//			const Periodicity periodic = filled_array<bool,dim>(false))
+//    :SplineSpace(DegreeTable(deg), knots,
+//    		multiplicity_regularity(interior_reg, DegreeTable(deg),
+//    				knots->get_num_intervals()),
+//					PeriodicTable(periodic))
+//    {}
 
 
     const DegreeTable &get_degree() const
@@ -324,10 +324,11 @@ public:
      * Fill the multiplicy for the maximum possible regularity
      *  of the given number of knots
      */
+    static
     std::shared_ptr<MultiplicityTable>
     multiplicity_regularity(const InteriorReg reg,
     		const DegreeTable &deg,
-			const TensorSize<dim> &n_elem) const;
+			const TensorSize<dim> &n_elem);
 
 public:
     void print_info(LogStream &out) const;
