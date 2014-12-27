@@ -42,31 +42,22 @@ SplineSpace<dim, range, rank>::
 SplineSpace(const DegreeTable &deg,
             std::shared_ptr<GridType> knots,
             shared_ptr<const MultiplicityTable> interior_mult,
-			const EndBehaviourTable &end_behaviour)
+			const PeriodicTable &periodic)
     :
     GridSpace(knots),
     interior_mult_(interior_mult),
     deg_(deg),
-	end_behaviour_(end_behaviour)
+	periodic_(periodic)
 {
-
-//    //-------------------
-//    const auto comp_map = interior_mult_->get_comp_map();
-//
-//    end_behaviour_ = EndBehaviourTable(comp_map);
-//    for (const auto &comp : end_behaviour_.get_active_components_id())
-//        end_behaviour_[comp] = filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::interpolatory);
-//    //-------------------
-
-
     this->init();
 
     // create a signal and a connection for the grid refinement
     this->connect_refinement_h_function(
         std::bind(&SplineSpace<dim,range,rank>::refine_h_after_grid_refinement, this,
                   std::placeholders::_1,std::placeholders::_2));
-
 }
+
+
 
 template<int dim, int range, int rank>
 void
@@ -93,22 +84,21 @@ init()
         }
     }
 #endif
-    typename SpaceDimensionTable::base_t aux;
-    for (int iComp = 0; iComp < n_components; ++iComp)
-    {
-        for (int j = 0; j < dim; ++j)
+
+    // Determine the dimensionality of the spline space
+    typename SpaceDimensionTable::base_t n_basis;
+    for (auto iComp : components)
+    	for (int dir = 0; dir < dim; ++dir)
         {
-            const auto deg = deg_[iComp][j];
-            const auto &mult = (*interior_mult_)[iComp].get_data_direction(j);
+            const auto deg = deg_[iComp][dir];
+            const auto &mult = (*interior_mult_)[iComp].get_data_direction(dir);
 
-            Index size = (end_behaviour_[iComp][j] == BasisEndBehaviour::periodic) ? 0 : deg + 1;
-
+            Index size = periodic_[iComp][dir] ? 0 : deg + 1;
             for (auto &n: mult)
                 size += n;
-            aux[iComp][j] = size;
+            n_basis[iComp][dir] = size;
         }
-    }
-    space_dim_=aux;
+    space_dim_ = n_basis;
 }
 
 
@@ -193,44 +183,66 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
 		const BoundaryKnotsTable &boundary_knots) const
 -> KnotsTable
 {
+
 #ifndef NDEBUG
-    for (int iComp = 0; iComp < n_components; ++iComp)
+    for (auto iComp : components)
     {
         for (int j = 0; j < dim; ++j)
         {
-           // const auto deg = deg_[iComp][j];
-            //onst auto order = deg + 1;
-            const auto &knots = this->get_grid()->get_knot_coordinates(j);
-            const auto &left_knts = boundary_knots[iComp][j].get_data_direction(0);
-            const auto &right_knts = boundary_knots[iComp][j].get_data_direction(1);
+        	const auto &l_knots = boundary_knots[iComp][j].get_data_direction(0);
+        	const auto &r_knots = boundary_knots[iComp][j].get_data_direction(1);
 
+        	if (periodic_[iComp][j])
+        	{
+        		Assert(ends[iComp][j] == BasisEndBehaviour::periodic,
+        				ExcMessage("Periodic inconsistency"));
+        		Assert(l_knots.size()==0,
+        				ExcMessage("Periodic inconsistency"));
+        		Assert(l_knots.size()==0,
+        				ExcMessage("Periodic inconsistency"));
 
-            {
-//                Assert((left_knts.size() == order) && (right_knts.size() == order),
-//                       ExcMessage("Wrong number of boundary knots"));
-//                Assert(knots.front() >= left_knts.back(),
-//                       ExcMessage("Boundary knots should be smaller or equal a"));
-//                Assert(knots.back() <= right_knts.front(),
-//                       ExcMessage("Boundary knots should be greater or equal b"));
-//                Assert(std::is_sorted(left_knts.begin(), left_knts.end()),
-//                       ExcMessage("Boundary knots is not sorted"));
-//                Assert(std::is_sorted(right_knts.begin(), right_knts.end()),
-//                       ExcMessage("Boundary knots is not sorted"));
-            }
+        	}
+        	else
+        	{
+        		if(ends[iComp][j] == BasisEndBehaviour::interpolatory)
+        		{
+        			Assert(l_knots.size()==0,
+        					ExcMessage("Interpolatory inconsistency"));
+        			Assert(l_knots.size()==0,
+        					ExcMessage("Interpolatory inconsistency"));
+        		}
+        		if(ends[iComp][j] == BasisEndBehaviour::end_knots)
+        		{
+        			const auto &knots = this->get_grid()->get_knot_coordinates(j);
+        			const int m = deg_[iComp][j] + 1;
+        			Assert(l_knots.size() == m,
+        					ExcMessage("Wrong number of boundary knots"));
+        			Assert(l_knots.size() == m,
+        					ExcMessage("Wrong number of boundary knots"));
+        			Assert(knots.front() >= l_knots.back(),
+        					ExcMessage("Boundary knots should be smaller or equal a"));
+        			Assert(knots.back() <= r_knots.front(),
+        					ExcMessage("Boundary knots should be greater or equal b"));
+        			Assert(std::is_sorted(l_knots.begin(), l_knots.end()),
+        					ExcMessage("Boundary knots is not sorted"));
+        			Assert(std::is_sorted(r_knots.begin(), r_knots.end()),
+        					ExcMessage("Boundary knots is not sorted"));
+        		}
+        	}
         }
     }
 #endif
 
     KnotsTable result;
 
-    for (int iComp = 0; iComp < n_components; ++iComp)
+    for (int comp = 0; comp < n_components; ++comp)
     {
-        for (int j = 0; j < dim; ++j)
+        for (int dir = 0; dir < dim; ++dir)
         {
-            const auto deg = deg_[iComp][j];
+            const auto deg = deg_[comp][dir];
             const auto order = deg + 1;
-            const auto &knots = this->get_grid()->get_knot_coordinates(j);
-            const auto &mult  = (*interior_mult_)[iComp].get_data_direction(j);
+            const auto &knots = this->get_grid()->get_knot_coordinates(dir);
+            const auto &mult  = (*interior_mult_)[comp].get_data_direction(dir);
 
             int size = 2 * order;
             const int m = order;
@@ -251,47 +263,53 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
                     *rep_it = *k_it;
             }
 
-            const auto& endb = ends[iComp][j];
-            switch (endb)
-            {
-            case BasisEndBehaviour::interpolatory:
-            {
-            	const Real a = knots.front();
-            	const Real b = knots.back();
 
-            	for (int i=0; i<m; ++i)
-            	{
-            		rep_knots[i] = a;
-            		rep_knots[m+K+i] = b;
-            	}
-            }
-            break;
-            case BasisEndBehaviour::periodic:
+            if (periodic_[comp][dir])
             {
             	const Real a = knots.front();
             	const Real b = knots.back();
-            	const Real L = b-a;
+            	const Real L = b - a;
             	for (int i=0; i<m; ++i)
             	{
             		rep_knots[i] = rep_knots[K+i] - L;
             		rep_knots[K+m+i] = rep_knots[m+i] + L;
             	}
             }
-            break;
-            case BasisEndBehaviour::end_knots:
+            else
             {
-            	const auto &left_knts = boundary_knots[iComp][j].get_data_direction(0);
-            	const auto &right_knts = boundary_knots[iComp][j].get_data_direction(1);
-
-            	for (int i=0; i<m; ++i)
+            	const auto &endb = ends[comp][dir];
+            	switch (endb)
             	{
-            		rep_knots[i]     = left_knts[i];
-            		rep_knots[K+m+i] = right_knts[i];
+            	case BasisEndBehaviour::interpolatory:
+            	{
+            		const Real a = knots.front();
+            		const Real b = knots.back();
+
+            		for (int i=0; i<m; ++i)
+            		{
+            			rep_knots[i] = a;
+            			rep_knots[m+K+i] = b;
+            		}
+            	}
+            	break;
+            	case BasisEndBehaviour::end_knots:
+            	{
+            		const auto &left_knts = boundary_knots[comp][dir].get_data_direction(0);
+            		const auto &right_knts = boundary_knots[comp][dir].get_data_direction(1);
+
+            		for (int i=0; i<m; ++i)
+            		{
+            			rep_knots[i]     = left_knts[i];
+            			rep_knots[K+m+i] = right_knts[i];
+            		}
+            	}
+            	break;
+            	case BasisEndBehaviour::periodic:
+            		Assert(false, ExcMessage("Impossible"));
             	}
             }
-            }
 
-            result[iComp].copy_data_direction(j,rep_knots);
+            result[comp].copy_data_direction(dir,rep_knots);
         }
     }
 
@@ -351,6 +369,7 @@ get_sub_space_mult(const Index sub_elem_id) const
 }
 
 
+
 template<int dim, int range, int rank>
 template<int k>
 auto
@@ -377,20 +396,20 @@ template<int dim, int range, int rank>
 template<int k>
 auto
 SplineSpace<dim, range, rank>::
-get_sub_space_end_b(const Index sub_elem_id) const
--> typename SubSpace<k>::EndBehaviourTable
+get_sub_space_periodicity(const Index sub_elem_id) const
+-> typename SubSpace<k>::PeriodicTable
 {
-    using SubEndBehaviourT = typename SubSpace<k>::EndBehaviourTable;
+    using SubPeriodicT = typename SubSpace<k>::PeriodicTable;
     auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
     const auto &active_dirs = k_elem.active_directions;
 
-    SubEndBehaviourT sub_end_b(end_behaviour_.get_comp_map());
+    SubPeriodicT sub_periodic(periodic_.get_comp_map());
 
-    for (int comp : sub_end_b.get_active_components_id())
+    for (int comp : periodic_.get_active_components_id())
         for (int j=0; j<k; ++j)
-            sub_end_b[comp][j] = end_behaviour_[comp][active_dirs[j]];
+            sub_periodic[comp][j] = periodic_[comp][active_dirs[j]];
 
-    return sub_end_b;
+    return sub_periodic;
 }
 
 
@@ -427,100 +446,38 @@ accumulated_interior_multiplicities() const -> MultiplicityTable
 template<int dim, int range, int rank>
 auto
 SplineSpace<dim, range, rank>::
-fill_max_regularity(const DegreeTable &deg, std::shared_ptr<const GridType> grid) -> std::shared_ptr<MultiplicityTable>
+multiplicity_regularity(const InteriorReg reg,
+		const DegreeTable &deg,
+		const TensorSize<dim> &n_elem) const
+		-> std::shared_ptr<MultiplicityTable>
 {
-    auto  res = std::make_shared<MultiplicityTable>(deg.get_comp_map());
+	auto  res = std::make_shared<MultiplicityTable>(deg_.get_comp_map());
 
-    auto const knots_size = grid->get_num_knots_dim();
-    for (int iComp : res->get_active_components_id())
-        for (int j = 0; j < dim; ++j)
+
+    for (int comp : res->get_active_components_id())
+        for (int dir = 0; dir < dim; ++dir)
         {
-            const auto size = knots_size[j]-2;
+        	int val;
+        	switch (reg)
+        	{
+        	case InteriorReg::maximum:
+        		val = 1;
+        		break;
+        	case InteriorReg::minimun:
+        		val = deg[comp][dir] + 1;
+        		break;
+        	}
+
+        	const auto size = n_elem[dir]-1;
+
+            vector<Size> mult(size);
             if (size>0)
-                (*res)[iComp].copy_data_direction(j, vector<Size>(size, 1));
+                (*res)[comp].copy_data_direction(dir, vector<Size>(size, val));
         }
     return res;
 }
 
 
-#if 0
-template<int dim, int range, int rank>
-auto
-SplineSpace<dim, range, rank>::
-interpolatory_end_knots() const -> BoundaryKnotsTable
-{
-    BoundaryKnotsTable result(deg_.get_comp_map());
-
-    for (int iComp : result.get_active_components_id())
-    {
-        BoundaryKnots bdry_knots;
-        for (int j = 0; j < dim; ++j)
-        {
-            const auto &knots = this->get_grid()->get_knot_coordinates(j);
-            const auto deg = deg_(iComp)[j];
-            const auto order = deg + 1;
-            const Real a = knots.front();
-            const Real b = knots.back();
-            vector<Real> vec_left(order, a);
-            vector<Real> vec_right(order, b);
-            bdry_knots[j].copy_data_direction(0, vec_left);
-            bdry_knots[j].copy_data_direction(1, vec_right);
-        }
-        result(iComp) = bdry_knots;
-    }
-    return result;
-}
-#endif
-#if 0
-template<int dim, int range, int rank>
-auto
-SplineSpace<dim, range, rank>::
-interpolatory_end_knots(const int comp_id,const int dir) const -> CartesianProductArray<Real,2>
-{
-    CartesianProductArray<Real,2> bdry_knots_dir;
-
-    const auto &knots = this->get_grid()->get_knot_coordinates(dir);
-    const auto deg = deg_[comp_id][dir];
-    const auto order = deg + 1;
-    const Real a = knots.front();
-    const Real b = knots.back();
-    vector<Real> vec_left(order, a);
-    vector<Real> vec_right(order, b);
-    bdry_knots_dir.copy_data_direction(0, vec_left);
-    bdry_knots_dir.copy_data_direction(1, vec_right);
-
-    return bdry_knots_dir;
-}
-
-
-
-template<int dim, int range, int rank>
-auto
-SplineSpace<dim, range, rank>::
-periodic_end_knots(const int comp_id, const int dir) const -> CartesianProductArray<Real,2>
-{
-    CartesianProductArray<Real,2> bdry_knots_dir;
-
-    const auto &knots = this->get_grid()->get_knot_coordinates(dir);
-    const auto n_knots = knots.size();
-    const auto deg = deg_[comp_id][dir];
-    const auto order = deg + 1;
-    const Real a = knots.front();
-    const Real b = knots.back();
-    vector<Real> front(knots.begin()+(n_knots-order), knots.end());
-    const Real len = b-a;
-    for (auto &i : front)
-    	i-=len;
-    vector<Real> back(knots.begin(), knots.begin()+order);
-    for (auto &i : back)
-    	i+=len;
-
-    bdry_knots_dir.copy_data_direction(0, front);
-    bdry_knots_dir.copy_data_direction(1, back);
-
-    return bdry_knots_dir;
-}
-#endif
 
 template<int dim, int range, int rank>
 void

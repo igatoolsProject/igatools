@@ -105,16 +105,19 @@ public:
     using Degrees  = TensorIndex<dim>;
     using Multiplicity = CartesianProductArray<Size, dim>;
     using Periodicity = std::array<bool, dim>;
+    using EndBehaviour = std::array<BasisEndBehaviour, dim>;
 
     using DegreeTable = ComponentContainer<Degrees>;
     using MultiplicityTable = ComponentContainer<Multiplicity>;
     using BoundaryKnotsTable = ComponentContainer<BoundaryKnots>;
     using KnotsTable = ComponentContainer<KnotCoordinates>;
     using PeriodicTable = ComponentContainer<Periodicity>;
+    using EndBehaviourTable = ComponentContainer<EndBehaviour>;
 
-    using IndexSpaceTable = ComponentContainer<DynamicMultiArray<Index,dim>>;
-    //using IndexSpaceMarkTable = Multiplicity;
 
+
+// TODO (pauletti, Dec 26, 2014): this is an application specific property
+// should not be part of space
     /**
      * Type alias for the boundary conditions on each face of each scalar component of the space.
      */
@@ -184,35 +187,34 @@ public:
     };
 
 
-    using EndBehaviourTable = ComponentContainer<std::array<BasisEndBehaviour, dim> >;
-
 
 
 public:
     /**
-     * Most general constructor
+     * Construct a spline space with the knots, degree and multiplicity
+     * as well as periodicity conditions
      */
     explicit SplineSpace(const DegreeTable &deg,
                          std::shared_ptr<GridType> knots,
                          std::shared_ptr<const MultiplicityTable> interior_mult,
-						 const EndBehaviourTable &end_behaviour =
-								 EndBehaviourTable(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::interpolatory)));
+						 const PeriodicTable &periodic =
+								 PeriodicTable(filled_array<bool,dim>(false)));
 
-    explicit SplineSpace(const DegreeTable &deg,
+
+    /**
+     * Component uniform constructor, it assumes all component belong to
+     * the same scalar space
+     */
+    explicit SplineSpace(const Degrees &deg,
     		std::shared_ptr<GridType> knots,
-			const InteriorReg &interior_mult,
-			const BasisEndBehaviour &eb)
-    :SplineSpace(deg, knots,interior_mult,
-    		EndBehaviourTable(filled_array<BasisEndBehaviour,dim>(eb)))
+			const InteriorReg &interior_reg,
+			const Periodicity periodic = filled_array<bool,dim>(false))
+    :SplineSpace(DegreeTable(deg), knots,
+    		multiplicity_regularity(interior_reg, DegreeTable(deg),
+    				knots->get_num_intervals()),
+					PeriodicTable(periodic))
     {}
 
-
-    explicit SplineSpace(const DegreeTable &deg,
-                         std::shared_ptr<GridType> knots,
-                         const InteriorReg &interior_mult,
-                         const EndBehaviourTable &ebt = EndBehaviourTable(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::interpolatory)))
-        :SplineSpace(deg, knots, fill_max_regularity(deg, knots), ebt)
-    {}
 
     const DegreeTable &get_degree() const
     {
@@ -300,8 +302,8 @@ public:
     get_sub_space_degree(const Index s_id) const;
 
     template<int k>
-    typename SubSpace<k>::EndBehaviourTable
-	get_sub_space_end_b(const Index s_id) const;
+    typename SubSpace<k>::PeriodicTable
+	get_sub_space_periodicity(const Index s_id) const;
 
 
 public:
@@ -318,26 +320,17 @@ public:
      */
     MultiplicityTable accumulated_interior_multiplicities() const;
 
-public:
-
-    void print_info(LogStream &out) const;
-
-
-private:
     /**
      * Fill the multiplicy for the maximum possible regularity
      *  of the given number of knots
      */
-    std::shared_ptr<MultiplicityTable> fill_max_regularity(const DegreeTable &deg, std::shared_ptr<const GridType> grid);
+    std::shared_ptr<MultiplicityTable>
+    multiplicity_regularity(const InteriorReg reg,
+    		const DegreeTable &deg,
+			const TensorSize<dim> &n_elem) const;
 
-#if 0
-    BoundaryKnotsTable interpolatory_end_knots() const;
-#endif
-
-    CartesianProductArray<Real,2> interpolatory_end_knots(const int comp_id,const int dir) const;
-    CartesianProductArray<Real,2> periodic_end_knots(const int comp_id,const int dir) const;
-
-
+public:
+    void print_info(LogStream &out) const;
 private:
     std::shared_ptr<const MultiplicityTable> interior_mult_;
 
@@ -346,7 +339,8 @@ private:
     /** Table with the dimensionality of the space in each component and direction */
     SpaceDimensionTable space_dim_;
 
-    EndBehaviourTable end_behaviour_;
+    //EndBehaviourTable end_behaviour_;
+    PeriodicTable periodic_;
 
     /**
      * Boundary conditions on each face of each scalar component of the space.
@@ -361,9 +355,9 @@ public:
         return interior_mult_;
     }
 
-    const EndBehaviourTable &get_end_behaviour() const
+    const PeriodicTable &get_periodic_table() const
     {
-        return end_behaviour_;
+        return periodic_;
     }
 
 
@@ -434,6 +428,10 @@ public:
                                sequence<n_entries>());
 
         ComponentContainer(const ComponentMap &comp_map, const T &val);
+
+        ComponentContainer(bool uniform, const T &val)
+        : ComponentContainer(filled_array<Index, n_entries>(0), val)
+        {}
 
         /**
          * Construct a homogenous range table with val value

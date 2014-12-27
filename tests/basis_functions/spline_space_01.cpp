@@ -36,7 +36,7 @@ void test_1d()
 
     auto grid = CartesianGrid<dim>::create(4);
     typename SplineSpace::DegreeTable deg {{2}};
-    auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable({ {{1,3}} }));
+    auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable({{{1,3}}}));
     SplineSpace sp_spec(deg, grid, int_mult);
     sp_spec.print_info(out);
 
