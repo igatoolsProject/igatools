@@ -34,13 +34,13 @@ IGA_NAMESPACE_OPEN
 template<int dim, int range, int rank>
 auto
 BernsteinExtraction<dim, range, rank>::
-compute(const matrix &M_j_1,
+compute(const Operator &M_j_1,
         typename vector<Real>::const_iterator  y,
         const Real a,
-        const Real b) -> matrix
+        const Real b) -> Operator
 {
     const int j = M_j_1.size1() + 1;
-    matrix M_j(j,j);
+    Operator M_j(j,j);
 
     vector<Real> alpha(j);
     vector<Real> one_alpha(j,1);
@@ -110,11 +110,11 @@ BernsteinExtraction<dim, range, rank>::
 fill_extraction(const int m,
                 const vector<Real>    &knots,
                 const vector<Real>    &rep_knots,
-                const vector<Index>   &acum_mult) -> vector<matrix>
+                const vector<Index>   &acum_mult) -> vector<Operator>
 {
     const int n_elem = knots.size()-1;
 
-    vector<matrix>  operators(n_elem, matrix(m,m));
+    vector<Operator>  operators(n_elem, Operator(m,m));
     // const auto &x = knots;
     const auto &y = rep_knots;
 
@@ -126,7 +126,7 @@ fill_extraction(const int m,
         const auto a = x[n];
         const auto b = x[n+1];
 
-        matrix M(1,1);
+        Operator M(1,1);
         M(0,0) = 1/(b-a);
         for (int k = m-2; k>=0; --k)
         {
@@ -141,7 +141,7 @@ fill_extraction(const int m,
         const int s = acum_mult[n];
         for (int k = 0; k < m; ++k)
         {
-            matrix_row<matrix> mr(M2, k);
+            matrix_row<Operator> mr(M2, k);
             mr *= (y[s+k+m]-y[s+k]);
         }
         operators[n] = M2;

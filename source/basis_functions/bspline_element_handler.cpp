@@ -75,12 +75,16 @@ partition<1>(const int n)
     return vector<TensorIndex<1>>(1,arr);
 }
 
+
+
 template<>
 vector<TensorIndex<0> >
 partition<0>(const int n)
 {
     return vector<TensorIndex<0>>();
 }
+
+
 
 template<int dim, int order>
 class TensorFunctionDerivativesSymmetry
@@ -147,7 +151,9 @@ public:
 
 };
 
-};
+}; // of the namespace
+
+
 
 template<int dim_, int range_ , int rank_>
 BSplineElementHandler<dim_, range_, rank_>::
@@ -163,6 +169,31 @@ BSplineElementHandler(shared_ptr<const Space> space)
     for (int j = 1; j < Space::n_components; ++j)
         comp_offset_[j] = comp_offset_[j-1] + n_basis_.get_component_size(j-1);
 }
+
+
+//template<int dim_, int range_ , int rank_>
+//void
+//BSplineElementHandler<dim_, range_, rank_>::
+//fill_interval_values(BasisValues &splines1d, const BasisValues &bernstein_values)
+//{
+//	/*
+//	 *
+//	 */
+//                for (auto comp : splines1d.get_active_components_id())
+//                {
+//                    const auto &berns_values = bernstein_values[comp];
+//                    auto &basis = splines1d[comp];
+//                    const auto &oper = bezier_op.get_operator(comp,dir)[j];
+//                    const Real one_div_size = 1.0 / inter_lengths[j];
+//                    for (int order = 0; order < max_der; ++order)
+//                    {
+//                        const Real scale = std::pow(one_div_size, order);
+//                        const auto &b_values = berns_values.get_derivative(order);
+//                        basis.get_derivative(order) =
+//                            scale * prec_prod(oper, b_values);
+//                    }
+//                }
+//}
 
 template<int dim_, int range_ , int rank_>
 template<int k>
@@ -208,8 +239,6 @@ reset(const ValueFlags flag,
 
         BasisValues bernstein_values(n_basis_.get_comp_map());
 
-
-
         for (int dir = 0 ; dir < dim ; ++dir)
         {
             const auto &pt_coords = points.get_data_direction(dir);
@@ -247,8 +276,7 @@ reset(const ValueFlags flag,
                     {
                         const Real scale = std::pow(one_div_size, order);
                         const auto &b_values = berns_values.get_derivative(order);
-                        basis.get_derivative(order) =
-                            scale * prec_prod(oper, b_values);
+                        basis.get_derivative(order) = oper(scale, b_values);
                     }
                 }
             }

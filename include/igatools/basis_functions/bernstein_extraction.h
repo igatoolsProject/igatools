@@ -28,6 +28,18 @@
 
 IGA_NAMESPACE_OPEN
 
+class BernsteinOperator : public DenseMatrix
+{
+public:
+	using Values = DenseMatrix;
+	using DenseMatrix::DenseMatrix;
+
+	Values scale_action(const Real scale, const Values &b_values) const
+	{
+		return scale * prec_prod(*this, b_values);
+	}
+};
+
 /**
  * A spline function restricted to each interval determined by
  * the knots is a polynomial of order m.
@@ -41,16 +53,16 @@ template<int dim, int range = 1, int rank = 1>
 class BernsteinExtraction
 {
 public:
-    using matrix = DenseMatrix;
+    using Operator = BernsteinOperator;
     using Space = SplineSpace<dim, range, rank>;
     using DegreeTable = typename Space::DegreeTable;
     using KnotsTable = typename Space::KnotsTable;
     using MultiplicityTable = typename Space::MultiplicityTable;
 
-    using ElemOper = std::array<matrix const *, dim>;
+    using ElemOper = std::array<Operator const *, dim>;
     using ElemOperTable = typename Space::template ComponentContainer<ElemOper>;
 private:
-    using Operators = CartesianProductArray<matrix, dim>;
+    using Operators = CartesianProductArray<Operator, dim>;
     using OperatorsTable = typename Space::template ComponentContainer<Operators>;
 
 public:
@@ -67,7 +79,7 @@ public:
      */
     void print_info(LogStream &out) const;
 
-    const vector<matrix> &get_operator(const int comp, const int  dir) const
+    const vector<Operator> &get_operator(const int comp, const int  dir) const
     {
         return ext_operators_[comp].get_data_direction(dir);
     }
@@ -82,13 +94,14 @@ public:
     }
 
 private:
-    vector<matrix>
+    vector<Operator>
     fill_extraction(const int m,
                     const vector<Real>    &knots,
                     const vector<Real>    &rep_knots,
                     const vector<Index>   &acum_mult);
 
-    matrix compute(const matrix &M_j_1,
+    /** Given the M_{j-1} computes and returns de M_{j} */
+    Operator compute(const Operator &M_j_1,
                    typename vector<Real>::const_iterator  y,
                    const Real a,
                    const Real b);
