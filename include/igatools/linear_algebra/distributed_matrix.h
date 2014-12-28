@@ -238,7 +238,7 @@ public:
 
     /** @name Methods for retrieving or printing the matrix informations */
     ///@{
-    void print(LogStream &out) const ;
+    void print_info(LogStream &out) const ;
 
     /** Return the number of global rows of the matrix */
     Index get_num_rows() const ;
@@ -416,7 +416,7 @@ public:
 
     /** @name Methods for retrieving or printing the matrix informations */
     ///@{
-    void print(LogStream &out) const ;
+    void print_info(LogStream &out) const ;
 
     /** Return the number of global rows of the matrix */
     Index get_num_rows() const ;
@@ -601,7 +601,7 @@ public:
 
     /** @name Methods for retrieving or printing the matrix informations */
     ///@{
-    void print(LogStream &out) const ;
+    void print_info(LogStream &out) const ;
 
 
     /** Return the number of global rows of the matrix */

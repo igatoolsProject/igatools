@@ -254,7 +254,7 @@ get_local_coefs(const vector<Index> &local_to_global_ids) const
 
 void
 Vector<LAPack::trilinos_tpetra>::
-print(LogStream &out) const
+print_info(LogStream &out) const
 {
     using std::endl;
 
@@ -420,7 +420,7 @@ get_local_coefs(const vector<Index> &local_to_global_ids) const
 
 void
 Vector<LAPack::trilinos_epetra>::
-print(LogStream &out) const
+print_info(LogStream &out) const
 {
     using std::endl;
 
@@ -626,7 +626,7 @@ get_local_coefs(const vector<Index> &local_to_global_ids) const
 
 void
 Vector<LAPack::petsc>::
-print(LogStream &out) const
+print_info(LogStream &out) const
 {
     Assert(false,ExcNotImplemented());
     AssertThrow(false,ExcNotImplemented());

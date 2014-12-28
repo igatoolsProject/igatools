@@ -17,7 +17,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-
 /*
  *  Test for Vector class
  *
@@ -26,20 +25,15 @@
  *
  */
 
-// TODO (pauletti, Nov 24, 2014): this test can be improved
 #include "../tests.h"
+
 #include <igatools/linear_algebra/distributed_vector.h>
 
+
+template <LAPack la_pack>
 void run_test()
 {
-#if defined(USE_TRILINOS)
-    const auto la_pack = LAPack::trilinos;
-#elif defined(USE_PETSC)
-    const auto la_pack = LAPack::petsc;
-#endif
     using VectorType = Vector<la_pack>;
-
-
 
     VectorType v0(0);
     v0.print_info(out);
@@ -55,7 +49,23 @@ int main()
 {
     out.depth_console(10);
 
-    run_test();
+#if defined(USE_TRILINOS)
+
+    out.begin_item("Testing Trilinos/Tpetra vector:");
+    run_test<LAPack::trilinos_tpetra>();
+    out.end_item();
+
+    out.begin_item("Testing Trilinos/Epetra vector:");
+    run_test<LAPack::trilinos_epetra>();
+    out.end_item();
+
+#elif defined(USE_PETSC)
+
+    out.begin_item("Testing Petsc vector:");
+    run_test<LAPack::petsc>();
+    out.end_item();
+
+#endif
 
     return  0;
 }

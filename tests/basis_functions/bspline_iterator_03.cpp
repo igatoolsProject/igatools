@@ -85,13 +85,30 @@ int main()
     out.depth_console(10);
 
 #if defined(USE_TRILINOS)
-    const auto la_pack = LAPack::trilinos;
+    const auto la_pack_tpetra = LAPack::trilinos_tpetra;
+    out.begin_item("Using Trilinos/TPetra:");
+    evaluate_field<la_pack_tpetra,2,2>();
+    evaluate_field<la_pack_tpetra,3,3>();
+    out.end_item();
+
+
+    const auto la_pack_epetra = LAPack::trilinos_epetra;
+    out.begin_item("Using Trilinos/EPetra:");
+    evaluate_field<la_pack_epetra,2,2>();
+    evaluate_field<la_pack_epetra,3,3>();
+    out.end_item();
+
 #elif defined(USE_PETSC)
     const auto la_pack = LAPack::petsc;
+
+    const auto la_pack_petsc = LAPack::petsc;
+    out.begin_item("Using PETSc:");
+    evaluate_field<la_pack_petsc,2,2>();
+    evaluate_field<la_pack_petsc,3,3>();
+    out.end_item();
+
 #endif
 
-    evaluate_field<la_pack,2,2>();
-    evaluate_field<la_pack,3,3>();
 
     return 0;
 }

@@ -235,7 +235,7 @@ clear_row(const Index row)
 
 void
 Matrix<LAPack::trilinos_tpetra>::
-print(LogStream &out) const
+print_info(LogStream &out) const
 {
     using std::endl;
 
@@ -517,7 +517,7 @@ clear_row(const Index row)
 
 void
 Matrix<LAPack::trilinos_epetra>::
-print(LogStream &out) const
+print_info(LogStream &out) const
 {
     using std::endl;
 
@@ -755,7 +755,7 @@ clear_row(const Index row)
 
 void
 Matrix<LAPack::petsc>::
-print(LogStream &out) const
+print_info(LogStream &out) const
 {
     Assert(false,ExcNotImplemented());
     AssertThrow(false,ExcNotImplemented());

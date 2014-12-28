@@ -72,13 +72,13 @@ int main()
     auto bspline_space = BSplineSpace< dim_domain, dim_range, rank>::create(p, knots) ;
 
 #if defined(USE_TRILINOS)
-    const auto la_pack = LAPack::trilinos;
+    const auto la_pack = LAPack::trilinos_tpetra;
 #elif defined(USE_PETSC)
     const auto la_pack = LAPack::petsc;
 #endif
     using VectorType = Vector<la_pack>;
     using MatrixType = Matrix<la_pack>;
-    using LinSolverType = LinearSolver<la_pack>;
+    using LinSolverType = LinearSolverIterative<la_pack>;
 
     MatrixType matrix(*bspline_space->get_space_manager());
 

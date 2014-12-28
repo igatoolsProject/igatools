@@ -27,10 +27,6 @@
  *
  */
 
-// TODO (pauletti, Jun 3, 2014): the comment is not consistent with the test
-// TODO (pauletti, Nov 24, 2014): the filename is not good
-// TODO (pauletti, Nov 24, 2014):  this test needs to be rewritten
-
 #include "../tests.h"
 
 #include <igatools/basis_functions/bspline_space.h>
@@ -42,6 +38,67 @@
 #include <igatools/linear_algebra/dof_tools.h>
 
 using std::set;
+
+template <LAPack la_pack>
+void fill_matrix_and_vector(const SpaceManager &space_manager)
+{
+    auto row_dofs_set = space_manager.get_row_dofs();
+    vector<Index> row_dofs(row_dofs_set.begin(),row_dofs_set.end());
+
+    auto col_dofs_set = space_manager.get_col_dofs();
+    vector<Index> col_dofs(col_dofs_set.begin(),col_dofs_set.end());
+
+
+    using VectorType = Vector<la_pack>;
+    using MatrixType = Matrix<la_pack>;
+
+
+//    SparsityPattern sparsity_pattern(space_manager);
+
+    MatrixType A(space_manager);
+
+
+    const auto num_rows = row_dofs.size() ;
+    const auto num_cols = col_dofs.size() ;
+
+    for (Index i = 0; i < num_cols ; i++)
+        A.add_entry(row_dofs[i], col_dofs[i], 2.0);
+
+    for (Index i = 0; i < num_rows - num_cols ; i++)
+        A.add_entry(row_dofs[num_cols + i], col_dofs[i], 1.0);
+
+    A.fill_complete();
+
+
+    out << "A matrix" << endl;
+    A.print_info(out);
+    out << endl;
+
+
+
+    VectorType b(col_dofs);
+    Real val = 1.0;
+    for (const Index id : col_dofs)
+    {
+        b.add_entry(id,val);
+        val += 1;
+    }
+
+    out << "b vector" << endl;
+    b.print_info(out);
+    out << endl;
+
+    VectorType c(row_dofs);
+    // c = A . b
+    A.multiply_by_right_vector(b,c,1.0,0.0);
+
+    out << "c = A . b" << endl;
+    c.print_info(out);
+
+    out << endl;
+
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -100,61 +157,25 @@ int main(int argc, char *argv[])
         dof_tools::build_dofs_connectvity_all_to_all(dofs_view_row,dofs_view_col));
 
 #if defined(USE_TRILINOS)
-    const auto la_pack = LAPack::trilinos;
+
+    out.begin_item("Testing with Trilinos/Tpetra objects");
+    fill_matrix_and_vector<LAPack::trilinos_tpetra>(space_manager);
+    out.end_item();
+
+    out.begin_item("Testing with Trilinos/Epetra objects");
+    fill_matrix_and_vector<LAPack::trilinos_epetra>(space_manager);
+    out.end_item();
+
 #elif defined(USE_PETSC)
+
+    out.begin_item("Testing with Petsc objects");
     const auto la_pack = LAPack::petsc;
+    out.end_item();
+
 #endif
-    using VectorType = Vector<la_pack>;
-    using MatrixType = Matrix<la_pack>;
-
-
-//    SparsityPattern sparsity_pattern(space_manager);
-
-    MatrixType A(space_manager);
-
-
-    const auto num_rows = n_basis_sp_rows ;
-    const auto num_cols = n_basis_sp_cols ;
-
-    for (Index i = 0; i < num_cols ; i++)
-        A.add_entry(dofs_view_row[i], dofs_view_col[i], 2.0);
-
-    for (Index i = 0; i < num_rows - num_cols ; i++)
-        A.add_entry(dofs_view_row[num_cols + i], dofs_view_col[i], 1.0);
-
-    A.fill_complete();
-
-
-    out << "A matrix" << endl;
-    A.print_info(out);
-    out << endl;
-
-
-    VectorType b(vector<Index>(dofs_view_col.begin(),dofs_view_col.end()));
-    Real val = 1.0;
-    for (const Index id : dofs_view_col)
-    {
-        b.add_entry(id,val);
-        val += 1;
-    }
-
-    out << "b vector" << endl;
-    b.print_info(out);
-    out << endl;
-
-    VectorType c(vector<Index>(dofs_view_row.begin(),dofs_view_row.end()));
-
-
-    // c = A . b
-    A.multiply_by_right_vector(b,c,1.0,0.0);
-
-    out << "c = A . b" << endl;
-    c.print_info(out);
-
-    out << endl;
-
 
 
     return 0;
 
 }
+
