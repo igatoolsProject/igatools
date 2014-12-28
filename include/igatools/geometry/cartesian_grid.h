@@ -288,6 +288,11 @@ public:
      */
     Size get_num_active_elems() const;
 
+    /**
+     * Total number of influence elements.
+     */
+    Size get_num_influence_elems() const;
+
     /** Total number of elements, including active and non-active */
     Size get_num_all_elems() const;
 
@@ -521,7 +526,7 @@ private:
      * In the hierarchical spaces elements are characterized as influent or not
      * this is the place where this information is stored.
      */
-    DynamicMultiArray<bool,dim> marked_elems_;
+    DynamicMultiArray<bool,dim> influence_elems_;
 
     /**
      * Active elements indicators (used for example in hierarchical spaces).

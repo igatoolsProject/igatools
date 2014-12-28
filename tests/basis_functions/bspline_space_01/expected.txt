@@ -3,11 +3,16 @@ void uniform_degree(int, std::shared_ptr<iga::CartesianGrid<dim_> >) [with int d
 ========================================================================
 Spline Space:
    Knots without repetition:
-      Number of active elements: 1
       Number of intervals per direction: [ ]
       Knot coordinates:
          Size: [ ]  Weights: []
       
+      Active elements:
+         Num.: 1
+         Flat IDs: 0
+      Influence elements:
+         Num.: 1
+         Flat IDs: 0
    
    Degrees:
       Raw componets: 
@@ -66,13 +71,18 @@ void uniform_degree(int, std::shared_ptr<iga::CartesianGrid<dim_> >) [with int d
 ========================================================================
 Spline Space:
    Knots without repetition:
-      Number of active elements: 1
       Number of intervals per direction: [ 1 ]
       Knot coordinates:
          Size: [ 2 ]  Weights: [2]
          Direction: 0
          [ 0 1.00000 ]
       
+      Active elements:
+         Num.: 1
+         Flat IDs: 0
+      Influence elements:
+         Num.: 1
+         Flat IDs: 0
    
    Degrees:
       Raw componets: 
@@ -135,7 +145,6 @@ void uniform_degree(int, std::shared_ptr<iga::CartesianGrid<dim_> >) [with int d
 ========================================================================
 Spline Space:
    Knots without repetition:
-      Number of active elements: 1
       Number of intervals per direction: [ 1 1 ]
       Knot coordinates:
          Size: [ 2 2 ]  Weights: [2,4]
@@ -144,6 +153,12 @@ Spline Space:
          Direction: 1
          [ 0 1.00000 ]
       
+      Active elements:
+         Num.: 1
+         Flat IDs: 0
+      Influence elements:
+         Num.: 1
+         Flat IDs: 0
    
    Degrees:
       Raw componets: 
@@ -210,7 +225,6 @@ void uniform_degree(int, std::shared_ptr<iga::CartesianGrid<dim_> >) [with int d
 ========================================================================
 Spline Space:
    Knots without repetition:
-      Number of active elements: 1
       Number of intervals per direction: [ 1 1 1 ]
       Knot coordinates:
          Size: [ 2 2 2 ]  Weights: [2,4,8]
@@ -221,6 +235,12 @@ Spline Space:
          Direction: 2
          [ 0 1.00000 ]
       
+      Active elements:
+         Num.: 1
+         Flat IDs: 0
+      Influence elements:
+         Num.: 1
+         Flat IDs: 0
    
    Degrees:
       Raw componets: 
@@ -291,11 +311,16 @@ void direction_degree(const iga::TensorIndex<rank>&, std::shared_ptr<iga::Cartes
 ========================================================================
 Spline Space:
    Knots without repetition:
-      Number of active elements: 1
       Number of intervals per direction: [ ]
       Knot coordinates:
          Size: [ ]  Weights: []
       
+      Active elements:
+         Num.: 1
+         Flat IDs: 0
+      Influence elements:
+         Num.: 1
+         Flat IDs: 0
    
    Degrees:
       Raw componets: 
@@ -354,13 +379,18 @@ void direction_degree(const iga::TensorIndex<rank>&, std::shared_ptr<iga::Cartes
 ========================================================================
 Spline Space:
    Knots without repetition:
-      Number of active elements: 1
       Number of intervals per direction: [ 1 ]
       Knot coordinates:
          Size: [ 2 ]  Weights: [2]
          Direction: 0
          [ 0 1.00000 ]
       
+      Active elements:
+         Num.: 1
+         Flat IDs: 0
+      Influence elements:
+         Num.: 1
+         Flat IDs: 0
    
    Degrees:
       Raw componets: 
@@ -423,7 +453,6 @@ void direction_degree(const iga::TensorIndex<rank>&, std::shared_ptr<iga::Cartes
 ========================================================================
 Spline Space:
    Knots without repetition:
-      Number of active elements: 1
       Number of intervals per direction: [ 1 1 ]
       Knot coordinates:
          Size: [ 2 2 ]  Weights: [2,4]
@@ -432,6 +461,12 @@ Spline Space:
          Direction: 1
          [ 0 1.00000 ]
       
+      Active elements:
+         Num.: 1
+         Flat IDs: 0
+      Influence elements:
+         Num.: 1
+         Flat IDs: 0
    
    Degrees:
       Raw componets: 
@@ -498,7 +533,6 @@ void direction_degree(const iga::TensorIndex<rank>&, std::shared_ptr<iga::Cartes
 ========================================================================
 Spline Space:
    Knots without repetition:
-      Number of active elements: 1
       Number of intervals per direction: [ 1 1 1 ]
       Knot coordinates:
          Size: [ 2 2 2 ]  Weights: [2,4,8]
@@ -509,6 +543,12 @@ Spline Space:
          Direction: 2
          [ 0 1.00000 ]
       
+      Active elements:
+         Num.: 1
+         Flat IDs: 0
+      Influence elements:
+         Num.: 1
+         Flat IDs: 0
    
    Degrees:
       Raw componets: 

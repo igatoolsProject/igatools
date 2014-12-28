@@ -166,7 +166,7 @@ CartesianGrid(const KnotCoordinates &knot_coordinates,
     kind_(kind),
     boundary_id_(filled_array<int,UnitElement<dim>::n_faces>(0)),
     knot_coordinates_(knot_coordinates),
-    marked_elems_(this->tensor_size(), true),
+    influence_elems_(this->tensor_size(), true),
     active_elems_(this->tensor_size(), true)
 {
 #ifndef NDEBUG
@@ -236,7 +236,7 @@ CartesianGrid(const self_t &grid)
     kind_(grid.kind_),
     boundary_id_(grid.boundary_id_),
     knot_coordinates_(grid.knot_coordinates_),
-    marked_elems_(grid.marked_elems_),
+    influence_elems_(grid.influence_elems_),
     active_elems_(grid.active_elems_)
 {}
 
@@ -442,6 +442,13 @@ get_num_active_elems() const
     return std::count(active_elems_.begin(), active_elems_.end(), true);
 }
 
+template<int dim_>
+Size
+CartesianGrid<dim_>::
+get_num_influence_elems() const
+{
+    return std::count(influence_elems_.begin(), influence_elems_.end(), true);
+}
 
 
 template<int dim_>
@@ -511,7 +518,7 @@ refine_directions(
     TensorSizedContainer<dim_>::reset_size(knot_coordinates_.tensor_size()-1);
 
     // TODO (pauletti, Jul 30, 2014): this is wrong in general !!!
-    marked_elems_.resize(this->tensor_size(), true);
+    influence_elems_.resize(this->tensor_size(), true);
     active_elems_.resize(this->tensor_size(), true);
 
     // refining the objects that's are attached to the CartesianGrid
@@ -602,12 +609,41 @@ void
 CartesianGrid<dim_>::
 print_info(LogStream &out) const
 {
-    out << "Number of active elements: " << get_num_active_elems() << endl;
     out << "Number of intervals per direction: " << this->tensor_size() << endl;
 
     out.begin_item("Knot coordinates:");
     knot_coordinates_.print_info(out);
     out.end_item();
+
+
+    //-------------------------------------------------------
+    out.begin_item("Active elements:");
+    out << "Num.: " << get_num_active_elems() << endl;
+    if (get_num_active_elems() > 0)
+    {
+        out << "   Flat IDs:";
+        for (const auto &elem : *this)
+            if (elem.is_active())
+                out << " " << elem.get_flat_index() ;
+    }
+    out.end_item();
+    //-------------------------------------------------------
+
+
+    //-------------------------------------------------------
+    out.begin_item("Influence elements:");
+    out << "Num.: " << get_num_influence_elems() << endl;
+    if (get_num_influence_elems() > 0)
+    {
+        out << "   Flat IDs:";
+        for (const auto &elem : *this)
+            if (elem.is_influence())
+                out << " " << elem.get_flat_index() ;
+    }
+    out.end_item();
+    //-------------------------------------------------------
+
+
 }
 
 

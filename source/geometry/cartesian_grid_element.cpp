@@ -202,7 +202,7 @@ bool
 CartesianGridElement<dim_>::
 is_influence() const
 {
-    return grid_->marked_elems_[flat_index_];
+    return grid_->influence_elems_[flat_index_];
 }
 
 
@@ -223,7 +223,7 @@ CartesianGridElement<dim_>::
 set_influence(const bool influence_flag)
 {
     std::const_pointer_cast<CartesianGrid<dim>>(grid_)->
-                                             marked_elems_[flat_index_] = influence_flag;
+                                             influence_elems_[flat_index_] = influence_flag;
 }
 
 
