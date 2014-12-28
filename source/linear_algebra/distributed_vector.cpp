@@ -46,40 +46,58 @@ DeclException3(ExcVectorAccessToNonLocalElement,
 
 #ifdef USE_TRILINOS
 
-Vector<LAPack::trilinos>::
+template <TrilinosImpl trilinos_impl>
+VectorTrilinos<trilinos_impl>::
+VectorTrilinos(const MapPtr map)
+    :
+    vector_(Tools::build_vector(map))
+{}
+
+
+template <TrilinosImpl trilinos_impl>
+auto
+VectorTrilinos<trilinos_impl>::
+get_trilinos_vector() const -> Teuchos::RCP<const WrappedVector>
+{
+    return vector_ ;
+}
+
+
+template <TrilinosImpl trilinos_impl>
+auto
+VectorTrilinos<trilinos_impl>::
+get_trilinos_vector() -> Teuchos::RCP<WrappedVector>
+{
+    return vector_ ;
+}
+
+
+Vector<LAPack::trilinos_tpetra>::
 Vector(const Index num_global_dofs, CommPtr comm)
     :
-    vector_(Tpetra::createMultiVector<Real,LO,GO>(
-                Tpetra::createUniformContigMap<LO,GO>(
-                    num_global_dofs,
-                    comm),
-                1))
+    VectorTrilinos<TrilinosImpl::tpetra>(
+        Tpetra::createUniformContigMap<LO,GO>(num_global_dofs,comm))
 {}
 
 
 
-Vector<LAPack::trilinos>::
+Vector<LAPack::trilinos_tpetra>::
 Vector(const vector<Index> &dofs_id, CommPtr comm)
     :
-    vector_(Tpetra::createMultiVector<Real,LO,GO>(
-                Tpetra::createNonContigMap<LO,GO>(
-                    dofs_id,
-                    comm),
-                1))
+    VectorTrilinos<TrilinosImpl::tpetra>(
+        Tpetra::createNonContigMap<LO,GO>(dofs_id,comm))
 {}
 
-
-
-Vector<LAPack::trilinos>::
-Vector(DofsMapPtr map)
+Vector<LAPack::trilinos_tpetra>::
+Vector(MapPtr map)
     :
-    vector_(Tpetra::createMultiVector<Real,LO,GO>(map,1))
+    VectorTrilinos<TrilinosImpl::tpetra>(map)
 {}
 
 
 
 auto
-Vector<LAPack::trilinos>::
+Vector<LAPack::trilinos_tpetra>::
 create(const Index size) -> std::shared_ptr<self_t>
 {
     return make_shared<self_t>(self_t(size));
@@ -88,7 +106,7 @@ create(const Index size) -> std::shared_ptr<self_t>
 
 
 auto
-Vector<LAPack::trilinos>::
+Vector<LAPack::trilinos_tpetra>::
 create(const vector<Index> &dof_ids) -> std::shared_ptr<self_t>
 {
     return make_shared<self_t>(self_t(dof_ids));
@@ -97,7 +115,7 @@ create(const vector<Index> &dof_ids) -> std::shared_ptr<self_t>
 
 
 void
-Vector<LAPack::trilinos>::
+Vector<LAPack::trilinos_tpetra>::
 add_entry(const Index i, const Real value)
 {
     Assert(!std::isnan(value),ExcNotANumber());
@@ -109,21 +127,7 @@ add_entry(const Index i, const Real value)
 
 
 auto
-Vector<LAPack::trilinos>::
-get_as_vector() const -> vector<Real>
-{
-    //TODO: A memcopy should be more efficient
-    const auto n_coefs = size();
-    vector<Real> coefs(n_coefs);
-    for (int i = 0 ; i < n_coefs ; ++i)
-        coefs[i] =(*this)(i);
-    return coefs;
-}
-
-
-
-auto
-Vector<LAPack::trilinos>::
+Vector<LAPack::trilinos_tpetra>::
 operator+=(const self_t &vec) -> self_t &
 {
     vector_->update(1., *(vec.vector_), 1.);
@@ -132,25 +136,39 @@ operator+=(const self_t &vec) -> self_t &
 
 
 auto
-Vector<LAPack::trilinos>::
+Vector<LAPack::trilinos_tpetra>::
 norm2() const -> Real
 {
     return vector_->getVector(0)->norm2();
 }
 
+Real
+Vector<LAPack::trilinos_tpetra>::
+dot(const self_t &A) const
+{
+    return vector_->getVector(0)->dot(*A.vector_->getVector(0));
+}
+
 
 
 void
-Vector<LAPack::trilinos>::
+Vector<LAPack::trilinos_tpetra>::
 clear()
 {
     vector_->putScalar(0.);
 }
 
+auto
+Vector<LAPack::trilinos_tpetra>::
+update(const Real scalar_A, const self_t &A, const Real scalar_this) -> self_t &
+{
+    vector_->update(scalar_A,*A.get_trilinos_vector(),scalar_this);
+    return *this;
+}
 
 
 const Real &
-Vector<LAPack::trilinos>::
+Vector<LAPack::trilinos_tpetra>::
 operator()(const Index global_id) const
 {
     /*
@@ -173,7 +191,7 @@ operator()(const Index global_id) const
 
 
 Real &
-Vector<LAPack::trilinos>::
+Vector<LAPack::trilinos_tpetra>::
 operator()(const Index global_id)
 {
     /*
@@ -194,28 +212,15 @@ operator()(const Index global_id)
 
 
 Index
-Vector<LAPack::trilinos>::
+Vector<LAPack::trilinos_tpetra>::
 size() const
 {
     return vector_->getGlobalLength() ;
 }
 
-auto
-Vector<LAPack::trilinos>::
-get_trilinos_vector() const -> Teuchos::RCP<const WrappedVectorType>
-{
-    return vector_ ;
-}
-
-auto
-Vector<LAPack::trilinos>::
-get_trilinos_vector() -> Teuchos::RCP<WrappedVectorType>
-{
-    return vector_ ;
-}
 
 void
-Vector<LAPack::trilinos>::
+Vector<LAPack::trilinos_tpetra>::
 add_block(
     const vector< Index > &local_to_global,
     const DenseVector &local_vector)
@@ -236,7 +241,7 @@ add_block(
 
 
 vector<Real>
-Vector<LAPack::trilinos>::
+Vector<LAPack::trilinos_tpetra>::
 get_local_coefs(const vector<Index> &local_to_global_ids) const
 {
     vector<Real> local_coefs;
@@ -248,8 +253,8 @@ get_local_coefs(const vector<Index> &local_to_global_ids) const
 
 
 void
-Vector<LAPack::trilinos>::
-print_info(LogStream &out) const
+Vector<LAPack::trilinos_tpetra>::
+print(LogStream &out) const
 {
     using std::endl;
 
@@ -271,20 +276,195 @@ print_info(LogStream &out) const
         out << global_id << "        " << (*this)(global_id) <<endl ;
     }
     out << "-----------------------------" << endl;
+}
 
 
-#if 0
+
+
+
+
+
+
+Vector<LAPack::trilinos_epetra>::
+Vector(const Index num_global_dofs, CommPtr comm)
+    :
+    VectorTrilinos<TrilinosImpl::epetra>(
+        Teuchos::rcp(new Map(num_global_dofs,0,*comm)))
+{}
+
+
+Vector<LAPack::trilinos_epetra>::
+Vector(const vector<Index> &dofs_id, CommPtr comm)
+    :
+    VectorTrilinos<TrilinosImpl::epetra>(
+        Teuchos::rcp(new Map(-1,dofs_id.size(),dofs_id.data(),0,*comm)))
+{}
+
+auto
+Vector<LAPack::trilinos_epetra>::
+create(const Index num_global_dofs) -> std::shared_ptr<self_t>
+{
+    return make_shared<self_t>(self_t(num_global_dofs));
+}
+
+auto
+Vector<LAPack::trilinos_epetra>::
+create(const vector<Index> &dof_ids) -> std::shared_ptr<self_t>
+{
+    return make_shared<self_t>(self_t(dof_ids));
+}
+
+void
+Vector<LAPack::trilinos_epetra>::
+clear()
+{
+    vector_->PutScalar(0.);
+}
+
+
+Real
+Vector<LAPack::trilinos_epetra>::
+dot(const self_t &A) const
+{
+    const auto &this_vec = *(*vector_)(0);
+    const auto &A_vec = *((*(A.vector_))(0));
+    Real dot;
+    this_vec.Dot(A_vec,&dot);
+    return dot;
+}
+
+
+auto
+Vector<LAPack::trilinos_epetra>::
+update(const Real scalar_A, const self_t &A, const Real scalar_this) -> self_t &
+{
+    vector_->Update(scalar_A,*A.get_trilinos_vector(),scalar_this);
+    return *this;
+}
+
+auto
+Vector<LAPack::trilinos_epetra>::
+norm2() const -> Real
+{
+    /*
+      shared_ptr<Real> res;
+      solution_->get_trilinos_vector ()->Norm2 (res.get());
+      return *res;
+    //*/
+    Real res;
+    (*vector_)(0)->Norm2(&res);
+
+    return res;
+}
+
+
+void
+Vector<LAPack::trilinos_epetra>::
+add_entry(const Index i, const Real value)
+{
+    Assert(!std::isnan(value),ExcNotANumber());
+    Assert(!std::isinf(value),ExcNumberNotFinite());
+
+    vector_->SumIntoGlobalValue(i,0,value);
+};
+
+
+
+const Real &
+Vector<LAPack::trilinos_epetra>::
+operator()(const Index global_id) const
+{
+    const auto &map = vector_->Map();
+    const auto local_id = map.LID(global_id) ;
+
+    Assert(local_id != Teuchos::OrdinalTraits<Index>::invalid(),
+           ExcVectorAccessToNonLocalElement(
+               global_id,
+               map.MinAllGID(),
+               map.MaxAllGID()));
+
+    return ((*vector_)[0][local_id]) ;
+}
+
+
+
+Real &
+Vector<LAPack::trilinos_epetra>::
+operator()(const Index global_id)
+{
+    const auto &map = vector_->Map();
+    const auto local_id = map.LID(global_id) ;
+
+    Assert(local_id != Teuchos::OrdinalTraits<Index>::invalid(),
+           ExcVectorAccessToNonLocalElement(
+               global_id,
+               map.MinAllGID(),
+               map.MaxAllGID()));
+
+    return ((*vector_)[0][local_id]) ;
+}
+
+
+
+
+vector<Real>
+Vector<LAPack::trilinos_epetra>::
+get_local_coefs(const vector<Index> &local_to_global_ids) const
+{
+    vector<Real> local_coefs;
+    for (const auto &global_id : local_to_global_ids)
+        local_coefs.emplace_back((*this)(global_id));
+
+    return local_coefs;
+}
+
+void
+Vector<LAPack::trilinos_epetra>::
+print(LogStream &out) const
+{
+    using std::endl;
+
     out << "-----------------------------" << endl;
-    out << "Local_ID        Value" << endl;
-    auto vector_data = vector_->get1dView();
-    const int local_length = vector_->getLocalLength();
-    for (int local_id = 0; local_id < local_length; ++local_id)
+
+    const Index n_entries = vector_->GlobalLength();
+    const auto &map = vector_->Map();
+    out << "Global_ID        Value" << endl;
+
+    const auto &data = (*vector_)[0];
+    for (Index i = 0 ; i < n_entries ; ++i)
     {
-        out << local_id << "        " << vector_data[local_id] <<endl ;
+        const auto global_id = map.GID(i) ;
+
+        out << global_id << "        " << data[i] <<endl ;
     }
     out << "-----------------------------" << endl;
-#endif
 }
+
+
+
+void
+Vector<LAPack::trilinos_epetra>::
+add_block(
+    const vector< Index > &local_to_global,
+    const DenseVector &local_vector)
+{
+    Assert(!local_to_global.empty(), ExcEmptyObject()) ;
+    const Index num_dofs = local_to_global.size() ;
+
+    Assert(Index(local_vector.size()) == num_dofs,
+           ExcDimensionMismatch(local_vector.size(), num_dofs)) ;
+
+    for (Index i = 0 ; i < num_dofs ; ++i)
+    {
+        Assert(!std::isnan(local_vector(i)),ExcNotANumber());
+        Assert(!std::isinf(local_vector(i)),ExcNumberNotFinite());
+        vector_->SumIntoGlobalValue(local_to_global[i],0,local_vector(i)) ;
+    }
+}
+
+
+template class VectorTrilinos<TrilinosImpl::tpetra>;
+template class VectorTrilinos<TrilinosImpl::epetra>;
 
 #endif // #ifdef USE_TRILINOS
 

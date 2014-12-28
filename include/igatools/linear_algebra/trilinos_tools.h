@@ -24,79 +24,85 @@
 #include <igatools/base/config.h>
 
 #include <igatools/basis_functions/space_manager.h>
+#include <igatools/linear_algebra/trilinos_types.h>
+
 
 #ifdef USE_TRILINOS
-#include <Tpetra_CrsMatrix.hpp>
+
+
 
 IGA_NAMESPACE_OPEN
 
 
-
-
-
-/** Type alias for the local ordinal types (i.e. the types for the local indices). */
-using LO = Index;
-
-/** Type alias for the global ordinal types (i.e. the types for the global indices). */
-using GO = Index;
-
-#if 0
 /**
- The Kokkos "Node" type describes the type of shared-memory
- parallelism that Tpetra will use _within_ an MPI process.  The
- available Node types depend on Trilinos' build options and the
- availability of certain third-party libraries.  Here are a few
- examples:
-
- Kokkos::SerialNode: No parallelism
-
- Kokkos::TPINode: Uses a custom Pthreads wrapper
-
- Kokkos::TBBNode: Uses Intel's Threading Building Blocks
-
- Kokkos::ThrustNode: Uses Thrust, a C++ CUDA wrapper,
- for GPU parallelism.
-
- Using a GPU-oriented Node means that Tpetra objects that store a
- lot of data (vectors and sparse matrices, for example) will store
- that data on the GPU, and operate on it there whenever possible.
-
- Kokkos::DefaultNode gives you a default Node type.  It may be
- different, depending on Trilinos' build options.  Currently, for
- example, building Trilinos with Pthreads enabled gives you
- Kokkos::TPINode by default.  That means your default Node is a
- parallel node!
-*/
-using Node = typename Kokkos::SerialNode;
-#endif
-
-/** Type alias for the communicator. */
-using Comm = Teuchos::Comm<int>;
-using CommPtr = Teuchos::RCP<const Comm>;
-
-/** Type alias for the dofs map across the processors */
-using DofsMap = Tpetra::Map<LO,GO>;
-using DofsMapPtr = Teuchos::RCP<const DofsMap>;
-
-/** Type alias for the connectivty graph */
-using Graph = Tpetra::CrsGraph<LO,GO>;
-using GraphPtr = Teuchos::RCP<Graph>;
-
-/** Type alias for the Trilinos matrix. */
-using MatrixImpl = Tpetra::CrsMatrix<Real,LO,GO>;
-using MatrixImplPtr = Teuchos::RCP<MatrixImpl>;
-
-
-namespace trilinos_tools
+ * @brief This class provides some methods for easy construction of Trilinos objects.
+ */
+template <TrilinosImpl trilinos_impl>
+class TrilinosTools
 {
-DofsMapPtr build_row_map(const SpaceManager &space_manager, const CommPtr comm);
+public:
+    using Types = TrilinosTypes<trilinos_impl>;
 
-DofsMapPtr build_col_map(const SpaceManager &space_manager, const CommPtr comm);
+    using CommPtr = typename Types::CommPtr;
+    using MapPtr = typename Types::MapPtr;
+    using Graph = typename Types::Graph;
+    using GraphPtr = typename Types::GraphPtr;
+    using Matrix = typename Types::Matrix;
+    using MatrixPtr = typename Types::MatrixPtr;
+    using Vector = typename Types::Vector;
+    using VectorPtr = typename Types::VectorPtr;
+    using OpPtr = typename Types::OpPtr;
 
-GraphPtr build_graph(const SpaceManager &space_manager,const DofsMapPtr row_map,const DofsMapPtr col_map);
+    static MapPtr build_row_map(const SpaceManager &space_manager, const CommPtr comm);
 
-MatrixImplPtr build_matrix(GraphPtr graph);
+    static MapPtr build_col_map(const SpaceManager &space_manager, const CommPtr comm);
+
+    static GraphPtr build_graph(const SpaceManager &space_manager,const MapPtr row_map,const MapPtr col_map);
+
+    static MatrixPtr build_matrix(const GraphPtr graph);
+
+    static VectorPtr build_vector(const MapPtr map);
+
+    static OpPtr compute_preconditioner_ILU(const MatrixPtr matrix, const int fill_level = 0);
+
+
+private:
+
+    /**
+     *
+     * The ILUKPreconditionerFactory class encapsulates creation of an Ifpack or Ifpack2
+     * preconditioner (returned as an OpPtr) from a MatrixPtr.
+     * Change the
+     * preconditioner parameters by changing the function that creates a
+     * ParameterList for Ifpack/Ifpack2.
+     * See the Ifpack/Ifpack2 documentation for a
+     * list and description of the parameters that it accepts.
+     *
+    */
+    class ILUKPreconditionerFactory
+    {
+    public:
+        // The constructor doesn't do anything, since this factory doesn't
+        // keep any state.
+        ILUKPreconditionerFactory() {};
+
+        /**
+         * Return a ParameterList for asking Ifpack or Ifpack2 to create an RILUK
+         * incomplete factorization preconditioner with a certain @p fill_level, drop
+         * tolerance 0.0, and absolute threshold 0.0
+         */
+        Teuchos::RCP<Teuchos::ParameterList>
+        get_parameter_list_for_preconditioner_creation(const int fill_level) const;
+
+
+        // Compute and return a preconditioner.
+        OpPtr
+        create(const Teuchos::RCP<const Matrix> &A,
+               const Teuchos::RCP<Teuchos::ParameterList> &plist) const;
+
+    };
 };
+
 
 
 IGA_NAMESPACE_CLOSE

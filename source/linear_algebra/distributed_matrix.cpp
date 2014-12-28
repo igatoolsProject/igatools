@@ -49,101 +49,55 @@ DeclException0(ExcNotQuadratic);
 
 #ifdef USE_TRILINOS
 
-
-Matrix<LAPack::trilinos>::
-Matrix(const SpaceManager &space_manager,CommPtr comm)
+template<TrilinosImpl trilinos_impl>
+MatrixTrilinos<trilinos_impl>::
+MatrixTrilinos(const SpaceManager &space_manager,CommPtr comm)
     :
-    matrix_(trilinos_tools::build_matrix(
-                trilinos_tools::build_graph(
+    matrix_(Tools::build_matrix(
+                Tools::build_graph(
                     space_manager,
-                    trilinos_tools::build_row_map(space_manager,comm),
-                    trilinos_tools::build_col_map(space_manager,comm))))
+                    Tools::build_row_map(space_manager,comm),
+                    Tools::build_col_map(space_manager,comm))))
+{}
+
+
+template<TrilinosImpl trilinos_impl>
+auto
+MatrixTrilinos<trilinos_impl>::
+get_trilinos_matrix() -> Teuchos::RCP<WrappedMatrix>
 {
-    /*
-    matrix_.reset(new MatrixImpl(
-                trilinos_tools::build_graph(
-                        space_manager,
-                        trilinos_tools::build_row_map(space_manager,comm),
-                        trilinos_tools::build_col_map(space_manager,comm))));
-    matrix_->setAllToScalar(0.0);
-    //*/
-}
+    return matrix_;
+};
 
-#if 0
-Matrix<LAPack::trilinos>::
-Matrix(const SparsityPattern &sparsity_pattern,Teuchos::RCP<const Teuchos::Comm<int>> comm)
-    :
-    comm_(comm)
+template<TrilinosImpl trilinos_impl>
+auto
+MatrixTrilinos<trilinos_impl>::
+get_trilinos_matrix() const -> Teuchos::RCP<const WrappedMatrix>
 {
-    //-------------------------------------------------------------------------------------
-    const auto row_dofs = sparsity_pattern.get_row_dofs();
-//  std::sort(row_dofs.begin(),row_dofs.end());
-
-    const auto col_dofs = sparsity_pattern.get_col_dofs();
-//  std::sort(col_dofs.begin(),col_dofs.end());
-
-    //-------------------------------------------------------------------------------------
-
-
-    column_space_map_.reset(new DofsMap(col_dofs.size(),col_dofs,0,comm_));
-
-    row_space_map_.reset(new DofsMap(row_dofs.size(),row_dofs,0,comm_));
-
-    using LongUInt = long unsigned int;
-    Teuchos::ArrayRCP<const LongUInt> n_dofs_per_row =
-        Teuchos::arcp(
-            Teuchos::RCP<const std::vector<LongUInt> >(
-                new vector<LongUInt>(sparsity_pattern.get_num_dof_connections()))) ;
-    //-------------------------------------------------------------------------------------
-
-
-
-    //-------------------------------------------------------------------------------------
-    // allocating the entries in the graph corresponding to the sparsitiy pattern
-    // (this step is required by the Tpetra matrix, in order to use sumIntoGlobalValues()
-
-    graph_.reset(new Graph(row_space_map_,column_space_map_,n_dofs_per_row,Tpetra::StaticProfile));
-    for (const auto &row : sparsity_pattern)
-    {
-        const Index row_id = row.first ;
-        const auto &cols_id = row.second;
-
-        auto cols_id_vec = vector<Index>(cols_id.begin(),cols_id.end());
-
-        auto cols_id_view = Teuchos::ArrayView<const GO>(std::move(cols_id_vec));
-
-        graph_->insertGlobalIndices(row_id,cols_id_view);
-    }
-    graph_->fillComplete(column_space_map_,row_space_map_);
-    //-------------------------------------------------------------------------------------
-
-    matrix_.reset(new MatrixImpl(graph_));
-    matrix_->setAllToScalar(0.0);
-    //-------------------------------------------------------------------------------------
+    return matrix_;
 };
 
 
-
-shared_ptr<Matrix<LAPack::trilinos> >
-Matrix<LAPack::trilinos>::
-create(const SparsityPattern &sparsity_pattern)
-{
-    return std::make_shared<Matrix>(Matrix(sparsity_pattern));
-}
-#endif
+Matrix<LAPack::trilinos_tpetra>::
+Matrix(const SpaceManager &space_manager,CommPtr comm)
+    :
+    MatrixTrilinos<TrilinosImpl::tpetra>(space_manager,comm)
+{}
 
 
-shared_ptr<Matrix<LAPack::trilinos> >
-Matrix<LAPack::trilinos>::
+
+shared_ptr<Matrix<LAPack::trilinos_tpetra> >
+Matrix<LAPack::trilinos_tpetra>::
 create(const SpaceManager &space_manager)
 {
-    return std::make_shared<Matrix>(Matrix(space_manager));
+    using Mat = Matrix<LAPack::trilinos_tpetra>;
+    return std::make_shared<Mat>(Mat(space_manager));
 }
 
 
 
 void
-Matrix<LAPack::trilinos>::
+Matrix<LAPack::trilinos_tpetra>::
 clear()
 {
     matrix_->resumeFill();
@@ -153,7 +107,7 @@ clear()
 
 
 void
-Matrix<LAPack::trilinos>::
+Matrix<LAPack::trilinos_tpetra>::
 add_entry(const Index row_id, const Index column_id, const Real value)
 {
     Teuchos::Array<Index> columns_id(1,column_id) ;
@@ -165,7 +119,7 @@ add_entry(const Index row_id, const Index column_id, const Real value)
 
 
 void
-Matrix<LAPack::trilinos>::
+Matrix<LAPack::trilinos_tpetra>::
 add_block(
     const vector<Index> &rows_id,
     const vector<Index> &cols_id,
@@ -182,12 +136,14 @@ add_block(
     Assert(n_cols == Index(local_matrix.size2()),
            ExcDimensionMismatch(n_cols,Index(local_matrix.size2()))) ;
 
-    vector<Real> row_values(n_cols) ;
+//    vector<Real> row_values(n_cols) ;
     for (int i = 0 ; i < n_rows ; ++i)
     {
-        const auto row_local_matrix = local_matrix.get_row(i) ;
-        for (int j = 0 ; j < n_cols ; ++j)
-            row_values[j] = row_local_matrix(j) ;
+//        const auto row_local_matrix = local_matrix.get_row(i) ;
+//        for (int j = 0 ; j < n_cols ; ++j)
+//            row_values[j] = row_local_matrix(j) ;
+
+        auto row_values = Teuchos::ArrayView<const Real>(&local_matrix(i,0),n_cols);
 
         matrix_->sumIntoGlobalValues(rows_id[i],cols_id,row_values);
     }
@@ -196,7 +152,7 @@ add_block(
 
 
 void
-Matrix<LAPack::trilinos>::
+Matrix<LAPack::trilinos_tpetra>::
 fill_complete()
 {
     const auto graph = matrix_->getGraph();
@@ -204,30 +160,15 @@ fill_complete()
 };
 
 void
-Matrix<LAPack::trilinos>::
+Matrix<LAPack::trilinos_tpetra>::
 resume_fill()
 {
     matrix_->resumeFill();
 };
 
 
-auto
-Matrix<LAPack::trilinos>::
-get_trilinos_matrix() -> Teuchos::RCP<MatrixImpl>
-{
-    return matrix_;
-};
-
-auto
-Matrix<LAPack::trilinos>::
-get_trilinos_matrix() const -> Teuchos::RCP<const MatrixImpl>
-{
-    return matrix_;
-};
-
-
 Real
-Matrix<LAPack::trilinos>::
+Matrix<LAPack::trilinos_tpetra>::
 operator()(const Index row, const Index col) const
 {
     const auto graph = matrix_->getGraph();
@@ -237,7 +178,6 @@ operator()(const Index row, const Index col) const
 
     const auto local_row = row_map->getLocalElement(row);
     const auto local_col = col_map->getLocalElement(col);
-//    std::cout << "Global=("<<row<<","<<col<<")   Local=("<<local_row<<","<<local_col<<")"<<std::endl;
 
     // If the data is not on the present processor, we throw an exception.
     // This is one of the two tiny differences to the el(i,j) call,
@@ -251,10 +191,8 @@ operator()(const Index row, const Index col) const
     Teuchos::ArrayView<const Real> values ;
     matrix_->getLocalRowView(local_row,local_col_ids,values) ;
 
-//    std::cout << local_col_ids <<std::endl ;
-//    std::cout << "local_col=" << local_col << std::endl;
     // Search the index where we look for the value, and then finally get it.
-    const Index *col_find = std::find(local_col_ids.begin(),local_col_ids.end(),local_col);
+    const auto col_find = std::find(local_col_ids.begin(),local_col_ids.end(),local_col);
 
 
     // This is actually the only difference to the el(i,j) function,
@@ -263,14 +201,13 @@ operator()(const Index row, const Index col) const
     Assert(col_find != local_col_ids.end(), ExcInvalidIndex(row,col));
 
     const Index id_find = static_cast<Index>(col_find-local_col_ids.begin());
-//    std::cout << "id_find="<<id_find<<std::endl;
 
     return values[id_find];
 }
 
 
 void
-Matrix<LAPack::trilinos>::
+Matrix<LAPack::trilinos_tpetra>::
 clear_row(const Index row)
 {
     const auto graph = matrix_->getGraph();
@@ -297,8 +234,8 @@ clear_row(const Index row)
 
 
 void
-Matrix<LAPack::trilinos>::
-print_info(LogStream &out) const
+Matrix<LAPack::trilinos_tpetra>::
+print(LogStream &out) const
 {
     using std::endl;
 
@@ -313,20 +250,26 @@ print_info(LogStream &out) const
     out << "Num. entries = " << this->get_num_entries() << endl;
     out << endl;
     out << "Row Index        Col Index        Value" << endl;
-    for (Index row_id = 0 ; row_id < n_rows ; ++row_id)
+    for (Index local_row = 0 ; local_row < n_rows ; ++local_row)
     {
-        auto n_entries_row = matrix_->getNumEntriesInGlobalRow(row_id);
+        const auto graph = matrix_->getGraph();
+
+        const auto row_map = graph->getRowMap();
+
+        const auto global_row = row_map->getGlobalElement(local_row);
+
+        auto n_entries_row = matrix_->getNumEntriesInGlobalRow(global_row);
 
         vector<Index> columns_id(n_entries_row);
 
         vector<Real> values(n_entries_row) ;
 
-        matrix_->getGlobalRowCopy(row_id,columns_id,values,n_entries_row);
+        matrix_->getGlobalRowCopy(global_row,columns_id,values,n_entries_row);
 
-        for (const auto col_id : columns_id)
-            out << row_id << "       "
-                << col_id << "        "
-                << (*this)(row_id,col_id) << endl;
+        for (const auto global_col : columns_id)
+            out << global_row << "       "
+                << global_col << "        "
+                << (*this)(global_row,global_col) << endl;
     }
     out << "-----------------------------" << endl;
 
@@ -337,21 +280,21 @@ print_info(LogStream &out) const
 
 
 auto
-Matrix<LAPack::trilinos>::
+Matrix<LAPack::trilinos_tpetra>::
 get_num_rows() const -> Index
 {
     return matrix_->getGlobalNumRows() ;
 }
 
 auto
-Matrix<LAPack::trilinos>::
+Matrix<LAPack::trilinos_tpetra>::
 get_num_columns() const -> Index
 {
     return matrix_->getGlobalNumCols() ;
 }
 
 auto
-Matrix<LAPack::trilinos>::
+Matrix<LAPack::trilinos_tpetra>::
 get_num_entries() const -> Index
 {
     return matrix_->getGlobalNumEntries() ;
@@ -359,7 +302,7 @@ get_num_entries() const -> Index
 
 
 void
-Matrix<LAPack::trilinos>::
+Matrix<LAPack::trilinos_tpetra>::
 multiply_by_right_vector(const vector_t &x,vector_t &y,const Real alpha,const Real beta) const
 {
     matrix_->apply(*x.get_trilinos_vector(),
@@ -368,13 +311,256 @@ multiply_by_right_vector(const vector_t &x,vector_t &y,const Real alpha,const Re
 }
 
 void
-Matrix<LAPack::trilinos>::
+Matrix<LAPack::trilinos_tpetra>::
 multiply_by_left_vector(const vector_t &x,vector_t &y,const Real alpha,const Real beta) const
 {
     matrix_->apply(*x.get_trilinos_vector(),
                    *y.get_trilinos_vector(),
                    Teuchos::TRANS,alpha,beta);
 }
+
+
+
+
+
+
+
+Matrix<LAPack::trilinos_epetra>::
+Matrix(const SpaceManager &space_manager,CommPtr comm)
+    :
+    MatrixTrilinos<TrilinosImpl::epetra>(space_manager,comm)
+{}
+
+shared_ptr<Matrix<LAPack::trilinos_epetra> >
+Matrix<LAPack::trilinos_epetra>::
+create(const SpaceManager &space_manager)
+{
+    using Mat = Matrix<LAPack::trilinos_epetra>;
+    return std::make_shared<Mat>(Mat(space_manager));
+}
+
+
+void
+Matrix<LAPack::trilinos_epetra>::
+add_entry(const Index row_id, const Index column_id, const Real value)
+{
+    matrix_->SumIntoGlobalValues(row_id,1,&value,&column_id);
+};
+
+
+void
+Matrix<LAPack::trilinos_epetra>::
+fill_complete()
+{
+//    const auto &graph = matrix_->Graph();
+//    matrix_->FillComplete(graph.DomainMap(),graph.RangeMap());
+    matrix_->FillComplete(matrix_->ColMap(),matrix_->RowMap());
+};
+
+void
+Matrix<LAPack::trilinos_epetra>::
+resume_fill()
+{};
+
+void
+Matrix<LAPack::trilinos_epetra>::
+clear()
+{
+    matrix_->PutScalar(0.);
+}
+
+auto
+Matrix<LAPack::trilinos_epetra>::
+get_num_rows() const -> Index
+{
+    return matrix_->NumGlobalRows() ;
+}
+
+auto
+Matrix<LAPack::trilinos_epetra>::
+get_num_columns() const -> Index
+{
+    return matrix_->NumGlobalCols() ;
+}
+
+auto
+Matrix<LAPack::trilinos_epetra>::
+get_num_entries() const -> Index
+{
+    return matrix_->GlobalMaxNumEntries() ;
+}
+
+
+void
+Matrix<LAPack::trilinos_epetra>::
+multiply_by_right_vector(const vector_t &x,vector_t &y,const Real alpha,const Real beta) const
+{
+    auto x_ptr = x.get_trilinos_vector();
+    using TrilinosVec = typename vector_t::WrappedVector;
+
+    auto A_times_X = Teuchos::rcp(new TrilinosVec(matrix_->RangeMap(),x_ptr->NumVectors()));
+    matrix_->Multiply(false,*x_ptr,*A_times_X);
+
+    y.get_trilinos_vector()->Update(alpha, *A_times_X, beta);
+}
+
+void
+Matrix<LAPack::trilinos_epetra>::
+multiply_by_left_vector(const vector_t &x,vector_t &y,const Real alpha,const Real beta) const
+{
+    auto x_ptr = x.get_trilinos_vector();
+    auto A_times_X = *x_ptr;
+    matrix_->Multiply(true,*x_ptr,A_times_X);
+
+    y.get_trilinos_vector()->Update(alpha, A_times_X, beta);
+}
+
+
+void
+Matrix<LAPack::trilinos_epetra>::
+add_block(
+    const vector<Index> &rows_id,
+    const vector<Index> &cols_id,
+    const DenseMatrix &local_matrix)
+{
+    Assert(!rows_id.empty(), ExcEmptyObject()) ;
+    Assert(!cols_id.empty(), ExcEmptyObject()) ;
+
+    const Index n_rows = rows_id.size();
+    const Index n_cols = cols_id.size();
+
+    Assert(n_rows == Index(local_matrix.size1()),
+           ExcDimensionMismatch(n_rows,Index(local_matrix.size1()))) ;
+    Assert(n_cols == Index(local_matrix.size2()),
+           ExcDimensionMismatch(n_cols,Index(local_matrix.size2()))) ;
+
+    vector<Real> row_values(n_cols) ;
+    for (int i = 0 ; i < n_rows ; ++i)
+    {
+        const auto row_local_matrix = local_matrix.get_row(i) ;
+        for (int j = 0 ; j < n_cols ; ++j)
+            row_values[j] = row_local_matrix(j) ;
+
+        matrix_->SumIntoGlobalValues(rows_id[i],n_cols,row_values.data(),cols_id.data());
+    }
+};
+
+
+
+
+Real
+Matrix<LAPack::trilinos_epetra>::
+operator()(const Index row, const Index col) const
+{
+    const auto &graph = matrix_->Graph();
+
+    const auto &row_map = graph.RowMap();
+    const auto &col_map = graph.ColMap();
+
+    const auto local_row = row_map.LID(row);
+    const auto local_col = col_map.LID(col);
+
+    // If the data is not on the present processor, we throw an exception.
+    // This is one of the two tiny differences to the el(i,j) call,
+    //which does not throw any assertions, but returns 0.0.
+    Assert(local_row != Teuchos::OrdinalTraits<Index>::invalid(),
+           ExcAccessToNonLocalElement(row,col,
+                                      row_map.MinAllGID(),
+                                      row_map.MaxAllGID()+1));
+
+    Index n_cols = matrix_->NumMyEntries(local_row);
+
+    Real *val_ptr;
+    Index *id_ptr;
+    matrix_->ExtractMyRowView(local_row, n_cols, val_ptr, id_ptr);
+    Teuchos::ArrayView<const Index> local_col_ids(id_ptr,n_cols) ;
+    Teuchos::ArrayView<const Real> values(val_ptr,n_cols) ;
+
+    // Search the index where we look for the value, and then finally get it.
+    const auto col_find = std::find(local_col_ids.begin(),local_col_ids.end(),local_col);
+
+
+    // This is actually the only difference to the el(i,j) function,
+    // which means that we throw an exception in this case instead of just
+    // returning zero for an element that is not present in the sparsity pattern.
+    Assert(col_find != local_col_ids.end(), ExcInvalidIndex(row,col));
+
+    const Index id_find = static_cast<Index>(col_find-local_col_ids.begin());
+
+    return values[id_find];
+}
+
+
+void
+Matrix<LAPack::trilinos_epetra>::
+clear_row(const Index row)
+{
+    const auto &graph = matrix_->Graph();
+
+    const auto &row_map = graph.RowMap();
+    const auto local_row = row_map.LID(row);
+
+    // Only do this on the rows owned locally on this processor.
+    if (local_row != Teuchos::OrdinalTraits<Index>::invalid())
+    {
+        auto n_entries_row = graph.NumMyIndices(local_row);
+
+        vector<Index> local_col_ids(n_entries_row);
+
+        graph.ExtractMyRowCopy(local_row,n_entries_row,n_entries_row,local_col_ids.data());
+
+        vector<Real> zeros(n_entries_row,0.0);
+        matrix_->ReplaceMyValues(local_row,n_entries_row,zeros.data(),local_col_ids.data());
+    }
+}
+
+
+void
+Matrix<LAPack::trilinos_epetra>::
+print(LogStream &out) const
+{
+    using std::endl;
+
+    const auto n_rows = this->get_num_rows();
+
+
+    out << "-----------------------------" << endl;
+    // Commented as different trilinos version show different information here
+    //   out << *matrix_ ;
+    out << "Num. rows    = " << n_rows << endl;
+    out << "Num. cols    = " << this->get_num_columns() << endl;
+    out << "Num. entries = " << this->get_num_entries() << endl;
+    out << endl;
+    out << "Row Index        Col Index        Value" << endl;
+
+    for (Index local_row = 0 ; local_row < n_rows ; ++local_row)
+    {
+        const auto &graph = matrix_->Graph();
+
+        const auto &row_map = graph.RowMap();
+
+        const auto global_row = row_map.GID(local_row);
+
+        Index n_entries_row = matrix_->NumGlobalEntries(global_row);
+        vector<Real> values(n_entries_row);
+        vector<Index> columns_id(n_entries_row);
+
+        Index nnz = 0;
+        matrix_->ExtractGlobalRowCopy(global_row,n_entries_row,nnz,values.data(),columns_id.data());
+
+        for (Index i = 0 ; i < n_entries_row ; ++i)
+            out << global_row << "       "
+                << columns_id[i] << "        "
+                << values[i] << endl;
+    }
+    out << "-----------------------------" << endl;
+
+}
+
+
+
+template class MatrixTrilinos<TrilinosImpl::tpetra>;
+template class MatrixTrilinos<TrilinosImpl::epetra>;
 
 #endif //#ifdef USE_TRILINOS
 

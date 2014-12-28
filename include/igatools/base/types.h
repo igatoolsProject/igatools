@@ -228,12 +228,16 @@ enum class LAPack : int
     /** Use the internal (igatools) linear algebra implementation.*/
     internal = 0,
 
-    /** Use the Trilinos linear algebra implementation.*/
-    trilinos = 1,
+    /** Use the Trilinos Tpetra linear algebra implementation.*/
+    trilinos_tpetra = 1,
+
+    /** Use the Trilinos Epetra linear algebra implementation.*/
+    trilinos_epetra = 2,
 
     /** Use the PETSc linear algebra implementation.*/
-    petsc = 2
+    petsc = 3
 };
+
 
 /**
  * Bit field flags specifying the verbosity level of the output.

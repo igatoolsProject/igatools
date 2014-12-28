@@ -37,12 +37,36 @@
 IGA_NAMESPACE_OPEN
 
 
-template < LAPack la_pack>
-class LinearSolver;
+template <LAPack la_pack>
+class LinearSolverIterative;
 
+template <LAPack la_pack>
+class LinearSolverDirect;
+
+
+template <LAPack la_pack>
+class LinearSolver
+{
+public:
+    /**
+     * Solve the linear system   matrix * solution = rhs
+     */
+    virtual void solve(const Matrix<la_pack> &matrix,
+                       const Vector<la_pack> &rhs,
+                       Vector<la_pack> &solution) = 0;
+    /**
+     * Returns the name of the used solver.
+     */
+    virtual std::string get_solver_name() const = 0;
+
+};
 
 
 #ifdef USE_TRILINOS
+
+
+
+
 
 /**
  * Simple interface linear solver.
@@ -57,14 +81,28 @@ class LinearSolver;
  * that have enough headaches learning igatools and postpone
  * learning Trilinos.
  *
+ * Further information about Trilinos::Belos can be found
+ * <a href="http://trilinos.org/packages/belos/">here</a>
+ *
  *
  * @todo (MM, Feb 2014) Re-design in order to be used with different linear algebra package
  * (Trilinos, PETSc,etc.)
  */
-template<>
-class LinearSolver<LAPack::trilinos>
+template<TrilinosImpl trilinos_impl>
+class LinearSolverIterativeTrilinos : public LinearSolver<TrilinosTypes<trilinos_impl>::la_pack>
 {
 public:
+    using Types = TrilinosTypes<trilinos_impl>;
+
+    using Comm  = typename Types::Comm;
+    using Map   = typename Types::Map;
+    using Graph = typename Types::Graph;
+    using Mat   = typename Types::Matrix;
+    using Vec   = typename Types::Vector;
+    using Op    = typename Types::Op;
+
+    static const LAPack la_pack = TrilinosTypes<trilinos_impl>::la_pack;
+
     /**
      * Enum class used to specify the linear solver
      *
@@ -80,10 +118,27 @@ public:
         RecyclingGMRES = 5,
         PseudoBlockGMRES = 6,
         PseudoBlockCG = 7,
+        TFQMR = 8,
+        GCRODR = 9,
+        MINRES = 10,
+        PCPG = 11,
 
         /** This entry tells how many elements we have in the current enum class */
-        ENUM_SIZE = 8
+        ENUM_SIZE = 12
     };
+
+
+    enum class PreconditionerType : int
+    {
+        NONE = 0,
+        ILU0 = 1,
+        ILU1 = 2,
+        ILU2 = 3,
+
+        /** This entry tells how many elements we have in the current enum class */
+        ENUM_SIZE = 4
+    };
+
 
     /**
      * Constructor with a solver type.
@@ -103,18 +158,25 @@ public:
      *
      * @param[in] max_num_iter The maximum number of iterations. Default is 1000.
      */
-    LinearSolver(const SolverType solver_type = SolverType::GMRES,
-                 const Real tolerance = 1.0e-9,
-                 const int max_num_iter = 1000);
+    LinearSolverIterativeTrilinos(const SolverType solver_type = SolverType::GMRES,
+                                  const PreconditionerType prec_type = PreconditionerType::ILU0,
+                                  const Real tolerance = 1.0e-9,
+                                  const int max_num_iter = 1000);
 
     /**
-     * Solves the linear system.
-     *
-     * @note A and b should be const but Belos expects non const
+     * Creates a shared pointer of type LinearSolverIterativeTrilinos<trilinos_impl> and returns it.
      */
-    void solve(Matrix<LAPack::trilinos> &A,
-               Vector<LAPack::trilinos> &b,
-               Vector<LAPack::trilinos> &x);
+    static std::shared_ptr<LinearSolverIterativeTrilinos<trilinos_impl>> create(
+                const SolverType solver_type = SolverType::GMRES,
+                const PreconditionerType prec_type = PreconditionerType::ILU0,
+                const Real tolerance = 1.0e-9,
+                const int max_num_iter = 1000);
+
+    /**
+     * Solves the linear system A * x = b.
+     *
+     */
+    void solve(const Matrix<la_pack> &A, const Vector<la_pack> &b, Vector<la_pack> &x) override final;
 
 
     /** Return the tolerance achieved by the last solve() invocation. */
@@ -139,17 +201,118 @@ public:
      */
     void set_solver_parameters(Teuchos::RCP<Teuchos::ParameterList> solver_params);
 
+    /**
+     * Returns the name of the used solver.
+     */
+    std::string get_solver_name() const override final;
+
+    /**
+     * Returns the preconditioner type.
+     */
+    PreconditionerType get_preconditioner_type() const;
+
+    /**
+     * Returns the solver parameters.
+     */
+    Teuchos::RCP<Teuchos::ParameterList> get_solver_parameters() const;
+
 private:
-    using matrix_t = Tpetra::Operator<Real,Index,Index> ;
-    using vector_t = Tpetra::MultiVector<Real,Index,Index> ;
-
-
     std::array<std::string,get_enum_size<SolverType>()> solver_type_enum_to_alias_ ;
+
+    std::string solver_name_;
 
     /** LinearSolver parameters */
     Teuchos::RCP<Teuchos::ParameterList> solver_params_;
 
-    Teuchos::RCP<Belos::SolverManager<Real,vector_t,matrix_t> > solver_;
+    Teuchos::RCP<Belos::SolverManager<Real,Vec,Op> > solver_;
+
+
+    PreconditionerType preconditioner_type_;
+
+    Teuchos::RCP<Op> preconditioner_;
+};
+
+
+template<>
+class LinearSolverIterative<LAPack::trilinos_tpetra> : public LinearSolverIterativeTrilinos<TrilinosImpl::tpetra>
+{
+public:
+    using LinearSolverIterativeTrilinos<TrilinosImpl::tpetra>::LinearSolverIterativeTrilinos;
+};
+
+
+template<>
+class LinearSolverIterative<LAPack::trilinos_epetra> : public LinearSolverIterativeTrilinos<TrilinosImpl::epetra>
+{
+    using LinearSolverIterativeTrilinos<TrilinosImpl::epetra>::LinearSolverIterativeTrilinos;
+};
+
+
+
+template<TrilinosImpl trilinos_impl>
+class LinearSolverDirectTrilinos : public LinearSolver<TrilinosTypes<trilinos_impl>::la_pack>
+{
+public:
+    static const LAPack la_pack = TrilinosTypes<trilinos_impl>::la_pack;
+
+
+    using SolverType = typename TrilinosTypes<trilinos_impl>::DirectSolver;
+
+    static constexpr SolverType default_solver_type = SolverType::SUPERLU;
+
+    /**
+     * Default constructor.
+     */
+    LinearSolverDirectTrilinos(const SolverType &solver_type = default_solver_type);
+
+    /**
+     * Creates a shared pointer of type LinearSolverDirectTrilinos<trilinos_impl> and returns it.
+     */
+    static std::shared_ptr<LinearSolverDirectTrilinos<trilinos_impl>> create(
+                const SolverType &solver_type = default_solver_type);
+
+    /**
+     * Copy constructor. Not allowed to be used.
+     */
+    LinearSolverDirectTrilinos(const LinearSolverDirectTrilinos<trilinos_impl> &solverDirect) = delete;
+
+    /**
+     * Assignment operator. Not allowed to be used.
+     */
+    LinearSolverDirectTrilinos &operator=(const LinearSolverDirectTrilinos<trilinos_impl> &solverDirect) = delete;
+
+    /**
+     * Returns the name of the used solver.
+     */
+    std::string get_solver_name() const override final;
+
+    /**
+     * Solve the linear system   matrix * solution = rhs
+     */
+    void solve(const Matrix<la_pack> &matrix,
+               const Vector<la_pack> &rhs,
+               Vector<la_pack> &solution) override final;
+
+
+private:
+    std::string solver_name_;
+};
+
+
+
+template<>
+class LinearSolverDirect<LAPack::trilinos_tpetra> : public LinearSolverDirectTrilinos<TrilinosImpl::tpetra>
+{
+public:
+    using LinearSolverDirectTrilinos<TrilinosImpl::tpetra>::LinearSolverDirectTrilinos;
+};
+
+
+template<>
+class LinearSolverDirect<LAPack::trilinos_epetra> : public LinearSolverDirectTrilinos<TrilinosImpl::epetra>
+{
+public:
+    using LinearSolverDirectTrilinos<TrilinosImpl::epetra>::LinearSolverDirectTrilinos;
 };
 
 #endif //#ifdef USE_TRILINOS
@@ -177,7 +340,7 @@ private:
  * @todo (MM, May 2014) fill the missing implementations complete the documentation
  */
 template<>
-class LinearSolver<LAPack::petsc>
+class LinearSolverIterative<LAPack::petsc>
 {
 public:
     /**
@@ -218,9 +381,9 @@ public:
      *
      * @param[in] max_num_iter The maximum number of iterations. Default is 1000.
      */
-    LinearSolver(const SolverType solver_type = SolverType::GMRES,
-                 const Real tolerance = 1.0e-15,
-                 const int max_num_iter = 1000);
+    LinearSolverIterative(const SolverType solver_type = SolverType::GMRES,
+                          const Real tolerance = 1.0e-15,
+                          const int max_num_iter = 1000);
 
     /**
      * Constructor with a solver and a preconditioner type.
@@ -240,10 +403,10 @@ public:
      *
      * @param[in] max_num_iter The maximum number of iterations. Default is 1000.
      */
-    LinearSolver(const SolverType solver_type = SolverType::GMRES,
-                 const PreconditionerType prec_type = PreconditionerType::ILU,
-                 const Real tolerance = 1.0e-15,
-                 const int max_num_iter = 1000);
+    LinearSolverIterative(const SolverType solver_type = SolverType::GMRES,
+                          const PreconditionerType prec_type = PreconditionerType::ILU,
+                          const Real tolerance = 1.0e-15,
+                          const int max_num_iter = 1000);
 
     /**
      * Solves the linear system.
@@ -269,6 +432,16 @@ public:
      */
     void set_tolerance(const Real tolerance) ;
 
+    /**
+     * Returns the name of the used solver.
+     */
+    std::string get_solver_name() const override final;
+
+    /**
+     * Returns the preconditioner type.
+     */
+    PreconditionerType get_preconditioner_type() const;
+
 
     /**
      * Set the parameters for the solver.
@@ -289,6 +462,8 @@ private:
 
     std::array<std::string,get_enum_size<SolverType>()> solver_type_enum_to_alias_ ;
     std::array<std::string,get_enum_size<PreconditionerType>()> prec_type_enum_to_alias_ ;
+    std::string solver_name_;
+    PreconditionerType preconditioner_type_;
 
     /** LinearSolver parameters */
 //    Teuchos::RCP<Teuchos::ParameterList> solver_params_;
