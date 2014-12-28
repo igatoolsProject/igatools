@@ -116,7 +116,7 @@ BSplineSpace(const DegreeTable &deg,
                BaseSpace::compute_knots_with_repetition(end_b_),
                BaseSpace::accumulated_interior_multiplicities(),
                deg),
-    end_interval_(this->get_components_map())
+    end_interval_(end_b.get_comp_map())
 {
     // TODO (pauletti, Dec 24, 2014): after it work it should be recoded properly
     const auto rep_knots =
@@ -125,13 +125,17 @@ BSplineSpace(const DegreeTable &deg,
     for (auto i : end_interval_.get_active_components_id())
         for (int dir=0; dir<dim; ++dir)
         {
-            const auto p = degt[i][dir];
-            end_interval_[i][dir].first =
-                knots->get_knot_coordinates().get_data_direction(dir)[1] -
-                rep_knots[i].get_data_direction(dir)[p];
-            end_interval_[i][dir].second =
-                *(rep_knots[i].get_data_direction(dir).end() - (p+1)) -
-                *(knots->get_knot_coordinates().get_data_direction(dir).end()-2);
+            const auto p = deg[i][dir];
+
+            const auto x1 = knots->get_knot_coordinates().get_data_direction(dir)[1];
+            const auto a = knots->get_knot_coordinates().get_data_direction(dir)[0];
+            const auto x0 = rep_knots[i].get_data_direction(dir)[p];
+            end_interval_[i][dir].first = (x1-a) / (x1-x0);
+
+            const auto xk= *(knots->get_knot_coordinates().get_data_direction(dir).end()-2);
+            const auto b = *(knots->get_knot_coordinates().get_data_direction(dir).end()-1);
+            const auto xk1 = *(rep_knots[i].get_data_direction(dir).end() - (p+1));
+            end_interval_[i][dir].second = (xk1-b) / (xk1-xk);
         }
 
     // create a signal and a connection for the grid refinement

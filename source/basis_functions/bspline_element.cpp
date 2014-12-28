@@ -300,7 +300,7 @@ BSplineElement(const self_t &elem,
 
 
 
-
+#if 0
 template <int dim, int range, int rank>
 auto
 BSplineElement<dim, range, rank>::
@@ -655,8 +655,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 
     return D_phi;
 }
-
-
+#endif
 
 IGA_NAMESPACE_CLOSE
 

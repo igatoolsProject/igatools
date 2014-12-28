@@ -115,7 +115,7 @@ public :
                           const Points<rank> &translate) ;
 
     /** Dilation of the TensorProductArray data.*/
-    void dilate(const std::array<Real,rank> &dilate) ;
+    void dilate(const Points<rank> &dilate) ;
 
 
     /** Translation of the TensorProductArray data.*/

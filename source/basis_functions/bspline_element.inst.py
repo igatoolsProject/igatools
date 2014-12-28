@@ -18,7 +18,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-# QA (pauletti, Jun 27, 2014):
 from init_instantiation_data import *
 
 include_files = ['geometry/cartesian_grid.h',
@@ -28,11 +27,12 @@ include_files = ['geometry/cartesian_grid.h',
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-accessors = [('BSplineElement<%d, %d, %d>' %(x.dim, x.range, x.rank), x.dim)
-             for x in inst.all_ref_sp_dims]
+ #for some reason the Element is instantiate in the handler
+# accessors = [('BSplineElement<%d, %d, %d>' %(x.dim, x.range, x.rank), x.dim)
+#              for x in inst.all_ref_sp_dims]
 
-for acc in accessors:
-    f.write('template class %s ;\n' %acc[0])
-    f.write('template class CartesianGridIterator<%s> ;\n' %acc[0])
+# for acc in accessors:
+#     f.write('template class %s ;\n' %acc[0])
+#     f.write('template class CartesianGridIterator<%s> ;\n' %acc[0])
 
 

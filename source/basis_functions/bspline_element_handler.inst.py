@@ -33,9 +33,6 @@ sub_dim_members = \
 'void elhandler::init_cache<k>(ElementAccessor &elem);' ,
 'void elhandler::reset<k>(const ValueFlags flag, const Quadrature<k> &quad);']
 
-#iterators = ['CartesianGridIteratorBase<Accessor>',
-#             'CartesianGridIterator<Accessor>',
-#             'CartesianGridConstIterator<Accessor>']
 
 for x in inst.sub_ref_sp_dims:
     space = 'BSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)

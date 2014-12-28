@@ -79,10 +79,18 @@ public:
      */
     void print_info(LogStream &out) const;
 
-    const vector<Operator> &get_operator(const int comp, const int  dir) const
+//    const vector<Operator> &get_operator(const int comp, const int  dir) const
+//    {
+//        return ext_operators_[comp].get_data_direction(dir);
+//    }
+
+
+    const Operator
+	&get_operator(const int dir, const int inter, const int comp) const
     {
-        return ext_operators_[comp].get_data_direction(dir);
+    	return ext_operators_[comp].get_data_direction(dir)[inter];
     }
+
 
     ElemOperTable get_element_operators(TensorIndex<dim> idx) const
     {

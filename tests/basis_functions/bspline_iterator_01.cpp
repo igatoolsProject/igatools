@@ -80,7 +80,7 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
 
 int main()
 {
-    out.depth_console(10);
+    out.depth_console(0);
 
     bspline_iterator<1,1,1>();
     bspline_iterator<1,1,2>();

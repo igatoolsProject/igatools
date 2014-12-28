@@ -171,29 +171,6 @@ BSplineElementHandler(shared_ptr<const Space> space)
 }
 
 
-//template<int dim_, int range_ , int rank_>
-//void
-//BSplineElementHandler<dim_, range_, rank_>::
-//fill_interval_values(BasisValues &splines1d, const BasisValues &bernstein_values)
-//{
-//	/*
-//	 *
-//	 */
-//                for (auto comp : splines1d.get_active_components_id())
-//                {
-//                    const auto &berns_values = bernstein_values[comp];
-//                    auto &basis = splines1d[comp];
-//                    const auto &oper = bezier_op.get_operator(comp,dir)[j];
-//                    const Real one_div_size = 1.0 / inter_lengths[j];
-//                    for (int order = 0; order < max_der; ++order)
-//                    {
-//                        const Real scale = std::pow(one_div_size, order);
-//                        const auto &b_values = berns_values.get_derivative(order);
-//                        basis.get_derivative(order) =
-//                            scale * prec_prod(oper, b_values);
-//                    }
-//                }
-//}
 
 template<int dim_, int range_ , int rank_>
 template<int k>
@@ -239,17 +216,118 @@ reset(const ValueFlags flag,
 
         BasisValues bernstein_values(n_basis_.get_comp_map());
 
+
+        ComponentContainer<Points<dim>> len_left(end_interval.get_comp_map());
+        ComponentContainer<TensorProductArray<dim>>
+		points_left(end_interval.get_comp_map(), points);
+        LogStream out1;
+        for (auto comp : points_left.get_active_components_id())
+        {
+        	Points<dim> dilate;
+        	Points<dim> translate;
+        	for (int dir=0; dir<dim; ++dir)
+        	{
+        		const Real alpha = end_interval[comp][dir].first;
+        		const Real one_alpha = 1. - alpha;
+        		dilate[dir] = alpha;
+        		translate[dir] = one_alpha;
+        		len_left[comp][dir] = lengths.get_data_direction(dir)[0]*alpha;
+        	}
+        	out1 << dilate << std::endl;
+        	out1 << len_left[comp] << std::endl;
+//        	out1 << translate << std::endl;
+//        	points_left.print_info(out1);
+        	points_left[comp].dilate_translate(dilate, translate);
+//        	points_left.print_info(out1);
+        }
+
+        ComponentContainer<Points<dim>> len_right(end_interval.get_comp_map());
+        ComponentContainer<TensorProductArray<dim>>
+		points_right(end_interval.get_comp_map(), points);
+        for (auto comp : points_right.get_active_components_id())
+        {
+        	Points<dim> dilate;
+        	for (int dir=0; dir<dim; ++dir)
+        	{
+        		const Real alpha = end_interval[comp][dir].second;
+        		dilate[dir] = alpha;
+        		len_right[comp][dir] = lengths.get_data_direction(dir)[n_inter[dir]-1]*alpha;
+        	}
+        	points_right[comp].dilate(dilate);
+        }
+
+
+// Left interval treatment
         for (int dir = 0 ; dir < dim ; ++dir)
         {
-            const auto &pt_coords = points.get_data_direction(dir);
-            vector<const vector<Real>*> point_vector(n_inter[dir]);
-            for (int j = 0 ; j < n_inter[dir] ; ++j)
-                point_vector[j] = &pt_coords;
+        	for (auto comp : bernstein_values.get_active_components_id())
+        	{
+        		const int deg = degree[comp][dir];
+        		bernstein_values[comp].resize(max_der, deg+1, n_points[dir]);
+        		const auto &pt_coords = points_left[comp].get_data_direction(dir);
+        		for (int order = 0; order < max_der; ++order)
+        			bernstein_values[comp].get_derivative(order) =
+        					BernsteinBasis::derivative(order, deg, pt_coords);
+        	}
+
+        	//const auto &inter_lengths = lengths.get_data_direction(dir);
+        	const int inter = 0;
+        	{
+        		auto &splines1d = g_cache.entry(dir, inter);
+        		for (auto comp : splines1d.get_active_components_id())
+        		{
+        			const auto &berns_values = bernstein_values[comp];
+        			auto &basis = splines1d[comp];
+        			const auto &oper = bezier_op.get_operator(dir, inter, comp);
+
+        			const Real one_div_size = 1.0 / len_left[comp][dir];
+        			LogStream out2;
+        			out2 << one_div_size;
+        			fill_interval_values(one_div_size, oper, berns_values, basis);
+        			berns_values.print_info(out2);
+        			basis.print_info(out2);
+        		}
+        	}
+        }
 
 
-            // fill values and derivatives of the Bernstein's polynomials at
-            // quad points in [0,1]
-            for (auto comp : bernstein_values.get_active_components_id())
+        // Right interval treatment
+        for (int dir = 0 ; dir < dim ; ++dir)
+        {
+        	for (auto comp : bernstein_values.get_active_components_id())
+        	{
+        		const int deg = degree[comp][dir];
+        		bernstein_values[comp].resize(max_der, deg+1, n_points[dir]);
+        		const auto &pt_coords = points_right[comp].get_data_direction(dir);
+        		for (int order = 0; order < max_der; ++order)
+        			bernstein_values[comp].get_derivative(order) =
+        					BernsteinBasis::derivative(order, deg, pt_coords);
+        	}
+
+        	//const auto &inter_lengths = lengths.get_data_direction(dir);
+        	const int inter = n_inter[dir]-1;
+        	{
+        		auto &splines1d = g_cache.entry(dir, inter);
+        		for (auto comp : splines1d.get_active_components_id())
+        		{
+        			const auto &berns_values = bernstein_values[comp];
+        			auto &basis = splines1d[comp];
+        			const auto &oper = bezier_op.get_operator(dir, inter, comp);
+
+        			const Real one_div_size = 1.0 / len_right[comp][dir];
+        			fill_interval_values(one_div_size, oper, berns_values, basis);
+        		}
+        	}
+        }
+
+
+
+        for (int dir = 0 ; dir < dim ; ++dir)
+        {
+        	const int inter_begin = 1;
+        	const int inter_end = n_inter[dir];//-1;
+
+        	for (auto comp : bernstein_values.get_active_components_id())
             {
                 const int deg = degree[comp][dir];
                 bernstein_values[comp].resize(max_der, deg+1, n_points[dir]);
@@ -260,24 +338,17 @@ reset(const ValueFlags flag,
             }
 
             const auto &inter_lengths = lengths.get_data_direction(dir);
-
-
-
-            for (int j = 0 ; j < n_inter[dir] ; ++j)
+            for (int inter = inter_begin ; inter < inter_end ; ++inter)
             {
-                auto &splines1d = g_cache.entry(dir, j);
+            	auto &splines1d = g_cache.entry(dir, inter);
                 for (auto comp : splines1d.get_active_components_id())
                 {
                     const auto &berns_values = bernstein_values[comp];
                     auto &basis = splines1d[comp];
-                    const auto &oper = bezier_op.get_operator(comp,dir)[j];
-                    const Real one_div_size = 1.0 / inter_lengths[j];
-                    for (int order = 0; order < max_der; ++order)
-                    {
-                        const Real scale = std::pow(one_div_size, order);
-                        const auto &b_values = berns_values.get_derivative(order);
-                        basis.get_derivative(order) = oper(scale, b_values);
-                    }
+                    const auto &oper = bezier_op.get_operator(dir, inter, comp);
+
+                    const Real one_div_size = 1.0 / inter_lengths[inter];
+                    fill_interval_values(one_div_size, oper, berns_values, basis);
                 }
             }
 

@@ -18,7 +18,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-# QA (pauletti, Jun 6, 2014):
 from init_instantiation_data import *
 
 include_files = ['geometry/cartesian_grid_element.h',
