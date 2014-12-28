@@ -56,8 +56,6 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
 
 
 
-
-
     //-----------------------------------------------------------------------
     // creating the dofs view from the dofs components views -- begin
     vector<DofsComponentView> components_views;
@@ -147,8 +145,7 @@ find_dof_id(const Index dof_id, int &comp_id, TensorIndex<dim> &tensor_index) co
     return dof_is_found;
 }
 
-// TODO (pauletti, Dec 11, 2014): This code is not dimension independent, there
-// should be no need for this to be
+
 template<int dim, int range, int rank>
 void
 DofDistribution<dim, range, rank>::
@@ -331,10 +328,14 @@ global_to_patch_local(const Index global_dof_id) const
 {
     int comp_id;
     TensorIndex<dim> tensor_index;
+#ifndef NDEBUG
     bool global_dof_is_found = this->find_dof_id(global_dof_id,comp_id,tensor_index);
     Assert(global_dof_is_found,
            ExcMessage("The global dof id " + std::to_string(global_dof_id) +
                       " is not present in the DofDistribution."));
+#else
+    this->find_dof_id(global_dof_id,comp_id,tensor_index);
+#endif
 
     Index offset = 0;
     for (int comp = 0 ; comp < comp_id ; ++comp)
@@ -350,23 +351,18 @@ void
 DofDistribution<dim, range, rank>::
 print_info(LogStream &out) const
 {
-    using std::endl;
     for (const auto &index_table_comp : index_table_)
-    {
         index_table_comp.print_info(out);
-        out << endl;
-    }
+    out << std::endl;
 
     // TODO (pauletti, Aug 26, 2014): bad style of print_info below, correct
-    out.begin_item("Element views:");
     for (const auto &dofs_elem : *elements_loc_to_global_flat_view_)
     {
         out << "[ ";
         for (auto x : dofs_elem.second)
             out << x << " ";
-        out << "]" << endl;
+        out << "]" << std::endl;
     }
-    out.end_item();
 }
 
 IGA_NAMESPACE_CLOSE
