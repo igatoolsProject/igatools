@@ -42,7 +42,7 @@ namespace space_tools
  *  The projection is a numerical vector (the coefficients of
  *  the projected function)
  */
-template<class Space, LAPack la_pack = LAPack::trilinos>
+template<class Space, LAPack la_pack = LAPack::trilinos_tpetra>
 std::shared_ptr<IgFunction<Space> >
 projection_l2(const std::shared_ptr<const typename Space::Func> function,
               std::shared_ptr<const Space> space,
@@ -121,8 +121,10 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
     // TODO (pauletti, Oct 9, 2014): the solver must use a precon
     const Real tol = 1.0e-15;
     const int max_iter = 1000;
-    using LinSolver = LinearSolver<la_pack>;
-    LinSolver solver(LinSolver::SolverType::CG,tol,max_iter);
+    using LinSolver = LinearSolverIterative<la_pack>;
+    LinSolver solver(LinSolver::SolverType::CG,
+        		LinSolver::PreconditionerType::ILU0,
+                tol,max_iter);
     solver.solve(matrix, rhs, sol);
 
     return std::make_shared<IgFunction<Space>>(IgFunction<Space>(space, sol.get_as_vector()));
@@ -141,7 +143,7 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
  * for this degree of freedom.
  *
  */
-template<class Space, LAPack la_pack = LAPack::trilinos>
+template<class Space, LAPack la_pack = LAPack::trilinos_tpetra>
 void
 project_boundary_values(const std::shared_ptr<const typename Space::Func> function,
                         std::shared_ptr<const Space> space,

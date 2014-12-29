@@ -42,8 +42,8 @@ void test(const int deg1)
     out << endl;
 
 
-    SplineSpace sp_spec(deg, grid, SplineSpace::InteriorReg::maximum);
-    sp_spec.print_info(out);
+    auto sp_spec = SplineSpace::create(deg, grid, SplineSpace::InteriorReg::maximum);
+    sp_spec->print_info(out);
 }
 
 

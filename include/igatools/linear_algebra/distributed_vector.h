@@ -134,6 +134,7 @@ public:
     Teuchos::RCP<WrappedVector> get_trilinos_vector() ;
     ///@}
 
+
 protected:
 
     /**
@@ -317,6 +318,11 @@ public:
     get_local_coefs(const vector<Index> &local_to_global_ids) const;
 
 
+    // TODO (pauletti, Nov 27, 2014): Document this
+    vector<Real> get_as_vector() const;
+
+
+
     /**
      * Print the content of the vector, mostly for debug purposes.
      * @param out
@@ -494,6 +500,9 @@ public:
      * @param out
      */
     void print_info(LogStream &out) const;
+
+    // TODO (pauletti, Nov 27, 2014): Document this
+    vector<Real> get_as_vector() const;
 
 };
 

@@ -37,19 +37,19 @@ void sub_space(const TensorSize<dim> &n_knots, const TensorIndex<dim> &degree)
     using SplineSpace = SplineSpace<dim, range, rank>;
     auto grid = CartesianGrid<dim>::create(n_knots);
     typename SplineSpace::DegreeTable deg {degree};
-    SplineSpace space(deg, grid, SplineSpace::InteriorReg::maximum);
+    auto space = SplineSpace::create(deg, grid, SplineSpace::InteriorReg::maximum);
 
     for (auto  s_id : UnitElement<dim>::template elems_ids<k>())
     {
         out.begin_item("Sub element id: " + std::to_string(s_id));
 
         out.begin_item("Multiplicity");
-        auto sub_mult = space.template get_sub_space_mult<k>(s_id);
+        auto sub_mult = space->template get_sub_space_mult<k>(s_id);
         sub_mult->print_info(out);
         out.end_item();
 
         out.begin_item("Degree");
-        auto sub_deg = space.template get_sub_space_degree<k>(s_id);
+        auto sub_deg = space->template get_sub_space_degree<k>(s_id);
         sub_deg.print_info(out);
         out.end_item();
 

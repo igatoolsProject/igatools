@@ -72,6 +72,8 @@ get_trilinos_vector() -> Teuchos::RCP<WrappedVector>
 }
 
 
+
+
 Vector<LAPack::trilinos_tpetra>::
 Vector(const Index num_global_dofs, CommPtr comm)
     :
@@ -252,6 +254,24 @@ get_local_coefs(const vector<Index> &local_to_global_ids) const
 }
 
 
+vector<Real>
+Vector<LAPack::trilinos_tpetra>::
+get_as_vector() const
+{
+    Teuchos::ArrayRCP<const Real> vec = vector_->getData(0) ;
+
+    const Index n_entries = vec.size();
+    vector<Real> coefs(n_entries);
+
+    const auto map = vector_->getMap();
+    for (Index i = 0 ; i < n_entries ; ++i)
+    {
+        const auto global_id = map->getGlobalElement(i) ;
+    	coefs[i] = (*this)(global_id);
+    }
+    return coefs;
+}
+
 void
 Vector<LAPack::trilinos_tpetra>::
 print_info(LogStream &out) const
@@ -416,6 +436,21 @@ get_local_coefs(const vector<Index> &local_to_global_ids) const
         local_coefs.emplace_back((*this)(global_id));
 
     return local_coefs;
+}
+
+vector<Real>
+Vector<LAPack::trilinos_epetra>::
+get_as_vector() const
+{
+    const Index n_entries = vector_->GlobalLength();
+    vector<Real> coefs(n_entries);
+
+    const auto &map = vector_->Map();
+    const auto &data = (*vector_)[0];
+    for (Index i = 0 ; i < n_entries ; ++i)
+    	coefs[i] = data[i];
+
+    return coefs;
 }
 
 void
