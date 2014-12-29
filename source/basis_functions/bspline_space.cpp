@@ -46,7 +46,12 @@ auto
 BSplineSpace<dim_, range_, rank_>::
 create(const int degree, shared_ptr< GridType > knots) -> shared_ptr<self_t>
 {
-    return shared_ptr<self_t>(new self_t(degree, knots));
+    auto sp = shared_ptr<self_t>(new self_t(degree, knots));
+    Assert(sp != nullptr, ExcNullPtr());
+
+    sp->create_connection_for_h_refinement(sp);
+
+    return sp;
 }
 
 
@@ -66,7 +71,12 @@ BSplineSpace<dim_, range_, rank_>::
 create(const TensorIndex<dim> &degree, shared_ptr<GridType> knots)
 -> shared_ptr<self_t>
 {
-    return shared_ptr<self_t>(new self_t(degree, knots));
+    auto sp = shared_ptr<self_t>(new self_t(degree, knots));
+    Assert(sp != nullptr, ExcNullPtr());
+
+    sp->create_connection_for_h_refinement(sp);
+
+    return sp;
 }
 
 
@@ -77,7 +87,7 @@ BSplineSpace(const DegreeTable &deg,
              std::shared_ptr<GridType> knots,
              const bool homogeneous_range)
     :
-    BSplineSpace(std::make_shared<SpaceData>(SpaceData(deg, knots, SpaceData::InteriorReg::maximum)))
+    BSplineSpace(SpaceData::create(deg, knots, SpaceData::InteriorReg::maximum))
 {}
 
 
@@ -89,7 +99,12 @@ create(const DegreeTable &deg,
        std::shared_ptr<GridType> knots,
        const bool homogeneous_range) -> shared_ptr<self_t>
 {
-    return shared_ptr<self_t>(new self_t(deg, knots, homogeneous_range));
+    auto sp = shared_ptr<self_t>(new self_t(deg, knots, homogeneous_range));
+    Assert(sp != nullptr, ExcNullPtr());
+
+    sp->create_connection_for_h_refinement(sp);
+
+    return sp;
 }
 
 
@@ -101,7 +116,7 @@ BSplineSpace(const DegreeTable &deg,
              std::shared_ptr<const MultiplicityTable> interior_mult,
              const EndBehaviourTable &end_b)
     :
-    BSplineSpace(std::make_shared<SpaceData>(SpaceData(deg, knots, interior_mult, end_b)))
+    BSplineSpace(SpaceData::create(deg, knots, interior_mult, end_b))
 {}
 
 template<int dim_, int range_, int rank_>
@@ -125,12 +140,7 @@ BSplineSpace(std::shared_ptr<SpaceData> space_data)
 				this->space_data_->get_end_behaviour()),
 		this->space_data_->accumulated_interior_multiplicities(),
 		this->space_data_->get_degree())
-{
-	// create a signal and a connection for the grid refinement
-	this->connect_refinement_h_function(
-			std::bind(&self_t::refine_h_after_grid_refinement, this,
-            std::placeholders::_1,std::placeholders::_2));
-}
+{}
 
 
 
@@ -143,7 +153,12 @@ create(const DegreeTable &deg,
        const EndBehaviourTable &ends)
 -> shared_ptr<self_t>
 {
-    return shared_ptr<self_t>(new self_t(deg, knots, interior_mult, ends));
+    auto sp = shared_ptr<self_t>(new self_t(deg, knots, interior_mult, ends));
+    Assert(sp != nullptr, ExcNullPtr());
+
+    sp->create_connection_for_h_refinement(sp);
+
+    return sp;
 }
 
 
@@ -434,6 +449,24 @@ get_space_manager() const -> std::shared_ptr<const SpaceManager>
 {
     return const_cast<self_t &>(*this).get_space_manager();
 }
+
+
+template<int dim_, int range_, int rank_>
+void
+BSplineSpace<dim_, range_, rank_>::
+create_connection_for_h_refinement(std::shared_ptr<self_t> space)
+{
+    using SlotType = typename CartesianGrid<dim>::SignalRefineSlot;
+
+    auto refinement_func_bspline_space =
+        std::bind(&self_t::refine_h_after_grid_refinement,
+                  space.get(),
+                  std::placeholders::_1,
+                  std::placeholders::_2);
+    this->connect_refinement_h_function(
+        SlotType(refinement_func_bspline_space).track_foreign(space));
+}
+
 
 template<int dim_, int range_, int rank_>
 void

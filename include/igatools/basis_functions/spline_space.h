@@ -76,6 +76,9 @@ template<int dim_, int range_ = 1, int rank_ = 1>
 class SplineSpace : public GridWrapper<CartesianGrid<dim_> >
 {
 public:
+	using self_t = SplineSpace<dim_,range_,rank_>;
+
+
     /**
      *  Class to manage the component quantities with the knowledge of
      * uniform range spaces
@@ -348,7 +351,7 @@ public:
         maximum, minimun
     };
 
-public:
+protected:
 
     SplineSpace() = delete;
 
@@ -360,12 +363,25 @@ public:
                          std::shared_ptr<const MultiplicityTable> interior_mult,
                          const EndBehaviourTable &end_behaviour = EndBehaviourTable(filled_array<EndBehaviour,dim_>(EndBehaviour::interpolatory)));
 
+
     explicit SplineSpace(const DegreeTable &deg,
                          std::shared_ptr<GridType> knots,
                          const InteriorReg &interior_mult,
                          const EndBehaviourTable &ebt = EndBehaviourTable(filled_array<EndBehaviour,dim_>(EndBehaviour::interpolatory)))
         :SplineSpace(deg, knots, fill_max_regularity(deg, knots), ebt)
     {}
+
+public:
+    static std::shared_ptr<self_t> create(const DegreeTable &deg,
+                         std::shared_ptr<GridType> knots,
+                         const InteriorReg &interior_mult,
+                         const EndBehaviourTable &ebt = EndBehaviourTable(filled_array<EndBehaviour,dim_>(EndBehaviour::interpolatory)));
+
+    static std::shared_ptr<self_t> create(
+    		const DegreeTable &deg,
+   	        std::shared_ptr<GridType> knots,
+    	    std::shared_ptr<const MultiplicityTable> interior_mult,
+    	    const EndBehaviourTable &end_behaviour = EndBehaviourTable(filled_array<EndBehaviour,dim_>(EndBehaviour::interpolatory)));
 
     virtual ~SplineSpace() = default;
 
@@ -585,6 +601,8 @@ public:
     void refine_h_after_grid_refinement(
         const std::array<bool,dim_> &refinement_directions,
         const GridType &grid_old) ;
+
+    void create_connection_for_h_refinement(std::shared_ptr<self_t> space);
 
     std::shared_ptr<const SplineSpace<dim_,range_,rank_> > spline_space_previous_refinement_;
 

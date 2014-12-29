@@ -42,15 +42,15 @@ int main()
         auto grid = CartesianGrid<dim>::create(4);
 
         auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable({ {{1,3}} }));
-        SplineSpace sp_spec(deg, grid, int_mult);
+        auto sp_spec = SplineSpace::create(deg, grid, int_mult);
 
         CartesianProductArray<Real,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
         typename SplineSpace::BoundaryKnotsTable bdry_knots { {bn_x} };
-        auto rep_knots = sp_spec.compute_knots_with_repetition(bdry_knots);
-        auto acum_mult = sp_spec.accumulated_interior_multiplicities();
+        auto rep_knots = sp_spec->compute_knots_with_repetition(bdry_knots);
+        auto acum_mult = sp_spec->accumulated_interior_multiplicities();
 
-        auto n_basis = sp_spec.get_num_basis_table();
-        auto degree = sp_spec.get_degree();
+        auto n_basis = sp_spec->get_num_basis_table();
+        auto degree = sp_spec->get_degree();
 
         DofDistribution<dim> basis_index(grid, acum_mult, n_basis, degree);
         basis_index.print_info(out);
@@ -64,14 +64,14 @@ int main()
 
         auto grid = CartesianGrid<dim>::create({4,3});
 
-        SplineSpace sp_spec(deg,grid, SplineSpace::InteriorReg::maximum);
+        auto sp_spec = SplineSpace::create(deg,grid, SplineSpace::InteriorReg::maximum);
 
 
-        auto rep_knots = sp_spec.compute_knots_with_repetition(sp_spec.get_end_behaviour());
-        auto acum_mult = sp_spec.accumulated_interior_multiplicities();
+        auto rep_knots = sp_spec->compute_knots_with_repetition(sp_spec->get_end_behaviour());
+        auto acum_mult = sp_spec->accumulated_interior_multiplicities();
 
-        auto n_basis = sp_spec.get_num_basis_table();
-        auto degree = sp_spec.get_degree();
+        auto n_basis = sp_spec->get_num_basis_table();
+        auto degree = sp_spec->get_degree();
 
         DofDistribution<dim> basis_index(grid, acum_mult, n_basis, degree);
         basis_index.print_info(out);

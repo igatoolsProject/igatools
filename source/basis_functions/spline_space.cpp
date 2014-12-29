@@ -64,13 +64,46 @@ SplineSpace(const DegreeTable &deg,
 
     this->init();
 
-
+#if 0
     // create a signal and a connection for the grid refinement
     this->connect_refinement_h_function(
         std::bind(&SplineSpace<dim,range,rank>::refine_h_after_grid_refinement, this,
                   std::placeholders::_1,std::placeholders::_2));
-
+#endif
 }
+
+template<int dim, int range, int rank>
+auto
+SplineSpace<dim, range, rank>::
+create(const DegreeTable &deg,
+       std::shared_ptr<GridType> knots,
+       const InteriorReg &interior_mult,
+       const EndBehaviourTable &ebt) -> std::shared_ptr<self_t>
+{
+    auto sp = shared_ptr<self_t>(new self_t(deg, knots, interior_mult, ebt));
+    Assert(sp != nullptr, ExcNullPtr());
+
+    sp->create_connection_for_h_refinement(sp);
+
+    return sp;
+}
+
+template<int dim, int range, int rank>
+auto
+SplineSpace<dim, range, rank>::
+create(const DegreeTable &deg,
+	   std::shared_ptr<GridType> knots,
+	   std::shared_ptr<const MultiplicityTable> interior_mult,
+	   const EndBehaviourTable &end_behaviour) -> std::shared_ptr<self_t>
+{
+    auto sp = shared_ptr<self_t>(new self_t(deg, knots, interior_mult, end_behaviour));
+    Assert(sp != nullptr, ExcNullPtr());
+
+    sp->create_connection_for_h_refinement(sp);
+
+    return sp;
+}
+
 
 template<int dim, int range, int rank>
 void
@@ -456,6 +489,22 @@ interpolatory_end_knots(const int comp_id,const int dir) const -> CartesianProdu
     bdry_knots_dir.copy_data_direction(1, vec_right);
 
     return bdry_knots_dir;
+}
+
+template<int dim_, int range_, int rank_>
+void
+SplineSpace<dim_, range_, rank_>::
+create_connection_for_h_refinement(std::shared_ptr<self_t> space)
+{
+    using SlotType = typename CartesianGrid<dim_>::SignalRefineSlot;
+
+    auto refinement_func_spline_space =
+        std::bind(&self_t::refine_h_after_grid_refinement,
+                  space.get(),
+                  std::placeholders::_1,
+                  std::placeholders::_2);
+    this->connect_refinement_h_function(
+        SlotType(refinement_func_spline_space).track_foreign(space));
 }
 
 template<int dim, int range, int rank>

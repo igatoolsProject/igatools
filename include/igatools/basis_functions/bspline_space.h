@@ -410,6 +410,8 @@ private:
         const std::array<bool,dim> &refinement_directions,
         const GridType &grid_old) ;
 
+    void create_connection_for_h_refinement(std::shared_ptr<self_t> space);
+
 public:
     DeclException1(ExcScalarRange, int,
                    << "Range " << arg1 << "should be 0 for a scalar valued"
