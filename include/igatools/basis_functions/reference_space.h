@@ -35,7 +35,7 @@ IGA_NAMESPACE_OPEN
 class SpaceManager;
 
 
-
+template<Transformation,int, int> class PushForward;
 
 template <class,int,Transformation> class PhysicalSpace;
 
@@ -57,6 +57,15 @@ public:
     static const int space_dim = dim_;
     static const int range     = range_;
     static const int rank      = rank_;
+
+    /**
+     * See documentation in \ref FunctionSpaceOnGrid
+     *
+     * @see FunctionSpaceOnGrid
+     */
+    using PushForwardType = PushForward<Transformation::h_grad, dim, codim>;
+
+    using RefSpace = ReferenceSpace<dim_,range_,rank_>;
 
     using Func = Function<dim, 0, range, rank>;
 

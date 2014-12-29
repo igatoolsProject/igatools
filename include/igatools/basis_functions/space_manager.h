@@ -18,9 +18,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-// TODO (pauletti, Nov 21, 2014): it may be better if we can avoid the space container
-// dependence on space manager
-
 #ifndef SPACE_MANAGER_H_
 #define SPACE_MANAGER_H_
 
@@ -29,7 +26,6 @@
 #include <igatools/base/equality_constraint.h>
 #include <igatools/base/linear_constraint.h>
 #include <igatools/utils/concatenated_iterator.h>
-#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/physical_space.h>
 
@@ -52,10 +48,12 @@
 
 IGA_NAMESPACE_OPEN
 
+template <class RefSpace, int codim, Transformation type>
+using PhysSpacePtr = std::shared_ptr<PhysicalSpace<RefSpace,codim,type>>;
 
-//template<class RefSpace, class PushFwd>
-//using PhysSpacePtr = std::shared_ptr<PhysicalSpace<RefSpace,PushFwd>>;
-//
+
+
+
 
 /**
  * @brief The purpose of this class is to provide an unified way to access the dofs information provided
@@ -238,6 +236,11 @@ public:
         decltype(auto) operator[](const Index row_global_id)
         {
             return connectivity_[row_global_id];
+        }
+
+        void clear()
+        {
+            connectivity_.clear();
         }
 
         void merge(const DofsConnectivity &dofs_connectivity)
@@ -438,10 +441,10 @@ public:
     void linear_constraints_close();
 
     /**
-     * Returns the vector of linear constraints of a given @p type, defined in the SpaceManager.
+     * Returns the map of linear constraints of a given @p type, defined in the SpaceManager.
      * If no @type is passed at the input argument, the function returns all the linear constraints.
      */
-    vector<std::shared_ptr<LinearConstraint> > get_linear_constraints(
+    std::map<Index,std::shared_ptr<const LinearConstraint> > get_linear_constraints(
         const LinearConstraintType &type = LinearConstraintType::any) const;
 
 
@@ -451,7 +454,7 @@ public:
      * If all coefficients satisfies the linear constraints the function returns an empty vector,
      * otherwise it returns a vector containing the linear constraints that are not satisfied.
      */
-    vector<std::shared_ptr<LinearConstraint> > verify_linear_constraints(
+    vector<std::shared_ptr<const LinearConstraint> > verify_linear_constraints(
         const vector<Real> &dof_values,
         const Real tol = 1.0e-13) const;
     ///@}
@@ -535,6 +538,7 @@ private:
                   const int space_dim,
                   const int range,
                   const int rank,
+                  const Transformation transf_type,
                   const Index num_dofs,
                   const Index min_dofs_id,
                   const Index max_dofs_id,
@@ -581,8 +585,36 @@ private:
         /** Returns the maximum dof id present in the space.*/
         Index get_max_dofs_id() const;
 
+        /** Returns the dimension of the space.*/
+        int get_dim() const;
+
+        /** Returns the codimension of the space.*/
+        int get_codim() const;
+
+        /** Returns the space dimension of the space.*/
+        int get_space_dim() const;
+
+        /** Returns the range of the space.*/
+        int get_range() const;
+
+        /** Returns the rank of the space.*/
+        int get_rank() const;
+
+        /** Returns true if all the parameters passed as arguments are the
+         *  same as the ones contained as private member.*/
+        bool check_parameters(const int dim,
+                              const int codim,
+                              const int space_dim,
+                              const int range,
+                              const int rank,
+                              const Transformation transf_type) const;
+
+        /** Returns the transformation type of the push forward of the space.*/
+        Transformation get_transformation_type() const;
+
+
         /**
-         * Addas an @p offset to all dofs present in the space.
+         * Adds an @p offset to all dofs present in the space.
          */
         void add_dofs_offset(const Index offset);
 
@@ -597,6 +629,7 @@ private:
          * Return true if the id of the lhs is equal to the id of the rhs.
          */
         bool operator==(const SpaceInfo &sp) const;
+
 
     private:
         /**
@@ -620,6 +653,9 @@ private:
         int range_;
 
         int rank_;
+
+        Transformation transf_type_;
+
 
         /**
          * Nuber of active dofs in the space.
@@ -648,9 +684,30 @@ private:
          * the the DofDistribution class instantiated in the space itself.
          */
         std::shared_ptr<const std::map<Index,DofsConstView>> elements_dofs_view_;
+
+
+
+
+        std::set<Index> inactive_dofs_;
+
+    public:
+
+        void set_inactive_dofs(const std::set<Index> &inactive_dofs)
+        {
+            inactive_dofs_ = inactive_dofs;
+        }
+
+        const std::set<Index> &get_inactive_dofs() const
+        {
+            return inactive_dofs_;
+        }
+
     };
 
+public:
     using SpaceInfoPtr = std::shared_ptr<SpaceInfo>;
+
+private:
 
 #if 0
     /**
@@ -682,7 +739,7 @@ private:
     DofsView dofs_view_;
 
 
-    std::multimap<LCType,std::shared_ptr<LC>> linear_constraints_;
+    std::map<LCType,std::map<Index,std::shared_ptr<const LC> > > linear_constraints_;
 
 
     vector<EqualityConstraint> equality_constraints_;
@@ -778,6 +835,28 @@ private:
             for (const auto &pair : extra_dofs_connectivity_)
                 dofs.insert(pair.first);
 
+#if 0
+            LogStream out;
+            out.begin_item("dofs row: ");
+            for (const auto dof : dofs)
+                out <<dof << " ";
+            out<< std::endl;
+            out.end_item();
+#endif
+
+#if 0
+            const auto &inactive_dofs = space_row_->get_inactive_dofs();
+
+            out.begin_item("inactive dofs row: ");
+            for (const auto dof : inactive_dofs)
+                out <<dof << " ";
+            out<< std::endl;
+            out.end_item();
+
+            if (!inactive_dofs.empty())
+                dofs.erase(inactive_dofs.begin(),inactive_dofs.end());
+#endif
+
             return dofs;
         }
 
@@ -793,6 +872,27 @@ private:
 
             for (const auto &pair : extra_dofs_connectivity_)
                 dofs.insert(pair.second.begin(),pair.second.end());
+
+#if 0
+            LogStream out;
+            out.begin_item("dofs col: ");
+            for (const auto dof : dofs)
+                out <<dof << " ";
+            out<< std::endl;
+            out.end_item();
+#endif
+#if 0
+            const auto &inactive_dofs = space_col_->get_inactive_dofs();
+
+            out.begin_item("inactive dofs col: ");
+            for (const auto dof : inactive_dofs)
+                out <<dof << " ";
+            out<< std::endl;
+            out.end_item();
+
+            if (!inactive_dofs.empty())
+                dofs.erase(inactive_dofs.begin(),inactive_dofs.end());
+#endif
 
             return dofs;
         }
@@ -852,6 +952,13 @@ public:
      */
     const std::map<Index,SpaceInfoPtr> &get_spaces_info() const;
 
+
+    /**
+     * Returns a map containing the pointers to the spaces handled by the SpaceManager,
+     * and some useful informations that does not depends on the template
+     * parameters needed to instantiate the spaces.
+     */
+    std::map<Index,SpaceInfoPtr> &get_spaces_info();
 
     /**
      * Returns the SpacesConnection corresponding to the row space @p space_test and
@@ -926,6 +1033,7 @@ add_space(std::shared_ptr<Space> space)
                                         Space::space_dim,
                                         Space::range,
                                         Space::rank,
+                                        Space::PushForwardType::type,
                                         space->get_num_basis(),
                                         dof_distribution.get_min_dof_id(),
                                         dof_distribution.get_max_dof_id(),

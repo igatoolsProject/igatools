@@ -71,6 +71,15 @@ public:
     static constexpr auto dims = SpSpace::dims;
 
 
+    /**
+     * See documentation in \ref FunctionSpaceOnGrid
+     *
+     * @see FunctionSpaceOnGrid
+     */
+    using PushForwardType = typename BaseSpace::PushForwardType;
+
+    using RefSpace = typename BaseSpace::RefSpace;
+
 
 public:
 

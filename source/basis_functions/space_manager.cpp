@@ -150,6 +150,7 @@ SpaceInfo(const SpacePtrVariant &space,
           const int space_dim,
           const int range,
           const int rank,
+          const Transformation transf_type,
           const Index num_dofs,
           const Index min_dofs_id,
           const Index max_dofs_id,
@@ -163,6 +164,7 @@ SpaceInfo(const SpacePtrVariant &space,
     space_dim_(space_dim),
     range_(range),
     rank_(rank),
+    transf_type_(transf_type),
     num_dofs_(num_dofs),
     min_dofs_id_(min_dofs_id),
     max_dofs_id_(max_dofs_id),
@@ -248,6 +250,73 @@ SpaceInfo::
 get_id() const
 {
     return id_;
+}
+
+int
+SpaceManager::
+SpaceInfo::
+get_dim() const
+{
+    return dim_;
+}
+
+int
+SpaceManager::
+SpaceInfo::
+get_codim() const
+{
+    return codim_;
+}
+
+int
+SpaceManager::
+SpaceInfo::
+get_space_dim() const
+{
+    return space_dim_;
+}
+
+int
+SpaceManager::
+SpaceInfo::
+get_range() const
+{
+    return range_;
+}
+
+int
+SpaceManager::
+SpaceInfo::
+get_rank() const
+{
+    return rank_;
+}
+
+Transformation
+SpaceManager::
+SpaceInfo::
+get_transformation_type() const
+{
+    return transf_type_;
+}
+
+
+bool
+SpaceManager::
+SpaceInfo::
+check_parameters(const int dim,
+                 const int codim,
+                 const int space_dim,
+                 const int range,
+                 const int rank,
+                 const Transformation transf_type) const
+{
+    return ((dim == dim_) &&
+            (codim == codim_) &&
+            (space_dim == space_dim_) &&
+            (range == range_) &&
+            (rank == rank_) &&
+            (transf_type == transf_type_));
 }
 
 bool
@@ -361,7 +430,11 @@ Index
 SpaceManager::
 get_num_linear_constraints() const
 {
-    return linear_constraints_.size();
+    Index num_linear_constraints = 0;
+    for (const auto &lcs_same_type : linear_constraints_)
+        num_linear_constraints += lcs_same_type.second.size();
+
+    return num_linear_constraints;
 }
 
 
@@ -421,6 +494,14 @@ get_elements_dofs_view() const -> const std::map<Index,DofsConstView> &
 auto
 SpaceManager::
 get_spaces_info() const -> const std::map<int,shared_ptr<SpaceInfo>> &
+{
+    return spaces_info_;
+}
+
+
+auto
+SpaceManager::
+get_spaces_info() -> std::map<int,shared_ptr<SpaceInfo>> &
 {
     return spaces_info_;
 }
@@ -489,7 +570,13 @@ add_linear_constraint(const Index global_dof_id,
     Assert(are_linear_constraints_open_ == true,
            ExcMessage("Linear constraints already closed."));
 
-    linear_constraints_.emplace(type,LC::create(global_dof_id,type,dofs,coeffs,rhs));
+    auto &lcs_same_type = linear_constraints_[type];
+
+    Assert(lcs_same_type[global_dof_id] == nullptr,
+           ExcMessage("Linear constraint already added."));
+    AssertThrow(lcs_same_type[global_dof_id] == nullptr,
+                ExcMessage("Linear constraint already added."));
+    lcs_same_type[global_dof_id] = LC::create(global_dof_id,type,dofs,coeffs,rhs);
 }
 
 
@@ -501,42 +588,26 @@ add_linear_constraint(std::shared_ptr<LinearConstraint> linear_constraint)
            ExcMessage("Linear constraints already closed."));
 
     Assert(linear_constraint != nullptr, ExcNullPtr());
-    linear_constraints_.emplace(linear_constraint->get_type(),linear_constraint);
+    auto &lcs_same_type = linear_constraints_[linear_constraint->get_type()];
+
+    Assert(lcs_same_type[linear_constraint->get_global_dof_id()] == nullptr,
+           ExcMessage("Linear constraint already added."));
+    AssertThrow(lcs_same_type[linear_constraint->get_global_dof_id()] == nullptr,
+                ExcMessage("Linear constraint already added."));
+    lcs_same_type[linear_constraint->get_global_dof_id()] = linear_constraint;
 }
 
 
-vector<std::shared_ptr<LinearConstraint> >
+std::map<Index,std::shared_ptr<const LinearConstraint> >
 SpaceManager::
 get_linear_constraints(const LinearConstraintType &type_in) const
 {
     //--------------------------------------------------
-    // create a vector of "pure" LCType from the input argument type_in,
-    // in order to use the equal_range_function
-    vector<LinearConstraintType> pure_types;
-    if (contains(type_in, LinearConstraintType::lagrange))
-        pure_types.push_back(LinearConstraintType::lagrange);
-    if (contains(type_in, LinearConstraintType::augmented_lagrange))
-        pure_types.push_back(LinearConstraintType::augmented_lagrange);
-    if (contains(type_in, LinearConstraintType::penalty))
-        pure_types.push_back(LinearConstraintType::penalty);
-    //--------------------------------------------------
-
-
-
-    //--------------------------------------------------
     // copying the LinearConstraints of appropriate type in the return variable
-    vector<std::shared_ptr<LC>> lcs;
-    for (const auto type : pure_types)
-    {
-        auto range = linear_constraints_.equal_range(type);
-        std::for_each(
-            range.first,
-            range.second,
-            [&lcs](const auto &lc_pair)
-        {
-            lcs.push_back(lc_pair.second);
-        });
-    }
+    std::map<Index,std::shared_ptr<const LC>> lcs;
+    for (const auto &linear_constr_same_type : linear_constraints_)
+        for (const auto &lc_pair : linear_constr_same_type.second)
+            lcs[lc_pair.first] = lc_pair.second;
     //--------------------------------------------------
 
     return lcs;
@@ -590,20 +661,24 @@ remove_equality_constraints_redundancies()
 
 
 
-vector<std::shared_ptr<LinearConstraint> >
+vector<std::shared_ptr<const LinearConstraint> >
 SpaceManager::
 verify_linear_constraints(const vector<Real> &dof_values, const Real tol) const
 {
     Assert(dof_values.size() == this->get_num_col_dofs(),
            ExcDimensionMismatch(dof_values.size(),this->get_num_col_dofs()));
 
-    vector<shared_ptr<LinearConstraint> > failed_linear_constraints;
-    for (const auto &lc_pair : linear_constraints_)
+    vector<shared_ptr<const LinearConstraint> > failed_linear_constraints;
+    for (const auto &lcs_same_type : linear_constraints_)
     {
-        const auto &lc = lc_pair.second;
-        if (lc->eval_absolute_error(dof_values) >= tol)
-            failed_linear_constraints.push_back(lc);
+        for (const auto &lc_pair : lcs_same_type.second)
+        {
+            const auto &lc = lc_pair.second;
+            if (lc->eval_absolute_error(dof_values) >= tol)
+                failed_linear_constraints.push_back(lc);
+        }
     }
+
 
     return failed_linear_constraints;
 }
@@ -628,6 +703,8 @@ get_row_dofs() const
     return row_dofs;
 }
 
+
+
 std::set<Index>
 SpaceManager::
 get_col_dofs() const
@@ -642,6 +719,7 @@ get_col_dofs() const
 
     for (const auto extra_row : extra_dofs_connectivity_)
         col_dofs.insert(extra_row.second.begin(),extra_row.second.end());
+
 
     return col_dofs;
 }
@@ -736,13 +814,26 @@ print_info(LogStream &out) const
     }
 
     out << "Num. row   dofs = " << this->get_num_row_dofs() << endl;
+    auto row_dofs_set = this->get_row_dofs();
+    vector<Index> row_dofs(row_dofs_set.begin(),row_dofs_set.end());
+    out.begin_item("Row dofs:");
+    row_dofs.print_info(out);
+    out.end_item();
+
+
     out << "Num. colum dofs = " << this->get_num_col_dofs() << endl;
+    auto col_dofs_set = this->get_col_dofs();
+    vector<Index> col_dofs(col_dofs_set.begin(),col_dofs_set.end());
+    out.begin_item("Col dofs:");
+    col_dofs.print_info(out);
+    out.end_item();
 
 
     out << "Num. linear   constraints = " << this->get_num_linear_constraints() << endl;
     out.push("   ");
     int lc_counter = 0 ;
-    for (const auto &lc : linear_constraints_)
+    const auto lcs = this->get_linear_constraints();
+    for (const auto &lc : lcs)
     {
         out << "Linear constraint[" << lc_counter++ << "] :" << endl;
         out.push("   ");

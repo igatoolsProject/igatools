@@ -126,6 +126,15 @@ public:
     using typename BaseSpace::Derivative;
     using typename BaseSpace::Div;
 
+    /**
+     * See documentation in \ref FunctionSpaceOnGrid
+     *
+     * @see FunctionSpaceOnGrid
+     */
+    using PushForwardType = typename BaseSpace::PushForwardType;
+
+    using RefSpace = typename BaseSpace::RefSpace;
+
     using RefPoint = Point;
 
 public:
@@ -147,6 +156,7 @@ public:
     using EndBehaviourTable = typename SpaceData::EndBehaviourTable;
 
     using BCTable = typename SpaceData::BCTable;
+
 
 public:
     /**

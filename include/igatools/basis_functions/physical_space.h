@@ -54,7 +54,11 @@ private:
 
 public:
     ///@{
-    /** see documentation in \ref FunctionSpaceOnGrid */
+    /**
+     * See documentation in \ref FunctionSpaceOnGrid
+     *
+     * @see FunctionSpaceOnGrid
+     */
     using PushForwardType = PushForward<type_, RefSpace_::dim, codim_>;
 
     using RefSpace = RefSpace_;
