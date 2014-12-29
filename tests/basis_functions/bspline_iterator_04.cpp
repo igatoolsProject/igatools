@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -44,7 +44,12 @@ void elem_derivatives(const int n_knots,
 
     using Space = BSplineSpace<dim, range, rank>;
     auto grid  = CartesianGrid<dim>::create(n_knots);
-    auto space = Space::create(deg, grid);
+
+    typename Space::PeriodicTable periodic(typename Space::Periodicity(filled_array<bool, dim>(false)));
+    typename Space::EndBehaviourTable ebt(typename Space::EndBehaviour(filled_array<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory)));
+    auto int_mult = Space::multiplicity_regularity(InteriorReg::maximum,
+                                                   deg, grid->get_num_intervals());
+    auto space = Space::create(deg, grid, int_mult, periodic, ebt);
 
     auto flag = der_flag[der];
     auto quad = QGauss<dim>(2);

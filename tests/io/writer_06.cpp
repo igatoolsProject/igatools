@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -50,8 +50,8 @@ void write_sphere()
 
     const int codim = 1;
     Writer<dim, codim> writer(F, 4);
-	writer.save("output");
-	writer.print_info(out);
+    writer.save("output");
+    writer.print_info(out);
 
     OUTEND
 }

@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -23,7 +23,7 @@
  *  date:
  *
  */
-
+// TODO (pauletti, Dec 26, 2014): remove this test
 #include "../tests.h"
 #include <igatools/basis_functions/spline_space.h>
 

@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -33,7 +33,7 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
                 const MultiplicityTable &accum_mult,
                 const SpaceDimensionTable &n_basis1,
                 const DegreeTable &degree_table,
-				const EndBehaviourTable &end_b,
+                const PeriodicTable &periodic,
                 DistributionPolicy pol)
     :
     TensorSizedContainer<dim>(grid->get_num_intervals()),
@@ -41,33 +41,38 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
         make_shared<map<Index,DofsConstView>>(map<Index,DofsConstView>())),
     policy_(pol)
 {
-	Assert(pol == DistributionPolicy::standard, ExcNotImplemented());
-	typename SpaceDimensionTable::base_t aux;
-	for (int comp = 0 ; comp < Space::n_components ; ++comp)
-		for (int dir = 0 ; dir < dim ; ++dir)
-			if (end_b[comp][dir] == EndBehaviour::periodic)
-				aux[comp][dir] = n_basis1[comp][dir] + degree_table[comp][dir] + 1;
+    Assert(pol == DistributionPolicy::standard, ExcNotImplemented());
 
-	SpaceDimensionTable n_basis(aux);
-
+    typename SpaceDimensionTable::base_t aux;
+    for (int comp = 0 ; comp < Space::n_components ; ++comp)
+        for (int dir = 0 ; dir < dim ; ++dir)
+        {
+            aux[comp][dir] = n_basis1[comp][dir];
+            if (periodic[comp][dir])
+                aux[comp][dir] += degree_table[comp][dir] + 1;
+        }
+    SpaceDimensionTable n_basis(aux);
 
     //-----------------------------------------------------------------------
     // fills the standard distribution, sorted by component and
     // by direction x moves faster
+    int comp_offset = 0;
     for (int comp = 0 ; comp < Space::n_components ; ++comp)
     {
-    	const auto size = n_basis[comp];
-    	const auto act_size = n_basis1[comp];
-    	auto &comp_table = index_table_[comp];
-    	comp_table.resize(size);
+        const auto size = n_basis[comp];
+        const auto act_size = n_basis1[comp];
+        auto &comp_table = index_table_[comp];
+        comp_table.resize(size);
+
         for (int i=0; i<n_basis.get_component_size(comp); ++i)
         {
-        	auto t_ind = comp_table.flat_to_tensor(i);
-        	for (int dir = 0 ; dir < dim ; ++dir)
-        		t_ind[dir] = t_ind[dir] % n_basis1[comp][dir];
-        	auto f_ind = comp_table.tensor_to_flat(t_ind);
-        	comp_table[i] = f_ind;
+            auto t_ind = comp_table.flat_to_tensor(i);
+            for (int dir = 0 ; dir < dim ; ++dir)
+                t_ind[dir] = t_ind[dir] % n_basis1[comp][dir];
+            auto f_ind = comp_table.tensor_to_flat(t_ind);
+            comp_table[i] = comp_offset + f_ind;
         }
+        comp_offset += n_basis.get_component_size(comp);
     }
     //-----------------------------------------------------------------------
 
@@ -101,6 +106,8 @@ get_min_dof_id() const
 {
     return *std::min_element(dofs_view_.cbegin(),dofs_view_.cend());
 }
+
+
 
 template<int dim, int range, int rank>
 Index
@@ -281,6 +288,8 @@ add_dofs_offset(const Index offset)
             dof_id += offset;
 }
 
+
+
 template<int dim, int range, int rank>
 auto
 DofDistribution<dim, range, rank>::
@@ -288,6 +297,8 @@ get_index_table() const -> const IndexDistributionTable &
 {
     return index_table_;
 }
+
+
 
 template<int dim, int range, int rank>
 auto

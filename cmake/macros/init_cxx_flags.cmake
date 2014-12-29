@@ -1,6 +1,6 @@
 #-+--------------------------------------------------------------------
 # Igatools a general purpose Isogeometric analysis library.
-# Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+# Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 #
 # This file is part of the igatools library.
 #
@@ -28,14 +28,14 @@ macro(init_cxx_flags)
   set(CMAKE_CXX_FLAGS_RELEASE        "-O3 -mtune=native -DNDEBUG")
   set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -mtune=native -DNDEBUG -g -p -pg")
 
-  # Compiler-specific C++11 activation.
+  # Compiler-specific C++14 activation.
   if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
     execute_process(
       COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
-  if (NOT (GCC_VERSION VERSION_GREATER 4.9 OR GCC_VERSION VERSION_EQUAL 4.9))
-      message(FATAL_ERROR "gcc version 4.9 or greater.")
+  if (NOT (GCC_VERSION VERSION_GREATER 4.9.1 OR GCC_VERSION VERSION_EQUAL 4.9.1))
+      message(FATAL_ERROR "gcc version 4.9.1 or greater.")
     endif()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
   elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     message(FATAL_ERROR "Your C++ CLANG compiler is not supported by igatools")
   elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "Intel")

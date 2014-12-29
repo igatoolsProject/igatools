@@ -1,6 +1,6 @@
 #-+--------------------------------------------------------------------
 # Igatools a general purpose Isogeometric analysis library.
-# Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+# Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 #
 # This file is part of the igatools library.
 #
@@ -18,14 +18,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #-+--------------------------------------------------------------------
 
-
-# QA (pauletti, Mar 19, 2014):
 from init_instantiation_data import *
 
 iga_inc_files = ['base/tensor.h',
-				 'utils/value_table.h']
-other_files   = ['igatools/linear_algebra/dense_matrix.h' ]
-data = Instantiation(iga_inc_files, other_files)
+				 'utils/value_table.h',
+                 'basis_functions/bernstein_extraction.h']
+#other_files   = ['igatools/linear_algebra/dense_matrix.h' ]
+data = Instantiation(iga_inc_files)
 (f, inst) = (data.file_output, data.inst)
 
 types = ('Real','Real*', 'Index')
@@ -36,7 +35,8 @@ for dim in inst.all_domain_dims:
         for k in range(0, dim+1):
             f.write('template %s::SubProduct<%d> ' %(row, k) +
                     '%s::get_sub_product(const TensorIndex<%d> &index) const; \n'  %(row, k))
-matrix = 'DenseMatrix'
+#matrix = 'DenseMatrix'
+matrix = 'BernsteinOperator'
 types = (matrix, "const %s *" %matrix, ) + \
 	('vector<%s>' %matrix, 'const vector<%s> *' %matrix)
 #types = types + ('Real','Real*', 'Index')

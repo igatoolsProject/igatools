@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -115,7 +115,7 @@ public :
                           const Points<rank> &translate) ;
 
     /** Dilation of the TensorProductArray data.*/
-    void dilate(const std::array<Real,rank> &dilate) ;
+    void dilate(const Points<rank> &dilate) ;
 
 
     /** Translation of the TensorProductArray data.*/

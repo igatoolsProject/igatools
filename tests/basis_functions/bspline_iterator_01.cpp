@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -80,7 +80,7 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
 
 int main()
 {
-    out.depth_console(10);
+    out.depth_console(0);
 
     bspline_iterator<1,1,1>();
     bspline_iterator<1,1,2>();

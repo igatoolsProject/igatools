@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -40,7 +40,7 @@ PhysicalSpace<RefSpace_, codim_, type_>::components = sequence<PhysicalSpace<Ref
 template <class RefSpace_,int codim_, Transformation type_>
 PhysicalSpace<RefSpace_, codim_, type_>::
 PhysicalSpace(shared_ptr<RefSpace> ref_space,
-                 shared_ptr<MapFunc> map_func)
+              shared_ptr<MapFunc> map_func)
     :
     BaseSpace(ref_space->get_grid()),
     ref_space_(ref_space),

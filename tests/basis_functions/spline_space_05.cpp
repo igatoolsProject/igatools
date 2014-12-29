@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -41,8 +41,9 @@ void test(const int deg1)
     deg.get_inactive_components_id().print_info(out);
     out << endl;
 
-
-    SplineSpace sp_spec(deg, grid, SplineSpace::InteriorReg::maximum);
+    auto int_mult = SplineSpace::multiplicity_regularity(InteriorReg::maximum,
+                                                         deg, grid->get_num_intervals());
+    SplineSpace sp_spec(deg, grid, int_mult);
     sp_spec.print_info(out);
 }
 

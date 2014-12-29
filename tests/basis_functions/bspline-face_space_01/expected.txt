@@ -24,24 +24,17 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 0; int dim = 
             Size: [ ]  Weights: []
          
          Dimensionality Table:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ [ ] ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
+            Component Dimension:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ 1 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Total Dimension: 1
          
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 1 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
-         Total Dimension: 1
       
       Patch Basis Indices:
          Size: [ ]  Weights: []
@@ -87,24 +80,17 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 0; int dim = 
             Size: [ ]  Weights: []
          
          Dimensionality Table:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ [ ] ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
+            Component Dimension:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ 1 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Total Dimension: 1
          
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 1 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
-         Total Dimension: 1
       
       Patch Basis Indices:
          Size: [ ]  Weights: []
@@ -159,24 +145,17 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
             [ 1 ]
          
          Dimensionality Table:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ [ 3 ] ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
+            Component Dimension:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ 3 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Total Dimension: 3
          
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 3 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
-         Total Dimension: 3
       
       Patch Basis Indices:
          Size: [ 3 ]  Weights: [3]
@@ -231,24 +210,17 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
             [ 1 ]
          
          Dimensionality Table:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ [ 3 ] ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
+            Component Dimension:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ 3 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Total Dimension: 3
          
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 3 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
-         Total Dimension: 3
       
       Patch Basis Indices:
          Size: [ 3 ]  Weights: [3]
@@ -303,24 +275,17 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
             [ ]
          
          Dimensionality Table:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ [ 2 ] ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
+            Component Dimension:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ 2 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Total Dimension: 2
          
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 2 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
-         Total Dimension: 2
       
       Patch Basis Indices:
          Size: [ 2 ]  Weights: [2]
@@ -372,24 +337,17 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
             [ ]
          
          Dimensionality Table:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ [ 2 ] ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
+            Component Dimension:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ 2 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Total Dimension: 2
          
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 2 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
-         Total Dimension: 2
       
       Patch Basis Indices:
          Size: [ 2 ]  Weights: [2]
@@ -450,24 +408,17 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             [ 1 1 ]
          
          Dimensionality Table:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ [ 3 4 ] ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
+            Component Dimension:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ 12 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Total Dimension: 12
          
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 12 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
-         Total Dimension: 12
       
       Patch Basis Indices:
          Size: [ 3 4 ]  Weights: [3,12]
@@ -538,24 +489,17 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             [ 1 1 ]
          
          Dimensionality Table:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ [ 3 4 ] ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
+            Component Dimension:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ 12 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Total Dimension: 12
          
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 12 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
-         Total Dimension: 12
       
       Patch Basis Indices:
          Size: [ 3 4 ]  Weights: [3,12]
@@ -626,24 +570,17 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             [ 1 1 ]
          
          Dimensionality Table:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ [ 2 4 ] ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
+            Component Dimension:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ 8 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Total Dimension: 8
          
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 8 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
-         Total Dimension: 8
       
       Patch Basis Indices:
          Size: [ 2 4 ]  Weights: [2,8]
@@ -707,24 +644,17 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             [ 1 1 ]
          
          Dimensionality Table:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ [ 2 4 ] ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
+            Component Dimension:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ 8 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Total Dimension: 8
          
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 8 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
-         Total Dimension: 8
       
       Patch Basis Indices:
          Size: [ 2 4 ]  Weights: [2,8]
@@ -788,24 +718,17 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             [ 1 ]
          
          Dimensionality Table:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ [ 2 3 ] ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
+            Component Dimension:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ 6 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Total Dimension: 6
          
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 6 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
-         Total Dimension: 6
       
       Patch Basis Indices:
          Size: [ 2 3 ]  Weights: [2,6]
@@ -866,24 +789,17 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             [ 1 ]
          
          Dimensionality Table:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ [ 2 3 ] ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
+            Component Dimension:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ 6 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Total Dimension: 6
          
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 6 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
-         Total Dimension: 6
       
       Patch Basis Indices:
          Size: [ 2 3 ]  Weights: [2,6]

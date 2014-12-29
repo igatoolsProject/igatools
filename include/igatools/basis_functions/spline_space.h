@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -33,16 +33,16 @@
 
 IGA_NAMESPACE_OPEN
 
-enum class EndBehaviour
+enum class BasisEndBehaviour
 {
-	/**
-	 * Interpolatory basis functions at knots bounday (i.e. open knot vector).
-	 */
-	interpolatory,
+    /**
+     * Interpolatory basis functions at knots bounday (i.e. open knot vector).
+     */
+    interpolatory,
 
-	periodic,
+    end_knots,
 
-	end_knots
+    periodic
 };
 
 // For the interior multiplicities
@@ -105,16 +105,20 @@ public:
     using BoundaryKnots = std::array<CartesianProductArray<Real,2>, dim>;
     using Degrees  = TensorIndex<dim>;
     using Multiplicity = CartesianProductArray<Size, dim>;
+    using Periodicity = std::array<bool, dim>;
+    using EndBehaviour = std::array<BasisEndBehaviour, dim>;
 
     using DegreeTable = ComponentContainer<Degrees>;
     using MultiplicityTable = ComponentContainer<Multiplicity>;
     using BoundaryKnotsTable = ComponentContainer<BoundaryKnots>;
     using KnotsTable = ComponentContainer<KnotCoordinates>;
-    //using PeriodicTable = ComponentContainer<std::array<bool, dim> >;
+    using PeriodicTable = ComponentContainer<Periodicity>;
+    using EndBehaviourTable = ComponentContainer<EndBehaviour>;
 
-    using IndexSpaceTable = ComponentContainer<DynamicMultiArray<Index,dim>>;
-    using IndexSpaceMarkTable = Multiplicity;
 
+
+// TODO (pauletti, Dec 26, 2014): this is an application specific property
+// should not be part of space
     /**
      * Type alias for the boundary conditions on each face of each scalar component of the space.
      */
@@ -127,7 +131,7 @@ public:
     class SpaceDimensionTable : public ComponentContainer<TensorSize<dim> >
     {
     public:
-    	using base_t = ComponentContainer<TensorSize<dim>>;
+        using base_t = ComponentContainer<TensorSize<dim>>;
 
         SpaceDimensionTable() = default;
 
@@ -137,21 +141,21 @@ public:
             comp_dimension(n_basis.get_comp_map()),
             total_dimension_(0)
         {
-        	 recompute_size();
+            recompute_size();
         }
 
         SpaceDimensionTable operator=(const base_t &st)
         {
-             base_t::operator=(st);
-             recompute_size();
-             return *this;
+            base_t::operator=(st);
+            recompute_size();
+            return *this;
 
         }
 
         void print_info(LogStream &out) const
         {
-        	out.begin_item("Component Dimension:");
-        	comp_dimension.print_info(out);
+            out.begin_item("Component Dimension:");
+            comp_dimension.print_info(out);
             out.end_item();
 
             out << "Total Dimension: " << total_dimension_ << std::endl;
@@ -159,23 +163,24 @@ public:
 
         Size total_dimension() const
         {
-        	return total_dimension_;
+            return total_dimension_;
         }
 
         Size get_component_size(const int comp) const
         {
-        	return comp_dimension[comp];
+            return comp_dimension[comp];
         }
     private:
         void recompute_size()
         {
-        	for (auto comp : this->get_active_components_id())
-        	{
-        		auto size = (*this)[comp].flat_size();
-        		comp_dimension[comp] = size;
-        	}
-        	for (auto size : comp_dimension)
-        		total_dimension_ += size;
+            for (auto comp : this->get_active_components_id())
+            {
+                auto size = (*this)[comp].flat_size();
+                comp_dimension[comp] = size;
+            }
+            total_dimension_ = 0;
+            for (auto size : comp_dimension)
+                total_dimension_ += size;
         }
 
         ComponentContainer<Size> comp_dimension;
@@ -183,34 +188,34 @@ public:
     };
 
 
-    using EndBehaviourTable = ComponentContainer<std::array<EndBehaviour, dim> >;
-
 
 
 public:
     /**
-     * Most general constructor
+     * Construct a spline space with the knots, degree and multiplicity
+     * as well as periodicity conditions
      */
     explicit SplineSpace(const DegreeTable &deg,
                          std::shared_ptr<GridType> knots,
                          std::shared_ptr<const MultiplicityTable> interior_mult,
-						 const EndBehaviourTable &end_behaviour = EndBehaviourTable(filled_array<EndBehaviour,dim>(EndBehaviour::interpolatory)));
-
-    explicit SplineSpace(const DegreeTable &deg,
-    		std::shared_ptr<GridType> knots,
-			const InteriorReg &interior_mult,
-			const EndBehaviour &eb)
-    :SplineSpace(deg, knots,interior_mult,
-    		EndBehaviourTable(filled_array<EndBehaviour,dim>(eb)))
-    {}
+                         const PeriodicTable &periodic =
+                             PeriodicTable(filled_array<bool,dim>(false)));
 
 
-    explicit SplineSpace(const DegreeTable &deg,
-                         std::shared_ptr<GridType> knots,
-                         const InteriorReg &interior_mult,
-                         const EndBehaviourTable &ebt = EndBehaviourTable(filled_array<EndBehaviour,dim>(EndBehaviour::interpolatory)))
-        :SplineSpace(deg, knots, fill_max_regularity(deg, knots), ebt)
-    {}
+//    /**
+//     * Component uniform constructor, it assumes all component belong to
+//     * the same scalar space
+//     */
+//    explicit SplineSpace(const Degrees &deg,
+//          std::shared_ptr<GridType> knots,
+//          const InteriorReg &interior_reg,
+//          const Periodicity periodic = filled_array<bool,dim>(false))
+//    :SplineSpace(DegreeTable(deg), knots,
+//          multiplicity_regularity(interior_reg, DegreeTable(deg),
+//                  knots->get_num_intervals()),
+//                  PeriodicTable(periodic))
+//    {}
+
 
     const DegreeTable &get_degree() const
     {
@@ -298,16 +303,16 @@ public:
     get_sub_space_degree(const Index s_id) const;
 
     template<int k>
-    typename SubSpace<k>::EndBehaviourTable
-	get_sub_space_end_b(const Index s_id) const;
+    typename SubSpace<k>::PeriodicTable
+    get_sub_space_periodicity(const Index s_id) const;
 
 
 public:
 
     KnotsTable compute_knots_with_repetition(const EndBehaviourTable &ends,
-    		const BoundaryKnotsTable &boundary_knots = BoundaryKnotsTable()) const;
+                                             const BoundaryKnotsTable &boundary_knots = BoundaryKnotsTable()) const;
 
-   // KnotsTable compute_knots_with_repetition(const EndBehaviourTable &ends) const;
+    // KnotsTable compute_knots_with_repetition(const EndBehaviourTable &ends) const;
 
     /**
      * For each element and for each component there is an initial
@@ -316,26 +321,18 @@ public:
      */
     MultiplicityTable accumulated_interior_multiplicities() const;
 
-public:
-
-    void print_info(LogStream &out) const;
-
-
-private:
     /**
      * Fill the multiplicy for the maximum possible regularity
      *  of the given number of knots
      */
-    std::shared_ptr<MultiplicityTable> fill_max_regularity(const DegreeTable &deg, std::shared_ptr<const GridType> grid);
+    static
+    std::shared_ptr<MultiplicityTable>
+    multiplicity_regularity(const InteriorReg reg,
+                            const DegreeTable &deg,
+                            const TensorSize<dim> &n_elem);
 
-#if 0
-    BoundaryKnotsTable interpolatory_end_knots() const;
-#endif
-
-    CartesianProductArray<Real,2> interpolatory_end_knots(const int comp_id,const int dir) const;
-    CartesianProductArray<Real,2> periodic_end_knots(const int comp_id,const int dir) const;
-
-
+public:
+    void print_info(LogStream &out) const;
 private:
     std::shared_ptr<const MultiplicityTable> interior_mult_;
 
@@ -344,7 +341,8 @@ private:
     /** Table with the dimensionality of the space in each component and direction */
     SpaceDimensionTable space_dim_;
 
-    EndBehaviourTable end_behaviour_;
+    //EndBehaviourTable end_behaviour_;
+    PeriodicTable periodic_;
 
     /**
      * Boundary conditions on each face of each scalar component of the space.
@@ -359,9 +357,9 @@ public:
         return interior_mult_;
     }
 
-    const EndBehaviourTable &get_end_behaviour() const
+    const PeriodicTable &get_periodic_table() const
     {
-        return end_behaviour_;
+        return periodic_;
     }
 
 
@@ -432,6 +430,10 @@ public:
                                sequence<n_entries>());
 
         ComponentContainer(const ComponentMap &comp_map, const T &val);
+
+        ComponentContainer(bool uniform, const T &val)
+            : ComponentContainer(filled_array<Index, n_entries>(0), val)
+        {}
 
         /**
          * Construct a homogenous range table with val value

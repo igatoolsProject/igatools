@@ -27,24 +27,17 @@ BSpline Space:
          [ 1 1 1 ]
       
       Dimensionality Table:
-         Raw componets: 
-            Size: [ 1 ]  Weights: [1]
-         [ [ 7 ] ]
-         Active componets ids: 
-         [ 0 ]
-         Inactive componets ids: 
-         [ ]
+         Component Dimension:
+            Raw componets: 
+               Size: [ 1 ]  Weights: [1]
+            [ 7 ]
+            Active componets ids: 
+            [ 0 ]
+            Inactive componets ids: 
+            [ ]
+         
+         Total Dimension: 7
       
-      Component Dimension:
-         Raw componets: 
-            Size: [ 1 ]  Weights: [1]
-         [ 7 ]
-         Active componets ids: 
-         [ 0 ]
-         Inactive componets ids: 
-         [ ]
-      
-      Total Dimension: 7
    
    Patch Basis Indices:
       Size: [ 7 ]  Weights: [7]
@@ -102,24 +95,17 @@ Weight function[0] :
             [ 1 1 1 ]
          
          Dimensionality Table:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ [ 7 ] ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
+            Component Dimension:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ 7 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Total Dimension: 7
          
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 7 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
-         Total Dimension: 7
       
       Patch Basis Indices:
          Size: [ 7 ]  Weights: [7]
@@ -188,24 +174,17 @@ BSpline Space:
          [ 1 1 1 ]
       
       Dimensionality Table:
-         Raw componets: 
-            Size: [ 2 ]  Weights: [2]
-         [ [ 7 ] [ 7 ] ]
-         Active componets ids: 
-         [ 0 1 ]
-         Inactive componets ids: 
-         [ ]
+         Component Dimension:
+            Raw componets: 
+               Size: [ 2 ]  Weights: [2]
+            [ 7 7 ]
+            Active componets ids: 
+            [ 0 1 ]
+            Inactive componets ids: 
+            [ ]
+         
+         Total Dimension: 14
       
-      Component Dimension:
-         Raw componets: 
-            Size: [ 2 ]  Weights: [2]
-         [ 7 7 ]
-         Active componets ids: 
-         [ 0 1 ]
-         Inactive componets ids: 
-         [ ]
-      
-      Total Dimension: 14
    
    Patch Basis Indices:
       Size: [ 7 ]  Weights: [7]
@@ -273,24 +252,17 @@ Weight function[0] :
             [ 1 1 1 ]
          
          Dimensionality Table:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ [ 7 ] ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
+            Component Dimension:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ 7 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Total Dimension: 7
          
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 7 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
-         Total Dimension: 7
       
       Patch Basis Indices:
          Size: [ 7 ]  Weights: [7]
@@ -352,24 +324,17 @@ Weight function[1] :
             [ 1 1 1 ]
          
          Dimensionality Table:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ [ 7 ] ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
+            Component Dimension:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ 7 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Total Dimension: 7
          
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 7 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
-         Total Dimension: 7
       
       Patch Basis Indices:
          Size: [ 7 ]  Weights: [7]
@@ -441,24 +406,17 @@ BSpline Space:
          [ 1 1 1 ]
       
       Dimensionality Table:
-         Raw componets: 
-            Size: [ 3 ]  Weights: [3]
-         [ [ 7 ] [ 7 ] [ 7 ] ]
-         Active componets ids: 
-         [ 0 1 2 ]
-         Inactive componets ids: 
-         [ ]
+         Component Dimension:
+            Raw componets: 
+               Size: [ 3 ]  Weights: [3]
+            [ 7 7 7 ]
+            Active componets ids: 
+            [ 0 1 2 ]
+            Inactive componets ids: 
+            [ ]
+         
+         Total Dimension: 21
       
-      Component Dimension:
-         Raw componets: 
-            Size: [ 3 ]  Weights: [3]
-         [ 7 7 7 ]
-         Active componets ids: 
-         [ 0 1 2 ]
-         Inactive componets ids: 
-         [ ]
-      
-      Total Dimension: 21
    
    Patch Basis Indices:
       Size: [ 7 ]  Weights: [7]
@@ -536,24 +494,17 @@ Weight function[0] :
             [ 1 1 1 ]
          
          Dimensionality Table:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ [ 7 ] ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
+            Component Dimension:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ 7 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Total Dimension: 7
          
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 7 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
-         Total Dimension: 7
       
       Patch Basis Indices:
          Size: [ 7 ]  Weights: [7]
@@ -615,24 +566,17 @@ Weight function[1] :
             [ 1 1 1 ]
          
          Dimensionality Table:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ [ 7 ] ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
+            Component Dimension:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ 7 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Total Dimension: 7
          
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 7 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
-         Total Dimension: 7
       
       Patch Basis Indices:
          Size: [ 7 ]  Weights: [7]
@@ -694,24 +638,17 @@ Weight function[2] :
             [ 1 1 1 ]
          
          Dimensionality Table:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ [ 7 ] ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
+            Component Dimension:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ 7 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Total Dimension: 7
          
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 7 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
-         Total Dimension: 7
       
       Patch Basis Indices:
          Size: [ 7 ]  Weights: [7]
@@ -781,24 +718,17 @@ BSpline Space:
          [ 1 1 ]
       
       Dimensionality Table:
-         Raw componets: 
-            Size: [ 1 ]  Weights: [1]
-         [ [ 7 5 ] ]
-         Active componets ids: 
-         [ 0 ]
-         Inactive componets ids: 
-         [ ]
+         Component Dimension:
+            Raw componets: 
+               Size: [ 1 ]  Weights: [1]
+            [ 35 ]
+            Active componets ids: 
+            [ 0 ]
+            Inactive componets ids: 
+            [ ]
+         
+         Total Dimension: 35
       
-      Component Dimension:
-         Raw componets: 
-            Size: [ 1 ]  Weights: [1]
-         [ 35 ]
-         Active componets ids: 
-         [ 0 ]
-         Inactive componets ids: 
-         [ ]
-      
-      Total Dimension: 35
    
    Patch Basis Indices:
       Size: [ 7 5 ]  Weights: [7,35]
@@ -880,24 +810,17 @@ Weight function[0] :
             [ 1 1 ]
          
          Dimensionality Table:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ [ 7 5 ] ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
+            Component Dimension:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ 35 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Total Dimension: 35
          
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 35 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
-         Total Dimension: 35
       
       Patch Basis Indices:
          Size: [ 7 5 ]  Weights: [7,35]
@@ -992,24 +915,17 @@ BSpline Space:
          [ 1 1 ]
       
       Dimensionality Table:
-         Raw componets: 
-            Size: [ 2 ]  Weights: [2]
-         [ [ 7 5 ] [ 7 5 ] ]
-         Active componets ids: 
-         [ 0 1 ]
-         Inactive componets ids: 
-         [ ]
+         Component Dimension:
+            Raw componets: 
+               Size: [ 2 ]  Weights: [2]
+            [ 35 35 ]
+            Active componets ids: 
+            [ 0 1 ]
+            Inactive componets ids: 
+            [ ]
+         
+         Total Dimension: 70
       
-      Component Dimension:
-         Raw componets: 
-            Size: [ 2 ]  Weights: [2]
-         [ 35 35 ]
-         Active componets ids: 
-         [ 0 1 ]
-         Inactive componets ids: 
-         [ ]
-      
-      Total Dimension: 70
    
    Patch Basis Indices:
       Size: [ 7 5 ]  Weights: [7,35]
@@ -1105,24 +1021,17 @@ Weight function[0] :
             [ 1 1 ]
          
          Dimensionality Table:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ [ 7 5 ] ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
+            Component Dimension:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ 35 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Total Dimension: 35
          
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 35 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
-         Total Dimension: 35
       
       Patch Basis Indices:
          Size: [ 7 5 ]  Weights: [7,35]
@@ -1208,24 +1117,17 @@ Weight function[1] :
             [ 1 1 ]
          
          Dimensionality Table:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ [ 7 5 ] ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
+            Component Dimension:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ 35 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Total Dimension: 35
          
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 35 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
-         Total Dimension: 35
       
       Patch Basis Indices:
          Size: [ 7 5 ]  Weights: [7,35]
@@ -1325,24 +1227,17 @@ BSpline Space:
          [ 1 1 ]
       
       Dimensionality Table:
-         Raw componets: 
-            Size: [ 3 ]  Weights: [3]
-         [ [ 7 5 ] [ 7 5 ] [ 7 5 ] ]
-         Active componets ids: 
-         [ 0 1 2 ]
-         Inactive componets ids: 
-         [ ]
+         Component Dimension:
+            Raw componets: 
+               Size: [ 3 ]  Weights: [3]
+            [ 35 35 35 ]
+            Active componets ids: 
+            [ 0 1 2 ]
+            Inactive componets ids: 
+            [ ]
+         
+         Total Dimension: 105
       
-      Component Dimension:
-         Raw componets: 
-            Size: [ 3 ]  Weights: [3]
-         [ 35 35 35 ]
-         Active componets ids: 
-         [ 0 1 2 ]
-         Inactive componets ids: 
-         [ ]
-      
-      Total Dimension: 105
    
    Patch Basis Indices:
       Size: [ 7 5 ]  Weights: [7,35]
@@ -1452,24 +1347,17 @@ Weight function[0] :
             [ 1 1 ]
          
          Dimensionality Table:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ [ 7 5 ] ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
+            Component Dimension:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ 35 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Total Dimension: 35
          
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 35 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
-         Total Dimension: 35
       
       Patch Basis Indices:
          Size: [ 7 5 ]  Weights: [7,35]
@@ -1555,24 +1443,17 @@ Weight function[1] :
             [ 1 1 ]
          
          Dimensionality Table:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ [ 7 5 ] ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
+            Component Dimension:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ 35 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Total Dimension: 35
          
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 35 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
-         Total Dimension: 35
       
       Patch Basis Indices:
          Size: [ 7 5 ]  Weights: [7,35]
@@ -1658,24 +1539,17 @@ Weight function[2] :
             [ 1 1 ]
          
          Dimensionality Table:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ [ 7 5 ] ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
+            Component Dimension:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ 35 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Total Dimension: 35
          
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 35 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
-         Total Dimension: 35
       
       Patch Basis Indices:
          Size: [ 7 5 ]  Weights: [7,35]
@@ -1769,24 +1643,17 @@ BSpline Space:
          [ 1 ]
       
       Dimensionality Table:
-         Raw componets: 
-            Size: [ 1 ]  Weights: [1]
-         [ [ 7 5 3 ] ]
-         Active componets ids: 
-         [ 0 ]
-         Inactive componets ids: 
-         [ ]
+         Component Dimension:
+            Raw componets: 
+               Size: [ 1 ]  Weights: [1]
+            [ 105 ]
+            Active componets ids: 
+            [ 0 ]
+            Inactive componets ids: 
+            [ ]
+         
+         Total Dimension: 105
       
-      Component Dimension:
-         Raw componets: 
-            Size: [ 1 ]  Weights: [1]
-         [ 105 ]
-         Active componets ids: 
-         [ 0 ]
-         Inactive componets ids: 
-         [ ]
-      
-      Total Dimension: 105
    
    Patch Basis Indices:
       Size: [ 7 5 3 ]  Weights: [7,35,105]
@@ -1899,24 +1766,17 @@ Weight function[0] :
             [ 1 ]
          
          Dimensionality Table:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ [ 7 5 3 ] ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
+            Component Dimension:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ 105 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Total Dimension: 105
          
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 105 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
-         Total Dimension: 105
       
       Patch Basis Indices:
          Size: [ 7 5 3 ]  Weights: [7,35,105]
@@ -2051,24 +1911,17 @@ BSpline Space:
          [ 1 ]
       
       Dimensionality Table:
-         Raw componets: 
-            Size: [ 3 ]  Weights: [3]
-         [ [ 7 5 3 ] [ 7 5 3 ] [ 7 5 3 ] ]
-         Active componets ids: 
-         [ 0 1 2 ]
-         Inactive componets ids: 
-         [ ]
+         Component Dimension:
+            Raw componets: 
+               Size: [ 3 ]  Weights: [3]
+            [ 105 105 105 ]
+            Active componets ids: 
+            [ 0 1 2 ]
+            Inactive componets ids: 
+            [ ]
+         
+         Total Dimension: 315
       
-      Component Dimension:
-         Raw componets: 
-            Size: [ 3 ]  Weights: [3]
-         [ 105 105 105 ]
-         Active componets ids: 
-         [ 0 1 2 ]
-         Inactive componets ids: 
-         [ ]
-      
-      Total Dimension: 315
    
    Patch Basis Indices:
       Size: [ 7 5 3 ]  Weights: [7,35,105]
@@ -2215,24 +2068,17 @@ Weight function[0] :
             [ 1 ]
          
          Dimensionality Table:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ [ 7 5 3 ] ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
+            Component Dimension:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ 105 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Total Dimension: 105
          
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 105 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
-         Total Dimension: 105
       
       Patch Basis Indices:
          Size: [ 7 5 3 ]  Weights: [7,35,105]
@@ -2349,24 +2195,17 @@ Weight function[1] :
             [ 1 ]
          
          Dimensionality Table:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ [ 7 5 3 ] ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
+            Component Dimension:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ 105 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Total Dimension: 105
          
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 105 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
-         Total Dimension: 105
       
       Patch Basis Indices:
          Size: [ 7 5 3 ]  Weights: [7,35,105]
@@ -2483,24 +2322,17 @@ Weight function[2] :
             [ 1 ]
          
          Dimensionality Table:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ [ 7 5 3 ] ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
+            Component Dimension:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+               [ 105 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+            
+            Total Dimension: 105
          
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 105 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
-         Total Dimension: 105
       
       Patch Basis Indices:
          Size: [ 7 5 3 ]  Weights: [7,35,105]

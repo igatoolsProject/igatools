@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -177,7 +177,7 @@ private:
     template <typename Accessor> friend class CartesianGridIterator;
     friend class BSplineElementHandler<dim, range, rank>;
 
-
+#if 0
 
 public:
     /*
@@ -185,10 +185,10 @@ public:
                 &get_scalar_evaluators() const;
     //*/
 
-#if 0
+
     ComponentContainer<std::array<ValueTable<Real>,dim> >
     get_univariate_derivatives(const int deriv_order) const;
-#endif
+
 
     /*
      * Returns a component table with the derivatives (of order @p deriv_order)
@@ -214,6 +214,7 @@ private:
     evaluate_univariate_derivatives_at_points(
         const int deriv_order,
         const std::array<vector<Real>,dim> &points) const;
+#endif
 };
 
 IGA_NAMESPACE_CLOSE

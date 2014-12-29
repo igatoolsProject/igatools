@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -27,6 +27,7 @@
 #include "../tests.h"
 #include <igatools/basis_functions/bernstein_extraction.h>
 
+// TODO (pauletti, Dec 26, 2014): this test needs to be update to current standards
 
 template <int dim>
 void
@@ -36,6 +37,7 @@ test(const int deg = 1)
     using MultiplicityTable = typename SplineSpace::MultiplicityTable;
 
     typename SplineSpace::DegreeTable degt {{deg}};
+
 
     CartesianProductArray<Real,dim> knots({{0,1,2,3,4}});
     auto grid = CartesianGrid<dim>::create(knots);
@@ -59,6 +61,7 @@ int main()
 {
     out.depth_console(10);
     test<1>();
+
 
 //    {
 //        const int dim=1;

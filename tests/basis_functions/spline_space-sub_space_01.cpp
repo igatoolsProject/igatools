@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -37,7 +37,9 @@ void sub_space(const TensorSize<dim> &n_knots, const TensorIndex<dim> &degree)
     using SplineSpace = SplineSpace<dim, range, rank>;
     auto grid = CartesianGrid<dim>::create(n_knots);
     typename SplineSpace::DegreeTable deg {degree};
-    SplineSpace space(deg, grid, SplineSpace::InteriorReg::maximum);
+    auto int_mult = SplineSpace::multiplicity_regularity(InteriorReg::maximum,
+                                                         deg, grid->get_num_intervals());
+    SplineSpace space(deg, grid, int_mult);
 
     for (auto  s_id : UnitElement<dim>::template elems_ids<k>())
     {
@@ -51,6 +53,11 @@ void sub_space(const TensorSize<dim> &n_knots, const TensorIndex<dim> &degree)
         out.begin_item("Degree");
         auto sub_deg = space.template get_sub_space_degree<k>(s_id);
         sub_deg.print_info(out);
+        out.end_item();
+
+        out.begin_item("Periodicity");
+        auto sub_periodic = space.template get_sub_space_periodicity<k>(s_id);
+        //sub_periodic.print_info(out);
         out.end_item();
 
         out.end_item();

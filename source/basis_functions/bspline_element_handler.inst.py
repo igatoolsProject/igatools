@@ -1,6 +1,6 @@
 #-+--------------------------------------------------------------------
 # Igatools a general purpose Isogeometric analysis library.
-# Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+# Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 #
 # This file is part of the igatools library.
 #
@@ -33,9 +33,6 @@ sub_dim_members = \
 'void elhandler::init_cache<k>(ElementAccessor &elem);' ,
 'void elhandler::reset<k>(const ValueFlags flag, const Quadrature<k> &quad);']
 
-#iterators = ['CartesianGridIteratorBase<Accessor>',
-#             'CartesianGridIterator<Accessor>',
-#             'CartesianGridConstIterator<Accessor>']
 
 for x in inst.sub_ref_sp_dims:
     space = 'BSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)

@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -60,7 +60,7 @@ compute_second_fundamental_form() const -> ValueVector<MetricTensor>
 
     const auto n_points = D2_F.get_num_points();
 
-   // const auto G_inv = compute_inv_first_fundamental_form();
+    // const auto G_inv = compute_inv_first_fundamental_form();
 
     ValueVector<MetricTensor> res;
     res.resize(n_points);
@@ -75,7 +75,7 @@ compute_second_fundamental_form() const -> ValueVector<MetricTensor>
         }
         res[pt] = -A;
 
-       // res[pt] = -compose(A, G_inv[pt]);
+        // res[pt] = -compose(A, G_inv[pt]);
 
     }
 

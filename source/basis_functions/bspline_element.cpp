@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -300,7 +300,7 @@ BSplineElement(const self_t &elem,
 
 
 
-
+#if 0
 template <int dim, int range, int rank>
 auto
 BSplineElement<dim, range, rank>::
@@ -655,8 +655,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 
     return D_phi;
 }
-
-
+#endif
 
 IGA_NAMESPACE_CLOSE
 

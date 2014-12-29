@@ -1,6 +1,6 @@
 #-+--------------------------------------------------------------------
 # Igatools a general purpose Isogeometric analysis library.
-# Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+# Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 #
 # This file is part of the igatools library.
 #
@@ -64,8 +64,8 @@ endif()
 # Set the igatools version 
 #
 set(IGATOOLS_MAJOR_VERSION 0)
-set(IGATOOLS_MINOR_VERSION 5)
-set(IGATOOLS_PATCH_VERSION 1)
+set(IGATOOLS_MINOR_VERSION 8)
+set(IGATOOLS_PATCH_VERSION 0)
 set(IGATOOLS_VERSION
   ${IGATOOLS_MAJOR_VERSION}.${IGATOOLS_MINOR_VERSION}.${IGATOOLS_PATCH_VERSION})
 #
