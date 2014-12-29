@@ -136,7 +136,7 @@ BSplineSpace(const DegreeTable &deg,
             const auto xk= *(knots->get_knot_coordinates().get_data_direction(dir).end()-2);
             const auto b = *(knots->get_knot_coordinates().get_data_direction(dir).end()-1);
             const auto xk1 = *(rep_knots[i].get_data_direction(dir).end() - (p+1));
-            end_interval_[i][dir].second = (xk1-b) / (xk1-xk);
+            end_interval_[i][dir].second = (b-xk) / (xk1-xk);
         }
 
     // create a signal and a connection for the grid refinement
