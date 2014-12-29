@@ -26,7 +26,7 @@
 #include <igatools/base/equality_constraint.h>
 #include <igatools/base/linear_constraint.h>
 #include <igatools/utils/concatenated_iterator.h>
-#include <igatools/basis_functions/nurbs_space.h>
+#include <igatools/basis_functions/reference_space.h>
 #include <igatools/basis_functions/physical_space.h>
 
 
@@ -338,7 +338,7 @@ public:
     ///@}
 
 
-    /** @name Functions for managing the spaces connecitivty in the SpaceManager */
+    /** @name Functions for managing the spaces connectivity in the SpaceManager */
     ///@{
     /**
      * Sets the SpaceManager in a state that can receive the connectivity between existing spaces.
@@ -354,7 +354,8 @@ public:
 
     /**
      * Defines connection between the global dofs of the @p space with itself.
-     * If the (optional) argument @p use_dofs_connectivity_from_space is set to FALSE, then the space's internal dofs will not
+     * If the (optional) argument @p use_dofs_connectivity_from_space is set to FALSE,
+     * then the space's internal dofs will not
      * be taken into account to define the dofs connectivity.
      */
     template<class Space>
@@ -362,7 +363,7 @@ public:
 
 
     /**
-     * Sets the SpaceManager in a state that cannnot receive any new connectivity between existing spaces.
+     * Sets the SpaceManager in a state that cannot receive any new connectivity between existing spaces.
      */
     void spaces_connectivity_close();
 
@@ -509,10 +510,10 @@ private:
 
 
     /**
-     * This class represent a <em>space</em> (BSplineSpace, NURBSSpace or PhysicalSpace) without
+     * This class represent a <em>space</em> (ReferenceSpace or PhysicalSpace) without
      * the difficulties (and limits) of the template technology.
      *
-     * This class is not templetized, and it stores a certain kind of space through the use of
+     * This class is not templatized, and it stores a certain kind of space through the use of
      * a modified version of the boost::variant class.
      *
      *
@@ -619,8 +620,9 @@ private:
         void add_dofs_offset(const Index offset);
 
         /**
-         * Return an object containing a variant of a shared_pointer pointing to a certain single-patch space.
-         * The allowed space type can be any valid BSplineSpace, NURBSSpace or PhysicalSpace.
+         * Return an object containing a variant of a shared_pointer pointing
+         * to a certain single-patch space.
+         * The allowed space type can be any valid ReferenceSpace or PhysicalSpace.
          */
         SpacePtrVariant &get_space_variant();
 
@@ -633,8 +635,8 @@ private:
 
     private:
         /**
-         * Pointer to a generic single-patch space (it can be any of the type allowed for BSplineSpace,
-         * NURBSSpace and PhysicalSpace).
+         * Pointer to a generic single-patch space (it can be any of the type allowed for
+         * ReferenceSpace and PhysicalSpace).
          */
         SpacePtrVariant space_;
 

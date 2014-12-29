@@ -95,6 +95,8 @@ public:
     using InteriorReg = typename SpaceData::InteriorReg;
 
     using DegreeTable = typename SpaceData::DegreeTable;
+
+    using Multiplicity = typename SpaceData::Multiplicity;
     using MultiplicityTable = typename SpaceData::MultiplicityTable;
     using KnotsTable = typename SpaceData::KnotsTable;
     using SpaceDimensionTable = typename SpaceData::SpaceDimensionTable;

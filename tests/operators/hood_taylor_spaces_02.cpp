@@ -49,7 +49,7 @@ private:
     const Quadrature<dim> quad;
 
 #if defined(USE_TRILINOS)
-    const static auto la_pack = LAPack::trilinos;
+    const static auto la_pack = LAPack::trilinos_tpetra;
 #elif defined(USE_PETSC)
     const static auto la_pack = LAPack::petsc;
 #endif
@@ -66,18 +66,18 @@ void StokesProblem<dim>::assemble_Bt()
 
     const auto vel_flag = ValueFlags::divergence | ValueFlags::w_measure;
     const auto pre_flag = ValueFlags::value;
-    PreElementHandler pre_sp_values(pre_space_);
-    pre_sp_values.template reset<k> (pre_flag, quad);
-    VelElementHandler vel_sp_values(vel_space_);
-    vel_sp_values.template reset<k> (vel_flag, quad);
+    auto pre_sp_values = PreElementHandler::create(pre_space_);
+    pre_sp_values->reset(pre_flag, quad);
+    auto vel_sp_values = VelElementHandler::create(vel_space_);
+    vel_sp_values->reset(vel_flag, quad);
 
     auto vel_el = vel_space_->begin();
     auto pre_el = pre_space_->begin();
     auto end_el = vel_space_->end();
 
 
-    vel_sp_values.template init_cache<k>(vel_el);
-    pre_sp_values.template init_cache<k>(pre_el);
+    vel_sp_values->template init_cache<k>(vel_el);
+    pre_sp_values->template init_cache<k>(pre_el);
 
     const int n_qp = quad.get_num_points();
 
@@ -89,24 +89,24 @@ void StokesProblem<dim>::assemble_Bt()
         DenseMatrix loc_mat(vel_n_basis, pre_n_basis);
         loc_mat = 0.0;
 
-        vel_sp_values.template fill_cache<k>(vel_el, 0);
-        pre_sp_values.template fill_cache<k>(pre_el, 0);
+        vel_sp_values->template fill_cache<k>(vel_el, 0);
+        pre_sp_values->template fill_cache<k>(pre_el, 0);
 
         auto q      = pre_el->template get_values<0,k>(0);
-//        auto div_v  = vel_el->get_basis_divergences();
-//        auto w_meas = vel_el->get_w_measures();
-//
-//        for (int i=0; i<vel_n_basis; ++i)
-//        {
-//            auto div_i = div_v.get_function_view(i);
-//            for (int j=0; j<pre_n_basis; ++j)
-//            {
-//                auto q_j = q.get_function_view(j);
-//                for (int qp=0; qp<n_qp; ++qp)
-//                    loc_mat(i,j) -=  scalar_product(div_i[qp], q_j[qp])
-//                                     * w_meas[qp];
-//            }
-//        }
+        auto div_v  = vel_el->get_basis_divergences();
+        auto w_meas = vel_el->get_w_measures();
+
+        for (int i=0; i<vel_n_basis; ++i)
+        {
+            auto div_i = div_v.get_function_view(i);
+            for (int j=0; j<pre_n_basis; ++j)
+            {
+                auto q_j = q.get_function_view(j);
+                for (int qp=0; qp<n_qp; ++qp)
+                    loc_mat(i,j) -= scalar_product(div_i[qp], q_j[qp])
+                                     * w_meas[qp];
+            } // end loop j
+        } // end loop i
         vector<Index> vel_loc_dofs = vel_el->get_local_to_global();
         vector<Index> pre_loc_dofs = pre_el->get_local_to_global();
         Bt_->add_block(vel_loc_dofs, pre_loc_dofs, loc_mat);
@@ -137,8 +137,8 @@ StokesProblem(const int deg, const int n_knots)
 {
     const int reg = 0;
 
-    typename PreSpace::Multiplicity pre_mult;
-    typename VelSpace::Multiplicity vel_mult;
+    typename PreSpace::RefSpace::Multiplicity pre_mult;
+    typename VelSpace::RefSpace::Multiplicity vel_mult;
 
     vector<Index> mult_p(n_knots-2, deg - reg);
     vector<Index> mult_v(n_knots-2, deg + 1 -reg);
@@ -182,7 +182,7 @@ StokesProblem(const int deg, const int n_knots)
 
 
 #if defined(USE_TRILINOS)
-    const auto la_pack = LAPack::trilinos;
+    const auto la_pack = LAPack::trilinos_tpetra;
 #elif defined(USE_PETSC)
     const auto la_pack = LAPack::petsc;
 #endif

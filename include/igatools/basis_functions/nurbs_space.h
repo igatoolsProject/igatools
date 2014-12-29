@@ -145,6 +145,7 @@ public:
     using ComponentContainer = typename SpSpace::template ComponentContainer<T>;
 
     using DegreeTable = typename SpSpace::DegreeTable;
+    using Multiplicity = typename SpSpace::Multiplicity;
     using MultiplicityTable = typename SpSpace::MultiplicityTable;
 
 

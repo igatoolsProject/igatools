@@ -149,6 +149,7 @@ public:
     using InteriorReg = typename SpaceData::InteriorReg;
 
     using DegreeTable = typename SpaceData::DegreeTable;
+    using Multiplicity = typename SpaceData::Multiplicity;
     using MultiplicityTable = typename SpaceData::MultiplicityTable;
     using KnotsTable = typename SpaceData::KnotsTable;
     using SpaceDimensionTable = typename SpaceData::SpaceDimensionTable;
@@ -201,7 +202,7 @@ public:
     create(const DegreeTable &deg,
            std::shared_ptr<GridType> knots,
            std::shared_ptr<const MultiplicityTable> interior_mult,
-           const EndBehaviourTable &ends);
+           const EndBehaviourTable &ends = EndBehaviourTable(filled_array<EndBehaviour,dim_>(EndBehaviour::interpolatory)));
     ///@}
 
     /**
