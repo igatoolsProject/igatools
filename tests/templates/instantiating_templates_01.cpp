@@ -39,6 +39,7 @@ public:
     using typename Base::Gradient;
     using typename Base::Hessian;
 
+    using Base::Base;
 
     void evaluate(const ValueVector<Point> &points,
                   ValueVector<Value> &values) const
@@ -58,6 +59,6 @@ public:
 
 int main()
 {
-    MyFun<2,3> f;
+    MyFun<2,3> f(CartesianGrid<2>::create(2));
     return 0;
 }
