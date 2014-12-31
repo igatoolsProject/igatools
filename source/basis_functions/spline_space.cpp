@@ -66,13 +66,12 @@ init()
 {
 #ifndef NDEBUG
     auto const knots_size = this->get_grid()->get_num_knots_dim();
-    for (int iComp = 0; iComp < n_components; ++iComp)
-    {
-        for (int j = 0; j < dim; ++j)
+    for (auto comp : components)
+    	for (auto j : dims)
         {
-            const auto deg = deg_[iComp][j];
+            const auto deg = deg_[comp][j];
             const auto order = deg + 1;
-            const auto &mult = (*interior_mult_)[iComp].get_data_direction(j);
+            const auto &mult = (*interior_mult_)[comp].get_data_direction(j);
             Assert(mult.size() == knots_size[j]-2,
                    ExcMessage("Interior multiplicity size does not match the grid"));
             if (!mult.empty())
@@ -82,7 +81,6 @@ init()
                        ExcMessage("multiplicity values not between 0 and p+1"));
             }
         }
-    }
 #endif
 
     // Determine the dimensionality of the spline space
@@ -99,6 +97,18 @@ init()
             n_basis[iComp][dir] = size;
         }
     space_dim_ = n_basis;
+
+#ifndef NDEBUG
+    for(auto comp : components)
+    	for (auto dir : dims)
+    		if (periodic_[comp][dir])
+    		{
+    			const auto deg = deg_[comp][dir];
+    			const auto order = deg + 1;
+    			Assert(n_basis[comp][dir]>order,
+    					ExcMessage("Not enough basis functions"));
+    		}
+#endif
 }
 
 
@@ -317,33 +327,6 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
 }
 
 
-#if 0
-template<int dim, int range, int rank>
-auto
-SplineSpace<dim, range, rank>::
-compute_knots_with_repetition(const BasisEndBehaviour &ends) const -> KnotsTable
-{
-    BoundaryKnotsTable bdry_knots_table(deg_.get_comp_map());
-    for (int iComp : bdry_knots_table.get_active_components_id())
-    {
-        for (int j = 0; j < dim; ++j)
-        {
-            if (ends[iComp][j] == BasisEndBehaviour::interpolatory)
-                bdry_knots_table[iComp][j] = interpolatory_end_knots(iComp,j);
-            else
-            {
-                if (ends[iComp][j] == BasisEndBehaviour::periodic)
-                {
-                    bdry_knots_table[iComp][j] = periodic_end_knots(iComp,j);
-                }
-            }
-
-        }
-    }
-    return compute_knots_with_repetition(bdry_knots_table);
-}
-#endif
-
 
 template<int dim, int range, int rank>
 template<int k>
@@ -507,4 +490,3 @@ print_info(LogStream &out) const
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/spline_space.inst>
-

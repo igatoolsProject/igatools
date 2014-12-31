@@ -37,7 +37,7 @@
 
 
 template <int dim>
-void plot_basis(const int deg)
+void plot_basis(const int n_knots, const int deg)
 {
     using Space  = BSplineSpace<dim>;
     using Coeffs = typename IgFunction<Space>::CoeffType;
@@ -45,15 +45,16 @@ void plot_basis(const int deg)
     TensorIndex<dim> deg1(deg);
     typename Space::DegreeTable degt(deg1);
 
-    const int n_knots = 6;//deg + 2;
     auto grid  = CartesianGrid<dim>::create(n_knots);
-    auto space = Space::create(deg, grid, InteriorReg::maximum, true, BasisEndBehaviour::periodic);
+    auto space = Space::create(deg, grid, InteriorReg::maximum, true,
+    		BasisEndBehaviour::periodic);
 
 
     const int n_basis = space->get_num_basis();
     out << "Num basis: " << n_basis << endl;
     space->print_info(out);
-#if 1
+
+#if 0
     Coeffs coeffs(n_basis);
 
     for (int basis_index = 0; basis_index < space->get_num_basis(); ++basis_index)
@@ -81,8 +82,10 @@ void plot_basis(const int deg)
 int main()
 {
     const int deg = 1;
-    //const int n_knots = 2;
-    plot_basis<1>(deg);
-
+	//const int deg = 2;
+    const int n_knots = 5 + deg;
+    plot_basis<1>(n_knots, deg);
+    plot_basis<2>(n_knots, deg);
+    plot_basis<3>(n_knots, deg);
     return 0;
 }

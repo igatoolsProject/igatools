@@ -64,13 +64,17 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
         auto &comp_table = index_table_[comp];
         comp_table.resize(size);
 
+        DynamicMultiArray<Index,dim> comp_table1(n_basis1[comp]);
+
         for (int i=0; i<n_basis.get_component_size(comp); ++i)
         {
             auto t_ind = comp_table.flat_to_tensor(i);
             for (int dir = 0 ; dir < dim ; ++dir)
-                t_ind[dir] = t_ind[dir] % n_basis1[comp][dir];
-            auto f_ind = comp_table.tensor_to_flat(t_ind);
+            	t_ind[dir] = t_ind[dir] % n_basis1[comp][dir];
+
+            auto f_ind = comp_table1.tensor_to_flat(t_ind);
             comp_table[i] = comp_offset + f_ind;
+
         }
         comp_offset += n_basis.get_component_size(comp);
     }
