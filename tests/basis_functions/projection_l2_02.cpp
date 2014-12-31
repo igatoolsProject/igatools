@@ -38,7 +38,7 @@
 #include <igatools/basis_functions/space_tools.h>
 
 #include <igatools/io/writer.h>
-#include <igatools/basis_functions/new_physical_space.h>
+#include <igatools/basis_functions/physical_space.h>
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/basis_functions/space_element_handler.h>
 
