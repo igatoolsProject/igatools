@@ -40,13 +40,11 @@ void test()
     const int r = 2;
 
     using Space = NURBSSpace< dim, range, rank >;
-    using DegreeTable = typename Space::DegreeTable;
     auto  knots = CartesianGrid<dim>::create();
 
     auto degree = TensorIndex<dim>(r);
-    DegreeTable deg(degree);
 
-    auto bsp_space = BSplineSpace<dim,range,rank>::create(deg, knots);
+    auto bsp_space = BSplineSpace<dim,range,rank>::create(degree, knots);
 
     using ScalarSpSpace = BSplineSpace<dim,1,1>;
     auto scalar_bsp_space = ScalarSpSpace::create(degree, knots);

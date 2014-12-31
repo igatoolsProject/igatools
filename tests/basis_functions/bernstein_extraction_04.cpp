@@ -41,9 +41,9 @@ test(const int deg = 1)
     CartesianProductArray<Real,dim> knots({{0,1,2,3,4}});
     auto grid = CartesianGrid<dim>::create(knots);
 
-    PeriodicTable per_t(filled_array<bool,dim>(true))
+    typename SplineSpace::PeriodicTable per_t(filled_array<bool,dim>(true));
     auto int_mult = SplineSpace::multiplicity_regularity(InteriorReg::maximum,
-                    deg, grid->get_num_intervals());
+                    degt, grid->get_num_intervals());
     SplineSpace sp_spec(degt, grid, int_mult, per_t);
     typename SplineSpace::EndBehaviour endb(filled_array<BasisEndBehaviour, dim>(BasisEndBehaviour::periodic));
     typename SplineSpace::EndBehaviourTable endb_t { {endb} };
