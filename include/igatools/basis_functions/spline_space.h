@@ -202,21 +202,6 @@ public:
                              PeriodicTable(filled_array<bool,dim>(false)));
 
 
-//    /**
-//     * Component uniform constructor, it assumes all component belong to
-//     * the same scalar space
-//     */
-//    explicit SplineSpace(const Degrees &deg,
-//          std::shared_ptr<GridType> knots,
-//          const InteriorReg &interior_reg,
-//          const Periodicity periodic = filled_array<bool,dim>(false))
-//    :SplineSpace(DegreeTable(deg), knots,
-//          multiplicity_regularity(interior_reg, DegreeTable(deg),
-//                  knots->get_num_intervals()),
-//                  PeriodicTable(periodic))
-//    {}
-
-
     const DegreeTable &get_degree() const
     {
         return deg_;

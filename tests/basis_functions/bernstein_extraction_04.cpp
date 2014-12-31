@@ -34,7 +34,6 @@ void
 test(const int deg = 1)
 {
     using SplineSpace = SplineSpace<dim>;
-    using MultiplicityTable = typename SplineSpace::MultiplicityTable;
 
     typename SplineSpace::DegreeTable degt {{deg}};
 
@@ -42,10 +41,14 @@ test(const int deg = 1)
     CartesianProductArray<Real,dim> knots({{0,1,2,3,4}});
     auto grid = CartesianGrid<dim>::create(knots);
 
-    SplineSpace sp_spec(degt, grid, InteriorReg::maximum, EndBehaviour::periodic);
+    PeriodicTable per_t(filled_array<bool,dim>(true))
+    auto int_mult = SplineSpace::multiplicity_regularity(InteriorReg::maximum,
+                    deg, grid->get_num_intervals());
+    SplineSpace sp_spec(degt, grid, int_mult, per_t);
+    typename SplineSpace::EndBehaviour endb(filled_array<BasisEndBehaviour, dim>(BasisEndBehaviour::periodic));
+    typename SplineSpace::EndBehaviourTable endb_t { {endb} };
 
-
-    auto rep_knots = sp_spec.compute_knots_with_repetition(sp_spec.get_end_behaviour());
+    auto rep_knots = sp_spec.compute_knots_with_repetition(endb_t);
     auto acum_mult = sp_spec.accumulated_interior_multiplicities();
 
     rep_knots.print_info(out);
@@ -61,30 +64,6 @@ int main()
 {
     out.depth_console(10);
     test<1>();
-
-
-//    {
-//        const int dim=1;
-//        using SplineSpace = SplineSpace<dim>;
-//        using MultiplicityTable = typename SplineSpace::MultiplicityTable;
-//
-//        typename SplineSpace::DegreeTable deg {{2}};
-//
-//        auto grid = CartesianGrid<dim>::create(4);
-//
-//        auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable({ {{1,3}} }));
-//        SplineSpace sp_spec(deg, grid, int_mult);
-//
-//        CartesianProductArray<Real,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
-//        typename SplineSpace::BoundaryKnotsTable bdry_knots { {bn_x} };
-//        auto rep_knots = sp_spec.compute_knots_with_repetition(bdry_knots);
-//        auto acum_mult = sp_spec.accumulated_interior_multiplicities();
-//
-//
-//        BernsteinExtraction<dim> operators(grid, rep_knots, acum_mult, deg);
-//        operators.print_info(out);
-//    }
-
 
     return 0;
 }
