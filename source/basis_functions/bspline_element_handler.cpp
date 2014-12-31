@@ -325,7 +325,7 @@ reset(const ValueFlags flag,
         for (int dir = 0 ; dir < dim ; ++dir)
         {
         	const int inter_begin = 1;
-        	const int inter_end = n_inter[dir];//-1;
+        	const int inter_end = n_inter[dir] - 1;
 
         	for (auto comp : bernstein_values.get_active_components_id())
             {
