@@ -37,41 +37,35 @@ sub_dim_members = \
 #'void elhandler::reset<k>(const ValueFlags flag, const Quadrature<k> &quad);']
 
 
-
-
-
 for x in inst.sub_ref_sp_dims:
-    space = 'BSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    f.write('template class SpaceElement<%s>; \n' %space)
-    elem = 'BSplineElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    f.write('template class %s; \n' %elem)
-#    acc = 'ReferenceElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
-#    for it in inst.iterators:
-#        iterator = it.replace('Accessor','%s' % (acc) )
+    space = 'ReferenceSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
+#    f.write('template class SpaceElement<%s>; \n' %space)
+    acc = 'ReferenceElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
+#    f.write('template class %s; \n' %acc)
+    for it in inst.iterators:
+        iterator = it.replace('Accessor','%s' % (acc) )
 #        f.write('template class %s; \n' %iterator)
-    elemhandler = 'BSplineElementHandler<%d, %d, %d>' %(x.dim, x.range, x.rank)
+    elemhandler = 'ReferenceElementHandler<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class %s; \n'  %elemhandler)
-    for fun in sub_dim_members:
-        k = x.dim
-        s = fun.replace('elhandler', elemhandler).replace('k', '%d' % (k));
-        f.write('template ' + s + '\n')
-
+#    for fun in sub_dim_members:
+#        k = x.dim
+#        s = fun.replace('elhandler', elemhandler).replace('k', '%d' % (k));
+#        f.write('template ' + s + '\n')
 
 
 for x in inst.ref_sp_dims:
-    space = 'BSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    f.write('template class SpaceElement<%s>;' %space)
-    elem = 'BSplineElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    f.write('template class %s; \n' %elem)
-#    acc = 'ReferenceElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
-#    for it in inst.iterators:
-#        iterator = it.replace('Accessor','%s' % (acc) )
+    space = 'ReferenceSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
+#    f.write('template class SpaceElement<%s>;' %space)
+    acc = 'ReferenceElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
+#    f.write('template class %s; \n' %acc)
+    for it in inst.iterators:
+        iterator = it.replace('Accessor','%s' % (acc) )
 #        f.write('template class %s; \n' %iterator)
-    elemhandler = 'BSplineElementHandler<%d, %d, %d>' %(x.dim, x.range, x.rank)
+    elemhandler = 'ReferenceElementHandler<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class %s; \n'  %elemhandler)
-    for fun in sub_dim_members:
-        for k in inst.sub_dims(x.dim):
-            s = fun.replace('elhandler', elemhandler).replace('k', '%d' % (k));
-            f.write('template ' + s + '\n')
-        
-   
+#    for fun in sub_dim_members:
+#        for k in inst.sub_dims(x.dim):
+#            s = fun.replace('elhandler', elemhandler).replace('k', '%d' % (k));
+#            f.write('template ' + s + '\n')
+
+
