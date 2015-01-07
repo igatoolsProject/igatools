@@ -5,13 +5,18 @@ IgFunction infos:
    Reference space info:
       Spline Space:
          Knots without repetition:
-            Number of active elements: 2
             Number of intervals per direction: [ 2 ]
             Knot coordinates:
                Size: [ 3 ]  Weights: [3]
                Direction: 0
                [ 0 0.500000 1.00000 ]
             
+            Active elements:
+               Num.: 2
+               Flat IDs: 0 1
+            Influence elements:
+               Num.: 2
+               Flat IDs: 0 1
          
          Degrees:
             Raw componets: 
@@ -116,7 +121,6 @@ IgFunction infos:
       Reference space info:
          Spline Space:
             Knots without repetition:
-               Number of active elements: 2
                Number of intervals per direction: [ 2 1 ]
                Knot coordinates:
                   Size: [ 3 2 ]  Weights: [3,6]
@@ -125,6 +129,12 @@ IgFunction infos:
                   Direction: 1
                   [ 0 1.00000 ]
                
+               Active elements:
+                  Num.: 2
+                  Flat IDs: 0 1
+               Influence elements:
+                  Num.: 2
+                  Flat IDs: 0 1
             
             Degrees:
                Raw componets: 
@@ -288,7 +298,6 @@ IgFunction infos:
          Reference space info:
             Spline Space:
                Knots without repetition:
-                  Number of active elements: 2
                   Number of intervals per direction: [ 2 1 1 ]
                   Knot coordinates:
                      Size: [ 3 2 2 ]  Weights: [3,6,12]
@@ -299,6 +308,12 @@ IgFunction infos:
                      Direction: 2
                      [ 0 1.00000 ]
                   
+                  Active elements:
+                     Num.: 2
+                     Flat IDs: 0 1
+                  Influence elements:
+                     Num.: 2
+                     Flat IDs: 0 1
                
                Degrees:
                   Raw componets: 

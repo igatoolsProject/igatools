@@ -75,6 +75,14 @@ public:
 
     void fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) override;
 
+    virtual void print_info(LogStream &out) const override final
+    {
+        using std::to_string;
+        out.begin_item("IdentityFunction<" + to_string(dim) + "," + to_string(space_dim) +">");
+        parent_t::print_info(out);
+        out.end_item();
+    }
+
 
 private:
 

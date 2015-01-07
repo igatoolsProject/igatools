@@ -163,14 +163,14 @@ public:
     template <int k>
     void init_cache(ElementAccessor &elem)
     {
-    	const auto topology = Int<k>();
-    	this->init_cache(elem, topology);
+        const auto topology = Int<k>();
+        this->init_cache(elem, topology);
     }
 
     template <int k>
     void init_cache(ElementIterator &elem)
     {
-    	this->template init_cache<k>(*elem);
+        this->template init_cache<k>(*elem);
     }
 
     virtual void fill_cache(ElementAccessor &elem, const topology_variant &k,const int j)
@@ -189,14 +189,14 @@ public:
     template <int k>
     void fill_cache(ElementAccessor &elem, const int j)
     {
-    	const auto topology = Int<k>();
-    	this->fill_cache(elem, topology,j);
+        const auto topology = Int<k>();
+        this->fill_cache(elem, topology,j);
     }
 
     template <int k>
     void fill_cache(ElementIterator &elem, const int j)
     {
-    	this->template fill_cache<k>(*elem,j);
+        this->template fill_cache<k>(*elem,j);
     }
 
     std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const
@@ -216,6 +216,19 @@ public:
     auto end() const -> ElementIterator
     {
         return ElementIterator(this->create_element(IteratorState::pass_the_end));
+    }
+
+
+
+    virtual void print_info(LogStream &out) const
+    {
+        using std::to_string;
+        out.begin_item("Function<" + to_string(dim) + "," +
+                       to_string(codim) + "," +
+                       to_string(range) + "," +
+                       to_string(rank) + ">");
+        parent_t::print_info(out);
+        out.end_item();
     }
 
 private:
