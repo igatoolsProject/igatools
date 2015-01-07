@@ -18,25 +18,34 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+#include <igatools/basis_functions/reference_element_handler.h>
+
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
-#include <igatools/basis_functions/bernstein_basis.h>
-#include <igatools/utils/multi_array_utils.h>
 
 #include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/nurbs_element_handler.h>
 
-#include <algorithm>
 using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
 
+template<int dim_, int range_ , int rank_>
+ReferenceElementHandler<dim_, range_, rank_>::
+ReferenceElementHandler(shared_ptr<const Space> space)
+    :
+    grid_handler_(space->get_grid()),
+    space_(space)
+{
+    Assert(space != nullptr, ExcNullPtr());
+};
+
 
 template<int dim_, int range_ , int rank_>
-std::shared_ptr<ReferenceElementHandler<dim_,range_,rank_> >
+shared_ptr<ReferenceElementHandler<dim_,range_,rank_> >
 ReferenceElementHandler<dim_, range_, rank_>::
-create(std::shared_ptr<const Space> space)
+create(shared_ptr<const Space> space)
 {
     using BSplineSp = const BSplineSpace<dim_,range_,rank_>;
     auto bsp_space = std::dynamic_pointer_cast< BSplineSp >(space);
@@ -59,6 +68,24 @@ create(std::shared_ptr<const Space> space)
         AssertThrow(false,ExcInvalidState());
     }
     return elem_handler;
+}
+
+
+template<int dim_, int range_ , int rank_>
+auto
+ReferenceElementHandler<dim_, range_, rank_>::
+get_space() const -> shared_ptr<const Space>
+{
+    Assert(space_ != nullptr,ExcNullPtr());
+    return space_;
+}
+
+template<int dim_, int range_ , int rank_>
+const GridElementHandler<dim_> &
+ReferenceElementHandler<dim_, range_, rank_>::
+get_grid_handler() const
+{
+    return this->grid_handler_;
 }
 
 

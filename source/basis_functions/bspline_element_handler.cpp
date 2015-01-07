@@ -21,10 +21,7 @@
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
 #include <igatools/basis_functions/bernstein_basis.h>
-#include <igatools/utils/multi_array_utils.h>
 
-#include <igatools/basis_functions/nurbs_space.h>
-#include <igatools/basis_functions/nurbs_element_handler.h>
 
 #include <algorithm>
 using std::shared_ptr;
