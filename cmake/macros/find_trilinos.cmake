@@ -30,10 +30,10 @@ macro(find_trilinos)
   endif()
 
   # add the location of Trilinos headers to the include directories
-  include_directories( ${Trilinos_INCLUDE_DIRS} )
+  include_directories( ${Trilinos_INCLUDE_DIRS} ${Trilinos_TPL_INCLUDE_DIRS})
 
   # Check that individual required Trilinos packages are available
-  set(tri_required_packages Tpetra Belos)
+  set(tri_required_packages Tpetra Epetra Belos Amesos Amesos2)
   foreach(package ${tri_required_packages})
     list(FIND Trilinos_PACKAGE_LIST  ${package} package_index)
     if (package_index EQUAL -1)

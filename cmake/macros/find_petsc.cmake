@@ -33,5 +33,4 @@ macro(find_petsc)
   set(Petsc_LIBRARIES libpetsc.so)
     
   message("-- Found PETSc library in ${Petsc_LIBRARY_DIRS}")
-    
 endmacro(find_petsc)
