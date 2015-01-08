@@ -48,7 +48,7 @@ void elem_derivatives(const int n_knots,
     typename Space::PeriodicTable periodic(typename Space::Periodicity(filled_array<bool, dim>(false)));
     typename Space::EndBehaviourTable ebt(typename Space::EndBehaviour(filled_array<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory)));
     auto int_mult = SplineSpace<dim,range,rank>::multiplicity_regularity(InteriorReg::maximum,
-                                                   deg, grid->get_num_intervals());
+                    deg, grid->get_num_intervals());
     auto space = Space::create(deg, grid, int_mult, periodic, ebt);
 
     auto flag = der_flag[der];

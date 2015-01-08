@@ -267,7 +267,7 @@ get_as_vector() const
     for (Index i = 0 ; i < n_entries ; ++i)
     {
         const auto global_id = map->getGlobalElement(i) ;
-    	coefs[i] = (*this)(global_id);
+        coefs[i] = (*this)(global_id);
     }
     return coefs;
 }
@@ -448,7 +448,7 @@ get_as_vector() const
     const auto &map = vector_->Map();
     const auto &data = (*vector_)[0];
     for (Index i = 0 ; i < n_entries ; ++i)
-    	coefs[i] = data[i];
+        coefs[i] = data[i];
 
     return coefs;
 }

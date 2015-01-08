@@ -118,13 +118,13 @@ BSplineSpace(const DegreeTable &deg,
         this->space_data_->accumulated_interior_multiplicities(),
         this->space_data_->get_num_basis_table(),
         this->space_data_->get_degree(),
-		this->space_data_->get_periodic_table()),
+        this->space_data_->get_periodic_table()),
     dof_distribution_patch_(
         this->space_data_->get_grid(),
         this->space_data_->accumulated_interior_multiplicities(),
         this->space_data_->get_num_basis_table(),
         this->space_data_->get_degree(),
-		this->space_data_->get_periodic_table()),
+        this->space_data_->get_periodic_table()),
     operators_(
         this->space_data_->get_grid(),
         this->space_data_->compute_knots_with_repetition(end_b),
@@ -134,7 +134,7 @@ BSplineSpace(const DegreeTable &deg,
 {
 // TODO (pauletti, Dec 24, 2014): after it work it should be recoded properly
     const auto rep_knots =
-    		this->space_data_->compute_knots_with_repetition(end_b_);
+        this->space_data_->compute_knots_with_repetition(end_b_);
     const auto &degt = this->get_degree();
     for (auto i : end_interval_.get_active_components_id())
         for (int dir=0; dir<dim; ++dir)
@@ -269,7 +269,7 @@ get_ref_sub_space(const int s_id,
         for (int j=0; j<k; ++j)
             sub_end_b[comp][j] = end_b_[comp][active_dirs[j]];
     auto sub_space =
-    		SubRefSp::create(sub_degree, sub_grid, sub_mult, sub_periodic, sub_end_b);
+    SubRefSp::create(sub_degree, sub_grid, sub_mult, sub_periodic, sub_end_b);
 
     // Creating the mapping between the space degrees of freedom
     const int n_dir = k_elem.constant_directions.size();
@@ -341,14 +341,14 @@ refine_h_after_grid_refinement(
                                    this->space_data_->accumulated_interior_multiplicities(),
                                    this->space_data_->get_num_basis_table(),
                                    this->space_data_->get_degree(),
-								   this->space_data_->get_periodic_table());
+                                   this->space_data_->get_periodic_table());
 
     dof_distribution_patch_ = DofDistribution<dim, range, rank>(
                                   this->get_grid(),
                                   this->space_data_->accumulated_interior_multiplicities(),
                                   this->space_data_->get_num_basis_table(),
                                   this->space_data_->get_degree(),
-								  this->space_data_->get_periodic_table());
+                                  this->space_data_->get_periodic_table());
 
     operators_ = BernsteinExtraction<dim, range, rank>(
                      this->get_grid(),

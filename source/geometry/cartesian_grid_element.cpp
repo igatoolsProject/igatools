@@ -263,8 +263,8 @@ bool
 CartesianGridElement<dim_>::
 operator <(const CartesianGridElement<dim_> &elem) const
 {
-	auto this_grid = this->get_grid().get();
-	auto elem_grid = elem.get_grid().get();
+    auto this_grid = this->get_grid().get();
+    auto elem_grid = elem.get_grid().get();
     Assert(this->get_grid() == elem.get_grid(), ExcMessage("Cannot compare elements on different grid."));
     return (this->get_flat_index() < elem.get_flat_index());
 }

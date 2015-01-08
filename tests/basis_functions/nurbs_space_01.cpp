@@ -65,9 +65,9 @@ void do_test()
 
 
     using Space = NURBSSpace< dim, range, rank >;
-  //  using DegreeTable = typename Space::DegreeTable;
+    //  using DegreeTable = typename Space::DegreeTable;
     auto  knots = CartesianGrid<dim>::create(coord);
-  //  DegreeTable deg(degree);
+    //  DegreeTable deg(degree);
 
     auto  bsp = BSplineSpace<dim, range, rank >::create(degree, knots);
     const auto n_basis = bsp->get_num_basis_table();

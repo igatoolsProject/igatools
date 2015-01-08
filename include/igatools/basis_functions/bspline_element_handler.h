@@ -129,17 +129,17 @@ public:
 private:
 
     static void
-	fill_interval_values(const Real one_len,
-		const BernsteinOperator &oper,
-		const BasisValues1d &bernstein_vals,
-		BasisValues1d &spline_vals)
+    fill_interval_values(const Real one_len,
+                         const BernsteinOperator &oper,
+                         const BasisValues1d &bernstein_vals,
+                         BasisValues1d &spline_vals)
     {
-    	for (int order = 0; order < max_der; ++order)
-    	{
-    		auto &spline = spline_vals.get_derivative(order);
-    		const auto &berns = bernstein_vals.get_derivative(order);
-    		spline = oper.scale_action(std::pow(one_len, order), berns);
-    	}
+        for (int order = 0; order < max_der; ++order)
+        {
+            auto &spline = spline_vals.get_derivative(order);
+            const auto &berns = bernstein_vals.get_derivative(order);
+            spline = oper.scale_action(std::pow(one_len, order), berns);
+        }
     }
 
     std::array<FunctionFlags, dim + 1> flags_;

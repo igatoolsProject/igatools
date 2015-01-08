@@ -29,7 +29,7 @@ GridWrapper(std::shared_ptr<GridType> grid)
     :
     grid_ {grid}
 {
-	Assert(grid_ != nullptr,ExcNullPtr());
+    Assert(grid_ != nullptr,ExcNullPtr());
 }
 
 

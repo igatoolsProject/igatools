@@ -123,8 +123,8 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
     const int max_iter = 1000;
     using LinSolver = LinearSolverIterative<la_pack>;
     LinSolver solver(LinSolver::SolverType::CG,
-        		LinSolver::PreconditionerType::ILU0,
-                tol,max_iter);
+                     LinSolver::PreconditionerType::ILU0,
+                     tol,max_iter);
     solver.solve(matrix, rhs, sol);
 
     return std::make_shared<IgFunction<Space>>(IgFunction<Space>(space, sol.get_as_vector()));

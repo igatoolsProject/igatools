@@ -31,13 +31,13 @@ IGA_NAMESPACE_OPEN
 class BernsteinOperator : public DenseMatrix
 {
 public:
-	using Values = DenseMatrix;
-	using DenseMatrix::DenseMatrix;
+    using Values = DenseMatrix;
+    using DenseMatrix::DenseMatrix;
 
-	Values scale_action(const Real scale, const Values &b_values) const
-	{
-		return scale * prec_prod(*this, b_values);
-	}
+    Values scale_action(const Real scale, const Values &b_values) const
+    {
+        return scale * prec_prod(*this, b_values);
+    }
 };
 
 /**
@@ -86,9 +86,9 @@ public:
 
 
     const Operator
-	&get_operator(const int dir, const int inter, const int comp) const
+    &get_operator(const int dir, const int inter, const int comp) const
     {
-    	return ext_operators_[comp].get_data_direction(dir)[inter];
+        return ext_operators_[comp].get_data_direction(dir)[inter];
     }
 
 
@@ -110,9 +110,9 @@ private:
 
     /** Given the M_{j-1} computes and returns de M_{j} */
     Operator compute(const Operator &M_j_1,
-                   typename vector<Real>::const_iterator  y,
-                   const Real a,
-                   const Real b);
+                     typename vector<Real>::const_iterator  y,
+                     const Real a,
+                     const Real b);
 
 private:
     OperatorsTable ext_operators_;

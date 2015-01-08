@@ -70,7 +70,7 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
         {
             auto t_ind = comp_table.flat_to_tensor(i);
             for (int dir = 0 ; dir < dim ; ++dir)
-            	t_ind[dir] = t_ind[dir] % n_basis1[comp][dir];
+                t_ind[dir] = t_ind[dir] % n_basis1[comp][dir];
 
             auto f_ind = comp_table1.tensor_to_flat(t_ind);
             comp_table[i] = comp_offset + f_ind;

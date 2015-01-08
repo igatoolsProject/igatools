@@ -104,7 +104,7 @@ void StokesProblem<dim>::assemble_Bt()
                 auto q_j = q.get_function_view(j);
                 for (int qp=0; qp<n_qp; ++qp)
                     loc_mat(i,j) -= scalar_product(div_i[qp], q_j[qp])
-                                     * w_meas[qp];
+                                    * w_meas[qp];
             } // end loop j
         } // end loop i
         vector<Index> vel_loc_dofs = vel_el->get_local_to_global();
