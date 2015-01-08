@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -250,8 +250,8 @@ Real integrate_difference(Function<dim, codim, range, rank> &f,
     typename Func::Value err;
     for (; elem_f != end; ++elem_f, ++elem_g)
     {
-        f.fill_cache(elem_f, 0, Int<dim>());
-        g.fill_cache(elem_g, 0, Int<dim>());
+        f.fill_cache(elem_f, Int<dim>(), 0);
+        g.fill_cache(elem_g, Int<dim>(), 0);
 
         const int elem_id = elem_f->get_flat_index();
         element_error[ elem_id ] = 0.0;

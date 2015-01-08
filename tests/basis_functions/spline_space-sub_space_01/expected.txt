@@ -24,6 +24,8 @@ Sub element id: 0
       Inactive componets ids: 
       [ ]
    
+   Periodicity
+   
 
 Sub element id: 1
    Multiplicity
@@ -47,6 +49,8 @@ Sub element id: 1
       [ 0 ]
       Inactive componets ids: 
       [ ]
+   
+   Periodicity
    
 
 Sub element id: 2
@@ -72,6 +76,8 @@ Sub element id: 2
       Inactive componets ids: 
       [ ]
    
+   Periodicity
+   
 
 Sub element id: 3
    Multiplicity
@@ -95,6 +101,8 @@ Sub element id: 3
       [ 0 ]
       Inactive componets ids: 
       [ ]
+   
+   Periodicity
    
 
 ========================================================================

@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -127,6 +127,21 @@ public:
 
 
 private:
+
+    static void
+	fill_interval_values(const Real one_len,
+		const BernsteinOperator &oper,
+		const BasisValues1d &bernstein_vals,
+		BasisValues1d &spline_vals)
+    {
+    	for (int order = 0; order < max_der; ++order)
+    	{
+    		auto &spline = spline_vals.get_derivative(order);
+    		const auto &berns = bernstein_vals.get_derivative(order);
+    		spline = oper.scale_action(std::pow(one_len, order), berns);
+    	}
+    }
+
     std::array<FunctionFlags, dim + 1> flags_;
 
     template <class T>

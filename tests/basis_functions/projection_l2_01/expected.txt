@@ -29,24 +29,17 @@ Reference space info:
          [ 1 1 1 1 1 1 1 1 ]
       
       Dimensionality Table:
-         Raw componets: 
-            Size: [ 1 ]  Weights: [1]
-         [ [ 12 ] ]
-         Active componets ids: 
-         [ 0 ]
-         Inactive componets ids: 
-         [ ]
+         Component Dimension:
+            Raw componets: 
+               Size: [ 1 ]  Weights: [1]
+            [ 12 ]
+            Active componets ids: 
+            [ 0 ]
+            Inactive componets ids: 
+            [ ]
+         
+         Total Dimension: 12
       
-      Component Dimension:
-         Raw componets: 
-            Size: [ 1 ]  Weights: [1]
-         [ 12 ]
-         Active componets ids: 
-         [ 0 ]
-         Inactive componets ids: 
-         [ ]
-      
-      Total Dimension: 12
    
    Patch Basis Indices:
       Size: [ 12 ]  Weights: [12]
@@ -130,24 +123,17 @@ Reference space info:
          [ 1 1 1 1 1 1 1 1 ]
       
       Dimensionality Table:
-         Raw componets: 
-            Size: [ 1 ]  Weights: [1]
-         [ [ 12 12 ] ]
-         Active componets ids: 
-         [ 0 ]
-         Inactive componets ids: 
-         [ ]
+         Component Dimension:
+            Raw componets: 
+               Size: [ 1 ]  Weights: [1]
+            [ 144 ]
+            Active componets ids: 
+            [ 0 ]
+            Inactive componets ids: 
+            [ ]
+         
+         Total Dimension: 144
       
-      Component Dimension:
-         Raw componets: 
-            Size: [ 1 ]  Weights: [1]
-         [ 144 ]
-         Active componets ids: 
-         [ 0 ]
-         Inactive componets ids: 
-         [ ]
-      
-      Total Dimension: 144
    
    Patch Basis Indices:
       Size: [ 12 12 ]  Weights: [12,144]
@@ -389,24 +375,17 @@ Reference space info:
          [ 1 1 1 1 1 1 1 1 ]
       
       Dimensionality Table:
-         Raw componets: 
-            Size: [ 1 ]  Weights: [1]
-         [ [ 10 10 10 ] ]
-         Active componets ids: 
-         [ 0 ]
-         Inactive componets ids: 
-         [ ]
+         Component Dimension:
+            Raw componets: 
+               Size: [ 1 ]  Weights: [1]
+            [ 1000 ]
+            Active componets ids: 
+            [ 0 ]
+            Inactive componets ids: 
+            [ ]
+         
+         Total Dimension: 1000
       
-      Component Dimension:
-         Raw componets: 
-            Size: [ 1 ]  Weights: [1]
-         [ 1000 ]
-         Active componets ids: 
-         [ 0 ]
-         Inactive componets ids: 
-         [ ]
-      
-      Total Dimension: 1000
    
    Patch Basis Indices:
       Size: [ 10 10 10 ]  Weights: [10,100,1000]

@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -25,7 +25,6 @@
 
 using std::endl;
 using std::array;
-
 using std::shared_ptr;
 using std::make_shared;
 using std::const_pointer_cast;
@@ -38,7 +37,7 @@ BSplineSpace(const int degree,
              std::shared_ptr<GridType> knots,
              const InteriorReg interior_reg,
              const bool periodic,
-             const BasisEndBehaviour &end_b)
+             const BasisEndBehaviour end_b)
     :
     BSplineSpace(Degrees(degree), knots, interior_reg,
                  Periodicity(filled_array<bool,dim>(periodic)),
@@ -54,7 +53,7 @@ create(const int degree,
        std::shared_ptr<GridType> knots,
        const InteriorReg interior_reg,
        const bool periodic,
-       const BasisEndBehaviour &end_b) -> shared_ptr<self_t>
+       const BasisEndBehaviour end_b) -> shared_ptr<self_t>
 {
     auto sp = shared_ptr<self_t>(new self_t(degree,knots,interior_reg,periodic,end_b));
     Assert(sp != nullptr, ExcNullPtr());
@@ -104,8 +103,6 @@ create(const Degrees &deg,
 
 
 
-
-
 template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(const DegreeTable &deg,
@@ -114,35 +111,48 @@ BSplineSpace(const DegreeTable &deg,
              const PeriodicTable &periodic,
              const EndBehaviourTable &end_b)
     :
-    BSplineSpace(SpaceData::create(deg, knots, interior_mult, periodic))
-{
-    Assert(false,ExcMessage("Add the modification made by Seba!"));
-}
-
-template<int dim_, int range_, int rank_>
-BSplineSpace<dim_, range_, rank_>::
-BSplineSpace(std::shared_ptr<SpaceData> space_data)
-    :
-    BaseSpace(space_data),
+    BaseSpace(SpaceData::create(deg, knots, interior_mult, periodic)),
+    end_b_(end_b),
     dof_distribution_global_(
         this->space_data_->get_grid(),
         this->space_data_->accumulated_interior_multiplicities(),
         this->space_data_->get_num_basis_table(),
         this->space_data_->get_degree(),
-        periodic),
+		this->space_data_->get_periodic_table()),
     dof_distribution_patch_(
         this->space_data_->get_grid(),
         this->space_data_->accumulated_interior_multiplicities(),
         this->space_data_->get_num_basis_table(),
         this->space_data_->get_degree(),
-        periodic),
+		this->space_data_->get_periodic_table()),
     operators_(
         this->space_data_->get_grid(),
-        this->space_data_->compute_knots_with_repetition(
-            this->space_data_->get_end_behaviour()),
+        this->space_data_->compute_knots_with_repetition(end_b),
         this->space_data_->accumulated_interior_multiplicities(),
-        this->space_data_->get_degree())
-{}
+        this->space_data_->get_degree()),
+    end_interval_(end_b.get_comp_map())
+{
+// TODO (pauletti, Dec 24, 2014): after it work it should be recoded properly
+    const auto rep_knots =
+    		this->space_data_->compute_knots_with_repetition(end_b_);
+    const auto &degt = this->get_degree();
+    for (auto i : end_interval_.get_active_components_id())
+        for (int dir=0; dir<dim; ++dir)
+        {
+            const auto p = deg[i][dir];
+
+            const auto x1 = knots->get_knot_coordinates().get_data_direction(dir)[1];
+            const auto a = knots->get_knot_coordinates().get_data_direction(dir)[0];
+            const auto x0 = rep_knots[i].get_data_direction(dir)[p];
+            end_interval_[i][dir].first = (x1-a) / (x1-x0);
+
+            const auto xk= *(knots->get_knot_coordinates().get_data_direction(dir).end()-2);
+            const auto b = *(knots->get_knot_coordinates().get_data_direction(dir).end()-1);
+            const auto xk1 = *(rep_knots[i].get_data_direction(dir).end() - (p+1));
+            end_interval_[i][dir].second = (b-xk) / (xk1-xk);
+        }
+}
+
 
 
 
@@ -185,7 +195,6 @@ create_element(const Index flat_index) const -> std::shared_ptr<ReferenceElement
 
     return elem;
 }
-
 
 
 template<int dim_, int range_, int rank_>
@@ -247,14 +256,22 @@ get_ref_sub_space(const int s_id,
     }
     auto sub_mult   = this->space_data_->template get_sub_space_mult<k>(s_id);
     auto sub_degree = this->space_data_->template get_sub_space_degree<k>(s_id);
-    auto end_b      = this->space_data_->template get_sub_space_end_b<k>(s_id);
+    auto sub_periodic = this->space_data_->template get_sub_space_periodicity<k>(s_id);
 
-    auto sub_space = BSplineSpace<k,range,rank>::create(sub_degree, sub_grid, sub_mult,end_b);
+    using SubRefSp = BSplineSpace<k,range,rank>;
 
+    using SubEndBT = typename SubRefSp::EndBehaviourTable;
     auto &k_elem = UnitElement<dim>::template get_elem<k>(s_id);
-
-    // Crating the mapping between the space degrees of freedom
     const auto &active_dirs = k_elem.active_directions;
+
+    SubEndBT sub_end_b(end_b_.get_comp_map());
+    for (int comp : end_b_.get_active_components_id())
+        for (int j=0; j<k; ++j)
+            sub_end_b[comp][j] = end_b_[comp][active_dirs[j]];
+    auto sub_space =
+    		SubRefSp::create(sub_degree, sub_grid, sub_mult, sub_periodic, sub_end_b);
+
+    // Creating the mapping between the space degrees of freedom
     const int n_dir = k_elem.constant_directions.size();
 
     TensorIndex<dim> tensor_index;
@@ -282,7 +299,6 @@ get_ref_sub_space(const int s_id,
             }
             dof_map[comp_i] = elem_global_indices(tensor_index);
         }
-
     }
 
     return sub_space;
@@ -301,8 +317,6 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
 {
     using SubMap = SubMapFunction<k, dim, space_dim>;
     auto grid =  this->get_grid();
-//    typename GridType::template InterGridMap<k> elem_map;
-//    auto sub_grid = this->get_grid()->template get_sub_grid<k>(s_id, elem_map);
 
     auto sub_ref_space = get_ref_sub_space(s_id, dof_map, sub_grid);
     auto F = IdentityFunction<dim>::create(grid);
@@ -326,23 +340,22 @@ refine_h_after_grid_refinement(
                                    this->get_grid(),
                                    this->space_data_->accumulated_interior_multiplicities(),
                                    this->space_data_->get_num_basis_table(),
-                                   this->space_data_->get_degree());
+                                   this->space_data_->get_degree(),
+								   this->space_data_->get_periodic_table());
 
     dof_distribution_patch_ = DofDistribution<dim, range, rank>(
                                   this->get_grid(),
                                   this->space_data_->accumulated_interior_multiplicities(),
                                   this->space_data_->get_num_basis_table(),
-                                  this->space_data_->get_degree());
+                                  this->space_data_->get_degree(),
+								  this->space_data_->get_periodic_table());
 
     operators_ = BernsteinExtraction<dim, range, rank>(
                      this->get_grid(),
-                     this->space_data_->compute_knots_with_repetition(
-                         this->space_data_->get_end_behaviour()),
+                     this->space_data_->compute_knots_with_repetition(end_b_),
                      this->space_data_->accumulated_interior_multiplicities(),
                      this->get_degree());
 }
-
-
 
 
 
@@ -395,6 +408,7 @@ get_dof_distribution_patch() -> DofDistribution<dim, range, rank> &
 }
 
 
+
 template<int dim_, int range_, int rank_>
 Index
 BSplineSpace<dim_, range_, rank_>::
@@ -403,6 +417,7 @@ get_global_dof_id(const TensorIndex<dim> &tensor_index,
 {
     return dof_distribution_global_.get_index_table()[comp](tensor_index);
 }
+
 
 
 template<int dim_, int range_, int rank_>
@@ -422,6 +437,7 @@ get_loc_to_patch(const CartesianGridElement<dim> &element) const
 {
     return dof_distribution_patch_.get_loc_to_global_indices(element);
 }
+
 
 
 template<int dim_, int range_, int rank_>
@@ -445,6 +461,8 @@ get_space_manager() -> shared_ptr<SpaceManager>
     return space_manager;
 }
 
+
+
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
@@ -452,7 +470,6 @@ get_space_manager() const -> std::shared_ptr<const SpaceManager>
 {
     return const_cast<self_t &>(*this).get_space_manager();
 }
-
 
 template<int dim_, int range_, int rank_>
 void

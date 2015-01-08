@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -56,6 +56,7 @@ public:
     using Space = SplineSpace<dim, range, rank>;
     using MultiplicityTable = typename Space::MultiplicityTable;
     using DegreeTable = typename Space::DegreeTable;
+    using PeriodicTable = typename Space::PeriodicTable;
     using SpaceDimensionTable = typename Space::SpaceDimensionTable;
     using DofsPerElementTable = typename Space::template ComponentContainer<Index>;
     using IndexDistributionTable =
@@ -83,9 +84,6 @@ public:
     /** Type alias for the ConstView on the dofs held by the single-patch space. */
     using DofsConstView = ConstView<DofsIterator,DofsConstIterator>;
 
-
-
-
     enum class DistributionPolicy
     {
         standard, component, other
@@ -102,6 +100,7 @@ public:
                     const MultiplicityTable &accum_mult,
                     const SpaceDimensionTable &n_basis,
                     const DegreeTable &degree_table,
+                    const PeriodicTable &periodic,
                     DistributionPolicy pol = DistributionPolicy::standard);
 
     /** Copy constructor.*/

@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -263,6 +263,8 @@ bool
 CartesianGridElement<dim_>::
 operator <(const CartesianGridElement<dim_> &elem) const
 {
+	auto this_grid = this->get_grid().get();
+	auto elem_grid = elem.get_grid().get();
     Assert(this->get_grid() == elem.get_grid(), ExcMessage("Cannot compare elements on different grid."));
     return (this->get_flat_index() < elem.get_flat_index());
 }

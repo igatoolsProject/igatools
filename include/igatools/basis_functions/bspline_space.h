@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __NEW_BSPLINE_SPACE_H_
-#define __NEW_BSPLINE_SPACE_H_
+#ifndef __BSPLINE_SPACE_H_
+#define __BSPLINE_SPACE_H_
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
@@ -162,6 +162,8 @@ public:
     using BCTable = typename SpaceData::BCTable;
 
 
+    using BaseSpace::ComponentContainer;
+
 public:
     /**
      * @name Creators.
@@ -178,7 +180,7 @@ public:
            std::shared_ptr<GridType> knots,
            const InteriorReg interior_reg = InteriorReg::maximum,
            const bool periodic = false,
-           const BasisEndBehaviour &end_b = BasisEndBehaviour::interpolatory);
+           const BasisEndBehaviour end_b = BasisEndBehaviour::interpolatory);
 
     /**
      * Builds and returns a maximum regularity BSpline space over CartesianGrid
@@ -192,7 +194,6 @@ public:
            const Periodicity &periodic = filled_array<bool, dim>(false),
            const EndBehaviour &end_b =
                filled_array<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory));
-
 
     /**
      * Builds and returns a BSpline space over the CartesianGrid
@@ -230,7 +231,7 @@ protected:
                           std::shared_ptr<GridType> knots,
                           const InteriorReg interior_reg,
                           const bool periodic,
-                          const BasisEndBehaviour &end_b);
+                          const BasisEndBehaviour end_b);
 
     /**
      * Constructs a maximum regularity BSpline space over CartesianGrid
@@ -242,7 +243,6 @@ protected:
                           const InteriorReg interior_reg,
                           const Periodicity &periodic,
                           const EndBehaviour &end_b);
-
 
     /**
      * Constructs a BSpline space over the CartesianGrid
@@ -257,8 +257,6 @@ protected:
                           const PeriodicTable &periodic,
                           const EndBehaviourTable &end_b);
 
-
-    explicit BSplineSpace(std::shared_ptr<SpaceData> space_data);
 
     /**
      * Copy constructor. Not allowed to be used.
@@ -383,6 +381,8 @@ private:
      * @note The concept of global indices refers to a global numeration of the
      * dofs of all the spaces.
      */
+    EndBehaviourTable end_b_;
+
     DofDistribution<dim, range, rank> dof_distribution_global_;
 
     /** Container with the local to patch basis indices
@@ -394,6 +394,11 @@ private:
     /** @name Bezier extraction operator. */
     BernsteinExtraction<dim, range, rank> operators_;
 
+
+    /** If end knots are not in the repeated knot vector */
+    using EndIntervalTable = typename BaseSpace::template
+    		ComponentContainer<std::array<std::pair<Real, Real>, dim>>;
+    EndIntervalTable end_interval_;
 
     friend class BSplineElement<dim, range, rank>;
     friend class BSplineElementHandler<dim, range, rank>;

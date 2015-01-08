@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -267,7 +267,30 @@ norm_one() const
 void DenseMatrix::
 print_info(LogStream &out) const
 {
-    out << *this;
+    const auto size1 = this->size1();
+    const auto size2 = this->size2();
+
+    out << '[' << size1 << ',' << size2 << "](";
+    if (size1 > 0)
+    {
+        out << '(' ;
+        if (size2 > 0)
+            out << (*this)(0, 0);
+        for (int j = 1; j < size2; ++ j)
+            out << ',' << (*this)(0, j);
+        out << ')';
+    }
+    for (int i = 1; i < size1; ++ i)
+    {
+        out << ",(" ;
+        if (size2 > 0)
+            out << (*this)(i, 0);
+        for (int j = 1; j < size2; ++ j)
+            out << ',' << (*this)(i, j);
+        out << ')';
+    }
+    out << ')';
 }
+
 IGA_NAMESPACE_CLOSE
 

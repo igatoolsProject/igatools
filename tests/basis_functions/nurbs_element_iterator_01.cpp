@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -40,13 +40,11 @@ void test()
     const int r = 2;
 
     using Space = NURBSSpace< dim, range, rank >;
-    using DegreeTable = typename Space::DegreeTable;
     auto  knots = CartesianGrid<dim>::create();
 
     auto degree = TensorIndex<dim>(r);
-    DegreeTable deg(degree);
 
-    auto bsp_space = BSplineSpace<dim,range,rank>::create(deg, knots);
+    auto bsp_space = BSplineSpace<dim,range,rank>::create(degree, knots);
 
     using ScalarSpSpace = BSplineSpace<dim,1,1>;
     auto scalar_bsp_space = ScalarSpSpace::create(degree, knots);

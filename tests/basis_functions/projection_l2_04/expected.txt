@@ -43,24 +43,17 @@ Reference space info:
          [ 1 1 ]
       
       Dimensionality Table:
-         Raw componets: 
-            Size: [ 3 ]  Weights: [3]
-         [ [ 4 4 ] [ 4 4 ] [ 4 4 ] ]
-         Active componets ids: 
-         [ 0 1 2 ]
-         Inactive componets ids: 
-         [ ]
+         Component Dimension:
+            Raw componets: 
+               Size: [ 3 ]  Weights: [3]
+            [ 16 16 16 ]
+            Active componets ids: 
+            [ 0 1 2 ]
+            Inactive componets ids: 
+            [ ]
+         
+         Total Dimension: 48
       
-      Component Dimension:
-         Raw componets: 
-            Size: [ 3 ]  Weights: [3]
-         [ 16 16 16 ]
-         Active componets ids: 
-         [ 0 1 2 ]
-         Inactive componets ids: 
-         [ ]
-      
-      Total Dimension: 48
    
    Patch Basis Indices:
       Size: [ 4 4 ]  Weights: [4,16]

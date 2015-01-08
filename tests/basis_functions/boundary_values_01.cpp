@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -37,7 +37,6 @@
 #include <igatools/linear_algebra/dof_tools.h>
 
 #include <igatools/base/identity_function.h>
-#include <igatools/basis_functions/physical_space.h>
 
 
 

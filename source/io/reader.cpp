@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -20,15 +20,12 @@
 
 #include <igatools/io/reader.h>
 #include <igatools/base/exceptions.h>
-//#include <igatools/utils/array.h>
 #include <igatools/base/ig_function.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/nurbs_element.h>
 
-
 #include <boost/algorithm/string.hpp>
 #include <boost/property_tree/xml_parser.hpp>
-
 
 #include <set>
 
@@ -38,9 +35,7 @@ using std::set;
 
 using namespace iga::reader_utils;
 
-
 IGA_NAMESPACE_OPEN
-
 
 namespace reader_utils
 {
@@ -530,19 +525,15 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
 
 
     //-------------------------------------------------------------------------
-    Assert(false,ExcMessage("Fix the next lines!"));
-#if 0
-    typename space_t::EndBehaviourTable end_behaviour(components_map);
-    for (const auto comp_id : end_behaviour.get_active_components_id())
-        for (int dir = 0 ; dir < dim ; ++dir)
-            end_behaviour[comp_id][dir] = EndBehaviour::interpolatory;
+    // TODO (pauletti, Dec 26, 2014): read periodic, end_behaviour and boundary knots from file
+    typename space_t::EndBehaviourTable
+    end_behaviour(components_map, filled_array<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory));
+    typename space_t::PeriodicTable periodic(components_map, filled_array<bool, dim>(false));
 
-    auto ref_space = space_t::create(degrees,grid,multiplicities,end_behaviour);
-    //-------------------------------------------------------------------------
+    auto ref_space = space_t::create(degrees, grid, multiplicities, periodic, end_behaviour);
+	//-------------------------------------------------------------------------
 
     return ref_space;
-#endif
-    return nullptr;
 }
 
 #ifdef NURBS
@@ -693,14 +684,13 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     //-------------------------------------------------------------------------
 
 
-    Assert(false,ExcMessage("Fix the next lines!"));
-#if 0
-    typename space_t::EndBehaviourTable end_behaviour(components_map);
-    for (const auto comp_id : end_behaviour.get_active_components_id())
-        for (int dir = 0 ; dir < dim ; ++dir)
-            end_behaviour[comp_id][dir] = EndBehaviour::interpolatory;
+    // TODO (pauletti, Dec 26, 2014): read periodic, end_behaviour and boundary knots from file
+    typename space_t::SpSpace::EndBehaviourTable
+	end_behaviour(components_map, filled_array<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory));
+    typename space_t::SpSpace::PeriodicTable periodic(components_map, filled_array<bool, dim>(false));
 
-    auto spline_space = space_t::SpSpace::create(degrees,grid,multiplicities,end_behaviour);
+    auto spline_space = space_t::SpSpace::create(degrees, grid, multiplicities, periodic, end_behaviour);
+
     //---------------------------------------------------------------------------------
 
 
@@ -716,11 +706,15 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
 
     using ScalarMultiplicityTable = typename ScalarBSplineSpace::MultiplicityTable;
     const auto scalar_mult_table = shared_ptr<const ScalarMultiplicityTable>(new ScalarMultiplicityTable((*multiplicities)[0]));
+    // TODO (pauletti, Dec 26, 2014): read periodic, end_behaviour and boundary knots from file
+    typename ScalarBSplineSpace::EndBehaviourTable
+	scalar_end_behaviour(filled_array<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory));
+    typename ScalarBSplineSpace::PeriodicTable scalar_periodic(filled_array<bool, dim>(false));
+
 
     auto scalar_spline_space =
         ScalarBSplineSpace::create(scalar_degree_table, new_grid,
-                                   scalar_mult_table,
-                                   typename ScalarBSplineSpace::EndBehaviourTable(filled_array<EndBehaviour,dim>(EndBehaviour::interpolatory)));
+        		scalar_mult_table, scalar_periodic, scalar_end_behaviour);
 
     using WeightFuncPtr = shared_ptr<WeightFunc>;
     using WeightFuncPtrTable = typename space_t::template ComponentContainer<WeightFuncPtr>;
@@ -739,8 +733,6 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     auto ref_space = space_t::create(spline_space,w_func_table);
 
     return ref_space;
-#endif
-    return nullptr;
 }
 #endif
 
@@ -748,7 +740,7 @@ IGA_NAMESPACE_CLOSE
 
 #include <igatools/io/reader.inst>
 
-
+// TODO (pauletti, Dec 27, 2014): commented code below should be removed
 #if 0
 
 #ifdef NURBS

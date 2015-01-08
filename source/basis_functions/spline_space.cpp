@@ -50,11 +50,12 @@ SplineSpace(const DegreeTable &deg,
     periodic_(periodic)
 {
     this->init();
-
+#if 0
     // create a signal and a connection for the grid refinement
     this->connect_refinement_h_function(
         std::bind(&SplineSpace<dim,range,rank>::refine_h_after_grid_refinement, this,
                   std::placeholders::_1,std::placeholders::_2));
+#endif
 }
 
 
@@ -70,8 +71,12 @@ create(const DegreeTable &deg,
     auto sp = std::shared_ptr<SpSpace>(new SpSpace(deg, knots,interior_mult,periodic));
     Assert(sp != nullptr, ExcNullPtr());
 
+    sp->create_connection_for_h_refinement(sp);
+
     return sp;
 }
+
+
 
 template<int dim, int range, int rank>
 void
@@ -81,7 +86,7 @@ init()
 #ifndef NDEBUG
     auto const knots_size = this->get_grid()->get_num_knots_dim();
     for (auto comp : components)
-        for (auto j : dims)
+    	for (auto j : dims)
         {
             const auto deg = deg_[comp][j];
             const auto order = deg + 1;
@@ -113,15 +118,15 @@ init()
     space_dim_ = n_basis;
 
 #ifndef NDEBUG
-    for (auto comp : components)
-        for (auto dir : dims)
-            if (periodic_[comp][dir])
-            {
-                const auto deg = deg_[comp][dir];
-                const auto order = deg + 1;
-                Assert(n_basis[comp][dir]>order,
-                       ExcMessage("Not enough basis functions"));
-            }
+    for(auto comp : components)
+    	for (auto dir : dims)
+    		if (periodic_[comp][dir])
+    		{
+    			const auto deg = deg_[comp][dir];
+    			const auto order = deg + 1;
+    			Assert(n_basis[comp][dir]>order,
+    					ExcMessage("Not enough basis functions"));
+    		}
 #endif
 }
 
@@ -270,7 +275,7 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
 
             int size = 2 * order;
             const int m = order;
-            int K=0.;
+            int K = 0;
             for (auto &n: mult)
                 K += n;
             size += K;
@@ -474,7 +479,24 @@ multiplicity_regularity(const InteriorReg reg,
     return res;
 }
 
+template<int dim, int range, int rank>
+void
+SplineSpace<dim, range, rank>::
+create_connection_for_h_refinement(std::shared_ptr<SplineSpace<dim,range,rank>> space)
+{
+	Assert(space != nullptr, ExcNullPtr());
 
+	auto refinement_func_spline_space =
+			std::bind(&SplineSpace<dim,range,rank>::refine_h_after_grid_refinement,
+					  space.get(),
+			          std::placeholders::_1,
+					  std::placeholders::_2);
+
+	using SlotType = typename CartesianGrid<dim>::SignalRefineSlot;
+    this->connect_refinement_h_function(
+        SlotType(refinement_func_spline_space).track_foreign(space));
+
+}
 
 template<int dim, int range, int rank>
 void

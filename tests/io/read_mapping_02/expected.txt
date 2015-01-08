@@ -34,24 +34,17 @@ IgFunction infos:
                [ 1 ]
             
             Dimensionality Table:
-               Raw componets: 
-                  Size: [ 1 ]  Weights: [1]
-               [ [ 4 ] ]
-               Active componets ids: 
-               [ 0 ]
-               Inactive componets ids: 
-               [ ]
+               Component Dimension:
+                  Raw componets: 
+                     Size: [ 1 ]  Weights: [1]
+                  [ 4 ]
+                  Active componets ids: 
+                  [ 0 ]
+                  Inactive componets ids: 
+                  [ ]
+               
+               Total Dimension: 4
             
-            Component Dimension:
-               Raw componets: 
-                  Size: [ 1 ]  Weights: [1]
-               [ 4 ]
-               Active componets ids: 
-               [ 0 ]
-               Inactive componets ids: 
-               [ ]
-            
-            Total Dimension: 4
          
          Patch Basis Indices:
             Size: [ 4 ]  Weights: [4]
@@ -108,24 +101,17 @@ IgFunction infos:
                   [ 1 ]
                
                Dimensionality Table:
-                  Raw componets: 
-                     Size: [ 1 ]  Weights: [1]
-                  [ [ 4 ] ]
-                  Active componets ids: 
-                  [ 0 ]
-                  Inactive componets ids: 
-                  [ ]
+                  Component Dimension:
+                     Raw componets: 
+                        Size: [ 1 ]  Weights: [1]
+                     [ 4 ]
+                     Active componets ids: 
+                     [ 0 ]
+                     Inactive componets ids: 
+                     [ ]
+                  
+                  Total Dimension: 4
                
-               Component Dimension:
-                  Raw componets: 
-                     Size: [ 1 ]  Weights: [1]
-                  [ 4 ]
-                  Active componets ids: 
-                  [ 0 ]
-                  Inactive componets ids: 
-                  [ ]
-               
-               Total Dimension: 4
             
             Patch Basis Indices:
                Size: [ 4 ]  Weights: [4]
@@ -239,24 +225,17 @@ IgFunction infos:
                   [ ]
                
                Dimensionality Table:
-                  Raw componets: 
-                     Size: [ 2 ]  Weights: [2]
-                  [ [ 4 2 ] [ 4 2 ] ]
-                  Active componets ids: 
-                  [ 0 1 ]
-                  Inactive componets ids: 
-                  [ ]
+                  Component Dimension:
+                     Raw componets: 
+                        Size: [ 2 ]  Weights: [2]
+                     [ 8 8 ]
+                     Active componets ids: 
+                     [ 0 1 ]
+                     Inactive componets ids: 
+                     [ ]
+                  
+                  Total Dimension: 16
                
-               Component Dimension:
-                  Raw componets: 
-                     Size: [ 2 ]  Weights: [2]
-                  [ 8 8 ]
-                  Active componets ids: 
-                  [ 0 1 ]
-                  Inactive componets ids: 
-                  [ ]
-               
-               Total Dimension: 16
             
             Patch Basis Indices:
                Size: [ 4 2 ]  Weights: [4,8]
@@ -329,24 +308,17 @@ IgFunction infos:
                      [ ]
                   
                   Dimensionality Table:
-                     Raw componets: 
-                        Size: [ 1 ]  Weights: [1]
-                     [ [ 4 2 ] ]
-                     Active componets ids: 
-                     [ 0 ]
-                     Inactive componets ids: 
-                     [ ]
+                     Component Dimension:
+                        Raw componets: 
+                           Size: [ 1 ]  Weights: [1]
+                        [ 8 ]
+                        Active componets ids: 
+                        [ 0 ]
+                        Inactive componets ids: 
+                        [ ]
+                     
+                     Total Dimension: 8
                   
-                  Component Dimension:
-                     Raw componets: 
-                        Size: [ 1 ]  Weights: [1]
-                     [ 8 ]
-                     Active componets ids: 
-                     [ 0 ]
-                     Inactive componets ids: 
-                     [ ]
-                  
-                  Total Dimension: 8
                
                Patch Basis Indices:
                   Size: [ 4 2 ]  Weights: [4,8]
@@ -413,24 +385,17 @@ IgFunction infos:
                      [ ]
                   
                   Dimensionality Table:
-                     Raw componets: 
-                        Size: [ 1 ]  Weights: [1]
-                     [ [ 4 2 ] ]
-                     Active componets ids: 
-                     [ 0 ]
-                     Inactive componets ids: 
-                     [ ]
+                     Component Dimension:
+                        Raw componets: 
+                           Size: [ 1 ]  Weights: [1]
+                        [ 8 ]
+                        Active componets ids: 
+                        [ 0 ]
+                        Inactive componets ids: 
+                        [ ]
+                     
+                     Total Dimension: 8
                   
-                  Component Dimension:
-                     Raw componets: 
-                        Size: [ 1 ]  Weights: [1]
-                     [ 8 ]
-                     Active componets ids: 
-                     [ 0 ]
-                     Inactive componets ids: 
-                     [ ]
-                  
-                  Total Dimension: 8
                
                Patch Basis Indices:
                   Size: [ 4 2 ]  Weights: [4,8]
@@ -599,24 +564,17 @@ IgFunction infos:
                      [ ]
                   
                   Dimensionality Table:
-                     Raw componets: 
-                        Size: [ 3 ]  Weights: [3]
-                     [ [ 4 2 2 ] [ 4 2 2 ] [ 4 2 2 ] ]
-                     Active componets ids: 
-                     [ 0 1 2 ]
-                     Inactive componets ids: 
-                     [ ]
+                     Component Dimension:
+                        Raw componets: 
+                           Size: [ 3 ]  Weights: [3]
+                        [ 16 16 16 ]
+                        Active componets ids: 
+                        [ 0 1 2 ]
+                        Inactive componets ids: 
+                        [ ]
+                     
+                     Total Dimension: 48
                   
-                  Component Dimension:
-                     Raw componets: 
-                        Size: [ 3 ]  Weights: [3]
-                     [ 16 16 16 ]
-                     Active componets ids: 
-                     [ 0 1 2 ]
-                     Inactive componets ids: 
-                     [ ]
-                  
-                  Total Dimension: 48
                
                Patch Basis Indices:
                   Size: [ 4 2 2 ]  Weights: [4,8,16]
@@ -709,24 +667,17 @@ IgFunction infos:
                         [ ]
                      
                      Dimensionality Table:
-                        Raw componets: 
-                           Size: [ 1 ]  Weights: [1]
-                        [ [ 4 2 2 ] ]
-                        Active componets ids: 
-                        [ 0 ]
-                        Inactive componets ids: 
-                        [ ]
+                        Component Dimension:
+                           Raw componets: 
+                              Size: [ 1 ]  Weights: [1]
+                           [ 16 ]
+                           Active componets ids: 
+                           [ 0 ]
+                           Inactive componets ids: 
+                           [ ]
+                        
+                        Total Dimension: 16
                      
-                     Component Dimension:
-                        Raw componets: 
-                           Size: [ 1 ]  Weights: [1]
-                        [ 16 ]
-                        Active componets ids: 
-                        [ 0 ]
-                        Inactive componets ids: 
-                        [ ]
-                     
-                     Total Dimension: 16
                   
                   Patch Basis Indices:
                      Size: [ 4 2 2 ]  Weights: [4,8,16]
@@ -799,24 +750,17 @@ IgFunction infos:
                         [ ]
                      
                      Dimensionality Table:
-                        Raw componets: 
-                           Size: [ 1 ]  Weights: [1]
-                        [ [ 4 2 2 ] ]
-                        Active componets ids: 
-                        [ 0 ]
-                        Inactive componets ids: 
-                        [ ]
+                        Component Dimension:
+                           Raw componets: 
+                              Size: [ 1 ]  Weights: [1]
+                           [ 16 ]
+                           Active componets ids: 
+                           [ 0 ]
+                           Inactive componets ids: 
+                           [ ]
+                        
+                        Total Dimension: 16
                      
-                     Component Dimension:
-                        Raw componets: 
-                           Size: [ 1 ]  Weights: [1]
-                        [ 16 ]
-                        Active componets ids: 
-                        [ 0 ]
-                        Inactive componets ids: 
-                        [ ]
-                     
-                     Total Dimension: 16
                   
                   Patch Basis Indices:
                      Size: [ 4 2 2 ]  Weights: [4,8,16]
@@ -889,24 +833,17 @@ IgFunction infos:
                         [ ]
                      
                      Dimensionality Table:
-                        Raw componets: 
-                           Size: [ 1 ]  Weights: [1]
-                        [ [ 4 2 2 ] ]
-                        Active componets ids: 
-                        [ 0 ]
-                        Inactive componets ids: 
-                        [ ]
+                        Component Dimension:
+                           Raw componets: 
+                              Size: [ 1 ]  Weights: [1]
+                           [ 16 ]
+                           Active componets ids: 
+                           [ 0 ]
+                           Inactive componets ids: 
+                           [ ]
+                        
+                        Total Dimension: 16
                      
-                     Component Dimension:
-                        Raw componets: 
-                           Size: [ 1 ]  Weights: [1]
-                        [ 16 ]
-                        Active componets ids: 
-                        [ 0 ]
-                        Inactive componets ids: 
-                        [ ]
-                     
-                     Total Dimension: 16
                   
                   Patch Basis Indices:
                      Size: [ 4 2 2 ]  Weights: [4,8,16]

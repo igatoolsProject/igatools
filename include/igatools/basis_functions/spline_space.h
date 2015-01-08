@@ -54,7 +54,6 @@ enum class InteriorReg
     minimun
 };
 
-
 /**
  * @brief Tensor product spline space
  *
@@ -114,7 +113,6 @@ public:
     using KnotsTable = ComponentContainer<KnotCoordinates>;
     using PeriodicTable = ComponentContainer<Periodicity>;
     using EndBehaviourTable = ComponentContainer<EndBehaviour>;
-
 
 
 // TODO (pauletti, Dec 26, 2014): this is an application specific property
@@ -544,6 +542,8 @@ public:
     void refine_h_after_grid_refinement(
         const std::array<bool,dim> &refinement_directions,
         const GridType &grid_old) ;
+
+    void create_connection_for_h_refinement(std::shared_ptr<SplineSpace<dim,range,rank>> space);
 
     std::shared_ptr<const SplineSpace<dim,range,rank> > spline_space_previous_refinement_;
 
