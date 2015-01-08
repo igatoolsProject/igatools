@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -22,37 +22,38 @@
 #define SPLINE_SPACE_H_
 
 #include <igatools/base/config.h>
-#include <igatools/utils/static_multi_array.h>
-#include <igatools/utils/dynamic_multi_array.h>
-#include <igatools/geometry/grid_wrapper.h>
+#include <igatools/base/array_utils.h>
 #include <igatools/base/function.h>
 #include <igatools/base/function_element.h>
-
+#include <igatools/utils/cartesian_product_array.h>
+#include <igatools/utils/static_multi_array.h>
+#include <igatools/utils/dynamic_multi_array.h>
+#include <igatools/basis_functions/function_space.h>
+#include <igatools/geometry/cartesian_grid.h>
 
 IGA_NAMESPACE_OPEN
 
-template <int,int,int> class DofDistribution;
-
-template <class T, int dim>
-inline
-vector<T>
-unique_container(std::array <T, dim> a)
-{
-    auto it = std::unique(a.begin(), a.end());
-    return vector<T>(a.begin(), it);
-}
-
-enum class EndBehaviour
+enum class BasisEndBehaviour
 {
     /**
      * Interpolatory basis functions at knots bounday (i.e. open knot vector).
      */
     interpolatory,
 
-    periodic,
+    end_knots,
 
-    end_knots
+    periodic
 };
+
+// For the interior multiplicities
+// maximum regularity
+// minimul regularity discontinous
+enum class InteriorReg
+{
+    maximum,
+    minimun
+};
+
 
 /**
  * @brief Tensor product spline space
@@ -72,231 +73,19 @@ enum class EndBehaviour
  * @author pauletti, 2014
  *
  */
-template<int dim_, int range_ = 1, int rank_ = 1>
-class SplineSpace : public GridWrapper<CartesianGrid<dim_> >
+template<int dim, int range = 1, int rank = 1>
+class SplineSpace :
+    public FunctionSpaceOnGrid<CartesianGrid<dim>>
 {
-public:
-	using self_t = SplineSpace<dim_,range_,rank_>;
-
-
-    /**
-     *  Class to manage the component quantities with the knowledge of
-     * uniform range spaces
-     */
-    template<class T>
-    class ComponentContainer : public StaticMultiArray<T,range_,rank_>
-    {
-        using base_t = StaticMultiArray<T,range_,rank_>;
-    public:
-        /** Type of the iterator. */
-        using iterator =  MultiArrayIterator<ComponentContainer<T>>;
-
-        /** Type of the const iterator. */
-        using const_iterator =  MultiArrayConstIterator<ComponentContainer<T>>;
-    public:
-        using base_t::n_entries;
-
-        using ComponentMap = std::array <Index, n_entries>;
-
-        ComponentContainer(const ComponentMap &comp_map =
-                               sequence<n_entries>())
-            :
-            base_t(),
-            comp_map_(comp_map),
-            active_components_id_(unique_container<Index, n_entries>(comp_map)),
-            inactive_components_id_(n_entries)
-        {
-            auto all = sequence<n_entries>();
-            auto it=std::set_difference(all.begin(), all.end(),
-                                        active_components_id_.begin(),active_components_id_.end(),
-                                        inactive_components_id_.begin());
-
-            inactive_components_id_.resize(it-inactive_components_id_.begin());
-        }
-
-
-        ComponentContainer(const ComponentMap &comp_map, const T &val)
-            :
-            base_t(),
-            comp_map_(comp_map),
-            active_components_id_(unique_container<Index, n_entries>(comp_map)),
-            inactive_components_id_(n_entries)
-        {
-            auto all = sequence<n_entries>();
-            auto it=std::set_difference(all.begin(), all.end(),
-                                        active_components_id_.begin(),active_components_id_.end(),
-                                        inactive_components_id_.begin());
-
-            inactive_components_id_.resize(it-inactive_components_id_.begin());
-
-            for (auto i : active_components_id_)
-                base_t::operator[](i) = val;
-        }
-
-
-        /**
-         * Construct a homogenous range table with val value
-         */
-        ComponentContainer(const T &val)
-            :
-            comp_map_(filled_array<Index, n_entries>(0)),
-            active_components_id_(1,0),
-            inactive_components_id_(n_entries-1)
-        {
-            for (int i=1; i<n_entries; ++i)
-                inactive_components_id_[i-1] = i;
-
-            base_t::operator[](0) = val;
-        }
-
-
-        ComponentContainer(std::initializer_list<T> list)
-            :
-            base_t(list),
-            comp_map_(sequence<n_entries>()),
-            active_components_id_(unique_container<Index, n_entries>(comp_map_))
-        {};
-
-
-        const_iterator
-        cbegin() const
-        {
-            return const_iterator(*this,0);
-        }
-
-        const_iterator
-        cend() const
-        {
-            return const_iterator(*this,IteratorState::pass_the_end);
-        }
-
-
-        const_iterator
-        begin() const
-        {
-            return cbegin();
-        }
-
-        const_iterator
-        end() const
-        {
-            return cend();
-        }
-
-        iterator
-        begin()
-        {
-            return iterator(*this,0);
-        }
-
-        iterator
-        end()
-        {
-            return iterator(*this,IteratorState::pass_the_end);
-        }
-
-        /**
-         *  Flat index access operator (non-const version).
-         */
-        T &operator[](const Index i)
-        {
-            return base_t::operator[](comp_map_[i]);
-        }
-
-        /**
-         *  Flat index access operator (const version).
-         */
-        const T &operator[](const Index i) const
-        {
-            return base_t::operator[](comp_map_[i]);
-        }
-
-        const Index active(const Index i) const
-        {
-            return comp_map_[i];
-        }
-
-        const vector<Index> &get_active_components_id() const
-        {
-            return active_components_id_;
-        }
-
-        const vector<Index> &get_inactive_components_id() const
-        {
-            return inactive_components_id_;
-        }
-
-        void
-        print_info(LogStream &out) const
-        {
-            out.begin_item("Raw componets: ");
-            base_t::print_info(out);
-            out.end_item();
-            out.begin_item("Active componets ids: ");
-            active_components_id_.print_info(out);
-            out.end_item();
-            out.begin_item("Inactive componets ids: ");
-            inactive_components_id_.print_info(out);
-            out.end_item();
-        }
-
-        const std::array <Index, n_entries> &get_comp_map() const
-        {
-            return comp_map_;
-        }
-
-    private:
-        /** For each component return the index of the active component */
-        ComponentMap comp_map_;
-
-        /** list of the active components */
-        vector<Index> active_components_id_;
-
-        /** list of the inactive components */
-        vector<Index> inactive_components_id_;
-    };
-
-
-    /**
-     * Component holding the number of basis functions
-     */
-    class SpaceDimensionTable : public ComponentContainer<TensorSize<dim_> >
-    {
-        using base_t = ComponentContainer<TensorSize<dim_>>;
-    public:
-        //using base_t::ComponentContainer;
-
-        SpaceDimensionTable() = default;
-
-        SpaceDimensionTable(const base_t &n_basis)
-            :
-            base_t(n_basis),
-            comp_dimension(n_basis.get_comp_map()),
-            total_dimension(0)
-        {
-            for (auto comp : this->get_active_components_id())
-            {
-                auto size = (*this)[comp].flat_size();
-                comp_dimension[comp] = size;
-            }
-            for (auto size : comp_dimension)
-                total_dimension += size;
-        }
-
-        //TODO(pauletti, Sep 8, 2014): make this private and write some getters
-        ComponentContainer<Size> comp_dimension;
-        Size total_dimension;
-    };
 
 private:
-    using GridType = CartesianGrid<dim_>;
-//    using typename GridType::GridType;
-
+    using GridSpace = FunctionSpaceOnGrid<CartesianGrid<dim>>;
+    using typename GridSpace::GridType;
 
 public:
-//    using GridSpace::dims;
+    using GridSpace::dims;
 
-    using Func = Function<dim_, 0, range_, rank_>;
+    using Func = Function<dim, 0, range, rank>;
 
 public:
     template <int order>
@@ -306,92 +95,128 @@ public:
     using Div   = typename Func::Div;
 
 public:
-//    using RefSpace::n_components;
-//    static constexpr int n_components = RefSpace::template ComponentContainer<Size>::n_entries;
-//    static const std::array<Size, n_components> components;
-
-
-public:
-    using Degrees  = TensorIndex<dim_>;
-    using DegreeTable = ComponentContainer<Degrees>;
-
-    using KnotCoordinates = typename GridType::KnotCoordinates;
-    using BoundaryKnots = std::array<CartesianProductArray<Real,2>, dim_>;
-    using Multiplicity = CartesianProductArray<Size, dim_>;
-
-    using MultiplicityTable = ComponentContainer<Multiplicity>;
-    using BoundaryKnotsTable = ComponentContainer<BoundaryKnots>;
-    using KnotsTable = ComponentContainer<KnotCoordinates>;
-
-    using IndexSpaceTable = ComponentContainer<DynamicMultiArray<Index,dim_>>;
-    using IndexSpaceMarkTable = Multiplicity;
-
+    template<class> class ComponentContainer;
     static constexpr int n_components = ComponentContainer<Size>::n_entries;
-
-    using ComponentMap = typename ComponentContainer<Size>::ComponentMap;
-
-    /**
-     * Type alias for the boundary conditions on each face of each scalar component of the space.
-     */
-    using BCTable = ComponentContainer<std::array<BoundaryConditionType,UnitElement<dim_>::n_faces>>;
-
-public:
     static const std::array<Size, n_components> components;
 
 
 public:
+    using KnotCoordinates = typename GridType::KnotCoordinates;
+    using BoundaryKnots = std::array<CartesianProductArray<Real,2>, dim>;
+    using Degrees  = TensorIndex<dim>;
+    using Multiplicity = CartesianProductArray<Size, dim>;
+    using Periodicity = std::array<bool, dim>;
+    using EndBehaviour = std::array<BasisEndBehaviour, dim>;
 
-    using EndBehaviourTable = ComponentContainer<std::array<EndBehaviour, dim_> >;
+    using DegreeTable = ComponentContainer<Degrees>;
+    using MultiplicityTable = ComponentContainer<Multiplicity>;
+    using BoundaryKnotsTable = ComponentContainer<BoundaryKnots>;
+    using KnotsTable = ComponentContainer<KnotCoordinates>;
+    using PeriodicTable = ComponentContainer<Periodicity>;
+    using EndBehaviourTable = ComponentContainer<EndBehaviour>;
 
-    // For the interior multiplicities
-    // maximum regularity
-    // minimul regularity discontinous
-    enum class InteriorReg
-    {
-        maximum, minimun
-    };
 
-protected:
 
-    SplineSpace() = delete;
+// TODO (pauletti, Dec 26, 2014): this is an application specific property
+// should not be part of space
+    /**
+     * Type alias for the boundary conditions on each face of each scalar component of the space.
+     */
+    using BCTable = ComponentContainer<std::array<BoundaryConditionType,UnitElement<dim>::n_faces>>;
+
 
     /**
-     * Most general constructor
+     * Component holding the number of basis functions
+     */
+    class SpaceDimensionTable : public ComponentContainer<TensorSize<dim> >
+    {
+    public:
+        using base_t = ComponentContainer<TensorSize<dim>>;
+
+        SpaceDimensionTable() = default;
+
+        SpaceDimensionTable(const base_t &n_basis)
+            :
+            base_t(n_basis),
+            comp_dimension(n_basis.get_comp_map()),
+            total_dimension_(0)
+        {
+            recompute_size();
+        }
+
+        SpaceDimensionTable operator=(const base_t &st)
+        {
+            base_t::operator=(st);
+            recompute_size();
+            return *this;
+
+        }
+
+        void print_info(LogStream &out) const
+        {
+            out.begin_item("Component Dimension:");
+            comp_dimension.print_info(out);
+            out.end_item();
+
+            out << "Total Dimension: " << total_dimension_ << std::endl;
+        }
+
+        Size total_dimension() const
+        {
+            return total_dimension_;
+        }
+
+        Size get_component_size(const int comp) const
+        {
+            return comp_dimension[comp];
+        }
+    private:
+        void recompute_size()
+        {
+            for (auto comp : this->get_active_components_id())
+            {
+                auto size = (*this)[comp].flat_size();
+                comp_dimension[comp] = size;
+            }
+            total_dimension_ = 0;
+            for (auto size : comp_dimension)
+                total_dimension_ += size;
+        }
+
+        ComponentContainer<Size> comp_dimension;
+        Size total_dimension_;
+    };
+
+
+
+
+public:
+    static std::shared_ptr<SplineSpace<dim,range,rank> > create(
+        const DegreeTable &deg,
+        std::shared_ptr<GridType> knots,
+        std::shared_ptr<const MultiplicityTable> interior_mult,
+        const PeriodicTable &periodic =
+            PeriodicTable(filled_array<bool,dim>(false)));
+
+protected:
+    /**
+     * Construct a spline space with the knots, degree and multiplicity
+     * as well as periodicity conditions
      */
     explicit SplineSpace(const DegreeTable &deg,
                          std::shared_ptr<GridType> knots,
                          std::shared_ptr<const MultiplicityTable> interior_mult,
-                         const EndBehaviourTable &end_behaviour = EndBehaviourTable(filled_array<EndBehaviour,dim_>(EndBehaviour::interpolatory)));
-
-
-    explicit SplineSpace(const DegreeTable &deg,
-                         std::shared_ptr<GridType> knots,
-                         const InteriorReg &interior_mult,
-                         const EndBehaviourTable &ebt = EndBehaviourTable(filled_array<EndBehaviour,dim_>(EndBehaviour::interpolatory)))
-        :SplineSpace(deg, knots, fill_max_regularity(deg, knots), ebt)
-    {}
+                         const PeriodicTable &periodic =
+                             PeriodicTable(filled_array<bool,dim>(false)));
 
 public:
-    static std::shared_ptr<self_t> create(const DegreeTable &deg,
-                         std::shared_ptr<GridType> knots,
-                         const InteriorReg &interior_mult,
-                         const EndBehaviourTable &ebt = EndBehaviourTable(filled_array<EndBehaviour,dim_>(EndBehaviour::interpolatory)));
-
-    static std::shared_ptr<self_t> create(
-    		const DegreeTable &deg,
-   	        std::shared_ptr<GridType> knots,
-    	    std::shared_ptr<const MultiplicityTable> interior_mult,
-    	    const EndBehaviourTable &end_behaviour = EndBehaviourTable(filled_array<EndBehaviour,dim_>(EndBehaviour::interpolatory)));
-
-    virtual ~SplineSpace() = default;
-
     const DegreeTable &get_degree() const
     {
         return deg_;
     }
 
 
-    const ComponentMap &get_components_map() const
+    const std::array<Index,n_components> &get_components_map() const
     {
         return interior_mult_->get_comp_map();
     }
@@ -404,7 +229,7 @@ public:
      */
     Size get_num_basis() const
     {
-        return space_dim_.total_dimension;
+        return space_dim_.total_dimension();
     }
 
     /**
@@ -413,7 +238,7 @@ public:
      */
     Size get_num_basis(const int comp) const
     {
-        return space_dim_.comp_dimension[comp];
+        return space_dim_.get_component_size(comp);
     }
 
     /**
@@ -434,30 +259,25 @@ public:
         return space_dim_;
     }
 
-    //TODO (MM, Dec 17,2014): this function is misleading because refers to an element and not to the space. REMOVE IT!
-    /**
-     * Component table with the offset of basis functions
-     * in each component of an element.
-     */
     SpaceDimensionTable get_num_all_element_basis() const
     {
-        ComponentContainer<TensorSize<dim_>> n_basis(deg_.get_comp_map());
+        ComponentContainer<TensorSize<dim>> n_basis(deg_.get_comp_map());
         for (auto comp : deg_.get_active_components_id())
-            n_basis[comp] = TensorSize<dim_>(deg_[comp]+1);
+            n_basis[comp] = TensorSize<dim>(deg_[comp]+1);
 
         return SpaceDimensionTable(n_basis);
     }
 
     /**
      * Component table with the offset of basis functions
-     * in each component of the space.
+     * in each component.
      */
     ComponentContainer<Size> get_basis_offset() const
     {
         ComponentContainer<Size> offset;
         offset[0] = 0;
         for (int comp = 1; comp < n_components; ++comp)
-            offset[comp] = offset[comp-1] + space_dim_.comp_dimension[comp];
+            offset[comp] = offset[comp-1] + space_dim_.get_component_size(comp);
 
         return offset;
     }
@@ -465,7 +285,7 @@ public:
     ///@}
 
     template<int k>
-    using SubSpace = SplineSpace<k, range_, rank_>;
+    using SubSpace = SplineSpace<k, range, rank>;
 
     template<int k>
     std::shared_ptr<typename SubSpace<k>::MultiplicityTable>
@@ -476,15 +296,16 @@ public:
     get_sub_space_degree(const Index s_id) const;
 
     template<int k>
-    typename SubSpace<k>::EndBehaviourTable
-    get_sub_space_end_b(const Index s_id) const;
+    typename SubSpace<k>::PeriodicTable
+    get_sub_space_periodicity(const Index s_id) const;
 
 
 public:
 
-    KnotsTable compute_knots_with_repetition(const BoundaryKnotsTable &boundary_knots) const;
+    KnotsTable compute_knots_with_repetition(const EndBehaviourTable &ends,
+                                             const BoundaryKnotsTable &boundary_knots = BoundaryKnotsTable()) const;
 
-    KnotsTable compute_knots_with_repetition(const EndBehaviourTable &ends) const;
+    // KnotsTable compute_knots_with_repetition(const EndBehaviourTable &ends) const;
 
     /**
      * For each element and for each component there is an initial
@@ -493,25 +314,19 @@ public:
      */
     MultiplicityTable accumulated_interior_multiplicities() const;
 
-    void print_info(LogStream &out) const;
-
-
-private:
     /**
      * Fill the multiplicy for the maximum possible regularity
      *  of the given number of knots
      */
-    std::shared_ptr<MultiplicityTable> fill_max_regularity(const DegreeTable &deg, std::shared_ptr<const GridType> grid);
+    static
+    std::shared_ptr<MultiplicityTable>
+    multiplicity_regularity(const InteriorReg reg,
+                            const DegreeTable &deg,
+                            const TensorSize<dim> &n_elem);
 
-#if 0
-    BoundaryKnotsTable interpolatory_end_knots() const;
-#endif
-
-    CartesianProductArray<Real,2> interpolatory_end_knots(const int comp_id,const int dir) const;
-
-
+public:
+    void print_info(LogStream &out) const;
 private:
-
     std::shared_ptr<const MultiplicityTable> interior_mult_;
 
     DegreeTable deg_;
@@ -519,7 +334,8 @@ private:
     /** Table with the dimensionality of the space in each component and direction */
     SpaceDimensionTable space_dim_;
 
-    EndBehaviourTable end_behaviour_;
+    //EndBehaviourTable end_behaviour_;
+    PeriodicTable periodic_;
 
     /**
      * Boundary conditions on each face of each scalar component of the space.
@@ -534,9 +350,9 @@ public:
         return interior_mult_;
     }
 
-    const EndBehaviourTable &get_end_behaviour() const
+    const PeriodicTable &get_periodic_table() const
     {
-        return end_behaviour_;
+        return periodic_;
     }
 
 
@@ -584,7 +400,134 @@ public:
         return boundary_conditions_table_;
     }
 
+    /**
+     *  Class to manage the component quantities with the knowledge of
+     * uniform range spaces
+     */
+    template<class T>
+    class ComponentContainer : public StaticMultiArray<T,range,rank>
+    {
+        using base_t = StaticMultiArray<T,range,rank>;
+    public:
+        /** Type of the iterator. */
+        using iterator =  MultiArrayIterator<ComponentContainer<T>>;
 
+        /** Type of the const iterator. */
+        using const_iterator =  MultiArrayConstIterator<ComponentContainer<T>>;
+    public:
+        using base_t::n_entries;
+
+        using  ComponentMap = std::array <Index, n_entries>;
+
+        ComponentContainer(const ComponentMap &comp_map =
+                               sequence<n_entries>());
+
+        ComponentContainer(const ComponentMap &comp_map, const T &val);
+
+        ComponentContainer(bool uniform, const T &val)
+            : ComponentContainer(filled_array<Index, n_entries>(0), val)
+        {}
+
+        /**
+         * Construct a homogenous range table with val value
+         */
+        ComponentContainer(const T &val);
+
+        ComponentContainer(std::initializer_list<T> list);
+
+        const_iterator
+        cbegin() const
+        {
+            return const_iterator(*this,0);
+        }
+
+        const_iterator
+        cend() const
+        {
+            return const_iterator(*this,IteratorState::pass_the_end);
+        }
+
+
+        const_iterator
+        begin() const
+        {
+            return cbegin();
+        }
+
+        const_iterator
+        end() const
+        {
+            return cend();
+        }
+
+        iterator
+        begin()
+        {
+            return iterator(*this,0);
+        }
+
+        iterator
+        end()
+        {
+            return iterator(*this,IteratorState::pass_the_end);
+        }
+
+        /**
+         *  Flat index access operator (non-const version).
+         */
+        T &operator[](const Index i);
+
+        /**
+         *  Flat index access operator (const version).
+         */
+        const T &operator[](const Index i) const;
+
+        const Index active(const Index i) const
+        {
+            return comp_map_[i];
+        }
+
+        const vector<Index> &get_active_components_id() const
+        {
+            return active_components_id_;
+        }
+
+        const vector<Index> &get_inactive_components_id() const
+        {
+            return inactive_components_id_;
+        }
+
+        void
+        print_info(LogStream &out) const
+        {
+            out.begin_item("Raw componets: ");
+            base_t::print_info(out);
+            out.end_item();
+            out.begin_item("Active componets ids: ");
+            active_components_id_.print_info(out);
+            out.end_item();
+            out.begin_item("Inactive componets ids: ");
+            inactive_components_id_.print_info(out);
+            out.end_item();
+        }
+
+        const std::array <Index, n_entries> &get_comp_map() const
+        {
+            return comp_map_;
+        }
+
+    private:
+        /** For each component return the index of the active component */
+        std::array <Index, n_entries> comp_map_;
+
+        /** list of the active components */
+        vector<Index> active_components_id_;
+
+        /** list of the inactive components */
+        vector<Index> inactive_components_id_;
+
+
+    };
 
     /**
      * Refines the function space after a grid uniform refinement.
@@ -599,15 +542,13 @@ public:
      * @ingroup h_refinement
      */
     void refine_h_after_grid_refinement(
-        const std::array<bool,dim_> &refinement_directions,
+        const std::array<bool,dim> &refinement_directions,
         const GridType &grid_old) ;
 
-    void create_connection_for_h_refinement(std::shared_ptr<self_t> space);
-
-    std::shared_ptr<const SplineSpace<dim_,range_,rank_> > spline_space_previous_refinement_;
+    std::shared_ptr<const SplineSpace<dim,range,rank> > spline_space_previous_refinement_;
 
 public:
-    std::shared_ptr<const SplineSpace<dim_,range_,rank_> >
+    std::shared_ptr<const SplineSpace<dim,range,rank> >
     get_spline_space_previous_refinement() const
     {
         return spline_space_previous_refinement_;
@@ -618,64 +559,114 @@ protected:
     /** This function initialize the member variables from the constructor
      * arguments or after an h-refinement. */
     void init();
-
-public:
-
-    vector<Index> get_loc_to_global(const CartesianGridElement<dim_> &element) const
-    {
-        Assert(false,ExcMessage("This class should not have this function."))
-        return vector<Index>();
-    }
-
-    vector<Index> get_loc_to_patch(const CartesianGridElement<dim_> &element) const
-    {
-        Assert(false,ExcMessage("This class should not have this function."))
-        return vector<Index>();
-    }
-
-
-    /** Returns the container with the global dof distribution (const version). */
-    const DofDistribution<dim_, range_, rank_> &
-    get_dof_distribution_global() const
-    {
-        Assert(false,ExcMessage("This class should not have this function."));
-        return *reinterpret_cast<const DofDistribution<dim_,range_,rank_> *>(this);
-    }
-
-    /** Returns the container with the global dof distribution (non const version). */
-    DofDistribution<dim_, range_, rank_> &
-    get_dof_distribution_global()
-    {
-        Assert(false,ExcMessage("This class should not have this function."));
-        return *reinterpret_cast<DofDistribution<dim_,range_,rank_> *>(this);
-    }
-
-    /** Returns the container with the patch dof distribution (const version). */
-    const DofDistribution<dim_, range_, rank_> &
-    get_dof_distribution_patch() const
-    {
-        Assert(false,ExcMessage("This class should not have this function."));
-        return *reinterpret_cast<const DofDistribution<dim_,range_,rank_> *>(this);
-    }
-
-
-    /** Returns the container with the patch dof distribution (non const version). */
-    DofDistribution<dim_, range_, rank_> &
-    get_dof_distribution_patch()
-    {
-        Assert(false,ExcMessage("This class should not have this function."));
-        return *reinterpret_cast<DofDistribution<dim_,range_,rank_> *>(this);
-    }
-
 };
 
 
+template <class T, int dim>
+inline
+vector<T>
+unique_container(std::array <T, dim> a)
+{
+    auto it = std::unique(a.begin(), a.end());
+    return vector<T>(a.begin(), it);
+}
 
 
 
+template<int dim, int range, int rank>
+template<class T>
+SplineSpace<dim, range, rank>::
+ComponentContainer<T>::
+ComponentContainer(const ComponentMap &comp_map)
+    :
+    base_t(),
+    comp_map_(comp_map),
+    active_components_id_(unique_container<Index, n_entries>(comp_map)),
+    inactive_components_id_(n_entries)
+{
+    auto all = sequence<n_entries>();
+    auto it=std::set_difference(all.begin(), all.end(),
+                                active_components_id_.begin(),active_components_id_.end(),
+                                inactive_components_id_.begin());
+
+    inactive_components_id_.resize(it-inactive_components_id_.begin());
+}
 
 
 
+template<int dim, int range, int rank>
+template<class T>
+SplineSpace<dim, range, rank>::ComponentContainer<T>::
+ComponentContainer(const ComponentMap &comp_map, const T &val)
+    :
+    base_t(),
+    comp_map_(comp_map),
+    active_components_id_(unique_container<Index, n_entries>(comp_map)),
+    inactive_components_id_(n_entries)
+{
+    auto all = sequence<n_entries>();
+    auto it=std::set_difference(all.begin(), all.end(),
+                                active_components_id_.begin(),active_components_id_.end(),
+                                inactive_components_id_.begin());
+
+    inactive_components_id_.resize(it-inactive_components_id_.begin());
+
+    for (auto i : active_components_id_)
+        base_t::operator[](i) = val;
+}
+
+
+
+template<int dim, int range, int rank>
+template<class T>
+SplineSpace<dim, range, rank>::ComponentContainer<T>::
+ComponentContainer(std::initializer_list<T> list)
+    :
+    base_t(list),
+    comp_map_(sequence<n_entries>()),
+    active_components_id_(unique_container<Index, n_entries>(comp_map_))
+{}
+
+
+
+template<int dim, int range, int rank>
+template<class T>
+SplineSpace<dim, range, rank>::
+ComponentContainer<T>::
+ComponentContainer(const T &val)
+    :
+    comp_map_(filled_array<Index, n_entries>(0)),
+    active_components_id_(1,0),
+    inactive_components_id_(n_entries-1)
+{
+    for (int i=1; i<n_entries; ++i)
+        inactive_components_id_[i-1] = i;
+
+    base_t::operator[](0) = val;
+}
+
+
+
+template<int dim, int range, int rank>
+template<class T>
+T &
+SplineSpace<dim, range, rank>::
+ComponentContainer<T>::
+operator[](const Index i)
+{
+    return base_t::operator[](comp_map_[i]);
+}
+
+
+template<int dim, int range, int rank>
+template<class T>
+const T &
+SplineSpace<dim, range, rank>::
+ComponentContainer<T>::
+operator[](const Index i) const
+{
+    return base_t::operator[](comp_map_[i]);
+}
 
 IGA_NAMESPACE_CLOSE
 

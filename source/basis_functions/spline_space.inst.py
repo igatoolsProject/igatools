@@ -1,6 +1,6 @@
 #-+--------------------------------------------------------------------
 # Igatools a general purpose Isogeometric analysis library.
-# Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+# Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 #
 # This file is part of the igatools library.
 #
@@ -27,9 +27,7 @@ inst = data.inst
 sub_dim_members = \
  ['std::shared_ptr<typename class::template SubSpace<k>::MultiplicityTable> class::get_sub_space_mult<k>(const Index s_id) const;', 
   'typename class::template SubSpace<k>::DegreeTable class::get_sub_space_degree<k>(const Index s_id) const;',
-  'typename class::template SubSpace<k>::EndBehaviourTable class::get_sub_space_end_b<k>(const Index s_id) const;']         
-
-
+  'typename class::template SubSpace<k>::PeriodicTable class::get_sub_space_periodicity<k>(const Index s_id) const;']         
 
 for x in inst.sub_ref_sp_dims:
     space = 'SplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)

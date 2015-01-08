@@ -92,14 +92,17 @@ public:
     using ElementHandler = ReferenceElementHandler<dim_, range_, rank_>;
 
     using SpaceData = SplineSpace<dim_,range_,rank_>;
-    using InteriorReg = typename SpaceData::InteriorReg;
 
-    using DegreeTable = typename SpaceData::DegreeTable;
-
+    using Degrees = typename SpaceData::Degrees;
     using Multiplicity = typename SpaceData::Multiplicity;
-    using MultiplicityTable = typename SpaceData::MultiplicityTable;
+    using EndBehaviour = typename SpaceData::EndBehaviour;
+    using Periodicity = typename SpaceData::Periodicity;
+
     using KnotsTable = typename SpaceData::KnotsTable;
+    using DegreeTable = typename SpaceData::DegreeTable;
+    using MultiplicityTable = typename SpaceData::MultiplicityTable;
     using SpaceDimensionTable = typename SpaceData::SpaceDimensionTable;
+    using PeriodicTable = typename SpaceData::PeriodicTable;
     using EndBehaviourTable = typename SpaceData::EndBehaviourTable;
 
     using BCTable = typename SpaceData::BCTable;
@@ -155,40 +158,40 @@ public:
      */
     const DegreeTable &get_degree() const
     {
-    	return space_data_->get_degree();
+        return space_data_->get_degree();
     }
 
     /** @name Functions for retrieving information about the number of basis function. */
     ///@{
     SpaceDimensionTable get_num_all_element_basis() const
     {
-    	return space_data_->get_num_all_element_basis();
+        return space_data_->get_num_all_element_basis();
     }
 
     const SpaceDimensionTable &get_num_basis_table() const
     {
-    	return space_data_->get_num_basis_table();
+        return space_data_->get_num_basis_table();
     }
 
     Size get_num_basis() const
     {
-    	return space_data_->get_num_basis();
+        return space_data_->get_num_basis();
     }
 
 
     Size get_num_basis(const int comp) const
     {
-    	return space_data_->get_num_basis(comp);
+        return space_data_->get_num_basis(comp);
     }
 
     Size get_num_basis(const int comp, const int dir) const
     {
-    	return space_data_->get_num_basis(comp,dir);
+        return space_data_->get_num_basis(comp,dir);
     }
 
     ComponentContainer<Size> get_basis_offset() const
     {
-    	return space_data_->get_basis_offset();
+        return space_data_->get_basis_offset();
     }
     ///@}
 
@@ -294,10 +297,10 @@ protected:
 
 public:
     std::shared_ptr<SpaceData> get_space_data() const
-	{
-    	Assert(space_data_ != nullptr,ExcNullPtr());
-    	return space_data_;
-	}
+    {
+        Assert(space_data_ != nullptr,ExcNullPtr());
+        return space_data_;
+    }
 };
 
 

@@ -81,11 +81,6 @@ public:
     using RefSpace = typename BaseSpace::RefSpace;
 
 
-public:
-
-
-    using BCTable = typename SpSpace::BCTable;
-
 
 public:
     using Func = typename SpSpace::Func;
@@ -144,14 +139,19 @@ public:
     template< class T>
     using ComponentContainer = typename SpSpace::template ComponentContainer<T>;
 
-    using DegreeTable = typename SpSpace::DegreeTable;
+    using Degrees = typename SpSpace::Degrees;
     using Multiplicity = typename SpSpace::Multiplicity;
+    using EndBehaviour = typename SpSpace::EndBehaviour;
+    using Periodicity = typename SpSpace::Periodicity;
+
+    using KnotsTable = typename SpSpace::KnotsTable;
+    using DegreeTable = typename SpSpace::DegreeTable;
     using MultiplicityTable = typename SpSpace::MultiplicityTable;
-
-
-    using EndBehaviourTable = typename SpSpace::EndBehaviourTable;
-    using InteriorReg= typename SpSpace::InteriorReg;
     using SpaceDimensionTable = typename SpSpace::SpaceDimensionTable;
+    using PeriodicTable = typename SpSpace::PeriodicTable;
+    using EndBehaviourTable = typename SpSpace::EndBehaviourTable;
+
+    using BCTable = typename SpSpace::BCTable;
 
     using WeightSpace = BSplineSpace<dim_,1,1>;
     using WeightFunction = IgFunction<ReferenceSpace<dim_,1,1> >;

@@ -529,14 +529,20 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
     //-------------------------------------------------------------------------
 
 
+    //-------------------------------------------------------------------------
+    Assert(false,ExcMessage("Fix the next lines!"));
+#if 0
     typename space_t::EndBehaviourTable end_behaviour(components_map);
     for (const auto comp_id : end_behaviour.get_active_components_id())
         for (int dir = 0 ; dir < dim ; ++dir)
             end_behaviour[comp_id][dir] = EndBehaviour::interpolatory;
 
     auto ref_space = space_t::create(degrees,grid,multiplicities,end_behaviour);
+    //-------------------------------------------------------------------------
 
     return ref_space;
+#endif
+    return nullptr;
 }
 
 #ifdef NURBS
@@ -687,6 +693,8 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     //-------------------------------------------------------------------------
 
 
+    Assert(false,ExcMessage("Fix the next lines!"));
+#if 0
     typename space_t::EndBehaviourTable end_behaviour(components_map);
     for (const auto comp_id : end_behaviour.get_active_components_id())
         for (int dir = 0 ; dir < dim ; ++dir)
@@ -731,6 +739,8 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     auto ref_space = space_t::create(spline_space,w_func_table);
 
     return ref_space;
+#endif
+    return nullptr;
 }
 #endif
 

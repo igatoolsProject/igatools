@@ -34,9 +34,15 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
-BSplineSpace(const int degree, shared_ptr<GridType> grid)
+BSplineSpace(const int degree,
+             std::shared_ptr<GridType> knots,
+             const InteriorReg interior_reg,
+             const bool periodic,
+             const BasisEndBehaviour &end_b)
     :
-    BSplineSpace(TensorIndex<dim>(degree), grid)
+    BSplineSpace(Degrees(degree), knots, interior_reg,
+                 Periodicity(filled_array<bool,dim>(periodic)),
+                 EndBehaviour(filled_array<BasisEndBehaviour,dim>(end_b)))
 {}
 
 
@@ -44,9 +50,13 @@ BSplineSpace(const int degree, shared_ptr<GridType> grid)
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-create(const int degree, shared_ptr< GridType > knots) -> shared_ptr<self_t>
+create(const int degree,
+       std::shared_ptr<GridType> knots,
+       const InteriorReg interior_reg,
+       const bool periodic,
+       const BasisEndBehaviour &end_b) -> shared_ptr<self_t>
 {
-    auto sp = shared_ptr<self_t>(new self_t(degree, knots));
+    auto sp = shared_ptr<self_t>(new self_t(degree,knots,interior_reg,periodic,end_b));
     Assert(sp != nullptr, ExcNullPtr());
 
     sp->create_connection_for_h_refinement(sp);
@@ -58,9 +68,18 @@ create(const int degree, shared_ptr< GridType > knots) -> shared_ptr<self_t>
 
 template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
-BSplineSpace(const TensorIndex<dim> &degree, shared_ptr<GridType> knots)
+BSplineSpace(const Degrees &deg,
+             std::shared_ptr<GridType> knots,
+             const InteriorReg interior_reg,
+             const Periodicity &periodic,
+             const EndBehaviour &end_b)
     :
-    BSplineSpace(DegreeTable(degree), knots, true)
+    BSplineSpace(DegreeTable(true,deg),
+                 knots,
+                 SpaceData::multiplicity_regularity(interior_reg,DegreeTable(true,deg),
+                                                    knots->get_num_intervals()),
+                 PeriodicTable(true,periodic),
+                 EndBehaviourTable(true,end_b))
 {}
 
 
@@ -68,10 +87,14 @@ BSplineSpace(const TensorIndex<dim> &degree, shared_ptr<GridType> knots)
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-create(const TensorIndex<dim> &degree, shared_ptr<GridType> knots)
+create(const Degrees &deg,
+       std::shared_ptr<GridType> knots,
+       const InteriorReg interior_reg,
+       const Periodicity &periodic,
+       const EndBehaviour &end_b)
 -> shared_ptr<self_t>
 {
-    auto sp = shared_ptr<self_t>(new self_t(degree, knots));
+    auto sp = shared_ptr<self_t>(new self_t(deg, knots, interior_reg, periodic, end_b));
     Assert(sp != nullptr, ExcNullPtr());
 
     sp->create_connection_for_h_refinement(sp);
@@ -80,32 +103,6 @@ create(const TensorIndex<dim> &degree, shared_ptr<GridType> knots)
 }
 
 
-
-template<int dim_, int range_, int rank_>
-BSplineSpace<dim_, range_, rank_>::
-BSplineSpace(const DegreeTable &deg,
-             std::shared_ptr<GridType> knots,
-             const bool homogeneous_range)
-    :
-    BSplineSpace(SpaceData::create(deg, knots, SpaceData::InteriorReg::maximum))
-{}
-
-
-
-template<int dim_, int range_, int rank_>
-auto
-BSplineSpace<dim_, range_, rank_>::
-create(const DegreeTable &deg,
-       std::shared_ptr<GridType> knots,
-       const bool homogeneous_range) -> shared_ptr<self_t>
-{
-    auto sp = shared_ptr<self_t>(new self_t(deg, knots, homogeneous_range));
-    Assert(sp != nullptr, ExcNullPtr());
-
-    sp->create_connection_for_h_refinement(sp);
-
-    return sp;
-}
 
 
 
@@ -114,32 +111,37 @@ BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(const DegreeTable &deg,
              std::shared_ptr<GridType> knots,
              std::shared_ptr<const MultiplicityTable> interior_mult,
+             const PeriodicTable &periodic,
              const EndBehaviourTable &end_b)
     :
-    BSplineSpace(SpaceData::create(deg, knots, interior_mult, end_b))
-{}
+    BSplineSpace(SpaceData::create(deg, knots, interior_mult, periodic))
+{
+    Assert(false,ExcMessage("Add the modification made by Seba!"));
+}
 
 template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(std::shared_ptr<SpaceData> space_data)
-	:
-	BaseSpace(space_data),
-	dof_distribution_global_(
-		this->space_data_->get_grid(),
-		this->space_data_->accumulated_interior_multiplicities(),
-		this->space_data_->get_num_basis_table(),
-		this->space_data_->get_degree()),
-	dof_distribution_patch_(
-		this->space_data_->get_grid(),
-		this->space_data_->accumulated_interior_multiplicities(),
-		this->space_data_->get_num_basis_table(),
-		this->space_data_->get_degree()),
-	operators_(
-		this->space_data_->get_grid(),
-		this->space_data_->compute_knots_with_repetition(
-				this->space_data_->get_end_behaviour()),
-		this->space_data_->accumulated_interior_multiplicities(),
-		this->space_data_->get_degree())
+    :
+    BaseSpace(space_data),
+    dof_distribution_global_(
+        this->space_data_->get_grid(),
+        this->space_data_->accumulated_interior_multiplicities(),
+        this->space_data_->get_num_basis_table(),
+        this->space_data_->get_degree(),
+        periodic),
+    dof_distribution_patch_(
+        this->space_data_->get_grid(),
+        this->space_data_->accumulated_interior_multiplicities(),
+        this->space_data_->get_num_basis_table(),
+        this->space_data_->get_degree(),
+        periodic),
+    operators_(
+        this->space_data_->get_grid(),
+        this->space_data_->compute_knots_with_repetition(
+            this->space_data_->get_end_behaviour()),
+        this->space_data_->accumulated_interior_multiplicities(),
+        this->space_data_->get_degree())
 {}
 
 
@@ -150,10 +152,11 @@ BSplineSpace<dim_, range_, rank_>::
 create(const DegreeTable &deg,
        std::shared_ptr<GridType> knots,
        std::shared_ptr<const MultiplicityTable> interior_mult,
-       const EndBehaviourTable &ends)
+       const PeriodicTable &periodic,
+       const EndBehaviourTable &end_b)
 -> shared_ptr<self_t>
 {
-    auto sp = shared_ptr<self_t>(new self_t(deg, knots, interior_mult, ends));
+    auto sp = shared_ptr<self_t>(new self_t(deg, knots, interior_mult, periodic, end_b));
     Assert(sp != nullptr, ExcNullPtr());
 
     sp->create_connection_for_h_refinement(sp);
@@ -321,21 +324,21 @@ refine_h_after_grid_refinement(
 {
     dof_distribution_global_ = DofDistribution<dim, range, rank>(
                                    this->get_grid(),
-								   this->space_data_->accumulated_interior_multiplicities(),
-								   this->space_data_->get_num_basis_table(),
-								   this->space_data_->get_degree());
+                                   this->space_data_->accumulated_interior_multiplicities(),
+                                   this->space_data_->get_num_basis_table(),
+                                   this->space_data_->get_degree());
 
     dof_distribution_patch_ = DofDistribution<dim, range, rank>(
                                   this->get_grid(),
-								  this->space_data_->accumulated_interior_multiplicities(),
-								  this->space_data_->get_num_basis_table(),
-								  this->space_data_->get_degree());
+                                  this->space_data_->accumulated_interior_multiplicities(),
+                                  this->space_data_->get_num_basis_table(),
+                                  this->space_data_->get_degree());
 
     operators_ = BernsteinExtraction<dim, range, rank>(
                      this->get_grid(),
-					 this->space_data_->compute_knots_with_repetition(
-							 this->space_data_->get_end_behaviour()),
-					 this->space_data_->accumulated_interior_multiplicities(),
+                     this->space_data_->compute_knots_with_repetition(
+                         this->space_data_->get_end_behaviour()),
+                     this->space_data_->accumulated_interior_multiplicities(),
                      this->get_degree());
 }
 
