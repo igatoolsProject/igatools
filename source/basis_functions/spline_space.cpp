@@ -44,10 +44,10 @@ SplineSpace(const DegreeTable &deg,
             shared_ptr<const MultiplicityTable> interior_mult,
             const PeriodicTable &periodic)
     :
-    GridSpace(knots),
-    interior_mult_(interior_mult),
-    deg_(deg),
-    periodic_(periodic)
+    GridWrapper<CartesianGrid<dim>>(knots),
+                                 interior_mult_(interior_mult),
+                                 deg_(deg),
+                                 periodic_(periodic)
 {
     this->init();
 #if 0

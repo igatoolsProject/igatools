@@ -52,6 +52,9 @@ class GridWrapper
 public:
 
     using GridType = Grid_;
+
+    static constexpr std::array<Size, Grid_::dim> dims = Grid_::dims;
+
     /** @name Constructor and destructor. */
     ///@{
     /** Default constructor. Not allowed to be used. */

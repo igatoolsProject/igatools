@@ -223,7 +223,8 @@ public:
     /** @name Assignment operators */
     ///@{
     /**
-     * Copy assignment operator. It performs a shallow copy of the Accessor hold by the CartesianGridIteratorBase.
+     * Copy assignment operator.
+     * It performs a <b>shallow</b> copy of the Accessor hold by the CartesianGridIteratorBase.
      */
     CartesianGridIteratorBase<Accessor> &
     operator=(const CartesianGridIteratorBase<Accessor> &it)
@@ -255,7 +256,7 @@ public:
     /**
      * "Greather than" comparison operator.
      *
-     * @note Internally uses the "greather than" comparison operator implemented by the Accessor object.
+     * @note Internally uses the "greater than" comparison operator implemented by the Accessor object.
      */
     bool operator> (const CartesianGridIteratorBase &) const;
 
@@ -352,52 +353,9 @@ public:
     /** Type of the grid-like container . */
     using ContainerType = typename Accessor::ContainerType;
 
-
+    /** The constructors are inherited from the parent class CartesianGridIteratorBase */
     using CartesianGridIteratorBase<Accessor>::CartesianGridIteratorBase;
 
-#if 0
-    /** @name Constructors & destructor */
-    ///@{
-    /**
-     * Default constructor. Not allowed to be used.
-     *
-     */
-    CartesianGridIterator()
-    {
-        Assert(false,ExcNotInitialized());
-    }
-
-    /**
-     * Construct an iterator on a grid-type container
-     * grid pointing to the element of given index.
-     */
-    CartesianGridIterator(std::shared_ptr<ContainerType> grid,
-                          const Index index);
-
-    /**
-     * Construct an iterator on a grid-type container
-     * grid pointing to the element of given index.
-     */
-    CartesianGridIterator(std::shared_ptr<ContainerType> grid,
-                          const TensorIndex<ContainerType::dim> &index);
-
-    /**
-     * Copy constructor. It may be used with different CopyPolicy (i.e. shallow or deep).
-     *
-     * @note By default it uses the deep copy.
-     */
-    CartesianGridIterator(const CartesianGridIterator<Accessor> &it,const CopyPolicy &copy_policy = CopyPolicy::deep);
-
-
-    /** Move constructor. */
-    CartesianGridIterator(CartesianGridIterator<Accessor> &&it) = default;
-
-//    CartesianGridIterator(const Accessor &acc,const CopyPolicy &copy_policy = CopyPolicy::shallow);
-
-    /** Destructor */
-    ~CartesianGridIterator() = default ;
-    ///@}
-#endif
 
     /** @name Dereferencing operators */
     ///@{
@@ -451,49 +409,9 @@ public:
     /** Type of the grid-like container . */
     using ContainerType = typename Accessor::ContainerType;
 
+    /** The constructors are inherited from the parent class CartesianGridIteratorBase */
     using CartesianGridIteratorBase<Accessor>::CartesianGridIteratorBase;
-#if 0
-    /** @name Constructors & destructor */
-    ///@{
-    /**
-     * Default constructor. Not allowed to be used.
-     */
-    CartesianGridConstIterator()
-    {
-        Assert(false,ExcNotInitialized());
-    }
 
-
-    /**
-     * Construct an iterator on a grid-type container
-     * grid pointing to the element of given index.
-     */
-    CartesianGridConstIterator(std::shared_ptr<ContainerType> grid,
-                               const Index index);
-
-    /**
-     * Construct an iterator on a grid-type container
-     * grid pointing to the element of given index.
-     */
-    CartesianGridConstIterator(std::shared_ptr<ContainerType> grid,
-                               const TensorIndex<ContainerType::dim> &index);
-
-    /**
-     * Copy constructor. It may be used with different CopyPolicy (i.e. shallow or deep).
-     *
-     * @note By default it uses the deep copy.
-     */
-    CartesianGridConstIterator(const CartesianGridConstIterator<Accessor> &it,const CopyPolicy &copy_policy = CopyPolicy::deep);
-
-
-    /** Move constructor. */
-    CartesianGridConstIterator(CartesianGridConstIterator<Accessor> &&it) = default;
-
-
-    /** Destructor */
-    ~CartesianGridConstIterator() = default ;
-    ///@}
-#endif
 
     /** @name Dereferencing operators */
     ///@{

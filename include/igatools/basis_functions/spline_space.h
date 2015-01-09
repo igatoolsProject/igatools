@@ -70,19 +70,20 @@ enum class InteriorReg
  * for the given space.
  *
  * @author pauletti, 2014
+ * @author M. Martinelli, 2014, 2015
  *
  */
 template<int dim, int range = 1, int rank = 1>
 class SplineSpace :
-    public FunctionSpaceOnGrid<CartesianGrid<dim>>
+    public GridWrapper<CartesianGrid<dim> >
 {
 
 private:
-    using GridSpace = FunctionSpaceOnGrid<CartesianGrid<dim>>;
-    using typename GridSpace::GridType;
+    using GridType = CartesianGrid<dim>;
+
+    using GridWrapper<CartesianGrid<dim>>::dims;
 
 public:
-    using GridSpace::dims;
 
     using Func = Function<dim, 0, range, rank>;
 

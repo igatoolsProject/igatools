@@ -46,11 +46,8 @@ CartesianGridElement<dim_>::
 CartesianGridElement(const std::shared_ptr<ContainerType> grid,
                      const TensorIndex<dim> index)
     :
-    grid_(grid)
-{
-    Assert(grid_ != nullptr,ExcNullPtr());
-    move_to(index);
-}
+    CartesianGridElement(grid,grid->tensor_to_flat(index))
+{}
 
 
 
@@ -142,12 +139,15 @@ void
 CartesianGridElement<dim_>::
 move_to(const TensorIndex<dim> &tensor_index)
 {
-    tensor_index_= tensor_index;
-    flat_index_ = grid_->tensor_to_flat(tensor_index_);
+    move_to(grid_->tensor_to_flat(tensor_index));
+    /*
+        tensor_index_= tensor_index;
+        flat_index_ = grid_->tensor_to_flat(tensor_index_);
 
-    Assert((flat_index_ == IteratorState::pass_the_end) ||
-           ((flat_index_ >= 0) && (flat_index_ < grid_->get_num_active_elems())),
-           ExcIndexRange(flat_index_, 0, grid_->get_num_active_elems()));
+        Assert((flat_index_ == IteratorState::pass_the_end) ||
+               ((flat_index_ >= 0) && (flat_index_ < grid_->get_num_active_elems())),
+               ExcIndexRange(flat_index_, 0, grid_->get_num_active_elems()));
+    //*/
 }
 
 
@@ -263,8 +263,6 @@ bool
 CartesianGridElement<dim_>::
 operator <(const CartesianGridElement<dim_> &elem) const
 {
-    auto this_grid = this->get_grid().get();
-    auto elem_grid = elem.get_grid().get();
     Assert(this->get_grid() == elem.get_grid(), ExcMessage("Cannot compare elements on different grid."));
     return (this->get_flat_index() < elem.get_flat_index());
 }

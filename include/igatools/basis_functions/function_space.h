@@ -100,7 +100,9 @@ private:
 
 public:
     using typename GridWrapper<Grid_>::GridType;
-    static constexpr std::array<Size, Grid_::dim> dims = Grid_::dims;
+//    static constexpr std::array<Size, Grid_::dim> dims = Grid_::dims;
+
+    using GridWrapper<Grid_>::dims;
 
 public:
     /** @name Constructor and destructor. */

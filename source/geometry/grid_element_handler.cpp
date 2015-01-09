@@ -193,6 +193,15 @@ fill_element_cache(ElementIterator &elem)
     fill_element_cache(*elem);
 }
 
+
+template <int dim_>
+auto
+GridElementHandler<dim_>::
+get_grid() const -> std::shared_ptr<const GridType>
+{
+    return grid_;
+}
+
 template <int dim_>
 auto
 GridElementHandler<dim_>::

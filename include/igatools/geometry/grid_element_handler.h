@@ -125,10 +125,7 @@ public:
     void print_info(LogStream &out) const;
 
 
-    auto get_grid() const
-    {
-        return grid_;
-    }
+    std::shared_ptr<const GridType> get_grid() const;
 
     const TensorProductArray<dim> &get_lengths() const;
 
@@ -146,4 +143,4 @@ protected:
 
 IGA_NAMESPACE_CLOSE
 
-#endif /* GRID_UNIFORM_QUAD_CACHE_H_ */
+#endif /* GRID_ELEMENT_HANDLER_H_ */

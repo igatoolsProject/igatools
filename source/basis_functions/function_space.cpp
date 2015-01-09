@@ -22,9 +22,10 @@
 #include <igatools/utils/unique_id_generator.h>
 
 IGA_NAMESPACE_OPEN
-
+/*
 template <class Grid_>
 constexpr  std::array<Size, Grid_::dim> FunctionSpaceOnGrid<Grid_>::dims;
+//*/
 
 template <class Grid_>
 FunctionSpaceOnGrid<Grid_>::

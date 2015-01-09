@@ -87,7 +87,7 @@ public:
      * (i.e. deep copy or shallow copy).
      * The default behaviour (i.e. using the proper interface of a
      * classic copy constructor)
-     * uses the deep copy.
+     * uses the <b>deep</b> copy.
      */
     CartesianGridElement(const self_t &elem,
                          const CopyPolicy &copy_policy = CopyPolicy::deep);
@@ -199,7 +199,13 @@ public:
     ///@}
 
 public:
-    /** @name Comparison operators */
+    /**
+     * @name Comparison operators
+     * @note In order to be meaningful, the comparison must be performed on elements defined on
+     * the <b>same grid</b>
+     * (in the sense that the pointer to the grid held by the element must point to the same
+     * grid object).
+     */
     ///@{
     /**
      * True if the elements have the same index.
