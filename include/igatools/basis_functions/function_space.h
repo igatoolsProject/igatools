@@ -53,7 +53,7 @@ public:
      */
     using GridWrapper<Grid_>::dims;
 
-public:
+protected:
     /** @name Constructor and destructor. */
     ///@{
     /** Default constructor. Not allowed to be used. */
@@ -81,6 +81,7 @@ public:
     self_t &operator=(self_t &&) = delete;
     ///@}
 
+public:
     /**
      * Returns the space id.
      */

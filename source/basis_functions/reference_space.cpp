@@ -46,12 +46,12 @@ ReferenceSpace<dim, range, rank>::components =
 template<int dim, int range, int rank>
 ReferenceSpace<dim, range, rank>::
 ReferenceSpace(const std::shared_ptr<SpaceData> space_data)
-	:
-	GridSpace(std::const_pointer_cast<CartesianGrid<dim>>(space_data->get_grid())),
-	space_data_(space_data)
+    :
+    GridSpace(std::const_pointer_cast<CartesianGrid<dim>>(space_data->get_grid())),
+    space_data_(space_data)
 {
-	Assert(this->get_grid() != nullptr,ExcNullPtr());
-	Assert(space_data_ != nullptr,ExcNullPtr());
+    Assert(this->get_grid() != nullptr,ExcNullPtr());
+    Assert(space_data_ != nullptr,ExcNullPtr());
 }
 
 
@@ -88,6 +88,15 @@ get_ref_sub_space(const int sub_elem_id,
     return sub_ref_space;
 }
 
+
+template<int dim, int range, int rank>
+auto
+ReferenceSpace<dim, range, rank>::
+get_space_data() const -> std::shared_ptr<SpaceData>
+{
+    Assert(space_data_ != nullptr,ExcNullPtr());
+    return space_data_;
+}
 
 
 

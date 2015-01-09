@@ -258,24 +258,6 @@ public:
     get_ref_sub_space(const int sub_elem_id,
                       InterSpaceMap<k> &dof_map,
                       std::shared_ptr<CartesianGrid<k>> sub_grid = nullptr) const;
-#if 0
-    {
-        std::shared_ptr< SubRefSpace<k> > sub_ref_space;
-        if (this->is_bspline())
-        {
-            const auto bsp_space = dynamic_cast<const BSplineSpace<dim,range,rank> *>(this);
-            Assert(bsp_space != nullptr,ExcNullPtr());
-        }
-        else
-        {
-            const auto nrb_space = dynamic_cast<const NURBSSpace<dim,range,rank> *>(this);
-            Assert(nrb_space != nullptr,ExcNullPtr());
-        }
-
-        Assert(false,ExcNotImplemented());
-        return nullptr;
-    }
-#endif
 
     template<int k>
     std::shared_ptr<SubSpace<k> >
@@ -296,11 +278,7 @@ protected:
 
 
 public:
-    std::shared_ptr<SpaceData> get_space_data() const
-    {
-        Assert(space_data_ != nullptr,ExcNullPtr());
-        return space_data_;
-    }
+    std::shared_ptr<SpaceData> get_space_data() const;
 };
 
 

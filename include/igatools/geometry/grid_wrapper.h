@@ -50,10 +50,11 @@ template<class Grid_>
 class GridWrapper
 {
 public:
-
     using GridType = Grid_;
 
     static constexpr std::array<Size, Grid_::dim> dims = Grid_::dims;
+
+protected:
 
     /** @name Constructor and destructor. */
     ///@{
@@ -83,6 +84,8 @@ public:
     ///@}
 
 
+public:
+
     /** @name Getting the grid */
     ///@{
 
@@ -94,7 +97,6 @@ public:
     ///@}
 
 
-public:
     /**
      * @name Functions for performing h-refinement
      */

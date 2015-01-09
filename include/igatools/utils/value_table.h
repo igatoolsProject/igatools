@@ -48,7 +48,7 @@ IGA_NAMESPACE_OPEN
  * the modulo operation <tt>i\%num_points</tt>: in other words,
  * the point-index runs faster than the function-index.
  *
- * The container can be iterated with the iterator ValueTable::iterator
+ * The ValueTable container can be iterated with the iterator ValueTable::iterator
  * or its const version ValueTable::const_iterator.
  * Moreover the class provides ``views'' (in const and non-const version),
  * i.e. special iterators that operates on entries that
