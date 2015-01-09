@@ -33,6 +33,8 @@
 // TODO (pauletti, Oct 9, 2014): should we use iga array
 #include <array>
 #include <memory>
+#include <map>
+#include <set>
 
 #include <boost/signals2.hpp>
 
@@ -362,6 +364,22 @@ public:
      * This function returns a element (const) iterator to one-pass the end of patch.
      */
     ElementConstIterator cend() const;
+
+
+    /**
+     * This function returns the iterator to the last active element on the grid.
+     */
+    ElementIterator last();
+
+    /**
+     * This function returns the (const) iterator to the last active element on the grid.
+     */
+    ElementConstIterator last() const;
+
+    /**
+     * This function returns the (const) iterator to the last active element on the grid.
+     */
+    ElementConstIterator clast() const;
     ///@}
 
 
@@ -522,16 +540,65 @@ private:
      */
     KnotCoordinates knot_coordinates_;
 
+public:
+
+
+    enum class ElementProperty : int
+    {
+        /**
+         * Active elements indicators (used for example in hierarchical spaces).
+         */
+        active = 1,
+
+        /**
+        * Marked elements indicators.
+        */
+        marked = 2,
+
+        /**
+        * Influence elements indicators  (used for example in hierarchical spaces).
+        */
+        influence = 3,
+
+        /**
+         * Number of different element properties allowed.
+         */
+        ENUM_SIZE = 3,
+    };
+
+private:
     /**
-     * In the hierarchical spaces elements are characterized as influent or not
-     * this is the place where this information is stored.
+     * Container for the element ids having a certain property.
+     *
+     * The property is the key of the std::map.
      */
-    DynamicMultiArray<bool,dim> influence_elems_;
+    std::map<ElementProperty,std::set<Index>> properties_elements_id_;
+
+public:
+    /**
+     * Returns the flat id of the elements having a certain @p property (non-const version).
+     */
+    std::set<Index> &get_elements_id_same_property(const ElementProperty &property);
 
     /**
-     * Active elements indicators (used for example in hierarchical spaces).
+     * Returns the flat id of the elements having a certain @p property (const version).
      */
-    DynamicMultiArray<bool,dim> active_elems_;
+    const std::set<Index> &get_elements_id_same_property(const ElementProperty &property) const;
+
+    /**
+     * Sets the @p status of the given @p property for the element with flat id @ elem_flat_id.
+     */
+    void set_element_property(const ElementProperty &property,
+                              const Index elem_flat_id,
+                              const bool status);
+
+private:
+    /**
+     * Returns the flat ids of the sub-elements corresponding to the element with index @p elem_id,
+     * referred to a CartesianGrid built as a refinement of the current one using
+     * @p n_sub_elems for each element.
+     */
+    vector<Index> get_sub_elements_id(const TensorSize<dim_> &n_sub_elems, const Index elem_id) const;
 
     /**
      * Perform a uniform refinement of the knots along the @p direction_id

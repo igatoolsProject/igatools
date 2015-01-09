@@ -34,17 +34,25 @@ template<int dim>
 void
 test()
 {
+    using Grid = CartesianGrid<dim>;
     const int n_knots = 4;
-    auto grid = CartesianGrid<dim>::create(n_knots);
+    auto grid = Grid::create(n_knots);
     grid->print_info(out);
 
     for (auto elem : *grid)
         out << elem.get_flat_index() << endl;
 
-    for (auto elem : *grid)
+    if (dim > 0)
     {
-        if (elem.get_flat_index() % 2 == 0)
-            elem.set_active(false);
+        const auto active_property = Grid::ElementProperty::active;
+
+        std::set<Index> id_active_elems = grid->get_elements_id_same_property(active_property);
+
+        for (const auto elem_id : id_active_elems)
+        {
+            if (elem_id % 2 == 0)
+                grid->set_element_property(active_property,elem_id,false);
+        }
     }
 
     grid->print_info(out);

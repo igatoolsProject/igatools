@@ -165,10 +165,22 @@ CartesianGrid(const KnotCoordinates &knot_coordinates,
     TensorSizedContainer<dim_>(TensorSize<dim_>(knot_coordinates.tensor_size()-1)),
     kind_(kind),
     boundary_id_(filled_array<int,UnitElement<dim>::n_faces>(0)),
-    knot_coordinates_(knot_coordinates),
-    influence_elems_(this->tensor_size(), true),
-    active_elems_(this->tensor_size(), true)
+    knot_coordinates_(knot_coordinates)
 {
+    const int n_elems = this->flat_size();
+
+    auto &active_elements = properties_elements_id_[ElementProperty::active];
+    auto &marked_elements = properties_elements_id_[ElementProperty::marked];
+    auto &influence_elements = properties_elements_id_[ElementProperty::influence];
+
+    for (int elem_id = 0 ; elem_id < n_elems ; ++elem_id)
+    {
+        active_elements.insert(elem_id);
+        marked_elements.insert(elem_id);
+        influence_elements.insert(elem_id);
+    }
+
+
 #ifndef NDEBUG
     for (int i = 0; i < dim; i++)
     {
@@ -236,8 +248,7 @@ CartesianGrid(const self_t &grid)
     kind_(grid.kind_),
     boundary_id_(grid.boundary_id_),
     knot_coordinates_(grid.knot_coordinates_),
-    influence_elems_(grid.influence_elems_),
-    active_elems_(grid.active_elems_)
+    properties_elements_id_(grid.properties_elements_id_)
 {}
 
 
@@ -281,21 +292,38 @@ get_element_lengths() const -> KnotCoordinates
 }
 
 
+template<int dim_>
+std::set<Index> &
+CartesianGrid<dim_>::
+get_elements_id_same_property(const ElementProperty &property)
+{
+    return properties_elements_id_[property];
+}
+
+template<int dim_>
+const std::set<Index> &
+CartesianGrid<dim_>::
+get_elements_id_same_property(const ElementProperty &property) const
+{
+    return properties_elements_id_.at(property);
+}
 
 template<int dim_>
 auto
-CartesianGrid<dim_>::begin() -> ElementIterator
+CartesianGrid<dim_>::
+begin() -> ElementIterator
 {
-    auto it = std::find(active_elems_.get_data().begin(),
-    active_elems_.get_data().end(), true);
+    const auto &active_elements = get_elements_id_same_property(ElementProperty::active);
+    const auto active_begin = active_elements.begin();
+    const auto active_end   = active_elements.end();
 
-    int index = 0;
-    if (it == active_elems_.get_data().end())
-        index = IteratorState::pass_the_end;
+    int id_first_active_elem;
+    if (active_begin != active_end)
+        id_first_active_elem = *active_begin;
     else
-        index = std::distance(active_elems_.get_data().begin(),it);
+        id_first_active_elem = IteratorState::pass_the_end;
 
-    return ElementIterator(this->create_element(index));
+    return ElementIterator(this->shared_from_this(), id_first_active_elem);
 }
 
 template<int dim_>
@@ -319,6 +347,48 @@ end() -> ElementIterator
     return ElementIterator(this->create_element(IteratorState::pass_the_end));
 }
 
+template<int dim_>
+auto
+CartesianGrid<dim_>::
+last() -> ElementIterator
+{
+    const auto &active_elements = get_elements_id_same_property(ElementProperty::active);
+    const auto active_begin = active_elements.begin();
+    auto active_end   = active_elements.end();
+    int id_last_active_elem;
+    if (active_begin != active_end)
+        id_last_active_elem = *(--active_end);
+    else
+        id_last_active_elem = IteratorState::pass_the_end;
+
+    return ElementIterator(this->shared_from_this(), id_last_active_elem);
+}
+
+template<int dim_>
+auto
+CartesianGrid<dim_>::
+last() const -> ElementConstIterator
+{
+    return clast();
+}
+
+template<int dim_>
+auto
+CartesianGrid<dim_>::
+clast() const -> ElementConstIterator
+{
+    const auto &active_elements = get_elements_id_same_property(ElementProperty::active);
+    const auto active_begin = active_elements.begin();
+    auto active_end   = active_elements.end();
+
+    int id_last_active_elem;
+    if (active_begin != active_end)
+        id_last_active_elem = *(--active_end);
+    else
+        id_last_active_elem = IteratorState::pass_the_end;
+
+    return ElementConstIterator(this->shared_from_this(), id_last_active_elem);
+}
 
 template<int dim_>
 auto
@@ -343,16 +413,17 @@ auto
 CartesianGrid<dim_>::
 cbegin() const -> ElementConstIterator
 {
-    auto it = std::find(active_elems_.get_data().begin(),
-                        active_elems_.get_data().end(), true);
+    const auto &active_elements = get_elements_id_same_property(ElementProperty::active);
+    const auto active_begin = active_elements.begin();
+    const auto active_end   = active_elements.end();
 
-    int index = 0;
-    if (it == active_elems_.get_data().end())
-        index = IteratorState::pass_the_end;
+    int id_first_active_elem;
+    if (active_begin != active_end)
+        id_first_active_elem = *active_begin;
     else
-        index = std::distance(active_elems_.get_data().begin(),it);
+        id_first_active_elem = IteratorState::pass_the_end;
 
-    return ElementConstIterator(this->create_element(index));
+    return ElementConstIterator(this->shared_from_this(), id_first_active_elem);
 }
 
 
@@ -439,7 +510,7 @@ Size
 CartesianGrid<dim_>::
 get_num_active_elems() const
 {
-    return std::count(active_elems_.begin(), active_elems_.end(), true);
+    return this->get_elements_id_same_property(ElementProperty::active).size();
 }
 
 template<int dim_>
@@ -447,7 +518,7 @@ Size
 CartesianGrid<dim_>::
 get_num_influence_elems() const
 {
-    return std::count(influence_elems_.begin(), influence_elems_.end(), true);
+    return this->get_elements_id_same_property(ElementProperty::influence).size();
 }
 
 
@@ -511,15 +582,38 @@ refine_directions(
     // make a copy of the grid before the refinement
     grid_pre_refinement_ = make_shared<const self_t>(self_t(*this));
 
+    TensorSize<dim_> n_sub_elems;
     for (auto i : dims)
+    {
         if (refinement_directions[i])
-            this->refine_knots_direction(i,n_subdivisions[i]);
-
+        {
+            Assert(n_subdivisions[i] > 0,ExcLowerRange(n_subdivisions[i],1));
+            n_sub_elems[i] = n_subdivisions[i];
+            this->refine_knots_direction(i,n_sub_elems[i]);
+        }
+        else
+        {
+            n_sub_elems[i] = 1;
+        }
+    }
     TensorSizedContainer<dim_>::reset_size(knot_coordinates_.tensor_size()-1);
 
-    // TODO (pauletti, Jul 30, 2014): this is wrong in general !!!
-    influence_elems_.resize(this->tensor_size(), true);
-    active_elems_.resize(this->tensor_size(), true);
+    //-------------------------------------------------------------
+    for (auto &elements_same_property : properties_elements_id_)
+    {
+        auto &old_elem_ids = elements_same_property.second;
+
+        std::set<Index> new_elem_ids;
+        for (const auto &old_elem_id : old_elem_ids)
+        {
+            const auto new_elem_ids_to_add =
+                grid_pre_refinement_->get_sub_elements_id(n_sub_elems,old_elem_id);
+
+            new_elem_ids.insert(new_elem_ids_to_add.begin(),new_elem_ids_to_add.end());
+        } // end loop old_elem_id
+        old_elem_ids = std::move(new_elem_ids);
+    } // end loop elements_same_property
+    //-------------------------------------------------------------
 
     // refining the objects that's are attached to the CartesianGrid
     // (i.e. that are defined using this CartesianGrid object)
@@ -622,9 +716,9 @@ print_info(LogStream &out) const
     if (get_num_active_elems() > 0)
     {
         out << "   Flat IDs:";
-        for (const auto &elem : *this)
-            if (elem.is_active())
-                out << " " << elem.get_flat_index() ;
+        const auto &active_elements = get_elements_id_same_property(ElementProperty::active);
+        for (const auto &elem_id : active_elements)
+            out << " " << elem_id ;
     }
     out.end_item();
     //-------------------------------------------------------
@@ -636,9 +730,9 @@ print_info(LogStream &out) const
     if (get_num_influence_elems() > 0)
     {
         out << "   Flat IDs:";
-        for (const auto &elem : *this)
-            if (elem.is_influence())
-                out << " " << elem.get_flat_index() ;
+        const auto &influence_elements = get_elements_id_same_property(ElementProperty::influence);
+        for (const auto &elem_id : influence_elements)
+            out << " " << elem_id ;
     }
     out.end_item();
     //-------------------------------------------------------
@@ -736,11 +830,10 @@ find_elements_of_points(const ValueVector<Points<dim>> &points) const
             elem_t_id[i] = (j>0) ? j-1 : 0;
         }
 
+        auto ans = res.emplace(
+                       ElementIterator(this->shared_from_this(), this->tensor_to_flat(elem_t_id)),
+                       vector<int>(1,k));
 
-        const auto elem_f_id = this->tensor_to_flat(elem_t_id);
-        auto ans =
-            res.emplace(ElementIterator(this->create_element(elem_f_id)),
-                        vector<int>(1,k));
         if (!ans.second)
             (ans.first)->second.push_back(k);
     }
@@ -763,6 +856,70 @@ operator==(const CartesianGrid<dim> &grid) const
         same_knots_coordinates = same_knots_coordinates && (knots_a == knots_b);
     }
     return same_knots_coordinates;
+}
+
+template <int dim_>
+vector<Index>
+CartesianGrid<dim_>::
+get_sub_elements_id(const TensorSize<dim_> &n_sub_elems, const Index elem_id) const
+{
+    const auto coarse_elem_tensor_id = this->flat_to_tensor(elem_id);
+
+    const auto weight_sub_elems = MultiArrayUtils<dim>::compute_weight(n_sub_elems);
+
+    const TensorSize<dim> n_elems_coarse_grid = this->get_num_intervals();
+    TensorSize<dim> n_elems_fine_grid;
+    TensorIndex<dim> first_fine_elem_tensor_id;
+    for (const auto &i : dims)
+    {
+        Assert(n_sub_elems[i] > 0 ,ExcLowerRange(n_sub_elems[i],1));
+
+        n_elems_fine_grid[i] = n_elems_coarse_grid[i] * n_sub_elems[i];
+
+        first_fine_elem_tensor_id[i] = n_sub_elems[i] * coarse_elem_tensor_id[i];
+    }
+    const auto weight_fine_grid = MultiArrayUtils<dim>::compute_weight(n_elems_fine_grid);
+
+
+    const int n_sub_elems_total = n_sub_elems.flat_size();
+    vector<Index> sub_elems_id(n_sub_elems_total);
+    TensorIndex<dim> fine_elem_tensor_id;
+    for (int sub_elem = 0 ; sub_elem < n_sub_elems_total ; ++sub_elem)
+    {
+        const auto sub_elem_tensor_id =
+            MultiArrayUtils<dim>::flat_to_tensor_index(sub_elem, weight_sub_elems);
+
+        for (const auto &i : dims)
+            fine_elem_tensor_id[i] = first_fine_elem_tensor_id[i] + sub_elem_tensor_id[i];
+
+        sub_elems_id[sub_elem] =
+            MultiArrayUtils<dim>::tensor_to_flat_index(fine_elem_tensor_id, weight_fine_grid);
+    } // end loop sub_elem_flat_id
+
+    return sub_elems_id;
+}
+
+
+template <int dim_>
+void
+CartesianGrid<dim_>::
+set_element_property(const ElementProperty &property,
+                     const Index elem_flat_id,
+                     const bool property_status)
+{
+    Assert(dim_ > 0,ExcMessage("Setting a property for CartesianGrid<dim> with dim==0 has no meaning."));
+
+    auto &elems_same_property = get_elements_id_same_property(property);
+    if (property_status)
+    {
+        elems_same_property.insert(elem_flat_id);
+    }
+    else
+    {
+        Assert(!elems_same_property.empty(),ExcEmptyObject());
+        elems_same_property.erase(elem_flat_id);
+    }
+
 }
 
 IGA_NAMESPACE_CLOSE

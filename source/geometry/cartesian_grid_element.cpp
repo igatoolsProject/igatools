@@ -181,18 +181,28 @@ void
 CartesianGridElement<dim_>::
 operator++()
 {
-    const auto n_elem = this->grid_->get_num_all_elems();
+    const auto &active_elems = grid_->get_elements_id_same_property(
+                                   CartesianGrid<dim_>::ElementProperty::active);
+    const auto elem_begin = active_elems.begin();
+    const auto elem_end  = active_elems.end();
+
     Index index = this->get_flat_index();
-    do
-    {
-        ++index;
-    }
-    while (index<n_elem && (!this->grid_->active_elems_[index]));
-
-    if (index >= n_elem)
+    auto elem = std::find(elem_begin,elem_end,index);
+    auto elem_next = ++elem;
+    if (elem_next == elem_end)
         index = IteratorState::pass_the_end;
-
+    else
+        index = *elem_next;
     this->move_to(index);
+}
+
+template <int dim_>
+bool
+CartesianGridElement<dim_>::
+is_property_true(const typename CartesianGrid<dim_>::ElementProperty &property) const
+{
+    const auto &elems_same_property = grid_->get_elements_id_same_property(property);
+    return std::binary_search(elems_same_property.begin(),elems_same_property.end(),flat_index_);
 }
 
 
@@ -202,7 +212,7 @@ bool
 CartesianGridElement<dim_>::
 is_influence() const
 {
-    return grid_->influence_elems_[flat_index_];
+    return is_property_true(CartesianGrid<dim_>::ElementProperty::influence);
 }
 
 
@@ -212,7 +222,7 @@ bool
 CartesianGridElement<dim_>::
 is_active() const
 {
-    return grid_->active_elems_[flat_index_];
+    return is_property_true(CartesianGrid<dim_>::ElementProperty::active);
 }
 
 
@@ -222,20 +232,15 @@ void
 CartesianGridElement<dim_>::
 set_influence(const bool influence_flag)
 {
-    std::const_pointer_cast<CartesianGrid<dim>>(grid_)->
-                                             influence_elems_[flat_index_] = influence_flag;
+    using Grid = CartesianGrid<dim_>;
+    std::const_pointer_cast<Grid>(grid_)->set_element_property(
+        Grid::ElementProperty::influence,
+        flat_index_,
+        influence_flag);
 }
 
 
 
-template <int dim_>
-void
-CartesianGridElement<dim_>::
-set_active(const bool active_flag)
-{
-    std::const_pointer_cast<CartesianGrid<dim> >(grid_)->
-    active_elems_[flat_index_] = active_flag;
-}
 
 
 template <int dim_>

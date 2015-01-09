@@ -151,13 +151,21 @@ public:
     ///@}
 
 
+    /**
+     * @name Functions for managing/querying the element properties.
+     */
+    ///@{
+    /**
+     * Tests if a certain element @p property is TRUE.
+     */
+    bool is_property_true(const typename CartesianGrid<dim_>::ElementProperty &property) const;
+
 
     bool is_influence() const;
     void set_influence(const bool influence_flag);
 
     bool is_active() const;
-    void set_active(const bool active_flag);
-
+    ///@}
 
 //protected:
     /**
