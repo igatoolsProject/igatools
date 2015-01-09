@@ -28,70 +28,16 @@ IGA_NAMESPACE_OPEN
 
 
 /**
- * @brief This class represent the "concept" of function space.
- * @note Its purpose is to use a function trait in order to check if a class is a function
- * space.
- *
- * @sa Is_function_space()
- * @author M.Martinelli, 2013
- */
-class FunctionSpace
-{};
-
-
-/**
  * This class represent the "concept" of isogeometric function space
- * that is built on a grid.
+ * that is built on a certain type of grid.
  *
- * A function space holds functions
- * \f$\phi:A\to B\f$, where A is called domain and B range.
+ * The main feature of this class is that contains a space identifier that is unique to the object,
+ * i.e. two different objects will have two different space id.
  *
- * In our particular setting A is an dim dimensional set in
- * R<sup>space_dim</sup> with codim = space_dim - dim non negative.
- *
- * B is a space of tensor \f$\mathcal{T}^{rank}(R^{range})\f$, i.e.
- * the tensor of rank @p rank over the R<sup>range</sup>.
- *
- * @note This class gives a common set of members expected to be used with
- * meta-programming techniques.
- *
- * In particular any function space should provide the following interface
- *
- * @code
- *  // Type of the push-forward.
- *  using PushForwardType = ;
- *
- *  // Type of the reference space.
- *  using RefSpace = ;
- *
- *  // Type of the grid on which the space is built upon.
- *  using GridType = typename PushForwardType::GridType;
- *
- *  // Dimension of the functions domain.
- *  static const int dim = PushForwardType::dim;
- *
- *  // Co-dimension of the functions domain.
- *  static const int codim = PushForwardType::codim;
- *
- *  // Dimension of the functions domain embedding space.
- *  static const int space_dim = PushForwardType::space_dim;
- *
- *  // Dimension of the range.
- *  static const int range = PushForwardType::template PhysRange<RefSpace::range>::value;
- *
- *  // Rank of the range.
- *  static const int rank = RefSpace::rank;
- *
- *  // Number of scalar components of the range.
- *  static constexpr int n_components = constexpr_pow(dim_range, rank);
- * @endcode
- *
- *
- * @author M.Martinelli, 2013
+ * @author M.Martinelli, 2013, 2014.
  */
 template<class Grid_>
 class FunctionSpaceOnGrid :
-    public FunctionSpace,
     public GridWrapper<Grid_>
 {
 
@@ -100,8 +46,11 @@ private:
 
 public:
     using typename GridWrapper<Grid_>::GridType;
-//    static constexpr std::array<Size, Grid_::dim> dims = Grid_::dims;
 
+    /**
+     * Array of dimension indices.
+     * They are intended to be used in range-for loops when all dimension indices must be used.
+     */
     using GridWrapper<Grid_>::dims;
 
 public:
@@ -133,25 +82,14 @@ public:
     ///@}
 
     /**
-     * Returns the id of the space.
+     * Returns the space id.
      */
-    Index get_id() const;
+    Index get_space_id() const;
 
 protected:
-    Index id_ = 0;
+    Index space_id_ = 0;
 };
 
-
-/**
- * Return true if the class T is derived from FunctionSpace.
- * @relates FunctionSpace
- *
- */
-template<class T>
-constexpr bool is_function_space()
-{
-    return std::is_base_of<FunctionSpace,T>::value;
-}
 
 IGA_NAMESPACE_CLOSE
 

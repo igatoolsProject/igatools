@@ -555,7 +555,7 @@ private:
         /**
          * Returns the space global id.
          */
-        Index get_id() const;
+        Index get_space_id() const;
 
         /** Returns the number of dofs of the space. */
         Index get_num_dofs() const ;
@@ -643,7 +643,7 @@ private:
         /**
          * Global space id.
          */
-        const Index id_;
+        const Index space_id_;
 
 
         int dim_;
@@ -1018,8 +1018,8 @@ add_space(std::shared_ptr<Space> space)
     // check that the input space is not already added
     for (auto &space_info : spaces_info_)
     {
-        Assert(space->get_id() != space_info.second->get_id(),
-               ExcMessage("The space with id=" + std::to_string(space->get_id()) +
+        Assert(space->get_space_id() != space_info.second->get_space_id(),
+               ExcMessage("The space with id=" + std::to_string(space->get_space_id()) +
                           " is already added in the SpaceManager."));
     }
 #endif
@@ -1029,7 +1029,7 @@ add_space(std::shared_ptr<Space> space)
 
     auto space_info = std::shared_ptr<SpaceInfo>(
                           new SpaceInfo(space,
-                                        space->get_id(),
+                                        space->get_space_id(),
                                         Space::dim,
                                         Space::codim,
                                         Space::space_dim,
@@ -1042,7 +1042,7 @@ add_space(std::shared_ptr<Space> space)
                                         dof_distribution.get_dofs_view(),
                                         dof_distribution.get_elements_view()));
 
-    spaces_info_[space_info->get_id()] = space_info;
+    spaces_info_[space_info->get_space_id()] = space_info;
 
     spaces_with_original_dofs_.push_back(space_info);
     //---------------------------------------------------------------------------------------------
@@ -1067,8 +1067,8 @@ add_spaces_connection(std::shared_ptr<SpaceTest> space_test,std::shared_ptr<Spac
     Assert(space_test !=nullptr,ExcNullPtr());
     Assert(space_trial !=nullptr,ExcNullPtr());
 
-    auto sp_test  = spaces_info_.at(space_test ->get_id());
-    auto sp_trial = spaces_info_.at(space_trial->get_id());
+    auto sp_test  = spaces_info_.at(space_test ->get_space_id());
+    auto sp_trial = spaces_info_.at(space_trial->get_space_id());
 
 //    spaces_connectivity_[sp_test].emplace(sp_trial);
 
@@ -1090,7 +1090,7 @@ add_spaces_connection(std::shared_ptr<Space> space, const bool use_dofs_connecti
 
     Assert(space !=nullptr,ExcNullPtr());
 
-    auto sp = spaces_info_.at(space->get_id());
+    auto sp = spaces_info_.at(space->get_space_id());
 
     SpacesConnection conn(sp,use_dofs_connectivity_from_space);
 
@@ -1115,8 +1115,8 @@ get_spaces_connection(
     Assert(space_test !=nullptr,ExcNullPtr());
     Assert(space_trial !=nullptr,ExcNullPtr());
 
-    auto sp_test  = spaces_info_.at(space_test ->get_id());
-    auto sp_trial = spaces_info_.at(space_trial->get_id());
+    auto sp_test  = spaces_info_.at(space_test ->get_space_id());
+    auto sp_trial = spaces_info_.at(space_trial->get_space_id());
 
     auto it = std::find(
         spaces_connections_.begin(),

@@ -53,7 +53,7 @@ IGA_NAMESPACE_OPEN
  *
  * Due to the generality of the underlying @p STLContainer,
  * we provide the entries access operators () (const and non-const version)
- * accepting both multi-indices (trhough its representation via the class TensorIndex)
+ * accepting both multi-indices (through its representation via the class TensorIndex)
  * and flat indices.
  *
  * Its main use is in the range independent treatment through
@@ -174,7 +174,7 @@ public:
      */
     const_reference operator()(const TensorIndex<rank> &i) const;
 
-    /** Return the entries of the multiarray as unidimensional vector. */
+    /** Return the entries of the multiarray as unidimensional STLContainer. */
     const STLContainer &get_data() const;
     ///@}
 

@@ -22,26 +22,22 @@
 #include <igatools/utils/unique_id_generator.h>
 
 IGA_NAMESPACE_OPEN
-/*
-template <class Grid_>
-constexpr  std::array<Size, Grid_::dim> FunctionSpaceOnGrid<Grid_>::dims;
-//*/
 
 template <class Grid_>
 FunctionSpaceOnGrid<Grid_>::
 FunctionSpaceOnGrid(std::shared_ptr<GridType> grid)
     :
     GridWrapper<GridType>(grid),
-    id_(UniqueIdGenerator::get_unique_id())
+    space_id_(UniqueIdGenerator::get_unique_id())
 {};
 
 
 template <class GridType>
 Index
 FunctionSpaceOnGrid<GridType>::
-get_id() const
+get_space_id() const
 {
-    return id_;
+    return space_id_;
 }
 
 

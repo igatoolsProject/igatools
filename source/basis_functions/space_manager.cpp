@@ -144,7 +144,7 @@ is_spaces_connectivity_open() const
 SpaceManager::
 SpaceInfo::
 SpaceInfo(const SpacePtrVariant &space,
-          const Index id,
+          const Index space_id,
           const int dim,
           const int codim,
           const int space_dim,
@@ -158,7 +158,7 @@ SpaceInfo(const SpacePtrVariant &space,
           const std::shared_ptr<const std::map<Index,DofsConstView>> elements_dofs_view)
     :
     space_(space),
-    id_(id),
+    space_id_(space_id),
     dim_(dim),
     codim_(codim),
     space_dim_(space_dim),
@@ -247,9 +247,9 @@ get_dofs_view() const -> const DofsView &
 Index
 SpaceManager::
 SpaceInfo::
-get_id() const
+get_space_id() const
 {
-    return id_;
+    return space_id_;
 }
 
 int
@@ -324,7 +324,7 @@ SpaceManager::
 SpaceInfo::
 operator==(const SpaceInfo &sp) const
 {
-    return (id_ == sp.id_);
+    return (space_id_ == sp.space_id_);
 }
 
 
