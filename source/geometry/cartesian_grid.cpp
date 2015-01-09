@@ -662,7 +662,7 @@ get_sub_grid(const int sub_elem_id, InterGridMap<k> &elem_map) const
 
     TensorIndex<dim> grid_index;
     const int n_dir = k_elem.constant_directions.size();
-    for (int j=0; j<n_dir; ++j)
+    for (int j = 0 ; j < n_dir ; ++j)
     {
         auto dir = k_elem.constant_directions[j];
         auto val = k_elem.constant_values[j];
@@ -675,8 +675,9 @@ get_sub_grid(const int sub_elem_id, InterGridMap<k> &elem_map) const
     for (; s_elem != s_end; ++s_elem)
     {
         auto s_index = s_elem.get_tensor_index();
-        for (int j=0; j<k; ++j)
+        for (int j = 0 ; j < k ; ++j)
             grid_index[active_dirs[j]] = s_index[j];
+
         v_elem.move_to(grid_index);
         elem_map.emplace(s_elem, v_elem);
     }
