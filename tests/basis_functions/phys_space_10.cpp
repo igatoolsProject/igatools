@@ -45,8 +45,7 @@ void cache_init(const ValueFlags flag,
     OUTSTART
 
     using BspSpace = BSplineSpace<dim, range, rank>;
-    using RefSpace = ReferenceSpace<dim, range,rank>;
-    using Space    = PhysicalSpace<RefSpace, codim, Transformation::h_grad>;
+    using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
     using ElementHandler = typename Space::ElementHandler;
     auto grid      = CartesianGrid<dim>::create(n_knots);
     auto ref_space = BspSpace::create(deg, grid);
@@ -84,8 +83,7 @@ void cache_init_elem(const ValueFlags flag,
     OUTSTART
 
     using BspSpace = BSplineSpace<dim, range, rank>;
-    using RefSpace = ReferenceSpace<dim, range,rank>;
-    using Space = PhysicalSpace<RefSpace, codim, Transformation::h_grad>;
+    using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
     using ElementHandler = typename Space::ElementHandler;
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
@@ -125,8 +123,7 @@ void cache_fill_elem(const ValueFlags flag,
 
     const int k = dim;
     using BspSpace = BSplineSpace<dim, range, rank>;
-    using RefSpace = ReferenceSpace<dim, range,rank>;
-    using Space = PhysicalSpace<RefSpace, codim, Transformation::h_grad>;
+    using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
     using ElementHandler = typename Space::ElementHandler;
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
@@ -171,8 +168,7 @@ void cache_get_elem_values(const ValueFlags flag,
     OUTSTART
     const int k = dim;
     using BspSpace = BSplineSpace<dim, range, rank>;
-    using RefSpace = ReferenceSpace<dim, range,rank>;
-    using Space = PhysicalSpace<RefSpace, codim, Transformation::h_grad>;
+    using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
     using ElementHandler = typename Space::ElementHandler;
 
     auto grid  = CartesianGrid<dim>::create(n_knots);

@@ -26,6 +26,7 @@
 #include <igatools/geometry/push_forward.h>
 #include <igatools/geometry/cartesian_grid_iterator.h>
 #include <igatools/basis_functions/function_space.h>
+#include <igatools/basis_functions/reference_space.h>
 #include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/utils/static_multi_array.h>
 
@@ -43,14 +44,14 @@ template <class> class SpaceElementHandler;
  *
  * @ingroup containers
  */
-template <class RefSpace_, int codim_, Transformation type_= Transformation::h_grad>
+template <int dim_, int range_, int rank_, int codim_, Transformation type_= Transformation::h_grad>
 class PhysicalSpace :
-    public std::enable_shared_from_this<PhysicalSpace<RefSpace_, codim_, type_>>,
-            public FunctionSpaceOnGrid<CartesianGrid<RefSpace_::dim> >
+    public std::enable_shared_from_this<PhysicalSpace<dim_, range_, rank_, codim_, type_>>,
+            public FunctionSpaceOnGrid<CartesianGrid<dim_> >
 {
 private:
-    using BaseSpace = FunctionSpaceOnGrid<CartesianGrid<RefSpace_::dim> >;
-    using self_t = PhysicalSpace<RefSpace_, codim_, type_>;
+    using BaseSpace = FunctionSpaceOnGrid<CartesianGrid<dim_> >;
+    using self_t = PhysicalSpace<dim_, range_, rank_, codim_, type_>;
 
 public:
     ///@{
@@ -59,23 +60,23 @@ public:
      *
      * @see FunctionSpaceOnGrid
      */
-    using PushForwardType = PushForward<type_, RefSpace_::dim, codim_>;
+    using PushForwardType = PushForward<type_, dim_, codim_>;
 
-    using RefSpace = RefSpace_;
+    using RefSpace = ReferenceSpace<dim_,range_,rank_>;
 
     //using GridType = typename PushForwardType::GridType;
     ///@}
     using ElementHandler = SpaceElementHandler<self_t>;
 
-    static const int dim = PushForwardType::dim;
+    static const int dim = dim_;
 
     static const int codim = PushForwardType::codim;
 
     static const int space_dim = PushForwardType::space_dim;
 
-    static const int range = PushForwardType::template PhysRange<RefSpace::range>::value;
+    static const int range = PushForwardType::template PhysRange<range_>::value;
 
-    static const int rank = RefSpace::rank;
+    static const int rank = rank_;
 
     using MapFunc =  MapFunction<dim, space_dim>;
 
@@ -165,7 +166,7 @@ public:
 
 
     template <int k>
-    using SubSpace = PhysicalSpace<typename RefSpace::template SubRefSpace<k>, codim + dim-k, type_>;
+    using SubSpace = PhysicalSpace<k, range, rank, codim + dim-k, type_>;
 
     template <int k>
     using InterGridMap = typename RefSpace::GridType::template InterGridMap<k>;

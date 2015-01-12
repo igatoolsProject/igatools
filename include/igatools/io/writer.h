@@ -35,7 +35,7 @@
 IGA_NAMESPACE_OPEN
 
 
-template <class RefSpace_, int codim_, Transformation type_>
+template <int dim_, int range_, int rank_ , int codim_, Transformation type_>
 class PhysicalSpace;
 
 

@@ -46,7 +46,7 @@ void do_test(const int p, const int num_knots = 10)
     const int sub_dim = dim - 1;
     using RefSpace = ReferenceSpace<dim,range,rank>;
     using BspSpace = BSplineSpace<dim,range,rank>;
-    using Space = PhysicalSpace<RefSpace, codim, Transformation::h_grad>;
+    using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 
 
     auto grid = CartesianGrid<dim>::create(num_knots);

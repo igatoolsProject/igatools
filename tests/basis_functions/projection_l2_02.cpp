@@ -107,7 +107,7 @@ void do_test(const int p, const int num_knots = 10)
 {
     using RefSpace = ReferenceSpace<dim,range,rank>;
     using BspSpace = BSplineSpace<dim,range,rank>;
-    using Space = PhysicalSpace<RefSpace, codim>;
+    using Space = PhysicalSpace<dim,range,rank,codim>;
 
     auto knots = CartesianGrid<dim>::create(num_knots);
     auto ref_space = BspSpace::create(p, knots);

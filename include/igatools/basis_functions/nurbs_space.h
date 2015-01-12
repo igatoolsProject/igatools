@@ -110,7 +110,7 @@ public:
     using SubRefSpace = NURBSSpace<k, range, rank>;
 
     template <int k>
-    using SubSpace = PhysicalSpace<SubRefSpace<k>, dim-k, Transformation::h_grad>;
+    using SubSpace = PhysicalSpace<k,range,rank, dim-k, Transformation::h_grad>;
 
     /**
      * Construct a sub space of dimension k conforming to

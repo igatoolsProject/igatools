@@ -37,7 +37,7 @@ class SpaceManager;
 
 template<Transformation,int, int> class PushForward;
 
-template <class,int,Transformation> class PhysicalSpace;
+template <int, int, int ,int,Transformation> class PhysicalSpace;
 
 template <int, int, int> class ReferenceElement;
 template <int,int,int> class ReferenceElementHandler;
@@ -141,7 +141,7 @@ public:
     using SubRefSpace = ReferenceSpace<k, range, rank>;
 
     template <int k>
-    using SubSpace = PhysicalSpace<ReferenceSpace<k>, dim-k, Transformation::h_grad>;
+    using SubSpace = PhysicalSpace<k,range,rank, dim-k, Transformation::h_grad>;
 
 
 

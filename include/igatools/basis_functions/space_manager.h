@@ -48,8 +48,8 @@
 
 IGA_NAMESPACE_OPEN
 
-template <class RefSpace, int codim, Transformation type>
-using PhysSpacePtr = std::shared_ptr<PhysicalSpace<RefSpace,codim,type>>;
+template <int dim, int range, int rank, int codim, Transformation type>
+using PhysSpacePtr = std::shared_ptr<PhysicalSpace<dim,range,rank,codim,type>>;
 
 
 
