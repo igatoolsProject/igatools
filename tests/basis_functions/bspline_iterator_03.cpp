@@ -62,7 +62,6 @@ void evaluate_field(const int deg = 1)
 
     QGauss<dim> quad(2) ;
     const auto flag = ValueFlags::value|ValueFlags::gradient;
-
     auto cache1 = ElementHandler::create(space);
     cache1->reset(flag, quad);
 

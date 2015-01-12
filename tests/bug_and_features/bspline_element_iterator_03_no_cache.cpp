@@ -31,7 +31,7 @@
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/bspline_element_accessor.h>
+#include <igatools/basis_functions/bspline_element.h>
 #include <igatools/linear_algebra/distributed_vector.h>
 #include <igatools/linear_algebra/dof_tools.h>
 
@@ -42,11 +42,11 @@ void do_test()
 
     const int degree = 1;
     const int rank =  1 ;
-    typedef BSplineSpace< dim_domain, dim_range, rank > Space_t ;
-    auto space = Space_t::create(degree, grid);
+    using Space = BSplineSpace< dim_domain, dim_range, rank >;
+    auto space = Space::create(degree, grid);
 
 #if defined(USE_TRILINOS)
-    const auto la_pack = LAPack::trilinos;
+    const auto la_pack = LAPack::trilinos_tpetra;
 #elif defined(USE_PETSC)
     const auto la_pack = LAPack::petsc;
 #endif
@@ -70,11 +70,12 @@ void do_test()
     const auto eval_points_1 = quad_scheme_1.get_points().get_flat_cartesian_product();
 
     auto element1 = space->begin();
-
+#if 0
     auto u_values = element1->evaluate_field_values_at_points(
                         u.get_local_coefs(element1->get_local_to_global()),
                         eval_points_1);
     u_values.print_info(out);
+#endif
     auto values1    = element1->evaluate_basis_values_at_points(eval_points_1);
     values1.print_info(out);
     auto gradients1    = element1->evaluate_basis_gradients_at_points(eval_points_1);
@@ -88,11 +89,12 @@ void do_test()
     auto gradients2    = element1->evaluate_basis_gradients_at_points(eval_points_2);
     gradients2.print_info(out);
 
+#if 0
     u_values = element1->evaluate_field_values_at_points(
                    u.get_local_coefs(element1->get_local_to_global()),
                    eval_points_2);
     u_values.print_info(out);
-
+#endif
 
 }
 
