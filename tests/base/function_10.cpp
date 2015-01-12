@@ -45,9 +45,11 @@ void test()
     auto grid = CartesianGrid<dim>::create(3);
     const int deg = 1;
     auto space = Space::create(deg, grid);
-    typename Function::CoeffType coeff(space->get_num_basis());
+    using CoeffType = typename Function::CoeffType;
+    CoeffType coeff(space->get_num_basis());
     coeff[0] = 1.;
-    auto F = Function::create(space, coeff);
+    auto coeff_ptr  = make_shared<CoeffType> (coeff);
+    auto F = Function::create(space, coeff_ptr);
     F->reset(flag, quad);
 
     auto elem = F->begin();

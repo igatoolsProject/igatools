@@ -297,8 +297,9 @@ get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
     const int n_ctrl_pts = ctrl_pts_attributes.get<int>("Size");
     AssertThrow(n_ctrl_pts >= 1,ExcLowerRange(n_ctrl_pts,1));
 
-    vector<Real> cntrl_pts = get_vector_data_from_xml<Real>(ctrl_pts_tree);
-    AssertThrow(cntrl_pts.size() == n_ctrl_pts,ExcDimensionMismatch(cntrl_pts.size(),n_ctrl_pts));
+    shared_ptr<vector<Real>> cntrl_pts =
+                              std::make_shared<vector<Real>>(get_vector_data_from_xml<Real>(ctrl_pts_tree));
+    AssertThrow(cntrl_pts->size() == n_ctrl_pts,ExcDimensionMismatch(cntrl_pts->size(),n_ctrl_pts));
     //-------------------------------------------------------------------------
 
 
@@ -313,7 +314,7 @@ get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
         using ref_space_t = ReferenceSpace<dim,dim_phys,1>;
         auto ref_space = get_nurbs_space_from_xml<dim,dim_phys,1>(mapping_tree);
 
-        map = IgFunction<ref_space_t>::create(ref_space,cntrl_pts);
+        map = IgFunction<ref_space_t>::create(ref_space, cntrl_pts);
 #else
         Assert(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
         AssertThrow(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
@@ -722,7 +723,8 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     int comp = 0;
     for (const auto &w_coefs : weights)
         w_func_table[comp++] = WeightFuncPtr(
-                                   new WeightFunc(scalar_spline_space,vector<Real>(w_coefs.get_data())));
+                                   new WeightFunc(scalar_spline_space,
+                                                  std::make_shared<vector<Real>>(vector<Real>(w_coefs.get_data()))));
 
 
     //*/

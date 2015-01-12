@@ -62,7 +62,8 @@ void test()
     for (int i = 0 ; i < n_entries ; ++i)
         weights_coef[i] = (i+1) * (1.0 / n_entries) ;
 
-    auto w_func = WeightFunc::create(scalar_bsp_space,vector<Real>(weights_coef.get_data()));
+    auto weights_data_ptr = make_shared<vector<Real>> (weights_coef.get_data());
+    auto w_func = WeightFunc::create(scalar_bsp_space, weights_data_ptr);
     auto weight_functions = typename Space::WeightFunctionPtrTable(w_func);
 //    for (auto & w_func : weight_functions)
 //          w_func = WeightFunc::create(scalar_bsp_space,vector<Real>(weights_coef.get_data()));

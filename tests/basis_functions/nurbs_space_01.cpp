@@ -73,12 +73,13 @@ void do_test()
     const auto n_basis = bsp->get_num_basis_table();
 
     DynamicMultiArray<Real,dim> weights(n_basis[0],1.0);
+    auto weights_data_ptr = make_shared<vector<Real>> (weights.get_data());
 
     using ScalarBSplineSpace = BSplineSpace<dim>;
     using WeightFunc = IgFunction<ReferenceSpace<dim>>;
     auto w_func = shared_ptr<WeightFunc>(new WeightFunc(
                                              ScalarBSplineSpace::create(degree,CartesianGrid<dim>::create(coord)),
-                                             weights.get_data()));
+                                             weights_data_ptr));
 
     using WeightFuncPtrTable = typename Space::WeightFunctionPtrTable;
     auto w_funcs_table = WeightFuncPtrTable(w_func);

@@ -51,7 +51,8 @@ void bspline_map(const int deg = 1)
     auto grid = CartesianGrid<dim>::create(2);
     auto space = Space::create(deg, grid);
 
-    typename Function::CoeffType control_pts(space->get_num_basis());
+    using CoeffType = typename Function::CoeffType;
+    CoeffType control_pts(space->get_num_basis());
 
     if (dim == 1)
     {
@@ -114,8 +115,9 @@ void bspline_map(const int deg = 1)
         control_pts[id++] = 1.0 ;
 
     }
+    auto control_pts_ptr = make_shared<CoeffType> (control_pts);
 
-    auto F = Function::create(space, control_pts);
+    auto F = Function::create(space, control_pts_ptr);
     auto map = Mapping::create(F);
 
     auto quad = QGauss<dim>(3);

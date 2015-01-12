@@ -44,7 +44,8 @@ create_function(shared_ptr<BSplineSpace<dim, dim + codim>> space)
     using Space = ReferenceSpace<dim, dim + codim>;
     using Function = IgFunction<Space>;
 
-    typename Function::CoeffType control_pts(space->get_num_basis());
+    using CoeffType = typename Function::CoeffType;
+    CoeffType control_pts(space->get_num_basis());
     if (dim == 1)
     {
         int id = 0 ;
@@ -106,8 +107,9 @@ create_function(shared_ptr<BSplineSpace<dim, dim + codim>> space)
         control_pts[id++] = 1.0 ;
 
     }
+    auto control_pts_ptr = std::make_shared<CoeffType> (control_pts);
 
-    return Function::create(space, control_pts);
+    return Function::create(space, control_pts_ptr);
 }
 
 

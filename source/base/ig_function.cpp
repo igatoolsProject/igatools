@@ -28,7 +28,7 @@ IGA_NAMESPACE_OPEN
 template<class Space>
 IgFunction<Space>::
 IgFunction(std::shared_ptr<const Space> space,
-           const CoeffType &coeff)
+           const CoeffTypePtr coeff)
     :
     parent_t::Function(space->get_grid()),
     space_(space),
@@ -37,7 +37,7 @@ IgFunction(std::shared_ptr<const Space> space,
     space_filler_(space->create_elem_handler())
 {
     Assert(space_ != nullptr,ExcNullPtr());
-    Assert(!coeff_.empty(),ExcEmptyObject());
+    Assert(!coeff_->empty(),ExcEmptyObject());
 }
 
 
@@ -53,7 +53,7 @@ IgFunction(const self_t &fun)
     space_filler_(fun.space_->create_elem_handler())
 {
     Assert(space_ != nullptr,ExcNullPtr());
-    Assert(!coeff_.empty(),ExcEmptyObject());
+    Assert(!coeff_->empty(),ExcEmptyObject());
 }
 
 
@@ -62,7 +62,7 @@ template<class Space>
 auto
 IgFunction<Space>::
 create(std::shared_ptr<const Space> space,
-       const CoeffType &coeff) ->  std::shared_ptr<self_t>
+       const CoeffTypePtr coeff) ->  std::shared_ptr<self_t>
 {
     return std::shared_ptr<self_t>(new self_t(space, coeff));
 }
@@ -115,7 +115,7 @@ fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) -> voi
     const auto local_ids = elem_->get_local_to_global();
     vector<Real> loc_coeff;
     for (const auto &id : local_ids)
-        loc_coeff.push_back(coeff_[id]);
+        loc_coeff.push_back((*coeff_)[id]);
 //    auto loc_coeff = coeff_.get_local_coefs(elem_->get_local_to_global());
 
     fill_cache_impl.loc_coeff = &loc_coeff;
@@ -139,7 +139,7 @@ get_iga_space() const -> std::shared_ptr<const Space>
 template<class Space>
 auto
 IgFunction<Space>::
-get_coefficients() const -> const CoeffType &
+get_coefficients() const -> const CoeffTypePtr
 {
     return coeff_;
 }
@@ -151,9 +151,9 @@ auto
 IgFunction<Space>::
 operator +=(const self_t &fun) -> self_t &
 {
-    const auto size = coeff_.size();
+    const auto size = coeff_->size();
     for (int i=0; i<size; ++i)
-        coeff_[i] += fun.coeff_[i];
+        (*coeff_)[i] += (*fun.coeff_)[i];
 
     return *this;
 }
@@ -177,7 +177,7 @@ print_info(LogStream &out) const
 #endif
 
     out.begin_item("Control points info (euclidean coordinates):");
-    coeff_.print_info(out);
+    coeff_->print_info(out);
     out.end_item();
 }
 
