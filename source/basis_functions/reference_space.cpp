@@ -31,16 +31,6 @@ using std::make_shared;
 using std::const_pointer_cast;
 
 IGA_NAMESPACE_OPEN
-#if 0
-template<int dim, int range, int rank>
-const Size ReferenceSpace<dim, range, rank>::n_components;
-
-
-template<int dim, int range, int rank>
-const std::array<Size, ReferenceSpace<dim, range, rank>::n_components>
-ReferenceSpace<dim, range, rank>::components =
-    sequence<ReferenceSpace<dim, range, rank>::n_components>();
-#endif
 
 
 template<int dim, int range, int rank>
@@ -78,10 +68,15 @@ get_ref_sub_space(const int sub_elem_id,
     }
     else
     {
+#ifdef NURBS
         //TODO (MM, Dec 22, 2014): implement NURBSSpace::get_ref_sub_space()
         const auto nrb_space = dynamic_cast<const NURBSSpace<dim,range,rank> *>(this);
         Assert(nrb_space != nullptr,ExcNullPtr());
         Assert(false,ExcNotImplemented());
+#else
+        Assert(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
+        AssertThrow(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
+#endif
     }
 
     Assert(sub_ref_space != nullptr,ExcNullPtr());
