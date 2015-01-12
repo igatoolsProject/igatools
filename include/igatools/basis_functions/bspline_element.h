@@ -122,41 +122,7 @@ public:
      */
     self_t &operator=(self_t &&elem) = default;
     ///@}
-#if 0
-    /** @name Functions/operators for moving the element in the BSplineSpace.*/
-    ///@{
-    /**
-     * Moves the element to the position that differs from the current one
-     * for the quantity given by @p increment.
-     *
-     * If the resulting position after the movement is valid (i.e. within the grid), then the function
-     * returns true, otherwise it returns false.
-     */
-    virtual bool jump(const TensorIndex<dim> &increment) override final;
 
-    /**
-     * Sets the index of the element using the flatten representation.
-     * @note This function also updates the index for the tensor representation.
-     * @warning This may be a dangerous function, be careful when using it
-     * as it is easy to use incorrectly. Only use it if you know what you
-     * are doing.
-     */
-    virtual void move_to(const Index flat_index) override final;
-
-
-    /**
-     * Sets the index of the element using the tensor representation.
-     * @note This function also updates the index for the flatten representation.
-     * @warning this may be a dangerous function, be careful when using it
-     * as it is easy to use incorrectly. Only use it if you know what you
-     * are doing.
-     */
-    virtual void move_to(const TensorIndex<dim> &tensor_index) override final;
-
-    /** Moves the element to the next active element in the CartesianGrid. */
-    virtual void operator++() override final;
-    ///@}
-#endif
 
 public:
     /** @name Functions for the basis and field evaluations without the use of
