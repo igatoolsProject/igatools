@@ -205,7 +205,12 @@ public:
         return SpaceData::components;
     }
 
-    BCTable get_boundary_conditions_table() const
+    const BCTable &get_boundary_conditions_table() const
+    {
+        return space_data_->get_boundary_conditions_table();
+    }
+
+    BCTable &get_boundary_conditions_table()
     {
         return space_data_->get_boundary_conditions_table();
     }
