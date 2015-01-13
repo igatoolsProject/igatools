@@ -205,6 +205,11 @@ public:
         return SpaceData::components;
     }
 
+    BCTable get_boundary_conditions_table() const
+    {
+        return space_data_->get_boundary_conditions_table();
+    }
+
 
     /** Returns the container with the global dof distribution (const version). */
     virtual const DofDistribution<dim, range, rank> &
