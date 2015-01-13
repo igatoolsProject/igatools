@@ -160,16 +160,16 @@ public:
     Conditional< deriv_order==0,
                  Value,
                  Derivative<deriv_order> > >
-                 evaluate_basis_derivatives_at_points(const ValueVector<Point> &points) const;
+                 evaluate_basis_derivatives_at_points(const ValueVector<Point> &points);
 
     ValueTable<Value>
-    evaluate_basis_values_at_points(const ValueVector<Point> &points) const
+    evaluate_basis_values_at_points(const ValueVector<Point> &points)
     {
         return evaluate_basis_derivatives_at_points<0>(points);
     }
 
     ValueTable<Derivative<1> >
-    evaluate_basis_gradients_at_points(const ValueVector<Point> &points) const
+    evaluate_basis_gradients_at_points(const ValueVector<Point> &points)
     {
         return evaluate_basis_derivatives_at_points<1>(points);
     }

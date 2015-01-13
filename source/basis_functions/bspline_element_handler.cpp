@@ -208,8 +208,8 @@ operator()(const T &quad1)
                 auto &splines1d = g_cache.entry(dir, j);
                 for (auto comp : splines1d.get_active_components_id())
                     splines1d[comp].resize(max_der, n_basis[comp][dir], n_pts);
-            }
-        }
+            } // end loop j
+        } // end loop dir
 
         /*
          * For each direction, interval and component we compute the 1D bspline
@@ -246,7 +246,7 @@ operator()(const T &quad1)
 //          points_left.print_info(out1);
             points_left[comp].dilate_translate(dilate, translate);
 //          points_left.print_info(out1);
-        }
+        } // end loop comp
 
         ComponentContainer<Points<dim>> len_right(end_interval.get_comp_map());
         ComponentContainer<TensorProductArray<dim>>
@@ -261,7 +261,7 @@ operator()(const T &quad1)
                 len_right[comp][dir] = lengths.get_data_direction(dir)[n_inter[dir]-1]*alpha;
             }
             points_right[comp].dilate(dilate);
-        }
+        } // end loop comp
 
 
 // Left interval treatment
@@ -275,7 +275,7 @@ operator()(const T &quad1)
                 for (int order = 0; order < max_der; ++order)
                     bernstein_values[comp].get_derivative(order) =
                         BernsteinBasis::derivative(order, deg, pt_coords);
-            }
+            } // end loop comp
 
             //const auto &inter_lengths = lengths.get_data_direction(dir);
             const int inter = 0;
@@ -293,9 +293,9 @@ operator()(const T &quad1)
                     fill_interval_values(one_div_size, oper, berns_values, basis);
                     berns_values.print_info(out2);
                     basis.print_info(out2);
-                }
-            }
-        }
+                } // end loop comp
+            } // end loop inter
+        } // end loop dir
 
 
         // Right interval treatment
@@ -309,7 +309,7 @@ operator()(const T &quad1)
                 for (int order = 0; order < max_der; ++order)
                     bernstein_values[comp].get_derivative(order) =
                         BernsteinBasis::derivative(order, deg, pt_coords);
-            }
+            } // end loop comp
 
             //const auto &inter_lengths = lengths.get_data_direction(dir);
             const int inter = n_inter[dir]-1;
@@ -323,9 +323,9 @@ operator()(const T &quad1)
 
                     const Real one_div_size = 1.0 / len_right[comp][dir];
                     fill_interval_values(one_div_size, oper, berns_values, basis);
-                }
-            }
-        }
+                } // end loop comp
+            } // end loop inter
+        } // end loop dir
 
 
 
@@ -342,7 +342,7 @@ operator()(const T &quad1)
                 for (int order = 0; order < max_der; ++order)
                     bernstein_values[comp].get_derivative(order) =
                         BernsteinBasis::derivative(order, deg, pt_coords);
-            }
+            } // end loop comp
 
             const auto &inter_lengths = lengths.get_data_direction(dir);
             for (int inter = inter_begin ; inter < inter_end ; ++inter)
@@ -356,8 +356,8 @@ operator()(const T &quad1)
 
                     const Real one_div_size = 1.0 / inter_lengths[inter];
                     fill_interval_values(one_div_size, oper, berns_values, basis);
-                }
-            }
+                } // end loop comp
+            } // end loop inter
 
         } //end loop dir
     } // end loop s_id

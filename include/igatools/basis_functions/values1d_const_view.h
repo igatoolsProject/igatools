@@ -32,9 +32,8 @@
 IGA_NAMESPACE_OPEN
 
 /**
- * Set of functions evaluation (values and derivatives) which
- * are defined as tensor product of scalar functions over
- * points also defined as tensor products.
+ * Container for scalar function values and derivatives
+ * computed  over points in an interval.
  */
 class BasisValues1d
 {
@@ -154,8 +153,18 @@ public:
             n_func[i] = (*this)[i]->get_num_functions();
             n_pts[i] = (*this)[i]->get_num_points();
         }
-        f_size = TensorSizedContainer<dim>(n_func);
-        p_size = TensorSizedContainer<dim>(n_pts);
+        f_size_ = TensorSizedContainer<dim>(n_func);
+        p_size_ = TensorSizedContainer<dim>(n_pts);
+
+#ifndef NDEBUG
+        if (!points_have_tensor_product_struct_)
+        {
+            // if the points have not a tensor product structure,
+            // they must be the same number in all directions
+            for (int i = 1; i < dim; ++i)
+                Assert(n_pts[i] = n_pts[0],ExcDimensionMismatch(n_pts[i],n_pts[0]));
+        }
+#endif
     }
     /**
      * Evaluate and returns one partial derivative in one point.
@@ -167,7 +176,7 @@ public:
                   const TensorIndex<dim> &func,
                   const TensorIndex<dim> &pt) const
     {
-        Real res = dim>0 ? (*this)[0]->get_derivative(order[0])(func[0],pt[0]) : 1.;
+        Real res = (dim>0) ? (*this)[0]->get_derivative(order[0])(func[0],pt[0]) : 1.0;
         for (int i = 1; i < dim; ++i)
             res *= (*this)[i]->get_derivative(order[i])(func[i], pt[i]);
         return res;
@@ -175,17 +184,27 @@ public:
 
     auto func_flat_to_tensor(const Index func_id) const
     {
-        return f_size.flat_to_tensor(func_id);
+        return f_size_.flat_to_tensor(func_id);
     }
 
-    auto points_flat_to_tensor(const Index p_id) const
+    auto points_flat_to_tensor(const Index p_flat_id) const
     {
-        return p_size.flat_to_tensor(p_id);
+        if (points_have_tensor_product_struct_)
+        {
+            return p_size_.flat_to_tensor(p_flat_id);
+        }
+        else
+        {
+            return TensorIndex<dim>(p_flat_id);
+            Assert(false,ExcNotImplemented());
+        }
     }
 
 private:
-    TensorSizedContainer<dim> f_size;
-    TensorSizedContainer<dim> p_size;
+    TensorSizedContainer<dim> f_size_;
+    TensorSizedContainer<dim> p_size_;
+
+    bool points_have_tensor_product_struct_ = true;
 };
 
 

@@ -60,7 +60,12 @@ create(shared_ptr<const Space> space)
     }
     else if (nrb_space)
     {
+#ifdef NURBS
         elem_handler = NURBSElementHandler<dim_,range_,rank_>::create(nrb_space);
+#else
+        Assert(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
+        AssertThrow(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
+#endif
     }
     else
     {

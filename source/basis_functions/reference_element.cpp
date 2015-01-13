@@ -22,6 +22,7 @@
 #include <igatools/basis_functions/reference_element.h>
 #include <igatools/basis_functions/reference_space.h>
 #include <igatools/basis_functions/space_element.h>
+#include <igatools/basis_functions/reference_element_handler.h>
 
 
 IGA_NAMESPACE_OPEN
@@ -59,6 +60,41 @@ ReferenceElement<dim, range, rank>::
 move_to(const TensorIndex<dim> &tensor_index)
 {
     parent_t::move_to(tensor_index);
+}
+
+
+template <int dim, int range, int rank>
+template <int deriv_order>
+auto
+ReferenceElement<dim, range, rank>::
+evaluate_basis_derivatives_at_points(const ValueVector<Point> &points) ->
+ValueTable<
+Conditional< deriv_order==0,
+             Value,
+             Derivative<deriv_order> > >
+{
+    auto elem_handler = ReferenceElementHandler<dim,range,rank>::create(this->get_space());
+
+    ValueFlags flags;
+    if (deriv_order == 0)
+        flags = ValueFlags::value;
+    else if (deriv_order == 1)
+        flags = ValueFlags::gradient;
+    else if (deriv_order == 2)
+        flags = ValueFlags::hessian;
+    else
+    {
+        Assert(false,ExcNotImplemented());
+    }
+
+    Assert(false,ExcNotImplemented());
+//  elem_handler->reset(flags,points);
+    elem_handler->template init_cache<dim>(*this);
+    elem_handler->template fill_cache<dim>(*this,0);
+
+    Assert(false,ExcNotImplemented());
+
+    return this->template get_values<deriv_order,dim>(0);
 }
 
 IGA_NAMESPACE_CLOSE
