@@ -144,8 +144,10 @@ class TensorProductFunctionEvaluator :
     public ElemFuncValues<dim>
 {
 public:
-    void update_size()
+    void update_size(bool points_have_tensor_product_struct = true)
     {
+        points_have_tensor_product_struct_ = points_have_tensor_product_struct;
+
         TensorSize<dim> n_func;
         TensorSize<dim> n_pts;
         for (int i = 0; i < dim; ++i)
@@ -204,6 +206,16 @@ private:
     TensorSizedContainer<dim> f_size_;
     TensorSizedContainer<dim> p_size_;
 
+    /**
+     * TRUE if the points are arranged in tensor product way.
+     * In this case the total number of points is
+     * <t>p_size_[0] * p_size_[1] * ... * p_size_[dim-1]</t>
+     *
+     * FALSE if the points are not arranged in tensor product way.
+     * In this case it must hold
+     * <t>p_size_[0] == p_size_[1] == ... == p_size_[dim-1]</t>
+     * and each value along a specific direction refers to a single point.
+     */
     bool points_have_tensor_product_struct_ = true;
 };
 

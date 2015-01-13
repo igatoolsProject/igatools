@@ -55,7 +55,13 @@ public:
     ReferenceElementHandler(const ReferenceElementHandler<dim_,range_,rank_> &elem_handler) = delete;
     ReferenceElementHandler(ReferenceElementHandler<dim_,range_,rank_> &&elem_handler) = delete;
 
+    /**
+     * Resets all the internal data in order to use the
+     * same quadrature scheme for each element of the space.
+     */
     virtual void reset(const ValueFlags &flag, const quadrature_variant &quad) = 0;
+
+    virtual void reset(const ValueFlags &flag, const ValueVector<typename Space::RefPoint> &points) = 0;
 
 protected:
     ReferenceElementHandler(std::shared_ptr<const Space> space);

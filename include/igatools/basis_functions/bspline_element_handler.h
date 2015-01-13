@@ -94,6 +94,8 @@ public:
 
     virtual void reset(const ValueFlags &flag, const quadrature_variant &quad) override final;
 
+    virtual void reset(const ValueFlags &flag, const ValueVector<typename Space::RefPoint> &points) override final;
+
     virtual void init_cache(RefElementAccessor &elem, const topology_variant &topology) override final;
 
     template <int k>

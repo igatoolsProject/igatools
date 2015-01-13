@@ -98,6 +98,12 @@ public:
 
     virtual void reset(const ValueFlags &flag, const quadrature_variant &quad) override final;
 
+    virtual void reset(const ValueFlags &flag, const ValueVector<typename Space::RefPoint> &points) override final
+    {
+        Assert(false,ExcNotImplemented());
+        AssertThrow(false,ExcNotImplemented());
+    }
+
     virtual void init_cache(RefElementAccessor &elem, const topology_variant &topology) override final;
 
     virtual void fill_cache(RefElementAccessor &elem, const topology_variant &topology, const int j) override final;

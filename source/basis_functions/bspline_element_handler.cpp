@@ -191,11 +191,11 @@ operator()(const T &quad1)
 
     for (auto &s_id: UnitElement<dim>::template elems_ids<k>())
     {
+        const auto &n_inter = space_->get_grid()->get_num_intervals();
         auto &g_cache = std::get<k>(*splines1d_)[s_id];
         g_cache.clear();
-        g_cache.resize(space_->get_grid()->get_num_intervals(),
+        g_cache.resize(n_inter,
                        BasisValues(space_->get_components_map()));
-        const auto &n_inter = space_->get_grid()->get_num_intervals();
         const auto quad = extend_sub_elem_quad<k,dim>(quad1, s_id);
         const auto &n_points = quad.get_num_points_direction();
 
@@ -378,6 +378,24 @@ reset(const ValueFlags &flag, const quadrature_variant &quad)
 //    reset_impl_.lengths_ = &(this->grid_handler_.lengths_);
 
     boost::apply_visitor(reset_impl_, quad);
+}
+
+
+template<int dim_, int range_ , int rank_>
+void
+BSplineElementHandler<dim_, range_, rank_>::
+reset(const ValueFlags &flag, const ValueVector<typename Space::RefPoint> &points)
+{
+    Assert(false,ExcNotImplemented());
+#if 0
+    reset_impl_.grid_handler_ = &(this->grid_handler_);
+    reset_impl_.flag_ = flag;
+    reset_impl_.flags_ = &flags_;
+    reset_impl_.splines1d_ = &splines1d_;
+    reset_impl_.space_ = this->get_bspline_space().get();
+
+    boost::apply_visitor(reset_impl_, quad);
+#endif
 }
 
 

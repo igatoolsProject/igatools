@@ -45,6 +45,7 @@ public:
 
     using parent_t = SpaceElement<ReferenceSpace<dim,range,rank>>;
 
+    using RefPoint = typename Space::RefPoint;
     using Point = typename Space::Point;
     using Value = typename Space::Value;
 
@@ -160,16 +161,16 @@ public:
     Conditional< deriv_order==0,
                  Value,
                  Derivative<deriv_order> > >
-                 evaluate_basis_derivatives_at_points(const ValueVector<Point> &points);
+                 evaluate_basis_derivatives_at_points(const ValueVector<RefPoint> &points);
 
     ValueTable<Value>
-    evaluate_basis_values_at_points(const ValueVector<Point> &points)
+    evaluate_basis_values_at_points(const ValueVector<RefPoint> &points)
     {
         return evaluate_basis_derivatives_at_points<0>(points);
     }
 
     ValueTable<Derivative<1> >
-    evaluate_basis_gradients_at_points(const ValueVector<Point> &points)
+    evaluate_basis_gradients_at_points(const ValueVector<RefPoint> &points)
     {
         return evaluate_basis_derivatives_at_points<1>(points);
     }
