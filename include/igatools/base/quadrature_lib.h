@@ -38,7 +38,7 @@ IGA_NAMESPACE_OPEN
  */
 template< int dim >
 class QGauss :
-    public Quadrature< dim >
+    public QuadratureTensorProduct< dim >
 {
 public:
     /**
@@ -113,7 +113,7 @@ private:
 
 template< >
 class QGauss<0> :
-    public Quadrature<0>
+    public QuadratureTensorProduct<0>
 {
 public:
     QGauss() = delete ;
@@ -123,7 +123,7 @@ public:
      * \note The argument \p n_points is not used. It is here only to mantain a unified interface
      * for dimension-independent coding.
      */
-    explicit QGauss(const Size n_points) : Quadrature<0> () {} ;
+    explicit QGauss(const Size n_points) : QuadratureTensorProduct<0> () {} ;
 
     /**
      * Copy constructor. Not allowed to be used
@@ -167,7 +167,7 @@ private:
  */
 template< int dim >
 class QGaussLobatto :
-    public Quadrature< dim >
+    public QuadratureTensorProduct< dim >
 {
 public:
 
@@ -245,7 +245,7 @@ private:
 
 template< >
 class QGaussLobatto<0> :
-    public Quadrature<0>
+    public QuadratureTensorProduct<0>
 {
 public:
     /**
@@ -258,7 +258,7 @@ public:
      * \note The argument \p n_points is not used. It is here only to mantain a unified interface
      * for dimension-independent coding.
      */
-    explicit QGaussLobatto(const Size n_points) : Quadrature<0> () {} ;
+    explicit QGaussLobatto(const Size n_points) : QuadratureTensorProduct<0> () {} ;
 
     /**
      * Copy constructor. Not allowed to be used
@@ -301,7 +301,7 @@ private:
  */
 template< int dim >
 class QUniform :
-    public Quadrature<dim>
+    public QuadratureTensorProduct<dim>
 {
 public:
 

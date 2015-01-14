@@ -65,7 +65,7 @@ public :
 
 
     /** Type for the quadrature scheme. */
-    using QuadratureType = Quadrature<dim>;
+    using QuadratureType = QuadratureTensorProduct<dim>;
 
 #if 0
     using Value = typename PhysSpace::Value;

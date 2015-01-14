@@ -66,7 +66,7 @@ template<int k>
 void
 NURBSElementHandler<dim_, range_, rank_>::
 reset(const ValueFlags flag,
-      const Quadrature<k> &quad1)
+      const QuadratureTensorProduct<k> &quad1)
 {
     //--------------------------------------
     // resetting the BSplineElementHandler (for the numerator)

@@ -570,7 +570,7 @@ void
 CartesianGridElement<dim_>::
 ValuesCache::
 resize(const GridFlags &flags_handler,
-       const Quadrature<dim> &quad)
+       const QuadratureTensorProduct<dim> &quad)
 {
     flags_handler_ = flags_handler;
 

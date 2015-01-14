@@ -39,7 +39,7 @@ template<int dim, template<int> class Q>
 using TupleList = decltype(tuple_of_quads<Q>(std::make_index_sequence<dim+1>()));
 
 template<class ValuesCache, int dim, std::size_t... I>
-auto tuple_of_caches(std::index_sequence<I...>, const Quadrature<dim> &q, const ValuesCache &)
+auto tuple_of_caches(std::index_sequence<I...>, const QuadratureTensorProduct<dim> &q, const ValuesCache &)
 -> decltype(std::make_tuple(std::array<ValuesCache,
                             UnitElement<dim>::template num_elem<I>()>() ...))
 {
@@ -50,7 +50,7 @@ auto tuple_of_caches(std::index_sequence<I...>, const Quadrature<dim> &q, const 
 
 template<class ValuesCache, int dim>
 using CacheList = decltype(tuple_of_caches(std::make_index_sequence<dim+1>(),
-                                           Quadrature<dim>(),
+                                           QuadratureTensorProduct<dim>(),
                                            ValuesCache()));
 
 template<class Func, class Tuple, std::size_t N, std::size_t Min>

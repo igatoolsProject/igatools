@@ -96,7 +96,7 @@ public:
 
 public:
     template<int k>
-    void reset(const ValueFlags flag, const Quadrature<k> &quad);
+    void reset(const ValueFlags flag, const QuadratureTensorProduct<k> &quad);
 
     template <int k>
     void init_cache(ElementAccessor &elem);

@@ -26,8 +26,13 @@
 
 IGA_NAMESPACE_OPEN
 
+
+
+
+
 /**
- * @brief Base class for tensor product quadrature formulas in @p dim dimensions.
+ * @brief Base class for tensor product quadrature formulas with tensor-product structure,
+ *  in @p dim dimensions.
  *
  * This class stores quadrature points and weights on a dim-dimensional unit
  * hypercube
@@ -39,10 +44,10 @@ IGA_NAMESPACE_OPEN
  *
  */
 template<int dim_>
-class Quadrature
+class QuadratureTensorProduct
 {
 private:
-    using self_t = Quadrature<dim_>;
+    using self_t = QuadratureTensorProduct<dim_>;
 public:
     static const int dim = dim_;
     using WeigthArray = TensorProductArray<dim>;
@@ -53,45 +58,45 @@ public:
     /**
      * Default constructor. It does nothing.
      */
-    Quadrature() = default;
+    QuadratureTensorProduct() = default;
 
     /**
      * Creates a tensor product quadrature rule
      * on the unit d-dimensional hypercube \f$ [0,1]^d \f$,
      * with @p num_points[i] number of points in the i-th dimension.
      */
-    explicit Quadrature(const TensorSize<dim> num_points);
+    explicit QuadratureTensorProduct(const TensorSize<dim> num_points);
 
     /**
      * Creates a tensor product quadrature rule
      * on the unit d-dimensional hypercube \f$ [0,1]^d \f$,
      * with @p num_points points in each direction.
      */
-    explicit Quadrature(const Index num_points);
+    explicit QuadratureTensorProduct(const Index num_points);
 
     /**
      * Creates a tensor product quadrature rule with the points, the
      * weights and the domain coordinates of the d-dimensional hypercube
      * upon which the quadrature is referred to.
      */
-    explicit Quadrature(const PointArray &points,
-                        const WeigthArray &weights);
+    explicit QuadratureTensorProduct(const PointArray &points,
+                                     const WeigthArray &weights);
 
     /**
      * Destructor.
      */
-    ~Quadrature() = default;
+    ~QuadratureTensorProduct() = default;
 
     /**
      * Copy constructor.
      * It performs a deep copy of the Quadrature object.
      */
-    Quadrature(const self_t &quad_scheme) = default;
+    QuadratureTensorProduct(const self_t &quad_scheme) = default;
 
     /**
     * Move constructor.
     */
-    Quadrature(self_t &&quad_scheme) = default;
+    QuadratureTensorProduct(self_t &&quad_scheme) = default;
     ///@}
 
     ///@name Assignment operators
@@ -100,12 +105,12 @@ public:
      * Copy assignment operator.
      * It performs a deep copy of the Quadrature object.
      */
-    Quadrature<dim> &operator=(const self_t &quad_scheme) = default;
+    QuadratureTensorProduct<dim> &operator=(const self_t &quad_scheme) = default;
 
     /**
      * Move assignment operator.
      */
-    Quadrature<dim> &operator=(self_t  &&quad_scheme) = default;
+    QuadratureTensorProduct<dim> &operator=(self_t  &&quad_scheme) = default;
     ///@}
 
     ///@name Getting informations about the points and the domain.
@@ -174,8 +179,8 @@ protected:
  * @relates Quadrature
  */
 template<int k, int dim>
-Quadrature<dim>
-extend_sub_elem_quad(const Quadrature<k> &quad, const int sub_elem_id);
+QuadratureTensorProduct<dim>
+extend_sub_elem_quad(const QuadratureTensorProduct<k> &quad, const int sub_elem_id);
 
 
 IGA_NAMESPACE_CLOSE

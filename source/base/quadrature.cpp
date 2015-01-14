@@ -28,7 +28,7 @@ using std::endl;
 IGA_NAMESPACE_OPEN
 
 template<int dim_>
-Quadrature<dim_>::Quadrature(const TensorSize<dim> num_points)
+QuadratureTensorProduct<dim_>::QuadratureTensorProduct(const TensorSize<dim> num_points)
     :
     points_(num_points),
     weights_(num_points)
@@ -37,7 +37,7 @@ Quadrature<dim_>::Quadrature(const TensorSize<dim> num_points)
 
 
 template<int dim_>
-Quadrature<dim_>::Quadrature(const Index num_points)
+QuadratureTensorProduct<dim_>::QuadratureTensorProduct(const Index num_points)
     :
     points_(num_points),
     weights_(num_points)
@@ -46,9 +46,9 @@ Quadrature<dim_>::Quadrature(const Index num_points)
 
 
 template<int dim_>
-Quadrature<dim_>::
-Quadrature(const CartesianProductArray<Real,dim> &points,
-           const TensorProductArray<dim> &weights)
+QuadratureTensorProduct<dim_>::
+QuadratureTensorProduct(const CartesianProductArray<Real,dim> &points,
+                        const TensorProductArray<dim> &weights)
     :
     points_(points),
     weights_(weights)
@@ -62,7 +62,7 @@ Quadrature(const CartesianProductArray<Real,dim> &points,
 
 template<int dim_>
 auto
-Quadrature<dim_>::get_points() const noexcept -> PointArray
+QuadratureTensorProduct<dim_>::get_points() const noexcept -> PointArray
 {
     return points_;
 }
@@ -71,7 +71,7 @@ Quadrature<dim_>::get_points() const noexcept -> PointArray
 
 template<int dim_>
 auto
-Quadrature<dim_>::get_weights() const noexcept -> WeigthArray
+QuadratureTensorProduct<dim_>::get_weights() const noexcept -> WeigthArray
 {
     return weights_;
 }
@@ -80,7 +80,7 @@ Quadrature<dim_>::get_weights() const noexcept -> WeigthArray
 
 template<int dim_>
 auto
-Quadrature<dim_>::
+QuadratureTensorProduct<dim_>::
 get_num_points_direction() const noexcept -> TensorSize<dim>
 {
     return points_.tensor_size();
@@ -90,7 +90,7 @@ get_num_points_direction() const noexcept -> TensorSize<dim>
 
 template<int dim_>
 Size
-Quadrature<dim_>::
+QuadratureTensorProduct<dim_>::
 get_num_points() const noexcept
 {
     return points_.flat_size();
@@ -100,7 +100,7 @@ get_num_points() const noexcept
 
 template<int dim_>
 void
-Quadrature<dim_>::
+QuadratureTensorProduct<dim_>::
 print_info(LogStream &out) const
 {
     out << "Number of points:" << get_num_points() << endl;
@@ -129,7 +129,7 @@ print_info(LogStream &out) const
 template<int dim_>
 template<int k>
 auto
-Quadrature<dim_>::
+QuadratureTensorProduct<dim_>::
 collapse_to_sub_element(const int sub_elem_id) const -> self_t
 {
     auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
@@ -153,21 +153,21 @@ collapse_to_sub_element(const int sub_elem_id) const -> self_t
         new_weights.copy_data_direction(i,weights_.get_data_direction(i));
     }
 
-    return Quadrature<dim>(new_points, new_weights);
+    return QuadratureTensorProduct<dim>(new_points, new_weights);
 }
 
 
 
 template<int k, int dim>
-Quadrature<dim>
-extend_sub_elem_quad(const Quadrature<k> &quad,
+QuadratureTensorProduct<dim>
+extend_sub_elem_quad(const QuadratureTensorProduct<k> &quad,
                      const int sub_elem_id)
 {
 
     auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
 
-    typename Quadrature<dim>::PointArray  new_points;
-    typename Quadrature<dim>::WeigthArray new_weights;
+    typename QuadratureTensorProduct<dim>::PointArray  new_points;
+    typename QuadratureTensorProduct<dim>::WeigthArray new_weights;
 
     const int n_dir = k_elem.constant_directions.size();
     for (int j=0; j<n_dir; ++j)
@@ -187,7 +187,7 @@ extend_sub_elem_quad(const Quadrature<k> &quad,
         ++ind;
     }
 
-    return Quadrature<dim>(new_points, new_weights);
+    return QuadratureTensorProduct<dim>(new_points, new_weights);
 }
 
 IGA_NAMESPACE_CLOSE

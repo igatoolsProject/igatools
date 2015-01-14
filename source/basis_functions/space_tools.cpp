@@ -166,7 +166,7 @@ template<class Space, LAPack la_pack>
 Real
 integrate_difference(const typename Space::Func &exact_solution,
                      std::shared_ptr<const Space> space,
-                     const Quadrature< Space::dim > &quad,
+                     const QuadratureTensorProduct< Space::dim > &quad,
                      const Norm &norm_flag,
                      const Vector<la_pack> &solution_coefs,
                      vector<Real> &element_error)
@@ -288,7 +288,7 @@ template<class Space, LAPack la_pack>
 Vector<la_pack>
 projection_l2(const typename Space::Func &func,
               shared_ptr<const Space> space,
-              const Quadrature<Space::dim> &quad)
+              const QuadratureTensorProduct<Space::dim> &quad)
 {
     const auto space_manager = space->get_space_manager();
     Matrix<la_pack> matrix(*space_manager);
@@ -364,7 +364,7 @@ template<class Space, LAPack la_pack>
 void
 project_boundary_values(const typename Space::Func &func,
                         std::shared_ptr<const Space> space,
-                        const Quadrature<Space::dim-1> &quad,
+                        const QuadratureTensorProduct<Space::dim-1> &quad,
                         const std::set<boundary_id>  &boundary_ids,
                         std::map<Index, Real>  &boundary_values)
 {
@@ -401,7 +401,7 @@ template<class Space, LAPack la_pack>
 void
 project_boundary_values(const typename Space::Func &func,
                         std::shared_ptr<const Space> space,
-                        const Quadrature<Space::dim-1> &quad,
+                        const QuadratureTensorProduct<Space::dim-1> &quad,
                         const boundary_id bdry_id,
                         std::map<Index,Real>  &boundary_values)
 {

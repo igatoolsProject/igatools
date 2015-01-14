@@ -71,7 +71,7 @@ public:
      * \see add_field
      */
     Writer(const std::shared_ptr<const MapFunction<dim,dim+codim> > map,
-           const std::shared_ptr<const Quadrature<dim>> quadrature);
+           const std::shared_ptr<const QuadratureTensorProduct<dim>> quadrature);
 
 
     /*
@@ -170,7 +170,7 @@ private:
     /**
      * Unit element quadrature rule used for the plot.
      */
-    std::shared_ptr< const Quadrature<dim> > quad_plot_;
+    std::shared_ptr< const QuadratureTensorProduct<dim> > quad_plot_;
 
 
 

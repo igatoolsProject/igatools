@@ -94,7 +94,7 @@ public:
     void reset(const ValueFlags &flag, const variant_1 &quad) override
     {
         base_t::reset(flag, quad);
-        auto q = boost::get<Quadrature<sub_dim>>(quad);
+        auto q = boost::get<QuadratureTensorProduct<sub_dim>>(quad);
         sup_func_->reset(flag, q);
 
     }
@@ -237,7 +237,7 @@ public:
     void reset(const ValueFlags &flag, const variant_1 &quad) override
     {
         base_t::reset(flag, quad);
-        auto q = boost::get<Quadrature<sub_dim>>(quad);
+        auto q = boost::get<QuadratureTensorProduct<sub_dim>>(quad);
         sup_func_->reset(flag, q);
 
     }

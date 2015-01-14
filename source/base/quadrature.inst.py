@@ -25,24 +25,24 @@ data = Instantiation()
 
 
 sub_dim_members = \
- ['Quadrature<dim> Quadrature<dim>::collapse_to_sub_element<k>(const int id) const;']
+ ['QuadratureTensorProduct<dim> QuadratureTensorProduct<dim>::collapse_to_sub_element<k>(const int id) const;']
 
 for dim in inst.sub_domain_dims:
-    f.write('template class Quadrature<%d>; \n' %dim)
+    f.write('template class QuadratureTensorProduct<%d>; \n' %dim)
     for fun in sub_dim_members:
         k = dim
         s = fun.replace('dim', '%d' % (dim)).replace('k', '%d' % (k));
         f.write('template ' + s + '\n')
 
 for dim in inst.domain_dims:
-    f.write('template class Quadrature<%d>; \n' %dim)
+    f.write('template class QuadratureTensorProduct<%d>; \n' %dim)
     for fun in sub_dim_members:
         for k in inst.sub_dims(dim):
             s = fun.replace('dim', '%d' % (dim)).replace('k', '%d' % (k));
             f.write('template ' + s + '\n')
         
 
-ext_members = [ 'Quadrature<dim> extend_sub_elem_quad<k,dim>(const Quadrature<k> &quad, const int sub_elem_id);']   
+ext_members = [ 'QuadratureTensorProduct<dim> extend_sub_elem_quad<k,dim>(const QuadratureTensorProduct<k> &quad, const int sub_elem_id);']   
 for dim in inst.all_domain_dims:
     for fun in ext_members:
         for k in range(0, dim+1):

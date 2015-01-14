@@ -356,7 +356,7 @@ private:
     {
     public:
         void resize(const GridFlags &flags_handler,
-                    const Quadrature<dim> &quad);
+                    const QuadratureTensorProduct<dim> &quad);
 
         void print_info(LogStream &out) const;
 

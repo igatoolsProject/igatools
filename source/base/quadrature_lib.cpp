@@ -261,7 +261,7 @@ void uniform_quadrature(const int n,
 //--------------------------------------------------------------------------------------------------
 template< int dim >
 QGauss< dim >::QGauss(const Size num_points) :
-    Quadrature< dim >(num_points)
+    QuadratureTensorProduct< dim >(num_points)
 {
     vector<Real> points(num_points);
     vector<Real> weights(num_points);
@@ -278,7 +278,7 @@ QGauss< dim >::QGauss(const Size num_points) :
 template< int dim >
 QGauss< dim >::
 QGauss(const TensorSize<dim> num_points) :
-    Quadrature< dim >(num_points)
+    QuadratureTensorProduct< dim >(num_points)
 {
     vector<Real> points;
     vector<Real> weights;
@@ -314,7 +314,7 @@ QGauss< dim >::create(const TensorSize<dim> num_points)
 
 template< int dim >
 QGaussLobatto< dim >::QGaussLobatto(const Size num_points, const Real eps_scaling) :
-    Quadrature< dim >(num_points)
+    QuadratureTensorProduct< dim >(num_points)
 {
     // Gauss-Lobatto schemes needs at least 2 points in each direction
     Assert(num_points >= 2, ExcLowerRange(num_points, 2)) ;
@@ -342,7 +342,7 @@ QGaussLobatto< dim >::QGaussLobatto(const Size num_points, const Real eps_scalin
 
 template< int dim >
 QGaussLobatto< dim >::QGaussLobatto(const TensorSize<dim> num_points, const Real eps_scaling) :
-    Quadrature< dim >(num_points)
+    QuadratureTensorProduct< dim >(num_points)
 {
     Assert(eps_scaling >= Real(0.0) && eps_scaling < Real(0.5),
            ExcMessage("The scaling factor must be >= 0.0 and < 0.5"));
@@ -391,7 +391,7 @@ QGaussLobatto< dim >::create(const TensorSize<dim> num_points, const Real eps_sc
 template< int dim >
 QUniform<dim>::QUniform(const Size num_points, const Real eps_scaling)
     :
-    Quadrature< dim >(num_points)
+    QuadratureTensorProduct< dim >(num_points)
 {
     Assert(eps_scaling >= Real(0.0) && eps_scaling < Real(0.5),
            ExcMessage("The scaling factor must be >= 0.0 and < 0.5"));
@@ -417,7 +417,7 @@ QUniform<dim>::QUniform(const Size num_points, const Real eps_scaling)
 template< int dim >
 QUniform<dim>::QUniform(const TensorSize<dim> num_points, const Real eps_scaling)
     :
-    Quadrature< dim >(num_points)
+    QuadratureTensorProduct< dim >(num_points)
 {
     Assert(eps_scaling >= Real(0.0) && eps_scaling < Real(0.5),
            ExcMessage("The scaling factor must be >= 0.0 and < 0.5"));

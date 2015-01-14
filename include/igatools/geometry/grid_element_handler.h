@@ -32,7 +32,7 @@
 IGA_NAMESPACE_OPEN
 
 template<int dim>
-using QuadList = TupleList<dim, Quadrature>;
+using QuadList = TupleList<dim, QuadratureTensorProduct>;
 
 /**
  * Grid element value manager
@@ -72,7 +72,7 @@ public:
 public:
 
     template<int k>
-    void reset(const ValueFlags flag, const Quadrature<k> &quad);
+    void reset(const ValueFlags flag, const QuadratureTensorProduct<k> &quad);
 
     template <int k>
     void init_cache(ElementAccessor &elem);
