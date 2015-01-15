@@ -39,8 +39,9 @@ QuadratureTensorProduct<dim_>::QuadratureTensorProduct(const TensorSize<dim> num
 template<int dim_>
 QuadratureTensorProduct<dim_>::QuadratureTensorProduct(const Index num_points)
     :
-    points_(num_points),
-    weights_(num_points)
+    QuadratureTensorProduct(TensorSize<dim>(num_points))
+//    points_(num_points),
+//    weights_(num_points)
 {}
 
 
@@ -57,7 +58,13 @@ QuadratureTensorProduct(const CartesianProductArray<Real,dim> &points,
            ExcMessage("Sizes of points and weights do not match."));
 }
 
-
+template<int dim_>
+bool
+QuadratureTensorProduct<dim_>::
+is_tensor_product_struct() const
+{
+    return true;
+}
 
 
 template<int dim_>

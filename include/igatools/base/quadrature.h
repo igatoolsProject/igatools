@@ -27,7 +27,68 @@
 IGA_NAMESPACE_OPEN
 
 
+template <int dim_>
+class EvaluationPoints
+{
+public:
 
+    /**
+     * Returns the total number of evaluation points.
+     */
+    virtual int get_num_points() const = 0;
+
+    /**
+     * Returns TRUE if the evaluation points have a tensor-product structure.
+     */
+    virtual bool is_tensor_product_struct() const = 0;
+
+protected:
+
+    /**
+     * @name Constructors.
+     */
+    ///@{
+    /**
+     * Default constructor.
+     */
+    EvaluationPoints() = default;
+
+    /**
+     * Copy constructor.
+     */
+    EvaluationPoints(const EvaluationPoints<dim_> &pts) = default;
+
+    /**
+     * Move constructor.
+     */
+    EvaluationPoints(EvaluationPoints<dim_> &&pts) = default;
+
+    /**
+     * Destructor.
+     */
+    virtual ~EvaluationPoints() = default;
+    ///@}
+
+
+    /**
+     * @name Assignment operators.
+     */
+    ///@{
+    /**
+     * Copy assignment operator.
+     */
+    EvaluationPoints<dim_> &operator=(const EvaluationPoints<dim_> &pts) = default;
+
+    /**
+     * Move assignment operator.
+     */
+    EvaluationPoints<dim_> &operator=(EvaluationPoints<dim_> &&pts) = default;
+    ///@}
+
+private:
+
+//    vector<TensorIndex<dim_>> map_point_id_to_coords_id_;
+};
 
 
 /**
@@ -45,6 +106,7 @@ IGA_NAMESPACE_OPEN
  */
 template<int dim_>
 class QuadratureTensorProduct
+    : public EvaluationPoints<dim_>
 {
 private:
     using self_t = QuadratureTensorProduct<dim_>;
@@ -118,7 +180,12 @@ public:
     /**
      * Returns the total number of quadrature points.
      */
-    Size get_num_points() const noexcept;
+    virtual Size get_num_points() const noexcept override final;
+
+    /**
+     * Returns TRUE.
+     */
+    virtual bool is_tensor_product_struct() const override final;
 
     /**
      * Returns the number of quadrature points along each coordinate direction.
