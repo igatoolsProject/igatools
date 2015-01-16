@@ -98,6 +98,21 @@ get_num_points() const
     return map_point_id_to_coords_id_.size();
 }
 
+
+
+template<int dim_,int sp_dim_>
+TensorIndex<sp_dim_>
+EvaluationPoints<dim_,sp_dim_>::
+get_num_coords_direction() const noexcept
+{
+    TensorIndex<sp_dim_> n_coords;
+    for (int i = 0 ; i < sp_dim_ ; ++i)
+        n_coords[i] = coordinates_[i].size();
+
+    return n_coords;
+}
+
+
 template<int dim_>
 QuadratureTensorProduct<dim_>::
 QuadratureTensorProduct(
@@ -187,14 +202,6 @@ get_weights() const noexcept -> WeigthArray
 }
 
 
-
-template<int dim_>
-auto
-QuadratureTensorProduct<dim_>::
-get_num_points_direction() const noexcept -> TensorSize<dim>
-{
-    return points_.tensor_size();
-}
 
 
 /*

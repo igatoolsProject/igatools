@@ -45,6 +45,17 @@ public:
      */
     virtual bool is_tensor_product_struct() const = 0;
 
+    /**
+     * Returns the coordinates indices relative to the point with (flat) index <p>point_id</p>.
+     */
+    TensorIndex<sp_dim_> get_coords_id_from_point_id(const int point_id) const;
+
+
+    /**
+     * Returns the number of point coordinates along each direction.
+     */
+    TensorIndex<sp_dim_> get_num_coords_direction() const noexcept;
+
 protected:
 
     /**
@@ -94,23 +105,28 @@ protected:
     EvaluationPoints<dim_,sp_dim_> &operator=(EvaluationPoints<dim_,sp_dim_> &&pts) = default;
     ///@}
 
-    /**
-     * Returns the coordinates indices relative to the point with (flat) index <p>point_id</p>.
-     */
-    TensorIndex<sp_dim_> get_coords_id_from_point_id(const int point_id) const;
 
 
+protected:
     /**
      * Reset the points coordinates an the map point_id_to_coords_is,
      * given a vector of points in the <t>sp_dim_</t>-dimensional space.
      */
     void reset_points_coordinates(const ValueVector<Point> &pts);
 
+
 private:
 
-
+    /**
+     * Coordinates of the points.
+     *
+     * It does not contain multiple values.
+     */
     special_array< vector<Real>, sp_dim_> coordinates_;
 
+    /**
+     * Map between the point (flat) ids and its coordinates ids.
+     */
     vector<TensorIndex<sp_dim_>> map_point_id_to_coords_id_;
 };
 
@@ -210,10 +226,7 @@ public:
      */
     virtual bool is_tensor_product_struct() const override final;
 
-    /**
-     * Returns the number of quadrature points along each coordinate direction.
-     */
-    TensorSize<dim> get_num_points_direction() const noexcept;
+public:
     ///@}
 
     ///@name Getting a copy of the internal variables.
@@ -229,7 +242,6 @@ public:
      * a tensor-product structure.
      */
     PointArray get_points() const noexcept;
-
     ///@}
 
     /**

@@ -197,12 +197,12 @@ operator()(const T &quad1)
         g_cache.resize(n_inter,
                        BasisValues(space_->get_components_map()));
         const auto quad = extend_sub_elem_quad<k,dim>(quad1, s_id);
-        const auto &n_points = quad.get_num_points_direction();
+        const auto &n_coords = quad.get_num_coords_direction();
 
         // Allocate space for the BasisValues1D
         for (int dir = 0 ; dir < dim ; ++dir)
         {
-            const auto &n_pts = n_points[dir];
+            const auto &n_pts = n_coords[dir];
             for (int j = 0 ; j < n_inter[dir] ; ++j)
             {
                 auto &splines1d = g_cache.entry(dir, j);
@@ -270,7 +270,7 @@ operator()(const T &quad1)
             for (auto comp : bernstein_values.get_active_components_id())
             {
                 const int deg = degree[comp][dir];
-                bernstein_values[comp].resize(max_der, deg+1, n_points[dir]);
+                bernstein_values[comp].resize(max_der, deg+1, n_coords[dir]);
                 const auto &pt_coords = points_left[comp].get_data_direction(dir);
                 for (int order = 0; order < max_der; ++order)
                     bernstein_values[comp].get_derivative(order) =
@@ -304,7 +304,7 @@ operator()(const T &quad1)
             for (auto comp : bernstein_values.get_active_components_id())
             {
                 const int deg = degree[comp][dir];
-                bernstein_values[comp].resize(max_der, deg+1, n_points[dir]);
+                bernstein_values[comp].resize(max_der, deg+1, n_coords[dir]);
                 const auto &pt_coords = points_right[comp].get_data_direction(dir);
                 for (int order = 0; order < max_der; ++order)
                     bernstein_values[comp].get_derivative(order) =
@@ -337,7 +337,7 @@ operator()(const T &quad1)
             for (auto comp : bernstein_values.get_active_components_id())
             {
                 const int deg = degree[comp][dir];
-                bernstein_values[comp].resize(max_der, deg+1, n_points[dir]);
+                bernstein_values[comp].resize(max_der, deg+1, n_coords[dir]);
                 const auto &pt_coords = points.get_data_direction(dir);
                 for (int order = 0; order < max_der; ++order)
                     bernstein_values[comp].get_derivative(order) =

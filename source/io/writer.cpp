@@ -61,7 +61,7 @@ Writer(const shared_ptr<const MapFunction<dim,dim+codim> > map,
     :
     map_(map->clone()),
     quad_plot_(quadrature),
-    num_points_direction_(quad_plot_->get_num_points_direction()),
+    num_points_direction_(quad_plot_->get_num_coords_direction()),
     n_iga_elements_(map->get_grid()->get_num_active_elems()),
     n_points_per_iga_element_(quad_plot_->get_num_points()),
     n_vtk_points_(n_iga_elements_*n_points_per_iga_element_),
