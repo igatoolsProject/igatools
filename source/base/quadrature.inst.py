@@ -24,10 +24,10 @@ data = Instantiation()
 (f, inst) = (data.file_output, data.inst)
 
 for dim in inst.sub_domain_dims:
-    f.write('template class EvaluationPoints<%d,%d>; \n' %(dim,dim))
+    f.write('template class EvaluationPoints<%d>; \n' %(dim))
 
 for dim in inst.domain_dims:
-    f.write('template class EvaluationPoints<%d,%d>; \n' %(dim,dim))
+    f.write('template class EvaluationPoints<%d>; \n' %(dim))
 
 sub_dim_members = \
  ['QuadratureTensorProduct<dim> QuadratureTensorProduct<dim>::collapse_to_sub_element<k>(const int id) const;']

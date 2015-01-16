@@ -33,23 +33,23 @@ using std::set;
 IGA_NAMESPACE_OPEN
 
 
-template<int dim_,int sp_dim_>
-EvaluationPoints<dim_,sp_dim_>::
+template<int dim_>
+EvaluationPoints<dim_>::
 EvaluationPoints(const ValueVector<Point> &pts)
 {
     this->reset_points_coordinates(pts);
 }
 
 
-template<int dim_,int sp_dim_>
+template<int dim_>
 void
-EvaluationPoints<dim_,sp_dim_>::
+EvaluationPoints<dim_>::
 reset_points_coordinates(const ValueVector<Point> &pts)
 {
     const int n_pts = pts.size();
     Assert(n_pts > 0 , ExcEmptyObject());
 
-    for (int i = 0 ; i < sp_dim_ ; ++i)
+    for (int i = 0 ; i < dim_ ; ++i)
     {
         set<Real> coords_set;
         for (const auto &pt : pts)
@@ -64,8 +64,8 @@ reset_points_coordinates(const ValueVector<Point> &pts)
     map_point_id_to_coords_id_.clear();
     for (const auto &pt : pts)
     {
-        TensorIndex<sp_dim_> coords_tensor_id;
-        for (int i = 0 ; i < sp_dim_ ; ++i)
+        TensorIndex<dim_> coords_tensor_id;
+        for (int i = 0 ; i < dim_ ; ++i)
         {
             const auto coords_begin = coordinates_[i].begin();
             const auto coords_end   = coordinates_[i].end();
@@ -79,9 +79,9 @@ reset_points_coordinates(const ValueVector<Point> &pts)
 }
 
 
-template<int dim_,int sp_dim_>
-TensorIndex<sp_dim_>
-EvaluationPoints<dim_,sp_dim_>::
+template<int dim_>
+TensorIndex<dim_>
+EvaluationPoints<dim_>::
 get_coords_id_from_point_id(const int point_id) const
 {
     Assert(point_id >= 0 && point_id < this->get_num_points(),
@@ -90,9 +90,9 @@ get_coords_id_from_point_id(const int point_id) const
     return map_point_id_to_coords_id_[point_id];
 }
 
-template<int dim_,int sp_dim_>
+template<int dim_>
 int
-EvaluationPoints<dim_,sp_dim_>::
+EvaluationPoints<dim_>::
 get_num_points() const
 {
     return map_point_id_to_coords_id_.size();
@@ -100,13 +100,13 @@ get_num_points() const
 
 
 
-template<int dim_,int sp_dim_>
-TensorIndex<sp_dim_>
-EvaluationPoints<dim_,sp_dim_>::
+template<int dim_>
+TensorIndex<dim_>
+EvaluationPoints<dim_>::
 get_num_coords_direction() const noexcept
 {
-    TensorIndex<sp_dim_> n_coords;
-    for (int i = 0 ; i < sp_dim_ ; ++i)
+    TensorIndex<dim_> n_coords;
+    for (int i = 0 ; i < dim_ ; ++i)
         n_coords[i] = coordinates_[i].size();
 
     return n_coords;
@@ -166,7 +166,7 @@ QuadratureTensorProduct<dim_>::
 QuadratureTensorProduct(const CartesianProductArray<Real,dim> &points,
                         const TensorProductArray<dim> &weights)
     :
-    EvaluationPoints<dim_,dim_>(points.get_flat_cartesian_product()),
+    EvaluationPoints<dim_>(points.get_flat_cartesian_product()),
     points_(points),
     weights_(weights)
 {

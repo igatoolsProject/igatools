@@ -59,9 +59,9 @@ GridElementHandler(shared_ptr<GridType> grid)
 {}
 
 template <int dim_>
-std::shared_ptr<GridElementHandler<dim_>>
-                                       GridElementHandler<dim_>::
-                                       create(std::shared_ptr<GridType> grid)
+std::shared_ptr<GridElementHandler<dim_> >
+GridElementHandler<dim_>::
+create(std::shared_ptr<GridType> grid)
 {
     using ElemHandler = GridElementHandler<dim_>;
     auto elem_handler = std::shared_ptr<ElemHandler>(new ElemHandler(grid));
@@ -75,7 +75,7 @@ template<int k>
 void
 GridElementHandler<dim_>::
 reset(const ValueFlags flag,
-      const QuadratureTensorProduct<k> &quad)
+      const EvaluationPoints<k> &quad)
 {
     flags_[k] = flag;
     auto &quad_k = std::get<k>(quad_);

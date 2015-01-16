@@ -28,12 +28,12 @@
 IGA_NAMESPACE_OPEN
 
 
-template <int dim_,int sp_dim_>
+template <int dim_>
 class EvaluationPoints
 {
 public:
 
-    using Point = Points<sp_dim_>;
+    using Point = Points<dim_>;
 
     /**
      * Returns the total number of evaluation points.
@@ -48,13 +48,13 @@ public:
     /**
      * Returns the coordinates indices relative to the point with (flat) index <p>point_id</p>.
      */
-    TensorIndex<sp_dim_> get_coords_id_from_point_id(const int point_id) const;
+    TensorIndex<dim_> get_coords_id_from_point_id(const int point_id) const;
 
 
     /**
      * Returns the number of point coordinates along each direction.
      */
-    TensorIndex<sp_dim_> get_num_coords_direction() const noexcept;
+    TensorIndex<dim_> get_num_coords_direction() const noexcept;
 
 protected:
 
@@ -69,19 +69,19 @@ protected:
 
 
     /**
-     * Construct the object given a vector of points in the <t>sp_dim_</t>-dimensional space.
+     * Construct the object given a vector of points in the <t>dim_</t>-dimensional space.
      */
     EvaluationPoints(const ValueVector<Point> &pts);
 
     /**
      * Copy constructor.
      */
-    EvaluationPoints(const EvaluationPoints<dim_,sp_dim_> &pts) = default;
+    EvaluationPoints(const EvaluationPoints<dim_> &pts) = default;
 
     /**
      * Move constructor.
      */
-    EvaluationPoints(EvaluationPoints<dim_,sp_dim_> &&pts) = default;
+    EvaluationPoints(EvaluationPoints<dim_> &&pts) = default;
 
     /**
      * Destructor.
@@ -97,12 +97,12 @@ protected:
     /**
      * Copy assignment operator.
      */
-    EvaluationPoints<dim_,sp_dim_> &operator=(const EvaluationPoints<dim_,sp_dim_> &pts) = default;
+    EvaluationPoints<dim_> &operator=(const EvaluationPoints<dim_> &pts) = default;
 
     /**
      * Move assignment operator.
      */
-    EvaluationPoints<dim_,sp_dim_> &operator=(EvaluationPoints<dim_,sp_dim_> &&pts) = default;
+    EvaluationPoints<dim_> &operator=(EvaluationPoints<dim_> &&pts) = default;
     ///@}
 
 
@@ -110,7 +110,7 @@ protected:
 protected:
     /**
      * Reset the points coordinates an the map point_id_to_coords_is,
-     * given a vector of points in the <t>sp_dim_</t>-dimensional space.
+     * given a vector of points in the <t>dim_</t>-dimensional space.
      */
     void reset_points_coordinates(const ValueVector<Point> &pts);
 
@@ -122,12 +122,12 @@ private:
      *
      * It does not contain multiple values.
      */
-    special_array< vector<Real>, sp_dim_> coordinates_;
+    special_array< vector<Real>, dim_> coordinates_;
 
     /**
      * Map between the point (flat) ids and its coordinates ids.
      */
-    vector<TensorIndex<sp_dim_>> map_point_id_to_coords_id_;
+    vector<TensorIndex<dim_>> map_point_id_to_coords_id_;
 };
 
 
@@ -146,13 +146,13 @@ private:
  */
 template<int dim_>
 class QuadratureTensorProduct
-    : public EvaluationPoints<dim_,dim_>
+    : public EvaluationPoints<dim_>
 {
 private:
     using self_t = QuadratureTensorProduct<dim_>;
 public:
 
-    using typename EvaluationPoints<dim_,dim_>::Point;
+    using typename EvaluationPoints<dim_>::Point;
 
     static const int dim = dim_;
     using WeigthArray = TensorProductArray<dim>;
