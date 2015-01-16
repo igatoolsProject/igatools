@@ -22,20 +22,23 @@
 #define QUADRATURE_H_
 
 #include <igatools/base/config.h>
+#include <igatools/utils/array.h>
 #include <igatools/utils/tensor_product_array.h>
 
 IGA_NAMESPACE_OPEN
 
 
-template <int dim_>
+template <int dim_,int sp_dim_>
 class EvaluationPoints
 {
 public:
 
+    using Point = Points<sp_dim_>;
+
     /**
      * Returns the total number of evaluation points.
      */
-    virtual int get_num_points() const = 0;
+    int get_num_points() const;
 
     /**
      * Returns TRUE if the evaluation points have a tensor-product structure.
@@ -53,15 +56,21 @@ protected:
      */
     EvaluationPoints() = default;
 
+
+    /**
+     * Construct the object given a vector of points in the <t>sp_dim_</t>-dimensional space.
+     */
+    EvaluationPoints(const ValueVector<Point> &pts);
+
     /**
      * Copy constructor.
      */
-    EvaluationPoints(const EvaluationPoints<dim_> &pts) = default;
+    EvaluationPoints(const EvaluationPoints<dim_,sp_dim_> &pts) = default;
 
     /**
      * Move constructor.
      */
-    EvaluationPoints(EvaluationPoints<dim_> &&pts) = default;
+    EvaluationPoints(EvaluationPoints<dim_,sp_dim_> &&pts) = default;
 
     /**
      * Destructor.
@@ -77,17 +86,32 @@ protected:
     /**
      * Copy assignment operator.
      */
-    EvaluationPoints<dim_> &operator=(const EvaluationPoints<dim_> &pts) = default;
+    EvaluationPoints<dim_,sp_dim_> &operator=(const EvaluationPoints<dim_,sp_dim_> &pts) = default;
 
     /**
      * Move assignment operator.
      */
-    EvaluationPoints<dim_> &operator=(EvaluationPoints<dim_> &&pts) = default;
+    EvaluationPoints<dim_,sp_dim_> &operator=(EvaluationPoints<dim_,sp_dim_> &&pts) = default;
     ///@}
+
+    /**
+     * Returns the coordinates indices relative to the point with (flat) index <p>point_id</p>.
+     */
+    TensorIndex<sp_dim_> get_coords_id_from_point_id(const int point_id) const;
+
+
+    /**
+     * Reset the points coordinates an the map point_id_to_coords_is,
+     * given a vector of points in the <t>sp_dim_</t>-dimensional space.
+     */
+    void reset_points_coordinates(const ValueVector<Point> &pts);
 
 private:
 
-//    vector<TensorIndex<dim_>> map_point_id_to_coords_id_;
+
+    special_array< vector<Real>, sp_dim_> coordinates_;
+
+    vector<TensorIndex<sp_dim_>> map_point_id_to_coords_id_;
 };
 
 
@@ -106,11 +130,14 @@ private:
  */
 template<int dim_>
 class QuadratureTensorProduct
-    : public EvaluationPoints<dim_>
+    : public EvaluationPoints<dim_,dim_>
 {
 private:
     using self_t = QuadratureTensorProduct<dim_>;
 public:
+
+    using typename EvaluationPoints<dim_,dim_>::Point;
+
     static const int dim = dim_;
     using WeigthArray = TensorProductArray<dim>;
     using PointArray  = CartesianProductArray<Real, dim>;
@@ -126,15 +153,16 @@ public:
      * Creates a tensor product quadrature rule
      * on the unit d-dimensional hypercube \f$ [0,1]^d \f$,
      * with @p num_points[i] number of points in the i-th dimension.
+     *
+     * The purpose of the function pointer argument <p>compute_coords_and_weight_1d</p>
+     * is to let a derived class to pass the method to compute the 1D coordinates and weights.
+     *
+     * The <p>eps</p> argument allows to perform a local scaling of the quadrature points.
      */
-    explicit QuadratureTensorProduct(const TensorSize<dim> num_points);
-
-    /**
-     * Creates a tensor product quadrature rule
-     * on the unit d-dimensional hypercube \f$ [0,1]^d \f$,
-     * with @p num_points points in each direction.
-     */
-    explicit QuadratureTensorProduct(const Index num_points);
+    explicit QuadratureTensorProduct(
+        const TensorSize<dim> num_points,
+        void (*compute_coords_and_weight_1d)(const int n_pts_1d, vector<Real> &coords,vector<Real> &weights),
+        const Real eps_scaling = 0.0);
 
     /**
      * Creates a tensor product quadrature rule with the points, the
@@ -147,7 +175,7 @@ public:
     /**
      * Destructor.
      */
-    ~QuadratureTensorProduct() = default;
+    virtual ~QuadratureTensorProduct() = default;
 
     /**
      * Copy constructor.
@@ -177,11 +205,6 @@ public:
 
     ///@name Getting informations about the points and the domain.
     ///@{
-    /**
-     * Returns the total number of quadrature points.
-     */
-    virtual Size get_num_points() const noexcept override final;
-
     /**
      * Returns TRUE.
      */

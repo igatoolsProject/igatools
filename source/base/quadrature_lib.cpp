@@ -20,6 +20,8 @@
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/exceptions.h>
+
+
 #include <limits>
 
 using std::array;
@@ -260,39 +262,18 @@ void uniform_quadrature(const int n,
 
 //--------------------------------------------------------------------------------------------------
 template< int dim >
-QGauss< dim >::QGauss(const Size num_points) :
-    QuadratureTensorProduct< dim >(num_points)
-{
-    vector<Real> points(num_points);
-    vector<Real> weights(num_points);
-    gauss_legendre_quadrature(num_points, points, weights);
-    for (int i = 0; i < dim; ++i)
-    {
-        this->points_.copy_data_direction(i,points);
-        this->weights_.copy_data_direction(i,weights);
-    }
+QGauss<dim>::
+QGauss(const Size num_points) :
+    QGauss<dim>(TensorSize<dim>(num_points))
+{}
 
-}
 
 
 template< int dim >
 QGauss< dim >::
 QGauss(const TensorSize<dim> num_points) :
-    QuadratureTensorProduct< dim >(num_points)
-{
-    vector<Real> points;
-    vector<Real> weights;
-    for (int i = 0; i < dim; ++i)
-    {
-        const auto n_pts = num_points[i];
-        points.resize(n_pts);
-        weights.resize(n_pts);
-        gauss_legendre_quadrature(n_pts, points, weights);
-
-        this->points_.copy_data_direction(i,points);
-        this->weights_.copy_data_direction(i,weights);
-    }
-}
+    QuadratureTensorProduct<dim>(num_points,&gauss_legendre_quadrature,0.0)
+{}
 
 
 template< int dim >
@@ -313,59 +294,24 @@ QGauss< dim >::create(const TensorSize<dim> num_points)
 
 
 template< int dim >
-QGaussLobatto< dim >::QGaussLobatto(const Size num_points, const Real eps_scaling) :
-    QuadratureTensorProduct< dim >(num_points)
-{
-    // Gauss-Lobatto schemes needs at least 2 points in each direction
-    Assert(num_points >= 2, ExcLowerRange(num_points, 2)) ;
+QGaussLobatto< dim >::
+QGaussLobatto(const Size num_points, const Real eps_scaling)
+    :
+    QGaussLobatto(TensorSize<dim>(num_points),eps_scaling)
+{}
 
-    Assert(eps_scaling >= Real(0.0) && eps_scaling < Real(0.5),
-           ExcMessage("The scaling factor must be >= 0.0 and < 0.5"));
-
-    vector<Real> points(num_points);
-    vector<Real> weights(num_points);
-    gauss_lobatto_quadrature(num_points, points, weights);
-
-    if (eps_scaling > 0)
-        for (int ip = 0; ip < num_points; ++ip)
-            points[ip] = 0.5 + (points[ip] / 0.5 - 1.0) * (0.5 - eps_scaling) ;
-
-
-    for (int i = 0; i < dim; ++i)
-    {
-        this->points_.copy_data_direction(i,points);
-        this->weights_.copy_data_direction(i,weights);
-    }
-
-}
 
 
 template< int dim >
-QGaussLobatto< dim >::QGaussLobatto(const TensorSize<dim> num_points, const Real eps_scaling) :
-    QuadratureTensorProduct< dim >(num_points)
+QGaussLobatto< dim >::
+QGaussLobatto(const TensorSize<dim> num_points, const Real eps_scaling) :
+    QuadratureTensorProduct< dim >(num_points,&gauss_lobatto_quadrature,eps_scaling)
 {
-    Assert(eps_scaling >= Real(0.0) && eps_scaling < Real(0.5),
-           ExcMessage("The scaling factor must be >= 0.0 and < 0.5"));
-
-    vector<Real> points;
-    vector<Real> weights;
+#ifndef NDEBUG
+    // Gauss-Lobatto schemes needs at least 2 points in each direction
     for (int i = 0; i < dim; ++i)
-    {
-        const auto n_pts = num_points[i];
-        // Gauss-Lobatto schemes needs at least 2 points in each direction
-        Assert(n_pts >= 2, ExcLowerRange(n_pts, 2)) ;
-
-        points.resize(n_pts);
-        weights.resize(n_pts);
-        gauss_lobatto_quadrature(n_pts, points, weights);
-
-        if (eps_scaling > 0)
-            for (int ip = 0; ip < n_pts; ++ip)
-                points[ip] = 0.5 + (points[ip] / 0.5 - 1.0) * (0.5 - eps_scaling) ;
-
-        this->points_.copy_data_direction(i,points);
-        this->weights_.copy_data_direction(i,weights);
-    }
+        Assert(num_points[i] >= 2, ExcLowerRange(num_points[i], 2)) ;
+#endif
 }
 
 
@@ -389,59 +335,24 @@ QGaussLobatto< dim >::create(const TensorSize<dim> num_points, const Real eps_sc
 
 
 template< int dim >
-QUniform<dim>::QUniform(const Size num_points, const Real eps_scaling)
+QUniform<dim>::
+QUniform(const Size num_points, const Real eps_scaling)
     :
-    QuadratureTensorProduct< dim >(num_points)
-{
-    Assert(eps_scaling >= Real(0.0) && eps_scaling < Real(0.5),
-           ExcMessage("The scaling factor must be >= 0.0 and < 0.5"));
-
-    vector<Real> points(num_points);
-    vector<Real> weights(num_points);
-    uniform_quadrature(num_points, points, weights);
-
-    if (eps_scaling > 0)
-        for (int ip = 0; ip < num_points; ++ip)
-            points[ip] = 0.5 + (points[ip] / 0.5 - 1.0) * (0.5 - eps_scaling) ;
-
-    for (int i = 0; i < dim; ++i)
-    {
-        this->points_.copy_data_direction(i,points);
-        this->weights_.copy_data_direction(i,weights);
-    }
-
-}
+    QUniform(TensorSize<dim>(num_points),eps_scaling)
+{}
 
 
 
 template< int dim >
 QUniform<dim>::QUniform(const TensorSize<dim> num_points, const Real eps_scaling)
     :
-    QuadratureTensorProduct< dim >(num_points)
+    QuadratureTensorProduct< dim >(num_points,&uniform_quadrature,eps_scaling)
 {
-    Assert(eps_scaling >= Real(0.0) && eps_scaling < Real(0.5),
-           ExcMessage("The scaling factor must be >= 0.0 and < 0.5"));
-
-    vector<Real> points;
-    vector<Real> weights;
+#ifndef NDEBUG
+    // Uniform schemes needs at least 2 points in each direction
     for (int i = 0; i < dim; ++i)
-    {
-        const auto n_pts = num_points[i];
-
-        // Uniform schemes needs at least 2 points in each direction
-        Assert(n_pts >= 2, ExcLowerRange(n_pts, 2)) ;
-
-        points.resize(n_pts);
-        weights.resize(n_pts);
-        uniform_quadrature(n_pts, points, weights);
-
-        if (eps_scaling > 0)
-            for (int ip = 0; ip < n_pts; ++ip)
-                points[ip] = 0.5 + (points[ip] / 0.5 - 1.0) * (0.5 - eps_scaling) ;
-
-        this->points_.copy_data_direction(i,points);
-        this->weights_.copy_data_direction(i,weights);
-    }
+        Assert(num_points[i] >= 2, ExcLowerRange(num_points[i], 2)) ;
+#endif
 }
 
 

@@ -2,7 +2,7 @@
 void quad_extension(int) [with int k = 0; int dim = 1]
 ========================================================================
 Original quadrature
-Number of points:1
+Number of points:0
 weights:
 Size: [ ]  Weights: []
 

@@ -41,6 +41,8 @@ class QGauss :
     public QuadratureTensorProduct< dim >
 {
 public:
+    using typename QuadratureTensorProduct<dim>::Point;
+
     /**
      * Default constructor. Not allowed to be used.
      */
@@ -102,10 +104,6 @@ public:
      */
     static std::shared_ptr< QGauss< dim > >
     create(const TensorSize<dim> num_points);
-
-
-private:
-
 } ;
 
 
@@ -151,10 +149,6 @@ public:
     ~QGauss() = default ;
 
     static std::shared_ptr< QGauss<0> > create();
-
-
-private:
-
 } ;
 
 
@@ -170,6 +164,7 @@ class QGaussLobatto :
     public QuadratureTensorProduct< dim >
 {
 public:
+    using typename QuadratureTensorProduct<dim>::Point;
 
     /**
      * Default constructor. Not allowed to be used.
@@ -180,7 +175,7 @@ public:
      * Constructor.
      * Builds a Gauss-Lobatto quadrature scheme on the \f$ d \f$-dimensional cube \f$ [0,1]^d \f$
      * with \p num_points points in each coordinate direction.
-     * The eps argument allows to do a local scaling of the quadrature points.
+     * The <p>eps</p> argument allows to perform a local scaling of the quadrature points.
      */
     explicit QGaussLobatto(const Size num_points, const Real eps_scaling = 0.0);
 
@@ -189,7 +184,7 @@ public:
      * Builds a Gauss-Lobatto quadrature scheme on the \f$ d \f$-dimensional cube \f$ [0,1]^d \f$
      * with a (possibly) different number of points in each coordinate direction.
      * The number of points along the \p i-th coordinate direction is specified by \p num_points[i].
-     * The eps argument allows to do a local scaling of the quadrature points.
+     * The <p>eps</p> argument allows to perform a local scaling of the quadrature points.
      */
     explicit QGaussLobatto(const TensorSize<dim> num_points, const Real eps_scaling = 0.0);
 
@@ -234,10 +229,6 @@ public:
      */
     static std::shared_ptr< QGaussLobatto< dim > >
     create(const TensorSize<dim> num_points, const Real eps_scaling = 0.0);
-
-
-private:
-
 } ;
 
 
@@ -288,10 +279,6 @@ public:
 
 
     static std::shared_ptr< QGaussLobatto<0> > create();
-
-
-private:
-
 } ;
 
 
@@ -304,6 +291,7 @@ class QUniform :
     public QuadratureTensorProduct<dim>
 {
 public:
+    using typename QuadratureTensorProduct<dim>::Point;
 
     /**
      * Default constructor. Not allowed to be used.
@@ -370,9 +358,6 @@ public:
      */
     static std::shared_ptr< QUniform< dim > >
     create(const TensorSize<dim> num_points, const Real eps_scaling = 0.0) ;
-
-private:
-
 } ;
 
 
@@ -425,6 +410,7 @@ public:
      */
     static std::shared_ptr< QTrapez< dim > >
     create(const Real eps_scaling = 0.0) ;
+
 } ;
 
 
