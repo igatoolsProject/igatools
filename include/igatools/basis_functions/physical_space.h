@@ -78,6 +78,8 @@ public:
 
     static const int rank = rank_;
 
+    static const bool is_physical_space = true;
+
     using MapFunc =  MapFunction<dim, space_dim>;
 
     static constexpr int n_components = constexpr_pow(range, rank);

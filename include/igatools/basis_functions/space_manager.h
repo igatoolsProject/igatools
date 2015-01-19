@@ -540,6 +540,7 @@ private:
                   const int range,
                   const int rank,
                   const Transformation transf_type,
+                  const bool is_physical_space,
                   const Index num_dofs,
                   const Index min_dofs_id,
                   const Index max_dofs_id,
@@ -608,7 +609,8 @@ private:
                               const int space_dim,
                               const int range,
                               const int rank,
-                              const Transformation transf_type) const;
+                              const Transformation transf_type,
+                              const bool is_physical_space) const ;
 
         /** Returns the transformation type of the push forward of the space.*/
         Transformation get_transformation_type() const;
@@ -657,6 +659,8 @@ private:
         int rank_;
 
         Transformation transf_type_;
+
+        bool is_physical_space_;
 
 
         /**
@@ -1036,6 +1040,7 @@ add_space(std::shared_ptr<Space> space)
                                         Space::range,
                                         Space::rank,
                                         Space::PushForwardType::type,
+                                        Space::is_physical_space,
                                         space->get_num_basis(),
                                         dof_distribution.get_min_dof_id(),
                                         dof_distribution.get_max_dof_id(),

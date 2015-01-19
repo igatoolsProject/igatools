@@ -57,6 +57,7 @@ public:
     static const int space_dim = dim_;
     static const int range     = range_;
     static const int rank      = rank_;
+    static const bool is_physical_space = false;
 
     /**
      * See documentation in \ref FunctionSpaceOnGrid

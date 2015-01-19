@@ -61,6 +61,7 @@ public:
     static const int space_dim = dim_;
     static const int range     = range_;
     static const int rank      = rank_;
+    static const bool is_physical_space = false;
 
     static const auto n_components = SplineSpace<dim_, range_, rank_>::n_components;
 //    static constexpr auto   components = SpSpace::components;

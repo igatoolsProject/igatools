@@ -151,6 +151,7 @@ SpaceInfo(const SpacePtrVariant &space,
           const int range,
           const int rank,
           const Transformation transf_type,
+          const bool is_physical_space,
           const Index num_dofs,
           const Index min_dofs_id,
           const Index max_dofs_id,
@@ -165,6 +166,7 @@ SpaceInfo(const SpacePtrVariant &space,
     range_(range),
     rank_(rank),
     transf_type_(transf_type),
+    is_physical_space_(is_physical_space),
     num_dofs_(num_dofs),
     min_dofs_id_(min_dofs_id),
     max_dofs_id_(max_dofs_id),
@@ -309,14 +311,16 @@ check_parameters(const int dim,
                  const int space_dim,
                  const int range,
                  const int rank,
-                 const Transformation transf_type) const
+                 const Transformation transf_type,
+                 const bool is_physical_space) const
 {
     return ((dim == dim_) &&
             (codim == codim_) &&
             (space_dim == space_dim_) &&
             (range == range_) &&
             (rank == rank_) &&
-            (transf_type == transf_type_));
+            (transf_type == transf_type_) &&
+            (is_physical_space == is_physical_space_));
 }
 
 bool
