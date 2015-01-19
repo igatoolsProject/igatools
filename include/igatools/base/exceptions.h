@@ -133,6 +133,11 @@ public:
      */
     void print_stack_trace(std::ostream &out) const;
 
+    /**
+     * Retrieves the volated condition, as a string.
+     */
+    const char *get_condition() const;
+
 protected:
     /**
      * Name of the file this exception happen in.

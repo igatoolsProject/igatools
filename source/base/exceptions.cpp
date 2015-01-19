@@ -330,6 +330,12 @@ const char *ExceptionBase::what() const throw()
     return 0;
 }
 
+const char *ExceptionBase::get_condition() const
+{
+    return cond;
+};
+
+
 
 
 namespace iga_exceptions
