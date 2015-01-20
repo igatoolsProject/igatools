@@ -388,10 +388,10 @@ template<class T>
 void
 BSplineElementHandler<dim_, range_, rank_>::
 ResetDispatcherOneElem::
-operator()(const T &eval_pts)
+operator()(const T &eval_pts1)
 {
     Assert(grid_handler_ != nullptr,ExcNullPtr());
-    grid_handler_->reset_one_element(FunctionFlags::to_grid_flags(flag_),eval_pts,elem_flat_id_);
+    grid_handler_->reset_one_element(FunctionFlags::to_grid_flags(flag_),eval_pts1,elem_flat_id_);
 
 
     const auto k = T::dim;
@@ -418,6 +418,7 @@ operator()(const T &eval_pts)
         g_cache.clear();
         g_cache.resize(n_inter,
                        BasisValues(space_->get_components_map()));
+        const auto eval_pts = extend_sub_elem_quad<k,dim>(eval_pts1, s_id);
         const auto &n_coords = eval_pts.get_num_coords_direction();
 
         // Allocate space for the BasisValues1D

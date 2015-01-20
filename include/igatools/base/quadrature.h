@@ -58,7 +58,6 @@ public:
      */
     TensorIndex<dim_> get_num_coords_direction() const noexcept;
 
-protected:
 
     /**
      * @name Constructors.
@@ -69,7 +68,6 @@ protected:
      */
     EvaluationPoints();
 
-public:
     /**
      * Construct the object given a vector of points in the <t>dim_</t>-dimensional space.
      */
@@ -114,6 +112,23 @@ public:
      */
     const vector<Real> &get_coords_direction(const int i) const;
 
+
+    /**
+     * Returns the coordinates of the the point with (flat) index <p>pt_id</p>
+     */
+    Point get_point(const int pt_id) const;
+
+    /**
+     * Returns the weight of the the point with (flat) index <p>pt_id</p>
+     */
+    Real get_weight(const int pt_id) const;
+
+
+    /**
+     * Returns the bounding box in which the points are located.
+     */
+    const BBox<dim_> &get_bounding_box() const;
+
     /**
      * @name Functions for performing dilation and translation of the points (and weights).
      */
@@ -134,7 +149,6 @@ public:
     void dilate_translate(const Point &dilate, const Point &translate);
     ///@}
 
-protected:
 
     /**
      * Reset the bounding box in which the points must be located.
@@ -142,13 +156,15 @@ protected:
     void reset_bounding_box(const BBox<dim_> &bounding_box);
 
     /**
-     * Reset the points coordinates an the map point_id_to_coords_is,
-     * given a vector of points in the <t>dim_</t>-dimensional space.
+     * This function performs the following task:
+     *   - reset the value of the points coordinates and the map point_id_to_coords_is,
+     * given a vector of points in the <t>dim_</t>-dimensional space
+     *   - reset the weight value associated to each point.
      *
      * @note In DEBUG mode the points are tested if they are within the bounding box.
      * Points on the side of the bounding box are still valid points.
      */
-    void reset_points_coordinates(const ValueVector<Point> &pts);
+    void reset_points_coordinates_and_weights(const ValueVector<Point> &pts,const ValueVector<Real> &weights);
 
 
 private:
@@ -160,6 +176,12 @@ private:
      */
     special_array< vector<Real>, dim_> coordinates_;
 
+
+    /**
+     * Weights of the points. By default are set to be equal to one.
+     */
+    ValueVector<Real> weights_;
+
     /**
      * Map between the point (flat) ids and its coordinates ids.
      */
@@ -168,6 +190,8 @@ private:
     BBox<dim_> bounding_box_;
 
     bool is_tensor_product_struct_;
+
+
 
 };
 
@@ -312,6 +336,18 @@ protected:
     WeigthArray weights_;
 
 };
+
+
+/**
+ * Given evaluation points on a dim dimensional face, of a dim+1
+ * domain, this functions creates an extended dimension
+ * version of this points applicable to the volume.
+ *
+ * @relates Quadrature
+ */
+template<int k, int dim>
+EvaluationPoints<dim>
+extend_sub_elem_quad(const EvaluationPoints<k> &quad, const int sub_elem_id);
 
 
 

@@ -83,6 +83,21 @@ reset(const ValueFlags flag,
 }
 
 
+template <int dim_>
+template<int k>
+void
+GridElementHandler<dim_>::
+reset_one_element(const ValueFlags flag, const EvaluationPoints<k> &eval_pts, const int elem_flat_id)
+{
+    Assert(false,ExcNotImplemented());
+    /*
+    flags_[k] = flag;
+    auto &quad_k = std::get<k>(quad_);
+    quad_k = quad;
+    //*/
+}
+
+
 
 template <int dim_>
 void
