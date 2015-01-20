@@ -370,6 +370,22 @@ public:
                       const Index comp) const;
 
     /**
+     * Returns a const reference to the end behaviour table of the BSpline space.
+     */
+    virtual EndBehaviourTable &get_end_behaviour_table() override final
+    {
+        return end_b_;
+    };
+
+    /**
+     * Returns a reference to the end behaviour table of the BSpline space.
+     */
+    virtual const EndBehaviourTable &get_end_behaviour_table() const override final
+    {
+        return end_b_;
+    };
+
+    /**
      * Prints internal information about the space.
      * @note Mostly used for debugging and testing.
      */
@@ -378,12 +394,12 @@ public:
 private:
 
 
+    EndBehaviourTable end_b_;
+
     /** Container with the local to global basis indices
      * @note The concept of global indices refers to a global numeration of the
      * dofs of all the spaces.
      */
-    EndBehaviourTable end_b_;
-
     DofDistribution<dim, range, rank> dof_distribution_global_;
 
     /** Container with the local to patch basis indices

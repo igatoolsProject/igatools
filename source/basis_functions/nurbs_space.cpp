@@ -237,17 +237,17 @@ end() const -> ElementIterator
 }
 
 
-#if 0
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-get_weights() const -> const WeightsTable &
+get_weights() const -> const WeightFunctionPtrTable &
 {
-    return weights_;
+    return weight_func_table_;
 }
 
 
 
+#if 0
 template <int dim_, int range_, int rank_>
 void
 NURBSSpace<dim_, range_, rank_>::

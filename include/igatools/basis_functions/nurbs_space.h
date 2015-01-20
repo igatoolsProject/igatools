@@ -282,10 +282,26 @@ public:
      */
     virtual ElementIterator end() const override final;
 
-//    /**
-//     * Get the weights of the NURBSSpace.
-//     */
-//    const WeightsTable &get_weights() const;
+    /**
+     * Get the weights of the NURBSSpace.
+     */
+    const WeightFunctionPtrTable &get_weights() const;
+
+    /**
+     * Returns a reference to the end behaviour table of the BSpline space.
+     */
+    virtual EndBehaviourTable &get_end_behaviour_table() override final
+    {
+        return sp_space_->get_end_behaviour_table();
+    };
+
+    /**
+     * Returns a const reference to the end behaviour table of the BSpline space.
+     */
+    virtual const EndBehaviourTable &get_end_behaviour_table() const override final
+    {
+        return sp_space_->get_end_behaviour_table();
+    };
 
     /**
      * Prints internal information about the space.

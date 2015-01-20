@@ -216,6 +216,16 @@ public:
         return space_data_->get_boundary_conditions_table();
     }
 
+    /**
+     * Returns a reference to the end behaviour table of the BSpline space.
+     */
+    virtual EndBehaviourTable &get_end_behaviour_table() = 0;
+
+    /**
+     * Returns a const reference to the end behaviour table of the BSpline space.
+     */
+    virtual const EndBehaviourTable &get_end_behaviour_table() const = 0;
+
 
     /** Returns the container with the global dof distribution (const version). */
     virtual const DofDistribution<dim, range, rank> &
