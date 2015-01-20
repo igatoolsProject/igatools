@@ -87,8 +87,7 @@ Conditional< deriv_order==0,
         Assert(false,ExcNotImplemented());
     }
 
-    Assert(false,ExcNotImplemented());
-//  elem_handler->reset(flags,points);
+    elem_handler->reset_one_element(flags,EvaluationPoints<dim>(points),this->get_flat_index());
     elem_handler->template init_cache<dim>(*this);
     elem_handler->template fill_cache<dim>(*this,0);
 

@@ -35,6 +35,8 @@ public:
 
     using Point = Points<dim_>;
 
+    static const int dim = dim_;
+
     /**
      * Returns the total number of evaluation points.
      */
@@ -43,7 +45,7 @@ public:
     /**
      * Returns TRUE if the evaluation points have a tensor-product structure.
      */
-    virtual bool is_tensor_product_struct() const = 0;
+    virtual bool is_tensor_product_struct() const;
 
     /**
      * Returns the coordinates indices relative to the point with (flat) index <p>point_id</p>.
@@ -63,11 +65,11 @@ protected:
      */
     ///@{
     /**
-     * Default constructor.
+     * Default constructor. It sets a unit bounding-box (i.e. the hypercube \f$ [0,1]^{dim}\f$) with no points inside.
      */
-    EvaluationPoints() = default;
+    EvaluationPoints();
 
-
+public:
     /**
      * Construct the object given a vector of points in the <t>dim_</t>-dimensional space.
      */
@@ -107,10 +109,44 @@ protected:
 
 
 
+    /**
+     * Returns coordinates of the points along the <p>i</p>-th direction.
+     */
+    const vector<Real> &get_coords_direction(const int i) const;
+
+    /**
+     * @name Functions for performing dilation and translation of the points (and weights).
+     */
+    //@{
+    /**
+     * Dilation of the points (and of the corresponding bounding box)
+     */
+    void dilate(const Point &dilate);
+
+    /**
+     * Translation of the points (and of the corresponding bounding box)
+     */
+    void translate(const Point &translate);
+
+    /**
+     * Dilation followed by a translation of the points (and of the corresponding bounding box).
+     */
+    void dilate_translate(const Point &dilate, const Point &translate);
+    ///@}
+
 protected:
+
+    /**
+     * Reset the bounding box in which the points must be located.
+     */
+    void reset_bounding_box(const BBox<dim_> &bounding_box);
+
     /**
      * Reset the points coordinates an the map point_id_to_coords_is,
      * given a vector of points in the <t>dim_</t>-dimensional space.
+     *
+     * @note In DEBUG mode the points are tested if they are within the bounding box.
+     * Points on the side of the bounding box are still valid points.
      */
     void reset_points_coordinates(const ValueVector<Point> &pts);
 
@@ -128,6 +164,11 @@ private:
      * Map between the point (flat) ids and its coordinates ids.
      */
     vector<TensorIndex<dim_>> map_point_id_to_coords_id_;
+
+    BBox<dim_> bounding_box_;
+
+    bool is_tensor_product_struct_;
+
 };
 
 
@@ -153,8 +194,8 @@ private:
 public:
 
     using typename EvaluationPoints<dim_>::Point;
+    using EvaluationPoints<dim_>::dim;
 
-    static const int dim = dim_;
     using WeigthArray = TensorProductArray<dim>;
     using PointArray  = CartesianProductArray<Real, dim>;
 public:
@@ -269,6 +310,7 @@ protected:
      * Quadrature weights.
      */
     WeigthArray weights_;
+
 };
 
 

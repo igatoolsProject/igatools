@@ -32,7 +32,7 @@
 IGA_NAMESPACE_OPEN
 
 template<int dim>
-using QuadList = TupleList<dim, EvaluationPoints>;
+using QuadTensorProdList = TupleList<dim, QuadratureTensorProduct>;
 
 /**
  * Grid element value manager
@@ -72,7 +72,11 @@ public:
 public:
 
     template<int k>
-    void reset(const ValueFlags flag, const EvaluationPoints<k> &quad);
+    void reset(const ValueFlags flag, const QuadratureTensorProduct<k> &quad);
+
+    template<int k>
+    void reset_one_element(const ValueFlags flag, const EvaluationPoints<k> &eval_pts, const int elem_flat_id);
+
 
     template <int k>
     void init_cache(ElementAccessor &elem);
@@ -135,7 +139,7 @@ private:
     std::array<GridFlags, dim + 1> flags_;
 
 protected:
-    QuadList<dim> quad_;
+    QuadTensorProdList<dim> quad_;
 
     TensorProductArray<dim> lengths_;
 

@@ -285,7 +285,7 @@ private:
         parent_t *grid_handler;
         ElementAccessor *elem;
         std::array<FunctionFlags, dim + 1> *flags_;
-        QuadList<dim> *quad_;
+        QuadTensorProdList<dim> *quad_;
     };
 
     ResetDispatcher reset_impl;

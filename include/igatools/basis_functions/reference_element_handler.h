@@ -47,6 +47,10 @@ public:
     using topology_variant = typename boost::make_variant_over<v2>::type;
 
 
+    using v3 = typename seq<EvaluationPoints, l, dim_>::type;
+    using eval_pts_variant = typename boost::make_variant_over<v3>::type;
+
+
     static std::shared_ptr<ReferenceElementHandler<dim_,range_,rank_> >
     create(std::shared_ptr<const Space> space);
 
@@ -61,7 +65,7 @@ public:
      */
     virtual void reset(const ValueFlags &flag, const quadrature_variant &quad) = 0;
 
-    virtual void reset(const ValueFlags &flag, const ValueVector<typename Space::RefPoint> &points) = 0;
+    virtual void reset_one_element(const ValueFlags &flag, const eval_pts_variant &eval_points, const int elem_flat_id) = 0;
 
 protected:
     ReferenceElementHandler(std::shared_ptr<const Space> space);

@@ -91,10 +91,11 @@ public:
 
     using quadrature_variant = typename base_t::quadrature_variant;
     using topology_variant = typename base_t::topology_variant;
+    using eval_pts_variant = typename base_t::eval_pts_variant;
 
     virtual void reset(const ValueFlags &flag, const quadrature_variant &quad) override final;
 
-    virtual void reset(const ValueFlags &flag, const ValueVector<typename Space::RefPoint> &points) override final;
+    virtual void reset_one_element(const ValueFlags &flag, const eval_pts_variant &eval_points, const int elem_flat_id) override final;
 
     virtual void init_cache(RefElementAccessor &elem, const topology_variant &topology) override final;
 
@@ -193,6 +194,21 @@ private:
 
     ResetDispatcher reset_impl_;
 
+
+    struct ResetDispatcherOneElem : boost::static_visitor<void>
+    {
+        template<class T>
+        void operator()(const T &eval_pts);
+
+        GridElementHandler<dim_> *grid_handler_;
+        ValueFlags flag_;
+        std::array<FunctionFlags, dim + 1> *flags_;
+        CacheList<GlobalCache, dim> *splines1d_;
+        const Space *space_;
+
+        int elem_flat_id_;
+    };
+    ResetDispatcherOneElem reset_one_elem_impl_;
 
     struct InitCacheDispatcher : boost::static_visitor<void>
     {

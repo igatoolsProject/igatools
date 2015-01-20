@@ -166,13 +166,13 @@ public:
     ValueTable<Value>
     evaluate_basis_values_at_points(const ValueVector<RefPoint> &points)
     {
-        return evaluate_basis_derivatives_at_points<0>(points);
+        return this->template evaluate_basis_derivatives_at_points<0>(points);
     }
 
     ValueTable<Derivative<1> >
     evaluate_basis_gradients_at_points(const ValueVector<RefPoint> &points)
     {
-        return evaluate_basis_derivatives_at_points<1>(points);
+        return this->template evaluate_basis_derivatives_at_points<1>(points);
     }
     ///@}
 

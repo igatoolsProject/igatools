@@ -95,10 +95,11 @@ public:
 
     using quadrature_variant = typename base_t::quadrature_variant;
     using topology_variant = typename base_t::topology_variant;
+    using eval_pts_variant = typename base_t::eval_pts_variant;
 
     virtual void reset(const ValueFlags &flag, const quadrature_variant &quad) override final;
 
-    virtual void reset(const ValueFlags &flag, const ValueVector<typename Space::RefPoint> &points) override final
+    virtual void reset_one_element(const ValueFlags &flag, const eval_pts_variant &eval_points, const int elem_flat_id) override final
     {
         Assert(false,ExcNotImplemented());
         AssertThrow(false,ExcNotImplemented());

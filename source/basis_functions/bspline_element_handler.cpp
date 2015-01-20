@@ -381,21 +381,218 @@ reset(const ValueFlags &flag, const quadrature_variant &quad)
 }
 
 
+
+
+template<int dim_, int range_ , int rank_>
+template<class T>
+void
+BSplineElementHandler<dim_, range_, rank_>::
+ResetDispatcherOneElem::
+operator()(const T &eval_pts)
+{
+    Assert(grid_handler_ != nullptr,ExcNullPtr());
+    grid_handler_->reset_one_element(FunctionFlags::to_grid_flags(flag_),eval_pts,elem_flat_id_);
+
+
+    const auto k = T::dim;
+
+    Assert(flags_ != nullptr,ExcNullPtr());
+    (*flags_)[k] = flag_;
+
+
+    Assert(splines1d_ != nullptr,ExcNullPtr());
+
+
+    Assert(space_ != nullptr,ExcNullPtr());
+    const auto n_basis = space_->get_num_all_element_basis();
+
+
+    const auto elem_tensor_id = space_->get_grid()->flat_to_tensor(elem_flat_id_);
+
+    for (auto &s_id: UnitElement<dim>::template elems_ids<k>())
+    {
+//        const auto &n_inter = space_->get_grid()->get_num_intervals();
+        const TensorSize<dim> n_inter(1);
+
+        auto &g_cache = std::get<k>(*splines1d_)[s_id];
+        g_cache.clear();
+        g_cache.resize(n_inter,
+                       BasisValues(space_->get_components_map()));
+        const auto &n_coords = eval_pts.get_num_coords_direction();
+
+        // Allocate space for the BasisValues1D
+        for (int dir = 0 ; dir < dim ; ++dir)
+        {
+            const auto &n_pts = n_coords[dir];
+            for (int j = 0 ; j < n_inter[dir] ; ++j)
+            {
+                auto &splines1d = g_cache.entry(dir, j);
+                for (auto comp : splines1d.get_active_components_id())
+                    splines1d[comp].resize(max_der, n_basis[comp][dir], n_pts);
+            } // end loop j
+        } // end loop dir
+
+        /*
+         * For each direction, interval and component we compute the 1D bspline
+         * basis evaluate at the 1D component of the tensor product quadrature
+         */
+        const auto &degree      = space_->get_degree();
+        const auto &bezier_op   = space_->operators_;
+        const auto &end_interval = space_->end_interval_;
+        const auto &lengths = grid_handler_->get_lengths();
+
+        BasisValues bernstein_values(n_basis.get_comp_map());
+
+
+        ComponentContainer<Points<dim>> len_left(end_interval.get_comp_map());
+        ComponentContainer<EvaluationPoints<dim>>
+                                               points_left(end_interval.get_comp_map(), eval_pts);
+        for (auto comp : points_left.get_active_components_id())
+        {
+            Points<dim> dilate;
+            Points<dim> translate;
+            for (int dir=0; dir<dim; ++dir)
+            {
+                const Real alpha = end_interval[comp][dir].first;
+                const Real one_alpha = 1. - alpha;
+                dilate[dir] = alpha;
+                translate[dir] = one_alpha;
+                len_left[comp][dir] = lengths.get_data_direction(dir)[0]*alpha;
+            }
+            points_left[comp].dilate_translate(dilate, translate);
+        } // end loop comp
+
+        ComponentContainer<Points<dim>> len_right(end_interval.get_comp_map());
+        ComponentContainer<EvaluationPoints<dim>>
+                                               points_right(end_interval.get_comp_map(), eval_pts);
+        for (auto comp : points_right.get_active_components_id())
+        {
+            Points<dim> dilate;
+            for (int dir=0; dir<dim; ++dir)
+            {
+                const Real alpha = end_interval[comp][dir].second;
+                dilate[dir] = alpha;
+                len_right[comp][dir] = lengths.get_data_direction(dir)[n_inter[dir]-1]*alpha;
+            }
+            points_right[comp].dilate(dilate);
+        } // end loop comp
+
+
+// Left interval treatment
+        for (int dir = 0 ; dir < dim ; ++dir)
+        {
+            for (auto comp : bernstein_values.get_active_components_id())
+            {
+                const int deg = degree[comp][dir];
+                bernstein_values[comp].resize(max_der, deg+1, n_coords[dir]);
+                const auto &pt_coords = points_left[comp].get_coords_direction(dir);
+                for (int order = 0; order < max_der; ++order)
+                    bernstein_values[comp].get_derivative(order) =
+                        BernsteinBasis::derivative(order, deg, pt_coords);
+            } // end loop comp
+
+            //const auto &inter_lengths = lengths.get_data_direction(dir);
+            const int inter = 0;
+            {
+                auto &splines1d = g_cache.entry(dir, inter);
+                for (auto comp : splines1d.get_active_components_id())
+                {
+                    const auto &berns_values = bernstein_values[comp];
+                    auto &basis = splines1d[comp];
+                    const auto &oper = bezier_op.get_operator(dir, inter, comp);
+
+                    const Real one_div_size = 1.0 / len_left[comp][dir];
+                    fill_interval_values(one_div_size, oper, berns_values, basis);
+                } // end loop comp
+            } // end loop inter
+        } // end loop dir
+
+
+        // Right interval treatment
+        for (int dir = 0 ; dir < dim ; ++dir)
+        {
+            for (auto comp : bernstein_values.get_active_components_id())
+            {
+                const int deg = degree[comp][dir];
+                bernstein_values[comp].resize(max_der, deg+1, n_coords[dir]);
+                const auto &pt_coords = points_right[comp].get_coords_direction(dir);
+                for (int order = 0; order < max_der; ++order)
+                    bernstein_values[comp].get_derivative(order) =
+                        BernsteinBasis::derivative(order, deg, pt_coords);
+            } // end loop comp
+
+            //const auto &inter_lengths = lengths.get_data_direction(dir);
+            const int inter = n_inter[dir]-1;
+            {
+                auto &splines1d = g_cache.entry(dir, inter);
+                for (auto comp : splines1d.get_active_components_id())
+                {
+                    const auto &berns_values = bernstein_values[comp];
+                    auto &basis = splines1d[comp];
+                    const auto &oper = bezier_op.get_operator(dir, inter, comp);
+
+                    const Real one_div_size = 1.0 / len_right[comp][dir];
+                    fill_interval_values(one_div_size, oper, berns_values, basis);
+                } // end loop comp
+            } // end loop inter
+        } // end loop dir
+
+
+
+        for (int dir = 0 ; dir < dim ; ++dir)
+        {
+            const int inter_begin = 1;
+            const int inter_end = n_inter[dir] - 1;
+
+            for (auto comp : bernstein_values.get_active_components_id())
+            {
+                const int deg = degree[comp][dir];
+                bernstein_values[comp].resize(max_der, deg+1, n_coords[dir]);
+                const auto &pt_coords = eval_pts.get_coords_direction(dir);
+                for (int order = 0; order < max_der; ++order)
+                    bernstein_values[comp].get_derivative(order) =
+                        BernsteinBasis::derivative(order, deg, pt_coords);
+            } // end loop comp
+
+            const auto &inter_lengths = lengths.get_data_direction(dir);
+            for (int inter = inter_begin ; inter < inter_end ; ++inter)
+            {
+                auto &splines1d = g_cache.entry(dir, inter);
+                for (auto comp : splines1d.get_active_components_id())
+                {
+                    const auto &berns_values = bernstein_values[comp];
+                    auto &basis = splines1d[comp];
+                    const auto &oper = bezier_op.get_operator(dir, inter, comp);
+
+                    const Real one_div_size = 1.0 / inter_lengths[inter];
+                    fill_interval_values(one_div_size, oper, berns_values, basis);
+                } // end loop comp
+            } // end loop inter
+
+        } //end loop dir
+    } // end loop s_id
+
+    Assert(false,ExcNotImplemented());
+}
 template<int dim_, int range_ , int rank_>
 void
 BSplineElementHandler<dim_, range_, rank_>::
-reset(const ValueFlags &flag, const ValueVector<typename Space::RefPoint> &points)
+reset_one_element(
+    const ValueFlags &flag,
+    const eval_pts_variant &eval_points,
+    const int elem_flat_id)
 {
-    Assert(false,ExcNotImplemented());
-#if 0
-    reset_impl_.grid_handler_ = &(this->grid_handler_);
-    reset_impl_.flag_ = flag;
-    reset_impl_.flags_ = &flags_;
-    reset_impl_.splines1d_ = &splines1d_;
-    reset_impl_.space_ = this->get_bspline_space().get();
+    reset_one_elem_impl_.grid_handler_ = &(this->grid_handler_);
+    reset_one_elem_impl_.flag_ = flag;
+    reset_one_elem_impl_.flags_ = &flags_;
+    reset_one_elem_impl_.splines1d_ = &splines1d_;
+    reset_one_elem_impl_.space_ = this->get_bspline_space().get();
 
-    boost::apply_visitor(reset_impl_, quad);
-#endif
+    reset_one_elem_impl_.elem_flat_id_ = elem_flat_id;
+
+    boost::apply_visitor(reset_one_elem_impl_, eval_points);
+
+    Assert(false,ExcNotImplemented());
 }
 
 

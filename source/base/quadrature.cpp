@@ -35,10 +35,83 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_>
 EvaluationPoints<dim_>::
+EvaluationPoints()
+{
+    for (auto &box_direction : bounding_box_)
+    {
+        box_direction[0] = 0.0;
+        box_direction[1] = 1.0;
+    }
+
+
+    this->is_tensor_product_struct_ = false;
+}
+
+template<int dim_>
+EvaluationPoints<dim_>::
 EvaluationPoints(const ValueVector<Point> &pts)
+    :
+    EvaluationPoints()
 {
     this->reset_points_coordinates(pts);
 }
+
+
+template<int dim_>
+void
+EvaluationPoints<dim_>::
+reset_bounding_box(const BBox<dim_> &bounding_box)
+{
+    bounding_box_ = bounding_box;
+
+#ifndef NDEBUG
+    for (const auto &box_direction : bounding_box_)
+        Assert(box_direction[0] < box_direction[1],ExcMessage("Wrong coordinates for the bounding box."));
+#endif
+}
+
+template<int dim_>
+void
+EvaluationPoints<dim_>::
+dilate(const Point &dilate)
+{
+    for (int i = 0 ; i < dim_ ; ++i)
+    {
+        Assert(dilate[i] > 0.0, ExcMessage("Dilation factor must be positive."));
+
+        for (auto &coord : coordinates_[i])
+            coord *= dilate[i];
+
+        bounding_box_[i][0] *= dilate[i];
+        bounding_box_[i][1] *= dilate[i];
+    }
+}
+
+template<int dim_>
+void
+EvaluationPoints<dim_>::
+translate(const Point &translate)
+{
+    for (int i = 0 ; i < dim_ ; ++i)
+    {
+        for (auto &coord : coordinates_[i])
+            coord += translate[i];
+
+        bounding_box_[i][0] += translate[i];
+        bounding_box_[i][1] += translate[i];
+    }
+}
+
+
+template<int dim_>
+void
+EvaluationPoints<dim_>::
+dilate_translate(const Point &dilate, const Point &translate)
+{
+    this->dilate(dilate);
+    this->translate(translate);
+}
+
 
 
 template<int dim_>
@@ -49,6 +122,7 @@ reset_points_coordinates(const ValueVector<Point> &pts)
     const int n_pts = pts.size();
     Assert(n_pts > 0 , ExcEmptyObject());
 
+    TensorSize<dim_> n_coords_direction;
     for (int i = 0 ; i < dim_ ; ++i)
     {
         set<Real> coords_set;
@@ -57,6 +131,17 @@ reset_points_coordinates(const ValueVector<Point> &pts)
 
         //inserting the point coordinates and removing the duplicates
         coordinates_[i].assign(coords_set.begin(),coords_set.end());
+
+        n_coords_direction[i] = coordinates_[i].size();
+
+
+#ifndef NDEBUG
+        // check that the points coordinate are within the bounding box
+        const auto box_min = bounding_box_[i][0];
+        const auto box_max = bounding_box_[i][1];
+        for (const auto &coord : coordinates_[i])
+            Assert(coord >= box_min && coord <= box_max,ExcMessage("Point coordinate outside the bounding box."));
+#endif
     } // end loop i
 
 
@@ -76,6 +161,59 @@ reset_points_coordinates(const ValueVector<Point> &pts)
         }
         map_point_id_to_coords_id_.emplace_back(coords_tensor_id);
     }
+
+
+
+    //-----------------------------------------------------------------
+    //here we check if the points have a tensor-product structure,
+    //comparing the coordinate indices
+    //with the ones expected from points having tensor_product structure.
+
+    //first of all, if the number of points is different
+    // to the tensor product of the coordinates size
+    // the points have not a tensor product structure
+    if (n_pts != n_coords_direction.flat_size())
+    {
+        this->is_tensor_product_struct_ = false;
+    }
+    else
+    {
+        const auto pt_w_size = MultiArrayUtils<dim_>::compute_weight(n_coords_direction);
+
+        const auto coords_id_begin = map_point_id_to_coords_id_.begin();
+        const auto coords_id_end   = map_point_id_to_coords_id_.end();
+
+        this->is_tensor_product_struct_ = true;
+        for (int pt_flat_id = 0 ; pt_flat_id < n_pts ; ++pt_flat_id)
+        {
+            const auto pt_tensor_id = MultiArrayUtils<dim_>::flat_to_tensor_index(pt_flat_id,pt_w_size);
+            if (std::find(coords_id_begin, coords_id_end, pt_tensor_id) == coords_id_end)
+            {
+                // coordinates id not found --> the points have not a tensor-product structure
+                this->is_tensor_product_struct_ = false;
+                break;
+            }
+        } // end loop pt_flat_id
+
+    }
+    //-----------------------------------------------------------------
+}
+
+
+template<int dim_>
+bool
+EvaluationPoints<dim_>::
+is_tensor_product_struct() const
+{
+    return this->is_tensor_product_struct_;
+}
+
+template<int dim_>
+const vector<Real> &
+EvaluationPoints<dim_>::
+get_coords_direction(const int i) const
+{
+    return coordinates_[i];
 }
 
 
