@@ -60,6 +60,13 @@ public:
 
 
     /**
+     * Prints internal information about the evaluation points.
+     * \note Mostly used for debugging and testing.
+     */
+    void print_info(LogStream &out) const;
+
+
+    /**
      * @name Constructors.
      */
     ///@{
@@ -112,6 +119,16 @@ public:
      */
     const vector<Real> &get_coords_direction(const int i) const;
 
+
+    /**
+     * Returns all the points.
+     */
+    ValueVector<Point> get_points() const;
+
+    /**
+     * Returns all the weights.
+     */
+    const ValueVector<Real> &get_weights() const;
 
     /**
      * Returns the coordinates of the the point with (flat) index <p>pt_id</p>
@@ -296,6 +313,7 @@ public:
 
     ///@name Getting a copy of the internal variables.
     ///@{
+#if 0
     /**
      * Return all quadrature weights in
      * a tensor-product structure.
@@ -307,6 +325,7 @@ public:
      * a tensor-product structure.
      */
     PointArray get_points() const noexcept;
+#endif
     ///@}
 
     /**
@@ -318,11 +337,6 @@ public:
     template<int k>
     self_t collapse_to_sub_element(const int id) const;
 
-    /**
-     * Prints internal information about the quadrature scheme.
-     * \note Mostly used for debugging and testing.
-     */
-    void print_info(LogStream &out) const;
 
 protected:
     /**
@@ -350,7 +364,7 @@ EvaluationPoints<dim>
 extend_sub_elem_quad(const EvaluationPoints<k> &quad, const int sub_elem_id);
 
 
-
+#if 0
 /**
  * Given a quadrature rule on a dim dimensional face, of a dim+1
  * domain, this functions creates an extended dimension
@@ -361,7 +375,7 @@ extend_sub_elem_quad(const EvaluationPoints<k> &quad, const int sub_elem_id);
 template<int k, int dim>
 QuadratureTensorProduct<dim>
 extend_sub_elem_quad(const QuadratureTensorProduct<k> &quad, const int sub_elem_id);
-
+#endif
 
 IGA_NAMESPACE_CLOSE
 

@@ -47,8 +47,9 @@ for dim in inst.domain_dims:
             f.write('template ' + s + '\n')
         
 
-ext_members = ['QuadratureTensorProduct<dim> extend_sub_elem_quad<k,dim>(const QuadratureTensorProduct<k> &quad, const int sub_elem_id);',
-               'EvaluationPoints<dim> extend_sub_elem_quad<k,dim>(const EvaluationPoints<k> &quad, const int sub_elem_id);']   
+#ext_members = ['QuadratureTensorProduct<dim> extend_sub_elem_quad<k,dim>(const QuadratureTensorProduct<k> &quad, const int sub_elem_id);',
+#               'EvaluationPoints<dim> extend_sub_elem_quad<k,dim>(const EvaluationPoints<k> &quad, const int sub_elem_id);']   
+ext_members = ['EvaluationPoints<dim> extend_sub_elem_quad<k,dim>(const EvaluationPoints<k> &quad, const int sub_elem_id);']   
 for dim in inst.all_domain_dims:
     for fun in ext_members:
         for k in range(0, dim+1):

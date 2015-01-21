@@ -264,6 +264,20 @@ get_point(const int pt_id) const -> Point
     return pt;
 }
 
+
+template<int dim_>
+auto
+EvaluationPoints<dim_>::
+get_points() const -> ValueVector<Point>
+{
+    const int n_pts = this->get_num_points();
+    ValueVector<Point> points(n_pts);
+    for (int ipt = 0 ; ipt < n_pts ; ++ipt)
+        points[ipt] = this->get_point(ipt);
+
+    return points;
+}
+
 template<int dim_>
 Real
 EvaluationPoints<dim_>::
@@ -275,6 +289,14 @@ get_weight(const int pt_id) const
     return weights_[pt_id];
 }
 
+
+template<int dim_>
+auto
+EvaluationPoints<dim_>::
+get_weights() const -> const ValueVector<Real> &
+{
+    return weights_;
+}
 
 template<int dim_>
 int
@@ -296,6 +318,44 @@ get_num_coords_direction() const noexcept
         n_coords[i] = coordinates_[i].size();
 
     return n_coords;
+}
+
+
+template<int dim_>
+void
+EvaluationPoints<dim_>::
+print_info(LogStream &out) const
+{
+    out << "Number of points:" << this->get_num_points() << endl;
+
+    out.begin_item("Weights:");
+    get_weights().print_info(out);
+    out.end_item();
+    out << endl;
+
+    out.begin_item("Coordinates:");
+    for (int dir = 0 ; dir < dim_ ; ++dir)
+    {
+        out << "Direction: " << dir << endl;
+        this->get_coords_direction(dir).print_info(out);
+        out << endl;
+    }
+    out.end_item();
+
+    out.begin_item("Points:");
+    this->get_points().print_info(out);
+    out.end_item();
+    out << endl;
+
+    out.begin_item("Bounding box:");
+    for (int dir = 0 ; dir < dim_ ; ++dir)
+    {
+        out << "Direction: " << dir << " ---- [ "
+            << bounding_box_[dir][0] << " , "
+            << bounding_box_[dir][1] << " ]" << endl;
+    }
+    out.end_item();
+    out << endl;
 }
 
 
@@ -374,7 +434,7 @@ is_tensor_product_struct() const
     return true;
 }
 
-
+#if 0
 template<int dim_>
 auto
 QuadratureTensorProduct<dim_>::
@@ -384,7 +444,6 @@ get_points() const noexcept -> PointArray
 }
 
 
-
 template<int dim_>
 auto
 QuadratureTensorProduct<dim_>::
@@ -392,6 +451,7 @@ get_weights() const noexcept -> WeigthArray
 {
     return weights_;
 }
+#endif
 
 
 
@@ -407,33 +467,6 @@ get_num_points() const noexcept
 //*/
 
 
-template<int dim_>
-void
-QuadratureTensorProduct<dim_>::
-print_info(LogStream &out) const
-{
-    out << "Number of points:" << this->get_num_points() << endl;
-
-    out << "weights:" << endl;
-    get_weights().print_info(out);
-    out << endl;
-
-    // TODO (pauletti, Aug 26, 2014): redundant info, remove
-    out << "weights (flat tensor product):" << endl;
-    get_weights().get_flat_tensor_product().print_info(out);
-    out << endl;
-
-    out << "coordinates:" << endl;
-    this->get_points().print_info(out);
-    out << endl;
-
-    // TODO (pauletti, Aug 26, 2014): redundant info, remove
-    out << "coordinates (flat cartesian_product):" << endl;
-    get_points().get_flat_cartesian_product().print_info(out);
-    out << endl;
-
-    out << endl;
-}
 
 template<int dim_>
 template<int k>
@@ -510,31 +543,10 @@ extend_sub_elem_quad(const EvaluationPoints<k> &eval_pts,
     new_eval_pts.reset_bounding_box(new_bounding_box);
     new_eval_pts.reset_points_coordinates_and_weights(new_points,new_weights);
 
-    /*
-        Assert(false,ExcNotImplemented());
-        typename QuadratureTensorProduct<dim>::WeigthArray new_weights;
-
-        const int n_dir = k_elem.constant_directions.size();
-        for (int j=0; j<n_dir; ++j)
-        {
-            auto dir = k_elem.constant_directions[j];
-            auto val = k_elem.constant_values[j];
-            new_points.copy_data_direction(dir,vector<Real>(1, val));
-            new_weights.copy_data_direction(dir,vector<Real>(1, 1.0));
-        }
-
-        int ind = 0;
-        for (auto i : k_elem.active_directions)
-        {
-            new_points.copy_data_direction(i,quad.get_points().get_data_direction(ind));
-            new_weights.copy_data_direction(i,quad.get_weights().get_data_direction(ind));
-            ++ind;
-        }
-    //*/
     return new_eval_pts;
 }
 
-
+#if 0
 template<int k, int dim>
 QuadratureTensorProduct<dim>
 extend_sub_elem_quad(const QuadratureTensorProduct<k> &quad,
@@ -559,13 +571,15 @@ extend_sub_elem_quad(const QuadratureTensorProduct<k> &quad,
     int ind = 0;
     for (auto i : k_elem.active_directions)
     {
-        new_points.copy_data_direction(i,quad.get_points().get_data_direction(ind));
+//        new_points.copy_data_direction(i,quad.get_points().get_data_direction(ind));
+        new_points.copy_data_direction(i,quad.get_coords_direction(ind));
         new_weights.copy_data_direction(i,quad.get_weights().get_data_direction(ind));
         ++ind;
     }
 
     return QuadratureTensorProduct<dim>(new_points, new_weights);
 }
+#endif
 
 IGA_NAMESPACE_CLOSE
 
