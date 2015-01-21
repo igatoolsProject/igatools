@@ -225,8 +225,10 @@ operator()(const T &quad1)
 
 
         ComponentContainer<Points<dim>> len_left(end_interval.get_comp_map());
-        ComponentContainer<TensorProductArray<dim>>
-                                                 points_left(end_interval.get_comp_map(), points);
+//        ComponentContainer<TensorProductArray<dim>>
+//                                                 points_left(end_interval.get_comp_map(), points);
+        ComponentContainer<EvaluationPoints<dim>>
+                                               points_left(end_interval.get_comp_map(), quad);
         LogStream out1;
         for (auto comp : points_left.get_active_components_id())
         {
@@ -249,8 +251,10 @@ operator()(const T &quad1)
         } // end loop comp
 
         ComponentContainer<Points<dim>> len_right(end_interval.get_comp_map());
-        ComponentContainer<TensorProductArray<dim>>
-                                                 points_right(end_interval.get_comp_map(), points);
+//        ComponentContainer<TensorProductArray<dim>>
+//                                                 points_right(end_interval.get_comp_map(), points);
+        ComponentContainer<EvaluationPoints<dim>>
+                                               points_right(end_interval.get_comp_map(), quad);
         for (auto comp : points_right.get_active_components_id())
         {
             Points<dim> dilate;
@@ -271,7 +275,7 @@ operator()(const T &quad1)
             {
                 const int deg = degree[comp][dir];
                 bernstein_values[comp].resize(max_der, deg+1, n_coords[dir]);
-                const auto &pt_coords = points_left[comp].get_data_direction(dir);
+                const auto &pt_coords = points_left[comp].get_coords_direction(dir);
                 for (int order = 0; order < max_der; ++order)
                     bernstein_values[comp].get_derivative(order) =
                         BernsteinBasis::derivative(order, deg, pt_coords);
@@ -305,7 +309,7 @@ operator()(const T &quad1)
             {
                 const int deg = degree[comp][dir];
                 bernstein_values[comp].resize(max_der, deg+1, n_coords[dir]);
-                const auto &pt_coords = points_right[comp].get_data_direction(dir);
+                const auto &pt_coords = points_right[comp].get_coords_direction(dir);
                 for (int order = 0; order < max_der; ++order)
                     bernstein_values[comp].get_derivative(order) =
                         BernsteinBasis::derivative(order, deg, pt_coords);
