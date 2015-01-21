@@ -29,6 +29,7 @@
 #include <igatools/basis_functions/reference_element_handler.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element_scalar_evaluator.h>
+#include <igatools/basis_functions/bernstein_basis.h>
 
 
 IGA_NAMESPACE_OPEN
@@ -145,6 +146,20 @@ private:
         }
     }
 
+
+    static void
+    resize_and_fill_bernstein_values(
+        const int deg,
+        const vector<Real> &pt_coords,
+        BasisValues1d &bernstein_values)
+    {
+        bernstein_values.resize(max_der, deg+1, pt_coords.size());
+        for (int order = 0; order < max_der; ++order)
+            bernstein_values.get_derivative(order) =
+                BernsteinBasis::derivative(order, deg, pt_coords);
+    }
+
+
     std::array<FunctionFlags, dim + 1> flags_;
 
     template <class T>
@@ -190,6 +205,11 @@ private:
         std::array<FunctionFlags, dim + 1> *flags_;
         CacheList<GlobalCache, dim> *splines1d_;
         const Space *space_;
+
+        /**
+         * id of the intervals that must be processed
+         */
+        std::array<vector<int>,dim> intervals_id_directions_;
     };
 
     ResetDispatcher reset_impl_;

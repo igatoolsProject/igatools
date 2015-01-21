@@ -20,7 +20,7 @@
 
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
-#include <igatools/basis_functions/bernstein_basis.h>
+//#include <igatools/basis_functions/bernstein_basis.h>
 
 
 #include <algorithm>
@@ -151,6 +151,7 @@ public:
 
 };
 
+
 }; // of the namespace
 
 
@@ -188,27 +189,43 @@ operator()(const T &quad1)
     Assert(space_ != nullptr,ExcNullPtr());
     const auto n_basis = space_->get_num_all_element_basis();
 
+//    std::array<vector<int>,dim> intervals_id_directions; // id of the intervals that must be processed
 
     for (auto &s_id: UnitElement<dim>::template elems_ids<k>())
     {
+        /*
         const auto &n_inter = space_->get_grid()->get_num_intervals();
+        for (int dir = 0 ; dir < dim ; ++dir)
+        {
+            intervals_id_directions[dir].resize(n_inter[dir]);
+            std::iota(intervals_id_directions[dir].begin(),intervals_id_directions[dir].end(),0);
+        }
+        //*/
+        TensorSize<dim> n_inter;
+        for (int dir = 0 ; dir < dim ; ++dir)
+        {
+            Assert(!intervals_id_directions_[dir].empty(),ExcEmptyObject());
+            n_inter[dir] = intervals_id_directions_[dir].size();
+        }
+
         auto &g_cache = std::get<k>(*splines1d_)[s_id];
         g_cache.clear();
-        g_cache.resize(n_inter,
-                       BasisValues(space_->get_components_map()));
+        g_cache.resize(n_inter,BasisValues(space_->get_components_map()));
         const auto quad = extend_sub_elem_quad<k,dim>(quad1, s_id);
         const auto &n_coords = quad.get_num_coords_direction();
 
         // Allocate space for the BasisValues1D
         for (int dir = 0 ; dir < dim ; ++dir)
         {
+            const auto &intervals_id = intervals_id_directions_[dir];
+
             const auto &n_pts = n_coords[dir];
-            for (int j = 0 ; j < n_inter[dir] ; ++j)
+            for (const int &interv_id : intervals_id)
             {
-                auto &splines1d = g_cache.entry(dir, j);
+                auto &splines1d = g_cache.entry(dir, interv_id);
                 for (auto comp : splines1d.get_active_components_id())
                     splines1d[comp].resize(max_der, n_basis[comp][dir], n_pts);
-            } // end loop j
+            } // end loop interv_id
         } // end loop dir
 
         /*
@@ -218,152 +235,115 @@ operator()(const T &quad1)
         const auto &degree      = space_->get_degree();
         const auto &bezier_op   = space_->operators_;
         const auto &end_interval = space_->end_interval_;
-        const auto &points      = quad.get_points();
         const auto &lengths = grid_handler_->get_lengths();
 
-        BasisValues bernstein_values(n_basis.get_comp_map());
+        BasisValues bernstein_values_internal(n_basis.get_comp_map());
+        BasisValues bernstein_values_left(n_basis.get_comp_map());
+        BasisValues bernstein_values_right(n_basis.get_comp_map());
 
+        using LengthCompContainer = ComponentContainer<Points<dim>>;
 
-        ComponentContainer<Points<dim>> len_left(end_interval.get_comp_map());
-//        ComponentContainer<TensorProductArray<dim>>
-//                                                 points_left(end_interval.get_comp_map(), points);
-        ComponentContainer<EvaluationPoints<dim>>
-                                               points_left(end_interval.get_comp_map(), quad);
-        LogStream out1;
-        for (auto comp : points_left.get_active_components_id())
-        {
-            Points<dim> dilate;
-            Points<dim> translate;
-            for (int dir=0; dir<dim; ++dir)
-            {
-                const Real alpha = end_interval[comp][dir].first;
-                const Real one_alpha = 1. - alpha;
-                dilate[dir] = alpha;
-                translate[dir] = one_alpha;
-                len_left[comp][dir] = lengths.get_data_direction(dir)[0]*alpha;
-            }
-            out1 << dilate << std::endl;
-            out1 << len_left[comp] << std::endl;
-//          out1 << translate << std::endl;
-//          points_left.print_info(out1);
-            points_left[comp].dilate_translate(dilate, translate);
-//          points_left.print_info(out1);
-        } // end loop comp
+        LengthCompContainer len_left(end_interval.get_comp_map());
+        LengthCompContainer len_right(end_interval.get_comp_map());
 
-        ComponentContainer<Points<dim>> len_right(end_interval.get_comp_map());
-//        ComponentContainer<TensorProductArray<dim>>
-//                                                 points_right(end_interval.get_comp_map(), points);
-        ComponentContainer<EvaluationPoints<dim>>
-                                               points_right(end_interval.get_comp_map(), quad);
-        for (auto comp : points_right.get_active_components_id())
-        {
-            Points<dim> dilate;
-            for (int dir=0; dir<dim; ++dir)
-            {
-                const Real alpha = end_interval[comp][dir].second;
-                dilate[dir] = alpha;
-                len_right[comp][dir] = lengths.get_data_direction(dir)[n_inter[dir]-1]*alpha;
-            }
-            points_right[comp].dilate(dilate);
-        } // end loop comp
-
-
-// Left interval treatment
+        // First/last interval treatment
         for (int dir = 0 ; dir < dim ; ++dir)
         {
-            for (auto comp : bernstein_values.get_active_components_id())
-            {
-                const int deg = degree[comp][dir];
-                bernstein_values[comp].resize(max_der, deg+1, n_coords[dir]);
-                const auto &pt_coords = points_left[comp].get_coords_direction(dir);
-                for (int order = 0; order < max_der; ++order)
-                    bernstein_values[comp].get_derivative(order) =
-                        BernsteinBasis::derivative(order, deg, pt_coords);
-            } // end loop comp
+            const auto &intervals_id = intervals_id_directions_[dir];
 
-            //const auto &inter_lengths = lengths.get_data_direction(dir);
-            const int inter = 0;
+            const int id_interval_left  = 0;
+            const int id_interval_right = n_inter[dir]-1;
+
+            const auto &pt_coords_internal = quad.get_coords_direction(dir);
+            const auto &len_internal = lengths.get_data_direction(dir);
+
+            if (intervals_id.front() == id_interval_left) // processing the leftmost interval
+            {
+                for (auto comp : bernstein_values_left.get_active_components_id())
+                {
+                    vector<Real> pt_coords_left;
+                    const Real alpha = end_interval[comp][dir].first;
+                    const Real one_alpha = 1. - alpha;
+                    len_left[comp][dir] = lengths.get_data_direction(dir)[id_interval_left]*alpha;
+
+                    for (const auto &coord_old : pt_coords_internal)
+                        pt_coords_left.emplace_back(one_alpha + coord_old * alpha);
+
+                    resize_and_fill_bernstein_values(degree[comp][dir],pt_coords_left,bernstein_values_left[comp]);
+                } // end loop comp
+            } // end process_interval_left
+
+            if (intervals_id.back() == id_interval_right) // processing the rightmost interval
+            {
+                for (auto comp : bernstein_values_right.get_active_components_id())
+                {
+                    vector<Real> pt_coords_right;
+                    const Real alpha = end_interval[comp][dir].second;
+                    len_right[comp][dir] = lengths.get_data_direction(dir)[id_interval_right]*alpha;
+
+                    for (const auto &coord_old : pt_coords_internal)
+                        pt_coords_right.emplace_back(coord_old * alpha);
+
+                    resize_and_fill_bernstein_values(degree[comp][dir],pt_coords_right,bernstein_values_right[comp]);
+                } // end loop comp
+            } // end process_interval_right
+
+            if (std::any_of(intervals_id.begin(),
+                            intervals_id.end(),
+                            [&id_interval_left,&id_interval_right](int i)
+        {
+            return (i > id_interval_left) && (i < id_interval_right);
+            }))
+            {
+                // processing the internal intervals
+                for (auto comp : bernstein_values_internal.get_active_components_id())
+                    resize_and_fill_bernstein_values(degree[comp][dir],pt_coords_internal,bernstein_values_internal[comp]);
+            } // end process_interval_internal
+
+
+            for (auto &inter : intervals_id)
             {
                 auto &splines1d = g_cache.entry(dir, inter);
+
                 for (auto comp : splines1d.get_active_components_id())
                 {
-                    const auto &berns_values = bernstein_values[comp];
+                    Real one_div_interval_length;
+                    const BasisValues1d *berns_values_ptr = nullptr;
+                    if (inter != id_interval_left && inter != id_interval_right)
+                    {
+                        // internal intervals
+                        one_div_interval_length = 1.0 / len_internal[inter];
+                        berns_values_ptr = &bernstein_values_internal[comp];
+                    }
+                    else if (inter == id_interval_left)
+                    {
+                        // first interval (i.e. left-most interval)
+                        one_div_interval_length = 1.0 / len_left[comp][dir];
+                        berns_values_ptr = &bernstein_values_left[comp];
+                    }
+                    else if (inter == id_interval_right)
+                    {
+                        // last interval (i.e. right-most interval)
+                        one_div_interval_length = 1.0 / len_right[comp][dir];
+                        berns_values_ptr = &bernstein_values_right[comp];
+                    }
+
                     auto &basis = splines1d[comp];
                     const auto &oper = bezier_op.get_operator(dir, inter, comp);
 
-                    const Real one_div_size = 1.0 / len_left[comp][dir];
-                    LogStream out2;
-                    out2 << one_div_size;
-                    fill_interval_values(one_div_size, oper, berns_values, basis);
-                    berns_values.print_info(out2);
-                    basis.print_info(out2);
+                    fill_interval_values(one_div_interval_length, oper, *berns_values_ptr, basis);
+                    if (inter == 0)
+                    {
+                        LogStream out2;
+                        out2 << one_div_interval_length;
+                        berns_values_ptr->print_info(out2);
+                        basis.print_info(out2);
+                    }
                 } // end loop comp
             } // end loop inter
+
         } // end loop dir
 
-
-        // Right interval treatment
-        for (int dir = 0 ; dir < dim ; ++dir)
-        {
-            for (auto comp : bernstein_values.get_active_components_id())
-            {
-                const int deg = degree[comp][dir];
-                bernstein_values[comp].resize(max_der, deg+1, n_coords[dir]);
-                const auto &pt_coords = points_right[comp].get_coords_direction(dir);
-                for (int order = 0; order < max_der; ++order)
-                    bernstein_values[comp].get_derivative(order) =
-                        BernsteinBasis::derivative(order, deg, pt_coords);
-            } // end loop comp
-
-            //const auto &inter_lengths = lengths.get_data_direction(dir);
-            const int inter = n_inter[dir]-1;
-            {
-                auto &splines1d = g_cache.entry(dir, inter);
-                for (auto comp : splines1d.get_active_components_id())
-                {
-                    const auto &berns_values = bernstein_values[comp];
-                    auto &basis = splines1d[comp];
-                    const auto &oper = bezier_op.get_operator(dir, inter, comp);
-
-                    const Real one_div_size = 1.0 / len_right[comp][dir];
-                    fill_interval_values(one_div_size, oper, berns_values, basis);
-                } // end loop comp
-            } // end loop inter
-        } // end loop dir
-
-
-
-        for (int dir = 0 ; dir < dim ; ++dir)
-        {
-            const int inter_begin = 1;
-            const int inter_end = n_inter[dir] - 1;
-
-            for (auto comp : bernstein_values.get_active_components_id())
-            {
-                const int deg = degree[comp][dir];
-                bernstein_values[comp].resize(max_der, deg+1, n_coords[dir]);
-                const auto &pt_coords = points.get_data_direction(dir);
-                for (int order = 0; order < max_der; ++order)
-                    bernstein_values[comp].get_derivative(order) =
-                        BernsteinBasis::derivative(order, deg, pt_coords);
-            } // end loop comp
-
-            const auto &inter_lengths = lengths.get_data_direction(dir);
-            for (int inter = inter_begin ; inter < inter_end ; ++inter)
-            {
-                auto &splines1d = g_cache.entry(dir, inter);
-                for (auto comp : splines1d.get_active_components_id())
-                {
-                    const auto &berns_values = bernstein_values[comp];
-                    auto &basis = splines1d[comp];
-                    const auto &oper = bezier_op.get_operator(dir, inter, comp);
-
-                    const Real one_div_size = 1.0 / inter_lengths[inter];
-                    fill_interval_values(one_div_size, oper, berns_values, basis);
-                } // end loop comp
-            } // end loop inter
-
-        } //end loop dir
     } // end loop s_id
 }
 
@@ -380,6 +360,17 @@ reset(const ValueFlags &flag, const quadrature_variant &quad)
     reset_impl_.splines1d_ = &splines1d_;
     reset_impl_.space_ = this->get_bspline_space().get();
 //    reset_impl_.lengths_ = &(this->grid_handler_.lengths_);
+
+    //-------------------------------------------------
+    // in this reset() function we want to initialize all the intervals
+    const auto &n_inter = reset_impl_.space_->get_grid()->get_num_intervals();
+    for (int dir = 0 ; dir < dim ; ++dir)
+    {
+        auto &interv_ids = reset_impl_.intervals_id_directions_[dir];
+        interv_ids.resize(n_inter[dir]);
+        std::iota(interv_ids.begin(),interv_ids.end(),0);
+    }
+    //-------------------------------------------------
 
     boost::apply_visitor(reset_impl_, quad);
 }
