@@ -257,17 +257,19 @@ operator()(const T &quad1)
             const auto &pt_coords_internal = quad.get_coords_direction(dir);
             const auto &len_internal = lengths.get_data_direction(dir);
 
+
             if (intervals_id.front() == id_interval_left) // processing the leftmost interval
             {
+                vector<Real> pt_coords_left(n_coords[dir]);
+
                 for (auto comp : bernstein_values_left.get_active_components_id())
                 {
-                    vector<Real> pt_coords_left;
                     const Real alpha = end_interval[comp][dir].first;
                     const Real one_alpha = 1. - alpha;
                     len_left[comp][dir] = lengths.get_data_direction(dir)[id_interval_left]*alpha;
 
-                    for (const auto &coord_old : pt_coords_internal)
-                        pt_coords_left.emplace_back(one_alpha + coord_old * alpha);
+                    for (int ipt = 0 ; ipt < n_coords[dir] ; ++ipt)
+                        pt_coords_left[ipt] = one_alpha + pt_coords_internal[ipt] * alpha;
 
                     resize_and_fill_bernstein_values(degree[comp][dir],pt_coords_left,bernstein_values_left[comp]);
                 } // end loop comp
@@ -275,21 +277,21 @@ operator()(const T &quad1)
 
             if (intervals_id.back() == id_interval_right) // processing the rightmost interval
             {
+                vector<Real> pt_coords_right(n_coords[dir]);
+
                 for (auto comp : bernstein_values_right.get_active_components_id())
                 {
-                    vector<Real> pt_coords_right;
                     const Real alpha = end_interval[comp][dir].second;
                     len_right[comp][dir] = lengths.get_data_direction(dir)[id_interval_right]*alpha;
 
-                    for (const auto &coord_old : pt_coords_internal)
-                        pt_coords_right.emplace_back(coord_old * alpha);
+                    for (int ipt = 0 ; ipt < n_coords[dir] ; ++ipt)
+                        pt_coords_right[ipt] = pt_coords_internal[ipt] * alpha;
 
                     resize_and_fill_bernstein_values(degree[comp][dir],pt_coords_right,bernstein_values_right[comp]);
                 } // end loop comp
             } // end process_interval_right
 
-            if (std::any_of(intervals_id.begin(),
-                            intervals_id.end(),
+            if (std::any_of(intervals_id.begin(),intervals_id.end(),
                             [&id_interval_left,&id_interval_right](int i)
         {
             return (i > id_interval_left) && (i < id_interval_right);
