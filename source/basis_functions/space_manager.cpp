@@ -302,6 +302,14 @@ get_transformation_type() const
     return transf_type_;
 }
 
+bool
+SpaceManager::
+SpaceInfo::
+is_physical_space() const
+{
+    return is_physical_space_;
+}
+
 
 bool
 SpaceManager::

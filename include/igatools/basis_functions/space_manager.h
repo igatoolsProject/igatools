@@ -602,6 +602,14 @@ private:
         /** Returns the rank of the space.*/
         int get_rank() const;
 
+        /** Returns the transformation type of the push forward of the space.*/
+        Transformation get_transformation_type() const;
+
+        /** Returns true if the variant corresponds to a physical space.
+         *  False elsewhere.
+         **/
+        bool is_physical_space() const;
+
         /** Returns true if all the parameters passed as arguments are the
          *  same as the ones contained as private member.*/
         bool check_parameters(const int dim,
@@ -611,9 +619,6 @@ private:
                               const int rank,
                               const Transformation transf_type,
                               const bool is_physical_space) const ;
-
-        /** Returns the transformation type of the push forward of the space.*/
-        Transformation get_transformation_type() const;
 
 
         /**
