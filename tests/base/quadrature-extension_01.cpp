@@ -42,7 +42,7 @@ void quad_extension(const int num_pts = 2)
     for (auto &i : UnitElement<dim>::template elems_ids<k>())
     {
         out << "Extended to subelement: " << i << endl;
-        QuadratureTensorProduct<dim> vol_quad = extend_sub_elem_quad<k, dim>(sub_quad, i);
+        const auto vol_quad = extend_sub_elem_quad<k, dim>(sub_quad, i);
         vol_quad.print_info(out);
     }
     OUTEND

@@ -4,40 +4,38 @@ Points per direction: 2
 
 Unit element
 Number of points:2
-weights:
-Size: [ 2 ]  Weights: [2]
-Direction: 0
-[ 0.500000 0.500000 ]
-
-weights (flat tensor product):
+Weights:
 ValueVector (num_points=2) : [ 0.500000 0.500000 ]
-coordinates:
-Size: [ 2 ]  Weights: [2]
-Direction: 0
-[ 0 1.00000 ]
 
-coordinates (flat cartesian_product):
+Coordinates:
+   Direction: 0
+   [ 0 1.00000 ]
+
+Points:
 ValueVector (num_points=2) : [ [ 0 ]  [ 1.00000 ]  ]
+
+Bounding box:
+   Direction: 0 ---- [ 0 , 1.00000 ]
+
 
 
 Points per direction: 3
 
 Unit element
 Number of points:3
-weights:
-Size: [ 3 ]  Weights: [3]
-Direction: 0
-[ 0.333333 0.333333 0.333333 ]
-
-weights (flat tensor product):
+Weights:
 ValueVector (num_points=3) : [ 0.333333 0.333333 0.333333 ]
-coordinates:
-Size: [ 3 ]  Weights: [3]
-Direction: 0
-[ 0 0.500000 1.00000 ]
 
-coordinates (flat cartesian_product):
+Coordinates:
+   Direction: 0
+   [ 0 0.500000 1.00000 ]
+
+Points:
 ValueVector (num_points=3) : [ [ 0 ]  [ 0.500000 ]  [ 1.00000 ]  ]
+
+Bounding box:
+   Direction: 0 ---- [ 0 , 1.00000 ]
+
 
 
 -------------------------------
@@ -48,48 +46,44 @@ Points per direction: 2
 
 Unit element
 Number of points:4
-weights:
-Size: [ 2 2 ]  Weights: [2,4]
-Direction: 0
-[ 0.500000 0.500000 ]
-Direction: 1
-[ 0.500000 0.500000 ]
-
-weights (flat tensor product):
+Weights:
 ValueVector (num_points=4) : [ 0.250000 0.250000 0.250000 0.250000 ]
-coordinates:
-Size: [ 2 2 ]  Weights: [2,4]
-Direction: 0
-[ 0 1.00000 ]
-Direction: 1
-[ 0 1.00000 ]
 
-coordinates (flat cartesian_product):
+Coordinates:
+   Direction: 0
+   [ 0 1.00000 ]
+   Direction: 1
+   [ 0 1.00000 ]
+
+Points:
 ValueVector (num_points=4) : [ [ 0 0 ]  [ 1.00000 0 ]  [ 0 1.00000 ]  [ 1.00000 1.00000 ]  ]
+
+Bounding box:
+   Direction: 0 ---- [ 0 , 1.00000 ]
+   Direction: 1 ---- [ 0 , 1.00000 ]
+
 
 
 Points per direction: 3
 
 Unit element
 Number of points:9
-weights:
-Size: [ 3 3 ]  Weights: [3,9]
-Direction: 0
-[ 0.333333 0.333333 0.333333 ]
-Direction: 1
-[ 0.333333 0.333333 0.333333 ]
-
-weights (flat tensor product):
+Weights:
 ValueVector (num_points=9) : [ 0.111111 0.111111 0.111111 0.111111 0.111111 0.111111 0.111111 0.111111 0.111111 ]
-coordinates:
-Size: [ 3 3 ]  Weights: [3,9]
-Direction: 0
-[ 0 0.500000 1.00000 ]
-Direction: 1
-[ 0 0.500000 1.00000 ]
 
-coordinates (flat cartesian_product):
+Coordinates:
+   Direction: 0
+   [ 0 0.500000 1.00000 ]
+   Direction: 1
+   [ 0 0.500000 1.00000 ]
+
+Points:
 ValueVector (num_points=9) : [ [ 0 0 ]  [ 0.500000 0 ]  [ 1.00000 0 ]  [ 0 0.500000 ]  [ 0.500000 0.500000 ]  [ 1.00000 0.500000 ]  [ 0 1.00000 ]  [ 0.500000 1.00000 ]  [ 1.00000 1.00000 ]  ]
+
+Bounding box:
+   Direction: 0 ---- [ 0 , 1.00000 ]
+   Direction: 1 ---- [ 0 , 1.00000 ]
+
 
 
 -------------------------------
@@ -100,56 +94,50 @@ Points per direction: 2
 
 Unit element
 Number of points:8
-weights:
-Size: [ 2 2 2 ]  Weights: [2,4,8]
-Direction: 0
-[ 0.500000 0.500000 ]
-Direction: 1
-[ 0.500000 0.500000 ]
-Direction: 2
-[ 0.500000 0.500000 ]
-
-weights (flat tensor product):
+Weights:
 ValueVector (num_points=8) : [ 0.125000 0.125000 0.125000 0.125000 0.125000 0.125000 0.125000 0.125000 ]
-coordinates:
-Size: [ 2 2 2 ]  Weights: [2,4,8]
-Direction: 0
-[ 0 1.00000 ]
-Direction: 1
-[ 0 1.00000 ]
-Direction: 2
-[ 0 1.00000 ]
 
-coordinates (flat cartesian_product):
+Coordinates:
+   Direction: 0
+   [ 0 1.00000 ]
+   Direction: 1
+   [ 0 1.00000 ]
+   Direction: 2
+   [ 0 1.00000 ]
+
+Points:
 ValueVector (num_points=8) : [ [ 0 0 0 ]  [ 1.00000 0 0 ]  [ 0 1.00000 0 ]  [ 1.00000 1.00000 0 ]  [ 0 0 1.00000 ]  [ 1.00000 0 1.00000 ]  [ 0 1.00000 1.00000 ]  [ 1.00000 1.00000 1.00000 ]  ]
+
+Bounding box:
+   Direction: 0 ---- [ 0 , 1.00000 ]
+   Direction: 1 ---- [ 0 , 1.00000 ]
+   Direction: 2 ---- [ 0 , 1.00000 ]
+
 
 
 Points per direction: 3
 
 Unit element
 Number of points:27
-weights:
-Size: [ 3 3 3 ]  Weights: [3,9,27]
-Direction: 0
-[ 0.333333 0.333333 0.333333 ]
-Direction: 1
-[ 0.333333 0.333333 0.333333 ]
-Direction: 2
-[ 0.333333 0.333333 0.333333 ]
-
-weights (flat tensor product):
+Weights:
 ValueVector (num_points=27) : [ 0.0370370 0.0370370 0.0370370 0.0370370 0.0370370 0.0370370 0.0370370 0.0370370 0.0370370 0.0370370 0.0370370 0.0370370 0.0370370 0.0370370 0.0370370 0.0370370 0.0370370 0.0370370 0.0370370 0.0370370 0.0370370 0.0370370 0.0370370 0.0370370 0.0370370 0.0370370 0.0370370 ]
-coordinates:
-Size: [ 3 3 3 ]  Weights: [3,9,27]
-Direction: 0
-[ 0 0.500000 1.00000 ]
-Direction: 1
-[ 0 0.500000 1.00000 ]
-Direction: 2
-[ 0 0.500000 1.00000 ]
 
-coordinates (flat cartesian_product):
+Coordinates:
+   Direction: 0
+   [ 0 0.500000 1.00000 ]
+   Direction: 1
+   [ 0 0.500000 1.00000 ]
+   Direction: 2
+   [ 0 0.500000 1.00000 ]
+
+Points:
 ValueVector (num_points=27) : [ [ 0 0 0 ]  [ 0.500000 0 0 ]  [ 1.00000 0 0 ]  [ 0 0.500000 0 ]  [ 0.500000 0.500000 0 ]  [ 1.00000 0.500000 0 ]  [ 0 1.00000 0 ]  [ 0.500000 1.00000 0 ]  [ 1.00000 1.00000 0 ]  [ 0 0 0.500000 ]  [ 0.500000 0 0.500000 ]  [ 1.00000 0 0.500000 ]  [ 0 0.500000 0.500000 ]  [ 0.500000 0.500000 0.500000 ]  [ 1.00000 0.500000 0.500000 ]  [ 0 1.00000 0.500000 ]  [ 0.500000 1.00000 0.500000 ]  [ 1.00000 1.00000 0.500000 ]  [ 0 0 1.00000 ]  [ 0.500000 0 1.00000 ]  [ 1.00000 0 1.00000 ]  [ 0 0.500000 1.00000 ]  [ 0.500000 0.500000 1.00000 ]  [ 1.00000 0.500000 1.00000 ]  [ 0 1.00000 1.00000 ]  [ 0.500000 1.00000 1.00000 ]  [ 1.00000 1.00000 1.00000 ]  ]
+
+Bounding box:
+   Direction: 0 ---- [ 0 , 1.00000 ]
+   Direction: 1 ---- [ 0 , 1.00000 ]
+   Direction: 2 ---- [ 0 , 1.00000 ]
+
 
 
 -------------------------------
@@ -160,40 +148,38 @@ Points per direction: 2
 
 Unit element
 Number of points:2
-weights:
-Size: [ 2 ]  Weights: [2]
-Direction: 0
-[ 0.500000 0.500000 ]
-
-weights (flat tensor product):
+Weights:
 ValueVector (num_points=2) : [ 0.500000 0.500000 ]
-coordinates:
-Size: [ 2 ]  Weights: [2]
-Direction: 0
-[ 0 1.00000 ]
 
-coordinates (flat cartesian_product):
+Coordinates:
+   Direction: 0
+   [ 0 1.00000 ]
+
+Points:
 ValueVector (num_points=2) : [ [ 0 ]  [ 1.00000 ]  ]
+
+Bounding box:
+   Direction: 0 ---- [ 0 , 1.00000 ]
+
 
 
 Points per direction: 3 
 
 Unit element
 Number of points:3
-weights:
-Size: [ 3 ]  Weights: [3]
-Direction: 0
-[ 0.333333 0.333333 0.333333 ]
-
-weights (flat tensor product):
+Weights:
 ValueVector (num_points=3) : [ 0.333333 0.333333 0.333333 ]
-coordinates:
-Size: [ 3 ]  Weights: [3]
-Direction: 0
-[ 0 0.500000 1.00000 ]
 
-coordinates (flat cartesian_product):
+Coordinates:
+   Direction: 0
+   [ 0 0.500000 1.00000 ]
+
+Points:
 ValueVector (num_points=3) : [ [ 0 ]  [ 0.500000 ]  [ 1.00000 ]  ]
+
+Bounding box:
+   Direction: 0 ---- [ 0 , 1.00000 ]
+
 
 
 -------------------------------
@@ -204,48 +190,44 @@ Points per direction: 2 3
 
 Unit element
 Number of points:6
-weights:
-Size: [ 2 3 ]  Weights: [2,6]
-Direction: 0
-[ 0.500000 0.500000 ]
-Direction: 1
-[ 0.333333 0.333333 0.333333 ]
-
-weights (flat tensor product):
+Weights:
 ValueVector (num_points=6) : [ 0.166667 0.166667 0.166667 0.166667 0.166667 0.166667 ]
-coordinates:
-Size: [ 2 3 ]  Weights: [2,6]
-Direction: 0
-[ 0 1.00000 ]
-Direction: 1
-[ 0 0.500000 1.00000 ]
 
-coordinates (flat cartesian_product):
+Coordinates:
+   Direction: 0
+   [ 0 1.00000 ]
+   Direction: 1
+   [ 0 0.500000 1.00000 ]
+
+Points:
 ValueVector (num_points=6) : [ [ 0 0 ]  [ 1.00000 0 ]  [ 0 0.500000 ]  [ 1.00000 0.500000 ]  [ 0 1.00000 ]  [ 1.00000 1.00000 ]  ]
+
+Bounding box:
+   Direction: 0 ---- [ 0 , 1.00000 ]
+   Direction: 1 ---- [ 0 , 1.00000 ]
+
 
 
 Points per direction: 3 4 
 
 Unit element
 Number of points:12
-weights:
-Size: [ 3 4 ]  Weights: [3,12]
-Direction: 0
-[ 0.333333 0.333333 0.333333 ]
-Direction: 1
-[ 0.250000 0.250000 0.250000 0.250000 ]
-
-weights (flat tensor product):
+Weights:
 ValueVector (num_points=12) : [ 0.0833333 0.0833333 0.0833333 0.0833333 0.0833333 0.0833333 0.0833333 0.0833333 0.0833333 0.0833333 0.0833333 0.0833333 ]
-coordinates:
-Size: [ 3 4 ]  Weights: [3,12]
-Direction: 0
-[ 0 0.500000 1.00000 ]
-Direction: 1
-[ 0 0.333333 0.666667 1.00000 ]
 
-coordinates (flat cartesian_product):
+Coordinates:
+   Direction: 0
+   [ 0 0.500000 1.00000 ]
+   Direction: 1
+   [ 0 0.333333 0.666667 1.00000 ]
+
+Points:
 ValueVector (num_points=12) : [ [ 0 0 ]  [ 0.500000 0 ]  [ 1.00000 0 ]  [ 0 0.333333 ]  [ 0.500000 0.333333 ]  [ 1.00000 0.333333 ]  [ 0 0.666667 ]  [ 0.500000 0.666667 ]  [ 1.00000 0.666667 ]  [ 0 1.00000 ]  [ 0.500000 1.00000 ]  [ 1.00000 1.00000 ]  ]
+
+Bounding box:
+   Direction: 0 ---- [ 0 , 1.00000 ]
+   Direction: 1 ---- [ 0 , 1.00000 ]
+
 
 
 -------------------------------
@@ -256,56 +238,50 @@ Points per direction: 2 3 4
 
 Unit element
 Number of points:24
-weights:
-Size: [ 2 3 4 ]  Weights: [2,6,24]
-Direction: 0
-[ 0.500000 0.500000 ]
-Direction: 1
-[ 0.333333 0.333333 0.333333 ]
-Direction: 2
-[ 0.250000 0.250000 0.250000 0.250000 ]
-
-weights (flat tensor product):
+Weights:
 ValueVector (num_points=24) : [ 0.0416667 0.0416667 0.0416667 0.0416667 0.0416667 0.0416667 0.0416667 0.0416667 0.0416667 0.0416667 0.0416667 0.0416667 0.0416667 0.0416667 0.0416667 0.0416667 0.0416667 0.0416667 0.0416667 0.0416667 0.0416667 0.0416667 0.0416667 0.0416667 ]
-coordinates:
-Size: [ 2 3 4 ]  Weights: [2,6,24]
-Direction: 0
-[ 0 1.00000 ]
-Direction: 1
-[ 0 0.500000 1.00000 ]
-Direction: 2
-[ 0 0.333333 0.666667 1.00000 ]
 
-coordinates (flat cartesian_product):
+Coordinates:
+   Direction: 0
+   [ 0 1.00000 ]
+   Direction: 1
+   [ 0 0.500000 1.00000 ]
+   Direction: 2
+   [ 0 0.333333 0.666667 1.00000 ]
+
+Points:
 ValueVector (num_points=24) : [ [ 0 0 0 ]  [ 1.00000 0 0 ]  [ 0 0.500000 0 ]  [ 1.00000 0.500000 0 ]  [ 0 1.00000 0 ]  [ 1.00000 1.00000 0 ]  [ 0 0 0.333333 ]  [ 1.00000 0 0.333333 ]  [ 0 0.500000 0.333333 ]  [ 1.00000 0.500000 0.333333 ]  [ 0 1.00000 0.333333 ]  [ 1.00000 1.00000 0.333333 ]  [ 0 0 0.666667 ]  [ 1.00000 0 0.666667 ]  [ 0 0.500000 0.666667 ]  [ 1.00000 0.500000 0.666667 ]  [ 0 1.00000 0.666667 ]  [ 1.00000 1.00000 0.666667 ]  [ 0 0 1.00000 ]  [ 1.00000 0 1.00000 ]  [ 0 0.500000 1.00000 ]  [ 1.00000 0.500000 1.00000 ]  [ 0 1.00000 1.00000 ]  [ 1.00000 1.00000 1.00000 ]  ]
+
+Bounding box:
+   Direction: 0 ---- [ 0 , 1.00000 ]
+   Direction: 1 ---- [ 0 , 1.00000 ]
+   Direction: 2 ---- [ 0 , 1.00000 ]
+
 
 
 Points per direction: 3 4 5 
 
 Unit element
 Number of points:60
-weights:
-Size: [ 3 4 5 ]  Weights: [3,12,60]
-Direction: 0
-[ 0.333333 0.333333 0.333333 ]
-Direction: 1
-[ 0.250000 0.250000 0.250000 0.250000 ]
-Direction: 2
-[ 0.200000 0.200000 0.200000 0.200000 0.200000 ]
-
-weights (flat tensor product):
+Weights:
 ValueVector (num_points=60) : [ 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 0.0166667 ]
-coordinates:
-Size: [ 3 4 5 ]  Weights: [3,12,60]
-Direction: 0
-[ 0 0.500000 1.00000 ]
-Direction: 1
-[ 0 0.333333 0.666667 1.00000 ]
-Direction: 2
-[ 0 0.250000 0.500000 0.750000 1.00000 ]
 
-coordinates (flat cartesian_product):
+Coordinates:
+   Direction: 0
+   [ 0 0.500000 1.00000 ]
+   Direction: 1
+   [ 0 0.333333 0.666667 1.00000 ]
+   Direction: 2
+   [ 0 0.250000 0.500000 0.750000 1.00000 ]
+
+Points:
 ValueVector (num_points=60) : [ [ 0 0 0 ]  [ 0.500000 0 0 ]  [ 1.00000 0 0 ]  [ 0 0.333333 0 ]  [ 0.500000 0.333333 0 ]  [ 1.00000 0.333333 0 ]  [ 0 0.666667 0 ]  [ 0.500000 0.666667 0 ]  [ 1.00000 0.666667 0 ]  [ 0 1.00000 0 ]  [ 0.500000 1.00000 0 ]  [ 1.00000 1.00000 0 ]  [ 0 0 0.250000 ]  [ 0.500000 0 0.250000 ]  [ 1.00000 0 0.250000 ]  [ 0 0.333333 0.250000 ]  [ 0.500000 0.333333 0.250000 ]  [ 1.00000 0.333333 0.250000 ]  [ 0 0.666667 0.250000 ]  [ 0.500000 0.666667 0.250000 ]  [ 1.00000 0.666667 0.250000 ]  [ 0 1.00000 0.250000 ]  [ 0.500000 1.00000 0.250000 ]  [ 1.00000 1.00000 0.250000 ]  [ 0 0 0.500000 ]  [ 0.500000 0 0.500000 ]  [ 1.00000 0 0.500000 ]  [ 0 0.333333 0.500000 ]  [ 0.500000 0.333333 0.500000 ]  [ 1.00000 0.333333 0.500000 ]  [ 0 0.666667 0.500000 ]  [ 0.500000 0.666667 0.500000 ]  [ 1.00000 0.666667 0.500000 ]  [ 0 1.00000 0.500000 ]  [ 0.500000 1.00000 0.500000 ]  [ 1.00000 1.00000 0.500000 ]  [ 0 0 0.750000 ]  [ 0.500000 0 0.750000 ]  [ 1.00000 0 0.750000 ]  [ 0 0.333333 0.750000 ]  [ 0.500000 0.333333 0.750000 ]  [ 1.00000 0.333333 0.750000 ]  [ 0 0.666667 0.750000 ]  [ 0.500000 0.666667 0.750000 ]  [ 1.00000 0.666667 0.750000 ]  [ 0 1.00000 0.750000 ]  [ 0.500000 1.00000 0.750000 ]  [ 1.00000 1.00000 0.750000 ]  [ 0 0 1.00000 ]  [ 0.500000 0 1.00000 ]  [ 1.00000 0 1.00000 ]  [ 0 0.333333 1.00000 ]  [ 0.500000 0.333333 1.00000 ]  [ 1.00000 0.333333 1.00000 ]  [ 0 0.666667 1.00000 ]  [ 0.500000 0.666667 1.00000 ]  [ 1.00000 0.666667 1.00000 ]  [ 0 1.00000 1.00000 ]  [ 0.500000 1.00000 1.00000 ]  [ 1.00000 1.00000 1.00000 ]  ]
+
+Bounding box:
+   Direction: 0 ---- [ 0 , 1.00000 ]
+   Direction: 1 ---- [ 0 , 1.00000 ]
+   Direction: 2 ---- [ 0 , 1.00000 ]
+
 
 
 -------------------------------

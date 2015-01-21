@@ -77,7 +77,7 @@ reset_bounding_box(const BBox<dim_> &bounding_box)
 
 #ifndef NDEBUG
     for (const auto &box_direction : bounding_box_)
-        Assert(box_direction[0] < box_direction[1],ExcMessage("Wrong coordinates for the bounding box."));
+        Assert(box_direction[0] <= box_direction[1],ExcMessage("Wrong coordinates for the bounding box."));
 #endif
 }
 

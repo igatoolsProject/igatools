@@ -65,8 +65,6 @@ void elem_measure(const int n_knots = 5)
         out.begin_item("Weighted Measure:");
         elem->template get_w_measures<dim-1>(0).print_info(out);
         out.end_item();
-
-
     }
 
     OUTEND

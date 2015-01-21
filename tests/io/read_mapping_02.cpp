@@ -48,7 +48,7 @@ void run_test(std::string &file_name)
     out << endl;
 
     QTrapez<dim> quad(Real(0.0));
-    const auto quad_pts = quad.get_points().get_flat_cartesian_product();
+    const auto quad_pts = quad.get_points();
     out.begin_item("Quad pts.:");
     quad_pts.print_info(out);
     out.end_item();
