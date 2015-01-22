@@ -51,3 +51,19 @@ for x in inst.mapping_dims:
 #     f.write('template %s get_bspline_space_from_xml(const boost::property_tree::ptree &);\n' % (sp))
 # # for sp in nrb_spaces:
 # #     f.write('template %s get_nurbs_space_from_xml(const boost::property_tree::ptree &);\n' % (sp))
+
+for x in inst.sub_ref_sp_dims:
+    dims = '%d, %d, %d' %(x.dim, x.range, x.rank)
+    bs_space = 'std::shared_ptr<BSplineSpace<%s>>' % (dims)
+    f.write('template %s get_bspline_space_from_xml<%s> (const boost::property_tree::ptree &);\n' % (bs_space, dims))
+
+    nr_space = 'std::shared_ptr<NURBSSpace<%s>>' % (dims)
+    f.write('template %s get_nurbs_space_from_xml<%s> (const boost::property_tree::ptree &);\n' % (nr_space, dims))
+
+for x in inst.ref_sp_dims:
+    dims = '%d, %d, %d' %(x.dim, x.range, x.rank)
+    bs_space = 'std::shared_ptr<BSplineSpace<%s>>' % (dims)
+    f.write('template %s get_bspline_space_from_xml<%s> (const boost::property_tree::ptree &);\n' % (bs_space, dims))
+
+    nr_space = 'std::shared_ptr<NURBSSpace<%s>>' % (dims)
+    f.write('template %s get_nurbs_space_from_xml<%s> (const boost::property_tree::ptree &);\n' % (nr_space, dims))
