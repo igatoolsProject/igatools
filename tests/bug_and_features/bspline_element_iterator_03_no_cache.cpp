@@ -67,7 +67,7 @@ void do_test()
     }
 
     QGauss< dim_domain > quad_scheme_1(2) ;
-    const auto eval_points_1 = quad_scheme_1.get_points().get_flat_cartesian_product();
+    const auto eval_points_1 = quad_scheme_1.get_points();
 
     auto element1 = space->begin();
 #if 0
@@ -82,7 +82,7 @@ void do_test()
     gradients1.print_info(out);
 
     QUniform< dim_domain > quad_scheme_2(3) ;
-    const auto eval_points_2 = quad_scheme_2.get_points().get_flat_cartesian_product();
+    const auto eval_points_2 = quad_scheme_2.get_points();
 
     auto values2    = element1->evaluate_basis_values_at_points(eval_points_2);
     values2.print_info(out);

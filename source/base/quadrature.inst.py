@@ -30,7 +30,7 @@ for dim in inst.domain_dims:
     f.write('template class EvaluationPoints<%d>; \n' %(dim))
 
 sub_dim_members = \
- ['QuadratureTensorProduct<dim> QuadratureTensorProduct<dim>::collapse_to_sub_element<k>(const int id) const;']
+ ['EvaluationPoints<dim> EvaluationPoints<dim>::collapse_to_sub_element<k>(const int id) const;']
 
 for dim in inst.sub_domain_dims:
     f.write('template class QuadratureTensorProduct<%d>; \n' %dim)

@@ -80,6 +80,9 @@ public:
     using v2 = typename seq<Int, l, dim>::type;
     using topology_variant = typename boost::make_variant_over<v2>::type;
 
+    using v3 = typename seq<EvaluationPoints, l, dim>::type;
+    using eval_pts_variant = typename boost::make_variant_over<v3>::type;
+
 public:
     using ElementAccessor = FunctionElement<dim, codim, range, rank>;
     using ElementIterator = CartesianGridIterator<ElementAccessor>;
@@ -137,7 +140,7 @@ public:
         return std::make_shared<self_t>(self_t(*this));
     }
 
-    virtual void reset(const ValueFlags &flag, const variant_1 &quad)
+    virtual void reset(const ValueFlags &flag, const eval_pts_variant &quad)
     {
         reset_impl.flag = flag;
         reset_impl.grid_handler = this;
@@ -285,7 +288,7 @@ private:
         parent_t *grid_handler;
         ElementAccessor *elem;
         std::array<FunctionFlags, dim + 1> *flags_;
-        QuadTensorProdList<dim> *quad_;
+        EvalPtsList<dim> *quad_;
     };
 
     ResetDispatcher reset_impl;

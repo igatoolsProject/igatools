@@ -28,7 +28,7 @@ data = Instantiation(include_files)
 
 sub_dim_members = ['void GridElementHandler<dim>::fill_cache<k>(ElementAccessor &elem, const int j);',
              'void GridElementHandler<dim>::init_cache<k>(ElementAccessor &elem);',
-             'void GridElementHandler<dim>::reset<k>(const ValueFlags flag, const QuadratureTensorProduct<k> &quad);',
+             'void GridElementHandler<dim>::reset<k>(const ValueFlags flag, const EvaluationPoints<k> &quad);',
              'void GridElementHandler<dim>::reset_one_element<k>(const ValueFlags flag, const EvaluationPoints<k> &quad, const int elem_id);',
              'Size GridElementHandler<dim>::get_num_points<k>() const;']
 

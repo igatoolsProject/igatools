@@ -72,13 +72,13 @@ create(std::shared_ptr<const Space> space,
 template<class Space>
 auto
 IgFunction<Space>::
-reset(const ValueFlags &flag, const variant_1 &quad) -> void
+reset(const ValueFlags &flag, const eval_pts_variant &eval_pts) -> void
 {
-    parent_t::reset(flag, quad);
+    parent_t::reset(flag, eval_pts);
     reset_impl.flag = flag;
     reset_impl.space_handler_ = space_filler_.get();
     reset_impl.flags_ = &(this->flags_);
-    boost::apply_visitor(reset_impl, quad);
+    boost::apply_visitor(reset_impl, eval_pts);
 }
 
 

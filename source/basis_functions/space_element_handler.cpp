@@ -116,11 +116,10 @@ template<class PhysSpace>
 template<int k>
 void
 SpaceElementHandler<PhysSpace>::
-reset(const ValueFlags flag, const QuadratureTensorProduct<k> &quad)
+reset(const ValueFlags flag, const EvaluationPoints<k> &eval_pts)
 {
-//    RefSpaceElementHandler::template reset<k>(space_to_ref_flag(type, flag), quad);
-    ref_space_handler_->reset(space_to_ref_flag(type, flag), quad);
-    PFCache::template reset<k>(space_to_pf_flag(flag), quad);
+    ref_space_handler_->reset(space_to_ref_flag(type, flag), eval_pts);
+    PFCache::template reset<k>(space_to_pf_flag(flag), eval_pts);
     flags_[k] = flag;
 }
 

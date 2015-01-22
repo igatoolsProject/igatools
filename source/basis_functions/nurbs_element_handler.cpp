@@ -130,7 +130,7 @@ operator()(const T &quad1)
 template<int dim_, int range_ , int rank_>
 void
 NURBSElementHandler<dim_, range_, rank_>::
-reset(const ValueFlags &flag, const quadrature_variant &quad)
+reset(const ValueFlags &flag, const eval_pts_variant &quad)
 {
     //--------------------------------------
     // resetting the BSplineElementHandler (for the numerator)

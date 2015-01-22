@@ -45,7 +45,12 @@ public:
     /**
      * Returns TRUE if the evaluation points have a tensor-product structure.
      */
-    virtual bool is_tensor_product_struct() const;
+    virtual bool have_points_tensor_product_struct() const;
+
+    /**
+     * Returns TRUE if the weights have a tensor-product structure.
+     */
+    virtual bool have_weights_tensor_product_struct() const;
 
     /**
      * Returns the coordinates indices relative to the point with (flat) index <p>point_id</p>.
@@ -186,6 +191,17 @@ public:
     ///@}
 
 
+
+    /**
+     * Returns a dim dimensional quadrature obtained by using
+     * a single point on the active face direction.
+     * @todo write example
+     * Usually use for face values
+     */
+    template<int k>
+    EvaluationPoints<dim_> collapse_to_sub_element(const int id) const;
+
+
 protected:
 
     /**
@@ -226,10 +242,8 @@ protected:
 
     BBox<dim_> bounding_box_;
 
-    bool is_tensor_product_struct_;
-
-
-
+    bool  points_have_tensor_product_struct_ = false;
+//    bool weights_have_tensor_product_struct_ = false;
 };
 
 
@@ -257,7 +271,7 @@ public:
     using typename EvaluationPoints<dim_>::Point;
     using EvaluationPoints<dim_>::dim;
 
-    using WeigthArray = TensorProductArray<dim>;
+    using WeightArray = TensorProductArray<dim>;
     using PointArray  = CartesianProductArray<Real, dim>;
 
     ///@name Constructors
@@ -288,7 +302,7 @@ public:
      * upon which the quadrature is referred to.
      */
     explicit QuadratureTensorProduct(const PointArray &points,
-                                     const WeigthArray &weights,
+                                     const WeightArray &weights,
                                      const BBox<dim> &bounding_box);
 
 
@@ -324,32 +338,20 @@ public:
     QuadratureTensorProduct<dim> &operator=(self_t  &&quad_scheme) = default;
     ///@}
 
-    ///@name Getting informations about the points and the domain.
+    ///@name Getting informations if the points and weights have the tensor-product structure.
     ///@{
     /**
      * Returns TRUE.
      */
-    virtual bool is_tensor_product_struct() const override final;
+    virtual bool have_points_tensor_product_struct() const override final;
 
+    /**
+     * Returns TRUE.
+     */
+    virtual bool have_weights_tensor_product_struct() const override final;
     ///@}
 
-    ///@name Getting a copy of the internal variables.
-    ///@{
 #if 0
-    /**
-     * Return all quadrature weights in
-     * a tensor-product structure.
-     */
-    WeigthArray get_weights() const noexcept ;
-
-    /**
-     * Return all quadrature points in
-     * a tensor-product structure.
-     */
-    PointArray get_points() const noexcept;
-#endif
-    ///@}
-
     /**
      * Returns a dim dimensional quadrature obtained by using
      * a single point on the active face direction.
@@ -358,18 +360,24 @@ public:
      */
     template<int k>
     self_t collapse_to_sub_element(const int id) const;
+#endif
 
+
+    /**
+     * Return the weights with their underlying tensor-product structure.
+     * @return
+     */
+    const WeightArray &get_weights_tensor_product() const;
 
 protected:
-    /**
-     * Quadrature points.
-     */
-//    PointArray points_;
 
     /**
      * Quadrature weights.
+     *
+     * @note We store this information keeping its tensor-product structure
+     * because we need it when the points must be extended/collapsed to a face.
      */
-    WeigthArray weights_;
+    WeightArray weights_;
 
 };
 

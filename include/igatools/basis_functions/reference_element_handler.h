@@ -63,9 +63,14 @@ public:
      * Resets all the internal data in order to use the
      * same quadrature scheme for each element of the space.
      */
-    virtual void reset(const ValueFlags &flag, const quadrature_variant &quad) = 0;
+    virtual void reset(const ValueFlags &flag, const eval_pts_variant &quad) = 0;
 
     virtual void reset_one_element(const ValueFlags &flag, const eval_pts_variant &eval_points, const int elem_flat_id) = 0;
+
+    virtual void reset_selected_elements(
+        const ValueFlags &flag,
+        const eval_pts_variant &eval_points,
+        const vector<int> elements_flat_id) = 0;
 
 protected:
     ReferenceElementHandler(std::shared_ptr<const Space> space);

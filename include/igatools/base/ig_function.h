@@ -55,6 +55,7 @@ public:
 
     using typename parent_t::variant_1;
     using typename parent_t::topology_variant;
+    using typename parent_t::eval_pts_variant;
     using typename parent_t::Point;
     using typename parent_t::Value;
     using typename parent_t::Gradient;
@@ -76,7 +77,7 @@ public:
     }
 
 
-    void reset(const ValueFlags &flag, const variant_1 &quad) override;
+    void reset(const ValueFlags &flag, const eval_pts_variant &eval_pts) override;
 
     void init_cache(ElementAccessor &elem, const topology_variant &k) override;
 

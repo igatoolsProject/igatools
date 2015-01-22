@@ -131,9 +131,9 @@ template<Transformation type, int dim, int codim>
 template<int k>
 auto
 PushForward<type, dim, codim>::
-reset(const ValueFlags flag, const QuadratureTensorProduct<k> &quad) -> void
+reset(const ValueFlags flag, const EvaluationPoints<k> &eval_pts) -> void
 {
-    MapType::template reset<k>(pushforward_to_mapping_flag(type, flag), quad);
+    MapType::template reset<k>(pushforward_to_mapping_flag(type, flag), eval_pts);
 }
 
 

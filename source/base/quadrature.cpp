@@ -42,9 +42,6 @@ EvaluationPoints()
         box_direction[0] = 0.0;
         box_direction[1] = 1.0;
     }
-
-
-    this->is_tensor_product_struct_ = false;
 }
 
 template<int dim_>
@@ -52,9 +49,7 @@ EvaluationPoints<dim_>::
 EvaluationPoints(const BBox<dim> &bounding_box)
     :
     bounding_box_(bounding_box)
-{
-    this->is_tensor_product_struct_ = false;
-}
+{}
 
 template<int dim_>
 EvaluationPoints<dim_>::
@@ -213,7 +208,7 @@ reset_points_coordinates_and_weights(const ValueVector<Point> &pts,const ValueVe
     // the points have not a tensor product structure
     if (n_pts != n_coords_direction.flat_size())
     {
-        this->is_tensor_product_struct_ = false;
+        this->points_have_tensor_product_struct_ = false;
     }
     else
     {
@@ -222,14 +217,14 @@ reset_points_coordinates_and_weights(const ValueVector<Point> &pts,const ValueVe
         const auto coords_id_begin = map_point_id_to_coords_id_.begin();
         const auto coords_id_end   = map_point_id_to_coords_id_.end();
 
-        this->is_tensor_product_struct_ = true;
+        this->points_have_tensor_product_struct_ = true;
         for (int pt_flat_id = 0 ; pt_flat_id < n_pts ; ++pt_flat_id)
         {
             const auto pt_tensor_id = MultiArrayUtils<dim_>::flat_to_tensor_index(pt_flat_id,pt_w_size);
             if (std::find(coords_id_begin, coords_id_end, pt_tensor_id) == coords_id_end)
             {
                 // coordinates id not found --> the points have not a tensor-product structure
-                this->is_tensor_product_struct_ = false;
+                this->points_have_tensor_product_struct_ = false;
                 break;
             }
         } // end loop pt_flat_id
@@ -242,10 +237,19 @@ reset_points_coordinates_and_weights(const ValueVector<Point> &pts,const ValueVe
 template<int dim_>
 bool
 EvaluationPoints<dim_>::
-is_tensor_product_struct() const
+have_points_tensor_product_struct() const
 {
-    return this->is_tensor_product_struct_;
+    return this->points_have_tensor_product_struct_;
 }
+
+template<int dim_>
+bool
+EvaluationPoints<dim_>::
+have_weights_tensor_product_struct() const
+{
+    return false;
+}
+
 
 template<int dim_>
 const vector<Real> &
@@ -391,7 +395,6 @@ QuadratureTensorProduct(
     void (*compute_coords_and_weight_1d)(const int n_pts_id, vector<Real> &coords,vector<Real> &weights),
     const Real eps_scaling)
     :
-//    points_(num_points),
     weights_(num_points)
 {
     Assert(compute_coords_and_weight_1d != nullptr,ExcNullPtr());
@@ -445,7 +448,6 @@ QuadratureTensorProduct(const CartesianProductArray<Real,dim> &points,
                         const BBox<dim> &bounding_box)
     :
     EvaluationPoints<dim_>(points.get_flat_cartesian_product(),weights.get_flat_tensor_product(),bounding_box),
-//    points_(points),
     weights_(weights)
 {
     Assert(points.tensor_size() == weights.tensor_size(),
@@ -455,31 +457,20 @@ QuadratureTensorProduct(const CartesianProductArray<Real,dim> &points,
 template<int dim_>
 bool
 QuadratureTensorProduct<dim_>::
-is_tensor_product_struct() const
+have_points_tensor_product_struct() const
 {
     return true;
 }
 
-#if 0
-template<int dim_>
-auto
-QuadratureTensorProduct<dim_>::
-get_points() const noexcept -> PointArray
-{
-    return points_;
-}
 
 
 template<int dim_>
 auto
 QuadratureTensorProduct<dim_>::
-get_weights() const noexcept -> WeigthArray
+get_weights_tensor_product() const -> const WeightArray &
 {
     return weights_;
 }
-#endif
-
-
 
 
 /*
@@ -492,8 +483,75 @@ get_num_points() const noexcept
 }
 //*/
 
+template<int dim_>
+bool
+QuadratureTensorProduct<dim_>::
+have_weights_tensor_product_struct() const
+{
+    return true;
+}
 
 
+template<int dim_>
+template<int k>
+auto
+EvaluationPoints<dim_>::
+collapse_to_sub_element(const int sub_elem_id) const -> EvaluationPoints<dim_>
+{
+    auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
+
+    using EvalPts = EvaluationPoints<dim_>;
+    using EvalPtsTP = QuadratureTensorProduct<dim_>;
+    using PointArray = typename EvalPtsTP::PointArray;
+    using WeightArray = typename EvalPtsTP::WeightArray;
+
+    PointArray  new_points;
+    WeightArray new_weights;
+    BBox<dim> new_bounding_box;
+    if (this->have_weights_tensor_product_struct())
+    {
+        const EvalPtsTP &this_as_quad_tensor_prod = dynamic_cast<const EvalPtsTP &>(*this);
+
+        const int n_dir = k_elem.constant_directions.size();
+        for (int j=0; j<n_dir; ++j)
+        {
+            auto dir = k_elem.constant_directions[j];
+            auto val = k_elem.constant_values[j];
+            new_points.copy_data_direction(dir,vector<Real>(1, val));
+            new_weights.copy_data_direction(dir,vector<Real>(1, 1.0));
+
+            new_bounding_box[dir][0] = val;
+            new_bounding_box[dir][1] = val;
+        }
+
+        const auto &old_bounding_box = this->get_bounding_box();
+
+        const auto &old_weights = this_as_quad_tensor_prod.get_weights_tensor_product();
+        for (auto i : k_elem.active_directions)
+        {
+            new_points.copy_data_direction(i,this->get_coords_direction(i));
+            new_weights.copy_data_direction(i,old_weights.get_data_direction(i));
+
+            new_bounding_box[i] = old_bounding_box[i];
+        }
+        return EvalPtsTP(new_points, new_weights, new_bounding_box);
+    }
+    else
+    {
+        Assert(false,ExcNotImplemented());
+        AssertThrow(false,ExcNotImplemented());
+
+        return EvalPts(
+            new_points.get_flat_cartesian_product(),
+            new_weights.get_flat_tensor_product(),
+            new_bounding_box);
+    }
+
+}
+
+
+
+#if 0
 template<int dim_>
 template<int k>
 auto
@@ -530,6 +588,7 @@ collapse_to_sub_element(const int sub_elem_id) const -> self_t
 
     return QuadratureTensorProduct<dim>(new_points, new_weights, new_bounding_box);
 }
+#endif
 
 template<int k, int dim>
 EvaluationPoints<dim>

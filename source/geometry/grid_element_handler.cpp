@@ -75,7 +75,7 @@ template<int k>
 void
 GridElementHandler<dim_>::
 reset(const ValueFlags flag,
-      const QuadratureTensorProduct<k> &quad)
+      const EvaluationPoints<k> &quad)
 {
     flags_[k] = flag;
     auto &quad_k = std::get<k>(quad_);

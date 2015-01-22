@@ -26,6 +26,8 @@
 #include <algorithm>
 using std::shared_ptr;
 
+using std::set;
+
 IGA_NAMESPACE_OPEN
 
 namespace
@@ -189,18 +191,8 @@ operator()(const T &quad1)
     Assert(space_ != nullptr,ExcNullPtr());
     const auto n_basis = space_->get_num_all_element_basis();
 
-//    std::array<vector<int>,dim> intervals_id_directions; // id of the intervals that must be processed
-
     for (auto &s_id: UnitElement<dim>::template elems_ids<k>())
     {
-        /*
-        const auto &n_inter = space_->get_grid()->get_num_intervals();
-        for (int dir = 0 ; dir < dim ; ++dir)
-        {
-            intervals_id_directions[dir].resize(n_inter[dir]);
-            std::iota(intervals_id_directions[dir].begin(),intervals_id_directions[dir].end(),0);
-        }
-        //*/
         TensorSize<dim> n_inter;
         for (int dir = 0 ; dir < dim ; ++dir)
         {
@@ -353,8 +345,55 @@ operator()(const T &quad1)
 template<int dim_, int range_ , int rank_>
 void
 BSplineElementHandler<dim_, range_, rank_>::
-reset(const ValueFlags &flag, const quadrature_variant &quad)
+reset_selected_elements(
+    const ValueFlags &flag,
+    const eval_pts_variant &eval_points,
+    const vector<int> elements_flat_id)
 {
+    reset_impl_.grid_handler_ = &(this->grid_handler_);
+    reset_impl_.flag_ = flag;
+    reset_impl_.flags_ = &flags_;
+    reset_impl_.splines1d_ = &splines1d_;
+    reset_impl_.space_ = this->get_bspline_space().get();
+
+
+    //-------------------------------------------------
+    // here we get the interval indices from the element indices
+    const auto grid = reset_impl_.space_->get_grid();
+    array<set<int>,dim> intervals_id_unique;
+    for (const auto elem_id : elements_flat_id)
+    {
+        const auto elem_tensor_id = grid->flat_to_tensor(elem_id);
+
+        for (int dir = 0 ; dir < dim ; ++dir)
+            intervals_id_unique[dir].insert(elem_tensor_id[dir]);
+    }
+
+    for (int dir = 0 ; dir < dim ; ++dir)
+    {
+        reset_impl_.intervals_id_directions_[dir].assign(
+            intervals_id_unique[dir].begin(),intervals_id_unique[dir].end());
+    }
+    //-------------------------------------------------
+
+    boost::apply_visitor(reset_impl_, eval_points);
+}
+
+
+template<int dim_, int range_ , int rank_>
+void
+BSplineElementHandler<dim_, range_, rank_>::
+reset(const ValueFlags &flag, const eval_pts_variant &eval_pts)
+{
+    using ElemProperty = typename CartesianGrid<dim_>::ElementProperty;
+    const set<int> active_elems_id =
+        this->get_bspline_space()->get_grid()->get_elements_id_same_property(ElemProperty::active);
+
+    this->reset_selected_elements(
+        flag,
+        eval_pts,
+        vector<int>(active_elems_id.begin(),active_elems_id.end()));
+#if 0
 //    reset_impl_.grid_handler_ = this;
     reset_impl_.grid_handler_ = &(this->grid_handler_);
     reset_impl_.flag_ = flag;
@@ -375,6 +414,7 @@ reset(const ValueFlags &flag, const quadrature_variant &quad)
     //-------------------------------------------------
 
     boost::apply_visitor(reset_impl_, quad);
+#endif
 }
 
 
@@ -580,16 +620,7 @@ reset_one_element(
     const eval_pts_variant &eval_points,
     const int elem_flat_id)
 {
-    reset_one_elem_impl_.grid_handler_ = &(this->grid_handler_);
-    reset_one_elem_impl_.flag_ = flag;
-    reset_one_elem_impl_.flags_ = &flags_;
-    reset_one_elem_impl_.splines1d_ = &splines1d_;
-    reset_one_elem_impl_.space_ = this->get_bspline_space().get();
-
-    reset_one_elem_impl_.elem_flat_id_ = elem_flat_id;
-
-    boost::apply_visitor(reset_one_elem_impl_, eval_points);
-
+    this->reset_selected_elements(flag,eval_points,vector<int>(1,elem_flat_id));
     Assert(false,ExcNotImplemented());
 }
 
