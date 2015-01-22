@@ -49,6 +49,15 @@ EvaluationPoints()
 
 template<int dim_>
 EvaluationPoints<dim_>::
+EvaluationPoints(const BBox<dim> &bounding_box)
+    :
+    bounding_box_(bounding_box)
+{
+    this->is_tensor_product_struct_ = false;
+}
+
+template<int dim_>
+EvaluationPoints<dim_>::
 EvaluationPoints(const ValueVector<Point> &pts)
     :
     EvaluationPoints()
@@ -56,6 +65,15 @@ EvaluationPoints(const ValueVector<Point> &pts)
     ValueVector<Real> weights(pts.size());
     weights.fill(1.0);
 
+    this->reset_points_coordinates_and_weights(pts,weights);
+}
+
+template<int dim_>
+EvaluationPoints<dim_>::
+EvaluationPoints(const ValueVector<Point> &pts, const ValueVector<Real> &weights, const BBox<dim> &bounding_box)
+    :
+    EvaluationPoints(bounding_box)
+{
     this->reset_points_coordinates_and_weights(pts,weights);
 }
 
@@ -133,7 +151,7 @@ reset_points_coordinates_and_weights(const ValueVector<Point> &pts,const ValueVe
     Assert(pts.size() == weights.size(),ExcDimensionMismatch(pts.size(),weights.size()));
 
     const int n_pts = pts.size();
-    Assert(n_pts > 0 , ExcEmptyObject());
+//    Assert(n_pts > 0 , ExcEmptyObject());
 
     //-----------------------------------------------------------------
     TensorSize<dim_> n_coords_direction;
@@ -361,12 +379,19 @@ print_info(LogStream &out) const
 
 template<int dim_>
 QuadratureTensorProduct<dim_>::
+QuadratureTensorProduct()
+    :
+    EvaluationPoints<dim_>()
+{}
+
+template<int dim_>
+QuadratureTensorProduct<dim_>::
 QuadratureTensorProduct(
     const TensorSize<dim> num_points,
     void (*compute_coords_and_weight_1d)(const int n_pts_id, vector<Real> &coords,vector<Real> &weights),
     const Real eps_scaling)
     :
-    points_(num_points),
+//    points_(num_points),
     weights_(num_points)
 {
     Assert(compute_coords_and_weight_1d != nullptr,ExcNullPtr());
@@ -388,7 +413,7 @@ QuadratureTensorProduct(
             for (int ip = 0; ip < n_pts; ++ip)
                 coords[i][ip] = 0.5 + (coords[i][ip] / 0.5 - 1.0) * (0.5 - eps_scaling) ;
 
-        this->points_.copy_data_direction(i,coords[i]);
+//        this->points_.copy_data_direction(i,coords[i]);
         this->weights_.copy_data_direction(i,weights[i]);
     }
 
@@ -416,10 +441,11 @@ QuadratureTensorProduct(
 template<int dim_>
 QuadratureTensorProduct<dim_>::
 QuadratureTensorProduct(const CartesianProductArray<Real,dim> &points,
-                        const TensorProductArray<dim> &weights)
+                        const TensorProductArray<dim> &weights,
+                        const BBox<dim> &bounding_box)
     :
-    EvaluationPoints<dim_>(points.get_flat_cartesian_product()),
-    points_(points),
+    EvaluationPoints<dim_>(points.get_flat_cartesian_product(),weights.get_flat_tensor_product(),bounding_box),
+//    points_(points),
     weights_(weights)
 {
     Assert(points.tensor_size() == weights.tensor_size(),
@@ -478,6 +504,7 @@ collapse_to_sub_element(const int sub_elem_id) const -> self_t
 
     PointArray  new_points;
     WeigthArray new_weights;
+    BBox<dim> new_bounding_box;
 
     const int n_dir = k_elem.constant_directions.size();
     for (int j=0; j<n_dir; ++j)
@@ -487,15 +514,21 @@ collapse_to_sub_element(const int sub_elem_id) const -> self_t
         new_points.copy_data_direction(dir,vector<Real>(1, val));
         new_weights.copy_data_direction(dir,vector<Real>(1, 1.0));
 
+        new_bounding_box[dir][0] = val;
+        new_bounding_box[dir][1] = val;
     }
+
+    const auto &old_bounding_box = this->get_bounding_box();
 
     for (auto i : k_elem.active_directions)
     {
-        new_points.copy_data_direction(i,points_.get_data_direction(i));
+        new_points.copy_data_direction(i,this->get_coords_direction(i));
         new_weights.copy_data_direction(i,weights_.get_data_direction(i));
+
+        new_bounding_box[i] = old_bounding_box[i];
     }
 
-    return QuadratureTensorProduct<dim>(new_points, new_weights);
+    return QuadratureTensorProduct<dim>(new_points, new_weights, new_bounding_box);
 }
 
 template<int k, int dim>
@@ -505,45 +538,87 @@ extend_sub_elem_quad(const EvaluationPoints<k> &eval_pts,
 {
     auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
 
+    //------------------------------------------------------
+    // creating the bounding box for the extension --- begin
+    const BBox<k> old_bounding_box = eval_pts.get_bounding_box();
+    BBox<dim> new_bounding_box;
+    const int n_dir = k_elem.constant_directions.size();
+    for (int j = 0 ; j < n_dir ; ++j)
+    {
+        const auto dir = k_elem.constant_directions[j];
+        const auto val = k_elem.constant_values[j];
+        new_bounding_box[dir][0] = val;
+        new_bounding_box[dir][1] = val;
+    }
+    int ind = 0;
+    for (auto i : k_elem.active_directions)
+        new_bounding_box[i] = old_bounding_box[ind++];
+    // creating the bounding box for the extension --- end
+    //------------------------------------------------------
+
+
+
+    //------------------------------------------------------
+    // defining the points for the extension --- begin
     const int n_pts = eval_pts.get_num_points();
     ValueVector<Points<dim>> new_points(n_pts);
     ValueVector<Real> new_weights(n_pts);
 
-    const BBox<k> old_bounding_box = eval_pts.get_bounding_box();
-    BBox<dim> new_bounding_box;
     for (int pt_id = 0 ; pt_id < n_pts ; ++pt_id)
     {
         Points<dim> &new_pt = new_points[pt_id];
 
-        const int n_dir = k_elem.constant_directions.size();
-        for (int j=0; j<n_dir; ++j)
+        for (int j = 0; j < n_dir; ++j)
         {
             const auto dir = k_elem.constant_directions[j];
             const auto val = k_elem.constant_values[j];
             new_pt[dir] = val;
-            new_bounding_box[dir][0] = val;
-            new_bounding_box[dir][1] = val;
         }
 
         const Points<k> old_pt = eval_pts.get_point(pt_id);
         int ind = 0;
         for (auto i : k_elem.active_directions)
-        {
-            new_bounding_box[i] = old_bounding_box[ind];
-            new_pt[i] = old_pt[ind];
-            ++ind;
-        }
+            new_pt[i] = old_pt[ind++];
 
         new_weights[pt_id] = eval_pts.get_weight(pt_id);
-
-
     }
+    // defining the points for the extension --- end
+    //------------------------------------------------------
 
-    EvaluationPoints<dim> new_eval_pts;
-    new_eval_pts.reset_bounding_box(new_bounding_box);
-    new_eval_pts.reset_points_coordinates_and_weights(new_points,new_weights);
 
-    return new_eval_pts;
+    return EvaluationPoints<dim>(new_points,new_weights,new_bounding_box);
+}
+
+
+template<>
+EvaluationPoints<1>
+extend_sub_elem_quad(const EvaluationPoints<0> &eval_pts,
+                     const int sub_elem_id)
+{
+    auto &k_elem = UnitElement<1>::template get_elem<0>(sub_elem_id);
+
+    //------------------------------------------------------
+    // creating the bounding box for the extension --- begin
+    BBox<1> new_bounding_box;
+    const auto val = k_elem.constant_values[0];
+    new_bounding_box[0][0] = val;
+    new_bounding_box[0][1] = val;
+    //------------------------------------------------------
+
+
+    //------------------------------------------------------
+    // defining the point for the extension --- begin
+    const int n_pts = 1;
+    ValueVector<Points<1>> new_points(n_pts);
+    ValueVector<Real> new_weights(n_pts);
+
+    new_points[0] = val;
+    new_weights[0] = 1.0;
+    // defining the point for the extension --- end
+    //------------------------------------------------------
+
+
+    return EvaluationPoints<1>(new_points,new_weights,new_bounding_box);
 }
 
 #if 0

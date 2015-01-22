@@ -71,14 +71,33 @@ public:
      */
     ///@{
     /**
-     * Default constructor. It sets a unit bounding-box (i.e. the hypercube \f$ [0,1]^{dim}\f$) with no points inside.
+     * Default constructor. It sets the bounding-box to be the hypercube \f$ [0,1]^{dim}\f$ with no points inside.
      */
     EvaluationPoints();
 
+protected:
     /**
-     * Construct the object given a vector of points in the <t>dim_</t>-dimensional space.
+     * Construct the object with a user-defined bounding-box, with no points inside.
+     */
+    EvaluationPoints(const BBox<dim> &bounding_box);
+
+public:
+    /**
+     * Construct the object given a vector of points in the <t>dim_</t>-dimensional space,
+     * and assign the weights value to be equal to 1.
+     *
+     * @note It sets the bounding-box to be the hypercube \f$ [0,1]^{dim}\f$.
      */
     EvaluationPoints(const ValueVector<Point> &pts);
+
+
+    /**
+     * Construct the object given:
+     *   - a vector of <p>points</p> in the <t>dim_</t>-dimensional space;
+     *   - the <p>weights</p> associated to the points;
+     *   - the bounding box in which the points are defined.
+     */
+    EvaluationPoints(const ValueVector<Point> &points, const ValueVector<Real> &weights, const BBox<dim> &bounding_box);
 
     /**
      * Copy constructor.
@@ -167,6 +186,8 @@ public:
     ///@}
 
 
+protected:
+
     /**
      * Reset the bounding box in which the points must be located.
      */
@@ -184,7 +205,6 @@ public:
     void reset_points_coordinates_and_weights(const ValueVector<Point> &pts,const ValueVector<Real> &weights);
 
 
-private:
 
     /**
      * Coordinates of the points.
@@ -239,13 +259,13 @@ public:
 
     using WeigthArray = TensorProductArray<dim>;
     using PointArray  = CartesianProductArray<Real, dim>;
-public:
+
     ///@name Constructors
     ///@{
     /**
-     * Default constructor. It does nothing.
+     * Default constructor. It sets the bounding-box to be the hypercube \f$ [0,1]^{dim}\f$ with no points inside.
      */
-    QuadratureTensorProduct() = default;
+    QuadratureTensorProduct();
 
     /**
      * Creates a tensor product quadrature rule
@@ -268,12 +288,15 @@ public:
      * upon which the quadrature is referred to.
      */
     explicit QuadratureTensorProduct(const PointArray &points,
-                                     const WeigthArray &weights);
+                                     const WeigthArray &weights,
+                                     const BBox<dim> &bounding_box);
+
 
     /**
      * Destructor.
      */
     virtual ~QuadratureTensorProduct() = default;
+
 
     /**
      * Copy constructor.
@@ -308,7 +331,6 @@ public:
      */
     virtual bool is_tensor_product_struct() const override final;
 
-public:
     ///@}
 
     ///@name Getting a copy of the internal variables.
@@ -342,7 +364,7 @@ protected:
     /**
      * Quadrature points.
      */
-    PointArray points_;
+//    PointArray points_;
 
     /**
      * Quadrature weights.

@@ -524,9 +524,13 @@ get_points(const int j) const ->ValueVector<Point>
     ValueVector<Point> ref_points(n_pts);
 
     for (int ipt = 0 ; ipt < n_pts ; ++ipt)
-        for (int dir = 0 ; dir < k ; ++dir)
-            ref_points[ipt][dir] = cache.unit_points_[ipt][dir] * dilate[dir] + translate[dir];
+    {
+        const auto &unit_pt = cache.unit_points_[ipt];
+        auto &ref_pt = ref_points[ipt];
 
+        for (int dir = 0 ; dir < dim ; ++dir)
+            ref_pt[dir] = unit_pt[dir] * dilate[dir] + translate[dir];
+    }
     return ref_points;
 }
 
