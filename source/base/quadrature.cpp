@@ -209,8 +209,8 @@ reset_points_coordinates_and_weights(
 
     for (int i = 0 ; i < dim_ ; ++i)
     {
-        Assert(coordinates_[i].size() == weights_1d.size(),
-               ExcDimensionMismatch(coordinates_[i].size(),weights_1d.size()));
+        Assert(coordinates_[i].size() == weights_1d[i].size(),
+               ExcDimensionMismatch(coordinates_[i].size(),weights_1d[i].size()));
         weights_1d_[i] = weights_1d[i];
     }
     weights_ = weights;
@@ -432,21 +432,21 @@ QuadratureTensorProduct(
            ExcMessage("The scaling factor must be >= 0.0 and < 0.5"));
 
     array<vector<Real>,dim> coords;
-    array<vector<Real>,dim> weights;
+    special_array<vector<Real>,dim> weights_1d;
     for (int i = 0; i < dim; ++i)
     {
         const auto n_pts = num_points[i];
 
         coords[i].resize(n_pts);
-        weights[i].resize(n_pts);
-        compute_coords_and_weight_1d(n_pts, coords[i], weights[i]);
+        weights_1d[i].resize(n_pts);
+        compute_coords_and_weight_1d(n_pts, coords[i], weights_1d[i]);
 
         if (eps_scaling > 0)
             for (int ip = 0; ip < n_pts; ++ip)
                 coords[i][ip] = 0.5 + (coords[i][ip] / 0.5 - 1.0) * (0.5 - eps_scaling) ;
 
 //        this->points_.copy_data_direction(i,coords[i]);
-        this->weights_.copy_data_direction(i,weights[i]);
+        this->weights_.copy_data_direction(i,weights_1d[i]);
     }
 
 
@@ -463,10 +463,10 @@ QuadratureTensorProduct(
         for (int i = 0 ; i < dim ; ++i)
         {
             points[pt_flat_id][i] = coords[i][pt_tensor_id[i]];
-            w[pt_flat_id] *= weights[i][pt_tensor_id[i]];
+            w[pt_flat_id] *= weights_1d[i][pt_tensor_id[i]];
         }
     }
-    this->reset_points_coordinates_and_weights(points,w);
+    this->reset_points_coordinates_and_weights(points,w,weights_1d);
 }
 
 
@@ -476,9 +476,18 @@ QuadratureTensorProduct(const CartesianProductArray<Real,dim> &points,
                         const TensorProductArray<dim> &weights,
                         const BBox<dim> &bounding_box)
     :
-    EvaluationPoints<dim_>(points.get_flat_cartesian_product(),weights.get_flat_tensor_product(),bounding_box),
+    EvaluationPoints<dim_>(bounding_box),
     weights_(weights)
 {
+    special_array<vector<Real>,dim_> weights_1d;
+    for (int i = 0 ; i < dim_ ; ++i)
+        weights_1d[i] = weights.get_data_direction(i);
+
+    this->reset_points_coordinates_and_weights(
+        points.get_flat_cartesian_product(),
+        weights.get_flat_tensor_product(),
+        weights_1d);
+
     Assert(points.tensor_size() == weights.tensor_size(),
            ExcMessage("Sizes of points and weights do not match."));
 }
@@ -537,6 +546,9 @@ collapse_to_sub_element(const int sub_elem_id) const -> EvaluationPoints<dim_>
     BBox<dim> new_bounding_box;
     const auto &old_bounding_box = this->get_bounding_box();
 
+    const auto &old_weights_1d = this->get_weights_1d();
+    special_array<vector<Real>,dim_> new_weights_1d;
+
     if (this->have_weights_tensor_product_struct())
     {
         PointArray  new_points;
@@ -553,6 +565,8 @@ collapse_to_sub_element(const int sub_elem_id) const -> EvaluationPoints<dim_>
 
             new_bounding_box[dir][0] = val;
             new_bounding_box[dir][1] = val;
+
+            new_weights_1d[dir].assign(1,1.0);
         }
 
 
@@ -563,7 +577,10 @@ collapse_to_sub_element(const int sub_elem_id) const -> EvaluationPoints<dim_>
             new_weights.copy_data_direction(i,old_weights.get_data_direction(i));
 
             new_bounding_box[i] = old_bounding_box[i];
+
+            new_weights_1d[i] = old_weights_1d[i];
         }
+//        return EvalPtsTP(new_points, new_weights, new_weights_1d, new_bounding_box);
         return EvalPtsTP(new_points, new_weights, new_bounding_box);
     }
     else
@@ -576,9 +593,15 @@ collapse_to_sub_element(const int sub_elem_id) const -> EvaluationPoints<dim_>
 
             new_bounding_box[dir][0] = val;
             new_bounding_box[dir][1] = val;
+
+            new_weights_1d[dir].assign(1,1.0);
         }
         for (auto i : k_elem.active_directions)
+        {
             new_bounding_box[i] = old_bounding_box[i];
+
+            new_weights_1d[i] = old_weights_1d[i];
+        }
 
         const auto new_points  = this->get_points();
         for (auto &point : new_points)
@@ -596,7 +619,7 @@ collapse_to_sub_element(const int sub_elem_id) const -> EvaluationPoints<dim_>
 //        Assert(false,ExcNotImplemented());
 //        AssertThrow(false,ExcNotImplemented());
 
-        return EvalPts(new_points,new_weights,new_bounding_box);
+        return EvalPts(new_points,new_weights,new_weights_1d,new_bounding_box);
     }
 
 }
@@ -666,14 +689,15 @@ extend_sub_elem_quad(const EvaluationPoints<k> &eval_pts,
         new_bounding_box[dir][0] = val;
         new_bounding_box[dir][1] = val;
 
-        new_weights_1d[dir].assign(old_weights_1d[dir].size(),val);
+        new_weights_1d[dir].assign(1,1.0);
     }
     int ind = 0;
     for (auto i : k_elem.active_directions)
     {
-        new_bounding_box[i] = old_bounding_box[ind++];
+        new_bounding_box[i] = old_bounding_box[ind];
 
-        new_weights_1d[i] = old_weights_1d[ind++];
+        new_weights_1d[i] = old_weights_1d[ind];
+        ++ind;
     }
     // creating the bounding box and the weights_1d for the extension --- end
     //------------------------------------------------------
