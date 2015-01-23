@@ -95,14 +95,17 @@ public:
      */
     EvaluationPoints(const ValueVector<Point> &pts);
 
-
     /**
      * Construct the object given:
      *   - a vector of <p>points</p> in the <t>dim_</t>-dimensional space;
      *   - the <p>weights</p> associated to the points;
      *   - the bounding box in which the points are defined.
      */
-    EvaluationPoints(const ValueVector<Point> &points, const ValueVector<Real> &weights, const BBox<dim> &bounding_box);
+    EvaluationPoints(
+        const ValueVector<Point> &points,
+        const ValueVector<Real> &weights,
+        const special_array<vector<Real>,dim_> &weights_1d,
+        const BBox<dim> &bounding_box);
 
     /**
      * Copy constructor.
@@ -153,6 +156,8 @@ public:
      * Returns all the weights.
      */
     const ValueVector<Real> &get_weights() const;
+
+    const special_array<vector<Real>,dim_> &get_weights_1d() const;
 
     /**
      * Returns the coordinates of the the point with (flat) index <p>pt_id</p>
@@ -218,7 +223,10 @@ protected:
      * @note In DEBUG mode the points are tested if they are within the bounding box.
      * Points on the side of the bounding box are still valid points.
      */
-    void reset_points_coordinates_and_weights(const ValueVector<Point> &pts,const ValueVector<Real> &weights);
+    void reset_points_coordinates_and_weights(
+        const ValueVector<Point> &pts,
+        const ValueVector<Real> &weights,
+        const special_array<vector<Real>,dim_> &weights_1d);
 
 
 
@@ -235,6 +243,9 @@ protected:
      */
     ValueVector<Real> weights_;
 
+    special_array<vector<Real>,dim_> weights_1d_;
+
+
     /**
      * Map between the point (flat) ids and its coordinates ids.
      */
@@ -243,6 +254,9 @@ protected:
     BBox<dim_> bounding_box_;
 
     bool  points_have_tensor_product_struct_ = false;
+
+
+
 //    bool weights_have_tensor_product_struct_ = false;
 };
 
@@ -379,6 +393,14 @@ protected:
      */
     WeightArray weights_;
 
+    /**
+     * This function pointer is pointing to the function that performs
+     * the 1D points and weights computation.
+     * @param[in] n_pts_1d Number of points along one direction.
+     * @param[out] coords Point coordinates.
+     * @param[out] weights Weights associated to the 1D point
+     */
+    void (*compute_coords_and_weight_1d)(const int n_pts_1d, vector<Real> &coords,vector<Real> &weights);
 };
 
 
