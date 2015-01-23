@@ -45,12 +45,12 @@ public:
     /**
      * Returns TRUE if the evaluation points have a tensor-product structure.
      */
-    virtual bool have_points_tensor_product_struct() const;
+    bool have_points_tensor_product_struct() const;
 
     /**
      * Returns TRUE if the weights have a tensor-product structure.
      */
-    virtual bool have_weights_tensor_product_struct() const;
+    bool have_weights_tensor_product_struct() const;
 
     /**
      * Returns the coordinates indices relative to the point with (flat) index <p>point_id</p>.
@@ -98,12 +98,11 @@ public:
     /**
      * Construct the object given:
      *   - a vector of <p>points</p> in the <t>dim_</t>-dimensional space;
-     *   - the <p>weights</p> associated to the points;
+     *   - the <p>weights_1d</p> are the weights associated to the points coordinates;
      *   - the bounding box in which the points are defined.
      */
     EvaluationPoints(
         const ValueVector<Point> &points,
-        const ValueVector<Real> &weights,
         const special_array<vector<Real>,dim_> &weights_1d,
         const BBox<dim> &bounding_box);
 
@@ -155,7 +154,7 @@ public:
     /**
      * Returns all the weights.
      */
-    const ValueVector<Real> &get_weights() const;
+    ValueVector<Real> get_weights() const;
 
     const special_array<vector<Real>,dim_> &get_weights_1d() const;
 
@@ -225,7 +224,6 @@ protected:
      */
     void reset_points_coordinates_and_weights(
         const ValueVector<Point> &pts,
-        const ValueVector<Real> &weights,
         const special_array<vector<Real>,dim_> &weights_1d);
 
 
@@ -239,10 +237,8 @@ protected:
 
 
     /**
-     * Weights of the points. By default are set to be equal to one.
+     * Weights associated to the points coordinates. By default are set to be equal to one.
      */
-    ValueVector<Real> weights_;
-
     special_array<vector<Real>,dim_> weights_1d_;
 
 
@@ -257,7 +253,7 @@ protected:
 
 
 
-//    bool weights_have_tensor_product_struct_ = false;
+    bool weights_have_tensor_product_struct_ = false;
 };
 
 
@@ -352,6 +348,7 @@ public:
     QuadratureTensorProduct<dim> &operator=(self_t  &&quad_scheme) = default;
     ///@}
 
+#if 0
     ///@name Getting informations if the points and weights have the tensor-product structure.
     ///@{
     /**
@@ -364,6 +361,7 @@ public:
      */
     virtual bool have_weights_tensor_product_struct() const override final;
     ///@}
+#endif
 
 #if 0
     /**
