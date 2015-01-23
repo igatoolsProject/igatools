@@ -291,6 +291,8 @@ public:
      */
     QuadratureTensorProduct();
 
+protected:
+
     /**
      * Creates a tensor product quadrature rule
      * on the unit d-dimensional hypercube \f$ [0,1]^d \f$,
@@ -306,6 +308,7 @@ public:
         void (*compute_coords_and_weight_1d)(const int n_pts_1d, vector<Real> &coords,vector<Real> &weights),
         const Real eps_scaling = 0.0);
 
+public:
     /**
      * Creates a tensor product quadrature rule with the points, the
      * weights and the domain coordinates of the d-dimensional hypercube
@@ -348,48 +351,7 @@ public:
     QuadratureTensorProduct<dim> &operator=(self_t  &&quad_scheme) = default;
     ///@}
 
-#if 0
-    ///@name Getting informations if the points and weights have the tensor-product structure.
-    ///@{
-    /**
-     * Returns TRUE.
-     */
-    virtual bool have_points_tensor_product_struct() const override final;
-
-    /**
-     * Returns TRUE.
-     */
-    virtual bool have_weights_tensor_product_struct() const override final;
-    ///@}
-#endif
-
-#if 0
-    /**
-     * Returns a dim dimensional quadrature obtained by using
-     * a single point on the active face direction.
-     * @todo write example
-     * Usually use for face values
-     */
-    template<int k>
-    self_t collapse_to_sub_element(const int id) const;
-#endif
-
-
-    /**
-     * Return the weights with their underlying tensor-product structure.
-     * @return
-     */
-    const WeightArray &get_weights_tensor_product() const;
-
 protected:
-
-    /**
-     * Quadrature weights.
-     *
-     * @note We store this information keeping its tensor-product structure
-     * because we need it when the points must be extended/collapsed to a face.
-     */
-    WeightArray weights_;
 
     /**
      * This function pointer is pointing to the function that performs
@@ -414,18 +376,6 @@ EvaluationPoints<dim>
 extend_sub_elem_quad(const EvaluationPoints<k> &quad, const int sub_elem_id);
 
 
-#if 0
-/**
- * Given a quadrature rule on a dim dimensional face, of a dim+1
- * domain, this functions creates an extended dimension
- * version of this quadrature applicable to the volume.
- *
- * @relates Quadrature
- */
-template<int k, int dim>
-QuadratureTensorProduct<dim>
-extend_sub_elem_quad(const QuadratureTensorProduct<k> &quad, const int sub_elem_id);
-#endif
 
 IGA_NAMESPACE_CLOSE
 

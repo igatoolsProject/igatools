@@ -58,7 +58,7 @@ tuple_of_caches(
 
 template<class ValuesCache, int dim>
 using CacheList = decltype(tuple_of_caches(std::make_index_sequence<dim+1>(),
-                                           QuadratureTensorProduct<dim>(),
+                                           EvaluationPoints<dim>(),
                                            ValuesCache()));
 
 template<class Func, class Tuple, std::size_t N, std::size_t Min>
