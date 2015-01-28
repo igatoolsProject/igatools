@@ -22,7 +22,7 @@
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/nurbs_space.h>
-#include <igatools/basis_functions/nurbs_element_accessor.h>
+#include <igatools/basis_functions/nurbs_element.h>
 
 /*
  *  Test for the NURBS space iterator using the no cache evaluations
@@ -35,24 +35,29 @@
 template< int dim, int range, int rank = 1>
 void test()
 {
+	OUTSTART
+
     const int r = 2;
-    out << "test<" << dim << "," << range << ">" << endl;
+//    out << "test<" << dim << "," << range << ">" << endl;
 
     using Space = NURBSSpace< dim, range, rank >;
-    using WeightsTable = typename Space::WeightsTable;
-    using DegreeTable = typename Space::DegreeTable;
     auto  knots = CartesianGrid<dim>::create();
 
     auto degree = TensorIndex<dim>(r);
-    DegreeTable deg(degree);
 
-    auto  bsp = BSplineSpace<dim, range, rank >::create(deg, knots);
-    WeightsTable weights;
-    const auto n_basis = bsp->get_num_basis_table();
-    for (auto comp : Space::components)
-        weights[comp].resize(n_basis[comp],1.0);
+    auto bsp_space = BSplineSpace<dim,range,rank>::create(degree, knots);
 
-    auto space = Space::create(deg, knots, weights);
+    using ScalarSpSpace = BSplineSpace<dim,1,1>;
+    auto scalar_bsp_space = ScalarSpSpace::create(degree, knots);
+
+    const auto n_scalar_basis = scalar_bsp_space->get_num_basis_table()[0];
+
+    using WeightFunc = IgFunction<ReferenceSpace<dim,1,1>>;
+    DynamicMultiArray<Real,dim> weights_coef(n_scalar_basis,1.0);
+    auto weight_function = std::shared_ptr<WeightFunc>(
+                               new WeightFunc(scalar_bsp_space,vector<Real>(weights_coef.get_data())));
+
+    auto space = Space::create(bsp_space,weight_function);
 
 
     //----------------------------------------------------------------------------------------------
@@ -61,8 +66,6 @@ void test()
 
     const int n_points = 3;
     QGauss<dim> quad(n_points);
-    const auto points = quad.get_points().get_flat_cartesian_product();
-
 
     auto elem     = space->begin();
     auto end = space->end();
@@ -72,17 +75,19 @@ void test()
         out << "Element: " << elem->get_flat_index()<< endl;
 
         out << "Values basis functions:" << endl ;
-        const auto values = elem->evaluate_basis_values_at_points(points);
+        const auto values = elem->evaluate_basis_values_at_points(quad);
         values.print_info(out) ;
 
         out << "Gradients basis functions:" << endl ;
-        const auto gradients = elem->evaluate_basis_gradients_at_points(points);
+        const auto gradients = elem->evaluate_basis_gradients_at_points(quad);
         gradients.print_info(out) ;
 
         out << "Hessians basis functions:" << endl ;
-        const auto hessians = elem->evaluate_basis_hessians_at_points(points);
+        const auto hessians = elem->evaluate_basis_hessians_at_points(quad);
         hessians.print_info(out) ;
     }
+
+    OUTEND
 }
 
 

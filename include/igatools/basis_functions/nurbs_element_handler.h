@@ -97,22 +97,10 @@ public:
     using topology_variant = typename base_t::topology_variant;
     using eval_pts_variant = typename base_t::eval_pts_variant;
 
-    virtual void reset(const ValueFlags &flag, const eval_pts_variant &quad) override final;
-
-    virtual void reset_one_element(const ValueFlags &flag, const eval_pts_variant &eval_points, const int elem_flat_id) override final
-    {
-        Assert(false,ExcNotImplemented());
-        AssertThrow(false,ExcNotImplemented());
-    }
-
     virtual void reset_selected_elements(
         const ValueFlags &flag,
         const eval_pts_variant &eval_points,
-        const vector<int> elements_flat_id) override final
-    {
-        Assert(false,ExcNotImplemented());
-        AssertThrow(false,ExcNotImplemented());
-    }
+        const vector<int> elements_flat_id) override final;
 
     virtual void init_cache(RefElementAccessor &elem, const topology_variant &topology) override final;
 

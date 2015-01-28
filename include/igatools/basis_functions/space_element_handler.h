@@ -63,6 +63,16 @@ public:
     void reset(const ValueFlags flag, const EvaluationPoints<k> &eval_pts);
 
 
+    template<int k>
+    void reset_selected_elements(
+        const ValueFlags &flag,
+        const EvaluationPoints<k> &eval_pts,
+        const vector<Index> &elements_flat_id)
+    {
+        Assert(false,ExcNotImplemented());
+        AssertThrow(false,ExcNotImplemented());
+    }
+
 
 
 

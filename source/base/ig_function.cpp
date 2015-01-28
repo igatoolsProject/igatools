@@ -70,17 +70,36 @@ create(std::shared_ptr<const Space> space,
 
 
 template<class Space>
-auto
+void
 IgFunction<Space>::
-reset(const ValueFlags &flag, const eval_pts_variant &eval_pts) -> void
+reset(const ValueFlags &flag, const eval_pts_variant &eval_pts)
+{
+    using ElemProperty = typename CartesianGrid<dim>::ElementProperty;
+    const std::set<int> active_elems_id =
+        this->get_iga_space()->get_grid()->get_elements_id_same_property(ElemProperty::active);
+
+    this->reset_selected_elements(
+        flag,
+        eval_pts,
+        vector<Index>(active_elems_id.begin(),active_elems_id.end()));
+}
+
+
+template<class Space>
+void
+IgFunction<Space>::
+reset_selected_elements(
+    const ValueFlags &flag,
+    const eval_pts_variant &eval_pts,
+    const vector<Index> &elements_flat_id)
 {
     parent_t::reset(flag, eval_pts);
     reset_impl.flag = flag;
     reset_impl.space_handler_ = space_filler_.get();
     reset_impl.flags_ = &(this->flags_);
+    reset_impl.elements_flat_id_ = &elements_flat_id;
     boost::apply_visitor(reset_impl, eval_pts);
 }
-
 
 
 template<class Space>

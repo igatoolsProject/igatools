@@ -32,10 +32,6 @@ NURBSElementHandler<dim_, range_, rank_>::
 NURBSElementHandler(shared_ptr<const Space> space)
     :
     base_t(space)
-//  ,
-//    space_(space)
-//  ,
-//    bspline_handler_(BSplineElementHandler<dim_,range_,rank_>::create(space->get_spline_space()))
 {
     const auto bsp_space = space->get_spline_space();
     bspline_handler_ = BSplineElementHandler<dim_,range_,rank_>::create(bsp_space);
@@ -60,62 +56,6 @@ NURBSElementHandler(shared_ptr<const Space> space)
 #endif
 
 
-#if 0
-template<int dim_, int range_ , int rank_>
-template<int k>
-void
-NURBSElementHandler<dim_, range_, rank_>::
-reset(const ValueFlags flag,
-      const QuadratureTensorProduct<k> &quad1)
-{
-    //--------------------------------------
-    // resetting the BSplineElementHandler (for the numerator)
-    bspline_handler_->reset(flag, quad1);
-    //--------------------------------------
-
-
-    //--------------------------------------------------
-    // resetting the Function for the weight (for the denominator)
-    int max_deriv_order = -1;
-    if (contains(flag, ValueFlags::point) ||
-        contains(flag, ValueFlags::value))
-        max_deriv_order = 0;
-
-    if (contains(flag, ValueFlags::measure) ||
-        contains(flag, ValueFlags::w_measure) ||
-        contains(flag, ValueFlags::boundary_normal) ||
-        contains(flag, ValueFlags::outer_normal) ||
-        contains(flag, ValueFlags::gradient) ||
-        contains(flag, ValueFlags::inv_gradient))
-        max_deriv_order = 1;
-
-
-    if (contains(flag, ValueFlags::curvature) ||
-        contains(flag, ValueFlags::hessian) ||
-        contains(flag, ValueFlags::inv_hessian))
-        max_deriv_order = 2;
-
-
-    ValueFlags weight_flag;
-    if (max_deriv_order == 0)
-        weight_flag = ValueFlags::value;
-    else if (max_deriv_order == 1)
-        weight_flag = ValueFlags::value | ValueFlags::gradient;
-    else if (max_deriv_order == 2)
-        weight_flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::hessian;
-    else
-        Assert(false,ExcMessage("Not a right value flag."));
-
-    for (const auto &comp_id : space_->weight_func_table_.get_active_components_id())
-        space_->weight_func_table_[comp_id]->reset(weight_flag,quad1);
-    //--------------------------------------------------
-
-
-
-    flags_[k] = flag;
-}
-#endif
-
 template<int dim_, int range_ , int rank_>
 template<class T>
 void
@@ -130,12 +70,15 @@ operator()(const T &quad1)
 template<int dim_, int range_ , int rank_>
 void
 NURBSElementHandler<dim_, range_, rank_>::
-reset(const ValueFlags &flag, const eval_pts_variant &quad)
+reset_selected_elements(
+    const ValueFlags &flag,
+    const eval_pts_variant &quad,
+    const vector<int> elements_flat_id)
 {
     //--------------------------------------
     // resetting the BSplineElementHandler (for the numerator)
     Assert(bspline_handler_ != nullptr, ExcNullPtr());
-    bspline_handler_->reset(flag, quad);
+    bspline_handler_->reset_selected_elements(flag, quad, elements_flat_id);
     //--------------------------------------
 
 
@@ -173,8 +116,9 @@ reset(const ValueFlags &flag, const eval_pts_variant &quad)
 
 
     const auto nrb_space = this->get_nurbs_space();
-    for (const auto &comp_id : nrb_space->weight_func_table_.get_active_components_id())
-        nrb_space->weight_func_table_[comp_id]->reset(weight_flag,quad);
+    const auto &w_func_table = nrb_space->weight_func_table_;
+    for (const auto &comp_id : w_func_table.get_active_components_id())
+        w_func_table[comp_id]->reset_selected_elements(weight_flag,quad,elements_flat_id);
     //--------------------------------------------------
 
 

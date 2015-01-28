@@ -61,11 +61,19 @@ public:
 
     /**
      * Resets all the internal data in order to use the
-     * same quadrature scheme for each element of the space.
+     * same quadrature scheme for each active element of the space.
      */
-    virtual void reset(const ValueFlags &flag, const eval_pts_variant &quad) = 0;
+    void reset(const ValueFlags &flag, const eval_pts_variant &quad);
 
-    virtual void reset_one_element(const ValueFlags &flag, const eval_pts_variant &eval_points, const int elem_flat_id) = 0;
+    /**
+     * Resets all the internal data in order to use the
+     * same quadrature scheme for the element of the space with ID specified by
+     * the input parameter <p>elem_flat_id</p>.
+     */
+    void reset_one_element(
+        const ValueFlags &flag,
+        const eval_pts_variant &eval_points,
+        const int elem_flat_id);
 
     virtual void reset_selected_elements(
         const ValueFlags &flag,

@@ -368,6 +368,8 @@ reset_selected_elements(
 
     //-------------------------------------------------
     // here we get the interval indices from the element indices
+    Assert(!elements_flat_id.empty(),ExcEmptyObject());
+
     const auto grid = reset_impl_.space_->get_grid();
     array<set<int>,dim> intervals_id_unique;
     for (const auto elem_id : elements_flat_id)
@@ -389,34 +391,9 @@ reset_selected_elements(
 }
 
 
-template<int dim_, int range_ , int rank_>
-void
-BSplineElementHandler<dim_, range_, rank_>::
-reset(const ValueFlags &flag, const eval_pts_variant &eval_pts)
-{
-    using ElemProperty = typename CartesianGrid<dim_>::ElementProperty;
-    const set<int> active_elems_id =
-        this->get_bspline_space()->get_grid()->get_elements_id_same_property(ElemProperty::active);
-
-    this->reset_selected_elements(
-        flag,
-        eval_pts,
-        vector<int>(active_elems_id.begin(),active_elems_id.end()));
-}
 
 
 
-
-template<int dim_, int range_ , int rank_>
-void
-BSplineElementHandler<dim_, range_, rank_>::
-reset_one_element(
-    const ValueFlags &flag,
-    const eval_pts_variant &eval_points,
-    const int elem_flat_id)
-{
-    this->reset_selected_elements(flag,eval_points,vector<int>(1,elem_flat_id));
-}
 
 
 template<int dim_, int range_ , int rank_>
