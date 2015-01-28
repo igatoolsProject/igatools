@@ -56,12 +56,12 @@ create_space<2>(const int num_knots)
     using EndBehaviourTable = typename Space::EndBehaviourTable;
 
     return Space::create(degree_table, knots,
-    		SpaceData::get_multiplicity_from_regularity(
-    				InteriorReg::maximum,
-					degree_table,
-    		        knots->get_num_intervals()),
-    		        PeriodicTable(true,filled_array<bool, 2>(false)),
-    		        EndBehaviourTable(true,filled_array<BasisEndBehaviour, 2>(BasisEndBehaviour::interpolatory))) ;
+                         SpaceData::get_multiplicity_from_regularity(
+                             InteriorReg::maximum,
+                             degree_table,
+                             knots->get_num_intervals()),
+                         PeriodicTable(true,filled_array<bool, 2>(false)),
+                         EndBehaviourTable(true,filled_array<BasisEndBehaviour, 2>(BasisEndBehaviour::interpolatory))) ;
 }
 
 template <>
@@ -78,19 +78,20 @@ create_space<3>(const int num_knots)
     using EndBehaviourTable = typename Space::EndBehaviourTable;
 
     return Space::create(degree_table, knots,
-    		SpaceData::get_multiplicity_from_regularity(
-    				InteriorReg::maximum,
-					degree_table,
-    		        knots->get_num_intervals()),
-    		        PeriodicTable(true,filled_array<bool,3>(false)),
-    		        EndBehaviourTable(true,filled_array<BasisEndBehaviour,3>(BasisEndBehaviour::interpolatory))) ;
+                         SpaceData::get_multiplicity_from_regularity(
+                             InteriorReg::maximum,
+                             degree_table,
+                             knots->get_num_intervals()),
+                         PeriodicTable(true,filled_array<bool,3>(false)),
+                         EndBehaviourTable(true,filled_array<BasisEndBehaviour,3>(BasisEndBehaviour::interpolatory))) ;
 }
 
 
 template< int dim_domain>
 void do_test()
 {
-    out << "domain, range and rank: " << dim_domain << "," << dim_domain << ",1" << endl ;
+    OUTSTART
+//    out << "domain, range and rank: " << dim_domain << "," << dim_domain << ",1" << endl ;
 
     const int num_knots = 3 ;
 
@@ -99,12 +100,15 @@ void do_test()
     const int n_points = 2;
     QGauss< dim_domain > quad(n_points) ;
 
+    using std::to_string;
+
     auto elem = space->begin();
     for (; elem != space->end(); ++elem)
     {
         const auto values = elem->evaluate_basis_values_at_points(quad);
-        out << "Values:" << endl ;
+        out.begin_item("Element " + to_string(elem.get_flat_index()) + " --- Values:");
         values.print_info(out);
+        out.end_item();
     }
 
     {
@@ -112,22 +116,25 @@ void do_test()
         for (; elem != space->end(); ++elem)
         {
             const auto gradients = elem->evaluate_basis_gradients_at_points(quad);
-            out << "Gradients:" << endl ;
+            out.begin_item("Element " + to_string(elem.get_flat_index()) + " --- Gradients:");
             gradients.print_info(out);
+            out.end_item();
         }
     }
-    //*/
 
     {
         auto elem = space->begin();
         for (; elem != space->end(); ++elem)
         {
             const auto hessians = elem->evaluate_basis_hessians_at_points(quad);
-            out << "Hessians:" << endl ;
+            out.begin_item("Element " + to_string(elem.get_flat_index()) + " --- Hessians:");
             hessians.print_info(out);
+            out.end_item();
         }
     }
-    //*/
+
+    OUTEND
+
 }
 
 

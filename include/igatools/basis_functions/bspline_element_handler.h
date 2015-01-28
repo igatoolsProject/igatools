@@ -176,11 +176,11 @@ private:
 
     /**
      * B-splines values and derivatives at quadrature points.
-     * The values are stored in the un tensor product way.
+     * The values are stored with the following index ordering:
      *
-     * splines1d_[dir][interval][comp][order][function][point]
+     * splines1d_[comp][dir][interval][order][function][point]
      */
-    class GlobalCache //: public DirectionTable<BasisValues>
+    class GlobalCache
     {
     private:
         using BasisValues1dTable = ComponentContainer<special_array<std::map<Index,BasisValues1d>,dim>>;
@@ -254,25 +254,6 @@ private:
             } // end loop comp
         }
 
-    protected:
-#if 0
-        using DirectionTable<BasisValues>::DirectionTable;
-        // TODO (pauletti, Sep 23, 2014): document and split definition
-        auto get_element_values(const TensorIndex<dim> &id) const
-        {
-            ComponentContainer<TensorProductFunctionEvaluator<dim> >
-            result((this->entry(0,0)).get_comp_map());
-            for (auto c : result.get_active_components_id())
-            {
-                for (int i = 0; i < dim; ++i)
-                    result[c][i] =
-                        BasisValues1dConstView((this->entry(i, id[i]))[c]);
-                result[c].update_size();
-
-            }
-            return result;
-        }
-#endif
     };
 
     CacheList<GlobalCache, dim> splines1d_;
@@ -296,23 +277,6 @@ private:
     };
 
     ResetDispatcher reset_impl_;
-
-#if 0
-    struct ResetDispatcherOneElem : boost::static_visitor<void>
-    {
-        template<class T>
-        void operator()(const T &eval_pts);
-
-        GridElementHandler<dim_> *grid_handler_;
-        ValueFlags flag_;
-        std::array<FunctionFlags, dim + 1> *flags_;
-        CacheList<GlobalCache, dim> *splines1d_;
-        const Space *space_;
-
-        int elem_flat_id_;
-    };
-    ResetDispatcherOneElem reset_one_elem_impl_;
-#endif
 
     struct InitCacheDispatcher : boost::static_visitor<void>
     {
