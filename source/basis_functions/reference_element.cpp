@@ -67,7 +67,7 @@ template <int dim, int range, int rank>
 template <int deriv_order>
 auto
 ReferenceElement<dim, range, rank>::
-evaluate_basis_derivatives_at_points(const ValueVector<RefPoint> &points) ->
+evaluate_basis_derivatives_at_points(const EvaluationPoints<dim> &points) ->
 ValueTable<
 Conditional< deriv_order==0,
              Value,
@@ -87,11 +87,11 @@ Conditional< deriv_order==0,
         Assert(false,ExcNotImplemented());
     }
 
-    elem_handler->reset_one_element(flags,EvaluationPoints<dim>(points),this->get_flat_index());
+    elem_handler->reset_one_element(flags,points,this->get_flat_index());
     elem_handler->template init_cache<dim>(*this);
     elem_handler->template fill_cache<dim>(*this,0);
 
-    Assert(false,ExcNotImplemented());
+//    Assert(false,ExcNotImplemented());
 
     return this->template get_values<deriv_order,dim>(0);
 }

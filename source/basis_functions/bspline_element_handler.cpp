@@ -621,7 +621,6 @@ reset_one_element(
     const int elem_flat_id)
 {
     this->reset_selected_elements(flag,eval_points,vector<int>(1,elem_flat_id));
-    Assert(false,ExcNotImplemented());
 }
 
 
