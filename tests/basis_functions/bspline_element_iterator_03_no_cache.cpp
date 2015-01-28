@@ -77,24 +77,24 @@ void do_test()
     u_values.print_info(out);
 #endif
     out.begin_item("Basis values using QGauss<" + std::to_string(dim_domain) + "> with 2 points in each coordinate direction.");
-    auto values1    = element1->evaluate_basis_values_at_points(quad_scheme_1);
+    auto values1 = element1->evaluate_basis_values_at_points(quad_scheme_1);
     values1.print_info(out);
     out.end_item();
 
     out.begin_item("Basis gradients using QGauss<" + std::to_string(dim_domain) + "> with 2 points in each coordinate direction.");
-    auto gradients1    = element1->evaluate_basis_gradients_at_points(quad_scheme_1);
+    auto gradients1 = element1->evaluate_basis_gradients_at_points(quad_scheme_1);
     gradients1.print_info(out);
     out.end_item();
 
     QUniform< dim_domain > quad_scheme_2(3) ;
 
     out.begin_item("Basis values using QUniform<" + std::to_string(dim_domain) + "> with 2 points in each coordinate direction.");
-    auto values2    = element1->evaluate_basis_values_at_points(quad_scheme_2);
+    auto values2 = element1->evaluate_basis_values_at_points(quad_scheme_2);
     values2.print_info(out);
     out.end_item();
 
     out.begin_item("Basis gradients using QUniform<" + std::to_string(dim_domain) + "> with 2 points in each coordinate direction.");
-    auto gradients2    = element1->evaluate_basis_gradients_at_points(quad_scheme_2);
+    auto gradients2 = element1->evaluate_basis_gradients_at_points(quad_scheme_2);
     gradients2.print_info(out);
     out.end_item();
 

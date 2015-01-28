@@ -66,8 +66,8 @@ int main()
 
         CartesianProductArray<Real,dim> knots({{0,1,2,3,4}});
         auto grid = CartesianGrid<dim>::create(knots);
-        auto int_mult = SplineSpace::multiplicity_regularity(InteriorReg::maximum,
-                deg, grid->get_num_intervals());
+        auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
+                        deg, grid->get_num_intervals());
 
         auto sp_spec = SplineSpace::create(deg, grid, int_mult);
 

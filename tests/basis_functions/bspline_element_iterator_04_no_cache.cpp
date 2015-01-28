@@ -34,7 +34,7 @@
 
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/basis_functions/bspline_element_accessor.h>
+#include <igatools/basis_functions/bspline_element.h>
 
 using std::shared_ptr;
 
@@ -48,11 +48,20 @@ create_space<2>(const int num_knots)
 {
     auto knots = CartesianGrid<2>::create(num_knots);
 
-    typename BSplineSpace<2,2,1>::DegreeTable degree = { {{3,2}},
-        {{2,3}}
-    } ;
+    using Space = BSplineSpace<2,2,1>;
+    typename Space::DegreeTable degree_table = {{{3,2}},{{2,3}}} ;
 
-    return BSplineSpace<2,2,1>::create(degree, knots) ;
+    using SpaceData = typename Space::SpaceData;
+    using PeriodicTable = typename Space::PeriodicTable;
+    using EndBehaviourTable = typename Space::EndBehaviourTable;
+
+    return Space::create(degree_table, knots,
+    		SpaceData::get_multiplicity_from_regularity(
+    				InteriorReg::maximum,
+					degree_table,
+    		        knots->get_num_intervals()),
+    		        PeriodicTable(true,filled_array<bool, 2>(false)),
+    		        EndBehaviourTable(true,filled_array<BasisEndBehaviour, 2>(BasisEndBehaviour::interpolatory))) ;
 }
 
 template <>
@@ -61,12 +70,20 @@ create_space<3>(const int num_knots)
 {
     auto knots = CartesianGrid<3>::create(num_knots);
 
-    typename BSplineSpace<3,3,1>::DegreeTable  degree = { {{3,2,2}},
-        {{2,3,2}},
-        {{2,2,3}}
-    } ;
+    using Space = BSplineSpace<3,3,1>;
+    typename Space::DegreeTable degree_table = { {{3,2,2}},{{2,3,2}},{{2,2,3}}} ;
 
-    return BSplineSpace<3,3,1>::create(degree, knots) ;
+    using SpaceData = typename Space::SpaceData;
+    using PeriodicTable = typename Space::PeriodicTable;
+    using EndBehaviourTable = typename Space::EndBehaviourTable;
+
+    return Space::create(degree_table, knots,
+    		SpaceData::get_multiplicity_from_regularity(
+    				InteriorReg::maximum,
+					degree_table,
+    		        knots->get_num_intervals()),
+    		        PeriodicTable(true,filled_array<bool,3>(false)),
+    		        EndBehaviourTable(true,filled_array<BasisEndBehaviour,3>(BasisEndBehaviour::interpolatory))) ;
 }
 
 
@@ -81,12 +98,11 @@ void do_test()
 
     const int n_points = 2;
     QGauss< dim_domain > quad(n_points) ;
-    const auto eval_points = quad.get_points().get_flat_cartesian_product();
 
     auto elem = space->begin();
     for (; elem != space->end(); ++elem)
     {
-        const auto values = elem->evaluate_basis_values_at_points(eval_points);
+        const auto values = elem->evaluate_basis_values_at_points(quad);
         out << "Values:" << endl ;
         values.print_info(out);
     }
@@ -95,7 +111,7 @@ void do_test()
         auto elem = space->begin();
         for (; elem != space->end(); ++elem)
         {
-            const auto gradients = elem->evaluate_basis_gradients_at_points(eval_points);
+            const auto gradients = elem->evaluate_basis_gradients_at_points(quad);
             out << "Gradients:" << endl ;
             gradients.print_info(out);
         }
@@ -106,7 +122,7 @@ void do_test()
         auto elem = space->begin();
         for (; elem != space->end(); ++elem)
         {
-            const auto hessians = elem->evaluate_basis_hessians_at_points(eval_points);
+            const auto hessians = elem->evaluate_basis_hessians_at_points(quad);
             out << "Hessians:" << endl ;
             hessians.print_info(out);
         }

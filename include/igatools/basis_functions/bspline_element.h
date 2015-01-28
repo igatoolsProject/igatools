@@ -125,6 +125,7 @@ public:
 
 
 public:
+#if 0
     /** @name Functions for the basis and field evaluations without the use of
      * the cache */
     ///@{
@@ -141,7 +142,7 @@ public:
     evaluate_basis_derivatives_at_points(const ValueVector<Point> &points) const;
 
     ///@}
-
+#endif
 
 
 private:

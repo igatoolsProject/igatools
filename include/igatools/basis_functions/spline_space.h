@@ -314,14 +314,14 @@ public:
     MultiplicityTable accumulated_interior_multiplicities() const;
 
     /**
-     * Fill the multiplicy for the maximum possible regularity
+     * Fill the multiplicy for the <p>regularity</p> requested
      *  of the given number of knots
      */
     static
     std::shared_ptr<MultiplicityTable>
-    multiplicity_regularity(const InteriorReg reg,
-                            const DegreeTable &deg,
-                            const TensorSize<dim> &n_elem);
+    get_multiplicity_from_regularity(const InteriorReg regularity,
+                                     const DegreeTable &deg,
+                                     const TensorSize<dim> &n_elem);
 
 public:
     void print_info(LogStream &out) const;

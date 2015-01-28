@@ -174,6 +174,12 @@ public:
     {
         return this->template evaluate_basis_derivatives_at_points<1>(points);
     }
+
+    ValueTable<Derivative<2> >
+    evaluate_basis_hessians_at_points(const EvaluationPoints<dim> &points)
+    {
+        return this->template evaluate_basis_derivatives_at_points<2>(points);
+    }
     ///@}
 
 };

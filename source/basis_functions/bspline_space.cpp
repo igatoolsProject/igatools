@@ -75,8 +75,8 @@ BSplineSpace(const Degrees &deg,
     :
     BSplineSpace(DegreeTable(true,deg),
                  knots,
-                 SpaceData::multiplicity_regularity(interior_reg,DegreeTable(true,deg),
-                                                    knots->get_num_intervals()),
+                 SpaceData::get_multiplicity_from_regularity(interior_reg,DegreeTable(true,deg),
+                                                             knots->get_num_intervals()),
                  PeriodicTable(true,periodic),
                  EndBehaviourTable(true,end_b))
 {}

@@ -448,9 +448,9 @@ accumulated_interior_multiplicities() const -> MultiplicityTable
 template<int dim, int range, int rank>
 auto
 SplineSpace<dim, range, rank>::
-multiplicity_regularity(const InteriorReg reg,
-                        const DegreeTable &deg,
-                        const TensorSize<dim> &n_elem)
+get_multiplicity_from_regularity(const InteriorReg reg,
+                                 const DegreeTable &deg,
+                                 const TensorSize<dim> &n_elem)
 -> std::shared_ptr<MultiplicityTable>
 {
     auto  res = std::make_shared<MultiplicityTable>(deg.get_comp_map());
