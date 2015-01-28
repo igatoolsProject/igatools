@@ -189,7 +189,10 @@ operator()(const T &quad1)
 
 
     Assert(space_ != nullptr,ExcNullPtr());
+
     const auto n_basis = space_->get_num_all_element_basis();
+
+    const auto &active_components_id = space_->get_active_components_id();
 
     for (auto &s_id: UnitElement<dim>::template elems_ids<k>())
     {
@@ -201,24 +204,28 @@ operator()(const T &quad1)
         }
 
         auto &g_cache = std::get<k>(*splines1d_)[s_id];
-        g_cache.clear();
-        g_cache.resize(n_inter,BasisValues(space_->get_components_map()));
+//        g_cache.clear();
+//        g_cache.resize(n_inter,BasisValues(space_->get_components_map()));
+        g_cache = GlobalCache(space_->get_components_map());
+
         const auto quad = extend_sub_elem_quad<k,dim>(quad1, s_id);
         const auto &n_coords = quad.get_num_coords_direction();
 
         // Allocate space for the BasisValues1D
-        for (int dir = 0 ; dir < dim ; ++dir)
+        for (auto comp : active_components_id)
         {
-            const auto &intervals_id = intervals_id_directions_[dir];
-
-            const auto &n_pts = n_coords[dir];
-            for (const int &interv_id : intervals_id)
+            for (int dir = 0 ; dir < dim ; ++dir)
             {
-                auto &splines1d = g_cache.entry(dir, interv_id);
-                for (auto comp : splines1d.get_active_components_id())
-                    splines1d[comp].resize(max_der, n_basis[comp][dir], n_pts);
-            } // end loop interv_id
-        } // end loop dir
+                const auto &intervals_id = intervals_id_directions_[dir];
+
+                const auto &n_pts = n_coords[dir];
+                for (const int &interv_id : intervals_id)
+                {
+                    auto &splines1d = g_cache.entry(comp, dir, interv_id);
+                    splines1d.resize(max_der, n_basis[comp][dir], n_pts);
+                } // end loop interv_id
+            } // end loop dir
+        } // end loop comp
 
         /*
          * For each direction, interval and component we compute the 1D bspline
@@ -229,6 +236,7 @@ operator()(const T &quad1)
         const auto &end_interval = space_->end_interval_;
         const auto &lengths = grid_handler_->get_lengths();
 
+        using BasisValues = ComponentContainer<BasisValues1d>;
         BasisValues bernstein_values_internal(n_basis.get_comp_map());
         BasisValues bernstein_values_left(n_basis.get_comp_map());
         BasisValues bernstein_values_right(n_basis.get_comp_map());
@@ -297,9 +305,9 @@ operator()(const T &quad1)
 
             for (auto &inter : intervals_id)
             {
-                auto &splines1d = g_cache.entry(dir, inter);
+//                auto &splines1d = g_cache.entry(dir, inter);
 
-                for (auto comp : splines1d.get_active_components_id())
+                for (auto comp : active_components_id)
                 {
                     Real one_div_interval_length;
                     const BasisValues1d *berns_values_ptr = nullptr;
@@ -322,7 +330,8 @@ operator()(const T &quad1)
                         berns_values_ptr = &bernstein_values_right[comp];
                     }
 
-                    auto &basis = splines1d[comp];
+//                    auto &basis = splines1d[comp];
+                    auto &basis = g_cache.entry(comp, dir, inter);
                     const auto &oper = bezier_op.get_operator(dir, inter, comp);
 
                     fill_interval_values(one_div_interval_length, oper, *berns_values_ptr, basis);
@@ -419,7 +428,7 @@ reset(const ValueFlags &flag, const eval_pts_variant &eval_pts)
 
 
 
-
+#if 0
 template<int dim_, int range_ , int rank_>
 template<class T>
 void
@@ -612,6 +621,8 @@ operator()(const T &eval_pts1)
 
     Assert(false,ExcNotImplemented());
 }
+#endif
+
 template<int dim_, int range_ , int rank_>
 void
 BSplineElementHandler<dim_, range_, rank_>::
@@ -868,11 +879,10 @@ operator()(const T &quad)
     Assert(elem_->get_local_cache() != nullptr, ExcNullPtr());
     auto &cache = elem_->get_local_cache()->template get_value_cache<T::k>(j_);
 
-    const auto &index = elem_->get_tensor_index();
-    //const TensorIndex<k> active(UnitElement<dim>::template get_elem<k>(j).active_directions);
+    const auto &elem_t_index = elem_->get_tensor_index();
 
     auto &flags = cache.flags_handler_;
-    auto val_1d = g_cache.get_element_values(index);
+    auto val_1d = g_cache.get_element_values(elem_t_index);
     if (flags.fill_values())
     {
         auto &values = cache.template get_der<0>();
@@ -987,15 +997,13 @@ BSplineElementHandler<dim_, range_, rank_>::
 print_info(LogStream &out) const
 {
     out.begin_item("Grid Cache:");
-//    GridElementHandler<dim_>::print_info(out);
     this->grid_handler_.print_info(out);
-//    static_cast<const CartesianGridHandler<dim_> &>(base_t)::print_info(out);
     out.end_item();
 
+
+    out.begin_item("Splines 1D Cache:");
     cacheutils::print_caches(splines1d_, out);
-    //out.begin_item("One dimensional splines cache:");
-    //splines1d_.print_info(out);
-    //out.end_item();
+    out.end_item();
 }
 
 IGA_NAMESPACE_CLOSE

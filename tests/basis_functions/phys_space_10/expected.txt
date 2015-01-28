@@ -8,71 +8,50 @@ Grid Cache:
       [ 0.250000 0.250000 0.250000 0.250000 ]
    
 
-Size: [ 0 ]  Weights: [0]
-Direction: 0
-
-Size: [ 0 ]  Weights: [0]
-Direction: 0
-
-
-Size: [ 0 ]  Weights: [0]
-Direction: 0
-
-Size: [ 0 ]  Weights: [0]
-Direction: 0
-
-
-Size: [ 4 ]  Weights: [4]
-Direction: 0
-   Raw componets: 
-      Size: [ 1 ]  Weights: [1]
-      [2,2]((0.788675,0.211325),(0.211325,0.788675))
-      [2,2]((-4.00000,-4.00000),(4.00000,4.00000))
-      [2,2]((0,0),(0,0))
+Splines 1D Cache:
+   Active Component ID: 0
+      Direction : 0
       
    
-   Active componets ids: 
-   [ 0 ]
-   Inactive componets ids: 
-   [ ]
-   
-   Raw componets: 
-      Size: [ 1 ]  Weights: [1]
-      [2,2]((0.788675,0.211325),(0.211325,0.788675))
-      [2,2]((-4.00000,-4.00000),(4.00000,4.00000))
-      [2,2]((0,0),(0,0))
+   Active Component ID: 0
+      Direction : 0
       
    
-   Active componets ids: 
-   [ 0 ]
-   Inactive componets ids: 
-   [ ]
    
-   Raw componets: 
-      Size: [ 1 ]  Weights: [1]
-      [2,2]((0.788675,0.211325),(0.211325,0.788675))
-      [2,2]((-4.00000,-4.00000),(4.00000,4.00000))
-      [2,2]((0,0),(0,0))
+   Active Component ID: 0
+      Direction : 0
       
    
-   Active componets ids: 
-   [ 0 ]
-   Inactive componets ids: 
-   [ ]
-   
-   Raw componets: 
-      Size: [ 1 ]  Weights: [1]
-      [2,2]((0.788675,0.211325),(0.211325,0.788675))
-      [2,2]((-4.00000,-4.00000),(4.00000,4.00000))
-      [2,2]((0,0),(0,0))
+   Active Component ID: 0
+      Direction : 0
       
    
-   Active componets ids: 
-   [ 0 ]
-   Inactive componets ids: 
-   [ ]
    
-
+   Active Component ID: 0
+      Direction : 0
+         Interval ID: 0
+            [2,2]((0.788675,0.211325),(0.211325,0.788675))
+            [2,2]((-4.00000,-4.00000),(4.00000,4.00000))
+            [2,2]((0,0),(0,0))
+         
+         Interval ID: 1
+            [2,2]((0.788675,0.211325),(0.211325,0.788675))
+            [2,2]((-4.00000,-4.00000),(4.00000,4.00000))
+            [2,2]((0,0),(0,0))
+         
+         Interval ID: 2
+            [2,2]((0.788675,0.211325),(0.211325,0.788675))
+            [2,2]((-4.00000,-4.00000),(4.00000,4.00000))
+            [2,2]((0,0),(0,0))
+         
+         Interval ID: 3
+            [2,2]((0.788675,0.211325),(0.211325,0.788675))
+            [2,2]((-4.00000,-4.00000),(4.00000,4.00000))
+            [2,2]((0,0),(0,0))
+         
+      
+   
+   
 
 ========================================================================
 

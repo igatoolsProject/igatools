@@ -220,6 +220,11 @@ public:
         return interior_mult_->get_comp_map();
     }
 
+    const auto &get_active_components_id() const
+    {
+        return interior_mult_->get_active_components_id();
+    }
+
     /** @name Getting information about the space */
     ///@{
     /**
