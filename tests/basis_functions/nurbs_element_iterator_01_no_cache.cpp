@@ -35,7 +35,7 @@
 template< int dim, int range, int rank = 1>
 void test()
 {
-	OUTSTART
+    OUTSTART
 
     const int r = 2;
 //    out << "test<" << dim << "," << range << ">" << endl;
@@ -54,8 +54,10 @@ void test()
 
     using WeightFunc = IgFunction<ReferenceSpace<dim,1,1>>;
     DynamicMultiArray<Real,dim> weights_coef(n_scalar_basis,1.0);
+
+    auto w_coeff_ptr = shared_ptr<vector<Real>>(new vector<Real>(weights_coef.get_data()));
     auto weight_function = std::shared_ptr<WeightFunc>(
-                               new WeightFunc(scalar_bsp_space,vector<Real>(weights_coef.get_data())));
+                               new WeightFunc(scalar_bsp_space,w_coeff_ptr));
 
     auto space = Space::create(bsp_space,weight_function);
 
