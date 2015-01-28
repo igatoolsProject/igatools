@@ -45,6 +45,7 @@ public:
 
     using typename base_t::variant_1;
     using typename base_t::topology_variant;
+    using typename base_t::eval_pts_variant;
     using typename base_t::ElementAccessor;
 
     using SuperGrid = typename SupFunc::GridType;
@@ -91,10 +92,10 @@ public:
         return std::make_shared<self_t>(self_t(*this));
     }
 
-    void reset(const ValueFlags &flag, const variant_1 &quad) override
+    void reset(const ValueFlags &flag, const eval_pts_variant &eval_pts) override
     {
-        base_t::reset(flag, quad);
-        auto q = boost::get<Quadrature<sub_dim>>(quad);
+        base_t::reset(flag, eval_pts);
+        auto q = boost::get<EvaluationPoints<sub_dim>>(eval_pts);
         sup_func_->reset(flag, q);
 
     }
@@ -173,6 +174,7 @@ public:
 
     using typename base_t::variant_1;
     using typename base_t::topology_variant;
+    using typename base_t::eval_pts_variant;
     using typename base_t::ElementAccessor;
 
     using SuperGrid = typename SupFunc::GridType;
@@ -234,10 +236,10 @@ public:
         return std::shared_ptr<base_t>(new self_t(grid, func, s_id, elem_map));
     }
 
-    void reset(const ValueFlags &flag, const variant_1 &quad) override
+    void reset(const ValueFlags &flag, const eval_pts_variant &eval_pts) override
     {
-        base_t::reset(flag, quad);
-        auto q = boost::get<Quadrature<sub_dim>>(quad);
+        base_t::reset(flag, eval_pts);
+        auto q = boost::get<EvaluationPoints<sub_dim>>(eval_pts);
         sup_func_->reset(flag, q);
 
     }

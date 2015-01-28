@@ -194,10 +194,10 @@ enum class Transformation : int
     h_grad = 1,
 
     /** \f[\vec u = D\vec{F}^{-T}(\hat{\vec{u}} \circ \vec{F}^{-1})\f] */
-    h_div = 2,
+    h_curl = 2,
 
     /** \f[\vec v=\frac{D\vec{F}}{\det D\vec{F}}(\hat{\vec{v}}\circ\vec{F}^{-1})\f] */
-    h_curl = 3 ,
+    h_div = 3 ,
 
     /** \f[ \varphi = \frac{\hat\varphi \circ \vec{F}^{-1}}{\det D\vec{F}} \f] */
     l_2 = 4

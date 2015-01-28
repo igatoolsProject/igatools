@@ -1,68 +1,61 @@
 Number of points:0
-weights:
-Size: [ 0 0 ]  Weights: [0,0]
-Direction: 0
-[ ]
-Direction: 1
-[ ]
-
-weights (flat tensor product):
+Weights:
 ValueVector (num_points=0) : [ ]
-coordinates:
-Size: [ 0 0 ]  Weights: [0,0]
-Direction: 0
-[ ]
-Direction: 1
-[ ]
 
-coordinates (flat cartesian_product):
+Coordinates:
+   Direction: 0
+   [ ]
+   Direction: 1
+   [ ]
+
+Points:
 ValueVector (num_points=0) : [ ]
+
+Bounding box:
+   Direction: 0 ---- [ 0 , 1.00000 ]
+   Direction: 1 ---- [ 0 , 1.00000 ]
+
 
 
 Number of points:0
-weights:
-Size: [ 0 0 ]  Weights: [0,0]
-Direction: 0
-[ ]
-Direction: 1
-[ ]
-
-weights (flat tensor product):
+Weights:
 ValueVector (num_points=0) : [ ]
-coordinates:
-Size: [ 0 0 ]  Weights: [0,0]
-Direction: 0
-[ ]
-Direction: 1
-[ ]
 
-coordinates (flat cartesian_product):
+Coordinates:
+   Direction: 0
+   [ ]
+   Direction: 1
+   [ ]
+
+Points:
 ValueVector (num_points=0) : [ ]
+
+Bounding box:
+   Direction: 0 ---- [ 0 , 1.00000 ]
+   Direction: 1 ---- [ 0 , 1.00000 ]
+
 
 
 Number of points:0
-weights:
-Size: [ 0 0 0 ]  Weights: [0,0,0]
-Direction: 0
-[ ]
-Direction: 1
-[ ]
-Direction: 2
-[ ]
-
-weights (flat tensor product):
+Weights:
 ValueVector (num_points=0) : [ ]
-coordinates:
-Size: [ 0 0 0 ]  Weights: [0,0,0]
-Direction: 0
-[ ]
-Direction: 1
-[ ]
-Direction: 2
-[ ]
 
-coordinates (flat cartesian_product):
+Coordinates:
+   Direction: 0
+   [ ]
+   Direction: 1
+   [ ]
+   Direction: 2
+   [ ]
+
+Points:
 ValueVector (num_points=0) : [ ]
+
+Bounding box:
+   Direction: 0 ---- [ 0 , 1.00000 ]
+   Direction: 1 ---- [ 0 , 1.00000 ]
+   Direction: 2 ---- [ 0 , 1.00000 ]
+
 
 
 0

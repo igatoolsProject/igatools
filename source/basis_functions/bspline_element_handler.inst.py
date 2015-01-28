@@ -34,7 +34,7 @@ sub_dim_members = \
 #,
 #'void elhandler::init_cache<k>(ElementAccessor &elem);']
 # ,
-#'void elhandler::reset<k>(const ValueFlags flag, const Quadrature<k> &quad);']
+#'void elhandler::reset<k>(const ValueFlags flag, const QuadratureTensorProduct<k> &quad);']
 
 
 

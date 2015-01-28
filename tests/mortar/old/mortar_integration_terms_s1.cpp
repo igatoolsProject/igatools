@@ -324,8 +324,8 @@ int main()
     //out<< to_string(tmp_bd_id0_0)<< to_string(tmp_bd_id0_1)<< to_string(tmp_bd_id0_2)<< to_string(tmp_bd_id0_3)<<endl;
 
 
-    const Quadrature<dim>   elem_quad(QGauss<dim>(deg+1));
-    const Quadrature<dim-1> face_quad(QGauss<dim-1>(deg+1));
+    const QuadratureTensorProduct<dim>   elem_quad(QGauss<dim>(deg+1));
+    const QuadratureTensorProduct<dim-1> face_quad(QGauss<dim-1>(deg+1));
     auto  face_quad_gbl  = extend_face_quad(face_quad,1);
     auto pts_unit_domain = face_quad_gbl.get_points().get_flat_cartesian_product();
     auto w_unit_domain   = face_quad_gbl.get_weights().get_flat_tensor_product();

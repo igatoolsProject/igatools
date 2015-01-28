@@ -519,10 +519,19 @@ get_points(const int j) const ->ValueVector<Point>
     auto translate = vertex(0);
     auto dilate    = get_coordinate_lengths<k>(j);
 
-    auto ref_points = cache.unit_points_;
-    ref_points.dilate_translate(dilate, translate);
 
-    return ref_points.get_flat_cartesian_product();
+    const int n_pts = cache.unit_points_.get_num_points();
+    ValueVector<Point> ref_points(n_pts);
+
+    for (int ipt = 0 ; ipt < n_pts ; ++ipt)
+    {
+        const auto &unit_pt = cache.unit_points_[ipt];
+        auto &ref_pt = ref_points[ipt];
+
+        for (int dir = 0 ; dir < dim ; ++dir)
+            ref_pt[dir] = unit_pt[dir] * dilate[dir] + translate[dir];
+    }
+    return ref_points;
 }
 
 
@@ -570,7 +579,7 @@ void
 CartesianGridElement<dim_>::
 ValuesCache::
 resize(const GridFlags &flags_handler,
-       const Quadrature<dim> &quad)
+       const EvaluationPoints<dim> &quad)
 {
     flags_handler_ = flags_handler;
 
@@ -582,7 +591,7 @@ resize(const GridFlags &flags_handler,
 
     if (flags_handler_.fill_w_measures())
     {
-        this->unit_weights_ = quad.get_weights().get_flat_tensor_product();
+        this->unit_weights_ = quad.get_weights();
     }
     else
     {

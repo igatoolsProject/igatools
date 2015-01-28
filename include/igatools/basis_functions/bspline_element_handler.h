@@ -29,6 +29,7 @@
 #include <igatools/basis_functions/reference_element_handler.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element_scalar_evaluator.h>
+#include <igatools/basis_functions/bernstein_basis.h>
 
 
 IGA_NAMESPACE_OPEN
@@ -91,8 +92,14 @@ public:
 
     using quadrature_variant = typename base_t::quadrature_variant;
     using topology_variant = typename base_t::topology_variant;
+    using eval_pts_variant = typename base_t::eval_pts_variant;
 
-    virtual void reset(const ValueFlags &flag, const quadrature_variant &quad) override final;
+
+    virtual void reset_selected_elements(
+        const ValueFlags &flag,
+        const eval_pts_variant &eval_points,
+        const vector<int> elements_flat_id) override final;
+
 
     virtual void init_cache(RefElementAccessor &elem, const topology_variant &topology) override final;
 
@@ -142,36 +149,105 @@ private:
         }
     }
 
+
+    static void
+    resize_and_fill_bernstein_values(
+        const int deg,
+        const vector<Real> &pt_coords,
+        BasisValues1d &bernstein_values)
+    {
+        bernstein_values.resize(max_der, deg+1, pt_coords.size());
+        for (int order = 0; order < max_der; ++order)
+            bernstein_values.get_derivative(order) =
+                BernsteinBasis::derivative(order, deg, pt_coords);
+    }
+
+
     std::array<FunctionFlags, dim + 1> flags_;
 
     template <class T>
     using DirectionTable = CartesianProductArray<T, dim_>;
-    using BasisValues = ComponentContainer<BasisValues1d>;
+
     /**
      * B-splines values and derivatives at quadrature points.
-     * The values are stored in the un tensor product way.
+     * The values are stored with the following index ordering:
      *
-     * splines1d_[dir][interval][comp][order][function][point]
+     * splines1d_[comp][dir][interval][order][function][point]
      */
-    class GlobalCache : public DirectionTable<BasisValues>
+    class GlobalCache
     {
+    private:
+        using BasisValues1dTable = ComponentContainer<special_array<std::map<Index,BasisValues1d>,dim>>;
+
+        /**
+         * Values (and derivatives) of 1D basis precomputed in the initalized interval of a given direction.
+         *
+         * @note The map's key is the interval id. In Debug mode, it will be raised an assertion if
+         * the requested values are not initialized for the interval.
+         *
+         */
+        BasisValues1dTable basis_values_1d_table_;
+
     public:
-        using DirectionTable<BasisValues>::DirectionTable;
-        // TODO (pauletti, Sep 23, 2014): document and split definition
+        using ComponentMap = typename BasisValues1dTable::ComponentMap;
+
+        GlobalCache() = default;
+
+        GlobalCache(const ComponentMap &component_map)
+            :
+            basis_values_1d_table_(BasisValues1dTable(component_map))
+        {}
+
+
         auto get_element_values(const TensorIndex<dim> &id) const
         {
             ComponentContainer<TensorProductFunctionEvaluator<dim> >
-            result((this->entry(0,0)).get_comp_map());
+            result(basis_values_1d_table_.get_comp_map());
+
             for (auto c : result.get_active_components_id())
             {
-                for (int i = 0; i < dim; ++i)
-                    result[c][i] =
-                        BasisValues1dConstView((this->entry(i, id[i]))[c]);
-                result[c].update_size();
+                const auto &basis_values_1d_comp = basis_values_1d_table_[c];
 
+                for (int i = 0; i < dim; ++i)
+                {
+                    result[c][i] = BasisValues1dConstView(basis_values_1d_comp[i].at(id[i]));
+                }
+                result[c].update_size();
             }
             return result;
         }
+
+        BasisValues1d &entry(const int comp, const int dir, const Index interval_id)
+        {
+            return basis_values_1d_table_[comp][dir][interval_id];
+        }
+
+        void print_info(LogStream &out) const
+        {
+            using std::to_string;
+            for (const auto comp : basis_values_1d_table_.get_active_components_id())
+            {
+                out.begin_item("Active Component ID: " + to_string(comp));
+
+                for (int dir = 0 ; dir < dim ; ++ dir)
+                {
+                    out.begin_item("Direction : " + to_string(dir));
+
+                    for (const auto &interv_id_and_basis : basis_values_1d_table_[comp][dir])
+                    {
+                        const auto interval_id = interv_id_and_basis.first;
+                        const auto &basis = interv_id_and_basis.second;
+
+                        out.begin_item("Interval ID: " + to_string(interval_id));
+                        basis.print_info(out);
+                        out.end_item();
+                    }
+                    out.end_item();
+                } // end loop dir
+                out.end_item();
+            } // end loop comp
+        }
+
     };
 
     CacheList<GlobalCache, dim> splines1d_;
@@ -187,10 +263,14 @@ private:
         std::array<FunctionFlags, dim + 1> *flags_;
         CacheList<GlobalCache, dim> *splines1d_;
         const Space *space_;
+
+        /**
+         * id of the intervals that must be processed
+         */
+        std::array<vector<int>,dim> intervals_id_directions_;
     };
 
     ResetDispatcher reset_impl_;
-
 
     struct InitCacheDispatcher : boost::static_visitor<void>
     {

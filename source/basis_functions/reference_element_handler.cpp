@@ -60,7 +60,12 @@ create(shared_ptr<const Space> space)
     }
     else if (nrb_space)
     {
+#ifdef NURBS
         elem_handler = NURBSElementHandler<dim_,range_,rank_>::create(nrb_space);
+#else
+        Assert(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
+        AssertThrow(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
+#endif
     }
     else
     {
@@ -86,6 +91,35 @@ ReferenceElementHandler<dim_, range_, rank_>::
 get_grid_handler() const
 {
     return this->grid_handler_;
+}
+
+
+template<int dim_, int range_ , int rank_>
+void
+ReferenceElementHandler<dim_, range_, rank_>::
+reset(const ValueFlags &flag, const eval_pts_variant &eval_pts)
+{
+    using ElemProperty = typename CartesianGrid<dim_>::ElementProperty;
+    const std::set<int> active_elems_id =
+        this->get_space()->get_grid()->get_elements_id_same_property(ElemProperty::active);
+
+    this->reset_selected_elements(
+        flag,
+        eval_pts,
+        vector<int>(active_elems_id.begin(),active_elems_id.end()));
+}
+
+
+
+template<int dim_, int range_ , int rank_>
+void
+ReferenceElementHandler<dim_, range_, rank_>::
+reset_one_element(
+    const ValueFlags &flag,
+    const eval_pts_variant &eval_points,
+    const int elem_flat_id)
+{
+    this->reset_selected_elements(flag,eval_points,vector<int>(1,elem_flat_id));
 }
 
 

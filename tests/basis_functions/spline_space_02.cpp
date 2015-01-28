@@ -34,8 +34,8 @@ void test_1d()
 
     auto grid = CartesianGrid<dim>::create(4);
     typename SplineSpace::DegreeTable deg {{2}};
-    auto int_mult = SplineSpace::multiplicity_regularity(InteriorReg::maximum,
-                                                         deg, grid->get_num_intervals());
+    auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
+                    deg, grid->get_num_intervals());
     auto sp_spec = SplineSpace::create(deg, grid, int_mult);
     sp_spec->print_info(out);
 
@@ -72,8 +72,8 @@ void test_2d()
     typename SplineSpace::DegreeTable deg {{1,3}};
 
 
-    auto int_mult = SplineSpace::multiplicity_regularity(InteriorReg::maximum,
-                                                         deg, grid->get_num_intervals());
+    auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
+                    deg, grid->get_num_intervals());
     auto sp_spec = SplineSpace::create(deg, grid, int_mult);
     sp_spec->print_info(out);
 
@@ -100,8 +100,8 @@ void test_3d()
 
     auto grid = CartesianGrid<dim>::create({3,4,5});
     typename SplineSpace::DegreeTable deg {{1,3,0}};
-    auto int_mult = SplineSpace::multiplicity_regularity(InteriorReg::maximum,
-                                                         deg, grid->get_num_intervals());
+    auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
+                    deg, grid->get_num_intervals());
     auto sp_spec = SplineSpace::create(deg, grid, int_mult);
     sp_spec->print_info(out);
 
@@ -132,8 +132,8 @@ void test_2d_2()
 
     auto grid = CartesianGrid<dim>::create({3,4});
     typename SplineSpace::DegreeTable deg {{1,3},{3,1}};
-    auto int_mult = SplineSpace::multiplicity_regularity(InteriorReg::maximum,
-                                                         deg, grid->get_num_intervals());
+    auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
+                    deg, grid->get_num_intervals());
     auto sp_spec = SplineSpace::create(deg, grid, int_mult);
     sp_spec->print_info(out);
 

@@ -74,11 +74,14 @@ public:
 
 public:
     static const int l = iga::max(0, dim-num_sub_elem);
-    using v1 = typename seq<Quadrature, l, dim>::type;
+    using v1 = typename seq<QuadratureTensorProduct, l, dim>::type;
     using variant_1 = typename boost::make_variant_over<v1>::type;
 
     using v2 = typename seq<Int, l, dim>::type;
     using topology_variant = typename boost::make_variant_over<v2>::type;
+
+    using v3 = typename seq<EvaluationPoints, l, dim>::type;
+    using eval_pts_variant = typename boost::make_variant_over<v3>::type;
 
 public:
     using ElementAccessor = FunctionElement<dim, codim, range, rank>;
@@ -137,7 +140,7 @@ public:
         return std::make_shared<self_t>(self_t(*this));
     }
 
-    virtual void reset(const ValueFlags &flag, const variant_1 &quad)
+    virtual void reset(const ValueFlags &flag, const eval_pts_variant &quad)
     {
         reset_impl.flag = flag;
         reset_impl.grid_handler = this;
@@ -285,7 +288,7 @@ private:
         parent_t *grid_handler;
         ElementAccessor *elem;
         std::array<FunctionFlags, dim + 1> *flags_;
-        QuadList<dim> *quad_;
+        EvalPtsList<dim> *quad_;
     };
 
     ResetDispatcher reset_impl;

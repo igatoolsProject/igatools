@@ -75,12 +75,12 @@ create(const std::shared_ptr<const SupMap> map,
 template<int dim_, int codim_>
 auto
 MappingSlice<dim_, codim_>::
-build_extended_quadrature(const Quadrature<dim> &quad) const -> Quadrature<dim+1>
+build_extended_quadrature(const QuadratureTensorProduct<dim> &quad) const -> QuadratureTensorProduct<dim+1>
 {
     const auto points  = quad.get_points();
     const auto weights = quad.get_weights();
 
-    auto ext_quad = Quadrature<dim+1>(
+    auto ext_quad = QuadratureTensorProduct<dim+1>(
                         insert(points, direction_,vector<Real>(1,value_)),
                         insert(weights,direction_,vector<Real>(1,1.0))) ;
 
@@ -120,7 +120,7 @@ evaluate_gradients(ValueVector<Gradient> &gradients) const
 template<int dim_, int codim_>
 void
 MappingSlice<dim_, codim_>::
-init_element(const ValueFlags flag, const Quadrature<dim> &quad) const
+init_element(const ValueFlags flag, const QuadratureTensorProduct<dim> &quad) const
 {
     element->init_cache(flag, build_extended_quadrature(quad));
 }

@@ -38,9 +38,11 @@ IGA_NAMESPACE_OPEN
  */
 template< int dim >
 class QGauss :
-    public Quadrature< dim >
+    public QuadratureTensorProduct< dim >
 {
 public:
+    using typename QuadratureTensorProduct<dim>::Point;
+
     /**
      * Default constructor. Not allowed to be used.
      */
@@ -102,10 +104,6 @@ public:
      */
     static std::shared_ptr< QGauss< dim > >
     create(const TensorSize<dim> num_points);
-
-
-private:
-
 } ;
 
 
@@ -113,7 +111,7 @@ private:
 
 template< >
 class QGauss<0> :
-    public Quadrature<0>
+    public QuadratureTensorProduct<0>
 {
 public:
     QGauss() = delete ;
@@ -123,7 +121,7 @@ public:
      * \note The argument \p n_points is not used. It is here only to mantain a unified interface
      * for dimension-independent coding.
      */
-    explicit QGauss(const Size n_points) : Quadrature<0> () {} ;
+    explicit QGauss(const Size n_points) : QuadratureTensorProduct<0> () {} ;
 
     /**
      * Copy constructor. Not allowed to be used
@@ -151,10 +149,6 @@ public:
     ~QGauss() = default ;
 
     static std::shared_ptr< QGauss<0> > create();
-
-
-private:
-
 } ;
 
 
@@ -167,9 +161,10 @@ private:
  */
 template< int dim >
 class QGaussLobatto :
-    public Quadrature< dim >
+    public QuadratureTensorProduct< dim >
 {
 public:
+    using typename QuadratureTensorProduct<dim>::Point;
 
     /**
      * Default constructor. Not allowed to be used.
@@ -180,7 +175,7 @@ public:
      * Constructor.
      * Builds a Gauss-Lobatto quadrature scheme on the \f$ d \f$-dimensional cube \f$ [0,1]^d \f$
      * with \p num_points points in each coordinate direction.
-     * The eps argument allows to do a local scaling of the quadrature points.
+     * The <p>eps</p> argument allows to perform a local scaling of the quadrature points.
      */
     explicit QGaussLobatto(const Size num_points, const Real eps_scaling = 0.0);
 
@@ -189,7 +184,7 @@ public:
      * Builds a Gauss-Lobatto quadrature scheme on the \f$ d \f$-dimensional cube \f$ [0,1]^d \f$
      * with a (possibly) different number of points in each coordinate direction.
      * The number of points along the \p i-th coordinate direction is specified by \p num_points[i].
-     * The eps argument allows to do a local scaling of the quadrature points.
+     * The <p>eps</p> argument allows to perform a local scaling of the quadrature points.
      */
     explicit QGaussLobatto(const TensorSize<dim> num_points, const Real eps_scaling = 0.0);
 
@@ -234,10 +229,6 @@ public:
      */
     static std::shared_ptr< QGaussLobatto< dim > >
     create(const TensorSize<dim> num_points, const Real eps_scaling = 0.0);
-
-
-private:
-
 } ;
 
 
@@ -245,7 +236,7 @@ private:
 
 template< >
 class QGaussLobatto<0> :
-    public Quadrature<0>
+    public QuadratureTensorProduct<0>
 {
 public:
     /**
@@ -258,7 +249,7 @@ public:
      * \note The argument \p n_points is not used. It is here only to mantain a unified interface
      * for dimension-independent coding.
      */
-    explicit QGaussLobatto(const Size n_points) : Quadrature<0> () {} ;
+    explicit QGaussLobatto(const Size n_points) : QuadratureTensorProduct<0> () {} ;
 
     /**
      * Copy constructor. Not allowed to be used
@@ -288,10 +279,6 @@ public:
 
 
     static std::shared_ptr< QGaussLobatto<0> > create();
-
-
-private:
-
 } ;
 
 
@@ -301,9 +288,10 @@ private:
  */
 template< int dim >
 class QUniform :
-    public Quadrature<dim>
+    public QuadratureTensorProduct<dim>
 {
 public:
+    using typename QuadratureTensorProduct<dim>::Point;
 
     /**
      * Default constructor. Not allowed to be used.
@@ -370,9 +358,6 @@ public:
      */
     static std::shared_ptr< QUniform< dim > >
     create(const TensorSize<dim> num_points, const Real eps_scaling = 0.0) ;
-
-private:
-
 } ;
 
 
@@ -425,6 +410,7 @@ public:
      */
     static std::shared_ptr< QTrapez< dim > >
     create(const Real eps_scaling = 0.0) ;
+
 } ;
 
 

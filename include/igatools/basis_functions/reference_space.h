@@ -196,6 +196,12 @@ public:
     }
     ///@}
 
+
+    const auto &get_active_components_id() const
+    {
+        return space_data_->get_active_components_id();
+    }
+
     const ComponentMap &get_components_map() const
     {
         return space_data_->get_components_map();

@@ -39,8 +39,8 @@ test()
 
     auto grid = CartesianGrid<dim>::create(4);
 
-    auto int_mult = SplineSpace::multiplicity_regularity(InteriorReg::maximum,
-                                                         deg, grid->get_num_intervals());
+    auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
+                    deg, grid->get_num_intervals());
     auto sp_spec = SplineSpace::create(deg, grid, int_mult);
 
     //CartesianProductArray<Real,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};

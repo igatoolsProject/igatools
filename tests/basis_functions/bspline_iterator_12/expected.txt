@@ -10,9 +10,17 @@ Lengths: [ 0 ]
 Unit weights:
 ValueVector (num_points=0) : [ ]
 Unit points:
-   Size: [ 0 ]  Weights: [0]
-   Direction: 0
-   [ ]
+ValueVector (num_points=0) : [ ]
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
 
 Fill flags:
      points     -->  fill = 0    filled = 0
@@ -23,11 +31,7 @@ Lengths: [ 0 ]
 Unit weights:
 ValueVector (num_points=0) : [ ]
 Unit points:
-   Size: [ 0 ]  Weights: [0]
-   Direction: 0
-   [ ]
-
-
+ValueVector (num_points=0) : [ ]
 Fill flags:
      points     -->  fill = 0    filled = 0
      measures   -->  fill = 0    filled = 0
@@ -37,23 +41,7 @@ Lengths: [ 0 ]
 Unit weights:
 ValueVector (num_points=0) : [ ]
 Unit points:
-   Size: [ 0 ]  Weights: [0]
-   Direction: 0
-   [ ]
-
-Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
-Measure: 0
-Lengths: [ 0 ] 
-Unit weights:
 ValueVector (num_points=0) : [ ]
-Unit points:
-   Size: [ 0 ]  Weights: [0]
-   Direction: 0
-   [ ]
-
 
 Fill flags:
      points     -->  fill = 1    filled = 1
@@ -64,10 +52,7 @@ Lengths: [ 0 ]
 Unit weights:
 ValueVector (num_points=0) : [ ]
 Unit points:
-   Size: [ 2 ]  Weights: [2]
-   Direction: 0
-   [ 0.211325 0.788675 ]
-
+ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
 
 Fill flags:
       values -->    fill = 0    filled = 0
@@ -160,9 +145,17 @@ Lengths: [ 0 ]
 Unit weights:
 ValueVector (num_points=0) : [ ]
 Unit points:
-   Size: [ 0 ]  Weights: [0]
-   Direction: 0
-   [ ]
+ValueVector (num_points=0) : [ ]
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
 
 Fill flags:
      points     -->  fill = 0    filled = 0
@@ -173,10 +166,17 @@ Lengths: [ 0 ]
 Unit weights:
 ValueVector (num_points=0) : [ ]
 Unit points:
-   Size: [ 0 ]  Weights: [0]
-   Direction: 0
-   [ ]
-
+ValueVector (num_points=0) : [ ]
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
 
 Fill flags:
      points     -->  fill = 0    filled = 0
@@ -187,37 +187,7 @@ Lengths: [ 0 ]
 Unit weights:
 ValueVector (num_points=0) : [ ]
 Unit points:
-   Size: [ 0 ]  Weights: [0]
-   Direction: 0
-   [ ]
-
-Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
-Measure: 0
-Lengths: [ 0 ] 
-Unit weights:
 ValueVector (num_points=0) : [ ]
-Unit points:
-   Size: [ 0 ]  Weights: [0]
-   Direction: 0
-   [ ]
-
-
-Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
-Measure: 0
-Lengths: [ 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-   Size: [ 0 ]  Weights: [0]
-   Direction: 0
-   [ ]
-
 
 Fill flags:
       values -->    fill = 0    filled = 0
@@ -310,11 +280,37 @@ Lengths: [ 0 0 ]
 Unit weights:
 ValueVector (num_points=0) : [ ]
 Unit points:
-   Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
+ValueVector (num_points=0) : [ ]
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
 
 Fill flags:
      points     -->  fill = 0    filled = 0
@@ -325,11 +321,37 @@ Lengths: [ 0 0 ]
 Unit weights:
 ValueVector (num_points=0) : [ ]
 Unit points:
-   Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
+ValueVector (num_points=0) : [ ]
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
 
 Fill flags:
      points     -->  fill = 0    filled = 0
@@ -340,12 +362,7 @@ Lengths: [ 0 0 ]
 Unit weights:
 ValueVector (num_points=0) : [ ]
 Unit points:
-   Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
-
+ValueVector (num_points=0) : [ ]
 Fill flags:
      points     -->  fill = 0    filled = 0
      measures   -->  fill = 0    filled = 0
@@ -355,13 +372,7 @@ Lengths: [ 0 0 ]
 Unit weights:
 ValueVector (num_points=0) : [ ]
 Unit points:
-   Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
-
-
+ValueVector (num_points=0) : [ ]
 Fill flags:
      points     -->  fill = 0    filled = 0
      measures   -->  fill = 0    filled = 0
@@ -371,12 +382,7 @@ Lengths: [ 0 0 ]
 Unit weights:
 ValueVector (num_points=0) : [ ]
 Unit points:
-   Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
-
+ValueVector (num_points=0) : [ ]
 Fill flags:
      points     -->  fill = 0    filled = 0
      measures   -->  fill = 0    filled = 0
@@ -386,103 +392,7 @@ Lengths: [ 0 0 ]
 Unit weights:
 ValueVector (num_points=0) : [ ]
 Unit points:
-   Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
-
-Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
 ValueVector (num_points=0) : [ ]
-Unit points:
-   Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
-
-Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-   Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
-
-
-Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-   Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
-
-Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-   Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
-
-Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-   Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
-
-Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-   Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
-
 
 Fill flags:
      points     -->  fill = 1    filled = 1
@@ -493,12 +403,7 @@ Lengths: [ 0 0 ]
 Unit weights:
 ValueVector (num_points=0) : [ ]
 Unit points:
-   Size: [ 2 2 ]  Weights: [2,4]
-   Direction: 0
-   [ 0.211325 0.788675 ]
-   Direction: 1
-   [ 0.211325 0.788675 ]
-
+ValueVector (num_points=4) : [ [ 0.211325 0.211325 ]  [ 0.788675 0.211325 ]  [ 0.211325 0.788675 ]  [ 0.788675 0.788675 ]  ]
 
 Fill flags:
       values -->    fill = 0    filled = 0
@@ -708,11 +613,37 @@ Lengths: [ 0 0 ]
 Unit weights:
 ValueVector (num_points=0) : [ ]
 Unit points:
-   Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
+ValueVector (num_points=0) : [ ]
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
 
 Fill flags:
      points     -->  fill = 0    filled = 0
@@ -723,11 +654,37 @@ Lengths: [ 0 0 ]
 Unit weights:
 ValueVector (num_points=0) : [ ]
 Unit points:
-   Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
+ValueVector (num_points=0) : [ ]
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
 
 Fill flags:
      points     -->  fill = 0    filled = 0
@@ -738,11 +695,37 @@ Lengths: [ 0 0 ]
 Unit weights:
 ValueVector (num_points=0) : [ ]
 Unit points:
-   Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
+ValueVector (num_points=0) : [ ]
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
 
 Fill flags:
      points     -->  fill = 0    filled = 0
@@ -753,150 +736,7 @@ Lengths: [ 0 0 ]
 Unit weights:
 ValueVector (num_points=0) : [ ]
 Unit points:
-   Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
-
-
-Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
 ValueVector (num_points=0) : [ ]
-Unit points:
-   Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
-
-Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-   Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
-
-Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-   Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
-
-Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-   Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
-
-
-Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-   Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
-
-Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-   Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
-
-Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-   Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
-
-Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-   Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
-
-
-Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-   Size: [ 0 0 ]  Weights: [0,0]
-   Direction: 0
-   [ ]
-   Direction: 1
-   [ ]
-
 
 Fill flags:
       values -->    fill = 0    filled = 0

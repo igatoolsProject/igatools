@@ -39,6 +39,7 @@ protected:
 public:
     using typename parent_t::variant_1;
     using typename parent_t::topology_variant;
+    using typename parent_t::eval_pts_variant;
     using typename parent_t::Point;
     using typename parent_t::Value;
     using typename parent_t::Gradient;
@@ -60,7 +61,7 @@ public:
         map_elem_(func.mapping_->begin())
     {}
 
-    void reset(const ValueFlags &flag, const variant_1 &quad) override
+    void reset(const ValueFlags &flag, const eval_pts_variant &quad) override
     {
         parent_t::reset(flag, quad);
         mapping_->reset(ValueFlags::value|ValueFlags::point, quad);

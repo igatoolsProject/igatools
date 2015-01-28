@@ -45,6 +45,13 @@ public:
 
     using parent_t = SpaceElement<ReferenceSpace<dim,range,rank>>;
 
+    using RefPoint = typename Space::RefPoint;
+    using Point = typename Space::Point;
+    using Value = typename Space::Value;
+
+    template <int order>
+    using Derivative = typename Space::template Derivative<order>;
+
     ReferenceElement()
     {
         Assert(false,ExcNotImplemented());
@@ -133,6 +140,47 @@ public:
                                 "You should call the clone() funtion of a derived base class."));
         return nullptr;
     }
+
+
+
+    /**
+     * @name Functions for the basis and field evaluations without the use of
+     * the cache.
+     */
+    ///@{
+    /**
+     * Returns a ValueTable with the <tt>deriv_order</tt>-th derivatives of all local basis function
+     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+     * @note This function does not use the cache and therefore can be called any time without
+     * needing to pre-call init_cache()/fill_cache().
+     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+     */
+    template <int deriv_order>
+    ValueTable<
+    Conditional< deriv_order==0,
+                 Value,
+                 Derivative<deriv_order> > >
+                 evaluate_basis_derivatives_at_points(const EvaluationPoints<dim> &points);
+
+    ValueTable<Value>
+    evaluate_basis_values_at_points(const EvaluationPoints<dim> &points)
+    {
+        return this->template evaluate_basis_derivatives_at_points<0>(points);
+    }
+
+    ValueTable<Derivative<1> >
+    evaluate_basis_gradients_at_points(const EvaluationPoints<dim> &points)
+    {
+        return this->template evaluate_basis_derivatives_at_points<1>(points);
+    }
+
+    ValueTable<Derivative<2> >
+    evaluate_basis_hessians_at_points(const EvaluationPoints<dim> &points)
+    {
+        return this->template evaluate_basis_derivatives_at_points<2>(points);
+    }
+    ///@}
 
 };
 

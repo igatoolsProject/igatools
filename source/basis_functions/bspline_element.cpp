@@ -384,7 +384,7 @@ evaluate_univariate_derivatives_at_points(
 template <int dim, int range, int rank>
 auto
 BSplineElement<dim, range, rank>::
-evaluate_univariate_derivatives_at_points(const int deriv_order, const Quadrature<dim> &quad) const
+evaluate_univariate_derivatives_at_points(const int deriv_order, const QuadratureTensorProduct<dim> &quad) const
 -> ComponentContainer<std::array<ValueTable<Real>,dim> >
 {
     std::array<vector<Real>,dim> points_coords;

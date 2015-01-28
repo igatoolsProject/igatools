@@ -40,11 +40,15 @@ public:
     using ElementAccessor = typename Space::ElementAccessor;
 
     static const int l = iga::max(0, dim_-num_sub_elem);
-    using v1 = typename seq<Quadrature, l, dim_>::type;
+    using v1 = typename seq<QuadratureTensorProduct, l, dim_>::type;
     using quadrature_variant = typename boost::make_variant_over<v1>::type;
 
     using v2 = typename seq<Int, l, dim_>::type;
     using topology_variant = typename boost::make_variant_over<v2>::type;
+
+
+    using v3 = typename seq<EvaluationPoints, l, dim_>::type;
+    using eval_pts_variant = typename boost::make_variant_over<v3>::type;
 
 
     static std::shared_ptr<ReferenceElementHandler<dim_,range_,rank_> >
@@ -55,7 +59,26 @@ public:
     ReferenceElementHandler(const ReferenceElementHandler<dim_,range_,rank_> &elem_handler) = delete;
     ReferenceElementHandler(ReferenceElementHandler<dim_,range_,rank_> &&elem_handler) = delete;
 
-    virtual void reset(const ValueFlags &flag, const quadrature_variant &quad) = 0;
+    /**
+     * Resets all the internal data in order to use the
+     * same quadrature scheme for each active element of the space.
+     */
+    void reset(const ValueFlags &flag, const eval_pts_variant &quad);
+
+    /**
+     * Resets all the internal data in order to use the
+     * same quadrature scheme for the element of the space with ID specified by
+     * the input parameter <p>elem_flat_id</p>.
+     */
+    void reset_one_element(
+        const ValueFlags &flag,
+        const eval_pts_variant &eval_points,
+        const int elem_flat_id);
+
+    virtual void reset_selected_elements(
+        const ValueFlags &flag,
+        const eval_pts_variant &eval_points,
+        const vector<int> elements_flat_id) = 0;
 
 protected:
     ReferenceElementHandler(std::shared_ptr<const Space> space);

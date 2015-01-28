@@ -56,6 +56,7 @@ public:
 
     using typename parent_t::variant_1;
     using typename parent_t::topology_variant;
+    using typename parent_t::eval_pts_variant;
     using typename parent_t::Point;
     using typename parent_t::Value;
     using typename parent_t::Gradient;
@@ -77,7 +78,12 @@ public:
     }
 
 
-    void reset(const ValueFlags &flag, const variant_1 &quad) override;
+    void reset(const ValueFlags &flag, const eval_pts_variant &eval_pts) override;
+
+    void reset_selected_elements(
+        const ValueFlags &flag,
+        const eval_pts_variant &eval_pts,
+        const vector<Index> &elements_flat_id);
 
     void init_cache(ElementAccessor &elem, const topology_variant &k) override;
 
@@ -109,13 +115,17 @@ private:
         {
             (*flags_)[T::dim] = flag;
             Assert(space_handler_ != nullptr, ExcNullPtr());
-//            space_handler_->template reset<T::dim>(flag, quad);
-            space_handler_->reset(flag, quad);
+            space_handler_->reset_selected_elements(flag, quad,*elements_flat_id_);
         }
 
         ValueFlags flag;
         typename Space::ElementHandler *space_handler_;
         std::array<FunctionFlags, dim + 1> *flags_;
+
+        /**
+         * Elements to reset.
+         */
+        const vector<Index> *elements_flat_id_;
     };
 
 

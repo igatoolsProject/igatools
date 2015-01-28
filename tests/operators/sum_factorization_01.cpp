@@ -106,8 +106,8 @@ protected:
     shared_ptr<Mapping<dim>> map;
     shared_ptr<Space>        space;
 
-    const Quadrature<dim>   elem_quad;
-    const Quadrature<dim-1> face_quad;
+    const QuadratureTensorProduct<dim>   elem_quad;
+    const QuadratureTensorProduct<dim-1> face_quad;
 
     const boundary_id dir_id = 0;
 

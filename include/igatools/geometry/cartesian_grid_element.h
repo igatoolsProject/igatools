@@ -356,7 +356,7 @@ private:
     {
     public:
         void resize(const GridFlags &flags_handler,
-                    const Quadrature<dim> &quad);
+                    const EvaluationPoints<dim> &quad);
 
         void print_info(LogStream &out) const;
 
@@ -368,7 +368,7 @@ private:
 
         Points<dim> lengths_;
 
-        TensorProductArray<dim> unit_points_;
+        ValueVector<Points<dim>> unit_points_;
 
         ValueVector<Real> unit_weights_;
         ///@}
