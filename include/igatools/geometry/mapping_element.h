@@ -36,6 +36,7 @@ private:
     using self_t  = MappingElement<dim_, codim_>;
     using parent_t = FunctionElement<dim_, 0, dim_+codim_>;
     using Map = Mapping<dim_, codim_>;
+    using Func = MapFunction<dim_,dim_+codim_>;
 
 public:
     using ContainerType = Map;
@@ -56,12 +57,12 @@ public:
 
     /**
      * Construct an accessor pointing to the element with
-     * flat index @p elem_index of the CartesianGrid @p grid.
+     * flat index @p elem_index of the Function @p func.
      */
-    MappingElement(const std::shared_ptr<const CartesianGrid<dim_>> grid,
+    MappingElement(const std::shared_ptr<const Func> func,
                    const Index elem_index)
         :
-        parent_t(grid,elem_index)
+        parent_t(func,elem_index)
     {}
 
     /**

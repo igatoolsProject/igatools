@@ -71,7 +71,7 @@ public:
     create(std::shared_ptr<const Space> space, const CoeffType &coeff);
 
 
-    std::shared_ptr<base_t> clone() const override
+    std::shared_ptr<base_t> clone() const override final
     {
         return std::make_shared<self_t>(self_t(*this));
     }

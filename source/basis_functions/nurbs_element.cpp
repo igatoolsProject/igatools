@@ -37,7 +37,7 @@ NURBSElement(const std::shared_ptr<ContainerType> space,
     weight_elem_table_(space->weight_func_table_.get_comp_map())
 {
     for (const auto &comp_id : weight_elem_table_.get_active_components_id())
-        weight_elem_table_[comp_id] = WeightElem(space->weight_func_table_[comp_id]->get_grid(),index);
+        weight_elem_table_[comp_id] = WeightElem(space->weight_func_table_[comp_id],index);
 }
 
 

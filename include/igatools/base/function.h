@@ -62,12 +62,15 @@ template <int, int, int, int> class FunctionElement;
  * Function Class
  */
 template<int dim, int codim = 0, int range = 1, int rank = 1>
-class Function : public GridElementHandler<dim>
+class Function :
+    public GridElementHandler<dim>
 {
 private:
     using base_t = Function<dim, codim, range, rank>;
     using self_t = Function<dim, codim, range, rank>;
     using parent_t = GridElementHandler<dim>;
+
+    virtual std::shared_ptr<const self_t> shared_from_derived() const = 0;
 
 public:
     using typename parent_t::GridType;
@@ -134,11 +137,15 @@ public:
 
     Function(const self_t &) = default;
 
+    virtual std::shared_ptr<base_t> clone() const = 0;
+
+#if 0
     virtual std::shared_ptr<base_t> clone() const
     {
         Assert(false, ExcNotImplemented());
         return std::make_shared<self_t>(self_t(*this));
     }
+#endif
 
     virtual void reset(const ValueFlags &flag, const eval_pts_variant &quad)
     {
@@ -205,7 +212,7 @@ public:
     std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const
     {
         auto elem = std::shared_ptr<ElementAccessor>(
-                        new ElementAccessor(this->get_grid(),flat_index));
+                        new ElementAccessor(this->shared_from_derived(),flat_index));
         Assert(elem != nullptr,ExcNullPtr());
 
         return elem;
@@ -235,6 +242,8 @@ public:
     }
 
 private:
+
+
     struct ResetDispatcher : boost::static_visitor<void>
     {
         template<class T>

@@ -38,11 +38,19 @@ create_id_tensor()
 
 
 template<int dim,int space_dim = dim>
-class IdentityFunction : public Function<dim, 0, space_dim, 1>
+class IdentityFunction :
+    public Function<dim, 0, space_dim, 1>,
+    public std::enable_shared_from_this<IdentityFunction<dim,space_dim> >
 {
 private:
     using parent_t = Function<dim, 0, space_dim, 1>;
     using self_t = IdentityFunction<dim,space_dim>;
+
+    std::shared_ptr<const parent_t> shared_from_derived() const override final
+    {
+        return this->shared_from_this();
+    }
+
 protected:
     using typename parent_t::GridType;
 public:
@@ -66,7 +74,7 @@ public:
         return std::shared_ptr<parent_t>(new self_t(grid));
     }
 
-    std::shared_ptr<parent_t> clone() const override
+    std::shared_ptr<parent_t> clone() const override final
     {
 
         return std::make_shared<self_t>(self_t(*this));

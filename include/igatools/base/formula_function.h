@@ -57,9 +57,12 @@ public:
     FormulaFunction(const self_t &func)
         :
         parent_t::Function(func),
+//        mapping_(func.mapping_),
         mapping_(func.mapping_->clone()),
         map_elem_(func.mapping_->begin())
-    {}
+    {
+        Assert(false,ExcNotImplemented());
+    }
 
     void reset(const ValueFlags &flag, const eval_pts_variant &quad) override
     {
