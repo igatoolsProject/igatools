@@ -116,6 +116,11 @@ public:
 
     using parent_t::FormulaFunction;
 
+    virtual std::shared_ptr<base_t> clone() const override final
+    {
+        return std::make_shared<self_t>(self_t(*this));
+    }
+
 
 private:
     void evaluate_0(const ValueVector<Point> &points,

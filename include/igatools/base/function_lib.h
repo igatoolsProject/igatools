@@ -57,6 +57,7 @@ public:
         return std::make_shared<self_t>(self_t(*this));
     }
 
+
     ConstantFunction(const self_t &) = default;
 
 protected:
@@ -83,8 +84,8 @@ private:
 
 template<int dim, int codim, int range>
 class LinearFunction :
-    public FormulaFunction<dim, codim, range, 1>,
-    public std::enable_shared_from_this<LinearFunction<dim,codim,range> >
+    public FormulaFunction<dim, codim, range, 1>
+//    public std::enable_shared_from_this<LinearFunction<dim,codim,range> >
 {
 
 public:
@@ -102,10 +103,12 @@ public:
     using typename parent_t::Map;
 
 private:
+#if 0
     std::shared_ptr<const base_t> shared_from_derived() const override final
     {
         return this->shared_from_this();
     }
+#endif
 
 public:
     static std::shared_ptr<base_t>

@@ -33,10 +33,14 @@ IGA_NAMESPACE_OPEN
  * @author pauletti 2014
  */
 template<int sub_dim, int dim, int codim, int range, int rank>
-class SubFunction : public Function<sub_dim, codim + (dim-sub_dim), range, rank>
+class SubFunction :
+		public Function<sub_dim, codim + (dim-sub_dim), range, rank>,
+		public std::enable_shared_from_this<SubFunction<sub_dim,dim,codim,range,rank>>
 {
 private:
     using self_t = SubFunction<sub_dim, dim, codim, range, rank>;
+
+
 public:
     using base_t  = Function<sub_dim, codim + (dim-sub_dim), range, rank>;
     using SupFunc = Function<dim, codim, range, rank>;
@@ -51,6 +55,12 @@ public:
     using SuperGrid = typename SupFunc::GridType;
     template <int j>
     using InterGridMap = typename SuperGrid::template InterGridMap<j>;
+
+private:
+    std::shared_ptr<const base_t> shared_from_derived() const override final
+    {
+        return this->shared_from_this();
+    }
 
 public:
 
@@ -162,7 +172,9 @@ private:
 
 
 template<int sub_dim, int dim, int space_dim>
-class SubMapFunction : public MapFunction<sub_dim, space_dim>
+class SubMapFunction :
+		public MapFunction<sub_dim, space_dim>,
+		public std::enable_shared_from_this<SubMapFunction<sub_dim,dim,space_dim>>
 {
 private:
     using self_t = SubMapFunction<sub_dim, dim, space_dim>;
@@ -180,6 +192,13 @@ public:
     using SuperGrid = typename SupFunc::GridType;
     template <int j>
     using InterGridMap = typename SuperGrid::template InterGridMap<j>;
+
+private:
+    std::shared_ptr<const base_t> shared_from_derived() const override final
+    {
+        return this->shared_from_this();
+    }
+
 
 public:
 
