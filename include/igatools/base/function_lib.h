@@ -103,12 +103,6 @@ public:
     using typename parent_t::Map;
 
 private:
-#if 0
-    std::shared_ptr<const base_t> shared_from_derived() const override final
-    {
-        return this->shared_from_this();
-    }
-#endif
 
 public:
     static std::shared_ptr<base_t>
