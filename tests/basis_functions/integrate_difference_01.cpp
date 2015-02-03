@@ -46,13 +46,12 @@ void do_test(const int deg, const int n_knots = 10)
     const int n_qpoints = ceil((2*dim + 1)/2.);
     QGauss<dim> quad(n_qpoints);
 
-    ProductFunction<dim> f(grid, IdentityFunction<dim>::create(grid));
+    auto f = std::shared_ptr<ProductFunction<dim> >(new ProductFunction<dim>(grid, IdentityFunction<dim>::create(grid)));
     typename functions::ConstantFunction<dim,0,1>::Value val {0.};
     auto g = functions::ConstantFunction<dim,0,1>::create(grid, IdentityFunction<dim>::create(grid), val);
 
     vector<Real> elem_err(grid->get_num_active_elems());
-    Real err = space_tools::integrate_difference<dim>
-               (f, *g, quad, Norm::L2, elem_err);
+    Real err = space_tools::integrate_difference<dim>(*f, *g, quad, Norm::L2, elem_err);
 
     const Real p=2;
     out << std::pow(p+1, -dim/p) << "\t" << err << endl;

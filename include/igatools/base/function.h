@@ -128,14 +128,18 @@ public:
 
     /** @name Constructors and destructor. */
     ///@{
+protected:
     /** Constructor */
     Function(std::shared_ptr<GridType> grid);
 
+
+    Function(const self_t &) = default;
+
+public:
     /** Destructor */
     virtual ~Function() = default;
     ///@}
 
-    Function(const self_t &) = default;
 
     virtual std::shared_ptr<base_t> clone() const = 0;
 
