@@ -81,10 +81,27 @@ public:
     static const int dim = dim_;
 
     /**
+     * @name Functions returning information about the number of points and coordinates.
+     */
+    ///@{
+    /**
      * Returns the total number of evaluation points.
      */
     int get_num_points() const;
 
+    /**
+     * Returns the number of point coordinates along each direction.
+     */
+    TensorIndex<dim_> get_num_coords_direction() const noexcept;
+    ///@}
+
+
+
+    /**
+     * @name Functions returning informations about the arrangement structure
+     * of the points and weights.
+     */
+    ///@{
     /**
      * Returns TRUE if the evaluation points have a tensor-product structure.
      */
@@ -94,17 +111,9 @@ public:
      * Returns TRUE if the weights have a tensor-product structure.
      */
     bool have_weights_tensor_product_struct() const;
-
-    /**
-     * Returns the coordinates indices relative to the point with (flat) index <p>point_id</p>.
-     */
-    TensorIndex<dim_> get_coords_id_from_point_id(const int point_id) const;
+    ///@}
 
 
-    /**
-     * Returns the number of point coordinates along each direction.
-     */
-    TensorIndex<dim_> get_num_coords_direction() const noexcept;
 
 
     /**
@@ -189,11 +198,6 @@ public:
      */
     ///@{
     /**
-     * Returns coordinates of the points along the <tt>i</tt>-th direction.
-     */
-    const vector<Real> &get_coords_direction(const int i) const;
-
-    /**
      * Returns all the points.
      */
     ValueVector<Point> get_points() const;
@@ -202,6 +206,11 @@ public:
      * Returns the coordinates of the the point with (flat) index <tt>pt_id</tt>
      */
     Point get_point(const int pt_id) const;
+
+    /**
+     * Returns coordinates of the points along the <tt>i</tt>-th direction.
+     */
+    const vector<Real> &get_coords_direction(const int i) const;
 
     /**
      * Returns all the weights.
@@ -216,13 +225,15 @@ public:
 
     const special_array<vector<Real>,dim_> &get_weights_1d() const;
 
-
-
-
     /**
      * Returns the bounding box in which the points are located.
      */
     const BBox<dim_> &get_bounding_box() const;
+
+    /**
+     * Returns the coordinates indices relative to the point with (flat) index <tt>point_id</tt>.
+     */
+    TensorIndex<dim_> get_coords_id_from_point_id(const int point_id) const;
     ///@}
 
 
