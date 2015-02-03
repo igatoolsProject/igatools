@@ -23,11 +23,32 @@
 
 #include <igatools/base/config.h>
 #include <igatools/utils/array.h>
-#include <igatools/utils/tensor_product_array.h>
+#include <igatools/base/tensor.h>
+#include <igatools/utils/value_vector.h>
+//#include <igatools/utils/tensor_product_array.h>
 
 IGA_NAMESPACE_OPEN
 
-
+/**
+ * @brief This class represents a container for the evaluation points.
+ *
+ * its main constructor takes as input arguments the following parameters:
+ * - a vector of points in the space;
+ * - the weights associated to the coordinates of the points;
+ * - the bounding box enclosing the points
+ *   (this is useful if some affine transformation are to be performed).
+ *
+ * The way in which this class is implemented allows to be used both for points having
+ * a tensor-product structure (as for the multi-dimensional Gaussian quadrature scheme)
+ * or for general points over a <tt>dim</dim>-dimensional domain.
+ *
+ * In order to do so, the class does not store the points itself but,
+ * after an analysis/preprocessing stage (done in the cosntructor),
+ * it stores the points coordinates and a multi-index for each point, that represents the
+ * coordinates id for a given point.
+ * For example, in 2D case, let suppose that the points used in the constructor argument are
+ *
+ */
 template <int dim_>
 class EvaluationPoints
 {
@@ -119,7 +140,7 @@ public:
     /**
      * Destructor.
      */
-    virtual ~EvaluationPoints() = default;
+    ~EvaluationPoints() = default;
     ///@}
 
 
@@ -206,12 +227,14 @@ public:
     EvaluationPoints<dim_> collapse_to_sub_element(const int id) const;
 
 
-protected:
+private:
 
     /**
      * Reset the bounding box in which the points must be located.
      */
     void reset_bounding_box(const BBox<dim_> &bounding_box);
+
+protected:
 
     /**
      * This function performs the following task:
@@ -247,11 +270,10 @@ protected:
      */
     vector<TensorIndex<dim_>> map_point_id_to_coords_id_;
 
+
     BBox<dim_> bounding_box_;
 
     bool  points_have_tensor_product_struct_ = false;
-
-
 
     bool weights_have_tensor_product_struct_ = false;
 };
@@ -280,9 +302,6 @@ public:
 
     using typename EvaluationPoints<dim_>::Point;
     using EvaluationPoints<dim_>::dim;
-
-    using WeightArray = TensorProductArray<dim>;
-    using PointArray  = CartesianProductArray<Real, dim>;
 
     ///@name Constructors
     ///@{
@@ -314,15 +333,16 @@ public:
      * weights and the domain coordinates of the d-dimensional hypercube
      * upon which the quadrature is referred to.
      */
-    explicit QuadratureTensorProduct(const PointArray &points,
-                                     const WeightArray &weights,
-                                     const BBox<dim> &bounding_box);
+    explicit QuadratureTensorProduct(
+        const ValueVector<Point> &points,
+        const special_array<vector<Real>,dim_> &weights_1d,
+        const BBox<dim> &bounding_box);
 
 
     /**
      * Destructor.
      */
-    virtual ~QuadratureTensorProduct() = default;
+    ~QuadratureTensorProduct() = default;
 
 
     /**
@@ -359,6 +379,9 @@ protected:
      * @param[in] n_pts_1d Number of points along one direction.
      * @param[out] coords Point coordinates.
      * @param[out] weights Weights associated to the 1D point
+     *
+     * @note It is assumed that the 1D points and weights along each coordinate component
+     * are computed using the same algorithm (but possibly with different number of points).
      */
     void (*compute_coords_and_weight_1d)(const int n_pts_1d, vector<Real> &coords,vector<Real> &weights);
 };

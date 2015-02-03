@@ -467,23 +467,13 @@ QuadratureTensorProduct(
 
 template<int dim_>
 QuadratureTensorProduct<dim_>::
-QuadratureTensorProduct(const CartesianProductArray<Real,dim> &points,
-                        const TensorProductArray<dim> &weights,
-                        const BBox<dim> &bounding_box)
+QuadratureTensorProduct(
+    const ValueVector<Point> &points,
+    const special_array<vector<Real>,dim_> &weights_1d,
+    const BBox<dim> &bounding_box)
     :
-    EvaluationPoints<dim_>(bounding_box)
-{
-    special_array<vector<Real>,dim_> weights_1d;
-    for (int i = 0 ; i < dim_ ; ++i)
-        weights_1d[i] = weights.get_data_direction(i);
-
-    this->reset_points_coordinates_and_weights(
-        points.get_flat_cartesian_product(),
-        weights_1d);
-
-    Assert(points.tensor_size() == weights.tensor_size(),
-           ExcMessage("Sizes of points and weights do not match."));
-}
+    EvaluationPoints<dim_>(points,weights_1d,bounding_box)
+{}
 
 
 template<int dim_>
@@ -496,43 +486,56 @@ collapse_to_sub_element(const int sub_elem_id) const -> EvaluationPoints<dim_>
 
     using EvalPts = EvaluationPoints<dim_>;
     using EvalPtsTP = QuadratureTensorProduct<dim_>;
-    using PointArray = typename EvalPtsTP::PointArray;
-    using WeightArray = typename EvalPtsTP::WeightArray;
 
     BBox<dim> new_bounding_box;
     const auto &old_bounding_box = this->get_bounding_box();
 
     const auto &old_weights_1d = this->get_weights_1d();
-//    special_array<vector<Real>,dim_> new_weights_1d = old_weights_1d;
-
     if (this->have_weights_tensor_product_struct())
     {
+        special_array<vector<Real>,dim_> new_weights_1d;
         if (k > 0)
         {
-            PointArray  new_points;
-            WeightArray new_weights;
+            special_array<vector<Real>,dim_> new_coords_1d;
+            TensorSize<dim_> n_coords;
 
             const int n_dir = k_elem.constant_directions.size();
             for (int j = 0 ; j < n_dir; ++j)
             {
                 auto dir = k_elem.constant_directions[j];
                 auto val = k_elem.constant_values[j];
-                new_points.copy_data_direction(dir,vector<Real>(1, val));
-                new_weights.copy_data_direction(dir,vector<Real>(1, 1.0));
+
+                new_coords_1d[dir].assign(1, val);
+                new_weights_1d[dir].assign(1, 1.0);
+                n_coords[dir] = 1;
 
                 new_bounding_box[dir][0] = val;
                 new_bounding_box[dir][1] = val;
             }
 
-
             for (auto i : k_elem.active_directions)
             {
-                new_points.copy_data_direction(i,this->get_coords_direction(i));
-                new_weights.copy_data_direction(i,old_weights_1d[i]);
+                new_coords_1d[i] = this->get_coords_direction(i);
+                new_weights_1d[i] = old_weights_1d[i];
+                n_coords[i] = new_coords_1d[i].size();
 
                 new_bounding_box[i] = old_bounding_box[i];
             }
-            return EvalPtsTP(new_points, new_weights, new_bounding_box);
+
+            const auto n_pts = n_coords.flat_size();
+            const auto pt_size_w = MultiArrayUtils<dim_>::compute_weight(n_coords);
+
+            ValueVector<Points<dim>> new_points(n_pts);
+            for (int pt_f_id = 0 ; pt_f_id < n_pts ; ++pt_f_id)
+            {
+                const auto pt_t_id = MultiArrayUtils<dim_>::flat_to_tensor_index(pt_f_id,pt_size_w);
+
+                auto &point = new_points[pt_f_id];
+                for (int dir = 0 ; dir < dim_ ; ++dir)
+                    point[dir] = new_coords_1d[dir][pt_t_id[dir]];
+            }
+
+            return EvalPtsTP(new_points,new_weights_1d,new_bounding_box);
         } // end if (k > 0)
         else
         {
@@ -543,7 +546,6 @@ collapse_to_sub_element(const int sub_elem_id) const -> EvaluationPoints<dim_>
             new_bounding_box[0][0] = val;
             new_bounding_box[0][1] = val;
 
-            special_array<vector<Real>,dim_> new_weights_1d ;
             new_weights_1d[0].assign(1,1.0);
 
             new_points.resize(1);
