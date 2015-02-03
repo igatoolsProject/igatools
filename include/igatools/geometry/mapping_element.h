@@ -59,7 +59,7 @@ public:
      * Construct an accessor pointing to the element with
      * flat index @p elem_index of the Function @p func.
      */
-    MappingElement(const std::shared_ptr<const Func> func,
+    MappingElement(const std::shared_ptr<Func> func,
                    const Index elem_index)
         :
         parent_t(func,elem_index)

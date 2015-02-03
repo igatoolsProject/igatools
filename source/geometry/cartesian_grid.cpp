@@ -922,6 +922,24 @@ set_element_property(const ElementProperty &property,
 
 }
 
+template <int dim_>
+bool
+CartesianGrid<dim_>::
+has_element_property(const Index elem_flat_id, const ElementProperty &property) const
+{
+    const auto &elems_same_property = this->get_elements_id_same_property(property);
+    return std::binary_search(elems_same_property.begin(),elems_same_property.end(),elem_flat_id);
+}
+
+
+template <int dim_>
+bool
+CartesianGrid<dim_>::
+is_element_active(const Index elem_flat_id) const
+{
+    return this->has_element_property(elem_flat_id,ElementProperty::active);
+}
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/cartesian_grid.inst>

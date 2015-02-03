@@ -159,6 +159,19 @@ public:
         boost::apply_visitor(reset_impl, quad);
     }
 
+    void reset_one_element(
+        const ValueFlags &flag,
+        const eval_pts_variant &eval_pts,
+        const Index elem_id)
+    {
+#ifndef NDEBUG
+        const auto grid = this->get_grid();
+        Assert(grid->is_element_active(elem_id),
+               ExcMessage("The element " + std::to_string(elem_id) + " is not active."));
+#endif
+
+        this->reset(flag,eval_pts);
+    }
 
     virtual void init_cache(ElementAccessor &elem, const topology_variant &k)
     {

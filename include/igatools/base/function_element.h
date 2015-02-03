@@ -59,7 +59,7 @@ public:
                     const Index elem_index)
         :
         CartesianGridElement<dim>(func->get_grid(),elem_index),
-        func_(func)
+        func_(std::const_pointer_cast<Func>(func))
     {
         Assert(func_ != nullptr ,ExcNullPtr());
     }
@@ -169,17 +169,28 @@ public:
                  Derivative<deriv_order> > >
                  evaluate_derivatives_at_points(const EvaluationPoints<dim> &points)
     {
-#if 0
-        virtual void reset(const ValueFlags &flag, const eval_pts_variant &quad)
-        virtual void init_cache(ElementAccessor &elem, const topology_variant &k)
-#endif
-        ValueVector<
-        Conditional< deriv_order==0,
-                     Value,
-                     Derivative<deriv_order> > > dummy;
+        ValueFlags flags;
+        if (deriv_order == 0)
+            flags = ValueFlags::value;
+        else if (deriv_order == 1)
+            flags = ValueFlags::gradient;
+        else if (deriv_order == 2)
+            flags = ValueFlags::hessian;
+        else
+        {
+            Assert(false,ExcNotImplemented());
+        }
 
-        Assert(false,ExcNotImplemented());
-        return dummy;
+        func_->reset_one_element(flags,points,this->get_flat_index());
+        const auto topology = Int<dim>();
+        func_->init_cache(*this,topology);
+        func_->fill_cache(*this,topology,0);
+
+        return this->template get_values<deriv_order,dim>(0);
+
+
+//        Assert(false,ExcNotImplemented());
+//        return dummy;
     }
 
     ValueVector<Value>
@@ -283,7 +294,7 @@ private:
 public:
     using CacheType = LocalCache;
 private:
-    std::shared_ptr<const Func> func_;
+    std::shared_ptr<Func> func_;
 
     template <class Accessor> friend class CartesianGridIteratorBase;
     friend class Function<dim, codim, range, rank>;

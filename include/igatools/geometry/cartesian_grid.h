@@ -574,7 +574,19 @@ private:
      */
     std::map<ElementProperty,std::set<Index>> properties_elements_id_;
 
+    /**
+     * Returns true if the element identified with <p>elem_flat_id</p> has
+     * the ElementProperty <p>property</p>.
+     */
+    bool has_element_property(const Index elem_flat_id, const ElementProperty &property) const;
+
 public:
+
+    /**
+     * Returns true if the element identified with <p>elem_flat_id</p> is active.
+     */
+    bool is_element_active(const Index elem_flat_id) const;
+
     /**
      * Returns the flat id of the elements having a certain @p property (non-const version).
      */
