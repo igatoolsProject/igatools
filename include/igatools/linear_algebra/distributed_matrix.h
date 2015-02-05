@@ -60,6 +60,12 @@ public:
     Matrix() = delete;
 
     /**
+     * Construct a distributed matrix passing a pre-built Trilinos/Tpetra graph.
+     */
+    Matrix(GraphPtr trilinos_graph);
+
+
+    /**
      * Construct a distributed matrix with the dof distribution for its rows and column
      * specified by the SpaceManager @p space_manager.
      */

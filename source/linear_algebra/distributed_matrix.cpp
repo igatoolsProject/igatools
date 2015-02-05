@@ -49,25 +49,22 @@ DeclException0(ExcNotQuadratic);
 
 #ifdef USE_TRILINOS
 
+Matrix<LAPack::trilinos>::
+Matrix(GraphPtr trilinos_graph)
+    :
+    matrix_(trilinos_tools::build_matrix(trilinos_graph))
+{
+    Assert(!matrix_.is_null(),ExcNullPtr());
+}
 
 Matrix<LAPack::trilinos>::
 Matrix(const SpaceManager &space_manager,CommPtr comm)
     :
-    matrix_(trilinos_tools::build_matrix(
-                trilinos_tools::build_graph(
-                    space_manager,
-                    trilinos_tools::build_row_map(space_manager,comm),
-                    trilinos_tools::build_col_map(space_manager,comm))))
-{
-    /*
-    matrix_.reset(new MatrixImpl(
-                trilinos_tools::build_graph(
-                        space_manager,
-                        trilinos_tools::build_row_map(space_manager,comm),
-                        trilinos_tools::build_col_map(space_manager,comm))));
-    matrix_->setAllToScalar(0.0);
-    //*/
-}
+    Matrix(trilinos_tools::build_graph(
+               space_manager,
+               trilinos_tools::build_row_map(space_manager,comm),
+               trilinos_tools::build_col_map(space_manager,comm)))
+{}
 
 #if 0
 Matrix<LAPack::trilinos>::
@@ -146,8 +143,8 @@ void
 Matrix<LAPack::trilinos>::
 clear()
 {
-	matrix_->resumeFill();
-	matrix_->setAllToScalar(0.);
+    matrix_->resumeFill();
+    matrix_->setAllToScalar(0.);
 }
 
 
