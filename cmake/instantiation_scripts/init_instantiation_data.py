@@ -360,10 +360,6 @@ class InstantiationInfo:
       inv_func = unique([FunctionRow([x.space_dim,  0, x.dim, 1]) 
                               for x in self.all_mapping_dims] )
       dims_list = unique (self.all_function_dims + inv_func)
-      
-      deriv ='Tensor<dim, order, tensor::covariant, Tensor<range, rank, tensor::contravariant, Tdouble>>'
-      value ='Tensor<range, rank, tensor::contravariant, Tdouble>'
-      div   ='Tensor<range, rank-1, tensor::contravariant, Tdouble>'
 
       deriv_list=[]
       value_list=[]
@@ -373,18 +369,13 @@ class InstantiationInfo:
             (dim, range, rank) = (dims.dim, dims.range, dims.rank)
             if order == 0:
                (dim, order) = (1,1)
-            replace_table = (('order', str(order)), ('dim', str(dim)),('range', str(range)),('rank', str(rank)))
-            temp = deriv
-            temp_v = value
-            temp_d = div
-            for rep in replace_table:
-               temp = temp.replace(rep[0], rep[1])
-               temp_v = temp_v.replace(rep[0], rep[1])
-               temp_d = temp_d.replace(rep[0], rep[1])
-            deriv_list.append(temp)
-            value_list.append(temp_v)
-            div_list.append(temp_d)
-            
+            deriv ='Tensor<%d, %d, tensor::covariant, Tensor<%d, %d, tensor::contravariant, Tdouble>>' % (dim, order, range, rank)
+            value ='Tensor<%d, %d, tensor::contravariant, Tdouble>' % (range, rank)
+            div   ='Tensor<%d, %d, tensor::contravariant, Tdouble>' % (range, rank - 1)
+            deriv_list.append(deriv)
+            value_list.append(value)
+            div_list.append(div)
+
       self.derivatives = unique(deriv_list)
       self.values = unique(value_list)
       self.divs = unique(div_list)
@@ -395,8 +386,8 @@ class InstantiationInfo:
 
 class Instantiation:
     """ Main function called at the beginning of all instatiation scripts."""
-   
-   
+
+
     def __init__(self, inc_files=[], other_inc_files=[], verbose=False):
         #Getting a dictionary or arguments.
         from sys import argv as sysargv

@@ -38,10 +38,7 @@ curvatures = ['vector<Real>']
 ma_list = ma_list + ['DynamicMultiArray<%s,2>' %(deriv)
            for deriv in inst.derivatives + inst.values + inst.divs + normals + curvatures]
 
-    		
-
-
-for row in ma_list:
+for row in set (ma_list):
     f.write('template class %s; \n' % (row))
 
 

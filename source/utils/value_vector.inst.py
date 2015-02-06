@@ -31,10 +31,10 @@ value_vectors=['ValueVector<Real>']
 for deriv in inst.derivatives + inst.values + inst.divs:
     value_vectors.append('ValueVector<%s>' % (deriv))
 
-for row in value_vectors:
+for row in set (value_vectors):
     f.write('template class %s; \n' % (row))
     f.write("template %s operator*(const Real, const %s &) ;\n" % (row,row))
     f.write("template %s operator*(const %s &, const Real) ;\n" % (row,row))
     
-for row in normals + curvatures:
+for row in set (normals + curvatures):
       f.write('template class ValueVector<%s>; \n' % (row))
