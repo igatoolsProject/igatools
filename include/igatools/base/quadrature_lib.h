@@ -35,6 +35,8 @@ IGA_NAMESPACE_OPEN
  *
  * @note this code was adapted from the dealii library for use
  * in igatools
+ *
+ * @ingroup eval_pts_scheme
  */
 template< int dim >
 class QGauss :
@@ -158,6 +160,9 @@ public:
  *
  * @note this code was adapted from the dealii library for use
  * in igatools
+ *
+ * @ingroup eval_pts_scheme
+ *
  */
 template< int dim >
 class QGaussLobatto :
@@ -285,6 +290,8 @@ public:
 
 /**
  * @brief Uniform quadrature rule.
+ *
+ * @ingroup eval_pts_scheme
  */
 template< int dim >
 class QUniform :
@@ -363,6 +370,8 @@ public:
 
 /**
  * @brief Trapezoidal quadrature rule, exact for linear polynomials.
+ *
+ * @ingroup eval_pts_scheme
  */
 template <int dim>
 class QTrapez :

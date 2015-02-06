@@ -112,6 +112,9 @@ dilate(const Point &dilate)
         for (auto &coord : coordinates_[i])
             coord *= dilate[i];
 
+        for (auto &weight : weights_1d_[i])
+            weight *= dilate[i];
+
         bounding_box_[i][0] *= dilate[i];
         bounding_box_[i][1] *= dilate[i];
     }

@@ -34,7 +34,64 @@ PhysicalSpace | PhysicalSpaceElementAccessor
    
 */
 
-/** @}*/ //end of group accessors_iterators
+/** @}*/ //end of group design
+
+
+/**
+@defgroup eval_pts_scheme Evaluation points 
+@ingroup design
+@{
+@brief Description about the different evaluation points arrangement. 
+
+One of the typical information that igatools can provide, is the values (or derivatives)
+ of functions (e.g. the basis of a vector space, a field, generic analytic, etc.) 
+ at some points in their domain.
+
+In order to attain good performance, it is better to perform computation 
+on groups of points. Moreover, sometimes the evaluation points are built in a way that
+give them special properties (a tipical case is the tensor-product structure of the points of
+many quadrature schemes) that can be exploited in the computation.
+
+Each group of points should be represented as an instance of one of the following classes:
+<center>
+class name        | Description
+----------------- | ----------------------------------
+EvaluationPoints  | Evaluation points on a single element freely definable by the user (without tensor-product structure)
+QGauss            | Evaluation points on a single element generated with Gauss-Legendre formula (with tensor product structure)
+QGaussLobatto     | Evaluation points on a single element generated with Gauss-Lobatto formula (with tensor product structure)
+QUniform          | Evaluation points on a single element generated uniformly (with tensor product structure)
+QTrapez           | Evaluation points on a single element generated with trapezodoila rule (with tensor product structure)
+</center>
+
+<ul>
+<li>
+Due to the fact that most of the time we need to perform function evaluations 
+for quadrature purposes, 
+to each point is associated a <em>weight</em>.
+
+If the points are defined by the user through the base class EvaluationPoints, 
+the associated weights are set by default to 1.0.
+</li>
+<li>
+Each one of the previous classes contains information about the 
+<em>bounding box</em> encosing the points.
+This information is used if the points needs to be dilated and/or translated.
+
+By default the bounding box is set to be the unit <tt>dim</tt>-dimensional hypercube
+\f$ \bigl[ 0,1 \bigr]^{\text{dim}} \f$.
+
+@note In case of dilation, the weights are modified such that they are still valid for 
+the quadrature on the new bounding box.
+</li>
+</ul>
+
+@note <b>For the developers</b>: any function that requires the points to be passed as input 
+argument, should be declared (and should work) using the input type EvaluationPoints, 
+that is the base class for the other different type of evaluation points containers.
+
+*/
+
+/** @}*/ //end of group eval_pts_scheme
 
 
 /**

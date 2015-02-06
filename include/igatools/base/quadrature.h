@@ -30,7 +30,7 @@
 IGA_NAMESPACE_OPEN
 
 /**
- * @brief This class represents a container for the evaluation points.
+ * @brief This class represents a container for an user-definable set of evaluation points.
  *
  *
  * Its main constructor takes as input arguments the following parameters:
@@ -70,13 +70,21 @@ IGA_NAMESPACE_OPEN
  * \mathtt{map\_point\_id\_to\_coords\_id\_[4]} &= \{ 3, 1\}
  * \f}
  *
+ * @ingroup eval_pts_scheme
+ *
+ * @author M. Martinelli
+ * @date 2014, 2015
  */
 template <int dim_>
 class EvaluationPoints
 {
 public:
 
+    /**
+     * @brief Alias for the point-type that is returned by the function EvaluationPoints::get_point()
+     */
     using Point = Points<dim_>;
+
 
     static const int dim = dim_;
 
@@ -98,8 +106,7 @@ public:
 
 
     /**
-     * @name Functions returning informations about the arrangement structure
-     * of the points and weights.
+     * @name Functions returning informations about the arrangement structure of the points and weights.
      */
     ///@{
     /**
@@ -333,6 +340,8 @@ protected:
  * quadrature extension in the hypercube
  * \f$ [0,1]^\text{dim+1} \f$.
  *
+ * @note This class in not intended to be used/instantiated directly .
+ * It's main purpose is to be the base class for QGauss, QGaussLobatto, QUniform.
  */
 template<int dim_>
 class QuadratureTensorProduct
