@@ -40,37 +40,29 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
                            Vector<la_pack> &rhs,
                            Vector<la_pack> &solution)
 {
-//    vector<Index> constrained_rows;
-
-    auto dof = boundary_values.begin();
-    const auto dof_end = boundary_values.end();
-    for (; dof != dof_end; ++dof)
+    // set the matrix in write mode
+    matrix.resume_fill();
+    for (const auto &bndry_val : boundary_values)
     {
-        Index row_id = dof->first;
-        const Real bc_value  = dof->second;
-		
+        const Index row_id = bndry_val.first;
+        const Real bc_value  = bndry_val.second;
+
         const Real mat_value = matrix(row_id,row_id);
 
-		
-        // set the matrix in write mode
-        matrix.resume_fill();
-        
-		
         // set the selected row to 0.0
         matrix.clear_row(row_id);
 
-		
+
         // set the diagonal element corresponding to the entry
         // (row_id,row_id) to mat_value
         matrix.add_entry(row_id, row_id, mat_value);
-		
-		
-        // communicate the matrix values to the different processors
-        matrix.fill_complete();
+
 
         rhs(row_id) = bc_value * mat_value;
         solution(row_id) = bc_value;
     }
+    // communicate the matrix values to the different processors
+    matrix.fill_complete();
 }
 
 
@@ -83,19 +75,19 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
                            Vector<LAPack::petsc> &rhs,
                            Vector<LAPack::petsc> &solution)
 {
-    
-	PetscErrorCode ierr;
+
+    PetscErrorCode ierr;
 
     vector<Index> rows;
     vector<PetscScalar> values;
 
-	
+
     for (const auto &bv : boundary_values)
     {
         rows.push_back(bv.first);
         values.push_back(bv.second);
     }
-	
+
 
     // Set the matrix in write mode.
     matrix.resume_fill();

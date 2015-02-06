@@ -110,12 +110,7 @@ void
 CartesianGridElement<dim_>::
 move_to(const TensorIndex<dim> &tensor_index)
 {
-    tensor_index_= tensor_index;
-    flat_index_ = grid_->tensor_to_flat(tensor_index_);
-
-    Assert((flat_index_ == IteratorState::pass_the_end) ||
-           ((flat_index_ >= 0) && (flat_index_ < grid_->get_num_active_elems())),
-           ExcIndexRange(flat_index_, 0, grid_->get_num_active_elems()));
+    this->move_to(grid_->tensor_to_flat(tensor_index_));
 }
 
 

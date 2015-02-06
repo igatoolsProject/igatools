@@ -454,6 +454,11 @@ public:
     std::shared_ptr<const self_t > get_grid_pre_refinement() const;
     ///@}
 
+    /**
+     * Sets the active elements in the grid.
+     */
+    void set_active_elements(const iga::vector<int> &active_elements_id);
+
 private:
     /** Flag for optimization use */
     Kind kind_ = Kind::non_uniform;

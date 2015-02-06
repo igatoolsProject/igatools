@@ -358,6 +358,17 @@ get_num_active_elems() const
 }
 
 
+template<int dim_>
+void
+CartesianGrid<dim_>::
+set_active_elements(const iga::vector<int> &active_elements_id)
+{
+    active_elems_.fill(false);
+
+    for (const auto &elem_id : active_elements_id)
+        active_elems_[elem_id] = true;
+}
+
 
 template<int dim_>
 Size

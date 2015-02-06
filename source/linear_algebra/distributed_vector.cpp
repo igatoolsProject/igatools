@@ -30,6 +30,9 @@ using Teuchos::rcp;
 #include <petscvec.h>
 #endif
 
+
+using std::to_string;
+
 IGA_NAMESPACE_OPEN
 
 namespace
@@ -110,10 +113,10 @@ add_entry(const Index i, const Real value)
 
 auto
 Vector<LAPack::trilinos>::
-operator+=(const self_t& vec) -> self_t &
+operator+=(const self_t &vec) -> self_t &
 {
-	vector_->update(1., *(vec.vector_), 1.);
-	return *this;
+    vector_->update(1., *(vec.vector_), 1.);
+    return *this;
 }
 
 
@@ -121,7 +124,7 @@ auto
 Vector<LAPack::trilinos>::
 norm2() const -> Real
 {
-	return vector_->getVector(0)->norm2();
+    return vector_->getVector(0)->norm2();
 }
 
 
@@ -130,7 +133,7 @@ void
 Vector<LAPack::trilinos>::
 clear()
 {
-	vector_->putScalar(0.);
+    vector_->putScalar(0.);
 }
 
 
@@ -167,14 +170,21 @@ operator()(const Index global_id)
            ExcIndexRange(global_id,0,Index(vector_->getGlobalLength()))) ;
     //*/
     const auto map = vector_->getMap();
+    Assert(map->isNodeGlobalElement(global_id),
+           ExcMessage("The global id " + to_string(global_id) +
+                      " is not owned by the vector's map on processor " +
+                      to_string(map->getComm()->getRank())));
+
+
     const auto local_id = map->getLocalElement(global_id) ;
 
+    /*
     Assert(local_id != Teuchos::OrdinalTraits<Index>::invalid(),
            ExcVectorAccessToNonLocalElement(
                global_id,
                map->getMinGlobalIndex(),
                map->getMaxGlobalIndex()));
-
+    //*/
     return (vector_->get2dViewNonConst()[0][local_id]) ;
 }
 
@@ -214,8 +224,15 @@ add_block(
 
     for (Index i = 0 ; i < num_dofs ; ++i)
     {
+#ifndef NDEBUG
         Assert(!std::isnan(local_vector(i)),ExcNotANumber());
         Assert(!std::isinf(local_vector(i)),ExcNumberNotFinite());
+        const auto trilinos_map = vector_->getMap();
+        Assert(trilinos_map->isNodeGlobalElement(local_to_global[i]),
+               ExcMessage("The global id " + to_string(local_to_global[i]) +
+                          " is not owned by the vector's map on processor " +
+                          to_string(trilinos_map->getComm()->getRank())));
+#endif
         vector_->sumIntoGlobalValue(local_to_global[i],0,local_vector(i)) ;
     }
 }

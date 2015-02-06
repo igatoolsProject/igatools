@@ -179,7 +179,7 @@ public:
         const DenseVector &local_vector);
 
     /** Add vec onto current vector */
-    self_t &operator+=(const self_t& vec);
+    self_t &operator+=(const self_t &vec);
 
     /**
      * Returns the const reference to the entry of the vector identified by the @p global_id
@@ -238,6 +238,7 @@ public:
     ///@}
 
 private:
+
     /**
      * Smart pointer wrapping a Tpetra::Vector
      */

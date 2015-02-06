@@ -273,22 +273,24 @@ clear_row(const Index row)
     const auto graph = matrix_->getGraph();
 
     const auto row_map = graph->getRowMap();
+
+    Assert(row_map->isNodeGlobalElement(row),
+           ExcMessage("The global node " + std::to_string(row) +
+                      " is not owned by a Tpetra::Map object on processor " +
+                      std::to_string(row_map->getComm()->getRank())));
+
     const auto local_row = row_map->getLocalElement(row);
 
-    // Only do this on the rows owned locally on this processor.
-    if (local_row != Teuchos::OrdinalTraits<Index>::invalid())
-    {
-        auto n_entries_row = graph->getNumEntriesInLocalRow(local_row);
+    auto n_entries_row = graph->getNumEntriesInLocalRow(local_row);
 
-        vector<Index> local_col_ids(n_entries_row);
+    vector<Index> local_col_ids(n_entries_row);
 
-        graph->getLocalRowCopy(local_row,local_col_ids,n_entries_row);
-        Assert(n_entries_row == graph->getNumEntriesInLocalRow(local_row),
-               ExcDimensionMismatch(n_entries_row,graph->getNumEntriesInLocalRow(local_row)));
+    graph->getLocalRowCopy(local_row,local_col_ids,n_entries_row);
+    Assert(n_entries_row == graph->getNumEntriesInLocalRow(local_row),
+           ExcDimensionMismatch(n_entries_row,graph->getNumEntriesInLocalRow(local_row)));
 
-        vector<Real> zeros(n_entries_row,0.0);
-        matrix_->replaceLocalValues(local_row,local_col_ids,zeros);
-    }
+    vector<Real> zeros(n_entries_row,0.0);
+    matrix_->replaceLocalValues(local_row,local_col_ids,zeros);
 }
 
 
