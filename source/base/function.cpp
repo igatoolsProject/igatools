@@ -23,18 +23,18 @@
 
 IGA_NAMESPACE_OPEN
 
-template<int dim, int codim, int range, int rank >
-Function<dim, codim, range, rank >::
+template<int dim_, int codim_, int range_, int rank_ >
+Function<dim_, codim_, range_, rank_ >::
 Function(std::shared_ptr<GridType> grid)
     :
-    GridElementHandler<dim>(grid)
+    GridElementHandler<dim_>(grid)
 {}
 
 
 
-template<int dim, int codim, int range, int rank>
+template<int dim_, int codim_, int range_, int rank_>
 auto
-Function<dim, codim, range, rank >::
+Function<dim_, codim_, range_, rank_ >::
 get_cache(ElementAccessor &elem)
 -> std::shared_ptr<typename ElementAccessor::CacheType> &
 {

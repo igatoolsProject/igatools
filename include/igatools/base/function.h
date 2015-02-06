@@ -61,33 +61,37 @@ template <int, int, int, int> class FunctionElement;
 /**
  * Function Class
  */
-template<int dim, int codim = 0, int range = 1, int rank = 1>
-class Function : public GridElementHandler<dim>
+template<int dim_, int codim_ = 0, int range_ = 1, int rank_ = 1>
+class Function : public GridElementHandler<dim_>
 {
 private:
-    using base_t = Function<dim, codim, range, rank>;
-    using self_t = Function<dim, codim, range, rank>;
-    using parent_t = GridElementHandler<dim>;
+    using base_t = Function<dim_, codim_, range_, rank_>;
+    using self_t = Function<dim_, codim_, range_, rank_>;
+    using parent_t = GridElementHandler<dim_>;
 
 public:
     using typename parent_t::GridType;
 
 public:
-    static const int l = iga::max(0, dim-num_sub_elem);
-    using v1 = typename seq<QuadratureTensorProduct, l, dim>::type;
+    static const int l = iga::max(0, dim_-num_sub_elem);
+    using v1 = typename seq<QuadratureTensorProduct, l, dim_>::type;
     using variant_1 = typename boost::make_variant_over<v1>::type;
 
-    using v2 = typename seq<Int, l, dim>::type;
+    using v2 = typename seq<Int, l, dim_>::type;
     using topology_variant = typename boost::make_variant_over<v2>::type;
 
-    using v3 = typename seq<EvaluationPoints, l, dim>::type;
+    using v3 = typename seq<EvaluationPoints, l, dim_>::type;
     using eval_pts_variant = typename boost::make_variant_over<v3>::type;
 
 public:
-    using ElementAccessor = FunctionElement<dim, codim, range, rank>;
+    using ElementAccessor = FunctionElement<dim_, codim_, range_, rank_>;
     using ElementIterator = CartesianGridIterator<ElementAccessor>;
 
-    static const int space_dim = dim + codim;
+    static const int space_dim = dim_ + codim_;
+    static const int dim       = dim_;
+    static const int codim     = codim_;
+    static const int range     = range_;
+    static const int rank      = rank_;
 
     /** Types for the input/output evaluation arguments */
     ///@{
@@ -99,13 +103,13 @@ public:
     /**
      * Type for the return of the function.
      */
-    using Value = Values<space_dim, range, rank>;
+    using Value = Values<space_dim, range_, rank_>;
 
     /**
      * Type for the derivative of the function.
      */
     template <int order>
-    using Derivative = Derivatives<space_dim, range, rank, order>;
+    using Derivative = Derivatives<space_dim, range_, rank_, order>;
 
     /**
      * Type for the gradient of the function.
@@ -120,7 +124,7 @@ public:
     /**
      * Type for the divergence of function.
      */
-    using Div = Values<space_dim, range, rank-1>;
+    using Div = Values<space_dim, range_, rank_-1>;
     ///@}
 
     /** @name Constructors and destructor. */
@@ -226,10 +230,10 @@ public:
     virtual void print_info(LogStream &out) const
     {
         using std::to_string;
-        out.begin_item("Function<" + to_string(dim) + "," +
-                       to_string(codim) + "," +
-                       to_string(range) + "," +
-                       to_string(rank) + ">");
+        out.begin_item("Function<" + to_string(dim_) + "," +
+                       to_string(codim_) + "," +
+                       to_string(range_) + "," +
+                       to_string(rank_) + ">");
         parent_t::print_info(out);
         out.end_item();
     }
@@ -247,7 +251,7 @@ private:
 
         ValueFlags flag;
         parent_t *grid_handler;
-        std::array<FunctionFlags, dim + 1> *flags_;
+        std::array<FunctionFlags, dim_ + 1> *flags_;
     };
 
     struct FillCacheDispatcher : boost::static_visitor<void>
@@ -277,7 +281,7 @@ private:
                 cache = std::shared_ptr<Cache>(new Cache);
             }
 
-            for (auto &s_id: UnitElement<dim>::template elems_ids<T::k>())
+            for (auto &s_id: UnitElement<dim_>::template elems_ids<T::k>())
             {
                 auto &s_cache = cache->template get_value_cache<T::k>(s_id);
                 auto &quad = std::get<T::k>(*quad_);
@@ -287,8 +291,8 @@ private:
 
         parent_t *grid_handler;
         ElementAccessor *elem;
-        std::array<FunctionFlags, dim + 1> *flags_;
-        EvalPtsList<dim> *quad_;
+        std::array<FunctionFlags, dim_ + 1> *flags_;
+        EvalPtsList<dim_> *quad_;
     };
 
     ResetDispatcher reset_impl;
@@ -301,7 +305,7 @@ public:
     &get_cache(ElementAccessor &elem);
 
 protected:
-    std::array<FunctionFlags, dim + 1> flags_;
+    std::array<FunctionFlags, dim_ + 1> flags_;
 };
 
 
