@@ -55,9 +55,9 @@ void test()
     using WeightFunc = IgFunction<ReferenceSpace<dim,1,1>>;
     DynamicMultiArray<Real,dim> weights_coef(n_scalar_basis,1.0);
 
-    auto w_coeff_ptr = shared_ptr<vector<Real>>(new vector<Real>(weights_coef.get_data()));
+    auto w_coeff = vector<Real>(weights_coef.get_data());
     auto weight_function = std::shared_ptr<WeightFunc>(
-                               new WeightFunc(scalar_bsp_space,w_coeff_ptr));
+                               new WeightFunc(scalar_bsp_space, w_coeff));
 
     auto space = Space::create(bsp_space,weight_function);
 

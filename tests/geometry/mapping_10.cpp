@@ -55,8 +55,7 @@ void ig_mapping(const int deg = 1)
     using CoeffType = typename Function::CoeffType;
     CoeffType coeff(space->get_num_basis());
     coeff[0] = 1.;
-    auto coeff_ptr = make_shared<CoeffType> (coeff);
-    auto F = Function::create(space, coeff_ptr);
+    auto F = Function::create(space, coeff);
 
     auto map = Mapping::create(F);
     map->template reset<sub_dim>(flag, quad);

@@ -127,8 +127,7 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
                      tol,max_iter);
     solver.solve(matrix, rhs, sol);
 
-    auto coefs_ptr = std::make_shared<vector<Real>> (sol.get_as_vector());
-    return std::make_shared<IgFunction<Space>>(IgFunction<Space>(space, coefs_ptr));
+    return std::make_shared<IgFunction<Space>>(IgFunction<Space>(space, sol.get_as_vector()));
 }
 
 
@@ -191,7 +190,7 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
 
         auto proj = projection_l2<SubSpace,la_pack>(sub_func, sub_space, quad);
 
-        const auto &coef = *(proj->get_coefficients());
+        const auto &coef = proj->get_coefficients();
         const int face_n_dofs = dof_map.size();
         for (Index i = 0; i< face_n_dofs; ++i)
             boundary_values[dof_map[i]] = coef[i];

@@ -338,9 +338,9 @@ evaluate_nurbs_values_from_bspline(
 
         const int n_funcs_comp = bspline_elem.get_num_basis(comp);
 
-        const auto w_coefs_ptr = nrb_space->weight_func_table_[comp]->get_coefficients();
-        Assert(nrb_space->get_num_basis(comp) == w_coefs_ptr->size(),
-               ExcDimensionMismatch(nrb_space->get_num_basis(comp),w_coefs_ptr->size()));
+        const auto w_coefs = nrb_space->weight_func_table_[comp]->get_coefficients();
+        Assert(nrb_space->get_num_basis(comp) == w_coefs.size(),
+               ExcDimensionMismatch(nrb_space->get_num_basis(comp),w_coefs.size()));
 
         const auto offset = comp_offset[comp];
         for (int w_fn_id = 0 ; w_fn_id < n_funcs_comp ; ++w_fn_id, ++bsp_fn_id)
@@ -349,7 +349,7 @@ evaluate_nurbs_values_from_bspline(
 
             auto R_fn = phi.get_function_view(bsp_fn_id);
 
-            const Real w = (*w_coefs_ptr)[bsp_local_to_patch[bsp_fn_id]-offset];
+            const Real w = w_coefs[bsp_local_to_patch[bsp_fn_id]-offset];
 
             for (int pt = 0 ; pt < n_pts ; ++pt)
                 R_fn[pt](comp) = P_fn[pt](comp) * invQ[pt] * w ;
@@ -424,9 +424,9 @@ evaluate_nurbs_gradients_from_bspline(
 
         const int n_funcs_comp = bspline_elem.get_num_basis(comp);
 
-        const auto w_coefs_ptr = nrb_space->weight_func_table_[comp]->get_coefficients();
-        Assert(nrb_space->get_num_basis(comp) == w_coefs_ptr->size(),
-               ExcDimensionMismatch(nrb_space->get_num_basis(comp),w_coefs_ptr->size()));
+        const auto w_coefs = nrb_space->weight_func_table_[comp]->get_coefficients();
+        Assert(nrb_space->get_num_basis(comp) == w_coefs.size(),
+               ExcDimensionMismatch(nrb_space->get_num_basis(comp),w_coefs.size()));
 
         const auto offset = comp_offset[comp];
         for (int w_fn_id = 0 ; w_fn_id < n_funcs_comp ; ++w_fn_id, ++bsp_fn_id)
@@ -436,7 +436,7 @@ evaluate_nurbs_gradients_from_bspline(
 
             auto dR_fn = D1_phi.get_function_view(bsp_fn_id);
 
-            const Real w = (*w_coefs_ptr)[bsp_local_to_patch[bsp_fn_id]-offset];
+            const Real w = w_coefs[bsp_local_to_patch[bsp_fn_id]-offset];
 
             for (int pt = 0 ; pt < n_pts ; ++pt)
             {
@@ -549,9 +549,9 @@ evaluate_nurbs_hessians_from_bspline(
 
         const int n_funcs_comp = bspline_elem.get_num_basis(comp);
 
-        const auto w_coefs_ptr = nrb_space->weight_func_table_[comp]->get_coefficients();
-        Assert(nrb_space->get_num_basis(comp) == w_coefs_ptr->size(),
-               ExcDimensionMismatch(nrb_space->get_num_basis(comp),w_coefs_ptr->size()));
+        const auto w_coefs = nrb_space->weight_func_table_[comp]->get_coefficients();
+        Assert(nrb_space->get_num_basis(comp) == w_coefs.size(),
+               ExcDimensionMismatch(nrb_space->get_num_basis(comp),w_coefs.size()));
 
         const auto offset = comp_offset[comp];
         for (int w_fn_id = 0 ; w_fn_id < n_funcs_comp ; ++w_fn_id, ++bsp_fn_id)
@@ -562,7 +562,7 @@ evaluate_nurbs_hessians_from_bspline(
 
             auto d2R_fn = D2_phi.get_function_view(bsp_fn_id);
 
-            const Real w = (*w_coefs_ptr)[bsp_local_to_patch[bsp_fn_id]-offset];
+            const Real w = w_coefs[bsp_local_to_patch[bsp_fn_id]-offset];
 
             for (int pt = 0 ; pt < n_pts ; ++pt)
             {

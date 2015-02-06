@@ -48,8 +48,7 @@ void test()
     using CoeffType = typename Function::CoeffType;
     CoeffType coeff(space->get_num_basis());
     coeff[0] = 1.;
-    auto coeff_ptr  = make_shared<CoeffType> (coeff);
-    auto F = Function::create(space, coeff_ptr);
+    auto F = Function::create(space, coeff);
     F->reset(flag, quad);
 
     auto elem = F->begin();

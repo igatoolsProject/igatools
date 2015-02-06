@@ -71,7 +71,7 @@ void plot_basis(const int deg)
 
     string field_name = "basis " + to_string(basis_index);
 
-    auto basis = Func::create(space, std::shared_ptr<Coeffs>(new Coeffs(coeffs)));
+    auto basis = Func::create(space, Coeffs(coeffs));
     output.template add_field<1,1>(basis, field_name);
 
     string file_name = "bspline_basis-" + to_string(dim) + "d";

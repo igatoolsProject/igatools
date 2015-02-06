@@ -297,9 +297,8 @@ get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
     const int n_ctrl_pts = ctrl_pts_attributes.get<int>("Size");
     AssertThrow(n_ctrl_pts >= 1,ExcLowerRange(n_ctrl_pts,1));
 
-    shared_ptr<vector<Real>> cntrl_pts =
-                              std::make_shared<vector<Real>>(get_vector_data_from_xml<Real>(ctrl_pts_tree));
-    AssertThrow(cntrl_pts->size() == n_ctrl_pts,ExcDimensionMismatch(cntrl_pts->size(),n_ctrl_pts));
+    const vector<Real> cntrl_pts = get_vector_data_from_xml<Real>(ctrl_pts_tree);
+    AssertThrow(cntrl_pts.size() == n_ctrl_pts,ExcDimensionMismatch(cntrl_pts.size(),n_ctrl_pts));
     //-------------------------------------------------------------------------
 
 
@@ -724,7 +723,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     for (const auto &w_coefs : weights)
         w_func_table[comp++] = WeightFuncPtr(
                                    new WeightFunc(scalar_spline_space,
-                                                  std::make_shared<vector<Real>>(vector<Real>(w_coefs.get_data()))));
+                                                  vector<Real>(w_coefs.get_data())));
 
 
     //*/

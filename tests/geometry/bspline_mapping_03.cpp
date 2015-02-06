@@ -174,9 +174,7 @@ void bspline_map(const int deg = 2)
 
     }
 
-    auto control_pts_ptr = make_shared<CoeffType> (control_pts);
-
-    auto F = Function::create(space, control_pts_ptr);
+    auto F = Function::create(space, control_pts);
     auto map = Mapping::create(F);
 
     auto quad = QGauss<dim>(3);

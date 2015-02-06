@@ -39,7 +39,6 @@ public:
     static const int rank = Space::rank;
 
     using CoeffType = vector<Real>;
-    using CoeffTypePtr = std::shared_ptr<CoeffType>;
 
 private:
     using base_t = Function<dim, codim, range, rank>;
@@ -48,7 +47,7 @@ private:
 
 public:
 
-    IgFunction(std::shared_ptr<const Space> space, const CoeffTypePtr coeff);
+    IgFunction(std::shared_ptr<const Space> space, const CoeffType &coeff);
 
     IgFunction(const self_t &);
 
@@ -69,7 +68,7 @@ public:
 
 public:
     static std::shared_ptr<self_t>
-    create(std::shared_ptr<const Space> space, const CoeffTypePtr coeff);
+    create(std::shared_ptr<const Space> space, const CoeffType &coeff);
 
 
     std::shared_ptr<base_t> clone() const override
@@ -91,7 +90,7 @@ public:
 
     std::shared_ptr<const Space> get_iga_space() const;
 
-    const CoeffTypePtr get_coefficients() const;
+    const CoeffType &get_coefficients() const;
 
     self_t &operator +=(const self_t &fun);
 
@@ -101,7 +100,7 @@ private:
 
     std::shared_ptr<const Space> space_;
 
-    CoeffTypePtr coeff_;
+    CoeffType coeff_;
 
     typename Space::ElementIterator elem_;
 
