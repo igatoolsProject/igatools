@@ -73,8 +73,8 @@ constexpr int CartesianGrid<dim_>::dim;
 
 
 
-template<int dim_>
-constexpr std::array<Size, dim_> CartesianGrid<dim_>::dims;
+//template<int dim_>
+//constexpr std::array<Size, dim_> CartesianGrid<dim_>::Topology::active_directions;
 
 
 
@@ -182,7 +182,8 @@ CartesianGrid(const KnotCoordinates &knot_coordinates,
 
 
 #ifndef NDEBUG
-    for (int i = 0; i < dim; i++)
+//    for (int i = 0; i < dim; i++)
+    for (const int &i : Topology::active_directions)
     {
         const auto &knots_i = knot_coordinates.get_data_direction(i);
         // checks that we have at least two knot values (i.e. one knot span) in
@@ -281,7 +282,7 @@ get_element_lengths() const -> KnotCoordinates
     auto const &size = get_num_intervals();
     KnotCoordinates length(size);
 
-    for (auto &i : dims)
+    for (auto &i : Topology::active_directions)
     {
         const auto &knots_i = knot_coordinates_.get_data_direction(i);
         const auto n_elem = size[i];
@@ -583,7 +584,7 @@ refine_directions(
     grid_pre_refinement_ = make_shared<const self_t>(self_t(*this));
 
     TensorSize<dim_> n_sub_elems;
-    for (auto i : dims)
+    for (auto i : Topology::active_directions)
     {
         if (refinement_directions[i])
         {
@@ -870,7 +871,7 @@ get_sub_elements_id(const TensorSize<dim_> &n_sub_elems, const Index elem_id) co
     const TensorSize<dim> n_elems_coarse_grid = this->get_num_intervals();
     TensorSize<dim> n_elems_fine_grid;
     TensorIndex<dim> first_fine_elem_tensor_id;
-    for (const auto &i : dims)
+    for (const auto &i : Topology::active_directions)
     {
         Assert(n_sub_elems[i] > 0 ,ExcLowerRange(n_sub_elems[i],1));
 
@@ -889,7 +890,7 @@ get_sub_elements_id(const TensorSize<dim_> &n_sub_elems, const Index elem_id) co
         const auto sub_elem_tensor_id =
             MultiArrayUtils<dim>::flat_to_tensor_index(sub_elem, weight_sub_elems);
 
-        for (const auto &i : dims)
+        for (const auto &i : Topology::active_directions)
             fine_elem_tensor_id[i] = first_fine_elem_tensor_id[i] + sub_elem_tensor_id[i];
 
         sub_elems_id[sub_elem] =
@@ -925,7 +926,7 @@ set_element_property(const ElementProperty &property,
 template <int dim_>
 bool
 CartesianGrid<dim_>::
-has_element_property(const Index elem_flat_id, const ElementProperty &property) const
+test_if_element_has_property(const Index elem_flat_id, const ElementProperty &property) const
 {
     const auto &elems_same_property = this->get_elements_id_same_property(property);
     return std::binary_search(elems_same_property.begin(),elems_same_property.end(),elem_flat_id);
@@ -937,7 +938,7 @@ bool
 CartesianGrid<dim_>::
 is_element_active(const Index elem_flat_id) const
 {
-    return this->has_element_property(elem_flat_id,ElementProperty::active);
+    return this->test_if_element_has_property(elem_flat_id,ElementProperty::active);
 }
 
 IGA_NAMESPACE_CLOSE

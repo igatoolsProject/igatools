@@ -141,13 +141,35 @@ template <int dim>
 struct UnitElement
 {
     /**
+     * Indices for the coordinate directions active on the UnitElement.
+     *
+     * Its main use to allow to use the range-based for loop
+     * \code{.cpp}
+       for (const auto &dir : active_directions)
+       {
+          // do something
+       }
+       \endcode
+     * instead of the traditional for loop
+     * \code{.cpp}
+       for (int dir = 0  ; dir < dim_ ; ++dir)
+       {
+          // do something
+       }
+       \endcode
+     *
+     */
+    static const std::array<Size,dim> active_directions;
+
+
+    /**
      * Number of elements of dimension k=0,...,dim in the
      * hyper-cube of dimension dim
      */
     static const std::array<Size, dim + 1> sub_elements_size;
 
     /**
-     * Element of dimension k in a cube of dimension dim
+     * Element of dimension <tt>k</tt> in a cube of dimension <tt>dim</tt>.
      */
     template<int k>
     struct SubElement

@@ -80,8 +80,7 @@ class SplineSpace :
 
 private:
     using GridType = CartesianGrid<dim>;
-
-    using GridWrapper<CartesianGrid<dim>>::dims;
+    using Topology = UnitElement<dim>;
 
 public:
 

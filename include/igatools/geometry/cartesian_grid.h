@@ -45,8 +45,20 @@ template <int> class GridElementHandler;
 /**
  * @brief Grid in <tt>dim</tt>-dimensional space with cartesian-product structure.
  *
- * Vector of knot vectors without repetition interpreted as a tensor product
- * cartesian grid.
+ * The data defining the grid is a <tt>dim</tt>-dimensional array of coordinates,
+ * representing the positions of the grid wires.
+ *
+ * Two consecutive coordinates (along the same direction) defines an <em>interval</em>.
+ *
+ * Then, the tensor-product of the intervals along the coordinate directions define
+ * the elements that are tiling the domain covered by the CartesianGrid;
+ *
+ * The elements can have associated a certain list of ElementProperty,
+ * and then the list of elements with a given property can be extracted from the CartesianGrid.
+ *
+ * The element type for the CartesianGrid is CartesianGridElement.
+ *
+ * The elements can be iterated with the CartesianGridIterator object.
  *
  * ### Getting a CartesianGrid by an XML structure.
  * A CartesianGrid object can be obtained by a Boost XML structure using the
@@ -92,7 +104,28 @@ public:
     /** Dimensionality of the grid. */
     static constexpr int dim = dim_;
 
-    static constexpr std::array<Size, dim_> dims = sequence<dim>();
+    /**
+     * Indices for the different coordinate directions.
+     *
+     * Its main use to allow to use the range-based for loop
+     * \code{.cpp}
+       for (const auto &dir : dims)
+       {
+          // do something
+       }
+       \endcode
+     * instead of the traditional for loop
+     * \code{.cpp}
+       for (int dir = 0  ; dir < dim_ ; ++dir)
+       {
+          // do something
+       }
+       \endcode
+     *
+     */
+//    static constexpr std::array<Size, dim_> dims = sequence<dim>();
+
+    using Topology = UnitElement<dim_>;
 
     using Point = Points<dim>;
 
@@ -543,27 +576,30 @@ private:
 public:
 
 
+    /**
+     * Enumerator for different kind of element properties.
+     */
     enum class ElementProperty : int
     {
         /**
          * Active elements indicators (used for example in hierarchical spaces).
          */
-        active = 1,
+        active = 1,   //!< active
 
         /**
         * Marked elements indicators.
         */
-        marked = 2,
+        marked = 2,   //!< marked
 
         /**
         * Influence elements indicators  (used for example in hierarchical spaces).
         */
-        influence = 3,
+        influence = 3,//!< influence
 
         /**
          * Number of different element properties allowed.
          */
-        ENUM_SIZE = 3,
+        ENUM_SIZE = 3,//!< ENUM_SIZE
     };
 
 private:
@@ -578,10 +614,14 @@ private:
      * Returns true if the element identified with <p>elem_flat_id</p> has
      * the ElementProperty <p>property</p>.
      */
-    bool has_element_property(const Index elem_flat_id, const ElementProperty &property) const;
+    bool test_if_element_has_property(const Index elem_flat_id, const ElementProperty &property) const;
 
 public:
 
+    /**
+     * @name Functions related to the management/query of the element properties.
+     */
+    ///@{
     /**
      * Returns true if the element identified with <p>elem_flat_id</p> is active.
      */
@@ -603,6 +643,8 @@ public:
     void set_element_property(const ElementProperty &property,
                               const Index elem_flat_id,
                               const bool status);
+    ///@}
+
 
 private:
     /**

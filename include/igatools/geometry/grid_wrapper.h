@@ -52,7 +52,7 @@ class GridWrapper
 public:
     using GridType = Grid_;
 
-    static constexpr std::array<Size, Grid_::dim> dims = Grid_::dims;
+    using Topology = typename Grid_::Topology;
 
 protected:
 

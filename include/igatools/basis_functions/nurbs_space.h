@@ -65,7 +65,6 @@ public:
 
     static const auto n_components = SplineSpace<dim_, range_, rank_>::n_components;
 //    static constexpr auto   components = SpSpace::components;
-    static constexpr auto dims = SpSpace::dims;
 
 
     /**

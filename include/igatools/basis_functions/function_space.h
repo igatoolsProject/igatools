@@ -47,11 +47,8 @@ private:
 public:
     using typename GridWrapper<Grid_>::GridType;
 
-    /**
-     * Array of dimension indices.
-     * They are intended to be used in range-for loops when all dimension indices must be used.
-     */
-    using GridWrapper<Grid_>::dims;
+    using Topology = typename Grid_::Topology;
+
 
 protected:
     /** @name Constructor and destructor. */

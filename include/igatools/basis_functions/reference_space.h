@@ -81,7 +81,6 @@ public:
     using GridSpace = FunctionSpaceOnGrid<CartesianGrid<dim>>;
     using typename GridSpace::GridType;
 
-    using GridSpace::dims;
 
 
     /** Type for the element accessor. */

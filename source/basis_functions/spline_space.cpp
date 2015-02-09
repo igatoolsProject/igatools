@@ -86,7 +86,7 @@ init()
 #ifndef NDEBUG
     auto const knots_size = this->get_grid()->get_num_knots_dim();
     for (auto comp : components)
-        for (auto j : dims)
+        for (auto j : Topology::active_directions)
         {
             const auto deg = deg_[comp][j];
             const auto order = deg + 1;
@@ -119,7 +119,7 @@ init()
 
 #ifndef NDEBUG
     for (auto comp : components)
-        for (auto dir : dims)
+        for (auto dir : Topology::active_directions)
             if (periodic_[comp][dir])
             {
                 const auto deg = deg_[comp][dir];

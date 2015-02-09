@@ -23,8 +23,6 @@
 
 IGA_NAMESPACE_OPEN
 
-template <class GridType>
-constexpr std::array<Size, GridType::dim> GridWrapper<GridType>::dims;
 
 template <class GridType>
 GridWrapper<GridType>::

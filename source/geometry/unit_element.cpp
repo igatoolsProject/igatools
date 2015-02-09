@@ -34,6 +34,10 @@ fill_skeleton_size()
 }
 
 
+template <int dim>
+const std::array<Size, dim>
+UnitElement<dim>::active_directions = sequence<dim>();
+
 
 template <int dim>
 const std::array<Size, dim + 1>
