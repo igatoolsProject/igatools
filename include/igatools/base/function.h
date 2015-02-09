@@ -63,7 +63,7 @@ template <int, int, int, int> class FunctionElement;
  */
 template<int dim_, int codim_ = 0, int range_ = 1, int rank_ = 1>
 class Function
-		: public GridElementHandler<dim_>
+    : public GridElementHandler<dim_>
 {
 private:
     using base_t = Function<dim_, codim_, range_, rank_>;

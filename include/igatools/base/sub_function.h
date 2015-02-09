@@ -34,8 +34,8 @@ IGA_NAMESPACE_OPEN
  */
 template<int sub_dim, int dim, int codim, int range, int rank>
 class SubFunction :
-		public Function<sub_dim, codim + (dim-sub_dim), range, rank>,
-		public std::enable_shared_from_this<SubFunction<sub_dim,dim,codim,range,rank>>
+    public Function<sub_dim, codim + (dim-sub_dim), range, rank>,
+    public std::enable_shared_from_this<SubFunction<sub_dim,dim,codim,range,rank>>
 {
 private:
     using self_t = SubFunction<sub_dim, dim, codim, range, rank>;
@@ -173,8 +173,8 @@ private:
 
 template<int sub_dim, int dim, int space_dim>
 class SubMapFunction :
-		public MapFunction<sub_dim, space_dim>,
-		public std::enable_shared_from_this<SubMapFunction<sub_dim,dim,space_dim>>
+    public MapFunction<sub_dim, space_dim>,
+    public std::enable_shared_from_this<SubMapFunction<sub_dim,dim,space_dim>>
 {
 private:
     using self_t = SubMapFunction<sub_dim, dim, space_dim>;

@@ -31,7 +31,7 @@ IGA_NAMESPACE_OPEN
 template<class Space>
 class IgFunction :
     public Function<Space::dim, Space::codim, Space::range, Space::rank>,
-	public std::enable_shared_from_this<IgFunction<Space>>
+    public std::enable_shared_from_this<IgFunction<Space>>
 {
 public:
     static const int dim = Space::dim;
