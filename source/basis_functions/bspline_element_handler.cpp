@@ -198,11 +198,11 @@ operator()(const T &quad1)
     const auto n_inter = space_->get_grid()->get_num_intervals();
 
 #ifndef NDEBUG
-    for (int dir = 0 ; dir < dim ; ++dir)
-        Assert(!intervals_id_directions_[dir].empty(),ExcEmptyObject());
+    for (const auto &intervals_id : intervals_id_directions_)
+        Assert(!intervals_id.empty(),ExcEmptyObject());
 #endif
 
-    for (auto &s_id: UnitElement<dim>::template elems_ids<k>())
+    for (auto &s_id: Topology::template elems_ids<k>())
     {
 
         auto &g_cache = std::get<k>(*splines1d_)[s_id];
@@ -214,7 +214,7 @@ operator()(const T &quad1)
         // Allocate space for the BasisValues1D
         for (auto comp : active_components_id)
         {
-            for (int dir = 0 ; dir < dim ; ++dir)
+            for (const int dir : Topology::active_directions)
             {
                 const auto &intervals_id = intervals_id_directions_[dir];
 
@@ -247,7 +247,7 @@ operator()(const T &quad1)
         LengthCompContainer len_right(end_interval.get_comp_map());
 
         // First/last interval treatment
-        for (int dir = 0 ; dir < dim ; ++dir)
+        for (const int dir : Topology::active_directions)
         {
             const auto &intervals_id = intervals_id_directions_[dir];
 
@@ -380,7 +380,7 @@ reset_selected_elements(
             intervals_id_unique[dir].insert(elem_tensor_id[dir]);
     }
 
-    for (int dir = 0 ; dir < dim ; ++dir)
+    for (const int dir : Topology::active_directions)
     {
         reset_impl_.intervals_id_directions_[dir].assign(
             intervals_id_unique[dir].begin(),intervals_id_unique[dir].end());
@@ -419,7 +419,7 @@ operator()(const T &quad)
     const auto n_points = grid_handler_->template get_num_points<T::k>();
     const auto flag = (*flags_)[T::k];
 
-    for (auto &s_id: UnitElement<dim>::template elems_ids<T::k>())
+    for (auto &s_id: Topology::template elems_ids<T::k>())
     {
         auto &s_cache = cache->template get_value_cache<T::k>(s_id);
         s_cache.resize(flag, n_points, n_basis);

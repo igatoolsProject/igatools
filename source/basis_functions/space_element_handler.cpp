@@ -110,6 +110,15 @@ SpaceElementHandler(std::shared_ptr<const PhysSpace> space)
     ref_space_handler_(space->get_reference_space()->create_elem_handler())
 {}
 
+template<class PhysSpace>
+auto
+SpaceElementHandler<PhysSpace>::
+create(std::shared_ptr<const PhysSpace> space) -> std::shared_ptr<self_t>
+{
+    Assert(space != nullptr,ExcNullPtr());
+    return std::shared_ptr<self_t>(new self_t(space));
+}
+
 
 
 template<class PhysSpace>

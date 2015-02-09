@@ -40,8 +40,6 @@ public:
     using ElementAccessor = typename Space::ElementAccessor;
 
     static const int l = iga::max(0, dim_-num_sub_elem);
-//    using v1 = typename seq<QuadratureTensorProduct, l, dim_>::type;
-//    using quadrature_variant = typename boost::make_variant_over<v1>::type;
 
     using v2 = typename seq<Int, l, dim_>::type;
     using topology_variant = typename boost::make_variant_over<v2>::type;
@@ -54,10 +52,29 @@ public:
     static std::shared_ptr<ReferenceElementHandler<dim_,range_,rank_> >
     create(std::shared_ptr<const Space> space);
 
+    /** @name Constructors */
+    ///@{
+    /**
+     * Default constructor. Not allowed to be used.
+     */
+    ReferenceElementHandler() = delete;
+
+    /**
+     * Destructor.
+     */
     virtual ~ReferenceElementHandler() = default;
 
+    /**
+     * Copy constructor. Not allowed to be used.
+     */
     ReferenceElementHandler(const ReferenceElementHandler<dim_,range_,rank_> &elem_handler) = delete;
+
+    /**
+     * Move constructor. Not allowed to be used.
+     */
     ReferenceElementHandler(ReferenceElementHandler<dim_,range_,rank_> &&elem_handler) = delete;
+    ///@}
+
 
     /**
      * Resets all the internal data in order to use the

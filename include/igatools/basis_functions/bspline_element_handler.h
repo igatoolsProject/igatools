@@ -64,25 +64,61 @@ class BSplineElementHandler : public ReferenceElementHandler<dim_,range_,rank_>
 
     using Value = typename Space::Value;
 
+
 protected:
 
     using BaseSpace = ReferenceSpace<dim_,range_,rank_>;
     using RefElementIterator = typename BaseSpace::ElementIterator;
     using RefElementAccessor = typename BaseSpace::ElementAccessor;
 
-//    using ElementIterator = typename Space::ElementIterator;
-//    using ElementAccessor = typename Space::ElementAccessor;
+    using Topology = UnitElement<dim_>;
 
 
+private:
+    /**
+     * Assignment operators.
+     */
+    ///@{
+    /**
+     * Copy assignment operator. Not allowed to be used.
+     */
+    self_t &operator=(const self_t &) = delete;
+
+    /**
+     * Move assignment operator. Not allowed to be used.
+     */
+    self_t &operator=(self_t &&) = delete;
+    ///@}
+
+    /**
+     * @name Constructors.
+     */
+    ///@{
+
+    /**
+     * Default constructor. Not allowed to be used.
+     */
+    BSplineElementHandler() = delete;
+
+    BSplineElementHandler(std::shared_ptr<const Space> space);
+
+    /**
+     * Copy constructor. Not allowed to be used.
+     */
+    BSplineElementHandler(const self_t &) = delete;
+
+    /**
+     * Move constructor. Not allowed to be used.
+     */
+    BSplineElementHandler(self_t &&) = delete;
+    ///@}
 
 public:
     static const int dim = dim_;
 
-protected:
-    //Allocates and fill the (global) cache
-    BSplineElementHandler(std::shared_ptr<const Space> space);
-
-public:
+    /**
+     * Destructor.
+     */
     virtual ~BSplineElementHandler() = default;
 
     static std::shared_ptr<self_t> create(std::shared_ptr<const Space> space)
@@ -162,7 +198,7 @@ private:
     }
 
 
-    std::array<FunctionFlags, dim + 1> flags_;
+    std::array<FunctionFlags, dim_ + 1> flags_;
 
     template <class T>
     using DirectionTable = CartesianProductArray<T, dim_>;
@@ -207,10 +243,9 @@ private:
             {
                 const auto &basis_values_1d_comp = basis_values_1d_table_[c];
 
-                for (int i = 0; i < dim; ++i)
-                {
+                for (const int i : Topology::active_directions)
                     result[c][i] = BasisValues1dConstView(basis_values_1d_comp[i].at(id[i]));
-                }
+
                 result[c].update_size();
             }
             return result;
@@ -228,7 +263,7 @@ private:
             {
                 out.begin_item("Active Component ID: " + to_string(comp));
 
-                for (int dir = 0 ; dir < dim ; ++ dir)
+                for (const int dir : Topology::active_directions)
                 {
                     out.begin_item("Direction : " + to_string(dir));
 

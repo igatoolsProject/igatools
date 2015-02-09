@@ -51,13 +51,55 @@ public:
 
     using PhysSpace::PushForwardType::type;
 
-    //Allocates and fill the (global) cache
+    /**
+     * @name Constructors
+     */
+    ///@{
+    /**
+     * Default constructor. Not allowed to be used.
+     */
+    SpaceElementHandler() = delete;
+
     SpaceElementHandler(std::shared_ptr<const PhysSpace> space);
 
-    static std::shared_ptr<self_t> create(std::shared_ptr<const PhysSpace> space)
-    {
-        return std::shared_ptr<self_t>(new self_t(space));
-    }
+    /**
+     * Copy constructor. Not allowed to be used.
+     */
+    SpaceElementHandler(const self_t &) = delete;
+
+    /**
+     * Move constructor. Not allowed to be used.
+     */
+    SpaceElementHandler(self_t &&) = delete;
+
+    /**
+     * Destructor.
+     */
+    ~SpaceElementHandler() = default;
+    ///@}
+
+    /**
+     * Assignment operators.
+     */
+    ///@{
+    /**
+     * Copy assignment operator. Not allowed to be used.
+     */
+    self_t &operator=(const self_t &) = delete;
+
+    /**
+     * Move assignment operator. Not allowed to be used.
+     */
+    self_t &operator=(self_t &&) = delete;
+    ///@}
+
+    /**
+     * @name Creators.
+     */
+    ///@{
+    static std::shared_ptr<self_t> create(std::shared_ptr<const PhysSpace> space);
+    ///@}
+
 
     template<int k>
     void reset(const ValueFlags flag, const EvaluationPoints<k> &eval_pts);
@@ -96,11 +138,6 @@ public:
     {
         init_cache<k>(*elem);
     }
-
-    //    void init_all_caches(ElementIterator &elem)
-    //    {
-    //        init_all_caches(*elem);
-    //    }
 
 
     void print_info(LogStream &out) const;

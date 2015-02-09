@@ -60,13 +60,58 @@ protected:
     void fill_element_cache(ElementAccessor &elem);
 public:
 
+    /**
+     * @name Creators.
+     */
+    ///@{
     static std::shared_ptr<GridElementHandler<dim>> create(std::shared_ptr<GridType> grid);
+    ///@}
 
-    //Allocates and fill the (global) cache
+    /**
+     * @name Constructors
+     */
+    ///@{
+    /**
+     * Default constructor. Not allowed to be used.
+     */
+    GridElementHandler() = delete;
+
+    /**
+     * Constructor.
+     */
     GridElementHandler(std::shared_ptr<GridType> grid);
 
+    /**
+     * Copy constructor.
+     */
     GridElementHandler(const self_t &) = default;
 
+    /**
+     * Move constructor.
+     */
+    GridElementHandler(self_t &&) = default;
+
+    /**
+     * Destructor.
+     */
+    ~GridElementHandler() = default;
+    ///@}
+
+
+    /**
+     * Assignment operators.
+     */
+    ///@{
+    /**
+     * Copy assignment operator. Not allowed to be used.
+     */
+    self_t &operator=(const self_t &) = delete;
+
+    /**
+     * Move assignment operator. Not allowed to be used.
+     */
+    self_t &operator=(self_t &&) = delete;
+    ///@}
 
 //protected:
 public:

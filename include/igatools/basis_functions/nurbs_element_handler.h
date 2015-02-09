@@ -82,9 +82,45 @@ public:
 
 
 private:
+    /** @name Constructors.*/
+    ///@{
+    /**
+     * Default constructor. Not allowed to be used.
+     */
+    NURBSElementHandler() = delete;
+
     NURBSElementHandler(std::shared_ptr<const Space> space);
 
+    /**
+     * Copy constructor. Not allowed to be used.
+     */
+    NURBSElementHandler(const self_t &) = delete;
+
+    /**
+     * Move constructor. Not allowed to be used.
+     */
+    NURBSElementHandler(self_t &&) = delete;
+    ///@}
+
+    /**
+     * Assignment operators.
+     */
+    ///@{
+    /**
+     * Copy assignment operator. Not allowed to be used.
+     */
+    self_t &operator=(const self_t &) = delete;
+
+    /**
+     * Move assignment operator. Not allowed to be used.
+     */
+    self_t &operator=(self_t &&) = delete;
+    ///@}
+
 public:
+    /**
+     * Destructor.
+     */
     virtual ~NURBSElementHandler() = default;
 
 
