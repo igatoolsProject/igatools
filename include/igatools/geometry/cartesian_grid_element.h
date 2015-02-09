@@ -61,6 +61,8 @@ public:
     /** Dimension of the grid like container */
     static const auto dim = ContainerType::dim;
 
+    using Topology = UnitElement<dim_>;
+
     using Point = Points<dim>;
 
 public:
@@ -286,60 +288,18 @@ public:
     Real get_measure(const int j) const;
 
     /**
-     * Returns the k dimiensional j-th sub-element measure
+     * Returns the <tt>k</tt> dimensional j-th sub-element measure
      * multiplied by the weights of the quadrature.
      */
     template <int k>
-    ValueVector<Real> get_w_measures(const int) const;
+    ValueVector<Real> get_w_measures(const int j) const;
 
-    /**
-     * Returns measure of the element or of the element-face in the
-     * CartesianGrid.
-     * @note The topology for which the measure is computed is specified by
-     * the input argument @p topology_id.
-     */
-//    Real get_measure() const;
-//    /**
-//     * Returns measure of j-th face.
-//     */
-//    Real get_face_measure(const int j) const;
-
-
-
-//public:
-//    /**
-//     * Returns the element measure multiplied by the weights of the quadrature
-//     * scheme used to initialize the accessor's cache.
-//     */
-//    ValueVector<Real> get_w_measures() const;
-
-//    /**
-//     * Returns the element-face measure multiplied by the weights of the
-//     * quadrature scheme
-//     * used to initialize the accessor's cache.
-//     * The face is specified by the input argument @p face_id
-//     */
-//    ValueVector<Real> get_face_w_measures(const Index face_id) const;
 
     template <int k = dim>
     ValueVector<Point> get_points(const int j = 0) const;
 
 
 public:
-//    /**
-//     * Return a const reference to the one-dimensional container with the
-//     * values of the map at the evaluation points.
-//     */
-//    ValueVector<Point> const get_points() const;
-//
-//    /**
-//     * Return a const reference to the one-dimensional container with the
-//     * values of the map at the evaluation points on the face specified
-//     * by @p face_id.
-//     */
-//    ValueVector<Point> const get_face_points(const Index face_id) const;
-//    ///@}
-
     /**
      * Prints internal information about the CartesianGridElementAccessor.
      * Its main use is for testing and debugging.

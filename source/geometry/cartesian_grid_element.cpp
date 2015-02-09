@@ -140,14 +140,6 @@ CartesianGridElement<dim_>::
 move_to(const TensorIndex<dim> &tensor_index)
 {
     move_to(grid_->tensor_to_flat(tensor_index));
-    /*
-        tensor_index_= tensor_index;
-        flat_index_ = grid_->tensor_to_flat(tensor_index_);
-
-        Assert((flat_index_ == IteratorState::pass_the_end) ||
-               ((flat_index_ >= 0) && (flat_index_ < grid_->get_num_active_elems())),
-               ExcIndexRange(flat_index_, 0, grid_->get_num_active_elems()));
-    //*/
 }
 
 
@@ -161,7 +153,7 @@ jump(const TensorIndex<dim> &increment)
 
     const auto n_elems = grid_->get_num_intervals();
     bool valid_tensor_index = true;
-    for (int i = 0 ; i < dim ; ++i)
+    for (const auto i : Topology::active_directions)
         if (tensor_index_[i] < 0 || tensor_index_[i] >= n_elems[i])
         {
             valid_tensor_index = false;
@@ -355,7 +347,7 @@ vertex(const int i) const -> Point
     TensorIndex<dim> index = this->get_tensor_index();
 
     auto all_elems = UnitElement<dim>::all_elems;
-    for (int j = 0; j < dim; ++j)
+    for (const auto j : Topology::active_directions)
     {
         auto vertex = std::get<0>(all_elems)[i];
         index[j] += vertex.constant_values[j];
@@ -374,7 +366,7 @@ is_boundary(const Index id) const
     const auto &n_elem = this->get_grid()->get_num_intervals();
     const auto &index = this->get_tensor_index();
 
-    auto &k_elem = UnitElement<dim>::template get_elem<k>(id);
+    auto &k_elem = Topology::template get_elem<k>(id);
 
     for (int i = 0; i < dim-k; ++i)
     {
@@ -396,7 +388,7 @@ bool
 CartesianGridElement<dim_>::
 is_boundary() const
 {
-    for (auto &id : UnitElement<dim>::template elems_ids<k>())
+    for (auto &id : Topology::template elems_ids<k>())
     {
         auto res = is_boundary<k>(id);
         if (res)
@@ -404,13 +396,6 @@ is_boundary() const
     }
     return false;
 }
-//    const int const_direction = UnitElement<dim>::face_constant_direction[face_id];
-//    const int face_side = UnitElement<dim>::face_side[face_id];
-//
-//    const auto element_id_dir = this->get_tensor_index()[const_direction] ;
-//    const auto num_elements_dir = this->get_grid()->get_num_intervals()[const_direction];
-//
-//    return (element_id_dir == ((num_elements_dir-1) * face_side)) ;
 
 
 
@@ -430,25 +415,6 @@ get_measure(const int j) const
 
 
 
-//template <int dim_>
-//inline Real
-//CartesianGridElement<dim_>::
-//get_measure() const
-//{
-//    return get_measure_<0>(0);
-//}
-
-
-
-//template <int dim_>
-//inline Real
-//CartesianGridElement<dim_>::
-//get_face_measure(const Index face_id) const
-//{
-//    // Assert(face_id < n_faces && face_id >= 0, ExcIndexRange(face_id,0,n_faces));
-//    return get_measure_<1>(face_id);
-//}
-
 
 
 template <int dim_>
@@ -466,25 +432,6 @@ get_w_measures(const int j) const
 
 
 
-//template <int dim_>
-//ValueVector<Real>
-//CartesianGridElement<dim_>::
-//get_w_measures() const
-//{
-//    return get_w_measures_<0>(0);
-//}
-
-
-
-//template <int dim_>
-//ValueVector<Real>
-//CartesianGridElement<dim_>::
-//get_face_w_measures(const Index face_id) const
-//{
-//    return get_w_measures_<1>(face_id);
-//}
-
-
 
 template <int dim_>
 template <int k>
@@ -499,14 +446,6 @@ get_coordinate_lengths(const int j) const -> const Point &
 }
 
 
-//template <int dim_>
-//auto
-//CartesianGridElement<dim_>::
-//get_coordinate_lengths() const -> const Point &
-//{
-//    return get_coordinate_lengths_<0>(0);
-//}
-
 
 template <int dim_>
 template <int k>
@@ -514,7 +453,7 @@ auto
 CartesianGridElement<dim_>::
 get_points(const int j) const ->ValueVector<Point>
 {
-    const auto &cache =  local_cache_->template get_value_cache<k>(j);
+    const auto &cache = local_cache_->template get_value_cache<k>(j);
     Assert(cache.flags_handler_.points_filled(), ExcNotInitialized());
     auto translate = vertex(0);
     auto dilate    = get_coordinate_lengths<k>(j);
@@ -528,49 +467,13 @@ get_points(const int j) const ->ValueVector<Point>
         const auto &unit_pt = cache.unit_points_[ipt];
         auto &ref_pt = ref_points[ipt];
 
-        for (int dir = 0 ; dir < dim ; ++dir)
+        for (const auto dir : Topology::active_directions)
             ref_pt[dir] = unit_pt[dir] * dilate[dir] + translate[dir];
     }
     return ref_points;
 }
 
 
-//template <int dim_>
-//auto
-//CartesianGridElement<dim_>::
-//get_points() const -> ValueVector<Point> const
-//{
-//    return get_points_<0>(0);
-//}
-
-
-
-//template <int dim_>
-//auto
-//CartesianGridElement<dim_>::
-//get_face_points(const Index face_id) const -> ValueVector<Point> const
-//{
-//    return get_points_<1>(face_id);
-//}
-
-
-//template <int dim_>
-//array< Real, dim_>
-//CartesianGridElement<dim_>::
-//get_coordinate_lengths() const
-//{
-//    Assert(length_cache_->is_filled(),ExcMessage("Cache not filled"));
-//
-//    const auto &tensor_index = this->get_tensor_index();
-//
-//    array<Real,dim_> coord_length;
-//    for (int d = 0; d<dim_; d++)
-//    {
-//        const auto &length_d = length_cache_->length_.get_data_direction(d);
-//        coord_length[d] = *(length_d[tensor_index[d]]);
-//    }
-//    return coord_length;
-//}
 
 
 

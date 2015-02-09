@@ -105,26 +105,8 @@ public:
     static constexpr int dim = dim_;
 
     /**
-     * Indices for the different coordinate directions.
-     *
-     * Its main use to allow to use the range-based for loop
-     * \code{.cpp}
-       for (const auto &dir : dims)
-       {
-          // do something
-       }
-       \endcode
-     * instead of the traditional for loop
-     * \code{.cpp}
-       for (int dir = 0  ; dir < dim_ ; ++dir)
-       {
-          // do something
-       }
-       \endcode
-     *
+     * Alias for the (static) class holding the topological information.
      */
-//    static constexpr std::array<Size, dim_> dims = sequence<dim>();
-
     using Topology = UnitElement<dim_>;
 
     using Point = Points<dim>;
@@ -149,6 +131,33 @@ public:
     enum class Kind
     {
         uniform, direction_uniform, non_uniform
+    };
+
+
+    /**
+     * Enumerator for different kind of element properties.
+     */
+    enum class ElementProperty : int
+    {
+        /**
+         * Active elements indicators (used for example in hierarchical spaces).
+         */
+        active = 1,   //!< active
+
+        /**
+        * Marked elements indicators.
+        */
+        marked = 2,   //!< marked
+
+        /**
+        * Influence elements indicators  (used for example in hierarchical spaces).
+        */
+        influence = 3,//!< influence
+
+        /**
+         * Number of different element properties allowed.
+         */
+        ENUM_SIZE = 3,//!< ENUM_SIZE
     };
 
     /** @name Constructors*/
@@ -318,6 +327,11 @@ public:
 
     ///@name Getting grid information
     ///@{
+    /**
+     * Returns the number of elements with the <tt>property</tt> specified as input argument.
+     */
+    Size get_num_elements_same_property(const ElementProperty &property) const;
+
     /**
      * Total number of active elements.
      */
@@ -573,34 +587,6 @@ private:
      */
     KnotCoordinates knot_coordinates_;
 
-public:
-
-
-    /**
-     * Enumerator for different kind of element properties.
-     */
-    enum class ElementProperty : int
-    {
-        /**
-         * Active elements indicators (used for example in hierarchical spaces).
-         */
-        active = 1,   //!< active
-
-        /**
-        * Marked elements indicators.
-        */
-        marked = 2,   //!< marked
-
-        /**
-        * Influence elements indicators  (used for example in hierarchical spaces).
-        */
-        influence = 3,//!< influence
-
-        /**
-         * Number of different element properties allowed.
-         */
-        ENUM_SIZE = 3,//!< ENUM_SIZE
-    };
 
 private:
     /**

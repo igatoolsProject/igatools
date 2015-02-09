@@ -505,13 +505,21 @@ get_boundary_normals(const int s_id) const -> BoundaryNormal<sub_dim>
 }
 
 
+template<int dim_>
+Size
+CartesianGrid<dim_>::
+get_num_elements_same_property(const ElementProperty &property) const
+{
+    return this->get_elements_id_same_property(property).size();
+}
+
 
 template<int dim_>
 Size
 CartesianGrid<dim_>::
 get_num_active_elems() const
 {
-    return this->get_elements_id_same_property(ElementProperty::active).size();
+    return this->get_num_elements_same_property(ElementProperty::active);
 }
 
 template<int dim_>
@@ -519,7 +527,7 @@ Size
 CartesianGrid<dim_>::
 get_num_influence_elems() const
 {
-    return this->get_elements_id_same_property(ElementProperty::influence).size();
+    return this->get_num_elements_same_property(ElementProperty::influence);
 }
 
 
@@ -584,7 +592,7 @@ refine_directions(
     grid_pre_refinement_ = make_shared<const self_t>(self_t(*this));
 
     TensorSize<dim_> n_sub_elems;
-    for (auto i : Topology::active_directions)
+    for (const auto i : Topology::active_directions)
     {
         if (refinement_directions[i])
         {
@@ -789,7 +797,7 @@ get_bounding_box() const -> BBox<dim>
 {
     BBox<dim> bounding_box;
 
-    for (int i = 0 ; i < dim ; ++i)
+    for (const auto i : Topology::active_directions)
     {
         bounding_box[i][0] = knot_coordinates_.get_data_direction(i).front();
         bounding_box[i][1] = knot_coordinates_.get_data_direction(i).back();
@@ -813,7 +821,7 @@ find_elements_of_points(const ValueVector<Points<dim>> &points) const
     {
         const auto &point = points[k];
         TensorIndex<dim> elem_t_id;
-        for (int i = 0 ; i < dim ; ++i)
+        for (const auto i : Topology::active_directions)
         {
             const auto &knots = knot_coordinates_.get_data_direction(i);
 
@@ -849,7 +857,7 @@ CartesianGrid<dim>::
 operator==(const CartesianGrid<dim> &grid) const
 {
     bool same_knots_coordinates = true;
-    for (int i = 0 ; i < dim ; ++i)
+    for (const auto i : Topology::active_directions)
     {
         const auto &knots_a =  this->knot_coordinates_.get_data_direction(i);
         const auto &knots_b =   grid.knot_coordinates_.get_data_direction(i);
