@@ -82,7 +82,7 @@ reset(const ValueFlags flag,
     quad_k = quad;
 }
 
-
+#if 0
 template <int dim_>
 template<int k>
 void
@@ -96,7 +96,7 @@ reset_one_element(const ValueFlags flag, const EvaluationPoints<k> &eval_pts, co
     quad_k = quad;
     //*/
 }
-
+#endif
 
 
 template <int dim_>

@@ -46,7 +46,8 @@ template <int, int> class MappingElement;
  * @author pauletti 2014
  */
 template<int dim_, int codim_ = 0>
-class Mapping
+class Mapping :
+    public std::enable_shared_from_this<Mapping<dim_,codim_> >
 {
 private:
     using self_t = Mapping<dim_, codim_>;
@@ -129,7 +130,8 @@ public:
 
     std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const
     {
-        auto elem = std::shared_ptr<ElementAccessor>(new ElementAccessor(F_->get_grid(),flat_index));
+        auto elem = std::shared_ptr<ElementAccessor>(new
+                                                     ElementAccessor(this->get_function(),flat_index));
         Assert(elem != nullptr, ExcNullPtr());
 
         return elem;

@@ -81,7 +81,7 @@ public:
     std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const
     {
         auto elem = std::shared_ptr<ElementAccessor>(
-                        new ElementAccessor(this->get_function()->get_grid(),flat_index));
+                        new ElementAccessor(this->get_function(),flat_index));
         Assert(elem != nullptr,ExcNullPtr());
 
         return elem;

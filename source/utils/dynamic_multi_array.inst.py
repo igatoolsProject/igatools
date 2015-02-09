@@ -31,7 +31,7 @@ data = Instantiation(include_files)
 ma_list = ['DynamicMultiArray<TensorIndex<%s>,%s>' %(dim,dim) 
            for dim in inst.all_domain_dims]
 ma_list = ma_list + ['DynamicMultiArray<%s,%s>' % (t,dim)
-                     for  dim in inst.all_domain_dims for t in ('Real','Index','bool','vector<Index>')]
+                     for  dim in inst.all_domain_dims for t in ('Real','Index')]
 normals = ['special_array<Points<%d>, %d>' %(x.dim, x.codim) for x in inst.all_mapping_dims]
 curvatures = ['vector<Real>']
 

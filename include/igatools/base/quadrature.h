@@ -23,25 +23,92 @@
 
 #include <igatools/base/config.h>
 #include <igatools/utils/array.h>
-#include <igatools/utils/tensor_product_array.h>
+#include <igatools/base/tensor.h>
+#include <igatools/utils/value_vector.h>
+//#include <igatools/utils/tensor_product_array.h>
 
 IGA_NAMESPACE_OPEN
 
-
+/**
+ * @brief This class represents a container for an user-definable set of evaluation points.
+ *
+ *
+ * Its main constructor takes as input arguments the following parameters:
+ * - a vector of points in the space;
+ * - the weights associated to the coordinates of the points;
+ * - the bounding box enclosing the points
+ *   (this is useful if some affine transformation are to be performed).
+ *
+ * The way in which this class is implemented allows to be used both for points having
+ * a tensor-product structure (as for the multi-dimensional Gaussian quadrature scheme)
+ * or for general points over a <tt>dim</tt>-dimensional domain.
+ *
+ * In order to do so, the class does not store the points itself but,
+ * after an analysis/preprocessing stage (done in the constructor),
+ * it stores the points coordinates and a multi-index for each point, that represents the
+ * coordinates id for a given point.
+ * For example, in 2D case, let suppose that the points used in the constructor argument are
+ *
+ * \f[
+ * \mathbf{P}_0 = (0.1,0.2) \quad , \quad
+ * \mathbf{P}_1 = (0.9,0.6) \quad , \quad
+ * \mathbf{P}_2 = (0.5,0.8) \quad , \quad
+ * \mathbf{P}_3 = (0.1,0.8) \quad , \quad
+ * \mathbf{P}_4 = (0.9,0.2)
+ * \f]
+ * then this class stores internally the two vectors of (sorted) coordinates
+ * \f{align*}{
+ * \mathtt{coordinates\_[0]} &= \{0.1,0.5,0.9\} \\
+ * \mathtt{coordinates\_[1]} &= \{0.2,0.6,0.8\}
+ * \f}
+ * and the coordinates id of each point
+ * \f{align*}{
+ * \mathtt{map\_point\_id\_to\_coords\_id\_[0]} &= \{ 1, 1\} \\
+ * \mathtt{map\_point\_id\_to\_coords\_id\_[1]} &= \{ 3, 2\} \\
+ * \mathtt{map\_point\_id\_to\_coords\_id\_[2]} &= \{ 2, 3\} \\
+ * \mathtt{map\_point\_id\_to\_coords\_id\_[3]} &= \{ 1, 3\} \\
+ * \mathtt{map\_point\_id\_to\_coords\_id\_[4]} &= \{ 3, 1\}
+ * \f}
+ *
+ * @ingroup eval_pts_scheme
+ *
+ * @author M. Martinelli
+ * @date 2014, 2015
+ */
 template <int dim_>
 class EvaluationPoints
 {
 public:
 
+    /**
+     * @brief Alias for the point-type that is returned by the function EvaluationPoints::get_point()
+     */
     using Point = Points<dim_>;
+
 
     static const int dim = dim_;
 
+    /**
+     * @name Functions returning information about the number of points and coordinates.
+     */
+    ///@{
     /**
      * Returns the total number of evaluation points.
      */
     int get_num_points() const;
 
+    /**
+     * Returns the number of point coordinates along each direction.
+     */
+    TensorIndex<dim_> get_num_coords_direction() const noexcept;
+    ///@}
+
+
+
+    /**
+     * @name Functions returning informations about the arrangement structure of the points and weights.
+     */
+    ///@{
     /**
      * Returns TRUE if the evaluation points have a tensor-product structure.
      */
@@ -51,17 +118,9 @@ public:
      * Returns TRUE if the weights have a tensor-product structure.
      */
     bool have_weights_tensor_product_struct() const;
-
-    /**
-     * Returns the coordinates indices relative to the point with (flat) index <p>point_id</p>.
-     */
-    TensorIndex<dim_> get_coords_id_from_point_id(const int point_id) const;
+    ///@}
 
 
-    /**
-     * Returns the number of point coordinates along each direction.
-     */
-    TensorIndex<dim_> get_num_coords_direction() const noexcept;
 
 
     /**
@@ -88,18 +147,19 @@ protected:
 
 public:
     /**
-     * Construct the object given a vector of points in the <t>dim_</t>-dimensional space,
+     * Construct the object given a vector of <tt>points</tt>
+     * in the <tt>dim_</tt>-dimensional space,
      * and assign the weights value to be equal to 1.
      *
      * @note It sets the bounding-box to be the hypercube \f$ [0,1]^{dim}\f$.
      */
-    EvaluationPoints(const ValueVector<Point> &pts);
+    EvaluationPoints(const ValueVector<Point> &points);
 
     /**
      * Construct the object given:
-     *   - a vector of <p>points</p> in the <t>dim_</t>-dimensional space;
-     *   - the <p>weights_1d</p> are the weights associated to the points coordinates;
-     *   - the bounding box in which the points are defined.
+     * - a vector of <tt>points</tt> in the <tt>dim_</tt>-dimensional space;
+     * - the <tt>weights_1d</tt> are the weights associated to the points coordinates;
+     * - the <tt>bounding_box</tt> in which the points are defined.
      */
     EvaluationPoints(
         const ValueVector<Point> &points,
@@ -119,7 +179,7 @@ public:
     /**
      * Destructor.
      */
-    virtual ~EvaluationPoints() = default;
+    ~EvaluationPoints() = default;
     ///@}
 
 
@@ -141,38 +201,48 @@ public:
 
 
     /**
-     * Returns coordinates of the points along the <p>i</p>-th direction.
+     * @name Functions returning internal data (points, weights, coordinates, bounding box, etc.)
      */
-    const vector<Real> &get_coords_direction(const int i) const;
-
-
+    ///@{
     /**
      * Returns all the points.
      */
     ValueVector<Point> get_points() const;
 
     /**
-     * Returns all the weights.
-     */
-    ValueVector<Real> get_weights() const;
-
-    const special_array<vector<Real>,dim_> &get_weights_1d() const;
-
-    /**
-     * Returns the coordinates of the the point with (flat) index <p>pt_id</p>
+     * Returns the coordinates of the the point with (flat) index <tt>pt_id</tt>
      */
     Point get_point(const int pt_id) const;
 
     /**
-     * Returns the weight of the the point with (flat) index <p>pt_id</p>
+     * Returns coordinates of the points along the <tt>i</tt>-th direction.
+     */
+    const vector<Real> &get_coords_direction(const int i) const;
+
+    /**
+     * Returns all the weights.
+     */
+    ValueVector<Real> get_weights() const;
+
+    /**
+     * Returns the weight of the the point with (flat) index <tt>pt_id</tt>
      */
     Real get_weight(const int pt_id) const;
 
+
+    const special_array<vector<Real>,dim_> &get_weights_1d() const;
 
     /**
      * Returns the bounding box in which the points are located.
      */
     const BBox<dim_> &get_bounding_box() const;
+
+    /**
+     * Returns the coordinates indices relative to the point with (flat) index <tt>point_id</tt>.
+     */
+    TensorIndex<dim_> get_coords_id_from_point_id(const int point_id) const;
+    ///@}
+
 
     /**
      * @name Functions for performing dilation and translation of the points (and weights).
@@ -206,12 +276,14 @@ public:
     EvaluationPoints<dim_> collapse_to_sub_element(const int id) const;
 
 
-protected:
+private:
 
     /**
-     * Reset the bounding box in which the points must be located.
+     * Reset the <tt>bounding_box</tt> in which the points must be located.
      */
     void reset_bounding_box(const BBox<dim_> &bounding_box);
+
+protected:
 
     /**
      * This function performs the following task:
@@ -247,11 +319,10 @@ protected:
      */
     vector<TensorIndex<dim_>> map_point_id_to_coords_id_;
 
+
     BBox<dim_> bounding_box_;
 
     bool  points_have_tensor_product_struct_ = false;
-
-
 
     bool weights_have_tensor_product_struct_ = false;
 };
@@ -269,6 +340,8 @@ protected:
  * quadrature extension in the hypercube
  * \f$ [0,1]^\text{dim+1} \f$.
  *
+ * @note This class in not intended to be used/instantiated directly .
+ * It's main purpose is to be the base class for QGauss, QGaussLobatto, QUniform.
  */
 template<int dim_>
 class QuadratureTensorProduct
@@ -280,9 +353,6 @@ public:
 
     using typename EvaluationPoints<dim_>::Point;
     using EvaluationPoints<dim_>::dim;
-
-    using WeightArray = TensorProductArray<dim>;
-    using PointArray  = CartesianProductArray<Real, dim>;
 
     ///@name Constructors
     ///@{
@@ -314,15 +384,16 @@ public:
      * weights and the domain coordinates of the d-dimensional hypercube
      * upon which the quadrature is referred to.
      */
-    explicit QuadratureTensorProduct(const PointArray &points,
-                                     const WeightArray &weights,
-                                     const BBox<dim> &bounding_box);
+    explicit QuadratureTensorProduct(
+        const ValueVector<Point> &points,
+        const special_array<vector<Real>,dim_> &weights_1d,
+        const BBox<dim> &bounding_box);
 
 
     /**
      * Destructor.
      */
-    virtual ~QuadratureTensorProduct() = default;
+    ~QuadratureTensorProduct() = default;
 
 
     /**
@@ -359,6 +430,9 @@ protected:
      * @param[in] n_pts_1d Number of points along one direction.
      * @param[out] coords Point coordinates.
      * @param[out] weights Weights associated to the 1D point
+     *
+     * @note It is assumed that the 1D points and weights along each coordinate component
+     * are computed using the same algorithm (but possibly with different number of points).
      */
     void (*compute_coords_and_weight_1d)(const int n_pts_1d, vector<Real> &coords,vector<Real> &weights);
 };

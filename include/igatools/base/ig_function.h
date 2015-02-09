@@ -30,7 +30,8 @@ IGA_NAMESPACE_OPEN
 
 template<class Space>
 class IgFunction :
-    public Function<Space::dim, Space::codim, Space::range, Space::rank>
+    public Function<Space::dim, Space::codim, Space::range, Space::rank>,
+	public std::enable_shared_from_this<IgFunction<Space>>
 {
 public:
     static const int dim = Space::dim;
@@ -44,6 +45,11 @@ private:
     using base_t = Function<dim, codim, range, rank>;
     using parent_t = Function<dim, codim, range, rank>;
     using self_t = IgFunction<Space>;
+
+    std::shared_ptr<const base_t> shared_from_derived() const override final
+    {
+        return this->shared_from_this();
+    }
 
 public:
 
@@ -71,7 +77,7 @@ public:
     create(std::shared_ptr<const Space> space, const CoeffType &coeff);
 
 
-    std::shared_ptr<base_t> clone() const override
+    std::shared_ptr<base_t> clone() const override final
     {
         return std::make_shared<self_t>(self_t(*this));
     }

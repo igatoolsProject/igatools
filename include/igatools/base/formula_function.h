@@ -29,7 +29,9 @@ IGA_NAMESPACE_OPEN
  *
  */
 template<int dim, int codim=0, int range = 1, int rank = 1>
-class FormulaFunction : public Function<dim, codim, range, rank>
+class FormulaFunction :
+		public Function<dim, codim, range, rank>,
+		public std::enable_shared_from_this<FormulaFunction<dim,codim,range,rank>>
 {
 private:
     using parent_t = Function<dim, codim, range, rank>;
@@ -74,6 +76,12 @@ public:
     }
 
     void fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) override;
+
+protected:
+    std::shared_ptr<const parent_t> shared_from_derived() const override final
+    {
+        return this->shared_from_this();
+    }
 
 private:
 

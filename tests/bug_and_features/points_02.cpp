@@ -26,11 +26,34 @@
  */
 
 #include "../tests.h"
-#include "igatools/base/tensor.h"
+#include "igatools/basis_functions/bspline_space.h"
+
+
+template<int dim>
+void
+do_test()
+{
+    OUTSTART
+    auto grid = CartesianGrid<dim>::create(3);
+
+    int degree = 2;
+    auto space = BSplineSpace<dim>::create(degree,grid);
+
+    /*
+        const auto & dof_distribution = space->get_dof_distribution_global();
+    //*/
+    LogStream out;
+    space->print_info(out);
+
+    OUTEND
+}
+
+
 
 int main()
 {
-    Points<2> p2 = {1, 2.5};
+//  do_test<1>();
+    do_test<2>();
 
     return 0;
 }

@@ -52,10 +52,11 @@ public:
     create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
            const Value &b);
 
-    std::shared_ptr<base_t> clone() const override
+    std::shared_ptr<base_t> clone() const override final
     {
         return std::make_shared<self_t>(self_t(*this));
     }
+
 
     ConstantFunction(const self_t &) = default;
 
@@ -82,7 +83,9 @@ private:
 //------------------------------------------------------------------------------
 
 template<int dim, int codim, int range>
-class LinearFunction : public FormulaFunction<dim, codim, range, 1>
+class LinearFunction :
+    public FormulaFunction<dim, codim, range, 1>
+//    public std::enable_shared_from_this<LinearFunction<dim,codim,range> >
 {
 
 public:
@@ -99,17 +102,21 @@ public:
     using Derivative = typename parent_t::template Derivative<order>;
     using typename parent_t::Map;
 
+private:
+
+public:
     static std::shared_ptr<base_t>
     create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
            const Gradient &A,
            const Value &b);
 
-    std::shared_ptr<base_t> clone() const override
+    virtual std::shared_ptr<base_t> clone() const override final
     {
         return std::make_shared<self_t>(self_t(*this));
     }
 
     LinearFunction(const self_t &) = default;
+
 
 protected:
     LinearFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
@@ -169,7 +176,7 @@ public:
     static std::shared_ptr<base_t>
     create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
 
-    std::shared_ptr<base_t> clone() const override
+    std::shared_ptr<base_t> clone() const override final
     {
         return std::make_shared<self_t>(self_t(*this));
     }
@@ -234,7 +241,7 @@ public:
     static std::shared_ptr<base_t>
     create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
 
-    std::shared_ptr<base_t> clone() const override
+    std::shared_ptr<base_t> clone() const override final
     {
         return std::make_shared<self_t>(self_t(*this));
     }
@@ -320,7 +327,7 @@ public:
            const Real theta0,
            const Real theta1);
 
-    std::shared_ptr<base_t> clone() const override
+    std::shared_ptr<base_t> clone() const override final
     {
         return std::make_shared<self_t>(self_t(*this));
     }

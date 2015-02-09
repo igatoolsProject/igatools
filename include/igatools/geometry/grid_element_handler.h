@@ -78,9 +78,10 @@ public:
     template<int k>
     void reset(const ValueFlags flag, const EvaluationPoints<k> &quad);
 
+#if 0
     template<int k>
     void reset_one_element(const ValueFlags flag, const EvaluationPoints<k> &eval_pts, const int elem_flat_id);
-
+#endif
 
     template <int k>
     void init_cache(ElementAccessor &elem);

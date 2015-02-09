@@ -27,7 +27,8 @@ iga_inc_files = ['base/tensor.h',
 data = Instantiation(iga_inc_files)
 (f, inst) = (data.file_output, data.inst)
 
-types = ('Real','Real*', 'Index')
+#types = ('Real','Real*', 'Index')
+types = ('Real', 'Index')
 for dim in inst.all_domain_dims:
     for t in types:
         row = 'CartesianProductArray<%s,%d>' %(t,dim)
@@ -35,11 +36,11 @@ for dim in inst.all_domain_dims:
         for k in range(0, dim+1):
             f.write('template %s::SubProduct<%d> ' %(row, k) +
                     '%s::get_sub_product(const TensorIndex<%d> &index) const; \n'  %(row, k))
+
 #matrix = 'DenseMatrix'
 matrix = 'BernsteinOperator'
 types = (matrix, "const %s *" %matrix, ) + \
 	('vector<%s>' %matrix, 'const vector<%s> *' %matrix)
-#types = types + ('Real','Real*', 'Index')
 ma_list = ['CartesianProductArray<%s,%d>' %(t,dim) 
            for dim in inst.all_domain_dims for t in types]
 

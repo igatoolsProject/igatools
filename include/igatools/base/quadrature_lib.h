@@ -35,6 +35,8 @@ IGA_NAMESPACE_OPEN
  *
  * @note this code was adapted from the dealii library for use
  * in igatools
+ *
+ * @ingroup eval_pts_scheme
  */
 template< int dim >
 class QGauss :
@@ -108,17 +110,71 @@ public:
 
 
 
+class QuadDimZero :
+    public QuadratureTensorProduct<0>
+{
+public:
+    /**
+     * Default constructor. Not allowed to be used.
+     */
+    QuadDimZero() = delete ;
 
+    /**
+     * Constructor.
+     * \note The argument \p n_points is not used. It is here only to mantain a unified interface
+     * for dimension-independent coding.
+     */
+    explicit QuadDimZero(const Size n_points) : QuadratureTensorProduct<0> () {} ;
+
+    /**
+     * Copy constructor. Not allowed to be used
+     */
+    explicit QuadDimZero(const QuadDimZero &quad_scheme) = delete ;
+
+    /**
+     * Copy assignment operator. Not allowed to be used
+     */
+    QuadDimZero &operator=(const QuadDimZero &quad_scheme) = delete ;
+
+
+    /**
+     * Move constructor. Not allowed to be used
+     */
+    explicit QuadDimZero(QuadDimZero &&quad_scheme) = delete ;
+
+    /**
+     * Move assignment operator. Not allowed to be used
+     */
+    QuadDimZero &operator=(QuadDimZero &&quad_scheme) = delete ;
+
+    /**
+     * Destructor.
+     */
+    ~QuadDimZero() = default ;
+};
+
+
+template< >
+class QGauss<0> :
+    public QuadDimZero
+{
+public:
+    using QuadDimZero::QuadDimZero;
+};
+
+#if 0
 template< >
 class QGauss<0> :
     public QuadratureTensorProduct<0>
 {
 public:
+
     QGauss() = delete ;
+
 
     /**
      * Constructor.
-     * \note The argument \p n_points is not used. It is here only to mantain a unified interface
+     * \note The argument \p n_points is not used. It is here only to maintain a unified interface
      * for dimension-independent coding.
      */
     explicit QGauss(const Size n_points) : QuadratureTensorProduct<0> () {} ;
@@ -150,7 +206,7 @@ public:
 
     static std::shared_ptr< QGauss<0> > create();
 } ;
-
+#endif
 
 
 /**
@@ -158,6 +214,9 @@ public:
  *
  * @note this code was adapted from the dealii library for use
  * in igatools
+ *
+ * @ingroup eval_pts_scheme
+ *
  */
 template< int dim >
 class QGaussLobatto :
@@ -232,8 +291,15 @@ public:
 } ;
 
 
+template< >
+class QGaussLobatto<0> :
+    public QuadDimZero
+{
+public:
+    using QuadDimZero::QuadDimZero;
+};
 
-
+#if 0
 template< >
 class QGaussLobatto<0> :
     public QuadratureTensorProduct<0>
@@ -280,11 +346,13 @@ public:
 
     static std::shared_ptr< QGaussLobatto<0> > create();
 } ;
-
+#endif
 
 
 /**
  * @brief Uniform quadrature rule.
+ *
+ * @ingroup eval_pts_scheme
  */
 template< int dim >
 class QUniform :
@@ -363,6 +431,8 @@ public:
 
 /**
  * @brief Trapezoidal quadrature rule, exact for linear polynomials.
+ *
+ * @ingroup eval_pts_scheme
  */
 template <int dim>
 class QTrapez :

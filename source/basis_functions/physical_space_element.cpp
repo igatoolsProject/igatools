@@ -32,7 +32,7 @@ PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
                      const Index index)
     :
     parent_t(phys_space,index),
-    PfElemAccessor(phys_space->get_grid(), index),
+    PfElemAccessor(phys_space->get_map_func(), index),
     ref_space_element_accessor_(phys_space->get_reference_space()->create_element(index))
 {
     Assert(ref_space_element_accessor_ != nullptr, ExcNullPtr());
