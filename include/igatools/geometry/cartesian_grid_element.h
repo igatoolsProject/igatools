@@ -24,7 +24,7 @@
 #include <igatools/base/config.h>
 #include <igatools/base/cache_status.h>
 #include <igatools/base/flags_handler.h>
-#include <igatools/base/quadrature.h>
+#include <igatools/base/evaluation_points.h>
 
 
 #include <igatools/geometry/grid_element_handler.h>

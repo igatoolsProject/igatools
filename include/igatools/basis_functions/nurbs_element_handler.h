@@ -28,7 +28,7 @@
 
 #include <igatools/base/cache_status.h>
 #include <igatools/base/flags_handler.h>
-#include <igatools/base/quadrature.h>
+#include <igatools/base/evaluation_points.h>
 
 //TODO(pauletti, Sep 9, 2014): should we instantiate the cartesian product instead
 //#include <igatools/utils/cartesian_product_array-template.h>
@@ -93,7 +93,6 @@ public:
         return std::shared_ptr<self_t>(new self_t(space));
     }
 
-    using quadrature_variant = typename base_t::quadrature_variant;
     using topology_variant = typename base_t::topology_variant;
     using eval_pts_variant = typename base_t::eval_pts_variant;
 

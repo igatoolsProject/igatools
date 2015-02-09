@@ -59,7 +59,6 @@ public:
 
     virtual ~IgFunction() = default;
 
-    using typename parent_t::variant_1;
     using typename parent_t::topology_variant;
     using typename parent_t::eval_pts_variant;
     using typename parent_t::Point;

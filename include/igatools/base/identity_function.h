@@ -54,7 +54,6 @@ private:
 protected:
     using typename parent_t::GridType;
 public:
-    using typename parent_t::variant_1;
     using typename parent_t::topology_variant;
     using typename parent_t::Point;
     using typename parent_t::Value;

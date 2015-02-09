@@ -26,7 +26,7 @@
 #include <igatools/base/cache_status.h>
 #include <igatools/base/flags_handler.h>
 
-#include <igatools/base/quadrature.h>
+#include <igatools/base/evaluation_points.h>
 #include <igatools/geometry/cartesian_grid_element.h>
 
 #include <igatools/utils/value_vector.h>

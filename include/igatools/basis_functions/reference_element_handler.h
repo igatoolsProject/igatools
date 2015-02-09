@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/flags_handler.h>
-#include <igatools/base/quadrature.h>
+#include <igatools/base/evaluation_points.h>
 
 #include <igatools/geometry/grid_element_handler.h>
 #include <igatools/basis_functions/reference_space.h>
@@ -40,8 +40,8 @@ public:
     using ElementAccessor = typename Space::ElementAccessor;
 
     static const int l = iga::max(0, dim_-num_sub_elem);
-    using v1 = typename seq<QuadratureTensorProduct, l, dim_>::type;
-    using quadrature_variant = typename boost::make_variant_over<v1>::type;
+//    using v1 = typename seq<QuadratureTensorProduct, l, dim_>::type;
+//    using quadrature_variant = typename boost::make_variant_over<v1>::type;
 
     using v2 = typename seq<Int, l, dim_>::type;
     using topology_variant = typename boost::make_variant_over<v2>::type;

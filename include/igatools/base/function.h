@@ -26,7 +26,7 @@
 #include <igatools/utils/value_vector.h>
 #include <igatools/geometry/cartesian_grid_iterator.h>
 #include <igatools/geometry/grid_element_handler.h>
-#include <igatools/base/quadrature.h>
+#include <igatools/base/evaluation_points.h>
 
 #include <boost/variant.hpp>
 #include <boost/mpl/vector.hpp>
@@ -77,8 +77,8 @@ public:
 
 public:
     static const int l = iga::max(0, dim_-num_sub_elem);
-    using v1 = typename seq<QuadratureTensorProduct, l, dim_>::type;
-    using variant_1 = typename boost::make_variant_over<v1>::type;
+//    using v1 = typename seq<QuadratureTensorProduct, l, dim_>::type;
+//    using variant_1 = typename boost::make_variant_over<v1>::type;
 
     using v2 = typename seq<Int, l, dim_>::type;
     using topology_variant = typename boost::make_variant_over<v2>::type;

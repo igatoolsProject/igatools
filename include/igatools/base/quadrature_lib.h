@@ -21,7 +21,7 @@
 #define QUADRATURE_LIB_H_
 
 #include <igatools/base/config.h>
-#include <igatools/base/quadrature.h>
+#include <igatools/base/quadrature_tensor_product.h>
 
 #include <memory>
 

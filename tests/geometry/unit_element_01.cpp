@@ -28,7 +28,8 @@
 #include "../tests.h"
 
 #include <igatools/geometry/unit_element.h>
-#include <igatools/base/quadrature.h>
+#include <igatools/base/quadrature_tensor_product.h>
+
 
 template<template<int> class Q, std::size_t... I>
 auto tuple_of_quads(std::index_sequence<I...>)
@@ -40,13 +41,19 @@ auto tuple_of_quads(std::index_sequence<I...>)
 template<int dim, template<int> class Q>
 using TupleList = decltype(tuple_of_quads<Q>(std::make_index_sequence<dim+1>()));
 
+
 template<int dim>
-using QuadList = TupleList<dim, QuadratureTensorProduct>;
+using QuadList = TupleList<dim, EvaluationPoints>;
+//using QuadList = TupleList<dim, QuadratureTensorProduct>;
 
 
 
 template<class ValuesCache, int dim, std::size_t... I>
-auto tuple_of_caches(std::index_sequence<I...>, const QuadratureTensorProduct<dim> &q, const ValuesCache &)
+auto
+tuple_of_caches(
+    std::index_sequence<I...>,
+    const EvaluationPoints<dim> &q,
+    const ValuesCache &)
 -> decltype(std::make_tuple(std::array<ValuesCache,
                             UnitElement<dim>::template num_elem<dim-I>()>() ...))
 {
@@ -56,9 +63,10 @@ auto tuple_of_caches(std::index_sequence<I...>, const QuadratureTensorProduct<di
 
 
 template<int dim, int n_sub_elem>
-using CacheList = decltype(tuple_of_caches(std::make_index_sequence<n_sub_elem+1>(),
-                                           QuadratureTensorProduct<dim>(),
-                                           3));
+using CacheList =
+    decltype(tuple_of_caches(
+                 std::make_index_sequence<n_sub_elem+1>(),
+                 EvaluationPoints<dim>(),3));
 
 
 template<class Func, class Tuple, std::size_t N, std::size_t Min>

@@ -90,7 +90,6 @@ public:
         return std::shared_ptr<self_t>(new self_t(space));
     }
 
-    using quadrature_variant = typename base_t::quadrature_variant;
     using topology_variant = typename base_t::topology_variant;
     using eval_pts_variant = typename base_t::eval_pts_variant;
 

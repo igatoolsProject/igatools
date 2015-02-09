@@ -24,7 +24,7 @@
 
 #include <igatools/base/config.h>
 
-#include <igatools/base/quadrature.h>
+#include <igatools/base/evaluation_points.h>
 #include <igatools/basis_functions/reference_element.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/nurbs_element.h>
@@ -64,8 +64,6 @@ public :
     using PfElemAccessor::type;
 
 
-    /** Type for the quadrature scheme. */
-    using QuadratureType = QuadratureTensorProduct<dim>;
 
 #if 0
     using Value = typename PhysSpace::Value;

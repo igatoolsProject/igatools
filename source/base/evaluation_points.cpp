@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/base/quadrature.h>
+#include <igatools/base/evaluation_points.h>
 #include <igatools/base/exceptions.h>
 #include <igatools/geometry/unit_element.h>
 #include <igatools/utils/multi_array_utils.h>
@@ -46,7 +46,7 @@ EvaluationPoints()
 
 template<int dim_>
 EvaluationPoints<dim_>::
-EvaluationPoints(const BBox<dim> &bounding_box)
+EvaluationPoints(const BBox<dim_> &bounding_box)
     :
     bounding_box_(bounding_box)
 {}
@@ -71,7 +71,7 @@ EvaluationPoints<dim_>::
 EvaluationPoints(
     const ValueVector<Point> &pts,
     const special_array<vector<Real>,dim_> &weights_1d,
-    const BBox<dim> &bounding_box)
+    const BBox<dim_> &bounding_box)
     :
     EvaluationPoints(bounding_box)
 {
@@ -412,72 +412,6 @@ print_info(LogStream &out) const
 }
 
 
-template<int dim_>
-QuadratureTensorProduct<dim_>::
-QuadratureTensorProduct()
-    :
-    EvaluationPoints<dim_>()
-{}
-//*/
-
-template<int dim_>
-QuadratureTensorProduct<dim_>::
-QuadratureTensorProduct(
-    const TensorSize<dim> num_points,
-    void (*compute_coords_and_weight_1d_in)(const int n_pts_id, vector<Real> &coords,vector<Real> &weights),
-    const Real eps_scaling)
-    :
-    EvaluationPoints<dim_>(),
-    compute_coords_and_weight_1d(compute_coords_and_weight_1d_in)
-{
-    this->weights_have_tensor_product_struct_ = true;
-
-    Assert(compute_coords_and_weight_1d != nullptr,ExcNullPtr());
-
-    Assert(eps_scaling >= Real(0.0) && eps_scaling < Real(0.5),
-           ExcMessage("The scaling factor must be >= 0.0 and < 0.5"));
-
-    array<vector<Real>,dim> coords;
-    special_array<vector<Real>,dim> weights_1d;
-    for (int i = 0; i < dim; ++i)
-    {
-        const auto n_pts = num_points[i];
-
-        coords[i].resize(n_pts);
-        weights_1d[i].resize(n_pts);
-        compute_coords_and_weight_1d(n_pts, coords[i], weights_1d[i]);
-
-        if (eps_scaling > 0)
-            for (int ip = 0; ip < n_pts; ++ip)
-                coords[i][ip] = 0.5 + (coords[i][ip] / 0.5 - 1.0) * (0.5 - eps_scaling) ;
-    }
-
-
-    const int n_pts_total = num_points.flat_size();
-    ValueVector<Point> points(n_pts_total);
-
-    const auto n_pts_w = MultiArrayUtils<dim>::compute_weight(num_points);
-    for (int pt_flat_id = 0 ; pt_flat_id < n_pts_total ; ++pt_flat_id)
-    {
-        const auto pt_tensor_id = MultiArrayUtils<dim>::flat_to_tensor_index(pt_flat_id,n_pts_w);
-
-        for (int i = 0 ; i < dim ; ++i)
-            points[pt_flat_id][i] = coords[i][pt_tensor_id[i]];
-    }
-    this->reset_points_coordinates_and_weights(points,weights_1d);
-}
-
-
-template<int dim_>
-QuadratureTensorProduct<dim_>::
-QuadratureTensorProduct(
-    const ValueVector<Point> &points,
-    const special_array<vector<Real>,dim_> &weights_1d,
-    const BBox<dim> &bounding_box)
-    :
-    EvaluationPoints<dim_>(points,weights_1d,bounding_box)
-{}
-
 
 template<int dim_>
 template<int k>
@@ -485,12 +419,12 @@ auto
 EvaluationPoints<dim_>::
 collapse_to_sub_element(const int sub_elem_id) const -> EvaluationPoints<dim_>
 {
-    auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
+    auto &k_elem = UnitElement<dim_>::template get_elem<k>(sub_elem_id);
 
     using EvalPts = EvaluationPoints<dim_>;
-    using EvalPtsTP = QuadratureTensorProduct<dim_>;
+//    using EvalPtsTP = QuadratureTensorProduct<dim_>;
 
-    BBox<dim> new_bounding_box;
+    BBox<dim_> new_bounding_box;
     const auto &old_bounding_box = this->get_bounding_box();
 
     const auto &old_weights_1d = this->get_weights_1d();
@@ -528,7 +462,7 @@ collapse_to_sub_element(const int sub_elem_id) const -> EvaluationPoints<dim_>
             const auto n_pts = n_coords.flat_size();
             const auto pt_size_w = MultiArrayUtils<dim_>::compute_weight(n_coords);
 
-            ValueVector<Points<dim>> new_points(n_pts);
+            ValueVector<Points<dim_>> new_points(n_pts);
             for (int pt_f_id = 0 ; pt_f_id < n_pts ; ++pt_f_id)
             {
                 const auto pt_t_id = MultiArrayUtils<dim_>::flat_to_tensor_index(pt_f_id,pt_size_w);
@@ -538,11 +472,11 @@ collapse_to_sub_element(const int sub_elem_id) const -> EvaluationPoints<dim_>
                     point[dir] = new_coords_1d[dir][pt_t_id[dir]];
             }
 
-            return EvalPtsTP(new_points,new_weights_1d,new_bounding_box);
+            return EvalPts(new_points,new_weights_1d,new_bounding_box);
         } // end if (k > 0)
         else
         {
-            ValueVector<Points<dim>> new_points;
+            ValueVector<Points<dim_>> new_points;
 
             const auto val = k_elem.constant_values[0];
 
@@ -673,4 +607,4 @@ extend_sub_elem_quad(const EvaluationPoints<0> &eval_pts,
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/base/quadrature.inst>
+#include <igatools/base/evaluation_points.inst>

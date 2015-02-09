@@ -47,7 +47,6 @@ public:
 
     using typename base_t::GridType;
 
-    using typename base_t::variant_1;
     using typename base_t::topology_variant;
     using typename base_t::eval_pts_variant;
     using typename base_t::ElementAccessor;
@@ -184,7 +183,6 @@ public:
 
     using typename base_t::GridType;
 
-    using typename base_t::variant_1;
     using typename base_t::topology_variant;
     using typename base_t::eval_pts_variant;
     using typename base_t::ElementAccessor;
