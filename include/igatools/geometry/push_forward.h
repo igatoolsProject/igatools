@@ -43,6 +43,8 @@ private:
     using MapType = Mapping<dim_, codim_>;
     using typename MapType::FuncType;
 public:
+    using Topology = UnitElement<dim_>;
+
     using ElementAccessor = PushForwardElement<type_, dim_, codim_>;
     using ElementIterator = CartesianGridIterator<ElementAccessor>;
     using MapType::space_dim;

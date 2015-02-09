@@ -28,8 +28,8 @@ using std::endl;
 
 IGA_NAMESPACE_OPEN
 
-template <int dim_>
-CartesianGridElement<dim_>::
+template <int dim>
+CartesianGridElement<dim>::
 CartesianGridElement(const std::shared_ptr<ContainerType> grid,
                      const Index index)
     :
@@ -41,8 +41,8 @@ CartesianGridElement(const std::shared_ptr<ContainerType> grid,
 
 
 
-template <int dim_>
-CartesianGridElement<dim_>::
+template <int dim>
+CartesianGridElement<dim>::
 CartesianGridElement(const std::shared_ptr<ContainerType> grid,
                      const TensorIndex<dim> index)
     :
@@ -51,9 +51,9 @@ CartesianGridElement(const std::shared_ptr<ContainerType> grid,
 
 
 
-template <int dim_>
-CartesianGridElement<dim_>::
-CartesianGridElement(const CartesianGridElement<dim_> &elem, const CopyPolicy &copy_policy)
+template <int dim>
+CartesianGridElement<dim>::
+CartesianGridElement(const CartesianGridElement<dim> &elem, const CopyPolicy &copy_policy)
 {
     grid_         = elem.grid_;
     flat_index_   = elem.flat_index_;
@@ -73,20 +73,20 @@ CartesianGridElement(const CartesianGridElement<dim_> &elem, const CopyPolicy &c
 }
 
 
-template <int dim_>
-std::shared_ptr<CartesianGridElement<dim_> >
-CartesianGridElement<dim_>::
+template <int dim>
+std::shared_ptr<CartesianGridElement<dim> >
+CartesianGridElement<dim>::
 clone() const
 {
-    auto elem = std::shared_ptr<CartesianGridElement<dim_> >(
+    auto elem = std::shared_ptr<CartesianGridElement<dim> >(
                     new CartesianGridElement(*this,CopyPolicy::deep));
     Assert(elem != nullptr, ExcNullPtr());
     return elem;
 }
 
-template <int dim_>
+template <int dim>
 auto
-CartesianGridElement<dim_>::
+CartesianGridElement<dim>::
 get_grid() const -> const std::shared_ptr<ContainerType>
 {
     return grid_;
@@ -94,10 +94,10 @@ get_grid() const -> const std::shared_ptr<ContainerType>
 
 
 
-template <int dim_>
+template <int dim>
 inline
 auto
-CartesianGridElement<dim_>::
+CartesianGridElement<dim>::
 get_flat_index() const -> Index
 {
     return flat_index_ ;
@@ -105,19 +105,19 @@ get_flat_index() const -> Index
 
 
 
-template <int dim_>
+template <int dim>
 inline
 auto
-CartesianGridElement<dim_>::
+CartesianGridElement<dim>::
 get_tensor_index() const -> TensorIndex<dim>
 {
     return tensor_index_ ;
 }
 
 
-template <int dim_>
+template <int dim>
 void
-CartesianGridElement<dim_>::
+CartesianGridElement<dim>::
 move_to(const Index flat_index)
 {
     Assert((flat_index == IteratorState::pass_the_end) ||
@@ -134,9 +134,9 @@ move_to(const Index flat_index)
 
 
 
-template <int dim_>
+template <int dim>
 void
-CartesianGridElement<dim_>::
+CartesianGridElement<dim>::
 move_to(const TensorIndex<dim> &tensor_index)
 {
     move_to(grid_->tensor_to_flat(tensor_index));
@@ -144,9 +144,9 @@ move_to(const TensorIndex<dim> &tensor_index)
 
 
 
-template <int dim_>
+template <int dim>
 bool
-CartesianGridElement<dim_>::
+CartesianGridElement<dim>::
 jump(const TensorIndex<dim> &increment)
 {
     tensor_index_ += increment;
@@ -168,13 +168,13 @@ jump(const TensorIndex<dim> &increment)
 }
 
 
-template <int dim_>
+template <int dim>
 void
-CartesianGridElement<dim_>::
+CartesianGridElement<dim>::
 operator++()
 {
     const auto &active_elems = grid_->get_elements_id_same_property(
-                                   CartesianGrid<dim_>::ElementProperty::active);
+                                   CartesianGrid<dim>::ElementProperty::active);
     const auto elem_begin = active_elems.begin();
     const auto elem_end  = active_elems.end();
 
@@ -188,10 +188,10 @@ operator++()
     this->move_to(index);
 }
 
-template <int dim_>
+template <int dim>
 bool
-CartesianGridElement<dim_>::
-is_property_true(const typename CartesianGrid<dim_>::ElementProperty &property) const
+CartesianGridElement<dim>::
+is_property_true(const typename CartesianGrid<dim>::ElementProperty &property) const
 {
     const auto &elems_same_property = grid_->get_elements_id_same_property(property);
     return std::binary_search(elems_same_property.begin(),elems_same_property.end(),flat_index_);
@@ -199,32 +199,32 @@ is_property_true(const typename CartesianGrid<dim_>::ElementProperty &property) 
 
 
 
-template <int dim_>
+template <int dim>
 bool
-CartesianGridElement<dim_>::
+CartesianGridElement<dim>::
 is_influence() const
 {
-    return is_property_true(CartesianGrid<dim_>::ElementProperty::influence);
+    return is_property_true(CartesianGrid<dim>::ElementProperty::influence);
 }
 
 
 
-template <int dim_>
+template <int dim>
 bool
-CartesianGridElement<dim_>::
+CartesianGridElement<dim>::
 is_active() const
 {
-    return is_property_true(CartesianGrid<dim_>::ElementProperty::active);
+    return is_property_true(CartesianGrid<dim>::ElementProperty::active);
 }
 
 
 
-template <int dim_>
+template <int dim>
 void
-CartesianGridElement<dim_>::
+CartesianGridElement<dim>::
 set_influence(const bool influence_flag)
 {
-    using Grid = CartesianGrid<dim_>;
+    using Grid = CartesianGrid<dim>;
     std::const_pointer_cast<Grid>(grid_)->set_element_property(
         Grid::ElementProperty::influence,
         flat_index_,
@@ -235,10 +235,10 @@ set_influence(const bool influence_flag)
 
 
 
-template <int dim_>
+template <int dim>
 bool
-CartesianGridElement<dim_>::
-operator ==(const CartesianGridElement<dim_> &elem) const
+CartesianGridElement<dim>::
+operator ==(const CartesianGridElement<dim> &elem) const
 {
     Assert(this->get_grid() == elem.get_grid(), ExcMessage("Cannot compare elements on different grid."));
     return (this->get_flat_index() == elem.get_flat_index());
@@ -246,48 +246,48 @@ operator ==(const CartesianGridElement<dim_> &elem) const
 
 
 
-template <int dim_>
+template <int dim>
 bool
-CartesianGridElement<dim_>::
-operator !=(const CartesianGridElement<dim_> &elem) const
+CartesianGridElement<dim>::
+operator !=(const CartesianGridElement<dim> &elem) const
 {
     Assert(this->get_grid() == elem.get_grid(), ExcMessage("Cannot compare elements on different grid."));
     return (this->get_flat_index() != elem.get_flat_index());
 }
 
-template <int dim_>
+template <int dim>
 bool
-CartesianGridElement<dim_>::
-operator <(const CartesianGridElement<dim_> &elem) const
+CartesianGridElement<dim>::
+operator <(const CartesianGridElement<dim> &elem) const
 {
     Assert(this->get_grid() == elem.get_grid(), ExcMessage("Cannot compare elements on different grid."));
     return (this->get_flat_index() < elem.get_flat_index());
 }
 
-template <int dim_>
+template <int dim>
 bool
-CartesianGridElement<dim_>::
-operator >(const CartesianGridElement<dim_> &elem) const
+CartesianGridElement<dim>::
+operator >(const CartesianGridElement<dim> &elem) const
 {
     Assert(this->get_grid() == elem.get_grid(), ExcMessage("Cannot compare elements on different grid."));
     return (this->get_flat_index() > elem.get_flat_index());
 }
 
 
-template <int dim_>
-CartesianGridElement<dim_> &
-CartesianGridElement<dim_>::
-operator=(const CartesianGridElement<dim_> &element)
+template <int dim>
+CartesianGridElement<dim> &
+CartesianGridElement<dim>::
+operator=(const CartesianGridElement<dim> &element)
 {
     shallow_copy_from(element);
     return *this;
 }
 
 
-template <int dim_>
+template <int dim>
 void
-CartesianGridElement<dim_>::
-copy_from(const CartesianGridElement<dim_> &elem,
+CartesianGridElement<dim>::
+copy_from(const CartesianGridElement<dim> &elem,
           const CopyPolicy &copy_policy)
 {
     Assert(this->get_grid() == elem.get_grid(), ExcMessage("Cannot copy from an element on different grid."));
@@ -316,29 +316,29 @@ copy_from(const CartesianGridElement<dim_> &elem,
 
 
 
-template <int dim_>
+template <int dim>
 void
-CartesianGridElement<dim_>::
-deep_copy_from(const CartesianGridElement<dim_> &elem)
+CartesianGridElement<dim>::
+deep_copy_from(const CartesianGridElement<dim> &elem)
 {
     copy_from(elem,CopyPolicy::deep);
 }
 
 
 
-template <int dim_>
+template <int dim>
 void
-CartesianGridElement<dim_>::
-shallow_copy_from(const CartesianGridElement<dim_> &elem)
+CartesianGridElement<dim>::
+shallow_copy_from(const CartesianGridElement<dim> &elem)
 {
     copy_from(elem,CopyPolicy::shallow);
 }
 
 
 
-template <int dim_>
+template <int dim>
 auto
-CartesianGridElement<dim_>::
+CartesianGridElement<dim>::
 vertex(const int i) const -> Point
 {
     Assert(i < UnitElement<dim>::sub_elements_size[0],
@@ -358,9 +358,9 @@ vertex(const int i) const -> Point
 
 
 
-template <int dim_>
+template <int dim>
 template <int k>
-bool CartesianGridElement<dim_>::
+bool CartesianGridElement<dim>::
 is_boundary(const Index id) const
 {
     const auto &n_elem = this->get_grid()->get_num_intervals();
@@ -382,10 +382,10 @@ is_boundary(const Index id) const
 
 
 
-template <int dim_>
+template <int dim>
 template <int k>
 bool
-CartesianGridElement<dim_>::
+CartesianGridElement<dim>::
 is_boundary() const
 {
     for (auto &id : Topology::template elems_ids<k>())
@@ -400,10 +400,10 @@ is_boundary() const
 
 
 
-template <int dim_>
+template <int dim>
 template <int k>
 Real
-CartesianGridElement<dim_>::
+CartesianGridElement<dim>::
 get_measure(const int j) const
 {
     const auto &cache = local_cache_->template get_value_cache<k>(j);
@@ -417,10 +417,10 @@ get_measure(const int j) const
 
 
 
-template <int dim_>
+template <int dim>
 template <int k>
 ValueVector<Real>
-CartesianGridElement<dim_>::
+CartesianGridElement<dim>::
 get_w_measures(const int j) const
 {
     const auto &cache = local_cache_->template get_value_cache<k>(j);
@@ -433,10 +433,10 @@ get_w_measures(const int j) const
 
 
 
-template <int dim_>
+template <int dim>
 template <int k>
 auto
-CartesianGridElement<dim_>::
+CartesianGridElement<dim>::
 get_coordinate_lengths(const int j) const -> const Point &
 {
     const auto &cache = local_cache_->template get_value_cache<k>(j);
@@ -447,10 +447,10 @@ get_coordinate_lengths(const int j) const -> const Point &
 
 
 
-template <int dim_>
+template <int dim>
 template <int k>
 auto
-CartesianGridElement<dim_>::
+CartesianGridElement<dim>::
 get_points(const int j) const ->ValueVector<Point>
 {
     const auto &cache = local_cache_->template get_value_cache<k>(j);
@@ -477,9 +477,9 @@ get_points(const int j) const ->ValueVector<Point>
 
 
 
-template <int dim_>
+template <int dim>
 void
-CartesianGridElement<dim_>::
+CartesianGridElement<dim>::
 ValuesCache::
 resize(const GridFlags &flags_handler,
        const EvaluationPoints<dim> &quad)
@@ -505,9 +505,9 @@ resize(const GridFlags &flags_handler,
 
 
 
-template <int dim_>
+template <int dim>
 void
-CartesianGridElement<dim_>::
+CartesianGridElement<dim>::
 ValuesCache::print_info(LogStream &out) const
 {
     out.begin_item("Fill flags:");
@@ -527,9 +527,9 @@ ValuesCache::print_info(LogStream &out) const
 
 
 
-template <int dim_>
+template <int dim>
 void
-CartesianGridElement<dim_>::
+CartesianGridElement<dim>::
 print_info(LogStream &out) const
 {
     out << "Flat id = "   << flat_index_ << "    ";
@@ -538,9 +538,9 @@ print_info(LogStream &out) const
 
 
 
-template <int dim_>
+template <int dim>
 void
-CartesianGridElement<dim_>::LocalCache::
+CartesianGridElement<dim>::LocalCache::
 print_info(LogStream &out) const
 {
     cacheutils::print_caches(values_, out);
@@ -558,9 +558,9 @@ print_info(LogStream &out) const
 
 
 
-template <int dim_>
+template <int dim>
 void
-CartesianGridElement<dim_>::
+CartesianGridElement<dim>::
 print_cache_info(LogStream &out) const
 {
     Assert(local_cache_ != nullptr, ExcNullPtr());

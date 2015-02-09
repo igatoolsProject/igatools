@@ -137,9 +137,11 @@ using AllCubeElements = decltype(tuple_of_elements<dim>(std::make_index_sequence
  * "element"
  *
  */
-template <int dim>
+template <int dim_>
 struct UnitElement
 {
+    static const int dim = dim_;
+
     /**
      * Indices for the coordinate directions active on the UnitElement.
      *
@@ -159,14 +161,14 @@ struct UnitElement
        \endcode
      *
      */
-    static const std::array<Size,dim> active_directions;
+    static const std::array<Size,dim_> active_directions;
 
 
     /**
      * Number of elements of dimension k=0,...,dim in the
      * hyper-cube of dimension dim
      */
-    static const std::array<Size, dim + 1> sub_elements_size;
+    static const std::array<Size, dim_ + 1> sub_elements_size;
 
     /**
      * Element of dimension <tt>k</tt> in a cube of dimension <tt>dim</tt>.
@@ -176,22 +178,22 @@ struct UnitElement
     {
         SubElement() = default;
 
-        std::array<Size, dim - k> constant_directions;
-        std::array<Size, dim - k> constant_values;
-        std::array<Size, k>       active_directions;
+        std::array<Size, dim_ - k> constant_directions;
+        std::array<Size, dim_ - k> constant_values;
+        std::array<Size, k>        active_directions;
     };
 
     /**
      * This tuple of size dim+1 provides the caracterization of all
      * j dimensional skeleton of the unit cube
      */
-    static const AllCubeElements<dim> all_elems;
+    static const AllCubeElements<dim_> all_elems;
 
     template<int k>
     static constexpr Size
     num_elem()
     {
-        return skel_size(dim, k);//sub_elements_size[k];
+        return skel_size(dim_, k);//sub_elements_size[k];
     }
 
     template<int k>
@@ -208,7 +210,7 @@ struct UnitElement
         return sequence<num_elem<k>()>();
     }
 
-    static constexpr auto n_faces = num_elem<dim-1>();
+    static constexpr auto n_faces = num_elem<dim_-1>();
 
 };
 

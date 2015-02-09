@@ -34,20 +34,24 @@ fill_skeleton_size()
 }
 
 
-template <int dim>
-const std::array<Size, dim>
-UnitElement<dim>::active_directions = sequence<dim>();
+template <int dim_>
+const int
+UnitElement<dim_>::dim;
+
+template <int dim_>
+const std::array<Size, dim_>
+UnitElement<dim_>::active_directions = sequence<dim_>();
 
 
-template <int dim>
-const std::array<Size, dim + 1>
-UnitElement<dim>::sub_elements_size = fill_skeleton_size<dim>();
+template <int dim_>
+const std::array<Size, dim_ + 1>
+UnitElement<dim_>::sub_elements_size = fill_skeleton_size<dim_>();
 
 
 
-template <int dim>
-const decltype(tuple_of_elements<dim>(std::make_index_sequence<dim+1>()))
-UnitElement<dim>::all_elems = construct_cube_elements<dim>();
+template <int dim_>
+const decltype(tuple_of_elements<dim_>(std::make_index_sequence<dim_+1>()))
+UnitElement<dim_>::all_elems = construct_cube_elements<dim_>();
 
 IGA_NAMESPACE_CLOSE
 

@@ -91,23 +91,21 @@ template <int> class GridElementHandler;
  * @ingroup containers
  * @todo document more
  */
-template<int dim_>
+template<int dim>
 class CartesianGrid :
-    protected TensorSizedContainer<dim_>,
-    public std::enable_shared_from_this<CartesianGrid<dim_>>
+    protected TensorSizedContainer<dim>,
+    public std::enable_shared_from_this<CartesianGrid<dim>>
 {
 private:
     /** Type for current class. */
-    using self_t = CartesianGrid<dim_>;
+    using self_t = CartesianGrid<dim>;
 
 public:
-    /** Dimensionality of the grid. */
-    static constexpr int dim = dim_;
 
     /**
      * Alias for the (static) class holding the topological information.
      */
-    using Topology = UnitElement<dim_>;
+    using Topology = UnitElement<dim>;
 
     using Point = Points<dim>;
 
@@ -435,12 +433,12 @@ public:
     /**
      * Transformation from a tensor-index to a flat-index.
      */
-    Index tensor_to_flat(const TensorIndex<dim_> &tensor_index) const;
+    Index tensor_to_flat(const TensorIndex<dim> &tensor_index) const;
 
     /**
      * Transformation from a flat-index to a tensor-index.
      */
-    TensorIndex<dim_> flat_to_tensor(const Index flat_index) const;
+    TensorIndex<dim> flat_to_tensor(const Index flat_index) const;
     ///@}
 
 
@@ -638,7 +636,7 @@ private:
      * referred to a CartesianGrid built as a refinement of the current one using
      * @p n_sub_elems for each element.
      */
-    vector<Index> get_sub_elements_id(const TensorSize<dim_> &n_sub_elems, const Index elem_id) const;
+    vector<Index> get_sub_elements_id(const TensorSize<dim> &n_sub_elems, const Index elem_id) const;
 
     /**
      * Perform a uniform refinement of the knots along the @p direction_id

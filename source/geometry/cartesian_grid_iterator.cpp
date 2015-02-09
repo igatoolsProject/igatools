@@ -34,15 +34,6 @@ CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
 {}
 
 
-#if 0
-template <class Accessor>
-CartesianGridIteratorBase<Accessor>::
-CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
-                          const TensorIndex<dim> &index)
-    :
-    CartesianGridIteratorBase(grid,grid->tensor_to_flat(index))
-{}
-#endif
 
 template <class Accessor>
 CartesianGridIteratorBase<Accessor>::
@@ -76,7 +67,7 @@ CartesianGridIteratorBase(const CartesianGridIteratorBase<Accessor> &it,const Co
 template <class Accessor>
 bool
 CartesianGridIteratorBase<Accessor>::
-jump(const TensorIndex<dim> &increment)
+jump(const TensIndex &increment)
 {
     return accessor_->jump(increment);
 }
@@ -93,7 +84,7 @@ move_to(const Index flat_index)
 template <class Accessor>
 void
 CartesianGridIteratorBase<Accessor>::
-move_to(const TensorIndex<dim> &tensor_index)
+move_to(const TensIndex &tensor_index)
 {
     accessor_->move_to(tensor_index);
 }
@@ -159,37 +150,11 @@ get_flat_index() const
 template <class Accessor>
 auto
 CartesianGridIteratorBase<Accessor>::
-get_tensor_index() const -> TensorIndex<dim>
+get_tensor_index() const -> TensIndex
 {
     return accessor_->get_tensor_index();
 }
 
-
-
-#if 0
-template <class Accessor>
-CartesianGridIterator<Accessor>::
-CartesianGridIterator(std::shared_ptr<ContainerType> grid,const Index index)
-    :
-    CartesianGridIteratorBase<Accessor>(grid,index)
-{}
-
-template <class Accessor>
-CartesianGridIterator<Accessor>::
-CartesianGridIterator(std::shared_ptr<ContainerType> grid,
-                      const TensorIndex<ContainerType::dim> &index)
-    :
-    CartesianGridIteratorBase<Accessor>(grid,index)
-{}
-
-
-template <class Accessor>
-CartesianGridIterator<Accessor>::
-CartesianGridIterator(const CartesianGridIterator<Accessor> &it,const CopyPolicy &copy_policy)
-    :
-    CartesianGridIteratorBase<Accessor>(it,copy_policy)
-{}
-#endif
 
 template <class Accessor>
 Accessor &
@@ -225,30 +190,6 @@ operator -> () const
     return this->accessor_.get();
 }
 
-#if 0
-template <class Accessor>
-CartesianGridConstIterator<Accessor>::
-CartesianGridConstIterator(std::shared_ptr<ContainerType> grid,const Index index)
-    :
-    CartesianGridIteratorBase<Accessor>(grid,index)
-{}
-
-template <class Accessor>
-CartesianGridConstIterator<Accessor>::
-CartesianGridConstIterator(std::shared_ptr<ContainerType> grid,
-                           const TensorIndex<ContainerType::dim> &index)
-    :
-    CartesianGridIteratorBase<Accessor>(grid,index)
-{}
-
-
-template <class Accessor>
-CartesianGridConstIterator<Accessor>::
-CartesianGridConstIterator(const CartesianGridConstIterator<Accessor> &it,const CopyPolicy &copy_policy)
-    :
-    CartesianGridIteratorBase<Accessor>(it,copy_policy)
-{}
-#endif
 
 template <class Accessor>
 const Accessor &

@@ -48,20 +48,20 @@ IGA_NAMESPACE_OPEN
  * @author S.Pauletti, 2012, 2013, 2014
  * @author M.Martinelli, 2013, 2014
  */
-template <int dim_>
+template <int dim>
 class CartesianGridElement
 {
 private:
-    using self_t = CartesianGridElement<dim_>;
+    using self_t = CartesianGridElement<dim>;
 
 public:
     /** Type required by the CartesianGridIterator templated iterator */
-    using ContainerType = const CartesianGrid<dim_>;
+    using ContainerType = const CartesianGrid<dim>;
 
-    /** Dimension of the grid like container */
-    static const auto dim = ContainerType::dim;
-
-    using Topology = UnitElement<dim_>;
+    /**
+     * Alias for the (static) class holding the topological information.
+     */
+    using Topology = UnitElement<dim>;
 
     using Point = Points<dim>;
 
@@ -160,7 +160,7 @@ public:
     /**
      * Tests if a certain element @p property is TRUE.
      */
-    bool is_property_true(const typename CartesianGrid<dim_>::ElementProperty &property) const;
+    bool is_property_true(const typename CartesianGrid<dim>::ElementProperty &property) const;
 
 
     bool is_influence() const;
@@ -222,14 +222,14 @@ public:
      *  @note In debug mode, it is also check they both refer to
      *  the same cartesian grid. No check is done on the cache.
      */
-    bool operator==(const CartesianGridElement<dim_> &elem) const;
+    bool operator==(const CartesianGridElement<dim> &elem) const;
 
     /**
      * True if the elements have different index.
      *  @note In debug mode, it is also check they both refer to
      *  the same cartesian grid. No check is done on the cache.
      */
-    bool operator!=(const CartesianGridElement<dim_> &elem) const;
+    bool operator!=(const CartesianGridElement<dim> &elem) const;
 
     /**
      * True if the flat-index of the element on the left is smaller than
@@ -237,7 +237,7 @@ public:
      *  @note In debug mode, it is also check they both refer to
      *  the same cartesian grid. No check is done on the cache.
      */
-    bool operator<(const CartesianGridElement<dim_> &elem) const;
+    bool operator<(const CartesianGridElement<dim> &elem) const;
 
     /**
      * True if the flat-index of the element on the left is bigger than
@@ -245,7 +245,7 @@ public:
      *  @note In debug mode, it is also check they both refer to
      *  the same cartesian grid. No check is done on the cache.
      */
-    bool operator>(const CartesianGridElement<dim_> &elem) const;
+    bool operator>(const CartesianGridElement<dim> &elem) const;
     ///@}
 
     ///@name Query information that requires the use of the cache
@@ -404,7 +404,7 @@ private:
      * @note For information on the local cache treatment, see the documentation
      * of deep_copy_from().
      */
-    std::shared_ptr<CartesianGridElement<dim_> > clone() const;
+    std::shared_ptr<CartesianGridElement<dim> > clone() const;
 };
 
 IGA_NAMESPACE_CLOSE

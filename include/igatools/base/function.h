@@ -70,15 +70,15 @@ private:
     using self_t = Function<dim_, codim_, range_, rank_>;
     using parent_t = GridElementHandler<dim_>;
 
+
     virtual std::shared_ptr<const self_t> shared_from_derived() const = 0;
 
 public:
+    using Topology = UnitElement<dim_>;
     using typename parent_t::GridType;
 
 public:
     static const int l = iga::max(0, dim_-num_sub_elem);
-//    using v1 = typename seq<QuadratureTensorProduct, l, dim_>::type;
-//    using variant_1 = typename boost::make_variant_over<v1>::type;
 
     using v2 = typename seq<Int, l, dim_>::type;
     using topology_variant = typename boost::make_variant_over<v2>::type;

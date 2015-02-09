@@ -172,7 +172,10 @@ public:
     /** Type of the grid-like container . */
     using ContainerType = typename Accessor::ContainerType;
 
-    static const int dim = ContainerType::dim;
+    /**
+     * Alias for the tensor index.
+     */
+    using TensIndex = TensorIndex<ContainerType::Topology::dim>;
 
     /** @name Constructors & destructor */
     ///@{
@@ -190,14 +193,6 @@ public:
      */
     CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
                               const Index index);
-#if 0
-    /**
-     * Construct an iterator on a grid-type container
-     * grid pointing to the element of given index.
-     */
-    CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
-                              const TensorIndex<dim> &index);
-#endif
 
     /**
      * Construct an iterator using the underlying element pointer.
@@ -278,7 +273,7 @@ public:
      * If the resulting position after the movement is valid (i.e. within the grid), then the function
      * returns true, otherwise it returns false.
      */
-    bool jump(const TensorIndex<dim> &increment);
+    bool jump(const TensIndex &increment);
 
     /**
      * Sets the index of the iterator using the flatten representation.
@@ -297,7 +292,7 @@ public:
      * as it is easy to use incorrectly. Only use it if you know what you
      * are doing.
      */
-    void move_to(const TensorIndex<dim> &tensor_index);
+    void move_to(const TensIndex &tensor_index);
 
     /**
      *  Prefix <tt>++</tt> operator: <tt>++i</tt>. This
@@ -317,7 +312,7 @@ public:
     Index get_flat_index() const;
 
     /** Returns the index of the element in its tensor representation. */
-    TensorIndex<dim> get_tensor_index() const;
+    TensIndex get_tensor_index() const;
     ///@}
 
 protected:
