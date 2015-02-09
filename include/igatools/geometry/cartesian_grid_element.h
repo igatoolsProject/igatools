@@ -69,9 +69,9 @@ public:
     /** @name Constructors */
     ///@{
     /**
-     * Default constructor.
+     * Default constructor. Not allowed to be used.
      */
-    CartesianGridElement() = default;
+    CartesianGridElement() = delete;
 
     /**
      * Construct an accessor pointing to the element with
@@ -104,7 +104,7 @@ public:
      */
     ~CartesianGridElement() = default;
     ///@}
-
+public:
     /**
      * @name Functions for performing different kind of copy.
      */

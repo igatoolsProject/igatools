@@ -31,9 +31,6 @@
 
 IGA_NAMESPACE_OPEN
 
-//template<int dim>
-//using QuadTensorProdList = TupleList<dim, QuadratureTensorProduct>;
-
 template<int dim>
 using EvalPtsList = TupleList<dim, EvaluationPoints>;
 
@@ -45,14 +42,14 @@ using EvalPtsList = TupleList<dim, EvaluationPoints>;
  * in each direction.
  *
  */
-template <int dim_>
+template <int dim>
 class GridElementHandler
 {
 private:
-    using self_t = GridElementHandler<dim_>;
+    using self_t = GridElementHandler<dim>;
 
 public:
-    using GridType = const CartesianGrid<dim_>;
+    using GridType = const CartesianGrid<dim>;
 
 protected:
     using ElementIterator = typename GridType::ElementIterator;
@@ -62,9 +59,8 @@ protected:
     void init_element_cache(ElementAccessor &elem);
     void fill_element_cache(ElementAccessor &elem);
 public:
-    static const int dim = dim_;
 
-    static std::shared_ptr<GridElementHandler<dim_>> create(std::shared_ptr<GridType> grid);
+    static std::shared_ptr<GridElementHandler<dim>> create(std::shared_ptr<GridType> grid);
 
     //Allocates and fill the (global) cache
     GridElementHandler(std::shared_ptr<GridType> grid);
@@ -140,7 +136,6 @@ private:
     std::array<GridFlags, dim + 1> flags_;
 
 protected:
-//    QuadTensorProdList<dim> quad_;
     EvalPtsList<dim> quad_;
 
     TensorProductArray<dim> lengths_;

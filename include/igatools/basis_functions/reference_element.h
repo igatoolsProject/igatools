@@ -52,10 +52,7 @@ public:
     template <int order>
     using Derivative = typename Space::template Derivative<order>;
 
-    ReferenceElement()
-    {
-        Assert(false,ExcNotImplemented());
-    }
+    ReferenceElement() = delete;
 
     ReferenceElement(const ReferenceElement<dim,range,rank> &elem,
                      const iga::CopyPolicy &copy_policy = CopyPolicy::deep)

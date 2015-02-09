@@ -53,12 +53,18 @@ template< class PhysSpace >
 PhysicalSpaceElement<PhysSpace>::
 PhysicalSpaceElement(const PhysicalSpaceElement<PhysSpace> &in,
                      const CopyPolicy &copy_policy)
-//  :
-//  parent_t(in,copy_policy),
-//  PfElemAccessor(in,copy_policy)
-//,
-//  ref_space_element_accessor_(in.ref_space_element_accessor_,copy_policy)
+    :
+    parent_t(in,copy_policy),
+    PfElemAccessor(in,copy_policy)
 {
+    if (copy_policy == CopyPolicy::shallow)
+        ref_space_element_accessor_ = in.ref_space_element_accessor_;
+    else
+    {
+        ref_space_element_accessor_ =
+            shared_ptr<RefElemAccessor>(new RefElemAccessor(*in.ref_space_element_accessor_));
+    }
+
     Assert(false,ExcNotImplemented());
 }
 

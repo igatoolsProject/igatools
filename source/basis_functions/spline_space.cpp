@@ -85,8 +85,8 @@ init()
 {
 #ifndef NDEBUG
     auto const knots_size = this->get_grid()->get_num_knots_dim();
-    for (auto comp : components)
-        for (auto j : Topology::active_directions)
+    for (const auto comp : components)
+        for (const auto j : Topology::active_directions)
         {
             const auto deg = deg_[comp][j];
             const auto order = deg + 1;
@@ -104,8 +104,8 @@ init()
 
     // Determine the dimensionality of the spline space
     typename SpaceDimensionTable::base_t n_basis;
-    for (auto iComp : components)
-        for (int dir = 0; dir < dim; ++dir)
+    for (const auto iComp : components)
+        for (const auto dir : Topology::active_directions)
         {
             const auto deg = deg_[iComp][dir];
             const auto &mult = (*interior_mult_)[iComp].get_data_direction(dir);
@@ -118,8 +118,8 @@ init()
     space_dim_ = n_basis;
 
 #ifndef NDEBUG
-    for (auto comp : components)
-        for (auto dir : Topology::active_directions)
+    for (const auto comp : components)
+        for (const auto dir : Topology::active_directions)
             if (periodic_[comp][dir])
             {
                 const auto deg = deg_[comp][dir];
@@ -152,7 +152,7 @@ refine_h_after_grid_refinement(
                 grid_pre_refinement,
                 interior_mult_prev_refinement));
 
-    for (int direction_id = 0; direction_id < dim; ++direction_id)
+    for (const auto direction_id : Topology::active_directions)
     {
         if (refinement_directions[direction_id])
         {
@@ -216,7 +216,7 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
 #ifndef NDEBUG
     for (auto iComp : components)
     {
-        for (int j = 0; j < dim; ++j)
+        for (const int j : Topology::active_directions)
         {
             const auto &l_knots = boundary_knots[iComp][j].get_data_direction(0);
             const auto &r_knots = boundary_knots[iComp][j].get_data_direction(1);
@@ -266,7 +266,7 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
 
     for (int comp = 0; comp < n_components; ++comp)
     {
-        for (int dir = 0; dir < dim; ++dir)
+        for (const auto dir : Topology::active_directions)
         {
             const auto deg = deg_[comp][dir];
             const auto order = deg + 1;
@@ -423,7 +423,7 @@ accumulated_interior_multiplicities() const -> MultiplicityTable
     MultiplicityTable result;
     for (int iComp = 0; iComp < n_components; ++iComp)
     {
-        for (int j = 0; j < dim; ++j)
+        for (const auto j : Topology::active_directions)
         {
             // Assert(!periodic_[iComp][j], ExcMessage("periodic needs to be implemented"));
             const auto &mult  = (*interior_mult_)[iComp].get_data_direction(j);
@@ -457,7 +457,7 @@ get_multiplicity_from_regularity(const InteriorReg reg,
 
 
     for (int comp : res->get_active_components_id())
-        for (int dir = 0; dir < dim; ++dir)
+        for (const auto dir : Topology::active_directions)
         {
             int val;
             switch (reg)

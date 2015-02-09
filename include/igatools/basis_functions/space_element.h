@@ -77,12 +77,9 @@ public:
     /** @name Constructors */
     ///@{
     /**
-     * Default constructor.
+     * Default constructor. Not allowed to be used.
      */
-    SpaceElement()
-    {
-        Assert(false,ExcNotImplemented());
-    }
+    SpaceElement() = delete;
 
     /**
      * Constructs an accessor to element number index of a

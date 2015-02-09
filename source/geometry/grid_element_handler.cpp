@@ -50,30 +50,30 @@ void init_unif_caches(const GridFlags &flag, const Quad &quad, std::tuple<Args..
 
 
 
-template <int dim_>
-GridElementHandler<dim_>::
+template <int dim>
+GridElementHandler<dim>::
 GridElementHandler(shared_ptr<GridType> grid)
     :
     grid_(grid),
     lengths_(grid->get_element_lengths())
 {}
 
-template <int dim_>
-std::shared_ptr<GridElementHandler<dim_> >
-GridElementHandler<dim_>::
+template <int dim>
+std::shared_ptr<GridElementHandler<dim> >
+GridElementHandler<dim>::
 create(std::shared_ptr<GridType> grid)
 {
-    using ElemHandler = GridElementHandler<dim_>;
+    using ElemHandler = GridElementHandler<dim>;
     auto elem_handler = std::shared_ptr<ElemHandler>(new ElemHandler(grid));
     Assert(elem_handler != nullptr,ExcNullPtr());
     return elem_handler;
 }
 
 
-template <int dim_>
+template <int dim>
 template<int k>
 void
-GridElementHandler<dim_>::
+GridElementHandler<dim>::
 reset(const ValueFlags flag,
       const EvaluationPoints<k> &quad)
 {
@@ -84,9 +84,9 @@ reset(const ValueFlags flag,
 
 
 
-template <int dim_>
+template <int dim>
 void
-GridElementHandler<dim_>::
+GridElementHandler<dim>::
 init_all_caches(ElementAccessor &elem)
 {
     auto &cache = elem.local_cache_;
@@ -100,10 +100,10 @@ init_all_caches(ElementAccessor &elem)
 
 
 
-template <int dim_>
+template <int dim>
 template <int k>
 void
-GridElementHandler<dim_>::
+GridElementHandler<dim>::
 init_cache(ElementAccessor &elem)
 {
     auto &cache = elem.local_cache_;
@@ -123,9 +123,9 @@ init_cache(ElementAccessor &elem)
 
 
 
-template <int dim_>
+template <int dim>
 void
-GridElementHandler<dim_>::
+GridElementHandler<dim>::
 init_element_cache(ElementAccessor &elem)
 {
     init_cache<dim>(elem);
@@ -133,9 +133,9 @@ init_element_cache(ElementAccessor &elem)
 
 
 
-template <int dim_>
+template <int dim>
 void
-GridElementHandler<dim_>::
+GridElementHandler<dim>::
 init_element_cache(ElementIterator &elem)
 {
     init_element_cache(*elem);
@@ -143,10 +143,10 @@ init_element_cache(ElementIterator &elem)
 
 
 
-template <int dim_>
+template <int dim>
 template <int k>
 void
-GridElementHandler<dim_>::
+GridElementHandler<dim>::
 fill_cache(ElementAccessor &elem, const int j)
 {
     Assert(elem.local_cache_ != nullptr, ExcNullPtr());
@@ -175,9 +175,9 @@ fill_cache(ElementAccessor &elem, const int j)
 
 
 
-template <int dim_>
+template <int dim>
 void
-GridElementHandler<dim_>::
+GridElementHandler<dim>::
 fill_element_cache(ElementAccessor &elem)
 {
     fill_cache<dim>(elem, 0);
@@ -185,34 +185,34 @@ fill_element_cache(ElementAccessor &elem)
 
 
 
-template <int dim_>
+template <int dim>
 void
-GridElementHandler<dim_>::
+GridElementHandler<dim>::
 fill_element_cache(ElementIterator &elem)
 {
     fill_element_cache(*elem);
 }
 
 
-template <int dim_>
+template <int dim>
 auto
-GridElementHandler<dim_>::
+GridElementHandler<dim>::
 get_grid() const -> std::shared_ptr<const GridType>
 {
     return grid_;
 }
 
-template <int dim_>
+template <int dim>
 auto
-GridElementHandler<dim_>::
+GridElementHandler<dim>::
 get_lengths() const -> const TensorProductArray<dim> &
 {
     return lengths_;
 }
 
-template <int dim_>
+template <int dim>
 void
-GridElementHandler<dim_>::
+GridElementHandler<dim>::
 print_info(LogStream &out) const
 {
     out.begin_item("Lengths:");

@@ -48,12 +48,9 @@ public:
     /** @name Constructors */
     ///@{
     /**
-     * Default constructor.
+     * Default constructor. Not allowed to be used.
      */
-    MappingElement()
-    {
-        Assert(false,ExcNotImplemented());
-    }
+    MappingElement() = delete;
 
     /**
      * Construct an accessor pointing to the element with
@@ -74,10 +71,7 @@ public:
      * uses the deep copy.
      */
     MappingElement(const self_t &elem,
-                   const CopyPolicy &copy_policy = CopyPolicy::deep)
-    {
-        Assert(false,ExcNotImplemented());
-    }
+                   const CopyPolicy &copy_policy = CopyPolicy::deep);
 
     /**
      * Move constructor.

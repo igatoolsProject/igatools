@@ -116,7 +116,7 @@ private:
 
 
     using WeightElem = typename Space::WeightFunction::ElementAccessor;
-    using WeightElemTable = typename Space::template ComponentContainer<WeightElem>;
+    using WeightElemTable = typename Space::template ComponentContainer<std::shared_ptr<WeightElem>>;
 
 
 

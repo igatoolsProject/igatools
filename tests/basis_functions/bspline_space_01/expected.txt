@@ -1,5 +1,5 @@
 ========================================================================
-void uniform_degree(int, std::shared_ptr<iga::CartesianGrid<dim_> >) [with int dim = 0]
+void uniform_degree(int, std::shared_ptr<iga::CartesianGrid<dim> >) [with int dim = 0]
 ========================================================================
 Spline Space:
    Knots without repetition:
@@ -60,7 +60,7 @@ Bernstein Extraction:
 ========================================================================
 
 ========================================================================
-void uniform_degree(int, std::shared_ptr<iga::CartesianGrid<dim_> >) [with int dim = 1]
+void uniform_degree(int, std::shared_ptr<iga::CartesianGrid<dim> >) [with int dim = 1]
 ========================================================================
 Spline Space:
    Knots without repetition:
@@ -127,7 +127,7 @@ Bernstein Extraction:
 ========================================================================
 
 ========================================================================
-void uniform_degree(int, std::shared_ptr<iga::CartesianGrid<dim_> >) [with int dim = 2]
+void uniform_degree(int, std::shared_ptr<iga::CartesianGrid<dim> >) [with int dim = 2]
 ========================================================================
 Spline Space:
    Knots without repetition:
@@ -200,7 +200,7 @@ Bernstein Extraction:
 ========================================================================
 
 ========================================================================
-void uniform_degree(int, std::shared_ptr<iga::CartesianGrid<dim_> >) [with int dim = 3]
+void uniform_degree(int, std::shared_ptr<iga::CartesianGrid<dim> >) [with int dim = 3]
 ========================================================================
 Spline Space:
    Knots without repetition:
@@ -279,7 +279,7 @@ Bernstein Extraction:
 ========================================================================
 
 ========================================================================
-void direction_degree(const iga::TensorIndex<rank>&, std::shared_ptr<iga::CartesianGrid<dim_> >) [with int dim = 0]
+void direction_degree(const iga::TensorIndex<rank>&, std::shared_ptr<iga::CartesianGrid<dim> >) [with int dim = 0]
 ========================================================================
 Spline Space:
    Knots without repetition:
@@ -340,7 +340,7 @@ Bernstein Extraction:
 ========================================================================
 
 ========================================================================
-void direction_degree(const iga::TensorIndex<rank>&, std::shared_ptr<iga::CartesianGrid<dim_> >) [with int dim = 1]
+void direction_degree(const iga::TensorIndex<rank>&, std::shared_ptr<iga::CartesianGrid<dim> >) [with int dim = 1]
 ========================================================================
 Spline Space:
    Knots without repetition:
@@ -407,7 +407,7 @@ Bernstein Extraction:
 ========================================================================
 
 ========================================================================
-void direction_degree(const iga::TensorIndex<rank>&, std::shared_ptr<iga::CartesianGrid<dim_> >) [with int dim = 2]
+void direction_degree(const iga::TensorIndex<rank>&, std::shared_ptr<iga::CartesianGrid<dim> >) [with int dim = 2]
 ========================================================================
 Spline Space:
    Knots without repetition:
@@ -480,7 +480,7 @@ Bernstein Extraction:
 ========================================================================
 
 ========================================================================
-void direction_degree(const iga::TensorIndex<rank>&, std::shared_ptr<iga::CartesianGrid<dim_> >) [with int dim = 3]
+void direction_degree(const iga::TensorIndex<rank>&, std::shared_ptr<iga::CartesianGrid<dim> >) [with int dim = 3]
 ========================================================================
 Spline Space:
    Knots without repetition:

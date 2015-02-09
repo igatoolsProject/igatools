@@ -37,7 +37,8 @@ NURBSElement(const std::shared_ptr<ContainerType> space,
     weight_elem_table_(space->weight_func_table_.get_comp_map())
 {
     for (const auto &comp_id : weight_elem_table_.get_active_components_id())
-        weight_elem_table_[comp_id] = WeightElem(space->weight_func_table_[comp_id],index);
+        weight_elem_table_[comp_id] =
+            std::shared_ptr<WeightElem>(new WeightElem(space->weight_func_table_[comp_id],index));
 }
 
 
@@ -61,7 +62,7 @@ operator++()
     ++bspline_elem_;
 
     for (const auto &comp_id : weight_elem_table_.get_active_components_id())
-        ++(weight_elem_table_[comp_id]);
+        ++(*(weight_elem_table_[comp_id]));
 }
 
 template <int dim, int range, int rank>
@@ -74,7 +75,7 @@ jump(const TensorIndex<dim> &increment)
 
     bool  weight_elems_active = true;
     for (const auto &comp_id : weight_elem_table_.get_active_components_id())
-        weight_elems_active = weight_elems_active && weight_elem_table_[comp_id].jump(increment);
+        weight_elems_active = weight_elems_active && weight_elem_table_[comp_id]->jump(increment);
 
     return grid_elem_active && bspline_elem_active && weight_elems_active;
 }
@@ -88,7 +89,7 @@ move_to(const Index flat_index)
     bspline_elem_.move_to(flat_index);
 
     for (const auto &comp_id : weight_elem_table_.get_active_components_id())
-        weight_elem_table_[comp_id].move_to(flat_index);
+        weight_elem_table_[comp_id]->move_to(flat_index);
 }
 
 
@@ -101,7 +102,7 @@ move_to(const TensorIndex<dim> &tensor_index)
     bspline_elem_.move_to(tensor_index);
 
     for (const auto &comp_id : weight_elem_table_.get_active_components_id())
-        weight_elem_table_[comp_id].move_to(tensor_index);
+        weight_elem_table_[comp_id]->move_to(tensor_index);
 }
 
 template <int dim, int range, int rank>

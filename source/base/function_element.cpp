@@ -24,6 +24,21 @@
 
 IGA_NAMESPACE_OPEN
 
+
+template<int dim, int codim, int range, int rank>
+FunctionElement<dim, codim, range, rank>::
+FunctionElement(const FunctionElement<dim,codim,range,rank> &elem,
+                const CopyPolicy &copy_policy)
+    :
+    CartesianGridElement<dim>(elem,copy_policy),
+    func_(elem.func_)
+{
+    if (copy_policy == CopyPolicy::shallow)
+        local_cache_ = elem.local_cache_;
+    else
+        local_cache_ = std::shared_ptr<LocalCache>(new LocalCache(*elem.local_cache_));
+}
+
 #if 0
 template<int dim, int codim, int range, int rank>
 auto

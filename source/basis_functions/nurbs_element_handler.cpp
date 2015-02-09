@@ -176,7 +176,7 @@ init_cache(RefElementAccessor &elem, const topology_variant &topology)
 
     const auto nrb_space = this->get_nurbs_space();
     for (const auto &comp_id : nrb_space->weight_func_table_.get_active_components_id())
-        nrb_space->weight_func_table_[comp_id]->init_cache(nrb_elem->weight_elem_table_[comp_id],topology);
+        nrb_space->weight_func_table_[comp_id]->init_cache(*(nrb_elem->weight_elem_table_[comp_id]),topology);
 
 
     //-------------------------------------
@@ -246,7 +246,7 @@ fill_cache(RefElementAccessor &elem, const topology_variant &topology, const int
 
     const auto &weight_func_table = nrb_space->weight_func_table_;
     for (const auto &comp_id : weight_func_table.get_active_components_id())
-        weight_func_table[comp_id]->fill_cache(nrb_elem->weight_elem_table_[comp_id],topology,j);
+        weight_func_table[comp_id]->fill_cache(*(nrb_elem->weight_elem_table_[comp_id]),topology,j);
 
 
     //-----------------------------------------
@@ -325,7 +325,7 @@ evaluate_nurbs_values_from_bspline(
     int bsp_fn_id = 0;
     for (int comp = 0 ; comp < n_components ; ++comp)
     {
-        const auto &weight_elem = weight_elem_table[comp];
+        const auto &weight_elem = *weight_elem_table[comp];
 
         const auto &Q = weight_elem.template get_values<0,dim>(0);
 
@@ -400,7 +400,7 @@ evaluate_nurbs_gradients_from_bspline(
     int bsp_fn_id = 0;
     for (int comp = 0 ; comp < n_components ; ++comp)
     {
-        const auto &weight_elem = weight_elem_table[comp];
+        const auto &weight_elem = *weight_elem_table[comp];
 
         const auto &Q  = weight_elem.template get_values<0,dim>(0);
         const auto &dQ = weight_elem.template get_values<1,dim>(0);
@@ -504,7 +504,7 @@ evaluate_nurbs_hessians_from_bspline(
     int bsp_fn_id = 0;
     for (int comp = 0 ; comp < n_components ; ++comp)
     {
-        const auto &weight_elem = weight_elem_table[comp];
+        const auto &weight_elem = *weight_elem_table[comp];
 
         const auto &Q   = weight_elem.template get_values<0,dim>(0);
         const auto &dQ  = weight_elem.template get_values<1,dim>(0);

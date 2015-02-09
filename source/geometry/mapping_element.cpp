@@ -24,6 +24,23 @@
 IGA_NAMESPACE_OPEN
 
 
+
+template<int dim_, int codim_>
+MappingElement<dim_, codim_>::
+MappingElement(const self_t &elem,
+               const CopyPolicy &copy_policy)
+    :
+    parent_t(elem,copy_policy)
+{
+    if (copy_policy == CopyPolicy::shallow)
+        local_cache_ = elem.local_cache_;
+    else
+    {
+        local_cache_ =
+            std::shared_ptr<LocalCache>(new LocalCache(*elem.local_cache_));
+    }
+}
+
 template<int dim_, int codim_>
 auto
 MappingElement<dim_, codim_>::
