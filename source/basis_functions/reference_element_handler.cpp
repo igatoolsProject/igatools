@@ -31,8 +31,8 @@ using std::shared_ptr;
 IGA_NAMESPACE_OPEN
 
 
-template<int dim_, int range_ , int rank_>
-ReferenceElementHandler<dim_, range_, rank_>::
+template<int dim, int range , int rank>
+ReferenceElementHandler<dim, range, rank>::
 ReferenceElementHandler(shared_ptr<const Space> space)
     :
     grid_handler_(space->get_grid()),
@@ -42,64 +42,58 @@ ReferenceElementHandler(shared_ptr<const Space> space)
 };
 
 
-template<int dim_, int range_ , int rank_>
-shared_ptr<ReferenceElementHandler<dim_,range_,rank_> >
-ReferenceElementHandler<dim_, range_, rank_>::
+template<int dim, int range , int rank>
+shared_ptr<ReferenceElementHandler<dim,range,rank> >
+ReferenceElementHandler<dim, range, rank>::
 create(shared_ptr<const Space> space)
 {
-    using BSplineSp = const BSplineSpace<dim_,range_,rank_>;
-    auto bsp_space = std::dynamic_pointer_cast< BSplineSp >(space);
-
-    using NURBSSp = const NURBSSpace<dim_,range_,rank_>;
-    auto nrb_space = std::dynamic_pointer_cast< NURBSSp >(space);
-
-    std::shared_ptr<ReferenceElementHandler<dim_,range_,rank_> > elem_handler = nullptr;
-    if (bsp_space)
+    std::shared_ptr<ReferenceElementHandler<dim,range,rank> > elem_handler = nullptr;
+    if (space->is_bspline())
     {
-        elem_handler = BSplineElementHandler<dim_,range_,rank_>::create(bsp_space);
+        using BSplineSp = const BSplineSpace<dim,range,rank>;
+        auto bsp_space = std::dynamic_pointer_cast< BSplineSp >(space);
+        elem_handler = BSplineElementHandler<dim,range,rank>::create(bsp_space);
     }
-    else if (nrb_space)
+    else
     {
 #ifdef NURBS
-        elem_handler = NURBSElementHandler<dim_,range_,rank_>::create(nrb_space);
+        using NURBSSp = const NURBSSpace<dim,range,rank>;
+        auto nrb_space = std::dynamic_pointer_cast< NURBSSp >(space);
+        elem_handler = NURBSElementHandler<dim,range,rank>::create(nrb_space);
 #else
         Assert(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
         AssertThrow(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
 #endif
     }
-    else
-    {
-        Assert(false,ExcInvalidState());
-        AssertThrow(false,ExcInvalidState());
-    }
+
     return elem_handler;
 }
 
 
-template<int dim_, int range_ , int rank_>
+template<int dim, int range , int rank>
 auto
-ReferenceElementHandler<dim_, range_, rank_>::
+ReferenceElementHandler<dim, range, rank>::
 get_space() const -> shared_ptr<const Space>
 {
     Assert(space_ != nullptr,ExcNullPtr());
     return space_;
 }
 
-template<int dim_, int range_ , int rank_>
-const GridElementHandler<dim_> &
-ReferenceElementHandler<dim_, range_, rank_>::
+template<int dim, int range , int rank>
+const GridElementHandler<dim> &
+ReferenceElementHandler<dim, range, rank>::
 get_grid_handler() const
 {
     return this->grid_handler_;
 }
 
 
-template<int dim_, int range_ , int rank_>
+template<int dim, int range , int rank>
 void
-ReferenceElementHandler<dim_, range_, rank_>::
+ReferenceElementHandler<dim, range, rank>::
 reset(const ValueFlags &flag, const eval_pts_variant &eval_pts)
 {
-    using ElemProperty = typename CartesianGrid<dim_>::ElementProperty;
+    using ElemProperty = typename CartesianGrid<dim>::ElementProperty;
     const std::set<int> active_elems_id =
         this->get_space()->get_grid()->get_elements_id_same_property(ElemProperty::active);
 
@@ -111,9 +105,9 @@ reset(const ValueFlags &flag, const eval_pts_variant &eval_pts)
 
 
 
-template<int dim_, int range_ , int rank_>
+template<int dim, int range , int rank>
 void
-ReferenceElementHandler<dim_, range_, rank_>::
+ReferenceElementHandler<dim, range, rank>::
 reset_one_element(
     const ValueFlags &flag,
     const eval_pts_variant &eval_points,

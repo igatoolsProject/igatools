@@ -51,6 +51,12 @@ private:
 public:
     using GridType = const CartesianGrid<dim>;
 
+    /**
+     * Alias for the (static) class holding the topological information.
+     */
+    using Topology = UnitElement<dim>;
+
+
 protected:
     using ElementIterator = typename GridType::ElementIterator;
     using ElementAccessor = typename GridType::ElementAccessor;
@@ -113,17 +119,27 @@ public:
     self_t &operator=(self_t &&) = delete;
     ///@}
 
-//protected:
 public:
 
+    /**
+     * @name Reset functions
+     */
+    ///@{
     template<int k>
     void reset(const ValueFlags flag, const EvaluationPoints<k> &quad);
-
+    ///@}
 
     template <int k>
     void init_cache(ElementAccessor &elem);
 
+//#if 0
     void init_all_caches(ElementAccessor &elem);
+
+    void init_all_caches(ElementIterator &elem)
+    {
+        init_all_caches(*elem);
+    }
+//#endif
 
     template <int k>
     void fill_cache(ElementAccessor &elem, const int j);
@@ -135,10 +151,6 @@ public:
         init_cache<k>(*elem);
     }
 
-    void init_all_caches(ElementIterator &elem)
-    {
-        init_all_caches(*elem);
-    }
 
     template <int k>
     void fill_cache(ElementIterator &elem, const int j)

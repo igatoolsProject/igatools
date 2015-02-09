@@ -47,6 +47,7 @@ void elem_measure(const int n_knots = 5)
     cache.template reset<dim>(flag, quad);
     auto elem = grid->begin();
     cache.init_element_cache(elem);
+//    cache.template init_cache<dim-1>(elem);
 
     cache.init_all_caches(elem);
 

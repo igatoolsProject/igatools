@@ -31,25 +31,25 @@
 
 IGA_NAMESPACE_OPEN
 
-template<int dim_, int range_ = 1, int rank_ = 1>
+template<int dim, int range = 1, int rank = 1>
 class ReferenceElementHandler
 {
 public:
-    using Space = ReferenceSpace<dim_,range_,rank_>;
+    using Space = ReferenceSpace<dim,range,rank>;
     using ElementIterator = typename Space::ElementIterator;
     using ElementAccessor = typename Space::ElementAccessor;
 
-    static const int l = iga::max(0, dim_-num_sub_elem);
+    static const int l = iga::max(0, dim-num_sub_elem);
 
-    using v2 = typename seq<Int, l, dim_>::type;
+    using v2 = typename seq<Int, l, dim>::type;
     using topology_variant = typename boost::make_variant_over<v2>::type;
 
 
-    using v3 = typename seq<EvaluationPoints, l, dim_>::type;
+    using v3 = typename seq<EvaluationPoints, l, dim>::type;
     using eval_pts_variant = typename boost::make_variant_over<v3>::type;
 
 
-    static std::shared_ptr<ReferenceElementHandler<dim_,range_,rank_> >
+    static std::shared_ptr<ReferenceElementHandler<dim,range,rank> >
     create(std::shared_ptr<const Space> space);
 
     /** @name Constructors */
@@ -67,12 +67,12 @@ public:
     /**
      * Copy constructor. Not allowed to be used.
      */
-    ReferenceElementHandler(const ReferenceElementHandler<dim_,range_,rank_> &elem_handler) = delete;
+    ReferenceElementHandler(const ReferenceElementHandler<dim,range,rank> &elem_handler) = delete;
 
     /**
      * Move constructor. Not allowed to be used.
      */
-    ReferenceElementHandler(ReferenceElementHandler<dim_,range_,rank_> &&elem_handler) = delete;
+    ReferenceElementHandler(ReferenceElementHandler<dim,range,rank> &&elem_handler) = delete;
     ///@}
 
 
@@ -118,7 +118,7 @@ public:
 
     void init_element_cache(ElementIterator &elem)
     {
-        this->template init_cache<dim_>(*elem);
+        this->template init_cache<dim>(*elem);
     }
 
 protected:
@@ -139,13 +139,13 @@ public:
 
     void fill_element_cache(ElementIterator &elem)
     {
-        this->template fill_cache<dim_>(*elem,0);
+        this->template fill_cache<dim>(*elem,0);
     }
 
 
     virtual void print_info(LogStream &out) const = 0;
 
-    template <int k = dim_>
+    template <int k = dim>
     Size get_num_points() const
     {
         return grid_handler_.template get_num_points<k>();
@@ -153,7 +153,7 @@ public:
 
 
 protected:
-    GridElementHandler<dim_> grid_handler_;
+    GridElementHandler<dim> grid_handler_;
 
 private:
     std::shared_ptr<const Space> space_;
@@ -163,7 +163,7 @@ public:
      * Returns the const reference of the GridElementHandler used by the current ReferenceElementHandler.
      * @return
      */
-    const GridElementHandler<dim_> &get_grid_handler() const;
+    const GridElementHandler<dim> &get_grid_handler() const;
 
     /**
      * Returns the ReferenceSpace associated to the current ReferenceElementHandler (const version).

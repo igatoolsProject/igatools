@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/geometry/grid_element_handler.h>
-#include <igatools/geometry/unit_element.h>
+//#include <igatools/geometry/unit_element.h>
 
 
 using std::shared_ptr;
@@ -47,7 +47,6 @@ void init_unif_caches(const GridFlags &flag, const Quad &quad, std::tuple<Args..
     TupleFunc1<UniformQuadFunc, GridFlags, Quad, decltype(t), sizeof...(Args), low>::apply_func(f, flag, quad, t);
 }
 };
-
 
 
 template <int dim>
@@ -83,7 +82,6 @@ reset(const ValueFlags flag,
 }
 
 
-
 template <int dim>
 void
 GridElementHandler<dim>::
@@ -99,7 +97,6 @@ init_all_caches(ElementAccessor &elem)
 }
 
 
-
 template <int dim>
 template <int k>
 void
@@ -113,7 +110,7 @@ init_cache(ElementAccessor &elem)
         cache = shared_ptr<Cache>(new Cache);
     }
 
-    for (auto &s_id: UnitElement<dim>::template elems_ids<k>())
+    for (auto &s_id: Topology::template elems_ids<k>())
     {
         auto &s_cache = cache->template get_value_cache<k>(s_id);
         auto &quad = std::get<k>(quad_);
@@ -153,7 +150,7 @@ fill_cache(ElementAccessor &elem, const int j)
     auto &cache = elem.local_cache_->template get_value_cache<k>(j);
 
     const auto &index = elem.get_tensor_index();
-    const TensorIndex<k> active(UnitElement<dim>::template get_elem<k>(j).active_directions);
+    const TensorIndex<k> active(Topology::template get_elem<k>(j).active_directions);
 
     auto &flags = cache.flags_handler_;
 
