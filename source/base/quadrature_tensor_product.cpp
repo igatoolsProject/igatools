@@ -39,7 +39,9 @@ QuadratureTensorProduct<dim_>::
 QuadratureTensorProduct()
     :
     EvaluationPoints<dim_>()
-{}
+{
+    this->weights_have_tensor_product_struct_ = true;
+}
 //*/
 
 template<int dim_>

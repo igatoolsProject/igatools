@@ -43,10 +43,15 @@ void elem_measure(const int n_knots = 5)
     auto flag = ValueFlags::measure|ValueFlags::w_measure;
 
     QGauss<dim> quad(2);
+//    QGauss<dim-1> quad_face(2);
+    const int face_id = 0;
+
     GridElementHandler<dim> cache(grid);
     cache.template reset<dim>(flag, quad);
     auto elem = grid->begin();
     cache.init_element_cache(elem);
+
+//    cache.template reset<dim-1>(flag, quad_face);
 //    cache.template init_cache<dim-1>(elem);
 
     cache.init_all_caches(elem);
@@ -61,10 +66,10 @@ void elem_measure(const int n_knots = 5)
         elem->template get_w_measures<dim>(0).print_info(out);
         out.end_item();
 
-        cache.template fill_cache<dim-1> (elem, 0);
-        out << "Sub elem Measure: " << elem->template get_measure<dim-1>(0) << endl;
+        cache.template fill_cache<dim-1> (elem, face_id);
+        out << "Sub elem Measure: " << elem->template get_measure<dim-1>(face_id) << endl;
         out.begin_item("Weighted Measure:");
-        elem->template get_w_measures<dim-1>(0).print_info(out);
+        elem->template get_w_measures<dim-1>(face_id).print_info(out);
         out.end_item();
     }
 
