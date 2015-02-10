@@ -36,6 +36,8 @@ void sub_elem_values(const int n_knots, const int deg)
     OUTSTART
 
     auto grid = CartesianGrid<dim>::create(n_knots);
+    using RefSpace = ReferenceSpace<dim>;
+    using RefElementHandler = typename RefSpace::ElementHandler;
     using Space = BSplineSpace<dim>;
     using ElementHandler = typename Space::ElementHandler;
     auto space = Space::create(deg, grid);
@@ -44,7 +46,7 @@ void sub_elem_values(const int n_knots, const int deg)
     QGauss<k>   k_quad(n_qp);
     QGauss<dim> quad(n_qp);
     auto flag = ValueFlags::value;//|ValueFlags::gradient|ValueFlags::hessian;
-    auto cache = ElementHandler::create(space);
+    std::shared_ptr<RefElementHandler> cache = ElementHandler::create(space);
     cache->reset(flag, k_quad);
     cache->reset(flag, quad);
     auto elem = space->begin();

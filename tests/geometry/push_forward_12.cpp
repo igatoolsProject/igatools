@@ -88,11 +88,11 @@ void test()
 
     pf.template init_cache<dim>(*elem);
 
-    sp_values->template init_cache<dim>(sp_elem);
+    sp_values->init_element_cache(sp_elem);
 
     for (; elem != end; ++elem, ++sp_elem)
     {
-        sp_values->template fill_cache<dim>(sp_elem, 0);
+        sp_values->fill_element_cache(sp_elem);
         pf.template fill_cache<dim>(*elem, 0);
 
         const auto &ref_values = sp_elem->template get_values<0,dim>(0);

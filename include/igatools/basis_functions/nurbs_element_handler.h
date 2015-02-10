@@ -124,7 +124,7 @@ public:
     virtual ~NURBSElementHandler() = default;
 
 
-    static std::shared_ptr<self_t> create(std::shared_ptr<const Space> space)
+    static std::shared_ptr<base_t> create(std::shared_ptr<const Space> space)
     {
         return std::shared_ptr<self_t>(new self_t(space));
     }
@@ -146,7 +146,7 @@ public:
 
 private:
 //    std::shared_ptr<const Space> space_;
-    std::shared_ptr<BSplineElementHandler<dim_,range_,rank_>> bspline_handler_;
+    std::shared_ptr<ReferenceElementHandler<dim_,range_,rank_>> bspline_handler_;
 
     std::array<FunctionFlags, dim + 1> flags_;
 

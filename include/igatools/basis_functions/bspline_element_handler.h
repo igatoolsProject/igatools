@@ -121,7 +121,7 @@ public:
      */
     virtual ~BSplineElementHandler() = default;
 
-    static std::shared_ptr<self_t> create(std::shared_ptr<const Space> space)
+    static std::shared_ptr<base_t> create(std::shared_ptr<const Space> space)
     {
         return std::shared_ptr<self_t>(new self_t(space));
     }
@@ -130,40 +130,19 @@ public:
     using eval_pts_variant = typename base_t::eval_pts_variant;
 
 
+    /**
+     * @name Reset functions
+     */
+    ///@{
     virtual void reset_selected_elements(
         const ValueFlags &flag,
         const eval_pts_variant &eval_points,
         const vector<int> elements_flat_id) override final;
-
+    ///@}
 
     virtual void init_cache(RefElementAccessor &elem, const topology_variant &topology) override final;
 
-    template <int k>
-    void init_cache(RefElementAccessor &elem)
-    {
-        this->init_cache(elem,Int<k>());
-    }
-
-    template <int k>
-    void init_cache(RefElementIterator &elem)
-    {
-        this->template init_cache<k>(*elem);
-    }
-
-
     virtual void fill_cache(RefElementAccessor &elem, const topology_variant &topology, const int j) override final;
-
-    template<int k>
-    void fill_cache(RefElementAccessor &elem, const int j)
-    {
-        this->fill_cache(elem,Int<k>(),j);
-    }
-
-    template<int k>
-    void fill_cache(RefElementIterator &elem, const int j)
-    {
-        this->template fill_cache<k>(*elem,j);
-    }
 
     virtual void print_info(LogStream &out) const override final ;
 

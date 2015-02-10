@@ -77,6 +77,10 @@ public:
 
 
     /**
+     * @name Reset functions
+     */
+    ///@{
+    /**
      * Resets all the internal data in order to use the
      * same quadrature scheme for each active element of the space.
      */
@@ -84,26 +88,37 @@ public:
 
     /**
      * Resets all the internal data in order to use the
-     * same quadrature scheme for the element of the space with ID specified by
-     * the input parameter <p>elem_flat_id</p>.
+     * same quadrature scheme for the single element of the space with ID specified by
+     * the input parameter <tt>elem_flat_id</tt>.
      */
     void reset_one_element(
         const ValueFlags &flag,
         const eval_pts_variant &eval_points,
         const int elem_flat_id);
 
+    /**
+     * Resets all the internal data in order to use the
+     * same quadrature scheme for the elements of the space with ID specified by
+     * the input parameter <tt>elements_flat_id</tt>.
+     *
+     * @note This function is pure virtual and must be implemented in the class that are derived
+     * from ReferenceElementHandler.
+     */
     virtual void reset_selected_elements(
         const ValueFlags &flag,
         const eval_pts_variant &eval_points,
         const vector<int> elements_flat_id) = 0;
+    ///@}
+
 
 protected:
     ReferenceElementHandler(std::shared_ptr<const Space> space);
 
-    virtual void init_cache(ElementAccessor &elem, const topology_variant &topology) = 0;
-
 
 public:
+
+    virtual void init_cache(ElementAccessor &elem, const topology_variant &topology) = 0;
+
     template <int k>
     void init_cache(ElementAccessor &elem)
     {
@@ -121,10 +136,8 @@ public:
         this->template init_cache<dim>(*elem);
     }
 
-protected:
     virtual void fill_cache(ElementAccessor &elem, const topology_variant &topology, const int j) = 0;
 
-public:
     template<int k>
     void fill_cache(ElementAccessor &elem, const int j)
     {

@@ -40,6 +40,8 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
     OUTSTART
 
     auto grid = CartesianGrid<dim>::create();
+    using RefSpace = ReferenceSpace<dim, range, rank>;
+    using RefElementHandler = typename RefSpace::ElementHandler;
     using Space = BSplineSpace<dim, range, rank>;
     using ElementHandler = typename Space::ElementHandler;
     auto space = Space::create(deg, grid);
@@ -48,7 +50,7 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
     QGauss<k> quad(n_qp);
     auto flag = ValueFlags::value|ValueFlags::gradient
                 |ValueFlags::hessian;
-    auto cache = ElementHandler::create(space);
+    std::shared_ptr<RefElementHandler> cache = ElementHandler::create(space);
     cache->reset(flag, quad);
 
     auto elem = space->begin();
