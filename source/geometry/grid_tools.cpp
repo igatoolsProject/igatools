@@ -74,26 +74,28 @@ build_map_elements_between_cartesian_grids(const CartesianGrid<dim> &grid_fine,
 
     const int n_elems_fine = grid_fine.get_num_active_elems();
 
-    auto f_elem = grid_fine.begin();
-    auto c_elem = grid_coarse.begin();
+//    auto f_elem = grid_fine.begin();
+//    auto c_elem = grid_coarse.begin();
     for (int elem_fine_fid = 0 ; elem_fine_fid < n_elems_fine ; ++elem_fine_fid)
     {
-        f_elem->move_to(elem_fine_fid);
+//        f_elem->move_to(elem_fine_fid);
+
+        const TensorIndex<dim> elem_fine_tid = grid_fine.flat_to_tensor(elem_fine_fid);
 
         TensorIndex<dim> elem_coarse_tid;
         for (int i = 0 ; i < dim ; ++i)
-            elem_coarse_tid[i] = map_interv_fid_fine_coarse[i][f_elem.get_tensor_index()[i]];
+            elem_coarse_tid[i] = map_interv_fid_fine_coarse[i][elem_fine_tid[i]];
 
 
-        c_elem->move_to(elem_coarse_tid);
+//        c_elem->move_to(elem_coarse_tid);
 
-        res.emplace(f_elem, c_elem);
-//        TensorIndex<dim> elem_fine_tid =
-//            grid_fine.flat_to_tensor_element_index(elem_fine_fid);
+//        res.emplace(f_elem, c_elem);
+//        res.emplace(f_elem->get_flat_index(), c_elem->get_tensor_index());
 //
 //
-//        const int elem_coarse_fid =
-//            grid_coarse.tensor_to_flat_element_index(elem_coarse_tid);
+        const int elem_coarse_fid = grid_coarse.tensor_to_flat(elem_coarse_tid);
+
+        res[elem_fine_fid] = elem_coarse_fid;
 //
 //        map_elem_fine_to_elem_coarse[elem_fine_fid] = elem_coarse_fid;
     }

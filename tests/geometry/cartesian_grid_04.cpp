@@ -33,7 +33,9 @@ template<int dim>
 void face_uniform(const int n_knots)
 {
     auto grid = CartesianGrid<dim>::create(n_knots);
+    out.begin_item("CaresianGrid<" + std::to_string(dim) +">");
     grid->print_info(out);
+    out.end_item();
     for (int i = 0; i < UnitElement<dim>::faces_per_element; ++i)
     {
         out << "Face: " << i << endl;
@@ -55,7 +57,9 @@ void face_non_uniform()
     for (int i = 0; i < dim; ++i)
         n_knots[i] = 2+i;
     auto grid = Grid::create(n_knots);
+    out.begin_item("CaresianGrid<" + std::to_string(dim) +">");
     grid->print_info(out);
+    out.end_item();
     for (int i = 0; i < UnitElement<dim>::faces_per_element; ++i)
     {
         out << "Face: " << i << endl;
