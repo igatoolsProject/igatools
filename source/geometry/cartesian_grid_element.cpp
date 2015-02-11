@@ -110,6 +110,8 @@ void
 CartesianGridElement<dim_>::
 move_to(const TensorIndex<dim> &tensor_index)
 {
+    tensor_index_ = tensor_index;
+    flat_index_ = grid_->tensor_to_flat(tensor_index_);
     this->move_to(grid_->tensor_to_flat(tensor_index_));
 }
 

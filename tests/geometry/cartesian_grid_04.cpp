@@ -42,8 +42,11 @@ void face_uniform(const int n_knots)
         std::map<int, int> elem_map;
         auto face_grid = grid->get_face_grid(i, elem_map);
         face_grid->print_info(out);
+
+        out << "Face-grid to element-grid map:" << endl;
         for (auto x : elem_map)
             out << x.first << " " << x.second << endl;
+        out << endl;
     }
     out << endl;
 }
@@ -66,8 +69,11 @@ void face_non_uniform()
         typename Grid::FaceGridMap elem_map;
         auto face_grid = grid->get_face_grid(i, elem_map);
         face_grid->print_info(out);
+
+        out << "Face-grid to element-grid map:" << endl;
         for (auto x : elem_map)
             out << x.first->get_flat_index() << " " << x.second->get_flat_index() << endl;
+        out << endl;
     }
     out << endl;
 }
