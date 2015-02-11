@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -160,8 +160,8 @@ void do_test_4()
     auto it = std::find(data1.begin(),data1.end(),3);
 
     out << "iterator id=" << it.get_id()
-    	<< "   stride=" << it.get_stride()
-    	<< "   value=" << *it << endl;
+        << "   stride=" << it.get_stride()
+        << "   value=" << *it << endl;
 }
 
 

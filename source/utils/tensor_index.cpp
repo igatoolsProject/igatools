@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -38,7 +38,7 @@ template <int rank>
 TensorIndex<rank>::
 TensorIndex(const Size val) noexcept
 {
-	Assert(val >= 0, ExcLowerRange(val,0));
+    Assert(val >= 0, ExcLowerRange(val,0));
     for (auto &idx : (*this))
         idx = val;
 }

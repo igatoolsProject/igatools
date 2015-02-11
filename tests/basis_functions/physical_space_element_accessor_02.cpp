@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -152,9 +152,9 @@ void test_evaluate()
     const int n_qpoints = quad.get_num_points();
 
     element->init_cache(ValueFlags::value |
-                         ValueFlags::gradient |
-                         ValueFlags::w_measure,
-                         quad) ;
+                        ValueFlags::gradient |
+                        ValueFlags::w_measure,
+                        quad) ;
     for (; element != element_end ; ++element)
     {
         element->fill_cache() ;

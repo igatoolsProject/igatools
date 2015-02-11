@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -50,7 +50,7 @@ void do_test()
 
     auto element = space->begin();
     element->init_cache(ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian,
-                         quad_scheme);
+                        quad_scheme);
     element->fill_cache();
 
     auto values    = element->get_basis_values();
