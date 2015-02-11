@@ -198,10 +198,20 @@ public:
         this->init_cache(elem, topology);
     }
 
+    void init_element_cache(ElementAccessor &elem)
+    {
+        this->init_cache(elem, Int<dim_>());
+    }
+
     template <int k>
     void init_cache(ElementIterator &elem)
     {
         this->template init_cache<k>(*elem);
+    }
+
+    void init_element_cache(ElementIterator &elem)
+    {
+        this->init_cache(*elem, Int<dim_>());
     }
 
     virtual void fill_cache(ElementAccessor &elem, const topology_variant &k,const int j)
@@ -224,10 +234,20 @@ public:
         this->fill_cache(elem, topology,j);
     }
 
+    void fill_element_cache(ElementAccessor &elem)
+    {
+        this->fill_cache(elem, Int<dim_>(),0);
+    }
+
     template <int k>
     void fill_cache(ElementIterator &elem, const int j)
     {
         this->template fill_cache<k>(*elem,j);
+    }
+
+    void fill_element_cache(ElementIterator &elem)
+    {
+        this->fill_cache(*elem, Int<dim_>(),0);
     }
 
     std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const

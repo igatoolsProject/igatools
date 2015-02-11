@@ -70,17 +70,21 @@ private:
 
     // [members]
 private:
+    using RefSpace = ReferenceSpace<dim>;
     using Space = BSplineSpace<dim>;
-    shared_ptr<Space> space;
+    shared_ptr<RefSpace> space;
 
     const QuadratureTensorProduct<dim>   elem_quad;
     const QuadratureTensorProduct<dim-1> face_quad;
     // [members]
 
     // [la members]
-    shared_ptr<Matrix<LAPack::trilinos>> matrix;
-    shared_ptr<Vector<LAPack::trilinos>> rhs;
-    shared_ptr<Vector<LAPack::trilinos>> solution;
+    using Mat = Matrix<LAPack::trilinos_tpetra>;
+    using Vec = Vector<LAPack::trilinos_tpetra>;
+
+    shared_ptr<Mat> matrix;
+    shared_ptr<Vec> rhs;
+    shared_ptr<Vec> solution;
 };
 // [la members]
 
@@ -94,9 +98,9 @@ PoissonProblem(const int n_knots, const int deg)
     face_quad(QGauss<dim-1>(deg+1))
 {
     const auto n_basis = space->get_num_basis();
-    matrix   = Matrix<LAPack::trilinos>::create(*space->get_space_manager());
-    rhs      = Vector<LAPack::trilinos>::create(n_basis);
-    solution = Vector<LAPack::trilinos>::create(n_basis);
+    matrix   = Mat::create(*space->get_space_manager());
+    rhs      = Vec::create(n_basis);
+    solution = Vec::create(n_basis);
 }
 
 
@@ -106,13 +110,14 @@ void PoissonProblem<dim>::assemble()
 {
     auto grid = space->get_grid();
 
-    using Function = ConstantFunction<dim,0,1,1>;
+    using Function = Function<dim,0,1,1>;
+    using ConstFunction = ConstantFunction<dim,0,1,1>;
     using Value = typename Function::Value;
 
     Value b = {5.};
-    auto f = ConstantFunction<dim,0,1,1>::create(grid, IdentityFunction<dim>::create(grid), b);
+    auto f = ConstFunction::create(grid, IdentityFunction<dim>::create(grid), b);
 
-    using ElementHandler = typename Space::ElementHandler;
+    using ElementHandler = typename RefSpace::ElementHandler;
     auto elem_handler = ElementHandler::create(space);
 
     auto flag = ValueFlags::value | ValueFlags::gradient |
@@ -125,9 +130,8 @@ void PoissonProblem<dim>::assemble()
     auto elem   = space->begin();
     const auto elem_end = space->end();
 
-    const auto topology = Int<dim>();
-    elem_handler->init_cache(elem,topology);
-    f->init_cache(f_elem,topology);
+    elem_handler->init_element_cache(elem);
+    f->init_element_cache(f_elem);
 
     const int n_qp = elem_quad.get_num_points();
 
@@ -141,12 +145,12 @@ void PoissonProblem<dim>::assemble()
         DenseVector loc_rhs(n_basis);
         loc_rhs = 0.0;
 
-        elem_handler->fill_cache(elem,topology,0);
+        elem_handler->fill_element_cache(elem);
         auto phi = elem->template get_values<0, dim>(0);
         auto grad_phi  = elem->template get_values<1, dim>(0);
         auto w_meas = elem->template get_w_measures<dim>(0);
 
-        f->fill_cache(f_elem, 0, topology);
+        f->fill_element_cache(f_elem);
         auto f_values = f_elem->template get_values<0,dim>(0);
 
         for (int i = 0; i < n_basis; ++i)
@@ -176,13 +180,18 @@ void PoissonProblem<dim>::assemble()
 
     // [dirichlet constraint]
 
-    auto g = Function::
+    auto g = ConstFunction::
              create(grid, IdentityFunction<dim>::create(grid), {0.});
 
 
-    const boundary_id dir_id = 0;
+    const set<boundary_id> dir_id {0};
     std::map<Index, Real> values;
-    project_boundary_values<Space,LAPack::trilinos>(g, space, face_quad, dir_id, values);
+    project_boundary_values<RefSpace,LAPack::trilinos_tpetra>(
+        const_pointer_cast<const Function>(g),
+        space,
+        face_quad,
+        dir_id,
+        values);
     apply_boundary_values(values, *matrix, *rhs, *solution);
     // [dirichlet constraint]
 }
@@ -191,7 +200,7 @@ void PoissonProblem<dim>::assemble()
 template<int dim>
 void PoissonProblem<dim>::solve()
 {
-    using LinSolver = LinearSolver<LAPack::trilinos>;
+    using LinSolver = LinearSolverIterative<LAPack::trilinos_tpetra>;
     LinSolver solver(LinSolver::SolverType::CG);
     solver.solve(*matrix, *rhs, *solution);
 }
@@ -201,9 +210,17 @@ template<int dim>
 void PoissonProblem<dim>::output()
 {
     const int n_plot_points = 2;
-    Writer<dim> writer(space->get_grid(), n_plot_points);
+    Writer<dim> writer(IdentityFunction<dim>::create(space->get_grid()), n_plot_points);
 
-    writer.add_field(space, *solution, "solution");
+    const int n_coefs = space->get_num_basis();
+    iga::vector<Real> solution_coefs(n_coefs);
+    for (int i = 0 ; i < n_coefs ; ++i)
+        solution_coefs[i] = (*solution)(i);
+
+    using IgFunc = IgFunction<RefSpace>;
+    shared_ptr<const Function<dim,0,1,1>> solution_function = IgFunc::create(space,solution_coefs);
+    writer.add_field(solution_function, "solution");
+//    writer.add_field(const_pointer_cast<const IgFunc>(solution_function), "solution");
     string filename = "poisson_problem-" + to_string(dim) + "d" ;
     writer.save(filename);
 }
