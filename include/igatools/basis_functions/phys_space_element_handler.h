@@ -32,8 +32,8 @@ IGA_NAMESPACE_OPEN
  * Element handler for an isogeometric space
  */
 template<class PhysSpace>
-class PhysSpaceElementHandler :
-    public PhysSpace::PushForwardType
+class PhysSpaceElementHandler
+//      : public PhysSpace::PushForwardType
 {
 
     using RefSpace =  typename PhysSpace::RefSpace;
@@ -49,7 +49,7 @@ class PhysSpaceElementHandler :
 public:
     static const int dim = PhysSpace::dim;
 
-    using PhysSpace::PushForwardType::type;
+//    using PhysSpace::PushForwardType::type;
 
     /**
      * @name Constructors
@@ -146,6 +146,9 @@ private:
     std::shared_ptr<const PhysSpace> space_;
 
     std::shared_ptr<typename PhysSpace::RefSpace::ElementHandler> ref_space_handler_;
+
+
+    typename PhysSpace::PushForwardType push_fwd_;
 
     std::array<FunctionFlags, dim + 1> flags_;
 

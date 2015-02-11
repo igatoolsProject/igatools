@@ -105,9 +105,10 @@ template<class PhysSpace>
 PhysSpaceElementHandler<PhysSpace>::
 PhysSpaceElementHandler(std::shared_ptr<const PhysSpace> space)
     :
-    PFCache(space->get_map_func()),
+//    PFCache(space->get_map_func()),
     space_(space),
-    ref_space_handler_(space->get_reference_space()->create_elem_handler())
+    ref_space_handler_(space->get_reference_space()->create_elem_handler()),
+    push_fwd_(space->get_map_func())
 {}
 
 template<class PhysSpace>
@@ -127,8 +128,9 @@ void
 PhysSpaceElementHandler<PhysSpace>::
 reset(const ValueFlags flag, const EvaluationPoints<k> &eval_pts)
 {
-    ref_space_handler_->reset(space_to_ref_flag(type, flag), eval_pts);
-    PFCache::template reset<k>(space_to_pf_flag(flag), eval_pts);
+    ref_space_handler_->reset(space_to_ref_flag(PhysSpace::PushForwardType::type, flag), eval_pts);
+    push_fwd_.template reset<k>(space_to_pf_flag(flag), eval_pts);
+//    PFCache::template reset<k>(space_to_pf_flag(flag), eval_pts);
     flags_[k] = flag;
 }
 
@@ -143,7 +145,8 @@ init_cache(ElementAccessor &elem)
     auto &ref_elem = elem.get_ref_space_accessor();
 
     ref_space_handler_->template init_cache<k>(ref_elem);
-    PFCache::template init_cache<k>(elem);
+    push_fwd_.template init_cache<k>(elem);
+//    PFCache::template init_cache<k>(elem);
 
     auto &cache = elem.PhysSpace::ElementAccessor::parent_t::local_cache_;
     if (cache == nullptr)
@@ -176,7 +179,8 @@ fill_cache(ElementAccessor &elem, const int j)
 //    const auto topology = Int<k>();
 
     ref_space_handler_->template fill_cache<k>(ref_elem, j);
-    PFCache::template fill_cache<k>(elem, j);
+    push_fwd_.template fill_cache<k>(elem, j);
+//    PFCache::template fill_cache<k>(elem, j);
 
     auto &local_cache = elem.PhysSpace::ElementAccessor::parent_t::local_cache_;
     Assert(local_cache != nullptr, ExcNullPtr());
