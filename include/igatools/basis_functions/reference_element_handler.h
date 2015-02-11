@@ -25,6 +25,7 @@
 #include <igatools/base/flags_handler.h>
 #include <igatools/base/evaluation_points.h>
 
+#include <igatools/basis_functions/element_handler.h>
 #include <igatools/geometry/grid_element_handler.h>
 #include <igatools/basis_functions/reference_space.h>
 
@@ -33,6 +34,7 @@ IGA_NAMESPACE_OPEN
 
 template<int dim, int range = 1, int rank = 1>
 class ReferenceElementHandler
+    : public ElementHandler<ReferenceSpace<dim,range,rank>>
 {
 public:
     using Space = ReferenceSpace<dim,range,rank>;
@@ -146,6 +148,7 @@ public:
     }
     ///@}
 
+#if 0
     /**
      * @name Fill functions
      */
@@ -174,6 +177,7 @@ public:
         this->template fill_cache<dim>(*elem,0);
     }
     ///@}
+#endif
 
     virtual void print_info(LogStream &out) const = 0;
 
