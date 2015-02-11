@@ -50,7 +50,7 @@ for space in inst.SubPhysSpaces:
     for it in inst.iterators:
         iterator = it.replace('Accessor','%s' % (acc) )
         f.write('template class %s; \n' %iterator)
-    elemhandler = 'SpaceElementHandler<%s>' %space.name
+    elemhandler = 'PhysSpaceElementHandler<%s>' %space.name
     f.write('template class %s; \n' %elemhandler)
     for fun in sub_dim_members:
         k = x.dim
@@ -65,7 +65,7 @@ for space in inst.PhysSpaces:
     for it in inst.iterators:
         iterator = it.replace('Accessor','%s' % (acc) )
         f.write('template class %s; \n' %iterator)
-    elemhandler = 'SpaceElementHandler<%s>' %space.name
+    elemhandler = 'PhysSpaceElementHandler<%s>' %space.name
     f.write('template class %s; \n' %elemhandler)
     for fun in sub_dim_members:
         for k in inst.sub_dims(x.dim):

@@ -36,7 +36,7 @@ class SpaceManager;
 
 template <class> class PhysicalSpaceElement;
 
-template <class> class SpaceElementHandler;
+template <class> class PhysSpaceElementHandler;
 
 /**
  *
@@ -66,7 +66,7 @@ public:
 
     //using GridType = typename PushForwardType::GridType;
     ///@}
-    using ElementHandler = SpaceElementHandler<self_t>;
+    using ElementHandler = PhysSpaceElementHandler<self_t>;
 
     static const int dim = dim_;
 

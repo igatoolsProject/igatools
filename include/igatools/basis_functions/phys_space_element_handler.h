@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef SPACE_ELEMENT_HANDLER_H_
-#define SPACE_ELEMENT_HANDLER_H_
+#ifndef PHYS_SPACE_ELEMENT_HANDLER_H_
+#define PHYS_SPACE_ELEMENT_HANDLER_H_
 
 #include <igatools/base/config.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
@@ -32,19 +32,19 @@ IGA_NAMESPACE_OPEN
  * Element handler for an isogeometric space
  */
 template<class PhysSpace>
-class SpaceElementHandler :
+class PhysSpaceElementHandler :
     public PhysSpace::PushForwardType
 {
 
     using RefSpace =  typename PhysSpace::RefSpace;
-    using RefSpaceElementHandler = typename PhysSpace::RefSpace::ElementHandler;
+    using RefPhysSpaceElementHandler = typename PhysSpace::RefSpace::ElementHandler;
     using PFCache = typename PhysSpace::PushForwardType;
 
     using ElementIterator = typename PhysSpace::ElementIterator;
     using ElementAccessor = typename PhysSpace::ElementAccessor;
     using PfElemAccessor = typename PhysSpace::PushForwardType::ElementAccessor;
 
-    using self_t = SpaceElementHandler<PhysSpace>;
+    using self_t = PhysSpaceElementHandler<PhysSpace>;
 
 public:
     static const int dim = PhysSpace::dim;
@@ -58,24 +58,24 @@ public:
     /**
      * Default constructor. Not allowed to be used.
      */
-    SpaceElementHandler() = delete;
+    PhysSpaceElementHandler() = delete;
 
-    SpaceElementHandler(std::shared_ptr<const PhysSpace> space);
+    PhysSpaceElementHandler(std::shared_ptr<const PhysSpace> space);
 
     /**
      * Copy constructor. Not allowed to be used.
      */
-    SpaceElementHandler(const self_t &) = delete;
+    PhysSpaceElementHandler(const self_t &) = delete;
 
     /**
      * Move constructor. Not allowed to be used.
      */
-    SpaceElementHandler(self_t &&) = delete;
+    PhysSpaceElementHandler(self_t &&) = delete;
 
     /**
      * Destructor.
      */
-    ~SpaceElementHandler() = default;
+    ~PhysSpaceElementHandler() = default;
     ///@}
 
     /**

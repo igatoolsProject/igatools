@@ -400,7 +400,7 @@ protected:
 
 private:
     template <class Accessor> friend class CartesianGridIteratorBase;
-    template <typename PSpace> friend class SpaceElementHandler;
+    template <typename PSpace> friend class PhysSpaceElementHandler;
 
     std::shared_ptr<RefElemAccessor> ref_space_element_accessor_;
 

@@ -32,7 +32,7 @@
 #include <igatools/base/function_lib.h>
 #include <igatools/base/identity_function.h>
 
-#include <igatools/basis_functions/space_element_handler.h>
+#include <igatools/basis_functions/phys_space_element_handler.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/geometry/push_forward_element.h>

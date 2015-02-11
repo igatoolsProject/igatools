@@ -117,6 +117,10 @@ protected:
 
 public:
 
+    /**
+     * @name Init functions
+     */
+    ///@{
     virtual void init_cache(ElementAccessor &elem, const topology_variant &topology) = 0;
 
     template <int k>
@@ -131,11 +135,21 @@ public:
         this->template init_cache<k>(*elem);
     }
 
+    void init_element_cache(ElementAccessor &elem)
+    {
+        this->template init_cache<dim>(elem);
+    }
+
     void init_element_cache(ElementIterator &elem)
     {
         this->template init_cache<dim>(*elem);
     }
+    ///@}
 
+    /**
+     * @name Fill functions
+     */
+    ///@{
     virtual void fill_cache(ElementAccessor &elem, const topology_variant &topology, const int j) = 0;
 
     template<int k>
@@ -150,11 +164,16 @@ public:
         this->template fill_cache<k>(*elem,j);
     }
 
+    void fill_element_cache(ElementAccessor &elem)
+    {
+        this->template fill_cache<dim>(elem,0);
+    }
+
     void fill_element_cache(ElementIterator &elem)
     {
         this->template fill_cache<dim>(*elem,0);
     }
-
+    ///@}
 
     virtual void print_info(LogStream &out) const = 0;
 

@@ -21,7 +21,7 @@
 #include <igatools/basis_functions/physical_space.h>
 #include <igatools/base/sub_function.h>
 #include <igatools/basis_functions/space_manager.h>
-#include <igatools/basis_functions/space_element_handler.h>
+#include <igatools/basis_functions/phys_space_element_handler.h>
 
 using std::array;
 using std::shared_ptr;

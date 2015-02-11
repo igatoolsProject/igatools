@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/basis_functions/space_element_handler.h>
+#include <igatools/basis_functions/phys_space_element_handler.h>
 
 using std::shared_ptr;
 
@@ -102,8 +102,8 @@ space_to_pf_flag(const ValueFlags flags)
 
 
 template<class PhysSpace>
-SpaceElementHandler<PhysSpace>::
-SpaceElementHandler(std::shared_ptr<const PhysSpace> space)
+PhysSpaceElementHandler<PhysSpace>::
+PhysSpaceElementHandler(std::shared_ptr<const PhysSpace> space)
     :
     PFCache(space->get_map_func()),
     space_(space),
@@ -112,7 +112,7 @@ SpaceElementHandler(std::shared_ptr<const PhysSpace> space)
 
 template<class PhysSpace>
 auto
-SpaceElementHandler<PhysSpace>::
+PhysSpaceElementHandler<PhysSpace>::
 create(std::shared_ptr<const PhysSpace> space) -> std::shared_ptr<self_t>
 {
     Assert(space != nullptr,ExcNullPtr());
@@ -124,7 +124,7 @@ create(std::shared_ptr<const PhysSpace> space) -> std::shared_ptr<self_t>
 template<class PhysSpace>
 template<int k>
 void
-SpaceElementHandler<PhysSpace>::
+PhysSpaceElementHandler<PhysSpace>::
 reset(const ValueFlags flag, const EvaluationPoints<k> &eval_pts)
 {
     ref_space_handler_->reset(space_to_ref_flag(type, flag), eval_pts);
@@ -137,7 +137,7 @@ reset(const ValueFlags flag, const EvaluationPoints<k> &eval_pts)
 template<class PhysSpace>
 template<int k>
 void
-SpaceElementHandler<PhysSpace>::
+PhysSpaceElementHandler<PhysSpace>::
 init_cache(ElementAccessor &elem)
 {
     auto &ref_elem = elem.get_ref_space_accessor();
@@ -169,7 +169,7 @@ init_cache(ElementAccessor &elem)
 template<class PhysSpace>
 template<int k>
 void
-SpaceElementHandler<PhysSpace>::
+PhysSpaceElementHandler<PhysSpace>::
 fill_cache(ElementAccessor &elem, const int j)
 {
     auto &ref_elem = elem.get_ref_space_accessor();
@@ -226,11 +226,11 @@ fill_cache(ElementAccessor &elem, const int j)
 #if 0
 template<class PhysSpace>
 auto
-SpaceElementHandler<PhysSpace>::
+PhysSpaceElementHandler<PhysSpace>::
 fill_element_cache(ElementAccessor &elem) -> void
 {
     auto &ref_elem = elem.get_ref_space_accessor();
-    RefSpaceElementHandler::fill_element_cache(ref_elem);
+    RefPhysSpaceElementHandler::fill_element_cache(ref_elem);
     PFCache::fill_element(elem);
 
     auto &cache = elem.PhysSpace::ElementAccessor::parent_t::local_cache_;
@@ -311,7 +311,7 @@ fill_element_cache(ElementAccessor &elem) -> void
 
 template<class PhysSpace>
 auto
-SpaceElementHandler<PhysSpace>::
+PhysSpaceElementHandler<PhysSpace>::
 print_info(LogStream &out) const -> void
 {
     ref_space_handler_->print_info(out);
@@ -321,4 +321,4 @@ print_info(LogStream &out) const -> void
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/basis_functions/space_element_handler.inst>
+#include <igatools/basis_functions/phys_space_element_handler.inst>
