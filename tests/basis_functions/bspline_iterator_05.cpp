@@ -51,20 +51,20 @@ void sub_elem_values(const int n_knots, const int deg)
     cache->reset(flag, quad);
     auto elem = space->begin();
     auto end =  space->end();
-    cache->template init_cache<k>(elem);
-    cache->template init_cache<dim>(elem);
+    cache->init_face_cache(elem);
+    cache->init_face_cache(elem);
     for (; elem != end; ++elem)
     {
         if (elem->is_boundary())
         {
-            cache->template fill_cache<dim>(elem, 0);
+            cache->fill_element_cache(elem);
             out << "Element" << elem->get_flat_index() << endl;
             elem->template get_values<0,dim>(0).print_info(out);
             for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
             {
                 if (elem->is_boundary(s_id))
                 {
-                    cache->template fill_cache<k>(elem, s_id);
+                    cache->fill_face_cache(elem, s_id);
                     out << "Sub Element: " << s_id << endl;
                     out.begin_item("Values basis functions:");
                     auto values = elem->template get_values<0,k>(s_id);

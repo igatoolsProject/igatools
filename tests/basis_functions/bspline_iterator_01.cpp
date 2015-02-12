@@ -54,11 +54,11 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
     cache->reset(flag, quad);
 
     auto elem = space->begin();
-    cache->template init_cache<k>(elem);
+    cache->init_element_cache(elem);
 
     for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
     {
-        cache->template fill_cache<k>(elem,s_id);
+        cache->fill_element_cache(elem);
 
         out << "Sub Element: " << s_id << endl;
         auto values    = elem->template get_values<0,k>(s_id);

@@ -25,54 +25,100 @@
 #include <igatools/base/config.h>
 #include <igatools/base/function.h>
 
-
+template <int,int,int>
+class ReferenceElementHandler;
 
 IGA_NAMESPACE_OPEN
 
 
-template<class ElemContainer>
+template<class ElementContainer>
 class ElementHandler
 {
 public:
-    using ElemIterator = typename ElemContainer::ElementIterator;
-    using ElemAccessor = typename ElemContainer::ElementAccessor;
+    using ElemIterator = typename ElementContainer::ElementIterator;
+    using ElemAccessor = typename ElementContainer::ElementAccessor;
+    using DerivedElemHandler = typename ElementContainer::ElementHandler;
 
-    static const int dim = ElemContainer::dim;
+    static const int dim = ElementContainer::dim;
+    static const int range = ElementContainer::range;
+    static const int rank = ElementContainer::rank;
+
+
+    DerivedElemHandler & as_derived_class()
+    {
+    	return static_cast<DerivedElemHandler &>(*this);
+    }
 
     static const int l = iga::max(0, dim-num_sub_elem);
 
     using v2 = typename seq<Int, l, dim>::type;
     using topology_variant = typename boost::make_variant_over<v2>::type;
 
+
+
+    /**
+     * @name Init functions
+     */
+    ///@{
+    template <int k>
+    void init_cache(ElemIterator &elem)
+    {
+        this->as_derived_class().template init_cache<k>(*elem);
+    }
+
+    void init_element_cache(ElemAccessor &elem)
+    {
+        this->as_derived_class().template init_cache<dim>(elem);
+    }
+
+    void init_element_cache(ElemIterator &elem)
+    {
+        this->init_element_cache(*elem);
+    }
+
+    void init_face_cache(ElemAccessor &elem)
+    {
+        this->as_derived_class().template init_cache<(dim > 0)?dim-1:0>(elem);
+    }
+
+    void init_face_cache(ElemIterator &elem)
+    {
+        this->init_face_cache(*elem);
+    }
+
+    ///@}
+
     /**
      * @name Fill functions
      */
     ///@{
-    virtual void fill_cache(ElemAccessor &elem, const topology_variant &topology, const int j) = 0;
-
-    template<int k>
-    void fill_cache(ElemAccessor &elem, const int j)
-    {
-        this->fill_cache(elem,Int<k>(),j);
-    }
-
     template<int k>
     void fill_cache(ElemIterator &elem, const int j)
     {
-        this->template fill_cache<k>(*elem,j);
+    	this->as_derived_class().template fill_cache<k>(*elem,j);
     }
 
     void fill_element_cache(ElemAccessor &elem)
     {
-        this->template fill_cache<dim>(elem,0);
+        this->as_derived_class().template fill_cache<dim>(elem,0);
     }
 
     void fill_element_cache(ElemIterator &elem)
     {
-        this->template fill_cache<dim>(*elem,0);
+        this->fill_element_cache(*elem);
     }
-    ///@}
 
+    void fill_face_cache(ElemAccessor &elem, const int j)
+    {
+    	this->as_derived_class().template fill_cache<dim-1>(elem,j);
+    }
+
+    void fill_face_cache(ElemIterator &elem, const int j)
+    {
+    	this->fill_face_cache(*elem,j);
+    }
+
+    ///@}
 };
 
 

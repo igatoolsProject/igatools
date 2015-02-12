@@ -78,11 +78,11 @@ void elem_values(const int n_knots = 2, const int deg=1)
 
     auto elem = space->begin();
     auto end = space->end();
-    sp_values.template init_cache<k>(elem);
+    sp_values.init_element_cache(elem);
 
     for (; elem != end; ++elem)
     {
-        sp_values.template fill_cache<k>(elem,0);
+        sp_values.fill_element_cache(elem);
 
         out << "Basis values: " << endl;
         elem->template get_values<0, k>().print_info(out);

@@ -108,7 +108,7 @@ void cache_init_elem(const ValueFlags flag,
     sp_values.template reset<dim> (flag, quad);
 
     auto elem = space->begin();
-    sp_values.template init_cache<k>(elem);
+    sp_values.init_element_cache(elem);
     elem->print_cache_info(out);
 
     OUTEND
@@ -149,10 +149,10 @@ void cache_fill_elem(const ValueFlags flag,
 
     auto elem = space->begin();
     auto end = space->end();
-    sp_values.template init_cache<k>(elem);
+    sp_values.init_element_cache(elem);
     for (; elem != end; ++elem)
     {
-        sp_values.template fill_cache<k>(elem, 0);
+        sp_values.fill_element_cache(elem);
         elem->print_cache_info(out);
     }
 
@@ -194,10 +194,10 @@ void cache_get_elem_values(const ValueFlags flag,
 
     auto elem = space->begin();
     auto end = space->end();
-    sp_values.template init_cache<k>(elem);
+    sp_values.init_element_cache(elem);
     for (; elem != end; ++elem)
     {
-        sp_values.template fill_cache<k>(elem,0);
+        sp_values.fill_element_cache(elem);
         elem->template get_values<0, k>().print_info(out);
     }
 

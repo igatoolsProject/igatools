@@ -79,7 +79,7 @@ void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
 
     auto elem = space->begin();
     auto end = space->end();
-    sp_values.template init_cache<k>(elem);
+    sp_values.init_element_cache(elem);
     for (; elem != end; ++elem)
     {
         if (elem->SpaceElement<Space>::is_boundary())
@@ -90,7 +90,7 @@ void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
                 if (elem->SpaceElement<Space>::is_boundary(s_id))
                 {
                     out << "Face " << s_id << endl;
-                    sp_values.template fill_cache<k>(elem, s_id);
+                    sp_values.fill_element_cache(elem);
                     out << "values: " << endl;
                     elem->template get_values<0, k>(s_id).print_info(out);
 //                  out << "values: " << endl;

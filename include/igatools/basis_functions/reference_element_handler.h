@@ -130,7 +130,7 @@ public:
     {
         this->init_cache(elem,Int<k>());
     }
-
+#if 0
     template <int k>
     void init_cache(ElementIterator &elem)
     {
@@ -146,9 +146,9 @@ public:
     {
         this->template init_cache<dim>(*elem);
     }
-    ///@}
+#endif
 
-#if 0
+    ///@}
     /**
      * @name Fill functions
      */
@@ -160,6 +160,8 @@ public:
     {
         this->fill_cache(elem,Int<k>(),j);
     }
+
+#if 0
 
     template<int k>
     void fill_cache(ElementIterator &elem, const int j)
@@ -176,8 +178,9 @@ public:
     {
         this->template fill_cache<dim>(*elem,0);
     }
-    ///@}
 #endif
+    ///@}
+
 
     virtual void print_info(LogStream &out) const = 0;
 
@@ -186,7 +189,6 @@ public:
     {
         return grid_handler_.template get_num_points<k>();
     }
-
 
 protected:
     GridElementHandler<dim> grid_handler_;
