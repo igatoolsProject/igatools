@@ -44,16 +44,16 @@ public:
     static const int rank = ElementContainer::rank;
 
 
-    DerivedElemHandler & as_derived_class()
+    DerivedElemHandler &as_derived_class()
     {
-    	return static_cast<DerivedElemHandler &>(*this);
+        return static_cast<DerivedElemHandler &>(*this);
     }
+    /*
+        static const int l = iga::max(0, dim-num_sub_elem);
 
-    static const int l = iga::max(0, dim-num_sub_elem);
-
-    using v2 = typename seq<Int, l, dim>::type;
-    using topology_variant = typename boost::make_variant_over<v2>::type;
-
+        using v2 = typename seq<Int, l, dim>::type;
+        using topology_variant = typename boost::make_variant_over<v2>::type;
+    //*/
 
 
     /**
@@ -85,7 +85,6 @@ public:
     {
         this->init_face_cache(*elem);
     }
-
     ///@}
 
     /**
@@ -95,7 +94,7 @@ public:
     template<int k>
     void fill_cache(ElemIterator &elem, const int j)
     {
-    	this->as_derived_class().template fill_cache<k>(*elem,j);
+        this->as_derived_class().template fill_cache<k>(*elem,j);
     }
 
     void fill_element_cache(ElemAccessor &elem)
@@ -110,12 +109,12 @@ public:
 
     void fill_face_cache(ElemAccessor &elem, const int j)
     {
-    	this->as_derived_class().template fill_cache<dim-1>(elem,j);
+        this->as_derived_class().template fill_cache<dim-1>(elem,j);
     }
 
     void fill_face_cache(ElemIterator &elem, const int j)
     {
-    	this->fill_face_cache(*elem,j);
+        this->fill_face_cache(*elem,j);
     }
 
     ///@}

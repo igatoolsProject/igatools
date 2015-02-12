@@ -66,10 +66,10 @@ void loc_stiff_matrix(const int n_knots, const int deg)
     const int n_basis = elem->get_num_basis();
     DenseMatrix loc_mat(n_basis,n_basis);
 
-    elem_handler.template init_cache<dim>(elem);
+    elem_handler.init_element_cache(elem);
     for (; elem != elem_end; ++elem)
     {
-        elem_handler.template fill_cache<dim>(elem,0);
+        elem_handler.fill_element_cache(elem);
 
         loc_mat = 0.0;
 

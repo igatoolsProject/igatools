@@ -66,10 +66,10 @@ void run_test(std::string &file_name)
     auto sp_elem     = ref_space->begin();
     auto sp_elem_end = ref_space->end();
 
-    sp_elem_handler->template init_cache<dim>(sp_elem);
+    sp_elem_handler->init_element_cache(sp_elem);
     for (; sp_elem != sp_elem_end; ++sp_elem)
     {
-        sp_elem_handler->template fill_cache<dim>(sp_elem,0);
+        sp_elem_handler->fill_element_cache(sp_elem);
 
         out << "Element id: " << sp_elem->get_flat_index() << endl;
 

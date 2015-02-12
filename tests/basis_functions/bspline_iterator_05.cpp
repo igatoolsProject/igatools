@@ -51,7 +51,7 @@ void sub_elem_values(const int n_knots, const int deg)
     cache->reset(flag, quad);
     auto elem = space->begin();
     auto end =  space->end();
-    cache->init_face_cache(elem);
+    cache->init_element_cache(elem);
     cache->init_face_cache(elem);
     for (; elem != end; ++elem)
     {

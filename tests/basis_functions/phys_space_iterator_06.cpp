@@ -54,7 +54,7 @@ create_function(shared_ptr<CartesianGrid<dim>> grid)
 }
 
 
-template <int dim, int k=dim, int range=1, int rank=1, int codim = 0>
+template <int dim, int k, int range=1, int rank=1, int codim = 0>
 void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
 {
     using BspSpace = BSplineSpace<dim, range, rank>;
@@ -79,7 +79,7 @@ void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
 
     auto elem = space->begin();
     auto end = space->end();
-    sp_values.init_element_cache(elem);
+    sp_values.init_face_cache(elem);
     for (; elem != end; ++elem)
     {
         if (elem->SpaceElement<Space>::is_boundary())
@@ -90,7 +90,7 @@ void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
                 if (elem->SpaceElement<Space>::is_boundary(s_id))
                 {
                     out << "Face " << s_id << endl;
-                    sp_values.fill_element_cache(elem);
+                    sp_values.fill_face_cache(elem,s_id);
                     out << "values: " << endl;
                     elem->template get_values<0, k>(s_id).print_info(out);
 //                  out << "values: " << endl;
