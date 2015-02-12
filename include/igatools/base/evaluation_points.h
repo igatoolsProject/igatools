@@ -344,6 +344,8 @@ extend_sub_elem_quad(const EvaluationPoints<k> &quad, const int sub_elem_id);
 
 
 
+
+
 IGA_NAMESPACE_CLOSE
 
 #endif // #ifndef EVALUATION_POINTS_H_

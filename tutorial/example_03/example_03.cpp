@@ -52,13 +52,13 @@ void loop_on_grid_with_cache()
     const auto elem_end = grid->end();
     // [loop as before]
     // [init cache]
-    elem_handler->template init_cache<dim>(elem);
+    elem_handler->init_element_cache(elem);
     // [init cache]
 
     for (; elem != elem_end; ++elem)
     {
         // [fill cache]
-        elem_handler->template fill_cache<dim>(elem, 0);
+        elem_handler->fill_element_cache(elem);
         // [fill cache]
         out << "The tensor index of element: " << elem->get_flat_index();
         out << " is: "<< elem->get_tensor_index() << endl;

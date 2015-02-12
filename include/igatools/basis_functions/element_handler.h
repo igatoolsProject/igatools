@@ -23,10 +23,6 @@
 #define ELEMENT_HANDLER_H_
 
 #include <igatools/base/config.h>
-#include <igatools/base/function.h>
-
-template <int,int,int>
-class ReferenceElementHandler;
 
 IGA_NAMESPACE_OPEN
 
@@ -71,11 +67,22 @@ public:
         this->as_derived_class().template init_cache<k>(*elem);
     }
 
+    /**
+     * Allocates the space in the cache of ElementAccessor <tt>element</tt>
+     * necessary for the given quadrature and flag combination.
+     * It also fills the invariant (not changing) members of
+     * the cache.
+     */
     void init_element_cache(ElemAccessor &elem)
     {
         this->as_derived_class().template init_cache<dim>(elem);
     }
 
+    /**
+     * Same as init_element_cache() but using the ElementIterator as input/output argument.
+     *
+     * @sa init_element_cache(ElemAccessor &elem)
+     */
     void init_element_cache(ElemIterator &elem)
     {
         this->init_element_cache(*elem);
@@ -121,7 +128,6 @@ public:
     {
         this->fill_face_cache(*elem,j);
     }
-
     ///@}
 };
 

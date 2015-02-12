@@ -119,7 +119,7 @@ init_cache(ElementAccessor &elem)
 }
 
 
-
+#if 0
 template <int dim>
 void
 GridElementHandler<dim>::
@@ -137,7 +137,7 @@ init_element_cache(ElementIterator &elem)
 {
     init_element_cache(*elem);
 }
-
+#endif
 
 
 template <int dim>
@@ -171,7 +171,7 @@ fill_cache(ElementAccessor &elem, const int j)
 }
 
 
-
+#if 0
 template <int dim>
 void
 GridElementHandler<dim>::
@@ -189,7 +189,7 @@ fill_element_cache(ElementIterator &elem)
 {
     fill_element_cache(*elem);
 }
-
+#endif
 
 template <int dim>
 auto

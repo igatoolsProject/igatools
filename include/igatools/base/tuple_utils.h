@@ -38,6 +38,9 @@ auto tuple_of_quads(std::index_sequence<I...>)
 template<int dim, template<int> class Q>
 using TupleList = decltype(tuple_of_quads<Q>(std::make_index_sequence<dim+1>()));
 
+template<int dim>
+using EvalPtsList = TupleList<dim, EvaluationPoints>;
+
 
 template<class ValuesCache, int dim, std::size_t... I>
 auto

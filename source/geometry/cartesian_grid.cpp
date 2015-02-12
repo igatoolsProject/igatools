@@ -36,18 +36,18 @@ namespace
 {
 
 /**
- * Given the boundaries of a dim-dimensional box, it
+ * Given the boundaries of a dim_-dimensional box, it
  * computes and returns a vector of knot vectors uniformly
  * distrubuted with the required numbers of knots.
  */
-template <int dim>
-CartesianProductArray<Real,dim>
-filled_progression(const BBox<dim> &end_points, const TensorSize<dim> &n_knots)
+template <int dim_>
+CartesianProductArray<Real,dim_>
+filled_progression(const BBox<dim_> &end_points, const TensorSize<dim_> &n_knots)
 {
-    CartesianProductArray<Real,dim> knot_coordinates(n_knots);
+    CartesianProductArray<Real,dim_> knot_coordinates(n_knots);
 
     vector<Real> knots_1d;
-    for (const int i : UnitElement<dim>::active_directions)
+    for (const int i : UnitElement<dim_>::active_directions)
     {
         const Size n_i = n_knots[i];
         Assert(n_i > 1, ExcLowerRange(n_i,2));
@@ -71,18 +71,18 @@ filled_progression(const BBox<dim> &end_points, const TensorSize<dim> &n_knots)
 
 
 
-template<int dim>
-CartesianGrid<dim>::
+template<int dim_>
+CartesianGrid<dim_>::
 CartesianGrid(const Size n)
     :
-    CartesianGrid(TensorSize<dim>(n), Kind::uniform)
+    CartesianGrid(TensorSize<dim_>(n), Kind::uniform)
 {}
 
 
 
-template<int dim>
+template<int dim_>
 auto
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 create(const Size n) -> shared_ptr<self_t>
 {
     return shared_ptr<self_t>(new self_t(n));
@@ -90,72 +90,72 @@ create(const Size n) -> shared_ptr<self_t>
 
 
 
-template<int dim>
-CartesianGrid<dim>::
-CartesianGrid(const TensorSize<dim> &n, const Kind kind)
+template<int dim_>
+CartesianGrid<dim_>::
+CartesianGrid(const TensorSize<dim_> &n, const Kind kind)
     :
-    CartesianGrid(filled_array<std::array<Real,2>,dim>(std::array<Real,2> {{0,1}}), n, kind)
+    CartesianGrid(filled_array<std::array<Real,2>,dim_>(std::array<Real,2> {{0,1}}), n, kind)
 {}
 
 
 
-template<int dim>
+template<int dim_>
 auto
-CartesianGrid<dim>::
-create(const TensorSize<dim> &n) -> shared_ptr<self_t>
+CartesianGrid<dim_>::
+create(const TensorSize<dim_> &n) -> shared_ptr<self_t>
 {
     return shared_ptr<self_t>(new self_t(n, Kind::direction_uniform));
 }
 
 
 
-template<int dim>
-CartesianGrid<dim>::
-CartesianGrid(const BBox<dim> &end_points, const Size n_knots, const Kind kind)
+template<int dim_>
+CartesianGrid<dim_>::
+CartesianGrid(const BBox<dim_> &end_points, const Size n_knots, const Kind kind)
     :
-    CartesianGrid(end_points, TensorSize<dim>(n_knots), kind)
+    CartesianGrid(end_points, TensorSize<dim_>(n_knots), kind)
 {}
 
 
 
-template<int dim>
+template<int dim_>
 auto
-CartesianGrid<dim>::
-create(const BBox<dim> &end_points, const Size n_knots) -> shared_ptr<self_t>
+CartesianGrid<dim_>::
+create(const BBox<dim_> &end_points, const Size n_knots) -> shared_ptr<self_t>
 {
     return shared_ptr<self_t>(new self_t(end_points, n_knots, Kind::uniform));
 }
 
 
 
-template<int dim>
-CartesianGrid<dim>::
-CartesianGrid(const BBox<dim> &end_points,
-              const TensorSize<dim> &n,
+template<int dim_>
+CartesianGrid<dim_>::
+CartesianGrid(const BBox<dim_> &end_points,
+              const TensorSize<dim_> &n,
               const Kind kind)
     :
-    CartesianGrid(filled_progression<dim>(end_points, n), kind)
+    CartesianGrid(filled_progression<dim_>(end_points, n), kind)
 {}
 
 
 
-template<int dim>
+template<int dim_>
 auto
-CartesianGrid<dim>::
-create(const BBox<dim> &end_points,
-       const TensorSize<dim> &n) -> shared_ptr<self_t>
+CartesianGrid<dim_>::
+create(const BBox<dim_> &end_points,
+       const TensorSize<dim_> &n) -> shared_ptr<self_t>
 {
     return shared_ptr<self_t>(new self_t(end_points, n, Kind::direction_uniform));
 }
 
 
 
-template<int dim>
-CartesianGrid<dim>::
+template<int dim_>
+CartesianGrid<dim_>::
 CartesianGrid(const KnotCoordinates &knot_coordinates,
               const Kind kind)
     :
-    TensorSizedContainer<dim>(TensorSize<dim>(knot_coordinates.tensor_size()-1)),
+    TensorSizedContainer<dim_>(TensorSize<dim_>(knot_coordinates.tensor_size()-1)),
     kind_(kind),
     boundary_id_(filled_array<int,Topology::n_faces>(0)),
     knot_coordinates_(knot_coordinates)
@@ -195,9 +195,9 @@ CartesianGrid(const KnotCoordinates &knot_coordinates,
 
 
 
-template<int dim>
+template<int dim_>
 auto
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 create(const KnotCoordinates &knot_coordinates) -> shared_ptr<self_t>
 {
     return shared_ptr<self_t>(new self_t(knot_coordinates, Kind::non_uniform));
@@ -205,27 +205,27 @@ create(const KnotCoordinates &knot_coordinates) -> shared_ptr<self_t>
 
 
 
-template<int dim>
-CartesianGrid<dim>::
-CartesianGrid(const std::array<vector<Real>,dim> &knot_coordinates)
+template<int dim_>
+CartesianGrid<dim_>::
+CartesianGrid(const std::array<vector<Real>,dim_> &knot_coordinates)
     :
-    self_t(CartesianProductArray<Real,dim>(knot_coordinates),
+    self_t(CartesianProductArray<Real,dim_>(knot_coordinates),
            Kind::direction_uniform)
 {}
 
 
 
-template<int dim>
+template<int dim_>
 auto
-CartesianGrid<dim>::
-create(const std::array<vector<Real>,dim> &knot_coordinates) -> shared_ptr<self_t>
+CartesianGrid<dim_>::
+create(const std::array<vector<Real>,dim_> &knot_coordinates) -> shared_ptr<self_t>
 {
     return shared_ptr< self_t >(new self_t(knot_coordinates));
 }
 
-template<int dim>
+template<int dim_>
 auto
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 create(const self_t &grid) -> std::shared_ptr<self_t>
 {
     return shared_ptr<self_t>(new self_t(grid));
@@ -233,11 +233,11 @@ create(const self_t &grid) -> std::shared_ptr<self_t>
 
 
 
-template<int dim>
-CartesianGrid<dim>::
+template<int dim_>
+CartesianGrid<dim_>::
 CartesianGrid(const self_t &grid)
     :
-    TensorSizedContainer<dim>(grid),
+    TensorSizedContainer<dim_>(grid),
     kind_(grid.kind_),
     boundary_id_(grid.boundary_id_),
     knot_coordinates_(grid.knot_coordinates_),
@@ -246,9 +246,9 @@ CartesianGrid(const self_t &grid)
 
 
 
-template<int dim>
+template<int dim_>
 vector< Real > const &
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 get_knot_coordinates(const int i) const
 {
     return knot_coordinates_.get_data_direction(i);
@@ -256,19 +256,19 @@ get_knot_coordinates(const int i) const
 
 
 
-template<int dim>
+template<int dim_>
 auto
-CartesianGrid<dim>::
-get_knot_coordinates() const -> CartesianProductArray<Real,dim> const &
+CartesianGrid<dim_>::
+get_knot_coordinates() const -> CartesianProductArray<Real,dim_> const &
 {
     return knot_coordinates_;
 }
 
 
 
-template<int dim>
+template<int dim_>
 auto
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 get_element_lengths() const -> KnotCoordinates
 {
     auto const &size = get_num_intervals();
@@ -285,25 +285,25 @@ get_element_lengths() const -> KnotCoordinates
 }
 
 
-template<int dim>
+template<int dim_>
 std::set<Index> &
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 get_elements_id_same_property(const ElementProperty &property)
 {
     return properties_elements_id_[property];
 }
 
-template<int dim>
+template<int dim_>
 const std::set<Index> &
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 get_elements_id_same_property(const ElementProperty &property) const
 {
     return properties_elements_id_.at(property);
 }
 
-template<int dim>
+template<int dim_>
 auto
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 begin() -> ElementIterator
 {
     const auto &active_elements = get_elements_id_same_property(ElementProperty::active);
@@ -319,12 +319,12 @@ begin() -> ElementIterator
     return ElementIterator(this->shared_from_this(), id_first_active_elem);
 }
 
-template<int dim>
+template<int dim_>
 auto
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 create_element(const Index flat_index) const -> std::shared_ptr<ElementAccessor>
 {
-    using Elem = CartesianGridElement<dim>;
+    using Elem = CartesianGridElement<dim_>;
     auto elem = shared_ptr<Elem>(new Elem(this->shared_from_this(),flat_index));
     Assert(elem != nullptr,ExcNullPtr());
 
@@ -332,17 +332,17 @@ create_element(const Index flat_index) const -> std::shared_ptr<ElementAccessor>
 }
 
 
-template<int dim>
+template<int dim_>
 auto
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 end() -> ElementIterator
 {
     return ElementIterator(this->create_element(IteratorState::pass_the_end));
 }
 
-template<int dim>
+template<int dim_>
 auto
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 last() -> ElementIterator
 {
     const auto &active_elements = get_elements_id_same_property(ElementProperty::active);
@@ -357,17 +357,17 @@ last() -> ElementIterator
     return ElementIterator(this->shared_from_this(), id_last_active_elem);
 }
 
-template<int dim>
+template<int dim_>
 auto
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 last() const -> ElementConstIterator
 {
     return clast();
 }
 
-template<int dim>
+template<int dim_>
 auto
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 clast() const -> ElementConstIterator
 {
     const auto &active_elements = get_elements_id_same_property(ElementProperty::active);
@@ -383,9 +383,9 @@ clast() const -> ElementConstIterator
     return ElementConstIterator(this->shared_from_this(), id_last_active_elem);
 }
 
-template<int dim>
+template<int dim_>
 auto
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 begin() const -> ElementConstIterator
 {
     return this->cbegin();
@@ -393,17 +393,17 @@ begin() const -> ElementConstIterator
 
 
 
-template<int dim>
+template<int dim_>
 auto
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 end() const -> ElementConstIterator
 {
     return this->cend();
 }
 
-template<int dim>
+template<int dim_>
 auto
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 cbegin() const -> ElementConstIterator
 {
     const auto &active_elements = get_elements_id_same_property(ElementProperty::active);
@@ -421,9 +421,9 @@ cbegin() const -> ElementConstIterator
 
 
 
-template<int dim>
+template<int dim_>
 auto
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 cend() const -> ElementConstIterator
 {
     return ElementConstIterator(this->create_element(IteratorState::pass_the_end));
@@ -433,61 +433,61 @@ cend() const -> ElementConstIterator
 
 
 
-template<int dim>
+template<int dim_>
 Index
-CartesianGrid<dim>::
-tensor_to_flat(const TensorIndex<dim> &tensor_index) const
+CartesianGrid<dim_>::
+tensor_to_flat(const TensorIndex<dim_> &tensor_index) const
 {
-    return TensorSizedContainer<dim>::tensor_to_flat(tensor_index);
+    return TensorSizedContainer<dim_>::tensor_to_flat(tensor_index);
 }
 
 
 
-template<int dim>
-TensorIndex<dim>
-CartesianGrid<dim>::
+template<int dim_>
+TensorIndex<dim_>
+CartesianGrid<dim_>::
 flat_to_tensor(const Index flat_index) const
 {
-    return TensorSizedContainer<dim>::flat_to_tensor(flat_index);
+    return TensorSizedContainer<dim_>::flat_to_tensor(flat_index);
 }
 
 
 
-template<int dim>
+template<int dim_>
 void
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 set_boundary_id(const int face, const boundary_id id)
 {
-    Assert(face < UnitElement<dim>::n_faces,
-           ExcIndexRange(face,0, UnitElement<dim>::n_faces));
+    Assert(face < UnitElement<dim_>::n_faces,
+           ExcIndexRange(face,0, UnitElement<dim_>::n_faces));
     boundary_id_[face] = id;
 }
 
 
 
-template<int dim>
+template<int dim_>
 boundary_id
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 get_boundary_id(const int face) const
 {
-    Assert(face < UnitElement<dim>::n_faces,
-           ExcIndexRange(face,0, UnitElement<dim>::n_faces));
+    Assert(face < UnitElement<dim_>::n_faces,
+           ExcIndexRange(face,0, UnitElement<dim_>::n_faces));
     return (boundary_id_[face]);
 }
 
 
 
-template<int dim>
+template<int dim_>
 template<int sub_dim>
 auto
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 get_boundary_normals(const int s_id) const -> BoundaryNormal<sub_dim>
 {
-    auto all_elems = UnitElement<dim>::all_elems;
+    auto all_elems = UnitElement<dim_>::all_elems;
     auto element = std::get<sub_dim>(all_elems)[s_id];
 
     BoundaryNormal<sub_dim> normals;
-    for (int i=0; i<dim-sub_dim; ++i)
+    for (int i=0; i<dim_-sub_dim; ++i)
     {
         auto val = 2*element.constant_values[i]-1;
         normals[i][element.constant_directions[i]] = val;
@@ -497,35 +497,35 @@ get_boundary_normals(const int s_id) const -> BoundaryNormal<sub_dim>
 }
 
 
-template<int dim>
+template<int dim_>
 Size
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 get_num_elements_same_property(const ElementProperty &property) const
 {
     return this->get_elements_id_same_property(property).size();
 }
 
 
-template<int dim>
+template<int dim_>
 Size
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 get_num_active_elems() const
 {
     return this->get_num_elements_same_property(ElementProperty::active);
 }
 
-template<int dim>
+template<int dim_>
 Size
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 get_num_influence_elems() const
 {
     return this->get_num_elements_same_property(ElementProperty::influence);
 }
 
 
-template<int dim>
+template<int dim_>
 Size
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 get_num_all_elems() const
 {
     return this->flat_size();
@@ -544,28 +544,28 @@ get_num_active_elems() const
 
 
 
-template<int dim>
+template<int dim_>
 auto
-CartesianGrid<dim>::
-get_num_intervals() const -> TensorSize<dim>
+CartesianGrid<dim_>::
+get_num_intervals() const -> TensorSize<dim_>
 {
     return this->tensor_size();
 }
 
 
 
-template<int dim>
+template<int dim_>
 auto
-CartesianGrid<dim>::
-get_num_knots_dim() const -> TensorSize<dim>
+CartesianGrid<dim_>::
+get_num_knots_dim() const -> TensorSize<dim_>
 {
     return knot_coordinates_.tensor_size();
 }
 
 
-template<int dim>
+template<int dim_>
 auto
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 get_grid_pre_refinement() const -> shared_ptr<const self_t>
 {
     return grid_pre_refinement_;
@@ -573,17 +573,17 @@ get_grid_pre_refinement() const -> shared_ptr<const self_t>
 
 
 
-template <int dim>
+template <int dim_>
 void
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 refine_directions(
-    const std::array<bool,dim> &refinement_directions,
-    const std::array<Size,dim> &n_subdivisions)
+    const std::array<bool,dim_> &refinement_directions,
+    const std::array<Size,dim_> &n_subdivisions)
 {
     // make a copy of the grid before the refinement
     grid_pre_refinement_ = make_shared<const self_t>(self_t(*this));
 
-    TensorSize<dim> n_sub_elems;
+    TensorSize<dim_> n_sub_elems;
     for (const auto i : Topology::active_directions)
     {
         if (refinement_directions[i])
@@ -597,7 +597,7 @@ refine_directions(
             n_sub_elems[i] = 1;
         }
     }
-    TensorSizedContainer<dim>::reset_size(knot_coordinates_.tensor_size()-1);
+    TensorSizedContainer<dim_>::reset_size(knot_coordinates_.tensor_size()-1);
 
     //-------------------------------------------------------------
     for (auto &elements_same_property : properties_elements_id_)
@@ -623,18 +623,18 @@ refine_directions(
 
 
 
-template <int dim>
+template <int dim_>
 void
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 refine_direction(const int direction_id, const Size n_subdivisions)
 {
-    Assert(direction_id >= 0 && direction_id < dim,
-           ExcIndexRange(direction_id, 0, dim));
+    Assert(direction_id >= 0 && direction_id < dim_,
+           ExcIndexRange(direction_id, 0, dim_));
 
-    std::array<bool,dim> refinement_directions = filled_array<bool,dim>(false);
+    std::array<bool,dim_> refinement_directions = filled_array<bool,dim_>(false);
     refinement_directions[direction_id] = true;
 
-    std::array<Size,dim> n_subdiv;
+    std::array<Size,dim_> n_subdiv;
     n_subdiv[direction_id] = n_subdivisions;
 
     this->refine_directions(refinement_directions,n_subdiv);
@@ -642,39 +642,39 @@ refine_direction(const int direction_id, const Size n_subdivisions)
 
 
 
-template <int dim>
+template <int dim_>
 void
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 refine(const Size n_subdivisions)
 {
     Assert(n_subdivisions >= 2, ExcLowerRange(n_subdivisions,2));
 
     this->refine_directions(
-        filled_array<bool,dim>(true),
-        filled_array<Size,dim>(n_subdivisions));
+        filled_array<bool,dim_>(true),
+        filled_array<Size,dim_>(n_subdivisions));
 }
 
 
 
-template <int dim>
+template <int dim_>
 boost::signals2::connection
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 connect_refinement(const SignalRefineSlot &subscriber)
 {
     return refine_signals_.connect(subscriber);
 }
 
 
-template <int dim>
+template <int dim_>
 void
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 refine_knots_direction(const int direction_id,
                        const Size n_subdivisions)
 {
     Assert(n_subdivisions >= 2,ExcLowerRange(n_subdivisions,2));
 
-    Assert(direction_id >=0 && direction_id < dim,
-           ExcIndexRange(direction_id,0,dim));
+    Assert(direction_id >=0 && direction_id < dim_,
+           ExcIndexRange(direction_id,0,dim_));
 
     const auto &knots_old = this->get_knot_coordinates(direction_id);
 
@@ -699,9 +699,9 @@ refine_knots_direction(const int direction_id,
 
 
 
-template <int dim>
+template <int dim_>
 void
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 print_info(LogStream &out) const
 {
     out << "Number of intervals per direction: " << this->tensor_size() << endl;
@@ -743,19 +743,19 @@ print_info(LogStream &out) const
 
 
 
-template <int dim>
+template <int dim_>
 template<int k>
 auto
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 get_sub_grid(const int sub_elem_id, InterGridMap<k> &elem_map) const
 -> std::shared_ptr<CartesianGrid<k>>
 {
-    auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
+    auto &k_elem = UnitElement<dim_>::template get_elem<k>(sub_elem_id);
     const auto active_dirs = TensorIndex<k>(k_elem.active_directions);
     auto sub_knots = knot_coordinates_.template get_sub_product<k>(active_dirs);
     auto sub_grid = CartesianGrid<k>::create(sub_knots);
 
-    TensorIndex<dim> grid_index;
+    TensorIndex<dim_> grid_index;
     const int n_dir = k_elem.constant_directions.size();
     for (int j = 0 ; j < n_dir ; ++j)
     {
@@ -782,12 +782,12 @@ get_sub_grid(const int sub_elem_id, InterGridMap<k> &elem_map) const
 
 
 
-template <int dim>
+template <int dim_>
 auto
-CartesianGrid<dim>::
-get_bounding_box() const -> BBox<dim>
+CartesianGrid<dim_>::
+get_bounding_box() const -> BBox<dim_>
 {
-    BBox<dim> bounding_box;
+    BBox<dim_> bounding_box;
 
     for (const auto i : Topology::active_directions)
     {
@@ -800,10 +800,10 @@ get_bounding_box() const -> BBox<dim>
 
 
 
-template <int dim>
+template <int dim_>
 auto
-CartesianGrid<dim>::
-find_elements_of_points(const ValueVector<Points<dim>> &points) const
+CartesianGrid<dim_>::
+find_elements_of_points(const ValueVector<Points<dim_>> &points) const
 -> std::map<ElementIterator, vector<int> >
 {
     std::map<ElementIterator, vector<int> > res;
@@ -812,7 +812,7 @@ find_elements_of_points(const ValueVector<Points<dim>> &points) const
     for (int k=0; k<n_points; ++k)
     {
         const auto &point = points[k];
-        TensorIndex<dim> elem_t_id;
+        TensorIndex<dim_> elem_t_id;
         for (const auto i : Topology::active_directions)
         {
             const auto &knots = knot_coordinates_.get_data_direction(i);
@@ -843,10 +843,10 @@ find_elements_of_points(const ValueVector<Points<dim>> &points) const
 
 
 
-template <int dim>
+template <int dim_>
 bool
-CartesianGrid<dim>::
-operator==(const CartesianGrid<dim> &grid) const
+CartesianGrid<dim_>::
+operator==(const CartesianGrid<dim_> &grid) const
 {
     bool same_knots_coordinates = true;
     for (const auto i : Topology::active_directions)
@@ -859,18 +859,18 @@ operator==(const CartesianGrid<dim> &grid) const
     return same_knots_coordinates;
 }
 
-template <int dim>
+template <int dim_>
 vector<Index>
-CartesianGrid<dim>::
-get_sub_elements_id(const TensorSize<dim> &n_sub_elems, const Index elem_id) const
+CartesianGrid<dim_>::
+get_sub_elements_id(const TensorSize<dim_> &n_sub_elems, const Index elem_id) const
 {
     const auto coarse_elem_tensor_id = this->flat_to_tensor(elem_id);
 
-    const auto weight_sub_elems = MultiArrayUtils<dim>::compute_weight(n_sub_elems);
+    const auto weight_sub_elems = MultiArrayUtils<dim_>::compute_weight(n_sub_elems);
 
-    const TensorSize<dim> n_elems_coarse_grid = this->get_num_intervals();
-    TensorSize<dim> n_elems_fine_grid;
-    TensorIndex<dim> first_fine_elem_tensor_id;
+    const TensorSize<dim_> n_elems_coarse_grid = this->get_num_intervals();
+    TensorSize<dim_> n_elems_fine_grid;
+    TensorIndex<dim_> first_fine_elem_tensor_id;
     for (const auto &i : Topology::active_directions)
     {
         Assert(n_sub_elems[i] > 0 ,ExcLowerRange(n_sub_elems[i],1));
@@ -879,36 +879,36 @@ get_sub_elements_id(const TensorSize<dim> &n_sub_elems, const Index elem_id) con
 
         first_fine_elem_tensor_id[i] = n_sub_elems[i] * coarse_elem_tensor_id[i];
     }
-    const auto weight_fine_grid = MultiArrayUtils<dim>::compute_weight(n_elems_fine_grid);
+    const auto weight_fine_grid = MultiArrayUtils<dim_>::compute_weight(n_elems_fine_grid);
 
 
     const int n_sub_elems_total = n_sub_elems.flat_size();
     vector<Index> sub_elems_id(n_sub_elems_total);
-    TensorIndex<dim> fine_elem_tensor_id;
+    TensorIndex<dim_> fine_elem_tensor_id;
     for (int sub_elem = 0 ; sub_elem < n_sub_elems_total ; ++sub_elem)
     {
         const auto sub_elem_tensor_id =
-            MultiArrayUtils<dim>::flat_to_tensor_index(sub_elem, weight_sub_elems);
+            MultiArrayUtils<dim_>::flat_to_tensor_index(sub_elem, weight_sub_elems);
 
         for (const auto &i : Topology::active_directions)
             fine_elem_tensor_id[i] = first_fine_elem_tensor_id[i] + sub_elem_tensor_id[i];
 
         sub_elems_id[sub_elem] =
-            MultiArrayUtils<dim>::tensor_to_flat_index(fine_elem_tensor_id, weight_fine_grid);
+            MultiArrayUtils<dim_>::tensor_to_flat_index(fine_elem_tensor_id, weight_fine_grid);
     } // end loop sub_elem_flat_id
 
     return sub_elems_id;
 }
 
 
-template <int dim>
+template <int dim_>
 void
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 set_element_property(const ElementProperty &property,
                      const Index elem_flat_id,
                      const bool property_status)
 {
-    Assert(dim > 0,ExcMessage("Setting a property for CartesianGrid<dim> with dim==0 has no meaning."));
+    Assert(dim_ > 0,ExcMessage("Setting a property for CartesianGrid<dim_> with dim_==0 has no meaning."));
 
     auto &elems_same_property = get_elements_id_same_property(property);
     if (property_status)
@@ -923,9 +923,9 @@ set_element_property(const ElementProperty &property,
 
 }
 
-template <int dim>
+template <int dim_>
 bool
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 test_if_element_has_property(const Index elem_flat_id, const ElementProperty &property) const
 {
     const auto &elems_same_property = this->get_elements_id_same_property(property);
@@ -933,9 +933,9 @@ test_if_element_has_property(const Index elem_flat_id, const ElementProperty &pr
 }
 
 
-template <int dim>
+template <int dim_>
 bool
-CartesianGrid<dim>::
+CartesianGrid<dim_>::
 is_element_active(const Index elem_flat_id) const
 {
     return this->test_if_element_has_property(elem_flat_id,ElementProperty::active);

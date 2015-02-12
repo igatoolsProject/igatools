@@ -91,26 +91,28 @@ template <int> class GridElementHandler;
  * @ingroup containers
  * @todo document more
  */
-template<int dim>
+template<int dim_>
 class CartesianGrid :
-    protected TensorSizedContainer<dim>,
-    public std::enable_shared_from_this<CartesianGrid<dim>>
+    protected TensorSizedContainer<dim_>,
+    public std::enable_shared_from_this<CartesianGrid<dim_>>
 {
 private:
     /** Type for current class. */
-    using self_t = CartesianGrid<dim>;
+    using self_t = CartesianGrid<dim_>;
 
 public:
 
     /**
      * Alias for the (static) class holding the topological information.
      */
-    using Topology = UnitElement<dim>;
+    using Topology = UnitElement<dim_>;
 
-    using Point = Points<dim>;
+    using Point = Points<dim_>;
+
+    static const int dim = dim_;
 
     /** Type for the element accessor. */
-    using ElementAccessor = CartesianGridElement<dim>;
+    using ElementAccessor = CartesianGridElement<dim_>;
 
     /** Type for the iterator over the elements of the grid (non-const version).  */
     using ElementIterator = CartesianGridIterator<ElementAccessor>;
@@ -118,10 +120,10 @@ public:
     /** Type for the iterator over the elements of the grid (const version).  */
     using ElementConstIterator = CartesianGridConstIterator<ElementAccessor>;
 
-    using ElementHandler = GridElementHandler<dim>;
+    using ElementHandler = GridElementHandler<dim_>;
 
     /** Type for the vector of knot vectors */
-    using KnotCoordinates = CartesianProductArray<Real, dim>;
+    using KnotCoordinates = CartesianProductArray<Real, dim_>;
 
     /**
      * Types of grid for future optimization
@@ -173,20 +175,20 @@ protected:
      * with <tt>n[0],..,n[dim-1</tt>] knots in each dimension
      * respectively.
      */
-    explicit CartesianGrid(const TensorSize<dim> &n_knots, const Kind kind);
+    explicit CartesianGrid(const TensorSize<dim_> &n_knots, const Kind kind);
 
     /**
      * @todo Document me
      */
-    explicit CartesianGrid(const BBox<dim> &end_points,
+    explicit CartesianGrid(const BBox<dim_> &end_points,
                            const Size n_knots,
                            const Kind kind);
 
     /**
      * @todo Document me
      */
-    explicit CartesianGrid(const BBox<dim> &end_points,
-                           const TensorSize<dim> &n_knots,
+    explicit CartesianGrid(const BBox<dim_> &end_points,
+                           const TensorSize<dim_> &n_knots,
                            const Kind kind);
 
     /**
@@ -212,7 +214,7 @@ protected:
      * is perform and if not satistified an exception is raised.
      */
     explicit
-    CartesianGrid(const std::array<vector<Real>,dim> &knot_coordinates);
+    CartesianGrid(const std::array<vector<Real>,dim_> &knot_coordinates);
 
 public:
     /**
@@ -231,7 +233,7 @@ public:
 
     /**
      * @name Creators
-     * @note The functions here return a CartesianGrid<dim> object wrapped by
+     * @note The functions here return a CartesianGrid<dim_> object wrapped by
      * a std::shared_ptr
      */
     ///@{
@@ -249,7 +251,7 @@ public:
      * with <tt>n[0],..,n[dim-1</tt>] knots in each dimension
      * respectively.
      */
-    static std::shared_ptr<self_t> create(const TensorSize<dim> &n);
+    static std::shared_ptr<self_t> create(const TensorSize<dim_> &n);
 
 
     /**
@@ -276,17 +278,17 @@ public:
      * is perform and if not satisfied an exception is raised.
      */
     static std::shared_ptr<self_t>
-    create(const std::array<vector<Real>,dim> &knot_coordinates);
+    create(const std::array<vector<Real>,dim_> &knot_coordinates);
 
 
     static std::shared_ptr<self_t>
-    create(const BBox<dim> &end_points, const Size n_knots);
+    create(const BBox<dim_> &end_points, const Size n_knots);
 
     /**
      * @todo document me
      */
     static std::shared_ptr<self_t>
-    create(const BBox<dim> &end_points, const TensorSize<dim> &n);
+    create(const BBox<dim_> &end_points, const TensorSize<dim_> &n);
 
     /**
      * Creates a CastesianGrid object (wrapped by a shared_ptr) using
@@ -347,13 +349,13 @@ public:
      * Total number of one dimensional intervals along each
      * coordinate direction.
      */
-    TensorSize<dim> get_num_intervals() const;
+    TensorSize<dim_> get_num_intervals() const;
 
     /**
      * Query the number of knot values along each coordinate direction
      * represented by the CartesianGrid.
      */
-    TensorSize<dim> get_num_knots_dim() const;
+    TensorSize<dim_> get_num_knots_dim() const;
 
     /**
      * Returns the knot coordinates along the direction @p i.
@@ -368,13 +370,13 @@ public:
     /**
      * Computes the interval lengths along each direction.
      */
-    CartesianProductArray<Real, dim> get_element_lengths() const;
+    CartesianProductArray<Real, dim_> get_element_lengths() const;
 
     /**
-     * Returns the smallest <tt>dim</tt>-dimensional bounding box enclosing the
+     * Returns the smallest <tt>dim_</tt>-dimensional bounding box enclosing the
      * domain represented by the CartesianGrid object.
      */
-    BBox<dim> get_bounding_box() const;
+    BBox<dim_> get_bounding_box() const;
     ///@}
 
 
@@ -433,12 +435,12 @@ public:
     /**
      * Transformation from a tensor-index to a flat-index.
      */
-    Index tensor_to_flat(const TensorIndex<dim> &tensor_index) const;
+    Index tensor_to_flat(const TensorIndex<dim_> &tensor_index) const;
 
     /**
      * Transformation from a flat-index to a tensor-index.
      */
-    TensorIndex<dim> flat_to_tensor(const Index flat_index) const;
+    TensorIndex<dim_> flat_to_tensor(const Index flat_index) const;
     ///@}
 
 
@@ -456,10 +458,10 @@ public:
 
 
     template<int sub_dim>
-    using BoundaryNormal = std::array<Points<dim>, dim-sub_dim>;
+    using BoundaryNormal = std::array<Points<dim_>, dim_-sub_dim>;
     /**
      * Returns the outward pointing
-     * unit normal vector space to the element of sub dim k.
+     * unit normal vector space to the element of sub dim_ k.
      */
     template<int sub_dim>
     BoundaryNormal<sub_dim> get_boundary_normals(const int s_id) const;
@@ -490,7 +492,7 @@ public:
      * @endcode
      */
     std::map<ElementIterator, vector<int> >
-    find_elements_of_points(const ValueVector<Points<dim>> &points) const;
+    find_elements_of_points(const ValueVector<Points<dim_>> &points) const;
 
 public:
     /**
@@ -502,13 +504,13 @@ public:
      * Comparison operator. Returns true if the knot coordinates of two grid
      * are equal.
      */
-    bool operator==(const CartesianGrid<dim> &grid) const;
+    bool operator==(const CartesianGrid<dim_> &grid) const;
 
 private:
     /** Type for the refinement signal. */
     using signal_refine_t =
         boost::signals2::signal<
-        void (const std::array<bool,dim> &,const CartesianGrid<dim> &)>;
+        void (const std::array<bool,dim_> &,const CartesianGrid<dim_> &)>;
 
 public:
 
@@ -543,8 +545,8 @@ public:
      *  then the corresponding value <tt>n_subdivisions[i]</tt> will be ignored.
      */
     void refine_directions(
-        const std::array<bool,dim> &refinement_directions,
-        const std::array<Size,dim> &n_subdivisions);
+        const std::array<bool,dim_> &refinement_directions,
+        const std::array<Size,dim_> &n_subdivisions);
 
     /**
      * Refine the cartesian grid and the objects connected to it (if any),
@@ -576,7 +578,7 @@ private:
     Kind kind_ = Kind::non_uniform;
 
     /** Boundary ids, one id per face */
-    std::array<boundary_id, UnitElement<dim>::template num_elem<dim-1>()> boundary_id_;
+    std::array<boundary_id, UnitElement<dim_>::template num_elem<dim_-1>()> boundary_id_;
 
     /**
      *  Knot coordinates along each coordinate direction.
@@ -636,7 +638,7 @@ private:
      * referred to a CartesianGrid built as a refinement of the current one using
      * @p n_sub_elems for each element.
      */
-    vector<Index> get_sub_elements_id(const TensorSize<dim> &n_sub_elems, const Index elem_id) const;
+    vector<Index> get_sub_elements_id(const TensorSize<dim_> &n_sub_elems, const Index elem_id) const;
 
     /**
      * Perform a uniform refinement of the knots along the @p direction_id
@@ -664,11 +666,11 @@ private:
      */
     signal_refine_t refine_signals_;
 
-    friend class CartesianGridElement<dim>;
+    friend class CartesianGridElement<dim_>;
 };
 
-//template<int dim>
-//std::shared_ptr<CartesianGrid::SubGrid<dim-1>>
+//template<int dim_>
+//std::shared_ptr<CartesianGrid::SubGrid<dim_-1>>
 //get_face_grid(const int sub_elem_id, InterGridMap<k> &elem_map) const;
 
 IGA_NAMESPACE_CLOSE

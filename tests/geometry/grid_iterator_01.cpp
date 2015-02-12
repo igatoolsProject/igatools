@@ -66,7 +66,7 @@ void elem_measure(const int n_knots = 5)
         elem->template get_w_measures<dim>(0).print_info(out);
         out.end_item();
 
-        cache.template fill_cache<dim-1> (elem, face_id);
+        cache.fill_face_cache(elem, face_id);
         out << "Sub elem Measure: " << elem->template get_measure<dim-1>(face_id) << endl;
         out.begin_item("Weighted Measure:");
         elem->template get_w_measures<dim-1>(face_id).print_info(out);

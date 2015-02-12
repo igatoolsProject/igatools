@@ -28,11 +28,11 @@
 #include <igatools/base/evaluation_points.h>
 #include <igatools/utils/tensor_product_array.h>
 #include <igatools/geometry/cartesian_grid.h>
+#include <igatools/basis_functions/element_handler.h>
+
 
 IGA_NAMESPACE_OPEN
 
-template<int dim>
-using EvalPtsList = TupleList<dim, EvaluationPoints>;
 
 
 /**
@@ -44,6 +44,7 @@ using EvalPtsList = TupleList<dim, EvaluationPoints>;
  */
 template <int dim>
 class GridElementHandler
+    : public ElementHandler<CartesianGrid<dim>>
 {
 private:
     using self_t = GridElementHandler<dim>;
@@ -61,9 +62,6 @@ protected:
     using ElementIterator = typename GridType::ElementIterator;
     using ElementAccessor = typename GridType::ElementAccessor;
 
-protected:
-    void init_element_cache(ElementAccessor &elem);
-    void fill_element_cache(ElementAccessor &elem);
 public:
 
     /**
@@ -132,6 +130,7 @@ public:
     template <int k>
     void init_cache(ElementAccessor &elem);
 
+
 //#if 0
     void init_all_caches(ElementAccessor &elem);
 
@@ -144,19 +143,7 @@ public:
     template <int k>
     void fill_cache(ElementAccessor &elem, const int j);
 
-public:
-    template <int k>
-    void init_cache(ElementIterator &elem)
-    {
-        init_cache<k>(*elem);
-    }
 
-
-    template <int k>
-    void fill_cache(ElementIterator &elem, const int j)
-    {
-        fill_cache<k>(*elem, j);
-    }
 
     template <int k = dim>
     Size get_num_points() const
@@ -165,6 +152,8 @@ public:
     }
 
 public:
+
+#if 0
     /**
      * Allocates the space in ElementIterator element_cache
      * necessary for the given quadrature and flag combination.
@@ -178,7 +167,7 @@ public:
      * element dependent part
      */
     void fill_element_cache(ElementIterator &elem);
-
+#endif
 
     void print_info(LogStream &out) const;
 

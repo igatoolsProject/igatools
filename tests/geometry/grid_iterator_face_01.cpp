@@ -51,7 +51,7 @@ void face_values(const TensorSize<dim> &n_knots)
     cache.template reset<k>(flag, quad);
 
     auto elem = grid->begin();
-    cache.template init_cache<k>(elem);
+    cache.init_face_cache(elem);
 
     for (; elem != grid->end(); ++elem)
     {
@@ -63,7 +63,7 @@ void face_values(const TensorSize<dim> &n_knots)
         {
             if (elem->is_boundary(face_id))
             {
-                cache.template fill_cache<k>(elem, face_id);
+                cache.fill_face_cache(elem, face_id);
                 out << "face: " << face_id << endl;
 
                 out << "meas: "<< elem->template get_measure<k>(face_id) << endl;
