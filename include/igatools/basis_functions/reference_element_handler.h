@@ -130,23 +130,6 @@ public:
     {
         this->init_cache(elem,Int<k>());
     }
-#if 0
-    template <int k>
-    void init_cache(ElementIterator &elem)
-    {
-        this->template init_cache<k>(*elem);
-    }
-
-    void init_element_cache(ElementAccessor &elem)
-    {
-        this->template init_cache<dim>(elem);
-    }
-
-    void init_element_cache(ElementIterator &elem)
-    {
-        this->template init_cache<dim>(*elem);
-    }
-#endif
 
     ///@}
     /**
@@ -161,24 +144,6 @@ public:
         this->fill_cache(elem,Int<k>(),j);
     }
 
-#if 0
-
-    template<int k>
-    void fill_cache(ElementIterator &elem, const int j)
-    {
-        this->template fill_cache<k>(*elem,j);
-    }
-
-    void fill_element_cache(ElementAccessor &elem)
-    {
-        this->template fill_cache<dim>(elem,0);
-    }
-
-    void fill_element_cache(ElementIterator &elem)
-    {
-        this->template fill_cache<dim>(*elem,0);
-    }
-#endif
     ///@}
 
 

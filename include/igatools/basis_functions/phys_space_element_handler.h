@@ -33,7 +33,7 @@ IGA_NAMESPACE_OPEN
  */
 template<class PhysSpace>
 class PhysSpaceElementHandler
-	: public ElementHandler<PhysSpace>
+    : public ElementHandler<PhysSpace>
 //      : public PhysSpace::PushForwardType
 {
 
@@ -123,25 +123,8 @@ public:
     void fill_cache(ElementAccessor &elem, const int j);
 
 
-    //    void init_all_caches(ElementAccessor &elem);
-public:
-    /*
-    template <int k>
-    void fill_cache(ElementIterator &elem, const int j)
-    {
-        fill_cache<k>(*elem, j);
-    }
-//*/
-
     template <int k>
     void init_cache(ElementAccessor &elem);
-/*
-    template <int k>
-    void init_cache(ElementIterator &elem)
-    {
-        init_cache<k>(*elem);
-    }
-//*/
 
     void print_info(LogStream &out) const;
 

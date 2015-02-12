@@ -55,6 +55,11 @@ public:
         using topology_variant = typename boost::make_variant_over<v2>::type;
     //*/
 
+    /**
+     * @name Reset functions
+     */
+    ///@{
+    ///@}
 
     /**
      * @name Init functions
