@@ -51,7 +51,7 @@ NURBSElement(const std::shared_ptr<ContainerType> space,
     NURBSElement(space,space->get_grid()->tensor_to_flat(index))
 {}
 
-
+/*
 template <int dim, int range, int rank>
 void
 NURBSElement<dim, range, rank>::
@@ -64,6 +64,8 @@ operator++()
     for (const auto &comp_id : weight_elem_table_.get_active_components_id())
         ++(*(weight_elem_table_[comp_id]));
 }
+//*/
+
 
 template <int dim, int range, int rank>
 bool

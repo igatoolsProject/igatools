@@ -322,6 +322,10 @@ public:
     ///@}
 
 
+    /** Return the cartesian grid from which the element belongs.*/
+    const std::shared_ptr<const CartesianGrid<dim>> get_grid() const;
+
+
 protected:
 
 #if 0
@@ -363,8 +367,8 @@ protected:
      */
     void move_to(const TensorIndex<dim> &tensor_index);
 
-    /** Moves the element to the next valid element in the CartesianGrid. */
-    void operator++();
+//    /** Moves the element to the next valid element in the CartesianGrid. */
+//    void operator++();
     ///@}
 
 

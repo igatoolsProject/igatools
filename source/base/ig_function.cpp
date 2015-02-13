@@ -74,9 +74,8 @@ void
 IgFunction<Space>::
 reset(const ValueFlags &flag, const eval_pts_variant &eval_pts)
 {
-    using ElemProperty = typename CartesianGrid<dim>::ElementProperty;
     const std::set<int> active_elems_id =
-        this->get_iga_space()->get_grid()->get_elements_id_same_property(ElemProperty::active);
+        this->get_iga_space()->get_grid()->get_elements_id_same_property(ElementProperty::active);
 
     this->reset_selected_elements(
         flag,

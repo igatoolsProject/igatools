@@ -44,7 +44,7 @@ test()
 
     if (dim > 0)
     {
-        const auto active_property = Grid::ElementProperty::active;
+        const auto active_property = ElementProperty::active;
 
         std::set<Index> id_active_elems = grid->get_elements_id_same_property(active_property);
 

@@ -613,7 +613,7 @@ move_to(const TensorIndex<dim> &tensor_index)
 }
 
 
-
+/*
 template< class PhysSpace >
 void
 PhysicalSpaceElement<PhysSpace>::
@@ -623,7 +623,7 @@ operator++()
     PfElemAccessor::operator++();
     ++(*ref_space_element_accessor_);
 }
-
+//*/
 
 
 template< class PhysSpace >
@@ -675,6 +675,14 @@ PhysicalSpaceElement<PhysSpace>::
 get_ref_space_accessor() -> RefElemAccessor &
 {
     return *ref_space_element_accessor_;
+}
+
+template< class PhysSpace >
+auto
+PhysicalSpaceElement<PhysSpace>::
+get_grid() const -> const std::shared_ptr<const CartesianGrid<dim> >
+{
+    return this->get_ref_space_accessor().get_grid();
 }
 
 #if 0

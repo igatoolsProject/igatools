@@ -32,12 +32,16 @@ IGA_NAMESPACE_OPEN
 //TODO(pauletti, Oct 11, 2014): the class name should be change to GridIterator
 
 /**
- * @brief Base class for iterator on objects that have a "grid-like" structure.
+ * @brief Base class for iterator on collection of objects build over a CartesianGrid and
+ * having in common a certain property
+ * (one of the available in the enumerator class ElementProperty).
  *
  * Its purpose is to iterate over the elements of a CartesianGrid.
  *
  * Its main features are:
  * - it takes an accessor's type as template parameter;
+ * - the property that define the collection of elements on which the iterator will advance with the
+ * <tt>++</tt> operator is passed as input argument of the constructor;
  * - can be incremented (using the prefix operator <tt>++</tt>) in order to point to the next element
  * in the container;
  * - when dereferenced (using the dereferencing operator <tt>*</tt> or <tt>-></tt>),
@@ -319,7 +323,7 @@ protected:
     /**
      * Pointer to the object holding the Real data.
      * @note We use a pointer instead of a reference object because the type Accessor
-     * can be a virtual base class (and therefore have some virtual functions)
+     * can be a pure abstract class (and therefore have some virtual functions)
      * that must be resolved at run-time.
      */
     std::shared_ptr<Accessor> accessor_ ;

@@ -134,31 +134,6 @@ public:
     };
 
 
-    /**
-     * Enumerator for different kind of element properties.
-     */
-    enum class ElementProperty : int
-    {
-        /**
-         * Active elements indicators (used for example in hierarchical spaces).
-         */
-        active = 1,   //!< active
-
-        /**
-        * Marked elements indicators.
-        */
-        marked = 2,   //!< marked
-
-        /**
-        * Influence elements indicators  (used for example in hierarchical spaces).
-        */
-        influence = 3,//!< influence
-
-        /**
-         * Number of different element properties allowed.
-         */
-        ENUM_SIZE = 3,//!< ENUM_SIZE
-    };
 
     /** @name Constructors*/
     ///@{

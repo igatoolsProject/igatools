@@ -95,9 +95,27 @@ CartesianGridIteratorBase<Accessor> &
 CartesianGridIteratorBase<Accessor>::
 operator++()
 {
-    ++(*accessor_);
+    const auto grid = accessor_->get_grid();
+    const auto &active_elems =
+        grid->get_elements_id_same_property(ElementProperty::active);
+
+    const auto elem_begin = active_elems.begin();
+    const auto elem_end  = active_elems.end();
+
+    Index index = accessor_->get_flat_index();
+    auto elem = std::find(elem_begin,elem_end,index);
+    auto elem_next = ++elem;
+    if (elem_next == elem_end)
+        index = IteratorState::pass_the_end;
+    else
+        index = *elem_next;
+
+    accessor_->move_to(index);
+
+
     return *this;
 }
+
 
 
 

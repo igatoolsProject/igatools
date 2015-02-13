@@ -166,8 +166,8 @@ public:
      */
     virtual void move_to(const TensorIndex<dim> &tensor_index) override final;
 
-    /** Moves the element to the next active element in the CartesianGrid. */
-    virtual void operator++() override final;
+//    /** Moves the element to the next active element in the CartesianGrid. */
+//    virtual void operator++() override final;
     ///@}
 
 

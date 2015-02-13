@@ -29,13 +29,6 @@ IGA_NAMESPACE_OPEN
 
 
 
-template <int dim, int range, int rank>
-void
-ReferenceElement<dim, range, rank>::
-operator++()
-{
-    parent_t::operator++();
-}
 
 template <int dim, int range, int rank>
 bool

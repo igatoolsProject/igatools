@@ -116,9 +116,6 @@ public:
      * are doing.
      */
     virtual void move_to(const TensorIndex<dim> &tensor_index) ;
-
-    /** Moves the element to the next active element in the CartesianGrid. */
-    virtual void operator++() ;
     ///@}
 
 

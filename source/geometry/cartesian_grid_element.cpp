@@ -87,7 +87,7 @@ clone() const
 template <int dim>
 auto
 CartesianGridElement<dim>::
-get_grid() const -> const std::shared_ptr<ContainerType>
+get_grid() const -> const std::shared_ptr<const CartesianGrid<dim> >
 {
     return grid_;
 }
@@ -167,7 +167,7 @@ jump(const TensorIndex<dim> &increment)
     return valid_tensor_index;
 }
 
-
+#if 0
 template <int dim>
 void
 CartesianGridElement<dim>::
@@ -187,11 +187,12 @@ operator++()
         index = *elem_next;
     this->move_to(index);
 }
+#endif
 
 template <int dim>
 bool
 CartesianGridElement<dim>::
-is_property_true(const typename CartesianGrid<dim>::ElementProperty &property) const
+is_property_true(const ElementProperty &property) const
 {
     const auto &elems_same_property = grid_->get_elements_id_same_property(property);
     return std::binary_search(elems_same_property.begin(),elems_same_property.end(),flat_index_);
@@ -204,7 +205,7 @@ bool
 CartesianGridElement<dim>::
 is_influence() const
 {
-    return is_property_true(CartesianGrid<dim>::ElementProperty::influence);
+    return is_property_true(ElementProperty::influence);
 }
 
 
@@ -214,7 +215,7 @@ bool
 CartesianGridElement<dim>::
 is_active() const
 {
-    return is_property_true(CartesianGrid<dim>::ElementProperty::active);
+    return is_property_true(ElementProperty::active);
 }
 
 
@@ -226,7 +227,7 @@ set_influence(const bool influence_flag)
 {
     using Grid = CartesianGrid<dim>;
     std::const_pointer_cast<Grid>(grid_)->set_element_property(
-        Grid::ElementProperty::influence,
+        ElementProperty::influence,
         flat_index_,
         influence_flag);
 }

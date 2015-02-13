@@ -501,6 +501,39 @@ enum class CopyPolicy : int
 };
 
 
+/**
+ * Enumerator for different kind of element properties.
+ */
+enum class ElementProperty : int
+{
+    /**
+     * No-property indicator (useful for example if you want to iterate over all the elements of
+     * the CartesianGrid, without taking into account the properties of the elements.).
+     */
+    none = 0,   //!< active
+
+    /**
+     * Active elements indicator (used for example in hierarchical spaces).
+     */
+    active = 1,   //!< active
+
+    /**
+    * Marked elements indicators.
+    */
+    marked = 2,   //!< marked
+
+    /**
+    * Influence elements indicators  (used for example in hierarchical spaces).
+    */
+    influence = 3,//!< influence
+
+    /**
+     * Number of different element properties allowed.
+     */
+    ENUM_SIZE = 3,//!< ENUM_SIZE
+};
+
+
 // TODO (pauletti, Nov 14, 2014): delete after gcc implements correct std::max
 constexpr int max(int a, int b)
 {

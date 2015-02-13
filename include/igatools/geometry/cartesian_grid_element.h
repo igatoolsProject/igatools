@@ -141,7 +141,8 @@ public:
 
 
     /** Return the cartesian grid from which the element belongs.*/
-    const std::shared_ptr<ContainerType> get_grid() const;
+    const std::shared_ptr<const CartesianGrid<dim>> get_grid() const;
+
 public:
     /** @name Functions related to the indices of the element in the cartesian grid. */
     ///@{
@@ -160,7 +161,7 @@ public:
     /**
      * Tests if a certain element @p property is TRUE.
      */
-    bool is_property_true(const typename CartesianGrid<dim>::ElementProperty &property) const;
+    bool is_property_true(const ElementProperty &property) const;
 
 
     bool is_influence() const;
@@ -204,8 +205,8 @@ public:
      */
     void move_to(const TensorIndex<dim> &tensor_index);
 
-    /** Moves the element to the next valid element in the CartesianGrid. */
-    void operator++();
+//    /** Moves the element to the next valid element in the CartesianGrid. */
+//    void operator++();
     ///@}
 
 public:
