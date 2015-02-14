@@ -192,16 +192,24 @@ public:
     }
 
     /**
-     * Construct an iterator on a grid-type container
-     * grid pointing to the element of given index.
+     * Construct an iterator on the elements (with the specified <tt>property</tt>)
+     * over a grid-type container.
+     * @note The <tt>index</tt> parameter is used to place the iterator on the specified element.
+     * @warning If the <tt>index</tt> refers to an element that has not the given <tt>property</tt>
+     * an assertion will be raised (in DEBUG mode).
      */
     CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
-                              const Index index);
+                              const Index index,
+							  const ElementProperty property = ElementProperty::active);
 
     /**
      * Construct an iterator using the underlying element pointer.
+     * @warning If the <tt>accessor_ptr</tt> refers to an element that has not the given <tt>property</tt>
+     * an assertion will be raised (in DEBUG mode).
      */
-    CartesianGridIteratorBase(std::shared_ptr<Accessor> accessor_ptr);
+    CartesianGridIteratorBase(
+    		std::shared_ptr<Accessor> accessor_ptr,
+			const ElementProperty property = ElementProperty::active);
 
 
     /**
@@ -229,6 +237,7 @@ public:
     operator=(const CartesianGridIteratorBase<Accessor> &it)
     {
         accessor_ = it.accessor_;
+        elem_property_ = it.elem_property_;
         return *this;
     }
 
@@ -265,8 +274,8 @@ public:
      * @note Internally uses the "smaller than" comparison operator implemented by the Accessor object.
      */
     bool operator< (const CartesianGridIteratorBase &) const;
-    ///@}
 
+    ///@}
 
     /** @name Functions/operators for moving the element in the CartesianGrid.*/
     ///@{
@@ -327,6 +336,8 @@ protected:
      * that must be resolved at run-time.
      */
     std::shared_ptr<Accessor> accessor_ ;
+
+    ElementProperty elem_property_;
 };
 
 

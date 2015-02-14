@@ -571,6 +571,7 @@ private:
      */
     std::map<ElementProperty,std::set<Index>> properties_elements_id_;
 
+public:
     /**
      * Returns true if the element identified with <p>elem_flat_id</p> has
      * the ElementProperty <p>property</p>.
