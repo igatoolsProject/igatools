@@ -66,7 +66,7 @@ operator++()
 }
 //*/
 
-
+#if 0
 template <int dim, int range, int rank>
 bool
 NURBSElement<dim, range, rank>::
@@ -81,6 +81,7 @@ jump(const TensorIndex<dim> &increment)
 
     return grid_elem_active && bspline_elem_active && weight_elems_active;
 }
+#endif
 
 template <int dim, int range, int rank>
 void
@@ -94,18 +95,6 @@ move_to(const Index flat_index)
         weight_elem_table_[comp_id]->move_to(flat_index);
 }
 
-
-template <int dim, int range, int rank>
-void
-NURBSElement<dim, range, rank>::
-move_to(const TensorIndex<dim> &tensor_index)
-{
-    parent_t::move_to(tensor_index);
-    bspline_elem_.move_to(tensor_index);
-
-    for (const auto &comp_id : weight_elem_table_.get_active_components_id())
-        weight_elem_table_[comp_id]->move_to(tensor_index);
-}
 
 template <int dim, int range, int rank>
 auto

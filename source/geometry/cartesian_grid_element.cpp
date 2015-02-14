@@ -133,7 +133,7 @@ move_to(const Index flat_index)
 }
 
 
-
+#if 0
 template <int dim>
 void
 CartesianGridElement<dim>::
@@ -141,8 +141,6 @@ move_to(const TensorIndex<dim> &tensor_index)
 {
     move_to(grid_->tensor_to_flat(tensor_index));
 }
-
-
 
 template <int dim>
 bool
@@ -167,7 +165,6 @@ jump(const TensorIndex<dim> &increment)
     return valid_tensor_index;
 }
 
-#if 0
 template <int dim>
 void
 CartesianGridElement<dim>::

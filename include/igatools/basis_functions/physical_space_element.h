@@ -340,15 +340,6 @@ protected:
     /** @name Functions/operators for moving the element in the CartesianGrid.*/
     ///@{
     /**
-     * Moves the element to the position that differs from the current one
-     * for the quantity given by @p increment.
-     *
-     * If the resulting position after the movement is valid (i.e. within the grid), then the function
-     * returns true, otherwise it returns false.
-     */
-    bool jump(const TensorIndex<dim> &increment);
-
-    /**
      * Sets the index of the element using the flatten representation.
      * @note This function also updates the index for the tensor representation.
      * @warning This may be a dangerous function, be careful when using it
@@ -356,19 +347,6 @@ protected:
      * are doing.
      */
     void move_to(const Index flat_index);
-
-
-    /**
-     * Sets the index of the element using the tensor representation.
-     * @note This function also updates the index for the flatten representation.
-     * @warning this may be a dangerous function, be careful when using it
-     * as it is easy to use incorrectly. Only use it if you know what you
-     * are doing.
-     */
-    void move_to(const TensorIndex<dim> &tensor_index);
-
-//    /** Moves the element to the next valid element in the CartesianGrid. */
-//    void operator++();
     ///@}
 
 

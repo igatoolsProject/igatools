@@ -565,18 +565,7 @@ get_tensor_index() const -> TensorIndex<dim>
     return parent_t::get_tensor_index();
 }
 
-//*/
 #if 0
-template< class PhysSpace >
-auto
-PhysicalSpaceElement<PhysSpace>::
-get_physical_space() const -> std::shared_ptr<const PhysSpace>
-{
-    return this->space_;
-}
-#endif
-
-
 template< class PhysSpace >
 bool
 PhysicalSpaceElement<PhysSpace>::
@@ -590,6 +579,7 @@ jump(const TensorIndex<dim> &increment)
 
     return jump_grid_accessor && jump_push_fwd_accessor && jump_ref_space_accessor;
 }
+#endif
 
 template< class PhysSpace >
 void
@@ -600,30 +590,6 @@ move_to(const Index flat_index)
     PfElemAccessor::move_to(flat_index);
     ref_space_element_accessor_->move_to(flat_index);
 }
-
-
-template< class PhysSpace >
-void
-PhysicalSpaceElement<PhysSpace>::
-move_to(const TensorIndex<dim> &tensor_index)
-{
-    parent_t::move_to(tensor_index);
-    PfElemAccessor::move_to(tensor_index);
-    ref_space_element_accessor_->move_to(tensor_index);
-}
-
-
-/*
-template< class PhysSpace >
-void
-PhysicalSpaceElement<PhysSpace>::
-operator++()
-{
-    parent_t::operator++();
-    PfElemAccessor::operator++();
-    ++(*ref_space_element_accessor_);
-}
-//*/
 
 
 template< class PhysSpace >

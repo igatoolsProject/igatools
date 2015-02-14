@@ -69,7 +69,28 @@ bool
 CartesianGridIteratorBase<Accessor>::
 jump(const TensIndex &increment)
 {
-    return accessor_->jump(increment);
+	using Topology = typename Accessor::Topology;
+	auto tensor_index = accessor_->get_tensor_index();
+    tensor_index += increment;
+
+    const auto grid = accessor_->get_grid();
+    const auto n_elems = grid->get_num_intervals();
+    bool valid_tensor_index = true;
+    Index flat_index;
+    for (const auto i : Topology::active_directions)
+        if (tensor_index[i] < 0 || tensor_index[i] >= n_elems[i])
+        {
+            valid_tensor_index = false;
+            flat_index = IteratorState::invalid;
+            break;
+        }
+
+    if (valid_tensor_index)
+        flat_index = grid->tensor_to_flat(tensor_index);
+
+    accessor_->move_to(flat_index);
+
+    return valid_tensor_index;
 }
 
 template <class Accessor>
@@ -86,7 +107,7 @@ void
 CartesianGridIteratorBase<Accessor>::
 move_to(const TensIndex &tensor_index)
 {
-    accessor_->move_to(tensor_index);
+    this->move_to(accessor_->get_grid()->tensor_to_flat(tensor_index));
 }
 
 
