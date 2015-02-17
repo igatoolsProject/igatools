@@ -19,7 +19,8 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the BSplineSpace ElementHandler init_element_cache()
+ *  Test for the BSplineSpace ElementHandler functions
+ *  init_element_cache() and fill_element_cache()
  *
  *  author: pauletti
  *  date: Aug 21, 2014
@@ -32,7 +33,7 @@
 #include <igatools/basis_functions/bspline_element_handler.h>
 
 template <int dim, int range=1, int rank=1>
-void space_cache_init_elem(
+void space_cache_init_fill_elem(
     const ValueFlags flag,
     const int n_knots = 5, const int deg=1)
 {
@@ -50,6 +51,7 @@ void space_cache_init_elem(
     auto elem = space->begin();
 
     value_handler->init_element_cache(elem);
+    value_handler->fill_element_cache(elem);
     elem->print_cache_info(out);
 
     OUTEND
@@ -60,11 +62,13 @@ void space_cache_init_elem(
 int main()
 {
     out.depth_console(10);
-    space_cache_init_elem<1>(ValueFlags::value, 2);
-    space_cache_init_elem<1>(ValueFlags::gradient, 3);
+    space_cache_init_fill_elem<1>(ValueFlags::value, 2);
+    space_cache_init_fill_elem<1>(ValueFlags::gradient, 3);
+    space_cache_init_fill_elem<1>(ValueFlags::hessian, 3);
 
-    space_cache_init_elem<2>(ValueFlags::value);
-    space_cache_init_elem<2>(ValueFlags::gradient);
+    space_cache_init_fill_elem<2>(ValueFlags::value);
+    space_cache_init_fill_elem<2>(ValueFlags::gradient);
+    space_cache_init_fill_elem<2>(ValueFlags::hessian);
 
     return  0;
 }

@@ -75,15 +75,8 @@ reset_selected_elements(
     const eval_pts_variant &quad,
     const vector<int> elements_flat_id)
 {
-    //--------------------------------------
-    // resetting the BSplineElementHandler (for the numerator)
-    Assert(bspline_handler_ != nullptr, ExcNullPtr());
-    bspline_handler_->reset_selected_elements(flag, quad, elements_flat_id);
-    //--------------------------------------
-
-
     //--------------------------------------------------
-    // resetting the Function for the weight (for the denominator)
+    // resetting the Function for the bspline (numerator and weight function at the denominator)
     int max_deriv_order = -1;
     if (contains(flag, ValueFlags::point) ||
         contains(flag, ValueFlags::value))
@@ -104,21 +97,31 @@ reset_selected_elements(
         max_deriv_order = 2;
 
 
-    ValueFlags weight_flag;
+    ValueFlags bspline_flag;
     if (max_deriv_order == 0)
-        weight_flag = ValueFlags::value;
+        bspline_flag = ValueFlags::value;
     else if (max_deriv_order == 1)
-        weight_flag = ValueFlags::value | ValueFlags::gradient;
+        bspline_flag = ValueFlags::value | ValueFlags::gradient;
     else if (max_deriv_order == 2)
-        weight_flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::hessian;
+        bspline_flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::hessian;
     else
         Assert(false,ExcMessage("Not a right value flag."));
+    //--------------------------------------------------
 
 
+
+    //--------------------------------------
+    // resetting the BSplineElementHandler (for the numerator)
+    Assert(bspline_handler_ != nullptr, ExcNullPtr());
+    bspline_handler_->reset_selected_elements(bspline_flag, quad, elements_flat_id);
+    //--------------------------------------
+
+
+    //--------------------------------------------------
     const auto nrb_space = this->get_nurbs_space();
     const auto &w_func_table = nrb_space->weight_func_table_;
     for (const auto &comp_id : w_func_table.get_active_components_id())
-        w_func_table[comp_id]->reset_selected_elements(weight_flag,quad,elements_flat_id);
+        w_func_table[comp_id]->reset_selected_elements(bspline_flag,quad,elements_flat_id);
     //--------------------------------------------------
 
 

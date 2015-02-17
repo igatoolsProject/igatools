@@ -628,7 +628,7 @@ template<class T>
 void
 BSplineElementHandler<dim_, range_, rank_>::
 FillCacheDispatcher::
-operator()(const T &quad)
+operator()(const T &topology)
 {
     Assert(grid_handler_ != nullptr,ExcNullPtr());
     grid_handler_->template fill_cache<T::k>(*elem_,j_);

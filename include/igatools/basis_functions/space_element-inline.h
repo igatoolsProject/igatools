@@ -329,17 +329,26 @@ ValuesCache::print_info(LogStream &out) const -> void
     flags_handler_.print_info(out);
     out.end_item();
 
-    out.begin_item("Values:");
-    get_der<0>().print_info(out);
-    out.end_item();
+    if (flags_handler_.values_filled())
+    {
+        out.begin_item("Values:");
+        get_der<0>().print_info(out);
+        out.end_item();
+    }
 
-    out.begin_item("Gradients:");
-    get_der<1>().print_info(out);
-    out.end_item();
+    if (flags_handler_.gradients_filled())
+    {
+        out.begin_item("Gradients:");
+        get_der<1>().print_info(out);
+        out.end_item();
+    }
 
-    out.begin_item("Hessians:");
-    get_der<2>().print_info(out);
-    out.end_item();
+    if (flags_handler_.hessians_filled())
+    {
+        out.begin_item("Hessians:");
+        get_der<2>().print_info(out);
+        out.end_item();
+    }
 
 //    out.begin_item("Divergeces:");
 //    div_phi_.print_info(out);

@@ -1,5 +1,5 @@
 ========================================================================
-void space_cache_init_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
+void space_cache_init_fill_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
 ========================================================================
 Fill flags:
      points     -->  fill = 0    filled = 0
@@ -48,7 +48,7 @@ Fill flags:
      measures   -->  fill = 0    filled = 0
 w_measures -->  fill = 0    filled = 0
 Measure: 0
-Lengths: [ 0 ] 
+Lengths: [ 1.00000 ] 
 Unit weights:
 ValueVector (num_points=0) : [ ]
 Unit points:
@@ -59,28 +59,10 @@ Fill flags:
    gradients -->    fill = 0    filled = 0
     hessians -->    fill = 0    filled = 0
 
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
-
 Fill flags:
       values -->    fill = 0    filled = 0
    gradients -->    fill = 0    filled = 0
     hessians -->    fill = 0    filled = 0
-
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
 
 
 Fill flags:
@@ -88,53 +70,29 @@ Fill flags:
    gradients -->    fill = 0    filled = 0
     hessians -->    fill = 0    filled = 0
 
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
-
 Fill flags:
       values -->    fill = 0    filled = 0
    gradients -->    fill = 0    filled = 0
     hessians -->    fill = 0    filled = 0
 
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
-
 
 Fill flags:
-      values -->    fill = 1    filled = 0
+      values -->    fill = 1    filled = 1
    gradients -->    fill = 0    filled = 0
     hessians -->    fill = 0    filled = 0
 
 Values:
     (num_functions=2,num_points=2) :
    Function 0
-   [ 0 ]  [ 0 ]  
+   [ 0.788675 ]  [ 0.211325 ]  
    Function 1
-   [ 0 ]  [ 0 ]  
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
+   [ 0.211325 ]  [ 0.788675 ]  
 
 
 ========================================================================
 
 ========================================================================
-void space_cache_init_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
+void space_cache_init_fill_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
 ========================================================================
 Fill flags:
      points     -->  fill = 0    filled = 0
@@ -194,28 +152,10 @@ Fill flags:
    gradients -->    fill = 0    filled = 0
     hessians -->    fill = 0    filled = 0
 
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
-
 Fill flags:
       values -->    fill = 0    filled = 0
    gradients -->    fill = 0    filled = 0
     hessians -->    fill = 0    filled = 0
-
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
 
 
 Fill flags:
@@ -223,53 +163,122 @@ Fill flags:
    gradients -->    fill = 0    filled = 0
     hessians -->    fill = 0    filled = 0
 
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
-
 Fill flags:
       values -->    fill = 0    filled = 0
    gradients -->    fill = 0    filled = 0
     hessians -->    fill = 0    filled = 0
 
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
-
 
 Fill flags:
       values -->    fill = 0    filled = 0
-   gradients -->    fill = 1    filled = 0
+   gradients -->    fill = 1    filled = 1
     hessians -->    fill = 0    filled = 0
-
-Values:
-    (num_functions=0,num_points=0) :
 
 Gradients:
     (num_functions=2,num_points=2) :
    Function 0
-   [ [ 0 ]  ]  [ [ 0 ]  ]  
+   [ [ -2.00000 ]  ]  [ [ -2.00000 ]  ]  
    Function 1
-   [ [ 0 ]  ]  [ [ 0 ]  ]  
+   [ [ 2.00000 ]  ]  [ [ 2.00000 ]  ]  
+
+
+========================================================================
+
+========================================================================
+void space_cache_init_fill_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
+========================================================================
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+
+Fill flags:
+      values -->    fill = 0    filled = 0
+   gradients -->    fill = 0    filled = 0
+    hessians -->    fill = 0    filled = 0
+
+Fill flags:
+      values -->    fill = 0    filled = 0
+   gradients -->    fill = 0    filled = 0
+    hessians -->    fill = 0    filled = 0
+
+
+Fill flags:
+      values -->    fill = 0    filled = 0
+   gradients -->    fill = 0    filled = 0
+    hessians -->    fill = 0    filled = 0
+
+Fill flags:
+      values -->    fill = 0    filled = 0
+   gradients -->    fill = 0    filled = 0
+    hessians -->    fill = 0    filled = 0
+
+
+Fill flags:
+      values -->    fill = 0    filled = 0
+   gradients -->    fill = 0    filled = 0
+    hessians -->    fill = 1    filled = 1
 
 Hessians:
-    (num_functions=0,num_points=0) :
+    (num_functions=2,num_points=2) :
+   Function 0
+   [ [ [ 0 ]  ]  ]  [ [ [ 0 ]  ]  ]  
+   Function 1
+   [ [ [ 0 ]  ]  ]  [ [ [ 0 ]  ]  ]  
 
 
 ========================================================================
 
 ========================================================================
-void space_cache_init_elem(iga::ValueFlags, int, int) [with int dim = 2; int range = 1; int rank = 1]
+void space_cache_init_fill_elem(iga::ValueFlags, int, int) [with int dim = 2; int range = 1; int rank = 1]
 ========================================================================
 Fill flags:
      points     -->  fill = 0    filled = 0
@@ -399,7 +408,7 @@ Fill flags:
      measures   -->  fill = 0    filled = 0
 w_measures -->  fill = 0    filled = 0
 Measure: 0
-Lengths: [ 0 0 ] 
+Lengths: [ 0.250000 0.250000 ] 
 Unit weights:
 ValueVector (num_points=0) : [ ]
 Unit points:
@@ -410,56 +419,20 @@ Fill flags:
    gradients -->    fill = 0    filled = 0
     hessians -->    fill = 0    filled = 0
 
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
+Fill flags:
+      values -->    fill = 0    filled = 0
+   gradients -->    fill = 0    filled = 0
+    hessians -->    fill = 0    filled = 0
 
 Fill flags:
       values -->    fill = 0    filled = 0
    gradients -->    fill = 0    filled = 0
     hessians -->    fill = 0    filled = 0
 
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
-
 Fill flags:
       values -->    fill = 0    filled = 0
    gradients -->    fill = 0    filled = 0
     hessians -->    fill = 0    filled = 0
-
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
-
-Fill flags:
-      values -->    fill = 0    filled = 0
-   gradients -->    fill = 0    filled = 0
-    hessians -->    fill = 0    filled = 0
-
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
 
 
 Fill flags:
@@ -467,56 +440,20 @@ Fill flags:
    gradients -->    fill = 0    filled = 0
     hessians -->    fill = 0    filled = 0
 
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
+Fill flags:
+      values -->    fill = 0    filled = 0
+   gradients -->    fill = 0    filled = 0
+    hessians -->    fill = 0    filled = 0
 
 Fill flags:
       values -->    fill = 0    filled = 0
    gradients -->    fill = 0    filled = 0
     hessians -->    fill = 0    filled = 0
 
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
-
 Fill flags:
       values -->    fill = 0    filled = 0
    gradients -->    fill = 0    filled = 0
     hessians -->    fill = 0    filled = 0
-
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
-
-Fill flags:
-      values -->    fill = 0    filled = 0
-   gradients -->    fill = 0    filled = 0
-    hessians -->    fill = 0    filled = 0
-
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
 
 
 Fill flags:
@@ -524,85 +461,43 @@ Fill flags:
    gradients -->    fill = 0    filled = 0
     hessians -->    fill = 0    filled = 0
 
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
+Fill flags:
+      values -->    fill = 0    filled = 0
+   gradients -->    fill = 0    filled = 0
+    hessians -->    fill = 0    filled = 0
 
 Fill flags:
       values -->    fill = 0    filled = 0
    gradients -->    fill = 0    filled = 0
     hessians -->    fill = 0    filled = 0
 
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
-
 Fill flags:
       values -->    fill = 0    filled = 0
    gradients -->    fill = 0    filled = 0
     hessians -->    fill = 0    filled = 0
 
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
 
 Fill flags:
-      values -->    fill = 0    filled = 0
-   gradients -->    fill = 0    filled = 0
-    hessians -->    fill = 0    filled = 0
-
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
-
-
-Fill flags:
-      values -->    fill = 1    filled = 0
+      values -->    fill = 1    filled = 1
    gradients -->    fill = 0    filled = 0
     hessians -->    fill = 0    filled = 0
 
 Values:
     (num_functions=4,num_points=4) :
    Function 0
-   [ 0 ]  [ 0 ]  [ 0 ]  [ 0 ]  
+   [ 0.622009 ]  [ 0.166667 ]  [ 0.166667 ]  [ 0.0446582 ]  
    Function 1
-   [ 0 ]  [ 0 ]  [ 0 ]  [ 0 ]  
+   [ 0.166667 ]  [ 0.622009 ]  [ 0.0446582 ]  [ 0.166667 ]  
    Function 2
-   [ 0 ]  [ 0 ]  [ 0 ]  [ 0 ]  
+   [ 0.166667 ]  [ 0.0446582 ]  [ 0.622009 ]  [ 0.166667 ]  
    Function 3
-   [ 0 ]  [ 0 ]  [ 0 ]  [ 0 ]  
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
+   [ 0.0446582 ]  [ 0.166667 ]  [ 0.166667 ]  [ 0.622009 ]  
 
 
 ========================================================================
 
 ========================================================================
-void space_cache_init_elem(iga::ValueFlags, int, int) [with int dim = 2; int range = 1; int rank = 1]
+void space_cache_init_fill_elem(iga::ValueFlags, int, int) [with int dim = 2; int range = 1; int rank = 1]
 ========================================================================
 Fill flags:
      points     -->  fill = 0    filled = 0
@@ -743,56 +638,20 @@ Fill flags:
    gradients -->    fill = 0    filled = 0
     hessians -->    fill = 0    filled = 0
 
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
+Fill flags:
+      values -->    fill = 0    filled = 0
+   gradients -->    fill = 0    filled = 0
+    hessians -->    fill = 0    filled = 0
 
 Fill flags:
       values -->    fill = 0    filled = 0
    gradients -->    fill = 0    filled = 0
     hessians -->    fill = 0    filled = 0
 
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
-
 Fill flags:
       values -->    fill = 0    filled = 0
    gradients -->    fill = 0    filled = 0
     hessians -->    fill = 0    filled = 0
-
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
-
-Fill flags:
-      values -->    fill = 0    filled = 0
-   gradients -->    fill = 0    filled = 0
-    hessians -->    fill = 0    filled = 0
-
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
 
 
 Fill flags:
@@ -800,56 +659,20 @@ Fill flags:
    gradients -->    fill = 0    filled = 0
     hessians -->    fill = 0    filled = 0
 
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
+Fill flags:
+      values -->    fill = 0    filled = 0
+   gradients -->    fill = 0    filled = 0
+    hessians -->    fill = 0    filled = 0
 
 Fill flags:
       values -->    fill = 0    filled = 0
    gradients -->    fill = 0    filled = 0
     hessians -->    fill = 0    filled = 0
 
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
-
 Fill flags:
       values -->    fill = 0    filled = 0
    gradients -->    fill = 0    filled = 0
     hessians -->    fill = 0    filled = 0
-
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
-
-Fill flags:
-      values -->    fill = 0    filled = 0
-   gradients -->    fill = 0    filled = 0
-    hessians -->    fill = 0    filled = 0
-
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
 
 
 Fill flags:
@@ -857,79 +680,256 @@ Fill flags:
    gradients -->    fill = 0    filled = 0
     hessians -->    fill = 0    filled = 0
 
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
+Fill flags:
+      values -->    fill = 0    filled = 0
+   gradients -->    fill = 0    filled = 0
+    hessians -->    fill = 0    filled = 0
 
 Fill flags:
       values -->    fill = 0    filled = 0
    gradients -->    fill = 0    filled = 0
     hessians -->    fill = 0    filled = 0
 
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
-
 Fill flags:
       values -->    fill = 0    filled = 0
    gradients -->    fill = 0    filled = 0
     hessians -->    fill = 0    filled = 0
 
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
 
 Fill flags:
       values -->    fill = 0    filled = 0
-   gradients -->    fill = 0    filled = 0
+   gradients -->    fill = 1    filled = 1
     hessians -->    fill = 0    filled = 0
-
-Values:
-    (num_functions=0,num_points=0) :
-
-Gradients:
-    (num_functions=0,num_points=0) :
-
-Hessians:
-    (num_functions=0,num_points=0) :
-
-
-Fill flags:
-      values -->    fill = 0    filled = 0
-   gradients -->    fill = 1    filled = 0
-    hessians -->    fill = 0    filled = 0
-
-Values:
-    (num_functions=0,num_points=0) :
 
 Gradients:
     (num_functions=4,num_points=4) :
    Function 0
-   [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
+   [ [ -3.15470 ]  [ -3.15470 ]  ]  [ [ -3.15470 ]  [ -0.845300 ]  ]  [ [ -0.845300 ]  [ -3.15470 ]  ]  [ [ -0.845300 ]  [ -0.845300 ]  ]  
    Function 1
-   [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
+   [ [ 3.15470 ]  [ -0.845300 ]  ]  [ [ 3.15470 ]  [ -3.15470 ]  ]  [ [ 0.845300 ]  [ -0.845300 ]  ]  [ [ 0.845300 ]  [ -3.15470 ]  ]  
    Function 2
-   [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
+   [ [ -0.845300 ]  [ 3.15470 ]  ]  [ [ -0.845300 ]  [ 0.845300 ]  ]  [ [ -3.15470 ]  [ 3.15470 ]  ]  [ [ -3.15470 ]  [ 0.845300 ]  ]  
    Function 3
-   [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  
+   [ [ 0.845300 ]  [ 0.845300 ]  ]  [ [ 0.845300 ]  [ 3.15470 ]  ]  [ [ 3.15470 ]  [ 0.845300 ]  ]  [ [ 3.15470 ]  [ 3.15470 ]  ]  
+
+
+========================================================================
+
+========================================================================
+void space_cache_init_fill_elem(iga::ValueFlags, int, int) [with int dim = 2; int range = 1; int rank = 1]
+========================================================================
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+
+Fill flags:
+     points     -->  fill = 0    filled = 0
+     measures   -->  fill = 0    filled = 0
+w_measures -->  fill = 0    filled = 0
+Measure: 0
+Lengths: [ 0 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+
+Fill flags:
+      values -->    fill = 0    filled = 0
+   gradients -->    fill = 0    filled = 0
+    hessians -->    fill = 0    filled = 0
+
+Fill flags:
+      values -->    fill = 0    filled = 0
+   gradients -->    fill = 0    filled = 0
+    hessians -->    fill = 0    filled = 0
+
+Fill flags:
+      values -->    fill = 0    filled = 0
+   gradients -->    fill = 0    filled = 0
+    hessians -->    fill = 0    filled = 0
+
+Fill flags:
+      values -->    fill = 0    filled = 0
+   gradients -->    fill = 0    filled = 0
+    hessians -->    fill = 0    filled = 0
+
+
+Fill flags:
+      values -->    fill = 0    filled = 0
+   gradients -->    fill = 0    filled = 0
+    hessians -->    fill = 0    filled = 0
+
+Fill flags:
+      values -->    fill = 0    filled = 0
+   gradients -->    fill = 0    filled = 0
+    hessians -->    fill = 0    filled = 0
+
+Fill flags:
+      values -->    fill = 0    filled = 0
+   gradients -->    fill = 0    filled = 0
+    hessians -->    fill = 0    filled = 0
+
+Fill flags:
+      values -->    fill = 0    filled = 0
+   gradients -->    fill = 0    filled = 0
+    hessians -->    fill = 0    filled = 0
+
+
+Fill flags:
+      values -->    fill = 0    filled = 0
+   gradients -->    fill = 0    filled = 0
+    hessians -->    fill = 0    filled = 0
+
+Fill flags:
+      values -->    fill = 0    filled = 0
+   gradients -->    fill = 0    filled = 0
+    hessians -->    fill = 0    filled = 0
+
+Fill flags:
+      values -->    fill = 0    filled = 0
+   gradients -->    fill = 0    filled = 0
+    hessians -->    fill = 0    filled = 0
+
+Fill flags:
+      values -->    fill = 0    filled = 0
+   gradients -->    fill = 0    filled = 0
+    hessians -->    fill = 0    filled = 0
+
+
+Fill flags:
+      values -->    fill = 0    filled = 0
+   gradients -->    fill = 0    filled = 0
+    hessians -->    fill = 1    filled = 1
 
 Hessians:
-    (num_functions=0,num_points=0) :
+    (num_functions=4,num_points=4) :
+   Function 0
+   [ [ [ 0 ]  [ 16.0000 ]  ]  [ [ 16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 16.0000 ]  ]  [ [ 16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 16.0000 ]  ]  [ [ 16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 16.0000 ]  ]  [ [ 16.0000 ]  [ 0 ]  ]  ]  
+   Function 1
+   [ [ [ 0 ]  [ -16.0000 ]  ]  [ [ -16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -16.0000 ]  ]  [ [ -16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -16.0000 ]  ]  [ [ -16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -16.0000 ]  ]  [ [ -16.0000 ]  [ 0 ]  ]  ]  
+   Function 2
+   [ [ [ 0 ]  [ -16.0000 ]  ]  [ [ -16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -16.0000 ]  ]  [ [ -16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -16.0000 ]  ]  [ [ -16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -16.0000 ]  ]  [ [ -16.0000 ]  [ 0 ]  ]  ]  
+   Function 3
+   [ [ [ 0 ]  [ 16.0000 ]  ]  [ [ 16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 16.0000 ]  ]  [ [ 16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 16.0000 ]  ]  [ [ 16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 16.0000 ]  ]  [ [ 16.0000 ]  [ 0 ]  ]  ]  
 
 
 ========================================================================

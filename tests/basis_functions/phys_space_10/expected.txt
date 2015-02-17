@@ -117,28 +117,10 @@ Reference space:
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
    
-   Values:
-       (num_functions=0,num_points=0) :
-   
-   Gradients:
-       (num_functions=0,num_points=0) :
-   
-   Hessians:
-       (num_functions=0,num_points=0) :
-   
    Fill flags:
          values -->    fill = 0    filled = 0
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
-   
-   Values:
-       (num_functions=0,num_points=0) :
-   
-   Gradients:
-       (num_functions=0,num_points=0) :
-   
-   Hessians:
-       (num_functions=0,num_points=0) :
    
    
    Fill flags:
@@ -146,47 +128,16 @@ Reference space:
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
    
-   Values:
-       (num_functions=0,num_points=0) :
-   
-   Gradients:
-       (num_functions=0,num_points=0) :
-   
-   Hessians:
-       (num_functions=0,num_points=0) :
-   
    Fill flags:
          values -->    fill = 0    filled = 0
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
-   
-   Values:
-       (num_functions=0,num_points=0) :
-   
-   Gradients:
-       (num_functions=0,num_points=0) :
-   
-   Hessians:
-       (num_functions=0,num_points=0) :
    
    
    Fill flags:
          values -->    fill = 1    filled = 0
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
-   
-   Values:
-       (num_functions=2,num_points=2) :
-      Function 0
-      [ 0 ]  [ 0 ]  
-      Function 1
-      [ 0 ]  [ 0 ]  
-   
-   Gradients:
-       (num_functions=0,num_points=0) :
-   
-   Hessians:
-       (num_functions=0,num_points=0) :
    
    
 
@@ -309,28 +260,10 @@ Reference space:
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
    
-   Values:
-       (num_functions=0,num_points=0) :
-   
-   Gradients:
-       (num_functions=0,num_points=0) :
-   
-   Hessians:
-       (num_functions=0,num_points=0) :
-   
    Fill flags:
          values -->    fill = 0    filled = 0
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
-   
-   Values:
-       (num_functions=0,num_points=0) :
-   
-   Gradients:
-       (num_functions=0,num_points=0) :
-   
-   Hessians:
-       (num_functions=0,num_points=0) :
    
    
    Fill flags:
@@ -338,28 +271,10 @@ Reference space:
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
    
-   Values:
-       (num_functions=0,num_points=0) :
-   
-   Gradients:
-       (num_functions=0,num_points=0) :
-   
-   Hessians:
-       (num_functions=0,num_points=0) :
-   
    Fill flags:
          values -->    fill = 0    filled = 0
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
-   
-   Values:
-       (num_functions=0,num_points=0) :
-   
-   Gradients:
-       (num_functions=0,num_points=0) :
-   
-   Hessians:
-       (num_functions=0,num_points=0) :
    
    
    Fill flags:
@@ -373,12 +288,6 @@ Reference space:
       [ 0.788675 ]  [ 0.211325 ]  
       Function 1
       [ 0.211325 ]  [ 0.788675 ]  
-   
-   Gradients:
-       (num_functions=0,num_points=0) :
-   
-   Hessians:
-       (num_functions=0,num_points=0) :
    
    
 
@@ -496,28 +405,10 @@ Reference space:
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
    
-   Values:
-       (num_functions=0,num_points=0) :
-   
-   Gradients:
-       (num_functions=0,num_points=0) :
-   
-   Hessians:
-       (num_functions=0,num_points=0) :
-   
    Fill flags:
          values -->    fill = 0    filled = 0
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
-   
-   Values:
-       (num_functions=0,num_points=0) :
-   
-   Gradients:
-       (num_functions=0,num_points=0) :
-   
-   Hessians:
-       (num_functions=0,num_points=0) :
    
    
    Fill flags:
@@ -525,28 +416,10 @@ Reference space:
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
    
-   Values:
-       (num_functions=0,num_points=0) :
-   
-   Gradients:
-       (num_functions=0,num_points=0) :
-   
-   Hessians:
-       (num_functions=0,num_points=0) :
-   
    Fill flags:
          values -->    fill = 0    filled = 0
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
-   
-   Values:
-       (num_functions=0,num_points=0) :
-   
-   Gradients:
-       (num_functions=0,num_points=0) :
-   
-   Hessians:
-       (num_functions=0,num_points=0) :
    
    
    Fill flags:
@@ -560,12 +433,6 @@ Reference space:
       [ 0.788675 ]  [ 0.211325 ]  
       Function 1
       [ 0.211325 ]  [ 0.788675 ]  
-   
-   Gradients:
-       (num_functions=0,num_points=0) :
-   
-   Hessians:
-       (num_functions=0,num_points=0) :
    
    
 
@@ -683,28 +550,10 @@ Reference space:
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
    
-   Values:
-       (num_functions=0,num_points=0) :
-   
-   Gradients:
-       (num_functions=0,num_points=0) :
-   
-   Hessians:
-       (num_functions=0,num_points=0) :
-   
    Fill flags:
          values -->    fill = 0    filled = 0
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
-   
-   Values:
-       (num_functions=0,num_points=0) :
-   
-   Gradients:
-       (num_functions=0,num_points=0) :
-   
-   Hessians:
-       (num_functions=0,num_points=0) :
    
    
    Fill flags:
@@ -712,28 +561,10 @@ Reference space:
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
    
-   Values:
-       (num_functions=0,num_points=0) :
-   
-   Gradients:
-       (num_functions=0,num_points=0) :
-   
-   Hessians:
-       (num_functions=0,num_points=0) :
-   
    Fill flags:
          values -->    fill = 0    filled = 0
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
-   
-   Values:
-       (num_functions=0,num_points=0) :
-   
-   Gradients:
-       (num_functions=0,num_points=0) :
-   
-   Hessians:
-       (num_functions=0,num_points=0) :
    
    
    Fill flags:
@@ -747,12 +578,6 @@ Reference space:
       [ 0.788675 ]  [ 0.211325 ]  
       Function 1
       [ 0.211325 ]  [ 0.788675 ]  
-   
-   Gradients:
-       (num_functions=0,num_points=0) :
-   
-   Hessians:
-       (num_functions=0,num_points=0) :
    
    
 
@@ -870,28 +695,10 @@ Reference space:
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
    
-   Values:
-       (num_functions=0,num_points=0) :
-   
-   Gradients:
-       (num_functions=0,num_points=0) :
-   
-   Hessians:
-       (num_functions=0,num_points=0) :
-   
    Fill flags:
          values -->    fill = 0    filled = 0
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
-   
-   Values:
-       (num_functions=0,num_points=0) :
-   
-   Gradients:
-       (num_functions=0,num_points=0) :
-   
-   Hessians:
-       (num_functions=0,num_points=0) :
    
    
    Fill flags:
@@ -899,28 +706,10 @@ Reference space:
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
    
-   Values:
-       (num_functions=0,num_points=0) :
-   
-   Gradients:
-       (num_functions=0,num_points=0) :
-   
-   Hessians:
-       (num_functions=0,num_points=0) :
-   
    Fill flags:
          values -->    fill = 0    filled = 0
       gradients -->    fill = 0    filled = 0
        hessians -->    fill = 0    filled = 0
-   
-   Values:
-       (num_functions=0,num_points=0) :
-   
-   Gradients:
-       (num_functions=0,num_points=0) :
-   
-   Hessians:
-       (num_functions=0,num_points=0) :
    
    
    Fill flags:
@@ -934,12 +723,6 @@ Reference space:
       [ 0.788675 ]  [ 0.211325 ]  
       Function 1
       [ 0.211325 ]  [ 0.788675 ]  
-   
-   Gradients:
-       (num_functions=0,num_points=0) :
-   
-   Hessians:
-       (num_functions=0,num_points=0) :
    
    
 
