@@ -53,7 +53,7 @@ template <int> class GridElementHandler;
  * Then, the tensor-product of the intervals along the coordinate directions define
  * the elements that are tiling the domain covered by the CartesianGrid;
  *
- * The elements can have associated a certain list of ElementProperty,
+ * The elements can have associated a certain list of element properties (identified by one std::string),
  * and then the list of elements with a given property can be extracted from the CartesianGrid.
  *
  * The element type for the CartesianGrid is CartesianGridElement.
@@ -305,7 +305,7 @@ public:
     /**
      * Returns the number of elements with the <tt>property</tt> specified as input argument.
      */
-    Size get_num_elements_same_property(const ElementProperty &property) const;
+    Size get_num_elements_same_property(const std::string &property) const;
 
     /**
      * Total number of active elements.
@@ -567,16 +567,16 @@ private:
     /**
      * Container for the element ids having a certain property.
      *
-     * The property is the key of the std::map.
+     * The property name is the key of the std::map.
      */
-    std::map<ElementProperty,std::set<Index>> properties_elements_id_;
+    std::map<std::string,std::set<Index>> properties_elements_id_;
 
 public:
     /**
      * Returns true if the element identified with <p>elem_flat_id</p> has
      * the ElementProperty <p>property</p>.
      */
-    bool test_if_element_has_property(const Index elem_flat_id, const ElementProperty &property) const;
+    bool test_if_element_has_property(const Index elem_flat_id, const std::string &property) const;
 
 public:
 
@@ -585,6 +585,13 @@ public:
      */
     ///@{
     /**
+     * Adds a new <tt>property</tt> definition for the elements in the CartesianGrid.
+     *
+     * @note If the <tt>property</tt> is already present, n assertion will be raised (in Debug mode).
+     */
+    void add_elements_property(const std::string &property);
+
+    /**
      * Returns true if the element identified with <p>elem_flat_id</p> is active.
      */
     bool is_element_active(const Index elem_flat_id) const;
@@ -592,19 +599,19 @@ public:
     /**
      * Returns the flat id of the elements having a certain @p property (non-const version).
      */
-    std::set<Index> &get_elements_id_same_property(const ElementProperty &property);
+    std::set<Index> &get_elements_id_same_property(const std::string &property);
 
     /**
      * Returns the flat id of the elements having a certain @p property (const version).
      */
-    const std::set<Index> &get_elements_id_same_property(const ElementProperty &property) const;
+    const std::set<Index> &get_elements_id_same_property(const std::string &property) const;
 
     /**
      * Sets the @p status of the given @p property for the element with flat id @ elem_flat_id.
      */
-    void set_element_property(const ElementProperty &property,
-                              const Index elem_flat_id,
-                              const bool status);
+    void set_element_property_status(const std::string &property,
+                                     const Index elem_flat_id,
+                                     const bool status);
     ///@}
 
 

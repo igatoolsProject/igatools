@@ -94,7 +94,7 @@ ReferenceElementHandler<dim, range, rank>::
 reset(const ValueFlags &flag, const eval_pts_variant &eval_pts)
 {
     const std::set<int> active_elems_id =
-        this->get_space()->get_grid()->get_elements_id_same_property(ElementProperty::active);
+        this->get_space()->get_grid()->get_elements_id_same_property("active");
 
     this->reset_selected_elements(
         flag,

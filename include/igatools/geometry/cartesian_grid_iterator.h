@@ -200,7 +200,7 @@ public:
      */
     CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
                               const Index index,
-							  const ElementProperty property = ElementProperty::active);
+                              const std::string &property = "active");
 
     /**
      * Construct an iterator using the underlying element pointer.
@@ -208,8 +208,8 @@ public:
      * an assertion will be raised (in DEBUG mode).
      */
     CartesianGridIteratorBase(
-    		std::shared_ptr<Accessor> accessor_ptr,
-			const ElementProperty property = ElementProperty::active);
+        std::shared_ptr<Accessor> accessor_ptr,
+        const std::string &property = "active");
 
 
     /**
@@ -337,7 +337,7 @@ protected:
      */
     std::shared_ptr<Accessor> accessor_ ;
 
-    ElementProperty elem_property_;
+    std::string elem_property_;
 };
 
 

@@ -189,7 +189,7 @@ operator++()
 template <int dim>
 bool
 CartesianGridElement<dim>::
-is_property_true(const ElementProperty &property) const
+is_property_true(const std::string &property) const
 {
     const auto &elems_same_property = grid_->get_elements_id_same_property(property);
     return std::binary_search(elems_same_property.begin(),elems_same_property.end(),flat_index_);
@@ -202,7 +202,7 @@ bool
 CartesianGridElement<dim>::
 is_influence() const
 {
-    return is_property_true(ElementProperty::influence);
+    return is_property_true("influence");
 }
 
 
@@ -212,7 +212,7 @@ bool
 CartesianGridElement<dim>::
 is_active() const
 {
-    return is_property_true(ElementProperty::active);
+    return is_property_true("active");
 }
 
 
@@ -223,8 +223,8 @@ CartesianGridElement<dim>::
 set_influence(const bool influence_flag)
 {
     using Grid = CartesianGrid<dim>;
-    std::const_pointer_cast<Grid>(grid_)->set_element_property(
-        ElementProperty::influence,
+    std::const_pointer_cast<Grid>(grid_)->set_element_property_status(
+        "influence",
         flat_index_,
         influence_flag);
 }

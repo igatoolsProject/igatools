@@ -44,14 +44,14 @@ test()
 
     if (dim > 0)
     {
-        const auto active_property = ElementProperty::active;
+        const auto active_property = "active";
 
         std::set<Index> id_active_elems = grid->get_elements_id_same_property(active_property);
 
         for (const auto elem_id : id_active_elems)
         {
             if (elem_id % 2 == 0)
-                grid->set_element_property(active_property,elem_id,false);
+                grid->set_element_property_status(active_property,elem_id,false);
         }
     }
 

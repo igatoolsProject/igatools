@@ -29,7 +29,7 @@ template <class Accessor>
 CartesianGridIteratorBase<Accessor>::
 CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
                           const Index index,
-						  const ElementProperty elem_property)
+                          const std::string &elem_property)
     :
     CartesianGridIteratorBase(grid->create_element(index),elem_property)
 {}
@@ -39,27 +39,27 @@ CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
 template <class Accessor>
 CartesianGridIteratorBase<Accessor>::
 CartesianGridIteratorBase(
-		std::shared_ptr<Accessor> accessor_ptr,
-		const ElementProperty elem_property)
+    std::shared_ptr<Accessor> accessor_ptr,
+    const std::string &elem_property)
     :
     accessor_(accessor_ptr),
-	elem_property_(elem_property)
+    elem_property_(elem_property)
 {
 #ifndef NDEBUG
     Assert(accessor_ != nullptr,ExcNullPtr());
 
     const auto flat_index = accessor_->get_flat_index();
     if (flat_index != IteratorState::pass_the_end)
-    	Assert(accessor_->get_grid()->test_if_element_has_property(flat_index,elem_property_),
-    	   ExcMessage("Iterator defined on an element not satisfying the requested ElementProperty."));
+        Assert(accessor_->get_grid()->test_if_element_has_property(flat_index,elem_property_),
+               ExcMessage("Iterator defined on an element not satisfying the requested ElementProperty."));
 #endif
 }
 
 template <class Accessor>
 CartesianGridIteratorBase<Accessor>::
 CartesianGridIteratorBase(const CartesianGridIteratorBase<Accessor> &it,const CopyPolicy &copy_policy)
-:
-elem_property_(it.elem_property_)
+    :
+    elem_property_(it.elem_property_)
 {
     if (copy_policy == CopyPolicy::deep)
     {
@@ -82,8 +82,8 @@ bool
 CartesianGridIteratorBase<Accessor>::
 jump(const TensIndex &increment)
 {
-	using Topology = typename Accessor::Topology;
-	auto tensor_index = accessor_->get_tensor_index();
+    using Topology = typename Accessor::Topology;
+    auto tensor_index = accessor_->get_tensor_index();
     tensor_index += increment;
 
     const auto grid = accessor_->get_grid();
@@ -135,9 +135,9 @@ operator++()
 
     const auto elem_next = ++(elems_same_property.find(accessor_->get_flat_index()));
     if (elem_next != elems_same_property.end())
-    	accessor_->move_to(*elem_next);
+        accessor_->move_to(*elem_next);
     else
-    	accessor_->move_to(IteratorState::pass_the_end);
+        accessor_->move_to(IteratorState::pass_the_end);
 
     return *this;
 }
@@ -153,8 +153,8 @@ bool
 CartesianGridIteratorBase<Accessor>::
 operator==(const CartesianGridIteratorBase<Accessor> &i) const
 {
-	Assert(elem_property_ == i.elem_property_,
-			ExcMessage("Iterators comparison not possible because they are defined with different ElementProperty"));
+    Assert(elem_property_ == i.elem_property_,
+           ExcMessage("Iterators comparison not possible because they are defined with different ElementProperty"));
     return *accessor_ == *i.accessor_;
 }
 
@@ -164,8 +164,8 @@ bool
 CartesianGridIteratorBase<Accessor>::
 operator>(const CartesianGridIteratorBase<Accessor> &i) const
 {
-	Assert(elem_property_ == i.elem_property_,
-			ExcMessage("Iterators comparison not possible because they are defined with different ElementProperty"));
+    Assert(elem_property_ == i.elem_property_,
+           ExcMessage("Iterators comparison not possible because they are defined with different ElementProperty"));
     return (*accessor_ > *i.accessor_);
 }
 
@@ -174,8 +174,8 @@ bool
 CartesianGridIteratorBase<Accessor>::
 operator<(const CartesianGridIteratorBase<Accessor> &i) const
 {
-	Assert(elem_property_ == i.elem_property_,
-			ExcMessage("Iterators comparison not possible because they are defined with different ElementProperty"));
+    Assert(elem_property_ == i.elem_property_,
+           ExcMessage("Iterators comparison not possible because they are defined with different ElementProperty"));
     return (*accessor_ < *i.accessor_);
 }
 
@@ -186,8 +186,8 @@ bool
 CartesianGridIteratorBase<Accessor>::
 operator!=(const CartesianGridIteratorBase<Accessor> &i) const
 {
-	Assert(elem_property_ == i.elem_property_,
-			ExcMessage("Iterators comparison not possible because they are defined with different ElementProperty"));
+    Assert(elem_property_ == i.elem_property_,
+           ExcMessage("Iterators comparison not possible because they are defined with different ElementProperty"));
     return accessor_->operator != (*(i.accessor_));
 }
 

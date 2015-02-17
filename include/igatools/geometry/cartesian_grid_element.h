@@ -161,7 +161,7 @@ public:
     /**
      * Tests if a certain element @p property is TRUE.
      */
-    bool is_property_true(const ElementProperty &property) const;
+    bool is_property_true(const std::string &property) const;
 
 
     bool is_influence() const;

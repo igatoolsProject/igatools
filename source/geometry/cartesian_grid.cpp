@@ -162,9 +162,9 @@ CartesianGrid(const KnotCoordinates &knot_coordinates,
 {
     const int n_elems = this->flat_size();
 
-    auto &active_elements = properties_elements_id_[ElementProperty::active];
-    auto &marked_elements = properties_elements_id_[ElementProperty::marked];
-    auto &influence_elements = properties_elements_id_[ElementProperty::influence];
+    auto &active_elements = properties_elements_id_["active"];
+    auto &marked_elements = properties_elements_id_["marked"];
+    auto &influence_elements = properties_elements_id_["influence"];
 
     for (int elem_id = 0 ; elem_id < n_elems ; ++elem_id)
     {
@@ -286,9 +286,20 @@ get_element_lengths() const -> KnotCoordinates
 
 
 template<int dim_>
+void
+CartesianGrid<dim_>::
+add_elements_property(const std::string &property)
+{
+    Assert(properties_elements_id_.count(property) == 0,
+           ExcMessage("The element property \"" + property + "\" is already defined."));
+    properties_elements_id_[property] = std::set<int>();
+}
+
+
+template<int dim_>
 std::set<Index> &
 CartesianGrid<dim_>::
-get_elements_id_same_property(const ElementProperty &property)
+get_elements_id_same_property(const std::string &property)
 {
     return properties_elements_id_[property];
 }
@@ -296,7 +307,7 @@ get_elements_id_same_property(const ElementProperty &property)
 template<int dim_>
 const std::set<Index> &
 CartesianGrid<dim_>::
-get_elements_id_same_property(const ElementProperty &property) const
+get_elements_id_same_property(const std::string &property) const
 {
     return properties_elements_id_.at(property);
 }
@@ -306,7 +317,7 @@ auto
 CartesianGrid<dim_>::
 begin() -> ElementIterator
 {
-    const auto &active_elements = get_elements_id_same_property(ElementProperty::active);
+    const auto &active_elements = get_elements_id_same_property("active");
     const auto active_begin = active_elements.begin();
     const auto active_end   = active_elements.end();
 
@@ -345,7 +356,7 @@ auto
 CartesianGrid<dim_>::
 last() -> ElementIterator
 {
-    const auto &active_elements = get_elements_id_same_property(ElementProperty::active);
+    const auto &active_elements = get_elements_id_same_property("active");
     const auto active_begin = active_elements.begin();
     auto active_end   = active_elements.end();
     int id_last_active_elem;
@@ -370,7 +381,7 @@ auto
 CartesianGrid<dim_>::
 clast() const -> ElementConstIterator
 {
-    const auto &active_elements = get_elements_id_same_property(ElementProperty::active);
+    const auto &active_elements = get_elements_id_same_property("active");
     const auto active_begin = active_elements.begin();
     auto active_end   = active_elements.end();
 
@@ -406,7 +417,7 @@ auto
 CartesianGrid<dim_>::
 cbegin() const -> ElementConstIterator
 {
-    const auto &active_elements = get_elements_id_same_property(ElementProperty::active);
+    const auto &active_elements = get_elements_id_same_property("active");
     const auto active_begin = active_elements.begin();
     const auto active_end   = active_elements.end();
 
@@ -500,7 +511,7 @@ get_boundary_normals(const int s_id) const -> BoundaryNormal<sub_dim>
 template<int dim_>
 Size
 CartesianGrid<dim_>::
-get_num_elements_same_property(const ElementProperty &property) const
+get_num_elements_same_property(const std::string &property) const
 {
     return this->get_elements_id_same_property(property).size();
 }
@@ -511,7 +522,7 @@ Size
 CartesianGrid<dim_>::
 get_num_active_elems() const
 {
-    return this->get_num_elements_same_property(ElementProperty::active);
+    return this->get_num_elements_same_property("active");
 }
 
 template<int dim_>
@@ -519,7 +530,7 @@ Size
 CartesianGrid<dim_>::
 get_num_influence_elems() const
 {
-    return this->get_num_elements_same_property(ElementProperty::influence);
+    return this->get_num_elements_same_property("influence");
 }
 
 
@@ -717,7 +728,7 @@ print_info(LogStream &out) const
     if (get_num_active_elems() > 0)
     {
         out << "   Flat IDs:";
-        const auto &active_elements = get_elements_id_same_property(ElementProperty::active);
+        const auto &active_elements = get_elements_id_same_property("active");
         for (const auto &elem_id : active_elements)
             out << " " << elem_id ;
     }
@@ -731,7 +742,7 @@ print_info(LogStream &out) const
     if (get_num_influence_elems() > 0)
     {
         out << "   Flat IDs:";
-        const auto &influence_elements = get_elements_id_same_property(ElementProperty::influence);
+        const auto &influence_elements = get_elements_id_same_property("influence");
         for (const auto &elem_id : influence_elements)
             out << " " << elem_id ;
     }
@@ -904,9 +915,9 @@ get_sub_elements_id(const TensorSize<dim_> &n_sub_elems, const Index elem_id) co
 template <int dim_>
 void
 CartesianGrid<dim_>::
-set_element_property(const ElementProperty &property,
-                     const Index elem_flat_id,
-                     const bool property_status)
+set_element_property_status(const std::string &property,
+                            const Index elem_flat_id,
+                            const bool property_status)
 {
     Assert(dim_ > 0,ExcMessage("Setting a property for CartesianGrid<dim_> with dim_==0 has no meaning."));
 
@@ -926,7 +937,7 @@ set_element_property(const ElementProperty &property,
 template <int dim_>
 bool
 CartesianGrid<dim_>::
-test_if_element_has_property(const Index elem_flat_id, const ElementProperty &property) const
+test_if_element_has_property(const Index elem_flat_id, const std::string &property) const
 {
     const auto &elems_same_property = this->get_elements_id_same_property(property);
     return std::binary_search(elems_same_property.begin(),elems_same_property.end(),elem_flat_id);
@@ -938,7 +949,7 @@ bool
 CartesianGrid<dim_>::
 is_element_active(const Index elem_flat_id) const
 {
-    return this->test_if_element_has_property(elem_flat_id,ElementProperty::active);
+    return this->test_if_element_has_property(elem_flat_id,"active");
 }
 
 IGA_NAMESPACE_CLOSE
