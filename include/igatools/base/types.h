@@ -115,8 +115,9 @@ enum class ValueFlags : std::int64_t
     /** Fill nothing */
     none           =    0,
 
-    ///@name Applicable to elements of all grid-like containers
+    /**@name Applicable to elements of all grid-like containers */
     ///@{
+
     /** Quadrature points on the element */
     point          =    1L << 1,
 
@@ -148,13 +149,13 @@ enum class ValueFlags : std::int64_t
     /** compute the gradients of the map */
     gradient           =    1L << 14,
 
-    /** compute the gradients of the map */
+    /** compute the hessians of the map */
     hessian            =    1L << 15,
 
-    /** compute the gradients of the map */
+    /** compute the (pseudo) inverse gradients of the map */
     inv_gradient       =    1L << 16,
 
-    /** compute the gradients of the map */
+    /** compute the (pseudo) inverse hessians of the map */
     inv_hessian        =    1L << 17,
 
 
@@ -173,7 +174,7 @@ enum class ValueFlags : std::int64_t
 
     ///@}
 
-    /** compute the second derivatives of basis functions */
+    /** compute the divergences of basis functions */
     divergence    =    1L << 28
 };
 

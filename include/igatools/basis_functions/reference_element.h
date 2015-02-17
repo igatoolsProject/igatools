@@ -157,6 +157,17 @@ public:
     }
     ///@}
 
+
+    /*
+        ValueVector<Real> get_w_measures() const
+        {
+            ValueVector<Real> w_meas;
+
+            Assert(false,ExcNotImplemented());
+
+            return w_meas;
+        }
+    //*/
 };
 
 

@@ -40,7 +40,7 @@ private:
     void assemble_Bt();
 
 private:
-    using PreSpace = BSplineSpace<dim>;
+    using PreSpace = BSplineSpace<dim, 1>;
     using VelSpace = BSplineSpace<dim, dim>;
 
     shared_ptr<PreSpace> pre_space_;
@@ -64,7 +64,7 @@ void StokesProblem<dim>::assemble_Bt()
     using PreElementHandler = typename PreSpace::ElementHandler;
     using VelElementHandler = typename VelSpace::ElementHandler;
 
-    const auto vel_flag = ValueFlags::divergence | ValueFlags::w_measure;
+    const auto vel_flag = ValueFlags::divergence | ValueFlags::gradient |ValueFlags::w_measure;
     const auto pre_flag = ValueFlags::value;
     auto pre_sp_values = PreElementHandler::create(pre_space_);
     pre_sp_values->reset(pre_flag, quad);
@@ -76,8 +76,8 @@ void StokesProblem<dim>::assemble_Bt()
     auto end_el = vel_space_->end();
 
 
-    vel_sp_values->template init_cache<k>(vel_el);
-    pre_sp_values->template init_cache<k>(pre_el);
+    vel_sp_values->init_element_cache(vel_el);
+    pre_sp_values->init_element_cache(pre_el);
 
     const int n_qp = quad.get_num_points();
 
@@ -89,12 +89,13 @@ void StokesProblem<dim>::assemble_Bt()
         DenseMatrix loc_mat(vel_n_basis, pre_n_basis);
         loc_mat = 0.0;
 
-        vel_sp_values->template fill_cache<k>(vel_el, 0);
-        pre_sp_values->template fill_cache<k>(pre_el, 0);
+        vel_sp_values->fill_element_cache(vel_el);
+        pre_sp_values->fill_element_cache(pre_el);
 
         auto q      = pre_el->template get_values<0,k>(0);
-        auto div_v  = vel_el->get_basis_divergences();
-        auto w_meas = vel_el->get_w_measures();
+        auto div_v  = vel_el->get_divergences();
+//        auto div_v  = vel_el->get_basis_divergences();
+        auto w_meas = vel_el->template get_w_measures<k>(0);
 
         for (int i=0; i<vel_n_basis; ++i)
         {
@@ -147,10 +148,17 @@ StokesProblem(const int deg, const int n_knots)
         pre_mult.copy_data_direction(i, mult_p) ;
         vel_mult.copy_data_direction(i, mult_v) ;
     }
-
-
-    auto pres_m = make_shared<typename PreSpace::MultiplicityTable>(pre_mult);
+    auto pres_mult = make_shared<typename PreSpace::MultiplicityTable>(pre_mult);
     auto vel_m  = make_shared<typename VelSpace::MultiplicityTable>(vel_mult);
+
+
+    typename PreSpace::PeriodicTable press_periodic_table(filled_array<bool,dim>(false));
+    typename PreSpace::EndBehaviourTable press_end_b(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::interpolatory));
+
+    typename VelSpace::PeriodicTable vel_periodic_table(filled_array<bool,dim>(false));
+    typename VelSpace::EndBehaviourTable   vel_end_b(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::interpolatory));
+
+
 
     typename PreSpace::DegreeTable pre_deg;//(TensorIndex<dim>(deg));
     pre_deg[0] = TensorIndex<dim>(deg);
@@ -159,10 +167,11 @@ StokesProblem(const int deg, const int n_knots)
 
     auto grid = CartesianGrid<dim>::create(n_knots);
 
-    vel_space_ = VelSpace::create(vel_deg, grid,vel_m);
+    vel_space_ = VelSpace::create(vel_deg, grid,vel_m,vel_periodic_table,vel_end_b);
+
     const auto dofs_view_vel = vel_space_->get_dof_distribution_global().get_dofs_view();
 
-    pre_space_ = PreSpace::create(pre_deg, grid, pres_m);
+    pre_space_ = PreSpace::create(pre_deg, grid, pres_mult, press_periodic_table, press_end_b);
     const auto dofs_view_pre = pre_space_->get_dof_distribution_global().get_dofs_view();
 
 

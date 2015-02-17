@@ -168,6 +168,40 @@ public:
         return basis_values.evaluate_linear_combination(loc_coefs) ;
     }
 
+
+    template<int k = dim>
+    ValueTable<Div> get_divergences(const int id = 0) const
+    {
+        Assert(local_cache_ != nullptr, ExcNullPtr());
+        const auto &cache = local_cache_->template get_value_cache<k>(id);
+        Assert(cache.is_filled() == true, ExcCacheNotFilled());
+
+        Assert(cache.flags_handler_.gradients_filled() == true, ExcCacheNotFilled());
+
+        const auto &basis_gradients =
+            this->template get_values<1,k>(id);
+
+        const int n_basis = basis_gradients.get_num_functions();
+        const int n_pts   = basis_gradients.get_num_points();
+
+        ValueTable<Div> div(n_basis,n_pts);
+
+        auto div_it = div.begin();
+        for (const auto &grad : basis_gradients)
+        {
+            *div_it = trace(grad);
+            ++div_it;
+        }
+
+        return div;
+    }
+
+    ValueTable<Div> get_element_divergences() const
+    {
+        return get_divergences<dim>();
+    }
+
+
 #if 0
     /** @name Functions returning the value of the basis functions. */
     ///@{
