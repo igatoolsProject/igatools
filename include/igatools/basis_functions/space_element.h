@@ -172,12 +172,13 @@ public:
     template<int k = dim>
     ValueTable<Div> get_divergences(const int id = 0) const
     {
+        /*
         Assert(local_cache_ != nullptr, ExcNullPtr());
         const auto &cache = local_cache_->template get_value_cache<k>(id);
         Assert(cache.is_filled() == true, ExcCacheNotFilled());
 
         Assert(cache.flags_handler_.gradients_filled() == true, ExcCacheNotFilled());
-
+        //*/
         const auto &basis_gradients =
             this->template get_values<1,k>(id);
 
@@ -195,6 +196,8 @@ public:
 
         return div;
     }
+
+
 
     ValueTable<Div> get_element_divergences() const
     {
@@ -544,6 +547,28 @@ protected:
         template<int k>
         const auto &get_der() const
         {
+#ifndef NDEBUG
+            if (k == 0)
+            {
+                Assert(flags_handler_.values_filled(),
+                       ExcMessage("Values cache is not filled."));
+            }
+            else if (k == 1)
+            {
+                Assert(flags_handler_.gradients_filled(),
+                       ExcMessage("Gradients cache is not filled."));
+            }
+            else if (k == 2)
+            {
+                Assert(flags_handler_.hessians_filled(),
+                       ExcMessage("Hessians cache is not filled."));
+            }
+            else
+            {
+                Assert(false,ExcMessage("Derivative order >=3 is not supported."));
+            }
+#endif
+
             return std::get<k>(values_);
         }
 
