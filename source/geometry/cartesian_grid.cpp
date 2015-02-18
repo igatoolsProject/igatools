@@ -163,7 +163,7 @@ CartesianGrid(const KnotCoordinates &knot_coordinates,
     knot_coordinates_(knot_coordinates)
 {
     const int n_elems = this->flat_size();
-
+#if 0
     auto &active_elements = properties_elements_id_["active"];
     auto &marked_elements = properties_elements_id_["marked"];
     auto &influence_elements = properties_elements_id_["influence"];
@@ -174,7 +174,7 @@ CartesianGrid(const KnotCoordinates &knot_coordinates,
         marked_elements.insert(elem_id);
         influence_elements.insert(elem_id);
     }
-
+#endif
 
 #ifndef NDEBUG
     for (const int i : Topology::active_directions)
@@ -292,9 +292,7 @@ void
 CartesianGrid<dim_>::
 add_elements_property(const std::string &property)
 {
-    Assert(properties_elements_id_.count(property) == 0,
-           ExcMessage("The element property \"" + property + "\" is already defined."));
-    properties_elements_id_[property] = std::set<int>();
+	properties_elements_id_.add_property(property);
 }
 
 
@@ -303,7 +301,7 @@ std::set<Index> &
 CartesianGrid<dim_>::
 get_elements_id_same_property(const std::string &property)
 {
-    return properties_elements_id_.at(property);
+    return properties_elements_id_.get_ids_same_property(property);
 }
 
 template<int dim_>
@@ -311,7 +309,7 @@ const std::set<Index> &
 CartesianGrid<dim_>::
 get_elements_id_same_property(const std::string &property) const
 {
-    return properties_elements_id_.at(property);
+    return properties_elements_id_.get_ids_same_property(property);
 }
 
 

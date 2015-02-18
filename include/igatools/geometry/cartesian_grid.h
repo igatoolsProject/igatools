@@ -29,6 +29,7 @@
 #include <igatools/geometry/unit_element.h>
 #include <igatools/base/array_utils.h>
 #include <igatools/geometry/cartesian_grid_iterator.h>
+#include <igatools/base/properties_id_container.h>
 
 // TODO (pauletti, Oct 9, 2014): should we use iga array
 #include <array>
@@ -599,7 +600,7 @@ private:
      *
      * The property name is the key of the std::map.
      */
-    std::map<std::string,std::set<Index>> properties_elements_id_;
+    PropertiesIdContainer properties_elements_id_;
 
 public:
     /**
