@@ -19,6 +19,7 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/geometry/cartesian_grid_iterator.h>
+#include <igatools/geometry/cartesian_grid.h>
 
 using std::shared_ptr;
 
@@ -51,7 +52,8 @@ CartesianGridIteratorBase(
     const auto flat_index = accessor_->get_flat_index();
     if (flat_index != IteratorState::pass_the_end)
         Assert(accessor_->get_grid()->test_if_element_has_property(flat_index,elem_property_),
-               ExcMessage("Iterator defined on an element not satisfying the requested ElementProperty."));
+               ExcMessage("Iterator defined on an element not satisfying the requested property \""
+                          + elem_property_ + "\"."));
 #endif
 }
 
@@ -129,15 +131,27 @@ CartesianGridIteratorBase<Accessor> &
 CartesianGridIteratorBase<Accessor>::
 operator++()
 {
+    const auto id_this_elem = accessor_->get_flat_index();
     const auto grid = accessor_->get_grid();
-    const auto &elems_same_property =
-        grid->get_elements_id_same_property(elem_property_);
-
-    const auto elem_next = ++(elems_same_property.find(accessor_->get_flat_index()));
-    if (elem_next != elems_same_property.end())
-        accessor_->move_to(*elem_next);
+    if (elem_property_ == CartesianGrid<ContainerType::Topology::dim>::elems_property_none)
+    {
+        const auto id_next_elem = id_this_elem + 1;
+        if (id_next_elem < grid->get_num_all_elems())
+            accessor_->move_to(id_next_elem);
+        else
+            accessor_->move_to(IteratorState::pass_the_end);
+    }
     else
-        accessor_->move_to(IteratorState::pass_the_end);
+    {
+        const auto &elems_same_property =
+            grid->get_elements_id_same_property(elem_property_);
+
+        const auto id_next_elem = ++(elems_same_property.find(id_this_elem));
+        if (id_next_elem != elems_same_property.end())
+            accessor_->move_to(*id_next_elem);
+        else
+            accessor_->move_to(IteratorState::pass_the_end);
+    }
 
     return *this;
 }

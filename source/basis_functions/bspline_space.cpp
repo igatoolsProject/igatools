@@ -202,7 +202,7 @@ auto
 BSplineSpace<dim_, range_, rank_>::
 begin() const -> ElementIterator
 {
-    return ElementIterator(this->create_element(0));
+    return ElementIterator(this->create_element(0),GridType::elems_property_none);
 }
 
 
@@ -215,7 +215,7 @@ last() const -> ElementIterator
     Assert(false,ExcNotImplemented());
     //TODO: the index of the last element in the grid is not correct, because we need to use the
     // index of the last ACTIVE element in the grid
-    return ElementIterator(this->create_element(this->get_grid()->get_num_active_elems()-1));
+    return ElementIterator(this->create_element(this->get_grid()->get_num_active_elems()-1),GridType::elems_property_none);
 }
 
 
@@ -225,7 +225,7 @@ auto
 BSplineSpace<dim_, range_, rank_>::
 end() const -> ElementIterator
 {
-    return ElementIterator(this->create_element(IteratorState::pass_the_end));
+    return ElementIterator(this->create_element(IteratorState::pass_the_end),GridType::elems_property_none);
 }
 
 

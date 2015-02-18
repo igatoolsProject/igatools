@@ -68,6 +68,8 @@ filled_progression(const BBox<dim_> &end_points, const TensorSize<dim_> &n_knots
 
 
 
+template<int dim_>
+const std::string CartesianGrid<dim_>::elems_property_none = "";
 
 
 
@@ -301,7 +303,7 @@ std::set<Index> &
 CartesianGrid<dim_>::
 get_elements_id_same_property(const std::string &property)
 {
-    return properties_elements_id_[property];
+    return properties_elements_id_.at(property);
 }
 
 template<int dim_>
@@ -312,23 +314,6 @@ get_elements_id_same_property(const std::string &property) const
     return properties_elements_id_.at(property);
 }
 
-template<int dim_>
-auto
-CartesianGrid<dim_>::
-begin() -> ElementIterator
-{
-    const auto &active_elements = get_elements_id_same_property("active");
-    const auto active_begin = active_elements.begin();
-    const auto active_end   = active_elements.end();
-
-    int id_first_active_elem;
-    if (active_begin != active_end)
-        id_first_active_elem = *active_begin;
-    else
-        id_first_active_elem = IteratorState::pass_the_end;
-
-    return ElementIterator(this->shared_from_this(), id_first_active_elem);
-}
 
 template<int dim_>
 auto
@@ -346,88 +331,101 @@ create_element(const Index flat_index) const -> std::shared_ptr<ElementAccessor>
 template<int dim_>
 auto
 CartesianGrid<dim_>::
-end() -> ElementIterator
+begin(const std::string &property) -> ElementIterator
 {
-    return ElementIterator(this->create_element(IteratorState::pass_the_end));
-}
-
-template<int dim_>
-auto
-CartesianGrid<dim_>::
-last() -> ElementIterator
-{
-    const auto &active_elements = get_elements_id_same_property("active");
-    const auto active_begin = active_elements.begin();
-    auto active_end   = active_elements.end();
-    int id_last_active_elem;
-    if (active_begin != active_end)
-        id_last_active_elem = *(--active_end);
+    int id_first_elem;
+    if (property == elems_property_none)
+    {
+        id_first_elem = 0;
+    }
     else
-        id_last_active_elem = IteratorState::pass_the_end;
+    {
+        const auto &elems_same_property = get_elements_id_same_property(property);
+        const auto elem_begin = elems_same_property.begin();
+        const auto elem_end   = elems_same_property.end();
 
-    return ElementIterator(this->shared_from_this(), id_last_active_elem);
+        if (elem_begin != elem_end)
+            id_first_elem = *elem_begin;
+        else
+            id_first_elem = IteratorState::pass_the_end;
+    }
+
+    return ElementIterator(this->shared_from_this(), id_first_elem, property);
+}
+
+
+template<int dim_>
+auto
+CartesianGrid<dim_>::
+end(const std::string &property) -> ElementIterator
+{
+    return ElementIterator(this->create_element(IteratorState::pass_the_end),property);
 }
 
 template<int dim_>
 auto
 CartesianGrid<dim_>::
-last() const -> ElementConstIterator
+last(const std::string &property) -> ElementIterator
 {
-    return clast();
-}
-
-template<int dim_>
-auto
-CartesianGrid<dim_>::
-clast() const -> ElementConstIterator
-{
-    const auto &active_elements = get_elements_id_same_property("active");
-    const auto active_begin = active_elements.begin();
-    auto active_end   = active_elements.end();
-
-    int id_last_active_elem;
-    if (active_begin != active_end)
-        id_last_active_elem = *(--active_end);
+    int id_last_elem;
+    if (property == elems_property_none)
+    {
+        id_last_elem = this->get_num_all_elems()-1;
+    }
     else
-        id_last_active_elem = IteratorState::pass_the_end;
+    {
+        const auto &elems_same_property = get_elements_id_same_property(property);
+        const auto elem_begin = elems_same_property.begin();
+        auto elem_end   = elems_same_property.end();
 
-    return ElementConstIterator(this->shared_from_this(), id_last_active_elem);
+        if (elem_begin != elem_end)
+            id_last_elem = *(--elem_end);
+        else
+            id_last_elem = IteratorState::pass_the_end;
+    }
+
+    return ElementIterator(this->shared_from_this(), id_last_elem, property);
 }
 
 template<int dim_>
 auto
 CartesianGrid<dim_>::
-begin() const -> ElementConstIterator
+last(const std::string &property) const -> ElementConstIterator
 {
-    return this->cbegin();
-}
-
-
-
-template<int dim_>
-auto
-CartesianGrid<dim_>::
-end() const -> ElementConstIterator
-{
-    return this->cend();
+    return clast(property);
 }
 
 template<int dim_>
 auto
 CartesianGrid<dim_>::
-cbegin() const -> ElementConstIterator
+clast(const std::string &property) const -> ElementConstIterator
 {
-    const auto &active_elements = get_elements_id_same_property("active");
-    const auto active_begin = active_elements.begin();
-    const auto active_end   = active_elements.end();
-
-    int id_first_active_elem;
-    if (active_begin != active_end)
-        id_first_active_elem = *active_begin;
+    int id_last_elem;
+    if (property == elems_property_none)
+    {
+        id_last_elem = this->get_num_all_elems()-1;
+    }
     else
-        id_first_active_elem = IteratorState::pass_the_end;
+    {
+        const auto &elems_same_property = get_elements_id_same_property(property);
+        const auto elem_begin = elems_same_property.begin();
+        auto elem_end   = elems_same_property.end();
 
-    return ElementConstIterator(this->shared_from_this(), id_first_active_elem);
+        if (elem_begin != elem_end)
+            id_last_elem = *(--elem_end);
+        else
+            id_last_elem = IteratorState::pass_the_end;
+    }
+
+    return ElementConstIterator(this->shared_from_this(), id_last_elem, property);
+}
+
+template<int dim_>
+auto
+CartesianGrid<dim_>::
+begin(const std::string &property) const -> ElementConstIterator
+{
+    return this->cbegin(property);
 }
 
 
@@ -435,9 +433,44 @@ cbegin() const -> ElementConstIterator
 template<int dim_>
 auto
 CartesianGrid<dim_>::
-cend() const -> ElementConstIterator
+end(const std::string &property) const -> ElementConstIterator
 {
-    return ElementConstIterator(this->create_element(IteratorState::pass_the_end));
+    return this->cend(property);
+}
+
+template<int dim_>
+auto
+CartesianGrid<dim_>::
+cbegin(const std::string &property) const -> ElementConstIterator
+{
+    int id_first_elem;
+    if (property == elems_property_none)
+    {
+        id_first_elem = 0;
+    }
+    else
+    {
+        const auto &elems_same_property = get_elements_id_same_property(property);
+        const auto elem_begin = elems_same_property.begin();
+        const auto elem_end   = elems_same_property.end();
+
+        if (elem_begin != elem_end)
+            id_first_elem = *elem_begin;
+        else
+            id_first_elem = IteratorState::pass_the_end;
+    }
+
+    return ElementConstIterator(this->shared_from_this(), id_first_elem, property);
+}
+
+
+
+template<int dim_>
+auto
+CartesianGrid<dim_>::
+cend(const std::string &property) const -> ElementConstIterator
+{
+    return ElementConstIterator(this->create_element(IteratorState::pass_the_end),property);
 }
 
 
@@ -843,7 +876,7 @@ find_elements_of_points(const ValueVector<Points<dim_>> &points) const
         }
 
         auto ans = res.emplace(
-                       ElementIterator(this->shared_from_this(), this->tensor_to_flat(elem_t_id)),
+                       ElementIterator(this->shared_from_this(), this->tensor_to_flat(elem_t_id),elems_property_none),
                        vector<int>(1,k));
 
         if (!ans.second)
@@ -939,8 +972,15 @@ bool
 CartesianGrid<dim_>::
 test_if_element_has_property(const Index elem_flat_id, const std::string &property) const
 {
-    const auto &elems_same_property = this->get_elements_id_same_property(property);
-    return std::binary_search(elems_same_property.begin(),elems_same_property.end(),elem_flat_id);
+    if (property == elems_property_none)
+    {
+        return true; // an element can always be considered without any property
+    }
+    else
+    {
+        const auto &elems_same_property = this->get_elements_id_same_property(property);
+        return std::binary_search(elems_same_property.begin(),elems_same_property.end(),elem_flat_id);
+    }
 }
 
 

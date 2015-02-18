@@ -53,12 +53,35 @@ template <int> class GridElementHandler;
  * Then, the tensor-product of the intervals along the coordinate directions define
  * the elements that are tiling the domain covered by the CartesianGrid;
  *
- * The elements can have associated a certain list of element properties (identified by one std::string),
- * and then the list of elements with a given property can be extracted from the CartesianGrid.
+ * The elements can have associated a certain list of <em>element properties</em> (identified by one std::string),
+ * and then the list of elements with a given property can be extracted from the CartesianGrid
+ * using the function get_elements_id_same_property(const std::string &property) .
+ * There is no pre-defined list of element properties: any property can be defined and added to the list
+ * of properties stored within the CartesianGrid. This choice is made because the properties
+ * are usually specific for a given problem (e.g. <em>active</em> elements in hierarchical grids or
+ * <em>marked</em> elements for a-posteriori error estimators).
+ *
  *
  * The element type for the CartesianGrid is CartesianGridElement.
  *
  * The elements can be iterated with the CartesianGridIterator object.
+ * Moreover it is possible to iterate over the element sharing the same property.
+ * The iterators for traversing the the entire set of elements of the grid (regardingless their properties, if any)
+ * are build with the begin(), end(), cbegin(), cend() functions called with no arguments.
+ * The iterators for elements with a given property can be oobtained with the above functions invoked
+ * with the property name as input argument. For example, to iterate over the elements that share the property
+ * <tt>"active"</tt> (provided that property <tt>"active"</tt> is defined for some elements in the grid)
+ * you can use
+ * @code{.cpp}
+   std::string property_active = "active";
+   auto elem_active = grid->begin(property_active);
+   auto  end_active = grid->end(property_active);
+   for ( ; elem_ctive != end_active ; ++elem_active)
+   {
+   // do something with the active elements
+   }
+   @endcode
+ *
  *
  * ### Getting a CartesianGrid by an XML structure.
  * A CartesianGrid object can be obtained by a Boost XML structure using the
@@ -100,7 +123,14 @@ private:
     /** Type for current class. */
     using self_t = CartesianGrid<dim_>;
 
+
 public:
+
+    /**
+     * Specifier for iterators on elements without taking into account any specific property.
+     */
+    static const std::string elems_property_none ;
+
 
     /**
      * Alias for the (static) class holding the topological information.
@@ -360,48 +390,48 @@ public:
     /**
      * This function returns a element iterator to the first element of the patch.
      */
-    ElementIterator begin();
+    ElementIterator begin(const std::string &property = elems_property_none);
 
     /**
      * This function returns a element iterator to one-pass the end of patch.
      */
-    ElementIterator end();
+    ElementIterator end(const std::string &property = elems_property_none);
 
     /**
      * This function returns a element (const) iterator to the first element of the patch.
      */
-    ElementConstIterator begin() const;
+    ElementConstIterator begin(const std::string &property = elems_property_none) const;
 
     /**
      * This function returns a element (const) iterator to one-pass the end of patch.
      */
-    ElementConstIterator end() const;
+    ElementConstIterator end(const std::string &property = elems_property_none) const;
 
     /**
      * This function returns a element (const) iterator to the first element of the patch.
      */
-    ElementConstIterator cbegin() const;
+    ElementConstIterator cbegin(const std::string &property = elems_property_none) const;
 
     /**
      * This function returns a element (const) iterator to one-pass the end of patch.
      */
-    ElementConstIterator cend() const;
+    ElementConstIterator cend(const std::string &property = elems_property_none) const;
 
 
     /**
      * This function returns the iterator to the last active element on the grid.
      */
-    ElementIterator last();
+    ElementIterator last(const std::string &property = elems_property_none);
 
     /**
      * This function returns the (const) iterator to the last active element on the grid.
      */
-    ElementConstIterator last() const;
+    ElementConstIterator last(const std::string &property = elems_property_none) const;
 
     /**
      * This function returns the (const) iterator to the last active element on the grid.
      */
-    ElementConstIterator clast() const;
+    ElementConstIterator clast(const std::string &property = elems_property_none) const;
     ///@}
 
 

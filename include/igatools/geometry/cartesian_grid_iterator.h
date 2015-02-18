@@ -33,8 +33,7 @@ IGA_NAMESPACE_OPEN
 
 /**
  * @brief Base class for iterator on collection of objects build over a CartesianGrid and
- * having in common a certain property
- * (one of the available in the enumerator class ElementProperty).
+ * having in common a certain property (see CartesianGrid documentation).
  *
  * Its purpose is to iterate over the elements of a CartesianGrid.
  *
@@ -200,7 +199,7 @@ public:
      */
     CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
                               const Index index,
-                              const std::string &property = "active");
+                              const std::string &property);
 
     /**
      * Construct an iterator using the underlying element pointer.
@@ -209,7 +208,7 @@ public:
      */
     CartesianGridIteratorBase(
         std::shared_ptr<Accessor> accessor_ptr,
-        const std::string &property = "active");
+        const std::string &property);
 
 
     /**
