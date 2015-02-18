@@ -37,8 +37,8 @@ template<int dim, int codim, int range>
 void test(shared_ptr<Function<dim, codim, range>> F)
 {
     using ElementIterator = typename  Function<dim, codim, range>::ElementIterator;
-    ElementIterator elem(F, 0);
-    ElementIterator end(F, IteratorState::pass_the_end);
+    ElementIterator elem = F->begin();
+    ElementIterator end = F->end();
 
     F->init_cache(elem, Int<dim>());
     for (; elem != end; ++elem)

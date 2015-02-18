@@ -61,8 +61,10 @@ Real ball_volume(const int n_knots)
     auto map = Mapping::create(F);
     map->template reset<dim>(flag, quad);
 
-    ElementIt elem(map, 0);
-    ElementIt end(map, IteratorState::pass_the_end);
+//    ElementIt elem(map, 0);
+//    ElementIt end(map, IteratorState::pass_the_end);
+    ElementIt elem = map->begin();
+    ElementIt end = map->end();
 
     map->template init_cache<dim>(elem);
     Real vol = 0.;

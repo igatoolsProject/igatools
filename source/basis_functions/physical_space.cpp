@@ -84,7 +84,7 @@ auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 begin() const -> ElementIterator
 {
-    return ElementIterator(this->create_element(0));
+    return ElementIterator(this->create_element(0),CartesianGrid<dim_>::elems_property_none);
 }
 
 
@@ -96,7 +96,8 @@ last() const -> ElementIterator
 {
     Assert(false,ExcNotImplemented());
     //TODO (MM, Dec 18, 2014): fix the index of the last ACTIVE element
-    return ElementIterator(this->create_element(ref_space_->get_grid()->get_num_active_elems() - 1));
+    return ElementIterator(this->create_element(ref_space_->get_grid()->get_num_active_elems() - 1),
+                           CartesianGrid<dim_>::elems_property_none);
 }
 
 
@@ -106,7 +107,8 @@ auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 end() const -> ElementIterator
 {
-    return ElementIterator(this->create_element(IteratorState::pass_the_end));
+    return ElementIterator(this->create_element(IteratorState::pass_the_end),
+                           CartesianGrid<dim_>::elems_property_none);
 }
 
 #if 0

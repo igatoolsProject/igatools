@@ -91,12 +91,12 @@ public:
 
     auto begin()  const -> ElementIterator
     {
-        return ElementIterator(this->create_element(0));
+        return ElementIterator(this->create_element(0),CartesianGrid<dim_>::elems_property_none);
     }
 
     auto end() const -> ElementIterator
     {
-        return ElementIterator(this->create_element(IteratorState::pass_the_end));
+        return ElementIterator(this->create_element(IteratorState::pass_the_end),CartesianGrid<dim_>::elems_property_none);
     }
 
 };
