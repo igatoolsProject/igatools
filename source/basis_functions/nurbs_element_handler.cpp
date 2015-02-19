@@ -146,7 +146,7 @@ operator()(const T &quad1)
 {
     Assert(grid_handler_ != nullptr,ExcNullPtr());
     Assert(elem_ != nullptr,ExcNullPtr());
-    grid_handler_->template init_cache<T::k>(*elem_);
+    grid_handler_->template init_cache<T::k>(elem_->as_cartesian_grid_element_accessor());
 
     auto &cache = elem_->get_local_cache();
     if (cache == nullptr)

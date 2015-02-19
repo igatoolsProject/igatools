@@ -289,9 +289,9 @@ IGA_NAMESPACE_CLOSE
 
 // If we are in debug mode we do not inline to gain some compilation speed,
 // but we do in Release mode
-#ifdef NDEBUG
-#include <igatools/utils/cartesian_product_array-inline.h>
-#endif
+//#ifdef NDEBUG
+//#include <igatools/utils/cartesian_product_array-inline.h>
+//#endif
 
 
 #endif // #ifndef CARTESIAN_PRODUCT_ARRAY_H_

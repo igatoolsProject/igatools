@@ -405,7 +405,7 @@ operator()(const T &quad)
 {
     Assert(grid_handler_ != nullptr,ExcNullPtr());
     Assert(elem_ != nullptr,ExcNullPtr());
-    grid_handler_->template init_cache<T::k>(*elem_);
+    grid_handler_->template init_cache<T::k>(elem_->as_cartesian_grid_element_accessor());
 
 
     auto &cache = elem_->get_local_cache();
@@ -631,7 +631,7 @@ FillCacheDispatcher::
 operator()(const T &topology)
 {
     Assert(grid_handler_ != nullptr,ExcNullPtr());
-    grid_handler_->template fill_cache<T::k>(*elem_,j_);
+    grid_handler_->template fill_cache<T::k>(elem_->as_cartesian_grid_element_accessor(),j_);
 
     Assert(splines1d_ != nullptr, ExcNullPtr());
     const auto &g_cache = std::get<T::k>(*splines1d_)[j_];

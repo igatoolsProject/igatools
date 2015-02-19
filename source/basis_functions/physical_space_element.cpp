@@ -32,10 +32,12 @@ PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
                      const Index index)
     :
     parent_t(phys_space,index),
-    PfElemAccessor(phys_space->get_map_func(), index),
-    ref_space_element_accessor_(phys_space->get_reference_space()->create_element(index))
+//    PfElemAccessor(phys_space->get_map_func(), index),
+    ref_space_element_accessor_(phys_space->get_reference_space()->create_element(index)),
+    push_fwd_element_(shared_ptr<PfElemAccessor>(new PfElemAccessor(phys_space->get_map_func(), index)))
 {
     Assert(ref_space_element_accessor_ != nullptr, ExcNullPtr());
+    Assert(push_fwd_element_ != nullptr, ExcNullPtr());
 }
 
 
@@ -54,15 +56,21 @@ PhysicalSpaceElement<PhysSpace>::
 PhysicalSpaceElement(const PhysicalSpaceElement<PhysSpace> &in,
                      const CopyPolicy &copy_policy)
     :
-    parent_t(in,copy_policy),
-    PfElemAccessor(in,copy_policy)
+    parent_t(in,copy_policy)
+    //,
+//    PfElemAccessor(in,copy_policy)
 {
     if (copy_policy == CopyPolicy::shallow)
+    {
         ref_space_element_accessor_ = in.ref_space_element_accessor_;
+        push_fwd_element_ = in.push_fwd_element_;
+    }
     else
     {
         ref_space_element_accessor_ =
             shared_ptr<RefElemAccessor>(new RefElemAccessor(*in.ref_space_element_accessor_));
+        push_fwd_element_ =
+            shared_ptr<PfElemAccessor>(new PfElemAccessor(*in.push_fwd_element_));
     }
 
     Assert(false,ExcNotImplemented());
@@ -586,12 +594,12 @@ void
 PhysicalSpaceElement<PhysSpace>::
 move_to(const Index flat_index)
 {
-    parent_t::move_to(flat_index);
-    PfElemAccessor::move_to(flat_index);
+    this->as_cartesian_grid_element_accessor().move_to(flat_index);
     ref_space_element_accessor_->move_to(flat_index);
+    push_fwd_element_->move_to(flat_index);
 }
 
-
+/*
 template< class PhysSpace >
 bool
 PhysicalSpaceElement<PhysSpace>::
@@ -625,7 +633,7 @@ operator<(const PhysicalSpaceElement <PhysSpace> &a) const
 {
     return this->as_cartesian_grid_element_accessor() < a.as_cartesian_grid_element_accessor();
 }
-
+//*/
 
 template< class PhysSpace >
 auto
@@ -651,18 +659,24 @@ get_grid() const -> const std::shared_ptr<const CartesianGrid<dim> >
     return this->get_ref_space_accessor().get_grid();
 }
 
-#if 0
 template< class PhysSpace >
 auto
 PhysicalSpaceElement<PhysSpace>::
 get_push_forward_accessor() const -> const PfElemAccessor &
 {
-    return static_cast<const PfElemAccessor &>(*this);
+    return *push_fwd_element_;
+}
+
+template< class PhysSpace >
+auto
+PhysicalSpaceElement<PhysSpace>::
+get_push_forward_accessor() -> PfElemAccessor &
+{
+    return *push_fwd_element_;
 }
 
 
-
-
+#if 0
 template< class PhysSpace >
 template <int deriv_order>
 auto
@@ -743,7 +757,7 @@ print_info(LogStream &out) const
     out.end_item();
 
     out.begin_item("Pushforward:");
-    PfElemAccessor::print_info(out);
+    push_fwd_element_->print_info(out);
     out.end_item();
 }
 
@@ -755,8 +769,9 @@ print_cache_info(LogStream &out) const
     out.begin_item("Reference space:");
     ref_space_element_accessor_->print_cache_info(out);
     out.end_item();
+
     out.begin_item("Pushforward:");
-    PfElemAccessor::print_cache_info(out);
+    push_fwd_element_->print_cache_info(out);
     out.end_item();
 }
 

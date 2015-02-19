@@ -38,16 +38,17 @@ template <class Accessor> class CartesianGridIterator;
 template<class PhysSpace>
 class PhysicalSpaceElement
     :
-    public SpaceElement<PhysSpace>,
+    public SpaceElement<PhysSpace>
+//,
     // todo: private PhysSpace::RefSpace::ElementAccessor,
-    private PhysSpace::PushForwardType::ElementAccessor
+//    private PhysSpace::PushForwardType::ElementAccessor
 {
 public :
     using parent_t = SpaceElement<PhysSpace>;
     // using parent_t::get_elem_cache;
     using parent_t::LocalCache;
     using parent_t::get_values;
-    using parent_t::is_boundary;
+//    using parent_t::is_boundary;
 
     /** Type required by the CartesianGridIterator templated iterator */
     using ContainerType = const PhysSpace;
@@ -57,13 +58,16 @@ public :
     using PushForwardType = typename PhysSpace::PushForwardType;
     using PfElemAccessor = typename PushForwardType::ElementAccessor;
     using RefElemAccessor = typename RefSpace::ElementAccessor;
-
-    using PfElemAccessor::dim;
-    using PfElemAccessor::space_dim;
-    using PfElemAccessor::codim;
-    using PfElemAccessor::type;
-
-
+    /*
+        using PfElemAccessor::dim;
+        using PfElemAccessor::space_dim;
+        using PfElemAccessor::codim;
+        using PfElemAccessor::type;
+    //*/
+    static const auto dim = PfElemAccessor::dim;
+    static const auto space_dim = PfElemAccessor::space_dim;
+    static const auto codim = PfElemAccessor::codim;
+    static const auto type = PfElemAccessor::type;
 
 #if 0
     using Value = typename PhysSpace::Value;
@@ -188,99 +192,22 @@ public :
     /**
      * Returns the gradient determinant of the map at the dilated quadrature points.
      */
+    /*
     using PhysSpace::PushForwardType::ElementAccessor::get_points;
     using PhysSpace::PushForwardType::ElementAccessor::get_measures;
     using PhysSpace::PushForwardType::ElementAccessor::get_w_measures;
-
-
-    /**
-     * Returns the quadrature weights multiplied by the
-     * gradient determinant of map at the dilated quadrature points.
-     */
-
-
-#if 0
-    /**
-     * Returns the quadrature weights multiplied by the
-     * gradient determinant of map at the dilated quadrature points
-     * on the face specified by @p face_id.
-     */
-    using PhysSpace::PushForwardType::ElementAccessor::get_face_w_measures;
-
+    //*/
 
     /**
-     * @todo Document this function
+     * Returns the <tt>k</tt> dimensional j-th sub-element measure
+     * multiplied by the weights of the quadrature.
      */
-    const PhysPoint &
-    get_point(const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
+    template <int k>
+    ValueVector<Real> get_w_measures(const int j) const
+    {
+        return push_fwd_element_->template get_w_measures<k>(j);
+    }
 
-    /**
-     * Returns a const reference to the one-dimensional container with the values
-     * of the map at the evaluation points.
-     */
-    const ValueVector< typename Mapping<dim,codim>::Value > &
-    get_points() const;
-
-    /**
-     * Returns a const reference to the one-dimensional container with the values
-     * of the map at the evaluation points on the face specified by @p face_id.
-     */
-    const ValueVector< typename Mapping<dim,codim>::Value > &
-    get_face_points(const Index face_id) const;
-
-    /**
-     * \brief Return a const reference to the one-dimensional container with the gradients of the map (i.e. the Jacobian) at the evaluation points.
-     * \return The const reference to the one-dimensional container with the values of the map at the evaluation points.
-     * \author M.Martinelli
-     * \date 03 Jun 2013
-     */
-    using PhysSpace::PushForwardType::ElementAccessor::get_map_gradients;
-
-
-    /**
-     * Return a const reference to the one-dimensional container with the normals at the face evaluation points.
-     */
-    using PhysSpace::PushForwardType::ElementAccessor::get_face_normals;
-
-    /**
-     * Test if the element has a boundary face.
-     */
-    bool is_boundary() const;
-
-    /**
-     * Test if the face @p face on the current element is on the boundary.
-     */
-    bool is_boundary(const Index face) const;
-
-    ///@}
-
-
-    /**
-     * @name Functions for field evaluation (values, gradient and hessian)
-     */
-    ///@{
-    //Fields related
-    ValueVector< Value >
-    evaluate_field(const vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    ValueVector< Derivative<1> >
-    evaluate_field_gradients(const vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    ValueVector< Derivative<2> >
-    evaluate_field_hessians(const vector<Real> &local_coefs,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-    ///@}
-
-
-    /**
-     * Return a pointer to the physical space on which the element is defined.
-     */
-    std::shared_ptr<const PhysSpace> get_physical_space() const;
-
-
-    using  push_forward_element_accessor = PushForwardElementAccessor< typename PhysSpace::PushForwardType>;
-
-
-#endif
 
     /**
      * Prints internal information about the BSplineElementAccessor.
@@ -300,7 +227,6 @@ private:
     const RefElemAccessor &get_ref_space_accessor() const;
     RefElemAccessor &get_ref_space_accessor();
 
-#if 0
 
     /**
      * Return a const reference of this object as would be viewed as push-forward element accessor.
@@ -308,7 +234,8 @@ private:
      * element accessor that is used as partial inheritance of the physical space element accessor.
      */
     const PfElemAccessor &get_push_forward_accessor() const;
-#endif
+    PfElemAccessor &get_push_forward_accessor();
+
 public:
 
     /**
@@ -351,11 +278,12 @@ protected:
     ///@}
 
 
-
-    bool operator==(const PhysicalSpaceElement<PhysSpace> &a) const;
-    bool operator!=(const PhysicalSpaceElement<PhysSpace> &a) const;
-    bool operator<(const PhysicalSpaceElement<PhysSpace> &a) const;
-    bool operator>(const PhysicalSpaceElement<PhysSpace> &a) const;
+    /*
+        bool operator==(const PhysicalSpaceElement<PhysSpace> &a) const;
+        bool operator!=(const PhysicalSpaceElement<PhysSpace> &a) const;
+        bool operator<(const PhysicalSpaceElement<PhysSpace> &a) const;
+        bool operator>(const PhysicalSpaceElement<PhysSpace> &a) const;
+    //*/
 
 #if 0
     /**
@@ -386,6 +314,9 @@ private:
     template <typename PSpace> friend class PhysSpaceElementHandler;
 
     std::shared_ptr<RefElemAccessor> ref_space_element_accessor_;
+
+
+    std::shared_ptr<PfElemAccessor> push_fwd_element_;
 
     /**
      * Creates a new object performing a deep copy of the current object using the PhysicalSpaceElement

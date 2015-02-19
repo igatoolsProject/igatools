@@ -143,10 +143,10 @@ PhysSpaceElementHandler<PhysSpace>::
 init_cache(ElementAccessor &elem)
 {
     auto &ref_elem = elem.get_ref_space_accessor();
-
     ref_space_handler_->template init_cache<k>(ref_elem);
-    push_fwd_.template init_cache<k>(elem);
-//    PFCache::template init_cache<k>(elem);
+
+    auto &push_fwd_elem = elem.get_push_forward_accessor();
+    push_fwd_.template init_cache<k>(push_fwd_elem);
 
     auto &cache = elem.PhysSpace::ElementAccessor::parent_t::local_cache_;
     if (cache == nullptr)
@@ -176,10 +176,10 @@ PhysSpaceElementHandler<PhysSpace>::
 fill_cache(ElementAccessor &elem, const int j)
 {
     auto &ref_elem = elem.get_ref_space_accessor();
-//    const auto topology = Int<k>();
-
     ref_space_handler_->template fill_cache<k>(ref_elem, j);
-    push_fwd_.template fill_cache<k>(elem, j);
+
+    auto &push_fwd_elem = elem.get_push_forward_accessor();
+    push_fwd_.template fill_cache<k>(push_fwd_elem, j);
 //    PFCache::template fill_cache<k>(elem, j);
 
     auto &local_cache = elem.PhysSpace::ElementAccessor::parent_t::local_cache_;
@@ -192,7 +192,7 @@ fill_cache(ElementAccessor &elem, const int j)
     {
         auto &result = cache.template get_der<0>();
         const auto &ref_values = ref_elem.template get_values<0,k>(j);
-        elem.template transform_0<RefSpace::range,RefSpace::rank>
+        push_fwd_elem.template transform_0<RefSpace::range,RefSpace::rank>
         (ref_values, result);
 
         flags.set_values_filled(true);
@@ -202,7 +202,7 @@ fill_cache(ElementAccessor &elem, const int j)
         const auto &ref_values = ref_elem.template get_values<0,k>(j);
         const auto &ref_der_1  = ref_elem.template get_values<1,k>(j);
         const auto &values = cache.template get_der<0>();
-        elem.template transform_1<PhysSpace::range,PhysSpace::rank, k>
+        push_fwd_elem.template transform_1<PhysSpace::range,PhysSpace::rank, k>
         (std::make_tuple(ref_values, ref_der_1), values,
          cache.template get_der<1>(), j);
 
@@ -215,7 +215,7 @@ fill_cache(ElementAccessor &elem, const int j)
         const auto &ref_der_2  = ref_elem.template get_values<2,k>(j);
         const auto &values = cache.template get_der<0>();
         const auto &der_1  = cache.template get_der<1>();
-        elem.template transform_2<PhysSpace::range,PhysSpace::rank, k>
+        push_fwd_elem.template transform_2<PhysSpace::range,PhysSpace::rank, k>
         (std::make_tuple(ref_values, ref_der_1, ref_der_2),
          std::make_tuple(values,der_1),
          cache.template get_der<2>(), j);

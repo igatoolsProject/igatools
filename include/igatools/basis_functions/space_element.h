@@ -42,7 +42,7 @@ template <class Accessor> class CartesianGridIterator;
 
 
 template<class Space>
-class SpaceElement : public CartesianGridElement<Space::dim>
+class SpaceElement : private CartesianGridElement<Space::dim>
 {
 protected:
     using base_t =  CartesianGridElement<Space::dim>;
@@ -64,6 +64,13 @@ public:
     static const int space_dim = Space::space_dim;
     static const int range     = Space::range;
     static const int rank      = Space::rank;
+
+    using base_t::get_flat_index;
+    using base_t::get_tensor_index;
+    using base_t::get_grid;
+    using base_t::is_boundary;
+
+    using Topology = typename base_t::Topology;
 
     /**
      * For each component gives a product array of the dimension
@@ -657,14 +664,41 @@ public:
     /** Return a const-reference to "*this" as being an object of type CartesianGridElementAccessor.*/
     const CartesianGridElement<dim> &as_cartesian_grid_element_accessor() const;
 
-private:
-#if 0
-    /** Return a reference to "*this" as being an object of type DerivedElementAccessor.*/
-    DerivedElementAccessor &as_derived_element_accessor();
 
-    /** Return a const-reference to "*this" as being an object of type DerivedElementAccessor.*/
-    const DerivedElementAccessor &as_derived_element_accessor() const;
-#endif
+
+    /**
+     * @name Comparison operators
+     */
+    ///@{
+    bool operator==(const self_t &a) const
+    {
+        Assert(this->get_space() == a.get_space(),
+               ExcMessage("Comparison between elements defined on different spaces"));
+        return this->as_cartesian_grid_element_accessor() == a.as_cartesian_grid_element_accessor();
+    }
+
+
+    bool operator!=(const self_t &a) const
+    {
+        Assert(this->get_space() == a.get_space(),
+               ExcMessage("Comparison between elements defined on different spaces"));
+        return this->as_cartesian_grid_element_accessor() != a.as_cartesian_grid_element_accessor();
+    }
+
+    bool operator<(const self_t &a) const
+    {
+        Assert(this->get_space() == a.get_space(),
+               ExcMessage("Comparison between elements defined on different spaces"));
+        return this->as_cartesian_grid_element_accessor() < a.as_cartesian_grid_element_accessor();
+    }
+
+    bool operator>(const self_t &a) const
+    {
+        Assert(this->get_space() == a.get_space(),
+               ExcMessage("Comparison between elements defined on different spaces"));
+        return this->as_cartesian_grid_element_accessor() > a.as_cartesian_grid_element_accessor();
+    }
+    ///@}
 };
 
 

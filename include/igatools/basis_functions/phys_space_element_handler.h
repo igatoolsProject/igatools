@@ -34,7 +34,6 @@ IGA_NAMESPACE_OPEN
 template<class PhysSpace>
 class PhysSpaceElementHandler
     : public ElementHandler<PhysSpace>
-//      : public PhysSpace::PushForwardType
 {
 
     using RefSpace =  typename PhysSpace::RefSpace;

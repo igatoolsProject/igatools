@@ -168,6 +168,17 @@ public:
             return w_meas;
         }
     //*/
+
+    /**
+     * Returns the <tt>k</tt> dimensional j-th sub-element measure
+     * multiplied by the weights of the quadrature.
+     */
+    template <int k>
+    ValueVector<Real> get_w_measures(const int j) const
+    {
+        return this->as_cartesian_grid_element_accessor().template get_w_measures<k>(j);
+    }
+
 };
 
 

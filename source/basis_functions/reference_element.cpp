@@ -35,7 +35,8 @@ void
 ReferenceElement<dim, range, rank>::
 move_to(const Index flat_index)
 {
-    parent_t::move_to(flat_index);
+//    parent_t::move_to(flat_index);
+    this->as_cartesian_grid_element_accessor().move_to(flat_index);
 }
 
 template <int dim, int range, int rank>
