@@ -223,8 +223,9 @@ test_if_same_space(const ElemTest &elem_test,const ElemTrial &elem_trial) const
 
     //--------------------------------------------------------------------------
     // checks that the elements on the grid are the same
-    Assert(static_cast<const CartesianGridElementAccessor<dim> &>(elem_test.get_ref_space_accessor()) ==
-           static_cast<const CartesianGridElementAccessor<dim> &>(elem_trial.get_ref_space_accessor()),
+    using Elem = CartesianGridElement<dim>;
+    Assert(static_cast<const Elem &>(elem_test.get_ref_space_accessor()) ==
+           static_cast<const Elem &>(elem_trial.get_ref_space_accessor()),
            ExcMessage("Different elements for test space and trial space."));
     //--------------------------------------------------------------------------
 

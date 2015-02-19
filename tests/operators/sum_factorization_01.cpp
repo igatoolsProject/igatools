@@ -22,11 +22,11 @@
 
 #include <igatools/base/function_lib.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/geometry/mapping_lib.h>
-#include <igatools/geometry/identity_mapping.h>
+//#include <igatools/geometry/mapping_lib.h>
+#include <igatools/base/identity_function.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/physical_space.h>
-#include <igatools/basis_functions/physical_space_element_accessor.h>
+#include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/basis_functions/space_tools.h>
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/linear_algebra/dense_vector.h>
@@ -89,7 +89,7 @@ public:
 protected:
     using RefSpace  = BSplineSpace<dim>;
     using PushFw    = PushForward<Transformation::h_grad, dim>;
-    using Space     = PhysicalSpace<RefSpace, PushFw>;
+    using Space     = PhysicalSpace<dim,1,1,0,Transformation::h_grad>;
     using SpaceTest = Space;
     using SpaceTrial = Space;
 
@@ -103,7 +103,6 @@ protected:
 
     const int deg_;
 
-    shared_ptr<Mapping<dim>> map;
     shared_ptr<Space>        space;
 
     const QuadratureTensorProduct<dim>   elem_quad;
@@ -112,7 +111,7 @@ protected:
     const boundary_id dir_id = 0;
 
 #if defined(USE_TRILINOS)
-    static const auto la_pack = LAPack::trilinos;
+    static const auto la_pack = LAPack::trilinos_tpetra;
 #elif defined(USE_PETSC)
     static const auto la_pack = LAPack::petsc;
 #endif
@@ -231,9 +230,9 @@ PoissonProblem(const int n_knots, const int deg)
 
     auto grid = CartesianGrid<dim>::create(box,TensorSize<dim>(n_knots));
     auto ref_space = RefSpace::create(deg,grid);
-    map       = BallMapping<dim>::create(grid);
-//    map       = IdentityMapping<dim,0>::create(grid);
-    space     = Space::create(ref_space, PushFw::create(map));
+
+    auto map = functions::BallFunction<dim>::create(grid,IdentityFunction<dim>::create(grid));
+    space     = Space::create(ref_space, map);
 
     num_dofs_ = space->get_num_basis();
     matrix   = MatrixType::create(*space->get_space_manager());
@@ -272,8 +271,10 @@ assemble()
 
 
 
+    auto grid = space->get_grid();
+    auto f = functions::ConstantFunction<dim,0,1>::create(grid,IdentityFunction<dim>::create(grid), {{0.5}});
+
     const Size n_qp = this->elem_quad.get_num_points();
-    ConstantFunction<dim> f({0.5});
     using Value = typename Function<dim>::Value;
     ValueVector<Value> f_values(n_qp);
 
@@ -289,18 +290,16 @@ assemble()
 
 
 
+    // number of points along each direction for the quadrature scheme.
+    const auto n_quad_points = this->elem_quad.get_num_coords_direction();
 
     auto elem = this->space->begin();
     const auto elem_end = this->space->end();
 
     ValueFlags fill_flags = this->get_fill_flags();
-
-    elem->init_cache(fill_flags, this->elem_quad);
-
-
-
-    // number of points along each direction for the quadrature scheme.
-    TensorSize<dim> n_quad_points = this->elem_quad.get_num_points_direction();
+    auto elem_filler = space->create_elem_handler();
+    elem_filler->reset(fill_flags,this->elem_quad);
+    elem_filler->init_element_cache(elem);
 
 
     const auto &elliptic_operators = static_cast<const DerivedClass &>(*this).get_elliptic_operators();
@@ -322,7 +321,7 @@ assemble()
 
         //----------------------------------------------------
         const TimePoint start_eval_basis = Clock::now();
-        elem->fill_cache();
+        elem_filler->fill_element_cache(elem);
         const TimePoint end_eval_basis = Clock::now();
         this->elapsed_time_eval_basis_ += end_eval_basis - start_eval_basis;
 
@@ -334,7 +333,7 @@ assemble()
 
 
         //----------------------------------------------------
-        f.evaluate(points, f_values);
+        f->evaluate(points, f_values);
         //----------------------------------------------------
 
 
@@ -422,7 +421,7 @@ assemble()
 
 
     TimePoint start_boundary_conditions = Clock::now();
-    ConstantFunction<dim> g({0.0});
+    functions::ConstantFunction<dim,0,1> g({0.0});
     std::map<Index, Real> values;
     const int dir_id = 0 ;
     project_boundary_values<Space,la_pack>(g, this->space, this->face_quad, dir_id, values);
@@ -577,7 +576,7 @@ get_fill_flags() const
 {
     ValueFlags fill_flags = ValueFlags::value |
 //                            ValueFlags::gradient |
-                            ValueFlags::map_inv_gradient |
+//                            ValueFlags::map_inv_gradient |
                             ValueFlags::measure |
                             ValueFlags::w_measure |
                             ValueFlags::point;

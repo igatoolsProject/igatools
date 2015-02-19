@@ -188,6 +188,7 @@ public :
     /**
      * Returns the gradient determinant of the map at the dilated quadrature points.
      */
+    using PhysSpace::PushForwardType::ElementAccessor::get_points;
     using PhysSpace::PushForwardType::ElementAccessor::get_measures;
     using PhysSpace::PushForwardType::ElementAccessor::get_w_measures;
 

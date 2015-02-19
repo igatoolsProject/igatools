@@ -197,37 +197,6 @@ is_property_true(const std::string &property) const
 
 
 
-template <int dim>
-bool
-CartesianGridElement<dim>::
-is_influence() const
-{
-    return is_property_true("influence");
-}
-
-
-
-template <int dim>
-bool
-CartesianGridElement<dim>::
-is_active() const
-{
-    return is_property_true("active");
-}
-
-
-
-template <int dim>
-void
-CartesianGridElement<dim>::
-set_influence(const bool influence_flag)
-{
-    using Grid = CartesianGrid<dim>;
-    std::const_pointer_cast<Grid>(grid_)->set_element_property_status(
-        "influence",
-        flat_index_,
-        influence_flag);
-}
 
 
 

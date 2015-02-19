@@ -162,12 +162,6 @@ public:
      * Tests if a certain element @p property is TRUE.
      */
     bool is_property_true(const std::string &property) const;
-
-
-    bool is_influence() const;
-    void set_influence(const bool influence_flag);
-
-    bool is_active() const;
     ///@}
 
 //protected:
