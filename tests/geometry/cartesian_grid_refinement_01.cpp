@@ -35,6 +35,15 @@ template <int dim>
 void test_evaluate()
 {
     auto grid = CartesianGrid<dim>::create();
+    const std::string active_property = "active";
+    const std::string influence_property = "influence";
+
+    grid->add_elements_property(active_property);
+    grid->add_elements_property(influence_property);
+
+    grid->set_element_property_status(active_property,0,true);
+    grid->set_element_property_status(influence_property,0,true);
+
 
     out << "===============================================================" << endl;
     out << "D i m = " << dim << endl;

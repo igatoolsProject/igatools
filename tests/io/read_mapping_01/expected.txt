@@ -11,12 +11,6 @@ IgFunction infos:
                Direction: 0
                [ 0 0.500000 1.00000 ]
             
-            Active elements:
-               Num.: 2
-               Flat IDs: 0 1
-            Influence elements:
-               Num.: 2
-               Flat IDs: 0 1
          
          Degrees:
             Raw componets: 
@@ -122,12 +116,6 @@ IgFunction infos:
                   Direction: 1
                   [ 0 1.00000 ]
                
-               Active elements:
-                  Num.: 2
-                  Flat IDs: 0 1
-               Influence elements:
-                  Num.: 2
-                  Flat IDs: 0 1
             
             Degrees:
                Raw componets: 
@@ -294,12 +282,6 @@ IgFunction infos:
                      Direction: 2
                      [ 0 1.00000 ]
                   
-                  Active elements:
-                     Num.: 2
-                     Flat IDs: 0 1
-                  Influence elements:
-                     Num.: 2
-                     Flat IDs: 0 1
                
                Degrees:
                   Raw componets: 

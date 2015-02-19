@@ -43,13 +43,14 @@ test()
         out << elem.get_flat_index() << endl;
 
     std::string active_tag = "active";
+    grid->add_elements_property(active_tag);
     if (dim > 0)
     {
         for (const auto elem : *grid)
         {
             const auto elem_id = elem.get_flat_index();
-            if (elem_id % 2 == 0)
-                grid->set_element_property_status(active_tag,elem_id,false);
+            if (elem_id % 2 != 0)
+                grid->set_element_property_status(active_tag,elem_id,true);
         }
     }
 

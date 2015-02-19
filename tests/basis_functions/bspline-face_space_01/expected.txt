@@ -9,12 +9,6 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 0; int dim = 
             Knot coordinates:
                Size: [ ]  Weights: []
             
-            Active elements:
-               Num.: 1
-               Flat IDs: 0
-            Influence elements:
-               Num.: 1
-               Flat IDs: 0
          
          Degrees:
             Raw componets: 
@@ -70,12 +64,6 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 0; int dim = 
             Knot coordinates:
                Size: [ ]  Weights: []
             
-            Active elements:
-               Num.: 1
-               Flat IDs: 0
-            Influence elements:
-               Num.: 1
-               Flat IDs: 0
          
          Degrees:
             Raw componets: 
@@ -138,12 +126,6 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
                Direction: 0
                [ 0 0.500000 1.00000 ]
             
-            Active elements:
-               Num.: 2
-               Flat IDs: 0 1
-            Influence elements:
-               Num.: 2
-               Flat IDs: 0 1
          
          Degrees:
             Raw componets: 
@@ -208,12 +190,6 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
                Direction: 0
                [ 0 0.500000 1.00000 ]
             
-            Active elements:
-               Num.: 2
-               Flat IDs: 0 1
-            Influence elements:
-               Num.: 2
-               Flat IDs: 0 1
          
          Degrees:
             Raw componets: 
@@ -278,12 +254,6 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
                Direction: 0
                [ 0 1.00000 ]
             
-            Active elements:
-               Num.: 1
-               Flat IDs: 0
-            Influence elements:
-               Num.: 1
-               Flat IDs: 0
          
          Degrees:
             Raw componets: 
@@ -345,12 +315,6 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
                Direction: 0
                [ 0 1.00000 ]
             
-            Active elements:
-               Num.: 1
-               Flat IDs: 0
-            Influence elements:
-               Num.: 1
-               Flat IDs: 0
          
          Degrees:
             Raw componets: 
@@ -419,12 +383,6 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
                Direction: 1
                [ 0 0.333333 0.666667 1.00000 ]
             
-            Active elements:
-               Num.: 6
-               Flat IDs: 0 1 2 3 4 5
-            Influence elements:
-               Num.: 6
-               Flat IDs: 0 1 2 3 4 5
          
          Degrees:
             Raw componets: 
@@ -505,12 +463,6 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
                Direction: 1
                [ 0 0.333333 0.666667 1.00000 ]
             
-            Active elements:
-               Num.: 6
-               Flat IDs: 0 1 2 3 4 5
-            Influence elements:
-               Num.: 6
-               Flat IDs: 0 1 2 3 4 5
          
          Degrees:
             Raw componets: 
@@ -591,12 +543,6 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
                Direction: 1
                [ 0 0.333333 0.666667 1.00000 ]
             
-            Active elements:
-               Num.: 3
-               Flat IDs: 0 1 2
-            Influence elements:
-               Num.: 3
-               Flat IDs: 0 1 2
          
          Degrees:
             Raw componets: 
@@ -670,12 +616,6 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
                Direction: 1
                [ 0 0.333333 0.666667 1.00000 ]
             
-            Active elements:
-               Num.: 3
-               Flat IDs: 0 1 2
-            Influence elements:
-               Num.: 3
-               Flat IDs: 0 1 2
          
          Degrees:
             Raw componets: 
@@ -749,12 +689,6 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
                Direction: 1
                [ 0 0.500000 1.00000 ]
             
-            Active elements:
-               Num.: 2
-               Flat IDs: 0 1
-            Influence elements:
-               Num.: 2
-               Flat IDs: 0 1
          
          Degrees:
             Raw componets: 
@@ -825,12 +759,6 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
                Direction: 1
                [ 0 0.500000 1.00000 ]
             
-            Active elements:
-               Num.: 2
-               Flat IDs: 0 1
-            Influence elements:
-               Num.: 2
-               Flat IDs: 0 1
          
          Degrees:
             Raw componets: 

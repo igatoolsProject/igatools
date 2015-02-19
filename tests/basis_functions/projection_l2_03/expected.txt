@@ -7,12 +7,6 @@ Reference space info:
             Direction: 0
             [ 0 0.333333 0.666667 1.00000 ]
          
-         Active elements:
-            Num.: 3
-            Flat IDs: 0 1 2
-         Influence elements:
-            Num.: 3
-            Flat IDs: 0 1 2
       
       Degrees:
          Raw componets: 
@@ -81,12 +75,6 @@ Reference space info:
             Direction: 1
             [ 0 0.333333 0.666667 1.00000 ]
          
-         Active elements:
-            Num.: 9
-            Flat IDs: 0 1 2 3 4 5 6 7 8
-         Influence elements:
-            Num.: 9
-            Flat IDs: 0 1 2 3 4 5 6 7 8
       
       Degrees:
          Raw componets: 
@@ -175,12 +163,6 @@ Reference space info:
             Direction: 2
             [ 0 0.333333 0.666667 1.00000 ]
          
-         Active elements:
-            Num.: 27
-            Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26
-         Influence elements:
-            Num.: 27
-            Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26
       
       Degrees:
          Raw componets: 
@@ -309,12 +291,6 @@ Reference space info:
             Direction: 1
             [ 0 0.333333 0.666667 1.00000 ]
          
-         Active elements:
-            Num.: 9
-            Flat IDs: 0 1 2 3 4 5 6 7 8
-         Influence elements:
-            Num.: 9
-            Flat IDs: 0 1 2 3 4 5 6 7 8
       
       Degrees:
          Raw componets: 

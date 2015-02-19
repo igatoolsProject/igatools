@@ -7,12 +7,6 @@ Knots without repetition:
       Direction: 0
       [ 0 0.333333 0.666667 1.00000 ]
    
-   Active elements:
-      Num.: 3
-      Flat IDs: 0 1 2
-   Influence elements:
-      Num.: 3
-      Flat IDs: 0 1 2
 
 Degrees:
    Raw componets: 
@@ -49,12 +43,6 @@ Knots without repetition:
       Direction: 0
       [ 0 0.333333 0.666667 1.00000 ]
    
-   Active elements:
-      Num.: 3
-      Flat IDs: 0 1 2
-   Influence elements:
-      Num.: 3
-      Flat IDs: 0 1 2
 
 Degrees:
    Raw componets: 
@@ -96,12 +84,6 @@ Knots without repetition:
       Direction: 1
       [ 0 0.333333 0.666667 1.00000 ]
    
-   Active elements:
-      Num.: 9
-      Flat IDs: 0 1 2 3 4 5 6 7 8
-   Influence elements:
-      Num.: 9
-      Flat IDs: 0 1 2 3 4 5 6 7 8
 
 Degrees:
    Raw componets: 
@@ -147,12 +129,6 @@ Knots without repetition:
       Direction: 1
       [ 0 0.333333 0.666667 1.00000 ]
    
-   Active elements:
-      Num.: 9
-      Flat IDs: 0 1 2 3 4 5 6 7 8
-   Influence elements:
-      Num.: 9
-      Flat IDs: 0 1 2 3 4 5 6 7 8
 
 Degrees:
    Raw componets: 

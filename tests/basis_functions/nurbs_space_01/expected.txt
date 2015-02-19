@@ -10,12 +10,6 @@ BSpline Space:
             Direction: 0
             [ 0 1.00000 2.00000 3.00000 4.00000 ]
          
-         Active elements:
-            Num.: 4
-            Flat IDs: 0 1 2 3
-         Influence elements:
-            Num.: 4
-            Flat IDs: 0 1 2 3
       
       Degrees:
          Raw componets: 
@@ -83,12 +77,6 @@ Weight function[0] :
                Direction: 0
                [ 0 1.00000 2.00000 3.00000 4.00000 ]
             
-            Active elements:
-               Num.: 4
-               Flat IDs: 0 1 2 3
-            Influence elements:
-               Num.: 4
-               Flat IDs: 0 1 2 3
          
          Degrees:
             Raw componets: 
@@ -164,12 +152,6 @@ BSpline Space:
             Direction: 0
             [ 0 1.00000 2.00000 3.00000 4.00000 ]
          
-         Active elements:
-            Num.: 4
-            Flat IDs: 0 1 2 3
-         Influence elements:
-            Num.: 4
-            Flat IDs: 0 1 2 3
       
       Degrees:
          Raw componets: 
@@ -250,12 +232,6 @@ Weight function[0] :
                Direction: 0
                [ 0 1.00000 2.00000 3.00000 4.00000 ]
             
-            Active elements:
-               Num.: 4
-               Flat IDs: 0 1 2 3
-            Influence elements:
-               Num.: 4
-               Flat IDs: 0 1 2 3
          
          Degrees:
             Raw componets: 
@@ -327,12 +303,6 @@ Weight function[1] :
                Direction: 0
                [ 0 1.00000 2.00000 3.00000 4.00000 ]
             
-            Active elements:
-               Num.: 4
-               Flat IDs: 0 1 2 3
-            Influence elements:
-               Num.: 4
-               Flat IDs: 0 1 2 3
          
          Degrees:
             Raw componets: 
@@ -408,12 +378,6 @@ BSpline Space:
             Direction: 0
             [ 0 1.00000 2.00000 3.00000 4.00000 ]
          
-         Active elements:
-            Num.: 4
-            Flat IDs: 0 1 2 3
-         Influence elements:
-            Num.: 4
-            Flat IDs: 0 1 2 3
       
       Degrees:
          Raw componets: 
@@ -507,12 +471,6 @@ Weight function[0] :
                Direction: 0
                [ 0 1.00000 2.00000 3.00000 4.00000 ]
             
-            Active elements:
-               Num.: 4
-               Flat IDs: 0 1 2 3
-            Influence elements:
-               Num.: 4
-               Flat IDs: 0 1 2 3
          
          Degrees:
             Raw componets: 
@@ -584,12 +542,6 @@ Weight function[1] :
                Direction: 0
                [ 0 1.00000 2.00000 3.00000 4.00000 ]
             
-            Active elements:
-               Num.: 4
-               Flat IDs: 0 1 2 3
-            Influence elements:
-               Num.: 4
-               Flat IDs: 0 1 2 3
          
          Degrees:
             Raw componets: 
@@ -661,12 +613,6 @@ Weight function[2] :
                Direction: 0
                [ 0 1.00000 2.00000 3.00000 4.00000 ]
             
-            Active elements:
-               Num.: 4
-               Flat IDs: 0 1 2 3
-            Influence elements:
-               Num.: 4
-               Flat IDs: 0 1 2 3
          
          Degrees:
             Raw componets: 
@@ -744,12 +690,6 @@ BSpline Space:
             Direction: 1
             [ 5.00000 6.00000 7.00000 8.00000 ]
          
-         Active elements:
-            Num.: 12
-            Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11
-         Influence elements:
-            Num.: 12
-            Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11
       
       Degrees:
          Raw componets: 
@@ -841,12 +781,6 @@ Weight function[0] :
                Direction: 1
                [ 5.00000 6.00000 7.00000 8.00000 ]
             
-            Active elements:
-               Num.: 12
-               Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11
-            Influence elements:
-               Num.: 12
-               Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11
          
          Degrees:
             Raw componets: 
@@ -946,12 +880,6 @@ BSpline Space:
             Direction: 1
             [ 5.00000 6.00000 7.00000 8.00000 ]
          
-         Active elements:
-            Num.: 12
-            Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11
-         Influence elements:
-            Num.: 12
-            Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11
       
       Degrees:
          Raw componets: 
@@ -1062,12 +990,6 @@ Weight function[0] :
                Direction: 1
                [ 5.00000 6.00000 7.00000 8.00000 ]
             
-            Active elements:
-               Num.: 12
-               Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11
-            Influence elements:
-               Num.: 12
-               Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11
          
          Degrees:
             Raw componets: 
@@ -1163,12 +1085,6 @@ Weight function[1] :
                Direction: 1
                [ 5.00000 6.00000 7.00000 8.00000 ]
             
-            Active elements:
-               Num.: 12
-               Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11
-            Influence elements:
-               Num.: 12
-               Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11
          
          Degrees:
             Raw componets: 
@@ -1268,12 +1184,6 @@ BSpline Space:
             Direction: 1
             [ 5.00000 6.00000 7.00000 8.00000 ]
          
-         Active elements:
-            Num.: 12
-            Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11
-         Influence elements:
-            Num.: 12
-            Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11
       
       Degrees:
          Raw componets: 
@@ -1403,12 +1313,6 @@ Weight function[0] :
                Direction: 1
                [ 5.00000 6.00000 7.00000 8.00000 ]
             
-            Active elements:
-               Num.: 12
-               Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11
-            Influence elements:
-               Num.: 12
-               Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11
          
          Degrees:
             Raw componets: 
@@ -1504,12 +1408,6 @@ Weight function[1] :
                Direction: 1
                [ 5.00000 6.00000 7.00000 8.00000 ]
             
-            Active elements:
-               Num.: 12
-               Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11
-            Influence elements:
-               Num.: 12
-               Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11
          
          Degrees:
             Raw componets: 
@@ -1605,12 +1503,6 @@ Weight function[2] :
                Direction: 1
                [ 5.00000 6.00000 7.00000 8.00000 ]
             
-            Active elements:
-               Num.: 12
-               Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11
-            Influence elements:
-               Num.: 12
-               Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11
          
          Degrees:
             Raw componets: 
@@ -1712,12 +1604,6 @@ BSpline Space:
             Direction: 2
             [ 9.00000 10.0000 11.0000 ]
          
-         Active elements:
-            Num.: 24
-            Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
-         Influence elements:
-            Num.: 24
-            Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
       
       Degrees:
          Raw componets: 
@@ -1840,12 +1726,6 @@ Weight function[0] :
                Direction: 2
                [ 9.00000 10.0000 11.0000 ]
             
-            Active elements:
-               Num.: 24
-               Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
-            Influence elements:
-               Num.: 24
-               Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
          
          Degrees:
             Raw componets: 
@@ -1976,12 +1856,6 @@ BSpline Space:
             Direction: 2
             [ 9.00000 10.0000 11.0000 ]
          
-         Active elements:
-            Num.: 24
-            Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
-         Influence elements:
-            Num.: 24
-            Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
       
       Degrees:
          Raw componets: 
@@ -2152,12 +2026,6 @@ Weight function[0] :
                Direction: 2
                [ 9.00000 10.0000 11.0000 ]
             
-            Active elements:
-               Num.: 24
-               Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
-            Influence elements:
-               Num.: 24
-               Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
          
          Degrees:
             Raw componets: 
@@ -2284,12 +2152,6 @@ Weight function[1] :
                Direction: 2
                [ 9.00000 10.0000 11.0000 ]
             
-            Active elements:
-               Num.: 24
-               Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
-            Influence elements:
-               Num.: 24
-               Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
          
          Degrees:
             Raw componets: 
@@ -2416,12 +2278,6 @@ Weight function[2] :
                Direction: 2
                [ 9.00000 10.0000 11.0000 ]
             
-            Active elements:
-               Num.: 24
-               Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
-            Influence elements:
-               Num.: 24
-               Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
          
          Degrees:
             Raw componets: 

@@ -7,12 +7,6 @@ Spline Space:
       Knot coordinates:
          Size: [ ]  Weights: []
       
-      Active elements:
-         Num.: 1
-         Flat IDs: 0
-      Influence elements:
-         Num.: 1
-         Flat IDs: 0
    
    Degrees:
       Raw componets: 
@@ -70,12 +64,6 @@ Spline Space:
          Direction: 0
          [ 0 1.00000 ]
       
-      Active elements:
-         Num.: 1
-         Flat IDs: 0
-      Influence elements:
-         Num.: 1
-         Flat IDs: 0
    
    Degrees:
       Raw componets: 
@@ -139,12 +127,6 @@ Spline Space:
          Direction: 1
          [ 0 1.00000 ]
       
-      Active elements:
-         Num.: 1
-         Flat IDs: 0
-      Influence elements:
-         Num.: 1
-         Flat IDs: 0
    
    Degrees:
       Raw componets: 
@@ -214,12 +196,6 @@ Spline Space:
          Direction: 2
          [ 0 1.00000 ]
       
-      Active elements:
-         Num.: 1
-         Flat IDs: 0
-      Influence elements:
-         Num.: 1
-         Flat IDs: 0
    
    Degrees:
       Raw componets: 
@@ -287,12 +263,6 @@ Spline Space:
       Knot coordinates:
          Size: [ ]  Weights: []
       
-      Active elements:
-         Num.: 1
-         Flat IDs: 0
-      Influence elements:
-         Num.: 1
-         Flat IDs: 0
    
    Degrees:
       Raw componets: 
@@ -350,12 +320,6 @@ Spline Space:
          Direction: 0
          [ 0 1.00000 ]
       
-      Active elements:
-         Num.: 1
-         Flat IDs: 0
-      Influence elements:
-         Num.: 1
-         Flat IDs: 0
    
    Degrees:
       Raw componets: 
@@ -419,12 +383,6 @@ Spline Space:
          Direction: 1
          [ 0 1.00000 ]
       
-      Active elements:
-         Num.: 1
-         Flat IDs: 0
-      Influence elements:
-         Num.: 1
-         Flat IDs: 0
    
    Degrees:
       Raw componets: 
@@ -494,12 +452,6 @@ Spline Space:
          Direction: 2
          [ 0 1.00000 ]
       
-      Active elements:
-         Num.: 1
-         Flat IDs: 0
-      Influence elements:
-         Num.: 1
-         Flat IDs: 0
    
    Degrees:
       Raw componets: 
