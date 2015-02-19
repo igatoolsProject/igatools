@@ -66,10 +66,14 @@ public:
 private:
     using ContainerType = std::map<std::string,std::set<Index>>;
     using iterator = typename ContainerType::iterator;
+    using const_iterator = typename ContainerType::const_iterator;
 
 public:
     iterator begin();
     iterator end();
+
+    const_iterator begin() const;
+    const_iterator end() const;
 
 private:
 	std::map<std::string,std::set<Index>> properties_id_;

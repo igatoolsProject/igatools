@@ -93,13 +93,13 @@ void
 ReferenceElementHandler<dim, range, rank>::
 reset(const ValueFlags &flag, const eval_pts_variant &eval_pts)
 {
-    const std::set<int> active_elems_id =
-        this->get_space()->get_grid()->get_elements_id_same_property("active");
+    const std::set<int> elems_id =
+        this->get_space()->get_grid()->get_elements_id();
 
     this->reset_selected_elements(
         flag,
         eval_pts,
-        vector<int>(active_elems_id.begin(),active_elems_id.end()));
+        vector<int>(elems_id.begin(),elems_id.end()));
 }
 
 

@@ -646,6 +646,11 @@ public:
     ///@}
 
 
+    /**
+     * Returns the flat-id of the elements in the CartesianGrid.
+     */
+    std::set<Index> get_elements_id() const;
+
 private:
     /**
      * Returns the flat ids of the sub-elements corresponding to the element with index @p elem_id,

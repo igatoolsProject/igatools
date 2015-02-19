@@ -56,10 +56,13 @@ add_property(const std::string &property)
     properties_id_[property] = std::set<int>();
 }
 
+
 std::set<Index> &
 PropertiesIdContainer::
 get_ids_same_property(const std::string &property)
 {
+    Assert(properties_id_.count(property) > 0,
+           ExcMessage("The property \"" + property + "\" is not defined."));
     return properties_id_.at(property);
 }
 
@@ -69,6 +72,8 @@ const std::set<Index> &
 PropertiesIdContainer::
 get_ids_same_property(const std::string &property) const
 {
+    Assert(properties_id_.count(property) > 0,
+           ExcMessage("The property \"" + property + "\" is not defined."));
     return properties_id_.at(property);
 }
 
@@ -78,8 +83,8 @@ get_ids_same_property(const std::string &property) const
 void
 PropertiesIdContainer::
 set_id_property_status(const std::string &property,
-                                 const Index id,
-                                 const bool status)
+                       const Index id,
+                       const bool status)
 {
     auto &ids_same_property = get_ids_same_property(property);
     if (status)
@@ -104,6 +109,21 @@ begin() -> iterator
 auto
 PropertiesIdContainer::
 end() -> iterator
+{
+	return properties_id_.end();
+}
+
+auto
+PropertiesIdContainer::
+begin() const -> const_iterator
+{
+	return properties_id_.begin();
+}
+
+
+auto
+PropertiesIdContainer::
+end() const -> const_iterator
 {
 	return properties_id_.end();
 }

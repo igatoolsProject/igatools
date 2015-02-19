@@ -162,8 +162,8 @@ CartesianGrid(const KnotCoordinates &knot_coordinates,
     boundary_id_(filled_array<int,Topology::n_faces>(0)),
     knot_coordinates_(knot_coordinates)
 {
-    const int n_elems = this->flat_size();
 #if 0
+    const int n_elems = this->flat_size();
     auto &active_elements = properties_elements_id_["active"];
     auto &marked_elements = properties_elements_id_["marked"];
     auto &influence_elements = properties_elements_id_["influence"];
@@ -573,6 +573,19 @@ get_num_all_elems() const
     return this->flat_size();
 }
 
+template<int dim_>
+std::set<Index>
+CartesianGrid<dim_>::
+get_elements_id() const
+{
+	const auto n_elems = this->get_num_all_elems();
+	std::set<Index> elems_id;
+	for (int id = 0 ; id < n_elems ; ++id)
+		elems_id.emplace(id);
+
+	return elems_id;
+}
+
 
 
 // TODO (pauletti, Jul 30, 2014): this should not be necesary to specialize
@@ -753,31 +766,21 @@ print_info(LogStream &out) const
     out.end_item();
 
 
-    //-------------------------------------------------------
-    out.begin_item("Active elements:");
-    out << "Num.: " << get_num_active_elems() << endl;
-    if (get_num_active_elems() > 0)
+    //-------------------------------------------------------------
+    for (const auto &elems_same_property : properties_elements_id_)
     {
-        out << "   Flat IDs:";
-        const auto &active_elements = get_elements_id_same_property("active");
-        for (const auto &elem_id : active_elements)
-            out << " " << elem_id ;
+    	const auto &property_name = elems_same_property.first;
+    	const auto &elems_id = elems_same_property.second;
+        out.begin_item("Elements with property \"" + property_name + "\":");
+        out << "Num.: " << elems_id.size() << endl;
+        if (elems_id.size() > 0)
+        {
+            out << "   Flat IDs:";
+            for (const auto &elem_id : elems_id)
+                out << " " << elem_id ;
+        }
+        out.end_item();
     }
-    out.end_item();
-    //-------------------------------------------------------
-
-
-    //-------------------------------------------------------
-    out.begin_item("Influence elements:");
-    out << "Num.: " << get_num_influence_elems() << endl;
-    if (get_num_influence_elems() > 0)
-    {
-        out << "   Flat IDs:";
-        const auto &influence_elements = get_elements_id_same_property("influence");
-        for (const auto &elem_id : influence_elements)
-            out << " " << elem_id ;
-    }
-    out.end_item();
     //-------------------------------------------------------
 
 
