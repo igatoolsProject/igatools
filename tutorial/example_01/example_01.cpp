@@ -40,7 +40,7 @@ int main()
     cout << "Creating a " << dim << " dimensional cartesian grid" << endl;
     auto grid = CartesianGrid<dim>::create(n_knots);
     cout << "Number of elements: ";
-    cout << grid->get_num_active_elems() << endl;
+    cout << grid->get_num_all_elems() << endl;
     // [grid]
 
     // [plot_grid]

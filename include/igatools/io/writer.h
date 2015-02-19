@@ -372,7 +372,7 @@ add_field(shared_ptr<const Function<dim, codim, range, rank>> function,
     func->init_cache(f_elem,topology);
 
 
-    const auto n_elements = map_->get_grid()->get_num_active_elems();
+    const auto n_elements = map_->get_grid()->get_num_all_elems();
     const auto n_pts_per_elem = quad_plot_->get_num_points();
 
     const int n_values_per_pt = (range == 1 ? 1 : std::pow(range, rank)) ;

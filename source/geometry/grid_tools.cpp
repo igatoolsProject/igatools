@@ -73,7 +73,7 @@ build_map_elements_between_cartesian_grids(const CartesianGrid<dim> &grid_fine,
         }
     }
 
-    const int n_elems_fine = grid_fine.get_num_active_elems();
+    const int n_elems_fine = grid_fine.get_num_all_elems();
 
     auto f_elem = grid_fine.begin();
     auto c_elem = grid_coarse.begin();

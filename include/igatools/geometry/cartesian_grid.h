@@ -338,15 +338,6 @@ public:
      */
     Size get_num_elements_same_property(const std::string &property) const;
 
-    /**
-     * Total number of active elements.
-     */
-    Size get_num_active_elems() const;
-
-    /**
-     * Total number of influence elements.
-     */
-    Size get_num_influence_elems() const;
 
     /** Total number of elements, including active and non-active */
     Size get_num_all_elems() const;
@@ -603,18 +594,19 @@ private:
     PropertiesIdContainer properties_elements_id_;
 
 public:
+
+
+    /**
+     * @name Functions related to the management/query of the element properties.
+     */
+    ///@{
+
     /**
      * Returns true if the element identified with <p>elem_flat_id</p> has
      * the ElementProperty <p>property</p>.
      */
     bool test_if_element_has_property(const Index elem_flat_id, const std::string &property) const;
 
-public:
-
-    /**
-     * @name Functions related to the management/query of the element properties.
-     */
-    ///@{
     /**
      * Adds a new <tt>property</tt> definition for the elements in the CartesianGrid.
      *
@@ -622,10 +614,6 @@ public:
      */
     void add_elements_property(const std::string &property);
 
-    /**
-     * Returns true if the element identified with <p>elem_flat_id</p> is active.
-     */
-    bool is_element_active(const Index elem_flat_id) const;
 
     /**
      * Returns the flat id of the elements having a certain @p property (non-const version).

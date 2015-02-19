@@ -37,7 +37,7 @@ void do_test()
     auto grid = CartesianGrid<dim>::create(n_knots);
 
     out << "Dimension: " << dim << endl;
-    const auto n_elems = grid->get_num_active_elems();
+    const auto n_elems = grid->get_num_all_elems();
     for (int i = 0; i < n_elems; ++i)
     {
         const auto ti = grid->flat_to_tensor(i);

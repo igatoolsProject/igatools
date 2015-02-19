@@ -170,8 +170,8 @@ public:
     {
 #ifndef NDEBUG
         const auto grid = this->get_grid();
-        Assert(grid->is_element_active(elem_id),
-               ExcMessage("The element " + std::to_string(elem_id) + " is not active."));
+//        Assert(grid->is_element_active(elem_id),
+//               ExcMessage("The element " + std::to_string(elem_id) + " is not active."));
 #endif
 
         this->reset(flag,eval_pts);

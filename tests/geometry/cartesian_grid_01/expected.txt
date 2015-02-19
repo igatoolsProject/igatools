@@ -5,12 +5,6 @@ Number of intervals per direction: [ ]
 Knot coordinates:
    Size: [ ]  Weights: []
 
-Active elements:
-   Num.: 1
-   Flat IDs: 0
-Influence elements:
-   Num.: 1
-   Flat IDs: 0
 
 ========================================================================
 
@@ -23,12 +17,6 @@ Knot coordinates:
    Direction: 0
    [ 0 1.00000 ]
 
-Active elements:
-   Num.: 1
-   Flat IDs: 0
-Influence elements:
-   Num.: 1
-   Flat IDs: 0
 
 ========================================================================
 
@@ -43,12 +31,6 @@ Knot coordinates:
    Direction: 1
    [ 0 1.00000 ]
 
-Active elements:
-   Num.: 1
-   Flat IDs: 0
-Influence elements:
-   Num.: 1
-   Flat IDs: 0
 
 ========================================================================
 
@@ -65,12 +47,6 @@ Knot coordinates:
    Direction: 2
    [ 0 1.00000 ]
 
-Active elements:
-   Num.: 1
-   Flat IDs: 0
-Influence elements:
-   Num.: 1
-   Flat IDs: 0
 
 ========================================================================
 
@@ -81,12 +57,6 @@ Number of intervals per direction: [ ]
 Knot coordinates:
    Size: [ ]  Weights: []
 
-Active elements:
-   Num.: 1
-   Flat IDs: 0
-Influence elements:
-   Num.: 1
-   Flat IDs: 0
 
 ========================================================================
 
@@ -99,12 +69,6 @@ Knot coordinates:
    Direction: 0
    [ 0 0.500000 1.00000 ]
 
-Active elements:
-   Num.: 2
-   Flat IDs: 0 1
-Influence elements:
-   Num.: 2
-   Flat IDs: 0 1
 
 ========================================================================
 
@@ -119,12 +83,6 @@ Knot coordinates:
    Direction: 1
    [ 0 0.500000 1.00000 ]
 
-Active elements:
-   Num.: 4
-   Flat IDs: 0 1 2 3
-Influence elements:
-   Num.: 4
-   Flat IDs: 0 1 2 3
 
 ========================================================================
 
@@ -141,12 +99,6 @@ Knot coordinates:
    Direction: 2
    [ 0 0.500000 1.00000 ]
 
-Active elements:
-   Num.: 8
-   Flat IDs: 0 1 2 3 4 5 6 7
-Influence elements:
-   Num.: 8
-   Flat IDs: 0 1 2 3 4 5 6 7
 
 ========================================================================
 
@@ -157,12 +109,6 @@ Number of intervals per direction: [ ]
 Knot coordinates:
    Size: [ ]  Weights: []
 
-Active elements:
-   Num.: 1
-   Flat IDs: 0
-Influence elements:
-   Num.: 1
-   Flat IDs: 0
 
 ========================================================================
 
@@ -175,12 +121,6 @@ Knot coordinates:
    Direction: 0
    [ 0 1.00000 ]
 
-Active elements:
-   Num.: 1
-   Flat IDs: 0
-Influence elements:
-   Num.: 1
-   Flat IDs: 0
 
 ========================================================================
 
@@ -195,12 +135,6 @@ Knot coordinates:
    Direction: 1
    [ 0 0.333333 0.666667 1.00000 ]
 
-Active elements:
-   Num.: 3
-   Flat IDs: 0 1 2
-Influence elements:
-   Num.: 3
-   Flat IDs: 0 1 2
 
 ========================================================================
 
@@ -217,12 +151,6 @@ Knot coordinates:
    Direction: 2
    [ 0 0.200000 0.400000 0.600000 0.800000 1.00000 ]
 
-Active elements:
-   Num.: 15
-   Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14
-Influence elements:
-   Num.: 15
-   Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14
 
 ========================================================================
 
@@ -233,12 +161,6 @@ Number of intervals per direction: [ ]
 Knot coordinates:
    Size: [ ]  Weights: []
 
-Active elements:
-   Num.: 1
-   Flat IDs: 0
-Influence elements:
-   Num.: 1
-   Flat IDs: 0
 
 ========================================================================
 
@@ -251,12 +173,6 @@ Knot coordinates:
    Direction: 0
    [ 0 1.00000 ]
 
-Active elements:
-   Num.: 1
-   Flat IDs: 0
-Influence elements:
-   Num.: 1
-   Flat IDs: 0
 
 ========================================================================
 
@@ -271,12 +187,6 @@ Knot coordinates:
    Direction: 1
    [ 2.00000 3.00000 4.00000 5.00000 ]
 
-Active elements:
-   Num.: 3
-   Flat IDs: 0 1 2
-Influence elements:
-   Num.: 3
-   Flat IDs: 0 1 2
 
 ========================================================================
 
@@ -293,12 +203,6 @@ Knot coordinates:
    Direction: 2
    [ 6.00000 7.00000 8.00000 9.00000 10.0000 11.0000 ]
 
-Active elements:
-   Num.: 15
-   Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14
-Influence elements:
-   Num.: 15
-   Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14
 
 ========================================================================
 

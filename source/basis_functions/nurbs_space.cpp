@@ -223,7 +223,7 @@ last() const -> ElementIterator
     Assert(false,ExcNotImplemented());
     //TODO: the index of the last element in the grid is not correct, because we need to use the
     // index of the last ACTIVE element in the grid
-    return ElementIterator(this->create_element(this->get_grid()->get_num_active_elems() - 1),CartesianGrid<dim_>::elems_property_none);
+    return ElementIterator(this->create_element(this->get_grid()->get_num_all_elems() - 1),CartesianGrid<dim_>::elems_property_none);
 }
 
 

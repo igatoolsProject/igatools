@@ -292,7 +292,7 @@ void
 CartesianGrid<dim_>::
 add_elements_property(const std::string &property)
 {
-	properties_elements_id_.add_property(property);
+    properties_elements_id_.add_property(property);
 }
 
 
@@ -548,22 +548,6 @@ get_num_elements_same_property(const std::string &property) const
 }
 
 
-template<int dim_>
-Size
-CartesianGrid<dim_>::
-get_num_active_elems() const
-{
-    return this->get_num_elements_same_property("active");
-}
-
-template<int dim_>
-Size
-CartesianGrid<dim_>::
-get_num_influence_elems() const
-{
-    return this->get_num_elements_same_property("influence");
-}
-
 
 template<int dim_>
 Size
@@ -578,23 +562,12 @@ std::set<Index>
 CartesianGrid<dim_>::
 get_elements_id() const
 {
-	const auto n_elems = this->get_num_all_elems();
-	std::set<Index> elems_id;
-	for (int id = 0 ; id < n_elems ; ++id)
-		elems_id.emplace(id);
+    const auto n_elems = this->get_num_all_elems();
+    std::set<Index> elems_id;
+    for (int id = 0 ; id < n_elems ; ++id)
+        elems_id.emplace(id);
 
-	return elems_id;
-}
-
-
-
-// TODO (pauletti, Jul 30, 2014): this should not be necesary to specialize
-template<>
-Size
-CartesianGrid<0>::
-get_num_active_elems() const
-{
-    return 1;
+    return elems_id;
 }
 
 
@@ -769,8 +742,8 @@ print_info(LogStream &out) const
     //-------------------------------------------------------------
     for (const auto &elems_same_property : properties_elements_id_)
     {
-    	const auto &property_name = elems_same_property.first;
-    	const auto &elems_id = elems_same_property.second;
+        const auto &property_name = elems_same_property.first;
+        const auto &elems_id = elems_same_property.second;
         out.begin_item("Elements with property \"" + property_name + "\":");
         out << "Num.: " << elems_id.size() << endl;
         if (elems_id.size() > 0)
@@ -984,14 +957,6 @@ test_if_element_has_property(const Index elem_flat_id, const std::string &proper
     }
 }
 
-
-template <int dim_>
-bool
-CartesianGrid<dim_>::
-is_element_active(const Index elem_flat_id) const
-{
-    return this->test_if_element_has_property(elem_flat_id,"active");
-}
 
 IGA_NAMESPACE_CLOSE
 

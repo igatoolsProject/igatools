@@ -36,7 +36,7 @@ test()
     auto grid = CartesianGrid<dim>::create(n_knots);
     Writer<dim> writer(grid);
 
-    const Size n_iga_elements = grid->get_num_active_elems();
+    const Size n_iga_elements = grid->get_num_all_elems();
     const Size n_points_iga_element = writer.get_num_points_per_iga_element();
 
     using Vec = vector<Real>;
