@@ -668,6 +668,9 @@ public:
 
     /**
      * @name Comparison operators
+     *
+     * @warning To be comparable, two SpaceElement objects must be defined on the same space,
+     * otherwise an assertion will be raised (in Debug mode).
      */
     ///@{
     bool operator==(const self_t &a) const
