@@ -941,6 +941,17 @@ set_element_property_status(const std::string &property,
 
 }
 
+
+template <int dim_>
+void
+CartesianGrid<dim_>::
+set_all_elements_property_status(const std::string &property,
+                                 const bool status)
+{
+    for (const auto &elem : (*this))
+        this->set_element_property_status(property,elem.get_flat_index(),status);
+}
+
 template <int dim_>
 bool
 CartesianGrid<dim_>::

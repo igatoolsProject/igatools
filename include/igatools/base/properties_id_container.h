@@ -33,7 +33,7 @@ IGA_NAMESPACE_OPEN
 class PropertiesIdContainer
 {
 public:
-	static const std::string property_none;
+    static const std::string property_none;
 
 
     bool test_id_for_property(const Index id, const std::string &property) const;
@@ -60,8 +60,15 @@ public:
      * Sets the <tt>status</tt> of the given <tt>property</tt> for the given <tt>id</tt>.
      */
     void set_id_property_status(const std::string &property,
-                                     const Index id,
-                                     const bool status);
+                                const Index id,
+                                const bool status);
+
+    /**
+     * Sets the <tt>status</tt> of the given <tt>property</tt> for the given <tt>ids</tt>.
+     */
+    void set_ids_property_status(const std::string &property,
+                                 const std::set<Index> ids,
+                                 const bool status);
 
 private:
     using ContainerType = std::map<std::string,std::set<Index>>;
@@ -76,7 +83,7 @@ public:
     const_iterator end() const;
 
 private:
-	std::map<std::string,std::set<Index>> properties_id_;
+    std::map<std::string,std::set<Index>> properties_id_;
 };
 
 

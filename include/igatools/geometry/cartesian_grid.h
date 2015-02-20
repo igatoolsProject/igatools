@@ -631,6 +631,14 @@ public:
     void set_element_property_status(const std::string &property,
                                      const Index elem_flat_id,
                                      const bool status);
+
+
+    /**
+     * Sets the @p status of the given @p property for the entire set of elements in the grid.
+     */
+    void set_all_elements_property_status(const std::string &property,
+                                          const bool status);
+
     ///@}
 
 

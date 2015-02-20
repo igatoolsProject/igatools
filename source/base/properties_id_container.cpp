@@ -98,11 +98,23 @@ set_id_property_status(const std::string &property,
     }
 }
 
+
+void
+PropertiesIdContainer::
+set_ids_property_status(const std::string &property,
+                        const std::set<Index> ids,
+                        const bool status)
+{
+    for (const auto id : ids)
+        set_id_property_status(property,id,status);
+}
+
+
 auto
 PropertiesIdContainer::
 begin() -> iterator
 {
-	return properties_id_.begin();
+    return properties_id_.begin();
 }
 
 
@@ -110,14 +122,14 @@ auto
 PropertiesIdContainer::
 end() -> iterator
 {
-	return properties_id_.end();
+    return properties_id_.end();
 }
 
 auto
 PropertiesIdContainer::
 begin() const -> const_iterator
 {
-	return properties_id_.begin();
+    return properties_id_.begin();
 }
 
 
@@ -125,7 +137,7 @@ auto
 PropertiesIdContainer::
 end() const -> const_iterator
 {
-	return properties_id_.end();
+    return properties_id_.end();
 }
 
 IGA_NAMESPACE_CLOSE

@@ -1,15 +1,3 @@
-Number of intervals per direction: [ ]
-Knot coordinates:
-   Size: [ ]  Weights: []
-
-0
-Number of intervals per direction: [ ]
-Knot coordinates:
-   Size: [ ]  Weights: []
-
-Elements with property "active":
-   Num.: 0
-
 Number of intervals per direction: [ 3 ]
 Knot coordinates:
    Size: [ 4 ]  Weights: [4]
