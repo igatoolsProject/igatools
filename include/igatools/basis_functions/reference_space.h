@@ -126,10 +126,8 @@ public:
     /**
      * Create and element (defined on this space) with a given flat_index
      */
-    virtual std::shared_ptr<ReferenceElement<dim_,range_,rank_> > create_element(const Index flat_index) const = 0;
-
-
-
+    virtual std::shared_ptr<ElementAccessor>
+    create_element(const Index flat_index) const = 0;
 
     template <int k>
     using InterGridMap = typename GridType::template InterGridMap<k>;
@@ -143,13 +141,11 @@ public:
     template <int k>
     using SubSpace = PhysicalSpace<k,range,rank, dim-k, Transformation::h_grad>;
 
-
-
     virtual bool is_bspline() const = 0;
 
     virtual vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const = 0;
-    virtual vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const = 0;
 
+    virtual vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const = 0;
 
     /**
      * Returns the degree of the BSpline space for each component and for each coordinate direction.
@@ -275,9 +271,7 @@ public:
     virtual ElementIterator end() const = 0;
     ///@}
 
-
     virtual void print_info(LogStream &out) const = 0;
-
 
     template<int k>
     std::shared_ptr< SubRefSpace<k> >
@@ -289,30 +283,20 @@ public:
     std::shared_ptr<SubSpace<k> >
     get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
                   std::shared_ptr<CartesianGrid<k>> sub_grid,
-                  std::shared_ptr<typename GridType::template InterGridMap<k>> elem_map) const
+                  std::shared_ptr<InterGridMap<k>> elem_map) const
     {
         Assert(false,ExcNotImplemented());
         return nullptr;
     }
 
-
     virtual std::shared_ptr<ElementHandler> create_elem_handler() const = 0;
-
-
 
 protected:
     std::shared_ptr<SpaceData > space_data_;
 
-
 public:
     std::shared_ptr<SpaceData> get_space_data() const;
 };
-
-
-
-
-
-
 
 IGA_NAMESPACE_CLOSE
 
