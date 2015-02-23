@@ -59,6 +59,7 @@ get_ref_sub_space(const int sub_elem_id,
                   std::shared_ptr<CartesianGrid<k>> sub_grid) const
 -> std::shared_ptr< SubRefSpace<k> >
 {
+	//TODO (pauletti, Feb 22, 2015): this is bad coding, the main purpose of virtual function is to avoid this
     std::shared_ptr< SubRefSpace<k> > sub_ref_space;
     if (this->is_bspline())
     {
