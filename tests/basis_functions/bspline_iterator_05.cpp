@@ -52,7 +52,11 @@ void sub_elem_values(const int n_knots, const int deg)
     auto elem = space->begin();
     auto end =  space->end();
     cache->init_element_cache(elem);
-    cache->init_face_cache(elem);
+
+    // TODO (pauletti, Feb 23, 2015): this test was tainted, k is not
+    // necesary a face, fix the library so original function works
+    //cache->init_face_cache(elem);
+    cache->template init_cache<k>(elem);
     for (; elem != end; ++elem)
     {
         if (elem->is_boundary())
@@ -64,7 +68,8 @@ void sub_elem_values(const int n_knots, const int deg)
             {
                 if (elem->is_boundary(s_id))
                 {
-                    cache->fill_face_cache(elem, s_id);
+                    //cache->fill_face_cache(elem, s_id);
+                    cache->template fill_cache<k>(elem, s_id);
                     out << "Sub Element: " << s_id << endl;
                     out.begin_item("Values basis functions:");
                     auto values = elem->template get_values<0,k>(s_id);

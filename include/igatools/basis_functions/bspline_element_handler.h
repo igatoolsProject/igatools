@@ -140,9 +140,12 @@ public:
         const vector<int> elements_flat_id) override final;
     ///@}
 
-    virtual void init_cache(RefElementAccessor &elem, const topology_variant &topology) override final;
+    virtual void init_cache(RefElementAccessor &elem,
+                            const topology_variant &topology) override final;
 
-    virtual void fill_cache(RefElementAccessor &elem, const topology_variant &topology, const int j) override final;
+    virtual void fill_cache(RefElementAccessor &elem,
+                            const topology_variant &topology,
+                            const int j) override final;
 
     virtual void print_info(LogStream &out) const override final ;
 
@@ -194,9 +197,11 @@ private:
         using BasisValues1dTable = ComponentContainer<special_array<std::map<Index,BasisValues1d>,dim>>;
 
         /**
-         * Values (and derivatives) of 1D basis precomputed in the initalized interval of a given direction.
+         * Values (and derivatives) of 1D basis precomputed in the initalized
+         * interval of a given direction.
          *
-         * @note The map's key is the interval id. In Debug mode, it will be raised an assertion if
+         * @note The map's key is the interval id. In Debug mode, it will be
+         * raised an assertion if
          * the requested values are not initialized for the interval.
          *
          */
@@ -220,10 +225,10 @@ private:
 
             for (auto c : result.get_active_components_id())
             {
-                const auto &basis_values_1d_comp = basis_values_1d_table_[c];
+                const auto &value = basis_values_1d_table_[c];
 
                 for (const int i : Topology::active_directions)
-                    result[c][i] = BasisValues1dConstView(basis_values_1d_comp[i].at(id[i]));
+                    result[c][i] = BasisValues1dConstView(value[i].at(id[i]));
 
                 result[c].update_size();
             }
@@ -304,11 +309,13 @@ private:
         void operator()(const T &quad);
 
         /**
-         * Computes the values (i.e. the 0-th order derivative) of the non-zero B-spline basis
+         * Computes the values (i.e. the 0-th order derivative) of the non-zero
+         *  B-spline basis
          * functions over the current element,
          *   at the evaluation points pre-allocated in the cache.
          *
-         * \warning If the output result @p D_phi is not correctly pre-allocated,
+         * \warning If the output result @p D_phi is not correctly
+         * pre-allocated,
          * an exception will be raised.
          */
         void evaluate_bspline_values(
