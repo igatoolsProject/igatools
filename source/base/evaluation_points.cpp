@@ -237,9 +237,9 @@ reset_points_coordinates_and_weights(
         for (int pt_flat_id = 0 ; pt_flat_id < n_pts ; ++pt_flat_id)
         {
             const auto pt_tensor_id =
-                    MultiArrayUtils<dim_>::flat_to_tensor_index(pt_flat_id,pt_w_size);
+                MultiArrayUtils<dim_>::flat_to_tensor_index(pt_flat_id,pt_w_size);
             if (std::find(coords_id_begin, coords_id_end, pt_tensor_id)
-            == coords_id_end)
+                == coords_id_end)
             {
                 // coordinates id not found --> the points have not a
                 // tensor-product structure
@@ -436,7 +436,7 @@ collapse_to_sub_element(const int sub_elem_id) const -> EvaluationPoints<dim_>
     if (this->have_weights_tensor_product_struct())
     {
         DirectionArray new_weights_1d;
-       // if (k > 0)
+        // if (k > 0)
         {
             DirectionArray new_coords_1d;
             TensorSize<dim_> n_coords;
@@ -471,7 +471,7 @@ collapse_to_sub_element(const int sub_elem_id) const -> EvaluationPoints<dim_>
             for (int pt_f_id = 0 ; pt_f_id < n_pts ; ++pt_f_id)
             {
                 const auto pt_t_id =
-                        MultiArrayUtils<dim_>::flat_to_tensor_index(pt_f_id,pt_size_w);
+                    MultiArrayUtils<dim_>::flat_to_tensor_index(pt_f_id,pt_size_w);
 
                 auto &point = new_points[pt_f_id];
                 for (int dir = 0 ; dir < dim_ ; ++dir)

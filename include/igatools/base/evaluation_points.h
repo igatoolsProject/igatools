@@ -83,7 +83,7 @@ template <int dim_>
 class EvaluationPoints
 {
 private:
-	static const int dirs = (dim_>0? dim_ : 1);
+    static const int dirs = (dim_>0? dim_ : 1);
 public:
     /**
      * @brief Alias for the point-type that is returned by the function EvaluationPoints::get_point()

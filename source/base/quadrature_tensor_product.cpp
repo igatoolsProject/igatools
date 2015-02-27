@@ -66,7 +66,7 @@ QuadratureTensorProduct(
         if (eps_scaling > 0)
             for (int ip = 0; ip < n_pts; ++ip)
                 coords[i][ip] = 0.5 +
-                (coords[i][ip] / 0.5 - 1.0) * (0.5 - eps_scaling);
+                                (coords[i][ip] / 0.5 - 1.0) * (0.5 - eps_scaling);
     }
 
 
@@ -77,7 +77,7 @@ QuadratureTensorProduct(
     for (int pt_flat_id = 0 ; pt_flat_id < n_pts_total ; ++pt_flat_id)
     {
         const auto pt_tensor_id =
-                MultiArrayUtils<dim_>::flat_to_tensor_index(pt_flat_id,n_pts_w);
+            MultiArrayUtils<dim_>::flat_to_tensor_index(pt_flat_id,n_pts_w);
 
         for (int i = 0 ; i < dim_ ; ++i)
             points[pt_flat_id][i] = coords[i][pt_tensor_id[i]];
@@ -90,12 +90,12 @@ QuadratureTensorProduct(
 template<int dim_>
 QuadratureTensorProduct<dim_>::
 QuadratureTensorProduct(
-        const PointVector &points,
-        const DirectionArray &weights_1d,
-        const BBox<dim_> &bounding_box)
-        :
-        EvaluationPoints<dim_>(points,weights_1d,bounding_box)
-        {}
+    const PointVector &points,
+    const DirectionArray &weights_1d,
+    const BBox<dim_> &bounding_box)
+    :
+    EvaluationPoints<dim_>(points,weights_1d,bounding_box)
+{}
 
 IGA_NAMESPACE_CLOSE
 

@@ -47,7 +47,7 @@ class QuadratureTensorProduct
     : public EvaluationPoints<dim_>
 {
 private:
-	using parent_t = EvaluationPoints<dim_>;
+    using parent_t = EvaluationPoints<dim_>;
     using self_t = QuadratureTensorProduct<dim_>;
 public:
 

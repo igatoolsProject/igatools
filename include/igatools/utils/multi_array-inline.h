@@ -70,7 +70,7 @@ auto
 MultiArray<STLContainer,rank>::
 operator[](const Index i) -> reference
 {
-    Assert((0<=i) && (i<this->flat_size()),
+    Assert((0<=i)  &&(i<this->flat_size()),
     ExcIndexRange(i,0,this->flat_size()));
     return this->data_[i];
 }
