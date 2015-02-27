@@ -78,7 +78,7 @@ template <int dim_>
 class EvaluationPoints
 {
 public:
-
+	static const int dirs = (dim_>0? dim_ : 1);
     /**
      * @brief Alias for the point-type that is returned by the function EvaluationPoints::get_point()
      */
@@ -165,7 +165,7 @@ public:
      */
     EvaluationPoints(
         const ValueVector<Point> &points,
-        const special_array<vector<Real>,dim_> &weights_1d,
+        const special_array<vector<Real>, dirs> &weights_1d,
         const BBox<dim_> &bounding_box);
 
     /**
@@ -232,7 +232,7 @@ public:
     Real get_weight(const int pt_id) const;
 
 
-    const special_array<vector<Real>,dim_> &get_weights_1d() const;
+    const special_array<vector<Real>, dirs> &get_weights_1d() const;
 
     /**
      * Returns the bounding box in which the points are located.
@@ -268,6 +268,8 @@ public:
 
 
 
+
+    //TODO (pauletti, Feb 27, 2015): this function should not be here but in tensor quad
     /**
      * Returns a dim dimensional quadrature obtained by using
      * a single point on the active face direction.
@@ -298,7 +300,7 @@ protected:
      */
     void reset_points_coordinates_and_weights(
         const ValueVector<Point> &pts,
-        const special_array<vector<Real>,dim_> &weights_1d);
+        const special_array<vector<Real>,dirs> &weights_1d);
 
 
 
@@ -307,13 +309,16 @@ protected:
      *
      * It does not contain multiple values.
      */
-    special_array< vector<Real>, dim_> coordinates_;
+    //TODO (pauletti, Feb 26, 2015): this is incorrect as in dimension 0
+    // the size should be one
+
+    special_array< vector<Real>, dirs> coordinates_;
 
 
     /**
      * Weights associated to the points coordinates. By default are set to be equal to one.
      */
-    special_array<vector<Real>,dim_> weights_1d_;
+    special_array<vector<Real>, dirs> weights_1d_;
 
 
     /**

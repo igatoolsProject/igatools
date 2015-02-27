@@ -129,7 +129,7 @@ int main()
 {
     out.depth_console(10);
     sub_elem_values<2,1>(2,1);
-
+    sub_elem_values<1,0>(2,1);
     return 0;
 }
 

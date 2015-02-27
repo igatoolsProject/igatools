@@ -271,11 +271,9 @@ public:
     virtual ElementIterator end() const = 0;
     ///@}
 
-    virtual void print_info(LogStream &out) const = 0;
-
     template<int k>
     std::shared_ptr< SubRefSpace<k> >
-    get_ref_sub_space(const int sub_elem_id,
+    get_ref_sub_space(const int s_id,
                       InterSpaceMap<k> &dof_map,
                       std::shared_ptr<CartesianGrid<k>> sub_grid = nullptr) const;
 
@@ -283,18 +281,18 @@ public:
     std::shared_ptr<SubSpace<k> >
     get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
                   std::shared_ptr<CartesianGrid<k>> sub_grid,
-                  std::shared_ptr<InterGridMap<k>> elem_map) const
-    {
-        Assert(false,ExcNotImplemented());
-        return nullptr;
-    }
+                  std::shared_ptr<InterGridMap<k>> elem_map) const;
 
-    virtual std::shared_ptr<ElementHandler> create_elem_handler() const = 0;
+    virtual void print_info(LogStream &out) const = 0;
+
+virtual std::shared_ptr<ElementHandler> create_elem_handler() const = 0;
 
 protected:
     std::shared_ptr<SpaceData > space_data_;
 
+
 public:
+    //TODO (pauletti, Feb 26, 2015): the use of this function may be a design problem
     std::shared_ptr<SpaceData> get_space_data() const;
 };
 

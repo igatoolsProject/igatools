@@ -59,7 +59,7 @@ EvaluationPoints(const ValueVector<Point> &pts)
 {
     const int n_pts = pts.size();
 
-    special_array<vector<Real>,dim_> weights_1d;
+    special_array<vector<Real>,dirs> weights_1d;
     for (auto &wghts : weights_1d)
         wghts.assign(n_pts,1.0);
 
@@ -70,7 +70,7 @@ template<int dim_>
 EvaluationPoints<dim_>::
 EvaluationPoints(
     const ValueVector<Point> &pts,
-    const special_array<vector<Real>,dim_> &weights_1d,
+    const special_array<vector<Real>,dirs> &weights_1d,
     const BBox<dim_> &bounding_box)
     :
     EvaluationPoints(bounding_box)
@@ -152,7 +152,7 @@ void
 EvaluationPoints<dim_>::
 reset_points_coordinates_and_weights(
     const ValueVector<Point> &pts,
-    const special_array<vector<Real>,dim_> &weights_1d)
+    const special_array<vector<Real>, dirs> &weights_1d)
 {
     const int n_pts = pts.size();
 //    Assert(n_pts > 0 , ExcEmptyObject());
@@ -346,7 +346,7 @@ get_weights() const
 template<int dim_>
 auto
 EvaluationPoints<dim_>::
-get_weights_1d() const -> const special_array<vector<Real>,dim_> &
+get_weights_1d() const -> const special_array<vector<Real>,dirs> &
 {
     return weights_1d_;
 }
@@ -430,10 +430,10 @@ collapse_to_sub_element(const int sub_elem_id) const -> EvaluationPoints<dim_>
     const auto &old_weights_1d = this->get_weights_1d();
     if (this->have_weights_tensor_product_struct())
     {
-        special_array<vector<Real>,dim_> new_weights_1d;
-        if (k > 0)
+        special_array<vector<Real>, dirs> new_weights_1d;
+       // if (k > 0)
         {
-            special_array<vector<Real>,dim_> new_coords_1d;
+            special_array<vector<Real>, dirs> new_coords_1d;
             TensorSize<dim_> n_coords;
 
             const int n_dir = k_elem.constant_directions.size();
@@ -474,22 +474,23 @@ collapse_to_sub_element(const int sub_elem_id) const -> EvaluationPoints<dim_>
 
             return EvalPts(new_points,new_weights_1d,new_bounding_box);
         } // end if (k > 0)
-        else
-        {
-            ValueVector<Points<dim_>> new_points;
-
-            const auto val = k_elem.constant_values[0];
-
-            new_bounding_box[0][0] = val;
-            new_bounding_box[0][1] = val;
-
-            new_weights_1d[0].assign(1,1.0);
-
-            new_points.resize(1);
-            new_points[0][0] = val;
-
-            return EvalPts(new_points,new_weights_1d,new_bounding_box);
-        }
+        //TODO (pauletti, Feb 26, 2015): this is inapropiate, same code should work for any k
+//        else
+//        {
+//            ValueVector<Points<dim_>> new_points;
+//
+//            const auto val = k_elem.constant_values[0];
+//
+//            new_bounding_box[0][0] = val;
+//            new_bounding_box[0][1] = val;
+//
+//            new_weights_1d[0].assign(1,1.0);
+//
+//            new_points.resize(1);
+//            new_points[0][0] = val;
+//
+//            return EvalPts(new_points,new_weights_1d,new_bounding_box);
+//        }
 
     }
     else
@@ -516,7 +517,7 @@ extend_sub_elem_quad(const EvaluationPoints<k> &eval_pts,
     BBox<dim> new_bounding_box;
 
     const auto &old_weights_1d = eval_pts.get_weights_1d();
-    special_array<vector<Real>,dim> new_weights_1d;
+    special_array<vector<Real>,EvaluationPoints<dim>::dirs> new_weights_1d;
 
     const int n_dir = k_elem.constant_directions.size();
     for (int j = 0 ; j < n_dir ; ++j)
@@ -571,7 +572,7 @@ extend_sub_elem_quad(const EvaluationPoints<k> &eval_pts,
     return EvaluationPoints<dim>(new_points,new_weights_1d,new_bounding_box);
 }
 
-
+#if 0
 template<>
 EvaluationPoints<1>
 extend_sub_elem_quad(const EvaluationPoints<0> &eval_pts,
@@ -603,7 +604,7 @@ extend_sub_elem_quad(const EvaluationPoints<0> &eval_pts,
 
     return EvaluationPoints<1>(new_points,new_weights_1d,new_bounding_box);
 }
-
+#endif
 
 IGA_NAMESPACE_CLOSE
 

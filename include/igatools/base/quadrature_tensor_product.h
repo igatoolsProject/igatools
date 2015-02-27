@@ -47,6 +47,7 @@ class QuadratureTensorProduct
     : public EvaluationPoints<dim_>
 {
 private:
+	using parent_t = EvaluationPoints<dim_>;
     using self_t = QuadratureTensorProduct<dim_>;
 public:
 
@@ -85,7 +86,7 @@ public:
      */
     explicit QuadratureTensorProduct(
         const ValueVector<Point> &points,
-        const special_array<vector<Real>,dim_> &weights_1d,
+        const special_array<vector<Real>,parent_t::dirs> &weights_1d,
         const BBox<dim_> &bounding_box);
 
 

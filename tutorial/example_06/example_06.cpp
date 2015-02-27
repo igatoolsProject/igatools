@@ -72,7 +72,7 @@ private:
 private:
     using RefSpace = ReferenceSpace<dim>;
     using Space = BSplineSpace<dim>;
-    shared_ptr<RefSpace> space;
+    shared_ptr<Space> space;
 
     const QuadratureTensorProduct<dim>   elem_quad;
     const QuadratureTensorProduct<dim-1> face_quad;

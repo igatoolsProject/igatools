@@ -46,10 +46,6 @@ ReferenceSpace(const std::shared_ptr<SpaceData> space_data)
 
 
 
-
-
-
-
 template<int dim, int range, int rank>
 template<int k>
 auto
@@ -59,8 +55,7 @@ get_ref_sub_space(const int sub_elem_id,
                   std::shared_ptr<CartesianGrid<k>> sub_grid) const
 -> std::shared_ptr< SubRefSpace<k> >
 {
-	//TODO (pauletti, Feb 22, 2015): this is bad coding, the main purpose of virtual function is to avoid this
-    std::shared_ptr< SubRefSpace<k> > sub_ref_space;
+	std::shared_ptr< SubRefSpace<k> > sub_ref_space;
     if (this->is_bspline())
     {
         const auto bsp_space = dynamic_cast<const BSplineSpace<dim,range,rank> *>(this);
@@ -80,9 +75,44 @@ get_ref_sub_space(const int sub_elem_id,
 #endif
     }
 
-    Assert(sub_ref_space != nullptr,ExcNullPtr());
+    Assert(sub_ref_space != nullptr, ExcNullPtr());
     return sub_ref_space;
 }
+
+
+
+template<int dim, int range, int rank>
+template<int k>
+auto
+ReferenceSpace<dim, range, rank>::
+get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
+		std::shared_ptr<CartesianGrid<k>> sub_grid,
+		std::shared_ptr<InterGridMap<k>> elem_map) const
+		-> std::shared_ptr<SubSpace<k> >
+{
+	std::shared_ptr<SubSpace<k> > sub_space;
+    if (this->is_bspline())
+    {
+        const auto bsp_space =
+        		dynamic_cast<const BSplineSpace<dim,range,rank> *>(this);
+        Assert(bsp_space != nullptr, ExcNullPtr());
+        sub_space = bsp_space->get_sub_space(s_id,dof_map,sub_grid, elem_map);
+    }
+    else
+    {
+#ifdef NURBS
+
+        Assert(false,ExcNotImplemented());
+#else
+        Assert(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
+        AssertThrow(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
+#endif
+    }
+
+    Assert(sub_space != nullptr, ExcNullPtr());
+    return sub_space;
+}
+
 
 
 template<int dim, int range, int rank>
@@ -93,11 +123,6 @@ get_space_data() const -> std::shared_ptr<SpaceData>
     Assert(space_data_ != nullptr,ExcNullPtr());
     return space_data_;
 }
-
-
-
-
-
 
 IGA_NAMESPACE_CLOSE
 

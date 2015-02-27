@@ -285,7 +285,7 @@ resize(const FunctionFlags &flags_handler,
 {
     flags_handler_ = flags_handler;
 
-    Assert(total_n_points > 0, ExcLowerRange(total_n_points,1));
+    Assert(total_n_points >= 0, ExcLowerRange(total_n_points,1));
     Assert(total_n_basis > 0, ExcLowerRange(total_n_basis,1));
 
     if (flags_handler_.fill_values())

@@ -61,8 +61,8 @@ QuadratureTensorProduct(
     Assert(eps_scaling >= Real(0.0) && eps_scaling < Real(0.5),
            ExcMessage("The scaling factor must be >= 0.0 and < 0.5"));
 
-    array<vector<Real>,dim_> coords;
-    special_array<vector<Real>,dim_> weights_1d;
+    array<vector<Real>,parent_t::dirs> coords;
+    special_array<vector<Real>,parent_t::dirs> weights_1d;
     for (int i = 0; i < dim_; ++i)
     {
         const auto n_pts = num_points[i];
@@ -96,7 +96,7 @@ template<int dim_>
 QuadratureTensorProduct<dim_>::
 QuadratureTensorProduct(
     const ValueVector<Point> &points,
-    const special_array<vector<Real>,dim_> &weights_1d,
+    const special_array<vector<Real>,parent_t::dirs> &weights_1d,
     const BBox<dim_> &bounding_box)
     :
     EvaluationPoints<dim_>(points,weights_1d,bounding_box)
