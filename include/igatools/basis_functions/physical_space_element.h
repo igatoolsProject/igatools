@@ -34,7 +34,10 @@ IGA_NAMESPACE_OPEN
 
 template <class Accessor> class CartesianGridIterator;
 
-
+/**
+ *
+ * @ingroup elements
+ */
 template<class PhysSpace>
 class PhysicalSpaceElement
     :

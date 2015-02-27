@@ -44,7 +44,7 @@ template <class Accessor> class CartesianGridIterator;
  * @brief NURBS element
  *
  * See module on \ref accessors_iterators for a general overview.
- * @ingroup accessors
+ * @ingroup elements
  */
 template <int dim, int range, int rank>
 class NURBSElement :

@@ -35,6 +35,10 @@ int physical_range(const int ref_range, const int space_dim, const Transformatio
 //Forward declaration to avoid including header file.
 template <Transformation, int, int> class PushForwardElement;
 
+/**
+ *
+ * @ingroup containers
+ */
 template<Transformation type_, int dim_, int codim_ = 0>
 class PushForward : public Mapping<dim_, codim_>
 {

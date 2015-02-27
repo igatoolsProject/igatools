@@ -386,15 +386,6 @@ SpacesConnection::
 add_dofs_connectivity(const DofsConnectivity &dofs_connectivity)
 {
     extra_dofs_connectivity_.merge(dofs_connectivity);
-#if 0
-    for (const auto &dofs_connectivity_map_entry : dofs_connectivity)
-    {
-        const auto row_dof = dofs_connectivity_map_entry.first;
-        const auto &col_dofs = dofs_connectivity_map_entry.second;
-
-        extra_dofs_connectivity_[row_dof].insert(col_dofs.begin(),col_dofs.end());
-    }
-#endif
 }
 
 
@@ -403,15 +394,6 @@ SpaceManager::
 add_dofs_connectivity(const DofsConnectivity &dofs_connectivity)
 {
     extra_dofs_connectivity_.merge(dofs_connectivity);
-#if 0
-    for (const auto &dofs_connectivity_map_entry : dofs_connectivity)
-    {
-        const auto row_dof = dofs_connectivity_map_entry.first;
-        const auto &col_dofs = dofs_connectivity_map_entry.second;
-
-        extra_dofs_connectivity_[row_dof].insert(col_dofs.begin(),col_dofs.end());
-    }
-#endif
 }
 
 

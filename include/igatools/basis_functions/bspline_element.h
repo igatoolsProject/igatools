@@ -41,7 +41,7 @@ template <class Accessor> class CartesianGridIterator;
 
 /**
  * See module on \ref accessors_iterators for a general overview.
- * @ingroup accessors
+ * @ingroup elements
  */
 template <int dim, int range, int rank>
 class BSplineElement :

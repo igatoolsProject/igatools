@@ -29,10 +29,6 @@
 
 IGA_NAMESPACE_OPEN
 
-/** @addtogroup linear_algebra
- *@{
- */
-
 /**
  * @brief Dense vector with real entries.
  *
@@ -41,6 +37,7 @@ IGA_NAMESPACE_OPEN
  * <a href="http://www.boost.org/doc/libs/1_55_0/libs/numeric/ublas/doc/index.htm">Boost uBlas library</a>
  * Therefore it can be used as a boost::numeric::ublas::vector<Real>.
  *
+ * @ingroup linear_algebra
  * @author M. Martinelli, 2012, 2013, 2014
  * @author S. Pauletti, 2012, 2013
  */
@@ -74,7 +71,6 @@ public:
     int size() const;
 };
 
-/**@}*/
 
 IGA_NAMESPACE_CLOSE
 

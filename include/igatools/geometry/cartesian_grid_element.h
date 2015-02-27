@@ -42,8 +42,8 @@ IGA_NAMESPACE_OPEN
  * that are obtained through a cache mechanism
  *
  *
- * See module (and the submodules) on \ref accessors_iterators for a general overview.
- * @ingroup accessors
+ * See module (and the submodules) on \ref elements for a general overview.
+ * @ingroup elements
  *
  * @author S.Pauletti, 2012, 2013, 2014
  * @author M.Martinelli, 2013, 2014

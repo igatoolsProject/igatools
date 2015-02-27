@@ -177,6 +177,7 @@ using PhysSpacePtr = std::shared_ptr<PhysicalSpace<dim,range,rank,codim,type>>;
  *   and then using SpacesConnection::add_dofs_connectivity().
  *
  * @todo: complete the documentation
+ * @ingroup spaces_manager
  * @author M. Martinelli
  * @date 10 Jun 2014
  */

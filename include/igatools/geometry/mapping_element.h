@@ -27,7 +27,10 @@
 
 IGA_NAMESPACE_OPEN
 
-
+/**
+ *
+ * @ingroup elements
+ */
 template<int dim_, int codim_ = 0>
 class MappingElement
     : public FunctionElement<dim_, 0, dim_+codim_>

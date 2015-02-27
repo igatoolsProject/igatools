@@ -48,6 +48,10 @@ template <int, int, int> class NURBSSpace;
 
 template <int,int,int> class DofDistribution;
 
+/**
+ *
+ * @ingroup containers
+ */
 template<int dim_, int range_ = 1, int rank_ = 1>
 class ReferenceSpace : public FunctionSpaceOnGrid<CartesianGrid<dim_>>
 {
@@ -285,7 +289,7 @@ public:
 
     virtual void print_info(LogStream &out) const = 0;
 
-virtual std::shared_ptr<ElementHandler> create_elem_handler() const = 0;
+    virtual std::shared_ptr<ElementHandler> create_elem_handler() const = 0;
 
 protected:
     std::shared_ptr<SpaceData > space_data_;

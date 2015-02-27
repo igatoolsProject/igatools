@@ -37,10 +37,15 @@
 IGA_NAMESPACE_OPEN
 
 template <LAPack la_pack>
+
 class Matrix;
 
 #ifdef USE_TRILINOS
 
+/**
+ *
+ * @ingroup linear_algebra
+ */
 template<TrilinosImpl trilinos_impl>
 class MatrixTrilinos
 {
@@ -130,6 +135,7 @@ protected:
  * @todo Missing documentation
  *
  *
+ * @ingroup linear_algebra
  */
 template <>
 class Matrix<LAPack::trilinos_tpetra> : public MatrixTrilinos<TrilinosImpl::tpetra>
@@ -303,6 +309,7 @@ public:
  * @todo Missing documentation
  *
  *
+ * @ingroup linear_algebra
  */
 template <>
 class Matrix<LAPack::trilinos_epetra> : public MatrixTrilinos<TrilinosImpl::epetra>

@@ -22,6 +22,8 @@
    site: http://www.igatools.org
 
    - For hands-on start check the \subpage tutorial
+
+   - For igatools general design description the @subpage design page
    
    - For the igatools license check the @subpage license
    
@@ -80,9 +82,9 @@
   - Dipartimento di Matematica "F. Casorati", Universita' di Pavia, Italy.
   - European Research Council through the FP7 Ideas Starting Grant 259229 ISOBIO
   - European Research Council through the FP7 Ideas Starting Grant 205004 GeoPDEs
-  - Hutchinson-Total under contract TOTAL DS–2753
-  - Agencia Nacional de Promocíon Cientfica y Tecnolgica, through grant PICT-2008-0622 (Argentina)
-  - FIRB “Futuro in Ricerca” RBFR08CZ0S
+  - Hutchinson-Total under contract TOTAL DS-2753
+  - Agencia Nacional de Promocion Cientfica y Tecnolgica, through grant PICT-2008-0622 (Argentina)
+  - FIRB "Futuro in Ricerca" RBFR08CZ0S
   - TERRIFIC project, European Communitys Seventh Framework Programme, Grant Agreement 284981 Call FP7-2011-NMP-ICT-FoF  
 */
 

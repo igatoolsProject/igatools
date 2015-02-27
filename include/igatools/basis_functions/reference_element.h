@@ -30,6 +30,10 @@ IGA_NAMESPACE_OPEN
 
 template <int, int, int> class ReferenceSpace;
 
+/**
+ *
+ * @ingroup elements
+ */
 template <int dim, int range, int rank>
 class ReferenceElement : public SpaceElement<ReferenceSpace<dim,range,rank>>
 {

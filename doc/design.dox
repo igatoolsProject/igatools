@@ -2,39 +2,91 @@
 
 @defgroup design Igatools general design
 @brief Rationale behind the the igatools classes design
-@{   
+@{
 
-In order to explain the design of the igatools library, it is useful to think the igatools' classes
-grouped into three concepts:
-- the @subpage containers i.e. the classes that represents <em>global data</em>. 
+Many of the classes in the igatools library can be grouped into modules. 
+These modules form around the building blocks of any isogeometric-based program. 
+
+These groups are all covered in the tutorial programs, 
+with a first overview of how they fit together given in tutorial 6. 
+The following is a guide to this classification of groups, as well as links to 
+the documentation pertaining to each of them:
+
+- the @subpage eval_pts_scheme are classes describing the location of points in the space and they
+  are used mainly as input arguments of basis function evaluations;
+
+- the @subpage infrastructure is a macro-module containing all the classes that are used to define
+  the function spaces and to perform the evaluation of the basis function. 
+  For code maintainability reasons, this module is split in 3 sub-modules. 
+  For each class in a given module, there is an associated class in each of the other two modules
+
+   - the @subpage containers i.e. the classes that represents <em>global data</em>. 
 The classes in this group have an underlying grid-like structure (intended as union of elements) 
 and usually have a big memory footprint. They are not intended to be used to perform computations.
-- the @subpage iterators_accessors  i.e. the classes that are used to iterate over the elements of the
-<em>Containers</em> from which they use some portion of their data. 
-Those classes are the one that performs the heavy computations.
-- the @subpage infrastructure i.e. the classes that are used in order to let the <em>Containers</em> and
-the <em>Iterators/Accessors</em> to work properly.
+
+   - the @subpage elements classes describe the properties of a finite element space as defined as
+  mapping of the unit cell. 
+  This includes, for example, how many and which basis function have support in the interior of element. 
+  In addition to this, element classes of course have to provide values and gradients of 
+  individual shape functions at points on the unit cell;
+
+   - the @subpage fillers i.e. the classes that performs heavy computations and fills the local cache of the elements
+
+
+<center>
+Element Containers   | Elements              | Element Fillers
+-------------------- | ----------------------|---------------------
+CartesianGrid        | CartesianGridElement  | GridElementHandler
+ReferenceSpace       | ReferenceElement      | ReferenceElementHandler
+BSplineSpace         | BSplineElement        | BSplineElementHandler 
+NURBSSpace           | NURBSElement          | NURBSElementHandler
+Mapping              | MappingElement        | not defined
+PushForward          | PushForwardElement    | not defined
+PhysicalSpace        | PhysicalSpaceElement  | PhysSpaceElementHandler
+</center>
+
+- the @subpage iterators  i.e. the classes that are used to iterate over the elements of a given
+container. 
+
+- @subpage in_out
+- @subpage linear_algebra
+- @subpage spaces_manager
+
 
 The split in the above concepts is made to have (and maintain) a clear distinction between
 <em>data</em> and <em>methods using the data</em>, with the goal of maximum encapsulation.
-
-@remark For each class in the <em>Containers</em> group is associated one (or more) class in the
-<em>Iterators/Accessors</em> iterator group. The association between a <em>Container</em> and 
-its relative <em>Iterator/Accessor</em> is shown in the next table
-<center>
-Container     | Iterator/Accessor
-------------- | -----------------
-CartesianGrid | CartesianGridElementAccessor 
-BSplineSpace  | BSplineElementAccessor 
-NURBSSpace    | NURBSElementAccessor
-Mapping       | MappingElementAccessor
-PushForward   | PushForwardElementAccessor
-PhysicalSpace | PhysicalSpaceElementAccessor
-</center>
    
 */
 
 /** @}*/ //end of group design
+
+
+/**
+@defgroup infrastructure Element/Container/Filler Infrastructure
+@ingroup design
+@{
+*/
+
+/** @}*/ //end of group infrastructure
+
+
+
+/**
+@defgroup elements Elements 
+@ingroup infrastructure
+@{
+*/
+
+/** @}*/ //end of group elements
+
+/**
+@defgroup fillers Element fillers 
+@ingroup infrastructure
+@{
+*/
+
+/** @}*/ //end of group fillers
+
 
 
 /**
@@ -49,8 +101,9 @@ One of the typical information that igatools can provide, is the values (or deri
 
 In order to attain good performance, it is better to perform computation 
 on groups of points. Moreover, sometimes the evaluation points are built in a way that
-give them special properties (a tipical case is the tensor-product structure of the points of
-many quadrature schemes) that can be exploited in the computation.
+give them special properties that can be exploited in the computation
+(a tipical case is the tensor-product structure of the points of
+many quadrature schemes).
 
 Each group of points should be represented as an instance of one of the following classes:
 <center>
@@ -95,43 +148,19 @@ that is the base class for the other different type of evaluation points contain
 
 
 /**
-@defgroup containers Containers
-@ingroup design
+@defgroup containers Elements Containers
+@ingroup infrastructure
 @{
 */
 
 /** @}*/ //end of group containers
 
-/**
-@defgroup iterators_accessors Iterators/Accessors
-@ingroup design
-@{
-Generally speaking, an iterator is an object that enables to traverse a container, while an accessor
-is an object that access information on a container.
-
-An <b>iterator</b> is an object that allows you to visit all (or a subset of) the elements contained in another object, 
-typically a <b>container</b>, without worrying about the details of a specific implementation.
-An <b>iterator</b> can be considered a specialized type of pointer that provides a point of sequential 
-access to elements of an object that contains a finite number of simpler objects, called <em>aggregate</em>.
-
-In igatools, the mechanism in which an iterator is pointing to a specific element in a <b>container</b> is
-by the use of an <b>accessor</b>.
-An <b>accessor</b> is a class associated to a container and representing a single element within the container,
-and contains the methods that are proper to the element.
-
-
-In order to clarify we can summarize as follows:
-  - the <b>container</b> is used to represent a set of elements;
-  - the <b>iterator</b> is used to handle the way in which a container is traversed;
-  - the <b>accessor</b> is used to represent the element (in a container) pointed by the iterator. 
-*/
-
-
-/** @}*/ //end of group iterators_accessors
 
 /**
 @defgroup iterators Iterators
-@ingroup iterators_accessors
+@ingroup design
+@brief Description about how traverse the elements in a container.
+
 @{
 An iterator is an object that allows you to visit all (or a subset of) the elements contained in another object, 
 typically a container, without worrying about the details of a specific implementation.
@@ -139,21 +168,54 @@ typically a container, without worrying about the details of a specific implemen
 An iterator can be considered a specialized type of pointer that provides a point of sequential 
 access to elements of an object that contains a finite number of simpler objects, called <em>aggregate</em>.
 
+
+In the igatools library, the mechanism in which an iterator is pointing to a specific element in a container 
+(i.e. one of the classes described in the \ref containers module) is by the use of 
+an <b>accessor</b>. 
+
+An accessor is one of the class defined in the \ref elements module and its type is used as template 
+argument of the iterator. In other words, we parametrize the iterator with the element pointed by 
+itself in the appropriate elements containers. In this way we can use the same iterator with different
+container/element pairs.
+
+The type of element pointed by the iterator (and the associated container type) can be retrieved
+from the following iterator's member types:
+
+Member type            | Definition                          | notes
+-----------------------|-------------------------------------|----------
+<tt>AccessorType</tt>  |The template parameter               | One of the class in the module \ref elements
+<tt>ContainerType</tt> |<tt>AccessorType::ContainerType</tt> | The container type upon which the iterator is defined 
+
 The iterator offers two basic operations:
    - Access to the element of the aggregate currently focused;
    - Updating the pointer so that it points to the next element in the sequence.
-These simple operations provide access to the elements of an aggregate in a uniform and independent 
-of the internal structure of the aggregate, which can be much more complex sequences implemented by 
-linear arrays and lists.
+
+These simple operations provide access to the elements of an aggregate in a uniform manner and 
+independently of the internal structure of the aggregate, 
+which can be much more complex sequences implemented by linear arrays and lists.
 
 
-Currently, in igatools there is only one kind of iterator: the CartesianGridIterator, that permits to
-iterate sequentially over a container of elements with an underlying tensor-product structure,
+Each class in the \ref containers module can be traversed by an iterator, and they provides the 
+following functions returning an iterator pointing to a specific element in the container:
+- <b>begin()</b> returns the iterator pointing to the first valid element in the container. 
+If this function is invoked using an <em>element property</em> as input argument, 
+it returns an iterator pointing to the first element in the container with that property.
+- <b>last()</b> returns the iterator pointing to the last valid element in the container. 
+If this function is invoked using an <em>element property</em> as input argument, 
+it returns an iterator pointing to the first element in the container with that property.
+- <b>end()</b> returns an iterator representing the situation in which the pointed element is not any longer valid 
+because is outside the container.
+
+
+Currently, in igatools there is only one kind of iterator: the CartesianGridIterator 
+(and its constant counterpart CartesianGridConstIterator), that permits to
+iterate sequentially over elements built upon a container with an underlying tensor-product structure,
 in a range in the direction that goes from its beginning towards its end.
 Its main features are:
 - it takes an accessor's type as template parameter;
-- can be incremented (using the prefix operator <tt>++</tt>) in order to point to the next element 
-in the container;
+- it can be defined with an element property (see the relative documentation in CartesianGrid);
+- it can be incremented (using the prefix operator <tt>++</tt>) in order to point to the next element 
+in the container with the same property (if a property is used when the CartesianGridIterator is built);
 - when dereferenced (using the dereferencing operator <tt>*</tt> or <tt>-></tt>), 
 it returns an accessor object or a pointer to an accessor.
 
@@ -168,7 +230,7 @@ because:
 
 /**
 @defgroup accessors Accessors
-@ingroup iterators_accessors
+@ingroup iterators
 @{
 
 The accessors are objects used to represent an element on an associated container.
@@ -197,10 +259,21 @@ element identifier withih the accessor).
 
 /** @}*/ //end of group accessors
 
+
 /**
-@defgroup infrastructure Infrastructure
+@defgroup spaces_manager Spaces Manager
 @ingroup design
 @{
 */
 
 /** @}*/ //end of group infrastructure
+
+/**
+@defgroup linear_algebra Linear Algebra
+@ingroup design
+@{
+*/
+
+/** @}*/ //end of group infrastructure
+
+
