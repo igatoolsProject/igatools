@@ -52,6 +52,8 @@ private:
 public:
 
     using typename EvaluationPoints<dim_>::Point;
+    using typename EvaluationPoints<dim_>::PointVector;
+    using typename EvaluationPoints<dim_>::DirectionArray;
 
 protected:
 
@@ -75,7 +77,8 @@ protected:
      */
     explicit QuadratureTensorProduct(
         const TensorSize<dim_> num_points,
-        void (*compute_coords_and_weight_1d)(const int n_pts_1d, vector<Real> &coords,vector<Real> &weights),
+        void (*compute_coords_and_weight_1d)
+        (const int n_pts_1d, vector<Real> &coords,vector<Real> &weights),
         const Real eps_scaling = 0.0);
 
 public:
@@ -85,8 +88,8 @@ public:
      * upon which the quadrature is referred to.
      */
     explicit QuadratureTensorProduct(
-        const ValueVector<Point> &points,
-        const special_array<vector<Real>,parent_t::dirs> &weights_1d,
+        const PointVector &points,
+        const DirectionArray &weights_1d,
         const BBox<dim_> &bounding_box);
 
 

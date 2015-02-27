@@ -29,7 +29,8 @@
 IGA_NAMESPACE_OPEN
 
 /**
- * @brief This class represents a container for an user-definable set of evaluation points.
+ * @brief This class represents a container for an user-definable set of
+ * evaluation points.
  *
  *
  * Its main constructor takes as input arguments the following parameters:
@@ -38,8 +39,10 @@ IGA_NAMESPACE_OPEN
  * - the bounding box enclosing the points
  *   (this is useful if some affine transformation are to be performed).
  *
- * The way in which this class is implemented allows to be used both for points having
- * a tensor-product structure (as for the multi-dimensional Gaussian quadrature scheme)
+ * The way in which this class is implemented allows to be used both for points
+ * having
+ * a tensor-product structure (as for the multi-dimensional Gaussian quadrature
+ * scheme)
  * or for general points over a <tt>dim</tt>-dimensional domain.
  *
  * In order to do so, the class does not store the points itself but,
@@ -74,16 +77,20 @@ IGA_NAMESPACE_OPEN
  * @author M. Martinelli
  * @date 2014, 2015
  */
+// TODO (pauletti, Feb 27, 2015): for non tensor product point makes no sense
+//                                to have a tensor product weight
 template <int dim_>
 class EvaluationPoints
 {
-public:
+private:
 	static const int dirs = (dim_>0? dim_ : 1);
+public:
     /**
      * @brief Alias for the point-type that is returned by the function EvaluationPoints::get_point()
      */
     using Point = Points<dim_>;
-
+    using PointVector = ValueVector<Point>;
+    using DirectionArray = special_array<vector<Real>, dirs>;
     /**
      * Dimensionality of the space in which the points are located
      * (equivalent to the number of the coordinates of each point).
@@ -165,7 +172,7 @@ public:
      */
     EvaluationPoints(
         const ValueVector<Point> &points,
-        const special_array<vector<Real>, dirs> &weights_1d,
+        const DirectionArray &weights_1d,
         const BBox<dim_> &bounding_box);
 
     /**
@@ -232,7 +239,7 @@ public:
     Real get_weight(const int pt_id) const;
 
 
-    const special_array<vector<Real>, dirs> &get_weights_1d() const;
+    const DirectionArray &get_weights_1d() const;
 
     /**
      * Returns the bounding box in which the points are located.
@@ -300,7 +307,7 @@ protected:
      */
     void reset_points_coordinates_and_weights(
         const ValueVector<Point> &pts,
-        const special_array<vector<Real>,dirs> &weights_1d);
+        const DirectionArray &weights_1d);
 
 
 
@@ -312,13 +319,13 @@ protected:
     //TODO (pauletti, Feb 26, 2015): this is incorrect as in dimension 0
     // the size should be one
 
-    special_array< vector<Real>, dirs> coordinates_;
+    DirectionArray coordinates_;
 
 
     /**
      * Weights associated to the points coordinates. By default are set to be equal to one.
      */
-    special_array<vector<Real>, dirs> weights_1d_;
+    DirectionArray weights_1d_;
 
 
     /**

@@ -20,19 +20,9 @@
 
 #include <igatools/base/quadrature_tensor_product.h>
 #include <igatools/base/exceptions.h>
-//#include <igatools/geometry/unit_element.h>
 #include <igatools/utils/multi_array_utils.h>
 
-
-//#include <set>
-
-using std::array;
-using std::endl;
-//using std::set;
-
 IGA_NAMESPACE_OPEN
-
-
 
 template<int dim_>
 QuadratureTensorProduct<dim_>::
@@ -42,13 +32,15 @@ QuadratureTensorProduct()
 {
     this->weights_have_tensor_product_struct_ = true;
 }
-//*/
+
+
 
 template<int dim_>
 QuadratureTensorProduct<dim_>::
 QuadratureTensorProduct(
     const TensorSize<dim_> num_points,
-    void (*compute_coords_and_weight_1d_in)(const int n_pts_id, vector<Real> &coords,vector<Real> &weights),
+    void (*compute_coords_and_weight_1d_in)
+    (const int n_pts_id, vector<Real> &coords,vector<Real> &weights),
     const Real eps_scaling)
     :
     EvaluationPoints<dim_>(),
@@ -61,8 +53,8 @@ QuadratureTensorProduct(
     Assert(eps_scaling >= Real(0.0) && eps_scaling < Real(0.5),
            ExcMessage("The scaling factor must be >= 0.0 and < 0.5"));
 
-    array<vector<Real>,parent_t::dirs> coords;
-    special_array<vector<Real>,parent_t::dirs> weights_1d;
+    DirectionArray coords;
+    DirectionArray weights_1d;
     for (int i = 0; i < dim_; ++i)
     {
         const auto n_pts = num_points[i];
@@ -73,7 +65,8 @@ QuadratureTensorProduct(
 
         if (eps_scaling > 0)
             for (int ip = 0; ip < n_pts; ++ip)
-                coords[i][ip] = 0.5 + (coords[i][ip] / 0.5 - 1.0) * (0.5 - eps_scaling) ;
+                coords[i][ip] = 0.5 +
+                (coords[i][ip] / 0.5 - 1.0) * (0.5 - eps_scaling);
     }
 
 
@@ -83,7 +76,8 @@ QuadratureTensorProduct(
     const auto n_pts_w = MultiArrayUtils<dim_>::compute_weight(num_points);
     for (int pt_flat_id = 0 ; pt_flat_id < n_pts_total ; ++pt_flat_id)
     {
-        const auto pt_tensor_id = MultiArrayUtils<dim_>::flat_to_tensor_index(pt_flat_id,n_pts_w);
+        const auto pt_tensor_id =
+                MultiArrayUtils<dim_>::flat_to_tensor_index(pt_flat_id,n_pts_w);
 
         for (int i = 0 ; i < dim_ ; ++i)
             points[pt_flat_id][i] = coords[i][pt_tensor_id[i]];
@@ -92,18 +86,16 @@ QuadratureTensorProduct(
 }
 
 
+
 template<int dim_>
 QuadratureTensorProduct<dim_>::
 QuadratureTensorProduct(
-    const ValueVector<Point> &points,
-    const special_array<vector<Real>,parent_t::dirs> &weights_1d,
-    const BBox<dim_> &bounding_box)
-    :
-    EvaluationPoints<dim_>(points,weights_1d,bounding_box)
-{}
-
-
-
+        const PointVector &points,
+        const DirectionArray &weights_1d,
+        const BBox<dim_> &bounding_box)
+        :
+        EvaluationPoints<dim_>(points,weights_1d,bounding_box)
+        {}
 
 IGA_NAMESPACE_CLOSE
 
