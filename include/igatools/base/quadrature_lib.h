@@ -109,7 +109,7 @@ public:
 } ;
 
 
-
+#if 0
 class QuadDimZero :
     public QuadratureTensorProduct<0>
 {
@@ -162,6 +162,7 @@ public:
     using QuadDimZero::QuadDimZero;
 };
 
+#endif
 #if 0
 template< >
 class QGauss<0> :

@@ -22,8 +22,8 @@
 #define EVALUATION_POINTS_H_
 
 #include <igatools/base/config.h>
-#include <igatools/utils/array.h>
-#include <igatools/base/tensor.h>
+#include <igatools/utils/cartesian_product_array.h>
+#include <igatools/utils/tensor_product_array.h>
 #include <igatools/utils/value_vector.h>
 
 IGA_NAMESPACE_OPEN
@@ -74,28 +74,100 @@ IGA_NAMESPACE_OPEN
  *
  * @ingroup eval_pts_scheme
  *
- * @author M. Martinelli
+ * @author M. Martinelli, pauletti
  * @date 2014, 2015
  */
-// TODO (pauletti, Feb 27, 2015): for non tensor product point makes no sense
-//                                to have a tensor product weight
+
+// TODO (pauletti, Feb 27, 2015): The bounding box may be an error prone structure
+// to have here
+
 template <int dim_>
 class EvaluationPoints
 {
 private:
-    static const int dirs = (dim_>0? dim_ : 1);
+    using self_t = EvaluationPoints<dim_>;
 public:
     /**
      * @brief Alias for the point-type that is returned by the function EvaluationPoints::get_point()
      */
     using Point = Points<dim_>;
     using PointVector = ValueVector<Point>;
-    using DirectionArray = special_array<vector<Real>, dirs>;
+    using PointArray  = TensorProductArray<dim_>;
+    using WeightArray = TensorProductArray<dim_>;
     /**
      * Dimensionality of the space in which the points are located
      * (equivalent to the number of the coordinates of each point).
      */
     static const int dim = dim_;
+    /**
+     * @name Constructors.
+     */
+    ///@{
+    /**
+     * Default constructor. It sets the bounding-box to be the hypercube \f$ [0,1]^{dim}\f$ with no points inside.
+     */
+protected:
+    /**
+     * Construct the object with a user-defined bounding-box, with no points inside.
+     */
+    EvaluationPoints(const BBox<dim_> &bounding_box);
+
+public:
+    EvaluationPoints();
+    /**
+     * Construct the object given a vector of <tt>points</tt>
+     * in the <tt>dim_</tt>-dimensional space,
+     * and assign the weights value to be equal to 1.
+     *
+     * @note It sets the bounding-box to be the hypercube \f$ [0,1]^{dim}\f$.
+     */
+    EvaluationPoints(const PointVector &points);
+
+
+    EvaluationPoints(const PointArray &points,
+                     const WeightArray &weights_1d);
+    /**
+     * Construct the object given:
+     * - a vector of <tt>points</tt> in the <tt>dim_</tt>-dimensional space;
+     * - the <tt>weights_1d</tt> are the weights associated to the points coordinates;
+     * - the <tt>bounding_box</tt> in which the points are defined.
+     */
+    EvaluationPoints(const PointVector &points,
+                     const WeightArray &weights_1d,
+                     const BBox<dim_> &bounding_box);
+
+    /**
+     * Copy constructor.
+     */
+    EvaluationPoints(const self_t & ) = default;
+
+    /**
+     * Move constructor.
+     */
+    EvaluationPoints(self_t && ) = default;
+
+    /**
+     * Destructor.
+     */
+    ~EvaluationPoints() = default;
+    ///@}
+
+
+    /**
+     * @name Assignment operators.
+     */
+    ///@{
+    /**
+     * Copy assignment operator.
+     */
+    self_t &operator=(const self_t & ) = default;
+
+    /**
+     * Move assignment operator.
+     */
+    self_t &operator=(self_t && ) = default;
+    ///@}
+
 
     /**
      * @name Functions returning information about the number of points and coordinates.
@@ -109,7 +181,7 @@ public:
     /**
      * Returns the number of point coordinates along each direction.
      */
-    TensorIndex<dim_> get_num_coords_direction() const noexcept;
+    TensorSize<dim_> get_num_coords_direction() const noexcept;
     ///@}
 
 
@@ -139,84 +211,17 @@ public:
     void print_info(LogStream &out) const;
 
 
-    /**
-     * @name Constructors.
-     */
-    ///@{
-    /**
-     * Default constructor. It sets the bounding-box to be the hypercube \f$ [0,1]^{dim}\f$ with no points inside.
-     */
-    EvaluationPoints();
-
-protected:
-    /**
-     * Construct the object with a user-defined bounding-box, with no points inside.
-     */
-    EvaluationPoints(const BBox<dim_> &bounding_box);
-
-public:
-    /**
-     * Construct the object given a vector of <tt>points</tt>
-     * in the <tt>dim_</tt>-dimensional space,
-     * and assign the weights value to be equal to 1.
-     *
-     * @note It sets the bounding-box to be the hypercube \f$ [0,1]^{dim}\f$.
-     */
-    EvaluationPoints(const ValueVector<Point> &points);
-
-    /**
-     * Construct the object given:
-     * - a vector of <tt>points</tt> in the <tt>dim_</tt>-dimensional space;
-     * - the <tt>weights_1d</tt> are the weights associated to the points coordinates;
-     * - the <tt>bounding_box</tt> in which the points are defined.
-     */
-    EvaluationPoints(
-        const ValueVector<Point> &points,
-        const DirectionArray &weights_1d,
-        const BBox<dim_> &bounding_box);
-
-    /**
-     * Copy constructor.
-     */
-    EvaluationPoints(const EvaluationPoints<dim_> &pts) = default;
-
-    /**
-     * Move constructor.
-     */
-    EvaluationPoints(EvaluationPoints<dim_> &&pts) = default;
-
-    /**
-     * Destructor.
-     */
-    ~EvaluationPoints() = default;
-    ///@}
 
 
     /**
-     * @name Assignment operators.
-     */
-    ///@{
-    /**
-     * Copy assignment operator.
-     */
-    EvaluationPoints<dim_> &operator=(const EvaluationPoints<dim_> &pts) = default;
-
-    /**
-     * Move assignment operator.
-     */
-    EvaluationPoints<dim_> &operator=(EvaluationPoints<dim_> &&pts) = default;
-    ///@}
-
-
-
-    /**
-     * @name Functions returning internal data (points, weights, coordinates, bounding box, etc.)
+     * @name Functions returning internal data (points, weights, coordinates,
+     *  bounding box, etc.)
      */
     ///@{
     /**
      * Returns all the points.
      */
-    ValueVector<Point> get_points() const;
+    PointVector get_points() const;
 
     /**
      * Returns the coordinates of the the point with (flat) index <tt>pt_id</tt>
@@ -239,7 +244,7 @@ public:
     Real get_weight(const int pt_id) const;
 
 
-    const DirectionArray &get_weights_1d() const;
+    const WeightArray &get_weights_1d() const;
 
     /**
      * Returns the bounding box in which the points are located.
@@ -306,8 +311,8 @@ protected:
      * Points on the side of the bounding box are still valid points.
      */
     void reset_points_coordinates_and_weights(
-        const ValueVector<Point> &pts,
-        const DirectionArray &weights_1d);
+            const PointVector &pts,
+            const WeightArray &weights_1d);
 
 
 
@@ -316,23 +321,19 @@ protected:
      *
      * It does not contain multiple values.
      */
-    //TODO (pauletti, Feb 26, 2015): this is incorrect as in dimension 0
-    // the size should be one
-
-    DirectionArray coordinates_;
+    PointArray coordinates_;
 
 
     /**
      * Weights associated to the points coordinates. By default are set to be equal to one.
      */
-    DirectionArray weights_1d_;
+    WeightArray weights_1d_;
 
 
     /**
      * Map between the point (flat) ids and its coordinates ids.
      */
     vector<TensorIndex<dim_>> map_point_id_to_coords_id_;
-
 
     BBox<dim_> bounding_box_;
 

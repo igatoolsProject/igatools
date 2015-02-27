@@ -79,9 +79,7 @@ void gauss_legendre_quadrature(const int n,
                                vector<Real> &points,
                                vector<Real> &weights)
 {
-
-    if (n == 0)
-        return;
+    Assert(n>0, ExcMessage("n points should be bigger than 0"))
 
     const int m = (n+1)/2;
 

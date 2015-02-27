@@ -34,6 +34,8 @@ QuadratureTensorProduct()
 }
 
 
+// TODO (pauletti, Feb 27, 2015): the scaling should not be done in the
+// constructor use specific function for this
 
 template<int dim_>
 QuadratureTensorProduct<dim_>::
@@ -48,7 +50,7 @@ QuadratureTensorProduct(
 {
     this->weights_have_tensor_product_struct_ = true;
 
-    Assert(compute_coords_and_weight_1d != nullptr,ExcNullPtr());
+    Assert(compute_coords_and_weight_1d != nullptr, ExcNullPtr());
 
     Assert(eps_scaling >= Real(0.0) && eps_scaling < Real(0.5),
            ExcMessage("The scaling factor must be >= 0.0 and < 0.5"));

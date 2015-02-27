@@ -27,9 +27,6 @@
 
 IGA_NAMESPACE_OPEN
 
-
-
-
 /**
  * @brief Specialization of CartesianProductArray when the entries are a product
  * of Reals instead of a tuple of Real.

@@ -70,10 +70,13 @@ protected:
      * on the unit d-dimensional hypercube \f$ [0,1]^d \f$,
      * with @p num_points[i] number of points in the i-th dimension.
      *
-     * The purpose of the function pointer argument <p>compute_coords_and_weight_1d</p>
-     * is to let a derived class to pass the method to compute the 1D coordinates and weights.
+     * The purpose of the function pointer argument
+     * <p>compute_coords_and_weight_1d</p>
+     * is to let a derived class to pass the method to compute
+     * the 1D coordinates and weights.
      *
-     * The <p>eps</p> argument allows to perform a local scaling of the quadrature points.
+     * The <p>eps</p> argument allows to perform a local scaling
+     * of the quadrature points.
      */
     explicit QuadratureTensorProduct(
         const TensorSize<dim_> num_points,
@@ -137,7 +140,8 @@ protected:
      * @note It is assumed that the 1D points and weights along each coordinate component
      * are computed using the same algorithm (but possibly with different number of points).
      */
-    void (*compute_coords_and_weight_1d)(const int n_pts_1d, vector<Real> &coords,vector<Real> &weights);
+    void (*compute_coords_and_weight_1d)
+       (const int n_pts_1d, vector<Real> &coords,vector<Real> &weights);
 };
 
 

@@ -37,6 +37,8 @@ template<int dim_>
 EvaluationPoints<dim_>::
 EvaluationPoints()
 {
+    map_point_id_to_coords_id_.resize(1);
+
     for (auto &box_direction : bounding_box_)
     {
         box_direction[0] = 0.0;
@@ -51,6 +53,26 @@ EvaluationPoints(const BBox<dim_> &bounding_box)
     bounding_box_(bounding_box)
 {}
 
+
+
+template<int dim_>
+EvaluationPoints<dim_>::
+EvaluationPoints(const PointArray &points,
+                 const WeightArray &weights_1d)
+                 :
+                 coordinates_(points),
+                 weights_1d_(weights_1d)
+{
+    this->points_have_tensor_product_struct_ = true;
+    this->weights_have_tensor_product_struct_ = true;
+
+    const auto n_pts = coordinates_.flat_size();
+    for (int i = 0 ; i < n_pts ; ++i)
+        map_point_id_to_coords_id_.push_back(coordinates_.flat_to_tensor(i));
+}
+
+
+
 template<int dim_>
 EvaluationPoints<dim_>::
 EvaluationPoints(const ValueVector<Point> &pts)
@@ -58,25 +80,27 @@ EvaluationPoints(const ValueVector<Point> &pts)
     EvaluationPoints()
 {
     const int n_pts = pts.size();
+    TensorSize<dim_> size(n_pts);
+    WeightArray weights_1d(size);
 
-    DirectionArray weights_1d;
-    for (auto &wghts : weights_1d)
-        wghts.assign(n_pts,1.0);
-
+    Assert(false, ExcMessage("put weight to 1"));
     this->reset_points_coordinates_and_weights(pts,weights_1d);
 }
+
+
 
 template<int dim_>
 EvaluationPoints<dim_>::
 EvaluationPoints(
-    const ValueVector<Point> &pts,
-    const DirectionArray &weights_1d,
+    const PointVector &pts,
+    const WeightArray &weights_1d,
     const BBox<dim_> &bounding_box)
     :
     EvaluationPoints(bounding_box)
 {
     this->reset_points_coordinates_and_weights(pts,weights_1d);
 }
+
 
 
 template<int dim_>
@@ -86,6 +110,8 @@ get_bounding_box() const
 {
     return bounding_box_;
 }
+
+
 
 template<int dim_>
 void
@@ -101,21 +127,20 @@ reset_bounding_box(const BBox<dim_> &bounding_box)
 #endif
 }
 
+
+
 template<int dim_>
 void
 EvaluationPoints<dim_>::
 dilate(const Point &dilate)
 {
+    coordinates_.dilate(dilate);
+    weights_1d_.dilate(dilate);
+
+
     for (int i = 0 ; i < dim_ ; ++i)
     {
         Assert(dilate[i] > 0., ExcMessage("Dilation factor must be positive."));
-
-        for (auto &coord : coordinates_[i])
-            coord *= dilate[i];
-
-        for (auto &weight : weights_1d_[i])
-            weight *= dilate[i];
-
         bounding_box_[i][0] *= dilate[i];
         bounding_box_[i][1] *= dilate[i];
     }
@@ -126,11 +151,11 @@ void
 EvaluationPoints<dim_>::
 translate(const Point &translate)
 {
+    coordinates_.translate(translate);
+
+    // TODO (pauletti, Feb 27, 2015): code BBox translate
     for (int i = 0 ; i < dim_ ; ++i)
     {
-        for (auto &coord : coordinates_[i])
-            coord += translate[i];
-
         bounding_box_[i][0] += translate[i];
         bounding_box_[i][1] += translate[i];
     }
@@ -152,11 +177,11 @@ template<int dim_>
 void
 EvaluationPoints<dim_>::
 reset_points_coordinates_and_weights(
-    const ValueVector<Point> &pts,
-    const DirectionArray &weights_1d)
+    const PointVector &pts,
+    const WeightArray &weights_1d)
 {
     const int n_pts = pts.size();
-//    Assert(n_pts > 0 , ExcEmptyObject());
+    Assert(n_pts > 0 , ExcEmptyObject());
 
     //-----------------------------------------------------------------
     TensorSize<dim_> n_dirs;
@@ -167,24 +192,21 @@ reset_points_coordinates_and_weights(
             coords_set.emplace(pt[i]);
 
         //inserting the point coordinates and removing the duplicates
-        coordinates_[i].assign(coords_set.begin(),coords_set.end());
-
-        n_dirs[i] = coordinates_[i].size();
-
+        coordinates_.copy_data_direction(i,vector<Real>(coords_set.begin(),coords_set.end()));
+        weights_1d_ = weights_1d;
 
 #ifndef NDEBUG
         // check that the points coordinate are within the bounding box
         const auto box_min = bounding_box_[i][0];
         const auto box_max = bounding_box_[i][1];
-        for (const auto &coord : coordinates_[i])
+        for (const auto &coord : coordinates_.get_data_direction(i))
             Assert(coord >= box_min && coord <= box_max,
                    ExcMessage("Point coordinate outside the bounding box."));
 #endif
 
 
-        Assert(n_dirs[i] == weights_1d[i].size(),
-               ExcDimensionMismatch(n_dirs[i],weights_1d[i].size()));
-        weights_1d_[i] = weights_1d[i];
+//        Assert(n_dirs[i] == weights_1d[i].size(),
+//               ExcDimensionMismatch(n_dirs[i],weights_1d[i].size()));
 
     } // end loop i
     //-----------------------------------------------------------------
@@ -195,20 +217,21 @@ reset_points_coordinates_and_weights(
     //for each point :
     //  - we retrieve the coordinate index;
     //  - we set the associated weight
-    map_point_id_to_coords_id_.clear();
-    for (const auto &pt : pts)
+    map_point_id_to_coords_id_.resize(n_pts);
+    for (int j = 0 ; j < n_pts ; ++j)
     {
+        auto &pt = pts[j];
         TensorIndex<dim_> coords_tensor_id;
         for (int i = 0 ; i < dim_ ; ++i)
         {
-            const auto coords_begin = coordinates_[i].begin();
-            const auto coords_end   = coordinates_[i].end();
+            const auto coords_begin = coordinates_.get_data_direction(i).begin();
+            const auto coords_end   = coordinates_.get_data_direction(i).end();
 
             const auto it = std::find(coords_begin, coords_end, pt[i]);
 
             coords_tensor_id[i] = std::distance(coords_begin,it);
         }
-        map_point_id_to_coords_id_.emplace_back(coords_tensor_id);
+        map_point_id_to_coords_id_[j]=(coords_tensor_id);
     }
     //-----------------------------------------------------------------
 
@@ -270,13 +293,15 @@ have_weights_tensor_product_struct() const
 }
 
 
+
 template<int dim_>
 const vector<Real> &
 EvaluationPoints<dim_>::
 get_coords_direction(const int i) const
 {
-    return coordinates_[i];
+    return coordinates_.get_data_direction(i);
 }
+
 
 
 template<int dim_>
@@ -291,18 +316,14 @@ get_coords_id_from_point_id(const int point_id) const
 }
 
 
+
 template<int dim_>
 auto
 EvaluationPoints<dim_>::
 get_point(const int pt_id) const -> Point
 {
     const auto tensor_id = this->get_coords_id_from_point_id(pt_id);
-
-    Point pt;
-    for (int i = 0 ; i < dim_ ; ++i)
-        pt[i] = coordinates_[i][tensor_id[i]];
-
-    return pt;
+    return coordinates_.cartesian_product(tensor_id);
 }
 
 
@@ -325,12 +346,7 @@ EvaluationPoints<dim_>::
 get_weight(const int pt_id) const
 {
     const auto tensor_id = this->get_coords_id_from_point_id(pt_id);
-
-    Real w = (dim_ > 0) ? weights_1d_[0][tensor_id[0]] : 1.0;
-    for (int i = 1 ; i < dim_ ; ++i)
-        w *= weights_1d_[i][tensor_id[i]];
-
-    return w;
+    return weights_1d_.tensor_product(tensor_id);
 }
 
 
@@ -351,7 +367,7 @@ get_weights() const
 template<int dim_>
 auto
 EvaluationPoints<dim_>::
-get_weights_1d() const -> const DirectionArray &
+get_weights_1d() const -> const WeightArray&
 {
     return weights_1d_;
 }
@@ -367,16 +383,13 @@ get_num_points() const
 
 
 template<int dim_>
-TensorIndex<dim_>
+TensorSize<dim_>
 EvaluationPoints<dim_>::
 get_num_coords_direction() const noexcept
 {
-    TensorIndex<dim_> n_coords;
-    for (int i = 0 ; i < dim_ ; ++i)
-        n_coords[i] = coordinates_[i].size();
-
-    return n_coords;
+    return coordinates_.tensor_size();
 }
+
 
 
 template<int dim_>
@@ -426,85 +439,36 @@ collapse_to_sub_element(const int sub_elem_id) const -> EvaluationPoints<dim_>
 {
     auto &k_elem = UnitElement<dim_>::template get_elem<k>(sub_elem_id);
 
-    using EvalPts = EvaluationPoints<dim_>;
-//    using EvalPtsTP = QuadratureTensorProduct<dim_>;
-
-    BBox<dim_> new_bounding_box;
-    const auto &old_bounding_box = this->get_bounding_box();
-
-    const auto &old_weights_1d = this->get_weights_1d();
-    if (this->have_weights_tensor_product_struct())
+    if (this->have_weights_tensor_product_struct() &&
+            this->have_points_tensor_product_struct())
     {
-        DirectionArray new_weights_1d;
-        // if (k > 0)
+        PointArray new_coords_1d;
+        WeightArray new_weights_1d;
+        const int n_dir = k_elem.constant_directions.size();
+        for (int j = 0 ; j < n_dir; ++j)
         {
-            DirectionArray new_coords_1d;
-            TensorSize<dim_> n_coords;
+            auto dir = k_elem.constant_directions[j];
+            auto val = k_elem.constant_values[j];
 
-            const int n_dir = k_elem.constant_directions.size();
-            for (int j = 0 ; j < n_dir; ++j)
-            {
-                auto dir = k_elem.constant_directions[j];
-                auto val = k_elem.constant_values[j];
+            new_coords_1d.copy_data_direction(dir, vector<Real>(1, val));
+            new_weights_1d.copy_data_direction(dir, vector<Real>(1, 1.));
 
-                new_coords_1d[dir].assign(1, val);
-                new_weights_1d[dir].assign(1, 1.0);
-                n_coords[dir] = 1;
+        }
 
-                new_bounding_box[dir][0] = val;
-                new_bounding_box[dir][1] = val;
-            }
+        for (auto i : k_elem.active_directions)
+        {
+            new_coords_1d.copy_data_direction(i, coordinates_.get_data_direction(i));
+            new_weights_1d.copy_data_direction(i, weights_1d_.get_data_direction(i));
+        }
 
-            for (auto i : k_elem.active_directions)
-            {
-                new_coords_1d[i] = this->get_coords_direction(i);
-                new_weights_1d[i] = old_weights_1d[i];
-                n_coords[i] = new_coords_1d[i].size();
-
-                new_bounding_box[i] = old_bounding_box[i];
-            }
-
-            const auto n_pts = n_coords.flat_size();
-            const auto pt_size_w = MultiArrayUtils<dim_>::compute_weight(n_coords);
-
-            ValueVector<Points<dim_>> new_points(n_pts);
-            for (int pt_f_id = 0 ; pt_f_id < n_pts ; ++pt_f_id)
-            {
-                const auto pt_t_id =
-                    MultiArrayUtils<dim_>::flat_to_tensor_index(pt_f_id,pt_size_w);
-
-                auto &point = new_points[pt_f_id];
-                for (int dir = 0 ; dir < dim_ ; ++dir)
-                    point[dir] = new_coords_1d[dir][pt_t_id[dir]];
-            }
-
-            return EvalPts(new_points,new_weights_1d,new_bounding_box);
-        } // end if (k > 0)
-        //TODO (pauletti, Feb 26, 2015): this is inapropiate, same code should work for any k
-//        else
-//        {
-//            ValueVector<Points<dim_>> new_points;
-//
-//            const auto val = k_elem.constant_values[0];
-//
-//            new_bounding_box[0][0] = val;
-//            new_bounding_box[0][1] = val;
-//
-//            new_weights_1d[0].assign(1,1.0);
-//
-//            new_points.resize(1);
-//            new_points[0][0] = val;
-//
-//            return EvalPts(new_points,new_weights_1d,new_bounding_box);
-//        }
-
+        return self_t(new_coords_1d, new_weights_1d);
     }
     else
     {
         Assert(false,ExcNotImplemented());
-        return EvalPts();
-    }
 
+    }
+    return self_t();
 }
 
 
@@ -523,7 +487,7 @@ extend_sub_elem_quad(const EvaluationPoints<k> &eval_pts,
     BBox<dim> new_bounding_box;
 
     const auto &old_weights_1d = eval_pts.get_weights_1d();
-    typename EvaluationPoints<dim>::DirectionArray new_weights_1d;
+    typename EvaluationPoints<dim>::WeightArray new_weights_1d;
 
     const int n_dir = k_elem.constant_directions.size();
     for (int j = 0 ; j < n_dir ; ++j)
