@@ -54,22 +54,54 @@ template <int> class GridElementHandler;
  * Then, the tensor-product of the intervals along the coordinate directions define
  * the elements that are tiling the domain covered by the CartesianGrid;
  *
- * The elements can have associated a certain list of <em>element properties</em> (identified by one std::string),
- * and then the list of elements with a given property can be extracted from the CartesianGrid
- * using the function get_elements_id_same_property(const std::string &property) .
+ * The element type for the CartesianGrid is CartesianGridElement.
+ *
+ * The elements can be iterated with the CartesianGridIterator object.
+ * The iterators for traversing the the entire set of elements of the grid
+ * are build with the begin(), end(), cbegin(), cend() functions called with no arguments.
+ *
+ * ### Element properties
+ * The elements can have associated a certain list of <em>element properties</em> (identified by one std::string).
  * There is no pre-defined list of element properties: any property can be defined and added to the list
  * of properties stored within the CartesianGrid. This choice is made because the properties
  * are usually specific for a given problem (e.g. <em>active</em> elements in hierarchical grids or
  * <em>marked</em> elements for a-posteriori error estimators).
  *
+ * For example, let suppose we want to build a bi-dimensional grid (over the unit square
+ * \f$ [0,1]\times[0,1] \f$) made of 4 equally-sized intervals in each coordinate direction, and
+ * then assign the property <tt>"active"</tt> to the elements with even flat-index and
+ * the <tt>"marked"</tt> to the elements with odd flat-index
+ * @code{.cpp}
+   auto grid = CartesianGrid<2>::create(5); // here we create a 4x4 grid
+
+   const std::string property_active = "active"; // here we choose the string identifying the first property
+   const std::string property_marked = "marked"; // here we choose the string identifying the second property
+
+   grid->add_elements_property(property_active); // here we add the first property to the elements property database managed by the grid
+   grid->add_elements_property(property_marked); // here we add the second property to the elements property database managed by the grid
+
+   //the next loop set the elements with the right property
+   for (const auto elem : *grid)
+   {
+       const auto flat_id = elem.get_flat_index();
+       if (flat_id % 2 == 0)
+           grid->set_element_property_status(property_active);
+       else
+           grid->set_element_property_status(property_marked);
+   }
+   @endcode
  *
- * The element type for the CartesianGrid is CartesianGridElement.
+ * The list of elements with a given property can be obtained from the CartesianGrid
+ * using the function get_elements_id_same_property(const std::string &property).
+ * For example if we want the IDs of the elements having the property <tt>"marked"</tt> we can write
+ * @code{.cpp}
+   const auto & elems_id_marked = grid->get_elements_id_same_property("marked");
+   // now elems_id_marked is a const reference to a std::set<Index> containing the values [1 3 5 7 9 11 13 15]
+   @endcode
  *
- * The elements can be iterated with the CartesianGridIterator object.
- * Moreover it is possible to iterate over the element sharing the same property.
- * The iterators for traversing the the entire set of elements of the grid (regardingless their properties, if any)
- * are build with the begin(), end(), cbegin(), cend() functions called with no arguments.
- * The iterators for elements with a given property can be oobtained with the above functions invoked
+ * The elements with the same property can be iterated with the CartesianGridIterator object.
+ * The iterators for elements with a given property can be obtained with the
+ * begin(), end(), cbegin(), cend() functions invoked
  * with the property name as input argument. For example, to iterate over the elements that share the property
  * <tt>"active"</tt> (provided that property <tt>"active"</tt> is defined for some elements in the grid)
  * you can use
@@ -77,12 +109,14 @@ template <int> class GridElementHandler;
    std::string property_active = "active";
    auto elem_active = grid->begin(property_active);
    auto  end_active = grid->end(property_active);
-   for ( ; elem_ctive != end_active ; ++elem_active)
+   for ( ; elem_active != end_active ; ++elem_active)
    {
    // do something with the active elements
    }
    @endcode
  *
+ * In Debug mode, an assertion will be raised if the the property string used as input argument
+ * in the begin() / end() functions is not defined in the CartesianGrid.
  *
  * ### Getting a CartesianGrid by an XML structure.
  * A CartesianGrid object can be obtained by a Boost XML structure using the
@@ -626,7 +660,7 @@ public:
     const std::set<Index> &get_elements_id_same_property(const std::string &property) const;
 
     /**
-     * Sets the @p status of the given @p property for the element with flat id @ elem_flat_id.
+     * Sets the @p status of the given @p property for the element with flat id @p elem_flat_id.
      */
     void set_element_property_status(const std::string &property,
                                      const Index elem_flat_id,
