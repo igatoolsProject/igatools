@@ -325,8 +325,8 @@ assemble()
         const TimePoint end_eval_basis = Clock::now();
         this->elapsed_time_eval_basis_ += end_eval_basis - start_eval_basis;
 
-        auto points  = elem->get_points();
-        auto phi     = elem->get_basis_values();
+        auto points  = elem->get_element_points();
+        auto phi     = elem->get_element_values();
 //        auto grd_phi = elem->get_basis_gradients();
         auto w_meas  = elem->get_w_measures();
         //----------------------------------------------------
@@ -339,7 +339,7 @@ assemble()
 
         //----------------------------------------------------
         // multiplicative coefficients of the mass matrix term.
-        ValueVector<Real> c_mass(n_quad_points.flat_size());
+        ValueVector<Real> c_mass(n_quad_points.get_num_points());
         for (auto &c : c_mass)
             c = 1.0;
         //----------------------------------------------------
@@ -361,7 +361,7 @@ assemble()
 
         //----------------------------------------------------
         // multiplicative coefficients of the stiffness matrix term.
-        iga::vector<TMatrix<dim,dim>> c_stiffness(n_quad_points.flat_size());
+        iga::vector<TMatrix<dim,dim>> c_stiffness(n_quad_points.get_num_points());
         for (auto &c : c_stiffness)
             for (Index i = 0 ; i < dim ; ++i)
                 c[i][i] = 1.0;

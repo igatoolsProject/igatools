@@ -166,6 +166,12 @@ public:
         return cache.template get_der<order>();
     }
 
+    auto
+    get_element_values() const
+    {
+        return this->template get_values<0,dim>(0);
+    }
+
     template<int order, int k>
     auto
     linear_combination(const vector<Real> &loc_coefs, const int id) const

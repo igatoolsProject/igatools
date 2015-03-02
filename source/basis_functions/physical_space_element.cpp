@@ -32,7 +32,6 @@ PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
                      const Index index)
     :
     parent_t(phys_space,index),
-//    PfElemAccessor(phys_space->get_map_func(), index),
     ref_space_element_accessor_(phys_space->get_reference_space()->create_element(index)),
     push_fwd_element_(shared_ptr<PfElemAccessor>(new PfElemAccessor(phys_space->get_map_func(), index)))
 {
@@ -57,8 +56,6 @@ PhysicalSpaceElement(const PhysicalSpaceElement<PhysSpace> &in,
                      const CopyPolicy &copy_policy)
     :
     parent_t(in,copy_policy)
-    //,
-//    PfElemAccessor(in,copy_policy)
 {
     if (copy_policy == CopyPolicy::shallow)
     {
@@ -117,6 +114,24 @@ shallow_copy_from(const PhysicalSpaceElement<PhysSpace> &element)
 {
     Assert(false,ExcNotImplemented());
 //    this->copy_from(element,CopyPolicy::shallow);
+}
+
+
+template< class PhysSpace >
+template <int k>
+auto
+PhysicalSpaceElement<PhysSpace>::
+get_points(const int j) const -> ValueVector<PhysPoint>
+{
+    return push_fwd_element_->template get_values<0,k>(j);
+}
+
+template< class PhysSpace >
+auto
+PhysicalSpaceElement<PhysSpace>::
+get_element_points() const -> ValueVector<PhysPoint>
+{
+    return this->template get_points<dim>(0);
 }
 
 #if 0

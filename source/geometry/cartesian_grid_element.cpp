@@ -443,6 +443,16 @@ get_points(const int j) const ->ValueVector<Point>
 
 
 
+template <int dim>
+auto
+CartesianGridElement<dim>::
+get_element_points() const -> ValueVector<Point>
+{
+    return this->template get_points<dim>(0);
+}
+
+
+
 
 template <int dim>
 void

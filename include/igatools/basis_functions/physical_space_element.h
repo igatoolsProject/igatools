@@ -72,6 +72,8 @@ public :
     static const auto codim = PfElemAccessor::codim;
     static const auto type = PfElemAccessor::type;
 
+    using PhysPoint = typename Space::Point;
+
 #if 0
     using Value = typename PhysSpace::Value;
     using PhysPoint = typename PhysSpace::Point;
@@ -210,6 +212,11 @@ public :
     {
         return push_fwd_element_->template get_w_measures<k>(j);
     }
+
+    template <int k = dim>
+    ValueVector<PhysPoint> get_points(const int j = 0) const;
+
+    ValueVector<PhysPoint> get_element_points() const;
 
 
     /**

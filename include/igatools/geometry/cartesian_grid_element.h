@@ -272,6 +272,7 @@ public:
     template <int k = dim>
     ValueVector<Point> get_points(const int j = 0) const;
 
+    ValueVector<Point> get_element_points() const;
 
 public:
     /**
