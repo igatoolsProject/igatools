@@ -2,6 +2,7 @@
    
    @defgroup refinement Refinement
    @brief Refinement support in igatools
+   @ingroup containers
    @{   
 
    The Isogeometric Analysis is a discretization method for partial differential

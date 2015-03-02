@@ -18,7 +18,6 @@ the documentation pertaining to each of them:
 - the @subpage infrastructure is a macro-module containing all the classes that are used to define
   the function spaces and to perform the evaluation of the basis function. 
   For code maintainability reasons, this module is split in 3 sub-modules. 
-  For each class in a given module, there is an associated class in each of the other two modules
 
    - the @subpage containers i.e. the classes that represents <em>global data</em>. 
 The classes in this group have an underlying grid-like structure (intended as union of elements) 
@@ -33,6 +32,8 @@ and usually have a big memory footprint. They are not intended to be used to per
    - the @subpage fillers i.e. the classes that performs heavy computations and fills the local cache of the elements
 
 
+For each class in a given module, there could be an associated class in each of the other two modules,
+as described by the following table:
 <center>
 Element Containers   | Elements              | Element Fillers
 -------------------- | ----------------------|---------------------
@@ -75,6 +76,25 @@ The split in the above concepts is made to have (and maintain) a clear distincti
 @defgroup elements Elements 
 @ingroup infrastructure
 @{
+The classes in this module are objects used to represent an element on an associated container.
+Their use and specifications can be summarized as follow:
+- they access information on @subpage containers. For each class in the @subpage containers group 
+there is an associated accessor, as shown in the following table: 
+<center>
+Elements             | Element Containers    
+-------------------- | ----------------------
+CartesianGridElement | CartesianGrid  
+ReferenceElement     | ReferenceSpace      
+BSplineElement       | BSplineSpace         
+NURBSElement         | NURBSSpace          
+MappingElement       | Mapping        
+PushForwardElement   | PushForward    
+PhysicalSpaceElement | PhysicalSpace
+</center>
+- they have an identifier in order to specify which element in the associated container they are representing;
+- they have @subpage iterators as friend classes (because the an iterator must be able to modify the 
+element);
+- they contains a <em>local cache</em> that is used to keep precomputed values at EvaluationPoints.
 */
 
 /** @}*/ //end of group elements
@@ -228,36 +248,6 @@ because:
 
 /** @}*/ //end of group iterators
 
-/**
-@defgroup accessors Accessors
-@ingroup iterators
-@{
-
-The accessors are objects used to represent an element on an associated container.
-Their use and specifications can be summarized as follow:
-- they are template argument for @subpage iterators, so it is safe to think of them as part of the iterators;
-- they access information on @subpage containers. For each class in the @subpage containers group 
-there is an associated accessor, as shown in the following table: 
-<center>
-Container     | Iterator/Accessor
-------------- | -----------------
-CartesianGrid | CartesianGridElement 
-BSplineSpace  | BSplineElement 
-NURBSSpace    | NURBSElement
-Mapping       | MappingElementAccessor
-PushForward   | PushForwardElement
-PhysicalSpace | PhysicalSpaceElement
-</center>
-- they have an identifier in order to specify which element in the associated container they are representing;
-- they have @subpage iterators as friend classes (because the an iterator must be able to modify the 
-element identifier withih the accessor).
-
-
-@todo complete the documentation
-
-*/
-
-/** @}*/ //end of group accessors
 
 
 /**
