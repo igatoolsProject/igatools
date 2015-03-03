@@ -213,6 +213,11 @@ public :
         return push_fwd_element_->template get_w_measures<k>(j);
     }
 
+    ValueVector<Real> get_element_w_measures() const
+    {
+        return this->template get_w_measures<dim>(0);
+    }
+
     template <int k = dim>
     ValueVector<PhysPoint> get_points(const int j = 0) const;
 
@@ -227,15 +232,15 @@ public :
 
     void print_cache_info(LogStream &out) const;
 
-private:
+public:
 
     /**
      * Return a const reference of this object as would be viewed as reference space element accessor.
      * This means that the returned object can be queried (but not modified) as the reference space
      * element accessor that is used as partial inheritance of the physical space element accessor.
      */
-    const RefElemAccessor &get_ref_space_accessor() const;
-    RefElemAccessor &get_ref_space_accessor();
+    const RefElemAccessor &get_ref_space_element() const;
+    RefElemAccessor &get_ref_space_element();
 
 
     /**
@@ -323,7 +328,7 @@ private:
     template <class Accessor> friend class CartesianGridIteratorBase;
     template <typename PSpace> friend class PhysSpaceElementHandler;
 
-    std::shared_ptr<RefElemAccessor> ref_space_element_accessor_;
+    std::shared_ptr<RefElemAccessor> ref_space_element_;
 
 
     std::shared_ptr<PfElemAccessor> push_fwd_element_;

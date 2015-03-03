@@ -123,8 +123,7 @@ public:
 
 
     /**
-     * @name Functions for the basis and field evaluations without the use of
-     * the cache.
+     * @name Functions for the basis and field evaluations without the use of the cache.
      */
     ///@{
     /**
@@ -161,17 +160,6 @@ public:
     }
     ///@}
 
-
-    /*
-        ValueVector<Real> get_w_measures() const
-        {
-            ValueVector<Real> w_meas;
-
-            Assert(false,ExcNotImplemented());
-
-            return w_meas;
-        }
-    //*/
 
     /**
      * Returns the <tt>k</tt> dimensional j-th sub-element measure

@@ -142,7 +142,7 @@ void
 PhysSpaceElementHandler<PhysSpace>::
 init_cache(ElementAccessor &elem)
 {
-    auto &ref_elem = elem.get_ref_space_accessor();
+    auto &ref_elem = elem.get_ref_space_element();
     ref_space_handler_->template init_cache<k>(ref_elem);
 
     auto &push_fwd_elem = elem.get_push_forward_accessor();
@@ -175,7 +175,7 @@ void
 PhysSpaceElementHandler<PhysSpace>::
 fill_cache(ElementAccessor &elem, const int j)
 {
-    auto &ref_elem = elem.get_ref_space_accessor();
+    auto &ref_elem = elem.get_ref_space_element();
     ref_space_handler_->template fill_cache<k>(ref_elem, j);
 
     auto &push_fwd_elem = elem.get_push_forward_accessor();
@@ -233,7 +233,7 @@ auto
 PhysSpaceElementHandler<PhysSpace>::
 fill_element_cache(ElementAccessor &elem) -> void
 {
-    auto &ref_elem = elem.get_ref_space_accessor();
+    auto &ref_elem = elem.get_ref_space_element();
     RefPhysSpaceElementHandler::fill_element_cache(ref_elem);
     PFCache::fill_element(elem);
 

@@ -62,7 +62,7 @@ void test_evaluate()
     auto elem = space->begin() ;
     const auto elem_end = space->end() ;
     const auto &elem_pf = elem->get_push_forward_accessor() ;
-    const auto &elem_rs = elem->get_ref_space_accessor() ;
+    const auto &elem_rs = elem->get_ref_space_element() ;
 
     const int n_qpoints = 1;
     QGauss<dim> quad(n_qpoints);

@@ -296,11 +296,17 @@ assemble()
     auto elem = this->space->begin();
     const auto elem_end = this->space->end();
 
+
+
     ValueFlags fill_flags = this->get_fill_flags();
     auto elem_filler = space->create_elem_handler();
     elem_filler->reset(fill_flags,this->elem_quad);
     elem_filler->init_element_cache(elem);
 
+
+    auto f_elem = f->begin();
+    f->reset(ValueFlags::value, this->elem_quad);
+    f->init_element_cache(f_elem);
 
     const auto &elliptic_operators = static_cast<const DerivedClass &>(*this).get_elliptic_operators();
 
@@ -328,18 +334,19 @@ assemble()
         auto points  = elem->get_element_points();
         auto phi     = elem->get_element_values();
 //        auto grd_phi = elem->get_basis_gradients();
-        auto w_meas  = elem->get_w_measures();
+        auto w_meas  = elem->get_element_w_measures();
         //----------------------------------------------------
 
 
         //----------------------------------------------------
-        f->evaluate(points, f_values);
+        f->fill_element_cache(f_elem);
+        const auto f_values = f_elem->template get_values<0,dim>(0);
         //----------------------------------------------------
 
 
         //----------------------------------------------------
         // multiplicative coefficients of the mass matrix term.
-        ValueVector<Real> c_mass(n_quad_points.get_num_points());
+        ValueVector<Real> c_mass(this->elem_quad.get_num_points());
         for (auto &c : c_mass)
             c = 1.0;
         //----------------------------------------------------
@@ -349,7 +356,11 @@ assemble()
         // Assembly of the local mass matrix -- begin
         const TimePoint start_eval_mass_matrix = Clock::now();
 
-        elliptic_operators.eval_operator_u_v(*elem,*elem,c_mass,loc_mass_matrix);
+        elliptic_operators.eval_operator_u_v(
+            *elem,*elem,
+            c_mass,
+            this->elem_quad,this->elem_quad,
+            loc_mass_matrix);
 
         const TimePoint end_eval_mass_matrix = Clock::now();
 
@@ -361,7 +372,7 @@ assemble()
 
         //----------------------------------------------------
         // multiplicative coefficients of the stiffness matrix term.
-        iga::vector<TMatrix<dim,dim>> c_stiffness(n_quad_points.get_num_points());
+        iga::vector<TMatrix<dim,dim>> c_stiffness(this->elem_quad.get_num_points());
         for (auto &c : c_stiffness)
             for (Index i = 0 ; i < dim ; ++i)
                 c[i][i] = 1.0;
@@ -373,7 +384,10 @@ assemble()
         const TimePoint start_eval_stiffness_matrix = Clock::now();
 
         elliptic_operators.eval_operator_gradu_gradv(
-            *elem,*elem,c_stiffness,loc_stiffness_matrix);
+            *elem,*elem,
+            c_stiffness,
+            this->elem_quad,this->elem_quad,
+            loc_stiffness_matrix);
 
         const TimePoint end_eval_stiffness_matrix = Clock::now();
         this->elapsed_time_eval_stiffness_matrix_ +=
@@ -421,9 +435,11 @@ assemble()
 
 
     TimePoint start_boundary_conditions = Clock::now();
-    functions::ConstantFunction<dim,0,1> g({0.0});
+    auto g = functions::ConstantFunction<dim,0,1,1>::
+             create(grid, IdentityFunction<dim>::create(grid), {0.0});
+
     std::map<Index, Real> values;
-    const int dir_id = 0 ;
+    const std::set<boundary_id> dir_id {0};
     project_boundary_values<Space,la_pack>(g, this->space, this->face_quad, dir_id, values);
 
 
@@ -460,7 +476,7 @@ assemble()
     out_screen << endl;
 
 
-    this->matrix->print(out);
+    this->matrix->print_info(out);
 
     out << "==========================================================" << endl;
     out << endl;

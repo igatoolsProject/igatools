@@ -431,7 +431,7 @@ void Mortar_Interface<dim, dim_field>::integration()
         auto basis_master     = felem_master.evaluate_basis_values_at_points(curr_master_face_quad_pts_unit);
 
 
-        auto felem_multiplier_ref=felem_multiplier.get_ref_space_accessor();
+        auto felem_multiplier_ref=felem_multiplier.get_ref_space_element();
 
 
 

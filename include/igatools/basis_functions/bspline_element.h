@@ -188,6 +188,8 @@ private:
     template <class Accessor> friend class CartesianGridIterator;
     friend class BSplineElementHandler<dim, range, rank>;
 
+
+
 #if 0
 public:
     /*
@@ -227,6 +229,21 @@ private:
 #endif
 
 public:
+
+
+    ComponentContainer<std::array<ValueTable<Real>,dim> >
+    evaluate_univariate_derivatives_at_points(const int deriv_order, const EvaluationPoints<dim> &pts) const
+    {
+        ComponentContainer<std::array<ValueTable<Real>,dim> > values;
+
+        Assert(false,ExcNotImplemented());
+
+        return values;
+    }
+
+
+
+
     virtual std::shared_ptr<ReferenceElement<dim,range,rank> > clone() const override final
     {
         auto elem = std::shared_ptr<BSplineElement<dim,range,rank> >(
