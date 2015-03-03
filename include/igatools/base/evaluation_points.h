@@ -80,6 +80,7 @@ IGA_NAMESPACE_OPEN
 
 // TODO (pauletti, Feb 27, 2015): The bounding box may be an error prone structure
 // to have here
+// TODO (pauletti, Feb 27, 2015): this class should be called Quadrature
 
 template <int dim_>
 class EvaluationPoints
@@ -92,6 +93,7 @@ public:
      */
     using Point = Points<dim_>;
     using PointVector = ValueVector<Point>;
+    using WeigthVector = ValueVector<Real>;
     using PointArray  = TensorProductArray<dim_>;
     using WeightArray = TensorProductArray<dim_>;
     /**
@@ -104,7 +106,8 @@ public:
      */
     ///@{
     /**
-     * Default constructor. It sets the bounding-box to be the hypercube \f$ [0,1]^{dim}\f$ with no points inside.
+     * Default constructor. It sets the bounding-box to be the hypercube
+     * \f$ [0,1]^{dim}\f$ with no points inside.
      */
 protected:
     /**
@@ -337,9 +340,10 @@ protected:
 
     BBox<dim_> bounding_box_;
 
-    bool  points_have_tensor_product_struct_ = false;
-
-    bool weights_have_tensor_product_struct_ = false;
+    const bool is_tensor_product_;
+//    bool  points_have_tensor_product_struct_ = false;
+//
+//    bool weights_have_tensor_product_struct_ = false;
 };
 
 

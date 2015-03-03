@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-
+#if 0
 #include <igatools/base/quadrature_tensor_product.h>
 #include <igatools/base/exceptions.h>
 #include <igatools/utils/multi_array_utils.h>
@@ -102,3 +102,4 @@ QuadratureTensorProduct(
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/base/quadrature_tensor_product.inst>
+#endif

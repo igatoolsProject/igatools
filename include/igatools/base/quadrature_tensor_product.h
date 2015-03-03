@@ -24,7 +24,7 @@
 #include <igatools/base/evaluation_points.h>
 
 IGA_NAMESPACE_OPEN
-
+#if 0
 
 /**
  * @brief Base class for tensor product quadrature formulas with tensor-product structure,
@@ -53,7 +53,8 @@ public:
 
     using typename EvaluationPoints<dim_>::Point;
     using typename EvaluationPoints<dim_>::PointVector;
-    using typename EvaluationPoints<dim_>::DirectionArray;
+    using typename EvaluationPoints<dim_>::PointArray;
+    using typename EvaluationPoints<dim_>::WeightArray;
 
 protected:
 
@@ -64,7 +65,7 @@ protected:
      */
     QuadratureTensorProduct();
 
-
+#if 0
     /**
      * Creates a tensor product quadrature rule
      * on the unit d-dimensional hypercube \f$ [0,1]^d \f$,
@@ -92,10 +93,12 @@ public:
      */
     explicit QuadratureTensorProduct(
         const PointVector &points,
-        const DirectionArray &weights_1d,
+        const WeightArray &weights_1d,
         const BBox<dim_> &bounding_box);
+#endif
 
-
+public:
+    explicit QuadratureTensorProduct(
     /**
      * Destructor.
      */
@@ -146,6 +149,7 @@ protected:
 
 
 
+#endif
 
 IGA_NAMESPACE_CLOSE
 

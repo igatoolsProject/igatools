@@ -291,7 +291,7 @@ public:
     create(const TensorSize<dim> num_points, const Real eps_scaling = 0.0);
 } ;
 
-
+#if 0
 template< >
 class QGaussLobatto<0> :
     public QuadDimZero
@@ -300,7 +300,7 @@ public:
     using QuadDimZero::QuadDimZero;
 };
 
-#if 0
+
 template< >
 class QGaussLobatto<0> :
     public QuadratureTensorProduct<0>

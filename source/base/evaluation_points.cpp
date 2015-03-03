@@ -23,7 +23,6 @@
 #include <igatools/geometry/unit_element.h>
 #include <igatools/utils/multi_array_utils.h>
 
-
 #include <set>
 
 using std::array;
@@ -32,24 +31,26 @@ using std::set;
 
 IGA_NAMESPACE_OPEN
 
-
 template<int dim_>
 EvaluationPoints<dim_>::
 EvaluationPoints()
+: is_tensor_product_(false)
 {
-    map_point_id_to_coords_id_.resize(1);
-
-    for (auto &box_direction : bounding_box_)
-    {
-        box_direction[0] = 0.0;
-        box_direction[1] = 1.0;
-    }
+	Assert(false, ExcNotImplemented());
+//	for (auto &box_direction : bounding_box_)
+//    {
+//        box_direction[0] = 0.0;
+//        box_direction[1] = 1.0;
+//    }
 }
+
+
 
 template<int dim_>
 EvaluationPoints<dim_>::
 EvaluationPoints(const BBox<dim_> &bounding_box)
     :
+    is_tensor_product_(false),
     bounding_box_(bounding_box)
 {}
 
@@ -61,12 +62,10 @@ EvaluationPoints(const PointArray &points,
                  const WeightArray &weights_1d)
                  :
                  coordinates_(points),
-                 weights_1d_(weights_1d)
+                 weights_1d_(weights_1d),
+				 is_tensor_product_(true)
 {
-    this->points_have_tensor_product_struct_ = true;
-    this->weights_have_tensor_product_struct_ = true;
-
-    const auto n_pts = coordinates_.flat_size();
+	const auto n_pts = coordinates_.flat_size();
     for (int i = 0 ; i < n_pts ; ++i)
         map_point_id_to_coords_id_.push_back(coordinates_.flat_to_tensor(i));
 }
@@ -77,7 +76,7 @@ template<int dim_>
 EvaluationPoints<dim_>::
 EvaluationPoints(const ValueVector<Point> &pts)
     :
-    EvaluationPoints()
+    is_tensor_product_(false)
 {
     const int n_pts = pts.size();
     TensorSize<dim_> size(n_pts);
@@ -146,6 +145,8 @@ dilate(const Point &dilate)
     }
 }
 
+
+
 template<int dim_>
 void
 EvaluationPoints<dim_>::
@@ -160,6 +161,7 @@ translate(const Point &translate)
         bounding_box_[i][1] += translate[i];
     }
 }
+
 
 
 template<int dim_>
@@ -276,6 +278,7 @@ reset_points_coordinates_and_weights(
 }
 
 
+
 template<int dim_>
 bool
 EvaluationPoints<dim_>::
@@ -283,6 +286,8 @@ have_points_tensor_product_struct() const
 {
     return this->points_have_tensor_product_struct_;
 }
+
+
 
 template<int dim_>
 bool
@@ -327,6 +332,7 @@ get_point(const int pt_id) const -> Point
 }
 
 
+
 template<int dim_>
 auto
 EvaluationPoints<dim_>::
@@ -340,6 +346,8 @@ get_points() const -> ValueVector<Point>
     return points;
 }
 
+
+
 template<int dim_>
 Real
 EvaluationPoints<dim_>::
@@ -348,6 +356,7 @@ get_weight(const int pt_id) const
     const auto tensor_id = this->get_coords_id_from_point_id(pt_id);
     return weights_1d_.tensor_product(tensor_id);
 }
+
 
 
 template<int dim_>
@@ -360,9 +369,10 @@ get_weights() const
     for (int ipt = 0 ; ipt < n_pts ; ++ipt)
         weights[ipt] = this->get_weight(ipt);
 
-
     return weights;
 }
+
+
 
 template<int dim_>
 auto
@@ -371,6 +381,8 @@ get_weights_1d() const -> const WeightArray&
 {
     return weights_1d_;
 }
+
+
 
 template<int dim_>
 int
@@ -479,6 +491,7 @@ EvaluationPoints<dim>
 extend_sub_elem_quad(const EvaluationPoints<k> &eval_pts,
                      const int sub_elem_id)
 {
+	using WeightArray = typename EvaluationPoints<dim>::WeightArray;
     auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
 
     //------------------------------------------------------
@@ -487,7 +500,7 @@ extend_sub_elem_quad(const EvaluationPoints<k> &eval_pts,
     BBox<dim> new_bounding_box;
 
     const auto &old_weights_1d = eval_pts.get_weights_1d();
-    typename EvaluationPoints<dim>::WeightArray new_weights_1d;
+    WeightArray new_weights_1d;
 
     const int n_dir = k_elem.constant_directions.size();
     for (int j = 0 ; j < n_dir ; ++j)
@@ -498,14 +511,14 @@ extend_sub_elem_quad(const EvaluationPoints<k> &eval_pts,
         new_bounding_box[dir][0] = val;
         new_bounding_box[dir][1] = val;
 
-        new_weights_1d[dir].assign(1,1.0);
+        new_weights_1d.copy_data_direction(dir, vector<Real>(1, 1.));
+
     }
     int ind = 0;
     for (auto i : k_elem.active_directions)
     {
         new_bounding_box[i] = old_bounding_box[ind];
-
-        new_weights_1d[i] = old_weights_1d[ind];
+        new_weights_1d.copy_data_direction(i, old_weights_1d.get_data_direction(ind));
         ++ind;
     }
     // creating the bounding box and the weights_1d for the extension --- end
@@ -537,44 +550,9 @@ extend_sub_elem_quad(const EvaluationPoints<k> &eval_pts,
     // defining the points for the extension --- end
     //------------------------------------------------------
 
-
-
     return EvaluationPoints<dim>(new_points,new_weights_1d,new_bounding_box);
 }
 
-#if 0
-template<>
-EvaluationPoints<1>
-extend_sub_elem_quad(const EvaluationPoints<0> &eval_pts,
-                     const int sub_elem_id)
-{
-    auto &k_elem = UnitElement<1>::template get_elem<0>(sub_elem_id);
-
-    //------------------------------------------------------
-    // creating the bounding box for the extension --- begin
-    BBox<1> new_bounding_box;
-    const auto val = k_elem.constant_values[0];
-    new_bounding_box[0][0] = val;
-    new_bounding_box[0][1] = val;
-    //------------------------------------------------------
-
-
-    //------------------------------------------------------
-    // defining the point for the extension --- begin
-    const int n_pts = 1;
-    ValueVector<Points<1>> new_points(n_pts);
-
-    special_array<vector<Real>,1> new_weights_1d;
-    new_weights_1d[0].assign(1,1.0);
-
-    new_points[0] = val;
-    // defining the point for the extension --- end
-    //------------------------------------------------------
-
-
-    return EvaluationPoints<1>(new_points,new_weights_1d,new_bounding_box);
-}
-#endif
 
 IGA_NAMESPACE_CLOSE
 
