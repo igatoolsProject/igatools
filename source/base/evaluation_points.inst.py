@@ -44,14 +44,14 @@ for dim in inst.all_domain_dims:
 #        f.write('template ' + s + '\n')
         
 for dim in inst.sub_domain_dims:
-#    f.write('template class QuadratureTensorProduct<%d>; \n' %dim)
+#    f.write('template class EvaluationPoints<%d>; \n' %dim)
     for fun in sub_dim_members:
         k = dim
         s = fun.replace('dim', '%d' % (dim)).replace('k', '%d' % (k));
         f.write('template ' + s + '\n')
         
 for dim in inst.domain_dims:
-#    f.write('template class QuadratureTensorProduct<%d>; \n' %dim)
+#    f.write('template class EvaluationPoints<%d>; \n' %dim)
     for fun in sub_dim_members:
         for k in inst.sub_dims(dim):
             s = fun.replace('dim', '%d' % (dim)).replace('k', '%d' % (k));

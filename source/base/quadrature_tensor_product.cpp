@@ -25,8 +25,8 @@
 IGA_NAMESPACE_OPEN
 
 template<int dim_>
-QuadratureTensorProduct<dim_>::
-QuadratureTensorProduct()
+EvaluationPoints<dim_>::
+EvaluationPoints()
     :
     EvaluationPoints<dim_>()
 {
@@ -38,8 +38,8 @@ QuadratureTensorProduct()
 // constructor use specific function for this
 
 template<int dim_>
-QuadratureTensorProduct<dim_>::
-QuadratureTensorProduct(
+EvaluationPoints<dim_>::
+EvaluationPoints(
     const TensorSize<dim_> num_points,
     void (*compute_coords_and_weight_1d_in)
     (const int n_pts_id, vector<Real> &coords,vector<Real> &weights),
@@ -90,8 +90,8 @@ QuadratureTensorProduct(
 
 
 template<int dim_>
-QuadratureTensorProduct<dim_>::
-QuadratureTensorProduct(
+EvaluationPoints<dim_>::
+EvaluationPoints(
     const PointVector &points,
     const DirectionArray &weights_1d,
     const BBox<dim_> &bounding_box)

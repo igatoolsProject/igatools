@@ -44,7 +44,7 @@ using TupleList = decltype(tuple_of_quads<Q>(std::make_index_sequence<dim+1>()))
 
 template<int dim>
 using QuadList = TupleList<dim, EvaluationPoints>;
-//using QuadList = TupleList<dim, QuadratureTensorProduct>;
+//using QuadList = TupleList<dim, EvaluationPoints>;
 
 
 

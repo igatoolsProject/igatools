@@ -126,7 +126,11 @@ public:
      */
     EvaluationPoints(const PointVector &points);
 
-
+    EvaluationPoints(const TensorSize<dim> &num_points,
+    		void (*)(int, iga::vector<double>&, iga::vector<double>&));
+    /**
+     * Tensor product constructor
+     */
     EvaluationPoints(const PointArray &points,
                      const WeightArray &weights_1d);
     /**

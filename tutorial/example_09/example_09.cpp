@@ -70,8 +70,8 @@ private:
     shared_ptr<Mapping<dim>> map;
     shared_ptr<Space>        space;
 
-    const QuadratureTensorProduct<dim>   elem_quad;
-    const QuadratureTensorProduct<dim-1> face_quad;
+    const EvaluationPoints<dim>   elem_quad;
+    const EvaluationPoints<dim-1> face_quad;
 
     const boundary_id dir_id = 0;
 

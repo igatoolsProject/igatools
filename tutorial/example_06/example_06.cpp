@@ -74,8 +74,8 @@ private:
     using Space = BSplineSpace<dim>;
     shared_ptr<Space> space;
 
-    const QuadratureTensorProduct<dim>   elem_quad;
-    const QuadratureTensorProduct<dim-1> face_quad;
+    const EvaluationPoints<dim>   elem_quad;
+    const EvaluationPoints<dim-1> face_quad;
     // [members]
 
     // [la members]

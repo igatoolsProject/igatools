@@ -46,7 +46,7 @@ template<class Space, LAPack la_pack = LAPack::trilinos_tpetra>
 std::shared_ptr<IgFunction<Space> >
 projection_l2(const std::shared_ptr<const typename Space::Func> function,
               std::shared_ptr<const Space> space,
-              const QuadratureTensorProduct<Space::dim> &quad)
+              const EvaluationPoints<Space::dim> &quad)
 {
     auto func = function->clone();
     const int dim = Space::dim;
@@ -147,7 +147,7 @@ template<class Space, LAPack la_pack = LAPack::trilinos_tpetra>
 void
 project_boundary_values(const std::shared_ptr<const typename Space::Func> function,
                         std::shared_ptr<const Space> space,
-                        const QuadratureTensorProduct<Space::dim-1> &quad,
+                        const EvaluationPoints<Space::dim-1> &quad,
                         const std::set<boundary_id>  &boundary_ids,
                         std::map<Index, Real>  &boundary_values)
 {
@@ -203,7 +203,7 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
 template<int dim, int codim = 0, int range = 1, int rank = 1>
 Real integrate_difference(Function<dim, codim, range, rank> &f,
                           Function<dim, codim, range, rank> &g,
-                          const QuadratureTensorProduct<dim> &quad,
+                          const EvaluationPoints<dim> &quad,
                           const Norm &norm_flag,
                           vector<Real> &element_error)
 {
@@ -387,7 +387,7 @@ Index find_span(
 template<class Space, LAPack la_pack = LAPack::trilinos>
 Real integrate_difference(const typename Space::Func &exact_solution,
                           std::shared_ptr<const Space> space,
-                          const QuadratureTensorProduct< Space::dim > &quad,
+                          const EvaluationPoints< Space::dim > &quad,
                           const Norm &norm_flag,
                           const Vector<la_pack> &solution_coefs,
                           vector<Real> &element_error);
@@ -407,7 +407,7 @@ template<class Space, LAPack la_pack = LAPack::trilinos>
 Vector<la_pack>
 projection_l2(const typename Space::Func &func,
               std::shared_ptr<const Space> space,
-              const QuadratureTensorProduct<Space::dim> &quad);
+              const EvaluationPoints<Space::dim> &quad);
 
 /**
  * Projects (using the L2 scalar product) a function to the whole or part
@@ -424,7 +424,7 @@ template<class Space, LAPack la_pack = LAPack::trilinos>
 void project_boundary_values(
     const typename Space::Func &func,
     std::shared_ptr<const Space> space,
-    const QuadratureTensorProduct<Space::dim-1> &quad,
+    const EvaluationPoints<Space::dim-1> &quad,
     const std::set<boundary_id>  &boundary_ids,
     std::map<Index, Real>  &boundary_values);
 
@@ -435,7 +435,7 @@ template<class Space, LAPack la_pack = LAPack::trilinos>
 void project_boundary_values(
     const typename Space::Func &func,
     std::shared_ptr<const Space> space,
-    const QuadratureTensorProduct<Space::dim-1> &quad,
+    const EvaluationPoints<Space::dim-1> &quad,
     const boundary_id bdry_id,
     std::map<Index,Real>  &boundary_values) ;
 

@@ -460,8 +460,8 @@ int main()
 
 
 
-    //const QuadratureTensorProduct<dim>   joint_elem_quad(QGauss<dim>(deg+1));
-    const QuadratureTensorProduct<dim-1> joint_face_quad(QGauss<dim-1>(deg+1));
+    //const EvaluationPoints<dim>   joint_elem_quad(QGauss<dim>(deg+1));
+    const EvaluationPoints<dim-1> joint_face_quad(QGauss<dim-1>(deg+1));
     const int n_qp = joint_face_quad.get_num_points();
 
     auto  slave_joint_face_quad_gbl   = extend_face_quad(joint_face_quad,1);

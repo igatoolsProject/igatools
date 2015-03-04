@@ -43,12 +43,12 @@ IGA_NAMESPACE_OPEN
  * It's main purpose is to be the base class for QGauss, QGaussLobatto, QUniform.
  */
 template<int dim_>
-class QuadratureTensorProduct
+class EvaluationPoints
     : public EvaluationPoints<dim_>
 {
 private:
     using parent_t = EvaluationPoints<dim_>;
-    using self_t = QuadratureTensorProduct<dim_>;
+    using self_t = EvaluationPoints<dim_>;
 public:
 
     using typename EvaluationPoints<dim_>::Point;
@@ -63,7 +63,7 @@ protected:
     /**
      * Default constructor. It sets the bounding-box to be the hypercube \f$ [0,1]^{dim}\f$ with no points inside.
      */
-    QuadratureTensorProduct();
+    EvaluationPoints();
 
 #if 0
     /**
@@ -79,7 +79,7 @@ protected:
      * The <p>eps</p> argument allows to perform a local scaling
      * of the quadrature points.
      */
-    explicit QuadratureTensorProduct(
+    explicit EvaluationPoints(
         const TensorSize<dim_> num_points,
         void (*compute_coords_and_weight_1d)
         (const int n_pts_1d, vector<Real> &coords,vector<Real> &weights),
@@ -91,30 +91,30 @@ public:
      * weights and the domain coordinates of the d-dimensional hypercube
      * upon which the quadrature is referred to.
      */
-    explicit QuadratureTensorProduct(
+    explicit EvaluationPoints(
         const PointVector &points,
         const WeightArray &weights_1d,
         const BBox<dim_> &bounding_box);
 #endif
 
 public:
-    explicit QuadratureTensorProduct(
+    explicit EvaluationPoints(
     /**
      * Destructor.
      */
-    ~QuadratureTensorProduct() = default;
+    ~EvaluationPoints() = default;
 
 
     /**
      * Copy constructor.
      * It performs a deep copy of the Quadrature object.
      */
-    QuadratureTensorProduct(const self_t &quad_scheme) = default;
+    EvaluationPoints(const self_t &quad_scheme) = default;
 
     /**
     * Move constructor.
     */
-    QuadratureTensorProduct(self_t &&quad_scheme) = default;
+    EvaluationPoints(self_t &&quad_scheme) = default;
     ///@}
 
     ///@name Assignment operators
@@ -123,12 +123,12 @@ public:
      * Copy assignment operator.
      * It performs a deep copy of the Quadrature object.
      */
-    QuadratureTensorProduct<dim_> &operator=(const self_t &quad_scheme) = default;
+    EvaluationPoints<dim_> &operator=(const self_t &quad_scheme) = default;
 
     /**
      * Move assignment operator.
      */
-    QuadratureTensorProduct<dim_> &operator=(self_t  &&quad_scheme) = default;
+    EvaluationPoints<dim_> &operator=(self_t  &&quad_scheme) = default;
     ///@}
 
 protected:

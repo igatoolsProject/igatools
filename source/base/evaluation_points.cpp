@@ -54,6 +54,29 @@ EvaluationPoints(const BBox<dim_> &bounding_box)
     bounding_box_(bounding_box)
 {}
 
+template<int dim_>
+EvaluationPoints<dim_>::
+EvaluationPoints(const TensorSize<dim> &num_points,
+		void (*quad_1d)(int, iga::vector<double>&, iga::vector<double>&))
+		:
+		coordinates_(num_points),
+		weights_1d_(num_points),
+		is_tensor_product_(true)
+{
+	iga::vector<double> pts;
+	iga::vector<double> w;
+	for(int i = 0; i<dim; ++i)
+	{
+		quad_1d(num_points[i],pts,w);
+		coordinates_.copy_data_direction(i, pts);
+		weights_1d_.copy_data_direction(i, w);
+	}
+
+	const auto n_pts = coordinates_.flat_size();
+	for (int i = 0 ; i < n_pts ; ++i)
+		map_point_id_to_coords_id_.push_back(coordinates_.flat_to_tensor(i));
+}
+
 
 
 template<int dim_>

@@ -302,7 +302,7 @@ void Mortar_Interface<dim, dim_field>::integration()
 
     // Face quadrature
     const int int_pts(degree_multiplier_+1);
-    const QuadratureTensorProduct<dim-1> joint_face_quad(QGauss<dim-1>(int_pts+1));
+    const EvaluationPoints<dim-1> joint_face_quad(QGauss<dim-1>(int_pts+1));
     const int n_qp                         = joint_face_quad.get_num_points();
     auto  face_w_unit_domain               = joint_face_quad.get_weights().get_flat_tensor_product();
     auto  face_quad_pts_unit_domain        = joint_face_quad.get_points().get_flat_cartesian_product();

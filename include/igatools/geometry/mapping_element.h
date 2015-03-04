@@ -446,7 +446,7 @@ class ValuesCache : public CacheStatus
 {
 public:
     void reset(const MappingFlags &flags_handler,
-               const QuadratureTensorProduct<dim> &quad);
+               const EvaluationPoints<dim> &quad);
 
     //TODO: the next member variables should be protected
 public:
@@ -470,7 +470,7 @@ public:
     ValueVector< Real > w_measures_;
 
     Size num_points_ = 0;
-    QuadratureTensorProduct<dim> quad_;
+    EvaluationPoints<dim> quad_;
 
     void print_info(LogStream &out) const
     {
@@ -517,7 +517,7 @@ public:
 struct ElementValuesCache : ValuesCache
 {
     void reset(const MappingFlags &flags_handler,
-               const QuadratureTensorProduct<dim> &quad);
+               const EvaluationPoints<dim> &quad);
 
 };
 
@@ -526,11 +526,11 @@ struct FaceValuesCache : ValuesCache
 {
     void reset(const Index face_id,
                const MappingFaceValueFlagsHandler &flags_handler,
-               const QuadratureTensorProduct<dim> &quad);
+               const EvaluationPoints<dim> &quad);
 
     void reset(const Index face_id,
                const MappingFaceValueFlagsHandler &flags_handler,
-               const QuadratureTensorProduct<dim-1> &quad);
+               const EvaluationPoints<dim-1> &quad);
 
 
     ValueVector< ValueMap > normals_;

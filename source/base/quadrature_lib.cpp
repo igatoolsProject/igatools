@@ -270,7 +270,7 @@ QGauss(const Size num_points) :
 template< int dim >
 QGauss< dim >::
 QGauss(const TensorSize<dim> num_points) :
-    QuadratureTensorProduct<dim>(num_points,&gauss_legendre_quadrature,0.0)
+    EvaluationPoints<dim>(num_points, &gauss_legendre_quadrature)
 {}
 
 
@@ -303,8 +303,9 @@ QGaussLobatto(const Size num_points, const Real eps_scaling)
 template< int dim >
 QGaussLobatto< dim >::
 QGaussLobatto(const TensorSize<dim> num_points, const Real eps_scaling) :
-    QuadratureTensorProduct< dim >(num_points,&gauss_lobatto_quadrature,eps_scaling)
+    EvaluationPoints< dim >(num_points,&gauss_lobatto_quadrature)
 {
+	Assert(false, ExcMessage("Do eps scaling here");
 #ifndef NDEBUG
     // Gauss-Lobatto schemes needs at least 2 points in each direction
     for (int i = 0; i < dim; ++i)
@@ -344,7 +345,7 @@ QUniform(const Size num_points, const Real eps_scaling)
 template< int dim >
 QUniform<dim>::QUniform(const TensorSize<dim> num_points, const Real eps_scaling)
     :
-    QuadratureTensorProduct< dim >(num_points,&uniform_quadrature,eps_scaling)
+    EvaluationPoints< dim >(num_points,&uniform_quadrature,eps_scaling)
 {
 #ifndef NDEBUG
     // Uniform schemes needs at least 2 points in each direction

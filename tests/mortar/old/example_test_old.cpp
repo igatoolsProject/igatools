@@ -337,8 +337,8 @@ int main()
     }
 
 
-    const QuadratureTensorProduct<dim>   elem_quad0(QGauss<dim>(deg0+1));
-    const QuadratureTensorProduct<dim-1> face_quad0(QGauss<dim-1>(deg0+1));
+    const EvaluationPoints<dim>   elem_quad0(QGauss<dim>(deg0+1));
+    const EvaluationPoints<dim-1> face_quad0(QGauss<dim-1>(deg0+1));
     std::shared_ptr<Matrix<LAPack::trilinos>> matrix;
     std::shared_ptr<Vector<LAPack::trilinos>> rhs;
     std::shared_ptr<Vector<LAPack::trilinos>> solution;
