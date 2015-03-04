@@ -629,7 +629,9 @@ private:
 
 public:
 
-
+//TODO (pauletti, Mar 3, 2015): element information is accessed through the accessor
+// maybe all members functions below are ill-designed, also the only valid index for an element
+// is an iterator
     /**
      * @name Functions related to the management/query of the element properties.
      */
@@ -717,10 +719,6 @@ private:
 
     friend class CartesianGridElement<dim_>;
 };
-
-//template<int dim_>
-//std::shared_ptr<CartesianGrid::SubGrid<dim_-1>>
-//get_face_grid(const int sub_elem_id, InterGridMap<k> &elem_map) const;
 
 IGA_NAMESPACE_CLOSE
 

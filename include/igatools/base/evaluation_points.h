@@ -193,15 +193,16 @@ public:
      * @name Functions returning informations about the arrangement structure of the points and weights.
      */
     ///@{
+    bool is_tensor_product() const;
     /**
      * Returns TRUE if the evaluation points have a tensor-product structure.
      */
-    bool have_points_tensor_product_struct() const;
+    //bool have_points_tensor_product_struct() const;
 
     /**
      * Returns TRUE if the weights have a tensor-product structure.
      */
-    bool have_weights_tensor_product_struct() const;
+   // bool have_weights_tensor_product_struct() const;
     ///@}
 
 
@@ -338,9 +339,10 @@ protected:
      */
     vector<TensorIndex<dim_>> map_point_id_to_coords_id_;
 
-    BBox<dim_> bounding_box_;
+
 
     const bool is_tensor_product_;
+    BBox<dim_> bounding_box_;
 //    bool  points_have_tensor_product_struct_ = false;
 //
 //    bool weights_have_tensor_product_struct_ = false;

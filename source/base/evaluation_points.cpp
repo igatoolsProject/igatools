@@ -182,6 +182,7 @@ reset_points_coordinates_and_weights(
     const PointVector &pts,
     const WeightArray &weights_1d)
 {
+	Assert(!is_tensor_product_, ExcNotImplemented());
     const int n_pts = pts.size();
     Assert(n_pts > 0 , ExcEmptyObject());
 
@@ -238,7 +239,7 @@ reset_points_coordinates_and_weights(
     //-----------------------------------------------------------------
 
 
-
+#if 0
     //-----------------------------------------------------------------
     //here we check if the points have a tensor-product structure,
     //comparing the coordinate indices
@@ -275,10 +276,20 @@ reset_points_coordinates_and_weights(
 
     }
     //-----------------------------------------------------------------
+#endif
+
 }
 
 
+template<int dim_>
+bool
+EvaluationPoints<dim_>::
+is_tensor_product() const
+{
+    return this->is_tensor_product_;
+}
 
+#if 0
 template<int dim_>
 bool
 EvaluationPoints<dim_>::
@@ -296,7 +307,7 @@ have_weights_tensor_product_struct() const
 {
     return this->weights_have_tensor_product_struct_;
 }
-
+#endif
 
 
 template<int dim_>
@@ -449,38 +460,32 @@ auto
 EvaluationPoints<dim_>::
 collapse_to_sub_element(const int sub_elem_id) const -> EvaluationPoints<dim_>
 {
-    auto &k_elem = UnitElement<dim_>::template get_elem<k>(sub_elem_id);
+	Assert(is_tensor_product_, ExcNotImplemented());
 
-    if (this->have_weights_tensor_product_struct() &&
-            this->have_points_tensor_product_struct())
-    {
-        PointArray new_coords_1d;
-        WeightArray new_weights_1d;
-        const int n_dir = k_elem.constant_directions.size();
-        for (int j = 0 ; j < n_dir; ++j)
-        {
-            auto dir = k_elem.constant_directions[j];
-            auto val = k_elem.constant_values[j];
+	auto &k_elem = UnitElement<dim_>::template get_elem<k>(sub_elem_id);
 
-            new_coords_1d.copy_data_direction(dir, vector<Real>(1, val));
-            new_weights_1d.copy_data_direction(dir, vector<Real>(1, 1.));
+	PointArray new_coords_1d;
+	WeightArray new_weights_1d;
+	const int n_dir = k_elem.constant_directions.size();
+	for (int j = 0 ; j < n_dir; ++j)
+	{
+		auto dir = k_elem.constant_directions[j];
+		auto val = k_elem.constant_values[j];
 
-        }
+		new_coords_1d.copy_data_direction(dir, vector<Real>(1, val));
+		new_weights_1d.copy_data_direction(dir, vector<Real>(1, 1.));
 
-        for (auto i : k_elem.active_directions)
-        {
-            new_coords_1d.copy_data_direction(i, coordinates_.get_data_direction(i));
-            new_weights_1d.copy_data_direction(i, weights_1d_.get_data_direction(i));
-        }
+	}
 
-        return self_t(new_coords_1d, new_weights_1d);
-    }
-    else
-    {
-        Assert(false,ExcNotImplemented());
+	for (auto i : k_elem.active_directions)
+	{
+		new_coords_1d.copy_data_direction(i, coordinates_.get_data_direction(i));
+		new_weights_1d.copy_data_direction(i, weights_1d_.get_data_direction(i));
+	}
 
-    }
-    return self_t();
+	return self_t(new_coords_1d, new_weights_1d);
+
+	return self_t();
 }
 
 

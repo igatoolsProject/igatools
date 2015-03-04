@@ -21,9 +21,9 @@
 #define QUADRATURE_LIB_H_
 
 #include <igatools/base/config.h>
-#include <igatools/base/quadrature_tensor_product.h>
+#include <igatools/base/evaluation_points.h>
 
-#include <memory>
+//#include <memory>
 
 IGA_NAMESPACE_OPEN
 
