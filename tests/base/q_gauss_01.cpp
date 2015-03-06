@@ -18,83 +18,59 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/**
- * This file contains the test for the Gauss-Legendre quadrature scheme,
- * implemented by the QGauss class.
- * \author Sebasian Pauletti (spauletti@gmail.com)
- * \author Massimiliano Martinelli (massimiliano.martinelli@gmail.com)
- * \date 08/04/2013
+/*
+ *  Test for  Gauss-Legendre quadrature scheme
+ *
+ *  author: pauletti
+ *  date: 2015-03-06
+ *
  */
 
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
+#include <igatools/base/array_utils.h>
 
-
-void do_test_zero()
+template <int dim>
+void uniform(const int n_pts)
 {
-    out << "-------------------------------" << endl ;
-    out << "Dimension: 0" << endl;
-    QGauss<0> quad(1) ;
+    OUTSTART
+
+    QGauss<dim> quad(n_pts);
     quad.print_info(out) ;
-    out << "-------------------------------" << endl ;
-    out <<endl ;
+
+    OUTEND
 }
 
-//Isotropic
+
 template <int dim>
-void do_test()
+void non_uniform(const int n_pts)
 {
-    out << "-------------------------------" << endl ;
-    const int max_deg = 4;
-    out << "Dimension: " << dim << endl;
-    for (int i = 1; i < max_deg; ++i)
-    {
-        out << "Points per direction: " << i << endl;
-        QGauss<dim> quad(i);
-        quad.print_info(out) ;
-    }
-    out << "-------------------------------" << endl ;
-    out <<endl ;
+    OUTSTART
+
+    const TensorSize<dim> n_points (arr::sequence<dim>(n_pts));
+    QGauss<dim> quad(n_points);
+    quad.print_info(out);
+
+    OUTEND
 }
 
 
-//Anisotropic
-template <int dim>
-void do_test_aniso()
+int main()
 {
-    out << "-------------------------------" << endl ;
-    const int max_deg = 4;
-    out << "Dimension: " << dim << endl;
-    for (int i = 1; i < max_deg; ++i)
+    const int max_n_pts = 4;
+    for (int n = 1; n <  max_n_pts; ++n)
     {
-        out << "Points per direction: ";
-        TensorSize<dim> n_points;
-        for (int j = 0; j < dim; ++j)
-        {
-            n_points[j] = i + j;
-            out << i+j << " ";
-        }
-        out << endl;
-        QGauss<dim> quad(n_points);
-        quad.print_info(out) ;
+        uniform<0>(n);
+        uniform<1>(n);
+        uniform<2>(n);
+        uniform<3>(n);
+
+        non_uniform<0>(n);
+        non_uniform<1>(n);
+        non_uniform<2>(n);
+        non_uniform<3>(n);
     }
-    out << "-------------------------------" << endl ;
-    out <<endl ;
-}
-
-
-int main(int argc, char *argv[])
-{
-//    do_test_zero() ;
-
-    do_test<1>();
-    do_test<2>();
-    do_test<3>();
-
-    do_test_aniso<1>();
-    do_test_aniso<2>();
-    do_test_aniso<3>();
 
     return 0;
 }
