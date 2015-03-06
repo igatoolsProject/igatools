@@ -47,7 +47,7 @@ void run_test(std::string &file_name)
     map->print_info(out);
     out << endl;
 
-    QTrapez<dim> quad(Real(0.0));
+    QTrapez<dim> quad;
     const auto quad_pts = quad.get_points();
     out.begin_item("Quad pts.:");
     quad_pts.print_info(out);

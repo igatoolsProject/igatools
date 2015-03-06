@@ -293,19 +293,19 @@ QGauss< dim >::create(const TensorSize<dim> num_points)
 
 template< int dim >
 QGaussLobatto< dim >::
-QGaussLobatto(const Size num_points, const Real eps_scaling)
+QGaussLobatto(const Size num_points)
     :
-    QGaussLobatto(TensorSize<dim>(num_points),eps_scaling)
+    QGaussLobatto(TensorSize<dim>(num_points))
 {}
 
 
 
 template< int dim >
 QGaussLobatto< dim >::
-QGaussLobatto(const TensorSize<dim> num_points, const Real eps_scaling) :
+QGaussLobatto(const TensorSize<dim> num_points) :
     EvaluationPoints< dim >(num_points,&gauss_lobatto_quadrature)
 {
-	Assert(false, ExcMessage("Do eps scaling here");
+	Assert(false, ExcMessage("Do eps scaling here"));
 #ifndef NDEBUG
     // Gauss-Lobatto schemes needs at least 2 points in each direction
     for (int i = 0; i < dim; ++i)
@@ -317,35 +317,35 @@ QGaussLobatto(const TensorSize<dim> num_points, const Real eps_scaling) :
 
 template< int dim >
 std::shared_ptr< QGaussLobatto< dim > >
-QGaussLobatto< dim >::create(const Size num_points, const Real eps_scaling)
+QGaussLobatto< dim >::create(const Size num_points)
 {
-    return (std::shared_ptr< QGaussLobatto< dim > >(new QGaussLobatto< dim >(num_points, eps_scaling))) ;
+    return (std::shared_ptr< QGaussLobatto< dim > >(new QGaussLobatto< dim >(num_points))) ;
 }
 
 
 
 template< int dim >
 std::shared_ptr< QGaussLobatto< dim > >
-QGaussLobatto< dim >::create(const TensorSize<dim> num_points, const Real eps_scaling)
+QGaussLobatto< dim >::create(const TensorSize<dim> num_points)
 {
-    return (std::shared_ptr< QGaussLobatto< dim > >(new QGaussLobatto< dim >(num_points, eps_scaling))) ;
+    return (std::shared_ptr< QGaussLobatto< dim > >(new QGaussLobatto< dim >(num_points))) ;
 }
 
 
 
 template< int dim >
 QUniform<dim>::
-QUniform(const Size num_points, const Real eps_scaling)
+QUniform(const Size num_points)
     :
-    QUniform(TensorSize<dim>(num_points),eps_scaling)
+    QUniform(TensorSize<dim>(num_points))
 {}
 
 
 
 template< int dim >
-QUniform<dim>::QUniform(const TensorSize<dim> num_points, const Real eps_scaling)
+QUniform<dim>::QUniform(const TensorSize<dim> num_points)
     :
-    EvaluationPoints< dim >(num_points,&uniform_quadrature,eps_scaling)
+    EvaluationPoints< dim >(num_points,&uniform_quadrature)
 {
 #ifndef NDEBUG
     // Uniform schemes needs at least 2 points in each direction
@@ -358,33 +358,33 @@ QUniform<dim>::QUniform(const TensorSize<dim> num_points, const Real eps_scaling
 
 template< int dim >
 std::shared_ptr< QUniform< dim > >
-QUniform< dim >::create(const Size num_points, const Real eps_scaling)
+QUniform< dim >::create(const Size num_points)
 {
-    return (std::shared_ptr< QUniform< dim > >(new QUniform< dim >(num_points, eps_scaling))) ;
+    return (std::shared_ptr< QUniform< dim > >(new QUniform< dim >(num_points))) ;
 }
 
 
 template< int dim >
 std::shared_ptr< QUniform< dim > >
-QUniform< dim >::create(const TensorSize<dim> num_points, const Real eps_scaling)
+QUniform< dim >::create(const TensorSize<dim> num_points)
 {
-    return (std::shared_ptr< QUniform< dim > >(new QUniform< dim >(num_points, eps_scaling))) ;
+    return (std::shared_ptr< QUniform< dim > >(new QUniform< dim >(num_points))) ;
 }
 
 
 
 template< int dim >
-QTrapez<dim>::QTrapez(const Real eps_scaling)
+QTrapez<dim>::QTrapez()
     :
-    QUniform<dim>(2, eps_scaling)
+    QUniform<dim>(2)
 {}
 
 
 template< int dim >
 std::shared_ptr< QTrapez< dim > >
-QTrapez< dim >::create(const Real eps_scaling)
+QTrapez< dim >::create()
 {
-    return (std::shared_ptr< QTrapez< dim > >(new QTrapez< dim >(eps_scaling))) ;
+    return (std::shared_ptr< QTrapez< dim > >(new QTrapez< dim >())) ;
 }
 
 IGA_NAMESPACE_CLOSE

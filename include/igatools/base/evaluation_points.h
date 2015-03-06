@@ -252,6 +252,8 @@ public:
     Real get_weight(const int pt_id) const;
 
 
+    const PointArray &get_points_1d() const;
+
     const WeightArray &get_weights_1d() const;
 
     /**
@@ -345,7 +347,8 @@ protected:
 
 
 
-    const bool is_tensor_product_;
+    // TODO (pauletti, Mar 6, 2015): should be const
+    bool is_tensor_product_;
     BBox<dim_> bounding_box_;
 //    bool  points_have_tensor_product_struct_ = false;
 //

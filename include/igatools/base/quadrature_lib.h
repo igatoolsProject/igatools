@@ -237,7 +237,7 @@ public:
      * with \p num_points points in each coordinate direction.
      * The <p>eps</p> argument allows to perform a local scaling of the quadrature points.
      */
-    explicit QGaussLobatto(const Size num_points, const Real eps_scaling = 0.0);
+    explicit QGaussLobatto(const Size num_points);
 
     /**
      * Constructor.
@@ -246,7 +246,7 @@ public:
      * The number of points along the \p i-th coordinate direction is specified by \p num_points[i].
      * The <p>eps</p> argument allows to perform a local scaling of the quadrature points.
      */
-    explicit QGaussLobatto(const TensorSize<dim> num_points, const Real eps_scaling = 0.0);
+    explicit QGaussLobatto(const TensorSize<dim> num_points);
 
     /**
      * Copy constructor. Performs a deep copy of the QGaussLobatto<dim> object.
@@ -279,7 +279,7 @@ public:
      * with \p num_points points in each coordinate direction.
      */
     static std::shared_ptr< QGaussLobatto< dim > >
-    create(const Size num_points, const Real eps_scaling = 0.0);
+    create(const Size num_points);
 
     /**
      * Returns a Gauss-Lobatto quadrature scheme (wrapped by a std::shared_ptr)
@@ -288,7 +288,7 @@ public:
      * The number of points along the \p i-th coordinate direction is specified by \p num_points[i].
      */
     static std::shared_ptr< QGaussLobatto< dim > >
-    create(const TensorSize<dim> num_points, const Real eps_scaling = 0.0);
+    create(const TensorSize<dim> num_points);
 } ;
 
 #if 0
@@ -373,7 +373,7 @@ public:
      * with \p num_points points in each coordinate direction.
      * The eps argument allows to do a local scaling of the quadrature points.
      */
-    explicit QUniform(const Size num_points, const Real eps_scaling = 0.0) ;
+    explicit QUniform(const Size num_points) ;
 
     /**
      * Constructor.
@@ -382,7 +382,7 @@ public:
      * The number of points along the \p i-th coordinate direction is specified by \p num_points[i].
      * The eps argument allows to do a local scaling of the quadrature points.
      */
-    explicit QUniform(const TensorSize<dim> num_points, const Real eps_scaling = 0.0) ;
+    explicit QUniform(const TensorSize<dim> num_points) ;
 
     /**
      * Copy constructor. Performs a deep copy of the QUniform<dim> object.
@@ -416,7 +416,7 @@ public:
      * The eps argument allows to do a local scaling of the quadrature points.
      */
     static std::shared_ptr< QUniform< dim > >
-    create(const Size num_points, const Real eps_scaling = 0.0) ;
+    create(const Size num_points) ;
 
     /**
      * Returns a uniform quadrature scheme (wrapped by a std::shared_ptr) on
@@ -426,7 +426,7 @@ public:
      * The eps argument allows to do a local scaling of the quadrature points.
      */
     static std::shared_ptr< QUniform< dim > >
-    create(const TensorSize<dim> num_points, const Real eps_scaling = 0.0) ;
+    create(const TensorSize<dim> num_points) ;
 } ;
 
 
@@ -446,7 +446,7 @@ public:
      * exact for linear polynomials.
      * The eps argument allows to do a local scaling of the quadrature points.
      */
-    explicit QTrapez(const Real eps_scaling = 0.0);
+    explicit QTrapez();
 
     /**
      * Copy constructor. Performs a deep copy of the QTrapez<dim> object.
@@ -480,7 +480,7 @@ public:
      * The eps argument allows to do a local scaling of the quadrature points.
      */
     static std::shared_ptr< QTrapez< dim > >
-    create(const Real eps_scaling = 0.0) ;
+    create() ;
 
 } ;
 

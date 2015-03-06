@@ -126,7 +126,7 @@ void do_test_aniso_scaled(const Real &eps_scale)
 }
 
 
-int main(int argc, char *argv[])
+int main()
 {
 //    do_test_zero() ;
 
@@ -134,17 +134,17 @@ int main(int argc, char *argv[])
     do_test<2>();
     do_test<3>();
 
-    do_test_scaled<1>(1.0e-9);
-    do_test_scaled<2>(1.0e-9);
-    do_test_scaled<3>(1.0e-9);
+//    do_test_scaled<1>(1.0e-9);
+//    do_test_scaled<2>(1.0e-9);
+//    do_test_scaled<3>(1.0e-9);
 
     do_test_aniso<1>();
     do_test_aniso<2>();
     do_test_aniso<3>();
 
-    do_test_aniso_scaled<1>(1.0e-9);
-    do_test_aniso_scaled<2>(1.0e-9);
-    do_test_aniso_scaled<3>(1.0e-9);
+//    do_test_aniso_scaled<1>(1.0e-9);
+//    do_test_aniso_scaled<2>(1.0e-9);
+//    do_test_aniso_scaled<3>(1.0e-9);
 
     return 0;
 }
