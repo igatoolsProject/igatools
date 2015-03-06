@@ -278,6 +278,11 @@ public:
 
     virtual vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const override final;
 
+    vector<Index> get_element_dofs(
+        const CartesianGridElement<dim> &element,
+        const DofDistribution<dim, range, rank> &dofs_distribution) const;
+
+
     /** @name Functions involving the element iterator */
     ///@{
     /**

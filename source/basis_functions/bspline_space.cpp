@@ -424,21 +424,14 @@ get_global_dof_id(const TensorIndex<dim> &tensor_index,
 template<int dim_, int range_, int rank_>
 vector<Index>
 BSplineSpace<dim_, range_, rank_>::
-get_loc_to_global(const CartesianGridElement<dim> &element) const
+get_element_dofs(
+    const CartesianGridElement<dim> &element,
+    const DofDistribution<dim, range, rank> &dofs_distribution) const
 {
-#if 0
-    const auto element_dofs = dof_distribution_global_.get_loc_to_global_indices(element);
-
-#endif
-
-
-
-//#if 0
     const auto &accum_mult = this->space_data_->accumulated_interior_multiplicities();
-    const auto &index_table = dof_distribution_global_.get_index_table();
+    const auto &index_table = dofs_distribution.get_index_table();
 
     const auto &degree_table = this->space_data_->get_degree();
-//    const auto & n_basis_table = this->space_data_->get_num_basis_table();
 
     vector<Index> element_dofs;
     const auto &elem_tensor_id = element.get_tensor_index();
@@ -470,26 +463,33 @@ get_loc_to_global(const CartesianGridElement<dim> &element) const
 
 
 
+        //-----------------------------------------------------------------
         const auto &index_table_comp = index_table[comp];
 
-        auto dof_t_origin = accum_mult[comp].cartesian_product(elem_tensor_id);
+        const auto dof_t_origin = accum_mult[comp].cartesian_product(elem_tensor_id);
         for (const auto loc_dof_t_id : elem_comp_dof_t_id)
         {
             const auto dof_t_id = dof_t_origin + loc_dof_t_id;
             element_dofs.emplace_back(index_table_comp(dof_t_id));
         }
+        //-----------------------------------------------------------------
 
     } // end comp loop
-//#endif
-    /*
-        LogStream out;
-        out.begin_item("Element dofs");
-        element_dofs.print_info(out);
-        out.end_item();
-    //*/
-//    Assert(false,ExcNotImplemented());
 
     return element_dofs;
+}
+
+template<int dim_, int range_, int rank_>
+vector<Index>
+BSplineSpace<dim_, range_, rank_>::
+get_loc_to_global(const CartesianGridElement<dim> &element) const
+{
+#if 0
+    const auto element_dofs = dof_distribution_global_.get_loc_to_global_indices(element);
+
+#endif
+
+    return this->get_element_dofs(element,dof_distribution_global_);
 }
 
 
@@ -499,7 +499,11 @@ vector<Index>
 BSplineSpace<dim_, range_, rank_>::
 get_loc_to_patch(const CartesianGridElement<dim> &element) const
 {
+#if 0
     return dof_distribution_patch_.get_loc_to_global_indices(element);
+#endif
+
+    return this->get_element_dofs(element,dof_distribution_patch_);
 }
 
 

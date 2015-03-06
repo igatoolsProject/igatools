@@ -161,10 +161,6 @@ public:
      * Returns the number of active dofs of the @p element.
      */
     Size get_num_dofs_element(const CartesianGridElement<dim> &element) const;
-
-
-    /** Returns the active dofs of the @p element.*/
-    vector<Index> get_loc_to_global_indices(const CartesianGridElement<dim> &element) const;
     ///@}
 
 
@@ -188,13 +184,14 @@ public:
     const DofsView &get_dofs_view() const;
 
 
-
+#if 0
     /**
      * Returns a pointer to a std::map in which the key is the element flat_id and the value
      * is a const view to the global dofs on a single element of a space.
      * The size of the map is equal to the number of active elements in the space.
      */
     std::shared_ptr<const std::map<Index,DofsConstView>> get_elements_view() const;
+#endif
 
 
     /**

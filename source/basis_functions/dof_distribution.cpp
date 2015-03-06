@@ -251,16 +251,6 @@ create_element_loc_to_global_view(
 
 
 template<int dim, int range, int rank>
-vector<Index>
-DofDistribution<dim, range, rank>::
-get_loc_to_global_indices(const CartesianGridElement<dim> &element) const
-{
-    const auto &dofs_elem_view = elements_loc_to_global_flat_view_->at(element.get_flat_index());
-    return vector<Index>(dofs_elem_view.begin(),dofs_elem_view.end());
-}
-
-
-template<int dim, int range, int rank>
 void
 DofDistribution<dim, range, rank>::
 add_dofs_offset(const Index offset)
@@ -281,7 +271,7 @@ get_index_table() const -> const IndexDistributionTable &
 }
 
 
-
+#if 0
 template<int dim, int range, int rank>
 auto
 DofDistribution<dim, range, rank>::
@@ -289,7 +279,7 @@ get_elements_view() const -> std::shared_ptr<const std::map<Index,DofsConstView>
 {
     return elements_loc_to_global_flat_view_;
 }
-
+#endif
 
 template<int dim, int range, int rank>
 auto
