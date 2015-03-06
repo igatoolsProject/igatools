@@ -583,14 +583,6 @@ private:
          */
         std::shared_ptr<const ElemsDofs> get_elements_dofs() const;
 
-#if 0
-        /**
-         * Returns a vector of size equal to the number of elements in the single-patch space,
-         * for which each entry is a view of the global dofs ids active on the element.
-         */
-        const std::map<Index,DofsConstView> &get_elements_dofs_view() const;
-#endif
-
 
         /** Returns the minimum dof id present in the space.*/
         Index get_min_dofs_id() const;
@@ -1046,9 +1038,7 @@ add_space(std::shared_ptr<Space> space)
     auto elem = space->begin();
     const auto elem_end = space->end();
     for (; elem != elem_end ; ++elem)
-    {
         (*elements_dofs)[elem->get_flat_index()] = elem->get_local_to_global();
-    }
 
 
     auto space_info = std::shared_ptr<SpaceInfo>(
@@ -1066,7 +1056,6 @@ add_space(std::shared_ptr<Space> space)
                                         dof_distribution.get_max_dof_id(),
                                         dof_distribution.get_dofs_view(),
                                         elements_dofs
-//                                      ,dof_distribution.get_elements_view()
                                        ));
 
     spaces_info_[space_info->get_space_id()] = space_info;

@@ -185,10 +185,6 @@ SpaceInfo(const SpacePtrVariant &space,
     Assert(num_dofs_ > 0,ExcEmptyObject());
     Assert(elements_dofs_ != nullptr,ExcNullPtr());
     Assert(!elements_dofs_->empty(), ExcEmptyObject());
-#if 0
-    Assert(elements_dofs_view_ != nullptr,ExcNullPtr());
-    Assert(!elements_dofs_view_->empty(), ExcEmptyObject());
-#endif
 }
 
 void
@@ -482,15 +478,6 @@ is_spaces_insertion_open() const
     return is_spaces_insertion_open_;
 }
 
-#if 0
-auto
-SpaceManager::
-SpaceInfo::
-get_elements_dofs_view() const -> const std::map<Index,DofsConstView> &
-{
-    return *elements_dofs_view_;
-}
-#endif
 
 
 auto
@@ -763,7 +750,6 @@ get_sparsity_pattern() const -> shared_ptr<const DofsConnectivity>
         {
             // adding the contribution of the dofs defined within the space itself
             const auto &space_info = sp_conn.get_space_row();
-//            for (const auto element_dofs : space_info.get_elements_dofs_view())
             const auto &elements_dofs = *space_info.get_elements_dofs();
             for (const auto elem : elements_dofs)
             {
