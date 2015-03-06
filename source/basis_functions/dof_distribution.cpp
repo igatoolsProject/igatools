@@ -36,7 +36,6 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
                 const PeriodicTable &periodic,
                 DistributionPolicy pol)
     :
-    TensorSizedContainer<dim>(grid->get_num_intervals()),
     policy_(pol)
 {
     Assert(pol == DistributionPolicy::standard, ExcNotImplemented());

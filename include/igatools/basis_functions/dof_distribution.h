@@ -46,7 +46,7 @@ IGA_NAMESPACE_OPEN
  *
  */
 template<int dim, int range = 1, int rank = 1>
-class DofDistribution : public TensorSizedContainer<dim>
+class DofDistribution
 {
 public:
     using Space = SplineSpace<dim, range, rank>;
