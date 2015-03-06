@@ -240,7 +240,10 @@ private:
      */
     std::shared_ptr<std::map<Index,DofsConstView>> elements_loc_to_global_flat_view_;
 
+
+
     DistributionPolicy policy_;
+
 };
 
 IGA_NAMESPACE_CLOSE

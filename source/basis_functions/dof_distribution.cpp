@@ -121,27 +121,6 @@ get_max_dof_id() const
     return *std::max_element(dofs_view_.cbegin(),dofs_view_.cend());
 }
 
-#if 0
-template<int dim, int range, int rank>
-auto
-DofDistribution<dim, range, rank>::
-basis_flat_to_tensor(const Index index, const Index comp) const -> TensorIndex<dim>
-{
-    return index_table_[comp].flat_to_tensor(index);
-}
-
-
-template<int dim, int range, int rank>
-Index
-DofDistribution<dim, range, rank>::
-basis_tensor_to_flat(const TensorIndex<dim> &tensor_index,
-                     const Index comp) const
-{
-    const auto &index_table_comp = index_table_[comp];
-    const Index basis_flat_id_patch = index_table_comp.tensor_to_flat(tensor_index);
-    return index_table_comp[basis_flat_id_patch];
-}
-#endif
 
 
 template<int dim, int range, int rank>
@@ -268,7 +247,6 @@ create_element_loc_to_global_view(
                           DofsConstIterator(dofs_elem_ranges,IteratorState::pass_the_end));
     }
 }
-
 
 
 
