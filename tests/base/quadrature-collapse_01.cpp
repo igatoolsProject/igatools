@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Testing quadrature restriction
+ *  Testing quadrature collapse
  *  author: pauletti
  *  date: 2013-04-02
  *
