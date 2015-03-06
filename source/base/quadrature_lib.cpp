@@ -305,7 +305,6 @@ QGaussLobatto< dim >::
 QGaussLobatto(const TensorSize<dim> num_points) :
     EvaluationPoints< dim >(num_points,&gauss_lobatto_quadrature)
 {
-	Assert(false, ExcMessage("Do eps scaling here"));
 #ifndef NDEBUG
     // Gauss-Lobatto schemes needs at least 2 points in each direction
     for (int i = 0; i < dim; ++i)
