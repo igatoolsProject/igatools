@@ -120,12 +120,14 @@ BSplineSpace(const DegreeTable &deg,
         this->space_data_->get_num_basis_table(),
         this->space_data_->get_degree(),
         this->space_data_->get_periodic_table()),
+#if 0
     dof_distribution_patch_(
         this->space_data_->get_grid(),
         this->space_data_->accumulated_interior_multiplicities(),
         this->space_data_->get_num_basis_table(),
         this->space_data_->get_degree(),
         this->space_data_->get_periodic_table()),
+#endif
     operators_(
         this->space_data_->get_grid(),
         this->space_data_->compute_knots_with_repetition(end_b),
@@ -281,7 +283,7 @@ get_ref_sub_space(const int s_id,
     for (auto comp : SpaceData::components)
     {
         const int n_basis = sub_space->get_num_basis(comp);
-        const auto &sub_local_indices = sub_space->get_dof_distribution_patch().get_index_table()[comp];
+        const auto &sub_local_indices = sub_space->get_dof_distribution_global().get_index_table()[comp];
         const auto &elem_global_indices = dof_distribution_global_.get_index_table()[comp];
 
         for (Index sub_i = 0; sub_i < n_basis; ++sub_i, ++comp_i)
@@ -289,7 +291,7 @@ get_ref_sub_space(const int s_id,
             const auto sub_base_id = sub_local_indices.flat_to_tensor(sub_i);
 
             for (int j=0; j<k; ++j)
-                tensor_index[active_dirs[j]] =  sub_base_id[j];
+                tensor_index[active_dirs[j]] = sub_base_id[j];
             for (int j=0; j<n_dir; ++j)
             {
                 auto dir = k_elem.constant_directions[j];
@@ -343,14 +345,14 @@ refine_h_after_grid_refinement(
                                    this->space_data_->get_num_basis_table(),
                                    this->space_data_->get_degree(),
                                    this->space_data_->get_periodic_table());
-
+#if 0
     dof_distribution_patch_ = DofDistribution<dim, range, rank>(
                                   this->get_grid(),
                                   this->space_data_->accumulated_interior_multiplicities(),
                                   this->space_data_->get_num_basis_table(),
                                   this->space_data_->get_degree(),
                                   this->space_data_->get_periodic_table());
-
+#endif
     operators_ = BernsteinExtraction<dim, range, rank>(
                      this->get_grid(),
                      this->space_data_->compute_knots_with_repetition(end_b_),
@@ -389,7 +391,7 @@ get_dof_distribution_global() -> DofDistribution<dim, range, rank> &
 }
 
 
-
+#if 0
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
@@ -407,7 +409,7 @@ get_dof_distribution_patch() -> DofDistribution<dim, range, rank> &
 {
     return dof_distribution_patch_;
 }
-
+#endif
 
 
 template<int dim_, int range_, int rank_>
@@ -484,11 +486,6 @@ vector<Index>
 BSplineSpace<dim_, range_, rank_>::
 get_loc_to_global(const CartesianGridElement<dim> &element) const
 {
-#if 0
-    const auto element_dofs = dof_distribution_global_.get_loc_to_global_indices(element);
-
-#endif
-
     return this->get_element_dofs(element,dof_distribution_global_);
 }
 
@@ -499,11 +496,15 @@ vector<Index>
 BSplineSpace<dim_, range_, rank_>::
 get_loc_to_patch(const CartesianGridElement<dim> &element) const
 {
-#if 0
-    return dof_distribution_patch_.get_loc_to_global_indices(element);
-#endif
+    const auto elem_dofs_global = this->get_loc_to_global(element);
+    vector<Index> elem_dofs_local;
+    for (const auto dof_global : elem_dofs_global)
+    	elem_dofs_local.push_back(dof_distribution_global_.global_to_patch_local(dof_global));
 
+    return elem_dofs_local;
+#if 0
     return this->get_element_dofs(element,dof_distribution_patch_);
+#endif
 }
 
 
@@ -565,10 +566,11 @@ print_info(LogStream &out) const
     this->space_data_->print_info(out);
     out.end_item();
 
+//#if 0
     out.begin_item("Patch Basis Indices:");
-    dof_distribution_patch_.print_info(out);
+    dof_distribution_global_.print_info(out);
     out.end_item();
-
+//#endif
     out.begin_item("Global Basis Indices:");
     dof_distribution_global_.print_info(out);
     out.end_item();

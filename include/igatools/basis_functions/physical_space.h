@@ -154,13 +154,13 @@ public:
 
     /** Returns the container with the global dof distribution (non const version). */
     DofDistribution<dim, range, rank> &get_dof_distribution_global();
-
+#if 0
     /** Returns the container with the patch dof distribution (const version). */
     const DofDistribution<dim, range, rank> &get_dof_distribution_patch() const;
 
     /** Returns the container with the patch dof distribution (non const version). */
     DofDistribution<dim, range, rank> &get_dof_distribution_patch();
-
+#endif
     auto get_num_all_element_basis() const
     {
         return ref_space_->get_num_all_element_basis();

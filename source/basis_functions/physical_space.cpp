@@ -297,7 +297,7 @@ get_dof_distribution_global() -> DofDistribution<dim, range, rank> &
 }
 
 
-
+#if 0
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
@@ -315,6 +315,7 @@ get_dof_distribution_patch() -> DofDistribution<dim, range, rank> &
 {
     return ref_space_->get_dof_distribution_patch();
 }
+#endif
 
 #if 0
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
