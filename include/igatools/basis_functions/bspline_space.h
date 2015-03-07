@@ -350,16 +350,6 @@ public:
     /** Returns the container with the global dof distribution (non const version). */
     virtual DofDistribution<dim, range, rank> &
     get_dof_distribution_global() override final;
-#if 0
-    /** Returns the container with the patch dof distribution (const version). */
-    virtual const DofDistribution<dim, range, rank> &
-    get_dof_distribution_patch() const override final;
-
-
-    /** Returns the container with the patch dof distribution (non const version). */
-    virtual DofDistribution<dim, range, rank> &
-    get_dof_distribution_patch() override final;
-#endif
     ///@}
 
     /**
@@ -407,13 +397,7 @@ private:
      * dofs of all the spaces.
      */
     DofDistribution<dim, range, rank> dof_distribution_global_;
-#if 0
-    /** Container with the local to patch basis indices
-     * @note The concept of patch indices refers to the numeration at patch
-     * level of the dofs.
-     */
-    DofDistribution<dim, range, rank> dof_distribution_patch_;
-#endif
+
     /** @name Bezier extraction operator. */
     BernsteinExtraction<dim, range, rank> operators_;
 

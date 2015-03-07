@@ -120,14 +120,6 @@ BSplineSpace(const DegreeTable &deg,
         this->space_data_->get_num_basis_table(),
         this->space_data_->get_degree(),
         this->space_data_->get_periodic_table()),
-#if 0
-    dof_distribution_patch_(
-        this->space_data_->get_grid(),
-        this->space_data_->accumulated_interior_multiplicities(),
-        this->space_data_->get_num_basis_table(),
-        this->space_data_->get_degree(),
-        this->space_data_->get_periodic_table()),
-#endif
     operators_(
         this->space_data_->get_grid(),
         this->space_data_->compute_knots_with_repetition(end_b),
@@ -232,17 +224,6 @@ end() const -> ElementIterator
 }
 
 
-#if 0
-template<int dim_, int range_, int rank_>
-auto
-BSplineSpace<dim_, range_, rank_>::
-get_element_handler() const -> ElementHandler
-{
-    return ElementHandler(this->shared_from_this());
-}
-#endif
-
-
 template<int dim_, int range_, int rank_>
 template<int k>
 auto
@@ -345,14 +326,6 @@ refine_h_after_grid_refinement(
                                    this->space_data_->get_num_basis_table(),
                                    this->space_data_->get_degree(),
                                    this->space_data_->get_periodic_table());
-#if 0
-    dof_distribution_patch_ = DofDistribution<dim, range, rank>(
-                                  this->get_grid(),
-                                  this->space_data_->accumulated_interior_multiplicities(),
-                                  this->space_data_->get_num_basis_table(),
-                                  this->space_data_->get_degree(),
-                                  this->space_data_->get_periodic_table());
-#endif
     operators_ = BernsteinExtraction<dim, range, rank>(
                      this->get_grid(),
                      this->space_data_->compute_knots_with_repetition(end_b_),
@@ -390,26 +363,6 @@ get_dof_distribution_global() -> DofDistribution<dim, range, rank> &
     return dof_distribution_global_;
 }
 
-
-#if 0
-template<int dim_, int range_, int rank_>
-auto
-BSplineSpace<dim_, range_, rank_>::
-get_dof_distribution_patch() const -> const DofDistribution<dim, range, rank> &
-{
-    return dof_distribution_patch_;
-}
-
-
-
-template<int dim_, int range_, int rank_>
-auto
-BSplineSpace<dim_, range_, rank_>::
-get_dof_distribution_patch() -> DofDistribution<dim, range, rank> &
-{
-    return dof_distribution_patch_;
-}
-#endif
 
 
 template<int dim_, int range_, int rank_>
@@ -502,9 +455,6 @@ get_loc_to_patch(const CartesianGridElement<dim> &element) const
     	elem_dofs_local.push_back(dof_distribution_global_.global_to_patch_local(dof_global));
 
     return elem_dofs_local;
-#if 0
-    return this->get_element_dofs(element,dof_distribution_patch_);
-#endif
 }
 
 
