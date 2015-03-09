@@ -29,7 +29,7 @@
 
 #include <igatools/geometry/cartesian_grid.h>
 
-#include <igatools/base/evaluation_points.h>
+#include <igatools/base/quadrature.h>
 
 template<int dim>
 void def_const()

@@ -26,7 +26,7 @@
 #include <igatools/utils/value_vector.h>
 #include <igatools/geometry/cartesian_grid_iterator.h>
 #include <igatools/geometry/grid_element_handler.h>
-#include <igatools/base/evaluation_points.h>
+#include <igatools/base/quadrature.h>
 
 #include <boost/variant.hpp>
 #include <boost/mpl/vector.hpp>

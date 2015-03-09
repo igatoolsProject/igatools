@@ -28,7 +28,7 @@
 
 #include <igatools/base/cache_status.h>
 #include <igatools/base/flags_handler.h>
-#include <igatools/base/evaluation_points.h>
+#include <igatools/base/quadrature.h>
 
 //TODO(pauletti, Sep 9, 2014): should we instantiate the cartesian product instead
 //#include <igatools/utils/cartesian_product_array-template.h>

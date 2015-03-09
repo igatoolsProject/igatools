@@ -497,4 +497,4 @@ extend_sub_elem_quad(const Quadrature<k> &eval_pts,
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/base/evaluation_points.inst>
+#include <igatools/base/quadrature.inst>
