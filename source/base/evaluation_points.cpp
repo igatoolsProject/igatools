@@ -57,7 +57,7 @@ Quadrature<dim_>::
 Quadrature(const TensorSize<dim> &num_points,
 		void (*quad_1d)(int, iga::vector<double>&, iga::vector<double>&))
 		:
-		coordinates_(num_points),
+		points_1d_(num_points),
 		weights_1d_(num_points),
 		is_tensor_product_(true)
 {
@@ -67,13 +67,13 @@ Quadrature(const TensorSize<dim> &num_points,
 	    iga::vector<double> pts(num_points[i]);
 	    iga::vector<double> w(num_points[i]);
 		quad_1d(num_points[i],pts,w);
-		coordinates_.copy_data_direction(i, pts);
+		points_1d_.copy_data_direction(i, pts);
 		weights_1d_.copy_data_direction(i, w);
 	}
 
-	const auto n_pts = coordinates_.flat_size();
+	const auto n_pts = points_1d_.flat_size();
 	for (int i = 0 ; i < n_pts ; ++i)
-		map_point_id_to_coords_id_.push_back(coordinates_.flat_to_tensor(i));
+		map_point_id_to_coords_id_.push_back(points_1d_.flat_to_tensor(i));
 }
 
 
@@ -83,13 +83,13 @@ Quadrature<dim_>::
 Quadrature(const PointArray &points,
                  const WeightArray &weights_1d)
                  :
-                 coordinates_(points),
+                 points_1d_(points),
                  weights_1d_(weights_1d),
 				 is_tensor_product_(true)
 {
-	const auto n_pts = coordinates_.flat_size();
+	const auto n_pts = points_1d_.flat_size();
     for (int i = 0 ; i < n_pts ; ++i)
-        map_point_id_to_coords_id_.push_back(coordinates_.flat_to_tensor(i));
+        map_point_id_to_coords_id_.push_back(points_1d_.flat_to_tensor(i));
 }
 
 
@@ -105,7 +105,7 @@ Quadrature(const ValueVector<Point> &pts)
     WeightArray weights_1d(size);
 
     Assert(false, ExcMessage("put weight to 1"));
-    this->reset_points_coordinates_and_weights(pts,weights_1d);
+    this->reset_points_points_1d_and_weights(pts,weights_1d);
 }
 
 
@@ -119,7 +119,7 @@ Quadrature(
     :
     Quadrature(bounding_box)
 {
-    this->reset_points_coordinates_and_weights(pts,weights_1d);
+    this->reset_points_points_1d_and_weights(pts,weights_1d);
 }
 
 
@@ -155,7 +155,7 @@ void
 Quadrature<dim_>::
 dilate(const Point &dilate)
 {
-    coordinates_.dilate(dilate);
+    points_1d_.dilate(dilate);
     weights_1d_.dilate(dilate);
 
 
@@ -174,7 +174,7 @@ void
 Quadrature<dim_>::
 translate(const Point &translate)
 {
-    coordinates_.translate(translate);
+    points_1d_.translate(translate);
 
     // TODO (pauletti, Feb 27, 2015): code BBox translate
     for (int i = 0 ; i < dim_ ; ++i)
@@ -200,7 +200,7 @@ dilate_translate(const Point &dilate, const Point &translate)
 template<int dim_>
 void
 Quadrature<dim_>::
-reset_points_coordinates_and_weights(
+reset_points_points_1d_and_weights(
     const PointVector &pts,
     const WeightArray &weights_1d)
 {
@@ -217,14 +217,14 @@ reset_points_coordinates_and_weights(
             coords_set.emplace(pt[i]);
 
         //inserting the point coordinates and removing the duplicates
-        coordinates_.copy_data_direction(i,vector<Real>(coords_set.begin(),coords_set.end()));
+        points_1d_.copy_data_direction(i,vector<Real>(coords_set.begin(),coords_set.end()));
         weights_1d_ = weights_1d;
 
 #ifndef NDEBUG
         // check that the points coordinate are within the bounding box
         const auto box_min = bounding_box_[i][0];
         const auto box_max = bounding_box_[i][1];
-        for (const auto &coord : coordinates_.get_data_direction(i))
+        for (const auto &coord : points_1d_.get_data_direction(i))
             Assert(coord >= box_min && coord <= box_max,
                    ExcMessage("Point coordinate outside the bounding box."));
 #endif
@@ -249,8 +249,8 @@ reset_points_coordinates_and_weights(
         TensorIndex<dim_> coords_tensor_id;
         for (int i = 0 ; i < dim_ ; ++i)
         {
-            const auto coords_begin = coordinates_.get_data_direction(i).begin();
-            const auto coords_end   = coordinates_.get_data_direction(i).end();
+            const auto coords_begin = points_1d_.get_data_direction(i).begin();
+            const auto coords_end   = points_1d_.get_data_direction(i).end();
 
             const auto it = std::find(coords_begin, coords_end, pt[i]);
 
@@ -259,48 +259,8 @@ reset_points_coordinates_and_weights(
         map_point_id_to_coords_id_[j]=(coords_tensor_id);
     }
     //-----------------------------------------------------------------
-
-
-#if 0
-    //-----------------------------------------------------------------
-    //here we check if the points have a tensor-product structure,
-    //comparing the coordinate indices
-    //with the ones expected from points having tensor_product structure.
-
-    //first of all, if the number of points is different
-    // to the tensor product of the coordinates size
-    // the points have not a tensor product structure
-    if (n_pts != n_dirs.flat_size())
-    {
-        this->points_have_tensor_product_struct_ = false;
-    }
-    else
-    {
-        const auto pt_w_size = MultiArrayUtils<dim_>::compute_weight(n_dirs);
-
-        const auto coords_id_begin = map_point_id_to_coords_id_.begin();
-        const auto coords_id_end   = map_point_id_to_coords_id_.end();
-
-        this->points_have_tensor_product_struct_ = true;
-        for (int pt_flat_id = 0 ; pt_flat_id < n_pts ; ++pt_flat_id)
-        {
-            const auto pt_tensor_id =
-                MultiArrayUtils<dim_>::flat_to_tensor_index(pt_flat_id,pt_w_size);
-            if (std::find(coords_id_begin, coords_id_end, pt_tensor_id)
-                == coords_id_end)
-            {
-                // coordinates id not found --> the points have not a
-                // tensor-product structure
-                this->points_have_tensor_product_struct_ = false;
-                break;
-            }
-        } // end loop pt_flat_id
-
-    }
-    //-----------------------------------------------------------------
-#endif
-
 }
+
 
 
 template<int dim_>
@@ -311,25 +271,6 @@ is_tensor_product() const
     return this->is_tensor_product_;
 }
 
-#if 0
-template<int dim_>
-bool
-Quadrature<dim_>::
-have_points_tensor_product_struct() const
-{
-    return this->points_have_tensor_product_struct_;
-}
-
-
-
-template<int dim_>
-bool
-Quadrature<dim_>::
-have_weights_tensor_product_struct() const
-{
-    return this->weights_have_tensor_product_struct_;
-}
-#endif
 
 
 template<int dim_>
@@ -337,7 +278,7 @@ const vector<Real> &
 Quadrature<dim_>::
 get_coords_direction(const int i) const
 {
-    return coordinates_.get_data_direction(i);
+    return points_1d_.get_data_direction(i);
 }
 
 
@@ -361,7 +302,7 @@ Quadrature<dim_>::
 get_point(const int pt_id) const -> Point
 {
     const auto tensor_id = this->get_coords_id_from_point_id(pt_id);
-    return coordinates_.cartesian_product(tensor_id);
+    return points_1d_.cartesian_product(tensor_id);
 }
 
 
@@ -422,7 +363,7 @@ auto
 Quadrature<dim_>::
 get_points_1d() const -> const PointArray&
 {
-    return coordinates_;
+    return points_1d_;
 }
 
 
@@ -442,7 +383,7 @@ TensorSize<dim_>
 Quadrature<dim_>::
 get_num_coords_direction() const noexcept
 {
-    return coordinates_.tensor_size();
+    return points_1d_.tensor_size();
 }
 
 
@@ -473,15 +414,6 @@ print_info(LogStream &out) const
     out.end_item();
     out << endl;
 
-//    out.begin_item("Bounding box:");
-//    for (int dir = 0 ; dir < dim_ ; ++dir)
-//    {
-//        out << "Direction: " << dir << " ---- [ "
-//            << bounding_box_[dir][0] << " , "
-//            << bounding_box_[dir][1] << " ]" << endl;
-//    }
-//    out.end_item();
-//    out << endl;
 }
 
 
@@ -511,7 +443,7 @@ collapse_to_sub_element(const int sub_elem_id) const -> Quadrature<dim_>
 
 	for (auto i : k_elem.active_directions)
 	{
-		new_coords_1d.copy_data_direction(i, coordinates_.get_data_direction(i));
+		new_coords_1d.copy_data_direction(i, points_1d_.get_data_direction(i));
 		new_weights_1d.copy_data_direction(i, weights_1d_.get_data_direction(i));
 	}
 
@@ -519,7 +451,6 @@ collapse_to_sub_element(const int sub_elem_id) const -> Quadrature<dim_>
 
 	return self_t();
 }
-
 
 
 

@@ -80,8 +80,6 @@ IGA_NAMESPACE_OPEN
 
 // TODO (pauletti, Feb 27, 2015): The bounding box may be an error prone structure
 // to have here
-// TODO (pauletti, Feb 27, 2015): this class should be called Quadrature
-
 template <int dim_>
 class Quadrature
 {
@@ -96,6 +94,7 @@ public:
     using WeigthVector = ValueVector<Real>;
     using PointArray  = TensorProductArray<dim_>;
     using WeightArray = TensorProductArray<dim_>;
+
     /**
      * Dimensionality of the space in which the points are located
      * (equivalent to the number of the coordinates of each point).
@@ -117,6 +116,7 @@ protected:
 
 public:
     Quadrature();
+
     /**
      * Construct the object given a vector of <tt>points</tt>
      * in the <tt>dim_</tt>-dimensional space,
@@ -159,7 +159,6 @@ public:
     ~Quadrature() = default;
     ///@}
 
-
     /**
      * @name Assignment operators.
      */
@@ -175,7 +174,6 @@ public:
     self_t &operator=(self_t && ) = default;
     ///@}
 
-
     /**
      * @name Functions returning information about the number of points and coordinates.
      */
@@ -190,8 +188,6 @@ public:
      */
     TensorSize<dim_> get_num_coords_direction() const noexcept;
     ///@}
-
-
 
     /**
      * @name Functions returning informations about the arrangement structure of the points and weights.
@@ -209,17 +205,11 @@ public:
    // bool have_weights_tensor_product_struct() const;
     ///@}
 
-
-
-
     /**
      * Prints internal information about the evaluation points.
      * \note Mostly used for debugging and testing.
      */
     void print_info(LogStream &out) const;
-
-
-
 
     /**
      * @name Functions returning internal data (points, weights, coordinates,
@@ -237,11 +227,6 @@ public:
     Point get_point(const int pt_id) const;
 
     /**
-     * Returns coordinates of the points along the <tt>i</tt>-th direction.
-     */
-    const vector<Real> &get_coords_direction(const int i) const;
-
-    /**
      * Returns all the weights.
      */
     ValueVector<Real> get_weights() const;
@@ -252,21 +237,27 @@ public:
     Real get_weight(const int pt_id) const;
 
 
+    /**
+     * Returns coordinates of the points along the <tt>i</tt>-th direction.
+     */
+    const vector<Real> &get_coords_direction(const int i) const;
+
     const PointArray &get_points_1d() const;
 
     const WeightArray &get_weights_1d() const;
 
+private:
     /**
      * Returns the bounding box in which the points are located.
      */
     const BBox<dim_> &get_bounding_box() const;
-
+public:
     /**
-     * Returns the coordinates indices relative to the point with (flat) index <tt>point_id</tt>.
+     * Returns the coordinates indices relative to the point with (flat)
+     * index <tt>point_id</tt>.
      */
     TensorIndex<dim_> get_coords_id_from_point_id(const int point_id) const;
     ///@}
-
 
     /**
      * @name Functions for performing dilation and translation of the points (and weights).
@@ -288,29 +279,22 @@ public:
     void dilate_translate(const Point &dilate, const Point &translate);
     ///@}
 
-
-
-
-    //TODO (pauletti, Feb 27, 2015): this function should not be here but in tensor quad
     /**
      * Returns a dim dimensional quadrature obtained by using
-     * a single point on the active face direction.
+     * a single point on the active sub-element direction.
      * @todo write example
      * Usually use for face values
      */
     template<int k>
     Quadrature<dim_> collapse_to_sub_element(const int id) const;
 
-
 private:
-
     /**
      * Reset the <tt>bounding_box</tt> in which the points must be located.
      */
     void reset_bounding_box(const BBox<dim_> &bounding_box);
 
 protected:
-
     /**
      * This function performs the following task:
      *   - reset the value of the points coordinates and the map point_id_to_coords_is,
@@ -320,19 +304,17 @@ protected:
      * @note In DEBUG mode the points are tested if they are within the bounding box.
      * Points on the side of the bounding box are still valid points.
      */
-    void reset_points_coordinates_and_weights(
+    void reset_points_points_1d_and_weights(
             const PointVector &pts,
             const WeightArray &weights_1d);
 
-
-
+private:
     /**
      * Coordinates of the points.
      *
      * It does not contain multiple values.
      */
-    PointArray coordinates_;
-
+    PointArray points_1d_;
 
     /**
      * Weights associated to the points coordinates. By default are set to be equal to one.
@@ -345,17 +327,12 @@ protected:
      */
     vector<TensorIndex<dim_>> map_point_id_to_coords_id_;
 
-
-
     // TODO (pauletti, Mar 6, 2015): should be const
     bool is_tensor_product_;
+
     BBox<dim_> bounding_box_;
-//    bool  points_have_tensor_product_struct_ = false;
-//
-//    bool weights_have_tensor_product_struct_ = false;
+
 };
-
-
 
 /**
  * Given evaluation points on a dim dimensional face, of a dim+1
@@ -367,10 +344,6 @@ protected:
 template<int k, int dim>
 Quadrature<dim>
 extend_sub_elem_quad(const Quadrature<k> &quad, const int sub_elem_id);
-
-
-
-
 
 IGA_NAMESPACE_CLOSE
 
