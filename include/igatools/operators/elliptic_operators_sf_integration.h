@@ -96,8 +96,8 @@ public:
         const ElemTest &elem_test,
         const ElemTrial &elem_trial,
         const ValueVector<Real> &c,
-        const QuadratureTensorProduct<ElemTest::dim> &quad_points_test,
-        const QuadratureTensorProduct<ElemTrial::dim> &quad_points_trial,
+        const EvaluationPoints<ElemTest::dim> &quad_points_test,
+        const EvaluationPoints<ElemTrial::dim> &quad_points_trial,
         DenseMatrix &operator_u_v) const override final;
 
     /**
@@ -115,8 +115,8 @@ public:
         const ElemTest &elem_test,
         const ElemTrial &elem_trial,
         const vector<TMatrix<space_dim,space_dim>> &coeffs,
-        const QuadratureTensorProduct<ElemTest::dim> &quad_points_test,
-        const QuadratureTensorProduct<ElemTrial::dim> &quad_points_trial,
+        const EvaluationPoints<ElemTest::dim> &quad_points_test,
+        const EvaluationPoints<ElemTrial::dim> &quad_points_trial,
         DenseMatrix &operator_gradu_gradv) const override final;
 
 
@@ -1148,8 +1148,8 @@ eval_operator_u_v(
     const ElemTest &elem_test,
     const ElemTrial &elem_trial,
     const ValueVector<Real> &coeffs,
-    const QuadratureTensorProduct<ElemTest::dim> &quad_points_test,
-    const QuadratureTensorProduct<ElemTrial::dim> &quad_points_trial,
+    const EvaluationPoints<ElemTest::dim> &quad_points_test,
+    const EvaluationPoints<ElemTrial::dim> &quad_points_trial,
     DenseMatrix &operator_u_v) const
 {
     //TODO: only the symmetric case is tested. In the non symmetric case, we need to check that
@@ -1403,8 +1403,8 @@ eval_operator_gradu_gradv(
     const ElemTest &elem_test,
     const ElemTrial &elem_trial,
     const vector<TMatrix<space_dim,space_dim>> &coeffs,
-    const QuadratureTensorProduct<ElemTest::dim> &quad_points_test,
-    const QuadratureTensorProduct<ElemTrial::dim> &quad_points_trial,
+    const EvaluationPoints<ElemTest::dim> &quad_points_test,
+    const EvaluationPoints<ElemTrial::dim> &quad_points_trial,
     DenseMatrix &operator_gradu_gradv) const
 {
 

@@ -112,8 +112,8 @@ public:
         const ElemTest &elem_test,
         const ElemTrial &elem_trial,
         const ValueVector<Real> &c,
-        const QuadratureTensorProduct<ElemTest::dim> &quad_points_test,
-        const QuadratureTensorProduct<ElemTrial::dim> &quad_points_trial,
+        const EvaluationPoints<ElemTest::dim> &quad_points_test,
+        const EvaluationPoints<ElemTrial::dim> &quad_points_trial,
         DenseMatrix &operator_u_v) const = 0;
 
     /**
@@ -131,8 +131,8 @@ public:
         const ElemTest &elem_test,
         const ElemTrial &elem_trial,
         const vector<TMatrix<space_dim,space_dim>> &coeffs,
-        const QuadratureTensorProduct<ElemTest::dim> &quad_points_test,
-        const QuadratureTensorProduct<ElemTrial::dim> &quad_points_trial,
+        const EvaluationPoints<ElemTest::dim> &quad_points_test,
+        const EvaluationPoints<ElemTrial::dim> &quad_points_trial,
         DenseMatrix &operator_gradu_gradv) const = 0;
 
     /**
