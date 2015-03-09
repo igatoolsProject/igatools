@@ -82,7 +82,7 @@ public:
     ~PushForward() = default;
 
     template<int k>
-    void reset(const ValueFlags flag, const EvaluationPoints<k> &eval_pts);
+    void reset(const ValueFlags flag, const Quadrature<k> &eval_pts);
 
     std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const
     {

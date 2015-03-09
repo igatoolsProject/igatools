@@ -126,7 +126,7 @@ template<class PhysSpace>
 template<int k>
 void
 PhysSpaceElementHandler<PhysSpace>::
-reset(const ValueFlags flag, const EvaluationPoints<k> &eval_pts)
+reset(const ValueFlags flag, const Quadrature<k> &eval_pts)
 {
     ref_space_handler_->reset(space_to_ref_flag(PhysSpace::PushForwardType::type, flag), eval_pts);
     push_fwd_.template reset<k>(space_to_pf_flag(flag), eval_pts);

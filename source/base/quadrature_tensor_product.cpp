@@ -25,10 +25,10 @@
 IGA_NAMESPACE_OPEN
 
 template<int dim_>
-EvaluationPoints<dim_>::
-EvaluationPoints()
+Quadrature<dim_>::
+Quadrature()
     :
-    EvaluationPoints<dim_>()
+    Quadrature<dim_>()
 {
     this->weights_have_tensor_product_struct_ = true;
 }
@@ -38,14 +38,14 @@ EvaluationPoints()
 // constructor use specific function for this
 
 template<int dim_>
-EvaluationPoints<dim_>::
-EvaluationPoints(
+Quadrature<dim_>::
+Quadrature(
     const TensorSize<dim_> num_points,
     void (*compute_coords_and_weight_1d_in)
     (const int n_pts_id, vector<Real> &coords,vector<Real> &weights),
     const Real eps_scaling)
     :
-    EvaluationPoints<dim_>(),
+    Quadrature<dim_>(),
     compute_coords_and_weight_1d(compute_coords_and_weight_1d_in)
 {
     this->weights_have_tensor_product_struct_ = true;
@@ -90,13 +90,13 @@ EvaluationPoints(
 
 
 template<int dim_>
-EvaluationPoints<dim_>::
-EvaluationPoints(
+Quadrature<dim_>::
+Quadrature(
     const PointVector &points,
     const DirectionArray &weights_1d,
     const BBox<dim_> &bounding_box)
     :
-    EvaluationPoints<dim_>(points,weights_1d,bounding_box)
+    Quadrature<dim_>(points,weights_1d,bounding_box)
 {}
 
 IGA_NAMESPACE_CLOSE

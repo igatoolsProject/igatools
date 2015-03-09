@@ -164,7 +164,7 @@ public:
     Conditional< deriv_order==0,
                  Value,
                  Derivative<deriv_order> > >
-                 evaluate_derivatives_at_points(const EvaluationPoints<dim> &points)
+                 evaluate_derivatives_at_points(const Quadrature<dim> &points)
     {
         ValueFlags flags;
         if (deriv_order == 0)
@@ -191,19 +191,19 @@ public:
     }
 
     ValueVector<Value>
-    evaluate_values_at_points(const EvaluationPoints<dim> &points)
+    evaluate_values_at_points(const Quadrature<dim> &points)
     {
         return this->template evaluate_derivatives_at_points<0>(points);
     }
 
     ValueVector<Derivative<1> >
-    evaluate_gradients_at_points(const EvaluationPoints<dim> &points)
+    evaluate_gradients_at_points(const Quadrature<dim> &points)
     {
         return this->template evaluate_derivatives_at_points<1>(points);
     }
 
     ValueVector<Derivative<2> >
-    evaluate_hessians_at_points(const EvaluationPoints<dim> &points)
+    evaluate_hessians_at_points(const Quadrature<dim> &points)
     {
         return this->template evaluate_derivatives_at_points<2>(points);
     }

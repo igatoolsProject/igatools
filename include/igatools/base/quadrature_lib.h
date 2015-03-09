@@ -40,10 +40,10 @@ IGA_NAMESPACE_OPEN
  */
 template< int dim >
 class QGauss :
-    public EvaluationPoints< dim >
+    public Quadrature< dim >
 {
 public:
-    using typename EvaluationPoints<dim>::Point;
+    using typename Quadrature<dim>::Point;
 
     /**
      * Default constructor. Not allowed to be used.
@@ -111,7 +111,7 @@ public:
 
 #if 0
 class QuadDimZero :
-    public EvaluationPoints<0>
+    public Quadrature<0>
 {
 public:
     /**
@@ -124,7 +124,7 @@ public:
      * \note The argument \p n_points is not used. It is here only to mantain a unified interface
      * for dimension-independent coding.
      */
-    explicit QuadDimZero(const Size n_points) : EvaluationPoints<0> () {} ;
+    explicit QuadDimZero(const Size n_points) : Quadrature<0> () {} ;
 
     /**
      * Copy constructor. Not allowed to be used
@@ -166,7 +166,7 @@ public:
 #if 0
 template< >
 class QGauss<0> :
-    public EvaluationPoints<0>
+    public Quadrature<0>
 {
 public:
 
@@ -178,7 +178,7 @@ public:
      * \note The argument \p n_points is not used. It is here only to maintain a unified interface
      * for dimension-independent coding.
      */
-    explicit QGauss(const Size n_points) : EvaluationPoints<0> () {} ;
+    explicit QGauss(const Size n_points) : Quadrature<0> () {} ;
 
     /**
      * Copy constructor. Not allowed to be used
@@ -221,10 +221,10 @@ public:
  */
 template< int dim >
 class QGaussLobatto :
-    public EvaluationPoints< dim >
+    public Quadrature< dim >
 {
 public:
-    using typename EvaluationPoints<dim>::Point;
+    using typename Quadrature<dim>::Point;
 
     /**
      * Default constructor. Not allowed to be used.
@@ -303,7 +303,7 @@ public:
 
 template< >
 class QGaussLobatto<0> :
-    public EvaluationPoints<0>
+    public Quadrature<0>
 {
 public:
     /**
@@ -316,7 +316,7 @@ public:
      * \note The argument \p n_points is not used. It is here only to mantain a unified interface
      * for dimension-independent coding.
      */
-    explicit QGaussLobatto(const Size n_points) : EvaluationPoints<0> () {} ;
+    explicit QGaussLobatto(const Size n_points) : Quadrature<0> () {} ;
 
     /**
      * Copy constructor. Not allowed to be used
@@ -357,10 +357,10 @@ public:
  */
 template< int dim >
 class QUniform :
-    public EvaluationPoints<dim>
+    public Quadrature<dim>
 {
 public:
-    using typename EvaluationPoints<dim>::Point;
+    using typename Quadrature<dim>::Point;
 
     /**
      * Default constructor. Not allowed to be used.

@@ -104,7 +104,7 @@ public:
     void reset(const ValueFlags &flag, const eval_pts_variant &eval_pts) override
     {
         base_t::reset(flag, eval_pts);
-        auto q = boost::get<EvaluationPoints<sub_dim>>(eval_pts);
+        auto q = boost::get<Quadrature<sub_dim>>(eval_pts);
         sup_func_->reset(flag, q);
 
     }
@@ -256,7 +256,7 @@ public:
     void reset(const ValueFlags &flag, const eval_pts_variant &eval_pts) override
     {
         base_t::reset(flag, eval_pts);
-        auto q = boost::get<EvaluationPoints<sub_dim>>(eval_pts);
+        auto q = boost::get<Quadrature<sub_dim>>(eval_pts);
         sup_func_->reset(flag, q);
 
     }

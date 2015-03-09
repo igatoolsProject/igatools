@@ -209,7 +209,7 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     ComponentContainer<std::array<ValueTable<Real>,dim> >
-    evaluate_univariate_derivatives_at_points(const int deriv_order, const EvaluationPoints<dim> &quad) const;
+    evaluate_univariate_derivatives_at_points(const int deriv_order, const Quadrature<dim> &quad) const;
 
     /*
      * Returns a component table with the derivatives (of order @p deriv_order)
@@ -232,7 +232,7 @@ public:
 
 
     ComponentContainer<std::array<ValueTable<Real>,dim> >
-    evaluate_univariate_derivatives_at_points(const int deriv_order, const EvaluationPoints<dim> &pts) const
+    evaluate_univariate_derivatives_at_points(const int deriv_order, const Quadrature<dim> &pts) const
     {
         ComponentContainer<std::array<ValueTable<Real>,dim> > values;
 

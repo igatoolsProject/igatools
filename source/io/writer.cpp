@@ -57,7 +57,7 @@ Writer(const std::shared_ptr<const MapFunction<dim,dim+codim>> map,
 template<int dim, int codim, class T>
 Writer<dim, codim, T>::
 Writer(const shared_ptr<const MapFunction<dim,dim+codim> > map,
-       const shared_ptr<const EvaluationPoints<dim> > quadrature)
+       const shared_ptr<const Quadrature<dim> > quadrature)
     :
     map_(map->clone()),
     quad_plot_(quadrature),

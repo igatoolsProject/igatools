@@ -46,7 +46,7 @@ private:
     shared_ptr<PreSpace> pre_space_;
     shared_ptr<VelSpace> vel_space_;
 
-    const EvaluationPoints<dim> quad;
+    const Quadrature<dim> quad;
 
 #if defined(USE_TRILINOS)
     const static auto la_pack = LAPack::trilinos_tpetra;

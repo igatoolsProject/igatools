@@ -291,7 +291,7 @@ private:
     {
     public:
         void resize(const GridFlags &flags_handler,
-                    const EvaluationPoints<dim> &quad);
+                    const Quadrature<dim> &quad);
 
         void print_info(LogStream &out) const;
 

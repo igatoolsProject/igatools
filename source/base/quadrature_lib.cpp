@@ -270,7 +270,7 @@ QGauss(const Size num_points) :
 template< int dim >
 QGauss< dim >::
 QGauss(const TensorSize<dim> num_points) :
-    EvaluationPoints<dim>(num_points, &gauss_legendre_quadrature)
+    Quadrature<dim>(num_points, &gauss_legendre_quadrature)
 {}
 
 
@@ -303,7 +303,7 @@ QGaussLobatto(const Size num_points)
 template< int dim >
 QGaussLobatto< dim >::
 QGaussLobatto(const TensorSize<dim> num_points) :
-    EvaluationPoints< dim >(num_points,&gauss_lobatto_quadrature)
+    Quadrature< dim >(num_points,&gauss_lobatto_quadrature)
 {
 #ifndef NDEBUG
     // Gauss-Lobatto schemes needs at least 2 points in each direction
@@ -344,7 +344,7 @@ QUniform(const Size num_points)
 template< int dim >
 QUniform<dim>::QUniform(const TensorSize<dim> num_points)
     :
-    EvaluationPoints< dim >(num_points,&uniform_quadrature)
+    Quadrature< dim >(num_points,&uniform_quadrature)
 {
 #ifndef NDEBUG
     // Uniform schemes needs at least 2 points in each direction

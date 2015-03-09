@@ -74,8 +74,8 @@ private:
     using Space = BSplineSpace<dim>;
     shared_ptr<Space> space;
 
-    const EvaluationPoints<dim>   elem_quad;
-    const EvaluationPoints<dim-1> face_quad;
+    const Quadrature<dim>   elem_quad;
+    const Quadrature<dim-1> face_quad;
     // [members]
 
     // [la members]

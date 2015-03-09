@@ -102,13 +102,13 @@ public:
 
 
     template<int k>
-    void reset(const ValueFlags flag, const EvaluationPoints<k> &eval_pts);
+    void reset(const ValueFlags flag, const Quadrature<k> &eval_pts);
 
 
     template<int k>
     void reset_selected_elements(
         const ValueFlags &flag,
-        const EvaluationPoints<k> &eval_pts,
+        const Quadrature<k> &eval_pts,
         const vector<Index> &elements_flat_id)
     {
         Assert(false,ExcNotImplemented());

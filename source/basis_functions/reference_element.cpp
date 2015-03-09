@@ -43,7 +43,7 @@ template <int dim, int range, int rank>
 template <int deriv_order>
 auto
 ReferenceElement<dim, range, rank>::
-evaluate_basis_derivatives_at_points(const EvaluationPoints<dim> &points) ->
+evaluate_basis_derivatives_at_points(const Quadrature<dim> &points) ->
 ValueTable<
 Conditional< deriv_order==0,
              Value,

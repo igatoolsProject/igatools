@@ -25,17 +25,17 @@ data = Instantiation()
 
 
 sub_dim_members = \
- ['EvaluationPoints<dim> EvaluationPoints<dim>::collapse_to_sub_element<k>(const int id) const;']
+ ['Quadrature<dim> Quadrature<dim>::collapse_to_sub_element<k>(const int id) const;']
 
 for dim in inst.sub_domain_dims:
-    f.write('template class EvaluationPoints<%d>; \n' %dim)
+    f.write('template class Quadrature<%d>; \n' %dim)
     for fun in sub_dim_members:
         k = dim
         s = fun.replace('dim', '%d' % (dim)).replace('k', '%d' % (k));
 #        f.write('template ' + s + '\n')
 
 for dim in inst.domain_dims:
-    f.write('template class EvaluationPoints<%d>; \n' %dim)
+    f.write('template class Quadrature<%d>; \n' %dim)
     for fun in sub_dim_members:
         for k in inst.sub_dims(dim):
             s = fun.replace('dim', '%d' % (dim)).replace('k', '%d' % (k));

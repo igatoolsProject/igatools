@@ -81,7 +81,7 @@ void run_test()
     map->refine_h_direction(0, 2);
 
 
-    shared_ptr<EvaluationPoints<dim>> quad = std::make_shared<EvaluationPoints<dim>>(QTrapez<dim>());
+    shared_ptr<Quadrature<dim>> quad = std::make_shared<Quadrature<dim>>(QTrapez<dim>());
 
     auto elem     = map->begin();
     auto elem_end = map->end();

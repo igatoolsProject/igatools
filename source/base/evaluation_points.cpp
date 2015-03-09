@@ -32,8 +32,8 @@ using std::set;
 IGA_NAMESPACE_OPEN
 
 template<int dim_>
-EvaluationPoints<dim_>::
-EvaluationPoints()
+Quadrature<dim_>::
+Quadrature()
 {
     //	for (auto &box_direction : bounding_box_)
     //    {
@@ -45,16 +45,16 @@ EvaluationPoints()
 
 
 template<int dim_>
-EvaluationPoints<dim_>::
-EvaluationPoints(const BBox<dim_> &bounding_box)
+Quadrature<dim_>::
+Quadrature(const BBox<dim_> &bounding_box)
     :
     is_tensor_product_(false),
     bounding_box_(bounding_box)
 {}
 
 template<int dim_>
-EvaluationPoints<dim_>::
-EvaluationPoints(const TensorSize<dim> &num_points,
+Quadrature<dim_>::
+Quadrature(const TensorSize<dim> &num_points,
 		void (*quad_1d)(int, iga::vector<double>&, iga::vector<double>&))
 		:
 		coordinates_(num_points),
@@ -79,8 +79,8 @@ EvaluationPoints(const TensorSize<dim> &num_points,
 
 
 template<int dim_>
-EvaluationPoints<dim_>::
-EvaluationPoints(const PointArray &points,
+Quadrature<dim_>::
+Quadrature(const PointArray &points,
                  const WeightArray &weights_1d)
                  :
                  coordinates_(points),
@@ -95,8 +95,8 @@ EvaluationPoints(const PointArray &points,
 
 
 template<int dim_>
-EvaluationPoints<dim_>::
-EvaluationPoints(const ValueVector<Point> &pts)
+Quadrature<dim_>::
+Quadrature(const ValueVector<Point> &pts)
     :
     is_tensor_product_(false)
 {
@@ -111,13 +111,13 @@ EvaluationPoints(const ValueVector<Point> &pts)
 
 
 template<int dim_>
-EvaluationPoints<dim_>::
-EvaluationPoints(
+Quadrature<dim_>::
+Quadrature(
     const PointVector &pts,
     const WeightArray &weights_1d,
     const BBox<dim_> &bounding_box)
     :
-    EvaluationPoints(bounding_box)
+    Quadrature(bounding_box)
 {
     this->reset_points_coordinates_and_weights(pts,weights_1d);
 }
@@ -126,7 +126,7 @@ EvaluationPoints(
 
 template<int dim_>
 const BBox<dim_> &
-EvaluationPoints<dim_>::
+Quadrature<dim_>::
 get_bounding_box() const
 {
     return bounding_box_;
@@ -136,7 +136,7 @@ get_bounding_box() const
 
 template<int dim_>
 void
-EvaluationPoints<dim_>::
+Quadrature<dim_>::
 reset_bounding_box(const BBox<dim_> &bounding_box)
 {
     bounding_box_ = bounding_box;
@@ -152,7 +152,7 @@ reset_bounding_box(const BBox<dim_> &bounding_box)
 
 template<int dim_>
 void
-EvaluationPoints<dim_>::
+Quadrature<dim_>::
 dilate(const Point &dilate)
 {
     coordinates_.dilate(dilate);
@@ -171,7 +171,7 @@ dilate(const Point &dilate)
 
 template<int dim_>
 void
-EvaluationPoints<dim_>::
+Quadrature<dim_>::
 translate(const Point &translate)
 {
     coordinates_.translate(translate);
@@ -188,7 +188,7 @@ translate(const Point &translate)
 
 template<int dim_>
 void
-EvaluationPoints<dim_>::
+Quadrature<dim_>::
 dilate_translate(const Point &dilate, const Point &translate)
 {
     this->dilate(dilate);
@@ -199,7 +199,7 @@ dilate_translate(const Point &dilate, const Point &translate)
 
 template<int dim_>
 void
-EvaluationPoints<dim_>::
+Quadrature<dim_>::
 reset_points_coordinates_and_weights(
     const PointVector &pts,
     const WeightArray &weights_1d)
@@ -305,7 +305,7 @@ reset_points_coordinates_and_weights(
 
 template<int dim_>
 bool
-EvaluationPoints<dim_>::
+Quadrature<dim_>::
 is_tensor_product() const
 {
     return this->is_tensor_product_;
@@ -314,7 +314,7 @@ is_tensor_product() const
 #if 0
 template<int dim_>
 bool
-EvaluationPoints<dim_>::
+Quadrature<dim_>::
 have_points_tensor_product_struct() const
 {
     return this->points_have_tensor_product_struct_;
@@ -324,7 +324,7 @@ have_points_tensor_product_struct() const
 
 template<int dim_>
 bool
-EvaluationPoints<dim_>::
+Quadrature<dim_>::
 have_weights_tensor_product_struct() const
 {
     return this->weights_have_tensor_product_struct_;
@@ -334,7 +334,7 @@ have_weights_tensor_product_struct() const
 
 template<int dim_>
 const vector<Real> &
-EvaluationPoints<dim_>::
+Quadrature<dim_>::
 get_coords_direction(const int i) const
 {
     return coordinates_.get_data_direction(i);
@@ -344,7 +344,7 @@ get_coords_direction(const int i) const
 
 template<int dim_>
 TensorIndex<dim_>
-EvaluationPoints<dim_>::
+Quadrature<dim_>::
 get_coords_id_from_point_id(const int point_id) const
 {
     Assert(point_id >= 0 && point_id < this->get_num_points(),
@@ -357,7 +357,7 @@ get_coords_id_from_point_id(const int point_id) const
 
 template<int dim_>
 auto
-EvaluationPoints<dim_>::
+Quadrature<dim_>::
 get_point(const int pt_id) const -> Point
 {
     const auto tensor_id = this->get_coords_id_from_point_id(pt_id);
@@ -368,7 +368,7 @@ get_point(const int pt_id) const -> Point
 
 template<int dim_>
 auto
-EvaluationPoints<dim_>::
+Quadrature<dim_>::
 get_points() const -> ValueVector<Point>
 {
     const int n_pts = this->get_num_points();
@@ -383,7 +383,7 @@ get_points() const -> ValueVector<Point>
 
 template<int dim_>
 Real
-EvaluationPoints<dim_>::
+Quadrature<dim_>::
 get_weight(const int pt_id) const
 {
     const auto tensor_id = this->get_coords_id_from_point_id(pt_id);
@@ -394,7 +394,7 @@ get_weight(const int pt_id) const
 
 template<int dim_>
 ValueVector<Real>
-EvaluationPoints<dim_>::
+Quadrature<dim_>::
 get_weights() const
 {
     const int n_pts = this->get_num_points();
@@ -409,7 +409,7 @@ get_weights() const
 
 template<int dim_>
 auto
-EvaluationPoints<dim_>::
+Quadrature<dim_>::
 get_weights_1d() const -> const WeightArray&
 {
     return weights_1d_;
@@ -419,7 +419,7 @@ get_weights_1d() const -> const WeightArray&
 
 template<int dim_>
 auto
-EvaluationPoints<dim_>::
+Quadrature<dim_>::
 get_points_1d() const -> const PointArray&
 {
     return coordinates_;
@@ -429,7 +429,7 @@ get_points_1d() const -> const PointArray&
 
 template<int dim_>
 int
-EvaluationPoints<dim_>::
+Quadrature<dim_>::
 get_num_points() const
 {
     return map_point_id_to_coords_id_.size();
@@ -439,7 +439,7 @@ get_num_points() const
 
 template<int dim_>
 TensorSize<dim_>
-EvaluationPoints<dim_>::
+Quadrature<dim_>::
 get_num_coords_direction() const noexcept
 {
     return coordinates_.tensor_size();
@@ -449,7 +449,7 @@ get_num_coords_direction() const noexcept
 
 template<int dim_>
 void
-EvaluationPoints<dim_>::
+Quadrature<dim_>::
 print_info(LogStream &out) const
 {
     out << "Number of points:" << this->get_num_points() << endl;
@@ -489,8 +489,8 @@ print_info(LogStream &out) const
 template<int dim_>
 template<int k>
 auto
-EvaluationPoints<dim_>::
-collapse_to_sub_element(const int sub_elem_id) const -> EvaluationPoints<dim_>
+Quadrature<dim_>::
+collapse_to_sub_element(const int sub_elem_id) const -> Quadrature<dim_>
 {
 	Assert(is_tensor_product_, ExcNotImplemented());
 
@@ -524,14 +524,14 @@ collapse_to_sub_element(const int sub_elem_id) const -> EvaluationPoints<dim_>
 
 
 template<int k, int dim>
-EvaluationPoints<dim>
-extend_sub_elem_quad(const EvaluationPoints<k> &eval_pts,
+Quadrature<dim>
+extend_sub_elem_quad(const Quadrature<k> &eval_pts,
                      const int sub_elem_id)
 {
 
     Assert(eval_pts.is_tensor_product(), ExcNotImplemented());
-	using WeightArray = typename EvaluationPoints<dim>::WeightArray;
-	using PointArray = typename EvaluationPoints<dim>::PointArray;
+	using WeightArray = typename Quadrature<dim>::WeightArray;
+	using PointArray = typename Quadrature<dim>::PointArray;
 
     auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
 
@@ -560,7 +560,7 @@ extend_sub_elem_quad(const EvaluationPoints<k> &eval_pts,
     }
 
 
-    return EvaluationPoints<dim>(new_coords_1d, new_weights_1d);
+    return Quadrature<dim>(new_coords_1d, new_weights_1d);
 }
 
 

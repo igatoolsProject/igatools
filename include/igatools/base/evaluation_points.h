@@ -83,13 +83,13 @@ IGA_NAMESPACE_OPEN
 // TODO (pauletti, Feb 27, 2015): this class should be called Quadrature
 
 template <int dim_>
-class EvaluationPoints
+class Quadrature
 {
 private:
-    using self_t = EvaluationPoints<dim_>;
+    using self_t = Quadrature<dim_>;
 public:
     /**
-     * @brief Alias for the point-type that is returned by the function EvaluationPoints::get_point()
+     * @brief Alias for the point-type that is returned by the function Quadrature::get_point()
      */
     using Point = Points<dim_>;
     using PointVector = ValueVector<Point>;
@@ -113,10 +113,10 @@ protected:
     /**
      * Construct the object with a user-defined bounding-box, with no points inside.
      */
-    EvaluationPoints(const BBox<dim_> &bounding_box);
+    Quadrature(const BBox<dim_> &bounding_box);
 
 public:
-    EvaluationPoints();
+    Quadrature();
     /**
      * Construct the object given a vector of <tt>points</tt>
      * in the <tt>dim_</tt>-dimensional space,
@@ -124,14 +124,14 @@ public:
      *
      * @note It sets the bounding-box to be the hypercube \f$ [0,1]^{dim}\f$.
      */
-    EvaluationPoints(const PointVector &points);
+    Quadrature(const PointVector &points);
 
-    EvaluationPoints(const TensorSize<dim> &num_points,
+    Quadrature(const TensorSize<dim> &num_points,
     		void (*)(int, iga::vector<double>&, iga::vector<double>&));
     /**
      * Tensor product constructor
      */
-    EvaluationPoints(const PointArray &points,
+    Quadrature(const PointArray &points,
                      const WeightArray &weights_1d);
     /**
      * Construct the object given:
@@ -139,24 +139,24 @@ public:
      * - the <tt>weights_1d</tt> are the weights associated to the points coordinates;
      * - the <tt>bounding_box</tt> in which the points are defined.
      */
-    EvaluationPoints(const PointVector &points,
+    Quadrature(const PointVector &points,
                      const WeightArray &weights_1d,
                      const BBox<dim_> &bounding_box);
 
     /**
      * Copy constructor.
      */
-    EvaluationPoints(const self_t & ) = default;
+    Quadrature(const self_t & ) = default;
 
     /**
      * Move constructor.
      */
-    EvaluationPoints(self_t && ) = default;
+    Quadrature(self_t && ) = default;
 
     /**
      * Destructor.
      */
-    ~EvaluationPoints() = default;
+    ~Quadrature() = default;
     ///@}
 
 
@@ -299,7 +299,7 @@ public:
      * Usually use for face values
      */
     template<int k>
-    EvaluationPoints<dim_> collapse_to_sub_element(const int id) const;
+    Quadrature<dim_> collapse_to_sub_element(const int id) const;
 
 
 private:
@@ -362,11 +362,11 @@ protected:
  * domain, this functions creates an extended dimension
  * version of this points applicable to the volume.
  *
- * @relates EvaluationPoints
+ * @relates Quadrature
  */
 template<int k, int dim>
-EvaluationPoints<dim>
-extend_sub_elem_quad(const EvaluationPoints<k> &quad, const int sub_elem_id);
+Quadrature<dim>
+extend_sub_elem_quad(const Quadrature<k> &quad, const int sub_elem_id);
 
 
 

@@ -124,7 +124,7 @@ public:
      */
     ///@{
     template<int k>
-    void reset(const ValueFlags flag, const EvaluationPoints<k> &quad);
+    void reset(const ValueFlags flag, const Quadrature<k> &quad);
     ///@}
 
     template <int k>

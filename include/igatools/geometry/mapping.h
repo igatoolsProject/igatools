@@ -99,7 +99,7 @@ public:
 
 public:
     template<int k>
-    void reset(const ValueFlags flag, const EvaluationPoints<k> &eval_pts);
+    void reset(const ValueFlags flag, const Quadrature<k> &eval_pts);
 
     template <int k>
     void init_cache(ElementAccessor &elem);

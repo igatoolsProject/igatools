@@ -47,7 +47,7 @@ public:
     using topology_variant = typename boost::make_variant_over<v2>::type;
 
 
-    using v3 = typename seq<EvaluationPoints, l, dim>::type;
+    using v3 = typename seq<Quadrature, l, dim>::type;
     using eval_pts_variant = typename boost::make_variant_over<v3>::type;
 
 

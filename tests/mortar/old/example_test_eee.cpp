@@ -303,10 +303,10 @@ int main()
     }
 
 
-    const EvaluationPoints<dim>   elem_quad0(QGauss<dim>(deg0+1));
-    const EvaluationPoints<dim-1> face_quad0(QGauss<dim-1>(deg0+1));
-    const EvaluationPoints<dim>   elem_quad1(QGauss<dim>(deg1+1));
-    const EvaluationPoints<dim-1> face_quad1(QGauss<dim-1>(deg1+1));
+    const Quadrature<dim>   elem_quad0(QGauss<dim>(deg0+1));
+    const Quadrature<dim-1> face_quad0(QGauss<dim-1>(deg0+1));
+    const Quadrature<dim>   elem_quad1(QGauss<dim>(deg1+1));
+    const Quadrature<dim-1> face_quad1(QGauss<dim-1>(deg1+1));
 
 
     std::shared_ptr<Matrix<LAPack::trilinos>> matrix0;
