@@ -25,7 +25,7 @@
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/geometry/mapping.h>
 #include <igatools/geometry/unit_element.h>
-#include <igatools/base/quadrature_tensor_product.h>
+#include <igatools/base/quadrature.h>
 #include <igatools/base/function_element.h>
 
 #include <igatools/utils/array.h>

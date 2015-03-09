@@ -19,18 +19,19 @@
 //-+--------------------------------------------------------------------
 
 // [analytical map]
-#include <igatools/geometry/mapping_lib.h>
+#include <igatools/base/function_lib.h>
+#include <igatools/base/identity_function.h>
 // [analytical map]
 
 // [ig map bspline]
-#include <igatools/geometry/ig_mapping.h>
+#include <igatools/base/ig_function.h>
 #include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/bspline_element_accessor.h>
+#include <igatools/basis_functions/bspline_element.h>
 // [ig map bspline]
 
 // [ig map read nurb]
 #include <igatools/io/reader.h>
-#include <igatools/basis_functions/nurbs_element_accessor.h>
+#include <igatools/basis_functions/nurbs_element.h>
 // [ig map read nurb]
 
 // [old includes]
@@ -47,6 +48,8 @@ using std::to_string;
 template<int dim>
 void analytical_geometry()
 {
+    using Function = functions::BallFunction<dim>;
+
     BBox<dim> box;
     box[0] = {{0.5,1}};
     for (int i=1; i<dim; ++i)
@@ -54,7 +57,7 @@ void analytical_geometry()
 
     const int n_knots = 3;
     auto grid = CartesianGrid<dim>::create(box, n_knots);
-    auto map  = BallMapping<dim>::create(grid);
+    auto map  = Function::create(grid, IdentityFunction<dim>::create(grid));
 
     const int n_plot_points = 2;
     Writer<dim> writer(map, n_plot_points);
@@ -68,13 +71,18 @@ void analytical_geometry()
 void nurb_geometry()
 {
     const int dim = 2;
+    using Function = IgFunction<ReferenceSpace<dim, dim>>;
+    using CoeffType = typename Function::CoeffType;
+
     const int deg = 2;
     const int n_knots = 3;
     auto grid = CartesianGrid<dim>::create(n_knots);
     using Space = BSplineSpace<dim,dim>;
     auto space = Space::create(deg, grid);
+
     const int n_basis = space->get_num_basis();
-    vector<Real> control_pts(n_basis);
+    CoeffType control_pts(n_basis);
+
     DynamicMultiArray<Points<dim>, dim> c_points(deg-1+n_knots);
     const Real eps = 0.2;
     c_points({0,0}) = {0.0, 0.0};
@@ -101,38 +109,42 @@ void nurb_geometry()
         control_pts[i+n_points] = flat_points[i][1];
     }
 
-    auto map = IgMapping<Space>::create(space, control_pts);
+    auto F = Function::create(space, control_pts);
+
 
     const int n_plot_points = 10;
-    Writer<dim> writer(map, n_plot_points);
+    Writer<dim> writer(F, n_plot_points);
     string filename = "nurb_geometry-" + to_string(dim) + "d" ;
     writer.save(filename);
 }
 // [bspline geometry]
 
 
+
 template<int dim>
 void nurb_geometry_from_file()
 {
-    string input_file = "nurb_geometry-" + to_string(dim) + "d_v2.xml" ;
+    string input_file = "nurb_geometry-" + to_string(dim) + "d_v2.xml";
+
     auto map = get_mapping_from_file<dim>(input_file);
 
     const int n_plot_points = 10;
     Writer<dim> writer(map, n_plot_points);
     string filename = "nurb_geometry_from_file-" + to_string(dim) + "d" ;
     writer.save(filename);
-    //*/
 }
+
 
 
 int main()
 {
 
+    analytical_geometry<1>();
     analytical_geometry<2>();
     analytical_geometry<3>();
 
     nurb_geometry();
-    //*/
+
     nurb_geometry_from_file<2>();
     nurb_geometry_from_file<3>();
 

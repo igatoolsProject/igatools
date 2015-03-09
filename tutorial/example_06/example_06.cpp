@@ -79,8 +79,9 @@ private:
     // [members]
 
     // [la members]
-    using Mat = Matrix<LAPack::trilinos_tpetra>;
-    using Vec = Vector<LAPack::trilinos_tpetra>;
+    static const LAPack la_pack = LAPack::trilinos_tpetra;
+    using Mat = Matrix<la_pack>;
+    using Vec = Vector<la_pack>;
 
     shared_ptr<Mat> matrix;
     shared_ptr<Vec> rhs;
@@ -186,6 +187,7 @@ void PoissonProblem<dim>::assemble()
 
     const set<boundary_id> dir_id {0};
     std::map<Index, Real> values;
+    // TODO (pauletti, Mar 9, 2015): parametrize with dimension
     project_boundary_values<RefSpace,LAPack::trilinos_tpetra>(
         const_pointer_cast<const Function>(g),
         space,
@@ -210,17 +212,20 @@ template<int dim>
 void PoissonProblem<dim>::output()
 {
     const int n_plot_points = 2;
-    Writer<dim> writer(IdentityFunction<dim>::create(space->get_grid()), n_plot_points);
+    auto map = IdentityFunction<dim>::create(space->get_grid());
+    Writer<dim> writer(map, n_plot_points);
 
+
+    // TODO (pauletti, Mar 9, 2015): this should be perform by
+    // the space to linear algebra manager
     const int n_coefs = space->get_num_basis();
     iga::vector<Real> solution_coefs(n_coefs);
     for (int i = 0 ; i < n_coefs ; ++i)
         solution_coefs[i] = (*solution)(i);
 
     using IgFunc = IgFunction<RefSpace>;
-    shared_ptr<const Function<dim,0,1,1>> solution_function = IgFunc::create(space,solution_coefs);
-    writer.add_field(solution_function, "solution");
-//    writer.add_field(const_pointer_cast<const IgFunc>(solution_function), "solution");
+    auto solution_function = IgFunc::create(space,solution_coefs);
+    writer.template add_field<1,1>(solution_function, "solution");
     string filename = "poisson_problem-" + to_string(dim) + "d" ;
     writer.save(filename);
 }
