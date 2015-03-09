@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/base/evaluation_points.h>
+#include <igatools/base/quadrature.h>
 #include <igatools/base/exceptions.h>
 #include <igatools/geometry/unit_element.h>
 #include <igatools/utils/multi_array_utils.h>
