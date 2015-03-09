@@ -48,6 +48,10 @@ template <int, int, int> class NURBSSpace;
 
 template <int,int,int> class DofDistribution;
 
+/**
+ *
+ * @ingroup containers
+ */
 template<int dim_, int range_ = 1, int rank_ = 1>
 class ReferenceSpace : public FunctionSpaceOnGrid<CartesianGrid<dim_>>
 {
@@ -235,7 +239,7 @@ public:
     /** Returns the container with the global dof distribution (non const version). */
     virtual DofDistribution<dim, range, rank> &
     get_dof_distribution_global() = 0;
-
+#if 0
     /** Returns the container with the patch dof distribution (const version). */
     virtual const DofDistribution<dim, range, rank> &
     get_dof_distribution_patch() const = 0;
@@ -244,7 +248,7 @@ public:
     /** Returns the container with the patch dof distribution (non const version). */
     virtual DofDistribution<dim, range, rank> &
     get_dof_distribution_patch() = 0;
-
+#endif
 
     //TODO (MM, Dec 22, 2014): implement ReferenceSpace::get_space_manager()
     // instead of the two implementation in BSplineSpace and NURBSSpace

@@ -26,7 +26,10 @@
 
 IGA_NAMESPACE_OPEN
 
-
+/**
+ *
+ * @ingroup elements
+ */
 template<Transformation type_, int dim_, int codim_ = 0>
 class PushForwardElement
     : public MappingElement<dim_, codim_>

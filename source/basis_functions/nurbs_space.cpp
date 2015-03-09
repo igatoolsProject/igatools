@@ -505,24 +505,6 @@ get_dof_distribution_global() -> DofDistribution<dim, range, rank> &
 
 
 
-template <int dim_, int range_, int rank_>
-auto
-NURBSSpace<dim_, range_, rank_>::
-get_dof_distribution_patch() const -> const DofDistribution<dim, range, rank> &
-{
-    return sp_space_->get_dof_distribution_patch();
-}
-
-
-
-template <int dim_, int range_, int rank_>
-auto
-NURBSSpace<dim_, range_, rank_>::
-get_dof_distribution_patch() -> DofDistribution<dim, range, rank> &
-{
-    return sp_space_->get_dof_distribution_patch();
-}
-
 #if 0
 template <int dim_, int range_, int rank_>
 auto

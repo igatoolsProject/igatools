@@ -24,7 +24,7 @@
 #include <igatools/base/config.h>
 #include <igatools/operators/elliptic_operators.h>
 #include <igatools/utils/multi_array_utils.h>
-
+//#include <igatools/basis_functions/bspline_element.h>
 #include <vector>
 
 IGA_NAMESPACE_OPEN
@@ -96,6 +96,8 @@ public:
         const ElemTest &elem_test,
         const ElemTrial &elem_trial,
         const ValueVector<Real> &c,
+        const QuadratureTensorProduct<ElemTest::dim> &quad_points_test,
+        const QuadratureTensorProduct<ElemTrial::dim> &quad_points_trial,
         DenseMatrix &operator_u_v) const override final;
 
     /**
@@ -113,6 +115,8 @@ public:
         const ElemTest &elem_test,
         const ElemTrial &elem_trial,
         const vector<TMatrix<space_dim,space_dim>> &coeffs,
+        const QuadratureTensorProduct<ElemTest::dim> &quad_points_test,
+        const QuadratureTensorProduct<ElemTrial::dim> &quad_points_trial,
         DenseMatrix &operator_gradu_gradv) const override final;
 
 
@@ -1144,6 +1148,8 @@ eval_operator_u_v(
     const ElemTest &elem_test,
     const ElemTrial &elem_trial,
     const ValueVector<Real> &coeffs,
+    const QuadratureTensorProduct<ElemTest::dim> &quad_points_test,
+    const QuadratureTensorProduct<ElemTrial::dim> &quad_points_trial,
     DenseMatrix &operator_u_v) const
 {
     //TODO: only the symmetric case is tested. In the non symmetric case, we need to check that
@@ -1182,7 +1188,7 @@ eval_operator_u_v(
     const Index comp = 0; // only scalar spaces for the moment
 
     // test space -- begin
-    TensorIndex<dim> degree_test = elem_test.get_physical_space()->get_reference_space()->get_degree()[comp];
+    TensorIndex<dim> degree_test = elem_test.get_space()->get_reference_space()->get_degree()[comp];
     TensorSize<dim> n_basis_elem_test(degree_test + 1);
 
     Assert(n_basis_elem_test.flat_size()==elem_test.get_num_basis(),
@@ -1195,7 +1201,7 @@ eval_operator_u_v(
 
 
     // trial space -- begin
-    TensorIndex<dim> degree_trial = elem_trial.get_physical_space()->get_reference_space()->get_degree()[comp];
+    TensorIndex<dim> degree_trial = elem_trial.get_space()->get_reference_space()->get_degree()[comp];
     TensorSize<dim> n_basis_elem_trial(degree_trial+1);
 
     Assert(n_basis_elem_trial.flat_size()==elem_trial.get_num_basis(),
@@ -1210,16 +1216,16 @@ eval_operator_u_v(
     //--------------------------------------------------------------------------
 
 
+    using BSpElem = const BSplineElement<dim,1,1>;
+
     //--------------------------------------------------------------------------
     // getting the 1D values for the test space -- begin
     std::array< ValueTable<Real>,dim> phi_1D_test;
     {
-        const auto &ref_elem_accessor = elem_test.get_ref_space_accessor();
-
-        const auto &quad_points = ref_elem_accessor.get_quad_points();
+        const auto &ref_elem_accessor = dynamic_cast<BSpElem &>(elem_test.get_ref_space_element());
 
         const auto phi_1D_test_table =
-            ref_elem_accessor.evaluate_univariate_derivatives_at_points(0,quad_points);
+            ref_elem_accessor.evaluate_univariate_derivatives_at_points(0,quad_points_test);
 
         phi_1D_test = phi_1D_test_table[0]; // only valid for scalar spaces
     }
@@ -1231,12 +1237,10 @@ eval_operator_u_v(
     // getting the 1D values for the trial space -- begin
     std::array< ValueTable<Real>,dim> phi_1D_trial;
     {
-        const auto &ref_elem_accessor = elem_trial.get_ref_space_accessor();
-
-        const auto &quad_points = ref_elem_accessor.get_quad_points();
+        const auto &ref_elem_accessor = dynamic_cast<BSpElem &>(elem_trial.get_ref_space_element());
 
         const auto phi_1D_trial_table =
-            ref_elem_accessor.evaluate_univariate_derivatives_at_points(0,quad_points);
+            ref_elem_accessor.evaluate_univariate_derivatives_at_points(0,quad_points_trial);
 
         phi_1D_trial = phi_1D_trial_table[0]; // only valid for scalar spaces
     }
@@ -1261,15 +1265,15 @@ eval_operator_u_v(
 
 
     // checks that the mapping used in the test space and in the trial space is the same
-    Assert(elem_test.get_physical_space()->get_push_forward()->get_mapping() ==
-           elem_trial.get_physical_space()->get_push_forward()->get_mapping(),
+    Assert(elem_test.get_space()()->get_push_forward()->get_mapping() ==
+           elem_trial.get_space()->get_push_forward()->get_mapping(),
            ExcMessage("Test and trial spaces must have the same mapping (and the same grid)!"));
 
 
     // checks that the elements on the grid are the same
     using Elem = CartesianGridElement<dim>;
-    Assert(static_cast<const Elem &>(elem_test.get_ref_space_accessor()) ==
-           static_cast<const Elem &>(elem_trial.get_ref_space_accessor()),
+    Assert(static_cast<const Elem &>(elem_test.get_ref_space_element()) ==
+           static_cast<const Elem &>(elem_trial.get_ref_space_element()),
            ExcMessage("Different elements for test space and trial space."));
 
 
@@ -1280,7 +1284,7 @@ eval_operator_u_v(
     Size n_points = det_DF.size();
 
 
-    TensorSize<dim> n_points_1D = elem_test.get_ref_space_accessor().get_quad_points().get_num_points_direction();
+    TensorSize<dim> n_points_1D = elem_test.get_ref_space_element().get_quad_points().get_num_points_direction();
     Assert(n_points_1D.flat_size() == n_points,
            ExcDimensionMismatch(n_points_1D.flat_size(),n_points));
 
@@ -1312,12 +1316,12 @@ eval_operator_u_v(
 #endif //#ifdef TIME_PROFILING
 
     const std::array<Real,dim> length_element_edge =
-        elem_test.get_ref_space_accessor().get_coordinate_lengths();
+        elem_test.get_ref_space_element().get_coordinate_lengths();
 
     const auto w_phi1Dtrial_phi1Dtest = evaluate_w_phi1Dtrial_phi1Dtest(
                                             phi_1D_test,
                                             phi_1D_trial,
-                                            elem_test.get_ref_space_accessor().get_quad_points().get_weights(),
+                                            elem_test.get_ref_space_element().get_quad_points().get_weights(),
                                             length_element_edge);
 
 #ifdef TIME_PROFILING
@@ -1399,6 +1403,8 @@ eval_operator_gradu_gradv(
     const ElemTest &elem_test,
     const ElemTrial &elem_trial,
     const vector<TMatrix<space_dim,space_dim>> &coeffs,
+    const QuadratureTensorProduct<ElemTest::dim> &quad_points_test,
+    const QuadratureTensorProduct<ElemTrial::dim> &quad_points_trial,
     DenseMatrix &operator_gradu_gradv) const
 {
 
@@ -1420,7 +1426,7 @@ eval_operator_gradu_gradv(
     const Index comp = 0; // only scalar spaces for the moment
 
     // test space -- begin
-    TensorIndex<dim> degree_test = elem_test.get_physical_space()->get_reference_space()->get_degree()[comp];
+    TensorIndex<dim> degree_test = elem_test.get_space()->get_reference_space()->get_degree()[comp];
     TensorSize<dim> n_basis_elem_test(degree_test + 1);
 
     Assert(n_basis_elem_test.flat_size()==elem_test.get_num_basis(),
@@ -1433,7 +1439,7 @@ eval_operator_gradu_gradv(
 
 
     // trial space -- begin
-    TensorIndex<dim> degree_trial = elem_trial.get_physical_space()->get_reference_space()->get_degree()[comp];
+    TensorIndex<dim> degree_trial = elem_trial.get_space()->get_reference_space()->get_degree()[comp];
     TensorSize<dim> n_basis_elem_trial(degree_trial + 1);
 
     Assert(n_basis_elem_trial.flat_size()==elem_trial.get_num_basis(),
@@ -1448,20 +1454,21 @@ eval_operator_gradu_gradv(
     //--------------------------------------------------------------------------
 
 
+    using BSpElem = const BSplineElement<dim,1,1>;
+
+
     //--------------------------------------------------------------------------
     // getting the 1D values for the test space -- begin
     std::array< ValueTable<Real>,dim> phi_1D_test;
     std::array< ValueTable<Real>,dim> grad_phi_1D_test;
     {
-        const auto &ref_elem_accessor = elem_test.get_ref_space_accessor();
-
-        const auto &quad_points = ref_elem_accessor.get_quad_points();
+        const auto &ref_elem_accessor = dynamic_cast<BSpElem &>(elem_test.get_ref_space_element());
 
         const auto phi_1D_test_table =
-            ref_elem_accessor.evaluate_univariate_derivatives_at_points(0,quad_points);
+            ref_elem_accessor.evaluate_univariate_derivatives_at_points(0,quad_points_test);
 
         const auto grad_phi_1D_test_table =
-            ref_elem_accessor.evaluate_univariate_derivatives_at_points(1,quad_points);
+            ref_elem_accessor.evaluate_univariate_derivatives_at_points(1,quad_points_test);
 
         phi_1D_test = phi_1D_test_table[0]; // only valid for scalar spaces
         grad_phi_1D_test = grad_phi_1D_test_table[0];  // only valid for scalar spaces
@@ -1475,15 +1482,15 @@ eval_operator_gradu_gradv(
     std::array< ValueTable<Real>,dim> phi_1D_trial;
     std::array< ValueTable<Real>,dim> grad_phi_1D_trial;
     {
-        const auto &ref_elem_accessor = elem_trial.get_ref_space_accessor();
+        const auto &ref_elem_accessor = dynamic_cast<BSpElem &>(elem_trial.get_ref_space_element());
 
         const auto &quad_points = ref_elem_accessor.get_quad_points();
 
         const auto phi_1D_trial_table =
-            ref_elem_accessor.evaluate_univariate_derivatives_at_points(0,quad_points);
+            ref_elem_accessor.evaluate_univariate_derivatives_at_points(0,quad_points_trial);
 
         const auto grad_phi_1D_trial_table =
-            ref_elem_accessor.evaluate_univariate_derivatives_at_points(1,quad_points);
+            ref_elem_accessor.evaluate_univariate_derivatives_at_points(1,quad_points_trial);
 
         phi_1D_trial = phi_1D_trial_table[0]; // only valid for scalar spaces
         grad_phi_1D_trial = grad_phi_1D_trial_table[0];  // only valid for scalar spaces
@@ -1511,15 +1518,15 @@ eval_operator_gradu_gradv(
 
 
     // checks that the mapping used in the test space and in the trial space is the same
-    Assert(elem_test.get_physical_space()->get_push_forward()->get_mapping() ==
-           elem_trial.get_physical_space()->get_push_forward()->get_mapping(),
+    Assert(elem_test.get_space()->get_push_forward()->get_mapping() ==
+           elem_trial.get_space()->get_push_forward()->get_mapping(),
            ExcMessage("Test and trial spaces must have the same mapping (and the same grid)!"));
 
 
     // checks that the elements on the grid are the same
     using Elem = CartesianGridElement<dim>;
-    Assert(static_cast<const Elem &>(elem_test.get_ref_space_accessor()) ==
-           static_cast<const Elem &>(elem_trial.get_ref_space_accessor()),
+    Assert(static_cast<const Elem &>(elem_test.get_ref_space_element()) ==
+           static_cast<const Elem &>(elem_trial.get_ref_space_element()),
            ExcMessage("Different elements for test space and trial space."));
 
 
@@ -1535,7 +1542,7 @@ eval_operator_gradu_gradv(
            ExcDimensionMismatch(invDF.size(), n_points));
 
 
-    TensorSize<dim> n_points_1D = elem_test.get_ref_space_accessor().get_quad_points().get_num_points_direction();
+    TensorSize<dim> n_points_1D = elem_test.get_ref_space_element().get_quad_points().get_num_points_direction();
     Assert(n_points_1D.flat_size() == n_points,
            ExcDimensionMismatch(n_points_1D.flat_size(),n_points));
 
@@ -1635,12 +1642,12 @@ eval_operator_gradu_gradv(
 #endif //#ifdef TIME_PROFILING
 
             const std::array<Real,dim> length_element_edge =
-                elem_test.get_ref_space_accessor().get_coordinate_lengths();
+                elem_test.get_ref_space_element().get_coordinate_lengths();
 
             const auto J = evaluate_w_phi1Dtrial_phi1Dtest(
                                test_1D,
                                trial_1D,
-                               elem_test.get_ref_space_accessor().get_quad_points().get_weights(),
+                               elem_test.get_ref_space_element().get_quad_points().get_weights(),
                                length_element_edge);
 
 #ifdef TIME_PROFILING

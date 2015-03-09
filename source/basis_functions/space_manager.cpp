@@ -156,7 +156,9 @@ SpaceInfo(const SpacePtrVariant &space,
           const Index min_dofs_id,
           const Index max_dofs_id,
           const DofsView &dofs_view,
-          const std::shared_ptr<const std::map<Index,DofsConstView>> elements_dofs_view)
+          const std::shared_ptr<const ElemsDofs> elements_dofs
+//        ,const std::shared_ptr<const std::map<Index,DofsConstView>> elements_dofs_view
+         )
     :
     space_(space),
     space_id_(space_id),
@@ -171,7 +173,8 @@ SpaceInfo(const SpacePtrVariant &space,
     min_dofs_id_(min_dofs_id),
     max_dofs_id_(max_dofs_id),
     dofs_view_(dofs_view),
-    elements_dofs_view_(elements_dofs_view)
+    elements_dofs_(elements_dofs)
+//  ,elements_dofs_view_(elements_dofs_view)
 {
     Assert(dim_ >= 0,ExcLowerRange(dim_,0));
     Assert(codim_ >= 0,ExcLowerRange(codim_,0));
@@ -180,8 +183,8 @@ SpaceInfo(const SpacePtrVariant &space,
     Assert(rank_ > 0,ExcLowerRange(rank_,1));
 
     Assert(num_dofs_ > 0,ExcEmptyObject());
-    Assert(elements_dofs_view_ != nullptr,ExcNullPtr());
-    Assert(!elements_dofs_view_->empty(), ExcEmptyObject());
+    Assert(elements_dofs_ != nullptr,ExcNullPtr());
+    Assert(!elements_dofs_->empty(), ExcEmptyObject());
 }
 
 void
@@ -386,15 +389,6 @@ SpacesConnection::
 add_dofs_connectivity(const DofsConnectivity &dofs_connectivity)
 {
     extra_dofs_connectivity_.merge(dofs_connectivity);
-#if 0
-    for (const auto &dofs_connectivity_map_entry : dofs_connectivity)
-    {
-        const auto row_dof = dofs_connectivity_map_entry.first;
-        const auto &col_dofs = dofs_connectivity_map_entry.second;
-
-        extra_dofs_connectivity_[row_dof].insert(col_dofs.begin(),col_dofs.end());
-    }
-#endif
 }
 
 
@@ -403,15 +397,6 @@ SpaceManager::
 add_dofs_connectivity(const DofsConnectivity &dofs_connectivity)
 {
     extra_dofs_connectivity_.merge(dofs_connectivity);
-#if 0
-    for (const auto &dofs_connectivity_map_entry : dofs_connectivity)
-    {
-        const auto row_dof = dofs_connectivity_map_entry.first;
-        const auto &col_dofs = dofs_connectivity_map_entry.second;
-
-        extra_dofs_connectivity_[row_dof].insert(col_dofs.begin(),col_dofs.end());
-    }
-#endif
 }
 
 
@@ -494,14 +479,14 @@ is_spaces_insertion_open() const
 }
 
 
+
 auto
 SpaceManager::
 SpaceInfo::
-get_elements_dofs_view() const -> const std::map<Index,DofsConstView> &
+get_elements_dofs() const -> std::shared_ptr<const ElemsDofs>
 {
-    return *elements_dofs_view_;
+    return elements_dofs_;
 }
-
 
 auto
 SpaceManager::
@@ -764,10 +749,14 @@ get_sparsity_pattern() const -> shared_ptr<const DofsConnectivity>
         if (sp_conn.is_unique_space() && sp_conn.use_dofs_connectivity_from_space())
         {
             // adding the contribution of the dofs defined within the space itself
-            const auto &space = sp_conn.get_space_row();
-            for (const auto element_dofs : space.get_elements_dofs_view())
-                for (const auto &dof : element_dofs.second)
-                    (*sparsity_pattern)[dof].insert(element_dofs.second.begin(),element_dofs.second.end());
+            const auto &space_info = sp_conn.get_space_row();
+            const auto &elements_dofs = *space_info.get_elements_dofs();
+            for (const auto elem : elements_dofs)
+            {
+                const auto &elem_dofs = elem.second;
+                for (const auto &dof : elem_dofs)
+                    (*sparsity_pattern)[dof].insert(elem_dofs.begin(),elem_dofs.end());
+            }
         }
 
         // adding the extra contribution to the connectivity defined within the spaces connection

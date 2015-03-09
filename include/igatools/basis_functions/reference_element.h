@@ -30,6 +30,10 @@ IGA_NAMESPACE_OPEN
 
 template <int, int, int> class ReferenceSpace;
 
+/**
+ *
+ * @ingroup elements
+ */
 template <int dim, int range, int rank>
 class ReferenceElement : public SpaceElement<ReferenceSpace<dim,range,rank>>
 {
@@ -119,8 +123,7 @@ public:
 
 
     /**
-     * @name Functions for the basis and field evaluations without the use of
-     * the cache.
+     * @name Functions for the basis and field evaluations without the use of the cache.
      */
     ///@{
     /**
@@ -157,17 +160,6 @@ public:
     }
     ///@}
 
-
-    /*
-        ValueVector<Real> get_w_measures() const
-        {
-            ValueVector<Real> w_meas;
-
-            Assert(false,ExcNotImplemented());
-
-            return w_meas;
-        }
-    //*/
 
     /**
      * Returns the <tt>k</tt> dimensional j-th sub-element measure

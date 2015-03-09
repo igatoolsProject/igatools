@@ -112,6 +112,8 @@ public:
         const ElemTest &elem_test,
         const ElemTrial &elem_trial,
         const ValueVector<Real> &c,
+        const QuadratureTensorProduct<ElemTest::dim> &quad_points_test,
+        const QuadratureTensorProduct<ElemTrial::dim> &quad_points_trial,
         DenseMatrix &operator_u_v) const = 0;
 
     /**
@@ -129,6 +131,8 @@ public:
         const ElemTest &elem_test,
         const ElemTrial &elem_trial,
         const vector<TMatrix<space_dim,space_dim>> &coeffs,
+        const QuadratureTensorProduct<ElemTest::dim> &quad_points_test,
+        const QuadratureTensorProduct<ElemTrial::dim> &quad_points_trial,
         DenseMatrix &operator_gradu_gradv) const = 0;
 
     /**
@@ -224,8 +228,8 @@ test_if_same_space(const ElemTest &elem_test,const ElemTrial &elem_trial) const
     //--------------------------------------------------------------------------
     // checks that the elements on the grid are the same
     using Elem = CartesianGridElement<dim>;
-    Assert(static_cast<const Elem &>(elem_test.get_ref_space_accessor()) ==
-           static_cast<const Elem &>(elem_trial.get_ref_space_accessor()),
+    Assert(static_cast<const Elem &>(elem_test.get_ref_space_element()) ==
+           static_cast<const Elem &>(elem_trial.get_ref_space_element()),
            ExcMessage("Different elements for test space and trial space."));
     //--------------------------------------------------------------------------
 

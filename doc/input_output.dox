@@ -1,6 +1,7 @@
 /**
    
 @defgroup in_out Input/Output
+@ingroup design
 @brief In this section we describe some details about the input/output file formats used by igatools. 
 
 */

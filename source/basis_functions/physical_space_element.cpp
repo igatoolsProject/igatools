@@ -32,11 +32,10 @@ PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
                      const Index index)
     :
     parent_t(phys_space,index),
-//    PfElemAccessor(phys_space->get_map_func(), index),
-    ref_space_element_accessor_(phys_space->get_reference_space()->create_element(index)),
+    ref_space_element_(phys_space->get_reference_space()->create_element(index)),
     push_fwd_element_(shared_ptr<PfElemAccessor>(new PfElemAccessor(phys_space->get_map_func(), index)))
 {
-    Assert(ref_space_element_accessor_ != nullptr, ExcNullPtr());
+    Assert(ref_space_element_ != nullptr, ExcNullPtr());
     Assert(push_fwd_element_ != nullptr, ExcNullPtr());
 }
 
@@ -57,18 +56,16 @@ PhysicalSpaceElement(const PhysicalSpaceElement<PhysSpace> &in,
                      const CopyPolicy &copy_policy)
     :
     parent_t(in,copy_policy)
-    //,
-//    PfElemAccessor(in,copy_policy)
 {
     if (copy_policy == CopyPolicy::shallow)
     {
-        ref_space_element_accessor_ = in.ref_space_element_accessor_;
+        ref_space_element_ = in.ref_space_element_;
         push_fwd_element_ = in.push_fwd_element_;
     }
     else
     {
-        ref_space_element_accessor_ =
-            shared_ptr<RefElemAccessor>(new RefElemAccessor(*in.ref_space_element_accessor_));
+        ref_space_element_ =
+            shared_ptr<RefElemAccessor>(new RefElemAccessor(*in.ref_space_element_));
         push_fwd_element_ =
             shared_ptr<PfElemAccessor>(new PfElemAccessor(*in.push_fwd_element_));
     }
@@ -91,9 +88,9 @@ copy_from(const PhysicalSpaceElement<PhysSpace> &element,
 //    PhysSpace::PushForwardType::ElementAccessor::copy_from(element,copy_policy);
 //
 //    if (copy_policy == CopyPolicy::deep)
-//        ref_space_element_accessor_->deep_copy_from(element.ref_space_element_accessor_);
+//        ref_space_element_->deep_copy_from(element.ref_space_element_);
 //    else if (copy_policy == CopyPolicy::shallow)
-//        ref_space_element_accessor_->deep_copy_from(element.ref_space_element_accessor_);
+//        ref_space_element_->deep_copy_from(element.ref_space_element_);
 //    else
 //    {
 //        Assert(false,ExcNotImplemented());
@@ -117,6 +114,24 @@ shallow_copy_from(const PhysicalSpaceElement<PhysSpace> &element)
 {
     Assert(false,ExcNotImplemented());
 //    this->copy_from(element,CopyPolicy::shallow);
+}
+
+
+template< class PhysSpace >
+template <int k>
+auto
+PhysicalSpaceElement<PhysSpace>::
+get_points(const int j) const -> ValueVector<PhysPoint>
+{
+    return push_fwd_element_->template get_values<0,k>(j);
+}
+
+template< class PhysSpace >
+auto
+PhysicalSpaceElement<PhysSpace>::
+get_element_points() const -> ValueVector<PhysPoint>
+{
+    return this->template get_points<dim>(0);
 }
 
 #if 0
@@ -279,7 +294,7 @@ init_cache(const ValueFlags fill_flag,
     const ValueFlags ref_sp_flag =
         get_reference_space_accessor_fill_flags(fill_flag);
     // TODO (pauletti, Sep 12, 2014): fix next line
-    // ref_space_element_accessor_->init_cache(ref_sp_flag, quad);
+    // ref_space_element_->init_cache(ref_sp_flag, quad);
 
     //const ValueFlags pf_flag = get_push_forward_accessor_fill_flags(fill_flag);
     //PfElemAccessor::init_cache(pf_flag, quad);
@@ -316,7 +331,7 @@ fill_cache(const TopologyId<dim> &topology_id)
     {
         PfElemAccessor::fill_cache();
         // TODO (pauletti, Sep 12, 2014): fix next line
-        // ref_space_element_accessor_->fill_cache();
+        // ref_space_element_->fill_cache();
     }
     else
     {
@@ -324,14 +339,14 @@ fill_cache(const TopologyId<dim> &topology_id)
         // and RefSpaceElementAccessor accepting TopologyId
         PfElemAccessor::fill_face_cache(topology_id.get_id());
         // TODO (pauletti, Sep 12, 2014): fix next line
-        //ref_space_element_accessor_->fill_face_cache(topology_id.get_id());
+        //ref_space_element_->fill_face_cache(topology_id.get_id());
     }
 
     if (cache.flags_handler_.fill_values())
     {
         PfElemAccessor::
         template transform_values<RefSpace::range,RefSpace::rank>(
-            ref_space_element_accessor_->get_basis_values(topology_id),
+            ref_space_element_->get_basis_values(topology_id),
             cache.phi_,
             topology_id);
 
@@ -346,7 +361,7 @@ fill_cache(const TopologyId<dim> &topology_id)
             PfElemAccessor::
             template transform_gradients<PhysSpace::range,PhysSpace::rank>(
                 dummy,
-                ref_space_element_accessor_->get_basis_gradients(topology_id),
+                ref_space_element_->get_basis_gradients(topology_id),
                 cache.D1phi_,
                 topology_id);
         }
@@ -354,8 +369,8 @@ fill_cache(const TopologyId<dim> &topology_id)
         {
             PfElemAccessor::
             template transform_gradients<PhysSpace::range,PhysSpace::rank>(
-                ref_space_element_accessor_->get_basis_values(topology_id),
-                ref_space_element_accessor_->get_basis_gradients(topology_id),
+                ref_space_element_->get_basis_values(topology_id),
+                ref_space_element_->get_basis_gradients(topology_id),
                 cache.D1phi_,
                 topology_id);
         }
@@ -370,8 +385,8 @@ fill_cache(const TopologyId<dim> &topology_id)
             PfElemAccessor::
             template transform_hessians<PhysSpace::range,PhysSpace::rank>(
                 dummy,
-                ref_space_element_accessor_->get_basis_gradients(topology_id),
-                ref_space_element_accessor_->get_basis_hessians(topology_id),
+                ref_space_element_->get_basis_gradients(topology_id),
+                ref_space_element_->get_basis_hessians(topology_id),
                 cache.D2phi_,
                 topology_id);
 
@@ -435,7 +450,7 @@ evaluate_field(const vector<Real> &local_coefs,const TopologyId<dim> &topology_i
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(), local_coefs.size()));
 
-    auto field_hat = ref_space_element_accessor_->evaluate_field(local_coefs,topology_id);
+    auto field_hat = ref_space_element_->evaluate_field(local_coefs,topology_id);
 
     ValueVector<Value> field(field_hat.size());
 
@@ -455,13 +470,13 @@ evaluate_field_gradients(const vector<Real> &local_coefs,const TopologyId<dim> &
     Assert(this->get_num_basis() == local_coefs.size(),
     ExcDimensionMismatch(this->get_num_basis(), local_coefs.size()));
 
-    auto D1field_hat = ref_space_element_accessor_->evaluate_field_gradients(local_coefs,topology_id);
+    auto D1field_hat = ref_space_element_->evaluate_field_gradients(local_coefs,topology_id);
 
     const auto n_quad_points = D1field_hat.size();
 
     ValueVector< typename RefElemAccessor::Value > D0field_hat(n_quad_points);
     if (transformation_type != Transformation::h_grad)
-        D0field_hat = ref_space_element_accessor_->evaluate_field(local_coefs,topology_id);
+        D0field_hat = ref_space_element_->evaluate_field(local_coefs,topology_id);
 
     ValueVector< Derivative<1> > D1field(n_quad_points);
     PfElemAccessor::
@@ -583,7 +598,7 @@ jump(const TensorIndex<dim> &increment)
 
     const bool jump_push_fwd_accessor = PfElemAccessor::jump(increment);
 
-    const bool jump_ref_space_accessor = ref_space_element_accessor_->jump(increment);
+    const bool jump_ref_space_accessor = ref_space_element_->jump(increment);
 
     return jump_grid_accessor && jump_push_fwd_accessor && jump_ref_space_accessor;
 }
@@ -595,7 +610,7 @@ PhysicalSpaceElement<PhysSpace>::
 move_to(const Index flat_index)
 {
     this->as_cartesian_grid_element_accessor().move_to(flat_index);
-    ref_space_element_accessor_->move_to(flat_index);
+    ref_space_element_->move_to(flat_index);
     push_fwd_element_->move_to(flat_index);
 }
 
@@ -638,17 +653,17 @@ operator<(const PhysicalSpaceElement <PhysSpace> &a) const
 template< class PhysSpace >
 auto
 PhysicalSpaceElement<PhysSpace>::
-get_ref_space_accessor() const -> const RefElemAccessor &
+get_ref_space_element() const -> const RefElemAccessor &
 {
-    return *ref_space_element_accessor_;
+    return *ref_space_element_;
 }
 
 template< class PhysSpace >
 auto
 PhysicalSpaceElement<PhysSpace>::
-get_ref_space_accessor() -> RefElemAccessor &
+get_ref_space_element() -> RefElemAccessor &
 {
-    return *ref_space_element_accessor_;
+    return *ref_space_element_;
 }
 
 template< class PhysSpace >
@@ -656,7 +671,7 @@ auto
 PhysicalSpaceElement<PhysSpace>::
 get_grid() const -> const std::shared_ptr<const CartesianGrid<dim> >
 {
-    return this->get_ref_space_accessor().get_grid();
+    return this->get_ref_space_element().get_grid();
 }
 
 template< class PhysSpace >
@@ -715,15 +730,15 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 
     ValueTable<ref_values_t> phi_hat;
     if (contains(ref_space_flags,ValueFlags::value))
-        phi_hat = ref_space_element_accessor_->evaluate_basis_values_at_points(points);
+        phi_hat = ref_space_element_->evaluate_basis_values_at_points(points);
 
     ValueTable<ref_gradients_t> D1phi_hat;
     if (contains(ref_space_flags,ValueFlags::gradient))
-        D1phi_hat = ref_space_element_accessor_->evaluate_basis_gradients_at_points(points);
+        D1phi_hat = ref_space_element_->evaluate_basis_gradients_at_points(points);
 
     ValueTable<ref_hessians_t> D2phi_hat;
     if (contains(ref_space_flags,ValueFlags::hessian))
-        D2phi_hat = ref_space_element_accessor_->evaluate_basis_hessians_at_points(points);
+        D2phi_hat = ref_space_element_->evaluate_basis_hessians_at_points(points);
     // evaluation of the basis function values (or derivatives) using the reference space --- end
     //---------------------------------------------------------------------------------------------
 
@@ -753,7 +768,7 @@ PhysicalSpaceElement<PhysSpace>::
 print_info(LogStream &out) const
 {
     out.begin_item("Reference space:");
-    ref_space_element_accessor_->print_info(out);
+    ref_space_element_->print_info(out);
     out.end_item();
 
     out.begin_item("Pushforward:");
@@ -767,7 +782,7 @@ PhysicalSpaceElement<PhysSpace>::
 print_cache_info(LogStream &out) const
 {
     out.begin_item("Reference space:");
-    ref_space_element_accessor_->print_cache_info(out);
+    ref_space_element_->print_cache_info(out);
     out.end_item();
 
     out.begin_item("Pushforward:");

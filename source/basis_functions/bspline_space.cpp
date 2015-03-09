@@ -22,6 +22,7 @@
 #include <igatools/basis_functions/space_manager.h>
 #include <igatools/base/sub_function.h>
 #include <igatools/base/identity_function.h>
+#include <igatools/utils/multi_array_utils.h>
 
 using std::endl;
 using std::array;
@@ -114,12 +115,6 @@ BSplineSpace(const DegreeTable &deg,
     BaseSpace(SpaceData::create(deg, knots, interior_mult, periodic)),
     end_b_(end_b),
     dof_distribution_global_(
-        this->space_data_->get_grid(),
-        this->space_data_->accumulated_interior_multiplicities(),
-        this->space_data_->get_num_basis_table(),
-        this->space_data_->get_degree(),
-        this->space_data_->get_periodic_table()),
-    dof_distribution_patch_(
         this->space_data_->get_grid(),
         this->space_data_->accumulated_interior_multiplicities(),
         this->space_data_->get_num_basis_table(),
@@ -229,17 +224,6 @@ end() const -> ElementIterator
 }
 
 
-#if 0
-template<int dim_, int range_, int rank_>
-auto
-BSplineSpace<dim_, range_, rank_>::
-get_element_handler() const -> ElementHandler
-{
-    return ElementHandler(this->shared_from_this());
-}
-#endif
-
-
 template<int dim_, int range_, int rank_>
 template<int k>
 auto
@@ -280,7 +264,7 @@ get_ref_sub_space(const int s_id,
     for (auto comp : SpaceData::components)
     {
         const int n_basis = sub_space->get_num_basis(comp);
-        const auto &sub_local_indices = sub_space->get_dof_distribution_patch().get_index_table()[comp];
+        const auto &sub_local_indices = sub_space->get_dof_distribution_global().get_index_table()[comp];
         const auto &elem_global_indices = dof_distribution_global_.get_index_table()[comp];
 
         for (Index sub_i = 0; sub_i < n_basis; ++sub_i, ++comp_i)
@@ -288,7 +272,7 @@ get_ref_sub_space(const int s_id,
             const auto sub_base_id = sub_local_indices.flat_to_tensor(sub_i);
 
             for (int j=0; j<k; ++j)
-                tensor_index[active_dirs[j]] =  sub_base_id[j];
+                tensor_index[active_dirs[j]] = sub_base_id[j];
             for (int j=0; j<n_dir; ++j)
             {
                 auto dir = k_elem.constant_directions[j];
@@ -342,14 +326,6 @@ refine_h_after_grid_refinement(
                                    this->space_data_->get_num_basis_table(),
                                    this->space_data_->get_degree(),
                                    this->space_data_->get_periodic_table());
-
-    dof_distribution_patch_ = DofDistribution<dim, range, rank>(
-                                  this->get_grid(),
-                                  this->space_data_->accumulated_interior_multiplicities(),
-                                  this->space_data_->get_num_basis_table(),
-                                  this->space_data_->get_degree(),
-                                  this->space_data_->get_periodic_table());
-
     operators_ = BernsteinExtraction<dim, range, rank>(
                      this->get_grid(),
                      this->space_data_->compute_knots_with_repetition(end_b_),
@@ -390,26 +366,6 @@ get_dof_distribution_global() -> DofDistribution<dim, range, rank> &
 
 
 template<int dim_, int range_, int rank_>
-auto
-BSplineSpace<dim_, range_, rank_>::
-get_dof_distribution_patch() const -> const DofDistribution<dim, range, rank> &
-{
-    return dof_distribution_patch_;
-}
-
-
-
-template<int dim_, int range_, int rank_>
-auto
-BSplineSpace<dim_, range_, rank_>::
-get_dof_distribution_patch() -> DofDistribution<dim, range, rank> &
-{
-    return dof_distribution_patch_;
-}
-
-
-
-template<int dim_, int range_, int rank_>
 Index
 BSplineSpace<dim_, range_, rank_>::
 get_global_dof_id(const TensorIndex<dim> &tensor_index,
@@ -423,9 +379,67 @@ get_global_dof_id(const TensorIndex<dim> &tensor_index,
 template<int dim_, int range_, int rank_>
 vector<Index>
 BSplineSpace<dim_, range_, rank_>::
+get_element_dofs(
+    const CartesianGridElement<dim> &element,
+    const DofDistribution<dim, range, rank> &dofs_distribution) const
+{
+    const auto &accum_mult = this->space_data_->accumulated_interior_multiplicities();
+    const auto &index_table = dofs_distribution.get_index_table();
+
+    const auto &degree_table = this->space_data_->get_degree();
+
+    vector<Index> element_dofs;
+    const auto &elem_tensor_id = element.get_tensor_index();
+
+    using Topology = UnitElement<dim>;
+
+    for (int comp = 0 ; comp < SpaceData::n_components ; ++comp)
+    {
+        //-----------------------------------------------------------------
+        // building the lookup table for the local dof id on the current component of the element --- begin
+        // TODO (MM, March 06, 2015): this can be put on the SplineSpace constructor for optimization
+        const auto &degree_comp = degree_table[comp];
+
+        TensorSize<dim> dofs_t_size_elem_comp;
+        for (const auto dir : Topology::active_directions)
+            dofs_t_size_elem_comp[dir] = degree_comp[dir] + 1;
+
+        const auto dofs_f_size_elem_comp = dofs_t_size_elem_comp.flat_size();
+
+        vector<Index> elem_comp_dof_f_id(dofs_f_size_elem_comp);
+        std::iota(elem_comp_dof_f_id.begin(),elem_comp_dof_f_id.end(),0);
+
+        vector<TensorIndex<dim>> elem_comp_dof_t_id;
+        const auto w_dofs_elem_comp = MultiArrayUtils<dim>::compute_weight(dofs_t_size_elem_comp);
+        for (const auto dof_f_id : elem_comp_dof_f_id)
+            elem_comp_dof_t_id.emplace_back(MultiArrayUtils<dim>::flat_to_tensor_index(dof_f_id,w_dofs_elem_comp));
+        // building the lookup table for the local dof id on the current component of the element --- end
+        //-----------------------------------------------------------------
+
+
+
+        //-----------------------------------------------------------------
+        const auto &index_table_comp = index_table[comp];
+
+        const auto dof_t_origin = accum_mult[comp].cartesian_product(elem_tensor_id);
+        for (const auto loc_dof_t_id : elem_comp_dof_t_id)
+        {
+            const auto dof_t_id = dof_t_origin + loc_dof_t_id;
+            element_dofs.emplace_back(index_table_comp(dof_t_id));
+        }
+        //-----------------------------------------------------------------
+
+    } // end comp loop
+
+    return element_dofs;
+}
+
+template<int dim_, int range_, int rank_>
+vector<Index>
+BSplineSpace<dim_, range_, rank_>::
 get_loc_to_global(const CartesianGridElement<dim> &element) const
 {
-    return dof_distribution_global_.get_loc_to_global_indices(element);
+    return this->get_element_dofs(element,dof_distribution_global_);
 }
 
 
@@ -435,7 +449,12 @@ vector<Index>
 BSplineSpace<dim_, range_, rank_>::
 get_loc_to_patch(const CartesianGridElement<dim> &element) const
 {
-    return dof_distribution_patch_.get_loc_to_global_indices(element);
+    const auto elem_dofs_global = this->get_loc_to_global(element);
+    vector<Index> elem_dofs_local;
+    for (const auto dof_global : elem_dofs_global)
+    	elem_dofs_local.push_back(dof_distribution_global_.global_to_patch_local(dof_global));
+
+    return elem_dofs_local;
 }
 
 
@@ -497,10 +516,11 @@ print_info(LogStream &out) const
     this->space_data_->print_info(out);
     out.end_item();
 
+//#if 0
     out.begin_item("Patch Basis Indices:");
-    dof_distribution_patch_.print_info(out);
+    dof_distribution_global_.print_info(out);
     out.end_item();
-
+//#endif
     out.begin_item("Global Basis Indices:");
     dof_distribution_global_.print_info(out);
     out.end_item();

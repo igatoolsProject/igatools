@@ -55,7 +55,10 @@ class Vector;
 
 
 
-
+/**
+ *
+ * @ingroup linear_algebra
+ */
 template<TrilinosImpl trilinos_impl>
 class VectorTrilinos
 {
@@ -156,6 +159,7 @@ protected:
  * \author M. Martinelli 2013, 2014
  * \author pauletti 2013
  *
+ * @ingroup linear_algebra
  */
 template <>
 class Vector<LAPack::trilinos_tpetra> : public VectorTrilinos<TrilinosImpl::tpetra>
@@ -338,6 +342,7 @@ public:
  *
  * \author M. Martinelli 2014
  *
+ * @ingroup linear_algebra
  */
 template <>
 class Vector<LAPack::trilinos_epetra> : public VectorTrilinos<TrilinosImpl::epetra>

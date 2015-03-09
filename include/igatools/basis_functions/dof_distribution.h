@@ -37,20 +37,16 @@ IGA_NAMESPACE_OPEN
  *
  * It is a helper class for the BSplineSpace.
  *
- * This class basically has two main (private) member:
+ * This class basically has two one (private) member:
  * - index_distribution_ that is the container for the basis function indices
  *   of a single-patch space
- * - elements_loc_to_global_flat_view_ that represent the views of the dofs
- *   that are active on each element of the space.
- *
- *
  *
  * @author pauletti, 2014
- * @author M.Martinelli, 2014
+ * @author M.Martinelli, 2014, 2015
  *
  */
 template<int dim, int range = 1, int rank = 1>
-class DofDistribution : public TensorSizedContainer<dim>
+class DofDistribution
 {
 public:
     using Space = SplineSpace<dim, range, rank>;
@@ -155,19 +151,6 @@ public:
 
 
 
-    /** @name Getting information of a specific element */
-    ///@{
-    /**
-     * Returns the number of active dofs of the @p element.
-     */
-    Size get_num_dofs_element(const CartesianGridElement<dim> &element) const;
-
-
-    /** Returns the active dofs of the @p element.*/
-    vector<Index> get_loc_to_global_indices(const CartesianGridElement<dim> &element) const;
-    ///@}
-
-
     /**
      * Returns the container used to store the dofs ids of each component of a single patch space.
      *
@@ -188,13 +171,6 @@ public:
     const DofsView &get_dofs_view() const;
 
 
-
-    /**
-     * Returns a pointer to a std::map in which the key is the element flat_id and the value
-     * is a const view to the global dofs on a single element of a space.
-     * The size of the map is equal to the number of active elements in the space.
-     */
-    std::shared_ptr<const std::map<Index,DofsConstView>> get_elements_view() const;
 
 
     /**
@@ -221,26 +197,8 @@ private:
     DofsView dofs_view_;
 
 
-    /**
-     * This functions uses the indices stored in the index_distribution_ member variable and
-     * creates the views relative to the elements in the space.
-     */
-    void create_element_loc_to_global_view(
-        std::shared_ptr<const CartesianGrid<dim> > grid,
-        const MultiplicityTable &accum_mult,
-        const SpaceDimensionTable &n_elem_basis);
-
-    /**
-     * Pointer to a std::map in which the key is the element flat_id and the value
-     * is a const view to the global dofs on a single element of a space.
-     * The size of the map is equal to the number of active elements in the space.
-     *
-     * @note We use the pointer because this object can be used by other classes (@see SpaceManager),
-     * and we want to keep the synchronization of the element views without the expense of successive copies.
-     */
-    std::shared_ptr<std::map<Index,DofsConstView>> elements_loc_to_global_flat_view_;
-
     DistributionPolicy policy_;
+
 };
 
 IGA_NAMESPACE_CLOSE

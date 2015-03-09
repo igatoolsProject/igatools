@@ -437,7 +437,7 @@ void Mortar_Interface<dim, dim_field>::integration()
         //out<<"is bound"<<felem_j.is_boundary()<<endl;
         //out<<"is bound"<<felem_j.is_boundary(0)<<endl;
 
-        auto felem_multiplier_ref=felem_multiplier.get_ref_space_accessor();
+        auto felem_multiplier_ref=felem_multiplier.get_ref_space_element();
         ////auto basis_slave_ref=felem_slave_ref.evaluate_basis_values_at_points(curr_slave_face_quad_pts_unit);
         ////out<<basis_slave.get_function_view(0)[0]<<basis_slave_ref.get_function_view(0)[0];
 

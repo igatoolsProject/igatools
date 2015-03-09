@@ -177,6 +177,7 @@ using PhysSpacePtr = std::shared_ptr<PhysicalSpace<dim,range,rank,codim,type>>;
  *   and then using SpacesConnection::add_dofs_connectivity().
  *
  * @todo: complete the documentation
+ * @ingroup spaces_manager
  * @author M. Martinelli
  * @date 10 Jun 2014
  */
@@ -209,6 +210,9 @@ public:
 
     /** Type alias for the LinearConstraintType. */
     using LCType = LinearConstraintType;
+
+    /** Type alias for the container holding the global dofs in each element. */
+    using ElemsDofs = std::map<Index,vector<Index>>;
 
     class DofsConnectivity
     {
@@ -545,7 +549,8 @@ private:
                   const Index min_dofs_id,
                   const Index max_dofs_id,
                   const DofsView &dofs_view,
-                  const std::shared_ptr<const std::map<Index,DofsConstView>> elements_dofs_view);
+                  const std::shared_ptr<const ElemsDofs> elements_dofs
+                 );
 
         SpaceInfo(const SpaceInfo &sp) = delete;
         SpaceInfo(SpaceInfo &&sp) = delete;
@@ -573,12 +578,10 @@ private:
         const DofsView &get_dofs_view() const;
 
         /**
-         * Returns a vector of size equal to the number of elements in the single-patch space,
-         * for which each entry is a view of the global dofs ids active on the element.
+         * Returns a map in which the key is the element id of a space and the key are the dofs
+         * active on the element.
          */
-        const std::map<Index,DofsConstView> &get_elements_dofs_view() const;
-
-
+        std::shared_ptr<const ElemsDofs> get_elements_dofs() const;
 
 
         /** Returns the minimum dof id present in the space.*/
@@ -689,13 +692,8 @@ private:
          * for which each entry is a view of the global dofs ids active on the element.
          *
          * The std::map key represent the element flat-id for which we store the dofs view.
-         *
-         * @note We use a std:shared_ptr because this container can be very big and
-         * it is already present
-         * the the DofDistribution class instantiated in the space itself.
          */
-        std::shared_ptr<const std::map<Index,DofsConstView>> elements_dofs_view_;
-
+        std::shared_ptr<const ElemsDofs> elements_dofs_;
 
 
 
@@ -1036,6 +1034,13 @@ add_space(std::shared_ptr<Space> space)
     //------------------------------------------------------------------------
     auto &dof_distribution = space->get_dof_distribution_global();
 
+    std::shared_ptr<ElemsDofs> elements_dofs(new ElemsDofs);
+    auto elem = space->begin();
+    const auto elem_end = space->end();
+    for (; elem != elem_end ; ++elem)
+        (*elements_dofs)[elem->get_flat_index()] = elem->get_local_to_global();
+
+
     auto space_info = std::shared_ptr<SpaceInfo>(
                           new SpaceInfo(space,
                                         space->get_space_id(),
@@ -1050,7 +1055,8 @@ add_space(std::shared_ptr<Space> space)
                                         dof_distribution.get_min_dof_id(),
                                         dof_distribution.get_max_dof_id(),
                                         dof_distribution.get_dofs_view(),
-                                        dof_distribution.get_elements_view()));
+                                        elements_dofs
+                                       ));
 
     spaces_info_[space_info->get_space_id()] = space_info;
 

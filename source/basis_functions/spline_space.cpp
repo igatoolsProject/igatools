@@ -142,6 +142,32 @@ refine_h_after_grid_refinement(
     Assert(this->get_grid()->get_grid_pre_refinement()!=nullptr,ExcNullPtr());
     auto grid_pre_refinement = const_pointer_cast<CartesianGrid<dim>>(this->get_grid()->get_grid_pre_refinement());
 
+
+    //------------------------------------------------------------------------------------------
+    // check if the multiplicity of the new knot lines is compatible with the minimum degree of the space --- begin
+    std::array<int,dim> mult_new_knot_lines;
+    for (int dir = 0 ; dir < dim ; ++dir)
+        mult_new_knot_lines[dir] = 1;
+
+#ifndef NDEBUG
+    const auto &interior_mult = const_cast<MultiplicityTable &>(*this->get_interior_mult());
+    for (int dir = 0; dir < dim; ++dir)
+    {
+        int min_degree = std::numeric_limits<int>::max();
+        for (int comp_id : interior_mult.get_active_components_id())
+        {
+            const auto &degree_comp = this->get_degree()[comp_id];
+            min_degree = std::min(min_degree,degree_comp[dir]);
+
+            Assert(mult_new_knot_lines[dir] > 0 && mult_new_knot_lines[dir] <= min_degree,
+                   ExcIndexRange(mult_new_knot_lines[dir],1,min_degree+1))
+        }
+    }
+#endif
+    // check if the multiplicity of the new knot lines is compatible with the minimum degree of the space --- end
+    //------------------------------------------------------------------------------------------
+
+
     shared_ptr<const MultiplicityTable> interior_mult_prev_refinement =
         make_shared<const MultiplicityTable>(MultiplicityTable(*this->get_interior_mult()));
 
@@ -186,12 +212,12 @@ refine_h_after_grid_refinement(
                 // creating the new multiplicity
                 const vector<int> &mult_old = interior_mult[comp_id].get_data_direction(direction_id);
 
-                vector<int> mult_new(n_extra_multiplicities,1);
+                vector<int> mult_new(n_extra_multiplicities,mult_new_knot_lines[direction_id]);
                 for (const int &m : mult_old)
                 {
                     mult_new.push_back(m); // adding the old multiplicity value
 
-                    mult_new.insert(mult_new.end(),n_extra_multiplicities,1); // adding the new multiplicity values
+                    mult_new.insert(mult_new.end(),n_extra_multiplicities,mult_new_knot_lines[direction_id]); // adding the new multiplicity values
                 }
 
                 interior_mult[comp_id].copy_data_direction(direction_id,mult_new);

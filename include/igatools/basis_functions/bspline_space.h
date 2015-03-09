@@ -278,6 +278,11 @@ public:
 
     virtual vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const override final;
 
+    vector<Index> get_element_dofs(
+        const CartesianGridElement<dim> &element,
+        const DofDistribution<dim, range, rank> &dofs_distribution) const;
+
+
     /** @name Functions involving the element iterator */
     ///@{
     /**
@@ -345,15 +350,6 @@ public:
     /** Returns the container with the global dof distribution (non const version). */
     virtual DofDistribution<dim, range, rank> &
     get_dof_distribution_global() override final;
-
-    /** Returns the container with the patch dof distribution (const version). */
-    virtual const DofDistribution<dim, range, rank> &
-    get_dof_distribution_patch() const override final;
-
-
-    /** Returns the container with the patch dof distribution (non const version). */
-    virtual DofDistribution<dim, range, rank> &
-    get_dof_distribution_patch() override final;
     ///@}
 
     /**
@@ -401,12 +397,6 @@ private:
      * dofs of all the spaces.
      */
     DofDistribution<dim, range, rank> dof_distribution_global_;
-
-    /** Container with the local to patch basis indices
-     * @note The concept of patch indices refers to the numeration at patch
-     * level of the dofs.
-     */
-    DofDistribution<dim, range, rank> dof_distribution_patch_;
 
     /** @name Bezier extraction operator. */
     BernsteinExtraction<dim, range, rank> operators_;
