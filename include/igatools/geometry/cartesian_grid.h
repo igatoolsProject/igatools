@@ -650,6 +650,19 @@ public:
      */
     void add_elements_property(const std::string &property);
 
+    /**
+     * Returns the id of the first element with a given @p property.
+     * @note If the @p property is equal to CartesianGrid<dim>::elems_property_none, then the
+     * first element index is 0 (zero).
+     */
+    Index get_first_element_id_same_property(const std::string &property) const;
+
+    /**
+     * Returns the id of the last element with a given @p property.
+     * @note If the @p property is equal to CartesianGrid<dim>::elems_property_none, then the
+     * last element index is equal to the number of elements in the grid minus 1.
+     */
+    Index get_last_element_id_same_property(const std::string &property) const;
 
     /**
      * Returns the flat id of the elements having a certain @p property (non-const version).

@@ -312,6 +312,34 @@ get_elements_id_same_property(const std::string &property) const
     return properties_elements_id_.get_ids_same_property(property);
 }
 
+template<int dim_>
+Index
+CartesianGrid<dim_>::
+get_first_element_id_same_property(const std::string &property) const
+{
+    Index first_id;
+    if (property == self_t::elems_property_none)
+        first_id = 0;
+    else
+        first_id = *(this->get_elements_id_same_property(property).cbegin());
+
+    return first_id;
+}
+
+template<int dim_>
+Index
+CartesianGrid<dim_>::
+get_last_element_id_same_property(const std::string &property) const
+{
+    Index last_id;
+    if (property == self_t::elems_property_none)
+        last_id = this->get_num_all_elems()-1;
+    else
+        last_id = *(this->get_elements_id_same_property(property).crbegin());
+
+    return last_id;
+}
+
 
 template<int dim_>
 auto

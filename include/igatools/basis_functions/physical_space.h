@@ -64,7 +64,7 @@ public:
 
     using RefSpace = ReferenceSpace<dim_,range_,rank_>;
 
-    //using GridType = typename PushForwardType::GridType;
+    using GridType = CartesianGrid<dim_>;
     ///@}
     using ElementHandler = PhysSpaceElementHandler<self_t>;
 
@@ -134,20 +134,26 @@ public:
      */
     Index get_num_basis() const;
 
+    /** @name Functions involving the element iterator */
+    ///@{
     /**
-     * Returns a element iterator to the first element of the patch.
+     * Returns a element iterator to the first element of the patch
+     * with the property @p element_property.
      */
-    ElementIterator begin() const;
+    ElementIterator begin(const std::string &element_property = GridType::elems_property_none) const;
 
     /**
-     * Returns a element iterator to the last element of the patch.
+     * Returns a element iterator to the last element of the patch
+     * with the property @p element_property.
      */
-    ElementIterator last() const;
+    ElementIterator last(const std::string &element_property = GridType::elems_property_none) const;
 
     /**
-     * Returns a element iterator to one-pass the end of patch.
+     * Returns a element iterator to one-pass the end of patch
+     * with the property @p element_property.
      */
-    ElementIterator end() const;
+    ElementIterator end(const std::string &element_property = GridType::elems_property_none) const;
+    ///@}
 
     /** Returns the container with the global dof distribution (const version). */
     const DofDistribution<dim, range, rank> &get_dof_distribution_global() const;

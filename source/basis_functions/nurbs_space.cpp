@@ -210,13 +210,10 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 begin(const std::string &element_property) const -> ElementIterator
 {
-    int first_id;
-    if (element_property == GridType::elems_property_none)
-        first_id = 0;
-    else
-        first_id = *(this->get_grid()->get_elements_id_same_property(element_property).cbegin());
-
-    return ElementIterator(this->create_element(first_id),element_property);
+    return ElementIterator(
+               this->create_element(
+                   this->get_grid()->get_first_element_id_same_property(element_property)),
+               element_property);
 }
 
 
@@ -226,14 +223,10 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 last(const std::string &element_property) const -> ElementIterator
 {
-    int last_id;
-    const auto grid = this->get_grid();
-    if (element_property == GridType::elems_property_none)
-        last_id = grid->get_num_all_elems()-1;
-    else
-        last_id = *(grid->get_elements_id_same_property(element_property).crbegin());
-
-    return ElementIterator(this->create_element(last_id),element_property);
+    return ElementIterator(
+               this->create_element(
+                   this->get_grid()->get_last_element_id_same_property(element_property)),
+               element_property);
 }
 
 
