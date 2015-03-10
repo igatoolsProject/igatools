@@ -53,7 +53,8 @@ template <int,int,int> class DofDistribution;
  * @ingroup containers
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
-class ReferenceSpace : public FunctionSpaceOnGrid<CartesianGrid<dim_>>
+class ReferenceSpace :
+    public FunctionSpaceOnGrid<CartesianGrid<dim_>>
 {
 public:
     static const int dim       = dim_;
@@ -239,21 +240,11 @@ public:
     /** Returns the container with the global dof distribution (non const version). */
     virtual DofDistribution<dim, range, rank> &
     get_dof_distribution_global() = 0;
-#if 0
-    /** Returns the container with the patch dof distribution (const version). */
-    virtual const DofDistribution<dim, range, rank> &
-    get_dof_distribution_patch() const = 0;
 
 
-    /** Returns the container with the patch dof distribution (non const version). */
-    virtual DofDistribution<dim, range, rank> &
-    get_dof_distribution_patch() = 0;
-#endif
 
-    //TODO (MM, Dec 22, 2014): implement ReferenceSpace::get_space_manager()
-    // instead of the two implementation in BSplineSpace and NURBSSpace
-    virtual std::shared_ptr<SpaceManager> get_space_manager() = 0;
-    virtual std::shared_ptr<const SpaceManager> get_space_manager() const = 0;
+    std::shared_ptr<SpaceManager> get_space_manager();
+    std::shared_ptr<const SpaceManager> get_space_manager() const;
 
 
     /** @name Functions involving the element iterator */
@@ -262,20 +253,20 @@ public:
      * Returns a element iterator to the first element of the patch
      * with the property @p element_property.
      */
-    virtual ElementIterator begin(const std::string &element_property = GridType::elems_property_none) const = 0;
+    ElementIterator begin(const std::string &element_property = GridType::elems_property_none) const;
 
     /**
      * Returns a element iterator to the last element of the patch
      * with the property @p element_property.
      */
-    virtual ElementIterator last(const std::string &element_property = GridType::elems_property_none) const = 0;
+    ElementIterator last(const std::string &element_property = GridType::elems_property_none) const;
 
 
     /**
      * Returns a element iterator to one-pass the end of patch.
      * with the property @p element_property.
      */
-    virtual ElementIterator end(const std::string &element_property = GridType::elems_property_none) const = 0;
+    ElementIterator end(const std::string &element_property = GridType::elems_property_none) const;
     ///@}
 
     template<int k>

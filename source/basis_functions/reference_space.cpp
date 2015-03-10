@@ -25,6 +25,7 @@
 
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/nurbs_space.h>
+#include <igatools/basis_functions/space_manager.h>
 
 using std::shared_ptr;
 using std::make_shared;
@@ -123,6 +124,88 @@ get_space_data() const -> std::shared_ptr<SpaceData>
     Assert(space_data_ != nullptr,ExcNullPtr());
     return space_data_;
 }
+
+
+
+template<int dim, int range, int rank>
+auto
+ReferenceSpace<dim, range, rank>::
+begin(const std::string &element_property) const -> ElementIterator
+{
+    return ElementIterator(
+               this->create_element(
+                   this->get_grid()->get_first_element_id_same_property(element_property)),
+               element_property);
+}
+
+
+
+template<int dim, int range, int rank>
+auto
+ReferenceSpace<dim, range, rank>::
+last(const std::string &element_property) const -> ElementIterator
+{
+    return ElementIterator(
+               this->create_element(
+                   this->get_grid()->get_last_element_id_same_property(element_property)),
+               element_property);
+}
+
+
+
+template<int dim, int range, int rank>
+auto
+ReferenceSpace<dim, range, rank>::
+end(const std::string &element_property) const -> ElementIterator
+{
+    return ElementIterator(this->create_element(IteratorState::pass_the_end),element_property);
+}
+
+
+
+template<int dim, int range, int rank>
+auto
+ReferenceSpace<dim, range, rank>::
+get_space_manager() -> shared_ptr<SpaceManager>
+{
+    auto space_manager = make_shared<SpaceManager>(SpaceManager());
+
+
+    shared_ptr<ReferenceSpace<dim,range,rank> > this_space;
+    if (this->is_bspline())
+    {
+        using BSpSpace = BSplineSpace<dim,range,rank>;
+        this_space = dynamic_cast<BSpSpace &>(*this).shared_from_this();
+    }
+    else
+    {
+        using NrbSpace = NURBSSpace<dim,range,rank>;
+        this_space = dynamic_cast<NrbSpace &>(*this).shared_from_this();
+    }
+    Assert(this_space != nullptr,ExcNullPtr());
+
+    space_manager->spaces_insertion_open();
+    space_manager->add_space(this_space);
+    space_manager->spaces_insertion_close();
+
+
+    space_manager->spaces_connectivity_open();
+    space_manager->add_spaces_connection(this_space);
+    space_manager->spaces_connectivity_close();
+
+    return space_manager;
+}
+
+
+
+template<int dim, int range, int rank>
+auto
+ReferenceSpace<dim, range, rank>::
+get_space_manager() const -> std::shared_ptr<const SpaceManager>
+{
+    return const_cast<ReferenceSpace<dim,range,rank> &>(*this).get_space_manager();
+}
+
 
 IGA_NAMESPACE_CLOSE
 

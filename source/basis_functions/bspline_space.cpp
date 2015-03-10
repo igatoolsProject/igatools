@@ -19,7 +19,6 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/space_manager.h>
 #include <igatools/base/sub_function.h>
 #include <igatools/base/identity_function.h>
 #include <igatools/utils/multi_array_utils.h>
@@ -194,45 +193,12 @@ BSplineSpace<dim_, range_, rank_>::
 create_element(const Index flat_index) const -> std::shared_ptr<ReferenceElement<dim_,range_,rank_> >
 {
     using Elem = BSplineElement<dim_,range_,rank_>;
-    auto elem = shared_ptr<Elem>(new Elem(this->shared_from_this(),flat_index));
+    auto elem = shared_ptr<Elem>(new Elem(
+        this->shared_from_this(),
+        flat_index));
     Assert(elem != nullptr, ExcNullPtr());
 
     return elem;
-}
-
-
-template<int dim_, int range_, int rank_>
-auto
-BSplineSpace<dim_, range_, rank_>::
-begin(const std::string &element_property) const -> ElementIterator
-{
-    return ElementIterator(
-               this->create_element(
-                   this->get_grid()->get_first_element_id_same_property(element_property)),
-               element_property);
-}
-
-
-
-template<int dim_, int range_, int rank_>
-auto
-BSplineSpace<dim_, range_, rank_>::
-last(const std::string &element_property) const -> ElementIterator
-{
-    return ElementIterator(
-               this->create_element(
-                   this->get_grid()->get_last_element_id_same_property(element_property)),
-               element_property);
-}
-
-
-
-template<int dim_, int range_, int rank_>
-auto
-BSplineSpace<dim_, range_, rank_>::
-end(const std::string &element_property) const -> ElementIterator
-{
-    return ElementIterator(this->create_element(IteratorState::pass_the_end),element_property);
 }
 
 
@@ -470,37 +436,6 @@ get_loc_to_patch(const CartesianGridElement<dim> &element) const
 }
 
 
-
-template<int dim_, int range_, int rank_>
-auto
-BSplineSpace<dim_, range_, rank_>::
-get_space_manager() -> shared_ptr<SpaceManager>
-{
-    auto space_manager = make_shared<SpaceManager>(SpaceManager());
-
-    auto this_space = this->shared_from_this();
-
-    space_manager->spaces_insertion_open();
-    space_manager->add_space(this_space);
-    space_manager->spaces_insertion_close();
-
-
-    space_manager->spaces_connectivity_open();
-    space_manager->add_spaces_connection(this_space);
-    space_manager->spaces_connectivity_close();
-
-    return space_manager;
-}
-
-
-
-template<int dim_, int range_, int rank_>
-auto
-BSplineSpace<dim_, range_, rank_>::
-get_space_manager() const -> std::shared_ptr<const SpaceManager>
-{
-    return const_cast<self_t &>(*this).get_space_manager();
-}
 
 template<int dim_, int range_, int rank_>
 void

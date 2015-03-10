@@ -33,7 +33,6 @@
 
 IGA_NAMESPACE_OPEN
 
-class SpaceManager;
 
 template <int, int, int> class BSplineElement;
 template <int, int, int> class BSplineElementHandler;
@@ -283,31 +282,6 @@ public:
         const DofDistribution<dim, range, rank> &dofs_distribution) const;
 
 
-    /** @name Functions involving the element iterator */
-    ///@{
-    /**
-     * Returns a element iterator to the first element of the patch
-     * with the property @p element_property.
-     */
-    virtual ElementIterator begin(
-        const std::string &element_property = GridType::elems_property_none) const override final;
-
-    /**
-     * Returns a element iterator to the last element of the patch
-     * with the property @p element_property.
-     */
-    virtual ElementIterator last(
-        const std::string &element_property = GridType::elems_property_none) const override final;
-
-
-    /**
-     * Returns a element iterator to one-pass the end of patch.
-     * with the property @p element_property.
-     */
-    virtual ElementIterator end(
-        const std::string &element_property = GridType::elems_property_none) const override final;
-    ///@}
-
 #if 0
     ElementHandler get_element_handler() const;
 #endif
@@ -343,10 +317,6 @@ public:
                   std::shared_ptr<typename GridType::template InterGridMap<k>> elem_map) const;
 
     std::shared_ptr<const self_t > get_reference_space() const;
-
-
-    virtual std::shared_ptr<SpaceManager> get_space_manager() override final ;
-    virtual std::shared_ptr<const SpaceManager> get_space_manager() const override final;
 
 
     /** Returns the container with the global dof distribution (const version). */
