@@ -740,18 +740,10 @@ print_info(LogStream &out) const
 
 
     //-------------------------------------------------------------
-    for (const auto &elems_same_property : properties_elements_id_)
+    if (!properties_elements_id_.empty())
     {
-        const auto &property_name = elems_same_property.first;
-        const auto &elems_id = elems_same_property.second;
-        out.begin_item("Elements with property \"" + property_name + "\":");
-        out << "Num.: " << elems_id.size() << endl;
-        if (elems_id.size() > 0)
-        {
-            out << "   Flat IDs:";
-            for (const auto &elem_id : elems_id)
-                out << " " << elem_id ;
-        }
+        out.begin_item("Element properties:");
+        properties_elements_id_.print_info(out);
         out.end_item();
     }
     //-------------------------------------------------------

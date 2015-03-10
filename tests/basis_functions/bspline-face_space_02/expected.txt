@@ -37,12 +37,16 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 0; int dim = 1; i
             
          
          Patch Basis Indices:
-            Size: [ ]  Weights: []
-            [ 0 ]
+            Dof indices:
+               Size: [ ]  Weights: []
+               [ 0 ]
+            
          
          Global Basis Indices:
-            Size: [ ]  Weights: []
-            [ 0 ]
+            Dof indices:
+               Size: [ ]  Weights: []
+               [ 0 ]
+            
          
          Bernstein Extraction:
             Component[0]: 
@@ -88,12 +92,16 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 0; int dim = 1; i
             
          
          Patch Basis Indices:
-            Size: [ ]  Weights: []
-            [ 0 ]
+            Dof indices:
+               Size: [ ]  Weights: []
+               [ 0 ]
+            
          
          Global Basis Indices:
-            Size: [ ]  Weights: []
-            [ 0 ]
+            Dof indices:
+               Size: [ ]  Weights: []
+               [ 0 ]
+            
          
          Bernstein Extraction:
             Component[0]: 
@@ -148,12 +156,16 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 2; i
             
          
          Patch Basis Indices:
-            Size: [ 3 ]  Weights: [3]
-            [ 0 1 2 ]
+            Dof indices:
+               Size: [ 3 ]  Weights: [3]
+               [ 0 1 2 ]
+            
          
          Global Basis Indices:
-            Size: [ 3 ]  Weights: [3]
-            [ 0 1 2 ]
+            Dof indices:
+               Size: [ 3 ]  Weights: [3]
+               [ 0 1 2 ]
+            
          
          Bernstein Extraction:
             Component[0]: 
@@ -206,12 +218,16 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 2; i
             
          
          Patch Basis Indices:
-            Size: [ 3 ]  Weights: [3]
-            [ 0 1 2 ]
+            Dof indices:
+               Size: [ 3 ]  Weights: [3]
+               [ 0 1 2 ]
+            
          
          Global Basis Indices:
-            Size: [ 3 ]  Weights: [3]
-            [ 0 1 2 ]
+            Dof indices:
+               Size: [ 3 ]  Weights: [3]
+               [ 0 1 2 ]
+            
          
          Bernstein Extraction:
             Component[0]: 
@@ -264,12 +280,16 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 2; i
             
          
          Patch Basis Indices:
-            Size: [ 2 ]  Weights: [2]
-            [ 0 1 ]
+            Dof indices:
+               Size: [ 2 ]  Weights: [2]
+               [ 0 1 ]
+            
          
          Global Basis Indices:
-            Size: [ 2 ]  Weights: [2]
-            [ 0 1 ]
+            Dof indices:
+               Size: [ 2 ]  Weights: [2]
+               [ 0 1 ]
+            
          
          Bernstein Extraction:
             Component[0]: 
@@ -321,12 +341,16 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 2; i
             
          
          Patch Basis Indices:
-            Size: [ 2 ]  Weights: [2]
-            [ 0 1 ]
+            Dof indices:
+               Size: [ 2 ]  Weights: [2]
+               [ 0 1 ]
+            
          
          Global Basis Indices:
-            Size: [ 2 ]  Weights: [2]
-            [ 0 1 ]
+            Dof indices:
+               Size: [ 2 ]  Weights: [2]
+               [ 0 1 ]
+            
          
          Bernstein Extraction:
             Component[0]: 
@@ -387,12 +411,16 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 3; i
             
          
          Patch Basis Indices:
-            Size: [ 3 4 ]  Weights: [3,12]
-            [ 0 1 2 3 4 5 6 7 8 9 10 11 ]
+            Dof indices:
+               Size: [ 3 4 ]  Weights: [3,12]
+               [ 0 1 2 3 4 5 6 7 8 9 10 11 ]
+            
          
          Global Basis Indices:
-            Size: [ 3 4 ]  Weights: [3,12]
-            [ 0 1 2 3 4 5 6 7 8 9 10 11 ]
+            Dof indices:
+               Size: [ 3 4 ]  Weights: [3,12]
+               [ 0 1 2 3 4 5 6 7 8 9 10 11 ]
+            
          
          Bernstein Extraction:
             Component[0]: 
@@ -453,12 +481,16 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 3; i
             
          
          Patch Basis Indices:
-            Size: [ 3 4 ]  Weights: [3,12]
-            [ 0 1 2 3 4 5 6 7 8 9 10 11 ]
+            Dof indices:
+               Size: [ 3 4 ]  Weights: [3,12]
+               [ 0 1 2 3 4 5 6 7 8 9 10 11 ]
+            
          
          Global Basis Indices:
-            Size: [ 3 4 ]  Weights: [3,12]
-            [ 0 1 2 3 4 5 6 7 8 9 10 11 ]
+            Dof indices:
+               Size: [ 3 4 ]  Weights: [3,12]
+               [ 0 1 2 3 4 5 6 7 8 9 10 11 ]
+            
          
          Bernstein Extraction:
             Component[0]: 
@@ -519,12 +551,16 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 3; i
             
          
          Patch Basis Indices:
-            Size: [ 2 4 ]  Weights: [2,8]
-            [ 0 1 2 3 4 5 6 7 ]
+            Dof indices:
+               Size: [ 2 4 ]  Weights: [2,8]
+               [ 0 1 2 3 4 5 6 7 ]
+            
          
          Global Basis Indices:
-            Size: [ 2 4 ]  Weights: [2,8]
-            [ 0 1 2 3 4 5 6 7 ]
+            Dof indices:
+               Size: [ 2 4 ]  Weights: [2,8]
+               [ 0 1 2 3 4 5 6 7 ]
+            
          
          Bernstein Extraction:
             Component[0]: 
@@ -584,12 +620,16 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 3; i
             
          
          Patch Basis Indices:
-            Size: [ 2 4 ]  Weights: [2,8]
-            [ 0 1 2 3 4 5 6 7 ]
+            Dof indices:
+               Size: [ 2 4 ]  Weights: [2,8]
+               [ 0 1 2 3 4 5 6 7 ]
+            
          
          Global Basis Indices:
-            Size: [ 2 4 ]  Weights: [2,8]
-            [ 0 1 2 3 4 5 6 7 ]
+            Dof indices:
+               Size: [ 2 4 ]  Weights: [2,8]
+               [ 0 1 2 3 4 5 6 7 ]
+            
          
          Bernstein Extraction:
             Component[0]: 
@@ -649,12 +689,16 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 3; i
             
          
          Patch Basis Indices:
-            Size: [ 2 3 ]  Weights: [2,6]
-            [ 0 1 2 3 4 5 ]
+            Dof indices:
+               Size: [ 2 3 ]  Weights: [2,6]
+               [ 0 1 2 3 4 5 ]
+            
          
          Global Basis Indices:
-            Size: [ 2 3 ]  Weights: [2,6]
-            [ 0 1 2 3 4 5 ]
+            Dof indices:
+               Size: [ 2 3 ]  Weights: [2,6]
+               [ 0 1 2 3 4 5 ]
+            
          
          Bernstein Extraction:
             Component[0]: 
@@ -713,12 +757,16 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 3; i
             
          
          Patch Basis Indices:
-            Size: [ 2 3 ]  Weights: [2,6]
-            [ 0 1 2 3 4 5 ]
+            Dof indices:
+               Size: [ 2 3 ]  Weights: [2,6]
+               [ 0 1 2 3 4 5 ]
+            
          
          Global Basis Indices:
-            Size: [ 2 3 ]  Weights: [2,6]
-            [ 0 1 2 3 4 5 ]
+            Dof indices:
+               Size: [ 2 3 ]  Weights: [2,6]
+               [ 0 1 2 3 4 5 ]
+            
          
          Bernstein Extraction:
             Component[0]: 

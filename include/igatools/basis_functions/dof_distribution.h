@@ -181,6 +181,48 @@ public:
      */
     Index global_to_patch_local(const Index global_dof_id) const;
 
+
+    /**
+     * @name Functions related to the management/query of the dof properties.
+     */
+    ///@{
+
+    /**
+     * Returns true if the dof with id @p dof_id has the asked @p property.
+     */
+    bool test_if_dof_has_property(const Index dof_id, const std::string &property) const;
+
+
+    /**
+     * Adds a new <tt>property</tt> definition for the dofs in the DofDistribution.
+     *
+     * @note If the <tt>property</tt> is already present, n assertion will be raised (in Debug mode).
+     */
+    void add_dofs_property(const std::string &property);
+
+
+    /**
+     * Returns the id of the dofs having a certain @p property (non-const version).
+     */
+    std::set<Index> &get_dofs_id_same_property(const std::string &property);
+
+    /**
+     * Returns the id of the dofs having a certain @p property (const version).
+     */
+    const std::set<Index> &get_dofs_id_same_property(const std::string &property) const;
+
+
+    /**
+     * Sets the @p status of the given @p property for the dof with the specified @p dof_id.
+     */
+    void set_dof_property_status(const std::string &property, const Index dof_id, const bool status);
+
+    /**
+     * Sets the @p status of the given @p property for all the dofs in the DofDistribution.
+     */
+    void set_all_dofs_property_status(const std::string &property, const bool status);
+    ///@}
+
 private:
 
     /**
@@ -199,6 +241,13 @@ private:
 
     DistributionPolicy policy_;
 
+
+    /**
+     * Container for the dofs having a certain property.
+     *
+     * The property name is the key of the std::map.
+     */
+    PropertiesIdContainer properties_dofs_;
 };
 
 IGA_NAMESPACE_CLOSE

@@ -140,4 +140,33 @@ end() const -> const_iterator
     return properties_id_.end();
 }
 
+void
+PropertiesIdContainer::
+print_info(LogStream &out) const
+{
+    using std::endl;
+    for (const auto &ids_same_property : properties_id_)
+    {
+        const auto &property_name = ids_same_property.first;
+        const auto &ids = ids_same_property.second;
+        out.begin_item("IDs with property \"" + property_name + "\":");
+        out << "Num.: " << ids.size() << endl;
+        if (ids.size() > 0)
+        {
+            out << "   Flat IDs:";
+            for (const auto &id : ids)
+                out << " " << id ;
+        }
+        out.end_item();
+    }
+}
+
+bool
+PropertiesIdContainer::
+empty() const noexcept
+{
+    return properties_id_.empty();
+}
+
+
 IGA_NAMESPACE_CLOSE

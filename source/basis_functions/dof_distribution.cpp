@@ -212,12 +212,81 @@ DofDistribution<dim, range, rank>::
 print_info(LogStream &out) const
 {
     using std::endl;
+
+    out.begin_item("Dof indices:");
     for (const auto &index_table_comp : index_table_)
     {
         index_table_comp.print_info(out);
         out << endl;
     }
+    out.end_item();
+
+
+    if (!properties_dofs_.empty())
+    {
+        out.begin_item("Dof properties:");
+        properties_dofs_.print_info(out);
+        out.end_item();
+    }
+
 }
+
+
+template<int dim, int range, int rank>
+bool
+DofDistribution<dim, range, rank>::
+test_if_dof_has_property(const Index dof_id, const std::string &property) const
+{
+    return properties_dofs_.test_id_for_property(dof_id, property);
+}
+
+
+template<int dim, int range, int rank>
+void
+DofDistribution<dim, range, rank>::
+add_dofs_property(const std::string &property)
+{
+    properties_dofs_.add_property(property);
+}
+
+
+template<int dim, int range, int rank>
+std::set<Index> &
+DofDistribution<dim, range, rank>::
+get_dofs_id_same_property(const std::string &property)
+{
+    return properties_dofs_.get_ids_same_property(property);
+}
+
+template<int dim, int range, int rank>
+const std::set<Index> &
+DofDistribution<dim, range, rank>::
+get_dofs_id_same_property(const std::string &property) const
+{
+    return properties_dofs_.get_ids_same_property(property);
+}
+
+
+template<int dim, int range, int rank>
+void
+DofDistribution<dim, range, rank>::
+set_dof_property_status(const std::string &property, const Index dof_id, const bool status)
+{
+    properties_dofs_.set_id_property_status(property,dof_id,status);
+}
+
+
+template<int dim, int range, int rank>
+void
+DofDistribution<dim, range, rank>::
+set_all_dofs_property_status(const std::string &property, const bool status)
+{
+    properties_dofs_.set_ids_property_status(
+        property,
+        std::set<Index>(dofs_view_.cbegin(),dofs_view_.cend()),
+        status);
+}
+
 
 IGA_NAMESPACE_CLOSE
 

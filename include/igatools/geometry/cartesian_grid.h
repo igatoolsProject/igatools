@@ -85,9 +85,9 @@ template <int> class GridElementHandler;
    {
        const auto flat_id = elem.get_flat_index();
        if (flat_id % 2 == 0)
-           grid->set_element_property_status(property_active);
+           grid->set_element_property_status(property_active,flat_id,true);
        else
-           grid->set_element_property_status(property_marked);
+           grid->set_element_property_status(property_marked,flat_id,true);
    }
    @endcode
  *
@@ -638,8 +638,8 @@ public:
     ///@{
 
     /**
-     * Returns true if the element identified with <p>elem_flat_id</p> has
-     * the ElementProperty <p>property</p>.
+     * Returns true if the element identified with <tt>elem_flat_id</tt> has
+     * the ElementProperty <tt>property</tt>.
      */
     bool test_if_element_has_property(const Index elem_flat_id, const std::string &property) const;
 

@@ -22,6 +22,7 @@
 #define PROPERTIES_ID_CONTAINER_H_
 
 #include <igatools/base/config.h>
+#include <igatools/base/logstream.h>
 
 #include <set>
 #include <map>
@@ -69,6 +70,19 @@ public:
     void set_ids_property_status(const std::string &property,
                                  const std::set<Index> ids,
                                  const bool status);
+
+
+    /**
+     * Prints the contents of the class. Its use is intended for testing and debugging purposes.
+     */
+    void print_info(LogStream &out) const;
+
+
+    /**
+     * Returns whether the container is empty (i.e. whether no properties are defined).
+     * @note This function does not modify the container in any way.
+     */
+    bool empty() const noexcept;
 
 private:
     using ContainerType = std::map<std::string,std::set<Index>>;
