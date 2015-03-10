@@ -36,16 +36,15 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 0; int dim = 1; i
                Total Dimension: 1
             
          
-         Patch Basis Indices:
+         DoFs Distribution:
             Dof indices:
                Size: [ ]  Weights: []
                [ 0 ]
             
-         
-         Global Basis Indices:
-            Dof indices:
-               Size: [ ]  Weights: []
-               [ 0 ]
+            Dof properties:
+               IDs with property "active":
+                  Num.: 1
+                  Flat IDs: 0
             
          
          Bernstein Extraction:
@@ -91,16 +90,15 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 0; int dim = 1; i
                Total Dimension: 1
             
          
-         Patch Basis Indices:
+         DoFs Distribution:
             Dof indices:
                Size: [ ]  Weights: []
                [ 0 ]
             
-         
-         Global Basis Indices:
-            Dof indices:
-               Size: [ ]  Weights: []
-               [ 0 ]
+            Dof properties:
+               IDs with property "active":
+                  Num.: 1
+                  Flat IDs: 0
             
          
          Bernstein Extraction:
@@ -155,16 +153,15 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 2; i
                Total Dimension: 3
             
          
-         Patch Basis Indices:
+         DoFs Distribution:
             Dof indices:
                Size: [ 3 ]  Weights: [3]
                [ 0 1 2 ]
             
-         
-         Global Basis Indices:
-            Dof indices:
-               Size: [ 3 ]  Weights: [3]
-               [ 0 1 2 ]
+            Dof properties:
+               IDs with property "active":
+                  Num.: 3
+                  Flat IDs: 0 1 2
             
          
          Bernstein Extraction:
@@ -217,16 +214,15 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 2; i
                Total Dimension: 3
             
          
-         Patch Basis Indices:
+         DoFs Distribution:
             Dof indices:
                Size: [ 3 ]  Weights: [3]
                [ 0 1 2 ]
             
-         
-         Global Basis Indices:
-            Dof indices:
-               Size: [ 3 ]  Weights: [3]
-               [ 0 1 2 ]
+            Dof properties:
+               IDs with property "active":
+                  Num.: 3
+                  Flat IDs: 0 1 2
             
          
          Bernstein Extraction:
@@ -279,16 +275,15 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 2; i
                Total Dimension: 2
             
          
-         Patch Basis Indices:
+         DoFs Distribution:
             Dof indices:
                Size: [ 2 ]  Weights: [2]
                [ 0 1 ]
             
-         
-         Global Basis Indices:
-            Dof indices:
-               Size: [ 2 ]  Weights: [2]
-               [ 0 1 ]
+            Dof properties:
+               IDs with property "active":
+                  Num.: 2
+                  Flat IDs: 0 1
             
          
          Bernstein Extraction:
@@ -340,16 +335,15 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 2; i
                Total Dimension: 2
             
          
-         Patch Basis Indices:
+         DoFs Distribution:
             Dof indices:
                Size: [ 2 ]  Weights: [2]
                [ 0 1 ]
             
-         
-         Global Basis Indices:
-            Dof indices:
-               Size: [ 2 ]  Weights: [2]
-               [ 0 1 ]
+            Dof properties:
+               IDs with property "active":
+                  Num.: 2
+                  Flat IDs: 0 1
             
          
          Bernstein Extraction:
@@ -410,16 +404,15 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 3; i
                Total Dimension: 12
             
          
-         Patch Basis Indices:
+         DoFs Distribution:
             Dof indices:
                Size: [ 3 4 ]  Weights: [3,12]
                [ 0 1 2 3 4 5 6 7 8 9 10 11 ]
             
-         
-         Global Basis Indices:
-            Dof indices:
-               Size: [ 3 4 ]  Weights: [3,12]
-               [ 0 1 2 3 4 5 6 7 8 9 10 11 ]
+            Dof properties:
+               IDs with property "active":
+                  Num.: 12
+                  Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11
             
          
          Bernstein Extraction:
@@ -480,16 +473,15 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 3; i
                Total Dimension: 12
             
          
-         Patch Basis Indices:
+         DoFs Distribution:
             Dof indices:
                Size: [ 3 4 ]  Weights: [3,12]
                [ 0 1 2 3 4 5 6 7 8 9 10 11 ]
             
-         
-         Global Basis Indices:
-            Dof indices:
-               Size: [ 3 4 ]  Weights: [3,12]
-               [ 0 1 2 3 4 5 6 7 8 9 10 11 ]
+            Dof properties:
+               IDs with property "active":
+                  Num.: 12
+                  Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11
             
          
          Bernstein Extraction:
@@ -550,16 +542,15 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 3; i
                Total Dimension: 8
             
          
-         Patch Basis Indices:
+         DoFs Distribution:
             Dof indices:
                Size: [ 2 4 ]  Weights: [2,8]
                [ 0 1 2 3 4 5 6 7 ]
             
-         
-         Global Basis Indices:
-            Dof indices:
-               Size: [ 2 4 ]  Weights: [2,8]
-               [ 0 1 2 3 4 5 6 7 ]
+            Dof properties:
+               IDs with property "active":
+                  Num.: 8
+                  Flat IDs: 0 1 2 3 4 5 6 7
             
          
          Bernstein Extraction:
@@ -619,16 +610,15 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 3; i
                Total Dimension: 8
             
          
-         Patch Basis Indices:
+         DoFs Distribution:
             Dof indices:
                Size: [ 2 4 ]  Weights: [2,8]
                [ 0 1 2 3 4 5 6 7 ]
             
-         
-         Global Basis Indices:
-            Dof indices:
-               Size: [ 2 4 ]  Weights: [2,8]
-               [ 0 1 2 3 4 5 6 7 ]
+            Dof properties:
+               IDs with property "active":
+                  Num.: 8
+                  Flat IDs: 0 1 2 3 4 5 6 7
             
          
          Bernstein Extraction:
@@ -688,16 +678,15 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 3; i
                Total Dimension: 6
             
          
-         Patch Basis Indices:
+         DoFs Distribution:
             Dof indices:
                Size: [ 2 3 ]  Weights: [2,6]
                [ 0 1 2 3 4 5 ]
             
-         
-         Global Basis Indices:
-            Dof indices:
-               Size: [ 2 3 ]  Weights: [2,6]
-               [ 0 1 2 3 4 5 ]
+            Dof properties:
+               IDs with property "active":
+                  Num.: 6
+                  Flat IDs: 0 1 2 3 4 5
             
          
          Bernstein Extraction:
@@ -756,16 +745,15 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 3; i
                Total Dimension: 6
             
          
-         Patch Basis Indices:
+         DoFs Distribution:
             Dof indices:
                Size: [ 2 3 ]  Weights: [2,6]
                [ 0 1 2 3 4 5 ]
             
-         
-         Global Basis Indices:
-            Dof indices:
-               Size: [ 2 3 ]  Weights: [2,6]
-               [ 0 1 2 3 4 5 ]
+            Dof properties:
+               IDs with property "active":
+                  Num.: 6
+                  Flat IDs: 0 1 2 3 4 5
             
          
          Bernstein Extraction:

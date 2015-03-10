@@ -127,6 +127,7 @@ BSplineSpace(const DegreeTable &deg,
         this->space_data_->get_degree()),
     end_interval_(end_b.get_comp_map())
 {
+    //------------------------------------------------------------------------------
 // TODO (pauletti, Dec 24, 2014): after it work it should be recoded properly
     const auto rep_knots =
         this->space_data_->compute_knots_with_repetition(end_b_);
@@ -146,6 +147,14 @@ BSplineSpace(const DegreeTable &deg,
             const auto xk1 = *(rep_knots[i].get_data_direction(dir).end() - (p+1));
             end_interval_[i][dir].second = (b-xk) / (xk1-xk);
         }
+    //------------------------------------------------------------------------------
+
+
+
+    //------------------------------------------------------------------------------
+    dof_distribution_global_.add_dofs_property(property_active_);
+    dof_distribution_global_.set_all_dofs_property_status(property_active_,true);
+    //------------------------------------------------------------------------------
 }
 
 
@@ -452,7 +461,7 @@ get_loc_to_patch(const CartesianGridElement<dim> &element) const
     const auto elem_dofs_global = this->get_loc_to_global(element);
     vector<Index> elem_dofs_local;
     for (const auto dof_global : elem_dofs_global)
-    	elem_dofs_local.push_back(dof_distribution_global_.global_to_patch_local(dof_global));
+        elem_dofs_local.push_back(dof_distribution_global_.global_to_patch_local(dof_global));
 
     return elem_dofs_local;
 }
@@ -516,12 +525,8 @@ print_info(LogStream &out) const
     this->space_data_->print_info(out);
     out.end_item();
 
-//#if 0
-    out.begin_item("Patch Basis Indices:");
-    dof_distribution_global_.print_info(out);
-    out.end_item();
-//#endif
-    out.begin_item("Global Basis Indices:");
+
+    out.begin_item("DoFs Distribution:");
     dof_distribution_global_.print_info(out);
     out.end_item();
 
