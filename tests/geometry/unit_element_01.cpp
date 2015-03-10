@@ -28,7 +28,7 @@
 #include "../tests.h"
 
 #include <igatools/geometry/unit_element.h>
-#include <igatools/base/quadrature_tensor_product.h>
+#include <igatools/base/quadrature.h>
 
 
 template<template<int> class Q, std::size_t... I>

@@ -11,11 +11,6 @@ Coordinates:
 Points:
 ValueVector (num_points=0) : [ ]
 
-Bounding box:
-   Direction: 0 ---- [ 0 , 1.00000 ]
-   Direction: 1 ---- [ 0 , 1.00000 ]
-
-
 
 Number of points:0
 Weights:
@@ -29,11 +24,6 @@ Coordinates:
 
 Points:
 ValueVector (num_points=0) : [ ]
-
-Bounding box:
-   Direction: 0 ---- [ 0 , 1.00000 ]
-   Direction: 1 ---- [ 0 , 1.00000 ]
-
 
 
 Number of points:0
@@ -50,12 +40,6 @@ Coordinates:
 
 Points:
 ValueVector (num_points=0) : [ ]
-
-Bounding box:
-   Direction: 0 ---- [ 0 , 1.00000 ]
-   Direction: 1 ---- [ 0 , 1.00000 ]
-   Direction: 2 ---- [ 0 , 1.00000 ]
-
 
 
 0
