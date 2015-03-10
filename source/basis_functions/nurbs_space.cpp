@@ -396,22 +396,6 @@ refine_h_weights(
 
 #endif
 
-template <int dim_, int range_, int rank_>
-Size
-NURBSSpace<dim_, range_, rank_>::
-get_num_basis() const
-{
-    return sp_space_->get_num_basis();
-}
-
-template <int dim_, int range_, int rank_>
-Size
-NURBSSpace<dim_, range_, rank_>::
-get_num_basis(const int i) const
-{
-    return sp_space_->get_num_basis(i);
-}
-
 
 #if 0
 template <int dim_, int range_, int rank_>
@@ -422,25 +406,6 @@ get_interior_mult() const -> std::shared_ptr<const MultiplicityTable>
     return sp_space_->get_interior_mult();
 }
 #endif
-
-template <int dim_, int range_, int rank_>
-auto
-NURBSSpace<dim_, range_, rank_>::
-get_loc_to_global(const CartesianGridElement<dim> &element) const -> vector<Index>
-{
-    return sp_space_->get_loc_to_global(element);
-}
-
-
-
-template <int dim_, int range_, int rank_>
-auto
-NURBSSpace<dim_, range_, rank_>::
-get_loc_to_patch(const CartesianGridElement<dim> &element) const -> vector<Index>
-{
-    return sp_space_->get_loc_to_patch(element);
-}
-
 
 
 template <int dim_, int range_, int rank_>
@@ -499,13 +464,6 @@ get_reference_space() const -> std::shared_ptr<const self_t >
 }
 #endif
 
-template <int dim_, int range_, int rank_>
-void
-NURBSSpace<dim_, range_, rank_>::
-add_dofs_offset(const Index offset)
-{
-    sp_space_->add_dofs_offset(offset);
-}
 
 
 

@@ -194,24 +194,6 @@ protected:
 public:
     /** @name Getting information about the space */
     ///@{
-    /**
-     * Total number of dofs (i.e number of basis functions aka dimensionality)
-     * of the space.
-     */
-    Size get_num_basis() const;
-
-    /** Return the total number of dofs for the i-th space component. */
-    Size get_num_basis(const int i) const;
-
-
-
-    SpaceDimensionTable get_num_all_element_basis() const
-    {
-        return sp_space_->get_num_all_element_basis();
-    }
-
-
-
 
     virtual bool is_bspline() const override final
     {
@@ -228,9 +210,6 @@ public:
     std::shared_ptr<const MultiplicityTable> get_interior_mult() const;
 #endif
 
-    virtual vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const override final;
-
-    vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const;
     ///@}
 
     const std::shared_ptr<SpSpace> get_spline_space() const;
@@ -251,11 +230,6 @@ public:
     std::shared_ptr<const self_t >
     get_reference_space() const;
 #endif
-
-    /**
-     * Adds an @p offset to the values of the dof ids.
-     */
-    void add_dofs_offset(const Index offset);
 
 
     /**

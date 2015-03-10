@@ -26,6 +26,8 @@
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/space_manager.h>
+#include <igatools/utils/multi_array_utils.h>
+
 
 using std::shared_ptr;
 using std::make_shared;
@@ -115,7 +117,6 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
 }
 
 
-
 template<int dim, int range, int rank>
 auto
 ReferenceSpace<dim, range, rank>::
@@ -124,7 +125,6 @@ get_space_data() const -> std::shared_ptr<SpaceData>
     Assert(space_data_ != nullptr,ExcNullPtr());
     return space_data_;
 }
-
 
 
 template<int dim, int range, int rank>
@@ -179,8 +179,13 @@ get_space_manager() -> shared_ptr<SpaceManager>
     }
     else
     {
+#ifdef NURBS
         using NrbSpace = NURBSSpace<dim,range,rank>;
         this_space = dynamic_cast<NrbSpace &>(*this).shared_from_this();
+#else
+        Assert(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
+        AssertThrow(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
+#endif
     }
     Assert(this_space != nullptr,ExcNullPtr());
 
@@ -206,6 +211,114 @@ get_space_manager() const -> std::shared_ptr<const SpaceManager>
     return const_cast<ReferenceSpace<dim,range,rank> &>(*this).get_space_manager();
 }
 
+
+
+template<int dim, int range, int rank>
+vector<Index>
+ReferenceSpace<dim, range, rank>::
+get_element_dofs(
+    const CartesianGridElement<dim> &element,
+    const DofDistribution<dim, range, rank> &dofs_distribution) const
+{
+    const auto &accum_mult = this->space_data_->accumulated_interior_multiplicities();
+    const auto &index_table = dofs_distribution.get_index_table();
+
+    const auto &degree_table = this->space_data_->get_degree();
+
+    vector<Index> element_dofs;
+    const auto &elem_tensor_id = element.get_tensor_index();
+
+    using Topology = UnitElement<dim>;
+
+    for (int comp = 0 ; comp < SpaceData::n_components ; ++comp)
+    {
+        //-----------------------------------------------------------------
+        // building the lookup table for the local dof id on the current component of the element --- begin
+        // TODO (MM, March 06, 2015): this can be put on the SplineSpace constructor for optimization
+        const auto &degree_comp = degree_table[comp];
+
+        TensorSize<dim> dofs_t_size_elem_comp;
+        for (const auto dir : Topology::active_directions)
+            dofs_t_size_elem_comp[dir] = degree_comp[dir] + 1;
+
+        const auto dofs_f_size_elem_comp = dofs_t_size_elem_comp.flat_size();
+
+        vector<Index> elem_comp_dof_f_id(dofs_f_size_elem_comp);
+        std::iota(elem_comp_dof_f_id.begin(),elem_comp_dof_f_id.end(),0);
+
+        vector<TensorIndex<dim>> elem_comp_dof_t_id;
+        const auto w_dofs_elem_comp = MultiArrayUtils<dim>::compute_weight(dofs_t_size_elem_comp);
+        for (const auto dof_f_id : elem_comp_dof_f_id)
+            elem_comp_dof_t_id.emplace_back(MultiArrayUtils<dim>::flat_to_tensor_index(dof_f_id,w_dofs_elem_comp));
+        // building the lookup table for the local dof id on the current component of the element --- end
+        //-----------------------------------------------------------------
+
+
+
+        //-----------------------------------------------------------------
+        const auto &index_table_comp = index_table[comp];
+
+        const auto dof_t_origin = accum_mult[comp].cartesian_product(elem_tensor_id);
+        for (const auto loc_dof_t_id : elem_comp_dof_t_id)
+        {
+            const auto dof_t_id = dof_t_origin + loc_dof_t_id;
+            element_dofs.emplace_back(index_table_comp(dof_t_id));
+        }
+        //-----------------------------------------------------------------
+
+    } // end comp loop
+
+    return element_dofs;
+}
+
+
+
+template<int dim, int range, int rank>
+vector<Index>
+ReferenceSpace<dim, range, rank>::
+get_loc_to_global(const CartesianGridElement<dim> &element) const
+{
+    return this->get_element_dofs(
+               element,
+               this->get_dof_distribution_global());
+}
+
+
+
+template<int dim, int range, int rank>
+vector<Index>
+ReferenceSpace<dim, range, rank>::
+get_loc_to_patch(const CartesianGridElement<dim> &element) const
+{
+    const auto elem_dofs_global = this->get_loc_to_global(element);
+    vector<Index> elem_dofs_local;
+
+    const auto &dof_distribution = this->get_dof_distribution_global();
+    for (const auto dof_global : elem_dofs_global)
+        elem_dofs_local.push_back(
+            dof_distribution.global_to_patch_local(dof_global));
+
+    return elem_dofs_local;
+}
+
+
+template<int dim, int range, int rank>
+void
+ReferenceSpace<dim, range, rank>::
+add_dofs_offset(const Index offset)
+{
+    this->get_dof_distribution_global().add_dofs_offset(offset);
+}
+
+
+template<int dim, int range, int rank>
+Index
+ReferenceSpace<dim, range, rank>::
+get_global_dof_id(const TensorIndex<dim> &tensor_index,
+                  const Index comp) const
+{
+    return this->get_dof_distribution_global().get_index_table()[comp](tensor_index);
+}
 
 IGA_NAMESPACE_CLOSE
 

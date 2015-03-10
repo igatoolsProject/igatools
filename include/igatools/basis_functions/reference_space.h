@@ -148,9 +148,6 @@ public:
 
     virtual bool is_bspline() const = 0;
 
-    virtual vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const = 0;
-
-    virtual vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const = 0;
 
     /**
      * Returns the degree of the BSpline space for each component and for each coordinate direction.
@@ -197,6 +194,19 @@ public:
     ///@}
 
 
+    /**
+     * Adds an @p offset to the values of the dof ids.
+     */
+    void add_dofs_offset(const Index offset);
+
+    /**
+     * This function returns the global dof id corresponding to the basis function
+     * with tensor index <p>tensor_index</p> on the @p comp component of the space.
+     */
+    Index
+    get_global_dof_id(const TensorIndex<dim> &tensor_index,
+                      const Index comp) const;
+
     const auto &get_active_components_id() const
     {
         return space_data_->get_active_components_id();
@@ -241,6 +251,15 @@ public:
     virtual DofDistribution<dim, range, rank> &
     get_dof_distribution_global() = 0;
 
+    // TODO (pauletti, Oct 16, 2014): need to be documented or deleted, check!
+    vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;
+
+    vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const;
+
+
+    vector<Index> get_element_dofs(
+        const CartesianGridElement<dim> &element,
+        const DofDistribution<dim, range, rank> &dofs_distribution) const;
 
 
     std::shared_ptr<SpaceManager> get_space_manager();
