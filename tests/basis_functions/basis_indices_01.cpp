@@ -54,6 +54,20 @@ void test1()
     auto degree = sp_spec->get_degree();
 
     DofDistribution<dim> dof_admin(grid, acum_mult, n_basis, degree, sp_spec->get_periodic_table());
+
+    //-----------------------------------------------------------------
+    const auto &dofs_view = dof_admin.get_dofs_view();
+    const std::string property_active = "active";
+    dof_admin.add_dofs_property(property_active);
+
+    for (const auto &dof : dofs_view)
+    {
+        if (dof % 2 == 0)
+            dof_admin.set_dof_property_status(property_active, dof, true);
+    }
+    //-----------------------------------------------------------------
+
+
     dof_admin.print_info(out);
 }
 
@@ -79,6 +93,19 @@ void test2()
     auto degree = sp_spec->get_degree();
 
     DofDistribution<dim> basis_index(grid, acum_mult, n_basis, degree, sp_spec->get_periodic_table());
+
+    //-----------------------------------------------------------------
+    const auto &dofs_view = basis_index.get_dofs_view();
+    const std::string property_active = "active";
+    basis_index.add_dofs_property(property_active);
+
+    for (const auto &dof : dofs_view)
+    {
+        if (dof % 2 == 0)
+            basis_index.set_dof_property_status(property_active, dof, true);
+    }
+    //-----------------------------------------------------------------
+
     basis_index.print_info(out);
 }
 
