@@ -260,19 +260,22 @@ public:
     ///@{
     /**
      * Returns a element iterator to the first element of the patch
+     * with the property @p element_property.
      */
-    virtual ElementIterator begin() const = 0;
+    virtual ElementIterator begin(const std::string &element_property = GridType::elems_property_none) const = 0;
 
     /**
      * Returns a element iterator to the last element of the patch
+     * with the property @p element_property.
      */
-    virtual ElementIterator last() const = 0;
+    virtual ElementIterator last(const std::string &element_property = GridType::elems_property_none) const = 0;
 
 
     /**
      * Returns a element iterator to one-pass the end of patch.
+     * with the property @p element_property.
      */
-    virtual ElementIterator end() const = 0;
+    virtual ElementIterator end(const std::string &element_property = GridType::elems_property_none) const = 0;
     ///@}
 
     template<int k>

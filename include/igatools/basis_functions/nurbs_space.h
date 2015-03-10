@@ -259,20 +259,30 @@ public:
      */
     void add_dofs_offset(const Index offset);
 
+
+    /** @name Functions involving the element iterator */
+    ///@{
     /**
     * Returns a element iterator to the first element of the patch
+     * with the property @p element_property.
     */
-    virtual ElementIterator begin() const override final;
+    virtual ElementIterator begin(
+        const std::string &element_property = GridType::elems_property_none) const override final;
 
     /**
      * Returns a element iterator to the last element of the patch
+     * with the property @p element_property.
      */
-    virtual ElementIterator last() const override final;
+    virtual ElementIterator last(
+        const std::string &element_property = GridType::elems_property_none) const override final;
 
     /**
      * Returns a element iterator to one-pass the end of patch.
+     * with the property @p element_property.
      */
-    virtual ElementIterator end() const override final;
+    virtual ElementIterator end(
+        const std::string &element_property = GridType::elems_property_none) const override final;
+    ///@}
 
     /**
      * Get the weights of the NURBSSpace.

@@ -204,9 +204,15 @@ create_element(const Index flat_index) const -> std::shared_ptr<ReferenceElement
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-begin() const -> ElementIterator
+begin(const std::string &element_property) const -> ElementIterator
 {
-    return ElementIterator(this->create_element(0),GridType::elems_property_none);
+    int first_id;
+    if (element_property == GridType::elems_property_none)
+        first_id = 0;
+    else
+        first_id = *(this->get_grid()->get_elements_id_same_property(element_property).cbegin());
+
+    return ElementIterator(this->create_element(first_id),element_property);
 }
 
 
@@ -214,12 +220,16 @@ begin() const -> ElementIterator
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-last() const -> ElementIterator
+last(const std::string &element_property) const -> ElementIterator
 {
-    Assert(false,ExcNotImplemented());
-    //TODO: the index of the last element in the grid is not correct, because we need to use the
-    // index of the last ACTIVE element in the grid
-    return ElementIterator(this->create_element(this->get_grid()->get_num_all_elems()-1),GridType::elems_property_none);
+    int last_id;
+    const auto grid = this->get_grid();
+    if (element_property == GridType::elems_property_none)
+        last_id = grid->get_num_all_elems()-1;
+    else
+        last_id = *(grid->get_elements_id_same_property(element_property).crbegin());
+
+    return ElementIterator(this->create_element(last_id),element_property);
 }
 
 
@@ -227,9 +237,9 @@ last() const -> ElementIterator
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-end() const -> ElementIterator
+end(const std::string &element_property) const -> ElementIterator
 {
-    return ElementIterator(this->create_element(IteratorState::pass_the_end),GridType::elems_property_none);
+    return ElementIterator(this->create_element(IteratorState::pass_the_end),element_property);
 }
 
 
