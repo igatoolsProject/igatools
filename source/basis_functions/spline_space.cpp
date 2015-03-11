@@ -133,8 +133,14 @@ init()
 #endif
 
 
+    //------------------------------------------------------------------------------
     using DofDistrib = DofDistribution<dim,range,rank>;
     dof_distribution_ = shared_ptr<DofDistrib>(new DofDistrib(space_dim_,deg_,periodic_));
+
+    dof_distribution_->add_dofs_property(dofs_property_active_);
+    dof_distribution_->set_all_dofs_property_status(dofs_property_active_,true);
+    //------------------------------------------------------------------------------
+
 }
 
 
@@ -552,6 +558,11 @@ print_info(LogStream &out) const
 
     out.begin_item("Dimensionality Table:");
     space_dim_.print_info(out);
+    out.end_item();
+
+
+    out.begin_item("DoFs Distribution:");
+    dof_distribution_->print_info(out);
     out.end_item();
 
 }

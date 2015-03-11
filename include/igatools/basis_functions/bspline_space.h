@@ -372,9 +372,6 @@ private:
     void create_connection_for_h_refinement(std::shared_ptr<self_t> space);
 
 
-    const std::string property_active_ = "active";
-
-
 
 
 public:

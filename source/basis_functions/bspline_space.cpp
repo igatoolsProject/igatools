@@ -129,25 +129,20 @@ BSplineSpace(const DegreeTable &deg,
         {
             const auto p = deg[i][dir];
 
-            const auto x1 = knots->get_knot_coordinates().get_data_direction(dir)[1];
-            const auto a = knots->get_knot_coordinates().get_data_direction(dir)[0];
+            const auto &knots_coord_dir = knots->get_knot_coordinates().get_data_direction(dir);
+
+            const auto x1 = knots_coord_dir[1];
+            const auto a = knots_coord_dir[0];
             const auto x0 = rep_knots[i].get_data_direction(dir)[p];
             end_interval_[i][dir].first = (x1-a) / (x1-x0);
 
-            const auto xk= *(knots->get_knot_coordinates().get_data_direction(dir).end()-2);
-            const auto b = *(knots->get_knot_coordinates().get_data_direction(dir).end()-1);
+            const auto xk= *(knots_coord_dir.end()-2);
+            const auto b = *(knots_coord_dir.end()-1);
             const auto xk1 = *(rep_knots[i].get_data_direction(dir).end() - (p+1));
             end_interval_[i][dir].second = (b-xk) / (xk1-xk);
         }
     //------------------------------------------------------------------------------
 
-
-
-    //------------------------------------------------------------------------------
-    auto &dof_distribution = this->get_dof_distribution_global();
-    dof_distribution.add_dofs_property(property_active_);
-    dof_distribution.set_all_dofs_property_status(property_active_,true);
-    //------------------------------------------------------------------------------
 }
 
 
@@ -337,9 +332,6 @@ print_info(LogStream &out) const
     out.end_item();
 
 
-    out.begin_item("DoFs Distribution:");
-    this->get_dof_distribution_global().print_info(out);
-    out.end_item();
 
     out.begin_item("Bernstein Extraction:");
     operators_.print_info(out);

@@ -350,14 +350,15 @@ private:
      */
     BCTable boundary_conditions_table_;
 
-//#if 0
     /**
      * Container with the local to global basis indices
      * @note The concept of global indices refers to a global numbering of the
      * dofs of all the spaces.
      */
     std::shared_ptr<DofDistribution<dim,range,rank> > dof_distribution_;
-//#endif
+
+
+    const std::string dofs_property_active_ = "active";
 
 public:
 

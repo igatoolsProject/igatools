@@ -34,6 +34,17 @@ Dimensionality Table:
    
    Total Dimension: 4
 
+DoFs Distribution:
+   Dof indices:
+      Size: [ 4 ]  Weights: [4]
+      [ 0 1 2 3 ]
+   
+   Dof properties:
+      IDs with property "active":
+         Num.: 4
+         Flat IDs: 0 1 2 3
+   
+
 [ 0 ]
 [ 1 ]
 Knots without repetition:
@@ -72,6 +83,19 @@ Dimensionality Table:
       [ ]
    
    Total Dimension: 8
+
+DoFs Distribution:
+   Dof indices:
+      Size: [ 4 ]  Weights: [4]
+      [ 0 1 2 3 ]
+      Size: [ 4 ]  Weights: [4]
+      [ 4 5 6 7 ]
+   
+   Dof properties:
+      IDs with property "active":
+         Num.: 8
+         Flat IDs: 0 1 2 3 4 5 6 7
+   
 
 [ 0 ]
 [ 1 ]
@@ -118,6 +142,19 @@ Dimensionality Table:
    
    Total Dimension: 72
 
+DoFs Distribution:
+   Dof indices:
+      Size: [ 6 6 ]  Weights: [6,36]
+      [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 ]
+      Size: [ 6 6 ]  Weights: [6,36]
+      [ 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 ]
+   
+   Dof properties:
+      IDs with property "active":
+         Num.: 72
+         Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71
+   
+
 [ 0 ]
 [ 1 ]
 Knots without repetition:
@@ -162,4 +199,17 @@ Dimensionality Table:
       [ ]
    
    Total Dimension: 50
+
+DoFs Distribution:
+   Dof indices:
+      Size: [ 5 5 ]  Weights: [5,25]
+      [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 ]
+      Size: [ 5 5 ]  Weights: [5,25]
+      [ 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 ]
+   
+   Dof properties:
+      IDs with property "active":
+         Num.: 50
+         Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49
+   
 
