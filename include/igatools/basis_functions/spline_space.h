@@ -291,6 +291,11 @@ public:
 
     ///@}
 
+
+
+    vector<Index>
+    get_element_dofs(const CartesianGridElement<dim> &element) const;
+
     template<int k>
     using SubSpace = SplineSpace<k, range, rank>;
 

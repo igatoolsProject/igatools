@@ -22,6 +22,7 @@
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/base/array_utils.h>
+#include <igatools/utils/multi_array_utils.h>
 
 using std::unique_ptr;
 using std::shared_ptr;
@@ -567,6 +568,67 @@ print_info(LogStream &out) const
     out.end_item();
 
 }
+
+
+
+template<int dim, int range, int rank>
+vector<Index>
+SplineSpace<dim, range, rank>::
+get_element_dofs(const CartesianGridElement<dim> &element) const
+{
+    const auto &accum_mult = this->accumulated_interior_multiplicities();
+    const auto &index_table = dof_distribution_->get_index_table();
+
+
+    vector<Index> element_dofs;
+    const auto &elem_tensor_id = element.get_tensor_index();
+
+    using Topology = UnitElement<dim>;
+
+    for (int comp = 0 ; comp < n_components ; ++comp)
+    {
+        //-----------------------------------------------------------------
+        // building the lookup table for the local dof id on the current component of the element --- begin
+        // TODO (MM, March 06, 2015): this can be put on the SplineSpace constructor for optimization
+        const auto &degree_comp = deg_[comp];
+
+        TensorSize<dim> dofs_t_size_elem_comp;
+        for (const auto dir : Topology::active_directions)
+            dofs_t_size_elem_comp[dir] = degree_comp[dir] + 1;
+
+        const auto dofs_f_size_elem_comp = dofs_t_size_elem_comp.flat_size();
+
+        vector<Index> elem_comp_dof_f_id(dofs_f_size_elem_comp);
+        std::iota(elem_comp_dof_f_id.begin(),elem_comp_dof_f_id.end(),0);
+
+        vector<TensorIndex<dim>> elem_comp_dof_t_id;
+        const auto w_dofs_elem_comp = MultiArrayUtils<dim>::compute_weight(dofs_t_size_elem_comp);
+        for (const auto dof_f_id : elem_comp_dof_f_id)
+            elem_comp_dof_t_id.emplace_back(MultiArrayUtils<dim>::flat_to_tensor_index(dof_f_id,w_dofs_elem_comp));
+        // building the lookup table for the local dof id on the current component of the element --- end
+        //-----------------------------------------------------------------
+
+
+
+        //-----------------------------------------------------------------
+        const auto &index_table_comp = index_table[comp];
+
+        const auto dof_t_origin = accum_mult[comp].cartesian_product(elem_tensor_id);
+        for (const auto loc_dof_t_id : elem_comp_dof_t_id)
+        {
+            const auto dof_t_id = dof_t_origin + loc_dof_t_id;
+
+            const auto dof = index_table_comp(dof_t_id);
+
+            element_dofs.emplace_back(dof);
+        }
+        //-----------------------------------------------------------------
+
+    } // end comp loop
+
+    return element_dofs;
+}
+
 
 IGA_NAMESPACE_CLOSE
 

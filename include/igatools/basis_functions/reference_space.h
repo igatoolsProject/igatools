@@ -260,9 +260,7 @@ public:
     vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const;
 
 
-    vector<Index> get_element_dofs(
-        const CartesianGridElement<dim> &element,
-        const DofDistribution<dim, range, rank> &dofs_distribution) const;
+    vector<Index> get_element_dofs(const CartesianGridElement<dim> &element) const;
 
 
     std::shared_ptr<SpaceManager> get_space_manager();
