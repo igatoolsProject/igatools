@@ -23,6 +23,7 @@
 #include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/base/array_utils.h>
 
+using std::unique_ptr;
 using std::shared_ptr;
 using std::make_shared;
 using std::const_pointer_cast;
@@ -305,21 +306,22 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
 
     for (int comp = 0; comp < n_components; ++comp)
     {
+        const auto   &degree_comp = deg_[comp];
+        const auto     &mult_comp = (*interior_mult_)[comp];
+        const auto &periodic_comp = periodic_[comp];
+
         for (const auto dir : Topology::active_directions)
         {
-            const auto deg = deg_[comp][dir];
+            const auto deg = degree_comp[dir];
             const auto order = deg + 1;
             const auto &knots = this->get_grid()->get_knot_coordinates(dir);
-            const auto &mult  = (*interior_mult_)[comp].get_data_direction(dir);
+            const auto &mult  = mult_comp.get_data_direction(dir);
 
-            int size = 2 * order;
             const int m = order;
-            int K = 0;
-            for (auto &n: mult)
-                K += n;
-            size += K;
+            const int K = std::accumulate(mult.begin(),mult.end(),0);
 
-            vector<Real> rep_knots(size);
+
+            vector<Real> rep_knots(2*order+K);
 
             auto rep_it = rep_knots.begin() + m;
             auto m_it = mult.begin();
@@ -332,7 +334,7 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
             }
 
 
-            if (periodic_[comp][dir])
+            if (periodic_comp[dir])
             {
                 const Real a = knots.front();
                 const Real b = knots.back();
@@ -378,8 +380,8 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
             }
 
             result[comp].copy_data_direction(dir,rep_knots);
-        }
-    }
+        } // end loop dir
+    } // end loop comp
 
     return result;
 }

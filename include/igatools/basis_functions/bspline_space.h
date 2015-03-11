@@ -258,6 +258,10 @@ protected:
                           const EndBehaviourTable &end_b);
 
 
+    explicit BSplineSpace(std::shared_ptr<SpaceData> space_data,
+                          const EndBehaviourTable &end_b);
+
+
     /**
      * Copy constructor. Not allowed to be used.
      */

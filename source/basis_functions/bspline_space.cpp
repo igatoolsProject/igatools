@@ -101,16 +101,12 @@ create(const Degrees &deg,
 }
 
 
-
 template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
-BSplineSpace(const DegreeTable &deg,
-             std::shared_ptr<GridType> knots,
-             std::shared_ptr<const MultiplicityTable> interior_mult,
-             const PeriodicTable &periodic,
+BSplineSpace(std::shared_ptr<SpaceData> space_data,
              const EndBehaviourTable &end_b)
     :
-    BaseSpace(SpaceData::create(deg, knots, interior_mult, periodic)),
+    BaseSpace(space_data),
     end_b_(end_b),
     operators_(
         this->space_data_->get_grid(),
@@ -121,15 +117,21 @@ BSplineSpace(const DegreeTable &deg,
 {
     //------------------------------------------------------------------------------
 // TODO (pauletti, Dec 24, 2014): after it work it should be recoded properly
+
+    const auto grid = this->space_data_->get_grid();
+    const auto &degree_table = this->space_data_->get_degree();
     const auto rep_knots =
         this->space_data_->compute_knots_with_repetition(end_b_);
-    const auto &degt = this->get_degree();
+
+    //const auto &degt = this->get_degree();
+
     for (auto i : end_interval_.get_active_components_id())
+    {
         for (int dir=0; dir<dim; ++dir)
         {
-            const auto p = deg[i][dir];
+            const auto p = degree_table[i][dir];
 
-            const auto &knots_coord_dir = knots->get_knot_coordinates().get_data_direction(dir);
+            const auto &knots_coord_dir = grid->get_knot_coordinates().get_data_direction(dir);
 
             const auto x1 = knots_coord_dir[1];
             const auto a = knots_coord_dir[0];
@@ -140,10 +142,22 @@ BSplineSpace(const DegreeTable &deg,
             const auto b = *(knots_coord_dir.end()-1);
             const auto xk1 = *(rep_knots[i].get_data_direction(dir).end() - (p+1));
             end_interval_[i][dir].second = (b-xk) / (xk1-xk);
-        }
+        } // end loop dir
+    } // end loop i
     //------------------------------------------------------------------------------
-
 }
+
+
+template<int dim_, int range_, int rank_>
+BSplineSpace<dim_, range_, rank_>::
+BSplineSpace(const DegreeTable &deg,
+             std::shared_ptr<GridType> knots,
+             std::shared_ptr<const MultiplicityTable> interior_mult,
+             const PeriodicTable &periodic,
+             const EndBehaviourTable &end_b)
+    :
+    BSplineSpace(SpaceData::create(deg, knots, interior_mult, periodic),end_b)
+{}
 
 
 
