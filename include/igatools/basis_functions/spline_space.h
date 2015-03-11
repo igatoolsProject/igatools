@@ -33,6 +33,11 @@
 
 IGA_NAMESPACE_OPEN
 
+
+template <int dim, int range, int rank>
+class DofDistribution;
+
+
 enum class BasisEndBehaviour
 {
     /**
@@ -345,6 +350,15 @@ private:
      */
     BCTable boundary_conditions_table_;
 
+#if 0
+    /**
+     * Container with the local to global basis indices
+     * @note The concept of global indices refers to a global numbering of the
+     * dofs of all the spaces.
+     */
+    DofDistribution<dim,range,rank> dof_distribution_;
+#endif
+
 public:
 
     /** Returns the multiplicity of the internal knots that defines the space. */
@@ -357,7 +371,21 @@ public:
     {
         return periodic_;
     }
+#if 0
+    /** Returns the container with the global dof distribution (const version). */
+    const DofDistribution<dim, range, rank> &
+    get_dof_distribution_global() const
+    {
+        return dof_distribution_;
+    }
 
+    /** Returns the container with the global dof distribution (non const version). */
+    DofDistribution<dim, range, rank> &
+    get_dof_distribution_global()
+    {
+        return dof_distribution_;
+    }
+#endif
 
     // TODO (pauletti, Dec 12, 2014): boundary condition is not a general property
     // of the space, rather specific flag for some application, this should be

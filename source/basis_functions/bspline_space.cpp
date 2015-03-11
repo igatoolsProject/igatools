@@ -113,8 +113,6 @@ BSplineSpace(const DegreeTable &deg,
     BaseSpace(SpaceData::create(deg, knots, interior_mult, periodic)),
     end_b_(end_b),
     dof_distribution_global_(
-        this->space_data_->get_grid(),
-        this->space_data_->accumulated_interior_multiplicities(),
         this->space_data_->get_num_basis_table(),
         this->space_data_->get_degree(),
         this->space_data_->get_periodic_table()),
@@ -298,8 +296,6 @@ refine_h_after_grid_refinement(
     const GridType &grid_old)
 {
     dof_distribution_global_ = DofDistribution<dim, range, rank>(
-                                   this->get_grid(),
-                                   this->space_data_->accumulated_interior_multiplicities(),
                                    this->space_data_->get_num_basis_table(),
                                    this->space_data_->get_degree(),
                                    this->space_data_->get_periodic_table());

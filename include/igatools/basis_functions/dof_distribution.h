@@ -50,11 +50,9 @@ class DofDistribution
 {
 public:
     using Space = SplineSpace<dim, range, rank>;
-    using MultiplicityTable = typename Space::MultiplicityTable;
     using DegreeTable = typename Space::DegreeTable;
     using PeriodicTable = typename Space::PeriodicTable;
     using SpaceDimensionTable = typename Space::SpaceDimensionTable;
-    using DofsPerElementTable = typename Space::template ComponentContainer<Index>;
     using IndexDistributionTable =
         StaticMultiArray<DynamicMultiArray<Index,dim>,range,rank>;
 
@@ -92,9 +90,7 @@ public:
     DofDistribution() = delete;
 
     //TODO: document this constructor
-    DofDistribution(std::shared_ptr<CartesianGrid<dim> > grid,
-                    const MultiplicityTable &accum_mult,
-                    const SpaceDimensionTable &n_basis,
+    DofDistribution(const SpaceDimensionTable &n_basis,
                     const DegreeTable &degree_table,
                     const PeriodicTable &periodic,
                     DistributionPolicy pol = DistributionPolicy::standard);

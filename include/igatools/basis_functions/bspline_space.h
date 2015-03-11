@@ -348,7 +348,8 @@ private:
 
     EndBehaviourTable end_b_;
 
-    /** Container with the local to global basis indices
+    /**
+     * Container with the local to global basis indices
      * @note The concept of global indices refers to a global numeration of the
      * dofs of all the spaces.
      */

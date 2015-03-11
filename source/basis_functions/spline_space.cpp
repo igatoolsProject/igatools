@@ -20,6 +20,7 @@
 
 
 #include <igatools/basis_functions/spline_space.h>
+#include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/base/array_utils.h>
 
 using std::shared_ptr;
