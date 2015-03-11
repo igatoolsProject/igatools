@@ -141,7 +141,6 @@ init()
     dof_distribution_->add_dofs_property(dofs_property_active_);
     dof_distribution_->set_all_dofs_property_status(dofs_property_active_,true);
     //------------------------------------------------------------------------------
-
 }
 
 

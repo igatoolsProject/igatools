@@ -161,10 +161,12 @@ public:
 
     /** @name Functions for retrieving information about the number of basis function. */
     ///@{
+    /*
     SpaceDimensionTable get_num_all_element_basis() const
     {
         return space_data_->get_num_all_element_basis();
     }
+    //*/
 
     const SpaceDimensionTable &get_num_basis_table() const
     {

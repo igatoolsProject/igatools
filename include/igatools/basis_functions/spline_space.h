@@ -136,6 +136,7 @@ public:
     public:
         using base_t = ComponentContainer<TensorSize<dim>>;
 
+
         SpaceDimensionTable() = default;
 
         SpaceDimensionTable(const base_t &n_basis)
@@ -143,59 +144,15 @@ public:
             base_t(n_basis)
         {}
 
-#if 0
-        SpaceDimensionTable(const DegreeTable &degree_table,
-                            const MultiplicityTable &mult_table,
-                            const PeriodicTable &periodic_table)
-            :
-            base_t(degree_table.get_comp_map())
-        {
-            for (const auto comp : components)
-            {
-                const auto &deg_comp = degree_table[comp];
-                const auto &mult_comp =   mult_table[comp];
-
-                for (const auto dir : Topology::active_directions)
-                {
-                    const auto &deg_comp_dir = deg_comp[dir];
-                    const auto &mult_comp_dir = mult_comp.get_data_direction(dir);
-
-                    Index size = periodic_table[comp][dir] ? 0 : deg_comp_dir + 1;
-                    for (auto &n: mult_comp_dir)
-                        size += n;
-                    (*this)[comp][dir] = size;
-                }
-            }
-
-#ifndef NDEBUG
-            for (const auto comp : components)
-                for (const auto dir : Topology::active_directions)
-                    if (periodic_table[comp][dir])
-                    {
-                        const auto deg = degree_table[comp][dir];
-                        const auto order = deg + 1;
-                        Assert((*this)[comp][dir]>order,
-                               ExcMessage("Not enough basis functions"));
-                    }
-#endif
-        }
-#endif
 
         SpaceDimensionTable(const SpaceDimensionTable &in) = default;
         SpaceDimensionTable(SpaceDimensionTable &&in) = default;
         SpaceDimensionTable &operator=(const SpaceDimensionTable &in) = default;
         SpaceDimensionTable &operator=(SpaceDimensionTable &&in) = default;
 
+        ~SpaceDimensionTable() = default;
 
-
-#if 0
-        SpaceDimensionTable operator=(const base_t &st)
-        {
-            base_t::operator=(st);
-            recompute_size();
-            return *this;
-        }
-#endif
+        //*/
 
 
 
@@ -295,7 +252,7 @@ public:
      */
     Size get_num_basis(const int comp, const int dir) const
     {
-        return  space_dim_[comp][dir];
+        return space_dim_[comp][dir];
     }
 
     /**
@@ -307,6 +264,7 @@ public:
         return space_dim_;
     }
 
+    /*
     SpaceDimensionTable get_num_all_element_basis() const
     {
         ComponentContainer<TensorSize<dim>> n_basis(deg_.get_comp_map());
@@ -315,6 +273,7 @@ public:
 
         return SpaceDimensionTable(n_basis);
     }
+    //*/
 
     /**
      * Component table with the offset of basis functions

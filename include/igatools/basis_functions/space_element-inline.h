@@ -37,11 +37,22 @@ SpaceElement(const std::shared_ptr<const Space> space,
              const Index elem_index)
     :
     base_t(space->get_grid(), elem_index),
-    space_(space),
-    n_basis_direction_(space->get_num_all_element_basis())
+    space_(space)//,
+//    n_basis_direction_(space->get_num_all_element_basis())
 {
-    Assert(space != nullptr, ExcNullPtr());
     Assert(space_ != nullptr, ExcNullPtr());
+
+    //-------------------------------------------------
+    const auto &degree_table = space->get_degree();
+    ComponentContainer<TensorSize<dim>> n_basis(degree_table.get_comp_map());
+    for (auto comp : degree_table.get_active_components_id())
+        n_basis[comp] = TensorSize<dim>(degree_table[comp]+1);
+
+    n_basis_direction_ = n_basis;
+    //-------------------------------------------------
+
+
+
 
     using Indexer = CartesianProductIndexer<dim>;
     for (int comp_id : basis_functions_indexer_.get_active_components_id())

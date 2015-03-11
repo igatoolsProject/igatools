@@ -161,11 +161,12 @@ public:
     /** Returns the container with the global dof distribution (non const version). */
     DofDistribution<dim, range, rank> &get_dof_distribution_global();
 
+    /*
     auto get_num_all_element_basis() const
     {
         return ref_space_->get_num_all_element_basis();
     }
-
+    //*/
 
     template <int k>
     using SubSpace = PhysicalSpace<k, range, rank, codim + dim-k, type_>;
@@ -182,9 +183,10 @@ public:
                   std::shared_ptr<CartesianGrid<k>> sub_grid,
                   std::shared_ptr<InterGridMap<k>> elem_map) const;
 
-#if 0
-    const DegreeTable &get_degree() const;
-#endif
+    const DegreeTable &get_degree() const
+    {
+        return ref_space_->get_degree();
+    }
 
     vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;
 
