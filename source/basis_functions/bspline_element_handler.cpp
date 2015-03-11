@@ -266,7 +266,7 @@ operator()(const T &quad1)
                 {
                     const Real alpha = end_interval[comp][dir].first;
                     const Real one_alpha = 1. - alpha;
-                    len_left[comp][dir] = lengths.get_data_direction(dir)[id_interval_left]*alpha;
+                    len_left[comp][dir] = lengths.get_data_direction(dir)[id_interval_left]/alpha;
 
                     for (int ipt = 0 ; ipt < n_coords[dir] ; ++ipt)
                         pt_coords_left[ipt] = one_alpha + pt_coords_internal[ipt] * alpha;
@@ -282,7 +282,7 @@ operator()(const T &quad1)
                 for (auto comp : bernstein_values_right.get_active_components_id())
                 {
                     const Real alpha = end_interval[comp][dir].second;
-                    len_right[comp][dir] = lengths.get_data_direction(dir)[id_interval_right]*alpha;
+                    len_right[comp][dir] = lengths.get_data_direction(dir)[id_interval_right]/alpha;
 
                     for (int ipt = 0 ; ipt < n_coords[dir] ; ++ipt)
                         pt_coords_right[ipt] = pt_coords_internal[ipt] * alpha;
