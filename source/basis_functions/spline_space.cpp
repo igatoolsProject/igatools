@@ -86,15 +86,25 @@ void
 SplineSpace<dim, range, rank>::
 init()
 {
-#ifndef NDEBUG
-    auto const knots_size = this->get_grid()->get_num_knots_dim();
+    //------------------------------------------------------------------------------
+    // Determine the dimensionality of the spline space --- begin
+    typename SpaceDimensionTable::base_t n_basis;
     for (const auto comp : components)
-        for (const auto j : Topology::active_directions)
+    {
+        const auto &deg_comp =              deg_[comp];
+        const auto &mult_comp = (*interior_mult_)[comp];
+
+        const auto &periodic_comp = periodic_[comp];
+
+        for (const auto dir : Topology::active_directions)
         {
-            const auto deg = deg_[comp][j];
+            const auto &deg =  deg_comp[dir];
+            const auto &mult = mult_comp.get_data_direction(dir);
+
             const auto order = deg + 1;
-            const auto &mult = (*interior_mult_)[comp].get_data_direction(j);
-            Assert(mult.size() == knots_size[j]-2,
+
+#ifndef NDEBUG
+            Assert(mult.size() == this->get_grid()->get_num_knots_dim()[dir]-2,
                    ExcMessage("Interior multiplicity size does not match the grid"));
             if (!mult.empty())
             {
@@ -102,35 +112,26 @@ init()
                 Assert((*result.first > 0) && (*result.second <= order),
                        ExcMessage("multiplicity values not between 0 and p+1"));
             }
-        }
 #endif
 
-    // Determine the dimensionality of the spline space
-    typename SpaceDimensionTable::base_t n_basis;
-    for (const auto iComp : components)
-        for (const auto dir : Topology::active_directions)
-        {
-            const auto deg = deg_[iComp][dir];
-            const auto &mult = (*interior_mult_)[iComp].get_data_direction(dir);
-
-            Index size = periodic_[iComp][dir] ? 0 : deg + 1;
-            for (auto &n: mult)
-                size += n;
-            n_basis[iComp][dir] = size;
-        }
-    space_dim_ = n_basis;
+            n_basis[comp][dir] = std::accumulate(
+                                     mult.begin(),
+                                     mult.end(),
+                                     periodic_comp[dir] ? 0 : order);
 
 #ifndef NDEBUG
-    for (const auto comp : components)
-        for (const auto dir : Topology::active_directions)
-            if (periodic_[comp][dir])
-            {
-                const auto deg = deg_[comp][dir];
-                const auto order = deg + 1;
-                Assert(n_basis[comp][dir]>order,
+            if (periodic_comp[dir])
+                Assert(n_basis[comp][dir] > order,
                        ExcMessage("Not enough basis functions"));
-            }
 #endif
+
+        } // end loop dir
+    } // end loop comp
+
+    space_dim_ = n_basis;
+    // Determine the dimensionality of the spline space --- end
+    //------------------------------------------------------------------------------
+
 
 
     //------------------------------------------------------------------------------

@@ -140,54 +140,94 @@ public:
 
         SpaceDimensionTable(const base_t &n_basis)
             :
-            base_t(n_basis),
-            comp_dimension(n_basis.get_comp_map()),
-            total_dimension_(0)
-        {
-            recompute_size();
-        }
+            base_t(n_basis)
+        {}
 
+#if 0
+        SpaceDimensionTable(const DegreeTable &degree_table,
+                            const MultiplicityTable &mult_table,
+                            const PeriodicTable &periodic_table)
+            :
+            base_t(degree_table.get_comp_map())
+        {
+            for (const auto comp : components)
+            {
+                const auto &deg_comp = degree_table[comp];
+                const auto &mult_comp =   mult_table[comp];
+
+                for (const auto dir : Topology::active_directions)
+                {
+                    const auto &deg_comp_dir = deg_comp[dir];
+                    const auto &mult_comp_dir = mult_comp.get_data_direction(dir);
+
+                    Index size = periodic_table[comp][dir] ? 0 : deg_comp_dir + 1;
+                    for (auto &n: mult_comp_dir)
+                        size += n;
+                    (*this)[comp][dir] = size;
+                }
+            }
+
+#ifndef NDEBUG
+            for (const auto comp : components)
+                for (const auto dir : Topology::active_directions)
+                    if (periodic_table[comp][dir])
+                    {
+                        const auto deg = degree_table[comp][dir];
+                        const auto order = deg + 1;
+                        Assert((*this)[comp][dir]>order,
+                               ExcMessage("Not enough basis functions"));
+                    }
+#endif
+        }
+#endif
+
+        SpaceDimensionTable(const SpaceDimensionTable &in) = default;
+        SpaceDimensionTable(SpaceDimensionTable &&in) = default;
+        SpaceDimensionTable &operator=(const SpaceDimensionTable &in) = default;
+        SpaceDimensionTable &operator=(SpaceDimensionTable &&in) = default;
+
+
+
+#if 0
         SpaceDimensionTable operator=(const base_t &st)
         {
             base_t::operator=(st);
             recompute_size();
             return *this;
+        }
+#endif
 
+
+
+        Size get_component_size(const int comp) const
+        {
+            return (*this)[comp].flat_size();
+        }
+
+
+        Size total_dimension() const
+        {
+            Index total_dimension = 0;
+            for (const auto comp : components)
+                total_dimension += this->get_component_size(comp);
+
+            return total_dimension;
         }
 
         void print_info(LogStream &out) const
         {
             out.begin_item("Component Dimension:");
-            comp_dimension.print_info(out);
-            out.end_item();
-
-            out << "Total Dimension: " << total_dimension_ << std::endl;
-        }
-
-        Size total_dimension() const
-        {
-            return total_dimension_;
-        }
-
-        Size get_component_size(const int comp) const
-        {
-            return comp_dimension[comp];
-        }
-    private:
-        void recompute_size()
-        {
+            ComponentContainer<Size> comp_dimension;
             for (auto comp : this->get_active_components_id())
             {
                 auto size = (*this)[comp].flat_size();
                 comp_dimension[comp] = size;
             }
-            total_dimension_ = 0;
-            for (auto size : comp_dimension)
-                total_dimension_ += size;
-        }
+            comp_dimension.print_info(out);
+            out.end_item();
 
-        ComponentContainer<Size> comp_dimension;
-        Size total_dimension_;
+            out << "Total Dimension: " << total_dimension() << std::endl;
+        }
     };
 
 
@@ -630,7 +670,8 @@ ComponentContainer(const ComponentMap &comp_map)
 
 template<int dim, int range, int rank>
 template<class T>
-SplineSpace<dim, range, rank>::ComponentContainer<T>::
+SplineSpace<dim, range, rank>::
+ComponentContainer<T>::
 ComponentContainer(const ComponentMap &comp_map, const T &val)
     :
     base_t(),
@@ -653,7 +694,8 @@ ComponentContainer(const ComponentMap &comp_map, const T &val)
 
 template<int dim, int range, int rank>
 template<class T>
-SplineSpace<dim, range, rank>::ComponentContainer<T>::
+SplineSpace<dim, range, rank>::
+ComponentContainer<T>::
 ComponentContainer(std::initializer_list<T> list)
     :
     base_t(list),
