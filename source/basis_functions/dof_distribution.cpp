@@ -40,6 +40,7 @@ DofDistribution(const SpaceDimensionTable &n_basis1,
 
     using Topology = UnitElement<dim>;
 
+    //-----------------------------------------------------------------------
     typename SpaceDimensionTable::base_t aux;
     for (const auto comp : Space::components)
         for (const auto dir : Topology::active_directions)
@@ -49,6 +50,8 @@ DofDistribution(const SpaceDimensionTable &n_basis1,
                 aux[comp][dir] += degree_table[comp][dir] + 1;
         }
     SpaceDimensionTable n_basis(aux);
+    //-----------------------------------------------------------------------
+
 
     //-----------------------------------------------------------------------
     // fills the standard distribution, sorted by component and
@@ -77,6 +80,7 @@ DofDistribution(const SpaceDimensionTable &n_basis1,
         comp_offset += n_basis_comp_size;
     }
     //-----------------------------------------------------------------------
+
 
     //-----------------------------------------------------------------------
     // creating the dofs view from the dofs components views -- begin

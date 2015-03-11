@@ -418,26 +418,6 @@ get_spline_space() const -> const std::shared_ptr<SpSpace>
 
 
 
-template <int dim_, int range_, int rank_>
-auto
-NURBSSpace<dim_, range_, rank_>::
-get_dof_distribution_global() const -> const DofDistribution<dim, range, rank> &
-{
-    return sp_space_->get_dof_distribution_global();
-}
-
-
-
-template <int dim_, int range_, int rank_>
-auto
-NURBSSpace<dim_, range_, rank_>::
-get_dof_distribution_global() -> DofDistribution<dim, range, rank> &
-{
-    return sp_space_->get_dof_distribution_global();
-}
-
-
-
 #if 0
 template <int dim_, int range_, int rank_>
 auto

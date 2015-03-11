@@ -244,12 +244,13 @@ public:
 
 
     /** Returns the container with the global dof distribution (const version). */
-    virtual const DofDistribution<dim, range, rank> &
-    get_dof_distribution_global() const = 0;
+    const DofDistribution<dim, range, rank> &
+    get_dof_distribution_global() const;
 
     /** Returns the container with the global dof distribution (non const version). */
-    virtual DofDistribution<dim, range, rank> &
-    get_dof_distribution_global() = 0;
+    DofDistribution<dim, range, rank> &
+    get_dof_distribution_global();
+
 
     // TODO (pauletti, Oct 16, 2014): need to be documented or deleted, check!
     vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;

@@ -112,10 +112,6 @@ BSplineSpace(const DegreeTable &deg,
     :
     BaseSpace(SpaceData::create(deg, knots, interior_mult, periodic)),
     end_b_(end_b),
-    dof_distribution_global_(
-        this->space_data_->get_num_basis_table(),
-        this->space_data_->get_degree(),
-        this->space_data_->get_periodic_table()),
     operators_(
         this->space_data_->get_grid(),
         this->space_data_->compute_knots_with_repetition(end_b),
@@ -148,8 +144,9 @@ BSplineSpace(const DegreeTable &deg,
 
 
     //------------------------------------------------------------------------------
-    dof_distribution_global_.add_dofs_property(property_active_);
-    dof_distribution_global_.set_all_dofs_property_status(property_active_,true);
+    auto &dof_distribution = this->get_dof_distribution_global();
+    dof_distribution.add_dofs_property(property_active_);
+    dof_distribution.set_all_dofs_property_status(property_active_,true);
     //------------------------------------------------------------------------------
 }
 
@@ -236,11 +233,13 @@ get_ref_sub_space(const int s_id,
     TensorIndex<dim> tensor_index;
     int comp_i = 0;
     dof_map.resize(sub_space->get_num_basis());
+    const auto &sub_space_index_table = sub_space->get_dof_distribution_global().get_index_table();
+    const auto     &space_index_table = this->get_dof_distribution_global().get_index_table();
     for (auto comp : SpaceData::components)
     {
-        const int n_basis = sub_space->get_num_basis(comp);
-        const auto &sub_local_indices = sub_space->get_dof_distribution_global().get_index_table()[comp];
-        const auto &elem_global_indices = dof_distribution_global_.get_index_table()[comp];
+        const auto n_basis = sub_space->get_num_basis(comp);
+        const auto &sub_local_indices = sub_space_index_table[comp];
+        const auto &elem_global_indices = space_index_table[comp];
 
         for (Index sub_i = 0; sub_i < n_basis; ++sub_i, ++comp_i)
         {
@@ -295,10 +294,6 @@ refine_h_after_grid_refinement(
     const std::array<bool,dim> &refinement_directions,
     const GridType &grid_old)
 {
-    dof_distribution_global_ = DofDistribution<dim, range, rank>(
-                                   this->space_data_->get_num_basis_table(),
-                                   this->space_data_->get_degree(),
-                                   this->space_data_->get_periodic_table());
     operators_ = BernsteinExtraction<dim, range, rank>(
                      this->get_grid(),
                      this->space_data_->compute_knots_with_repetition(end_b_),
@@ -307,27 +302,6 @@ refine_h_after_grid_refinement(
 }
 
 
-
-
-
-
-template<int dim_, int range_, int rank_>
-auto
-BSplineSpace<dim_, range_, rank_>::
-get_dof_distribution_global() const -> const DofDistribution<dim, range, rank> &
-{
-    return dof_distribution_global_;
-}
-
-
-
-template<int dim_, int range_, int rank_>
-auto
-BSplineSpace<dim_, range_, rank_>::
-get_dof_distribution_global() -> DofDistribution<dim, range, rank> &
-{
-    return dof_distribution_global_;
-}
 
 
 
@@ -364,7 +338,7 @@ print_info(LogStream &out) const
 
 
     out.begin_item("DoFs Distribution:");
-    dof_distribution_global_.print_info(out);
+    this->get_dof_distribution_global().print_info(out);
     out.end_item();
 
     out.begin_item("Bernstein Extraction:");

@@ -51,6 +51,8 @@ SplineSpace(const DegreeTable &deg,
                                  periodic_(periodic)
 {
     this->init();
+
+
 #if 0
     // create a signal and a connection for the grid refinement
     this->connect_refinement_h_function(
@@ -129,6 +131,10 @@ init()
                        ExcMessage("Not enough basis functions"));
             }
 #endif
+
+
+    using DofDistrib = DofDistribution<dim,range,rank>;
+    dof_distribution_ = shared_ptr<DofDistrib>(new DofDistrib(space_dim_,deg_,periodic_));
 }
 
 

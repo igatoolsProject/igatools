@@ -22,9 +22,9 @@
 #define DOF_DISTRIBUTION_H_
 
 #include <igatools/base/config.h>
-#include <igatools/utils/tensor_sized_container.h>
+//#include <igatools/utils/tensor_sized_container.h>
 #include <igatools/basis_functions/spline_space.h>
-#include <igatools/geometry/cartesian_grid_element.h>
+//#include <igatools/geometry/cartesian_grid_element.h>
 #include <igatools/utils/concatenated_iterator.h>
 
 IGA_NAMESPACE_OPEN

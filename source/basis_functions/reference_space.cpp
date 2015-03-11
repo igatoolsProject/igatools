@@ -320,6 +320,26 @@ get_global_dof_id(const TensorIndex<dim> &tensor_index,
     return this->get_dof_distribution_global().get_index_table()[comp](tensor_index);
 }
 
+
+template<int dim, int range, int rank>
+auto
+ReferenceSpace<dim, range, rank>::
+get_dof_distribution_global() const -> const DofDistribution<dim, range, rank> &
+{
+    return space_data_->get_dof_distribution_global();
+}
+
+
+
+template<int dim, int range, int rank>
+auto
+ReferenceSpace<dim, range, rank>::
+get_dof_distribution_global() -> DofDistribution<dim, range, rank> &
+{
+    return space_data_->get_dof_distribution_global();
+}
+
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/reference_space.inst>

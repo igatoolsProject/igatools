@@ -214,11 +214,6 @@ public:
 
     const std::shared_ptr<SpSpace> get_spline_space() const;
 
-    /** Returns the container with the global dof distribution (const version). */
-    const DofDistribution<dim, range, rank> &get_dof_distribution_global() const;
-
-    /** Returns the container with the global dof distribution (non const version). */
-    DofDistribution<dim, range, rank> &get_dof_distribution_global();
 
 #if 0
     /** Return the push forward (non-const version). */
