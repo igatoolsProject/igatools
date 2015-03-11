@@ -118,8 +118,7 @@ void PoissonProblem<dim>::assemble()
     Value b = {5.};
     auto f = ConstFunction::create(grid, IdentityFunction<dim>::create(grid), b);
 
-    using ElementHandler = typename RefSpace::ElementHandler;
-    auto elem_handler = ElementHandler::create(space);
+    auto elem_handler = space->create_elem_handler();
 
     auto flag = ValueFlags::value | ValueFlags::gradient |
                 ValueFlags::w_measure;
