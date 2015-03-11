@@ -194,7 +194,7 @@ public:
     static std::shared_ptr<SplineSpace<dim,range,rank> > create(
         const DegreeTable &deg,
         std::shared_ptr<GridType> knots,
-        std::shared_ptr<const MultiplicityTable> interior_mult,
+        const MultiplicityTable &interior_mult,
         const PeriodicTable &periodic =
             PeriodicTable(filled_array<bool,dim>(false)));
 
@@ -205,7 +205,7 @@ protected:
      */
     explicit SplineSpace(const DegreeTable &deg,
                          std::shared_ptr<GridType> knots,
-                         std::shared_ptr<const MultiplicityTable> interior_mult,
+                         const MultiplicityTable &interior_mult,
                          const PeriodicTable &periodic =
                              PeriodicTable(filled_array<bool,dim>(false)));
 
@@ -218,12 +218,12 @@ public:
 
     const std::array<Index,n_components> &get_components_map() const
     {
-        return interior_mult_->get_comp_map();
+        return interior_mult_.get_comp_map();
     }
 
     const auto &get_active_components_id() const
     {
-        return interior_mult_->get_active_components_id();
+        return interior_mult_.get_active_components_id();
     }
 
     /** @name Getting information about the space */
@@ -295,7 +295,7 @@ public:
     using SubSpace = SplineSpace<k, range, rank>;
 
     template<int k>
-    std::shared_ptr<typename SubSpace<k>::MultiplicityTable>
+    typename SubSpace<k>::MultiplicityTable
     get_sub_space_mult(const Index s_id) const;
 
     template<int k>
@@ -326,7 +326,7 @@ public:
      *  of the given number of knots
      */
     static
-    std::shared_ptr<MultiplicityTable>
+    MultiplicityTable
     get_multiplicity_from_regularity(const InteriorReg regularity,
                                      const DegreeTable &deg,
                                      const TensorSize<dim> &n_elem);
@@ -334,7 +334,8 @@ public:
 public:
     void print_info(LogStream &out) const;
 private:
-    std::shared_ptr<const MultiplicityTable> interior_mult_;
+//    std::shared_ptr<const MultiplicityTable> interior_mult_;
+    MultiplicityTable interior_mult_;
 
     DegreeTable deg_;
 
@@ -362,7 +363,7 @@ private:
 public:
 
     /** Returns the multiplicity of the internal knots that defines the space. */
-    std::shared_ptr<const MultiplicityTable> get_interior_mult() const
+    const MultiplicityTable &get_interior_mult() const
     {
         return interior_mult_;
     }

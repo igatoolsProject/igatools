@@ -43,7 +43,7 @@ template<int dim, int range, int rank>
 SplineSpace<dim, range, rank>::
 SplineSpace(const DegreeTable &deg,
             std::shared_ptr<GridType> knots,
-            shared_ptr<const MultiplicityTable> interior_mult,
+            const MultiplicityTable &interior_mult,
             const PeriodicTable &periodic)
     :
     GridWrapper<CartesianGrid<dim>>(knots),
@@ -68,7 +68,7 @@ std::shared_ptr<SplineSpace<dim,range,rank> >
 SplineSpace<dim, range, rank>::
 create(const DegreeTable &deg,
        std::shared_ptr<GridType> knots,
-       std::shared_ptr<const MultiplicityTable> interior_mult,
+       const MultiplicityTable &interior_mult,
        const PeriodicTable &periodic)
 {
     using SpSpace = SplineSpace<dim,range,rank>;
@@ -93,7 +93,7 @@ init()
     for (const auto comp : components)
     {
         const auto &deg_comp =              deg_[comp];
-        const auto &mult_comp = (*interior_mult_)[comp];
+        const auto &mult_comp = interior_mult_[comp];
 
         const auto &periodic_comp = periodic_[comp];
 
@@ -164,11 +164,11 @@ refine_h_after_grid_refinement(
         mult_new_knot_lines[dir] = 1;
 
 #ifndef NDEBUG
-    const auto &interior_mult = const_cast<MultiplicityTable &>(*this->get_interior_mult());
+//    const auto &interior_mult = const_cast<MultiplicityTable &>(*this->get_interior_mult());
     for (int dir = 0; dir < dim; ++dir)
     {
         int min_degree = std::numeric_limits<int>::max();
-        for (int comp_id : interior_mult.get_active_components_id())
+        for (int comp_id : interior_mult_.get_active_components_id())
         {
             const auto &degree_comp = this->get_degree()[comp_id];
             min_degree = std::min(min_degree,degree_comp[dir]);
@@ -181,16 +181,16 @@ refine_h_after_grid_refinement(
     // check if the multiplicity of the new knot lines is compatible with the minimum degree of the space --- end
     //------------------------------------------------------------------------------------------
 
-
-    shared_ptr<const MultiplicityTable> interior_mult_prev_refinement =
-        make_shared<const MultiplicityTable>(MultiplicityTable(*this->get_interior_mult()));
-
+    /*
+        shared_ptr<const MultiplicityTable> interior_mult_prev_refinement =
+            make_shared<const MultiplicityTable>(MultiplicityTable(*this->get_interior_mult()));
+    //*/
     spline_space_previous_refinement_ =
         make_shared<const SplineSpace<dim,range,rank> >(
             SplineSpace<dim,range,rank>(
                 this->get_degree(),
                 grid_pre_refinement,
-                interior_mult_prev_refinement));
+                interior_mult_));
 
     for (const auto direction_id : Topology::active_directions)
     {
@@ -219,12 +219,12 @@ refine_h_after_grid_refinement(
 
             knots_added.resize(it-knots_added.begin());
 
-            auto &interior_mult = const_cast<MultiplicityTable &>(*this->get_interior_mult());
-            for (int comp_id : interior_mult.get_active_components_id())
+//            auto &interior_mult = const_cast<MultiplicityTable &>(*this->get_interior_mult());
+            for (int comp_id : interior_mult_.get_active_components_id())
             {
                 //--------------------------------------------------------
                 // creating the new multiplicity
-                const vector<int> &mult_old = interior_mult[comp_id].get_data_direction(direction_id);
+                const vector<int> &mult_old = interior_mult_[comp_id].get_data_direction(direction_id);
 
                 vector<int> mult_new(n_extra_multiplicities,mult_new_knot_lines[direction_id]);
                 for (const int &m : mult_old)
@@ -234,7 +234,7 @@ refine_h_after_grid_refinement(
                     mult_new.insert(mult_new.end(),n_extra_multiplicities,mult_new_knot_lines[direction_id]); // adding the new multiplicity values
                 }
 
-                interior_mult[comp_id].copy_data_direction(direction_id,mult_new);
+                interior_mult_[comp_id].copy_data_direction(direction_id,mult_new);
                 //--------------------------------------------------------
             } // end loop comp_id
         } // end if(refinement_directions[direction_id])
@@ -307,7 +307,7 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
     for (int comp = 0; comp < n_components; ++comp)
     {
         const auto   &degree_comp = deg_[comp];
-        const auto     &mult_comp = (*interior_mult_)[comp];
+        const auto     &mult_comp = interior_mult_[comp];
         const auto &periodic_comp = periodic_[comp];
 
         for (const auto dir : Topology::active_directions)
@@ -393,22 +393,21 @@ template<int k>
 auto
 SplineSpace<dim, range, rank>::
 get_sub_space_mult(const Index sub_elem_id) const
--> std::shared_ptr<typename SubSpace<k>::MultiplicityTable >
+-> typename SubSpace<k>::MultiplicityTable
 {
     using SubMultT = typename SubSpace<k>::MultiplicityTable;
-    const auto &v_mult = *interior_mult_;
+    const auto &v_mult = interior_mult_;
 
     auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
     const auto &active_dirs = k_elem.active_directions;
 
-    auto sub_mult_ptr = make_shared<SubMultT> (v_mult.get_comp_map());
-    auto &sub_mult = *sub_mult_ptr;
+    auto sub_mult = SubMultT(v_mult.get_comp_map());
     for (int comp : sub_mult.get_active_components_id())
     {
         for (int j=0; j<k; ++j)
             sub_mult[comp].copy_data_direction(j, v_mult[comp].get_data_direction(active_dirs[j]));
     }
-    return sub_mult_ptr;
+    return sub_mult;
 }
 
 
@@ -467,7 +466,7 @@ accumulated_interior_multiplicities() const -> MultiplicityTable
         for (const auto j : Topology::active_directions)
         {
             // Assert(!periodic_[iComp][j], ExcMessage("periodic needs to be implemented"));
-            const auto &mult  = (*interior_mult_)[iComp].get_data_direction(j);
+            const auto &mult  = (interior_mult_)[iComp].get_data_direction(j);
 
             vector<Size> accum_mult;
             const int size = mult.size();
@@ -492,12 +491,12 @@ SplineSpace<dim, range, rank>::
 get_multiplicity_from_regularity(const InteriorReg reg,
                                  const DegreeTable &deg,
                                  const TensorSize<dim> &n_elem)
--> std::shared_ptr<MultiplicityTable>
+-> MultiplicityTable
 {
-    auto  res = std::make_shared<MultiplicityTable>(deg.get_comp_map());
+    auto res = MultiplicityTable(deg.get_comp_map());
 
 
-    for (int comp : res->get_active_components_id())
+    for (int comp : res.get_active_components_id())
         for (const auto dir : Topology::active_directions)
         {
             int val;
@@ -515,7 +514,7 @@ get_multiplicity_from_regularity(const InteriorReg reg,
 
             vector<Size> mult(size);
             if (size>0)
-                (*res)[comp].copy_data_direction(dir, vector<Size>(size, val));
+                res[comp].copy_data_direction(dir, vector<Size>(size, val));
         }
     return res;
 }
@@ -553,7 +552,7 @@ print_info(LogStream &out) const
     out.end_item();
 
     out.begin_item("Interior multiplicities:");
-    const MultiplicityTable &interior_mult_ref = *interior_mult_;
+    const MultiplicityTable &interior_mult_ref = interior_mult_;
     for (const auto &v : interior_mult_ref)
         v.print_info(out);
     out.end_item();

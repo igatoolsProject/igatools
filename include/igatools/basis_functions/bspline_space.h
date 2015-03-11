@@ -205,7 +205,7 @@ public:
     static std::shared_ptr<self_t>
     create(const DegreeTable &deg,
            std::shared_ptr<GridType> knots,
-           std::shared_ptr<const MultiplicityTable> interior_mult,
+           const MultiplicityTable &interior_mult,
            const PeriodicTable &periodic,
            const EndBehaviourTable &end_b);
     ///@}
@@ -253,7 +253,7 @@ protected:
      */
     explicit BSplineSpace(const DegreeTable &deg,
                           std::shared_ptr<GridType> knots,
-                          std::shared_ptr<const MultiplicityTable> interior_mult,
+                          const MultiplicityTable &interior_mult,
                           const PeriodicTable &periodic,
                           const EndBehaviourTable &end_b);
 

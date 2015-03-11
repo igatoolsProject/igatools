@@ -472,7 +472,7 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
     using MultiplicityTable = typename space_t::MultiplicityTable;
 
     DegreeTable degrees(components_map);
-    shared_ptr<MultiplicityTable> multiplicities(new MultiplicityTable(components_map));
+    MultiplicityTable multiplicities(components_map);
 
     for (const auto &comp_element : scalar_component_vector)
     {
@@ -517,7 +517,7 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
         //---------------------------------------------
         // getting the multiplicities
         const auto &comp_multiplicities_element = get_xml_element(comp_element,"InteriorMultiplicities");
-        (*multiplicities)[comp_id] = get_interior_multiplicity_from_xml<dim>(comp_multiplicities_element);
+        multiplicities[comp_id] = get_interior_multiplicity_from_xml<dim>(comp_multiplicities_element);
         //---------------------------------------------
 
     } // end loop over the scalar components
@@ -614,7 +614,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
 
     DegreeTable degrees(components_map);
     WeightsTable weights(components_map);
-    shared_ptr<MultiplicityTable> multiplicities(new MultiplicityTable(components_map));
+    MultiplicityTable multiplicities(components_map);
 
     for (const auto &comp_element : scalar_component_vector)
     {
@@ -659,7 +659,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
         //---------------------------------------------
         // getting the multiplicities
         const auto &comp_multiplicities_element = get_xml_element(comp_element,"InteriorMultiplicities");
-        (*multiplicities)[comp_id] = get_interior_multiplicity_from_xml<dim>(comp_multiplicities_element);
+        multiplicities[comp_id] = get_interior_multiplicity_from_xml<dim>(comp_multiplicities_element);
         //---------------------------------------------
 
 
@@ -705,7 +705,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     auto new_grid = CartesianGrid<dim>::create(*grid);
 
     using ScalarMultiplicityTable = typename ScalarBSplineSpace::MultiplicityTable;
-    const auto scalar_mult_table = shared_ptr<const ScalarMultiplicityTable>(new ScalarMultiplicityTable((*multiplicities)[0]));
+    const auto scalar_mult_table = ScalarMultiplicityTable(multiplicities[0]);
     // TODO (pauletti, Dec 26, 2014): read periodic, end_behaviour and boundary knots from file
     typename ScalarBSplineSpace::EndBehaviourTable
     scalar_end_behaviour(filled_array<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory));

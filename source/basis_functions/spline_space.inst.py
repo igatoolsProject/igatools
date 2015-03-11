@@ -25,7 +25,7 @@ f = data.file_output
 inst = data.inst
 
 sub_dim_members = \
- ['std::shared_ptr<typename class::template SubSpace<k>::MultiplicityTable> class::get_sub_space_mult<k>(const Index s_id) const;', 
+ ['typename class::template SubSpace<k>::MultiplicityTable class::get_sub_space_mult<k>(const Index s_id) const;', 
   'typename class::template SubSpace<k>::DegreeTable class::get_sub_space_degree<k>(const Index s_id) const;',
   'typename class::template SubSpace<k>::PeriodicTable class::get_sub_space_periodicity<k>(const Index s_id) const;']         
 

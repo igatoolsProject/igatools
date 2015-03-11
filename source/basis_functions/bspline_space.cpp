@@ -152,7 +152,7 @@ template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(const DegreeTable &deg,
              std::shared_ptr<GridType> knots,
-             std::shared_ptr<const MultiplicityTable> interior_mult,
+             const MultiplicityTable &interior_mult,
              const PeriodicTable &periodic,
              const EndBehaviourTable &end_b)
     :
@@ -167,7 +167,7 @@ auto
 BSplineSpace<dim_, range_, rank_>::
 create(const DegreeTable &deg,
        std::shared_ptr<GridType> knots,
-       std::shared_ptr<const MultiplicityTable> interior_mult,
+       const MultiplicityTable &interior_mult,
        const PeriodicTable &periodic,
        const EndBehaviourTable &end_b)
 -> shared_ptr<self_t>
