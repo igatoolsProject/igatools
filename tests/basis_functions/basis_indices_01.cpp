@@ -40,7 +40,7 @@ void test1()
 
     auto grid = CartesianGrid<dim>::create(4);
 
-    auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable({ {{1,3}} }));
+    auto int_mult = MultiplicityTable({ {{1,3}} });
     auto sp_spec = SplineSpace::create(deg, grid, int_mult);
 
     CartesianProductArray<Real,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
@@ -48,12 +48,11 @@ void test1()
     typename SplineSpace::EndBehaviourTable end_b(typename SplineSpace::EndBehaviourTable(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::end_knots)));
 
     auto rep_knots = sp_spec->compute_knots_with_repetition(end_b,bdry_knots);
-    auto acum_mult = sp_spec->accumulated_interior_multiplicities();
 
     auto n_basis = sp_spec->get_num_basis_table();
     auto degree = sp_spec->get_degree();
 
-    DofDistribution<dim> dof_admin(grid, acum_mult, n_basis, degree, sp_spec->get_periodic_table());
+    DofDistribution<dim> dof_admin(n_basis, degree, sp_spec->get_periodic_table());
 
     //-----------------------------------------------------------------
     const auto &dofs_view = dof_admin.get_dofs_view();
@@ -87,12 +86,11 @@ void test2()
 
     auto rep_knots = sp_spec->compute_knots_with_repetition(end_b);
 
-    auto acum_mult = sp_spec->accumulated_interior_multiplicities();
 
     auto n_basis = sp_spec->get_num_basis_table();
     auto degree = sp_spec->get_degree();
 
-    DofDistribution<dim> basis_index(grid, acum_mult, n_basis, degree, sp_spec->get_periodic_table());
+    DofDistribution<dim> basis_index(n_basis, degree, sp_spec->get_periodic_table());
 
     //-----------------------------------------------------------------
     const auto &dofs_view = basis_index.get_dofs_view();

@@ -22,9 +22,9 @@
 #define DOF_DISTRIBUTION_H_
 
 #include <igatools/base/config.h>
-#include <igatools/utils/tensor_sized_container.h>
+//#include <igatools/utils/tensor_sized_container.h>
 #include <igatools/basis_functions/spline_space.h>
-#include <igatools/geometry/cartesian_grid_element.h>
+//#include <igatools/geometry/cartesian_grid_element.h>
 #include <igatools/utils/concatenated_iterator.h>
 
 IGA_NAMESPACE_OPEN
@@ -50,11 +50,9 @@ class DofDistribution
 {
 public:
     using Space = SplineSpace<dim, range, rank>;
-    using MultiplicityTable = typename Space::MultiplicityTable;
     using DegreeTable = typename Space::DegreeTable;
     using PeriodicTable = typename Space::PeriodicTable;
     using SpaceDimensionTable = typename Space::SpaceDimensionTable;
-    using DofsPerElementTable = typename Space::template ComponentContainer<Index>;
     using IndexDistributionTable =
         StaticMultiArray<DynamicMultiArray<Index,dim>,range,rank>;
 
@@ -92,9 +90,7 @@ public:
     DofDistribution() = delete;
 
     //TODO: document this constructor
-    DofDistribution(std::shared_ptr<CartesianGrid<dim> > grid,
-                    const MultiplicityTable &accum_mult,
-                    const SpaceDimensionTable &n_basis,
+    DofDistribution(const SpaceDimensionTable &n_basis,
                     const DegreeTable &degree_table,
                     const PeriodicTable &periodic,
                     DistributionPolicy pol = DistributionPolicy::standard);

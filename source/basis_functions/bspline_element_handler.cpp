@@ -190,7 +190,8 @@ operator()(const T &quad1)
 
     Assert(space_ != nullptr,ExcNullPtr());
 
-    const auto n_basis = space_->get_num_all_element_basis();
+//    const auto n_basis = space_->get_num_all_element_basis();
+    const auto &degree = space_->get_degree();
 
     const auto &active_components_id = space_->get_active_components_id();
 
@@ -219,10 +220,13 @@ operator()(const T &quad1)
                 const auto &intervals_id = intervals_id_directions_[dir];
 
                 const auto &n_pts = n_coords[dir];
+
+                const auto n_basis_comp_dir = degree[comp][dir]+1;
+
                 for (const int &interv_id : intervals_id)
                 {
                     auto &splines1d = g_cache.entry(comp, dir, interv_id);
-                    splines1d.resize(max_der, n_basis[comp][dir], n_pts);
+                    splines1d.resize(max_der, n_basis_comp_dir, n_pts);
                 } // end loop interv_id
             } // end loop dir
         } // end loop comp
@@ -231,15 +235,14 @@ operator()(const T &quad1)
          * For each direction, interval and component we compute the 1D bspline
          * basis evaluate at the 1D component of the tensor product quadrature
          */
-        const auto &degree      = space_->get_degree();
         const auto &bezier_op   = space_->operators_;
         const auto &end_interval = space_->end_interval_;
         const auto &lengths = grid_handler_->get_lengths();
 
         using BasisValues = ComponentContainer<BasisValues1d>;
-        BasisValues bernstein_values_internal(n_basis.get_comp_map());
-        BasisValues bernstein_values_left(n_basis.get_comp_map());
-        BasisValues bernstein_values_right(n_basis.get_comp_map());
+        BasisValues bernstein_values_internal(degree.get_comp_map());
+        BasisValues bernstein_values_left(degree.get_comp_map());
+        BasisValues bernstein_values_right(degree.get_comp_map());
 
         using LengthCompContainer = ComponentContainer<Points<dim>>;
 

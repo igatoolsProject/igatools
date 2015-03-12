@@ -37,7 +37,7 @@ void test_1d()
 
     auto grid = CartesianGrid<dim>::create(4);
     typename SplineSpace::DegreeTable deg {{2}};
-    auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable({ {{1,3}} }));
+    auto int_mult = MultiplicityTable({ {{1,3}} });
     auto sp_spec = SplineSpace::create(deg, grid, int_mult);
     sp_spec->print_info(out);
 
@@ -67,7 +67,7 @@ void test_2d()
     auto grid = CartesianGrid<dim>::create({3,5});
     typename SplineSpace::DegreeTable deg {{1,3}};
 
-    auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable({ {{1}, {1,3,1}} }));
+    auto int_mult = MultiplicityTable({ {{1}, {1,3,1}} });
 
     auto sp_spec = SplineSpace::create(deg, grid, int_mult);
     sp_spec->print_info(out);
@@ -97,7 +97,7 @@ void test_3d()
     using MultiplicityTable = typename SplineSpace::MultiplicityTable;
     auto grid = CartesianGrid<dim>::create({3,4,5});
     typename SplineSpace::DegreeTable deg {{1,3,0}};
-    auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable({ {{1}, {1,3}, {1,1,1}} }));
+    auto int_mult = MultiplicityTable({ {{1}, {1,3}, {1,1,1}} });
 
     auto sp_spec = SplineSpace::create(deg, grid, int_mult);
     sp_spec->print_info(out);
@@ -129,7 +129,7 @@ void test_2d_2()
     auto grid = CartesianGrid<dim>::create({3,4});
     typename SplineSpace::DegreeTable deg {{1,3},{3,1}};
 
-    auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable({ {{1}, {1,3}},{{1}, {1,1}}}));
+    auto int_mult = MultiplicityTable({ {{1}, {1,3}},{{1}, {1,1}}});
 
     auto sp_spec = SplineSpace::create(deg, grid, int_mult);
     sp_spec->print_info(out);

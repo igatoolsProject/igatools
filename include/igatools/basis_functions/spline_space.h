@@ -33,6 +33,11 @@
 
 IGA_NAMESPACE_OPEN
 
+
+template <int dim, int range, int rank>
+class DofDistribution;
+
+
 enum class BasisEndBehaviour
 {
     /**
@@ -131,58 +136,55 @@ public:
     public:
         using base_t = ComponentContainer<TensorSize<dim>>;
 
+
         SpaceDimensionTable() = default;
 
         SpaceDimensionTable(const base_t &n_basis)
             :
-            base_t(n_basis),
-            comp_dimension(n_basis.get_comp_map()),
-            total_dimension_(0)
+            base_t(n_basis)
+        {}
+
+
+        SpaceDimensionTable(const SpaceDimensionTable &in) = default;
+        SpaceDimensionTable(SpaceDimensionTable &&in) = default;
+        SpaceDimensionTable &operator=(const SpaceDimensionTable &in) = default;
+        SpaceDimensionTable &operator=(SpaceDimensionTable &&in) = default;
+
+        ~SpaceDimensionTable() = default;
+
+        //*/
+
+
+
+        Size get_component_size(const int comp) const
         {
-            recompute_size();
+            return (*this)[comp].flat_size();
         }
 
-        SpaceDimensionTable operator=(const base_t &st)
-        {
-            base_t::operator=(st);
-            recompute_size();
-            return *this;
 
+        Size total_dimension() const
+        {
+            Index total_dimension = 0;
+            for (const auto comp : components)
+                total_dimension += this->get_component_size(comp);
+
+            return total_dimension;
         }
 
         void print_info(LogStream &out) const
         {
             out.begin_item("Component Dimension:");
-            comp_dimension.print_info(out);
-            out.end_item();
-
-            out << "Total Dimension: " << total_dimension_ << std::endl;
-        }
-
-        Size total_dimension() const
-        {
-            return total_dimension_;
-        }
-
-        Size get_component_size(const int comp) const
-        {
-            return comp_dimension[comp];
-        }
-    private:
-        void recompute_size()
-        {
+            ComponentContainer<Size> comp_dimension;
             for (auto comp : this->get_active_components_id())
             {
                 auto size = (*this)[comp].flat_size();
                 comp_dimension[comp] = size;
             }
-            total_dimension_ = 0;
-            for (auto size : comp_dimension)
-                total_dimension_ += size;
-        }
+            comp_dimension.print_info(out);
+            out.end_item();
 
-        ComponentContainer<Size> comp_dimension;
-        Size total_dimension_;
+            out << "Total Dimension: " << total_dimension() << std::endl;
+        }
     };
 
 
@@ -192,7 +194,7 @@ public:
     static std::shared_ptr<SplineSpace<dim,range,rank> > create(
         const DegreeTable &deg,
         std::shared_ptr<GridType> knots,
-        std::shared_ptr<const MultiplicityTable> interior_mult,
+        const MultiplicityTable &interior_mult,
         const PeriodicTable &periodic =
             PeriodicTable(filled_array<bool,dim>(false)));
 
@@ -203,7 +205,7 @@ protected:
      */
     explicit SplineSpace(const DegreeTable &deg,
                          std::shared_ptr<GridType> knots,
-                         std::shared_ptr<const MultiplicityTable> interior_mult,
+                         const MultiplicityTable &interior_mult,
                          const PeriodicTable &periodic =
                              PeriodicTable(filled_array<bool,dim>(false)));
 
@@ -216,12 +218,12 @@ public:
 
     const std::array<Index,n_components> &get_components_map() const
     {
-        return interior_mult_->get_comp_map();
+        return interior_mult_.get_comp_map();
     }
 
     const auto &get_active_components_id() const
     {
-        return interior_mult_->get_active_components_id();
+        return interior_mult_.get_active_components_id();
     }
 
     /** @name Getting information about the space */
@@ -250,7 +252,7 @@ public:
      */
     Size get_num_basis(const int comp, const int dir) const
     {
-        return  space_dim_[comp][dir];
+        return space_dim_[comp][dir];
     }
 
     /**
@@ -262,6 +264,7 @@ public:
         return space_dim_;
     }
 
+    /*
     SpaceDimensionTable get_num_all_element_basis() const
     {
         ComponentContainer<TensorSize<dim>> n_basis(deg_.get_comp_map());
@@ -270,6 +273,7 @@ public:
 
         return SpaceDimensionTable(n_basis);
     }
+    //*/
 
     /**
      * Component table with the offset of basis functions
@@ -287,11 +291,16 @@ public:
 
     ///@}
 
+
+
+    vector<Index>
+    get_element_dofs(const CartesianGridElement<dim> &element) const;
+
     template<int k>
     using SubSpace = SplineSpace<k, range, rank>;
 
     template<int k>
-    std::shared_ptr<typename SubSpace<k>::MultiplicityTable>
+    typename SubSpace<k>::MultiplicityTable
     get_sub_space_mult(const Index s_id) const;
 
     template<int k>
@@ -322,7 +331,7 @@ public:
      *  of the given number of knots
      */
     static
-    std::shared_ptr<MultiplicityTable>
+    MultiplicityTable
     get_multiplicity_from_regularity(const InteriorReg regularity,
                                      const DegreeTable &deg,
                                      const TensorSize<dim> &n_elem);
@@ -330,7 +339,8 @@ public:
 public:
     void print_info(LogStream &out) const;
 private:
-    std::shared_ptr<const MultiplicityTable> interior_mult_;
+//    std::shared_ptr<const MultiplicityTable> interior_mult_;
+    MultiplicityTable interior_mult_;
 
     DegreeTable deg_;
 
@@ -345,10 +355,20 @@ private:
      */
     BCTable boundary_conditions_table_;
 
+    /**
+     * Container with the local to global basis indices
+     * @note The concept of global indices refers to a global numbering of the
+     * dofs of all the spaces.
+     */
+    std::shared_ptr<DofDistribution<dim,range,rank> > dof_distribution_;
+
+
+    const std::string dofs_property_active_ = "active";
+
 public:
 
     /** Returns the multiplicity of the internal knots that defines the space. */
-    std::shared_ptr<const MultiplicityTable> get_interior_mult() const
+    const MultiplicityTable &get_interior_mult() const
     {
         return interior_mult_;
     }
@@ -356,6 +376,20 @@ public:
     const PeriodicTable &get_periodic_table() const
     {
         return periodic_;
+    }
+
+    /** Returns the container with the global dof distribution (const version). */
+    const DofDistribution<dim, range, rank> &
+    get_dof_distribution_global() const
+    {
+        return *dof_distribution_;
+    }
+
+    /** Returns the container with the global dof distribution (non const version). */
+    DofDistribution<dim, range, rank> &
+    get_dof_distribution_global()
+    {
+        return *dof_distribution_;
     }
 
 
@@ -601,7 +635,8 @@ ComponentContainer(const ComponentMap &comp_map)
 
 template<int dim, int range, int rank>
 template<class T>
-SplineSpace<dim, range, rank>::ComponentContainer<T>::
+SplineSpace<dim, range, rank>::
+ComponentContainer<T>::
 ComponentContainer(const ComponentMap &comp_map, const T &val)
     :
     base_t(),
@@ -624,7 +659,8 @@ ComponentContainer(const ComponentMap &comp_map, const T &val)
 
 template<int dim, int range, int rank>
 template<class T>
-SplineSpace<dim, range, rank>::ComponentContainer<T>::
+SplineSpace<dim, range, rank>::
+ComponentContainer<T>::
 ComponentContainer(std::initializer_list<T> list)
     :
     base_t(list),

@@ -42,7 +42,7 @@ int main()
 
         auto grid = CartesianGrid<dim>::create(4);
 
-        auto int_mult = shared_ptr<MultiplicityTable>(new MultiplicityTable({ {{1,3}} }));
+        auto int_mult = MultiplicityTable({ {{1,3}} });
         auto sp_spec = SplineSpace::create(deg, grid, int_mult);
 
         CartesianProductArray<Real,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};

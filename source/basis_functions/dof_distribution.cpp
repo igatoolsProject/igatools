@@ -29,9 +29,7 @@ IGA_NAMESPACE_OPEN
 
 template<int dim, int range, int rank>
 DofDistribution<dim, range, rank>::
-DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
-                const MultiplicityTable &accum_mult,
-                const SpaceDimensionTable &n_basis1,
+DofDistribution(const SpaceDimensionTable &n_basis1,
                 const DegreeTable &degree_table,
                 const PeriodicTable &periodic,
                 DistributionPolicy pol)
@@ -40,21 +38,26 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
 {
     Assert(pol == DistributionPolicy::standard, ExcNotImplemented());
 
+    using Topology = UnitElement<dim>;
+
+    //-----------------------------------------------------------------------
     typename SpaceDimensionTable::base_t aux;
-    for (int comp = 0 ; comp < Space::n_components ; ++comp)
-        for (int dir = 0 ; dir < dim ; ++dir)
+    for (const auto comp : Space::components)
+        for (const auto dir : Topology::active_directions)
         {
             aux[comp][dir] = n_basis1[comp][dir];
             if (periodic[comp][dir])
                 aux[comp][dir] += degree_table[comp][dir] + 1;
         }
     SpaceDimensionTable n_basis(aux);
+    //-----------------------------------------------------------------------
+
 
     //-----------------------------------------------------------------------
     // fills the standard distribution, sorted by component and
     // by direction x moves faster
     int comp_offset = 0;
-    for (int comp = 0 ; comp < Space::n_components ; ++comp)
+    for (const auto comp : Space::components)
     {
         const auto size = n_basis[comp];
         const auto act_size = n_basis1[comp];
@@ -63,19 +66,21 @@ DofDistribution(shared_ptr<CartesianGrid<dim> > grid,
 
         DynamicMultiArray<Index,dim> comp_table1(n_basis1[comp]);
 
-        for (int i=0; i<n_basis.get_component_size(comp); ++i)
+        const auto n_basis_comp_size = n_basis.get_component_size(comp);
+        for (int i = 0 ; i < n_basis_comp_size ; ++i)
         {
             auto t_ind = comp_table.flat_to_tensor(i);
-            for (int dir = 0 ; dir < dim ; ++dir)
+            for (const auto dir : Topology::active_directions)
                 t_ind[dir] = t_ind[dir] % n_basis1[comp][dir];
 
             auto f_ind = comp_table1.tensor_to_flat(t_ind);
             comp_table[i] = comp_offset + f_ind;
 
         }
-        comp_offset += n_basis.get_component_size(comp);
+        comp_offset += n_basis_comp_size;
     }
     //-----------------------------------------------------------------------
+
 
     //-----------------------------------------------------------------------
     // creating the dofs view from the dofs components views -- begin
@@ -119,7 +124,7 @@ find_dof_id(const Index dof_id, int &comp_id, TensorIndex<dim> &tensor_index) co
 {
     bool dof_is_found = false;
 
-    for (auto &comp: Space::components)
+    for (const auto comp: Space::components)
     {
         const auto &index_table_comp = index_table_[comp];
 

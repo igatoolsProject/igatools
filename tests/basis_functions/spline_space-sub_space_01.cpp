@@ -47,7 +47,7 @@ void sub_space(const TensorSize<dim> &n_knots, const TensorIndex<dim> &degree)
 
         out.begin_item("Multiplicity");
         auto sub_mult = space->template get_sub_space_mult<k>(s_id);
-        sub_mult->print_info(out);
+        sub_mult.print_info(out);
         out.end_item();
 
         out.begin_item("Degree");

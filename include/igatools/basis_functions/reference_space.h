@@ -161,10 +161,12 @@ public:
 
     /** @name Functions for retrieving information about the number of basis function. */
     ///@{
+    /*
     SpaceDimensionTable get_num_all_element_basis() const
     {
         return space_data_->get_num_all_element_basis();
     }
+    //*/
 
     const SpaceDimensionTable &get_num_basis_table() const
     {
@@ -244,12 +246,13 @@ public:
 
 
     /** Returns the container with the global dof distribution (const version). */
-    virtual const DofDistribution<dim, range, rank> &
-    get_dof_distribution_global() const = 0;
+    const DofDistribution<dim, range, rank> &
+    get_dof_distribution_global() const;
 
     /** Returns the container with the global dof distribution (non const version). */
-    virtual DofDistribution<dim, range, rank> &
-    get_dof_distribution_global() = 0;
+    DofDistribution<dim, range, rank> &
+    get_dof_distribution_global();
+
 
     // TODO (pauletti, Oct 16, 2014): need to be documented or deleted, check!
     vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;
@@ -257,9 +260,7 @@ public:
     vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const;
 
 
-    vector<Index> get_element_dofs(
-        const CartesianGridElement<dim> &element,
-        const DofDistribution<dim, range, rank> &dofs_distribution) const;
+    vector<Index> get_element_dofs(const CartesianGridElement<dim> &element) const;
 
 
     std::shared_ptr<SpaceManager> get_space_manager();

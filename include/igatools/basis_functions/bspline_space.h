@@ -205,7 +205,7 @@ public:
     static std::shared_ptr<self_t>
     create(const DegreeTable &deg,
            std::shared_ptr<GridType> knots,
-           std::shared_ptr<const MultiplicityTable> interior_mult,
+           const MultiplicityTable &interior_mult,
            const PeriodicTable &periodic,
            const EndBehaviourTable &end_b);
     ///@}
@@ -253,8 +253,12 @@ protected:
      */
     explicit BSplineSpace(const DegreeTable &deg,
                           std::shared_ptr<GridType> knots,
-                          std::shared_ptr<const MultiplicityTable> interior_mult,
+                          const MultiplicityTable &interior_mult,
                           const PeriodicTable &periodic,
+                          const EndBehaviourTable &end_b);
+
+
+    explicit BSplineSpace(std::shared_ptr<SpaceData> space_data,
                           const EndBehaviourTable &end_b);
 
 
@@ -310,14 +314,6 @@ public:
 
     std::shared_ptr<const self_t > get_reference_space() const;
 
-
-    /** Returns the container with the global dof distribution (const version). */
-    virtual const DofDistribution<dim, range, rank> &
-    get_dof_distribution_global() const override final;
-
-    /** Returns the container with the global dof distribution (non const version). */
-    virtual DofDistribution<dim, range, rank> &
-    get_dof_distribution_global() override final;
     ///@}
 
 
@@ -348,11 +344,6 @@ private:
 
     EndBehaviourTable end_b_;
 
-    /** Container with the local to global basis indices
-     * @note The concept of global indices refers to a global numeration of the
-     * dofs of all the spaces.
-     */
-    DofDistribution<dim, range, rank> dof_distribution_global_;
 
     /** @name Bezier extraction operator. */
     BernsteinExtraction<dim, range, rank> operators_;
@@ -383,9 +374,6 @@ private:
         const GridType &grid_old) ;
 
     void create_connection_for_h_refinement(std::shared_ptr<self_t> space);
-
-
-    const std::string property_active_ = "active";
 
 
 

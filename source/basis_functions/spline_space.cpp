@@ -20,8 +20,11 @@
 
 
 #include <igatools/basis_functions/spline_space.h>
+#include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/base/array_utils.h>
+#include <igatools/utils/multi_array_utils.h>
 
+using std::unique_ptr;
 using std::shared_ptr;
 using std::make_shared;
 using std::const_pointer_cast;
@@ -41,7 +44,7 @@ template<int dim, int range, int rank>
 SplineSpace<dim, range, rank>::
 SplineSpace(const DegreeTable &deg,
             std::shared_ptr<GridType> knots,
-            shared_ptr<const MultiplicityTable> interior_mult,
+            const MultiplicityTable &interior_mult,
             const PeriodicTable &periodic)
     :
     GridWrapper<CartesianGrid<dim>>(knots),
@@ -50,6 +53,8 @@ SplineSpace(const DegreeTable &deg,
                                  periodic_(periodic)
 {
     this->init();
+
+
 #if 0
     // create a signal and a connection for the grid refinement
     this->connect_refinement_h_function(
@@ -64,7 +69,7 @@ std::shared_ptr<SplineSpace<dim,range,rank> >
 SplineSpace<dim, range, rank>::
 create(const DegreeTable &deg,
        std::shared_ptr<GridType> knots,
-       std::shared_ptr<const MultiplicityTable> interior_mult,
+       const MultiplicityTable &interior_mult,
        const PeriodicTable &periodic)
 {
     using SpSpace = SplineSpace<dim,range,rank>;
@@ -83,15 +88,25 @@ void
 SplineSpace<dim, range, rank>::
 init()
 {
-#ifndef NDEBUG
-    auto const knots_size = this->get_grid()->get_num_knots_dim();
+    //------------------------------------------------------------------------------
+    // Determine the dimensionality of the spline space --- begin
+    typename SpaceDimensionTable::base_t n_basis;
     for (const auto comp : components)
-        for (const auto j : Topology::active_directions)
+    {
+        const auto &deg_comp =              deg_[comp];
+        const auto &mult_comp = interior_mult_[comp];
+
+        const auto &periodic_comp = periodic_[comp];
+
+        for (const auto dir : Topology::active_directions)
         {
-            const auto deg = deg_[comp][j];
+            const auto &deg =  deg_comp[dir];
+            const auto &mult = mult_comp.get_data_direction(dir);
+
             const auto order = deg + 1;
-            const auto &mult = (*interior_mult_)[comp].get_data_direction(j);
-            Assert(mult.size() == knots_size[j]-2,
+
+#ifndef NDEBUG
+            Assert(mult.size() == this->get_grid()->get_num_knots_dim()[dir]-2,
                    ExcMessage("Interior multiplicity size does not match the grid"));
             if (!mult.empty())
             {
@@ -99,35 +114,35 @@ init()
                 Assert((*result.first > 0) && (*result.second <= order),
                        ExcMessage("multiplicity values not between 0 and p+1"));
             }
-        }
 #endif
 
-    // Determine the dimensionality of the spline space
-    typename SpaceDimensionTable::base_t n_basis;
-    for (const auto iComp : components)
-        for (const auto dir : Topology::active_directions)
-        {
-            const auto deg = deg_[iComp][dir];
-            const auto &mult = (*interior_mult_)[iComp].get_data_direction(dir);
-
-            Index size = periodic_[iComp][dir] ? 0 : deg + 1;
-            for (auto &n: mult)
-                size += n;
-            n_basis[iComp][dir] = size;
-        }
-    space_dim_ = n_basis;
+            n_basis[comp][dir] = std::accumulate(
+                                     mult.begin(),
+                                     mult.end(),
+                                     periodic_comp[dir] ? 0 : order);
 
 #ifndef NDEBUG
-    for (const auto comp : components)
-        for (const auto dir : Topology::active_directions)
-            if (periodic_[comp][dir])
-            {
-                const auto deg = deg_[comp][dir];
-                const auto order = deg + 1;
-                Assert(n_basis[comp][dir]>order,
+            if (periodic_comp[dir])
+                Assert(n_basis[comp][dir] > order,
                        ExcMessage("Not enough basis functions"));
-            }
 #endif
+
+        } // end loop dir
+    } // end loop comp
+
+    space_dim_ = n_basis;
+    // Determine the dimensionality of the spline space --- end
+    //------------------------------------------------------------------------------
+
+
+
+    //------------------------------------------------------------------------------
+    using DofDistrib = DofDistribution<dim,range,rank>;
+    dof_distribution_ = shared_ptr<DofDistrib>(new DofDistrib(space_dim_,deg_,periodic_));
+
+    dof_distribution_->add_dofs_property(dofs_property_active_);
+    dof_distribution_->set_all_dofs_property_status(dofs_property_active_,true);
+    //------------------------------------------------------------------------------
 }
 
 
@@ -150,11 +165,11 @@ refine_h_after_grid_refinement(
         mult_new_knot_lines[dir] = 1;
 
 #ifndef NDEBUG
-    const auto &interior_mult = const_cast<MultiplicityTable &>(*this->get_interior_mult());
+//    const auto &interior_mult = const_cast<MultiplicityTable &>(*this->get_interior_mult());
     for (int dir = 0; dir < dim; ++dir)
     {
         int min_degree = std::numeric_limits<int>::max();
-        for (int comp_id : interior_mult.get_active_components_id())
+        for (int comp_id : interior_mult_.get_active_components_id())
         {
             const auto &degree_comp = this->get_degree()[comp_id];
             min_degree = std::min(min_degree,degree_comp[dir]);
@@ -167,16 +182,16 @@ refine_h_after_grid_refinement(
     // check if the multiplicity of the new knot lines is compatible with the minimum degree of the space --- end
     //------------------------------------------------------------------------------------------
 
-
-    shared_ptr<const MultiplicityTable> interior_mult_prev_refinement =
-        make_shared<const MultiplicityTable>(MultiplicityTable(*this->get_interior_mult()));
-
+    /*
+        shared_ptr<const MultiplicityTable> interior_mult_prev_refinement =
+            make_shared<const MultiplicityTable>(MultiplicityTable(*this->get_interior_mult()));
+    //*/
     spline_space_previous_refinement_ =
         make_shared<const SplineSpace<dim,range,rank> >(
             SplineSpace<dim,range,rank>(
                 this->get_degree(),
                 grid_pre_refinement,
-                interior_mult_prev_refinement));
+                interior_mult_));
 
     for (const auto direction_id : Topology::active_directions)
     {
@@ -205,12 +220,12 @@ refine_h_after_grid_refinement(
 
             knots_added.resize(it-knots_added.begin());
 
-            auto &interior_mult = const_cast<MultiplicityTable &>(*this->get_interior_mult());
-            for (int comp_id : interior_mult.get_active_components_id())
+//            auto &interior_mult = const_cast<MultiplicityTable &>(*this->get_interior_mult());
+            for (int comp_id : interior_mult_.get_active_components_id())
             {
                 //--------------------------------------------------------
                 // creating the new multiplicity
-                const vector<int> &mult_old = interior_mult[comp_id].get_data_direction(direction_id);
+                const vector<int> &mult_old = interior_mult_[comp_id].get_data_direction(direction_id);
 
                 vector<int> mult_new(n_extra_multiplicities,mult_new_knot_lines[direction_id]);
                 for (const int &m : mult_old)
@@ -220,7 +235,7 @@ refine_h_after_grid_refinement(
                     mult_new.insert(mult_new.end(),n_extra_multiplicities,mult_new_knot_lines[direction_id]); // adding the new multiplicity values
                 }
 
-                interior_mult[comp_id].copy_data_direction(direction_id,mult_new);
+                interior_mult_[comp_id].copy_data_direction(direction_id,mult_new);
                 //--------------------------------------------------------
             } // end loop comp_id
         } // end if(refinement_directions[direction_id])
@@ -292,21 +307,22 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
 
     for (int comp = 0; comp < n_components; ++comp)
     {
+        const auto   &degree_comp = deg_[comp];
+        const auto     &mult_comp = interior_mult_[comp];
+        const auto &periodic_comp = periodic_[comp];
+
         for (const auto dir : Topology::active_directions)
         {
-            const auto deg = deg_[comp][dir];
+            const auto deg = degree_comp[dir];
             const auto order = deg + 1;
             const auto &knots = this->get_grid()->get_knot_coordinates(dir);
-            const auto &mult  = (*interior_mult_)[comp].get_data_direction(dir);
+            const auto &mult  = mult_comp.get_data_direction(dir);
 
-            int size = 2 * order;
             const int m = order;
-            int K = 0;
-            for (auto &n: mult)
-                K += n;
-            size += K;
+            const int K = std::accumulate(mult.begin(),mult.end(),0);
 
-            vector<Real> rep_knots(size);
+
+            vector<Real> rep_knots(2*order+K);
 
             auto rep_it = rep_knots.begin() + m;
             auto m_it = mult.begin();
@@ -319,7 +335,7 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
             }
 
 
-            if (periodic_[comp][dir])
+            if (periodic_comp[dir])
             {
                 const Real a = knots.front();
                 const Real b = knots.back();
@@ -365,8 +381,8 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
             }
 
             result[comp].copy_data_direction(dir,rep_knots);
-        }
-    }
+        } // end loop dir
+    } // end loop comp
 
     return result;
 }
@@ -378,22 +394,21 @@ template<int k>
 auto
 SplineSpace<dim, range, rank>::
 get_sub_space_mult(const Index sub_elem_id) const
--> std::shared_ptr<typename SubSpace<k>::MultiplicityTable >
+-> typename SubSpace<k>::MultiplicityTable
 {
     using SubMultT = typename SubSpace<k>::MultiplicityTable;
-    const auto &v_mult = *interior_mult_;
+    const auto &v_mult = interior_mult_;
 
     auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
     const auto &active_dirs = k_elem.active_directions;
 
-    auto sub_mult_ptr = make_shared<SubMultT> (v_mult.get_comp_map());
-    auto &sub_mult = *sub_mult_ptr;
+    auto sub_mult = SubMultT(v_mult.get_comp_map());
     for (int comp : sub_mult.get_active_components_id())
     {
         for (int j=0; j<k; ++j)
             sub_mult[comp].copy_data_direction(j, v_mult[comp].get_data_direction(active_dirs[j]));
     }
-    return sub_mult_ptr;
+    return sub_mult;
 }
 
 
@@ -452,7 +467,7 @@ accumulated_interior_multiplicities() const -> MultiplicityTable
         for (const auto j : Topology::active_directions)
         {
             // Assert(!periodic_[iComp][j], ExcMessage("periodic needs to be implemented"));
-            const auto &mult  = (*interior_mult_)[iComp].get_data_direction(j);
+            const auto &mult  = (interior_mult_)[iComp].get_data_direction(j);
 
             vector<Size> accum_mult;
             const int size = mult.size();
@@ -477,12 +492,12 @@ SplineSpace<dim, range, rank>::
 get_multiplicity_from_regularity(const InteriorReg reg,
                                  const DegreeTable &deg,
                                  const TensorSize<dim> &n_elem)
--> std::shared_ptr<MultiplicityTable>
+-> MultiplicityTable
 {
-    auto  res = std::make_shared<MultiplicityTable>(deg.get_comp_map());
+    auto res = MultiplicityTable(deg.get_comp_map());
 
 
-    for (int comp : res->get_active_components_id())
+    for (int comp : res.get_active_components_id())
         for (const auto dir : Topology::active_directions)
         {
             int val;
@@ -500,7 +515,7 @@ get_multiplicity_from_regularity(const InteriorReg reg,
 
             vector<Size> mult(size);
             if (size>0)
-                (*res)[comp].copy_data_direction(dir, vector<Size>(size, val));
+                res[comp].copy_data_direction(dir, vector<Size>(size, val));
         }
     return res;
 }
@@ -538,7 +553,7 @@ print_info(LogStream &out) const
     out.end_item();
 
     out.begin_item("Interior multiplicities:");
-    const MultiplicityTable &interior_mult_ref = *interior_mult_;
+    const MultiplicityTable &interior_mult_ref = interior_mult_;
     for (const auto &v : interior_mult_ref)
         v.print_info(out);
     out.end_item();
@@ -547,7 +562,73 @@ print_info(LogStream &out) const
     space_dim_.print_info(out);
     out.end_item();
 
+
+    out.begin_item("DoFs Distribution:");
+    dof_distribution_->print_info(out);
+    out.end_item();
+
 }
+
+
+
+template<int dim, int range, int rank>
+vector<Index>
+SplineSpace<dim, range, rank>::
+get_element_dofs(const CartesianGridElement<dim> &element) const
+{
+    const auto &accum_mult = this->accumulated_interior_multiplicities();
+    const auto &index_table = dof_distribution_->get_index_table();
+
+
+    vector<Index> element_dofs;
+    const auto &elem_tensor_id = element.get_tensor_index();
+
+    using Topology = UnitElement<dim>;
+
+    for (int comp = 0 ; comp < n_components ; ++comp)
+    {
+        //-----------------------------------------------------------------
+        // building the lookup table for the local dof id on the current component of the element --- begin
+        // TODO (MM, March 06, 2015): this can be put on the SplineSpace constructor for optimization
+        const auto &degree_comp = deg_[comp];
+
+        TensorSize<dim> dofs_t_size_elem_comp;
+        for (const auto dir : Topology::active_directions)
+            dofs_t_size_elem_comp[dir] = degree_comp[dir] + 1;
+
+        const auto dofs_f_size_elem_comp = dofs_t_size_elem_comp.flat_size();
+
+        vector<Index> elem_comp_dof_f_id(dofs_f_size_elem_comp);
+        std::iota(elem_comp_dof_f_id.begin(),elem_comp_dof_f_id.end(),0);
+
+        vector<TensorIndex<dim>> elem_comp_dof_t_id;
+        const auto w_dofs_elem_comp = MultiArrayUtils<dim>::compute_weight(dofs_t_size_elem_comp);
+        for (const auto dof_f_id : elem_comp_dof_f_id)
+            elem_comp_dof_t_id.emplace_back(MultiArrayUtils<dim>::flat_to_tensor_index(dof_f_id,w_dofs_elem_comp));
+        // building the lookup table for the local dof id on the current component of the element --- end
+        //-----------------------------------------------------------------
+
+
+
+        //-----------------------------------------------------------------
+        const auto &index_table_comp = index_table[comp];
+
+        const auto dof_t_origin = accum_mult[comp].cartesian_product(elem_tensor_id);
+        for (const auto loc_dof_t_id : elem_comp_dof_t_id)
+        {
+            const auto dof_t_id = dof_t_origin + loc_dof_t_id;
+
+            const auto dof = index_table_comp(dof_t_id);
+
+            element_dofs.emplace_back(dof);
+        }
+        //-----------------------------------------------------------------
+
+    } // end comp loop
+
+    return element_dofs;
+}
+
 
 IGA_NAMESPACE_CLOSE
 

@@ -148,8 +148,6 @@ StokesProblem(const int deg, const int n_knots)
         pre_mult.copy_data_direction(i, mult_p) ;
         vel_mult.copy_data_direction(i, mult_v) ;
     }
-    auto pres_mult = make_shared<typename PreSpace::MultiplicityTable>(pre_mult);
-    auto vel_m  = make_shared<typename VelSpace::MultiplicityTable>(vel_mult);
 
 
     typename PreSpace::PeriodicTable press_periodic_table(filled_array<bool,dim>(false));
@@ -167,11 +165,11 @@ StokesProblem(const int deg, const int n_knots)
 
     auto grid = CartesianGrid<dim>::create(n_knots);
 
-    vel_space_ = VelSpace::create(vel_deg, grid,vel_m,vel_periodic_table,vel_end_b);
+    vel_space_ = VelSpace::create(vel_deg, grid, vel_mult,vel_periodic_table,vel_end_b);
 
     const auto dofs_view_vel = vel_space_->get_dof_distribution_global().get_dofs_view();
 
-    pre_space_ = PreSpace::create(pre_deg, grid, pres_mult, press_periodic_table, press_end_b);
+    pre_space_ = PreSpace::create(pre_deg, grid, pre_mult, press_periodic_table, press_end_b);
     const auto dofs_view_pre = pre_space_->get_dof_distribution_global().get_dofs_view();
 
 
