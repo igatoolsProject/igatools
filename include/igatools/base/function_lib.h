@@ -82,10 +82,12 @@ private:
 
 //------------------------------------------------------------------------------
 
+/**
+ * y = A * x + b
+ */
 template<int dim, int codim, int range>
 class LinearFunction :
     public FormulaFunction<dim, codim, range, 1>
-//    public std::enable_shared_from_this<LinearFunction<dim,codim,range> >
 {
 
 public:

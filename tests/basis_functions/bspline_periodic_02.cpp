@@ -41,6 +41,7 @@
 #include <igatools/io/writer.h>
 #include <igatools/base/identity_function.h>
 #include <igatools/base/ig_function.h>
+
 using functions::ConstantFunction;
 template <int dim>
 void assemble_matrix(const int n_knots, const int deg)
@@ -49,9 +50,9 @@ void assemble_matrix(const int n_knots, const int deg)
     using RefSpace  = ReferenceSpace<dim>;
 
     using Function = Function<dim,0,1,1>;
-    using ConstFunction = ConstantFunction<dim,0,1,1>;
+    using ConstFunction = functions::LinearFunction<dim,0,1>;
     using Value = typename Function::Value;
-
+    using Gradient = typename Function::Gradient;
 
 
     TensorIndex<dim> deg1(deg);
@@ -60,8 +61,12 @@ void assemble_matrix(const int n_knots, const int deg)
     auto grid  = CartesianGrid<dim>::create(n_knots);
     auto space = Space::create(deg, grid, InteriorReg::maximum, true,
                                BasisEndBehaviour::periodic);
-    Value b = {5.};
-    auto f = ConstFunction::create(grid, IdentityFunction<dim>::create(grid), b);
+    Gradient A;
+    for (int i = 0; i < dim; ++i) {
+		A[i][i]=100.;
+	}
+    Value b = {-50.};
+    auto f = ConstFunction::create(grid, IdentityFunction<dim>::create(grid), A, b);
 
     using Mat = Matrix<LAPack::trilinos_tpetra>;
     using Vec = Vector<LAPack::trilinos_tpetra>;
