@@ -199,3 +199,159 @@ Bernstein Extraction:
    [2,2]((1.00000,0.00000),(0.00000,1.00000))
    [2,2]((1.00000,0.00000),(0.00000,1.00000))
 
+Num basis: 8
+Spline Space:
+   Knots without repetition:
+      Number of intervals per direction: [ 5 ]
+      Knot coordinates:
+         Size: [ 6 ]  Weights: [6]
+         Direction: 0
+         [ 0 0.200000 0.400000 0.600000 0.800000 1.00000 ]
+      
+   
+   Degrees:
+      Raw componets: 
+         Size: [ 2 ]  Weights: [2]
+      [ [1] [0] ]
+      Active componets ids: 
+      [ 0 ]
+      Inactive componets ids: 
+      [ 1 ]
+   
+   Interior multiplicities:
+      Size: [ 4 ]  Weights: [4]
+      Direction: 0
+      [ 1 1 1 1 ]
+      Size: [ 4 ]  Weights: [4]
+      Direction: 0
+      [ 1 1 1 1 ]
+   
+   Dimensionality Table:
+      Component Dimension:
+         Raw componets: 
+            Size: [ 2 ]  Weights: [2]
+         [ 4 4 ]
+         Active componets ids: 
+         [ 0 1 ]
+         Inactive componets ids: 
+         [ ]
+      
+      Total Dimension: 8
+   
+   DoFs Distribution:
+      Dof indices:
+         Size: [ 6 ]  Weights: [6]
+         [ 0 1 2 3 0 1 ]
+         Size: [ 6 ]  Weights: [6]
+         [ 4 5 6 7 4 5 ]
+      
+      Dof properties:
+         IDs with property "active":
+            Num.: 8
+            Flat IDs: 0 1 2 3 4 5 6 7
+      
+   
+
+Bernstein Extraction:
+   Component[0]: 
+   Direction[0]:
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   Component[1]: 
+   Direction[0]:
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+
+Num basis: 32
+Spline Space:
+   Knots without repetition:
+      Number of intervals per direction: [ 5 5 ]
+      Knot coordinates:
+         Size: [ 6 6 ]  Weights: [6,36]
+         Direction: 0
+         [ 0 0.200000 0.400000 0.600000 0.800000 1.00000 ]
+         Direction: 1
+         [ 0 0.200000 0.400000 0.600000 0.800000 1.00000 ]
+      
+   
+   Degrees:
+      Raw componets: 
+         Size: [ 2 ]  Weights: [2]
+      [ [1,1] [0,0] ]
+      Active componets ids: 
+      [ 0 ]
+      Inactive componets ids: 
+      [ 1 ]
+   
+   Interior multiplicities:
+      Size: [ 4 4 ]  Weights: [4,16]
+      Direction: 0
+      [ 1 1 1 1 ]
+      Direction: 1
+      [ 1 1 1 1 ]
+      Size: [ 4 4 ]  Weights: [4,16]
+      Direction: 0
+      [ 1 1 1 1 ]
+      Direction: 1
+      [ 1 1 1 1 ]
+   
+   Dimensionality Table:
+      Component Dimension:
+         Raw componets: 
+            Size: [ 2 ]  Weights: [2]
+         [ 16 16 ]
+         Active componets ids: 
+         [ 0 1 ]
+         Inactive componets ids: 
+         [ ]
+      
+      Total Dimension: 32
+   
+   DoFs Distribution:
+      Dof indices:
+         Size: [ 6 6 ]  Weights: [6,36]
+         [ 0 1 2 3 0 1 4 5 6 7 4 5 8 9 10 11 8 9 12 13 14 15 12 13 0 1 2 3 0 1 4 5 6 7 4 5 ]
+         Size: [ 6 6 ]  Weights: [6,36]
+         [ 16 17 18 19 16 17 20 21 22 23 20 21 24 25 26 27 24 25 28 29 30 31 28 29 16 17 18 19 16 17 20 21 22 23 20 21 ]
+      
+      Dof properties:
+         IDs with property "active":
+            Num.: 32
+            Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+      
+   
+
+Bernstein Extraction:
+   Component[0]: 
+   Direction[0]:
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   Direction[1]:
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   Component[1]: 
+   Direction[0]:
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   Direction[1]:
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+   [2,2]((1.00000,0.00000),(0.00000,1.00000))
+

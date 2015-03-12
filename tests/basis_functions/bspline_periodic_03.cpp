@@ -46,32 +46,35 @@
 #include <igatools/base/ig_function.h>
 
 using functions::ConstantFunction;
-template <int dim, int range=1>
+template <int dim>
 void assemble_matrix(const int n_knots, const int deg)
 {
-    using Space  = BSplineSpace<dim, range>;
-    using RefSpace  = ReferenceSpace<dim, range>;
+    using Space  = BSplineSpace<dim>;
+    using RefSpace  = ReferenceSpace<dim>;
 
-    using Function = Function<dim,0,range,1>;
-    using ConstFunction = functions::LinearFunction<dim,0, range>;
+    using Function = Function<dim,0,1,1>;
+    using ConstFunction = functions::LinearFunction<dim,0,1>;
     using Value = typename Function::Value;
     using Gradient = typename Function::Gradient;
 
+    typename Space::Degrees degt(deg);
+    typename Space::Periodicity periodic = filled_array<bool, dim>(false);
+    periodic[0] = true;
+    typename Space::EndBehaviour end_b =
+            filled_array<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory);
 
-    TensorIndex<dim> deg1(deg);
-    typename Space::DegreeTable degt(deg1);
+    end_b[0] = BasisEndBehaviour::periodic;
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
-    auto space = Space::create(deg, grid, InteriorReg::maximum, true,
-                               BasisEndBehaviour::periodic);
+    auto space = Space::create(degt, grid, InteriorReg::maximum, periodic, end_b);
+
+    space->print_info(out);
+
+
     Gradient A;
-    Value b;
-    for (int j = 0; j < range; ++j)
-    {
-        for (int i = 0; i < dim; ++i)
-            if (i==j)
-                A[i][j]=10.*(i+1);
-        b[j] = -5.;
+    Value b = {-5.};
+    for (int i = 0; i < dim; ++i) {
+		A[i]=10*(i+1);
     }
 
     auto f = ConstFunction::create(grid, IdentityFunction<dim>::create(grid), A, b);
@@ -164,21 +167,20 @@ void assemble_matrix(const int n_knots, const int deg)
 
     using IgFunc = IgFunction<RefSpace>;
     auto solution_function = IgFunc::create(space,solution_coefs);
-    writer.template add_field<range,1>(solution_function, "solution");
+    writer.template add_field<1,1>(solution_function, "solution");
     string filename = "poisson_problem-" + to_string(deg) + "-" + to_string(dim) + "d" ;
     writer.save(filename);
+
 }
 
 
 int main()
 {
-    const int max_deg=3;
-    for(int deg = 1;deg<max_deg; ++deg)
+    for(int deg = 1;deg<3; ++deg)
     {
         const int n_knots = 5 + deg;
-        assemble_matrix<1>(n_knots, deg);
+       // assemble_matrix<1>(n_knots, deg);
         assemble_matrix<2>(n_knots, deg);
-        assemble_matrix<2,2>(n_knots, deg);
     }
     return 0;
 }

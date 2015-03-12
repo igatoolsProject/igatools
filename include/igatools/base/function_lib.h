@@ -124,8 +124,6 @@ protected:
     LinearFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
                    const Gradient &A, const Value &b);
 
-
-
 private:
     void evaluate_0(const ValueVector<Point> &points,
                     ValueVector<Value> &values) const override;
@@ -212,8 +210,9 @@ private:
 
 //------------------------------------------------------------------------------
 /**
- * Maps a hyper rectangle into a spherical ball sector using the
- * dim-dimensional spherical coordinates, maps a hyper-rectangle
+ * Maps a hyper rectangle into a spherical sector using the
+ * dim-dimensional spherical coordinates.
+ * It maps a hyper-rectangle
  * r in [0,R], phi_1 in [0, 2 pi], and phi_2, phi_dim-1 in [0,pi]
  * such that
  * x1 = r cos (phi_1)
