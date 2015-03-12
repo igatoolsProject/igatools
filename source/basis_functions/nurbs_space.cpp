@@ -129,7 +129,10 @@ NURBSSpace<dim_, range_, rank_>::
 NURBSSpace(std::shared_ptr<SpSpace> bs_space,
            const WeightFunctionPtrTable &weight_func_table)
     :
-    BaseSpace(bs_space->get_space_data()),
+    BaseSpace(
+        bs_space->get_grid(),
+        bs_space->get_dof_distribution(),
+        bs_space->get_space_data()),
     sp_space_(bs_space),
     weight_func_table_(weight_func_table)
 {

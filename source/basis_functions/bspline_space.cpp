@@ -106,7 +106,15 @@ BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(std::shared_ptr<SpaceData> space_data,
              const EndBehaviourTable &end_b)
     :
-    BaseSpace(space_data),
+    BaseSpace(
+        space_data->get_grid(),
+        std::make_shared<DofDistribution<dim_,range_,rank_>>(
+            DofDistribution<dim_,range_,rank_>(
+                space_data->get_num_basis_table(),
+                space_data->get_degree(),
+                space_data->get_periodic_table())
+        ),
+        space_data),
     end_b_(end_b),
     operators_(
         this->space_data_->get_grid(),
@@ -115,6 +123,7 @@ BSplineSpace(std::shared_ptr<SpaceData> space_data,
         this->space_data_->get_degree()),
     end_interval_(end_b.get_comp_map())
 {
+
     //------------------------------------------------------------------------------
 // TODO (pauletti, Dec 24, 2014): after it work it should be recoded properly
 
@@ -144,6 +153,13 @@ BSplineSpace(std::shared_ptr<SpaceData> space_data,
             end_interval_[i][dir].second = (b-xk) / (xk1-xk);
         } // end loop dir
     } // end loop i
+    //------------------------------------------------------------------------------
+
+
+
+    //------------------------------------------------------------------------------
+    this->dof_distribution_->add_dofs_property(this->dofs_property_active_);
+    this->dof_distribution_->set_all_dofs_property_status(this->dofs_property_active_,true);
     //------------------------------------------------------------------------------
 }
 
@@ -242,8 +258,8 @@ get_ref_sub_space(const int s_id,
     TensorIndex<dim> tensor_index;
     int comp_i = 0;
     dof_map.resize(sub_space->get_num_basis());
-    const auto &sub_space_index_table = sub_space->get_dof_distribution_global().get_index_table();
-    const auto     &space_index_table = this->get_dof_distribution_global().get_index_table();
+    const auto &sub_space_index_table = sub_space->get_dof_distribution()->get_index_table();
+    const auto     &space_index_table = this->get_dof_distribution()->get_index_table();
     for (auto comp : SpaceData::components)
     {
         const auto n_basis = sub_space->get_num_basis(comp);

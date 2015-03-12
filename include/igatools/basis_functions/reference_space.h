@@ -125,7 +125,11 @@ protected:
 
     ReferenceSpace() = delete;
 
-    explicit ReferenceSpace(const std::shared_ptr<SpaceData> space_data);
+
+    explicit ReferenceSpace(
+        const std::shared_ptr<CartesianGrid<dim_>> grid,
+        const std::shared_ptr<DofDistribution<dim_,range_,rank_>> dof_distribution,
+        const std::shared_ptr<SpaceData> space_data);
 
 public:
     virtual ~ReferenceSpace() = default;
@@ -163,12 +167,6 @@ public:
 
     /** @name Functions for retrieving information about the number of basis function. */
     ///@{
-    /*
-    SpaceDimensionTable get_num_all_element_basis() const
-    {
-        return space_data_->get_num_all_element_basis();
-    }
-    //*/
 
     const SpaceDimensionTable &get_num_basis_table() const
     {
@@ -246,7 +244,7 @@ public:
      */
     virtual const EndBehaviourTable &get_end_behaviour_table() const = 0;
 
-
+#if 0
     /** Returns the container with the global dof distribution (const version). */
     const DofDistribution<dim, range, rank> &
     get_dof_distribution_global() const;
@@ -254,6 +252,13 @@ public:
     /** Returns the container with the global dof distribution (non const version). */
     DofDistribution<dim, range, rank> &
     get_dof_distribution_global();
+#endif
+
+    std::shared_ptr<const DofDistribution<dim, range, rank> >
+    get_dof_distribution() const;
+
+    std::shared_ptr<DofDistribution<dim, range, rank> >
+    get_dof_distribution();
 
 
     // TODO (pauletti, Oct 16, 2014): need to be documented or deleted, check!

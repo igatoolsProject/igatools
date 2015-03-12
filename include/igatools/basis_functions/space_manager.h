@@ -1032,7 +1032,7 @@ add_space(std::shared_ptr<Space> space)
 #endif
 
     //------------------------------------------------------------------------
-    auto &dof_distribution = space->get_dof_distribution_global();
+    const auto &dof_distribution = *(space->get_dof_distribution());
 
     std::shared_ptr<ElemsDofs> elements_dofs(new ElemsDofs);
     auto elem = space->begin();

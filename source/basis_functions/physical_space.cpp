@@ -283,9 +283,9 @@ get_space_manager() const -> std::shared_ptr<const SpaceManager>
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-get_dof_distribution_global() const -> const DofDistribution<dim, range, rank> &
+get_dof_distribution() const -> std::shared_ptr<const DofDistribution<dim, range, rank> >
 {
-    return ref_space_->get_dof_distribution_global();
+    return ref_space_->get_dof_distribution();
 }
 
 
@@ -293,9 +293,9 @@ get_dof_distribution_global() const -> const DofDistribution<dim, range, rank> &
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-get_dof_distribution_global() -> DofDistribution<dim, range, rank> &
+get_dof_distribution() -> std::shared_ptr<DofDistribution<dim, range, rank> >
 {
-    return ref_space_->get_dof_distribution_global();
+    return ref_space_->get_dof_distribution();
 }
 
 

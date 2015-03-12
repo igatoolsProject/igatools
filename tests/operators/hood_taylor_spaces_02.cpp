@@ -167,10 +167,10 @@ StokesProblem(const int deg, const int n_knots)
 
     vel_space_ = VelSpace::create(vel_deg, grid, vel_mult,vel_periodic_table,vel_end_b);
 
-    const auto dofs_view_vel = vel_space_->get_dof_distribution_global().get_dofs_view();
+    const auto dofs_view_vel = vel_space_->get_dof_distribution()->get_dofs_view();
 
     pre_space_ = PreSpace::create(pre_deg, grid, pre_mult, press_periodic_table, press_end_b);
-    const auto dofs_view_pre = pre_space_->get_dof_distribution_global().get_dofs_view();
+    const auto dofs_view_pre = pre_space_->get_dof_distribution()->get_dofs_view();
 
 
     SpaceManager space_manager;

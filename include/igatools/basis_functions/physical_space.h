@@ -156,10 +156,13 @@ public:
     ///@}
 
     /** Returns the container with the global dof distribution (const version). */
-    const DofDistribution<dim, range, rank> &get_dof_distribution_global() const;
+    std::shared_ptr<const DofDistribution<dim, range, rank> >
+    get_dof_distribution() const;
 
     /** Returns the container with the global dof distribution (non const version). */
-    DofDistribution<dim, range, rank> &get_dof_distribution_global();
+    std::shared_ptr<DofDistribution<dim, range, rank> >
+    get_dof_distribution();
+
 
     /*
     auto get_num_all_element_basis() const

@@ -35,26 +35,30 @@ using std::const_pointer_cast;
 IGA_NAMESPACE_OPEN
 
 
-template<int dim, int range, int rank>
-ReferenceSpace<dim, range, rank>::
-ReferenceSpace(const std::shared_ptr<SpaceData> space_data)
+template<int dim_, int range_, int rank_>
+ReferenceSpace<dim_, range_, rank_>::
+ReferenceSpace(
+    const std::shared_ptr<CartesianGrid<dim_>> grid,
+    const std::shared_ptr<DofDistribution<dim_,range_,rank_>> dof_distribution,
+    const std::shared_ptr<SpaceData> space_data)
     :
-    GridSpace(std::const_pointer_cast<CartesianGrid<dim>>(space_data->get_grid())),
-    space_data_(space_data)
+    GridSpace(grid),
+    space_data_(space_data),
+    dof_distribution_(dof_distribution)
 {
     Assert(this->get_grid() != nullptr,ExcNullPtr());
     Assert(space_data_ != nullptr,ExcNullPtr());
-
+    Assert(this->get_grid() == space_data_->get_grid(),ExcMessage("Different grids"));
+    Assert(dof_distribution_ != nullptr,ExcNullPtr());
 
     //------------------------------------------------------------------------------
+    /*
     using DofDistrib = DofDistribution<dim,range,rank>;
     dof_distribution_ = shared_ptr<DofDistrib>(new DofDistrib(
                                                    space_data_->get_num_basis_table(),
                                                    space_data_->get_degree(),
                                                    space_data_->get_periodic_table()));
-
-    dof_distribution_->add_dofs_property(dofs_property_active_);
-    dof_distribution_->set_all_dofs_property_status(dofs_property_active_,true);
+    //*/
     //------------------------------------------------------------------------------
 }
 
@@ -331,7 +335,7 @@ get_global_dof_id(const TensorIndex<dim> &tensor_index,
     return dof_distribution_->get_index_table()[comp](tensor_index);
 }
 
-
+#if 0
 template<int dim, int range, int rank>
 auto
 ReferenceSpace<dim, range, rank>::
@@ -348,6 +352,23 @@ ReferenceSpace<dim, range, rank>::
 get_dof_distribution_global() -> DofDistribution<dim, range, rank> &
 {
     return *dof_distribution_;
+}
+#endif
+
+template<int dim, int range, int rank>
+auto
+ReferenceSpace<dim, range, rank>::
+get_dof_distribution() const -> shared_ptr<const DofDistribution<dim,range,rank> >
+{
+    return dof_distribution_;
+}
+
+template<int dim, int range, int rank>
+auto
+ReferenceSpace<dim, range, rank>::
+get_dof_distribution() -> shared_ptr<DofDistribution<dim,range,rank> >
+{
+    return dof_distribution_;
 }
 
 
