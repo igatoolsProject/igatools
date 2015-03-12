@@ -36,12 +36,10 @@
 
 
 
-template <int dim>
+template <int dim, int range=1>
 void plot_basis(const int n_knots, const int deg)
 {
-    using Space  = BSplineSpace<dim>;
-    using RefSpace  = ReferenceSpace<dim>;
-    using Coeffs = typename IgFunction<RefSpace>::CoeffType;
+    using Space  = BSplineSpace<dim, range>;
 
     TensorIndex<dim> deg1(deg);
     typename Space::DegreeTable degt(deg1);
@@ -56,6 +54,8 @@ void plot_basis(const int n_knots, const int deg)
     space->print_info(out);
 
 #if 0
+    using RefSpace  = ReferenceSpace<dim, range>;
+    using Coeffs = typename IgFunction<RefSpace>::CoeffType;
     Coeffs coeffs(n_basis);
 
     for (int basis_index = 0; basis_index < space->get_num_basis(); ++basis_index)
@@ -88,5 +88,9 @@ int main()
     plot_basis<1>(n_knots, deg);
     plot_basis<2>(n_knots, deg);
     plot_basis<3>(n_knots, deg);
+
+    plot_basis<1,2>(n_knots, deg);
+    plot_basis<2,2>(n_knots, deg);
+
     return 0;
 }
