@@ -19,12 +19,15 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for periodic BSplineSpace constructors
+ *  Test for periodic BSplineSpace solving poisson
  *
  *  author: pauletti
- *  date: 2014-10-23
+ *  date: 2015-03-12
  *
  */
+
+// TODO (pauletti, Mar 12, 2015): this is not a unit test, this tests
+// has to be splitted into simpler tests (this one goes onto consistency test)
 
 #include "../tests.h"
 #include <igatools/base/function_lib.h>
@@ -62,10 +65,11 @@ void assemble_matrix(const int n_knots, const int deg)
     auto space = Space::create(deg, grid, InteriorReg::maximum, true,
                                BasisEndBehaviour::periodic);
     Gradient A;
+    Value b = {-5.};
     for (int i = 0; i < dim; ++i) {
-		A[i][i]=100.;
-	}
-    Value b = {-50.};
+		A[i]=10*(i+1);
+    }
+
     auto f = ConstFunction::create(grid, IdentityFunction<dim>::create(grid), A, b);
 
     using Mat = Matrix<LAPack::trilinos_tpetra>;
@@ -142,7 +146,7 @@ void assemble_matrix(const int n_knots, const int deg)
     LinSolver solver(LinSolver::SolverType::CG);
     solver.solve(*matrix, *rhs, *solution);
 
-    const int n_plot_points = 2;
+    const int n_plot_points = deg+1;
     auto map = IdentityFunction<dim>::create(space->get_grid());
     Writer<dim> writer(map, n_plot_points);
 
@@ -157,16 +161,18 @@ void assemble_matrix(const int n_knots, const int deg)
     using IgFunc = IgFunction<RefSpace>;
     auto solution_function = IgFunc::create(space,solution_coefs);
     writer.template add_field<1,1>(solution_function, "solution");
-    string filename = "poisson_problem-" + to_string(dim) + "d" ;
+    string filename = "poisson_problem-" + to_string(deg) + "-" + to_string(dim) + "d" ;
     writer.save(filename);
 }
 
 
 int main()
 {
-    const int deg = 1;
-    const int n_knots = 5 + deg;
-    assemble_matrix<1>(n_knots, deg);
-
+    for(int deg = 1;deg<3; ++deg)
+    {
+        const int n_knots = 5 + deg;
+        assemble_matrix<1>(n_knots, deg);
+        assemble_matrix<2>(n_knots, deg);
+    }
     return 0;
 }
