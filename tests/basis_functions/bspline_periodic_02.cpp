@@ -46,14 +46,14 @@
 #include <igatools/base/ig_function.h>
 
 using functions::ConstantFunction;
-template <int dim>
+template <int dim, int range=1>
 void assemble_matrix(const int n_knots, const int deg)
 {
-    using Space  = BSplineSpace<dim>;
-    using RefSpace  = ReferenceSpace<dim>;
+    using Space  = BSplineSpace<dim, range>;
+    using RefSpace  = ReferenceSpace<dim, range>;
 
-    using Function = Function<dim,0,1,1>;
-    using ConstFunction = functions::LinearFunction<dim,0,1>;
+    using Function = Function<dim,0,range,1>;
+    using ConstFunction = functions::LinearFunction<dim,0, range>;
     using Value = typename Function::Value;
     using Gradient = typename Function::Gradient;
 
@@ -65,9 +65,13 @@ void assemble_matrix(const int n_knots, const int deg)
     auto space = Space::create(deg, grid, InteriorReg::maximum, true,
                                BasisEndBehaviour::periodic);
     Gradient A;
-    Value b = {-5.};
-    for (int i = 0; i < dim; ++i) {
-		A[i]=10*(i+1);
+    Value b;
+    for (int j = 0; j < range; ++j)
+    {
+        for (int i = 0; i < dim; ++i)
+            if (i==j)
+                A[i][j]=10.*(i+1);
+        b[j] = -5.;
     }
 
     auto f = ConstFunction::create(grid, IdentityFunction<dim>::create(grid), A, b);
@@ -160,7 +164,7 @@ void assemble_matrix(const int n_knots, const int deg)
 
     using IgFunc = IgFunction<RefSpace>;
     auto solution_function = IgFunc::create(space,solution_coefs);
-    writer.template add_field<1,1>(solution_function, "solution");
+    writer.template add_field<range,1>(solution_function, "solution");
     string filename = "poisson_problem-" + to_string(deg) + "-" + to_string(dim) + "d" ;
     writer.save(filename);
 }
@@ -168,11 +172,13 @@ void assemble_matrix(const int n_knots, const int deg)
 
 int main()
 {
-    for(int deg = 1;deg<3; ++deg)
+    const int max_deg=3;
+    for(int deg = 1;deg<max_deg; ++deg)
     {
         const int n_knots = 5 + deg;
         assemble_matrix<1>(n_knots, deg);
         assemble_matrix<2>(n_knots, deg);
+        assemble_matrix<2,2>(n_knots, deg);
     }
     return 0;
 }
