@@ -34,8 +34,6 @@
 IGA_NAMESPACE_OPEN
 
 
-template <int dim, int range, int rank>
-class DofDistribution;
 
 
 enum class BasisEndBehaviour
@@ -293,8 +291,6 @@ public:
 
 
 
-    vector<Index>
-    get_element_dofs(const CartesianGridElement<dim> &element) const;
 
     template<int k>
     using SubSpace = SplineSpace<k, range, rank>;
@@ -355,15 +351,6 @@ private:
      */
     BCTable boundary_conditions_table_;
 
-    /**
-     * Container with the local to global basis indices
-     * @note The concept of global indices refers to a global numbering of the
-     * dofs of all the spaces.
-     */
-    std::shared_ptr<DofDistribution<dim,range,rank> > dof_distribution_;
-
-
-    const std::string dofs_property_active_ = "active";
 
 public:
 
@@ -378,19 +365,6 @@ public:
         return periodic_;
     }
 
-    /** Returns the container with the global dof distribution (const version). */
-    const DofDistribution<dim, range, rank> &
-    get_dof_distribution_global() const
-    {
-        return *dof_distribution_;
-    }
-
-    /** Returns the container with the global dof distribution (non const version). */
-    DofDistribution<dim, range, rank> &
-    get_dof_distribution_global()
-    {
-        return *dof_distribution_;
-    }
 
 
     // TODO (pauletti, Dec 12, 2014): boundary condition is not a general property

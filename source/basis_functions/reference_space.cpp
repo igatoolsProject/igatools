@@ -44,6 +44,18 @@ ReferenceSpace(const std::shared_ptr<SpaceData> space_data)
 {
     Assert(this->get_grid() != nullptr,ExcNullPtr());
     Assert(space_data_ != nullptr,ExcNullPtr());
+
+
+    //------------------------------------------------------------------------------
+    using DofDistrib = DofDistribution<dim,range,rank>;
+    dof_distribution_ = shared_ptr<DofDistrib>(new DofDistrib(
+                                                   space_data_->get_num_basis_table(),
+                                                   space_data_->get_degree(),
+                                                   space_data_->get_periodic_table()));
+
+    dof_distribution_->add_dofs_property(dofs_property_active_);
+    dof_distribution_->set_all_dofs_property_status(dofs_property_active_,true);
+    //------------------------------------------------------------------------------
 }
 
 
@@ -218,7 +230,59 @@ ReferenceSpace<dim, range, rank>::
 get_element_dofs(
     const CartesianGridElement<dim> &element) const
 {
-    return this->space_data_->get_element_dofs(element);
+    const auto &accum_mult = space_data_->accumulated_interior_multiplicities();
+    const auto &index_table = dof_distribution_->get_index_table();
+
+
+    vector<Index> element_dofs;
+    const auto &elem_tensor_id = element.get_tensor_index();
+
+    using Topology = UnitElement<dim>;
+
+    const auto &degree_table = space_data_->get_degree();
+
+    for (int comp = 0 ; comp < n_components ; ++comp)
+    {
+        //-----------------------------------------------------------------
+        // building the lookup table for the local dof id on the current component of the element --- begin
+        // TODO (MM, March 06, 2015): this can be put on the SplineSpace constructor for optimization
+        const auto &degree_comp = degree_table[comp];
+
+        TensorSize<dim> dofs_t_size_elem_comp;
+        for (const auto dir : Topology::active_directions)
+            dofs_t_size_elem_comp[dir] = degree_comp[dir] + 1;
+
+        const auto dofs_f_size_elem_comp = dofs_t_size_elem_comp.flat_size();
+
+        vector<Index> elem_comp_dof_f_id(dofs_f_size_elem_comp);
+        std::iota(elem_comp_dof_f_id.begin(),elem_comp_dof_f_id.end(),0);
+
+        vector<TensorIndex<dim>> elem_comp_dof_t_id;
+        const auto w_dofs_elem_comp = MultiArrayUtils<dim>::compute_weight(dofs_t_size_elem_comp);
+        for (const auto dof_f_id : elem_comp_dof_f_id)
+            elem_comp_dof_t_id.emplace_back(MultiArrayUtils<dim>::flat_to_tensor_index(dof_f_id,w_dofs_elem_comp));
+        // building the lookup table for the local dof id on the current component of the element --- end
+        //-----------------------------------------------------------------
+
+
+
+        //-----------------------------------------------------------------
+        const auto &index_table_comp = index_table[comp];
+
+        const auto dof_t_origin = accum_mult[comp].cartesian_product(elem_tensor_id);
+        for (const auto loc_dof_t_id : elem_comp_dof_t_id)
+        {
+            const auto dof_t_id = dof_t_origin + loc_dof_t_id;
+
+            const auto dof = index_table_comp(dof_t_id);
+
+            element_dofs.emplace_back(dof);
+        }
+        //-----------------------------------------------------------------
+
+    } // end comp loop
+
+    return element_dofs;
 }
 
 
@@ -241,10 +305,9 @@ get_loc_to_patch(const CartesianGridElement<dim> &element) const
     const auto elem_dofs_global = this->get_loc_to_global(element);
     vector<Index> elem_dofs_local;
 
-    const auto &dof_distribution = this->get_dof_distribution_global();
     for (const auto dof_global : elem_dofs_global)
         elem_dofs_local.push_back(
-            dof_distribution.global_to_patch_local(dof_global));
+            dof_distribution_->global_to_patch_local(dof_global));
 
     return elem_dofs_local;
 }
@@ -255,7 +318,7 @@ void
 ReferenceSpace<dim, range, rank>::
 add_dofs_offset(const Index offset)
 {
-    this->get_dof_distribution_global().add_dofs_offset(offset);
+    dof_distribution_->add_dofs_offset(offset);
 }
 
 
@@ -265,7 +328,7 @@ ReferenceSpace<dim, range, rank>::
 get_global_dof_id(const TensorIndex<dim> &tensor_index,
                   const Index comp) const
 {
-    return this->get_dof_distribution_global().get_index_table()[comp](tensor_index);
+    return dof_distribution_->get_index_table()[comp](tensor_index);
 }
 
 
@@ -274,7 +337,7 @@ auto
 ReferenceSpace<dim, range, rank>::
 get_dof_distribution_global() const -> const DofDistribution<dim, range, rank> &
 {
-    return space_data_->get_dof_distribution_global();
+    return *dof_distribution_;
 }
 
 
@@ -284,7 +347,7 @@ auto
 ReferenceSpace<dim, range, rank>::
 get_dof_distribution_global() -> DofDistribution<dim, range, rank> &
 {
-    return space_data_->get_dof_distribution_global();
+    return *dof_distribution_;
 }
 
 

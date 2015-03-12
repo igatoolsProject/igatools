@@ -346,6 +346,10 @@ print_info(LogStream &out) const
     out.end_item();
 
 
+    out.begin_item("DoFs Distribution:");
+    this->dof_distribution_->print_info(out);
+    out.end_item();
+
 
     out.begin_item("Bernstein Extraction:");
     operators_.print_info(out);

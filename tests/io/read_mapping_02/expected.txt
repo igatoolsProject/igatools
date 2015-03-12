@@ -39,16 +39,16 @@ IgFunction infos:
                
                Total Dimension: 4
             
-            DoFs Distribution:
-               Dof indices:
-                  Size: [ 4 ]  Weights: [4]
-                  [ 0 1 2 3 ]
-               
-               Dof properties:
-                  IDs with property "active":
-                     Num.: 4
-                     Flat IDs: 0 1 2 3
-               
+         
+         DoFs Distribution:
+            Dof indices:
+               Size: [ 4 ]  Weights: [4]
+               [ 0 1 2 3 ]
+            
+            Dof properties:
+               IDs with property "active":
+                  Num.: 4
+                  Flat IDs: 0 1 2 3
             
          
          Bernstein Extraction:
@@ -95,16 +95,16 @@ IgFunction infos:
                   
                   Total Dimension: 4
                
-               DoFs Distribution:
-                  Dof indices:
-                     Size: [ 4 ]  Weights: [4]
-                     [ 0 1 2 3 ]
-                  
-                  Dof properties:
-                     IDs with property "active":
-                        Num.: 4
-                        Flat IDs: 0 1 2 3
-                  
+            
+            DoFs Distribution:
+               Dof indices:
+                  Size: [ 4 ]  Weights: [4]
+                  [ 0 1 2 3 ]
+               
+               Dof properties:
+                  IDs with property "active":
+                     Num.: 4
+                     Flat IDs: 0 1 2 3
                
             
             Bernstein Extraction:
@@ -208,18 +208,18 @@ IgFunction infos:
                   
                   Total Dimension: 16
                
-               DoFs Distribution:
-                  Dof indices:
-                     Size: [ 4 2 ]  Weights: [4,8]
-                     [ 0 1 2 3 4 5 6 7 ]
-                     Size: [ 4 2 ]  Weights: [4,8]
-                     [ 8 9 10 11 12 13 14 15 ]
-                  
-                  Dof properties:
-                     IDs with property "active":
-                        Num.: 16
-                        Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
-                  
+            
+            DoFs Distribution:
+               Dof indices:
+                  Size: [ 4 2 ]  Weights: [4,8]
+                  [ 0 1 2 3 4 5 6 7 ]
+                  Size: [ 4 2 ]  Weights: [4,8]
+                  [ 8 9 10 11 12 13 14 15 ]
+               
+               Dof properties:
+                  IDs with property "active":
+                     Num.: 16
+                     Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
                
             
             Bernstein Extraction:
@@ -278,16 +278,16 @@ IgFunction infos:
                      
                      Total Dimension: 8
                   
-                  DoFs Distribution:
-                     Dof indices:
-                        Size: [ 4 2 ]  Weights: [4,8]
-                        [ 0 1 2 3 4 5 6 7 ]
-                     
-                     Dof properties:
-                        IDs with property "active":
-                           Num.: 8
-                           Flat IDs: 0 1 2 3 4 5 6 7
-                     
+               
+               DoFs Distribution:
+                  Dof indices:
+                     Size: [ 4 2 ]  Weights: [4,8]
+                     [ 0 1 2 3 4 5 6 7 ]
+                  
+                  Dof properties:
+                     IDs with property "active":
+                        Num.: 8
+                        Flat IDs: 0 1 2 3 4 5 6 7
                   
                
                Bernstein Extraction:
@@ -344,16 +344,16 @@ IgFunction infos:
                      
                      Total Dimension: 8
                   
-                  DoFs Distribution:
-                     Dof indices:
-                        Size: [ 4 2 ]  Weights: [4,8]
-                        [ 0 1 2 3 4 5 6 7 ]
-                     
-                     Dof properties:
-                        IDs with property "active":
-                           Num.: 8
-                           Flat IDs: 0 1 2 3 4 5 6 7
-                     
+               
+               DoFs Distribution:
+                  Dof indices:
+                     Size: [ 4 2 ]  Weights: [4,8]
+                     [ 0 1 2 3 4 5 6 7 ]
+                  
+                  Dof properties:
+                     IDs with property "active":
+                        Num.: 8
+                        Flat IDs: 0 1 2 3 4 5 6 7
                   
                
                Bernstein Extraction:
@@ -512,20 +512,20 @@ IgFunction infos:
                      
                      Total Dimension: 48
                   
-                  DoFs Distribution:
-                     Dof indices:
-                        Size: [ 4 2 2 ]  Weights: [4,8,16]
-                        [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ]
-                        Size: [ 4 2 2 ]  Weights: [4,8,16]
-                        [ 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 ]
-                        Size: [ 4 2 2 ]  Weights: [4,8,16]
-                        [ 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 ]
-                     
-                     Dof properties:
-                        IDs with property "active":
-                           Num.: 48
-                           Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47
-                     
+               
+               DoFs Distribution:
+                  Dof indices:
+                     Size: [ 4 2 2 ]  Weights: [4,8,16]
+                     [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ]
+                     Size: [ 4 2 2 ]  Weights: [4,8,16]
+                     [ 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 ]
+                     Size: [ 4 2 2 ]  Weights: [4,8,16]
+                     [ 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 ]
+                  
+                  Dof properties:
+                     IDs with property "active":
+                        Num.: 48
+                        Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47
                   
                
                Bernstein Extraction:
@@ -600,16 +600,16 @@ IgFunction infos:
                         
                         Total Dimension: 16
                      
-                     DoFs Distribution:
-                        Dof indices:
-                           Size: [ 4 2 2 ]  Weights: [4,8,16]
-                           [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ]
-                        
-                        Dof properties:
-                           IDs with property "active":
-                              Num.: 16
-                              Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
-                        
+                  
+                  DoFs Distribution:
+                     Dof indices:
+                        Size: [ 4 2 2 ]  Weights: [4,8,16]
+                        [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ]
+                     
+                     Dof properties:
+                        IDs with property "active":
+                           Num.: 16
+                           Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
                      
                   
                   Bernstein Extraction:
@@ -672,16 +672,16 @@ IgFunction infos:
                         
                         Total Dimension: 16
                      
-                     DoFs Distribution:
-                        Dof indices:
-                           Size: [ 4 2 2 ]  Weights: [4,8,16]
-                           [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ]
-                        
-                        Dof properties:
-                           IDs with property "active":
-                              Num.: 16
-                              Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
-                        
+                  
+                  DoFs Distribution:
+                     Dof indices:
+                        Size: [ 4 2 2 ]  Weights: [4,8,16]
+                        [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ]
+                     
+                     Dof properties:
+                        IDs with property "active":
+                           Num.: 16
+                           Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
                      
                   
                   Bernstein Extraction:
@@ -744,16 +744,16 @@ IgFunction infos:
                         
                         Total Dimension: 16
                      
-                     DoFs Distribution:
-                        Dof indices:
-                           Size: [ 4 2 2 ]  Weights: [4,8,16]
-                           [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ]
-                        
-                        Dof properties:
-                           IDs with property "active":
-                              Num.: 16
-                              Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
-                        
+                  
+                  DoFs Distribution:
+                     Dof indices:
+                        Size: [ 4 2 2 ]  Weights: [4,8,16]
+                        [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ]
+                     
+                     Dof properties:
+                        IDs with property "active":
+                           Num.: 16
+                           Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
                      
                   
                   Bernstein Extraction:

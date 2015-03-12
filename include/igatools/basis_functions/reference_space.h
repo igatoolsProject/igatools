@@ -29,6 +29,8 @@
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/basis_functions/space_element.h>
 #include <igatools/basis_functions/spline_space.h>
+#include <igatools/basis_functions/dof_distribution.h>
+#include <igatools/utils/multi_array_utils.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -307,6 +309,17 @@ public:
 
 protected:
     std::shared_ptr<SpaceData > space_data_;
+
+
+    /**
+     * Container with the local to global basis indices
+     * @note The concept of global indices refers to a global numbering of the
+     * dofs of all the spaces.
+     */
+    std::shared_ptr<DofDistribution<dim,range,rank> > dof_distribution_;
+
+
+    const std::string dofs_property_active_ = "active";
 
 
 public:
