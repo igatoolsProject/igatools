@@ -77,7 +77,7 @@ DofDistribution(const SpaceDimensionTable &n_basis1,
             comp_table[i] = comp_offset + f_ind;
 
         }
-        comp_offset += n_basis_comp_size;
+        comp_offset += n_basis1.get_component_size(comp);//n_basis_comp_size;
     }
     //-----------------------------------------------------------------------
 
