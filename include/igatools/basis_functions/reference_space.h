@@ -112,7 +112,7 @@ public:
     using PeriodicTable = typename SpaceData::PeriodicTable;
     using EndBehaviourTable = typename SpaceData::EndBehaviourTable;
 
-    using BCTable = typename SpaceData::BCTable;
+    using BCTable = typename SpaceData::template ComponentContainer<std::array<BoundaryConditionType,UnitElement<dim>::n_faces>>;
 
     template <class T>
     using ComponentContainer = typename SpaceData::template ComponentContainer<T>;
@@ -128,8 +128,7 @@ protected:
 
     explicit ReferenceSpace(
         const std::shared_ptr<CartesianGrid<dim_>> grid,
-        const std::shared_ptr<DofDistribution<dim_,range_,rank_>> dof_distribution,
-        const std::shared_ptr<SpaceData> space_data);
+        const std::shared_ptr<DofDistribution<dim_,range_,rank_>> dof_distribution);
 
 public:
     virtual ~ReferenceSpace() = default;
@@ -154,48 +153,39 @@ public:
 
     virtual bool is_bspline() const = 0;
 
-
     /**
      * Returns the degree of the BSpline space for each component and for each coordinate direction.
      * \return The degree of the BSpline space for each component and for each coordinate direction.
      * The first index of the returned object is the component id, the second index is the direction id.
      */
-    const DegreeTable &get_degree() const
-    {
-        return space_data_->get_degree();
-    }
+    virtual const DegreeTable &get_degree() const = 0;
 
     /** @name Functions for retrieving information about the number of basis function. */
     ///@{
 
     const TensorSizeTable &get_num_basis_table() const
     {
-//        return space_data_->get_num_basis_table();
         return dof_distribution_->get_num_dofs_table();
     }
 
     Size get_num_basis() const
     {
-//        return space_data_->get_num_basis();
         return dof_distribution_->get_num_dofs_table().total_dimension();
     }
 
 
     Size get_num_basis(const int comp) const
     {
-//        return space_data_->get_num_basis(comp);
         return dof_distribution_->get_num_dofs_table().get_component_size(comp);
     }
 
     Size get_num_basis(const int comp, const int dir) const
     {
-//        return space_data_->get_num_basis(comp,dir);
         return dof_distribution_->get_num_dofs_table()[comp][dir];
     }
 
     ComponentContainer<Size> get_basis_offset() const
     {
-//        return space_data_->get_basis_offset();
         return dof_distribution_->get_num_dofs_table().get_offset();
     }
     ///@}
@@ -214,30 +204,55 @@ public:
     get_global_dof_id(const TensorIndex<dim> &tensor_index,
                       const Index comp) const;
 
-    const auto &get_active_components_id() const
-    {
-        return space_data_->get_active_components_id();
-    }
+    // TODO (pauletti, Dec 12, 2014): boundary condition is not a general property
+    // of the space, rather specific flag for some application, this should be
+    // done in some other layer
+    /**
+     * @name Dealing with the boundary conditions.
+     * @return
+     */
+    ///@{
+    /**
+     * Returns a const-reference to the table containing
+     * the boundary conditions on each face of each scalar component of the space.
+     *
+     * For example, with the code
+     * @code{.cpp}
+       const auto &bc_table = space.get_boundary_conditions_table();
 
-    const ComponentMap &get_components_map() const
-    {
-        return space_data_->get_components_map();
-    }
-
-    static std::array<Size,SpaceData::n_components> get_components()
-    {
-        return SpaceData::components;
-    }
-
+       BoundaryConditionType bc_id = bc_table[1][3]; // boundary condition on face 3 of space's component 1
+       @endcode
+     * we copy to the variable <tt>bc_id</tt> the value of the boundary condition
+     * on the face 3 of the space component 1.
+     *
+     * @sa BoundaryConditionType
+     */
     const BCTable &get_boundary_conditions_table() const
     {
-        return space_data_->get_boundary_conditions_table();
+        return boundary_conditions_table_;
     }
 
+
+    /**
+     * Returns a reference to the table containing
+     * the boundary conditions on each face of each scalar component of the space.
+     *
+     * For example, with the code
+     * @code{.cpp}
+       const auto &bc_table = space.get_boundary_conditions_table();
+
+       BoundaryConditionType bc_id = bc_table[1][3]; // boundary condition on face 3 of space's component 1
+       @endcode
+     * we copy to the variable <tt>bc_id</tt> the value of the boundary condition
+     * on the face 3 of the space component 1.
+     *
+     * @sa BoundaryConditionType
+     */
     BCTable &get_boundary_conditions_table()
     {
-        return space_data_->get_boundary_conditions_table();
+        return boundary_conditions_table_;
     }
+    ///@}
 
     /**
      * Returns a reference to the end behaviour table of the BSpline space.
@@ -249,15 +264,6 @@ public:
      */
     virtual const EndBehaviourTable &get_end_behaviour_table() const = 0;
 
-#if 0
-    /** Returns the container with the global dof distribution (const version). */
-    const DofDistribution<dim, range, rank> &
-    get_dof_distribution_global() const;
-
-    /** Returns the container with the global dof distribution (non const version). */
-    DofDistribution<dim, range, rank> &
-    get_dof_distribution_global();
-#endif
 
     std::shared_ptr<const DofDistribution<dim, range, rank> >
     get_dof_distribution() const;
@@ -272,7 +278,7 @@ public:
     vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const;
 
 
-    vector<Index> get_element_dofs(const CartesianGridElement<dim> &element) const;
+    virtual vector<Index> get_element_dofs(const CartesianGridElement<dim> &element) const = 0;
 
 
     std::shared_ptr<SpaceManager> get_space_manager();
@@ -318,7 +324,6 @@ public:
     virtual std::shared_ptr<ElementHandler> create_elem_handler() const = 0;
 
 protected:
-    std::shared_ptr<SpaceData > space_data_;
 
 
     /**
@@ -331,10 +336,14 @@ protected:
 
     const std::string dofs_property_active_ = "active";
 
+    // TODO (pauletti, Dec 12, 2014): boundary condition is not a general property
+    // of the space, rather specific flag for some application, this should be
+    // done in some other layer
+    /**
+     * Boundary conditions on each face of each scalar component of the space.
+     */
+    BCTable boundary_conditions_table_;
 
-public:
-    //TODO (pauletti, Feb 26, 2015): the use of this function may be a design problem
-    std::shared_ptr<SpaceData> get_space_data() const;
 };
 
 IGA_NAMESPACE_CLOSE

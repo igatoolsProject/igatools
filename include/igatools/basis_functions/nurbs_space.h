@@ -200,6 +200,17 @@ public:
         return false;
     }
 
+    virtual const DegreeTable &get_degree() const override final
+    {
+        return this->sp_space_->get_degree();
+    }
+
+    virtual vector<Index> get_element_dofs(const CartesianGridElement<dim> &element) const override final
+    {
+        return this->sp_space_->get_element_dofs(element);
+    }
+
+
 #if 0
     /**
      * Returns the multiplicity of the internal knots that defines the BSpline

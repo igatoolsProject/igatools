@@ -159,7 +159,7 @@ public:
     using PeriodicTable = typename SpaceData::PeriodicTable;
     using EndBehaviourTable = typename SpaceData::EndBehaviourTable;
 
-    using BCTable = typename SpaceData::BCTable;
+//    using BCTable = typename SpaceData::BCTable;
 
 
     using BaseSpace::ComponentContainer;
@@ -278,6 +278,15 @@ protected:
 public:
 
 
+
+    virtual const DegreeTable &get_degree() const override final
+    {
+        return this->space_data_->get_degree();
+    }
+
+
+    virtual vector<Index> get_element_dofs(const CartesianGridElement<dim> &element) const override final;
+
 #if 0
     ElementHandler get_element_handler() const;
 #endif
@@ -340,6 +349,8 @@ public:
     virtual void print_info(LogStream &out) const override final;
 
 private:
+
+    std::shared_ptr<SpaceData > space_data_;
 
 
     EndBehaviourTable end_b_;

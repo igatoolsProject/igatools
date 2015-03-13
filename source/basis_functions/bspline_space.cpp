@@ -112,9 +112,8 @@ BSplineSpace(std::shared_ptr<SpaceData> space_data,
             DofDistribution<dim_,range_,rank_>(
                 space_data->get_num_basis_table(),
                 space_data->get_degree(),
-                space_data->get_periodic_table())
-        ),
-        space_data),
+                space_data->get_periodic_table()))),
+    space_data_(space_data),
     end_b_(end_b),
     operators_(
         this->space_data_->get_grid(),
@@ -123,6 +122,7 @@ BSplineSpace(std::shared_ptr<SpaceData> space_data,
         this->space_data_->get_degree()),
     end_interval_(end_b.get_comp_map())
 {
+    Assert(space_data_ != nullptr,ExcNullPtr());
 
     //------------------------------------------------------------------------------
 // TODO (pauletti, Dec 24, 2014): after it work it should be recoded properly
@@ -255,9 +255,9 @@ get_ref_sub_space(const int s_id,
     // Creating the mapping between the space degrees of freedom
     const int n_dir = k_elem.constant_directions.size();
     for (int comp : end_b_.get_active_components_id())
-    	for (int j=0; j<n_dir; ++j)
-    		Assert(end_b_[comp][k_elem.constant_directions[j]] == BasisEndBehaviour::interpolatory,
-    				ExcNotImplemented());
+        for (int j=0; j<n_dir; ++j)
+            Assert(end_b_[comp][k_elem.constant_directions[j]] == BasisEndBehaviour::interpolatory,
+            ExcNotImplemented());
 
 
 
@@ -329,7 +329,7 @@ refine_h_after_grid_refinement(
                      this->get_grid(),
                      this->space_data_->compute_knots_with_repetition(end_b_),
                      this->space_data_->accumulated_interior_multiplicities(),
-                     this->get_degree());
+                     this->space_data_->get_degree());
 }
 
 
@@ -337,6 +337,63 @@ refine_h_after_grid_refinement(
 
 
 
+template<int dim_, int range_, int rank_>
+vector<Index>
+BSplineSpace<dim_, range_, rank_>::
+get_element_dofs(
+    const CartesianGridElement<dim> &element) const
+{
+    const auto &accum_mult = space_data_->accumulated_interior_multiplicities();
+    const auto &index_table = this->dof_distribution_->get_index_table();
+
+    vector<Index> element_dofs;
+    const auto &elem_tensor_id = element.get_tensor_index();
+
+    const auto &degree_table = space_data_->get_degree();
+
+    for (const auto comp : SpaceData::components)
+    {
+        //-----------------------------------------------------------------
+        // building the lookup table for the local dof id on the current component of the element --- begin
+        // TODO (MM, March 06, 2015): this can be put on the SplineSpace constructor for optimization
+        const auto &degree_comp = degree_table[comp];
+
+        const auto dofs_t_size_elem_comp = TensorSize<dim>(degree_comp+1);
+//        for (const auto dir : Topology::active_directions)
+//            dofs_t_size_elem_comp[dir] = degree_comp[dir] + 1;
+
+        const auto dofs_f_size_elem_comp = dofs_t_size_elem_comp.flat_size();
+
+        vector<Index> elem_comp_dof_f_id(dofs_f_size_elem_comp);
+        std::iota(elem_comp_dof_f_id.begin(),elem_comp_dof_f_id.end(),0);
+
+        vector<TensorIndex<dim>> elem_comp_dof_t_id;
+        const auto w_dofs_elem_comp = MultiArrayUtils<dim>::compute_weight(dofs_t_size_elem_comp);
+        for (const auto dof_f_id : elem_comp_dof_f_id)
+            elem_comp_dof_t_id.emplace_back(MultiArrayUtils<dim>::flat_to_tensor_index(dof_f_id,w_dofs_elem_comp));
+        // building the lookup table for the local dof id on the current component of the element --- end
+        //-----------------------------------------------------------------
+
+
+
+        //-----------------------------------------------------------------
+        const auto &index_table_comp = index_table[comp];
+
+        const auto dof_t_origin = accum_mult[comp].cartesian_product(elem_tensor_id);
+        for (const auto loc_dof_t_id : elem_comp_dof_t_id)
+        {
+            const auto dof_t_id = dof_t_origin + loc_dof_t_id;
+
+            const auto dof = index_table_comp(dof_t_id);
+
+            element_dofs.emplace_back(dof);
+        }
+        //-----------------------------------------------------------------
+
+    } // end comp loop
+
+    return element_dofs;
+}
 
 
 

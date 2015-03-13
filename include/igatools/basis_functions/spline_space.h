@@ -118,12 +118,6 @@ public:
     using EndBehaviourTable = ComponentContainer<EndBehaviour>;
 
 
-// TODO (pauletti, Dec 26, 2014): this is an application specific property
-// should not be part of space
-    /**
-     * Type alias for the boundary conditions on each face of each scalar component of the space.
-     */
-    using BCTable = ComponentContainer<std::array<BoundaryConditionType,UnitElement<dim>::n_faces>>;
 
 
     /**
@@ -273,22 +267,6 @@ public:
     {
         return space_dim_;
     }
-
-#if 0
-    /**
-     * Component table with the offset of basis functions
-     * in each component.
-     */
-    ComponentContainer<Size> get_basis_offset() const
-    {
-        ComponentContainer<Size> offset;
-        offset[0] = 0;
-        for (int comp = 1; comp < n_components; ++comp)
-            offset[comp] = offset[comp-1] + space_dim_.get_component_size(comp-1);
-
-        return offset;
-    }
-#endif
     ///@}
 
 
@@ -348,10 +326,6 @@ private:
     //EndBehaviourTable end_behaviour_;
     PeriodicTable periodic_;
 
-    /**
-     * Boundary conditions on each face of each scalar component of the space.
-     */
-    BCTable boundary_conditions_table_;
 
 
 public:
@@ -369,49 +343,8 @@ public:
 
 
 
-    // TODO (pauletti, Dec 12, 2014): boundary condition is not a general property
-    // of the space, rather specific flag for some application, this should be
-    // done in some other layer
 
-    /**
-     * Returns a const-reference to the table containing
-     * the boundary conditions on each face of each scalar component of the space.
-     *
-     * For example, with the code
-     * @code{.cpp}
-       const auto &bc_table = space.get_boundary_conditions_table();
 
-       BoundaryConditionType bc_id = bc_table[1][3]; // boundary condition on face 3 of space's component 1
-       @endcode
-     * we copy to the variable <tt>bc_id</tt> the value of the boundary condition
-     * on the face 3 of the space component 1.
-     *
-     * @sa BoundaryConditionType
-     */
-    const BCTable &get_boundary_conditions_table() const
-    {
-        return boundary_conditions_table_;
-    }
-
-    /**
-     * Returns a reference to the table containing
-     * the boundary conditions on each face of each scalar component of the space.
-     *
-     * For example, with the code
-     * @code{.cpp}
-       auto &bc_table = space.get_boundary_conditions_table();
-
-       bc_table[1][3] = BoundaryConditionType::DirichletHomogeneous; // setting Dirichlet homogeneous boundary condition on face 3 of space's component 1
-       @endcode
-     * we assign the value <tt>BoundaryConditionType::DirichletHomogeneous</tt> to the
-     * boundary condition on the face 3 of the space component 1.
-     *
-     * @sa BoundaryConditionType
-     */
-    BCTable &get_boundary_conditions_table()
-    {
-        return boundary_conditions_table_;
-    }
 
     /**
      *  Class to manage the component quantities with the knowledge of

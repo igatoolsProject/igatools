@@ -154,9 +154,13 @@ void
 DofDistribution<dim, range, rank>::
 add_dofs_offset(const Index offset)
 {
+    /*
     for (auto &dofs_component : index_table_)
         for (auto &dof_id : dofs_component)
             dof_id += offset;
+    //*/
+    for (auto &dof : dofs_view_)
+        dof += offset;
 }
 
 
@@ -204,9 +208,13 @@ global_to_patch_local(const Index global_dof_id) const
     this->find_dof_id(global_dof_id,comp_id,tensor_index);
 #endif
 
+    /*
     Index offset = 0;
     for (int comp = 0 ; comp < comp_id ; ++comp)
         offset += index_table_[comp].flat_size();
+    //*/
+
+    const Index offset = index_table_size_.get_offset()[comp_id];
 
     const Index local_dof_id = offset + index_table_[comp_id].tensor_to_flat(tensor_index);
 

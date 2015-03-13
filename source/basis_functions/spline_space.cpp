@@ -450,12 +450,14 @@ auto SplineSpace<dim, range, rank>::
 accumulated_interior_multiplicities() const -> MultiplicityTable
 {
     MultiplicityTable result;
-    for (int iComp = 0; iComp < n_components; ++iComp)
+    for (const auto comp : components)
     {
+        const auto &mult_comp = interior_mult_[comp];
+
         for (const auto j : Topology::active_directions)
         {
             // Assert(!periodic_[iComp][j], ExcMessage("periodic needs to be implemented"));
-            const auto &mult  = (interior_mult_)[iComp].get_data_direction(j);
+            const auto &mult = mult_comp.get_data_direction(j);
 
             vector<Size> accum_mult;
             const int size = mult.size();
@@ -464,7 +466,7 @@ accumulated_interior_multiplicities() const -> MultiplicityTable
             for (int i = 0; i < size; ++i)
                 accum_mult.push_back(accum_mult[i] + mult[i]);
 
-            result[iComp].copy_data_direction(j, accum_mult);
+            result[comp].copy_data_direction(j, accum_mult);
 
             //TODO(pauletti, May 3, 2014): write some post assertions
         }

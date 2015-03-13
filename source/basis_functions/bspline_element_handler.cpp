@@ -190,10 +190,12 @@ operator()(const T &quad1)
 
     Assert(space_ != nullptr,ExcNullPtr());
 
+    const auto space_data = space_->space_data_;
+
 //    const auto n_basis = space_->get_num_all_element_basis();
     const auto &degree = space_->get_degree();
 
-    const auto &active_components_id = space_->get_active_components_id();
+    const auto &active_components_id = space_data->get_active_components_id();
 
     // number of intervals in the cartesian grid
     const auto n_inter = space_->get_grid()->get_num_intervals();
@@ -207,7 +209,7 @@ operator()(const T &quad1)
     {
 
         auto &g_cache = std::get<k>(*splines1d_)[s_id];
-        g_cache = GlobalCache(space_->get_components_map());
+        g_cache = GlobalCache(space_data->get_components_map());
 
         const auto quad = extend_sub_elem_quad<k,dim>(quad1, s_id);
         const auto &n_coords = quad.get_num_coords_direction();
