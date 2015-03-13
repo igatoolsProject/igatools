@@ -205,9 +205,11 @@ public:
         return this->sp_space_->get_degree();
     }
 
-    virtual vector<Index> get_element_dofs(const CartesianGridElement<dim> &element) const override final
+    virtual vector<Index> get_element_dofs(
+        const CartesianGridElement<dim> &element,
+        const std::string &dofs_property = DofProperties::none) const override final
     {
-        return this->sp_space_->get_element_dofs(element);
+        return this->sp_space_->get_element_dofs(element,dofs_property);
     }
 
 

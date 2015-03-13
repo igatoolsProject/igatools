@@ -49,6 +49,8 @@ void
 PropertiesIdContainer::
 add_property(const std::string &property)
 {
+    Assert(property != Properties::none,
+           ExcMessage("The property \"" + property + "\" cannot be added to the list."));
     Assert(properties_id_.count(property) == 0,
            ExcMessage("The property \"" + property + "\" is already defined."));
     properties_id_[property] = std::set<int>();
@@ -59,6 +61,8 @@ std::set<Index> &
 PropertiesIdContainer::
 get_ids_same_property(const std::string &property)
 {
+    Assert(property != Properties::none,
+           ExcMessage("The property \"" + property + "\" is invalid for this function."));
     Assert(properties_id_.count(property) > 0,
            ExcMessage("The property \"" + property + "\" is not defined."));
     return properties_id_.at(property);
@@ -70,6 +74,8 @@ const std::set<Index> &
 PropertiesIdContainer::
 get_ids_same_property(const std::string &property) const
 {
+    Assert(property != Properties::none,
+           ExcMessage("The property \"" + property + "\" is invalid for this function."));
     Assert(properties_id_.count(property) > 0,
            ExcMessage("The property \"" + property + "\" is not defined."));
     return properties_id_.at(property);

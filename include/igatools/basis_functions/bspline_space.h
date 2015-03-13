@@ -285,7 +285,9 @@ public:
     }
 
 
-    virtual vector<Index> get_element_dofs(const CartesianGridElement<dim> &element) const override final;
+    virtual vector<Index> get_element_dofs(
+        const CartesianGridElement<dim> &element,
+        const std::string &dofs_property = DofProperties::none) const override final;
 
 #if 0
     ElementHandler get_element_handler() const;
@@ -406,6 +408,11 @@ public:
         return ElementHandler::create(this_space);
     }
 
+
+private:
+    // lookup table for the local dof id in each element component
+    typename SpaceData::template ComponentContainer<vector<TensorIndex<dim>>>
+                                                           dofs_tensor_id_elem_table_;
 };
 
 IGA_NAMESPACE_CLOSE

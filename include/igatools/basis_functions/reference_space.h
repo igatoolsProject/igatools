@@ -278,7 +278,9 @@ public:
     vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const;
 
 
-    virtual vector<Index> get_element_dofs(const CartesianGridElement<dim> &element) const = 0;
+    virtual vector<Index> get_element_dofs(
+        const CartesianGridElement<dim> &element,
+        const std::string &dofs_property = DofProperties::none) const = 0;
 
 
     std::shared_ptr<SpaceManager> get_space_manager();
@@ -332,9 +334,6 @@ protected:
      * dofs of all the spaces.
      */
     std::shared_ptr<DofDistribution<dim,range,rank> > dof_distribution_;
-
-
-    const std::string dofs_property_active_ = "active";
 
     // TODO (pauletti, Dec 12, 2014): boundary condition is not a general property
     // of the space, rather specific flag for some application, this should be

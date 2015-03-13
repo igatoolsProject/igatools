@@ -158,9 +158,27 @@ BSplineSpace(std::shared_ptr<SpaceData> space_data,
 
 
     //------------------------------------------------------------------------------
+    // building the lookup table for the local dof id on the current component of the element --- begin
+    for (const auto comp : SpaceData::components)
+    {
+        const auto dofs_t_size_elem_comp = TensorSize<dim>(degree_table[comp]+1);
+        const auto dofs_f_size_elem_comp = dofs_t_size_elem_comp.flat_size();
+
+        auto &elem_comp_dof_t_id = dofs_tensor_id_elem_table_[comp];
+        const auto w_dofs_elem_comp = MultiArrayUtils<dim>::compute_weight(dofs_t_size_elem_comp);
+
+        for (int dof_f_id = 0 ; dof_f_id < dofs_f_size_elem_comp ; ++dof_f_id)
+            elem_comp_dof_t_id.emplace_back(MultiArrayUtils<dim>::flat_to_tensor_index(dof_f_id,w_dofs_elem_comp));
+    }
+    // building the lookup table for the local dof id on the current component of the element --- end
+    //------------------------------------------------------------------------------
+
+#if 0
+    //------------------------------------------------------------------------------
     this->dof_distribution_->add_dofs_property(this->dofs_property_active_);
     this->dof_distribution_->set_all_dofs_property_status(this->dofs_property_active_,true);
     //------------------------------------------------------------------------------
+#endif
 }
 
 
@@ -341,7 +359,8 @@ template<int dim_, int range_, int rank_>
 vector<Index>
 BSplineSpace<dim_, range_, rank_>::
 get_element_dofs(
-    const CartesianGridElement<dim> &element) const
+    const CartesianGridElement<dim> &element,
+    const std::string &dofs_property) const
 {
     const auto &accum_mult = space_data_->accumulated_interior_multiplicities();
     const auto &index_table = this->dof_distribution_->get_index_table();
@@ -349,46 +368,31 @@ get_element_dofs(
     vector<Index> element_dofs;
     const auto &elem_tensor_id = element.get_tensor_index();
 
-    const auto &degree_table = space_data_->get_degree();
-
     for (const auto comp : SpaceData::components)
     {
-        //-----------------------------------------------------------------
-        // building the lookup table for the local dof id on the current component of the element --- begin
-        // TODO (MM, March 06, 2015): this can be put on the SplineSpace constructor for optimization
-        const auto &degree_comp = degree_table[comp];
-
-        const auto dofs_t_size_elem_comp = TensorSize<dim>(degree_comp+1);
-//        for (const auto dir : Topology::active_directions)
-//            dofs_t_size_elem_comp[dir] = degree_comp[dir] + 1;
-
-        const auto dofs_f_size_elem_comp = dofs_t_size_elem_comp.flat_size();
-
-        vector<Index> elem_comp_dof_f_id(dofs_f_size_elem_comp);
-        std::iota(elem_comp_dof_f_id.begin(),elem_comp_dof_f_id.end(),0);
-
-        vector<TensorIndex<dim>> elem_comp_dof_t_id;
-        const auto w_dofs_elem_comp = MultiArrayUtils<dim>::compute_weight(dofs_t_size_elem_comp);
-        for (const auto dof_f_id : elem_comp_dof_f_id)
-            elem_comp_dof_t_id.emplace_back(MultiArrayUtils<dim>::flat_to_tensor_index(dof_f_id,w_dofs_elem_comp));
-        // building the lookup table for the local dof id on the current component of the element --- end
-        //-----------------------------------------------------------------
-
-
-
-        //-----------------------------------------------------------------
         const auto &index_table_comp = index_table[comp];
 
         const auto dof_t_origin = accum_mult[comp].cartesian_product(elem_tensor_id);
-        for (const auto loc_dof_t_id : elem_comp_dof_t_id)
+
+        const auto &elem_comp_dof_t_id = dofs_tensor_id_elem_table_[comp];
+
+        if (dofs_property == DofProperties::none)
         {
-            const auto dof_t_id = dof_t_origin + loc_dof_t_id;
-
-            const auto dof = index_table_comp(dof_t_id);
-
-            element_dofs.emplace_back(dof);
+            for (const auto loc_dof_t_id : elem_comp_dof_t_id)
+            {
+                const auto dof = index_table_comp(dof_t_origin + loc_dof_t_id);
+                element_dofs.emplace_back(dof);
+            }
         }
-        //-----------------------------------------------------------------
+        else
+        {
+            for (const auto loc_dof_t_id : elem_comp_dof_t_id)
+            {
+                const auto dof = index_table_comp(dof_t_origin + loc_dof_t_id);
+                if (this->dof_distribution_->test_if_dof_has_property(dof, dofs_property))
+                    element_dofs.emplace_back(dof);
+            }
+        }
 
     } // end comp loop
 
