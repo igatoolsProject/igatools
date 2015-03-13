@@ -140,19 +140,19 @@ public:
      * Returns a element iterator to the first element of the patch
      * with the property @p element_property.
      */
-    ElementIterator begin(const std::string &element_property = GridType::elems_property_none) const;
+    ElementIterator begin(const std::string &element_property = ElementProperties::none) const;
 
     /**
      * Returns a element iterator to the last element of the patch
      * with the property @p element_property.
      */
-    ElementIterator last(const std::string &element_property = GridType::elems_property_none) const;
+    ElementIterator last(const std::string &element_property = ElementProperties::none) const;
 
     /**
      * Returns a element iterator to one-pass the end of patch
      * with the property @p element_property.
      */
-    ElementIterator end(const std::string &element_property = GridType::elems_property_none) const;
+    ElementIterator end(const std::string &element_property = ElementProperties::none) const;
     ///@}
 
     /** Returns the container with the global dof distribution (const version). */

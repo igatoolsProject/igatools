@@ -133,7 +133,7 @@ operator++()
 {
     const auto id_this_elem = accessor_->get_flat_index();
     const auto grid = accessor_->get_grid();
-    if (elem_property_ == CartesianGrid<ContainerType::Topology::dim>::elems_property_none)
+    if (elem_property_ == ElementProperties::none)
     {
         const auto id_next_elem = id_this_elem + 1;
         if (id_next_elem < grid->get_num_all_elems())

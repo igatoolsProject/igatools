@@ -161,10 +161,6 @@ private:
 
 public:
 
-    /**
-     * Specifier for iterators on elements without taking into account any specific property.
-     */
-    static const std::string elems_property_none ;
 
 
     /**
@@ -416,48 +412,48 @@ public:
     /**
      * This function returns a element iterator to the first element of the patch.
      */
-    ElementIterator begin(const std::string &property = elems_property_none);
+    ElementIterator begin(const std::string &property = ElementProperties::none);
 
     /**
      * This function returns a element iterator to one-pass the end of patch.
      */
-    ElementIterator end(const std::string &property = elems_property_none);
+    ElementIterator end(const std::string &property = ElementProperties::none);
 
     /**
      * This function returns a element (const) iterator to the first element of the patch.
      */
-    ElementConstIterator begin(const std::string &property = elems_property_none) const;
+    ElementConstIterator begin(const std::string &property = ElementProperties::none) const;
 
     /**
      * This function returns a element (const) iterator to one-pass the end of patch.
      */
-    ElementConstIterator end(const std::string &property = elems_property_none) const;
+    ElementConstIterator end(const std::string &property = ElementProperties::none) const;
 
     /**
      * This function returns a element (const) iterator to the first element of the patch.
      */
-    ElementConstIterator cbegin(const std::string &property = elems_property_none) const;
+    ElementConstIterator cbegin(const std::string &property = ElementProperties::none) const;
 
     /**
      * This function returns a element (const) iterator to one-pass the end of patch.
      */
-    ElementConstIterator cend(const std::string &property = elems_property_none) const;
+    ElementConstIterator cend(const std::string &property = ElementProperties::none) const;
 
 
     /**
      * This function returns the iterator to the last active element on the grid.
      */
-    ElementIterator last(const std::string &property = elems_property_none);
+    ElementIterator last(const std::string &property = ElementProperties::none);
 
     /**
      * This function returns the (const) iterator to the last active element on the grid.
      */
-    ElementConstIterator last(const std::string &property = elems_property_none) const;
+    ElementConstIterator last(const std::string &property = ElementProperties::none) const;
 
     /**
      * This function returns the (const) iterator to the last active element on the grid.
      */
-    ElementConstIterator clast(const std::string &property = elems_property_none) const;
+    ElementConstIterator clast(const std::string &property = ElementProperties::none) const;
     ///@}
 
 
@@ -652,14 +648,14 @@ public:
 
     /**
      * Returns the id of the first element with a given @p property.
-     * @note If the @p property is equal to CartesianGrid<dim>::elems_property_none, then the
+     * @note If the @p property is equal to ElementProperties::none, then the
      * first element index is 0 (zero).
      */
     Index get_first_element_id_same_property(const std::string &property) const;
 
     /**
      * Returns the id of the last element with a given @p property.
-     * @note If the @p property is equal to CartesianGrid<dim>::elems_property_none, then the
+     * @note If the @p property is equal to ElementProperties::none, then the
      * last element index is equal to the number of elements in the grid minus 1.
      */
     Index get_last_element_id_same_property(const std::string &property) const;

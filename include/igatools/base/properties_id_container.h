@@ -23,6 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
+#include <igatools/base/properties.h>
 
 #include <set>
 #include <map>
@@ -31,11 +32,13 @@
 
 IGA_NAMESPACE_OPEN
 
+
+
+
+
 class PropertiesIdContainer
 {
 public:
-    static const std::string property_none;
-
 
     bool test_id_for_property(const Index id, const std::string &property) const;
 

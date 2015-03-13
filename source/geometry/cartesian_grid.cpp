@@ -68,10 +68,6 @@ filled_progression(const BBox<dim_> &end_points, const TensorSize<dim_> &n_knots
 
 
 
-template<int dim_>
-const std::string CartesianGrid<dim_>::elems_property_none = "";
-
-
 
 template<int dim_>
 CartesianGrid<dim_>::
@@ -162,20 +158,6 @@ CartesianGrid(const KnotCoordinates &knot_coordinates,
     boundary_id_(filled_array<int,Topology::n_faces>(0)),
     knot_coordinates_(knot_coordinates)
 {
-#if 0
-    const int n_elems = this->flat_size();
-    auto &active_elements = properties_elements_id_["active"];
-    auto &marked_elements = properties_elements_id_["marked"];
-    auto &influence_elements = properties_elements_id_["influence"];
-
-    for (int elem_id = 0 ; elem_id < n_elems ; ++elem_id)
-    {
-        active_elements.insert(elem_id);
-        marked_elements.insert(elem_id);
-        influence_elements.insert(elem_id);
-    }
-#endif
-
 #ifndef NDEBUG
     for (const int i : Topology::active_directions)
     {
@@ -318,7 +300,7 @@ CartesianGrid<dim_>::
 get_first_element_id_same_property(const std::string &property) const
 {
     Index first_id;
-    if (property == self_t::elems_property_none)
+    if (property == ElementProperties::none)
         first_id = 0;
     else
         first_id = *(this->get_elements_id_same_property(property).cbegin());
@@ -332,7 +314,7 @@ CartesianGrid<dim_>::
 get_last_element_id_same_property(const std::string &property) const
 {
     Index last_id;
-    if (property == self_t::elems_property_none)
+    if (property == ElementProperties::none)
         last_id = this->get_num_all_elems()-1;
     else
         last_id = *(this->get_elements_id_same_property(property).crbegin());
@@ -360,7 +342,7 @@ CartesianGrid<dim_>::
 begin(const std::string &property) -> ElementIterator
 {
     int id_first_elem;
-    if (property == elems_property_none)
+    if (property == ElementProperties::none)
     {
         id_first_elem = 0;
     }
@@ -394,7 +376,7 @@ CartesianGrid<dim_>::
 last(const std::string &property) -> ElementIterator
 {
     int id_last_elem;
-    if (property == elems_property_none)
+    if (property == ElementProperties::none)
     {
         id_last_elem = this->get_num_all_elems()-1;
     }
@@ -427,7 +409,7 @@ CartesianGrid<dim_>::
 clast(const std::string &property) const -> ElementConstIterator
 {
     int id_last_elem;
-    if (property == elems_property_none)
+    if (property == ElementProperties::none)
     {
         id_last_elem = this->get_num_all_elems()-1;
     }
@@ -470,7 +452,7 @@ CartesianGrid<dim_>::
 cbegin(const std::string &property) const -> ElementConstIterator
 {
     int id_first_elem;
-    if (property == elems_property_none)
+    if (property == ElementProperties::none)
     {
         id_first_elem = 0;
     }
@@ -870,7 +852,7 @@ find_elements_of_points(const ValueVector<Points<dim_>> &points) const
         }
 
         auto ans = res.emplace(
-                       ElementIterator(this->shared_from_this(), this->tensor_to_flat(elem_t_id),elems_property_none),
+                       ElementIterator(this->shared_from_this(), this->tensor_to_flat(elem_t_id),ElementProperties::none),
                        vector<int>(1,k));
 
         if (!ans.second)
@@ -977,7 +959,7 @@ bool
 CartesianGrid<dim_>::
 test_if_element_has_property(const Index elem_flat_id, const std::string &property) const
 {
-    if (property == elems_property_none)
+    if (property == ElementProperties::none)
     {
         return true; // an element can always be considered without any property
     }

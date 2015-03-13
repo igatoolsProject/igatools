@@ -29,13 +29,11 @@ IGA_NAMESPACE_OPEN
 
 
 
-const std::string PropertiesIdContainer::property_none = "";
-
 bool
 PropertiesIdContainer::
 test_id_for_property(const Index id, const std::string &property) const
 {
-    if (property == property_none)
+    if (property == Properties::none)
     {
         return true; // an element can always be considered without any property
     }

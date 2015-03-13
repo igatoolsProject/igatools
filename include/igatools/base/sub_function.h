@@ -120,7 +120,7 @@ public:
     {
         Assert(j==0, ExcNotImplemented());
         using ElementIt = typename CartesianGrid<sub_dim>::ElementIterator;
-        ElementIt el_it(elem.get_grid(),elem.get_flat_index(),CartesianGrid<sub_dim>::elems_property_none);
+        ElementIt el_it(elem.get_grid(),elem.get_flat_index(),ElementProperties::none);
 
         sup_elem_->move_to(elem_map_[el_it]->get_flat_index());
 
@@ -273,7 +273,7 @@ public:
         Assert(j==0, ExcNotImplemented());
 //        typename CartesianGrid<sub_dim>::ElementIterator el_it(elem);
         using ElementIt = typename CartesianGrid<sub_dim>::ElementIterator;
-        ElementIt el_it(elem.get_grid()->create_element(elem.get_flat_index()),CartesianGrid<sub_dim>::elems_property_none);
+        ElementIt el_it(elem.get_grid()->create_element(elem.get_flat_index()),ElementProperties::none);
 
         sup_elem_->move_to(elem_map_[el_it]->get_flat_index());
 
