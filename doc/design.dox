@@ -94,7 +94,7 @@ PhysicalSpaceElement | PhysicalSpace
 - they have an identifier in order to specify which element in the associated container they are representing;
 - they have @subpage iterators as friend classes (because the an iterator must be able to modify the 
 element);
-- they contains a <em>local cache</em> that is used to keep precomputed values at EvaluationPoints.
+- they contains a <em>local cache</em> that is used to keep precomputed values at Quadrature.
 */
 
 /** @}*/ //end of group elements
@@ -129,7 +129,7 @@ Each group of points should be represented as an instance of one of the followin
 <center>
 class name        | Description
 ----------------- | ----------------------------------
-EvaluationPoints  | Evaluation points on a single element freely definable by the user (without tensor-product structure)
+Quadrature  | Evaluation points on a single element freely definable by the user (without tensor-product structure)
 QGauss            | Evaluation points on a single element generated with Gauss-Legendre formula (with tensor product structure)
 QGaussLobatto     | Evaluation points on a single element generated with Gauss-Lobatto formula (with tensor product structure)
 QUniform          | Evaluation points on a single element generated uniformly (with tensor product structure)
@@ -142,7 +142,7 @@ Due to the fact that most of the time we need to perform function evaluations
 for quadrature purposes, 
 to each point is associated a <em>weight</em>.
 
-If the points are defined by the user through the base class EvaluationPoints, 
+If the points are defined by the user through the base class Quadrature, 
 the associated weights are set by default to 1.0.
 </li>
 <li>
@@ -159,7 +159,7 @@ the quadrature on the new bounding box.
 </ul>
 
 @note <b>For the developers</b>: any function that requires the points to be passed as input 
-argument, should be declared (and should work) using the input type EvaluationPoints, 
+argument, should be declared (and should work) using the input type Quadrature, 
 that is the base class for the other different type of evaluation points containers.
 
 */

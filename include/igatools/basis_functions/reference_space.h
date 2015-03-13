@@ -108,7 +108,7 @@ public:
     using KnotsTable = typename SpaceData::KnotsTable;
     using DegreeTable = typename SpaceData::DegreeTable;
     using MultiplicityTable = typename SpaceData::MultiplicityTable;
-    using SpaceDimensionTable = typename SpaceData::SpaceDimensionTable;
+    using TensorSizeTable = typename SpaceData::TensorSizeTable;
     using PeriodicTable = typename SpaceData::PeriodicTable;
     using EndBehaviourTable = typename SpaceData::EndBehaviourTable;
 
@@ -168,30 +168,35 @@ public:
     /** @name Functions for retrieving information about the number of basis function. */
     ///@{
 
-    const SpaceDimensionTable &get_num_basis_table() const
+    const TensorSizeTable &get_num_basis_table() const
     {
-        return space_data_->get_num_basis_table();
+//        return space_data_->get_num_basis_table();
+        return dof_distribution_->get_num_dofs_table();
     }
 
     Size get_num_basis() const
     {
-        return space_data_->get_num_basis();
+//        return space_data_->get_num_basis();
+        return dof_distribution_->get_num_dofs_table().total_dimension();
     }
 
 
     Size get_num_basis(const int comp) const
     {
-        return space_data_->get_num_basis(comp);
+//        return space_data_->get_num_basis(comp);
+        return dof_distribution_->get_num_dofs_table().get_component_size(comp);
     }
 
     Size get_num_basis(const int comp, const int dir) const
     {
-        return space_data_->get_num_basis(comp,dir);
+//        return space_data_->get_num_basis(comp,dir);
+        return dof_distribution_->get_num_dofs_table()[comp][dir];
     }
 
     ComponentContainer<Size> get_basis_offset() const
     {
-        return space_data_->get_basis_offset();
+//        return space_data_->get_basis_offset();
+        return dof_distribution_->get_num_dofs_table().get_offset();
     }
     ///@}
 

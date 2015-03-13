@@ -57,7 +57,7 @@ class BSplineElementHandler : public ReferenceElementHandler<dim_,range_,rank_>
     template<class T>
     using ComponentDirectionContainer = ComponentContainer<std::array<T,dim_>>;
 
-    using SpaceDimensionTable = typename Space::SpaceDimensionTable;
+    using TensorSizeTable = typename Space::TensorSizeTable;
 
     template <int order>
     using Derivative = typename Space::template Derivative<order>;

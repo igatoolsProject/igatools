@@ -88,7 +88,7 @@ init()
 {
     //------------------------------------------------------------------------------
     // Determine the dimensionality of the spline space --- begin
-    typename SpaceDimensionTable::base_t n_basis;
+    typename TensorSizeTable::base_t n_basis;
     for (const auto comp : components)
     {
         const auto &deg_comp =              deg_[comp];

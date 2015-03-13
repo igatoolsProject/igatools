@@ -20,6 +20,8 @@
 
 
 #include <igatools/basis_functions/dof_distribution.h>
+#include <igatools/utils/multi_array_utils.h>
+
 
 using std::map;
 using std::shared_ptr;
@@ -29,11 +31,13 @@ IGA_NAMESPACE_OPEN
 
 template<int dim, int range, int rank>
 DofDistribution<dim, range, rank>::
-DofDistribution(const SpaceDimensionTable &n_basis1,
+DofDistribution(const TensorSizeTable &n_basis,
                 const DegreeTable &degree_table,
                 const PeriodicTable &periodic,
                 DistributionPolicy pol)
     :
+    num_dofs_table_(n_basis),
+    index_table_size_(n_basis),
     policy_(pol)
 {
     Assert(pol == DistributionPolicy::standard, ExcNotImplemented());
@@ -41,43 +45,39 @@ DofDistribution(const SpaceDimensionTable &n_basis1,
     using Topology = UnitElement<dim>;
 
     //-----------------------------------------------------------------------
-    typename SpaceDimensionTable::base_t aux;
     for (const auto comp : Space::components)
         for (const auto dir : Topology::active_directions)
-        {
-            aux[comp][dir] = n_basis1[comp][dir];
             if (periodic[comp][dir])
-                aux[comp][dir] += degree_table[comp][dir] + 1;
-        }
-    SpaceDimensionTable n_basis(aux);
+                index_table_size_[comp][dir] += degree_table[comp][dir] + 1;
     //-----------------------------------------------------------------------
 
 
     //-----------------------------------------------------------------------
     // fills the standard distribution, sorted by component and
     // by direction x moves faster
-    int comp_offset = 0;
+    Index comp_offset = 0;
     for (const auto comp : Space::components)
     {
-        const auto size = n_basis[comp];
-        const auto act_size = n_basis1[comp];
-        auto &comp_table = index_table_[comp];
-        comp_table.resize(size);
+        const auto &index_table_size_comp = index_table_size_[comp];
+        auto &index_table_comp = index_table_[comp];
+        index_table_comp.resize(index_table_size_comp);
 
-        DynamicMultiArray<Index,dim> comp_table1(n_basis1[comp]);
+        const auto &n_dofs_comp = num_dofs_table_[comp];
+        const auto w_dofs_comp = MultiArrayUtils<dim>::compute_weight(n_dofs_comp);
 
-        const auto n_basis_comp_size = n_basis.get_component_size(comp);
-        for (int i = 0 ; i < n_basis_comp_size ; ++i)
+
+        const auto n_indices_comp = index_table_size_.get_component_size(comp);
+        for (int i = 0 ; i < n_indices_comp ; ++i)
         {
-            auto t_ind = comp_table.flat_to_tensor(i);
+            auto t_ind = index_table_comp.flat_to_tensor(i);
             for (const auto dir : Topology::active_directions)
-                t_ind[dir] = t_ind[dir] % n_basis1[comp][dir];
+                t_ind[dir] %= n_dofs_comp[dir];
 
-            auto f_ind = comp_table1.tensor_to_flat(t_ind);
-            comp_table[i] = comp_offset + f_ind;
+            const auto f_ind = MultiArrayUtils<dim>::tensor_to_flat_index(t_ind,w_dofs_comp);
+            index_table_comp[i] = comp_offset + f_ind;
 
         }
-        comp_offset += n_basis1.get_component_size(comp);//n_basis_comp_size;
+        comp_offset += num_dofs_table_.get_component_size(comp);//n_basis_comp_size;
     }
     //-----------------------------------------------------------------------
 
@@ -85,8 +85,8 @@ DofDistribution(const SpaceDimensionTable &n_basis1,
     //-----------------------------------------------------------------------
     // creating the dofs view from the dofs components views -- begin
     vector<DofsComponentView> components_views;
-    for (auto &dof_distribution_comp : index_table_)
-        components_views.emplace_back(dof_distribution_comp.get_flat_view());
+    for (auto &index_table_comp : index_table_)
+        components_views.emplace_back(index_table_comp.get_flat_view());
 
     dofs_view_ = DofsView(
                      DofsIterator(components_views,0),
@@ -128,9 +128,11 @@ find_dof_id(const Index dof_id, int &comp_id, TensorIndex<dim> &tensor_index) co
     {
         const auto &index_table_comp = index_table_[comp];
 
-        auto dofs_begin = index_table_comp.get_data().begin();
-        auto dofs_end   = index_table_comp.get_data().end();
-        auto it = std::find(dofs_begin, dofs_end, dof_id);
+        const auto &index_table_comp_data = index_table_comp.get_data();
+
+        const auto dofs_begin = index_table_comp_data.begin();
+        const auto dofs_end   = index_table_comp_data.end();
+        const auto it = std::find(dofs_begin, dofs_end, dof_id);
 
         if (it != dofs_end)
         {
@@ -212,6 +214,20 @@ global_to_patch_local(const Index global_dof_id) const
 }
 
 template<int dim, int range, int rank>
+auto
+DofDistribution<dim, range, rank>::
+get_dofs_offset() const -> OffsetTable
+{
+    /*
+    OffsetTable offset;
+    offset[0] = 0;
+    for (int comp = 1; comp < Space::n_components; ++comp)
+        offset[comp] = offset[comp-1] + num_dofs_table_.get_component_size(comp-1);
+    //*/
+    return num_dofs_table_.get_offset();
+}
+
+template<int dim, int range, int rank>
 void
 DofDistribution<dim, range, rank>::
 print_info(LogStream &out) const
@@ -290,6 +306,15 @@ set_all_dofs_property_status(const std::string &property, const bool status)
         property,
         std::set<Index>(dofs_view_.cbegin(),dofs_view_.cend()),
         status);
+}
+
+
+template<int dim, int range, int rank>
+auto
+DofDistribution<dim, range, rank>::
+get_num_dofs_table() const -> const TensorSizeTable &
+{
+    return num_dofs_table_;
 }
 
 

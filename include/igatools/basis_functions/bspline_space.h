@@ -155,7 +155,7 @@ public:
     using KnotsTable = typename SpaceData::KnotsTable;
     using DegreeTable = typename SpaceData::DegreeTable;
     using MultiplicityTable = typename SpaceData::MultiplicityTable;
-    using SpaceDimensionTable = typename SpaceData::SpaceDimensionTable;
+    using TensorSizeTable = typename SpaceData::TensorSizeTable;
     using PeriodicTable = typename SpaceData::PeriodicTable;
     using EndBehaviourTable = typename SpaceData::EndBehaviourTable;
 

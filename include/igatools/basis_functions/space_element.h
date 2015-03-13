@@ -77,7 +77,7 @@ public:
      */
     template<class T>
     using ComponentContainer = typename Space::template ComponentContainer<T>;
-    using SpaceDimensionTable = typename Space::SpaceDimensionTable;
+    using TensorSizeTable = typename Space::TensorSizeTable;
     ///@}
 
 
@@ -512,7 +512,7 @@ private:
 
 protected:
     /** Number of scalar basis functions along each direction, for all space components. */
-    typename Space::SpaceDimensionTable n_basis_direction_;
+    typename Space::TensorSizeTable n_basis_direction_;
 
 
     /** Hash table for fast conversion between flat-to-tensor basis function ids. */

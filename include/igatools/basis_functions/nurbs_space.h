@@ -143,7 +143,7 @@ public:
     using KnotsTable = typename SpSpace::KnotsTable;
     using DegreeTable = typename SpSpace::DegreeTable;
     using MultiplicityTable = typename SpSpace::MultiplicityTable;
-    using SpaceDimensionTable = typename SpSpace::SpaceDimensionTable;
+    using TensorSizeTable = typename SpSpace::TensorSizeTable;
     using PeriodicTable = typename SpSpace::PeriodicTable;
     using EndBehaviourTable = typename SpSpace::EndBehaviourTable;
 

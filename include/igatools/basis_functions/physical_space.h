@@ -107,7 +107,7 @@ public:
     template< class T>
     using ComponentContainer = typename RefSpace::template ComponentContainer<T>;
 
-    using SpaceDimensionTable = typename RefSpace::SpaceDimensionTable;
+    using TensorSizeTable = typename RefSpace::TensorSizeTable;
 
     using DegreeTable = typename RefSpace::DegreeTable;
 

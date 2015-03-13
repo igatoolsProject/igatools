@@ -127,28 +127,28 @@ public:
 
 
     /**
-     * Component holding the number of basis functions
+     * Component container holding tensor size
      */
-    class SpaceDimensionTable : public ComponentContainer<TensorSize<dim> >
+    class TensorSizeTable : public ComponentContainer<TensorSize<dim> >
     {
     public:
         using base_t = ComponentContainer<TensorSize<dim>>;
 
 
-        SpaceDimensionTable() = default;
+        TensorSizeTable() = default;
 
-        SpaceDimensionTable(const base_t &n_basis)
+        TensorSizeTable(const base_t &n_basis)
             :
             base_t(n_basis)
         {}
 
 
-        SpaceDimensionTable(const SpaceDimensionTable &in) = default;
-        SpaceDimensionTable(SpaceDimensionTable &&in) = default;
-        SpaceDimensionTable &operator=(const SpaceDimensionTable &in) = default;
-        SpaceDimensionTable &operator=(SpaceDimensionTable &&in) = default;
+        TensorSizeTable(const TensorSizeTable &in) = default;
+        TensorSizeTable(TensorSizeTable &&in) = default;
+        TensorSizeTable &operator=(const TensorSizeTable &in) = default;
+        TensorSizeTable &operator=(TensorSizeTable &&in) = default;
 
-        ~SpaceDimensionTable() = default;
+        ~TensorSizeTable() = default;
 
         //*/
 
@@ -167,6 +167,18 @@ public:
                 total_dimension += this->get_component_size(comp);
 
             return total_dimension;
+        }
+
+        ComponentContainer<Size>
+        get_offset() const
+        {
+            ComponentContainer<Size> offset;
+            offset[0] = 0;
+            for (int comp = 1; comp < n_components; ++comp)
+                offset[comp] = offset[comp-1] + this->get_component_size(comp-1);
+
+            return offset;
+
         }
 
         void print_info(LogStream &out) const
@@ -257,22 +269,12 @@ public:
      * Component-direction indexed table with the number of basis functions
      * in each direction and component
      */
-    const SpaceDimensionTable &get_num_basis_table() const
+    const TensorSizeTable &get_num_basis_table() const
     {
         return space_dim_;
     }
 
-    /*
-    SpaceDimensionTable get_num_all_element_basis() const
-    {
-        ComponentContainer<TensorSize<dim>> n_basis(deg_.get_comp_map());
-        for (auto comp : deg_.get_active_components_id())
-            n_basis[comp] = TensorSize<dim>(deg_[comp]+1);
-
-        return SpaceDimensionTable(n_basis);
-    }
-    //*/
-
+#if 0
     /**
      * Component table with the offset of basis functions
      * in each component.
@@ -282,11 +284,11 @@ public:
         ComponentContainer<Size> offset;
         offset[0] = 0;
         for (int comp = 1; comp < n_components; ++comp)
-            offset[comp] = offset[comp-1] + space_dim_.get_component_size(comp);
+            offset[comp] = offset[comp-1] + space_dim_.get_component_size(comp-1);
 
         return offset;
     }
-
+#endif
     ///@}
 
 
@@ -341,7 +343,7 @@ private:
     DegreeTable deg_;
 
     /** Table with the dimensionality of the space in each component and direction */
-    SpaceDimensionTable space_dim_;
+    TensorSizeTable space_dim_;
 
     //EndBehaviourTable end_behaviour_;
     PeriodicTable periodic_;

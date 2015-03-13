@@ -22,9 +22,7 @@
 #define DOF_DISTRIBUTION_H_
 
 #include <igatools/base/config.h>
-//#include <igatools/utils/tensor_sized_container.h>
 #include <igatools/basis_functions/spline_space.h>
-//#include <igatools/geometry/cartesian_grid_element.h>
 #include <igatools/utils/concatenated_iterator.h>
 
 IGA_NAMESPACE_OPEN
@@ -52,7 +50,8 @@ public:
     using Space = SplineSpace<dim, range, rank>;
     using DegreeTable = typename Space::DegreeTable;
     using PeriodicTable = typename Space::PeriodicTable;
-    using SpaceDimensionTable = typename Space::SpaceDimensionTable;
+    using TensorSizeTable = typename Space::TensorSizeTable;
+    using OffsetTable = typename Space::template ComponentContainer<Size>;
     using IndexDistributionTable =
         StaticMultiArray<DynamicMultiArray<Index,dim>,range,rank>;
 
@@ -90,7 +89,7 @@ public:
     DofDistribution() = delete;
 
     //TODO: document this constructor
-    DofDistribution(const SpaceDimensionTable &n_basis,
+    DofDistribution(const TensorSizeTable &n_basis,
                     const DegreeTable &degree_table,
                     const PeriodicTable &periodic,
                     DistributionPolicy pol = DistributionPolicy::standard);
@@ -148,12 +147,20 @@ public:
 
 
     /**
-     * Returns the container used to store the dofs ids of each component of a single patch space.
+     * Returns the container used to store the dofs ids of each component
+     * of a single patch space.
      *
-     * @warning This object can have a BIG memory footprint, therefore its copy is discouraged: please
-     * use the associated View instead!
+     * @warning This object can have a BIG memory footprint, therefore
+     * its copy is discouraged: please use the associated View instead!
      */
     const IndexDistributionTable &get_index_table() const;
+
+    /**
+     * Component table with the offset of unique dofs
+     * in each component.
+     */
+    OffsetTable get_dofs_offset() const;
+
 
     /**
      * Returns a view of the active dofs ids on a given single-patch space (non-const version).
@@ -167,7 +174,10 @@ public:
     const DofsView &get_dofs_view() const;
 
 
-
+    /**
+     * Return the container holding the number of unique dofs, component-by-component and direction-by-direction.
+     */
+    const TensorSizeTable &get_num_dofs_table() const;
 
     /**
      * Converts a @p global_dof_id into the correspondent local (patch) representation.
@@ -234,6 +244,18 @@ private:
      */
     DofsView dofs_view_;
 
+
+    /**
+     * Number of unique dofs, component-by-component and direction-by-direction.
+     */
+    TensorSizeTable num_dofs_table_;
+
+
+
+    /**
+     * Size of the index_table_, component-by-component and direction-by-direction.
+     */
+    TensorSizeTable index_table_size_;
 
     DistributionPolicy policy_;
 
