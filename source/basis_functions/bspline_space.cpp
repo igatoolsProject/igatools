@@ -254,6 +254,12 @@ get_ref_sub_space(const int s_id,
 
     // Creating the mapping between the space degrees of freedom
     const int n_dir = k_elem.constant_directions.size();
+    for (int comp : end_b_.get_active_components_id())
+    	for (int j=0; j<n_dir; ++j)
+    		Assert(end_b_[comp][k_elem.constant_directions[j]] == BasisEndBehaviour::interpolatory,
+    				ExcNotImplemented());
+
+
 
     TensorIndex<dim> tensor_index;
     int comp_i = 0;
