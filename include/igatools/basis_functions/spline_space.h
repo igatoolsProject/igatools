@@ -114,7 +114,7 @@ public:
     using MultiplicityTable = ComponentContainer<Multiplicity>;
     using BoundaryKnotsTable = ComponentContainer<BoundaryKnots>;
     using KnotsTable = ComponentContainer<KnotCoordinates>;
-    using PeriodicTable = ComponentContainer<Periodicity>;
+    using PeriodicityTable = ComponentContainer<Periodicity>;
     using EndBehaviourTable = ComponentContainer<EndBehaviour>;
 
 
@@ -199,8 +199,8 @@ public:
         const DegreeTable &deg,
         std::shared_ptr<GridType> knots,
         const MultiplicityTable &interior_mult,
-        const PeriodicTable &periodic =
-            PeriodicTable(filled_array<bool,dim>(false)));
+        const PeriodicityTable &periodic =
+            PeriodicityTable(filled_array<bool,dim>(false)));
 
 protected:
     /**
@@ -210,8 +210,8 @@ protected:
     explicit SplineSpace(const DegreeTable &deg,
                          std::shared_ptr<GridType> knots,
                          const MultiplicityTable &interior_mult,
-                         const PeriodicTable &periodic =
-                             PeriodicTable(filled_array<bool,dim>(false)));
+                         const PeriodicityTable &periodic =
+                             PeriodicityTable(filled_array<bool,dim>(false)));
 
 public:
     const DegreeTable &get_degree() const
@@ -219,6 +219,10 @@ public:
         return deg_;
     }
 
+    const PeriodicityTable &get_periodicity() const
+    {
+    	return periodic_;
+    }
 
     const std::array<Index,n_components> &get_components_map() const
     {
@@ -284,7 +288,7 @@ public:
     get_sub_space_degree(const Index s_id) const;
 
     template<int k>
-    typename SubSpace<k>::PeriodicTable
+    typename SubSpace<k>::PeriodicityTable
     get_sub_space_periodicity(const Index s_id) const;
 
 
@@ -324,7 +328,7 @@ private:
     TensorSizeTable space_dim_;
 
     //EndBehaviourTable end_behaviour_;
-    PeriodicTable periodic_;
+    PeriodicityTable periodic_;
 
 
 
@@ -336,7 +340,7 @@ public:
         return interior_mult_;
     }
 
-    const PeriodicTable &get_periodic_table() const
+    const PeriodicityTable &get_periodic_table() const
     {
         return periodic_;
     }

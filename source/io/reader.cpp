@@ -528,7 +528,7 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
     // TODO (pauletti, Dec 26, 2014): read periodic, end_behaviour and boundary knots from file
     typename space_t::EndBehaviourTable
     end_behaviour(components_map, filled_array<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory));
-    typename space_t::PeriodicTable periodic(components_map, filled_array<bool, dim>(false));
+    typename space_t::PeriodicityTable periodic(components_map, filled_array<bool, dim>(false));
 
     auto ref_space = space_t::create(degrees, grid, multiplicities, periodic, end_behaviour);
     //-------------------------------------------------------------------------
@@ -687,7 +687,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     // TODO (pauletti, Dec 26, 2014): read periodic, end_behaviour and boundary knots from file
     typename space_t::SpSpace::EndBehaviourTable
     end_behaviour(components_map, filled_array<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory));
-    typename space_t::SpSpace::PeriodicTable periodic(components_map, filled_array<bool, dim>(false));
+    typename space_t::SpSpace::PeriodicityTable periodic(components_map, filled_array<bool, dim>(false));
 
     auto spline_space = space_t::SpSpace::create(degrees, grid, multiplicities, periodic, end_behaviour);
 
@@ -709,7 +709,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     // TODO (pauletti, Dec 26, 2014): read periodic, end_behaviour and boundary knots from file
     typename ScalarBSplineSpace::EndBehaviourTable
     scalar_end_behaviour(filled_array<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory));
-    typename ScalarBSplineSpace::PeriodicTable scalar_periodic(filled_array<bool, dim>(false));
+    typename ScalarBSplineSpace::PeriodicityTable scalar_periodic(filled_array<bool, dim>(false));
 
 
     auto scalar_spline_space =

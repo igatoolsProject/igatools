@@ -52,7 +52,6 @@ private:
 public:
     using SpSpace = BSplineSpace<dim_, range_, rank_>;
 
-
     /** see documentation in \ref FunctionSpaceOnGrid */
 
     using GridType = CartesianGrid<dim_>;
@@ -64,7 +63,6 @@ public:
     static const bool is_physical_space = false;
 
     static const auto n_components = SplineSpace<dim_, range_, rank_>::n_components;
-//    static constexpr auto   components = SpSpace::components;
 
 
     /**
@@ -144,7 +142,7 @@ public:
     using DegreeTable = typename SpSpace::DegreeTable;
     using MultiplicityTable = typename SpSpace::MultiplicityTable;
     using TensorSizeTable = typename SpSpace::TensorSizeTable;
-    using PeriodicTable = typename SpSpace::PeriodicTable;
+    using PeriodicityTable = typename SpSpace::PeriodicityTable;
     using EndBehaviourTable = typename SpSpace::EndBehaviourTable;
 
     using BCTable = typename SpSpace::BCTable;
@@ -245,6 +243,12 @@ public:
      */
     const WeightFunctionPtrTable &get_weights() const;
 
+    const PeriodicityTable &get_periodicity() const override final
+    		{
+    	return sp_space_->get_periodicity();
+    		}
+
+#if 0
     /**
      * Returns a reference to the end behaviour table of the BSpline space.
      */
@@ -252,7 +256,7 @@ public:
     {
         return sp_space_->get_end_behaviour_table();
     };
-
+#endif
     /**
      * Returns a const reference to the end behaviour table of the BSpline space.
      */
@@ -260,6 +264,7 @@ public:
     {
         return sp_space_->get_end_behaviour_table();
     };
+
 
     /**
      * Prints internal information about the space.

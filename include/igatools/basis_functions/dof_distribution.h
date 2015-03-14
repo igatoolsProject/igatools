@@ -49,7 +49,7 @@ class DofDistribution
 public:
     using Space = SplineSpace<dim, range, rank>;
     using DegreeTable = typename Space::DegreeTable;
-    using PeriodicTable = typename Space::PeriodicTable;
+    using PeriodicityTable = typename Space::PeriodicityTable;
     using TensorSizeTable = typename Space::TensorSizeTable;
     using OffsetTable = typename Space::template ComponentContainer<Size>;
     using IndexDistributionTable =
@@ -91,7 +91,7 @@ public:
     //TODO: document this constructor
     DofDistribution(const TensorSizeTable &n_basis,
                     const DegreeTable &degree_table,
-                    const PeriodicTable &periodic,
+                    const PeriodicityTable &periodic,
                     DistributionPolicy pol = DistributionPolicy::standard);
 
     /** Copy constructor.*/

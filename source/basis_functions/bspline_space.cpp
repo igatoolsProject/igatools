@@ -76,7 +76,7 @@ BSplineSpace(const Degrees &deg,
                  knots,
                  SpaceData::get_multiplicity_from_regularity(interior_reg,DegreeTable(true,deg),
                                                              knots->get_num_intervals()),
-                 PeriodicTable(true,periodic),
+                 PeriodicityTable(true,periodic),
                  EndBehaviourTable(true,end_b))
 {}
 
@@ -187,7 +187,7 @@ BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(const DegreeTable &deg,
              std::shared_ptr<GridType> knots,
              const MultiplicityTable &interior_mult,
-             const PeriodicTable &periodic,
+             const PeriodicityTable &periodic,
              const EndBehaviourTable &end_b)
     :
     BSplineSpace(SpaceData::create(deg, knots, interior_mult, periodic),end_b)
@@ -202,7 +202,7 @@ BSplineSpace<dim_, range_, rank_>::
 create(const DegreeTable &deg,
        std::shared_ptr<GridType> knots,
        const MultiplicityTable &interior_mult,
-       const PeriodicTable &periodic,
+       const PeriodicityTable &periodic,
        const EndBehaviourTable &end_b)
 -> shared_ptr<self_t>
 {

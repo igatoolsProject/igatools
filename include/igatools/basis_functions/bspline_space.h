@@ -156,7 +156,7 @@ public:
     using DegreeTable = typename SpaceData::DegreeTable;
     using MultiplicityTable = typename SpaceData::MultiplicityTable;
     using TensorSizeTable = typename SpaceData::TensorSizeTable;
-    using PeriodicTable = typename SpaceData::PeriodicTable;
+    using PeriodicityTable = typename SpaceData::PeriodicityTable;
     using EndBehaviourTable = typename SpaceData::EndBehaviourTable;
 
 //    using BCTable = typename SpaceData::BCTable;
@@ -206,7 +206,7 @@ public:
     create(const DegreeTable &deg,
            std::shared_ptr<GridType> knots,
            const MultiplicityTable &interior_mult,
-           const PeriodicTable &periodic,
+           const PeriodicityTable &periodic,
            const EndBehaviourTable &end_b);
     ///@}
 
@@ -254,7 +254,7 @@ protected:
     explicit BSplineSpace(const DegreeTable &deg,
                           std::shared_ptr<GridType> knots,
                           const MultiplicityTable &interior_mult,
-                          const PeriodicTable &periodic,
+                          const PeriodicityTable &periodic,
                           const EndBehaviourTable &end_b);
 
 
@@ -327,15 +327,20 @@ public:
 
     ///@}
 
+    const PeriodicityTable &get_periodicity() const override final
+    {
+    	return space_data_->get_periodicity();
+    }
 
+#if 0
     /**
      * Returns a const reference to the end behaviour table of the BSpline space.
      */
     virtual EndBehaviourTable &get_end_behaviour_table() override final
     {
         return end_b_;
-    };
-
+    }
+#endif
     /**
      * Returns a reference to the end behaviour table of the BSpline space.
      */

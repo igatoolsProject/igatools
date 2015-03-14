@@ -33,7 +33,7 @@ template<int dim, int range, int rank>
 DofDistribution<dim, range, rank>::
 DofDistribution(const TensorSizeTable &n_basis,
                 const DegreeTable &degree_table,
-                const PeriodicTable &periodic,
+                const PeriodicityTable &periodic,
                 DistributionPolicy pol)
     :
     num_dofs_table_(n_basis),

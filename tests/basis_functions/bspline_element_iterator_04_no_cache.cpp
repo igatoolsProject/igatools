@@ -52,7 +52,7 @@ create_space<2>(const int num_knots)
     typename Space::DegreeTable degree_table = {{{3,2}},{{2,3}}} ;
 
     using SpaceData = typename Space::SpaceData;
-    using PeriodicTable = typename Space::PeriodicTable;
+    using PeriodicityTable = typename Space::PeriodicityTable;
     using EndBehaviourTable = typename Space::EndBehaviourTable;
 
     return Space::create(degree_table, knots,
@@ -60,7 +60,7 @@ create_space<2>(const int num_knots)
                              InteriorReg::maximum,
                              degree_table,
                              knots->get_num_intervals()),
-                         PeriodicTable(true,filled_array<bool, 2>(false)),
+                         PeriodicityTable(true,filled_array<bool, 2>(false)),
                          EndBehaviourTable(true,filled_array<BasisEndBehaviour, 2>(BasisEndBehaviour::interpolatory))) ;
 }
 
@@ -74,7 +74,7 @@ create_space<3>(const int num_knots)
     typename Space::DegreeTable degree_table = { {{3,2,2}},{{2,3,2}},{{2,2,3}}} ;
 
     using SpaceData = typename Space::SpaceData;
-    using PeriodicTable = typename Space::PeriodicTable;
+    using PeriodicityTable = typename Space::PeriodicityTable;
     using EndBehaviourTable = typename Space::EndBehaviourTable;
 
     return Space::create(degree_table, knots,
@@ -82,7 +82,7 @@ create_space<3>(const int num_knots)
                              InteriorReg::maximum,
                              degree_table,
                              knots->get_num_intervals()),
-                         PeriodicTable(true,filled_array<bool,3>(false)),
+                         PeriodicityTable(true,filled_array<bool,3>(false)),
                          EndBehaviourTable(true,filled_array<BasisEndBehaviour,3>(BasisEndBehaviour::interpolatory))) ;
 }
 

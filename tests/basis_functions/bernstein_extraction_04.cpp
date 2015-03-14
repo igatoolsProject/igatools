@@ -41,7 +41,7 @@ test(const int deg = 1)
     CartesianProductArray<Real,dim> knots({{0,1,2,3,4}});
     auto grid = CartesianGrid<dim>::create(knots);
 
-    typename SplineSpace::PeriodicTable per_t(filled_array<bool,dim>(true));
+    typename SplineSpace::PeriodicityTable per_t(filled_array<bool,dim>(true));
     auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
                     degt, grid->get_num_intervals());
     auto sp_spec = SplineSpace::create(degt, grid, int_mult, per_t);

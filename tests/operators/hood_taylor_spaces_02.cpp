@@ -150,10 +150,10 @@ StokesProblem(const int deg, const int n_knots)
     }
 
 
-    typename PreSpace::PeriodicTable press_periodic_table(filled_array<bool,dim>(false));
+    typename PreSpace::PeriodicityTable press_periodic_table(filled_array<bool,dim>(false));
     typename PreSpace::EndBehaviourTable press_end_b(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::interpolatory));
 
-    typename VelSpace::PeriodicTable vel_periodic_table(filled_array<bool,dim>(false));
+    typename VelSpace::PeriodicityTable vel_periodic_table(filled_array<bool,dim>(false));
     typename VelSpace::EndBehaviourTable   vel_end_b(filled_array<BasisEndBehaviour,dim>(BasisEndBehaviour::interpolatory));
 
 

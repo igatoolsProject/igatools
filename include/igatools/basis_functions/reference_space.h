@@ -109,7 +109,7 @@ public:
     using DegreeTable = typename SpaceData::DegreeTable;
     using MultiplicityTable = typename SpaceData::MultiplicityTable;
     using TensorSizeTable = typename SpaceData::TensorSizeTable;
-    using PeriodicTable = typename SpaceData::PeriodicTable;
+    using PeriodicityTable = typename SpaceData::PeriodicityTable;
     using EndBehaviourTable = typename SpaceData::EndBehaviourTable;
 
     using BCTable = typename SpaceData::template ComponentContainer<std::array<BoundaryConditionType,UnitElement<dim>::n_faces>>;
@@ -254,15 +254,19 @@ public:
     }
     ///@}
 
+#if 0
     /**
      * Returns a reference to the end behaviour table of the BSpline space.
      */
     virtual EndBehaviourTable &get_end_behaviour_table() = 0;
-
+#endif
     /**
      * Returns a const reference to the end behaviour table of the BSpline space.
      */
     virtual const EndBehaviourTable &get_end_behaviour_table() const = 0;
+
+
+    virtual const PeriodicityTable &get_periodicity() const = 0;
 
 
     std::shared_ptr<const DofDistribution<dim, range, rank> >

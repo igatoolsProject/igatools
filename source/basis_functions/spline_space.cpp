@@ -43,7 +43,7 @@ SplineSpace<dim, range, rank>::
 SplineSpace(const DegreeTable &deg,
             std::shared_ptr<GridType> knots,
             const MultiplicityTable &interior_mult,
-            const PeriodicTable &periodic)
+            const PeriodicityTable &periodic)
     :
     GridWrapper<CartesianGrid<dim>>(knots),
                                  interior_mult_(interior_mult),
@@ -68,7 +68,7 @@ SplineSpace<dim, range, rank>::
 create(const DegreeTable &deg,
        std::shared_ptr<GridType> knots,
        const MultiplicityTable &interior_mult,
-       const PeriodicTable &periodic)
+       const PeriodicityTable &periodic)
 {
     using SpSpace = SplineSpace<dim,range,rank>;
     auto sp = std::shared_ptr<SpSpace>(new SpSpace(deg, knots,interior_mult,periodic));
@@ -428,9 +428,9 @@ template<int k>
 auto
 SplineSpace<dim, range, rank>::
 get_sub_space_periodicity(const Index sub_elem_id) const
--> typename SubSpace<k>::PeriodicTable
+-> typename SubSpace<k>::PeriodicityTable
 {
-    using SubPeriodicT = typename SubSpace<k>::PeriodicTable;
+    using SubPeriodicT = typename SubSpace<k>::PeriodicityTable;
     auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
     const auto &active_dirs = k_elem.active_directions;
 

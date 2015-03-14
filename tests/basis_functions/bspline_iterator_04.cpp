@@ -45,7 +45,7 @@ void elem_derivatives(const int n_knots,
     using Space = BSplineSpace<dim, range, rank>;
     auto grid  = CartesianGrid<dim>::create(n_knots);
 
-    typename Space::PeriodicTable periodic(typename Space::Periodicity(filled_array<bool, dim>(false)));
+    typename Space::PeriodicityTable periodic(typename Space::Periodicity(filled_array<bool, dim>(false)));
     typename Space::EndBehaviourTable ebt(typename Space::EndBehaviour(filled_array<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory)));
     auto int_mult = SplineSpace<dim,range,rank>::get_multiplicity_from_regularity(InteriorReg::maximum,
                     deg, grid->get_num_intervals());
