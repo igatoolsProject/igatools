@@ -221,7 +221,7 @@ public:
 
     const PeriodicityTable &get_periodicity() const
     {
-    	return periodic_;
+        return periodic_;
     }
 
     const std::array<Index,n_components> &get_components_map() const

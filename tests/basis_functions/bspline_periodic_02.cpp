@@ -127,16 +127,16 @@ void assemble_matrix(const int n_knots, const int deg)
                 auto phi_j = phi.get_function_view(j);
                 for (int qp = 0; qp < n_qp; ++qp)
                     loc_mat(i,j) +=
-                            ( scalar_product(grad_phi_i[qp], grad_phi_j[qp])
-                              +
-                              scalar_product(phi_i[qp], phi_j[qp])
-                             )
-                            * w_meas[qp];
+                        (scalar_product(grad_phi_i[qp], grad_phi_j[qp])
+                         +
+                         scalar_product(phi_i[qp], phi_j[qp])
+                        )
+                        * w_meas[qp];
             }
 
             for (int qp=0; qp<n_qp; ++qp)
                 loc_rhs(i) += scalar_product(phi_i[qp], f_values[qp])
-                * w_meas[qp];
+                              * w_meas[qp];
         }
 
         const auto loc_dofs = elem->get_local_to_global();
@@ -173,7 +173,7 @@ void assemble_matrix(const int n_knots, const int deg)
 int main()
 {
     const int max_deg=3;
-    for(int deg = 1;deg<max_deg; ++deg)
+    for (int deg = 1; deg<max_deg; ++deg)
     {
         const int n_knots = 5 + deg;
         assemble_matrix<1>(n_knots, deg);

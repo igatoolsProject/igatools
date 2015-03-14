@@ -35,7 +35,7 @@ template<int dim_>
 Quadrature<dim_>::
 Quadrature()
 {
-    //	for (auto &box_direction : bounding_box_)
+    //  for (auto &box_direction : bounding_box_)
     //    {
     //        box_direction[0] = 0.0;
     //        box_direction[1] = 1.0;
@@ -55,25 +55,25 @@ Quadrature(const BBox<dim_> &bounding_box)
 template<int dim_>
 Quadrature<dim_>::
 Quadrature(const TensorSize<dim> &num_points,
-		void (*quad_1d)(int, iga::vector<double>&, iga::vector<double>&))
-		:
-		points_1d_(num_points),
-		weights_1d_(num_points),
-		is_tensor_product_(true)
+           void (*quad_1d)(int, iga::vector<double> &, iga::vector<double> &))
+    :
+    points_1d_(num_points),
+    weights_1d_(num_points),
+    is_tensor_product_(true)
 {
 
-	for(int i = 0; i<dim; ++i)
-	{
-	    iga::vector<double> pts(num_points[i]);
-	    iga::vector<double> w(num_points[i]);
-		quad_1d(num_points[i],pts,w);
-		points_1d_.copy_data_direction(i, pts);
-		weights_1d_.copy_data_direction(i, w);
-	}
+    for (int i = 0; i<dim; ++i)
+    {
+        iga::vector<double> pts(num_points[i]);
+        iga::vector<double> w(num_points[i]);
+        quad_1d(num_points[i],pts,w);
+        points_1d_.copy_data_direction(i, pts);
+        weights_1d_.copy_data_direction(i, w);
+    }
 
-	const auto n_pts = points_1d_.flat_size();
-	for (int i = 0 ; i < n_pts ; ++i)
-		map_point_id_to_coords_id_.push_back(points_1d_.flat_to_tensor(i));
+    const auto n_pts = points_1d_.flat_size();
+    for (int i = 0 ; i < n_pts ; ++i)
+        map_point_id_to_coords_id_.push_back(points_1d_.flat_to_tensor(i));
 }
 
 
@@ -81,13 +81,13 @@ Quadrature(const TensorSize<dim> &num_points,
 template<int dim_>
 Quadrature<dim_>::
 Quadrature(const PointArray &points,
-                 const WeightArray &weights_1d)
-                 :
-                 points_1d_(points),
-                 weights_1d_(weights_1d),
-				 is_tensor_product_(true)
+           const WeightArray &weights_1d)
+    :
+    points_1d_(points),
+    weights_1d_(weights_1d),
+    is_tensor_product_(true)
 {
-	const auto n_pts = points_1d_.flat_size();
+    const auto n_pts = points_1d_.flat_size();
     for (int i = 0 ; i < n_pts ; ++i)
         map_point_id_to_coords_id_.push_back(points_1d_.flat_to_tensor(i));
 }
@@ -204,7 +204,7 @@ reset_points_points_1d_and_weights(
     const PointVector &pts,
     const WeightArray &weights_1d)
 {
-	Assert(!is_tensor_product_, ExcNotImplemented());
+    Assert(!is_tensor_product_, ExcNotImplemented());
     const int n_pts = pts.size();
     Assert(n_pts > 0 , ExcEmptyObject());
 
@@ -351,7 +351,7 @@ get_weights() const
 template<int dim_>
 auto
 Quadrature<dim_>::
-get_weights_1d() const -> const WeightArray&
+get_weights_1d() const -> const WeightArray &
 {
     return weights_1d_;
 }
@@ -361,7 +361,7 @@ get_weights_1d() const -> const WeightArray&
 template<int dim_>
 auto
 Quadrature<dim_>::
-get_points_1d() const -> const PointArray&
+get_points_1d() const -> const PointArray &
 {
     return points_1d_;
 }
@@ -424,32 +424,32 @@ auto
 Quadrature<dim_>::
 collapse_to_sub_element(const int sub_elem_id) const -> Quadrature<dim_>
 {
-	Assert(is_tensor_product_, ExcNotImplemented());
+    Assert(is_tensor_product_, ExcNotImplemented());
 
-	auto &k_elem = UnitElement<dim_>::template get_elem<k>(sub_elem_id);
+    auto &k_elem = UnitElement<dim_>::template get_elem<k>(sub_elem_id);
 
-	PointArray new_coords_1d;
-	WeightArray new_weights_1d;
-	const int n_dir = k_elem.constant_directions.size();
-	for (int j = 0 ; j < n_dir; ++j)
-	{
-		auto dir = k_elem.constant_directions[j];
-		auto val = k_elem.constant_values[j];
+    PointArray new_coords_1d;
+    WeightArray new_weights_1d;
+    const int n_dir = k_elem.constant_directions.size();
+    for (int j = 0 ; j < n_dir; ++j)
+    {
+        auto dir = k_elem.constant_directions[j];
+        auto val = k_elem.constant_values[j];
 
-		new_coords_1d.copy_data_direction(dir, vector<Real>(1, val));
-		new_weights_1d.copy_data_direction(dir, vector<Real>(1, 1.));
+        new_coords_1d.copy_data_direction(dir, vector<Real>(1, val));
+        new_weights_1d.copy_data_direction(dir, vector<Real>(1, 1.));
 
-	}
+    }
 
-	for (auto i : k_elem.active_directions)
-	{
-		new_coords_1d.copy_data_direction(i, points_1d_.get_data_direction(i));
-		new_weights_1d.copy_data_direction(i, weights_1d_.get_data_direction(i));
-	}
+    for (auto i : k_elem.active_directions)
+    {
+        new_coords_1d.copy_data_direction(i, points_1d_.get_data_direction(i));
+        new_weights_1d.copy_data_direction(i, weights_1d_.get_data_direction(i));
+    }
 
-	return self_t(new_coords_1d, new_weights_1d);
+    return self_t(new_coords_1d, new_weights_1d);
 
-	return self_t();
+    return self_t();
 }
 
 
@@ -461,8 +461,8 @@ extend_sub_elem_quad(const Quadrature<k> &eval_pts,
 {
 
     Assert(eval_pts.is_tensor_product(), ExcNotImplemented());
-	using WeightArray = typename Quadrature<dim>::WeightArray;
-	using PointArray = typename Quadrature<dim>::PointArray;
+    using WeightArray = typename Quadrature<dim>::WeightArray;
+    using PointArray = typename Quadrature<dim>::PointArray;
 
     auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
 

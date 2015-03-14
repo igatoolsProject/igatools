@@ -329,7 +329,7 @@ public:
 
     const PeriodicityTable &get_periodicity() const override final
     {
-    	return space_data_->get_periodicity();
+        return space_data_->get_periodicity();
     }
 
 #if 0

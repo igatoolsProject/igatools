@@ -127,12 +127,12 @@ public:
     Quadrature(const PointVector &points);
 
     Quadrature(const TensorSize<dim> &num_points,
-    		void (*)(int, iga::vector<double>&, iga::vector<double>&));
+               void (*)(int, iga::vector<double> &, iga::vector<double> &));
     /**
      * Tensor product constructor
      */
     Quadrature(const PointArray &points,
-                     const WeightArray &weights_1d);
+               const WeightArray &weights_1d);
     /**
      * Construct the object given:
      * - a vector of <tt>points</tt> in the <tt>dim_</tt>-dimensional space;
@@ -140,18 +140,18 @@ public:
      * - the <tt>bounding_box</tt> in which the points are defined.
      */
     Quadrature(const PointVector &points,
-                     const WeightArray &weights_1d,
-                     const BBox<dim_> &bounding_box);
+               const WeightArray &weights_1d,
+               const BBox<dim_> &bounding_box);
 
     /**
      * Copy constructor.
      */
-    Quadrature(const self_t & ) = default;
+    Quadrature(const self_t &) = default;
 
     /**
      * Move constructor.
      */
-    Quadrature(self_t && ) = default;
+    Quadrature(self_t &&) = default;
 
     /**
      * Destructor.
@@ -166,12 +166,12 @@ public:
     /**
      * Copy assignment operator.
      */
-    self_t &operator=(const self_t & ) = default;
+    self_t &operator=(const self_t &) = default;
 
     /**
      * Move assignment operator.
      */
-    self_t &operator=(self_t && ) = default;
+    self_t &operator=(self_t &&) = default;
     ///@}
 
     /**
@@ -202,7 +202,7 @@ public:
     /**
      * Returns TRUE if the weights have a tensor-product structure.
      */
-   // bool have_weights_tensor_product_struct() const;
+    // bool have_weights_tensor_product_struct() const;
     ///@}
 
     /**
@@ -305,8 +305,8 @@ protected:
      * Points on the side of the bounding box are still valid points.
      */
     void reset_points_points_1d_and_weights(
-            const PointVector &pts,
-            const WeightArray &weights_1d);
+        const PointVector &pts,
+        const WeightArray &weights_1d);
 
 private:
     /**

@@ -244,9 +244,9 @@ public:
     const WeightFunctionPtrTable &get_weights() const;
 
     const PeriodicityTable &get_periodicity() const override final
-    		{
-    	return sp_space_->get_periodicity();
-    		}
+    {
+        return sp_space_->get_periodicity();
+    }
 
 #if 0
     /**
