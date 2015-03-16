@@ -285,8 +285,11 @@ public:
     }
 
 
-    virtual vector<Index> get_element_dofs(
+    virtual void get_element_dofs(
         const CartesianGridElement<dim> &element,
+        vector<Index> &dofs_global,
+        vector<Index> &dofs_local_to_patch,
+        vector<Index> &dofs_local_to_elem,
         const std::string &dofs_property = DofProperties::none) const override final;
 
 #if 0
@@ -329,7 +332,7 @@ public:
 
     const PeriodicityTable &get_periodicity() const override final
     {
-    	return space_data_->get_periodicity();
+        return space_data_->get_periodicity();
     }
 
 #if 0

@@ -356,18 +356,25 @@ refine_h_after_grid_refinement(
 
 
 template<int dim_, int range_, int rank_>
-vector<Index>
+void
 BSplineSpace<dim_, range_, rank_>::
 get_element_dofs(
     const CartesianGridElement<dim> &element,
+    vector<Index> &dofs_global,
+    vector<Index> &dofs_local_to_patch,
+    vector<Index> &dofs_local_to_elem,
     const std::string &dofs_property) const
 {
     const auto &accum_mult = space_data_->accumulated_interior_multiplicities();
     const auto &index_table = this->dof_distribution_->get_index_table();
 
-    vector<Index> element_dofs;
+    dofs_global.clear();
+    dofs_local_to_patch.clear();
+    dofs_local_to_elem.clear();
+
     const auto &elem_tensor_id = element.get_tensor_index();
 
+    Index dof_loc_to_elem = 0;
     for (const auto comp : SpaceData::components)
     {
         const auto &index_table_comp = index_table[comp];
@@ -380,23 +387,37 @@ get_element_dofs(
         {
             for (const auto loc_dof_t_id : elem_comp_dof_t_id)
             {
-                const auto dof = index_table_comp(dof_t_origin + loc_dof_t_id);
-                element_dofs.emplace_back(dof);
-            }
+                const auto dof_global = index_table_comp(dof_t_origin + loc_dof_t_id);
+                dofs_global.emplace_back(dof_global);
+
+                const auto dof_loc_to_patch = this->dof_distribution_->global_to_patch_local(dof_global);
+                dofs_local_to_patch.emplace_back(dof_loc_to_patch);
+
+                dofs_local_to_elem.emplace_back(dof_loc_to_elem);
+
+                ++dof_loc_to_elem;
+            } // end loop loc_dof_t_id
         }
         else
         {
             for (const auto loc_dof_t_id : elem_comp_dof_t_id)
             {
-                const auto dof = index_table_comp(dof_t_origin + loc_dof_t_id);
-                if (this->dof_distribution_->test_if_dof_has_property(dof, dofs_property))
-                    element_dofs.emplace_back(dof);
-            }
+                const auto dof_global = index_table_comp(dof_t_origin + loc_dof_t_id);
+                if (this->dof_distribution_->test_if_dof_has_property(dof_global, dofs_property))
+                {
+                    dofs_global.emplace_back(dof_global);
+
+                    const auto dof_loc_to_patch = this->dof_distribution_->global_to_patch_local(dof_global);
+                    dofs_local_to_patch.emplace_back(dof_loc_to_patch);
+
+                    dofs_local_to_elem.emplace_back(dof_loc_to_elem);
+
+                }
+                ++dof_loc_to_elem;
+            } // end loop loc_dof_t_id
         }
 
     } // end comp loop
-
-    return element_dofs;
 }
 
 

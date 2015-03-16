@@ -222,7 +222,12 @@ vector<Index>
 ReferenceSpace<dim, range, rank>::
 get_loc_to_global(const CartesianGridElement<dim> &element) const
 {
-    return this->get_element_dofs(element);
+    vector<Index> dofs_global;
+    vector<Index> dofs_loc_to_patch;
+    vector<Index> dofs_loc_to_elem;
+    this->get_element_dofs(element,dofs_global,dofs_loc_to_patch,dofs_loc_to_elem);
+
+    return dofs_global;
 }
 
 
