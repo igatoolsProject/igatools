@@ -163,6 +163,19 @@ public:
         Assert(local_cache_ != nullptr, ExcNullPtr());
         const auto &cache = local_cache_->template get_value_cache<k>(j);
         Assert(cache.is_filled() == true, ExcCacheNotFilled());
+
+        vector<Index> dofs_global;
+        vector<Index> dofs_local_to_patch;
+        vector<Index> dofs_local_to_elem;
+
+        //TODO (martinelli, 16Mar2015): change the DofProperties to active
+        this->space_->get_element_dofs(
+            *this,
+            dofs_global,
+            dofs_local_to_patch,
+            dofs_local_to_elem,
+            DofProperties::none);
+
         return cache.template get_der<order>();
     }
 
