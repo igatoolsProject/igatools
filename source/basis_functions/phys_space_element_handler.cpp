@@ -155,9 +155,7 @@ init_cache(ElementAccessor &elem)
         cache = shared_ptr<Cache>(new Cache);
     }
 
-    //auto n_basis = space_->get_num_all_element_basis();
-    const auto n_basis = ref_elem.get_num_basis();
-
+    const auto n_basis = ref_elem.get_num_basis(DofProperties::none);
     for (auto &s_id: UnitElement<dim>::template elems_ids<k>())
     {
         auto &s_cache = cache->template get_value_cache<k>(s_id);

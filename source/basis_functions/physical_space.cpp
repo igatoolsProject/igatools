@@ -230,6 +230,7 @@ get_id() const
 }
 #endif
 
+#if 0
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 vector<Index>
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
@@ -246,6 +247,7 @@ get_loc_to_patch(const CartesianGridElement<dim> &element) const
 {
     return ref_space_->get_loc_to_patch(element);
 }
+#endif
 
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 void

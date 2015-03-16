@@ -137,7 +137,7 @@ void PoissonProblem<dim>::assemble()
 
     for (; elem != elem_end; ++elem, ++f_elem)
     {
-        const int n_basis = elem->get_num_basis();
+        const int n_basis = elem->get_num_basis(DofProperties::none);
 
         DenseMatrix loc_mat(n_basis, n_basis);
         loc_mat = 0.0;
@@ -171,7 +171,7 @@ void PoissonProblem<dim>::assemble()
                               * w_meas[qp];
         }
 
-        const auto loc_dofs = elem->get_local_to_global();
+        const auto loc_dofs = elem->get_local_to_global(DofProperties::none);
         matrix->add_block(loc_dofs, loc_dofs,loc_mat);
         rhs->add_block(loc_dofs, loc_rhs);
     }

@@ -130,7 +130,7 @@ fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) -> voi
 
 
     // TODO (pauletti, Nov 27, 2014): if code is in final state remove commented line else fix
-    const auto local_ids = elem_->get_local_to_global();
+    const auto local_ids = elem_->get_local_to_global(DofProperties::none);
     vector<Real> loc_coeff;
     for (const auto &id : local_ids)
         loc_coeff.push_back(coeff_[id]);

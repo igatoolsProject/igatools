@@ -63,7 +63,7 @@ void loc_stiff_matrix(const int n_knots, const int deg)
     auto elem           = phys_space->begin();
     const auto elem_end = phys_space->end();
 
-    const int n_basis = elem->get_num_basis();
+    const int n_basis = elem->get_num_basis(DofProperties::none);
     DenseMatrix loc_mat(n_basis,n_basis);
 
     elem_handler.init_element_cache(elem);

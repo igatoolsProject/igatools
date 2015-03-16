@@ -49,7 +49,7 @@ void elem_dofs(const int n_knots = 4, const int deg=1)
     {
         out << "Element index: " << elem->get_flat_index() << endl;
         out << "Global dofs: ";
-        elem->get_local_to_global().print_info(out);
+        elem->get_local_to_global(DofProperties::none).print_info(out);
         out << endl;
     }
 

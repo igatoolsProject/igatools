@@ -492,9 +492,9 @@ public:
     /** @name Query information without use of cache */
     ///@{
     /**
-     *  Number of non zero basis functions over the current element.
+     *  Number of non zero basis functions with the given @p dofs_property, over the current element.
      */
-    Size get_num_basis() const;
+    Size get_num_basis(const std::string &dofs_property) const;
 
     /**
      * Number of non-zero scalar basis functions associated
@@ -513,22 +513,34 @@ public:
     /**
      * Returns the global dofs of the local (non zero) basis functions
      * on the element.
+     *
+     * @note The dofs can be filtered invoking the function with the argument @p dof_property.
+     * If @p dof_property is equal to DofProperties::none, then no filter is applied.
+     *
      * For example:
      * \code
-       auto loc_to_glob = elem->get_local_to_global();
-       // loc_to_glob[0] is the global id of the first basis function on the element
-       // loc_to_glob[1] is the global id of the second basis function on the element
+       auto loc_to_glob_all = elem->get_local_to_global(DofProperties::none);
+       // loc_to_glob_all[0] is the global id of the first basis function on the element
+       // loc_to_glob_all[1] is the global id of the second basis function on the element
+       // ...
+       auto loc_to_glob_active = elem->get_local_to_global(DofProperties::active);
+       // loc_to_glob_active[0] is the global id of the first active basis function on the element
+       // loc_to_glob_active[1] is the global id of the second active basis function on the element
        // ...
       \endcode
      *
      */
-    vector<Index> get_local_to_global() const;
+    vector<Index> get_local_to_global(const std::string &dofs_property) const;
 
     /**
      * Returns the patch dofs of the local (non zero) basis functions
      * on the element.
+     *
+     * @note The dofs can be filtered invoking the function with the argument @p dof_property.
+     * If @p dof_property is equal to DofProperties::none, then no filter is applied.
+     *
      */
-    vector<Index> get_local_to_patch() const;
+    vector<Index> get_local_to_patch(const std::string &dofs_property) const;
 
     /**
      * Pointer to the @p Space upon which the accessor is iterating on.

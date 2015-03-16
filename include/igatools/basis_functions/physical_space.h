@@ -190,11 +190,11 @@ public:
     {
         return ref_space_->get_degree();
     }
-
+#if 0
     vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;
 
     vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const;
-
+#endif
 
     void get_element_dofs(
         const CartesianGridElement<dim> &element,

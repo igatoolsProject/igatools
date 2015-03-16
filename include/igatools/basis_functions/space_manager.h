@@ -1033,12 +1033,15 @@ add_space(std::shared_ptr<Space> space)
 
     //------------------------------------------------------------------------
     const auto &dof_distribution = *(space->get_dof_distribution());
+    const std::string dofs_filter =
+        dof_distribution.is_property_defined(DofProperties::active) ?
+        DofProperties::active : DofProperties::none;
 
     std::shared_ptr<ElemsDofs> elements_dofs(new ElemsDofs);
     auto elem = space->begin();
     const auto elem_end = space->end();
     for (; elem != elem_end ; ++elem)
-        (*elements_dofs)[elem->get_flat_index()] = elem->get_local_to_global();
+        (*elements_dofs)[elem->get_flat_index()] = elem->get_local_to_global(dofs_filter);
 
 
     auto space_info = std::shared_ptr<SpaceInfo>(

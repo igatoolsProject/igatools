@@ -88,7 +88,7 @@ void  PoissonPreparation<dim>::local_assemble()
         // [iterate as before]
 
         // [local matrix]
-        const int n_basis = elem->get_num_basis();
+        const int n_basis = elem->get_num_basis(DofProperties::none);
 
         DenseMatrix loc_mat(n_basis, n_basis);
         loc_mat = 0.0;

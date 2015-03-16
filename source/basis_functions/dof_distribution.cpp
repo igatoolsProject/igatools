@@ -260,6 +260,13 @@ print_info(LogStream &out) const
 
 }
 
+template<int dim, int range, int rank>
+bool
+DofDistribution<dim, range, rank>::
+is_property_defined(const std::string &property) const
+{
+    return properties_dofs_.is_property_defined(property);
+}
 
 template<int dim, int range, int rank>
 bool
