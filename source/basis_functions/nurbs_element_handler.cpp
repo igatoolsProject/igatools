@@ -155,7 +155,7 @@ operator()(const T &quad1)
         cache = shared_ptr<Cache>(new Cache);
     }
 
-    const auto n_basis = elem_->get_num_basis();
+    const auto n_basis = elem_->get_num_basis(DofProperties::none);
     const auto n_points = grid_handler_->template get_num_points<T::k>();
     const auto flag = (*flags_)[T::k];
 
@@ -317,10 +317,10 @@ evaluate_nurbs_values_from_bspline(
 
     Assert(!phi.empty(), ExcEmptyObject());
 
-    const auto &P = bspline_elem.template get_values<0,dim>(0);
+    const auto &P = bspline_elem.template get_values<0,dim>(0,DofProperties::none);
     const auto n_pts = P.get_num_points();
 
-    const auto bsp_local_to_patch = bspline_elem.get_local_to_patch();
+    const auto bsp_local_to_patch = bspline_elem.get_local_to_patch(DofProperties::none);
 
     const auto nrb_space = nrb_elem_->get_nurbs_space();
     const auto comp_offset = nrb_space->sp_space_->get_basis_offset();
@@ -391,13 +391,13 @@ evaluate_nurbs_gradients_from_bspline(
 
     Assert(!D1_phi.empty(), ExcEmptyObject());
 
-    const auto &P  = bspline_elem.template get_values<0,dim>(0);
-    const auto &dP = bspline_elem.template get_values<1,dim>(0);
+    const auto &P  = bspline_elem.template get_values<0,dim>(0,DofProperties::none);
+    const auto &dP = bspline_elem.template get_values<1,dim>(0,DofProperties::none);
 
     const auto n_pts = P.get_num_points();
 
     const auto nrb_space = nrb_elem_->get_nurbs_space();
-    const auto bsp_local_to_patch = bspline_elem.get_local_to_patch();
+    const auto bsp_local_to_patch = bspline_elem.get_local_to_patch(DofProperties::none);
     const auto comp_offset = nrb_space->sp_space_->get_basis_offset();
 
     int bsp_fn_id = 0;
@@ -494,14 +494,14 @@ evaluate_nurbs_hessians_from_bspline(
      */
     Assert(!D2_phi.empty(), ExcEmptyObject());
 
-    const auto &P   = bspline_elem.template get_values<0,dim>(0);
-    const auto &dP  = bspline_elem.template get_values<1,dim>(0);
-    const auto &d2P = bspline_elem.template get_values<2,dim>(0);
+    const auto &P   = bspline_elem.template get_values<0,dim>(0,DofProperties::none);
+    const auto &dP  = bspline_elem.template get_values<1,dim>(0,DofProperties::none);
+    const auto &d2P = bspline_elem.template get_values<2,dim>(0,DofProperties::none);
 
     const auto n_pts = P.get_num_points();
 
     const auto nrb_space = nrb_elem_->get_nurbs_space();
-    const auto bsp_local_to_patch = bspline_elem.get_local_to_patch();
+    const auto bsp_local_to_patch = bspline_elem.get_local_to_patch(DofProperties::none);
     const auto comp_offset = nrb_space->sp_space_->get_basis_offset();
 
     int bsp_fn_id = 0;

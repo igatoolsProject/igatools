@@ -48,6 +48,13 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
               std::shared_ptr<const Space> space,
               const Quadrature<Space::dim> &quad)
 {
+    const auto &dof_distribution = *(space->get_dof_distribution());
+    const std::string dofs_filter =
+        dof_distribution.is_property_defined(DofProperties::active) ?
+        DofProperties::active : DofProperties::none;
+
+
+
     auto func = function->clone();
     const int dim = Space::dim;
 
@@ -76,12 +83,13 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
     sp_filler->init_element_cache(elem);
 
     const int n_qp = quad.get_num_points();
-    const int n_basis = elem->get_num_basis();
-    DenseVector loc_rhs(n_basis);
-    DenseMatrix loc_mat(n_basis, n_basis);
 
     for (; elem != end; ++elem, ++f_elem)
     {
+        const int n_basis = elem->get_num_basis(dofs_filter);
+        DenseVector loc_rhs(n_basis);
+        DenseMatrix loc_mat(n_basis, n_basis);
+
         func->fill_element_cache(f_elem);
         sp_filler->fill_element_cache(elem);
 
@@ -89,7 +97,7 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
         loc_rhs = 0.;
 
         auto f_at_qp = f_elem->template get_values<0,dim>(0);
-        auto phi = elem->template get_values<0,dim>(0);
+        auto phi = elem->template get_values<0,dim>(0,dofs_filter);
 
         // computing the upper triangular part of the local matrix
         auto w_meas = elem->template get_w_measures<dim>(0);
@@ -112,7 +120,7 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
             for (int j = 0; j < i; ++j)
                 loc_mat(i, j) = loc_mat(j, i);
 
-        const auto local_dofs = elem->get_local_to_global();
+        const auto local_dofs = elem->get_local_to_global(dofs_filter);
         matrix.add_block(local_dofs,local_dofs,loc_mat);
         rhs.add_block(local_dofs,loc_rhs);
     }

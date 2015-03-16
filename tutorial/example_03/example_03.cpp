@@ -100,9 +100,9 @@ void loop_on_space_with_cache()
         elem_handler->fill_element_cache(elem);
         out << "Element: " << elem->get_flat_index();
         out << " has global basis: ";
-        elem->get_local_to_global().print_info(out);
+        elem->get_local_to_global(DofProperties::none).print_info(out);
         out << endl;
-        elem->template get_values<0, dim>(0).print_info(out);
+        elem->template get_values<0, dim>(0,DofProperties::none).print_info(out);
         out<< endl;
     }
     out << endl;

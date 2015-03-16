@@ -275,15 +275,20 @@ public:
     std::shared_ptr<DofDistribution<dim, range, rank> >
     get_dof_distribution();
 
-
+#if 0
     // TODO (pauletti, Oct 16, 2014): need to be documented or deleted, check!
-    vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;
+    vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element,
+                                    const std::string &dofs_property) const;
 
-    vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const;
+    vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element,
+                                   const std::string &dofs_property) const;
+#endif
 
-
-    virtual vector<Index> get_element_dofs(
+    virtual void get_element_dofs(
         const CartesianGridElement<dim> &element,
+        vector<Index> &dofs_global,
+        vector<Index> &dofs_local_to_patch,
+        vector<Index> &dofs_local_to_elem,
         const std::string &dofs_property = DofProperties::none) const = 0;
 
 

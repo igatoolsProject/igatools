@@ -192,6 +192,13 @@ public:
      * @name Functions related to the management/query of the dof properties.
      */
     ///@{
+    /**
+     * Returns TRUE if the @p property is defined.
+     *
+     * @warning Returns true also if the @p property is defined but no dofs have the given @p property.
+     */
+    bool is_property_defined(const std::string &property) const;
+
 
     /**
      * Returns true if the dof with id @p dof_id has the asked @p property.

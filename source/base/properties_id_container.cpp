@@ -28,6 +28,12 @@
 IGA_NAMESPACE_OPEN
 
 
+bool
+PropertiesIdContainer::
+is_property_defined(const std::string &property) const
+{
+    return (properties_id_.count(property) > 0) ? true : false;
+}
 
 bool
 PropertiesIdContainer::

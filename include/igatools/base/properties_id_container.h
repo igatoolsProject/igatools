@@ -40,6 +40,16 @@ class PropertiesIdContainer
 {
 public:
 
+    /**
+     * Returns TRUE if the @p property is defined.
+     *
+     * @warning Returns true also if the @p property is defined but no ids are associated to the @p property.
+     */
+    bool is_property_defined(const std::string &property) const;
+
+    /**
+     * Returns TRUE if the @p id has the given @p property.
+     */
     bool test_id_for_property(const Index id, const std::string &property) const;
 
 

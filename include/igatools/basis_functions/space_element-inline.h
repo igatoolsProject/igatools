@@ -224,11 +224,19 @@ template<class Space>
 inline
 Size
 SpaceElement<Space>::
-get_num_basis() const
+get_num_basis(const std::string &dofs_property) const
 {
     Index total_num_basis = 0;
-    for (const auto n_basis_direction_component : n_basis_direction_)
-        total_num_basis += n_basis_direction_component.flat_size();
+    if (dofs_property != DofProperties::none)
+    {
+        for (const auto n_basis_direction_component : n_basis_direction_)
+            total_num_basis += n_basis_direction_component.flat_size();
+    }
+    else
+    {
+        const auto dofs_global = this->get_local_to_global(dofs_property);
+        total_num_basis = dofs_global.size();
+    }
 
     return total_num_basis;
 }
@@ -257,9 +265,17 @@ template<class Space>
 inline
 auto
 SpaceElement<Space>::
-get_local_to_global() const -> vector<Index>
+get_local_to_global(const std::string &dofs_property) const -> vector<Index>
 {
-    return space_->get_loc_to_global(*this);
+//    return space_->get_loc_to_global(*this,dofs_property);
+
+    vector<Index> dofs_global;
+    vector<Index> dofs_loc_to_patch;
+    vector<Index> dofs_loc_to_elem;
+    space_->get_element_dofs(*this,dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
+
+    return dofs_global;
+
 }
 
 
@@ -267,9 +283,17 @@ template<class Space>
 inline
 auto
 SpaceElement<Space>::
-get_local_to_patch() const -> vector<Index>
+get_local_to_patch(const std::string &dofs_property) const -> vector<Index>
 {
-    return space_->get_loc_to_patch(*this);
+//    return space_->get_loc_to_patch(*this,dofs_property);
+
+    vector<Index> dofs_global;
+    vector<Index> dofs_loc_to_patch;
+    vector<Index> dofs_loc_to_elem;
+    space_->get_element_dofs(*this,dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
+
+    return dofs_loc_to_patch;
+
 }
 
 

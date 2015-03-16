@@ -139,24 +139,32 @@ public:
     Conditional< deriv_order==0,
                  Value,
                  Derivative<deriv_order> > >
-                 evaluate_basis_derivatives_at_points(const Quadrature<dim> &points);
+                 evaluate_basis_derivatives_at_points(
+                     const Quadrature<dim> &points,
+                     const std::string &dofs_property);
 
     ValueTable<Value>
-    evaluate_basis_values_at_points(const Quadrature<dim> &points)
+    evaluate_basis_values_at_points(
+        const Quadrature<dim> &points,
+        const std::string &dofs_property)
     {
-        return this->template evaluate_basis_derivatives_at_points<0>(points);
+        return this->template evaluate_basis_derivatives_at_points<0>(points,dofs_property);
     }
 
     ValueTable<Derivative<1> >
-    evaluate_basis_gradients_at_points(const Quadrature<dim> &points)
+    evaluate_basis_gradients_at_points(
+        const Quadrature<dim> &points,
+        const std::string &dofs_property)
     {
-        return this->template evaluate_basis_derivatives_at_points<1>(points);
+        return this->template evaluate_basis_derivatives_at_points<1>(points,dofs_property);
     }
 
     ValueTable<Derivative<2> >
-    evaluate_basis_hessians_at_points(const Quadrature<dim> &points)
+    evaluate_basis_hessians_at_points(
+        const Quadrature<dim> &points,
+        const std::string &dofs_property)
     {
-        return this->template evaluate_basis_derivatives_at_points<2>(points);
+        return this->template evaluate_basis_derivatives_at_points<2>(points,dofs_property);
     }
     ///@}
 

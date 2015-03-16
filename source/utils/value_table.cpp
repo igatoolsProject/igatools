@@ -57,10 +57,12 @@ ValueTable<T>::
 get_function_view(const int i) -> view
 {
     Assert(this->size() > 0, ExcEmptyObject()) ;
+
+    const auto n_pts = this->get_num_points();
     Assert(i >= 0 && i < this->get_num_functions(), ExcIndexRange(i,0,this->get_num_functions()));
     return view(
-        iterator(*this, i    * this->get_num_points(), 1),
-        iterator(*this,(i+1) * this->get_num_points(), 1));
+        iterator(*this, i    * n_pts, 1),
+        iterator(*this,(i+1) * n_pts, 1));
 }
 
 
@@ -70,10 +72,12 @@ ValueTable<T>::
 get_function_view(const int i) const -> const_view
 {
     Assert(this->size() > 0, ExcEmptyObject()) ;
+
+    const auto n_pts = this->get_num_points();
     Assert(i >= 0 && i < this->get_num_functions(), ExcIndexRange(i,0,this->get_num_functions()));
     return const_view(
-               const_iterator(*this, i    * this->get_num_points(), 1),
-               const_iterator(*this,(i+1) * this->get_num_points(), 1));
+               const_iterator(*this, i    * n_pts, 1),
+               const_iterator(*this,(i+1) * n_pts, 1));
 }
 
 template <class T>
@@ -82,10 +86,12 @@ ValueTable<T>::
 get_point_view(const int i) -> view
 {
     Assert(this->size() > 0, ExcEmptyObject()) ;
-    Assert(i >= 0 && i < this->get_num_points(), ExcIndexRange(i,0,this->get_num_points()));
+
+    const auto n_pts = this->get_num_points();
+    Assert(i >= 0 && i < n_pts, ExcIndexRange(i,0,n_pts));
     return view(
-        iterator(*this,i,this->get_num_points()),
-        iterator(*this,IteratorState::pass_the_end,this->get_num_points()));
+        iterator(*this,i,n_pts),
+        iterator(*this,IteratorState::pass_the_end,n_pts));
 }
 
 
@@ -95,10 +101,12 @@ ValueTable<T>::
 get_point_view(const int i) const -> const_view
 {
     Assert(this->size() > 0, ExcEmptyObject()) ;
-    Assert(i >= 0 && i < this->get_num_points(), ExcIndexRange(i,0,this->get_num_points()));
+
+    const auto n_pts = this->get_num_points();
+    Assert(i >= 0 && i < n_pts, ExcIndexRange(i,0,n_pts));
     return const_view(
-               const_iterator(*this,i,this->get_num_points()),
-               const_iterator(*this,IteratorState::pass_the_end,this->get_num_points()));
+               const_iterator(*this,i,n_pts),
+               const_iterator(*this,IteratorState::pass_the_end,n_pts));
 }
 
 
@@ -107,21 +115,25 @@ ValueVector<T>
 ValueTable<T>::
 evaluate_linear_combination(const vector<Real> &coefficients) const
 {
-    Assert(this->get_num_points() > 0, ExcLowerRange(this->get_num_points(),0));
-    Assert(this->get_num_functions() > 0, ExcLowerRange(this->get_num_functions(),0));
-    Assert(this->get_num_functions() == static_cast<int>(coefficients.size()),
-           ExcDimensionMismatch(this->get_num_functions(),static_cast<int>(coefficients.size())));
+    const auto n_funcs = this->get_num_functions();
+    const auto n_pts = this->get_num_points();
 
-    ValueVector<T> linear_combination(this->get_num_points()) ;
+    Assert(n_pts > 0, ExcLowerRange(n_pts,0));
+    Assert(n_funcs > 0, ExcLowerRange(n_funcs,0));
+    Assert(n_funcs == static_cast<int>(coefficients.size()),
+           ExcDimensionMismatch(n_funcs,static_cast<int>(coefficients.size())));
 
-    for (int iFn = 0 ; iFn < this->get_num_functions() ; ++iFn)
+
+    ValueVector<T> linear_combination(n_pts) ;
+
+    for (int fn = 0 ; fn < n_funcs ; ++fn)
     {
-        const auto func = this->get_function_view(iFn) ;
+        const auto func = this->get_function_view(fn) ;
 
-        Real coeff_iFn = coefficients[iFn] ;
+        const Real coeff_fn = coefficients[fn] ;
 
-        for (int jPt = 0 ; jPt < this->get_num_points() ; ++jPt)
-            linear_combination[jPt] += coeff_iFn * func[jPt] ;
+        for (int pt = 0 ; pt < n_pts ; ++pt)
+            linear_combination[pt] += coeff_fn * func[pt] ;
     }
 
     return linear_combination ;
@@ -150,10 +162,11 @@ ValueTable<T>::
 print_info(LogStream &out) const
 {
     // TODO (pauletti, Sep 12, 2014): should just called the parent print_info
-    out << " (num_functions=" << this->get_num_functions();
+    const auto n_funcs = this->get_num_functions();
+    out << " (num_functions=" << n_funcs;
     out << ",num_points=" << this->get_num_points() << ") :" << std::endl ;
 
-    for (int iFunc = 0 ; iFunc < this->get_num_functions() ; ++iFunc)
+    for (int iFunc = 0 ; iFunc < n_funcs ; ++iFunc)
     {
         out.begin_item("Function " + std::to_string(iFunc));
 

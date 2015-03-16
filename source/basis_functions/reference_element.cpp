@@ -43,7 +43,9 @@ template <int dim, int range, int rank>
 template <int deriv_order>
 auto
 ReferenceElement<dim, range, rank>::
-evaluate_basis_derivatives_at_points(const Quadrature<dim> &points) ->
+evaluate_basis_derivatives_at_points(
+    const Quadrature<dim> &points,
+    const std::string &dofs_property) ->
 ValueTable<
 Conditional< deriv_order==0,
              Value,
@@ -69,7 +71,7 @@ Conditional< deriv_order==0,
 
 //    Assert(false,ExcNotImplemented());
 
-    return this->template get_values<deriv_order,dim>(0);
+    return this->template get_values<deriv_order,dim>(0,dofs_property);
 }
 
 IGA_NAMESPACE_CLOSE

@@ -163,13 +163,13 @@ private:
 
             if (flags.fill_values())
                 std::get<0>(cache.values_) =
-                    space_elem->template linear_combination<0, T::k>(*loc_coeff, j);
+                    space_elem->template linear_combination<0,T::k>(*loc_coeff,j,DofProperties::none);
             if (flags.fill_gradients())
                 std::get<1>(cache.values_) =
-                    space_elem->template linear_combination<1, T::k>(*loc_coeff, j);
+                    space_elem->template linear_combination<1,T::k>(*loc_coeff,j,DofProperties::none);
             if (flags.fill_hessians())
                 std::get<2>(cache.values_) =
-                    space_elem->template linear_combination<2, T::k>(*loc_coeff, j);
+                    space_elem->template linear_combination<2,T::k>(*loc_coeff,j,DofProperties::none);
 
             cache.set_filled(true);
         }

@@ -216,13 +216,20 @@ get_space_manager() const -> std::shared_ptr<const SpaceManager>
 
 
 
-
+#if 0
 template<int dim, int range, int rank>
 vector<Index>
 ReferenceSpace<dim, range, rank>::
-get_loc_to_global(const CartesianGridElement<dim> &element) const
+get_loc_to_global(
+    const CartesianGridElement<dim> &element,
+    const std::string &dofs_property) const
 {
-    return this->get_element_dofs(element);
+    vector<Index> dofs_global;
+    vector<Index> dofs_loc_to_patch;
+    vector<Index> dofs_loc_to_elem;
+    this->get_element_dofs(element,dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
+
+    return dofs_global;
 }
 
 
@@ -230,8 +237,11 @@ get_loc_to_global(const CartesianGridElement<dim> &element) const
 template<int dim, int range, int rank>
 vector<Index>
 ReferenceSpace<dim, range, rank>::
-get_loc_to_patch(const CartesianGridElement<dim> &element) const
+get_loc_to_patch(
+    const CartesianGridElement<dim> &element,
+    const std::string &dofs_property) const
 {
+    /*
     const auto elem_dofs_global = this->get_loc_to_global(element);
     vector<Index> elem_dofs_local;
 
@@ -240,8 +250,15 @@ get_loc_to_patch(const CartesianGridElement<dim> &element) const
             dof_distribution_->global_to_patch_local(dof_global));
 
     return elem_dofs_local;
-}
+    //*/
+    vector<Index> dofs_global;
+    vector<Index> dofs_loc_to_patch;
+    vector<Index> dofs_loc_to_elem;
+    this->get_element_dofs(element,dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
 
+    return dofs_loc_to_patch;
+}
+#endif
 
 template<int dim, int range, int rank>
 void
