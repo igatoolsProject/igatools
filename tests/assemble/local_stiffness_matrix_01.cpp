@@ -74,7 +74,7 @@ void loc_stiff_matrix(const int n_knots, const int deg)
         loc_mat = 0.0;
 
         const auto w_meas = elem->template get_w_measures<dim>(0);
-        const auto grad = elem->template get_values<1,dim>(0);
+        const auto grad = elem->template get_values<1,dim>(0,DofProperties::none);
 
         for (int i=0; i<n_basis; ++i)
         {

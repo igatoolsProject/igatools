@@ -317,7 +317,7 @@ evaluate_nurbs_values_from_bspline(
 
     Assert(!phi.empty(), ExcEmptyObject());
 
-    const auto &P = bspline_elem.template get_values<0,dim>(0);
+    const auto &P = bspline_elem.template get_values<0,dim>(0,DofProperties::none);
     const auto n_pts = P.get_num_points();
 
     const auto bsp_local_to_patch = bspline_elem.get_local_to_patch();
@@ -391,8 +391,8 @@ evaluate_nurbs_gradients_from_bspline(
 
     Assert(!D1_phi.empty(), ExcEmptyObject());
 
-    const auto &P  = bspline_elem.template get_values<0,dim>(0);
-    const auto &dP = bspline_elem.template get_values<1,dim>(0);
+    const auto &P  = bspline_elem.template get_values<0,dim>(0,DofProperties::none);
+    const auto &dP = bspline_elem.template get_values<1,dim>(0,DofProperties::none);
 
     const auto n_pts = P.get_num_points();
 
@@ -494,9 +494,9 @@ evaluate_nurbs_hessians_from_bspline(
      */
     Assert(!D2_phi.empty(), ExcEmptyObject());
 
-    const auto &P   = bspline_elem.template get_values<0,dim>(0);
-    const auto &dP  = bspline_elem.template get_values<1,dim>(0);
-    const auto &d2P = bspline_elem.template get_values<2,dim>(0);
+    const auto &P   = bspline_elem.template get_values<0,dim>(0,DofProperties::none);
+    const auto &dP  = bspline_elem.template get_values<1,dim>(0,DofProperties::none);
+    const auto &d2P = bspline_elem.template get_values<2,dim>(0,DofProperties::none);
 
     const auto n_pts = P.get_num_points();
 

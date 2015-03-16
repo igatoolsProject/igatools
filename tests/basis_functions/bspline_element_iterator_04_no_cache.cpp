@@ -105,7 +105,7 @@ void do_test()
     auto elem = space->begin();
     for (; elem != space->end(); ++elem)
     {
-        const auto values = elem->evaluate_basis_values_at_points(quad);
+        const auto values = elem->evaluate_basis_values_at_points(quad,DofProperties::none);
         out.begin_item("Element " + to_string(elem.get_flat_index()) + " --- Values:");
         values.print_info(out);
         out.end_item();
@@ -115,7 +115,7 @@ void do_test()
         auto elem = space->begin();
         for (; elem != space->end(); ++elem)
         {
-            const auto gradients = elem->evaluate_basis_gradients_at_points(quad);
+            const auto gradients = elem->evaluate_basis_gradients_at_points(quad,DofProperties::none);
             out.begin_item("Element " + to_string(elem.get_flat_index()) + " --- Gradients:");
             gradients.print_info(out);
             out.end_item();
@@ -126,7 +126,7 @@ void do_test()
         auto elem = space->begin();
         for (; elem != space->end(); ++elem)
         {
-            const auto hessians = elem->evaluate_basis_hessians_at_points(quad);
+            const auto hessians = elem->evaluate_basis_hessians_at_points(quad,DofProperties::none);
             out.begin_item("Element " + to_string(elem.get_flat_index()) + " --- Hessians:");
             hessians.print_info(out);
             out.end_item();

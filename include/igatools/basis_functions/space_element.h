@@ -158,45 +158,71 @@ public:
 
     template<int order = 0, int k = dim>
     auto
-    get_values(const int j = 0) const
+    get_values(const int j, const std::string &dofs_property) const
     {
         Assert(local_cache_ != nullptr, ExcNullPtr());
         const auto &cache = local_cache_->template get_value_cache<k>(j);
         Assert(cache.is_filled() == true, ExcCacheNotFilled());
+        const auto values_all_elem_dofs = cache.template get_der<order>();
 
+        //--------------------------------------------------------------------------------------
+        // filtering the values that correspond to the dofs with the given property --- begin
         vector<Index> dofs_global;
         vector<Index> dofs_local_to_patch;
         vector<Index> dofs_local_to_elem;
 
-        //TODO (martinelli, 16Mar2015): change the DofProperties to active
         this->space_->get_element_dofs(
             *this,
             dofs_global,
             dofs_local_to_patch,
             dofs_local_to_elem,
-            DofProperties::none);
+            dofs_property);
 
-        return cache.template get_der<order>();
+        const auto n_active_dofs = dofs_local_to_elem.size();
+        const auto n_pts = values_all_elem_dofs.get_num_points();
+
+        decltype(values_all_elem_dofs) values_active_elem_dofs(n_active_dofs,n_pts);
+
+        int fn = 0;
+        for (const auto loc_dof : dofs_local_to_elem)
+        {
+            const auto values_all_elem_dofs_fn = values_all_elem_dofs.get_function_view(loc_dof);
+
+            const auto values_active_elem_dofs_fn = values_active_elem_dofs.get_function_view(fn);
+
+            std::copy(values_all_elem_dofs_fn.begin(),
+                      values_all_elem_dofs_fn.end(),
+                      values_active_elem_dofs_fn.begin());
+
+            ++fn;
+        }
+        // filtering the values that correspond to the dofs with the given property --- end
+        //--------------------------------------------------------------------------------------
+
+        return values_active_elem_dofs;
     }
 
     auto
-    get_element_values() const
+    get_element_values(const std::string &dofs_property) const
     {
-        return this->template get_values<0,dim>(0);
+        return this->template get_values<0,dim>(0,dofs_property);
     }
 
     template<int order, int k>
     auto
-    linear_combination(const vector<Real> &loc_coefs, const int id) const
+    linear_combination(const vector<Real> &loc_coefs,
+                       const int id,
+                       const std::string &dofs_property) const
     {
         const auto &basis_values =
-            this->template get_values<order, k>(id);
+            this->template get_values<order, k>(id,dofs_property);
         return basis_values.evaluate_linear_combination(loc_coefs) ;
     }
 
 
     template<int k = dim>
-    ValueTable<Div> get_divergences(const int id = 0) const
+    ValueTable<Div> get_divergences(const int id,
+                                    const std::string &dofs_property) const
     {
         /*
         Assert(local_cache_ != nullptr, ExcNullPtr());
@@ -206,7 +232,7 @@ public:
         Assert(cache.flags_handler_.gradients_filled() == true, ExcCacheNotFilled());
         //*/
         const auto &basis_gradients =
-            this->template get_values<1,k>(id);
+            this->template get_values<1,k>(id,dofs_property);
 
         const int n_basis = basis_gradients.get_num_functions();
         const int n_pts   = basis_gradients.get_num_points();
@@ -225,9 +251,9 @@ public:
 
 
 
-    ValueTable<Div> get_element_divergences() const
+    ValueTable<Div> get_element_divergences(const std::string &dofs_property) const
     {
-        return get_divergences<dim>();
+        return get_divergences<dim>(0,dofs_property);
     }
 
 

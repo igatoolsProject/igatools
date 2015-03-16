@@ -66,7 +66,7 @@ void assemble_matrix(const int n_knots, const int deg)
     typename Space::Periodicity periodic = filled_array<bool, dim>(false);
     periodic[0] = true;
     typename Space::EndBehaviour end_b =
-            filled_array<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory);
+        filled_array<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory);
 
     end_b[0] = BasisEndBehaviour::periodic;
 
@@ -81,8 +81,9 @@ void assemble_matrix(const int n_knots, const int deg)
 
     Gradient A;
     Value b = {-5.};
-    for (int i = 0; i < dim; ++i) {
-		A[i]=10*(i+1);
+    for (int i = 0; i < dim; ++i)
+    {
+        A[i]=10*(i+1);
     }
 
     auto f = ConstFunction::create(grid, IdentityFunction<dim>::create(grid), A, b);
@@ -121,8 +122,8 @@ void assemble_matrix(const int n_knots, const int deg)
         elem_handler->fill_element_cache(elem);
         f->fill_element_cache(f_elem);
 
-        auto phi = elem->template get_values<0, dim>(0);
-        auto grad_phi  = elem->template get_values<1, dim>(0);
+        auto phi = elem->template get_values<0, dim>(0,DofProperties::none);
+        auto grad_phi  = elem->template get_values<1, dim>(0,DofProperties::none);
         auto w_meas = elem->template get_w_measures<dim>(0);
 
         grad_phi.print_info(out);
@@ -138,16 +139,16 @@ void assemble_matrix(const int n_knots, const int deg)
                 auto phi_j = phi.get_function_view(j);
                 for (int qp = 0; qp < n_qp; ++qp)
                     loc_mat(i,j) +=
-                            ( scalar_product(grad_phi_i[qp], grad_phi_j[qp])
-                              +
-                              scalar_product(phi_i[qp], phi_j[qp])
-                             )
-                            * w_meas[qp];
+                        (scalar_product(grad_phi_i[qp], grad_phi_j[qp])
+                         +
+                         scalar_product(phi_i[qp], phi_j[qp])
+                        )
+                        * w_meas[qp];
             }
 
             for (int qp=0; qp<n_qp; ++qp)
                 loc_rhs(i) += scalar_product(phi_i[qp], f_values[qp])
-                * w_meas[qp];
+                              * w_meas[qp];
         }
 
         const auto loc_dofs = elem->get_local_to_global();
@@ -200,10 +201,10 @@ void assemble_matrix(const int n_knots, const int deg)
 
 int main()
 {
-    for(int deg = 1;deg<3; ++deg)
+    for (int deg = 1; deg<3; ++deg)
     {
         const int n_knots = 5 + deg;
-       // assemble_matrix<1>(n_knots, deg);
+        // assemble_matrix<1>(n_knots, deg);
         assemble_matrix<2>(n_knots, deg);
     }
     return 0;

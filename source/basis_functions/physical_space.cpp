@@ -247,6 +247,23 @@ get_loc_to_patch(const CartesianGridElement<dim> &element) const
     return ref_space_->get_loc_to_patch(element);
 }
 
+template <int dim_, int range_, int rank_, int codim_, Transformation type_>
+void
+PhysicalSpace<dim_, range_, rank_, codim_, type_>::
+get_element_dofs(
+    const CartesianGridElement<dim> &element,
+    vector<Index> &dofs_global,
+    vector<Index> &dofs_local_to_patch,
+    vector<Index> &dofs_local_to_elem,
+    const std::string &dofs_property) const
+{
+    return ref_space_->get_element_dofs(
+               element,
+               dofs_global,
+               dofs_local_to_patch,
+               dofs_local_to_elem,dofs_property);
+}
+
 
 
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>

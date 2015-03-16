@@ -92,8 +92,8 @@ void StokesProblem<dim>::assemble_Bt()
         vel_sp_values->fill_element_cache(vel_el);
         pre_sp_values->fill_element_cache(pre_el);
 
-        auto q      = pre_el->template get_values<0,k>(0);
-        auto div_v  = vel_el->get_divergences();
+        auto q      = pre_el->template get_values<0,k>(0,DofProperties::none);
+        auto div_v  = vel_el->get_divergences(0,DofProperties::none);
 //        auto div_v  = vel_el->get_basis_divergences();
         auto w_meas = vel_el->template get_w_measures<k>(0);
 

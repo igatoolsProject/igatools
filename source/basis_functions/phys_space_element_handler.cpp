@@ -191,7 +191,7 @@ fill_cache(ElementAccessor &elem, const int j)
     if (flags.fill_values())
     {
         auto &result = cache.template get_der<0>();
-        const auto &ref_values = ref_elem.template get_values<0,k>(j);
+        const auto &ref_values = ref_elem.template get_values<0,k>(j,DofProperties::none);
         push_fwd_elem.template transform_0<RefSpace::range,RefSpace::rank>
         (ref_values, result);
 
@@ -199,8 +199,8 @@ fill_cache(ElementAccessor &elem, const int j)
     }
     if (flags.fill_gradients())
     {
-        const auto &ref_values = ref_elem.template get_values<0,k>(j);
-        const auto &ref_der_1  = ref_elem.template get_values<1,k>(j);
+        const auto &ref_values = ref_elem.template get_values<0,k>(j,DofProperties::none);
+        const auto &ref_der_1  = ref_elem.template get_values<1,k>(j,DofProperties::none);
         const auto &values = cache.template get_der<0>();
         push_fwd_elem.template transform_1<PhysSpace::range,PhysSpace::rank, k>
         (std::make_tuple(ref_values, ref_der_1), values,
@@ -210,9 +210,9 @@ fill_cache(ElementAccessor &elem, const int j)
     }
     if (flags.fill_hessians())
     {
-        const auto &ref_values = ref_elem.template get_values<0,k>(j);
-        const auto &ref_der_1  = ref_elem.template get_values<1,k>(j);
-        const auto &ref_der_2  = ref_elem.template get_values<2,k>(j);
+        const auto &ref_values = ref_elem.template get_values<0,k>(j,DofProperties::none);
+        const auto &ref_der_1  = ref_elem.template get_values<1,k>(j,DofProperties::none);
+        const auto &ref_der_2  = ref_elem.template get_values<2,k>(j,DofProperties::none);
         const auto &values = cache.template get_der<0>();
         const auto &der_1  = cache.template get_der<1>();
         push_fwd_elem.template transform_2<PhysSpace::range,PhysSpace::rank, k>

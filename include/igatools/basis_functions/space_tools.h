@@ -89,7 +89,7 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
         loc_rhs = 0.;
 
         auto f_at_qp = f_elem->template get_values<0,dim>(0);
-        auto phi = elem->template get_values<0,dim>(0);
+        auto phi = elem->template get_values<0,dim>(0,DofProperties::none);
 
         // computing the upper triangular part of the local matrix
         auto w_meas = elem->template get_w_measures<dim>(0);

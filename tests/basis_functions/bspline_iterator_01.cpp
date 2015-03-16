@@ -61,9 +61,9 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
         cache->fill_element_cache(elem);
 
         out << "Sub Element: " << s_id << endl;
-        auto values    = elem->template get_values<0,k>(s_id);
-        auto gradients = elem->template get_values<1,k>(s_id);
-        auto hessians  = elem->template get_values<2,k>(s_id);
+        auto values    = elem->template get_values<0,k>(s_id,DofProperties::none);
+        auto gradients = elem->template get_values<1,k>(s_id,DofProperties::none);
+        auto hessians  = elem->template get_values<2,k>(s_id,DofProperties::none);
 
         out.begin_item("Values basis functions:");
         values.print_info(out);

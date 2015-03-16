@@ -102,7 +102,7 @@ void loop_on_space_with_cache()
         out << " has global basis: ";
         elem->get_local_to_global().print_info(out);
         out << endl;
-        elem->template get_values<0, dim>(0).print_info(out);
+        elem->template get_values<0, dim>(0,DofProperties::none).print_info(out);
         out<< endl;
     }
     out << endl;

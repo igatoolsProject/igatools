@@ -83,9 +83,9 @@ void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
     for (; elem != end; ++elem)
     {
         sp_values.fill_element_cache(elem);
-        elem->template get_values<0, k>().print_info(out);
-        elem->template get_values<1, k>().print_info(out);
-        elem->template get_values<2, k>().print_info(out);
+        elem->template get_values<0, k>(0,DofProperties::none).print_info(out);
+        elem->template get_values<1, k>(0,DofProperties::none).print_info(out);
+        elem->template get_values<2, k>(0,DofProperties::none).print_info(out);
     }
 
 }

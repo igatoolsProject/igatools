@@ -63,7 +63,7 @@ void sub_elem_values(const int n_knots, const int deg)
         {
             cache->fill_element_cache(elem);
             out << "Element" << elem->get_flat_index() << endl;
-            elem->template get_values<0,dim>(0).print_info(out);
+            elem->template get_values<0,dim>(0,DofProperties::none).print_info(out);
             for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
             {
                 if (elem->is_boundary(s_id))
@@ -72,7 +72,7 @@ void sub_elem_values(const int n_knots, const int deg)
                     cache->template fill_cache<k>(elem, s_id);
                     out << "Sub Element: " << s_id << endl;
                     out.begin_item("Values basis functions:");
-                    auto values = elem->template get_values<0,k>(s_id);
+                    auto values = elem->template get_values<0,k>(s_id,DofProperties::none);
                     values.print_info(out);
                     out.end_item();
                 }
