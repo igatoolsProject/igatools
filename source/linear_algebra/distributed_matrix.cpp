@@ -31,7 +31,11 @@ IGA_NAMESPACE_OPEN
 
 namespace
 {
-DeclException2(ExcInvalidIndex,
+DeclException1(ExcInvalidRow,
+               int,
+               << "The row with global index " << arg1 << " is not present in the matrix.");
+
+DeclException2(ExcInvalidEntry,
                int, int,
                << "The entry with index <" << arg1 << ',' << arg2
                << "> does not exist.");
@@ -110,6 +114,9 @@ void
 Matrix<LAPack::trilinos_tpetra>::
 add_entry(const Index row_id, const Index column_id, const Real value)
 {
+    Assert(this->is_row_present(row_id),ExcInvalidRow(row_id));
+    Assert(this->has_entry(row_id,column_id),ExcInvalidEntry(row_id,column_id));
+
     Teuchos::Array<Index> columns_id(1,column_id) ;
     Teuchos::Array<Real> values(1,value) ;
 
@@ -136,14 +143,17 @@ add_block(
     Assert(n_cols == Index(local_matrix.size2()),
            ExcDimensionMismatch(n_cols,Index(local_matrix.size2()))) ;
 
-//    vector<Real> row_values(n_cols) ;
     for (int i = 0 ; i < n_rows ; ++i)
     {
-//        const auto row_local_matrix = local_matrix.get_row(i) ;
-//        for (int j = 0 ; j < n_cols ; ++j)
-//            row_values[j] = row_local_matrix(j) ;
-
         auto row_values = Teuchos::ArrayView<const Real>(&local_matrix(i,0),n_cols);
+
+#ifndef NDEBUG
+        Assert(this->is_row_present(rows_id[i]),ExcInvalidRow(rows_id[i]));
+
+        for (const auto col_id : cols_id)
+            Assert(this->has_entry(rows_id[i],col_id),ExcInvalidEntry(rows_id[i],col_id));
+#endif
+
 
         matrix_->sumIntoGlobalValues(rows_id[i],cols_id,row_values);
     }
@@ -171,6 +181,9 @@ Real
 Matrix<LAPack::trilinos_tpetra>::
 operator()(const Index row, const Index col) const
 {
+    Assert(this->is_row_present(row),ExcInvalidRow(row));
+    Assert(this->has_entry(row,col),ExcInvalidEntry(row,col));
+
     const auto graph = matrix_->getGraph();
 
     const auto row_map = graph->getRowMap();
@@ -198,7 +211,7 @@ operator()(const Index row, const Index col) const
     // This is actually the only difference to the el(i,j) function,
     // which means that we throw an exception in this case instead of just
     // returning zero for an element that is not present in the sparsity pattern.
-    Assert(col_find != local_col_ids.end(), ExcInvalidIndex(row,col));
+    Assert(col_find != local_col_ids.end(), ExcInvalidEntry(row,col));
 
     const Index id_find = static_cast<Index>(col_find-local_col_ids.begin());
 
@@ -210,6 +223,8 @@ void
 Matrix<LAPack::trilinos_tpetra>::
 clear_row(const Index row)
 {
+    Assert(this->is_row_present(row),ExcInvalidRow(row));
+
     const auto graph = matrix_->getGraph();
 
     const auto row_map = graph->getRowMap();
@@ -231,6 +246,39 @@ clear_row(const Index row)
     }
 }
 
+bool
+Matrix<LAPack::trilinos_tpetra>::
+is_row_present(const Index &row_global_id) const
+{
+
+    return (Index(matrix_->getNumEntriesInGlobalRow(row_global_id)) ==
+            Teuchos::OrdinalTraits<Index>::invalid()) ? false : true;
+}
+
+
+bool
+Matrix<LAPack::trilinos_tpetra>::
+has_entry(const Index &row_global_id,const Index &col_global_id) const
+{
+    bool entry_is_found = false;
+
+    if (this->is_row_present(row_global_id))
+    {
+        auto graph = matrix_->getCrsGraph();
+        size_t n_cols_in_row = graph->getNumEntriesInGlobalRow(row_global_id);
+        vector<Index> global_cols(n_cols_in_row);
+        graph->getGlobalRowCopy(row_global_id, global_cols, n_cols_in_row);
+
+        for (const auto global_col : global_cols)
+            if (global_col == col_global_id)
+            {
+                entry_is_found = true;
+                break;
+            }
+    }
+
+    return entry_is_found;
+}
 
 
 void
@@ -257,6 +305,7 @@ print_info(LogStream &out) const
         const auto row_map = graph->getRowMap();
 
         const auto global_row = row_map->getGlobalElement(local_row);
+        Assert(this->is_row_present(global_row),ExcInvalidRow(global_row));
 
         auto n_entries_row = matrix_->getNumEntriesInGlobalRow(global_row);
 
@@ -483,7 +532,7 @@ operator()(const Index row, const Index col) const
     // This is actually the only difference to the el(i,j) function,
     // which means that we throw an exception in this case instead of just
     // returning zero for an element that is not present in the sparsity pattern.
-    Assert(col_find != local_col_ids.end(), ExcInvalidIndex(row,col));
+    Assert(col_find != local_col_ids.end(), ExcInvalidEntry(row,col));
 
     const Index id_find = static_cast<Index>(col_find-local_col_ids.begin());
 

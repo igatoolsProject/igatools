@@ -301,6 +301,22 @@ public:
      */
     void resume_fill();
     ///@}
+
+
+    /**
+     * Returns TRUE if the row with global id @p row_global_id is
+     * defined in the sparsity pattern of the matrix.
+     */
+    bool is_row_present(const Index &row_global_id) const;
+
+    /**
+     * Returns TRUE if the sparsity pattern of the matrix has the entry
+     * specified by the global indices
+     * (for row and column, respectively)
+     * @p row_global_id and @p col_global_id.
+     */
+    bool has_entry(const Index &row_global_id,const Index &col_global_id) const;
+
 };
 
 
