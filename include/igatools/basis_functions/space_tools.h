@@ -209,7 +209,9 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
 
 
 
-
+/**
+ *
+ */
 template<int dim, int codim = 0, int range = 1, int rank = 1>
 Real integrate_difference(Function<dim, codim, range, rank> &f,
                           Function<dim, codim, range, rank> &g,
@@ -333,142 +335,6 @@ Real integrate_difference(Function<dim, codim, range, rank> &f,
 
 };
 
-
-
-
 IGA_NAMESPACE_CLOSE
 
-#if 0
-#include <igatools/base/config.h>
-#include <igatools/base/quadrature.h>
-#include <igatools/geometry/cartesian_grid.h>
-#include <igatools/linear_algebra/distributed_matrix.h>
-#include <igatools/geometry/mapping.h>
-#include <igatools/base/sub_function.h>
-#include <igatools/base/function.h>
-
-#include <igatools/basis_functions/physical_space.h>
-#include <boost/optional.hpp>
-
-#include <memory>
-#include <map>
-
-IGA_NAMESPACE_OPEN
-
-/**
- * This namespace collects functions that work on the
- * physical spaces and fields or functions.
- * Such as:
- * - projections
- * - interpolations
- * - error computations
- */
-namespace space_tools
-{
-/**
- * Determine the knot span index.
- *
- * @return The knot span index of the value @p u in the knot vector @p U.
- * @param[in] p Degree.
- * @param[in] u Knot values for which the span is requested.
- * @param[in] U Knot vector with repeated values.
- *
- * @note The implementation of this function is based on "The NURBS Book" Algorithm A2.1
- */
-Index find_span(
-    const int p,
-    const Real u,
-    const vector<Real> &U);
-
-
-//TODO the order of parameters should be consistent
-/**
- * Computes the norm distance between a generic function and
- * and an isogeometric type function.
- * More precisely,
- * res = | D^i(f-g) |_L2 with i=0 or i=1.
- * It also stores the local norm of each grid element in
- * the element error vector.
- *
- * @note mostly use to compute the convergence rates when the exact solution is
- *       known.
- * @todo document a little more
- */
-template<class Space, LAPack la_pack = LAPack::trilinos>
-Real integrate_difference(const typename Space::Func &exact_solution,
-                          std::shared_ptr<const Space> space,
-                          const Quadrature< Space::dim > &quad,
-                          const Norm &norm_flag,
-                          const Vector<la_pack> &solution_coefs,
-                          vector<Real> &element_error);
-
-
-
-
-// TODO (pauletti, Jun 18, 2014):use space::Function
-// TODO (pauletti, Jun 18, 2014): use a quadrature table, and use a default quad if none provided
-/**
- * Perform an (L2)-Projection the function @p func
- * onto the space @p space using the quadrature rule @p quad.
- *  The projection is a numerical vector (the coefficients of
- *  the projected function)
- */
-template<class Space, LAPack la_pack = LAPack::trilinos>
-Vector<la_pack>
-projection_l2(const typename Space::Func &func,
-              std::shared_ptr<const Space> space,
-              const Quadrature<Space::dim> &quad);
-
-/**
- * Projects (using the L2 scalar product) a function to the whole or part
- * of the boundary of the domain.
- * The piece of the domain is indicated by the boundary ids and the
- * projection is computed using the provided quadrature rule.
- *
- * The projected function is returned in boundary_values, a map containing all
- * indices of degrees of freedom at the boundary and the computed coefficient value
- * for this degree of freedom.
- *
- */
-template<class Space, LAPack la_pack = LAPack::trilinos>
-void project_boundary_values(
-    const typename Space::Func &func,
-    std::shared_ptr<const Space> space,
-    const Quadrature<Space::dim-1> &quad,
-    const std::set<boundary_id>  &boundary_ids,
-    std::map<Index, Real>  &boundary_values);
-
-/**
- * See documentation above.
- */
-template<class Space, LAPack la_pack = LAPack::trilinos>
-void project_boundary_values(
-    const typename Space::Func &func,
-    std::shared_ptr<const Space> space,
-    const Quadrature<Space::dim-1> &quad,
-    const boundary_id bdry_id,
-    std::map<Index,Real>  &boundary_values) ;
-
-//TODO: who uses the next function? delete
-/**
- * Transform a set (CartesianProductArray) of points from the unit reference cube [0,1]^{dim} to the
- * element-based reference domain. It returns also the interval id of the elements that contains the points.
- * @param[in] reference_patch - Reference patch.
- * @param[in] points_ref - Set of points in the unit cube [0,1]^{dim}
- * @param[out] points_element - Set of point in the element-based reference domain.
- * @param knot_interval_id - ID of the intervals owning the points.
- */
-template < int dim >
-void reference_to_element(
-    const CartesianGrid< dim > &reference_patch,
-    const CartesianProductArray< Real, dim> &points_ref,
-    CartesianProductArray< Real, dim> &points_element,
-    CartesianProductArray< int, dim> &knot_interval_id) ;
-
-} ;
-
-IGA_NAMESPACE_CLOSE
-
-#endif // #ifndef SPACE_TOOLS_H_
 #endif
-
