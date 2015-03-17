@@ -285,42 +285,7 @@ Real integrate_difference(Function<dim, codim, range, rank> &f,
         element_error[ elem_id ] = sqrt(element_error[ elem_id ]);
     }
 
-#if 0
-    using Value = typename Space::Func::Value;
-    using Gradient = typename Space::Func::Gradient;
 
-    ValueVector<Value>    u(n_points);
-    ValueVector<Gradient> grad_u(n_points);
-
-    Value err;
-    Gradient grad_err;
-
-    vector<Real>     norm_err_L2_square(n_elements);
-    vector<Real> seminorm_err_H1_square(n_elements);
-
-    for (; elem != end; ++elem)
-    {
-
-
-
-        if (is_H1_seminorm)
-        {
-            const auto &grad_uh = elem->evaluate_field_gradients(solution_coefs_elem);
-            exact_solution.evaluate_gradients(map_at_points, grad_u);
-
-            Real element_err_semiH1_pow2 = 0.0;
-            for (int iPt = 0; iPt < n_points; ++iPt)
-            {
-                grad_err = grad_uh[iPt] - grad_u[iPt];
-
-                element_err_semiH1_pow2 += grad_err.norm_square() * elem->get_w_measures()[iPt];
-            }
-            element_error[ elem_id ] += element_err_semiH1_pow2;
-        }
-
-
-    }
-#endif
     Real err_pow2 = 0.0;
     for (const Real &elem_err : element_error)
         err_pow2 += elem_err * elem_err;
@@ -332,7 +297,61 @@ Real integrate_difference(Function<dim, codim, range, rank> &f,
 }
 
 
+static const std::array<ValueFlags, 3> order_to_flag =
+{ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian};
 
+template<int order, int dim, int codim = 0, int range = 1, int rank = 1>
+void norm_difference_(Function<dim, codim, range, rank> &f,
+                     Function<dim, codim, range, rank> &g,
+                     const Quadrature<dim> &quad,
+                     const Real p,
+                     vector<Real> &element_error)
+{
+    using Func = Function<dim, codim, range, rank>;
+
+    auto flag = ValueFlags::point | ValueFlags::w_measure | order_to_flag[order];
+
+    f.reset(flag, quad);
+    g.reset(flag, quad);
+    const int n_points = quad.get_num_points();
+
+    auto elem_f = f.begin();
+    auto elem_g = g.begin();
+    auto end = f.end();
+
+    f.init_cache(elem_f, Int<dim>());
+    g.init_cache(elem_g, Int<dim>());
+    typename Func::Value err;
+    for (; elem_f != end; ++elem_f, ++elem_g)
+    {
+        f.fill_cache(elem_f, Int<dim>(), 0);
+        g.fill_cache(elem_g, Int<dim>(), 0);
+
+        const int elem_id = elem_f->get_flat_index();
+
+        auto f_val = elem_f->template get_values<order,dim>(0);
+        auto g_val = elem_g->template get_values<order,dim>(0);
+        auto w_meas = elem_f->template get_w_measures<dim>(0);
+
+        Real elem_diff_pow_p = 0.0;
+        for (int iPt = 0; iPt < n_points; ++iPt)
+        {
+            err = f_val[iPt] - g_val[iPt];
+            elem_diff_pow_p += std::pow(err.norm_square(),p/2.) * w_meas[iPt];
+        }
+        element_error[ elem_id ] += elem_diff_pow_p;
+    }
+
+
+//    Real err_pow2 = 0.0;
+//    for (const Real &elem_err : element_error)
+//        err_pow2 += elem_err * elem_err;
+//
+//    Real total_error = sqrt(err_pow2);
+//
+//    return 0.;//total_error;
+
+}
 };
 
 IGA_NAMESPACE_CLOSE
