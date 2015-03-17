@@ -190,11 +190,6 @@ public:
     {
         return ref_space_->get_degree();
     }
-#if 0
-    vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element) const;
-
-    vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element) const;
-#endif
 
     void get_element_dofs(
         const CartesianGridElement<dim> &element,
@@ -236,9 +231,6 @@ public:
 
 
 
-    std::shared_ptr<SpaceManager> get_space_manager();
-
-    std::shared_ptr<const SpaceManager> get_space_manager() const;
 #if 0
 
 

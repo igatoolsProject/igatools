@@ -191,10 +191,13 @@ public:
     ///@}
 
 
+#if 0
     /**
      * Adds an @p offset to the values of the dof ids.
      */
     void add_dofs_offset(const Index offset);
+#endif
+
 
     /**
      * This function returns the global dof id corresponding to the basis function
@@ -275,14 +278,6 @@ public:
     std::shared_ptr<DofDistribution<dim, range, rank> >
     get_dof_distribution();
 
-#if 0
-    // TODO (pauletti, Oct 16, 2014): need to be documented or deleted, check!
-    vector<Index> get_loc_to_global(const CartesianGridElement<dim> &element,
-                                    const std::string &dofs_property) const;
-
-    vector<Index> get_loc_to_patch(const CartesianGridElement<dim> &element,
-                                   const std::string &dofs_property) const;
-#endif
 
     virtual void get_element_dofs(
         const CartesianGridElement<dim> &element,
@@ -290,10 +285,6 @@ public:
         vector<Index> &dofs_local_to_patch,
         vector<Index> &dofs_local_to_elem,
         const std::string &dofs_property = DofProperties::none) const = 0;
-
-
-    std::shared_ptr<SpaceManager> get_space_manager();
-    std::shared_ptr<const SpaceManager> get_space_manager() const;
 
 
     /** @name Functions involving the element iterator */

@@ -65,11 +65,13 @@ do_test_1()
 
         ref_spaces[i_sp] = RefSpace::create(degree,grid);
 
-        ref_spaces[i_sp]->add_dofs_offset(dofs_offset);
+        auto dof_distribution = ref_spaces[i_sp]->get_dof_distribution();
+
+        dof_distribution->add_dofs_offset(dofs_offset);
 
         dofs_offset += ref_spaces[i_sp]->get_num_basis();
 
-        const DMA &index_space = ref_spaces[i_sp]->get_dof_distribution()->get_index_table()[0];
+        const DMA &index_space = dof_distribution->get_index_table()[0];
 
         out << "Index space " << i_sp << " =" << endl;
         index_space.print_info(out);
@@ -126,11 +128,13 @@ do_test_2()
 
         ref_spaces[i_sp] = RefSpace::create(degree,grid);
 
-        ref_spaces[i_sp]->add_dofs_offset(dofs_offset);
+        auto dof_distribution = ref_spaces[i_sp]->get_dof_distribution();
+
+        dof_distribution->add_dofs_offset(dofs_offset);
 
         dofs_offset += ref_spaces[i_sp]->get_num_basis();
 
-        const DMA &index_space = ref_spaces[i_sp]->get_dof_distribution()->get_index_table()[0];
+        const DMA &index_space = dof_distribution->get_index_table()[0];
 
         out << "Index space " << i_sp << " =" << endl;
         index_space.print_info(out);

@@ -37,6 +37,7 @@
 
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
+#include <igatools/basis_functions/space_manager.h>
 #include <igatools/geometry/unit_element.h>
 
 #include <igatools/linear_algebra/sparsity_pattern.h>
@@ -80,7 +81,8 @@ int main()
     using MatrixType = Matrix<la_pack>;
     using LinSolverType = LinearSolverIterative<la_pack>;
 
-    MatrixType matrix(*bspline_space->get_space_manager());
+    auto space_manager = build_space_manager_single_patch(bspline_space);
+    MatrixType matrix(*space_manager);
 
 
     const Index num_rows = matrix.get_num_rows() ;
