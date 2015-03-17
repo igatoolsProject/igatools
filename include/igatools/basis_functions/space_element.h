@@ -158,7 +158,7 @@ public:
 
     template<int order = 0, int k = dim>
     auto
-    get_values(const int j, const std::string &dofs_property) const
+    get_values(const int j, const std::string &dofs_property = DofProperties::none) const
     {
         Assert(local_cache_ != nullptr, ExcNullPtr());
         const auto &cache = local_cache_->template get_value_cache<k>(j);
@@ -203,7 +203,7 @@ public:
     }
 
     auto
-    get_element_values(const std::string &dofs_property) const
+    get_element_values(const std::string &dofs_property = DofProperties::none) const
     {
         return this->template get_values<0,dim>(0,dofs_property);
     }
@@ -492,9 +492,10 @@ public:
     /** @name Query information without use of cache */
     ///@{
     /**
-     *  Number of non zero basis functions with the given @p dofs_property, over the current element.
+     *  Number of non zero basis functions with the given @p dofs_property,
+     *  over the current element.
      */
-    Size get_num_basis(const std::string &dofs_property) const;
+    Size get_num_basis(const std::string &dofs_property = DofProperties::none) const;
 
     /**
      * Number of non-zero scalar basis functions associated
@@ -530,7 +531,7 @@ public:
       \endcode
      *
      */
-    vector<Index> get_local_to_global(const std::string &dofs_property) const;
+    vector<Index> get_local_to_global(const std::string &dofs_property = DofProperties::none) const;
 
     /**
      * Returns the patch dofs of the local (non zero) basis functions
@@ -589,9 +590,6 @@ protected:
                     const Size n_basis);
 
 
-        /** Returns the divergences. */
-        //const ValueTable<Div> &get_divergences() const;
-
 
     public:
         void print_info(LogStream &out) const;
@@ -612,6 +610,7 @@ protected:
         const auto &get_der() const
         {
 #ifndef NDEBUG
+            // TODO (pauletti, Mar 17, 2015): bad checking, should be k independent
             if (k == 0)
             {
                 Assert(flags_handler_.values_filled(),
@@ -633,7 +632,6 @@ protected:
             }
 #endif
 
-//            const auto loc_id_active_dofs = this->
 
             return std::get<k>(values_);
         }
@@ -699,6 +697,7 @@ protected:
     std::shared_ptr<LocalCache> local_cache_;
 
 public:
+    // TODO (pauletti, Mar 17, 2015): this cannot be public, if needed it measn wrong desing
     std::shared_ptr<LocalCache> &get_local_cache()
     {
         return local_cache_;
