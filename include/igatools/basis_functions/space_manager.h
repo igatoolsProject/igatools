@@ -1149,6 +1149,26 @@ get_spaces_connection(
 
 
 
+template<class Space>
+inline
+std::shared_ptr<SpaceManager>
+build_space_manager_single_patch(std::shared_ptr<Space> space)
+{
+    auto space_manager = std::make_shared<SpaceManager>(SpaceManager());
+
+    space_manager->spaces_insertion_open();
+    space_manager->add_space(space);
+    space_manager->spaces_insertion_close();
+
+
+    space_manager->spaces_connectivity_open();
+    space_manager->add_spaces_connection(space);
+    space_manager->spaces_connectivity_close();
+
+    return space_manager;
+}
+
+
 IGA_NAMESPACE_CLOSE
 
 

@@ -20,7 +20,6 @@
 
 #include <igatools/basis_functions/physical_space.h>
 #include <igatools/base/sub_function.h>
-#include <igatools/basis_functions/space_manager.h>
 #include <igatools/basis_functions/phys_space_element_handler.h>
 
 using std::array;
@@ -230,24 +229,6 @@ get_id() const
 }
 #endif
 
-#if 0
-template <int dim_, int range_, int rank_, int codim_, Transformation type_>
-vector<Index>
-PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-get_loc_to_global(const CartesianGridElement<dim> &element) const
-{
-    return ref_space_->get_loc_to_global(element);
-}
-
-
-template <int dim_, int range_, int rank_, int codim_, Transformation type_>
-vector<Index>
-PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-get_loc_to_patch(const CartesianGridElement<dim> &element) const
-{
-    return ref_space_->get_loc_to_patch(element);
-}
-#endif
 
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 void
@@ -266,36 +247,6 @@ get_element_dofs(
                dofs_local_to_elem,dofs_property);
 }
 
-
-
-template <int dim_, int range_, int rank_, int codim_, Transformation type_>
-auto
-PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-get_space_manager() -> shared_ptr<SpaceManager>
-{
-    auto space_manager = make_shared<SpaceManager>(SpaceManager());
-
-    auto this_space = this->shared_from_this();
-
-    space_manager->spaces_insertion_open();
-    space_manager->add_space(this_space);
-    space_manager->spaces_insertion_close();
-
-
-    space_manager->spaces_connectivity_open();
-    space_manager->add_spaces_connection(this_space);
-    space_manager->spaces_connectivity_close();
-
-    return space_manager;
-}
-
-template <int dim_, int range_, int rank_, int codim_, Transformation type_>
-auto
-PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-get_space_manager() const -> std::shared_ptr<const SpaceManager>
-{
-    return const_cast<self_t &>(*this).get_space_manager();
-}
 
 
 

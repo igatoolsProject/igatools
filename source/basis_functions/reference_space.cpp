@@ -25,7 +25,6 @@
 
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/nurbs_space.h>
-#include <igatools/basis_functions/space_manager.h>
 
 
 using std::shared_ptr;
@@ -164,102 +163,9 @@ end(const std::string &element_property) const -> ElementIterator
 
 
 
-template<int dim, int range, int rank>
-auto
-ReferenceSpace<dim, range, rank>::
-get_space_manager() -> shared_ptr<SpaceManager>
-{
-    auto space_manager = make_shared<SpaceManager>(SpaceManager());
-
-
-    shared_ptr<ReferenceSpace<dim,range,rank> > this_space;
-    if (this->is_bspline())
-    {
-        using BSpSpace = BSplineSpace<dim,range,rank>;
-        this_space = dynamic_cast<BSpSpace &>(*this).shared_from_this();
-    }
-    else
-    {
-#ifdef NURBS
-        using NrbSpace = NURBSSpace<dim,range,rank>;
-        this_space = dynamic_cast<NrbSpace &>(*this).shared_from_this();
-#else
-        Assert(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
-        AssertThrow(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
-#endif
-    }
-    Assert(this_space != nullptr,ExcNullPtr());
-
-    space_manager->spaces_insertion_open();
-    space_manager->add_space(this_space);
-    space_manager->spaces_insertion_close();
-
-
-    space_manager->spaces_connectivity_open();
-    space_manager->add_spaces_connection(this_space);
-    space_manager->spaces_connectivity_close();
-
-    return space_manager;
-}
-
-
-
-template<int dim, int range, int rank>
-auto
-ReferenceSpace<dim, range, rank>::
-get_space_manager() const -> std::shared_ptr<const SpaceManager>
-{
-    return const_cast<ReferenceSpace<dim,range,rank> &>(*this).get_space_manager();
-}
-
-
-
 
 
 #if 0
-template<int dim, int range, int rank>
-vector<Index>
-ReferenceSpace<dim, range, rank>::
-get_loc_to_global(
-    const CartesianGridElement<dim> &element,
-    const std::string &dofs_property) const
-{
-    vector<Index> dofs_global;
-    vector<Index> dofs_loc_to_patch;
-    vector<Index> dofs_loc_to_elem;
-    this->get_element_dofs(element,dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
-
-    return dofs_global;
-}
-
-
-
-template<int dim, int range, int rank>
-vector<Index>
-ReferenceSpace<dim, range, rank>::
-get_loc_to_patch(
-    const CartesianGridElement<dim> &element,
-    const std::string &dofs_property) const
-{
-    /*
-    const auto elem_dofs_global = this->get_loc_to_global(element);
-    vector<Index> elem_dofs_local;
-
-    for (const auto dof_global : elem_dofs_global)
-        elem_dofs_local.push_back(
-            dof_distribution_->global_to_patch_local(dof_global));
-
-    return elem_dofs_local;
-    //*/
-    vector<Index> dofs_global;
-    vector<Index> dofs_loc_to_patch;
-    vector<Index> dofs_loc_to_elem;
-    this->get_element_dofs(element,dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
-
-    return dofs_loc_to_patch;
-}
-#endif
-
 template<int dim, int range, int rank>
 void
 ReferenceSpace<dim, range, rank>::
@@ -267,7 +173,7 @@ add_dofs_offset(const Index offset)
 {
     dof_distribution_->add_dofs_offset(offset);
 }
-
+#endif
 
 template<int dim, int range, int rank>
 Index
@@ -277,7 +183,6 @@ get_global_dof_id(const TensorIndex<dim> &tensor_index,
 {
     return dof_distribution_->get_index_table()[comp](tensor_index);
 }
-
 
 template<int dim, int range, int rank>
 auto
