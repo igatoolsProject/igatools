@@ -33,9 +33,40 @@
 #include <igatools/basis_functions/space_tools.h>
 
 
+template<int dim, int range = 1, int rank = 1>
+void norm_difference(const int deg, const int n_knots = 10)
+{
+    const Real p=2.;
+    using Space = BSplineSpace<dim, range, rank>;
+
+
+    auto grid = CartesianGrid<dim>::create(n_knots);
+    auto space = Space::create(deg, grid);
+
+    const int n_qpoints = ceil((2*dim + 1)/2.);
+    QGauss<dim> quad(n_qpoints);
+
+    auto f = std::shared_ptr<ProductFunction<dim> >(new ProductFunction<dim>(grid, IdentityFunction<dim>::create(grid)));
+    typename functions::ConstantFunction<dim,0,1>::Value val {0.};
+    auto g = functions::ConstantFunction<dim,0,1>::create(grid,
+                                                          IdentityFunction<dim>::create(grid), val);
+
+    vector<Real> elem_err(grid->get_num_all_elems());
+    auto err = space_tools::l2_norm_difference(*f, *g, quad, elem_err);
+    out << std::pow(p+1, -dim/p) << "\t" << err << endl;
+
+    vector<Real> elem_err_h1(grid->get_num_all_elems());
+    auto err_h1 = space_tools::h1_norm_difference(*f, *g, quad, elem_err_h1);
+    out <<  err_h1 << endl;
+
+    vector<Real> elem_err_inf(grid->get_num_all_elems());
+    auto err_inf = space_tools::inf_norm_difference(*f, *g, quad, elem_err_inf);
+    out <<  err_inf << endl;
+
+}
 
 template<int dim, int range = 1, int rank = 1>
-void norm_difference(const int deg, const int n_knots = 10, const Real p=2.0)
+void norm_difference_p(const int deg, const int n_knots, const Real p)
 {
     using Space = BSplineSpace<dim, range, rank>;
 
@@ -52,8 +83,7 @@ void norm_difference(const int deg, const int n_knots = 10, const Real p=2.0)
                                                           IdentityFunction<dim>::create(grid), val);
 
     vector<Real> elem_err(grid->get_num_all_elems());
-
-    space_tools::norm_difference_<0,dim>(*f, *g, quad, p, elem_err);
+    space_tools::norm_difference<0,dim>(*f, *g, quad, p, elem_err);
 
     Real err = 0;
     for (const Real &loc_err : elem_err)
@@ -75,7 +105,9 @@ int main()
     norm_difference<2,1,1>(3);
     norm_difference<3,1,1>(1);
 
-    norm_difference<1,1,1>(3, 10, 1);
+    norm_difference_p<1,1,1>(3, 10, 1);
+    norm_difference_p<2,1,1>(3, 10, 1);
+    norm_difference_p<3,1,1>(3, 10, 1);
     return 0;
 }
 

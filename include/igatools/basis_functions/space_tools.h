@@ -298,16 +298,17 @@ Real integrate_difference(Function<dim, codim, range, rank> &f,
 
 
 static const std::array<ValueFlags, 3> order_to_flag =
-{ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian};
+{ValueFlags::value,ValueFlags::gradient,ValueFlags::hessian};
 
 template<int order, int dim, int codim = 0, int range = 1, int rank = 1>
-void norm_difference_(Function<dim, codim, range, rank> &f,
+void norm_difference(Function<dim, codim, range, rank> &f,
                      Function<dim, codim, range, rank> &g,
                      const Quadrature<dim> &quad,
                      const Real p,
                      vector<Real> &element_error)
 {
-    using Func = Function<dim, codim, range, rank>;
+    const bool is_inf = p==std::numeric_limits<Real>::infinity()? true : false;
+    //using Func = Function<dim, codim, range, rank>;
 
     auto flag = ValueFlags::point | ValueFlags::w_measure | order_to_flag[order];
 
@@ -321,7 +322,7 @@ void norm_difference_(Function<dim, codim, range, rank> &f,
 
     f.init_cache(elem_f, Int<dim>());
     g.init_cache(elem_g, Int<dim>());
-    typename Func::Value err;
+   // typename Func::Value err;
     for (; elem_f != end; ++elem_f, ++elem_g)
     {
         f.fill_cache(elem_f, Int<dim>(), 0);
@@ -334,24 +335,85 @@ void norm_difference_(Function<dim, codim, range, rank> &f,
         auto w_meas = elem_f->template get_w_measures<dim>(0);
 
         Real elem_diff_pow_p = 0.0;
+        Real val;
         for (int iPt = 0; iPt < n_points; ++iPt)
         {
-            err = f_val[iPt] - g_val[iPt];
-            elem_diff_pow_p += std::pow(err.norm_square(),p/2.) * w_meas[iPt];
+            const auto err = f_val[iPt] - g_val[iPt];
+            val = err.norm_square();
+            if (is_inf)
+                elem_diff_pow_p = std::max(elem_diff_pow_p, fabs(sqrt(val)));
+            else
+                elem_diff_pow_p += std::pow(val,p/2.) * w_meas[iPt];
         }
         element_error[ elem_id ] += elem_diff_pow_p;
     }
-
-
-//    Real err_pow2 = 0.0;
-//    for (const Real &elem_err : element_error)
-//        err_pow2 += elem_err * elem_err;
-//
-//    Real total_error = sqrt(err_pow2);
-//
-//    return 0.;//total_error;
-
 }
+
+
+
+template<int dim, int codim = 0, int range = 1, int rank = 1>
+Real l2_norm_difference(Function<dim, codim, range, rank> &f,
+                     Function<dim, codim, range, rank> &g,
+                     const Quadrature<dim> &quad,
+                     vector<Real> &elem_error)
+{
+    const Real p=2.;
+    const Real one_p = 1./p;
+    const int order=0;
+
+    space_tools::norm_difference<order,dim, codim, range, rank>(f, g, quad, p, elem_error);
+
+    Real err = 0;
+    for (Real &loc_err : elem_error)
+    {
+        err += loc_err;
+        loc_err = std::pow(loc_err,one_p);
+
+    }
+
+    return std::pow(err,one_p);
+}
+
+
+template<int dim, int codim = 0, int range = 1, int rank = 1>
+Real h1_norm_difference(Function<dim, codim, range, rank> &f,
+                     Function<dim, codim, range, rank> &g,
+                     const Quadrature<dim> &quad,
+                     vector<Real> &elem_error)
+{
+    const Real p=2.;
+    const Real one_p = 1./p;
+
+    space_tools::norm_difference<0,dim, codim, range, rank>(f, g, quad, p, elem_error);
+    space_tools::norm_difference<1,dim, codim, range, rank>(f, g, quad, p, elem_error);
+
+    Real err = 0;
+    for (Real &loc_err : elem_error)
+    {
+        err += loc_err;
+        loc_err = std::pow(loc_err,one_p);
+    }
+
+    return std::pow(err,one_p);
+}
+
+
+
+template<int dim, int codim = 0, int range = 1, int rank = 1>
+Real inf_norm_difference(Function<dim, codim, range, rank> &f,
+                     Function<dim, codim, range, rank> &g,
+                     const Quadrature<dim> &quad,
+                     vector<Real> &elem_error)
+{
+    const Real p=std::numeric_limits<Real>::infinity();
+    space_tools::norm_difference<0, dim, codim, range, rank>(f, g, quad, p, elem_error);
+    Real err = 0;
+    for (const Real &loc_err : elem_error)
+        err = std::max(err,loc_err);
+
+    return err;
+}
+
 };
 
 IGA_NAMESPACE_CLOSE
