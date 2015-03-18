@@ -175,8 +175,8 @@ StokesProblem(const int deg, const int n_knots)
 
     SpaceManager space_manager;
     space_manager.spaces_insertion_open();
-    space_manager.add_space(vel_space_);
-    space_manager.add_space(pre_space_);
+    space_manager.add_space<typename VelSpace::RefSpace>(vel_space_);
+    space_manager.add_space<typename PreSpace::RefSpace>(pre_space_);
     space_manager.spaces_insertion_close();
 
     space_manager.spaces_connectivity_open();
