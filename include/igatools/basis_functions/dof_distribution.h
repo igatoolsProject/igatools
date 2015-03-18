@@ -145,6 +145,14 @@ public:
     Index get_max_dof_id() const;
 
 
+    /**
+     * Returns the number of dofs with the property specified by @p dofs_property.
+     *
+     * @note If @p dofs_property is equal to the default value DofProperties::none then the
+     * value returned is the total number of dofs in the object.
+     */
+    Index get_num_dofs(const std::string &dofs_property = DofProperties::none) const;
+
 
     /**
      * Returns the container used to store the dofs ids of each component
@@ -187,6 +195,15 @@ public:
      */
     Index global_to_patch_local(const Index global_dof_id) const;
 
+
+
+    /**
+     * Converts a @p global_dof_id into the correspondent "component" representation.
+     *
+     * @note The @p global_dof_id must be in the DofDistribution, otherwise in DEBUG mode
+     * an assertion will be raised.
+     */
+    void global_to_comp_local(const Index global_dof_id,int &comp,int &dof_id) const;
 
     /**
      * @name Functions related to the management/query of the dof properties.

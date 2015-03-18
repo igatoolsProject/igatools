@@ -41,6 +41,9 @@ public:
 
     using CoeffType = vector<Real>;
 
+    using CoeffTypeNew = typename SplineSpace<dim,range,rank>::template ComponentContainer<DynamicMultiArray<Real,dim>>;
+
+
 private:
     using base_t = Function<dim, codim, range, rank>;
     using parent_t = Function<dim, codim, range, rank>;
@@ -106,6 +109,8 @@ private:
     std::shared_ptr<const Space> space_;
 
     CoeffType coeff_;
+
+    CoeffTypeNew coeff_new_;
 
     typename Space::ElementIterator elem_;
 

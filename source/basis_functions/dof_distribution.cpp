@@ -174,6 +174,17 @@ get_index_table() const -> const IndexDistributionTable &
 }
 
 
+template<int dim, int range, int rank>
+Index
+DofDistribution<dim, range, rank>::
+get_num_dofs(const std::string &dofs_property) const
+{
+    if (dofs_property == DofProperties::none)
+        return num_dofs_table_.total_dimension();
+    else
+        return this->get_dofs_id_same_property(dofs_property).size();
+}
+
 
 template<int dim, int range, int rank>
 auto
@@ -197,29 +208,35 @@ Index
 DofDistribution<dim, range, rank>::
 global_to_patch_local(const Index global_dof_id) const
 {
-    int comp_id;
+    int comp;
+    Index dof_id_comp;
+    this->global_to_comp_local(global_dof_id,comp,dof_id_comp);
+
+    const Index offset = index_table_size_.get_offset()[comp];
+
+    const Index local_dof_id = offset + dof_id_comp;
+
+    return local_dof_id;
+}
+
+template<int dim, int range, int rank>
+void
+DofDistribution<dim, range, rank>::
+global_to_comp_local(const Index global_dof_id,int &comp,int &dof_id_comp) const
+{
     TensorIndex<dim> tensor_index;
 #ifndef NDEBUG
-    bool global_dof_is_found = this->find_dof_id(global_dof_id,comp_id,tensor_index);
+    bool global_dof_is_found = this->find_dof_id(global_dof_id,comp,tensor_index);
     Assert(global_dof_is_found,
            ExcMessage("The global dof id " + std::to_string(global_dof_id) +
                       " is not present in the DofDistribution."));
 #else
-    this->find_dof_id(global_dof_id,comp_id,tensor_index);
+    this->find_dof_id(global_dof_id,comp,tensor_index);
 #endif
 
-    /*
-    Index offset = 0;
-    for (int comp = 0 ; comp < comp_id ; ++comp)
-        offset += index_table_[comp].flat_size();
-    //*/
-
-    const Index offset = index_table_size_.get_offset()[comp_id];
-
-    const Index local_dof_id = offset + index_table_[comp_id].tensor_to_flat(tensor_index);
-
-    return local_dof_id;
+    dof_id_comp = index_table_[comp].tensor_to_flat(tensor_index);
 }
+
 
 template<int dim, int range, int rank>
 auto
