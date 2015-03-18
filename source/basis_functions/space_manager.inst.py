@@ -29,7 +29,8 @@ f.write( 'using SpacePtrVariant = Variant<\n')
 
 for space in inst.AllRefSpaces + inst.AllPhysSpaces:
     f.write( 'std::shared_ptr<%s>,\n' %space.name)    
-
+    f.write( 'std::shared_ptr<const %s>,\n' %space.name)
+    
 f.seek(f.tell()-2);
 f.write( '>;\n')
 

@@ -60,7 +60,7 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
 
 //    const auto space_manager = space->get_space_manager();
     const auto space_manager =
-        build_space_manager_single_patch(std::const_pointer_cast<Space>(space));
+        build_space_manager_single_patch<Space>(std::const_pointer_cast<Space>(space));
     Matrix<la_pack> matrix(*space_manager);
 
     const auto space_dofs_set = space_manager->get_row_dofs();
