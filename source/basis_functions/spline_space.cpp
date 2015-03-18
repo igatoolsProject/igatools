@@ -51,14 +51,6 @@ SplineSpace(const DegreeTable &deg,
                                  periodic_(periodic)
 {
     this->init();
-
-
-#if 0
-    // create a signal and a connection for the grid refinement
-    this->connect_refinement_h_function(
-        std::bind(&SplineSpace<dim,range,rank>::refine_h_after_grid_refinement, this,
-                  std::placeholders::_1,std::placeholders::_2));
-#endif
 }
 
 
