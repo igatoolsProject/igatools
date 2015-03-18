@@ -354,9 +354,9 @@ void norm_difference(Function<dim, codim, range, rank> &f,
 
 template<int dim, int codim = 0, int range = 1, int rank = 1>
 Real l2_norm_difference(Function<dim, codim, range, rank> &f,
-                     Function<dim, codim, range, rank> &g,
-                     const Quadrature<dim> &quad,
-                     vector<Real> &elem_error)
+                        Function<dim, codim, range, rank> &g,
+                        const Quadrature<dim> &quad,
+                        vector<Real> &elem_error)
 {
     const Real p=2.;
     const Real one_p = 1./p;
@@ -379,9 +379,9 @@ Real l2_norm_difference(Function<dim, codim, range, rank> &f,
 
 template<int dim, int codim = 0, int range = 1, int rank = 1>
 Real h1_norm_difference(Function<dim, codim, range, rank> &f,
-                     Function<dim, codim, range, rank> &g,
-                     const Quadrature<dim> &quad,
-                     vector<Real> &elem_error)
+                        Function<dim, codim, range, rank> &g,
+                        const Quadrature<dim> &quad,
+                        vector<Real> &elem_error)
 {
     const Real p=2.;
     const Real one_p = 1./p;
@@ -403,9 +403,9 @@ Real h1_norm_difference(Function<dim, codim, range, rank> &f,
 
 template<int dim, int codim = 0, int range = 1, int rank = 1>
 Real inf_norm_difference(Function<dim, codim, range, rank> &f,
-                     Function<dim, codim, range, rank> &g,
-                     const Quadrature<dim> &quad,
-                     vector<Real> &elem_error)
+                         Function<dim, codim, range, rank> &g,
+                         const Quadrature<dim> &quad,
+                         vector<Real> &elem_error)
 {
     const Real p=std::numeric_limits<Real>::infinity();
     space_tools::norm_difference<0, dim, codim, range, rank>(f, g, quad, p, elem_error);

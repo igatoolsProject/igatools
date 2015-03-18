@@ -44,15 +44,15 @@ void component_space(const int deg=3,  const int n_knots = 10)
     typename VecSpace::Periodicity periodic = filled_array<bool, dim>(false);
     periodic[0] = true;
     typename VecSpace::EndBehaviour end_b =
-            filled_array<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory);
+        filled_array<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory);
     end_b[0] = BasisEndBehaviour::periodic;
 
     auto space = VecSpace::create(degt, grid, InteriorReg::maximum, periodic, end_b);
     space->print_info(out);
 
     auto comp_space = CompSpace::create(space->get_degree()[0],grid, InteriorReg::maximum,
-                                   space->get_periodicity()[0],
-                                   space->get_end_behaviour_table()[0]);
+                                        space->get_periodicity()[0],
+                                        space->get_end_behaviour_table()[0]);
 
     comp_space->print_info(out);
 
