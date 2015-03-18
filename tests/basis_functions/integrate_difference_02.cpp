@@ -51,8 +51,7 @@ void integrate(const int deg,  const int n_knots)
 
 
     vector<Real> elem_err(grid->get_num_all_elems());
-    Real err = space_tools::integrate_difference<dim>
-               (*f, *g, quad, Norm::L2, elem_err);
+    Real err = space_tools::l2_norm_difference<dim>(*f, *g, quad, elem_err);
 
     out << err << endl;
 }

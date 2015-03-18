@@ -208,7 +208,7 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
 }
 
 
-
+#if 0
 /**
  *
  */
@@ -295,8 +295,11 @@ Real integrate_difference(Function<dim, codim, range, rank> &f,
     return total_error;
 
 }
+#endif
 
 
+
+// TODO (pauletti, Mar 18, 2015): this could be given a more general use
 static const std::array<ValueFlags, 3> order_to_flag =
 {ValueFlags::value,ValueFlags::gradient,ValueFlags::hessian};
 
@@ -308,8 +311,6 @@ void norm_difference(Function<dim, codim, range, rank> &f,
                      vector<Real> &element_error)
 {
     const bool is_inf = p==std::numeric_limits<Real>::infinity()? true : false;
-    //using Func = Function<dim, codim, range, rank>;
-
     auto flag = ValueFlags::point | ValueFlags::w_measure | order_to_flag[order];
 
     f.reset(flag, quad);
@@ -322,7 +323,7 @@ void norm_difference(Function<dim, codim, range, rank> &f,
 
     f.init_cache(elem_f, Int<dim>());
     g.init_cache(elem_g, Int<dim>());
-   // typename Func::Value err;
+
     for (; elem_f != end; ++elem_f, ++elem_g)
     {
         f.fill_cache(elem_f, Int<dim>(), 0);
@@ -373,6 +374,7 @@ Real l2_norm_difference(Function<dim, codim, range, rank> &f,
 
     return std::pow(err,one_p);
 }
+
 
 
 template<int dim, int codim = 0, int range = 1, int rank = 1>

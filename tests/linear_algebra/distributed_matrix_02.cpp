@@ -144,8 +144,8 @@ int main(int argc, char *argv[])
 
     SpaceManager space_manager;
     space_manager.spaces_insertion_open();
-    space_manager.add_space(bspline_space_rows);
-    space_manager.add_space(bspline_space_cols);
+    space_manager.template add_space<ReferenceSpace< dim_domain, dim_range, rank  >>(bspline_space_rows);
+    space_manager.template add_space<ReferenceSpace< dim_domain, dim_range, rank  >>(bspline_space_cols);
     space_manager.spaces_insertion_close();
 
     space_manager.spaces_connectivity_open();
