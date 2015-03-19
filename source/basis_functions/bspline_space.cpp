@@ -343,6 +343,12 @@ refine_h_after_grid_refinement(
     const std::array<bool,dim> &refinement_directions,
     const GridType &grid_old)
 {
+	this->dof_distribution_ = shared_ptr<DofDistribution<dim_,range_,rank_>>(
+	            new DofDistribution<dim_,range_,rank_>(
+	            		this->space_data_->get_num_basis_table(),
+						this->space_data_->get_degree(),
+						this->space_data_->get_periodic_table()));
+
     operators_ = BernsteinExtraction<dim, range, rank>(
                      this->get_grid(),
                      this->space_data_->compute_knots_with_repetition(end_b_),

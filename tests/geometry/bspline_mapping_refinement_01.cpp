@@ -164,7 +164,7 @@ int main()
     out.depth_console(10);
 
     bspline_map<1>();
-//    bspline_map<2>();
+    bspline_map<2>();
 //    bspline_map<3>();
 
 }
