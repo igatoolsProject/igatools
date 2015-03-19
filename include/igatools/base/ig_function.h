@@ -93,7 +93,7 @@ public:
 
     void fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) override;
 
-    std::shared_ptr<const Space> get_iga_space() const;
+    std::shared_ptr<const Space> get_ig_space() const;
 
     const CoeffType &get_coefficients() const;
 

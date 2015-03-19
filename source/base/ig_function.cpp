@@ -75,7 +75,7 @@ IgFunction<Space>::
 reset(const ValueFlags &flag, const eval_pts_variant &eval_pts)
 {
     const std::set<int> elems_id =
-        this->get_iga_space()->get_grid()->get_elements_id();
+        this->get_ig_space()->get_grid()->get_elements_id();
 
     this->reset_selected_elements(
         flag,
@@ -147,7 +147,7 @@ fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) -> voi
 template<class Space>
 auto
 IgFunction<Space>::
-get_iga_space() const -> std::shared_ptr<const Space>
+get_ig_space() const -> std::shared_ptr<const Space>
 {
     return space_;
 }
