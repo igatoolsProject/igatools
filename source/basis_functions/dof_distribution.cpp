@@ -120,7 +120,7 @@ get_max_dof_id() const
 template<int dim, int range, int rank>
 bool
 DofDistribution<dim, range, rank>::
-find_dof_id(const Index dof_id, int &comp_id, TensorIndex<dim> &tensor_index) const
+find_dof_id(const Index dof_id, int &comp_id, Index &dof_id_in_component) const
 {
     bool dof_is_found = false;
 
@@ -138,7 +138,10 @@ find_dof_id(const Index dof_id, int &comp_id, TensorIndex<dim> &tensor_index) co
         {
             dof_is_found = true;
             comp_id = comp;
-            tensor_index = index_table_comp.flat_to_tensor(it-dofs_begin);
+
+            const auto dofs_offset = this->get_dofs_offset();
+            dof_id_in_component = dof_id - dofs_offset[comp_id];
+//            tensor_index = index_table_comp.flat_to_tensor(it-dofs_begin);
 
             break;
         }
@@ -154,11 +157,6 @@ void
 DofDistribution<dim, range, rank>::
 add_dofs_offset(const Index offset)
 {
-    /*
-    for (auto &dofs_component : index_table_)
-        for (auto &dof_id : dofs_component)
-            dof_id += offset;
-    //*/
     for (auto &dof : dofs_view_)
         dof += offset;
 }
@@ -212,6 +210,7 @@ global_to_patch_local(const Index global_dof_id) const
     Index dof_id_comp;
     this->global_to_comp_local(global_dof_id,comp,dof_id_comp);
 
+    //TODO (martinelli, 19Mar2015): this is wrong for periodic dofs
     const Index offset = index_table_size_.get_offset()[comp];
 
     const Index local_dof_id = offset + dof_id_comp;
@@ -224,17 +223,14 @@ void
 DofDistribution<dim, range, rank>::
 global_to_comp_local(const Index global_dof_id,int &comp,int &dof_id_comp) const
 {
-    TensorIndex<dim> tensor_index;
 #ifndef NDEBUG
-    bool global_dof_is_found = this->find_dof_id(global_dof_id,comp,tensor_index);
+    bool global_dof_is_found = this->find_dof_id(global_dof_id,comp,dof_id_comp);
     Assert(global_dof_is_found,
            ExcMessage("The global dof id " + std::to_string(global_dof_id) +
                       " is not present in the DofDistribution."));
 #else
-    this->find_dof_id(global_dof_id,comp,tensor_index);
+    this->find_dof_id(global_dof_id,comp,dof_id_comp);
 #endif
-
-    dof_id_comp = index_table_[comp].tensor_to_flat(tensor_index);
 }
 
 
@@ -243,12 +239,6 @@ auto
 DofDistribution<dim, range, rank>::
 get_dofs_offset() const -> OffsetTable
 {
-    /*
-    OffsetTable offset;
-    offset[0] = 0;
-    for (int comp = 1; comp < Space::n_components; ++comp)
-        offset[comp] = offset[comp-1] + num_dofs_table_.get_component_size(comp-1);
-    //*/
     return num_dofs_table_.get_offset();
 }
 

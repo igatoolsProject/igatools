@@ -119,7 +119,7 @@ public:
     /**
      * This function looks for a @p dof_id and (if found) gives back its
      * component id @p comp
-     * and its TensorIndex<dim> @p tensor_index within the component.
+     * and its flat index @p dof_id_in_component within the component.
      *
      * @returns TRUE if the @p dof_id is found in the DofDistribution.
      *
@@ -127,7 +127,7 @@ public:
      *  @p comp_id and
      * @p tensor_id are UNDETERMINED.
      */
-    bool find_dof_id(const Index dof_id, int &comp_id, TensorIndex<dim> &tensor_index) const;
+    bool find_dof_id(const Index dof_id, int &comp_id, Index &dof_id_in_component) const;
 
     /**
      * Print the class content
@@ -198,7 +198,8 @@ public:
 
 
     /**
-     * Converts a @p global_dof_id into the correspondent "component" representation.
+     * Converts a @p global_dof_id into the correspondent "component" representation,
+     * i.e. the component id @p comp and the flat index @p dof_id within the component.
      *
      * @note The @p global_dof_id must be in the DofDistribution, otherwise in DEBUG mode
      * an assertion will be raised.

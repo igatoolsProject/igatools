@@ -170,14 +170,54 @@ fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) -> voi
     fill_cache_impl.function = this;
 
 
+#if 0
+    LogStream out;
+
+
+    int comp = 0;
+    for (auto &coeff_new_comp : coeff_new_)
+    {
+        out.begin_item("Coeffs new[" + std::to_string(comp) + "]");
+        coeff_new_comp.print_info(out);
+        out.end_item();
+        ++comp;
+    }
+    out.begin_item("Control points info (euclidean coordinates):");
+    coeff_.print_info(out);
+    out.end_item();
+#endif
+
+
     // TODO (pauletti, Nov 27, 2014): if code is in final state remove commented line else fix
     const auto elem_global_ids = elem_->get_local_to_global(DofProperties::none);
     vector<Real> loc_coeff;
+#if 0
     for (const auto &id : elem_global_ids)
         loc_coeff.push_back(coeff_[id]);
-//    auto loc_coeff = coeff_.get_local_coefs(elem_->get_local_to_global());
+    //    auto loc_coeff = coeff_.get_local_coefs(elem_->get_local_to_global());
+#endif
 
+    //-----------------------------------------------------
+    const auto dof_distribution = space_->get_dof_distribution();
+#if 0
+    out.begin_item("Dof distribution");
+    dof_distribution->print_info(out);
+    out.end_item();
+    out.begin_item("elem_global_ids");
+    elem_global_ids.print_info(out);
+    out.end_item();
+#endif
+    for (const auto &dof_global_id : elem_global_ids)
+    {
+        int comp;
+        Index dof_id_in_comp;
+        dof_distribution->global_to_comp_local(dof_global_id,comp,dof_id_in_comp);
 
+//      out << "GID: " << dof_global_id << "    comp: " << comp << "    LID: " << dof_id_in_comp << std::endl;
+
+        loc_coeff.push_back(coeff_new_[comp][dof_id_in_comp]);
+    }
+    //-----------------------------------------------------
 
 
     fill_cache_impl.loc_coeff = &loc_coeff;
