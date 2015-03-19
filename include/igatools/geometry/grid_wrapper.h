@@ -54,7 +54,7 @@ public:
 
     using Topology = typename Grid_::Topology;
 
-protected:
+//protected:
 
     /** @name Constructor and destructor. */
     ///@{

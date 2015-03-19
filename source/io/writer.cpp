@@ -40,7 +40,7 @@ IGA_NAMESPACE_OPEN
 
 template<int dim, int codim, class T>
 Writer<dim, codim, T>::
-Writer(const shared_ptr<const CartesianGrid<dim>> grid)
+Writer(const shared_ptr<CartesianGrid<dim>> grid)
     :
     Writer(IdentityFunction<dim,dim+codim>::create(grid),
            shared_ptr< QUniform<dim> >(new QUniform<dim>(2)))

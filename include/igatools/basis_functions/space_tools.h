@@ -45,7 +45,7 @@ namespace space_tools
 template<class Space, LAPack la_pack = LAPack::trilinos_tpetra>
 std::shared_ptr<IgFunction<Space> >
 projection_l2(const std::shared_ptr<const typename Space::Func> function,
-              std::shared_ptr<const Space> space,
+              std::shared_ptr<Space> space,
               const Quadrature<Space::dim> &quad)
 {
     const auto &dof_distribution = *(space->get_dof_distribution());

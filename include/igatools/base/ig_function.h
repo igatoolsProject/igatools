@@ -56,7 +56,7 @@ private:
 
 public:
 
-    IgFunction(std::shared_ptr<const Space> space, const CoeffType &coeff);
+    IgFunction(std::shared_ptr<Space> space, const CoeffType &coeff);
 
     IgFunction(const self_t &);
 
@@ -76,7 +76,7 @@ public:
 
 public:
     static std::shared_ptr<self_t>
-    create(std::shared_ptr<const Space> space, const CoeffType &coeff);
+    create(std::shared_ptr<Space> space, const CoeffType &coeff);
 
 
     std::shared_ptr<base_t> clone() const override final
@@ -106,7 +106,7 @@ public:
 
 private:
 
-    std::shared_ptr<const Space> space_;
+    std::shared_ptr<Space> space_;
 
     CoeffType coeff_;
 

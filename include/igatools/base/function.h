@@ -24,6 +24,7 @@
 #include <igatools/base/config.h>
 #include <igatools/base/tensor.h>
 #include <igatools/utils/value_vector.h>
+#include <igatools/geometry/grid_wrapper.h>
 #include <igatools/geometry/cartesian_grid_iterator.h>
 #include <igatools/geometry/grid_element_handler.h>
 #include <igatools/base/quadrature.h>
@@ -75,7 +76,7 @@ private:
 
 public:
     using Topology = UnitElement<dim_>;
-    using typename parent_t::GridType;
+    using GridType = CartesianGrid<dim_>;
 
 public:
     static const int l = iga::max(0, dim_-num_sub_elem);
@@ -352,6 +353,9 @@ public:
 
 protected:
     std::array<FunctionFlags, dim_ + 1> flags_;
+
+
+    GridWrapper<CartesianGrid<dim_> > functions_h_refinement_;
 };
 
 

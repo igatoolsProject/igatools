@@ -323,7 +323,7 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
 -> std::shared_ptr<SubSpace<k> >
 {
     using SubMap = SubMapFunction<k, dim, space_dim>;
-    auto grid =  this->get_grid();
+    auto grid = const_pointer_cast<CartesianGrid<dim_> >(this->get_grid());
 
     auto sub_ref_space = get_ref_sub_space(s_id, dof_map, sub_grid);
     auto F = IdentityFunction<dim>::create(grid);
