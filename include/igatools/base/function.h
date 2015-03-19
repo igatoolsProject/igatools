@@ -356,6 +356,17 @@ protected:
 
 
     GridWrapper<CartesianGrid<dim_> > functions_h_refinement_;
+
+public:
+
+    /**
+     * Perform the h-refinement of the grid in all the directions.
+     * Each interval in the unrefined grid is uniformly divided in @p n_subdivisions sub-intervals.
+     */
+    void refine_h(const Size n_subdivisions=2)
+    {
+        functions_h_refinement_.refine_h(n_subdivisions);
+    }
 };
 
 
