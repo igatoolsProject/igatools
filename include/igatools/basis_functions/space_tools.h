@@ -60,7 +60,7 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
 
 //    const auto space_manager = space->get_space_manager();
     const auto space_manager =
-        build_space_manager_single_patch(std::const_pointer_cast<Space>(space));
+        build_space_manager_single_patch<Space>(std::const_pointer_cast<Space>(space));
     Matrix<la_pack> matrix(*space_manager);
 
     const auto space_dofs_set = space_manager->get_row_dofs();
@@ -209,129 +209,123 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
 
 
 
-/**
- *
- */
-template<int dim, int codim = 0, int range = 1, int rank = 1>
-Real integrate_difference(Function<dim, codim, range, rank> &f,
-                          Function<dim, codim, range, rank> &g,
-                          const Quadrature<dim> &quad,
-                          const Norm &norm_flag,
-                          vector<Real> &element_error)
+
+// TODO (pauletti, Mar 18, 2015): this could be given a more general use
+static const std::array<ValueFlags, 3> order_to_flag =
+{ValueFlags::value,ValueFlags::gradient,ValueFlags::hessian};
+
+template<int order, int dim, int codim = 0, int range = 1, int rank = 1>
+void norm_difference(Function<dim, codim, range, rank> &f,
+                     Function<dim, codim, range, rank> &g,
+                     const Quadrature<dim> &quad,
+                     const Real p,
+                     vector<Real> &element_error)
 {
-    using Func = Function<dim, codim, range, rank>;
-
-    bool is_L2_norm     = contains(norm_flag, Norm::L2);
-    bool is_H1_norm     = contains(norm_flag, Norm::H1);
-    bool is_H1_seminorm = contains(norm_flag, Norm::H1_semi);
-
-    Assert(is_L2_norm || is_H1_seminorm || is_H1_norm,
-           ExcMessage("No active flag for the error norm."));
-
-
-    Assert(!((is_L2_norm && is_H1_seminorm) ||
-             (is_L2_norm && is_H1_norm) ||
-             (is_H1_seminorm && is_H1_norm)),
-           ExcMessage("Only a single flag for the error norm can be used."));
-
-
-    if (is_H1_norm)
-    {
-        is_L2_norm     = true;
-        is_H1_seminorm = true;
-    }
-
-    auto flag = ValueFlags::point | ValueFlags::w_measure;
-
-    if (is_L2_norm)
-        flag |= ValueFlags::value;
-
-    if (is_H1_seminorm)
-        flag |= ValueFlags::gradient;
+    const bool is_inf = p==std::numeric_limits<Real>::infinity()? true : false;
+    auto flag = ValueFlags::point | ValueFlags::w_measure | order_to_flag[order];
 
     f.reset(flag, quad);
     g.reset(flag, quad);
-    const int n_points   =  quad.get_num_points();
-    //const int n_elements =  element_error.size();
+    const int n_points = quad.get_num_points();
+
     auto elem_f = f.begin();
     auto elem_g = g.begin();
     auto end = f.end();
 
     f.init_cache(elem_f, Int<dim>());
     g.init_cache(elem_g, Int<dim>());
-    typename Func::Value err;
+
     for (; elem_f != end; ++elem_f, ++elem_g)
     {
         f.fill_cache(elem_f, Int<dim>(), 0);
         g.fill_cache(elem_g, Int<dim>(), 0);
 
         const int elem_id = elem_f->get_flat_index();
-        element_error[ elem_id ] = 0.0;
 
-        if (is_L2_norm)
+        auto f_val = elem_f->template get_values<order,dim>(0);
+        auto g_val = elem_g->template get_values<order,dim>(0);
+        auto w_meas = elem_f->template get_w_measures<dim>(0);
+
+        Real elem_diff_pow_p = 0.0;
+        Real val;
+        for (int iPt = 0; iPt < n_points; ++iPt)
         {
-            auto f_val = elem_f->template get_values<0,dim>(0);
-            auto g_val = elem_g->template get_values<0,dim>(0);
-            auto w_meas = elem_f->template get_w_measures<dim>(0);
-
-            Real element_err_L2_pow2 = 0.0;
-            for (int iPt = 0; iPt < n_points; ++iPt)
-            {
-                err = f_val[iPt] - g_val[iPt];
-                element_err_L2_pow2 += err.norm_square() * w_meas[iPt];
-            }
-            element_error[ elem_id ] += element_err_L2_pow2;
+            const auto err = f_val[iPt] - g_val[iPt];
+            val = err.norm_square();
+            if (is_inf)
+                elem_diff_pow_p = std::max(elem_diff_pow_p, fabs(sqrt(val)));
+            else
+                elem_diff_pow_p += std::pow(val,p/2.) * w_meas[iPt];
         }
-        element_error[ elem_id ] = sqrt(element_error[ elem_id ]);
+        element_error[ elem_id ] += elem_diff_pow_p;
     }
-
-#if 0
-    using Value = typename Space::Func::Value;
-    using Gradient = typename Space::Func::Gradient;
-
-    ValueVector<Value>    u(n_points);
-    ValueVector<Gradient> grad_u(n_points);
-
-    Value err;
-    Gradient grad_err;
-
-    vector<Real>     norm_err_L2_square(n_elements);
-    vector<Real> seminorm_err_H1_square(n_elements);
-
-    for (; elem != end; ++elem)
-    {
-
-
-
-        if (is_H1_seminorm)
-        {
-            const auto &grad_uh = elem->evaluate_field_gradients(solution_coefs_elem);
-            exact_solution.evaluate_gradients(map_at_points, grad_u);
-
-            Real element_err_semiH1_pow2 = 0.0;
-            for (int iPt = 0; iPt < n_points; ++iPt)
-            {
-                grad_err = grad_uh[iPt] - grad_u[iPt];
-
-                element_err_semiH1_pow2 += grad_err.norm_square() * elem->get_w_measures()[iPt];
-            }
-            element_error[ elem_id ] += element_err_semiH1_pow2;
-        }
-
-
-    }
-#endif
-    Real err_pow2 = 0.0;
-    for (const Real &elem_err : element_error)
-        err_pow2 += elem_err * elem_err;
-
-    Real total_error = sqrt(err_pow2);
-
-    return total_error;
-
 }
 
 
+
+template<int dim, int codim = 0, int range = 1, int rank = 1>
+Real l2_norm_difference(Function<dim, codim, range, rank> &f,
+                        Function<dim, codim, range, rank> &g,
+                        const Quadrature<dim> &quad,
+                        vector<Real> &elem_error)
+{
+    const Real p=2.;
+    const Real one_p = 1./p;
+    const int order=0;
+
+    space_tools::norm_difference<order,dim, codim, range, rank>(f, g, quad, p, elem_error);
+
+    Real err = 0;
+    for (Real &loc_err : elem_error)
+    {
+        err += loc_err;
+        loc_err = std::pow(loc_err,one_p);
+
+    }
+
+    return std::pow(err,one_p);
+}
+
+
+
+template<int dim, int codim = 0, int range = 1, int rank = 1>
+Real h1_norm_difference(Function<dim, codim, range, rank> &f,
+                        Function<dim, codim, range, rank> &g,
+                        const Quadrature<dim> &quad,
+                        vector<Real> &elem_error)
+{
+    const Real p=2.;
+    const Real one_p = 1./p;
+
+    space_tools::norm_difference<0,dim, codim, range, rank>(f, g, quad, p, elem_error);
+    space_tools::norm_difference<1,dim, codim, range, rank>(f, g, quad, p, elem_error);
+
+    Real err = 0;
+    for (Real &loc_err : elem_error)
+    {
+        err += loc_err;
+        loc_err = std::pow(loc_err,one_p);
+    }
+
+    return std::pow(err,one_p);
+}
+
+
+
+template<int dim, int codim = 0, int range = 1, int rank = 1>
+Real inf_norm_difference(Function<dim, codim, range, rank> &f,
+                         Function<dim, codim, range, rank> &g,
+                         const Quadrature<dim> &quad,
+                         vector<Real> &elem_error)
+{
+    const Real p=std::numeric_limits<Real>::infinity();
+    space_tools::norm_difference<0, dim, codim, range, rank>(f, g, quad, p, elem_error);
+    Real err = 0;
+    for (const Real &loc_err : elem_error)
+        err = std::max(err,loc_err);
+
+    return err;
+}
 
 };
 

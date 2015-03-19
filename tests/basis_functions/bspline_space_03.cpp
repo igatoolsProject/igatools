@@ -19,52 +19,48 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for the integrate_difference function.
+ *  Test for building a matrix on a space of an igfunction
  *
  *  author: pauletti
- *  date: 26 Jun 2014
+ *  date: 2015-03-17
+ *
  */
 
 #include "../tests.h"
 
-#include "common_functions.h"
-#include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/space_tools.h>
+#include <igatools/basis_functions/bspline_element.h>
+#include <igatools/base/ig_function.h>
+#include <igatools/linear_algebra/distributed_matrix.h>
 
-template<int dim, int range = 1, int rank = 1>
-void integrate(const int deg,  const int n_knots)
+
+template<int dim, int codim=0>
+void using_const_space(shared_ptr<IgFunction<ReferenceSpace<dim>>> fun)
 {
-    using Space = BSplineSpace<dim, range, rank>;
+    OUTSTART
 
-    auto grid = CartesianGrid<dim>::create(n_knots);
-    auto space = Space::create(deg, grid);
+	auto space = fun->get_ig_space();
+    Matrix<LAPack::trilinos_tpetra> matrix(*build_space_manager_single_patch<const ReferenceSpace<dim>>(space));
 
-    const int n_qpoints = ceil((2*dim + 1)/2.);
-    QGauss<dim> quad(n_qpoints);
-
-
-    auto f = NormFunction<dim>::create(grid, IdentityFunction<dim>::create(grid));
-
-    typename functions::ConstantFunction<dim,0,1>::Value val {0.};
-    auto g = functions::ConstantFunction<dim,0,1>::create(grid, IdentityFunction<dim>::create(grid), val);
-
-
-    vector<Real> elem_err(grid->get_num_all_elems());
-    Real err = space_tools::l2_norm_difference<dim>(*f, *g, quad, elem_err);
-
-    out << err << endl;
+    OUTEND
 }
+
 
 
 
 int main()
 {
-    out.depth_console(20);
+	const int dim = 2;
+	using Space = BSplineSpace<dim>;
 
-    integrate<3,1,1>(1,3);
+	auto grid = CartesianGrid<dim>::create(5);
+	auto space = Space::create(1, grid);
 
+	typename IgFunction<ReferenceSpace<dim>>::CoeffType coeff(space->get_num_basis());
+    auto fun = IgFunction<ReferenceSpace<dim>>::create(space, coeff);
+
+
+    using_const_space<2>(fun);
 
     return 0;
 }
-

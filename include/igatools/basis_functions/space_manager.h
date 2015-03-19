@@ -1149,6 +1149,8 @@ get_spaces_connection(
 
 
 
+
+// TODO (pauletti, Mar 18, 2015): should the pointer be to const space?
 template<class Space>
 inline
 std::shared_ptr<SpaceManager>

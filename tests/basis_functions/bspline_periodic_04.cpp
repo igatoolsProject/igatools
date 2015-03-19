@@ -92,7 +92,7 @@ void assemble_matrix(const int n_knots, const int deg)
     using Vec = Vector<LAPack::trilinos_tpetra>;
 
     const auto n_basis = space->get_num_basis();
-    auto space_manager = build_space_manager_single_patch(space);
+    auto space_manager = build_space_manager_single_patch<RefSpace>(space);
     auto matrix   = Mat::create(*space_manager);
     auto rhs      = Vec::create(n_basis);
     auto solution = Vec::create(n_basis);

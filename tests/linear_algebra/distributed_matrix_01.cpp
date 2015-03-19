@@ -81,7 +81,7 @@ int main()
     using MatrixType = Matrix<la_pack>;
     using LinSolverType = LinearSolverIterative<la_pack>;
 
-    auto space_manager = build_space_manager_single_patch(bspline_space);
+    auto space_manager = build_space_manager_single_patch<ReferenceSpace< dim_domain, dim_range, rank>>(bspline_space);
     MatrixType matrix(*space_manager);
 
 

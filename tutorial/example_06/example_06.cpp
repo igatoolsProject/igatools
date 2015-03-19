@@ -99,7 +99,7 @@ PoissonProblem(const int n_knots, const int deg)
     face_quad(QGauss<dim-1>(deg+1))
 {
     const auto n_basis = space->get_num_basis();
-    auto space_manager = build_space_manager_single_patch(space);
+    auto space_manager = build_space_manager_single_patch<RefSpace>(space);
     matrix   = Mat::create(*space_manager);
     rhs      = Vec::create(n_basis);
     solution = Vec::create(n_basis);
