@@ -642,9 +642,11 @@ refine_directions(
     this->insert_knots(knots_to_insert);
     //-------------------------------------------------------------
 
+#if 0
     // refining the objects that's are attached to the CartesianGrid
     // (i.e. that are defined using this CartesianGrid object)
     this->refine_signals_(refinement_directions,*grid_pre_refinement_);
+#endif
 }
 
 
@@ -688,6 +690,14 @@ CartesianGrid<dim_>::
 connect_refinement(const SignalRefineSlot &subscriber)
 {
     return refine_signals_.connect(subscriber);
+}
+
+template <int dim_>
+boost::signals2::connection
+CartesianGrid<dim_>::
+connect_insert_knots(const SignalInsertKnotsSlot &subscriber)
+{
+    return insert_knots_signals_.connect(subscriber);
 }
 
 
