@@ -33,30 +33,54 @@
 #include <igatools/linear_algebra/distributed_matrix.h>
 
 
+struct DofProp
+{
+    static const std::string interior;
+    static const std::string dirichlet;
+    static const std::string neumman;
+};
+
+const std::string DofProp::interior = "interior";
+const std::string DofProp::dirichlet  = "dirichlet";
+const std::string DofProp::neumman  = "neumman";
 
 template<int dim, int range = 1, int rank = 1>
 void filtered_dofs(const int deg = 1, const int n_knots = 3)
 {
     OUTSTART
 
-    std::string interior = "interior";
-    using RefSpace = ReferenceSpace<dim, range, rank>;
     using Space = BSplineSpace<dim, range, rank>;
 
     auto grid = CartesianGrid<dim>::create(n_knots);
     auto space = Space::create(deg, grid);
     auto dof_dist = space->get_dof_distribution();
-    dof_dist->add_dofs_property(interior);
+    dof_dist->add_dofs_property(DofProp::interior);
+    dof_dist->add_dofs_property(DofProp::dirichlet);
+    dof_dist->add_dofs_property(DofProp::neumman);
+
     std::set<Index> int_dofs={4};
-    dof_dist->set_dof_property_status(interior, int_dofs,true);
+    dof_dist->set_dof_property_status(DofProp::interior, int_dofs,true);
+    std::set<Index> dir_dofs={6,3,0, 1, 2, 5, 8};
+    dof_dist->set_dof_property_status(DofProp::dirichlet, dir_dofs,true);
+    std::set<Index> neu_dofs={7};
+    dof_dist->set_dof_property_status(DofProp::neumman, neu_dofs,true);
 
     auto elem = space->begin();
     auto end  = space->end();
 
     for(;elem != end; ++elem)
     {
-        auto loc_to_glob = elem->get_local_to_global("interior");
-        loc_to_glob.print_info(out);
+        out << "Interior dofs:" << endl;
+        elem->get_local_to_global(DofProp::interior).print_info(out);
+        out << endl;
+
+        out << "dirichlet dofs:" << endl;
+        elem->get_local_to_global(DofProp::dirichlet).print_info(out);
+        out << endl;
+
+        out << "neumman dofs:" << endl;
+        elem->get_local_to_global(DofProp::neumman).print_info(out);
+        out << endl;
         out << endl;
     }
 
