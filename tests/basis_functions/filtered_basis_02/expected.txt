@@ -1,0 +1,33 @@
+========================================================================
+void filtered_dofs(int, int) [with int dim = 2; int range = 1; int rank = 1]
+========================================================================
+Interior dofs:
+[ 4 ]
+dirichlet dofs:
+[ 0 1 3 ]
+neumman dofs:
+[ ]
+
+Interior dofs:
+[ 4 ]
+dirichlet dofs:
+[ 1 2 5 ]
+neumman dofs:
+[ ]
+
+Interior dofs:
+[ 4 ]
+dirichlet dofs:
+[ 3 6 ]
+neumman dofs:
+[ 7 ]
+
+Interior dofs:
+[ 4 ]
+dirichlet dofs:
+[ 5 8 ]
+neumman dofs:
+[ 7 ]
+
+========================================================================
+
