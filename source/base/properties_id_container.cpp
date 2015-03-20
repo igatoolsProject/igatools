@@ -150,6 +150,19 @@ end() const -> const_iterator
     return properties_id_.end();
 }
 
+
+vector<std::string>
+PropertiesIdContainer::
+get_properties() const
+{
+    vector<std::string> properties;
+
+    for (const auto &ids_same_property : properties_id_)
+        properties.emplace_back(ids_same_property.first);
+
+    return properties;
+}
+
 void
 PropertiesIdContainer::
 print_info(LogStream &out) const

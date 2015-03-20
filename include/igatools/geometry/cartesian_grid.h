@@ -24,6 +24,7 @@
 #include <igatools/base/config.h>
 #include <igatools/base/tensor.h>
 #include <igatools/base/logstream.h>
+#include <igatools/utils/array.h>
 #include <igatools/utils/cartesian_product_array.h>
 #include <igatools/utils/dynamic_multi_array.h>
 #include <igatools/geometry/unit_element.h>
@@ -521,6 +522,17 @@ public:
     std::map<ElementIterator, vector<int> >
     find_elements_of_points(const ValueVector<Points<dim_>> &points) const;
 
+    /**
+     * Given a point, this function return the id of the
+     * elements that intersects with the point.
+     *
+     * @note If the point is lying exactly on knot line(s),
+     * then the point can have intersection with multiple elements.
+     */
+    vector<Index>
+    find_elements_id_of_point(const Points<dim_> &point) const;
+
+
 public:
     /**
      * Prints debug information of the CartesianGrid to a LogStream.
@@ -592,6 +604,13 @@ public:
      */
     boost::signals2::connection
     connect_refinement(const SignalRefineSlot &subscriber);
+
+
+    /**
+     * Insert the @p knots_to_insert to the grid and to the object that are using the grid.
+     * @note The @p knots_to_insert may contain multiple knot values in each direction.
+     */
+    void insert_knots(special_array<vector<Real>,dim_> &knots_to_insert);
 
     /**
      * Returns the grid before the last refinement. If no refinement is
@@ -692,6 +711,7 @@ public:
      */
     std::set<Index> get_elements_id() const;
 
+
 private:
     /**
      * Returns the flat ids of the sub-elements corresponding to the element with index @p elem_id,
@@ -725,6 +745,19 @@ private:
      * function pointers.
      */
     signal_refine_t refine_signals_;
+
+
+    /** Type for the insert_knots signal. */
+    using signal_insert_knots_t =
+        boost::signals2::signal<
+        void (const special_array<vector<Real>,dim_> &new_knots,const CartesianGrid<dim_> &old_grid)>;
+
+    /**
+     * Signals for the h-refinement. It can be viewed as a FIFO list of
+     * function pointers.
+     */
+    signal_insert_knots_t insert_knots_signals_;
+
 
     friend class CartesianGridElement<dim_>;
 };

@@ -103,7 +103,13 @@ IgFunction<Space>::
 create(std::shared_ptr<Space> space,
        const CoeffType &coeff) ->  std::shared_ptr<self_t>
 {
-    return std::shared_ptr<self_t>(new self_t(space, coeff));
+    auto ig_func = std::shared_ptr<self_t>(new self_t(space, coeff));
+
+    Assert(ig_func != nullptr, ExcNullPtr());
+
+    ig_func->create_connection_for_h_refinement(ig_func);
+
+    return ig_func;
 }
 
 
@@ -280,6 +286,205 @@ operator +=(const self_t &fun) -> self_t &
     }
 
     return *this;
+}
+
+template<class Space>
+void
+IgFunction<Space>::
+refine_h_after_grid_refinement(
+    const std::array<bool,dim> &refinement_directions,
+    const CartesianGrid<dim> &grid_old)
+{
+    auto grid = this->get_grid();
+
+    LogStream out;
+    out.begin_item("Grid Old");
+    grid_old.print_info(out);
+    out.end_item();
+
+    out.begin_item("Grid New");
+    grid->print_info(out);
+    out.end_item();
+
+#if 0
+    auto ref_space = data_->ref_space_;
+
+    using bspline_space_t = BSplineSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>;
+    const bspline_space_t &bspline_space = get_bspline_space(*ref_space);
+
+    auto knots_with_repetitions_pre_refinement = bspline_space.get_spline_space_previous_refinement()
+                                                 ->compute_knots_with_repetition(
+                                                     bspline_space.get_end_behaviour());
+    auto knots_with_repetitions = bspline_space.compute_knots_with_repetition(
+                                      bspline_space.get_end_behaviour());
+#endif
+
+
+#if 0
+    for (int direction_id = 0 ; direction_id < dim ; ++direction_id)
+    {
+        if (refinement_directions[direction_id])
+        {
+            // knots in the refined grid along the selected direction
+            vector<Real> knots_new = grid->get_knot_coordinates(direction_id);
+
+            // knots in the original (unrefined) grid along the selected direction
+            vector<Real> knots_old = grid_old->get_knot_coordinates(direction_id);
+
+            vector<Real> knots_added(knots_new.size());
+
+            // find the knots in the refined grid that are not present in the old grid
+            auto it = std::set_difference(
+                          knots_new.begin(),knots_new.end(),
+                          knots_old.begin(),knots_old.end(),
+                          knots_added.begin());
+
+            knots_added.resize(it-knots_added.begin());
+
+
+            for (int comp_id = 0 ; comp_id < space_dim ; ++comp_id)
+            {
+                const int p = ref_space->get_degree()[comp_id][direction_id];
+                const auto &U = knots_with_repetitions_pre_refinement[comp_id].get_data_direction(direction_id);
+                const auto &X = knots_added;
+                const auto &Ubar = knots_with_repetitions[comp_id].get_data_direction(direction_id);
+
+                const int m = U.size()-1;
+                const int r = X.size()-1;
+                const int a = space_tools::find_span(p,X[0],U);
+                const int b = space_tools::find_span(p,X[r],U)+1;
+
+                const int n = m-p-1;
+
+                const auto &Pw = data_->ctrl_mesh_[comp_id];
+                const auto old_sizes = Pw.tensor_size();
+                Assert(old_sizes[direction_id] == n+1,
+                       ExcDimensionMismatch(old_sizes[direction_id],n+1));
+
+
+                auto new_sizes = old_sizes;
+                new_sizes[direction_id] += r+1; // r+1 new weights in the refinement direction
+                Assert(new_sizes[direction_id] ==
+                       data_->ref_space_->get_num_basis(comp_id,direction_id),
+                       ExcDimensionMismatch(new_sizes[direction_id],
+                                            data_->ref_space_->get_num_basis(comp_id,direction_id)));
+
+                DynamicMultiArray<Real,dim> Qw(new_sizes);
+
+                for (Index j = 0 ; j <= a-p ; ++j)
+                {
+                    Qw.copy_slice(direction_id,j,
+                                  Pw.get_slice(direction_id,j));
+                }
+
+                for (Index j = b-1 ; j <= n ; ++j)
+                {
+                    Qw.copy_slice(direction_id,j+r+1,
+                                  Pw.get_slice(direction_id,j));
+                }
+
+                Index i = b + p - 1;
+                Index k = b + p + r;
+                for (Index j = r ; j >= 0 ; --j)
+                {
+                    while (X[j] <= U[i] && i > a)
+                    {
+                        Qw.copy_slice(direction_id,k-p-1,Pw.get_slice(direction_id,i-p-1));
+                        k = k-1;
+                        i = i-1;
+                    }
+                    Qw.copy_slice(direction_id,k-p-1,
+                                  Qw.get_slice(direction_id,k-p));
+
+                    for (Index l = 1 ; l <= p ; ++l)
+                    {
+                        Index ind = k-p+l;
+
+                        Real alfa = Ubar[k+l] - X[j];
+                        if (fabs(alfa) == 0.0)
+                        {
+                            Qw.copy_slice(direction_id,ind-1,Qw.get_slice(direction_id,ind));
+                        }
+                        else
+                        {
+                            alfa = alfa / (Ubar[k+l] - U[i-p+l]);
+
+                            Qw.copy_slice(direction_id,ind-1,
+                                          alfa  * Qw.get_slice(direction_id,ind-1) +
+                                          (1.0-alfa) * Qw.get_slice(direction_id,ind));
+                        }
+                    } // end loop l
+                    k = k-1;
+
+                } // end loop j
+
+                data_->ctrl_mesh_[comp_id] = Qw;
+                //*/
+            } // end loop comp_id
+        } // end if (refinement_directions[direction_id])
+
+    } // end loop direction_id
+
+
+
+    //----------------------------------
+    // copy the control mesh after the refinement
+    data_->control_points_.resize(data_->ref_space_->get_num_basis());
+
+    if (RefSpace::has_weights)
+    {
+#ifdef NURBS
+        const auto weights_after_refinement = get_weights_from_ref_space(*(data_->ref_space_));
+
+        Index ctrl_pt_id = 0;
+        for (int comp_id = 0 ; comp_id < space_dim ; ++comp_id)
+        {
+            const auto &ctrl_mesh_comp = data_->ctrl_mesh_[comp_id];
+            const auto &weights_after_refinement_comp = weights_after_refinement[comp_id];
+
+            const Size n_dofs_comp = data_->ref_space_->get_num_basis(comp_id);
+            for (Index loc_id = 0 ; loc_id < n_dofs_comp ; ++loc_id, ++ctrl_pt_id)
+            {
+                // if NURBS, transform the control points from  projective to euclidean coordinates
+                const Real &w = weights_after_refinement_comp[loc_id];
+
+                data_->control_points_[ctrl_pt_id] = ctrl_mesh_comp[loc_id] / w ;
+            }
+        }
+#endif
+    }
+    else
+    {
+        Index ctrl_pt_id = 0;
+        for (int comp_id = 0 ; comp_id < space_dim ; ++comp_id)
+        {
+            const auto &ctrl_mesh_comp = data_->ctrl_mesh_[comp_id];
+            const Size n_dofs_comp = data_->ref_space_->get_num_basis(comp_id);
+            for (Index loc_id = 0 ; loc_id < n_dofs_comp ; ++loc_id, ++ctrl_pt_id)
+                data_->control_points_[ctrl_pt_id] = ctrl_mesh_comp[loc_id];
+        }
+    }
+    //----------------------------------
+#endif
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+}
+
+
+template<class Space>
+void
+IgFunction<Space>::
+create_connection_for_h_refinement(std::shared_ptr<self_t> ig_function)
+{
+    using SlotType = typename CartesianGrid<dim>::SignalRefineSlot;
+
+    auto refinement_func_igfunction =
+        std::bind(&self_t::refine_h_after_grid_refinement,
+                  ig_function.get(),
+                  std::placeholders::_1,
+                  std::placeholders::_2);
+    this->functions_h_refinement_.connect_refinement_h_function(
+        SlotType(refinement_func_igfunction).track_foreign(ig_function));
 }
 
 

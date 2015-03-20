@@ -23,7 +23,8 @@
 #define __GRID_WRAPPER_H_
 
 #include <igatools/base/config.h>
-
+#include <igatools/utils/array.h>
+#include <igatools/geometry/cartesian_grid.h>
 
 #include <array>
 #include <memory>
@@ -140,9 +141,16 @@ public:
      * @ingroup h_refinement
      */
     void refine_h(const Size n_subdivisions = 2);
+
+
+
+    /**
+     * Insert the @p new_knots to the grid and to the object that are using the grid.
+     * @note The @p new_knots may contain multiple knot values.
+     */
+    void insert_knots(special_array<vector<Real>,GridType::dim> &new_knots);
     ///@}
 
-protected:
     /**
      * Connect the function @p subscriber to the h-refinement signal in the grid object and create
      * the relative connection.
@@ -151,6 +159,9 @@ protected:
      */
     void
     connect_refinement_h_function(const typename GridType::SignalRefineSlot &subscriber);
+
+
+
 
 private:
     /** Grid object. */
@@ -161,6 +172,7 @@ private:
      * Connection to the signal for the h-refinement.
      */
     boost::signals2::connection refine_h_connection_ ;
+
 };
 
 

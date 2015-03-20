@@ -98,6 +98,22 @@ connect_refinement_h_function(const typename GridType::SignalRefineSlot &subscri
 }
 
 
+template <class GridType>
+void
+GridWrapper<GridType>::
+insert_knots(special_array<vector<Real>,GridType::dim> &new_knots)
+{
+
+
+    // refining the objects that's are attached to the CartesianGrid
+    // (i.e. that are defined using this CartesianGrid object)
+//    this->refine_signals_(new_knots);
+
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+}
+
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/grid_wrapper.inst>

@@ -190,6 +190,15 @@ private:
     ResetDispatcher reset_impl;
     InitCacheDispatcher init_cache_impl;
     FillCacheDispatcher fill_cache_impl;
+
+
+
+    void create_connection_for_h_refinement(std::shared_ptr<self_t> ig_function);
+
+    void refine_h_after_grid_refinement(
+        const std::array<bool,dim> &refinement_directions,
+        const CartesianGrid<dim> &grid_old);
+
 };
 
 IGA_NAMESPACE_CLOSE

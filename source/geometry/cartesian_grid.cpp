@@ -19,6 +19,7 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/geometry/cartesian_grid.h>
+#include <igatools/geometry/grid_tools.h>
 #include <igatools/base/exceptions.h>
 #include <igatools/base/array_utils.h>
 #include <igatools/utils/vector_tools.h>
@@ -610,7 +611,6 @@ get_grid_pre_refinement() const -> shared_ptr<const self_t>
 }
 
 
-
 template <int dim_>
 void
 CartesianGrid<dim_>::
@@ -861,7 +861,58 @@ find_elements_of_points(const ValueVector<Points<dim_>> &points) const
     return res;
 }
 
+template <int dim_>
+vector<Index>
+CartesianGrid<dim_>::
+find_elements_id_of_point(const Points<dim_> &point) const
+{
+    Assert(false,ExcMessage("This function is not tested at all!"));
+    vector<Index> elements_id;
 
+    std::array<vector<int>,dim> ids;
+
+    TensorSize<dim_> n_elems_dir;
+    for (const auto dir : Topology::active_directions)
+    {
+        const auto &knots = knot_coordinates_.get_data_direction(dir);
+
+        const auto &p = point[dir];
+
+        Assert(p >= knots.front() && p <= knots.back(),
+               ExcMessage("The point coordinate p[" + std::to_string(dir) + "]= " + std::to_string(p) +
+                          " is not in the interval spanned by the knots along the direction " +
+                          std::to_string(dir)));
+
+        //find the index j in the knots for which knots[j] <= point[dir]
+        const auto low = std::lower_bound(knots.begin(),knots.end(),p);
+        const Index j = low - knots.begin();
+
+        if (j > 0)
+        {
+            ids[dir].push_back(j-1);
+            if (p == knots[j])
+                ids[dir].push_back(j);
+        }
+        else
+        {
+            ids[dir].push_back(0);
+        }
+        n_elems_dir[dir] = ids[dir].size();
+    }
+
+    const auto n_elems = n_elems_dir.flat_size();
+    const auto w_elems_dir = MultiArrayUtils<dim_>::compute_weight(n_elems_dir);
+    for (int elem = 0 ; elem < n_elems ; ++elem)
+    {
+        const auto t_id = MultiArrayUtils<dim_>::flat_to_tensor_index(elem,w_elems_dir);
+        TensorIndex<dim_> elem_t_id;
+        for (const auto dir : Topology::active_directions)
+            elem_t_id[dir] = ids[dir][t_id[dir]];
+
+        elements_id.emplace_back(this->tensor_to_flat(elem_t_id));
+    }
+    return elements_id;
+}
 
 template <int dim_>
 bool
@@ -968,6 +1019,72 @@ test_if_element_has_property(const Index elem_flat_id, const std::string &proper
         const auto &elems_same_property = this->get_elements_id_same_property(property);
         return std::binary_search(elems_same_property.begin(),elems_same_property.end(),elem_flat_id);
     }
+}
+
+
+template <int dim_>
+void
+CartesianGrid<dim_>::
+insert_knots(special_array<vector<Real>,dim_> &knots_to_insert)
+{
+    //----------------------------------------------------------------------------------
+    // make a copy of the grid before the refinement
+    grid_pre_refinement_ = make_shared<const self_t>(self_t(*this));
+    //----------------------------------------------------------------------------------
+
+
+    //----------------------------------------------------------------------------------
+    // inserts the knots into the current grid --- begin
+    for (const auto dir : Topology::active_directions)
+    {
+        std::set<Real> new_coords_no_duplicates(knots_to_insert[dir].begin(),knots_to_insert[dir].end());
+
+        const auto &old_coords = knot_coordinates_.get_data_direction(dir);
+        new_coords_no_duplicates.insert(old_coords.begin(),old_coords.end());
+
+        knot_coordinates_.copy_data_direction(
+            dir,
+            vector<Real>(new_coords_no_duplicates.begin(),
+                         new_coords_no_duplicates.end()));
+    }
+    TensorSizedContainer<dim_>::reset_size(knot_coordinates_.tensor_size()-1);
+    // inserts the knots into the current grid --- end
+    //----------------------------------------------------------------------------------
+
+
+
+    //----------------------------------------------------------------------------------
+    // transferring the element properties from the old grid to the new grid --- begin
+    const auto fine_to_coarse_grid = grid_tools::build_map_elements_between_cartesian_grids(
+                                         *this,*grid_pre_refinement_);
+
+
+    for (auto &elem_properties : properties_elements_id_)
+        elem_properties.second.clear();
+
+    for (const auto &fine_coarse_elem : fine_to_coarse_grid)
+    {
+        const auto   &fine_elem = fine_coarse_elem.first;
+        const auto &coarse_elem = fine_coarse_elem.second;
+
+        const auto fine_elem_id = fine_elem->get_flat_index();
+
+        const auto old_elem_properties = coarse_elem->get_defined_properties();
+
+        for (const auto &property : old_elem_properties)
+            this->set_element_property_status(property,fine_elem_id,true);
+    }
+    // transferring the element properties from the old grid to the new grid --- end
+    //----------------------------------------------------------------------------------
+
+
+    //----------------------------------------------------------------------------------
+    // refining the objects that's are attached to the CartesianGrid
+    // (i.e. that are defined using this CartesianGrid object)
+    this->insert_knots_signals_(knots_to_insert,*grid_pre_refinement_);
+    //----------------------------------------------------------------------------------
+
+//  Assert(false,ExcNotImplemented());
 }
 
 

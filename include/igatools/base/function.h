@@ -355,6 +355,9 @@ protected:
     std::array<FunctionFlags, dim_ + 1> flags_;
 
 
+    /**
+     * This memeber is used to hanlde the h-refinement.
+     */
     GridWrapper<CartesianGrid<dim_> > functions_h_refinement_;
 
 public:
