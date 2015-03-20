@@ -39,6 +39,7 @@ GridWrapper<GridType>::
 ~GridWrapper()
 {
     refine_h_connection_.disconnect();
+    insert_knots_connection_.disconnect();
 }
 
 
@@ -97,20 +98,21 @@ connect_refinement_h_function(const typename GridType::SignalRefineSlot &subscri
     refine_h_connection_ = grid_->connect_refinement(subscriber);
 }
 
+template <class GridType>
+void
+GridWrapper<GridType>::
+connect_insert_knots_function(const typename GridType::SignalInsertKnotsSlot &subscriber)
+{
+    insert_knots_connection_ = grid_->connect_insert_knots(subscriber);
+}
+
 
 template <class GridType>
 void
 GridWrapper<GridType>::
-insert_knots(special_array<vector<Real>,GridType::dim> &new_knots)
+insert_knots(special_array<vector<Real>,GridType::dim> &knots_to_insert)
 {
-
-
-    // refining the objects that's are attached to the CartesianGrid
-    // (i.e. that are defined using this CartesianGrid object)
-//    this->refine_signals_(new_knots);
-
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
+    grid_->insert_knots(knots_to_insert);
 }
 
 

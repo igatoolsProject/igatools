@@ -145,10 +145,10 @@ public:
 
 
     /**
-     * Insert the @p new_knots to the grid and to the object that are using the grid.
-     * @note The @p new_knots may contain multiple knot values.
+     * Insert the @p knots_to_insert to the grid and to the object that are using the grid.
+     * @note The @p knots_to_insert may contain multiple knot values in each direction.
      */
-    void insert_knots(special_array<vector<Real>,GridType::dim> &new_knots);
+    void insert_knots(special_array<vector<Real>,GridType::dim> &knots_to_insert);
     ///@}
 
     /**
@@ -159,6 +159,16 @@ public:
      */
     void
     connect_refinement_h_function(const typename GridType::SignalRefineSlot &subscriber);
+
+
+    /**
+     * Connect the function @p subscriber to the insert_knots signal in the grid object and create
+     * the relative connection.
+     *
+     * @ingroup h_refinement
+     */
+    void
+    connect_insert_knots_function(const typename GridType::SignalInsertKnotsSlot &subscriber);
 
 
 
@@ -172,6 +182,12 @@ private:
      * Connection to the signal for the h-refinement.
      */
     boost::signals2::connection refine_h_connection_ ;
+
+
+    /**
+     * Connection to the signal for the h-refinement.
+     */
+    boost::signals2::connection insert_knots_connection_ ;
 
 };
 
