@@ -312,6 +312,19 @@ set_dof_property_status(const std::string &property, const Index dof_id, const b
 }
 
 
+
+template<int dim, int range, int rank>
+void
+DofDistribution<dim, range, rank>::
+set_dof_property_status(const std::string &property,
+                        const std::set<Index> ids,
+                        const bool status)
+{
+    properties_dofs_.set_ids_property_status(property,ids,status);
+}
+
+
+
 template<int dim, int range, int rank>
 void
 DofDistribution<dim, range, rank>::
