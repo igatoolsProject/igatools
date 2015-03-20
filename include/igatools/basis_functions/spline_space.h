@@ -479,26 +479,18 @@ public:
 
     };
 
-    /**
-     * Refines the function space after a grid uniform refinement.
-     *
-     * @param[in] refinement_directions Directions along which the refinement is performed.
-     * @param[in] grid_old Grid before the refinement.
-     *
-     * @pre Before invoking this function, must be invoked the function grid_->refine().
-     * @note This function is connected to the CartesianGrid's signal for the refinement, and
-     * it is necessary in order to avoid infinite loops in the refine() function calls.
-     *
-     * @ingroup h_refinement
-     */
-    void refine_h_after_grid_refinement(
-        const std::array<bool,dim> &refinement_directions,
-        const GridType &grid_old) ;
-
-    void create_connection_for_h_refinement(std::shared_ptr<SplineSpace<dim,range,rank>> space);
 
     std::shared_ptr<const SplineSpace<dim,range,rank> > spline_space_previous_refinement_;
 
+    /**
+     * Rebuild the internal state of the object after an insert_knots() function is invoked.
+     *
+     * @pre Before invoking this function, must be invoked the function grid_->insert_knots().
+     * @note This function is connected to the CartesianGrid's signal for the refinement, and
+     * it is necessary in order to avoid infinite loops in the insert_knots() function calls.
+     *
+     * @ingroup h_refinement
+     */
     void rebuild_after_insert_knots(
         const special_array<vector<Real>,dim> &knots_to_insert,
         const CartesianGrid<dim> &old_grid);

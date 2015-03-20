@@ -604,6 +604,7 @@ public:
      */
     void refine(const Size n_subdivisions = 2);
 
+#if 0
     /**
      *  Connect a slot (i.e. a function pointer) to the refinement signals
      *  which will be
@@ -612,7 +613,7 @@ public:
      */
     boost::signals2::connection
     connect_refinement(const SignalRefineSlot &subscriber);
-
+#endif
 
     /**
      *  Connect a slot (i.e. a function pointer) to the refinement signals
@@ -745,16 +746,16 @@ private:
      */
     std::shared_ptr<const self_t> grid_pre_refinement_ = nullptr;
 
+#if 0
     /**
      * Signals for the h-refinement. It can be viewed as a FIFO list of
      * function pointers.
      */
     signal_refine_t refine_signals_;
-
-
+#endif
 
     /**
-     * Signals for the h-refinement. It can be viewed as a FIFO list of
+     * Signals for the insert_knots() invocations. It can be viewed as a FIFO list of
      * function pointers.
      */
     signal_insert_knots_t insert_knots_signals_;

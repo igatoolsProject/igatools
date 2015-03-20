@@ -683,7 +683,7 @@ refine(const Size n_subdivisions)
 }
 
 
-
+#if 0
 template <int dim_>
 boost::signals2::connection
 CartesianGrid<dim_>::
@@ -691,6 +691,7 @@ connect_refinement(const SignalRefineSlot &subscriber)
 {
     return refine_signals_.connect(subscriber);
 }
+#endif
 
 template <int dim_>
 boost::signals2::connection

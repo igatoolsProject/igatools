@@ -151,6 +151,7 @@ public:
     void insert_knots(special_array<vector<Real>,GridType::dim> &knots_to_insert);
     ///@}
 
+#if 0
     /**
      * Connect the function @p subscriber to the h-refinement signal in the grid object and create
      * the relative connection.
@@ -159,7 +160,7 @@ public:
      */
     void
     connect_refinement_h_function(const typename GridType::SignalRefineSlot &subscriber);
-
+#endif
 
     /**
      * Connect the function @p subscriber to the insert_knots signal in the grid object and create
@@ -177,12 +178,12 @@ private:
     /** Grid object. */
     std::shared_ptr<GridType> grid_ ;
 
-
+#if 0
     /**
      * Connection to the signal for the h-refinement.
      */
     boost::signals2::connection refine_h_connection_ ;
-
+#endif
 
     /**
      * Connection to the signal for the h-refinement.

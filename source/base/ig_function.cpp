@@ -107,7 +107,7 @@ create(std::shared_ptr<Space> space,
 
     Assert(ig_func != nullptr, ExcNullPtr());
 
-    ig_func->create_connection_for_h_refinement(ig_func);
+    ig_func->create_connection_for_insert_knots(ig_func);
 
     return ig_func;
 }
@@ -291,8 +291,8 @@ operator +=(const self_t &fun) -> self_t &
 template<class Space>
 void
 IgFunction<Space>::
-refine_h_after_grid_refinement(
-    const std::array<bool,dim> &refinement_directions,
+rebuild_after_insert_knots(
+    const special_array<vector<Real>,dim> &knots_to_insert,
     const CartesianGrid<dim> &grid_old)
 {
     auto grid = this->get_grid();
@@ -470,23 +470,24 @@ refine_h_after_grid_refinement(
     AssertThrow(false,ExcNotImplemented());
 }
 
-
 template<class Space>
 void
 IgFunction<Space>::
-create_connection_for_h_refinement(std::shared_ptr<self_t> ig_function)
+create_connection_for_insert_knots(std::shared_ptr<self_t> ig_function)
 {
-    using SlotType = typename CartesianGrid<dim>::SignalRefineSlot;
+    Assert(ig_function != nullptr, ExcNullPtr());
+    Assert(&(*ig_function) == &(*this), ExcMessage("Different objects."));
 
-    auto refinement_func_igfunction =
-        std::bind(&self_t::refine_h_after_grid_refinement,
+    using SlotType = typename CartesianGrid<dim>::SignalInsertKnotsSlot;
+
+    auto func_to_connect =
+        std::bind(&self_t::rebuild_after_insert_knots,
                   ig_function.get(),
                   std::placeholders::_1,
                   std::placeholders::_2);
-    this->functions_h_refinement_.connect_refinement_h_function(
-        SlotType(refinement_func_igfunction).track_foreign(ig_function));
+    this->functions_knots_refinement_.connect_insert_knots_function(
+        SlotType(func_to_connect).track_foreign(ig_function));
 }
-
 
 
 template<class Space>

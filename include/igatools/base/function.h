@@ -356,9 +356,9 @@ protected:
 
 
     /**
-     * This memeber is used to hanlde the h-refinement.
+     * This member is used to handle the knots-refinement.
      */
-    GridWrapper<CartesianGrid<dim_> > functions_h_refinement_;
+    GridWrapper<CartesianGrid<dim_> > functions_knots_refinement_;
 
 public:
 
@@ -368,7 +368,7 @@ public:
      */
     void refine_h(const Size n_subdivisions=2)
     {
-        functions_h_refinement_.refine_h(n_subdivisions);
+        functions_knots_refinement_.refine_h(n_subdivisions);
     }
 };
 

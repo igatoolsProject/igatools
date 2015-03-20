@@ -57,7 +57,8 @@ create(const int degree,
     auto sp = shared_ptr<self_t>(new self_t(degree,knots,interior_reg,periodic,end_b));
     Assert(sp != nullptr, ExcNullPtr());
 
-    sp->create_connection_for_h_refinement(sp);
+//    sp->create_connection_for_h_refinement(sp);
+    sp->create_connection_for_insert_knots(sp);
 
     return sp;
 }
@@ -95,7 +96,8 @@ create(const Degrees &deg,
     auto sp = shared_ptr<self_t>(new self_t(deg, knots, interior_reg, periodic, end_b));
     Assert(sp != nullptr, ExcNullPtr());
 
-    sp->create_connection_for_h_refinement(sp);
+//    sp->create_connection_for_h_refinement(sp);
+    sp->create_connection_for_insert_knots(sp);
 
     return sp;
 }
@@ -209,7 +211,8 @@ create(const DegreeTable &deg,
     auto sp = shared_ptr<self_t>(new self_t(deg, knots, interior_mult, periodic, end_b));
     Assert(sp != nullptr, ExcNullPtr());
 
-    sp->create_connection_for_h_refinement(sp);
+//    sp->create_connection_for_h_refinement(sp);
+    sp->create_connection_for_insert_knots(sp);
 
     return sp;
 }
@@ -339,15 +342,15 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
 template<int dim_, int range_, int rank_>
 void
 BSplineSpace<dim_, range_, rank_>::
-refine_h_after_grid_refinement(
-    const std::array<bool,dim> &refinement_directions,
-    const GridType &grid_old)
+rebuild_after_insert_knots(
+    const special_array<vector<Real>,dim> &knots_to_insert,
+    const CartesianGrid<dim> &old_grid)
 {
-	this->dof_distribution_ = shared_ptr<DofDistribution<dim_,range_,rank_>>(
-	            new DofDistribution<dim_,range_,rank_>(
-	            		this->space_data_->get_num_basis_table(),
-						this->space_data_->get_degree(),
-						this->space_data_->get_periodic_table()));
+    this->dof_distribution_ = shared_ptr<DofDistribution<dim_,range_,rank_>>(
+                                  new DofDistribution<dim_,range_,rank_>(
+                                      this->space_data_->get_num_basis_table(),
+                                      this->space_data_->get_degree(),
+                                      this->space_data_->get_periodic_table()));
 
     operators_ = BernsteinExtraction<dim, range, rank>(
                      this->get_grid(),
@@ -355,9 +358,6 @@ refine_h_after_grid_refinement(
                      this->space_data_->accumulated_interior_multiplicities(),
                      this->space_data_->get_degree());
 }
-
-
-
 
 
 
@@ -432,17 +432,20 @@ get_element_dofs(
 template<int dim_, int range_, int rank_>
 void
 BSplineSpace<dim_, range_, rank_>::
-create_connection_for_h_refinement(std::shared_ptr<self_t> space)
+create_connection_for_insert_knots(std::shared_ptr<self_t> space)
 {
-    using SlotType = typename CartesianGrid<dim>::SignalRefineSlot;
+    Assert(space != nullptr, ExcNullPtr());
+    Assert(&(*space) == &(*this), ExcMessage("Different objects."));
 
-    auto refinement_func_bspline_space =
-        std::bind(&self_t::refine_h_after_grid_refinement,
+    auto func_to_connect =
+        std::bind(&self_t::rebuild_after_insert_knots,
                   space.get(),
                   std::placeholders::_1,
                   std::placeholders::_2);
-    this->connect_refinement_h_function(
-        SlotType(refinement_func_bspline_space).track_foreign(space));
+
+    using SlotType = typename CartesianGrid<dim>::SignalInsertKnotsSlot;
+    this->connect_insert_knots_function(
+        SlotType(func_to_connect).track_foreign(space));
 }
 
 

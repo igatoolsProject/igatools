@@ -28,7 +28,7 @@ Function<dim_, codim_, range_, rank_ >::
 Function(std::shared_ptr<GridType> grid)
     :
     GridElementHandler<dim_>(grid),
-    functions_h_refinement_(grid)
+    functions_knots_refinement_(grid)
 {}
 
 

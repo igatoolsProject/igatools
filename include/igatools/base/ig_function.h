@@ -192,12 +192,11 @@ private:
     FillCacheDispatcher fill_cache_impl;
 
 
+    void create_connection_for_insert_knots(std::shared_ptr<self_t> ig_function);
 
-    void create_connection_for_h_refinement(std::shared_ptr<self_t> ig_function);
-
-    void refine_h_after_grid_refinement(
-        const std::array<bool,dim> &refinement_directions,
-        const CartesianGrid<dim> &grid_old);
+    void rebuild_after_insert_knots(
+        const special_array<vector<Real>,dim> &knots_to_insert,
+        const CartesianGrid<dim> &old_grid);
 
 };
 
