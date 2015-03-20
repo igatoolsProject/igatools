@@ -618,40 +618,28 @@ refine_directions(
     const std::array<bool,dim_> &refinement_directions,
     const std::array<Size,dim_> &n_subdivisions)
 {
-    // make a copy of the grid before the refinement
-    grid_pre_refinement_ = make_shared<const self_t>(self_t(*this));
-
-    TensorSize<dim_> n_sub_elems;
-    for (const auto i : Topology::active_directions)
+    //-------------------------------------------------------------
+    special_array<vector<Real>,dim_> knots_to_insert;
+    for (const auto dir : Topology::active_directions)
     {
-        if (refinement_directions[i])
+        if (refinement_directions[dir])
         {
-            Assert(n_subdivisions[i] > 0,ExcLowerRange(n_subdivisions[i],1));
-            n_sub_elems[i] = n_subdivisions[i];
-            this->refine_knots_direction(i,n_sub_elems[i]);
-        }
-        else
-        {
-            n_sub_elems[i] = 1;
+            const int n_sub_interv = n_subdivisions[dir];
+            Assert(n_sub_interv > 0,ExcLowerRange(n_sub_interv,1));
+
+            const auto &knots_old = this->get_knot_coordinates(dir);
+
+            const Size n_knots_old = knots_old.size();
+            for (Index i = 0 ; i < n_knots_old - 1 ; ++i)
+            {
+                const Real h = (knots_old[i+1] - knots_old[i]) / n_sub_interv;
+
+                for (Index j = 1 ; j < n_sub_interv ; ++j)
+                    knots_to_insert[dir].emplace_back(knots_old[i] + j * h);
+            }
         }
     }
-    TensorSizedContainer<dim_>::reset_size(knot_coordinates_.tensor_size()-1);
-
-    //-------------------------------------------------------------
-    for (auto &elements_same_property : properties_elements_id_)
-    {
-        auto &old_elem_ids = elements_same_property.second;
-
-        std::set<Index> new_elem_ids;
-        for (const auto &old_elem_id : old_elem_ids)
-        {
-            const auto new_elem_ids_to_add =
-                grid_pre_refinement_->get_sub_elements_id(n_sub_elems,old_elem_id);
-
-            new_elem_ids.insert(new_elem_ids_to_add.begin(),new_elem_ids_to_add.end());
-        } // end loop old_elem_id
-        old_elem_ids = std::move(new_elem_ids);
-    } // end loop elements_same_property
+    this->insert_knots(knots_to_insert);
     //-------------------------------------------------------------
 
     // refining the objects that's are attached to the CartesianGrid
@@ -700,39 +688,6 @@ CartesianGrid<dim_>::
 connect_refinement(const SignalRefineSlot &subscriber)
 {
     return refine_signals_.connect(subscriber);
-}
-
-
-template <int dim_>
-void
-CartesianGrid<dim_>::
-refine_knots_direction(const int direction_id,
-                       const Size n_subdivisions)
-{
-    Assert(n_subdivisions >= 2,ExcLowerRange(n_subdivisions,2));
-
-    Assert(direction_id >=0 && direction_id < dim_,
-           ExcIndexRange(direction_id,0,dim_));
-
-    const auto &knots_old = this->get_knot_coordinates(direction_id);
-
-    const Size n_knots_old = knots_old.size();
-    const Size n_knots_to_add = (n_knots_old - 1) * (n_subdivisions - 1);
-
-    const Size n_knots_new = n_knots_old + n_knots_to_add;
-    vector<Real> knots_new(n_knots_new);
-
-    Index i_new = 0;
-    for (Index i_old = 0 ; i_old < n_knots_old - 1 ; ++i_old)
-    {
-        const Real h = (knots_old[i_old+1] - knots_old[i_old]) / n_subdivisions;
-
-        for (Index j = 0 ; j < n_subdivisions ; ++j, ++i_new)
-            knots_new[i_new] = knots_old[i_old] + j * h;
-    }
-    knots_new[n_knots_new-1] = knots_old[n_knots_old-1];
-
-    knot_coordinates_.copy_data_direction(direction_id,knots_new);
 }
 
 

@@ -720,19 +720,6 @@ private:
      */
     vector<Index> get_sub_elements_id(const TensorSize<dim_> &n_sub_elems, const Index elem_id) const;
 
-    /**
-     * Perform a uniform refinement of the knots along the @p direction_id
-     * direction,
-     * dividing each interval in the knot vector into @p n_subdivisions
-     * intervals.
-     * @param[in] direction_id Direction along which the refinement is
-     * performed.
-     * @param[in] n_subdivisions Number of subdivision in which each interval
-     * in the knot vector is
-     * divided. This value must be >= 2.
-     */
-    void refine_knots_direction(const int direction_id,
-                                const Size n_subdivisions);
 
     /**
      * This class member is the grid before the last refinement. If no
