@@ -1,0 +1,2 @@
+If you write a paper using results obtained with the help of igatools, please cite the following reference:
+  * [M.S. Pauletti, M. Martinelli, N. Cavallini, P. Antolín: Igatools: an isogeometric analysis library, I.M.A.T.I.-C.N.R. Technical Report 3PV14/1/0  (2014), 1-27.](https://www.dropbox.com/s/jhraxy2krvs83sz/3PV14-1-0.pdf)

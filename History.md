@@ -1,0 +1,2 @@
+igatools originated as a project in the isogeometric analysis group at the Mathematics Department of the University of Pavia and the Istituto di Matematica Applicata e Tecnologie Informatiche (IMATI).
+The isogeometric analysis group at Pavia is a world leading group composed of several scientists in mathematics and engineering that have contributed with their work to the theoretical and computational development isogeometric analysis (IgA).
