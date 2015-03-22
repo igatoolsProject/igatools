@@ -550,6 +550,7 @@ private:
                   const Index min_dofs_id,
                   const Index max_dofs_id,
                   const DofsView &dofs_view,
+				  const std::set<Index> &dofs,
                   const std::shared_ptr<const ElemsDofs> elements_dofs
                  );
 
@@ -572,6 +573,11 @@ private:
          * Returns a View to the dofs active on the space (non-const version).
          */
         DofsView &get_dofs_view();
+
+        const std::set<Index> &get_dofs() const
+		{
+        	return	dofs_;
+		}
 
         /*
          * Returns a View to the dofs active on the space (const version).
@@ -687,7 +693,7 @@ private:
          * View of the dofs ids active on the space.
          */
         DofsView dofs_view_;
-
+        std::set<Index> dofs_;
         /**
          * Map of size equal to the number of elements in the single-patch space,
          * for which each entry is a view of the global dofs ids active on the element.
@@ -695,6 +701,7 @@ private:
          * The std::map key represent the element flat-id for which we store the dofs view.
          */
         std::shared_ptr<const ElemsDofs> elements_dofs_;
+
 
 
 
@@ -838,7 +845,9 @@ private:
             std::set<Index> dofs;
             if (use_dofs_connectivity_from_space_)
             {
-                const auto &sp_dofs_view = space_row_->get_dofs_view();
+                //TODO (pauletti, Mar 20, 2015): should be replace by property
+            	// space_row_->get_set_dofs_with_given_prop
+            	const auto &sp_dofs_view = space_row_->get_dofs();
                 dofs.insert(sp_dofs_view.begin(),sp_dofs_view.end());
             }
 
@@ -875,7 +884,7 @@ private:
             std::set<Index> dofs;
             if (use_dofs_connectivity_from_space_)
             {
-                const auto &sp_dofs_view = space_col_->get_dofs_view();
+                const auto &sp_dofs_view = space_col_->get_dofs();
 
                 dofs.insert(sp_dofs_view.begin(),sp_dofs_view.end());
             }
@@ -1045,7 +1054,7 @@ add_space(std::shared_ptr<Space> space,
     const auto elem_end = space->end();
     for (; elem != elem_end ; ++elem)
         (*elements_dofs)[elem->get_flat_index()] = elem->get_local_to_global(dofs_filter);
-
+    auto dofs = dof_distribution.get_dofs_id_same_property(dofs_filter);
 
     auto space_info = std::shared_ptr<SpaceInfo>(
                           new SpaceInfo(space,
@@ -1057,10 +1066,11 @@ add_space(std::shared_ptr<Space> space,
                                         Space::rank,
                                         Space::PushForwardType::type,
                                         Space::is_physical_space,
-                                        space->get_num_basis(dofs_filter),
+										dof_distribution.get_num_dofs(dofs_filter),
                                         dof_distribution.get_min_dof_id(),
                                         dof_distribution.get_max_dof_id(),
                                         dof_distribution.get_dofs_view(),
+										dofs,
                                         elements_dofs
                                        ));
 

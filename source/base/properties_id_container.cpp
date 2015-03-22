@@ -39,15 +39,15 @@ bool
 PropertiesIdContainer::
 test_id_for_property(const Index id, const std::string &property) const
 {
-    if (property == Properties::none)
-    {
-        return true; // an element can always be considered without any property
-    }
-    else
-    {
+//    if (property == Properties::none)
+//    {
+//        return true; // an element can always be considered without any property
+//    }
+//    else
+//    {
         const auto &ids_same_property = this->get_ids_same_property(property);
         return std::binary_search(ids_same_property.begin(),ids_same_property.end(),id);
-    }
+//    }
 }
 
 
@@ -55,8 +55,8 @@ void
 PropertiesIdContainer::
 add_property(const std::string &property)
 {
-    Assert(property != Properties::none,
-           ExcMessage("The property \"" + property + "\" cannot be added to the list."));
+//    Assert(property != Properties::none,
+//           ExcMessage("The property \"" + property + "\" cannot be added to the list."));
     Assert(properties_id_.count(property) == 0,
            ExcMessage("The property \"" + property + "\" is already defined."));
     properties_id_[property] = std::set<int>();
@@ -67,8 +67,8 @@ std::set<Index> &
 PropertiesIdContainer::
 get_ids_same_property(const std::string &property)
 {
-    Assert(property != Properties::none,
-           ExcMessage("The property \"" + property + "\" is invalid for this function."));
+//    Assert(property != Properties::none,
+//           ExcMessage("The property \"" + property + "\" is invalid for this function."));
     Assert(properties_id_.count(property) > 0,
            ExcMessage("The property \"" + property + "\" is not defined."));
     return properties_id_.at(property);
@@ -80,8 +80,8 @@ const std::set<Index> &
 PropertiesIdContainer::
 get_ids_same_property(const std::string &property) const
 {
-    Assert(property != Properties::none,
-           ExcMessage("The property \"" + property + "\" is invalid for this function."));
+//    Assert(property != Properties::none,
+//           ExcMessage("The property \"" + property + "\" is invalid for this function."));
     Assert(properties_id_.count(property) > 0,
            ExcMessage("The property \"" + property + "\" is not defined."));
     return properties_id_.at(property);

@@ -21,7 +21,7 @@
 
 #include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/utils/multi_array_utils.h>
-
+#include <igatools/base/properties.h>
 
 using std::map;
 using std::shared_ptr;
@@ -93,6 +93,11 @@ DofDistribution(const TensorSizeTable &n_basis,
                      DofsIterator(components_views,IteratorState::pass_the_end));
     // creating the dofs view from the dofs components views -- end
     //-----------------------------------------------------------------------
+    properties_dofs_.add_property(DofProperties::none);
+    properties_dofs_.set_ids_property_status(
+    		DofProperties::none,
+            std::set<Index>(dofs_view_.cbegin(),dofs_view_.cend()),
+            true);
 }
 
 
@@ -286,13 +291,26 @@ add_dofs_property(const std::string &property)
 }
 
 
+
+template<int dim, int range, int rank>
+Size
+DofDistribution<dim, range, rank>::
+get_num_dofs(const std::string &property) const
+{
+	return properties_dofs_.get_ids_same_property(property).size();
+}
+
+
+
 template<int dim, int range, int rank>
 std::set<Index> &
 DofDistribution<dim, range, rank>::
 get_dofs_id_same_property(const std::string &property)
 {
-    return properties_dofs_.get_ids_same_property(property);
+	return properties_dofs_.get_ids_same_property(property);
 }
+
+
 
 template<int dim, int range, int rank>
 const std::set<Index> &

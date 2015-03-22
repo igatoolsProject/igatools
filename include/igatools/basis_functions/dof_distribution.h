@@ -33,13 +33,14 @@ IGA_NAMESPACE_OPEN
  * indices that are defined on a single patch space,
  * storing what is known as the local to global map.
  *
- * It is a helper class for the BSplineSpace.
+ * It is responsable to assign to each basis function an index
+ * and knows which of them are non zero on each element.
  *
- * This class basically has two one (private) member:
- * - index_distribution_ that is the container for the basis function indices
- *   of a single-patch space
+ * It alos allows to store different properties on subset of
+ * the basis functions.
  *
- * @author pauletti, 2014
+ *
+ * @author pauletti, 2014, 2015
  * @author M.Martinelli, 2014, 2015
  *
  */
@@ -168,14 +169,17 @@ public:
     DofsView &get_dofs_view();
 
 
+    //TODO (pauletti, Mar 21, 2015): the doc is wrong, what is active?
     /**
-     * Returns a view of the active dofs ids on a given single-patch space (const version).
+     * Returns a view of the active dofs ids on a given single-patch space
+     * (const version).
      */
     const DofsView &get_dofs_view() const;
 
 
     /**
-     * Return the container holding the number of unique dofs, component-by-component and direction-by-direction.
+     * Return the container holding the number of unique dofs,
+     * component-by-component and direction-by-direction.
      */
     const TensorSizeTable &get_num_dofs_table() const;
 
@@ -213,7 +217,7 @@ public:
      */
     void add_dofs_property(const std::string &property);
 
-
+    Size get_num_dofs(const std::string &property) const;
     /**
      * Returns the id of the dofs having a certain @p property (non-const version).
      */
@@ -234,7 +238,8 @@ public:
                             const std::set<Index> ids,
                             const bool status);
     /**
-     * Sets the @p status of the given @p property for all the dofs in the DofDistribution.
+     * Sets the @p status of the given @p property for all the dofs in the
+     * DofDistribution.
      */
     void set_all_dofs_property_status(const std::string &property, const bool status);
     ///@}

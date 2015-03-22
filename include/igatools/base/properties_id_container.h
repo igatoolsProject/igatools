@@ -29,17 +29,11 @@
 #include <map>
 #include <string>
 
-
 IGA_NAMESPACE_OPEN
-
-
-
-
 
 class PropertiesIdContainer
 {
 public:
-
     /**
      * Returns TRUE if the @p property is defined.
      *
@@ -56,7 +50,8 @@ public:
     /**
      * Adds a new <tt>property</tt> definition.
      *
-     * @note If the <tt>property</tt> is already present, an assertion will be raised (in Debug mode).
+     * @note If the <tt>property</tt> is already present,
+     * an assertion will be raised (in Debug mode).
      */
     void add_property(const std::string &property);
 
