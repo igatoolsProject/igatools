@@ -77,7 +77,7 @@ int main()
     const auto la_pack = LAPack::petsc;
 #endif
     out.depth_console(20);
-    do_test<0,1,1>(1);
+    do_test<0,1,1, la_pack>(1);
    // do_test<1,1,1, la_pack>(3);
    // do_test<2,1,1, la_pack>(3);
    // do_test<3,1,1, la_pack>(1);

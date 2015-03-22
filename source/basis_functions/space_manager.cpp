@@ -179,7 +179,7 @@ SpaceInfo(const SpacePtrVariant &space,
 {
     Assert(dim_ >= 0,ExcLowerRange(dim_,0));
     Assert(codim_ >= 0,ExcLowerRange(codim_,0));
-    Assert(space_dim_ > 0,ExcLowerRange(space_dim_,1));
+    Assert(space_dim_ >= 0,ExcLowerRange(space_dim_,1));
     Assert(range_ > 0,ExcLowerRange(range_,1));
     Assert(rank_ > 0,ExcLowerRange(rank_,1));
 

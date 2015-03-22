@@ -130,10 +130,6 @@ void do_test(const int p, const int num_knots = 10)
     auto proj_func = space_tools::projection_l2<Space,la_pack>(f, space, quad);
     proj_func->print_info(out);
 
-//    Writer<dim> output(grid, 4);
-//    output.add_field(space, proj_values, "projected function");
-//    string filename = "proj_function-" + std::to_string(dim) +"d";
-//    output.save(filename);
 }
 
 
