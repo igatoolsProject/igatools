@@ -1,3 +1,62 @@
+========================================================================
+void test_proj(int, int) [with int dim = 0; int range = 1; int rank = 1; iga::LAPack la_pack = (iga::LAPack)1]
+========================================================================
+Reference space info:
+   Spline Space:
+      Knots without repetition:
+         Number of intervals per direction: [ ]
+         Knot coordinates:
+            Size: [ ]  Weights: []
+         
+      
+      Degrees:
+         Raw componets: 
+            Size: [ 1 ]  Weights: [1]
+         [ [] ]
+         Active componets ids: 
+         [ 0 ]
+         Inactive componets ids: 
+         [ ]
+      
+      Interior multiplicities:
+         Size: [ ]  Weights: []
+      
+      Dimensionality Table:
+         Component Dimension:
+            Raw componets: 
+               Size: [ 1 ]  Weights: [1]
+            [ 1 ]
+            Active componets ids: 
+            [ 0 ]
+            Inactive componets ids: 
+            [ ]
+         
+         Total Dimension: 1
+      
+   
+   DoFs Distribution:
+      Dof indices:
+         Size: [ ]  Weights: []
+         [ 0 ]
+      
+      Dof properties:
+         IDs with property "none":
+            Num.: 1
+            Flat IDs: 0
+      
+   
+   Bernstein Extraction:
+      Component[0]: 
+   
+
+
+Control points info (euclidean coordinates):
+[ 3.00000 ]
+========================================================================
+
+========================================================================
+void test_proj(int, int) [with int dim = 1; int range = 1; int rank = 1; iga::LAPack la_pack = (iga::LAPack)1]
+========================================================================
 Reference space info:
    Spline Space:
       Knots without repetition:
@@ -57,6 +116,11 @@ Reference space info:
 
 Control points info (euclidean coordinates):
 [ 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 ]
+========================================================================
+
+========================================================================
+void test_proj(int, int) [with int dim = 2; int range = 1; int rank = 1; iga::LAPack la_pack = (iga::LAPack)1]
+========================================================================
 Reference space info:
    Spline Space:
       Knots without repetition:
@@ -124,6 +188,11 @@ Reference space info:
 
 Control points info (euclidean coordinates):
 [ 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 ]
+========================================================================
+
+========================================================================
+void test_proj(int, int) [with int dim = 3; int range = 1; int rank = 1; iga::LAPack la_pack = (iga::LAPack)1]
+========================================================================
 Reference space info:
    Spline Space:
       Knots without repetition:
@@ -199,6 +268,11 @@ Reference space info:
 
 Control points info (euclidean coordinates):
 [ 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 ]
+========================================================================
+
+========================================================================
+void test_proj(int, int) [with int dim = 2; int range = 3; int rank = 1; iga::LAPack la_pack = (iga::LAPack)1]
+========================================================================
 Reference space info:
    Spline Space:
       Knots without repetition:
@@ -298,3 +372,5 @@ Reference space info:
 
 Control points info (euclidean coordinates):
 [ 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 3.00000 4.00000 4.00000 4.00000 4.00000 4.00000 4.00000 4.00000 4.00000 4.00000 4.00000 4.00000 4.00000 4.00000 4.00000 4.00000 4.00000 5.00000 5.00000 5.00000 5.00000 5.00000 5.00000 5.00000 5.00000 5.00000 5.00000 5.00000 5.00000 5.00000 5.00000 5.00000 5.00000 ]
+========================================================================
+
