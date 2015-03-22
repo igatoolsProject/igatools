@@ -41,7 +41,6 @@
 #include <igatools/linear_algebra/distributed_matrix.h>
 #include <igatools/linear_algebra/distributed_vector.h>
 #include <igatools/linear_algebra/linear_solver.h>
-#include <igatools/linear_algebra/sparsity_pattern.h>
 #include <igatools/linear_algebra/dof_tools.h>
 // [linear system]
 

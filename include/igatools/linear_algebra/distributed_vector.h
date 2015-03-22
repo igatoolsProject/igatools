@@ -506,7 +506,7 @@ public:
      */
     void print_info(LogStream &out) const;
 
-    // TODO (pauletti, Nov 27, 2014): Document this
+    /** Return the vector as the type use for coefficient of an IgFunction */
     vector<Real> get_as_vector() const;
 
 };

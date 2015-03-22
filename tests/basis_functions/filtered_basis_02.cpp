@@ -26,6 +26,8 @@
  *
  */
 
+//TODO (pauletti, Mar 22, 2015): this is a development step, should be
+// splitted and modified to became several unit testing afterwards
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
@@ -33,6 +35,10 @@
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/linear_algebra/distributed_matrix.h>
 #include <igatools/linear_algebra/distributed_vector.h>
+#include <igatools/linear_algebra/linear_solver.h>
+#include <igatools/base/identity_function.h>
+#include <igatools/base/ig_function.h>
+#include <igatools/io/writer.h>
 
 struct DofProp
 {
@@ -78,8 +84,12 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
     auto space_manager =
     		build_space_manager_single_patch<RefSpace>(space, DofProp::interior);
     auto matrix   = Mat::create(*space_manager);
-
+    const auto dofs_set = space_manager->get_row_dofs();
+    const vector<Index> dofs_vec(dofs_set.begin(),dofs_set.end());
+    auto vec      = Vec::create(dofs_vec);
+    auto solution     = Vec::create(dofs_vec);
     matrix->print_info(out);
+    vec->print_info(out);
 
     auto elem_handler = space->create_elem_handler();
     auto flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::w_measure;
@@ -114,29 +124,33 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
     		}
     		auto phi_i = phi.get_function_view(i);
 
-//    		for (int qp=0; qp<n_qp; ++qp)
-//    			loc_rhs(i) += scalar_product(phi_i[qp], f_values[qp])
-//				* w_meas[qp];
+    		for (int qp=0; qp<n_qp; ++qp)
+    			loc_rhs(i) += phi_i[qp][0] // f=1
+				* w_meas[qp];
     	}
 
     	const auto loc_dofs = elem->get_local_to_global(DofProp::interior);
-    	matrix->add_block(loc_dofs, loc_dofs,loc_mat);
-    	//rhs->add_block(loc_dofs, loc_rhs);
+    	matrix->add_block(loc_dofs, loc_dofs, loc_mat);
+    	vec->add_block(loc_dofs, loc_rhs);
     }
 
     matrix->fill_complete();
     matrix->print_info(out);
+    vec->print_info(out);
 
-//
-//        out << "dirichlet dofs:" << endl;
-//        elem->get_local_to_global(DofProp::dirichlet).print_info(out);
-//        out << endl;
-//
-//        out << "neumman dofs:" << endl;
-//        elem->get_local_to_global(DofProp::neumman).print_info(out);
-//        out << endl;
-        out << endl;
+    using LinSolver = LinearSolverIterative<la_pack>;
+    LinSolver solver(LinSolver::SolverType::CG);
+    solver.solve(*matrix, *vec, *solution);
 
+    const int n_plot_points = 2;
+    auto map = IdentityFunction<dim>::create(space->get_grid());
+    Writer<dim> writer(map, n_plot_points);
+
+    using IgFunc = IgFunction<RefSpace>;
+    auto solution_function = IgFunc::create(space,solution->get_as_vector());
+    writer.template add_field<1,1>(solution_function, "solution");
+    string filename = "poisson_problem-" + to_string(dim) + "d" ;
+    writer.save(filename);
 
     OUTEND
 }
