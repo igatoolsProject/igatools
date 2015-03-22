@@ -568,6 +568,8 @@ Real
 NURBSSpace<dim_, range_, rank_>::
 get_weight_coef_from_basis_id(const Index basis_id) const
 {
+	//TODO (pauletti, Mar 22, 2015): this looks like a forced function study its use
+
     const auto &basis_offset = sp_space_->get_basis_offset();
 
     int comp_id = 0;
@@ -577,7 +579,7 @@ get_weight_coef_from_basis_id(const Index basis_id) const
 
     const Index w_id = basis_id - basis_offset[comp_id];
 
-    return (weight_func_table_[comp_id]->get_coefficients())[w_id];
+    return (weight_func_table_[comp_id]->get_coefficients())(w_id);
 }
 
 

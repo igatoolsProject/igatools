@@ -37,7 +37,7 @@ IgFunction(std::shared_ptr<const Space> space,
     space_filler_(space->create_elem_handler())
 {
     Assert(space_ != nullptr,ExcNullPtr());
-    Assert(!coeff_.empty(),ExcEmptyObject());
+  //  Assert(!coeff_.empty(),ExcEmptyObject());
 }
 
 
@@ -53,7 +53,7 @@ IgFunction(const self_t &fun)
     space_filler_(fun.space_->create_elem_handler())
 {
     Assert(space_ != nullptr,ExcNullPtr());
-    Assert(!coeff_.empty(),ExcEmptyObject());
+    //Assert(!coeff_.empty(),ExcEmptyObject());
 }
 
 
@@ -128,13 +128,8 @@ fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) -> voi
     fill_cache_impl.func_elem = &elem;
     fill_cache_impl.function = this;
 
-
-    // TODO (pauletti, Nov 27, 2014): if code is in final state remove commented line else fix
-    const auto local_ids = elem_->get_local_to_global(DofProperties::none);
-    vector<Real> loc_coeff;
-    for (const auto &id : local_ids)
-        loc_coeff.push_back(coeff_[id]);
-//    auto loc_coeff = coeff_.get_local_coefs(elem_->get_local_to_global());
+    //TODO (pauletti, Mar 22, 2015): none should be changed to active
+    auto loc_coeff = coeff_.get_local_coefs(elem_->get_local_to_global(DofProperties::none));
 
     fill_cache_impl.loc_coeff = &loc_coeff;
     fill_cache_impl.j =j;
@@ -169,9 +164,10 @@ auto
 IgFunction<Space>::
 operator +=(const self_t &fun) -> self_t &
 {
-    const auto size = coeff_.size();
-    for (int i=0; i<size; ++i)
-        coeff_[i] += fun.coeff_[i];
+	coeff_ += fun.coeff_;
+//    const auto size = coeff_.size();
+//    for (int i=0; i<size; ++i)
+//        coeff_[i] += fun.coeff_[i];
 
     return *this;
 }

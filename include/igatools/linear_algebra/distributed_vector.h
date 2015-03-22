@@ -95,7 +95,7 @@ public:
     /**
      * Copy constructor. Not allowed to be used.
      */
-    VectorTrilinos(const VectorTrilinos<trilinos_impl> &vector) = delete;
+    VectorTrilinos(const VectorTrilinos<trilinos_impl> &vector) = default;
 
     /**
      * Move constructor.
@@ -369,7 +369,7 @@ public:
      * for @p n degrees of freedom.
      * All entries are set to zero.
      */
-    Vector(const Index n,CommPtr comm = Teuchos::rcp(new Epetra_SerialComm()));
+    Vector(const Index n, CommPtr comm = Teuchos::rcp(new Epetra_SerialComm()));
 
     /**
      * Construct a vector that gets a non consecutive indexing
@@ -377,7 +377,9 @@ public:
      * dof numbering provided from some external library.
      * All entries are set to zero.
      */
-    Vector(const vector<Index> &dof_ids,CommPtr comm = Teuchos::rcp(new Epetra_SerialComm()));
+    Vector(const vector<Index> &dof_ids, CommPtr comm = Teuchos::rcp(new Epetra_SerialComm()));
+
+    Vector(const vector<Real>& , CommPtr comm = Teuchos::rcp(new Epetra_SerialComm()));
 
     Vector(const MapPtr map);
 
@@ -476,6 +478,18 @@ public:
      * Returns the reference to the entry of the vector identified by the @p global_id
      */
     Real &operator()(const Index global_id);
+
+    /**
+     * Returns the const reference to the entry of the vector identified by the @p global_id
+     */
+    const Real &operator[](const Index global_id) const
+    { return this->operator ()(global_id);}
+
+    /**
+     * Returns the reference to the entry of the vector identified by the @p global_id
+     */
+    Real &operator[](const Index global_id)
+    { return this->operator ()(global_id);}
 
     /** Returns the number of entries in the vector. */
     Index size() const;

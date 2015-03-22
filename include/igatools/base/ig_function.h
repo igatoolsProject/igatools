@@ -23,10 +23,11 @@
 
 #include <igatools/base/function.h>
 #include <igatools/basis_functions/spline_space.h>
-//#include <igatools/linear_algebra/distributed_vector.h>
-
+#include <igatools/linear_algebra/distributed_vector.h>
 
 IGA_NAMESPACE_OPEN
+
+using IgCoefficient = Vector<LAPack::trilinos_epetra>;
 
 template<class Space>
 class IgFunction :
@@ -39,7 +40,7 @@ public:
     static const int range = Space::range;
     static const int rank = Space::rank;
 
-    using CoeffType = vector<Real>;
+    using CoeffType = IgCoefficient;
 
 private:
     using base_t = Function<dim, codim, range, rank>;

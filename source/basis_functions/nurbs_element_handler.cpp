@@ -352,13 +352,16 @@ evaluate_nurbs_values_from_bspline(
 
             auto R_fn = phi.get_function_view(bsp_fn_id);
 
-            const Real w = w_coefs[bsp_local_to_patch[bsp_fn_id]-offset];
+            //TODO (pauletti, Mar 22, 2015): study the following line, why is it like this?
+            const Real w = w_coefs(bsp_local_to_patch[bsp_fn_id]-offset);
 
             for (int pt = 0 ; pt < n_pts ; ++pt)
                 R_fn[pt](comp) = P_fn[pt](comp) * invQ[pt] * w ;
         } // end loop w_fn_id
     } // end loop comp
 }
+
+
 
 template<int dim_, int range_ , int rank_>
 void
