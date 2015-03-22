@@ -24,7 +24,6 @@
  *
  *  author: pauletti
  *  date: 2013-10-10
- *  QA: The 0 dim case not returning appropriate value
  */
 
 #include "../tests.h"
@@ -38,16 +37,12 @@
 
 #include <igatools/basis_functions/space_tools.h>
 
-#include <igatools/io/writer.h>
-
-// TODO (pauletti, Nov 13, 2014): investigate dim==0 case and then remove this
-// test as it is already covered in _02
-
-
 
 template<int dim , int range ,int rank, LAPack la_pack>
-void do_test(const int p, const int num_knots = 10)
+void project_l2(const int p, const int num_knots = 10)
 {
+	OUTSTART
+
     using Space =  BSplineSpace<dim,range,rank>;
     using RefSpace =  ReferenceSpace<dim,range,rank>;
 
@@ -61,10 +56,7 @@ void do_test(const int p, const int num_knots = 10)
     auto proj_func = space_tools::projection_l2<RefSpace,la_pack>(f, space, quad);
     proj_func->print_info(out);
 
-//    Writer<dim> output(knots, 4);
-//    output.add_field(space, proj_values, "projected function");
-//    string filename = "proj_function-" + to_string(dim) +"d";
-//    output.save(filename);
+    OUTEND
 }
 
 
@@ -76,11 +68,11 @@ int main()
 #elif defined(USE_PETSC)
     const auto la_pack = LAPack::petsc;
 #endif
-    out.depth_console(20);
-    do_test<0,1,1, la_pack>(1);
-   // do_test<1,1,1, la_pack>(3);
-   // do_test<2,1,1, la_pack>(3);
-   // do_test<3,1,1, la_pack>(1);
+
+    project_l2<0,1,1, la_pack>(1);
+    project_l2<1,1,1, la_pack>(3);
+    project_l2<2,1,1, la_pack>(3);
+    project_l2<3,1,1, la_pack>(1);
 
     return 0;
 }

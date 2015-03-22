@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for building a matrix on a space of an igfunction
+ *  Test for building a matrix on a filtered space
  *
  *  author: pauletti
  *  date: 2015-03-17
@@ -28,6 +28,7 @@
 
 #include "../tests.h"
 
+#include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/linear_algebra/distributed_matrix.h>
@@ -71,17 +72,61 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
     std::set<Index> neu_dofs={7};
     dof_dist->set_dof_property_status(DofProp::neumman, neu_dofs,true);
 
-//    auto elem = space->begin();
-//    auto end  = space->end();
+    auto elem = space->begin();
+    auto end  = space->end();
 
-    auto space_manager = build_space_manager_single_patch<RefSpace>(space, DofProp::interior);
+    auto space_manager =
+    		build_space_manager_single_patch<RefSpace>(space, DofProp::interior);
     auto matrix   = Mat::create(*space_manager);
 
-//    for(;elem != end; ++elem)
-//    {
-//        out << "Interior dofs:" << endl;
-//        elem->get_local_to_global(DofProp::interior).print_info(out);
-//        out << endl;
+    matrix->print_info(out);
+
+    auto elem_handler = space->create_elem_handler();
+    auto flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::w_measure;
+    QGauss<dim> elem_quad(deg+1);
+    elem_handler->reset(flag, elem_quad);
+    elem_handler->init_element_cache(elem);
+    const int n_qp = elem_quad.get_num_points();
+    for(;elem != end; ++elem)
+    {
+    	const int n_basis = elem->get_num_basis(DofProp::interior);
+
+    	DenseMatrix loc_mat(n_basis, n_basis);
+    	loc_mat = 0.0;
+    	DenseVector loc_rhs(n_basis);
+    	loc_rhs = 0.0;
+
+    	elem_handler->fill_element_cache(elem);
+    	auto phi = elem->template get_values<0, dim>(0,DofProp::interior);
+    	auto grad_phi  = elem->template get_values<1, dim>(0,DofProp::interior);
+    	auto w_meas = elem->template get_w_measures<dim>(0);
+
+    	for (int i = 0; i < n_basis; ++i)
+    	{
+    		auto grad_phi_i = grad_phi.get_function_view(i);
+    		for (int j = 0; j < n_basis; ++j)
+    		{
+    			auto grad_phi_j = grad_phi.get_function_view(j);
+    			for (int qp = 0; qp < n_qp; ++qp)
+    				loc_mat(i,j) +=
+    						scalar_product(grad_phi_i[qp], grad_phi_j[qp])
+							* w_meas[qp];
+    		}
+    		auto phi_i = phi.get_function_view(i);
+
+//    		for (int qp=0; qp<n_qp; ++qp)
+//    			loc_rhs(i) += scalar_product(phi_i[qp], f_values[qp])
+//				* w_meas[qp];
+    	}
+
+    	const auto loc_dofs = elem->get_local_to_global(DofProp::interior);
+    	matrix->add_block(loc_dofs, loc_dofs,loc_mat);
+    	//rhs->add_block(loc_dofs, loc_rhs);
+    }
+
+    matrix->fill_complete();
+    matrix->print_info(out);
+
 //
 //        out << "dirichlet dofs:" << endl;
 //        elem->get_local_to_global(DofProp::dirichlet).print_info(out);
@@ -90,8 +135,8 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
 //        out << "neumman dofs:" << endl;
 //        elem->get_local_to_global(DofProp::neumman).print_info(out);
 //        out << endl;
-//        out << endl;
-//    }
+        out << endl;
+
 
     OUTEND
 }
