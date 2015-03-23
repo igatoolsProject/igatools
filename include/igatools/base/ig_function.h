@@ -199,6 +199,7 @@ private:
         const special_array<vector<Real>,dim> &knots_to_insert,
         const CartesianGrid<dim> &old_grid);
 
+
 };
 
 IGA_NAMESPACE_CLOSE

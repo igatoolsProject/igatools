@@ -96,7 +96,6 @@ create(const Degrees &deg,
     auto sp = shared_ptr<self_t>(new self_t(deg, knots, interior_reg, periodic, end_b));
     Assert(sp != nullptr, ExcNullPtr());
 
-//    sp->create_connection_for_h_refinement(sp);
     sp->create_connection_for_insert_knots(sp);
 
     return sp;
@@ -211,7 +210,6 @@ create(const DegreeTable &deg,
     auto sp = shared_ptr<self_t>(new self_t(deg, knots, interior_mult, periodic, end_b));
     Assert(sp != nullptr, ExcNullPtr());
 
-//    sp->create_connection_for_h_refinement(sp);
     sp->create_connection_for_insert_knots(sp);
 
     return sp;
@@ -346,6 +344,14 @@ rebuild_after_insert_knots(
     const special_array<vector<Real>,dim> &knots_to_insert,
     const CartesianGrid<dim> &old_grid)
 {
+    this->ref_space_previous_refinement_ =
+        shared_ptr<BSplineSpace<dim_,range_,rank_>>(new
+                                                    BSplineSpace(
+                                                        const_pointer_cast<SpaceData>(
+                                                            this->space_data_->get_spline_space_previous_refinement()),
+                                                        this->end_b_));
+
+
     this->dof_distribution_ = shared_ptr<DofDistribution<dim_,range_,rank_>>(
                                   new DofDistribution<dim_,range_,rank_>(
                                       this->space_data_->get_num_basis_table(),

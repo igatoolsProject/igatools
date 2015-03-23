@@ -160,6 +160,23 @@ public:
      */
     virtual const DegreeTable &get_degree() const = 0;
 
+
+    /**
+     * Return the maximum value of the degree, for each component, for each direction;
+     * @return
+     */
+    int get_max_degree() const
+    {
+        int max_degree = 0;
+
+        const auto &degree_table = this->get_degree();
+        for (const auto &degree_comp : degree_table)
+            for (const auto &degree_comp_dim : degree_comp)
+                max_degree = std::max(max_degree,degree_comp_dim);
+
+        return max_degree;
+    }
+
     /** @name Functions for retrieving information about the number of basis function. */
     ///@{
 
@@ -343,6 +360,15 @@ protected:
      */
     BCTable boundary_conditions_table_;
 
+
+    std::shared_ptr<RefSpace> ref_space_previous_refinement_ = nullptr;
+
+
+public:
+    std::shared_ptr<const RefSpace> get_space_previous_refinement() const
+    {
+        return ref_space_previous_refinement_;
+    }
 };
 
 IGA_NAMESPACE_CLOSE

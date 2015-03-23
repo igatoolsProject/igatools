@@ -20,6 +20,8 @@
 
 #include <igatools/base/ig_function.h>
 #include <igatools/base/function_element.h>
+#include <igatools/base/quadrature_lib.h>
+#include <igatools/basis_functions/space_tools.h>
 
 using std::shared_ptr;
 
@@ -304,6 +306,30 @@ rebuild_after_insert_knots(
     grid->print_info(out);
     out.end_item();
 
+
+    out.begin_item("Space Old");
+    auto space_previous_refinement = std::const_pointer_cast<Space>(space_->get_space_previous_refinement());
+    space_previous_refinement->print_info(out);
+    out.end_item();
+
+
+    out.begin_item("Space New");
+    space_->print_info(out);
+    out.end_item();
+
+
+    auto function_previous_refinement = IgFunction<Space>::create(space_previous_refinement,coeff_);
+    out.begin_item("IgFunction Old");
+    function_previous_refinement->print_info(out);
+    out.end_item();
+
+
+    QGauss<dim> quad(space_->get_max_degree()+1);
+    auto function_refined = space_tools::projection_l2(
+                                function_previous_refinement,
+                                space_,
+                                quad);
+    //*/
 #if 0
     auto ref_space = data_->ref_space_;
 
