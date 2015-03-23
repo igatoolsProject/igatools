@@ -497,6 +497,7 @@ public:
      */
     Size get_num_basis(const std::string &dofs_property = DofProperties::none) const;
 
+    // TODO (pauletti, Mar 20, 2015): NOT safe, maybe remove or...
     /**
      * Number of non-zero scalar basis functions associated
      * with the i-th space component on the element.
@@ -506,6 +507,7 @@ public:
      */
     int get_num_basis(const int i) const;
 
+    // TODO (pauletti, Mar 20, 2015): NOT safe, maybe remove or...
     /**
      * Returns the basis function ID offset between the different components.
      */

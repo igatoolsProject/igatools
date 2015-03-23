@@ -723,7 +723,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     for (const auto &w_coefs : weights)
         w_func_table[comp++] = WeightFuncPtr(
                                    new WeightFunc(scalar_spline_space,
-                                                  vector<Real>(w_coefs.get_data())));
+                                                  IgCoefficient(w_coefs.get_data())));
 
 
     //*/

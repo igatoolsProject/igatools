@@ -156,8 +156,8 @@ SpaceInfo(const SpacePtrVariant &space,
           const Index min_dofs_id,
           const Index max_dofs_id,
           const DofsView &dofs_view,
+		  const std::set<Index> &dofs,
           const std::shared_ptr<const ElemsDofs> elements_dofs
-//        ,const std::shared_ptr<const std::map<Index,DofsConstView>> elements_dofs_view
          )
     :
     space_(space),
@@ -173,12 +173,13 @@ SpaceInfo(const SpacePtrVariant &space,
     min_dofs_id_(min_dofs_id),
     max_dofs_id_(max_dofs_id),
     dofs_view_(dofs_view),
+	dofs_(dofs),
     elements_dofs_(elements_dofs)
-//  ,elements_dofs_view_(elements_dofs_view)
+
 {
     Assert(dim_ >= 0,ExcLowerRange(dim_,0));
     Assert(codim_ >= 0,ExcLowerRange(codim_,0));
-    Assert(space_dim_ > 0,ExcLowerRange(space_dim_,1));
+    Assert(space_dim_ >= 0,ExcLowerRange(space_dim_,1));
     Assert(range_ > 0,ExcLowerRange(range_,1));
     Assert(rank_ > 0,ExcLowerRange(rank_,1));
 
@@ -232,6 +233,8 @@ get_space_variant() -> SpacePtrVariant &
 {
     return space_;
 }
+
+
 
 auto
 SpaceManager::

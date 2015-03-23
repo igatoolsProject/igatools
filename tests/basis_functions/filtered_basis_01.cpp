@@ -71,6 +71,7 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
     for(;elem != end; ++elem)
     {
         out << "Interior dofs:" << endl;
+        out << "Number: " << elem->get_num_basis(DofProp::interior) << endl;
         elem->get_local_to_global(DofProp::interior).print_info(out);
         out << endl;
 

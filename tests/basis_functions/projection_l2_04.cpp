@@ -113,9 +113,6 @@ void test_proj(const int p, const int n_knots = 4)
     auto proj_func = space_tools::projection_l2<RefSpace,la_pack>(f, space, quad);
     proj_func->print_info(out);
 
-//    Writer<dim> writer(knots,4);
-//    writer.add_field(space, proj_values, "Function");
-//    writer.save("output");
 }
 
 

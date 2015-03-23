@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 /*
  *  Test for the l2_projection function.
- *  Bspline spaces case
+ *  Bspline spaces, constant function, vector valued case
  *
  *  author: pauletti
  *  date: 2013-10-31
@@ -37,14 +37,16 @@
 #include <igatools/basis_functions/space_tools.h>
 
 template<int dim , int range=1 ,int rank = 1, LAPack la_pack>
-void test_proj(const int p, const int n_knots = 4)
+void test_proj(const int deg, const int n_knots = 4)
 {
+	OUTSTART
+
     using Space = BSplineSpace<dim,range,rank> ;
     using RefSpace = ReferenceSpace<dim,range,rank> ;
     using Func = typename functions::ConstantFunction<dim, 0, range, rank>;
 
     auto grid = CartesianGrid<dim>::create(n_knots);
-    auto space = Space::create(p, grid);
+    auto space = Space::create(deg, grid);
 
 
     typename Func::Value val;
@@ -58,6 +60,8 @@ void test_proj(const int p, const int n_knots = 4)
     auto proj_func = space_tools::projection_l2<RefSpace,la_pack>(f, space, quad);
     proj_func->print_info(out);
 
+    OUTEND
+
 }
 
 
@@ -70,6 +74,7 @@ int main()
     const auto la_pack = LAPack::petsc;
 #endif
 
+    test_proj<0,1,1, la_pack>(3);
     test_proj<1,1,1, la_pack>(3);
     test_proj<2,1,1, la_pack>(3);
     test_proj<3,1,1, la_pack>(1);
