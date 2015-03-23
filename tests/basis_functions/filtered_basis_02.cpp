@@ -142,12 +142,12 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
     LinSolver solver(LinSolver::SolverType::CG);
     solver.solve(*matrix, *vec, *solution);
 
-    const int n_plot_points = 2;
+    const int n_plot_points = 4;
     auto map = IdentityFunction<dim>::create(space->get_grid());
     Writer<dim> writer(map, n_plot_points);
 
     using IgFunc = IgFunction<RefSpace>;
-    auto solution_function = IgFunc::create(space,solution->get_as_vector(),
+    auto solution_function = IgFunc::create(space,solution->as_ig_fun_coefficients(),
     		DofProp::interior);
     writer.template add_field<1,1>(solution_function, "solution");
     string filename = "poisson_problem-" + to_string(dim) + "d" ;

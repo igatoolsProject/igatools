@@ -137,7 +137,7 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
                      tol,max_iter);
     solver.solve(matrix, rhs, sol);
 
-    return std::make_shared<IgFunction<Space>>(IgFunction<Space>(space, sol.get_as_vector()));
+    return std::make_shared<IgFunction<Space>>(IgFunction<Space>(space, sol.as_ig_fun_coefficients()));
 }
 
 

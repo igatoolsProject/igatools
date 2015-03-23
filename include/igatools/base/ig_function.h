@@ -117,7 +117,7 @@ private:
 
     CoeffType coeff_;
 
-    const std::string &property_;
+    std::string property_;
 
     typename Space::ElementIterator elem_;
 
@@ -152,8 +152,6 @@ private:
         {
             Assert(space_handler_ != nullptr, ExcNullPtr());
             space_handler_->template init_cache<T::k>(*space_elem);
-//            const auto topology = Int<T::k>();
-//            space_handler_->init_cache(*space_elem,topology);
         }
 
         typename Space::ElementHandler  *space_handler_;
@@ -175,13 +173,13 @@ private:
 
             if (flags.fill_values())
                 std::get<0>(cache.values_) =
-                    space_elem->template linear_combination<0,T::k>(*loc_coeff,j,DofProperties::active);
+                    space_elem->template linear_combination<0,T::k>(*loc_coeff,j, *property);
             if (flags.fill_gradients())
                 std::get<1>(cache.values_) =
-                    space_elem->template linear_combination<1,T::k>(*loc_coeff,j,DofProperties::active);
+                    space_elem->template linear_combination<1,T::k>(*loc_coeff,j, *property);
             if (flags.fill_hessians())
                 std::get<2>(cache.values_) =
-                    space_elem->template linear_combination<2,T::k>(*loc_coeff,j,DofProperties::active);
+                    space_elem->template linear_combination<2,T::k>(*loc_coeff,j, *property);
 
             cache.set_filled(true);
         }
@@ -192,6 +190,7 @@ private:
         ElementAccessor *func_elem;
         typename Space::ElementAccessor *space_elem;
         vector<Real> *loc_coeff;
+        std::string *property;
     };
 
     ResetDispatcher reset_impl;

@@ -137,8 +137,8 @@ fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) -> voi
     		coeff_.get_local_coefs(elem_->get_local_to_global(property_));
 
     fill_cache_impl.loc_coeff = &loc_coeff;
-    fill_cache_impl.j =j;
-
+    fill_cache_impl.j = j;
+    fill_cache_impl.property = &property_;
     boost::apply_visitor(fill_cache_impl, k);
 }
 
