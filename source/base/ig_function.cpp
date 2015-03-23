@@ -194,15 +194,9 @@ fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) -> voi
 
 
     // TODO (pauletti, Nov 27, 2014): if code is in final state remove commented line else fix
-    const auto elem_global_ids = elem_->get_local_to_global(DofProperties::none);
-    vector<Real> loc_coeff;
-#if 0
-//    for (const auto &id : elem_global_ids)
-//        loc_coeff.push_back(coeff_[id]);
-
+//    const auto elem_global_ids = elem_->get_local_to_global(DofProperties::none);
+//    vector<Real> loc_coeff;
     auto loc_coeff = coeff_.get_local_coefs(elem_->get_local_to_global(DofProperties::none));
-
-#endif
 
     //-----------------------------------------------------
     const auto dof_distribution = space_->get_dof_distribution();
@@ -214,6 +208,8 @@ fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) -> voi
     elem_global_ids.print_info(out);
     out.end_item();
 #endif
+
+#if 0
     for (const auto &dof_global_id : elem_global_ids)
     {
         int comp;
@@ -224,6 +220,7 @@ fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) -> voi
 
         loc_coeff.push_back(coeff_new_[comp][dof_id_in_comp]);
     }
+#endif
     //-----------------------------------------------------
 
     fill_cache_impl.loc_coeff = &loc_coeff;
@@ -295,40 +292,19 @@ rebuild_after_insert_knots(
     const special_array<vector<Real>,dim> &knots_to_insert,
     const CartesianGrid<dim> &grid_old)
 {
-    auto grid = this->get_grid();
-
-    LogStream out;
-    out.begin_item("Grid Old");
-    grid_old.print_info(out);
-    out.end_item();
-
-    out.begin_item("Grid New");
-    grid->print_info(out);
-    out.end_item();
-
-
-    out.begin_item("Space Old");
-    auto space_previous_refinement = std::const_pointer_cast<Space>(space_->get_space_previous_refinement());
-    space_previous_refinement->print_info(out);
-    out.end_item();
-
-
-    out.begin_item("Space New");
-    space_->print_info(out);
-    out.end_item();
-
-
-    auto function_previous_refinement = IgFunction<Space>::create(space_previous_refinement,coeff_);
-    out.begin_item("IgFunction Old");
-    function_previous_refinement->print_info(out);
-    out.end_item();
-
+    auto function_previous_refinement = IgFunction<Space>::create(
+                                            std::const_pointer_cast<Space>(space_->get_space_previous_refinement()),
+                                            coeff_);
 
     QGauss<dim> quad(space_->get_max_degree()+1);
     auto function_refined = space_tools::projection_l2(
                                 function_previous_refinement,
                                 space_,
                                 quad);
+
+    this->coeff_ = std::move(function_refined->coeff_);
+
+
     //*/
 #if 0
     auto ref_space = data_->ref_space_;
@@ -490,8 +466,6 @@ rebuild_after_insert_knots(
     }
     //----------------------------------
 #endif
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
 }
 
 template<class Space>

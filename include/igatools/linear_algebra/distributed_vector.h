@@ -112,12 +112,12 @@ public:
     /**
      * Copy assignment operator. Not allowed to be used.
      */
-    VectorTrilinos<trilinos_impl> &operator=(const VectorTrilinos<trilinos_impl> &matrix) = delete;
+    VectorTrilinos<trilinos_impl> &operator=(const VectorTrilinos<trilinos_impl> &vector) = delete;
 
     /**
      * Move assignment operator. Not allowed to be used.
      */
-    VectorTrilinos<trilinos_impl> &operator=(VectorTrilinos<trilinos_impl> &&matrix) = delete;
+    VectorTrilinos<trilinos_impl> &operator=(VectorTrilinos<trilinos_impl> &&vector) = default;
     ///@}
 
 

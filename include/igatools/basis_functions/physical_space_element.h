@@ -269,7 +269,6 @@ public:
     const std::shared_ptr<const CartesianGrid<dim>> get_grid() const;
 
 
-protected:
 
 #if 0
     /**
@@ -292,6 +291,7 @@ protected:
     void move_to(const Index flat_index);
     ///@}
 
+protected:
 
     /*
         bool operator==(const PhysicalSpaceElement<PhysSpace> &a) const;

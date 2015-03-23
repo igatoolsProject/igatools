@@ -24,14 +24,18 @@
 #include <igatools/base/function.h>
 #include <igatools/base/ig_function.h>
 
+#include <igatools/geometry/grid_tools.h>
+
 #include <igatools/linear_algebra/distributed_matrix.h>
 #include <igatools/linear_algebra/linear_solver.h>
 
-#include<set>
 #include <igatools/base/sub_function.h>
 
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/basis_functions/phys_space_element_handler.h>
+
+
+#include<set>
 
 IGA_NAMESPACE_OPEN
 namespace space_tools
@@ -81,13 +85,26 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
     auto elem = space->begin();
     auto end  = space->end();
 
+
+
+    auto map_elems_fine_coarse =
+        grid_tools::build_map_elements_between_cartesian_grids(
+            *space->get_grid(),*func->get_grid());
+
     func->init_element_cache(f_elem);
     sp_filler->init_element_cache(elem);
 
     const int n_qp = quad.get_num_points();
 
-    for (; elem != end; ++elem, ++f_elem)
+//    for (; elem != end; ++elem, ++f_elem)
+    for (const auto &elems_pair : map_elems_fine_coarse)
     {
+        elem->move_to(elems_pair.first ->get_flat_index());
+        f_elem->move_to(elems_pair.second->get_flat_index());
+
+        const auto &elem_ref = *elem;
+        const auto &f_elem_ref = *elem;
+
         const int n_basis = elem->get_num_basis(dofs_filter);
         DenseVector loc_rhs(n_basis);
         DenseMatrix loc_mat(n_basis, n_basis);
@@ -128,7 +145,6 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
     }
     matrix.fill_complete();
 
-    // TODO (pauletti, Oct 9, 2014): the solver must use a precon
     const Real tol = 1.0e-15;
     const int max_iter = 1000;
     using LinSolver = LinearSolverIterative<la_pack>;

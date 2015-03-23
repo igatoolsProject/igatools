@@ -35,6 +35,7 @@
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/base/function_element.h>
+#include <igatools/io/writer.h>
 
 
 template <int dim, int codim=0>
@@ -119,15 +120,20 @@ void bspline_map(const int deg = 1)
     auto F = Function::create(space, control_pts);
     auto map = Mapping::create(F);
 
-    out.begin_item("Function before h-refinement");
+    out.begin_item("IgFunction before h-refinement");
     F->print_info(out);
     out.end_item();
+    Writer<dim,codim> writer_func_unrefined(F,10);
+    writer_func_unrefined.save("func_unrefined_" + std::to_string(dim) + "d");
+
 
     F->refine_h(2);
 
-    out.begin_item("Function after h-refinement");
+    out.begin_item("IgFunction after h-refinement");
     F->print_info(out);
     out.end_item();
+    Writer<dim,codim> writer_func_refined(F,10);
+    writer_func_refined.save("func_refined_" + std::to_string(dim) + "d");
 
     /*
     auto quad = QGauss<dim>(3);
@@ -165,6 +171,6 @@ int main()
 
     bspline_map<1>();
     bspline_map<2>();
-//    bspline_map<3>();
+    bspline_map<3>();
 
 }
