@@ -58,17 +58,17 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
     dof_dist->add_dofs_property(DofProp::dirichlet);
     dof_dist->add_dofs_property(DofProp::neumman);
 
-    std::set<Index> int_dofs={4};
+    std::set<Index> int_dofs= {4};
     dof_dist->set_dof_property_status(DofProp::interior, int_dofs,true);
-    std::set<Index> dir_dofs={6,3,0, 1, 2, 5, 8};
+    std::set<Index> dir_dofs= {6,3,0, 1, 2, 5, 8};
     dof_dist->set_dof_property_status(DofProp::dirichlet, dir_dofs,true);
-    std::set<Index> neu_dofs={7};
+    std::set<Index> neu_dofs= {7};
     dof_dist->set_dof_property_status(DofProp::neumman, neu_dofs,true);
 
     auto elem = space->begin();
     auto end  = space->end();
 
-    for(;elem != end; ++elem)
+    for (; elem != end; ++elem)
     {
         out << "Interior dofs:" << endl;
         out << "Number: " << elem->get_num_basis(DofProp::interior) << endl;
@@ -93,8 +93,8 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
 
 int main()
 {
-	const int dim = 2;
-	filtered_dofs<dim>();
+    const int dim = 2;
+    filtered_dofs<dim>();
 
     return 0;
 }

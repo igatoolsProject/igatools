@@ -45,8 +45,8 @@ test_id_for_property(const Index id, const std::string &property) const
 //    }
 //    else
 //    {
-        const auto &ids_same_property = this->get_ids_same_property(property);
-        return std::binary_search(ids_same_property.begin(),ids_same_property.end(),id);
+    const auto &ids_same_property = this->get_ids_same_property(property);
+    return std::binary_search(ids_same_property.begin(),ids_same_property.end(),id);
 //    }
 }
 

@@ -95,9 +95,9 @@ DofDistribution(const TensorSizeTable &n_basis,
     //-----------------------------------------------------------------------
     properties_dofs_.add_property(DofProperties::none);
     properties_dofs_.set_ids_property_status(
-    		DofProperties::none,
-            std::set<Index>(dofs_view_.cbegin(),dofs_view_.cend()),
-            true);
+        DofProperties::none,
+        std::set<Index>(dofs_view_.cbegin(),dofs_view_.cend()),
+        true);
 }
 
 
@@ -307,7 +307,7 @@ std::set<Index> &
 DofDistribution<dim, range, rank>::
 get_dofs_id_same_property(const std::string &property)
 {
-	return properties_dofs_.get_ids_same_property(property);
+    return properties_dofs_.get_ids_same_property(property);
 }
 
 

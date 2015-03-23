@@ -41,7 +41,7 @@
 template<int dim , int range ,int rank, LAPack la_pack>
 void project_l2(const int p, const int num_knots = 10)
 {
-	OUTSTART
+    OUTSTART
 
     using Space =  BSplineSpace<dim,range,rank>;
     using RefSpace =  ReferenceSpace<dim,range,rank>;

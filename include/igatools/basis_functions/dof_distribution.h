@@ -252,8 +252,8 @@ public:
     void set_dof_property_status(const std::string &property, const Index dof_id, const bool status);
 
     void set_dof_property_status(const std::string &property,
-                            const std::set<Index> ids,
-                            const bool status);
+                                 const std::set<Index> ids,
+                                 const bool status);
     /**
      * Sets the @p status of the given @p property for all the dofs in the
      * DofDistribution.

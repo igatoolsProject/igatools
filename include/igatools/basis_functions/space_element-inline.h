@@ -233,9 +233,9 @@ get_num_basis(const std::string &dofs_property) const
 //            total_num_basis += n_basis_direction_component.flat_size();
 //    }
 //    else
-//	{
-        const auto dofs_global = this->get_local_to_global(dofs_property);
-        return dofs_global.size();
+//  {
+    const auto dofs_global = this->get_local_to_global(dofs_property);
+    return dofs_global.size();
 //    }
 
 //    return total_num_basis;

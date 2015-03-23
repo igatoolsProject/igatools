@@ -52,10 +52,10 @@ IgFunction(std::shared_ptr<Space> space,
     for (auto &coeff_new_comp : coeff_new_)
     {
         coeff_new_comp.resize(n_dofs_table[comp]);
-        for (auto & coeff_new_comp_dof : coeff_new_comp)
+        for (auto &coeff_new_comp_dof : coeff_new_comp)
         {
-        	coeff_new_comp_dof = coeff_(dof);
-        	++dof;
+            coeff_new_comp_dof = coeff_(dof);
+            ++dof;
         }
         ++comp;
     }
