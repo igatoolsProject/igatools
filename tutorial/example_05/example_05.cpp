@@ -88,7 +88,7 @@ void  PoissonPreparation<dim>::local_assemble()
         // [iterate as before]
 
         // [local matrix]
-        const int n_basis = elem->get_num_basis(DofProperties::none);
+        const int n_basis = elem->get_num_basis(DofProperties::active);
 
         DenseMatrix loc_mat(n_basis, n_basis);
         loc_mat = 0.0;
@@ -99,8 +99,8 @@ void  PoissonPreparation<dim>::local_assemble()
 
         // [get the values]
         elem_handler->fill_element_cache(elem);
-        auto values = elem->template get_values<0, dim>(0,DofProperties::none);
-        auto grads  = elem->template get_values<1, dim>(0,DofProperties::none);
+        auto values = elem->template get_values<0, dim>(0,DofProperties::active);
+        auto grads  = elem->template get_values<1, dim>(0,DofProperties::active);
         auto w_meas = elem->template get_w_measures<dim>(0);
         // [get the values]
 

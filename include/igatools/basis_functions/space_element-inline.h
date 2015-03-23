@@ -227,7 +227,7 @@ SpaceElement<Space>::
 get_num_basis(const std::string &dofs_property) const
 {
 //    Index total_num_basis = 0;
-//    if (dofs_property == DofProperties::none)
+//    if (dofs_property == DofProperties::active)
 //    {
 //        for (const auto n_basis_direction_component : n_basis_direction_)
 //            total_num_basis += n_basis_direction_component.flat_size();

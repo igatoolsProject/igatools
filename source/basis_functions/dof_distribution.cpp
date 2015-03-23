@@ -93,9 +93,9 @@ DofDistribution(const TensorSizeTable &n_basis,
                      DofsIterator(components_views,IteratorState::pass_the_end));
     // creating the dofs view from the dofs components views -- end
     //-----------------------------------------------------------------------
-    properties_dofs_.add_property(DofProperties::none);
+    properties_dofs_.add_property(DofProperties::active);
     properties_dofs_.set_ids_property_status(
-    		DofProperties::none,
+    		DofProperties::active,
             std::set<Index>(dofs_view_.cbegin(),dofs_view_.cend()),
             true);
 }

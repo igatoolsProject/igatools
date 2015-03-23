@@ -95,7 +95,7 @@ void test()
         sp_values->fill_element_cache(sp_elem);
         pf.template fill_cache<dim>(*elem, 0);
 
-        const auto &ref_values = sp_elem->template get_values<0,dim>(0,DofProperties::none);
+        const auto &ref_values = sp_elem->template get_values<0,dim>(0,DofProperties::active);
         ValueTable<typename PForward::template PhysValue<Space::range, Space::rank>>
         values(ref_values.get_num_functions(), ref_values.get_num_points());
         elem->template transform_0<Space::range, Space::rank>
@@ -106,7 +106,7 @@ void test()
         values.print_info(out);
         out << endl;
 
-        const auto &ref_der_1 = sp_elem->template get_values<1,dim>(0,DofProperties::none);
+        const auto &ref_der_1 = sp_elem->template get_values<1,dim>(0,DofProperties::active);
         ValueTable<typename PForward::template PhysDerivative<Space::range, Space::rank, 1>>
         gradients(ref_values.get_num_functions(), ref_values.get_num_points());
         elem->template transform_1<Space::range, Space::rank, dim>
@@ -118,7 +118,7 @@ void test()
         out << endl;
 
 
-        const auto &ref_der_2 = sp_elem->template get_values<2,dim>(0,DofProperties::none);
+        const auto &ref_der_2 = sp_elem->template get_values<2,dim>(0,DofProperties::active);
         ValueTable<typename PForward::template PhysDerivative<Space::range, Space::rank, 2>>
         hessians(ref_values.get_num_functions(), ref_values.get_num_points());
         elem->template transform_2<Space::range, Space::rank, dim>

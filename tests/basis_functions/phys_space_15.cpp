@@ -104,7 +104,7 @@ void elem_values(const int n_knots = 5, const int deg=1)
     for (; elem != end; ++elem)
     {
         sp_values.fill_element_cache(elem);
-        elem->template get_values<0, k>(0,DofProperties::none).print_info(out);
+        elem->template get_values<0, k>(0,DofProperties::active).print_info(out);
     }
 
     OUTEND

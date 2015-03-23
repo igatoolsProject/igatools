@@ -290,7 +290,7 @@ public:
         vector<Index> &dofs_global,
         vector<Index> &dofs_local_to_patch,
         vector<Index> &dofs_local_to_elem,
-        const std::string &dofs_property = DofProperties::none) const override final;
+        const std::string &dofs_property = DofProperties::active) const override final;
 
 #if 0
     ElementHandler get_element_handler() const;

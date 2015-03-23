@@ -28,15 +28,18 @@ IGA_NAMESPACE_OPEN
 template<class Space>
 IgFunction<Space>::
 IgFunction(std::shared_ptr<const Space> space,
-           const CoeffType &coeff)
+           const CoeffType &coeff,
+			const std::string &property)
     :
     parent_t::Function(space->get_grid()),
     space_(space),
     coeff_(coeff),
+	property_(property),
     elem_(space->begin()),
     space_filler_(space->create_elem_handler())
 {
     Assert(space_ != nullptr,ExcNullPtr());
+   // space_->get_dof_distribution()->
   //  Assert(!coeff_.empty(),ExcEmptyObject());
 }
 
@@ -49,6 +52,7 @@ IgFunction(const self_t &fun)
     parent_t::Function(fun.space_->get_grid()),
     space_(fun.space_),
     coeff_(fun.coeff_),
+	property_(fun.property_),
     elem_(fun.space_->begin()),
     space_filler_(fun.space_->create_elem_handler())
 {
@@ -62,9 +66,10 @@ template<class Space>
 auto
 IgFunction<Space>::
 create(std::shared_ptr<const Space> space,
-       const CoeffType &coeff) ->  std::shared_ptr<self_t>
+       const CoeffType &coeff,
+		const std::string &property) ->  std::shared_ptr<self_t>
 {
-    return std::shared_ptr<self_t>(new self_t(space, coeff));
+    return std::shared_ptr<self_t>(new self_t(space, coeff, property));
 }
 
 
@@ -128,8 +133,8 @@ fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) -> voi
     fill_cache_impl.func_elem = &elem;
     fill_cache_impl.function = this;
 
-    //TODO (pauletti, Mar 22, 2015): none should be changed to active
-    auto loc_coeff = coeff_.get_local_coefs(elem_->get_local_to_global(DofProperties::none));
+    auto loc_coeff =
+    		coeff_.get_local_coefs(elem_->get_local_to_global(property_));
 
     fill_cache_impl.loc_coeff = &loc_coeff;
     fill_cache_impl.j =j;
@@ -165,10 +170,6 @@ IgFunction<Space>::
 operator +=(const self_t &fun) -> self_t &
 {
 	coeff_ += fun.coeff_;
-//    const auto size = coeff_.size();
-//    for (int i=0; i<size; ++i)
-//        coeff_[i] += fun.coeff_[i];
-
     return *this;
 }
 
@@ -183,12 +184,6 @@ print_info(LogStream &out) const
     space_->print_info(out);
     out.end_item();
     out << std::endl;
-
-#if 0
-    out << "Control points info (projective coordinates):" << endl;
-
-    //write the projective cooridnates if the reference space is NURBS
-#endif
 
     out.begin_item("Control points info (euclidean coordinates):");
     coeff_.print_info(out);

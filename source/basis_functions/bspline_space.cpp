@@ -383,7 +383,7 @@ get_element_dofs(
 
         const auto &elem_comp_dof_t_id = dofs_tensor_id_elem_table_[comp];
 
-        if (dofs_property == DofProperties::none)
+        if (dofs_property == DofProperties::active)
         {
             for (const auto loc_dof_t_id : elem_comp_dof_t_id)
             {

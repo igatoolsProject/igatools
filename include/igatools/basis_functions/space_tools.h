@@ -51,7 +51,7 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
     const auto &dof_distribution = *(space->get_dof_distribution());
     const std::string dofs_filter =
         dof_distribution.is_property_defined(DofProperties::active) ?
-        DofProperties::active : DofProperties::none;
+        DofProperties::active : DofProperties::active;
 
 
 

@@ -54,7 +54,10 @@ private:
 
 public:
 
-    IgFunction(std::shared_ptr<const Space> space, const CoeffType &coeff);
+    //TODO (pauletti, Mar 23, 2015): should we make this private?
+    IgFunction(std::shared_ptr<const Space> space,
+    		const CoeffType &coeff,
+			const std::string &property = DofProperties::active);
 
     IgFunction(const self_t &);
 
@@ -74,7 +77,8 @@ public:
 
 public:
     static std::shared_ptr<self_t>
-    create(std::shared_ptr<const Space> space, const CoeffType &coeff);
+    create(std::shared_ptr<const Space> space, const CoeffType &coeff,
+			const std::string &property = DofProperties::active);
 
 
     std::shared_ptr<base_t> clone() const override final
@@ -98,6 +102,11 @@ public:
 
     const CoeffType &get_coefficients() const;
 
+    const std::string &get_property() const
+    {
+    	return property_;
+    }
+
     self_t &operator +=(const self_t &fun);
 
     void print_info(LogStream &out) const;
@@ -107,6 +116,8 @@ private:
     std::shared_ptr<const Space> space_;
 
     CoeffType coeff_;
+
+    const std::string &property_;
 
     typename Space::ElementIterator elem_;
 
@@ -164,13 +175,13 @@ private:
 
             if (flags.fill_values())
                 std::get<0>(cache.values_) =
-                    space_elem->template linear_combination<0,T::k>(*loc_coeff,j,DofProperties::none);
+                    space_elem->template linear_combination<0,T::k>(*loc_coeff,j,DofProperties::active);
             if (flags.fill_gradients())
                 std::get<1>(cache.values_) =
-                    space_elem->template linear_combination<1,T::k>(*loc_coeff,j,DofProperties::none);
+                    space_elem->template linear_combination<1,T::k>(*loc_coeff,j,DofProperties::active);
             if (flags.fill_hessians())
                 std::get<2>(cache.values_) =
-                    space_elem->template linear_combination<2,T::k>(*loc_coeff,j,DofProperties::none);
+                    space_elem->template linear_combination<2,T::k>(*loc_coeff,j,DofProperties::active);
 
             cache.set_filled(true);
         }

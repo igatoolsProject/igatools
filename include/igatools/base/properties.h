@@ -41,11 +41,9 @@ struct ElementProperties : public Properties
 };
 
 
-struct DofProperties : public Properties
+struct DofProperties
 {
-    using Properties::none;
-
-    static const std::string active;
+	static const std::string active;
 };
 
 IGA_NAMESPACE_CLOSE
