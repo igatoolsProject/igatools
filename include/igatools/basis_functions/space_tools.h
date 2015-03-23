@@ -91,6 +91,8 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
         grid_tools::build_map_elements_between_cartesian_grids(
             *space->get_grid(),*func->get_grid());
 
+
+
     func->init_element_cache(f_elem);
     sp_filler->init_element_cache(elem);
 
@@ -101,6 +103,9 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
     {
         elem->move_to(elems_pair.first ->get_flat_index());
         f_elem->move_to(elems_pair.second->get_flat_index());
+
+
+
 
         const auto &elem_ref = *elem;
         const auto &f_elem_ref = *elem;
@@ -115,7 +120,30 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
         loc_mat = 0.;
         loc_rhs = 0.;
 
-        auto f_at_qp = f_elem->template get_values<0,dim>(0);
+//        auto f_at_qp = f_elem->template get_values<0,dim>(0);
+
+        //---------------------------------------------------------------------------
+        // the function is supposed to be defined on the same grid of the space or coarser
+        const auto &elem_grid_accessor = elem->as_cartesian_grid_element_accessor();
+        auto quad_in_func_elem = quad;
+        quad_in_func_elem.dilate_translate(
+            elem_grid_accessor.
+            template get_coordinate_lengths<dim>(0),
+            elem_grid_accessor.vertex(0));
+
+        auto one_div_f_elem_size = f_elem->template get_coordinate_lengths<dim>(0);
+        for (int dir : UnitElement<dim>::active_directions)
+            one_div_f_elem_size[dir] = 1.0/one_div_f_elem_size[dir];
+
+        auto f_elem_vertex = -f_elem->vertex(0);
+        quad_in_func_elem.translate(f_elem_vertex);
+        quad_in_func_elem.dilate(one_div_f_elem_size);
+
+
+        auto f_at_qp = f_elem->evaluate_values_at_points(quad_in_func_elem);
+        //---------------------------------------------------------------------------
+
+
         auto phi = elem->template get_values<0,dim>(0,dofs_filter);
 
         // computing the upper triangular part of the local matrix
