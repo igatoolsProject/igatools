@@ -370,6 +370,22 @@ dot(const self_t &A) const
     return dot;
 }
 
+Index
+Vector<LAPack::trilinos_epetra>::
+size() const
+{
+    return vector_->GlobalLength();
+}
+
+
+auto
+Vector<LAPack::trilinos_epetra>::
+operator+=(const self_t &vec) -> self_t &
+{
+    vector_->Update(1., *(vec.vector_), 1.);
+    return *this;
+}
+
 
 auto
 Vector<LAPack::trilinos_epetra>::
