@@ -292,14 +292,15 @@ rebuild_after_insert_knots(
     const special_array<vector<Real>,dim> &knots_to_insert,
     const CartesianGrid<dim> &grid_old)
 {
+    using std::const_pointer_cast;
     auto function_previous_refinement = IgFunction<Space>::create(
-                                            std::const_pointer_cast<Space>(space_->get_space_previous_refinement()),
+                                            const_pointer_cast<Space>(space_->get_space_previous_refinement()),
                                             coeff_);
 
     QGauss<dim> quad(space_->get_max_degree()+1);
     auto function_refined = space_tools::projection_l2(
                                 function_previous_refinement,
-                                space_,
+                                const_pointer_cast<const Space>(space_),
                                 quad);
 
     this->coeff_ = std::move(function_refined->coeff_);
