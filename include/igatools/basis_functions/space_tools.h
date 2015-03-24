@@ -40,117 +40,7 @@
 IGA_NAMESPACE_OPEN
 namespace space_tools
 {
-#if 0
-/**
- * Perform an (L2)-Projection the function @p func
- * onto the space @p space using the quadrature rule @p quad.
- *  The projection is a numerical vector (the coefficients of
- *  the projected function)
- *
- *  @pre The grids of the space and of the function must be the same, otherwise an assertion
- *  will be raised (in Debug mode)
- */
-template<class Space, LAPack la_pack = LAPack::trilinos_tpetra>
-std::shared_ptr<IgFunction<Space> >
-projection_l2_same_grids(const std::shared_ptr<const typename Space::Func> function,
-                         std::shared_ptr<const Space> space,
-                         const Quadrature<Space::dim> &quad)
-{
-    Assert(space->get_grid() == function->get_grid(),ExcMessage("Different grids."));
 
-    const auto &dof_distribution = *(space->get_dof_distribution());
-    const std::string dofs_filter =
-        dof_distribution.is_property_defined(DofProperties::active) ?
-        DofProperties::active : DofProperties::none;
-
-
-
-    auto func = function->clone();
-    const int dim = Space::dim;
-
-//    const auto space_manager = space->get_space_manager();
-    const auto space_manager =
-        build_space_manager_single_patch<Space>(std::const_pointer_cast<Space>(space));
-    Matrix<la_pack> matrix(*space_manager);
-
-    const auto space_dofs_set = space_manager->get_row_dofs();
-    vector<Index> space_dofs(space_dofs_set.begin(),space_dofs_set.end());
-    Vector<la_pack> rhs(space_dofs);
-    Vector<la_pack> sol(space_dofs);
-
-    auto func_flag = ValueFlags::point | ValueFlags::value;
-    func->reset(func_flag, quad);
-
-    using ElementHandler = typename Space::ElementHandler;
-    auto sp_filler = ElementHandler::create(space);
-    auto sp_flag = ValueFlags::point | ValueFlags::value |
-                   ValueFlags::w_measure;
-    sp_filler->reset(sp_flag, quad);
-
-    auto f_elem = func->begin();
-    auto elem = space->begin();
-    auto end  = space->end();
-
-    func->init_element_cache(f_elem);
-    sp_filler->init_element_cache(elem);
-
-    const int n_qp = quad.get_num_points();
-
-    for (; elem != end; ++elem, ++f_elem)
-    {
-        const int n_basis = elem->get_num_basis(dofs_filter);
-        DenseVector loc_rhs(n_basis);
-        DenseMatrix loc_mat(n_basis, n_basis);
-
-        func->fill_element_cache(f_elem);
-        sp_filler->fill_element_cache(elem);
-
-        loc_mat = 0.;
-        loc_rhs = 0.;
-
-        auto f_at_qp = f_elem->template get_values<0,dim>(0);
-        auto phi = elem->template get_values<0,dim>(0,dofs_filter);
-
-        // computing the upper triangular part of the local matrix
-        auto w_meas = elem->template get_w_measures<dim>(0);
-        for (int i = 0; i < n_basis; ++i)
-        {
-            const auto phi_i = phi.get_function_view(i);
-            for (int j = i; j < n_basis; ++j)
-            {
-                const auto phi_j = phi.get_function_view(j);
-                for (int q = 0; q < n_qp; ++q)
-                    loc_mat(i,j) += scalar_product(phi_i[q], phi_j[q]) * w_meas[q];
-            }
-
-            for (int q = 0; q < n_qp; q++)
-                loc_rhs(i) += scalar_product(f_at_qp[q], phi_i[q]) * w_meas[q];
-        }
-
-        // filling symmetric ;lower part of local matrix
-        for (int i = 0; i < n_basis; ++i)
-            for (int j = 0; j < i; ++j)
-                loc_mat(i, j) = loc_mat(j, i);
-
-        const auto local_dofs = elem->get_local_to_global(dofs_filter);
-        matrix.add_block(local_dofs,local_dofs,loc_mat);
-        rhs.add_block(local_dofs,loc_rhs);
-    }
-    matrix.fill_complete();
-
-    // TODO (pauletti, Oct 9, 2014): the solver must use a precon
-    const Real tol = 1.0e-15;
-    const int max_iter = 1000;
-    using LinSolver = LinearSolverIterative<la_pack>;
-    LinSolver solver(LinSolver::SolverType::CG,
-                     LinSolver::PreconditionerType::ILU0,
-                     tol,max_iter);
-    solver.solve(matrix, rhs, sol);
-
-    return std::make_shared<IgFunction<Space>>(IgFunction<Space>(
-                                                   std::const_pointer_cast<Space>(space), sol.get_as_vector()));
-}
-#endif
 
 /**
  * Perform an (L2)-Projection the function @p func
@@ -181,7 +71,11 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
     Vector<la_pack> rhs(space_dofs);
     Vector<la_pack> sol(space_dofs);
 
-    if (space->get_grid() == function->get_grid())
+    const auto space_grid =    space->get_grid();
+    const auto  func_grid = function->get_grid();
+
+
+    if (space_grid == func_grid)
     {
         auto func = function->clone();
         const int dim = Space::dim;
@@ -217,10 +111,10 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
             loc_rhs = 0.;
 
             auto f_at_qp = f_elem->template get_values<0,dim>(0);
-            auto phi = elem->template get_values<0,dim>(0,dofs_filter);
+            auto phi = elem->get_element_values(dofs_filter);
 
             // computing the upper triangular part of the local matrix
-            auto w_meas = elem->template get_w_measures<dim>(0);
+            auto w_meas = elem->get_element_w_measures();
             for (int i = 0; i < n_basis; ++i)
             {
                 const auto phi_i = phi.get_function_view(i);
@@ -240,14 +134,18 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
                 for (int j = 0; j < i; ++j)
                     loc_mat(i, j) = loc_mat(j, i);
 
-            const auto local_dofs = elem->get_local_to_global(dofs_filter);
-            matrix.add_block(local_dofs,local_dofs,loc_mat);
-            rhs.add_block(local_dofs,loc_rhs);
+            const auto elem_dofs = elem->get_local_to_global(dofs_filter);
+            matrix.add_block(elem_dofs,elem_dofs,loc_mat);
+            rhs.add_block(elem_dofs,loc_rhs);
         }
         matrix.fill_complete();
     }
     else
     {
+        Assert(space_grid->same_knots_or_refinement_of(*func_grid),
+               ExcMessage("The space grid is not a refinement of the function grid."));
+
+        Assert(false,ExcNotImplemented());
         auto func = function->clone();
         const int dim = Space::dim;
 
@@ -318,10 +216,11 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
             //---------------------------------------------------------------------------
 
 
-            auto phi = elem->template get_values<0,dim>(0,dofs_filter);
+            auto phi = elem->get_element_values(dofs_filter);
 
             // computing the upper triangular part of the local matrix
-            auto w_meas = elem->template get_w_measures<dim>(0);
+//            auto w_meas = elem->template get_w_measures<dim>(0);
+            auto w_meas = elem->get_element_w_measures();
             for (int i = 0; i < n_basis; ++i)
             {
                 const auto phi_i = phi.get_function_view(i);
@@ -341,9 +240,9 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
                 for (int j = 0; j < i; ++j)
                     loc_mat(i, j) = loc_mat(j, i);
 
-            const auto local_dofs = elem->get_local_to_global(dofs_filter);
-            matrix.add_block(local_dofs,local_dofs,loc_mat);
-            rhs.add_block(local_dofs,loc_rhs);
+            const auto elem_dofs = elem->get_local_to_global(dofs_filter);
+            matrix.add_block(elem_dofs,elem_dofs,loc_mat);
+            rhs.add_block(elem_dofs,loc_rhs);
         }
         matrix.fill_complete();
     }

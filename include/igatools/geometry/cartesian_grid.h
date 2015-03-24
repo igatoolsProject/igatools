@@ -533,6 +533,15 @@ public:
     find_elements_id_of_point(const Points<dim_> &point) const;
 
 
+    /**
+     * This function returns TRUE if the current grid object is a <em>refinement</em> of
+     *  @p grid_to_compare_with,
+     * i.e. if the knots of the current grid object are present in @p grid_to_compare_with.
+     * @note The functions returns TRUE also if the knots in the current grid object
+     * are equal to the knots in @p grid_to_compare_with.
+     */
+    bool same_knots_or_refinement_of(const CartesianGrid<dim_> &grid_to_compare_with) const;
+
 public:
     /**
      * Prints debug information of the CartesianGrid to a LogStream.

@@ -31,6 +31,7 @@ namespace grid_tools
 template<int dim>
 using InterGridMap = std::map<typename CartesianGrid<dim>::ElementConstIterator,
       typename CartesianGrid<dim>::ElementConstIterator>;
+
 /**
  * Given one grid <tt>grid_coarse</tt> and a refinement <tt>grid_fine</tt>,
  * this function builds and returns the one-to-one mapping between the elements on the

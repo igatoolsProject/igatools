@@ -1054,6 +1054,36 @@ insert_knots(special_array<vector<Real>,dim_> &knots_to_insert)
 }
 
 
+template <int dim_>
+bool
+CartesianGrid<dim_>::
+same_knots_or_refinement_of(const CartesianGrid<dim_> &grid_to_compare_with) const
+{
+    bool is_refinement = true;
+    for (auto dir : Topology::active_directions)
+    {
+        const auto &knots_coarse = grid_to_compare_with.get_knot_coordinates(dir);
+        const auto &knots_fine   = this->get_knot_coordinates(dir);
+
+        //look if there is any value in knots_coarse not in knots_fine
+        if (std::any_of(
+                knots_coarse.begin(),
+                knots_coarse.end(),
+                [&knots_fine](const Real &val)
+    {
+        return !std::binary_search(knots_fine.begin(),knots_fine.end(),val);
+        }))
+        {
+            is_refinement = false;
+            break;
+        }
+    }
+
+
+    return is_refinement;
+}
+
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/cartesian_grid.inst>

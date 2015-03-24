@@ -179,6 +179,14 @@ public:
         return this->as_cartesian_grid_element_accessor().template get_w_measures<k>(j);
     }
 
+    /**
+     * Returns the gradient determinant of the identity map at the dilated quadrature points.
+     */
+    ValueVector<Real> get_element_w_measures() const
+    {
+        return this->template get_w_measures<dim>(0);
+    }
+
 };
 
 
