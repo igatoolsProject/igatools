@@ -41,7 +41,7 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 0; int dim = 
             [ 0 ]
          
          Dof properties:
-            IDs with property "none":
+            IDs with property "active":
                Num.: 1
                Flat IDs: 0
          
@@ -93,7 +93,7 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 0; int dim = 
             [ 0 ]
          
          Dof properties:
-            IDs with property "none":
+            IDs with property "active":
                Num.: 1
                Flat IDs: 0
          
@@ -154,7 +154,7 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
             [ 0 1 2 ]
          
          Dof properties:
-            IDs with property "none":
+            IDs with property "active":
                Num.: 3
                Flat IDs: 0 1 2
          
@@ -213,7 +213,7 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
             [ 0 1 2 ]
          
          Dof properties:
-            IDs with property "none":
+            IDs with property "active":
                Num.: 3
                Flat IDs: 0 1 2
          
@@ -272,7 +272,7 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
             [ 0 1 ]
          
          Dof properties:
-            IDs with property "none":
+            IDs with property "active":
                Num.: 2
                Flat IDs: 0 1
          
@@ -330,7 +330,7 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
             [ 0 1 ]
          
          Dof properties:
-            IDs with property "none":
+            IDs with property "active":
                Num.: 2
                Flat IDs: 0 1
          
@@ -397,7 +397,7 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             [ 0 1 2 3 4 5 6 7 8 9 10 11 ]
          
          Dof properties:
-            IDs with property "none":
+            IDs with property "active":
                Num.: 12
                Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11
          
@@ -464,7 +464,7 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             [ 0 1 2 3 4 5 6 7 8 9 10 11 ]
          
          Dof properties:
-            IDs with property "none":
+            IDs with property "active":
                Num.: 12
                Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11
          
@@ -531,7 +531,7 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             [ 0 1 2 3 4 5 6 7 ]
          
          Dof properties:
-            IDs with property "none":
+            IDs with property "active":
                Num.: 8
                Flat IDs: 0 1 2 3 4 5 6 7
          
@@ -597,7 +597,7 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             [ 0 1 2 3 4 5 6 7 ]
          
          Dof properties:
-            IDs with property "none":
+            IDs with property "active":
                Num.: 8
                Flat IDs: 0 1 2 3 4 5 6 7
          
@@ -663,7 +663,7 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             [ 0 1 2 3 4 5 ]
          
          Dof properties:
-            IDs with property "none":
+            IDs with property "active":
                Num.: 6
                Flat IDs: 0 1 2 3 4 5
          
@@ -728,7 +728,7 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             [ 0 1 2 3 4 5 ]
          
          Dof properties:
-            IDs with property "none":
+            IDs with property "active":
                Num.: 6
                Flat IDs: 0 1 2 3 4 5
          
