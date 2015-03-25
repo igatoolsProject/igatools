@@ -494,7 +494,7 @@ public:
      */
     Size get_num_basis(const std::string &dofs_property) const;
 
-    Size get_num_basis() const;
+    virtual Size get_num_basis() const = 0;
 
 
     /**
@@ -549,8 +549,6 @@ private:
 
 
 protected:
-    /** Number of scalar basis functions along each direction, for all space components. */
-    typename Space::TensorSizeTable n_basis_direction_;
 
 
     /**

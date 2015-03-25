@@ -41,15 +41,6 @@ SpaceElement(const std::shared_ptr<const Space> space,
 //    n_basis_direction_(space->get_num_all_element_basis())
 {
     Assert(space_ != nullptr, ExcNullPtr());
-
-    //-------------------------------------------------
-    const auto &degree_table = space->get_degree();
-    ComponentContainer<TensorSize<dim>> n_basis(degree_table.get_comp_map());
-    for (auto comp : degree_table.get_active_components_id())
-        n_basis[comp] = TensorSize<dim>(degree_table[comp]+1);
-
-    n_basis_direction_ = n_basis;
-    //-------------------------------------------------
 }
 
 
@@ -72,8 +63,7 @@ SpaceElement(const SpaceElement<Space> &elem,
              const CopyPolicy &copy_policy)
     :
     CartesianGridElement<Space::dim>(elem,copy_policy),
-    space_(elem.space_),
-    n_basis_direction_(elem.n_basis_direction_)
+    space_(elem.space_)
 {
     Assert(space_ != nullptr,ExcNullPtr());
 
@@ -103,7 +93,6 @@ copy_from(const SpaceElement<Space> &elem,
         CartesianGridElement<Space::dim>::copy_from(elem,copy_policy);
 
         space_ = elem.space_;
-        n_basis_direction_ = elem.n_basis_direction_;
 
         if (copy_policy == CopyPolicy::deep)
         {
@@ -209,7 +198,7 @@ get_num_basis(const std::string &dofs_property) const
     return dofs_global.size();
 }
 
-
+#if 0
 template<class Space>
 inline
 Size
@@ -218,7 +207,7 @@ get_num_basis() const
 {
     return n_basis_direction_.total_dimension();
 }
-
+#endif
 
 template<class Space>
 inline
@@ -354,9 +343,6 @@ void
 SpaceElement<Space>::print_info(LogStream &out) const
 {
     base_t::print_info(out);
-    out.begin_item("Number of element basis: ");
-    n_basis_direction_.print_info(out);
-    out.end_item();
 }
 
 template<class Space>

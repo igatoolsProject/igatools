@@ -252,6 +252,13 @@ public:
     PfElemAccessor &get_push_forward_accessor();
 
 public:
+    using parent_t::get_num_basis;
+
+    /**
+     * Returns the max. number of basis function that can have support on this element.
+     */
+    int get_num_basis() const override final;
+
 
     /**
      * @name Functions related to get the indices of the element.

@@ -177,12 +177,31 @@ public:
 
 
     using OffsetTable = typename Space::template ComponentContainer<int>;
+    using TensorSizeTable = typename Space::TensorSizeTable;
 
 protected:
+
+    /** Number of scalar basis functions along each direction, for all space components. */
+    TensorSizeTable n_basis_direction_;
+
     /** Basis function ID offset between the different components. */
     OffsetTable comp_offset_;
 
+    using Indexer = CartesianProductIndexer<dim>;
+    using IndexerPtr = std::shared_ptr<Indexer>;
+    using IndexerPtrTable = typename Space::template ComponentContainer<IndexerPtr>;
+
+    /** Hash table for fast conversion between flat-to-tensor basis function ids. */
+    IndexerPtrTable basis_functions_indexer_;
+
 public:
+    using parent_t::get_num_basis;
+
+    /**
+     * Returns the max. number of basis function that can have support on this element.
+     */
+    int get_num_basis() const override final;
+
     /**
      * Returns the basis function ID offset between the different components.
      */
@@ -197,13 +216,7 @@ public:
      */
     int get_num_basis_comp(const int i) const;
 
-protected:
-    using Indexer = CartesianProductIndexer<dim>;
-    using IndexerPtr = std::shared_ptr<Indexer>;
-    using IndexerPtrTable = typename Space::template ComponentContainer<IndexerPtr>;
-
-    /** Hash table for fast conversion between flat-to-tensor basis function ids. */
-    IndexerPtrTable basis_functions_indexer_;
+    void print_info(LogStream &out) const;
 
 };
 
