@@ -310,13 +310,14 @@ Vector<LAPack::trilinos_epetra>::
 Vector(const vector<Real> &val, CommPtr comm)
     :
     VectorTrilinos<TrilinosImpl::epetra>(
-    		Teuchos::rcp(new Map(val.size(),0,*comm))
-        )
+        Teuchos::rcp(new Map(val.size(),0,*comm))
+    )
 {
-	//TODO (pauletti, Mar 22, 2015): this constructor can be implemente much better
-	for (int i = 0; i < val.size(); ++i) {
-		this->operator ()(i) = val[i];
-	}
+    //TODO (pauletti, Mar 22, 2015): this constructor can be implemente much better
+    for (int i = 0; i < val.size(); ++i)
+    {
+        this->operator()(i) = val[i];
+    }
 }
 
 
@@ -461,7 +462,7 @@ auto
 Vector<LAPack::trilinos_epetra>::
 as_ig_fun_coefficients() const ->  const self_t &
 {
-	return *this;
+    return *this;
 }
 
 

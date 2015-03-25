@@ -156,7 +156,7 @@ SpaceInfo(const SpacePtrVariant &space,
           const Index min_dofs_id,
           const Index max_dofs_id,
           const DofsView &dofs_view,
-		  const std::set<Index> &dofs,
+          const std::set<Index> &dofs,
           const std::shared_ptr<const ElemsDofs> elements_dofs
          )
     :
@@ -173,7 +173,7 @@ SpaceInfo(const SpacePtrVariant &space,
     min_dofs_id_(min_dofs_id),
     max_dofs_id_(max_dofs_id),
     dofs_view_(dofs_view),
-	dofs_(dofs),
+    dofs_(dofs),
     elements_dofs_(elements_dofs)
 
 {

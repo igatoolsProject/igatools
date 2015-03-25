@@ -140,14 +140,14 @@ protected:
      */
     template<class T>
     using ComponentContainer =
-            typename Space::BaseSpace::template ComponentContainer<T>;
+        typename Space::BaseSpace::template ComponentContainer<T>;
 
     /**
      * For each component gives a product array of the dimension
      */
     template<class T>
     using ComponentDirectionTable =
-            ComponentContainer<CartesianProductArray<T,dim>>;
+        ComponentContainer<CartesianProductArray<T,dim>>;
 
 
 private:

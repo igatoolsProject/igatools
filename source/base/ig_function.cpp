@@ -29,18 +29,18 @@ template<class Space>
 IgFunction<Space>::
 IgFunction(std::shared_ptr<const Space> space,
            const CoeffType &coeff,
-			const std::string &property)
+           const std::string &property)
     :
     parent_t::Function(space->get_grid()),
     space_(space),
     coeff_(coeff),
-	property_(property),
+    property_(property),
     elem_(space->begin()),
     space_filler_(space->create_elem_handler())
 {
     Assert(space_ != nullptr,ExcNullPtr());
-   // space_->get_dof_distribution()->
-  //  Assert(!coeff_.empty(),ExcEmptyObject());
+    // space_->get_dof_distribution()->
+    //  Assert(!coeff_.empty(),ExcEmptyObject());
 }
 
 
@@ -52,7 +52,7 @@ IgFunction(const self_t &fun)
     parent_t::Function(fun.space_->get_grid()),
     space_(fun.space_),
     coeff_(fun.coeff_),
-	property_(fun.property_),
+    property_(fun.property_),
     elem_(fun.space_->begin()),
     space_filler_(fun.space_->create_elem_handler())
 {
@@ -67,7 +67,7 @@ auto
 IgFunction<Space>::
 create(std::shared_ptr<const Space> space,
        const CoeffType &coeff,
-		const std::string &property) ->  std::shared_ptr<self_t>
+       const std::string &property) ->  std::shared_ptr<self_t>
 {
     return std::shared_ptr<self_t>(new self_t(space, coeff, property));
 }
@@ -134,7 +134,7 @@ fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) -> voi
     fill_cache_impl.function = this;
 
     auto loc_coeff =
-    		coeff_.get_local_coefs(elem_->get_local_to_global(property_));
+    coeff_.get_local_coefs(elem_->get_local_to_global(property_));
 
     fill_cache_impl.loc_coeff = &loc_coeff;
     fill_cache_impl.j = j;
@@ -169,7 +169,7 @@ auto
 IgFunction<Space>::
 operator +=(const self_t &fun) -> self_t &
 {
-	coeff_ += fun.coeff_;
+    coeff_ += fun.coeff_;
     return *this;
 }
 

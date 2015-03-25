@@ -98,7 +98,7 @@ void bspline_iterator_active_dofs(const int deg = 2,const int n_qp = 3)
         if (dof % 2 == 0)
             dof_distribution->set_dof_property_status(DofProperties::active,dof,true);
         else
-        	dof_distribution->set_dof_property_status(DofProperties::active,dof,false);
+            dof_distribution->set_dof_property_status(DofProperties::active,dof,false);
 
     QGauss<k> quad(n_qp);
     auto flag = ValueFlags::value|ValueFlags::gradient

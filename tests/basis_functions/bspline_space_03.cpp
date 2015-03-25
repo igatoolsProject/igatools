@@ -39,7 +39,7 @@ void using_const_space(shared_ptr<IgFunction<ReferenceSpace<dim>>> fun)
 {
     OUTSTART
 
-	auto space = fun->get_ig_space();
+    auto space = fun->get_ig_space();
     Matrix<LAPack::trilinos_tpetra> matrix(*build_space_manager_single_patch<const ReferenceSpace<dim>>(space));
 
     OUTEND
@@ -50,13 +50,13 @@ void using_const_space(shared_ptr<IgFunction<ReferenceSpace<dim>>> fun)
 
 int main()
 {
-	const int dim = 2;
-	using Space = BSplineSpace<dim>;
+    const int dim = 2;
+    using Space = BSplineSpace<dim>;
 
-	auto grid = CartesianGrid<dim>::create(5);
-	auto space = Space::create(1, grid);
+    auto grid = CartesianGrid<dim>::create(5);
+    auto space = Space::create(1, grid);
 
-	typename IgFunction<ReferenceSpace<dim>>::CoeffType coeff(space->get_num_basis());
+    typename IgFunction<ReferenceSpace<dim>>::CoeffType coeff(space->get_num_basis());
     auto fun = IgFunction<ReferenceSpace<dim>>::create(space, coeff);
 
 

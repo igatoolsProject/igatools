@@ -550,7 +550,7 @@ private:
                   const Index min_dofs_id,
                   const Index max_dofs_id,
                   const DofsView &dofs_view,
-				  const std::set<Index> &dofs,
+                  const std::set<Index> &dofs,
                   const std::shared_ptr<const ElemsDofs> elements_dofs
                  );
 
@@ -575,9 +575,9 @@ private:
         DofsView &get_dofs_view();
 
         const std::set<Index> &get_dofs() const
-		{
-        	return	dofs_;
-		}
+        {
+            return  dofs_;
+        }
 
         /*
          * Returns a View to the dofs active on the space (const version).
@@ -846,8 +846,8 @@ private:
             if (use_dofs_connectivity_from_space_)
             {
                 //TODO (pauletti, Mar 20, 2015): should be replace by property
-            	// space_row_->get_set_dofs_with_given_prop
-            	const auto &sp_dofs_view = space_row_->get_dofs();
+                // space_row_->get_set_dofs_with_given_prop
+                const auto &sp_dofs_view = space_row_->get_dofs();
                 dofs.insert(sp_dofs_view.begin(),sp_dofs_view.end());
             }
 
@@ -1066,11 +1066,11 @@ add_space(std::shared_ptr<Space> space,
                                         Space::rank,
                                         Space::PushForwardType::type,
                                         Space::is_physical_space,
-										dof_distribution.get_num_dofs(dofs_filter),
+                                        dof_distribution.get_num_dofs(dofs_filter),
                                         dof_distribution.get_min_dof_id(),
                                         dof_distribution.get_max_dof_id(),
                                         dof_distribution.get_dofs_view(),
-										dofs,
+                                        dofs,
                                         elements_dofs
                                        ));
 
@@ -1169,7 +1169,7 @@ inline
 std::shared_ptr<SpaceManager>
 build_space_manager_single_patch(std::shared_ptr<Space> space,
                                  const std::string dofs_filter = DofProperties::active)
-                                 {
+{
     auto space_manager = std::make_shared<SpaceManager>(SpaceManager());
 
     space_manager->spaces_insertion_open();

@@ -36,14 +36,14 @@
 template <LAPack la_pack>
 void non_contig_indices()
 {
-	OUTSTART
+    OUTSTART
 
     using VectorType = Vector<la_pack>;
 
     vector<Index> dofs = {1, 3, 5};
     VectorType vec(dofs);
     vec.print_info(out);
-    
+
     const int dim = 1;
     using Space = BSplineSpace<dim>;
     using Function = IgFunction<ReferenceSpace<dim>>;
@@ -66,6 +66,6 @@ void non_contig_indices()
 
 int main()
 {
-	non_contig_indices<LAPack::trilinos_epetra>();
+    non_contig_indices<LAPack::trilinos_epetra>();
     return  0;
 }

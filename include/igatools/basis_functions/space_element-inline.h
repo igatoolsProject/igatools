@@ -226,8 +226,8 @@ Size
 SpaceElement<Space>::
 get_num_basis(const std::string &dofs_property) const
 {
-	const auto dofs_global = this->get_local_to_global(dofs_property);
-	return dofs_global.size();
+    const auto dofs_global = this->get_local_to_global(dofs_property);
+    return dofs_global.size();
 }
 
 
@@ -237,7 +237,7 @@ Size
 SpaceElement<Space>::
 get_num_basis() const
 {
-	return n_basis_direction_.total_dimension();
+    return n_basis_direction_.total_dimension();
 }
 
 

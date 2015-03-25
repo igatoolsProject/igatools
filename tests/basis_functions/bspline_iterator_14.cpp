@@ -33,7 +33,8 @@
 
 const std::array<ValueFlags, 3> der_flag = {ValueFlags::value,
                                             ValueFlags::gradient,
-                                            ValueFlags::hessian};
+                                            ValueFlags::hessian
+                                           };
 
 template <int der, int dim, int range=1, int rank=1>
 void elem_derivatives(const int n_knots = 5, const int deg=1)

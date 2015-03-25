@@ -367,7 +367,7 @@ public:
      */
     Vector(const vector<Index> &dof_ids, CommPtr comm = Teuchos::rcp(new Epetra_SerialComm()));
 
-    Vector(const vector<Real>& , CommPtr comm = Teuchos::rcp(new Epetra_SerialComm()));
+    Vector(const vector<Real> &, CommPtr comm = Teuchos::rcp(new Epetra_SerialComm()));
 
     Vector(const MapPtr map);
 
@@ -471,13 +471,17 @@ public:
      * Returns the const reference to the entry of the vector identified by the @p global_id
      */
     const Real &operator[](const Index global_id) const
-    { return this->operator ()(global_id);}
+    {
+        return this->operator()(global_id);
+    }
 
     /**
      * Returns the reference to the entry of the vector identified by the @p global_id
      */
     Real &operator[](const Index global_id)
-    { return this->operator ()(global_id);}
+    {
+        return this->operator()(global_id);
+    }
 
     /** Returns the number of entries in the vector. */
     Index size() const;
