@@ -41,8 +41,7 @@ link_directories(${IGATOOLS_LIBRARY_DIR})
 #
 set (test_dirs base basis_functions utils
   equations geometry linear_algebra io 
-  tutorial bug_and_features templates mortar
-  hierarchical operators assemble)
+  tutorial templates assemble)
 
 foreach(dir ${test_dirs})
   file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${dir})

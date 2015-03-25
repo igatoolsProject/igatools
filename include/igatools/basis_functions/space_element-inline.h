@@ -301,6 +301,21 @@ template<class Space>
 inline
 auto
 SpaceElement<Space>::
+get_local_dofs(const std::string &dofs_property) const -> vector<Index>
+{
+    vector<Index> dofs_global;
+    vector<Index> dofs_loc_to_patch;
+    vector<Index> dofs_loc_to_elem;
+    space_->get_element_dofs(*this,dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
+
+    return dofs_loc_to_elem;
+}
+
+
+template<class Space>
+inline
+auto
+SpaceElement<Space>::
 get_space() const -> std::shared_ptr<const Space>
 {
     Assert(space_ != nullptr,ExcNullPtr());

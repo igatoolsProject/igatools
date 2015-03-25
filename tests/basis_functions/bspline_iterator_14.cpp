@@ -32,8 +32,8 @@
 #include <igatools/basis_functions/bspline_element_handler.h>
 
 const std::array<ValueFlags, 3> der_flag = {ValueFlags::value,
-                                            ValueFlags::gradient, ValueFlags::hessian
-                                           };
+                                            ValueFlags::gradient,
+                                            ValueFlags::hessian};
 
 template <int der, int dim, int range=1, int rank=1>
 void elem_derivatives(const int n_knots = 5, const int deg=1)
@@ -60,14 +60,13 @@ void elem_derivatives(const int n_knots = 5, const int deg=1)
         value_handler->fill_element_cache(elem);
         elem->template get_values<der, dim>(0,DofProperties::active).print_info(out);
     }
+
     OUTEND
 }
 
 
 int main()
 {
-    out.depth_console(10);
-
     const int values = 0;
     const int grad   = 1;
     const int hess   = 2;

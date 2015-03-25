@@ -63,8 +63,6 @@ public:
     using Derivative = typename parent_t::template Derivative<order>;
     using typename parent_t::Point;
     using typename parent_t::Value;
-    //using typename parent_t::Div;
-
 
 public:
     /** @name Constructors */
@@ -85,9 +83,10 @@ public:
                    const TensorIndex<dim> &elem_index);
     /**
      * Copy constructor.
-     * It can be used with different copy policies (i.e. deep copy or shallow copy).
-     * The default behaviour (i.e. using the proper interface of a classic copy constructor)
-     * uses the deep copy.
+     * It can be used with different copy policies (i.e. deep copy or shallow
+     *  copy).
+     * The default behaviour (i.e. using the proper interface of a classic copy
+     * constructor) uses the deep copy.
      */
     BSplineElement(const self_t &elem,
                    const CopyPolicy &copy_policy = CopyPolicy::deep);
@@ -128,7 +127,8 @@ private:
     /**
      * This type store the values, first second derivatives
      * of a 1D Bspline functions, i.e BasisValues1d[k]
-     * stores the values of the k-th derivative of the (p+1) basis function on a given interval
+     * stores the values of the k-th derivative of the (p+1) basis function
+     * on a given interval
      * at the quadrature points.
      * BasisValues1d[k] is a (p+1) x n_qp matrix
      */
@@ -139,13 +139,15 @@ protected:
      * For each component gives a product array of the dimension
      */
     template<class T>
-    using ComponentContainer = typename Space::BaseSpace::template ComponentContainer<T>;
+    using ComponentContainer =
+            typename Space::BaseSpace::template ComponentContainer<T>;
 
     /**
      * For each component gives a product array of the dimension
      */
     template<class T>
-    using ComponentDirectionTable = ComponentContainer<CartesianProductArray<T,dim>>;
+    using ComponentDirectionTable =
+            ComponentContainer<CartesianProductArray<T,dim>>;
 
 
 private:
@@ -158,51 +160,10 @@ private:
     template <class Accessor> friend class CartesianGridIterator;
     friend class BSplineElementHandler<dim, range, rank>;
 
-
-
-#if 0
 public:
-    /*
-        const ComponentContainer<DynamicMultiArray<std::shared_ptr<BSplineElementScalarEvaluator<dim>>,dim> >
-                &get_scalar_evaluators() const;
-    //*/
-
-
     ComponentContainer<std::array<ValueTable<Real>,dim> >
-    get_univariate_derivatives(const int deriv_order) const;
-
-
-    /*
-     * Returns a component table with the derivatives (of order @p deriv_order)
-     * of the 1D basis function in each direction.
-     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
-     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
-     */
-    ComponentContainer<std::array<ValueTable<Real>,dim> >
-    evaluate_univariate_derivatives_at_points(const int deriv_order, const Quadrature<dim> &quad) const;
-
-    /*
-     * Returns a component table with the derivatives (of order @p deriv_order)
-     * of the 1D basis function in each direction.
-     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
-     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
-     */
-    ComponentContainer<std::array<ValueTable<Real>,dim> >
-    evaluate_univariate_derivatives_at_points(const int deriv_order, const ValueVector<Point> &points) const;
-
-
-private:
-    ComponentContainer<std::array<ValueTable<Real>,dim> >
-    evaluate_univariate_derivatives_at_points(
-        const int deriv_order,
-        const std::array<vector<Real>,dim> &points) const;
-#endif
-
-public:
-
-
-    ComponentContainer<std::array<ValueTable<Real>,dim> >
-    evaluate_univariate_derivatives_at_points(const int deriv_order, const Quadrature<dim> &pts) const
+    evaluate_univariate_derivatives_at_points(const int deriv_order,
+                                              const Quadrature<dim> &pts) const
     {
         ComponentContainer<std::array<ValueTable<Real>,dim> > values;
 
@@ -211,10 +172,8 @@ public:
         return values;
     }
 
-
-
-
-    virtual std::shared_ptr<ReferenceElement<dim,range,rank> > clone() const override final
+    virtual std::shared_ptr<ReferenceElement<dim,range,rank> >
+    clone() const override final
     {
         auto elem = std::shared_ptr<BSplineElement<dim,range,rank> >(
                         new BSplineElement(*this,CopyPolicy::deep));
