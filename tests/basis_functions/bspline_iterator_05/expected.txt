@@ -61,3 +61,30 @@ Values basis functions:
 
 ========================================================================
 
+========================================================================
+void sub_elem_values(int, int) [with int dim = 1; int k = 0]
+========================================================================
+Element0
+ (num_functions=2,num_points=2) :
+Function 0
+[ 0.788675 ]  [ 0.211325 ]  
+Function 1
+[ 0.211325 ]  [ 0.788675 ]  
+Sub Element: 0
+Values basis functions:
+    (num_functions=2,num_points=1) :
+   Function 0
+   [ 1.00000 ]  
+   Function 1
+   [ 0 ]  
+
+Sub Element: 1
+Values basis functions:
+    (num_functions=2,num_points=1) :
+   Function 0
+   [ 0 ]  
+   Function 1
+   [ 1.00000 ]  
+
+========================================================================
+

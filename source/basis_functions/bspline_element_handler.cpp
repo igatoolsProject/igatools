@@ -675,6 +675,8 @@ operator()(const T &topology)
     cache.set_filled(true);
 }
 
+
+
 template<int dim_, int range_ , int rank_>
 void
 BSplineElementHandler<dim_, range_, rank_>::

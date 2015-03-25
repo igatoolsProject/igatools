@@ -214,16 +214,8 @@ void PoissonProblem<dim>::output()
     auto map = IdentityFunction<dim>::create(space->get_grid());
     Writer<dim> writer(map, n_plot_points);
 
-
-    // TODO (pauletti, Mar 9, 2015): this should be perform by
-    // the space to linear algebra manager
-    const int n_coefs = space->get_num_basis();
-    iga::vector<Real> solution_coefs(n_coefs);
-    for (int i = 0 ; i < n_coefs ; ++i)
-        solution_coefs[i] = (*solution)(i);
-
     using IgFunc = IgFunction<RefSpace>;
-    auto solution_function = IgFunc::create(space,solution_coefs);
+    auto solution_function = IgFunc::create(space, solution->as_ig_fun_coefficients());
     writer.template add_field<1,1>(solution_function, "solution");
     string filename = "poisson_problem-" + to_string(dim) + "d" ;
     writer.save(filename);

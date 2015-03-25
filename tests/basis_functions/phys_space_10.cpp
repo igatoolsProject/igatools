@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for "New" physical space
+ *  Test for physical space
  *
  *  author: pauletti
  *  date: Oct 08, 2014

@@ -20,11 +20,11 @@
 
 // [old includes]
 #include <igatools/base/function_lib.h>
+#include <igatools/base/identity_function.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/geometry/mapping_lib.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/physical_space.h>
-#include <igatools/basis_functions/physical_space_element_accessor.h>
+#include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/basis_functions/space_tools.h>
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/linear_algebra/dense_vector.h>
@@ -61,23 +61,27 @@ private:
 
     // [type aliases]
 private:
-    using RefSpace  = BSplineSpace<dim>;
-    using PushFw    = PushForward<Transformation::h_grad, dim>;
-    using Space     = PhysicalSpace<RefSpace, PushFw>;
+    using RefSpace = BSplineSpace<dim>;
+    using Space    = PhysicalSpace<dim>;
     using Value = typename Function<dim>::Value;
     // [type aliases]
 
-    shared_ptr<Mapping<dim>> map;
+
     shared_ptr<Space>        space;
+    shared_ptr<MapFunction<dim, dim>> map;
 
     const Quadrature<dim>   elem_quad;
     const Quadrature<dim-1> face_quad;
 
     const boundary_id dir_id = 0;
 
-    std::shared_ptr<Matrix<LAPack::trilinos>> matrix;
-    std::shared_ptr<Vector<LAPack::trilinos>> rhs;
-    std::shared_ptr<Vector<LAPack::trilinos>> solution;
+    static const LAPack la_pack = LAPack::trilinos_epetra;
+    using Mat = Matrix<la_pack>;
+    using Vec = Vector<la_pack>;
+
+    shared_ptr<Mat> matrix;
+    shared_ptr<Vec> rhs;
+    shared_ptr<Vec> solution;
 };
 
 
@@ -96,13 +100,15 @@ PoissonProblem(const int deg, const TensorSize<dim> &n_knots)
 
     auto grid = CartesianGrid<dim>::create(box, n_knots);
     auto ref_space = RefSpace::create(deg, grid);
-    map       = BallMapping<dim>::create(grid);
-    space     = Space::create(ref_space, PushFw::create(map));
+    using Function = functions::BallFunction<dim>;
+    map = Function::create(grid, IdentityFunction<dim>::create(grid));
+    space = Space::create(ref_space, map);
 
     const auto n_basis = space->get_num_basis();
-    matrix   = Matrix<LAPack::trilinos>::create(*space->get_space_manager());
-    rhs      = Vector<LAPack::trilinos>::create(n_basis);
-    solution = Vector<LAPack::trilinos>::create(n_basis);
+    auto space_manager = build_space_manager_single_patch<Space>(space);
+    matrix   = Mat::create(*space_manager);
+    rhs      = Vec::create(n_basis);
+    solution = Vec::create(n_basis);
 }
 
 
@@ -110,65 +116,144 @@ PoissonProblem(const int deg, const TensorSize<dim> &n_knots)
 template<int dim>
 void PoissonProblem<dim>::assemble()
 {
-    const int n_qp = elem_quad.get_num_points();
-    ConstantFunction<dim> f({0.5});
-    ValueVector<Value> f_values(n_qp);
+    auto grid = space->get_grid();
 
-    auto elem = space->begin();
+    using Function = Function<dim,0,1,1>;
+    using ConstFunction = ConstantFunction<dim,0,1,1>;
+    using Value = typename Function::Value;
+
+    Value b = {5.};
+    auto f = ConstFunction::create(grid, IdentityFunction<dim>::create(grid), b);
+
+    auto elem_handler = space->create_elem_handler();
+
+    auto flag = ValueFlags::value | ValueFlags::gradient |
+            ValueFlags::w_measure;
+
+    elem_handler->reset(flag, elem_quad);
+
+    f->reset(ValueFlags::value, elem_quad);
+
+    auto f_elem = f->begin();
+    auto elem   = space->begin();
     const auto elem_end = space->end();
-    ValueFlags fill_flags = ValueFlags::value | ValueFlags::gradient |
-                            ValueFlags::w_measure | ValueFlags::point;
-    elem->init_cache(fill_flags, elem_quad);
 
-    for (; elem != elem_end; ++elem)
+    elem_handler->init_element_cache(elem);
+    f->init_element_cache(f_elem);
+
+    const int n_qp = elem_quad.get_num_points();
+
+    for (; elem != elem_end; ++elem, ++f_elem)
     {
-        const int n_basis = elem->get_num_basis();
+        const int n_basis = elem->get_num_basis(DofProperties::active);
+
         DenseMatrix loc_mat(n_basis, n_basis);
         loc_mat = 0.0;
 
         DenseVector loc_rhs(n_basis);
         loc_rhs = 0.0;
 
-        elem->fill_cache();
+        elem_handler->fill_element_cache(elem);
+        auto phi = elem->template get_values<0, dim>(0,DofProperties::active);
+        auto grad_phi  = elem->template get_values<1, dim>(0,DofProperties::active);
+        auto w_meas = elem->template get_w_measures<dim>(0);
 
-        auto points  = elem->get_points();
-        auto phi     = elem->get_basis_values();
-        auto grd_phi = elem->get_basis_gradients();
-        auto w_meas  = elem->get_w_measures();
-
-        f.evaluate(points, f_values);
+        f->fill_element_cache(f_elem);
+        auto f_values = f_elem->template get_values<0,dim>(0);
 
         for (int i = 0; i < n_basis; ++i)
         {
-            auto grd_phi_i = grd_phi.get_function_view(i);
+            auto grad_phi_i = grad_phi.get_function_view(i);
             for (int j = 0; j < n_basis; ++j)
             {
-                auto grd_phi_j = grd_phi.get_function_view(j);
+                auto grad_phi_j = grad_phi.get_function_view(j);
                 for (int qp = 0; qp < n_qp; ++qp)
                     loc_mat(i,j) +=
-                        scalar_product(grd_phi_i[qp], grd_phi_j[qp])
-                        * w_meas[qp];
+                            scalar_product(grad_phi_i[qp], grad_phi_j[qp])
+                            * w_meas[qp];
             }
-
             auto phi_i = phi.get_function_view(i);
-            for (int qp = 0; qp < n_qp; ++qp)
+
+            for (int qp=0; qp<n_qp; ++qp)
                 loc_rhs(i) += scalar_product(phi_i[qp], f_values[qp])
-                              * w_meas[qp];
+                * w_meas[qp];
         }
 
-        auto loc_dofs = elem->get_local_to_global();
-        matrix->add_block(loc_dofs, loc_dofs, loc_mat);
+        const auto loc_dofs = elem->get_local_to_global(DofProperties::active);
+        matrix->add_block(loc_dofs, loc_dofs,loc_mat);
         rhs->add_block(loc_dofs, loc_rhs);
     }
 
     matrix->fill_complete();
 
     // [dirichlet constraint]
-    ConstantFunction<dim> g({0.0});
+
+        auto g = ConstFunction::
+        create(grid, IdentityFunction<dim>::create(grid), {0.});
+
+
+    const set<boundary_id> dir_id {0};
     std::map<Index, Real> values;
-    project_boundary_values<Space,LAPack::trilinos>(g,space,face_quad,dir_id,values);
+    // TODO (pauletti, Mar 9, 2015): parametrize with dimension
+    project_boundary_values<Space,la_pack>(
+            const_pointer_cast<const Function>(g),
+            space,
+            face_quad,
+            dir_id,
+            values);
     apply_boundary_values(values, *matrix, *rhs, *solution);
     // [dirichlet constraint]
+
+
+//    for (; elem != elem_end; ++elem)
+//    {
+//        const int n_basis = elem->get_num_basis();
+//        DenseMatrix loc_mat(n_basis, n_basis);
+//        loc_mat = 0.0;
+//
+//        DenseVector loc_rhs(n_basis);
+//        loc_rhs = 0.0;
+//
+//        elem->fill_cache();
+//
+//        auto points  = elem->get_points();
+//        auto phi     = elem->get_basis_values();
+//        auto grd_phi = elem->get_basis_gradients();
+//        auto w_meas  = elem->get_w_measures();
+//
+//        f.evaluate(points, f_values);
+//
+//        for (int i = 0; i < n_basis; ++i)
+//        {
+//            auto grd_phi_i = grd_phi.get_function_view(i);
+//            for (int j = 0; j < n_basis; ++j)
+//            {
+//                auto grd_phi_j = grd_phi.get_function_view(j);
+//                for (int qp = 0; qp < n_qp; ++qp)
+//                    loc_mat(i,j) +=
+//                        scalar_product(grd_phi_i[qp], grd_phi_j[qp])
+//                        * w_meas[qp];
+//            }
+//
+//            auto phi_i = phi.get_function_view(i);
+//            for (int qp = 0; qp < n_qp; ++qp)
+//                loc_rhs(i) += scalar_product(phi_i[qp], f_values[qp])
+//                              * w_meas[qp];
+//        }
+//
+//        auto loc_dofs = elem->get_local_to_global();
+//        matrix->add_block(loc_dofs, loc_dofs, loc_mat);
+//        rhs->add_block(loc_dofs, loc_rhs);
+//    }
+//
+//    matrix->fill_complete();
+//
+//    // [dirichlet constraint]
+//    ConstantFunction<dim> g({0.0});
+//    std::map<Index, Real> values;
+//    project_boundary_values<Space,LAPack::trilinos>(g,space,face_quad,dir_id,values);
+//    apply_boundary_values(values, *matrix, *rhs, *solution);
+//    // [dirichlet constraint]
 }
 
 
@@ -176,7 +261,7 @@ void PoissonProblem<dim>::assemble()
 template<int dim>
 void PoissonProblem<dim>::solve()
 {
-    using LinSolver = LinearSolver<LAPack::trilinos>;
+    using LinSolver = LinearSolverIterative<la_pack>;
     LinSolver solver(LinSolver::SolverType::CG);
     solver.solve(*matrix, *rhs, *solution);
 }
@@ -187,9 +272,12 @@ template<int dim>
 void PoissonProblem<dim>::output()
 {
     const int n_plot_points = 2;
+    auto map = IdentityFunction<dim>::create(space->get_grid());
     Writer<dim> writer(map, n_plot_points);
 
-    writer.add_field(space, *solution, "solution");
+    using IgFunc = IgFunction<Space>;
+    auto solution_function = IgFunc::create(space, solution->as_ig_fun_coefficients());
+    writer.template add_field<1,1>(solution_function, "solution");
     string filename = "poisson_problem-" + to_string(dim) + "d" ;
     writer.save(filename);
 }

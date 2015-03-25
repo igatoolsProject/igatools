@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __NEW_PHYSICAL_SPACE_H_
-#define __NEW_PHYSICAL_SPACE_H_
+#ifndef __PHYSICAL_SPACE_H_
+#define __PHYSICAL_SPACE_H_
 
 #include <igatools/base/config.h>
 #include <igatools/geometry/mapping.h>
@@ -44,7 +44,8 @@ template <class> class PhysSpaceElementHandler;
  *
  * @ingroup containers
  */
-template <int dim_, int range_, int rank_, int codim_, Transformation type_= Transformation::h_grad>
+template <int dim_, int range_= 1, int rank_ = 1, int codim_ = 0,
+        Transformation type_= Transformation::h_grad>
 class PhysicalSpace :
     public std::enable_shared_from_this<PhysicalSpace<dim_, range_, rank_, codim_, type_>>,
             public FunctionSpaceOnGrid<CartesianGrid<dim_> >

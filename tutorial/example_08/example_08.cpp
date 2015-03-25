@@ -18,8 +18,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/geometry/mapping_lib.h>
-#include <igatools/geometry/push_forward.h>
+#include <igatools/base/function_lib.h>
+#include <igatools/base/identity_function.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/physical_space.h>
 
 #include <igatools/io/writer.h>
@@ -32,11 +33,10 @@ template<int dim>
 void physical_space(const int deg)
 {
     using RefSpace = BSplineSpace<dim>;
-    using PushFw   = PushForward<Transformation::h_grad, dim>;
-    using Space    = PhysicalSpace<RefSpace, PushFw>;
+    using Space    = PhysicalSpace<dim>;
 
     BBox<dim> box;
-    box[0] = {{0.5,1}};
+    box[0] = {{0.5, 1}};
     for (int i=1; i<dim; ++i)
         box[i] = {{PI/4,PI/2}};
 
@@ -44,9 +44,9 @@ void physical_space(const int deg)
     auto grid = CartesianGrid<dim>::create(box, n_knots);
     auto ref_space = RefSpace::create(deg, grid);
 
-    auto map  = BallMapping<dim>::create(grid);
-    auto push_fordward = PushFw::create(map);
-    auto space = Space::create(ref_space, push_fordward);
+    using Function = functions::BallFunction<dim>;
+    auto map = Function::create(grid, IdentityFunction<dim>::create(grid));
+    auto space = Space::create(ref_space, map);
 
     const int n_plot_points = 2;
     Writer<dim> writer(map, n_plot_points);
@@ -54,10 +54,9 @@ void physical_space(const int deg)
     writer.save(filename);
 }
 
+
 int main()
 {
     physical_space<2>(1);
-
-
     return  0;
 }
