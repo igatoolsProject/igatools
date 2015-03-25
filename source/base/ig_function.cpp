@@ -67,7 +67,7 @@ create(std::shared_ptr<Space> space,
        const CoeffType &coeff,
        const std::string &property) ->  std::shared_ptr<self_t>
 {
-    auto ig_func = std::shared_ptr<self_t>(new self_t(space, coeff));
+    auto ig_func = std::shared_ptr<self_t>(new self_t(space, coeff,property));
 
     Assert(ig_func != nullptr, ExcNullPtr());
 
@@ -139,13 +139,8 @@ fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) -> voi
 
     const auto elem_dofs = elem_->get_local_to_global(property_);
     vector<Real> loc_coeff;
-#ifdef NDEBUG
     for (const auto &dof : elem_dofs)
-        loc_coeff.emplace_back(coeff_[dof]);
-#else
-    for (const auto &dof : elem_dofs)
-        loc_coeff.emplace_back(coeff_.at(dof));
-#endif
+        loc_coeff.emplace_back(coeff_(dof));
 
 //    auto loc_coeff =
 //    coeff_.get_local_coefs(elem_->get_local_to_global(property_));
@@ -201,7 +196,8 @@ rebuild_after_insert_knots(
     using std::const_pointer_cast;
     auto function_previous_refinement = IgFunction<Space>::create(
                                             const_pointer_cast<Space>(space_->get_space_previous_refinement()),
-                                            coeff_);
+                                            coeff_,
+                                            property_);
 
     QGauss<dim> quad(space_->get_max_degree()+1);
     auto function_refined = space_tools::projection_l2(

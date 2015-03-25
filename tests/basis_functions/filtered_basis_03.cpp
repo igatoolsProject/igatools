@@ -55,6 +55,10 @@ static const LAPack la_pack = LAPack::trilinos_epetra;
 using Mat = Matrix<la_pack>;
 using Vec = Vector<la_pack>;
 
+enum class bc : boundary_id
+{
+    dir, neu
+};
 
 
 template<int dim, int range = 1, int rank = 1>
@@ -65,12 +69,9 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
     using Space = BSplineSpace<dim, range, rank>;
 
     auto grid = CartesianGrid<dim>::create(n_knots);
-    class enum bc : boundary_id
-    {
-        dir = 0, neu
-    }
 
-    grid->set_boundary_id(3, bc::neu);
+
+    grid->set_boundary_id(3, boundary_id(bc::neu));
 
 
     auto space = Space::create(deg, grid);
@@ -96,9 +97,9 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
         build_space_manager_single_patch<RefSpace>(space, DofProp::interior);
     auto matrix   = Mat::create(*space_manager);
     const auto dofs_set = space_manager->get_row_dofs();
-    const vector<Index> dofs_vec(dofs_set.begin(),dofs_set.end());
-    auto vec      = Vec::create(dofs_vec);
-    auto solution     = Vec::create(dofs_vec);
+//    const vector<Index> dofs_vec(dofs_set.begin(),dofs_set.end());
+    auto vec      = Vec::create(dofs_set);
+    auto solution     = Vec::create(dofs_set);
     matrix->print_info(out);
     vec->print_info(out);
 
@@ -157,9 +158,14 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
     auto map = IdentityFunction<dim>::create(space->get_grid());
     Writer<dim> writer(map, n_plot_points);
 
+    vector<Real> sol_coeff = solution->get_local_coefs(
+                                 space->get_dof_distribution()->get_dofs_id_same_property(DofProp::interior));
+
     using IgFunc = IgFunction<RefSpace>;
-    auto solution_function = IgFunc::create(space,solution->as_ig_fun_coefficients(),
-                                            DofProp::interior);
+    auto solution_function = IgFunc::create(
+                                 space,
+                                 IgCoefficients(*space,DofProp::interior,sol_coeff),
+                                 DofProp::interior);
     writer.template add_field<1,1>(solution_function, "solution");
     string filename = "poisson_problem-" + to_string(dim) + "d" ;
     writer.save(filename);
