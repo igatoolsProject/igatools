@@ -83,7 +83,7 @@ void do_test(const int p, const int num_knots = 10)
 int main()
 {
 #if defined(USE_TRILINOS)
-    const auto la_pack = LAPack::trilinos_tpetra;
+    const auto la_pack = LAPack::trilinos_epetra;
 #elif defined(USE_PETSC)
     const auto la_pack = LAPack::petsc;
 #endif

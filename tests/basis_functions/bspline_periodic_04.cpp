@@ -88,8 +88,8 @@ void assemble_matrix(const int n_knots, const int deg)
 
     auto f = ConstFunction::create(grid, IdentityFunction<dim>::create(grid), A, b);
 
-    using Mat = Matrix<LAPack::trilinos_tpetra>;
-    using Vec = Vector<LAPack::trilinos_tpetra>;
+    using Mat = Matrix<LAPack::trilinos_epetra>;
+    using Vec = Vector<LAPack::trilinos_epetra>;
 
     const auto n_basis = space->get_num_basis();
     auto space_manager = build_space_manager_single_patch<RefSpace>(space);
@@ -163,7 +163,7 @@ void assemble_matrix(const int n_knots, const int deg)
     const std::set<boundary_id> dir_id {0};
     std::map<Index, Real> values;
     // TODO (pauletti, Mar 9, 2015): parametrize with dimension
-    project_boundary_values<RefSpace,LAPack::trilinos_tpetra>(
+    project_boundary_values<RefSpace,LAPack::trilinos_epetra>(
         const_pointer_cast<const Function>(g),
         space,
         face_quad,
@@ -175,7 +175,7 @@ void assemble_matrix(const int n_knots, const int deg)
 
 
 
-    using LinSolver = LinearSolverIterative<LAPack::trilinos_tpetra>;
+    using LinSolver = LinearSolverIterative<LAPack::trilinos_epetra>;
     LinSolver solver(LinSolver::SolverType::CG);
     solver.solve(*matrix, *rhs, *solution);
 

@@ -78,7 +78,7 @@ private:
     // [members]
 
     // [la members]
-    static const LAPack la_pack = LAPack::trilinos_tpetra;
+    static const LAPack la_pack = LAPack::trilinos_epetra;
     using Mat = Matrix<la_pack>;
     using Vec = Vector<la_pack>;
 
@@ -187,7 +187,7 @@ void PoissonProblem<dim>::assemble()
     const set<boundary_id> dir_id {0};
     std::map<Index, Real> values;
     // TODO (pauletti, Mar 9, 2015): parametrize with dimension
-    project_boundary_values<RefSpace,LAPack::trilinos_tpetra>(
+    project_boundary_values<RefSpace,la_pack>(
         const_pointer_cast<const Function>(g),
         space,
         face_quad,
@@ -201,7 +201,7 @@ void PoissonProblem<dim>::assemble()
 template<int dim>
 void PoissonProblem<dim>::solve()
 {
-    using LinSolver = LinearSolverIterative<LAPack::trilinos_tpetra>;
+    using LinSolver = LinearSolverIterative<la_pack>;
     LinSolver solver(LinSolver::SolverType::CG);
     solver.solve(*matrix, *rhs, *solution);
 }

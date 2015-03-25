@@ -57,12 +57,14 @@ void test1()
     //-----------------------------------------------------------------
     const auto &dofs_view = dof_admin.get_dofs_view();
     const std::string property_active = "active";
-    dof_admin.add_dofs_property(property_active);
+    //dof_admin.add_dofs_property(property_active);
 
     for (const auto &dof : dofs_view)
     {
         if (dof % 2 == 0)
             dof_admin.set_dof_property_status(property_active, dof, true);
+        else
+        	dof_admin.set_dof_property_status(property_active, dof, false);
     }
     //-----------------------------------------------------------------
 
@@ -95,12 +97,14 @@ void test2()
     //-----------------------------------------------------------------
     const auto &dofs_view = basis_index.get_dofs_view();
     const std::string property_active = "active";
-    basis_index.add_dofs_property(property_active);
+   // basis_index.add_dofs_property(property_active);
 
     for (const auto &dof : dofs_view)
     {
         if (dof % 2 == 0)
             basis_index.set_dof_property_status(property_active, dof, true);
+        else
+        	basis_index.set_dof_property_status(property_active, dof, false);
     }
     //-----------------------------------------------------------------
 

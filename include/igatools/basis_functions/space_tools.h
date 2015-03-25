@@ -42,7 +42,7 @@ namespace space_tools
  *  The projection is a numerical vector (the coefficients of
  *  the projected function)
  */
-template<class Space, LAPack la_pack = LAPack::trilinos_tpetra>
+template<class Space, LAPack la_pack = LAPack::trilinos_epetra>
 std::shared_ptr<IgFunction<Space> >
 projection_l2(const std::shared_ptr<const typename Space::Func> function,
               std::shared_ptr<const Space> space,

@@ -188,6 +188,13 @@ public:
     {
         return dof_distribution_->get_num_dofs_table().get_offset();
     }
+
+    Size get_elem_num_basis() const
+    {
+        return dof_distribution_->get_num_dofs_table().total_dimension();
+    }
+
+
     ///@}
 
 
@@ -207,62 +214,6 @@ public:
     get_global_dof_id(const TensorIndex<dim> &tensor_index,
                       const Index comp) const;
 
-    // TODO (pauletti, Dec 12, 2014): boundary condition is not a general property
-    // of the space, rather specific flag for some application, this should be
-    // done in some other layer
-    /**
-     * @name Dealing with the boundary conditions.
-     * @return
-     */
-    ///@{
-    /**
-     * Returns a const-reference to the table containing
-     * the boundary conditions on each face of each scalar component of the space.
-     *
-     * For example, with the code
-     * @code{.cpp}
-       const auto &bc_table = space.get_boundary_conditions_table();
-
-       BoundaryConditionType bc_id = bc_table[1][3]; // boundary condition on face 3 of space's component 1
-       @endcode
-     * we copy to the variable <tt>bc_id</tt> the value of the boundary condition
-     * on the face 3 of the space component 1.
-     *
-     * @sa BoundaryConditionType
-     */
-    const BCTable &get_boundary_conditions_table() const
-    {
-        return boundary_conditions_table_;
-    }
-
-
-    /**
-     * Returns a reference to the table containing
-     * the boundary conditions on each face of each scalar component of the space.
-     *
-     * For example, with the code
-     * @code{.cpp}
-       const auto &bc_table = space.get_boundary_conditions_table();
-
-       BoundaryConditionType bc_id = bc_table[1][3]; // boundary condition on face 3 of space's component 1
-       @endcode
-     * we copy to the variable <tt>bc_id</tt> the value of the boundary condition
-     * on the face 3 of the space component 1.
-     *
-     * @sa BoundaryConditionType
-     */
-    BCTable &get_boundary_conditions_table()
-    {
-        return boundary_conditions_table_;
-    }
-    ///@}
-
-#if 0
-    /**
-     * Returns a reference to the end behaviour table of the BSpline space.
-     */
-    virtual EndBehaviourTable &get_end_behaviour_table() = 0;
-#endif
     /**
      * Returns a const reference to the end behaviour table of the BSpline space.
      */
@@ -323,25 +274,17 @@ public:
 
     virtual void print_info(LogStream &out) const = 0;
 
+
+    //TODO (pauletti, Mar 24, 2015): for uniformity should be call get
     virtual std::shared_ptr<ElementHandler> create_elem_handler() const = 0;
 
 protected:
-
-
     /**
      * Container with the local to global basis indices
      * @note The concept of global indices refers to a global numbering of the
      * dofs of all the spaces.
      */
     std::shared_ptr<DofDistribution<dim,range,rank> > dof_distribution_;
-
-    // TODO (pauletti, Dec 12, 2014): boundary condition is not a general property
-    // of the space, rather specific flag for some application, this should be
-    // done in some other layer
-    /**
-     * Boundary conditions on each face of each scalar component of the space.
-     */
-    BCTable boundary_conditions_table_;
 
 };
 

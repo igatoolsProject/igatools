@@ -335,15 +335,6 @@ public:
         return space_data_->get_periodicity();
     }
 
-#if 0
-    /**
-     * Returns a const reference to the end behaviour table of the BSpline space.
-     */
-    virtual EndBehaviourTable &get_end_behaviour_table() override final
-    {
-        return end_b_;
-    }
-#endif
     /**
      * Returns a reference to the end behaviour table of the BSpline space.
      */

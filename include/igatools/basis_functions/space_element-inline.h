@@ -226,20 +226,20 @@ Size
 SpaceElement<Space>::
 get_num_basis(const std::string &dofs_property) const
 {
-//    Index total_num_basis = 0;
-//    if (dofs_property == DofProperties::active)
-//    {
-//        for (const auto n_basis_direction_component : n_basis_direction_)
-//            total_num_basis += n_basis_direction_component.flat_size();
-//    }
-//    else
-//	{
-        const auto dofs_global = this->get_local_to_global(dofs_property);
-        return dofs_global.size();
-//    }
-
-//    return total_num_basis;
+	const auto dofs_global = this->get_local_to_global(dofs_property);
+	return dofs_global.size();
 }
+
+
+template<class Space>
+inline
+Size
+SpaceElement<Space>::
+get_num_basis() const
+{
+	return n_basis_direction_.total_dimension();
+}
+
 
 template<class Space>
 inline

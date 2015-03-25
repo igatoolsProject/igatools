@@ -46,7 +46,7 @@ void do_test()
     auto space = Space::create(degree, grid);
 
 #if defined(USE_TRILINOS)
-    const auto la_pack = LAPack::trilinos_tpetra;
+    const auto la_pack = LAPack::trilinos_epetra;
 #elif defined(USE_PETSC)
     const auto la_pack = LAPack::petsc;
 #endif

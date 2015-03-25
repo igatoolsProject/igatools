@@ -38,9 +38,6 @@ IGA_NAMESPACE_OPEN
 
 template <class Accessor> class CartesianGridIterator;
 
-
-
-
 template<class Space>
 class SpaceElement : private CartesianGridElement<Space::dim>
 {
@@ -495,8 +492,9 @@ public:
      *  Number of non zero basis functions with the given @p dofs_property,
      *  over the current element.
      */
-    Size get_num_basis(const std::string &dofs_property = DofProperties::active) const;
+    Size get_num_basis(const std::string &dofs_property) const;
 
+    Size get_num_basis() const;
     // TODO (pauletti, Mar 20, 2015): NOT safe, maybe remove or...
     /**
      * Number of non-zero scalar basis functions associated

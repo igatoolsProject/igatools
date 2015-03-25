@@ -1,5 +1,5 @@
 ========================================================================
-void test_proj(int, int) [with int dim = 0; int range = 1; int rank = 1; iga::LAPack la_pack = (iga::LAPack)1]
+void test_proj(int, int) [with int dim = 0; int range = 1; int rank = 1; iga::LAPack la_pack = (iga::LAPack)2]
 ========================================================================
 Reference space info:
    Spline Space:
@@ -40,7 +40,7 @@ Reference space info:
          [ 0 ]
       
       Dof properties:
-         IDs with property "none":
+         IDs with property "active":
             Num.: 1
             Flat IDs: 0
       
@@ -59,7 +59,7 @@ Control points info (euclidean coordinates):
 ========================================================================
 
 ========================================================================
-void test_proj(int, int) [with int dim = 1; int range = 1; int rank = 1; iga::LAPack la_pack = (iga::LAPack)1]
+void test_proj(int, int) [with int dim = 1; int range = 1; int rank = 1; iga::LAPack la_pack = (iga::LAPack)2]
 ========================================================================
 Reference space info:
    Spline Space:
@@ -104,7 +104,7 @@ Reference space info:
          [ 0 1 2 3 4 5 ]
       
       Dof properties:
-         IDs with property "none":
+         IDs with property "active":
             Num.: 6
             Flat IDs: 0 1 2 3 4 5
       
@@ -132,7 +132,7 @@ Control points info (euclidean coordinates):
 ========================================================================
 
 ========================================================================
-void test_proj(int, int) [with int dim = 2; int range = 1; int rank = 1; iga::LAPack la_pack = (iga::LAPack)1]
+void test_proj(int, int) [with int dim = 2; int range = 1; int rank = 1; iga::LAPack la_pack = (iga::LAPack)2]
 ========================================================================
 Reference space info:
    Spline Space:
@@ -181,7 +181,7 @@ Reference space info:
          [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 ]
       
       Dof properties:
-         IDs with property "none":
+         IDs with property "active":
             Num.: 36
             Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35
       
@@ -243,7 +243,7 @@ Control points info (euclidean coordinates):
 ========================================================================
 
 ========================================================================
-void test_proj(int, int) [with int dim = 3; int range = 1; int rank = 1; iga::LAPack la_pack = (iga::LAPack)1]
+void test_proj(int, int) [with int dim = 3; int range = 1; int rank = 1; iga::LAPack la_pack = (iga::LAPack)2]
 ========================================================================
 Reference space info:
    Spline Space:
@@ -296,7 +296,7 @@ Reference space info:
          [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 ]
       
       Dof properties:
-         IDs with property "none":
+         IDs with property "active":
             Num.: 64
             Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63
       
@@ -390,7 +390,7 @@ Control points info (euclidean coordinates):
 ========================================================================
 
 ========================================================================
-void test_proj(int, int) [with int dim = 2; int range = 3; int rank = 1; iga::LAPack la_pack = (iga::LAPack)1]
+void test_proj(int, int) [with int dim = 2; int range = 3; int rank = 1; iga::LAPack la_pack = (iga::LAPack)2]
 ========================================================================
 Reference space info:
    Spline Space:
@@ -453,7 +453,7 @@ Reference space info:
          [ 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 ]
       
       Dof properties:
-         IDs with property "none":
+         IDs with property "active":
             Num.: 48
             Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47
       
