@@ -69,7 +69,7 @@ void test_proj(const int deg, const int n_knots = 4)
 int main()
 {
 #if defined(USE_TRILINOS)
-    const auto la_pack = LAPack::trilinos_tpetra;
+    const auto la_pack = LAPack::trilinos_epetra;
 #elif defined(USE_PETSC)
     const auto la_pack = LAPack::petsc;
 #endif

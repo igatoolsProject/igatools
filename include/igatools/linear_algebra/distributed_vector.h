@@ -39,21 +39,14 @@
 #include <petscvec.h>
 #endif
 
-
 #include <memory>
-
 
 IGA_NAMESPACE_OPEN
 
-template < LAPack la_pack>
-class Vector;
-
-
+template < LAPack la_pack> class Vector;
 
 
 #ifdef USE_TRILINOS
-
-
 
 /**
  *
@@ -321,17 +314,12 @@ public:
     vector<Real>
     get_local_coefs(const vector<Index> &local_to_global_ids) const;
 
-
-    // TODO (pauletti, Nov 27, 2014): Document this
-    vector<Real> get_as_vector() const;
-
-
-
     /**
      * Print the content of the vector, mostly for debug purposes.
      * @param out
      */
     void print_info(LogStream &out) const;
+
 };
 
 
@@ -525,8 +513,10 @@ public:
     void print_info(LogStream &out) const;
 
     /** Return the vector as the type use for coefficient of an IgFunction */
-    vector<Real> get_as_vector() const;
-
+    //TODO (pauletti, Mar 23, 2015): should be an external functione
+    // with the following prototype
+    //IgCoefficient get_as_ig_coefficients(const SpaceInfo &) const;
+    const self_t &as_ig_fun_coefficients() const;
 };
 
 

@@ -73,7 +73,7 @@ void loop_on_space()
     {
         out << "Element: " << elem.get_flat_index();
         out << " has global basis: ";
-        elem.get_local_to_global(DofProperties::none).print_info(out);
+        elem.get_local_to_global(DofProperties::active).print_info(out);
         out << endl;
     }
     out << endl;

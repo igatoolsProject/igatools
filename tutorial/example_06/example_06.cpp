@@ -78,7 +78,7 @@ private:
     // [members]
 
     // [la members]
-    static const LAPack la_pack = LAPack::trilinos_tpetra;
+    static const LAPack la_pack = LAPack::trilinos_epetra;
     using Mat = Matrix<la_pack>;
     using Vec = Vector<la_pack>;
 
@@ -137,7 +137,7 @@ void PoissonProblem<dim>::assemble()
 
     for (; elem != elem_end; ++elem, ++f_elem)
     {
-        const int n_basis = elem->get_num_basis(DofProperties::none);
+        const int n_basis = elem->get_num_basis(DofProperties::active);
 
         DenseMatrix loc_mat(n_basis, n_basis);
         loc_mat = 0.0;
@@ -146,8 +146,8 @@ void PoissonProblem<dim>::assemble()
         loc_rhs = 0.0;
 
         elem_handler->fill_element_cache(elem);
-        auto phi = elem->template get_values<0, dim>(0,DofProperties::none);
-        auto grad_phi  = elem->template get_values<1, dim>(0,DofProperties::none);
+        auto phi = elem->template get_values<0, dim>(0,DofProperties::active);
+        auto grad_phi  = elem->template get_values<1, dim>(0,DofProperties::active);
         auto w_meas = elem->template get_w_measures<dim>(0);
 
         f->fill_element_cache(f_elem);
@@ -171,7 +171,7 @@ void PoissonProblem<dim>::assemble()
                               * w_meas[qp];
         }
 
-        const auto loc_dofs = elem->get_local_to_global(DofProperties::none);
+        const auto loc_dofs = elem->get_local_to_global(DofProperties::active);
         matrix->add_block(loc_dofs, loc_dofs,loc_mat);
         rhs->add_block(loc_dofs, loc_rhs);
     }
@@ -187,7 +187,7 @@ void PoissonProblem<dim>::assemble()
     const set<boundary_id> dir_id {0};
     std::map<Index, Real> values;
     // TODO (pauletti, Mar 9, 2015): parametrize with dimension
-    project_boundary_values<RefSpace,LAPack::trilinos_tpetra>(
+    project_boundary_values<RefSpace,la_pack>(
         const_pointer_cast<const Function>(g),
         space,
         face_quad,
@@ -201,7 +201,7 @@ void PoissonProblem<dim>::assemble()
 template<int dim>
 void PoissonProblem<dim>::solve()
 {
-    using LinSolver = LinearSolverIterative<LAPack::trilinos_tpetra>;
+    using LinSolver = LinearSolverIterative<la_pack>;
     LinSolver solver(LinSolver::SolverType::CG);
     solver.solve(*matrix, *rhs, *solution);
 }

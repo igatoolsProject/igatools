@@ -376,7 +376,8 @@ add_field(shared_ptr<const Function<dim, codim, range, rank>> function,
     const auto n_pts_per_elem = quad_plot_->get_num_points();
 
     const int n_values_per_pt = (range == 1 ? 1 : std::pow(range, rank)) ;
-    shared_ptr< vector<T> > data_ptr(new vector<T>(n_elements * n_pts_per_elem * n_values_per_pt));
+    shared_ptr<vector<T> >
+	    data_ptr(new vector<T>(n_elements * n_pts_per_elem * n_values_per_pt));
     auto &data = *data_ptr;
     if (rank == 0 || (rank == 1 && range == 1))
     {

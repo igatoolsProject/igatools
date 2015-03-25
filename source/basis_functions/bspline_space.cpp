@@ -395,22 +395,22 @@ get_element_dofs(
 
         const auto &elem_comp_dof_t_id = dofs_tensor_id_elem_table_[comp];
 
-        if (dofs_property == DofProperties::none)
-        {
-            for (const auto loc_dof_t_id : elem_comp_dof_t_id)
-            {
-                const auto dof_global = index_table_comp(dof_t_origin + loc_dof_t_id);
-                dofs_global.emplace_back(dof_global);
-
-                const auto dof_loc_to_patch = this->dof_distribution_->global_to_patch_local(dof_global);
-                dofs_local_to_patch.emplace_back(dof_loc_to_patch);
-
-                dofs_local_to_elem.emplace_back(dof_loc_to_elem);
-
-                ++dof_loc_to_elem;
-            } // end loop loc_dof_t_id
-        }
-        else
+//        if (dofs_property == DofProperties::active)
+//        {
+//            for (const auto loc_dof_t_id : elem_comp_dof_t_id)
+//            {
+//                const auto dof_global = index_table_comp(dof_t_origin + loc_dof_t_id);
+//                dofs_global.emplace_back(dof_global);
+//
+//                const auto dof_loc_to_patch = this->dof_distribution_->global_to_patch_local(dof_global);
+//                dofs_local_to_patch.emplace_back(dof_loc_to_patch);
+//
+//                dofs_local_to_elem.emplace_back(dof_loc_to_elem);
+//
+//                ++dof_loc_to_elem;
+//            } // end loop loc_dof_t_id
+//        }
+//        else
         {
             for (const auto loc_dof_t_id : elem_comp_dof_t_id)
             {

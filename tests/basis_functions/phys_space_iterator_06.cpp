@@ -92,7 +92,7 @@ void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
                     out << "Face " << s_id << endl;
                     sp_values.fill_face_cache(elem,s_id);
                     out << "values: " << endl;
-                    elem->template get_values<0, k>(s_id,DofProperties::none).print_info(out);
+                    elem->template get_values<0, k>(s_id,DofProperties::active).print_info(out);
 //                  out << "values: " << endl;
 //                  elem->template get_values<1, k>(s_id).print_info(out);
 //                  elem->template get_values<2, k>(s_id).print_info(out);

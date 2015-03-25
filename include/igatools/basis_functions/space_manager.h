@@ -1028,7 +1028,7 @@ inline
 void
 SpaceManager::
 add_space(std::shared_ptr<Space> space,
-          const std::string dofs_filter = DofProperties::none)
+          const std::string dofs_filter = DofProperties::active)
 {
     Assert(space != nullptr,ExcNullPtr());
 
@@ -1047,7 +1047,7 @@ add_space(std::shared_ptr<Space> space,
 
 //    const std::string dofs_filter =
 //        dof_distribution.is_property_defined(DofProperties::active) ?
-//        DofProperties::active : DofProperties::none;
+//        DofProperties::active : DofProperties::active;
 
     std::shared_ptr<ElemsDofs> elements_dofs(new ElemsDofs);
     auto elem = space->begin();
@@ -1168,7 +1168,7 @@ template<class Space>
 inline
 std::shared_ptr<SpaceManager>
 build_space_manager_single_patch(std::shared_ptr<Space> space,
-                                 const std::string dofs_filter = DofProperties::none)
+                                 const std::string dofs_filter = DofProperties::active)
 {
     auto space_manager = std::make_shared<SpaceManager>(SpaceManager());
 

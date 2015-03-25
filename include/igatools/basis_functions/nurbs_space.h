@@ -208,7 +208,7 @@ public:
         vector<Index> &dofs_global,
         vector<Index> &dofs_local_to_patch,
         vector<Index> &dofs_local_to_elem,
-        const std::string &dofs_property = DofProperties::none) const override final
+        const std::string &dofs_property = DofProperties::active) const override final
     {
         this->sp_space_->get_element_dofs(
             element,

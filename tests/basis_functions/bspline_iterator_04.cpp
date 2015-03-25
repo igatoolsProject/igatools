@@ -64,7 +64,7 @@ void elem_derivatives(const int n_knots,
     for (; elem != end; ++elem)
     {
         value_handler->fill_element_cache(elem);
-        elem->template get_values<der,dim>(0,DofProperties::none).print_info(out);
+        elem->template get_values<der,dim>(0,DofProperties::active).print_info(out);
     }
     OUTEND
 }

@@ -48,7 +48,7 @@ namespace space_tools
  *  The projection is a numerical vector (the coefficients of
  *  the projected function)
  */
-template<class Space, LAPack la_pack = LAPack::trilinos_tpetra>
+template<class Space, LAPack la_pack = LAPack::trilinos_epetra>
 std::shared_ptr<IgFunction<Space> >
 projection_l2(const std::shared_ptr<const typename Space::Func> function,
               std::shared_ptr<const Space> space,
@@ -60,7 +60,7 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
     const auto &dof_distribution = *(space->get_dof_distribution());
     const std::string dofs_filter =
         dof_distribution.is_property_defined(DofProperties::active) ?
-        DofProperties::active : DofProperties::none;
+        DofProperties::active : DofProperties::active;
 
     const auto space_manager =
         build_space_manager_single_patch<Space>(std::const_pointer_cast<Space>(space));
@@ -257,7 +257,7 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
     solver.solve(matrix, rhs, sol);
 
     return std::make_shared<ProjFunc>(
-               ProjFunc(std::const_pointer_cast<Space>(space), sol.get_as_vector()));
+               ProjFunc(std::const_pointer_cast<Space>(space), sol.as_ig_fun_coefficients()));
 }
 
 

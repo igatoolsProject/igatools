@@ -96,13 +96,11 @@ DofDistribution(const TensorSizeTable &n_basis,
 
 
     //-----------------------------------------------------------------------
-    //TODO (martinelli, 23Mar2015): this is a waste of memory.
-    //All the dofs have the property "none"...we should use this fact and not replicating the data.
-    properties_dofs_.add_property(DofProperties::none);
+    properties_dofs_.add_property(DofProperties::active);
     properties_dofs_.set_ids_property_status(
-        DofProperties::none,
-        std::set<Index>(dofs_view_.cbegin(),dofs_view_.cend()),
-        true);
+    		DofProperties::active,
+            std::set<Index>(dofs_view_.cbegin(),dofs_view_.cend()),
+            true);
     //-----------------------------------------------------------------------
 }
 

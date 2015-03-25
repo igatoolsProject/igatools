@@ -101,7 +101,6 @@ public:
     static constexpr int n_components = ComponentContainer<Size>::n_entries;
     static const std::array<Size, n_components> components;
 
-
 public:
     using KnotCoordinates = typename GridType::KnotCoordinates;
     using BoundaryKnots = std::array<CartesianProductArray<Real,2>, dim>;
@@ -116,9 +115,6 @@ public:
     using KnotsTable = ComponentContainer<KnotCoordinates>;
     using PeriodicityTable = ComponentContainer<Periodicity>;
     using EndBehaviourTable = ComponentContainer<EndBehaviour>;
-
-
-
 
     /**
      * Component container holding tensor size

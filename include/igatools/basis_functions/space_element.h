@@ -38,9 +38,6 @@ IGA_NAMESPACE_OPEN
 
 template <class Accessor> class CartesianGridIterator;
 
-
-
-
 template<class Space>
 class SpaceElement : private CartesianGridElement<Space::dim>
 {
@@ -158,7 +155,7 @@ public:
 
     template<int order = 0, int k = dim>
     auto
-    get_values(const int j, const std::string &dofs_property = DofProperties::none) const
+    get_values(const int j, const std::string &dofs_property = DofProperties::active) const
     {
         Assert(local_cache_ != nullptr, ExcNullPtr());
         const auto &cache = local_cache_->template get_value_cache<k>(j);
@@ -203,7 +200,7 @@ public:
     }
 
     auto
-    get_element_values(const std::string &dofs_property = DofProperties::none) const
+    get_element_values(const std::string &dofs_property = DofProperties::active) const
     {
         return this->template get_values<0,dim>(0,dofs_property);
     }
@@ -495,8 +492,9 @@ public:
      *  Number of non zero basis functions with the given @p dofs_property,
      *  over the current element.
      */
-    Size get_num_basis(const std::string &dofs_property = DofProperties::none) const;
+    Size get_num_basis(const std::string &dofs_property) const;
 
+    Size get_num_basis() const;
     // TODO (pauletti, Mar 20, 2015): NOT safe, maybe remove or...
     /**
      * Number of non-zero scalar basis functions associated
@@ -518,11 +516,11 @@ public:
      * on the element.
      *
      * @note The dofs can be filtered invoking the function with the argument @p dof_property.
-     * If @p dof_property is equal to DofProperties::none, then no filter is applied.
+     * If @p dof_property is equal to DofProperties::active, then no filter is applied.
      *
      * For example:
      * \code
-       auto loc_to_glob_all = elem->get_local_to_global(DofProperties::none);
+       auto loc_to_glob_all = elem->get_local_to_global(DofProperties::active);
        // loc_to_glob_all[0] is the global id of the first basis function on the element
        // loc_to_glob_all[1] is the global id of the second basis function on the element
        // ...
@@ -533,14 +531,14 @@ public:
       \endcode
      *
      */
-    vector<Index> get_local_to_global(const std::string &dofs_property = DofProperties::none) const;
+    vector<Index> get_local_to_global(const std::string &dofs_property = DofProperties::active) const;
 
     /**
      * Returns the patch dofs of the local (non zero) basis functions
      * on the element.
      *
      * @note The dofs can be filtered invoking the function with the argument @p dof_property.
-     * If @p dof_property is equal to DofProperties::none, then no filter is applied.
+     * If @p dof_property is equal to DofProperties::active, then no filter is applied.
      *
      */
     vector<Index> get_local_to_patch(const std::string &dofs_property) const;

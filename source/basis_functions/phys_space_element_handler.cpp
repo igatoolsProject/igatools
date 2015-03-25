@@ -155,7 +155,7 @@ init_cache(ElementAccessor &elem)
         cache = shared_ptr<Cache>(new Cache);
     }
 
-    const auto n_basis = ref_elem.get_num_basis(DofProperties::none);
+    const auto n_basis = ref_elem.get_num_basis(DofProperties::active);
     for (auto &s_id: UnitElement<dim>::template elems_ids<k>())
     {
         auto &s_cache = cache->template get_value_cache<k>(s_id);
@@ -189,7 +189,7 @@ fill_cache(ElementAccessor &elem, const int j)
     if (flags.fill_values())
     {
         auto &result = cache.template get_der<0>();
-        const auto &ref_values = ref_elem.template get_values<0,k>(j,DofProperties::none);
+        const auto &ref_values = ref_elem.template get_values<0,k>(j,DofProperties::active);
         push_fwd_elem.template transform_0<RefSpace::range,RefSpace::rank>
         (ref_values, result);
 
@@ -197,8 +197,8 @@ fill_cache(ElementAccessor &elem, const int j)
     }
     if (flags.fill_gradients())
     {
-        const auto &ref_values = ref_elem.template get_values<0,k>(j,DofProperties::none);
-        const auto &ref_der_1  = ref_elem.template get_values<1,k>(j,DofProperties::none);
+        const auto &ref_values = ref_elem.template get_values<0,k>(j,DofProperties::active);
+        const auto &ref_der_1  = ref_elem.template get_values<1,k>(j,DofProperties::active);
         const auto &values = cache.template get_der<0>();
         push_fwd_elem.template transform_1<PhysSpace::range,PhysSpace::rank, k>
         (std::make_tuple(ref_values, ref_der_1), values,
@@ -208,9 +208,9 @@ fill_cache(ElementAccessor &elem, const int j)
     }
     if (flags.fill_hessians())
     {
-        const auto &ref_values = ref_elem.template get_values<0,k>(j,DofProperties::none);
-        const auto &ref_der_1  = ref_elem.template get_values<1,k>(j,DofProperties::none);
-        const auto &ref_der_2  = ref_elem.template get_values<2,k>(j,DofProperties::none);
+        const auto &ref_values = ref_elem.template get_values<0,k>(j,DofProperties::active);
+        const auto &ref_der_1  = ref_elem.template get_values<1,k>(j,DofProperties::active);
+        const auto &ref_der_2  = ref_elem.template get_values<2,k>(j,DofProperties::active);
         const auto &values = cache.template get_der<0>();
         const auto &der_1  = cache.template get_der<1>();
         push_fwd_elem.template transform_2<PhysSpace::range,PhysSpace::rank, k>

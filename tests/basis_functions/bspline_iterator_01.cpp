@@ -61,9 +61,9 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
         cache->fill_element_cache(elem);
 
         out << "Sub Element: " << s_id << endl;
-        auto values    = elem->template get_values<0,k>(s_id,DofProperties::none);
-        auto gradients = elem->template get_values<1,k>(s_id,DofProperties::none);
-        auto hessians  = elem->template get_values<2,k>(s_id,DofProperties::none);
+        auto values    = elem->template get_values<0,k>(s_id,DofProperties::active);
+        auto gradients = elem->template get_values<1,k>(s_id,DofProperties::active);
+        auto hessians  = elem->template get_values<2,k>(s_id,DofProperties::active);
 
         out.begin_item("Values basis functions:");
         values.print_info(out);
@@ -93,11 +93,12 @@ void bspline_iterator_active_dofs(const int deg = 2,const int n_qp = 3)
     auto space = Space::create(deg, grid);
 
     auto dof_distribution = space->get_dof_distribution();
-    dof_distribution->add_dofs_property(DofProperties::active);
+    //dof_distribution->add_dofs_property(DofProperties::active);
     for (const auto dof: dof_distribution->get_dofs_view())
         if (dof % 2 == 0)
             dof_distribution->set_dof_property_status(DofProperties::active,dof,true);
-
+        else
+        	dof_distribution->set_dof_property_status(DofProperties::active,dof,false);
 
     QGauss<k> quad(n_qp);
     auto flag = ValueFlags::value|ValueFlags::gradient

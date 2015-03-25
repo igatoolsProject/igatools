@@ -290,7 +290,7 @@ public:
         vector<Index> &dofs_global,
         vector<Index> &dofs_local_to_patch,
         vector<Index> &dofs_local_to_elem,
-        const std::string &dofs_property = DofProperties::none) const override final;
+        const std::string &dofs_property = DofProperties::active) const override final;
 
 #if 0
     ElementHandler get_element_handler() const;
@@ -335,15 +335,6 @@ public:
         return space_data_->get_periodicity();
     }
 
-#if 0
-    /**
-     * Returns a const reference to the end behaviour table of the BSpline space.
-     */
-    virtual EndBehaviourTable &get_end_behaviour_table() override final
-    {
-        return end_b_;
-    }
-#endif
     /**
      * Returns a reference to the end behaviour table of the BSpline space.
      */

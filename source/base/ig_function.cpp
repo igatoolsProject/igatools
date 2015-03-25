@@ -30,17 +30,19 @@ IGA_NAMESPACE_OPEN
 template<class Space>
 IgFunction<Space>::
 IgFunction(std::shared_ptr<Space> space,
-           const CoeffType &coeff)
+           const CoeffType &coeff,
+			const std::string &property)
     :
     parent_t::Function(space->get_grid()),
     space_(space),
     coeff_(coeff),
+	property_(property),
     elem_(space->begin()),
     space_filler_(space->create_elem_handler())
 {
     Assert(space_ != nullptr,ExcNullPtr());
 
-
+#if 0
     const auto dof_distribution = space_->get_dof_distribution();
 
 #ifndef NDEBUG
@@ -61,7 +63,7 @@ IgFunction(std::shared_ptr<Space> space,
         }
         ++comp;
     }
-
+#endif
 
 #if 0
     LogStream out;
@@ -90,6 +92,7 @@ IgFunction(const self_t &fun)
     space_(fun.space_),
     coeff_(fun.coeff_),
     coeff_new_(fun.coeff_new_),
+	property_(fun.property_),
     elem_(fun.space_->begin()),
     space_filler_(fun.space_->create_elem_handler())
 {
@@ -102,7 +105,8 @@ template<class Space>
 auto
 IgFunction<Space>::
 create(std::shared_ptr<Space> space,
-       const CoeffType &coeff) ->  std::shared_ptr<self_t>
+       const CoeffType &coeff,
+		const std::string &property) ->  std::shared_ptr<self_t>
 {
     auto ig_func = std::shared_ptr<self_t>(new self_t(space, coeff));
 
@@ -193,14 +197,13 @@ fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) -> voi
 #endif
 
 
-    // TODO (pauletti, Nov 27, 2014): if code is in final state remove commented line else fix
-//    const auto elem_global_ids = elem_->get_local_to_global(DofProperties::none);
-//    vector<Real> loc_coeff;
-    auto loc_coeff = coeff_.get_local_coefs(elem_->get_local_to_global(DofProperties::none));
+    auto loc_coeff =
+    		coeff_.get_local_coefs(elem_->get_local_to_global(property_));
+
 
     //-----------------------------------------------------
-    const auto dof_distribution = space_->get_dof_distribution();
 #if 0
+    const auto dof_distribution = space_->get_dof_distribution();
     out.begin_item("Dof distribution");
     dof_distribution->print_info(out);
     out.end_item();
@@ -224,8 +227,8 @@ fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) -> voi
     //-----------------------------------------------------
 
     fill_cache_impl.loc_coeff = &loc_coeff;
-    fill_cache_impl.j =j;
-
+    fill_cache_impl.j = j;
+    fill_cache_impl.property = &property_;
     boost::apply_visitor(fill_cache_impl, k);
 }
 
@@ -258,14 +261,9 @@ operator +=(const self_t &fun) -> self_t &
 {
     Assert(coeff_.size() == fun.coeff_.size(),ExcDimensionMismatch(coeff_.size(),fun.coeff_.size()));
 
-    /*
-    const auto size = coeff_.size();
-    for (int i=0; i<size; ++i)
-        coeff_[i] += fun.coeff_[i];
-    //*/
-
     coeff_ += fun.coeff_;
 
+#if 0
     int comp = 0;
     for (auto &coeff_new_comp : coeff_new_)
     {
@@ -280,7 +278,7 @@ operator +=(const self_t &fun) -> self_t &
 
         ++comp;
     }
-
+#endif
 
     return *this;
 }
@@ -498,12 +496,6 @@ print_info(LogStream &out) const
     space_->print_info(out);
     out.end_item();
     out << std::endl;
-
-#if 0
-    out << "Control points info (projective coordinates):" << endl;
-
-    //write the projective cooridnates if the reference space is NURBS
-#endif
 
     out.begin_item("Control points info (euclidean coordinates):");
     coeff_.print_info(out);

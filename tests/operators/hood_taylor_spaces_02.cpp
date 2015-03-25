@@ -83,8 +83,8 @@ void StokesProblem<dim>::assemble_Bt()
 
     for (; vel_el != end_el; ++vel_el, ++pre_el)
     {
-        const int vel_n_basis = vel_el->get_num_basis(DofProperties::none);
-        const int pre_n_basis = pre_el->get_num_basis(DofProperties::none);
+        const int vel_n_basis = vel_el->get_num_basis(DofProperties::active);
+        const int pre_n_basis = pre_el->get_num_basis(DofProperties::active);
 
         DenseMatrix loc_mat(vel_n_basis, pre_n_basis);
         loc_mat = 0.0;
@@ -92,8 +92,8 @@ void StokesProblem<dim>::assemble_Bt()
         vel_sp_values->fill_element_cache(vel_el);
         pre_sp_values->fill_element_cache(pre_el);
 
-        auto q      = pre_el->template get_values<0,k>(0,DofProperties::none);
-        auto div_v  = vel_el->get_divergences(0,DofProperties::none);
+        auto q      = pre_el->template get_values<0,k>(0,DofProperties::active);
+        auto div_v  = vel_el->get_divergences(0,DofProperties::active);
 //        auto div_v  = vel_el->get_basis_divergences();
         auto w_meas = vel_el->template get_w_measures<k>(0);
 
@@ -108,8 +108,8 @@ void StokesProblem<dim>::assemble_Bt()
                                     * w_meas[qp];
             } // end loop j
         } // end loop i
-        vector<Index> vel_loc_dofs = vel_el->get_local_to_global(DofProperties::none);
-        vector<Index> pre_loc_dofs = pre_el->get_local_to_global(DofProperties::none);
+        vector<Index> vel_loc_dofs = vel_el->get_local_to_global(DofProperties::active);
+        vector<Index> pre_loc_dofs = pre_el->get_local_to_global(DofProperties::active);
         Bt_->add_block(vel_loc_dofs, pre_loc_dofs, loc_mat);
 
         out << loc_mat << endl;

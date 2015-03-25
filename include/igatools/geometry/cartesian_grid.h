@@ -159,11 +159,7 @@ private:
     /** Type for current class. */
     using self_t = CartesianGrid<dim_>;
 
-
 public:
-
-
-
     /**
      * Alias for the (static) class holding the topological information.
      */
@@ -195,8 +191,6 @@ public:
         uniform, direction_uniform, non_uniform
     };
 
-
-
     /** @name Constructors*/
     ///@{
 protected:
@@ -227,7 +221,6 @@ protected:
     explicit CartesianGrid(const BBox<dim_> &end_points,
                            const TensorSize<dim_> &n_knots,
                            const Kind kind);
-
     /**
      * Construct a cartesian grid where the knot coordinate in each
      * direction is provided as CartesianProductArray object.
@@ -274,13 +267,11 @@ public:
      * a std::shared_ptr
      */
     ///@{
-
     /**
      * Creates a uniform cartesian grid of the unit <tt>dim</tt>-dimensional
      * hypercube \f$[0,1]^{dim}\f$, with @p n knots (equally spaced) in each dimension.
      */
     static std::shared_ptr<self_t> create(const Index n = 2);
-
 
     /**
      * Creates a uniform cartesian grid of the unit <tt>dim</tt>-dimensional
@@ -289,7 +280,6 @@ public:
      * respectively.
      */
     static std::shared_ptr<self_t> create(const TensorSize<dim_> &n);
-
 
     /**
      * Construct a cartesian grid where the knot coordinate in each
@@ -317,7 +307,6 @@ public:
     static std::shared_ptr<self_t>
     create(const std::array<vector<Real>,dim_> &knot_coordinates);
 
-
     static std::shared_ptr<self_t>
     create(const BBox<dim_> &end_points, const Size n_knots);
 
@@ -338,7 +327,6 @@ public:
     create(const self_t &grid);
 
     ///@}
-
 
     /**
      * Create an element (defined on this grid) with a given flat_index.
@@ -361,14 +349,12 @@ public:
     self_t &operator=(self_t &&grid) = default;
     ///@}
 
-
     ///@name Getting grid information
     ///@{
     /**
      * Returns the number of elements with the <tt>property</tt> specified as input argument.
      */
     Size get_num_elements_same_property(const std::string &property) const;
-
 
     /** Total number of elements, including active and non-active */
     Size get_num_all_elems() const;
@@ -407,7 +393,6 @@ public:
     BBox<dim_> get_bounding_box() const;
     ///@}
 
-
     ///@name Iterating of grid elements
     ///@{
     /**
@@ -440,7 +425,6 @@ public:
      */
     ElementConstIterator cend(const std::string &property = ElementProperties::none) const;
 
-
     /**
      * This function returns the iterator to the last active element on the grid.
      */
@@ -457,7 +441,6 @@ public:
     ElementConstIterator clast(const std::string &property = ElementProperties::none) const;
     ///@}
 
-
     /** @name Functions for the index transformations */
     ///@{
     /**
@@ -471,7 +454,6 @@ public:
     TensorIndex<dim_> flat_to_tensor(const Index flat_index) const;
     ///@}
 
-
     ///@name Dealing with boundary information
     ///@{
     /**
@@ -484,9 +466,9 @@ public:
      */
     void set_boundary_id(const int face, const boundary_id id);
 
-
     template<int sub_dim>
     using BoundaryNormal = std::array<Points<dim_>, dim_-sub_dim>;
+
     /**
      * Returns the outward pointing
      * unit normal vector space to the element of sub dim_ k.
@@ -566,7 +548,6 @@ private:
         void (const special_array<vector<Real>,dim_> &new_knots,const CartesianGrid<dim_> &old_grid)>;
 
 public:
-
     /** Slot type for the refinement signal. */
     using SignalRefineSlot = typename signal_refine_t::slot_type;
 
@@ -661,7 +642,6 @@ private:
      */
     KnotCoordinates knot_coordinates_;
 
-
 private:
     /**
      * Container for the element ids having a certain property.
@@ -671,7 +651,6 @@ private:
     PropertiesIdContainer properties_elements_id_;
 
 public:
-
 //TODO (pauletti, Mar 3, 2015): element information is accessed through the accessor
 // maybe all members functions below are ill-designed, also the only valid index for an element
 // is an iterator
@@ -724,7 +703,6 @@ public:
                                      const Index elem_flat_id,
                                      const bool status);
 
-
     /**
      * Sets the @p status of the given @p property for the entire set of elements in the grid.
      */
@@ -732,7 +710,6 @@ public:
                                           const bool status);
 
     ///@}
-
 
     /**
      * Returns the flat-id of the elements in the CartesianGrid.

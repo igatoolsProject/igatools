@@ -17,44 +17,47 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-
 /*
- *  Test for the l2_projection function.
- *  Bspline spaces case
+ *  Test for Vector class
  *
  *  author: pauletti
- *  date: 2013-10-10
+ *  date: Apr 5, 2013
+ *
  */
 
 #include "../tests.h"
-#include "./common_functions.h"
 
-#include <igatools/base/quadrature_lib.h>
-#include <igatools/base/formula_function.h>
-
+#include <igatools/linear_algebra/distributed_vector.h>
+#include <igatools/base/ig_function.h>
+#include <igatools/base/function_element.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 
-#include <igatools/basis_functions/space_tools.h>
-
-
-template<int dim , int range ,int rank, LAPack la_pack>
-void project_l2(const int p, const int num_knots = 10)
+template <LAPack la_pack>
+void non_contig_indices()
 {
-    OUTSTART
+	OUTSTART
 
-    using Space =  BSplineSpace<dim,range,rank>;
-    using RefSpace =  ReferenceSpace<dim,range,rank>;
+    using VectorType = Vector<la_pack>;
 
-    auto knots = CartesianGrid<dim>::create(num_knots);
-    auto space = Space::create(p, knots) ;
+    vector<Index> dofs = {1, 3, 5};
+    VectorType vec(dofs);
+    vec.print_info(out);
+    
+    const int dim = 1;
+    using Space = BSplineSpace<dim>;
+    using Function = IgFunction<ReferenceSpace<dim>>;
+    auto grid = CartesianGrid<dim>::create(3);
+    const int deg = 1;
+    auto space = Space::create(deg, grid);
+    auto F = Function::create(space, vec);
 
-    const int n_qpoints = 4;
-    QGauss<dim> quad(n_qpoints);
+    auto vec1 = F->get_coefficients();
+    vec1.print_info(out);
 
-    auto f = BoundaryFunction<dim>::create(knots);
-    auto proj_func = space_tools::projection_l2<RefSpace,la_pack>(f, space, quad);
-    proj_func->print_info(out);
+    auto func = F->clone();
+    auto vec2 = std::dynamic_pointer_cast<Function>(func)->get_coefficients();
+    vec2.print_info(out);
 
     OUTEND
 }
@@ -63,17 +66,6 @@ void project_l2(const int p, const int num_knots = 10)
 
 int main()
 {
-#if defined(USE_TRILINOS)
-    const auto la_pack = LAPack::trilinos_epetra;
-#elif defined(USE_PETSC)
-    const auto la_pack = LAPack::petsc;
-#endif
-
-    project_l2<0,1,1, la_pack>(1);
-    project_l2<1,1,1, la_pack>(3);
-    project_l2<2,1,1, la_pack>(3);
-    project_l2<3,1,1, la_pack>(1);
-
-    return 0;
+	non_contig_indices<LAPack::trilinos_epetra>();
+    return  0;
 }
-

@@ -18,7 +18,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
 #ifndef BSPLINE_ELEMENT_H_
 #define BSPLINE_ELEMENT_H_
 
@@ -34,10 +33,6 @@ IGA_NAMESPACE_OPEN
 
 template <int dim, int range, int rank> class BSplineSpace;
 template <class Accessor> class CartesianGridIterator;
-
-
-
-
 
 /**
  * See module on \ref accessors_iterators for a general overview.
@@ -123,28 +118,6 @@ public:
     self_t &operator=(self_t &&elem) = default;
     ///@}
 
-
-public:
-#if 0
-    /** @name Functions for the basis and field evaluations without the use of
-     * the cache */
-    ///@{
-    /**
-     * Returns a ValueTable with the <tt>deriv_order</tt>-th derivatives of all local basis function
-     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
-     * @note This function does not use the cache and therefore can be called any time without
-     * needing to pre-call init_cache()/fill_cache().
-     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
-     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
-     */
-    template <int deriv_order>
-    ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
-    evaluate_basis_derivatives_at_points(const ValueVector<Point> &points) const;
-
-    ///@}
-#endif
-
-
 private:
     /**
      * @name Containers for the cache of the element values and for the
@@ -161,9 +134,7 @@ private:
      */
     using BasisValues1d = vector<DenseMatrix>;
 
-
 protected:
-
     /**
      * For each component gives a product array of the dimension
      */
@@ -178,7 +149,6 @@ protected:
 
 
 private:
-
     /**
      * Returns the BSplineSpace upon which the element is defined.
      */

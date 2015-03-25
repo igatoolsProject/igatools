@@ -88,8 +88,8 @@ void assemble_matrix(const int n_knots, const int deg)
 
     auto f = ConstFunction::create(grid, IdentityFunction<dim>::create(grid), A, b);
 
-    using Mat = Matrix<LAPack::trilinos_tpetra>;
-    using Vec = Vector<LAPack::trilinos_tpetra>;
+    using Mat = Matrix<LAPack::trilinos_epetra>;
+    using Vec = Vector<LAPack::trilinos_epetra>;
 
     const auto n_basis = space->get_num_basis();
     auto space_manager = build_space_manager_single_patch<RefSpace>(space);
@@ -113,7 +113,7 @@ void assemble_matrix(const int n_knots, const int deg)
     const int n_qp = elem_quad.get_num_points();
     for (; elem != elem_end; ++elem, ++f_elem)
     {
-        const int n_basis = elem->get_num_basis(DofProperties::none);
+        const int n_basis = elem->get_num_basis(DofProperties::active);
         DenseMatrix loc_mat(n_basis, n_basis);
         loc_mat = 0.0;
 
@@ -123,8 +123,8 @@ void assemble_matrix(const int n_knots, const int deg)
         elem_handler->fill_element_cache(elem);
         f->fill_element_cache(f_elem);
 
-        auto phi = elem->template get_values<0, dim>(0,DofProperties::none);
-        auto grad_phi  = elem->template get_values<1, dim>(0,DofProperties::none);
+        auto phi = elem->template get_values<0, dim>(0,DofProperties::active);
+        auto grad_phi  = elem->template get_values<1, dim>(0,DofProperties::active);
         auto w_meas = elem->template get_w_measures<dim>(0);
 
         grad_phi.print_info(out);
@@ -152,7 +152,7 @@ void assemble_matrix(const int n_knots, const int deg)
                               * w_meas[qp];
         }
 
-        const auto loc_dofs = elem->get_local_to_global(DofProperties::none);
+        const auto loc_dofs = elem->get_local_to_global(DofProperties::active);
         matrix->add_block(loc_dofs, loc_dofs,loc_mat);
         rhs->add_block(loc_dofs, loc_rhs);
     }
@@ -163,7 +163,7 @@ void assemble_matrix(const int n_knots, const int deg)
     const std::set<boundary_id> dir_id {0};
     std::map<Index, Real> values;
     // TODO (pauletti, Mar 9, 2015): parametrize with dimension
-    project_boundary_values<RefSpace,LAPack::trilinos_tpetra>(
+    project_boundary_values<RefSpace,LAPack::trilinos_epetra>(
         const_pointer_cast<const Function>(g),
         space,
         face_quad,
@@ -175,7 +175,7 @@ void assemble_matrix(const int n_knots, const int deg)
 
 
 
-    using LinSolver = LinearSolverIterative<LAPack::trilinos_tpetra>;
+    using LinSolver = LinearSolverIterative<LAPack::trilinos_epetra>;
     LinSolver solver(LinSolver::SolverType::CG);
     solver.solve(*matrix, *rhs, *solution);
 
