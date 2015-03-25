@@ -152,7 +152,7 @@ public:
      * @note If @p dofs_property is equal to the default value DofProperties::none then the
      * value returned is the total number of dofs in the object.
      */
-    Index get_num_dofs(const std::string &dofs_property = DofProperties::none) const;
+    Index get_num_dofs(const std::string &dofs_property) const;
 
 
     /**

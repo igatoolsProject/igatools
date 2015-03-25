@@ -148,7 +148,7 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
 
     using IgFunc = IgFunction<RefSpace>;
     auto solution_function = IgFunc::create(space,solution->as_ig_fun_coefficients(),
-    		DofProp::interior);
+                                            DofProp::interior);
     writer.template add_field<1,1>(solution_function, "solution");
     string filename = "poisson_problem-" + to_string(dim) + "d" ;
     writer.save(filename);

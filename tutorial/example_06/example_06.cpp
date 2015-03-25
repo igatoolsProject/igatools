@@ -218,7 +218,7 @@ void PoissonProblem<dim>::output()
     // TODO (pauletti, Mar 9, 2015): this should be perform by
     // the space to linear algebra manager
     const int n_coefs = space->get_num_basis();
-    iga::vector<Real> solution_coefs(n_coefs);
+    IgCoefficients solution_coefs(*space,DofProperties::active);
     for (int i = 0 ; i < n_coefs ; ++i)
         solution_coefs[i] = (*solution)(i);
 

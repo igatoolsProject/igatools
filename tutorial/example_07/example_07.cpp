@@ -72,7 +72,6 @@ void nurb_geometry()
 {
     const int dim = 2;
     using Function = IgFunction<ReferenceSpace<dim, dim>>;
-    using CoeffType = typename Function::CoeffType;
 
     const int deg = 2;
     const int n_knots = 3;
@@ -80,8 +79,7 @@ void nurb_geometry()
     using Space = BSplineSpace<dim,dim>;
     auto space = Space::create(deg, grid);
 
-    const int n_basis = space->get_num_basis();
-    CoeffType control_pts(n_basis);
+    IgCoefficients control_pts(*space,DofProperties::active);
 
     DynamicMultiArray<Points<dim>, dim> c_points(deg-1+n_knots);
     const Real eps = 0.2;

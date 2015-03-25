@@ -307,13 +307,12 @@ get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
     shared_ptr< MapFunction<dim,dim+codim> > map;
 
     const int dim_phys = dim + codim;
+    using ref_space_t = ReferenceSpace<dim,dim_phys,1>;
+    shared_ptr<ref_space_t> ref_space = nullptr;
     if (is_nurbs_space)
     {
 #ifdef NURBS
-        using ref_space_t = ReferenceSpace<dim,dim_phys,1>;
-        auto ref_space = get_nurbs_space_from_xml<dim,dim_phys,1>(mapping_tree);
-
-        map = IgFunction<ref_space_t>::create(ref_space, cntrl_pts);
+        ref_space = get_nurbs_space_from_xml<dim,dim_phys,1>(mapping_tree);
 #else
         Assert(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
         AssertThrow(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
@@ -321,11 +320,11 @@ get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
     }
     else
     {
-        using ref_space_t = ReferenceSpace<dim,dim_phys,1>;
-        auto ref_space = get_bspline_space_from_xml<dim,dim_phys,1>(mapping_tree);
-
-        map = IgFunction<ref_space_t>::create(ref_space,cntrl_pts);
+        ref_space = get_bspline_space_from_xml<dim,dim_phys,1>(mapping_tree);
     }
+
+    const auto &active_dofs = ref_space->get_dof_distribution()->get_dofs_id_same_property(DofProperties::active);
+    map = IgFunction<ref_space_t>::create(ref_space, IgCoefficients(active_dofs,cntrl_pts));
     //-------------------------------------------------------------------------
     AssertThrow(map != nullptr,ExcNullPtr());
 
@@ -721,10 +720,22 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     WeightFuncPtrTable w_func_table;
     int comp = 0;
     for (const auto &w_coefs : weights)
-        w_func_table[comp++] = WeightFuncPtr(
-                                   new WeightFunc(scalar_spline_space,
-                                                  IgCoefficient(w_coefs.get_data())));
+    {
+        const auto &dofs_active =
+            scalar_spline_space->get_dof_distribution()->
+            get_dofs_id_same_property(DofProperties::active);
 
+        const auto &w_data = w_coefs.get_data();
+        /*
+                IgCoefficients w_func_coeffs;
+                int i = 0;
+                for (const auto dof : dofs_active)
+                    w_func_coeffs[dof] = w_data[i++];
+        //*/
+
+        w_func_table[comp++] = WeightFuncPtr(
+                                   new WeightFunc(scalar_spline_space,IgCoefficients(dofs_active,w_data)));
+    }
 
     //*/
     // building the weight function table --- end

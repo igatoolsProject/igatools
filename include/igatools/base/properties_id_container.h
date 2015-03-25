@@ -100,6 +100,13 @@ public:
      */
     vector<std::string> get_properties() const;
 
+
+    /**
+     * Add the @p offset value to the ids contained in the object.
+     * @param offset
+     */
+    void add_offset(const Index offset);
+
 private:
     using ContainerType = std::map<std::string,std::set<Index>>;
     using iterator = typename ContainerType::iterator;

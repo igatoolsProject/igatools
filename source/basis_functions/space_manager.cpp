@@ -42,7 +42,8 @@ SpaceManager()
     :
     is_spaces_insertion_open_(false),
     is_spaces_connectivity_open_(false),
-    space_dofs_offset_(0)
+    space_dofs_offset_(0),
+    dof_offsets_(1,0)
 {}
 
 
@@ -65,13 +66,15 @@ spaces_insertion_close(const bool automatic_dofs_renumbering)
 
     Assert(!spaces_info_.empty(),ExcEmptyObject());
 
-
-    if (automatic_dofs_renumbering)
-        this->perform_space_dofs_renumbering();
-
+    /*
+        if (automatic_dofs_renumbering)
+            this->perform_space_dofs_renumbering();
+    //*/
     this->update_dofs_view();
+
 }
 
+#if 0
 void
 SpaceManager::
 perform_space_dofs_renumbering()
@@ -93,6 +96,7 @@ perform_space_dofs_renumbering()
         space_info_it = spaces_with_original_dofs_.erase(space_info_it);
     }
 }
+#endif
 
 
 void

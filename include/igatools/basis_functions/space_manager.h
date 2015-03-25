@@ -779,7 +779,7 @@ private:
 
 
 
-    /** @name Memebr variables used to keep track of dofs renumbering */
+    /** @name Member variables used to keep track of dofs renumbering */
     ///@{
     /** List of spaces that have the original global dofs (after the space creation). */
     std::list<SpaceInfoPtr> spaces_with_original_dofs_;
@@ -788,14 +788,17 @@ private:
     std::list<SpaceInfoPtr> spaces_with_renumbered_dofs_;
     ///@}
 
+#if 0
     /**
      * This function renumber the dofs of the spaces that are in the list spaces_with_original_dofs_
      * and then put the renumbered spaces in the list spaces_with_renumbered_dofs_
      */
     void perform_space_dofs_renumbering();
+#endif
 
     Index space_dofs_offset_;
 
+    vector<Index> dof_offsets_;
 
     class SpacesConnection
     {
@@ -1043,7 +1046,12 @@ add_space(std::shared_ptr<Space> space,
 #endif
 
     //------------------------------------------------------------------------
-    const auto &dof_distribution = *(space->get_dof_distribution());
+    using SpaceNonConst = typename std::remove_const<Space>::type;
+    auto &dof_distribution = *(std::const_pointer_cast<SpaceNonConst>(space)->get_dof_distribution());
+
+    // renumbering the dofs in the space
+    dof_distribution.add_dofs_offset(dof_offsets_.back());
+    dof_offsets_.emplace_back(dof_distribution.get_max_dof_id()+1);
 
 //    const std::string dofs_filter =
 //        dof_distribution.is_property_defined(DofProperties::active) ?

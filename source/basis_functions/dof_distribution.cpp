@@ -98,9 +98,9 @@ DofDistribution(const TensorSizeTable &n_basis,
     //-----------------------------------------------------------------------
     properties_dofs_.add_property(DofProperties::active);
     properties_dofs_.set_ids_property_status(
-    		DofProperties::active,
-            std::set<Index>(dofs_view_.cbegin(),dofs_view_.cend()),
-            true);
+        DofProperties::active,
+        std::set<Index>(dofs_view_.cbegin(),dofs_view_.cend()),
+        true);
     //-----------------------------------------------------------------------
 }
 
@@ -168,6 +168,8 @@ add_dofs_offset(const Index offset)
 {
     for (auto &dof : dofs_view_)
         dof += offset;
+
+    properties_dofs_.add_offset(offset);
 }
 
 
@@ -186,10 +188,7 @@ Index
 DofDistribution<dim, range, rank>::
 get_num_dofs(const std::string &dofs_property) const
 {
-    if (dofs_property == DofProperties::none)
-        return num_dofs_table_.total_dimension();
-    else
-        return this->get_dofs_id_same_property(dofs_property).size();
+    return this->get_dofs_id_same_property(dofs_property).size();
 }
 
 

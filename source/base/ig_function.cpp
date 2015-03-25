@@ -31,56 +31,16 @@ template<class Space>
 IgFunction<Space>::
 IgFunction(std::shared_ptr<Space> space,
            const CoeffType &coeff,
-			const std::string &property)
+           const std::string &property)
     :
     parent_t::Function(space->get_grid()),
     space_(space),
     coeff_(coeff),
-	property_(property),
+    property_(property),
     elem_(space->begin()),
     space_filler_(space->create_elem_handler())
 {
     Assert(space_ != nullptr,ExcNullPtr());
-
-#if 0
-    const auto dof_distribution = space_->get_dof_distribution();
-
-#ifndef NDEBUG
-    const auto n_dofs = dof_distribution->get_num_dofs(DofProperties::none);
-    Assert(coeff.size() == n_dofs,ExcDimensionMismatch(coeff.size(),n_dofs));
-#endif
-
-    const auto &n_dofs_table = dof_distribution->get_num_dofs_table();
-    int comp = 0;
-    Index dof = 0;
-    for (auto &coeff_new_comp : coeff_new_)
-    {
-        coeff_new_comp.resize(n_dofs_table[comp]);
-        for (auto &coeff_new_comp_dof : coeff_new_comp)
-        {
-            coeff_new_comp_dof = coeff_(dof);
-            ++dof;
-        }
-        ++comp;
-    }
-#endif
-
-#if 0
-    LogStream out;
-
-
-    comp = 0;
-    for (auto &coeff_new_comp : coeff_new_)
-    {
-        out.begin_item("Coeffs new[" + std::to_string(comp) + "]");
-        coeff_new_comp.print_info(out);
-        out.end_item();
-        ++comp;
-    }
-    out.begin_item("Control points info (euclidean coordinates):");
-    coeff_.print_info(out);
-    out.end_item();
-#endif
 }
 
 
@@ -91,8 +51,7 @@ IgFunction(const self_t &fun)
     parent_t::Function(fun.space_->get_grid()),
     space_(fun.space_),
     coeff_(fun.coeff_),
-    coeff_new_(fun.coeff_new_),
-	property_(fun.property_),
+    property_(fun.property_),
     elem_(fun.space_->begin()),
     space_filler_(fun.space_->create_elem_handler())
 {
@@ -106,7 +65,7 @@ auto
 IgFunction<Space>::
 create(std::shared_ptr<Space> space,
        const CoeffType &coeff,
-		const std::string &property) ->  std::shared_ptr<self_t>
+       const std::string &property) ->  std::shared_ptr<self_t>
 {
     auto ig_func = std::shared_ptr<self_t>(new self_t(space, coeff));
 
@@ -178,53 +137,19 @@ fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) -> voi
     fill_cache_impl.func_elem = &elem;
     fill_cache_impl.function = this;
 
-
-#if 0
-    LogStream out;
-
-
-    int comp = 0;
-    for (auto &coeff_new_comp : coeff_new_)
-    {
-        out.begin_item("Coeffs new[" + std::to_string(comp) + "]");
-        coeff_new_comp.print_info(out);
-        out.end_item();
-        ++comp;
-    }
-    out.begin_item("Control points info (euclidean coordinates):");
-    coeff_.print_info(out);
-    out.end_item();
+    const auto elem_dofs = elem_->get_local_to_global(property_);
+    vector<Real> loc_coeff;
+#ifdef NDEBUG
+    for (const auto &dof : elem_dofs)
+        loc_coeff.emplace_back(coeff_[dof]);
+#else
+    for (const auto &dof : elem_dofs)
+        loc_coeff.emplace_back(coeff_.at(dof));
 #endif
 
+//    auto loc_coeff =
+//    coeff_.get_local_coefs(elem_->get_local_to_global(property_));
 
-    auto loc_coeff =
-    		coeff_.get_local_coefs(elem_->get_local_to_global(property_));
-
-
-    //-----------------------------------------------------
-#if 0
-    const auto dof_distribution = space_->get_dof_distribution();
-    out.begin_item("Dof distribution");
-    dof_distribution->print_info(out);
-    out.end_item();
-    out.begin_item("elem_global_ids");
-    elem_global_ids.print_info(out);
-    out.end_item();
-#endif
-
-#if 0
-    for (const auto &dof_global_id : elem_global_ids)
-    {
-        int comp;
-        Index dof_id_in_comp;
-        dof_distribution->global_to_comp_local(dof_global_id,comp,dof_id_in_comp);
-
-//      out << "GID: " << dof_global_id << "    comp: " << comp << "    LID: " << dof_id_in_comp << std::endl;
-
-        loc_coeff.push_back(coeff_new_[comp][dof_id_in_comp]);
-    }
-#endif
-    //-----------------------------------------------------
 
     fill_cache_impl.loc_coeff = &loc_coeff;
     fill_cache_impl.j = j;
@@ -259,26 +184,9 @@ auto
 IgFunction<Space>::
 operator +=(const self_t &fun) -> self_t &
 {
-    Assert(coeff_.size() == fun.coeff_.size(),ExcDimensionMismatch(coeff_.size(),fun.coeff_.size()));
+    Assert(space_ == fun.space_,ExcMessage("Functions defined on different spaces."));
 
     coeff_ += fun.coeff_;
-
-#if 0
-    int comp = 0;
-    for (auto &coeff_new_comp : coeff_new_)
-    {
-        Assert(coeff_new_comp.tensor_size() == fun.coeff_new_[comp].tensor_size(),
-        ExcMessage("Different tensor sizes for the IgFunction coefficients."));
-
-        // coeff_new_ += fun.coeff_new_
-        std::transform(coeff_new_comp.begin(),coeff_new_comp.end(),
-        fun.coeff_new_[comp].begin(),
-        coeff_new_comp.begin(),
-        std::plus<Real>());
-
-        ++comp;
-    }
-#endif
 
     return *this;
 }

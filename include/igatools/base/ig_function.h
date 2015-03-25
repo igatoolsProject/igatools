@@ -27,7 +27,91 @@
 
 IGA_NAMESPACE_OPEN
 
-using IgCoefficient = Vector<LAPack::trilinos_epetra>;
+class IgCoefficients : public std::map<Index,Real>
+{
+public:
+    using std::map<Index,Real>::map;
+
+    IgCoefficients(const std::set<Index> &global_dofs, const vector<Real> &coeffs)
+    {
+        Assert(Index(global_dofs.size()) == coeffs.size(),
+               ExcDimensionMismatch(global_dofs.size(),coeffs.size()));
+
+        int i = 0;
+        for (const auto dof : global_dofs)
+            (*this)[dof] = coeffs[i++];
+    }
+
+    template <class Space>
+    IgCoefficients(
+        const Space &space,
+        const std::string &dofs_property,
+        const vector<Real> &coeffs)
+        :
+        IgCoefficients(space.get_dof_distribution()->get_dofs_id_same_property(dofs_property),coeffs)
+    {}
+
+    template <class Space>
+    IgCoefficients(
+        const Space &space,
+        const std::string &dofs_property)
+        :
+        IgCoefficients(
+            space.get_dof_distribution()->get_dofs_id_same_property(dofs_property),
+            vector<Real>(space.get_dof_distribution()->
+                         get_dofs_id_same_property(dofs_property).size(),0.0))
+    {}
+
+
+    Real &operator()(const Index &global_dof)
+    {
+#ifdef NDEBUG
+        return (*this)[global_dof];
+#else
+        return (*this).at(global_dof);
+#endif
+    }
+
+    const Real &operator()(const Index &global_dof) const
+    {
+#ifdef NDEBUG
+        return (*this)[global_dof];
+#else
+        return (*this).at(global_dof);
+#endif
+    }
+
+
+    Index size() const
+    {
+        return std::map<Index,Real>::size();
+    }
+
+    IgCoefficients &operator+=(const IgCoefficients &coeffs)
+    {
+        Assert(this->size() == coeffs.size(),ExcDimensionMismatch(this->size(),coeffs.size()));
+#ifdef NDEBUG
+        for (const auto &c : coeffs)
+            (*this)[c.first] += c.second;
+#else
+        for (const auto &c : coeffs)
+            (*this).at(c.first) += c.second;
+#endif
+
+        return *this;
+    }
+
+
+    void print_info(LogStream &out) const
+    {
+        int i = 0;
+        for (const auto &c : (*this))
+        {
+            out << "coeff[local_id=" << i << ", global_id=" << c.first << "] = " << c.second << std::endl;
+            ++i;
+        }
+    }
+};
 
 template<class Space>
 class IgFunction :
@@ -40,9 +124,7 @@ public:
     static const int range = Space::range;
     static const int rank = Space::rank;
 
-    using CoeffType = IgCoefficient;
-
-    using CoeffTypeNew = typename SplineSpace<dim,range,rank>::template ComponentContainer<DynamicMultiArray<Real,dim>>;
+    using CoeffType = IgCoefficients;
 
 
 private:
@@ -59,8 +141,8 @@ public:
 
     //TODO (pauletti, Mar 23, 2015): should we make this private?
     IgFunction(std::shared_ptr<Space> space,
-    		const CoeffType &coeff,
-			const std::string &property = DofProperties::active);
+               const CoeffType &coeff,
+               const std::string &property = DofProperties::active);
 
     IgFunction(const self_t &);
 
@@ -81,7 +163,7 @@ public:
 public:
     static std::shared_ptr<self_t>
     create(std::shared_ptr<Space> space, const CoeffType &coeff,
-			const std::string &property = DofProperties::active);
+           const std::string &property = DofProperties::active);
 
 
     std::shared_ptr<base_t> clone() const override final
@@ -107,7 +189,7 @@ public:
 
     const std::string &get_property() const
     {
-    	return property_;
+        return property_;
     }
 
     self_t &operator +=(const self_t &fun);
@@ -119,8 +201,6 @@ private:
     std::shared_ptr<Space> space_;
 
     CoeffType coeff_;
-
-    CoeffTypeNew coeff_new_;
 
     std::string property_;
 

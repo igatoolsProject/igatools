@@ -187,7 +187,7 @@ public:
 
     Size get_num_basis() const
     {
-        return dof_distribution_->get_num_dofs(DofProperties::none);
+        return dof_distribution_->get_num_dofs_table().total_dimension();
     }
 
 

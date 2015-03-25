@@ -165,6 +165,23 @@ get_properties() const
 
 void
 PropertiesIdContainer::
+add_offset(const Index offset)
+{
+    for (auto &property_id : properties_id_)
+    {
+        const std::set<Index> &old_dofs = property_id.second;
+        std::set<Index> new_dofs;
+        for (const auto &dof : old_dofs)
+            new_dofs.insert(dof + offset);
+
+        property_id.second = std::move(new_dofs);
+//      property_id.second = new_dofs;
+    }
+}
+
+
+void
+PropertiesIdContainer::
 print_info(LogStream &out) const
 {
     using std::endl;

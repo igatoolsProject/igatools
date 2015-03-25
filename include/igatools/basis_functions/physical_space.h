@@ -86,10 +86,6 @@ public:
 
     static const std::array<int, n_components> components;
 
-    /**
-     * Type alias for the boundary conditions on each face of each scalar component of the space.
-     */
-    using BCTable = typename RefSpace::BCTable;
 
 public:
     using Func = Function<dim, codim, range, rank>;

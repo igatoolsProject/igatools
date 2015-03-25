@@ -66,8 +66,8 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
         build_space_manager_single_patch<Space>(std::const_pointer_cast<Space>(space));
     Matrix<la_pack> matrix(*space_manager);
 
-    const auto space_dofs_set = space_manager->get_row_dofs();
-    vector<Index> space_dofs(space_dofs_set.begin(),space_dofs_set.end());
+    const auto space_dofs = space_manager->get_row_dofs();
+//    vector<Index> space_dofs(space_dofs_set.begin(),space_dofs_set.end());
     Vector<la_pack> rhs(space_dofs);
     Vector<la_pack> sol(space_dofs);
 
@@ -256,8 +256,15 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
                      tol,max_iter);
     solver.solve(matrix, rhs, sol);
 
+    const auto &active_dofs = space->get_dof_distribution()->get_dofs_id_same_property(DofProperties::active);
+
+
     return std::make_shared<ProjFunc>(
-               ProjFunc(std::const_pointer_cast<Space>(space), sol.as_ig_fun_coefficients()));
+               ProjFunc(std::const_pointer_cast<Space>(space),
+                        IgCoefficients(
+                            *space,
+                            DofProperties::active,
+                            sol.get_local_coefs(active_dofs))));
 }
 
 
@@ -323,7 +330,8 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
         const auto &coef = proj->get_coefficients();
         const int face_n_dofs = dof_map.size();
         for (Index i = 0; i< face_n_dofs; ++i)
-            boundary_values[dof_map[i]] = coef[i];
+            boundary_values[dof_map[i]] = coef(i);
+        //*/
     }
 }
 

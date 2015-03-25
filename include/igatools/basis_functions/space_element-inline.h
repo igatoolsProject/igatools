@@ -237,7 +237,7 @@ Size
 SpaceElement<Space>::
 get_num_basis() const
 {
-	return n_basis_direction_.total_dimension();
+    return n_basis_direction_.total_dimension();
 }
 
 

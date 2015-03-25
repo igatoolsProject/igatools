@@ -43,7 +43,7 @@ struct ElementProperties : public Properties
 
 struct DofProperties
 {
-	static const std::string active;
+    static const std::string active;
 };
 
 IGA_NAMESPACE_CLOSE

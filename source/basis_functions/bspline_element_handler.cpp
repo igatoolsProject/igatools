@@ -462,7 +462,7 @@ copy_to_inactive_components_values(const vector<Index> &inactive_comp,
 {
     Assert(D_phi.get_num_functions() == elem_->get_num_basis(),
            ExcDimensionMismatch(D_phi.get_num_functions(),
-        		   elem_->get_num_basis()));
+                                elem_->get_num_basis()));
 
     const auto comp_offset = elem_->get_basis_offset();
 
@@ -496,7 +496,7 @@ copy_to_inactive_components(const vector<Index> &inactive_comp,
 {
     Assert(D_phi.get_num_functions() == elem_->get_num_basis(),
            ExcDimensionMismatch(D_phi.get_num_functions(),
-        		   elem_->get_num_basis()));
+                                elem_->get_num_basis()));
 
     const auto comp_offset = elem_->get_basis_offset();
 
@@ -533,9 +533,9 @@ evaluate_bspline_values(
     const ComponentContainer<TensorProductFunctionEvaluator<dim>> &elem_values,
     ValueTable<Value> &D_phi) const
 {
-	Assert(D_phi.get_num_functions() == elem_->get_num_basis(),
-			ExcDimensionMismatch(D_phi.get_num_functions(),
-					elem_->get_num_basis()));
+    Assert(D_phi.get_num_functions() == elem_->get_num_basis(),
+           ExcDimensionMismatch(D_phi.get_num_functions(),
+                                elem_->get_num_basis()));
 
     const auto comp_offset = elem_->get_basis_offset();
 
@@ -588,7 +588,7 @@ evaluate_bspline_derivatives(
 
     Assert(D_phi.get_num_functions() == elem_->get_num_basis(),
            ExcDimensionMismatch(D_phi.get_num_functions(),
-        		   elem_->get_num_basis()));
+                                elem_->get_num_basis()));
 
     const auto comp_offset = elem_->get_basis_offset();
 

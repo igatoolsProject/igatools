@@ -36,28 +36,38 @@
 template <LAPack la_pack>
 void non_contig_indices()
 {
-	OUTSTART
+    OUTSTART
 
     using VectorType = Vector<la_pack>;
 
-    vector<Index> dofs = {1, 3, 5};
+    std::set<Index> dofs = {1, 3, 5};
     VectorType vec(dofs);
+    out.begin_item("vec");
     vec.print_info(out);
-    
+    out.end_item();
+
     const int dim = 1;
     using Space = BSplineSpace<dim>;
     using Function = IgFunction<ReferenceSpace<dim>>;
-    auto grid = CartesianGrid<dim>::create(3);
+    auto grid = CartesianGrid<dim>::create(5);
     const int deg = 1;
     auto space = Space::create(deg, grid);
-    auto F = Function::create(space, vec);
+    auto dof_distribution = space->get_dof_distribution();
+    dof_distribution->set_all_dofs_property_status(DofProperties::active,false);
+    dof_distribution->set_dof_property_status(DofProperties::active,dofs,true);
+
+    auto F = Function::create(space, IgCoefficients(*space,DofProperties::active,vec.get_local_coefs(dofs)));
 
     auto vec1 = F->get_coefficients();
+    out.begin_item("vec1");
     vec1.print_info(out);
+    out.end_item();
 
     auto func = F->clone();
     auto vec2 = std::dynamic_pointer_cast<Function>(func)->get_coefficients();
+    out.begin_item("vec2");
     vec2.print_info(out);
+    out.end_item();
 
     OUTEND
 }
@@ -66,6 +76,6 @@ void non_contig_indices()
 
 int main()
 {
-	non_contig_indices<LAPack::trilinos_epetra>();
+    non_contig_indices<LAPack::trilinos_epetra>();
     return  0;
 }

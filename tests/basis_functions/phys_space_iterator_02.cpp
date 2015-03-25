@@ -44,8 +44,7 @@ create_function(shared_ptr<BSplineSpace<dim, dim + codim>> space)
     using Space = ReferenceSpace<dim, dim + codim>;
     using Function = IgFunction<Space>;
 
-    using CoeffType = typename Function::CoeffType;
-    CoeffType control_pts(space->get_num_basis());
+    vector<Real> control_pts(space->get_num_basis());
     if (dim == 1)
     {
         int id = 0 ;
@@ -108,7 +107,7 @@ create_function(shared_ptr<BSplineSpace<dim, dim + codim>> space)
 
     }
 
-    return Function::create(space, control_pts);
+    return Function::create(space, IgCoefficients(*space,DofProperties::active,control_pts));
 }
 
 
