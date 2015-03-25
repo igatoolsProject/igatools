@@ -36,13 +36,159 @@
 
 IGA_NAMESPACE_OPEN
 
+template <class Grid> class FunctionSpaceOnGrid;
+
 template <class Accessor> class CartesianGridIterator;
 
-template<class Space>
-class SpaceElement : private CartesianGridElement<Space::dim>
+template <int dim>
+class SpaceElementBase : private CartesianGridElement<dim>
 {
 protected:
-    using base_t =  CartesianGridElement<Space::dim>;
+    using base_t = CartesianGridElement<dim>;
+private:
+    using self_t = SpaceElementBase<dim>;
+
+    using Space = FunctionSpaceOnGrid<CartesianGrid<dim>>;
+public:
+    using base_t::get_flat_index;
+    using base_t::get_tensor_index;
+    using base_t::get_grid;
+    using base_t::is_boundary;
+
+    using Topology = typename base_t::Topology;
+
+    /** @name Constructors */
+    ///@{
+    /**
+     * Default constructor. Not allowed to be used.
+     */
+    SpaceElementBase() = delete;
+
+    /**
+     * Constructs an accessor to element number index of a
+     * function space.
+     */
+    SpaceElementBase(const std::shared_ptr<const Space> space,
+                 const Index elem_index)
+    :
+    	base_t(space->get_grid(), elem_index),
+		space0_(space)
+    {
+    	Assert(space0_ != nullptr, ExcNullPtr());
+    }
+
+
+
+    /**
+     * Copy constructor.
+     * It can be used with different copy policies (i.e. deep copy or shallow copy).
+     * The default behaviour (i.e. using the proper interface of a classic copy constructor)
+     * uses the deep copy.
+     */
+    SpaceElementBase(const self_t &elem,
+                 const CopyPolicy &copy_policy = CopyPolicy::deep)
+    :
+    	base_t(elem,copy_policy),
+		space0_(elem.space0_)
+    {}
+
+    /**
+     * Move constructor.
+     */
+    SpaceElementBase(self_t &&elem) = default;
+
+    /**
+     * Destructor.
+     */
+    ~SpaceElementBase() = default;
+    ///@}
+
+
+    /** Return a reference to "*this" as being an object of type CartesianGridElementAccessor.*/
+    CartesianGridElement<dim> &as_cartesian_grid_element_accessor()
+	{
+	    return static_cast<CartesianGridElement<dim> &>(*this);
+	}
+
+
+
+    /** Return a const-reference to "*this" as being an object of type CartesianGridElementAccessor.*/
+    const CartesianGridElement<dim> &as_cartesian_grid_element_accessor() const
+    {
+        return static_cast<const CartesianGridElement<dim> &>(*this);
+    }
+
+    void print_info(LogStream &out) const
+    {
+    	base_t::print_info(out);
+    }
+
+    void print_cache_info(LogStream &out) const
+    {
+        base_t::print_cache_info(out);
+    }
+
+    void
+    copy_from(const SpaceElementBase<dim> &elem,const CopyPolicy &copy_policy)
+    {
+        if (this != &elem)
+        {
+        	CartesianGridElement<dim>::copy_from(elem,copy_policy);
+        	space0_ = elem.space0_;
+        }
+    }
+
+
+private:
+    std::shared_ptr<const Space> space0_;
+
+
+public:
+
+    /**
+     * @name Comparison operators
+     *
+     * @warning To be comparable, two SpaceElement objects must be defined on the same space,
+     * otherwise an assertion will be raised (in Debug mode).
+     */
+    ///@{
+    bool operator==(const self_t &a) const
+    {
+        Assert(space0_ == a.space0_,
+               ExcMessage("Comparison between elements defined on different spaces"));
+        return this->as_cartesian_grid_element_accessor() == a.as_cartesian_grid_element_accessor();
+    }
+
+
+    bool operator!=(const self_t &a) const
+    {
+        Assert(space0_ == a.space0_,
+               ExcMessage("Comparison between elements defined on different spaces"));
+        return this->as_cartesian_grid_element_accessor() != a.as_cartesian_grid_element_accessor();
+    }
+
+    bool operator<(const self_t &a) const
+    {
+        Assert(space0_ == a.space0_,
+               ExcMessage("Comparison between elements defined on different spaces"));
+        return this->as_cartesian_grid_element_accessor() < a.as_cartesian_grid_element_accessor();
+    }
+
+    bool operator>(const self_t &a) const
+    {
+        Assert(space0_ == a.space0_,
+               ExcMessage("Comparison between elements defined on different spaces"));
+        return this->as_cartesian_grid_element_accessor() > a.as_cartesian_grid_element_accessor();
+    }
+    ///@}
+};
+
+
+template<class Space>
+class SpaceElement : public SpaceElementBase<Space::dim>
+{
+protected:
+    using base_t =  SpaceElementBase<Space::dim>;
 private:
     using self_t = SpaceElement<Space>;
 
@@ -62,11 +208,12 @@ public:
     static const int range     = Space::range;
     static const int rank      = Space::rank;
 
+    /*
     using base_t::get_flat_index;
     using base_t::get_tensor_index;
     using base_t::get_grid;
     using base_t::is_boundary;
-
+//*/
     using Topology = typename base_t::Topology;
 
     /**
@@ -91,14 +238,14 @@ public:
      */
     SpaceElement(const std::shared_ptr<const Space> space,
                  const Index elem_index);
-
+#if 0
     /**
      * Constructs an accessor to element number index of a
      * function space.
      */
     SpaceElement(const std::shared_ptr<const Space> space,
                  const TensorIndex<dim> &elem_index);
-
+#endif
     /**
      * Copy constructor.
      * It can be used with different copy policies (i.e. deep copy or shallow copy).
@@ -153,6 +300,8 @@ public:
     void shallow_copy_from(const self_t &element);
     ///@}
 
+
+
     template<int order = 0, int k = dim>
     auto
     get_values(const int j, const std::string &dofs_property = DofProperties::active) const
@@ -169,7 +318,7 @@ public:
         vector<Index> dofs_local_to_elem;
 
         this->space_->get_element_dofs(
-            *this,
+            this->as_cartesian_grid_element_accessor(),
             dofs_global,
             dofs_local_to_patch,
             dofs_local_to_elem,
@@ -691,53 +840,7 @@ protected:
 
 
 
-public:
 
-    /** Return a reference to "*this" as being an object of type CartesianGridElementAccessor.*/
-    CartesianGridElement<dim> &as_cartesian_grid_element_accessor();
-
-
-    /** Return a const-reference to "*this" as being an object of type CartesianGridElementAccessor.*/
-    const CartesianGridElement<dim> &as_cartesian_grid_element_accessor() const;
-
-
-
-    /**
-     * @name Comparison operators
-     *
-     * @warning To be comparable, two SpaceElement objects must be defined on the same space,
-     * otherwise an assertion will be raised (in Debug mode).
-     */
-    ///@{
-    bool operator==(const self_t &a) const
-    {
-        Assert(this->get_space() == a.get_space(),
-               ExcMessage("Comparison between elements defined on different spaces"));
-        return this->as_cartesian_grid_element_accessor() == a.as_cartesian_grid_element_accessor();
-    }
-
-
-    bool operator!=(const self_t &a) const
-    {
-        Assert(this->get_space() == a.get_space(),
-               ExcMessage("Comparison between elements defined on different spaces"));
-        return this->as_cartesian_grid_element_accessor() != a.as_cartesian_grid_element_accessor();
-    }
-
-    bool operator<(const self_t &a) const
-    {
-        Assert(this->get_space() == a.get_space(),
-               ExcMessage("Comparison between elements defined on different spaces"));
-        return this->as_cartesian_grid_element_accessor() < a.as_cartesian_grid_element_accessor();
-    }
-
-    bool operator>(const self_t &a) const
-    {
-        Assert(this->get_space() == a.get_space(),
-               ExcMessage("Comparison between elements defined on different spaces"));
-        return this->as_cartesian_grid_element_accessor() > a.as_cartesian_grid_element_accessor();
-    }
-    ///@}
 };
 
 

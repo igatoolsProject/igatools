@@ -36,15 +36,12 @@ SpaceElement<Space>::
 SpaceElement(const std::shared_ptr<const Space> space,
              const Index elem_index)
     :
-    base_t(space->get_grid(), elem_index),
-    space_(space)//,
-//    n_basis_direction_(space->get_num_all_element_basis())
-{
-    Assert(space_ != nullptr, ExcNullPtr());
-}
+    base_t(space, elem_index),
+    space_(space)
+{}
 
 
-
+#if 0
 template<class Space>
 inline
 SpaceElement<Space>::
@@ -53,7 +50,7 @@ SpaceElement(const std::shared_ptr<const Space> space,
     :
     SpaceElement(space, space->get_grid()->tensor_to_flat(elem_index))
 {}
-
+#endif
 
 
 template<class Space>
@@ -62,10 +59,10 @@ SpaceElement<Space>::
 SpaceElement(const SpaceElement<Space> &elem,
              const CopyPolicy &copy_policy)
     :
-    CartesianGridElement<Space::dim>(elem,copy_policy),
+    base_t(elem,copy_policy),
     space_(elem.space_)
 {
-    Assert(space_ != nullptr,ExcNullPtr());
+    Assert(this->space_ != nullptr,ExcNullPtr());
 
     if (elem.local_cache_ != nullptr)
     {
@@ -90,9 +87,9 @@ copy_from(const SpaceElement<Space> &elem,
 {
     if (this != &elem)
     {
-        CartesianGridElement<Space::dim>::copy_from(elem,copy_policy);
+    	SpaceElementBase<Space::dim>::copy_from(elem,copy_policy);
 
-        space_ = elem.space_;
+        this->space_ = elem.space_;
 
         if (copy_policy == CopyPolicy::deep)
         {
@@ -143,7 +140,7 @@ operator=(const SpaceElement<Space> &element)
 }
 
 
-
+#if 0
 template<class Space>
 inline
 auto
@@ -163,7 +160,7 @@ as_cartesian_grid_element_accessor() const -> const CartesianGridElement<dim> &
 {
     return static_cast<const CartesianGridElement<dim> &>(*this);
 }
-
+#endif
 
 #if 0
 template<class Space>
@@ -220,7 +217,9 @@ get_local_to_global(const std::string &dofs_property) const -> vector<Index>
     vector<Index> dofs_global;
     vector<Index> dofs_loc_to_patch;
     vector<Index> dofs_loc_to_elem;
-    space_->get_element_dofs(*this,dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
+    this->space_->get_element_dofs(
+    		this->as_cartesian_grid_element_accessor(),
+			dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
 
     return dofs_global;
 
@@ -238,7 +237,9 @@ get_local_to_patch(const std::string &dofs_property) const -> vector<Index>
     vector<Index> dofs_global;
     vector<Index> dofs_loc_to_patch;
     vector<Index> dofs_loc_to_elem;
-    space_->get_element_dofs(*this,dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
+    this->space_->get_element_dofs(
+    		this->as_cartesian_grid_element_accessor(),
+			dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
 
     return dofs_loc_to_patch;
 
@@ -251,8 +252,8 @@ auto
 SpaceElement<Space>::
 get_space() const -> std::shared_ptr<const Space>
 {
-    Assert(space_ != nullptr,ExcNullPtr());
-    return space_;
+    Assert(this->space_ != nullptr,ExcNullPtr());
+    return this->space_;
 }
 
 
