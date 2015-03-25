@@ -52,15 +52,13 @@ template<class Space, LAPack la_pack = LAPack::trilinos_epetra>
 std::shared_ptr<IgFunction<Space> >
 projection_l2(const std::shared_ptr<const typename Space::Func> function,
               std::shared_ptr<const Space> space,
-              const Quadrature<Space::dim> &quad)
+              const Quadrature<Space::dim> &quad,
+              const std::string &dofs_property = DofProperties::active)
 {
     using ProjFunc = IgFunction<Space>;
     std::shared_ptr<ProjFunc> projection;
 
     const auto &dof_distribution = *(space->get_dof_distribution());
-    const std::string dofs_filter =
-        dof_distribution.is_property_defined(DofProperties::active) ?
-        DofProperties::active : DofProperties::active;
 
     const auto space_manager =
         build_space_manager_single_patch<Space>(std::const_pointer_cast<Space>(space));
@@ -100,7 +98,7 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
 
         for (; elem != end; ++elem, ++f_elem)
         {
-            const int n_basis = elem->get_num_basis(dofs_filter);
+            const int n_basis = elem->get_num_basis(dofs_property);
             DenseVector loc_rhs(n_basis);
             DenseMatrix loc_mat(n_basis, n_basis);
 
@@ -111,7 +109,7 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
             loc_rhs = 0.;
 
             auto f_at_qp = f_elem->template get_values<0,dim>(0);
-            auto phi = elem->get_element_values(dofs_filter);
+            auto phi = elem->get_element_values(dofs_property);
 
             // computing the upper triangular part of the local matrix
             auto w_meas = elem->get_element_w_measures();
@@ -134,7 +132,7 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
                 for (int j = 0; j < i; ++j)
                     loc_mat(i, j) = loc_mat(j, i);
 
-            const auto elem_dofs = elem->get_local_to_global(dofs_filter);
+            const auto elem_dofs = elem->get_local_to_global(dofs_property);
             matrix.add_block(elem_dofs,elem_dofs,loc_mat);
             rhs.add_block(elem_dofs,loc_rhs);
         }
@@ -182,7 +180,7 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
             const auto &elem_ref = *elem;
             const auto &f_elem_ref = *elem;
 
-            const int n_basis = elem->get_num_basis(dofs_filter);
+            const int n_basis = elem->get_num_basis(dofs_property);
             DenseVector loc_rhs(n_basis);
             DenseMatrix loc_mat(n_basis, n_basis);
 
@@ -216,7 +214,7 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
             //---------------------------------------------------------------------------
 
 
-            auto phi = elem->get_element_values(dofs_filter);
+            auto phi = elem->get_element_values(dofs_property);
 
             // computing the upper triangular part of the local matrix
 //            auto w_meas = elem->template get_w_measures<dim>(0);
@@ -240,7 +238,7 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
                 for (int j = 0; j < i; ++j)
                     loc_mat(i, j) = loc_mat(j, i);
 
-            const auto elem_dofs = elem->get_local_to_global(dofs_filter);
+            const auto elem_dofs = elem->get_local_to_global(dofs_property);
             matrix.add_block(elem_dofs,elem_dofs,loc_mat);
             rhs.add_block(elem_dofs,loc_rhs);
         }
@@ -256,15 +254,13 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
                      tol,max_iter);
     solver.solve(matrix, rhs, sol);
 
-    const auto &active_dofs = space->get_dof_distribution()->get_dofs_id_same_property(DofProperties::active);
+    const auto &dofs = space->get_dof_distribution()->get_dofs_id_same_property(dofs_property);
 
 
-    return std::make_shared<ProjFunc>(
-               ProjFunc(std::const_pointer_cast<Space>(space),
-                        IgCoefficients(
-                            *space,
-                            DofProperties::active,
-                            sol.get_local_coefs(active_dofs))));
+    return ProjFunc::create(
+               std::const_pointer_cast<Space>(space),
+               IgCoefficients(*space,dofs_property,sol.get_local_coefs(dofs)),
+               dofs_property);
 }
 
 

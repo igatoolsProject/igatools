@@ -206,7 +206,7 @@ rebuild_after_insert_knots(
                                 quad);
 
     this->coeff_ = std::move(function_refined->coeff_);
-
+    this->property_ = DofProperties::active;
 
     //*/
 #if 0
