@@ -29,6 +29,42 @@ IGA_NAMESPACE_OPEN
 
 
 
+template <int dim, int range, int rank>
+ReferenceElement<dim, range, rank>::
+ReferenceElement(const std::shared_ptr<ConstSpace> space,
+                 const Index elem_index)
+    :
+    parent_t(space,elem_index)
+{
+    Assert(this->get_space() != nullptr,ExcNullPtr());
+
+    //----------------------------------------------------------------
+    comp_offset_[0] = 0;
+    for (int comp_id = 1; comp_id < Space::n_components; ++comp_id)
+        comp_offset_[comp_id] = comp_offset_[comp_id-1] +
+                                this->n_basis_direction_.get_component_size(comp_id-1);
+    //----------------------------------------------------------------
+};
+
+
+template <int dim, int range, int rank>
+ReferenceElement<dim, range, rank>::
+ReferenceElement(const std::shared_ptr<ConstSpace> space,
+                 const TensorIndex<dim> &elem_index)
+    :
+    ReferenceElement(space,space->get_grid()->tensor_to_flat(elem_index))
+{}
+
+
+template <int dim, int range, int rank>
+ReferenceElement<dim, range, rank>::
+ReferenceElement(const ReferenceElement<dim,range,rank> &elem,
+                 const iga::CopyPolicy &copy_policy)
+    :
+    parent_t(elem,copy_policy),
+    comp_offset_(elem.comp_offset_)
+{};
+
 
 template <int dim, int range, int rank>
 void
@@ -73,6 +109,17 @@ Conditional< deriv_order==0,
 
     return this->template get_values<deriv_order,dim>(0,dofs_property);
 }
+
+
+
+template <int dim, int range, int rank>
+auto
+ReferenceElement<dim, range, rank>::
+get_basis_offset() const -> OffsetTable
+{
+    return this->comp_offset_;
+}
+
 
 IGA_NAMESPACE_CLOSE
 

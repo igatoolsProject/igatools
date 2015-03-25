@@ -59,34 +59,22 @@ public:
     ReferenceElement() = delete;
 
     ReferenceElement(const ReferenceElement<dim,range,rank> &elem,
-                     const iga::CopyPolicy &copy_policy = CopyPolicy::deep)
-        :
-        parent_t(elem,copy_policy)
-    {};
+                     const iga::CopyPolicy &copy_policy = CopyPolicy::deep);
 
     /**
      * Constructs an accessor to element number index of a
      * ReferenceSpace space.
      */
     ReferenceElement(const std::shared_ptr<ConstSpace> space,
-                     const Index elem_index)
-        :
-        parent_t(space,elem_index)
-    {
-        Assert(this->get_space() != nullptr,ExcNullPtr());
-    };
+                     const Index elem_index);
 
     /**
      * Constructs an accessor to element number index of a
      * Reference space.
      */
     ReferenceElement(const std::shared_ptr<ConstSpace> space,
-                     const TensorIndex<dim> &elem_index)
-        :
-        parent_t(space,elem_index)
-    {
-        Assert(this->get_space() != nullptr,ExcNullPtr());
-    };
+                     const TensorIndex<dim> &elem_index);
+
 
     virtual ~ReferenceElement() = default;
 
@@ -186,6 +174,20 @@ public:
     {
         return this->template get_w_measures<dim>(0);
     }
+
+
+    using OffsetTable = typename Space::template ComponentContainer<int>;
+
+protected:
+    /** Basis function ID offset between the different components. */
+    OffsetTable comp_offset_;
+
+public:
+    // TODO (pauletti, Mar 20, 2015): NOT safe, maybe remove or...
+    /**
+     * Returns the basis function ID offset between the different components.
+     */
+    OffsetTable get_basis_offset() const;
 
 };
 

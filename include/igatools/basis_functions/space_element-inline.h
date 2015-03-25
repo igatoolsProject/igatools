@@ -63,10 +63,6 @@ SpaceElement(const std::shared_ptr<const Space> space,
             std::shared_ptr<Indexer>(new Indexer(n_basis_direction_[comp_id]));
     }
 
-    comp_offset_[0] = 0;
-    for (int comp_id = 1; comp_id < Space::n_components; ++comp_id)
-        comp_offset_[comp_id] = comp_offset_[comp_id-1] +
-                                n_basis_direction_.get_component_size(comp_id-1);
 }
 
 
@@ -91,8 +87,7 @@ SpaceElement(const SpaceElement<Space> &elem,
     CartesianGridElement<Space::dim>(elem,copy_policy),
     space_(elem.space_),
     n_basis_direction_(elem.n_basis_direction_),
-    basis_functions_indexer_(elem.basis_functions_indexer_),
-    comp_offset_(elem.comp_offset_)
+    basis_functions_indexer_(elem.basis_functions_indexer_)
 {
     Assert(space_ != nullptr,ExcNullPtr());
 
@@ -124,7 +119,6 @@ copy_from(const SpaceElement<Space> &elem,
         space_ = elem.space_;
         n_basis_direction_ = elem.n_basis_direction_;
         basis_functions_indexer_ = elem.basis_functions_indexer_;
-        comp_offset_ = elem.comp_offset_;
 
         if (copy_policy == CopyPolicy::deep)
         {
@@ -240,7 +234,7 @@ get_num_basis() const
     return n_basis_direction_.total_dimension();
 }
 
-
+#if 0
 template<class Space>
 inline
 auto
@@ -249,7 +243,7 @@ get_basis_offset() const -> ComponentContainer<int>
 {
     return comp_offset_;
 }
-
+#endif
 
 template<class Space>
 inline

@@ -504,13 +504,13 @@ public:
      * V = V1 x V2 x ... X Vn.
      */
     int get_num_basis(const int i) const;
-
+#if 0
     // TODO (pauletti, Mar 20, 2015): NOT safe, maybe remove or...
     /**
      * Returns the basis function ID offset between the different components.
      */
     ComponentContainer<int> get_basis_offset() const;
-
+#endif
     /**
      * Returns the global dofs of the local (non zero) basis functions
      * on the element.
@@ -570,8 +570,6 @@ protected:
     /** Hash table for fast conversion between flat-to-tensor basis function ids. */
     ComponentContainer<std::shared_ptr<CartesianProductIndexer<dim> > > basis_functions_indexer_;
 
-    /** Basis function ID offset between the different components. */
-    ComponentContainer<int> comp_offset_;
 
     /**
      * Base class for the cache of the element values and
