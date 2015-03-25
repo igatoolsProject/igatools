@@ -470,7 +470,7 @@ copy_to_inactive_components_values(const vector<Index> &inactive_comp,
     for (int comp : inactive_comp)
     {
         const auto act_comp = active_map[comp];
-        const auto n_basis_comp = elem_->get_num_basis(comp);
+        const auto n_basis_comp = elem_->get_num_basis_comp(comp);
         const Size act_offset = comp_offset[act_comp];
         const Size offset     = comp_offset[comp];
         for (Size basis_i = 0; basis_i < n_basis_comp;  ++basis_i)
@@ -505,7 +505,7 @@ copy_to_inactive_components(const vector<Index> &inactive_comp,
     for (int comp : inactive_comp)
     {
         const auto act_comp = active_map[comp];
-        const auto n_basis_comp = elem_->get_num_basis(comp);
+        const auto n_basis_comp = elem_->get_num_basis_comp(comp);
         const Size act_offset = comp_offset[act_comp];
         const Size offset     = comp_offset[comp];
         for (Size basis_i = 0; basis_i < n_basis_comp;  ++basis_i)
@@ -544,7 +544,7 @@ evaluate_bspline_values(
     for (int comp : elem_values.get_active_components_id())
     {
         auto &values = elem_values[comp];
-        const int n_basis_comp = elem_->get_num_basis(comp);
+        const int n_basis_comp = elem_->get_num_basis_comp(comp);
         const Size offset = comp_offset[comp];
 
         for (int func_id = 0; func_id < n_basis_comp; ++func_id)
@@ -601,7 +601,7 @@ evaluate_bspline_derivatives(
     for (int comp : elem_values.get_active_components_id())
     {
         auto &values = elem_values[comp];
-        const int n_basis_comp = elem_->get_num_basis(comp);
+        const int n_basis_comp = elem_->get_num_basis_comp(comp);
         const Size offset = comp_offset[comp];
 
         for (int func_id = 0; func_id < n_basis_comp; ++func_id)

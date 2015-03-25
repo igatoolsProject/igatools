@@ -50,19 +50,6 @@ SpaceElement(const std::shared_ptr<const Space> space,
 
     n_basis_direction_ = n_basis;
     //-------------------------------------------------
-
-
-
-
-    using Indexer = CartesianProductIndexer<dim>;
-    for (int comp_id : basis_functions_indexer_.get_active_components_id())
-    {
-        // creating the objects for fast conversion from flat-to-tensor indexing
-        // (in practice it is an hash-table from flat to tensor indices)
-        basis_functions_indexer_[comp_id] =
-            std::shared_ptr<Indexer>(new Indexer(n_basis_direction_[comp_id]));
-    }
-
 }
 
 
@@ -86,8 +73,7 @@ SpaceElement(const SpaceElement<Space> &elem,
     :
     CartesianGridElement<Space::dim>(elem,copy_policy),
     space_(elem.space_),
-    n_basis_direction_(elem.n_basis_direction_),
-    basis_functions_indexer_(elem.basis_functions_indexer_)
+    n_basis_direction_(elem.n_basis_direction_)
 {
     Assert(space_ != nullptr,ExcNullPtr());
 
@@ -118,7 +104,6 @@ copy_from(const SpaceElement<Space> &elem,
 
         space_ = elem.space_;
         n_basis_direction_ = elem.n_basis_direction_;
-        basis_functions_indexer_ = elem.basis_functions_indexer_;
 
         if (copy_policy == CopyPolicy::deep)
         {
@@ -232,26 +217,6 @@ SpaceElement<Space>::
 get_num_basis() const
 {
     return n_basis_direction_.total_dimension();
-}
-
-#if 0
-template<class Space>
-inline
-auto
-SpaceElement<Space>::
-get_basis_offset() const -> ComponentContainer<int>
-{
-    return comp_offset_;
-}
-#endif
-
-template<class Space>
-inline
-int
-SpaceElement<Space>::
-get_num_basis(const int i) const
-{
-    return n_basis_direction_[i].flat_size();
 }
 
 

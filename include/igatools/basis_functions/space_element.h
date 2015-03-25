@@ -495,22 +495,8 @@ public:
     Size get_num_basis(const std::string &dofs_property) const;
 
     Size get_num_basis() const;
-    // TODO (pauletti, Mar 20, 2015): NOT safe, maybe remove or...
-    /**
-     * Number of non-zero scalar basis functions associated
-     * with the i-th space component on the element.
-     * This makes sense as a reference B-spline space
-     * is only allowed to be of the cartesian product type
-     * V = V1 x V2 x ... X Vn.
-     */
-    int get_num_basis(const int i) const;
-#if 0
-    // TODO (pauletti, Mar 20, 2015): NOT safe, maybe remove or...
-    /**
-     * Returns the basis function ID offset between the different components.
-     */
-    ComponentContainer<int> get_basis_offset() const;
-#endif
+
+
     /**
      * Returns the global dofs of the local (non zero) basis functions
      * on the element.
@@ -565,10 +551,6 @@ private:
 protected:
     /** Number of scalar basis functions along each direction, for all space components. */
     typename Space::TensorSizeTable n_basis_direction_;
-
-
-    /** Hash table for fast conversion between flat-to-tensor basis function ids. */
-    ComponentContainer<std::shared_ptr<CartesianProductIndexer<dim> > > basis_functions_indexer_;
 
 
     /**

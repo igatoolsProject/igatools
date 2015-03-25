@@ -183,11 +183,27 @@ protected:
     OffsetTable comp_offset_;
 
 public:
-    // TODO (pauletti, Mar 20, 2015): NOT safe, maybe remove or...
     /**
      * Returns the basis function ID offset between the different components.
      */
     OffsetTable get_basis_offset() const;
+
+    /**
+     * Number of non-zero scalar basis functions associated
+     * with the i-th space component on the element.
+     * This makes sense as a reference B-spline space
+     * is only allowed to be of the cartesian product type
+     * V = V1 x V2 x ... X Vn.
+     */
+    int get_num_basis_comp(const int i) const;
+
+protected:
+    using Indexer = CartesianProductIndexer<dim>;
+    using IndexerPtr = std::shared_ptr<Indexer>;
+    using IndexerPtrTable = typename Space::template ComponentContainer<IndexerPtr>;
+
+    /** Hash table for fast conversion between flat-to-tensor basis function ids. */
+    IndexerPtrTable basis_functions_indexer_;
 
 };
 

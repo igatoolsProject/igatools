@@ -40,9 +40,20 @@ ReferenceElement(const std::shared_ptr<ConstSpace> space,
 
     //----------------------------------------------------------------
     comp_offset_[0] = 0;
-    for (int comp_id = 1; comp_id < Space::n_components; ++comp_id)
-        comp_offset_[comp_id] = comp_offset_[comp_id-1] +
-                                this->n_basis_direction_.get_component_size(comp_id-1);
+    for (int comp = 1; comp < Space::n_components; ++comp)
+        comp_offset_[comp] = comp_offset_[comp-1] +
+                             this->n_basis_direction_.get_component_size(comp-1);
+    //----------------------------------------------------------------
+
+
+    //----------------------------------------------------------------
+    for (int comp : basis_functions_indexer_.get_active_components_id())
+    {
+        // creating the objects for fast conversion from flat-to-tensor indexing
+        // (in practice it is an hash-table from flat to tensor indices)
+        basis_functions_indexer_[comp] =
+            std::shared_ptr<Indexer>(new Indexer(this->n_basis_direction_[comp]));
+    }
     //----------------------------------------------------------------
 };
 
@@ -62,7 +73,8 @@ ReferenceElement(const ReferenceElement<dim,range,rank> &elem,
                  const iga::CopyPolicy &copy_policy)
     :
     parent_t(elem,copy_policy),
-    comp_offset_(elem.comp_offset_)
+    comp_offset_(elem.comp_offset_),
+    basis_functions_indexer_(elem.basis_functions_indexer_)
 {};
 
 
@@ -111,6 +123,14 @@ Conditional< deriv_order==0,
 }
 
 
+
+template <int dim, int range, int rank>
+int
+ReferenceElement<dim, range, rank>::
+get_num_basis_comp(const int i) const
+{
+    return this->n_basis_direction_[i].flat_size();
+}
 
 template <int dim, int range, int rank>
 auto
