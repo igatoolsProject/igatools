@@ -42,7 +42,6 @@ SpaceManager()
     :
     is_spaces_insertion_open_(false),
     is_spaces_connectivity_open_(false),
-    space_dofs_offset_(0),
     dof_offsets_(1,0)
 {}
 
@@ -58,7 +57,7 @@ spaces_insertion_open()
 
 void
 SpaceManager::
-spaces_insertion_close(const bool automatic_dofs_renumbering)
+spaces_insertion_close()
 {
     Assert(is_spaces_insertion_open_ == true,ExcInvalidState());
 
@@ -74,29 +73,6 @@ spaces_insertion_close(const bool automatic_dofs_renumbering)
 
 }
 
-#if 0
-void
-SpaceManager::
-perform_space_dofs_renumbering()
-{
-    Assert(is_spaces_insertion_open_ == false,ExcInvalidState());
-
-    auto space_info_it = spaces_with_original_dofs_.begin();
-    while (space_info_it != spaces_with_original_dofs_.end())
-    {
-        auto space_info = (*space_info_it);
-
-        space_info->add_dofs_offset(space_dofs_offset_);
-
-        space_dofs_offset_ = space_info->get_max_dofs_id() + 1;
-
-        spaces_with_renumbered_dofs_.push_back(space_info);
-
-        //erase the renumbered space and move the iterator to the next space to renumber
-        space_info_it = spaces_with_original_dofs_.erase(space_info_it);
-    }
-}
-#endif
 
 
 void
@@ -190,19 +166,6 @@ SpaceInfo(const SpacePtrVariant &space,
     Assert(num_dofs_ > 0,ExcEmptyObject());
     Assert(elements_dofs_ != nullptr,ExcNullPtr());
     Assert(!elements_dofs_->empty(), ExcEmptyObject());
-}
-
-void
-SpaceManager::
-SpaceInfo::
-add_dofs_offset(const Index offset)
-{
-    Assert(offset >= 0,ExcLowerRange(offset,0));
-    min_dofs_id_ += offset;
-    max_dofs_id_ += offset;
-
-    for (Index &dof : dofs_view_)
-        dof += offset;
 }
 
 
