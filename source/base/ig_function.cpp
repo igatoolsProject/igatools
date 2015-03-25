@@ -20,6 +20,8 @@
 
 #include <igatools/base/ig_function.h>
 #include <igatools/base/function_element.h>
+#include <igatools/base/quadrature_lib.h>
+#include <igatools/basis_functions/space_tools.h>
 
 using std::shared_ptr;
 
@@ -27,7 +29,7 @@ IGA_NAMESPACE_OPEN
 
 template<class Space>
 IgFunction<Space>::
-IgFunction(std::shared_ptr<const Space> space,
+IgFunction(std::shared_ptr<Space> space,
            const CoeffType &coeff,
            const std::string &property)
     :
@@ -38,9 +40,7 @@ IgFunction(std::shared_ptr<const Space> space,
     elem_(space->begin()),
     space_filler_(space->create_elem_handler())
 {
-    Assert(space_ != nullptr,ExcNullPtr());
-    // space_->get_dof_distribution()->
-    //  Assert(!coeff_.empty(),ExcEmptyObject());
+    Assert(space_ != nullptr, ExcNullPtr());
 }
 
 
@@ -65,11 +65,17 @@ IgFunction(const self_t &fun)
 template<class Space>
 auto
 IgFunction<Space>::
-create(std::shared_ptr<const Space> space,
+create(std::shared_ptr<Space> space,
        const CoeffType &coeff,
        const std::string &property) ->  std::shared_ptr<self_t>
 {
-    return std::shared_ptr<self_t>(new self_t(space, coeff, property));
+    auto ig_func = std::shared_ptr<self_t>(new self_t(space, coeff,property));
+
+    Assert(ig_func != nullptr, ExcNullPtr());
+
+    ig_func->create_connection_for_insert_knots(ig_func);
+
+    return ig_func;
 }
 
 
@@ -89,6 +95,7 @@ reset(const ValueFlags &flag, const eval_pts_variant &eval_pts)
 }
 
 
+
 template<class Space>
 void
 IgFunction<Space>::
@@ -104,6 +111,7 @@ reset_selected_elements(
     reset_impl.elements_flat_id_ = &elements_flat_id;
     boost::apply_visitor(reset_impl, eval_pts);
 }
+
 
 
 template<class Space>
@@ -133,8 +141,15 @@ fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) -> voi
     fill_cache_impl.func_elem = &elem;
     fill_cache_impl.function = this;
 
-    auto loc_coeff =
-    coeff_.get_local_coefs(elem_->get_local_to_global(property_));
+
+    const auto elem_dofs = elem_->get_local_to_global(property_);
+    vector<Real> loc_coeff;
+    for (const auto &dof : elem_dofs)
+        loc_coeff.emplace_back(coeff_(dof));
+
+//    auto loc_coeff =
+//    coeff_.get_local_coefs(elem_->get_local_to_global(property_));
+
 
     fill_cache_impl.loc_coeff = &loc_coeff;
     fill_cache_impl.j = j;
@@ -169,10 +184,217 @@ auto
 IgFunction<Space>::
 operator +=(const self_t &fun) -> self_t &
 {
+    Assert(space_ == fun.space_,ExcMessage("Functions defined on different spaces."));
+
     coeff_ += fun.coeff_;
     return *this;
 }
 
+
+
+template<class Space>
+void
+IgFunction<Space>::
+rebuild_after_insert_knots(
+    const special_array<vector<Real>,dim> &knots_to_insert,
+    const CartesianGrid<dim> &grid_old)
+{
+    using std::const_pointer_cast;
+    auto function_previous_refinement = IgFunction<Space>::create(
+                                            const_pointer_cast<Space>(space_->get_space_previous_refinement()),
+                                            coeff_,
+                                            property_);
+
+    QGauss<dim> quad(space_->get_max_degree()+1);
+    auto function_refined = space_tools::projection_l2(
+                                function_previous_refinement,
+                                const_pointer_cast<const Space>(space_),
+                                quad);
+
+    this->coeff_ = std::move(function_refined->coeff_);
+    this->property_ = DofProperties::active;
+
+    //*/
+#if 0
+    auto ref_space = data_->ref_space_;
+
+    using bspline_space_t = BSplineSpace<RefSpace::dim,RefSpace::range,RefSpace::rank>;
+    const bspline_space_t &bspline_space = get_bspline_space(*ref_space);
+
+    auto knots_with_repetitions_pre_refinement = bspline_space.get_spline_space_previous_refinement()
+                                                 ->compute_knots_with_repetition(
+                                                     bspline_space.get_end_behaviour());
+    auto knots_with_repetitions = bspline_space.compute_knots_with_repetition(
+                                      bspline_space.get_end_behaviour());
+#endif
+
+
+#if 0
+    for (int direction_id = 0 ; direction_id < dim ; ++direction_id)
+    {
+        if (refinement_directions[direction_id])
+        {
+            // knots in the refined grid along the selected direction
+            vector<Real> knots_new = grid->get_knot_coordinates(direction_id);
+
+            // knots in the original (unrefined) grid along the selected direction
+            vector<Real> knots_old = grid_old->get_knot_coordinates(direction_id);
+
+            vector<Real> knots_added(knots_new.size());
+
+            // find the knots in the refined grid that are not present in the old grid
+            auto it = std::set_difference(
+                          knots_new.begin(),knots_new.end(),
+                          knots_old.begin(),knots_old.end(),
+                          knots_added.begin());
+
+            knots_added.resize(it-knots_added.begin());
+
+
+            for (int comp_id = 0 ; comp_id < space_dim ; ++comp_id)
+            {
+                const int p = ref_space->get_degree()[comp_id][direction_id];
+                const auto &U = knots_with_repetitions_pre_refinement[comp_id].get_data_direction(direction_id);
+                const auto &X = knots_added;
+                const auto &Ubar = knots_with_repetitions[comp_id].get_data_direction(direction_id);
+
+                const int m = U.size()-1;
+                const int r = X.size()-1;
+                const int a = space_tools::find_span(p,X[0],U);
+                const int b = space_tools::find_span(p,X[r],U)+1;
+
+                const int n = m-p-1;
+
+                const auto &Pw = data_->ctrl_mesh_[comp_id];
+                const auto old_sizes = Pw.tensor_size();
+                Assert(old_sizes[direction_id] == n+1,
+                       ExcDimensionMismatch(old_sizes[direction_id],n+1));
+
+
+                auto new_sizes = old_sizes;
+                new_sizes[direction_id] += r+1; // r+1 new weights in the refinement direction
+                Assert(new_sizes[direction_id] ==
+                       data_->ref_space_->get_num_basis(comp_id,direction_id),
+                       ExcDimensionMismatch(new_sizes[direction_id],
+                                            data_->ref_space_->get_num_basis(comp_id,direction_id)));
+
+                DynamicMultiArray<Real,dim> Qw(new_sizes);
+
+                for (Index j = 0 ; j <= a-p ; ++j)
+                {
+                    Qw.copy_slice(direction_id,j,
+                                  Pw.get_slice(direction_id,j));
+                }
+
+                for (Index j = b-1 ; j <= n ; ++j)
+                {
+                    Qw.copy_slice(direction_id,j+r+1,
+                                  Pw.get_slice(direction_id,j));
+                }
+
+                Index i = b + p - 1;
+                Index k = b + p + r;
+                for (Index j = r ; j >= 0 ; --j)
+                {
+                    while (X[j] <= U[i] && i > a)
+                    {
+                        Qw.copy_slice(direction_id,k-p-1,Pw.get_slice(direction_id,i-p-1));
+                        k = k-1;
+                        i = i-1;
+                    }
+                    Qw.copy_slice(direction_id,k-p-1,
+                                  Qw.get_slice(direction_id,k-p));
+
+                    for (Index l = 1 ; l <= p ; ++l)
+                    {
+                        Index ind = k-p+l;
+
+                        Real alfa = Ubar[k+l] - X[j];
+                        if (fabs(alfa) == 0.0)
+                        {
+                            Qw.copy_slice(direction_id,ind-1,Qw.get_slice(direction_id,ind));
+                        }
+                        else
+                        {
+                            alfa = alfa / (Ubar[k+l] - U[i-p+l]);
+
+                            Qw.copy_slice(direction_id,ind-1,
+                                          alfa  * Qw.get_slice(direction_id,ind-1) +
+                                          (1.0-alfa) * Qw.get_slice(direction_id,ind));
+                        }
+                    } // end loop l
+                    k = k-1;
+
+                } // end loop j
+
+                data_->ctrl_mesh_[comp_id] = Qw;
+                //*/
+            } // end loop comp_id
+        } // end if (refinement_directions[direction_id])
+
+    } // end loop direction_id
+
+
+
+    //----------------------------------
+    // copy the control mesh after the refinement
+    data_->control_points_.resize(data_->ref_space_->get_num_basis());
+
+    if (RefSpace::has_weights)
+    {
+#ifdef NURBS
+        const auto weights_after_refinement = get_weights_from_ref_space(*(data_->ref_space_));
+
+        Index ctrl_pt_id = 0;
+        for (int comp_id = 0 ; comp_id < space_dim ; ++comp_id)
+        {
+            const auto &ctrl_mesh_comp = data_->ctrl_mesh_[comp_id];
+            const auto &weights_after_refinement_comp = weights_after_refinement[comp_id];
+
+            const Size n_dofs_comp = data_->ref_space_->get_num_basis(comp_id);
+            for (Index loc_id = 0 ; loc_id < n_dofs_comp ; ++loc_id, ++ctrl_pt_id)
+            {
+                // if NURBS, transform the control points from  projective to euclidean coordinates
+                const Real &w = weights_after_refinement_comp[loc_id];
+
+                data_->control_points_[ctrl_pt_id] = ctrl_mesh_comp[loc_id] / w ;
+            }
+        }
+#endif
+    }
+    else
+    {
+        Index ctrl_pt_id = 0;
+        for (int comp_id = 0 ; comp_id < space_dim ; ++comp_id)
+        {
+            const auto &ctrl_mesh_comp = data_->ctrl_mesh_[comp_id];
+            const Size n_dofs_comp = data_->ref_space_->get_num_basis(comp_id);
+            for (Index loc_id = 0 ; loc_id < n_dofs_comp ; ++loc_id, ++ctrl_pt_id)
+                data_->control_points_[ctrl_pt_id] = ctrl_mesh_comp[loc_id];
+        }
+    }
+    //----------------------------------
+#endif
+}
+
+template<class Space>
+void
+IgFunction<Space>::
+create_connection_for_insert_knots(std::shared_ptr<self_t> ig_function)
+{
+    Assert(ig_function != nullptr, ExcNullPtr());
+    Assert(&(*ig_function) == &(*this), ExcMessage("Different objects."));
+
+    using SlotType = typename CartesianGrid<dim>::SignalInsertKnotsSlot;
+
+    auto func_to_connect =
+        std::bind(&self_t::rebuild_after_insert_knots,
+                  ig_function.get(),
+                  std::placeholders::_1,
+                  std::placeholders::_2);
+    this->functions_knots_refinement_.connect_insert_knots_function(
+        SlotType(func_to_connect).track_foreign(ig_function));
+}
 
 
 template<class Space>

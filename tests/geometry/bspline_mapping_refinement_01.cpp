@@ -17,34 +17,44 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-
 /*
+ *  Test the IgMapping class on Bspline space
+ *  The map is the identity of degree one.
  *
- *  Test for the evaluation of physical space basis functions
- *  values and gradients with an ig function for the map
- *  author:
- *  date: 2014-11-08
+ *  author: pauletti
+ *  date: 2013-10-04
  *
  */
 
 #include "../tests.h"
 
+#include <igatools/geometry/mapping.h>
+#include <igatools/geometry/mapping_element.h>
 #include <igatools/base/ig_function.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/physical_space.h>
-#include <igatools/basis_functions/physical_space_element.h>
-#include <igatools/basis_functions/phys_space_element_handler.h>
+#include <igatools/basis_functions/bspline_element.h>
+#include <igatools/base/function_element.h>
+#include <igatools/io/writer.h>
 
 
-template<int dim, int codim=0>
-auto
-create_function(shared_ptr<BSplineSpace<dim, dim + codim>> space)
+template <int dim, int codim=0>
+void bspline_map(const int deg = 1)
 {
-    using Space = ReferenceSpace<dim, dim + codim>;
-    using Function = IgFunction<Space>;
+    OUTSTART
 
-    vector<Real> control_pts(space->get_num_basis());
+    const int sub_dim = dim;
+    using Space = BSplineSpace<dim, dim+codim>;
+    using RefSpace = ReferenceSpace<dim, dim+codim>;
+    using Function = IgFunction<RefSpace>;
+    using Mapping   = Mapping<dim, codim>;
+
+    auto grid = CartesianGrid<dim>::create(2);
+    auto space = Space::create(deg, grid);
+
+    using CoeffType = typename Function::CoeffType;
+    CoeffType control_pts(space->get_num_basis());
+
     if (dim == 1)
     {
         int id = 0 ;
@@ -107,55 +117,60 @@ create_function(shared_ptr<BSplineSpace<dim, dim + codim>> space)
 
     }
 
-    return Function::create(space, IgCoefficients(*space,DofProperties::active,control_pts));
-}
+    auto F = Function::create(space, control_pts);
+    auto map = Mapping::create(F);
+
+    out.begin_item("IgFunction before h-refinement");
+    F->print_info(out);
+    out.end_item();
+    Writer<dim,codim> writer_func_unrefined(F,10);
+    writer_func_unrefined.save("func_unrefined_" + std::to_string(dim) + "d");
 
 
+    F->refine_h(2);
 
-template <int dim, int order = 0, int range=dim, int rank=1, int codim = 0>
-void elem_values(const int n_knots = 2, const int deg=1)
-{
-    const int k = dim;
-    using BspSpace = BSplineSpace<dim, range, rank>;
-    using RefSpace = ReferenceSpace<dim, range,rank>;
-    using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
-    using ElementHandler = typename Space::ElementHandler;
+    out.begin_item("IgFunction after h-refinement");
+    F->print_info(out);
+    out.end_item();
+    Writer<dim,codim> writer_func_refined(F,10);
+    writer_func_refined.save("func_refined_" + std::to_string(dim) + "d");
 
-    auto grid  = CartesianGrid<dim>::create(n_knots);
+    /*
+    auto quad = QGauss<dim>(3);
+    auto flag =  ValueFlags::value| ValueFlags::gradient
+                 | ValueFlags::hessian;
 
-    auto ref_space = BspSpace::create(deg, grid);
-    auto map_func = create_function(ref_space);
+    map->template reset<sub_dim>(flag, quad);
 
-    auto space = Space::create(ref_space, map_func);
+    auto elem = map->begin();
+    auto end  = map->end();
+    const int s_id = 0;
 
-    const int n_qp = 3;
-    auto quad = QGauss<k>(n_qp);
-
-    auto flag = ValueFlags::value |
-                ValueFlags::gradient |
-                ValueFlags::w_measure;
-
-    ElementHandler sp_values(space);
-    sp_values.template reset<k> (flag, quad);
-
-    auto elem = space->begin();
-    auto end = space->end();
-    sp_values.init_element_cache(elem);
+    map->template init_cache<sub_dim>(elem);
     for (; elem != end; ++elem)
     {
-        sp_values.fill_element_cache(elem);
-        elem->template get_values<0, k>(0,DofProperties::active).print_info(out);
-        elem->template get_values<1, k>(0,DofProperties::active).print_info(out);
-        elem->template get_w_measures<k>(0).print_info(out);
+        map->template fill_cache<sub_dim>(elem, s_id);
+        out << "Values (x1,x2,...):" << endl;
+        elem->template get_values<0,sub_dim>(s_id).print_info(out);
+        out << endl;
+        out << "Gradients:" << endl;
+        elem->template get_values<1,sub_dim>(s_id).print_info(out);
+        out << endl;
+    //        elem->template get_values<2,sub_dim>(s_id).print_info(out);
+    //        out << endl;
     }
+    //*/
+
+
+    OUTEND
 }
 
 int main()
 {
     out.depth_console(10);
 
-    elem_values<1>();
-    elem_values<2>();
-    elem_values<3>();
+    bspline_map<1>();
+    bspline_map<2>();
+    bspline_map<3>();
 
 }

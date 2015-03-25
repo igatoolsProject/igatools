@@ -165,7 +165,8 @@ void assemble_matrix(const int n_knots, const int deg)
         solution_coefs[i] = (*solution)(i);
 
     using IgFunc = IgFunction<RefSpace>;
-    auto solution_function = IgFunc::create(space,solution_coefs);
+    auto solution_function = IgFunc::create(
+                                 space,IgCoefficients(*space,DofProperties::active,solution_coefs));
     writer.template add_field<range,1>(solution_function, "solution");
     string filename = "poisson_problem-" + to_string(deg) + "-" + to_string(dim) + "d" ;
     writer.save(filename);

@@ -24,6 +24,8 @@
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
 #include <igatools/base/properties.h>
+#include <igatools/utils/vector.h>
+
 
 #include <set>
 #include <map>
@@ -91,6 +93,19 @@ public:
      * @note This function does not modify the container in any way.
      */
     bool empty() const noexcept;
+
+
+    /**
+     * Returns the properties defined.
+     */
+    vector<std::string> get_properties() const;
+
+
+    /**
+     * Add the @p offset value to the ids contained in the object.
+     * @param offset
+     */
+    void add_offset(const Index offset);
 
 private:
     using ContainerType = std::map<std::string,std::set<Index>>;

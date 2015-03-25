@@ -51,9 +51,7 @@ void bspline_map(const int deg = 1)
     auto grid = CartesianGrid<dim>::create(2);
     auto space = Space::create(deg, grid);
 
-    using CoeffType = typename Function::CoeffType;
-    CoeffType control_pts(space->get_num_basis());
-
+    vector<Real> control_pts(space->get_num_basis());
     if (dim == 1)
     {
         int id = 0 ;
@@ -116,7 +114,7 @@ void bspline_map(const int deg = 1)
 
     }
 
-    auto F = Function::create(space, control_pts);
+    auto F = Function::create(space, IgCoefficients(*space,DofProperties::active,control_pts));
     auto map = Mapping::create(F);
 
     auto quad = QGauss<dim>(3);

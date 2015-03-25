@@ -75,7 +75,6 @@ void StokesProblem<dim>::assemble_Bt()
     auto pre_el = pre_space_->begin();
     auto end_el = vel_space_->end();
 
-
     vel_sp_values->init_element_cache(vel_el);
     pre_sp_values->init_element_cache(pre_el);
 
@@ -108,9 +107,17 @@ void StokesProblem<dim>::assemble_Bt()
                                     * w_meas[qp];
             } // end loop j
         } // end loop i
-        vector<Index> vel_loc_dofs = vel_el->get_local_to_global(DofProperties::active);
-        vector<Index> pre_loc_dofs = pre_el->get_local_to_global(DofProperties::active);
-        Bt_->add_block(vel_loc_dofs, pre_loc_dofs, loc_mat);
+        const auto vel_dofs = vel_el->get_local_to_global(DofProperties::active);
+        const auto pre_dofs = pre_el->get_local_to_global(DofProperties::active);
+        /*
+        out.begin_item("vel_dofs");
+        vel_dofs.print_info(out);
+        out.end_item();
+        out.begin_item("pre_dofs");
+        pre_dofs.print_info(out);
+        out.end_item();
+        //*/
+        Bt_->add_block(vel_dofs, pre_dofs, loc_mat);
 
         out << loc_mat << endl;
     }
@@ -195,8 +202,6 @@ StokesProblem(const int deg, const int n_knots)
 #endif
 
     Bt_ = Matrix<la_pack>::create(space_manager);
-
-
 }
 
 

@@ -21,6 +21,7 @@
 
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/base/array_utils.h>
+#include <igatools/utils/vector_tools.h>
 
 using std::unique_ptr;
 using std::shared_ptr;
@@ -51,14 +52,6 @@ SplineSpace(const DegreeTable &deg,
                                  periodic_(periodic)
 {
     this->init();
-
-
-#if 0
-    // create a signal and a connection for the grid refinement
-    this->connect_refinement_h_function(
-        std::bind(&SplineSpace<dim,range,rank>::refine_h_after_grid_refinement, this,
-                  std::placeholders::_1,std::placeholders::_2));
-#endif
 }
 
 
@@ -74,7 +67,7 @@ create(const DegreeTable &deg,
     auto sp = std::shared_ptr<SpSpace>(new SpSpace(deg, knots,interior_mult,periodic));
     Assert(sp != nullptr, ExcNullPtr());
 
-    sp->create_connection_for_h_refinement(sp);
+    sp->create_connection_for_insert_knots(sp);
 
     return sp;
 }
@@ -138,42 +131,16 @@ init()
 template<int dim, int range, int rank>
 void
 SplineSpace<dim, range, rank>::
-refine_h_after_grid_refinement(
-    const std::array<bool,dim> &refinement_directions,
-    const GridType &grid_old)
+rebuild_after_insert_knots(
+    const special_array<vector<Real>,dim> &knots_to_insert,
+    const CartesianGrid<dim> &old_grid)
 {
-    Assert(this->get_grid()->get_grid_pre_refinement()!=nullptr,ExcNullPtr());
-    auto grid_pre_refinement = const_pointer_cast<CartesianGrid<dim>>(this->get_grid()->get_grid_pre_refinement());
+    const auto refined_grid = this->get_grid();
+    auto grid_pre_refinement =
+        const_pointer_cast<CartesianGrid<dim>>(refined_grid->get_grid_pre_refinement());
 
+    Assert(&(*grid_pre_refinement) == &old_grid,ExcMessage("Different grids."));
 
-    //------------------------------------------------------------------------------------------
-    // check if the multiplicity of the new knot lines is compatible with the minimum degree of the space --- begin
-    std::array<int,dim> mult_new_knot_lines;
-    for (int dir = 0 ; dir < dim ; ++dir)
-        mult_new_knot_lines[dir] = 1;
-
-#ifndef NDEBUG
-//    const auto &interior_mult = const_cast<MultiplicityTable &>(*this->get_interior_mult());
-    for (int dir = 0; dir < dim; ++dir)
-    {
-        int min_degree = std::numeric_limits<int>::max();
-        for (int comp_id : interior_mult_.get_active_components_id())
-        {
-            const auto &degree_comp = this->get_degree()[comp_id];
-            min_degree = std::min(min_degree,degree_comp[dir]);
-
-            Assert(mult_new_knot_lines[dir] > 0 && mult_new_knot_lines[dir] <= min_degree,
-                   ExcIndexRange(mult_new_knot_lines[dir],1,min_degree+1))
-        }
-    }
-#endif
-    // check if the multiplicity of the new knot lines is compatible with the minimum degree of the space --- end
-    //------------------------------------------------------------------------------------------
-
-    /*
-        shared_ptr<const MultiplicityTable> interior_mult_prev_refinement =
-            make_shared<const MultiplicityTable>(MultiplicityTable(*this->get_interior_mult()));
-    //*/
     spline_space_previous_refinement_ =
         make_shared<const SplineSpace<dim,range,rank> >(
             SplineSpace<dim,range,rank>(
@@ -181,53 +148,96 @@ refine_h_after_grid_refinement(
                 grid_pre_refinement,
                 interior_mult_));
 
-    for (const auto direction_id : Topology::active_directions)
+
+    const auto &old_unique_knots = old_grid.get_knot_coordinates();
+
+#ifndef NDEBUG
+    //---------------------------------------------------------------------------------------
+    // check that the new knots are internal to the grid --- begin
+    for (const auto dir : Topology::active_directions)
     {
-        if (refinement_directions[direction_id])
+        const auto &knots_dir = old_unique_knots.get_data_direction(dir);
+
+        for (const auto &knt_value : knots_to_insert[dir])
         {
-            // knots in the refined grid along the selected direction
-            vector<Real> knots_new = this->get_grid()->get_knot_coordinates(direction_id);
-            const int n_elements_new = knots_new.size() - 1;
+            Assert(knt_value > knots_dir.front() && knt_value < knots_dir.back(),
+                   ExcMessage("The knot value" + std::to_string(knt_value) +
+                              " inserted along the direction " + std::to_string(dir) +
+                              " is not contained in the open interval (" +
+                              std::to_string(knots_dir.front()) + " , " +
+                              std::to_string(knots_dir.back()) + ")"));
+        }
+    }
+    // check that the new knots are internal to the grid --- end
+    //---------------------------------------------------------------------------------------
+#endif
 
-            // knots in the original (unrefined) grid along the selected direction
-            vector<Real> knots_old = grid_old.get_knot_coordinates(direction_id);
-            const int n_elements_old = knots_old.size() - 1;
 
-            Assert(n_elements_new % n_elements_old == 0,
-                   ExcMessage("The number of new elements along one direction is not an integer multiple of the number of old elements."))
-            const int refine_factor = n_elements_new / n_elements_old;
-            const int n_extra_multiplicities = refine_factor - 1;
+    //---------------------------------------------------------------------------------------
+    // build the new internal knots with repetitions --- begin
+    for (const auto comp : components)
+    {
+        const auto &interior_mult_comp = spline_space_previous_refinement_->interior_mult_[comp];
 
-            vector<Real> knots_added(knots_new.size());
+        for (const auto dir : Topology::active_directions)
+        {
+            const auto &old_unique_knots_dir = old_unique_knots.get_data_direction(dir);
+            const auto &interior_mult_comp_dir = interior_mult_comp.get_data_direction(dir);
 
-            // find the knots in the refined grid that are not present in the old grid
-            auto it = std::set_difference(
-                          knots_new.begin(),knots_new.end(),
-                          knots_old.begin(),knots_old.end(),
-                          knots_added.begin());
+            const int n_internal_knots_old = old_unique_knots_dir.size() - 2;
+            Assert(n_internal_knots_old == interior_mult_comp_dir.size(),
+                   ExcDimensionMismatch(n_internal_knots_old,interior_mult_comp_dir.size()));
 
-            knots_added.resize(it-knots_added.begin());
-
-//            auto &interior_mult = const_cast<MultiplicityTable &>(*this->get_interior_mult());
-            for (int comp_id : interior_mult_.get_active_components_id())
+            vector<Real> new_internal_knots(knots_to_insert[dir]);
+            for (int i = 0 ; i < n_internal_knots_old ; ++i)
             {
-                //--------------------------------------------------------
-                // creating the new multiplicity
-                const vector<int> &mult_old = interior_mult_[comp_id].get_data_direction(direction_id);
+                new_internal_knots.insert(new_internal_knots.end(),
+                                          interior_mult_comp_dir[i],
+                                          old_unique_knots_dir[i+1]);
+            }
+            std::sort(new_internal_knots.begin(),new_internal_knots.end());
 
-                vector<int> mult_new(n_extra_multiplicities,mult_new_knot_lines[direction_id]);
-                for (const int &m : mult_old)
-                {
-                    mult_new.push_back(m); // adding the old multiplicity value
+            vector<Real> new_internal_knots_unique;
+            vector<int> new_internal_mult_dir;
+            vector_tools::count_and_remove_duplicates(
+                new_internal_knots,
+                new_internal_knots_unique,
+                new_internal_mult_dir);
 
-                    mult_new.insert(mult_new.end(),n_extra_multiplicities,mult_new_knot_lines[direction_id]); // adding the new multiplicity values
-                }
+#ifndef NDEBUG
+            //---------------------------------------------------------------------------------------
+            // check that the new unique knots are the same of the new grid --- begin
+            const auto &unique_knots_dir_refined_grid = refined_grid->get_knot_coordinates(dir);
 
-                interior_mult_[comp_id].copy_data_direction(direction_id,mult_new);
-                //--------------------------------------------------------
-            } // end loop comp_id
-        } // end if(refinement_directions[direction_id])
-    } // end loop direction_id
+            const int n_internal_knots_unique_new = unique_knots_dir_refined_grid.size() - 2;
+            Assert(n_internal_knots_unique_new == new_internal_knots_unique.size(),
+                   ExcDimensionMismatch(n_internal_knots_unique_new,new_internal_knots_unique.size()));
+            for (int i = 0 ; i < n_internal_knots_unique_new ; ++i)
+            {
+                Assert(new_internal_knots_unique[i] == unique_knots_dir_refined_grid[i+1],
+                       ExcMessage(
+                           "The knot value " + std::to_string(new_internal_knots_unique[i]) +
+                           " is not present along the direction " + std::to_string(dir) +
+                           " of the refined grid."));
+            }
+            // check that the new unique knots are the same of the new grid --- end
+            //---------------------------------------------------------------------------------------
+
+
+            //---------------------------------------------------------------------------------------
+            // check that the multiplicity is compatible with the degree --- begin
+            for (const auto mult : new_internal_mult_dir)
+                Assert(mult <= deg_[comp][dir],ExcIndexRange(mult,1,deg_[comp][dir]+1))
+
+                // check that the multiplicity is compatible with the degree --- end
+                //---------------------------------------------------------------------------------------
+#endif
+
+                interior_mult_[comp].copy_data_direction(dir,new_internal_mult_dir);
+        }
+    }
+    // build the new internal knots with repetitions --- end
+    //---------------------------------------------------------------------------------------
 
     this->init();
 }
@@ -510,23 +520,24 @@ get_multiplicity_from_regularity(const InteriorReg reg,
     return res;
 }
 
+
 template<int dim, int range, int rank>
 void
 SplineSpace<dim, range, rank>::
-create_connection_for_h_refinement(std::shared_ptr<SplineSpace<dim,range,rank>> space)
+create_connection_for_insert_knots(std::shared_ptr<SplineSpace<dim,range,rank>> space)
 {
     Assert(space != nullptr, ExcNullPtr());
+    Assert(&(*space) == &(*this), ExcMessage("Different objects."));
 
-    auto refinement_func_spline_space =
-        std::bind(&SplineSpace<dim,range,rank>::refine_h_after_grid_refinement,
+    auto func_to_connect =
+        std::bind(&SplineSpace<dim,range,rank>::rebuild_after_insert_knots,
                   space.get(),
                   std::placeholders::_1,
                   std::placeholders::_2);
 
-    using SlotType = typename CartesianGrid<dim>::SignalRefineSlot;
-    this->connect_refinement_h_function(
-        SlotType(refinement_func_spline_space).track_foreign(space));
-
+    using SlotType = typename CartesianGrid<dim>::SignalInsertKnotsSlot;
+    this->connect_insert_knots_function(
+        SlotType(func_to_connect).track_foreign(space));
 }
 
 template<int dim, int range, int rank>

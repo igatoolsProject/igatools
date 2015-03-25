@@ -27,7 +27,8 @@ template<int dim_, int codim_, int range_, int rank_ >
 Function<dim_, codim_, range_, rank_ >::
 Function(std::shared_ptr<GridType> grid)
     :
-    GridElementHandler<dim_>(grid)
+    GridElementHandler<dim_>(grid),
+    functions_knots_refinement_(grid)
 {}
 
 

@@ -65,13 +65,9 @@ using PhysSpacePtr = std::shared_ptr<PhysicalSpace<dim,range,rank,codim,type>>;
  *      The purpose of this phase is to populate the SpaceManager with the spaces that must handle
  *      and coordinate. This phase starts with the execution function spaces_insertion_open() and it is
  *      concluded after the execution of the function spaces_insertion_close().
- *      Between the execution of these two functions, the spaces are added to the SpaceManager with
- *      the function add_space().
- *      The function spaces_insertion_close() has an (optional) input argument that is used to
- *      choose if the global dofs of the spaces must keep the original numbering or must be renumbered
- *      in a way that no (global) dof id is used in different spaces (this is the default behaviour).
- *      The "no-renumbering" option can be useful if the global dof numbering needs to be kept
- *      (for any reason).
+ *      Between the execution of these two functions, the spaces are added to the SpaceManager
+ *      (and their dofs renumbered) with the function add_space().
+ *      The renumbering is made in ascending order using an offset counter from the previous spaces.
  *      @code{.cpp}
         SpaceManager sp_manager;
 
@@ -79,13 +75,12 @@ using PhysSpacePtr = std::shared_ptr<PhysicalSpace<dim,range,rank,codim,type>>;
         sp_manager.spaces_insertion_open(); // starts the spaces insertion phase (phase 1)
 
         sp_manager.add_space(space_0); // adds space_0
-        sp_manager.add_space(space_1); // adds space_1
-        sp_manager.add_space(space_2); // adds space_2
+        sp_manager.add_space(space_1); // adds space_1 and renumbers its dofs
+        sp_manager.add_space(space_2); // adds space_2 and renumbers its dofs
         ...
         sp_manager.add_space(space_last);  // adds space_last
 
-        sp_manager.spaces_insertion_close(); // ends the spaces insertion phase (phase 1) and renumbers the global dof id
-
+        sp_manager.spaces_insertion_close(); // ends the spaces insertion phase (phase 1)
         @endcode
  *
  *      <em>After this phase is not possible to insert any new space to the SpaceManager.</em>
@@ -325,15 +320,8 @@ public:
 
     /**
      * Sets the SpaceManager in a state that cannot receive any new space.
-     *
-     * If the input argument @p automatic_dofs_renumbering is set to TRUE (the default value)
-     * then the dofs in each space are renumbered by the SpaceManager.
-     * The renumbering is made in ascending order processing the dofs space views as inserted
-     * using the function add_dofs_space_view.
-     *
-     * If the input argument @p automatic_dofs_renumbering is set to FALSE, no renumbering is performed.
      */
-    void spaces_insertion_close(const bool automatic_dofs_renumbering = true);
+    void spaces_insertion_close();
 
 
     /**
@@ -631,10 +619,6 @@ private:
                               const bool is_physical_space) const ;
 
 
-        /**
-         * Adds an @p offset to all dofs present in the space.
-         */
-        void add_dofs_offset(const Index offset);
 
         /**
          * Return an object containing a variant of a shared_pointer pointing
@@ -693,7 +677,8 @@ private:
          * View of the dofs ids active on the space.
          */
         DofsView dofs_view_;
-        std::set<Index> dofs_;
+        const std::set<Index> &dofs_;
+
         /**
          * Map of size equal to the number of elements in the single-patch space,
          * for which each entry is a view of the global dofs ids active on the element.
@@ -701,24 +686,6 @@ private:
          * The std::map key represent the element flat-id for which we store the dofs view.
          */
         std::shared_ptr<const ElemsDofs> elements_dofs_;
-
-
-
-
-        std::set<Index> inactive_dofs_;
-
-    public:
-
-        void set_inactive_dofs(const std::set<Index> &inactive_dofs)
-        {
-            inactive_dofs_ = inactive_dofs;
-        }
-
-        const std::set<Index> &get_inactive_dofs() const
-        {
-            return inactive_dofs_;
-        }
-
     };
 
 public:
@@ -779,23 +746,9 @@ private:
 
 
 
-    /** @name Memebr variables used to keep track of dofs renumbering */
-    ///@{
-    /** List of spaces that have the original global dofs (after the space creation). */
-    std::list<SpaceInfoPtr> spaces_with_original_dofs_;
 
-    /** List of spaces that have the global dofs renumbered. */
-    std::list<SpaceInfoPtr> spaces_with_renumbered_dofs_;
-    ///@}
 
-    /**
-     * This function renumber the dofs of the spaces that are in the list spaces_with_original_dofs_
-     * and then put the renumbered spaces in the list spaces_with_renumbered_dofs_
-     */
-    void perform_space_dofs_renumbering();
-
-    Index space_dofs_offset_;
-
+    vector<Index> dof_offsets_;
 
     class SpacesConnection
     {
@@ -1043,19 +996,28 @@ add_space(std::shared_ptr<Space> space,
 #endif
 
     //------------------------------------------------------------------------
-    const auto &dof_distribution = *(space->get_dof_distribution());
+    using SpaceNonConst = typename std::remove_const<Space>::type;
+    auto &dof_distribution = *(std::const_pointer_cast<SpaceNonConst>(space)->get_dof_distribution());
+
+    // renumbering the dofs in the space
+    dof_distribution.add_dofs_offset(dof_offsets_.back());
+    dof_offsets_.emplace_back(dof_distribution.get_max_dof_id()+1);
 
 //    const std::string dofs_filter =
 //        dof_distribution.is_property_defined(DofProperties::active) ?
 //        DofProperties::active : DofProperties::active;
 
     std::shared_ptr<ElemsDofs> elements_dofs(new ElemsDofs);
+    /*
     auto elem = space->begin();
     const auto elem_end = space->end();
     for (; elem != elem_end ; ++elem)
         (*elements_dofs)[elem->get_flat_index()] = elem->get_local_to_global(dofs_filter);
-    auto dofs = dof_distribution.get_dofs_id_same_property(dofs_filter);
+    //*/
+    for (const auto &elem : *space)
+        (*elements_dofs)[elem.get_flat_index()] = elem.get_local_to_global(dofs_filter);
 
+    const auto &dofs = dof_distribution.get_dofs_id_same_property(dofs_filter);
     auto space_info = std::shared_ptr<SpaceInfo>(
                           new SpaceInfo(space,
                                         space->get_space_id(),
@@ -1076,7 +1038,7 @@ add_space(std::shared_ptr<Space> space,
 
     spaces_info_[space_info->get_space_id()] = space_info;
 
-    spaces_with_original_dofs_.push_back(space_info);
+//    spaces_with_original_dofs_.push_back(space_info);
     //---------------------------------------------------------------------------------------------
 }
 

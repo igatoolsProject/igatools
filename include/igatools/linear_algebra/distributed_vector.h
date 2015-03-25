@@ -27,7 +27,7 @@
 #include <igatools/utils/vector.h>
 
 #include <igatools/linear_algebra/dense_vector.h>
-
+#include <igatools/base/ig_function.h>
 
 #ifdef USE_TRILINOS
 #include <igatools/linear_algebra/trilinos_tools.h>
@@ -105,12 +105,12 @@ public:
     /**
      * Copy assignment operator. Not allowed to be used.
      */
-    VectorTrilinos<trilinos_impl> &operator=(const VectorTrilinos<trilinos_impl> &matrix) = delete;
+    VectorTrilinos<trilinos_impl> &operator=(const VectorTrilinos<trilinos_impl> &vector) = delete;
 
     /**
      * Move assignment operator. Not allowed to be used.
      */
-    VectorTrilinos<trilinos_impl> &operator=(VectorTrilinos<trilinos_impl> &&matrix) = delete;
+    VectorTrilinos<trilinos_impl> &operator=(VectorTrilinos<trilinos_impl> &&vector) = default;
     ///@}
 
 
@@ -188,7 +188,7 @@ public:
      * dof numbering provided from some external library.
      * All entries are set to zero.
      */
-    Vector(const vector<Index> &dof_ids,CommPtr comm = Teuchos::createSerialComm<int>());
+    Vector(const std::set<Index> &dof_ids,CommPtr comm = Teuchos::createSerialComm<int>());
 
     Vector(const MapPtr map);
 
@@ -240,7 +240,7 @@ public:
      * dof numbering provided from some external library, IRIT as an example.
      * Initializing all entries to zero.
      */
-    static std::shared_ptr<self_t> create(const vector<Index> &dof_ids);
+    static std::shared_ptr<self_t> create(const std::set<Index> &dof_ids);
     ///@}
 
 
@@ -308,11 +308,11 @@ public:
 
 
     /**
-     * Returns the local coefficients of the distributed vector,
-     * from the vector of local-to-global indices.
+     * Returns the coefficients of the distributed vector associated with the global indices
+     * @p global_ids.
      */
     vector<Real>
-    get_local_coefs(const vector<Index> &local_to_global_ids) const;
+    get_local_coefs(const std::set<Index> &global_ids) const;
 
     /**
      * Print the content of the vector, mostly for debug purposes.
@@ -365,7 +365,7 @@ public:
      * dof numbering provided from some external library.
      * All entries are set to zero.
      */
-    Vector(const vector<Index> &dof_ids, CommPtr comm = Teuchos::rcp(new Epetra_SerialComm()));
+    Vector(const std::set<Index> &dof_ids, CommPtr comm = Teuchos::rcp(new Epetra_SerialComm()));
 
     Vector(const vector<Real> &, CommPtr comm = Teuchos::rcp(new Epetra_SerialComm()));
 
@@ -419,7 +419,7 @@ public:
      * dof numbering provided from some external library, IRIT as an example.
      * Initializing all entries to zero.
      */
-    static std::shared_ptr<self_t> create(const vector<Index> &dof_ids);
+    static std::shared_ptr<self_t> create(const std::set<Index> &dof_ids);
     ///@}
 
 
@@ -499,11 +499,11 @@ public:
     void clear();
 
     /**
-     * Returns the local coefficients of the distributed vector,
-     * from the vector of local-to-global indices.
+     * Returns the coefficients of the distributed vector associated with the global indices
+     * @p global_ids.
      */
     vector<Real>
-    get_local_coefs(const vector<Index> &local_to_global_ids) const;
+    get_local_coefs(const std::set<Index> &global_ids) const;
 
 
     /**
@@ -516,7 +516,7 @@ public:
     //TODO (pauletti, Mar 23, 2015): should be an external functione
     // with the following prototype
     //IgCoefficient get_as_ig_coefficients(const SpaceInfo &) const;
-    const self_t &as_ig_fun_coefficients() const;
+    const  IgCoefficients as_ig_fun_coefficients() const;
 };
 
 

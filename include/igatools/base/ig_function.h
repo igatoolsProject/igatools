@@ -23,11 +23,102 @@
 
 #include <igatools/base/function.h>
 #include <igatools/basis_functions/spline_space.h>
-#include <igatools/linear_algebra/distributed_vector.h>
 
 IGA_NAMESPACE_OPEN
 
-using IgCoefficient = Vector<LAPack::trilinos_epetra>;
+class IgCoefficients : public std::map<Index,Real>
+{
+public:
+    using std::map<Index,Real>::map;
+
+    IgCoefficients(const std::set<Index> &global_dofs, const vector<Real> &coeffs)
+    {
+        Assert(Index(global_dofs.size()) == coeffs.size(),
+               ExcDimensionMismatch(global_dofs.size(),coeffs.size()));
+
+        int i = 0;
+        for (const auto dof : global_dofs)
+            (*this)[dof] = coeffs[i++];
+    }
+
+    template <class Space>
+    IgCoefficients(
+        const Space &space,
+        const std::string &dofs_property,
+        const vector<Real> &coeffs)
+        :
+        IgCoefficients(space.get_dof_distribution()->get_dofs_id_same_property(dofs_property),coeffs)
+    {}
+
+    template <class Space>
+    IgCoefficients(
+        const Space &space,
+        const std::string &dofs_property)
+        :
+        IgCoefficients(
+            space.get_dof_distribution()->get_dofs_id_same_property(dofs_property),
+            vector<Real>(space.get_dof_distribution()->
+                         get_dofs_id_same_property(dofs_property).size(),0.0))
+    {}
+
+
+    Real &operator()(const Index &global_dof)
+    {
+#ifdef NDEBUG
+        return (*this)[global_dof];
+#else
+        return (*this).at(global_dof);
+#endif
+    }
+
+    const Real &operator()(const Index &global_dof) const
+    {
+#ifdef NDEBUG
+        return (*this)[global_dof];
+#else
+        return (*this).at(global_dof);
+#endif
+    }
+
+
+    Size size() const
+    {
+        return std::map<Index,Real>::size();
+    }
+
+    IgCoefficients &operator+=(const IgCoefficients &coeffs)
+    {
+        Assert(this->size() == coeffs.size(),ExcDimensionMismatch(this->size(),coeffs.size()));
+#ifdef NDEBUG
+        for (const auto &c : coeffs)
+            (*this)[c.first] += c.second;
+#else
+        for (const auto &c : coeffs)
+            (*this).at(c.first) += c.second;
+#endif
+
+        return *this;
+    }
+
+    vector<Real> get_local_coeffs(const vector<Index> &elem_dofs) const
+    {
+
+       vector<Real> loc_coeff;
+       for (const auto &dof : elem_dofs)
+           loc_coeff.emplace_back((*this)(dof));
+       return  loc_coeff;
+    }
+
+    void print_info(LogStream &out) const
+    {
+        int i = 0;
+        for (const auto &c : (*this))
+        {
+            out << "coeff[local_id=" << i << ", global_id=" << c.first << "] = " << c.second << std::endl;
+            ++i;
+        }
+    }
+};
 
 template<class Space>
 class IgFunction :
@@ -40,7 +131,8 @@ public:
     static const int range = Space::range;
     static const int rank = Space::rank;
 
-    using CoeffType = IgCoefficient;
+    using CoeffType = IgCoefficients;
+
 
 private:
     using base_t = Function<dim, codim, range, rank>;
@@ -53,9 +145,8 @@ private:
     }
 
 public:
-
     //TODO (pauletti, Mar 23, 2015): should we make this private?
-    IgFunction(std::shared_ptr<const Space> space,
+    IgFunction(std::shared_ptr<Space> space,
                const CoeffType &coeff,
                const std::string &property = DofProperties::active);
 
@@ -77,7 +168,7 @@ public:
 
 public:
     static std::shared_ptr<self_t>
-    create(std::shared_ptr<const Space> space, const CoeffType &coeff,
+    create(std::shared_ptr<Space> space, const CoeffType &coeff,
            const std::string &property = DofProperties::active);
 
 
@@ -113,7 +204,7 @@ public:
 
 private:
 
-    std::shared_ptr<const Space> space_;
+    std::shared_ptr<Space> space_;
 
     CoeffType coeff_;
 
@@ -196,6 +287,15 @@ private:
     ResetDispatcher reset_impl;
     InitCacheDispatcher init_cache_impl;
     FillCacheDispatcher fill_cache_impl;
+
+
+    void create_connection_for_insert_knots(std::shared_ptr<self_t> ig_function);
+
+    void rebuild_after_insert_knots(
+        const special_array<vector<Real>,dim> &knots_to_insert,
+        const CartesianGrid<dim> &old_grid);
+
+
 };
 
 IGA_NAMESPACE_CLOSE

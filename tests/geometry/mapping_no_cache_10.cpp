@@ -52,9 +52,9 @@ void ig_mapping(const int deg = 1)
     auto grid = CartesianGrid<dim>::create(3);
 
     auto space = Space::create(deg, grid);
-    typename Function::CoeffType coeff(space->get_num_basis());
+    vector<Real> coeff(space->get_num_basis());
     coeff[0] = 1.;
-    auto F = Function::create(space, coeff);
+    auto F = Function::create(space, IgCoefficients(*space,DofProperties::active,coeff));
 
     auto map = Mapping::create(F);
 

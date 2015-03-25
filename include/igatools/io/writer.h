@@ -55,7 +55,7 @@ public:
     Writer(const Writer<dim,codim,T> &writer) = delete;
 
 
-    Writer(const std::shared_ptr<const CartesianGrid<dim> > grid);
+    Writer(const std::shared_ptr<CartesianGrid<dim> > grid);
 
 
     Writer(const std::shared_ptr<const MapFunction<dim,dim+codim>> map,

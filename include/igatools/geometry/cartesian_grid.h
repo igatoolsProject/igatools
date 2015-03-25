@@ -24,6 +24,7 @@
 #include <igatools/base/config.h>
 #include <igatools/base/tensor.h>
 #include <igatools/base/logstream.h>
+#include <igatools/utils/array.h>
 #include <igatools/utils/cartesian_product_array.h>
 #include <igatools/utils/dynamic_multi_array.h>
 #include <igatools/geometry/unit_element.h>
@@ -503,6 +504,26 @@ public:
     std::map<ElementIterator, vector<int> >
     find_elements_of_points(const ValueVector<Points<dim_>> &points) const;
 
+    /**
+     * Given a point, this function return the id of the
+     * elements that intersects with the point.
+     *
+     * @note If the point is lying exactly on knot line(s),
+     * then the point can have intersection with multiple elements.
+     */
+    vector<Index>
+    find_elements_id_of_point(const Points<dim_> &point) const;
+
+
+    /**
+     * This function returns TRUE if the current grid object is a <em>refinement</em> of
+     *  @p grid_to_compare_with,
+     * i.e. if the knots of the current grid object are present in @p grid_to_compare_with.
+     * @note The functions returns TRUE also if the knots in the current grid object
+     * are equal to the knots in @p grid_to_compare_with.
+     */
+    bool same_knots_or_refinement_of(const CartesianGrid<dim_> &grid_to_compare_with) const;
+
 public:
     /**
      * Prints debug information of the CartesianGrid to a LogStream.
@@ -521,9 +542,17 @@ private:
         boost::signals2::signal<
         void (const std::array<bool,dim_> &,const CartesianGrid<dim_> &)>;
 
+    /** Type for the insert_knots signal. */
+    using signal_insert_knots_t =
+        boost::signals2::signal<
+        void (const special_array<vector<Real>,dim_> &new_knots,const CartesianGrid<dim_> &old_grid)>;
+
 public:
     /** Slot type for the refinement signal. */
     using SignalRefineSlot = typename signal_refine_t::slot_type;
+
+    /** Slot type for the refinement signal. */
+    using SignalInsertKnotsSlot = typename signal_insert_knots_t::slot_type;
 
     /** @name Functions for performing grid refinement */
     ///@{
@@ -565,6 +594,7 @@ public:
      */
     void refine(const Size n_subdivisions = 2);
 
+#if 0
     /**
      *  Connect a slot (i.e. a function pointer) to the refinement signals
      *  which will be
@@ -573,6 +603,23 @@ public:
      */
     boost::signals2::connection
     connect_refinement(const SignalRefineSlot &subscriber);
+#endif
+
+    /**
+     *  Connect a slot (i.e. a function pointer) to the refinement signals
+     *  which will be
+     *  emitted whenever a insert_knots() function is called by an object holding
+     *  a CartesianGrid member.
+     */
+    boost::signals2::connection
+    connect_insert_knots(const SignalInsertKnotsSlot &subscriber);
+
+
+    /**
+     * Insert the @p knots_to_insert to the grid and to the object that are using the grid.
+     * @note The @p knots_to_insert may contain multiple knot values in each direction.
+     */
+    void insert_knots(special_array<vector<Real>,dim_> &knots_to_insert);
 
     /**
      * Returns the grid before the last refinement. If no refinement is
@@ -669,6 +716,7 @@ public:
      */
     std::set<Index> get_elements_id() const;
 
+
 private:
     /**
      * Returns the flat ids of the sub-elements corresponding to the element with index @p elem_id,
@@ -677,19 +725,6 @@ private:
      */
     vector<Index> get_sub_elements_id(const TensorSize<dim_> &n_sub_elems, const Index elem_id) const;
 
-    /**
-     * Perform a uniform refinement of the knots along the @p direction_id
-     * direction,
-     * dividing each interval in the knot vector into @p n_subdivisions
-     * intervals.
-     * @param[in] direction_id Direction along which the refinement is
-     * performed.
-     * @param[in] n_subdivisions Number of subdivision in which each interval
-     * in the knot vector is
-     * divided. This value must be >= 2.
-     */
-    void refine_knots_direction(const int direction_id,
-                                const Size n_subdivisions);
 
     /**
      * This class member is the grid before the last refinement. If no
@@ -697,11 +732,20 @@ private:
      */
     std::shared_ptr<const self_t> grid_pre_refinement_ = nullptr;
 
+#if 0
     /**
      * Signals for the h-refinement. It can be viewed as a FIFO list of
      * function pointers.
      */
     signal_refine_t refine_signals_;
+#endif
+
+    /**
+     * Signals for the insert_knots() invocations. It can be viewed as a FIFO list of
+     * function pointers.
+     */
+    signal_insert_knots_t insert_knots_signals_;
+
 
     friend class CartesianGridElement<dim_>;
 };

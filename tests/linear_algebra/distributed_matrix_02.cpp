@@ -76,7 +76,7 @@ void fill_matrix_and_vector(const SpaceManager &space_manager)
 
 
 
-    VectorType b(col_dofs);
+    VectorType b(col_dofs_set);
     Real val = 1.0;
     for (const Index id : col_dofs)
     {
@@ -88,7 +88,7 @@ void fill_matrix_and_vector(const SpaceManager &space_manager)
     b.print_info(out);
     out << endl;
 
-    VectorType c(row_dofs);
+    VectorType c(row_dofs_set);
     // c = A . b
     A.multiply_by_right_vector(b,c,1.0,0.0);
 

@@ -23,7 +23,8 @@
 #define __GRID_WRAPPER_H_
 
 #include <igatools/base/config.h>
-
+#include <igatools/utils/array.h>
+#include <igatools/geometry/cartesian_grid.h>
 
 #include <array>
 #include <memory>
@@ -54,7 +55,7 @@ public:
 
     using Topology = typename Grid_::Topology;
 
-protected:
+//protected:
 
     /** @name Constructor and destructor. */
     ///@{
@@ -140,9 +141,17 @@ public:
      * @ingroup h_refinement
      */
     void refine_h(const Size n_subdivisions = 2);
+
+
+
+    /**
+     * Insert the @p knots_to_insert to the grid and to the object that are using the grid.
+     * @note The @p knots_to_insert may contain multiple knot values in each direction.
+     */
+    void insert_knots(special_array<vector<Real>,GridType::dim> &knots_to_insert);
     ///@}
 
-protected:
+#if 0
     /**
      * Connect the function @p subscriber to the h-refinement signal in the grid object and create
      * the relative connection.
@@ -151,16 +160,36 @@ protected:
      */
     void
     connect_refinement_h_function(const typename GridType::SignalRefineSlot &subscriber);
+#endif
+
+    /**
+     * Connect the function @p subscriber to the insert_knots signal in the grid object and create
+     * the relative connection.
+     *
+     * @ingroup h_refinement
+     */
+    void
+    connect_insert_knots_function(const typename GridType::SignalInsertKnotsSlot &subscriber);
+
+
+
 
 private:
     /** Grid object. */
     std::shared_ptr<GridType> grid_ ;
 
-
+#if 0
     /**
      * Connection to the signal for the h-refinement.
      */
     boost::signals2::connection refine_h_connection_ ;
+#endif
+
+    /**
+     * Connection to the signal for the h-refinement.
+     */
+    boost::signals2::connection insert_knots_connection_ ;
+
 };
 
 

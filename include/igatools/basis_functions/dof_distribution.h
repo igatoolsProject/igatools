@@ -120,7 +120,7 @@ public:
     /**
      * This function looks for a @p dof_id and (if found) gives back its
      * component id @p comp
-     * and its TensorIndex<dim> @p tensor_index within the component.
+     * and its flat index @p dof_id_in_component within the component.
      *
      * @returns TRUE if the @p dof_id is found in the DofDistribution.
      *
@@ -128,7 +128,7 @@ public:
      *  @p comp_id and
      * @p tensor_id are UNDETERMINED.
      */
-    bool find_dof_id(const Index dof_id, int &comp_id, TensorIndex<dim> &tensor_index) const;
+    bool find_dof_id(const Index dof_id, int &comp_id, Index &dof_id_in_component) const;
 
     /**
      * Print the class content
@@ -145,6 +145,14 @@ public:
     /** Returns the maximum dof id. */
     Index get_max_dof_id() const;
 
+
+    /**
+     * Returns the number of dofs with the property specified by @p dofs_property.
+     *
+     * @note If @p dofs_property is equal to the default value DofProperties::none then the
+     * value returned is the total number of dofs in the object.
+     */
+    Size get_num_dofs(const std::string &dofs_property) const;
 
 
     /**
@@ -192,6 +200,16 @@ public:
     Index global_to_patch_local(const Index global_dof_id) const;
 
 
+
+    /**
+     * Converts a @p global_dof_id into the correspondent "component" representation,
+     * i.e. the component id @p comp and the flat index @p dof_id within the component.
+     *
+     * @note The @p global_dof_id must be in the DofDistribution, otherwise in DEBUG mode
+     * an assertion will be raised.
+     */
+    void global_to_comp_local(const Index global_dof_id,int &comp,int &dof_id) const;
+
     /**
      * @name Functions related to the management/query of the dof properties.
      */
@@ -217,7 +235,6 @@ public:
      */
     void add_dofs_property(const std::string &property);
 
-    Size get_num_dofs(const std::string &property) const;
     /**
      * Returns the id of the dofs having a certain @p property (non-const version).
      */

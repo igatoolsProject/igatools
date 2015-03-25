@@ -56,9 +56,9 @@ int main()
     auto grid = CartesianGrid<dim>::create(5);
     auto space = Space::create(1, grid);
 
-    typename IgFunction<ReferenceSpace<dim>>::CoeffType coeff(space->get_num_basis());
-    auto fun = IgFunction<ReferenceSpace<dim>>::create(space, coeff);
 
+    auto fun = IgFunction<ReferenceSpace<dim>>::create(space,
+                                                       IgCoefficients(*space,DofProperties::active));
 
     using_const_space<2>(fun);
 

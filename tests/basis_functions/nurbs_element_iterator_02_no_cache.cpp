@@ -50,12 +50,13 @@ void test()
     const auto n_scalar_basis = scalar_bsp_space->get_num_basis_table()[0];
 
     using WeightFunc = IgFunction<ReferenceSpace<dim,1,1>>;
-    DynamicMultiArray<Real,dim> weights_coef(n_scalar_basis);
-    const int n_entries = weights_coef.flat_size();
+    vector<Real> weights_coef(n_scalar_basis.flat_size());
+    const int n_entries = weights_coef.size();
     for (int i = 0 ; i < n_entries ; ++i)
         weights_coef[i] = (i+1) * (1.0 / n_entries) ;
 
-    auto w_func = WeightFunc::create(scalar_bsp_space,vector<Real>(weights_coef.get_data()));
+    auto w_func = WeightFunc::create(scalar_bsp_space,
+                                     IgCoefficients(*scalar_bsp_space,DofProperties::active,weights_coef));
     auto weight_functions = typename Space::WeightFunctionPtrTable(w_func);
 
     auto nrb_space = Space::create(bsp_space,weight_functions);

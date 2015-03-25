@@ -24,6 +24,7 @@
 #include <igatools/base/config.h>
 #include <igatools/base/tensor.h>
 #include <igatools/utils/value_vector.h>
+#include <igatools/geometry/grid_wrapper.h>
 #include <igatools/geometry/cartesian_grid_iterator.h>
 #include <igatools/geometry/grid_element_handler.h>
 #include <igatools/base/quadrature.h>
@@ -75,7 +76,7 @@ private:
 
 public:
     using Topology = UnitElement<dim_>;
-    using typename parent_t::GridType;
+    using GridType = CartesianGrid<dim_>;
 
 public:
     static const int l = iga::max(0, dim_-num_sub_elem);
@@ -352,6 +353,23 @@ public:
 
 protected:
     std::array<FunctionFlags, dim_ + 1> flags_;
+
+
+    /**
+     * This member is used to handle the knots-refinement.
+     */
+    GridWrapper<CartesianGrid<dim_> > functions_knots_refinement_;
+
+public:
+
+    /**
+     * Perform the h-refinement of the grid in all the directions.
+     * Each interval in the unrefined grid is uniformly divided in @p n_subdivisions sub-intervals.
+     */
+    void refine_h(const Size n_subdivisions=2)
+    {
+        functions_knots_refinement_.refine_h(n_subdivisions);
+    }
 };
 
 

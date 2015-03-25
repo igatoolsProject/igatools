@@ -35,7 +35,7 @@
 
 
 template <int dim>
-auto create_mapping1(shared_ptr<const CartesianGrid<dim>> grid)
+auto create_mapping1(shared_ptr<CartesianGrid<dim>> grid)
 {
     using Function = functions::CylindricalAnnulus<dim>;
 
@@ -45,7 +45,7 @@ auto create_mapping1(shared_ptr<const CartesianGrid<dim>> grid)
 }
 
 template <int dim>
-auto create_mapping2(shared_ptr<const CartesianGrid<dim>> grid)
+auto create_mapping2(shared_ptr<CartesianGrid<dim>> grid)
 {
     using Function = IdentityFunction<dim>;
 

@@ -87,10 +87,6 @@ public:
 
     static const std::array<int, n_components> components;
 
-    /**
-     * Type alias for the boundary conditions on each face of each scalar component of the space.
-     */
-    using BCTable = typename RefSpace::BCTable;
 
 public:
     using Func = Function<dim, codim, range, rank>;
@@ -289,6 +285,29 @@ private:
 
 public:
     std::shared_ptr<ElementHandler> create_elem_handler() const;
+
+
+protected:
+    std::shared_ptr<self_t> phys_space_previous_refinement_ = nullptr;
+
+
+public:
+    std::shared_ptr<const self_t> get_space_previous_refinement() const
+    {
+        Assert(false,ExcNotImplemented());
+        AssertThrow(false,ExcNotImplemented());
+        return phys_space_previous_refinement_;
+    }
+
+
+    /**
+     * Return the maximum value of the degree, for each component, for each direction;
+     * @return
+     */
+    int get_max_degree() const
+    {
+        return ref_space_->get_max_degree();
+    }
 
 };
 

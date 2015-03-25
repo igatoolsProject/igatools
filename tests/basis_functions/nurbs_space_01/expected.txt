@@ -118,16 +118,13 @@ Weight function[0] :
    
    
    Control points info (euclidean coordinates):
-      -----------------------------
-      Global_ID        Value
-      0        1.00000
-      1        1.00000
-      2        1.00000
-      3        1.00000
-      4        1.00000
-      5        1.00000
-      6        1.00000
-      -----------------------------
+      coeff[local_id=0, global_id=0] = 1.00000
+      coeff[local_id=1, global_id=1] = 1.00000
+      coeff[local_id=2, global_id=2] = 1.00000
+      coeff[local_id=3, global_id=3] = 1.00000
+      coeff[local_id=4, global_id=4] = 1.00000
+      coeff[local_id=5, global_id=5] = 1.00000
+      coeff[local_id=6, global_id=6] = 1.00000
    
 
 ========================================================================
@@ -263,16 +260,13 @@ Weight function[0] :
    
    
    Control points info (euclidean coordinates):
-      -----------------------------
-      Global_ID        Value
-      0        1.00000
-      1        1.00000
-      2        1.00000
-      3        1.00000
-      4        1.00000
-      5        1.00000
-      6        1.00000
-      -----------------------------
+      coeff[local_id=0, global_id=0] = 1.00000
+      coeff[local_id=1, global_id=1] = 1.00000
+      coeff[local_id=2, global_id=2] = 1.00000
+      coeff[local_id=3, global_id=3] = 1.00000
+      coeff[local_id=4, global_id=4] = 1.00000
+      coeff[local_id=5, global_id=5] = 1.00000
+      coeff[local_id=6, global_id=6] = 1.00000
    
 
 Weight function[1] :
@@ -335,16 +329,13 @@ Weight function[1] :
    
    
    Control points info (euclidean coordinates):
-      -----------------------------
-      Global_ID        Value
-      0        1.00000
-      1        1.00000
-      2        1.00000
-      3        1.00000
-      4        1.00000
-      5        1.00000
-      6        1.00000
-      -----------------------------
+      coeff[local_id=0, global_id=0] = 1.00000
+      coeff[local_id=1, global_id=1] = 1.00000
+      coeff[local_id=2, global_id=2] = 1.00000
+      coeff[local_id=3, global_id=3] = 1.00000
+      coeff[local_id=4, global_id=4] = 1.00000
+      coeff[local_id=5, global_id=5] = 1.00000
+      coeff[local_id=6, global_id=6] = 1.00000
    
 
 ========================================================================
@@ -491,16 +482,13 @@ Weight function[0] :
    
    
    Control points info (euclidean coordinates):
-      -----------------------------
-      Global_ID        Value
-      0        1.00000
-      1        1.00000
-      2        1.00000
-      3        1.00000
-      4        1.00000
-      5        1.00000
-      6        1.00000
-      -----------------------------
+      coeff[local_id=0, global_id=0] = 1.00000
+      coeff[local_id=1, global_id=1] = 1.00000
+      coeff[local_id=2, global_id=2] = 1.00000
+      coeff[local_id=3, global_id=3] = 1.00000
+      coeff[local_id=4, global_id=4] = 1.00000
+      coeff[local_id=5, global_id=5] = 1.00000
+      coeff[local_id=6, global_id=6] = 1.00000
    
 
 Weight function[1] :
@@ -563,16 +551,13 @@ Weight function[1] :
    
    
    Control points info (euclidean coordinates):
-      -----------------------------
-      Global_ID        Value
-      0        1.00000
-      1        1.00000
-      2        1.00000
-      3        1.00000
-      4        1.00000
-      5        1.00000
-      6        1.00000
-      -----------------------------
+      coeff[local_id=0, global_id=0] = 1.00000
+      coeff[local_id=1, global_id=1] = 1.00000
+      coeff[local_id=2, global_id=2] = 1.00000
+      coeff[local_id=3, global_id=3] = 1.00000
+      coeff[local_id=4, global_id=4] = 1.00000
+      coeff[local_id=5, global_id=5] = 1.00000
+      coeff[local_id=6, global_id=6] = 1.00000
    
 
 Weight function[2] :
@@ -635,16 +620,13 @@ Weight function[2] :
    
    
    Control points info (euclidean coordinates):
-      -----------------------------
-      Global_ID        Value
-      0        1.00000
-      1        1.00000
-      2        1.00000
-      3        1.00000
-      4        1.00000
-      5        1.00000
-      6        1.00000
-      -----------------------------
+      coeff[local_id=0, global_id=0] = 1.00000
+      coeff[local_id=1, global_id=1] = 1.00000
+      coeff[local_id=2, global_id=2] = 1.00000
+      coeff[local_id=3, global_id=3] = 1.00000
+      coeff[local_id=4, global_id=4] = 1.00000
+      coeff[local_id=5, global_id=5] = 1.00000
+      coeff[local_id=6, global_id=6] = 1.00000
    
 
 ========================================================================
@@ -785,44 +767,41 @@ Weight function[0] :
    
    
    Control points info (euclidean coordinates):
-      -----------------------------
-      Global_ID        Value
-      0        1.00000
-      1        1.00000
-      2        1.00000
-      3        1.00000
-      4        1.00000
-      5        1.00000
-      6        1.00000
-      7        1.00000
-      8        1.00000
-      9        1.00000
-      10        1.00000
-      11        1.00000
-      12        1.00000
-      13        1.00000
-      14        1.00000
-      15        1.00000
-      16        1.00000
-      17        1.00000
-      18        1.00000
-      19        1.00000
-      20        1.00000
-      21        1.00000
-      22        1.00000
-      23        1.00000
-      24        1.00000
-      25        1.00000
-      26        1.00000
-      27        1.00000
-      28        1.00000
-      29        1.00000
-      30        1.00000
-      31        1.00000
-      32        1.00000
-      33        1.00000
-      34        1.00000
-      -----------------------------
+      coeff[local_id=0, global_id=0] = 1.00000
+      coeff[local_id=1, global_id=1] = 1.00000
+      coeff[local_id=2, global_id=2] = 1.00000
+      coeff[local_id=3, global_id=3] = 1.00000
+      coeff[local_id=4, global_id=4] = 1.00000
+      coeff[local_id=5, global_id=5] = 1.00000
+      coeff[local_id=6, global_id=6] = 1.00000
+      coeff[local_id=7, global_id=7] = 1.00000
+      coeff[local_id=8, global_id=8] = 1.00000
+      coeff[local_id=9, global_id=9] = 1.00000
+      coeff[local_id=10, global_id=10] = 1.00000
+      coeff[local_id=11, global_id=11] = 1.00000
+      coeff[local_id=12, global_id=12] = 1.00000
+      coeff[local_id=13, global_id=13] = 1.00000
+      coeff[local_id=14, global_id=14] = 1.00000
+      coeff[local_id=15, global_id=15] = 1.00000
+      coeff[local_id=16, global_id=16] = 1.00000
+      coeff[local_id=17, global_id=17] = 1.00000
+      coeff[local_id=18, global_id=18] = 1.00000
+      coeff[local_id=19, global_id=19] = 1.00000
+      coeff[local_id=20, global_id=20] = 1.00000
+      coeff[local_id=21, global_id=21] = 1.00000
+      coeff[local_id=22, global_id=22] = 1.00000
+      coeff[local_id=23, global_id=23] = 1.00000
+      coeff[local_id=24, global_id=24] = 1.00000
+      coeff[local_id=25, global_id=25] = 1.00000
+      coeff[local_id=26, global_id=26] = 1.00000
+      coeff[local_id=27, global_id=27] = 1.00000
+      coeff[local_id=28, global_id=28] = 1.00000
+      coeff[local_id=29, global_id=29] = 1.00000
+      coeff[local_id=30, global_id=30] = 1.00000
+      coeff[local_id=31, global_id=31] = 1.00000
+      coeff[local_id=32, global_id=32] = 1.00000
+      coeff[local_id=33, global_id=33] = 1.00000
+      coeff[local_id=34, global_id=34] = 1.00000
    
 
 ========================================================================
@@ -980,44 +959,41 @@ Weight function[0] :
    
    
    Control points info (euclidean coordinates):
-      -----------------------------
-      Global_ID        Value
-      0        1.00000
-      1        1.00000
-      2        1.00000
-      3        1.00000
-      4        1.00000
-      5        1.00000
-      6        1.00000
-      7        1.00000
-      8        1.00000
-      9        1.00000
-      10        1.00000
-      11        1.00000
-      12        1.00000
-      13        1.00000
-      14        1.00000
-      15        1.00000
-      16        1.00000
-      17        1.00000
-      18        1.00000
-      19        1.00000
-      20        1.00000
-      21        1.00000
-      22        1.00000
-      23        1.00000
-      24        1.00000
-      25        1.00000
-      26        1.00000
-      27        1.00000
-      28        1.00000
-      29        1.00000
-      30        1.00000
-      31        1.00000
-      32        1.00000
-      33        1.00000
-      34        1.00000
-      -----------------------------
+      coeff[local_id=0, global_id=0] = 1.00000
+      coeff[local_id=1, global_id=1] = 1.00000
+      coeff[local_id=2, global_id=2] = 1.00000
+      coeff[local_id=3, global_id=3] = 1.00000
+      coeff[local_id=4, global_id=4] = 1.00000
+      coeff[local_id=5, global_id=5] = 1.00000
+      coeff[local_id=6, global_id=6] = 1.00000
+      coeff[local_id=7, global_id=7] = 1.00000
+      coeff[local_id=8, global_id=8] = 1.00000
+      coeff[local_id=9, global_id=9] = 1.00000
+      coeff[local_id=10, global_id=10] = 1.00000
+      coeff[local_id=11, global_id=11] = 1.00000
+      coeff[local_id=12, global_id=12] = 1.00000
+      coeff[local_id=13, global_id=13] = 1.00000
+      coeff[local_id=14, global_id=14] = 1.00000
+      coeff[local_id=15, global_id=15] = 1.00000
+      coeff[local_id=16, global_id=16] = 1.00000
+      coeff[local_id=17, global_id=17] = 1.00000
+      coeff[local_id=18, global_id=18] = 1.00000
+      coeff[local_id=19, global_id=19] = 1.00000
+      coeff[local_id=20, global_id=20] = 1.00000
+      coeff[local_id=21, global_id=21] = 1.00000
+      coeff[local_id=22, global_id=22] = 1.00000
+      coeff[local_id=23, global_id=23] = 1.00000
+      coeff[local_id=24, global_id=24] = 1.00000
+      coeff[local_id=25, global_id=25] = 1.00000
+      coeff[local_id=26, global_id=26] = 1.00000
+      coeff[local_id=27, global_id=27] = 1.00000
+      coeff[local_id=28, global_id=28] = 1.00000
+      coeff[local_id=29, global_id=29] = 1.00000
+      coeff[local_id=30, global_id=30] = 1.00000
+      coeff[local_id=31, global_id=31] = 1.00000
+      coeff[local_id=32, global_id=32] = 1.00000
+      coeff[local_id=33, global_id=33] = 1.00000
+      coeff[local_id=34, global_id=34] = 1.00000
    
 
 Weight function[1] :
@@ -1088,44 +1064,41 @@ Weight function[1] :
    
    
    Control points info (euclidean coordinates):
-      -----------------------------
-      Global_ID        Value
-      0        1.00000
-      1        1.00000
-      2        1.00000
-      3        1.00000
-      4        1.00000
-      5        1.00000
-      6        1.00000
-      7        1.00000
-      8        1.00000
-      9        1.00000
-      10        1.00000
-      11        1.00000
-      12        1.00000
-      13        1.00000
-      14        1.00000
-      15        1.00000
-      16        1.00000
-      17        1.00000
-      18        1.00000
-      19        1.00000
-      20        1.00000
-      21        1.00000
-      22        1.00000
-      23        1.00000
-      24        1.00000
-      25        1.00000
-      26        1.00000
-      27        1.00000
-      28        1.00000
-      29        1.00000
-      30        1.00000
-      31        1.00000
-      32        1.00000
-      33        1.00000
-      34        1.00000
-      -----------------------------
+      coeff[local_id=0, global_id=0] = 1.00000
+      coeff[local_id=1, global_id=1] = 1.00000
+      coeff[local_id=2, global_id=2] = 1.00000
+      coeff[local_id=3, global_id=3] = 1.00000
+      coeff[local_id=4, global_id=4] = 1.00000
+      coeff[local_id=5, global_id=5] = 1.00000
+      coeff[local_id=6, global_id=6] = 1.00000
+      coeff[local_id=7, global_id=7] = 1.00000
+      coeff[local_id=8, global_id=8] = 1.00000
+      coeff[local_id=9, global_id=9] = 1.00000
+      coeff[local_id=10, global_id=10] = 1.00000
+      coeff[local_id=11, global_id=11] = 1.00000
+      coeff[local_id=12, global_id=12] = 1.00000
+      coeff[local_id=13, global_id=13] = 1.00000
+      coeff[local_id=14, global_id=14] = 1.00000
+      coeff[local_id=15, global_id=15] = 1.00000
+      coeff[local_id=16, global_id=16] = 1.00000
+      coeff[local_id=17, global_id=17] = 1.00000
+      coeff[local_id=18, global_id=18] = 1.00000
+      coeff[local_id=19, global_id=19] = 1.00000
+      coeff[local_id=20, global_id=20] = 1.00000
+      coeff[local_id=21, global_id=21] = 1.00000
+      coeff[local_id=22, global_id=22] = 1.00000
+      coeff[local_id=23, global_id=23] = 1.00000
+      coeff[local_id=24, global_id=24] = 1.00000
+      coeff[local_id=25, global_id=25] = 1.00000
+      coeff[local_id=26, global_id=26] = 1.00000
+      coeff[local_id=27, global_id=27] = 1.00000
+      coeff[local_id=28, global_id=28] = 1.00000
+      coeff[local_id=29, global_id=29] = 1.00000
+      coeff[local_id=30, global_id=30] = 1.00000
+      coeff[local_id=31, global_id=31] = 1.00000
+      coeff[local_id=32, global_id=32] = 1.00000
+      coeff[local_id=33, global_id=33] = 1.00000
+      coeff[local_id=34, global_id=34] = 1.00000
    
 
 ========================================================================
@@ -1300,44 +1273,41 @@ Weight function[0] :
    
    
    Control points info (euclidean coordinates):
-      -----------------------------
-      Global_ID        Value
-      0        1.00000
-      1        1.00000
-      2        1.00000
-      3        1.00000
-      4        1.00000
-      5        1.00000
-      6        1.00000
-      7        1.00000
-      8        1.00000
-      9        1.00000
-      10        1.00000
-      11        1.00000
-      12        1.00000
-      13        1.00000
-      14        1.00000
-      15        1.00000
-      16        1.00000
-      17        1.00000
-      18        1.00000
-      19        1.00000
-      20        1.00000
-      21        1.00000
-      22        1.00000
-      23        1.00000
-      24        1.00000
-      25        1.00000
-      26        1.00000
-      27        1.00000
-      28        1.00000
-      29        1.00000
-      30        1.00000
-      31        1.00000
-      32        1.00000
-      33        1.00000
-      34        1.00000
-      -----------------------------
+      coeff[local_id=0, global_id=0] = 1.00000
+      coeff[local_id=1, global_id=1] = 1.00000
+      coeff[local_id=2, global_id=2] = 1.00000
+      coeff[local_id=3, global_id=3] = 1.00000
+      coeff[local_id=4, global_id=4] = 1.00000
+      coeff[local_id=5, global_id=5] = 1.00000
+      coeff[local_id=6, global_id=6] = 1.00000
+      coeff[local_id=7, global_id=7] = 1.00000
+      coeff[local_id=8, global_id=8] = 1.00000
+      coeff[local_id=9, global_id=9] = 1.00000
+      coeff[local_id=10, global_id=10] = 1.00000
+      coeff[local_id=11, global_id=11] = 1.00000
+      coeff[local_id=12, global_id=12] = 1.00000
+      coeff[local_id=13, global_id=13] = 1.00000
+      coeff[local_id=14, global_id=14] = 1.00000
+      coeff[local_id=15, global_id=15] = 1.00000
+      coeff[local_id=16, global_id=16] = 1.00000
+      coeff[local_id=17, global_id=17] = 1.00000
+      coeff[local_id=18, global_id=18] = 1.00000
+      coeff[local_id=19, global_id=19] = 1.00000
+      coeff[local_id=20, global_id=20] = 1.00000
+      coeff[local_id=21, global_id=21] = 1.00000
+      coeff[local_id=22, global_id=22] = 1.00000
+      coeff[local_id=23, global_id=23] = 1.00000
+      coeff[local_id=24, global_id=24] = 1.00000
+      coeff[local_id=25, global_id=25] = 1.00000
+      coeff[local_id=26, global_id=26] = 1.00000
+      coeff[local_id=27, global_id=27] = 1.00000
+      coeff[local_id=28, global_id=28] = 1.00000
+      coeff[local_id=29, global_id=29] = 1.00000
+      coeff[local_id=30, global_id=30] = 1.00000
+      coeff[local_id=31, global_id=31] = 1.00000
+      coeff[local_id=32, global_id=32] = 1.00000
+      coeff[local_id=33, global_id=33] = 1.00000
+      coeff[local_id=34, global_id=34] = 1.00000
    
 
 Weight function[1] :
@@ -1408,44 +1378,41 @@ Weight function[1] :
    
    
    Control points info (euclidean coordinates):
-      -----------------------------
-      Global_ID        Value
-      0        1.00000
-      1        1.00000
-      2        1.00000
-      3        1.00000
-      4        1.00000
-      5        1.00000
-      6        1.00000
-      7        1.00000
-      8        1.00000
-      9        1.00000
-      10        1.00000
-      11        1.00000
-      12        1.00000
-      13        1.00000
-      14        1.00000
-      15        1.00000
-      16        1.00000
-      17        1.00000
-      18        1.00000
-      19        1.00000
-      20        1.00000
-      21        1.00000
-      22        1.00000
-      23        1.00000
-      24        1.00000
-      25        1.00000
-      26        1.00000
-      27        1.00000
-      28        1.00000
-      29        1.00000
-      30        1.00000
-      31        1.00000
-      32        1.00000
-      33        1.00000
-      34        1.00000
-      -----------------------------
+      coeff[local_id=0, global_id=0] = 1.00000
+      coeff[local_id=1, global_id=1] = 1.00000
+      coeff[local_id=2, global_id=2] = 1.00000
+      coeff[local_id=3, global_id=3] = 1.00000
+      coeff[local_id=4, global_id=4] = 1.00000
+      coeff[local_id=5, global_id=5] = 1.00000
+      coeff[local_id=6, global_id=6] = 1.00000
+      coeff[local_id=7, global_id=7] = 1.00000
+      coeff[local_id=8, global_id=8] = 1.00000
+      coeff[local_id=9, global_id=9] = 1.00000
+      coeff[local_id=10, global_id=10] = 1.00000
+      coeff[local_id=11, global_id=11] = 1.00000
+      coeff[local_id=12, global_id=12] = 1.00000
+      coeff[local_id=13, global_id=13] = 1.00000
+      coeff[local_id=14, global_id=14] = 1.00000
+      coeff[local_id=15, global_id=15] = 1.00000
+      coeff[local_id=16, global_id=16] = 1.00000
+      coeff[local_id=17, global_id=17] = 1.00000
+      coeff[local_id=18, global_id=18] = 1.00000
+      coeff[local_id=19, global_id=19] = 1.00000
+      coeff[local_id=20, global_id=20] = 1.00000
+      coeff[local_id=21, global_id=21] = 1.00000
+      coeff[local_id=22, global_id=22] = 1.00000
+      coeff[local_id=23, global_id=23] = 1.00000
+      coeff[local_id=24, global_id=24] = 1.00000
+      coeff[local_id=25, global_id=25] = 1.00000
+      coeff[local_id=26, global_id=26] = 1.00000
+      coeff[local_id=27, global_id=27] = 1.00000
+      coeff[local_id=28, global_id=28] = 1.00000
+      coeff[local_id=29, global_id=29] = 1.00000
+      coeff[local_id=30, global_id=30] = 1.00000
+      coeff[local_id=31, global_id=31] = 1.00000
+      coeff[local_id=32, global_id=32] = 1.00000
+      coeff[local_id=33, global_id=33] = 1.00000
+      coeff[local_id=34, global_id=34] = 1.00000
    
 
 Weight function[2] :
@@ -1516,44 +1483,41 @@ Weight function[2] :
    
    
    Control points info (euclidean coordinates):
-      -----------------------------
-      Global_ID        Value
-      0        1.00000
-      1        1.00000
-      2        1.00000
-      3        1.00000
-      4        1.00000
-      5        1.00000
-      6        1.00000
-      7        1.00000
-      8        1.00000
-      9        1.00000
-      10        1.00000
-      11        1.00000
-      12        1.00000
-      13        1.00000
-      14        1.00000
-      15        1.00000
-      16        1.00000
-      17        1.00000
-      18        1.00000
-      19        1.00000
-      20        1.00000
-      21        1.00000
-      22        1.00000
-      23        1.00000
-      24        1.00000
-      25        1.00000
-      26        1.00000
-      27        1.00000
-      28        1.00000
-      29        1.00000
-      30        1.00000
-      31        1.00000
-      32        1.00000
-      33        1.00000
-      34        1.00000
-      -----------------------------
+      coeff[local_id=0, global_id=0] = 1.00000
+      coeff[local_id=1, global_id=1] = 1.00000
+      coeff[local_id=2, global_id=2] = 1.00000
+      coeff[local_id=3, global_id=3] = 1.00000
+      coeff[local_id=4, global_id=4] = 1.00000
+      coeff[local_id=5, global_id=5] = 1.00000
+      coeff[local_id=6, global_id=6] = 1.00000
+      coeff[local_id=7, global_id=7] = 1.00000
+      coeff[local_id=8, global_id=8] = 1.00000
+      coeff[local_id=9, global_id=9] = 1.00000
+      coeff[local_id=10, global_id=10] = 1.00000
+      coeff[local_id=11, global_id=11] = 1.00000
+      coeff[local_id=12, global_id=12] = 1.00000
+      coeff[local_id=13, global_id=13] = 1.00000
+      coeff[local_id=14, global_id=14] = 1.00000
+      coeff[local_id=15, global_id=15] = 1.00000
+      coeff[local_id=16, global_id=16] = 1.00000
+      coeff[local_id=17, global_id=17] = 1.00000
+      coeff[local_id=18, global_id=18] = 1.00000
+      coeff[local_id=19, global_id=19] = 1.00000
+      coeff[local_id=20, global_id=20] = 1.00000
+      coeff[local_id=21, global_id=21] = 1.00000
+      coeff[local_id=22, global_id=22] = 1.00000
+      coeff[local_id=23, global_id=23] = 1.00000
+      coeff[local_id=24, global_id=24] = 1.00000
+      coeff[local_id=25, global_id=25] = 1.00000
+      coeff[local_id=26, global_id=26] = 1.00000
+      coeff[local_id=27, global_id=27] = 1.00000
+      coeff[local_id=28, global_id=28] = 1.00000
+      coeff[local_id=29, global_id=29] = 1.00000
+      coeff[local_id=30, global_id=30] = 1.00000
+      coeff[local_id=31, global_id=31] = 1.00000
+      coeff[local_id=32, global_id=32] = 1.00000
+      coeff[local_id=33, global_id=33] = 1.00000
+      coeff[local_id=34, global_id=34] = 1.00000
    
 
 ========================================================================
@@ -1708,114 +1672,111 @@ Weight function[0] :
    
    
    Control points info (euclidean coordinates):
-      -----------------------------
-      Global_ID        Value
-      0        1.00000
-      1        1.00000
-      2        1.00000
-      3        1.00000
-      4        1.00000
-      5        1.00000
-      6        1.00000
-      7        1.00000
-      8        1.00000
-      9        1.00000
-      10        1.00000
-      11        1.00000
-      12        1.00000
-      13        1.00000
-      14        1.00000
-      15        1.00000
-      16        1.00000
-      17        1.00000
-      18        1.00000
-      19        1.00000
-      20        1.00000
-      21        1.00000
-      22        1.00000
-      23        1.00000
-      24        1.00000
-      25        1.00000
-      26        1.00000
-      27        1.00000
-      28        1.00000
-      29        1.00000
-      30        1.00000
-      31        1.00000
-      32        1.00000
-      33        1.00000
-      34        1.00000
-      35        1.00000
-      36        1.00000
-      37        1.00000
-      38        1.00000
-      39        1.00000
-      40        1.00000
-      41        1.00000
-      42        1.00000
-      43        1.00000
-      44        1.00000
-      45        1.00000
-      46        1.00000
-      47        1.00000
-      48        1.00000
-      49        1.00000
-      50        1.00000
-      51        1.00000
-      52        1.00000
-      53        1.00000
-      54        1.00000
-      55        1.00000
-      56        1.00000
-      57        1.00000
-      58        1.00000
-      59        1.00000
-      60        1.00000
-      61        1.00000
-      62        1.00000
-      63        1.00000
-      64        1.00000
-      65        1.00000
-      66        1.00000
-      67        1.00000
-      68        1.00000
-      69        1.00000
-      70        1.00000
-      71        1.00000
-      72        1.00000
-      73        1.00000
-      74        1.00000
-      75        1.00000
-      76        1.00000
-      77        1.00000
-      78        1.00000
-      79        1.00000
-      80        1.00000
-      81        1.00000
-      82        1.00000
-      83        1.00000
-      84        1.00000
-      85        1.00000
-      86        1.00000
-      87        1.00000
-      88        1.00000
-      89        1.00000
-      90        1.00000
-      91        1.00000
-      92        1.00000
-      93        1.00000
-      94        1.00000
-      95        1.00000
-      96        1.00000
-      97        1.00000
-      98        1.00000
-      99        1.00000
-      100        1.00000
-      101        1.00000
-      102        1.00000
-      103        1.00000
-      104        1.00000
-      -----------------------------
+      coeff[local_id=0, global_id=0] = 1.00000
+      coeff[local_id=1, global_id=1] = 1.00000
+      coeff[local_id=2, global_id=2] = 1.00000
+      coeff[local_id=3, global_id=3] = 1.00000
+      coeff[local_id=4, global_id=4] = 1.00000
+      coeff[local_id=5, global_id=5] = 1.00000
+      coeff[local_id=6, global_id=6] = 1.00000
+      coeff[local_id=7, global_id=7] = 1.00000
+      coeff[local_id=8, global_id=8] = 1.00000
+      coeff[local_id=9, global_id=9] = 1.00000
+      coeff[local_id=10, global_id=10] = 1.00000
+      coeff[local_id=11, global_id=11] = 1.00000
+      coeff[local_id=12, global_id=12] = 1.00000
+      coeff[local_id=13, global_id=13] = 1.00000
+      coeff[local_id=14, global_id=14] = 1.00000
+      coeff[local_id=15, global_id=15] = 1.00000
+      coeff[local_id=16, global_id=16] = 1.00000
+      coeff[local_id=17, global_id=17] = 1.00000
+      coeff[local_id=18, global_id=18] = 1.00000
+      coeff[local_id=19, global_id=19] = 1.00000
+      coeff[local_id=20, global_id=20] = 1.00000
+      coeff[local_id=21, global_id=21] = 1.00000
+      coeff[local_id=22, global_id=22] = 1.00000
+      coeff[local_id=23, global_id=23] = 1.00000
+      coeff[local_id=24, global_id=24] = 1.00000
+      coeff[local_id=25, global_id=25] = 1.00000
+      coeff[local_id=26, global_id=26] = 1.00000
+      coeff[local_id=27, global_id=27] = 1.00000
+      coeff[local_id=28, global_id=28] = 1.00000
+      coeff[local_id=29, global_id=29] = 1.00000
+      coeff[local_id=30, global_id=30] = 1.00000
+      coeff[local_id=31, global_id=31] = 1.00000
+      coeff[local_id=32, global_id=32] = 1.00000
+      coeff[local_id=33, global_id=33] = 1.00000
+      coeff[local_id=34, global_id=34] = 1.00000
+      coeff[local_id=35, global_id=35] = 1.00000
+      coeff[local_id=36, global_id=36] = 1.00000
+      coeff[local_id=37, global_id=37] = 1.00000
+      coeff[local_id=38, global_id=38] = 1.00000
+      coeff[local_id=39, global_id=39] = 1.00000
+      coeff[local_id=40, global_id=40] = 1.00000
+      coeff[local_id=41, global_id=41] = 1.00000
+      coeff[local_id=42, global_id=42] = 1.00000
+      coeff[local_id=43, global_id=43] = 1.00000
+      coeff[local_id=44, global_id=44] = 1.00000
+      coeff[local_id=45, global_id=45] = 1.00000
+      coeff[local_id=46, global_id=46] = 1.00000
+      coeff[local_id=47, global_id=47] = 1.00000
+      coeff[local_id=48, global_id=48] = 1.00000
+      coeff[local_id=49, global_id=49] = 1.00000
+      coeff[local_id=50, global_id=50] = 1.00000
+      coeff[local_id=51, global_id=51] = 1.00000
+      coeff[local_id=52, global_id=52] = 1.00000
+      coeff[local_id=53, global_id=53] = 1.00000
+      coeff[local_id=54, global_id=54] = 1.00000
+      coeff[local_id=55, global_id=55] = 1.00000
+      coeff[local_id=56, global_id=56] = 1.00000
+      coeff[local_id=57, global_id=57] = 1.00000
+      coeff[local_id=58, global_id=58] = 1.00000
+      coeff[local_id=59, global_id=59] = 1.00000
+      coeff[local_id=60, global_id=60] = 1.00000
+      coeff[local_id=61, global_id=61] = 1.00000
+      coeff[local_id=62, global_id=62] = 1.00000
+      coeff[local_id=63, global_id=63] = 1.00000
+      coeff[local_id=64, global_id=64] = 1.00000
+      coeff[local_id=65, global_id=65] = 1.00000
+      coeff[local_id=66, global_id=66] = 1.00000
+      coeff[local_id=67, global_id=67] = 1.00000
+      coeff[local_id=68, global_id=68] = 1.00000
+      coeff[local_id=69, global_id=69] = 1.00000
+      coeff[local_id=70, global_id=70] = 1.00000
+      coeff[local_id=71, global_id=71] = 1.00000
+      coeff[local_id=72, global_id=72] = 1.00000
+      coeff[local_id=73, global_id=73] = 1.00000
+      coeff[local_id=74, global_id=74] = 1.00000
+      coeff[local_id=75, global_id=75] = 1.00000
+      coeff[local_id=76, global_id=76] = 1.00000
+      coeff[local_id=77, global_id=77] = 1.00000
+      coeff[local_id=78, global_id=78] = 1.00000
+      coeff[local_id=79, global_id=79] = 1.00000
+      coeff[local_id=80, global_id=80] = 1.00000
+      coeff[local_id=81, global_id=81] = 1.00000
+      coeff[local_id=82, global_id=82] = 1.00000
+      coeff[local_id=83, global_id=83] = 1.00000
+      coeff[local_id=84, global_id=84] = 1.00000
+      coeff[local_id=85, global_id=85] = 1.00000
+      coeff[local_id=86, global_id=86] = 1.00000
+      coeff[local_id=87, global_id=87] = 1.00000
+      coeff[local_id=88, global_id=88] = 1.00000
+      coeff[local_id=89, global_id=89] = 1.00000
+      coeff[local_id=90, global_id=90] = 1.00000
+      coeff[local_id=91, global_id=91] = 1.00000
+      coeff[local_id=92, global_id=92] = 1.00000
+      coeff[local_id=93, global_id=93] = 1.00000
+      coeff[local_id=94, global_id=94] = 1.00000
+      coeff[local_id=95, global_id=95] = 1.00000
+      coeff[local_id=96, global_id=96] = 1.00000
+      coeff[local_id=97, global_id=97] = 1.00000
+      coeff[local_id=98, global_id=98] = 1.00000
+      coeff[local_id=99, global_id=99] = 1.00000
+      coeff[local_id=100, global_id=100] = 1.00000
+      coeff[local_id=101, global_id=101] = 1.00000
+      coeff[local_id=102, global_id=102] = 1.00000
+      coeff[local_id=103, global_id=103] = 1.00000
+      coeff[local_id=104, global_id=104] = 1.00000
    
 
 ========================================================================
@@ -2014,114 +1975,111 @@ Weight function[0] :
    
    
    Control points info (euclidean coordinates):
-      -----------------------------
-      Global_ID        Value
-      0        1.00000
-      1        1.00000
-      2        1.00000
-      3        1.00000
-      4        1.00000
-      5        1.00000
-      6        1.00000
-      7        1.00000
-      8        1.00000
-      9        1.00000
-      10        1.00000
-      11        1.00000
-      12        1.00000
-      13        1.00000
-      14        1.00000
-      15        1.00000
-      16        1.00000
-      17        1.00000
-      18        1.00000
-      19        1.00000
-      20        1.00000
-      21        1.00000
-      22        1.00000
-      23        1.00000
-      24        1.00000
-      25        1.00000
-      26        1.00000
-      27        1.00000
-      28        1.00000
-      29        1.00000
-      30        1.00000
-      31        1.00000
-      32        1.00000
-      33        1.00000
-      34        1.00000
-      35        1.00000
-      36        1.00000
-      37        1.00000
-      38        1.00000
-      39        1.00000
-      40        1.00000
-      41        1.00000
-      42        1.00000
-      43        1.00000
-      44        1.00000
-      45        1.00000
-      46        1.00000
-      47        1.00000
-      48        1.00000
-      49        1.00000
-      50        1.00000
-      51        1.00000
-      52        1.00000
-      53        1.00000
-      54        1.00000
-      55        1.00000
-      56        1.00000
-      57        1.00000
-      58        1.00000
-      59        1.00000
-      60        1.00000
-      61        1.00000
-      62        1.00000
-      63        1.00000
-      64        1.00000
-      65        1.00000
-      66        1.00000
-      67        1.00000
-      68        1.00000
-      69        1.00000
-      70        1.00000
-      71        1.00000
-      72        1.00000
-      73        1.00000
-      74        1.00000
-      75        1.00000
-      76        1.00000
-      77        1.00000
-      78        1.00000
-      79        1.00000
-      80        1.00000
-      81        1.00000
-      82        1.00000
-      83        1.00000
-      84        1.00000
-      85        1.00000
-      86        1.00000
-      87        1.00000
-      88        1.00000
-      89        1.00000
-      90        1.00000
-      91        1.00000
-      92        1.00000
-      93        1.00000
-      94        1.00000
-      95        1.00000
-      96        1.00000
-      97        1.00000
-      98        1.00000
-      99        1.00000
-      100        1.00000
-      101        1.00000
-      102        1.00000
-      103        1.00000
-      104        1.00000
-      -----------------------------
+      coeff[local_id=0, global_id=0] = 1.00000
+      coeff[local_id=1, global_id=1] = 1.00000
+      coeff[local_id=2, global_id=2] = 1.00000
+      coeff[local_id=3, global_id=3] = 1.00000
+      coeff[local_id=4, global_id=4] = 1.00000
+      coeff[local_id=5, global_id=5] = 1.00000
+      coeff[local_id=6, global_id=6] = 1.00000
+      coeff[local_id=7, global_id=7] = 1.00000
+      coeff[local_id=8, global_id=8] = 1.00000
+      coeff[local_id=9, global_id=9] = 1.00000
+      coeff[local_id=10, global_id=10] = 1.00000
+      coeff[local_id=11, global_id=11] = 1.00000
+      coeff[local_id=12, global_id=12] = 1.00000
+      coeff[local_id=13, global_id=13] = 1.00000
+      coeff[local_id=14, global_id=14] = 1.00000
+      coeff[local_id=15, global_id=15] = 1.00000
+      coeff[local_id=16, global_id=16] = 1.00000
+      coeff[local_id=17, global_id=17] = 1.00000
+      coeff[local_id=18, global_id=18] = 1.00000
+      coeff[local_id=19, global_id=19] = 1.00000
+      coeff[local_id=20, global_id=20] = 1.00000
+      coeff[local_id=21, global_id=21] = 1.00000
+      coeff[local_id=22, global_id=22] = 1.00000
+      coeff[local_id=23, global_id=23] = 1.00000
+      coeff[local_id=24, global_id=24] = 1.00000
+      coeff[local_id=25, global_id=25] = 1.00000
+      coeff[local_id=26, global_id=26] = 1.00000
+      coeff[local_id=27, global_id=27] = 1.00000
+      coeff[local_id=28, global_id=28] = 1.00000
+      coeff[local_id=29, global_id=29] = 1.00000
+      coeff[local_id=30, global_id=30] = 1.00000
+      coeff[local_id=31, global_id=31] = 1.00000
+      coeff[local_id=32, global_id=32] = 1.00000
+      coeff[local_id=33, global_id=33] = 1.00000
+      coeff[local_id=34, global_id=34] = 1.00000
+      coeff[local_id=35, global_id=35] = 1.00000
+      coeff[local_id=36, global_id=36] = 1.00000
+      coeff[local_id=37, global_id=37] = 1.00000
+      coeff[local_id=38, global_id=38] = 1.00000
+      coeff[local_id=39, global_id=39] = 1.00000
+      coeff[local_id=40, global_id=40] = 1.00000
+      coeff[local_id=41, global_id=41] = 1.00000
+      coeff[local_id=42, global_id=42] = 1.00000
+      coeff[local_id=43, global_id=43] = 1.00000
+      coeff[local_id=44, global_id=44] = 1.00000
+      coeff[local_id=45, global_id=45] = 1.00000
+      coeff[local_id=46, global_id=46] = 1.00000
+      coeff[local_id=47, global_id=47] = 1.00000
+      coeff[local_id=48, global_id=48] = 1.00000
+      coeff[local_id=49, global_id=49] = 1.00000
+      coeff[local_id=50, global_id=50] = 1.00000
+      coeff[local_id=51, global_id=51] = 1.00000
+      coeff[local_id=52, global_id=52] = 1.00000
+      coeff[local_id=53, global_id=53] = 1.00000
+      coeff[local_id=54, global_id=54] = 1.00000
+      coeff[local_id=55, global_id=55] = 1.00000
+      coeff[local_id=56, global_id=56] = 1.00000
+      coeff[local_id=57, global_id=57] = 1.00000
+      coeff[local_id=58, global_id=58] = 1.00000
+      coeff[local_id=59, global_id=59] = 1.00000
+      coeff[local_id=60, global_id=60] = 1.00000
+      coeff[local_id=61, global_id=61] = 1.00000
+      coeff[local_id=62, global_id=62] = 1.00000
+      coeff[local_id=63, global_id=63] = 1.00000
+      coeff[local_id=64, global_id=64] = 1.00000
+      coeff[local_id=65, global_id=65] = 1.00000
+      coeff[local_id=66, global_id=66] = 1.00000
+      coeff[local_id=67, global_id=67] = 1.00000
+      coeff[local_id=68, global_id=68] = 1.00000
+      coeff[local_id=69, global_id=69] = 1.00000
+      coeff[local_id=70, global_id=70] = 1.00000
+      coeff[local_id=71, global_id=71] = 1.00000
+      coeff[local_id=72, global_id=72] = 1.00000
+      coeff[local_id=73, global_id=73] = 1.00000
+      coeff[local_id=74, global_id=74] = 1.00000
+      coeff[local_id=75, global_id=75] = 1.00000
+      coeff[local_id=76, global_id=76] = 1.00000
+      coeff[local_id=77, global_id=77] = 1.00000
+      coeff[local_id=78, global_id=78] = 1.00000
+      coeff[local_id=79, global_id=79] = 1.00000
+      coeff[local_id=80, global_id=80] = 1.00000
+      coeff[local_id=81, global_id=81] = 1.00000
+      coeff[local_id=82, global_id=82] = 1.00000
+      coeff[local_id=83, global_id=83] = 1.00000
+      coeff[local_id=84, global_id=84] = 1.00000
+      coeff[local_id=85, global_id=85] = 1.00000
+      coeff[local_id=86, global_id=86] = 1.00000
+      coeff[local_id=87, global_id=87] = 1.00000
+      coeff[local_id=88, global_id=88] = 1.00000
+      coeff[local_id=89, global_id=89] = 1.00000
+      coeff[local_id=90, global_id=90] = 1.00000
+      coeff[local_id=91, global_id=91] = 1.00000
+      coeff[local_id=92, global_id=92] = 1.00000
+      coeff[local_id=93, global_id=93] = 1.00000
+      coeff[local_id=94, global_id=94] = 1.00000
+      coeff[local_id=95, global_id=95] = 1.00000
+      coeff[local_id=96, global_id=96] = 1.00000
+      coeff[local_id=97, global_id=97] = 1.00000
+      coeff[local_id=98, global_id=98] = 1.00000
+      coeff[local_id=99, global_id=99] = 1.00000
+      coeff[local_id=100, global_id=100] = 1.00000
+      coeff[local_id=101, global_id=101] = 1.00000
+      coeff[local_id=102, global_id=102] = 1.00000
+      coeff[local_id=103, global_id=103] = 1.00000
+      coeff[local_id=104, global_id=104] = 1.00000
    
 
 Weight function[1] :
@@ -2199,114 +2157,111 @@ Weight function[1] :
    
    
    Control points info (euclidean coordinates):
-      -----------------------------
-      Global_ID        Value
-      0        1.00000
-      1        1.00000
-      2        1.00000
-      3        1.00000
-      4        1.00000
-      5        1.00000
-      6        1.00000
-      7        1.00000
-      8        1.00000
-      9        1.00000
-      10        1.00000
-      11        1.00000
-      12        1.00000
-      13        1.00000
-      14        1.00000
-      15        1.00000
-      16        1.00000
-      17        1.00000
-      18        1.00000
-      19        1.00000
-      20        1.00000
-      21        1.00000
-      22        1.00000
-      23        1.00000
-      24        1.00000
-      25        1.00000
-      26        1.00000
-      27        1.00000
-      28        1.00000
-      29        1.00000
-      30        1.00000
-      31        1.00000
-      32        1.00000
-      33        1.00000
-      34        1.00000
-      35        1.00000
-      36        1.00000
-      37        1.00000
-      38        1.00000
-      39        1.00000
-      40        1.00000
-      41        1.00000
-      42        1.00000
-      43        1.00000
-      44        1.00000
-      45        1.00000
-      46        1.00000
-      47        1.00000
-      48        1.00000
-      49        1.00000
-      50        1.00000
-      51        1.00000
-      52        1.00000
-      53        1.00000
-      54        1.00000
-      55        1.00000
-      56        1.00000
-      57        1.00000
-      58        1.00000
-      59        1.00000
-      60        1.00000
-      61        1.00000
-      62        1.00000
-      63        1.00000
-      64        1.00000
-      65        1.00000
-      66        1.00000
-      67        1.00000
-      68        1.00000
-      69        1.00000
-      70        1.00000
-      71        1.00000
-      72        1.00000
-      73        1.00000
-      74        1.00000
-      75        1.00000
-      76        1.00000
-      77        1.00000
-      78        1.00000
-      79        1.00000
-      80        1.00000
-      81        1.00000
-      82        1.00000
-      83        1.00000
-      84        1.00000
-      85        1.00000
-      86        1.00000
-      87        1.00000
-      88        1.00000
-      89        1.00000
-      90        1.00000
-      91        1.00000
-      92        1.00000
-      93        1.00000
-      94        1.00000
-      95        1.00000
-      96        1.00000
-      97        1.00000
-      98        1.00000
-      99        1.00000
-      100        1.00000
-      101        1.00000
-      102        1.00000
-      103        1.00000
-      104        1.00000
-      -----------------------------
+      coeff[local_id=0, global_id=0] = 1.00000
+      coeff[local_id=1, global_id=1] = 1.00000
+      coeff[local_id=2, global_id=2] = 1.00000
+      coeff[local_id=3, global_id=3] = 1.00000
+      coeff[local_id=4, global_id=4] = 1.00000
+      coeff[local_id=5, global_id=5] = 1.00000
+      coeff[local_id=6, global_id=6] = 1.00000
+      coeff[local_id=7, global_id=7] = 1.00000
+      coeff[local_id=8, global_id=8] = 1.00000
+      coeff[local_id=9, global_id=9] = 1.00000
+      coeff[local_id=10, global_id=10] = 1.00000
+      coeff[local_id=11, global_id=11] = 1.00000
+      coeff[local_id=12, global_id=12] = 1.00000
+      coeff[local_id=13, global_id=13] = 1.00000
+      coeff[local_id=14, global_id=14] = 1.00000
+      coeff[local_id=15, global_id=15] = 1.00000
+      coeff[local_id=16, global_id=16] = 1.00000
+      coeff[local_id=17, global_id=17] = 1.00000
+      coeff[local_id=18, global_id=18] = 1.00000
+      coeff[local_id=19, global_id=19] = 1.00000
+      coeff[local_id=20, global_id=20] = 1.00000
+      coeff[local_id=21, global_id=21] = 1.00000
+      coeff[local_id=22, global_id=22] = 1.00000
+      coeff[local_id=23, global_id=23] = 1.00000
+      coeff[local_id=24, global_id=24] = 1.00000
+      coeff[local_id=25, global_id=25] = 1.00000
+      coeff[local_id=26, global_id=26] = 1.00000
+      coeff[local_id=27, global_id=27] = 1.00000
+      coeff[local_id=28, global_id=28] = 1.00000
+      coeff[local_id=29, global_id=29] = 1.00000
+      coeff[local_id=30, global_id=30] = 1.00000
+      coeff[local_id=31, global_id=31] = 1.00000
+      coeff[local_id=32, global_id=32] = 1.00000
+      coeff[local_id=33, global_id=33] = 1.00000
+      coeff[local_id=34, global_id=34] = 1.00000
+      coeff[local_id=35, global_id=35] = 1.00000
+      coeff[local_id=36, global_id=36] = 1.00000
+      coeff[local_id=37, global_id=37] = 1.00000
+      coeff[local_id=38, global_id=38] = 1.00000
+      coeff[local_id=39, global_id=39] = 1.00000
+      coeff[local_id=40, global_id=40] = 1.00000
+      coeff[local_id=41, global_id=41] = 1.00000
+      coeff[local_id=42, global_id=42] = 1.00000
+      coeff[local_id=43, global_id=43] = 1.00000
+      coeff[local_id=44, global_id=44] = 1.00000
+      coeff[local_id=45, global_id=45] = 1.00000
+      coeff[local_id=46, global_id=46] = 1.00000
+      coeff[local_id=47, global_id=47] = 1.00000
+      coeff[local_id=48, global_id=48] = 1.00000
+      coeff[local_id=49, global_id=49] = 1.00000
+      coeff[local_id=50, global_id=50] = 1.00000
+      coeff[local_id=51, global_id=51] = 1.00000
+      coeff[local_id=52, global_id=52] = 1.00000
+      coeff[local_id=53, global_id=53] = 1.00000
+      coeff[local_id=54, global_id=54] = 1.00000
+      coeff[local_id=55, global_id=55] = 1.00000
+      coeff[local_id=56, global_id=56] = 1.00000
+      coeff[local_id=57, global_id=57] = 1.00000
+      coeff[local_id=58, global_id=58] = 1.00000
+      coeff[local_id=59, global_id=59] = 1.00000
+      coeff[local_id=60, global_id=60] = 1.00000
+      coeff[local_id=61, global_id=61] = 1.00000
+      coeff[local_id=62, global_id=62] = 1.00000
+      coeff[local_id=63, global_id=63] = 1.00000
+      coeff[local_id=64, global_id=64] = 1.00000
+      coeff[local_id=65, global_id=65] = 1.00000
+      coeff[local_id=66, global_id=66] = 1.00000
+      coeff[local_id=67, global_id=67] = 1.00000
+      coeff[local_id=68, global_id=68] = 1.00000
+      coeff[local_id=69, global_id=69] = 1.00000
+      coeff[local_id=70, global_id=70] = 1.00000
+      coeff[local_id=71, global_id=71] = 1.00000
+      coeff[local_id=72, global_id=72] = 1.00000
+      coeff[local_id=73, global_id=73] = 1.00000
+      coeff[local_id=74, global_id=74] = 1.00000
+      coeff[local_id=75, global_id=75] = 1.00000
+      coeff[local_id=76, global_id=76] = 1.00000
+      coeff[local_id=77, global_id=77] = 1.00000
+      coeff[local_id=78, global_id=78] = 1.00000
+      coeff[local_id=79, global_id=79] = 1.00000
+      coeff[local_id=80, global_id=80] = 1.00000
+      coeff[local_id=81, global_id=81] = 1.00000
+      coeff[local_id=82, global_id=82] = 1.00000
+      coeff[local_id=83, global_id=83] = 1.00000
+      coeff[local_id=84, global_id=84] = 1.00000
+      coeff[local_id=85, global_id=85] = 1.00000
+      coeff[local_id=86, global_id=86] = 1.00000
+      coeff[local_id=87, global_id=87] = 1.00000
+      coeff[local_id=88, global_id=88] = 1.00000
+      coeff[local_id=89, global_id=89] = 1.00000
+      coeff[local_id=90, global_id=90] = 1.00000
+      coeff[local_id=91, global_id=91] = 1.00000
+      coeff[local_id=92, global_id=92] = 1.00000
+      coeff[local_id=93, global_id=93] = 1.00000
+      coeff[local_id=94, global_id=94] = 1.00000
+      coeff[local_id=95, global_id=95] = 1.00000
+      coeff[local_id=96, global_id=96] = 1.00000
+      coeff[local_id=97, global_id=97] = 1.00000
+      coeff[local_id=98, global_id=98] = 1.00000
+      coeff[local_id=99, global_id=99] = 1.00000
+      coeff[local_id=100, global_id=100] = 1.00000
+      coeff[local_id=101, global_id=101] = 1.00000
+      coeff[local_id=102, global_id=102] = 1.00000
+      coeff[local_id=103, global_id=103] = 1.00000
+      coeff[local_id=104, global_id=104] = 1.00000
    
 
 Weight function[2] :
@@ -2384,114 +2339,111 @@ Weight function[2] :
    
    
    Control points info (euclidean coordinates):
-      -----------------------------
-      Global_ID        Value
-      0        1.00000
-      1        1.00000
-      2        1.00000
-      3        1.00000
-      4        1.00000
-      5        1.00000
-      6        1.00000
-      7        1.00000
-      8        1.00000
-      9        1.00000
-      10        1.00000
-      11        1.00000
-      12        1.00000
-      13        1.00000
-      14        1.00000
-      15        1.00000
-      16        1.00000
-      17        1.00000
-      18        1.00000
-      19        1.00000
-      20        1.00000
-      21        1.00000
-      22        1.00000
-      23        1.00000
-      24        1.00000
-      25        1.00000
-      26        1.00000
-      27        1.00000
-      28        1.00000
-      29        1.00000
-      30        1.00000
-      31        1.00000
-      32        1.00000
-      33        1.00000
-      34        1.00000
-      35        1.00000
-      36        1.00000
-      37        1.00000
-      38        1.00000
-      39        1.00000
-      40        1.00000
-      41        1.00000
-      42        1.00000
-      43        1.00000
-      44        1.00000
-      45        1.00000
-      46        1.00000
-      47        1.00000
-      48        1.00000
-      49        1.00000
-      50        1.00000
-      51        1.00000
-      52        1.00000
-      53        1.00000
-      54        1.00000
-      55        1.00000
-      56        1.00000
-      57        1.00000
-      58        1.00000
-      59        1.00000
-      60        1.00000
-      61        1.00000
-      62        1.00000
-      63        1.00000
-      64        1.00000
-      65        1.00000
-      66        1.00000
-      67        1.00000
-      68        1.00000
-      69        1.00000
-      70        1.00000
-      71        1.00000
-      72        1.00000
-      73        1.00000
-      74        1.00000
-      75        1.00000
-      76        1.00000
-      77        1.00000
-      78        1.00000
-      79        1.00000
-      80        1.00000
-      81        1.00000
-      82        1.00000
-      83        1.00000
-      84        1.00000
-      85        1.00000
-      86        1.00000
-      87        1.00000
-      88        1.00000
-      89        1.00000
-      90        1.00000
-      91        1.00000
-      92        1.00000
-      93        1.00000
-      94        1.00000
-      95        1.00000
-      96        1.00000
-      97        1.00000
-      98        1.00000
-      99        1.00000
-      100        1.00000
-      101        1.00000
-      102        1.00000
-      103        1.00000
-      104        1.00000
-      -----------------------------
+      coeff[local_id=0, global_id=0] = 1.00000
+      coeff[local_id=1, global_id=1] = 1.00000
+      coeff[local_id=2, global_id=2] = 1.00000
+      coeff[local_id=3, global_id=3] = 1.00000
+      coeff[local_id=4, global_id=4] = 1.00000
+      coeff[local_id=5, global_id=5] = 1.00000
+      coeff[local_id=6, global_id=6] = 1.00000
+      coeff[local_id=7, global_id=7] = 1.00000
+      coeff[local_id=8, global_id=8] = 1.00000
+      coeff[local_id=9, global_id=9] = 1.00000
+      coeff[local_id=10, global_id=10] = 1.00000
+      coeff[local_id=11, global_id=11] = 1.00000
+      coeff[local_id=12, global_id=12] = 1.00000
+      coeff[local_id=13, global_id=13] = 1.00000
+      coeff[local_id=14, global_id=14] = 1.00000
+      coeff[local_id=15, global_id=15] = 1.00000
+      coeff[local_id=16, global_id=16] = 1.00000
+      coeff[local_id=17, global_id=17] = 1.00000
+      coeff[local_id=18, global_id=18] = 1.00000
+      coeff[local_id=19, global_id=19] = 1.00000
+      coeff[local_id=20, global_id=20] = 1.00000
+      coeff[local_id=21, global_id=21] = 1.00000
+      coeff[local_id=22, global_id=22] = 1.00000
+      coeff[local_id=23, global_id=23] = 1.00000
+      coeff[local_id=24, global_id=24] = 1.00000
+      coeff[local_id=25, global_id=25] = 1.00000
+      coeff[local_id=26, global_id=26] = 1.00000
+      coeff[local_id=27, global_id=27] = 1.00000
+      coeff[local_id=28, global_id=28] = 1.00000
+      coeff[local_id=29, global_id=29] = 1.00000
+      coeff[local_id=30, global_id=30] = 1.00000
+      coeff[local_id=31, global_id=31] = 1.00000
+      coeff[local_id=32, global_id=32] = 1.00000
+      coeff[local_id=33, global_id=33] = 1.00000
+      coeff[local_id=34, global_id=34] = 1.00000
+      coeff[local_id=35, global_id=35] = 1.00000
+      coeff[local_id=36, global_id=36] = 1.00000
+      coeff[local_id=37, global_id=37] = 1.00000
+      coeff[local_id=38, global_id=38] = 1.00000
+      coeff[local_id=39, global_id=39] = 1.00000
+      coeff[local_id=40, global_id=40] = 1.00000
+      coeff[local_id=41, global_id=41] = 1.00000
+      coeff[local_id=42, global_id=42] = 1.00000
+      coeff[local_id=43, global_id=43] = 1.00000
+      coeff[local_id=44, global_id=44] = 1.00000
+      coeff[local_id=45, global_id=45] = 1.00000
+      coeff[local_id=46, global_id=46] = 1.00000
+      coeff[local_id=47, global_id=47] = 1.00000
+      coeff[local_id=48, global_id=48] = 1.00000
+      coeff[local_id=49, global_id=49] = 1.00000
+      coeff[local_id=50, global_id=50] = 1.00000
+      coeff[local_id=51, global_id=51] = 1.00000
+      coeff[local_id=52, global_id=52] = 1.00000
+      coeff[local_id=53, global_id=53] = 1.00000
+      coeff[local_id=54, global_id=54] = 1.00000
+      coeff[local_id=55, global_id=55] = 1.00000
+      coeff[local_id=56, global_id=56] = 1.00000
+      coeff[local_id=57, global_id=57] = 1.00000
+      coeff[local_id=58, global_id=58] = 1.00000
+      coeff[local_id=59, global_id=59] = 1.00000
+      coeff[local_id=60, global_id=60] = 1.00000
+      coeff[local_id=61, global_id=61] = 1.00000
+      coeff[local_id=62, global_id=62] = 1.00000
+      coeff[local_id=63, global_id=63] = 1.00000
+      coeff[local_id=64, global_id=64] = 1.00000
+      coeff[local_id=65, global_id=65] = 1.00000
+      coeff[local_id=66, global_id=66] = 1.00000
+      coeff[local_id=67, global_id=67] = 1.00000
+      coeff[local_id=68, global_id=68] = 1.00000
+      coeff[local_id=69, global_id=69] = 1.00000
+      coeff[local_id=70, global_id=70] = 1.00000
+      coeff[local_id=71, global_id=71] = 1.00000
+      coeff[local_id=72, global_id=72] = 1.00000
+      coeff[local_id=73, global_id=73] = 1.00000
+      coeff[local_id=74, global_id=74] = 1.00000
+      coeff[local_id=75, global_id=75] = 1.00000
+      coeff[local_id=76, global_id=76] = 1.00000
+      coeff[local_id=77, global_id=77] = 1.00000
+      coeff[local_id=78, global_id=78] = 1.00000
+      coeff[local_id=79, global_id=79] = 1.00000
+      coeff[local_id=80, global_id=80] = 1.00000
+      coeff[local_id=81, global_id=81] = 1.00000
+      coeff[local_id=82, global_id=82] = 1.00000
+      coeff[local_id=83, global_id=83] = 1.00000
+      coeff[local_id=84, global_id=84] = 1.00000
+      coeff[local_id=85, global_id=85] = 1.00000
+      coeff[local_id=86, global_id=86] = 1.00000
+      coeff[local_id=87, global_id=87] = 1.00000
+      coeff[local_id=88, global_id=88] = 1.00000
+      coeff[local_id=89, global_id=89] = 1.00000
+      coeff[local_id=90, global_id=90] = 1.00000
+      coeff[local_id=91, global_id=91] = 1.00000
+      coeff[local_id=92, global_id=92] = 1.00000
+      coeff[local_id=93, global_id=93] = 1.00000
+      coeff[local_id=94, global_id=94] = 1.00000
+      coeff[local_id=95, global_id=95] = 1.00000
+      coeff[local_id=96, global_id=96] = 1.00000
+      coeff[local_id=97, global_id=97] = 1.00000
+      coeff[local_id=98, global_id=98] = 1.00000
+      coeff[local_id=99, global_id=99] = 1.00000
+      coeff[local_id=100, global_id=100] = 1.00000
+      coeff[local_id=101, global_id=101] = 1.00000
+      coeff[local_id=102, global_id=102] = 1.00000
+      coeff[local_id=103, global_id=103] = 1.00000
+      coeff[local_id=104, global_id=104] = 1.00000
    
 
 ========================================================================

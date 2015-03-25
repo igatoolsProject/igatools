@@ -84,10 +84,10 @@ Vector(const Index num_global_dofs, CommPtr comm)
 
 
 Vector<LAPack::trilinos_tpetra>::
-Vector(const vector<Index> &dofs_id, CommPtr comm)
+Vector(const std::set<Index> &dofs_id, CommPtr comm)
     :
     VectorTrilinos<TrilinosImpl::tpetra>(
-        Tpetra::createNonContigMap<LO,GO>(dofs_id,comm))
+        Tpetra::createNonContigMap<LO,GO>(vector<Index>(dofs_id.begin(),dofs_id.end()),comm))
 {}
 
 Vector<LAPack::trilinos_tpetra>::
@@ -109,7 +109,7 @@ create(const Index size) -> std::shared_ptr<self_t>
 
 auto
 Vector<LAPack::trilinos_tpetra>::
-create(const vector<Index> &dof_ids) -> std::shared_ptr<self_t>
+create(const std::set<Index> &dof_ids) -> std::shared_ptr<self_t>
 {
     return make_shared<self_t>(self_t(dof_ids));
 }
@@ -244,10 +244,10 @@ add_block(
 
 vector<Real>
 Vector<LAPack::trilinos_tpetra>::
-get_local_coefs(const vector<Index> &local_to_global_ids) const
+get_local_coefs(const std::set<Index> &global_ids) const
 {
     vector<Real> local_coefs;
-    for (const auto &global_id : local_to_global_ids)
+    for (const auto &global_id : global_ids)
         local_coefs.emplace_back((*this)(global_id));
 
     return local_coefs;
@@ -298,10 +298,10 @@ Vector(const Index num_global_dofs, CommPtr comm)
 
 
 Vector<LAPack::trilinos_epetra>::
-Vector(const vector<Index> &dofs_id, CommPtr comm)
+Vector(const std::set<Index> &dofs_id, CommPtr comm)
     :
     VectorTrilinos<TrilinosImpl::epetra>(
-        Teuchos::rcp(new Map(-1,dofs_id.size(),dofs_id.data(),0,*comm)))
+        Teuchos::rcp(new Map(-1,dofs_id.size(),vector<Index>(dofs_id.begin(),dofs_id.end()).data(),0,*comm)))
 {}
 
 
@@ -331,7 +331,7 @@ create(const Index num_global_dofs) -> std::shared_ptr<self_t>
 
 auto
 Vector<LAPack::trilinos_epetra>::
-create(const vector<Index> &dof_ids) -> std::shared_ptr<self_t>
+create(const std::set<Index> &dof_ids) -> std::shared_ptr<self_t>
 {
     return make_shared<self_t>(self_t(dof_ids));
 }
@@ -447,10 +447,10 @@ operator()(const Index global_id)
 
 vector<Real>
 Vector<LAPack::trilinos_epetra>::
-get_local_coefs(const vector<Index> &local_to_global_ids) const
+get_local_coefs(const std::set<Index> &global_ids) const
 {
     vector<Real> local_coefs;
-    for (const auto &global_id : local_to_global_ids)
+    for (const auto &global_id : global_ids)
         local_coefs.emplace_back((*this)(global_id));
 
     return local_coefs;
@@ -460,9 +460,22 @@ get_local_coefs(const vector<Index> &local_to_global_ids) const
 
 auto
 Vector<LAPack::trilinos_epetra>::
-as_ig_fun_coefficients() const ->  const self_t &
+as_ig_fun_coefficients() const ->  const IgCoefficients
 {
-    return *this;
+    const Index n_entries = vector_->GlobalLength();
+    const auto &map = vector_->Map();
+
+    std::set<Index> global_dofs;
+    vector<Real> coeffs(n_entries);
+
+    const auto &data = (*vector_)[0];
+    for (Index i = 0 ; i < n_entries ; ++i)
+    {
+        const auto global_id = map.GID(i) ;
+        global_dofs.emplace(global_id);
+        coeffs[i] =  data[i];
+    }
+    return IgCoefficients(global_dofs, coeffs);
 }
 
 

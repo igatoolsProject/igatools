@@ -24,18 +24,24 @@
 #include <igatools/base/function.h>
 #include <igatools/base/ig_function.h>
 
+#include <igatools/geometry/grid_tools.h>
+
 #include <igatools/linear_algebra/distributed_matrix.h>
 #include <igatools/linear_algebra/linear_solver.h>
 
-#include<set>
 #include <igatools/base/sub_function.h>
 
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/basis_functions/phys_space_element_handler.h>
 
+
+#include<set>
+
 IGA_NAMESPACE_OPEN
 namespace space_tools
 {
+
+
 /**
  * Perform an (L2)-Projection the function @p func
  * onto the space @p space using the quadrature rule @p quad.
@@ -46,89 +52,200 @@ template<class Space, LAPack la_pack = LAPack::trilinos_epetra>
 std::shared_ptr<IgFunction<Space> >
 projection_l2(const std::shared_ptr<const typename Space::Func> function,
               std::shared_ptr<const Space> space,
-              const Quadrature<Space::dim> &quad)
+              const Quadrature<Space::dim> &quad,
+              const std::string &dofs_property = DofProperties::active)
 {
+    using ProjFunc = IgFunction<Space>;
+    std::shared_ptr<ProjFunc> projection;
+
     const auto &dof_distribution = *(space->get_dof_distribution());
-    const std::string dofs_filter =
-        dof_distribution.is_property_defined(DofProperties::active) ?
-        DofProperties::active : DofProperties::active;
 
-
-
-    auto func = function->clone();
-    const int dim = Space::dim;
-
-//    const auto space_manager = space->get_space_manager();
     const auto space_manager =
         build_space_manager_single_patch<Space>(std::const_pointer_cast<Space>(space));
     Matrix<la_pack> matrix(*space_manager);
 
-    const auto space_dofs_set = space_manager->get_row_dofs();
-    vector<Index> space_dofs(space_dofs_set.begin(),space_dofs_set.end());
+    const auto space_dofs = space_manager->get_row_dofs();
+//    vector<Index> space_dofs(space_dofs_set.begin(),space_dofs_set.end());
     Vector<la_pack> rhs(space_dofs);
     Vector<la_pack> sol(space_dofs);
 
-    auto func_flag = ValueFlags::point | ValueFlags::value;
-    func->reset(func_flag, quad);
+    const auto space_grid =    space->get_grid();
+    const auto  func_grid = function->get_grid();
 
-    using ElementHandler = typename Space::ElementHandler;
-    auto sp_filler = ElementHandler::create(space);
-    auto sp_flag = ValueFlags::point | ValueFlags::value |
-                   ValueFlags::w_measure;
-    sp_filler->reset(sp_flag, quad);
 
-    auto f_elem = func->begin();
-    auto elem = space->begin();
-    auto end  = space->end();
-
-    func->init_element_cache(f_elem);
-    sp_filler->init_element_cache(elem);
-
-    const int n_qp = quad.get_num_points();
-
-    for (; elem != end; ++elem, ++f_elem)
+    if (space_grid == func_grid)
     {
-        const int n_basis = elem->get_num_basis(dofs_filter);
-        DenseVector loc_rhs(n_basis);
-        DenseMatrix loc_mat(n_basis, n_basis);
+        auto func = function->clone();
+        const int dim = Space::dim;
 
-        func->fill_element_cache(f_elem);
-        sp_filler->fill_element_cache(elem);
+        auto func_flag = ValueFlags::point | ValueFlags::value;
+        func->reset(func_flag, quad);
 
-        loc_mat = 0.;
-        loc_rhs = 0.;
+        using ElementHandler = typename Space::ElementHandler;
+        auto sp_filler = ElementHandler::create(space);
+        auto sp_flag = ValueFlags::point | ValueFlags::value |
+                       ValueFlags::w_measure;
+        sp_filler->reset(sp_flag, quad);
 
-        auto f_at_qp = f_elem->template get_values<0,dim>(0);
-        auto phi = elem->template get_values<0,dim>(0,dofs_filter);
+        auto f_elem = func->begin();
+        auto elem = space->begin();
+        auto end  = space->end();
 
-        // computing the upper triangular part of the local matrix
-        auto w_meas = elem->template get_w_measures<dim>(0);
-        for (int i = 0; i < n_basis; ++i)
+        func->init_element_cache(f_elem);
+        sp_filler->init_element_cache(elem);
+
+        const int n_qp = quad.get_num_points();
+
+        for (; elem != end; ++elem, ++f_elem)
         {
-            const auto phi_i = phi.get_function_view(i);
-            for (int j = i; j < n_basis; ++j)
+            const int n_basis = elem->get_num_basis(dofs_property);
+            DenseVector loc_rhs(n_basis);
+            DenseMatrix loc_mat(n_basis, n_basis);
+
+            func->fill_element_cache(f_elem);
+            sp_filler->fill_element_cache(elem);
+
+            loc_mat = 0.;
+            loc_rhs = 0.;
+
+            auto f_at_qp = f_elem->template get_values<0,dim>(0);
+            auto phi = elem->get_element_values(dofs_property);
+
+            // computing the upper triangular part of the local matrix
+            auto w_meas = elem->get_element_w_measures();
+            for (int i = 0; i < n_basis; ++i)
             {
-                const auto phi_j = phi.get_function_view(j);
-                for (int q = 0; q < n_qp; ++q)
-                    loc_mat(i,j) += scalar_product(phi_i[q], phi_j[q]) * w_meas[q];
+                const auto phi_i = phi.get_function_view(i);
+                for (int j = i; j < n_basis; ++j)
+                {
+                    const auto phi_j = phi.get_function_view(j);
+                    for (int q = 0; q < n_qp; ++q)
+                        loc_mat(i,j) += scalar_product(phi_i[q], phi_j[q]) * w_meas[q];
+                }
+
+                for (int q = 0; q < n_qp; q++)
+                    loc_rhs(i) += scalar_product(f_at_qp[q], phi_i[q]) * w_meas[q];
             }
 
-            for (int q = 0; q < n_qp; q++)
-                loc_rhs(i) += scalar_product(f_at_qp[q], phi_i[q]) * w_meas[q];
+            // filling symmetric ;lower part of local matrix
+            for (int i = 0; i < n_basis; ++i)
+                for (int j = 0; j < i; ++j)
+                    loc_mat(i, j) = loc_mat(j, i);
+
+            const auto elem_dofs = elem->get_local_to_global(dofs_property);
+            matrix.add_block(elem_dofs,elem_dofs,loc_mat);
+            rhs.add_block(elem_dofs,loc_rhs);
         }
-
-        // filling symmetric ;lower part of local matrix
-        for (int i = 0; i < n_basis; ++i)
-            for (int j = 0; j < i; ++j)
-                loc_mat(i, j) = loc_mat(j, i);
-
-        const auto local_dofs = elem->get_local_to_global(dofs_filter);
-        matrix.add_block(local_dofs,local_dofs,loc_mat);
-        rhs.add_block(local_dofs,loc_rhs);
+        matrix.fill_complete();
     }
-    matrix.fill_complete();
+    else
+    {
+        Assert(space_grid->same_knots_or_refinement_of(*func_grid),
+               ExcMessage("The space grid is not a refinement of the function grid."));
 
-    // TODO (pauletti, Oct 9, 2014): the solver must use a precon
+        Assert(false,ExcNotImplemented());
+        auto func = function->clone();
+        const int dim = Space::dim;
+
+
+        auto func_flag = ValueFlags::point | ValueFlags::value;
+        func->reset(func_flag, quad);
+
+        using ElementHandler = typename Space::ElementHandler;
+        auto sp_filler = ElementHandler::create(space);
+        auto sp_flag = ValueFlags::point | ValueFlags::value |
+                       ValueFlags::w_measure;
+        sp_filler->reset(sp_flag, quad);
+
+        auto f_elem = func->begin();
+        auto elem = space->begin();
+        auto end  = space->end();
+
+
+        auto map_elems_fine_coarse =
+            grid_tools::build_map_elements_between_cartesian_grids(
+                *space->get_grid(),*func->get_grid());
+
+        func->init_element_cache(f_elem);
+        sp_filler->init_element_cache(elem);
+
+        const int n_qp = quad.get_num_points();
+
+//    for (; elem != end; ++elem, ++f_elem)
+        for (const auto &elems_pair : map_elems_fine_coarse)
+        {
+            elem->move_to(elems_pair.first ->get_flat_index());
+            f_elem->move_to(elems_pair.second->get_flat_index());
+
+            const auto &elem_ref = *elem;
+            const auto &f_elem_ref = *elem;
+
+            const int n_basis = elem->get_num_basis(dofs_property);
+            DenseVector loc_rhs(n_basis);
+            DenseMatrix loc_mat(n_basis, n_basis);
+
+            func->fill_element_cache(f_elem);
+            sp_filler->fill_element_cache(elem);
+
+            loc_mat = 0.;
+            loc_rhs = 0.;
+
+//        auto f_at_qp = f_elem->template get_values<0,dim>(0);
+
+            //---------------------------------------------------------------------------
+            // the function is supposed to be defined on the same grid of the space or coarser
+            const auto &elem_grid_accessor = elem->as_cartesian_grid_element_accessor();
+            auto quad_in_func_elem = quad;
+            quad_in_func_elem.dilate_translate(
+                elem_grid_accessor.
+                template get_coordinate_lengths<dim>(0),
+                elem_grid_accessor.vertex(0));
+
+            auto one_div_f_elem_size = f_elem->template get_coordinate_lengths<dim>(0);
+            for (int dir : UnitElement<dim>::active_directions)
+                one_div_f_elem_size[dir] = 1.0/one_div_f_elem_size[dir];
+
+            auto f_elem_vertex = -f_elem->vertex(0);
+            quad_in_func_elem.translate(f_elem_vertex);
+            quad_in_func_elem.dilate(one_div_f_elem_size);
+
+
+            auto f_at_qp = f_elem->evaluate_values_at_points(quad_in_func_elem);
+            //---------------------------------------------------------------------------
+
+
+            auto phi = elem->get_element_values(dofs_property);
+
+            // computing the upper triangular part of the local matrix
+//            auto w_meas = elem->template get_w_measures<dim>(0);
+            auto w_meas = elem->get_element_w_measures();
+            for (int i = 0; i < n_basis; ++i)
+            {
+                const auto phi_i = phi.get_function_view(i);
+                for (int j = i; j < n_basis; ++j)
+                {
+                    const auto phi_j = phi.get_function_view(j);
+                    for (int q = 0; q < n_qp; ++q)
+                        loc_mat(i,j) += scalar_product(phi_i[q], phi_j[q]) * w_meas[q];
+                }
+
+                for (int q = 0; q < n_qp; q++)
+                    loc_rhs(i) += scalar_product(f_at_qp[q], phi_i[q]) * w_meas[q];
+            }
+
+            // filling symmetric ;lower part of local matrix
+            for (int i = 0; i < n_basis; ++i)
+                for (int j = 0; j < i; ++j)
+                    loc_mat(i, j) = loc_mat(j, i);
+
+            const auto elem_dofs = elem->get_local_to_global(dofs_property);
+            matrix.add_block(elem_dofs,elem_dofs,loc_mat);
+            rhs.add_block(elem_dofs,loc_rhs);
+        }
+        matrix.fill_complete();
+    }
+
+
     const Real tol = 1.0e-15;
     const int max_iter = 1000;
     using LinSolver = LinearSolverIterative<la_pack>;
@@ -137,7 +254,13 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
                      tol,max_iter);
     solver.solve(matrix, rhs, sol);
 
-    return std::make_shared<IgFunction<Space>>(IgFunction<Space>(space, sol.as_ig_fun_coefficients()));
+    const auto &dofs = space->get_dof_distribution()->get_dofs_id_same_property(dofs_property);
+
+
+    return ProjFunc::create(
+               std::const_pointer_cast<Space>(space),
+               IgCoefficients(*space,dofs_property,sol.get_local_coefs(dofs)),
+               dofs_property);
 }
 
 
@@ -203,7 +326,8 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
         const auto &coef = proj->get_coefficients();
         const int face_n_dofs = dof_map.size();
         for (Index i = 0; i< face_n_dofs; ++i)
-            boundary_values[dof_map[i]] = coef[i];
+            boundary_values[dof_map[i]] = coef(i);
+        //*/
     }
 }
 

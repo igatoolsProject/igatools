@@ -72,13 +72,13 @@ void do_test()
     auto  bsp = BSplineSpace<dim, range, rank >::create(degree, knots);
     const auto n_basis = bsp->get_num_basis_table();
 
-    DynamicMultiArray<Real,dim> weights(n_basis[0],1.0);
+    vector<Real> weights(n_basis[0].flat_size(),1.0);
 
     using ScalarBSplineSpace = BSplineSpace<dim>;
     using WeightFunc = IgFunction<ReferenceSpace<dim>>;
-    auto w_func = shared_ptr<WeightFunc>(new WeightFunc(
-                                             ScalarBSplineSpace::create(degree,CartesianGrid<dim>::create(coord)),
-                                             weights.get_data()));
+    auto scalar_space = ScalarBSplineSpace::create(degree,CartesianGrid<dim>::create(coord));
+    auto w_func = WeightFunc::create(scalar_space,
+                                     IgCoefficients(*scalar_space,DofProperties::active,weights));
 
     using WeightFuncPtrTable = typename Space::WeightFunctionPtrTable;
     auto w_funcs_table = WeightFuncPtrTable(w_func);

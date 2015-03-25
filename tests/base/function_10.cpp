@@ -46,7 +46,7 @@ void test()
     const int deg = 1;
     auto space = Space::create(deg, grid);
     using CoeffType = typename Function::CoeffType;
-    CoeffType coeff(space->get_num_basis());
+    CoeffType coeff(*space, DofProperties::active);
     coeff[0] = 1.;
     auto F = Function::create(space, coeff);
     F->reset(flag, quad);

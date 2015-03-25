@@ -30,7 +30,8 @@
 #include <igatools/base/logstream.h>
 
 using namespace iga;
-using namespace std;
+using std::endl;
+using std::to_string;
 
 LogStream out;
 
@@ -40,7 +41,6 @@ void plot_basis(const int deg)
 {
     using Space  = BSplineSpace<dim>;
     using Func = IgFunction<ReferenceSpace<dim>>;
-    using Coeffs = typename Func::CoeffType;
 
     const int n_knots = deg + 2;
     auto grid  = CartesianGrid<dim>::create(n_knots);
@@ -48,8 +48,7 @@ void plot_basis(const int deg)
     // [plot function]
 
     // [init vec]
-    const int n_basis = space->get_num_basis();
-    Coeffs coeffs(n_basis);
+    auto coeffs = IgCoefficients(*space,DofProperties::active);
     // [init vec]
 
     // [tensor to flat]
@@ -71,7 +70,7 @@ void plot_basis(const int deg)
 
     string field_name = "basis " + to_string(basis_index);
 
-    auto basis = Func::create(space, Coeffs(coeffs));
+    auto basis = Func::create(space, coeffs);
     output.template add_field<1,1>(basis, field_name);
 
     string file_name = "bspline_basis-" + to_string(dim) + "d";

@@ -442,7 +442,7 @@ evaluate_nurbs_gradients_from_bspline(
 
             auto dR_fn = D1_phi.get_function_view(bsp_fn_id);
 
-            const Real w = w_coefs[bsp_local_to_patch[bsp_fn_id]-offset];
+            const Real w = w_coefs(bsp_local_to_patch[bsp_fn_id]-offset);
 
             for (int pt = 0 ; pt < n_pts ; ++pt)
             {
@@ -568,7 +568,7 @@ evaluate_nurbs_hessians_from_bspline(
 
             auto d2R_fn = D2_phi.get_function_view(bsp_fn_id);
 
-            const Real w = w_coefs[bsp_local_to_patch[bsp_fn_id]-offset];
+            const Real w = w_coefs(bsp_local_to_patch[bsp_fn_id]-offset);
 
             for (int pt = 0 ; pt < n_pts ; ++pt)
             {

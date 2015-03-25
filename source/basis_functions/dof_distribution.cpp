@@ -93,11 +93,16 @@ DofDistribution(const TensorSizeTable &n_basis,
                      DofsIterator(components_views,IteratorState::pass_the_end));
     // creating the dofs view from the dofs components views -- end
     //-----------------------------------------------------------------------
+
+
+    //-----------------------------------------------------------------------
     properties_dofs_.add_property(DofProperties::active);
     properties_dofs_.set_ids_property_status(
         DofProperties::active,
         std::set<Index>(dofs_view_.cbegin(),dofs_view_.cend()),
         true);
+    //-----------------------------------------------------------------------
+
 }
 
 
@@ -125,7 +130,7 @@ get_max_dof_id() const
 template<int dim, int range, int rank>
 bool
 DofDistribution<dim, range, rank>::
-find_dof_id(const Index dof_id, int &comp_id, TensorIndex<dim> &tensor_index) const
+find_dof_id(const Index dof_id, int &comp_id, Index &dof_id_in_component) const
 {
     bool dof_is_found = false;
 
@@ -143,7 +148,10 @@ find_dof_id(const Index dof_id, int &comp_id, TensorIndex<dim> &tensor_index) co
         {
             dof_is_found = true;
             comp_id = comp;
-            tensor_index = index_table_comp.flat_to_tensor(it-dofs_begin);
+
+            const auto dofs_offset = this->get_dofs_offset();
+            dof_id_in_component = dof_id - dofs_offset[comp_id];
+//            tensor_index = index_table_comp.flat_to_tensor(it-dofs_begin);
 
             break;
         }
@@ -159,13 +167,10 @@ void
 DofDistribution<dim, range, rank>::
 add_dofs_offset(const Index offset)
 {
-    /*
-    for (auto &dofs_component : index_table_)
-        for (auto &dof_id : dofs_component)
-            dof_id += offset;
-    //*/
     for (auto &dof : dofs_view_)
         dof += offset;
+
+    properties_dofs_.add_offset(offset);
 }
 
 
@@ -177,7 +182,6 @@ get_index_table() const -> const IndexDistributionTable &
 {
     return index_table_;
 }
-
 
 
 template<int dim, int range, int rank>
@@ -202,41 +206,39 @@ Index
 DofDistribution<dim, range, rank>::
 global_to_patch_local(const Index global_dof_id) const
 {
-    int comp_id;
-    TensorIndex<dim> tensor_index;
+    int comp;
+    Index dof_id_comp;
+    this->global_to_comp_local(global_dof_id,comp,dof_id_comp);
+
+    //TODO (martinelli, 19Mar2015): this is wrong for periodic dofs
+    const Index offset = index_table_size_.get_offset()[comp];
+
+    const Index local_dof_id = offset + dof_id_comp;
+
+    return local_dof_id;
+}
+
+template<int dim, int range, int rank>
+void
+DofDistribution<dim, range, rank>::
+global_to_comp_local(const Index global_dof_id,int &comp,int &dof_id_comp) const
+{
 #ifndef NDEBUG
-    bool global_dof_is_found = this->find_dof_id(global_dof_id,comp_id,tensor_index);
+    bool global_dof_is_found = this->find_dof_id(global_dof_id,comp,dof_id_comp);
     Assert(global_dof_is_found,
            ExcMessage("The global dof id " + std::to_string(global_dof_id) +
                       " is not present in the DofDistribution."));
 #else
-    this->find_dof_id(global_dof_id,comp_id,tensor_index);
+    this->find_dof_id(global_dof_id,comp,dof_id_comp);
 #endif
-
-    /*
-    Index offset = 0;
-    for (int comp = 0 ; comp < comp_id ; ++comp)
-        offset += index_table_[comp].flat_size();
-    //*/
-
-    const Index offset = index_table_size_.get_offset()[comp_id];
-
-    const Index local_dof_id = offset + index_table_[comp_id].tensor_to_flat(tensor_index);
-
-    return local_dof_id;
 }
+
 
 template<int dim, int range, int rank>
 auto
 DofDistribution<dim, range, rank>::
 get_dofs_offset() const -> OffsetTable
 {
-    /*
-    OffsetTable offset;
-    offset[0] = 0;
-    for (int comp = 1; comp < Space::n_components; ++comp)
-        offset[comp] = offset[comp-1] + num_dofs_table_.get_component_size(comp-1);
-    //*/
     return num_dofs_table_.get_offset();
 }
 
@@ -292,6 +294,7 @@ add_dofs_property(const std::string &property)
 
 
 
+
 template<int dim, int range, int rank>
 Size
 DofDistribution<dim, range, rank>::
@@ -299,6 +302,7 @@ get_num_dofs(const std::string &property) const
 {
     return properties_dofs_.get_ids_same_property(property).size();
 }
+
 
 
 

@@ -544,6 +544,24 @@ print_cache_info(LogStream &out) const
     local_cache_->print_info(out);
 }
 
+
+template <int dim>
+vector<std::string>
+CartesianGridElement<dim>::
+get_defined_properties() const
+{
+    vector<std::string> elem_properties;
+
+    vector<std::string> grid_properties = grid_->properties_elements_id_.get_properties();
+    for (const auto &property : grid_properties)
+    {
+        if (grid_->test_if_element_has_property(flat_index_, property))
+            elem_properties.emplace_back(property);
+    }
+    return elem_properties;
+}
+
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/cartesian_grid_element.inst>

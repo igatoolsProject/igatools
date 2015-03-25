@@ -145,7 +145,6 @@ public:
     using PeriodicityTable = typename SpSpace::PeriodicityTable;
     using EndBehaviourTable = typename SpSpace::EndBehaviourTable;
 
-    using BCTable = typename SpSpace::BCTable;
 
     using WeightSpace = BSplineSpace<dim_,1,1>;
     using WeightFunction = IgFunction<ReferenceSpace<dim_,1,1> >;

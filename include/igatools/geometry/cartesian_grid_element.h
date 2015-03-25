@@ -254,6 +254,13 @@ public:
      */
     Point vertex(const int i) const;
 
+
+    /**
+     * Return the properties defined for the element.
+     */
+    vector<std::string> get_defined_properties() const;
+
+
 public:
     template<int k>
     const Point &get_coordinate_lengths(const int j) const;
