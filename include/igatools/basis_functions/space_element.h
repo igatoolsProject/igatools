@@ -49,6 +49,10 @@ private:
     using self_t = SpaceElementBase<dim>;
 
     using Space = FunctionSpaceOnGrid<CartesianGrid<dim>>;
+
+protected:
+    std::shared_ptr<const Space> space0_;
+
 public:
     using base_t::get_flat_index;
     using base_t::get_tensor_index;
@@ -139,8 +143,74 @@ public:
     }
 
 
-private:
-    std::shared_ptr<const Space> space0_;
+    /**
+     * Returns the global dofs of the local (non zero) basis functions
+     * on the element.
+     *
+     * @note The dofs can be filtered invoking the function with the argument @p dof_property.
+     * If @p dof_property is equal to DofProperties::active, then no filter is applied.
+     *
+     * For example:
+     * \code
+       auto loc_to_glob_all = elem->get_local_to_global(DofProperties::active);
+       // loc_to_glob_all[0] is the global id of the first basis function on the element
+       // loc_to_glob_all[1] is the global id of the second basis function on the element
+       // ...
+       auto loc_to_glob_active = elem->get_local_to_global(DofProperties::active);
+       // loc_to_glob_active[0] is the global id of the first active basis function on the element
+       // loc_to_glob_active[1] is the global id of the second active basis function on the element
+       // ...
+      \endcode
+     *
+     */
+    vector<Index>
+    get_local_to_global(const std::string &dofs_property) const
+    {
+        vector<Index> dofs_global;
+        vector<Index> dofs_loc_to_patch;
+        vector<Index> dofs_loc_to_elem;
+        this->space0_->get_element_dofs(
+        		*this,
+    			dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
+
+        return dofs_global;
+    }
+
+    /**
+     * Returns the patch dofs of the local (non zero) basis functions
+     * on the element.
+     *
+     * @note The dofs can be filtered invoking the function with the argument @p dof_property.
+     * If @p dof_property is equal to DofProperties::active, then no filter is applied.
+     *
+     */
+    inline
+    vector<Index>
+    get_local_to_patch(const std::string &dofs_property) const
+    {
+        vector<Index> dofs_global;
+        vector<Index> dofs_loc_to_patch;
+        vector<Index> dofs_loc_to_elem;
+        this->space0_->get_element_dofs(
+        		*this,
+    			dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
+
+        return dofs_loc_to_patch;
+    }
+
+
+    /**
+     *  Number of non zero basis functions with the given @p dofs_property,
+     *  over the current element.
+     */
+    inline Size get_num_basis(const std::string &dofs_property) const
+    {
+        const auto dofs_global = this->get_local_to_global(dofs_property);
+        return dofs_global.size();
+    }
+
+    virtual Size get_num_basis() const = 0;
+
 
 
 public:
@@ -263,7 +333,7 @@ public:
     /**
      * Destructor.
      */
-    ~SpaceElement() = default;
+    virtual ~SpaceElement() = default;
     ///@}
 
     /** @name Assignment operators */
@@ -301,7 +371,6 @@ public:
     ///@}
 
 
-
     template<int order = 0, int k = dim>
     auto
     get_values(const int j, const std::string &dofs_property = DofProperties::active) const
@@ -317,7 +386,7 @@ public:
         vector<Index> dofs_local_to_patch;
         vector<Index> dofs_local_to_elem;
 
-        this->space_->get_element_dofs(
+        this->space0_->get_element_dofs(
             this->as_cartesian_grid_element_accessor(),
             dofs_global,
             dofs_local_to_patch,
@@ -403,280 +472,11 @@ public:
     }
 
 
-#if 0
-    /** @name Functions returning the value of the basis functions. */
-    ///@{
-    /**
-     * Returns the const reference to a ValueTable with the values of all local basis function
-     * at each evaluation point.
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    ValueTable<Value> const &get_basis_values() const;
-
-    /**
-     * Returns a const view to the values of the <tt>i</tt>-th basis function at each evaluation point.
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    typename ValueTable<Value>::const_view
-    get_basis_values(const Index i) const;
-
-    /**
-     * Returns the const reference to the value of a local basis function
-     * at one evaluation point.
-     * @param[in] basis Local basis id.
-     * @param[in] qp Point id.
-     *
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    Value const &get_basis_value(const Index basis, const Index qp);
-
-    /**
-     * Returns the const reference to a ValueTable with the values of all local basis function
-     * at each evaluation point on the face specified by @p face_id.
-     */
-    ValueTable<Value> const &get_face_basis_values(const Index face_id) const;
-    ///@}
-
-
-
-    /** @name Functions returning the gradient of the basis functions. */
-    ///@{
-    /**
-     * Returns the const reference to a ValueTable with the gradients of all local basis function
-     * evaluated at each evaluation point.
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    ValueTable<Derivative<1>> const &get_basis_gradients() const;
-
-    /**
-     * Returns a const view to the gradients of the <tt>i</tt>-th basis function at each evaluation point.
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    typename ValueTable<Derivative<1> >::const_view
-    get_basis_gradients(const Index i,) const;
-
-    /**
-     * Returns the const reference to the gradient of a local basis function
-     * at one evaluation point.
-     * @param[in] basis Local basis id.
-     * @param[in] qp Point id.
-     *
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    Derivative<1> const &get_basis_gradient(const Index basis, const Index qp)
-
-    /**
-     * Returns the const reference to a ValueTable with the gradients of all local basis function
-     * at each evaluation point on the face specified by @p face_id.
-     */
-    ValueTable<Derivative<1>> const
-                           &get_face_basis_gradients(const Index face_id) const;
-    ///@}
-
-    /** @name Functions returning the hessian of the basis functions. */
-    ///@{
-    /**
-     * Returns the const reference to a ValueTable with hessians of all local basis function
-     * at each evaluation point.
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    ValueTable<Derivative<2>> const &get_basis_hessians() const;
-
-    /**
-     * Returns a const view to the hessians of the <tt>i</tt>-th basis function at each evaluation point.
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    typename ValueTable<Derivative<2> >::const_view
-    get_basis_hessians(const Index i,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Returns the const reference to the hessian of a local basis function
-     * at one evaluation point.
-     * @param[in] basis Local basis id.
-     * @param[in] qp Point id.
-     *
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    Derivative<2> const &get_basis_hessian(const Index basis, const Index qp) const;
-
-    /**
-     * Returns the const reference to a ValueTable with the hessians of all local basis function
-     * at each evaluation point on the face specified by @p face_id.
-     */
-    ValueTable<Derivative<2>> const &get_face_basis_hessians(const Index face_id) const;
-    ///@}
-
-    /** @name Functions returning the divergence of the basis functions. */
-    ///@{
-    /**
-     * Returns the const reference to a ValueTable with the values of all local basis function
-     * at each evaluation point.
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    ValueTable<Div> const &get_basis_divergences() const;
-
-    /**
-     * Returns a const view to the divergences of the <tt>i</tt>-th basis function at each evaluation point.
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    typename ValueTable<Div>::const_view
-    get_basis_divergences(const Index i) const;
-
-    /**
-     * Returns the const reference to the divergence of a local basis function
-     * at one evaluation point.
-     * @param[in] basis Local basis id.
-     * @param[in] qp Point id.
-     *
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     */
-    Div const &get_basis_divergence(const Index basis, const Index qp,const TopologyId<dim> &topology_id = ElemTopology<dim>()) const;
-
-    /**
-     * Returns the const reference to a ValueTable with the divergences of all local basis function
-     * at each evaluation point on the face specified by @p face_id.
-     */
-    ValueTable<Div> const &get_face_basis_divergences(const Index face_id) const;
-    ///@}
-
-
-
-
-    /** @name Fields related */
-    ///@{
-    /**
-     * Returns the ValueVector with the evaluation of the field @p local_coefs at the evaluation
-     * points.
-     *
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     * @see get_local_coefs
-     */
-    ValueVector<Value>
-    evaluate_field(const vector<Real> &local_coefs) const;
-
-
-    /**
-     * Returns the ValueVector with the evaluation of the field @p local_coefs at the evaluation
-     * points on the face specified by @p face_id.
-     */
-    ValueVector<Value>
-    evaluate_face_field(const Index face_id, const vector<Real> &local_coefs) const;
-
-    /**
-     * Returns the ValueVector with the evaluation of the gradient of the field @p local_coefs
-     * at the evaluation points.
-     *
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     * @see get_local_coefs
-     */
-    ValueVector<Derivative<1> >
-    evaluate_field_gradients(const vector<Real> &local_coefs) const;
-
-    /**
-     * Returns the ValueVector with the evaluation of the gradient of the field @p local_coefs at the evaluation
-     * points on the face specified by @p face_id.
-     */
-    ValueVector<Derivative<1> >
-    evaluate_face_field_gradients(const Index face_id,
-                                  const vector<Real> &local_coefs) const;
-
-    /**
-     * Returns the ValueVector with the evaluation of the hessians of the field @p local_coefs
-     * at the evaluation points.
-     *
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     * @see get_local_coefs
-     */
-    ValueVector<Derivative<2> >
-    evaluate_field_hessians(const vector<Real> &local_coefs) const;
-
-    /**
-     * Returns the ValueVector with the evaluation of the hessian of the field @p local_coefs at the evaluation
-     * points on the face specified by @p face_id.
-     */
-    ValueVector<Derivative<2> >
-    evaluate_face_field_hessians(const Index face_id,
-                                 const vector<Real> &local_coefs) const;
-
-    /**
-     * Returns the ValueVector with the evaluation of the divergences of the field @p local_coefs
-     * at the evaluation points.
-     *
-     * @note The @p topology_id parameter can be used to select values on the element
-     * (it's the default behaviour if @p topology_id is not specified) or on a element-face. See the TopologyId documentation).
-     * @see get_local_coefs
-     */
-    ValueVector<Div>
-    evaluate_field_divergences(const vector<Real> &local_coefs) const;
-
-    /**
-     * Returns the ValueVector with the evaluation of the divergence of the field @p local_coefs at the evaluation
-     * points on the face specified by @p face_id.
-     */
-    ValueVector<Div>
-    evaluate_face_field_divergences(const Index face_id,
-                                    const vector<Real> &local_coefs) const;
-    ///@}
-
-#endif
 
     /** @name Query information without use of cache */
     ///@{
-    /**
-     *  Number of non zero basis functions with the given @p dofs_property,
-     *  over the current element.
-     */
-    Size get_num_basis(const std::string &dofs_property) const;
-
-    virtual Size get_num_basis() const = 0;
 
 
-    /**
-     * Returns the global dofs of the local (non zero) basis functions
-     * on the element.
-     *
-     * @note The dofs can be filtered invoking the function with the argument @p dof_property.
-     * If @p dof_property is equal to DofProperties::active, then no filter is applied.
-     *
-     * For example:
-     * \code
-       auto loc_to_glob_all = elem->get_local_to_global(DofProperties::active);
-       // loc_to_glob_all[0] is the global id of the first basis function on the element
-       // loc_to_glob_all[1] is the global id of the second basis function on the element
-       // ...
-       auto loc_to_glob_active = elem->get_local_to_global(DofProperties::active);
-       // loc_to_glob_active[0] is the global id of the first active basis function on the element
-       // loc_to_glob_active[1] is the global id of the second active basis function on the element
-       // ...
-      \endcode
-     *
-     */
-    vector<Index> get_local_to_global(const std::string &dofs_property = DofProperties::active) const;
-
-    /**
-     * Returns the patch dofs of the local (non zero) basis functions
-     * on the element.
-     *
-     * @note The dofs can be filtered invoking the function with the argument @p dof_property.
-     * If @p dof_property is equal to DofProperties::active, then no filter is applied.
-     *
-     */
-    vector<Index> get_local_to_patch(const std::string &dofs_property) const;
 
     /**
      * Pointer to the @p Space upon which the accessor is iterating on.

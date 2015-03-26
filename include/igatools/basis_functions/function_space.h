@@ -24,6 +24,8 @@
 #include <igatools/base/config.h>
 #include <igatools/geometry/grid_wrapper.h>
 
+//#include <string>
+
 IGA_NAMESPACE_OPEN
 
 
@@ -49,6 +51,15 @@ public:
 
     using Topology = typename Grid_::Topology;
 
+    using GridElement = typename Grid_::ElementAccessor;
+
+    virtual void get_element_dofs(
+        const GridElement &element,
+        vector<Index> &dofs_global,
+        vector<Index> &dofs_local_to_patch,
+        vector<Index> &dofs_local_to_elem,
+        const std::string &dofs_property = DofProperties::active) const = 0;
+
 
 protected:
     /** @name Constructor and destructor. */
@@ -66,7 +77,7 @@ protected:
     FunctionSpaceOnGrid(self_t &&grid) = default;
 
     /** Destructor. */
-    ~FunctionSpaceOnGrid() = default;
+    virtual ~FunctionSpaceOnGrid() = default;
     ///@}
 
     /** @name Assignment operator. */

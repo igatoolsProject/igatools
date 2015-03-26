@@ -41,16 +41,6 @@ SpaceElement(const std::shared_ptr<const Space> space,
 {}
 
 
-#if 0
-template<class Space>
-inline
-SpaceElement<Space>::
-SpaceElement(const std::shared_ptr<const Space> space,
-             const TensorIndex<dim> &elem_index)
-    :
-    SpaceElement(space, space->get_grid()->tensor_to_flat(elem_index))
-{}
-#endif
 
 
 template<class Space>
@@ -140,51 +130,8 @@ operator=(const SpaceElement<Space> &element)
 }
 
 
-#if 0
-template<class Space>
-inline
-auto
-SpaceElement<Space>::
-as_cartesian_grid_element_accessor() -> CartesianGridElement<dim> &
-{
-    return static_cast<CartesianGridElement<dim> &>(*this);
-}
-
-
-
-template<class Space>
-inline
-auto
-SpaceElement<Space>::
-as_cartesian_grid_element_accessor() const -> const CartesianGridElement<dim> &
-{
-    return static_cast<const CartesianGridElement<dim> &>(*this);
-}
-#endif
 
 #if 0
-template<class Space>
-inline
-auto
-SpaceElement<Space>::
-as_derived_element_accessor() -> DerivedElementAccessor &
-{
-    return static_cast<DerivedElementAccessor &>(*this);
-}
-
-
-
-template<class Space>
-inline
-auto
-SpaceElement<Space>::
-as_derived_element_accessor() const -> const DerivedElementAccessor &
-{
-    return static_cast<const DerivedElementAccessor &>(*this);
-}
-#endif
-
-
 template<class Space>
 inline
 Size
@@ -194,18 +141,9 @@ get_num_basis(const std::string &dofs_property) const
     const auto dofs_global = this->get_local_to_global(dofs_property);
     return dofs_global.size();
 }
-
-#if 0
-template<class Space>
-inline
-Size
-SpaceElement<Space>::
-get_num_basis() const
-{
-    return n_basis_direction_.total_dimension();
-}
 #endif
 
+#if 0
 template<class Space>
 inline
 auto
@@ -222,10 +160,10 @@ get_local_to_global(const std::string &dofs_property) const -> vector<Index>
 			dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
 
     return dofs_global;
-
 }
+#endif
 
-
+#if 0
 template<class Space>
 inline
 auto
@@ -242,9 +180,8 @@ get_local_to_patch(const std::string &dofs_property) const -> vector<Index>
 			dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
 
     return dofs_loc_to_patch;
-
 }
-
+#endif
 
 template<class Space>
 inline
