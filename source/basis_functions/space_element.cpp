@@ -19,41 +19,22 @@
 //-+--------------------------------------------------------------------
 
 
-#ifndef SPACE_ELEMENT_INLINE_H_
-#define SPACE_ELEMENT_INLINE_H_
-
-// TODO (pauletti, Oct 20, 2014): the inline name is missleading,
-// there is no need for inlining, it is only ignorance on how to
-// provide proper instantiation, needs to be improved
 
 #include <igatools/basis_functions/space_element.h>
 
 IGA_NAMESPACE_OPEN
 
-template<class Space,int dim,int codim,int range,int rank>
-inline
-SpaceElement<Space,dim,codim,range,rank>::
-SpaceElement(const std::shared_ptr<const Space> space,
-             const Index elem_index)
-    :
-    base_t(space, elem_index)
-//  ,space_(space)
-{}
 
 
 
 
-template<class Space,int dim,int codim,int range,int rank>
-inline
-SpaceElement<Space,dim,codim,range,rank>::
-SpaceElement(const SpaceElement<Space,dim,codim,range,rank> &elem,
+template<int dim,int codim,int range,int rank>
+SpaceElement<dim,codim,range,rank>::
+SpaceElement(const self_t &elem,
              const CopyPolicy &copy_policy)
     :
     base_t(elem,copy_policy)
-//  ,space_(elem.space_)
 {
-//    Assert(this->space_ != nullptr,ExcNullPtr());
-
     if (elem.local_cache_ != nullptr)
     {
         if (copy_policy == CopyPolicy::shallow)
@@ -69,17 +50,16 @@ SpaceElement(const SpaceElement<Space,dim,codim,range,rank> &elem,
 
 
 
-template<class Space,int dim,int codim,int range,int rank>
+template<int dim,int codim,int range,int rank>
 void
-SpaceElement<Space,dim,codim,range,rank>::
-copy_from(const SpaceElement<Space,dim,codim,range,rank> &elem,
+SpaceElement<dim,codim,range,rank>::
+copy_from(const self_t &elem,
           const CopyPolicy &copy_policy)
 {
     if (this != &elem)
     {
-        SpaceElementBase<Space::dim>::copy_from(elem,copy_policy);
+        base_t::copy_from(elem,copy_policy);
 
-//        this->space_ = elem.space_;
 
         if (copy_policy == CopyPolicy::deep)
         {
@@ -100,30 +80,30 @@ copy_from(const SpaceElement<Space,dim,codim,range,rank> &elem,
 
 
 
-template<class Space,int dim,int codim,int range,int rank>
+template<int dim,int codim,int range,int rank>
 void
-SpaceElement<Space,dim,codim,range,rank>::
-deep_copy_from(const SpaceElement<Space,dim,codim,range,rank> &elem)
+SpaceElement<dim,codim,range,rank>::
+deep_copy_from(const self_t &elem)
 {
     this->copy_from(elem,CopyPolicy::deep);
 }
 
 
 
-template<class Space,int dim,int codim,int range,int rank>
+template<int dim,int codim,int range,int rank>
 void
-SpaceElement<Space,dim,codim,range,rank>::
-shallow_copy_from(const SpaceElement<Space,dim,codim,range,rank> &elem)
+SpaceElement<dim,codim,range,rank>::
+shallow_copy_from(const self_t &elem)
 {
     this->copy_from(elem,CopyPolicy::shallow);
 }
 
 
 
-template<class Space,int dim,int codim,int range,int rank>
-SpaceElement<Space,dim,codim,range,rank> &
-SpaceElement<Space,dim,codim,range,rank>::
-operator=(const SpaceElement<Space,dim,codim,range,rank> &element)
+template<int dim,int codim,int range,int rank>
+auto
+SpaceElement<dim,codim,range,rank>::
+operator=(const self_t &element) -> self_t &
 {
     this->shallow_copy_from(element);
     return (*this);
@@ -131,75 +111,11 @@ operator=(const SpaceElement<Space,dim,codim,range,rank> &element)
 
 
 
-#if 0
-template<class Space,int dim,int codim,int range,int rank>
-inline
-Size
-SpaceElement<Space,dim,codim,range,rank>::
-get_num_basis(const std::string &dofs_property) const
-{
-    const auto dofs_global = this->get_local_to_global(dofs_property);
-    return dofs_global.size();
-}
-#endif
-
-#if 0
-template<class Space,int dim,int codim,int range,int rank>
-inline
-auto
-SpaceElement<Space,dim,codim,range,rank>::
-get_local_to_global(const std::string &dofs_property) const -> vector<Index>
-{
-//    return space_->get_loc_to_global(*this,dofs_property);
-
-    vector<Index> dofs_global;
-    vector<Index> dofs_loc_to_patch;
-    vector<Index> dofs_loc_to_elem;
-    this->space_->get_element_dofs(
-        this->as_cartesian_grid_element_accessor(),
-        dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
-
-    return dofs_global;
-}
-#endif
-
-#if 0
-template<class Space,int dim,int codim,int range,int rank>
-inline
-auto
-SpaceElement<Space,dim,codim,range,rank>::
-get_local_to_patch(const std::string &dofs_property) const -> vector<Index>
-{
-//    return space_->get_loc_to_patch(*this,dofs_property);
-
-    vector<Index> dofs_global;
-    vector<Index> dofs_loc_to_patch;
-    vector<Index> dofs_loc_to_elem;
-    this->space_->get_element_dofs(
-        this->as_cartesian_grid_element_accessor(),
-        dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
-
-    return dofs_loc_to_patch;
-}
-#endif
-
-#if 0
-template<class Space,int dim,int codim,int range,int rank>
-inline
-auto
-SpaceElement<Space,dim,codim,range,rank>::
-get_space() const -> std::shared_ptr<const Space>
-{
-    Assert(this->space_ != nullptr,ExcNullPtr());
-    return this->space_;
-}
-#endif
 
 
-template<class Space,int dim,int codim,int range,int rank>
-inline
+template<int dim,int codim,int range,int rank>
 void
-SpaceElement<Space,dim,codim,range,rank>::
+SpaceElement<dim,codim,range,rank>::
 ValuesCache::
 resize(const FunctionFlags &flags_handler,
        const Size total_n_points,
@@ -241,10 +157,9 @@ resize(const FunctionFlags &flags_handler,
 
 
 
-template<class Space,int dim,int codim,int range,int rank>
-inline
+template<int dim,int codim,int range,int rank>
 auto
-SpaceElement<Space,dim,codim,range,rank>::
+SpaceElement<dim,codim,range,rank>::
 ValuesCache::print_info(LogStream &out) const -> void
 {
     out.begin_item("Fill flags:");
@@ -277,16 +192,16 @@ ValuesCache::print_info(LogStream &out) const -> void
 //    out.end_item();
 }
 
-template<class Space,int dim,int codim,int range,int rank>
+template<int dim,int codim,int range,int rank>
 void
-SpaceElement<Space,dim,codim,range,rank>::print_info(LogStream &out) const
+SpaceElement<dim,codim,range,rank>::print_info(LogStream &out) const
 {
     base_t::print_info(out);
 }
 
-template<class Space,int dim,int codim,int range,int rank>
+template<int dim,int codim,int range,int rank>
 void
-SpaceElement<Space,dim,codim,range,rank>::
+SpaceElement<dim,codim,range,rank>::
 print_cache_info(LogStream &out) const
 {
     base_t::print_cache_info(out);
@@ -296,9 +211,9 @@ print_cache_info(LogStream &out) const
 }
 
 
-template<class Space,int dim,int codim,int range,int rank>
+template<int dim,int codim,int range,int rank>
 void
-SpaceElement<Space,dim,codim,range,rank>::LocalCache::
+SpaceElement<dim,codim,range,rank>::LocalCache::
 print_info(LogStream &out) const
 {
     cacheutils::print_caches(values_, out);
@@ -319,4 +234,7 @@ print_info(LogStream &out) const
 
 IGA_NAMESPACE_CLOSE
 
-#endif
+
+#include <igatools/basis_functions/space_element.inst>
+
+

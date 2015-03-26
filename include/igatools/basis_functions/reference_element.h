@@ -35,7 +35,7 @@ template <int, int, int> class ReferenceSpace;
  * @ingroup elements
  */
 template <int dim, int range, int rank>
-class ReferenceElement : public SpaceElement<ReferenceSpace<dim,range,rank>,dim,0,range,rank>
+class ReferenceElement : public SpaceElement<dim,0,range,rank>
 {
 public:
     /** Type for the grid accessor. */
@@ -47,7 +47,7 @@ public:
     using Space = ReferenceSpace<dim,range,rank>;
     using ConstSpace = const ReferenceSpace<dim,range,rank>;
 
-    using parent_t = SpaceElement<ReferenceSpace<dim,range,rank>,dim,0,range,rank>;
+    using parent_t = SpaceElement<dim,0,range,rank>;
 
     using RefPoint = typename Space::RefPoint;
     using Point = typename Space::Point;

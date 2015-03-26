@@ -26,6 +26,8 @@
 #include <igatools/base/cache_status.h>
 #include <igatools/base/flags_handler.h>
 
+#include <igatools/base/function.h>
+
 #include <igatools/base/quadrature.h>
 #include <igatools/geometry/cartesian_grid_element.h>
 
@@ -33,6 +35,8 @@
 #include <igatools/utils/value_table.h>
 #include <igatools/utils/static_multi_array.h>
 #include <igatools/utils/cartesian_product_indexer.h>
+
+#include <igatools/basis_functions/spline_space.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -51,7 +55,7 @@ private:
     using Space = FunctionSpaceOnGrid<CartesianGrid<dim>>;
 
 protected:
-    std::shared_ptr<const Space> space0_;
+    std::shared_ptr<const Space> space_;
 
 public:
     using base_t::get_flat_index;
@@ -76,9 +80,9 @@ public:
                      const Index elem_index)
         :
         base_t(space->get_grid(), elem_index),
-        space0_(space)
+        space_(space)
     {
-        Assert(space0_ != nullptr, ExcNullPtr());
+        Assert(space_ != nullptr, ExcNullPtr());
     }
 
 
@@ -93,7 +97,7 @@ public:
                      const CopyPolicy &copy_policy = CopyPolicy::deep)
         :
         base_t(elem,copy_policy),
-        space0_(elem.space0_)
+        space_(elem.space_)
     {}
 
     /**
@@ -138,7 +142,7 @@ public:
         if (this != &elem)
         {
             CartesianGridElement<dim>::copy_from(elem,copy_policy);
-            space0_ = elem.space0_;
+            space_ = elem.space_;
         }
     }
 
@@ -169,7 +173,7 @@ public:
         vector<Index> dofs_global;
         vector<Index> dofs_loc_to_patch;
         vector<Index> dofs_loc_to_elem;
-        this->space0_->get_element_dofs(
+        this->space_->get_element_dofs(
             *this,
             dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
 
@@ -191,7 +195,7 @@ public:
         vector<Index> dofs_global;
         vector<Index> dofs_loc_to_patch;
         vector<Index> dofs_loc_to_elem;
-        this->space0_->get_element_dofs(
+        this->space_->get_element_dofs(
             *this,
             dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
 
@@ -224,7 +228,7 @@ public:
     ///@{
     bool operator==(const self_t &a) const
     {
-        Assert(space0_ == a.space0_,
+        Assert(space_ == a.space_,
                ExcMessage("Comparison between elements defined on different spaces"));
         return this->as_cartesian_grid_element_accessor() == a.as_cartesian_grid_element_accessor();
     }
@@ -232,21 +236,21 @@ public:
 
     bool operator!=(const self_t &a) const
     {
-        Assert(space0_ == a.space0_,
+        Assert(space_ == a.space_,
                ExcMessage("Comparison between elements defined on different spaces"));
         return this->as_cartesian_grid_element_accessor() != a.as_cartesian_grid_element_accessor();
     }
 
     bool operator<(const self_t &a) const
     {
-        Assert(space0_ == a.space0_,
+        Assert(space_ == a.space_,
                ExcMessage("Comparison between elements defined on different spaces"));
         return this->as_cartesian_grid_element_accessor() < a.as_cartesian_grid_element_accessor();
     }
 
     bool operator>(const self_t &a) const
     {
-        Assert(space0_ == a.space0_,
+        Assert(space_ == a.space_,
                ExcMessage("Comparison between elements defined on different spaces"));
         return this->as_cartesian_grid_element_accessor() > a.as_cartesian_grid_element_accessor();
     }
@@ -254,68 +258,47 @@ public:
 };
 
 
-template<class Space,int dim,int codim,int range,int rank>
-class SpaceElement : public SpaceElementBase<Space::dim>
+template<int dim,int codim,int range,int rank>
+class SpaceElement : public SpaceElementBase<dim>
 {
 protected:
-    using base_t =  SpaceElementBase<Space::dim>;
+    using base_t =  SpaceElementBase<dim>;
 private:
-    using self_t = SpaceElement<Space,dim,codim,range,rank>;
+    using self_t = SpaceElement<dim,codim,range,rank>;
 
 public:
-    using DerivedElementAccessor = typename Space::ElementAccessor;
 
-    using RefPoint = typename Space::RefPoint;
-    using Point = typename Space::Point;
-    using Value = typename Space::Value;
+    using Func = Function<dim,codim,range,rank>;
+
+    using RefPoint = typename Func::RefPoint;
+    using Point = typename Func::Point;
+    using Value = typename Func::Value;
     template <int order>
-    using Derivative = typename Space::template Derivative<order>;
-    using Div = typename Space::Div;
+    using Derivative = typename Func::template Derivative<order>;
+    using Div = typename Func::Div;
 
 //    static const int dim       = Space::dim;
 //    static const int codim     = Space::codim;
-    static const int space_dim = Space::space_dim;
+    static const int space_dim = Func::space_dim;
 //    static const int range     = Space::range;
 //    static const int rank      = Space::rank;
 
-    /*
-    using base_t::get_flat_index;
-    using base_t::get_tensor_index;
-    using base_t::get_grid;
-    using base_t::is_boundary;
-    //*/
     using Topology = typename base_t::Topology;
+
 
     /**
      * For each component gives a product array of the dimension
      */
     template<class T>
-    using ComponentContainer = typename Space::template ComponentContainer<T>;
-    using TensorSizeTable = typename Space::TensorSizeTable;
+    using ComponentContainer = typename SplineSpace<dim,range,rank>::template ComponentContainer<T>;
+    using TensorSizeTable = typename SplineSpace<dim,range,rank>::TensorSizeTable;
     ///@}
 
 
     /** @name Constructors */
     ///@{
-    /**
-     * Default constructor. Not allowed to be used.
-     */
-    SpaceElement() = delete;
+    using SpaceElementBase<dim>::SpaceElementBase;
 
-    /**
-     * Constructs an accessor to element number index of a
-     * function space.
-     */
-    SpaceElement(const std::shared_ptr<const Space> space,
-                 const Index elem_index);
-#if 0
-    /**
-     * Constructs an accessor to element number index of a
-     * function space.
-     */
-    SpaceElement(const std::shared_ptr<const Space> space,
-                 const TensorIndex<dim> &elem_index);
-#endif
     /**
      * Copy constructor.
      * It can be used with different copy policies (i.e. deep copy or shallow copy).
@@ -386,7 +369,7 @@ public:
         vector<Index> dofs_local_to_patch;
         vector<Index> dofs_local_to_elem;
 
-        this->space0_->get_element_dofs(
+        this->space_->get_element_dofs(
             this->as_cartesian_grid_element_accessor(),
             dofs_global,
             dofs_local_to_patch,
@@ -473,30 +456,11 @@ public:
 
 
 
-    /** @name Query information without use of cache */
-    ///@{
-
-
-#if 0
-    /**
-     * Pointer to the @p Space upon which the accessor is iterating on.
-     */
-    std::shared_ptr<const Space> get_space() const;
-#endif
-    ///@}
 
 
     void print_info(LogStream &out) const;
 
     void print_cache_info(LogStream &out) const;
-
-#if 0
-private:
-    /**
-     * Space for which the SpaceElement refers to.
-     */
-    std::shared_ptr<const Space> space_ = nullptr;
-#endif
 
 protected:
 
@@ -625,7 +589,7 @@ protected:
     std::shared_ptr<LocalCache> local_cache_;
 
 public:
-    // TODO (pauletti, Mar 17, 2015): this cannot be public, if needed it measn wrong desing
+    // TODO (pauletti, Mar 17, 2015): this cannot be public, if needed it means wrong desing
     std::shared_ptr<LocalCache> &get_local_cache()
     {
         return local_cache_;
@@ -647,8 +611,7 @@ protected:
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/basis_functions/space_element-inline.h>
 
 
-#endif // #ifndef SPACE_ELEMENT_ACCESSOR_
+#endif // #ifndef SPACE_ELEMENT_H_
 

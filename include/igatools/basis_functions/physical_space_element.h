@@ -41,13 +41,13 @@ template <class Accessor> class CartesianGridIterator;
 template<class PhysSpace>
 class PhysicalSpaceElement
     :
-    public SpaceElement<PhysSpace,PhysSpace::dim,PhysSpace::codim,PhysSpace::range,PhysSpace::rank>
+    public SpaceElement<PhysSpace::dim,PhysSpace::codim,PhysSpace::range,PhysSpace::rank>
 //,
     // todo: private PhysSpace::RefSpace::ElementAccessor,
 //    private PhysSpace::PushForwardType::ElementAccessor
 {
 public :
-    using parent_t = SpaceElement<PhysSpace,PhysSpace::dim,PhysSpace::codim,PhysSpace::range,PhysSpace::rank>;
+    using parent_t = SpaceElement<PhysSpace::dim,PhysSpace::codim,PhysSpace::range,PhysSpace::rank>;
     // using parent_t::get_elem_cache;
     using parent_t::LocalCache;
     using parent_t::get_values;

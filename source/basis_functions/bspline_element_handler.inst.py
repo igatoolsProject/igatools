@@ -41,9 +41,9 @@ sub_dim_members = \
 
 
 for x in inst.sub_ref_sp_dims:
-    space = 'BSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    space_elem = 'SpaceElement<%s,%d,0,%d,%d>' %(space,x.dim, x.range, x.rank)
-    f.write('template class %s; \n' %space_elem)
+#    space = 'BSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
+#    space_elem = 'SpaceElement<%s,%d,0,%d,%d>' %(space,x.dim, x.range, x.rank)
+#    f.write('template class %s; \n' %space_elem)
     elem = 'BSplineElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class %s; \n' %elem)
 #    acc = 'ReferenceElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
@@ -60,9 +60,9 @@ for x in inst.sub_ref_sp_dims:
 
 
 for x in inst.ref_sp_dims:
-    space = 'BSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    space_elem = 'SpaceElement<%s,%d,0,%d,%d>' %(space,x.dim, x.range, x.rank)
-    f.write('template class %s;' %space_elem)
+#    space = 'BSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
+#    space_elem = 'SpaceElement<%s,%d,0,%d,%d>' %(space,x.dim, x.range, x.rank)
+#    f.write('template class %s>;' %space_elem)
     elem = 'BSplineElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class %s; \n' %elem)
 #    acc = 'ReferenceElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
