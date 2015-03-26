@@ -13,6 +13,8 @@ Spline Space:
       Raw componets: 
          Size: [ 1 ]  Weights: [1]
       [ [1,1] ]
+      Components map: 
+      [ 0 ]
       Active componets ids: 
       [ 0 ]
       Inactive componets ids: 
@@ -26,15 +28,17 @@ Spline Space:
       [ 1 1 1 1 ]
    
    Dimensionality Table:
-      Component Dimension:
-         Raw componets: 
-            Size: [ 1 ]  Weights: [1]
-         [ 24 ]
-         Active componets ids: 
-         [ 0 ]
-         Inactive componets ids: 
-         [ ]
-      
+      Raw componets: 
+         Size: [ 1 ]  Weights: [1]
+      [ [ 4 6 ] ]
+      Components map: 
+      [ 0 ]
+      Active componets ids: 
+      [ 0 ]
+      Inactive componets ids: 
+      [ ]
+      Scalar components dimensions:
+      [ 24 ]
       Total Dimension: 24
    
 
@@ -503,6 +507,8 @@ Spline Space:
       Raw componets: 
          Size: [ 1 ]  Weights: [1]
       [ [2,2] ]
+      Components map: 
+      [ 0 ]
       Active componets ids: 
       [ 0 ]
       Inactive componets ids: 
@@ -516,15 +522,17 @@ Spline Space:
       [ 1 1 1 1 1 ]
    
    Dimensionality Table:
-      Component Dimension:
-         Raw componets: 
-            Size: [ 1 ]  Weights: [1]
-         [ 40 ]
-         Active componets ids: 
-         [ 0 ]
-         Inactive componets ids: 
-         [ ]
-      
+      Raw componets: 
+         Size: [ 1 ]  Weights: [1]
+      [ [ 5 8 ] ]
+      Components map: 
+      [ 0 ]
+      Active componets ids: 
+      [ 0 ]
+      Inactive componets ids: 
+      [ ]
+      Scalar components dimensions:
+      [ 40 ]
       Total Dimension: 40
    
 

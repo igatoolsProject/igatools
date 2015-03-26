@@ -115,6 +115,7 @@ create_function(shared_ptr<BSplineSpace<dim, dim + codim>> space)
 template <int dim, int order = 0, int range=dim, int rank=1, int codim = 0>
 void elem_values(const int n_knots = 2, const int deg=1)
 {
+    OUTSTART
     const int k = dim;
     using BspSpace = BSplineSpace<dim, range, rank>;
     using RefSpace = ReferenceSpace<dim, range,rank>;
@@ -133,6 +134,7 @@ void elem_values(const int n_knots = 2, const int deg=1)
 
     auto flag = ValueFlags::value |
                 ValueFlags::gradient |
+                ValueFlags::hessian |
                 ValueFlags::w_measure;
 
     ElementHandler sp_values(space);
@@ -144,10 +146,32 @@ void elem_values(const int n_knots = 2, const int deg=1)
     for (; elem != end; ++elem)
     {
         sp_values.fill_element_cache(elem);
+        out.begin_item("Element " + std::to_string(elem->get_flat_index()));
+        elem->print_info(out);
+
+        out.begin_item("Values: ");
         elem->template get_values<0, k>(0,DofProperties::active).print_info(out);
+        out.end_item();
+
+        out.begin_item("Gradients: ");
         elem->template get_values<1, k>(0,DofProperties::active).print_info(out);
+        out.end_item();
+
+        out.begin_item("Hessians: ");
+        elem->template get_values<2, k>(0,DofProperties::active).print_info(out);
+        out.end_item();
+
+        out.begin_item("Divergences: ");
+        elem->template get_divergences<k>(0,DofProperties::active).print_info(out);
+        out.end_item();
+
+        out.begin_item("W * Measures: ");
         elem->template get_w_measures<k>(0).print_info(out);
+        out.end_item();
+
+        out.end_item();
     }
+    OUTEND
 }
 
 int main()

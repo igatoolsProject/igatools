@@ -2,16 +2,20 @@
 void space_cache_fill_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
 ========================================================================
 Flat id = 0    Tensor id = [0]
+Element global connectivity (property="active"):
+[ 0 1 ]
 Number of element basis: 
-   Component Dimension:
-      Raw componets: 
-         Size: [ 1 ]  Weights: [1]
-      [ 2 ]
-      Active componets ids: 
-      [ 0 ]
-      Inactive componets ids: 
-      [ ]
-   
+   Raw componets: 
+      Size: [ 1 ]  Weights: [1]
+   [ [ 2 ] ]
+   Components map: 
+   [ 0 ]
+   Active componets ids: 
+   [ 0 ]
+   Inactive componets ids: 
+   [ ]
+   Scalar components dimensions:
+   [ 2 ]
    Total Dimension: 2
 
 Fill flags:
@@ -108,16 +112,20 @@ Values:
 void space_cache_fill_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
 ========================================================================
 Flat id = 0    Tensor id = [0]
+Element global connectivity (property="active"):
+[ 0 1 ]
 Number of element basis: 
-   Component Dimension:
-      Raw componets: 
-         Size: [ 1 ]  Weights: [1]
-      [ 2 ]
-      Active componets ids: 
-      [ 0 ]
-      Inactive componets ids: 
-      [ ]
-   
+   Raw componets: 
+      Size: [ 1 ]  Weights: [1]
+   [ [ 2 ] ]
+   Components map: 
+   [ 0 ]
+   Active componets ids: 
+   [ 0 ]
+   Inactive componets ids: 
+   [ ]
+   Scalar components dimensions:
+   [ 2 ]
    Total Dimension: 2
 
 Fill flags:
@@ -214,16 +222,20 @@ Gradients:
 void space_cache_fill_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
 ========================================================================
 Flat id = 0    Tensor id = [0]
+Element global connectivity (property="active"):
+[ 0 1 ]
 Number of element basis: 
-   Component Dimension:
-      Raw componets: 
-         Size: [ 1 ]  Weights: [1]
-      [ 2 ]
-      Active componets ids: 
-      [ 0 ]
-      Inactive componets ids: 
-      [ ]
-   
+   Raw componets: 
+      Size: [ 1 ]  Weights: [1]
+   [ [ 2 ] ]
+   Components map: 
+   [ 0 ]
+   Active componets ids: 
+   [ 0 ]
+   Inactive componets ids: 
+   [ ]
+   Scalar components dimensions:
+   [ 2 ]
    Total Dimension: 2
 
 Fill flags:

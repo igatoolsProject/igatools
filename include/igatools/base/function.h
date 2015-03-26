@@ -99,6 +99,8 @@ public:
 
     /** Types for the input/output evaluation arguments */
     ///@{
+    using RefPoint = Points<dim>;
+
     /**
      * Type for the input argument of the function.
      */

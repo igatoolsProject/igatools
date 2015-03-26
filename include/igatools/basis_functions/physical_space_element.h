@@ -41,13 +41,13 @@ template <class Accessor> class CartesianGridIterator;
 template<class PhysSpace>
 class PhysicalSpaceElement
     :
-    public SpaceElement<PhysSpace>
+    public SpaceElement<PhysSpace::dim,PhysSpace::codim,PhysSpace::range,PhysSpace::rank>
 //,
     // todo: private PhysSpace::RefSpace::ElementAccessor,
 //    private PhysSpace::PushForwardType::ElementAccessor
 {
 public :
-    using parent_t = SpaceElement<PhysSpace>;
+    using parent_t = SpaceElement<PhysSpace::dim,PhysSpace::codim,PhysSpace::range,PhysSpace::rank>;
     // using parent_t::get_elem_cache;
     using parent_t::LocalCache;
     using parent_t::get_values;
@@ -252,6 +252,13 @@ public:
     PfElemAccessor &get_push_forward_accessor();
 
 public:
+    using parent_t::get_num_basis;
+
+    /**
+     * Returns the max. number of basis function that can have support on this element.
+     */
+    int get_num_basis() const override final;
+
 
     /**
      * @name Functions related to get the indices of the element.

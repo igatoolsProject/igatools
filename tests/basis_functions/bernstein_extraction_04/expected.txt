@@ -5,6 +5,8 @@ Raw componets:
    [ -2.00000 -1.00000 1.00000 2.00000 3.00000 5.00000 6.00000 ]
    
 
+Components map: 
+[ 0 ]
 Active componets ids: 
 [ 0 ]
 Inactive componets ids: 
@@ -17,6 +19,8 @@ Raw componets:
    [ 0 1 2 3 ]
    
 
+Components map: 
+[ 0 ]
 Active componets ids: 
 [ 0 ]
 Inactive componets ids: 

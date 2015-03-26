@@ -35,7 +35,7 @@ template <int, int, int> class ReferenceSpace;
  * @ingroup elements
  */
 template <int dim, int range, int rank>
-class ReferenceElement : public SpaceElement<ReferenceSpace<dim,range,rank>>
+class ReferenceElement : public SpaceElement<dim,0,range,rank>
 {
 public:
     /** Type for the grid accessor. */
@@ -47,7 +47,7 @@ public:
     using Space = ReferenceSpace<dim,range,rank>;
     using ConstSpace = const ReferenceSpace<dim,range,rank>;
 
-    using parent_t = SpaceElement<ReferenceSpace<dim,range,rank>>;
+    using parent_t = SpaceElement<dim,0,range,rank>;
 
     using RefPoint = typename Space::RefPoint;
     using Point = typename Space::Point;
@@ -59,34 +59,22 @@ public:
     ReferenceElement() = delete;
 
     ReferenceElement(const ReferenceElement<dim,range,rank> &elem,
-                     const iga::CopyPolicy &copy_policy = CopyPolicy::deep)
-        :
-        parent_t(elem,copy_policy)
-    {};
+                     const iga::CopyPolicy &copy_policy = CopyPolicy::deep);
 
     /**
      * Constructs an accessor to element number index of a
      * ReferenceSpace space.
      */
     ReferenceElement(const std::shared_ptr<ConstSpace> space,
-                     const Index elem_index)
-        :
-        parent_t(space,elem_index)
-    {
-        Assert(this->get_space() != nullptr,ExcNullPtr());
-    };
+                     const Index elem_index);
 
     /**
      * Constructs an accessor to element number index of a
      * Reference space.
      */
     ReferenceElement(const std::shared_ptr<ConstSpace> space,
-                     const TensorIndex<dim> &elem_index)
-        :
-        parent_t(space,elem_index)
-    {
-        Assert(this->get_space() != nullptr,ExcNullPtr());
-    };
+                     const TensorIndex<dim> &elem_index);
+
 
     virtual ~ReferenceElement() = default;
 
@@ -191,6 +179,58 @@ public:
         return this->template get_w_measures<dim>(0);
     }
 
+
+    using OffsetTable = typename Space::template ComponentContainer<int>;
+    using TensorSizeTable = typename Space::TensorSizeTable;
+
+protected:
+
+    /** Number of scalar basis functions along each direction, for all space components. */
+    TensorSizeTable n_basis_direction_;
+
+    /** Basis function ID offset between the different components. */
+    OffsetTable comp_offset_;
+
+    using Indexer = CartesianProductIndexer<dim>;
+    using IndexerPtr = std::shared_ptr<Indexer>;
+    using IndexerPtrTable = typename Space::template ComponentContainer<IndexerPtr>;
+
+    /** Hash table for fast conversion between flat-to-tensor basis function ids. */
+    IndexerPtrTable basis_functions_indexer_;
+
+public:
+    using parent_t::get_num_basis;
+
+    /**
+     * Returns the max. number of basis function that can have support on this element.
+     */
+    int get_num_basis() const override final;
+
+    /**
+     * Returns the basis function ID offset between the different components.
+     */
+    OffsetTable get_basis_offset() const;
+
+    /**
+     * Number of non-zero scalar basis functions associated
+     * with the i-th space component on the element.
+     * This makes sense as a reference B-spline space
+     * is only allowed to be of the cartesian product type
+     * V = V1 x V2 x ... X Vn.
+     */
+    int get_num_basis_comp(const int i) const;
+
+    void print_info(LogStream &out) const;
+
+protected:
+    std::shared_ptr<const Space> space_;
+
+
+public:
+    std::shared_ptr<const Space> get_space() const
+    {
+        return space_;
+    }
 };
 
 

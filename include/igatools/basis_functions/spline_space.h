@@ -173,14 +173,13 @@ public:
 
         void print_info(LogStream &out) const
         {
-            out.begin_item("Component Dimension:");
-            ComponentContainer<Size> comp_dimension;
-            for (auto comp : this->get_active_components_id())
-            {
-                auto size = (*this)[comp].flat_size();
-                comp_dimension[comp] = size;
-            }
-            comp_dimension.print_info(out);
+            base_t::print_info(out);
+
+            out.begin_item("Scalar components dimensions:");
+            out << "[ ";
+            for (auto comp : components)
+                out << this->get_component_size(comp) << " ";
+            out << "]";
             out.end_item();
 
             out << "Total Dimension: " << total_dimension() << std::endl;
@@ -354,6 +353,7 @@ public:
     class ComponentContainer : public StaticMultiArray<T,range,rank>
     {
         using base_t = StaticMultiArray<T,range,rank>;
+        using self_t = ComponentContainer<T>;
     public:
         /** Type of the iterator. */
         using iterator =  MultiArrayIterator<ComponentContainer<T>>;
@@ -380,6 +380,12 @@ public:
         ComponentContainer(const T &val);
 
         ComponentContainer(std::initializer_list<T> list);
+
+        ComponentContainer(const self_t &in) = default;
+        ComponentContainer(self_t &&in) = default;
+
+        self_t &operator=(const self_t &in) = default;
+        self_t &operator=(self_t &&in) = default;
 
         const_iterator
         cbegin() const
@@ -449,9 +455,18 @@ public:
             out.begin_item("Raw componets: ");
             base_t::print_info(out);
             out.end_item();
+
+            out.begin_item("Components map: ");
+            out << "[ ";
+            for (const auto v : comp_map_)
+                out << v << " " ;
+            out << "]";
+            out.end_item();
+
             out.begin_item("Active componets ids: ");
             active_components_id_.print_info(out);
             out.end_item();
+
             out.begin_item("Inactive componets ids: ");
             inactive_components_id_.print_info(out);
             out.end_item();
