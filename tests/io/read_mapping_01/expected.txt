@@ -16,6 +16,8 @@ IgFunction infos:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
             [ [2] ]
+            Components map: 
+            [ 0 ]
             Active componets ids: 
             [ 0 ]
             Inactive componets ids: 
@@ -27,15 +29,17 @@ IgFunction infos:
             [ 1 ]
          
          Dimensionality Table:
-            Component Dimension:
-               Raw componets: 
-                  Size: [ 1 ]  Weights: [1]
-               [ 4 ]
-               Active componets ids: 
-               [ 0 ]
-               Inactive componets ids: 
-               [ ]
-            
+            Raw componets: 
+               Size: [ 1 ]  Weights: [1]
+            [ [ 4 ] ]
+            Components map: 
+            [ 0 ]
+            Active componets ids: 
+            [ 0 ]
+            Inactive componets ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 4 ]
             Total Dimension: 4
          
       
@@ -120,6 +124,8 @@ IgFunction infos:
                Raw componets: 
                   Size: [ 2 ]  Weights: [2]
                [ [2,1] [2,1] ]
+               Components map: 
+               [ 0 1 ]
                Active componets ids: 
                [ 0 1 ]
                Inactive componets ids: 
@@ -138,15 +144,17 @@ IgFunction infos:
                [ ]
             
             Dimensionality Table:
-               Component Dimension:
-                  Raw componets: 
-                     Size: [ 2 ]  Weights: [2]
-                  [ 8 8 ]
-                  Active componets ids: 
-                  [ 0 1 ]
-                  Inactive componets ids: 
-                  [ ]
-               
+               Raw componets: 
+                  Size: [ 2 ]  Weights: [2]
+               [ [ 4 2 ] [ 4 2 ] ]
+               Components map: 
+               [ 0 1 ]
+               Active componets ids: 
+               [ 0 1 ]
+               Inactive componets ids: 
+               [ ]
+               Scalar components dimensions:
+               [ 8 8 ]
                Total Dimension: 16
             
          
@@ -295,6 +303,8 @@ IgFunction infos:
                   Raw componets: 
                      Size: [ 3 ]  Weights: [3]
                   [ [2,1,1] [0,0,0] [0,0,0] ]
+                  Components map: 
+                  [ 0 0 0 ]
                   Active componets ids: 
                   [ 0 ]
                   Inactive componets ids: 
@@ -324,15 +334,17 @@ IgFunction infos:
                   [ ]
                
                Dimensionality Table:
-                  Component Dimension:
-                     Raw componets: 
-                        Size: [ 3 ]  Weights: [3]
-                     [ 16 16 16 ]
-                     Active componets ids: 
-                     [ 0 1 2 ]
-                     Inactive componets ids: 
-                     [ ]
-                  
+                  Raw componets: 
+                     Size: [ 3 ]  Weights: [3]
+                  [ [ 4 2 2 ] [ 4 2 2 ] [ 4 2 2 ] ]
+                  Components map: 
+                  [ 0 1 2 ]
+                  Active componets ids: 
+                  [ 0 1 2 ]
+                  Inactive componets ids: 
+                  [ ]
+                  Scalar components dimensions:
+                  [ 16 16 16 ]
                   Total Dimension: 48
                
             

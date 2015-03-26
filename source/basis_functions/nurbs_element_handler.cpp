@@ -339,7 +339,7 @@ evaluate_nurbs_values_from_bspline(
         for (int pt = 0 ; pt < n_pts ; ++pt)
             invQ[pt] = 1.0 / Q[pt](0);
 
-        const int n_funcs_comp = bspline_elem.get_num_basis(comp);
+        const int n_funcs_comp = bspline_elem.get_num_basis_comp(comp);
 
         const auto w_coefs = nrb_space->weight_func_table_[comp]->get_coefficients();
         Assert(nrb_space->get_num_basis(comp) == w_coefs.size(),
@@ -428,7 +428,7 @@ evaluate_nurbs_gradients_from_bspline(
                 dQ_invQ2_pt[i] = invQ[pt] * invQ[pt] * dQ_pt(i)(0);
         }
 
-        const int n_funcs_comp = bspline_elem.get_num_basis(comp);
+        const int n_funcs_comp = bspline_elem.get_num_basis_comp(comp);
 
         const auto w_coefs = nrb_space->weight_func_table_[comp]->get_coefficients();
         Assert(nrb_space->get_num_basis(comp) == w_coefs.size(),
@@ -553,7 +553,7 @@ evaluate_nurbs_hessians_from_bspline(
         } // end loop pt
 
 
-        const int n_funcs_comp = bspline_elem.get_num_basis(comp);
+        const int n_funcs_comp = bspline_elem.get_num_basis_comp(comp);
 
         const auto w_coefs = nrb_space->weight_func_table_[comp]->get_coefficients();
         Assert(nrb_space->get_num_basis(comp) == w_coefs.size(),

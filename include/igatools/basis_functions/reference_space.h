@@ -247,12 +247,6 @@ public:
     get_dof_distribution();
 
 
-    virtual void get_element_dofs(
-        const CartesianGridElement<dim> &element,
-        vector<Index> &dofs_global,
-        vector<Index> &dofs_local_to_patch,
-        vector<Index> &dofs_local_to_elem,
-        const std::string &dofs_property = DofProperties::active) const = 0;
 
 
     /** @name Functions involving the element iterator */

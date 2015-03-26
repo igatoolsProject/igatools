@@ -29,6 +29,66 @@ IGA_NAMESPACE_OPEN
 
 
 
+template <int dim, int range, int rank>
+ReferenceElement<dim, range, rank>::
+ReferenceElement(const std::shared_ptr<ConstSpace> space,
+                 const Index elem_index)
+    :
+    parent_t(space,elem_index),
+    space_(space)
+{
+//    Assert(this->get_space() != nullptr,ExcNullPtr());
+
+    //-------------------------------------------------
+    const auto &degree_table = space->get_degree();
+    TensorSizeTable n_basis(degree_table.get_comp_map());
+    for (auto comp : degree_table.get_active_components_id())
+        n_basis[comp] = TensorSize<dim>(degree_table[comp]+1);
+
+    n_basis_direction_ = n_basis;
+    //-------------------------------------------------
+
+
+    //----------------------------------------------------------------
+    comp_offset_[0] = 0;
+    for (int comp = 1; comp < Space::n_components; ++comp)
+        comp_offset_[comp] = comp_offset_[comp-1] +
+                             this->n_basis_direction_.get_component_size(comp-1);
+    //----------------------------------------------------------------
+
+
+    //----------------------------------------------------------------
+    for (int comp : basis_functions_indexer_.get_active_components_id())
+    {
+        // creating the objects for fast conversion from flat-to-tensor indexing
+        // (in practice it is an hash-table from flat to tensor indices)
+        basis_functions_indexer_[comp] =
+            std::shared_ptr<Indexer>(new Indexer(this->n_basis_direction_[comp]));
+    }
+    //----------------------------------------------------------------
+};
+
+
+template <int dim, int range, int rank>
+ReferenceElement<dim, range, rank>::
+ReferenceElement(const std::shared_ptr<ConstSpace> space,
+                 const TensorIndex<dim> &elem_index)
+    :
+    ReferenceElement(space,space->get_grid()->tensor_to_flat(elem_index))
+{}
+
+
+template <int dim, int range, int rank>
+ReferenceElement<dim, range, rank>::
+ReferenceElement(const ReferenceElement<dim,range,rank> &elem,
+                 const iga::CopyPolicy &copy_policy)
+    :
+    parent_t(elem,copy_policy),
+    n_basis_direction_(elem.n_basis_direction_),
+    comp_offset_(elem.comp_offset_),
+    basis_functions_indexer_(elem.basis_functions_indexer_)
+{};
+
 
 template <int dim, int range, int rank>
 void
@@ -51,7 +111,7 @@ Conditional< deriv_order==0,
              Value,
              Derivative<deriv_order> > >
 {
-    auto elem_handler = ReferenceElementHandler<dim,range,rank>::create(this->get_space());
+    auto elem_handler = ReferenceElementHandler<dim,range,rank>::create(this->space_);
 
     ValueFlags flags;
     if (deriv_order == 0)
@@ -72,6 +132,45 @@ Conditional< deriv_order==0,
 //    Assert(false,ExcNotImplemented());
 
     return this->template get_values<deriv_order,dim>(0,dofs_property);
+}
+
+
+
+template <int dim, int range, int rank>
+int
+ReferenceElement<dim, range, rank>::
+get_num_basis_comp(const int i) const
+{
+    return this->n_basis_direction_[i].flat_size();
+}
+
+template <int dim, int range, int rank>
+auto
+ReferenceElement<dim, range, rank>::
+get_basis_offset() const -> OffsetTable
+{
+    return this->comp_offset_;
+}
+
+
+template <int dim, int range, int rank>
+int
+ReferenceElement<dim, range, rank>::
+get_num_basis() const
+{
+    return this->n_basis_direction_.total_dimension();
+}
+
+
+template <int dim, int range, int rank>
+void
+ReferenceElement<dim, range, rank>::
+print_info(LogStream &out) const
+{
+    parent_t::print_info(out);
+    out.begin_item("Number of element basis: ");
+    n_basis_direction_.print_info(out);
+    out.end_item();
 }
 
 IGA_NAMESPACE_CLOSE

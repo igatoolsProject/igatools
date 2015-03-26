@@ -101,7 +101,7 @@ auto
 NURBSElement<dim, range, rank>::
 get_nurbs_space() const -> std::shared_ptr<const Space>
 {
-    const auto nrb_space = std::dynamic_pointer_cast<const Space>(this->get_space());
+    const auto nrb_space = std::dynamic_pointer_cast<const Space>(this->space_);
     Assert(nrb_space != nullptr,ExcNullPtr());
     return nrb_space;
 }

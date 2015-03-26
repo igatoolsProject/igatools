@@ -651,6 +651,14 @@ operator<(const PhysicalSpaceElement <PhysSpace> &a) const
 //*/
 
 template< class PhysSpace >
+int
+PhysicalSpaceElement<PhysSpace>::
+get_num_basis() const
+{
+    return ref_space_element_->get_num_basis();
+}
+
+template< class PhysSpace >
 auto
 PhysicalSpaceElement<PhysSpace>::
 get_ref_space_element() const -> const RefElemAccessor &
