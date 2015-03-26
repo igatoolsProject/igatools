@@ -87,7 +87,7 @@ template <int dim>
 void
 SpaceElementBase<dim>::
 copy_from(const SpaceElementBase<dim> &elem,
-		  const CopyPolicy &copy_policy)
+          const CopyPolicy &copy_policy)
 {
     if (this != &elem)
     {
