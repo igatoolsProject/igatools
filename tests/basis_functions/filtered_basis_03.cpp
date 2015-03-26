@@ -61,6 +61,7 @@ enum  bc : boundary_id
 };
 
 
+
 template<int dim, int range = 1, int rank = 1>
 void filtered_dofs(const int deg = 1, const int n_knots = 3)
 {
@@ -75,6 +76,17 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
 
 
     auto space = Space::create(deg, grid);
+
+    const int s_dim = dim-1;
+    for (auto &s_id : UnitElement<dim>::template elems_ids<s_dim>())
+    {
+    auto dofs = space->template get_boundary_dofs<s_dim>(s_id);
+    for (auto &x : dofs)
+        out << x << endl;
+    out << endl;
+    }
+
+
     auto dof_dist = space->get_dof_distribution();
     dof_dist->add_dofs_property(DofProp::interior);
     dof_dist->add_dofs_property(DofProp::dirichlet);
@@ -177,6 +189,24 @@ int main()
 {
     const int dim = 2;
     filtered_dofs<dim>();
+
+    {
+        TensorIndex<1> first{3};
+        TensorIndex<1> last{7};
+        tensor_range(first, last).print_info(out);
+    }
+
+    {
+        TensorIndex<2> first{3,5};
+        TensorIndex<2> last{7,10};
+        tensor_range(first, last).print_info(out);
+    }
+
+    {
+        TensorIndex<3> first{3,5,1};
+        TensorIndex<3> last{7,10, 3};
+        tensor_range(first, last).print_info(out);
+    }
 
     return 0;
 }
