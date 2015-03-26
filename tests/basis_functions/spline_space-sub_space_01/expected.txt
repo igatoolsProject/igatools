@@ -10,6 +10,8 @@ Sub element id: 0
          [ 1 1 ]
          
       
+      Components map: 
+      [ 0 ]
       Active componets ids: 
       [ 0 ]
       Inactive componets ids: 
@@ -19,6 +21,8 @@ Sub element id: 0
       Raw componets: 
          Size: [ 1 ]  Weights: [1]
       [ [3] ]
+      Components map: 
+      [ 0 ]
       Active componets ids: 
       [ 0 ]
       Inactive componets ids: 
@@ -36,6 +40,8 @@ Sub element id: 1
          [ 1 1 ]
          
       
+      Components map: 
+      [ 0 ]
       Active componets ids: 
       [ 0 ]
       Inactive componets ids: 
@@ -45,6 +51,8 @@ Sub element id: 1
       Raw componets: 
          Size: [ 1 ]  Weights: [1]
       [ [3] ]
+      Components map: 
+      [ 0 ]
       Active componets ids: 
       [ 0 ]
       Inactive componets ids: 
@@ -62,6 +70,8 @@ Sub element id: 2
          [ 1 ]
          
       
+      Components map: 
+      [ 0 ]
       Active componets ids: 
       [ 0 ]
       Inactive componets ids: 
@@ -71,6 +81,8 @@ Sub element id: 2
       Raw componets: 
          Size: [ 1 ]  Weights: [1]
       [ [1] ]
+      Components map: 
+      [ 0 ]
       Active componets ids: 
       [ 0 ]
       Inactive componets ids: 
@@ -88,6 +100,8 @@ Sub element id: 3
          [ 1 ]
          
       
+      Components map: 
+      [ 0 ]
       Active componets ids: 
       [ 0 ]
       Inactive componets ids: 
@@ -97,6 +111,8 @@ Sub element id: 3
       Raw componets: 
          Size: [ 1 ]  Weights: [1]
       [ [1] ]
+      Components map: 
+      [ 0 ]
       Active componets ids: 
       [ 0 ]
       Inactive componets ids: 

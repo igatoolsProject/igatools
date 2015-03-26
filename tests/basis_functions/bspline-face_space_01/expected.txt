@@ -14,6 +14,8 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 0; int dim = 
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
             [ [] ]
+            Components map: 
+            [ 0 ]
             Active componets ids: 
             [ 0 ]
             Inactive componets ids: 
@@ -23,15 +25,17 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 0; int dim = 
             Size: [ ]  Weights: []
          
          Dimensionality Table:
-            Component Dimension:
-               Raw componets: 
-                  Size: [ 1 ]  Weights: [1]
-               [ 1 ]
-               Active componets ids: 
-               [ 0 ]
-               Inactive componets ids: 
-               [ ]
-            
+            Raw componets: 
+               Size: [ 1 ]  Weights: [1]
+            [ [ ] ]
+            Components map: 
+            [ 0 ]
+            Active componets ids: 
+            [ 0 ]
+            Inactive componets ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 1 ]
             Total Dimension: 1
          
       
@@ -66,6 +70,8 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 0; int dim = 
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
             [ [] ]
+            Components map: 
+            [ 0 ]
             Active componets ids: 
             [ 0 ]
             Inactive componets ids: 
@@ -75,15 +81,17 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 0; int dim = 
             Size: [ ]  Weights: []
          
          Dimensionality Table:
-            Component Dimension:
-               Raw componets: 
-                  Size: [ 1 ]  Weights: [1]
-               [ 1 ]
-               Active componets ids: 
-               [ 0 ]
-               Inactive componets ids: 
-               [ ]
-            
+            Raw componets: 
+               Size: [ 1 ]  Weights: [1]
+            [ [ ] ]
+            Components map: 
+            [ 0 ]
+            Active componets ids: 
+            [ 0 ]
+            Inactive componets ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 1 ]
             Total Dimension: 1
          
       
@@ -125,6 +133,8 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
             [ [1] ]
+            Components map: 
+            [ 0 ]
             Active componets ids: 
             [ 0 ]
             Inactive componets ids: 
@@ -136,15 +146,17 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
             [ 1 ]
          
          Dimensionality Table:
-            Component Dimension:
-               Raw componets: 
-                  Size: [ 1 ]  Weights: [1]
-               [ 3 ]
-               Active componets ids: 
-               [ 0 ]
-               Inactive componets ids: 
-               [ ]
-            
+            Raw componets: 
+               Size: [ 1 ]  Weights: [1]
+            [ [ 3 ] ]
+            Components map: 
+            [ 0 ]
+            Active componets ids: 
+            [ 0 ]
+            Inactive componets ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 3 ]
             Total Dimension: 3
          
       
@@ -184,6 +196,8 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
             [ [1] ]
+            Components map: 
+            [ 0 ]
             Active componets ids: 
             [ 0 ]
             Inactive componets ids: 
@@ -195,15 +209,17 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
             [ 1 ]
          
          Dimensionality Table:
-            Component Dimension:
-               Raw componets: 
-                  Size: [ 1 ]  Weights: [1]
-               [ 3 ]
-               Active componets ids: 
-               [ 0 ]
-               Inactive componets ids: 
-               [ ]
-            
+            Raw componets: 
+               Size: [ 1 ]  Weights: [1]
+            [ [ 3 ] ]
+            Components map: 
+            [ 0 ]
+            Active componets ids: 
+            [ 0 ]
+            Inactive componets ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 3 ]
             Total Dimension: 3
          
       
@@ -243,6 +259,8 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
             [ [1] ]
+            Components map: 
+            [ 0 ]
             Active componets ids: 
             [ 0 ]
             Inactive componets ids: 
@@ -254,15 +272,17 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
             [ ]
          
          Dimensionality Table:
-            Component Dimension:
-               Raw componets: 
-                  Size: [ 1 ]  Weights: [1]
-               [ 2 ]
-               Active componets ids: 
-               [ 0 ]
-               Inactive componets ids: 
-               [ ]
-            
+            Raw componets: 
+               Size: [ 1 ]  Weights: [1]
+            [ [ 2 ] ]
+            Components map: 
+            [ 0 ]
+            Active componets ids: 
+            [ 0 ]
+            Inactive componets ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 2 ]
             Total Dimension: 2
          
       
@@ -301,6 +321,8 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
             [ [1] ]
+            Components map: 
+            [ 0 ]
             Active componets ids: 
             [ 0 ]
             Inactive componets ids: 
@@ -312,15 +334,17 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
             [ ]
          
          Dimensionality Table:
-            Component Dimension:
-               Raw componets: 
-                  Size: [ 1 ]  Weights: [1]
-               [ 2 ]
-               Active componets ids: 
-               [ 0 ]
-               Inactive componets ids: 
-               [ ]
-            
+            Raw componets: 
+               Size: [ 1 ]  Weights: [1]
+            [ [ 2 ] ]
+            Components map: 
+            [ 0 ]
+            Active componets ids: 
+            [ 0 ]
+            Inactive componets ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 2 ]
             Total Dimension: 2
          
       
@@ -366,6 +390,8 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
             [ [1,1] ]
+            Components map: 
+            [ 0 ]
             Active componets ids: 
             [ 0 ]
             Inactive componets ids: 
@@ -379,15 +405,17 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             [ 1 1 ]
          
          Dimensionality Table:
-            Component Dimension:
-               Raw componets: 
-                  Size: [ 1 ]  Weights: [1]
-               [ 12 ]
-               Active componets ids: 
-               [ 0 ]
-               Inactive componets ids: 
-               [ ]
-            
+            Raw componets: 
+               Size: [ 1 ]  Weights: [1]
+            [ [ 3 4 ] ]
+            Components map: 
+            [ 0 ]
+            Active componets ids: 
+            [ 0 ]
+            Inactive componets ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 12 ]
             Total Dimension: 12
          
       
@@ -433,6 +461,8 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
             [ [1,1] ]
+            Components map: 
+            [ 0 ]
             Active componets ids: 
             [ 0 ]
             Inactive componets ids: 
@@ -446,15 +476,17 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             [ 1 1 ]
          
          Dimensionality Table:
-            Component Dimension:
-               Raw componets: 
-                  Size: [ 1 ]  Weights: [1]
-               [ 12 ]
-               Active componets ids: 
-               [ 0 ]
-               Inactive componets ids: 
-               [ ]
-            
+            Raw componets: 
+               Size: [ 1 ]  Weights: [1]
+            [ [ 3 4 ] ]
+            Components map: 
+            [ 0 ]
+            Active componets ids: 
+            [ 0 ]
+            Inactive componets ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 12 ]
             Total Dimension: 12
          
       
@@ -500,6 +532,8 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
             [ [1,1] ]
+            Components map: 
+            [ 0 ]
             Active componets ids: 
             [ 0 ]
             Inactive componets ids: 
@@ -513,15 +547,17 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             [ 1 1 ]
          
          Dimensionality Table:
-            Component Dimension:
-               Raw componets: 
-                  Size: [ 1 ]  Weights: [1]
-               [ 8 ]
-               Active componets ids: 
-               [ 0 ]
-               Inactive componets ids: 
-               [ ]
-            
+            Raw componets: 
+               Size: [ 1 ]  Weights: [1]
+            [ [ 2 4 ] ]
+            Components map: 
+            [ 0 ]
+            Active componets ids: 
+            [ 0 ]
+            Inactive componets ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 8 ]
             Total Dimension: 8
          
       
@@ -566,6 +602,8 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
             [ [1,1] ]
+            Components map: 
+            [ 0 ]
             Active componets ids: 
             [ 0 ]
             Inactive componets ids: 
@@ -579,15 +617,17 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             [ 1 1 ]
          
          Dimensionality Table:
-            Component Dimension:
-               Raw componets: 
-                  Size: [ 1 ]  Weights: [1]
-               [ 8 ]
-               Active componets ids: 
-               [ 0 ]
-               Inactive componets ids: 
-               [ ]
-            
+            Raw componets: 
+               Size: [ 1 ]  Weights: [1]
+            [ [ 2 4 ] ]
+            Components map: 
+            [ 0 ]
+            Active componets ids: 
+            [ 0 ]
+            Inactive componets ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 8 ]
             Total Dimension: 8
          
       
@@ -632,6 +672,8 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
             [ [1,1] ]
+            Components map: 
+            [ 0 ]
             Active componets ids: 
             [ 0 ]
             Inactive componets ids: 
@@ -645,15 +687,17 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             [ 1 ]
          
          Dimensionality Table:
-            Component Dimension:
-               Raw componets: 
-                  Size: [ 1 ]  Weights: [1]
-               [ 6 ]
-               Active componets ids: 
-               [ 0 ]
-               Inactive componets ids: 
-               [ ]
-            
+            Raw componets: 
+               Size: [ 1 ]  Weights: [1]
+            [ [ 2 3 ] ]
+            Components map: 
+            [ 0 ]
+            Active componets ids: 
+            [ 0 ]
+            Inactive componets ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 6 ]
             Total Dimension: 6
          
       
@@ -697,6 +741,8 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
             [ [1,1] ]
+            Components map: 
+            [ 0 ]
             Active componets ids: 
             [ 0 ]
             Inactive componets ids: 
@@ -710,15 +756,17 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             [ 1 ]
          
          Dimensionality Table:
-            Component Dimension:
-               Raw componets: 
-                  Size: [ 1 ]  Weights: [1]
-               [ 6 ]
-               Active componets ids: 
-               [ 0 ]
-               Inactive componets ids: 
-               [ ]
-            
+            Raw componets: 
+               Size: [ 1 ]  Weights: [1]
+            [ [ 2 3 ] ]
+            Components map: 
+            [ 0 ]
+            Active componets ids: 
+            [ 0 ]
+            Inactive componets ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 6 ]
             Total Dimension: 6
          
       

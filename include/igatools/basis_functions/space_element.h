@@ -29,7 +29,6 @@
 #include <igatools/base/function.h>
 
 #include <igatools/base/quadrature.h>
-#include <igatools/geometry/cartesian_grid_element.h>
 
 #include <igatools/utils/value_vector.h>
 #include <igatools/utils/value_table.h>
@@ -38,224 +37,11 @@
 
 #include <igatools/basis_functions/spline_space.h>
 
+#include <igatools/basis_functions/space_element_base.h>
+
 IGA_NAMESPACE_OPEN
 
-template <class Grid> class FunctionSpaceOnGrid;
 
-template <class Accessor> class CartesianGridIterator;
-
-template <int dim>
-class SpaceElementBase : private CartesianGridElement<dim>
-{
-protected:
-    using base_t = CartesianGridElement<dim>;
-private:
-    using self_t = SpaceElementBase<dim>;
-
-    using Space = FunctionSpaceOnGrid<CartesianGrid<dim>>;
-
-protected:
-    std::shared_ptr<const Space> space_;
-
-public:
-    using base_t::get_flat_index;
-    using base_t::get_tensor_index;
-    using base_t::get_grid;
-    using base_t::is_boundary;
-
-    using Topology = typename base_t::Topology;
-
-    /** @name Constructors */
-    ///@{
-    /**
-     * Default constructor. Not allowed to be used.
-     */
-    SpaceElementBase() = delete;
-
-    /**
-     * Constructs an accessor to element number index of a
-     * function space.
-     */
-    SpaceElementBase(const std::shared_ptr<const Space> space,
-                     const Index elem_index)
-        :
-        base_t(space->get_grid(), elem_index),
-        space_(space)
-    {
-        Assert(space_ != nullptr, ExcNullPtr());
-    }
-
-
-
-    /**
-     * Copy constructor.
-     * It can be used with different copy policies (i.e. deep copy or shallow copy).
-     * The default behaviour (i.e. using the proper interface of a classic copy constructor)
-     * uses the deep copy.
-     */
-    SpaceElementBase(const self_t &elem,
-                     const CopyPolicy &copy_policy = CopyPolicy::deep)
-        :
-        base_t(elem,copy_policy),
-        space_(elem.space_)
-    {}
-
-    /**
-     * Move constructor.
-     */
-    SpaceElementBase(self_t &&elem) = default;
-
-    /**
-     * Destructor.
-     */
-    ~SpaceElementBase() = default;
-    ///@}
-
-
-    /** Return a reference to "*this" as being an object of type CartesianGridElementAccessor.*/
-    CartesianGridElement<dim> &as_cartesian_grid_element_accessor()
-    {
-        return static_cast<CartesianGridElement<dim> &>(*this);
-    }
-
-
-
-    /** Return a const-reference to "*this" as being an object of type CartesianGridElementAccessor.*/
-    const CartesianGridElement<dim> &as_cartesian_grid_element_accessor() const
-    {
-        return static_cast<const CartesianGridElement<dim> &>(*this);
-    }
-
-    void print_info(LogStream &out) const
-    {
-        base_t::print_info(out);
-    }
-
-    void print_cache_info(LogStream &out) const
-    {
-        base_t::print_cache_info(out);
-    }
-
-    void
-    copy_from(const SpaceElementBase<dim> &elem,const CopyPolicy &copy_policy)
-    {
-        if (this != &elem)
-        {
-            CartesianGridElement<dim>::copy_from(elem,copy_policy);
-            space_ = elem.space_;
-        }
-    }
-
-
-    /**
-     * Returns the global dofs of the local (non zero) basis functions
-     * on the element.
-     *
-     * @note The dofs can be filtered invoking the function with the argument @p dof_property.
-     * If @p dof_property is equal to DofProperties::active, then no filter is applied.
-     *
-     * For example:
-     * \code
-       auto loc_to_glob_all = elem->get_local_to_global(DofProperties::active);
-       // loc_to_glob_all[0] is the global id of the first basis function on the element
-       // loc_to_glob_all[1] is the global id of the second basis function on the element
-       // ...
-       auto loc_to_glob_active = elem->get_local_to_global(DofProperties::active);
-       // loc_to_glob_active[0] is the global id of the first active basis function on the element
-       // loc_to_glob_active[1] is the global id of the second active basis function on the element
-       // ...
-      \endcode
-     *
-     */
-    vector<Index>
-    get_local_to_global(const std::string &dofs_property) const
-    {
-        vector<Index> dofs_global;
-        vector<Index> dofs_loc_to_patch;
-        vector<Index> dofs_loc_to_elem;
-        this->space_->get_element_dofs(
-            *this,
-            dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
-
-        return dofs_global;
-    }
-
-    /**
-     * Returns the patch dofs of the local (non zero) basis functions
-     * on the element.
-     *
-     * @note The dofs can be filtered invoking the function with the argument @p dof_property.
-     * If @p dof_property is equal to DofProperties::active, then no filter is applied.
-     *
-     */
-    inline
-    vector<Index>
-    get_local_to_patch(const std::string &dofs_property) const
-    {
-        vector<Index> dofs_global;
-        vector<Index> dofs_loc_to_patch;
-        vector<Index> dofs_loc_to_elem;
-        this->space_->get_element_dofs(
-            *this,
-            dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
-
-        return dofs_loc_to_patch;
-    }
-
-
-    /**
-     *  Number of non zero basis functions with the given @p dofs_property,
-     *  over the current element.
-     */
-    inline Size get_num_basis(const std::string &dofs_property) const
-    {
-        const auto dofs_global = this->get_local_to_global(dofs_property);
-        return dofs_global.size();
-    }
-
-    virtual Size get_num_basis() const = 0;
-
-
-
-public:
-
-    /**
-     * @name Comparison operators
-     *
-     * @warning To be comparable, two SpaceElement objects must be defined on the same space,
-     * otherwise an assertion will be raised (in Debug mode).
-     */
-    ///@{
-    bool operator==(const self_t &a) const
-    {
-        Assert(space_ == a.space_,
-               ExcMessage("Comparison between elements defined on different spaces"));
-        return this->as_cartesian_grid_element_accessor() == a.as_cartesian_grid_element_accessor();
-    }
-
-
-    bool operator!=(const self_t &a) const
-    {
-        Assert(space_ == a.space_,
-               ExcMessage("Comparison between elements defined on different spaces"));
-        return this->as_cartesian_grid_element_accessor() != a.as_cartesian_grid_element_accessor();
-    }
-
-    bool operator<(const self_t &a) const
-    {
-        Assert(space_ == a.space_,
-               ExcMessage("Comparison between elements defined on different spaces"));
-        return this->as_cartesian_grid_element_accessor() < a.as_cartesian_grid_element_accessor();
-    }
-
-    bool operator>(const self_t &a) const
-    {
-        Assert(space_ == a.space_,
-               ExcMessage("Comparison between elements defined on different spaces"));
-        return this->as_cartesian_grid_element_accessor() > a.as_cartesian_grid_element_accessor();
-    }
-    ///@}
-};
 
 
 template<int dim,int codim,int range,int rank>
@@ -277,14 +63,9 @@ public:
     using Derivative = typename Func::template Derivative<order>;
     using Div = typename Func::Div;
 
-//    static const int dim       = Space::dim;
-//    static const int codim     = Space::codim;
     static const int space_dim = Func::space_dim;
-//    static const int range     = Space::range;
-//    static const int rank      = Space::rank;
 
     using Topology = typename base_t::Topology;
-
 
     /**
      * For each component gives a product array of the dimension
@@ -376,28 +157,28 @@ public:
             dofs_local_to_elem,
             dofs_property);
 
-        const auto n_active_dofs = dofs_local_to_elem.size();
+        const auto n_filtered_dofs = dofs_local_to_elem.size();
         const auto n_pts = values_all_elem_dofs.get_num_points();
 
-        decltype(values_all_elem_dofs) values_active_elem_dofs(n_active_dofs,n_pts);
+        decltype(values_all_elem_dofs) values_filtered_elem_dofs(n_filtered_dofs,n_pts);
 
         int fn = 0;
         for (const auto loc_dof : dofs_local_to_elem)
         {
             const auto values_all_elem_dofs_fn = values_all_elem_dofs.get_function_view(loc_dof);
 
-            const auto values_active_elem_dofs_fn = values_active_elem_dofs.get_function_view(fn);
+            const auto values_filtered_elem_dofs_fn = values_filtered_elem_dofs.get_function_view(fn);
 
             std::copy(values_all_elem_dofs_fn.begin(),
                       values_all_elem_dofs_fn.end(),
-                      values_active_elem_dofs_fn.begin());
+                      values_filtered_elem_dofs_fn.begin());
 
             ++fn;
         }
         // filtering the values that correspond to the dofs with the given property --- end
         //--------------------------------------------------------------------------------------
 
-        return values_active_elem_dofs;
+        return values_filtered_elem_dofs;
     }
 
     auto
@@ -435,16 +216,22 @@ public:
         const int n_basis = basis_gradients.get_num_functions();
         const int n_pts   = basis_gradients.get_num_points();
 
-        ValueTable<Div> div(n_basis,n_pts);
+        ValueTable<Div> divergences(n_basis,n_pts);
+        /*
+        std::transform(basis_gradients.cbegin(),
+                       basis_gradients.cend(),
+                       divergences.begin(),
+                       [](const auto &grad){ return trace(grad);});
+                       //*/
 
-        auto div_it = div.begin();
+        auto div_it = divergences.begin();
         for (const auto &grad : basis_gradients)
         {
             *div_it = trace(grad);
             ++div_it;
         }
-
-        return div;
+//*/
+        return divergences;
     }
 
 

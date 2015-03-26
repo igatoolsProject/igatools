@@ -14,6 +14,8 @@ Reference space info:
          Raw componets: 
             Size: [ 3 ]  Weights: [3]
          [ [1,1] [0,0] [0,0] ]
+         Components map: 
+         [ 0 0 0 ]
          Active componets ids: 
          [ 0 ]
          Inactive componets ids: 
@@ -37,15 +39,17 @@ Reference space info:
          [ 1 1 ]
       
       Dimensionality Table:
-         Component Dimension:
-            Raw componets: 
-               Size: [ 3 ]  Weights: [3]
-            [ 16 16 16 ]
-            Active componets ids: 
-            [ 0 1 2 ]
-            Inactive componets ids: 
-            [ ]
-         
+         Raw componets: 
+            Size: [ 3 ]  Weights: [3]
+         [ [ 4 4 ] [ 4 4 ] [ 4 4 ] ]
+         Components map: 
+         [ 0 1 2 ]
+         Active componets ids: 
+         [ 0 1 2 ]
+         Inactive componets ids: 
+         [ ]
+         Scalar components dimensions:
+         [ 16 16 16 ]
          Total Dimension: 48
       
    

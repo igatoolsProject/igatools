@@ -10,6 +10,8 @@ Degrees:
    Raw componets: 
       Size: [ 1 ]  Weights: [1]
    [ [2] ]
+   Components map: 
+   [ 0 ]
    Active componets ids: 
    [ 0 ]
    Inactive componets ids: 
@@ -21,15 +23,17 @@ Interior multiplicities:
    [ 1 1 ]
 
 Dimensionality Table:
-   Component Dimension:
-      Raw componets: 
-         Size: [ 1 ]  Weights: [1]
-      [ 5 ]
-      Active componets ids: 
-      [ 0 ]
-      Inactive componets ids: 
-      [ ]
-   
+   Raw componets: 
+      Size: [ 1 ]  Weights: [1]
+   [ [ 5 ] ]
+   Components map: 
+   [ 0 ]
+   Active componets ids: 
+   [ 0 ]
+   Inactive componets ids: 
+   [ ]
+   Scalar components dimensions:
+   [ 5 ]
    Total Dimension: 5
 
 Boundary knots:
@@ -61,6 +65,8 @@ Degrees:
    Raw componets: 
       Size: [ 1 ]  Weights: [1]
    [ [1,3] ]
+   Components map: 
+   [ 0 ]
    Active componets ids: 
    [ 0 ]
    Inactive componets ids: 
@@ -74,15 +80,17 @@ Interior multiplicities:
    [ 1 1 1 ]
 
 Dimensionality Table:
-   Component Dimension:
-      Raw componets: 
-         Size: [ 1 ]  Weights: [1]
-      [ 21 ]
-      Active componets ids: 
-      [ 0 ]
-      Inactive componets ids: 
-      [ ]
-   
+   Raw componets: 
+      Size: [ 1 ]  Weights: [1]
+   [ [ 3 7 ] ]
+   Components map: 
+   [ 0 ]
+   Active componets ids: 
+   [ 0 ]
+   Inactive componets ids: 
+   [ ]
+   Scalar components dimensions:
+   [ 21 ]
    Total Dimension: 21
 
 Boundary knots:
@@ -118,6 +126,8 @@ Degrees:
    Raw componets: 
       Size: [ 1 ]  Weights: [1]
    [ [1,3,0] ]
+   Components map: 
+   [ 0 ]
    Active componets ids: 
    [ 0 ]
    Inactive componets ids: 
@@ -133,15 +143,17 @@ Interior multiplicities:
    [ 1 1 1 ]
 
 Dimensionality Table:
-   Component Dimension:
-      Raw componets: 
-         Size: [ 1 ]  Weights: [1]
-      [ 72 ]
-      Active componets ids: 
-      [ 0 ]
-      Inactive componets ids: 
-      [ ]
-   
+   Raw componets: 
+      Size: [ 1 ]  Weights: [1]
+   [ [ 3 6 4 ] ]
+   Components map: 
+   [ 0 ]
+   Active componets ids: 
+   [ 0 ]
+   Inactive componets ids: 
+   [ ]
+   Scalar components dimensions:
+   [ 72 ]
    Total Dimension: 72
 
 Boundary knots:
@@ -182,6 +194,8 @@ Degrees:
    Raw componets: 
       Size: [ 2 ]  Weights: [2]
    [ [1,3] [3,1] ]
+   Components map: 
+   [ 0 1 ]
    Active componets ids: 
    [ 0 1 ]
    Inactive componets ids: 
@@ -200,15 +214,17 @@ Interior multiplicities:
    [ 1 1 ]
 
 Dimensionality Table:
-   Component Dimension:
-      Raw componets: 
-         Size: [ 2 ]  Weights: [2]
-      [ 18 20 ]
-      Active componets ids: 
-      [ 0 1 ]
-      Inactive componets ids: 
-      [ ]
-   
+   Raw componets: 
+      Size: [ 2 ]  Weights: [2]
+   [ [ 3 6 ] [ 5 4 ] ]
+   Components map: 
+   [ 0 1 ]
+   Active componets ids: 
+   [ 0 1 ]
+   Inactive componets ids: 
+   [ ]
+   Scalar components dimensions:
+   [ 18 20 ]
    Total Dimension: 38
 
 Boundary knots:

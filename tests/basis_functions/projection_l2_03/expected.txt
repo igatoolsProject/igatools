@@ -13,6 +13,8 @@ Reference space info:
          Raw componets: 
             Size: [ 1 ]  Weights: [1]
          [ [] ]
+         Components map: 
+         [ 0 ]
          Active componets ids: 
          [ 0 ]
          Inactive componets ids: 
@@ -22,15 +24,17 @@ Reference space info:
          Size: [ ]  Weights: []
       
       Dimensionality Table:
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 1 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
+         Raw componets: 
+            Size: [ 1 ]  Weights: [1]
+         [ [ ] ]
+         Components map: 
+         [ 0 ]
+         Active componets ids: 
+         [ 0 ]
+         Inactive componets ids: 
+         [ ]
+         Scalar components dimensions:
+         [ 1 ]
          Total Dimension: 1
       
    
@@ -72,6 +76,8 @@ Reference space info:
          Raw componets: 
             Size: [ 1 ]  Weights: [1]
          [ [3] ]
+         Components map: 
+         [ 0 ]
          Active componets ids: 
          [ 0 ]
          Inactive componets ids: 
@@ -83,15 +89,17 @@ Reference space info:
          [ 1 1 ]
       
       Dimensionality Table:
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 6 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
+         Raw componets: 
+            Size: [ 1 ]  Weights: [1]
+         [ [ 6 ] ]
+         Components map: 
+         [ 0 ]
+         Active componets ids: 
+         [ 0 ]
+         Inactive componets ids: 
+         [ ]
+         Scalar components dimensions:
+         [ 6 ]
          Total Dimension: 6
       
    
@@ -144,6 +152,8 @@ Reference space info:
          Raw componets: 
             Size: [ 1 ]  Weights: [1]
          [ [3,3] ]
+         Components map: 
+         [ 0 ]
          Active componets ids: 
          [ 0 ]
          Inactive componets ids: 
@@ -157,15 +167,17 @@ Reference space info:
          [ 1 1 ]
       
       Dimensionality Table:
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 36 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
+         Raw componets: 
+            Size: [ 1 ]  Weights: [1]
+         [ [ 6 6 ] ]
+         Components map: 
+         [ 0 ]
+         Active componets ids: 
+         [ 0 ]
+         Inactive componets ids: 
+         [ ]
+         Scalar components dimensions:
+         [ 36 ]
          Total Dimension: 36
       
    
@@ -254,6 +266,8 @@ Reference space info:
          Raw componets: 
             Size: [ 1 ]  Weights: [1]
          [ [1,1,1] ]
+         Components map: 
+         [ 0 ]
          Active componets ids: 
          [ 0 ]
          Inactive componets ids: 
@@ -269,15 +283,17 @@ Reference space info:
          [ 1 1 ]
       
       Dimensionality Table:
-         Component Dimension:
-            Raw componets: 
-               Size: [ 1 ]  Weights: [1]
-            [ 64 ]
-            Active componets ids: 
-            [ 0 ]
-            Inactive componets ids: 
-            [ ]
-         
+         Raw componets: 
+            Size: [ 1 ]  Weights: [1]
+         [ [ 4 4 4 ] ]
+         Components map: 
+         [ 0 ]
+         Active componets ids: 
+         [ 0 ]
+         Inactive componets ids: 
+         [ ]
+         Scalar components dimensions:
+         [ 64 ]
          Total Dimension: 64
       
    
@@ -396,6 +412,8 @@ Reference space info:
          Raw componets: 
             Size: [ 3 ]  Weights: [3]
          [ [1,1] [0,0] [0,0] ]
+         Components map: 
+         [ 0 0 0 ]
          Active componets ids: 
          [ 0 ]
          Inactive componets ids: 
@@ -419,15 +437,17 @@ Reference space info:
          [ 1 1 ]
       
       Dimensionality Table:
-         Component Dimension:
-            Raw componets: 
-               Size: [ 3 ]  Weights: [3]
-            [ 16 16 16 ]
-            Active componets ids: 
-            [ 0 1 2 ]
-            Inactive componets ids: 
-            [ ]
-         
+         Raw componets: 
+            Size: [ 3 ]  Weights: [3]
+         [ [ 4 4 ] [ 4 4 ] [ 4 4 ] ]
+         Components map: 
+         [ 0 1 2 ]
+         Active componets ids: 
+         [ 0 1 2 ]
+         Inactive componets ids: 
+         [ ]
+         Scalar components dimensions:
+         [ 16 16 16 ]
          Total Dimension: 48
       
    
