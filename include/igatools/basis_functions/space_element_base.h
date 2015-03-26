@@ -31,7 +31,7 @@ IGA_NAMESPACE_OPEN
 
 template <class Grid> class FunctionSpaceOnGrid;
 
-template <class Accessor> class CartesianGridIterator;
+//template <class Accessor> class CartesianGridIterator;
 
 template <int dim>
 class SpaceElementBase : private CartesianGridElement<dim>
@@ -143,6 +143,10 @@ public:
      */
     vector<Index>
     get_local_to_patch(const std::string &dofs_property) const;
+
+
+    vector<Index>
+    get_local_dofs(const std::string &dofs_property) const;
 
 
     /**

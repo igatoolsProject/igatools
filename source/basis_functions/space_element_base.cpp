@@ -126,6 +126,20 @@ get_local_to_patch(const std::string &dofs_property) const
     return dofs_loc_to_patch;
 }
 
+template <int dim>
+vector<Index>
+SpaceElementBase<dim>::
+get_local_dofs(const std::string &dofs_property) const
+{
+    vector<Index> dofs_global;
+    vector<Index> dofs_loc_to_patch;
+    vector<Index> dofs_loc_to_elem;
+    this->space_->get_element_dofs(
+        *this,
+        dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
+
+    return dofs_loc_to_elem;
+}
 
 template <int dim>
 Size
