@@ -34,6 +34,10 @@ GridFlags(const ValueFlags &flags)
      * general_points -> meas
      * w_meas -> meas
      */
+    if (contains(flags, ValueFlags::length))
+    {
+        fill_lengths_ = true;
+    }
     if (contains(flags, ValueFlags::point))
     {
         fill_points_  = true;
@@ -58,7 +62,7 @@ GridFlags::
 fill_none() const
 {
     bool fill_none = true;
-    if (fill_points_ || fill_measures_ || fill_w_measures_)
+    if (fill_lengths_ || fill_points_ || fill_measures_ || fill_w_measures_)
         fill_none = false;
     return fill_none;
 }
@@ -177,15 +181,21 @@ void
 GridFlags::
 print_info(LogStream &out) const
 {
-    using std::endl;
-    out.push("  ");
-    out << "points     -->  fill = "
-        << fill_points_ << "    filled = " << points_filled_ << endl;
-    out << "measures   -->  fill = "
-        << fill_measures_ << "    filled = " << measures_filled_ << endl;
-    out << "w_measures -->  fill = "
-        << fill_w_measures_ << "    filled = " << w_measures_filled_;
-    out.pop();
+    out.begin_item("lengths");
+    out << "   fill = " << fill_lengths_ << "    filled = " << lengths_filled_;
+    out.end_item();
+
+    out.begin_item("points");
+    out << "   fill = " << fill_points_  << "    filled = " << points_filled_;
+    out.end_item();
+
+    out.begin_item("measures");
+    out << "   fill = " << fill_measures_<< "    filled = " << measures_filled_;
+    out.end_item();
+
+    out.begin_item("w_measures");
+    out << "   fill = " << fill_w_measures_ << "    filled = " << w_measures_filled_;
+    out.end_item();
 }
 
 #if 0
@@ -343,14 +353,17 @@ void
 FunctionFlags::
 print_info(LogStream &out) const
 {
-    using std::endl;
-    out << "   values -->    fill = "
-        << fill_values_ << "    filled = " << values_filled_ << endl;
-    out << "gradients -->    fill = "
-        << fill_gradients_ << "    filled = " << gradients_filled_ << endl;
-    out << " hessians -->    fill = "
-        << fill_hessians_ << "    filled = " << hessians_filled_ << endl;
+    out.begin_item("values");
+    out << "   fill = " << fill_values_ << "    filled = " << values_filled_;
+    out.end_item();
 
+    out.begin_item("gradients");
+    out << "   fill = " << fill_gradients_ << "    filled = " << gradients_filled_;
+    out.end_item();
+
+    out.begin_item("hessians");
+    out << "   fill = " << fill_hessians_ << "    filled = " << hessians_filled_;
+    out.end_item();
 }
 
 //====================================================
@@ -526,11 +539,15 @@ MappingFlags::
 print_info(LogStream &out) const
 {
     FunctionFlags::print_info(out);
-    using std::endl;
-    out << "   inv grad -->    fill = "
-        << fill_inv_gradients_ << "    filled = " << inv_gradients_filled_ << endl;
-    out << "inv hessians -->    fill = "
-        << fill_inv_hessians_ << "    filled = " << inv_hessians_filled_ << endl;
+
+    out.begin_item("inv gradients");
+    out << "   fill = " << fill_inv_gradients_ << "    filled = " << inv_gradients_filled_;
+    out.end_item();
+
+    out.begin_item("inv hessians");
+    out << "   fill = " << fill_inv_hessians_ << "    filled = " << inv_hessians_filled_;
+    out.end_item();
+
 
 
 }

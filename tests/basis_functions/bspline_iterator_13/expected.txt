@@ -19,9 +19,15 @@ Number of element basis:
    Total Dimension: 2
 
 Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
+   lengths
+      fill = 0    filled = 0
+   points
+      fill = 0    filled = 0
+   measures
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
 Measure: 0
 Lengths: [ 0 ] 
 Unit weights:
@@ -29,9 +35,15 @@ ValueVector (num_points=0) : [ ]
 Unit points:
 ValueVector (num_points=0) : [ ]
 Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
+   lengths
+      fill = 0    filled = 0
+   points
+      fill = 0    filled = 0
+   measures
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
 Measure: 0
 Lengths: [ 0 ] 
 Unit weights:
@@ -40,9 +52,15 @@ Unit points:
 ValueVector (num_points=0) : [ ]
 
 Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
+   lengths
+      fill = 0    filled = 0
+   points
+      fill = 0    filled = 0
+   measures
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
 Measure: 0
 Lengths: [ 0 ] 
 Unit weights:
@@ -50,9 +68,15 @@ ValueVector (num_points=0) : [ ]
 Unit points:
 ValueVector (num_points=0) : [ ]
 Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
+   lengths
+      fill = 0    filled = 0
+   points
+      fill = 0    filled = 0
+   measures
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
 Measure: 0
 Lengths: [ 0 ] 
 Unit weights:
@@ -61,9 +85,15 @@ Unit points:
 ValueVector (num_points=0) : [ ]
 
 Fill flags:
-     points     -->  fill = 1    filled = 1
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
+   lengths
+      fill = 1    filled = 1
+   points
+      fill = 1    filled = 1
+   measures
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
 Measure: 0
 Lengths: [ 1.00000 ] 
 Unit weights:
@@ -72,31 +102,46 @@ Unit points:
 ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
 
 Fill flags:
-      values -->    fill = 0    filled = 0
-   gradients -->    fill = 0    filled = 0
-    hessians -->    fill = 0    filled = 0
+   values
+      fill = 0    filled = 0
+   gradients
+      fill = 0    filled = 0
+   hessians
+      fill = 0    filled = 0
 
 Fill flags:
-      values -->    fill = 0    filled = 0
-   gradients -->    fill = 0    filled = 0
-    hessians -->    fill = 0    filled = 0
-
-
-Fill flags:
-      values -->    fill = 0    filled = 0
-   gradients -->    fill = 0    filled = 0
-    hessians -->    fill = 0    filled = 0
-
-Fill flags:
-      values -->    fill = 0    filled = 0
-   gradients -->    fill = 0    filled = 0
-    hessians -->    fill = 0    filled = 0
+   values
+      fill = 0    filled = 0
+   gradients
+      fill = 0    filled = 0
+   hessians
+      fill = 0    filled = 0
 
 
 Fill flags:
-      values -->    fill = 1    filled = 1
-   gradients -->    fill = 0    filled = 0
-    hessians -->    fill = 0    filled = 0
+   values
+      fill = 0    filled = 0
+   gradients
+      fill = 0    filled = 0
+   hessians
+      fill = 0    filled = 0
+
+Fill flags:
+   values
+      fill = 0    filled = 0
+   gradients
+      fill = 0    filled = 0
+   hessians
+      fill = 0    filled = 0
+
+
+Fill flags:
+   values
+      fill = 1    filled = 1
+   gradients
+      fill = 0    filled = 0
+   hessians
+      fill = 0    filled = 0
 
 Values:
     (num_functions=2,num_points=2) :
@@ -129,30 +174,15 @@ Number of element basis:
    Total Dimension: 2
 
 Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
-Measure: 0
-Lengths: [ 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
-Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
-Measure: 0
-Lengths: [ 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
+   lengths
+      fill = 0    filled = 0
+   points
+      fill = 0    filled = 0
+   measures
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
 
-Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
 Measure: 0
 Lengths: [ 0 ] 
 Unit weights:
@@ -160,9 +190,15 @@ ValueVector (num_points=0) : [ ]
 Unit points:
 ValueVector (num_points=0) : [ ]
 Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
+   lengths
+      fill = 0    filled = 0
+   points
+      fill = 0    filled = 0
+   measures
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
 Measure: 0
 Lengths: [ 0 ] 
 Unit weights:
@@ -171,9 +207,31 @@ Unit points:
 ValueVector (num_points=0) : [ ]
 
 Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
+   lengths
+      fill = 0    filled = 0
+   points
+      fill = 0    filled = 0
+   measures
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
+Measure: 0
+Lengths: [ 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+Fill flags:
+   lengths
+      fill = 0    filled = 0
+   points
+      fill = 0    filled = 0
+   measures
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
 Measure: 0
 Lengths: [ 0 ] 
 Unit weights:
@@ -182,31 +240,63 @@ Unit points:
 ValueVector (num_points=0) : [ ]
 
 Fill flags:
-      values -->    fill = 0    filled = 0
-   gradients -->    fill = 0    filled = 0
-    hessians -->    fill = 0    filled = 0
+   lengths
+      fill = 0    filled = 0
+   points
+      fill = 0    filled = 0
+   measures
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
+Measure: 0
+Lengths: [ 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
 
 Fill flags:
-      values -->    fill = 0    filled = 0
-   gradients -->    fill = 0    filled = 0
-    hessians -->    fill = 0    filled = 0
+   values
+      fill = 0    filled = 0
+   gradients
+      fill = 0    filled = 0
+   hessians
+      fill = 0    filled = 0
+
+Fill flags:
+   values
+      fill = 0    filled = 0
+   gradients
+      fill = 0    filled = 0
+   hessians
+      fill = 0    filled = 0
 
 
 Fill flags:
-      values -->    fill = 0    filled = 0
-   gradients -->    fill = 0    filled = 0
-    hessians -->    fill = 0    filled = 0
+   values
+      fill = 0    filled = 0
+   gradients
+      fill = 0    filled = 0
+   hessians
+      fill = 0    filled = 0
 
 Fill flags:
-      values -->    fill = 0    filled = 0
-   gradients -->    fill = 0    filled = 0
-    hessians -->    fill = 0    filled = 0
+   values
+      fill = 0    filled = 0
+   gradients
+      fill = 0    filled = 0
+   hessians
+      fill = 0    filled = 0
 
 
 Fill flags:
-      values -->    fill = 0    filled = 0
-   gradients -->    fill = 1    filled = 1
-    hessians -->    fill = 0    filled = 0
+   values
+      fill = 0    filled = 0
+   gradients
+      fill = 1    filled = 1
+   hessians
+      fill = 0    filled = 0
 
 Gradients:
     (num_functions=2,num_points=2) :
@@ -239,30 +329,15 @@ Number of element basis:
    Total Dimension: 2
 
 Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
-Measure: 0
-Lengths: [ 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
-Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
-Measure: 0
-Lengths: [ 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
+   lengths
+      fill = 0    filled = 0
+   points
+      fill = 0    filled = 0
+   measures
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
 
-Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
 Measure: 0
 Lengths: [ 0 ] 
 Unit weights:
@@ -270,9 +345,15 @@ ValueVector (num_points=0) : [ ]
 Unit points:
 ValueVector (num_points=0) : [ ]
 Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
+   lengths
+      fill = 0    filled = 0
+   points
+      fill = 0    filled = 0
+   measures
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
 Measure: 0
 Lengths: [ 0 ] 
 Unit weights:
@@ -281,9 +362,31 @@ Unit points:
 ValueVector (num_points=0) : [ ]
 
 Fill flags:
-     points     -->  fill = 0    filled = 0
-     measures   -->  fill = 0    filled = 0
-w_measures -->  fill = 0    filled = 0
+   lengths
+      fill = 0    filled = 0
+   points
+      fill = 0    filled = 0
+   measures
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
+Measure: 0
+Lengths: [ 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
+Fill flags:
+   lengths
+      fill = 0    filled = 0
+   points
+      fill = 0    filled = 0
+   measures
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
 Measure: 0
 Lengths: [ 0 ] 
 Unit weights:
@@ -292,31 +395,63 @@ Unit points:
 ValueVector (num_points=0) : [ ]
 
 Fill flags:
-      values -->    fill = 0    filled = 0
-   gradients -->    fill = 0    filled = 0
-    hessians -->    fill = 0    filled = 0
+   lengths
+      fill = 0    filled = 0
+   points
+      fill = 0    filled = 0
+   measures
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
+Measure: 0
+Lengths: [ 0 ] 
+Unit weights:
+ValueVector (num_points=0) : [ ]
+Unit points:
+ValueVector (num_points=0) : [ ]
 
 Fill flags:
-      values -->    fill = 0    filled = 0
-   gradients -->    fill = 0    filled = 0
-    hessians -->    fill = 0    filled = 0
+   values
+      fill = 0    filled = 0
+   gradients
+      fill = 0    filled = 0
+   hessians
+      fill = 0    filled = 0
+
+Fill flags:
+   values
+      fill = 0    filled = 0
+   gradients
+      fill = 0    filled = 0
+   hessians
+      fill = 0    filled = 0
 
 
 Fill flags:
-      values -->    fill = 0    filled = 0
-   gradients -->    fill = 0    filled = 0
-    hessians -->    fill = 0    filled = 0
+   values
+      fill = 0    filled = 0
+   gradients
+      fill = 0    filled = 0
+   hessians
+      fill = 0    filled = 0
 
 Fill flags:
-      values -->    fill = 0    filled = 0
-   gradients -->    fill = 0    filled = 0
-    hessians -->    fill = 0    filled = 0
+   values
+      fill = 0    filled = 0
+   gradients
+      fill = 0    filled = 0
+   hessians
+      fill = 0    filled = 0
 
 
 Fill flags:
-      values -->    fill = 0    filled = 0
-   gradients -->    fill = 0    filled = 0
-    hessians -->    fill = 1    filled = 1
+   values
+      fill = 0    filled = 0
+   gradients
+      fill = 0    filled = 0
+   hessians
+      fill = 1    filled = 1
 
 Hessians:
     (num_functions=2,num_points=2) :

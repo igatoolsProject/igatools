@@ -44,7 +44,7 @@ void init_unif_caches(const GridFlags &flag, const Quad &quad, std::tuple<Args..
     const int dim = Quad::dim;
     const int low = dim==0? 0 : dim-num_sub_elem;
     UniformQuadFunc f;
-    TupleFunc1<UniformQuadFunc, GridFlags, Quad, decltype(t), sizeof...(Args), low>::apply_func(f, flag, quad, t);
+    TupleFunc1< UniformQuadFunc, GridFlags, Quad, decltype(t), sizeof...(Args), low>::apply_func(f, flag, quad, t);
 }
 };
 
