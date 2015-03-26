@@ -82,22 +82,32 @@ void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
     sp_values.init_face_cache(elem);
     for (; elem != end; ++elem)
     {
-        if (elem->SpaceElement<Space>::is_boundary())
+        if (elem->is_boundary())
         {
-            out << "Element" << elem->get_flat_index() << endl;
+            out.begin_item("Element " + std::to_string(elem->get_flat_index()));
             for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
             {
-                if (elem->SpaceElement<Space>::is_boundary(s_id))
+                if (elem->is_boundary(s_id))
                 {
-                    out << "Face " << s_id << endl;
+                    out.begin_item("Face " + std::to_string(s_id));
                     sp_values.fill_face_cache(elem,s_id);
-                    out << "values: " << endl;
+
+                    out.begin_item("Values: ");
                     elem->template get_values<0, k>(s_id,DofProperties::active).print_info(out);
-//                  out << "values: " << endl;
-//                  elem->template get_values<1, k>(s_id).print_info(out);
-//                  elem->template get_values<2, k>(s_id).print_info(out);
+                    out.end_item();
+
+                    out.begin_item("Gradients: ");
+                    elem->template get_values<1, k>(s_id,DofProperties::active).print_info(out);
+                    out.end_item();
+
+                    out.begin_item("Hessians: ");
+                    elem->template get_values<2, k>(s_id,DofProperties::active).print_info(out);
+                    out.end_item();
+
+                    out.end_item();
                 }
             }
+            out.end_item();
         }
     }
 }

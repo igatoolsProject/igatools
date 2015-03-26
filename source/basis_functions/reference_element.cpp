@@ -34,9 +34,10 @@ ReferenceElement<dim, range, rank>::
 ReferenceElement(const std::shared_ptr<ConstSpace> space,
                  const Index elem_index)
     :
-    parent_t(space,elem_index)
+    parent_t(space,elem_index),
+    space_(space)
 {
-    Assert(this->get_space() != nullptr,ExcNullPtr());
+//    Assert(this->get_space() != nullptr,ExcNullPtr());
 
     //-------------------------------------------------
     const auto &degree_table = space->get_degree();
@@ -110,7 +111,7 @@ Conditional< deriv_order==0,
              Value,
              Derivative<deriv_order> > >
 {
-    auto elem_handler = ReferenceElementHandler<dim,range,rank>::create(this->get_space());
+    auto elem_handler = ReferenceElementHandler<dim,range,rank>::create(this->space_);
 
     ValueFlags flags;
     if (deriv_order == 0)

@@ -36,8 +36,8 @@ SpaceElement<Space,dim,codim,range,rank>::
 SpaceElement(const std::shared_ptr<const Space> space,
              const Index elem_index)
     :
-    base_t(space, elem_index),
-    space_(space)
+    base_t(space, elem_index)
+//  ,space_(space)
 {}
 
 
@@ -49,10 +49,10 @@ SpaceElement<Space,dim,codim,range,rank>::
 SpaceElement(const SpaceElement<Space,dim,codim,range,rank> &elem,
              const CopyPolicy &copy_policy)
     :
-    base_t(elem,copy_policy),
-    space_(elem.space_)
+    base_t(elem,copy_policy)
+//  ,space_(elem.space_)
 {
-    Assert(this->space_ != nullptr,ExcNullPtr());
+//    Assert(this->space_ != nullptr,ExcNullPtr());
 
     if (elem.local_cache_ != nullptr)
     {
@@ -79,7 +79,7 @@ copy_from(const SpaceElement<Space,dim,codim,range,rank> &elem,
     {
         SpaceElementBase<Space::dim>::copy_from(elem,copy_policy);
 
-        this->space_ = elem.space_;
+//        this->space_ = elem.space_;
 
         if (copy_policy == CopyPolicy::deep)
         {
@@ -183,6 +183,7 @@ get_local_to_patch(const std::string &dofs_property) const -> vector<Index>
 }
 #endif
 
+#if 0
 template<class Space,int dim,int codim,int range,int rank>
 inline
 auto
@@ -192,7 +193,7 @@ get_space() const -> std::shared_ptr<const Space>
     Assert(this->space_ != nullptr,ExcNullPtr());
     return this->space_;
 }
-
+#endif
 
 
 template<class Space,int dim,int codim,int range,int rank>

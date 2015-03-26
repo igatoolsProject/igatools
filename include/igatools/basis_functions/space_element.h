@@ -477,11 +477,12 @@ public:
     ///@{
 
 
-
+#if 0
     /**
      * Pointer to the @p Space upon which the accessor is iterating on.
      */
     std::shared_ptr<const Space> get_space() const;
+#endif
     ///@}
 
 
@@ -489,13 +490,13 @@ public:
 
     void print_cache_info(LogStream &out) const;
 
-
+#if 0
 private:
     /**
      * Space for which the SpaceElement refers to.
      */
     std::shared_ptr<const Space> space_ = nullptr;
-
+#endif
 
 protected:
 

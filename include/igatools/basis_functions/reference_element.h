@@ -218,6 +218,15 @@ public:
 
     void print_info(LogStream &out) const;
 
+protected:
+    std::shared_ptr<const Space> space_;
+
+
+public:
+    std::shared_ptr<const Space> get_space() const
+    {
+        return space_;
+    }
 };
 
 
