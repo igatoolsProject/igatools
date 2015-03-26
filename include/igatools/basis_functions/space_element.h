@@ -73,12 +73,12 @@ public:
      * function space.
      */
     SpaceElementBase(const std::shared_ptr<const Space> space,
-                 const Index elem_index)
-    :
-    	base_t(space->get_grid(), elem_index),
-		space0_(space)
+                     const Index elem_index)
+        :
+        base_t(space->get_grid(), elem_index),
+        space0_(space)
     {
-    	Assert(space0_ != nullptr, ExcNullPtr());
+        Assert(space0_ != nullptr, ExcNullPtr());
     }
 
 
@@ -90,10 +90,10 @@ public:
      * uses the deep copy.
      */
     SpaceElementBase(const self_t &elem,
-                 const CopyPolicy &copy_policy = CopyPolicy::deep)
-    :
-    	base_t(elem,copy_policy),
-		space0_(elem.space0_)
+                     const CopyPolicy &copy_policy = CopyPolicy::deep)
+        :
+        base_t(elem,copy_policy),
+        space0_(elem.space0_)
     {}
 
     /**
@@ -110,9 +110,9 @@ public:
 
     /** Return a reference to "*this" as being an object of type CartesianGridElementAccessor.*/
     CartesianGridElement<dim> &as_cartesian_grid_element_accessor()
-	{
-	    return static_cast<CartesianGridElement<dim> &>(*this);
-	}
+    {
+        return static_cast<CartesianGridElement<dim> &>(*this);
+    }
 
 
 
@@ -124,7 +124,7 @@ public:
 
     void print_info(LogStream &out) const
     {
-    	base_t::print_info(out);
+        base_t::print_info(out);
     }
 
     void print_cache_info(LogStream &out) const
@@ -137,8 +137,8 @@ public:
     {
         if (this != &elem)
         {
-        	CartesianGridElement<dim>::copy_from(elem,copy_policy);
-        	space0_ = elem.space0_;
+            CartesianGridElement<dim>::copy_from(elem,copy_policy);
+            space0_ = elem.space0_;
         }
     }
 
@@ -170,8 +170,8 @@ public:
         vector<Index> dofs_loc_to_patch;
         vector<Index> dofs_loc_to_elem;
         this->space0_->get_element_dofs(
-        		*this,
-    			dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
+            *this,
+            dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
 
         return dofs_global;
     }
@@ -192,8 +192,8 @@ public:
         vector<Index> dofs_loc_to_patch;
         vector<Index> dofs_loc_to_elem;
         this->space0_->get_element_dofs(
-        		*this,
-    			dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
+            *this,
+            dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
 
         return dofs_loc_to_patch;
     }
@@ -254,13 +254,13 @@ public:
 };
 
 
-template<class Space>
+template<class Space,int dim,int codim,int range,int rank>
 class SpaceElement : public SpaceElementBase<Space::dim>
 {
 protected:
     using base_t =  SpaceElementBase<Space::dim>;
 private:
-    using self_t = SpaceElement<Space>;
+    using self_t = SpaceElement<Space,dim,codim,range,rank>;
 
 public:
     using DerivedElementAccessor = typename Space::ElementAccessor;
@@ -272,18 +272,18 @@ public:
     using Derivative = typename Space::template Derivative<order>;
     using Div = typename Space::Div;
 
-    static const int dim       = Space::dim;
-    static const int codim     = Space::codim;
+//    static const int dim       = Space::dim;
+//    static const int codim     = Space::codim;
     static const int space_dim = Space::space_dim;
-    static const int range     = Space::range;
-    static const int rank      = Space::rank;
+//    static const int range     = Space::range;
+//    static const int rank      = Space::rank;
 
     /*
     using base_t::get_flat_index;
     using base_t::get_tensor_index;
     using base_t::get_grid;
     using base_t::is_boundary;
-//*/
+    //*/
     using Topology = typename base_t::Topology;
 
     /**
