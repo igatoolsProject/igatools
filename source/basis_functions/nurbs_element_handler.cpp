@@ -212,19 +212,19 @@ operator()(const T &quad1)
     auto &flags = cache.flags_handler_;
     if (flags.fill_values())
     {
-        auto &values = cache.template get_der<0>();
+        auto &values = cache.template get_der<_Value>();
         evaluate_nurbs_values_from_bspline(bsp_elem, wght_table, values);
         flags.set_values_filled(true);
     }
     if (flags.fill_gradients())
     {
-        auto &gradients = cache.template get_der<1>();
+        auto &gradients = cache.template get_der<_Gradient>();
         evaluate_nurbs_gradients_from_bspline(bsp_elem, wght_table, gradients);
         flags.set_gradients_filled(true);
     }
     if (flags.fill_hessians())
     {
-        auto &hessians = cache.template get_der<2>();
+        auto &hessians = cache.template get_der<_Hessian>();
         evaluate_nurbs_hessians_from_bspline(bsp_elem, wght_table, hessians);
         flags.set_hessians_filled(true);
     }

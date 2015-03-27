@@ -127,11 +127,11 @@ resize(const FunctionFlags &flags_handler,
     Assert(total_n_basis > 0, ExcLowerRange(total_n_basis,1));
 
     if (flags_handler_.fill_values())
-        resize_der<0>(total_n_basis,total_n_points);
+        resize_der<_Value>(total_n_basis,total_n_points);
     if (flags_handler_.fill_gradients())
-        resize_der<1>(total_n_basis,total_n_points);
+        resize_der<_Gradient>(total_n_basis,total_n_points);
     if (flags_handler_.fill_hessians())
-        resize_der<2>(total_n_basis,total_n_points);
+        resize_der<_Hessian>(total_n_basis,total_n_points);
 
 #if 0
     if (flags_handler_.fill_divergences())
@@ -169,21 +169,21 @@ ValuesCache::print_info(LogStream &out) const -> void
     if (flags_handler_.values_filled())
     {
         out.begin_item("Values:");
-        get_der<0>().print_info(out);
+        get_der<_Value>().print_info(out);
         out.end_item();
     }
 
     if (flags_handler_.gradients_filled())
     {
         out.begin_item("Gradients:");
-        get_der<1>().print_info(out);
+        get_der<_Gradient>().print_info(out);
         out.end_item();
     }
 
     if (flags_handler_.hessians_filled())
     {
         out.begin_item("Hessians:");
-        get_der<2>().print_info(out);
+        get_der<_Hessian>().print_info(out);
         out.end_item();
     }
 

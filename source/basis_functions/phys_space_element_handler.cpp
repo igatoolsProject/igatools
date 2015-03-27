@@ -207,7 +207,7 @@ fill_cache(ElementAccessor &elem, const int j)
 
     if (flags.fill_values())
     {
-        auto &result = cache.template get_der<0>();
+        auto &result = cache.template get_der<_Value>();
         const auto &ref_values = ref_elem.template get_basis<_Value,k>(j,DofProperties::active);
         push_fwd_elem.template transform_0<RefSpace::range,RefSpace::rank>
         (ref_values, result);
@@ -218,10 +218,10 @@ fill_cache(ElementAccessor &elem, const int j)
     {
         const auto &ref_values = ref_elem.template get_basis<   _Value,k>(j,DofProperties::active);
         const auto &ref_der_1  = ref_elem.template get_basis<_Gradient,k>(j,DofProperties::active);
-        const auto &values = cache.template get_der<0>();
+        const auto &values = cache.template get_der<_Value>();
         push_fwd_elem.template transform_1<PhysSpace::range,PhysSpace::rank, k>
         (std::make_tuple(ref_values, ref_der_1), values,
-         cache.template get_der<1>(), j);
+         cache.template get_der<_Gradient>(), j);
 
         flags.set_gradients_filled(true);
     }
@@ -230,12 +230,12 @@ fill_cache(ElementAccessor &elem, const int j)
         const auto &ref_values = ref_elem.template get_basis<   _Value,k>(j,DofProperties::active);
         const auto &ref_der_1  = ref_elem.template get_basis<_Gradient,k>(j,DofProperties::active);
         const auto &ref_der_2  = ref_elem.template get_basis< _Hessian,k>(j,DofProperties::active);
-        const auto &values = cache.template get_der<0>();
-        const auto &der_1  = cache.template get_der<1>();
+        const auto &values = cache.template get_der<   _Value>();
+        const auto &der_1  = cache.template get_der<_Gradient>();
         push_fwd_elem.template transform_2<PhysSpace::range,PhysSpace::rank, k>
         (std::make_tuple(ref_values, ref_der_1, ref_der_2),
          std::make_tuple(values,der_1),
-         cache.template get_der<2>(), j);
+         cache.template get_der<_Hessian>(), j);
 
         flags.set_hessians_filled(true);
     }

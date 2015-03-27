@@ -107,7 +107,7 @@ evaluate_basis_derivatives_at_points(
     const Quadrature<dim> &points,
     const std::string &dofs_property) ->
 ValueTable<
-Conditional< ValueType::order==0,
+Conditional< ValueType::order == 0,
              Value,
              Derivative<ValueType::order> > >
 {

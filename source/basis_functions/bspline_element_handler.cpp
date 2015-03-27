@@ -655,19 +655,19 @@ operator()(const T &topology)
     auto val_1d = g_cache.get_element_values(elem_t_index);
     if (flags.fill_values())
     {
-        auto &values = cache.template get_der<0>();
+        auto &values = cache.template get_der<_Value>();
         evaluate_bspline_values(val_1d, values);
         flags.set_values_filled(true);
     }
     if (flags.fill_gradients())
     {
-        auto &values = cache.template get_der<1>();
+        auto &values = cache.template get_der<_Gradient>();
         evaluate_bspline_derivatives<1>(val_1d, values);
         flags.set_gradients_filled(true);
     }
     if (flags.fill_hessians())
     {
-        auto &values = cache.template get_der<2>();
+        auto &values = cache.template get_der<_Hessian>();
         evaluate_bspline_derivatives<2>(val_1d, values);
         flags.set_hessians_filled(true);
     }
