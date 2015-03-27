@@ -333,7 +333,10 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
 
 
 
-
+/**
+ * Returns the list of global ids of the non zero basis functions
+ * on the faces with the given boundary ids.
+ */
 template<class Space>
 std::set<Index>
 get_boundary_dofs(std::shared_ptr<const Space> space,
