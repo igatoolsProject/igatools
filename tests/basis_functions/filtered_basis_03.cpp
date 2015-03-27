@@ -90,8 +90,8 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
     auto neu_dofs = get_boundary_dofs<Space>(space, neu_ids);
     std::vector<Index> common(dim*range);
     auto end1 =
-    std::set_intersection(neu_dofs.begin(), neu_dofs.end(),
-                          dir_dofs.begin(), dir_dofs.end(), common.begin());
+        std::set_intersection(neu_dofs.begin(), neu_dofs.end(),
+                              dir_dofs.begin(), dir_dofs.end(), common.begin());
     common.resize(end1-common.begin());
     for (auto &id : common)
         neu_dofs.erase(id);

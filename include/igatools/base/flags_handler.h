@@ -180,21 +180,21 @@ public:
     template<class ValueType>
     bool fill() const
     {
-    	return value_type_flags_.at(ValueType::id).fill_;
+        return value_type_flags_.at(ValueType::id).fill_;
     }
 
     /** Returns true if the quantity associated to @p ValueType is filled. */
     template<class ValueType>
     bool filled() const
     {
-    	return value_type_flags_.at(ValueType::id).filled_;
+        return value_type_flags_.at(ValueType::id).filled_;
     }
 
     /** Sets the filled @p status the quantity associated to @p ValueType. */
     template<class ValueType>
     void set_filled(const bool status)
     {
-    	value_type_flags_[ValueType::id].filled_ = status;
+        value_type_flags_[ValueType::id].filled_ = status;
     }
 
 
@@ -223,13 +223,13 @@ protected:
 
     struct Flags
     {
-    	bool fill_ = false;
-    	bool filled_ = false;
+        bool fill_ = false;
+        bool filled_ = false;
 
-    	void print_info(LogStream & out) const
-    	{
-    	    out << "   fill = " << fill_ << "    filled = " << filled_;
-    	}
+        void print_info(LogStream &out) const
+        {
+            out << "   fill = " << fill_ << "    filled = " << filled_;
+        }
     };
 
     /**

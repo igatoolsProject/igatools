@@ -284,8 +284,8 @@ private:
             }
             if (flags.template fill<_Divergence>())
             {
-            	Assert(false,ExcNotImplemented());
-            	AssertThrow(false,ExcNotImplemented());
+                Assert(false,ExcNotImplemented());
+                AssertThrow(false,ExcNotImplemented());
             }
 
             cache.set_filled(true);

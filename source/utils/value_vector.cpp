@@ -67,8 +67,8 @@ void
 ValueVector<T>::
 resize(const Size num_functions, const Size num_points)
 {
-	Assert(num_functions == 1,ExcDimensionMismatch(num_functions,1));
-	this->resize(num_points);
+    Assert(num_functions == 1,ExcDimensionMismatch(num_functions,1));
+    this->resize(num_points);
 }
 
 

@@ -217,33 +217,33 @@ DeclException2(ExcFillFlagNotSupported, ValueFlags, ValueFlags,
 FunctionFlags::
 FunctionFlags()
 {
-	value_type_flags_[     _Value::id] = Flags();
-	value_type_flags_[  _Gradient::id] = Flags();
-	value_type_flags_[   _Hessian::id] = Flags();
-	value_type_flags_[_Divergence::id] = Flags();
+    value_type_flags_[     _Value::id] = Flags();
+    value_type_flags_[  _Gradient::id] = Flags();
+    value_type_flags_[   _Hessian::id] = Flags();
+    value_type_flags_[_Divergence::id] = Flags();
 }
 
 
 FunctionFlags::
 FunctionFlags(const ValueFlags &flags)
-:
-FunctionFlags()
+    :
+    FunctionFlags()
 {
     if (contains(flags, ValueFlags::point))
         fill_points_ = true;
 
     if (contains(flags, ValueFlags::value))
-    	value_type_flags_[_Value::id].fill_ = true;
+        value_type_flags_[_Value::id].fill_ = true;
 
     if (contains(flags, ValueFlags::gradient))
-    	value_type_flags_[_Gradient::id].fill_ = true;
+        value_type_flags_[_Gradient::id].fill_ = true;
 
     if (contains(flags, ValueFlags::hessian))
-    	value_type_flags_[_Hessian::id].fill_ = true;
+        value_type_flags_[_Hessian::id].fill_ = true;
 
     if (contains(flags, ValueFlags::divergence))
     {
-    	value_type_flags_[_Divergence::id].fill_ = true;
+        value_type_flags_[_Divergence::id].fill_ = true;
     }
 
 }
@@ -270,16 +270,16 @@ fill_none() const
 {
     bool fill_none = true;
 
-    for (const auto & value_type_flag : value_type_flags_)
-    	if (value_type_flag.second.fill_)
-    	{
-    		fill_none = false;
-    		break;
-    	}
-/*
-    if (fill_values_ || fill_gradients_ || fill_hessians_)
-        fill_none = false;
-//*/
+    for (const auto &value_type_flag : value_type_flags_)
+        if (value_type_flag.second.fill_)
+        {
+            fill_none = false;
+            break;
+        }
+    /*
+        if (fill_values_ || fill_gradients_ || fill_hessians_)
+            fill_none = false;
+    //*/
 
     return fill_none;
 }

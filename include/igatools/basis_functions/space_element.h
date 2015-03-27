@@ -334,7 +334,7 @@ protected:
                                             boost::mpl::pair<     _Value,boost::mpl::int_<0> >,
                                             boost::mpl::pair<  _Gradient,boost::mpl::int_<1> >,
                                             boost::mpl::pair<   _Hessian,boost::mpl::int_<2> >,
-											boost::mpl::pair<_Divergence,boost::mpl::int_<3> >
+                                            boost::mpl::pair<_Divergence,boost::mpl::int_<3> >
                                             >;
         using map_VT_TP = map_ValueType_TuplePosition;
 
@@ -346,7 +346,7 @@ protected:
                                                 boost::mpl::pair<TuplePos_from_ValueType<  _Gradient>,ValueTable<Derivative<1>> >,
                                                 boost::mpl::pair<TuplePos_from_ValueType<   _Hessian>,ValueTable<Derivative<2>> >,
                                                 boost::mpl::pair<TuplePos_from_ValueType<_Divergence>,ValueVector<Derivative<1>>>
-												>;
+                                                >;
         using map_TP_CT = map_TuplePosition_ContainerType;
 
         template <int tuple_position>
@@ -356,7 +356,7 @@ protected:
         ContType_from_TuplePos<0>,
                                ContType_from_TuplePos<1>,
                                ContType_from_TuplePos<2>,
-							   ContType_from_TuplePos<3>> values_;
+                               ContType_from_TuplePos<3>> values_;
 
         template<class ValueType>
         auto &get_der()
