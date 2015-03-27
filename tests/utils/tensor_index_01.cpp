@@ -18,63 +18,45 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef VALUE_TYPES_H_
-#define VALUE_TYPES_H_
+/**
+ * Test for tensor index tensor range
+ * author: pauletti
+ * date:   2015-03-27
+ *
+ */
 
-#include <igatools/base/config.h>
+#include "../tests.h"
+#include <igatools/utils/tensor_index.h>
 
-#include <string>
-
-IGA_NAMESPACE_OPEN
-
-
-template <int value_type_id>
-class ValueType;
-
-template<>
-class ValueType<0>
+void get_range()
 {
-public:
-    static constexpr int id = 0;
-    static constexpr int order = 0;
-    static const std::string name;
-};
-using _Value = ValueType<0>;
+    OUTSTART
+    {
+        TensorIndex<1> first{3};
+        TensorIndex<1> last{7};
+        tensor_range(first, last).print_info(out);
+        out << endl;
+    }
+
+    {
+        TensorIndex<2> first{3,5};
+        TensorIndex<2> last{7,10};
+        tensor_range(first, last).print_info(out);
+        out << endl;
+    }
+
+    {
+        TensorIndex<3> first{3,5,1};
+        TensorIndex<3> last{7,10, 3};
+        tensor_range(first, last).print_info(out);
+        out << endl;
+    }
+    OUTEND
+}
 
 
-template<>
-class ValueType<1>
+int main()
 {
-public:
-    static constexpr int id = 1;
-    static constexpr int order = 1;
-    static const std::string name;
-};
-using _Gradient = ValueType<1>;
-
-template<>
-class ValueType<2>
-{
-public:
-    static constexpr int id = 2;
-    static constexpr int order = 2;
-    static const std::string name;
-};
-using _Hessian = ValueType<2>;
-
-
-template<>
-class ValueType<-1>
-{
-public:
-    static constexpr int id = -1;
-    static constexpr int order = 1;
-    static const std::string name;
-};
-using _Divergence = ValueType<-1>;
-
-
-
-IGA_NAMESPACE_CLOSE
-
-#endif //#ifndef  VALUE_TYPES_H_
+    get_range();
+    return 0;
+}

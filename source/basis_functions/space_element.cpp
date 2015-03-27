@@ -126,12 +126,19 @@ resize(const FunctionFlags &flags_handler,
     Assert(total_n_points >= 0, ExcLowerRange(total_n_points,1));
     Assert(total_n_basis > 0, ExcLowerRange(total_n_basis,1));
 
-    if (flags_handler_.fill_values())
+    if (flags_handler_.template fill<_Value>())
         resize_der<_Value>(total_n_basis,total_n_points);
-    if (flags_handler_.fill_gradients())
+    if (flags_handler_.template fill<_Gradient>())
         resize_der<_Gradient>(total_n_basis,total_n_points);
-    if (flags_handler_.fill_hessians())
+    if (flags_handler_.template fill<_Hessian>())
         resize_der<_Hessian>(total_n_basis,total_n_points);
+
+    if (flags_handler_.template fill<_Divergence>())
+    {
+        Assert(flags_handler_.template fill<_Gradient>(),
+               ExcMessage("Divergence requires gradient to be filled."));
+        resize_der<_Divergence>(total_n_basis,total_n_points);
+    }
 
 #if 0
     if (flags_handler_.fill_divergences())
@@ -166,30 +173,33 @@ ValuesCache::print_info(LogStream &out) const -> void
     flags_handler_.print_info(out);
     out.end_item();
 
-    if (flags_handler_.values_filled())
+    if (flags_handler_.template filled<_Value>())
     {
         out.begin_item("Values:");
         get_der<_Value>().print_info(out);
         out.end_item();
     }
 
-    if (flags_handler_.gradients_filled())
+    if (flags_handler_.template filled<_Gradient>())
     {
         out.begin_item("Gradients:");
         get_der<_Gradient>().print_info(out);
         out.end_item();
     }
 
-    if (flags_handler_.hessians_filled())
+    if (flags_handler_.template filled<_Hessian>())
     {
         out.begin_item("Hessians:");
         get_der<_Hessian>().print_info(out);
         out.end_item();
     }
 
-//    out.begin_item("Divergeces:");
-//    div_phi_.print_info(out);
-//    out.end_item();
+    if (flags_handler_.template filled<_Divergence>())
+    {
+        out.begin_item("Divergences:");
+        get_der<_Divergence>().print_info(out);
+        out.end_item();
+    }
 }
 
 template<int dim,int codim,int range,int rank>

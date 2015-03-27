@@ -23,6 +23,7 @@
 
 #include <igatools/base/function.h>
 #include <igatools/geometry/cartesian_grid_element.h>
+#include <igatools/base/value_types.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -222,13 +223,13 @@ private:
             if (flags_handler_.fill_points())
                 points_.resize(n_points);
 
-            if (flags_handler_.fill_values())
+            if (flags_handler_.fill<_Value>())
                 std::get<0>(values_).resize(n_points);
 
-            if (flags_handler_.fill_gradients())
+            if (flags_handler_.fill<_Gradient>())
                 std::get<1>(values_).resize(n_points);
 
-            if (flags_handler_.fill_hessians())
+            if (flags_handler_.fill<_Hessian>())
                 std::get<2>(values_).resize(n_points);
 
             set_initialized(true);

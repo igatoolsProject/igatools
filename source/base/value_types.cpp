@@ -24,15 +24,21 @@ using std::string;
 
 IGA_NAMESPACE_OPEN
 
-/*
-template<> constexpr int    _Value::order;
-template<> const string _Value::name = "Value";
 
-template<> constexpr int    _Gradient::order;
-template<> const string _Gradient::name = "Gradient";
+constexpr int _Value::id;
+constexpr int _Value::order;
+const string  _Value::name = "Value";
 
-template<> constexpr int    _Hessian::order;
-template<> const string _Hessian::name = "Hessian";
-//*/
+constexpr int _Gradient::id;
+constexpr int _Gradient::order;
+const string  _Gradient::name = "Gradient";
+
+constexpr int _Hessian::id;
+constexpr int _Hessian::order;
+const string  _Hessian::name = "Hessian";
+
+constexpr int _Divergence::id;
+constexpr int _Divergence::order;
+const string  _Divergence::name = "Divergence";
 
 IGA_NAMESPACE_CLOSE

@@ -210,24 +210,30 @@ operator()(const T &quad1)
     const auto &wght_table = nrb_elem_->weight_elem_table_;
 
     auto &flags = cache.flags_handler_;
-    if (flags.fill_values())
+    if (flags.template fill<_Value>())
     {
         auto &values = cache.template get_der<_Value>();
         evaluate_nurbs_values_from_bspline(bsp_elem, wght_table, values);
-        flags.set_values_filled(true);
+        flags.template set_filled<_Value>(true);
     }
-    if (flags.fill_gradients())
+    if (flags.template fill<_Gradient>())
     {
         auto &gradients = cache.template get_der<_Gradient>();
         evaluate_nurbs_gradients_from_bspline(bsp_elem, wght_table, gradients);
-        flags.set_gradients_filled(true);
+        flags.template set_filled<_Gradient>(true);
     }
-    if (flags.fill_hessians())
+    if (flags.template fill<_Hessian>())
     {
         auto &hessians = cache.template get_der<_Hessian>();
         evaluate_nurbs_hessians_from_bspline(bsp_elem, wght_table, hessians);
-        flags.set_hessians_filled(true);
+        flags.template set_filled<_Hessian>(true);
     }
+    if (flags.template fill<_Divergence>())
+    {
+    	Assert(false,ExcNotImplemented());
+    	AssertThrow(false,ExcNotImplemented());
+    }
+
     cache.set_filled(true);
 }
 

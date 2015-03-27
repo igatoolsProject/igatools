@@ -205,16 +205,16 @@ fill_cache(ElementAccessor &elem, const int j)
 
     auto &flags = cache.flags_handler_;
 
-    if (flags.fill_values())
+    if (flags.template fill<_Value>())
     {
         auto &result = cache.template get_der<_Value>();
         const auto &ref_values = ref_elem.template get_basis<_Value,k>(j,DofProperties::active);
         push_fwd_elem.template transform_0<RefSpace::range,RefSpace::rank>
         (ref_values, result);
 
-        flags.set_values_filled(true);
+        flags.template set_filled<_Value>(true);
     }
-    if (flags.fill_gradients())
+    if (flags.template fill<_Gradient>())
     {
         const auto &ref_values = ref_elem.template get_basis<   _Value,k>(j,DofProperties::active);
         const auto &ref_der_1  = ref_elem.template get_basis<_Gradient,k>(j,DofProperties::active);
@@ -223,9 +223,9 @@ fill_cache(ElementAccessor &elem, const int j)
         (std::make_tuple(ref_values, ref_der_1), values,
          cache.template get_der<_Gradient>(), j);
 
-        flags.set_gradients_filled(true);
+        flags.template set_filled<_Gradient>(true);
     }
-    if (flags.fill_hessians())
+    if (flags.template fill<_Hessian>())
     {
         const auto &ref_values = ref_elem.template get_basis<   _Value,k>(j,DofProperties::active);
         const auto &ref_der_1  = ref_elem.template get_basis<_Gradient,k>(j,DofProperties::active);
@@ -237,7 +237,7 @@ fill_cache(ElementAccessor &elem, const int j)
          std::make_tuple(values,der_1),
          cache.template get_der<_Hessian>(), j);
 
-        flags.set_hessians_filled(true);
+        flags.template set_filled<_Hessian>(true);
     }
 
     cache.set_filled(true);

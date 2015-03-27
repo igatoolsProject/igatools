@@ -18,63 +18,43 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef VALUE_TYPES_H_
-#define VALUE_TYPES_H_
+/**
+ *  Test for space get_interior_dofs
+ *
+ *  author: pauletti
+ *  date: 2015-03-27
+ *
+ */
 
-#include <igatools/base/config.h>
+#include "../tests.h"
 
-#include <string>
+#include <igatools/basis_functions/bspline_space.h>
 
-IGA_NAMESPACE_OPEN
-
-
-template <int value_type_id>
-class ValueType;
-
-template<>
-class ValueType<0>
+template<int dim, int range = 1, int rank = 1>
+void get_interior_dof(const int deg = 1, const int n_knots = 3)
 {
-public:
-    static constexpr int id = 0;
-    static constexpr int order = 0;
-    static const std::string name;
-};
-using _Value = ValueType<0>;
+    OUTSTART
+    using Space = BSplineSpace<dim, range, rank>;
+    auto grid = CartesianGrid<dim>::create(n_knots);
+
+    auto space = Space::create(deg, grid);
+    auto int_dofs = space->get_interior_dofs();
+
+    // TODO (pauletti, Mar 27, 2015): we should create iga::set with print_info
+    for (auto &x : int_dofs)
+        out << x << " ";
+    out << endl;
+
+    OUTEND
+}
 
 
-template<>
-class ValueType<1>
+
+int main()
 {
-public:
-    static constexpr int id = 1;
-    static constexpr int order = 1;
-    static const std::string name;
-};
-using _Gradient = ValueType<1>;
+    get_interior_dof<1>();
+    get_interior_dof<2>();
+    get_interior_dof<3>();
 
-template<>
-class ValueType<2>
-{
-public:
-    static constexpr int id = 2;
-    static constexpr int order = 2;
-    static const std::string name;
-};
-using _Hessian = ValueType<2>;
-
-
-template<>
-class ValueType<-1>
-{
-public:
-    static constexpr int id = -1;
-    static constexpr int order = 1;
-    static const std::string name;
-};
-using _Divergence = ValueType<-1>;
-
-
-
-IGA_NAMESPACE_CLOSE
-
-#endif //#ifndef  VALUE_TYPES_H_
+    return 0;
+}

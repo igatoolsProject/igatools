@@ -653,23 +653,28 @@ operator()(const T &topology)
 
     auto &flags = cache.flags_handler_;
     auto val_1d = g_cache.get_element_values(elem_t_index);
-    if (flags.fill_values())
+    if (flags.template fill<_Value>())
     {
         auto &values = cache.template get_der<_Value>();
         evaluate_bspline_values(val_1d, values);
-        flags.set_values_filled(true);
+        flags.template set_filled<_Value>(true);
     }
-    if (flags.fill_gradients())
+    if (flags.template fill<_Gradient>())
     {
         auto &values = cache.template get_der<_Gradient>();
         evaluate_bspline_derivatives<1>(val_1d, values);
-        flags.set_gradients_filled(true);
+        flags.template set_filled<_Gradient>(true);
     }
-    if (flags.fill_hessians())
+    if (flags.template fill<_Hessian>())
     {
         auto &values = cache.template get_der<_Hessian>();
         evaluate_bspline_derivatives<2>(val_1d, values);
-        flags.set_hessians_filled(true);
+        flags.template set_filled<_Hessian>(true);
+    }
+    if (flags.template fill<_Divergence>())
+    {
+    	Assert(false,ExcNotImplemented());
+    	AssertThrow(false,ExcNotImplemented());
     }
 
     cache.set_filled(true);

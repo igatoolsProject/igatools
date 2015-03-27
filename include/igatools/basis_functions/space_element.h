@@ -331,9 +331,10 @@ protected:
         FunctionFlags flags_handler_;
 
         using map_ValueType_TuplePosition = boost::mpl::map<
-                                            boost::mpl::pair<   _Value,boost::mpl::int_<0> >,
-                                            boost::mpl::pair<_Gradient,boost::mpl::int_<1> >,
-                                            boost::mpl::pair< _Hessian,boost::mpl::int_<2> >
+                                            boost::mpl::pair<     _Value,boost::mpl::int_<0> >,
+                                            boost::mpl::pair<  _Gradient,boost::mpl::int_<1> >,
+                                            boost::mpl::pair<   _Hessian,boost::mpl::int_<2> >,
+											boost::mpl::pair<_Divergence,boost::mpl::int_<3> >
                                             >;
         using map_VT_TP = map_ValueType_TuplePosition;
 
@@ -341,9 +342,11 @@ protected:
         using TuplePos_from_ValueType = typename boost::mpl::at<map_VT_TP,ValueType>::type;
 
         using map_TuplePosition_ContainerType = boost::mpl::map<
-                                                boost::mpl::pair<TuplePos_from_ValueType<   _Value>,ValueTable<Value> >,
-                                                boost::mpl::pair<TuplePos_from_ValueType<_Gradient>,ValueTable<Derivative<1>> >,
-                                                boost::mpl::pair<TuplePos_from_ValueType< _Hessian>,ValueTable<Derivative<2>> > >;
+                                                boost::mpl::pair<TuplePos_from_ValueType<     _Value>,ValueTable<Value> >,
+                                                boost::mpl::pair<TuplePos_from_ValueType<  _Gradient>,ValueTable<Derivative<1>> >,
+                                                boost::mpl::pair<TuplePos_from_ValueType<   _Hessian>,ValueTable<Derivative<2>> >,
+                                                boost::mpl::pair<TuplePos_from_ValueType<_Divergence>,ValueVector<Derivative<1>>>
+												>;
         using map_TP_CT = map_TuplePosition_ContainerType;
 
         template <int tuple_position>
@@ -352,7 +355,8 @@ protected:
         std::tuple<
         ContType_from_TuplePos<0>,
                                ContType_from_TuplePos<1>,
-                               ContType_from_TuplePos<2> > values_;
+                               ContType_from_TuplePos<2>,
+							   ContType_from_TuplePos<3>> values_;
 
         template<class ValueType>
         auto &get_der()
@@ -364,52 +368,17 @@ protected:
         const auto &get_der() const
         {
             const auto k = TuplePos_from_ValueType<ValueType>::value;
-//          const auto k = boost::mpl::order<map_ValueType_ContainerType,ValueType>::type::value;
-#ifndef NDEBUG
-            // TODO (pauletti, Mar 17, 2015): bad checking, should be k independent
-            if (k == 0)
-            {
-                Assert(flags_handler_.values_filled(),
-                       ExcMessage("Values cache is not filled."));
-            }
-            else if (k == 1)
-            {
-                Assert(flags_handler_.gradients_filled(),
-                       ExcMessage("Gradients cache is not filled."));
-            }
-            else if (k == 2)
-            {
-                Assert(flags_handler_.hessians_filled(),
-                       ExcMessage("Hessians cache is not filled."));
-            }
-            else
-            {
-                Assert(false,ExcMessage("Derivative order >=3 is not supported."));
-            }
-#endif
-//          Assert(ValueType::order == k,ExcDimensionMismatch(ValueType::order,k));
-//            return std::get<k>(values_);
+
+            Assert(flags_handler_.filled<ValueType>(),
+                   ExcMessage(ValueType::name + "s cache is not filled."));
+
             return std::get<k>(values_);
         }
 
-#if 0
-        template<int k>
-        void resize_der(const int n_basis, const int n_points)
-        {
-            auto &value = std::get<k>(values_);
-            if (value.get_num_points() != n_points ||
-                value.get_num_functions() != n_basis)
-            {
-                value.resize(n_basis, n_points);
-                value.zero();
-            }
-        }
-#endif
 
         template<class ValueType>
         void resize_der(const int n_basis, const int n_points)
         {
-//            auto &value = std::get<k>(values_);
             auto &value = std::get< TuplePos_from_ValueType<ValueType>::value >(values_);
             if (value.get_num_points() != n_points ||
                 value.get_num_functions() != n_basis)
@@ -419,21 +388,9 @@ protected:
             }
         }
 
-#if 0
-        template<int k>
-        void clear_der()
-        {
-            auto &value = std::get<k>(values_);
-            value.clear();
-        }
-#endif
-
         template<class ValueType>
         void clear_der()
         {
-//          const auto k = boost::mpl::order<map_ValueType_ContainerType,ValueType>::type::value;
-//          Assert(ValueType::order == k,ExcDimensionMismatch(ValueType::order,k));
-//            auto &value = std::get<k>(values_);
             auto &value = std::get<ValueType::order>(values_);
             value.clear();
         }

@@ -39,6 +39,9 @@
 #include <igatools/base/identity_function.h>
 #include <igatools/base/ig_function.h>
 #include <igatools/io/writer.h>
+#include <igatools/basis_functions/space_tools.h>
+
+using space_tools::get_boundary_dofs;
 
 struct DofProp
 {
@@ -57,9 +60,8 @@ using Vec = Vector<la_pack>;
 
 enum  bc : boundary_id
 {
-    dir, neu
+    dir=0, neu
 };
-
 
 
 template<int dim, int range = 1, int rank = 1>
@@ -71,21 +73,28 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
 
     auto grid = CartesianGrid<dim>::create(n_knots);
 
-
-    grid->set_boundary_id(3, bc::neu);
+    const int neu_face = 3;
+    grid->set_boundary_id(neu_face, bc::neu);
 
 
     auto space = Space::create(deg, grid);
 
-    const int s_dim = dim-1;
-    for (auto &s_id : UnitElement<dim>::template elems_ids<s_dim>())
-    {
-        auto dofs = space->template get_boundary_dofs<s_dim>(s_id);
-        for (auto &x : dofs)
-            out << x << endl;
-        out << endl;
-    }
+    std::set<boundary_id>  dir_ids = {bc::dir};
+    auto dir_dofs = get_boundary_dofs<Space>(space, dir_ids);
 
+
+    auto int_dofs = space->get_interior_dofs();
+
+
+    std::set<boundary_id>  neu_ids = {bc::neu};
+    auto neu_dofs = get_boundary_dofs<Space>(space, neu_ids);
+    std::vector<Index> common(dim*range);
+    auto end1 =
+    std::set_intersection(neu_dofs.begin(), neu_dofs.end(),
+                          dir_dofs.begin(), dir_dofs.end(), common.begin());
+    common.resize(end1-common.begin());
+    for (auto &id : common)
+        neu_dofs.erase(id);
 
     auto dof_dist = space->get_dof_distribution();
     dof_dist->add_dofs_property(DofProp::interior);
@@ -93,14 +102,9 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
     dof_dist->add_dofs_property(DofProp::neumman);
 
 
-
-
-    std::set<Index> int_dofs= {4};
-    dof_dist->set_dof_property_status(DofProp::interior, int_dofs,true);
-    std::set<Index> dir_dofs= {6,3,0, 1, 2, 5, 8};
-    dof_dist->set_dof_property_status(DofProp::dirichlet, dir_dofs,true);
-    std::set<Index> neu_dofs= {7};
-    dof_dist->set_dof_property_status(DofProp::neumman, neu_dofs,true);
+    dof_dist->set_dof_property_status(DofProp::interior, int_dofs, true);
+    dof_dist->set_dof_property_status(DofProp::dirichlet, dir_dofs, true);
+    dof_dist->set_dof_property_status(DofProp::neumman, neu_dofs, true);
 
     auto elem = space->begin();
     auto end  = space->end();
@@ -109,11 +113,10 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
         build_space_manager_single_patch<RefSpace>(space, DofProp::interior);
     auto matrix   = Mat::create(*space_manager);
     const auto dofs_set = space_manager->get_row_dofs();
-//    const vector<Index> dofs_vec(dofs_set.begin(),dofs_set.end());
+
     auto vec      = Vec::create(dofs_set);
     auto solution     = Vec::create(dofs_set);
-    matrix->print_info(out);
-    vec->print_info(out);
+
 
     auto elem_handler = space->create_elem_handler();
     auto flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::w_measure;
@@ -165,18 +168,16 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
     using LinSolver = LinearSolverIterative<la_pack>;
     LinSolver solver(LinSolver::SolverType::CG);
     solver.solve(*matrix, *vec, *solution);
+    solution->print_info(out);
 
     const int n_plot_points = 4;
     auto map = IdentityFunction<dim>::create(space->get_grid());
     Writer<dim> writer(map, n_plot_points);
-
-
     using IgFunc = IgFunction<RefSpace>;
     auto solution_function = IgFunc::create(space,solution->as_ig_fun_coefficients(),
                                             DofProp::interior);
-
     writer.template add_field<1,1>(solution_function, "solution");
-    string filename = "poisson_problem-" + to_string(dim) + "d" ;
+    string filename = "poisson_problem-" + to_string(deg) + "-" + to_string(dim) + "d" ;
     writer.save(filename);
 
     OUTEND
@@ -188,25 +189,10 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
 int main()
 {
     const int dim = 2;
-    filtered_dofs<dim>();
-
-    {
-        TensorIndex<1> first {3};
-        TensorIndex<1> last {7};
-        tensor_range(first, last).print_info(out);
-    }
-
-    {
-        TensorIndex<2> first {3,5};
-        TensorIndex<2> last {7,10};
-        tensor_range(first, last).print_info(out);
-    }
-
-    {
-        TensorIndex<3> first {3,5,1};
-        TensorIndex<3> last {7,10, 3};
-        tensor_range(first, last).print_info(out);
-    }
+    const int deg = 1;
+    const int n_knots = 5;
+    filtered_dofs<dim>(deg, n_knots);
+    filtered_dofs<dim>(2, n_knots);
 
     return 0;
 }

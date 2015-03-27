@@ -21,6 +21,9 @@
 
 #include <igatools/base/flags_handler.h>
 #include <igatools/base/exceptions.h>
+#include <igatools/base/value_types.h>
+
+
 
 IGA_NAMESPACE_OPEN
 
@@ -211,21 +214,38 @@ DeclException2(ExcFillFlagNotSupported, ValueFlags, ValueFlags,
 
 #endif
 
+FunctionFlags::
+FunctionFlags()
+{
+	value_type_flags_[     _Value::id] = Flags();
+	value_type_flags_[  _Gradient::id] = Flags();
+	value_type_flags_[   _Hessian::id] = Flags();
+	value_type_flags_[_Divergence::id] = Flags();
+}
+
 
 FunctionFlags::
 FunctionFlags(const ValueFlags &flags)
+:
+FunctionFlags()
 {
     if (contains(flags, ValueFlags::point))
         fill_points_ = true;
 
     if (contains(flags, ValueFlags::value))
-        fill_values_ = true;
+    	value_type_flags_[_Value::id].fill_ = true;
 
     if (contains(flags, ValueFlags::gradient))
-        fill_gradients_ = true;
+    	value_type_flags_[_Gradient::id].fill_ = true;
 
     if (contains(flags, ValueFlags::hessian))
-        fill_hessians_ = true;
+    	value_type_flags_[_Hessian::id].fill_ = true;
+
+    if (contains(flags, ValueFlags::divergence))
+    {
+    	value_type_flags_[_Divergence::id].fill_ = true;
+    }
+
 }
 
 
@@ -250,8 +270,16 @@ fill_none() const
 {
     bool fill_none = true;
 
+    for (const auto & value_type_flag : value_type_flags_)
+    	if (value_type_flag.second.fill_)
+    	{
+    		fill_none = false;
+    		break;
+    	}
+/*
     if (fill_values_ || fill_gradients_ || fill_hessians_)
         fill_none = false;
+//*/
 
     return fill_none;
 }
@@ -284,85 +312,24 @@ set_points_filled(const bool status)
 
 
 
-bool
-FunctionFlags::
-fill_values() const
-{
-    return fill_values_;
-}
-
-
-bool
-FunctionFlags::
-values_filled() const
-{
-    return values_filled_;
-}
-
-void
-FunctionFlags::
-set_values_filled(const bool status)
-{
-    values_filled_ = status;
-}
-
-bool
-FunctionFlags::
-fill_gradients() const
-{
-    return fill_gradients_;
-}
-
-bool
-FunctionFlags::
-gradients_filled() const
-{
-    return gradients_filled_;
-}
-
-void
-FunctionFlags::
-set_gradients_filled(const bool status)
-{
-    gradients_filled_ = status;
-}
-
-bool
-FunctionFlags::
-fill_hessians() const
-{
-    return fill_hessians_;
-}
-
-bool
-FunctionFlags::
-hessians_filled() const
-{
-    return hessians_filled_;
-}
-
-void
-FunctionFlags::
-set_hessians_filled(const bool status)
-{
-    hessians_filled_ = status;
-}
-
-
 void
 FunctionFlags::
 print_info(LogStream &out) const
 {
-    out.begin_item("values");
-    out << "   fill = " << fill_values_ << "    filled = " << values_filled_;
+    out.begin_item(_Value::name);
+    value_type_flags_.at(_Value::id).print_info(out);
     out.end_item();
 
-    out.begin_item("gradients");
-    out << "   fill = " << fill_gradients_ << "    filled = " << gradients_filled_;
+    out.begin_item(_Gradient::name);
+    value_type_flags_.at(_Gradient::id).print_info(out);
     out.end_item();
 
-    out.begin_item("hessians");
-    out << "   fill = " << fill_hessians_ << "    filled = " << hessians_filled_;
+    out.begin_item(_Hessian::name);
+    value_type_flags_.at(_Hessian::id).print_info(out);
+    out.end_item();
+
+    out.begin_item(_Divergence::name);
+    value_type_flags_.at(_Divergence::id).print_info(out);
     out.end_item();
 }
 

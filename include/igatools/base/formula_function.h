@@ -22,6 +22,7 @@
 #define FORMULA_FUNCTIONS_H
 
 #include <igatools/base/function.h>
+#include <igatools/base/value_types.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -109,11 +110,11 @@ private:
             if (!flags.fill_none())
             {
                 cache.points_ = function->map_elem_->template get_values<0, T::k>(j);
-                if (flags.fill_values())
+                if (flags.template fill<_Value>())
                     function->evaluate_0(cache.points_, std::get<0>(cache.values_));
-                if (flags.fill_gradients())
+                if (flags.template fill<_Gradient>())
                     function->evaluate_1(cache.points_, std::get<1>(cache.values_));
-                if (flags.fill_hessians())
+                if (flags.template fill<_Hessian>())
                     function->evaluate_2(cache.points_, std::get<2>(cache.values_));
             }
 

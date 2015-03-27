@@ -22,6 +22,7 @@
 #define IDENTITY_FUNCTIONS_H
 
 #include <igatools/base/function.h>
+#include <igatools/base/value_types.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -105,7 +106,7 @@ private:
             if (!flags.fill_none())
             {
 
-                if (flags.fill_points() || flags.fill_values())
+                if (flags.fill_points() || flags.template fill<_Value>())
                 {
                     const auto points =
                         elem->CartesianGridElement<dim>::template get_points<T::k>(j);
@@ -114,7 +115,7 @@ private:
                     {
                         cache.points_ = points;
                     }
-                    if (flags.fill_values())
+                    if (flags.template fill<_Value>())
                     {
                         const auto n_pts = points.get_num_points();
 
@@ -124,12 +125,12 @@ private:
                                 values[pt][i] = points[pt][i];
                     }
                 }
-                if (flags.fill_gradients())
+                if (flags.template fill<_Gradient>())
                 {
                     auto identity = create_id_tensor<dim,space_dim>();
                     std::get<1>(cache.values_).fill(identity);
                 }
-                if (flags.fill_hessians())
+                if (flags.template fill<_Hessian>())
                 {
                     Assert(false, ExcNotImplemented());
                     //std::get<2>(cache.values_) = 0.;
