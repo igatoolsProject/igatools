@@ -21,6 +21,7 @@
 #ifndef IG_FUNCTIONS_H
 #define IG_FUNCTIONS_H
 
+#include <igatools/base/value_types.h>
 #include <igatools/base/function.h>
 #include <igatools/basis_functions/spline_space.h>
 
@@ -103,10 +104,10 @@ public:
     vector<Real> get_local_coeffs(const vector<Index> &elem_dofs) const
     {
 
-       vector<Real> loc_coeff;
-       for (const auto &dof : elem_dofs)
-           loc_coeff.emplace_back((*this)(dof));
-       return  loc_coeff;
+        vector<Real> loc_coeff;
+        for (const auto &dof : elem_dofs)
+            loc_coeff.emplace_back((*this)(dof));
+        return  loc_coeff;
     }
 
     void print_info(LogStream &out) const
@@ -262,15 +263,16 @@ private:
             auto &cache = local_cache->template get_value_cache<T::k>(j);
             auto &flags = cache.flags_handler_;
 
+            //TODO (martinelli Mar 27,2015): bad style. Use the ValueType mechanism in order to avoid the if-switch
             if (flags.fill_values())
                 std::get<0>(cache.values_) =
-                    space_elem->template linear_combination<0,T::k>(*loc_coeff,j, *property);
+                    space_elem->template linear_combination<_Value,T::k>(*loc_coeff,j, *property);
             if (flags.fill_gradients())
                 std::get<1>(cache.values_) =
-                    space_elem->template linear_combination<1,T::k>(*loc_coeff,j, *property);
+                    space_elem->template linear_combination<_Gradient,T::k>(*loc_coeff,j, *property);
             if (flags.fill_hessians())
                 std::get<2>(cache.values_) =
-                    space_elem->template linear_combination<2,T::k>(*loc_coeff,j, *property);
+                    space_elem->template linear_combination<_Hessian,T::k>(*loc_coeff,j, *property);
 
             cache.set_filled(true);
         }

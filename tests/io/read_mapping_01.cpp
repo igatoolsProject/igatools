@@ -72,7 +72,7 @@ void run_test(std::string &file_name)
 
         out << "Element id: " << sp_elem->get_flat_index() << endl;
 
-        const auto &values = sp_elem->template get_values<0,dim>(0,DofProperties::active);
+        const auto &values = sp_elem->template get_basis<_Value,dim>(0,DofProperties::active);
         out << "Values = ";
         values.print_info(out);
         out<< endl;

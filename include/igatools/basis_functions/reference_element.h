@@ -126,11 +126,11 @@ public:
      * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
-    template <int deriv_order>
+    template <class ValueType>
     ValueTable<
-    Conditional< deriv_order==0,
+    Conditional< ValueType::order==0,
                  Value,
-                 Derivative<deriv_order> > >
+                 Derivative<ValueType::order> > >
                  evaluate_basis_derivatives_at_points(
                      const Quadrature<dim> &points,
                      const std::string &dofs_property);
@@ -140,7 +140,7 @@ public:
         const Quadrature<dim> &points,
         const std::string &dofs_property)
     {
-        return this->template evaluate_basis_derivatives_at_points<0>(points,dofs_property);
+        return this->template evaluate_basis_derivatives_at_points<_Value>(points,dofs_property);
     }
 
     ValueTable<Derivative<1> >
@@ -148,7 +148,7 @@ public:
         const Quadrature<dim> &points,
         const std::string &dofs_property)
     {
-        return this->template evaluate_basis_derivatives_at_points<1>(points,dofs_property);
+        return this->template evaluate_basis_derivatives_at_points<_Gradient>(points,dofs_property);
     }
 
     ValueTable<Derivative<2> >
@@ -156,7 +156,7 @@ public:
         const Quadrature<dim> &points,
         const std::string &dofs_property)
     {
-        return this->template evaluate_basis_derivatives_at_points<2>(points,dofs_property);
+        return this->template evaluate_basis_derivatives_at_points<_Hessian>(points,dofs_property);
     }
     ///@}
 

@@ -80,10 +80,10 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
     const int s_dim = dim-1;
     for (auto &s_id : UnitElement<dim>::template elems_ids<s_dim>())
     {
-    auto dofs = space->template get_boundary_dofs<s_dim>(s_id);
-    for (auto &x : dofs)
-        out << x << endl;
-    out << endl;
+        auto dofs = space->template get_boundary_dofs<s_dim>(s_id);
+        for (auto &x : dofs)
+            out << x << endl;
+        out << endl;
     }
 
 
@@ -131,8 +131,8 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
         loc_rhs = 0.0;
 
         elem_handler->fill_element_cache(elem);
-        auto phi = elem->template get_values<0, dim>(0,DofProp::interior);
-        auto grad_phi  = elem->template get_values<1, dim>(0,DofProp::interior);
+        auto phi = elem->template get_basis<_Value, dim>(0,DofProp::interior);
+        auto grad_phi  = elem->template get_basis<_Gradient, dim>(0,DofProp::interior);
         auto w_meas = elem->template get_w_measures<dim>(0);
 
         for (int i = 0; i < n_basis; ++i)
@@ -191,20 +191,20 @@ int main()
     filtered_dofs<dim>();
 
     {
-        TensorIndex<1> first{3};
-        TensorIndex<1> last{7};
+        TensorIndex<1> first {3};
+        TensorIndex<1> last {7};
         tensor_range(first, last).print_info(out);
     }
 
     {
-        TensorIndex<2> first{3,5};
-        TensorIndex<2> last{7,10};
+        TensorIndex<2> first {3,5};
+        TensorIndex<2> last {7,10};
         tensor_range(first, last).print_info(out);
     }
 
     {
-        TensorIndex<3> first{3,5,1};
-        TensorIndex<3> last{7,10, 3};
+        TensorIndex<3> first {3,5,1};
+        TensorIndex<3> last {7,10, 3};
         tensor_range(first, last).print_info(out);
     }
 

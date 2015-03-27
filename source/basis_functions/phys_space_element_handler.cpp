@@ -140,9 +140,9 @@ template<int k>
 void
 PhysSpaceElementHandler<PhysSpace>::
 reset_selected_elements(
-        const ValueFlags &flag,
-        const Quadrature<k> &eval_pts,
-        const vector<Index> &elements_flat_id)
+    const ValueFlags &flag,
+    const Quadrature<k> &eval_pts,
+    const vector<Index> &elements_flat_id)
 {
     ref_space_handler_->
     reset_selected_elements(space_to_ref_flag(PhysSpace::PushForwardType::type, flag), eval_pts, elements_flat_id);
@@ -208,7 +208,7 @@ fill_cache(ElementAccessor &elem, const int j)
     if (flags.fill_values())
     {
         auto &result = cache.template get_der<0>();
-        const auto &ref_values = ref_elem.template get_values<0,k>(j,DofProperties::active);
+        const auto &ref_values = ref_elem.template get_basis<_Value,k>(j,DofProperties::active);
         push_fwd_elem.template transform_0<RefSpace::range,RefSpace::rank>
         (ref_values, result);
 
@@ -216,8 +216,8 @@ fill_cache(ElementAccessor &elem, const int j)
     }
     if (flags.fill_gradients())
     {
-        const auto &ref_values = ref_elem.template get_values<0,k>(j,DofProperties::active);
-        const auto &ref_der_1  = ref_elem.template get_values<1,k>(j,DofProperties::active);
+        const auto &ref_values = ref_elem.template get_basis<   _Value,k>(j,DofProperties::active);
+        const auto &ref_der_1  = ref_elem.template get_basis<_Gradient,k>(j,DofProperties::active);
         const auto &values = cache.template get_der<0>();
         push_fwd_elem.template transform_1<PhysSpace::range,PhysSpace::rank, k>
         (std::make_tuple(ref_values, ref_der_1), values,
@@ -227,9 +227,9 @@ fill_cache(ElementAccessor &elem, const int j)
     }
     if (flags.fill_hessians())
     {
-        const auto &ref_values = ref_elem.template get_values<0,k>(j,DofProperties::active);
-        const auto &ref_der_1  = ref_elem.template get_values<1,k>(j,DofProperties::active);
-        const auto &ref_der_2  = ref_elem.template get_values<2,k>(j,DofProperties::active);
+        const auto &ref_values = ref_elem.template get_basis<   _Value,k>(j,DofProperties::active);
+        const auto &ref_der_1  = ref_elem.template get_basis<_Gradient,k>(j,DofProperties::active);
+        const auto &ref_der_2  = ref_elem.template get_basis< _Hessian,k>(j,DofProperties::active);
         const auto &values = cache.template get_der<0>();
         const auto &der_1  = cache.template get_der<1>();
         push_fwd_elem.template transform_2<PhysSpace::range,PhysSpace::rank, k>

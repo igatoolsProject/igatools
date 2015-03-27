@@ -123,8 +123,8 @@ void assemble_matrix(const int n_knots, const int deg)
         elem_handler->fill_element_cache(elem);
         f->fill_element_cache(f_elem);
 
-        auto phi = elem->template get_values<0, dim>(0,DofProperties::active);
-        auto grad_phi  = elem->template get_values<1, dim>(0,DofProperties::active);
+        auto phi = elem->template get_basis<_Value, dim>(0,DofProperties::active);
+        auto grad_phi  = elem->template get_basis<_Gradient, dim>(0,DofProperties::active);
         auto w_meas = elem->template get_w_measures<dim>(0);
 
         grad_phi.print_info(out);

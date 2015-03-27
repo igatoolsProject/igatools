@@ -100,25 +100,25 @@ move_to(const Index flat_index)
 }
 
 template <int dim, int range, int rank>
-template <int deriv_order>
+template <class ValueType>
 auto
 ReferenceElement<dim, range, rank>::
 evaluate_basis_derivatives_at_points(
     const Quadrature<dim> &points,
     const std::string &dofs_property) ->
 ValueTable<
-Conditional< deriv_order==0,
+Conditional< ValueType::order==0,
              Value,
-             Derivative<deriv_order> > >
+             Derivative<ValueType::order> > >
 {
     auto elem_handler = ReferenceElementHandler<dim,range,rank>::create(this->space_);
 
     ValueFlags flags;
-    if (deriv_order == 0)
+    if (ValueType::order == 0)
         flags = ValueFlags::value;
-    else if (deriv_order == 1)
+    else if (ValueType::order == 1)
         flags = ValueFlags::gradient;
-    else if (deriv_order == 2)
+    else if (ValueType::order == 2)
         flags = ValueFlags::hessian;
     else
     {
@@ -131,7 +131,7 @@ Conditional< deriv_order==0,
 
 //    Assert(false,ExcNotImplemented());
 
-    return this->template get_values<deriv_order,dim>(0,dofs_property);
+    return this->template get_basis<ValueType,dim>(0,dofs_property);
 }
 
 

@@ -50,7 +50,7 @@ public :
     using parent_t = SpaceElement<PhysSpace::dim,PhysSpace::codim,PhysSpace::range,PhysSpace::rank>;
     // using parent_t::get_elem_cache;
     using parent_t::LocalCache;
-    using parent_t::get_values;
+//    using parent_t::get_values;
 //    using parent_t::is_boundary;
 
     /** Type required by the CartesianGridIterator templated iterator */

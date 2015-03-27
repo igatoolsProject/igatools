@@ -79,17 +79,17 @@ void test()
         out << "Element flat id: " << elem->get_flat_index() << endl << endl;
 
         out.begin_item("Values basis functions:");
-        auto values = elem->template get_values<0,dim>(0,DofProperties::active);
+        auto values = elem->template get_basis<_Value,dim>(0,DofProperties::active);
         values.print_info(out);
         out.end_item();
 
         out.begin_item("Gradients basis functions:");
-        auto gradients = elem->template get_values<1,dim>(0,DofProperties::active);
+        auto gradients = elem->template get_basis<_Gradient,dim>(0,DofProperties::active);
         gradients.print_info(out);
         out.end_item();
 
         out.begin_item("Hessians basis functions:");
-        auto hessians = elem->template get_values<2,dim>(0,DofProperties::active);
+        auto hessians = elem->template get_basis<_Hessian,dim>(0,DofProperties::active);
         hessians.print_info(out);
         out.end_item();
     }
