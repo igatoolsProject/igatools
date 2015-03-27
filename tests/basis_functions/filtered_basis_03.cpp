@@ -86,6 +86,11 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
     out << endl;
     }
 
+    auto int_dofs = space->get_interior_dofs();
+    for (auto &x : int_dofs)
+    	out << x << endl;
+    out << endl;
+
 
     auto dof_dist = space->get_dof_distribution();
     dof_dist->add_dofs_property(DofProp::interior);
@@ -95,7 +100,7 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
 
 
 
-    std::set<Index> int_dofs= {4};
+    //std::set<Index> int_dofs= {4};
     dof_dist->set_dof_property_status(DofProp::interior, int_dofs,true);
     std::set<Index> dir_dofs= {6,3,0, 1, 2, 5, 8};
     dof_dist->set_dof_property_status(DofProp::dirichlet, dir_dofs,true);
@@ -109,7 +114,7 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
         build_space_manager_single_patch<RefSpace>(space, DofProp::interior);
     auto matrix   = Mat::create(*space_manager);
     const auto dofs_set = space_manager->get_row_dofs();
-//    const vector<Index> dofs_vec(dofs_set.begin(),dofs_set.end());
+
     auto vec      = Vec::create(dofs_set);
     auto solution     = Vec::create(dofs_set);
     matrix->print_info(out);

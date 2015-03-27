@@ -333,6 +333,8 @@ public:
     template<int k>
     std::set<Index> get_boundary_dofs(const int s_id) const;
 
+    std::set<Index> get_interior_dofs() const;
+
     std::shared_ptr<const self_t > get_reference_space() const;
 
     ///@}

@@ -367,6 +367,43 @@ get_boundary_dofs(const int s_id) const -> std::set<Index>
 
 
 template<int dim_, int range_, int rank_>
+auto
+BSplineSpace<dim_, range_, rank_>::
+get_interior_dofs() const -> std::set<Index>
+{
+
+    for (int comp : end_b_.get_active_components_id())
+        for (int j=0; j<dim; ++j)
+            Assert(end_b_[comp][j] == BasisEndBehaviour::interpolatory,
+            ExcNotImplemented());
+
+    std::set<Index> dofs;
+
+    TensorIndex<dim> first;
+    TensorIndex<dim> last;
+
+    const auto &index_table = this->get_dof_distribution()->get_index_table();
+    for (auto comp : SpaceData::components)
+    {
+        for (int j=0; j<dim; ++j)
+        {
+            first[j] = 1;
+            last[j] = this->get_num_basis(comp, j)-1;
+        }
+
+        auto tensor_ind = tensor_range(first, last);
+        const auto &elem_global_indices = index_table[comp];
+
+        for (auto &tensor_index : tensor_ind)
+            dofs.insert(elem_global_indices(tensor_index));
+    }
+
+    return dofs;
+}
+
+
+
+template<int dim_, int range_, int rank_>
 template<int k>
 auto
 BSplineSpace<dim_, range_, rank_>::
