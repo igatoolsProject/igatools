@@ -111,13 +111,10 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
     dof_dist->add_dofs_property(DofProp::neumman);
 
 
-
-
-    //std::set<Index> int_dofs= {4};
     dof_dist->set_dof_property_status(DofProp::interior, int_dofs,true);
-   // std::set<Index> dir_dofs= {6,3,0, 1, 2, 5, 8};
+
     dof_dist->set_dof_property_status(DofProp::dirichlet, dir_dofs,true);
-   // std::set<Index> neu_dofs= {7};
+
     dof_dist->set_dof_property_status(DofProp::neumman, neu_dofs,true);
 
     auto elem = space->begin();
