@@ -57,9 +57,38 @@ using Vec = Vector<la_pack>;
 
 enum  bc : boundary_id
 {
-    dir, neu
+    dir=0, neu
 };
 
+template<class Space>
+std::set<Index>
+get_boundary_dofs(std::shared_ptr<const Space> space,
+                  const std::set<boundary_id>  &boundary_ids)
+{
+    const int dim   = Space::dim;
+    std::set<Index> dofs;
+    const int sub_dim = dim - 1;
+
+    auto grid = space->get_grid();
+
+    std::set<int> sub_elems;
+    auto bdry_begin = boundary_ids.begin();
+    auto bdry_end   = boundary_ids.end();
+    for (auto &s_id : UnitElement<Space::dim>::template elems_ids<sub_dim>())
+    {
+        const auto bdry_id = grid->get_boundary_id(s_id);
+        if (find(bdry_begin, bdry_end, bdry_id) != bdry_end)
+            sub_elems.insert(s_id);
+    }
+
+    for (const Index &s_id : sub_elems)
+    {
+        auto s_dofs = space->template get_boundary_dofs<sub_dim>(s_id);
+        dofs.insert(s_dofs.begin(), s_dofs.end());
+    }
+
+    return dofs;
+}
 
 
 template<int dim, int range = 1, int rank = 1>
@@ -71,26 +100,35 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
 
     auto grid = CartesianGrid<dim>::create(n_knots);
 
-
-    grid->set_boundary_id(3, bc::neu);
+    const int neu_face = 3;
+    grid->set_boundary_id(neu_face, bc::neu);
 
 
     auto space = Space::create(deg, grid);
 
-    const int s_dim = dim-1;
-    for (auto &s_id : UnitElement<dim>::template elems_ids<s_dim>())
-    {
-    auto dofs = space->template get_boundary_dofs<s_dim>(s_id);
-    for (auto &x : dofs)
-        out << x << endl;
-    out << endl;
-    }
+    std::set<boundary_id>  dir_ids = {bc::dir};
+    auto dir_dofs = get_boundary_dofs<Space>(space, dir_ids);
+
+//    for (auto &x : dofs)
+//        out << x << endl;
+
 
     auto int_dofs = space->get_interior_dofs();
-    for (auto &x : int_dofs)
-    	out << x << endl;
-    out << endl;
+//    for (auto &x : int_dofs)
+//    	out << x << endl;
 
+    std::set<boundary_id>  neu_ids = {bc::neu};
+    auto neu_dofs = get_boundary_dofs<Space>(space, neu_ids);
+
+//    std::set<Index> neu_dofs1;
+    std::vector<Index> common(dim*range);
+
+    auto end1 =
+    std::set_intersection(neu_dofs.begin(), neu_dofs.end(),
+                          dir_dofs.begin(), dir_dofs.end(), common.begin());
+    common.resize(end1-common.begin());
+    for (auto &id : common)
+        neu_dofs.erase(id);
 
     auto dof_dist = space->get_dof_distribution();
     dof_dist->add_dofs_property(DofProp::interior);
@@ -102,9 +140,9 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
 
     //std::set<Index> int_dofs= {4};
     dof_dist->set_dof_property_status(DofProp::interior, int_dofs,true);
-    std::set<Index> dir_dofs= {6,3,0, 1, 2, 5, 8};
+   // std::set<Index> dir_dofs= {6,3,0, 1, 2, 5, 8};
     dof_dist->set_dof_property_status(DofProp::dirichlet, dir_dofs,true);
-    std::set<Index> neu_dofs= {7};
+   // std::set<Index> neu_dofs= {7};
     dof_dist->set_dof_property_status(DofProp::neumman, neu_dofs,true);
 
     auto elem = space->begin();
