@@ -111,11 +111,9 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
     dof_dist->add_dofs_property(DofProp::neumman);
 
 
-    dof_dist->set_dof_property_status(DofProp::interior, int_dofs,true);
-
-    dof_dist->set_dof_property_status(DofProp::dirichlet, dir_dofs,true);
-
-    dof_dist->set_dof_property_status(DofProp::neumman, neu_dofs,true);
+    dof_dist->set_dof_property_status(DofProp::interior, int_dofs, true);
+    dof_dist->set_dof_property_status(DofProp::dirichlet, dir_dofs, true);
+    dof_dist->set_dof_property_status(DofProp::neumman, neu_dofs, true);
 
     auto elem = space->begin();
     auto end  = space->end();
@@ -204,24 +202,6 @@ int main()
 {
     const int dim = 2;
     filtered_dofs<dim>();
-
-    {
-        TensorIndex<1> first{3};
-        TensorIndex<1> last{7};
-        tensor_range(first, last).print_info(out);
-    }
-
-    {
-        TensorIndex<2> first{3,5};
-        TensorIndex<2> last{7,10};
-        tensor_range(first, last).print_info(out);
-    }
-
-    {
-        TensorIndex<3> first{3,5,1};
-        TensorIndex<3> last{7,10, 3};
-        tensor_range(first, last).print_info(out);
-    }
 
     return 0;
 }
