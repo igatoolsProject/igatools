@@ -64,8 +64,6 @@ enum  bc : boundary_id
 };
 
 
-
-
 template<int dim, int range = 1, int rank = 1>
 void filtered_dofs(const int deg = 1, const int n_knots = 3)
 {
@@ -84,20 +82,13 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
     std::set<boundary_id>  dir_ids = {bc::dir};
     auto dir_dofs = get_boundary_dofs<Space>(space, dir_ids);
 
-//    for (auto &x : dofs)
-//        out << x << endl;
-
 
     auto int_dofs = space->get_interior_dofs();
-//    for (auto &x : int_dofs)
-//    	out << x << endl;
+
 
     std::set<boundary_id>  neu_ids = {bc::neu};
     auto neu_dofs = get_boundary_dofs<Space>(space, neu_ids);
-
-//    std::set<Index> neu_dofs1;
     std::vector<Index> common(dim*range);
-
     auto end1 =
     std::set_intersection(neu_dofs.begin(), neu_dofs.end(),
                           dir_dofs.begin(), dir_dofs.end(), common.begin());
@@ -125,8 +116,7 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
 
     auto vec      = Vec::create(dofs_set);
     auto solution     = Vec::create(dofs_set);
-    matrix->print_info(out);
-    vec->print_info(out);
+
 
     auto elem_handler = space->create_elem_handler();
     auto flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::w_measure;
@@ -178,18 +168,16 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
     using LinSolver = LinearSolverIterative<la_pack>;
     LinSolver solver(LinSolver::SolverType::CG);
     solver.solve(*matrix, *vec, *solution);
+    solution->print_info(out);
 
     const int n_plot_points = 4;
     auto map = IdentityFunction<dim>::create(space->get_grid());
     Writer<dim> writer(map, n_plot_points);
-
-
     using IgFunc = IgFunction<RefSpace>;
     auto solution_function = IgFunc::create(space,solution->as_ig_fun_coefficients(),
                                             DofProp::interior);
-
     writer.template add_field<1,1>(solution_function, "solution");
-    string filename = "poisson_problem-" + to_string(dim) + "d" ;
+    string filename = "poisson_problem-" + to_string(deg) + "-" + to_string(dim) + "d" ;
     writer.save(filename);
 
     OUTEND
@@ -201,7 +189,10 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
 int main()
 {
     const int dim = 2;
-    filtered_dofs<dim>();
+    const int deg = 1;
+    const int n_knots = 5;
+    filtered_dofs<dim>(deg, n_knots);
+    filtered_dofs<dim>(2, n_knots);
 
     return 0;
 }
