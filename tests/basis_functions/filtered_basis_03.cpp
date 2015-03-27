@@ -40,6 +40,10 @@
 #include <igatools/base/ig_function.h>
 #include <igatools/io/writer.h>
 
+#include <igatools/basis_functions/space_tools.h>
+
+
+using space_tools::get_boundary_dofs;
 struct DofProp
 {
     static const std::string interior;
@@ -60,35 +64,7 @@ enum  bc : boundary_id
     dir=0, neu
 };
 
-//template<class Space>
-//std::set<Index>
-//get_boundary_dofs(std::shared_ptr<const Space> space,
-//                  const std::set<boundary_id>  &boundary_ids)
-//{
-//    const int dim   = Space::dim;
-//    std::set<Index> dofs;
-//    const int sub_dim = dim - 1;
-//
-//    auto grid = space->get_grid();
-//
-//    std::set<int> sub_elems;
-//    auto bdry_begin = boundary_ids.begin();
-//    auto bdry_end   = boundary_ids.end();
-//    for (auto &s_id : UnitElement<Space::dim>::template elems_ids<sub_dim>())
-//    {
-//        const auto bdry_id = grid->get_boundary_id(s_id);
-//        if (find(bdry_begin, bdry_end, bdry_id) != bdry_end)
-//            sub_elems.insert(s_id);
-//    }
-//
-//    for (const Index &s_id : sub_elems)
-//    {
-//        auto s_dofs = space->template get_boundary_dofs<sub_dim>(s_id);
-//        dofs.insert(s_dofs.begin(), s_dofs.end());
-//    }
-//
-//    return dofs;
-//}
+
 
 
 template<int dim, int range = 1, int rank = 1>
