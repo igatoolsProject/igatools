@@ -136,7 +136,26 @@ operator<<(LogStream &out, const TensorIndex<rank> &tensor_index)
     return (out);
 }
 
+template<>
+vector<TensorIndex<1>> tensor_range(TensorIndex<1> first, TensorIndex<1> last)
+{
+    Assert(first < last, ExcMessage("first not smaller than last"));
+    vector<TensorIndex<1>> result(last[0]-first[0]);
+    for (int i=first[0]; i<last[0]; ++i)
+        result[i-first[0]][0] = i;
 
+    return result;
+}
+
+template<>
+vector<TensorIndex<0>> tensor_range(TensorIndex<0> first, TensorIndex<0> last)
+{
+    Assert(false, ExcNotImplemented());
+    vector<TensorIndex<0>> result;
+
+
+    return result;
+}
 
 
 IGA_NAMESPACE_CLOSE

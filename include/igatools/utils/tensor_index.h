@@ -25,9 +25,8 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
-
-
-
+#include <igatools/utils/vector.h>
+#include <igatools/base/array_utils.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -107,6 +106,17 @@ public:
     const Index &operator[](const Index i) const;
     ///@}
 
+
+    template<int k>
+    TensorIndex<k> get_sub_tensor(const TensorIndex<k> &index) const
+    {
+        TensorIndex<k> res;
+        int j = 0;
+        for (auto i : index)
+            res[j++] = (*this)[i];
+
+        return res;
+    }
     /**
      * @name Increment/decrement operators.
      */
@@ -154,7 +164,15 @@ template <int rank>
 TensorIndex<rank>
 operator-(const TensorIndex<rank> &index,const Index j) ;
 
-
+template <int rank>
+bool
+operator<(const TensorIndex<rank> &index_a,const TensorIndex<rank> &index_b)
+{
+    for (int j=0; j<rank; ++j)
+        if (index_a[j] >= index_b[j])
+            return false;
+    return true;
+}
 /**
  * Output operator for TensorIndex.
  *
@@ -163,6 +181,40 @@ operator-(const TensorIndex<rank> &index,const Index j) ;
 template <int rank>
 LogStream &
 operator<<(LogStream &out, const TensorIndex<rank> &tensor_index) ;
+
+
+/**
+ * Generates a vector with the tensor indices of the given
+ * rectangular range.
+ *
+ */
+template<int k>
+vector<TensorIndex<k>> tensor_range(TensorIndex<k> first, TensorIndex<k> last)
+{
+    Assert(first < last, ExcMessage("first not smaller than last"));
+    vector<TensorIndex<k>> result;
+    TensorIndex<k-1> ind(arr::sequence<k-1>());
+    auto vec = tensor_range<k-1>(first.get_sub_tensor(ind), last.get_sub_tensor(ind));
+
+    for (int i=first[k-1]; i<last[k-1]; ++i)
+    {
+        for (auto &t_k_1 : vec)
+        {
+            TensorIndex<k> t_k;
+            for (int j=0; j<k-1; ++j)
+                t_k[j] = t_k_1[j];
+            t_k[k-1] = i;
+            result.emplace_back(t_k);
+        }
+    }
+    return result;
+}
+
+template<>
+vector<TensorIndex<1>> tensor_range(TensorIndex<1> first, TensorIndex<1> last);
+
+template<>
+vector<TensorIndex<0>> tensor_range(TensorIndex<0> first, TensorIndex<0> last);
 
 IGA_NAMESPACE_CLOSE
 

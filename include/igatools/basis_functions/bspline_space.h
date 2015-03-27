@@ -326,6 +326,13 @@ public:
                   std::shared_ptr<CartesianGrid<k>> sub_grid,
                   std::shared_ptr<typename GridType::template InterGridMap<k>> elem_map) const;
 
+    /**
+     * Global indices of the basis functions whose support intersect the
+     * boundary.
+     */
+    template<int k>
+    std::set<Index> get_boundary_dofs(const int s_id) const;
+
     std::shared_ptr<const self_t > get_reference_space() const;
 
     ///@}

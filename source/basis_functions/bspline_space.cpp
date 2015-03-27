@@ -318,6 +318,58 @@ template<int dim_, int range_, int rank_>
 template<int k>
 auto
 BSplineSpace<dim_, range_, rank_>::
+get_boundary_dofs(const int s_id) const -> std::set<Index>
+{
+    auto &k_elem = UnitElement<dim>::template get_elem<k>(s_id);
+    const auto &active_dirs = k_elem.active_directions;
+
+    const int n_dir = k_elem.constant_directions.size();
+    for (int comp : end_b_.get_active_components_id())
+        for (int j=0; j<n_dir; ++j)
+            Assert(end_b_[comp][k_elem.constant_directions[j]] ==
+                    BasisEndBehaviour::interpolatory,
+            ExcNotImplemented());
+
+    std::set<Index> dofs;
+
+    TensorIndex<dim> first;
+    TensorIndex<dim> last;
+
+    const auto &space_index_table = this->get_dof_distribution()->get_index_table();
+    for (auto comp : SpaceData::components)
+    {
+        for (int j=0; j<k; ++j)
+        {
+            first[active_dirs[j]] = 0;
+            last[active_dirs[j]] = this->get_num_basis(comp, active_dirs[j]);
+        }
+
+        for (int j=0; j<n_dir; ++j)
+        {
+            auto dir = k_elem.constant_directions[j];
+            auto val = k_elem.constant_values[j];
+            const int fixed_id = val * (this->get_num_basis(comp, dir) - 1);
+            first[dir] = fixed_id;
+            last[dir] = fixed_id + 1;
+        }
+        auto tensor_ind = tensor_range(first, last);
+
+
+        const auto &elem_global_indices = space_index_table[comp];
+
+        for (auto &tensor_index : tensor_ind)
+            dofs.insert(elem_global_indices(tensor_index));
+    }
+
+    return dofs;
+}
+
+
+
+template<int dim_, int range_, int rank_>
+template<int k>
+auto
+BSplineSpace<dim_, range_, rank_>::
 get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
               std::shared_ptr<CartesianGrid<k>> sub_grid,
               std::shared_ptr<typename GridType::template InterGridMap<k>> elem_map) const
