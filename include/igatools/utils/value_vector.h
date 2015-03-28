@@ -119,12 +119,6 @@ public :
      */
     void resize(const Size num_points);
 
-    /**
-     * This resize function is to have the same interface of ValueTable (used in the cache initialization).
-     * @warning This function MUST be called with <tt>num_function == 1</tt>,
-     * otherwise an assertion will be raised (in Debug mode).
-     */
-    void resize(const Size num_functions, const Size num_points);
 
     /**
      * Removes all elements from the ValueVector, leaving the container with a size of 0.

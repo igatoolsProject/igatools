@@ -345,7 +345,7 @@ protected:
                                                 boost::mpl::pair<TuplePos_from_ValueType<     _Value>,ValueTable<Value> >,
                                                 boost::mpl::pair<TuplePos_from_ValueType<  _Gradient>,ValueTable<Derivative<1>> >,
                                                 boost::mpl::pair<TuplePos_from_ValueType<   _Hessian>,ValueTable<Derivative<2>> >,
-                                                boost::mpl::pair<TuplePos_from_ValueType<_Divergence>,ValueVector<Derivative<1>>>
+                                                boost::mpl::pair<TuplePos_from_ValueType<_Divergence>,ValueTable<Div>>
                                                 >;
         using map_TP_CT = map_TuplePosition_ContainerType;
 
@@ -391,7 +391,7 @@ protected:
         template<class ValueType>
         void clear_der()
         {
-            auto &value = std::get<ValueType::order>(values_);
+            auto &value = std::get<TuplePos_from_ValueType<ValueType>::value>(values_);
             value.clear();
         }
 
