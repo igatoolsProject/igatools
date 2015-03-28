@@ -135,6 +135,7 @@ void elem_values(const int n_knots = 2, const int deg=1)
     auto flag = ValueFlags::value |
                 ValueFlags::gradient |
                 ValueFlags::hessian |
+                ValueFlags::divergence |
                 ValueFlags::w_measure;
 
     ElementHandler sp_values(space);
@@ -162,7 +163,7 @@ void elem_values(const int n_knots = 2, const int deg=1)
         out.end_item();
 
         out.begin_item("Divergences: ");
-        elem->template get_divergences<k>(0,DofProperties::active).print_info(out);
+        elem->template get_basis<_Divergence,k>(0,DofProperties::active).print_info(out);
         out.end_item();
 
         out.begin_item("W * Measures: ");

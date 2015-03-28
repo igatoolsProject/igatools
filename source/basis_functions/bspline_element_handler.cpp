@@ -673,8 +673,32 @@ operator()(const T &topology)
     }
     if (flags.template fill<_Divergence>())
     {
-        Assert(false,ExcNotImplemented());
-        AssertThrow(false,ExcNotImplemented());
+    	const auto & gradients = cache.template get_der<_Gradient>();
+
+
+//        const int n_basis = gradients.get_num_functions();
+//        const int n_pts   = gradients.get_num_points();
+
+        auto &divergences = cache.template get_der<_Divergence>();
+
+//        divergences.resize(n_basis,n_pts);
+        /*
+        std::transform(basis_gradients.cbegin(),
+                       basis_gradients.cend(),
+                       divergences.begin(),
+                       [](const auto &grad){ return trace(grad);});
+                       //*/
+
+        auto div_it = divergences.begin();
+        for (const auto &grad : gradients)
+        {
+            *div_it = trace(grad);
+            ++div_it;
+        }
+        flags.template set_filled<_Divergence>(true);
+
+//        Assert(false,ExcNotImplemented());
+//        AssertThrow(false,ExcNotImplemented());
     }
 
     cache.set_filled(true);
