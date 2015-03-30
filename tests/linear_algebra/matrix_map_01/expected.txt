@@ -1,0 +1,227 @@
+========================================================================
+void matrix_map(int, int) [with int dim = 1]
+========================================================================
+Row map:
+
+Number of Global Elements  = 3
+Number of Global Points    = 3
+Maximum of all GIDs        = 2
+Minimum of all GIDs        = 0
+Index Base                 = 0
+Constant Element Size      = 1
+
+Number of Local Elements   = 3
+Number of Local Points     = 3
+Maximum of my GIDs         = 2
+Minimum of my GIDs         = 0
+
+     MyPID               Local Index        Global Index  
+0                 0                 0                 
+0                 1                 1                 
+0                 2                 2                 
+
+Col map:
+
+Number of Global Elements  = 3
+Number of Global Points    = 3
+Maximum of all GIDs        = 2
+Minimum of all GIDs        = 0
+Index Base                 = 0
+Constant Element Size      = 1
+
+Number of Local Elements   = 3
+Number of Local Points     = 3
+Maximum of my GIDs         = 2
+Minimum of my GIDs         = 0
+
+     MyPID               Local Index        Global Index  
+0                 0                 0                 
+0                 1                 1                 
+0                 2                 2                 
+
+========================================================================
+
+========================================================================
+void matrix_map1(int, int) [with int dim = 1]
+========================================================================
+Row map:
+
+Number of Global Elements  = 3
+Number of Global Points    = 3
+Maximum of all GIDs        = 2
+Minimum of all GIDs        = 0
+Index Base                 = 0
+Constant Element Size      = 1
+
+Number of Local Elements   = 3
+Number of Local Points     = 3
+Maximum of my GIDs         = 2
+Minimum of my GIDs         = 0
+
+     MyPID               Local Index        Global Index  
+0                 0                 0                 
+0                 1                 1                 
+0                 2                 2                 
+
+Col map:
+
+Number of Global Elements  = 4
+Number of Global Points    = 4
+Maximum of all GIDs        = 3
+Minimum of all GIDs        = 0
+Index Base                 = 0
+Constant Element Size      = 1
+
+Number of Local Elements   = 4
+Number of Local Points     = 4
+Maximum of my GIDs         = 3
+Minimum of my GIDs         = 0
+
+     MyPID               Local Index        Global Index  
+0                 0                 0                 
+0                 1                 1                 
+0                 2                 2                 
+0                 3                 3                 
+
+========================================================================
+
+========================================================================
+void matrix_map1(int, int) [with int dim = 2]
+========================================================================
+Row map:
+
+Number of Global Elements  = 9
+Number of Global Points    = 9
+Maximum of all GIDs        = 8
+Minimum of all GIDs        = 0
+Index Base                 = 0
+Constant Element Size      = 1
+
+Number of Local Elements   = 9
+Number of Local Points     = 9
+Maximum of my GIDs         = 8
+Minimum of my GIDs         = 0
+
+     MyPID               Local Index        Global Index  
+0                 0                 0                 
+0                 1                 1                 
+0                 2                 2                 
+0                 3                 3                 
+0                 4                 4                 
+0                 5                 5                 
+0                 6                 6                 
+0                 7                 7                 
+0                 8                 8                 
+
+Col map:
+
+Number of Global Elements  = 16
+Number of Global Points    = 16
+Maximum of all GIDs        = 15
+Minimum of all GIDs        = 0
+Index Base                 = 0
+Constant Element Size      = 1
+
+Number of Local Elements   = 16
+Number of Local Points     = 16
+Maximum of my GIDs         = 15
+Minimum of my GIDs         = 0
+
+     MyPID               Local Index        Global Index  
+0                 0                 0                 
+0                 1                 1                 
+0                 2                 2                 
+0                 3                 3                 
+0                 4                 4                 
+0                 5                 5                 
+0                 6                 6                 
+0                 7                 7                 
+0                 8                 8                 
+0                 9                 9                 
+0                 10                10                
+0                 11                11                
+0                 12                12                
+0                 13                13                
+0                 14                14                
+0                 15                15                
+
+========================================================================
+
+========================================================================
+void matrix_map2(int, int) [with int dim = 1; int range = 1]
+========================================================================
+Row map:
+
+Number of Global Elements  = 1
+Number of Global Points    = 1
+Maximum of all GIDs        = 1
+Minimum of all GIDs        = 1
+Index Base                 = 0
+Constant Element Size      = 1
+
+Number of Local Elements   = 1
+Number of Local Points     = 1
+Maximum of my GIDs         = 1
+Minimum of my GIDs         = 1
+
+     MyPID               Local Index        Global Index  
+0                 0                 1                 
+
+Col map:
+
+Number of Global Elements  = 1
+Number of Global Points    = 1
+Maximum of all GIDs        = 0
+Minimum of all GIDs        = 0
+Index Base                 = 0
+Constant Element Size      = 1
+
+Number of Local Elements   = 1
+Number of Local Points     = 1
+Maximum of my GIDs         = 0
+Minimum of my GIDs         = 0
+
+     MyPID               Local Index        Global Index  
+0                 0                 0                 
+
+========================================================================
+
+========================================================================
+void matrix_map2(int, int) [with int dim = 2; int range = 1]
+========================================================================
+Row map:
+
+Number of Global Elements  = 1
+Number of Global Points    = 1
+Maximum of all GIDs        = 4
+Minimum of all GIDs        = 4
+Index Base                 = 0
+Constant Element Size      = 1
+
+Number of Local Elements   = 1
+Number of Local Points     = 1
+Maximum of my GIDs         = 4
+Minimum of my GIDs         = 4
+
+     MyPID               Local Index        Global Index  
+0                 0                 4                 
+
+Col map:
+
+Number of Global Elements  = 1
+Number of Global Points    = 1
+Maximum of all GIDs        = 3
+Minimum of all GIDs        = 3
+Index Base                 = 0
+Constant Element Size      = 1
+
+Number of Local Elements   = 1
+Number of Local Points     = 1
+Maximum of my GIDs         = 3
+Minimum of my GIDs         = 3
+
+     MyPID               Local Index        Global Index  
+0                 0                 3                 
+
+========================================================================
+
