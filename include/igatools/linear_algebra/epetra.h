@@ -42,23 +42,36 @@ class  Vector : public Epetra_Vector
 public:
     using Epetra_Vector::Epetra_Vector;
 
-    void add_block(const vector<Index> &local_to_global,
+    void add_block(const vector<Index> &vec_id,
                    const DenseVector &local_vector)
     {
-        const auto   NumEntries = local_to_global.size();
+        const auto   NumEntries = vec_id.size();
         const double *Values    = &(local_vector.data()[0]);
-        const int    *Indices   = local_to_global.data();
+        const int    *Indices   = vec_id.data();
 
         Epetra_Vector::SumIntoGlobalValues(NumEntries, Values, Indices);
- //        Assert(!local_to_global.empty(), ExcEmptyObject()) ;
-//        Assert(Index(local_vector.size()) == num_dofs,
-//               ExcDimensionMismatch(local_vector.size(), num_dofs)) ;
-//
-//        for (Index i = 0 ; i < num_dofs ; ++i)
-//        {
-//            Assert(!std::isnan(local_vector(i)),ExcNotANumber());
-//            Assert(!std::isinf(local_vector(i)),ExcNumberNotFinite());
-//        }
+
+    }
+};
+
+
+class  Matrix : public Epetra_CrsMatrix
+{
+public:
+    using Epetra_CrsMatrix::Epetra_CrsMatrix;
+
+    void add_block(const vector<Index> &rows_id,
+                   const vector<Index> &cols_id,
+                   const DenseMatrix &loc_matrix)
+    {
+        const auto n_rows = rows_id.size();
+        const auto n_cols = cols_id.size();
+
+        for (int i = 0 ; i < n_rows ; ++i)
+        {
+            const double *i_row_data =  &(loc_matrix.data()[i*n_cols]);
+            SumIntoGlobalValues(rows_id[i], n_cols, i_row_data, cols_id.data());
+        }
     }
 };
 
@@ -71,7 +84,7 @@ public:
     using Graph = Epetra_CrsGraph;
     using GraphPtr = std::shared_ptr<Graph>;
 
-    using Matrix = Epetra_CrsMatrix;
+    //using Matrix = Epetra_CrsMatrix;
     using MatrixPtr = std::shared_ptr<Matrix>;
 
     //using Vector = Epetra_MultiVector;

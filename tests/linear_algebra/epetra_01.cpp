@@ -53,9 +53,10 @@ void matrix_map(const int deg, const int n_knots)
     graph->Print(out.get_file_stream());
 
     auto matrix = EpetraTools::create_matrix(graph);
+    auto vector = EpetraTools::create_vector(map);
 
-//    MatrixGraph<LAPack::trilinos_epetra> graph(space, "active", space, "active");
-//    graph.print_info(out);
+    matrix->Print(out.get_file_stream());
+    vector->Print(out.get_file_stream());
 
     OUTEND
 }
