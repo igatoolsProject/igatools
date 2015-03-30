@@ -20,9 +20,9 @@
 //TODO: This test should be splitted in: vector test, matrix test and solver test
 
 /*
- * Test for
- *  author:
- *  date:
+ * Test for developing epetra minimal and efficient linear algebra interaction
+ *  author: pauletti
+ *  date: 2015-03-30
  *
  */
 
@@ -30,7 +30,8 @@
 
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/basis_functions/bspline_space.h>
-#include <igatools/linear_algebra/matrix_map.h>
+#include <igatools/linear_algebra/epetra.h>
+
 #include <igatools/basis_functions/space_tools.h>
 
 using space_tools::get_boundary_dofs;
@@ -42,12 +43,24 @@ void matrix_map(const int deg, const int n_knots)
 	auto grid = CartesianGrid<dim>::create(n_knots);
     auto space = BSplineSpace<dim>::create(deg, grid);
 
-    MatrixGraph<LAPack::trilinos_epetra> graph(space, "active", space, "active");
-    graph.print_info(out);
+    Epetra_SerialComm comm;
+
+
+    auto map = EpetraTools::create_map(space, "active", comm);
+    map->Print(out.get_file_stream());
+
+    auto graph = EpetraTools::create_graph(space, "active", space, "active",map, map);
+    graph->Print(out.get_file_stream());
+
+    auto matrix = EpetraTools::create_matrix(graph);
+
+//    MatrixGraph<LAPack::trilinos_epetra> graph(space, "active", space, "active");
+//    graph.print_info(out);
 
     OUTEND
 }
 
+#if 0
 
 template<int dim>
 void matrix_map1(const int deg, const int n_knots)
@@ -128,7 +141,7 @@ void matrix_map2(const int deg, const int n_knots)
     OUTEND
 }
 
-
+#endif
 
 int main()
 {
