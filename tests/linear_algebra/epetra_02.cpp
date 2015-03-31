@@ -59,8 +59,8 @@ void matrix_map(const int deg, const int n_knots)
 	auto matrix = EpetraTools::create_matrix(graph);
 	auto vector = EpetraTools::create_vector(map);
 	auto sol = EpetraTools::create_vector(map);
-	matrix->Print(out.get_file_stream());
-	vector->Print(out.get_file_stream());
+//	matrix->Print(out.get_file_stream());
+//	vector->Print(out.get_file_stream());
 
 	auto quad = QGauss<dim>(2);
 	auto flag = ValueFlags::value | ValueFlags::w_measure;
@@ -109,8 +109,8 @@ void matrix_map(const int deg, const int n_knots)
 
 	matrix->FillComplete();
 
-	matrix->Print(out.get_file_stream());
-	vector->Print(out.get_file_stream());
+//	matrix->Print(out.get_file_stream());
+//	vector->Print(out.get_file_stream());
 
 	using OP = Epetra_Operator;
 	using MV = Epetra_MultiVector;
@@ -132,12 +132,13 @@ void matrix_map(const int deg, const int n_knots)
 					rcp<MV>(sol.get(),false),
 					rcp<MV>(vector.get(),false)));
 
-	ML_Epetra::MultiLevelPreconditioner * MLPrec =
-	    new ML_Epetra::MultiLevelPreconditioner(*(matrix.get()), true);
-	problem->setRightPrec(rcp<OP>(MLPrec,false));
+	RCP<ML_Epetra::MultiLevelPreconditioner> Prec =
+	        rcp( new ML_Epetra::MultiLevelPreconditioner(*(matrix.get()), true) );
 
 
-//	problem->setRightPrec (M);
+	RCP<Belos::EpetraPrecOp> belosPrec = rcp( new Belos::EpetraPrecOp(Prec) );
+
+	problem->setLeftPrec(belosPrec);
 
 	problem->setProblem();
 	solver->setProblem (problem);
@@ -153,7 +154,9 @@ void matrix_map(const int deg, const int n_knots)
 
 int main()
 {
-	matrix_map<2>(1,3);
+    const int deg = 1;
+    const int n_knots = 10;
+	matrix_map<2>(deg, n_knots);
 	return 0;
 
 }
