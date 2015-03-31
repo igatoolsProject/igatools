@@ -38,21 +38,18 @@ template <class Accessor> class CartesianGridIterator;
  *
  * @ingroup elements
  */
-template<class PhysSpace>
+template<int dim_,int range_,int rank_,int codim_>
 class PhysicalSpaceElement
     :
-    public SpaceElement<PhysSpace::dim,PhysSpace::codim,PhysSpace::range,PhysSpace::rank>
-//,
-    // todo: private PhysSpace::RefSpace::ElementAccessor,
-//    private PhysSpace::PushForwardType::ElementAccessor
+    public SpaceElement<dim_,codim_,range_,rank_>
 {
 public :
-    using parent_t = SpaceElement<PhysSpace::dim,PhysSpace::codim,PhysSpace::range,PhysSpace::rank>;
-    // using parent_t::get_elem_cache;
-    using parent_t::LocalCache;
-//    using parent_t::get_values;
-//    using parent_t::is_boundary;
+    using self_t = PhysicalSpaceElement<dim_,range_,rank_,codim_>;
+    using parent_t = SpaceElement<dim_,codim_,range_,rank_>;
 
+    using parent_t::LocalCache;
+
+    using PhysSpace = PhysicalSpace<dim_,range_,rank_,codim_>;
     /** Type required by the CartesianGridIterator templated iterator */
     using ContainerType = const PhysSpace;
 
@@ -113,14 +110,14 @@ public :
      * The default behaviour (i.e. using the proper interface of a classic copy constructor)
      * uses the deep copy.
      */
-    PhysicalSpaceElement(const PhysicalSpaceElement<PhysSpace> &in,
+    PhysicalSpaceElement(const self_t &in,
                          const CopyPolicy &copy_policy = CopyPolicy::deep);
 
 
     /**
      * Move constructor.
      */
-    PhysicalSpaceElement(PhysicalSpaceElement<PhysSpace> &&in) = default;
+    PhysicalSpaceElement(self_t &&in) = default;
 
     /**
      * Destructor.
@@ -138,14 +135,14 @@ public :
      *
      * @note Internally it uses the function shallow_copy_from().
      */
-    PhysicalSpaceElement<PhysSpace> &
-    operator=(const PhysicalSpaceElement<PhysSpace> &in) = default;
+    self_t &
+    operator=(const self_t &in) = default;
 
     /**
      * Move assignment operator.
      */
-    PhysicalSpaceElement<PhysSpace> &
-    operator=(PhysicalSpaceElement<PhysSpace> &&in) = default;
+    self_t &
+    operator=(self_t &&in) = default;
 
     ///@}
 
@@ -160,14 +157,14 @@ public :
      *
      * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
      */
-    void deep_copy_from(const PhysicalSpaceElement<PhysSpace> &element);
+    void deep_copy_from(const self_t &element);
 
 
     /**
      * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
      * local cache used by the input @p element.
      */
-    void shallow_copy_from(const PhysicalSpaceElement<PhysSpace> &element);
+    void shallow_copy_from(const self_t &element);
     ///@}
 
 #if 0
@@ -327,13 +324,13 @@ protected:
      * Performs a copy of the input @p element.
      * The type of copy (deep or shallow) is specified by the input parameter @p copy_policy.
      */
-    void copy_from(const PhysicalSpaceElement<PhysSpace> &element,
+    void copy_from(const self_t &element,
                    const CopyPolicy &copy_policy);
 
 
 private:
     template <class Accessor> friend class CartesianGridIteratorBase;
-    template <typename PSpace> friend class PhysSpaceElementHandler;
+    template <int,int,int,int> friend class PhysSpaceElementHandler;
 
     std::shared_ptr<RefElemAccessor> ref_space_element_;
 
@@ -344,10 +341,10 @@ private:
      * Creates a new object performing a deep copy of the current object using the PhysicalSpaceElement
      * copy constructor.
      */
-    std::shared_ptr<PhysicalSpaceElement<PhysSpace> > clone() const
+    std::shared_ptr<self_t> clone() const
     {
-        auto elem = std::shared_ptr<PhysicalSpaceElement<PhysSpace> >(
-                        new PhysicalSpaceElement(*this,CopyPolicy::deep));
+        auto elem = std::shared_ptr<self_t>(
+                        new self_t(*this,CopyPolicy::deep));
         Assert(elem != nullptr, ExcNullPtr());
         return elem;
     }

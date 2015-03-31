@@ -34,9 +34,9 @@ IGA_NAMESPACE_OPEN
 
 class SpaceManager;
 
-template <class> class PhysicalSpaceElement;
+template <int,int,int,int> class PhysicalSpaceElement;
 
-template <class> class PhysSpaceElementHandler;
+template <int,int,int,int> class PhysSpaceElementHandler;
 
 /**
  *
@@ -45,7 +45,7 @@ template <class> class PhysSpaceElementHandler;
  * @ingroup containers
  */
 template <int dim_, int range_= 1, int rank_ = 1, int codim_ = 0,
-        Transformation type_= Transformation::h_grad>
+          Transformation type_= Transformation::h_grad>
 class PhysicalSpace :
     public std::enable_shared_from_this<PhysicalSpace<dim_, range_, rank_, codim_, type_>>,
             public FunctionSpaceOnGrid<CartesianGrid<dim_> >
@@ -67,7 +67,7 @@ public:
 
     using GridType = CartesianGrid<dim_>;
     ///@}
-    using ElementHandler = PhysSpaceElementHandler<self_t>;
+    using ElementHandler = PhysSpaceElementHandler<dim_,range_,rank_,codim_>;
 
     static const int dim = dim_;
 
@@ -111,7 +111,7 @@ public:
 public:
 
 
-    using ElementAccessor = PhysicalSpaceElement<self_t>;
+    using ElementAccessor = PhysicalSpaceElement<dim_,range_,rank_,codim_>;
     using ElementIterator = CartesianGridIterator<ElementAccessor>;
 
 

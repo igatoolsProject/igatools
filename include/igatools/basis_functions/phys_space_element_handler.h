@@ -28,14 +28,18 @@
 
 IGA_NAMESPACE_OPEN
 
+template<int dim, int range, int rank, int codim,Transformation type_>
+class PhysicalSpace;
+
 /**
  * Element handler for an isogeometric space
  */
-template<class PhysSpace>
+template<int dim_,int range_,int rank_,int codim_>
 class PhysSpaceElementHandler
-    : public ElementHandler<PhysSpace>
+    : public ElementHandler<PhysicalSpace<dim_,range_,rank_,codim_>>
 {
 
+    using PhysSpace = PhysicalSpace<dim_,range_,rank_,codim_>;
     using RefSpace =  typename PhysSpace::RefSpace;
     using RefPhysSpaceElementHandler = typename PhysSpace::RefSpace::ElementHandler;
     using PFCache = typename PhysSpace::PushForwardType;
@@ -44,10 +48,10 @@ class PhysSpaceElementHandler
     using ElementAccessor = typename PhysSpace::ElementAccessor;
     using PfElemAccessor = typename PhysSpace::PushForwardType::ElementAccessor;
 
-    using self_t = PhysSpaceElementHandler<PhysSpace>;
+    using self_t = PhysSpaceElementHandler<dim_,range_,rank_,codim_>;
 
 public:
-    static const int dim = PhysSpace::dim;
+    static const int dim = dim_;
 
 //    using PhysSpace::PushForwardType::type;
 

@@ -101,19 +101,18 @@ space_to_pf_flag(const ValueFlags flags)
 
 
 
-template<class PhysSpace>
-PhysSpaceElementHandler<PhysSpace>::
+template<int dim,int range,int rank,int codim>
+PhysSpaceElementHandler<dim,range,rank,codim>::
 PhysSpaceElementHandler(std::shared_ptr<const PhysSpace> space)
     :
-//    PFCache(space->get_map_func()),
     space_(space),
     ref_space_handler_(space->get_reference_space()->create_elem_handler()),
     push_fwd_(space->get_map_func())
 {}
 
-template<class PhysSpace>
+template<int dim,int range,int rank,int codim>
 auto
-PhysSpaceElementHandler<PhysSpace>::
+PhysSpaceElementHandler<dim,range,rank,codim>::
 create(std::shared_ptr<const PhysSpace> space) -> std::shared_ptr<self_t>
 {
     Assert(space != nullptr,ExcNullPtr());
@@ -122,10 +121,10 @@ create(std::shared_ptr<const PhysSpace> space) -> std::shared_ptr<self_t>
 
 
 
-template<class PhysSpace>
+template<int dim,int range,int rank,int codim>
 template<int k>
 void
-PhysSpaceElementHandler<PhysSpace>::
+PhysSpaceElementHandler<dim,range,rank,codim>::
 reset(const ValueFlags flag, const Quadrature<k> &eval_pts)
 {
     ref_space_handler_->reset(space_to_ref_flag(PhysSpace::PushForwardType::type, flag), eval_pts);
@@ -135,10 +134,10 @@ reset(const ValueFlags flag, const Quadrature<k> &eval_pts)
 }
 
 
-template<class PhysSpace>
+template<int dim,int range,int rank,int codim>
 template<int k>
 void
-PhysSpaceElementHandler<PhysSpace>::
+PhysSpaceElementHandler<dim,range,rank,codim>::
 reset_selected_elements(
     const ValueFlags &flag,
     const Quadrature<k> &eval_pts,
@@ -155,10 +154,10 @@ reset_selected_elements(
 
 
 
-template<class PhysSpace>
+template<int dim,int range,int rank,int codim>
 template<int k>
 void
-PhysSpaceElementHandler<PhysSpace>::
+PhysSpaceElementHandler<dim,range,rank,codim>::
 init_cache(ElementAccessor &elem)
 {
     auto &ref_elem = elem.get_ref_space_element();
@@ -186,10 +185,10 @@ init_cache(ElementAccessor &elem)
 
 
 
-template<class PhysSpace>
+template<int dim,int range,int rank,int codim>
 template<int k>
 void
-PhysSpaceElementHandler<PhysSpace>::
+PhysSpaceElementHandler<dim,range,rank,codim>::
 fill_cache(ElementAccessor &elem, const int j)
 {
     auto &ref_elem = elem.get_ref_space_element();
@@ -241,23 +240,23 @@ fill_cache(ElementAccessor &elem, const int j)
     }
     if (flags.template fill<_Divergence>())
     {
-    	const auto & gradients = cache.template get_der<_Gradient>();
-    	auto &divergences = cache.template get_der<_Divergence>();
+        const auto &gradients = cache.template get_der<_Gradient>();
+        auto &divergences = cache.template get_der<_Divergence>();
 
-    /*
-    std::transform(basis_gradients.cbegin(),
-                   basis_gradients.cend(),
-                   divergences.begin(),
-                   [](const auto &grad){ return trace(grad);});
-                   //*/
+        /*
+        std::transform(basis_gradients.cbegin(),
+                       basis_gradients.cend(),
+                       divergences.begin(),
+                       [](const auto &grad){ return trace(grad);});
+                       //*/
 
-    	auto div_it = divergences.begin();
-    	for (const auto &grad : gradients)
-    	{
-    		*div_it = trace(grad);
-    		++div_it;
-    	}
-    	flags.template set_filled<_Divergence>(true);
+        auto div_it = divergences.begin();
+        for (const auto &grad : gradients)
+        {
+            *div_it = trace(grad);
+            ++div_it;
+        }
+        flags.template set_filled<_Divergence>(true);
     }
 
     cache.set_filled(true);
@@ -265,9 +264,9 @@ fill_cache(ElementAccessor &elem, const int j)
 }
 
 #if 0
-template<class PhysSpace>
+template<int dim, int codim,int range,int rank>
 auto
-PhysSpaceElementHandler<PhysSpace>::
+PhysSpaceElementHandler<dim,range,rank,codim>::
 fill_element_cache(ElementAccessor &elem) -> void
 {
     auto &ref_elem = elem.get_ref_space_element();
@@ -350,9 +349,9 @@ fill_element_cache(ElementAccessor &elem) -> void
 
 
 
-template<class PhysSpace>
+template<int dim,int range,int rank,int codim>
 auto
-PhysSpaceElementHandler<PhysSpace>::
+PhysSpaceElementHandler<dim,range,rank,codim>::
 print_info(LogStream &out) const -> void
 {
     ref_space_handler_->print_info(out);

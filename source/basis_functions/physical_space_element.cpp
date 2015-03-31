@@ -26,8 +26,8 @@ using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
-template< class PhysSpace >
-PhysicalSpaceElement<PhysSpace>::
+template<int dim_,int range_,int rank_,int codim_>
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
                      const Index index)
     :
@@ -41,8 +41,8 @@ PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
 
 
 
-template< class PhysSpace >
-PhysicalSpaceElement<PhysSpace>::
+template<int dim_,int range_,int rank_,int codim_>
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
                      const TensorIndex<dim> &index)
     :
@@ -50,9 +50,9 @@ PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
 {}
 
 
-template< class PhysSpace >
-PhysicalSpaceElement<PhysSpace>::
-PhysicalSpaceElement(const PhysicalSpaceElement<PhysSpace> &in,
+template<int dim_,int range_,int rank_,int codim_>
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+PhysicalSpaceElement(const PhysicalSpaceElement<dim_,range_,rank_,codim_> &in,
                      const CopyPolicy &copy_policy)
     :
     parent_t(in,copy_policy)
@@ -76,10 +76,10 @@ PhysicalSpaceElement(const PhysicalSpaceElement<PhysSpace> &in,
 
 
 
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 void
-PhysicalSpaceElement<PhysSpace>::
-copy_from(const PhysicalSpaceElement<PhysSpace> &element,
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+copy_from(const PhysicalSpaceElement<dim_,range_,rank_,codim_> &element,
           const CopyPolicy &copy_policy)
 {
     Assert(false,ExcNotImplemented());
@@ -97,47 +97,47 @@ copy_from(const PhysicalSpaceElement<PhysSpace> &element,
 //    }
 }
 
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 void
-PhysicalSpaceElement<PhysSpace>::
-deep_copy_from(const PhysicalSpaceElement<PhysSpace> &element)
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+deep_copy_from(const PhysicalSpaceElement<dim_,range_,rank_,codim_> &element)
 {
     Assert(false,ExcNotImplemented());
     //this->copy_from(element,CopyPolicy::deep);
 }
 
 
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 void
-PhysicalSpaceElement<PhysSpace>::
-shallow_copy_from(const PhysicalSpaceElement<PhysSpace> &element)
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+shallow_copy_from(const PhysicalSpaceElement<dim_,range_,rank_,codim_> &element)
 {
     Assert(false,ExcNotImplemented());
 //    this->copy_from(element,CopyPolicy::shallow);
 }
 
 
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 template <int k>
 auto
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_points(const int j) const -> ValueVector<PhysPoint>
 {
     return push_fwd_element_->template get_values<0,k>(j);
 }
 
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_element_points() const -> ValueVector<PhysPoint>
 {
     return this->template get_points<dim>(0);
 }
 
 #if 0
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 ValueFlags
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_face_flags(const ValueFlags fill_flag) const
 {
     ValueFlags face_fill_flag = ValueFlags::none ;
@@ -156,9 +156,9 @@ get_face_flags(const ValueFlags fill_flag) const
 
 
 
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 ValueFlags
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_reference_space_accessor_fill_flags(const ValueFlags fill_flag) const
 {
     bool fill_values = false;
@@ -243,9 +243,9 @@ get_reference_space_accessor_fill_flags(const ValueFlags fill_flag) const
 
 
 
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 ValueFlags
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_push_forward_accessor_fill_flags(const ValueFlags fill_flag) const
 {
     const ValueFlags common_flag =
@@ -282,9 +282,9 @@ get_push_forward_accessor_fill_flags(const ValueFlags fill_flag) const
 #endif
 
 #if 0
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 void
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 init_cache(const ValueFlags fill_flag,
            const QuadratureType &quad)
 {
@@ -306,9 +306,9 @@ init_cache(const ValueFlags fill_flag,
 
 
 
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 void
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 init_face_cache(const Index face_id,
                 const ValueFlags fill_flag,
                 const QuadratureFaceType &quad)
@@ -318,8 +318,8 @@ init_face_cache(const Index face_id,
 
 
 
-template< class PhysSpace >
-void PhysicalSpaceElement<PhysSpace>::
+template<int dim_,int range_,int rank_,int codim_>
+void PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 fill_cache(const TopologyId<dim> &topology_id)
 {
     auto &cache = parent_t::get_values_cache(topology_id);
@@ -421,8 +421,8 @@ fill_cache(const TopologyId<dim> &topology_id)
 
 
 
-template< class PhysSpace >
-void PhysicalSpaceElement<PhysSpace>::
+template<int dim_,int range_,int rank_,int codim_>
+void PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 fill_face_cache(const Index face_id)
 {
     this->fill_cache(FaceTopology<dim>(face_id));
@@ -431,9 +431,9 @@ fill_face_cache(const Index face_id)
 #endif
 
 #if 0
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_point(const Index qp,const TopologyId<dim> &topology_id) const -> const PhysPoint &
 {
 //    Assert(this->get_values_cache(topology_id).is_filled(), ExcCacheNotFilled());
@@ -442,9 +442,9 @@ get_point(const Index qp,const TopologyId<dim> &topology_id) const -> const Phys
 
 
 
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 evaluate_field(const vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< Value >
 {
     Assert(this->get_num_basis() == local_coefs.size(),
@@ -462,9 +462,9 @@ evaluate_field(const vector<Real> &local_coefs,const TopologyId<dim> &topology_i
 
 
 
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 evaluate_field_gradients(const vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< Derivative<1> >
 {
     Assert(this->get_num_basis() == local_coefs.size(),
@@ -488,9 +488,9 @@ evaluate_field_gradients(const vector<Real> &local_coefs,const TopologyId<dim> &
 
 
 
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 evaluate_field_hessians(const vector<Real> &local_coefs,const TopologyId<dim> &topology_id) const -> ValueVector< Derivative<2> >
 {
     AssertThrow(false,ExcNotImplemented());
@@ -507,9 +507,9 @@ evaluate_field_hessians(const vector<Real> &local_coefs,const TopologyId<dim> &t
 
 
 
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_points(const TopologyId<dim> &topology_id) const ->
 const ValueVector< typename Mapping<dim, codim>::Value > &
 {
@@ -517,9 +517,9 @@ const ValueVector< typename Mapping<dim, codim>::Value > &
     return PfElemAccessor::get_map_values(topology_id);
 }
 
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_face_points(const Index face_id) const ->
 const ValueVector< typename Mapping<dim, codim>::Value > &
 {
@@ -527,9 +527,9 @@ const ValueVector< typename Mapping<dim, codim>::Value > &
 }
 
 /*
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_map_gradients(const TopologyId<dim> &topology_id) const ->
 const ValueVector< typename Mapping<dim, codim>::Gradient > &
 {
@@ -540,9 +540,9 @@ const ValueVector< typename Mapping<dim, codim>::Gradient > &
 
 
 /*
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_face_normals(const Index face_id) const ->
 const ValueVector< typename Mapping<dim, codim>::Value > &
 {
@@ -552,9 +552,9 @@ const ValueVector< typename Mapping<dim, codim>::Value > &
 }
 //*/
 
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 bool
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 is_boundary() const
 {
     return PfElemAccessor::is_boundary();
@@ -562,9 +562,9 @@ is_boundary() const
 //*/
 
 
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 bool
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 is_boundary(const Index face) const
 {
     return PfElemAccessor::is_boundary(face);
@@ -572,26 +572,26 @@ is_boundary(const Index face) const
 //*/
 
 #endif
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 Index
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_flat_index() const
 {
     return parent_t::get_flat_index();
 }
 
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_tensor_index() const -> TensorIndex<dim>
 {
     return parent_t::get_tensor_index();
 }
 
 #if 0
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 bool
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 jump(const TensorIndex<dim> &increment)
 {
     const bool jump_grid_accessor = parent_t::jump(increment);
@@ -604,9 +604,9 @@ jump(const TensorIndex<dim> &increment)
 }
 #endif
 
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 void
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 move_to(const Index flat_index)
 {
     this->as_cartesian_grid_element_accessor().move_to(flat_index);
@@ -615,9 +615,9 @@ move_to(const Index flat_index)
 }
 
 /*
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 bool
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 operator==(const PhysicalSpaceElement <PhysSpace> &a) const
 {
     return this->as_cartesian_grid_element_accessor() == a.as_cartesian_grid_element_accessor();
@@ -625,74 +625,74 @@ operator==(const PhysicalSpaceElement <PhysSpace> &a) const
 
 
 
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 bool
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 operator!=(const PhysicalSpaceElement <PhysSpace> &a) const
 {
     return this->as_cartesian_grid_element_accessor() != a.as_cartesian_grid_element_accessor();
 }
 
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 bool
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 operator>(const PhysicalSpaceElement <PhysSpace> &a) const
 {
     return this->as_cartesian_grid_element_accessor() > a.as_cartesian_grid_element_accessor();
 }
 
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 bool
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 operator<(const PhysicalSpaceElement <PhysSpace> &a) const
 {
     return this->as_cartesian_grid_element_accessor() < a.as_cartesian_grid_element_accessor();
 }
 //*/
 
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 int
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_num_basis() const
 {
     return ref_space_element_->get_num_basis();
 }
 
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_ref_space_element() const -> const RefElemAccessor &
 {
     return *ref_space_element_;
 }
 
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_ref_space_element() -> RefElemAccessor &
 {
     return *ref_space_element_;
 }
 
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_grid() const -> const std::shared_ptr<const CartesianGrid<dim> >
 {
     return this->get_ref_space_element().get_grid();
 }
 
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_push_forward_accessor() const -> const PfElemAccessor &
 {
     return *push_fwd_element_;
 }
 
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 auto
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_push_forward_accessor() -> PfElemAccessor &
 {
     return *push_fwd_element_;
@@ -700,10 +700,10 @@ get_push_forward_accessor() -> PfElemAccessor &
 
 
 #if 0
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 template <int deriv_order>
 auto
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 evaluate_basis_derivatives_at_points(const ValueVector<RefPoint> &points) const ->
 ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 {
@@ -770,9 +770,9 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 
 #endif
 
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 void
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 print_info(LogStream &out) const
 {
     out.begin_item("Reference space:");
@@ -784,9 +784,9 @@ print_info(LogStream &out) const
     out.end_item();
 }
 
-template< class PhysSpace >
+template<int dim_,int range_,int rank_,int codim_>
 void
-PhysicalSpaceElement<PhysSpace>::
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 print_cache_info(LogStream &out) const
 {
     out.begin_item("Reference space:");
