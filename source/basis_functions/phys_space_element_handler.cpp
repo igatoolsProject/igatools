@@ -24,6 +24,10 @@ using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
+
+
+
+
 namespace
 {
 auto
@@ -240,22 +244,9 @@ fill_cache(ElementAccessor &elem, const int j)
     }
     if (flags.template fill<_Divergence>())
     {
-        const auto &gradients = cache.template get_der<_Gradient>();
-        auto &divergences = cache.template get_der<_Divergence>();
-
-        /*
-        std::transform(basis_gradients.cbegin(),
-                       basis_gradients.cend(),
-                       divergences.begin(),
-                       [](const auto &grad){ return trace(grad);});
-                       //*/
-
-        auto div_it = divergences.begin();
-        for (const auto &grad : gradients)
-        {
-            *div_it = trace(grad);
-            ++div_it;
-        }
+        eval_divergences_from_gradients(
+            cache.template get_der<_Gradient>(),
+            cache.template get_der<_Divergence>());
         flags.template set_filled<_Divergence>(true);
     }
 

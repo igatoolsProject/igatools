@@ -230,23 +230,10 @@ operator()(const T &quad1)
     }
     if (flags.template fill<_Divergence>())
     {
-    	const auto & gradients = cache.template get_der<_Gradient>();
-    	auto &divergences = cache.template get_der<_Divergence>();
-
-    /*
-    std::transform(basis_gradients.cbegin(),
-                   basis_gradients.cend(),
-                   divergences.begin(),
-                   [](const auto &grad){ return trace(grad);});
-                   //*/
-
-    	auto div_it = divergences.begin();
-    	for (const auto &grad : gradients)
-    	{
-    		*div_it = trace(grad);
-    		++div_it;
-    	}
-    	flags.template set_filled<_Divergence>(true);
+        eval_divergences_from_gradients(
+            cache.template get_der<_Gradient>(),
+            cache.template get_der<_Divergence>());
+        flags.template set_filled<_Divergence>(true);
     }
 
     cache.set_filled(true);

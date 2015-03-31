@@ -24,6 +24,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/basis_functions/space_element.h>
+#include <igatools/basis_functions/reference_element_handler.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -55,6 +56,8 @@ public:
 
     template <int order>
     using Derivative = typename Space::template Derivative<order>;
+
+    using Div = typename Space::Div;
 
     ReferenceElement() = delete;
 
@@ -113,13 +116,39 @@ public:
     }
 
 
+    /**
+     * This boost::mpl::map is used to select the return type of the template function evaluate_basis_at_points()
+     * from its template parameter @p ValueType.
+     *
+     * @see evaluate_basis_at_points()
+     */
+    using map_ValueTypeId_ContainerType =
+        boost::mpl::map<
+        boost::mpl::pair<boost::mpl::int_<     _Value::id>,ValueTable<Value> >,
+        boost::mpl::pair<boost::mpl::int_<  _Gradient::id>,ValueTable<Derivative<1>> >,
+        boost::mpl::pair<boost::mpl::int_<   _Hessian::id>,ValueTable<Derivative<2>> >,
+        boost::mpl::pair<boost::mpl::int_<_Divergence::id>,ValueTable<Div>>
+        >;
+
+    /**
+     * This is a type-trait that convert a @p ValueType to the correspondent container returned
+     * by the function evaluate_basis_at_points().
+     *
+     * @see evaluate_basis_at_points()
+     */
+    template <class ValueType>
+    using ContType_from_ValueType = typename boost::mpl::at<
+                                    map_ValueTypeId_ContainerType,boost::mpl::int_<ValueType::id>>::type;
+
+
 
     /**
      * @name Functions for the basis and field evaluations without the use of the cache.
      */
     ///@{
     /**
-     * Returns a ValueTable with the <tt>deriv_order</tt>-th derivatives of all local basis function
+     * Returns a ValueTable with the quantity specified by the template parameter @p ValueType,
+     * computed for all local basis function,
      * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
      * @note This function does not use the cache and therefore can be called any time without
      * needing to pre-call init_cache()/fill_cache().
@@ -127,37 +156,37 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     template <class ValueType>
-    ValueTable<
-    Conditional< ValueType::order==0,
-                 Value,
-                 Derivative<ValueType::order> > >
-                 evaluate_basis_derivatives_at_points(
-                     const Quadrature<dim> &points,
-                     const std::string &dofs_property);
-
-    ValueTable<Value>
-    evaluate_basis_values_at_points(
+    ContType_from_ValueType<ValueType>
+    evaluate_basis_at_points(
         const Quadrature<dim> &points,
         const std::string &dofs_property)
     {
-        return this->template evaluate_basis_derivatives_at_points<_Value>(points,dofs_property);
+        auto elem_handler = ReferenceElementHandler<dim,range,rank>::create(this->space_);
+
+        ValueFlags flags;
+        if (ValueType::id == _Value::id)
+            flags = ValueFlags::value;
+        else if (ValueType::id == _Gradient::id)
+            flags = ValueFlags::gradient;
+        else if (ValueType::id == _Hessian::id)
+            flags = ValueFlags::hessian;
+        else if (ValueType::id == _Divergence::id)
+            flags = ValueFlags::divergence;
+        else
+        {
+            Assert(false,ExcNotImplemented());
+        }
+
+        elem_handler->reset_one_element(flags,points,this->get_flat_index());
+        elem_handler->template init_cache<dim>(*this);
+        elem_handler->template fill_cache<dim>(*this,0);
+
+        //    Assert(false,ExcNotImplemented());
+
+        return this->template get_basis<ValueType,dim>(0,dofs_property);
+
     }
 
-    ValueTable<Derivative<1> >
-    evaluate_basis_gradients_at_points(
-        const Quadrature<dim> &points,
-        const std::string &dofs_property)
-    {
-        return this->template evaluate_basis_derivatives_at_points<_Gradient>(points,dofs_property);
-    }
-
-    ValueTable<Derivative<2> >
-    evaluate_basis_hessians_at_points(
-        const Quadrature<dim> &points,
-        const std::string &dofs_property)
-    {
-        return this->template evaluate_basis_derivatives_at_points<_Hessian>(points,dofs_property);
-    }
     ///@}
 
 

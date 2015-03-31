@@ -206,49 +206,18 @@ public:
             this->template get_basis<ValueType, k>(id,dofs_property);
         return basis_values.evaluate_linear_combination(loc_coefs) ;
     }
-
 #if 0
-    template<int k = dim>
-    ValueTable<Div> get_divergences(const int id,
-                                    const std::string &dofs_property) const
+    template <class ValueType>
+    auto
+    linear_combination_at_points(const vector<Real> &loc_coefs,
+                                 const std::string &dofs_property) const
     {
-        /*
-        Assert(local_cache_ != nullptr, ExcNullPtr());
-        const auto &cache = local_cache_->template get_value_cache<k>(id);
-        Assert(cache.is_filled() == true, ExcCacheNotFilled());
-
-        Assert(cache.flags_handler_.gradients_filled() == true, ExcCacheNotFilled());
-        //*/
-        const auto &basis_gradients =
-            this->template get_basis<_Gradient,k>(id,dofs_property);
-
-        const int n_basis = basis_gradients.get_num_functions();
-        const int n_pts   = basis_gradients.get_num_points();
-
-        ValueTable<Div> divergences(n_basis,n_pts);
-        /*
-        std::transform(basis_gradients.cbegin(),
-                       basis_gradients.cend(),
-                       divergences.begin(),
-                       [](const auto &grad){ return trace(grad);});
-                       //*/
-
-        auto div_it = divergences.begin();
-        for (const auto &grad : basis_gradients)
-        {
-            *div_it = trace(grad);
-            ++div_it;
-        }
-//*/
-        return divergences;
-    }
-
-
-    ValueTable<Div> get_element_divergences(const std::string &dofs_property) const
-    {
-        return get_divergences<dim>(0,dofs_property);
+        const auto &basis_values =
+            this->template get_basis<ValueType, k>(id,dofs_property);
+        return basis_values.evaluate_linear_combination(loc_coefs) ;
     }
 #endif
+
 
 
 
