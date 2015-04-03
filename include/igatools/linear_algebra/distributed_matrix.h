@@ -21,6 +21,7 @@
 #ifndef DISTRIBUTED_MATRIX_H_
 #define DISTRIBUTED_MATRIX_H_
 
+#if 0
 #include <igatools/base/config.h>
 
 #ifdef USE_TRILINOS
@@ -288,16 +289,16 @@ public:
      * Off-node indices are distributed, indices are sorted,
      * redundant indices are eliminated, and global indices are transformed to local indices.
      */
-    void fill_complete();
+    void FillComplete();
 
     /**
      * Resume operations that may change the values or structure of the matrix.
      *
      * This method must be called as a collective operation.
-     * Calling fill_complete() "freezes" both the values and the structure of the matrix.
+     * Calling FillComplete() "freezes" both the values and the structure of the matrix.
      * If you want to modify the matrix again, you must first call resume_fill().
-     * You then may not call resume_fill() again on that matrix until you first call fill_complete().
-     * You may make sequences of fill_complete(), resume_fill() calls as many times as you wish.
+     * You then may not call resume_fill() again on that matrix until you first call FillComplete().
+     * You may make sequences of FillComplete(), resume_fill() calls as many times as you wish.
      */
     void resume_fill();
     ///@}
@@ -483,16 +484,16 @@ public:
      * Off-node indices are distributed, indices are sorted,
      * redundant indices are eliminated, and global indices are transformed to local indices.
      */
-    void fill_complete();
+    void FillComplete();
 
     /**
      * Resume operations that may change the values or structure of the matrix.
      *
      * This method must be called as a collective operation.
-     * Calling fill_complete() "freezes" both the values and the structure of the matrix.
+     * Calling FillComplete() "freezes" both the values and the structure of the matrix.
      * If you want to modify the matrix again, you must first call resume_fill().
-     * You then may not call resume_fill() again on that matrix until you first call fill_complete().
-     * You may make sequences of fill_complete(), resume_fill() calls as many times as you wish.
+     * You then may not call resume_fill() again on that matrix until you first call FillComplete().
+     * You may make sequences of FillComplete(), resume_fill() calls as many times as you wish.
      */
     void resume_fill();
     ///@}
@@ -666,16 +667,16 @@ public:
      * Off-node indices are distributed, indices are sorted,
      * redundant indices are eliminated, and global indices are transformed to local indices.
      */
-    void fill_complete();
+    void FillComplete();
 
     /**
      * Resume operations that may change the values or structure of the matrix.
      *
      * This method must be called as a collective operation.
-     * Calling fill_complete() "freezes" both the values and the structure of the matrix.
+     * Calling FillComplete() "freezes" both the values and the structure of the matrix.
      * If you want to modify the matrix again, you must first call resume_fill().
-     * You then may not call resume_fill() again on that matrix until you first call fill_complete().
-     * You may make sequences of fill_complete(), resume_fill() calls as many times as you wish.
+     * You then may not call resume_fill() again on that matrix until you first call FillComplete().
+     * You may make sequences of FillComplete(), resume_fill() calls as many times as you wish.
      */
     void resume_fill();
     ///@}
@@ -691,3 +692,4 @@ private:
 IGA_NAMESPACE_CLOSE
 
 #endif /* DISTRIBUTED_MATRIX_H_ */
+#endif

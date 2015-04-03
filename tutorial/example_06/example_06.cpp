@@ -176,7 +176,7 @@ void PoissonProblem<dim>::assemble()
         rhs->add_block(loc_dofs, loc_rhs);
     }
 
-    matrix->fill_complete();
+    matrix->FillComplete();
 
     // [dirichlet constraint]
 

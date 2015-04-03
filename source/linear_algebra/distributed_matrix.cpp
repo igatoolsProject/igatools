@@ -17,6 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
+#if 0
 
 #include <igatools/linear_algebra/distributed_matrix.h>
 #include <igatools/base/exceptions.h>
@@ -163,7 +164,7 @@ add_block(
 
 void
 Matrix<LAPack::trilinos_tpetra>::
-fill_complete()
+FillComplete()
 {
     const auto graph = matrix_->getGraph();
     matrix_->fillComplete(graph->getDomainMap(),graph->getRangeMap());
@@ -399,7 +400,7 @@ add_entry(const Index row_id, const Index column_id, const Real value)
 
 void
 Matrix<LAPack::trilinos_epetra>::
-fill_complete()
+FillComplete()
 {
 //    const auto &graph = matrix_->Graph();
 //    matrix_->FillComplete(graph.DomainMap(),graph.RangeMap());
@@ -718,7 +719,7 @@ add_block(
 
 void
 Matrix<LAPack::petsc>::
-fill_complete()
+FillComplete()
 {
     PetscErrorCode ierr;
     ierr = MatAssemblyBegin(matrix_, MAT_FINAL_ASSEMBLY); // CHKERRQ(ierr);
@@ -898,5 +899,5 @@ multiply_by_left_vector(const vector_t &x,vector_t &y,const Real alpha,const Rea
 
 IGA_NAMESPACE_CLOSE
 
-
+#endif
 

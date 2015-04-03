@@ -734,7 +734,7 @@ int main()
             rhs->add_block(loc_dofs, loc_rhs);
         }
     }
-    matrix->fill_complete();
+    matrix->FillComplete();
     matrix->print(out);
 
     for (auto &space_curr: space_infos)

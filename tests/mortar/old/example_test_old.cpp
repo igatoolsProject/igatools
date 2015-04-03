@@ -397,7 +397,7 @@ int main()
         rhs->add_block(loc_dofs, loc_rhs);
     }
 
-    matrix->fill_complete();
+    matrix->FillComplete();
 
     //ConstantFunction<dim> g({0.0});
     D_function<dim, dim_field, 1> dfunction;

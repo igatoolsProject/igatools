@@ -58,20 +58,17 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
     using ProjFunc = IgFunction<Space>;
     std::shared_ptr<ProjFunc> projection;
 
-    const auto &dof_distribution = *(space->get_dof_distribution());
+    Epetra_SerialComm comm;
 
-    const auto space_manager =
-        build_space_manager_single_patch<Space>(std::const_pointer_cast<Space>(space));
-    Matrix<la_pack> matrix(*space_manager);
+    auto map = EpetraTools::create_map(space, "active", comm);
+    auto graph = EpetraTools::create_graph(space, "active", space, "active",map, map);
 
-    const auto space_dofs = space_manager->get_row_dofs();
-//    vector<Index> space_dofs(space_dofs_set.begin(),space_dofs_set.end());
-    Vector<la_pack> rhs(space_dofs);
-    Vector<la_pack> sol(space_dofs);
+    auto matrix = EpetraTools::create_matrix(graph);
+    auto rhs = EpetraTools::create_vector(map);
+    auto sol = EpetraTools::create_vector(map);
 
     const auto space_grid =    space->get_grid();
-    const auto  func_grid = function->get_grid();
-
+    const auto func_grid = function->get_grid();
 
     if (space_grid == func_grid)
     {
@@ -133,10 +130,10 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
                     loc_mat(i, j) = loc_mat(j, i);
 
             const auto elem_dofs = elem->get_local_to_global(dofs_property);
-            matrix.add_block(elem_dofs,elem_dofs,loc_mat);
-            rhs.add_block(elem_dofs,loc_rhs);
+            matrix->add_block(elem_dofs,elem_dofs,loc_mat);
+            rhs->add_block(elem_dofs,loc_rhs);
         }
-        matrix.fill_complete();
+        matrix->FillComplete();
     }
     else
     {
@@ -239,27 +236,30 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
                     loc_mat(i, j) = loc_mat(j, i);
 
             const auto elem_dofs = elem->get_local_to_global(dofs_property);
-            matrix.add_block(elem_dofs,elem_dofs,loc_mat);
-            rhs.add_block(elem_dofs,loc_rhs);
+            matrix->add_block(elem_dofs,elem_dofs,loc_mat);
+            rhs->add_block(elem_dofs,loc_rhs);
         }
-        matrix.fill_complete();
+        matrix->FillComplete();
     }
 
+    auto solver = EpetraTools::create_solver(matrix, sol, rhs);
+    auto result = solver->solve();
+    AssertThrow(result == Belos::ReturnType::Converged,
+    		ExcMessage("No convergence."));
+//    const Real tol = 1.0e-15;
+//    const int max_iter = 1000;
+//    using LinSolver = LinearSolverIterative<la_pack>;
+//    LinSolver solver(LinSolver::SolverType::CG,
+//                     LinSolver::PreconditionerType::ILU0,
+//                     tol,max_iter);
+//    solver.solve(matrix, rhs, sol);
 
-    const Real tol = 1.0e-15;
-    const int max_iter = 1000;
-    using LinSolver = LinearSolverIterative<la_pack>;
-    LinSolver solver(LinSolver::SolverType::CG,
-                     LinSolver::PreconditionerType::ILU0,
-                     tol,max_iter);
-    solver.solve(matrix, rhs, sol);
-
-    const auto &dofs = space->get_dof_distribution()->get_dofs_id_same_property(dofs_property);
+    //const auto &dofs = space->get_dof_distribution()->get_dofs_id_same_property(dofs_property);
 
 
     return ProjFunc::create(
                std::const_pointer_cast<Space>(space),
-               IgCoefficients(*space,dofs_property,sol.get_local_coefs(dofs)),
+               *sol,
                dofs_property);
 }
 

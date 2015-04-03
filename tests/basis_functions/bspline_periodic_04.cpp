@@ -156,7 +156,7 @@ void assemble_matrix(const int n_knots, const int deg)
         matrix->add_block(loc_dofs, loc_dofs,loc_mat);
         rhs->add_block(loc_dofs, loc_rhs);
     }
-    matrix->fill_complete();
+    matrix->FillComplete();
     auto g = ConstantFunction<dim,0,1,1>::create(grid, IdentityFunction<dim>::create(grid), {0.});
 
     const QGauss<dim-1>  face_quad(deg);

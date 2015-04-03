@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
+#if 0
 #ifndef TRILINOS_VECTOR_H_
 #define TRILINOS_VECTOR_H_
 
@@ -721,3 +721,4 @@ private:
 IGA_NAMESPACE_CLOSE
 
 #endif /* TRILINOS_VECTOR_H_ */
+#endif

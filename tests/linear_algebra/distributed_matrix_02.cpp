@@ -67,7 +67,7 @@ void fill_matrix_and_vector(const SpaceManager &space_manager)
     for (Index i = 0; i < num_rows - num_cols ; i++)
         A.add_entry(row_dofs[num_cols + i], col_dofs[i], 1.0);
 
-    A.fill_complete();
+    A.FillComplete();
 
 
     out << "A matrix" << endl;

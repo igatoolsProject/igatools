@@ -18,6 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+#if 0
 #ifndef LINEAR_SOLVER_H_
 #define LINEAR_SOLVER_H_
 
@@ -477,3 +478,4 @@ IGA_NAMESPACE_CLOSE
 
 
 #endif /* LINEAR_SOLVER_H_ */
+#endif

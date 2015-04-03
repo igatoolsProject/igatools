@@ -28,19 +28,12 @@
 
 #include "../tests.h"
 
-
 #include <igatools/linear_algebra/epetra.h>
-
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 
-
-
-
-
 using namespace Teuchos;
-
 
 template<int dim>
 void matrix_map(const int deg, const int n_knots)
@@ -57,8 +50,6 @@ void matrix_map(const int deg, const int n_knots)
 	auto matrix = EpetraTools::create_matrix(graph);
 	auto vector = EpetraTools::create_vector(map);
 	auto sol = EpetraTools::create_vector(map);
-//	matrix->Print(out.get_file_stream());
-//	vector->Print(out.get_file_stream());
 
 	auto quad = QGauss<dim>(2);
 	auto flag = ValueFlags::value | ValueFlags::w_measure;

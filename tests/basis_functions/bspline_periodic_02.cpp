@@ -145,7 +145,7 @@ void assemble_matrix(const int n_knots, const int deg)
         matrix->add_block(loc_dofs, loc_dofs,loc_mat);
         rhs->add_block(loc_dofs, loc_rhs);
     }
-    matrix->fill_complete();
+    matrix->FillComplete();
     matrix->print_info(out);
 
     using LinSolver = LinearSolverIterative<LAPack::trilinos_tpetra>;

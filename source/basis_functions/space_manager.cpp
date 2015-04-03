@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
+#if 0
 #include <igatools/basis_functions/space_manager.h>
 #include <igatools/base/exceptions.h>
 
@@ -831,3 +831,4 @@ print_info(LogStream &out) const
 
 
 IGA_NAMESPACE_CLOSE
+#endif

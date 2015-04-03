@@ -23,20 +23,11 @@
 #define __DOF_TOOLS_H_
 
 #include <igatools/base/config.h>
-#include <igatools/basis_functions/space_manager.h>
-#include <igatools/linear_algebra/sparsity_pattern.h>
-#include <igatools/basis_functions/function_space.h>
+#include <igatools/linear_algebra/epetra.h>
 
-
-#include <memory>
 
 IGA_NAMESPACE_OPEN
 
-template <LAPack la_pack>
-class Vector;
-
-template <LAPack la_pack>
-class Matrix;
 
 /**
  * Collection of routines to handle the relation
@@ -45,6 +36,7 @@ class Matrix;
  */
 namespace dof_tools
 {
+using namespace EpetraTools;
 /**
  * Modifies the matrix, the unknown and rhs of a linear system
  * to impose dirichlet constraints on the dofs.
@@ -52,11 +44,11 @@ namespace dof_tools
  */
 template <LAPack la_pack>
 void apply_boundary_values(const std::map<Index,Real> &boundary_values,
-                           Matrix<la_pack> &matrix,
-                           Vector<la_pack> &rhs,
-                           Vector<la_pack> &solution);
+                           Matrix &matrix,
+                           Vector &rhs,
+                           Vector &solution);
 
-
+#if 0
 /**
  * This function returns the connectivity of two sets of dofs index, using an all-to-all
  * strategy, i.e. each dof in the set @p row_dofs is connected with all dofs in the set @p col_dofs.
@@ -81,7 +73,7 @@ build_dofs_connectvity_all_to_all(const Container &row_dofs,const Container &col
 
     return dofs_connectivity;
 }
-
+#endif
 
 } // end of namespace dof_tools
 

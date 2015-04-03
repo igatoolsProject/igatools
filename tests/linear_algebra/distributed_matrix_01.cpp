@@ -90,7 +90,7 @@ int main()
     for (Index i = 0; i < num_rows ; i++)
         matrix.add_entry(i,i,2.0);
 
-    matrix.fill_complete();
+    matrix.FillComplete();
 
     matrix.print_info(out);
     out << std::endl;

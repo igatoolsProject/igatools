@@ -79,7 +79,7 @@ public:
     Real get_elapsed_time_eval_rhs() const;
     Real get_elapsed_time_assemble_stiffness_matrix() const;
     Real get_elapsed_time_solve_linear_system() const;
-    Real get_elapsed_time_fill_complete() const;
+    Real get_elapsed_time_FillComplete() const;
     Real get_elapsed_time_total() const;
 
     int get_num_dofs() const;
@@ -149,7 +149,7 @@ protected:
 
     Duration elapsed_time_assemble_stiffness_matrix_;
 
-    Duration elapsed_time_fill_complete_;
+    Duration elapsed_time_FillComplete_;
 
     Duration elapsed_time_solve_linear_system_;
 
@@ -229,9 +229,9 @@ get_elapsed_time_solve_linear_system() const
 template<int dim,class DerivedClass>
 Real
 PoissonProblem<dim,DerivedClass>::
-get_elapsed_time_fill_complete() const
+get_elapsed_time_FillComplete() const
 {
-    return elapsed_time_fill_complete_.count();
+    return elapsed_time_FillComplete_.count();
 }
 
 template<int dim,class DerivedClass>
@@ -273,7 +273,7 @@ PoissonProblem(const int n_knots, const int deg)
     elapsed_time_eval_stiffness_matrix_(0),
     elapsed_time_eval_rhs_(0),
     elapsed_time_assemble_stiffness_matrix_(0),
-    elapsed_time_fill_complete_(0),
+    elapsed_time_FillComplete_(0),
     elapsed_time_solve_linear_system_(0)
 {
 
@@ -459,10 +459,10 @@ assemble()
 
     }
 
-    const TimePoint start_fill_complete = Clock::now();
-    this->matrix->fill_complete();
-    const TimePoint end_fill_complete = Clock::now();
-    this->elapsed_time_fill_complete_ = end_fill_complete - start_fill_complete;
+    const TimePoint start_FillComplete = Clock::now();
+    this->matrix->FillComplete();
+    const TimePoint end_FillComplete = Clock::now();
+    this->elapsed_time_FillComplete_ = end_FillComplete - start_FillComplete;
 
 
     TimePoint start_boundary_conditions = Clock::now();
@@ -717,7 +717,7 @@ do_test(const int degree_min, const int degree_max,const int n_elems_per_directi
 
     string time_assemble = "Loc-to-glob assemble";
 
-    string time_fill_complete = "Fill-complete";
+    string time_FillComplete = "Fill-complete";
 
     string time_solve_lin_system = "Solve lin.system";
 
@@ -741,7 +741,7 @@ do_test(const int degree_min, const int degree_max,const int n_elems_per_directi
         time_table.add_value(time_stiff,poisson.get_elapsed_time_eval_stiffness_matrix());
 
         time_table.add_value(time_assemble,poisson.get_elapsed_time_assemble_stiffness_matrix());
-        time_table.add_value(time_fill_complete,poisson.get_elapsed_time_fill_complete());
+        time_table.add_value(time_FillComplete,poisson.get_elapsed_time_FillComplete());
         time_table.add_value(time_solve_lin_system,poisson.get_elapsed_time_solve_linear_system());
 
         time_table.add_value(time_total,poisson.get_elapsed_time_total());
@@ -766,8 +766,8 @@ do_test(const int degree_min, const int degree_max,const int n_elems_per_directi
     time_table.set_precision(time_assemble,10);
     time_table.set_scientific(time_assemble,true);
 
-    time_table.set_precision(time_fill_complete,10);
-    time_table.set_scientific(time_fill_complete,true);
+    time_table.set_precision(time_FillComplete,10);
+    time_table.set_scientific(time_FillComplete,true);
 
     time_table.set_precision(time_solve_lin_system,10);
     time_table.set_scientific(time_solve_lin_system,true);

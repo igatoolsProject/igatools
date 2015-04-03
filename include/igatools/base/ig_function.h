@@ -23,9 +23,13 @@
 
 #include <igatools/base/function.h>
 #include <igatools/basis_functions/spline_space.h>
+#include <igatools/linear_algebra/epetra.h>
 
 IGA_NAMESPACE_OPEN
 
+using IgCoefficients = EpetraTools::Vector;
+
+#if 0
 class IgCoefficients : public std::map<Index,Real>
 {
 public:
@@ -119,6 +123,7 @@ public:
         }
     }
 };
+#endif
 
 template<class Space>
 class IgFunction :

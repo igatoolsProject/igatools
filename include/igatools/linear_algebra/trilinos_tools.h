@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-
+#if 0
 #ifndef TRILINOS_TOOLS_H_
 #define TRILINOS_TOOLS_H_
 
@@ -110,3 +110,4 @@ IGA_NAMESPACE_CLOSE
 #endif // #ifdef USE_TRILINOS
 
 #endif // #ifndef TRILINOS_TOOLS_H_
+#endif

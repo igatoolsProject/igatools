@@ -345,7 +345,7 @@ projection_l2(const typename Space::Func &func,
         matrix.add_block(local_dofs,local_dofs,loc_mat);
         rhs.add_block(local_dofs,loc_rhs);
     }
-    matrix.fill_complete();
+    matrix.FillComplete();
 
     // TODO (pauletti, Oct 9, 2014): the solver must use a precon
     const Real tolerance = 1.0e-15;

@@ -46,6 +46,15 @@ class  Vector : public Epetra_Vector
 public:
     using Epetra_Vector::Epetra_Vector;
 
+    Size size() const
+    {return GlobalLength ();}
+
+    Vector &operator +=(const Vector &vec)
+	{
+    	Update(1., *(this), 1.);
+    	return *this;
+	}
+
     void add_block(const vector<Index> &vec_id,
                    const DenseVector &local_vector)
     {
@@ -56,8 +65,21 @@ public:
         Epetra_Vector::SumIntoGlobalValues(NumEntries, Values, Indices);
     }
 
+    //TODO (pauletti, Apr 3, 2015): both vector<Real> and std::vector<Index>
+    // should be replace by a typedef and a proper type for fast comuniction with LA
+    vector<Real>
+    get_local_coeffs(const std::vector<Index> &global_ids) const
+    {
+        vector<Real> local_coefs;
+        for (const auto &global_id : global_ids)
+            local_coefs.emplace_back((*this)[global_id]);
+
+        return local_coefs;
+    }
+
     void print_info(LogStream &out) const
     {
+    	using std::endl;
     	out << "-----------------------------" << endl;
 
         const Index n_entries = GlobalLength();

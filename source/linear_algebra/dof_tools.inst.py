@@ -19,41 +19,6 @@
 #-+--------------------------------------------------------------------
 
 from init_instantiation_data import *
-include_files = ['basis_functions/bspline_space.h',
-                 'basis_functions/bspline_element.h',
-                # 'basis_functions/nurbs_space.h',
-                # 'basis_functions/nurbs_element_accessor.h',
-                 'basis_functions/physical_space.h',
-                 'geometry/cartesian_grid_element.h',
-                 'geometry/mapping_element.h',
-                 'geometry/push_forward_element.h',
-                 'basis_functions/physical_space_element.h']
-data = Instantiation(include_files)
+data = Instantiation()
 (f, inst) = (data.file_output, data.inst)
-
-
-apply_boundary_values = ('template void dof_tools::apply_boundary_values('
-               + 'const std::map<Index,Real> &boundary_values,'
-               + 'Matrix<LinAlgebra> &matrix,'
-               + 'Vector<LinAlgebra> &rhs,'
-               + 'Vector<LinAlgebra> &solution) ;\n')
-
-
-
-############################################
-# TRILINOS specific instantiations -- begin
-f.write('#ifdef USE_TRILINOS\n')
-f.write(apply_boundary_values.replace('LinAlgebra','LAPack::trilinos_tpetra'))
-f.write(apply_boundary_values.replace('LinAlgebra','LAPack::trilinos_epetra'))
-f.write('#endif\n')
-# TRILINOS' specific instantiations -- end
-############################################
-
-
-############################################
-# PETSc specific instantiations -- begin
-f.write('#ifdef USE_PETSC\n')
-f.write(apply_boundary_values.replace('LinAlgebra','LAPack::petsc'))
-f.write('#endif\n')
-# PETSc specific instantiations -- end
-############################################
+# delete this file

@@ -322,9 +322,11 @@ get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
     {
         ref_space = get_bspline_space_from_xml<dim,dim_phys,1>(mapping_tree);
     }
-
-    const auto &active_dofs = ref_space->get_dof_distribution()->get_dofs_id_same_property(DofProperties::active);
-    map = IgFunction<ref_space_t>::create(ref_space, IgCoefficients(active_dofs,cntrl_pts));
+    Epetra_SerialComm comm;
+    auto emap = EpetraTools::create_map(ref_space, "active", comm);
+    auto vec = cntrl_pts;
+    EpetraTools::Vector w(Copy, *emap, vec.data());
+    map = IgFunction<ref_space_t>::create(ref_space, w);
     //-------------------------------------------------------------------------
     AssertThrow(map != nullptr,ExcNullPtr());
 
@@ -721,20 +723,11 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     int comp = 0;
     for (const auto &w_coefs : weights)
     {
-        const auto &dofs_active =
-            scalar_spline_space->get_dof_distribution()->
-            get_dofs_id_same_property(DofProperties::active);
-
-        const auto &w_data = w_coefs.get_data();
-        /*
-                IgCoefficients w_func_coeffs;
-                int i = 0;
-                for (const auto dof : dofs_active)
-                    w_func_coeffs[dof] = w_data[i++];
-        //*/
-
-        w_func_table[comp++] = WeightFuncPtr(
-                                   new WeightFunc(scalar_spline_space,IgCoefficients(dofs_active,w_data)));
+    	Epetra_SerialComm comm;
+    	auto map = EpetraTools::create_map(scalar_spline_space, "active", comm);
+    	auto vec = w_coefs.get_data();
+    	EpetraTools::Vector w(Copy, *map, vec.data());
+    	w_func_table[comp++] = WeightFuncPtr(new WeightFunc(scalar_spline_space, w));
     }
 
     //*/

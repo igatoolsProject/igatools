@@ -134,7 +134,7 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
         vec->add_block(loc_dofs, loc_rhs);
     }
 
-    matrix->fill_complete();
+    matrix->FillComplete();
     matrix->print_info(out);
     vec->print_info(out);
 

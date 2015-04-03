@@ -21,6 +21,7 @@
 #ifndef SPACE_MANAGER_H_
 #define SPACE_MANAGER_H_
 
+#if 0
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
 #include <igatools/base/equality_constraint.h>
@@ -1151,3 +1152,4 @@ IGA_NAMESPACE_CLOSE
 
 
 #endif // #ifndef SPACE_MANAGER_H_
+#endif

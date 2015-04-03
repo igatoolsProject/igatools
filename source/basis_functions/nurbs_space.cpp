@@ -579,7 +579,7 @@ get_weight_coef_from_basis_id(const Index basis_id) const
 
     const Index w_id = basis_id - basis_offset[comp_id];
 
-    return (weight_func_table_[comp_id]->get_coefficients())(w_id);
+    return (weight_func_table_[comp_id]->get_coefficients())[w_id];
 }
 
 

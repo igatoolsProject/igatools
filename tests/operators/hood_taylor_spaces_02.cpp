@@ -121,7 +121,7 @@ void StokesProblem<dim>::assemble_Bt()
 
         out << loc_mat << endl;
     }
-    Bt_->fill_complete();
+    Bt_->FillComplete();
 
     out << endl;
     out << "B^t matrix" << endl;

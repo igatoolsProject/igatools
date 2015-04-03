@@ -78,7 +78,7 @@ public:
     Real get_elapsed_time_eval_stiffness_matrix() const;
     Real get_elapsed_time_eval_rhs() const;
     Real get_elapsed_time_assemble_stiffness_matrix() const;
-    Real get_elapsed_time_fill_complete() const;
+    Real get_elapsed_time_FillComplete() const;
 
     int get_num_dofs() const;
 
@@ -135,7 +135,7 @@ protected:
 
     Duration elapsed_time_assemble_stiffness_matrix_;
 
-    Duration elapsed_time_fill_complete_;
+    Duration elapsed_time_FillComplete_;
 
     int num_dofs_;
 };
@@ -185,9 +185,9 @@ get_elapsed_time_assemble_stiffness_matrix() const
 template<int dim,class DerivedClass>
 Real
 PoissonProblem<dim,DerivedClass>::
-get_elapsed_time_fill_complete() const
+get_elapsed_time_FillComplete() const
 {
-    return elapsed_time_fill_complete_.count();
+    return elapsed_time_FillComplete_.count();
 }
 
 template<int dim,class DerivedClass>
@@ -213,7 +213,7 @@ PoissonProblem(const int n_knots, const int deg)
     elapsed_time_eval_stiffness_matrix_(0),
     elapsed_time_eval_rhs_(0),
     elapsed_time_assemble_stiffness_matrix_(0),
-    elapsed_time_fill_complete_(0)
+    elapsed_time_FillComplete_(0)
 {
 
 
@@ -428,10 +428,10 @@ assemble()
 
     }
 
-    const TimePoint start_fill_complete = Clock::now();
-    this->matrix->fill_complete();
-    const TimePoint end_fill_complete = Clock::now();
-    this->elapsed_time_fill_complete_ = end_fill_complete - start_fill_complete;
+    const TimePoint start_FillComplete = Clock::now();
+    this->matrix->FillComplete();
+    const TimePoint end_FillComplete = Clock::now();
+    this->elapsed_time_FillComplete_ = end_FillComplete - start_FillComplete;
 
 
     TimePoint start_boundary_conditions = Clock::now();

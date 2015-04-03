@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
+#if 0
 #include <igatools/linear_algebra/linear_solver.h>
 
 using std::shared_ptr;
@@ -617,5 +617,5 @@ get_preconditioner_type() const -> PreconditionerType
 
 
 IGA_NAMESPACE_CLOSE
-
+#endif
 

@@ -141,15 +141,7 @@ fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) -> voi
     fill_cache_impl.func_elem = &elem;
     fill_cache_impl.function = this;
 
-
-    const auto elem_dofs = elem_->get_local_to_global(property_);
-    vector<Real> loc_coeff;
-    for (const auto &dof : elem_dofs)
-        loc_coeff.emplace_back(coeff_(dof));
-
-//    auto loc_coeff =
-//    coeff_.get_local_coefs(elem_->get_local_to_global(property_));
-
+    auto loc_coeff = coeff_.get_local_coeffs(elem_->get_local_to_global(property_));
 
     fill_cache_impl.loc_coeff = &loc_coeff;
     fill_cache_impl.j = j;

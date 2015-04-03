@@ -35,40 +35,38 @@ IGA_NAMESPACE_OPEN
 namespace dof_tools
 {
 
-template <LAPack la_pack>
 void apply_boundary_values(const std::map<Index,Real> &boundary_values,
-                           Matrix<la_pack> &matrix,
-                           Vector<la_pack> &rhs,
-                           Vector<la_pack> &solution)
+                           Matrix &matrix,
+                           Vector &rhs,
+                           Vector &solution)
 {
     auto dof = boundary_values.begin();
     const auto dof_end = boundary_values.end();
+    const auto &graph = matrix.Graph();
+
+
     for (; dof != dof_end; ++dof)
     {
-        Index row_id = dof->first;
-        const Real bc_value  = dof->second;
+        const Index row_id = dof->first;
+        const Real bc_value = dof->second;
 
-        const Real mat_value = matrix(row_id,row_id);
+        int NumIndices;
+        int *Indices;
+        graph.ExtractGlobalRowView(row_id, NumIndices, Indices);
 
-
-        // set the matrix in write mode
-        matrix.resume_fill();
-
-
-        // set the selected row to 0.0
-        matrix.clear_row(row_id);
+        int NumEntries;
+        double *Values;
+        matrix.ExtractGlobalRowView(row_id, NumEntries, Values);
 
 
-        // set the diagonal element corresponding to the entry
-        // (row_id,row_id) to mat_value
-        matrix.add_entry(row_id, row_id, mat_value);
+        Real mat_value;
+        for(int i=0; i<NumEntries; ++i)
+        	if (Indices[i] != row_id)
+        		Values[i] = 0.;
+        	else mat_value = Values[i];
 
-
-        // communicate the matrix values to the different processors
-        matrix.fill_complete();
-
-        rhs(row_id) = bc_value * mat_value;
-        solution(row_id) = bc_value;
+        rhs[row_id] = bc_value * mat_value;
+        solution[row_id] = bc_value;
     }
 }
 
@@ -124,7 +122,7 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
                               rhs.get_petsc_vector());
 
     // Communicate the matrix values to the different processors.
-    matrix.fill_complete();
+    matrix.FillComplete();
 
 }
 #endif //#ifdef USE_PETSC

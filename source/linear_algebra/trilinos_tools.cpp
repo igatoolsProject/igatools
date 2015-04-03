@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
+#if 0
 #include <igatools/linear_algebra/trilinos_tools.h>
 
 
@@ -400,3 +400,4 @@ template class TrilinosTools<TrilinosImpl::epetra>;
 IGA_NAMESPACE_CLOSE
 
 
+#endif
