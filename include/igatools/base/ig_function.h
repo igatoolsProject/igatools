@@ -23,7 +23,7 @@
 
 #include <igatools/base/function.h>
 #include <igatools/basis_functions/spline_space.h>
-#include <igatools/linear_algebra/epetra.h>
+#include <igatools/linear_algebra/epetra_vector.h>
 
 IGA_NAMESPACE_OPEN
 

@@ -21,13 +21,14 @@
 #ifndef SPACE_TOOLS_H_
 #define SPACE_TOOLS_H_
 
-#include <igatools/base/function.h>
+//#include <igatools/base/function.h>
 #include <igatools/base/ig_function.h>
 
 #include <igatools/geometry/grid_tools.h>
 
-#include <igatools/linear_algebra/distributed_matrix.h>
-#include <igatools/linear_algebra/linear_solver.h>
+//#include <igatools/linear_algebra/distributed_matrix.h>
+
+#include <igatools/linear_algebra/epetra_solver.h>
 
 #include <igatools/base/sub_function.h>
 
@@ -326,7 +327,7 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
         const auto &coef = proj->get_coefficients();
         const int face_n_dofs = dof_map.size();
         for (Index i = 0; i< face_n_dofs; ++i)
-            boundary_values[dof_map[i]] = coef(i);
+            boundary_values[dof_map[i]] = coef[i];
         //*/
     }
 }

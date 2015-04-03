@@ -45,7 +45,7 @@ void do_test_1_const()
 
     using VecIterator = vector<int>::iterator;
     using VecConstIterator = vector<int>::const_iterator;
-    using VecView = View<VecIterator,VecConstIterator>;
+    using VecView = MView<VecIterator,VecConstIterator>;
     using VecConstView = ConstView<VecIterator,VecConstIterator>;
 
     vector<VecConstView> ranges;
@@ -79,7 +79,7 @@ void do_test_1_nonconst()
 
     using VecIterator = vector<int>::iterator;
     using VecConstIterator = vector<int>::const_iterator;
-    using VecView = View<VecIterator,VecConstIterator>;
+    using VecView = MView<VecIterator,VecConstIterator>;
 
     vector<VecView> ranges;
     ranges.push_back(VecView(v0.begin(),v0.end()));
@@ -117,7 +117,7 @@ void do_test_2()
 
     using ItType_0 = vector<int>::iterator;
     using ConstItType_0 = vector<int>::iterator;
-    using VecView = View<ItType_0,ConstItType_0>;
+    using VecView = MView<ItType_0,ConstItType_0>;
     using VecConstView = ConstView<ItType_0,ConstItType_0>;
 
     vector<VecConstView> ranges_a;

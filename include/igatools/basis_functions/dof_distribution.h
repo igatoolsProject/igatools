@@ -73,7 +73,7 @@ public:
     using DofsConstIterator = ConcatenatedConstIterator<DofsComponentView,DofsComponentConstView>;
 
     /** Type alias for the View on the dofs held by the single-patch space. */
-    using DofsView = View<DofsIterator,DofsConstIterator>;
+    using DofsView = MView<DofsIterator,DofsConstIterator>;
 
     /** Type alias for the ConstView on the dofs held by the single-patch space. */
     using DofsConstView = ConstView<DofsIterator,DofsConstIterator>;

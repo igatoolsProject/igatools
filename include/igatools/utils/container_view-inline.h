@@ -67,8 +67,8 @@ operator=(const ViewData<IteratorType> &view_data)
 
 template <class Iterator,class ConstIterator>
 inline
-View<Iterator,ConstIterator>::
-View(const iterator begin, const iterator end)
+MView<Iterator,ConstIterator>::
+MView(const iterator begin, const iterator end)
     :
     ViewData<Iterator>(begin,end)
 {}
@@ -77,7 +77,7 @@ View(const iterator begin, const iterator end)
 template <class Iterator,class ConstIterator>
 inline
 auto
-View<Iterator,ConstIterator>::
+MView<Iterator,ConstIterator>::
 begin() -> iterator
 {
     return this->begin_;
@@ -86,7 +86,7 @@ begin() -> iterator
 template <class Iterator,class ConstIterator>
 inline
 auto
-View<Iterator,ConstIterator>::
+MView<Iterator,ConstIterator>::
 begin() const -> const_iterator
 {
     return ConstIterator(this->begin_);
@@ -95,7 +95,7 @@ begin() const -> const_iterator
 template <class Iterator,class ConstIterator>
 inline
 auto
-View<Iterator,ConstIterator>::
+MView<Iterator,ConstIterator>::
 cbegin() const -> const_iterator
 {
     return ConstIterator(this->begin_);
@@ -104,7 +104,7 @@ cbegin() const -> const_iterator
 template <class Iterator,class ConstIterator>
 inline
 auto
-View<Iterator,ConstIterator>::
+MView<Iterator,ConstIterator>::
 end() -> iterator
 {
     return this->end_;
@@ -113,7 +113,7 @@ end() -> iterator
 template <class Iterator,class ConstIterator>
 inline
 auto
-View<Iterator,ConstIterator>::
+MView<Iterator,ConstIterator>::
 end() const -> const_iterator
 {
     return ConstIterator(this->end_);
@@ -122,7 +122,7 @@ end() const -> const_iterator
 template <class Iterator,class ConstIterator>
 inline
 auto
-View<Iterator,ConstIterator>::
+MView<Iterator,ConstIterator>::
 cend() const -> const_iterator
 {
     return ConstIterator(this->end_);
@@ -131,7 +131,7 @@ cend() const -> const_iterator
 template <class Iterator,class ConstIterator>
 inline
 auto
-View<Iterator,ConstIterator>::
+MView<Iterator,ConstIterator>::
 operator[](const Index n) -> reference
 {
 #ifndef NDEBUG
@@ -144,7 +144,7 @@ operator[](const Index n) -> reference
 template <class Iterator,class ConstIterator>
 inline
 auto
-View<Iterator,ConstIterator>::
+MView<Iterator,ConstIterator>::
 operator[](const Index n) const -> const reference
 {
 #ifndef NDEBUG
@@ -167,7 +167,7 @@ ConstView(const const_iterator begin, const const_iterator end)
 template <class Iterator,class ConstIterator>
 inline
 ConstView<Iterator,ConstIterator>::
-ConstView(const View<Iterator,ConstIterator> &view)
+ConstView(const MView<Iterator,ConstIterator> &view)
     :
     ViewData<ConstIterator>(view.begin(),view.end())
 {

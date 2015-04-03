@@ -59,6 +59,15 @@ public:
 
     VectorPtr create_vector(MapPtr map);
 
+    template <class SpacePtr>
+    VectorPtr
+	create_vector(SpacePtr space, const std::string &prop)
+    {
+    	Epetra_SerialComm comm;
+    	auto map = EpetraTools::create_map(space, prop, comm);
+    	return EpetraTools::create_vector(map);
+    }
+
 };
 
 IGA_NAMESPACE_CLOSE

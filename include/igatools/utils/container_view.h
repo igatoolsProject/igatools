@@ -94,7 +94,7 @@ protected:
 
 
 template <class Iterator, class ConstIterator>
-class View : public ViewData<Iterator>
+class MView : public ViewData<Iterator>
 {
 public:
     /** Type of the iterator. */
@@ -113,34 +113,34 @@ public:
     /**
      * Default constructor. It does nothing.
      */
-    View() = default;
+    MView() = default;
 
     /**
      * Construct a view defined by the iterator @p begin pointing to the first element,
      * and the iterator @p end pointing to one-past-the-end element
      * satisfying the chosen criteria.
      */
-    explicit View(const iterator begin, const iterator end);
+    explicit MView(const iterator begin, const iterator end);
 
 
     /** Copy constructor. */
-    View(const View<Iterator,ConstIterator> &view) = default;
+    MView(const MView<Iterator,ConstIterator> &view) = default;
 
     /** Move constructor. */
-    View(View<Iterator,ConstIterator> &&view) = default;
+    MView(MView<Iterator,ConstIterator> &&view) = default;
 
     /** Destructor. */
-    ~View() = default;
+    ~MView() = default;
     ///@}
 
     /** @name Assignment operators */
     ///@{
 
     /** Copy assignment operator. */
-    View<Iterator,ConstIterator> &operator=(const View<Iterator,ConstIterator> &view) = default;
+    MView<Iterator,ConstIterator> &operator=(const MView<Iterator,ConstIterator> &view) = default;
 
     /** Move assignment operator. */
-    View<Iterator,ConstIterator> &operator=(View<Iterator,ConstIterator> &&view) = default;
+    MView<Iterator,ConstIterator> &operator=(MView<Iterator,ConstIterator> &&view) = default;
     ///@}
 
     /** @name Dealing with the iterator */
@@ -206,7 +206,7 @@ public:
     /**
      * Construct a ConstView from a View.
      */
-    explicit ConstView(const View<Iterator,ConstIterator> &view);
+    explicit ConstView(const MView<Iterator,ConstIterator> &view);
 
     /** Copy constructor. */
     ConstView(const ConstView<Iterator,ConstIterator> &view) = default;
@@ -291,10 +291,10 @@ public:
  * @date 2014
  */
 template <class Container>
-class ContainerView : public View<typename Container::iterator,typename Container::const_iterator>
+class ContainerView : public MView<typename Container::iterator,typename Container::const_iterator>
 {
 public:
-    using View<typename Container::iterator,typename Container::const_iterator>::View;
+    using MView<typename Container::iterator,typename Container::const_iterator>::MView;
 //  ContainerView(const ContainerView<Container> &view) = default;
 //  ContainerView(ContainerView<Container> &&view) = default;
 };

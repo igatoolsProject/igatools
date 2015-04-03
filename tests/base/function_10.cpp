@@ -45,10 +45,13 @@ void test()
     auto grid = CartesianGrid<dim>::create(3);
     const int deg = 1;
     auto space = Space::create(deg, grid);
-    using CoeffType = typename Function::CoeffType;
-    CoeffType coeff(*space, DofProperties::active);
-    coeff[0] = 1.;
-    auto F = Function::create(space, coeff);
+
+    Epetra_SerialComm comm;
+    auto map = EpetraTools::create_map(space, "active", comm);
+    auto coeff = EpetraTools::create_vector(map);
+    (*coeff)[0] = 1.;
+
+    auto F = Function::create(space, *coeff);
     F->reset(flag, quad);
 
     auto elem = F->begin();

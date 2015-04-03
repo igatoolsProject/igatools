@@ -28,13 +28,15 @@
  */
 
 #include "../tests.h"
+#include <igatools/basis_functions/space_tools.h>
+#include <igatools/linear_algebra/dof_tools.h>
+
 #include "common_functions.h"
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
-#include <igatools/basis_functions/space_tools.h>
-#include <igatools/linear_algebra/dof_tools.h>
+
 
 #include <igatools/base/identity_function.h>
 

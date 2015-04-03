@@ -62,6 +62,8 @@ Vector::get_local_coeffs(const std::vector<Index> &global_ids) const
 	return local_coefs;
 }
 
+
+
 void Vector::print_info(LogStream &out) const
 {
 	using std::endl;
@@ -77,12 +79,13 @@ void Vector::print_info(LogStream &out) const
 	out << "-----------------------------" << endl;
 }
 
+
+
 VectorPtr
 create_vector(MapPtr map)
 {
 	return std::make_shared<Vector>(*map);
 }
-
 
 };
 

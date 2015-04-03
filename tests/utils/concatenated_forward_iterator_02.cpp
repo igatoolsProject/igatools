@@ -46,7 +46,7 @@ do_test_1()
     using DMA = DynamicMultiArray<Index,dim>;
     using VecIt = typename DMA::iterator;
     using VecConstIt = typename DMA::const_iterator;
-    using VecView = View<VecIt,VecConstIt>;
+    using VecView = MView<VecIt,VecConstIt>;
     using VecConstView = ConstView<VecIt,VecConstIt>;
 
     vector<VecConstView> ranges;
@@ -109,7 +109,7 @@ do_test_2()
     using DMA = DynamicMultiArray<Index,dim>;
     using VecIt = typename vector<Index>::iterator;
     using VecConstIt = typename vector<Index>::const_iterator;
-    using VecView = View<VecIt,VecConstIt>;
+    using VecView = MView<VecIt,VecConstIt>;
     using VecConstView = ConstView<VecIt,VecConstIt>;
 
     vector<VecConstView> ranges;
