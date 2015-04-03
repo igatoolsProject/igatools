@@ -36,6 +36,7 @@
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/basis_functions/phys_space_element_handler.h>
 
+using namespace EpetraTools;
 
 template<int dim, int codim=0>
 auto
@@ -44,7 +45,10 @@ create_function(shared_ptr<BSplineSpace<dim, dim + codim>> space)
     using Space = ReferenceSpace<dim, dim + codim>;
     using Function = IgFunction<Space>;
 
-    vector<Real> control_pts(space->get_num_basis());
+    Epetra_SerialComm comm;
+    auto map = create_map(space, "active", comm);
+    Vector control_pts(*map);
+
     if (dim == 1)
     {
         int id = 0 ;
@@ -107,7 +111,7 @@ create_function(shared_ptr<BSplineSpace<dim, dim + codim>> space)
 
     }
 
-    return Function::create(space, IgCoefficients(*space,DofProperties::active,control_pts));
+    return Function::create(space, control_pts);
 }
 
 
@@ -118,7 +122,7 @@ void elem_values(const int n_knots = 2, const int deg=1)
     OUTSTART
     const int k = dim;
     using BspSpace = BSplineSpace<dim, range, rank>;
-    using RefSpace = ReferenceSpace<dim, range,rank>;
+
     using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
     using ElementHandler = typename Space::ElementHandler;
 

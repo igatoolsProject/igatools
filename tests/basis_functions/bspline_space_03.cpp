@@ -31,7 +31,7 @@
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/base/ig_function.h>
-#include <igatools/linear_algebra/distributed_matrix.h>
+#include <igatools/linear_algebra/epetra_matrix.h>
 
 
 template<int dim, int codim=0>
@@ -40,7 +40,10 @@ void using_const_space(shared_ptr<IgFunction<ReferenceSpace<dim>>> fun)
     OUTSTART
 
     auto space = fun->get_ig_space();
-    Matrix<LAPack::trilinos_tpetra> matrix(*build_space_manager_single_patch<const ReferenceSpace<dim>>(space));
+    Epetra_SerialComm comm;
+    auto map = EpetraTools::create_map(space, "active", comm);
+    auto graph = EpetraTools::create_graph(space, "active", space, "active", map, map);
+    auto matrix = EpetraTools::create_matrix(graph);
 
     OUTEND
 }
@@ -56,9 +59,9 @@ int main()
     auto grid = CartesianGrid<dim>::create(5);
     auto space = Space::create(1, grid);
 
+    auto coeff = EpetraTools::create_vector(space, "active");
 
-    auto fun = IgFunction<ReferenceSpace<dim>>::create(space,
-                                                       IgCoefficients(*space,DofProperties::active));
+    auto fun = IgFunction<ReferenceSpace<dim>>::create(space, *coeff);
 
     using_const_space<2>(fun);
 

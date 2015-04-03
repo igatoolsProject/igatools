@@ -24,6 +24,8 @@
 #include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 
+using namespace EpetraTools;
+
 template< int dim, int range, int rank = 1>
 void do_test()
 {
@@ -77,8 +79,12 @@ void do_test()
     using ScalarBSplineSpace = BSplineSpace<dim>;
     using WeightFunc = IgFunction<ReferenceSpace<dim>>;
     auto scalar_space = ScalarBSplineSpace::create(degree,CartesianGrid<dim>::create(coord));
+
+    Epetra_SerialComm comm;
+    auto map = create_map(scalar_space, "active", comm);
     auto w_func = WeightFunc::create(scalar_space,
-                                     IgCoefficients(*scalar_space,DofProperties::active,weights));
+                                         IgCoefficients(Copy, *map, weights.data()));
+
 
     using WeightFuncPtrTable = typename Space::WeightFunctionPtrTable;
     auto w_funcs_table = WeightFuncPtrTable(w_func);

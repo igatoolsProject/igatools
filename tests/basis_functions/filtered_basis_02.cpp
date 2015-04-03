@@ -33,12 +33,12 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
-#include <igatools/linear_algebra/distributed_matrix.h>
-#include <igatools/linear_algebra/distributed_vector.h>
-#include <igatools/linear_algebra/linear_solver.h>
+#include <igatools/linear_algebra/epetra_solver.h>
 #include <igatools/base/identity_function.h>
 #include <igatools/base/ig_function.h>
 #include <igatools/io/writer.h>
+
+using namespace EpetraTools;
 
 struct DofProp
 {
@@ -50,11 +50,6 @@ struct DofProp
 const std::string DofProp::interior = "interior";
 const std::string DofProp::dirichlet  = "dirichlet";
 const std::string DofProp::neumman  = "neumman";
-
-static const LAPack la_pack = LAPack::trilinos_epetra;
-using Mat = Matrix<la_pack>;
-using Vec = Vector<la_pack>;
-
 
 
 template<int dim, int range = 1, int rank = 1>
@@ -81,15 +76,15 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
     auto elem = space->begin();
     auto end  = space->end();
 
-    auto space_manager =
-        build_space_manager_single_patch<RefSpace>(space, DofProp::interior);
-    auto matrix   = Mat::create(*space_manager);
-    const auto dofs_set = space_manager->get_row_dofs();
-//    const vector<Index> dofs_vec(dofs_set.begin(),dofs_set.end());
-    auto vec      = Vec::create(dofs_set);
-    auto solution     = Vec::create(dofs_set);
+    Epetra_SerialComm comm;
+    auto map = create_map(space, "active", comm);
+    auto graph = create_graph(space, "active", space, "active", map, map);
+
+    auto matrix = create_matrix(graph);
+    auto rhs = create_vector(map);
+    auto solution = create_vector(map);
     matrix->print_info(out);
-    vec->print_info(out);
+    rhs->print_info(out);
 
     auto elem_handler = space->create_elem_handler();
     auto flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::w_measure;
@@ -131,27 +126,25 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
 
         const auto loc_dofs = elem->get_local_to_global(DofProp::interior);
         matrix->add_block(loc_dofs, loc_dofs, loc_mat);
-        vec->add_block(loc_dofs, loc_rhs);
+        rhs->add_block(loc_dofs, loc_rhs);
     }
 
     matrix->FillComplete();
     matrix->print_info(out);
-    vec->print_info(out);
+    rhs->print_info(out);
 
-    using LinSolver = LinearSolverIterative<la_pack>;
-    LinSolver solver(LinSolver::SolverType::CG);
-    solver.solve(*matrix, *vec, *solution);
+    auto solver = create_solver(matrix, solution, rhs);
+    solver->solve();
+
+    solution->print_info(out);
 
     const int n_plot_points = 4;
-    auto map = IdentityFunction<dim>::create(space->get_grid());
-    Writer<dim> writer(map, n_plot_points);
-
+    auto map1 = IdentityFunction<dim>::create(space->get_grid());
+    Writer<dim> writer(map1, n_plot_points);
     using IgFunc = IgFunction<RefSpace>;
-    auto solution_function = IgFunc::create(space,solution->as_ig_fun_coefficients(),
-                                            DofProp::interior);
-
+    auto solution_function = IgFunc::create(space, *solution, DofProp::interior);
     writer.template add_field<1,1>(solution_function, "solution");
-    string filename = "poisson_problem-" + to_string(dim) + "d" ;
+    string filename = "poisson_problem-" + to_string(deg) + "-" + to_string(dim) + "d" ;
     writer.save(filename);
 
     OUTEND
