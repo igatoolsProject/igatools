@@ -23,6 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/linear_algebra/epetra_graph.h>
+#include <igatools/linear_algebra/dense_matrix.h>
 #include <Epetra_CrsMatrix.h>
 
 IGA_NAMESPACE_OPEN
@@ -50,10 +51,7 @@ using MatrixPtr = std::shared_ptr<Matrix>;
  * Creates a pointer to the matrix
  */
 MatrixPtr
-create_matrix(GraphPtr graph)
-{
-	return std::make_shared<Matrix>(Epetra_DataAccess::Copy, *graph);
-}
+create_matrix(GraphPtr graph);
 
 };
 

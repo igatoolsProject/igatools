@@ -18,15 +18,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __MATRIX_MAP_H_
-#define __MATRIX_MAP_H_
+#ifndef __EPETRA_GRAPH_H_
+#define __EPETRA_GRAPH_H_
 
 #include <igatools/base/config.h>
+
 #include <igatools/linear_algebra/epetra_map.h>
 
-#include <igatools/linear_algebra/dense_vector.h>
-#include <igatools/linear_algebra/dense_matrix.h>
-#include <igatools/utils/vector.h>
+//#include <igatools/utils/vector.h>
 
 #include <Epetra_CrsGraph.h>
 

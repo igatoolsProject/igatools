@@ -23,7 +23,6 @@
 
 #include <igatools/base/config.h>
 #include <igatools/linear_algebra/epetra_map.h>
-
 #include <igatools/linear_algebra/dense_vector.h>
 #include <igatools/utils/vector.h>
 
