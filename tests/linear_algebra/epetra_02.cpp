@@ -113,9 +113,9 @@ void matrix_map(const int deg, const int n_knots)
 			ExcMessage("No convergence."));
 	out << solver->getNumIters() << endl;
 
-	matrix->Print(out.get_file_stream());
-	vector->Print(out.get_file_stream());
-	sol->Print(out.get_file_stream());
+	matrix->print_info(out);
+	vector->print_info(out);
+	sol->print_info(out);
 
 	OUTEND
 }

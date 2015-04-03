@@ -54,8 +54,22 @@ public:
         const int    *Indices   = vec_id.data();
 
         Epetra_Vector::SumIntoGlobalValues(NumEntries, Values, Indices);
-
     }
+
+    void print_info(LogStream &out) const
+    {
+    	out << "-----------------------------" << endl;
+
+        const Index n_entries = GlobalLength();
+        const auto &map = Map();
+        out << "Global_ID        Value" << endl;
+
+        for (Index i = 0 ; i < n_entries ; ++i)
+        	out << map.GID(i) << "        " << (*this)[i] << std::endl ;
+
+        out << "-----------------------------" << endl;
+    }
+
 };
 
 
@@ -77,6 +91,42 @@ public:
             SumIntoGlobalValues(rows_id[i], n_cols, i_row_data, cols_id.data());
         }
     }
+
+    void print_info(LogStream &out) const
+    {
+    	const auto n_rows = NumGlobalRows();
+
+
+    	out << "-----------------------------" << std::endl;
+
+    	out << "Num. rows    = " << NumGlobalCols() << std::endl;
+    	out << "Num. cols    = " << NumGlobalRows() << std::endl;
+    	out << "Num. entries = " << NumGlobalNonzeros() << std::endl;
+    	out << std::endl;
+    	out << "Row Index        Col Index        Value" << std::endl;
+
+    	for (Index local_row = 0 ; local_row < n_rows; ++local_row)
+    	{
+    		const auto &graph = Graph();
+    		const auto &row_map = graph.RowMap();
+
+    		const auto global_row = row_map.GID(local_row);
+
+    		Index n_entries_row = NumGlobalEntries(global_row);
+    		vector<Real> values(n_entries_row);
+    		vector<Index> columns_id(n_entries_row);
+
+    		Index nnz = 0;
+    		ExtractGlobalRowCopy(global_row,n_entries_row,nnz,values.data(),columns_id.data());
+
+    		for (Index i = 0 ; i < n_entries_row ; ++i)
+    			out << global_row << "       "
+				<< columns_id[i] << "        "
+				<< values[i] << std::endl;
+    	}
+    	out << "-----------------------------" << std::endl;
+    }
+
 };
 
     using Comm = Epetra_Comm;
