@@ -29,10 +29,12 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
-#include <igatools/linear_algebra/distributed_vector.h>
+#include <igatools/linear_algebra/epetra_vector.h>
 #include <igatools/linear_algebra/dof_tools.h>
 
-template<LAPack la_pack, int dim, int range, int rank =  1>
+using namespace EpetraTools;
+
+template<int dim, int range, int rank =  1>
 void evaluate_field(const int deg = 1)
 {
     OUTSTART
@@ -43,22 +45,25 @@ void evaluate_field(const int deg = 1)
     using ElementHandler = typename Space::ElementHandler;
 
     auto space = Space::create(deg, grid);
+    const auto  num = space->get_num_basis();
+       Epetra_SerialComm comm;
+       Epetra_Map map(num, num, 0, comm);
 
-    Vector<la_pack> u(space->get_num_basis());
-    {
-        int id = 0 ;
-        u(id++) = 0.0 ;
-        u(id++) = 1.0 ;
+       Vector u(map);
+       {
+           int id = 0 ;
+           u[id++] = 0.0 ;
+           u[id++] = 1.0 ;
 
-        u(id++) = 0.0 ;
-        u(id++) = 1.0 ;
+           u[id++] = 0.0 ;
+           u[id++] = 1.0 ;
 
-        u(id++) = 0.0 ;
-        u(id++) = 0.0 ;
+           u[id++] = 0.0 ;
+           u[id++] = 0.0 ;
 
-        u(id++) = 1.0 ;
-        u(id++) = 1.0 ;
-    }
+           u[id++] = 1.0 ;
+           u[id++] = 1.0 ;
+       }
 
     QGauss<dim> quad(2) ;
     const auto flag = ValueFlags::value|ValueFlags::gradient;
@@ -70,7 +75,7 @@ void evaluate_field(const int deg = 1)
     cache1->fill_element_cache(elem);
 
     const auto elem_dofs = elem->get_local_to_global(DofProperties::active);
-    const auto &loc_coef = u.get_local_coefs(std::set<Index>(elem_dofs.begin(),elem_dofs.end()));
+    const auto &loc_coef = u.get_local_coeffs(elem_dofs);
     elem->template linear_combination<0,dim>(loc_coef,0,DofProperties::active).print_info(out);
     out << endl;
     elem->template linear_combination<1,dim>(loc_coef,0,DofProperties::active).print_info(out);
@@ -84,30 +89,20 @@ int main()
 {
     out.depth_console(10);
 
-#if defined(USE_TRILINOS)
-    const auto la_pack_tpetra = LAPack::trilinos_tpetra;
+    //const auto la_pack_tpetra = LAPack::trilinos_tpetra;
     out.begin_item("Using Trilinos/TPetra:");
-    evaluate_field<la_pack_tpetra,2,2>();
-    evaluate_field<la_pack_tpetra,3,3>();
+    evaluate_field<2,2>();
+    evaluate_field<3,3>();
     out.end_item();
 
 
-    const auto la_pack_epetra = LAPack::trilinos_epetra;
+    //const auto la_pack_epetra = LAPack::trilinos_epetra;
     out.begin_item("Using Trilinos/EPetra:");
-    evaluate_field<la_pack_epetra,2,2>();
-    evaluate_field<la_pack_epetra,3,3>();
+    evaluate_field<2,2>();
+    evaluate_field<3,3>();
     out.end_item();
 
-#elif defined(USE_PETSC)
-    const auto la_pack = LAPack::petsc;
 
-    const auto la_pack_petsc = LAPack::petsc;
-    out.begin_item("Using PETSc:");
-    evaluate_field<la_pack_petsc,2,2>();
-    evaluate_field<la_pack_petsc,3,3>();
-    out.end_item();
-
-#endif
 
 
     return 0;

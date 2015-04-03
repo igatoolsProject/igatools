@@ -247,21 +247,9 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
     auto result = solver->solve();
     AssertThrow(result == Belos::ReturnType::Converged,
     		ExcMessage("No convergence."));
-//    const Real tol = 1.0e-15;
-//    const int max_iter = 1000;
-//    using LinSolver = LinearSolverIterative<la_pack>;
-//    LinSolver solver(LinSolver::SolverType::CG,
-//                     LinSolver::PreconditionerType::ILU0,
-//                     tol,max_iter);
-//    solver.solve(matrix, rhs, sol);
 
-    //const auto &dofs = space->get_dof_distribution()->get_dofs_id_same_property(dofs_property);
-
-
-    return ProjFunc::create(
-               std::const_pointer_cast<Space>(space),
-               *sol,
-               dofs_property);
+    return ProjFunc::create(std::const_pointer_cast<Space>(space),
+    		*sol, dofs_property);
 }
 
 
@@ -277,7 +265,7 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
  * for this degree of freedom.
  *
  */
-template<class Space, LAPack la_pack = LAPack::trilinos_tpetra>
+template<class Space>
 void
 project_boundary_values(const std::shared_ptr<const typename Space::Func> function,
                         std::shared_ptr<const Space> space,
@@ -322,13 +310,12 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
         auto sub_space = space->template get_sub_space<sub_dim>(s_id, dof_map, sub_grid, elem_map);
         auto sub_func = SubFunc::create(sub_grid, function, s_id, *elem_map);
 
-        auto proj = projection_l2<SubSpace,la_pack>(sub_func, sub_space, quad);
+        auto proj = projection_l2<SubSpace>(sub_func, sub_space, quad);
 
         const auto &coef = proj->get_coefficients();
         const int face_n_dofs = dof_map.size();
         for (Index i = 0; i< face_n_dofs; ++i)
             boundary_values[dof_map[i]] = coef[i];
-        //*/
     }
 }
 

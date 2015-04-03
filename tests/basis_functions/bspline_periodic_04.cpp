@@ -34,13 +34,8 @@
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/linear_algebra/dense_matrix.h>
-#include <igatools/linear_algebra/dense_vector.h>
 
-#include <igatools/linear_algebra/distributed_matrix.h>
-#include <igatools/linear_algebra/distributed_vector.h>
-
-#include <igatools/linear_algebra/linear_solver.h>
+#include <igatools/linear_algebra/epetra_solver.h>
 #include <igatools/io/writer.h>
 #include <igatools/base/identity_function.h>
 #include <igatools/base/ig_function.h>
@@ -51,6 +46,9 @@
 using space_tools::project_boundary_values;
 using dof_tools::apply_boundary_values;
 using functions::ConstantFunction;
+
+using namespace EpetraTools;
+
 template <int dim>
 void assemble_matrix(const int n_knots, const int deg)
 {
@@ -88,14 +86,13 @@ void assemble_matrix(const int n_knots, const int deg)
 
     auto f = ConstFunction::create(grid, IdentityFunction<dim>::create(grid), A, b);
 
-    using Mat = Matrix<LAPack::trilinos_epetra>;
-    using Vec = Vector<LAPack::trilinos_epetra>;
+    Epetra_SerialComm comm;
+    auto map = create_map(space, "active", comm);
+    auto graph = create_graph(space, "active", space, "active", map, map);
 
-    const auto n_basis = space->get_num_basis();
-    auto space_manager = build_space_manager_single_patch<RefSpace>(space);
-    auto matrix   = Mat::create(*space_manager);
-    auto rhs      = Vec::create(n_basis);
-    auto solution = Vec::create(n_basis);
+    auto matrix = create_matrix(graph);
+    auto rhs = create_vector(map);
+    auto solution = create_vector(map);
 
     const QGauss<dim>  elem_quad(deg);
     auto elem_handler = space->create_elem_handler();
@@ -163,7 +160,7 @@ void assemble_matrix(const int n_knots, const int deg)
     const std::set<boundary_id> dir_id {0};
     std::map<Index, Real> values;
     // TODO (pauletti, Mar 9, 2015): parametrize with dimension
-    project_boundary_values<RefSpace,LAPack::trilinos_epetra>(
+    project_boundary_values<RefSpace>(
         const_pointer_cast<const Function>(g),
         space,
         face_quad,
@@ -174,26 +171,17 @@ void assemble_matrix(const int n_knots, const int deg)
     matrix->print_info(out);
 
 
-
-    using LinSolver = LinearSolverIterative<LAPack::trilinos_epetra>;
-    LinSolver solver(LinSolver::SolverType::CG);
-    solver.solve(*matrix, *rhs, *solution);
+    auto solver = create_solver(matrix, solution, vector);
+    auto result = solver->solve();
 
     const int n_plot_points = deg+1;
-    auto map = IdentityFunction<dim>::create(space->get_grid());
-    Writer<dim> writer(map, n_plot_points);
+    auto map1 = IdentityFunction<dim>::create(space->get_grid());
+    Writer<dim> writer(map1, n_plot_points);
 
-
-    // TODO (pauletti, Mar 9, 2015): this should be perform by
-    // the space to linear algebra manager
-    const int n_coefs = space->get_num_basis();
-    iga::vector<Real> solution_coefs(n_coefs);
-    for (int i = 0 ; i < n_coefs ; ++i)
-        solution_coefs[i] = (*solution)(i);
 
     using IgFunc = IgFunction<RefSpace>;
-    auto solution_function = IgFunc::create(space,
-                                            IgCoefficients(*space,DofProperties::active,solution_coefs));
+    auto solution_function = IgFunc::create(space, *solution);
+
     writer.template add_field<1,1>(solution_function, "solution");
     string filename = "poisson_problem-" + to_string(deg) + "-" + to_string(dim) + "d" ;
     writer.save(filename);

@@ -19,21 +19,25 @@
 //-+--------------------------------------------------------------------
 /*
  *  Test for the bspline element iterator
- *  Computes values and derivatives of the basis functions without the use of the cache.
+ *  Computes values and derivatives of the basis functions without the use of
+ *  the cache.
  *  This test computes the same quantities of bspline_element_iterator_03.cpp
  *
  *  author: martinelli
  *  date: May 08, 2013
  *
  */
-
+//TODO (pauletti, Apr 3, 2015): rename to bspline_element_iterato_??
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
-#include <igatools/linear_algebra/distributed_vector.h>
+//#include <igatools/linear_algebra/distributed_vector.h>
+#include <igatools/linear_algebra/epetra_vector.h>
 #include <igatools/linear_algebra/dof_tools.h>
+
+using namespace EpetraTools;
 
 template< int dim_domain, int dim_range >
 void do_test()
@@ -45,37 +49,31 @@ void do_test()
     using Space = BSplineSpace< dim_domain, dim_range, rank >;
     auto space = Space::create(degree, grid);
 
-#if defined(USE_TRILINOS)
-    const auto la_pack = LAPack::trilinos_epetra;
-#elif defined(USE_PETSC)
-    const auto la_pack = LAPack::petsc;
-#endif
-    Vector<la_pack> u(space->get_num_basis());
+    const auto  num = space->get_num_basis();
+    Epetra_SerialComm comm;
+    Epetra_Map map(num, num, 0, comm);
+
+    Vector u(map);
     {
         int id = 0 ;
-        u(id++) = 0.0 ;
-        u(id++) = 1.0 ;
+        u[id++] = 0.0 ;
+        u[id++] = 1.0 ;
 
-        u(id++) = 0.0 ;
-        u(id++) = 1.0 ;
+        u[id++] = 0.0 ;
+        u[id++] = 1.0 ;
 
-        u(id++) = 0.0 ;
-        u(id++) = 0.0 ;
+        u[id++] = 0.0 ;
+        u[id++] = 0.0 ;
 
-        u(id++) = 1.0 ;
-        u(id++) = 1.0 ;
+        u[id++] = 1.0 ;
+        u[id++] = 1.0 ;
     }
 
     QGauss< dim_domain > quad_scheme_1(2) ;
 //    const auto eval_points_1 = quad_scheme_1.get_points();
 
     auto element1 = space->begin();
-#if 0
-    auto u_values = element1->evaluate_field_values_at_points(
-                        u.get_local_coefs(element1->get_local_to_global()),
-                        eval_points_1);
-    u_values.print_info(out);
-#endif
+
     out.begin_item("Basis values using QGauss<" + std::to_string(dim_domain) + "> with 2 points in each coordinate direction.");
     auto values1 = element1->evaluate_basis_values_at_points(quad_scheme_1,DofProperties::active);
     values1.print_info(out);
@@ -98,12 +96,7 @@ void do_test()
     gradients2.print_info(out);
     out.end_item();
 
-#if 0
-    u_values = element1->evaluate_field_values_at_points(
-                   u.get_local_coefs(element1->get_local_to_global()),
-                   eval_points_2);
-    u_values.print_info(out);
-#endif
+
 
 }
 
