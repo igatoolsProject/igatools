@@ -42,11 +42,11 @@
 
 
 
-template<int dim , int codim, int range ,int rank, LAPack la_pack>
+template<int dim , int codim, int range ,int rank>
 void do_test(const int p, const int num_knots = 10)
 {
     const int sub_dim = dim - 1;
-    using RefSpace = ReferenceSpace<dim,range,rank>;
+
     using BspSpace = BSplineSpace<dim,range,rank>;
     using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 
@@ -70,7 +70,7 @@ void do_test(const int p, const int num_knots = 10)
 
 
     std::map<Index,Real> boundary_values;
-    space_tools::project_boundary_values<Space,la_pack>(
+    space_tools::project_boundary_values<Space>(
         f, space, quad, bdry_ids,
         boundary_values);
 
@@ -84,14 +84,9 @@ void do_test(const int p, const int num_knots = 10)
 
 int main()
 {
-#if defined(USE_TRILINOS)
-    const auto la_pack = LAPack::trilinos_epetra;
-#elif defined(USE_PETSC)
-    const auto la_pack = LAPack::petsc;
-#endif
-    out.depth_console(20);
 
-    do_test<2, 0, 1, 1, la_pack>(3);
+
+    do_test<2, 0, 1, 1>(3);
 
     //do_test<3,3,1,1>(3);
 

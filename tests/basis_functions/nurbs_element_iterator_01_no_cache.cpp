@@ -24,6 +24,7 @@
 #include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/nurbs_element.h>
 
+using namespace EpetraTools;
 /*
  *  Test for the NURBS space iterator using the no cache evaluations
  *
@@ -54,12 +55,14 @@ void test()
 
     using WeightFunc = IgFunction<ReferenceSpace<dim,1,1>>;
     vector<Real> weights_coef(n_scalar_basis.flat_size(),1.0);
-    auto weight_function = std::shared_ptr<WeightFunc>(
-                               new WeightFunc(scalar_bsp_space,
-                                              IgCoefficients(*scalar_bsp_space,DofProperties::active,weights_coef)));
 
-    auto space = Space::create(bsp_space,weight_function);
+    Epetra_SerialComm comm;
+    auto map = create_map(scalar_bsp_space, "active", comm);
 
+    auto w_func = WeightFunc::create(scalar_bsp_space,
+    		IgCoefficients(Copy, *map, weights_coef.data()));
+
+    auto space = Space::create(bsp_space,w_func);
 
     //----------------------------------------------------------------------------------------------
     // for the basis functions evaluation we need a set of points (with tensor product structure)
