@@ -108,8 +108,8 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
             loc_mat = 0.;
             loc_rhs = 0.;
 
-            auto f_at_qp = f_elem->template get_values<0,dim>(0);
-            auto phi = elem->get_element_values(dofs_property);
+            auto f_at_qp = f_elem->template get_values<_Value,dim>(0);
+            auto phi = elem->template get_basis_element<_Value>(dofs_property);
 
             // computing the upper triangular part of the local matrix
             auto w_meas = elem->get_element_w_measures();
@@ -210,11 +210,11 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
             quad_in_func_elem.dilate(one_div_f_elem_size);
 
 
-            auto f_at_qp = f_elem->evaluate_values_at_points(quad_in_func_elem);
+            auto f_at_qp = f_elem->template evaluate_at_points<_Value>(quad_in_func_elem);
             //---------------------------------------------------------------------------
 
 
-            auto phi = elem->get_element_values(dofs_property);
+            auto phi = elem->template get_basis_element<_Value>(dofs_property);
 
             // computing the upper triangular part of the local matrix
 //            auto w_meas = elem->template get_w_measures<dim>(0);
@@ -401,8 +401,8 @@ void norm_difference(Function<dim, codim, range, rank> &f,
 
         const int elem_id = elem_f->get_flat_index();
 
-        auto f_val = elem_f->template get_values<order,dim>(0);
-        auto g_val = elem_g->template get_values<order,dim>(0);
+        auto f_val = elem_f->template get_values<ValueType<order>,dim>(0);
+        auto g_val = elem_g->template get_values<ValueType<order>,dim>(0);
         auto w_meas = elem_f->template get_w_measures<dim>(0);
 
         Real elem_diff_pow_p = 0.0;

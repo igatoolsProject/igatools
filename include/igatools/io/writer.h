@@ -386,7 +386,7 @@ add_field(shared_ptr<const Function<dim, codim, range, rank>> function,
         {
             func->fill_cache(f_elem,topology,0);
 
-            const auto &field_values = f_elem->template get_values<0,dim>(0);
+            const auto &field_values = f_elem->template get_values<_Value,dim>(0);
 
             for (int iPt = 0; iPt < n_pts_per_elem; ++iPt)
                 data[pos++] = field_values[iPt][0];
@@ -402,7 +402,7 @@ add_field(shared_ptr<const Function<dim, codim, range, rank>> function,
         {
             func->fill_cache(f_elem,topology,0);
 
-            const auto &field_values = f_elem->template get_values<0,dim>(0);
+            const auto &field_values = f_elem->template get_values<_Value,dim>(0);
 
             for (int iPt = 0; iPt < n_pts_per_elem; ++iPt)
             {
@@ -425,7 +425,7 @@ add_field(shared_ptr<const Function<dim, codim, range, rank>> function,
             Assert(true, ExcMessage(" fix next line "));
             func->fill_cache(f_elem,topology,0);
 
-            const auto &field_values = f_elem->template get_values<0,dim>(0);
+            const auto &field_values = f_elem->template get_values<_Value,dim>(0);
 
             for (int iPt = 0; iPt < n_pts_per_elem; ++iPt)
             {

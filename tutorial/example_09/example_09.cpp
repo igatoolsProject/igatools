@@ -128,7 +128,7 @@ void PoissonProblem<dim>::assemble()
     auto elem_handler = space->create_elem_handler();
 
     auto flag = ValueFlags::value | ValueFlags::gradient |
-            ValueFlags::w_measure;
+                ValueFlags::w_measure;
 
     elem_handler->reset(flag, elem_quad);
 
@@ -154,8 +154,8 @@ void PoissonProblem<dim>::assemble()
         loc_rhs = 0.0;
 
         elem_handler->fill_element_cache(elem);
-        auto phi = elem->template get_values<0, dim>(0,DofProperties::active);
-        auto grad_phi  = elem->template get_values<1, dim>(0,DofProperties::active);
+        auto phi = elem->template get_basis<_Value, dim>(0,DofProperties::active);
+        auto grad_phi  = elem->template get_basis<_Gradient, dim>(0,DofProperties::active);
         auto w_meas = elem->template get_w_measures<dim>(0);
 
         f->fill_element_cache(f_elem);
@@ -169,14 +169,14 @@ void PoissonProblem<dim>::assemble()
                 auto grad_phi_j = grad_phi.get_function_view(j);
                 for (int qp = 0; qp < n_qp; ++qp)
                     loc_mat(i,j) +=
-                            scalar_product(grad_phi_i[qp], grad_phi_j[qp])
-                            * w_meas[qp];
+                        scalar_product(grad_phi_i[qp], grad_phi_j[qp])
+                        * w_meas[qp];
             }
             auto phi_i = phi.get_function_view(i);
 
             for (int qp=0; qp<n_qp; ++qp)
                 loc_rhs(i) += scalar_product(phi_i[qp], f_values[qp])
-                * w_meas[qp];
+                              * w_meas[qp];
         }
 
         const auto loc_dofs = elem->get_local_to_global(DofProperties::active);
@@ -188,19 +188,19 @@ void PoissonProblem<dim>::assemble()
 
     // [dirichlet constraint]
 
-        auto g = ConstFunction::
-        create(grid, IdentityFunction<dim>::create(grid), {0.});
+    auto g = ConstFunction::
+             create(grid, IdentityFunction<dim>::create(grid), {0.});
 
 
     const set<boundary_id> dir_id {0};
     std::map<Index, Real> values;
     // TODO (pauletti, Mar 9, 2015): parametrize with dimension
     project_boundary_values<Space,la_pack>(
-            const_pointer_cast<const Function>(g),
-            space,
-            face_quad,
-            dir_id,
-            values);
+        const_pointer_cast<const Function>(g),
+        space,
+        face_quad,
+        dir_id,
+        values);
     apply_boundary_values(values, *matrix, *rhs, *solution);
     // [dirichlet constraint]
 

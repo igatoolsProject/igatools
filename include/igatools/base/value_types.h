@@ -23,6 +23,10 @@
 
 #include <igatools/base/config.h>
 
+#include <boost/mpl/map.hpp>
+#include <boost/mpl/int.hpp>
+
+
 #include <string>
 
 IGA_NAMESPACE_OPEN
@@ -73,6 +77,19 @@ public:
 };
 using _Divergence = ValueType<-1>;
 
+
+
+
+using map_ValueType_TuplePosition = boost::mpl::map<
+                                    boost::mpl::pair<     _Value,boost::mpl::int_<0> >,
+                                    boost::mpl::pair<  _Gradient,boost::mpl::int_<1> >,
+                                    boost::mpl::pair<   _Hessian,boost::mpl::int_<2> >,
+                                    boost::mpl::pair<_Divergence,boost::mpl::int_<3> >
+                                    >;
+using map_VT_TP = map_ValueType_TuplePosition;
+
+template <class ValueType>
+using TuplePosition_from_ValueType = typename boost::mpl::at<map_VT_TP,ValueType>::type;
 
 
 IGA_NAMESPACE_CLOSE

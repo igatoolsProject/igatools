@@ -65,13 +65,13 @@ void test()
     for (; elem != end; ++elem)
     {
         out << "Values:" << endl;
-        elem->evaluate_values_at_points(quad).print_info(out);
+        elem->template evaluate_at_points<_Value>(quad).print_info(out);
         out << endl;
         out << "Gradients:" << endl;
-        elem->evaluate_gradients_at_points(quad).print_info(out);
+        elem->template evaluate_at_points<_Gradient>(quad).print_info(out);
         out << endl;
         out << "Hessians:" << endl;
-        elem->evaluate_hessians_at_points(quad).print_info(out);
+        elem->template evaluate_at_points<_Hessian>(quad).print_info(out);
         out << endl;
     }
 

@@ -47,7 +47,7 @@ MappingElement<dim_, codim_>::
 compute_inv_first_fundamental_form() const -> ValueVector<MetricTensor>
 {
     ValueVector<MetricTensor> res;
-    const auto &DF = this->template get_values<1, dim>(0);
+    const auto &DF = this->template get_values<_Gradient, dim>(0);
     const auto n_points = DF.get_num_points();
 
     res.resize(n_points);
@@ -72,7 +72,7 @@ compute_second_fundamental_form() const -> ValueVector<MetricTensor>
 {
     Assert(codim==1, ExcNotImplemented());
 
-    const auto &D2_F  = this->template get_values<2, dim>(0);
+    const auto &D2_F  = this->template get_values<_Hessian, dim>(0);
     const auto normal = this->get_external_normals();
 
     const auto n_points = D2_F.get_num_points();
@@ -134,7 +134,7 @@ get_external_normals() const -> ValueVector<Points<space_dim> >
 {
     Assert(codim==1, ExcNotImplemented());
     ValueVector<Points<space_dim> > res;
-    const auto &DF = this->template get_values<1, dim>(0);
+    const auto &DF = this->template get_values<_Gradient, dim>(0);
     const auto n_points = DF.get_num_points();
 
     res.resize(n_points);
@@ -155,7 +155,7 @@ get_D_external_normals() const -> ValueVector< Derivative<1> >
     Assert(codim==1, ExcNotImplemented());
 
     const auto H = compute_second_fundamental_form();
-    const auto &DF = this->template get_values<1, dim>(0);
+    const auto &DF = this->template get_values<_Gradient, dim>(0);
     const auto G_inv = compute_inv_first_fundamental_form();
 
     const auto n_points = H.get_num_points();

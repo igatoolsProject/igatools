@@ -181,10 +181,7 @@ public:
         elem_handler->template init_cache<dim>(*this);
         elem_handler->template fill_cache<dim>(*this,0);
 
-        //    Assert(false,ExcNotImplemented());
-
         return this->template get_basis<ValueType,dim>(0,dofs_property);
-
     }
 
     ///@}

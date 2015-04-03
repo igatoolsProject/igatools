@@ -92,7 +92,7 @@ fill_cache(ElementAccessor &elem, const int j) -> void
     {
         auto &k_elem = UnitElement<dim>::template get_elem<k>(j);
 
-        const auto &DF = elem.template get_values<1, k>(j);
+        const auto &DF = elem.template get_values<_Gradient, k>(j);
         typename MapFunction<k, space_dim>::Gradient DF1;
 
 
@@ -116,7 +116,7 @@ fill_cache(ElementAccessor &elem, const int j) -> void
     if (flags.fill_inv_gradients())
     {
         // TODO (pauletti, Nov 23, 2014): if also fill measure this could be done here
-        const auto &DF = elem.template get_values<1, k>(j);
+        const auto &DF = elem.template get_values<_Gradient, k>(j);
         auto &D_invF = cache.template get_inv_values<1>();
         Real det;
         for (int i=0; i<n_points; ++i)
@@ -125,8 +125,8 @@ fill_cache(ElementAccessor &elem, const int j) -> void
 
     if (flags.fill_inv_hessians())
     {
-        const auto &D1_F = elem.template get_values<1, k>(j);
-        const auto &D2_F = elem.template get_values<2, k>(j);
+        const auto &D1_F = elem.template get_values<_Gradient, k>(j);
+        const auto &D2_F = elem.template get_values<_Hessian, k>(j);
         const auto &D1_invF = cache.template get_inv_values<1>();
         auto &D2_invF       = cache.template get_inv_values<2>();
 

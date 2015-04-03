@@ -126,7 +126,7 @@ public:
         auto D2v_it     = D2v.begin();
         auto D1v_it     = D1v.cbegin();
         auto D2v_hat_it = D2v_hat.cbegin();
-        const auto D2F     =  this->template get_values<2,k>(s_id);
+        const auto D2F     =  this->template get_values<_Hessian,k>(s_id);
         const auto &DF_inv =  this->template get_inverse_values<1,k>(s_id);
 
         for (int i_fn = 0; i_fn < n_func; ++i_fn)

@@ -151,7 +151,7 @@ void PoissonProblem<dim>::assemble()
         auto w_meas = elem->template get_w_measures<dim>(0);
 
         f->fill_element_cache(f_elem);
-        auto f_values = f_elem->template get_values<0,dim>(0);
+        auto f_values = f_elem->template get_values<_Value,dim>(0);
 
         for (int i = 0; i < n_basis; ++i)
         {

@@ -41,9 +41,6 @@
 #include <igatools/basis_functions/space_element_base.h>
 
 
-#include <boost/mpl/map.hpp>
-#include <boost/mpl/int.hpp>
-//#include <boost/mpl/order.hpp>
 
 IGA_NAMESPACE_OPEN
 
@@ -185,15 +182,14 @@ public:
         //--------------------------------------------------------------------------------------
 
         return values_filtered_elem_dofs;
-//        return this->template get_values<ValueType::order,k>(j,dofs_property);
     }
 
 
+    template <class ValueType>
     auto
-    get_element_values(const std::string &dofs_property = DofProperties::active) const
+    get_basis_element(const std::string &dofs_property = DofProperties::active) const
     {
-        return this->template get_basis<_Value,dim>(0,dofs_property);
-//        return this->template get_values<0,dim>(0,dofs_property);
+        return this->template get_basis<ValueType,dim>(0,dofs_property);
     }
 
     template <class ValueType, int k = dim>
@@ -206,17 +202,6 @@ public:
             this->template get_basis<ValueType, k>(id,dofs_property);
         return basis_values.evaluate_linear_combination(loc_coefs) ;
     }
-#if 0
-    template <class ValueType>
-    auto
-    linear_combination_at_points(const vector<Real> &loc_coefs,
-                                 const std::string &dofs_property) const
-    {
-        const auto &basis_values =
-            this->template get_basis<ValueType, k>(id,dofs_property);
-        return basis_values.evaluate_linear_combination(loc_coefs) ;
-    }
-#endif
 
 
 
@@ -252,22 +237,12 @@ protected:
 
         FunctionFlags flags_handler_;
 
-        using map_ValueType_TuplePosition = boost::mpl::map<
-                                            boost::mpl::pair<     _Value,boost::mpl::int_<0> >,
-                                            boost::mpl::pair<  _Gradient,boost::mpl::int_<1> >,
-                                            boost::mpl::pair<   _Hessian,boost::mpl::int_<2> >,
-                                            boost::mpl::pair<_Divergence,boost::mpl::int_<3> >
-                                            >;
-        using map_VT_TP = map_ValueType_TuplePosition;
-
-        template <class ValueType>
-        using TuplePos_from_ValueType = typename boost::mpl::at<map_VT_TP,ValueType>::type;
 
         using map_TuplePosition_ContainerType = boost::mpl::map<
-                                                boost::mpl::pair<TuplePos_from_ValueType<     _Value>,ValueTable<Value> >,
-                                                boost::mpl::pair<TuplePos_from_ValueType<  _Gradient>,ValueTable<Derivative<1>> >,
-                                                boost::mpl::pair<TuplePos_from_ValueType<   _Hessian>,ValueTable<Derivative<2>> >,
-                                                boost::mpl::pair<TuplePos_from_ValueType<_Divergence>,ValueTable<Div>>
+                                                boost::mpl::pair<TuplePosition_from_ValueType<     _Value>,ValueTable<Value> >,
+                                                boost::mpl::pair<TuplePosition_from_ValueType<  _Gradient>,ValueTable<Derivative<1>> >,
+                                                boost::mpl::pair<TuplePosition_from_ValueType<   _Hessian>,ValueTable<Derivative<2>> >,
+                                                boost::mpl::pair<TuplePosition_from_ValueType<_Divergence>,ValueTable<Div>>
                                                 >;
         using map_TP_CT = map_TuplePosition_ContainerType;
 
@@ -283,25 +258,23 @@ protected:
         template<class ValueType>
         auto &get_der()
         {
-            return std::get<TuplePos_from_ValueType<ValueType>::value>(values_);
+            return std::get<TuplePosition_from_ValueType<ValueType>::value>(values_);
         }
 
         template<class ValueType>
         const auto &get_der() const
         {
-            const auto k = TuplePos_from_ValueType<ValueType>::value;
-
             Assert(flags_handler_.filled<ValueType>(),
-                   ExcMessage(ValueType::name + "s cache is not filled."));
+                   ExcMessage("The cache for " + ValueType::name + " is not filled."));
 
-            return std::get<k>(values_);
+            return std::get<TuplePosition_from_ValueType<ValueType>::value>(values_);
         }
 
 
         template<class ValueType>
         void resize_der(const int n_basis, const int n_points)
         {
-            auto &value = std::get< TuplePos_from_ValueType<ValueType>::value >(values_);
+            auto &value = std::get< TuplePosition_from_ValueType<ValueType>::value >(values_);
             if (value.get_num_points() != n_points ||
                 value.get_num_functions() != n_basis)
             {
@@ -313,7 +286,7 @@ protected:
         template<class ValueType>
         void clear_der()
         {
-            auto &value = std::get<TuplePos_from_ValueType<ValueType>::value>(values_);
+            auto &value = std::get<TuplePosition_from_ValueType<ValueType>::value>(values_);
             value.clear();
         }
 

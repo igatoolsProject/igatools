@@ -46,8 +46,6 @@ void ig_mapping(const int deg = 1)
     using Mapping   = Mapping<dim,0>;
 
 
-    auto flag =  ValueFlags::value| ValueFlags::gradient
-                 | ValueFlags::hessian;
     auto quad = QGauss<dim>(2);
     auto grid = CartesianGrid<dim>::create(3);
 
@@ -63,11 +61,11 @@ void ig_mapping(const int deg = 1)
 
     for (; elem != end; ++elem)
     {
-        elem->evaluate_values_at_points(quad).print_info(out);
+        elem->template evaluate_at_points<_Value>(quad).print_info(out);
         out << endl;
-        elem->evaluate_gradients_at_points(quad).print_info(out);
+        elem->template evaluate_at_points<_Gradient>(quad).print_info(out);
         out << endl;
-        elem->evaluate_hessians_at_points(quad).print_info(out);
+        elem->template evaluate_at_points<_Hessian>(quad).print_info(out);
         out << endl;
     }
 

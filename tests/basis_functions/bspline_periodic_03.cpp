@@ -121,7 +121,7 @@ void assemble_matrix(const int n_knots, const int deg)
 
         grad_phi.print_info(out);
 
-        auto f_values = f_elem->template get_values<0,dim>(0);
+        auto f_values = f_elem->template get_values<_Value,dim>(0);
         for (int i = 0; i < n_basis; ++i)
         {
             auto grad_phi_i = grad_phi.get_function_view(i);

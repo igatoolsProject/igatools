@@ -197,7 +197,7 @@ get_subelements(
            ExcDimensionMismatch(vtk_elements_connectivity.size(), n_vtk_elements_per_iga_element_));
 
 
-    auto element_vertices_tmp = elem.template get_values<0,dim>(0);
+    auto element_vertices_tmp = elem.template get_values<_Value,dim>(0);
 
     const T zero = T(0.0);
 
