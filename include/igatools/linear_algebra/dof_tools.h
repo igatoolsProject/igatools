@@ -42,7 +42,6 @@ using namespace EpetraTools;
  * to impose dirichlet constraints on the dofs.
  * todo: //TODO: apply_dirichlet_constraint? and document more.
  */
-template <LAPack la_pack>
 void apply_boundary_values(const std::map<Index,Real> &boundary_values,
                            Matrix &matrix,
                            Vector &rhs,
