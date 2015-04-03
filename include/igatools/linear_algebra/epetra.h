@@ -22,14 +22,18 @@
 #define __MATRIX_MAP_H_
 
 #include <igatools/base/config.h>
-#include <igatools/linear_algebra/dense_vector.h>
+#include <BelosSolverFactory.hpp>
+#include <BelosEpetraAdapter.hpp>
 
+#include <igatools/linear_algebra/dense_vector.h>
+#include <igatools/linear_algebra/dense_matrix.h>
+#include <igatools/utils/vector.h>
 #include <Epetra_SerialComm.h>
 #include <Epetra_Map.h>
 #include <Epetra_CrsMatrix.h>
 
 #include <Epetra_Vector.h>
-
+#include "ml_epetra_preconditioner.h"
 
 
 IGA_NAMESPACE_OPEN
@@ -172,6 +176,48 @@ public:
     {
         return std::make_shared<Vector>(*map);
     }
+
+    using OP = Epetra_Operator;
+    using MV = Epetra_MultiVector;
+    using SolverPtr = Teuchos::RCP<Belos::SolverManager<double, MV, OP> >;
+    SolverPtr
+	create_solver(MatrixPtr A, VectorPtr x, VectorPtr b)
+    {
+
+    	using Teuchos::ParameterList;
+    	using Teuchos::parameterList;
+    	using Teuchos::RCP;
+    	using Teuchos::rcp;
+    	Belos::SolverFactory<double, MV, OP> factory;
+    	RCP<ParameterList> solverParams = parameterList();
+    	solverParams->set ("Num Blocks", 40);
+    	solverParams->set ("Maximum Iterations", 400);
+    	solverParams->set ("Convergence Tolerance", 1.0e-8);
+
+    	SolverPtr solver =
+    			factory.create ("CG", solverParams);
+    	RCP<Belos::LinearProblem<double, MV, OP> > problem =
+    			rcp (new Belos::LinearProblem<double, MV, OP> (
+    					rcp<OP>(A.get(),false),
+						rcp<MV>(x.get(),false),
+						rcp<MV>(b.get(),false)));
+
+    	RCP<ML_Epetra::MultiLevelPreconditioner> Prec =
+    			rcp( new ML_Epetra::MultiLevelPreconditioner(*(A.get()), true));
+
+
+    	RCP<Belos::EpetraPrecOp> belosPrec = rcp(new Belos::EpetraPrecOp(Prec));
+    	problem->setLeftPrec(belosPrec);
+    	problem->setProblem();
+
+    	solver->setProblem (problem);
+//    	auto solver1 = SolverPtr(solver);
+//    	solver.release();
+
+    	return solver;
+    }
+
+
 };
 
 

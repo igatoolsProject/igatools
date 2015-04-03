@@ -28,16 +28,14 @@
 
 #include "../tests.h"
 
-#include <BelosSolverFactory.hpp>
-#include <BelosEpetraAdapter.hpp>
+
+#include <igatools/linear_algebra/epetra.h>
 
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 
-#include <igatools/linear_algebra/epetra.h>
-//#include "Ifpack.h"
-#include "ml_epetra_preconditioner.h"
+
 
 
 
@@ -109,43 +107,15 @@ void matrix_map(const int deg, const int n_knots)
 
 	matrix->FillComplete();
 
-//	matrix->Print(out.get_file_stream());
-//	vector->Print(out.get_file_stream());
-
-	using OP = Epetra_Operator;
-	using MV = Epetra_MultiVector;
-	using Teuchos::ParameterList;
-	using Teuchos::parameterList;
-	using Teuchos::RCP;
-	using Teuchos::rcp;
-	Belos::SolverFactory<double, MV, OP> factory;
-	RCP<ParameterList> solverParams = parameterList();
-	solverParams->set ("Num Blocks", 40);
-	solverParams->set ("Maximum Iterations", 400);
-	solverParams->set ("Convergence Tolerance", 1.0e-8);
-
-	RCP<Belos::SolverManager<double, MV, OP> > solver =
-	factory.create ("CG", solverParams);
-	RCP<Belos::LinearProblem<double, MV, OP> > problem =
-			rcp (new Belos::LinearProblem<double, MV, OP> (
-					rcp<OP>(matrix.get(),false),
-					rcp<MV>(sol.get(),false),
-					rcp<MV>(vector.get(),false)));
-
-	RCP<ML_Epetra::MultiLevelPreconditioner> Prec =
-	        rcp( new ML_Epetra::MultiLevelPreconditioner(*(matrix.get()), true) );
-
-
-	RCP<Belos::EpetraPrecOp> belosPrec = rcp( new Belos::EpetraPrecOp(Prec) );
-
-	problem->setLeftPrec(belosPrec);
-
-	problem->setProblem();
-	solver->setProblem (problem);
-
+	auto solver = EpetraTools::create_solver(matrix, sol, vector);
 	auto result = solver->solve();
-	AssertThrow(result == Belos::ReturnType::Converged, ExcMessage("No convergence."));
+	AssertThrow(result == Belos::ReturnType::Converged,
+			ExcMessage("No convergence."));
 	out << solver->getNumIters() << endl;
+
+	matrix->Print(out.get_file_stream());
+	vector->Print(out.get_file_stream());
+	sol->Print(out.get_file_stream());
 
 	OUTEND
 }
