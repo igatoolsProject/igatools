@@ -89,21 +89,8 @@ int main()
 {
     out.depth_console(10);
 
-    //const auto la_pack_tpetra = LAPack::trilinos_tpetra;
-    out.begin_item("Using Trilinos/TPetra:");
     evaluate_field<2,2>();
     evaluate_field<3,3>();
-    out.end_item();
-
-
-    //const auto la_pack_epetra = LAPack::trilinos_epetra;
-    out.begin_item("Using Trilinos/EPetra:");
-    evaluate_field<2,2>();
-    evaluate_field<3,3>();
-    out.end_item();
-
-
-
 
     return 0;
 }
