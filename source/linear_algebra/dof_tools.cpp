@@ -43,16 +43,18 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
     auto dof = boundary_values.begin();
     const auto dof_end = boundary_values.end();
     const auto &graph = matrix.Graph();
-
+    const auto &map = graph.RowMap();
 
     for (; dof != dof_end; ++dof)
     {
-        const Index row_id = dof->first;
+    	const Index row_id = dof->first;
+        const Index loc_id = map.LID(dof->first);
+
         const Real bc_value = dof->second;
 
         int NumIndices;
         int *Indices;
-        graph.ExtractGlobalRowView(row_id, NumIndices, Indices);
+        graph.ExtractMyRowView(loc_id, NumIndices, Indices);
 
         int NumEntries;
         double *Values;

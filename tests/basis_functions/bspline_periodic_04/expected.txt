@@ -296,7 +296,7 @@ Function 3
 -----------------------------
 Num. rows    = 24
 Num. cols    = 24
-Num. entries = 9
+Num. entries = 192
 
 Row Index        Col Index        Value
 0       0        1.25875
@@ -1251,7 +1251,7 @@ Function 8
 -----------------------------
 Num. rows    = 40
 Num. cols    = 40
-Num. entries = 25
+Num. entries = 850
 
 Row Index        Col Index        Value
 0       0        1.17689

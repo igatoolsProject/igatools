@@ -170,7 +170,6 @@ void assemble_matrix(const int n_knots, const int deg)
 
     matrix->print_info(out);
 
-
     auto solver = create_solver(matrix, solution, rhs);
     solver->solve();
 

@@ -107,8 +107,9 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
     auto end  = space->end();
 
     Epetra_SerialComm comm;
-    auto map = create_map(space, "active", comm);
-    auto graph = create_graph(space, "active", space, "active", map, map);
+    auto map = create_map(space, DofProp::interior, comm);
+    auto graph = create_graph(space, DofProp::interior, space,
+    		DofProp::interior, map, map);
 
     auto matrix = create_matrix(graph);
     auto rhs = create_vector(map);
