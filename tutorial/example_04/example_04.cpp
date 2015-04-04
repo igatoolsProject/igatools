@@ -48,7 +48,7 @@ void plot_basis(const int deg)
     // [plot function]
 
     // [init vec]
-    auto coeffs = IgCoefficients(*space,DofProperties::active);
+    auto coeffs = *EpetraTools::create_vector(space);
     // [init vec]
 
     // [tensor to flat]

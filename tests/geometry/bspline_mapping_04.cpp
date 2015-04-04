@@ -38,7 +38,7 @@
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/base/function_element.h>
 
-
+using namespace EpetraTools;
 
 template <int dim, int codim = 0, int rank = 1>
 void bspline_map(const int deg = 2)
@@ -68,7 +68,8 @@ void bspline_map(const int deg = 2)
     auto grid = CartesianGrid<dim>::create(coord);
     auto space = Space::create(deg, grid);
 
-    vector<Real> control_pts(space->get_num_basis());
+    auto c_p = EpetraTools::create_vector(space, "active");
+    auto &control_pts = *c_p;
 
     if (dim == 2)
     {
@@ -212,9 +213,7 @@ void bspline_map(const int deg = 2)
         control_pts[id++] = 1.0 ;
 
     }
-
-
-    auto F = Function::create(space, IgCoefficients(*space,DofProperties::active,control_pts));
+    auto F = Function::create(space, control_pts);
     auto map = Mapping::create(F);
 
     auto quad = QGauss<dim>(3);

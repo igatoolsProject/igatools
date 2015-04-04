@@ -24,6 +24,7 @@
 #include <igatools/base/config.h>
 #include <igatools/linear_algebra/epetra_graph.h>
 #include <igatools/linear_algebra/dense_matrix.h>
+#include <igatools/base/properties.h>
 #include <Epetra_CrsMatrix.h>
 
 IGA_NAMESPACE_OPEN
@@ -52,6 +53,20 @@ using MatrixPtr = std::shared_ptr<Matrix>;
  */
 MatrixPtr
 create_matrix(GraphPtr graph);
+
+
+/**
+ * Creates a pointer to the matrix, beginners use mostly for tutorials
+ */
+template<class SpacePtr>
+MatrixPtr
+create_matrix(SpacePtr space, const std::string &prop = DofProperties::active)
+{
+	Epetra_SerialComm comm;
+	auto map = create_map(space, prop, comm);
+	auto graph = create_graph(space, prop, space, prop, map, map);
+	return std::make_shared<Matrix>(Epetra_DataAccess::Copy, *graph);
+}
 
 };
 

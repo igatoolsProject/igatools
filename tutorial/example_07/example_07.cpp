@@ -39,6 +39,7 @@
 
 using namespace iga;
 using numbers::PI;
+using namespace EpetraTools;
 
 using std::string;
 using std::to_string;
@@ -79,7 +80,7 @@ void nurb_geometry()
     using Space = BSplineSpace<dim,dim>;
     auto space = Space::create(deg, grid);
 
-    IgCoefficients control_pts(*space,DofProperties::active);
+    auto control_pts = *create_vector(space,DofProperties::active);
 
     DynamicMultiArray<Points<dim>, dim> c_points(deg-1+n_knots);
     const Real eps = 0.2;

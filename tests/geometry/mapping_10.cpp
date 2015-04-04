@@ -52,9 +52,12 @@ void ig_mapping(const int deg = 1)
     auto grid = CartesianGrid<dim>::create(3);
 
     auto space = Space::create(deg, grid);
-    vector<Real> coeff(space->get_num_basis());
+
+    auto c_p = EpetraTools::create_vector(space, DofProperties::active);
+    auto &coeff = *c_p;
+
     coeff[0] = 1.;
-    auto F = Function::create(space, IgCoefficients(*space,DofProperties::active,coeff));
+    auto F = Function::create(space, coeff);
 
     auto map = Mapping::create(F);
     map->template reset<sub_dim>(flag, quad);

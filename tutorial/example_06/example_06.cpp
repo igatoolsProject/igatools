@@ -38,14 +38,14 @@
 // [project to boundary]
 
 // [linear system]
-#include <igatools/linear_algebra/distributed_matrix.h>
-#include <igatools/linear_algebra/distributed_vector.h>
-#include <igatools/linear_algebra/linear_solver.h>
+#include <igatools/linear_algebra/epetra_solver.h>
 #include <igatools/linear_algebra/dof_tools.h>
 // [linear system]
 
 using namespace iga;
 using namespace std;
+
+using namespace EpetraTools;
 
 // [short names]
 using functions::ConstantFunction;
@@ -78,13 +78,11 @@ private:
     // [members]
 
     // [la members]
-    static const LAPack la_pack = LAPack::trilinos_epetra;
-    using Mat = Matrix<la_pack>;
-    using Vec = Vector<la_pack>;
 
-    shared_ptr<Mat> matrix;
-    shared_ptr<Vec> rhs;
-    shared_ptr<Vec> solution;
+
+    shared_ptr<Matrix> matrix;
+    shared_ptr<Vector> rhs;
+    shared_ptr<Vector> solution;
 };
 // [la members]
 
@@ -94,15 +92,12 @@ PoissonProblem<dim>::
 PoissonProblem(const int n_knots, const int deg)
     :
     space(Space::create(deg, CartesianGrid<dim>::create(n_knots))),
-    elem_quad(QGauss<dim>(deg+1)),
-    face_quad(QGauss<dim-1>(deg+1))
-{
-    const auto n_basis = space->get_num_basis();
-    auto space_manager = build_space_manager_single_patch<RefSpace>(space);
-    matrix   = Mat::create(*space_manager);
-    rhs      = Vec::create(n_basis);
-    solution = Vec::create(n_basis);
-}
+	elem_quad(QGauss<dim>(deg+1)),
+    face_quad(QGauss<dim-1>(deg+1)),
+	matrix(create_matrix(space)),
+	rhs(create_vector(space)),
+	solution(create_vector(space))
+{}
 
 
 
@@ -187,7 +182,7 @@ void PoissonProblem<dim>::assemble()
     const set<boundary_id> dir_id {0};
     std::map<Index, Real> values;
     // TODO (pauletti, Mar 9, 2015): parametrize with dimension
-    project_boundary_values<RefSpace,la_pack>(
+    project_boundary_values<RefSpace>(
         const_pointer_cast<const Function>(g),
         space,
         face_quad,
@@ -201,9 +196,8 @@ void PoissonProblem<dim>::assemble()
 template<int dim>
 void PoissonProblem<dim>::solve()
 {
-    using LinSolver = LinearSolverIterative<la_pack>;
-    LinSolver solver(LinSolver::SolverType::CG);
-    solver.solve(*matrix, *rhs, *solution);
+	auto solver = create_solver(matrix, solution, rhs);
+	solver->solve();
 }
 
 
@@ -214,19 +208,9 @@ void PoissonProblem<dim>::output()
     auto map = IdentityFunction<dim>::create(space->get_grid());
     Writer<dim> writer(map, n_plot_points);
 
-//<<<<<<< HEAD
-//=======
-//
-//    // TODO (pauletti, Mar 9, 2015): this should be perform by
-//    // the space to linear algebra manager
-//    const int n_coefs = space->get_num_basis();
-//    IgCoefficients solution_coefs(*space,DofProperties::active);
-//    for (int i = 0 ; i < n_coefs ; ++i)
-//        solution_coefs[i] = (*solution)(i);
-//
-//>>>>>>> 9adb0f670a8df10de7297de3db4e68dee209a77c
+
     using IgFunc = IgFunction<RefSpace>;
-    auto solution_function = IgFunc::create(space, solution->as_ig_fun_coefficients());
+    auto solution_function = IgFunc::create(space, *solution);
     writer.template add_field<1,1>(solution_function, "solution");
     string filename = "poisson_problem-" + to_string(dim) + "d" ;
     writer.save(filename);

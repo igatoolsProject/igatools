@@ -25,6 +25,7 @@
 #include <igatools/linear_algebra/epetra_map.h>
 #include <igatools/linear_algebra/dense_vector.h>
 #include <igatools/utils/vector.h>
+#include <igatools/base/properties.h>
 
 #include <Epetra_Vector.h>
 
@@ -61,7 +62,7 @@ public:
 
     template <class SpacePtr>
     VectorPtr
-	create_vector(SpacePtr space, const std::string &prop)
+	create_vector(SpacePtr space, const std::string &prop = DofProperties::active)
     {
     	Epetra_SerialComm comm;
     	auto map = EpetraTools::create_map(space, prop, comm);
