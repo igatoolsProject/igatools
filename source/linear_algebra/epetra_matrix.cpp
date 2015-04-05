@@ -47,8 +47,8 @@ void Matrix::print_info(LogStream &out) const
 
 	out << "-----------------------------" << std::endl;
 
-	out << "Num. rows    = " << NumGlobalCols() << std::endl;
-	out << "Num. cols    = " << NumGlobalRows() << std::endl;
+	out << "Num. rows    = " << NumGlobalRows() << std::endl;
+	out << "Num. cols    = " << NumGlobalCols() << std::endl;
 	out << "Num. entries = " << NumGlobalNonzeros() << std::endl;
 	out << std::endl;
 	out << "Row Index        Col Index        Value" << std::endl;

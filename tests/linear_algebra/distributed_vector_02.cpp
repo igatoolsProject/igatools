@@ -27,23 +27,27 @@
 
 #include "../tests.h"
 
-#include <igatools/linear_algebra/distributed_vector.h>
+#include <igatools/linear_algebra/epetra_vector.h>
 #include <igatools/base/ig_function.h>
 #include <igatools/base/function_element.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 
-template <LAPack la_pack>
+using namespace EpetraTools;
+
 void non_contig_indices()
 {
     OUTSTART
 
-    using VectorType = Vector<la_pack>;
+
 
     std::set<Index> dofs = {1, 3, 5};
-    VectorType vec(dofs);
+    const vector<Index> dofs_vec(dofs.begin(), dofs.end());
+    Epetra_SerialComm comm;
+    auto map = std::make_shared<Map>(-1, dofs_vec.size(), dofs_vec.data(), 0, comm);
+    auto vec = create_vector(map);
     out.begin_item("vec");
-    vec.print_info(out);
+    vec->print_info(out);
     out.end_item();
 
     const int dim = 1;
@@ -56,8 +60,8 @@ void non_contig_indices()
     dof_distribution->set_all_dofs_property_status(DofProperties::active,false);
     dof_distribution->set_dof_property_status(DofProperties::active,dofs,true);
 
-    auto F = Function::create(space, IgCoefficients(*space,DofProperties::active,vec.get_local_coefs(dofs)));
-
+    auto coeff = create_vector(space, DofProperties::active);
+    auto F = Function::create(space, *coeff);
     auto vec1 = F->get_coefficients();
     out.begin_item("vec1");
     vec1.print_info(out);
@@ -76,6 +80,6 @@ void non_contig_indices()
 
 int main()
 {
-    non_contig_indices<LAPack::trilinos_epetra>();
+    non_contig_indices();
     return  0;
 }

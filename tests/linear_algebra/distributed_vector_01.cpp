@@ -24,48 +24,38 @@
  *  date: Apr 5, 2013
  *
  */
-
+//TODO (pauletti, Apr 4, 2015): this test is nonsense, rewrite or remove
 #include "../tests.h"
 
-#include <igatools/linear_algebra/distributed_vector.h>
+#include <igatools/linear_algebra/epetra_vector.h>
 
+using namespace EpetraTools;
 
-template <LAPack la_pack>
 void run_test()
 {
-    using VectorType = Vector<la_pack>;
+	vector<Index> dofs_vec;
+	Epetra_SerialComm comm;
+	auto map = std::make_shared<Map>(-1, dofs_vec.size(), dofs_vec.data(), 0, comm);
+	auto vec = create_vector(map);
 
-    VectorType v0(0);
-    v0.print_info(out);
+    vec->print_info(out);
     out << endl;
 
-    VectorType v1(10);
-    v1.print_info(out);
-    out << endl;
+
 
 }
 
 int main()
 {
-    out.depth_console(10);
-
-#if defined(USE_TRILINOS)
-
-    out.begin_item("Testing Trilinos/Tpetra vector:");
-    run_test<LAPack::trilinos_tpetra>();
+	out.begin_item("Testing Trilinos/Tpetra vector:");
+    run_test();
     out.end_item();
 
     out.begin_item("Testing Trilinos/Epetra vector:");
-    run_test<LAPack::trilinos_epetra>();
+    run_test();
     out.end_item();
 
-#elif defined(USE_PETSC)
 
-    out.begin_item("Testing Petsc vector:");
-    run_test<LAPack::petsc>();
-    out.end_item();
-
-#endif
 
     return  0;
 }

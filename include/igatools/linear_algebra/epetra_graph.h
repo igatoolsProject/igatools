@@ -22,10 +22,7 @@
 #define __EPETRA_GRAPH_H_
 
 #include <igatools/base/config.h>
-
 #include <igatools/linear_algebra/epetra_map.h>
-
-//#include <igatools/utils/vector.h>
 
 #include <Epetra_CrsGraph.h>
 
