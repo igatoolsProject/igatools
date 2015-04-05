@@ -198,7 +198,7 @@ void cache_get_elem_values(const ValueFlags flag,
     for (; elem != end; ++elem)
     {
         sp_values.fill_element_cache(elem);
-        elem->template get_values<0, k>(0,DofProperties::active).print_info(out);
+        elem->template get_basis<_Value, k>(0,DofProperties::active).print_info(out);
     }
 
     OUTEND

@@ -61,9 +61,9 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
         cache->fill_element_cache(elem);
 
         out << "Sub Element: " << s_id << endl;
-        auto values    = elem->template get_values<0,k>(s_id,DofProperties::active);
-        auto gradients = elem->template get_values<1,k>(s_id,DofProperties::active);
-        auto hessians  = elem->template get_values<2,k>(s_id,DofProperties::active);
+        auto values    = elem->template get_basis<_Value,k>(s_id,DofProperties::active);
+        auto gradients = elem->template get_basis<_Gradient,k>(s_id,DofProperties::active);
+        auto hessians  = elem->template get_basis<_Hessian,k>(s_id,DofProperties::active);
 
         out.begin_item("Values basis functions:");
         values.print_info(out);
@@ -114,9 +114,9 @@ void bspline_iterator_active_dofs(const int deg = 2,const int n_qp = 3)
         cache->fill_element_cache(elem);
 
         out << "Sub Element: " << s_id << endl;
-        auto values    = elem->template get_values<0,k>(s_id,DofProperties::active);
-        auto gradients = elem->template get_values<1,k>(s_id,DofProperties::active);
-        auto hessians  = elem->template get_values<2,k>(s_id,DofProperties::active);
+        auto values    = elem->template get_basis<_Value,k>(s_id,DofProperties::active);
+        auto gradients = elem->template get_basis<_Gradient,k>(s_id,DofProperties::active);
+        auto hessians  = elem->template get_basis<_Hessian,k>(s_id,DofProperties::active);
 
         out.begin_item("Values basis functions:");
         values.print_info(out);

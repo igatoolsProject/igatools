@@ -176,6 +176,34 @@ public:
 
 
 
+
+template< class Grad, class Div >
+void
+eval_divergences_from_gradients(const ValueTable<Grad> &gradients, ValueTable<Div> &divergences)
+{
+    Assert(gradients.get_num_functions() == divergences.get_num_functions(),
+           ExcDimensionMismatch(gradients.get_num_functions(),divergences.get_num_functions()));
+
+    Assert(gradients.get_num_points() == divergences.get_num_points(),
+           ExcDimensionMismatch(gradients.get_num_points(),divergences.get_num_points()));
+
+    auto div_it = divergences.begin();
+    for (const auto &grad : gradients)
+    {
+        *div_it = trace(grad);
+        ++div_it;
+    }
+
+    /*
+    std::transform(basis_gradients.cbegin(),
+                   basis_gradients.cend(),
+                   divergences.begin(),
+                   [](const auto &grad){ return trace(grad);});
+                   //*/
+
+}
+
+
 IGA_NAMESPACE_CLOSE
 
 

@@ -119,6 +119,7 @@ public :
      */
     void resize(const Size num_points);
 
+
     /**
      * Removes all elements from the ValueVector, leaving the container with a size of 0.
      */

@@ -390,6 +390,7 @@ ValueVector<Real>
 CartesianGridElement<dim>::
 get_w_measures(const int j) const
 {
+    Assert(local_cache_ != nullptr, ExcNullPtr());
     const auto &cache = local_cache_->template get_value_cache<k>(j);
     Assert(cache.is_filled(), ExcNotInitialized());
     Assert(cache.flags_handler_.measures_filled(), ExcNotInitialized());
@@ -406,6 +407,7 @@ auto
 CartesianGridElement<dim>::
 get_coordinate_lengths(const int j) const -> const Point &
 {
+    Assert(local_cache_ != nullptr, ExcNullPtr());
     const auto &cache = local_cache_->template get_value_cache<k>(j);
     Assert(cache.is_filled(), ExcNotInitialized());
     Assert(cache.flags_handler_.lengths_filled(), ExcNotInitialized());
@@ -420,6 +422,7 @@ auto
 CartesianGridElement<dim>::
 get_points(const int j) const ->ValueVector<Point>
 {
+    Assert(local_cache_ != nullptr, ExcNullPtr());
     const auto &cache = local_cache_->template get_value_cache<k>(j);
     Assert(cache.flags_handler_.points_filled(), ExcNotInitialized());
     auto translate = vertex(0);

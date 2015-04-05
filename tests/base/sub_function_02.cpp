@@ -74,9 +74,9 @@ void sub_map(const int n_knots = 2)
         for (; f_elem != end; ++f_elem)
         {
             sub_func->fill_cache(f_elem, Int<sub_dim>(),0);
-            f_elem->template get_values<0,sub_dim>(0).print_info(out);
+            f_elem->template get_values<_Value,sub_dim>(0).print_info(out);
             out << endl;
-            f_elem->template get_values<1,sub_dim>(0).print_info(out);
+            f_elem->template get_values<_Gradient,sub_dim>(0).print_info(out);
             out << endl;
         }
     }

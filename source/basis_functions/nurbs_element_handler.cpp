@@ -210,24 +210,32 @@ operator()(const T &quad1)
     const auto &wght_table = nrb_elem_->weight_elem_table_;
 
     auto &flags = cache.flags_handler_;
-    if (flags.fill_values())
+    if (flags.template fill<_Value>())
     {
-        auto &values = cache.template get_der<0>();
+        auto &values = cache.template get_der<_Value>();
         evaluate_nurbs_values_from_bspline(bsp_elem, wght_table, values);
-        flags.set_values_filled(true);
+        flags.template set_filled<_Value>(true);
     }
-    if (flags.fill_gradients())
+    if (flags.template fill<_Gradient>())
     {
-        auto &gradients = cache.template get_der<1>();
+        auto &gradients = cache.template get_der<_Gradient>();
         evaluate_nurbs_gradients_from_bspline(bsp_elem, wght_table, gradients);
-        flags.set_gradients_filled(true);
+        flags.template set_filled<_Gradient>(true);
     }
-    if (flags.fill_hessians())
+    if (flags.template fill<_Hessian>())
     {
-        auto &hessians = cache.template get_der<2>();
+        auto &hessians = cache.template get_der<_Hessian>();
         evaluate_nurbs_hessians_from_bspline(bsp_elem, wght_table, hessians);
-        flags.set_hessians_filled(true);
+        flags.template set_filled<_Hessian>(true);
     }
+    if (flags.template fill<_Divergence>())
+    {
+        eval_divergences_from_gradients(
+            cache.template get_der<_Gradient>(),
+            cache.template get_der<_Divergence>());
+        flags.template set_filled<_Divergence>(true);
+    }
+
     cache.set_filled(true);
 }
 
@@ -317,7 +325,7 @@ evaluate_nurbs_values_from_bspline(
 
     Assert(!phi.empty(), ExcEmptyObject());
 
-    const auto &P = bspline_elem.template get_values<0,dim>(0,DofProperties::active);
+    const auto &P = bspline_elem.template get_basis<_Value,dim>(0,DofProperties::active);
     const auto n_pts = P.get_num_points();
 
     const auto bsp_local_to_patch = bspline_elem.get_local_to_patch(DofProperties::active);
@@ -330,7 +338,7 @@ evaluate_nurbs_values_from_bspline(
     {
         const auto &weight_elem = *weight_elem_table[comp];
 
-        const auto &Q = weight_elem.template get_values<0,dim>(0);
+        const auto &Q = weight_elem.template get_values<_Value,dim>(0);
 
         Assert(n_pts == Q.get_num_points(),
                ExcDimensionMismatch(n_pts,Q.get_num_points()));
@@ -394,8 +402,8 @@ evaluate_nurbs_gradients_from_bspline(
 
     Assert(!D1_phi.empty(), ExcEmptyObject());
 
-    const auto &P  = bspline_elem.template get_values<0,dim>(0,DofProperties::active);
-    const auto &dP = bspline_elem.template get_values<1,dim>(0,DofProperties::active);
+    const auto &P  = bspline_elem.template get_basis<   _Value,dim>(0,DofProperties::active);
+    const auto &dP = bspline_elem.template get_basis<_Gradient,dim>(0,DofProperties::active);
 
     const auto n_pts = P.get_num_points();
 
@@ -408,8 +416,8 @@ evaluate_nurbs_gradients_from_bspline(
     {
         const auto &weight_elem = *weight_elem_table[comp];
 
-        const auto &Q  = weight_elem.template get_values<0,dim>(0);
-        const auto &dQ = weight_elem.template get_values<1,dim>(0);
+        const auto &Q  = weight_elem.template get_values<_Value,dim>(0);
+        const auto &dQ = weight_elem.template get_values<_Gradient,dim>(0);
 
         Assert(n_pts == Q.get_num_points(),
                ExcDimensionMismatch(n_pts,Q.get_num_points()));
@@ -497,9 +505,9 @@ evaluate_nurbs_hessians_from_bspline(
      */
     Assert(!D2_phi.empty(), ExcEmptyObject());
 
-    const auto &P   = bspline_elem.template get_values<0,dim>(0,DofProperties::active);
-    const auto &dP  = bspline_elem.template get_values<1,dim>(0,DofProperties::active);
-    const auto &d2P = bspline_elem.template get_values<2,dim>(0,DofProperties::active);
+    const auto &P   = bspline_elem.template get_basis<   _Value,dim>(0,DofProperties::active);
+    const auto &dP  = bspline_elem.template get_basis<_Gradient,dim>(0,DofProperties::active);
+    const auto &d2P = bspline_elem.template get_basis< _Hessian,dim>(0,DofProperties::active);
 
     const auto n_pts = P.get_num_points();
 
@@ -512,9 +520,9 @@ evaluate_nurbs_hessians_from_bspline(
     {
         const auto &weight_elem = *weight_elem_table[comp];
 
-        const auto &Q   = weight_elem.template get_values<0,dim>(0);
-        const auto &dQ  = weight_elem.template get_values<1,dim>(0);
-        const auto &d2Q = weight_elem.template get_values<2,dim>(0);
+        const auto &Q   = weight_elem.template get_values<_Value,dim>(0);
+        const auto &dQ  = weight_elem.template get_values<_Gradient,dim>(0);
+        const auto &d2Q = weight_elem.template get_values<_Hessian,dim>(0);
 
         Assert(n_pts == Q.get_num_points(),
                ExcDimensionMismatch(n_pts,Q.get_num_points()));

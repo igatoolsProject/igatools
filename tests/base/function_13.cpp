@@ -45,7 +45,7 @@ void values_of_F(Function<dim, codim, range> &F)
         F.fill_cache(elem, Int<dim>(), 0);
 //        elem->get_points().print_info(out);
 //        out << endl;
-        elem->template get_values<0, dim>(0).print_info(out);
+        elem->template get_values<_Value, dim>(0).print_info(out);
         out << endl;
 //        elem->template get_values<1>().print_info(out);
 //        out << endl;

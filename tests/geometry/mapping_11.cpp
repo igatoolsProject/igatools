@@ -72,13 +72,13 @@ void test()
         elem->get_points().print_info(out);
         out << endl;
         out << "Values:" << endl;
-        elem->template get_values<0,dim>(0).print_info(out);
+        elem->template get_values<_Value,dim>(0).print_info(out);
         out << endl;
         out << "Gradients:" << endl;
-        elem->template get_values<1,dim>(0).print_info(out);
+        elem->template get_values<_Gradient,dim>(0).print_info(out);
         out << endl;
         out << "Hessians:" << endl;
-        elem->template get_values<2,dim>(0).print_info(out);
+        elem->template get_values<_Hessian,dim>(0).print_info(out);
         out << endl;
 //        elem->get_measures().print_info(out);
 //        out << endl;

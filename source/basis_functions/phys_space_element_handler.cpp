@@ -24,6 +24,10 @@ using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
+
+
+
+
 namespace
 {
 auto
@@ -101,19 +105,18 @@ space_to_pf_flag(const ValueFlags flags)
 
 
 
-template<class PhysSpace>
-PhysSpaceElementHandler<PhysSpace>::
+template<int dim,int range,int rank,int codim>
+PhysSpaceElementHandler<dim,range,rank,codim>::
 PhysSpaceElementHandler(std::shared_ptr<const PhysSpace> space)
     :
-//    PFCache(space->get_map_func()),
     space_(space),
     ref_space_handler_(space->get_reference_space()->create_elem_handler()),
     push_fwd_(space->get_map_func())
 {}
 
-template<class PhysSpace>
+template<int dim,int range,int rank,int codim>
 auto
-PhysSpaceElementHandler<PhysSpace>::
+PhysSpaceElementHandler<dim,range,rank,codim>::
 create(std::shared_ptr<const PhysSpace> space) -> std::shared_ptr<self_t>
 {
     Assert(space != nullptr,ExcNullPtr());
@@ -122,10 +125,10 @@ create(std::shared_ptr<const PhysSpace> space) -> std::shared_ptr<self_t>
 
 
 
-template<class PhysSpace>
+template<int dim,int range,int rank,int codim>
 template<int k>
 void
-PhysSpaceElementHandler<PhysSpace>::
+PhysSpaceElementHandler<dim,range,rank,codim>::
 reset(const ValueFlags flag, const Quadrature<k> &eval_pts)
 {
     ref_space_handler_->reset(space_to_ref_flag(PhysSpace::PushForwardType::type, flag), eval_pts);
@@ -135,14 +138,14 @@ reset(const ValueFlags flag, const Quadrature<k> &eval_pts)
 }
 
 
-template<class PhysSpace>
+template<int dim,int range,int rank,int codim>
 template<int k>
 void
-PhysSpaceElementHandler<PhysSpace>::
+PhysSpaceElementHandler<dim,range,rank,codim>::
 reset_selected_elements(
-        const ValueFlags &flag,
-        const Quadrature<k> &eval_pts,
-        const vector<Index> &elements_flat_id)
+    const ValueFlags &flag,
+    const Quadrature<k> &eval_pts,
+    const vector<Index> &elements_flat_id)
 {
     ref_space_handler_->
     reset_selected_elements(space_to_ref_flag(PhysSpace::PushForwardType::type, flag), eval_pts, elements_flat_id);
@@ -155,10 +158,10 @@ reset_selected_elements(
 
 
 
-template<class PhysSpace>
+template<int dim,int range,int rank,int codim>
 template<int k>
 void
-PhysSpaceElementHandler<PhysSpace>::
+PhysSpaceElementHandler<dim,range,rank,codim>::
 init_cache(ElementAccessor &elem)
 {
     auto &ref_elem = elem.get_ref_space_element();
@@ -186,10 +189,10 @@ init_cache(ElementAccessor &elem)
 
 
 
-template<class PhysSpace>
+template<int dim,int range,int rank,int codim>
 template<int k>
 void
-PhysSpaceElementHandler<PhysSpace>::
+PhysSpaceElementHandler<dim,range,rank,codim>::
 fill_cache(ElementAccessor &elem, const int j)
 {
     auto &ref_elem = elem.get_ref_space_element();
@@ -205,39 +208,46 @@ fill_cache(ElementAccessor &elem, const int j)
 
     auto &flags = cache.flags_handler_;
 
-    if (flags.fill_values())
+    if (flags.template fill<_Value>())
     {
-        auto &result = cache.template get_der<0>();
-        const auto &ref_values = ref_elem.template get_values<0,k>(j,DofProperties::active);
+        auto &result = cache.template get_der<_Value>();
+        const auto &ref_values = ref_elem.template get_basis<_Value,k>(j,DofProperties::active);
         push_fwd_elem.template transform_0<RefSpace::range,RefSpace::rank>
         (ref_values, result);
 
-        flags.set_values_filled(true);
+        flags.template set_filled<_Value>(true);
     }
-    if (flags.fill_gradients())
+    if (flags.template fill<_Gradient>())
     {
-        const auto &ref_values = ref_elem.template get_values<0,k>(j,DofProperties::active);
-        const auto &ref_der_1  = ref_elem.template get_values<1,k>(j,DofProperties::active);
-        const auto &values = cache.template get_der<0>();
+        const auto &ref_values = ref_elem.template get_basis<   _Value,k>(j,DofProperties::active);
+        const auto &ref_der_1  = ref_elem.template get_basis<_Gradient,k>(j,DofProperties::active);
+        const auto &values = cache.template get_der<_Value>();
         push_fwd_elem.template transform_1<PhysSpace::range,PhysSpace::rank, k>
         (std::make_tuple(ref_values, ref_der_1), values,
-         cache.template get_der<1>(), j);
+         cache.template get_der<_Gradient>(), j);
 
-        flags.set_gradients_filled(true);
+        flags.template set_filled<_Gradient>(true);
     }
-    if (flags.fill_hessians())
+    if (flags.template fill<_Hessian>())
     {
-        const auto &ref_values = ref_elem.template get_values<0,k>(j,DofProperties::active);
-        const auto &ref_der_1  = ref_elem.template get_values<1,k>(j,DofProperties::active);
-        const auto &ref_der_2  = ref_elem.template get_values<2,k>(j,DofProperties::active);
-        const auto &values = cache.template get_der<0>();
-        const auto &der_1  = cache.template get_der<1>();
+        const auto &ref_values = ref_elem.template get_basis<   _Value,k>(j,DofProperties::active);
+        const auto &ref_der_1  = ref_elem.template get_basis<_Gradient,k>(j,DofProperties::active);
+        const auto &ref_der_2  = ref_elem.template get_basis< _Hessian,k>(j,DofProperties::active);
+        const auto &values = cache.template get_der<   _Value>();
+        const auto &der_1  = cache.template get_der<_Gradient>();
         push_fwd_elem.template transform_2<PhysSpace::range,PhysSpace::rank, k>
         (std::make_tuple(ref_values, ref_der_1, ref_der_2),
          std::make_tuple(values,der_1),
-         cache.template get_der<2>(), j);
+         cache.template get_der<_Hessian>(), j);
 
-        flags.set_hessians_filled(true);
+        flags.template set_filled<_Hessian>(true);
+    }
+    if (flags.template fill<_Divergence>())
+    {
+        eval_divergences_from_gradients(
+            cache.template get_der<_Gradient>(),
+            cache.template get_der<_Divergence>());
+        flags.template set_filled<_Divergence>(true);
     }
 
     cache.set_filled(true);
@@ -245,9 +255,9 @@ fill_cache(ElementAccessor &elem, const int j)
 }
 
 #if 0
-template<class PhysSpace>
+template<int dim, int codim,int range,int rank>
 auto
-PhysSpaceElementHandler<PhysSpace>::
+PhysSpaceElementHandler<dim,range,rank,codim>::
 fill_element_cache(ElementAccessor &elem) -> void
 {
     auto &ref_elem = elem.get_ref_space_element();
@@ -330,9 +340,9 @@ fill_element_cache(ElementAccessor &elem) -> void
 
 
 
-template<class PhysSpace>
+template<int dim,int range,int rank,int codim>
 auto
-PhysSpaceElementHandler<PhysSpace>::
+PhysSpaceElementHandler<dim,range,rank,codim>::
 print_info(LogStream &out) const -> void
 {
     ref_space_handler_->print_info(out);

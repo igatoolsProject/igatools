@@ -62,6 +62,8 @@ resize(const Size num_points)
     ValueContainer<T>::resize(1,num_points);
 }
 
+
+
 template <class T>
 void
 ValueVector<T>::

@@ -23,6 +23,7 @@
 
 #include <igatools/base/function.h>
 #include <igatools/geometry/cartesian_grid_element.h>
+#include <igatools/base/value_types.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -35,6 +36,7 @@ public:
     using Value = typename Func::Value;
     using Gradient = typename Func::Gradient;
     using Hessian  = typename Func::Hessian;
+    using Div      = typename Func::Div;
 //    using ContainerType = const CartesianGrid<dim>;
     using ContainerType = const Func;
 
@@ -134,14 +136,14 @@ public:
 
 
 
-    template<int order, int k>
+    template<class ValueType, int k>
     auto
     get_values(const int j) const
     {
         Assert(local_cache_ != nullptr,ExcNullPtr());
         const auto &cache = local_cache_->template get_value_cache<k>(j);
         Assert(cache.is_filled() == true, ExcCacheNotFilled());
-        return std::get<order>(cache.values_);
+        return cache.template get<ValueType>();
     }
 
 
@@ -152,26 +154,23 @@ public:
      */
     ///@{
     /**
-     * Returns a ValueTable with the <tt>deriv_order</tt>-th derivatives of all local basis function
+     * Returns a ValueTable with the values specified by the template parameter
+     * <tt>ValueType</tt>
      * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
      * @note This function does not use the cache and therefore can be called any time without
      * needing to pre-call init_cache()/fill_cache().
      * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
-    template <int deriv_order>
-    ValueVector<
-    Conditional< deriv_order==0,
-                 Value,
-                 Derivative<deriv_order> > >
-                 evaluate_derivatives_at_points(const Quadrature<dim> &points)
+    template <class ValueType>
+    decltype(auto) evaluate_at_points(const Quadrature<dim> &points)
     {
         ValueFlags flags;
-        if (deriv_order == 0)
+        if (ValueType::id == _Value::id)
             flags = ValueFlags::value;
-        else if (deriv_order == 1)
+        else if (ValueType::id == _Gradient::id)
             flags = ValueFlags::gradient;
-        else if (deriv_order == 2)
+        else if (ValueType::id == _Hessian::id)
             flags = ValueFlags::hessian;
         else
         {
@@ -183,29 +182,7 @@ public:
         func_->init_cache(*this,topology);
         func_->fill_cache(*this,topology,0);
 
-        return this->template get_values<deriv_order,dim>(0);
-
-
-//        Assert(false,ExcNotImplemented());
-//        return dummy;
-    }
-
-    ValueVector<Value>
-    evaluate_values_at_points(const Quadrature<dim> &points)
-    {
-        return this->template evaluate_derivatives_at_points<0>(points);
-    }
-
-    ValueVector<Derivative<1> >
-    evaluate_gradients_at_points(const Quadrature<dim> &points)
-    {
-        return this->template evaluate_derivatives_at_points<1>(points);
-    }
-
-    ValueVector<Derivative<2> >
-    evaluate_hessians_at_points(const Quadrature<dim> &points)
-    {
-        return this->template evaluate_derivatives_at_points<2>(points);
+        return this->template get_values<ValueType,dim>(0);
     }
     ///@}
 
@@ -222,32 +199,90 @@ private:
             if (flags_handler_.fill_points())
                 points_.resize(n_points);
 
-            if (flags_handler_.fill_values())
-                std::get<0>(values_).resize(n_points);
+            if (flags_handler_.fill<_Value>())
+                get<_Value>().resize(n_points);
 
-            if (flags_handler_.fill_gradients())
-                std::get<1>(values_).resize(n_points);
+            if (flags_handler_.fill<_Gradient>())
+                get<_Gradient>().resize(n_points);
 
-            if (flags_handler_.fill_hessians())
-                std::get<2>(values_).resize(n_points);
+            if (flags_handler_.fill<_Hessian>())
+                get<_Hessian>().resize(n_points);
+
+            if (flags_handler_.fill<_Divergence>())
+                Assert(false,ExcNotImplemented());
 
             set_initialized(true);
         }
 
         void print_info(LogStream &out) const
         {
-            flags_handler_.print_info(out);
-            std::get<0>(values_).print_info(out);
-            std::get<1>(values_).print_info(out);
-            std::get<2>(values_).print_info(out);
+            if (flags_handler_.filled<_Value>())
+            {
+                flags_handler_.print_info(out);
+                out.begin_item(_Value::name + ":");
+                get<_Value>().print_info(out);
+                out.end_item();
+            }
+
+            if (flags_handler_.filled<_Gradient>())
+            {
+                out.begin_item(_Gradient::name + ":");
+                get<_Gradient>().print_info(out);
+                out.end_item();
+            }
+
+            if (flags_handler_.filled<_Hessian>())
+            {
+                out.begin_item(_Hessian::name + ":");
+                get<_Hessian>().print_info(out);
+                out.end_item();
+            }
+
+            if (flags_handler_.filled<_Divergence>())
+            {
+                out.begin_item(_Divergence::name + ":");
+                get<_Divergence>().print_info(out);
+                out.end_item();
+            }
         }
 
         FunctionFlags flags_handler_;
 
+        using map_TuplePosition_ContainerType = boost::mpl::map<
+                                                boost::mpl::pair<TuplePosition_from_ValueType<     _Value>,ValueVector<Value> >,
+                                                boost::mpl::pair<TuplePosition_from_ValueType<  _Gradient>,ValueVector<Derivative<1>> >,
+                                                boost::mpl::pair<TuplePosition_from_ValueType<   _Hessian>,ValueVector<Derivative<2>> >,
+                                                boost::mpl::pair<TuplePosition_from_ValueType<_Divergence>,ValueVector<Div>>
+                                                >;
+
+        template <int tuple_position>
+        using ContType_from_TuplePosition = typename boost::mpl::at<
+                                            map_TuplePosition_ContainerType,boost::mpl::int_<tuple_position>>::type;
+
+        std::tuple<
+        ContType_from_TuplePosition<0>,
+                                    ContType_from_TuplePosition<1>,
+                                    ContType_from_TuplePosition<2>,
+                                    ContType_from_TuplePosition<3>> values_;
+
+
         ValueVector<Point> points_;
-        std::tuple<ValueVector<Value>,
-            ValueVector<Derivative<1>>,
-            ValueVector<Derivative<2>>> values_;
+
+    public:
+        template<class ValueType>
+        auto &get()
+        {
+            return std::get<TuplePosition_from_ValueType<ValueType>::value>(values_);
+        }
+
+        template<class ValueType>
+        const auto &get() const
+        {
+            //TODO (martinelli, Apr 03,2015): uncomment this assertion
+//            Assert(flags_handler_.filled<ValueType>(),
+//                   ExcMessage("The cache for " + ValueType::name + " is not filled."));
+            return std::get<TuplePosition_from_ValueType<ValueType>::value>(values_);
+        }
 
     };
 
@@ -269,18 +304,18 @@ private:
 
         void print_info(LogStream &out) const;
 
-        template <int k>
+        template <int topology_dim>
         ValuesCache &
         get_value_cache(const int j)
         {
-            return std::get<k>(values_)[j];
+            return std::get<topology_dim>(values_)[j];
         }
 
-        template <int k>
+        template <int topology_dim>
         const ValuesCache &
         get_value_cache(const int j) const
         {
-            return std::get<k>(values_)[j];
+            return std::get<topology_dim>(values_)[j];
         }
 
         CacheList<ValuesCache, dim> values_;

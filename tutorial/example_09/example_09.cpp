@@ -28,10 +28,7 @@
 #include <igatools/basis_functions/space_tools.h>
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/linear_algebra/dense_vector.h>
-#include <igatools/linear_algebra/distributed_matrix.h>
-#include <igatools/linear_algebra/distributed_vector.h>
-#include <igatools/linear_algebra/linear_solver.h>
-#include <igatools/linear_algebra/sparsity_pattern.h>
+#include <igatools/linear_algebra/epetra_solver.h>
 #include <igatools/linear_algebra/dof_tools.h>
 #include <igatools/io/writer.h>
 // [old includes]
@@ -39,6 +36,7 @@
 // [unqualified names]
 using namespace iga;
 using namespace std;
+using namespace EpetraTools;
 using functions::ConstantFunction;
 using space_tools::project_boundary_values;
 using dof_tools::apply_boundary_values;
@@ -75,13 +73,9 @@ private:
 
     const boundary_id dir_id = 0;
 
-    static const LAPack la_pack = LAPack::trilinos_epetra;
-    using Mat = Matrix<la_pack>;
-    using Vec = Vector<la_pack>;
-
-    shared_ptr<Mat> matrix;
-    shared_ptr<Vec> rhs;
-    shared_ptr<Vec> solution;
+    shared_ptr<Matrix> matrix;
+    shared_ptr<Vector> rhs;
+    shared_ptr<Vector> solution;
 };
 
 
@@ -104,11 +98,10 @@ PoissonProblem(const int deg, const TensorSize<dim> &n_knots)
     map = Function::create(grid, IdentityFunction<dim>::create(grid));
     space = Space::create(ref_space, map);
 
-    const auto n_basis = space->get_num_basis();
-    auto space_manager = build_space_manager_single_patch<Space>(space);
-    matrix   = Mat::create(*space_manager);
-    rhs      = Vec::create(n_basis);
-    solution = Vec::create(n_basis);
+    matrix = create_matrix(space);
+    rhs = create_vector(space);
+    solution=create_vector(space);
+
 }
 
 
@@ -128,7 +121,7 @@ void PoissonProblem<dim>::assemble()
     auto elem_handler = space->create_elem_handler();
 
     auto flag = ValueFlags::value | ValueFlags::gradient |
-            ValueFlags::w_measure;
+                ValueFlags::w_measure;
 
     elem_handler->reset(flag, elem_quad);
 
@@ -154,12 +147,12 @@ void PoissonProblem<dim>::assemble()
         loc_rhs = 0.0;
 
         elem_handler->fill_element_cache(elem);
-        auto phi = elem->template get_values<0, dim>(0,DofProperties::active);
-        auto grad_phi  = elem->template get_values<1, dim>(0,DofProperties::active);
+        auto phi = elem->template get_basis<_Value, dim>(0,DofProperties::active);
+        auto grad_phi  = elem->template get_basis<_Gradient, dim>(0,DofProperties::active);
         auto w_meas = elem->template get_w_measures<dim>(0);
 
         f->fill_element_cache(f_elem);
-        auto f_values = f_elem->template get_values<0,dim>(0);
+        auto f_values = f_elem->template get_values<_Value, dim>(0);
 
         for (int i = 0; i < n_basis; ++i)
         {
@@ -169,14 +162,14 @@ void PoissonProblem<dim>::assemble()
                 auto grad_phi_j = grad_phi.get_function_view(j);
                 for (int qp = 0; qp < n_qp; ++qp)
                     loc_mat(i,j) +=
-                            scalar_product(grad_phi_i[qp], grad_phi_j[qp])
-                            * w_meas[qp];
+                        scalar_product(grad_phi_i[qp], grad_phi_j[qp])
+                        * w_meas[qp];
             }
             auto phi_i = phi.get_function_view(i);
 
             for (int qp=0; qp<n_qp; ++qp)
                 loc_rhs(i) += scalar_product(phi_i[qp], f_values[qp])
-                * w_meas[qp];
+                              * w_meas[qp];
         }
 
         const auto loc_dofs = elem->get_local_to_global(DofProperties::active);
@@ -188,19 +181,19 @@ void PoissonProblem<dim>::assemble()
 
     // [dirichlet constraint]
 
-        auto g = ConstFunction::
-        create(grid, IdentityFunction<dim>::create(grid), {0.});
+    auto g = ConstFunction::
+             create(grid, IdentityFunction<dim>::create(grid), {0.});
 
 
     const set<boundary_id> dir_id {0};
     std::map<Index, Real> values;
     // TODO (pauletti, Mar 9, 2015): parametrize with dimension
-    project_boundary_values<Space,la_pack>(
-            const_pointer_cast<const Function>(g),
-            space,
-            face_quad,
-            dir_id,
-            values);
+    project_boundary_values<Space>(
+        const_pointer_cast<const Function>(g),
+        space,
+        face_quad,
+        dir_id,
+        values);
     apply_boundary_values(values, *matrix, *rhs, *solution);
     // [dirichlet constraint]
 
@@ -261,9 +254,8 @@ void PoissonProblem<dim>::assemble()
 template<int dim>
 void PoissonProblem<dim>::solve()
 {
-    using LinSolver = LinearSolverIterative<la_pack>;
-    LinSolver solver(LinSolver::SolverType::CG);
-    solver.solve(*matrix, *rhs, *solution);
+	auto solver = create_solver(matrix, solution, rhs);
+	solver->solve();
 }
 
 
@@ -276,7 +268,7 @@ void PoissonProblem<dim>::output()
     Writer<dim> writer(map, n_plot_points);
 
     using IgFunc = IgFunction<Space>;
-    auto solution_function = IgFunc::create(space, solution->as_ig_fun_coefficients());
+    auto solution_function = IgFunc::create(space, *solution);
     writer.template add_field<1,1>(solution_function, "solution");
     string filename = "poisson_problem-" + to_string(dim) + "d" ;
     writer.save(filename);

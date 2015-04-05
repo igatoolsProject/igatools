@@ -23,6 +23,7 @@
 #define SPACE_ELEMENT_H_
 
 #include <igatools/base/config.h>
+#include <igatools/base/value_types.h>
 #include <igatools/base/cache_status.h>
 #include <igatools/base/flags_handler.h>
 
@@ -38,6 +39,8 @@
 #include <igatools/basis_functions/spline_space.h>
 
 #include <igatools/basis_functions/space_element_base.h>
+
+
 
 IGA_NAMESPACE_OPEN
 
@@ -135,14 +138,14 @@ public:
     ///@}
 
 
-    template<int order = 0, int k = dim>
+    template <class ValueType, int k = dim>
     auto
-    get_values(const int j, const std::string &dofs_property = DofProperties::active) const
+    get_basis(const int j, const std::string &dofs_property = DofProperties::active) const
     {
         Assert(local_cache_ != nullptr, ExcNullPtr());
         const auto &cache = local_cache_->template get_value_cache<k>(j);
         Assert(cache.is_filled() == true, ExcCacheNotFilled());
-        const auto values_all_elem_dofs = cache.template get_der<order>();
+        const auto values_all_elem_dofs = cache.template get_der<ValueType>();
 
         //--------------------------------------------------------------------------------------
         // filtering the values that correspond to the dofs with the given property --- begin
@@ -181,65 +184,25 @@ public:
         return values_filtered_elem_dofs;
     }
 
+
+    template <class ValueType>
     auto
-    get_element_values(const std::string &dofs_property = DofProperties::active) const
+    get_basis_element(const std::string &dofs_property = DofProperties::active) const
     {
-        return this->template get_values<0,dim>(0,dofs_property);
+        return this->template get_basis<ValueType,dim>(0,dofs_property);
     }
 
-    template<int order, int k>
+    template <class ValueType, int k = dim>
     auto
     linear_combination(const vector<Real> &loc_coefs,
                        const int id,
                        const std::string &dofs_property) const
     {
         const auto &basis_values =
-            this->template get_values<order, k>(id,dofs_property);
+            this->template get_basis<ValueType, k>(id,dofs_property);
         return basis_values.evaluate_linear_combination(loc_coefs) ;
     }
 
-
-    template<int k = dim>
-    ValueTable<Div> get_divergences(const int id,
-                                    const std::string &dofs_property) const
-    {
-        /*
-        Assert(local_cache_ != nullptr, ExcNullPtr());
-        const auto &cache = local_cache_->template get_value_cache<k>(id);
-        Assert(cache.is_filled() == true, ExcCacheNotFilled());
-
-        Assert(cache.flags_handler_.gradients_filled() == true, ExcCacheNotFilled());
-        //*/
-        const auto &basis_gradients =
-            this->template get_values<1,k>(id,dofs_property);
-
-        const int n_basis = basis_gradients.get_num_functions();
-        const int n_pts   = basis_gradients.get_num_points();
-
-        ValueTable<Div> divergences(n_basis,n_pts);
-        /*
-        std::transform(basis_gradients.cbegin(),
-                       basis_gradients.cend(),
-                       divergences.begin(),
-                       [](const auto &grad){ return trace(grad);});
-                       //*/
-
-        auto div_it = divergences.begin();
-        for (const auto &grad : basis_gradients)
-        {
-            *div_it = trace(grad);
-            ++div_it;
-        }
-//*/
-        return divergences;
-    }
-
-
-
-    ValueTable<Div> get_element_divergences(const std::string &dofs_property) const
-    {
-        return get_divergences<dim>(0,dofs_property);
-    }
 
 
 
@@ -274,50 +237,44 @@ protected:
 
         FunctionFlags flags_handler_;
 
-        std::tuple<ValueTable<Value>,
-            ValueTable<Derivative<1>>,
-            ValueTable<Derivative<2>>> values_;
 
-        template<int k>
+        using map_TuplePosition_ContainerType = boost::mpl::map<
+                                                boost::mpl::pair<TuplePosition_from_ValueType<     _Value>,ValueTable<Value> >,
+                                                boost::mpl::pair<TuplePosition_from_ValueType<  _Gradient>,ValueTable<Derivative<1>> >,
+                                                boost::mpl::pair<TuplePosition_from_ValueType<   _Hessian>,ValueTable<Derivative<2>> >,
+                                                boost::mpl::pair<TuplePosition_from_ValueType<_Divergence>,ValueTable<Div>>
+                                                >;
+        using map_TP_CT = map_TuplePosition_ContainerType;
+
+        template <int tuple_position>
+        using ContType_from_TuplePos = typename boost::mpl::at<map_TP_CT,boost::mpl::int_<tuple_position>>::type;
+
+        std::tuple<
+        ContType_from_TuplePos<0>,
+                               ContType_from_TuplePos<1>,
+                               ContType_from_TuplePos<2>,
+                               ContType_from_TuplePos<3>> values_;
+
+        template<class ValueType>
         auto &get_der()
         {
-            return std::get<k>(values_);
+            return std::get<TuplePosition_from_ValueType<ValueType>::value>(values_);
         }
 
-        template<int k>
+        template<class ValueType>
         const auto &get_der() const
         {
-#ifndef NDEBUG
-            // TODO (pauletti, Mar 17, 2015): bad checking, should be k independent
-            if (k == 0)
-            {
-                Assert(flags_handler_.values_filled(),
-                       ExcMessage("Values cache is not filled."));
-            }
-            else if (k == 1)
-            {
-                Assert(flags_handler_.gradients_filled(),
-                       ExcMessage("Gradients cache is not filled."));
-            }
-            else if (k == 2)
-            {
-                Assert(flags_handler_.hessians_filled(),
-                       ExcMessage("Hessians cache is not filled."));
-            }
-            else
-            {
-                Assert(false,ExcMessage("Derivative order >=3 is not supported."));
-            }
-#endif
+            Assert(flags_handler_.filled<ValueType>(),
+                   ExcMessage("The cache for " + ValueType::name + " is not filled."));
 
-
-            return std::get<k>(values_);
+            return std::get<TuplePosition_from_ValueType<ValueType>::value>(values_);
         }
 
-        template<int k>
+
+        template<class ValueType>
         void resize_der(const int n_basis, const int n_points)
         {
-            auto &value = std::get<k>(values_);
+            auto &value = std::get< TuplePosition_from_ValueType<ValueType>::value >(values_);
             if (value.get_num_points() != n_points ||
                 value.get_num_functions() != n_basis)
             {
@@ -326,10 +283,10 @@ protected:
             }
         }
 
-        template<int k>
+        template<class ValueType>
         void clear_der()
         {
-            auto &value = std::get<k>(values_);
+            auto &value = std::get<TuplePosition_from_ValueType<ValueType>::value>(values_);
             value.clear();
         }
 
@@ -354,18 +311,18 @@ protected:
 
         void print_info(LogStream &out) const;
 
-        template <int k>
+        template <int topology_dim>
         ValuesCache &
         get_value_cache(const int j)
         {
-            return std::get<k>(values_)[j];
+            return std::get<topology_dim>(values_)[j];
         }
 
-        template <int k>
+        template <int topology_dim>
         const ValuesCache &
         get_value_cache(const int j) const
         {
-            return std::get<k>(values_)[j];
+            return std::get<topology_dim>(values_)[j];
         }
 
         CacheList<ValuesCache, dim> values_;

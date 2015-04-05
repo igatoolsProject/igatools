@@ -87,8 +87,8 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
     auto neu_dofs = get_boundary_dofs<Space>(space, neu_ids);
     std::vector<Index> common(dim*range);
     auto end1 =
-    std::set_intersection(neu_dofs.begin(), neu_dofs.end(),
-                          dir_dofs.begin(), dir_dofs.end(), common.begin());
+        std::set_intersection(neu_dofs.begin(), neu_dofs.end(),
+                              dir_dofs.begin(), dir_dofs.end(), common.begin());
     common.resize(end1-common.begin());
     for (auto &id : common)
         neu_dofs.erase(id);
@@ -132,8 +132,8 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
         loc_rhs = 0.0;
 
         elem_handler->fill_element_cache(elem);
-        auto phi = elem->template get_values<0, dim>(0,DofProp::interior);
-        auto grad_phi  = elem->template get_values<1, dim>(0,DofProp::interior);
+        auto phi = elem->template get_basis<_Value, dim>(0,DofProp::interior);
+        auto grad_phi  = elem->template get_basis<_Gradient, dim>(0,DofProp::interior);
         auto w_meas = elem->template get_w_measures<dim>(0);
 
         for (int i = 0; i < n_basis; ++i)

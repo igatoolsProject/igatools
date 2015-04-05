@@ -149,7 +149,7 @@ public:
     /**
      * Default constructor. Sets all boolean flags to false.
      */
-    FunctionFlags() = default;
+    FunctionFlags();
 
     FunctionFlags(const ValueFlags &flag);
 
@@ -176,6 +176,28 @@ public:
     FunctionFlags &operator=(FunctionFlags &&in) = default;
     ///@}
 
+    /** Returns true if the quantity associated to @p ValueType must be filled. */
+    template<class ValueType>
+    bool fill() const
+    {
+        return value_type_flags_.at(ValueType::id).fill_;
+    }
+
+    /** Returns true if the quantity associated to @p ValueType is filled. */
+    template<class ValueType>
+    bool filled() const
+    {
+        return value_type_flags_.at(ValueType::id).filled_;
+    }
+
+    /** Sets the filled @p status the quantity associated to @p ValueType. */
+    template<class ValueType>
+    void set_filled(const bool status)
+    {
+        value_type_flags_[ValueType::id].filled_ = status;
+    }
+
+
     /** Returns true if the nothing must be filled. */
     bool fill_none() const;
 
@@ -188,34 +210,6 @@ public:
     /** Sets the filled status for values. */
     void set_points_filled(const bool status);
 
-    /** Returns true if the values must be filled. */
-    bool fill_values() const;
-
-    /** Returns true if the values are filled. */
-    bool values_filled() const;
-
-    /** Sets the filled status for values. */
-    void set_values_filled(const bool status);
-
-    /** Returns true if the gradients must be filled. */
-    bool fill_gradients() const;
-
-    /** Returns true if the gradients are filled. */
-    bool gradients_filled() const;
-
-    /** Sets the filled status for gradients. */
-    void set_gradients_filled(const bool status);
-
-    /** Returns true if the hessians must be filled. */
-    bool fill_hessians() const;
-
-    /** Returns true if the hessians are filled. */
-    bool hessians_filled() const;
-
-    /** Sets the filled status for hessians. */
-    void set_hessians_filled(const bool status);
-
-
     /**
      * Prints internal information about the ElementValuesCache.
      * Its main use is for testing and debugging.
@@ -226,14 +220,22 @@ protected:
     bool fill_points_ = false;
     bool points_filled_ = false;
 
-    bool fill_values_ = false;
-    bool values_filled_ = false;
 
-    bool fill_gradients_ = false;
-    bool gradients_filled_ = false;
+    struct Flags
+    {
+        bool fill_ = false;
+        bool filled_ = false;
 
-    bool fill_hessians_ = false;
-    bool hessians_filled_ = false;
+        void print_info(LogStream &out) const
+        {
+            out << "   fill = " << fill_ << "    filled = " << filled_;
+        }
+    };
+
+    /**
+     * Map used to realize the association between the ValueType::id and the relative Flags.
+     */
+    std::map<int,Flags> value_type_flags_;
 };
 
 

@@ -71,7 +71,7 @@ void matrix_map(const int deg, const int n_knots)
 		loc_rhs = 0.0;
 
 		elem_handler->fill_element_cache(elem);
-		auto phi = elem->template get_values<0, dim>(0, "active");
+		auto phi = elem->template get_basis<_Value, dim>(0, "active");
 		auto w_meas = elem->template get_w_measures<dim>(0);
 
 		for (int i = 0; i < n_basis; ++i)

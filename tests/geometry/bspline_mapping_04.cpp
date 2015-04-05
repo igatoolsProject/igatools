@@ -231,13 +231,13 @@ void bspline_map(const int deg = 2)
     {
         map->template fill_cache<sub_dim>(elem, s_id);
         out << "Values : ";
-        elem->template get_values<0,sub_dim>(s_id).print_info(out);
+        elem->template get_values<_Value,sub_dim>(s_id).print_info(out);
         out << endl;
         out << "Gradients : ";
-        elem->template get_values<1,sub_dim>(s_id).print_info(out);
+        elem->template get_values<_Gradient,sub_dim>(s_id).print_info(out);
         out << endl;
         out << "Hessians : ";
-        elem->template get_values<2,sub_dim>(s_id).print_info(out);
+        elem->template get_values<_Hessian,sub_dim>(s_id).print_info(out);
         out << endl;
     }
 

@@ -76,15 +76,15 @@ void test()
         out << "Element: " << elem->get_flat_index()<< endl;
 
         out << "Values basis functions:" << endl ;
-        const auto values = elem->evaluate_basis_values_at_points(quad,DofProperties::active);
+        const auto values = elem->template evaluate_basis_at_points<_Value>(quad,DofProperties::active);
         values.print_info(out) ;
 
         out << "Gradients basis functions:" << endl ;
-        const auto gradients = elem->evaluate_basis_gradients_at_points(quad,DofProperties::active);
+        const auto gradients = elem->template evaluate_basis_at_points<_Gradient>(quad,DofProperties::active);
         gradients.print_info(out) ;
 
         out << "Hessians basis functions:" << endl ;
-        const auto hessians = elem->evaluate_basis_hessians_at_points(quad,DofProperties::active);
+        const auto hessians = elem->template evaluate_basis_at_points<_Hessian>(quad,DofProperties::active);
         hessians.print_info(out) ;
     }
 }

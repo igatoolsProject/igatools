@@ -94,15 +94,15 @@ void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
                     sp_values.fill_face_cache(elem,s_id);
 
                     out.begin_item("Values: ");
-                    elem->template get_values<0, k>(s_id,DofProperties::active).print_info(out);
+                    elem->template get_basis<_Value, k>(s_id,DofProperties::active).print_info(out);
                     out.end_item();
 
                     out.begin_item("Gradients: ");
-                    elem->template get_values<1, k>(s_id,DofProperties::active).print_info(out);
+                    elem->template get_basis<_Gradient, k>(s_id,DofProperties::active).print_info(out);
                     out.end_item();
 
                     out.begin_item("Hessians: ");
-                    elem->template get_values<2, k>(s_id,DofProperties::active).print_info(out);
+                    elem->template get_basis<_Hessian, k>(s_id,DofProperties::active).print_info(out);
                     out.end_item();
 
                     out.end_item();

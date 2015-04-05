@@ -75,10 +75,12 @@ void evaluate_field(const int deg = 1)
     cache1->fill_element_cache(elem);
 
     const auto elem_dofs = elem->get_local_to_global(DofProperties::active);
+
     const auto &loc_coef = u.get_local_coeffs(elem_dofs);
-    elem->template linear_combination<0,dim>(loc_coef,0,DofProperties::active).print_info(out);
+    elem->template linear_combination<_Value,dim>(loc_coef,0,DofProperties::active).print_info(out);
+
     out << endl;
-    elem->template linear_combination<1,dim>(loc_coef,0,DofProperties::active).print_info(out);
+    elem->template linear_combination<_Gradient,dim>(loc_coef,0,DofProperties::active).print_info(out);
     out << endl;
 
     OUTEND

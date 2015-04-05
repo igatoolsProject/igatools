@@ -46,11 +46,11 @@ test(shared_ptr<Function<dim,codim, range,rank>> F)
         F->fill_cache(elem, Int<dim>(),0);
         elem->get_points().print_info(out);
         out << endl;
-        elem->template get_values<0, dim>(0).print_info(out);
+        elem->template get_values<_Value, dim>(0).print_info(out);
         out << endl;
-        elem->template get_values<1, dim>(0).print_info(out);
+        elem->template get_values<_Gradient, dim>(0).print_info(out);
         out << endl;
-        elem->template get_values<2, dim>(0).print_info(out);
+        elem->template get_values<_Hessian, dim>(0).print_info(out);
         out << endl;
     }
 
