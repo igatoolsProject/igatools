@@ -149,11 +149,11 @@ reset_selected_elements(
 {
     ref_space_handler_->
     reset_selected_elements(space_to_ref_flag(PhysSpace::PushForwardType::type, flag), eval_pts, elements_flat_id);
-    //push_fwd_.template reset<k>(space_to_pf_flag(flag), eval_pts);
+    push_fwd_.template reset<k>(space_to_pf_flag(flag), eval_pts);
     //    PFCache::template reset<k>(space_to_pf_flag(flag), eval_pts);
-    //flags_[k] = flag;
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
+    flags_[k] = flag;
+//    Assert(false,ExcNotImplemented());
+//    AssertThrow(false,ExcNotImplemented());
 }
 
 

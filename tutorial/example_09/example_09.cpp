@@ -76,6 +76,7 @@ private:
     shared_ptr<Matrix> matrix;
     shared_ptr<Vector> rhs;
     shared_ptr<Vector> solution;
+
 };
 
 
@@ -196,59 +197,7 @@ void PoissonProblem<dim>::assemble()
         values);
     apply_boundary_values(values, *matrix, *rhs, *solution);
     // [dirichlet constraint]
-
-
-//    for (; elem != elem_end; ++elem)
-//    {
-//        const int n_basis = elem->get_num_basis();
-//        DenseMatrix loc_mat(n_basis, n_basis);
-//        loc_mat = 0.0;
-//
-//        DenseVector loc_rhs(n_basis);
-//        loc_rhs = 0.0;
-//
-//        elem->fill_cache();
-//
-//        auto points  = elem->get_points();
-//        auto phi     = elem->get_basis_values();
-//        auto grd_phi = elem->get_basis_gradients();
-//        auto w_meas  = elem->get_w_measures();
-//
-//        f.evaluate(points, f_values);
-//
-//        for (int i = 0; i < n_basis; ++i)
-//        {
-//            auto grd_phi_i = grd_phi.get_function_view(i);
-//            for (int j = 0; j < n_basis; ++j)
-//            {
-//                auto grd_phi_j = grd_phi.get_function_view(j);
-//                for (int qp = 0; qp < n_qp; ++qp)
-//                    loc_mat(i,j) +=
-//                        scalar_product(grd_phi_i[qp], grd_phi_j[qp])
-//                        * w_meas[qp];
-//            }
-//
-//            auto phi_i = phi.get_function_view(i);
-//            for (int qp = 0; qp < n_qp; ++qp)
-//                loc_rhs(i) += scalar_product(phi_i[qp], f_values[qp])
-//                              * w_meas[qp];
-//        }
-//
-//        auto loc_dofs = elem->get_local_to_global();
-//        matrix->add_block(loc_dofs, loc_dofs, loc_mat);
-//        rhs->add_block(loc_dofs, loc_rhs);
-//    }
-//
-//    matrix->FillComplete();
-//
-//    // [dirichlet constraint]
-//    ConstantFunction<dim> g({0.0});
-//    std::map<Index, Real> values;
-//    project_boundary_values<Space,LAPack::trilinos>(g,space,face_quad,dir_id,values);
-//    apply_boundary_values(values, *matrix, *rhs, *solution);
-//    // [dirichlet constraint]
 }
-
 
 
 template<int dim>
@@ -264,7 +213,7 @@ template<int dim>
 void PoissonProblem<dim>::output()
 {
     const int n_plot_points = 2;
-    auto map = IdentityFunction<dim>::create(space->get_grid());
+    auto map = space->get_map_func();
     Writer<dim> writer(map, n_plot_points);
 
     using IgFunc = IgFunction<Space>;

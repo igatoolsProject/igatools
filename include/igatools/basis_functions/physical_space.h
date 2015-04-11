@@ -196,81 +196,17 @@ public:
         const std::string &dofs_property = DofProperties::active) const;
 
 
-#if 0
-    /**
-     * Returns the element accessor with its flat id corresponding to @p elem_flat_id.
-     *
-     * @warning This function creates a new ElementAccessor object,
-     * so it could be computationally expensive.
-     */
-    ElementAccessor get_element(const Index elem_flat_id) const;
-
-
-    std::shared_ptr<const PushForwardType> get_push_forward() const;
-#endif
     std::shared_ptr<const RefSpace> get_reference_space() const;
+
     std::shared_ptr<RefSpace> get_reference_space();
+
     std::shared_ptr<MapFunc> get_map_func() const
     {
         return map_func_;
     }
 
-#if 0
-    std::shared_ptr<FaceSpace>
-    get_face_space(const Index face_id,
-                   vector<Index> &face_to_element_dofs) const;
 
-    Index get_id() const;
-
-
-#endif
     void print_info(LogStream &out) const;
-
-
-
-#if 0
-
-
-    /**
-     * Returns a const-reference to the table containing
-     * the boundary conditions on each face of each scalar component of the space.
-     *
-     * For example, with the code
-     * @code{.cpp}
-       const auto &bc_table = space.get_boundary_conditions_table();
-
-       BoundaryConditionType bc_id = bc_table[1][3]; // boundary condition on face 3 of space's component 1
-       @endcode
-     * we copy to the variable <tt>bc_id</tt> the value of the boundary condition
-     * on the face 3 of the space component 1.
-     *
-     * @sa BoundaryConditionType
-     */
-    const BCTable &get_boundary_conditions_table() const
-    {
-        return ref_space_->get_boundary_conditions_table();
-    }
-
-    /**
-     * Returns a reference to the table containing
-     * the boundary conditions on each face of each scalar component of the space.
-     *
-     * For example, with the code
-     * @code{.cpp}
-       auto &bc_table = space.get_boundary_conditions_table();
-
-       bc_table[1][3] = BoundaryConditionType::DirichletHomogeneous; // setting Dirichlet homogeneous boundary condition on face 3 of space's component 1
-       @endcode
-     * we assign the value <tt>BoundaryConditionType::DirichletHomogeneous</tt> to the
-     * boundary condition on the face 3 of the space component 1.
-     *
-     * @sa BoundaryConditionType
-     */
-    BCTable &get_boundary_conditions_table()
-    {
-        return ref_space_->get_boundary_conditions_table();
-    }
-#endif
 
 private:
     PhysicalSpace(std::shared_ptr<RefSpace> ref_space,
