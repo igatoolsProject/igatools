@@ -87,23 +87,32 @@ using PhysSpacePtr = std::shared_ptr<PhysicalSpace<dim,range,rank,codim,type>>;
  *      <em>After this phase is not possible to insert any new space to the SpaceManager.</em>
  *
  *   2. <b>Definition of the connectivity between the spaces.</b>
- *      The purpose of this phase is to define relation between the dofs in the spaces and therefore
+ *      The purpose of this phase is to define relation between the dofs in the
+ *      spaces and therefore
  *      the active blocks in the <em>sparsity pattern</em> of the system matrix.
- *      This phase starts with the execution function spaces_connectivity_open() and it is
+ *      This phase starts with the execution function spaces_connectivity_open()
+ *      and it is
  *      concluded after the execution of the function spaces_connectivity_close().
  *      Between the execution of these two functions, the spaces connectivities
- *      (i.e. the blocks in the sparsity pattern) are added to the SpaceManager with the function
+ *      (i.e. the blocks in the sparsity pattern) are added to the SpaceManager
+ *       with the function
  *      add_spaces_connection().
- *      Please note that this last function can be used with two different signatures:
- *        - the first version takes two arguments for the spaces: one argument is used to define the
- *        space of test functions (i.e. the space defining the block of dofs along the rows)
+ *      Please note that this last function can be used with two different
+ *      signatures:
+ *        - the first version takes two arguments for the spaces: one argument
+ *        is used to define the
+ *        space of test functions (i.e. the space defining the block of dofs
+ *        along the rows)
  *        and the other is used to define the space of trial functions
  *        (i.e. the space defining the block of dofs along the columns).
- *        This means that if a user wants to add symmetric blocks, he needs to call this function twice with
+ *        This means that if a user wants to add symmetric blocks,
+ *        he needs to call this function twice with
  *        the spaces reverted.
- *        - the second version takes only one space: this can be used to define blocks along the diagonal.
+ *        - the second version takes only one space: this can be used to define
+ *         blocks along the diagonal.
  *
- *      For example, if we have 3 spaces <tt>space_0</tt>, <tt>space_1</tt> and <tt>space_2</tt> and the
+ *      For example, if we have 3 spaces <tt>space_0</tt>, <tt>space_1</tt>
+ *      and <tt>space_2</tt> and the
  *      connectivity is defined as follows:
  *        - <tt>space_0</tt> with <tt>space_2</tt> and it symmetric counterpart;
  *        - <tt>space_1</tt> with <tt>space_2</tt>;
@@ -1047,7 +1056,8 @@ template<class SpaceTest,class SpaceTrial>
 inline
 void
 SpaceManager::
-add_spaces_connection(std::shared_ptr<SpaceTest> space_test,std::shared_ptr<SpaceTrial> space_trial)
+add_spaces_connection(std::shared_ptr<SpaceTest> space_test,
+                      std::shared_ptr<SpaceTrial> space_trial)
 {
     /*
     using std::cout;
@@ -1131,7 +1141,8 @@ template<class Space>
 inline
 std::shared_ptr<SpaceManager>
 build_space_manager_single_patch(std::shared_ptr<Space> space,
-                                 const std::string dofs_filter = DofProperties::active)
+                                 const std::string row_dofs_filter,
+                                 const std::string col_dofs_filter)                                 )
 {
     auto space_manager = std::make_shared<SpaceManager>(SpaceManager());
 
@@ -1146,6 +1157,30 @@ build_space_manager_single_patch(std::shared_ptr<Space> space,
 
     return space_manager;
 }
+
+
+
+template<class Space>
+inline
+std::shared_ptr<SpaceManager>
+build_space_manager_single_patch(std::shared_ptr<Space> space,
+                                 const std::string dofs_filter = DofProperties::active)                                 )
+{
+    auto space_manager = std::make_shared<SpaceManager>(SpaceManager());
+
+    space_manager->spaces_insertion_open();
+    space_manager->add_space(space, dofs_filter);
+    space_manager->spaces_insertion_close();
+
+
+    space_manager->spaces_connectivity_open();
+    space_manager->add_spaces_connection(space);
+    space_manager->spaces_connectivity_close();
+
+    return space_manager;
+}
+
+
 
 
 IGA_NAMESPACE_CLOSE

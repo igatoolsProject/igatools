@@ -327,7 +327,7 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
  */
 template<class Space>
 std::set<Index>
-get_boundary_dofs(std::shared_ptr<const Space> space,
+get_boundary_dofs(std::shared_ptr<Space> space,
                   const std::set<boundary_id>  &boundary_ids)
 {
     const int dim   = Space::dim;

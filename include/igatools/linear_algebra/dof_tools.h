@@ -25,9 +25,7 @@
 #include <igatools/base/config.h>
 #include <igatools/linear_algebra/epetra.h>
 
-
 IGA_NAMESPACE_OPEN
-
 
 /**
  * Collection of routines to handle the relation

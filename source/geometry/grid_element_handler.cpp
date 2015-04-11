@@ -171,25 +171,6 @@ fill_cache(ElementAccessor &elem, const int j)
 }
 
 
-#if 0
-template <int dim>
-void
-GridElementHandler<dim>::
-fill_element_cache(ElementAccessor &elem)
-{
-    fill_cache<dim>(elem, 0);
-}
-
-
-
-template <int dim>
-void
-GridElementHandler<dim>::
-fill_element_cache(ElementIterator &elem)
-{
-    fill_element_cache(*elem);
-}
-#endif
 
 template <int dim>
 auto
@@ -199,6 +180,8 @@ get_grid() const -> std::shared_ptr<const GridType>
     return grid_;
 }
 
+
+
 template <int dim>
 auto
 GridElementHandler<dim>::
@@ -206,6 +189,8 @@ get_lengths() const -> const TensorProductArray<dim> &
 {
     return lengths_;
 }
+
+
 
 template <int dim>
 void

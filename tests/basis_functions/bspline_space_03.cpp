@@ -48,8 +48,15 @@ void using_const_space(shared_ptr<IgFunction<ReferenceSpace<dim>>> fun)
     OUTEND
 }
 
-
-
+template<int dim, int codim=0>
+void using_const_space(shared_ptr<Function<dim> fun)
+{
+    OUTSTART
+    auto grid = fun->get_hacked_grid();
+    auto zero = Function::create(grid,
+                                IdentityFunction<dim>::create(grid), val);
+    OUTEND
+}
 
 int main()
 {

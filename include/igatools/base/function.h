@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef NEW_FUNCTIONS_H
-#define NEW_FUNCTIONS_H
+#ifndef __FUNCTION_H_
+#define __FUNCTION_H_
 
 #include <igatools/base/config.h>
 #include <igatools/base/tensor.h>
@@ -57,8 +57,6 @@ struct seq
 
 template <int, int, int, int> class FunctionElement;
 
-
-
 /**
  * Function Class
  */
@@ -76,7 +74,7 @@ private:
 
 public:
     using Topology = UnitElement<dim_>;
-    using GridType = CartesianGrid<dim_>;
+    using GridType = const CartesianGrid<dim_>;
 
 public:
     static const int l = iga::max(0, dim_-num_sub_elem);
@@ -150,13 +148,7 @@ public:
 
     virtual std::shared_ptr<base_t> clone() const = 0;
 
-#if 0
-    virtual std::shared_ptr<base_t> clone() const
-    {
-        Assert(false, ExcNotImplemented());
-        return std::make_shared<self_t>(self_t(*this));
-    }
-#endif
+
 
     virtual void reset(const ValueFlags &flag, const eval_pts_variant &quad)
     {
@@ -171,12 +163,6 @@ public:
         const eval_pts_variant &eval_pts,
         const Index elem_id)
     {
-#ifndef NDEBUG
-        const auto grid = this->get_grid();
-//        Assert(grid->is_element_active(elem_id),
-//               ExcMessage("The element " + std::to_string(elem_id) + " is not active."));
-#endif
-
         this->reset(flag,eval_pts);
     }
 
@@ -349,18 +335,26 @@ private:
     InitCacheDispatcher init_cache_impl;
 
 
+
+    // TODO (pauletti, Apr 10, 2015): next function should not be public
 public:
     std::shared_ptr<typename ElementAccessor::CacheType>
     &get_cache(ElementAccessor &elem);
 
+
+
 protected:
+    /**
+     * One flag for each possile subdim
+     */
     std::array<FunctionFlags, dim_ + 1> flags_;
 
 
+#ifdef REFINE
     /**
      * This member is used to handle the knots-refinement.
      */
-    GridWrapper<CartesianGrid<dim_> > functions_knots_refinement_;
+    GridWrapper<GridType> functions_knots_refinement_;
 
 public:
 
@@ -372,6 +366,7 @@ public:
     {
         functions_knots_refinement_.refine_h(n_subdivisions);
     }
+#endif
 };
 
 

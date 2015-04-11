@@ -77,14 +77,14 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
     auto space = Space::create(deg, grid);
 
     std::set<boundary_id>  dir_ids = {bc::dir};
-    auto dir_dofs = get_boundary_dofs<Space>(space, dir_ids);
+    auto dir_dofs = get_boundary_dofs<RefSpace>(space, dir_ids);
 
 
     auto int_dofs = space->get_interior_dofs();
 
 
     std::set<boundary_id>  neu_ids = {bc::neu};
-    auto neu_dofs = get_boundary_dofs<Space>(space, neu_ids);
+    auto neu_dofs = get_boundary_dofs<RefSpace>(space, neu_ids);
     std::vector<Index> common(dim*range);
     auto end1 =
         std::set_intersection(neu_dofs.begin(), neu_dofs.end(),

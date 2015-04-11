@@ -115,10 +115,6 @@ public:
     static const int rank      = rank_;
     static const bool is_physical_space = false;
 
-//    using BaseSpace::n_components;
-//    using BaseSpace::components;
-//    using BaseSpace::dims;
-
 public:
     using typename BaseSpace::Func;
     using typename BaseSpace::Point;
@@ -158,9 +154,6 @@ public:
     using TensorSizeTable = typename SpaceData::TensorSizeTable;
     using PeriodicityTable = typename SpaceData::PeriodicityTable;
     using EndBehaviourTable = typename SpaceData::EndBehaviourTable;
-
-//    using BCTable = typename SpaceData::BCTable;
-
 
     using BaseSpace::ComponentContainer;
 
@@ -292,9 +285,6 @@ public:
         vector<Index> &dofs_local_to_elem,
         const std::string &dofs_property = DofProperties::active) const override final;
 
-#if 0
-    ElementHandler get_element_handler() const;
-#endif
 
     template <int k>
     using InterGridMap = typename GridType::template InterGridMap<k>;
@@ -330,10 +320,81 @@ public:
      * Global indices of the basis functions whose support intersect the
      * boundary.
      */
-    template<int k>
-    std::set<Index> get_boundary_dofs(const int s_id) const;
+//    template<int k>
+//    std::set<Index> get_boundary_dofs(const int s_id) const;
 
-    std::set<Index> get_interior_dofs() const;
+
+    using typename BaseSpace::topology_variant;
+    std::set<Index> get_boundary_dofs(const int s_id, const topology_variant &k)
+    {
+        std::set<Index> dofs;
+        boundary_dofs_impl.s_id     = s_id;
+        boundary_dofs_impl.end_b_   = &end_b_;
+        boundary_dofs_impl.bs_space = this;
+        boundary_dofs_impl.dofs = &dofs;
+
+        boost::apply_visitor(boundary_dofs_impl, k);
+        return dofs;
+    }
+
+    struct get_boundary_dofs_disp : boost::static_visitor<void>
+    {
+        template<class T>
+        void operator()(const T &quad)
+        {
+            auto &k_elem = UnitElement<dim>::template get_elem<T::k>(s_id);
+            const auto &active_dirs = k_elem.active_directions;
+
+            const int n_dir = k_elem.constant_directions.size();
+            for (int comp : end_b_->get_active_components_id())
+                for (int j=0; j<n_dir; ++j)
+                    Assert((*end_b_)[comp][k_elem.constant_directions[j]] ==
+                            BasisEndBehaviour::interpolatory,
+                            ExcNotImplemented());
+
+
+
+            TensorIndex<dim> first;
+            TensorIndex<dim> last;
+
+            const auto &space_index_table = bs_space->get_dof_distribution()->get_index_table();
+            for (auto comp : SpaceData::components)
+            {
+                for (int j=0; j<T::k; ++j)
+                {
+                    first[active_dirs[j]] = 0;
+                    last[active_dirs[j]] = bs_space->get_num_basis(comp, active_dirs[j]);
+                }
+
+                for (int j=0; j<n_dir; ++j)
+                {
+                    auto dir = k_elem.constant_directions[j];
+                    auto val = k_elem.constant_values[j];
+                    const int fixed_id = val * (bs_space->get_num_basis(comp, dir) - 1);
+                    first[dir] = fixed_id;
+                    last[dir] = fixed_id + 1;
+                }
+                auto tensor_ind = tensor_range(first, last);
+
+
+                const auto &elem_global_indices = space_index_table[comp];
+
+                for (auto &tensor_index : tensor_ind)
+                    dofs->insert(elem_global_indices(tensor_index));
+            }
+
+
+        }
+
+        int s_id;
+        EndBehaviourTable *end_b_;
+        const self_t *bs_space;
+        std::set<Index> *dofs;
+    };
+
+    get_boundary_dofs_disp boundary_dofs_impl;
+
+    std::set<Index> get_interior_dofs() const override;
 
     std::shared_ptr<const self_t > get_reference_space() const;
 

@@ -166,11 +166,11 @@ public:
     /**
      * Create an element (defined on this space) with a given flat_index.
      */
-    virtual std::shared_ptr<ReferenceElement<dim_,range_,rank_> > create_element(const Index flat_index) const override final;
+    virtual std::shared_ptr<ReferenceElement<dim_,range_,rank_> >
+    create_element(const Index flat_index) const override final;
 
     /** Destructor */
     virtual ~NURBSSpace() = default;
-
 
 protected:
     /** @name Constructor */
@@ -218,31 +218,23 @@ public:
     }
 
 
-#if 0
-    /**
-     * Returns the multiplicity of the internal knots that defines the BSpline
-     * space for each component and for each coordinate direction.
-     * \return The multiplicity of the internal knots that defines the BSpline
-     * space for each component and for each coordinate direction.
-     */
-    std::shared_ptr<const MultiplicityTable> get_interior_mult() const;
-#endif
+    std::set<Index> get_interior_dofs() const
+	{
+    	return sp_space_->get_interior_dofs();
+	}
+
+
+    using typename BaseSpace::topology_variant;
+    std::set<Index>
+    get_boundary_dofs(const int s_id, const topology_variant &k)
+    {
+    	return sp_space_->get_boundary_dofs(s_id, k);
+    }
 
     ///@}
 
     const std::shared_ptr<SpSpace> get_spline_space() const;
 
-
-#if 0
-    /** Return the push forward (non-const version). */
-    std::shared_ptr<PushForwardType> get_push_forward();
-
-    /** Return the push forward (const version). */
-    std::shared_ptr<const PushForwardType> get_push_forward() const;
-
-    std::shared_ptr<const self_t >
-    get_reference_space() const;
-#endif
 
 
     /**
@@ -255,15 +247,7 @@ public:
         return sp_space_->get_periodicity();
     }
 
-#if 0
-    /**
-     * Returns a reference to the end behaviour table of the BSpline space.
-     */
-    virtual EndBehaviourTable &get_end_behaviour_table() override final
-    {
-        return sp_space_->get_end_behaviour_table();
-    };
-#endif
+
     /**
      * Returns a const reference to the end behaviour table of the BSpline space.
      */
@@ -279,47 +263,6 @@ public:
      */
     virtual void print_info(LogStream &out) const override final;
 
-#if 0
-    /**
-     * Returns a const-reference to the table containing
-     * the boundary conditions on each face of each scalar component of the space.
-     *
-     * For example, with the code
-     * @code{.cpp}
-       const auto &bc_table = space.get_boundary_conditions_table();
-
-       BoundaryConditionType bc_id = bc_table[1][3]; // boundary condition on face 3 of space's component 1
-       @endcode
-     * we copy to the variable <tt>bc_id</tt> the value of the boundary condition
-     * on the face 3 of the space component 1.
-     *
-     * @sa BoundaryConditionType
-     */
-    const BCTable &get_boundary_conditions_table() const
-    {
-        return sp_space_->get_boundary_conditions_table();
-    }
-
-    /**
-     * Returns a reference to the table containing
-     * the boundary conditions on each face of each scalar component of the space.
-     *
-     * For example, with the code
-     * @code{.cpp}
-       auto &bc_table = space.get_boundary_conditions_table();
-
-       bc_table[1][3] = BoundaryConditionType::DirichletHomogeneous; // setting Dirichlet homogeneous boundary condition on face 3 of space's component 1
-       @endcode
-     * we assign the value <tt>BoundaryConditionType::DirichletHomogeneous</tt> to the
-     * boundary condition on the face 3 of the space component 1.
-     *
-     * @sa BoundaryConditionType
-     */
-    BCTable &get_boundary_conditions_table()
-    {
-        return sp_space_->get_boundary_conditions_table();
-    }
-#endif
 private:
     /**
      * B-spline space
@@ -333,37 +276,6 @@ private:
     WeightFunctionPtrTable weight_func_table_;
 
 
-#if 0
-    /**
-     * Refines the NURBSSpace after the uniform refinement of the BSplineSpace.
-     *
-     * @param[in] refinement_directions Directions along which the refinement is performed.
-     * @param[in] grid_old Grid before the refinement.
-     *
-     * @pre Before invoking this function, must be invoked the function BSplineSpace::refine().
-     * @note This function is connected to the CartesianGrid's signal for the refinement, and
-     * it is necessary in order to avoid infinite loops in the CartesianGrid::refine() function calls.
-     * @note The implementation of this function is based on "The NURBS Book" Algorithm A5.4.
-     *
-     * @ingroup h_refinement
-     */
-    void refine_h_weights(const std::array<bool,dim> &refinement_directions,
-                          const GridType &grid_old);
-
-    /**
-     * Create a signal and a connection for the refinement.
-     */
-    void create_refinement_connection();
-    /**
-     * Performs checks after the construction of the object.
-     * In debug mode, if something is going wrong, an assertion will be raised.
-     *
-     * @warning This function should be used as last line in the implementation of each constructor.
-     */
-    void perform_post_construction_checks() const;
-
-
-#endif
     friend ElementAccessor;
     friend ElementHandler;
 
@@ -374,9 +286,11 @@ private:
 
 
 public:
-    virtual std::shared_ptr<typename BaseSpace::ElementHandler> create_elem_handler() const override final
+    virtual std::shared_ptr<typename BaseSpace::ElementHandler>
+    create_elem_handler() const override final
     {
-        const auto this_space = std::enable_shared_from_this<self_t>::shared_from_this();
+        const auto this_space =
+        		std::enable_shared_from_this<self_t>::shared_from_this();
         return ElementHandler::create(this_space);
     }
 

@@ -594,16 +594,6 @@ public:
      */
     void refine(const Size n_subdivisions = 2);
 
-#if 0
-    /**
-     *  Connect a slot (i.e. a function pointer) to the refinement signals
-     *  which will be
-     *  emitted whenever a refine() function is called by an object holding
-     *  a CartesianGrid member.
-     */
-    boost::signals2::connection
-    connect_refinement(const SignalRefineSlot &subscriber);
-#endif
 
     /**
      *  Connect a slot (i.e. a function pointer) to the refinement signals

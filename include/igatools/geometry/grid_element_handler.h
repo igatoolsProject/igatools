@@ -152,25 +152,7 @@ public:
     }
 
 public:
-
-#if 0
-    /**
-     * Allocates the space in ElementIterator element_cache
-     * necessary for the given quadrature and flag combination.
-     * It also fills the invariant (not changing) members of
-     * the cache.
-     */
-    void init_element_cache(ElementIterator &elem);
-
-    /**
-     * Fills the ElementIterator element_cache
-     * element dependent part
-     */
-    void fill_element_cache(ElementIterator &elem);
-#endif
-
     void print_info(LogStream &out) const;
-
 
     std::shared_ptr<const GridType> get_grid() const;
 

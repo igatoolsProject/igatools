@@ -34,9 +34,6 @@
 
 IGA_NAMESPACE_OPEN
 
-class SpaceManager;
-
-
 template<Transformation,int, int> class PushForward;
 
 template <int, int, int ,int,Transformation> class PhysicalSpace;
@@ -49,6 +46,12 @@ template <int, int, int> class NURBSSpace;
 
 
 template <int,int,int> class DofDistribution;
+
+//template<int k_>
+//struct Int
+//{
+//    static const int k = k_;
+//};
 
 /**
  *
@@ -112,8 +115,6 @@ public:
     using PeriodicityTable = typename SpaceData::PeriodicityTable;
     using EndBehaviourTable = typename SpaceData::EndBehaviourTable;
 
-//    using BCTable = typename SpaceData::template ComponentContainer<std::array<BoundaryConditionType,UnitElement<dim>::n_faces>>;
-
     template <class T>
     using ComponentContainer = typename SpaceData::template ComponentContainer<T>;
 
@@ -122,9 +123,7 @@ public:
     static const auto n_components = SpaceData::n_components;
 
 protected:
-
     ReferenceSpace() = delete;
-
 
     explicit ReferenceSpace(
         const std::shared_ptr<CartesianGrid<dim_>> grid,
@@ -153,6 +152,7 @@ public:
 
     virtual bool is_bspline() const = 0;
 
+    // TODO (pauletti, Apr 10, 2015): if needed it should go in spline space not here
     /**
      * Returns the degree of the BSpline space for each component and for each coordinate direction.
      * \return The degree of the BSpline space for each component and for each coordinate direction.
@@ -161,6 +161,7 @@ public:
     virtual const DegreeTable &get_degree() const = 0;
 
 
+    // TODO (pauletti, Apr 10, 2015): if needed it should go in spline space not here
     /**
      * Return the maximum value of the degree, for each component, for each direction;
      * @return
@@ -179,12 +180,12 @@ public:
 
     /** @name Functions for retrieving information about the number of basis function. */
     ///@{
-
+    // TODO (pauletti, Apr 10, 2015): if needed it should go in spline space not here
     const TensorSizeTable &get_num_basis_table() const
     {
         return dof_distribution_->get_num_dofs_table();
     }
-
+    // TODO (pauletti, Apr 10, 2015): this one should go in spline space not here
     Size get_num_basis() const
     {
         return dof_distribution_->get_num_dofs_table().total_dimension();
@@ -215,14 +216,6 @@ public:
     ///@}
 
 
-#if 0
-    /**
-     * Adds an @p offset to the values of the dof ids.
-     */
-    void add_dofs_offset(const Index offset);
-#endif
-
-
     /**
      * This function returns the global dof id corresponding to the basis function
      * with tensor index <p>tensor_index</p> on the @p comp component of the space.
@@ -246,9 +239,20 @@ public:
     std::shared_ptr<DofDistribution<dim, range, rank> >
     get_dof_distribution();
 
+    virtual std::set<Index> get_interior_dofs() const = 0;
 
+    static const int l = iga::max(0, dim_-num_sub_elem);
+    using v2 = typename seq<Int, l, dim_>::type;
+    using topology_variant = typename boost::make_variant_over<v2>::type;
 
+    virtual std::set<Index> get_boundary_dofs(const int s_id, const topology_variant &k) = 0;
 
+    template<int k>
+    std::set<Index> get_boundary_dofs(const int s_id)
+    {
+        const auto topology = Int<k>();
+        return this-> get_boundary_dofs(s_id,  topology);
+    }
     /** @name Functions involving the element iterator */
     ///@{
     /**
