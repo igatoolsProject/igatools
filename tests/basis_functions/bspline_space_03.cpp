@@ -19,23 +19,26 @@
 //-+--------------------------------------------------------------------
 
 /*
- *  Test for building a matrix on a space of an igfunction
+ *  Test for building a matrix on a space of an const igfunction
  *
  *  author: pauletti
  *  date: 2015-03-17
  *
  */
 
+//TODO (pauletti, Apr 11, 2015): rename this test to sthing more meaningful
 #include "../tests.h"
 
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/base/ig_function.h>
+#include <igatools/base/function_lib.h>
+#include <igatools/base/identity_function.h>
 #include <igatools/linear_algebra/epetra_matrix.h>
 
 
 template<int dim, int codim=0>
-void using_const_space(shared_ptr<IgFunction<ReferenceSpace<dim>>> fun)
+void using_const_space(shared_ptr<const IgFunction<ReferenceSpace<dim>>> fun)
 {
     OUTSTART
 
@@ -49,12 +52,13 @@ void using_const_space(shared_ptr<IgFunction<ReferenceSpace<dim>>> fun)
 }
 
 template<int dim, int codim=0>
-void using_const_space(shared_ptr<Function<dim> fun)
+void using_const_function(shared_ptr<const Function<dim>> fun)
 {
     OUTSTART
-    auto grid = fun->get_hacked_grid();
-    auto zero = Function::create(grid,
-                                IdentityFunction<dim>::create(grid), val);
+	using Func =  functions::ConstantFunction<dim, codim, 1>;
+    typename Func::Value val{0.};
+    auto grid = fun->get_grid();
+    auto zero = Func::create(grid, IdentityFunction<dim>::create(grid), val);
     OUTEND
 }
 
@@ -71,6 +75,7 @@ int main()
     auto fun = IgFunction<ReferenceSpace<dim>>::create(space, *coeff);
 
     using_const_space<2>(fun);
+    using_const_function<2>(fun);
 
     return 0;
 }

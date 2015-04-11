@@ -1,5 +1,10 @@
 ========================================================================
-void using_const_space(std::shared_ptr<iga::IgFunction<iga::ReferenceSpace<dim> > >) [with int dim = 2; int codim = 0]
+void using_const_space(std::shared_ptr<const iga::IgFunction<iga::ReferenceSpace<dim> > >) [with int dim = 2; int codim = 0]
+========================================================================
+========================================================================
+
+========================================================================
+void using_const_function(std::shared_ptr<const iga::Function<dim> >) [with int dim = 2; int codim = 0]
 ========================================================================
 ========================================================================
 
