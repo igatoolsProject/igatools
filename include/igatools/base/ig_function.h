@@ -91,8 +91,8 @@ public:
     void reset(const ValueFlags &flag, const eval_pts_variant &eval_pts) override;
 
     void reset_selected_elements(const ValueFlags &flag,
-    		const eval_pts_variant &eval_pts,
-			const vector<Index> &elements_flat_id);
+                                 const eval_pts_variant &eval_pts,
+                                 const vector<Index> &elements_flat_id);
 
     void init_cache(ElementAccessor &elem, const topology_variant &k) override;
 

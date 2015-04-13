@@ -1142,7 +1142,7 @@ inline
 std::shared_ptr<SpaceManager>
 build_space_manager_single_patch(std::shared_ptr<Space> space,
                                  const std::string row_dofs_filter,
-                                 const std::string col_dofs_filter)                                 )
+                                 const std::string col_dofs_filter))
 {
     auto space_manager = std::make_shared<SpaceManager>(SpaceManager());
 
@@ -1164,7 +1164,7 @@ template<class Space>
 inline
 std::shared_ptr<SpaceManager>
 build_space_manager_single_patch(std::shared_ptr<Space> space,
-                                 const std::string dofs_filter = DofProperties::active)                                 )
+                                 const std::string dofs_filter = DofProperties::active))
 {
     auto space_manager = std::make_shared<SpaceManager>(SpaceManager());
 

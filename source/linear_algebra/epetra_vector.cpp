@@ -26,26 +26,28 @@ namespace EpetraTools
 {
 
 Size Vector::size() const
-{return GlobalLength ();}
+{
+    return GlobalLength();
+}
 
 
 
 Vector &Vector::operator +=(const Vector &vec)
 {
-	Update(1., *(this), 1.);
-	return *this;
+    Update(1., *(this), 1.);
+    return *this;
 }
 
 
 
 void Vector::add_block(const vector<Index> &vec_id,
-		const DenseVector &local_vector)
+                       const DenseVector &local_vector)
 {
-	const auto   NumEntries = vec_id.size();
-	const double *Values    = &(local_vector.data()[0]);
-	const int    *Indices   = vec_id.data();
+    const auto   NumEntries = vec_id.size();
+    const double *Values    = &(local_vector.data()[0]);
+    const int    *Indices   = vec_id.data();
 
-	Epetra_Vector::SumIntoGlobalValues(NumEntries, Values, Indices);
+    Epetra_Vector::SumIntoGlobalValues(NumEntries, Values, Indices);
 }
 
 
@@ -55,28 +57,28 @@ void Vector::add_block(const vector<Index> &vec_id,
 vector<Real>
 Vector::get_local_coeffs(const std::vector<Index> &global_ids) const
 {
-	vector<Real> local_coefs;
-	for (const auto &global_id : global_ids)
-		local_coefs.emplace_back((*this)[global_id]);
+    vector<Real> local_coefs;
+    for (const auto &global_id : global_ids)
+        local_coefs.emplace_back((*this)[global_id]);
 
-	return local_coefs;
+    return local_coefs;
 }
 
 
 
 void Vector::print_info(LogStream &out) const
 {
-	using std::endl;
-	out << "-----------------------------" << endl;
+    using std::endl;
+    out << "-----------------------------" << endl;
 
-	const Index n_entries = GlobalLength();
-	const auto &map = Map();
-	out << "Global_ID        Value" << endl;
+    const Index n_entries = GlobalLength();
+    const auto &map = Map();
+    out << "Global_ID        Value" << endl;
 
-	for (Index i = 0 ; i < n_entries ; ++i)
-		out << map.GID(i) << "        " << (*this)[i] << std::endl ;
+    for (Index i = 0 ; i < n_entries ; ++i)
+        out << map.GID(i) << "        " << (*this)[i] << std::endl ;
 
-	out << "-----------------------------" << endl;
+    out << "-----------------------------" << endl;
 }
 
 
@@ -84,7 +86,7 @@ void Vector::print_info(LogStream &out) const
 VectorPtr
 create_vector(MapPtr map)
 {
-	return std::make_shared<Vector>(*map);
+    return std::make_shared<Vector>(*map);
 }
 
 };

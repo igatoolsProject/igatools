@@ -723,11 +723,11 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     int comp = 0;
     for (const auto &w_coefs : weights)
     {
-    	Epetra_SerialComm comm;
-    	auto map = EpetraTools::create_map(scalar_spline_space, "active", comm);
-    	auto vec = w_coefs.get_data();
-    	EpetraTools::Vector w(Copy, *map, vec.data());
-    	w_func_table[comp++] = WeightFuncPtr(new WeightFunc(scalar_spline_space, w));
+        Epetra_SerialComm comm;
+        auto map = EpetraTools::create_map(scalar_spline_space, "active", comm);
+        auto vec = w_coefs.get_data();
+        EpetraTools::Vector w(Copy, *map, vec.data());
+        w_func_table[comp++] = WeightFuncPtr(new WeightFunc(scalar_spline_space, w));
     }
 
     //*/

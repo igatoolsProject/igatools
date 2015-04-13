@@ -32,11 +32,11 @@ IGA_NAMESPACE_OPEN
 
 namespace EpetraTools
 {
-    using OP = Epetra_Operator;
-    using MV = Epetra_MultiVector;
-    using SolverPtr = Teuchos::RCP<Belos::SolverManager<double, MV, OP> >;
-    SolverPtr
-	create_solver(MatrixPtr A, VectorPtr x, VectorPtr b);
+using OP = Epetra_Operator;
+using MV = Epetra_MultiVector;
+using SolverPtr = Teuchos::RCP<Belos::SolverManager<double, MV, OP> >;
+SolverPtr
+create_solver(MatrixPtr A, VectorPtr x, VectorPtr b);
 };
 
 IGA_NAMESPACE_CLOSE

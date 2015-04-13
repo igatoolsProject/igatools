@@ -60,7 +60,7 @@ void test()
     auto map = create_map(scalar_bsp_space, "active", comm);
 
     auto w_func = WeightFunc::create(scalar_bsp_space,
-    		IgCoefficients(Copy, *map, weights_coef.data()));
+                                     IgCoefficients(Copy, *map, weights_coef.data()));
 
     auto space = Space::create(bsp_space,w_func);
 

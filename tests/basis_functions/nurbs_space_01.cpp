@@ -83,7 +83,7 @@ void do_test()
     Epetra_SerialComm comm;
     auto map = create_map(scalar_space, "active", comm);
     auto w_func = WeightFunc::create(scalar_space,
-                                         IgCoefficients(Copy, *map, weights.data()));
+                                     IgCoefficients(Copy, *map, weights.data()));
 
 
     using WeightFuncPtrTable = typename Space::WeightFunctionPtrTable;

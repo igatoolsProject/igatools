@@ -35,24 +35,24 @@ IGA_NAMESPACE_OPEN
 
 namespace EpetraTools
 {
-    using Comm = Epetra_Comm;
-    using CommPtr = std::shared_ptr<const Comm>;
+using Comm = Epetra_Comm;
+using CommPtr = std::shared_ptr<const Comm>;
 
-    using Map = Epetra_Map;
-    using MapPtr = std::shared_ptr<Map>;
+using Map = Epetra_Map;
+using MapPtr = std::shared_ptr<Map>;
 
-    template<class SpacePtr>
-    MapPtr create_map(const SpacePtr space,
-                      const std::string &property,
-                      Comm &comm)
-    {
-        const auto dof_dist = space->get_dof_distribution();
-        const auto dofs = dof_dist->get_dofs_id_same_property(property);
-        //TODO (pauletti, Mar 28, 2015): this is double copy of data
-        const vector<Index> dofs_vec(dofs.begin(), dofs.end());
-        auto map = std::make_shared<Map>(-1, dofs_vec.size(), dofs_vec.data(), 0, comm);
-        return map;
-    }
+template<class SpacePtr>
+MapPtr create_map(const SpacePtr space,
+                  const std::string &property,
+                  Comm &comm)
+{
+    const auto dof_dist = space->get_dof_distribution();
+    const auto dofs = dof_dist->get_dofs_id_same_property(property);
+    //TODO (pauletti, Mar 28, 2015): this is double copy of data
+    const vector<Index> dofs_vec(dofs.begin(), dofs.end());
+    auto map = std::make_shared<Map>(-1, dofs_vec.size(), dofs_vec.data(), 0, comm);
+    return map;
+}
 
 };
 

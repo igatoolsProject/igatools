@@ -26,37 +26,37 @@ IGA_NAMESPACE_OPEN
 namespace EpetraTools
 {
 
-    SolverPtr create_solver(MatrixPtr A, VectorPtr x, VectorPtr b)
-    {
-    	using Teuchos::ParameterList;
-    	using Teuchos::parameterList;
-    	using Teuchos::RCP;
-    	using Teuchos::rcp;
-    	Belos::SolverFactory<double, MV, OP> factory;
-    	RCP<ParameterList> solverParams = parameterList();
-    	solverParams->set ("Num Blocks", 40);
-    	solverParams->set ("Maximum Iterations", 400);
-    	solverParams->set ("Convergence Tolerance", 1.0e-8);
+SolverPtr create_solver(MatrixPtr A, VectorPtr x, VectorPtr b)
+{
+    using Teuchos::ParameterList;
+    using Teuchos::parameterList;
+    using Teuchos::RCP;
+    using Teuchos::rcp;
+    Belos::SolverFactory<double, MV, OP> factory;
+    RCP<ParameterList> solverParams = parameterList();
+    solverParams->set("Num Blocks", 40);
+    solverParams->set("Maximum Iterations", 400);
+    solverParams->set("Convergence Tolerance", 1.0e-8);
 
-    	SolverPtr solver =
-    			factory.create ("CG", solverParams);
-    	RCP<Belos::LinearProblem<double, MV, OP> > problem =
-    			rcp (new Belos::LinearProblem<double, MV, OP> (
-    					rcp<OP>(A.get(),false),
-						rcp<MV>(x.get(),false),
-						rcp<MV>(b.get(),false)));
+    SolverPtr solver =
+        factory.create("CG", solverParams);
+    RCP<Belos::LinearProblem<double, MV, OP> > problem =
+        rcp(new Belos::LinearProblem<double, MV, OP> (
+                rcp<OP>(A.get(),false),
+                rcp<MV>(x.get(),false),
+                rcp<MV>(b.get(),false)));
 
-    	RCP<ML_Epetra::MultiLevelPreconditioner> Prec =
-    			rcp( new ML_Epetra::MultiLevelPreconditioner(*(A.get()), true));
+    RCP<ML_Epetra::MultiLevelPreconditioner> Prec =
+        rcp(new ML_Epetra::MultiLevelPreconditioner(*(A.get()), true));
 
-    	RCP<Belos::EpetraPrecOp> belosPrec = rcp(new Belos::EpetraPrecOp(Prec));
-    	problem->setLeftPrec(belosPrec);
-    	problem->setProblem();
+    RCP<Belos::EpetraPrecOp> belosPrec = rcp(new Belos::EpetraPrecOp(Prec));
+    problem->setLeftPrec(belosPrec);
+    problem->setProblem();
 
-    	solver->setProblem (problem);
+    solver->setProblem(problem);
 
-    	return solver;
-    }
+    return solver;
+}
 
 };
 

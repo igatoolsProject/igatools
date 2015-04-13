@@ -38,77 +38,77 @@ using namespace Teuchos;
 template<int dim>
 void matrix_map(const int deg, const int n_knots)
 {
-	OUTSTART
-	auto grid = CartesianGrid<dim>::create(n_knots);
-	auto space = BSplineSpace<dim>::create(deg, grid);
+    OUTSTART
+    auto grid = CartesianGrid<dim>::create(n_knots);
+    auto space = BSplineSpace<dim>::create(deg, grid);
 
-	Epetra_SerialComm comm;
+    Epetra_SerialComm comm;
 
-	auto map = EpetraTools::create_map(space, "active", comm);
-	auto graph = EpetraTools::create_graph(space, "active", space, "active",map, map);
+    auto map = EpetraTools::create_map(space, "active", comm);
+    auto graph = EpetraTools::create_graph(space, "active", space, "active",map, map);
 
-	auto matrix = EpetraTools::create_matrix(graph);
-	auto vector = EpetraTools::create_vector(map);
-	auto sol = EpetraTools::create_vector(map);
+    auto matrix = EpetraTools::create_matrix(graph);
+    auto vector = EpetraTools::create_vector(map);
+    auto sol = EpetraTools::create_vector(map);
 
-	auto quad = QGauss<dim>(2);
-	auto flag = ValueFlags::value | ValueFlags::w_measure;
-	auto elem_handler = space->create_elem_handler();
-	elem_handler->reset(flag, quad);
+    auto quad = QGauss<dim>(2);
+    auto flag = ValueFlags::value | ValueFlags::w_measure;
+    auto elem_handler = space->create_elem_handler();
+    elem_handler->reset(flag, quad);
 
-	auto elem = space->begin();
-	auto end  = space->end();
-	elem_handler->init_element_cache(elem);
-	const int n_qp = quad.get_num_points();
+    auto elem = space->begin();
+    auto end  = space->end();
+    elem_handler->init_element_cache(elem);
+    const int n_qp = quad.get_num_points();
 
-	for (; elem != end; ++elem)
-	{
-		const int n_basis = elem->get_num_basis("active");
+    for (; elem != end; ++elem)
+    {
+        const int n_basis = elem->get_num_basis("active");
 
-		DenseMatrix loc_mat(n_basis, n_basis);
-		loc_mat = 0.0;
-		DenseVector loc_rhs(n_basis);
-		loc_rhs = 0.0;
+        DenseMatrix loc_mat(n_basis, n_basis);
+        loc_mat = 0.0;
+        DenseVector loc_rhs(n_basis);
+        loc_rhs = 0.0;
 
-		elem_handler->fill_element_cache(elem);
-		auto phi = elem->template get_basis<_Value, dim>(0, "active");
-		auto w_meas = elem->template get_w_measures<dim>(0);
+        elem_handler->fill_element_cache(elem);
+        auto phi = elem->template get_basis<_Value, dim>(0, "active");
+        auto w_meas = elem->template get_w_measures<dim>(0);
 
-		for (int i = 0; i < n_basis; ++i)
-		{
-			auto phi_i = phi.get_function_view(i);
-			for (int j = 0; j < n_basis; ++j)
-			{
-				auto phi_j = phi.get_function_view(j);
-				for (int qp = 0; qp < n_qp; ++qp)
-					loc_mat(i,j) +=
-							scalar_product(phi_i[qp], phi_j[qp])
-							* w_meas[qp];
-			}
+        for (int i = 0; i < n_basis; ++i)
+        {
+            auto phi_i = phi.get_function_view(i);
+            for (int j = 0; j < n_basis; ++j)
+            {
+                auto phi_j = phi.get_function_view(j);
+                for (int qp = 0; qp < n_qp; ++qp)
+                    loc_mat(i,j) +=
+                        scalar_product(phi_i[qp], phi_j[qp])
+                        * w_meas[qp];
+            }
 
-			for (int qp=0; qp<n_qp; ++qp)
-				loc_rhs(i) += phi_i[qp][0] // f=1
-				* w_meas[qp];
-		}
+            for (int qp=0; qp<n_qp; ++qp)
+                loc_rhs(i) += phi_i[qp][0] // f=1
+                              * w_meas[qp];
+        }
 
-		const auto loc_dofs = elem->get_local_to_global("active");
-		matrix->add_block(loc_dofs, loc_dofs, loc_mat);
-		vector->add_block(loc_dofs, loc_rhs);
-	}
+        const auto loc_dofs = elem->get_local_to_global("active");
+        matrix->add_block(loc_dofs, loc_dofs, loc_mat);
+        vector->add_block(loc_dofs, loc_rhs);
+    }
 
-	matrix->FillComplete();
+    matrix->FillComplete();
 
-	auto solver = EpetraTools::create_solver(matrix, sol, vector);
-	auto result = solver->solve();
-	AssertThrow(result == Belos::ReturnType::Converged,
-			ExcMessage("No convergence."));
-	out << solver->getNumIters() << endl;
+    auto solver = EpetraTools::create_solver(matrix, sol, vector);
+    auto result = solver->solve();
+    AssertThrow(result == Belos::ReturnType::Converged,
+                ExcMessage("No convergence."));
+    out << solver->getNumIters() << endl;
 
-	matrix->print_info(out);
-	vector->print_info(out);
-	sol->print_info(out);
+    matrix->print_info(out);
+    vector->print_info(out);
+    sol->print_info(out);
 
-	OUTEND
+    OUTEND
 }
 
 
@@ -117,7 +117,7 @@ int main()
 {
     const int deg = 1;
     const int n_knots = 10;
-	matrix_map<2>(deg, n_knots);
-	return 0;
+    matrix_map<2>(deg, n_knots);
+    return 0;
 
 }

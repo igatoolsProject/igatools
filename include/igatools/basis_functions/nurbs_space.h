@@ -219,16 +219,16 @@ public:
 
 
     std::set<Index> get_interior_dofs() const
-	{
-    	return sp_space_->get_interior_dofs();
-	}
+    {
+        return sp_space_->get_interior_dofs();
+    }
 
 
     using typename BaseSpace::topology_variant;
     std::set<Index>
     get_boundary_dofs(const int s_id, const topology_variant &k)
     {
-    	return sp_space_->get_boundary_dofs(s_id, k);
+        return sp_space_->get_boundary_dofs(s_id, k);
     }
 
     ///@}
@@ -290,7 +290,7 @@ public:
     create_elem_handler() const override final
     {
         const auto this_space =
-        		std::enable_shared_from_this<self_t>::shared_from_this();
+            std::enable_shared_from_this<self_t>::shared_from_this();
         return ElementHandler::create(this_space);
     }
 

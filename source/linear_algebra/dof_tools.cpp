@@ -47,7 +47,7 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
 
     for (; dof != dof_end; ++dof)
     {
-    	const Index row_id = dof->first;
+        const Index row_id = dof->first;
         const Index loc_id = map.LID(dof->first);
 
         const Real bc_value = dof->second;
@@ -62,10 +62,10 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
 
 
         Real mat_value;
-        for(int i=0; i<NumEntries; ++i)
-        	if (Indices[i] != row_id)
-        		Values[i] = 0.;
-        	else mat_value = Values[i];
+        for (int i=0; i<NumEntries; ++i)
+            if (Indices[i] != row_id)
+                Values[i] = 0.;
+            else mat_value = Values[i];
 
         rhs[row_id] = bc_value * mat_value;
         solution[row_id] = bc_value;

@@ -246,10 +246,10 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
     auto solver = EpetraTools::create_solver(matrix, sol, rhs);
     auto result = solver->solve();
     AssertThrow(result == Belos::ReturnType::Converged,
-    		ExcMessage("No convergence."));
+                ExcMessage("No convergence."));
 
     return ProjFunc::create(std::const_pointer_cast<Space>(space),
-    		*sol, dofs_property);
+                            *sol, dofs_property);
 }
 
 

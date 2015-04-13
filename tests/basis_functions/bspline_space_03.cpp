@@ -55,8 +55,8 @@ template<int dim, int codim=0>
 void using_const_function(shared_ptr<const Function<dim>> fun)
 {
     OUTSTART
-	using Func =  functions::ConstantFunction<dim, codim, 1>;
-    typename Func::Value val{0.};
+    using Func =  functions::ConstantFunction<dim, codim, 1>;
+    typename Func::Value val {0.};
     auto grid = fun->get_grid();
     auto zero = Func::create(grid, IdentityFunction<dim>::create(grid), val);
     OUTEND

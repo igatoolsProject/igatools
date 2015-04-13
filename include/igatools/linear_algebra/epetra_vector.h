@@ -56,18 +56,18 @@ public:
 
 };
 
-    using VectorPtr = std::shared_ptr<Vector>;
+using VectorPtr = std::shared_ptr<Vector>;
 
-    VectorPtr create_vector(MapPtr map);
+VectorPtr create_vector(MapPtr map);
 
-    template <class SpacePtr>
-    VectorPtr
-	create_vector(SpacePtr space, const std::string &prop = DofProperties::active)
-    {
-    	Epetra_SerialComm comm;
-    	auto map = EpetraTools::create_map(space, prop, comm);
-    	return EpetraTools::create_vector(map);
-    }
+template <class SpacePtr>
+VectorPtr
+create_vector(SpacePtr space, const std::string &prop = DofProperties::active)
+{
+    Epetra_SerialComm comm;
+    auto map = EpetraTools::create_map(space, prop, comm);
+    return EpetraTools::create_vector(map);
+}
 
 };
 

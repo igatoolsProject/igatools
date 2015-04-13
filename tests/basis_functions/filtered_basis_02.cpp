@@ -79,7 +79,7 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
     Epetra_SerialComm comm;
     auto map = create_map(space,DofProp::interior , comm);
     auto graph = create_graph(space, DofProp::interior, space,
-    		DofProp::interior, map, map);
+                              DofProp::interior, map, map);
 
     auto matrix = create_matrix(graph);
     auto rhs = create_vector(map);

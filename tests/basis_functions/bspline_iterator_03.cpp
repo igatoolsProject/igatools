@@ -46,24 +46,24 @@ void evaluate_field(const int deg = 1)
 
     auto space = Space::create(deg, grid);
     const auto  num = space->get_num_basis();
-       Epetra_SerialComm comm;
-       Epetra_Map map(num, num, 0, comm);
+    Epetra_SerialComm comm;
+    Epetra_Map map(num, num, 0, comm);
 
-       Vector u(map);
-       {
-           int id = 0 ;
-           u[id++] = 0.0 ;
-           u[id++] = 1.0 ;
+    Vector u(map);
+    {
+        int id = 0 ;
+        u[id++] = 0.0 ;
+        u[id++] = 1.0 ;
 
-           u[id++] = 0.0 ;
-           u[id++] = 1.0 ;
+        u[id++] = 0.0 ;
+        u[id++] = 1.0 ;
 
-           u[id++] = 0.0 ;
-           u[id++] = 0.0 ;
+        u[id++] = 0.0 ;
+        u[id++] = 0.0 ;
 
-           u[id++] = 1.0 ;
-           u[id++] = 1.0 ;
-       }
+        u[id++] = 1.0 ;
+        u[id++] = 1.0 ;
+    }
 
     QGauss<dim> quad(2) ;
     const auto flag = ValueFlags::value|ValueFlags::gradient;

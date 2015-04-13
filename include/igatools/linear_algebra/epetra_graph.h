@@ -37,56 +37,56 @@ using GraphPtr = std::shared_ptr<Graph>;
 template<class RowSpacePtr, class ColSpacePtr>
 GraphPtr
 create_graph(const RowSpacePtr row_space, const std::string &row_property,
-		const ColSpacePtr col_space, const std::string &col_property,
-		MapPtr row_map_, MapPtr col_map_)
+             const ColSpacePtr col_space, const std::string &col_property,
+             MapPtr row_map_, MapPtr col_map_)
 {
-	const auto n_rows = row_map_->NumMyElements();
-	vector<vector<Index>> loc_dofs(n_rows);
-	auto r_elem = row_space->begin();
-	auto c_elem = col_space->begin();
-	const auto end = row_space->end();
-	for (;r_elem != end; ++r_elem, ++c_elem)
-	{
-		auto r_dofs = r_elem->get_local_to_global(row_property);
-		auto c_dofs = c_elem->get_local_to_global(col_property);
-		for(auto &r_dof : r_dofs)
-		{
-			auto &dof_vec = loc_dofs[row_map_->LID(r_dof)];
-			dof_vec.insert(dof_vec.begin(), c_dofs.begin(), c_dofs.end());
-		}
-	}
+    const auto n_rows = row_map_->NumMyElements();
+    vector<vector<Index>> loc_dofs(n_rows);
+    auto r_elem = row_space->begin();
+    auto c_elem = col_space->begin();
+    const auto end = row_space->end();
+    for (; r_elem != end; ++r_elem, ++c_elem)
+    {
+        auto r_dofs = r_elem->get_local_to_global(row_property);
+        auto c_dofs = c_elem->get_local_to_global(col_property);
+        for (auto &r_dof : r_dofs)
+        {
+            auto &dof_vec = loc_dofs[row_map_->LID(r_dof)];
+            dof_vec.insert(dof_vec.begin(), c_dofs.begin(), c_dofs.end());
+        }
+    }
 
-	vector<Size> n_dofs_per_row(n_rows);
-	{
-		Index j=0;
-		for (auto &dofs : loc_dofs)
-		{
-			std::sort(dofs.begin(), dofs.end());
-			auto it = std::unique (dofs.begin(), dofs.end());
-			dofs.resize(std::distance(dofs.begin(),it) );
-			n_dofs_per_row[j] = dofs.size();
-			++j;
-		}
-	}
+    vector<Size> n_dofs_per_row(n_rows);
+    {
+        Index j=0;
+        for (auto &dofs : loc_dofs)
+        {
+            std::sort(dofs.begin(), dofs.end());
+            auto it = std::unique(dofs.begin(), dofs.end());
+            dofs.resize(std::distance(dofs.begin(),it));
+            n_dofs_per_row[j] = dofs.size();
+            ++j;
+        }
+    }
 
-	const bool is_static_profile = true;
-	auto graph_ = std::make_shared<Graph>(Epetra_DataAccess::Copy,
-			*row_map_, *col_map_,
-			n_dofs_per_row.data(),
-			is_static_profile);
+    const bool is_static_profile = true;
+    auto graph_ = std::make_shared<Graph>(Epetra_DataAccess::Copy,
+                                          *row_map_, *col_map_,
+                                          n_dofs_per_row.data(),
+                                          is_static_profile);
 
-	Index j=0;
-	for (auto &dofs : loc_dofs)
-	{
-		const Index row_id = row_map_->GID(j);
-		graph_->InsertGlobalIndices(row_id, dofs.size(), dofs.data());
-		++j;
-	}
+    Index j=0;
+    for (auto &dofs : loc_dofs)
+    {
+        const Index row_id = row_map_->GID(j);
+        graph_->InsertGlobalIndices(row_id, dofs.size(), dofs.data());
+        ++j;
+    }
 
-	int res = graph_->FillComplete(*col_map_,*row_map_);
-	Assert(res==0, ExcMessage(" "));
+    int res = graph_->FillComplete(*col_map_,*row_map_);
+    Assert(res==0, ExcMessage(" "));
 
-	return graph_;
+    return graph_;
 }
 
 };

@@ -177,7 +177,7 @@ IgFunction<Space>::
 operator +=(const self_t &fun) -> self_t &
 {
     Assert(space_ == fun.space_,
-    		ExcMessage("Functions defined on different spaces."));
+    ExcMessage("Functions defined on different spaces."));
 
     coeff_ += fun.coeff_;
     return *this;
