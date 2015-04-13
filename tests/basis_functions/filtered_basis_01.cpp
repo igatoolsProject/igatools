@@ -30,8 +30,6 @@
 
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
-#include <igatools/linear_algebra/distributed_matrix.h>
-
 
 struct DofProp
 {
