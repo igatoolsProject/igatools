@@ -245,10 +245,10 @@ public:
     using v2 = typename seq<Int, l, dim_>::type;
     using topology_variant = typename boost::make_variant_over<v2>::type;
 
-    virtual std::set<Index> get_boundary_dofs(const int s_id, const topology_variant &k) = 0;
+    virtual std::set<Index> get_boundary_dofs(const int s_id, const topology_variant &k) const = 0;
 
     template<int k>
-    std::set<Index> get_boundary_dofs(const int s_id)
+    std::set<Index> get_boundary_dofs(const int s_id) const
     {
         const auto topology = Int<k>();
         return this-> get_boundary_dofs(s_id,  topology);

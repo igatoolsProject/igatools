@@ -29,7 +29,7 @@ IGA_NAMESPACE_OPEN
 
 template<class Space>
 IgFunction<Space>::
-IgFunction(std::shared_ptr<Space> space,
+IgFunction(std::shared_ptr<const Space> space,
            const CoeffType &coeff,
            const std::string &property)
     :
@@ -65,7 +65,7 @@ IgFunction(const self_t &fun)
 template<class Space>
 auto
 IgFunction<Space>::
-create(std::shared_ptr<Space> space,
+create(std::shared_ptr<const Space> space,
        const CoeffType &coeff,
        const std::string &property) ->  std::shared_ptr<self_t>
 {

@@ -56,7 +56,7 @@ private:
 
 public:
     //TODO (pauletti, Mar 23, 2015): should we make this private?
-    IgFunction(std::shared_ptr<Space> space,
+    IgFunction(std::shared_ptr<const Space> space,
                const CoeffType &coeff,
                const std::string &property = DofProperties::active);
 
@@ -78,7 +78,7 @@ public:
 
 public:
     static std::shared_ptr<self_t>
-    create(std::shared_ptr<Space> space, const CoeffType &coeff,
+    create(std::shared_ptr<const Space> space, const CoeffType &coeff,
            const std::string &property = DofProperties::active);
 
 

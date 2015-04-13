@@ -320,12 +320,9 @@ public:
      * Global indices of the basis functions whose support intersect the
      * boundary.
      */
-//    template<int k>
-//    std::set<Index> get_boundary_dofs(const int s_id) const;
-
-
     using typename BaseSpace::topology_variant;
-    std::set<Index> get_boundary_dofs(const int s_id, const topology_variant &k)
+    std::set<Index>
+    get_boundary_dofs(const int s_id, const topology_variant &k) const override
     {
         std::set<Index> dofs;
         boundary_dofs_impl.s_id     = s_id;
@@ -387,12 +384,12 @@ public:
         }
 
         int s_id;
-        EndBehaviourTable *end_b_;
-        const self_t *bs_space;
+        EndBehaviourTable const *end_b_;
+        self_t const *bs_space;
         std::set<Index> *dofs;
     };
 
-    get_boundary_dofs_disp boundary_dofs_impl;
+    mutable get_boundary_dofs_disp boundary_dofs_impl;
 
     std::set<Index> get_interior_dofs() const override;
 

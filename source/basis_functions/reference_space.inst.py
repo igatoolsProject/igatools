@@ -34,10 +34,7 @@ sub_dim_members = \
   'InterSpaceMap<k> &dof_map, ' + 
   'std::shared_ptr<CartesianGrid<k>> sub_grid, ' +
   'std::shared_ptr<InterGridMap<k>> elem_map) const;',
-  'std::set<Index> class::get_boundary_dofs<k>(const int s_id);']
-  
-#  'std::shared_ptr<typename class::template SubSpace<k>::MultiplicityTable> class::get_sub_space_mult<k>(const Index s_id) const;', 
-#  'typename class::template SubSpace<k>::DegreeTable class::get_sub_space_degree<k>(const Index s_id) const;']         
+  'std::set<Index> class::get_boundary_dofs<k>(const int s_id) const;']
 
 
 for x in inst.sub_ref_sp_dims:

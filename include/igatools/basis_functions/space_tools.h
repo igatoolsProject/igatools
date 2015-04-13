@@ -21,20 +21,14 @@
 #ifndef SPACE_TOOLS_H_
 #define SPACE_TOOLS_H_
 
-//#include <igatools/base/function.h>
 #include <igatools/base/ig_function.h>
-
 #include <igatools/geometry/grid_tools.h>
-
-//#include <igatools/linear_algebra/distributed_matrix.h>
-
-#include <igatools/linear_algebra/epetra_solver.h>
-
 #include <igatools/base/sub_function.h>
 
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/basis_functions/phys_space_element_handler.h>
 
+#include <igatools/linear_algebra/epetra_solver.h>
 
 #include<set>
 
@@ -327,7 +321,7 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
  */
 template<class Space>
 std::set<Index>
-get_boundary_dofs(std::shared_ptr<Space> space,
+get_boundary_dofs(std::shared_ptr<const Space> space,
                   const std::set<boundary_id>  &boundary_ids)
 {
     const int dim   = Space::dim;

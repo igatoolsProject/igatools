@@ -226,7 +226,7 @@ public:
 
     using typename BaseSpace::topology_variant;
     std::set<Index>
-    get_boundary_dofs(const int s_id, const topology_variant &k)
+    get_boundary_dofs(const int s_id, const topology_variant &k) const override
     {
         return sp_space_->get_boundary_dofs(s_id, k);
     }
