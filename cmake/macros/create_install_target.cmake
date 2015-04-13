@@ -36,8 +36,6 @@ macro(create_install_target use_other_templates)
   endif(${use_other_templates})
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/${lib_name}/base/config.h 
     DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${lib_name}/base)
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/${lib_name}/basis_functions/space_manager.inst 
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${lib_name}/basis_functions/)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${lib_name}Config.cmake 
     ${CMAKE_CURRENT_BINARY_DIR}/${lib_name}ConfigVersion.cmake
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
