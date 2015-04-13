@@ -21,9 +21,6 @@
 
 #include <igatools/linear_algebra/dof_tools.h>
 #include <igatools/base/exceptions.h>
-#include <igatools/linear_algebra/distributed_matrix.h>
-
-
 
 using std::map;
 using std::set;
@@ -71,63 +68,6 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
         solution[row_id] = bc_value;
     }
 }
-
-
-
-#ifdef USE_PETSC
-
-template <>
-void apply_boundary_values(const std::map<Index,Real> &boundary_values,
-                           Matrix<LAPack::petsc> &matrix,
-                           Vector<LAPack::petsc> &rhs,
-                           Vector<LAPack::petsc> &solution)
-{
-
-    PetscErrorCode ierr;
-
-    vector<Index> rows;
-    vector<PetscScalar> values;
-
-
-    for (const auto &bv : boundary_values)
-    {
-        rows.push_back(bv.first);
-        values.push_back(bv.second);
-    }
-
-
-    // Set the matrix in write mode.
-    matrix.resume_fill();
-
-    // Set the boundary value in the solution vector.
-    ierr = VecSetValues(solution.get_petsc_vector(), rows.size(), rows.data(),
-                        values.data(), INSERT_VALUES);
-
-    // Getting the first diagonal value (of the constrained degrees of freedom),
-    // this value is going to be written in the diagonal for all the removed
-    // rows/columns.
-    // Note: It would be desirable to keep the correspoding values for
-    // every row/column, but the petsc function MatZeroRowsColumns only allows
-    // to specify a single value for the diagonal terms.
-    // This could be changed with multiple calls to this function (one for every
-    // degree of freedom constrained). Probably it would be expensive, but the
-    // condition number would be possibly improved.
-    const Real diagonal = matrix(rows[0], rows[0]);
-
-    // Setting to zero the rows and columns corresponding to rows.
-    // The diagonal terms will be set with the value of diagonal.
-    // The corresponding values or rhs will be set to be equal to
-    // diagonal * values (for every vector element).
-    ierr = MatZeroRowsColumns(matrix.get_petsc_matrix(), rows.size(),
-                              rows.data(), diagonal,
-                              solution.get_petsc_vector(),
-                              rhs.get_petsc_vector());
-
-    // Communicate the matrix values to the different processors.
-    matrix.FillComplete();
-
-}
-#endif //#ifdef USE_PETSC
 
 }
 
