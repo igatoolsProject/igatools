@@ -34,7 +34,7 @@ Size Vector::size() const
 
 Vector &Vector::operator +=(const Vector &vec)
 {
-    Update(1., *(this), 1.);
+    Update(1., vec, 1.);
     return *this;
 }
 
