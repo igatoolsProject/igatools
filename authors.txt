@@ -16,6 +16,10 @@ Leading developers
 Developers
 
     Pablo Antolin
-    Nicola Cavallini 
-
+    
 Contributors
+    
+    Rafael Vazques
+    Nicola Cavallini
+    
+
