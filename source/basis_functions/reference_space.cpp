@@ -79,7 +79,9 @@ get_ref_sub_space(const int sub_elem_id,
     {
 #ifdef NURBS
         //TODO (MM, Dec 22, 2014): implement NURBSSpace::get_ref_sub_space()
+#ifndef NDEBUG
         const auto nrb_space = dynamic_cast<const NURBSSpace<dim,range,rank> *>(this);
+#endif
         Assert(nrb_space != nullptr,ExcNullPtr());
         Assert(false,ExcNotImplemented());
 #else

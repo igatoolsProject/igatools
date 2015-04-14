@@ -343,13 +343,14 @@ public:
             const auto &active_dirs = k_elem.active_directions;
 
             const int n_dir = k_elem.constant_directions.size();
+
+#ifndef NDEBUG
             for (int comp : end_b_->get_active_components_id())
                 for (int j=0; j<n_dir; ++j)
                     Assert((*end_b_)[comp][k_elem.constant_directions[j]] ==
                            BasisEndBehaviour::interpolatory,
                            ExcNotImplemented());
-
-
+#endif
 
             TensorIndex<dim> first;
             TensorIndex<dim> last;

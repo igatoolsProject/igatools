@@ -99,41 +99,6 @@ move_to(const Index flat_index)
     this->as_cartesian_grid_element_accessor().move_to(flat_index);
 }
 
-#if 0
-template <int dim, int range, int rank>
-template <class ValueType>
-auto
-ReferenceElement<dim, range, rank>::
-evaluate_basis_at_points(
-    const Quadrature<dim> &points,
-    const std::string &dofs_property)
--> ValueTable< ContType_from_ValueType<ValueType> >
-{
-    auto elem_handler = ReferenceElementHandler<dim,range,rank>::create(this->space_);
-
-    ValueFlags flags;
-    if (ValueType::id == _Value::id)
-        flags = ValueFlags::value;
-    else if (ValueType::id == _Gradient::id)
-        flags = ValueFlags::gradient;
-    else if (ValueType::id == _Hessian::id)
-        flags = ValueFlags::hessian;
-    else if (ValueType::id == _Divergence::id)
-        flags = ValueFlags::divergence;
-    else
-    {
-        Assert(false,ExcNotImplemented());
-    }
-
-    elem_handler->reset_one_element(flags,points,this->get_flat_index());
-    elem_handler->template init_cache<dim>(*this);
-    elem_handler->template fill_cache<dim>(*this,0);
-
-//    Assert(false,ExcNotImplemented());
-
-    return this->template get_basis<ValueType,dim>(0,dofs_property);
-}
-#endif
 
 
 template <int dim, int range, int rank>
@@ -143,6 +108,8 @@ get_num_basis_comp(const int i) const
 {
     return this->n_basis_direction_[i].flat_size();
 }
+
+
 
 template <int dim, int range, int rank>
 auto

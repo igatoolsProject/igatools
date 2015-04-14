@@ -58,12 +58,13 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
         matrix.ExtractGlobalRowView(row_id, NumEntries, Values);
 
 
-        Real mat_value;
+        Real mat_value = NAN;
         for (int i=0; i<NumEntries; ++i)
             if (Indices[i] != row_id)
                 Values[i] = 0.;
             else mat_value = Values[i];
 
+        Assert(mat_value != NAN, ExcInternalError());
         rhs[row_id] = bc_value * mat_value;
         solution[row_id] = bc_value;
     }
