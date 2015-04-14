@@ -277,7 +277,7 @@ get_ref_sub_space(const int s_id,
     for (int comp : end_b_.get_active_components_id())
         for (int j=0; j<n_dir; ++j)
             Assert(end_b_[comp][k_elem.constant_directions[j]] ==
-                    BasisEndBehaviour::interpolatory,
+            BasisEndBehaviour::interpolatory,
             ExcNotImplemented());
 #endif
 
