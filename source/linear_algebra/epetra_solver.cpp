@@ -38,8 +38,7 @@ SolverPtr create_solver(MatrixPtr A, VectorPtr x, VectorPtr b)
     solverParams->set("Maximum Iterations", 400);
     solverParams->set("Convergence Tolerance", 1.0e-8);
 
-    SolverPtr solver =
-        factory.create("CG", solverParams);
+    SolverPtr solver = factory.create("CG", solverParams);
     RCP<Belos::LinearProblem<double, MV, OP> > problem =
         rcp(new Belos::LinearProblem<double, MV, OP> (
                 rcp<OP>(A.get(),false),
