@@ -63,8 +63,8 @@ endif()
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Set the igatools version 
 #
-set(IGATOOLS_MAJOR_VERSION 0)
-set(IGATOOLS_MINOR_VERSION 8)
+set(IGATOOLS_MAJOR_VERSION 1)
+set(IGATOOLS_MINOR_VERSION 0)
 set(IGATOOLS_PATCH_VERSION 0)
 set(IGATOOLS_VERSION
   ${IGATOOLS_MAJOR_VERSION}.${IGATOOLS_MINOR_VERSION}.${IGATOOLS_PATCH_VERSION})
@@ -110,7 +110,6 @@ option(submit_test "Allow test submition" OFF)
 
 # Optinal libraries
 option(USE_TRILINOS "Use the linear algebra packages from Trilinos" ON)
-option(USE_PETSC "Use the linear algebra packages from PETSc" OFF)
 #
 #-------------------------------------------------------------------------------
 
@@ -122,9 +121,6 @@ if (USE_TRILINOS)
   find_trilinos()
 endif()
 
-if (USE_PETSC)
-  find_petsc()
-endif()
 #-------------------------------------------------------------------------------
 
 
