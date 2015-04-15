@@ -47,7 +47,7 @@ public :
     using self_t = PhysicalSpaceElement<dim_,range_,rank_,codim_>;
     using parent_t = SpaceElement<dim_,codim_,range_,rank_>;
 
-    using parent_t::LocalCache;
+//    using parent_t::LocalCache;
 
     using PhysSpace = PhysicalSpace<dim_,range_,rank_,codim_>;
     /** Type required by the CartesianGridIterator templated iterator */

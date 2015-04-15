@@ -36,59 +36,9 @@ FunctionElement(const FunctionElement<dim,codim,range,rank> &elem,
     if (copy_policy == CopyPolicy::shallow)
         local_cache_ = elem.local_cache_;
     else
-        local_cache_ = std::shared_ptr<LocalCache>(new LocalCache(*elem.local_cache_));
+        local_cache_ = std::shared_ptr<LocalCache<Cache>>(new LocalCache<Cache>(*elem.local_cache_));
 }
 
-#if 0
-template<int dim, int codim, int range, int rank>
-auto
-FunctionElement<dim, codim, range, rank>::
-get_points() const -> ValueVector<Point> const &
-{
-    return elem_cache_->points_;
-}
-
-
-
-template<int dim, int codim, int range, int rank>
-auto
-FunctionElement<dim, codim, range, rank>::
-get_values() const -> ValueVector<Value> const &
-{
-    return elem_cache_->values_;
-}
-
-
-
-template<int dim, int codim, int range, int rank>
-template<int order>
-auto const &
-FunctionElement<dim, codim, range, rank>::
-get_derivative() const
-{
-    return std::get<order>(elem_cache_->derivatives_);
-}
-
-
-
-template<int dim, int codim, int range, int rank>
-auto
-FunctionElement<dim, codim, range, rank>::
-get_gradients() const -> ValueVector<Gradient> const &
-{
-    return get_derivative<1>();
-}
-
-
-
-template<int dim, int codim, int range, int rank>
-auto
-FunctionElement<dim, codim, range, rank>::
-get_hessians() const -> ValueVector<Hessian> const &
-{
-    return get_derivative<2>();
-}
-#endif
 
 IGA_NAMESPACE_CLOSE
 

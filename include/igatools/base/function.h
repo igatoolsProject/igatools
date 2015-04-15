@@ -312,7 +312,7 @@ private:
             auto &cache = elem->local_cache_;
             if (cache == nullptr)
             {
-                using Cache = typename ElementAccessor::LocalCache;
+                using Cache = typename ElementAccessor::CacheType;
                 cache = std::shared_ptr<Cache>(new Cache);
             }
 

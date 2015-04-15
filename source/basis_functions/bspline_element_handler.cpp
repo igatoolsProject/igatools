@@ -416,7 +416,10 @@ operator()(const T &quad)
     auto &cache = elem_->get_local_cache();
     if (cache == nullptr)
     {
-        using Cache = typename BSplineElement<dim_,range_,rank_>::LocalCache;
+        using VCache = typename BSplineElement<dim_,range_,rank_>::parent_t::Cache;
+
+        using Cache = LocalCache<VCache>;
+
         cache = shared_ptr<Cache>(new Cache);
     }
 

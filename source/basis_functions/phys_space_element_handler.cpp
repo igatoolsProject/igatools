@@ -183,7 +183,9 @@ init_cache(ElementAccessor &elem)
     auto &cache = elem.PhysSpace::ElementAccessor::parent_t::local_cache_;
     if (cache == nullptr)
     {
-        using Cache = typename PhysSpace::ElementAccessor::parent_t::LocalCache;
+        using VCache = typename PhysSpace::ElementAccessor::parent_t::Cache;
+
+        using Cache = LocalCache<VCache>;
         cache = shared_ptr<Cache>(new Cache);
     }
 

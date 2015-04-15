@@ -43,7 +43,7 @@ SpaceElement(const self_t &elem,
         }
         else
         {
-            local_cache_ = std::shared_ptr<LocalCache>(new LocalCache(*elem.local_cache_));
+            local_cache_ = std::shared_ptr<LocalCache<Cache>>(new LocalCache<Cache>(*elem.local_cache_));
         }
     }
 }
@@ -64,7 +64,7 @@ copy_from(const self_t &elem,
         if (copy_policy == CopyPolicy::deep)
         {
             Assert(elem.local_cache_ != nullptr, ExcNullPtr());
-            local_cache_ = std::shared_ptr<LocalCache>(new LocalCache(*elem.local_cache_));
+            local_cache_ = std::shared_ptr<LocalCache<Cache>>(new LocalCache<Cache>(*elem.local_cache_));
         }
         else if (copy_policy == CopyPolicy::shallow)
         {
@@ -128,27 +128,6 @@ print_cache_info(LogStream &out) const
 
     Assert(local_cache_ != nullptr,ExcNullPtr());
     local_cache_->print_info(out);
-}
-
-
-template<int dim,int codim,int range,int rank>
-void
-SpaceElement<dim,codim,range,rank>::LocalCache::
-print_info(LogStream &out) const
-{
-    cacheutils::print_caches(values_, out);
-
-//    out.begin_item("Element Cache:");
-//    get_value_cache<0>(0).print_info(out);
-//    out.end_item();
-//
-//    for (int i = 0 ; i < n_faces ; ++i)
-//    {
-//        out.begin_item("Face "+ std::to_string(i) + " Cache:");
-//        get_value_cache<1>(i).print_info(out);
-//        out.end_item();
-//    }
-
 }
 
 

@@ -151,7 +151,10 @@ operator()(const T &quad1)
     auto &cache = elem_->get_local_cache();
     if (cache == nullptr)
     {
-        using Cache = typename ElementAccessor::LocalCache;
+        using VCache = typename NURBSElement<dim_,range_,rank_>::parent_t::Cache;
+
+        using Cache = LocalCache<VCache>;
+
         cache = shared_ptr<Cache>(new Cache);
     }
 

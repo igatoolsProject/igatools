@@ -212,53 +212,19 @@ public:
 
     void print_cache_info(LogStream &out) const;
 
+    using Cache = BasisValuesCache<dim,codim,range,rank>;
+
 protected:
 
 
 
-    class LocalCache
-    {
-    public:
-        LocalCache() = default;
-
-        LocalCache(const LocalCache &in) = default;
-
-        LocalCache(LocalCache &&in) = default;
-
-        ~LocalCache() = default;
-
-
-        LocalCache &operator=(const LocalCache &in) = delete;
-
-        LocalCache &operator=(LocalCache &&in) = delete;
-
-        void print_info(LogStream &out) const;
-
-        using Cache = BasisValuesCache<dim,codim,range,rank>;
-
-        template <int topology_dim>
-        Cache &
-        get_value_cache(const int j)
-        {
-            return std::get<topology_dim>(values_)[j];
-        }
-
-        template <int topology_dim>
-        const Cache &
-        get_value_cache(const int j) const
-        {
-            return std::get<topology_dim>(values_)[j];
-        }
-
-        CacheList<Cache, dim> values_;
-    };
-
     /** The local (element and face) cache. */
-    std::shared_ptr<LocalCache> local_cache_;
+    std::shared_ptr<LocalCache<Cache>> local_cache_;
 
 public:
     // TODO (pauletti, Mar 17, 2015): this cannot be public, if needed it means wrong desing
-    std::shared_ptr<LocalCache> &get_local_cache()
+    std::shared_ptr<LocalCache<Cache>> &
+                                    get_local_cache()
     {
         return local_cache_;
     }

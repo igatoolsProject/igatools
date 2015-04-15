@@ -188,152 +188,15 @@ public:
     ///@}
 
 private:
-#if 0
-    class ValuesCache : public CacheStatus
-    {
-    public:
-        void resize(const FunctionFlags &flags_handler,
-                    const int n_points)
-        {
-            //TODO(pauletti, Oct 11, 2014): missing all necesary clears
-            flags_handler_ = flags_handler;
-
-            if (flags_handler_.fill_points())
-                points_.resize(n_points);
-
-            if (flags_handler_.fill<_Value>())
-                get<_Value>().resize(n_points);
-
-            if (flags_handler_.fill<_Gradient>())
-                get<_Gradient>().resize(n_points);
-
-            if (flags_handler_.fill<_Hessian>())
-                get<_Hessian>().resize(n_points);
-
-            if (flags_handler_.fill<_Divergence>())
-                Assert(false,ExcNotImplemented());
-
-            set_initialized(true);
-        }
-
-        void print_info(LogStream &out) const
-        {
-            if (flags_handler_.filled<_Value>())
-            {
-                flags_handler_.print_info(out);
-                out.begin_item(_Value::name + ":");
-                get<_Value>().print_info(out);
-                out.end_item();
-            }
-
-            if (flags_handler_.filled<_Gradient>())
-            {
-                out.begin_item(_Gradient::name + ":");
-                get<_Gradient>().print_info(out);
-                out.end_item();
-            }
-
-            if (flags_handler_.filled<_Hessian>())
-            {
-                out.begin_item(_Hessian::name + ":");
-                get<_Hessian>().print_info(out);
-                out.end_item();
-            }
-
-            if (flags_handler_.filled<_Divergence>())
-            {
-                out.begin_item(_Divergence::name + ":");
-                get<_Divergence>().print_info(out);
-                out.end_item();
-            }
-        }
-
-        FunctionFlags flags_handler_;
-
-        using map_TuplePosition_ContainerType = boost::mpl::map<
-                                                boost::mpl::pair<TuplePosition_from_ValueType<     _Value>,ValueVector<Value> >,
-                                                boost::mpl::pair<TuplePosition_from_ValueType<  _Gradient>,ValueVector<Derivative<1>> >,
-                                                boost::mpl::pair<TuplePosition_from_ValueType<   _Hessian>,ValueVector<Derivative<2>> >,
-                                                boost::mpl::pair<TuplePosition_from_ValueType<_Divergence>,ValueVector<Div>>
-                                                >;
-
-        template <int tuple_position>
-        using ContType_from_TuplePosition = typename boost::mpl::at<
-                                            map_TuplePosition_ContainerType,boost::mpl::int_<tuple_position>>::type;
-
-        std::tuple<
-        ContType_from_TuplePosition<0>,
-                                    ContType_from_TuplePosition<1>,
-                                    ContType_from_TuplePosition<2>,
-                                    ContType_from_TuplePosition<3>> values_;
 
 
-        ValueVector<Point> points_;
 
-    public:
-        template<class ValueType>
-        auto &get()
-        {
-            return std::get<TuplePosition_from_ValueType<ValueType>::value>(values_);
-        }
+    using Cache = FuncValuesCache<dim,codim,range,rank>;
 
-        template<class ValueType>
-        const auto &get() const
-        {
-            //TODO (martinelli, Apr 03,2015): uncomment this assertion
-//            Assert(flags_handler_.filled<ValueType>(),
-//                   ExcMessage("The cache for " + ValueType::name + " is not filled."));
-            return std::get<TuplePosition_from_ValueType<ValueType>::value>(values_);
-        }
-
-    };
-#endif
-
-
-    class LocalCache
-    {
-    public:
-        LocalCache() = default;
-
-        LocalCache(const LocalCache &in) = default;
-
-        LocalCache(LocalCache &&in) = default;
-
-        ~LocalCache() = default;
-
-
-        LocalCache &operator=(const LocalCache &in) = delete;
-
-        LocalCache &operator=(LocalCache &&in) = delete;
-
-        void print_info(LogStream &out) const;
-
-        using Cache = FuncValuesCache<dim,codim,range,rank>;
-
-        template <int topology_dim>
-        Cache &
-        get_value_cache(const int j)
-        {
-            return std::get<topology_dim>(values_)[j];
-        }
-
-        template <int topology_dim>
-        const Cache &
-        get_value_cache(const int j) const
-        {
-            return std::get<topology_dim>(values_)[j];
-        }
-
-//        CacheList<ValuesCache, dim> values_;
-
-        CacheList<Cache, dim> values_;
-
-    };
-
-    std::shared_ptr<LocalCache> local_cache_;
+    std::shared_ptr<LocalCache<Cache>> local_cache_;
 
 public:
-    using CacheType = LocalCache;
+    using CacheType = LocalCache<Cache>;
 private:
     std::shared_ptr<Func> func_;
 
