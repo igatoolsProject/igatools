@@ -56,7 +56,7 @@ public:
     /** Type required for the generic algorithm on the spaces (plots??) */
     using Space = BSplineSpace<dim, range, rank> ;
 
-    using ValuesCache = typename parent_t::ValuesCache;
+//    using ValuesCache = typename parent_t::ValuesCache;
 
 public:
     template <int order>

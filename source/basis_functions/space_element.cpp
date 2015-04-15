@@ -111,100 +111,10 @@ operator=(const self_t &element) -> self_t &
 
 
 
-
-
 template<int dim,int codim,int range,int rank>
 void
 SpaceElement<dim,codim,range,rank>::
-ValuesCache::
-resize(const FunctionFlags &flags_handler,
-       const Size total_n_points,
-       const Size total_n_basis)
-{
-    flags_handler_ = flags_handler;
-
-    Assert(total_n_points >= 0, ExcLowerRange(total_n_points,1));
-    Assert(total_n_basis > 0, ExcLowerRange(total_n_basis,1));
-
-    if (flags_handler_.template fill<_Value>())
-        resize_der<_Value>(total_n_basis,total_n_points);
-    if (flags_handler_.template fill<_Gradient>())
-        resize_der<_Gradient>(total_n_basis,total_n_points);
-    if (flags_handler_.template fill<_Hessian>())
-        resize_der<_Hessian>(total_n_basis,total_n_points);
-
-    if (flags_handler_.template fill<_Divergence>())
-    {
-        Assert(flags_handler_.template fill<_Gradient>(),
-               ExcMessage("Divergence requires gradient to be filled."));
-        resize_der<_Divergence>(total_n_basis,total_n_points);
-    }
-
-#if 0
-    if (flags_handler_.fill_divergences())
-    {
-        Assert(flags_handler_.fill_gradients(),
-               ExcMessage("Divergence requires gradient to be filled."));
-
-        if (div_phi_.get_num_points() != total_n_points ||
-            div_phi_.get_num_functions() != total_n_basis)
-        {
-            div_phi_.resize(total_n_basis,total_n_points);
-            div_phi_.zero();
-        }
-    }
-    else
-    {
-        div_phi_.clear();
-    }
-#endif
-
-    this->set_initialized(true);
-}
-
-
-
-template<int dim,int codim,int range,int rank>
-auto
-SpaceElement<dim,codim,range,rank>::
-ValuesCache::print_info(LogStream &out) const -> void
-{
-    out.begin_item("Fill flags:");
-    flags_handler_.print_info(out);
-    out.end_item();
-
-    if (flags_handler_.template filled<_Value>())
-    {
-        out.begin_item("Values:");
-        get_der<_Value>().print_info(out);
-        out.end_item();
-    }
-
-    if (flags_handler_.template filled<_Gradient>())
-    {
-        out.begin_item("Gradients:");
-        get_der<_Gradient>().print_info(out);
-        out.end_item();
-    }
-
-    if (flags_handler_.template filled<_Hessian>())
-    {
-        out.begin_item("Hessians:");
-        get_der<_Hessian>().print_info(out);
-        out.end_item();
-    }
-
-    if (flags_handler_.template filled<_Divergence>())
-    {
-        out.begin_item("Divergences:");
-        get_der<_Divergence>().print_info(out);
-        out.end_item();
-    }
-}
-
-template<int dim,int codim,int range,int rank>
-void
-SpaceElement<dim,codim,range,rank>::print_info(LogStream &out) const
+print_info(LogStream &out) const
 {
     base_t::print_info(out);
 }

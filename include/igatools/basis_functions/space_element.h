@@ -23,16 +23,17 @@
 #define SPACE_ELEMENT_H_
 
 #include <igatools/base/config.h>
-#include <igatools/base/value_types.h>
-#include <igatools/base/cache_status.h>
-#include <igatools/base/flags_handler.h>
+//#include <igatools/base/value_types.h>
+//#include <igatools/base/cache_status.h>
+//#include <igatools/base/flags_handler.h>
 
-#include <igatools/base/function.h>
+//#include <igatools/base/function.h>
 
 #include <igatools/base/quadrature.h>
+#include <igatools/basis_functions/values_cache.h>
 
-#include <igatools/utils/value_vector.h>
-#include <igatools/utils/value_table.h>
+//#include <igatools/utils/value_vector.h>
+//#include <igatools/utils/value_table.h>
 #include <igatools/utils/static_multi_array.h>
 #include <igatools/utils/cartesian_product_indexer.h>
 
@@ -214,84 +215,6 @@ public:
 protected:
 
 
-    /**
-     * Base class for the cache of the element values and
-     * for the cache of the face values.
-     */
-    class ValuesCache : public CacheStatus
-    {
-    public:
-        /**
-         * Allocate space for the values and derivatives
-         * of the element basis functions at quadrature points
-         * as specify by the flag
-         */
-        void resize(const FunctionFlags &flags_handler,
-                    const Size total_n_points,
-                    const Size n_basis);
-
-
-
-    public:
-        void print_info(LogStream &out) const;
-
-        FunctionFlags flags_handler_;
-
-
-        using map_TuplePosition_ContainerType = boost::mpl::map<
-                                                boost::mpl::pair<TuplePosition_from_ValueType<     _Value>,ValueTable<Value> >,
-                                                boost::mpl::pair<TuplePosition_from_ValueType<  _Gradient>,ValueTable<Derivative<1>> >,
-                                                boost::mpl::pair<TuplePosition_from_ValueType<   _Hessian>,ValueTable<Derivative<2>> >,
-                                                boost::mpl::pair<TuplePosition_from_ValueType<_Divergence>,ValueTable<Div>>
-                                                >;
-        using map_TP_CT = map_TuplePosition_ContainerType;
-
-        template <int tuple_position>
-        using ContType_from_TuplePos = typename boost::mpl::at<map_TP_CT,boost::mpl::int_<tuple_position>>::type;
-
-        std::tuple<
-        ContType_from_TuplePos<0>,
-                               ContType_from_TuplePos<1>,
-                               ContType_from_TuplePos<2>,
-                               ContType_from_TuplePos<3>> values_;
-
-        template<class ValueType>
-        auto &get_der()
-        {
-            return std::get<TuplePosition_from_ValueType<ValueType>::value>(values_);
-        }
-
-        template<class ValueType>
-        const auto &get_der() const
-        {
-            Assert(flags_handler_.filled<ValueType>(),
-                   ExcMessage("The cache for " + ValueType::name + " is not filled."));
-
-            return std::get<TuplePosition_from_ValueType<ValueType>::value>(values_);
-        }
-
-
-        template<class ValueType>
-        void resize_der(const int n_basis, const int n_points)
-        {
-            auto &value = std::get< TuplePosition_from_ValueType<ValueType>::value >(values_);
-            if (value.get_num_points() != n_points ||
-                value.get_num_functions() != n_basis)
-            {
-                value.resize(n_basis, n_points);
-                value.zero();
-            }
-        }
-
-        template<class ValueType>
-        void clear_der()
-        {
-            auto &value = std::get<TuplePosition_from_ValueType<ValueType>::value>(values_);
-            value.clear();
-        }
-
-    };
-
 
     class LocalCache
     {
@@ -311,21 +234,25 @@ protected:
 
         void print_info(LogStream &out) const;
 
+        using VCache = NewValuesCache<dim,codim,range,rank,ValueTable>;
+
         template <int topology_dim>
-        ValuesCache &
+        VCache &
         get_value_cache(const int j)
         {
             return std::get<topology_dim>(values_)[j];
         }
 
         template <int topology_dim>
-        const ValuesCache &
+        const VCache &
         get_value_cache(const int j) const
         {
             return std::get<topology_dim>(values_)[j];
         }
 
-        CacheList<ValuesCache, dim> values_;
+//        CacheList<ValuesCache, dim> values_;
+
+        CacheList<NewValuesCache<dim,codim,range,rank,ValueTable>, dim> values_;
     };
 
     /** The local (element and face) cache. */
