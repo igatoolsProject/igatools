@@ -24,6 +24,7 @@
 #include <igatools/base/function.h>
 #include <igatools/geometry/cartesian_grid_element.h>
 #include <igatools/base/value_types.h>
+#include <igatools/basis_functions/values_cache.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -143,7 +144,7 @@ public:
         Assert(local_cache_ != nullptr,ExcNullPtr());
         const auto &cache = local_cache_->template get_value_cache<k>(j);
         Assert(cache.is_filled() == true, ExcCacheNotFilled());
-        return cache.template get<ValueType>();
+        return cache.template get_der<ValueType>();
     }
 
 
@@ -187,6 +188,7 @@ public:
     ///@}
 
 private:
+#if 0
     class ValuesCache : public CacheStatus
     {
     public:
@@ -285,6 +287,8 @@ private:
         }
 
     };
+#endif
+
 
     class LocalCache
     {
@@ -304,21 +308,26 @@ private:
 
         void print_info(LogStream &out) const;
 
+        using Cache = FuncValuesCache<dim,codim,range,rank>;
+
         template <int topology_dim>
-        ValuesCache &
+        Cache &
         get_value_cache(const int j)
         {
             return std::get<topology_dim>(values_)[j];
         }
 
         template <int topology_dim>
-        const ValuesCache &
+        const Cache &
         get_value_cache(const int j) const
         {
             return std::get<topology_dim>(values_)[j];
         }
 
-        CacheList<ValuesCache, dim> values_;
+//        CacheList<ValuesCache, dim> values_;
+
+        CacheList<Cache, dim> values_;
+
     };
 
     std::shared_ptr<LocalCache> local_cache_;

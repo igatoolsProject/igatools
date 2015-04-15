@@ -111,11 +111,11 @@ private:
             {
                 cache.points_ = function->map_elem_->template get_values<_Value, T::k>(j);
                 if (flags.template fill<_Value>())
-                    function->evaluate_0(cache.points_, cache.template get<_Value>());
+                    function->evaluate_0(cache.points_, cache.template get_der<_Value>());
                 if (flags.template fill<_Gradient>())
-                    function->evaluate_1(cache.points_, cache.template get<_Gradient>());
+                    function->evaluate_1(cache.points_, cache.template get_der<_Gradient>());
                 if (flags.template fill<_Hessian>())
-                    function->evaluate_2(cache.points_, cache.template get<_Hessian>());
+                    function->evaluate_2(cache.points_, cache.template get_der<_Hessian>());
                 if (flags.template fill<_Divergence>())
                     Assert(false,ExcNotImplemented());
 

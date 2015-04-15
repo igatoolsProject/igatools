@@ -234,25 +234,23 @@ protected:
 
         void print_info(LogStream &out) const;
 
-        using VCache = NewValuesCache<dim,codim,range,rank,ValueTable>;
+        using Cache = BasisValuesCache<dim,codim,range,rank>;
 
         template <int topology_dim>
-        VCache &
+        Cache &
         get_value_cache(const int j)
         {
             return std::get<topology_dim>(values_)[j];
         }
 
         template <int topology_dim>
-        const VCache &
+        const Cache &
         get_value_cache(const int j) const
         {
             return std::get<topology_dim>(values_)[j];
         }
 
-//        CacheList<ValuesCache, dim> values_;
-
-        CacheList<NewValuesCache<dim,codim,range,rank,ValueTable>, dim> values_;
+        CacheList<Cache, dim> values_;
     };
 
     /** The local (element and face) cache. */
