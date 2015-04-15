@@ -229,6 +229,51 @@ public :
 
     void print_cache_info(LogStream &out) const;
 
+
+    /**
+     * @name Functions for the basis evaluation without the use of the cache.
+     */
+    ///@{
+    /**
+     * Returns a ValueTable with the quantity specified by the template parameter @p ValueType,
+     * computed for all local basis function,
+     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+     * @note This function does not use the cache and therefore can be called any time without
+     * needing to pre-call init_cache()/fill_cache().
+     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+     */
+    template <class ValueType>
+//    ContType_from_ValueType<ValueType>
+    decltype(auto)
+    evaluate_basis_at_points(
+        const Quadrature<dim_> &points,
+        const std::string &dofs_property)
+    {
+        auto elem_handler = typename Space::ElementHandler::create(this->space_);
+
+        ValueFlags flags;
+        if (ValueType::id == _Value::id)
+            flags = ValueFlags::value;
+        else if (ValueType::id == _Gradient::id)
+            flags = ValueFlags::gradient;
+        else if (ValueType::id == _Hessian::id)
+            flags = ValueFlags::hessian;
+        else if (ValueType::id == _Divergence::id)
+            flags = ValueFlags::divergence;
+        else
+        {
+            Assert(false,ExcNotImplemented());
+        }
+
+        elem_handler->reset_one_element(flags,points,this->get_flat_index());
+        elem_handler->template init_cache<dim>(*this);
+        elem_handler->template fill_cache<dim>(*this,0);
+
+        return this->template get_basis<ValueType,dim>(0,dofs_property);
+    }
+
+    ///@}
 public:
 
     /**

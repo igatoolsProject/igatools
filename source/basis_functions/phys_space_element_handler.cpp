@@ -150,10 +150,20 @@ reset_selected_elements(
     ref_space_handler_->
     reset_selected_elements(space_to_ref_flag(PhysSpace::PushForwardType::type, flag), eval_pts, elements_flat_id);
     push_fwd_.template reset<k>(space_to_pf_flag(flag), eval_pts);
-    //    PFCache::template reset<k>(space_to_pf_flag(flag), eval_pts);
     flags_[k] = flag;
-//    Assert(false,ExcNotImplemented());
-//    AssertThrow(false,ExcNotImplemented());
+}
+
+
+template<int dim,int range,int rank,int codim>
+template<int k>
+void
+PhysSpaceElementHandler<dim,range,rank,codim>::
+reset_one_element(
+    const ValueFlags &flag,
+    const Quadrature<k> &eval_pts,
+    const int elem_flat_id)
+{
+    this->reset_selected_elements(flag,eval_pts,vector<int>(1,elem_flat_id));
 }
 
 

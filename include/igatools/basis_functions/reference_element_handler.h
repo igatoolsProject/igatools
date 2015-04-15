@@ -90,7 +90,7 @@ public:
 
     /**
      * Resets all the internal data in order to use the
-     * same quadrature scheme for the single element of the space with ID specified by
+     * quadrature scheme for the single element of the space with ID specified by
      * the input parameter <tt>elem_flat_id</tt>.
      */
     void reset_one_element(

@@ -33,7 +33,7 @@ macro(find_trilinos)
   include_directories( ${Trilinos_INCLUDE_DIRS} ${Trilinos_TPL_INCLUDE_DIRS})
 
   # Check that individual required Trilinos packages are available
-  set(tri_required_packages Tpetra Epetra Belos Amesos Amesos2)
+  set(tri_required_packages Tpetra Epetra Belos Amesos Amesos2 ML)
   foreach(package ${tri_required_packages})
     list(FIND Trilinos_PACKAGE_LIST  ${package} package_index)
     if (package_index EQUAL -1)

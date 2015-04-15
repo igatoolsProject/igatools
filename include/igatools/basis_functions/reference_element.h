@@ -143,7 +143,7 @@ public:
 
 
     /**
-     * @name Functions for the basis and field evaluations without the use of the cache.
+     * @name Functions for the basis evaluations without the use of the cache.
      */
     ///@{
     /**
