@@ -142,6 +142,7 @@ FunctionFlags()
     value_type_flags_[  _Gradient::id] = Flags();
     value_type_flags_[   _Hessian::id] = Flags();
     value_type_flags_[_Divergence::id] = Flags();
+    value_type_flags_[     _Point::id] = Flags();
 }
 
 
@@ -151,7 +152,7 @@ FunctionFlags(const ValueFlags &flags)
     FunctionFlags()
 {
     if (contains(flags, ValueFlags::point))
-        points_flags_.fill_ = true;
+    	value_type_flags_[_Point::id].fill_ = true;
 
     if (contains(flags, ValueFlags::value))
         value_type_flags_[_Value::id].fill_ = true;
@@ -204,37 +205,16 @@ fill_none() const
 }
 
 
-bool
-FunctionFlags::
-fill_points() const
-{
-    return points_flags_.fill_;
-}
-
-
-
-bool
-FunctionFlags::
-points_filled() const
-{
-    return points_flags_.filled_;
-}
-
-
-
-void
-FunctionFlags::
-set_points_filled(const bool status)
-{
-    points_flags_.filled_ = status;
-}
-
-
-
 void
 FunctionFlags::
 print_info(LogStream &out) const
 {
+	/*
+    out.begin_item(_Point::name);
+    value_type_flags_.at(_Point::id).print_info(out);
+    out.end_item();
+    //*/
+
     out.begin_item(_Value::name);
     value_type_flags_.at(_Value::id).print_info(out);
     out.end_item();

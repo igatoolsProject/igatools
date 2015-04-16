@@ -81,8 +81,18 @@ public:
 using _Divergence = ValueType<-1>;
 
 
+template<>
+class ValueType<-3>
+{
+public:
+    static constexpr int id = -3;
+    static constexpr int order = 0;
+    static const std::string name;
+};
+using _Point = ValueType<-3>;
 
 
+#if 0
 using map_ValueType_TuplePosition = boost::mpl::map<
                                     boost::mpl::pair<     _Value,boost::mpl::int_<0> >,
                                     boost::mpl::pair<  _Gradient,boost::mpl::int_<1> >,
@@ -93,7 +103,7 @@ using map_VT_TP = map_ValueType_TuplePosition;
 
 template <class ValueType>
 using TuplePosition_from_ValueType = typename boost::mpl::at<map_VT_TP,ValueType>::type;
-
+#endif
 
 IGA_NAMESPACE_CLOSE
 

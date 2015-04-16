@@ -46,11 +46,23 @@
 #include <boost/fusion/include/at_key.hpp>
 
 IGA_NAMESPACE_OPEN
+#if 0
+template<int dim, int codim, int range, int rank,
+         template<class ContainedType> class ContainerType>
+using FunctionCacheType = boost::fusion::map<
+        boost::fusion::pair<     _Value,ContainerType<typename Function<dim,codim,range,rank>::Value>>,
+        boost::fusion::pair<  _Gradient,ContainerType<typename Function<dim,codim,range,rank>::template Derivative<1>>>,
+        boost::fusion::pair<   _Hessian,ContainerType<typename Function<dim,codim,range,rank>::template Derivative<2>>>,
+        boost::fusion::pair<_Divergence,ContainerType<typename Function<dim,codim,range,rank>::Div>>
+        >;
+#endif
 
-
-template<int dim, int codim, int range, int rank, template<class ContainedType> class ContainerType>
+template<int dim,
+		 class CacheType,
+		 class FlagsType>
 class ValuesCache : public CacheStatus
 {
+#if 0
     using Func = Function<dim,codim,range,rank>;
 
     using Value = typename Func::Value;
@@ -59,6 +71,7 @@ class ValuesCache : public CacheStatus
     using Derivative = typename Func::template Derivative<der_order>;
 
     using Div = typename Func::Div;
+#endif
 
 public:
 
@@ -68,14 +81,16 @@ public:
     }
 
 
-    FunctionFlags flags_handler_;
+    FlagsType flags_handler_;
 
+#if 0
     using CacheType = boost::fusion::map<
                       boost::fusion::pair<     _Value,ContainerType<Value>>,
                       boost::fusion::pair<  _Gradient,ContainerType<Derivative<1>>>,
                       boost::fusion::pair<   _Hessian,ContainerType<Derivative<2>>>,
                       boost::fusion::pair<_Divergence,ContainerType<Div>>
                       >;
+#endif
 
 protected:
 
@@ -145,11 +160,9 @@ public:
 
 
 
-template<int dim, int codim, int range, int rank>
-class BasisValuesCache : public ValuesCache<dim,codim,range,rank,ValueTable>
+template<int dim, class CacheType, class FlagsType>
+class BasisValuesCache : public ValuesCache<dim,CacheType,FlagsType>
 {
-    using parent_t = ValuesCache<dim,codim,range,rank,ValueTable>;
-
 private:
     struct BasisValuesCacheResizer
     {
@@ -220,11 +233,9 @@ public:
 };
 
 
-template<int dim, int codim, int range, int rank>
-class FuncValuesCache : public ValuesCache<dim,codim,range,rank,ValueVector>
+template<int dim, class CacheType, class FlagsType>
+class FuncValuesCache : public ValuesCache<dim,CacheType,FlagsType>
 {
-    using parent_t = ValuesCache<dim,codim,range,rank,ValueVector>;
-
 private:
     struct FuncValuesCacheResizer
     {
@@ -268,9 +279,11 @@ private:
 
 
 public:
+#if 0
     using Func = Function<dim,codim,range,rank>;
 
     using Point = typename Func::Point;
+#endif
 
     /**
      * Allocate space for the fucntion values and derivatives
@@ -289,7 +302,7 @@ public:
         this->set_initialized(true);
     }
 
-    ValueVector<Point> points_;
+//    ValueVector<Point> points_;
 
 };
 

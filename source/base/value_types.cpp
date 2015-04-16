@@ -29,16 +29,24 @@ constexpr int _Value::id;
 constexpr int _Value::order;
 const string  _Value::name = "Value";
 
+
 constexpr int _Gradient::id;
 constexpr int _Gradient::order;
 const string  _Gradient::name = "Gradient";
+
 
 constexpr int _Hessian::id;
 constexpr int _Hessian::order;
 const string  _Hessian::name = "Hessian";
 
+
 constexpr int _Divergence::id;
 constexpr int _Divergence::order;
 const string  _Divergence::name = "Divergence";
+
+
+constexpr int _Point::id;
+constexpr int _Point::order;
+const string  _Point::name = "Point";
 
 IGA_NAMESPACE_CLOSE

@@ -188,9 +188,15 @@ public:
 
 private:
 
+    using CType = boost::fusion::map<
+            boost::fusion::pair<     _Value,ValueVector<Value>>,
+            boost::fusion::pair<  _Gradient,ValueVector<Derivative<1>>>,
+            boost::fusion::pair<   _Hessian,ValueVector<Derivative<2>>>,
+            boost::fusion::pair<_Divergence,ValueVector<Div>>,
+            boost::fusion::pair<     _Point,ValueVector<Point>>
+            >;
 
-
-    using Cache = FuncValuesCache<dim,codim,range,rank>;
+    using Cache = FuncValuesCache<dim,CType,FunctionFlags>;
 
     std::shared_ptr<LocalCache<Cache>> local_cache_;
 

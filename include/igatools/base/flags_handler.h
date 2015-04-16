@@ -187,14 +187,6 @@ public:
     /** Returns true if the nothing must be filled. */
     bool fill_none() const;
 
-    /** Returns true if the values must be filled. */
-    bool fill_points() const;
-
-    /** Returns true if the values are filled. */
-    bool points_filled() const;
-
-    /** Sets the filled status for values. */
-    void set_points_filled(const bool status);
 
     /**
      * Prints internal information about the ElementValuesCache.
@@ -203,8 +195,6 @@ public:
     void print_info(LogStream &out) const;
 
 protected:
-    Flags points_flags_;
-
     /**
      * Map used to realize the association between the ValueType::id and the relative Flags.
      */
