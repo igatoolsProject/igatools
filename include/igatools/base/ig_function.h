@@ -173,26 +173,27 @@ private:
             //TODO (martinelli Mar 27,2015): bad style. Use the ValueType mechanism in order to avoid the if-switch
             if (flags.template fill<_Value>())
             {
-                std::get<0>(cache.values_) =
+                cache.template get_der<_Value>() =
                     space_elem->template linear_combination<_Value,T::k>(*loc_coeff,j, *property);
                 flags.template set_filled<_Value>(true);
             }
             if (flags.template fill<_Gradient>())
             {
-                std::get<1>(cache.values_) =
+                cache.template get_der<_Gradient>() =
                     space_elem->template linear_combination<_Gradient,T::k>(*loc_coeff,j, *property);
                 flags.template set_filled<_Gradient>(true);
             }
             if (flags.template fill<_Hessian>())
             {
-                std::get<2>(cache.values_) =
+                cache.template get_der<_Hessian>() =
                     space_elem->template linear_combination<_Hessian,T::k>(*loc_coeff,j, *property);
                 flags.template set_filled<_Hessian>(true);
             }
             if (flags.template fill<_Divergence>())
             {
-                Assert(false,ExcNotImplemented());
-                AssertThrow(false,ExcNotImplemented());
+                cache.template get_der<_Divergence>() =
+                    space_elem->template linear_combination<_Divergence,T::k>(*loc_coeff,j, *property);
+                flags.template set_filled<_Divergence>(true);
             }
 
             cache.set_filled(true);

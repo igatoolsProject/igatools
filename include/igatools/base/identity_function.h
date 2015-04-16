@@ -119,7 +119,7 @@ private:
                     {
                         const auto n_pts = points.get_num_points();
 
-                        auto &values = std::get<0>(cache.values_);
+                        auto &values = cache.template get_der<_Value>();
                         for (int pt = 0 ; pt < n_pts ; ++pt)
                             for (int i = 0 ; i < dim ; ++i)
                                 values[pt][i] = points[pt][i];
@@ -128,7 +128,8 @@ private:
                 if (flags.template fill<_Gradient>())
                 {
                     auto identity = create_id_tensor<dim,space_dim>();
-                    std::get<1>(cache.values_).fill(identity);
+                    cache.template get_der<_Gradient>().fill(identity);
+//                    std::get<1>(cache.values_).fill(identity);
                 }
                 if (flags.template fill<_Hessian>())
                 {

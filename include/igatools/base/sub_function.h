@@ -131,12 +131,15 @@ public:
         auto &flags = cache.flags_handler_;
 
         if (flags.template fill<_Value>())
-            std::get<0>(cache.values_) = sup_elem_->template get_values<_Value, sub_dim>(s_id_);
+        {
+            cache.template get_der<_Value>() = sup_elem_->template get_values<_Value, sub_dim>(s_id_);
+            flags.template set_filled<_Value>(true);
+        }
         if (flags.template fill<_Gradient>())
         {
             auto active = UnitElement<dim>::template get_elem<sub_dim>(s_id_).active_directions;
             auto DSupF  = sup_elem_->template get_values<_Gradient, sub_dim>(s_id_);
-            auto &DSubF = std::get<1>(cache.values_);
+            auto &DSubF = cache.template get_der<_Gradient>();
 
             const auto n_points = DSupF.get_num_points();
             for (int pt = 0; pt < n_points; ++pt)
@@ -148,6 +151,7 @@ public:
                     ++j;
                 }
             }
+            flags.template set_filled<_Gradient>(true);
         }
 
         if (flags.template fill<_Hessian>())
@@ -284,12 +288,12 @@ public:
         auto &flags = cache.flags_handler_;
 
         if (flags.template fill<_Value>())
-            std::get<0>(cache.values_) = sup_elem_->template get_values<_Value, sub_dim>(s_id_);
+            cache.template get_der<_Value>() = sup_elem_->template get_values<_Value, sub_dim>(s_id_);
         if (flags.template fill<_Gradient>())
         {
             auto active = UnitElement<dim>::template get_elem<sub_dim>(s_id_).active_directions;
             auto DSupF  = sup_elem_->template get_values<_Gradient, sub_dim>(s_id_);
-            auto &DSubF = std::get<1>(cache.values_);
+            auto &DSubF = cache.template get_der<_Gradient>();
 
             const auto n_points = DSupF.get_num_points();
             for (int pt = 0; pt<n_points; ++pt)
