@@ -33,14 +33,7 @@
 
 #include <igatools/utils/value_vector.h>
 #include <igatools/utils/value_table.h>
-//#include <igatools/utils/static_multi_array.h>
-//#include <igatools/utils/cartesian_product_indexer.h>
 
-//#include <igatools/basis_functions/spline_space.h>
-
-//#include <igatools/basis_functions/space_element_base.h>
-
-#include <boost/mpl/for_each.hpp>
 
 
 #include <boost/fusion/container/map.hpp>
@@ -86,7 +79,7 @@ public:
 
 protected:
 
-    CacheType new_values_;
+    CacheType values_;
 
 
 
@@ -126,17 +119,15 @@ public:
         out.end_item();
 
         ValuesCachePrinter printer(flags_handler_,out);
-        // apply the functor printer to each type contained in map_VT_TP
-
-        boost::fusion::for_each(new_values_,printer);
-
+        // apply the functor printer to each pair ValueType/Container in values_
+        boost::fusion::for_each(values_,printer);
     }
 
 
     template<class ValueType>
     auto &get_der()
     {
-        return boost::fusion::at_key<ValueType>(new_values_);
+        return boost::fusion::at_key<ValueType>(values_);
     }
 
     template<class ValueType>
@@ -146,18 +137,8 @@ public:
 //        Assert(flags_handler_.filled<ValueType>(),
 //               ExcMessage("The cache for " + ValueType::name + " is not filled."));
 
-        return boost::fusion::at_key<ValueType>(new_values_);
+        return boost::fusion::at_key<ValueType>(values_);
     }
-
-
-#if 0
-    template<class ValueType>
-    void clear_der()
-    {
-        auto &value = std::get<TuplePosition_from_ValueType<ValueType>::value>(values_);
-        value.clear();
-    }
-#endif
 
 };
 
@@ -229,9 +210,9 @@ public:
         this->flags_handler_ = flags_handler;
 
         BasisValuesCacheResizer resizer(this->flags_handler_,n_basis,n_points);
-        // apply the functor resizer to each type contained in map_VT_TP
 
-        boost::fusion::for_each(this->new_values_,resizer);
+        // apply the functor resizer to each pair ValueType/Container in this->values_
+        boost::fusion::for_each(this->values_,resizer);
 
         this->set_initialized(true);
     }
@@ -302,9 +283,8 @@ public:
         this->flags_handler_ = flags_handler;
 
         FuncValuesCacheResizer resizer(this->flags_handler_,n_points);
-        // apply the functor resizer to each type contained in map_VT_TP
-
-        boost::fusion::for_each(this->new_values_,resizer);
+        // apply the functor resizer to each pair ValueType/Container in this->values_
+        boost::fusion::for_each(this->values_,resizer);
 
         this->set_initialized(true);
     }
