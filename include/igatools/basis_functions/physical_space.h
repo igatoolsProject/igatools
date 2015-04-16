@@ -205,7 +205,7 @@ public:
     template<int k>
     std::set<Index> get_boundary_dofs(const int s_id) const
     {
-        return ref_space_->template get_boundary_dofs<k>();
+        return ref_space_->template get_boundary_dofs<k>(s_id);
     }
 
     std::set<Index> get_interior_dofs() const
