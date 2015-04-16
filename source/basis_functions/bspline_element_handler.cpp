@@ -708,57 +708,6 @@ fill_cache(RefElementAccessor &elem, const topology_variant &topology, const int
 }
 
 
-//template <int dim_, int range_ , int rank_>
-//template <int k>
-//void
-//BSplineElementHandler<dim_, range_, rank_>::
-//fill_element_cache_(ElementAccessor &elem, const int j)
-//{
-//    base_t::template fill_cache<dim-k> (elem, j);
-//
-//    Assert(elem.local_cache_ != nullptr, ExcNullPtr());
-//    auto &cache = elem.local_cache_->template get_value_cache<k>(j);
-//
-//    const auto &index = elem.get_tensor_index();
-//    auto val_1d = splines1d_.get_element_values(index);
-//    if (cache.flags_handler_.fill_values())
-//    {
-//        auto &values = cache.template get_der<0>();
-//        evaluate_bspline_values(val_1d, values);
-//        cache.flags_handler_.set_values_filled(true);
-//    }
-//    if (cache.flags_handler_.fill_gradients())
-//    {
-//        auto &values = cache.template get_der<1>();
-//        evaluate_bspline_derivatives<1>(val_1d, values);
-//        cache.flags_handler_.set_gradients_filled(true);
-//    }
-//    if (cache.flags_handler_.fill_hessians())
-//    {
-//        auto &values = cache.template get_der<2>();
-//        evaluate_bspline_derivatives<2>(val_1d, values);
-//        cache.flags_handler_.set_hessians_filled(true);
-//    }
-//
-////    if (cache.flags_handler_.fill_divergences())
-////    {
-////        //TODO(pauletti, Sep 7, 2014): create a specialize exception
-////        Assert(cache.flags_handler_.gradients_filled(),
-////               ExcMessage("Divergence requires gradient to be filled."));
-////
-////        auto D1  = cache.D1phi_.begin();
-////        auto div = cache.div_phi_.begin();
-////        auto end = cache.D1phi_.end();
-////        for (; D1 != end; ++D1, ++div)
-////            *div = trace(*D1);
-////
-////        cache.flags_handler_.set_divergences_filled(true);
-////    }
-//
-//    cache.set_filled(true);
-//}
-
-
 
 template<int dim_, int range_ , int rank_>
 auto

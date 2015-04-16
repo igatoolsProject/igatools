@@ -40,7 +40,7 @@
 
 //#include <igatools/basis_functions/space_element_base.h>
 
-
+#include <boost/mpl/for_each.hpp>
 
 IGA_NAMESPACE_OPEN
 
@@ -68,42 +68,6 @@ public:
 
 
 
-    void print_info(LogStream &out) const
-    {
-        out.begin_item("Fill flags:");
-        flags_handler_.print_info(out);
-        out.end_item();
-
-        if (flags_handler_.template filled<_Value>())
-        {
-            out.begin_item("Values:");
-            get_der<_Value>().print_info(out);
-            out.end_item();
-        }
-
-        if (flags_handler_.template filled<_Gradient>())
-        {
-            out.begin_item("Gradients:");
-            get_der<_Gradient>().print_info(out);
-            out.end_item();
-        }
-
-        if (flags_handler_.template filled<_Hessian>())
-        {
-            out.begin_item("Hessians:");
-            get_der<_Hessian>().print_info(out);
-            out.end_item();
-        }
-
-        if (flags_handler_.template filled<_Divergence>())
-        {
-            out.begin_item("Divergences:");
-            get_der<_Divergence>().print_info(out);
-            out.end_item();
-        }
-    }
-
-
     FunctionFlags flags_handler_;
 
 
@@ -118,11 +82,64 @@ public:
     template <int tuple_position>
     using ContType_from_TuplePos = typename boost::mpl::at<map_TP_CT,boost::mpl::int_<tuple_position>>::type;
 
-    std::tuple<
-    ContType_from_TuplePos<0>,
-                           ContType_from_TuplePos<1>,
-                           ContType_from_TuplePos<2>,
-                           ContType_from_TuplePos<3>> values_;
+
+
+
+    using CacheType = std::tuple<
+                      ContType_from_TuplePos<0>,
+                      ContType_from_TuplePos<1>,
+                      ContType_from_TuplePos<2>,
+                      ContType_from_TuplePos<3>>;
+    CacheType values_;
+
+
+protected:
+
+
+    struct ValuesCachePrinter
+    {
+        ValuesCachePrinter(const CacheType &values,
+                           const FunctionFlags &flags_handler,
+                           LogStream &out)
+            :
+            values_ {values},
+                flags_handler_ {flags_handler},
+                out_ {out}
+        {}
+
+
+        template <class pair_VT_TP>
+        void operator()(const pair_VT_TP &x)
+        {
+            using ValueType = typename pair_VT_TP::first;
+            if (this->flags_handler_.template filled<ValueType>())
+            {
+                this->out_.begin_item(ValueType::name + "s:");
+                std::get<TuplePosition_from_ValueType<ValueType>::value>(this->values_).print_info(this->out_);
+                this->out_.end_item();
+            }
+        }
+
+    private:
+        const CacheType &values_;
+
+        const FunctionFlags &flags_handler_;
+
+        LogStream &out_;
+    };
+
+public:
+    void print_info(LogStream &out) const
+    {
+        out.begin_item("Fill flags:");
+        flags_handler_.print_info(out);
+        out.end_item();
+
+        ValuesCachePrinter printer(values_,flags_handler_,out);
+        // apply the functor printer to each type contained in map_VT_TP
+        boost::mpl::for_each<map_VT_TP>(printer);
+    }
+
 
     template<class ValueType>
     auto &get_der()
@@ -158,6 +175,61 @@ public:
 template<int dim, int codim, int range, int rank>
 class BasisValuesCache : public ValuesCache<dim,codim,range,rank,ValueTable>
 {
+    using parent_t = ValuesCache<dim,codim,range,rank,ValueTable>;
+    using CacheType = typename parent_t::CacheType;
+
+private:
+    struct BasisValuesCacheResizer
+    {
+        BasisValuesCacheResizer(
+            CacheType &values,
+            FunctionFlags &flags_handler,
+            const int n_basis,
+            const int n_points)
+            :
+            values_ {values},
+                flags_handler_ {flags_handler},
+                n_basis_ {n_basis},
+        n_points_ {n_points}
+        {
+            Assert(n_points >= 0, ExcLowerRange(n_points,1));
+            Assert(n_basis > 0, ExcLowerRange(n_basis,1));
+        }
+
+
+        template <class pair_VT_TP>
+        void operator()(const pair_VT_TP &x)
+        {
+            using ValueType = typename pair_VT_TP::first;
+            const auto tuple_pos = TuplePosition_from_ValueType<ValueType>::value;
+            auto &value = std::get<tuple_pos>(this->values_);
+
+            if (this->flags_handler_.template fill<ValueType>())
+            {
+                if (value.get_num_points() != n_points_ ||
+                    value.get_num_functions() != n_basis_)
+                {
+                    value.resize(n_basis_,n_points_);
+                }
+                value.zero();
+            }
+            else
+            {
+                value.clear();
+                this->flags_handler_.template set_filled<ValueType>(false);
+            }
+        }
+
+    private:
+        CacheType &values_;
+
+        FunctionFlags &flags_handler_;
+
+        int n_basis_;
+        int n_points_;
+    };
+
+
 public:
     /**
      * Allocate space for the values and derivatives
@@ -170,36 +242,11 @@ public:
     {
         this->flags_handler_ = flags_handler;
 
-        Assert(n_points >= 0, ExcLowerRange(n_points,1));
-        Assert(n_basis > 0, ExcLowerRange(n_basis,1));
-
-        if (this->flags_handler_.template fill<_Value>())
-            resize_der<_Value>(n_basis,n_points);
-        if (this->flags_handler_.template fill<_Gradient>())
-            resize_der<_Gradient>(n_basis,n_points);
-        if (this->flags_handler_.template fill<_Hessian>())
-            resize_der<_Hessian>(n_basis,n_points);
-
-        if (this->flags_handler_.template fill<_Divergence>())
-        {
-            Assert(this->flags_handler_.template fill<_Gradient>(),
-                   ExcMessage("Divergence requires gradient to be filled."));
-            resize_der<_Divergence>(n_basis,n_points);
-        }
+        BasisValuesCacheResizer resizer(this->values_,this->flags_handler_,n_basis,n_points);
+        // apply the functor resizer to each type contained in map_VT_TP
+        boost::mpl::for_each<map_VT_TP>(resizer);
 
         this->set_initialized(true);
-    }
-
-    template<class ValueType>
-    void resize_der(const int n_basis, const int n_points)
-    {
-        auto &value = this->template get_der<ValueType>();
-        if (value.get_num_points() != n_points ||
-            value.get_num_functions() != n_basis)
-        {
-            value.resize(n_basis, n_points);
-            value.zero();
-        }
     }
 
 };
@@ -208,6 +255,57 @@ public:
 template<int dim, int codim, int range, int rank>
 class FuncValuesCache : public ValuesCache<dim,codim,range,rank,ValueVector>
 {
+    using parent_t = ValuesCache<dim,codim,range,rank,ValueVector>;
+    using CacheType = typename parent_t::CacheType;
+
+private:
+    struct FuncValuesCacheResizer
+    {
+        FuncValuesCacheResizer(
+            CacheType &values,
+            FunctionFlags &flags_handler,
+            const int n_points)
+            :
+            values_ {values},
+                flags_handler_ {flags_handler},
+        n_points_ {n_points}
+        {
+            Assert(n_points >= 0, ExcLowerRange(n_points,1));
+        }
+
+
+        template <class pair_VT_TP>
+        void operator()(const pair_VT_TP &x)
+        {
+            using ValueType = typename pair_VT_TP::first;
+            const auto tuple_pos = TuplePosition_from_ValueType<ValueType>::value;
+            auto &value = std::get<tuple_pos>(this->values_);
+
+            if (this->flags_handler_.template fill<ValueType>())
+            {
+                if (value.get_num_points() != n_points_)
+                {
+                    value.resize(n_points_);
+                }
+                value.zero();
+            }
+            else
+            {
+                value.clear();
+                this->flags_handler_.template set_filled<ValueType>(false);
+            }
+        }
+
+    private:
+        CacheType &values_;
+
+        FunctionFlags &flags_handler_;
+
+        int n_points_;
+    };
+
+
+
 public:
     using Func = Function<dim,codim,range,rank>;
 
@@ -223,40 +321,11 @@ public:
     {
         this->flags_handler_ = flags_handler;
 
-        Assert(n_points >= 0, ExcLowerRange(n_points,1));
-
-        if (this->flags_handler_.fill_points())
-            points_.resize(n_points);
-
-        if (this->flags_handler_.template fill<_Value>())
-            resize_der<_Value>(n_points);
-        if (this->flags_handler_.template fill<_Gradient>())
-            resize_der<_Gradient>(n_points);
-        if (this->flags_handler_.template fill<_Hessian>())
-            resize_der<_Hessian>(n_points);
-
-        if (this->flags_handler_.template fill<_Divergence>())
-        {
-            Assert(this->flags_handler_.template fill<_Gradient>(),
-                   ExcMessage("Divergence requires gradient to be filled."));
-
-            Assert(false,ExcNotImplemented());
-            AssertThrow(false,ExcNotImplemented());
-            resize_der<_Divergence>(n_points);
-        }
+        FuncValuesCacheResizer resizer(this->values_,this->flags_handler_,n_points);
+        // apply the functor resizer to each type contained in map_VT_TP
+        boost::mpl::for_each<map_VT_TP>(resizer);
 
         this->set_initialized(true);
-    }
-
-    template<class ValueType>
-    void resize_der(const int n_points)
-    {
-        auto &value = this->template get_der<ValueType>();
-        if (value.get_num_points() != n_points)
-        {
-            value.resize(n_points);
-            value.zero();
-        }
     }
 
     ValueVector<Point> points_;

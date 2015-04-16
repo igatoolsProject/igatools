@@ -143,7 +143,6 @@ public:
     {
         Assert(local_cache_ != nullptr,ExcNullPtr());
         const auto &cache = local_cache_->template get_value_cache<k>(j);
-        Assert(cache.is_filled() == true, ExcCacheNotFilled());
         return cache.template get_der<ValueType>();
     }
 
