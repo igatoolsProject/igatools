@@ -28,15 +28,24 @@
 
 IGA_NAMESPACE_OPEN
 
+struct Flags
+{
+    bool fill_ = false;
+    bool filled_ = false;
+
+    void print_info(LogStream &out) const
+    {
+        out << "   fill = " << fill_ << "    filled = " << filled_;
+    }
+};
+
 
 class GridFlags
 {
 public:
     static const ValueFlags valid_flags =
         ValueFlags::point|
-        ValueFlags::measure |
-        ValueFlags::w_measure |
-        ValueFlags::length;
+        ValueFlags::w_measure;
 
     /** @name Constructors */
     ///@{
@@ -84,14 +93,6 @@ public:
     /** Sets the filled status for points. */
     void set_points_filled(const bool status);
 
-    /** Returns true if the element measure must be filled. */
-    bool fill_measures() const;
-
-    /** Returns true if the measures are filled. */
-    bool measures_filled() const;
-
-    /** Sets the filled status for measures. */
-    void set_measures_filled(const bool status);
 
     /** Returns true if the quadrature weight multiplied by the element measure must be filled. */
     bool fill_w_measures() const;
@@ -102,9 +103,6 @@ public:
     /** Sets the filled status for w_measures. */
     void set_w_measures_filled(const bool status);
 
-    bool fill_lengths() const;
-    bool lengths_filled() const;
-    void set_lengths_filled(const bool status);
 
     /**
      * Prints internal information about the ElementValuesCache.
@@ -114,21 +112,9 @@ public:
 
 
 protected:
-    bool fill_points_ = false;
+    Flags points_flags_;
 
-    bool points_filled_ = false;
-
-    bool fill_measures_ = false;
-
-    bool measures_filled_ = false;
-
-    bool fill_w_measures_ = false;
-
-    bool w_measures_filled_ = false;
-
-    bool fill_lengths_   = false;
-
-    bool lengths_filled_ = false;
+    Flags w_measures_flags_;
 };
 
 
@@ -217,20 +203,7 @@ public:
     void print_info(LogStream &out) const;
 
 protected:
-    bool fill_points_ = false;
-    bool points_filled_ = false;
-
-
-    struct Flags
-    {
-        bool fill_ = false;
-        bool filled_ = false;
-
-        void print_info(LogStream &out) const
-        {
-            out << "   fill = " << fill_ << "    filled = " << filled_;
-        }
-    };
+    Flags points_flags_;
 
     /**
      * Map used to realize the association between the ValueType::id and the relative Flags.
@@ -356,182 +329,6 @@ protected:
 
 };
 
-#if 0
-
-class PushFowardFlags
-{
-public:
-    /** @name Constructors */
-    ///@{
-    /** Default constructor. Sets all boolean flags to false. */
-    PushFowardFlags();
-
-    /**
-     * Constructor. Transforms the value flags for the mapping in the correspondent booleans
-     * that specify the quantities that must be computed/filled.
-     */
-    PushFowardFlags(const ValueFlags &flags);
-
-    /** Copy constructor. */
-    PushFowardFlags(const PushFowardFlags &in) = default;
-
-    /** Move constructor. */
-    PushFowardFlags(PushFowardFlags &&in) = default;
-
-
-    /** Destructor. */
-    ~PushFowardFlags() = default;
-    ///@}
-
-
-    ValueFlags to_mapping_flags(const ValueFlags &flag);
-
-    /** @name Assignment operators */
-    ///@{
-    /** Copy assignment operator. */
-    MappingFlags &operator=(const PushFowardFlags &in) = default;
-
-
-    /** Move assignment operator. */
-    PushFowardFlags &operator=(PushFowardFlags &&in) = default;
-    ///@}
-
-    /** Returns true if the nothing must be filled. */
-    bool fill_none() const;
-
-    /** Returns true if the gradients inverse must be filled. */
-    bool fill_trans() const;
-
-    /** Returns true if the gradients are filled. */
-    bool inv_gradients_filled() const;
-
-    /** Sets the filled status for gradients. */
-    void set_inv_gradients_filled(const bool status);
-
-    /** Returns true if the hessians inverse must be filled. */
-    bool fill_inv_hessians() const;
-
-    /** Returns true if the hessians are filled. */
-    bool inv_hessians_filled() const;
-
-    /** Sets the filled status for hessians. */
-    void set_inv_hessians_filled(const bool status);
-
-
-    /**
-     * Prints internal information about the ElementValuesCache.
-     * Its main use is for testing and debugging.
-     */
-    void print_info(LogStream &out) const;
-
-protected:
-    bool fill_inv_gradients_ = false;
-
-    bool inv_gradients_filled_ = false;
-
-    bool fill_inv_hessians_ = false;
-
-    bool inv_hessians_filled_ = false;
-};
-
-
-class SpaceFlags
-{
-public:
-    static const ValueFlags valid_flags =
-        ValueFlags::value|
-        ValueFlags::gradient|
-        ValueFlags::hessian |
-        ValueFlags::w_measure;
-
-
-    /** @name Constructors */
-    ///@{
-    /**
-     * Default constructor. Sets all boolean flags to false.
-     */
-    SpaceFlags();
-
-    SpaceFlags(const ValueFlags &flag);
-
-    /** Copy constructor. */
-    SpaceFlags(const SpaceFlags &in) = default;
-
-    /** Move constructor. */
-    SpaceFlags(SpaceFlags &&in) = default;
-
-
-    /** Destructor. */
-    ~SpaceFlags() = default;
-    ///@}
-
-    ValueFlags to_grid_flags(const ValueFlags &flag);
-    ValueFlags to_ref_space_flag(const ValueFlags &flag);
-    ValueFlags to_push_forward_flag(const ValueFlags &flag);
-
-    /** @name Assignment operators */
-    ///@{
-    /** Copy assignment operator. */
-    SpaceFlags &operator=(const SpaceFlags &in) = default;
-
-
-    /** Move assignment operator. */
-    SpaceFlags &operator=(SpaceFlags &&in) = default;
-    ///@}
-
-
-    /** Returns true if the nothing must be filled. */
-    bool fill_none() const;
-
-    /** Returns true if the values must be filled. */
-    bool fill_values() const;
-
-    /** Returns true if the values are filled. */
-    bool values_filled() const;
-
-    /** Sets the filled status for values. */
-    void set_values_filled(const bool status);
-
-    /** Returns true if the gradients must be filled. */
-    bool fill_gradients() const;
-
-    /** Returns true if the gradients are filled. */
-    bool gradients_filled() const;
-
-    /** Sets the filled status for gradients. */
-    void set_gradients_filled(const bool status);
-
-    /** Returns true if the hessians must be filled. */
-    bool fill_hessians() const;
-
-    /** Returns true if the hessians are filled. */
-    bool hessians_filled() const;
-
-    /** Sets the filled status for hessians. */
-    void set_hessians_filled(const bool status);
-
-
-    /**
-     * Prints internal information about the ElementValuesCache.
-     * Its main use is for testing and debugging.
-     */
-    void print_info(LogStream &out) const;
-
-protected:
-    bool fill_points_ = false;
-    bool points_filled_ = false;
-
-    bool fill_values_ = false;
-    bool values_filled_ = false;
-
-    bool fill_gradients_ = false;
-    bool gradients_filled_ = false;
-
-    bool fill_hessians_ = false;
-    bool hessians_filled_ = false;
-};
-
-#endif
 
 IGA_NAMESPACE_CLOSE
 

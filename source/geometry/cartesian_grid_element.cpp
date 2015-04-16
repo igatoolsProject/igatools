@@ -373,12 +373,6 @@ Real
 CartesianGridElement<dim>::
 get_measure(const int j) const
 {
-#if 0
-    const auto &cache = local_cache_->template get_value_cache<k>(j);
-    Assert(cache.flags_handler_.measures_filled(), ExcMessage("Cache not filed."));
-    return cache.measure_;
-#endif
-
     const auto lengths = this->template get_coordinate_lengths<k>(j);
 
     auto &k_elem = Topology::template get_elem<k>(j);
@@ -402,11 +396,13 @@ get_w_measures(const int j) const
 {
     Assert(local_cache_ != nullptr, ExcNullPtr());
     const auto &cache = local_cache_->template get_value_cache<k>(j);
-//    Assert(cache.flags_handler_.measures_filled(), ExcNotInitialized());
-//    return (cache.measure_ * cache.unit_weights_);
+    /*
+        const auto measure = this->template get_measure<k>(j);
+        return (measure * cache.unit_weights_);
+    //*/
+    Assert(cache.flags_handler_.w_measures_filled(), ExcCacheNotFilled());
+    return cache.w_measures_;
 
-    const auto measure = this->template get_measure<k>(j);
-    return (measure * cache.unit_weights_);
 }
 
 
@@ -418,20 +414,12 @@ auto
 CartesianGridElement<dim>::
 get_coordinate_lengths(const int j) const -> const Point
 {
-#if 0
-    Assert(local_cache_ != nullptr, ExcNullPtr());
-    const auto &cache = local_cache_->template get_value_cache<k>(j);
-    Assert(cache.flags_handler_.lengths_filled(), ExcNotInitialized());
-
-    return cache.lengths_;
-#endif
-
     Point lengths;
 #if 0
     auto &k_elem = Topology::template get_elem<k>(j);
 
     for (const int const_dir :k_elem.constant_directions)
-        lengths[const_dir] = 1.0;
+        lengths[const_dir] = 0.0;
 
     for (const int active_dir : k_elem.active_directions)
     {
@@ -469,7 +457,8 @@ get_points(const int j) const ->ValueVector<Point>
 {
     Assert(local_cache_ != nullptr, ExcNullPtr());
     const auto &cache = local_cache_->template get_value_cache<k>(j);
-    Assert(cache.flags_handler_.points_filled(), ExcNotInitialized());
+    Assert(cache.flags_handler_.points_filled(), ExcCacheNotFilled());
+    /*
     auto translate = vertex(0);
     auto dilate    = get_coordinate_lengths<k>(j);
 
@@ -486,6 +475,10 @@ get_points(const int j) const ->ValueVector<Point>
             ref_pt[dir] = unit_pt[dir] * dilate[dir] + translate[dir];
     }
     return ref_points;
+    //*/
+
+    return cache.ref_points_;
+
 }
 
 
@@ -514,17 +507,26 @@ resize(const GridFlags &flags_handler,
     if (flags_handler_.fill_points())
     {
         this->unit_points_ = quad.get_points();
-        flags_handler_.set_points_filled(true);
+//        flags_handler_.set_points_filled(true);
+
+        this->ref_points_.resize(this->unit_points_.get_num_points());
+    }
+    else
+    {
+        this->ref_points_.clear();
     }
 
     if (flags_handler_.fill_w_measures())
     {
         this->unit_weights_ = quad.get_weights();
+        this->w_measures_.resize(this->unit_weights_.get_num_points());
     }
     else
     {
-        this->unit_weights_.clear() ;
+        this->unit_weights_.clear();
+        this->w_measures_.clear();
     }
+
     this->set_initialized(true);
 }
 
@@ -533,21 +535,36 @@ resize(const GridFlags &flags_handler,
 template <int dim>
 void
 CartesianGridElement<dim>::
-ValuesCache::print_info(LogStream &out) const
+ValuesCache::
+print_info(LogStream &out) const
 {
     out.begin_item("Fill flags:");
     flags_handler_.print_info(out);
     out.end_item();
 
-    out << "Measure: " << measure_ << std::endl;
-    out << "Lengths: " << lengths_ << std::endl;
-    out.begin_item("Unit weights:");
-    unit_weights_.print_info(out);
-    out.end_item();
+//    out << "Measure: " << measure_ << std::endl;
+//    out << "Lengths: " << lengths_ << std::endl;
+    if (flags_handler_.w_measures_filled())
+    {
+        out.begin_item("Unit weights:");
+        unit_weights_.print_info(out);
+        out.end_item();
 
-    out.begin_item("Unit points:");
-    unit_points_.print_info(out);
-    out.end_item();
+        out.begin_item("Weights * measure:");
+        w_measures_.print_info(out);
+        out.end_item();
+    }
+
+    if (flags_handler_.points_filled())
+    {
+        out.begin_item("Unit points:");
+        unit_points_.print_info(out);
+        out.end_item();
+
+        out.begin_item("Points in the parametric element:");
+        ref_points_.print_info(out);
+        out.end_item();
+    }
 }
 
 

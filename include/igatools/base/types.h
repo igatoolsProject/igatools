@@ -137,9 +137,6 @@ enum class ValueFlags : std::int64_t
 
     /** curvatures */
     curvature     =    1L << 6,
-
-    /** element coordinates length */
-    length         =    1L << 8,
     ///@}
 
 

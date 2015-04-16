@@ -264,8 +264,8 @@ public:
 
 
 public:
-    //TODO (martinelli, Apr 16, 2015): the returned value should be Points<topology_dim>, i.e.
-    // the leghts should refer to the sub-element of dimension topology_dim
+    //TODO (martinelli, Apr 16, 2015): maybe the returned value should be Points<topology_dim>, i.e.
+    // the lengths should refer to the sub-element of dimension topology_dim
     template<int topology_dim>
     const Point get_coordinate_lengths(const int topology_id) const;
 
@@ -315,13 +315,13 @@ private:
 
         ///@name The "cache" properly speaking
         ///@{
-        Real measure_;
-
-        Points<dim> lengths_;
-
         ValueVector<Points<dim>> unit_points_;
 
         ValueVector<Real> unit_weights_;
+
+        ValueVector<Points<dim>> ref_points_;
+
+        ValueVector<Real> w_measures_;
         ///@}
     };
 

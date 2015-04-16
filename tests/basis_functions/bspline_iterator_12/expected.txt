@@ -2,86 +2,40 @@
 void space_cache_init_fill_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
 ========================================================================
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
 
-Measure: 0
-Lengths: [ 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
 
-Measure: 0
-Lengths: [ 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
 
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
 
-Measure: 0
-Lengths: [ 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
 
-Measure: 0
-Lengths: [ 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
 
 Fill flags:
-   lengths
-      fill = 1    filled = 1
    points
       fill = 1    filled = 1
-   measures
-      fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
 
-Measure: 0
-Lengths: [ 1.00000 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
 Unit points:
+ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
+Points in the parametric element:
 ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
 
 Fill flags:
@@ -150,87 +104,37 @@ Values:
 void space_cache_init_fill_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
 ========================================================================
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
-Fill flags:
-   lengths
-      fill = 0    filled = 0
-   points
-      fill = 0    filled = 0
-   measures
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
 
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
 
-Measure: 0
-Lengths: [ 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
-Fill flags:
-   lengths
-      fill = 0    filled = 0
-   points
-      fill = 0    filled = 0
-   measures
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
 
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
 
-Measure: 0
-Lengths: [ 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
+Fill flags:
+   points
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
+
+Fill flags:
+   points
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
 
 Fill flags:
    Value
@@ -298,87 +202,37 @@ Gradients:
 void space_cache_init_fill_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
 ========================================================================
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
-Fill flags:
-   lengths
-      fill = 0    filled = 0
-   points
-      fill = 0    filled = 0
-   measures
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
 
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
 
-Measure: 0
-Lengths: [ 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
-Fill flags:
-   lengths
-      fill = 0    filled = 0
-   points
-      fill = 0    filled = 0
-   measures
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
 
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
 
-Measure: 0
-Lengths: [ 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
+Fill flags:
+   points
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
+
+Fill flags:
+   points
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
 
 Fill flags:
    Value
@@ -446,216 +300,90 @@ Hessians:
 void space_cache_init_fill_elem(iga::ValueFlags, int, int) [with int dim = 2; int range = 1; int rank = 1]
 ========================================================================
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
 
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
 
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
 
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
 
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
 
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
 
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
 
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
 
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
 
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
 
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
 
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
 
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
 
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
 
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
 
 Fill flags:
-   lengths
-      fill = 1    filled = 1
    points
       fill = 1    filled = 1
-   measures
-      fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
 
-Measure: 0
-Lengths: [ 0.250000 0.250000 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
 Unit points:
 ValueVector (num_points=4) : [ [ 0.211325 0.211325 ]  [ 0.788675 0.211325 ]  [ 0.211325 0.788675 ]  [ 0.788675 0.788675 ]  ]
+Points in the parametric element:
+ValueVector (num_points=4) : [ [ 0.0528312 0.0528312 ]  [ 0.197169 0.0528312 ]  [ 0.0528312 0.197169 ]  [ 0.197169 0.197169 ]  ]
 
 Fill flags:
    Value
@@ -808,216 +536,86 @@ Values:
 void space_cache_init_fill_elem(iga::ValueFlags, int, int) [with int dim = 2; int range = 1; int rank = 1]
 ========================================================================
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
-Fill flags:
-   lengths
-      fill = 0    filled = 0
-   points
-      fill = 0    filled = 0
-   measures
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
-Fill flags:
-   lengths
-      fill = 0    filled = 0
-   points
-      fill = 0    filled = 0
-   measures
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
-Fill flags:
-   lengths
-      fill = 0    filled = 0
-   points
-      fill = 0    filled = 0
-   measures
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
 
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
-Fill flags:
-   lengths
-      fill = 0    filled = 0
-   points
-      fill = 0    filled = 0
-   measures
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
-Fill flags:
-   lengths
-      fill = 0    filled = 0
-   points
-      fill = 0    filled = 0
-   measures
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
-Fill flags:
-   lengths
-      fill = 0    filled = 0
-   points
-      fill = 0    filled = 0
-   measures
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
 
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
-Fill flags:
-   lengths
-      fill = 0    filled = 0
-   points
-      fill = 0    filled = 0
-   measures
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
-Fill flags:
-   lengths
-      fill = 0    filled = 0
-   points
-      fill = 0    filled = 0
-   measures
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
-Fill flags:
-   lengths
-      fill = 0    filled = 0
-   points
-      fill = 0    filled = 0
-   measures
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
 
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
 
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
+
+Fill flags:
+   points
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
+Fill flags:
+   points
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
+Fill flags:
+   points
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
+Fill flags:
+   points
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
+
+Fill flags:
+   points
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
+Fill flags:
+   points
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
+Fill flags:
+   points
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
+Fill flags:
+   points
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
+
+Fill flags:
+   points
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
 
 Fill flags:
    Value
@@ -1170,216 +768,86 @@ Gradients:
 void space_cache_init_fill_elem(iga::ValueFlags, int, int) [with int dim = 2; int range = 1; int rank = 1]
 ========================================================================
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
-Fill flags:
-   lengths
-      fill = 0    filled = 0
-   points
-      fill = 0    filled = 0
-   measures
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
-Fill flags:
-   lengths
-      fill = 0    filled = 0
-   points
-      fill = 0    filled = 0
-   measures
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
-Fill flags:
-   lengths
-      fill = 0    filled = 0
-   points
-      fill = 0    filled = 0
-   measures
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
 
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
-Fill flags:
-   lengths
-      fill = 0    filled = 0
-   points
-      fill = 0    filled = 0
-   measures
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
-Fill flags:
-   lengths
-      fill = 0    filled = 0
-   points
-      fill = 0    filled = 0
-   measures
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
-Fill flags:
-   lengths
-      fill = 0    filled = 0
-   points
-      fill = 0    filled = 0
-   measures
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
 
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
-Fill flags:
-   lengths
-      fill = 0    filled = 0
-   points
-      fill = 0    filled = 0
-   measures
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
-Fill flags:
-   lengths
-      fill = 0    filled = 0
-   points
-      fill = 0    filled = 0
-   measures
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
-Fill flags:
-   lengths
-      fill = 0    filled = 0
-   points
-      fill = 0    filled = 0
-   measures
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
 
 Fill flags:
-   lengths
-      fill = 0    filled = 0
    points
-      fill = 0    filled = 0
-   measures
       fill = 0    filled = 0
    w_measures
       fill = 0    filled = 0
 
-Measure: 0
-Lengths: [ 0 0 ] 
-Unit weights:
-ValueVector (num_points=0) : [ ]
-Unit points:
-ValueVector (num_points=0) : [ ]
+
+Fill flags:
+   points
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
+Fill flags:
+   points
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
+Fill flags:
+   points
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
+Fill flags:
+   points
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
+
+Fill flags:
+   points
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
+Fill flags:
+   points
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
+Fill flags:
+   points
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
+Fill flags:
+   points
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
+
+Fill flags:
+   points
+      fill = 0    filled = 0
+   w_measures
+      fill = 0    filled = 0
+
 
 Fill flags:
    Value

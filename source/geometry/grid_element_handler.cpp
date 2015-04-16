@@ -149,23 +149,35 @@ fill_cache(ElementAccessor &elem, const int j)
     Assert(elem.local_cache_ != nullptr, ExcNullPtr());
     auto &cache = elem.local_cache_->template get_value_cache<k>(j);
 
-    const auto &index = elem.get_tensor_index();
-    const TensorIndex<k> active(Topology::template get_elem<k>(j).active_directions);
-
     auto &flags = cache.flags_handler_;
 
-    auto meas = lengths_.template sub_tensor_product<k>(index, active);
+    if (flags.fill_points())
+    {
+        auto translate = elem.vertex(0);
+        auto dilate    = elem.template get_coordinate_lengths<k>(j);
 
-    if (flags.fill_measures())
-    {
-        cache.measure_ = meas;
-        flags.set_measures_filled(true);
+        const int n_pts = cache.unit_points_.get_num_points();
+
+        const auto &unit_pts = cache.unit_points_;
+        auto &ref_pts = cache.ref_points_;
+        for (int pt = 0 ; pt < n_pts ; ++pt)
+        {
+            const auto &unit_pt = unit_pts[pt];
+            auto &ref_pt = ref_pts[pt];
+
+            for (const auto dir : Topology::active_directions)
+                ref_pt[dir] = unit_pt[dir] * dilate[dir] + translate[dir];
+        }
+
+        flags.set_points_filled(true);
     }
-    if (flags.fill_lengths())
+
+    if (flags.fill_w_measures())
     {
-        cache.lengths_ = lengths_.cartesian_product(index);
-        flags.set_lengths_filled(true);
+        cache.w_measures_ = elem.template get_measure<k>(j) * cache.unit_weights_;
+        flags.set_w_measures_filled(true);
     }
+
 
     cache.set_filled(true);
 }

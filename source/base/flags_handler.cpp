@@ -31,31 +31,11 @@ IGA_NAMESPACE_OPEN
 GridFlags::
 GridFlags(const ValueFlags &flags)
 {
-    /*
-     * meas -> lengths
-     * points -> lengths
-     * general_points -> meas
-     * w_meas -> meas
-     */
-    if (contains(flags, ValueFlags::length))
-    {
-        fill_lengths_ = true;
-    }
     if (contains(flags, ValueFlags::point))
-    {
-        fill_points_  = true;
-        fill_lengths_ = true;
-    }
-    if (contains(flags, ValueFlags::measure))
-    {
-        fill_measures_ = true;
-        fill_lengths_  = true;
-    }
+        points_flags_.fill_  = true;
+
     if (contains(flags, ValueFlags::w_measure))
-    {
-        fill_measures_ = true;
-        fill_w_measures_ = true;
-    }
+        w_measures_flags_.fill_ = true;
 }
 
 
@@ -65,7 +45,7 @@ GridFlags::
 fill_none() const
 {
     bool fill_none = true;
-    if (fill_lengths_ || fill_points_ || fill_measures_ || fill_w_measures_)
+    if (points_flags_.fill_ || w_measures_flags_.fill_)
         fill_none = false;
     return fill_none;
 }
@@ -76,7 +56,7 @@ bool
 GridFlags::
 fill_points() const
 {
-    return fill_points_;
+    return points_flags_.fill_;
 }
 
 
@@ -85,7 +65,7 @@ bool
 GridFlags::
 points_filled() const
 {
-    return points_filled_;
+    return points_flags_.filled_;
 }
 
 
@@ -94,35 +74,10 @@ void
 GridFlags::
 set_points_filled(const bool status)
 {
-    points_filled_ = status;
+    points_flags_.filled_ = status;
 }
 
 
-
-bool
-GridFlags::
-fill_measures() const
-{
-    return fill_measures_;
-}
-
-
-
-bool
-GridFlags::
-measures_filled() const
-{
-    return measures_filled_;
-}
-
-
-
-void
-GridFlags::
-set_measures_filled(const bool status)
-{
-    measures_filled_ = status;
-}
 
 
 
@@ -130,7 +85,7 @@ bool
 GridFlags::
 fill_w_measures() const
 {
-    return fill_w_measures_;
+    return w_measures_flags_.fill_;
 }
 
 
@@ -139,7 +94,7 @@ bool
 GridFlags::
 w_measures_filled() const
 {
-    return w_measures_filled_;
+    return w_measures_flags_.filled_;
 }
 
 
@@ -148,35 +103,9 @@ void
 GridFlags::
 set_w_measures_filled(const bool status)
 {
-    w_measures_filled_ = status;
+    w_measures_flags_.filled_ = status;
 }
 
-
-
-bool
-GridFlags::
-fill_lengths() const
-{
-    return fill_lengths_;
-}
-
-
-
-bool
-GridFlags::
-lengths_filled() const
-{
-    return lengths_filled_;
-}
-
-
-
-void
-GridFlags::
-set_lengths_filled(const bool status)
-{
-    lengths_filled_ = status;
-}
 
 
 
@@ -184,20 +113,14 @@ void
 GridFlags::
 print_info(LogStream &out) const
 {
-    out.begin_item("lengths");
-    out << "   fill = " << fill_lengths_ << "    filled = " << lengths_filled_;
-    out.end_item();
-
     out.begin_item("points");
-    out << "   fill = " << fill_points_  << "    filled = " << points_filled_;
-    out.end_item();
-
-    out.begin_item("measures");
-    out << "   fill = " << fill_measures_<< "    filled = " << measures_filled_;
+    points_flags_.print_info(out);
+//    out << "   fill = " << fill_points_  << "    filled = " << points_filled_;
     out.end_item();
 
     out.begin_item("w_measures");
-    out << "   fill = " << fill_w_measures_ << "    filled = " << w_measures_filled_;
+    w_measures_flags_.print_info(out);
+//    out << "   fill = " << fill_w_measures_ << "    filled = " << w_measures_filled_;
     out.end_item();
 }
 
@@ -230,7 +153,7 @@ FunctionFlags(const ValueFlags &flags)
     FunctionFlags()
 {
     if (contains(flags, ValueFlags::point))
-        fill_points_ = true;
+        points_flags_.fill_ = true;
 
     if (contains(flags, ValueFlags::value))
         value_type_flags_[_Value::id].fill_ = true;
@@ -242,9 +165,7 @@ FunctionFlags(const ValueFlags &flags)
         value_type_flags_[_Hessian::id].fill_ = true;
 
     if (contains(flags, ValueFlags::divergence))
-    {
         value_type_flags_[_Divergence::id].fill_ = true;
-    }
 
 }
 
@@ -289,7 +210,7 @@ bool
 FunctionFlags::
 fill_points() const
 {
-    return fill_points_;
+    return points_flags_.fill_;
 }
 
 
@@ -298,7 +219,7 @@ bool
 FunctionFlags::
 points_filled() const
 {
-    return points_filled_;
+    return points_flags_.filled_;
 }
 
 
@@ -307,7 +228,7 @@ void
 FunctionFlags::
 set_points_filled(const bool status)
 {
-    points_filled_ = status;
+    points_flags_.filled_ = status;
 }
 
 
