@@ -37,7 +37,7 @@ MappingElement(const self_t &elem,
     else
     {
         local_cache_ =
-            std::shared_ptr<LocalCache>(new LocalCache(*elem.local_cache_));
+            std::shared_ptr<CacheType>(new CacheType(*elem.local_cache_));
     }
 }
 
@@ -85,9 +85,10 @@ compute_second_fundamental_form() const -> ValueVector<MetricTensor>
     MetricTensor A;
     for (int pt = 0; pt < n_points; ++pt)
     {
+        const auto &D2_F_pt = D2_F[pt];
         for (int u=0; u<dim; ++u)
         {
-            auto  B = co_tensor(transpose(D2_F[pt][u]));
+            const auto B = co_tensor(transpose(D2_F_pt[u]));
             A[u] = action(B, normal[pt]);
         }
         res[pt] = -A;
@@ -138,10 +139,10 @@ get_external_normals() const -> ValueVector<Points<space_dim> >
     const auto n_points = DF.get_num_points();
 
     res.resize(n_points);
-    for (int i = 0; i< n_points; ++i)
+    for (int pt = 0; pt < n_points; ++pt)
     {
-        res[i] = cross_product<dim, codim>(DF[i]);
-        res[i] /= res[i].norm();
+        res[pt] = cross_product<dim, codim>(DF[pt]);
+        res[pt] /= res[pt].norm();
     }
 
     return res;
