@@ -183,10 +183,7 @@ public:
                   std::shared_ptr<CartesianGrid<k>> sub_grid,
                   std::shared_ptr<InterGridMap<k>> elem_map) const;
 
-    const DegreeTable &get_degree() const
-    {
-        return ref_space_->get_degree();
-    }
+
 
     void get_element_dofs(
         const CartesianGridElement<dim> &element,
@@ -205,6 +202,16 @@ public:
         return map_func_;
     }
 
+    template<int k>
+    std::set<Index> get_boundary_dofs(const int s_id) const
+    {
+        return ref_space_->template get_boundary_dofs<k>();
+    }
+
+    std::set<Index> get_interior_dofs() const
+    {
+        return ref_space_->get_interior_dofs();
+    }
 
     void print_info(LogStream &out) const;
 
@@ -235,7 +242,8 @@ public:
         return phys_space_previous_refinement_;
     }
 
-
+#if 0
+    // TODO (pauletti, Apr 16, 2015): Not appropriate for a physical space
     /**
      * Return the maximum value of the degree, for each component, for each direction;
      * @return
@@ -244,6 +252,13 @@ public:
     {
         return ref_space_->get_max_degree();
     }
+
+    // TODO (pauletti, Apr 16, 2015): Not appropriate for a physical space
+    const DegreeTable &get_degree() const
+       {
+           return ref_space_->get_degree();
+       }
+#endif
 
 };
 
