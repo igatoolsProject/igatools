@@ -373,10 +373,21 @@ Real
 CartesianGridElement<dim>::
 get_measure(const int j) const
 {
+#if 0
     const auto &cache = local_cache_->template get_value_cache<k>(j);
     Assert(cache.flags_handler_.measures_filled(), ExcMessage("Cache not filed."));
-
     return cache.measure_;
+#endif
+
+    const auto lengths = this->template get_coordinate_lengths<k>(j);
+
+    auto &k_elem = Topology::template get_elem<k>(j);
+
+    Real measure = 1.0;
+    for (const int active_dir : k_elem.active_directions)
+        measure *= lengths[active_dir];
+
+    return measure;
 }
 
 
@@ -391,9 +402,11 @@ get_w_measures(const int j) const
 {
     Assert(local_cache_ != nullptr, ExcNullPtr());
     const auto &cache = local_cache_->template get_value_cache<k>(j);
-    Assert(cache.flags_handler_.measures_filled(), ExcNotInitialized());
-    //Assert(cache.flags_handler_.weights_filled(), ExcNotInitialized());
-    return (cache.measure_ * cache.unit_weights_);
+//    Assert(cache.flags_handler_.measures_filled(), ExcNotInitialized());
+//    return (cache.measure_ * cache.unit_weights_);
+
+    const auto measure = this->template get_measure<k>(j);
+    return (measure * cache.unit_weights_);
 }
 
 
@@ -403,13 +416,47 @@ template <int dim>
 template <int k>
 auto
 CartesianGridElement<dim>::
-get_coordinate_lengths(const int j) const -> const Point &
+get_coordinate_lengths(const int j) const -> const Point
 {
+#if 0
     Assert(local_cache_ != nullptr, ExcNullPtr());
     const auto &cache = local_cache_->template get_value_cache<k>(j);
-//    Assert(cache.is_filled(), ExcNotInitialized());
     Assert(cache.flags_handler_.lengths_filled(), ExcNotInitialized());
+
     return cache.lengths_;
+#endif
+
+    Point lengths;
+#if 0
+    auto &k_elem = Topology::template get_elem<k>(j);
+
+    for (const int const_dir :k_elem.constant_directions)
+        lengths[const_dir] = 1.0;
+
+    for (const int active_dir : k_elem.active_directions)
+    {
+        const auto &knots_active_dir = grid_->get_knot_coordinates(active_dir);
+        const int j = tensor_index_[active_dir];
+        lengths[active_dir] = knots_active_dir[j+1] - knots_active_dir[j];
+    }
+#endif
+    for (const int active_dir : Topology::active_directions)
+    {
+        const auto &knots_active_dir = grid_->get_knot_coordinates(active_dir);
+        const int j = tensor_index_[active_dir];
+        lengths[active_dir] = knots_active_dir[j+1] - knots_active_dir[j];
+    }
+
+    /*
+    LogStream out;
+    out.begin_item("CartesianGridElement<" + std::to_string(dim) + ">::get_coordinate_lengths<" +
+            std::to_string(k) + ">(" + std::to_string(j) + ")");
+    out << lengths << endl;
+    out.end_item();
+    //*/
+//    Assert(false,ExcNotImplemented());
+
+    return lengths;
 }
 
 

@@ -42,15 +42,20 @@ void values_of_F(Function<dim, codim, range> &F)
     F.init_cache(elem, Int<dim>());
     for (; elem != end; ++elem)
     {
+        out.begin_item("Element " + std::to_string(elem->get_flat_index()));
+
         F.fill_cache(elem, Int<dim>(), 0);
 //        elem->get_points().print_info(out);
 //        out << endl;
+        out.begin_item("Value ");
         elem->template get_values<_Value, dim>(0).print_info(out);
-        out << endl;
+        out.end_item();
 //        elem->template get_values<1>().print_info(out);
 //        out << endl;
 //        elem->template get_values<2>().print_info(out);
 //        out << endl;
+
+        out.end_item();
     }
 }
 
@@ -58,6 +63,7 @@ void values_of_F(Function<dim, codim, range> &F)
 template<int dim, int codim, int range>
 void create_fun()
 {
+    OUTSTART
     using Function = functions::LinearFunction<dim, codim, range>;
 
     typename Function::Value    b;
@@ -89,9 +95,11 @@ void create_fun()
 
         auto sub_quad = QGauss<k>(1);
         subF->reset(flag, sub_quad);
-        out << "Face: " << s_id << endl;
+        out.begin_item("Face: " + std::to_string(s_id));
         values_of_F<k, 0, range>(*subF);
+        out.end_item();
     }
+    OUTEND
 }
 
 

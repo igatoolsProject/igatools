@@ -264,22 +264,24 @@ public:
 
 
 public:
+    //TODO (martinelli, Apr 16, 2015): the returned value should be Points<topology_dim>, i.e.
+    // the leghts should refer to the sub-element of dimension topology_dim
     template<int topology_dim>
-    const Point &get_coordinate_lengths(const int j) const;
+    const Point get_coordinate_lengths(const int topology_id) const;
 
     template <int topology_dim>
-    Real get_measure(const int j) const;
+    Real get_measure(const int topology_id) const;
 
     /**
-     * Returns the <tt>topology_dim</tt> dimensional j-th sub-element measure
+     * Returns the <tt>topology_dim</tt> dimensional topology_id-th sub-element measure
      * multiplied by the weights of the quadrature.
      */
     template <int topology_dim>
-    ValueVector<Real> get_w_measures(const int j) const;
+    ValueVector<Real> get_w_measures(const int topology_id) const;
 
 
     template <int topology_dim = dim>
-    ValueVector<Point> get_points(const int j = 0) const;
+    ValueVector<Point> get_points(const int topology_id = 0) const;
 
     ValueVector<Point> get_element_points() const;
 
