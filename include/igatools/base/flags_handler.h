@@ -311,22 +311,13 @@ public:
     void print_info(LogStream &out) const;
 
 protected:
-    bool fill_inv_gradients_ = false;
+    Flags inv_gradients_flags_;
 
-    bool inv_gradients_filled_ = false;
+    Flags inv_hessians_flags_;
 
-    bool fill_inv_hessians_ = false;
+    Flags measures_flags_;
 
-    bool inv_hessians_filled_ = false;
-
-    bool fill_measures_ = false;
-
-    bool measures_filled_ = false;
-
-    bool fill_w_measures_ = false;
-
-    bool w_measures_filled_ = false;
-
+    Flags w_measures_flags_;
 };
 
 

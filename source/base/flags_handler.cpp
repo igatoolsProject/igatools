@@ -115,12 +115,10 @@ print_info(LogStream &out) const
 {
     out.begin_item("points");
     points_flags_.print_info(out);
-//    out << "   fill = " << fill_points_  << "    filled = " << points_filled_;
     out.end_item();
 
     out.begin_item("w_measures");
     w_measures_flags_.print_info(out);
-//    out << "   fill = " << fill_w_measures_ << "    filled = " << w_measures_filled_;
     out.end_item();
 }
 
@@ -268,8 +266,8 @@ fill_none() const
 {
     bool fill_none = true;
 
-    if (fill_inv_gradients_ ||
-        fill_inv_hessians_ ||
+    if (inv_gradients_flags_.fill_ ||
+        inv_hessians_flags_.fill_ ||
         !FunctionFlags::fill_none())
         fill_none = false;
 
@@ -285,18 +283,18 @@ MappingFlags(const ValueFlags &flags)
     if (contains(flags, ValueFlags::inv_gradient)    ||
         contains(flags, ValueFlags::boundary_normal) ||
         contains(flags, ValueFlags::curvature))
-        fill_inv_gradients_ = true;
+        inv_gradients_flags_.fill_ = true;
 
     if (contains(flags, ValueFlags::inv_hessian))
-        fill_inv_hessians_ = true;
+        inv_hessians_flags_.fill_ = true;
 
     if (contains(flags, ValueFlags::measure))
-        fill_measures_ = true;
+        measures_flags_.fill_ = true;
 
     if (contains(flags, ValueFlags::w_measure))
     {
-        fill_measures_ = true;
-        fill_w_measures_ = true;
+        measures_flags_.fill_ = true;
+        w_measures_flags_.fill_ = true;
     }
 }
 
@@ -332,48 +330,48 @@ bool
 MappingFlags::
 fill_inv_gradients() const
 {
-    return fill_inv_gradients_;
+    return inv_gradients_flags_.fill_;
 }
 
 bool
 MappingFlags::
 inv_gradients_filled() const
 {
-    return inv_gradients_filled_;
+    return inv_gradients_flags_.filled_;
 }
 
 void
 MappingFlags::
 set_inv_gradients_filled(const bool status)
 {
-    inv_gradients_filled_ = status;
+    inv_gradients_flags_.filled_ = status;
 }
 
 bool
 MappingFlags::
 fill_inv_hessians() const
 {
-    return fill_inv_hessians_;
+    return inv_hessians_flags_.fill_;
 }
 
 bool
 MappingFlags::
 inv_hessians_filled() const
 {
-    return inv_hessians_filled_;
+    return inv_hessians_flags_.filled_;
 }
 
 void
 MappingFlags::
 set_inv_hessians_filled(const bool status)
 {
-    inv_hessians_filled_ = status;
+    inv_hessians_flags_.filled_ = status;
 }
 bool
 MappingFlags::
 fill_measures() const
 {
-    return fill_measures_;
+    return measures_flags_.fill_;
 }
 
 
@@ -382,7 +380,7 @@ bool
 MappingFlags::
 measures_filled() const
 {
-    return measures_filled_;
+    return measures_flags_.filled_;
 }
 
 
@@ -391,7 +389,7 @@ void
 MappingFlags::
 set_measures_filled(const bool status)
 {
-    measures_filled_ = status;
+    measures_flags_.filled_ = status;
 }
 
 
@@ -400,7 +398,7 @@ bool
 MappingFlags::
 fill_w_measures() const
 {
-    return fill_w_measures_;
+    return w_measures_flags_.fill_;
 }
 
 
@@ -409,7 +407,7 @@ bool
 MappingFlags::
 w_measures_filled() const
 {
-    return w_measures_filled_;
+    return w_measures_flags_.filled_;
 }
 
 
@@ -418,7 +416,7 @@ void
 MappingFlags::
 set_w_measures_filled(const bool status)
 {
-    w_measures_filled_ = status;
+    w_measures_flags_.filled_ = status;
 }
 
 
@@ -429,235 +427,25 @@ print_info(LogStream &out) const
     FunctionFlags::print_info(out);
 
     out.begin_item("inv gradients");
-    out << "   fill = " << fill_inv_gradients_ << "    filled = " << inv_gradients_filled_;
+    inv_gradients_flags_.print_info(out);
     out.end_item();
 
     out.begin_item("inv hessians");
-    out << "   fill = " << fill_inv_hessians_ << "    filled = " << inv_hessians_filled_;
+    inv_hessians_flags_.print_info(out);
     out.end_item();
 
+    out.begin_item("measures");
+    measures_flags_.print_info(out);
+    out.end_item();
 
-
+    out.begin_item("w * measures");
+    w_measures_flags_.print_info(out);
+    out.end_item();
 }
 //====================================================
 
 
 
-#if 0
-
-//====================================================
-MappingFaceValueFlagsHandler::
-MappingFaceValueFlagsHandler()
-    :
-    MappingFlags(),
-    fill_normals_(false),
-    normals_filled_(false)
-{}
-
-
-bool
-MappingFaceValueFlagsHandler::
-fill_none() const
-{
-    bool fill_none = true;
-
-    if (fill_normals_ || !MappingFlags::fill_none())
-        fill_none = false;
-
-    return fill_none;
-}
-
-MappingFaceValueFlagsHandler::
-MappingFaceValueFlagsHandler(const ValueFlags &flags)
-{
-    if (contains(flags, ValueFlags::face_point) ||
-        contains(flags, ValueFlags::map_face_value))
-    {
-        GridFlags::fill_points_ = true;
-        fill_values_ = true;
-    }
-
-    if (contains(flags, ValueFlags::map_face_gradient))
-    {
-        fill_gradients_ = true;
-    }
-
-    if (contains(flags, ValueFlags::map_face_hessian))
-    {
-        fill_hessians_ = true;
-    }
-
-    if (contains(flags, ValueFlags::map_face_inv_gradient))
-    {
-        fill_gradients_ = true;
-        fill_measures_ = true;
-        fill_inv_gradients_ = true;
-    }
-
-    if (contains(flags, ValueFlags::map_face_inv_hessian))
-    {
-        fill_hessians_ = true;
-        fill_inv_hessians_ = true;
-    }
-
-    if (contains(flags, ValueFlags::face_measure))
-    {
-        fill_gradients_ = true;
-        fill_measures_ = true;
-    }
-
-    if (contains(flags, ValueFlags::face_w_measure))
-    {
-        fill_gradients_ = true;
-        fill_measures_ = true;
-        fill_w_measures_ = true;
-    }
-
-    if (contains(flags, ValueFlags::face_normal))
-    {
-        fill_normals_ = true;
-    }
-}
-
-
-
-bool
-MappingFaceValueFlagsHandler::
-fill_normals() const
-{
-    return fill_normals_;
-}
-
-bool
-MappingFaceValueFlagsHandler::
-normals_filled() const
-{
-    return normals_filled_;
-}
-
-void
-MappingFaceValueFlagsHandler::
-set_normals_filled(const bool status)
-{
-    normals_filled_ = status;
-}
-//====================================================
-
-
-//====================================================
-BasisElemValueFlagsHandler::
-BasisElemValueFlagsHandler()
-    :
-    ValueFlagsHandler(),
-    fill_divergences_(false),
-    divergences_filled_(false)
-{}
-
-
-bool
-BasisElemValueFlagsHandler::
-fill_none() const
-{
-    bool fill_none = true;
-
-    if (fill_divergences_ || !ValueFlagsHandler::fill_none())
-        fill_none = false;
-
-    return fill_none;
-}
-
-
-
-BasisElemValueFlagsHandler::
-BasisElemValueFlagsHandler(const ValueFlags &flags)
-{
-    if (contains(flags, ValueFlags::value))
-    {
-        fill_values_ = true;
-    }
-
-    if (contains(flags, ValueFlags::gradient))
-    {
-        fill_gradients_ = true;
-    }
-
-    if (contains(flags, ValueFlags::hessian))
-    {
-        fill_hessians_ = true;
-    }
-
-    if (contains(flags, ValueFlags::divergence))
-    {
-        fill_gradients_ = true;
-        fill_divergences_ = true;
-    }
-}
-
-
-
-bool
-BasisElemValueFlagsHandler::
-fill_divergences() const
-{
-    return fill_divergences_;
-}
-
-bool
-BasisElemValueFlagsHandler::
-divergences_filled() const
-{
-    return divergences_filled_;
-}
-
-void
-BasisElemValueFlagsHandler::
-set_divergences_filled(const bool status)
-{
-    divergences_filled_ = status;
-}
-
-
-void
-BasisElemValueFlagsHandler::
-print_info(LogStream &out) const
-{
-    ValueFlagsHandler::print_info(out);
-    out << "divergences -->    fill = "
-        << fill_divergences_ << "    filled = " << divergences_filled_ << std::endl;
-}
-//====================================================
-
-
-
-
-//====================================================
-BasisFaceValueFlagsHandler::
-BasisFaceValueFlagsHandler(const ValueFlags &flags)
-{
-    if (contains(flags, ValueFlags::face_value))
-    {
-        fill_values_ = true;
-    }
-
-    if (contains(flags, ValueFlags::face_gradient))
-    {
-        fill_gradients_ = true;
-    }
-
-    if (contains(flags, ValueFlags::face_hessian))
-    {
-        fill_hessians_ = true;
-    }
-
-    if (contains(flags, ValueFlags::face_divergence))
-    {
-        fill_gradients_ = true;
-        fill_divergences_ = true;
-    }
-}
-//====================================================
-
-#endif
 
 IGA_NAMESPACE_CLOSE
 
