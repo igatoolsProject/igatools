@@ -45,10 +45,10 @@
 IGA_NAMESPACE_OPEN
 
 
-template<int dim_, int codim, int range, int rank, template<class ContainedType> class ContainerType>
+template<int dim, int codim, int range, int rank, template<class ContainedType> class ContainerType>
 class ValuesCache : public CacheStatus
 {
-    using Func = Function<dim_,codim,range,rank>;
+    using Func = Function<dim,codim,range,rank>;
 
     using Value = typename Func::Value;
 
@@ -59,7 +59,10 @@ class ValuesCache : public CacheStatus
 
 public:
 
-    static constexpr int dim = dim_;
+    static constexpr int get_dim()
+    {
+        return dim;
+    }
 
 
 
@@ -288,21 +291,22 @@ public:
 
     template <int topology_dim>
     Cache &
-    get_value_cache(const int j)
+    get_value_cache(const int topology_id)
     {
-        return std::get<topology_dim>(values_)[j];
+        return std::get<topology_dim>(values_)[topology_id];
     }
 
     template <int topology_dim>
     const Cache &
-    get_value_cache(const int j) const
+    get_value_cache(const int topology_id) const
     {
-        return std::get<topology_dim>(values_)[j];
+        const auto &cache = std::get<topology_dim>(values_)[topology_id];
+        Assert(cache.is_filled() == true, ExcCacheNotFilled());
+
+        return cache;
     }
 
-//        CacheList<ValuesCache, dim> values_;
-
-    CacheList<Cache, Cache::dim> values_;
+    CacheList<Cache, Cache::get_dim()> values_;
 
 };
 

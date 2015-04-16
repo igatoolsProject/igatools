@@ -26,6 +26,7 @@
 #include <igatools/geometry/cartesian_grid_element.h>
 #include <igatools/basis_functions/function_space.h>
 
+
 IGA_NAMESPACE_OPEN
 
 
@@ -164,24 +165,36 @@ public:
     ///@}
 
 
+
 public:
 
     /**
      * @name Comparison operators.
      *
-     * @brief The comparison operators compares the position of the element in the grid.
+     * @brief The comparison operators compares the <em>position</em> of the element in the grid.
      *
-     * @warning To be comparable, two SpaceElementBase objects must be defined on the same space,
+     * @warning To be comparable, two SpaceElementBase objects must be defined on the same space
+     * (and therefore on the same grid),
      * otherwise an assertion will be raised (in Debug mode).
      */
     ///@{
+    /** Returns TRUE if the two elements have the same index on the grid. */
     bool operator==(const self_t &a) const;
 
 
+    /** Returns TRUE if the two elements have different indices on the grid. */
     bool operator!=(const self_t &a) const;
 
+    /**
+     * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
+     * is smaller than the the index of the element on the right.
+     * */
     bool operator<(const self_t &a) const;
 
+    /**
+     * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
+     * is bigger than the the index of the element on the right.
+     * */
     bool operator>(const self_t &a) const;
     ///@}
 };

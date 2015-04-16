@@ -28,9 +28,9 @@
 //#include <igatools/base/flags_handler.h>
 
 //#include <igatools/base/function.h>
+#include <igatools/basis_functions/values_cache.h>
 
 #include <igatools/base/quadrature.h>
-#include <igatools/basis_functions/values_cache.h>
 
 //#include <igatools/utils/value_vector.h>
 //#include <igatools/utils/value_table.h>
@@ -139,13 +139,12 @@ public:
     ///@}
 
 
-    template <class ValueType, int k = dim>
+    template <class ValueType, int topology_dim = dim>
     auto
-    get_basis(const int j, const std::string &dofs_property = DofProperties::active) const
+    get_basis(const int topology_id, const std::string &dofs_property = DofProperties::active) const
     {
         Assert(local_cache_ != nullptr, ExcNullPtr());
-        const auto &cache = local_cache_->template get_value_cache<k>(j);
-        Assert(cache.is_filled() == true, ExcCacheNotFilled());
+        const auto &cache = local_cache_->template get_value_cache<topology_dim>(topology_id);
         const auto values_all_elem_dofs = cache.template get_der<ValueType>();
 
         //--------------------------------------------------------------------------------------
@@ -196,11 +195,11 @@ public:
     template <class ValueType, int k = dim>
     auto
     linear_combination(const vector<Real> &loc_coefs,
-                       const int id,
+                       const int topology_id,
                        const std::string &dofs_property) const
     {
         const auto &basis_values =
-            this->template get_basis<ValueType, k>(id,dofs_property);
+            this->template get_basis<ValueType, k>(topology_id,dofs_property);
         return basis_values.evaluate_linear_combination(loc_coefs) ;
     }
 
@@ -226,7 +225,7 @@ public:
     std::shared_ptr<LocalCache<Cache>> &
                                     get_local_cache()
     {
-        return local_cache_;
+        return this->local_cache_;
     }
 
 protected:

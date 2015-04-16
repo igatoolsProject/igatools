@@ -22,8 +22,10 @@
 #define CARTESIAN_GRID_ELEMENT_H_
 
 #include <igatools/base/config.h>
-#include <igatools/base/cache_status.h>
-#include <igatools/base/flags_handler.h>
+//#include <igatools/base/cache_status.h>
+//#include <igatools/base/flags_handler.h>
+#include <igatools/basis_functions/values_cache.h>
+
 #include <igatools/base/quadrature.h>
 
 
@@ -262,21 +264,21 @@ public:
 
 
 public:
-    template<int k>
+    template<int topology_dim>
     const Point &get_coordinate_lengths(const int j) const;
 
-    template <int k>
+    template <int topology_dim>
     Real get_measure(const int j) const;
 
     /**
-     * Returns the <tt>k</tt> dimensional j-th sub-element measure
+     * Returns the <tt>topology_dim</tt> dimensional j-th sub-element measure
      * multiplied by the weights of the quadrature.
      */
-    template <int k>
+    template <int topology_dim>
     ValueVector<Real> get_w_measures(const int j) const;
 
 
-    template <int k = dim>
+    template <int topology_dim = dim>
     ValueVector<Point> get_points(const int j = 0) const;
 
     ValueVector<Point> get_element_points() const;
@@ -302,6 +304,11 @@ private:
 
         void print_info(LogStream &out) const;
 
+        static constexpr int get_dim()
+        {
+            return dim;
+        }
+
         GridFlags flags_handler_;
 
         ///@name The "cache" properly speaking
@@ -317,31 +324,8 @@ private:
     };
 
 
-    class LocalCache
-    {
-    public:
-        LocalCache() = default;
+    using CacheType = LocalCache<ValuesCache>;
 
-        LocalCache(const LocalCache &in) = default;
-
-        LocalCache(LocalCache &&in) = default;
-
-        ~LocalCache() = default;
-
-        LocalCache &operator=(const LocalCache &in) = delete;
-
-        LocalCache &operator=(LocalCache &&in) = delete;
-
-        void print_info(LogStream &out) const;
-
-        template <int k>
-        ValuesCache &get_value_cache(const int j)
-        {
-            return std::get<k>(values_)[j];
-        }
-
-        CacheList<ValuesCache, dim> values_;
-    };
 
 private:
     template <class Accessor> friend class CartesianGridIteratorBase;
@@ -356,7 +340,7 @@ private:
     TensorIndex<dim> tensor_index_;
 
     /** The local (element and face) cache. */
-    std::shared_ptr<LocalCache> local_cache_;
+    std::shared_ptr<CacheType> local_cache_;
 
 protected:
     /**

@@ -90,7 +90,7 @@ init_all_caches(ElementAccessor &elem)
     auto &cache = elem.local_cache_;
     if (cache == nullptr)
     {
-        using Cache = typename ElementAccessor::LocalCache;
+        using Cache = typename ElementAccessor::CacheType;
         cache = shared_ptr<Cache>(new Cache);
     }
     init_unif_caches(flags_[dim], std::get<dim>(quad_), cache->values_);
@@ -106,7 +106,7 @@ init_cache(ElementAccessor &elem)
     auto &cache = elem.local_cache_;
     if (cache == nullptr)
     {
-        using Cache = typename ElementAccessor::LocalCache;
+        using Cache = typename ElementAccessor::CacheType;
         cache = shared_ptr<Cache>(new Cache);
     }
 

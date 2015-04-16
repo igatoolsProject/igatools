@@ -67,7 +67,7 @@ CartesianGridElement(const CartesianGridElement<dim> &elem, const CopyPolicy &co
         }
         else
         {
-            local_cache_ = std::shared_ptr<LocalCache>(new LocalCache(*elem.local_cache_));
+            local_cache_ = std::shared_ptr<CacheType>(new CacheType(*elem.local_cache_));
         }
     }
 }
@@ -267,7 +267,7 @@ copy_from(const CartesianGridElement<dim> &elem,
         if (copy_policy == CopyPolicy::deep)
         {
             Assert(elem.local_cache_ != nullptr, ExcNullPtr());
-            local_cache_ = std::shared_ptr<LocalCache>(new LocalCache(*elem.local_cache_));
+            local_cache_ = std::shared_ptr<CacheType>(new CacheType(*elem.local_cache_));
         }
         else if (copy_policy == CopyPolicy::shallow)
         {
@@ -374,7 +374,6 @@ CartesianGridElement<dim>::
 get_measure(const int j) const
 {
     const auto &cache = local_cache_->template get_value_cache<k>(j);
-    Assert(cache.is_filled(), ExcMessage("Cache not filed."));
     Assert(cache.flags_handler_.measures_filled(), ExcMessage("Cache not filed."));
 
     return cache.measure_;
@@ -392,7 +391,6 @@ get_w_measures(const int j) const
 {
     Assert(local_cache_ != nullptr, ExcNullPtr());
     const auto &cache = local_cache_->template get_value_cache<k>(j);
-    Assert(cache.is_filled(), ExcNotInitialized());
     Assert(cache.flags_handler_.measures_filled(), ExcNotInitialized());
     //Assert(cache.flags_handler_.weights_filled(), ExcNotInitialized());
     return (cache.measure_ * cache.unit_weights_);
@@ -409,7 +407,7 @@ get_coordinate_lengths(const int j) const -> const Point &
 {
     Assert(local_cache_ != nullptr, ExcNullPtr());
     const auto &cache = local_cache_->template get_value_cache<k>(j);
-    Assert(cache.is_filled(), ExcNotInitialized());
+//    Assert(cache.is_filled(), ExcNotInitialized());
     Assert(cache.flags_handler_.lengths_filled(), ExcNotInitialized());
     return cache.lengths_;
 }
@@ -514,26 +512,6 @@ print_info(LogStream &out) const
 {
     out << "Flat id = "   << flat_index_ << "    ";
     out << "Tensor id = " << tensor_index_ << endl;
-}
-
-
-
-template <int dim>
-void
-CartesianGridElement<dim>::LocalCache::
-print_info(LogStream &out) const
-{
-    cacheutils::print_caches(values_, out);
-//    out.begin_item("Element Cache:");
-//    std::get<dim>(values_)[0].print_info(out);
-//    out.end_item();
-
-//    for (int i = 0 ; i < UnitElement<dim>::template num_elem<dim==0? 0 : dim-1>() ; ++i)
-//    {
-//        out.begin_item("Face: "+ std::to_string(i) + " Cache:");
-//        std::get<1>(values_)[i].print_info(out);
-//        out.end_item();
-//    }
 }
 
 
