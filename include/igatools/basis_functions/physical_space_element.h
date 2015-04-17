@@ -47,8 +47,6 @@ public :
     using self_t = PhysicalSpaceElement<dim_,range_,rank_,codim_>;
     using parent_t = SpaceElement<dim_,codim_,range_,rank_>;
 
-//    using parent_t::LocalCache;
-
     using PhysSpace = PhysicalSpace<dim_,range_,rank_,codim_>;
     /** Type required by the CartesianGridIterator templated iterator */
     using ContainerType = const PhysSpace;
@@ -58,12 +56,7 @@ public :
     using PushForwardType = typename PhysSpace::PushForwardType;
     using PfElemAccessor = typename PushForwardType::ElementAccessor;
     using RefElemAccessor = typename RefSpace::ElementAccessor;
-    /*
-        using PfElemAccessor::dim;
-        using PfElemAccessor::space_dim;
-        using PfElemAccessor::codim;
-        using PfElemAccessor::type;
-    //*/
+
     static const auto dim = PfElemAccessor::dim;
     static const auto space_dim = PfElemAccessor::space_dim;
     static const auto codim = PfElemAccessor::codim;
@@ -71,23 +64,7 @@ public :
 
     using PhysPoint = typename Space::Point;
 
-#if 0
-    using Value = typename PhysSpace::Value;
-    using PhysPoint = typename PhysSpace::Point;
-    using RefPoint = typename RefSpace::Point;
 
-
-    using ValueMap = typename PfElemAccessor::MappingElementAccessor::ValueMap;
-
-    /**
-     * Typedef for specifying the derivatives of the basis function in the physical domain.
-     * \tparam order - order of the derivative.
-     */
-    template <int order>
-    using Derivative = typename PfElemAccessor::template PhysDerivative<RefSpace::range, RefSpace::rank, order>;
-
-    using Div = typename PhysSpace::Div;
-#endif
     /**
      * @name Constructors
      */
@@ -167,39 +144,11 @@ public :
     void shallow_copy_from(const self_t &element);
     ///@}
 
-#if 0
-    /** @name Functions for the basis and field evaluations without the use of the cache */
-    ///@{
 
-    /**
-     * Returns a ValueTable with the <tt>deriv_order</tt>-th derivatives of all local basis function
-     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
-     * @note This function does not use the cache and therefore can be called any time without
-     * needing to pre-call init_values()/fill_values().
-     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
-     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
-     */
-    template <int deriv_order>
-    ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
-    evaluate_basis_derivatives_at_points(const ValueVector<RefPoint> &points) const;
-
-    ///@}
-
-#endif
     /**
      * @name Getting quantities that are geometry-related
      */
     ///@{
-
-    /**
-     * Returns the gradient determinant of the map at the dilated quadrature points.
-     */
-    /*
-    using PhysSpace::PushForwardType::ElementAccessor::get_points;
-    using PhysSpace::PushForwardType::ElementAccessor::get_measures;
-    using PhysSpace::PushForwardType::ElementAccessor::get_w_measures;
-    //*/
-
     /**
      * Returns the <tt>k</tt> dimensional j-th sub-element measure
      * multiplied by the weights of the quadrature.
@@ -208,6 +157,15 @@ public :
     ValueVector<Real> get_w_measures(const int j) const
     {
         return push_fwd_element_->template get_w_measures<k>(j);
+    }
+
+    /**
+     * Returns the gradient determinant of the map at the dilated quadrature points.
+     */
+    template <int k>
+    ValueVector<Real> get_measures(const int j) const
+    {
+        return push_fwd_element_->template get_measures<k>(j);
     }
 
     ValueVector<Real> get_element_w_measures() const

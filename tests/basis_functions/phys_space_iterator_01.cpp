@@ -18,85 +18,36 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/*
- *  Test for the evaluation of physical space basis functions
- *  values and gradients with the identity mapping
+/**
+ *  Physical space element evaluation
+ *  Function map is the identity function
  *
  *  author: pauletti
- *  date: 2013-10-02
+ *  date:
  *
  */
 
-#include "../tests.h"
-
-#include <igatools/base/quadrature_lib.h>
-#include <igatools/base/function_lib.h>
+//#include <igatools/base/function_lib.h>
 #include <igatools/base/identity_function.h>
-#include <igatools/basis_functions/bspline_space.h>
-#include <igatools/basis_functions/physical_space.h>
-#include <igatools/basis_functions/physical_space_element.h>
-#include <igatools/basis_functions/phys_space_element_handler.h>
+
+#include "phys_space_iterator.h"
+
 
 template<int dim, int codim=0>
 auto
-create_function(shared_ptr<CartesianGrid<dim>> grid)
+linear_function(const int n_knots = 2)
 {
-
-    using Function = functions::LinearFunction<dim, 0, dim+codim>;
-    typename Function::Value    b;
-    typename Function::Gradient A;
-
-    for (int j=0; j<dim; j++)
-        A[j][j] = 1.;
-
-    return Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
-}
-
-
-template <int dim, int order = 0, int range=1, int rank=1, int codim = 0>
-void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
-{
-    const int k = dim;
-    using BspSpace = BSplineSpace<dim, range, rank>;
-    using RefSpace = ReferenceSpace<dim, range,rank>;
-    using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
-    using ElementHandler = typename Space::ElementHandler;
-
     auto grid  = CartesianGrid<dim>::create(n_knots);
-
-    auto ref_space = BspSpace::create(deg, grid);
-    auto map_func = create_function(grid);
-
-    auto space = Space::create(ref_space, map_func);
-
-
-    auto quad = QGauss<k>(n_qp);
-    auto flag = ValueFlags::value|ValueFlags::gradient|
-                ValueFlags::hessian | ValueFlags::point;
-
-    ElementHandler sp_values(space);
-    sp_values.template reset<k> (flag, quad);
-
-    auto elem = space->begin();
-    auto end = space->end();
-    sp_values.init_element_cache(elem);
-    for (; elem != end; ++elem)
-    {
-        sp_values.fill_element_cache(elem);
-        elem->template get_basis<   _Value, k>(0,DofProperties::active).print_info(out);
-        elem->template get_basis<_Gradient, k>(0,DofProperties::active).print_info(out);
-        elem->template get_basis< _Hessian, k>(0,DofProperties::active).print_info(out);
-    }
-
+    auto map = IdentityFunction<dim>::create(grid);
+    elem_values<dim, dim>(grid, map, 1, 1, true);
 }
 
 int main()
 {
-    out.depth_console(10);
 
-    elem_values<1>();
-    elem_values<2>();
-    elem_values<3>();
+    linear_function<1>();
+    linear_function<2>();
+    linear_function<3>();
 
     return 0;
 }

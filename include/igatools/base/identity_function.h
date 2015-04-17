@@ -59,9 +59,12 @@ public:
     using typename parent_t::Point;
     using typename parent_t::Value;
     using typename parent_t::Gradient;
+    using typename parent_t::Hessian;
+
     using typename parent_t::ElementIterator;
     using typename parent_t::ElementAccessor;
-//    using parent_t::space_dim;
+
+
 
     template <int order>
     using Derivative = typename parent_t::template Derivative<order>;
@@ -127,13 +130,15 @@ private:
                 }
                 if (flags.template fill<_Gradient>())
                 {
+                    // TODO (pauletti, Apr 17, 2015): this can be static const
                     auto identity = create_id_tensor<dim,space_dim>();
                     std::get<1>(cache.values_).fill(identity);
                 }
                 if (flags.template fill<_Hessian>())
                 {
-                    Assert(false, ExcNotImplemented());
-                    //std::get<2>(cache.values_) = 0.;
+                    // TODO (pauletti, Apr 17, 2015): this can be static const
+                    Hessian zero;
+                    std::get<2>(cache.values_).fill(zero);
                 }
             }
             cache.set_filled(true);
