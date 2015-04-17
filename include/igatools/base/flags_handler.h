@@ -63,6 +63,19 @@ create_function_flags_data()
                FlagStatus(), FlagStatus(), FlagStatus(), FlagStatus(), FlagStatus());
 }
 
+inline
+auto
+create_map_flags_data()
+{
+    return boost::fusion::make_map<
+           _Point,
+           _Value,_Gradient,_Hessian,
+           _Measure, _W_Measure,
+           _InvGradient, _InvHessian>(
+               FlagStatus(), FlagStatus(), FlagStatus(), FlagStatus(),
+               FlagStatus(), FlagStatus(), FlagStatus(), FlagStatus());
+}
+
 
 template<class FusionMap_ValueType_FlagStatus>
 class Flags
@@ -160,6 +173,26 @@ protected:
         } // end lambda function
                                );
     }
+
+public:
+    /**
+     * Returns the flas that are valid to be used with this class.
+     */
+    ValueFlags get_valid_flags() const
+    {
+        ValueFlags valid_flags;
+
+        boost::fusion::for_each(map_value_types_and_flag_status_,
+                                [&](const auto & type_and_status) -> void
+        {
+            using ValueType_Status = typename std::remove_reference<decltype(type_and_status)>::type;
+            using ValueType = typename ValueType_Status::first_type;
+
+            valid_flags |= ValueType::flag;
+        } // end lambda function
+                               );
+        return valid_flags;
+    }
 };
 
 
@@ -167,13 +200,6 @@ class FunctionFlags : public Flags<decltype(create_function_flags_data())>
 {
     using parent_t = Flags<decltype(create_function_flags_data())>;
 public:
-
-    static const ValueFlags valid_flags =
-        ValueFlags::point|
-        ValueFlags::value|
-        ValueFlags::gradient|
-        ValueFlags::hessian|
-        ValueFlags::divergence;
 
     static ValueFlags to_grid_flags(const ValueFlags &flag);
 
@@ -222,10 +248,6 @@ class GridFlags : public Flags<decltype(create_grid_flags_data())>
     using parent_t = Flags<decltype(create_grid_flags_data())>;
 public:
 
-    static const ValueFlags valid_flags =
-        ValueFlags::point|
-        ValueFlags::w_measure;
-
     /** @name Constructors */
     ///@{
     /**
@@ -265,11 +287,11 @@ public:
 };
 
 
-class MappingFlags :
-    public FunctionFlags
+class MappingFlags : public Flags<decltype(create_map_flags_data())>
 {
+    using parent_t = Flags<decltype(create_map_flags_data())>;
 public:
-
+#if 0
     static const ValueFlags valid_flags =
         FunctionFlags::valid_flags |
         ValueFlags::inv_gradient|
@@ -279,13 +301,17 @@ public:
         ValueFlags::boundary_normal|
         ValueFlags::outer_normal|
         ValueFlags::curvature;
+#endif
 
     static ValueFlags to_function_flags(const ValueFlags &flag);
 
     /** @name Constructors */
     ///@{
     /** Default constructor. Sets all boolean flags to false. */
-    MappingFlags() = default;
+    MappingFlags()
+        :
+        parent_t(create_map_flags_data())
+    {};
 
     /**
      * Constructor. Transforms the value flags for the mapping in the correspondent booleans
@@ -305,8 +331,6 @@ public:
     ///@}
 
 
-
-
     /** @name Assignment operators */
     ///@{
     /** Copy assignment operator. */
@@ -316,59 +340,6 @@ public:
     /** Move assignment operator. */
     MappingFlags &operator=(MappingFlags &&in) = default;
     ///@}
-
-    /** Returns true if the nothing must be filled. */
-    bool fill_none() const;
-
-    /** Returns true if the gradients inverse must be filled. */
-    bool fill_inv_gradients() const;
-
-    /** Returns true if the gradients are filled. */
-    bool inv_gradients_filled() const;
-
-    /** Sets the filled status for gradients. */
-    void set_inv_gradients_filled(const bool status);
-
-    /** Returns true if the hessians inverse must be filled. */
-    bool fill_inv_hessians() const;
-
-    /** Returns true if the hessians are filled. */
-    bool inv_hessians_filled() const;
-
-    /** Sets the filled status for hessians. */
-    void set_inv_hessians_filled(const bool status);
-
-    /** Returns true if the element measure must be filled. */
-    bool fill_measures() const;
-
-    /** Returns true if the measures are filled. */
-    bool measures_filled() const;
-
-    /** Sets the filled status for measures. */
-    void set_measures_filled(const bool status);
-
-    /** Returns true if the quadrature weight multiplied by the element measure must be filled. */
-    bool fill_w_measures() const;
-
-    /** Returns true if the w_measures are filled. */
-    bool w_measures_filled() const;
-
-    /** Sets the filled status for w_measures. */
-    void set_w_measures_filled(const bool status);
-    /**
-     * Prints internal information about the ElementValuesCache.
-     * Its main use is for testing and debugging.
-     */
-    void print_info(LogStream &out) const;
-
-protected:
-    FlagStatus inv_gradients_flags_;
-
-    FlagStatus inv_hessians_flags_;
-
-    FlagStatus measures_flags_;
-
-    FlagStatus w_measures_flags_;
 };
 
 

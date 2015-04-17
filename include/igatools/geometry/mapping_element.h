@@ -97,7 +97,7 @@ public:
     ValueVector<Real> const &get_measures(const int j) const
     {
         const auto &cache = local_cache_->template get_value_cache<k>(j);
-        Assert(cache.flags_handler_.measures_filled(),ExcCacheNotFilled());
+        Assert(cache.flags_handler_.template filled<_Measure>(),ExcCacheNotFilled());
         return cache.measures_;
     }
 
@@ -105,7 +105,7 @@ public:
     ValueVector<Real> const &get_w_measures(const int j) const
     {
         const auto &cache = local_cache_->template get_value_cache<k>(j);
-        Assert(cache.flags_handler_.w_measures_filled(),ExcCacheNotFilled());
+        Assert(cache.flags_handler_.template filled<_W_Measure>(),ExcCacheNotFilled());
         return cache.w_measures_;
     }
 
@@ -170,13 +170,13 @@ private:
             //TODO(pauletti, Oct 11, 2014): missing all necesary clears
             flags_handler_ = flags_handler;
 
-            if (flags_handler_.fill_measures())
+            if (flags_handler_.template fill<_Measure>())
                 measures_.resize(n_points);
-            if (flags_handler_.fill_w_measures())
+            if (flags_handler_.template fill<_W_Measure>())
                 w_measures_.resize(n_points);
-            if (flags_handler_.fill_inv_gradients())
+            if (flags_handler_.template fill<_InvGradient>())
                 std::get<1>(inv_values_).resize(n_points);
-            if (flags_handler_.fill_inv_hessians())
+            if (flags_handler_.template fill<_InvHessian>())
                 std::get<2>(inv_values_).resize(n_points);
 
             set_initialized(true);
@@ -186,28 +186,28 @@ private:
         {
             flags_handler_.print_info(out);
 
-            if (flags_handler_.measures_filled())
+            if (flags_handler_.template filled<_Measure>())
             {
                 out.begin_item("Measures:");
                 measures_.print_info(out);
                 out.end_item();
             }
 
-            if (flags_handler_.w_measures_filled())
+            if (flags_handler_.template filled<_W_Measure>())
             {
                 out.begin_item("W * Measures:");
                 w_measures_.print_info(out);
                 out.end_item();
             }
 
-            if (flags_handler_.inv_gradients_filled())
+            if (flags_handler_.template filled<_InvGradient>())
             {
                 out.begin_item("Inv. Gradients:");
                 std::get<1>(inv_values_).print_info(out);
                 out.end_item();
             }
 
-            if (flags_handler_.inv_hessians_filled())
+            if (flags_handler_.template filled<_InvHessian>())
             {
                 out.begin_item("Inv. Hessians:");
                 std::get<2>(inv_values_).print_info(out);

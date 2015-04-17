@@ -110,6 +110,41 @@ public:
 using _W_Measure = ValueType<-4>;
 
 
+template<>
+class ValueType<-5>
+{
+public:
+    static constexpr int id = -5;
+    static constexpr int order = 0;
+    static const std::string name;
+    static const auto flag = ValueFlags::measure;
+};
+using _Measure = ValueType<-5>;
+
+
+template<>
+class ValueType<-6>
+{
+public:
+    static constexpr int id = -6;
+    static constexpr int order = 1;
+    static const std::string name;
+    static const auto flag = ValueFlags::inv_gradient;
+};
+using _InvGradient = ValueType<-6>;
+
+
+template<>
+class ValueType<-7>
+{
+public:
+    static constexpr int id = -7;
+    static constexpr int order = 1;
+    static const std::string name;
+    static const auto flag = ValueFlags::inv_hessian;
+};
+using _InvHessian = ValueType<-7>;
+
 IGA_NAMESPACE_CLOSE
 
 #endif //#ifndef  VALUE_TYPES_H_

@@ -54,4 +54,19 @@ constexpr int _W_Measure::id;
 constexpr int _W_Measure::order;
 const string  _W_Measure::name = "W_Measure";
 
+
+constexpr int _Measure::id;
+constexpr int _Measure::order;
+const string  _Measure::name = "Measure";
+
+
+constexpr int _InvGradient::id;
+constexpr int _InvGradient::order;
+const string  _InvGradient::name = "InvGradient";
+
+
+constexpr int _InvHessian::id;
+constexpr int _InvHessian::order;
+const string  _InvHessian::name = "InvHessian";
+
 IGA_NAMESPACE_CLOSE

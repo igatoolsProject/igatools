@@ -396,10 +396,6 @@ get_w_measures(const int j) const
 {
     Assert(local_cache_ != nullptr, ExcNullPtr());
     const auto &cache = local_cache_->template get_value_cache<k>(j);
-    /*
-        const auto measure = this->template get_measure<k>(j);
-        return (measure * cache.unit_weights_);
-    //*/
     Assert(cache.flags_handler_.template filled<_W_Measure>(), ExcCacheNotFilled());
     return cache.w_measures_;
 
@@ -435,15 +431,6 @@ get_coordinate_lengths(const int j) const -> const Point
         lengths[active_dir] = knots_active_dir[j+1] - knots_active_dir[j];
     }
 
-    /*
-    LogStream out;
-    out.begin_item("CartesianGridElement<" + std::to_string(dim) + ">::get_coordinate_lengths<" +
-            std::to_string(k) + ">(" + std::to_string(j) + ")");
-    out << lengths << endl;
-    out.end_item();
-    //*/
-//    Assert(false,ExcNotImplemented());
-
     return lengths;
 }
 
@@ -458,24 +445,6 @@ get_points(const int j) const ->ValueVector<Point>
     Assert(local_cache_ != nullptr, ExcNullPtr());
     const auto &cache = local_cache_->template get_value_cache<k>(j);
     Assert(cache.flags_handler_.template filled<_Point>(), ExcCacheNotFilled());
-    /*
-    auto translate = vertex(0);
-    auto dilate    = get_coordinate_lengths<k>(j);
-
-
-    const int n_pts = cache.unit_points_.get_num_points();
-    ValueVector<Point> ref_points(n_pts);
-
-    for (int ipt = 0 ; ipt < n_pts ; ++ipt)
-    {
-        const auto &unit_pt = cache.unit_points_[ipt];
-        auto &ref_pt = ref_points[ipt];
-
-        for (const auto dir : Topology::active_directions)
-            ref_pt[dir] = unit_pt[dir] * dilate[dir] + translate[dir];
-    }
-    return ref_points;
-    //*/
 
     return cache.ref_points_;
 
@@ -507,8 +476,6 @@ resize(const GridFlags &flags_handler,
     if (flags_handler_.template fill<_Point>())
     {
         this->unit_points_ = quad.get_points();
-//        flags_handler_.set_points_filled(true);
-
         this->ref_points_.resize(this->unit_points_.get_num_points());
     }
     else
