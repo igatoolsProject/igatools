@@ -119,25 +119,6 @@ init_cache(ElementAccessor &elem)
 }
 
 
-#if 0
-template <int dim>
-void
-GridElementHandler<dim>::
-init_element_cache(ElementAccessor &elem)
-{
-    init_cache<dim>(elem);
-}
-
-
-
-template <int dim>
-void
-GridElementHandler<dim>::
-init_element_cache(ElementIterator &elem)
-{
-    init_element_cache(*elem);
-}
-#endif
 
 
 template <int dim>
@@ -159,7 +140,7 @@ fill_cache(ElementAccessor &elem, const int j)
         const int n_pts = cache.unit_points_.get_num_points();
 
         const auto &unit_pts = cache.unit_points_;
-        auto &ref_pts = cache.ref_points_;
+        auto &ref_pts = cache.template get_der<_Point>();
         for (int pt = 0 ; pt < n_pts ; ++pt)
         {
             const auto &unit_pt = unit_pts[pt];
@@ -174,7 +155,7 @@ fill_cache(ElementAccessor &elem, const int j)
 
     if (flags.template fill<_W_Measure>())
     {
-        cache.w_measures_ = elem.template get_measure<k>(j) * cache.unit_weights_;
+    	cache.template get_der<_W_Measure>() = elem.template get_measure<k>(j) * cache.unit_weights_;
         flags.template set_filled<_W_Measure>(true);
     }
 
@@ -191,7 +172,6 @@ get_grid() const -> std::shared_ptr<const GridType>
 {
     return grid_;
 }
-
 
 
 template <int dim>

@@ -314,23 +314,12 @@ private:
                     const Quadrature<dim> &quad);
 
         void print_info(LogStream &out) const;
-#if 0
-        static constexpr int get_dim()
-        {
-            return dim;
-        }
-#endif
-//        GridFlags flags_handler_;
 
         ///@name The "cache" properly speaking
         ///@{
         ValueVector<Points<dim>> unit_points_;
 
         ValueVector<Real> unit_weights_;
-
-        ValueVector<Points<dim>> ref_points_;
-
-        ValueVector<Real> w_measures_;
         ///@}
     };
 

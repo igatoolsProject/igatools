@@ -33,9 +33,9 @@ Fill flags:
    W_Measure
       fill = 0    filled = 0
 
-Unit points:
+Points:
 ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
-Points in the parametric element:
+Unit points:
 ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
 
 Fill flags:
@@ -410,10 +410,10 @@ Fill flags:
    W_Measure
       fill = 0    filled = 0
 
+Points:
+ValueVector (num_points=4) : [ [ 0.0528312 0.0528312 ]  [ 0.197169 0.0528312 ]  [ 0.0528312 0.197169 ]  [ 0.197169 0.197169 ]  ]
 Unit points:
 ValueVector (num_points=4) : [ [ 0.211325 0.211325 ]  [ 0.788675 0.211325 ]  [ 0.211325 0.788675 ]  [ 0.788675 0.788675 ]  ]
-Points in the parametric element:
-ValueVector (num_points=4) : [ [ 0.0528312 0.0528312 ]  [ 0.197169 0.0528312 ]  [ 0.0528312 0.197169 ]  [ 0.197169 0.197169 ]  ]
 
 Fill flags:
    Point

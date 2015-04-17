@@ -50,9 +50,9 @@ Fill flags:
    W_Measure
       fill = 0    filled = 0
 
-Unit points:
+Points:
 ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
-Points in the parametric element:
+Unit points:
 ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
 
 Fill flags:

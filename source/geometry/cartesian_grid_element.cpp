@@ -396,9 +396,9 @@ get_w_measures(const int j) const
 {
     Assert(local_cache_ != nullptr, ExcNullPtr());
     const auto &cache = local_cache_->template get_value_cache<k>(j);
-    Assert(cache.flags_handler_.template filled<_W_Measure>(), ExcCacheNotFilled());
-    return cache.w_measures_;
-
+//    Assert(cache.flags_handler_.template filled<_W_Measure>(), ExcCacheNotFilled());
+//    return cache.w_measures_;
+    return cache.template get_der<_W_Measure>();
 }
 
 
@@ -444,10 +444,11 @@ get_points(const int j) const ->ValueVector<Point>
 {
     Assert(local_cache_ != nullptr, ExcNullPtr());
     const auto &cache = local_cache_->template get_value_cache<k>(j);
-    Assert(cache.flags_handler_.template filled<_Point>(), ExcCacheNotFilled());
+//    Assert(cache.flags_handler_.template filled<_Point>(), ExcCacheNotFilled());
 
-    return cache.ref_points_;
+//    return cache.ref_points_;
 
+    return cache.template get_der<_Point>();
 }
 
 
@@ -478,22 +479,22 @@ resize(const GridFlags &flags_handler,
     if (this->flags_handler_.template fill<_Point>())
     {
         this->unit_points_ = quad.get_points();
-        this->ref_points_.resize(this->unit_points_.get_num_points());
+//        this->ref_points_.resize(this->unit_points_.get_num_points());
     }
     else
     {
-        this->ref_points_.clear();
+        this->unit_points_.clear();
     }
 
     if (this->flags_handler_.template fill<_W_Measure>())
     {
         this->unit_weights_ = quad.get_weights();
-        this->w_measures_.resize(this->unit_weights_.get_num_points());
+//        this->w_measures_.resize(this->unit_weights_.get_num_points());
     }
     else
     {
         this->unit_weights_.clear();
-        this->w_measures_.clear();
+//       this->w_measures_.clear();
     }
 
     this->set_initialized(true);
@@ -507,22 +508,12 @@ CartesianGridElement<dim>::
 ValuesCache::
 print_info(LogStream &out) const
 {
-    out.begin_item("Fill flags:");
-    this->flags_handler_.print_info(out);
-    out.end_item();
-
     parent_t::print_info(out);
 
-//    out << "Measure: " << measure_ << std::endl;
-//    out << "Lengths: " << lengths_ << std::endl;
     if (this->flags_handler_.template filled<_W_Measure>())
     {
         out.begin_item("Unit weights:");
         unit_weights_.print_info(out);
-        out.end_item();
-
-        out.begin_item("Weights * measure:");
-        w_measures_.print_info(out);
         out.end_item();
     }
 
@@ -530,10 +521,6 @@ print_info(LogStream &out) const
     {
         out.begin_item("Unit points:");
         unit_points_.print_info(out);
-        out.end_item();
-
-        out.begin_item("Points in the parametric element:");
-        ref_points_.print_info(out);
         out.end_item();
     }
 }
