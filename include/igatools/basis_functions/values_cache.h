@@ -36,43 +36,22 @@
 
 
 
-#include <boost/fusion/container/map.hpp>
+//#include <boost/fusion/container/map.hpp>
 #include <boost/fusion/include/map.hpp>
-#include <boost/fusion/container/map/map_fwd.hpp>
+//#include <boost/fusion/container/map/map_fwd.hpp>
 #include <boost/fusion/include/map_fwd.hpp>
-#include <boost/fusion/algorithm/iteration/for_each.hpp>
+//#include <boost/fusion/algorithm/iteration/for_each.hpp>
 #include <boost/fusion/include/for_each.hpp>
-#include <boost/fusion/sequence/intrinsic/at_key.hpp>
+//#include <boost/fusion/sequence/intrinsic/at_key.hpp>
 #include <boost/fusion/include/at_key.hpp>
 
 IGA_NAMESPACE_OPEN
-#if 0
-template<int dim, int codim, int range, int rank,
-         template<class ContainedType> class ContainerType>
-using FunctionCacheType = boost::fusion::map<
-        boost::fusion::pair<     _Value,ContainerType<typename Function<dim,codim,range,rank>::Value>>,
-        boost::fusion::pair<  _Gradient,ContainerType<typename Function<dim,codim,range,rank>::template Derivative<1>>>,
-        boost::fusion::pair<   _Hessian,ContainerType<typename Function<dim,codim,range,rank>::template Derivative<2>>>,
-        boost::fusion::pair<_Divergence,ContainerType<typename Function<dim,codim,range,rank>::Div>>
-        >;
-#endif
 
 template<int dim,
-		 class CacheType,
-		 class FlagsType>
+         class CacheType,
+         class FlagsType>
 class ValuesCache : public CacheStatus
 {
-#if 0
-    using Func = Function<dim,codim,range,rank>;
-
-    using Value = typename Func::Value;
-
-    template <int der_order>
-    using Derivative = typename Func::template Derivative<der_order>;
-
-    using Div = typename Func::Div;
-#endif
-
 public:
 
     static constexpr int get_dim()
@@ -83,14 +62,6 @@ public:
 
     FlagsType flags_handler_;
 
-#if 0
-    using CacheType = boost::fusion::map<
-                      boost::fusion::pair<     _Value,ContainerType<Value>>,
-                      boost::fusion::pair<  _Gradient,ContainerType<Derivative<1>>>,
-                      boost::fusion::pair<   _Hessian,ContainerType<Derivative<2>>>,
-                      boost::fusion::pair<_Divergence,ContainerType<Div>>
-                      >;
-#endif
 
 protected:
 
@@ -108,13 +79,13 @@ protected:
         {}
 
         template <class pair_ValueType_ValueContainer>
-        void operator()(const pair_ValueType_ValueContainer &x) const
+        void operator()(const pair_ValueType_ValueContainer &type_and_value) const
         {
             using ValueType = typename pair_ValueType_ValueContainer::first_type;
             if (this->flags_handler_.template filled<ValueType>())
             {
                 this->out_.begin_item(ValueType::name + "s:");
-                x.second.print_info(this->out_);
+                type_and_value.second.print_info(this->out_);
                 this->out_.end_item();
             }
         }
@@ -149,7 +120,7 @@ public:
     const auto &get_der() const
     {
         //TODO (martinelli, Apr 03,2015): uncomment this assertion
-//        Assert(flags_handler_.filled<ValueType>(),
+//        Assert(flags_handler_.template filled<ValueType>(),
 //               ExcMessage("The cache for " + ValueType::name + " is not filled."));
 
         return boost::fusion::at_key<ValueType>(values_);
@@ -180,10 +151,10 @@ private:
         }
 
         template <class pair_ValueType_ValueContainer>
-        void operator()(pair_ValueType_ValueContainer &x) const
+        void operator()(pair_ValueType_ValueContainer &type_and_value) const
         {
             using ValueType = typename pair_ValueType_ValueContainer::first_type;
-            auto &value = x.second;
+            auto &value = type_and_value.second;
 
             if (this->flags_handler_.template fill<ValueType>())
             {
@@ -250,10 +221,10 @@ private:
         }
 
         template <class pair_ValueType_ValueContainer>
-        void operator()(pair_ValueType_ValueContainer &x) const
+        void operator()(pair_ValueType_ValueContainer &type_and_value) const
         {
             using ValueType = typename pair_ValueType_ValueContainer::first_type;
-            auto &value = x.second;
+            auto &value = type_and_value.second;
 
             if (this->flags_handler_.template fill<ValueType>())
             {
@@ -279,11 +250,6 @@ private:
 
 
 public:
-#if 0
-    using Func = Function<dim,codim,range,rank>;
-
-    using Point = typename Func::Point;
-#endif
 
     /**
      * Allocate space for the fucntion values and derivatives

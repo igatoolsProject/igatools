@@ -39,6 +39,8 @@ Points in the parametric element:
 ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -49,27 +51,8 @@ Fill flags:
       fill = 0    filled = 0
 
 Fill flags:
-   Value
+   Point
       fill = 0    filled = 0
-   Gradient
-      fill = 0    filled = 0
-   Hessian
-      fill = 0    filled = 0
-   Divergence
-      fill = 0    filled = 0
-
-
-Fill flags:
-   Value
-      fill = 0    filled = 0
-   Gradient
-      fill = 0    filled = 0
-   Hessian
-      fill = 0    filled = 0
-   Divergence
-      fill = 0    filled = 0
-
-Fill flags:
    Value
       fill = 0    filled = 0
    Gradient
@@ -81,6 +64,33 @@ Fill flags:
 
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
+   Value
+      fill = 0    filled = 0
+   Gradient
+      fill = 0    filled = 0
+   Hessian
+      fill = 0    filled = 0
+   Divergence
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   Value
+      fill = 0    filled = 0
+   Gradient
+      fill = 0    filled = 0
+   Hessian
+      fill = 0    filled = 0
+   Divergence
+      fill = 0    filled = 0
+
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 1    filled = 1
    Gradient
@@ -137,6 +147,8 @@ Fill flags:
 
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -147,27 +159,8 @@ Fill flags:
       fill = 0    filled = 0
 
 Fill flags:
-   Value
+   Point
       fill = 0    filled = 0
-   Gradient
-      fill = 0    filled = 0
-   Hessian
-      fill = 0    filled = 0
-   Divergence
-      fill = 0    filled = 0
-
-
-Fill flags:
-   Value
-      fill = 0    filled = 0
-   Gradient
-      fill = 0    filled = 0
-   Hessian
-      fill = 0    filled = 0
-   Divergence
-      fill = 0    filled = 0
-
-Fill flags:
    Value
       fill = 0    filled = 0
    Gradient
@@ -179,6 +172,33 @@ Fill flags:
 
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
+   Value
+      fill = 0    filled = 0
+   Gradient
+      fill = 0    filled = 0
+   Hessian
+      fill = 0    filled = 0
+   Divergence
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   Value
+      fill = 0    filled = 0
+   Gradient
+      fill = 0    filled = 0
+   Hessian
+      fill = 0    filled = 0
+   Divergence
+      fill = 0    filled = 0
+
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -235,6 +255,8 @@ Fill flags:
 
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -245,27 +267,8 @@ Fill flags:
       fill = 0    filled = 0
 
 Fill flags:
-   Value
+   Point
       fill = 0    filled = 0
-   Gradient
-      fill = 0    filled = 0
-   Hessian
-      fill = 0    filled = 0
-   Divergence
-      fill = 0    filled = 0
-
-
-Fill flags:
-   Value
-      fill = 0    filled = 0
-   Gradient
-      fill = 0    filled = 0
-   Hessian
-      fill = 0    filled = 0
-   Divergence
-      fill = 0    filled = 0
-
-Fill flags:
    Value
       fill = 0    filled = 0
    Gradient
@@ -277,6 +280,33 @@ Fill flags:
 
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
+   Value
+      fill = 0    filled = 0
+   Gradient
+      fill = 0    filled = 0
+   Hessian
+      fill = 0    filled = 0
+   Divergence
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   Value
+      fill = 0    filled = 0
+   Gradient
+      fill = 0    filled = 0
+   Hessian
+      fill = 0    filled = 0
+   Divergence
+      fill = 0    filled = 0
+
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -386,6 +416,8 @@ Points in the parametric element:
 ValueVector (num_points=4) : [ [ 0.0528312 0.0528312 ]  [ 0.197169 0.0528312 ]  [ 0.0528312 0.197169 ]  [ 0.197169 0.197169 ]  ]
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -396,6 +428,8 @@ Fill flags:
       fill = 0    filled = 0
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -406,6 +440,8 @@ Fill flags:
       fill = 0    filled = 0
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -416,47 +452,8 @@ Fill flags:
       fill = 0    filled = 0
 
 Fill flags:
-   Value
+   Point
       fill = 0    filled = 0
-   Gradient
-      fill = 0    filled = 0
-   Hessian
-      fill = 0    filled = 0
-   Divergence
-      fill = 0    filled = 0
-
-
-Fill flags:
-   Value
-      fill = 0    filled = 0
-   Gradient
-      fill = 0    filled = 0
-   Hessian
-      fill = 0    filled = 0
-   Divergence
-      fill = 0    filled = 0
-
-Fill flags:
-   Value
-      fill = 0    filled = 0
-   Gradient
-      fill = 0    filled = 0
-   Hessian
-      fill = 0    filled = 0
-   Divergence
-      fill = 0    filled = 0
-
-Fill flags:
-   Value
-      fill = 0    filled = 0
-   Gradient
-      fill = 0    filled = 0
-   Hessian
-      fill = 0    filled = 0
-   Divergence
-      fill = 0    filled = 0
-
-Fill flags:
    Value
       fill = 0    filled = 0
    Gradient
@@ -468,6 +465,8 @@ Fill flags:
 
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -478,6 +477,8 @@ Fill flags:
       fill = 0    filled = 0
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -488,6 +489,8 @@ Fill flags:
       fill = 0    filled = 0
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -498,6 +501,8 @@ Fill flags:
       fill = 0    filled = 0
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -509,6 +514,57 @@ Fill flags:
 
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
+   Value
+      fill = 0    filled = 0
+   Gradient
+      fill = 0    filled = 0
+   Hessian
+      fill = 0    filled = 0
+   Divergence
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   Value
+      fill = 0    filled = 0
+   Gradient
+      fill = 0    filled = 0
+   Hessian
+      fill = 0    filled = 0
+   Divergence
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   Value
+      fill = 0    filled = 0
+   Gradient
+      fill = 0    filled = 0
+   Hessian
+      fill = 0    filled = 0
+   Divergence
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   Value
+      fill = 0    filled = 0
+   Gradient
+      fill = 0    filled = 0
+   Hessian
+      fill = 0    filled = 0
+   Divergence
+      fill = 0    filled = 0
+
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 1    filled = 1
    Gradient
@@ -618,6 +674,8 @@ Fill flags:
 
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -628,6 +686,8 @@ Fill flags:
       fill = 0    filled = 0
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -638,6 +698,8 @@ Fill flags:
       fill = 0    filled = 0
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -648,47 +710,8 @@ Fill flags:
       fill = 0    filled = 0
 
 Fill flags:
-   Value
+   Point
       fill = 0    filled = 0
-   Gradient
-      fill = 0    filled = 0
-   Hessian
-      fill = 0    filled = 0
-   Divergence
-      fill = 0    filled = 0
-
-
-Fill flags:
-   Value
-      fill = 0    filled = 0
-   Gradient
-      fill = 0    filled = 0
-   Hessian
-      fill = 0    filled = 0
-   Divergence
-      fill = 0    filled = 0
-
-Fill flags:
-   Value
-      fill = 0    filled = 0
-   Gradient
-      fill = 0    filled = 0
-   Hessian
-      fill = 0    filled = 0
-   Divergence
-      fill = 0    filled = 0
-
-Fill flags:
-   Value
-      fill = 0    filled = 0
-   Gradient
-      fill = 0    filled = 0
-   Hessian
-      fill = 0    filled = 0
-   Divergence
-      fill = 0    filled = 0
-
-Fill flags:
    Value
       fill = 0    filled = 0
    Gradient
@@ -700,6 +723,8 @@ Fill flags:
 
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -710,6 +735,8 @@ Fill flags:
       fill = 0    filled = 0
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -720,6 +747,8 @@ Fill flags:
       fill = 0    filled = 0
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -730,6 +759,8 @@ Fill flags:
       fill = 0    filled = 0
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -741,6 +772,57 @@ Fill flags:
 
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
+   Value
+      fill = 0    filled = 0
+   Gradient
+      fill = 0    filled = 0
+   Hessian
+      fill = 0    filled = 0
+   Divergence
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   Value
+      fill = 0    filled = 0
+   Gradient
+      fill = 0    filled = 0
+   Hessian
+      fill = 0    filled = 0
+   Divergence
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   Value
+      fill = 0    filled = 0
+   Gradient
+      fill = 0    filled = 0
+   Hessian
+      fill = 0    filled = 0
+   Divergence
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   Value
+      fill = 0    filled = 0
+   Gradient
+      fill = 0    filled = 0
+   Hessian
+      fill = 0    filled = 0
+   Divergence
+      fill = 0    filled = 0
+
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -850,6 +932,8 @@ Fill flags:
 
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -860,6 +944,8 @@ Fill flags:
       fill = 0    filled = 0
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -870,6 +956,8 @@ Fill flags:
       fill = 0    filled = 0
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -880,47 +968,8 @@ Fill flags:
       fill = 0    filled = 0
 
 Fill flags:
-   Value
+   Point
       fill = 0    filled = 0
-   Gradient
-      fill = 0    filled = 0
-   Hessian
-      fill = 0    filled = 0
-   Divergence
-      fill = 0    filled = 0
-
-
-Fill flags:
-   Value
-      fill = 0    filled = 0
-   Gradient
-      fill = 0    filled = 0
-   Hessian
-      fill = 0    filled = 0
-   Divergence
-      fill = 0    filled = 0
-
-Fill flags:
-   Value
-      fill = 0    filled = 0
-   Gradient
-      fill = 0    filled = 0
-   Hessian
-      fill = 0    filled = 0
-   Divergence
-      fill = 0    filled = 0
-
-Fill flags:
-   Value
-      fill = 0    filled = 0
-   Gradient
-      fill = 0    filled = 0
-   Hessian
-      fill = 0    filled = 0
-   Divergence
-      fill = 0    filled = 0
-
-Fill flags:
    Value
       fill = 0    filled = 0
    Gradient
@@ -932,6 +981,8 @@ Fill flags:
 
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -942,6 +993,8 @@ Fill flags:
       fill = 0    filled = 0
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -952,6 +1005,8 @@ Fill flags:
       fill = 0    filled = 0
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -962,6 +1017,8 @@ Fill flags:
       fill = 0    filled = 0
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -973,6 +1030,57 @@ Fill flags:
 
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
+   Value
+      fill = 0    filled = 0
+   Gradient
+      fill = 0    filled = 0
+   Hessian
+      fill = 0    filled = 0
+   Divergence
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   Value
+      fill = 0    filled = 0
+   Gradient
+      fill = 0    filled = 0
+   Hessian
+      fill = 0    filled = 0
+   Divergence
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   Value
+      fill = 0    filled = 0
+   Gradient
+      fill = 0    filled = 0
+   Hessian
+      fill = 0    filled = 0
+   Divergence
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   Value
+      fill = 0    filled = 0
+   Gradient
+      fill = 0    filled = 0
+   Hessian
+      fill = 0    filled = 0
+   Divergence
+      fill = 0    filled = 0
+
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient

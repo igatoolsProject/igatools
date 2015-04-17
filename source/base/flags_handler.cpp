@@ -21,9 +21,10 @@
 
 #include <igatools/base/flags_handler.h>
 #include <igatools/base/exceptions.h>
-#include <igatools/base/value_types.h>
 
 
+#include <boost/fusion/include/for_each.hpp>
+#include <boost/fusion/include/any.hpp>
 
 IGA_NAMESPACE_OPEN
 
@@ -135,15 +136,6 @@ DeclException2(ExcFillFlagNotSupported, ValueFlags, ValueFlags,
 
 #endif
 
-FunctionFlags::
-FunctionFlags()
-{
-    value_type_flags_[     _Value::id] = Flags();
-    value_type_flags_[  _Gradient::id] = Flags();
-    value_type_flags_[   _Hessian::id] = Flags();
-    value_type_flags_[_Divergence::id] = Flags();
-    value_type_flags_[     _Point::id] = Flags();
-}
 
 
 FunctionFlags::
@@ -151,21 +143,31 @@ FunctionFlags(const ValueFlags &flags)
     :
     FunctionFlags()
 {
+    using boost::fusion::at_key;
     if (contains(flags, ValueFlags::point))
-    	value_type_flags_[_Point::id].fill_ = true;
+    {
+        at_key<_Point>(flags_type_and_status_).fill_ = true;
+    }
 
     if (contains(flags, ValueFlags::value))
-        value_type_flags_[_Value::id].fill_ = true;
+    {
+        at_key<_Value>(flags_type_and_status_).fill_ = true;
+    }
 
     if (contains(flags, ValueFlags::gradient))
-        value_type_flags_[_Gradient::id].fill_ = true;
+    {
+        at_key<_Gradient>(flags_type_and_status_).fill_ = true;
+    }
 
     if (contains(flags, ValueFlags::hessian))
-        value_type_flags_[_Hessian::id].fill_ = true;
+    {
+        at_key<_Hessian>(flags_type_and_status_).fill_ = true;
+    }
 
     if (contains(flags, ValueFlags::divergence))
-        value_type_flags_[_Divergence::id].fill_ = true;
-
+    {
+        at_key<_Divergence>(flags_type_and_status_).fill_ = true;
+    }
 }
 
 
@@ -188,20 +190,14 @@ bool
 FunctionFlags::
 fill_none() const
 {
-    bool fill_none = true;
+    const bool fill_someone = boost::fusion::any(flags_type_and_status_,
+                                                 [](const auto & type_and_status) -> bool
+    {
+        return type_and_status.second.fill_ == true;
+    }
+                                                );
 
-    for (const auto &value_type_flag : value_type_flags_)
-        if (value_type_flag.second.fill_)
-        {
-            fill_none = false;
-            break;
-        }
-    /*
-        if (fill_values_ || fill_gradients_ || fill_hessians_)
-            fill_none = false;
-    //*/
-
-    return fill_none;
+    return !fill_someone;
 }
 
 
@@ -209,27 +205,17 @@ void
 FunctionFlags::
 print_info(LogStream &out) const
 {
-	/*
-    out.begin_item(_Point::name);
-    value_type_flags_.at(_Point::id).print_info(out);
-    out.end_item();
-    //*/
+    boost::fusion::for_each(flags_type_and_status_,
+                            [&out](const auto & type_and_status) -> void
+    {
+        using ValueType_Status = typename std::remove_reference<decltype(type_and_status)>::type;
+        using ValueType = typename ValueType_Status::first_type;
 
-    out.begin_item(_Value::name);
-    value_type_flags_.at(_Value::id).print_info(out);
-    out.end_item();
-
-    out.begin_item(_Gradient::name);
-    value_type_flags_.at(_Gradient::id).print_info(out);
-    out.end_item();
-
-    out.begin_item(_Hessian::name);
-    value_type_flags_.at(_Hessian::id).print_info(out);
-    out.end_item();
-
-    out.begin_item(_Divergence::name);
-    value_type_flags_.at(_Divergence::id).print_info(out);
-    out.end_item();
+        out.begin_item(ValueType::name);
+        type_and_status.second.print_info(out);
+        out.end_item();
+    }
+                           );
 }
 
 //====================================================

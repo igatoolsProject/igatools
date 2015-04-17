@@ -25,10 +25,15 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
+#include <igatools/base/value_types.h>
+
+
+#include <boost/fusion/include/make_map.hpp>
+#include <boost/fusion/include/at_key.hpp>
 
 IGA_NAMESPACE_OPEN
 
-struct Flags
+struct FlagStatus
 {
     bool fill_ = false;
     bool filled_ = false;
@@ -112,11 +117,20 @@ public:
 
 
 protected:
-    Flags points_flags_;
+    FlagStatus points_flags_;
 
-    Flags w_measures_flags_;
+    FlagStatus w_measures_flags_;
 };
 
+
+
+inline
+auto
+create_function_flags_type_and_status()
+{
+    return boost::fusion::make_map<_Point,_Value,_Gradient,_Hessian,_Divergence>(
+               FlagStatus(), FlagStatus(), FlagStatus(), FlagStatus(), FlagStatus());
+}
 
 
 class FunctionFlags
@@ -126,7 +140,8 @@ public:
         ValueFlags::point|
         ValueFlags::value|
         ValueFlags::gradient|
-        ValueFlags::hessian;
+        ValueFlags::hessian|
+        ValueFlags::divergence;
 
     static ValueFlags to_grid_flags(const ValueFlags &flag);
 
@@ -135,7 +150,7 @@ public:
     /**
      * Default constructor. Sets all boolean flags to false.
      */
-    FunctionFlags();
+    FunctionFlags() = default;
 
     FunctionFlags(const ValueFlags &flag);
 
@@ -166,21 +181,24 @@ public:
     template<class ValueType>
     bool fill() const
     {
-        return value_type_flags_.at(ValueType::id).fill_;
+//        return value_type_flags_.at(ValueType::id).fill_;
+        return boost::fusion::at_key<ValueType>(flags_type_and_status_).fill_;
     }
 
     /** Returns true if the quantity associated to @p ValueType is filled. */
     template<class ValueType>
     bool filled() const
     {
-        return value_type_flags_.at(ValueType::id).filled_;
+//        return value_type_flags_.at(ValueType::id).filled_;
+        return boost::fusion::at_key<ValueType>(flags_type_and_status_).filled_;
     }
 
     /** Sets the filled @p status the quantity associated to @p ValueType. */
     template<class ValueType>
     void set_filled(const bool status)
     {
-        value_type_flags_[ValueType::id].filled_ = status;
+//        value_type_flags_[ValueType::id].filled_ = status;
+        boost::fusion::at_key<ValueType>(flags_type_and_status_).filled_ = status;
     }
 
 
@@ -195,10 +213,11 @@ public:
     void print_info(LogStream &out) const;
 
 protected:
+
     /**
-     * Map used to realize the association between the ValueType::id and the relative Flags.
+     * Map used to realize the association between the ValueType and the relative FlagStatus.
      */
-    std::map<int,Flags> value_type_flags_;
+    decltype(create_function_flags_type_and_status()) flags_type_and_status_ = create_function_flags_type_and_status();
 };
 
 
@@ -301,13 +320,13 @@ public:
     void print_info(LogStream &out) const;
 
 protected:
-    Flags inv_gradients_flags_;
+    FlagStatus inv_gradients_flags_;
 
-    Flags inv_hessians_flags_;
+    FlagStatus inv_hessians_flags_;
 
-    Flags measures_flags_;
+    FlagStatus measures_flags_;
 
-    Flags w_measures_flags_;
+    FlagStatus w_measures_flags_;
 };
 
 
