@@ -146,7 +146,7 @@ private:
                 {
                     // TODO (pauletti, Apr 17, 2015): this can be static const
                     Hessian zero;
-                    std::get<2>(cache.values_).fill(zero);
+                    cache.template get_der<_Hessian>().fill(zero);
                 }
             }
             cache.set_filled(true);
