@@ -193,8 +193,9 @@ fill_none() const
     const bool fill_someone = boost::fusion::any(flags_type_and_status_,
                                                  [](const auto & type_and_status) -> bool
     {
+        // begin lambda function
         return type_and_status.second.fill_ == true;
-    }
+    } // end lambda function
                                                 );
 
     return !fill_someone;
@@ -208,13 +209,14 @@ print_info(LogStream &out) const
     boost::fusion::for_each(flags_type_and_status_,
                             [&out](const auto & type_and_status) -> void
     {
+        // begin lambda function
         using ValueType_Status = typename std::remove_reference<decltype(type_and_status)>::type;
         using ValueType = typename ValueType_Status::first_type;
 
         out.begin_item(ValueType::name);
         type_and_status.second.print_info(out);
         out.end_item();
-    }
+    } // end lambda function
                            );
 }
 

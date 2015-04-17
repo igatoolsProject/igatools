@@ -69,34 +69,6 @@ protected:
 
 
 
-    struct ValuesCachePrinter
-    {
-        ValuesCachePrinter(const FunctionFlags &flags_handler,
-                           LogStream &out)
-            :
-            flags_handler_ {flags_handler},
-                       out_ {out}
-        {}
-
-        template <class pair_ValueType_ValueContainer>
-        void operator()(const pair_ValueType_ValueContainer &type_and_value) const
-        {
-            using ValueType = typename pair_ValueType_ValueContainer::first_type;
-            if (this->flags_handler_.template filled<ValueType>())
-            {
-                this->out_.begin_item(ValueType::name + "s:");
-                type_and_value.second.print_info(this->out_);
-                this->out_.end_item();
-            }
-        }
-
-
-    private:
-        const FunctionFlags &flags_handler_;
-
-        LogStream &out_;
-    };
-
 public:
     void print_info(LogStream &out) const
     {
@@ -104,9 +76,19 @@ public:
         flags_handler_.print_info(out);
         out.end_item();
 
-        ValuesCachePrinter printer(flags_handler_,out);
-        // apply the functor printer to each pair ValueType/Container in values_
-        boost::fusion::for_each(values_,printer);
+        boost::fusion::for_each(values_,
+                                [&](const auto & type_and_value) -> void
+        {
+            using ValueType_ValueContainer = typename std::remove_reference<decltype(type_and_value)>::type;
+            using ValueType = typename ValueType_ValueContainer::first_type;
+            if (flags_handler_.template filled<ValueType>())
+            {
+                out.begin_item(ValueType::name + "s:");
+                type_and_value.second.print_info(out);
+                out.end_item();
+            }
+        } // end lambda function
+                               );
     }
 
 
@@ -134,52 +116,6 @@ public:
 template<int dim, class CacheType, class FlagsType>
 class BasisValuesCache : public ValuesCache<dim,CacheType,FlagsType>
 {
-private:
-    struct BasisValuesCacheResizer
-    {
-        BasisValuesCacheResizer(
-            FunctionFlags &flags_handler,
-            const int n_basis,
-            const int n_points)
-            :
-            flags_handler_ {flags_handler},
-                       n_basis_ {n_basis},
-        n_points_ {n_points}
-        {
-            Assert(n_points >= 0, ExcLowerRange(n_points,1));
-            Assert(n_basis > 0, ExcLowerRange(n_basis,1));
-        }
-
-        template <class pair_ValueType_ValueContainer>
-        void operator()(pair_ValueType_ValueContainer &type_and_value) const
-        {
-            using ValueType = typename pair_ValueType_ValueContainer::first_type;
-            auto &value = type_and_value.second;
-
-            if (this->flags_handler_.template fill<ValueType>())
-            {
-                if (value.get_num_points() != n_points_ ||
-                    value.get_num_functions() != n_basis_)
-                {
-                    value.resize(n_basis_,n_points_);
-                }
-                value.zero();
-            }
-            else
-            {
-                value.clear();
-                this->flags_handler_.template set_filled<ValueType>(false);
-            }
-        }
-
-
-    private:
-        FunctionFlags &flags_handler_;
-
-        int n_basis_;
-        int n_points_;
-    };
-
 
 public:
     /**
@@ -193,10 +129,32 @@ public:
     {
         this->flags_handler_ = flags_handler;
 
-        BasisValuesCacheResizer resizer(this->flags_handler_,n_basis,n_points);
+        Assert(n_points >= 0, ExcLowerRange(n_points,1));
+        Assert(n_basis > 0, ExcLowerRange(n_basis,1));
 
-        // apply the functor resizer to each pair ValueType/Container in this->values_
-        boost::fusion::for_each(this->values_,resizer);
+        boost::fusion::for_each(this->values_,
+                                [&](auto & type_and_value) -> void
+        {
+            using ValueType_ValueContainer = typename std::remove_reference<decltype(type_and_value)>::type;
+            using ValueType = typename ValueType_ValueContainer::first_type;
+            auto &value = type_and_value.second;
+
+            if (this->flags_handler_.template fill<ValueType>())
+            {
+                if (value.get_num_points() != n_points ||
+                value.get_num_functions() != n_basis)
+                {
+                    value.resize(n_basis,n_points);
+                }
+                value.zero();
+            }
+            else
+            {
+                value.clear();
+                this->flags_handler_.template set_filled<ValueType>(false);
+            }
+        } // end lambda function
+                               );
 
         this->set_initialized(true);
     }
@@ -207,47 +165,6 @@ public:
 template<int dim, class CacheType, class FlagsType>
 class FuncValuesCache : public ValuesCache<dim,CacheType,FlagsType>
 {
-private:
-    struct FuncValuesCacheResizer
-    {
-        FuncValuesCacheResizer(
-            FunctionFlags &flags_handler,
-            const int n_points)
-            :
-            flags_handler_ {flags_handler},
-        n_points_ {n_points}
-        {
-            Assert(n_points >= 0, ExcLowerRange(n_points,1));
-        }
-
-        template <class pair_ValueType_ValueContainer>
-        void operator()(pair_ValueType_ValueContainer &type_and_value) const
-        {
-            using ValueType = typename pair_ValueType_ValueContainer::first_type;
-            auto &value = type_and_value.second;
-
-            if (this->flags_handler_.template fill<ValueType>())
-            {
-                if (value.get_num_points() != n_points_)
-                {
-                    value.resize(n_points_);
-                }
-                value.zero();
-            }
-            else
-            {
-                value.clear();
-                this->flags_handler_.template set_filled<ValueType>(false);
-            }
-        }
-
-    private:
-        FunctionFlags &flags_handler_;
-
-        int n_points_;
-    };
-
-
 
 public:
 
@@ -261,15 +178,32 @@ public:
     {
         this->flags_handler_ = flags_handler;
 
-        FuncValuesCacheResizer resizer(this->flags_handler_,n_points);
-        // apply the functor resizer to each pair ValueType/Container in this->values_
-        boost::fusion::for_each(this->values_,resizer);
+        Assert(n_points >= 0, ExcLowerRange(n_points,1));
+
+        boost::fusion::for_each(this->values_,
+                                [&](auto & type_and_value) -> void
+        {
+            using ValueType_ValueContainer = typename std::remove_reference<decltype(type_and_value)>::type;
+            using ValueType = typename ValueType_ValueContainer::first_type;
+            auto &value = type_and_value.second;
+
+            if (this->flags_handler_.template fill<ValueType>())
+            {
+                if (value.get_num_points() != n_points)
+                    value.resize(n_points);
+
+                value.zero();
+            }
+            else
+            {
+                value.clear();
+                this->flags_handler_.template set_filled<ValueType>(false);
+            }
+        } // end lambda function
+                               );
 
         this->set_initialized(true);
     }
-
-//    ValueVector<Point> points_;
-
 };
 
 
