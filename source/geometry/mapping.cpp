@@ -88,7 +88,7 @@ fill_cache(ElementAccessor &elem, const int j) -> void
     auto &cache = elem.local_cache_->template get_value_cache<k>(j);
     auto &flags = cache.flags_handler_;
 
-    if (flags.fill_measures())
+    if (flags.template fill<_Measure>())
     {
         auto &k_elem = UnitElement<dim>::template get_elem<k>(j);
 
@@ -96,50 +96,57 @@ fill_cache(ElementAccessor &elem, const int j) -> void
         typename MapFunction<k, space_dim>::Gradient DF1;
 
 
-        for (int i=0; i<n_points; ++i)
+        for (int pt = 0 ; pt < n_points; ++pt)
         {
             for (int l=0; l<k; ++l)
-                DF1[l] = DF[i][k_elem.active_directions[l]];
+                DF1[l] = DF[pt][k_elem.active_directions[l]];
 
-            cache.measures_[i] = fabs(determinant<k,space_dim>(DF1));
+            cache.measures_[pt] = fabs(determinant<k,space_dim>(DF1));
         }
+        flags.template set_filled<_Measure>(true);
     }
 
-    if (flags.fill_w_measures())
+    if (flags.template fill<_W_Measure>())
     {
         const auto &meas = cache.measures_;
         const auto &w = elem.CartesianGridElement<dim>::template get_w_measures<k>(j);
-        for (int i=0; i<n_points; ++i)
-            cache.w_measures_[i] = w[i] * meas[i];
+        for (int pt = 0 ; pt < n_points; ++pt)
+            cache.w_measures_[pt] = w[pt] * meas[pt];
+
+        flags.template set_filled<_W_Measure>(true);
     }
 
-    if (flags.fill_inv_gradients())
+    if (flags.template fill<_InvGradient>())
     {
         // TODO (pauletti, Nov 23, 2014): if also fill measure this could be done here
         const auto &DF = elem.template get_values<_Gradient, k>(j);
         auto &D_invF = cache.template get_inv_values<1>();
         Real det;
-        for (int i=0; i<n_points; ++i)
-            D_invF[i] = inverse(DF[i], det);
+        for (int pt = 0 ; pt < n_points; ++pt)
+            D_invF[pt] = inverse(DF[pt], det);
+
+        flags.template set_filled<_InvGradient>(true);
     }
 
-    if (flags.fill_inv_hessians())
+    if (flags.template fill<_InvHessian>())
     {
         const auto &D1_F = elem.template get_values<_Gradient, k>(j);
         const auto &D2_F = elem.template get_values<_Hessian, k>(j);
         const auto &D1_invF = cache.template get_inv_values<1>();
         auto &D2_invF       = cache.template get_inv_values<2>();
 
-        for (int i=0; i<n_points; ++i)
+        for (int pt = 0 ; pt < n_points; ++pt)
             for (int u=0; u<dim; ++u)
             {
-                const auto tmp_u = action(D2_F[i], D1_invF[i][u]);
+                const auto tmp_u = action(D2_F[pt], D1_invF[pt][u]);
                 for (int v=0; v<dim; ++v)
                 {
-                    const auto tmp_u_v = action(tmp_u, D1_invF[i][v]);
-                    D2_invF[i][u][v] = - action(D1_invF[i], tmp_u_v);
+                    const auto tmp_u_v = action(tmp_u, D1_invF[pt][v]);
+                    D2_invF[pt][u][v] = - action(D1_invF[pt], tmp_u_v);
                 }
             }
+
+        flags.template set_filled<_InvHessian>(true);
     }
 
     cache.set_filled(true);
@@ -158,7 +165,7 @@ init_cache(ElementAccessor &elem) -> void
     auto &cache = elem.local_cache_;
     if (cache == nullptr)
     {
-        using Cache = typename ElementAccessor::LocalCache;
+        using Cache = typename ElementAccessor::CacheType;
         cache = shared_ptr<Cache>(new Cache);
     }
 

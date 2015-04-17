@@ -109,30 +109,38 @@ private:
             if (!flags.fill_none())
             {
 
-                if (flags.fill_points() || flags.template fill<_Value>())
+                if (flags.template fill<_Point>() || flags.template fill<_Value>())
                 {
                     const auto points =
                         elem->CartesianGridElement<dim>::template get_points<T::k>(j);
 
-                    if (flags.fill_points())
+                    if (flags.template fill<_Point>())
                     {
-                        cache.points_ = points;
+                        auto & cache_pts = cache.template get_der<_Point>();
+                        cache_pts = points;
+
+                        flags.template set_filled<_Point>(true);
                     }
                     if (flags.template fill<_Value>())
                     {
                         const auto n_pts = points.get_num_points();
 
-                        auto &values = std::get<0>(cache.values_);
+                        auto &values = cache.template get_der<_Value>();
                         for (int pt = 0 ; pt < n_pts ; ++pt)
                             for (int i = 0 ; i < dim ; ++i)
                                 values[pt][i] = points[pt][i];
+
+                        flags.template set_filled<_Value>(true);
                     }
                 }
                 if (flags.template fill<_Gradient>())
                 {
                     // TODO (pauletti, Apr 17, 2015): this can be static const
                     auto identity = create_id_tensor<dim,space_dim>();
-                    std::get<1>(cache.values_).fill(identity);
+                    cache.template get_der<_Gradient>().fill(identity);
+//                    std::get<1>(cache.values_).fill(identity);
+
+                    flags.template set_filled<_Gradient>(true);
                 }
                 if (flags.template fill<_Hessian>())
                 {

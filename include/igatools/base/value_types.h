@@ -45,6 +45,7 @@ public:
     static constexpr int id = 0;
     static constexpr int order = 0;
     static const std::string name;
+    static const auto flag = ValueFlags::value;
 };
 using _Value = ValueType<0>;
 
@@ -56,8 +57,10 @@ public:
     static constexpr int id = 1;
     static constexpr int order = 1;
     static const std::string name;
+    static const auto flag = ValueFlags::gradient;
 };
 using _Gradient = ValueType<1>;
+
 
 template<>
 class ValueType<2>
@@ -66,6 +69,7 @@ public:
     static constexpr int id = 2;
     static constexpr int order = 2;
     static const std::string name;
+    static const auto flag = ValueFlags::hessian;
 };
 using _Hessian = ValueType<2>;
 
@@ -77,23 +81,69 @@ public:
     static constexpr int id = -1;
     static constexpr int order = 1;
     static const std::string name;
+    static const auto flag = ValueFlags::divergence;
 };
 using _Divergence = ValueType<-1>;
 
 
+template<>
+class ValueType<-3>
+{
+public:
+    static constexpr int id = -3;
+    static constexpr int order = 0;
+    static const std::string name;
+    static const auto flag = ValueFlags::point;
+};
+using _Point = ValueType<-3>;
 
 
-using map_ValueType_TuplePosition = boost::mpl::map<
-                                    boost::mpl::pair<     _Value,boost::mpl::int_<0> >,
-                                    boost::mpl::pair<  _Gradient,boost::mpl::int_<1> >,
-                                    boost::mpl::pair<   _Hessian,boost::mpl::int_<2> >,
-                                    boost::mpl::pair<_Divergence,boost::mpl::int_<3> >
-                                    >;
-using map_VT_TP = map_ValueType_TuplePosition;
+template<>
+class ValueType<-4>
+{
+public:
+    static constexpr int id = -4;
+    static constexpr int order = 0;
+    static const std::string name;
+    static const auto flag = ValueFlags::w_measure;
+};
+using _W_Measure = ValueType<-4>;
 
-template <class ValueType>
-using TuplePosition_from_ValueType = typename boost::mpl::at<map_VT_TP,ValueType>::type;
 
+template<>
+class ValueType<-5>
+{
+public:
+    static constexpr int id = -5;
+    static constexpr int order = 0;
+    static const std::string name;
+    static const auto flag = ValueFlags::measure;
+};
+using _Measure = ValueType<-5>;
+
+
+template<>
+class ValueType<-6>
+{
+public:
+    static constexpr int id = -6;
+    static constexpr int order = 1;
+    static const std::string name;
+    static const auto flag = ValueFlags::inv_gradient;
+};
+using _InvGradient = ValueType<-6>;
+
+
+template<>
+class ValueType<-7>
+{
+public:
+    static constexpr int id = -7;
+    static constexpr int order = 1;
+    static const std::string name;
+    static const auto flag = ValueFlags::inv_hessian;
+};
+using _InvHessian = ValueType<-7>;
 
 IGA_NAMESPACE_CLOSE
 

@@ -60,39 +60,41 @@ void cache_init_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1
 ========================================================================
 Reference space:
    Fill flags:
-      points
+      Point
          fill = 0    filled = 0
-      w_measures
-         fill = 0    filled = 0
-   
-   Fill flags:
-      points
-         fill = 0    filled = 0
-      w_measures
-         fill = 0    filled = 0
-   
-   
-   Fill flags:
-      points
-         fill = 0    filled = 0
-      w_measures
+      W_Measure
          fill = 0    filled = 0
    
    Fill flags:
-      points
+      Point
          fill = 0    filled = 0
-      w_measures
+      W_Measure
          fill = 0    filled = 0
    
    
    Fill flags:
-      points
+      Point
+         fill = 0    filled = 0
+      W_Measure
+         fill = 0    filled = 0
+   
+   Fill flags:
+      Point
+         fill = 0    filled = 0
+      W_Measure
+         fill = 0    filled = 0
+   
+   
+   Fill flags:
+      Point
          fill = 1    filled = 0
-      w_measures
+      W_Measure
          fill = 0    filled = 0
    
    
    Fill flags:
+      Point
+         fill = 0    filled = 0
       Value
          fill = 0    filled = 0
       Gradient
@@ -103,27 +105,8 @@ Reference space:
          fill = 0    filled = 0
    
    Fill flags:
-      Value
+      Point
          fill = 0    filled = 0
-      Gradient
-         fill = 0    filled = 0
-      Hessian
-         fill = 0    filled = 0
-      Divergence
-         fill = 0    filled = 0
-   
-   
-   Fill flags:
-      Value
-         fill = 0    filled = 0
-      Gradient
-         fill = 0    filled = 0
-      Hessian
-         fill = 0    filled = 0
-      Divergence
-         fill = 0    filled = 0
-   
-   Fill flags:
       Value
          fill = 0    filled = 0
       Gradient
@@ -135,6 +118,33 @@ Reference space:
    
    
    Fill flags:
+      Point
+         fill = 0    filled = 0
+      Value
+         fill = 0    filled = 0
+      Gradient
+         fill = 0    filled = 0
+      Hessian
+         fill = 0    filled = 0
+      Divergence
+         fill = 0    filled = 0
+   
+   Fill flags:
+      Point
+         fill = 0    filled = 0
+      Value
+         fill = 0    filled = 0
+      Gradient
+         fill = 0    filled = 0
+      Hessian
+         fill = 0    filled = 0
+      Divergence
+         fill = 0    filled = 0
+   
+   
+   Fill flags:
+      Point
+         fill = 0    filled = 0
       Value
          fill = 1    filled = 0
       Gradient
@@ -148,35 +158,35 @@ Reference space:
 
 Pushforward:
    Fill flags:
-      points
+      Point
          fill = 0    filled = 0
-      w_measures
-         fill = 0    filled = 0
-   
-   Fill flags:
-      points
-         fill = 0    filled = 0
-      w_measures
-         fill = 0    filled = 0
-   
-   
-   Fill flags:
-      points
-         fill = 0    filled = 0
-      w_measures
+      W_Measure
          fill = 0    filled = 0
    
    Fill flags:
-      points
+      Point
          fill = 0    filled = 0
-      w_measures
+      W_Measure
          fill = 0    filled = 0
    
    
    Fill flags:
-      points
+      Point
          fill = 0    filled = 0
-      w_measures
+      W_Measure
+         fill = 0    filled = 0
+   
+   Fill flags:
+      Point
+         fill = 0    filled = 0
+      W_Measure
+         fill = 0    filled = 0
+   
+   
+   Fill flags:
+      Point
+         fill = 0    filled = 0
+      W_Measure
          fill = 0    filled = 0
    
    
@@ -188,43 +198,45 @@ void cache_fill_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1
 ========================================================================
 Reference space:
    Fill flags:
-      points
+      Point
          fill = 0    filled = 0
-      w_measures
-         fill = 0    filled = 0
-   
-   Fill flags:
-      points
-         fill = 0    filled = 0
-      w_measures
-         fill = 0    filled = 0
-   
-   
-   Fill flags:
-      points
-         fill = 0    filled = 0
-      w_measures
+      W_Measure
          fill = 0    filled = 0
    
    Fill flags:
-      points
+      Point
          fill = 0    filled = 0
-      w_measures
+      W_Measure
          fill = 0    filled = 0
    
    
    Fill flags:
-      points
+      Point
+         fill = 0    filled = 0
+      W_Measure
+         fill = 0    filled = 0
+   
+   Fill flags:
+      Point
+         fill = 0    filled = 0
+      W_Measure
+         fill = 0    filled = 0
+   
+   
+   Fill flags:
+      Point
          fill = 1    filled = 1
-      w_measures
+      W_Measure
          fill = 0    filled = 0
    
-   Unit points:
-   ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
-   Points in the parametric element:
+   Points:
    ValueVector (num_points=2) : [ [ 0.0528312 ]  [ 0.197169 ]  ]
+   Unit points:
+   ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
    
    Fill flags:
+      Point
+         fill = 0    filled = 0
       Value
          fill = 0    filled = 0
       Gradient
@@ -235,27 +247,8 @@ Reference space:
          fill = 0    filled = 0
    
    Fill flags:
-      Value
+      Point
          fill = 0    filled = 0
-      Gradient
-         fill = 0    filled = 0
-      Hessian
-         fill = 0    filled = 0
-      Divergence
-         fill = 0    filled = 0
-   
-   
-   Fill flags:
-      Value
-         fill = 0    filled = 0
-      Gradient
-         fill = 0    filled = 0
-      Hessian
-         fill = 0    filled = 0
-      Divergence
-         fill = 0    filled = 0
-   
-   Fill flags:
       Value
          fill = 0    filled = 0
       Gradient
@@ -267,6 +260,33 @@ Reference space:
    
    
    Fill flags:
+      Point
+         fill = 0    filled = 0
+      Value
+         fill = 0    filled = 0
+      Gradient
+         fill = 0    filled = 0
+      Hessian
+         fill = 0    filled = 0
+      Divergence
+         fill = 0    filled = 0
+   
+   Fill flags:
+      Point
+         fill = 0    filled = 0
+      Value
+         fill = 0    filled = 0
+      Gradient
+         fill = 0    filled = 0
+      Hessian
+         fill = 0    filled = 0
+      Divergence
+         fill = 0    filled = 0
+   
+   
+   Fill flags:
+      Point
+         fill = 0    filled = 0
       Value
          fill = 1    filled = 1
       Gradient
@@ -287,78 +307,80 @@ Reference space:
 
 Pushforward:
    Fill flags:
-      points
+      Point
          fill = 0    filled = 0
-      w_measures
-         fill = 0    filled = 0
-   
-   Fill flags:
-      points
-         fill = 0    filled = 0
-      w_measures
-         fill = 0    filled = 0
-   
-   
-   Fill flags:
-      points
-         fill = 0    filled = 0
-      w_measures
+      W_Measure
          fill = 0    filled = 0
    
    Fill flags:
-      points
+      Point
          fill = 0    filled = 0
-      w_measures
+      W_Measure
          fill = 0    filled = 0
    
    
    Fill flags:
-      points
+      Point
          fill = 0    filled = 0
-      w_measures
+      W_Measure
+         fill = 0    filled = 0
+   
+   Fill flags:
+      Point
+         fill = 0    filled = 0
+      W_Measure
+         fill = 0    filled = 0
+   
+   
+   Fill flags:
+      Point
+         fill = 0    filled = 0
+      W_Measure
          fill = 0    filled = 0
    
    
 
 Reference space:
    Fill flags:
-      points
+      Point
          fill = 0    filled = 0
-      w_measures
-         fill = 0    filled = 0
-   
-   Fill flags:
-      points
-         fill = 0    filled = 0
-      w_measures
-         fill = 0    filled = 0
-   
-   
-   Fill flags:
-      points
-         fill = 0    filled = 0
-      w_measures
+      W_Measure
          fill = 0    filled = 0
    
    Fill flags:
-      points
+      Point
          fill = 0    filled = 0
-      w_measures
+      W_Measure
          fill = 0    filled = 0
    
    
    Fill flags:
-      points
+      Point
+         fill = 0    filled = 0
+      W_Measure
+         fill = 0    filled = 0
+   
+   Fill flags:
+      Point
+         fill = 0    filled = 0
+      W_Measure
+         fill = 0    filled = 0
+   
+   
+   Fill flags:
+      Point
          fill = 1    filled = 1
-      w_measures
+      W_Measure
          fill = 0    filled = 0
    
-   Unit points:
-   ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
-   Points in the parametric element:
+   Points:
    ValueVector (num_points=2) : [ [ 0.302831 ]  [ 0.447169 ]  ]
+   Unit points:
+   ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
    
    Fill flags:
+      Point
+         fill = 0    filled = 0
       Value
          fill = 0    filled = 0
       Gradient
@@ -369,27 +391,8 @@ Reference space:
          fill = 0    filled = 0
    
    Fill flags:
-      Value
+      Point
          fill = 0    filled = 0
-      Gradient
-         fill = 0    filled = 0
-      Hessian
-         fill = 0    filled = 0
-      Divergence
-         fill = 0    filled = 0
-   
-   
-   Fill flags:
-      Value
-         fill = 0    filled = 0
-      Gradient
-         fill = 0    filled = 0
-      Hessian
-         fill = 0    filled = 0
-      Divergence
-         fill = 0    filled = 0
-   
-   Fill flags:
       Value
          fill = 0    filled = 0
       Gradient
@@ -401,6 +404,33 @@ Reference space:
    
    
    Fill flags:
+      Point
+         fill = 0    filled = 0
+      Value
+         fill = 0    filled = 0
+      Gradient
+         fill = 0    filled = 0
+      Hessian
+         fill = 0    filled = 0
+      Divergence
+         fill = 0    filled = 0
+   
+   Fill flags:
+      Point
+         fill = 0    filled = 0
+      Value
+         fill = 0    filled = 0
+      Gradient
+         fill = 0    filled = 0
+      Hessian
+         fill = 0    filled = 0
+      Divergence
+         fill = 0    filled = 0
+   
+   
+   Fill flags:
+      Point
+         fill = 0    filled = 0
       Value
          fill = 1    filled = 1
       Gradient
@@ -421,78 +451,80 @@ Reference space:
 
 Pushforward:
    Fill flags:
-      points
+      Point
          fill = 0    filled = 0
-      w_measures
-         fill = 0    filled = 0
-   
-   Fill flags:
-      points
-         fill = 0    filled = 0
-      w_measures
-         fill = 0    filled = 0
-   
-   
-   Fill flags:
-      points
-         fill = 0    filled = 0
-      w_measures
+      W_Measure
          fill = 0    filled = 0
    
    Fill flags:
-      points
+      Point
          fill = 0    filled = 0
-      w_measures
+      W_Measure
          fill = 0    filled = 0
    
    
    Fill flags:
-      points
+      Point
          fill = 0    filled = 0
-      w_measures
+      W_Measure
+         fill = 0    filled = 0
+   
+   Fill flags:
+      Point
+         fill = 0    filled = 0
+      W_Measure
+         fill = 0    filled = 0
+   
+   
+   Fill flags:
+      Point
+         fill = 0    filled = 0
+      W_Measure
          fill = 0    filled = 0
    
    
 
 Reference space:
    Fill flags:
-      points
+      Point
          fill = 0    filled = 0
-      w_measures
-         fill = 0    filled = 0
-   
-   Fill flags:
-      points
-         fill = 0    filled = 0
-      w_measures
-         fill = 0    filled = 0
-   
-   
-   Fill flags:
-      points
-         fill = 0    filled = 0
-      w_measures
+      W_Measure
          fill = 0    filled = 0
    
    Fill flags:
-      points
+      Point
          fill = 0    filled = 0
-      w_measures
+      W_Measure
          fill = 0    filled = 0
    
    
    Fill flags:
-      points
+      Point
+         fill = 0    filled = 0
+      W_Measure
+         fill = 0    filled = 0
+   
+   Fill flags:
+      Point
+         fill = 0    filled = 0
+      W_Measure
+         fill = 0    filled = 0
+   
+   
+   Fill flags:
+      Point
          fill = 1    filled = 1
-      w_measures
+      W_Measure
          fill = 0    filled = 0
    
-   Unit points:
-   ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
-   Points in the parametric element:
+   Points:
    ValueVector (num_points=2) : [ [ 0.552831 ]  [ 0.697169 ]  ]
+   Unit points:
+   ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
    
    Fill flags:
+      Point
+         fill = 0    filled = 0
       Value
          fill = 0    filled = 0
       Gradient
@@ -503,27 +535,8 @@ Reference space:
          fill = 0    filled = 0
    
    Fill flags:
-      Value
+      Point
          fill = 0    filled = 0
-      Gradient
-         fill = 0    filled = 0
-      Hessian
-         fill = 0    filled = 0
-      Divergence
-         fill = 0    filled = 0
-   
-   
-   Fill flags:
-      Value
-         fill = 0    filled = 0
-      Gradient
-         fill = 0    filled = 0
-      Hessian
-         fill = 0    filled = 0
-      Divergence
-         fill = 0    filled = 0
-   
-   Fill flags:
       Value
          fill = 0    filled = 0
       Gradient
@@ -535,6 +548,33 @@ Reference space:
    
    
    Fill flags:
+      Point
+         fill = 0    filled = 0
+      Value
+         fill = 0    filled = 0
+      Gradient
+         fill = 0    filled = 0
+      Hessian
+         fill = 0    filled = 0
+      Divergence
+         fill = 0    filled = 0
+   
+   Fill flags:
+      Point
+         fill = 0    filled = 0
+      Value
+         fill = 0    filled = 0
+      Gradient
+         fill = 0    filled = 0
+      Hessian
+         fill = 0    filled = 0
+      Divergence
+         fill = 0    filled = 0
+   
+   
+   Fill flags:
+      Point
+         fill = 0    filled = 0
       Value
          fill = 1    filled = 1
       Gradient
@@ -555,78 +595,80 @@ Reference space:
 
 Pushforward:
    Fill flags:
-      points
+      Point
          fill = 0    filled = 0
-      w_measures
-         fill = 0    filled = 0
-   
-   Fill flags:
-      points
-         fill = 0    filled = 0
-      w_measures
-         fill = 0    filled = 0
-   
-   
-   Fill flags:
-      points
-         fill = 0    filled = 0
-      w_measures
+      W_Measure
          fill = 0    filled = 0
    
    Fill flags:
-      points
+      Point
          fill = 0    filled = 0
-      w_measures
+      W_Measure
          fill = 0    filled = 0
    
    
    Fill flags:
-      points
+      Point
          fill = 0    filled = 0
-      w_measures
+      W_Measure
+         fill = 0    filled = 0
+   
+   Fill flags:
+      Point
+         fill = 0    filled = 0
+      W_Measure
+         fill = 0    filled = 0
+   
+   
+   Fill flags:
+      Point
+         fill = 0    filled = 0
+      W_Measure
          fill = 0    filled = 0
    
    
 
 Reference space:
    Fill flags:
-      points
+      Point
          fill = 0    filled = 0
-      w_measures
-         fill = 0    filled = 0
-   
-   Fill flags:
-      points
-         fill = 0    filled = 0
-      w_measures
-         fill = 0    filled = 0
-   
-   
-   Fill flags:
-      points
-         fill = 0    filled = 0
-      w_measures
+      W_Measure
          fill = 0    filled = 0
    
    Fill flags:
-      points
+      Point
          fill = 0    filled = 0
-      w_measures
+      W_Measure
          fill = 0    filled = 0
    
    
    Fill flags:
-      points
+      Point
+         fill = 0    filled = 0
+      W_Measure
+         fill = 0    filled = 0
+   
+   Fill flags:
+      Point
+         fill = 0    filled = 0
+      W_Measure
+         fill = 0    filled = 0
+   
+   
+   Fill flags:
+      Point
          fill = 1    filled = 1
-      w_measures
+      W_Measure
          fill = 0    filled = 0
    
+   Points:
+   ValueVector (num_points=2) : [ [ 0.802831 ]  [ 0.947169 ]  ]
    Unit points:
    ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
-   Points in the parametric element:
-   ValueVector (num_points=2) : [ [ 0.802831 ]  [ 0.947169 ]  ]
    
    Fill flags:
+      Point
+         fill = 0    filled = 0
       Value
          fill = 0    filled = 0
       Gradient
@@ -637,27 +679,8 @@ Reference space:
          fill = 0    filled = 0
    
    Fill flags:
-      Value
+      Point
          fill = 0    filled = 0
-      Gradient
-         fill = 0    filled = 0
-      Hessian
-         fill = 0    filled = 0
-      Divergence
-         fill = 0    filled = 0
-   
-   
-   Fill flags:
-      Value
-         fill = 0    filled = 0
-      Gradient
-         fill = 0    filled = 0
-      Hessian
-         fill = 0    filled = 0
-      Divergence
-         fill = 0    filled = 0
-   
-   Fill flags:
       Value
          fill = 0    filled = 0
       Gradient
@@ -669,6 +692,33 @@ Reference space:
    
    
    Fill flags:
+      Point
+         fill = 0    filled = 0
+      Value
+         fill = 0    filled = 0
+      Gradient
+         fill = 0    filled = 0
+      Hessian
+         fill = 0    filled = 0
+      Divergence
+         fill = 0    filled = 0
+   
+   Fill flags:
+      Point
+         fill = 0    filled = 0
+      Value
+         fill = 0    filled = 0
+      Gradient
+         fill = 0    filled = 0
+      Hessian
+         fill = 0    filled = 0
+      Divergence
+         fill = 0    filled = 0
+   
+   
+   Fill flags:
+      Point
+         fill = 0    filled = 0
       Value
          fill = 1    filled = 1
       Gradient
@@ -689,35 +739,35 @@ Reference space:
 
 Pushforward:
    Fill flags:
-      points
+      Point
          fill = 0    filled = 0
-      w_measures
-         fill = 0    filled = 0
-   
-   Fill flags:
-      points
-         fill = 0    filled = 0
-      w_measures
-         fill = 0    filled = 0
-   
-   
-   Fill flags:
-      points
-         fill = 0    filled = 0
-      w_measures
+      W_Measure
          fill = 0    filled = 0
    
    Fill flags:
-      points
+      Point
          fill = 0    filled = 0
-      w_measures
+      W_Measure
          fill = 0    filled = 0
    
    
    Fill flags:
-      points
+      Point
          fill = 0    filled = 0
-      w_measures
+      W_Measure
+         fill = 0    filled = 0
+   
+   Fill flags:
+      Point
+         fill = 0    filled = 0
+      W_Measure
+         fill = 0    filled = 0
+   
+   
+   Fill flags:
+      Point
+         fill = 0    filled = 0
+      W_Measure
          fill = 0    filled = 0
    
    

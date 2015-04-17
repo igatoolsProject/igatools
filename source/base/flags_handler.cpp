@@ -21,106 +21,11 @@
 
 #include <igatools/base/flags_handler.h>
 #include <igatools/base/exceptions.h>
-#include <igatools/base/value_types.h>
 
 
 
 IGA_NAMESPACE_OPEN
 
-//====================================================
-GridFlags::
-GridFlags(const ValueFlags &flags)
-{
-    if (contains(flags, ValueFlags::point))
-        points_flags_.fill_  = true;
-
-    if (contains(flags, ValueFlags::w_measure))
-        w_measures_flags_.fill_ = true;
-}
-
-
-
-bool
-GridFlags::
-fill_none() const
-{
-    bool fill_none = true;
-    if (points_flags_.fill_ || w_measures_flags_.fill_)
-        fill_none = false;
-    return fill_none;
-}
-
-
-
-bool
-GridFlags::
-fill_points() const
-{
-    return points_flags_.fill_;
-}
-
-
-
-bool
-GridFlags::
-points_filled() const
-{
-    return points_flags_.filled_;
-}
-
-
-
-void
-GridFlags::
-set_points_filled(const bool status)
-{
-    points_flags_.filled_ = status;
-}
-
-
-
-
-
-bool
-GridFlags::
-fill_w_measures() const
-{
-    return w_measures_flags_.fill_;
-}
-
-
-
-bool
-GridFlags::
-w_measures_filled() const
-{
-    return w_measures_flags_.filled_;
-}
-
-
-
-void
-GridFlags::
-set_w_measures_filled(const bool status)
-{
-    w_measures_flags_.filled_ = status;
-}
-
-
-
-
-void
-GridFlags::
-print_info(LogStream &out) const
-{
-    out.begin_item("points");
-    points_flags_.print_info(out);
-    out.end_item();
-
-    out.begin_item("w_measures");
-    w_measures_flags_.print_info(out);
-    out.end_item();
-}
 
 #if 0
 //====================================================
@@ -135,13 +40,13 @@ DeclException2(ExcFillFlagNotSupported, ValueFlags, ValueFlags,
 
 #endif
 
-FunctionFlags::
-FunctionFlags()
+
+GridFlags::
+GridFlags(const ValueFlags &flags)
+    :
+    GridFlags()
 {
-    value_type_flags_[     _Value::id] = Flags();
-    value_type_flags_[  _Gradient::id] = Flags();
-    value_type_flags_[   _Hessian::id] = Flags();
-    value_type_flags_[_Divergence::id] = Flags();
+    this->set_fill_status_from_value_flags(flags);
 }
 
 
@@ -150,29 +55,19 @@ FunctionFlags(const ValueFlags &flags)
     :
     FunctionFlags()
 {
-    if (contains(flags, ValueFlags::point))
-        points_flags_.fill_ = true;
+    const auto valid_flags = this->get_valid_flags();
+    auto f_flags = flags & valid_flags;
+    if (contains(f_flags, ValueFlags::divergence))
+        f_flags |= ValueFlags::gradient;
 
-    if (contains(flags, ValueFlags::value))
-        value_type_flags_[_Value::id].fill_ = true;
-
-    if (contains(flags, ValueFlags::gradient))
-        value_type_flags_[_Gradient::id].fill_ = true;
-
-    if (contains(flags, ValueFlags::hessian))
-        value_type_flags_[_Hessian::id].fill_ = true;
-
-    if (contains(flags, ValueFlags::divergence))
-        value_type_flags_[_Divergence::id].fill_ = true;
-
+    this->set_fill_status_from_value_flags(f_flags);
 }
 
 
 ValueFlags
 FunctionFlags::to_grid_flags(const ValueFlags &flags)
 {
-    ValueFlags transfer_flag = ValueFlags::measure |
-                               ValueFlags::w_measure |
+    ValueFlags transfer_flag = ValueFlags::w_measure |
                                ValueFlags::boundary_normal;
     ValueFlags g_flag = flags & transfer_flag;
     if (contains(flags, ValueFlags::point) || contains(flags, ValueFlags::value))
@@ -183,75 +78,6 @@ FunctionFlags::to_grid_flags(const ValueFlags &flags)
 }
 
 
-bool
-FunctionFlags::
-fill_none() const
-{
-    bool fill_none = true;
-
-    for (const auto &value_type_flag : value_type_flags_)
-        if (value_type_flag.second.fill_)
-        {
-            fill_none = false;
-            break;
-        }
-    /*
-        if (fill_values_ || fill_gradients_ || fill_hessians_)
-            fill_none = false;
-    //*/
-
-    return fill_none;
-}
-
-
-bool
-FunctionFlags::
-fill_points() const
-{
-    return points_flags_.fill_;
-}
-
-
-
-bool
-FunctionFlags::
-points_filled() const
-{
-    return points_flags_.filled_;
-}
-
-
-
-void
-FunctionFlags::
-set_points_filled(const bool status)
-{
-    points_flags_.filled_ = status;
-}
-
-
-
-void
-FunctionFlags::
-print_info(LogStream &out) const
-{
-    out.begin_item(_Value::name);
-    value_type_flags_.at(_Value::id).print_info(out);
-    out.end_item();
-
-    out.begin_item(_Gradient::name);
-    value_type_flags_.at(_Gradient::id).print_info(out);
-    out.end_item();
-
-    out.begin_item(_Hessian::name);
-    value_type_flags_.at(_Hessian::id).print_info(out);
-    out.end_item();
-
-    out.begin_item(_Divergence::name);
-    value_type_flags_.at(_Divergence::id).print_info(out);
-    out.end_item();
-}
-
 //====================================================
 
 
@@ -259,7 +85,7 @@ print_info(LogStream &out) const
 
 
 
-
+#if 0
 bool
 MappingFlags::
 fill_none() const
@@ -268,13 +94,32 @@ fill_none() const
 
     if (inv_gradients_flags_.fill_ ||
         inv_hessians_flags_.fill_ ||
-        !FunctionFlags::fill_none())
+        !parent_t::fill_none())
         fill_none = false;
 
     return fill_none;
 }
+#endif
 
+MappingFlags::
+MappingFlags(const ValueFlags &flags)
+    :
+    MappingFlags()
+{
+    const auto valid_flags = this->get_valid_flags();
+    auto m_flags = flags & valid_flags;
 
+    if (contains(flags, ValueFlags::boundary_normal) ||
+        contains(flags, ValueFlags::curvature))
+        m_flags |= ValueFlags::inv_gradient;
+
+    if (contains(flags, ValueFlags::w_measure))
+        m_flags |= ValueFlags::measure;
+
+    this->set_fill_status_from_value_flags(m_flags);
+}
+
+#if 0
 MappingFlags::
 MappingFlags(const ValueFlags &flags)
     :
@@ -297,16 +142,18 @@ MappingFlags(const ValueFlags &flags)
         w_measures_flags_.fill_ = true;
     }
 }
-
+#endif
 
 
 ValueFlags
 MappingFlags::to_function_flags(const ValueFlags &flags)
 {
+    FunctionFlags func_flags;
+
     ValueFlags transfer_flag = ValueFlags::measure |
                                ValueFlags::w_measure |
                                ValueFlags::boundary_normal |
-                               FunctionFlags::valid_flags;
+                               func_flags.get_valid_flags();
 
 
     ValueFlags f_flag = flags & transfer_flag;
@@ -325,7 +172,7 @@ MappingFlags::to_function_flags(const ValueFlags &flags)
 }
 
 
-
+#if 0
 bool
 MappingFlags::
 fill_inv_gradients() const
@@ -419,12 +266,11 @@ set_w_measures_filled(const bool status)
     w_measures_flags_.filled_ = status;
 }
 
-
 void
 MappingFlags::
 print_info(LogStream &out) const
 {
-    FunctionFlags::print_info(out);
+    parent_t::print_info(out);
 
     out.begin_item("inv gradients");
     inv_gradients_flags_.print_info(out);
@@ -442,6 +288,7 @@ print_info(LogStream &out) const
     w_measures_flags_.print_info(out);
     out.end_item();
 }
+#endif
 //====================================================
 
 

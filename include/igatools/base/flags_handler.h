@@ -25,10 +25,17 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
+#include <igatools/base/value_types.h>
+
+
+#include <boost/fusion/include/make_map.hpp>
+#include <boost/fusion/include/at_key.hpp>
+#include <boost/fusion/include/for_each.hpp>
+#include <boost/fusion/include/any.hpp>
 
 IGA_NAMESPACE_OPEN
 
-struct Flags
+struct FlagStatus
 {
     bool fill_ = false;
     bool filled_ = false;
@@ -40,24 +47,221 @@ struct Flags
 };
 
 
-class GridFlags
+inline
+auto
+create_grid_flags_data()
 {
+    return boost::fusion::make_map<_Point,_W_Measure>(
+               FlagStatus(), FlagStatus());
+}
+
+inline
+auto
+create_function_flags_data()
+{
+    return boost::fusion::make_map<_Point,_Value,_Gradient,_Hessian,_Divergence>(
+               FlagStatus(), FlagStatus(), FlagStatus(), FlagStatus(), FlagStatus());
+}
+
+inline
+auto
+create_map_flags_data()
+{
+    return boost::fusion::make_map<
+           _Point,
+           _Value,_Gradient,_Hessian,
+           _Measure, _W_Measure,
+           _InvGradient, _InvHessian>(
+               FlagStatus(), FlagStatus(), FlagStatus(), FlagStatus(),
+               FlagStatus(), FlagStatus(), FlagStatus(), FlagStatus());
+}
+
+
+template<class FusionMap_ValueType_FlagStatus>
+class Flags
+{
+protected:
+    /**
+     * Constructor. Sets all boolean flags to false.
+     * @note This constructor is intended to be called from a derived class only.
+     */
+    Flags(const FusionMap_ValueType_FlagStatus &map_value_types_and_flag_status)
+        :
+        map_value_types_and_flag_status_ {map_value_types_and_flag_status}
+    {};
+
+
 public:
-    static const ValueFlags valid_flags =
-        ValueFlags::point|
-        ValueFlags::w_measure;
+    /**
+     * @name Functions used to query or modify the Flag status for a give ValueType
+     */
+    ///@{
+    /** Returns true if the quantity associated to @p ValueType must be filled. */
+    template<class ValueType>
+    bool fill() const
+    {
+        return boost::fusion::at_key<ValueType>(map_value_types_and_flag_status_).fill_;
+    }
+
+    /** Returns true if the quantity associated to @p ValueType is filled. */
+    template<class ValueType>
+    bool filled() const
+    {
+        return boost::fusion::at_key<ValueType>(map_value_types_and_flag_status_).filled_;
+    }
+
+    /** Sets the filled @p status the quantity associated to @p ValueType. */
+    template<class ValueType>
+    void set_filled(const bool status)
+    {
+        boost::fusion::at_key<ValueType>(map_value_types_and_flag_status_).filled_ = status;
+    }
+    ///@}
+
+
+    /**
+     * Prints internal information about the FlagStatus for all valid ValueType(s).
+     * Its main use is for testing and debugging.
+     */
+    void print_info(LogStream &out) const
+    {
+        boost::fusion::for_each(map_value_types_and_flag_status_,
+                                [&out](const auto & type_and_status) -> void
+        {
+            using ValueType_Status = typename std::remove_reference<decltype(type_and_status)>::type;
+            using ValueType = typename ValueType_Status::first_type;
+
+            out.begin_item(ValueType::name);
+            type_and_status.second.print_info(out);
+            out.end_item();
+        } // end lambda function
+                               );
+    }
+
+    /** Returns true if the nothing must be filled. */
+    bool fill_none() const
+    {
+        const bool fill_someone = boost::fusion::any(map_value_types_and_flag_status_,
+                                                     [](const auto & type_and_status) -> bool
+        {
+            return type_and_status.second.fill_ == true;
+        } // end lambda function
+                                                    );
+
+        return !fill_someone;
+    }
+
+protected:
+    /**
+     * Map used to realize the association between the ValueType and the relative FlagStatus.
+     */
+    FusionMap_ValueType_FlagStatus map_value_types_and_flag_status_;
+
+    /**
+     * Sets the fill status given the input @p flags.
+     */
+    void set_fill_status_from_value_flags(const ValueFlags &flags)
+    {
+        boost::fusion::for_each(map_value_types_and_flag_status_,
+                                [&](auto & type_and_status) -> void
+        {
+            using ValueType_Status = typename std::remove_reference<decltype(type_and_status)>::type;
+            using ValueType = typename ValueType_Status::first_type;
+
+            if (contains(flags, ValueType::flag))
+                type_and_status.second.fill_ = true;
+        } // end lambda function
+                               );
+    }
+
+public:
+    /**
+     * Returns the flas that are valid to be used with this class.
+     */
+    ValueFlags get_valid_flags() const
+    {
+        ValueFlags valid_flags;
+
+        boost::fusion::for_each(map_value_types_and_flag_status_,
+                                [&](const auto & type_and_status) -> void
+        {
+            using ValueType_Status = typename std::remove_reference<decltype(type_and_status)>::type;
+            using ValueType = typename ValueType_Status::first_type;
+
+            valid_flags |= ValueType::flag;
+        } // end lambda function
+                               );
+        return valid_flags;
+    }
+};
+
+
+class FunctionFlags : public Flags<decltype(create_function_flags_data())>
+{
+    using parent_t = Flags<decltype(create_function_flags_data())>;
+public:
+
+    static ValueFlags to_grid_flags(const ValueFlags &flag);
 
     /** @name Constructors */
     ///@{
-    /** Default constructor. Sets all boolean flags to false. */
-    GridFlags() = default;
+    /**
+     * Default constructor. Sets all boolean flags to false.
+     */
+    FunctionFlags()
+        :
+        parent_t(create_function_flags_data())
+    {};
 
     /**
-     * Constructor. Transforms the value flags for grid-like element accessor in
-     * the correspondent booleans
-     * that specify the quantities that must be computed/filled.
+     * Constructor. It sets the fill status of the valid ValueType(s) given the input @p flags.
      */
-    GridFlags(const ValueFlags &flags);
+    FunctionFlags(const ValueFlags &flag);
+
+    /** Copy constructor. */
+    FunctionFlags(const FunctionFlags &in) = default;
+
+    /** Move constructor. */
+    FunctionFlags(FunctionFlags &&in) = default;
+
+
+    /** Destructor. */
+    ~FunctionFlags() = default;
+    ///@}
+
+
+    /** @name Assignment operators */
+    ///@{
+    /** Copy assignment operator. */
+    FunctionFlags &operator=(const FunctionFlags &in) = default;
+
+
+    /** Move assignment operator. */
+    FunctionFlags &operator=(FunctionFlags &&in) = default;
+    ///@}
+};
+
+
+
+class GridFlags : public Flags<decltype(create_grid_flags_data())>
+{
+    using parent_t = Flags<decltype(create_grid_flags_data())>;
+public:
+
+    /** @name Constructors */
+    ///@{
+    /**
+     * Default constructor. Sets all boolean flags to false.
+     */
+    GridFlags()
+        :
+        parent_t(create_grid_flags_data())
+    {};
+
+    /**
+     * Constructor. It sets the fill status of the valid ValueType(s) given the input @p flags.
+     */
+    GridFlags(const ValueFlags &flag);
 
     /** Copy constructor. */
     GridFlags(const GridFlags &in) = default;
@@ -80,145 +284,14 @@ public:
     /** Move assignment operator. */
     GridFlags &operator=(GridFlags &&in) = default;
     ///@}
-
-    /** Returns true if the nothing must be filled. */
-    bool fill_none() const;
-
-    /** Returns true if the quadrature points on the element must be filled. */
-    bool fill_points() const;
-
-    /** Returns true if the points are filled. */
-    bool points_filled() const;
-
-    /** Sets the filled status for points. */
-    void set_points_filled(const bool status);
-
-
-    /** Returns true if the quadrature weight multiplied by the element measure must be filled. */
-    bool fill_w_measures() const;
-
-    /** Returns true if the w_measures are filled. */
-    bool w_measures_filled() const;
-
-    /** Sets the filled status for w_measures. */
-    void set_w_measures_filled(const bool status);
-
-
-    /**
-     * Prints internal information about the ElementValuesCache.
-     * Its main use is for testing and debugging.
-     */
-    void print_info(LogStream &out) const;
-
-
-protected:
-    Flags points_flags_;
-
-    Flags w_measures_flags_;
 };
 
 
-
-class FunctionFlags
+class MappingFlags : public Flags<decltype(create_map_flags_data())>
 {
+    using parent_t = Flags<decltype(create_map_flags_data())>;
 public:
-    static const ValueFlags valid_flags =
-        ValueFlags::point|
-        ValueFlags::value|
-        ValueFlags::gradient|
-        ValueFlags::hessian;
-
-    static ValueFlags to_grid_flags(const ValueFlags &flag);
-
-    /** @name Constructors */
-    ///@{
-    /**
-     * Default constructor. Sets all boolean flags to false.
-     */
-    FunctionFlags();
-
-    FunctionFlags(const ValueFlags &flag);
-
-    /** Copy constructor. */
-    FunctionFlags(const FunctionFlags &in) = default;
-
-    /** Move constructor. */
-    FunctionFlags(FunctionFlags &&in) = default;
-
-
-    /** Destructor. */
-    ~FunctionFlags() = default;
-    ///@}
-
-
-
-    /** @name Assignment operators */
-    ///@{
-    /** Copy assignment operator. */
-    FunctionFlags &operator=(const FunctionFlags &in) = default;
-
-
-    /** Move assignment operator. */
-    FunctionFlags &operator=(FunctionFlags &&in) = default;
-    ///@}
-
-    /** Returns true if the quantity associated to @p ValueType must be filled. */
-    template<class ValueType>
-    bool fill() const
-    {
-        return value_type_flags_.at(ValueType::id).fill_;
-    }
-
-    /** Returns true if the quantity associated to @p ValueType is filled. */
-    template<class ValueType>
-    bool filled() const
-    {
-        return value_type_flags_.at(ValueType::id).filled_;
-    }
-
-    /** Sets the filled @p status the quantity associated to @p ValueType. */
-    template<class ValueType>
-    void set_filled(const bool status)
-    {
-        value_type_flags_[ValueType::id].filled_ = status;
-    }
-
-
-    /** Returns true if the nothing must be filled. */
-    bool fill_none() const;
-
-    /** Returns true if the values must be filled. */
-    bool fill_points() const;
-
-    /** Returns true if the values are filled. */
-    bool points_filled() const;
-
-    /** Sets the filled status for values. */
-    void set_points_filled(const bool status);
-
-    /**
-     * Prints internal information about the ElementValuesCache.
-     * Its main use is for testing and debugging.
-     */
-    void print_info(LogStream &out) const;
-
-protected:
-    Flags points_flags_;
-
-    /**
-     * Map used to realize the association between the ValueType::id and the relative Flags.
-     */
-    std::map<int,Flags> value_type_flags_;
-};
-
-
-
-
-class MappingFlags :
-    public FunctionFlags
-{
-public:
-
+#if 0
     static const ValueFlags valid_flags =
         FunctionFlags::valid_flags |
         ValueFlags::inv_gradient|
@@ -228,13 +301,17 @@ public:
         ValueFlags::boundary_normal|
         ValueFlags::outer_normal|
         ValueFlags::curvature;
+#endif
 
     static ValueFlags to_function_flags(const ValueFlags &flag);
 
     /** @name Constructors */
     ///@{
     /** Default constructor. Sets all boolean flags to false. */
-    MappingFlags() = default;
+    MappingFlags()
+        :
+        parent_t(create_map_flags_data())
+    {};
 
     /**
      * Constructor. Transforms the value flags for the mapping in the correspondent booleans
@@ -254,8 +331,6 @@ public:
     ///@}
 
 
-
-
     /** @name Assignment operators */
     ///@{
     /** Copy assignment operator. */
@@ -265,59 +340,6 @@ public:
     /** Move assignment operator. */
     MappingFlags &operator=(MappingFlags &&in) = default;
     ///@}
-
-    /** Returns true if the nothing must be filled. */
-    bool fill_none() const;
-
-    /** Returns true if the gradients inverse must be filled. */
-    bool fill_inv_gradients() const;
-
-    /** Returns true if the gradients are filled. */
-    bool inv_gradients_filled() const;
-
-    /** Sets the filled status for gradients. */
-    void set_inv_gradients_filled(const bool status);
-
-    /** Returns true if the hessians inverse must be filled. */
-    bool fill_inv_hessians() const;
-
-    /** Returns true if the hessians are filled. */
-    bool inv_hessians_filled() const;
-
-    /** Sets the filled status for hessians. */
-    void set_inv_hessians_filled(const bool status);
-
-    /** Returns true if the element measure must be filled. */
-    bool fill_measures() const;
-
-    /** Returns true if the measures are filled. */
-    bool measures_filled() const;
-
-    /** Sets the filled status for measures. */
-    void set_measures_filled(const bool status);
-
-    /** Returns true if the quadrature weight multiplied by the element measure must be filled. */
-    bool fill_w_measures() const;
-
-    /** Returns true if the w_measures are filled. */
-    bool w_measures_filled() const;
-
-    /** Sets the filled status for w_measures. */
-    void set_w_measures_filled(const bool status);
-    /**
-     * Prints internal information about the ElementValuesCache.
-     * Its main use is for testing and debugging.
-     */
-    void print_info(LogStream &out) const;
-
-protected:
-    Flags inv_gradients_flags_;
-
-    Flags inv_hessians_flags_;
-
-    Flags measures_flags_;
-
-    Flags w_measures_flags_;
 };
 
 

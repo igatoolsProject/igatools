@@ -295,33 +295,31 @@ public:
     void print_cache_info(LogStream &out) const;
 
 private:
+
+    using CType = boost::fusion::map<
+                  boost::fusion::pair<    _Point,ValueVector<Points<dim>>>,
+                  boost::fusion::pair<_W_Measure,ValueVector<Real>>
+                  >;
+
+    using BaseCache = FuncValuesCache<dim,CType,GridFlags>;
+
     /**
      * @brief Base class for cache of CartesianGridElement
      */
-    class ValuesCache : public CacheStatus
+    class ValuesCache : public BaseCache
     {
+        using parent_t = BaseCache;
     public:
         void resize(const GridFlags &flags_handler,
                     const Quadrature<dim> &quad);
 
         void print_info(LogStream &out) const;
 
-        static constexpr int get_dim()
-        {
-            return dim;
-        }
-
-        GridFlags flags_handler_;
-
         ///@name The "cache" properly speaking
         ///@{
         ValueVector<Points<dim>> unit_points_;
 
         ValueVector<Real> unit_weights_;
-
-        ValueVector<Points<dim>> ref_points_;
-
-        ValueVector<Real> w_measures_;
         ///@}
     };
 

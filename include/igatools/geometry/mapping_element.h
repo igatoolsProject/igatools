@@ -97,6 +97,7 @@ public:
     ValueVector<Real> const &get_measures(const int j) const
     {
         const auto &cache = local_cache_->template get_value_cache<k>(j);
+        Assert(cache.flags_handler_.template filled<_Measure>(),ExcCacheNotFilled());
         return cache.measures_;
     }
 
@@ -104,6 +105,7 @@ public:
     ValueVector<Real> const &get_w_measures(const int j) const
     {
         const auto &cache = local_cache_->template get_value_cache<k>(j);
+        Assert(cache.flags_handler_.template filled<_W_Measure>(),ExcCacheNotFilled());
         return cache.w_measures_;
     }
 
@@ -112,7 +114,6 @@ public:
     get_inverse_values(const int j = 0) const
     {
         const auto &cache = local_cache_->template get_value_cache<k>(j);
-        Assert(cache.is_filled() == true, ExcCacheNotFilled());
         return cache.template get_inv_values<order>();
     }
 
@@ -152,10 +153,16 @@ public:
         return res;
     }
 
+
 private:
     class ValuesCache : public CacheStatus
     {
     public:
+
+        static constexpr int get_dim()
+        {
+            return dim_;
+        }
 
         void resize(const MappingFlags &flags_handler,
                     const int n_points)
@@ -163,13 +170,13 @@ private:
             //TODO(pauletti, Oct 11, 2014): missing all necesary clears
             flags_handler_ = flags_handler;
 
-            if (flags_handler_.fill_measures())
+            if (flags_handler_.template fill<_Measure>())
                 measures_.resize(n_points);
-            if (flags_handler_.fill_w_measures())
+            if (flags_handler_.template fill<_W_Measure>())
                 w_measures_.resize(n_points);
-            if (flags_handler_.fill_inv_gradients())
+            if (flags_handler_.template fill<_InvGradient>())
                 std::get<1>(inv_values_).resize(n_points);
-            if (flags_handler_.fill_inv_hessians())
+            if (flags_handler_.template fill<_InvHessian>())
                 std::get<2>(inv_values_).resize(n_points);
 
             set_initialized(true);
@@ -178,7 +185,35 @@ private:
         void print_info(LogStream &out) const
         {
             flags_handler_.print_info(out);
-            measures_.print_info(out);
+
+            if (flags_handler_.template filled<_Measure>())
+            {
+                out.begin_item("Measures:");
+                measures_.print_info(out);
+                out.end_item();
+            }
+
+            if (flags_handler_.template filled<_W_Measure>())
+            {
+                out.begin_item("W * Measures:");
+                w_measures_.print_info(out);
+                out.end_item();
+            }
+
+            if (flags_handler_.template filled<_InvGradient>())
+            {
+                out.begin_item("Inv. Gradients:");
+                std::get<1>(inv_values_).print_info(out);
+                out.end_item();
+            }
+
+            if (flags_handler_.template filled<_InvHessian>())
+            {
+                out.begin_item("Inv. Hessians:");
+                std::get<2>(inv_values_).print_info(out);
+                out.end_item();
+            }
+
         }
 
 
@@ -202,51 +237,17 @@ private:
         std::tuple<ValueVector<InvDerivative<0>>,
             ValueVector<InvDerivative<1>>,
             ValueVector<InvDerivative<2>>> inv_values_;
-
-
     };
 
-    class LocalCache
-    {
-    public:
-        LocalCache() = default;
-
-        LocalCache(const LocalCache &in) = default;
-
-        LocalCache(LocalCache &&in) = default;
-
-        ~LocalCache() = default;
-
-
-        LocalCache &operator=(const LocalCache &in) = delete;
-
-        LocalCache &operator=(LocalCache &&in) = delete;
-
-        void print_info(LogStream &out) const;
-
-        template <int k>
-        ValuesCache &
-        get_value_cache(const int j)
-        {
-            return std::get<k>(values_)[j];
-        }
-
-        template <int k>
-        const ValuesCache &
-        get_value_cache(const int j) const
-        {
-            return std::get<k>(values_)[j];
-        }
-
-        CacheList<ValuesCache, dim> values_;
-    };
-
-    std::shared_ptr<LocalCache> local_cache_;
 
 public:
-    using CacheType = LocalCache;
+    using CacheType = LocalCache<ValuesCache>;
 
 private:
+
+    std::shared_ptr<CacheType> local_cache_;
+
+
     template <class Accessor> friend class CartesianGridIteratorBase;
     friend class Mapping<dim, codim>;
 

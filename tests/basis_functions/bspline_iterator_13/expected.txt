@@ -19,43 +19,45 @@ Number of element basis:
    Total Dimension: 2
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Fill flags:
-   points
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-
-Fill flags:
-   points
-      fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 
 Fill flags:
-   points
+   Point
+      fill = 0    filled = 0
+   W_Measure
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   W_Measure
+      fill = 0    filled = 0
+
+
+Fill flags:
+   Point
       fill = 1    filled = 1
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
+Points:
+ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
 Unit points:
 ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
-Points in the parametric element:
-ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -66,27 +68,8 @@ Fill flags:
       fill = 0    filled = 0
 
 Fill flags:
-   Value
+   Point
       fill = 0    filled = 0
-   Gradient
-      fill = 0    filled = 0
-   Hessian
-      fill = 0    filled = 0
-   Divergence
-      fill = 0    filled = 0
-
-
-Fill flags:
-   Value
-      fill = 0    filled = 0
-   Gradient
-      fill = 0    filled = 0
-   Hessian
-      fill = 0    filled = 0
-   Divergence
-      fill = 0    filled = 0
-
-Fill flags:
    Value
       fill = 0    filled = 0
    Gradient
@@ -98,6 +81,33 @@ Fill flags:
 
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
+   Value
+      fill = 0    filled = 0
+   Gradient
+      fill = 0    filled = 0
+   Hessian
+      fill = 0    filled = 0
+   Divergence
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   Value
+      fill = 0    filled = 0
+   Gradient
+      fill = 0    filled = 0
+   Hessian
+      fill = 0    filled = 0
+   Divergence
+      fill = 0    filled = 0
+
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 1    filled = 1
    Gradient
@@ -138,39 +148,41 @@ Number of element basis:
    Total Dimension: 2
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Fill flags:
-   points
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-
-Fill flags:
-   points
-      fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
+   W_Measure
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   W_Measure
       fill = 0    filled = 0
 
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
+   W_Measure
+      fill = 0    filled = 0
+
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -181,27 +193,8 @@ Fill flags:
       fill = 0    filled = 0
 
 Fill flags:
-   Value
+   Point
       fill = 0    filled = 0
-   Gradient
-      fill = 0    filled = 0
-   Hessian
-      fill = 0    filled = 0
-   Divergence
-      fill = 0    filled = 0
-
-
-Fill flags:
-   Value
-      fill = 0    filled = 0
-   Gradient
-      fill = 0    filled = 0
-   Hessian
-      fill = 0    filled = 0
-   Divergence
-      fill = 0    filled = 0
-
-Fill flags:
    Value
       fill = 0    filled = 0
    Gradient
@@ -213,6 +206,33 @@ Fill flags:
 
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
+   Value
+      fill = 0    filled = 0
+   Gradient
+      fill = 0    filled = 0
+   Hessian
+      fill = 0    filled = 0
+   Divergence
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   Value
+      fill = 0    filled = 0
+   Gradient
+      fill = 0    filled = 0
+   Hessian
+      fill = 0    filled = 0
+   Divergence
+      fill = 0    filled = 0
+
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -253,39 +273,41 @@ Number of element basis:
    Total Dimension: 2
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Fill flags:
-   points
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-
-Fill flags:
-   points
-      fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
+   W_Measure
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   W_Measure
       fill = 0    filled = 0
 
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
+   W_Measure
+      fill = 0    filled = 0
+
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient
@@ -296,27 +318,8 @@ Fill flags:
       fill = 0    filled = 0
 
 Fill flags:
-   Value
+   Point
       fill = 0    filled = 0
-   Gradient
-      fill = 0    filled = 0
-   Hessian
-      fill = 0    filled = 0
-   Divergence
-      fill = 0    filled = 0
-
-
-Fill flags:
-   Value
-      fill = 0    filled = 0
-   Gradient
-      fill = 0    filled = 0
-   Hessian
-      fill = 0    filled = 0
-   Divergence
-      fill = 0    filled = 0
-
-Fill flags:
    Value
       fill = 0    filled = 0
    Gradient
@@ -328,6 +331,33 @@ Fill flags:
 
 
 Fill flags:
+   Point
+      fill = 0    filled = 0
+   Value
+      fill = 0    filled = 0
+   Gradient
+      fill = 0    filled = 0
+   Hessian
+      fill = 0    filled = 0
+   Divergence
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   Value
+      fill = 0    filled = 0
+   Gradient
+      fill = 0    filled = 0
+   Hessian
+      fill = 0    filled = 0
+   Divergence
+      fill = 0    filled = 0
+
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
    Value
       fill = 0    filled = 0
    Gradient

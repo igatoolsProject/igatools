@@ -211,7 +211,14 @@ public:
 
     void print_cache_info(LogStream &out) const;
 
-    using Cache = BasisValuesCache<dim,codim,range,rank>;
+    using CType = boost::fusion::map<
+            boost::fusion::pair<     _Value,ValueTable<Value>>,
+            boost::fusion::pair<  _Gradient,ValueTable<Derivative<1>>>,
+            boost::fusion::pair<   _Hessian,ValueTable<Derivative<2>>>,
+            boost::fusion::pair<_Divergence,ValueTable<Div>>
+            >;
+
+    using Cache = BasisValuesCache<dim,CType,FunctionFlags>;
 
 protected:
 

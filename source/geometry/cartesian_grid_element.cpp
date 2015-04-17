@@ -396,13 +396,9 @@ get_w_measures(const int j) const
 {
     Assert(local_cache_ != nullptr, ExcNullPtr());
     const auto &cache = local_cache_->template get_value_cache<k>(j);
-    /*
-        const auto measure = this->template get_measure<k>(j);
-        return (measure * cache.unit_weights_);
-    //*/
-    Assert(cache.flags_handler_.w_measures_filled(), ExcCacheNotFilled());
-    return cache.w_measures_;
-
+//    Assert(cache.flags_handler_.template filled<_W_Measure>(), ExcCacheNotFilled());
+//    return cache.w_measures_;
+    return cache.template get_der<_W_Measure>();
 }
 
 
@@ -435,15 +431,6 @@ get_coordinate_lengths(const int j) const -> const Point
         lengths[active_dir] = knots_active_dir[j+1] - knots_active_dir[j];
     }
 
-    /*
-    LogStream out;
-    out.begin_item("CartesianGridElement<" + std::to_string(dim) + ">::get_coordinate_lengths<" +
-            std::to_string(k) + ">(" + std::to_string(j) + ")");
-    out << lengths << endl;
-    out.end_item();
-    //*/
-//    Assert(false,ExcNotImplemented());
-
     return lengths;
 }
 
@@ -457,28 +444,11 @@ get_points(const int j) const ->ValueVector<Point>
 {
     Assert(local_cache_ != nullptr, ExcNullPtr());
     const auto &cache = local_cache_->template get_value_cache<k>(j);
-    Assert(cache.flags_handler_.points_filled(), ExcCacheNotFilled());
-    /*
-    auto translate = vertex(0);
-    auto dilate    = get_coordinate_lengths<k>(j);
+//    Assert(cache.flags_handler_.template filled<_Point>(), ExcCacheNotFilled());
 
+//    return cache.ref_points_;
 
-    const int n_pts = cache.unit_points_.get_num_points();
-    ValueVector<Point> ref_points(n_pts);
-
-    for (int ipt = 0 ; ipt < n_pts ; ++ipt)
-    {
-        const auto &unit_pt = cache.unit_points_[ipt];
-        auto &ref_pt = ref_points[ipt];
-
-        for (const auto dir : Topology::active_directions)
-            ref_pt[dir] = unit_pt[dir] * dilate[dir] + translate[dir];
-    }
-    return ref_points;
-    //*/
-
-    return cache.ref_points_;
-
+    return cache.template get_der<_Point>();
 }
 
 
@@ -502,29 +472,29 @@ ValuesCache::
 resize(const GridFlags &flags_handler,
        const Quadrature<dim> &quad)
 {
-    flags_handler_ = flags_handler;
+    this->flags_handler_ = flags_handler;
 
-    if (flags_handler_.fill_points())
+    parent_t::resize(this->flags_handler_,quad.get_num_points());
+
+    if (this->flags_handler_.template fill<_Point>())
     {
         this->unit_points_ = quad.get_points();
-//        flags_handler_.set_points_filled(true);
-
-        this->ref_points_.resize(this->unit_points_.get_num_points());
+//        this->ref_points_.resize(this->unit_points_.get_num_points());
     }
     else
     {
-        this->ref_points_.clear();
+        this->unit_points_.clear();
     }
 
-    if (flags_handler_.fill_w_measures())
+    if (this->flags_handler_.template fill<_W_Measure>())
     {
         this->unit_weights_ = quad.get_weights();
-        this->w_measures_.resize(this->unit_weights_.get_num_points());
+//        this->w_measures_.resize(this->unit_weights_.get_num_points());
     }
     else
     {
         this->unit_weights_.clear();
-        this->w_measures_.clear();
+//       this->w_measures_.clear();
     }
 
     this->set_initialized(true);
@@ -538,31 +508,19 @@ CartesianGridElement<dim>::
 ValuesCache::
 print_info(LogStream &out) const
 {
-    out.begin_item("Fill flags:");
-    flags_handler_.print_info(out);
-    out.end_item();
+    parent_t::print_info(out);
 
-//    out << "Measure: " << measure_ << std::endl;
-//    out << "Lengths: " << lengths_ << std::endl;
-    if (flags_handler_.w_measures_filled())
+    if (this->flags_handler_.template filled<_W_Measure>())
     {
         out.begin_item("Unit weights:");
         unit_weights_.print_info(out);
         out.end_item();
-
-        out.begin_item("Weights * measure:");
-        w_measures_.print_info(out);
-        out.end_item();
     }
 
-    if (flags_handler_.points_filled())
+    if (this->flags_handler_.template filled<_Point>())
     {
         out.begin_item("Unit points:");
         unit_points_.print_info(out);
-        out.end_item();
-
-        out.begin_item("Points in the parametric element:");
-        ref_points_.print_info(out);
         out.end_item();
     }
 }
