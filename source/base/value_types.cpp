@@ -49,4 +49,9 @@ constexpr int _Point::id;
 constexpr int _Point::order;
 const string  _Point::name = "Point";
 
+
+constexpr int _W_Measure::id;
+constexpr int _W_Measure::order;
+const string  _W_Measure::name = "W_Measure";
+
 IGA_NAMESPACE_CLOSE

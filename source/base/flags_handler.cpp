@@ -23,12 +23,11 @@
 #include <igatools/base/exceptions.h>
 
 
-#include <boost/fusion/include/for_each.hpp>
-#include <boost/fusion/include/any.hpp>
 
 IGA_NAMESPACE_OPEN
 
 //====================================================
+#if 0
 GridFlags::
 GridFlags(const ValueFlags &flags)
 {
@@ -122,6 +121,7 @@ print_info(LogStream &out) const
     w_measures_flags_.print_info(out);
     out.end_item();
 }
+#endif
 
 #if 0
 //====================================================
@@ -137,37 +137,21 @@ DeclException2(ExcFillFlagNotSupported, ValueFlags, ValueFlags,
 #endif
 
 
+GridFlags::
+GridFlags(const ValueFlags &flags)
+    :
+    GridFlags()
+{
+    this->set_fill_status_from_value_flags(flags);
+}
+
 
 FunctionFlags::
 FunctionFlags(const ValueFlags &flags)
     :
     FunctionFlags()
 {
-    using boost::fusion::at_key;
-    if (contains(flags, ValueFlags::point))
-    {
-        at_key<_Point>(flags_type_and_status_).fill_ = true;
-    }
-
-    if (contains(flags, ValueFlags::value))
-    {
-        at_key<_Value>(flags_type_and_status_).fill_ = true;
-    }
-
-    if (contains(flags, ValueFlags::gradient))
-    {
-        at_key<_Gradient>(flags_type_and_status_).fill_ = true;
-    }
-
-    if (contains(flags, ValueFlags::hessian))
-    {
-        at_key<_Hessian>(flags_type_and_status_).fill_ = true;
-    }
-
-    if (contains(flags, ValueFlags::divergence))
-    {
-        at_key<_Divergence>(flags_type_and_status_).fill_ = true;
-    }
+    this->set_fill_status_from_value_flags(flags);
 }
 
 
@@ -185,40 +169,6 @@ FunctionFlags::to_grid_flags(const ValueFlags &flags)
     return g_flag;
 }
 
-
-bool
-FunctionFlags::
-fill_none() const
-{
-    const bool fill_someone = boost::fusion::any(flags_type_and_status_,
-                                                 [](const auto & type_and_status) -> bool
-    {
-        // begin lambda function
-        return type_and_status.second.fill_ == true;
-    } // end lambda function
-                                                );
-
-    return !fill_someone;
-}
-
-
-void
-FunctionFlags::
-print_info(LogStream &out) const
-{
-    boost::fusion::for_each(flags_type_and_status_,
-                            [&out](const auto & type_and_status) -> void
-    {
-        // begin lambda function
-        using ValueType_Status = typename std::remove_reference<decltype(type_and_status)>::type;
-        using ValueType = typename ValueType_Status::first_type;
-
-        out.begin_item(ValueType::name);
-        type_and_status.second.print_info(out);
-        out.end_item();
-    } // end lambda function
-                           );
-}
 
 //====================================================
 

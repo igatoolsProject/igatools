@@ -2,35 +2,35 @@
 void space_cache_init_fill_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
 ========================================================================
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Fill flags:
-   points
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-
-Fill flags:
-   points
-      fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 
 Fill flags:
-   points
+   Point
+      fill = 0    filled = 0
+   W_Measure
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   W_Measure
+      fill = 0    filled = 0
+
+
+Fill flags:
+   Point
       fill = 1    filled = 1
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 Unit points:
@@ -114,35 +114,35 @@ Values:
 void space_cache_init_fill_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
 ========================================================================
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Fill flags:
-   points
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-
-Fill flags:
-   points
-      fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
+   W_Measure
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   W_Measure
+      fill = 0    filled = 0
+
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   W_Measure
       fill = 0    filled = 0
 
 
@@ -222,35 +222,35 @@ Gradients:
 void space_cache_init_fill_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
 ========================================================================
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Fill flags:
-   points
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-
-Fill flags:
-   points
-      fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
+   W_Measure
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   W_Measure
+      fill = 0    filled = 0
+
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   W_Measure
       fill = 0    filled = 0
 
 
@@ -330,84 +330,84 @@ Hessians:
 void space_cache_init_fill_elem(iga::ValueFlags, int, int) [with int dim = 2; int range = 1; int rank = 1]
 ========================================================================
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Fill flags:
-   points
-      fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Fill flags:
-   points
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-
-Fill flags:
-   points
-      fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Fill flags:
-   points
-      fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Fill flags:
-   points
-      fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
+   W_Measure
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   W_Measure
       fill = 0    filled = 0
 
 
 Fill flags:
-   points
+   Point
+      fill = 0    filled = 0
+   W_Measure
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   W_Measure
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   W_Measure
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   W_Measure
+      fill = 0    filled = 0
+
+
+Fill flags:
+   Point
       fill = 1    filled = 1
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 Unit points:
@@ -592,84 +592,84 @@ Values:
 void space_cache_init_fill_elem(iga::ValueFlags, int, int) [with int dim = 2; int range = 1; int rank = 1]
 ========================================================================
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Fill flags:
-   points
-      fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Fill flags:
-   points
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-
-Fill flags:
-   points
-      fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Fill flags:
-   points
-      fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Fill flags:
-   points
-      fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
+   W_Measure
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   W_Measure
       fill = 0    filled = 0
 
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
+   W_Measure
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   W_Measure
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   W_Measure
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   W_Measure
+      fill = 0    filled = 0
+
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   W_Measure
       fill = 0    filled = 0
 
 
@@ -850,84 +850,84 @@ Gradients:
 void space_cache_init_fill_elem(iga::ValueFlags, int, int) [with int dim = 2; int range = 1; int rank = 1]
 ========================================================================
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Fill flags:
-   points
-      fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Fill flags:
-   points
-      fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-
-Fill flags:
-   points
-      fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Fill flags:
-   points
-      fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
-      fill = 0    filled = 0
-
-Fill flags:
-   points
-      fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
+   W_Measure
       fill = 0    filled = 0
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
+   W_Measure
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   W_Measure
       fill = 0    filled = 0
 
 
 Fill flags:
-   points
+   Point
       fill = 0    filled = 0
-   w_measures
+   W_Measure
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   W_Measure
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   W_Measure
+      fill = 0    filled = 0
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   W_Measure
+      fill = 0    filled = 0
+
+
+Fill flags:
+   Point
+      fill = 0    filled = 0
+   W_Measure
       fill = 0    filled = 0
 
 

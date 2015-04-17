@@ -400,7 +400,7 @@ get_w_measures(const int j) const
         const auto measure = this->template get_measure<k>(j);
         return (measure * cache.unit_weights_);
     //*/
-    Assert(cache.flags_handler_.w_measures_filled(), ExcCacheNotFilled());
+    Assert(cache.flags_handler_.template filled<_W_Measure>(), ExcCacheNotFilled());
     return cache.w_measures_;
 
 }
@@ -457,7 +457,7 @@ get_points(const int j) const ->ValueVector<Point>
 {
     Assert(local_cache_ != nullptr, ExcNullPtr());
     const auto &cache = local_cache_->template get_value_cache<k>(j);
-    Assert(cache.flags_handler_.points_filled(), ExcCacheNotFilled());
+    Assert(cache.flags_handler_.template filled<_Point>(), ExcCacheNotFilled());
     /*
     auto translate = vertex(0);
     auto dilate    = get_coordinate_lengths<k>(j);
@@ -504,7 +504,7 @@ resize(const GridFlags &flags_handler,
 {
     flags_handler_ = flags_handler;
 
-    if (flags_handler_.fill_points())
+    if (flags_handler_.template fill<_Point>())
     {
         this->unit_points_ = quad.get_points();
 //        flags_handler_.set_points_filled(true);
@@ -516,7 +516,7 @@ resize(const GridFlags &flags_handler,
         this->ref_points_.clear();
     }
 
-    if (flags_handler_.fill_w_measures())
+    if (flags_handler_.template fill<_W_Measure>())
     {
         this->unit_weights_ = quad.get_weights();
         this->w_measures_.resize(this->unit_weights_.get_num_points());
@@ -544,7 +544,7 @@ print_info(LogStream &out) const
 
 //    out << "Measure: " << measure_ << std::endl;
 //    out << "Lengths: " << lengths_ << std::endl;
-    if (flags_handler_.w_measures_filled())
+    if (flags_handler_.template filled<_W_Measure>())
     {
         out.begin_item("Unit weights:");
         unit_weights_.print_info(out);
@@ -555,7 +555,7 @@ print_info(LogStream &out) const
         out.end_item();
     }
 
-    if (flags_handler_.points_filled())
+    if (flags_handler_.template filled<_Point>())
     {
         out.begin_item("Unit points:");
         unit_points_.print_info(out);
