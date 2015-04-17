@@ -123,7 +123,7 @@ public:
      * of the element basis functions at quadrature points
      * as specify by the flag
      */
-    void resize(const FunctionFlags &flags_handler,
+    void resize(const FlagsType &flags_handler,
                 const Size n_points,
                 const Size n_basis)
     {
@@ -173,7 +173,7 @@ public:
      * of the element at quadrature points
      * as specify by the flag
      */
-    void resize(const FunctionFlags &flags_handler,
+    void resize(const FlagsType &flags_handler,
                 const Size n_points)
     {
         this->flags_handler_ = flags_handler;

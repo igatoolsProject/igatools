@@ -471,9 +471,11 @@ ValuesCache::
 resize(const GridFlags &flags_handler,
        const Quadrature<dim> &quad)
 {
-    flags_handler_ = flags_handler;
+    this->flags_handler_ = flags_handler;
 
-    if (flags_handler_.template fill<_Point>())
+    parent_t::resize(this->flags_handler_,quad.get_num_points());
+
+    if (this->flags_handler_.template fill<_Point>())
     {
         this->unit_points_ = quad.get_points();
         this->ref_points_.resize(this->unit_points_.get_num_points());
@@ -483,7 +485,7 @@ resize(const GridFlags &flags_handler,
         this->ref_points_.clear();
     }
 
-    if (flags_handler_.template fill<_W_Measure>())
+    if (this->flags_handler_.template fill<_W_Measure>())
     {
         this->unit_weights_ = quad.get_weights();
         this->w_measures_.resize(this->unit_weights_.get_num_points());
@@ -506,12 +508,14 @@ ValuesCache::
 print_info(LogStream &out) const
 {
     out.begin_item("Fill flags:");
-    flags_handler_.print_info(out);
+    this->flags_handler_.print_info(out);
     out.end_item();
+
+    parent_t::print_info(out);
 
 //    out << "Measure: " << measure_ << std::endl;
 //    out << "Lengths: " << lengths_ << std::endl;
-    if (flags_handler_.template filled<_W_Measure>())
+    if (this->flags_handler_.template filled<_W_Measure>())
     {
         out.begin_item("Unit weights:");
         unit_weights_.print_info(out);
@@ -522,7 +526,7 @@ print_info(LogStream &out) const
         out.end_item();
     }
 
-    if (flags_handler_.template filled<_Point>())
+    if (this->flags_handler_.template filled<_Point>())
     {
         out.begin_item("Unit points:");
         unit_points_.print_info(out);
