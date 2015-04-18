@@ -18,10 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
-
-#ifndef NEW_FLAGS_HANDLER_H_
-#define NEW_FLAGS_HANDLER_H_
+#ifndef __FLAGS_HANDLER_H_
+#define __FLAGS_HANDLER_H_
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
@@ -180,7 +178,7 @@ public:
      */
     ValueFlags get_valid_flags() const
     {
-        ValueFlags valid_flags;
+        ValueFlags valid_flags = ValueFlags::none;
 
         boost::fusion::for_each(map_value_types_and_flag_status_,
                                 [&](const auto & type_and_status) -> void
