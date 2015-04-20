@@ -205,6 +205,8 @@ operator()(const T &quad1)
         Assert(!intervals_id.empty(),ExcEmptyObject());
 #endif
 
+    const auto &lengths = grid_handler_->get_grid()->get_element_lengths();
+
     for (auto &s_id: Topology::template elems_ids<k>())
     {
 
@@ -239,7 +241,7 @@ operator()(const T &quad1)
          */
         const auto &bezier_op   = space_->operators_;
         const auto &end_interval = space_->end_interval_;
-        const auto &lengths = grid_handler_->get_lengths();
+//        const auto &lengths = grid_handler_->get_lengths();
 
         using BasisValues = ComponentContainer<BasisValues1d>;
         BasisValues bernstein_values_internal(degree.get_comp_map());
@@ -728,10 +730,11 @@ void
 BSplineElementHandler<dim_, range_, rank_>::
 print_info(LogStream &out) const
 {
+    /*
     out.begin_item("Grid Cache:");
     this->grid_handler_.print_info(out);
     out.end_item();
-
+    //*/
 
     out.begin_item("Splines 1D Cache:");
     cacheutils::print_caches(splines1d_, out);

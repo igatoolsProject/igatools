@@ -53,8 +53,9 @@ template <int dim>
 GridElementHandler<dim>::
 GridElementHandler(shared_ptr<GridType> grid)
     :
-    grid_(grid),
-    lengths_(grid->get_element_lengths())
+    grid_(grid)
+//  ,
+//    lengths_(grid->get_element_lengths())
 {}
 
 template <int dim>
@@ -155,7 +156,7 @@ fill_cache(ElementAccessor &elem, const int j)
 
     if (flags.template fill<_W_Measure>())
     {
-    	cache.template get_der<_W_Measure>() = elem.template get_measure<k>(j) * cache.unit_weights_;
+        cache.template get_der<_W_Measure>() = elem.template get_measure<k>(j) * cache.unit_weights_;
         flags.template set_filled<_W_Measure>(true);
     }
 
@@ -173,7 +174,7 @@ get_grid() const -> std::shared_ptr<const GridType>
     return grid_;
 }
 
-
+#if 0
 template <int dim>
 auto
 GridElementHandler<dim>::
@@ -181,18 +182,21 @@ get_lengths() const -> const TensorProductArray<dim> &
 {
     return lengths_;
 }
+#endif
 
-
-
+#if 0
 template <int dim>
 void
 GridElementHandler<dim>::
 print_info(LogStream &out) const
 {
+    /*
     out.begin_item("Lengths:");
     lengths_.print_info(out);
     out.end_item();
+    //*/
 }
+#endif
 
 IGA_NAMESPACE_CLOSE
 

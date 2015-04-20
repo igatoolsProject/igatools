@@ -152,11 +152,11 @@ public:
     }
 
 public:
-    void print_info(LogStream &out) const;
+//    void print_info(LogStream &out) const;
 
     std::shared_ptr<const GridType> get_grid() const;
 
-    const TensorProductArray<dim> &get_lengths() const;
+//    const TensorProductArray<dim> &get_lengths() const;
 
 private:
     std::shared_ptr<GridType> grid_;
@@ -166,7 +166,7 @@ private:
 protected:
     EvalPtsList<dim> quad_;
 
-    TensorProductArray<dim> lengths_;
+//    TensorProductArray<dim> lengths_;
 
 };
 

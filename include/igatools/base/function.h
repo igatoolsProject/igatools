@@ -267,7 +267,7 @@ public:
                        to_string(codim_) + "," +
                        to_string(range_) + "," +
                        to_string(rank_) + ">");
-        parent_t::print_info(out);
+//        parent_t::print_info(out);
         out.end_item();
     }
 

@@ -1,13 +1,6 @@
 ========================================================================
 void cache_init(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1; int codim = 0]
 ========================================================================
-Grid Cache:
-   Lengths:
-      Size: [ 4 ]  Weights: [4]
-      Direction: 0
-      [ 0.250000 0.250000 0.250000 0.250000 ]
-   
-
 Splines 1D Cache:
    Active Component ID: 0
       Direction : 0
