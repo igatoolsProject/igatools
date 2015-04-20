@@ -36,13 +36,9 @@
 
 
 
-//#include <boost/fusion/container/map.hpp>
 #include <boost/fusion/include/map.hpp>
-//#include <boost/fusion/container/map/map_fwd.hpp>
 #include <boost/fusion/include/map_fwd.hpp>
-//#include <boost/fusion/algorithm/iteration/for_each.hpp>
 #include <boost/fusion/include/for_each.hpp>
-//#include <boost/fusion/sequence/intrinsic/at_key.hpp>
 #include <boost/fusion/include/at_key.hpp>
 
 IGA_NAMESPACE_OPEN
@@ -236,14 +232,14 @@ public:
     Cache &
     get_value_cache(const int topology_id)
     {
-        return std::get<topology_dim>(values_)[topology_id];
+        return boost::fusion::at_c<topology_dim>(values_).second[topology_id];
     }
 
     template <int topology_dim>
     const Cache &
     get_value_cache(const int topology_id) const
     {
-        const auto &cache = std::get<topology_dim>(values_)[topology_id];
+        const auto &cache = boost::fusion::at_c<topology_dim>(values_).second[topology_id];
         Assert(cache.is_filled() == true, ExcCacheNotFilled());
 
         return cache;

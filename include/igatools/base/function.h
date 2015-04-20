@@ -319,7 +319,8 @@ private:
             for (auto &s_id: UnitElement<dim_>::template elems_ids<T::k>())
             {
                 auto &s_cache = cache->template get_value_cache<T::k>(s_id);
-                auto &quad = std::get<T::k>(*quad_);
+//                auto &quad = std::get<T::k>(*quad_);
+                auto &quad = boost::fusion::at_c<T::k>(*quad_);
                 s_cache.resize((*flags_)[T::k], quad.get_num_points());
             }
         }

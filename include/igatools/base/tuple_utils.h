@@ -24,15 +24,23 @@
 #include <igatools/base/config.h>
 #include <igatools/geometry/unit_element.h>
 #include <igatools/base/quadrature.h>
+
 #include <tuple>
+
+#include <boost/mpl/int.hpp>
+#include <boost/fusion/include/make_vector.hpp>
+#include <boost/fusion/include/make_map.hpp>
+#include <boost/fusion/include/for_each.hpp>
+
 
 IGA_NAMESPACE_OPEN
 
 template<template<int> class Q, std::size_t... I>
-auto tuple_of_quads(std::index_sequence<I...>)
--> decltype(std::make_tuple(Q<I>() ...))
+auto
+tuple_of_quads(std::index_sequence<I...>)
+-> decltype(boost::fusion::make_vector(Q<I>() ...))
 {
-    return std::make_tuple(Q<I>() ...);
+    return boost::fusion::make_vector(Q<I>() ...);
 }
 
 template<int dim, template<int> class Q>
@@ -49,13 +57,12 @@ tuple_of_caches(
     const Quadrature<dim> &q,
     const ValuesCache &)
 -> decltype(
-    std::make_tuple(
-        std::array<ValuesCache,
-        UnitElement<dim>::template num_elem<I>()>() ...)
+    boost::fusion::make_vector(
+        boost::fusion::pair<boost::mpl::int_<I>,std::array<ValuesCache,UnitElement<dim>::template num_elem<I>()>>() ...)
     )
 {
-    return std::make_tuple(
-               std::array<ValuesCache,UnitElement<dim>::template num_elem<I>()>() ...);
+    return boost::fusion::make_vector(
+               boost::fusion::pair<boost::mpl::int_<I>,std::array<ValuesCache,UnitElement<dim>::template num_elem<I>()>>() ...);
 }
 
 
@@ -138,12 +145,30 @@ struct PrintCacheFunc
     LogStream &out;
 };
 
+#if 0
 template<class... Args>
 void print_caches(const std::tuple<Args...> &t, LogStream &out)
 {
     PrintCacheFunc f(out);
     TupleFunc<PrintCacheFunc, decltype(t), sizeof...(Args), 0>::apply_func(f,t);
 }
+#endif
+
+//#if 0
+template<class FusionContainer>
+void print_caches(const FusionContainer &data, LogStream &out)
+{
+    boost::fusion::for_each(data,
+                            [&out](const auto & data_same_topology_dim)
+    {
+        for (const auto &data_same_topology_id : data_same_topology_dim.second)
+            data_same_topology_id.print_info(out);
+        out << std::endl;
+    }
+                           );
+
+}
+//#endif
 };
 
 

@@ -210,7 +210,8 @@ operator()(const T &quad1)
     for (auto &s_id: Topology::template elems_ids<k>())
     {
 
-        auto &g_cache = std::get<k>(*splines1d_)[s_id];
+//        auto &g_cache = std::get<k>(*splines1d_)[s_id];
+        auto &g_cache = boost::fusion::at_c<k>(*splines1d_).second[s_id];
         g_cache = GlobalCache(space_data->get_components_map());
 
         const auto quad = extend_sub_elem_quad<k,dim>(quad1, s_id);
@@ -638,7 +639,9 @@ operator()(const T &topology)
     grid_handler_->template fill_cache<T::k>(elem_->as_cartesian_grid_element_accessor(),j_);
 
     Assert(splines1d_ != nullptr, ExcNullPtr());
-    const auto &g_cache = std::get<T::k>(*splines1d_)[j_];
+//    const auto &g_cache = std::get<T::k>(*splines1d_)[j_];
+    const auto &g_cache = boost::fusion::at_c<T::k>(*splines1d_).second[j_];
+
 
     Assert(elem_ != nullptr, ExcNullPtr());
     Assert(elem_->get_local_cache() != nullptr, ExcNullPtr());
@@ -728,6 +731,7 @@ print_info(LogStream &out) const
 
     out.begin_item("Splines 1D Cache:");
     cacheutils::print_caches(splines1d_, out);
+//    splines1d_.print_info(out);
     out.end_item();
 }
 
