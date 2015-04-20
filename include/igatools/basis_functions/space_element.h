@@ -143,9 +143,12 @@ public:
     auto
     get_basis(const int topology_id, const std::string &dofs_property = DofProperties::active) const
     {
+        /*
         Assert(local_cache_ != nullptr, ExcNullPtr());
         const auto &cache = local_cache_->template get_value_cache<topology_dim>(topology_id);
-        const auto values_all_elem_dofs = cache.template get_der<ValueType>();
+        const auto &values_all_elem_dofs = cache.template get_der<ValueType>();
+        //*/
+        const auto &values_all_elem_dofs = this->get_values_from_cache<ValueType,topology_dim>(topology_id);
 
         //--------------------------------------------------------------------------------------
         // filtering the values that correspond to the dofs with the given property --- begin
@@ -163,7 +166,8 @@ public:
         const auto n_filtered_dofs = dofs_local_to_elem.size();
         const auto n_pts = values_all_elem_dofs.get_num_points();
 
-        decltype(values_all_elem_dofs) values_filtered_elem_dofs(n_filtered_dofs,n_pts);
+        using VType = typename std::remove_reference<decltype(values_all_elem_dofs)>::type;
+        VType values_filtered_elem_dofs(n_filtered_dofs,n_pts);
 
         int fn = 0;
         for (const auto loc_dof : dofs_local_to_elem)
@@ -212,11 +216,11 @@ public:
     void print_cache_info(LogStream &out) const;
 
     using CType = boost::fusion::map<
-            boost::fusion::pair<     _Value,ValueTable<Value>>,
-            boost::fusion::pair<  _Gradient,ValueTable<Derivative<1>>>,
-            boost::fusion::pair<   _Hessian,ValueTable<Derivative<2>>>,
-            boost::fusion::pair<_Divergence,ValueTable<Div>>
-            >;
+                  boost::fusion::pair<     _Value,ValueTable<Value>>,
+                  boost::fusion::pair<  _Gradient,ValueTable<Derivative<1>>>,
+                  boost::fusion::pair<   _Hessian,ValueTable<Derivative<2>>>,
+                  boost::fusion::pair<_Divergence,ValueTable<Div>>
+                  >;
 
     using Cache = BasisValuesCache<dim,CType,FunctionFlags>;
 
@@ -234,6 +238,17 @@ public:
     {
         return this->local_cache_;
     }
+
+private:
+    template <class ValueType, int topology_dim>
+    const auto &
+    get_values_from_cache(const int topology_id) const
+    {
+        Assert(local_cache_ != nullptr, ExcNullPtr());
+        const auto &cache = local_cache_->template get_value_cache<topology_dim>(topology_id);
+        return cache.template get_der<ValueType>();
+    }
+
 
 protected:
     /**

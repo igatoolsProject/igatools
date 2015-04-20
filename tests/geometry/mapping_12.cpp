@@ -66,9 +66,9 @@ void test()
     for (; elem != end; ++elem)
     {
         map->template fill_cache<sub_dim>(elem, s_id);
-        elem->template get_inverse_values<1, sub_dim> (s_id).print_info(out);
+        elem->template get_values_from_cache<_InvGradient, sub_dim> (s_id).print_info(out);
         out << endl;
-        elem->template get_inverse_values<2, sub_dim> (s_id).print_info(out);
+        elem->template get_values_from_cache< _InvHessian, sub_dim> (s_id).print_info(out);
         out << endl;
     }
 

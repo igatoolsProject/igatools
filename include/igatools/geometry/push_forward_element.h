@@ -94,7 +94,7 @@ public:
         auto Dv_it     = Dv.begin();
         auto Dv_hat_it = Dv_hat.cbegin();
 
-        const auto &DF_inv = this->template get_inverse_values<1,k>(s_id);
+        const auto &DF_inv = this->template get_values_from_cache<_InvGradient,k>(s_id);
         for (int i_fn = 0; i_fn < n_func; ++i_fn)
             for (Index j_pt = 0; j_pt < n_points; ++j_pt)
             {
@@ -127,7 +127,7 @@ public:
         auto D1v_it     = D1v.cbegin();
         auto D2v_hat_it = D2v_hat.cbegin();
         const auto D2F     =  this->template get_values<_Hessian,k>(s_id);
-        const auto &DF_inv =  this->template get_inverse_values<1,k>(s_id);
+        const auto &DF_inv =  this->template get_values_from_cache<_InvGradient,k>(s_id);
 
         for (int i_fn = 0; i_fn < n_func; ++i_fn)
             for (Index j_pt = 0; j_pt < n_points; ++j_pt)

@@ -95,23 +95,27 @@ fill_cache(ElementAccessor &elem, const int j) -> void
         const auto &DF = elem.template get_values<_Gradient, k>(j);
         typename MapFunction<k, space_dim>::Gradient DF1;
 
-
+        auto &measures = cache.template get_der<_Measure>();
         for (int pt = 0 ; pt < n_points; ++pt)
         {
             for (int l=0; l<k; ++l)
                 DF1[l] = DF[pt][k_elem.active_directions[l]];
 
-            cache.measures_[pt] = fabs(determinant<k,space_dim>(DF1));
+            measures[pt] = fabs(determinant<k,space_dim>(DF1));
         }
         flags.template set_filled<_Measure>(true);
     }
 
     if (flags.template fill<_W_Measure>())
     {
-        const auto &meas = cache.measures_;
         const auto &w = elem.CartesianGridElement<dim>::template get_w_measures<k>(j);
+
+        const auto &measures = cache.template get_der<_Measure>();
+
+        auto &w_measures = cache.template get_der<_W_Measure>();
+
         for (int pt = 0 ; pt < n_points; ++pt)
-            cache.w_measures_[pt] = w[pt] * meas[pt];
+            w_measures[pt] = w[pt] * measures[pt];
 
         flags.template set_filled<_W_Measure>(true);
     }
@@ -120,7 +124,7 @@ fill_cache(ElementAccessor &elem, const int j) -> void
     {
         // TODO (pauletti, Nov 23, 2014): if also fill measure this could be done here
         const auto &DF = elem.template get_values<_Gradient, k>(j);
-        auto &D_invF = cache.template get_inv_values<1>();
+        auto &D_invF = cache.template get_der<_InvGradient>();
         Real det;
         for (int pt = 0 ; pt < n_points; ++pt)
             D_invF[pt] = inverse(DF[pt], det);
@@ -132,8 +136,8 @@ fill_cache(ElementAccessor &elem, const int j) -> void
     {
         const auto &D1_F = elem.template get_values<_Gradient, k>(j);
         const auto &D2_F = elem.template get_values<_Hessian, k>(j);
-        const auto &D1_invF = cache.template get_inv_values<1>();
-        auto &D2_invF       = cache.template get_inv_values<2>();
+        const auto &D1_invF = cache.template get_der<_InvGradient>();
+        auto &D2_invF       = cache.template get_der<_InvHessian>();
 
         for (int pt = 0 ; pt < n_points; ++pt)
             for (int u=0; u<dim; ++u)

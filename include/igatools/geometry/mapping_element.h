@@ -93,32 +93,26 @@ public:
     template <int order>
     using Derivative = typename Map::template Derivative<order>;
 
+    template <class ValueType, int topology_dim = dim>
+    auto &get_values_from_cache(const int topology_id = 0) const
+    {
+        Assert(local_cache_ != nullptr,ExcNullPtr());
+        const auto &cache = local_cache_->template get_value_cache<topology_dim>(topology_id);
+        return cache.template get_der<ValueType>();
+    }
+
     template<int k>
     ValueVector<Real> const &get_measures(const int j) const
     {
-        const auto &cache = local_cache_->template get_value_cache<k>(j);
-        Assert(cache.flags_handler_.template filled<_Measure>(),ExcCacheNotFilled());
-        return cache.measures_;
+        return get_values_from_cache<_Measure,k>(j);
     }
 
     template<int k>
     ValueVector<Real> const &get_w_measures(const int j) const
     {
-        const auto &cache = local_cache_->template get_value_cache<k>(j);
-        Assert(cache.flags_handler_.template filled<_W_Measure>(),ExcCacheNotFilled());
-        return cache.w_measures_;
+        return get_values_from_cache<_W_Measure,k>(j);
     }
 
-    template<int order = 0, int k = dim>
-    auto
-    get_inverse_values(const int j = 0) const
-    {
-        const auto &cache = local_cache_->template get_value_cache<k>(j);
-        return cache.template get_inv_values<order>();
-    }
-
-
-//    ValueVector<special_array<Points<space_dim>, codim>>
     ValueVector<Points<space_dim> > get_external_normals() const;
 
     using MetricTensor =
@@ -139,109 +133,35 @@ public:
     {
         Assert(dim==sub_dim+1, ExcNotImplemented());
         ValueVector<Points<space_dim>> res;
-        const auto &DF_inv = get_inverse_values<1, sub_dim>(s_id);
+        const auto &DF_inv = get_values_from_cache<_InvGradient, sub_dim>(s_id);
         const auto n_hat  = this->get_grid()->template get_boundary_normals<sub_dim>(s_id)[0];
 
         const auto n_points = DF_inv.get_num_points();
         res.resize(n_points);
-        for (int i = 0; i< n_points; ++i)
+        for (int pt = 0; pt < n_points; ++pt)
         {
-            const auto DF_inv_t = co_tensor(transpose(DF_inv[i]));
-            res[i] = action(DF_inv_t, n_hat);
-            res[i] /= res[i].norm();
+            const auto DF_inv_t = co_tensor(transpose(DF_inv[pt]));
+            res[pt] = action(DF_inv_t, n_hat);
+            res[pt] /= res[pt].norm();
         }
         return res;
     }
 
 
 private:
-    class ValuesCache : public CacheStatus
-    {
-    public:
 
-        static constexpr int get_dim()
-        {
-            return dim_;
-        }
+    using CType = boost::fusion::map<
+                  boost::fusion::pair<    _Measure,ValueVector<Real>>,
+                  boost::fusion::pair<  _W_Measure,ValueVector<Real>>,
+                  boost::fusion::pair<_InvGradient,ValueVector<InvDerivative<1>>>,
+                  boost::fusion::pair< _InvHessian,ValueVector<InvDerivative<2>>>
+                  >;
 
-        void resize(const MappingFlags &flags_handler,
-                    const int n_points)
-        {
-            //TODO(pauletti, Oct 11, 2014): missing all necesary clears
-            flags_handler_ = flags_handler;
-
-            if (flags_handler_.template fill<_Measure>())
-                measures_.resize(n_points);
-            if (flags_handler_.template fill<_W_Measure>())
-                w_measures_.resize(n_points);
-            if (flags_handler_.template fill<_InvGradient>())
-                std::get<1>(inv_values_).resize(n_points);
-            if (flags_handler_.template fill<_InvHessian>())
-                std::get<2>(inv_values_).resize(n_points);
-
-            set_initialized(true);
-        }
-
-        void print_info(LogStream &out) const
-        {
-            flags_handler_.print_info(out);
-
-            if (flags_handler_.template filled<_Measure>())
-            {
-                out.begin_item("Measures:");
-                measures_.print_info(out);
-                out.end_item();
-            }
-
-            if (flags_handler_.template filled<_W_Measure>())
-            {
-                out.begin_item("W * Measures:");
-                w_measures_.print_info(out);
-                out.end_item();
-            }
-
-            if (flags_handler_.template filled<_InvGradient>())
-            {
-                out.begin_item("Inv. Gradients:");
-                std::get<1>(inv_values_).print_info(out);
-                out.end_item();
-            }
-
-            if (flags_handler_.template filled<_InvHessian>())
-            {
-                out.begin_item("Inv. Hessians:");
-                std::get<2>(inv_values_).print_info(out);
-                out.end_item();
-            }
-
-        }
-
-
-        template<int k>
-        auto &get_inv_values()
-        {
-            return std::get<k>(inv_values_);
-        }
-
-        template<int k>
-        const auto &get_inv_values() const
-        {
-            return std::get<k>(inv_values_);
-        }
-
-        MappingFlags flags_handler_;
-
-        ValueVector<Real> measures_;
-        ValueVector<Real> w_measures_;
-
-        std::tuple<ValueVector<InvDerivative<0>>,
-            ValueVector<InvDerivative<1>>,
-            ValueVector<InvDerivative<2>>> inv_values_;
-    };
+    using Cache = FuncValuesCache<dim,CType,MappingFlags>;
 
 
 public:
-    using CacheType = LocalCache<ValuesCache>;
+    using CacheType = LocalCache<Cache>;
 
 private:
 

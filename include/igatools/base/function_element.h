@@ -165,6 +165,7 @@ public:
     template <class ValueType>
     decltype(auto) evaluate_at_points(const Quadrature<dim> &points)
     {
+#if 0
         ValueFlags flags;
         if (ValueType::id == _Value::id)
             flags = ValueFlags::value;
@@ -176,8 +177,8 @@ public:
         {
             Assert(false,ExcNotImplemented());
         }
-
-        func_->reset_one_element(flags,points,this->get_flat_index());
+#endif
+        func_->reset_one_element(ValueType::flag,points,this->get_flat_index());
         const auto topology = Int<dim>();
         func_->init_cache(*this,topology);
         func_->fill_cache(*this,topology,0);
@@ -189,12 +190,12 @@ public:
 private:
 
     using CType = boost::fusion::map<
-            boost::fusion::pair<     _Value,ValueVector<Value>>,
-            boost::fusion::pair<  _Gradient,ValueVector<Derivative<1>>>,
-            boost::fusion::pair<   _Hessian,ValueVector<Derivative<2>>>,
-            boost::fusion::pair<_Divergence,ValueVector<Div>>,
-            boost::fusion::pair<     _Point,ValueVector<Point>>
-            >;
+                  boost::fusion::pair<     _Value,ValueVector<Value>>,
+                  boost::fusion::pair<  _Gradient,ValueVector<Derivative<1>>>,
+                  boost::fusion::pair<   _Hessian,ValueVector<Derivative<2>>>,
+                  boost::fusion::pair<_Divergence,ValueVector<Div>>,
+                  boost::fusion::pair<     _Point,ValueVector<Point>>
+                  >;
 
     using Cache = FuncValuesCache<dim,CType,FunctionFlags>;
 
