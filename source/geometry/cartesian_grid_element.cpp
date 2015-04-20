@@ -394,11 +394,7 @@ ValueVector<Real>
 CartesianGridElement<dim>::
 get_w_measures(const int j) const
 {
-    Assert(local_cache_ != nullptr, ExcNullPtr());
-    const auto &cache = local_cache_->template get_value_cache<k>(j);
-//    Assert(cache.flags_handler_.template filled<_W_Measure>(), ExcCacheNotFilled());
-//    return cache.w_measures_;
-    return cache.template get_der<_W_Measure>();
+    return this->template get_values_from_cache<_W_Measure,k>(j);
 }
 
 
@@ -442,13 +438,7 @@ auto
 CartesianGridElement<dim>::
 get_points(const int j) const ->ValueVector<Point>
 {
-    Assert(local_cache_ != nullptr, ExcNullPtr());
-    const auto &cache = local_cache_->template get_value_cache<k>(j);
-//    Assert(cache.flags_handler_.template filled<_Point>(), ExcCacheNotFilled());
-
-//    return cache.ref_points_;
-
-    return cache.template get_der<_Point>();
+    return this->template get_values_from_cache<_Point,k>(j);
 }
 
 
@@ -472,14 +462,13 @@ ValuesCache::
 resize(const GridFlags &flags_handler,
        const Quadrature<dim> &quad)
 {
-    this->flags_handler_ = flags_handler;
+//    this->flags_handler_ = flags_handler;
 
-    parent_t::resize(this->flags_handler_,quad.get_num_points());
+    parent_t::resize(flags_handler,quad.get_num_points());
 
     if (this->flags_handler_.template fill<_Point>())
     {
         this->unit_points_ = quad.get_points();
-//        this->ref_points_.resize(this->unit_points_.get_num_points());
     }
     else
     {
@@ -489,12 +478,10 @@ resize(const GridFlags &flags_handler,
     if (this->flags_handler_.template fill<_W_Measure>())
     {
         this->unit_weights_ = quad.get_weights();
-//        this->w_measures_.resize(this->unit_weights_.get_num_points());
     }
     else
     {
         this->unit_weights_.clear();
-//       this->w_measures_.clear();
     }
 
     this->set_initialized(true);

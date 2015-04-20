@@ -241,12 +241,12 @@ operator()(const T &quad1)
          */
         const auto &bezier_op   = space_->operators_;
         const auto &end_interval = space_->end_interval_;
-//        const auto &lengths = grid_handler_->get_lengths();
 
         using BasisValues = ComponentContainer<BasisValues1d>;
-        BasisValues bernstein_values_internal(degree.get_comp_map());
-        BasisValues bernstein_values_left(degree.get_comp_map());
-        BasisValues bernstein_values_right(degree.get_comp_map());
+        const auto &deg_comp_map = degree.get_comp_map();
+        BasisValues bernstein_values_internal(deg_comp_map);
+        BasisValues bernstein_values_left(deg_comp_map);
+        BasisValues bernstein_values_right(deg_comp_map);
 
         using LengthCompContainer = ComponentContainer<Points<dim>>;
 
@@ -335,20 +335,10 @@ operator()(const T &quad1)
                         berns_values_ptr = &bernstein_values_right[comp];
                     }
 
-//                    auto &basis = splines1d[comp];
                     auto &basis = g_cache.entry(comp, dir, inter);
                     const auto &oper = bezier_op.get_operator(dir, inter, comp);
 
                     fill_interval_values(one_div_interval_length, oper, *berns_values_ptr, basis);
-#if 0
-                    if (inter == 0)
-                    {
-                        LogStream out2;
-                        out2 << one_div_interval_length;
-                        berns_values_ptr->print_info(out2);
-                        basis.print_info(out2);
-                    }
-#endif
                 } // end loop comp
             } // end loop inter
 

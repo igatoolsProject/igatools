@@ -317,8 +317,14 @@ private:
 
         ///@name The "cache" properly speaking
         ///@{
+        /**
+         * Evaluation points in the unit element.
+         */
         ValueVector<Points<dim>> unit_points_;
 
+        /**
+         * Weights associated to the evaluation points in the unit element.
+         */
         ValueVector<Real> unit_weights_;
         ///@}
     };
@@ -341,6 +347,17 @@ private:
 
     /** The local (element and face) cache. */
     std::shared_ptr<CacheType> local_cache_;
+
+
+    template <class ValueType, int topology_dim>
+    const auto &
+    get_values_from_cache(const int topology_id) const
+    {
+        Assert(local_cache_ != nullptr, ExcNullPtr());
+        const auto &cache = local_cache_->template get_value_cache<topology_dim>(topology_id);
+        return cache.template get_der<ValueType>();
+    }
+
 
 protected:
     /**

@@ -174,29 +174,6 @@ get_grid() const -> std::shared_ptr<const GridType>
     return grid_;
 }
 
-#if 0
-template <int dim>
-auto
-GridElementHandler<dim>::
-get_lengths() const -> const TensorProductArray<dim> &
-{
-    return lengths_;
-}
-#endif
-
-#if 0
-template <int dim>
-void
-GridElementHandler<dim>::
-print_info(LogStream &out) const
-{
-    /*
-    out.begin_item("Lengths:");
-    lengths_.print_info(out);
-    out.end_item();
-    //*/
-}
-#endif
 
 IGA_NAMESPACE_CLOSE
 

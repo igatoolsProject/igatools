@@ -165,9 +165,6 @@ private:
 
 protected:
     EvalPtsList<dim> quad_;
-
-//    TensorProductArray<dim> lengths_;
-
 };
 
 IGA_NAMESPACE_CLOSE
