@@ -29,6 +29,7 @@
 
 #include <boost/mpl/int.hpp>
 #include <boost/fusion/include/make_vector.hpp>
+#include <boost/fusion/include/map.hpp>
 #include <boost/fusion/include/make_map.hpp>
 #include <boost/fusion/include/for_each.hpp>
 
@@ -38,7 +39,6 @@ IGA_NAMESPACE_OPEN
 template<template<int> class Q, std::size_t... I>
 auto
 tuple_of_quads(std::index_sequence<I...>)
--> decltype(boost::fusion::make_vector(Q<I>() ...))
 {
     return boost::fusion::make_vector(Q<I>() ...);
 }
@@ -56,13 +56,10 @@ tuple_of_caches(
     std::index_sequence<I...>,
     const Quadrature<dim> &q,
     const ValuesCache &)
--> decltype(
-    boost::fusion::make_vector(
-        boost::fusion::pair<boost::mpl::int_<I>,std::array<ValuesCache,UnitElement<dim>::template num_elem<I>()>>() ...)
-    )
 {
-    return boost::fusion::make_vector(
-               boost::fusion::pair<boost::mpl::int_<I>,std::array<ValuesCache,UnitElement<dim>::template num_elem<I>()>>() ...);
+    using Topology = UnitElement<dim>;
+    return boost::fusion::map<boost::fusion::pair<boost::mpl::int_<I>,std::array<ValuesCache,Topology::template num_elem<I>()>> ...>(
+                boost::fusion::pair<boost::mpl::int_<I>,std::array<ValuesCache,Topology::template num_elem<I>()>>() ...);
 }
 
 
