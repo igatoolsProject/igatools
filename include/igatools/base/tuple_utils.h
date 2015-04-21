@@ -36,18 +36,17 @@
 
 IGA_NAMESPACE_OPEN
 
-template<template<int> class Q, std::size_t... I>
+template<int dim, std::size_t... I>
 auto
 tuple_of_quads(std::index_sequence<I...>)
 {
-    return boost::fusion::make_vector(Q<I>() ...);
+    return boost::fusion::map<
+           boost::fusion::pair<boost::mpl::int_<(dim>I) ? dim-I : 0>,Quadrature<(dim>I) ? dim-I : 0> > ...>(
+               boost::fusion::pair<boost::mpl::int_<(dim>I) ? dim-I : 0>,Quadrature<(dim>I) ? dim-I : 0> >() ...);
 }
 
-template<int dim, template<int> class Q>
-using TupleList = decltype(tuple_of_quads<Q>(std::make_index_sequence<dim+1>()));
-
 template<int dim>
-using EvalPtsList = TupleList<dim, Quadrature>;
+using QuadList = decltype(tuple_of_quads<dim>(std::make_index_sequence<(num_sub_elem <= dim ? num_sub_elem+1 : 1)>()));
 
 
 template<class ValuesCache, int dim, std::size_t... I>

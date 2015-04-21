@@ -320,7 +320,7 @@ private:
             {
                 auto &s_cache = cache->template get_value_cache<T::k>(s_id);
 //                auto &quad = std::get<T::k>(*quad_);
-                auto &quad = boost::fusion::at_c<T::k>(*quad_);
+                auto &quad = cacheutils::extract_sub_elements_data<T::k>(*quad_);
                 s_cache.resize((*flags_)[T::k], quad.get_num_points());
             }
         }
@@ -328,7 +328,7 @@ private:
         parent_t *grid_handler;
         ElementAccessor *elem;
         std::array<FunctionFlags, dim_ + 1> *flags_;
-        EvalPtsList<dim_> *quad_;
+        QuadList<dim_> *quad_;
     };
 
     ResetDispatcher reset_impl;

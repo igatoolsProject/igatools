@@ -83,7 +83,7 @@ reset(const ValueFlags flag,
     flags_[k] = flag;
 //    auto &quad_k = std::get<k>(quad_);
 //    quad_k = quad;
-    boost::fusion::at_c<k>(quad_) = quad;
+    cacheutils::extract_sub_elements_data<k>(quad_) = quad;
 }
 
 
@@ -100,7 +100,7 @@ init_all_caches(ElementAccessor &elem)
     }
 //    init_unif_caches(flags_[dim], std::get<dim>(quad_), cache->values_);
 //    init_unif_caches(flags_[dim], boost::fusion::at_c<dim>(quad_), cache->values_);
-    const auto &quad = boost::fusion::at_c<dim>(quad_);
+    const auto &quad = cacheutils::extract_sub_elements_data<dim>(quad_);
 
     boost::fusion::for_each(cache->values_,
                             [&](auto & value_dim) -> void
@@ -141,7 +141,8 @@ init_cache(ElementAccessor &elem)
         auto &s_cache = cache->template get_value_cache<k>(s_id);
 //        auto &quad = std::get<k>(quad_);
 //        s_cache.resize(flags_[k], extend_sub_elem_quad<k, dim>(quad, s_id));
-        s_cache.resize(flags_[k], extend_sub_elem_quad<k, dim>(boost::fusion::at_c<k>(quad_), s_id));
+        s_cache.resize(flags_[k], extend_sub_elem_quad<k, dim>(
+                           cacheutils::extract_sub_elements_data<k>(quad_), s_id));
     }
 }
 

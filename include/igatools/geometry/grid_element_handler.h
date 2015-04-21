@@ -149,7 +149,7 @@ public:
     Size get_num_points() const
     {
 //        return std::get<k>(quad_).get_num_points();
-        return boost::fusion::at_c<k>(quad_).get_num_points();
+        return cacheutils::extract_sub_elements_data<k>(quad_).get_num_points();
     }
 
 public:
@@ -165,7 +165,7 @@ private:
     std::array<GridFlags, dim + 1> flags_;
 
 protected:
-    EvalPtsList<dim> quad_;
+    QuadList<dim> quad_;
 };
 
 IGA_NAMESPACE_CLOSE
