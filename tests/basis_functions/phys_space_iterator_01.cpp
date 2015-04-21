@@ -32,24 +32,37 @@
 #include "phys_space_iterator.h"
 
 
-template<int dim, int codim=0>
-auto
-identity_function(const int n_knots = 2, const int deg = 1)
+template<int dim, int sub_dim = dim>
+void
+identity_map(const int n_knots, const int deg)
 {
+    OUTSTART
     auto grid  = CartesianGrid<dim>::create(n_knots);
     auto map = IdentityFunction<dim>::create(grid);
     const int n_qp = 1;
-    elem_values<dim, dim>(grid, map, deg, n_qp, true);
+    elem_values<dim, sub_dim>(grid, map, deg, n_qp, true);
+    OUTEND
 }
+
+
+template <int dim>
+void
+dim_test()
+{
+    for (int n_knots=2; n_knots<4; ++n_knots)
+        for (int deg=1; deg<3; ++deg)
+        {
+            identity_map<dim,dim>(n_knots, deg);
+            identity_map<dim, dim-1>(n_knots, deg);
+        }
+}
+
 
 int main()
 {
-
-    identity_function<1>();
-    identity_function<2>();
-    identity_function<3>();
-
-   // identity_function<1>(2,2);
+    dim_test<1>();
+    dim_test<2>();
+    dim_test<3>();
 
     return 0;
 }

@@ -45,7 +45,7 @@ void elem_values(shared_ptr<CartesianGrid<dim>> grid,
                  const int n_qp = 1,
                  const bool no_boundary=true)
 {
-    OUTSTART
+
     using BspSpace = BSplineSpace<dim, range, rank>;
   //  using RefSpace = ReferenceSpace<dim, range,rank>;
     using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
@@ -58,7 +58,7 @@ void elem_values(shared_ptr<CartesianGrid<dim>> grid,
     auto quad = QGauss<k>(n_qp);
     auto flag = ValueFlags::value|ValueFlags::gradient |
                 ValueFlags::hessian | ValueFlags::point |
-                ValueFlags::measure;
+                ValueFlags::w_measure;
 
     ElementHandler sp_values(space);
     sp_values.template reset<k> (flag, quad);
@@ -73,7 +73,7 @@ void elem_values(shared_ptr<CartesianGrid<dim>> grid,
             out.begin_item("Element " + std::to_string(elem->get_flat_index()));
             for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
             {
-                if (elem->is_boundary(s_id))
+                if ((no_boundary) || (elem->is_boundary(s_id)))
                 {
                     out.begin_item("Sub element id:  " + std::to_string(s_id));
                     sp_values.template fill_cache<k>(*elem, s_id);
@@ -90,24 +90,15 @@ void elem_values(shared_ptr<CartesianGrid<dim>> grid,
                     elem->template get_basis<_Hessian, k>(s_id,DofProperties::active).print_info(out);
                     out.end_item();
 
-                    out.begin_item("Measures: ");
-                    elem->template get_measures<k>(0).print_info(out);
+                    out.begin_item("W * Measures: ");
+                    elem->template get_w_measures<k>(s_id).print_info(out);
                     out.end_item();
-
-//                    out.begin_item("Divergences: ");
-//                    elem->template get_basis<_Divergence,k>(0,DofProperties::active).print_info(out);
-//                    out.end_item();
-//
-//                    out.begin_item("W * Measures: ");
-//                    elem->template get_w_measures<k>(0).print_info(out);
-//                    out.end_item();
-
                     out.end_item();
                 }
             }
             out.end_item();
         }
     }
-    OUTEND
+
 
 }
