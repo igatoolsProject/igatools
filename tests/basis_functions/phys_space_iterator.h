@@ -38,22 +38,28 @@
 #include <igatools/basis_functions/phys_space_element_handler.h>
 
 
+template <int dim, int range=1, int rank=1, int codim = 0>
+shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>>
+create_space(shared_ptr<CartesianGrid<dim>> grid,
+             shared_ptr<MapFunction<dim,dim+codim>> map_func,
+             const int deg=1)
+{
+    using BspSpace = BSplineSpace<dim, range, rank>;
+    using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
+    auto ref_space = BspSpace::create(deg, grid);
+    return Space::create(ref_space, map_func);
+}
+
+
+
 template <int dim, int k, int range=1, int rank=1, int codim = 0>
-void elem_values(shared_ptr<CartesianGrid<dim>> grid,
-                 shared_ptr<MapFunction<dim,dim+codim>> map_func,
-                 const int deg=1,
+void elem_values(shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>> space,
                  const int n_qp = 1,
+                 const string &prop = DofProperties::active,
                  const bool no_boundary=true)
 {
-
-    using BspSpace = BSplineSpace<dim, range, rank>;
-  //  using RefSpace = ReferenceSpace<dim, range,rank>;
     using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
     using ElementHandler = typename Space::ElementHandler;
-
-    auto ref_space = BspSpace::create(deg, grid);
-    auto space = Space::create(ref_space, map_func);
-
 
     auto quad = QGauss<k>(n_qp);
     auto flag = ValueFlags::value|ValueFlags::gradient |
@@ -79,15 +85,15 @@ void elem_values(shared_ptr<CartesianGrid<dim>> grid,
                     sp_values.template fill_cache<k>(*elem, s_id);
 
                     out.begin_item("Values: ");
-                    elem->template get_basis<_Value, k>(s_id,DofProperties::active).print_info(out);
+                    elem->template get_basis<_Value, k>(s_id,prop).print_info(out);
                     out.end_item();
 
                     out.begin_item("Gradients: ");
-                    elem->template get_basis<_Gradient, k>(s_id,DofProperties::active).print_info(out);
+                    elem->template get_basis<_Gradient, k>(s_id,prop).print_info(out);
                     out.end_item();
 
                     out.begin_item("Hessians: ");
-                    elem->template get_basis<_Hessian, k>(s_id,DofProperties::active).print_info(out);
+                    elem->template get_basis<_Hessian, k>(s_id,prop).print_info(out);
                     out.end_item();
 
                     out.begin_item("W * Measures: ");

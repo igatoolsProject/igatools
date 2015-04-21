@@ -34,13 +34,16 @@
 
 template<int dim, int sub_dim = dim>
 void
-identity_map(const int n_knots, const int deg)
+identity_map(const int n_knots, const int deg, const string prop=DofProperties::active,
+             const bool use_bdry=true)
 {
     OUTSTART
+
     auto grid  = CartesianGrid<dim>::create(n_knots);
     auto map = IdentityFunction<dim>::create(grid);
+    auto space = create_space<dim>(grid, map, deg);
     const int n_qp = 1;
-    elem_values<dim, sub_dim>(grid, map, deg, n_qp, true);
+    elem_values<dim, sub_dim>(space, n_qp, prop, use_bdry);
     OUTEND
 }
 
