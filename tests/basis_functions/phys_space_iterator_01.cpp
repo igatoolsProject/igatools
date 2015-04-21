@@ -27,7 +27,6 @@
  *
  */
 
-//#include <igatools/base/function_lib.h>
 #include <igatools/base/identity_function.h>
 
 #include "phys_space_iterator.h"
@@ -35,19 +34,22 @@
 
 template<int dim, int codim=0>
 auto
-linear_function(const int n_knots = 2)
+identity_function(const int n_knots = 2, const int deg = 1)
 {
     auto grid  = CartesianGrid<dim>::create(n_knots);
     auto map = IdentityFunction<dim>::create(grid);
-    elem_values<dim, dim>(grid, map, 1, 1, true);
+    const int n_qp = 1;
+    elem_values<dim, dim>(grid, map, deg, n_qp, true);
 }
 
 int main()
 {
 
-    linear_function<1>();
-    linear_function<2>();
-    linear_function<3>();
+    identity_function<1>();
+    identity_function<2>();
+    identity_function<3>();
+
+   // identity_function<1>(2,2);
 
     return 0;
 }

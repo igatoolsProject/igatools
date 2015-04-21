@@ -69,5 +69,8 @@ int main()
     get_bdry_dof<2>();
     get_bdry_dof<3>();
 
+    get_bdry_dof<1>(2);
+    get_bdry_dof<2>(2);
+
     return 0;
 }
