@@ -27,6 +27,7 @@ using std::array;
 
 IGA_NAMESPACE_OPEN
 
+#if 0
 namespace
 {
 struct UniformQuadFunc
@@ -48,6 +49,7 @@ init_unif_caches(const GridFlags &flag, const Quad &quad, std::tuple<Args...> &t
     TupleFunc1< UniformQuadFunc, GridFlags, Quad, decltype(t), sizeof...(Args), low>::apply_func(f, flag, quad, t);
 }
 };
+#endif
 
 
 template <int dim>
@@ -117,7 +119,7 @@ init_all_caches(ElementAccessor &elem)
     }
                            );
 //#endif
-    Assert(false,ExcNotImplemented());
+//    Assert(false,ExcNotImplemented());
 }
 
 

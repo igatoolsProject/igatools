@@ -58,115 +58,60 @@ tuple_of_caches(
     const ValuesCache &)
 {
     using Topology = UnitElement<dim>;
-    return boost::fusion::map<boost::fusion::pair<boost::mpl::int_<I>,std::array<ValuesCache,Topology::template num_elem<I>()>> ...>(
-                boost::fusion::pair<boost::mpl::int_<I>,std::array<ValuesCache,Topology::template num_elem<I>()>>() ...);
+    return boost::fusion::map<boost::fusion::pair<boost::mpl::int_<(dim>I) ? dim-I : 0>,std::array<ValuesCache,Topology::template num_elem<(dim>I) ? dim-I : 0>()>> ...>(
+               boost::fusion::pair<boost::mpl::int_<(dim>I) ? dim-I : 0>,std::array<ValuesCache,Topology::template num_elem<(dim>I) ? dim-I : 0>()>>() ...);
 }
 
 
 template<class ValuesCache, int dim>
-using CacheList = decltype(tuple_of_caches(std::make_index_sequence<dim+1>(),
-                                           Quadrature<dim>(),
-                                           ValuesCache()));
-
-template<class Func, class Tuple, std::size_t N, std::size_t Min>
-struct TupleFunc
-{
-    static void apply_func(Func &F, const Tuple &t)
-    {
-        TupleFunc<Func,Tuple, N-1, Min>::apply_func(F,t);
-        if (N>Min)
-            F.func(std::get<N-1>(t));
-    }
-};
-
-template<class Func, class Tuple, std::size_t N>
-struct TupleFunc<Func, Tuple, N, N>
-{
-    static void apply_func(Func &F, const Tuple &t)
-    {
-        F.func(std::get<N>(t));
-    }
-};
+using CacheList = decltype(tuple_of_caches(
+                               std::make_index_sequence<(num_sub_elem <= dim ? num_sub_elem+1 : 1)>(),
+                               Quadrature<dim>(),
+                               ValuesCache()));
 
 
-template<class Func, class Args1, class Args2, class Tuple, std::size_t N, std::size_t Min>
-struct TupleFunc1
-{
-    static void apply_func(Func &F, const Args1 &flag, const Args2 &quad, Tuple &t)
-    {
-        TupleFunc1<Func, Args1, Args2, Tuple, N-1, Min>::apply_func(F, flag, quad, t);
-        if (N>Min)
-        {
-            auto &val_cache = std::get<N-1>(t);
-            int j=0;
-            for (auto &s_cache : val_cache)
-            {
-                F.func(s_cache, flag, quad.template collapse_to_sub_element<N-1>(j));
-                ++j;
-            }
-        }
-    }
-};
-
-template<class Func, class Args1, class Args2, class Tuple, std::size_t N>
-struct TupleFunc1<Func, Args1, Args2, Tuple, N, N>
-{
-    static void apply_func(Func &F, const Args1 &flag, const Args2 &quad, Tuple &t)
-    {
-        auto &val_cache = std::get<N>(t);
-        int j=0;
-        for (auto &s_cache : val_cache)
-        {
-            F.func(s_cache, flag, quad.template collapse_to_sub_element<N>(j));
-            ++j;
-        }
-    }
-};
 
 
 
 namespace cacheutils
 {
-struct PrintCacheFunc
-{
-    PrintCacheFunc(LogStream &out1)
-        :out(out1)
-    {}
 
-    void func(const auto &c)
-    {
-        for (auto &e : c)
-            e.print_info(out);
-        out << std::endl;
-    }
-    LogStream &out;
-};
-
-#if 0
-template<class... Args>
-void print_caches(const std::tuple<Args...> &t, LogStream &out)
-{
-    PrintCacheFunc f(out);
-    TupleFunc<PrintCacheFunc, decltype(t), sizeof...(Args), 0>::apply_func(f,t);
-}
-#endif
-
-//#if 0
 template<class FusionContainer>
 void print_caches(const FusionContainer &data, LogStream &out)
 {
     boost::fusion::for_each(data,
                             [&out](const auto & data_same_topology_dim)
     {
+        using PairType = typename std::remove_reference<decltype(data_same_topology_dim)>::type;
+        using SubDimType = typename PairType::first_type;
+        out.begin_item("Cache for sub-element(s) with dimension: " + std::to_string(SubDimType::value));
+        int s_id =0;
         for (const auto &data_same_topology_id : data_same_topology_dim.second)
+        {
+            out.begin_item("Sub-element id: " + std::to_string(s_id++));
             data_same_topology_id.print_info(out);
-        out << std::endl;
+            out.end_item();
+        }
+        out.end_item();
     }
                            );
-
 }
-//#endif
-};
+
+template <int sub_elem_dim, class FusionContainer>
+const auto &
+extract_sub_elements_data(const FusionContainer &data)
+{
+    return boost::fusion::at_key<boost::mpl::int_<sub_elem_dim>>(data);
+}
+
+template <int sub_elem_dim, class FusionContainer>
+auto &
+extract_sub_elements_data(FusionContainer &data)
+{
+    return boost::fusion::at_key<boost::mpl::int_<sub_elem_dim>>(data);
+}
+
+}; // end namespace cacheutils
 
 
 IGA_NAMESPACE_CLOSE

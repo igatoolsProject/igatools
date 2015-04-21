@@ -56,10 +56,11 @@ public:
     }
 
 
+
     FlagsType flags_handler_;
 
-
 protected:
+
 
     CacheType values_;
 
@@ -99,7 +100,7 @@ public:
     {
         //TODO (martinelli, Apr 03,2015): uncomment this assertion
 //        Assert(flags_handler_.template filled<ValueType>(),
-//               ExcMessage("The cache for " + ValueType::name + " is not filled."));
+//               ExcMessage("The cache for \"" + ValueType::name + "\" is not filled."));
 
         return boost::fusion::at_key<ValueType>(values_);
     }
@@ -232,16 +233,15 @@ public:
     Cache &
     get_value_cache(const int topology_id)
     {
-        return boost::fusion::at_c<topology_dim>(values_).second[topology_id];
+        return cacheutils::extract_sub_elements_data<topology_dim>(values_)[topology_id];
     }
 
     template <int topology_dim>
     const Cache &
     get_value_cache(const int topology_id) const
     {
-        const auto &cache = boost::fusion::at_c<topology_dim>(values_).second[topology_id];
+        const auto &cache = cacheutils::extract_sub_elements_data<topology_dim>(values_)[topology_id];
         Assert(cache.is_filled() == true, ExcCacheNotFilled());
-
         return cache;
     }
 
