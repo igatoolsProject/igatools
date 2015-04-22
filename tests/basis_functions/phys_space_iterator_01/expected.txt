@@ -18226,3 +18226,957 @@ Element 7
 
 ========================================================================
 
+========================================================================
+void identity_map_prop(int, int, bool) [with int dim = 1; int sub_dim = 1]
+========================================================================
+Element 0
+   Sub element id:  0
+      Values: 
+          (num_functions=0,num_points=1) :
+      
+      Gradients: 
+          (num_functions=0,num_points=1) :
+      
+      Hessians: 
+          (num_functions=0,num_points=1) :
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 1.00000 ]
+   
+
+Element 0
+   Sub element id:  0
+      Values: 
+          (num_functions=1,num_points=1) :
+         Function 0
+         [ 0.500000 ]  
+      
+      Gradients: 
+          (num_functions=1,num_points=1) :
+         Function 0
+         [ [ 1.00000 ]  ]  
+      
+      Hessians: 
+          (num_functions=1,num_points=1) :
+         Function 0
+         [ [ [ 0 ]  ]  ]  
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 1.00000 ]
+   
+
+Element 0
+   Sub element id:  0
+      Values: 
+          (num_functions=1,num_points=1) :
+         Function 0
+         [ 0.500000 ]  
+      
+      Gradients: 
+          (num_functions=1,num_points=1) :
+         Function 0
+         [ [ -1.00000 ]  ]  
+      
+      Hessians: 
+          (num_functions=1,num_points=1) :
+         Function 0
+         [ [ [ 0 ]  ]  ]  
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 1.00000 ]
+   
+
+========================================================================
+
+========================================================================
+void identity_map_prop(int, int, bool) [with int dim = 1; int sub_dim = 0]
+========================================================================
+Element 0
+   Sub element id:  0
+      Values: 
+          (num_functions=1,num_points=1) :
+         Function 0
+         [ 0 ]  
+      
+      Gradients: 
+          (num_functions=1,num_points=1) :
+         Function 0
+         [ [ 2.00000 ]  ]  
+      
+      Hessians: 
+          (num_functions=1,num_points=1) :
+         Function 0
+         [ [ [ 0 ]  ]  ]  
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 1.00000 ]
+   
+
+Element 1
+   Sub element id:  1
+      Values: 
+          (num_functions=1,num_points=1) :
+         Function 0
+         [ 0 ]  
+      
+      Gradients: 
+          (num_functions=1,num_points=1) :
+         Function 0
+         [ [ -2.00000 ]  ]  
+      
+      Hessians: 
+          (num_functions=1,num_points=1) :
+         Function 0
+         [ [ [ 0 ]  ]  ]  
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 1.00000 ]
+   
+
+Element 0
+   Sub element id:  0
+      Values: 
+          (num_functions=0,num_points=1) :
+      
+      Gradients: 
+          (num_functions=0,num_points=1) :
+      
+      Hessians: 
+          (num_functions=0,num_points=1) :
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 1.00000 ]
+   
+
+Element 1
+   Sub element id:  1
+      Values: 
+          (num_functions=1,num_points=1) :
+         Function 0
+         [ 1.00000 ]  
+      
+      Gradients: 
+          (num_functions=1,num_points=1) :
+         Function 0
+         [ [ 2.00000 ]  ]  
+      
+      Hessians: 
+          (num_functions=1,num_points=1) :
+         Function 0
+         [ [ [ 0 ]  ]  ]  
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 1.00000 ]
+   
+
+Element 0
+   Sub element id:  0
+      Values: 
+          (num_functions=1,num_points=1) :
+         Function 0
+         [ 1.00000 ]  
+      
+      Gradients: 
+          (num_functions=1,num_points=1) :
+         Function 0
+         [ [ -2.00000 ]  ]  
+      
+      Hessians: 
+          (num_functions=1,num_points=1) :
+         Function 0
+         [ [ [ 0 ]  ]  ]  
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 1.00000 ]
+   
+
+Element 1
+   Sub element id:  1
+      Values: 
+          (num_functions=0,num_points=1) :
+      
+      Gradients: 
+          (num_functions=0,num_points=1) :
+      
+      Hessians: 
+          (num_functions=0,num_points=1) :
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 1.00000 ]
+   
+
+========================================================================
+
+========================================================================
+void identity_map_prop(int, int, bool) [with int dim = 2; int sub_dim = 1]
+========================================================================
+Element 0
+   Sub element id:  0
+      Values: 
+          (num_functions=4,num_points=1) :
+         Function 0
+         [ 0 ]  
+         Function 1
+         [ 0 ]  
+         Function 2
+         [ 0 ]  
+         Function 3
+         [ 0 ]  
+      
+      Gradients: 
+          (num_functions=4,num_points=1) :
+         Function 0
+         [ [ 2.50000 ]  [ 0 ]  ]  
+         Function 1
+         [ [ 0 ]  [ 0 ]  ]  
+         Function 2
+         [ [ 0.500000 ]  [ 0 ]  ]  
+         Function 3
+         [ [ 0 ]  [ 0 ]  ]  
+      
+      Hessians: 
+          (num_functions=4,num_points=1) :
+         Function 0
+         [ [ [ -7.50000 ]  [ 4.00000 ]  ]  [ [ 4.00000 ]  [ 0 ]  ]  ]  
+         Function 1
+         [ [ [ 2.50000 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  
+         Function 2
+         [ [ [ -1.50000 ]  [ 4.00000 ]  ]  [ [ 4.00000 ]  [ 0 ]  ]  ]  
+         Function 3
+         [ [ [ 0.500000 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 0.500000 ]
+   
+   Sub element id:  2
+      Values: 
+          (num_functions=4,num_points=1) :
+         Function 0
+         [ 0 ]  
+         Function 1
+         [ 0 ]  
+         Function 2
+         [ 0 ]  
+         Function 3
+         [ 0 ]  
+      
+      Gradients: 
+          (num_functions=4,num_points=1) :
+         Function 0
+         [ [ 0 ]  [ 2.50000 ]  ]  
+         Function 1
+         [ [ 0 ]  [ 0.500000 ]  ]  
+         Function 2
+         [ [ 0 ]  [ 0 ]  ]  
+         Function 3
+         [ [ 0 ]  [ 0 ]  ]  
+      
+      Hessians: 
+          (num_functions=4,num_points=1) :
+         Function 0
+         [ [ [ 0 ]  [ 4.00000 ]  ]  [ [ 4.00000 ]  [ -7.50000 ]  ]  ]  
+         Function 1
+         [ [ [ 0 ]  [ 4.00000 ]  ]  [ [ 4.00000 ]  [ -1.50000 ]  ]  ]  
+         Function 2
+         [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 2.50000 ]  ]  ]  
+         Function 3
+         [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0.500000 ]  ]  ]  
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 0.500000 ]
+   
+
+Element 1
+   Sub element id:  1
+      Values: 
+          (num_functions=4,num_points=1) :
+         Function 0
+         [ 0 ]  
+         Function 1
+         [ 0 ]  
+         Function 2
+         [ 0 ]  
+         Function 3
+         [ 0 ]  
+      
+      Gradients: 
+          (num_functions=4,num_points=1) :
+         Function 0
+         [ [ 0 ]  [ 0 ]  ]  
+         Function 1
+         [ [ -2.50000 ]  [ 0 ]  ]  
+         Function 2
+         [ [ 0 ]  [ 0 ]  ]  
+         Function 3
+         [ [ -0.500000 ]  [ 0 ]  ]  
+      
+      Hessians: 
+          (num_functions=4,num_points=1) :
+         Function 0
+         [ [ [ 2.50000 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  
+         Function 1
+         [ [ [ -7.50000 ]  [ -4.00000 ]  ]  [ [ -4.00000 ]  [ 0 ]  ]  ]  
+         Function 2
+         [ [ [ 0.500000 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  
+         Function 3
+         [ [ [ -1.50000 ]  [ -4.00000 ]  ]  [ [ -4.00000 ]  [ 0 ]  ]  ]  
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 0.500000 ]
+   
+   Sub element id:  2
+      Values: 
+          (num_functions=4,num_points=1) :
+         Function 0
+         [ 0 ]  
+         Function 1
+         [ 0 ]  
+         Function 2
+         [ 0 ]  
+         Function 3
+         [ 0 ]  
+      
+      Gradients: 
+          (num_functions=4,num_points=1) :
+         Function 0
+         [ [ 0 ]  [ 0.500000 ]  ]  
+         Function 1
+         [ [ 0 ]  [ 2.50000 ]  ]  
+         Function 2
+         [ [ 0 ]  [ 0 ]  ]  
+         Function 3
+         [ [ 0 ]  [ 0 ]  ]  
+      
+      Hessians: 
+          (num_functions=4,num_points=1) :
+         Function 0
+         [ [ [ 0 ]  [ -4.00000 ]  ]  [ [ -4.00000 ]  [ -1.50000 ]  ]  ]  
+         Function 1
+         [ [ [ 0 ]  [ -4.00000 ]  ]  [ [ -4.00000 ]  [ -7.50000 ]  ]  ]  
+         Function 2
+         [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0.500000 ]  ]  ]  
+         Function 3
+         [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 2.50000 ]  ]  ]  
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 0.500000 ]
+   
+
+Element 2
+   Sub element id:  0
+      Values: 
+          (num_functions=4,num_points=1) :
+         Function 0
+         [ 0 ]  
+         Function 1
+         [ 0 ]  
+         Function 2
+         [ 0 ]  
+         Function 3
+         [ 0 ]  
+      
+      Gradients: 
+          (num_functions=4,num_points=1) :
+         Function 0
+         [ [ 0.500000 ]  [ 0 ]  ]  
+         Function 1
+         [ [ 0 ]  [ 0 ]  ]  
+         Function 2
+         [ [ 2.50000 ]  [ 0 ]  ]  
+         Function 3
+         [ [ 0 ]  [ 0 ]  ]  
+      
+      Hessians: 
+          (num_functions=4,num_points=1) :
+         Function 0
+         [ [ [ -1.50000 ]  [ -4.00000 ]  ]  [ [ -4.00000 ]  [ 0 ]  ]  ]  
+         Function 1
+         [ [ [ 0.500000 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  
+         Function 2
+         [ [ [ -7.50000 ]  [ -4.00000 ]  ]  [ [ -4.00000 ]  [ 0 ]  ]  ]  
+         Function 3
+         [ [ [ 2.50000 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 0.500000 ]
+   
+   Sub element id:  3
+      Values: 
+          (num_functions=4,num_points=1) :
+         Function 0
+         [ 0 ]  
+         Function 1
+         [ 0 ]  
+         Function 2
+         [ 0 ]  
+         Function 3
+         [ 0 ]  
+      
+      Gradients: 
+          (num_functions=4,num_points=1) :
+         Function 0
+         [ [ 0 ]  [ 0 ]  ]  
+         Function 1
+         [ [ 0 ]  [ 0 ]  ]  
+         Function 2
+         [ [ 0 ]  [ -2.50000 ]  ]  
+         Function 3
+         [ [ 0 ]  [ -0.500000 ]  ]  
+      
+      Hessians: 
+          (num_functions=4,num_points=1) :
+         Function 0
+         [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 2.50000 ]  ]  ]  
+         Function 1
+         [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0.500000 ]  ]  ]  
+         Function 2
+         [ [ [ 0 ]  [ -4.00000 ]  ]  [ [ -4.00000 ]  [ -7.50000 ]  ]  ]  
+         Function 3
+         [ [ [ 0 ]  [ -4.00000 ]  ]  [ [ -4.00000 ]  [ -1.50000 ]  ]  ]  
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 0.500000 ]
+   
+
+Element 3
+   Sub element id:  1
+      Values: 
+          (num_functions=4,num_points=1) :
+         Function 0
+         [ 0 ]  
+         Function 1
+         [ 0 ]  
+         Function 2
+         [ 0 ]  
+         Function 3
+         [ 0 ]  
+      
+      Gradients: 
+          (num_functions=4,num_points=1) :
+         Function 0
+         [ [ 0 ]  [ 0 ]  ]  
+         Function 1
+         [ [ -0.500000 ]  [ 0 ]  ]  
+         Function 2
+         [ [ 0 ]  [ 0 ]  ]  
+         Function 3
+         [ [ -2.50000 ]  [ 0 ]  ]  
+      
+      Hessians: 
+          (num_functions=4,num_points=1) :
+         Function 0
+         [ [ [ 0.500000 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  
+         Function 1
+         [ [ [ -1.50000 ]  [ 4.00000 ]  ]  [ [ 4.00000 ]  [ 0 ]  ]  ]  
+         Function 2
+         [ [ [ 2.50000 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  
+         Function 3
+         [ [ [ -7.50000 ]  [ 4.00000 ]  ]  [ [ 4.00000 ]  [ 0 ]  ]  ]  
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 0.500000 ]
+   
+   Sub element id:  3
+      Values: 
+          (num_functions=4,num_points=1) :
+         Function 0
+         [ 0 ]  
+         Function 1
+         [ 0 ]  
+         Function 2
+         [ 0 ]  
+         Function 3
+         [ 0 ]  
+      
+      Gradients: 
+          (num_functions=4,num_points=1) :
+         Function 0
+         [ [ 0 ]  [ 0 ]  ]  
+         Function 1
+         [ [ 0 ]  [ 0 ]  ]  
+         Function 2
+         [ [ 0 ]  [ -0.500000 ]  ]  
+         Function 3
+         [ [ 0 ]  [ -2.50000 ]  ]  
+      
+      Hessians: 
+          (num_functions=4,num_points=1) :
+         Function 0
+         [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 0.500000 ]  ]  ]  
+         Function 1
+         [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 2.50000 ]  ]  ]  
+         Function 2
+         [ [ [ 0 ]  [ 4.00000 ]  ]  [ [ 4.00000 ]  [ -1.50000 ]  ]  ]  
+         Function 3
+         [ [ [ 0 ]  [ 4.00000 ]  ]  [ [ 4.00000 ]  [ -7.50000 ]  ]  ]  
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 0.500000 ]
+   
+
+Element 0
+   Sub element id:  0
+      Values: 
+          (num_functions=3,num_points=1) :
+         Function 0
+         [ 0.250000 ]  
+         Function 1
+         [ 0 ]  
+         Function 2
+         [ 0 ]  
+      
+      Gradients: 
+          (num_functions=3,num_points=1) :
+         Function 0
+         [ [ -1.00000 ]  [ -2.00000 ]  ]  
+         Function 1
+         [ [ 1.00000 ]  [ 0 ]  ]  
+         Function 2
+         [ [ 0 ]  [ 0 ]  ]  
+      
+      Hessians: 
+          (num_functions=3,num_points=1) :
+         Function 0
+         [ [ [ 2.00000 ]  [ 8.00000 ]  ]  [ [ 8.00000 ]  [ 8.00000 ]  ]  ]  
+         Function 1
+         [ [ [ -3.00000 ]  [ -8.00000 ]  ]  [ [ -8.00000 ]  [ 0 ]  ]  ]  
+         Function 2
+         [ [ [ 1.00000 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 0.500000 ]
+   
+   Sub element id:  2
+      Values: 
+          (num_functions=3,num_points=1) :
+         Function 0
+         [ 0.250000 ]  
+         Function 1
+         [ 0.625000 ]  
+         Function 2
+         [ 0.125000 ]  
+      
+      Gradients: 
+          (num_functions=3,num_points=1) :
+         Function 0
+         [ [ -2.00000 ]  [ -1.00000 ]  ]  
+         Function 1
+         [ [ 1.00000 ]  [ -2.50000 ]  ]  
+         Function 2
+         [ [ 1.00000 ]  [ -0.500000 ]  ]  
+      
+      Hessians: 
+          (num_functions=3,num_points=1) :
+         Function 0
+         [ [ [ 8.00000 ]  [ 8.00000 ]  ]  [ [ 8.00000 ]  [ 2.00000 ]  ]  ]  
+         Function 1
+         [ [ [ -12.0000 ]  [ -4.00000 ]  ]  [ [ -4.00000 ]  [ 5.00000 ]  ]  ]  
+         Function 2
+         [ [ [ 4.00000 ]  [ -4.00000 ]  ]  [ [ -4.00000 ]  [ 1.00000 ]  ]  ]  
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 0.500000 ]
+   
+
+Element 1
+   Sub element id:  1
+      Values: 
+          (num_functions=5,num_points=1) :
+         Function 0
+         [ 0 ]  
+         Function 1
+         [ 0 ]  
+         Function 2
+         [ 0.250000 ]  
+         Function 3
+         [ 0.625000 ]  
+         Function 4
+         [ 0.125000 ]  
+      
+      Gradients: 
+          (num_functions=5,num_points=1) :
+         Function 0
+         [ [ 0 ]  [ 0 ]  ]  
+         Function 1
+         [ [ -1.00000 ]  [ 0 ]  ]  
+         Function 2
+         [ [ 1.00000 ]  [ -2.00000 ]  ]  
+         Function 3
+         [ [ 2.50000 ]  [ 1.00000 ]  ]  
+         Function 4
+         [ [ 0.500000 ]  [ 1.00000 ]  ]  
+      
+      Hessians: 
+          (num_functions=5,num_points=1) :
+         Function 0
+         [ [ [ 1.00000 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  
+         Function 1
+         [ [ [ -3.00000 ]  [ 8.00000 ]  ]  [ [ 8.00000 ]  [ 0 ]  ]  ]  
+         Function 2
+         [ [ [ 2.00000 ]  [ -8.00000 ]  ]  [ [ -8.00000 ]  [ 8.00000 ]  ]  ]  
+         Function 3
+         [ [ [ 5.00000 ]  [ 4.00000 ]  ]  [ [ 4.00000 ]  [ -12.0000 ]  ]  ]  
+         Function 4
+         [ [ [ 1.00000 ]  [ 4.00000 ]  ]  [ [ 4.00000 ]  [ 4.00000 ]  ]  ]  
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 0.500000 ]
+   
+   Sub element id:  2
+      Values: 
+          (num_functions=5,num_points=1) :
+         Function 0
+         [ 0.125000 ]  
+         Function 1
+         [ 0.625000 ]  
+         Function 2
+         [ 0.250000 ]  
+         Function 3
+         [ 0 ]  
+         Function 4
+         [ 0 ]  
+      
+      Gradients: 
+          (num_functions=5,num_points=1) :
+         Function 0
+         [ [ -1.00000 ]  [ -0.500000 ]  ]  
+         Function 1
+         [ [ -1.00000 ]  [ -2.50000 ]  ]  
+         Function 2
+         [ [ 2.00000 ]  [ -1.00000 ]  ]  
+         Function 3
+         [ [ 0 ]  [ 1.00000 ]  ]  
+         Function 4
+         [ [ 0 ]  [ 0 ]  ]  
+      
+      Hessians: 
+          (num_functions=5,num_points=1) :
+         Function 0
+         [ [ [ 4.00000 ]  [ 4.00000 ]  ]  [ [ 4.00000 ]  [ 1.00000 ]  ]  ]  
+         Function 1
+         [ [ [ -12.0000 ]  [ 4.00000 ]  ]  [ [ 4.00000 ]  [ 5.00000 ]  ]  ]  
+         Function 2
+         [ [ [ 8.00000 ]  [ -8.00000 ]  ]  [ [ -8.00000 ]  [ 2.00000 ]  ]  ]  
+         Function 3
+         [ [ [ 0 ]  [ 8.00000 ]  ]  [ [ 8.00000 ]  [ -3.00000 ]  ]  ]  
+         Function 4
+         [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 1.00000 ]  ]  ]  
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 0.500000 ]
+   
+
+Element 2
+   Sub element id:  0
+      Values: 
+          (num_functions=3,num_points=1) :
+         Function 0
+         [ 0.250000 ]  
+         Function 1
+         [ 0 ]  
+         Function 2
+         [ 0 ]  
+      
+      Gradients: 
+          (num_functions=3,num_points=1) :
+         Function 0
+         [ [ -1.00000 ]  [ 2.00000 ]  ]  
+         Function 1
+         [ [ 1.00000 ]  [ 0 ]  ]  
+         Function 2
+         [ [ 0 ]  [ 0 ]  ]  
+      
+      Hessians: 
+          (num_functions=3,num_points=1) :
+         Function 0
+         [ [ [ 2.00000 ]  [ -8.00000 ]  ]  [ [ -8.00000 ]  [ 8.00000 ]  ]  ]  
+         Function 1
+         [ [ [ -3.00000 ]  [ 8.00000 ]  ]  [ [ 8.00000 ]  [ 0 ]  ]  ]  
+         Function 2
+         [ [ [ 1.00000 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 0.500000 ]
+   
+   Sub element id:  3
+      Values: 
+          (num_functions=3,num_points=1) :
+         Function 0
+         [ 0.250000 ]  
+         Function 1
+         [ 0.625000 ]  
+         Function 2
+         [ 0.125000 ]  
+      
+      Gradients: 
+          (num_functions=3,num_points=1) :
+         Function 0
+         [ [ -2.00000 ]  [ 1.00000 ]  ]  
+         Function 1
+         [ [ 1.00000 ]  [ 2.50000 ]  ]  
+         Function 2
+         [ [ 1.00000 ]  [ 0.500000 ]  ]  
+      
+      Hessians: 
+          (num_functions=3,num_points=1) :
+         Function 0
+         [ [ [ 8.00000 ]  [ -8.00000 ]  ]  [ [ -8.00000 ]  [ 2.00000 ]  ]  ]  
+         Function 1
+         [ [ [ -12.0000 ]  [ 4.00000 ]  ]  [ [ 4.00000 ]  [ 5.00000 ]  ]  ]  
+         Function 2
+         [ [ [ 4.00000 ]  [ 4.00000 ]  ]  [ [ 4.00000 ]  [ 1.00000 ]  ]  ]  
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 0.500000 ]
+   
+
+Element 3
+   Sub element id:  1
+      Values: 
+          (num_functions=5,num_points=1) :
+         Function 0
+         [ 0.125000 ]  
+         Function 1
+         [ 0.625000 ]  
+         Function 2
+         [ 0 ]  
+         Function 3
+         [ 0 ]  
+         Function 4
+         [ 0.250000 ]  
+      
+      Gradients: 
+          (num_functions=5,num_points=1) :
+         Function 0
+         [ [ 0.500000 ]  [ -1.00000 ]  ]  
+         Function 1
+         [ [ 2.50000 ]  [ -1.00000 ]  ]  
+         Function 2
+         [ [ 0 ]  [ 0 ]  ]  
+         Function 3
+         [ [ -1.00000 ]  [ 0 ]  ]  
+         Function 4
+         [ [ 1.00000 ]  [ 2.00000 ]  ]  
+      
+      Hessians: 
+          (num_functions=5,num_points=1) :
+         Function 0
+         [ [ [ 1.00000 ]  [ -4.00000 ]  ]  [ [ -4.00000 ]  [ 4.00000 ]  ]  ]  
+         Function 1
+         [ [ [ 5.00000 ]  [ -4.00000 ]  ]  [ [ -4.00000 ]  [ -12.0000 ]  ]  ]  
+         Function 2
+         [ [ [ 1.00000 ]  [ 0 ]  ]  [ [ 0 ]  [ 0 ]  ]  ]  
+         Function 3
+         [ [ [ -3.00000 ]  [ -8.00000 ]  ]  [ [ -8.00000 ]  [ 0 ]  ]  ]  
+         Function 4
+         [ [ [ 2.00000 ]  [ 8.00000 ]  ]  [ [ 8.00000 ]  [ 8.00000 ]  ]  ]  
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 0.500000 ]
+   
+   Sub element id:  3
+      Values: 
+          (num_functions=5,num_points=1) :
+         Function 0
+         [ 0 ]  
+         Function 1
+         [ 0 ]  
+         Function 2
+         [ 0.125000 ]  
+         Function 3
+         [ 0.625000 ]  
+         Function 4
+         [ 0.250000 ]  
+      
+      Gradients: 
+          (num_functions=5,num_points=1) :
+         Function 0
+         [ [ 0 ]  [ 0 ]  ]  
+         Function 1
+         [ [ 0 ]  [ -1.00000 ]  ]  
+         Function 2
+         [ [ -1.00000 ]  [ 0.500000 ]  ]  
+         Function 3
+         [ [ -1.00000 ]  [ 2.50000 ]  ]  
+         Function 4
+         [ [ 2.00000 ]  [ 1.00000 ]  ]  
+      
+      Hessians: 
+          (num_functions=5,num_points=1) :
+         Function 0
+         [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 1.00000 ]  ]  ]  
+         Function 1
+         [ [ [ 0 ]  [ -8.00000 ]  ]  [ [ -8.00000 ]  [ -3.00000 ]  ]  ]  
+         Function 2
+         [ [ [ 4.00000 ]  [ -4.00000 ]  ]  [ [ -4.00000 ]  [ 1.00000 ]  ]  ]  
+         Function 3
+         [ [ [ -12.0000 ]  [ -4.00000 ]  ]  [ [ -4.00000 ]  [ 5.00000 ]  ]  ]  
+         Function 4
+         [ [ [ 8.00000 ]  [ 8.00000 ]  ]  [ [ 8.00000 ]  [ 2.00000 ]  ]  ]  
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 0.500000 ]
+   
+
+Element 0
+   Sub element id:  0
+      Values: 
+          (num_functions=2,num_points=1) :
+         Function 0
+         [ 0.625000 ]  
+         Function 1
+         [ 0.125000 ]  
+      
+      Gradients: 
+          (num_functions=2,num_points=1) :
+         Function 0
+         [ [ -2.50000 ]  [ 1.00000 ]  ]  
+         Function 1
+         [ [ -0.500000 ]  [ 1.00000 ]  ]  
+      
+      Hessians: 
+          (num_functions=2,num_points=1) :
+         Function 0
+         [ [ [ 5.00000 ]  [ -4.00000 ]  ]  [ [ -4.00000 ]  [ -12.0000 ]  ]  ]  
+         Function 1
+         [ [ [ 1.00000 ]  [ -4.00000 ]  ]  [ [ -4.00000 ]  [ 4.00000 ]  ]  ]  
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 0.500000 ]
+   
+   Sub element id:  2
+      Values: 
+          (num_functions=2,num_points=1) :
+         Function 0
+         [ 0 ]  
+         Function 1
+         [ 0 ]  
+      
+      Gradients: 
+          (num_functions=2,num_points=1) :
+         Function 0
+         [ [ 0 ]  [ 1.00000 ]  ]  
+         Function 1
+         [ [ 0 ]  [ 0 ]  ]  
+      
+      Hessians: 
+          (num_functions=2,num_points=1) :
+         Function 0
+         [ [ [ 0 ]  [ -8.00000 ]  ]  [ [ -8.00000 ]  [ -3.00000 ]  ]  ]  
+         Function 1
+         [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 1.00000 ]  ]  ]  
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 0.500000 ]
+   
+
+Element 1
+   Sub element id:  1
+      Values: 
+          (num_functions=0,num_points=1) :
+      
+      Gradients: 
+          (num_functions=0,num_points=1) :
+      
+      Hessians: 
+          (num_functions=0,num_points=1) :
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 0.500000 ]
+   
+   Sub element id:  2
+      Values: 
+          (num_functions=0,num_points=1) :
+      
+      Gradients: 
+          (num_functions=0,num_points=1) :
+      
+      Hessians: 
+          (num_functions=0,num_points=1) :
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 0.500000 ]
+   
+
+Element 2
+   Sub element id:  0
+      Values: 
+          (num_functions=2,num_points=1) :
+         Function 0
+         [ 0.125000 ]  
+         Function 1
+         [ 0.625000 ]  
+      
+      Gradients: 
+          (num_functions=2,num_points=1) :
+         Function 0
+         [ [ -0.500000 ]  [ -1.00000 ]  ]  
+         Function 1
+         [ [ -2.50000 ]  [ -1.00000 ]  ]  
+      
+      Hessians: 
+          (num_functions=2,num_points=1) :
+         Function 0
+         [ [ [ 1.00000 ]  [ 4.00000 ]  ]  [ [ 4.00000 ]  [ 4.00000 ]  ]  ]  
+         Function 1
+         [ [ [ 5.00000 ]  [ 4.00000 ]  ]  [ [ 4.00000 ]  [ -12.0000 ]  ]  ]  
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 0.500000 ]
+   
+   Sub element id:  3
+      Values: 
+          (num_functions=2,num_points=1) :
+         Function 0
+         [ 0 ]  
+         Function 1
+         [ 0 ]  
+      
+      Gradients: 
+          (num_functions=2,num_points=1) :
+         Function 0
+         [ [ 0 ]  [ 0 ]  ]  
+         Function 1
+         [ [ 0 ]  [ -1.00000 ]  ]  
+      
+      Hessians: 
+          (num_functions=2,num_points=1) :
+         Function 0
+         [ [ [ 0 ]  [ 0 ]  ]  [ [ 0 ]  [ 1.00000 ]  ]  ]  
+         Function 1
+         [ [ [ 0 ]  [ 8.00000 ]  ]  [ [ 8.00000 ]  [ -3.00000 ]  ]  ]  
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 0.500000 ]
+   
+
+Element 3
+   Sub element id:  1
+      Values: 
+          (num_functions=0,num_points=1) :
+      
+      Gradients: 
+          (num_functions=0,num_points=1) :
+      
+      Hessians: 
+          (num_functions=0,num_points=1) :
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 0.500000 ]
+   
+   Sub element id:  3
+      Values: 
+          (num_functions=0,num_points=1) :
+      
+      Gradients: 
+          (num_functions=0,num_points=1) :
+      
+      Hessians: 
+          (num_functions=0,num_points=1) :
+      
+      W * Measures: 
+      ValueVector (num_points=1) : [ 0.500000 ]
+   
+
+========================================================================
+

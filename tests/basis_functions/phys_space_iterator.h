@@ -37,6 +37,9 @@
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/basis_functions/phys_space_element_handler.h>
 
+#include <igatools/basis_functions/space_tools.h>
+
+using space_tools::get_boundary_dofs;
 
 template <int dim, int range=1, int rank=1, int codim = 0>
 shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>>
@@ -48,6 +51,67 @@ create_space(shared_ptr<CartesianGrid<dim>> grid,
     using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
     auto ref_space = BspSpace::create(deg, grid);
     return Space::create(ref_space, map_func);
+}
+
+
+struct DofProp
+{
+    static const std::string interior;
+    static const std::string dirichlet;
+    static const std::string neumman;
+};
+
+const std::string DofProp::interior = "interior";
+const std::string DofProp::dirichlet  = "dirichlet";
+const std::string DofProp::neumman  = "neumman";
+
+enum  bc : boundary_id
+{
+    dir=0, neu
+};
+
+template <int dim, int range=1, int rank=1, int codim = 0>
+shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>>
+create_space_prop(shared_ptr<CartesianGrid<dim>> grid,
+             shared_ptr<MapFunction<dim,dim+codim>> map_func,
+             const int deg=1)
+{
+    const int neu_face = 0;
+    grid->set_boundary_id(neu_face, bc::neu);
+
+    using BspSpace = BSplineSpace<dim, range, rank>;
+    using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
+    auto ref_space = BspSpace::create(deg, grid);
+    auto space = Space::create(ref_space, map_func);
+
+    std::set<boundary_id>  dir_ids = {bc::dir};
+    auto dir_dofs = get_boundary_dofs<Space>(space, dir_ids);
+
+
+    auto int_dofs = space->get_interior_dofs();
+
+
+    std::set<boundary_id>  neu_ids = {bc::neu};
+    auto neu_dofs = get_boundary_dofs<Space>(space, neu_ids);
+    std::vector<Index> common(dim*range);
+    auto end1 =
+            std::set_intersection(neu_dofs.begin(), neu_dofs.end(),
+                                  dir_dofs.begin(), dir_dofs.end(), common.begin());
+    common.resize(end1-common.begin());
+    for (auto &id : common)
+        neu_dofs.erase(id);
+
+    auto dof_dist = space->get_dof_distribution();
+    dof_dist->add_dofs_property(DofProp::interior);
+    dof_dist->add_dofs_property(DofProp::dirichlet);
+    dof_dist->add_dofs_property(DofProp::neumman);
+
+
+    dof_dist->set_dof_property_status(DofProp::interior, int_dofs, true);
+    dof_dist->set_dof_property_status(DofProp::dirichlet, dir_dofs, true);
+    dof_dist->set_dof_property_status(DofProp::neumman, neu_dofs, true);
+
+    return space;
 }
 
 

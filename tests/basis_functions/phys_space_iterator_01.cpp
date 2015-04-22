@@ -44,6 +44,7 @@ identity_map(const int n_knots, const int deg, const string prop=DofProperties::
     auto space = create_space<dim>(grid, map, deg);
     const int n_qp = 1;
     elem_values<dim, sub_dim>(space, n_qp, prop, use_bdry);
+
     OUTEND
 }
 
@@ -61,11 +62,32 @@ dim_test()
 }
 
 
+template<int dim, int sub_dim = dim>
+void
+identity_map_prop(const int n_knots, const int deg, const bool use_bdry=true)
+{
+    OUTSTART
+
+    auto grid  = CartesianGrid<dim>::create(n_knots);
+    auto map = IdentityFunction<dim>::create(grid);
+    auto space = create_space_prop<dim>(grid, map, deg);
+    const int n_qp = 1;
+    elem_values<dim, sub_dim>(space, n_qp, DofProp::interior, use_bdry);
+    elem_values<dim, sub_dim>(space, n_qp, DofProp::dirichlet, use_bdry);
+    elem_values<dim, sub_dim>(space, n_qp, DofProp::neumman, use_bdry);
+    OUTEND
+}
+
+
 int main()
 {
     dim_test<1>();
     dim_test<2>();
     dim_test<3>();
+
+    identity_map_prop<1,1>(2,1,true);
+    identity_map_prop<1,0>(3,1,false);
+    identity_map_prop<2,1>(3,2,false);
 
     return 0;
 }
