@@ -174,6 +174,17 @@ public:
     }
     ///@}
 
+
+    static ValueFlags get_valid_flags()
+    {
+        ValueFlags valid_flags = ValueFlags::value |
+                                 ValueFlags::gradient |
+                                 ValueFlags::hessian |
+                                 ValueFlags::divergence |
+                                 ValueFlags::point;
+        return valid_flags;
+    }
+
 private:
 
     using CType = boost::fusion::map<
@@ -184,7 +195,9 @@ private:
                   boost::fusion::pair<     _Point,DataWithFlagStatus<ValueVector<Point>>>
                   >;
 
-    using Cache = FuncValuesCache<dim,CType,FunctionFlags>;
+
+
+    using Cache = FuncValuesCache<dim,CType>;
 
     std::shared_ptr<LocalCache<Cache>> local_cache_;
 

@@ -135,7 +135,7 @@ private:
 
         ValueFlags flag;
         typename Space::ElementHandler *space_handler_;
-        std::array<FunctionFlags, dim + 1> *flags_;
+        std::array<ValueFlags, dim + 1> *flags_;
 
         /**
          * Elements to reset.

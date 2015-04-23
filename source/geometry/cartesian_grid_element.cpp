@@ -407,12 +407,12 @@ template <int dim>
 void
 CartesianGridElement<dim>::
 ValuesCache::
-resize(const GridFlags &flags_handler,
+resize(const ValueFlags &flags,
        const Quadrature<dim> &quad)
 {
 //    this->flags_handler_ = flags_handler;
 
-    parent_t::resize(flags_handler,quad.get_num_points());
+    parent_t::resize(flags,quad.get_num_points());
 
     if (this->template status_fill<_Point>())
     {

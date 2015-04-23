@@ -250,12 +250,12 @@ private:
         {
             (*flags_)[T::dim] = flag;
 
-            grid_handler->template reset<T::dim>(FunctionFlags::to_grid_flags(flag), quad);
+            grid_handler->template reset<T::dim>(function_to_grid_flags(flag), quad);
         }
 
         ValueFlags flag;
         parent_t *grid_handler;
-        std::array<FunctionFlags, dim_ + 1> *flags_;
+        std::array<ValueFlags, dim_ + 1> *flags_;
     };
 
     struct FillCacheDispatcher : boost::static_visitor<void>
@@ -296,7 +296,7 @@ private:
 
         parent_t *grid_handler;
         ElementAccessor *elem;
-        std::array<FunctionFlags, dim_ + 1> *flags_;
+        std::array<ValueFlags, dim_ + 1> *flags_;
         QuadList<dim_> *quad_;
     };
 
@@ -317,7 +317,7 @@ protected:
     /**
      * One flag for each possile subdim
      */
-    std::array<FunctionFlags, dim_ + 1> flags_;
+    std::array<ValueFlags, dim_ + 1> flags_;
 
 
 #ifdef REFINE

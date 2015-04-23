@@ -154,7 +154,7 @@ protected:
 private:
     std::shared_ptr<FuncType> F_;
 
-    std::array<MappingFlags, dim_ + 1> flags_;
+    std::array<ValueFlags, dim_ + 1> flags_;
 
     friend ElementAccessor;
 };

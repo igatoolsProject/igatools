@@ -178,7 +178,7 @@ private:
     }
 
 
-    std::array<FunctionFlags, dim_ + 1> flags_;
+    std::array<ValueFlags, dim_ + 1> flags_;
 
     template <class T>
     using DirectionTable = CartesianProductArray<T, dim_>;
@@ -276,7 +276,7 @@ private:
 
         GridElementHandler<dim_> *grid_handler_;
         ValueFlags flag_;
-        std::array<FunctionFlags, dim + 1> *flags_;
+        std::array<ValueFlags, dim + 1> *flags_;
         CacheList<GlobalCache, dim> *splines1d_;
         const Space *space_;
 
@@ -295,7 +295,7 @@ private:
 
         GridElementHandler<dim_> *grid_handler_;
         ReferenceElement<dim_,range_,rank_> *elem_;
-        std::array<FunctionFlags, dim + 1> *flags_;
+        std::array<ValueFlags, dim + 1> *flags_;
     };
 
     InitCacheDispatcher init_cache_impl_;

@@ -297,7 +297,14 @@ private:
                   boost::fusion::pair<_W_Measure,DataWithFlagStatus<ValueVector<Real>>>
                   >;
 
-    using BaseCache = FuncValuesCache<dim,CType,GridFlags>;
+    static ValueFlags get_valid_flags()
+    {
+        ValueFlags valid_flags = ValueFlags::point |
+                                 ValueFlags::w_measure;
+        return valid_flags;
+    }
+
+    using BaseCache = FuncValuesCache<dim,CType>;
 
     /**
      * @brief Base class for cache of CartesianGridElement
@@ -306,7 +313,7 @@ private:
     {
         using parent_t = BaseCache;
     public:
-        void resize(const GridFlags &flags_handler,
+        void resize(const ValueFlags &flags,
                     const Quadrature<dim> &quad);
 
         void print_info(LogStream &out) const;

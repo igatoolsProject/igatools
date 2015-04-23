@@ -215,7 +215,7 @@ public:
                   boost::fusion::pair<_Divergence,DataWithFlagStatus<ValueTable<Div>>>
                   >;
 
-    using Cache = BasisValuesCache<dim,CType,FunctionFlags>;
+    using Cache = BasisValuesCache<dim,CType>;
 
 protected:
 

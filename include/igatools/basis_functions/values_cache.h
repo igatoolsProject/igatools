@@ -103,8 +103,7 @@ private:
 
 
 template<int dim,
-         class CacheType,
-         class FlagsType>
+         class CacheType>
 class ValuesCache : public CacheStatus
 {
 public:
@@ -203,13 +202,34 @@ public:
     }
     ///@}
 
+
+
+    /**
+     * Returns the flags that are valid to be used with this class.
+     */
+    ValueFlags get_valid_flags() const
+    {
+        ValueFlags valid_flags = ValueFlags::none;
+
+        boost::fusion::for_each(values_,
+                                [&](const auto & type_and_status) -> void
+        {
+            using ValueType_Status = typename std::remove_reference<decltype(type_and_status)>::type;
+            using ValueType = typename ValueType_Status::first_type;
+
+            valid_flags |= ValueType::flag;
+        } // end lambda function
+                               );
+        return valid_flags;
+    }
+
 };
 
 
 
 
-template<int dim, class CacheType, class FlagsType>
-class BasisValuesCache : public ValuesCache<dim,CacheType,FlagsType>
+template<int dim, class CacheType>
+class BasisValuesCache : public ValuesCache<dim,CacheType>
 {
 
 public:
@@ -218,12 +238,10 @@ public:
      * of the element basis functions at quadrature points
      * as specify by the flag
      */
-    void resize(const FlagsType &flags_handler,
+    void resize(const ValueFlags &flags,
                 const Size n_points,
                 const Size n_basis)
     {
-//        this->flags_handler_ = flags_handler;
-
         Assert(n_points >= 0, ExcLowerRange(n_points,1));
         Assert(n_basis > 0, ExcLowerRange(n_basis,1));
 
@@ -234,14 +252,10 @@ public:
             using ValueType = typename ValueType_ValueContainer::first_type;
             auto &value = type_and_value.second;
 
-            value.set_status_fill(flags_handler.template fill<ValueType>());
-
-            value.set_status_filled(flags_handler.template filled<ValueType>());
-            Assert(!value.status_filled(),
-            ExcMessage("The status for the data \"" + ValueType::name + "\" cannot have the variable \"filled_\" set to TRUE."));
-
-            if (value.status_fill())
+            if (contains(flags,ValueType::flag))
             {
+                value.set_status_fill(true);
+
                 if (value.get_num_points() != n_points ||
                 value.get_num_functions() != n_basis)
                 {
@@ -252,8 +266,9 @@ public:
             else
             {
                 value.clear();
-                value.set_status_filled(false);
+                value.set_status_fill(false);
             }
+            value.set_status_filled(false);
         } // end lambda function
                                );
 
@@ -263,8 +278,8 @@ public:
 };
 
 
-template<int dim, class CacheType, class FlagsType>
-class FuncValuesCache : public ValuesCache<dim,CacheType,FlagsType>
+template<int dim, class CacheType>
+class FuncValuesCache : public ValuesCache<dim,CacheType>
 {
 
 public:
@@ -274,7 +289,7 @@ public:
      * of the element at quadrature points
      * as specify by the flag
      */
-    void resize(const FlagsType &flags_handler,
+    void resize(const ValueFlags &flags,
                 const Size n_points)
     {
 //        this->flags_handler_ = flags_handler;
@@ -288,14 +303,10 @@ public:
             using ValueType = typename ValueType_ValueContainer::first_type;
             auto &value = type_and_value.second;
 
-            value.set_status_fill(flags_handler.template fill<ValueType>());
-
-            value.set_status_filled(flags_handler.template filled<ValueType>());
-            Assert(!value.status_filled(),
-            ExcMessage("The status for the data \"" + ValueType::name + "\" cannot have the variable \"filled_\" set to TRUE."));
-
-            if (value.status_fill())
+            if (contains(flags,ValueType::flag))
             {
+                value.set_status_fill(true);
+
                 if (value.get_num_points() != n_points)
                     value.resize(n_points);
 
@@ -304,8 +315,10 @@ public:
             else
             {
                 value.clear();
-                value.set_status_filled(false);
+                value.set_status_fill(false);
             }
+            value.set_status_filled(false);
+
         } // end lambda function
                                );
 
@@ -353,6 +366,12 @@ public:
         const auto &cache = cacheutils::extract_sub_elements_data<sub_elem_dim>(cache_all_sub_elems_)[sub_elem_id];
         Assert(cache.is_filled() == true, ExcCacheNotFilled());
         return cache;
+    }
+
+
+    ValueFlags get_valid_flags() const
+    {
+        return this->template get_sub_elem_cache<SubElemCache::get_dim()>(0).get_valid_flags();
     }
 
     /**

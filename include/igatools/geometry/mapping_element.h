@@ -157,7 +157,22 @@ private:
                   boost::fusion::pair< _InvHessian,DataWithFlagStatus<ValueVector<InvDerivative<2>>>>
                   >;
 
-    using Cache = FuncValuesCache<dim,CType,MappingFlags>;
+    static ValueFlags get_valid_flags()
+    {
+        const auto valid_func_flags = parent_t::get_valid_flags();
+        const auto valid_flags = ValueFlags::measure |
+                                 ValueFlags::w_measure |
+                                 ValueFlags::inv_gradient |
+                                 ValueFlags::inv_hessian |
+                                 ValueFlags::boundary_normal|
+                                 ValueFlags::outer_normal|
+                                 ValueFlags::curvature |
+                                 valid_func_flags;
+
+        return valid_flags;
+    }
+
+    using Cache = FuncValuesCache<dim,CType>;
 
 
 public:

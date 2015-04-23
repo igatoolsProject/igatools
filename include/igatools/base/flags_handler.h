@@ -98,6 +98,52 @@ create_map_flags_data()
                FlagStatus(), FlagStatus(), FlagStatus(), FlagStatus());
 }
 
+inline
+ValueFlags
+function_to_grid_flags(const ValueFlags &function_flags)
+{
+    ValueFlags transfer_flags = ValueFlags::w_measure |
+                                ValueFlags::boundary_normal;
+    ValueFlags g_flags = function_flags & transfer_flags;
+    if (contains(function_flags, ValueFlags::point) || contains(function_flags, ValueFlags::value))
+    {
+        g_flags |= ValueFlags::point;
+    }
+    return g_flags;
+
+}
+
+
+inline
+ValueFlags
+mapping_to_function_flags(const ValueFlags &flags)
+{
+    ValueFlags valid_func_flags = ValueFlags::value |
+                                  ValueFlags::gradient |
+                                  ValueFlags::hessian |
+                                  ValueFlags::divergence |
+                                  ValueFlags::point;
+
+    ValueFlags transfer_flags = ValueFlags::measure |
+                                ValueFlags::w_measure |
+                                ValueFlags::boundary_normal |
+                                valid_func_flags;
+
+
+    ValueFlags f_flags = flags & transfer_flags;
+
+    if (contains(flags, ValueFlags::measure) ||
+        contains(flags, ValueFlags::w_measure) ||
+        contains(flags, ValueFlags::inv_gradient) ||
+        contains(flags, ValueFlags::outer_normal))
+        f_flags |=  ValueFlags::gradient;
+
+    if (contains(flags, ValueFlags::inv_hessian) ||
+        contains(flags, ValueFlags::curvature))
+        f_flags |=  ValueFlags::gradient | ValueFlags::hessian;
+
+    return f_flags;
+}
 
 
 /**
@@ -149,7 +195,7 @@ public:
     }
     ///@}
 
-
+#if 0
     /**
      * Prints internal information about the FlagStatus for all valid ValueType(s).
      * Its main use is for testing and debugging.
@@ -181,6 +227,7 @@ public:
 
         return !fill_someone;
     }
+#endif
 
 protected:
     /**
@@ -206,6 +253,7 @@ protected:
     }
 
 public:
+
     /**
      * Returns the flags that are valid to be used with this class.
      */
@@ -232,7 +280,7 @@ class FunctionFlags : public Flags<decltype(create_function_flags_data())>
     using parent_t = Flags<decltype(create_function_flags_data())>;
 public:
 
-    static ValueFlags to_grid_flags(const ValueFlags &flag);
+//    static ValueFlags to_grid_flags(const ValueFlags &flag);
 
     /** @name Constructors */
     ///@{
@@ -273,7 +321,7 @@ public:
 };
 
 
-
+#if 0
 class GridFlags : public Flags<decltype(create_grid_flags_data())>
 {
     using parent_t = Flags<decltype(create_grid_flags_data())>;
@@ -316,7 +364,7 @@ public:
     GridFlags &operator=(GridFlags &&in) = default;
     ///@}
 };
-
+#endif
 
 class MappingFlags : public Flags<decltype(create_map_flags_data())>
 {
@@ -334,7 +382,7 @@ public:
         ValueFlags::curvature;
 #endif
 
-    static ValueFlags to_function_flags(const ValueFlags &flag);
+//    static ValueFlags to_function_flags(const ValueFlags &flag);
 
     /** @name Constructors */
     ///@{

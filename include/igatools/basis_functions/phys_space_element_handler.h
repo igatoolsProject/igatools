@@ -147,7 +147,7 @@ private:
 
     typename PhysSpace::PushForwardType push_fwd_;
 
-    std::array<FunctionFlags, dim + 1> flags_;
+    std::array<ValueFlags, dim + 1> flags_;
 
 };
 

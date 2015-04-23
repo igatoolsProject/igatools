@@ -162,7 +162,7 @@ public:
 private:
     std::shared_ptr<GridType> grid_;
 
-    std::array<GridFlags, dim + 1> flags_;
+    std::array<ValueFlags, dim + 1> flags_;
 
 protected:
     QuadList<dim> quad_;

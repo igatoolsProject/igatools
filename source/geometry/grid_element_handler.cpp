@@ -27,29 +27,6 @@ using std::array;
 
 IGA_NAMESPACE_OPEN
 
-#if 0
-namespace
-{
-struct UniformQuadFunc
-{
-    void func(auto &val_cache, const GridFlags &flag, const auto &quad)
-    {
-        val_cache.resize(flag, quad);
-    }
-};
-
-template<class Quad, class... Args>
-void
-init_unif_caches(const GridFlags &flag, const Quad &quad, std::tuple<Args...> &t)
-//init_unif_caches(const GridFlags &flag, const Quad &quad, boost::fusion::vector<Args...> &t)
-{
-    const int dim = Quad::dim;
-    const int low = dim==0? 0 : dim-num_sub_elem;
-    UniformQuadFunc f;
-    TupleFunc1< UniformQuadFunc, GridFlags, Quad, decltype(t), sizeof...(Args), low>::apply_func(f, flag, quad, t);
-}
-};
-#endif
 
 
 template <int dim>
@@ -57,8 +34,6 @@ GridElementHandler<dim>::
 GridElementHandler(shared_ptr<GridType> grid)
     :
     grid_(grid)
-//  ,
-//    lengths_(grid->get_element_lengths())
 {}
 
 template <int dim>
@@ -80,9 +55,9 @@ GridElementHandler<dim>::
 reset(const ValueFlags flag,
       const Quadrature<k> &quad)
 {
-    flags_[k] = flag;
-//    auto &quad_k = std::get<k>(quad_);
-//    quad_k = quad;
+    const auto valid_flags = ElementAccessor::get_valid_flags();
+    flags_[k] = flag & valid_flags;
+
     cacheutils::extract_sub_elements_data<k>(quad_) = quad;
 }
 

@@ -40,7 +40,7 @@ DeclException2(ExcFillFlagNotSupported, ValueFlags, ValueFlags,
 
 #endif
 
-
+#if 0
 GridFlags::
 GridFlags(const ValueFlags &flags)
     :
@@ -48,7 +48,7 @@ GridFlags(const ValueFlags &flags)
 {
     this->set_fill_status_true_from_value_flags(flags);
 }
-
+#endif
 
 FunctionFlags::
 FunctionFlags(const ValueFlags &flags)
@@ -64,6 +64,7 @@ FunctionFlags(const ValueFlags &flags)
 }
 
 
+#if 0
 ValueFlags
 FunctionFlags::to_grid_flags(const ValueFlags &flags)
 {
@@ -76,7 +77,7 @@ FunctionFlags::to_grid_flags(const ValueFlags &flags)
     }
     return g_flag;
 }
-
+#endif
 
 
 
@@ -99,7 +100,7 @@ MappingFlags(const ValueFlags &flags)
 }
 
 
-
+#if 0
 ValueFlags
 MappingFlags::to_function_flags(const ValueFlags &flags)
 {
@@ -125,7 +126,7 @@ MappingFlags::to_function_flags(const ValueFlags &flags)
 
     return f_flag;
 }
-
+#endif
 
 
 

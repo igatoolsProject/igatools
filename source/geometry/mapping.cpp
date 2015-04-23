@@ -66,10 +66,21 @@ template<int dim, int codim>
 template <int k>
 auto
 Mapping<dim, codim>::
-reset(const ValueFlags flag, const Quadrature<k> &eval_pts) -> void
+reset(const ValueFlags flags, const Quadrature<k> &eval_pts) -> void
 {
-    F_->reset(MappingFlags::to_function_flags(flag), eval_pts);
-    flags_[k] = flag;
+    const auto valid_flags = ElementAccessor::get_valid_flags();
+    auto m_flags = flags & valid_flags;
+
+    if (contains(flags, ValueFlags::boundary_normal) ||
+    contains(flags, ValueFlags::curvature))
+        m_flags |= ValueFlags::inv_gradient;
+
+    if (contains(flags, ValueFlags::w_measure))
+        m_flags |= ValueFlags::measure;
+
+
+    F_->reset(mapping_to_function_flags(m_flags), eval_pts);
+    flags_[k] = m_flags;
 }
 
 
