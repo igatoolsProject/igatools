@@ -145,7 +145,7 @@ mapping_to_function_flags(const ValueFlags &flags)
     return f_flags;
 }
 
-
+#if 0
 /**
  * @brief Base class for defining an association between ValueType(s) and FlagStatus.
  *
@@ -421,6 +421,7 @@ public:
     ///@}
 };
 
+#endif
 
 IGA_NAMESPACE_CLOSE
 

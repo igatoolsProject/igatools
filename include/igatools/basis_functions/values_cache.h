@@ -43,6 +43,41 @@
 
 IGA_NAMESPACE_OPEN
 
+
+template<int dim, int sub_elem_dim, class CacheSingleElem>
+class CacheSubElems : std::array<CacheSingleElem,UnitElement<dim>::template num_elem<sub_elem_dim>>
+{
+    using self_t = std::array<CacheSingleElem,UnitElement<dim>::template num_elem<sub_elem_dim>>;
+public:
+
+    using self_t::self_t;
+};
+
+
+template<class ValuesCache, int dim, std::size_t... I>
+auto
+tuple_of_caches(
+    std::index_sequence<I...>,
+    const Quadrature<dim> &q,
+    const ValuesCache &)
+{
+    return boost::fusion::map<boost::fusion::pair<Topology<(dim>I) ? dim-I : 0>,std::array<ValuesCache,UnitElement<dim>::template num_elem<(dim>I) ? dim-I : 0>()>> ...>(
+               boost::fusion::pair<Topology<(dim>I) ? dim-I : 0>,std::array<ValuesCache,UnitElement<dim>::template num_elem<(dim>I) ? dim-I : 0>()>>() ...);
+}
+
+
+template<class ValuesCache, int dim>
+using CacheList = decltype(tuple_of_caches(
+                               std::make_index_sequence<(num_sub_elem <= dim ? num_sub_elem+1 : 1)>(),
+                               Quadrature<dim>(),
+                               ValuesCache()));
+
+
+
+
+
+
+
 template < class DataType >
 class DataWithFlagStatus : public DataType
 {

@@ -150,6 +150,7 @@ public:
 
 private:
 
+    //TODO (martinelli, Apr 23, 2015): add the containers for boundary_normal, outer_normal, curvature
     using CType = boost::fusion::map<
                   boost::fusion::pair<    _Measure,DataWithFlagStatus<ValueVector<Real>>>,
                   boost::fusion::pair<  _W_Measure,DataWithFlagStatus<ValueVector<Real>>>,

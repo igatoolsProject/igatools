@@ -50,6 +50,7 @@ GridFlags(const ValueFlags &flags)
 }
 #endif
 
+#if 0
 FunctionFlags::
 FunctionFlags(const ValueFlags &flags)
     :
@@ -62,7 +63,7 @@ FunctionFlags(const ValueFlags &flags)
 
     this->set_fill_status_true_from_value_flags(f_flags);
 }
-
+#endif
 
 #if 0
 ValueFlags
@@ -80,7 +81,7 @@ FunctionFlags::to_grid_flags(const ValueFlags &flags)
 #endif
 
 
-
+#if 0
 MappingFlags::
 MappingFlags(const ValueFlags &flags)
     :
@@ -98,7 +99,7 @@ MappingFlags(const ValueFlags &flags)
 
     this->set_fill_status_true_from_value_flags(m_flags);
 }
-
+#endif
 
 #if 0
 ValueFlags
