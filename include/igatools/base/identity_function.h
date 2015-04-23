@@ -99,11 +99,11 @@ private:
 
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
-        template<class T>
-        void operator()(const T &quad)
+        template<int sub_elem_dim>
+        void operator()(const Int<sub_elem_dim> &sub_elem)
         {
             auto &local_cache = function->get_cache(*elem);
-            auto &cache = local_cache->template get_value_cache<T::k>(j);
+            auto &cache = local_cache->template get_value_cache<sub_elem_dim>(j);
             auto &flags = cache.flags_handler_;
 
             if (!flags.fill_none())
@@ -112,11 +112,11 @@ private:
                 if (flags.template fill<_Point>() || flags.template fill<_Value>())
                 {
                     const auto points =
-                        elem->CartesianGridElement<dim>::template get_points<T::k>(j);
+                        elem->CartesianGridElement<dim>::template get_points<sub_elem_dim>(j);
 
                     if (flags.template fill<_Point>())
                     {
-                        auto & cache_pts = cache.template get_der<_Point>();
+                        auto &cache_pts = cache.template get_der<_Point>();
                         cache_pts = points;
 
                         flags.template set_filled<_Point>(true);

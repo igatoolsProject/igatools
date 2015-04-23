@@ -273,8 +273,8 @@ private:
 
     struct ResetDispatcher : boost::static_visitor<void>
     {
-        template<class T>
-        void operator()(const T &quad);
+        template<int sub_elem_dim>
+        void operator()(const Quadrature<sub_elem_dim> &quad);
 
         GridElementHandler<dim_> *grid_handler_;
         ValueFlags flag_;
@@ -292,8 +292,8 @@ private:
 
     struct InitCacheDispatcher : boost::static_visitor<void>
     {
-        template<class T>
-        void operator()(const T &quad);
+        template<int sub_elem_dim>
+        void operator()(const Int<sub_elem_dim> &sub_elem);
 
         GridElementHandler<dim_> *grid_handler_;
         ReferenceElement<dim_,range_,rank_> *elem_;
@@ -305,8 +305,8 @@ private:
 
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
-        template<class T>
-        void operator()(const T &quad);
+        template<int sub_elem_dim>
+        void operator()(const Int<sub_elem_dim> &sub_elem);
 
         /**
          * Computes the values (i.e. the 0-th order derivative) of the non-zero

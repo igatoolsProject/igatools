@@ -33,11 +33,16 @@
 #include <boost/mpl/vector.hpp>
 IGA_NAMESPACE_OPEN
 
+/*
 template<int k_>
 struct Int
 {
     static const int k = k_;
 };
+//*/
+
+template <int dim>
+using Int = boost::mpl::int_<dim>;
 
 template<template<int> class Q, int start, std::size_t N>
 struct seq;
@@ -291,10 +296,10 @@ private:
 
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
-        template<class T>
-        void operator()(const T &quad)
+        template<int sub_elem_dim>
+        void operator()(const Int<sub_elem_dim> &sub_elem)
         {
-            grid_handler->template fill_cache<T::k>(*elem, j);
+            grid_handler->template fill_cache<sub_elem_dim>(*elem, j);
         }
 
         int j;
@@ -304,10 +309,10 @@ private:
 
     struct InitCacheDispatcher : boost::static_visitor<void>
     {
-        template<class T>
-        void operator()(const T &quad)
+        template<int sub_elem_dim>
+        void operator()(const Int<sub_elem_dim> &sub_elem)
         {
-            grid_handler->template init_cache<T::k>(*elem);
+            grid_handler->template init_cache<sub_elem_dim>(*elem);
 
             auto &cache = elem->local_cache_;
             if (cache == nullptr)
@@ -316,12 +321,12 @@ private:
                 cache = std::shared_ptr<Cache>(new Cache);
             }
 
-            for (auto &s_id: UnitElement<dim_>::template elems_ids<T::k>())
+            for (auto &s_id: UnitElement<dim_>::template elems_ids<sub_elem_dim>())
             {
-                auto &s_cache = cache->template get_value_cache<T::k>(s_id);
+                auto &s_cache = cache->template get_value_cache<sub_elem_dim>(s_id);
 //                auto &quad = std::get<T::k>(*quad_);
-                auto &quad = cacheutils::extract_sub_elements_data<T::k>(*quad_);
-                s_cache.resize((*flags_)[T::k], quad.get_num_points());
+                auto &quad = cacheutils::extract_sub_elements_data<sub_elem_dim>(*quad_);
+                s_cache.resize((*flags_)[sub_elem_dim], quad.get_num_points());
             }
         }
 

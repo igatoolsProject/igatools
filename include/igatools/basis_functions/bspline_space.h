@@ -336,10 +336,10 @@ public:
 
     struct get_boundary_dofs_disp : boost::static_visitor<void>
     {
-        template<class T>
-        void operator()(const T &quad)
+        template<int sub_elem_dim>
+        void operator()(const Int<sub_elem_dim> &sub_elem)
         {
-            auto &k_elem = UnitElement<dim>::template get_elem<T::k>(s_id);
+            auto &k_elem = UnitElement<dim>::template get_elem<sub_elem_dim>(s_id);
             const auto &active_dirs = k_elem.active_directions;
 
             const int n_dir = k_elem.constant_directions.size();
@@ -358,13 +358,13 @@ public:
             const auto &space_index_table = bs_space->get_dof_distribution()->get_index_table();
             for (auto comp : SpaceData::components)
             {
-                for (int j=0; j<T::k; ++j)
+                for (int j = 0 ; j < sub_elem_dim ; ++j)
                 {
                     first[active_dirs[j]] = 0;
                     last[active_dirs[j]] = bs_space->get_num_basis(comp, active_dirs[j]);
                 }
 
-                for (int j=0; j<n_dir; ++j)
+                for (int j = 0 ; j < n_dir ; ++j)
                 {
                     auto dir = k_elem.constant_directions[j];
                     auto val = k_elem.constant_values[j];
