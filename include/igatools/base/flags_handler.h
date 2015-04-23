@@ -45,6 +45,27 @@ struct FlagStatus
     {
         out << "   fill = " << fill_ << "    filled = " << filled_;
     }
+    /*
+        bool fill() const
+        {
+            return fill_;
+        };
+
+        void set_fill(const bool fill_status)
+        {
+            fill_ = fill_status;
+        };
+
+        bool filled() const
+        {
+            return filled_;
+        };
+
+        void set_filled(const bool filled_status)
+        {
+            filled_ = filled_status;
+        };
+    //*/
 };
 
 

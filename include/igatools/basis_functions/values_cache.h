@@ -43,6 +43,63 @@
 
 IGA_NAMESPACE_OPEN
 
+template < class DataType >
+class DataWithFlagStatus : public DataType
+{
+    using self_t = DataWithFlagStatus<DataType>;
+
+public:
+    using DataType::DataType;
+
+
+    DataWithFlagStatus &operator=(const DataType &data)
+    {
+        if (this != &data)
+        {
+            DataType::operator=(data);
+            status_.filled_ = true;
+        }
+        return (*this);
+    }
+
+    bool status_fill() const
+    {
+        return status_.fill_;
+    };
+
+    void set_status_fill(const bool fill_status)
+    {
+        status_.fill_ = fill_status;
+    };
+
+    bool status_filled() const
+    {
+        return status_.filled_;
+    };
+
+    void set_status_filled(const bool filled_status)
+    {
+        status_.filled_ = filled_status;
+    };
+
+    const FlagStatus &get_status() const
+    {
+        return status_;
+    }
+//*/
+    /*
+        void set_status(const FlagStatus &status)
+        {
+            status_ = status;
+        }
+    //*/
+
+private:
+//  DataType data_;
+    FlagStatus status_;
+
+
+};
 
 
 template<int dim,
@@ -57,10 +114,6 @@ public:
         return dim;
     }
 
-
-
-    FlagsType flags_handler_;
-
 protected:
 
 
@@ -71,21 +124,24 @@ protected:
 public:
     void print_info(LogStream &out) const
     {
-        out.begin_item("Fill flags:");
-        flags_handler_.print_info(out);
-        out.end_item();
-
         boost::fusion::for_each(values_,
                                 [&](const auto & type_and_value) -> void
         {
             using ValueType_ValueContainer = typename std::remove_reference<decltype(type_and_value)>::type;
             using ValueType = typename ValueType_ValueContainer::first_type;
-            if (flags_handler_.template filled<ValueType>())
+            out.begin_item(ValueType::name + ":");
+
+            out.begin_item("Fill flags:");
+            type_and_value.second.get_status().print_info(out);
+            out.end_item();
+
+            if (type_and_value.second.status_filled())
             {
-                out.begin_item(ValueType::name + "s:");
+                out.begin_item("Data:");
                 type_and_value.second.print_info(out);
                 out.end_item();
             }
+            out.end_item();
         } // end lambda function
                                );
     }
@@ -107,6 +163,46 @@ public:
         return boost::fusion::at_key<ValueType>(values_);
     }
 
+
+    /**
+     * @name Functions used to query or modify the Flag status for a given ValueType
+     */
+    ///@{
+    /** Returns true if the quantity associated to @p ValueType must be filled. */
+    template<class ValueType>
+    bool status_fill() const
+    {
+        return this->template get_data<ValueType>().status_fill();
+    }
+
+    /** Returns true if the quantity associated to @p ValueType is filled. */
+    template<class ValueType>
+    bool status_filled() const
+    {
+        return this->template get_data<ValueType>().status_filled();
+    }
+
+    /** Sets the filled @p status the quantity associated to @p ValueType. */
+    template<class ValueType>
+    void set_status_filled(const bool status)
+    {
+        this->template get_data<ValueType>().set_status_filled(status);
+    }
+
+    /** Returns true if the nothing must be filled. */
+    bool fill_none() const
+    {
+        const bool fill_someone = boost::fusion::any(values_,
+                                                     [](const auto & type_and_data) -> bool
+        {
+            return type_and_data.second.status_fill() == true;
+        } // end lambda function
+                                                    );
+
+        return !fill_someone;
+    }
+    ///@}
+
 };
 
 
@@ -126,7 +222,7 @@ public:
                 const Size n_points,
                 const Size n_basis)
     {
-        this->flags_handler_ = flags_handler;
+//        this->flags_handler_ = flags_handler;
 
         Assert(n_points >= 0, ExcLowerRange(n_points,1));
         Assert(n_basis > 0, ExcLowerRange(n_basis,1));
@@ -138,7 +234,13 @@ public:
             using ValueType = typename ValueType_ValueContainer::first_type;
             auto &value = type_and_value.second;
 
-            if (this->flags_handler_.template fill<ValueType>())
+            value.set_status_fill(flags_handler.template fill<ValueType>());
+
+            value.set_status_filled(flags_handler.template filled<ValueType>());
+            Assert(!value.status_filled(),
+            ExcMessage("The status for the data \"" + ValueType::name + "\" cannot have the variable \"filled_\" set to TRUE."));
+
+            if (value.status_fill())
             {
                 if (value.get_num_points() != n_points ||
                 value.get_num_functions() != n_basis)
@@ -150,7 +252,7 @@ public:
             else
             {
                 value.clear();
-                this->flags_handler_.template set_filled<ValueType>(false);
+                value.set_status_filled(false);
             }
         } // end lambda function
                                );
@@ -175,7 +277,7 @@ public:
     void resize(const FlagsType &flags_handler,
                 const Size n_points)
     {
-        this->flags_handler_ = flags_handler;
+//        this->flags_handler_ = flags_handler;
 
         Assert(n_points >= 0, ExcLowerRange(n_points,1));
 
@@ -186,7 +288,13 @@ public:
             using ValueType = typename ValueType_ValueContainer::first_type;
             auto &value = type_and_value.second;
 
-            if (this->flags_handler_.template fill<ValueType>())
+            value.set_status_fill(flags_handler.template fill<ValueType>());
+
+            value.set_status_filled(flags_handler.template filled<ValueType>());
+            Assert(!value.status_filled(),
+            ExcMessage("The status for the data \"" + ValueType::name + "\" cannot have the variable \"filled_\" set to TRUE."));
+
+            if (value.status_fill())
             {
                 if (value.get_num_points() != n_points)
                     value.resize(n_points);
@@ -196,7 +304,7 @@ public:
             else
             {
                 value.clear();
-                this->flags_handler_.template set_filled<ValueType>(false);
+                value.set_status_filled(false);
             }
         } // end lambda function
                                );

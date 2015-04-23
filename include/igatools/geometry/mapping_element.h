@@ -151,10 +151,10 @@ public:
 private:
 
     using CType = boost::fusion::map<
-                  boost::fusion::pair<    _Measure,ValueVector<Real>>,
-                  boost::fusion::pair<  _W_Measure,ValueVector<Real>>,
-                  boost::fusion::pair<_InvGradient,ValueVector<InvDerivative<1>>>,
-                  boost::fusion::pair< _InvHessian,ValueVector<InvDerivative<2>>>
+                  boost::fusion::pair<    _Measure,DataWithFlagStatus<ValueVector<Real>>>,
+                  boost::fusion::pair<  _W_Measure,DataWithFlagStatus<ValueVector<Real>>>,
+                  boost::fusion::pair<_InvGradient,DataWithFlagStatus<ValueVector<InvDerivative<1>>>>,
+                  boost::fusion::pair< _InvHessian,DataWithFlagStatus<ValueVector<InvDerivative<2>>>>
                   >;
 
     using Cache = FuncValuesCache<dim,CType,MappingFlags>;

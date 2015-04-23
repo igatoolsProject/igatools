@@ -86,9 +86,9 @@ fill_cache(ElementAccessor &elem, const int j) -> void
     const auto n_points = F_->template get_num_points<k>();
 
     auto &cache = elem.local_cache_->template get_sub_elem_cache<k>(j);
-    auto &flags = cache.flags_handler_;
+//    auto &flags = cache.flags_handler_;
 
-    if (flags.template fill<_Measure>())
+    if (cache.template status_fill<_Measure>())
     {
         auto &k_elem = UnitElement<dim>::template get_elem<k>(j);
 
@@ -103,10 +103,10 @@ fill_cache(ElementAccessor &elem, const int j) -> void
 
             measures[pt] = fabs(determinant<k,space_dim>(DF1));
         }
-        flags.template set_filled<_Measure>(true);
+        cache.template set_status_filled<_Measure>(true);
     }
 
-    if (flags.template fill<_W_Measure>())
+    if (cache.template status_fill<_W_Measure>())
     {
         const auto &w = elem.CartesianGridElement<dim>::template get_w_measures<k>(j);
 
@@ -117,10 +117,10 @@ fill_cache(ElementAccessor &elem, const int j) -> void
         for (int pt = 0 ; pt < n_points; ++pt)
             w_measures[pt] = w[pt] * measures[pt];
 
-        flags.template set_filled<_W_Measure>(true);
+        cache.template set_status_filled<_W_Measure>(true);
     }
 
-    if (flags.template fill<_InvGradient>())
+    if (cache.template status_fill<_InvGradient>())
     {
         // TODO (pauletti, Nov 23, 2014): if also fill measure this could be done here
         const auto &DF = elem.template get_values<_Gradient, k>(j);
@@ -129,10 +129,10 @@ fill_cache(ElementAccessor &elem, const int j) -> void
         for (int pt = 0 ; pt < n_points; ++pt)
             D_invF[pt] = inverse(DF[pt], det);
 
-        flags.template set_filled<_InvGradient>(true);
+        cache.template set_status_filled<_InvGradient>(true);
     }
 
-    if (flags.template fill<_InvHessian>())
+    if (cache.template status_fill<_InvHessian>())
     {
         const auto &D1_F = elem.template get_values<_Gradient, k>(j);
         const auto &D2_F = elem.template get_values<_Hessian, k>(j);
@@ -150,7 +150,7 @@ fill_cache(ElementAccessor &elem, const int j) -> void
                 }
             }
 
-        flags.template set_filled<_InvHessian>(true);
+        cache.template set_status_filled<_InvHessian>(true);
     }
 
     cache.set_filled(true);

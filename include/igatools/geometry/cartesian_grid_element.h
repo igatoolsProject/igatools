@@ -293,8 +293,8 @@ public:
 private:
 
     using CType = boost::fusion::map<
-                  boost::fusion::pair<    _Point,ValueVector<Points<dim>>>,
-                  boost::fusion::pair<_W_Measure,ValueVector<Real>>
+                  boost::fusion::pair<    _Point,DataWithFlagStatus<ValueVector<Points<dim>>>>,
+                  boost::fusion::pair<_W_Measure,DataWithFlagStatus<ValueVector<Real>>>
                   >;
 
     using BaseCache = FuncValuesCache<dim,CType,GridFlags>;

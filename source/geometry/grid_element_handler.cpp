@@ -157,9 +157,9 @@ fill_cache(ElementAccessor &elem, const int j)
     Assert(elem.local_cache_ != nullptr, ExcNullPtr());
     auto &cache = elem.local_cache_->template get_sub_elem_cache<k>(j);
 
-    auto &flags = cache.flags_handler_;
+//    auto &flags = cache.flags_handler_;
 
-    if (flags.template fill<_Point>())
+    if (cache.template status_fill<_Point>())
     {
         auto translate = elem.vertex(0);
         auto dilate    = elem.template get_coordinate_lengths<k>(j);
@@ -177,13 +177,13 @@ fill_cache(ElementAccessor &elem, const int j)
                 ref_pt[dir] = unit_pt[dir] * dilate[dir] + translate[dir];
         }
 
-        flags.template set_filled<_Point>(true);
+        cache.template set_status_filled<_Point>(true);
     }
 
-    if (flags.template fill<_W_Measure>())
+    if (cache.template status_fill<_W_Measure>())
     {
         cache.template get_data<_W_Measure>() = elem.template get_measure<k>(j) * cache.unit_weights_;
-        flags.template set_filled<_W_Measure>(true);
+        cache.template set_status_filled<_W_Measure>(true);
     }
 
 

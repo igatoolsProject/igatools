@@ -645,32 +645,32 @@ operator()(const Topology<sub_elem_dim> &sub_elem)
 
     const auto &elem_t_index = elem_->get_tensor_index();
 
-    auto &flags = cache.flags_handler_;
+//    auto &flags = cache.flags_handler_;
     auto val_1d = g_cache.get_element_values(elem_t_index);
-    if (flags.template fill<_Value>())
+    if (cache.template status_fill<_Value>())
     {
         auto &values = cache.template get_data<_Value>();
         evaluate_bspline_values(val_1d, values);
-        flags.template set_filled<_Value>(true);
+        cache.template set_status_filled<_Value>(true);
     }
-    if (flags.template fill<_Gradient>())
+    if (cache.template status_fill<_Gradient>())
     {
         auto &values = cache.template get_data<_Gradient>();
         evaluate_bspline_derivatives<1>(val_1d, values);
-        flags.template set_filled<_Gradient>(true);
+        cache.template set_status_filled<_Gradient>(true);
     }
-    if (flags.template fill<_Hessian>())
+    if (cache.template status_fill<_Hessian>())
     {
         auto &values = cache.template get_data<_Hessian>();
         evaluate_bspline_derivatives<2>(val_1d, values);
-        flags.template set_filled<_Hessian>(true);
+        cache.template set_status_filled<_Hessian>(true);
     }
-    if (flags.template fill<_Divergence>())
+    if (cache.template status_fill<_Divergence>())
     {
         eval_divergences_from_gradients(
             cache.template get_data<_Gradient>(),
             cache.template get_data<_Divergence>());
-        flags.template set_filled<_Divergence>(true);
+        cache.template set_status_filled<_Divergence>(true);
     }
 
 

@@ -20,85 +20,103 @@ Number of element basis:
 
 Cache for sub-element(s) with dimension: 1
    Sub-element id: 0
-      Fill flags:
-         Point
+      Point:
+         Fill flags:
             fill = 1    filled = 1
-         W_Measure
+         Data:
+         ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
+      
+      W_Measure:
+         Fill flags:
             fill = 0    filled = 0
       
-      Points:
-      ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
       Unit points:
       ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
    
 
 Cache for sub-element(s) with dimension: 0
    Sub-element id: 0
-      Fill flags:
-         Point
+      Point:
+         Fill flags:
             fill = 0    filled = 0
-         W_Measure
+      
+      W_Measure:
+         Fill flags:
             fill = 0    filled = 0
       
    
    Sub-element id: 1
-      Fill flags:
-         Point
+      Point:
+         Fill flags:
             fill = 0    filled = 0
-         W_Measure
+      
+      W_Measure:
+         Fill flags:
             fill = 0    filled = 0
       
    
 
 Cache for sub-element(s) with dimension: 1
    Sub-element id: 0
-      Fill flags:
-         Point
-            fill = 0    filled = 0
-         Value
+      Value:
+         Fill flags:
             fill = 1    filled = 1
-         Gradient
-            fill = 0    filled = 0
-         Hessian
-            fill = 0    filled = 0
-         Divergence
+         Data:
+             (num_functions=2,num_points=2) :
+            Function 0
+            [ 0.788675 ]  [ 0.211325 ]  
+            Function 1
+            [ 0.211325 ]  [ 0.788675 ]  
+         
+      
+      Gradient:
+         Fill flags:
             fill = 0    filled = 0
       
-      Values:
-          (num_functions=2,num_points=2) :
-         Function 0
-         [ 0.788675 ]  [ 0.211325 ]  
-         Function 1
-         [ 0.211325 ]  [ 0.788675 ]  
+      Hessian:
+         Fill flags:
+            fill = 0    filled = 0
+      
+      Divergence:
+         Fill flags:
+            fill = 0    filled = 0
       
    
 
 Cache for sub-element(s) with dimension: 0
    Sub-element id: 0
-      Fill flags:
-         Point
+      Value:
+         Fill flags:
             fill = 0    filled = 0
-         Value
+      
+      Gradient:
+         Fill flags:
             fill = 0    filled = 0
-         Gradient
+      
+      Hessian:
+         Fill flags:
             fill = 0    filled = 0
-         Hessian
-            fill = 0    filled = 0
-         Divergence
+      
+      Divergence:
+         Fill flags:
             fill = 0    filled = 0
       
    
    Sub-element id: 1
-      Fill flags:
-         Point
+      Value:
+         Fill flags:
             fill = 0    filled = 0
-         Value
+      
+      Gradient:
+         Fill flags:
             fill = 0    filled = 0
-         Gradient
+      
+      Hessian:
+         Fill flags:
             fill = 0    filled = 0
-         Hessian
-            fill = 0    filled = 0
-         Divergence
+      
+      Divergence:
+         Fill flags:
             fill = 0    filled = 0
       
    
@@ -127,81 +145,99 @@ Number of element basis:
 
 Cache for sub-element(s) with dimension: 1
    Sub-element id: 0
-      Fill flags:
-         Point
+      Point:
+         Fill flags:
             fill = 0    filled = 0
-         W_Measure
+      
+      W_Measure:
+         Fill flags:
             fill = 0    filled = 0
       
    
 
 Cache for sub-element(s) with dimension: 0
    Sub-element id: 0
-      Fill flags:
-         Point
+      Point:
+         Fill flags:
             fill = 0    filled = 0
-         W_Measure
+      
+      W_Measure:
+         Fill flags:
             fill = 0    filled = 0
       
    
    Sub-element id: 1
-      Fill flags:
-         Point
+      Point:
+         Fill flags:
             fill = 0    filled = 0
-         W_Measure
+      
+      W_Measure:
+         Fill flags:
             fill = 0    filled = 0
       
    
 
 Cache for sub-element(s) with dimension: 1
    Sub-element id: 0
-      Fill flags:
-         Point
-            fill = 0    filled = 0
-         Value
-            fill = 0    filled = 0
-         Gradient
-            fill = 1    filled = 1
-         Hessian
-            fill = 0    filled = 0
-         Divergence
+      Value:
+         Fill flags:
             fill = 0    filled = 0
       
-      Gradients:
-          (num_functions=2,num_points=2) :
-         Function 0
-         [ [ -1.00000 ]  ]  [ [ -1.00000 ]  ]  
-         Function 1
-         [ [ 1.00000 ]  ]  [ [ 1.00000 ]  ]  
+      Gradient:
+         Fill flags:
+            fill = 1    filled = 1
+         Data:
+             (num_functions=2,num_points=2) :
+            Function 0
+            [ [ -1.00000 ]  ]  [ [ -1.00000 ]  ]  
+            Function 1
+            [ [ 1.00000 ]  ]  [ [ 1.00000 ]  ]  
+         
+      
+      Hessian:
+         Fill flags:
+            fill = 0    filled = 0
+      
+      Divergence:
+         Fill flags:
+            fill = 0    filled = 0
       
    
 
 Cache for sub-element(s) with dimension: 0
    Sub-element id: 0
-      Fill flags:
-         Point
+      Value:
+         Fill flags:
             fill = 0    filled = 0
-         Value
+      
+      Gradient:
+         Fill flags:
             fill = 0    filled = 0
-         Gradient
+      
+      Hessian:
+         Fill flags:
             fill = 0    filled = 0
-         Hessian
-            fill = 0    filled = 0
-         Divergence
+      
+      Divergence:
+         Fill flags:
             fill = 0    filled = 0
       
    
    Sub-element id: 1
-      Fill flags:
-         Point
+      Value:
+         Fill flags:
             fill = 0    filled = 0
-         Value
+      
+      Gradient:
+         Fill flags:
             fill = 0    filled = 0
-         Gradient
+      
+      Hessian:
+         Fill flags:
             fill = 0    filled = 0
-         Hessian
-            fill = 0    filled = 0
-         Divergence
+      
+      Divergence:
+         Fill flags:
             fill = 0    filled = 0
       
    
@@ -230,81 +266,99 @@ Number of element basis:
 
 Cache for sub-element(s) with dimension: 1
    Sub-element id: 0
-      Fill flags:
-         Point
+      Point:
+         Fill flags:
             fill = 0    filled = 0
-         W_Measure
+      
+      W_Measure:
+         Fill flags:
             fill = 0    filled = 0
       
    
 
 Cache for sub-element(s) with dimension: 0
    Sub-element id: 0
-      Fill flags:
-         Point
+      Point:
+         Fill flags:
             fill = 0    filled = 0
-         W_Measure
+      
+      W_Measure:
+         Fill flags:
             fill = 0    filled = 0
       
    
    Sub-element id: 1
-      Fill flags:
-         Point
+      Point:
+         Fill flags:
             fill = 0    filled = 0
-         W_Measure
+      
+      W_Measure:
+         Fill flags:
             fill = 0    filled = 0
       
    
 
 Cache for sub-element(s) with dimension: 1
    Sub-element id: 0
-      Fill flags:
-         Point
-            fill = 0    filled = 0
-         Value
-            fill = 0    filled = 0
-         Gradient
-            fill = 0    filled = 0
-         Hessian
-            fill = 1    filled = 1
-         Divergence
+      Value:
+         Fill flags:
             fill = 0    filled = 0
       
-      Hessians:
-          (num_functions=2,num_points=2) :
-         Function 0
-         [ [ [ 0 ]  ]  ]  [ [ [ 0 ]  ]  ]  
-         Function 1
-         [ [ [ 0 ]  ]  ]  [ [ [ 0 ]  ]  ]  
+      Gradient:
+         Fill flags:
+            fill = 0    filled = 0
+      
+      Hessian:
+         Fill flags:
+            fill = 1    filled = 1
+         Data:
+             (num_functions=2,num_points=2) :
+            Function 0
+            [ [ [ 0 ]  ]  ]  [ [ [ 0 ]  ]  ]  
+            Function 1
+            [ [ [ 0 ]  ]  ]  [ [ [ 0 ]  ]  ]  
+         
+      
+      Divergence:
+         Fill flags:
+            fill = 0    filled = 0
       
    
 
 Cache for sub-element(s) with dimension: 0
    Sub-element id: 0
-      Fill flags:
-         Point
+      Value:
+         Fill flags:
             fill = 0    filled = 0
-         Value
+      
+      Gradient:
+         Fill flags:
             fill = 0    filled = 0
-         Gradient
+      
+      Hessian:
+         Fill flags:
             fill = 0    filled = 0
-         Hessian
-            fill = 0    filled = 0
-         Divergence
+      
+      Divergence:
+         Fill flags:
             fill = 0    filled = 0
       
    
    Sub-element id: 1
-      Fill flags:
-         Point
+      Value:
+         Fill flags:
             fill = 0    filled = 0
-         Value
+      
+      Gradient:
+         Fill flags:
             fill = 0    filled = 0
-         Gradient
+      
+      Hessian:
+         Fill flags:
             fill = 0    filled = 0
-         Hessian
-            fill = 0    filled = 0
-         Divergence
+      
+      Divergence:
+         Fill flags:
             fill = 0    filled = 0
       
    

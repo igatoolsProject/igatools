@@ -209,10 +209,10 @@ public:
     void print_cache_info(LogStream &out) const;
 
     using CType = boost::fusion::map<
-                  boost::fusion::pair<     _Value,ValueTable<Value>>,
-                  boost::fusion::pair<  _Gradient,ValueTable<Derivative<1>>>,
-                  boost::fusion::pair<   _Hessian,ValueTable<Derivative<2>>>,
-                  boost::fusion::pair<_Divergence,ValueTable<Div>>
+                  boost::fusion::pair<     _Value,DataWithFlagStatus<ValueTable<Value>>>,
+                  boost::fusion::pair<  _Gradient,DataWithFlagStatus<ValueTable<Derivative<1>>>>,
+                  boost::fusion::pair<   _Hessian,DataWithFlagStatus<ValueTable<Derivative<2>>>>,
+                  boost::fusion::pair<_Divergence,DataWithFlagStatus<ValueTable<Div>>>
                   >;
 
     using Cache = BasisValuesCache<dim,CType,FunctionFlags>;

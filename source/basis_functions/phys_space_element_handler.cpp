@@ -218,18 +218,18 @@ fill_cache(ElementAccessor &elem, const int j)
     Assert(local_cache != nullptr, ExcNullPtr());
     auto &cache =  local_cache->template get_sub_elem_cache<k>(j);
 
-    auto &flags = cache.flags_handler_;
+//    auto &flags = cache.flags_handler_;
 
-    if (flags.template fill<_Value>())
+    if (cache.template status_fill<_Value>())
     {
         auto &result = cache.template get_data<_Value>();
         const auto &ref_values = ref_elem.template get_basis<_Value,k>(j,DofProperties::active);
         push_fwd_elem.template transform_0<RefSpace::range,RefSpace::rank>
         (ref_values, result);
 
-        flags.template set_filled<_Value>(true);
+        cache.template set_status_filled<_Value>(true);
     }
-    if (flags.template fill<_Gradient>())
+    if (cache.template status_fill<_Gradient>())
     {
         const auto &ref_values = ref_elem.template get_basis<   _Value,k>(j,DofProperties::active);
         const auto &ref_der_1  = ref_elem.template get_basis<_Gradient,k>(j,DofProperties::active);
@@ -238,9 +238,9 @@ fill_cache(ElementAccessor &elem, const int j)
         (std::make_tuple(ref_values, ref_der_1), values,
          cache.template get_data<_Gradient>(), j);
 
-        flags.template set_filled<_Gradient>(true);
+        cache.template set_status_filled<_Gradient>(true);
     }
-    if (flags.template fill<_Hessian>())
+    if (cache.template status_fill<_Hessian>())
     {
         const auto &ref_values = ref_elem.template get_basis<   _Value,k>(j,DofProperties::active);
         const auto &ref_der_1  = ref_elem.template get_basis<_Gradient,k>(j,DofProperties::active);
@@ -252,14 +252,15 @@ fill_cache(ElementAccessor &elem, const int j)
          std::make_tuple(values,der_1),
          cache.template get_data<_Hessian>(), j);
 
-        flags.template set_filled<_Hessian>(true);
+        cache.template set_status_filled<_Hessian>(true);
     }
-    if (flags.template fill<_Divergence>())
+    if (cache.template status_fill<_Divergence>())
     {
         eval_divergences_from_gradients(
             cache.template get_data<_Gradient>(),
             cache.template get_data<_Divergence>());
-        flags.template set_filled<_Divergence>(true);
+
+        cache.template set_status_filled<_Divergence>(true);
     }
 
     cache.set_filled(true);

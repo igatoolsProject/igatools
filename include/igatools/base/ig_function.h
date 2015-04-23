@@ -168,32 +168,32 @@ private:
 
             auto &local_cache = function->get_cache(*func_elem);
             auto &cache = local_cache->template get_sub_elem_cache<sub_elem_dim>(j);
-            auto &flags = cache.flags_handler_;
+//            auto &flags = cache.flags_handler_;
 
             //TODO (martinelli Mar 27,2015): bad style. Use the ValueType mechanism in order to avoid the if-switch
-            if (flags.template fill<_Value>())
+            if (cache.template status_fill<_Value>())
             {
                 cache.template get_data<_Value>() =
                     space_elem->template linear_combination<_Value,sub_elem_dim>(*loc_coeff,j, *property);
-                flags.template set_filled<_Value>(true);
+                cache.template set_status_filled<_Value>(true);
             }
-            if (flags.template fill<_Gradient>())
+            if (cache.template status_fill<_Gradient>())
             {
                 cache.template get_data<_Gradient>() =
                     space_elem->template linear_combination<_Gradient,sub_elem_dim>(*loc_coeff,j, *property);
-                flags.template set_filled<_Gradient>(true);
+                cache.template set_status_filled<_Gradient>(true);
             }
-            if (flags.template fill<_Hessian>())
+            if (cache.template status_fill<_Hessian>())
             {
                 cache.template get_data<_Hessian>() =
                     space_elem->template linear_combination<_Hessian,sub_elem_dim>(*loc_coeff,j, *property);
-                flags.template set_filled<_Hessian>(true);
+                cache.template set_status_filled<_Hessian>(true);
             }
-            if (flags.template fill<_Divergence>())
+            if (cache.template status_fill<_Divergence>())
             {
                 cache.template get_data<_Divergence>() =
                     space_elem->template linear_combination<_Divergence,sub_elem_dim>(*loc_coeff,j, *property);
-                flags.template set_filled<_Divergence>(true);
+                cache.template set_status_filled<_Divergence>(true);
             }
 
             cache.set_filled(true);

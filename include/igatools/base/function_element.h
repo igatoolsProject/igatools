@@ -177,11 +177,11 @@ public:
 private:
 
     using CType = boost::fusion::map<
-                  boost::fusion::pair<     _Value,ValueVector<Value>>,
-                  boost::fusion::pair<  _Gradient,ValueVector<Derivative<1>>>,
-                  boost::fusion::pair<   _Hessian,ValueVector<Derivative<2>>>,
-                  boost::fusion::pair<_Divergence,ValueVector<Div>>,
-                  boost::fusion::pair<     _Point,ValueVector<Point>>
+                  boost::fusion::pair<     _Value,DataWithFlagStatus<ValueVector<Value>>>,
+                  boost::fusion::pair<  _Gradient,DataWithFlagStatus<ValueVector<Derivative<1>>>>,
+                  boost::fusion::pair<   _Hessian,DataWithFlagStatus<ValueVector<Derivative<2>>>>,
+                  boost::fusion::pair<_Divergence,DataWithFlagStatus<ValueVector<Div>>>,
+                  boost::fusion::pair<     _Point,DataWithFlagStatus<ValueVector<Point>>>
                   >;
 
     using Cache = FuncValuesCache<dim,CType,FunctionFlags>;
