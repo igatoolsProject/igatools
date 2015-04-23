@@ -147,7 +147,7 @@ private:
     struct InitCacheDispatcher : boost::static_visitor<void>
     {
         template<int sub_elem_dim>
-        void operator()(const Int<sub_elem_dim> &sub_elem)
+        void operator()(const Topology<sub_elem_dim> &sub_elem)
         {
             Assert(space_handler_ != nullptr, ExcNullPtr());
             space_handler_->template init_cache<sub_elem_dim>(*space_elem);
@@ -161,7 +161,7 @@ private:
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
         template<int sub_elem_dim>
-        void operator()(const Int<sub_elem_dim> &sub_elem)
+        void operator()(const Topology<sub_elem_dim> &sub_elem)
         {
             Assert(space_handler_ != nullptr, ExcNullPtr());
             space_handler_->template fill_cache<sub_elem_dim>(*space_elem,j);

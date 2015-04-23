@@ -113,7 +113,7 @@ public:
     void init_cache(ElementAccessor &elem, const topology_variant &k1) override
     {
         base_t::init_cache(elem, k1);
-        sup_func_->init_cache(sup_elem_, Int<sub_dim>());
+        sup_func_->init_cache(sup_elem_, Topology<sub_dim>());
     }
 
     void fill_cache(ElementAccessor &elem, const topology_variant &k1, const int j) override
@@ -125,7 +125,7 @@ public:
         sup_elem_->move_to(elem_map_[el_it]->get_flat_index());
 
         base_t::fill_cache(elem,k1,j);
-        sup_func_->fill_cache(sup_elem_, Int<sub_dim>(),s_id_);
+        sup_func_->fill_cache(sup_elem_, Topology<sub_dim>(),s_id_);
         auto &local_cache = this->get_cache(elem);
         auto &cache = local_cache->template get_value_cache<sub_dim>(j);
         auto &flags = cache.flags_handler_;
@@ -269,7 +269,7 @@ public:
     void init_cache(ElementAccessor &elem, const topology_variant &k1) override
     {
         base_t::init_cache(elem, k1);
-        sup_func_->init_cache(sup_elem_, Int<sub_dim>());
+        sup_func_->init_cache(sup_elem_, Topology<sub_dim>());
     }
 
     void fill_cache(ElementAccessor &elem, const topology_variant &k1, const int j) override
@@ -282,7 +282,7 @@ public:
         sup_elem_->move_to(elem_map_[el_it]->get_flat_index());
 
         base_t::fill_cache(elem, k1, j);
-        sup_func_->fill_cache(sup_elem_,Int<sub_dim>(),s_id_);
+        sup_func_->fill_cache(sup_elem_,Topology<sub_dim>(),s_id_);
         auto &local_cache = this->get_cache(elem);
         auto &cache = local_cache->template get_value_cache<sub_dim>(j);
         auto &flags = cache.flags_handler_;

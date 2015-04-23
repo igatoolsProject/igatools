@@ -41,14 +41,8 @@ public:
     using ElementIterator = typename Space::ElementIterator;
     using ElementAccessor = typename Space::ElementAccessor;
 
-    static const int l = iga::max(0, dim-num_sub_elem);
-
-    using v2 = typename seq<Int, l, dim>::type;
-    using topology_variant = typename boost::make_variant_over<v2>::type;
-
-
-    using v3 = typename seq<Quadrature, l, dim>::type;
-    using eval_pts_variant = typename boost::make_variant_over<v3>::type;
+    using topology_variant = TopologyVariants<dim>;
+    using eval_pts_variant = SubElemVariants<Quadrature,dim>;
 
 
     static std::shared_ptr<ReferenceElementHandler<dim,range,rank> >
@@ -128,7 +122,7 @@ public:
     template <int k>
     void init_cache(ElementAccessor &elem)
     {
-        this->init_cache(elem,Int<k>());
+        this->init_cache(elem,Topology<k>());
     }
 
     ///@}
@@ -141,7 +135,7 @@ public:
     template<int k>
     void fill_cache(ElementAccessor &elem, const int j)
     {
-        this->fill_cache(elem,Int<k>(),j);
+        this->fill_cache(elem,Topology<k>(),j);
     }
 
     ///@}
@@ -149,10 +143,10 @@ public:
 
     virtual void print_info(LogStream &out) const = 0;
 
-    template <int k = dim>
+    template <int sub_elem_dim = dim>
     Size get_num_points() const
     {
-        return grid_handler_.template get_num_points<k>();
+        return grid_handler_.template get_num_points<sub_elem_dim>();
     }
 
 protected:

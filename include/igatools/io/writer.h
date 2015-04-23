@@ -367,7 +367,7 @@ add_field(shared_ptr<const Function<dim, codim, range, rank>> function,
     auto f_elem = func->begin();
     auto f_end  = func->end();
 
-    const auto topology = Int<dim>();
+    const auto topology = Topology<dim>();
 
     func->init_cache(f_elem,topology);
 

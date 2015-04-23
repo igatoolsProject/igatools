@@ -68,12 +68,15 @@ void sub_map(const int n_knots = 2)
 
         auto f_elem =  sub_func->begin();
         auto end    =  sub_func->end();
-        sub_func->init_cache(f_elem, Int<sub_dim>());
+
+        const auto topology = Topology<sub_dim>();
+
+        sub_func->init_cache(f_elem, topology);
 
 
         for (; f_elem != end; ++f_elem)
         {
-            sub_func->fill_cache(f_elem, Int<sub_dim>(),0);
+            sub_func->fill_cache(f_elem, topology,0);
             f_elem->template get_values<_Value,sub_dim>(0).print_info(out);
             out << endl;
             f_elem->template get_values<_Gradient,sub_dim>(0).print_info(out);

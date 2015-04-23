@@ -142,7 +142,7 @@ template<int sub_elem_dim>
 void
 NURBSElementHandler<dim_, range_, rank_>::
 InitCacheDispatcher::
-operator()(const Int<sub_elem_dim> &sub_elem)
+operator()(const Topology<sub_elem_dim> &sub_elem)
 {
     Assert(grid_handler_ != nullptr,ExcNullPtr());
     Assert(elem_ != nullptr,ExcNullPtr());
@@ -202,7 +202,7 @@ template<int sub_elem_dim>
 void
 NURBSElementHandler<dim_, range_, rank_>::
 FillCacheDispatcher::
-operator()(const Int<sub_elem_dim> &sub_elem)
+operator()(const Topology<sub_elem_dim> &sub_elem)
 {
     Assert(nrb_elem_ != nullptr, ExcNullPtr());
 

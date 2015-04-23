@@ -194,7 +194,7 @@ private:
     struct InitCacheDispatcher : boost::static_visitor<void>
     {
         template<int sub_elem_dim>
-        void operator()(const Int<sub_elem_dim> &sub_elem);
+        void operator()(const Topology<sub_elem_dim> &sub_elem);
 
         GridElementHandler<dim_> *grid_handler_;
         ReferenceElement<dim_,range_,rank_> *elem_;
@@ -208,7 +208,7 @@ private:
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
         template<int sub_elem_dim>
-        void operator()(const Int<sub_elem_dim> &sub_elem);
+        void operator()(const Topology<sub_elem_dim> &sub_elem);
 
         /**
          * Computes the value of the non-zero NURBS basis

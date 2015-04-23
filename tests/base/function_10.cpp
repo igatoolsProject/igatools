@@ -57,7 +57,7 @@ void test()
     auto elem = F->begin();
     auto end  = F->end();
 
-    const auto topology = Int<dim>();
+    const auto topology = Topology<dim>();
     F->init_cache(*elem,topology);
     for (; elem != end; ++elem)
     {

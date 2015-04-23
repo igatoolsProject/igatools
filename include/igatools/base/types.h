@@ -27,8 +27,12 @@
 #include <cmath>
 #include <cstdint>
 #include <iostream>
-#include <boost/tti/has_member_function.hpp>
 
+
+#include <boost/tti/has_member_function.hpp>
+#include <boost/mpl/int.hpp>
+#include <boost/mpl/vector.hpp>
+#include <boost/variant.hpp>
 
 IGA_NAMESPACE_OPEN
 
@@ -532,11 +536,46 @@ enum class ElementProperty : int
 };
 
 
+
 // TODO (pauletti, Nov 14, 2014): delete after gcc implements correct std::max
 constexpr int max(int a, int b)
 {
     return a>b ? a : b;
 }
+
+
+//---------------------------------------------------------------------------------------
+template<template<int> class Q, int start, std::size_t N>
+struct seq;
+
+template<template<int> class Q, int start>
+struct seq<Q, start, start>
+{
+    using type = boost::mpl::vector<Q<start>>;
+};
+
+template<template<int> class Q, int start, std::size_t N>
+struct seq
+{
+    using v1 = typename seq<Q, start, N-1>::type;
+    using type = typename boost::mpl::push_back<v1, Q<N>>::type;
+};
+
+
+template <template<int> class T,int dim>
+using SubElemVariants = typename boost::make_variant_over<typename seq<T, iga::max(0, dim-num_sub_elem), dim>::type>::type;
+
+
+template <int dim>
+using Topology = boost::mpl::int_<dim>;
+
+
+template <int dim>
+using TopologyVariants = SubElemVariants<Topology,dim>;
+//---------------------------------------------------------------------------------------
+
+
+
 
 IGA_NAMESPACE_CLOSE
 

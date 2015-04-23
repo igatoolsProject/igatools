@@ -39,12 +39,14 @@ void values_of_F(Function<dim, codim, range> &F)
     auto elem = F.begin();
     auto end  = F.end();
 
-    F.init_cache(elem, Int<dim>());
+    const auto topology = Topology<dim>();
+
+    F.init_cache(elem, topology);
     for (; elem != end; ++elem)
     {
         out.begin_item("Element " + std::to_string(elem->get_flat_index()));
 
-        F.fill_cache(elem, Int<dim>(), 0);
+        F.fill_cache(elem, topology, 0);
 //        elem->get_points().print_info(out);
 //        out << endl;
         out.begin_item("Value ");

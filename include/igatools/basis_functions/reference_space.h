@@ -241,17 +241,15 @@ public:
 
     virtual std::set<Index> get_interior_dofs() const = 0;
 
-    static const int l = iga::max(0, dim_-num_sub_elem);
-    using v2 = typename seq<Int, l, dim_>::type;
-    using topology_variant = typename boost::make_variant_over<v2>::type;
+    using topology_variant = TopologyVariants<dim_>;
+
 
     virtual std::set<Index> get_boundary_dofs(const int s_id, const topology_variant &k) const = 0;
 
     template<int k>
     std::set<Index> get_boundary_dofs(const int s_id) const
     {
-        const auto topology = Int<k>();
-        return this-> get_boundary_dofs(s_id,  topology);
+        return this-> get_boundary_dofs(s_id,Topology<k>());
     }
     /** @name Functions involving the element iterator */
     ///@{

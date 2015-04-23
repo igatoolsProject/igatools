@@ -89,7 +89,7 @@ void run_test(std::string &file_name)
     auto map_elem     = map->begin();
     auto map_elem_end = map->end();
 
-    const auto topology = Int<dim>();
+    const auto topology = Topology<dim>();
 
     map->init_cache(*map_elem,topology);
 

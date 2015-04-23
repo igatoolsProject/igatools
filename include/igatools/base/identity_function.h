@@ -100,7 +100,7 @@ private:
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
         template<int sub_elem_dim>
-        void operator()(const Int<sub_elem_dim> &sub_elem)
+        void operator()(const Topology<sub_elem_dim> &sub_elem)
         {
             auto &local_cache = function->get_cache(*elem);
             auto &cache = local_cache->template get_value_cache<sub_elem_dim>(j);

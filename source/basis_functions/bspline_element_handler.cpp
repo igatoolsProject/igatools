@@ -205,7 +205,7 @@ operator()(const Quadrature<sub_elem_dim> &quad1)
 
     const auto &lengths = grid_handler_->get_grid()->get_element_lengths();
 
-    for (auto &s_id: Topology::template elems_ids<sub_elem_dim>())
+    for (auto &s_id: UnitElement<dim_>::template elems_ids<sub_elem_dim>())
     {
         auto &g_cache = cacheutils::extract_sub_elements_data<sub_elem_dim>(*splines1d_)[s_id];
 
@@ -217,7 +217,7 @@ operator()(const Quadrature<sub_elem_dim> &quad1)
         // Allocate space for the BasisValues1D
         for (auto comp : active_components_id)
         {
-            for (const int dir : Topology::active_directions)
+            for (const int dir : UnitElement<dim_>::active_directions)
             {
                 const auto &intervals_id = intervals_id_directions_[dir];
 
@@ -252,7 +252,7 @@ operator()(const Quadrature<sub_elem_dim> &quad1)
         LengthCompContainer len_right(end_interval.get_comp_map());
 
         // First/last interval treatment
-        for (const int dir : Topology::active_directions)
+        for (const int dir : UnitElement<dim_>::active_directions)
         {
             const auto &intervals_id = intervals_id_directions_[dir];
 
@@ -375,7 +375,7 @@ reset_selected_elements(
             intervals_id_unique[dir].insert(elem_tensor_id[dir]);
     }
 
-    for (const int dir : Topology::active_directions)
+    for (const int dir : UnitElement<dim_>::active_directions)
     {
         reset_impl_.intervals_id_directions_[dir].assign(
             intervals_id_unique[dir].begin(),intervals_id_unique[dir].end());
@@ -396,7 +396,7 @@ template<int sub_elem_dim>
 void
 BSplineElementHandler<dim_, range_, rank_>::
 InitCacheDispatcher::
-operator()(const Int<sub_elem_dim> &sub_elem)
+operator()(const Topology<sub_elem_dim> &sub_elem)
 {
     Assert(grid_handler_ != nullptr,ExcNullPtr());
     Assert(elem_ != nullptr,ExcNullPtr());
@@ -417,7 +417,7 @@ operator()(const Int<sub_elem_dim> &sub_elem)
     const auto n_points = grid_handler_->template get_num_points<sub_elem_dim>();
     const auto flag = (*flags_)[sub_elem_dim];
 
-    for (auto &s_id: Topology::template elems_ids<sub_elem_dim>())
+    for (auto &s_id: UnitElement<dim_>::template elems_ids<sub_elem_dim>())
     {
         auto &s_cache = cache->template get_value_cache<sub_elem_dim>(s_id);
         s_cache.resize(flag, n_points, n_basis);
@@ -630,7 +630,7 @@ template<int sub_elem_dim>
 void
 BSplineElementHandler<dim_, range_, rank_>::
 FillCacheDispatcher::
-operator()(const Int<sub_elem_dim> &sub_elem)
+operator()(const Topology<sub_elem_dim> &sub_elem)
 {
     Assert(grid_handler_ != nullptr,ExcNullPtr());
     grid_handler_->template fill_cache<sub_elem_dim>(elem_->as_cartesian_grid_element_accessor(),j_);

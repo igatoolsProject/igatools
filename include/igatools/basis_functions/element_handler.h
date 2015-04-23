@@ -44,12 +44,6 @@ public:
     {
         return static_cast<DerivedElemHandler &>(*this);
     }
-    /*
-        static const int l = iga::max(0, dim-num_sub_elem);
-
-        using v2 = typename seq<Int, l, dim>::type;
-        using topology_variant = typename boost::make_variant_over<v2>::type;
-    //*/
 
     /**
      * @name Reset functions
