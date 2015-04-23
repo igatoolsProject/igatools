@@ -97,8 +97,8 @@ public:
     auto &get_values_from_cache(const int topology_id = 0) const
     {
         Assert(local_cache_ != nullptr,ExcNullPtr());
-        const auto &cache = local_cache_->template get_value_cache<topology_dim>(topology_id);
-        return cache.template get_der<ValueType>();
+        const auto &cache = local_cache_->template get_sub_elem_cache<topology_dim>(topology_id);
+        return cache.template get_data<ValueType>();
     }
 
     template<int k>

@@ -192,7 +192,7 @@ init_cache(ElementAccessor &elem)
     const auto n_basis = ref_elem.get_num_basis(DofProperties::active);
     for (auto &s_id: UnitElement<dim>::template elems_ids<k>())
     {
-        auto &s_cache = cache->template get_value_cache<k>(s_id);
+        auto &s_cache = cache->template get_sub_elem_cache<k>(s_id);
         const auto n_points = ref_space_handler_->template get_num_points<k>();
 
         s_cache.resize(flags_[k], n_points, n_basis);
@@ -216,13 +216,13 @@ fill_cache(ElementAccessor &elem, const int j)
 
     auto &local_cache = elem.PhysSpace::ElementAccessor::parent_t::local_cache_;
     Assert(local_cache != nullptr, ExcNullPtr());
-    auto &cache =  local_cache->template get_value_cache<k>(j);
+    auto &cache =  local_cache->template get_sub_elem_cache<k>(j);
 
     auto &flags = cache.flags_handler_;
 
     if (flags.template fill<_Value>())
     {
-        auto &result = cache.template get_der<_Value>();
+        auto &result = cache.template get_data<_Value>();
         const auto &ref_values = ref_elem.template get_basis<_Value,k>(j,DofProperties::active);
         push_fwd_elem.template transform_0<RefSpace::range,RefSpace::rank>
         (ref_values, result);
@@ -233,10 +233,10 @@ fill_cache(ElementAccessor &elem, const int j)
     {
         const auto &ref_values = ref_elem.template get_basis<   _Value,k>(j,DofProperties::active);
         const auto &ref_der_1  = ref_elem.template get_basis<_Gradient,k>(j,DofProperties::active);
-        const auto &values = cache.template get_der<_Value>();
+        const auto &values = cache.template get_data<_Value>();
         push_fwd_elem.template transform_1<PhysSpace::range,PhysSpace::rank, k>
         (std::make_tuple(ref_values, ref_der_1), values,
-         cache.template get_der<_Gradient>(), j);
+         cache.template get_data<_Gradient>(), j);
 
         flags.template set_filled<_Gradient>(true);
     }
@@ -245,20 +245,20 @@ fill_cache(ElementAccessor &elem, const int j)
         const auto &ref_values = ref_elem.template get_basis<   _Value,k>(j,DofProperties::active);
         const auto &ref_der_1  = ref_elem.template get_basis<_Gradient,k>(j,DofProperties::active);
         const auto &ref_der_2  = ref_elem.template get_basis< _Hessian,k>(j,DofProperties::active);
-        const auto &values = cache.template get_der<   _Value>();
-        const auto &der_1  = cache.template get_der<_Gradient>();
+        const auto &values = cache.template get_data<   _Value>();
+        const auto &der_1  = cache.template get_data<_Gradient>();
         push_fwd_elem.template transform_2<PhysSpace::range,PhysSpace::rank, k>
         (std::make_tuple(ref_values, ref_der_1, ref_der_2),
          std::make_tuple(values,der_1),
-         cache.template get_der<_Hessian>(), j);
+         cache.template get_data<_Hessian>(), j);
 
         flags.template set_filled<_Hessian>(true);
     }
     if (flags.template fill<_Divergence>())
     {
         eval_divergences_from_gradients(
-            cache.template get_der<_Gradient>(),
-            cache.template get_der<_Divergence>());
+            cache.template get_data<_Gradient>(),
+            cache.template get_data<_Divergence>());
         flags.template set_filled<_Divergence>(true);
     }
 
@@ -277,13 +277,13 @@ fill_element_cache(ElementAccessor &elem) -> void
     PFCache::fill_element(elem);
 
     auto &cache = elem.PhysSpace::ElementAccessor::parent_t::local_cache_;
-    auto &elem_cache = cache->template get_value_cache<0>(0);
+    auto &elem_cache = cache->template get_sub_elem_cache<0>(0);
 
     if (elem_cache.flags_handler_.fill_values())
     {
         const auto &ref_values = ref_elem.template get_basis_ders<0,0>(0);
         elem.template transform_0<RefSpace::range,RefSpace::rank>
-        (ref_values, elem_cache.template get_der<0>());
+        (ref_values, elem_cache.template get_data<0>());
 
         elem_cache.flags_handler_.set_values_filled(true);
     }
@@ -293,10 +293,10 @@ fill_element_cache(ElementAccessor &elem) -> void
     {
         const auto &ref_values = ref_elem.template get_basis_ders<0,0>(0);
         const auto &ref_der_1  = ref_elem.template get_basis_ders<0,1>(0);
-        const auto &values = elem_cache.template get_der<0>();
+        const auto &values = elem_cache.template get_data<0>();
         elem.template transform_1<PhysSpace::range,PhysSpace::rank>
         (std::make_tuple(ref_values, ref_der_1), values,
-        elem_cache.template get_der<1>());
+        elem_cache.template get_data<1>());
 
         elem_cache.flags_handler_.set_gradients_filled(true);
     }
@@ -313,7 +313,7 @@ fill_element_cache(ElementAccessor &elem) -> void
                 dummy,
                 ref_space_element_accessor_.get_basis_gradients(topology_id),
                 ref_space_element_accessor_.get_basis_hessians(topology_id),
-                elem_cache.template get_ders<2>(),
+                elem_cache.template get_datas<2>(),
                 topology_id);
 
         }

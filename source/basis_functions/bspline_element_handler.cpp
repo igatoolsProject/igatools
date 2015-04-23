@@ -419,7 +419,7 @@ operator()(const Topology<sub_elem_dim> &sub_elem)
 
     for (auto &s_id: UnitElement<dim_>::template elems_ids<sub_elem_dim>())
     {
-        auto &s_cache = cache->template get_value_cache<sub_elem_dim>(s_id);
+        auto &s_cache = cache->template get_sub_elem_cache<sub_elem_dim>(s_id);
         s_cache.resize(flag, n_points, n_basis);
     }
 }
@@ -641,7 +641,7 @@ operator()(const Topology<sub_elem_dim> &sub_elem)
 
     Assert(elem_ != nullptr, ExcNullPtr());
     Assert(elem_->get_local_cache() != nullptr, ExcNullPtr());
-    auto &cache = elem_->get_local_cache()->template get_value_cache<sub_elem_dim>(j_);
+    auto &cache = elem_->get_local_cache()->template get_sub_elem_cache<sub_elem_dim>(j_);
 
     const auto &elem_t_index = elem_->get_tensor_index();
 
@@ -649,27 +649,27 @@ operator()(const Topology<sub_elem_dim> &sub_elem)
     auto val_1d = g_cache.get_element_values(elem_t_index);
     if (flags.template fill<_Value>())
     {
-        auto &values = cache.template get_der<_Value>();
+        auto &values = cache.template get_data<_Value>();
         evaluate_bspline_values(val_1d, values);
         flags.template set_filled<_Value>(true);
     }
     if (flags.template fill<_Gradient>())
     {
-        auto &values = cache.template get_der<_Gradient>();
+        auto &values = cache.template get_data<_Gradient>();
         evaluate_bspline_derivatives<1>(val_1d, values);
         flags.template set_filled<_Gradient>(true);
     }
     if (flags.template fill<_Hessian>())
     {
-        auto &values = cache.template get_der<_Hessian>();
+        auto &values = cache.template get_data<_Hessian>();
         evaluate_bspline_derivatives<2>(val_1d, values);
         flags.template set_filled<_Hessian>(true);
     }
     if (flags.template fill<_Divergence>())
     {
         eval_divergences_from_gradients(
-            cache.template get_der<_Gradient>(),
-            cache.template get_der<_Divergence>());
+            cache.template get_data<_Gradient>(),
+            cache.template get_data<_Divergence>());
         flags.template set_filled<_Divergence>(true);
     }
 

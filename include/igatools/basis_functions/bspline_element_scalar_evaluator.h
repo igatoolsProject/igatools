@@ -123,7 +123,7 @@ public:
      * Returns a const view to the one-dimensional derivatives of given @p order,
      * along all coordinate directions.
      */
-    const std::array<Values1DConstView,dim> &get_derivative_components_view(const int order) const;
+    const std::array<Values1DConstView,dim> &get_dataivative_components_view(const int order) const;
 
     /**
      * Returns a const view to the one-dimensional derivative of given @p order,

@@ -65,12 +65,12 @@ public:
         values_.print_info(out);
     }
 
-    auto &get_derivative(const int order)
+    auto &get_dataivative(const int order)
     {
         return values_[order];
     }
 
-    auto const &get_derivative(const int order) const
+    auto const &get_dataivative(const int order) const
     {
         return values_[order];
     }
@@ -178,9 +178,9 @@ public:
                   const TensorIndex<dim> &func,
                   const TensorIndex<dim> &pt) const
     {
-        Real res = (dim>0) ? (*this)[0]->get_derivative(order[0])(func[0],pt[0]) : 1.0;
+        Real res = (dim>0) ? (*this)[0]->get_dataivative(order[0])(func[0],pt[0]) : 1.0;
         for (int i = 1; i < dim; ++i)
-            res *= (*this)[i]->get_derivative(order[i])(func[i], pt[i]);
+            res *= (*this)[i]->get_dataivative(order[i])(func[i], pt[i]);
         return res;
     }
 

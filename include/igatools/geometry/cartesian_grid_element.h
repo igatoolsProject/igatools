@@ -60,10 +60,6 @@ public:
     /** Type required by the CartesianGridIterator templated iterator */
     using ContainerType = const CartesianGrid<dim>;
 
-    /**
-     * Alias for the (static) class holding the topological information.
-     */
-    using Topology = UnitElement<dim>;
 
     using Point = Points<dim>;
 
@@ -354,8 +350,8 @@ private:
     get_values_from_cache(const int topology_id) const
     {
         Assert(local_cache_ != nullptr, ExcNullPtr());
-        const auto &cache = local_cache_->template get_value_cache<topology_dim>(topology_id);
-        return cache.template get_der<ValueType>();
+        const auto &cache = local_cache_->template get_sub_elem_cache<topology_dim>(topology_id);
+        return cache.template get_data<ValueType>();
     }
 
 

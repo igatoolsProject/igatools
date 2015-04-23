@@ -142,8 +142,8 @@ public:
     get_values(const int j) const
     {
         Assert(local_cache_ != nullptr,ExcNullPtr());
-        const auto &cache = local_cache_->template get_value_cache<k>(j);
-        return cache.template get_der<ValueType>();
+        const auto &cache = local_cache_->template get_sub_elem_cache<k>(j);
+        return cache.template get_data<ValueType>();
     }
 
 

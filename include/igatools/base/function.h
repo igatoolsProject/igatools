@@ -287,7 +287,7 @@ private:
 
             for (auto &s_id: UnitElement<dim_>::template elems_ids<sub_elem_dim>())
             {
-                auto &s_cache = cache->template get_value_cache<sub_elem_dim>(s_id);
+                auto &s_cache = cache->template get_sub_elem_cache<sub_elem_dim>(s_id);
 //                auto &quad = std::get<T::k>(*quad_);
                 auto &quad = cacheutils::extract_sub_elements_data<sub_elem_dim>(*quad_);
                 s_cache.resize((*flags_)[sub_elem_dim], quad.get_num_points());

@@ -98,11 +98,10 @@ init_all_caches(ElementAccessor &elem)
         using Cache = typename ElementAccessor::CacheType;
         cache = shared_ptr<Cache>(new Cache);
     }
-//    init_unif_caches(flags_[dim], std::get<dim>(quad_), cache->values_);
-//    init_unif_caches(flags_[dim], boost::fusion::at_c<dim>(quad_), cache->values_);
+
     const auto &quad = cacheutils::extract_sub_elements_data<dim>(quad_);
 
-    boost::fusion::for_each(cache->values_,
+    boost::fusion::for_each(cache->cache_all_sub_elems_,
                             [&](auto & value_dim) -> void
     {
         using PairType = typename std::remove_reference<decltype(value_dim)>::type;
@@ -138,7 +137,7 @@ init_cache(ElementAccessor &elem)
 
     for (auto &s_id: Topology::template elems_ids<k>())
     {
-        auto &s_cache = cache->template get_value_cache<k>(s_id);
+        auto &s_cache = cache->template get_sub_elem_cache<k>(s_id);
 //        auto &quad = std::get<k>(quad_);
 //        s_cache.resize(flags_[k], extend_sub_elem_quad<k, dim>(quad, s_id));
         s_cache.resize(flags_[k], extend_sub_elem_quad<k, dim>(
@@ -156,7 +155,7 @@ GridElementHandler<dim>::
 fill_cache(ElementAccessor &elem, const int j)
 {
     Assert(elem.local_cache_ != nullptr, ExcNullPtr());
-    auto &cache = elem.local_cache_->template get_value_cache<k>(j);
+    auto &cache = elem.local_cache_->template get_sub_elem_cache<k>(j);
 
     auto &flags = cache.flags_handler_;
 
@@ -168,7 +167,7 @@ fill_cache(ElementAccessor &elem, const int j)
         const int n_pts = cache.unit_points_.get_num_points();
 
         const auto &unit_pts = cache.unit_points_;
-        auto &ref_pts = cache.template get_der<_Point>();
+        auto &ref_pts = cache.template get_data<_Point>();
         for (int pt = 0 ; pt < n_pts ; ++pt)
         {
             const auto &unit_pt = unit_pts[pt];
@@ -183,7 +182,7 @@ fill_cache(ElementAccessor &elem, const int j)
 
     if (flags.template fill<_W_Measure>())
     {
-        cache.template get_der<_W_Measure>() = elem.template get_measure<k>(j) * cache.unit_weights_;
+        cache.template get_data<_W_Measure>() = elem.template get_measure<k>(j) * cache.unit_weights_;
         flags.template set_filled<_W_Measure>(true);
     }
 

@@ -103,7 +103,7 @@ private:
         void operator()(const Topology<sub_elem_dim> &sub_elem)
         {
             auto &local_cache = function->get_cache(*elem);
-            auto &cache = local_cache->template get_value_cache<sub_elem_dim>(j);
+            auto &cache = local_cache->template get_sub_elem_cache<sub_elem_dim>(j);
             auto &flags = cache.flags_handler_;
 
             if (!flags.fill_none())
@@ -116,7 +116,7 @@ private:
 
                     if (flags.template fill<_Point>())
                     {
-                        auto &cache_pts = cache.template get_der<_Point>();
+                        auto &cache_pts = cache.template get_data<_Point>();
                         cache_pts = points;
 
                         flags.template set_filled<_Point>(true);
@@ -125,7 +125,7 @@ private:
                     {
                         const auto n_pts = points.get_num_points();
 
-                        auto &values = cache.template get_der<_Value>();
+                        auto &values = cache.template get_data<_Value>();
                         for (int pt = 0 ; pt < n_pts ; ++pt)
                             for (int i = 0 ; i < dim ; ++i)
                                 values[pt][i] = points[pt][i];
@@ -137,7 +137,7 @@ private:
                 {
                     // TODO (pauletti, Apr 17, 2015): this can be static const
                     auto identity = create_id_tensor<dim,space_dim>();
-                    cache.template get_der<_Gradient>().fill(identity);
+                    cache.template get_data<_Gradient>().fill(identity);
 //                    std::get<1>(cache.values_).fill(identity);
 
                     flags.template set_filled<_Gradient>(true);
@@ -146,7 +146,7 @@ private:
                 {
                     // TODO (pauletti, Apr 17, 2015): this can be static const
                     Hessian zero;
-                    cache.template get_der<_Hessian>().fill(zero);
+                    cache.template get_data<_Hessian>().fill(zero);
                 }
             }
             cache.set_filled(true);

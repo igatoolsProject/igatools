@@ -53,7 +53,6 @@ public:
     using base_t::get_grid;
     using base_t::is_boundary;
 
-    using Topology = typename base_t::Topology;
 
     /** @name Constructors */
     ///@{

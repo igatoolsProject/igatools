@@ -158,8 +158,8 @@ private:
     {
         for (int order = 0; order < max_der; ++order)
         {
-            auto &spline = spline_vals.get_derivative(order);
-            const auto &berns = bernstein_vals.get_derivative(order);
+            auto &spline = spline_vals.get_dataivative(order);
+            const auto &berns = bernstein_vals.get_dataivative(order);
             spline = oper.scale_action(std::pow(one_len, order), berns);
         }
     }
@@ -173,7 +173,7 @@ private:
     {
         bernstein_values.resize(max_der, deg+1, pt_coords.size());
         for (int order = 0; order < max_der; ++order)
-            bernstein_values.get_derivative(order) =
+            bernstein_values.get_dataivative(order) =
                 BernsteinBasis::derivative(order, deg, pt_coords);
     }
 

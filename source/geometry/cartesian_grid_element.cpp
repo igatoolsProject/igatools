@@ -133,58 +133,6 @@ move_to(const Index flat_index)
 }
 
 
-#if 0
-template <int dim>
-void
-CartesianGridElement<dim>::
-move_to(const TensorIndex<dim> &tensor_index)
-{
-    move_to(grid_->tensor_to_flat(tensor_index));
-}
-
-template <int dim>
-bool
-CartesianGridElement<dim>::
-jump(const TensorIndex<dim> &increment)
-{
-    tensor_index_ += increment;
-
-    const auto n_elems = grid_->get_num_intervals();
-    bool valid_tensor_index = true;
-    for (const auto i : Topology::active_directions)
-        if (tensor_index_[i] < 0 || tensor_index_[i] >= n_elems[i])
-        {
-            valid_tensor_index = false;
-            flat_index_ = IteratorState::invalid;
-            break;
-        }
-
-    if (valid_tensor_index)
-        flat_index_ = grid_->tensor_to_flat(tensor_index_);
-
-    return valid_tensor_index;
-}
-
-template <int dim>
-void
-CartesianGridElement<dim>::
-operator++()
-{
-    const auto &active_elems = grid_->get_elements_id_same_property(
-                                   CartesianGrid<dim>::ElementProperty::active);
-    const auto elem_begin = active_elems.begin();
-    const auto elem_end  = active_elems.end();
-
-    Index index = this->get_flat_index();
-    auto elem = std::find(elem_begin,elem_end,index);
-    auto elem_next = ++elem;
-    if (elem_next == elem_end)
-        index = IteratorState::pass_the_end;
-    else
-        index = *elem_next;
-    this->move_to(index);
-}
-#endif
 
 template <int dim>
 bool
@@ -314,7 +262,7 @@ vertex(const int i) const -> Point
     TensorIndex<dim> index = this->get_tensor_index();
 
     auto all_elems = UnitElement<dim>::all_elems;
-    for (const auto j : Topology::active_directions)
+    for (const auto j : UnitElement<dim>::active_directions)
     {
         auto vertex = std::get<0>(all_elems)[i];
         index[j] += vertex.constant_values[j];
@@ -333,7 +281,7 @@ is_boundary(const Index id) const
     const auto &n_elem = this->get_grid()->get_num_intervals();
     const auto &index = this->get_tensor_index();
 
-    auto &k_elem = Topology::template get_elem<k>(id);
+    auto &k_elem = UnitElement<dim>::template get_elem<k>(id);
 
     for (int i = 0; i < dim-k; ++i)
     {
@@ -355,7 +303,7 @@ bool
 CartesianGridElement<dim>::
 is_boundary() const
 {
-    for (auto &id : Topology::template elems_ids<k>())
+    for (auto &id : UnitElement<dim>::template elems_ids<k>())
     {
         auto res = is_boundary<k>(id);
         if (res)
@@ -375,7 +323,7 @@ get_measure(const int j) const
 {
     const auto lengths = this->template get_coordinate_lengths<k>(j);
 
-    auto &k_elem = Topology::template get_elem<k>(j);
+    auto &k_elem = UnitElement<dim>::template get_elem<k>(j);
 
     Real measure = 1.0;
     for (const int active_dir : k_elem.active_directions)
@@ -408,7 +356,7 @@ get_coordinate_lengths(const int j) const -> const Point
 {
     Point lengths;
 #if 0
-    auto &k_elem = Topology::template get_elem<k>(j);
+    auto &k_elem = UnitElement<dim>::template get_elem<k>(j);
 
     for (const int const_dir :k_elem.constant_directions)
         lengths[const_dir] = 0.0;
@@ -420,7 +368,7 @@ get_coordinate_lengths(const int j) const -> const Point
         lengths[active_dir] = knots_active_dir[j+1] - knots_active_dir[j];
     }
 #endif
-    for (const int active_dir : Topology::active_directions)
+    for (const int active_dir : UnitElement<dim>::active_directions)
     {
         const auto &knots_active_dir = grid_->get_knot_coordinates(active_dir);
         const int j = tensor_index_[active_dir];

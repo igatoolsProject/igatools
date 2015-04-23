@@ -33,6 +33,9 @@
 
 IGA_NAMESPACE_OPEN
 
+/**
+ * @brief This structure describes the possible two states of a cache associated to a given ValueType.
+ */
 struct FlagStatus
 {
     bool fill_ = false;
@@ -75,6 +78,15 @@ create_map_flags_data()
 }
 
 
+
+/**
+ * @brief Base class for defining an association between ValueType(s) and FlagStatus.
+ *
+ * Basically it is an associative container (a boost::fusion::map) in which the <tt>key</tt> is a ValueType
+ * and the associated <tt>value</tt> is a FlagStatus.
+ *
+ * The type defining the map is passed as template argument <tt>FusionMap_ValueType_FlagStatus</tt>.
+ */
 template<class FusionMap_ValueType_FlagStatus>
 class Flags
 {
@@ -91,7 +103,7 @@ protected:
 
 public:
     /**
-     * @name Functions used to query or modify the Flag status for a give ValueType
+     * @name Functions used to query or modify the Flag status for a given ValueType
      */
     ///@{
     /** Returns true if the quantity associated to @p ValueType must be filled. */
@@ -156,9 +168,9 @@ protected:
     FusionMap_ValueType_FlagStatus map_value_types_and_flag_status_;
 
     /**
-     * Sets the fill status given the input @p flags.
+     * Sets the fill status to TRUE for the types corresponing to the input @p flags.
      */
-    void set_fill_status_from_value_flags(const ValueFlags &flags)
+    void set_fill_status_true_from_value_flags(const ValueFlags &flags)
     {
         boost::fusion::for_each(map_value_types_and_flag_status_,
                                 [&](auto & type_and_status) -> void
@@ -174,7 +186,7 @@ protected:
 
 public:
     /**
-     * Returns the flas that are valid to be used with this class.
+     * Returns the flags that are valid to be used with this class.
      */
     ValueFlags get_valid_flags() const
     {

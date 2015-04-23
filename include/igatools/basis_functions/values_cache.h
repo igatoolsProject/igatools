@@ -43,6 +43,8 @@
 
 IGA_NAMESPACE_OPEN
 
+
+
 template<int dim,
          class CacheType,
          class FlagsType>
@@ -90,13 +92,13 @@ public:
 
 
     template<class ValueType>
-    auto &get_der()
+    auto &get_data()
     {
         return boost::fusion::at_key<ValueType>(values_);
     }
 
     template<class ValueType>
-    const auto &get_der() const
+    const auto &get_data() const
     {
         //TODO (martinelli, Apr 03,2015): uncomment this assertion
 //        Assert(flags_handler_.template filled<ValueType>(),
@@ -207,7 +209,7 @@ public:
 
 
 
-template <class Cache>
+template <class SubElemCache>
 class LocalCache
 {
 public:
@@ -226,26 +228,29 @@ public:
 
     void print_info(LogStream &out) const
     {
-        cacheutils::print_caches(values_, out);
+        cacheutils::print_caches(cache_all_sub_elems_, out);
     }
 
-    template <int topology_dim>
-    Cache &
-    get_value_cache(const int topology_id)
+    template <int sub_elem_dim>
+    SubElemCache &
+    get_sub_elem_cache(const int sub_elem_id)
     {
-        return cacheutils::extract_sub_elements_data<topology_dim>(values_)[topology_id];
+        return cacheutils::extract_sub_elements_data<sub_elem_dim>(cache_all_sub_elems_)[sub_elem_id];
     }
 
-    template <int topology_dim>
-    const Cache &
-    get_value_cache(const int topology_id) const
+    template <int sub_elem_dim>
+    const SubElemCache &
+    get_sub_elem_cache(const int sub_elem_id) const
     {
-        const auto &cache = cacheutils::extract_sub_elements_data<topology_dim>(values_)[topology_id];
+        const auto &cache = cacheutils::extract_sub_elements_data<sub_elem_dim>(cache_all_sub_elems_)[sub_elem_id];
         Assert(cache.is_filled() == true, ExcCacheNotFilled());
         return cache;
     }
 
-    CacheList<Cache, Cache::get_dim()> values_;
+    /**
+     * Cache for all sub-elements.
+     */
+    CacheList<SubElemCache, SubElemCache::get_dim()> cache_all_sub_elems_;
 
 };
 
