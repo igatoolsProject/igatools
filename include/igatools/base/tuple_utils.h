@@ -41,32 +41,12 @@ auto
 tuple_of_quads(std::index_sequence<I...>)
 {
     return boost::fusion::map<
-           boost::fusion::pair<boost::mpl::int_<(dim>I) ? dim-I : 0>,Quadrature<(dim>I) ? dim-I : 0> > ...>(
-               boost::fusion::pair<boost::mpl::int_<(dim>I) ? dim-I : 0>,Quadrature<(dim>I) ? dim-I : 0> >() ...);
+           boost::fusion::pair<Topology<(dim>I) ? dim-I : 0>,Quadrature<(dim>I) ? dim-I : 0> > ...>(
+               boost::fusion::pair<Topology<(dim>I) ? dim-I : 0>,Quadrature<(dim>I) ? dim-I : 0> >() ...);
 }
 
 template<int dim>
 using QuadList = decltype(tuple_of_quads<dim>(std::make_index_sequence<(num_sub_elem <= dim ? num_sub_elem+1 : 1)>()));
-
-
-template<class ValuesCache, int dim, std::size_t... I>
-auto
-tuple_of_caches(
-    std::index_sequence<I...>,
-    const Quadrature<dim> &q,
-    const ValuesCache &)
-{
-    using Topology = UnitElement<dim>;
-    return boost::fusion::map<boost::fusion::pair<boost::mpl::int_<(dim>I) ? dim-I : 0>,std::array<ValuesCache,Topology::template num_elem<(dim>I) ? dim-I : 0>()>> ...>(
-               boost::fusion::pair<boost::mpl::int_<(dim>I) ? dim-I : 0>,std::array<ValuesCache,Topology::template num_elem<(dim>I) ? dim-I : 0>()>>() ...);
-}
-
-
-template<class ValuesCache, int dim>
-using CacheList = decltype(tuple_of_caches(
-                               std::make_index_sequence<(num_sub_elem <= dim ? num_sub_elem+1 : 1)>(),
-                               Quadrature<dim>(),
-                               ValuesCache()));
 
 
 
@@ -76,7 +56,8 @@ namespace cacheutils
 {
 
 template<class FusionContainer>
-void print_caches(const FusionContainer &data, LogStream &out)
+void
+print_caches(const FusionContainer &data, LogStream &out)
 {
     boost::fusion::for_each(data,
                             [&out](const auto & data_same_topology_dim)
@@ -96,19 +77,44 @@ void print_caches(const FusionContainer &data, LogStream &out)
                            );
 }
 
+
+
+template<class CacheType>
+ValueFlags
+get_valid_flags_from_cache_type(const CacheType &cache)
+{
+    ValueFlags valid_flags = ValueFlags::none;
+
+    boost::fusion::for_each(cache,
+                            [&](const auto & type_and_status) -> void
+    {
+        using ValueType_Status = typename std::remove_reference<decltype(type_and_status)>::type;
+        using ValueType = typename ValueType_Status::first_type;
+
+        valid_flags |= ValueType::flag;
+    } // end lambda function
+                           );
+    return valid_flags;
+
+}
+
+
 template <int sub_elem_dim, class FusionContainer>
 const auto &
 extract_sub_elements_data(const FusionContainer &data)
 {
-    return boost::fusion::at_key<boost::mpl::int_<sub_elem_dim>>(data);
+    return boost::fusion::at_key<Topology<sub_elem_dim>>(data);
 }
 
 template <int sub_elem_dim, class FusionContainer>
 auto &
 extract_sub_elements_data(FusionContainer &data)
 {
-    return boost::fusion::at_key<boost::mpl::int_<sub_elem_dim>>(data);
+    return boost::fusion::at_key<Topology<sub_elem_dim>>(data);
 }
+
+
+
 
 }; // end namespace cacheutils
 

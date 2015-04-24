@@ -20,7 +20,12 @@
 
 #include <igatools/basis_functions/phys_space_element_handler.h>
 
+
+#include <functional>
+
 using std::shared_ptr;
+
+
 
 IGA_NAMESPACE_OPEN
 
@@ -77,8 +82,8 @@ space_to_ref_flag(const Transformation type, const ValueFlags flags)
 }
 
 
-auto
-space_to_pf_flag(const ValueFlags flags)
+void
+space_to_pf_flag(const ValueFlags flags, ValueFlags &map_flags, TransformationFlags &transf_flags)
 {
     ValueFlags transfer_flag =
         ValueFlags::measure |
@@ -87,18 +92,22 @@ space_to_pf_flag(const ValueFlags flags)
         ValueFlags::boundary_normal |
         ValueFlags::point;
 
-    ValueFlags pf_flag = flags & transfer_flag;
+    map_flags = ValueFlags::none;
+    map_flags = flags & transfer_flag;
 
+
+
+    TransformationFlags t_flags;
     if (contains(flags , ValueFlags::value))
-        pf_flag |= ValueFlags::tran_value;
+        t_flags |= TransformationFlags::tran_value;
 
     if (contains(flags , ValueFlags::gradient))
-        pf_flag |= ValueFlags::tran_gradient;
+        t_flags |= TransformationFlags::tran_gradient;
 
     if (contains(flags , ValueFlags::hessian))
-        pf_flag |= ValueFlags::tran_hessian;
+        t_flags |= TransformationFlags::tran_hessian;
 
-    return pf_flag;
+    transf_flags = t_flags;
 }
 
 };
@@ -131,10 +140,24 @@ void
 PhysSpaceElementHandler<dim,range,rank,codim>::
 reset(const ValueFlags flag, const Quadrature<k> &eval_pts)
 {
+    /*
     ref_space_handler_->reset(space_to_ref_flag(PhysSpace::PushForwardType::type, flag), eval_pts);
-    push_fwd_.template reset<k>(space_to_pf_flag(flag), eval_pts);
-//    PFCache::template reset<k>(space_to_pf_flag(flag), eval_pts);
+
+    ValueFlags map_flags;
+    TransformationFlags transf_flags;
+    space_to_pf_flag(flag,map_flags, transf_flags);
+
+    push_fwd_.template reset<k>(map_flags, transf_flags, eval_pts);
     flags_[k] = flag;
+    //*/
+
+    const std::set<int> elems_id =
+        this->space_->get_grid()->get_elements_id();
+
+    this->reset_selected_elements(
+        flag,
+        eval_pts,
+        vector<int>(elems_id.begin(),elems_id.end()));
 }
 
 
@@ -149,7 +172,13 @@ reset_selected_elements(
 {
     ref_space_handler_->
     reset_selected_elements(space_to_ref_flag(PhysSpace::PushForwardType::type, flag), eval_pts, elements_flat_id);
-    push_fwd_.template reset<k>(space_to_pf_flag(flag), eval_pts);
+
+
+    ValueFlags map_flags;
+    TransformationFlags transf_flags;
+    space_to_pf_flag(flag,map_flags, transf_flags);
+
+    push_fwd_.template reset<k>(map_flags, transf_flags, eval_pts);
     flags_[k] = flag;
 }
 
@@ -212,35 +241,33 @@ fill_cache(ElementAccessor &elem, const int j)
 
     auto &push_fwd_elem = elem.get_push_forward_accessor();
     push_fwd_.template fill_cache<k>(push_fwd_elem, j);
-//    PFCache::template fill_cache<k>(elem, j);
 
     auto &local_cache = elem.PhysSpace::ElementAccessor::parent_t::local_cache_;
     Assert(local_cache != nullptr, ExcNullPtr());
-    auto &cache =  local_cache->template get_sub_elem_cache<k>(j);
+    auto &cache = local_cache->template get_sub_elem_cache<k>(j);
 
-    auto &flags = cache.flags_handler_;
-
-    if (flags.template fill<_Value>())
+    using std::cref;
+    if (cache.template status_fill<_Value>())
     {
         auto &result = cache.template get_data<_Value>();
         const auto &ref_values = ref_elem.template get_basis<_Value,k>(j,DofProperties::active);
         push_fwd_elem.template transform_0<RefSpace::range,RefSpace::rank>
         (ref_values, result);
 
-        flags.template set_filled<_Value>(true);
+        cache.template set_status_filled<_Value>(true);
     }
-    if (flags.template fill<_Gradient>())
+    if (cache.template status_fill<_Gradient>())
     {
         const auto &ref_values = ref_elem.template get_basis<   _Value,k>(j,DofProperties::active);
         const auto &ref_der_1  = ref_elem.template get_basis<_Gradient,k>(j,DofProperties::active);
         const auto &values = cache.template get_data<_Value>();
         push_fwd_elem.template transform_1<PhysSpace::range,PhysSpace::rank, k>
-        (std::make_tuple(ref_values, ref_der_1), values,
+        (std::make_tuple(cref(ref_values), cref(ref_der_1)),values,
          cache.template get_data<_Gradient>(), j);
 
-        flags.template set_filled<_Gradient>(true);
+        cache.template set_status_filled<_Gradient>(true);
     }
-    if (flags.template fill<_Hessian>())
+    if (cache.template status_fill<_Hessian>())
     {
         const auto &ref_values = ref_elem.template get_basis<   _Value,k>(j,DofProperties::active);
         const auto &ref_der_1  = ref_elem.template get_basis<_Gradient,k>(j,DofProperties::active);
@@ -248,18 +275,19 @@ fill_cache(ElementAccessor &elem, const int j)
         const auto &values = cache.template get_data<   _Value>();
         const auto &der_1  = cache.template get_data<_Gradient>();
         push_fwd_elem.template transform_2<PhysSpace::range,PhysSpace::rank, k>
-        (std::make_tuple(ref_values, ref_der_1, ref_der_2),
-         std::make_tuple(values,der_1),
+        (std::make_tuple(cref(ref_values), cref(ref_der_1), cref(ref_der_2)),
+         std::make_tuple(cref(values),cref(der_1)),
          cache.template get_data<_Hessian>(), j);
 
-        flags.template set_filled<_Hessian>(true);
+        cache.template set_status_filled<_Hessian>(true);
     }
-    if (flags.template fill<_Divergence>())
+    if (cache.template status_fill<_Divergence>())
     {
         eval_divergences_from_gradients(
             cache.template get_data<_Gradient>(),
             cache.template get_data<_Divergence>());
-        flags.template set_filled<_Divergence>(true);
+
+        cache.template set_status_filled<_Divergence>(true);
     }
 
     cache.set_filled(true);

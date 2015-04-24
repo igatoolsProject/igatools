@@ -128,14 +128,14 @@ public:
         sup_func_->fill_cache(sup_elem_, Topology<sub_dim>(),s_id_);
         auto &local_cache = this->get_cache(elem);
         auto &cache = local_cache->template get_sub_elem_cache<sub_dim>(j);
-        auto &flags = cache.flags_handler_;
+//        auto &flags = cache.flags_handler_;
 
-        if (flags.template fill<_Value>())
+        if (cache.template status_fill<_Value>())
         {
             cache.template get_data<_Value>() = sup_elem_->template get_values<_Value, sub_dim>(s_id_);
-            flags.template set_filled<_Value>(true);
+            cache.template set_status_filled<_Value>(true);
         }
-        if (flags.template fill<_Gradient>())
+        if (cache.template status_fill<_Gradient>())
         {
             auto active = UnitElement<dim>::template get_elem<sub_dim>(s_id_).active_directions;
             auto DSupF  = sup_elem_->template get_values<_Gradient, sub_dim>(s_id_);
@@ -151,10 +151,10 @@ public:
                     ++j;
                 }
             }
-            flags.template set_filled<_Gradient>(true);
+            cache.template set_status_filled<_Gradient>(true);
         }
 
-        if (flags.template fill<_Hessian>())
+        if (cache.template status_fill<_Hessian>())
         {
             Assert(false, ExcNotImplemented());
 //      std::get<2>(cache.values_) = sup_elem_->template get_values<2, sub_dim>(j);
@@ -285,11 +285,15 @@ public:
         sup_func_->fill_cache(sup_elem_,Topology<sub_dim>(),s_id_);
         auto &local_cache = this->get_cache(elem);
         auto &cache = local_cache->template get_sub_elem_cache<sub_dim>(j);
-        auto &flags = cache.flags_handler_;
+//        auto &flags = cache.flags_handler_;
 
-        if (flags.template fill<_Value>())
+        if (cache.template status_fill<_Value>())
+        {
             cache.template get_data<_Value>() = sup_elem_->template get_values<_Value, sub_dim>(s_id_);
-        if (flags.template fill<_Gradient>())
+
+            cache.template set_status_filled<_Value>(true);
+        }
+        if (cache.template status_fill<_Gradient>())
         {
             auto active = UnitElement<dim>::template get_elem<sub_dim>(s_id_).active_directions;
             auto DSupF  = sup_elem_->template get_values<_Gradient, sub_dim>(s_id_);
@@ -305,8 +309,10 @@ public:
                     ++j;
                 }
             }
+
+            cache.template set_status_filled<_Gradient>(true);
         }
-        if (flags.template fill<_Hessian>())
+        if (cache.template status_fill<_Hessian>())
         {
             Assert(false, ExcNotImplemented());
             //      std::get<2>(cache.values_) = sup_elem_->template get_values<2, sub_dim>(j);

@@ -407,14 +407,14 @@ template <int dim>
 void
 CartesianGridElement<dim>::
 ValuesCache::
-resize(const GridFlags &flags_handler,
+resize(const ValueFlags &flags,
        const Quadrature<dim> &quad)
 {
 //    this->flags_handler_ = flags_handler;
 
-    parent_t::resize(flags_handler,quad.get_num_points());
+    parent_t::resize(flags,quad.get_num_points());
 
-    if (this->flags_handler_.template fill<_Point>())
+    if (this->template status_fill<_Point>())
     {
         this->unit_points_ = quad.get_points();
     }
@@ -423,7 +423,7 @@ resize(const GridFlags &flags_handler,
         this->unit_points_.clear();
     }
 
-    if (this->flags_handler_.template fill<_W_Measure>())
+    if (this->template status_fill<_W_Measure>())
     {
         this->unit_weights_ = quad.get_weights();
     }
@@ -445,14 +445,14 @@ print_info(LogStream &out) const
 {
     parent_t::print_info(out);
 
-    if (this->flags_handler_.template filled<_W_Measure>())
+    if (this->template status_filled<_W_Measure>())
     {
         out.begin_item("Unit weights:");
         unit_weights_.print_info(out);
         out.end_item();
     }
 
-    if (this->flags_handler_.template filled<_Point>())
+    if (this->template status_filled<_Point>())
     {
         out.begin_item("Unit points:");
         unit_points_.print_info(out);

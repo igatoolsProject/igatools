@@ -48,7 +48,7 @@ IGA_NAMESPACE_OPEN
  * @ingroup elements
  *
  * @author S.Pauletti, 2012, 2013, 2014
- * @author M.Martinelli, 2013, 2014
+ * @author M.Martinelli, 2013, 2014, 2105
  */
 template <int dim>
 class CartesianGridElement
@@ -293,11 +293,21 @@ public:
 private:
 
     using CType = boost::fusion::map<
-                  boost::fusion::pair<    _Point,ValueVector<Points<dim>>>,
-                  boost::fusion::pair<_W_Measure,ValueVector<Real>>
+                  boost::fusion::pair<    _Point,DataWithFlagStatus<ValueVector<Points<dim>>>>,
+                  boost::fusion::pair<_W_Measure,DataWithFlagStatus<ValueVector<Real>>>
                   >;
+    /**
+     * Returns the flags that are valid to be used with this class.
+     *
+     * @note The valid flags are defined to be the ones that can be inferred from the ValueType(s)
+     * used as key of the boost::fusion::map in CType.
+     */
+    static ValueFlags get_valid_flags()
+    {
+        return cacheutils::get_valid_flags_from_cache_type(CType());
+    }
 
-    using BaseCache = FuncValuesCache<dim,CType,GridFlags>;
+    using BaseCache = FuncValuesCache<dim,CType>;
 
     /**
      * @brief Base class for cache of CartesianGridElement
@@ -306,7 +316,7 @@ private:
     {
         using parent_t = BaseCache;
     public:
-        void resize(const GridFlags &flags_handler,
+        void resize(const ValueFlags &flags,
                     const Quadrature<dim> &quad);
 
         void print_info(LogStream &out) const;

@@ -27,29 +27,6 @@ using std::array;
 
 IGA_NAMESPACE_OPEN
 
-#if 0
-namespace
-{
-struct UniformQuadFunc
-{
-    void func(auto &val_cache, const GridFlags &flag, const auto &quad)
-    {
-        val_cache.resize(flag, quad);
-    }
-};
-
-template<class Quad, class... Args>
-void
-init_unif_caches(const GridFlags &flag, const Quad &quad, std::tuple<Args...> &t)
-//init_unif_caches(const GridFlags &flag, const Quad &quad, boost::fusion::vector<Args...> &t)
-{
-    const int dim = Quad::dim;
-    const int low = dim==0? 0 : dim-num_sub_elem;
-    UniformQuadFunc f;
-    TupleFunc1< UniformQuadFunc, GridFlags, Quad, decltype(t), sizeof...(Args), low>::apply_func(f, flag, quad, t);
-}
-};
-#endif
 
 
 template <int dim>
@@ -57,8 +34,6 @@ GridElementHandler<dim>::
 GridElementHandler(shared_ptr<GridType> grid)
     :
     grid_(grid)
-//  ,
-//    lengths_(grid->get_element_lengths())
 {}
 
 template <int dim>
@@ -80,13 +55,13 @@ GridElementHandler<dim>::
 reset(const ValueFlags flag,
       const Quadrature<k> &quad)
 {
-    flags_[k] = flag;
-//    auto &quad_k = std::get<k>(quad_);
-//    quad_k = quad;
-    cacheutils::extract_sub_elements_data<k>(quad_) = quad;
+    const auto valid_flags = ElementAccessor::get_valid_flags();
+    flags_[k] = flag & valid_flags;
+
+    cacheutils::extract_sub_elements_data<k>(quad_all_sub_elems_) = quad;
 }
 
-
+#if 0
 template <int dim>
 void
 GridElementHandler<dim>::
@@ -99,7 +74,7 @@ init_all_caches(ElementAccessor &elem)
         cache = shared_ptr<Cache>(new Cache);
     }
 
-    const auto &quad = cacheutils::extract_sub_elements_data<dim>(quad_);
+    const auto &quad = cacheutils::extract_sub_elements_data<dim>(quad_all_sub_elems_);
 
     boost::fusion::for_each(cache->cache_all_sub_elems_,
                             [&](auto & value_dim) -> void
@@ -117,10 +92,8 @@ init_all_caches(ElementAccessor &elem)
         }
     }
                            );
-//#endif
-//    Assert(false,ExcNotImplemented());
 }
-
+#endif
 
 template <int dim>
 template <int k>
@@ -138,10 +111,8 @@ init_cache(ElementAccessor &elem)
     for (auto &s_id: Topology::template elems_ids<k>())
     {
         auto &s_cache = cache->template get_sub_elem_cache<k>(s_id);
-//        auto &quad = std::get<k>(quad_);
-//        s_cache.resize(flags_[k], extend_sub_elem_quad<k, dim>(quad, s_id));
         s_cache.resize(flags_[k], extend_sub_elem_quad<k, dim>(
-                           cacheutils::extract_sub_elements_data<k>(quad_), s_id));
+                           cacheutils::extract_sub_elements_data<k>(quad_all_sub_elems_), s_id));
     }
 }
 
@@ -157,9 +128,7 @@ fill_cache(ElementAccessor &elem, const int j)
     Assert(elem.local_cache_ != nullptr, ExcNullPtr());
     auto &cache = elem.local_cache_->template get_sub_elem_cache<k>(j);
 
-    auto &flags = cache.flags_handler_;
-
-    if (flags.template fill<_Point>())
+    if (cache.template status_fill<_Point>())
     {
         auto translate = elem.vertex(0);
         auto dilate    = elem.template get_coordinate_lengths<k>(j);
@@ -177,13 +146,13 @@ fill_cache(ElementAccessor &elem, const int j)
                 ref_pt[dir] = unit_pt[dir] * dilate[dir] + translate[dir];
         }
 
-        flags.template set_filled<_Point>(true);
+        cache.template set_status_filled<_Point>(true);
     }
 
-    if (flags.template fill<_W_Measure>())
+    if (cache.template status_fill<_W_Measure>())
     {
         cache.template get_data<_W_Measure>() = elem.template get_measure<k>(j) * cache.unit_weights_;
-        flags.template set_filled<_W_Measure>(true);
+        cache.template set_status_filled<_W_Measure>(true);
     }
 
 

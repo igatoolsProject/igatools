@@ -104,24 +104,24 @@ private:
         {
             auto &local_cache = function->get_cache(*elem);
             auto &cache = local_cache->template get_sub_elem_cache<sub_elem_dim>(j);
-            auto &flags = cache.flags_handler_;
+//            auto &flags = cache.flags_handler_;
 
-            if (!flags.fill_none())
+            if (!cache.fill_none())
             {
 
-                if (flags.template fill<_Point>() || flags.template fill<_Value>())
+                if (cache.template status_fill<_Point>() || cache.template status_fill<_Value>())
                 {
                     const auto points =
                         elem->CartesianGridElement<dim>::template get_points<sub_elem_dim>(j);
 
-                    if (flags.template fill<_Point>())
+                    if (cache.template status_fill<_Point>())
                     {
                         auto &cache_pts = cache.template get_data<_Point>();
                         cache_pts = points;
 
-                        flags.template set_filled<_Point>(true);
+                        cache.template set_status_filled<_Point>(true);
                     }
-                    if (flags.template fill<_Value>())
+                    if (cache.template status_fill<_Value>())
                     {
                         const auto n_pts = points.get_num_points();
 
@@ -130,23 +130,24 @@ private:
                             for (int i = 0 ; i < dim ; ++i)
                                 values[pt][i] = points[pt][i];
 
-                        flags.template set_filled<_Value>(true);
+                        cache.template set_status_filled<_Value>(true);
                     }
                 }
-                if (flags.template fill<_Gradient>())
+                if (cache.template status_fill<_Gradient>())
                 {
                     // TODO (pauletti, Apr 17, 2015): this can be static const
                     auto identity = create_id_tensor<dim,space_dim>();
                     cache.template get_data<_Gradient>().fill(identity);
-//                    std::get<1>(cache.values_).fill(identity);
 
-                    flags.template set_filled<_Gradient>(true);
+                    cache.template set_status_filled<_Gradient>(true);
                 }
-                if (flags.template fill<_Hessian>())
+                if (cache.template status_fill<_Hessian>())
                 {
                     // TODO (pauletti, Apr 17, 2015): this can be static const
                     Hessian zero;
                     cache.template get_data<_Hessian>().fill(zero);
+
+                    cache.template set_status_filled<_Hessian>(true);
                 }
             }
             cache.set_filled(true);
@@ -155,7 +156,7 @@ private:
         int j;
         self_t *function;
         ElementAccessor *elem;
-        std::array<FunctionFlags, dim + 1> *flags_;
+        std::array<ValueFlags, dim + 1> *flags_;
     };
 
     FillCacheDispatcher fill_cache_impl;

@@ -120,36 +120,34 @@ public:
 public:
 
     /**
-     * @name Reset functions
+     * @name Functions for the cache's reset/init/fill mechanism.
      */
     ///@{
     template<int k>
     void reset(const ValueFlags flag, const Quadrature<k> &quad);
-    ///@}
 
     template <int k>
     void init_cache(ElementAccessor &elem);
 
-
-//#if 0
+#if 0
     void init_all_caches(ElementAccessor &elem);
 
     void init_all_caches(ElementIterator &elem)
     {
         init_all_caches(*elem);
     }
-//#endif
+#endif
 
     template <int k>
     void fill_cache(ElementAccessor &elem, const int j);
+    ///@}
 
 
 
     template <int k = dim>
     Size get_num_points() const
     {
-//        return std::get<k>(quad_).get_num_points();
-        return cacheutils::extract_sub_elements_data<k>(quad_).get_num_points();
+        return cacheutils::extract_sub_elements_data<k>(quad_all_sub_elems_).get_num_points();
     }
 
 public:
@@ -162,10 +160,10 @@ public:
 private:
     std::shared_ptr<GridType> grid_;
 
-    std::array<GridFlags, dim + 1> flags_;
+    std::array<ValueFlags, dim + 1> flags_;
 
 protected:
-    QuadList<dim> quad_;
+    QuadList<dim> quad_all_sub_elems_;
 };
 
 IGA_NAMESPACE_CLOSE

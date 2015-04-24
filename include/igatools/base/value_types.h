@@ -145,6 +145,30 @@ public:
 };
 using _InvHessian = ValueType<-7>;
 
+
+template<>
+class ValueType<-8>
+{
+public:
+    static constexpr int id = -8;
+    static constexpr int order = 1;
+    static const std::string name;
+    static const auto flag = ValueFlags::boundary_normal;
+};
+using _BoundaryNormal = ValueType<-8>;
+
+
+template<>
+class ValueType<-9>
+{
+public:
+    static constexpr int id = -9;
+    static constexpr int order = 1;
+    static const std::string name;
+    static const auto flag = ValueFlags::outer_normal;
+};
+using _OuterNormal = ValueType<-9>;
+
 IGA_NAMESPACE_CLOSE
 
 #endif //#ifndef  VALUE_TYPES_H_

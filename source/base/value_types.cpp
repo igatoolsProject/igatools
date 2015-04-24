@@ -78,4 +78,16 @@ constexpr int _InvHessian::order;
 const string  _InvHessian::name = "InvHessian";
 constexpr ValueFlags _InvHessian::flag;
 
+
+constexpr int _BoundaryNormal::id;
+constexpr int _BoundaryNormal::order;
+const string  _BoundaryNormal::name = "BoundaryNormal";
+constexpr ValueFlags _BoundaryNormal::flag;
+
+
+constexpr int _OuterNormal::id;
+constexpr int _OuterNormal::order;
+const string  _OuterNormal::name = "OuterNormal";
+constexpr ValueFlags _OuterNormal::flag;
+
 IGA_NAMESPACE_CLOSE

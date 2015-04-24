@@ -105,28 +105,28 @@ private:
         {
             auto &local_cache = function->get_cache(*elem);
             auto &cache = local_cache->template get_sub_elem_cache<sub_elem_dim>(j);
-            auto &flags = cache.flags_handler_;
+//            auto &flags = cache.flags_handler_;
 
-            if (!flags.fill_none())
+            if (!cache.fill_none())
             {
                 auto &cache_pts = cache.template get_data<_Point>();
                 cache_pts = function->map_elem_->template get_values<_Value, sub_elem_dim>(j);
-                if (flags.template fill<_Value>())
+                if (cache.template status_fill<_Value>())
                 {
                     function->evaluate_0(cache_pts, cache.template get_data<_Value>());
-                    flags.template set_filled<_Value>(true);
+                    cache.template set_status_filled<_Value>(true);
                 }
-                if (flags.template fill<_Gradient>())
+                if (cache.template status_fill<_Gradient>())
                 {
                     function->evaluate_1(cache_pts, cache.template get_data<_Gradient>());
-                    flags.template set_filled<_Gradient>(true);
+                    cache.template set_status_filled<_Gradient>(true);
                 }
-                if (flags.template fill<_Hessian>())
+                if (cache.template status_fill<_Hessian>())
                 {
                     function->evaluate_2(cache_pts, cache.template get_data<_Hessian>());
-                    flags.template set_filled<_Hessian>(true);
+                    cache.template set_status_filled<_Hessian>(true);
                 }
-                if (flags.template fill<_Divergence>())
+                if (cache.template status_fill<_Divergence>())
                     Assert(false,ExcNotImplemented());
 
             }

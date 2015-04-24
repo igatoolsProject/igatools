@@ -142,7 +142,7 @@ public:
         init_cache_impl.grid_handler = this;
         init_cache_impl.elem = &elem;
         init_cache_impl.flags_ = &flags_;
-        init_cache_impl.quad_ = &(this->quad_);
+        init_cache_impl.quad_ = &(this->quad_all_sub_elems_);
         boost::apply_visitor(init_cache_impl, k);
     }
 
@@ -245,17 +245,17 @@ private:
 
     struct ResetDispatcher : boost::static_visitor<void>
     {
-        template<class T>
-        void operator()(const T &quad)
+        template<int sub_elem_dim>
+        void operator()(const Quadrature<sub_elem_dim> &quad)
         {
-            (*flags_)[T::dim] = flag;
+            (*flags_)[sub_elem_dim] = flag;
 
-            grid_handler->template reset<T::dim>(FunctionFlags::to_grid_flags(flag), quad);
+            grid_handler->template reset<sub_elem_dim>(function_to_grid_flags(flag), quad);
         }
 
         ValueFlags flag;
         parent_t *grid_handler;
-        std::array<FunctionFlags, dim_ + 1> *flags_;
+        std::array<ValueFlags, dim_ + 1> *flags_;
     };
 
     struct FillCacheDispatcher : boost::static_visitor<void>
@@ -288,7 +288,6 @@ private:
             for (auto &s_id: UnitElement<dim_>::template elems_ids<sub_elem_dim>())
             {
                 auto &s_cache = cache->template get_sub_elem_cache<sub_elem_dim>(s_id);
-//                auto &quad = std::get<T::k>(*quad_);
                 auto &quad = cacheutils::extract_sub_elements_data<sub_elem_dim>(*quad_);
                 s_cache.resize((*flags_)[sub_elem_dim], quad.get_num_points());
             }
@@ -296,7 +295,7 @@ private:
 
         parent_t *grid_handler;
         ElementAccessor *elem;
-        std::array<FunctionFlags, dim_ + 1> *flags_;
+        std::array<ValueFlags, dim_ + 1> *flags_;
         QuadList<dim_> *quad_;
     };
 
@@ -317,7 +316,7 @@ protected:
     /**
      * One flag for each possile subdim
      */
-    std::array<FunctionFlags, dim_ + 1> flags_;
+    std::array<ValueFlags, dim_ + 1> flags_;
 
 
 #ifdef REFINE

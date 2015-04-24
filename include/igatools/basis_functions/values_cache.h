@@ -43,11 +43,86 @@
 
 IGA_NAMESPACE_OPEN
 
+#if 0
+template<int dim, int sub_elem_dim, class CacheSingleElem>
+class CacheSubElems : std::array<CacheSingleElem,UnitElement<dim>::template num_elem<sub_elem_dim>()>
+{
+    using self_t = std::array<CacheSingleElem,UnitElement<dim>::template num_elem<sub_elem_dim>()>;
+public:
+
+    using self_t::self_t;
+};
+#endif
+
+template<class ValuesCache, int dim, std::size_t... I>
+auto
+tuple_of_caches(std::index_sequence<I...>)
+{
+    return boost::fusion::map<boost::fusion::pair<Topology<(dim>I) ? dim-I : 0>,std::array<ValuesCache,UnitElement<dim>::template num_elem<(dim>I) ? dim-I : 0>()>> ...>(
+               boost::fusion::pair<Topology<(dim>I) ? dim-I : 0>,std::array<ValuesCache,UnitElement<dim>::template num_elem<(dim>I) ? dim-I : 0>()>>() ...);
+}
 
 
-template<int dim,
-         class CacheType,
-         class FlagsType>
+template<class ValuesCache, int dim>
+using CacheList = decltype(tuple_of_caches<ValuesCache,dim>(
+                               std::make_index_sequence<(num_sub_elem <= dim ? num_sub_elem+1 : 1)>()));
+
+
+
+
+
+
+
+template < class DataType >
+class DataWithFlagStatus : public DataType
+{
+    using self_t = DataWithFlagStatus<DataType>;
+
+public:
+    using DataType::DataType;
+
+
+    DataWithFlagStatus &operator=(const DataType &data)
+    {
+        if (this != &data)
+        {
+            DataType::operator=(data);
+            status_.filled_ = true;
+        }
+        return (*this);
+    }
+
+    bool status_fill() const
+    {
+        return status_.fill_;
+    };
+
+    void set_status_fill(const bool fill_status)
+    {
+        status_.fill_ = fill_status;
+    };
+
+    bool status_filled() const
+    {
+        return status_.filled_;
+    };
+
+    void set_status_filled(const bool filled_status)
+    {
+        status_.filled_ = filled_status;
+    };
+
+    const FlagStatus &get_status() const
+    {
+        return status_;
+    }
+
+private:
+    FlagStatus status_;
+};
+
+
+template<int dim,class CacheType>
 class ValuesCache : public CacheStatus
 {
 public:
@@ -56,10 +131,6 @@ public:
     {
         return dim;
     }
-
-
-
-    FlagsType flags_handler_;
 
 protected:
 
@@ -71,21 +142,24 @@ protected:
 public:
     void print_info(LogStream &out) const
     {
-        out.begin_item("Fill flags:");
-        flags_handler_.print_info(out);
-        out.end_item();
-
         boost::fusion::for_each(values_,
                                 [&](const auto & type_and_value) -> void
         {
             using ValueType_ValueContainer = typename std::remove_reference<decltype(type_and_value)>::type;
             using ValueType = typename ValueType_ValueContainer::first_type;
-            if (flags_handler_.template filled<ValueType>())
+            out.begin_item(ValueType::name + ":");
+
+            out.begin_item("Fill flags:");
+            type_and_value.second.get_status().print_info(out);
+            out.end_item();
+
+            if (type_and_value.second.status_filled())
             {
-                out.begin_item(ValueType::name + "s:");
+                out.begin_item("Data:");
                 type_and_value.second.print_info(out);
                 out.end_item();
             }
+            out.end_item();
         } // end lambda function
                                );
     }
@@ -100,20 +174,87 @@ public:
     template<class ValueType>
     const auto &get_data() const
     {
-        //TODO (martinelli, Apr 03,2015): uncomment this assertion
-//        Assert(flags_handler_.template filled<ValueType>(),
-//               ExcMessage("The cache for \"" + ValueType::name + "\" is not filled."));
+        const auto &data = boost::fusion::at_key<ValueType>(values_);
+        Assert(data.status_filled(),
+               ExcMessage("The cache for \"" + ValueType::name + "\" is not filled."));
 
-        return boost::fusion::at_key<ValueType>(values_);
+        return data;
     }
 
+
+    /**
+     * @name Functions used to query or modify the Flag status for a given ValueType
+     */
+    ///@{
+    /** Returns true if the quantity associated to @p ValueType must be filled. */
+    template<class ValueType>
+    bool status_fill() const
+    {
+        return boost::fusion::at_key<ValueType>(values_).status_fill();
+    }
+
+    /** Returns true if the quantity associated to @p ValueType is filled. */
+    template<class ValueType>
+    bool status_filled() const
+    {
+        return boost::fusion::at_key<ValueType>(values_).status_filled();
+    }
+
+    /** Sets the filled @p status the quantity associated to @p ValueType. */
+    template<class ValueType>
+    void set_status_filled(const bool status)
+    {
+        this->template get_data<ValueType>().set_status_filled(status);
+    }
+
+    /** Returns true if the nothing must be filled. */
+    bool fill_none() const
+    {
+        const bool fill_someone = boost::fusion::any(values_,
+                                                     [](const auto & type_and_data) -> bool
+        {
+            return type_and_data.second.status_fill() == true;
+        } // end lambda function
+                                                    );
+
+        return !fill_someone;
+    }
+    ///@}
+
+
+#if 0
+    /**
+     * Returns the flags that are valid to be used with this class.
+     *
+     * @note The valid flags are defined to be the ones that can be inferred from the ValueType(s)
+     * used as key of the boost::fusion::map in CacheType.
+     */
+    ValueFlags get_valid_flags() const
+    {
+#if 0
+        ValueFlags valid_flags = ValueFlags::none;
+
+        boost::fusion::for_each(values_,
+                                [&](const auto & type_and_status) -> void
+        {
+            using ValueType_Status = typename std::remove_reference<decltype(type_and_status)>::type;
+            using ValueType = typename ValueType_Status::first_type;
+
+            valid_flags |= ValueType::flag;
+        } // end lambda function
+                               );
+        return valid_flags;
+#endif
+        return cacheutils::get_valid_flags_from_cache_type(values_);
+    }
+#endif
 };
 
 
 
 
-template<int dim, class CacheType, class FlagsType>
-class BasisValuesCache : public ValuesCache<dim,CacheType,FlagsType>
+template<int dim, class CacheType>
+class BasisValuesCache : public ValuesCache<dim,CacheType>
 {
 
 public:
@@ -122,12 +263,10 @@ public:
      * of the element basis functions at quadrature points
      * as specify by the flag
      */
-    void resize(const FlagsType &flags_handler,
+    void resize(const ValueFlags &flags,
                 const Size n_points,
                 const Size n_basis)
     {
-        this->flags_handler_ = flags_handler;
-
         Assert(n_points >= 0, ExcLowerRange(n_points,1));
         Assert(n_basis > 0, ExcLowerRange(n_basis,1));
 
@@ -138,8 +277,10 @@ public:
             using ValueType = typename ValueType_ValueContainer::first_type;
             auto &value = type_and_value.second;
 
-            if (this->flags_handler_.template fill<ValueType>())
+            if (contains(flags,ValueType::flag))
             {
+                value.set_status_fill(true);
+
                 if (value.get_num_points() != n_points ||
                 value.get_num_functions() != n_basis)
                 {
@@ -150,19 +291,19 @@ public:
             else
             {
                 value.clear();
-                this->flags_handler_.template set_filled<ValueType>(false);
+                value.set_status_fill(false);
             }
+            value.set_status_filled(false);
         } // end lambda function
                                );
 
         this->set_initialized(true);
     }
-
 };
 
 
-template<int dim, class CacheType, class FlagsType>
-class FuncValuesCache : public ValuesCache<dim,CacheType,FlagsType>
+template<int dim, class CacheType>
+class FuncValuesCache : public ValuesCache<dim,CacheType>
 {
 
 public:
@@ -172,10 +313,10 @@ public:
      * of the element at quadrature points
      * as specify by the flag
      */
-    void resize(const FlagsType &flags_handler,
+    void resize(const ValueFlags &flags,
                 const Size n_points)
     {
-        this->flags_handler_ = flags_handler;
+//        this->flags_handler_ = flags_handler;
 
         Assert(n_points >= 0, ExcLowerRange(n_points,1));
 
@@ -186,8 +327,10 @@ public:
             using ValueType = typename ValueType_ValueContainer::first_type;
             auto &value = type_and_value.second;
 
-            if (this->flags_handler_.template fill<ValueType>())
+            if (contains(flags,ValueType::flag))
             {
+                value.set_status_fill(true);
+
                 if (value.get_num_points() != n_points)
                     value.resize(n_points);
 
@@ -196,8 +339,10 @@ public:
             else
             {
                 value.clear();
-                this->flags_handler_.template set_filled<ValueType>(false);
+                value.set_status_fill(false);
             }
+            value.set_status_filled(false);
+
         } // end lambda function
                                );
 
@@ -245,6 +390,12 @@ public:
         const auto &cache = cacheutils::extract_sub_elements_data<sub_elem_dim>(cache_all_sub_elems_)[sub_elem_id];
         Assert(cache.is_filled() == true, ExcCacheNotFilled());
         return cache;
+    }
+
+
+    ValueFlags get_valid_flags() const
+    {
+        return this->template get_sub_elem_cache<SubElemCache::get_dim()>(0).get_valid_flags();
     }
 
     /**

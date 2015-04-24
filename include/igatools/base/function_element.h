@@ -174,17 +174,31 @@ public:
     }
     ///@}
 
+
+    /**
+     * Returns the flags that are valid to be used with this class.
+     *
+     * @note The valid flags are defined to be the ones that can be inferred from the ValueType(s)
+     * used as key of the boost::fusion::map in CType.
+     */
+    static ValueFlags get_valid_flags()
+    {
+        return cacheutils::get_valid_flags_from_cache_type(CType());
+    }
+
 private:
 
     using CType = boost::fusion::map<
-                  boost::fusion::pair<     _Value,ValueVector<Value>>,
-                  boost::fusion::pair<  _Gradient,ValueVector<Derivative<1>>>,
-                  boost::fusion::pair<   _Hessian,ValueVector<Derivative<2>>>,
-                  boost::fusion::pair<_Divergence,ValueVector<Div>>,
-                  boost::fusion::pair<     _Point,ValueVector<Point>>
+                  boost::fusion::pair<     _Value,DataWithFlagStatus<ValueVector<Value>>>,
+                  boost::fusion::pair<  _Gradient,DataWithFlagStatus<ValueVector<Derivative<1>>>>,
+                  boost::fusion::pair<   _Hessian,DataWithFlagStatus<ValueVector<Derivative<2>>>>,
+                  boost::fusion::pair<_Divergence,DataWithFlagStatus<ValueVector<Div>>>,
+                  boost::fusion::pair<     _Point,DataWithFlagStatus<ValueVector<Point>>>
                   >;
 
-    using Cache = FuncValuesCache<dim,CType,FunctionFlags>;
+
+
+    using Cache = FuncValuesCache<dim,CType>;
 
     std::shared_ptr<LocalCache<Cache>> local_cache_;
 
