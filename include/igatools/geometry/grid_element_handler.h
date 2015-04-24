@@ -22,9 +22,8 @@
 #define GRID_ELEMENT_HANDLER_H_
 
 #include <igatools/base/config.h>
+#include <igatools/basis_functions/values_cache.h>
 #include <igatools/base/tuple_utils.h>
-#include <igatools/base/cache_status.h>
-#include <igatools/base/flags_handler.h>
 #include <igatools/base/quadrature.h>
 #include <igatools/utils/tensor_product_array.h>
 #include <igatools/geometry/cartesian_grid.h>
