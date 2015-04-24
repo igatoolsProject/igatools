@@ -56,7 +56,8 @@ namespace cacheutils
 {
 
 template<class FusionContainer>
-void print_caches(const FusionContainer &data, LogStream &out)
+void
+print_caches(const FusionContainer &data, LogStream &out)
 {
     boost::fusion::for_each(data,
                             [&out](const auto & data_same_topology_dim)
@@ -76,6 +77,10 @@ void print_caches(const FusionContainer &data, LogStream &out)
                            );
 }
 
+
+
+
+
 template <int sub_elem_dim, class FusionContainer>
 const auto &
 extract_sub_elements_data(const FusionContainer &data)
@@ -89,6 +94,9 @@ extract_sub_elements_data(FusionContainer &data)
 {
     return boost::fusion::at_key<Topology<sub_elem_dim>>(data);
 }
+
+
+
 
 }; // end namespace cacheutils
 

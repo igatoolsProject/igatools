@@ -121,16 +121,8 @@ public:
     {
         return status_;
     }
-//*/
-    /*
-        void set_status(const FlagStatus &status)
-        {
-            status_ = status;
-        }
-    //*/
 
 private:
-//  DataType data_;
     FlagStatus status_;
 };
 
