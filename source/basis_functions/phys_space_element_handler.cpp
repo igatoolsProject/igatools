@@ -211,13 +211,10 @@ fill_cache(ElementAccessor &elem, const int j)
 
     auto &push_fwd_elem = elem.get_push_forward_accessor();
     push_fwd_.template fill_cache<k>(push_fwd_elem, j);
-//    PFCache::template fill_cache<k>(elem, j);
 
     auto &local_cache = elem.PhysSpace::ElementAccessor::parent_t::local_cache_;
     Assert(local_cache != nullptr, ExcNullPtr());
-    auto &cache =  local_cache->template get_sub_elem_cache<k>(j);
-
-//    auto &flags = cache.flags_handler_;
+    auto &cache = local_cache->template get_sub_elem_cache<k>(j);
 
     if (cache.template status_fill<_Value>())
     {
