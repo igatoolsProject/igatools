@@ -30,10 +30,7 @@
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/basis_functions/element_handler.h>
 
-
 IGA_NAMESPACE_OPEN
-
-
 
 /**
  * Grid element value manager
@@ -57,13 +54,11 @@ public:
      */
     using Topology = UnitElement<dim>;
 
-
 protected:
     using ElementIterator = typename GridType::ElementIterator;
     using ElementAccessor = typename GridType::ElementAccessor;
 
 public:
-
     /**
      * @name Creators.
      */
@@ -101,7 +96,6 @@ public:
     ~GridElementHandler() = default;
     ///@}
 
-
     /**
      * Assignment operators.
      */
@@ -118,7 +112,6 @@ public:
     ///@}
 
 public:
-
     /**
      * @name Functions for the cache's reset/init/fill mechanism.
      */
@@ -151,8 +144,11 @@ public:
     }
 
 public:
-//    void print_info(LogStream &out) const;
-
+    void print_info(LogStream &out) const
+    {
+        // TODO (pauletti, Apr 24, 2015): line below should be implemented
+        //quad_all_sub_elems_.print_info(out);
+    }
     std::shared_ptr<const GridType> get_grid() const;
 
 //    const TensorProductArray<dim> &get_lengths() const;
