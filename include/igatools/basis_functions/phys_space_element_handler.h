@@ -50,9 +50,6 @@ class PhysSpaceElementHandler
 
     using self_t = PhysSpaceElementHandler<dim_,range_,rank_,codim_>;
 
-    static const int l = iga::max(0, dim_-num_sub_elem);
-    using v3 = typename seq<Quadrature, l, dim_>::type;
-    using eval_pts_variant = typename boost::make_variant_over<v3>::type;
 
 public:
     static const int dim = dim_;

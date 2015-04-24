@@ -47,7 +47,7 @@ fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) -> voi
     fill_cache_impl.j = j;
     fill_cache_impl.function = this;
     fill_cache_impl.elem = &elem;
-    fill_cache_impl.flags_ = &(this->flags_);
+//    fill_cache_impl.flags_ = &(this->flags_);
     boost::apply_visitor(fill_cache_impl, k);
 }
 

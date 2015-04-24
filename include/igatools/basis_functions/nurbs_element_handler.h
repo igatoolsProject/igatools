@@ -181,8 +181,8 @@ private:
 
     struct ResetDispatcher : boost::static_visitor<void>
     {
-        template<class T>
-        void operator()(const T &quad);
+        template<int sub_elem_dim>
+        void operator()(const Quadrature<sub_elem_dim> &quad);
 
         GridElementHandler<dim_> *grid_handler_;
         ValueFlags flag_;
@@ -193,8 +193,8 @@ private:
 
     struct InitCacheDispatcher : boost::static_visitor<void>
     {
-        template<class T>
-        void operator()(const T &quad);
+        template<int sub_elem_dim>
+        void operator()(const Topology<sub_elem_dim> &sub_elem);
 
         GridElementHandler<dim_> *grid_handler_;
         ReferenceElement<dim_,range_,rank_> *elem_;
@@ -207,8 +207,8 @@ private:
 
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
-        template<class T>
-        void operator()(const T &quad);
+        template<int sub_elem_dim>
+        void operator()(const Topology<sub_elem_dim> &sub_elem);
 
         /**
          * Computes the value of the non-zero NURBS basis

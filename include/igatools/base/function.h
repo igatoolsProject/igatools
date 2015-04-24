@@ -29,31 +29,10 @@
 #include <igatools/geometry/grid_element_handler.h>
 #include <igatools/base/quadrature.h>
 
-#include <boost/variant.hpp>
-#include <boost/mpl/vector.hpp>
 IGA_NAMESPACE_OPEN
 
-template<int k_>
-struct Int
-{
-    static const int k = k_;
-};
 
-template<template<int> class Q, int start, std::size_t N>
-struct seq;
 
-template<template<int> class Q, int start>
-struct seq<Q, start, start>
-{
-    using type = boost::mpl::vector<Q<start>>;
-};
-
-template<template<int> class Q, int start, std::size_t N>
-struct seq
-{
-    using v1 = typename seq<Q, start, N-1>::type;
-    using type = typename boost::mpl::push_back<v1, Q<N>>::type;
-};
 
 template <int, int, int, int> class FunctionElement;
 
@@ -73,19 +52,11 @@ private:
     virtual std::shared_ptr<const self_t> shared_from_derived() const = 0;
 
 public:
-    using Topology = UnitElement<dim_>;
     using GridType = const CartesianGrid<dim_>;
 
-public:
-    static const int l = iga::max(0, dim_-num_sub_elem);
+    using topology_variant = TopologyVariants<dim_>;
+    using eval_pts_variant = SubElemVariants<Quadrature,dim_>;
 
-    using v2 = typename seq<Int, l, dim_>::type;
-    using topology_variant = typename boost::make_variant_over<v2>::type;
-
-    using v3 = typename seq<Quadrature, l, dim_>::type;
-    using eval_pts_variant = typename boost::make_variant_over<v3>::type;
-
-public:
     using ElementAccessor = FunctionElement<dim_, codim_, range_, rank_>;
     using ElementIterator = CartesianGridIterator<ElementAccessor>;
 
@@ -183,13 +154,12 @@ public:
     template <int k>
     void init_cache(ElementAccessor &elem)
     {
-        const auto topology = Int<k>();
-        this->init_cache(elem, topology);
+        this->init_cache(elem, Topology<k>());
     }
 
     void init_element_cache(ElementAccessor &elem)
     {
-        this->init_cache(elem, Int<dim_>());
+        this->init_cache(elem, Topology<dim_>());
     }
 
     template <int k>
@@ -200,7 +170,7 @@ public:
 
     void init_element_cache(ElementIterator &elem)
     {
-        this->init_cache(*elem, Int<dim_>());
+        this->init_cache(*elem, Topology<dim_>());
     }
 
     virtual void fill_cache(ElementAccessor &elem, const topology_variant &k,const int j)
@@ -219,13 +189,12 @@ public:
     template <int k>
     void fill_cache(ElementAccessor &elem, const int j)
     {
-        const auto topology = Int<k>();
-        this->fill_cache(elem, topology,j);
+        this->fill_cache(elem,Topology<k>(),j);
     }
 
     void fill_element_cache(ElementAccessor &elem)
     {
-        this->fill_cache(elem, Int<dim_>(),0);
+        this->fill_cache(elem, Topology<dim_>(),0);
     }
 
     template <int k>
@@ -236,7 +205,7 @@ public:
 
     void fill_element_cache(ElementIterator &elem)
     {
-        this->fill_cache(*elem, Int<dim_>(),0);
+        this->fill_cache(*elem, Topology<dim_>(),0);
     }
 
     std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const
@@ -291,10 +260,10 @@ private:
 
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
-        template<class T>
-        void operator()(const T &quad)
+        template<int sub_elem_dim>
+        void operator()(const Topology<sub_elem_dim> &sub_elem)
         {
-            grid_handler->template fill_cache<T::k>(*elem, j);
+            grid_handler->template fill_cache<sub_elem_dim>(*elem, j);
         }
 
         int j;
@@ -304,10 +273,10 @@ private:
 
     struct InitCacheDispatcher : boost::static_visitor<void>
     {
-        template<class T>
-        void operator()(const T &quad)
+        template<int sub_elem_dim>
+        void operator()(const Topology<sub_elem_dim> &sub_elem)
         {
-            grid_handler->template init_cache<T::k>(*elem);
+            grid_handler->template init_cache<sub_elem_dim>(*elem);
 
             auto &cache = elem->local_cache_;
             if (cache == nullptr)
@@ -316,18 +285,19 @@ private:
                 cache = std::shared_ptr<Cache>(new Cache);
             }
 
-            for (auto &s_id: UnitElement<dim_>::template elems_ids<T::k>())
+            for (auto &s_id: UnitElement<dim_>::template elems_ids<sub_elem_dim>())
             {
-                auto &s_cache = cache->template get_value_cache<T::k>(s_id);
-                auto &quad = std::get<T::k>(*quad_);
-                s_cache.resize((*flags_)[T::k], quad.get_num_points());
+                auto &s_cache = cache->template get_sub_elem_cache<sub_elem_dim>(s_id);
+//                auto &quad = std::get<T::k>(*quad_);
+                auto &quad = cacheutils::extract_sub_elements_data<sub_elem_dim>(*quad_);
+                s_cache.resize((*flags_)[sub_elem_dim], quad.get_num_points());
             }
         }
 
         parent_t *grid_handler;
         ElementAccessor *elem;
         std::array<FunctionFlags, dim_ + 1> *flags_;
-        EvalPtsList<dim_> *quad_;
+        QuadList<dim_> *quad_;
     };
 
     ResetDispatcher reset_impl;

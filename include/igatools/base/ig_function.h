@@ -125,10 +125,10 @@ private:
 private:
     struct ResetDispatcher : boost::static_visitor<void>
     {
-        template<class T>
-        void operator()(const T &quad)
+        template<int sub_elem_dim>
+        void operator()(const Quadrature<sub_elem_dim> &quad)
         {
-            (*flags_)[T::dim] = flag;
+            (*flags_)[sub_elem_dim] = flag;
             Assert(space_handler_ != nullptr, ExcNullPtr());
             space_handler_->reset_selected_elements(flag, quad,*elements_flat_id_);
         }
@@ -146,11 +146,11 @@ private:
 
     struct InitCacheDispatcher : boost::static_visitor<void>
     {
-        template<class T>
-        void operator()(const T &quad)
+        template<int sub_elem_dim>
+        void operator()(const Topology<sub_elem_dim> &sub_elem)
         {
             Assert(space_handler_ != nullptr, ExcNullPtr());
-            space_handler_->template init_cache<T::k>(*space_elem);
+            space_handler_->template init_cache<sub_elem_dim>(*space_elem);
         }
 
         typename Space::ElementHandler  *space_handler_;
@@ -160,39 +160,39 @@ private:
 
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
-        template<class T>
-        void operator()(const T &quad)
+        template<int sub_elem_dim>
+        void operator()(const Topology<sub_elem_dim> &sub_elem)
         {
             Assert(space_handler_ != nullptr, ExcNullPtr());
-            space_handler_->template fill_cache<T::k>(*space_elem,j);
+            space_handler_->template fill_cache<sub_elem_dim>(*space_elem,j);
 
             auto &local_cache = function->get_cache(*func_elem);
-            auto &cache = local_cache->template get_value_cache<T::k>(j);
+            auto &cache = local_cache->template get_sub_elem_cache<sub_elem_dim>(j);
             auto &flags = cache.flags_handler_;
 
             //TODO (martinelli Mar 27,2015): bad style. Use the ValueType mechanism in order to avoid the if-switch
             if (flags.template fill<_Value>())
             {
-                cache.template get_der<_Value>() =
-                    space_elem->template linear_combination<_Value,T::k>(*loc_coeff,j, *property);
+                cache.template get_data<_Value>() =
+                    space_elem->template linear_combination<_Value,sub_elem_dim>(*loc_coeff,j, *property);
                 flags.template set_filled<_Value>(true);
             }
             if (flags.template fill<_Gradient>())
             {
-                cache.template get_der<_Gradient>() =
-                    space_elem->template linear_combination<_Gradient,T::k>(*loc_coeff,j, *property);
+                cache.template get_data<_Gradient>() =
+                    space_elem->template linear_combination<_Gradient,sub_elem_dim>(*loc_coeff,j, *property);
                 flags.template set_filled<_Gradient>(true);
             }
             if (flags.template fill<_Hessian>())
             {
-                cache.template get_der<_Hessian>() =
-                    space_elem->template linear_combination<_Hessian,T::k>(*loc_coeff,j, *property);
+                cache.template get_data<_Hessian>() =
+                    space_elem->template linear_combination<_Hessian,sub_elem_dim>(*loc_coeff,j, *property);
                 flags.template set_filled<_Hessian>(true);
             }
             if (flags.template fill<_Divergence>())
             {
-                cache.template get_der<_Divergence>() =
-                    space_elem->template linear_combination<_Divergence,T::k>(*loc_coeff,j, *property);
+                cache.template get_data<_Divergence>() =
+                    space_elem->template linear_combination<_Divergence,sub_elem_dim>(*loc_coeff,j, *property);
                 flags.template set_filled<_Divergence>(true);
             }
 

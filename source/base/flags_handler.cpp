@@ -46,7 +46,7 @@ GridFlags(const ValueFlags &flags)
     :
     GridFlags()
 {
-    this->set_fill_status_from_value_flags(flags);
+    this->set_fill_status_true_from_value_flags(flags);
 }
 
 
@@ -60,7 +60,7 @@ FunctionFlags(const ValueFlags &flags)
     if (contains(f_flags, ValueFlags::divergence))
         f_flags |= ValueFlags::gradient;
 
-    this->set_fill_status_from_value_flags(f_flags);
+    this->set_fill_status_true_from_value_flags(f_flags);
 }
 
 
@@ -78,28 +78,7 @@ FunctionFlags::to_grid_flags(const ValueFlags &flags)
 }
 
 
-//====================================================
 
-
-
-
-
-
-#if 0
-bool
-MappingFlags::
-fill_none() const
-{
-    bool fill_none = true;
-
-    if (inv_gradients_flags_.fill_ ||
-        inv_hessians_flags_.fill_ ||
-        !parent_t::fill_none())
-        fill_none = false;
-
-    return fill_none;
-}
-#endif
 
 MappingFlags::
 MappingFlags(const ValueFlags &flags)
@@ -116,33 +95,9 @@ MappingFlags(const ValueFlags &flags)
     if (contains(flags, ValueFlags::w_measure))
         m_flags |= ValueFlags::measure;
 
-    this->set_fill_status_from_value_flags(m_flags);
+    this->set_fill_status_true_from_value_flags(m_flags);
 }
 
-#if 0
-MappingFlags::
-MappingFlags(const ValueFlags &flags)
-    :
-    FunctionFlags::FunctionFlags(to_function_flags(flags))
-{
-    if (contains(flags, ValueFlags::inv_gradient)    ||
-        contains(flags, ValueFlags::boundary_normal) ||
-        contains(flags, ValueFlags::curvature))
-        inv_gradients_flags_.fill_ = true;
-
-    if (contains(flags, ValueFlags::inv_hessian))
-        inv_hessians_flags_.fill_ = true;
-
-    if (contains(flags, ValueFlags::measure))
-        measures_flags_.fill_ = true;
-
-    if (contains(flags, ValueFlags::w_measure))
-    {
-        measures_flags_.fill_ = true;
-        w_measures_flags_.fill_ = true;
-    }
-}
-#endif
 
 
 ValueFlags
@@ -170,126 +125,6 @@ MappingFlags::to_function_flags(const ValueFlags &flags)
 
     return f_flag;
 }
-
-
-#if 0
-bool
-MappingFlags::
-fill_inv_gradients() const
-{
-    return inv_gradients_flags_.fill_;
-}
-
-bool
-MappingFlags::
-inv_gradients_filled() const
-{
-    return inv_gradients_flags_.filled_;
-}
-
-void
-MappingFlags::
-set_inv_gradients_filled(const bool status)
-{
-    inv_gradients_flags_.filled_ = status;
-}
-
-bool
-MappingFlags::
-fill_inv_hessians() const
-{
-    return inv_hessians_flags_.fill_;
-}
-
-bool
-MappingFlags::
-inv_hessians_filled() const
-{
-    return inv_hessians_flags_.filled_;
-}
-
-void
-MappingFlags::
-set_inv_hessians_filled(const bool status)
-{
-    inv_hessians_flags_.filled_ = status;
-}
-bool
-MappingFlags::
-fill_measures() const
-{
-    return measures_flags_.fill_;
-}
-
-
-
-bool
-MappingFlags::
-measures_filled() const
-{
-    return measures_flags_.filled_;
-}
-
-
-
-void
-MappingFlags::
-set_measures_filled(const bool status)
-{
-    measures_flags_.filled_ = status;
-}
-
-
-
-bool
-MappingFlags::
-fill_w_measures() const
-{
-    return w_measures_flags_.fill_;
-}
-
-
-
-bool
-MappingFlags::
-w_measures_filled() const
-{
-    return w_measures_flags_.filled_;
-}
-
-
-
-void
-MappingFlags::
-set_w_measures_filled(const bool status)
-{
-    w_measures_flags_.filled_ = status;
-}
-
-void
-MappingFlags::
-print_info(LogStream &out) const
-{
-    parent_t::print_info(out);
-
-    out.begin_item("inv gradients");
-    inv_gradients_flags_.print_info(out);
-    out.end_item();
-
-    out.begin_item("inv hessians");
-    inv_hessians_flags_.print_info(out);
-    out.end_item();
-
-    out.begin_item("measures");
-    measures_flags_.print_info(out);
-    out.end_item();
-
-    out.begin_item("w * measures");
-    w_measures_flags_.print_info(out);
-    out.end_item();
-}
-#endif
-//====================================================
 
 
 

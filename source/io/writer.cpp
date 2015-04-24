@@ -164,7 +164,7 @@ fill_points_and_connectivity(
     auto m_elem = map_->begin();
     auto m_end  = map_->end();
 
-    const auto topology = Int<dim>();
+    const auto topology = Topology<dim>();
 
     map_->init_cache(m_elem,topology);
 

@@ -69,8 +69,6 @@ public:
 
     static const int space_dim = Func::space_dim;
 
-    using Topology = typename base_t::Topology;
-
     /**
      * For each component gives a product array of the dimension
      */
@@ -139,16 +137,11 @@ public:
     ///@}
 
 
-    template <class ValueType, int topology_dim = dim>
+    template <class ValueType, int sub_elem_dim = dim>
     auto
-    get_basis(const int topology_id, const std::string &dofs_property = DofProperties::active) const
+    get_basis(const int sub_elem_id, const std::string &dofs_property = DofProperties::active) const
     {
-        /*
-        Assert(local_cache_ != nullptr, ExcNullPtr());
-        const auto &cache = local_cache_->template get_value_cache<topology_dim>(topology_id);
-        const auto &values_all_elem_dofs = cache.template get_der<ValueType>();
-        //*/
-        const auto &values_all_elem_dofs = this->get_values_from_cache<ValueType,topology_dim>(topology_id);
+        const auto &values_all_elem_dofs = this->get_data_from_sub_elem_cache<ValueType,sub_elem_dim>(sub_elem_id);
 
         //--------------------------------------------------------------------------------------
         // filtering the values that correspond to the dofs with the given property --- begin
@@ -196,14 +189,14 @@ public:
         return this->template get_basis<ValueType,dim>(0,dofs_property);
     }
 
-    template <class ValueType, int k = dim>
+    template <class ValueType, int sub_elem_dim = dim>
     auto
     linear_combination(const vector<Real> &loc_coefs,
-                       const int topology_id,
+                       const int sub_elem_id,
                        const std::string &dofs_property) const
     {
         const auto &basis_values =
-            this->template get_basis<ValueType, k>(topology_id,dofs_property);
+            this->template get_basis<ValueType, sub_elem_dim>(sub_elem_id,dofs_property);
         return basis_values.evaluate_linear_combination(loc_coefs) ;
     }
 
@@ -242,11 +235,11 @@ public:
 private:
     template <class ValueType, int topology_dim>
     const auto &
-    get_values_from_cache(const int topology_id) const
+    get_data_from_sub_elem_cache(const int topology_id) const
     {
         Assert(local_cache_ != nullptr, ExcNullPtr());
-        const auto &cache = local_cache_->template get_value_cache<topology_dim>(topology_id);
-        return cache.template get_der<ValueType>();
+        const auto &cache = local_cache_->template get_sub_elem_cache<topology_dim>(topology_id);
+        return cache.template get_data<ValueType>();
     }
 
 

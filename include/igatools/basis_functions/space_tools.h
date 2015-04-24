@@ -373,13 +373,15 @@ void norm_difference(Function<dim, codim, range, rank> &f,
     auto elem_g = g.begin();
     auto end = f.end();
 
-    f.init_cache(elem_f, Int<dim>());
-    g.init_cache(elem_g, Int<dim>());
+    const auto topology = Topology<dim>();
+
+    f.init_cache(elem_f, topology);
+    g.init_cache(elem_g, topology);
 
     for (; elem_f != end; ++elem_f, ++elem_g)
     {
-        f.fill_cache(elem_f, Int<dim>(), 0);
-        g.fill_cache(elem_g, Int<dim>(), 0);
+        f.fill_cache(elem_f, topology, 0);
+        g.fill_cache(elem_g, topology, 0);
 
         const int elem_id = elem_f->get_flat_index();
 

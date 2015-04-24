@@ -27,6 +27,7 @@ using std::array;
 
 IGA_NAMESPACE_OPEN
 
+#if 0
 namespace
 {
 struct UniformQuadFunc
@@ -34,12 +35,13 @@ struct UniformQuadFunc
     void func(auto &val_cache, const GridFlags &flag, const auto &quad)
     {
         val_cache.resize(flag, quad);
-
     }
 };
 
 template<class Quad, class... Args>
-void init_unif_caches(const GridFlags &flag, const Quad &quad, std::tuple<Args...> &t)
+void
+init_unif_caches(const GridFlags &flag, const Quad &quad, std::tuple<Args...> &t)
+//init_unif_caches(const GridFlags &flag, const Quad &quad, boost::fusion::vector<Args...> &t)
 {
     const int dim = Quad::dim;
     const int low = dim==0? 0 : dim-num_sub_elem;
@@ -47,6 +49,7 @@ void init_unif_caches(const GridFlags &flag, const Quad &quad, std::tuple<Args..
     TupleFunc1< UniformQuadFunc, GridFlags, Quad, decltype(t), sizeof...(Args), low>::apply_func(f, flag, quad, t);
 }
 };
+#endif
 
 
 template <int dim>
@@ -78,8 +81,9 @@ reset(const ValueFlags flag,
       const Quadrature<k> &quad)
 {
     flags_[k] = flag;
-    auto &quad_k = std::get<k>(quad_);
-    quad_k = quad;
+//    auto &quad_k = std::get<k>(quad_);
+//    quad_k = quad;
+    cacheutils::extract_sub_elements_data<k>(quad_) = quad;
 }
 
 
@@ -94,7 +98,27 @@ init_all_caches(ElementAccessor &elem)
         using Cache = typename ElementAccessor::CacheType;
         cache = shared_ptr<Cache>(new Cache);
     }
-    init_unif_caches(flags_[dim], std::get<dim>(quad_), cache->values_);
+
+    const auto &quad = cacheutils::extract_sub_elements_data<dim>(quad_);
+
+    boost::fusion::for_each(cache->cache_all_sub_elems_,
+                            [&](auto & value_dim) -> void
+    {
+        using PairType = typename std::remove_reference<decltype(value_dim)>::type;
+        const int topology_dim = PairType::first_type::value;
+        auto &cache_same_topology_dim = value_dim.second;
+        int topology_id = 0;
+        for (auto &cache_same_topology_id : cache_same_topology_dim)
+        {
+            cache_same_topology_id.resize(
+                flags_[dim],
+                quad.template collapse_to_sub_element<topology_dim>(topology_id));
+            ++topology_id;
+        }
+    }
+                           );
+//#endif
+//    Assert(false,ExcNotImplemented());
 }
 
 
@@ -113,9 +137,11 @@ init_cache(ElementAccessor &elem)
 
     for (auto &s_id: Topology::template elems_ids<k>())
     {
-        auto &s_cache = cache->template get_value_cache<k>(s_id);
-        auto &quad = std::get<k>(quad_);
-        s_cache.resize(flags_[k], extend_sub_elem_quad<k, dim>(quad, s_id));
+        auto &s_cache = cache->template get_sub_elem_cache<k>(s_id);
+//        auto &quad = std::get<k>(quad_);
+//        s_cache.resize(flags_[k], extend_sub_elem_quad<k, dim>(quad, s_id));
+        s_cache.resize(flags_[k], extend_sub_elem_quad<k, dim>(
+                           cacheutils::extract_sub_elements_data<k>(quad_), s_id));
     }
 }
 
@@ -129,7 +155,7 @@ GridElementHandler<dim>::
 fill_cache(ElementAccessor &elem, const int j)
 {
     Assert(elem.local_cache_ != nullptr, ExcNullPtr());
-    auto &cache = elem.local_cache_->template get_value_cache<k>(j);
+    auto &cache = elem.local_cache_->template get_sub_elem_cache<k>(j);
 
     auto &flags = cache.flags_handler_;
 
@@ -141,7 +167,7 @@ fill_cache(ElementAccessor &elem, const int j)
         const int n_pts = cache.unit_points_.get_num_points();
 
         const auto &unit_pts = cache.unit_points_;
-        auto &ref_pts = cache.template get_der<_Point>();
+        auto &ref_pts = cache.template get_data<_Point>();
         for (int pt = 0 ; pt < n_pts ; ++pt)
         {
             const auto &unit_pt = unit_pts[pt];
@@ -156,7 +182,7 @@ fill_cache(ElementAccessor &elem, const int j)
 
     if (flags.template fill<_W_Measure>())
     {
-        cache.template get_der<_W_Measure>() = elem.template get_measure<k>(j) * cache.unit_weights_;
+        cache.template get_data<_W_Measure>() = elem.template get_measure<k>(j) * cache.unit_weights_;
         flags.template set_filled<_W_Measure>(true);
     }
 

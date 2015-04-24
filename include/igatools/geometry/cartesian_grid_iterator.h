@@ -178,7 +178,7 @@ public:
     /**
      * Alias for the tensor index.
      */
-    using TensIndex = TensorIndex<ContainerType::Topology::dim>;
+    using TensIndex = TensorIndex<ContainerType::dim>;
 
     /** @name Constructors & destructor */
     ///@{

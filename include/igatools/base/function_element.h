@@ -142,8 +142,8 @@ public:
     get_values(const int j) const
     {
         Assert(local_cache_ != nullptr,ExcNullPtr());
-        const auto &cache = local_cache_->template get_value_cache<k>(j);
-        return cache.template get_der<ValueType>();
+        const auto &cache = local_cache_->template get_sub_elem_cache<k>(j);
+        return cache.template get_data<ValueType>();
     }
 
 
@@ -165,21 +165,8 @@ public:
     template <class ValueType>
     decltype(auto) evaluate_at_points(const Quadrature<dim> &points)
     {
-#if 0
-        ValueFlags flags;
-        if (ValueType::id == _Value::id)
-            flags = ValueFlags::value;
-        else if (ValueType::id == _Gradient::id)
-            flags = ValueFlags::gradient;
-        else if (ValueType::id == _Hessian::id)
-            flags = ValueFlags::hessian;
-        else
-        {
-            Assert(false,ExcNotImplemented());
-        }
-#endif
         func_->reset_one_element(ValueType::flag,points,this->get_flat_index());
-        const auto topology = Int<dim>();
+        const auto topology = Topology<dim>();
         func_->init_cache(*this,topology);
         func_->fill_cache(*this,topology,0);
 

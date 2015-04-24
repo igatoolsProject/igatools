@@ -71,8 +71,6 @@ protected:
     using RefElementIterator = typename BaseSpace::ElementIterator;
     using RefElementAccessor = typename BaseSpace::ElementAccessor;
 
-    using Topology = UnitElement<dim_>;
-
 
 private:
     /**
@@ -160,8 +158,8 @@ private:
     {
         for (int order = 0; order < max_der; ++order)
         {
-            auto &spline = spline_vals.get_derivative(order);
-            const auto &berns = bernstein_vals.get_derivative(order);
+            auto &spline = spline_vals.get_dataivative(order);
+            const auto &berns = bernstein_vals.get_dataivative(order);
             spline = oper.scale_action(std::pow(one_len, order), berns);
         }
     }
@@ -175,7 +173,7 @@ private:
     {
         bernstein_values.resize(max_der, deg+1, pt_coords.size());
         for (int order = 0; order < max_der; ++order)
-            bernstein_values.get_derivative(order) =
+            bernstein_values.get_dataivative(order) =
                 BernsteinBasis::derivative(order, deg, pt_coords);
     }
 
@@ -227,7 +225,7 @@ private:
             {
                 const auto &value = basis_values_1d_table_[c];
 
-                for (const int i : Topology::active_directions)
+                for (const int i : UnitElement<dim_>::active_directions)
                     result[c][i] = BasisValues1dConstView(value[i].at(id[i]));
 
                 result[c].update_size();
@@ -247,7 +245,7 @@ private:
             {
                 out.begin_item("Active Component ID: " + to_string(comp));
 
-                for (const int dir : Topology::active_directions)
+                for (const int dir : UnitElement<dim_>::active_directions)
                 {
                     out.begin_item("Direction : " + to_string(dir));
 
@@ -273,8 +271,8 @@ private:
 
     struct ResetDispatcher : boost::static_visitor<void>
     {
-        template<class T>
-        void operator()(const T &quad);
+        template<int sub_elem_dim>
+        void operator()(const Quadrature<sub_elem_dim> &quad);
 
         GridElementHandler<dim_> *grid_handler_;
         ValueFlags flag_;
@@ -292,8 +290,8 @@ private:
 
     struct InitCacheDispatcher : boost::static_visitor<void>
     {
-        template<class T>
-        void operator()(const T &quad);
+        template<int sub_elem_dim>
+        void operator()(const Topology<sub_elem_dim> &sub_elem);
 
         GridElementHandler<dim_> *grid_handler_;
         ReferenceElement<dim_,range_,rank_> *elem_;
@@ -305,8 +303,8 @@ private:
 
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
-        template<class T>
-        void operator()(const T &quad);
+        template<int sub_elem_dim>
+        void operator()(const Topology<sub_elem_dim> &sub_elem);
 
         /**
          * Computes the values (i.e. the 0-th order derivative) of the non-zero

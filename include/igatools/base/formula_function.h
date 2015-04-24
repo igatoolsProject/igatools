@@ -100,30 +100,30 @@ private:
 
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
-        template<class T>
-        void operator()(const T &quad)
+        template<int sub_elem_dim>
+        void operator()(const Topology<sub_elem_dim> &sub_elem)
         {
             auto &local_cache = function->get_cache(*elem);
-            auto &cache = local_cache->template get_value_cache<T::k>(j);
+            auto &cache = local_cache->template get_sub_elem_cache<sub_elem_dim>(j);
             auto &flags = cache.flags_handler_;
 
             if (!flags.fill_none())
             {
-                auto & cache_pts = cache.template get_der<_Point>();
-                cache_pts = function->map_elem_->template get_values<_Value, T::k>(j);
+                auto &cache_pts = cache.template get_data<_Point>();
+                cache_pts = function->map_elem_->template get_values<_Value, sub_elem_dim>(j);
                 if (flags.template fill<_Value>())
                 {
-                    function->evaluate_0(cache_pts, cache.template get_der<_Value>());
+                    function->evaluate_0(cache_pts, cache.template get_data<_Value>());
                     flags.template set_filled<_Value>(true);
                 }
                 if (flags.template fill<_Gradient>())
                 {
-                    function->evaluate_1(cache_pts, cache.template get_der<_Gradient>());
+                    function->evaluate_1(cache_pts, cache.template get_data<_Gradient>());
                     flags.template set_filled<_Gradient>(true);
                 }
                 if (flags.template fill<_Hessian>())
                 {
-                    function->evaluate_2(cache_pts, cache.template get_der<_Hessian>());
+                    function->evaluate_2(cache_pts, cache.template get_data<_Hessian>());
                     flags.template set_filled<_Hessian>(true);
                 }
                 if (flags.template fill<_Divergence>())
@@ -137,7 +137,7 @@ private:
         int j;
         self_t *function;
         ElementAccessor *elem;
-        std::array<FunctionFlags, dim + 1> *flags_;
+//        std::array<FunctionFlags, dim + 1> *flags_;
     };
 
     FillCacheDispatcher fill_cache_impl;

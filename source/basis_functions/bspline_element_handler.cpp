@@ -169,20 +169,18 @@ BSplineElementHandler(shared_ptr<const Space> space)
 }
 
 template<int dim_, int range_ , int rank_>
-template<class T>
+template<int sub_elem_dim>
 void
 BSplineElementHandler<dim_, range_, rank_>::
 ResetDispatcher::
-operator()(const T &quad1)
+operator()(const Quadrature<sub_elem_dim> &quad1)
 {
     Assert(grid_handler_ != nullptr,ExcNullPtr());
     grid_handler_->reset(FunctionFlags::to_grid_flags(flag_),quad1);
 
 
-    const auto k = T::dim;
-
     Assert(flags_ != nullptr,ExcNullPtr());
-    (*flags_)[k] = flag_;
+    (*flags_)[sub_elem_dim] = flag_;
 
 
     Assert(splines1d_ != nullptr,ExcNullPtr());
@@ -207,19 +205,19 @@ operator()(const T &quad1)
 
     const auto &lengths = grid_handler_->get_grid()->get_element_lengths();
 
-    for (auto &s_id: Topology::template elems_ids<k>())
+    for (auto &s_id: UnitElement<dim_>::template elems_ids<sub_elem_dim>())
     {
+        auto &g_cache = cacheutils::extract_sub_elements_data<sub_elem_dim>(*splines1d_)[s_id];
 
-        auto &g_cache = std::get<k>(*splines1d_)[s_id];
         g_cache = GlobalCache(space_data->get_components_map());
 
-        const auto quad = extend_sub_elem_quad<k,dim>(quad1, s_id);
+        const auto quad = extend_sub_elem_quad<sub_elem_dim,dim>(quad1, s_id);
         const auto &n_coords = quad.get_num_coords_direction();
 
         // Allocate space for the BasisValues1D
         for (auto comp : active_components_id)
         {
-            for (const int dir : Topology::active_directions)
+            for (const int dir : UnitElement<dim_>::active_directions)
             {
                 const auto &intervals_id = intervals_id_directions_[dir];
 
@@ -254,7 +252,7 @@ operator()(const T &quad1)
         LengthCompContainer len_right(end_interval.get_comp_map());
 
         // First/last interval treatment
-        for (const int dir : Topology::active_directions)
+        for (const int dir : UnitElement<dim_>::active_directions)
         {
             const auto &intervals_id = intervals_id_directions_[dir];
 
@@ -377,7 +375,7 @@ reset_selected_elements(
             intervals_id_unique[dir].insert(elem_tensor_id[dir]);
     }
 
-    for (const int dir : Topology::active_directions)
+    for (const int dir : UnitElement<dim_>::active_directions)
     {
         reset_impl_.intervals_id_directions_[dir].assign(
             intervals_id_unique[dir].begin(),intervals_id_unique[dir].end());
@@ -394,15 +392,15 @@ reset_selected_elements(
 
 
 template<int dim_, int range_ , int rank_>
-template<class T>
+template<int sub_elem_dim>
 void
 BSplineElementHandler<dim_, range_, rank_>::
 InitCacheDispatcher::
-operator()(const T &quad)
+operator()(const Topology<sub_elem_dim> &sub_elem)
 {
     Assert(grid_handler_ != nullptr,ExcNullPtr());
     Assert(elem_ != nullptr,ExcNullPtr());
-    grid_handler_->template init_cache<T::k>(elem_->as_cartesian_grid_element_accessor());
+    grid_handler_->template init_cache<sub_elem_dim>(elem_->as_cartesian_grid_element_accessor());
 
 
     auto &cache = elem_->get_local_cache();
@@ -416,12 +414,12 @@ operator()(const T &quad)
     }
 
     const auto n_basis = elem_->get_num_basis();//elem_->get_num_basis(DofProperties::active);
-    const auto n_points = grid_handler_->template get_num_points<T::k>();
-    const auto flag = (*flags_)[T::k];
+    const auto n_points = grid_handler_->template get_num_points<sub_elem_dim>();
+    const auto flag = (*flags_)[sub_elem_dim];
 
-    for (auto &s_id: Topology::template elems_ids<T::k>())
+    for (auto &s_id: UnitElement<dim_>::template elems_ids<sub_elem_dim>())
     {
-        auto &s_cache = cache->template get_value_cache<T::k>(s_id);
+        auto &s_cache = cache->template get_sub_elem_cache<sub_elem_dim>(s_id);
         s_cache.resize(flag, n_points, n_basis);
     }
 }
@@ -628,21 +626,22 @@ evaluate_bspline_derivatives(
 
 
 template<int dim_, int range_ , int rank_>
-template<class T>
+template<int sub_elem_dim>
 void
 BSplineElementHandler<dim_, range_, rank_>::
 FillCacheDispatcher::
-operator()(const T &topology)
+operator()(const Topology<sub_elem_dim> &sub_elem)
 {
     Assert(grid_handler_ != nullptr,ExcNullPtr());
-    grid_handler_->template fill_cache<T::k>(elem_->as_cartesian_grid_element_accessor(),j_);
+    grid_handler_->template fill_cache<sub_elem_dim>(elem_->as_cartesian_grid_element_accessor(),j_);
 
     Assert(splines1d_ != nullptr, ExcNullPtr());
-    const auto &g_cache = std::get<T::k>(*splines1d_)[j_];
+    const auto &g_cache = cacheutils::extract_sub_elements_data<sub_elem_dim>(*splines1d_)[j_];
+
 
     Assert(elem_ != nullptr, ExcNullPtr());
     Assert(elem_->get_local_cache() != nullptr, ExcNullPtr());
-    auto &cache = elem_->get_local_cache()->template get_value_cache<T::k>(j_);
+    auto &cache = elem_->get_local_cache()->template get_sub_elem_cache<sub_elem_dim>(j_);
 
     const auto &elem_t_index = elem_->get_tensor_index();
 
@@ -650,27 +649,27 @@ operator()(const T &topology)
     auto val_1d = g_cache.get_element_values(elem_t_index);
     if (flags.template fill<_Value>())
     {
-        auto &values = cache.template get_der<_Value>();
+        auto &values = cache.template get_data<_Value>();
         evaluate_bspline_values(val_1d, values);
         flags.template set_filled<_Value>(true);
     }
     if (flags.template fill<_Gradient>())
     {
-        auto &values = cache.template get_der<_Gradient>();
+        auto &values = cache.template get_data<_Gradient>();
         evaluate_bspline_derivatives<1>(val_1d, values);
         flags.template set_filled<_Gradient>(true);
     }
     if (flags.template fill<_Hessian>())
     {
-        auto &values = cache.template get_der<_Hessian>();
+        auto &values = cache.template get_data<_Hessian>();
         evaluate_bspline_derivatives<2>(val_1d, values);
         flags.template set_filled<_Hessian>(true);
     }
     if (flags.template fill<_Divergence>())
     {
         eval_divergences_from_gradients(
-            cache.template get_der<_Gradient>(),
-            cache.template get_der<_Divergence>());
+            cache.template get_data<_Gradient>(),
+            cache.template get_data<_Divergence>());
         flags.template set_filled<_Divergence>(true);
     }
 
@@ -728,6 +727,7 @@ print_info(LogStream &out) const
 
     out.begin_item("Splines 1D Cache:");
     cacheutils::print_caches(splines1d_, out);
+//    splines1d_.print_info(out);
     out.end_item();
 }
 

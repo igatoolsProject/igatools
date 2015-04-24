@@ -56,8 +56,6 @@ public:
     using ElementAccessor = MappingElement<dim_, codim_>;
     using ElementIterator = CartesianGridIterator<ElementAccessor>;
 
-    using Topology = UnitElement<dim_>;
-
     static const int dim = dim_;
     static const int space_dim = dim_ + codim_;
 

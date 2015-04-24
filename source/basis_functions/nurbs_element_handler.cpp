@@ -57,13 +57,13 @@ NURBSElementHandler(shared_ptr<const Space> space)
 
 
 template<int dim_, int range_ , int rank_>
-template<class T>
+template<int sub_elem_dim>
 void
 NURBSElementHandler<dim_, range_, rank_>::
 ResetDispatcher::
-operator()(const T &quad1)
+operator()(const Quadrature<sub_elem_dim> &quad)
 {
-    (*flags_)[T::dim] = flag_;
+    (*flags_)[sub_elem_dim] = flag_;
 }
 
 
@@ -138,15 +138,15 @@ reset_selected_elements(
 
 
 template<int dim_, int range_ , int rank_>
-template<class T>
+template<int sub_elem_dim>
 void
 NURBSElementHandler<dim_, range_, rank_>::
 InitCacheDispatcher::
-operator()(const T &quad1)
+operator()(const Topology<sub_elem_dim> &sub_elem)
 {
     Assert(grid_handler_ != nullptr,ExcNullPtr());
     Assert(elem_ != nullptr,ExcNullPtr());
-    grid_handler_->template init_cache<T::k>(elem_->as_cartesian_grid_element_accessor());
+    grid_handler_->template init_cache<sub_elem_dim>(elem_->as_cartesian_grid_element_accessor());
 
     auto &cache = elem_->get_local_cache();
     if (cache == nullptr)
@@ -159,12 +159,12 @@ operator()(const T &quad1)
     }
 
     const auto n_basis = elem_->get_num_basis(DofProperties::active);
-    const auto n_points = grid_handler_->template get_num_points<T::k>();
-    const auto flag = (*flags_)[T::k];
+    const auto n_points = grid_handler_->template get_num_points<sub_elem_dim>();
+    const auto flag = (*flags_)[sub_elem_dim];
 
-    for (auto &s_id: UnitElement<dim>::template elems_ids<T::k>())
+    for (auto &s_id: UnitElement<dim>::template elems_ids<sub_elem_dim>())
     {
-        auto &s_cache = cache->template get_value_cache<T::k>(s_id);
+        auto &s_cache = cache->template get_sub_elem_cache<sub_elem_dim>(s_id);
         s_cache.resize(flag, n_points, n_basis);
     }
 }
@@ -198,16 +198,16 @@ init_cache(RefElementAccessor &elem, const topology_variant &topology)
 
 
 template<int dim_, int range_ , int rank_>
-template<class T>
+template<int sub_elem_dim>
 void
 NURBSElementHandler<dim_, range_, rank_>::
 FillCacheDispatcher::
-operator()(const T &quad1)
+operator()(const Topology<sub_elem_dim> &sub_elem)
 {
     Assert(nrb_elem_ != nullptr, ExcNullPtr());
 
     Assert(nrb_elem_->local_cache_ != nullptr, ExcNullPtr());
-    auto &cache = nrb_elem_->local_cache_->template get_value_cache<T::k>(j_);
+    auto &cache = nrb_elem_->local_cache_->template get_sub_elem_cache<sub_elem_dim>(j_);
 
     const auto &bsp_elem = nrb_elem_->bspline_elem_;
     const auto &wght_table = nrb_elem_->weight_elem_table_;
@@ -215,27 +215,27 @@ operator()(const T &quad1)
     auto &flags = cache.flags_handler_;
     if (flags.template fill<_Value>())
     {
-        auto &values = cache.template get_der<_Value>();
+        auto &values = cache.template get_data<_Value>();
         evaluate_nurbs_values_from_bspline(bsp_elem, wght_table, values);
         flags.template set_filled<_Value>(true);
     }
     if (flags.template fill<_Gradient>())
     {
-        auto &gradients = cache.template get_der<_Gradient>();
+        auto &gradients = cache.template get_data<_Gradient>();
         evaluate_nurbs_gradients_from_bspline(bsp_elem, wght_table, gradients);
         flags.template set_filled<_Gradient>(true);
     }
     if (flags.template fill<_Hessian>())
     {
-        auto &hessians = cache.template get_der<_Hessian>();
+        auto &hessians = cache.template get_data<_Hessian>();
         evaluate_nurbs_hessians_from_bspline(bsp_elem, wght_table, hessians);
         flags.template set_filled<_Hessian>(true);
     }
     if (flags.template fill<_Divergence>())
     {
         eval_divergences_from_gradients(
-            cache.template get_der<_Gradient>(),
-            cache.template get_der<_Divergence>());
+            cache.template get_data<_Gradient>(),
+            cache.template get_data<_Divergence>());
         flags.template set_filled<_Divergence>(true);
     }
 

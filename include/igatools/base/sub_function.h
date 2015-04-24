@@ -113,7 +113,7 @@ public:
     void init_cache(ElementAccessor &elem, const topology_variant &k1) override
     {
         base_t::init_cache(elem, k1);
-        sup_func_->init_cache(sup_elem_, Int<sub_dim>());
+        sup_func_->init_cache(sup_elem_, Topology<sub_dim>());
     }
 
     void fill_cache(ElementAccessor &elem, const topology_variant &k1, const int j) override
@@ -125,21 +125,21 @@ public:
         sup_elem_->move_to(elem_map_[el_it]->get_flat_index());
 
         base_t::fill_cache(elem,k1,j);
-        sup_func_->fill_cache(sup_elem_, Int<sub_dim>(),s_id_);
+        sup_func_->fill_cache(sup_elem_, Topology<sub_dim>(),s_id_);
         auto &local_cache = this->get_cache(elem);
-        auto &cache = local_cache->template get_value_cache<sub_dim>(j);
+        auto &cache = local_cache->template get_sub_elem_cache<sub_dim>(j);
         auto &flags = cache.flags_handler_;
 
         if (flags.template fill<_Value>())
         {
-            cache.template get_der<_Value>() = sup_elem_->template get_values<_Value, sub_dim>(s_id_);
+            cache.template get_data<_Value>() = sup_elem_->template get_values<_Value, sub_dim>(s_id_);
             flags.template set_filled<_Value>(true);
         }
         if (flags.template fill<_Gradient>())
         {
             auto active = UnitElement<dim>::template get_elem<sub_dim>(s_id_).active_directions;
             auto DSupF  = sup_elem_->template get_values<_Gradient, sub_dim>(s_id_);
-            auto &DSubF = cache.template get_der<_Gradient>();
+            auto &DSubF = cache.template get_data<_Gradient>();
 
             const auto n_points = DSupF.get_num_points();
             for (int pt = 0; pt < n_points; ++pt)
@@ -269,7 +269,7 @@ public:
     void init_cache(ElementAccessor &elem, const topology_variant &k1) override
     {
         base_t::init_cache(elem, k1);
-        sup_func_->init_cache(sup_elem_, Int<sub_dim>());
+        sup_func_->init_cache(sup_elem_, Topology<sub_dim>());
     }
 
     void fill_cache(ElementAccessor &elem, const topology_variant &k1, const int j) override
@@ -282,18 +282,18 @@ public:
         sup_elem_->move_to(elem_map_[el_it]->get_flat_index());
 
         base_t::fill_cache(elem, k1, j);
-        sup_func_->fill_cache(sup_elem_,Int<sub_dim>(),s_id_);
+        sup_func_->fill_cache(sup_elem_,Topology<sub_dim>(),s_id_);
         auto &local_cache = this->get_cache(elem);
-        auto &cache = local_cache->template get_value_cache<sub_dim>(j);
+        auto &cache = local_cache->template get_sub_elem_cache<sub_dim>(j);
         auto &flags = cache.flags_handler_;
 
         if (flags.template fill<_Value>())
-            cache.template get_der<_Value>() = sup_elem_->template get_values<_Value, sub_dim>(s_id_);
+            cache.template get_data<_Value>() = sup_elem_->template get_values<_Value, sub_dim>(s_id_);
         if (flags.template fill<_Gradient>())
         {
             auto active = UnitElement<dim>::template get_elem<sub_dim>(s_id_).active_directions;
             auto DSupF  = sup_elem_->template get_values<_Gradient, sub_dim>(s_id_);
-            auto &DSubF = cache.template get_der<_Gradient>();
+            auto &DSubF = cache.template get_data<_Gradient>();
 
             const auto n_points = DSupF.get_num_points();
             for (int pt = 0; pt<n_points; ++pt)

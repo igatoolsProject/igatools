@@ -84,7 +84,6 @@ bool
 CartesianGridIteratorBase<Accessor>::
 jump(const TensIndex &increment)
 {
-    using Topology = typename Accessor::Topology;
     auto tensor_index = accessor_->get_tensor_index();
     tensor_index += increment;
 
@@ -92,7 +91,7 @@ jump(const TensIndex &increment)
     const auto n_elems = grid->get_num_intervals();
     bool valid_tensor_index = true;
     Index flat_index;
-    for (const auto i : Topology::active_directions)
+    for (const auto i : UnitElement<ContainerType::dim>::active_directions)
         if (tensor_index[i] < 0 || tensor_index[i] >= n_elems[i])
         {
             valid_tensor_index = false;

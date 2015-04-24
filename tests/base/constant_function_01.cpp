@@ -40,10 +40,12 @@ test(shared_ptr<Function<dim,codim, range,rank>> F)
     auto elem = F->begin();
     auto end  = F->end();
 
-    F->init_cache(elem, Int<dim>());
+    const auto topology = Topology<dim>();
+
+    F->init_cache(elem, topology);
     for (; elem != end; ++elem)
     {
-        F->fill_cache(elem, Int<dim>(),0);
+        F->fill_cache(elem, topology,0);
         elem->get_points().print_info(out);
         out << endl;
         elem->template get_values<_Value, dim>(0).print_info(out);

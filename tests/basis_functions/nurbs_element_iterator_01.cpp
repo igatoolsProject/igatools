@@ -76,7 +76,7 @@ void test()
     auto elem_handler = ElemHandler::create(space);
     elem_handler->reset(flag,quad);
 
-    const auto topology = Int<dim>();
+    const auto topology = Topology<dim>();
     elem_handler->init_cache(*elem,topology);
     for (; elem != end_element; ++elem)
     {
