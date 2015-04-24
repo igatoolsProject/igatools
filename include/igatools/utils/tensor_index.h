@@ -18,10 +18,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-// QualityAssurance: martinelli, 21 Jan 2014
 
-#ifndef TENSOR_INDEX_H_
-#define TENSOR_INDEX_H_
+#ifndef __TENSOR_INDEX_H_
+#define __TENSOR_INDEX_H_
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
@@ -38,17 +37,13 @@ IGA_NAMESPACE_OPEN
  * This class makes possible the
  * rank independent treatment of tensor type containers.
  *
- * This class inherits publicly from std::array, but reimplements the access operator[]
- * for bounds checking.
- *
- * @author M.Martinelli
- * @date 20 Jan 2014
+ * @author M.Martinelli 2014
+ * @author pauletti 2015
  */
 template <int rank>
 class TensorIndex : public std::array<Index, rank>
 {
 public:
-
     /** @name Constructors */
     ///@{
 
@@ -107,16 +102,21 @@ public:
     ///@}
 
 
+    /**
+     * Returns a rank k tensor index formed by the component
+     * in the k indices of sub_indices
+     */
     template<int k>
-    TensorIndex<k> get_sub_tensor(const TensorIndex<k> &index) const
+    TensorIndex<k> get_sub_tensor(const TensorIndex<k> &sub_indices) const
     {
         TensorIndex<k> res;
         int j = 0;
-        for (auto i : index)
+        for (auto i : sub_indices)
             res[j++] = (*this)[i];
 
         return res;
     }
+
     /**
      * @name Increment/decrement operators.
      */
@@ -183,6 +183,18 @@ operator<(const TensorIndex<rank> &index_a,const TensorIndex<rank> &index_b)
             return false;
     return true;
 }
+
+
+template <int rank>
+bool
+operator<=(const TensorIndex<rank> &index_a,const TensorIndex<rank> &index_b)
+{
+    for (int j=0; j<rank; ++j)
+        if (index_a[j] > index_b[j])
+            return false;
+    return true;
+}
+
 /**
  * Output operator for TensorIndex.
  *
@@ -197,11 +209,13 @@ operator<<(LogStream &out, const TensorIndex<rank> &tensor_index) ;
  * Generates a vector with the tensor indices of the given
  * rectangular range.
  *
+ *  @relates TensorIndex
+ *  @author pauletti 2015
  */
 template<int k>
 vector<TensorIndex<k>> tensor_range(TensorIndex<k> first, TensorIndex<k> last)
 {
-    Assert(first < last, ExcMessage("first not smaller than last"));
+    Assert(first <= last, ExcMessage("first bigger than last"));
     vector<TensorIndex<k>> result;
     TensorIndex<k-1> ind(arr::sequence<k-1>());
     auto vec = tensor_range<k-1>(first.get_sub_tensor(ind), last.get_sub_tensor(ind));

@@ -84,7 +84,7 @@ create_graph(const RowSpacePtr row_space, const std::string &row_property,
     }
 
     int res = graph_->FillComplete(*col_map_,*row_map_);
-    Assert(res==0, ExcMessage(" "));
+    AssertThrow(res==0, ExcMessage(" "));
 
     return graph_;
 }

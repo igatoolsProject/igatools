@@ -19,20 +19,16 @@
 //-+--------------------------------------------------------------------
 
 
-// QualityAssurance: martinelli, 21 Jan 2014
-
 #include <igatools/utils/tensor_index.h>
 #include <igatools/base/exceptions.h>
 
-
-
+// TODO (pauletti, Apr 22, 2015): the inlining in release mode should be uniform
+// through out the library
 #ifndef NDEBUG
 #include <igatools/utils/tensor_index-inline.h>
 #endif
 
-
 IGA_NAMESPACE_OPEN
-
 
 template <int rank>
 TensorIndex<rank>::
@@ -42,6 +38,7 @@ TensorIndex(const Size val) noexcept
     for (auto &idx : (*this))
         idx = val;
 }
+
 
 
 template <int rank>
@@ -55,6 +52,8 @@ std::array<int,rank>::array(arr)
         Assert(idx >= 0,ExcLowerRange(idx,0));
 #endif
 }
+
+
 
 template <int rank>
 TensorIndex<rank>::
@@ -72,6 +71,8 @@ TensorIndex(std::initializer_list<Index> list) noexcept
 #endif
 }
 
+
+
 template <int rank>
 TensorIndex<rank>
 operator+(const TensorIndex<rank> &index_a,const TensorIndex<rank> &index_b)
@@ -82,6 +83,8 @@ operator+(const TensorIndex<rank> &index_a,const TensorIndex<rank> &index_b)
 
     return tensor_index;
 }
+
+
 
 template <int rank>
 TensorIndex<rank>
@@ -94,6 +97,7 @@ operator+(const TensorIndex<rank> &index,const Index j)
 
     return tensor_index;
 }
+
 
 
 template <int rank>
@@ -117,13 +121,6 @@ template <int rank>
 LogStream &
 operator<<(LogStream &out, const TensorIndex<rank> &tensor_index)
 {
-    /*
-    out << "[";
-    for (const auto idx : tensor_index)
-        out << idx << " ";
-    out << "]";
-    //*/
-
     out << "[";
     if (rank > 0)
     {
@@ -132,20 +129,24 @@ operator<<(LogStream &out, const TensorIndex<rank> &tensor_index)
             out << "," << tensor_index[i];
     }
     out << "]";
-//*/
-    return (out);
+
+    return out;
 }
+
+
 
 template<>
 vector<TensorIndex<1>> tensor_range(TensorIndex<1> first, TensorIndex<1> last)
 {
-    Assert(first < last, ExcMessage("first not smaller than last"));
+    Assert(first <= last, ExcMessage("first bigger than last"));
     vector<TensorIndex<1>> result(last[0]-first[0]);
     for (int i=first[0]; i<last[0]; ++i)
         result[i-first[0]][0] = i;
 
     return result;
 }
+
+
 
 template<>
 vector<TensorIndex<0>> tensor_range(TensorIndex<0> first, TensorIndex<0> last)
@@ -157,8 +158,6 @@ vector<TensorIndex<0>> tensor_range(TensorIndex<0> first, TensorIndex<0> last)
     return result;
 }
 
-
 IGA_NAMESPACE_CLOSE
-
 
 #include <igatools/utils/tensor_index.inst>
