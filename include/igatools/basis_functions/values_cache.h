@@ -140,7 +140,13 @@ extract_sub_elements_data(FusionContainer &data)
 }; // end namespace cacheutils
 
 
-
+/**
+ * @brief Numerical values (ValueTable or a ValueVector) with an associated FlagStatus.
+ * It is used to store the values of a given quantity
+ * in the element's cache (for a given dimension and for a given sub-element).
+ *
+ * @tparam DataType This should be a ValueTable or a ValueVector.
+ */
 template < class DataType >
 class DataWithFlagStatus : public DataType
 {
