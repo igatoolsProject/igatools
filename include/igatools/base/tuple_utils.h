@@ -79,6 +79,24 @@ print_caches(const FusionContainer &data, LogStream &out)
 
 
 
+template<class CacheType>
+ValueFlags
+get_valid_flags_from_cache_type(const CacheType &cache)
+{
+    ValueFlags valid_flags = ValueFlags::none;
+
+    boost::fusion::for_each(cache,
+                            [&](const auto & type_and_status) -> void
+    {
+        using ValueType_Status = typename std::remove_reference<decltype(type_and_status)>::type;
+        using ValueType = typename ValueType_Status::first_type;
+
+        valid_flags |= ValueType::flag;
+    } // end lambda function
+                           );
+    return valid_flags;
+
+}
 
 
 template <int sub_elem_dim, class FusionContainer>

@@ -164,6 +164,24 @@ fill_cache(ElementAccessor &elem, const int j) -> void
         cache.template set_status_filled<_InvHessian>(true);
     }
 
+    if (cache.template status_fill<_BoundaryNormal>())
+    {
+        Assert(dim == k+1, ExcNotImplemented());
+        const auto &D1_invF = cache.template get_data<_InvGradient>();
+        const auto n_hat  = this->get_grid()->template get_boundary_normals<k>(j)[0];
+        auto &bndry_normal = cache.template get_data<_BoundaryNormal>();
+
+        const auto n_points = D1_invF.get_num_points();
+        for (int pt = 0; pt < n_points; ++pt)
+        {
+            const auto D1_invF_t = co_tensor(transpose(D1_invF[pt]));
+            bndry_normal[pt] = action(D1_invF_t, n_hat);
+            bndry_normal[pt] /= bndry_normal[pt].norm();
+        }
+
+        cache.template set_status_filled<_BoundaryNormal>(true);
+    }
+
     cache.set_filled(true);
 }
 

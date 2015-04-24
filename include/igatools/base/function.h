@@ -142,7 +142,7 @@ public:
         init_cache_impl.grid_handler = this;
         init_cache_impl.elem = &elem;
         init_cache_impl.flags_ = &flags_;
-        init_cache_impl.quad_ = &(this->quad_);
+        init_cache_impl.quad_ = &(this->quad_all_sub_elems_);
         boost::apply_visitor(init_cache_impl, k);
     }
 

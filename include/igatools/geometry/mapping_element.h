@@ -128,9 +128,10 @@ public:
 
 
     template<int sub_dim>
-    ValueVector<Points<space_dim> >
+    const ValueVector<Points<space_dim> > &
     get_boundary_normals(const int s_id) const
     {
+#if 0
         Assert(dim==sub_dim+1, ExcNotImplemented());
         ValueVector<Points<space_dim>> res;
         const auto &DF_inv = get_values_from_cache<_InvGradient, sub_dim>(s_id);
@@ -145,32 +146,39 @@ public:
             res[pt] /= res[pt].norm();
         }
         return res;
+#endif
+        return get_values_from_cache<_BoundaryNormal,sub_dim>(s_id);
     }
 
 
 private:
 
-    //TODO (martinelli, Apr 23, 2015): add the containers for boundary_normal, outer_normal, curvature
+    //TODO (martinelli, Apr 23, 2015): add the containers for outer_normal, curvature
     using CType = boost::fusion::map<
-                  boost::fusion::pair<    _Measure,DataWithFlagStatus<ValueVector<Real>>>,
-                  boost::fusion::pair<  _W_Measure,DataWithFlagStatus<ValueVector<Real>>>,
-                  boost::fusion::pair<_InvGradient,DataWithFlagStatus<ValueVector<InvDerivative<1>>>>,
-                  boost::fusion::pair< _InvHessian,DataWithFlagStatus<ValueVector<InvDerivative<2>>>>
+                  boost::fusion::pair<       _Measure,DataWithFlagStatus<ValueVector<Real>>>,
+                  boost::fusion::pair<     _W_Measure,DataWithFlagStatus<ValueVector<Real>>>,
+                  boost::fusion::pair<   _InvGradient,DataWithFlagStatus<ValueVector<InvDerivative<1>>>>,
+                  boost::fusion::pair<    _InvHessian,DataWithFlagStatus<ValueVector<InvDerivative<2>>>>,
+                  boost::fusion::pair<_BoundaryNormal,DataWithFlagStatus<ValueVector<Points<space_dim>>>>
                   >;
 
+
+    /**
+     * Returns the flags that are valid to be used with this class.
+     *
+     * @note The valid flags are defined to be the ones that can be inferred from the ValueType(s)
+     * used as key of the boost::fusion::map in CType, plus the flags valid for the FunctionElement.
+     */
     static ValueFlags get_valid_flags()
     {
         const auto valid_func_flags = parent_t::get_valid_flags();
-        const auto valid_flags = ValueFlags::measure |
-                                 ValueFlags::w_measure |
-                                 ValueFlags::inv_gradient |
-                                 ValueFlags::inv_hessian |
-                                 ValueFlags::boundary_normal|
-                                 ValueFlags::outer_normal|
-                                 ValueFlags::curvature |
-                                 valid_func_flags;
 
-        return valid_flags;
+        const auto valid_map_flags = cacheutils::get_valid_flags_from_cache_type(CType()) |
+                                     ValueFlags::outer_normal|
+                                     ValueFlags::curvature |
+                                     valid_func_flags;
+
+        return valid_map_flags;
     }
 
     using Cache = FuncValuesCache<dim,CType>;

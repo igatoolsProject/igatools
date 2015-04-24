@@ -43,7 +43,7 @@ void elem_measure(const int n_knots = 5)
     auto flag = ValueFlags::measure|ValueFlags::w_measure;
 
     QGauss<dim> quad(2);
-//    QGauss<dim-1> quad_face(2);
+    QGauss<dim-1> quad_face(2);
     const int face_id = 0;
 
     GridElementHandler<dim> cache(grid);
@@ -51,10 +51,11 @@ void elem_measure(const int n_knots = 5)
     auto elem = grid->begin();
     cache.init_element_cache(elem);
 
-//    cache.template reset<dim-1>(flag, quad_face);
+    cache.template reset<dim-1>(flag, quad_face);
+    cache.init_face_cache(elem);
 //    cache.template init_cache<dim-1>(elem);
 
-    cache.init_all_caches(elem);
+//    cache.init_all_caches(elem);
 
     for (; elem != grid->end(); ++elem)
     {

@@ -58,10 +58,10 @@ reset(const ValueFlags flag,
     const auto valid_flags = ElementAccessor::get_valid_flags();
     flags_[k] = flag & valid_flags;
 
-    cacheutils::extract_sub_elements_data<k>(quad_) = quad;
+    cacheutils::extract_sub_elements_data<k>(quad_all_sub_elems_) = quad;
 }
 
-
+#if 0
 template <int dim>
 void
 GridElementHandler<dim>::
@@ -74,7 +74,7 @@ init_all_caches(ElementAccessor &elem)
         cache = shared_ptr<Cache>(new Cache);
     }
 
-    const auto &quad = cacheutils::extract_sub_elements_data<dim>(quad_);
+    const auto &quad = cacheutils::extract_sub_elements_data<dim>(quad_all_sub_elems_);
 
     boost::fusion::for_each(cache->cache_all_sub_elems_,
                             [&](auto & value_dim) -> void
@@ -92,10 +92,8 @@ init_all_caches(ElementAccessor &elem)
         }
     }
                            );
-//#endif
-//    Assert(false,ExcNotImplemented());
 }
-
+#endif
 
 template <int dim>
 template <int k>
@@ -113,10 +111,8 @@ init_cache(ElementAccessor &elem)
     for (auto &s_id: Topology::template elems_ids<k>())
     {
         auto &s_cache = cache->template get_sub_elem_cache<k>(s_id);
-//        auto &quad = std::get<k>(quad_);
-//        s_cache.resize(flags_[k], extend_sub_elem_quad<k, dim>(quad, s_id));
         s_cache.resize(flags_[k], extend_sub_elem_quad<k, dim>(
-                           cacheutils::extract_sub_elements_data<k>(quad_), s_id));
+                           cacheutils::extract_sub_elements_data<k>(quad_all_sub_elems_), s_id));
     }
 }
 

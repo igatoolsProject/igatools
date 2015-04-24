@@ -175,14 +175,15 @@ public:
     ///@}
 
 
+    /**
+     * Returns the flags that are valid to be used with this class.
+     *
+     * @note The valid flags are defined to be the ones that can be inferred from the ValueType(s)
+     * used as key of the boost::fusion::map in CType.
+     */
     static ValueFlags get_valid_flags()
     {
-        ValueFlags valid_flags = ValueFlags::value |
-                                 ValueFlags::gradient |
-                                 ValueFlags::hessian |
-                                 ValueFlags::divergence |
-                                 ValueFlags::point;
-        return valid_flags;
+        return cacheutils::get_valid_flags_from_cache_type(CType());
     }
 
 private:

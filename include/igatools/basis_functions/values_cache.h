@@ -56,10 +56,7 @@ public:
 
 template<class ValuesCache, int dim, std::size_t... I>
 auto
-tuple_of_caches(
-    std::index_sequence<I...>,
-    const Quadrature<dim> &q,
-    const ValuesCache &)
+tuple_of_caches(std::index_sequence<I...>)
 {
     return boost::fusion::map<boost::fusion::pair<Topology<(dim>I) ? dim-I : 0>,std::array<ValuesCache,UnitElement<dim>::template num_elem<(dim>I) ? dim-I : 0>()>> ...>(
                boost::fusion::pair<Topology<(dim>I) ? dim-I : 0>,std::array<ValuesCache,UnitElement<dim>::template num_elem<(dim>I) ? dim-I : 0>()>>() ...);
@@ -67,10 +64,8 @@ tuple_of_caches(
 
 
 template<class ValuesCache, int dim>
-using CacheList = decltype(tuple_of_caches(
-                               std::make_index_sequence<(num_sub_elem <= dim ? num_sub_elem+1 : 1)>(),
-                               Quadrature<dim>(),
-                               ValuesCache()));
+using CacheList = decltype(tuple_of_caches<ValuesCache,dim>(
+                               std::make_index_sequence<(num_sub_elem <= dim ? num_sub_elem+1 : 1)>()));
 
 
 
@@ -180,7 +175,6 @@ public:
     const auto &get_data() const
     {
         const auto &data = boost::fusion::at_key<ValueType>(values_);
-        //TODO (martinelli, Apr 03,2015): uncomment this assertion
         Assert(data.status_filled(),
                ExcMessage("The cache for \"" + ValueType::name + "\" is not filled."));
 
@@ -228,7 +222,7 @@ public:
     ///@}
 
 
-
+#if 0
     /**
      * Returns the flags that are valid to be used with this class.
      *
@@ -237,6 +231,7 @@ public:
      */
     ValueFlags get_valid_flags() const
     {
+#if 0
         ValueFlags valid_flags = ValueFlags::none;
 
         boost::fusion::for_each(values_,
@@ -249,8 +244,10 @@ public:
         } // end lambda function
                                );
         return valid_flags;
+#endif
+        return cacheutils::get_valid_flags_from_cache_type(values_);
     }
-
+#endif
 };
 
 

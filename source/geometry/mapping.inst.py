@@ -33,7 +33,7 @@ sub_dim_members = \
 ['void Mapping<dim,cod>::fill_cache<k>(ElementAccessor &elem, const int j);',
  'void Mapping<dim,cod>::init_cache<k>(ElementAccessor &elem);',
  'void Mapping<dim,cod>::reset<k>(const ValueFlags flag, const Quadrature<k> &quad);',
- 'ValueVector<Points<dim+cod>> MappingElement<dim,cod>::get_boundary_normals<k>(const int s_id) const;']
+ 'const ValueVector<Points<dim+cod>> & MappingElement<dim,cod>::get_boundary_normals<k>(const int s_id) const;']
 
 for x in inst.sub_mapping_dims:
     dims = '<%d, %d>' %(x.dim, x.codim)
