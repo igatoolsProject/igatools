@@ -161,7 +161,7 @@ enum class ValueFlags : std::int64_t
 
 
 
-
+#if 0
     ///@name Transformation (pushforward) related
     ///@{
     /** transform the values of basis functions */
@@ -172,8 +172,8 @@ enum class ValueFlags : std::int64_t
 
     /** transform the second derivatives of basis functions */
     tran_hessian  =    1L << 24,
-
     ///@}
+#endif
 
     /** compute the divergences of basis functions */
     divergence    =    1L << 28
@@ -183,7 +183,17 @@ enum class ValueFlags : std::int64_t
 const std::array<ValueFlags, max_der> DerivativeFlags =
 {ValueFlags::value, ValueFlags::gradient,  ValueFlags::hessian};
 
+enum class TransformationFlags : std::int64_t
+{
+    /** transform the values of basis functions */
+    tran_value    =    1L << 22,
 
+    /** transform the gradients of basis functions */
+    tran_gradient =    1L << 23,
+
+    /** transform the second derivatives of basis functions */
+    tran_hessian  =    1L << 24
+};
 
 /**
  * Type of transformation for values and derivatives of basis functions.

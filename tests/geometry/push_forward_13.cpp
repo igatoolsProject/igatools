@@ -62,10 +62,13 @@ void test()
                 | ValueFlags::gradient | ValueFlags::hessian|
                 ValueFlags::measure |
                 ValueFlags::w_measure;
+
+    auto t_flag = TransformationFlags::tran_value;
+
     auto F = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
     PForward pf(F);
 
-    pf.template reset<dim>(flag, quad);
+    pf.template reset<dim>(flag, t_flag, quad);
 
     auto elem = pf.begin();
     auto end  = pf.end();

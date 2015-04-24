@@ -75,12 +75,12 @@ void test()
     auto F = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
     PForward pf(F);
 
-    auto flag = ValueFlags::point |
-                ValueFlags::tran_value |
-                ValueFlags::tran_gradient|
-                ValueFlags::tran_hessian;
+    auto flag = ValueFlags::point ;
+    auto t_flag = TransformationFlags::tran_value |
+                  TransformationFlags::tran_gradient|
+                  TransformationFlags::tran_hessian;
 
-    pf.template reset<dim>(flag, quad);
+    pf.template reset<dim>(flag, t_flag, quad);
 
     auto elem = pf.begin();
     auto end  = pf.end();

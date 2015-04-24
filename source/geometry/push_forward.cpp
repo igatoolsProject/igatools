@@ -30,7 +30,7 @@ IGA_NAMESPACE_OPEN
 namespace
 {
 auto
-pushforward_to_mapping_flag(const Transformation type, const ValueFlags flags)
+pushforward_to_mapping_flag(const Transformation type, const ValueFlags flags, const TransformationFlags transf_flags)
 -> ValueFlags
 {
     ValueFlags transfer_flag =
@@ -47,13 +47,13 @@ pushforward_to_mapping_flag(const Transformation type, const ValueFlags flags)
 
     if (type == Transformation::h_grad)
     {
-        if (contains(flags, ValueFlags::tran_value))
+        if (contains(transf_flags, TransformationFlags::tran_value))
         {}
 
-        if (contains(flags, ValueFlags::tran_gradient))
+        if (contains(transf_flags, TransformationFlags::tran_gradient))
             map_flag|= (ValueFlags::inv_gradient);
 
-        if (contains(flags, ValueFlags::tran_hessian))
+        if (contains(transf_flags, TransformationFlags::tran_hessian))
         {
             map_flag |= (ValueFlags::hessian | ValueFlags::inv_gradient);
         }
@@ -131,9 +131,9 @@ template<Transformation type, int dim, int codim>
 template<int k>
 auto
 PushForward<type, dim, codim>::
-reset(const ValueFlags flag, const Quadrature<k> &eval_pts) -> void
+reset(const ValueFlags flag, const TransformationFlags transf_flag, const Quadrature<k> &eval_pts) -> void
 {
-    MapType::template reset<k>(pushforward_to_mapping_flag(type, flag), eval_pts);
+    MapType::template reset<k>(pushforward_to_mapping_flag(type, flag, transf_flag), eval_pts);
 }
 
 
