@@ -145,8 +145,23 @@ public:
 public:
     void print_info(LogStream &out) const
     {
-        // TODO (pauletti, Apr 24, 2015): line below should be implemented
-        //quad_all_sub_elems_.print_info(out);
+        out.begin_item("Quadrature cache for all dimensions:");
+
+        boost::fusion::for_each(quad_all_sub_elems_,
+                                [&](const auto & data_same_topology_dim)
+        {
+            using PairType = typename std::remove_reference<decltype(data_same_topology_dim)>::type;
+            using SubDimType = typename PairType::first_type;
+
+            const auto &quad_same_subdim = data_same_topology_dim.second;
+
+            out.begin_item("Quadrature cache for dimension: " + std::to_string(SubDimType::value));
+            quad_same_subdim.print_info(out);
+            out.end_item();
+        }
+                               );
+        out.end_item();
+
     }
     std::shared_ptr<const GridType> get_grid() const;
 
