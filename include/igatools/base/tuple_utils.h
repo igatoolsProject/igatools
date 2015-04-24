@@ -60,7 +60,7 @@ void
 print_caches(const FusionContainer &data, LogStream &out)
 {
     boost::fusion::for_each(data,
-                            [&out](const auto & data_same_topology_dim)
+                            [&](const auto & data_same_topology_dim)
     {
         using PairType = typename std::remove_reference<decltype(data_same_topology_dim)>::type;
         using SubDimType = typename PairType::first_type;

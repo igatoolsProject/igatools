@@ -133,6 +133,16 @@ public:
     /** Decrement the indices in all directions by the value @p j. */
     TensorIndex<rank> &operator -=(const Index j) noexcept ;
     ///@}
+
+    /**
+     * Returns the memory used to define the object's data members.
+     */
+    auto memory_consumption() const
+    {
+        return sizeof(static_cast<const std::array<Index,rank> &>(*this));
+//      return rank * sizeof(Index);
+    }
+
 };
 
 

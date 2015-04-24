@@ -117,6 +117,14 @@ public:
         return status_;
     }
 
+    /**
+     * Returns an estimate of the memory used to define the object.
+     */
+    auto memory_consumption() const
+    {
+        return DataType::memory_consumption() + sizeof(status_) ;
+    }
+
 private:
     FlagStatus status_;
 };
@@ -142,26 +150,48 @@ protected:
 public:
     void print_info(LogStream &out) const
     {
+        out.begin_item("Memory consumption: " + std::to_string(this->memory_consumption()) + " bytes");
+        out.end_item();
+
         boost::fusion::for_each(values_,
                                 [&](const auto & type_and_value) -> void
         {
             using ValueType_ValueContainer = typename std::remove_reference<decltype(type_and_value)>::type;
             using ValueType = typename ValueType_ValueContainer::first_type;
-            out.begin_item(ValueType::name + ":");
+            const auto &value = type_and_value.second;
+
+            out.begin_item(ValueType::name + ": (memory consumption: " + std::to_string(value.memory_consumption()) + " bytes)");
 
             out.begin_item("Fill flags:");
-            type_and_value.second.get_status().print_info(out);
+            value.get_status().print_info(out);
             out.end_item();
 
-            if (type_and_value.second.status_filled())
+
+            if (value.status_filled())
             {
                 out.begin_item("Data:");
-                type_and_value.second.print_info(out);
+                value.print_info(out);
                 out.end_item();
             }
             out.end_item();
+
         } // end lambda function
                                );
+    }
+
+    /**
+     * Returns an estimate of the memory used to define the object.
+     */
+    auto memory_consumption() const
+    {
+        std::size_t memory_consumption = 0;
+        boost::fusion::for_each(values_,
+                                [&](const auto & type_and_value) -> void
+        {
+            memory_consumption += type_and_value.second.memory_consumption();
+        } // end lambda function
+                               );
+        return memory_consumption;
     }
 
 
@@ -220,34 +250,6 @@ public:
         return !fill_someone;
     }
     ///@}
-
-
-#if 0
-    /**
-     * Returns the flags that are valid to be used with this class.
-     *
-     * @note The valid flags are defined to be the ones that can be inferred from the ValueType(s)
-     * used as key of the boost::fusion::map in CacheType.
-     */
-    ValueFlags get_valid_flags() const
-    {
-#if 0
-        ValueFlags valid_flags = ValueFlags::none;
-
-        boost::fusion::for_each(values_,
-                                [&](const auto & type_and_status) -> void
-        {
-            using ValueType_Status = typename std::remove_reference<decltype(type_and_status)>::type;
-            using ValueType = typename ValueType_Status::first_type;
-
-            valid_flags |= ValueType::flag;
-        } // end lambda function
-                               );
-        return valid_flags;
-#endif
-        return cacheutils::get_valid_flags_from_cache_type(values_);
-    }
-#endif
 };
 
 
@@ -316,8 +318,6 @@ public:
     void resize(const ValueFlags &flags,
                 const Size n_points)
     {
-//        this->flags_handler_ = flags_handler;
-
         Assert(n_points >= 0, ExcLowerRange(n_points,1));
 
         boost::fusion::for_each(this->values_,
@@ -373,7 +373,32 @@ public:
 
     void print_info(LogStream &out) const
     {
-        cacheutils::print_caches(cache_all_sub_elems_, out);
+        out.begin_item("Cache for all sub-elements in all dimensions: (memory consumption: " + std::to_string(this->memory_consumption()) + " bytes)");
+
+        boost::fusion::for_each(cache_all_sub_elems_,
+                                [&](const auto & data_same_topology_dim)
+        {
+            using PairType = typename std::remove_reference<decltype(data_same_topology_dim)>::type;
+            using SubDimType = typename PairType::first_type;
+
+            const auto &data_same_subdim = data_same_topology_dim.second;
+
+            out.begin_item("Cache for sub-element(s) with dimension: " + std::to_string(SubDimType::value) +
+                           "  (memory consumption : " +
+                           std::to_string(data_same_subdim.size() * data_same_subdim[0].memory_consumption()) + " bytes.");
+            int s_id =0;
+            for (const auto &data_same_topology_id : data_same_subdim)
+            {
+                out.begin_item("Sub-element id: " + std::to_string(s_id++));
+                data_same_topology_id.print_info(out);
+                out.end_item();
+            }
+            out.end_item();
+        }
+                               );
+
+
+        out.end_item();
     }
 
     template <int sub_elem_dim>
@@ -397,6 +422,24 @@ public:
     {
         return this->template get_sub_elem_cache<SubElemCache::get_dim()>(0).get_valid_flags();
     }
+
+
+    /**
+     * Returns an estimate of the memory used to define the object.
+     */
+    auto memory_consumption() const
+    {
+        std::size_t memory_consumption = 0;
+        boost::fusion::for_each(cache_all_sub_elems_,
+                                [&](const auto & type_and_value) -> void
+        {
+            for (const auto &cache : type_and_value.second)
+                memory_consumption += cache.memory_consumption();
+        } // end lambda function
+                               );
+        return memory_consumption;
+    }
+
 
     /**
      * Cache for all sub-elements.

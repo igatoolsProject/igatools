@@ -117,6 +117,14 @@ public:
     ///@}
 
 
+    /**
+     * Returns the memory used to define the object's data members.
+     */
+    auto memory_consumption() const
+    {
+        return size_.memory_consumption() + weight_.memory_consumption();
+    }
+
 protected:
     /**
      * Reset the size_ member in order to be equal to the input argument @p size.

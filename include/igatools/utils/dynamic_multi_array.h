@@ -171,7 +171,6 @@ public:
                     DynamicMultiArray<T,0>> &slice);
     ///@}
 
-
 };
 
 
