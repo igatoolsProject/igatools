@@ -37,8 +37,17 @@ create_id_tensor()
 }
 
 
-
-template<int dim,int space_dim = dim>
+/**
+ * The identity function from R^dim to R^spacedim,
+ * if dim < space_dim, the last space_dim-dim  coordinates are zero.
+ *
+ * @note this function is not inherited from formula function because
+ * we want to optimize its computation
+ *
+ * @author martinelli 2015
+ * @author pauletti 2015
+ */
+template<int dim, int space_dim = dim>
 class IdentityFunction :
     public Function<dim, 0, space_dim, 1>,
     public std::enable_shared_from_this<IdentityFunction<dim,space_dim> >
@@ -54,6 +63,7 @@ private:
 
 protected:
     using typename parent_t::GridType;
+
 public:
     using typename parent_t::topology_variant;
     using typename parent_t::Point;
@@ -84,19 +94,10 @@ public:
     }
 
 
-    void fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) override;
-
-    virtual void print_info(LogStream &out) const override final
-    {
-        using std::to_string;
-        out.begin_item("IdentityFunction<" + to_string(dim) + "," + to_string(space_dim) +">");
-        parent_t::print_info(out);
-        out.end_item();
-    }
-
+    void fill_cache(ElementAccessor &elem, const topology_variant &k,
+                    const int j) override;
 
 private:
-
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
         template<int sub_elem_dim>

@@ -231,13 +231,7 @@ public:
 
     virtual void print_info(LogStream &out) const
     {
-        using std::to_string;
-        out.begin_item("Function<" + to_string(dim_) + "," +
-                       to_string(codim_) + "," +
-                       to_string(range_) + "," +
-                       to_string(rank_) + ">");
-//        parent_t::print_info(out);
-        out.end_item();
+        parent_t::print_info(out);
     }
 
 private:
