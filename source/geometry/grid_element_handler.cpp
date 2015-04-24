@@ -132,8 +132,6 @@ fill_cache(ElementAccessor &elem, const int j)
     Assert(elem.local_cache_ != nullptr, ExcNullPtr());
     auto &cache = elem.local_cache_->template get_sub_elem_cache<k>(j);
 
-//    auto &flags = cache.flags_handler_;
-
     if (cache.template status_fill<_Point>())
     {
         auto translate = elem.vertex(0);

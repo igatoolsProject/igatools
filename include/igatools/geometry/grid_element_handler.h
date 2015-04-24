@@ -131,14 +131,12 @@ public:
     void init_cache(ElementAccessor &elem);
 
 
-//#if 0
     void init_all_caches(ElementAccessor &elem);
 
     void init_all_caches(ElementIterator &elem)
     {
         init_all_caches(*elem);
     }
-//#endif
 
     template <int k>
     void fill_cache(ElementAccessor &elem, const int j);
@@ -148,7 +146,6 @@ public:
     template <int k = dim>
     Size get_num_points() const
     {
-//        return std::get<k>(quad_).get_num_points();
         return cacheutils::extract_sub_elements_data<k>(quad_).get_num_points();
     }
 

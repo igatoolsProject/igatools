@@ -138,7 +138,6 @@ private:
                     // TODO (pauletti, Apr 17, 2015): this can be static const
                     auto identity = create_id_tensor<dim,space_dim>();
                     cache.template get_data<_Gradient>().fill(identity);
-//                    std::get<1>(cache.values_).fill(identity);
 
                     cache.template set_status_filled<_Gradient>(true);
                 }
@@ -147,6 +146,8 @@ private:
                     // TODO (pauletti, Apr 17, 2015): this can be static const
                     Hessian zero;
                     cache.template get_data<_Hessian>().fill(zero);
+
+                    cache.template set_status_filled<_Hessian>(true);
                 }
             }
             cache.set_filled(true);

@@ -132,13 +132,10 @@ public:
 private:
 //  DataType data_;
     FlagStatus status_;
-
-
 };
 
 
-template<int dim,
-         class CacheType>
+template<int dim,class CacheType>
 class ValuesCache : public CacheStatus
 {
 public:
@@ -190,11 +187,12 @@ public:
     template<class ValueType>
     const auto &get_data() const
     {
+        const auto &data = boost::fusion::at_key<ValueType>(values_);
         //TODO (martinelli, Apr 03,2015): uncomment this assertion
-//        Assert(flags_handler_.template filled<ValueType>(),
-//               ExcMessage("The cache for \"" + ValueType::name + "\" is not filled."));
+        Assert(data.status_filled(),
+               ExcMessage("The cache for \"" + ValueType::name + "\" is not filled."));
 
-        return boost::fusion::at_key<ValueType>(values_);
+        return data;
     }
 
 
@@ -206,14 +204,14 @@ public:
     template<class ValueType>
     bool status_fill() const
     {
-        return this->template get_data<ValueType>().status_fill();
+        return boost::fusion::at_key<ValueType>(values_).status_fill();
     }
 
     /** Returns true if the quantity associated to @p ValueType is filled. */
     template<class ValueType>
     bool status_filled() const
     {
-        return this->template get_data<ValueType>().status_filled();
+        return boost::fusion::at_key<ValueType>(values_).status_filled();
     }
 
     /** Sets the filled @p status the quantity associated to @p ValueType. */
@@ -241,6 +239,9 @@ public:
 
     /**
      * Returns the flags that are valid to be used with this class.
+     *
+     * @note The valid flags are defined to be the ones that can be inferred from the ValueType(s)
+     * used as key of the boost::fusion::map in CacheType.
      */
     ValueFlags get_valid_flags() const
     {
@@ -309,7 +310,6 @@ public:
 
         this->set_initialized(true);
     }
-
 };
 
 
