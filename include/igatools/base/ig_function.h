@@ -168,7 +168,23 @@ private:
 
             auto &local_cache = function->get_cache(*func_elem);
             auto &cache = local_cache->template get_sub_elem_cache<sub_elem_dim>(j);
-//            auto &flags = cache.flags_handler_;
+
+#if 0
+            boost::fusion::for_each(cache.get_values(),
+                                    [&](auto & type_and_value) -> void
+            {
+                using ValueType_ValueContainer = typename std::remove_reference<decltype(type_and_value)>::type;
+                using ValueType = typename ValueType_ValueContainer::first_type;
+                auto &value = type_and_value.second;
+
+                if (value.status_fill())
+                {
+                    value = space_elem->template linear_combination<ValueType,sub_elem_dim>(*loc_coeff,j, *property);
+                    value.set_status_filled(true);
+                }
+            } // end lambda function
+                                                           );
+#endif
 
             //TODO (martinelli Mar 27,2015): bad style. Use the ValueType mechanism in order to avoid the if-switch
             if (cache.template status_fill<_Value>())
@@ -195,7 +211,7 @@ private:
                     space_elem->template linear_combination<_Divergence,sub_elem_dim>(*loc_coeff,j, *property);
                 cache.template set_status_filled<_Divergence>(true);
             }
-
+//#endif
             cache.set_filled(true);
         }
 
