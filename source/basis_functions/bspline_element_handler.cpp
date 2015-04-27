@@ -176,7 +176,7 @@ ResetDispatcher::
 operator()(const Quadrature<sub_elem_dim> &quad1)
 {
     Assert(grid_handler_ != nullptr,ExcNullPtr());
-    grid_handler_->reset(function_to_grid_flags(flag_),quad1);
+    grid_handler_->reset(flag_,quad1);
 
 
     Assert(flags_ != nullptr,ExcNullPtr());

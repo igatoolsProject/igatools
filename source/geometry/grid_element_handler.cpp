@@ -28,7 +28,6 @@ using std::array;
 IGA_NAMESPACE_OPEN
 
 
-
 template <int dim>
 GridElementHandler<dim>::
 GridElementHandler(shared_ptr<GridType> grid)
@@ -56,7 +55,12 @@ reset(const ValueFlags flag,
       const Quadrature<k> &quad)
 {
     const auto valid_flags = ElementAccessor::get_valid_flags();
-    flags_[k] = flag & valid_flags;
+    auto grid_flag = flag & valid_flags;
+
+    if (contains(flag, ValueFlags::value))
+        grid_flag |= ValueFlags::point;
+
+    flags_[k] = grid_flag;
 
     cacheutils::extract_sub_elements_data<k>(quad_all_sub_elems_) = quad;
 }

@@ -222,6 +222,10 @@ protected:
 
 
 public:
+    /**
+     * Function for printing information of the cache.
+     * Its use is intended for testing and debugging purposes.
+     */
     void print_info(LogStream &out) const
     {
         out.begin_item("Memory consumption: " + std::to_string(this->memory_consumption()) + " bytes");
@@ -269,12 +273,21 @@ public:
     }
 
 
+    /**
+     * Returns the data associated with the given <tt>ValueType</tt> (non-const version).
+     */
     template<class ValueType>
     auto &get_data()
     {
         return boost::fusion::at_key<ValueType>(values_);
     }
 
+    /**
+     * Returns the data associated with the given <tt>ValueType</tt> (const version).
+     *
+     * @note In Debug mode, a check is performed in order to check that the FlagStatus of the
+     * requested data is marked as "filled", otherwise, an assertion will be raised.
+     */
     template<class ValueType>
     const auto &get_data() const
     {
@@ -320,7 +333,6 @@ public:
             return type_and_data.second.status_fill() == true;
         } // end lambda function
                                                     );
-
         return !fill_someone;
     }
     ///@}

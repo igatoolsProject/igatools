@@ -69,21 +69,6 @@ struct FlagStatus
     //*/
 };
 
-inline
-ValueFlags
-function_to_grid_flags(const ValueFlags &function_flags)
-{
-    ValueFlags transfer_flags = ValueFlags::w_measure |
-                                ValueFlags::boundary_normal;
-    ValueFlags g_flags = function_flags & transfer_flags;
-    if (contains(function_flags, ValueFlags::point) || contains(function_flags, ValueFlags::value))
-    {
-        g_flags |= ValueFlags::point;
-    }
-    return g_flags;
-
-}
-
 
 inline
 ValueFlags

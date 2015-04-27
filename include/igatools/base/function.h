@@ -244,7 +244,7 @@ private:
         {
             (*flags_)[sub_elem_dim] = flag;
 
-            grid_handler->template reset<sub_elem_dim>(function_to_grid_flags(flag), quad);
+            grid_handler->template reset<sub_elem_dim>(flag, quad);
         }
 
         ValueFlags flag;
