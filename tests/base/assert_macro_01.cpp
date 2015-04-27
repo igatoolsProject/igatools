@@ -18,16 +18,16 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/*
- *  Test for the exception throw mechanism
- *  author: pauletti
- *  Date: 2012-11-18
+/**
+ *  @brief Test for the exception throw mechanism
+ *  @author pauletti
+ *  @date 2012-11-18
  */
 
 #include "../tests.h"
 #include <igatools/base/exceptions.h>
 
-int main(int argc, char *argv[])
+int main()
 {
     iga_exceptions::suppress_stacktrace_in_exceptions();
     Assert(true, ExcInternalError());

@@ -38,7 +38,7 @@ PROJECT_NAME           = igatools
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = @IGA_VERSION@
+PROJECT_NUMBER         = @IGATOOLS_VERSION@
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
@@ -534,7 +534,7 @@ SORT_MEMBER_DOCS       = YES
 # name. If set to NO the members will appear in declaration order.
 # The default value is: NO.
 
-SORT_BRIEF_DOCS        = YES
+SORT_BRIEF_DOCS        = NO
 
 # If the SORT_MEMBERS_CTORS_1ST tag is set to YES then doxygen will sort the
 # (brief and detailed) documentation of class members so that constructors and
@@ -553,7 +553,7 @@ SORT_MEMBERS_CTORS_1ST = YES
 # appear in their defined order.
 # The default value is: NO.
 
-SORT_GROUP_NAMES       = YES
+SORT_GROUP_NAMES       = NO
 
 # If the SORT_BY_SCOPE_NAME tag is set to YES, the class list will be sorted by
 # fully-qualified names, including namespaces. If set to NO, the class list will
@@ -580,7 +580,7 @@ STRICT_PROTO_MATCHING  = NO
 # documentation.
 # The default value is: YES.
 
-GENERATE_TODOLIST      = YES
+GENERATE_TODOLIST      = NO
 
 # The GENERATE_TESTLIST tag can be used to enable ( YES) or disable ( NO) the
 # test list. This list is created by putting \test commands in the
@@ -745,7 +745,8 @@ WARN_LOGFILE           = doxygen_warnings.log
 
 INPUT                  = @CMAKE_CURRENT_SOURCE_DIR@/doc \
                          @CMAKE_CURRENT_SOURCE_DIR@/tutorial \
-                         @CMAKE_CURRENT_SOURCE_DIR@/include/igatools
+                         @CMAKE_CURRENT_SOURCE_DIR@/include/igatools\
+                         @CMAKE_CURRENT_SOURCE_DIR@/tests/base
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -766,7 +767,8 @@ INPUT_ENCODING         = UTF-8
 # *.qsf, *.as and *.js.
 
 FILE_PATTERNS          = *.h \
-                         *.dox
+                         *.dox\
+                         *.cpp
 
 # The RECURSIVE tag can be used to specify whether or not subdirectories should
 # be searched for input files as well.
