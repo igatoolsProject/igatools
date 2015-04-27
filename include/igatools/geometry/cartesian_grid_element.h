@@ -295,27 +295,6 @@ public:
 
 private:
 
-    /**
-     * Alias used to define the container for the values in the cache.
-     */
-    using CType = boost::fusion::map<
-                  boost::fusion::pair<    _Point,DataWithFlagStatus<ValueVector<Points<dim>>>>,
-                  boost::fusion::pair<_W_Measure,DataWithFlagStatus<ValueVector<Real>>>
-                  >;
-    /**
-     * Returns the flags that are valid to be used with this class.
-     *
-     * @note The valid flags are defined to be the ones that can be inferred from the ValueType(s)
-     * used as key of the boost::fusion::map in CType.
-     */
-    static ValueFlags get_valid_flags()
-    {
-        return cacheutils::get_valid_flags_from_cache_type(CType());
-    }
-
-    using ValuesCache = FuncValuesCache<dim,CType>;
-
-    using CacheType = LocalCache<ValuesCache>;
 
 
 private:
@@ -330,19 +309,44 @@ private:
     /** Tensor product indices of the current struct index @p flat_index_. */
     TensorIndex<dim> tensor_index_;
 
+    /**
+     * @name Types, data and methods for the cache.
+     */
+    ///@{
+
+    /**
+     * Alias used to define the container for the values in the cache.
+     */
+    using CType = boost::fusion::map<
+                  boost::fusion::pair<    _Point,DataWithFlagStatus<ValueVector<Points<dim>>>>,
+                  boost::fusion::pair<_W_Measure,DataWithFlagStatus<ValueVector<Real>>>
+                  >;
+    /**
+     * Returns the flags that are valid to be used with this class.
+     *
+     * @note The valid flags are defined to be the ones that can be inferred from the ValueType(s)
+     * used as key of the boost::fusion::map in CType.
+     */
+    static ValueFlags get_valid_flags();
+
+    using ValuesCache = FuncValuesCache<dim,CType>;
+
+    using CacheType = LocalCache<ValuesCache>;
+
+
     /** The local (element and face) cache. */
-    std::shared_ptr<CacheType> local_cache_;
+    std::shared_ptr<CacheType> all_sub_elems_cache_;
 
 
     template <class ValueType, int topology_dim>
     const auto &
     get_values_from_cache(const int topology_id) const
     {
-        Assert(local_cache_ != nullptr, ExcNullPtr());
-        const auto &cache = local_cache_->template get_sub_elem_cache<topology_dim>(topology_id);
+        Assert(all_sub_elems_cache_ != nullptr, ExcNullPtr());
+        const auto &cache = all_sub_elems_cache_->template get_sub_elem_cache<topology_dim>(topology_id);
         return cache.template get_data<ValueType>();
     }
-
+    ///@}
 
 protected:
     /**

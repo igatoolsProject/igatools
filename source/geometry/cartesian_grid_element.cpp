@@ -50,15 +50,16 @@ CartesianGridElement(const CartesianGridElement<dim> &elem, const CopyPolicy &co
     flat_index_   = elem.flat_index_;
     tensor_index_ = elem.tensor_index_;
 
-    if (elem.local_cache_ != nullptr)
+    if (elem.all_sub_elems_cache_ != nullptr)
     {
         if (copy_policy == CopyPolicy::shallow)
         {
-            local_cache_ = elem.local_cache_;
+            all_sub_elems_cache_ = elem.all_sub_elems_cache_;
         }
         else
         {
-            local_cache_ = std::shared_ptr<CacheType>(new CacheType(*elem.local_cache_));
+//            all_sub_elems_cache_ = std::shared_ptr<CacheType>(new CacheType(*elem.all_sub_elems_cache_));
+            all_sub_elems_cache_ = std::make_shared<CacheType>(*elem.all_sub_elems_cache_);
         }
     }
 }
@@ -69,8 +70,9 @@ std::shared_ptr<CartesianGridElement<dim> >
 CartesianGridElement<dim>::
 clone() const
 {
-    auto elem = std::shared_ptr<CartesianGridElement<dim> >(
-                    new CartesianGridElement(*this,CopyPolicy::deep));
+//    auto elem = std::shared_ptr<CartesianGridElement<dim> >(
+//                   new CartesianGridElement(*this,CopyPolicy::deep));
+    auto elem = std::make_shared<CartesianGridElement<dim>>(*this,CopyPolicy::deep);
     Assert(elem != nullptr, ExcNullPtr());
     return elem;
 }
@@ -205,12 +207,12 @@ copy_from(const CartesianGridElement<dim> &elem,
 
         if (copy_policy == CopyPolicy::deep)
         {
-            Assert(elem.local_cache_ != nullptr, ExcNullPtr());
-            local_cache_ = std::shared_ptr<CacheType>(new CacheType(*elem.local_cache_));
+            Assert(elem.all_sub_elems_cache_ != nullptr, ExcNullPtr());
+            all_sub_elems_cache_ = std::make_shared<CacheType>(*elem.all_sub_elems_cache_);
         }
         else if (copy_policy == CopyPolicy::shallow)
         {
-            local_cache_ = elem.local_cache_;
+            all_sub_elems_cache_ = elem.all_sub_elems_cache_;
         }
         else
         {
@@ -392,67 +394,6 @@ get_element_points() const -> ValueVector<Point>
 }
 
 
-
-#if 0
-template <int dim>
-void
-CartesianGridElement<dim>::
-ValuesCache::
-resize(const ValueFlags &flags,
-       const Quadrature<dim> &quad)
-{
-//    this->flags_handler_ = flags_handler;
-
-    parent_t::resize(flags,quad.get_num_points());
-
-    if (this->template status_fill<_Point>())
-    {
-        this->unit_points_ = quad.get_points();
-    }
-    else
-    {
-        this->unit_points_.clear();
-    }
-
-    if (this->template status_fill<_W_Measure>())
-    {
-        this->unit_weights_ = quad.get_weights();
-    }
-    else
-    {
-        this->unit_weights_.clear();
-    }
-
-    this->set_initialized(true);
-}
-
-
-
-template <int dim>
-void
-CartesianGridElement<dim>::
-ValuesCache::
-print_info(LogStream &out) const
-{
-    parent_t::print_info(out);
-
-    if (this->template status_filled<_W_Measure>())
-    {
-        out.begin_item("Unit weights:");
-        unit_weights_.print_info(out);
-        out.end_item();
-    }
-
-    if (this->template status_filled<_Point>())
-    {
-        out.begin_item("Unit points:");
-        unit_points_.print_info(out);
-        out.end_item();
-    }
-}
-
-#endif
-
 template <int dim>
 void
 CartesianGridElement<dim>::
@@ -469,8 +410,8 @@ void
 CartesianGridElement<dim>::
 print_cache_info(LogStream &out) const
 {
-    Assert(local_cache_ != nullptr, ExcNullPtr());
-    local_cache_->print_info(out);
+    Assert(all_sub_elems_cache_ != nullptr, ExcNullPtr());
+    all_sub_elems_cache_->print_info(out);
 }
 
 
@@ -490,6 +431,15 @@ get_defined_properties() const
     return elem_properties;
 }
 
+
+
+template <int dim>
+ValueFlags
+CartesianGridElement<dim>::
+get_valid_flags()
+{
+    return cacheutils::get_valid_flags_from_cache_type(CType());
+}
 
 IGA_NAMESPACE_CLOSE
 

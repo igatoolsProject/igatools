@@ -41,7 +41,7 @@ GridElementHandler<dim>::
 create(std::shared_ptr<GridType> grid)
 {
     using ElemHandler = GridElementHandler<dim>;
-    auto elem_handler = std::shared_ptr<ElemHandler>(new ElemHandler(grid));
+    auto elem_handler = std::make_shared<ElemHandler>(grid);
     Assert(elem_handler != nullptr,ExcNullPtr());
     return elem_handler;
 }
@@ -71,7 +71,7 @@ void
 GridElementHandler<dim>::
 init_all_caches(ElementAccessor &elem)
 {
-    auto &cache = elem.local_cache_;
+    auto &cache = elem.all_sub_elems_cache_;
     if (cache == nullptr)
     {
         using Cache = typename ElementAccessor::CacheType;
@@ -105,14 +105,14 @@ void
 GridElementHandler<dim>::
 init_cache(ElementAccessor &elem)
 {
-    auto &cache = elem.local_cache_;
+    auto &cache = elem.all_sub_elems_cache_;
     if (cache == nullptr)
     {
         using Cache = typename ElementAccessor::CacheType;
         cache = std::make_shared<Cache>();
     }
 
-    for (auto &s_id: Topology::template elems_ids<k>())
+    for (auto &s_id: UnitElement<dim>::template elems_ids<k>())
     {
         auto &s_cache = cache->template get_sub_elem_cache<k>(s_id);
 //        s_cache.resize(flags_[k], extend_sub_elem_quad<k, dim>(
@@ -131,8 +131,8 @@ void
 GridElementHandler<dim>::
 fill_cache(ElementAccessor &elem, const int j)
 {
-    Assert(elem.local_cache_ != nullptr, ExcNullPtr());
-    auto &cache = elem.local_cache_->template get_sub_elem_cache<k>(j);
+    Assert(elem.all_sub_elems_cache_ != nullptr, ExcNullPtr());
+    auto &cache = elem.all_sub_elems_cache_->template get_sub_elem_cache<k>(j);
 
     const auto &quadrature = this->template get_quadrature<k>();
 

@@ -48,10 +48,6 @@ private:
 public:
     using GridType = const CartesianGrid<dim>;
 
-    /**
-     * Alias for the (static) class holding the topological information.
-     */
-    using Topology = UnitElement<dim>;
 
 protected:
     using ElementIterator = typename GridType::ElementIterator;
