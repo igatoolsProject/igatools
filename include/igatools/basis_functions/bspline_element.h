@@ -173,8 +173,7 @@ public:
     virtual std::shared_ptr<ReferenceElement<dim,range,rank> >
     clone() const override final
     {
-        auto elem = std::shared_ptr<BSplineElement<dim,range,rank> >(
-                        new BSplineElement(*this,CopyPolicy::deep));
+        auto elem = std::make_shared<BSplineElement<dim,range,rank> >(*this,CopyPolicy::deep);
         Assert(elem != nullptr, ExcNullPtr());
         return elem;
     }
