@@ -90,4 +90,10 @@ constexpr int _OuterNormal::order;
 const string  _OuterNormal::name = "OuterNormal";
 constexpr ValueFlags _OuterNormal::flag;
 
+
+constexpr int _Curvature::id;
+constexpr int _Curvature::order;
+const string  _Curvature::name = "Curvature";
+constexpr ValueFlags _Curvature::flag;
+
 IGA_NAMESPACE_CLOSE

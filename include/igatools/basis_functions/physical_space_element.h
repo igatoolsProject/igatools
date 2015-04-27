@@ -78,9 +78,6 @@ public :
                          const Index index);
 
 
-    PhysicalSpaceElement(const std::shared_ptr<ContainerType> space,
-                         const TensorIndex<dim> &index);
-
     /**
      * Copy constructor.
      * It can be used with different copy policies (i.e. deep copy or shallow copy).
@@ -202,14 +199,13 @@ public :
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     template <class ValueType>
-//    ContType_from_ValueType<ValueType>
     decltype(auto)
     evaluate_basis_at_points(
         const Quadrature<dim_> &points,
         const std::string &dofs_property)
     {
         auto elem_handler = typename Space::ElementHandler::create(this->space_);
-
+#if 0
         ValueFlags flags;
         if (ValueType::id == _Value::id)
             flags = ValueFlags::value;
@@ -223,8 +219,8 @@ public :
         {
             Assert(false,ExcNotImplemented());
         }
-
-        elem_handler->reset_one_element(flags,points,this->get_flat_index());
+#endif
+        elem_handler->reset_one_element(ValueType::flag,points,this->get_flat_index());
         elem_handler->template init_cache<dim>(*this);
         elem_handler->template fill_cache<dim>(*this,0);
 

@@ -71,13 +71,6 @@ public:
     ReferenceElement(const std::shared_ptr<ConstSpace> space,
                      const Index elem_index);
 
-    /**
-     * Constructs an accessor to element number index of a
-     * Reference space.
-     */
-    ReferenceElement(const std::shared_ptr<ConstSpace> space,
-                     const TensorIndex<dim> &elem_index);
-
 
     virtual ~ReferenceElement() = default;
 

@@ -79,8 +79,6 @@ public:
     BSplineElement(const std::shared_ptr<ContainerType> space,
                    const Index elem_index);
 
-    BSplineElement(const std::shared_ptr<ContainerType> space,
-                   const TensorIndex<dim> &elem_index);
     /**
      * Copy constructor.
      * It can be used with different copy policies (i.e. deep copy or shallow

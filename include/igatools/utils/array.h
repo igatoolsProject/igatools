@@ -101,13 +101,13 @@ public:
 
     reference operator[](Size n)
     {
-        Assert(n<size(), ExcIndexRange(n, 0, size()));
+        Assert(n >= 0 && n <size(), ExcIndexRange(n, 0, size()));
         return data_[n];
     }
 
     const_reference operator[](Size n) const
     {
-        Assert(n<size(), ExcIndexRange(n, 0, size()));
+        Assert(n >= 0 && n < size(), ExcIndexRange(n, 0, size()));
         return data_[n];
     }
     /**

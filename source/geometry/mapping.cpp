@@ -26,6 +26,42 @@ using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
+
+namespace
+{
+
+ValueFlags
+mapping_to_function_flags(const ValueFlags &flags)
+{
+    ValueFlags valid_func_flags = ValueFlags::value |
+                                  ValueFlags::gradient |
+                                  ValueFlags::hessian |
+                                  ValueFlags::divergence |
+                                  ValueFlags::point;
+
+    ValueFlags transfer_flags = ValueFlags::measure |
+                                ValueFlags::w_measure |
+                                ValueFlags::boundary_normal |
+                                valid_func_flags;
+
+
+    ValueFlags f_flags = flags & transfer_flags;
+
+    if (contains(flags, ValueFlags::measure) ||
+        contains(flags, ValueFlags::w_measure) ||
+        contains(flags, ValueFlags::inv_gradient) ||
+        contains(flags, ValueFlags::outer_normal))
+        f_flags |=  ValueFlags::gradient;
+
+    if (contains(flags, ValueFlags::inv_hessian) ||
+        contains(flags, ValueFlags::curvature))
+        f_flags |=  ValueFlags::gradient | ValueFlags::hessian;
+
+    return f_flags;
+}
+};
+
+
 template<int dim, int codim>
 auto
 Mapping<dim, codim>::
@@ -75,6 +111,11 @@ reset(const ValueFlags flags, const Quadrature<k> &eval_pts) -> void
     contains(flags, ValueFlags::curvature))
         m_flags |= ValueFlags::inv_gradient;
 
+
+    if (contains(flags, ValueFlags::curvature))
+        m_flags |= ValueFlags::outer_normal;
+
+
     if (contains(flags, ValueFlags::w_measure))
         m_flags |= ValueFlags::measure;
 
@@ -97,7 +138,6 @@ fill_cache(ElementAccessor &elem, const int j) -> void
     const auto n_points = F_->template get_num_points<k>();
 
     auto &cache = elem.local_cache_->template get_sub_elem_cache<k>(j);
-//    auto &flags = cache.flags_handler_;
 
     if (cache.template status_fill<_Measure>())
     {
@@ -171,7 +211,6 @@ fill_cache(ElementAccessor &elem, const int j) -> void
         const auto n_hat  = this->get_grid()->template get_boundary_normals<k>(j)[0];
         auto &bndry_normal = cache.template get_data<_BoundaryNormal>();
 
-        const auto n_points = D1_invF.get_num_points();
         for (int pt = 0; pt < n_points; ++pt)
         {
             const auto D1_invF_t = co_tensor(transpose(D1_invF[pt]));
@@ -181,6 +220,47 @@ fill_cache(ElementAccessor &elem, const int j) -> void
 
         cache.template set_status_filled<_BoundaryNormal>(true);
     }
+
+    if (cache.template status_fill<_OuterNormal>())
+    {
+        Assert(k == dim, ExcNotImplemented());
+        Assert(codim == 1, ExcNotImplemented());
+
+        const auto &DF = elem.template get_values<_Gradient, k>(j);
+        auto &outer_normal = cache.template get_data<_OuterNormal>();
+
+        for (int pt = 0; pt < n_points; ++pt)
+        {
+            outer_normal[pt] = cross_product<dim, codim>(DF[pt]);
+            outer_normal[pt] /= outer_normal[pt].norm();
+        }
+
+        cache.template set_status_filled<_OuterNormal>(true);
+    }
+
+
+    if (cache.template status_fill<_Curvature>())
+    {
+        Assert(k == dim, ExcNotImplemented());
+        Assert(codim == 1, ExcNotImplemented());
+
+        const auto H = elem.compute_second_fundamental_form();
+        const auto G_inv = elem.compute_inv_first_fundamental_form();
+
+        auto &curvatures = cache.template get_data<_Curvature>();
+
+        for (int pt = 0; pt < n_points; ++pt)
+        {
+//          const MetricTensor B = compose(H[pt], G_inv[pt]);
+            const auto B = compose(H[pt], G_inv[pt]);
+            const auto A = unroll_to_matrix(B);
+            curvatures[pt] = A.eigen_values();
+        }
+
+        cache.template set_status_filled<_Curvature>(true);
+    }
+
+
 
     cache.set_filled(true);
 }

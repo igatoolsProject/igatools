@@ -176,7 +176,7 @@ ResetDispatcher::
 operator()(const Quadrature<sub_elem_dim> &quad1)
 {
     Assert(grid_handler_ != nullptr,ExcNullPtr());
-    grid_handler_->reset(function_to_grid_flags(flag_),quad1);
+    grid_handler_->reset(flag_,quad1);
 
 
     Assert(flags_ != nullptr,ExcNullPtr());
@@ -410,7 +410,8 @@ operator()(const Topology<sub_elem_dim> &sub_elem)
 
         using Cache = LocalCache<VCache>;
 
-        cache = shared_ptr<Cache>(new Cache);
+//        cache = shared_ptr<Cache>(new Cache);
+        cache = std::make_shared<Cache>();
     }
 
     const auto n_basis = elem_->get_num_basis();//elem_->get_num_basis(DofProperties::active);

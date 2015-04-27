@@ -104,8 +104,9 @@ compute_second_fundamental_form() const -> ValueVector<MetricTensor>
 template<int dim_, int codim_>
 auto
 MappingElement<dim_, codim_>::
-get_principal_curvatures() const -> ValueVector<vector<Real>>
+get_principal_curvatures() const -> const ValueVector<vector<Real>> &
 {
+#if 0
     Assert(codim==1, ExcNotImplemented());
 
     const auto H = compute_second_fundamental_form();
@@ -122,6 +123,9 @@ get_principal_curvatures() const -> ValueVector<vector<Real>>
         res[pt] = A.eigen_values();
     }
     return res;
+#endif
+    Assert(codim==1, ExcNotImplemented());
+    return get_values_from_cache<_Curvature,dim_>(0);
 }
 
 
@@ -131,8 +135,9 @@ get_principal_curvatures() const -> ValueVector<vector<Real>>
 template<int dim_, int codim_>
 auto
 MappingElement<dim_, codim_>::
-get_external_normals() const -> ValueVector<Points<space_dim> >
+get_external_normals() const -> const ValueVector<Points<space_dim> > &
 {
+#if 0
     Assert(codim==1, ExcNotImplemented());
     ValueVector<Points<space_dim> > res;
     const auto &DF = this->template get_values<_Gradient, dim>(0);
@@ -146,6 +151,10 @@ get_external_normals() const -> ValueVector<Points<space_dim> >
     }
 
     return res;
+#endif
+
+    Assert(codim==1, ExcNotImplemented());
+    return get_values_from_cache<_OuterNormal,dim_>(0);
 }
 
 template<int dim_, int codim_>

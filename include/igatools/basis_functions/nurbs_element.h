@@ -78,8 +78,6 @@ public:
     NURBSElement(const std::shared_ptr<ContainerType> space,
                  const Index elem_index);
 
-    NURBSElement(const std::shared_ptr<ContainerType> space,
-                 const TensorIndex<dim> &elem_index);
 
     /**
      * Copy constructor.

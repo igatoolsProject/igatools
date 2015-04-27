@@ -180,8 +180,8 @@ private:
 
     std::array<ValueFlags, dim_ + 1> flags_;
 
-    template <class T>
-    using DirectionTable = CartesianProductArray<T, dim_>;
+//    template <class T>
+//    using DirectionTable = CartesianProductArray<T, dim_>;
 
     /**
      * B-splines values and derivatives at quadrature points.

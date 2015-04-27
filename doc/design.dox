@@ -29,10 +29,10 @@ and usually have a big memory footprint. They are not intended to be used to per
   In addition to this, element classes of course have to provide values and gradients of 
   individual shape functions at points on the unit cell;
 
-   - the @subpage fillers i.e. the classes that performs heavy computations and fills the local cache of the elements
+   - the @subpage fillers i.e. the classes that performs heavy computations and fills the local <em>cache</em> of the elements
 
 
-For each class in a given module, there could be an associated class in each of the other two modules,
+   For each class in a given module, there could be an associated class in each of the other two modules,
 as described by the following table:
 <center>
 Element Containers   | Elements              | Element Fillers
@@ -45,6 +45,8 @@ Mapping              | MappingElement        | not defined
 PushForward          | PushForwardElement    | not defined
 PhysicalSpace        | PhysicalSpaceElement  | PhysSpaceElementHandler
 </center>
+   For the Mapping and the PushForward, the element filler is the container itself.
+   
 
 - the @subpage iterators  i.e. the classes that are used to iterate over the elements of a given
 container. 
@@ -66,6 +68,15 @@ The split in the above concepts is made to have (and maintain) a clear distincti
 @defgroup infrastructure Element/Container/Filler Infrastructure
 @ingroup design
 @{
+
+The library is designed in such a way that values at points within an element can be obtained in two
+ways:
+- the first approach is simpler to use but can be somewhat less efficient: element accessors have a set of
+  member function that permits to <em>compute</em> and <em>retrieve</em> the quantity of interest 
+  passing the quadrature points as input argument. 
+
+- @subpage elem_cache
+
 */
 
 /** @}*/ //end of group infrastructure
@@ -129,7 +140,7 @@ Each group of points should be represented as an instance of one of the followin
 <center>
 class name        | Description
 ----------------- | ----------------------------------
-Quadrature  | Evaluation points on a single element freely definable by the user (without tensor-product structure)
+Quadrature        | Evaluation points on a single element freely definable by the user (without tensor-product structure)
 QGauss            | Evaluation points on a single element generated with Gauss-Legendre formula (with tensor product structure)
 QGaussLobatto     | Evaluation points on a single element generated with Gauss-Lobatto formula (with tensor product structure)
 QUniform          | Evaluation points on a single element generated uniformly (with tensor product structure)

@@ -22,9 +22,8 @@
 #define GRID_ELEMENT_HANDLER_H_
 
 #include <igatools/base/config.h>
+#include <igatools/basis_functions/values_cache.h>
 #include <igatools/base/tuple_utils.h>
-#include <igatools/base/cache_status.h>
-#include <igatools/base/flags_handler.h>
 #include <igatools/base/quadrature.h>
 #include <igatools/utils/tensor_product_array.h>
 #include <igatools/geometry/cartesian_grid.h>
@@ -49,10 +48,6 @@ private:
 public:
     using GridType = const CartesianGrid<dim>;
 
-    /**
-     * Alias for the (static) class holding the topological information.
-     */
-    using Topology = UnitElement<dim>;
 
 protected:
     using ElementIterator = typename GridType::ElementIterator;
@@ -136,19 +131,31 @@ public:
     ///@}
 
 
+    template <int k = dim>
+    const Quadrature<k> &get_quadrature() const
+    {
+        return cacheutils::extract_sub_elements_data<k>(quad_all_sub_elems_);
+    }
+
 
     template <int k = dim>
     Size get_num_points() const
     {
-        return cacheutils::extract_sub_elements_data<k>(quad_all_sub_elems_).get_num_points();
+        return this->template get_quadrature<k>().get_num_points();
     }
 
 public:
-    void print_info(LogStream &out) const
-    {
-        // TODO (pauletti, Apr 24, 2015): line below should be implemented
-        //quad_all_sub_elems_.print_info(out);
-    }
+
+    /**
+     * Function for printing some internal information.
+     * Its use is mostly intended for debugging and testing purposes.
+     */
+    void print_info(LogStream &out) const;
+
+
+    /**
+     * Returns the grid upon which the object is built.
+     */
     std::shared_ptr<const GridType> get_grid() const;
 
 //    const TensorProductArray<dim> &get_lengths() const;

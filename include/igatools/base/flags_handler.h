@@ -23,13 +23,13 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
-#include <igatools/base/value_types.h>
+//#include <igatools/base/value_types.h>
 
 
-#include <boost/fusion/include/make_map.hpp>
-#include <boost/fusion/include/at_key.hpp>
-#include <boost/fusion/include/for_each.hpp>
-#include <boost/fusion/include/any.hpp>
+//#include <boost/fusion/include/make_map.hpp>
+//#include <boost/fusion/include/at_key.hpp>
+//#include <boost/fusion/include/for_each.hpp>
+//#include <boost/fusion/include/any.hpp>
 
 IGA_NAMESPACE_OPEN
 
@@ -69,22 +69,7 @@ struct FlagStatus
     //*/
 };
 
-inline
-ValueFlags
-function_to_grid_flags(const ValueFlags &function_flags)
-{
-    ValueFlags transfer_flags = ValueFlags::w_measure |
-                                ValueFlags::boundary_normal;
-    ValueFlags g_flags = function_flags & transfer_flags;
-    if (contains(function_flags, ValueFlags::point) || contains(function_flags, ValueFlags::value))
-    {
-        g_flags |= ValueFlags::point;
-    }
-    return g_flags;
-
-}
-
-
+#if 0
 inline
 ValueFlags
 mapping_to_function_flags(const ValueFlags &flags)
@@ -115,7 +100,7 @@ mapping_to_function_flags(const ValueFlags &flags)
 
     return f_flags;
 }
-
+#endif
 
 IGA_NAMESPACE_CLOSE
 

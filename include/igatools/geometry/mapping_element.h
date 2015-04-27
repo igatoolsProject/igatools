@@ -113,7 +113,7 @@ public:
         return get_values_from_cache<_W_Measure,k>(j);
     }
 
-    ValueVector<Points<space_dim> > get_external_normals() const;
+    const ValueVector<Points<space_dim> > &get_external_normals() const;
 
     using MetricTensor =
         Tensor<dim, 1, tensor::covariant, Tensor<dim, 1, tensor::contravariant, Tdouble> >;
@@ -124,7 +124,7 @@ public:
 
     ValueVector< Derivative<1> > get_D_external_normals() const;
 
-    ValueVector<vector<Real> > get_principal_curvatures() const;
+    const ValueVector<vector<Real> > &get_principal_curvatures() const;
 
 
     template<int sub_dim>
@@ -153,13 +153,14 @@ public:
 
 private:
 
-    //TODO (martinelli, Apr 23, 2015): add the containers for outer_normal, curvature
     using CType = boost::fusion::map<
                   boost::fusion::pair<       _Measure,DataWithFlagStatus<ValueVector<Real>>>,
                   boost::fusion::pair<     _W_Measure,DataWithFlagStatus<ValueVector<Real>>>,
                   boost::fusion::pair<   _InvGradient,DataWithFlagStatus<ValueVector<InvDerivative<1>>>>,
                   boost::fusion::pair<    _InvHessian,DataWithFlagStatus<ValueVector<InvDerivative<2>>>>,
-                  boost::fusion::pair<_BoundaryNormal,DataWithFlagStatus<ValueVector<Points<space_dim>>>>
+                  boost::fusion::pair<_BoundaryNormal,DataWithFlagStatus<ValueVector<Points<space_dim>>>>,
+                  boost::fusion::pair<   _OuterNormal,DataWithFlagStatus<ValueVector<Points<space_dim>>>>,
+                  boost::fusion::pair<     _Curvature,DataWithFlagStatus<ValueVector<vector<Real>>>>
                   >;
 
 
@@ -174,7 +175,6 @@ private:
         const auto valid_func_flags = parent_t::get_valid_flags();
 
         const auto valid_map_flags = cacheutils::get_valid_flags_from_cache_type(CType()) |
-                                     ValueFlags::outer_normal|
                                      ValueFlags::curvature |
                                      valid_func_flags;
 

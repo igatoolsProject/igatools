@@ -28,7 +28,6 @@ using std::array;
 IGA_NAMESPACE_OPEN
 
 
-
 template <int dim>
 GridElementHandler<dim>::
 GridElementHandler(shared_ptr<GridType> grid)
@@ -42,7 +41,7 @@ GridElementHandler<dim>::
 create(std::shared_ptr<GridType> grid)
 {
     using ElemHandler = GridElementHandler<dim>;
-    auto elem_handler = std::shared_ptr<ElemHandler>(new ElemHandler(grid));
+    auto elem_handler = std::make_shared<ElemHandler>(grid);
     Assert(elem_handler != nullptr,ExcNullPtr());
     return elem_handler;
 }
@@ -56,7 +55,12 @@ reset(const ValueFlags flag,
       const Quadrature<k> &quad)
 {
     const auto valid_flags = ElementAccessor::get_valid_flags();
-    flags_[k] = flag & valid_flags;
+    auto grid_flag = flag & valid_flags;
+
+    if (contains(flag, ValueFlags::value))
+        grid_flag |= ValueFlags::point;
+
+    flags_[k] = grid_flag;
 
     cacheutils::extract_sub_elements_data<k>(quad_all_sub_elems_) = quad;
 }
@@ -67,7 +71,7 @@ void
 GridElementHandler<dim>::
 init_all_caches(ElementAccessor &elem)
 {
-    auto &cache = elem.local_cache_;
+    auto &cache = elem.all_sub_elems_cache_;
     if (cache == nullptr)
     {
         using Cache = typename ElementAccessor::CacheType;
@@ -101,18 +105,20 @@ void
 GridElementHandler<dim>::
 init_cache(ElementAccessor &elem)
 {
-    auto &cache = elem.local_cache_;
+    auto &cache = elem.all_sub_elems_cache_;
     if (cache == nullptr)
     {
         using Cache = typename ElementAccessor::CacheType;
-        cache = shared_ptr<Cache>(new Cache);
+        cache = std::make_shared<Cache>();
     }
 
-    for (auto &s_id: Topology::template elems_ids<k>())
+    for (auto &s_id: UnitElement<dim>::template elems_ids<k>())
     {
         auto &s_cache = cache->template get_sub_elem_cache<k>(s_id);
-        s_cache.resize(flags_[k], extend_sub_elem_quad<k, dim>(
-                           cacheutils::extract_sub_elements_data<k>(quad_all_sub_elems_), s_id));
+//        s_cache.resize(flags_[k], extend_sub_elem_quad<k, dim>(
+//                           cacheutils::extract_sub_elements_data<k>(quad_all_sub_elems_), s_id));
+        s_cache.resize(flags_[k], this->template get_num_points<k>());
+
     }
 }
 
@@ -125,25 +131,42 @@ void
 GridElementHandler<dim>::
 fill_cache(ElementAccessor &elem, const int j)
 {
-    Assert(elem.local_cache_ != nullptr, ExcNullPtr());
-    auto &cache = elem.local_cache_->template get_sub_elem_cache<k>(j);
+    Assert(elem.all_sub_elems_cache_ != nullptr, ExcNullPtr());
+    auto &cache = elem.all_sub_elems_cache_->template get_sub_elem_cache<k>(j);
+
+    const auto &quadrature = this->template get_quadrature<k>();
 
     if (cache.template status_fill<_Point>())
     {
-        auto translate = elem.vertex(0);
-        auto dilate    = elem.template get_coordinate_lengths<k>(j);
+        const auto unit_points = quadrature.get_points();
 
-        const int n_pts = cache.unit_points_.get_num_points();
+        const auto translate = elem.vertex(0);
+        const auto dilate    = elem.template get_coordinate_lengths<k>(j);
 
-        const auto &unit_pts = cache.unit_points_;
+        const auto n_pts = unit_points.get_num_points();
+
+        const auto &sub_unit_elem = UnitElement<dim>::template get_elem<k>(j);
         auto &ref_pts = cache.template get_data<_Point>();
         for (int pt = 0 ; pt < n_pts ; ++pt)
         {
-            const auto &unit_pt = unit_pts[pt];
+            const auto &unit_pt = unit_points[pt];
             auto &ref_pt = ref_pts[pt];
 
-            for (const auto dir : Topology::active_directions)
-                ref_pt[dir] = unit_pt[dir] * dilate[dir] + translate[dir];
+            int sub_elem_dir = 0;
+            for (const auto active_dir : sub_unit_elem.active_directions)
+            {
+                ref_pt[active_dir] = translate[active_dir] +
+                                     dilate[active_dir] * unit_pt[sub_elem_dir] ;
+                ++sub_elem_dir;
+            }
+
+            sub_elem_dir = 0;
+            for (const auto constant_dir : sub_unit_elem.constant_directions)
+            {
+                ref_pt[constant_dir] = translate[constant_dir] +
+                                       dilate[constant_dir] * sub_unit_elem.constant_values[sub_elem_dir];
+                ++sub_elem_dir;
+            }
         }
 
         cache.template set_status_filled<_Point>(true);
@@ -151,7 +174,7 @@ fill_cache(ElementAccessor &elem, const int j)
 
     if (cache.template status_fill<_W_Measure>())
     {
-        cache.template get_data<_W_Measure>() = elem.template get_measure<k>(j) * cache.unit_weights_;
+        cache.template get_data<_W_Measure>() = elem.template get_measure<k>(j) * quadrature.get_weights();
         cache.template set_status_filled<_W_Measure>(true);
     }
 
@@ -167,6 +190,31 @@ GridElementHandler<dim>::
 get_grid() const -> std::shared_ptr<const GridType>
 {
     return grid_;
+}
+
+
+template <int dim>
+void
+GridElementHandler<dim>::
+print_info(LogStream &out) const
+{
+    out.begin_item("Quadrature cache for all dimensions:");
+
+    boost::fusion::for_each(quad_all_sub_elems_,
+                            [&](const auto & data_same_topology_dim)
+    {
+        using PairType = typename std::remove_reference<decltype(data_same_topology_dim)>::type;
+        using SubDimType = typename PairType::first_type;
+
+        const auto &quad_same_subdim = data_same_topology_dim.second;
+
+        out.begin_item("Quadrature cache for dimension: " + std::to_string(SubDimType::value));
+        quad_same_subdim.print_info(out);
+        out.end_item();
+    }
+                           );
+    out.end_item();
+
 }
 
 

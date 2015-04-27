@@ -281,13 +281,6 @@ BSplineElement(const std::shared_ptr<ContainerType> space,
 
 
 
-template <int dim, int range, int rank>
-BSplineElement<dim, range, rank>::
-BSplineElement(const std::shared_ptr<ContainerType> space,
-               const TensorIndex<dim> &index)
-    :
-    parent_t(space,index)
-{}
 
 
 template <int dim, int range, int rank>
