@@ -35,15 +35,15 @@ SpaceElement(const self_t &elem,
     :
     base_t(elem,copy_policy)
 {
-    if (elem.local_cache_ != nullptr)
+    if (elem.all_sub_elems_cache_ != nullptr)
     {
         if (copy_policy == CopyPolicy::shallow)
         {
-            local_cache_ = elem.local_cache_;
+            all_sub_elems_cache_ = elem.all_sub_elems_cache_;
         }
         else
         {
-            local_cache_ = std::shared_ptr<LocalCache<Cache>>(new LocalCache<Cache>(*elem.local_cache_));
+            all_sub_elems_cache_ = std::make_shared<LocalCache<Cache>>(*elem.all_sub_elems_cache_);
         }
     }
 }
@@ -63,12 +63,12 @@ copy_from(const self_t &elem,
 
         if (copy_policy == CopyPolicy::deep)
         {
-            Assert(elem.local_cache_ != nullptr, ExcNullPtr());
-            local_cache_ = std::shared_ptr<LocalCache<Cache>>(new LocalCache<Cache>(*elem.local_cache_));
+            Assert(elem.all_sub_elems_cache_ != nullptr, ExcNullPtr());
+            all_sub_elems_cache_ = std::make_shared<LocalCache<Cache>>(*elem.all_sub_elems_cache_);
         }
         else if (copy_policy == CopyPolicy::shallow)
         {
-            local_cache_ = elem.local_cache_;
+            all_sub_elems_cache_ = elem.all_sub_elems_cache_;
         }
         else
         {
@@ -126,8 +126,8 @@ print_cache_info(LogStream &out) const
 {
     base_t::print_cache_info(out);
 
-    Assert(local_cache_ != nullptr,ExcNullPtr());
-    local_cache_->print_info(out);
+    Assert(all_sub_elems_cache_ != nullptr,ExcNullPtr());
+    all_sub_elems_cache_->print_info(out);
 }
 
 

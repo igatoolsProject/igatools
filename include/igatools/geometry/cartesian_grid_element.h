@@ -68,7 +68,6 @@ public:
 
     using Point = Points<dim>;
 
-public:
     /** @name Constructors */
     ///@{
     /**
@@ -105,7 +104,7 @@ public:
      */
     ~CartesianGridElement() = default;
     ///@}
-public:
+
     /**
      * @name Functions for performing different kind of copy.
      */
@@ -144,7 +143,7 @@ public:
     /** Return the cartesian grid from which the element belongs.*/
     const std::shared_ptr<const CartesianGrid<dim>> get_grid() const;
 
-public:
+
     /** @name Functions related to the indices of the element in the cartesian grid. */
     ///@{
     /** Returns the index of the element in its flatten representation. */
@@ -165,7 +164,6 @@ public:
     bool is_property_true(const std::string &property) const;
     ///@}
 
-//protected:
     /**
      * @name Functions/operators for moving the element in the CartesianGrid.
      *
@@ -183,7 +181,6 @@ public:
 
     ///@}
 
-public:
     /**
      * @name Comparison operators
      * @note In order to be meaningful, the comparison must be performed on elements defined on
@@ -262,7 +259,6 @@ public:
     vector<std::string> get_defined_properties() const;
 
 
-public:
     //TODO (martinelli, Apr 16, 2015): maybe the returned value should be Points<topology_dim>, i.e.
     // the lengths should refer to the sub-element of dimension topology_dim
     template<int topology_dim>
@@ -284,7 +280,6 @@ public:
 
     ValueVector<Point> get_element_points() const;
 
-public:
     /**
      * Prints internal information about the CartesianGridElementAccessor.
      * Its main use is for testing and debugging.
@@ -293,7 +288,6 @@ public:
 
     void print_cache_info(LogStream &out) const;
 
-private:
 
 
 

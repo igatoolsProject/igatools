@@ -209,13 +209,13 @@ init_cache(ElementAccessor &elem)
     auto &push_fwd_elem = elem.get_push_forward_accessor();
     push_fwd_.template init_cache<k>(push_fwd_elem);
 
-    auto &cache = elem.PhysSpace::ElementAccessor::parent_t::local_cache_;
+    auto &cache = elem.PhysSpace::ElementAccessor::parent_t::all_sub_elems_cache_;
     if (cache == nullptr)
     {
         using VCache = typename PhysSpace::ElementAccessor::parent_t::Cache;
 
         using Cache = LocalCache<VCache>;
-        cache = shared_ptr<Cache>(new Cache);
+        cache = std::make_shared<Cache>();
     }
 
     const auto n_basis = ref_elem.get_num_basis(DofProperties::active);
@@ -242,7 +242,7 @@ fill_cache(ElementAccessor &elem, const int j)
     auto &push_fwd_elem = elem.get_push_forward_accessor();
     push_fwd_.template fill_cache<k>(push_fwd_elem, j);
 
-    auto &local_cache = elem.PhysSpace::ElementAccessor::parent_t::local_cache_;
+    auto &local_cache = elem.PhysSpace::ElementAccessor::parent_t::all_sub_elems_cache_;
     Assert(local_cache != nullptr, ExcNullPtr());
     auto &cache = local_cache->template get_sub_elem_cache<k>(j);
 
@@ -307,7 +307,7 @@ fill_element_cache(ElementAccessor &elem) -> void
     RefPhysSpaceElementHandler::fill_element_cache(ref_elem);
     PFCache::fill_element(elem);
 
-    auto &cache = elem.PhysSpace::ElementAccessor::parent_t::local_cache_;
+    auto &cache = elem.PhysSpace::ElementAccessor::parent_t::all_sub_elems_cache_;
     auto &elem_cache = cache->template get_sub_elem_cache<0>(0);
 
     if (elem_cache.flags_handler_.fill_values())

@@ -222,14 +222,14 @@ protected:
 
 
     /** The local (element and face) cache. */
-    std::shared_ptr<LocalCache<Cache>> local_cache_;
+    std::shared_ptr<LocalCache<Cache>> all_sub_elems_cache_;
 
 public:
     // TODO (pauletti, Mar 17, 2015): this cannot be public, if needed it means wrong desing
     std::shared_ptr<LocalCache<Cache>> &
                                     get_local_cache()
     {
-        return this->local_cache_;
+        return this->all_sub_elems_cache_;
     }
 
 private:
@@ -237,8 +237,8 @@ private:
     const auto &
     get_data_from_sub_elem_cache(const int topology_id) const
     {
-        Assert(local_cache_ != nullptr, ExcNullPtr());
-        const auto &cache = local_cache_->template get_sub_elem_cache<topology_dim>(topology_id);
+        Assert(all_sub_elems_cache_ != nullptr, ExcNullPtr());
+        const auto &cache = all_sub_elems_cache_->template get_sub_elem_cache<topology_dim>(topology_id);
         return cache.template get_data<ValueType>();
     }
 

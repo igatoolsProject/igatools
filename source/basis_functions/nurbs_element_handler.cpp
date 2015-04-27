@@ -206,8 +206,8 @@ operator()(const Topology<sub_elem_dim> &sub_elem)
 {
     Assert(nrb_elem_ != nullptr, ExcNullPtr());
 
-    Assert(nrb_elem_->local_cache_ != nullptr, ExcNullPtr());
-    auto &cache = nrb_elem_->local_cache_->template get_sub_elem_cache<sub_elem_dim>(j_);
+    Assert(nrb_elem_->all_sub_elems_cache_ != nullptr, ExcNullPtr());
+    auto &cache = nrb_elem_->all_sub_elems_cache_->template get_sub_elem_cache<sub_elem_dim>(j_);
 
     const auto &bsp_elem = nrb_elem_->bspline_elem_;
     const auto &wght_table = nrb_elem_->weight_elem_table_;
