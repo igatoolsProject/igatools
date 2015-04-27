@@ -17,12 +17,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-/*
- *  Test for the ConstantFunction.
- *
- *  author: pauletti
- *  date: 2013-11-01
- *
+
+/**
+ *  @file
+ *  @brief ConstantFunction
+ *  @ingroup tests_base
+ *  @author pauletti
+ *  @date 2013-11-01
  */
 
 #include "../tests.h"

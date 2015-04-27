@@ -17,11 +17,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-/*
- *  Test for bernstein polynomial class.
- *  author: pauletti
- *  date: 2013-01-10
- *
+
+
+/**
+ *  @file
+ *  @brief Test for bernstein polynomial class
+ *  @ingroup tests_basis_functions
+ *  @author pauletti
+ *  @date 2013-01-10
  */
 
 #include "../tests.h"
@@ -43,8 +46,6 @@ int main()
 
     for (int p = 0; p<3; p++)
     {
-        //ValueTable< double > values;
-
         out << "degree: " << p << endl;
 
         auto values = BernsteinBasis::derivative(0, p, points);
