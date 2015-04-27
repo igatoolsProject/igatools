@@ -276,7 +276,7 @@ private:
             if (cache == nullptr)
             {
                 using Cache = typename ElementAccessor::CacheType;
-                cache = std::shared_ptr<Cache>(new Cache);
+                cache = std::make_shared<Cache>();
             }
 
             for (auto &s_id: UnitElement<dim_>::template elems_ids<sub_elem_dim>())

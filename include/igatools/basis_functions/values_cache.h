@@ -223,6 +223,13 @@ protected:
 
 
 public:
+
+
+    CacheType &get_values()
+    {
+        return values_;
+    }
+
     /**
      * Function for printing information of the cache.
      * Its use is intended for testing and debugging purposes.
