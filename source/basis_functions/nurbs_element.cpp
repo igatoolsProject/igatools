@@ -43,14 +43,6 @@ NURBSElement(const std::shared_ptr<ContainerType> space,
 
 
 
-template <int dim, int range, int rank>
-NURBSElement<dim, range, rank>::
-NURBSElement(const std::shared_ptr<ContainerType> space,
-             const TensorIndex<dim> &index)
-    :
-    NURBSElement(space,space->get_grid()->tensor_to_flat(index))
-{}
-
 /*
 template <int dim, int range, int rank>
 void

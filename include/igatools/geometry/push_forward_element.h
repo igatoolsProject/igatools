@@ -80,8 +80,8 @@ public:
     template <int range, int rank, int k, Transformation ttype=type_>
     void
     transform_1(const std::tuple<
-                ValueContainer<RefValue<range, rank>>,
-                ValueContainer<RefDerivative<range, rank, 1>>> &ref_values,
+                const ValueContainer<RefValue<range, rank>> &,
+                const ValueContainer<RefDerivative<range, rank, 1>> &> &ref_values,
                 const ValueContainer<PhysValue<range, rank>>   &phys_values,
                 ValueContainer<PhysDerivative<range, rank, 1>> &Dv,
                 const int s_id,
@@ -95,10 +95,10 @@ public:
         auto Dv_hat_it = Dv_hat.cbegin();
 
         const auto &DF_inv = this->template get_values_from_cache<_InvGradient,k>(s_id);
-        for (int i_fn = 0; i_fn < n_func; ++i_fn)
-            for (Index j_pt = 0; j_pt < n_points; ++j_pt)
+        for (int fn = 0; fn < n_func; ++fn)
+            for (Index pt = 0; pt < n_points; ++pt)
             {
-                (*Dv_it) = compose((*Dv_hat_it), DF_inv[j_pt]);
+                (*Dv_it) = compose((*Dv_hat_it), DF_inv[pt]);
                 ++Dv_hat_it;
                 ++Dv_it;
             }
@@ -108,12 +108,12 @@ public:
     template <int range, int rank, int k, Transformation ttype=type_>
     void
     transform_2(const std::tuple<
-                ValueContainer<RefValue<range, rank>>,
-                ValueContainer<RefDerivative<range, rank, 1>>,
-                ValueContainer<RefDerivative<range, rank, 2>> > &ref_values,
+                const ValueContainer<RefValue<range, rank>> &,
+                const ValueContainer<RefDerivative<range, rank, 1>> &,
+                const ValueContainer<RefDerivative<range, rank, 2>> &> &ref_values,
                 const std::tuple<
-                ValueContainer<PhysValue<range, rank>>,
-                ValueContainer<PhysDerivative<range, rank, 1>>> &phys_values,
+                const ValueContainer<PhysValue<range, rank>> &,
+                const ValueContainer<PhysDerivative<range, rank, 1>> &> &phys_values,
                 ValueContainer<PhysDerivative<range, rank, 2>> &D2v,
                 const int s_id,
                 EnableIf<ttype == Transformation::h_grad> * = 0) const
@@ -129,15 +129,17 @@ public:
         const auto D2F     =  this->template get_values<_Hessian,k>(s_id);
         const auto &DF_inv =  this->template get_values_from_cache<_InvGradient,k>(s_id);
 
-        for (int i_fn = 0; i_fn < n_func; ++i_fn)
-            for (Index j_pt = 0; j_pt < n_points; ++j_pt)
+        for (int fn = 0; fn < n_func; ++fn)
+            for (Index pt = 0; pt < n_points; ++pt)
             {
-                for (int u=0; u<dim; ++u)
+                const auto &D2F_pt = D2F[pt];
+                const auto &DF_inv_pt = DF_inv[pt];
+                for (int u = 0 ; u < dim ; ++u)
                 {
-                    auto &w = DF_inv[j_pt][u];
+                    const auto &w = DF_inv_pt[u];
                     (*D2v_it)[u] = compose(
-                                       action(*D2v_hat_it, w) - compose((*D1v_it),action(D2F[j_pt],w)),
-                                       DF_inv[j_pt]);
+                                       action(*D2v_hat_it, w) - compose((*D1v_it),action(D2F_pt,w)),
+                                       DF_inv_pt);
                 }
                 ++D2v_hat_it;
                 ++D1v_it;

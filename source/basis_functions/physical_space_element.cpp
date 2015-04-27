@@ -43,15 +43,6 @@ PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
 
 template<int dim_,int range_,int rank_,int codim_>
 PhysicalSpaceElement<dim_,range_,rank_,codim_>::
-PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
-                     const TensorIndex<dim> &index)
-    :
-    PhysicalSpaceElement(phys_space,phys_space->get_grid()->tensor_to_flat(index))
-{}
-
-
-template<int dim_,int range_,int rank_,int codim_>
-PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 PhysicalSpaceElement(const PhysicalSpaceElement<dim_,range_,rank_,codim_> &in,
                      const CopyPolicy &copy_policy)
     :

@@ -109,15 +109,16 @@ init_cache(ElementAccessor &elem)
     if (cache == nullptr)
     {
         using Cache = typename ElementAccessor::CacheType;
-//        cache = shared_ptr<Cache>(new Cache);
         cache = std::make_shared<Cache>();
     }
 
     for (auto &s_id: Topology::template elems_ids<k>())
     {
         auto &s_cache = cache->template get_sub_elem_cache<k>(s_id);
-        s_cache.resize(flags_[k], extend_sub_elem_quad<k, dim>(
-                           cacheutils::extract_sub_elements_data<k>(quad_all_sub_elems_), s_id));
+//        s_cache.resize(flags_[k], extend_sub_elem_quad<k, dim>(
+//                           cacheutils::extract_sub_elements_data<k>(quad_all_sub_elems_), s_id));
+        s_cache.resize(flags_[k], this->template get_num_points<k>());
+
     }
 }
 
@@ -133,22 +134,39 @@ fill_cache(ElementAccessor &elem, const int j)
     Assert(elem.local_cache_ != nullptr, ExcNullPtr());
     auto &cache = elem.local_cache_->template get_sub_elem_cache<k>(j);
 
+    const auto &quadrature = this->template get_quadrature<k>();
+
     if (cache.template status_fill<_Point>())
     {
-        auto translate = elem.vertex(0);
-        auto dilate    = elem.template get_coordinate_lengths<k>(j);
+        const auto unit_points = quadrature.get_points();
 
-        const int n_pts = cache.unit_points_.get_num_points();
+        const auto translate = elem.vertex(0);
+        const auto dilate    = elem.template get_coordinate_lengths<k>(j);
 
-        const auto &unit_pts = cache.unit_points_;
+        const auto n_pts = unit_points.get_num_points();
+
+        const auto &sub_unit_elem = UnitElement<dim>::template get_elem<k>(j);
         auto &ref_pts = cache.template get_data<_Point>();
         for (int pt = 0 ; pt < n_pts ; ++pt)
         {
-            const auto &unit_pt = unit_pts[pt];
+            const auto &unit_pt = unit_points[pt];
             auto &ref_pt = ref_pts[pt];
 
-            for (const auto dir : Topology::active_directions)
-                ref_pt[dir] = unit_pt[dir] * dilate[dir] + translate[dir];
+            int sub_elem_dir = 0;
+            for (const auto active_dir : sub_unit_elem.active_directions)
+            {
+                ref_pt[active_dir] = translate[active_dir] +
+                                     dilate[active_dir] * unit_pt[sub_elem_dir] ;
+                ++sub_elem_dir;
+            }
+
+            sub_elem_dir = 0;
+            for (const auto constant_dir : sub_unit_elem.constant_directions)
+            {
+                ref_pt[constant_dir] = translate[constant_dir] +
+                                       dilate[constant_dir] * sub_unit_elem.constant_values[sub_elem_dir];
+                ++sub_elem_dir;
+            }
         }
 
         cache.template set_status_filled<_Point>(true);
@@ -156,7 +174,7 @@ fill_cache(ElementAccessor &elem, const int j)
 
     if (cache.template status_fill<_W_Measure>())
     {
-        cache.template get_data<_W_Measure>() = elem.template get_measure<k>(j) * cache.unit_weights_;
+        cache.template get_data<_W_Measure>() = elem.template get_measure<k>(j) * quadrature.get_weights();
         cache.template set_status_filled<_W_Measure>(true);
     }
 

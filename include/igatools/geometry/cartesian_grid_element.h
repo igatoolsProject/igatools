@@ -47,6 +47,11 @@ IGA_NAMESPACE_OPEN
  * See module (and the submodules) on \ref elements for a general overview.
  * @ingroup elements
  *
+ * ### Quantities handled by the cache
+ * - _Point i.e. evaluation points mapped in the parametric domain
+ * - _W_Measure i.e. quadrature weights associated to each quadrature point,
+ * multiplied by the element <tt>dim</tt>-dimensional measure.
+ *
  * @author S.Pauletti, 2012, 2013, 2014
  * @author M.Martinelli, 2013, 2014, 2105
  */
@@ -78,8 +83,6 @@ public:
     CartesianGridElement(const std::shared_ptr<ContainerType> grid,
                          const Index elem_index);
 
-    CartesianGridElement(const std::shared_ptr<ContainerType> grid,
-                         const TensorIndex<dim> elem_index);
 
     /**
      * Copy constructor.
@@ -232,7 +235,7 @@ public:
        // length[1] the length of the y-side of the element.
        \endcode
      */
-    // const Point &get_coordinate_lengths() const;
+
     /**
        * Test if the element has a boundary face.
        */
@@ -292,6 +295,9 @@ public:
 
 private:
 
+    /**
+     * Alias used to define the container for the values in the cache.
+     */
     using CType = boost::fusion::map<
                   boost::fusion::pair<    _Point,DataWithFlagStatus<ValueVector<Points<dim>>>>,
                   boost::fusion::pair<_W_Measure,DataWithFlagStatus<ValueVector<Real>>>
@@ -307,34 +313,7 @@ private:
         return cacheutils::get_valid_flags_from_cache_type(CType());
     }
 
-    using BaseCache = FuncValuesCache<dim,CType>;
-
-    /**
-     * @brief Base class for cache of CartesianGridElement
-     */
-    class ValuesCache : public BaseCache
-    {
-        using parent_t = BaseCache;
-    public:
-        void resize(const ValueFlags &flags,
-                    const Quadrature<dim> &quad);
-
-        void print_info(LogStream &out) const;
-
-        ///@name The "cache" properly speaking
-        ///@{
-        /**
-         * Evaluation points in the unit element.
-         */
-        ValueVector<Points<dim>> unit_points_;
-
-        /**
-         * Weights associated to the evaluation points in the unit element.
-         */
-        ValueVector<Real> unit_weights_;
-        ///@}
-    };
-
+    using ValuesCache = FuncValuesCache<dim,CType>;
 
     using CacheType = LocalCache<ValuesCache>;
 

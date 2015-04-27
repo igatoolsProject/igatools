@@ -41,15 +41,6 @@ CartesianGridElement(const std::shared_ptr<ContainerType> grid,
 
 
 
-template <int dim>
-CartesianGridElement<dim>::
-CartesianGridElement(const std::shared_ptr<ContainerType> grid,
-                     const TensorIndex<dim> index)
-    :
-    CartesianGridElement(grid,grid->tensor_to_flat(index))
-{}
-
-
 
 template <int dim>
 CartesianGridElement<dim>::
@@ -402,7 +393,7 @@ get_element_points() const -> ValueVector<Point>
 
 
 
-
+#if 0
 template <int dim>
 void
 CartesianGridElement<dim>::
@@ -460,7 +451,7 @@ print_info(LogStream &out) const
     }
 }
 
-
+#endif
 
 template <int dim>
 void

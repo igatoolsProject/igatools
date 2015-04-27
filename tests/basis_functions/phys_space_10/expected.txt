@@ -225,8 +225,6 @@ Reference space:
                Fill flags:
                   fill = 0    filled = 0
             
-            Unit points:
-            ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
          
       
       Cache for sub-element(s) with dimension: 0  (memory consumption : 168 bytes.
@@ -390,8 +388,6 @@ Reference space:
                Fill flags:
                   fill = 0    filled = 0
             
-            Unit points:
-            ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
          
       
       Cache for sub-element(s) with dimension: 0  (memory consumption : 168 bytes.
@@ -555,8 +551,6 @@ Reference space:
                Fill flags:
                   fill = 0    filled = 0
             
-            Unit points:
-            ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
          
       
       Cache for sub-element(s) with dimension: 0  (memory consumption : 168 bytes.
@@ -720,8 +714,6 @@ Reference space:
                Fill flags:
                   fill = 0    filled = 0
             
-            Unit points:
-            ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
          
       
       Cache for sub-element(s) with dimension: 0  (memory consumption : 168 bytes.

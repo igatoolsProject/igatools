@@ -135,11 +135,17 @@ public:
     ///@}
 
 
+    template <int k = dim>
+    const Quadrature<k> &get_quadrature() const
+    {
+        return cacheutils::extract_sub_elements_data<k>(quad_all_sub_elems_);
+    }
+
 
     template <int k = dim>
     Size get_num_points() const
     {
-        return cacheutils::extract_sub_elements_data<k>(quad_all_sub_elems_).get_num_points();
+        return this->template get_quadrature<k>().get_num_points();
     }
 
 public:

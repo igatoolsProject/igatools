@@ -16,8 +16,6 @@ Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
             Fill flags:
                fill = 0    filled = 0
          
-         Unit points:
-         ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
       
    
    Cache for sub-element(s) with dimension: 0  (memory consumption : 168 bytes.
@@ -380,8 +378,6 @@ Cache for all sub-elements in all dimensions: (memory consumption: 420 bytes)
             Fill flags:
                fill = 0    filled = 0
          
-         Unit points:
-         ValueVector (num_points=4) : [ [ 0.211325 0.211325 ]  [ 0.788675 0.211325 ]  [ 0.211325 0.788675 ]  [ 0.788675 0.788675 ]  ]
       
    
    Cache for sub-element(s) with dimension: 1  (memory consumption : 336 bytes.

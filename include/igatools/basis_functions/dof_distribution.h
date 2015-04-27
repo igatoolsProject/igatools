@@ -33,10 +33,10 @@ IGA_NAMESPACE_OPEN
  * indices that are defined on a single patch space,
  * storing what is known as the local to global map.
  *
- * It is responsable to assign to each basis function an index
+ * It is responsible to assign to each basis function an index
  * and knows which of them are non zero on each element.
  *
- * It alos allows to store different properties on subset of
+ * It allows to store different properties on subset of
  * the basis functions.
  *
  *

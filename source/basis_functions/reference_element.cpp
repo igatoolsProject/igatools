@@ -69,14 +69,6 @@ ReferenceElement(const std::shared_ptr<ConstSpace> space,
 };
 
 
-template <int dim, int range, int rank>
-ReferenceElement<dim, range, rank>::
-ReferenceElement(const std::shared_ptr<ConstSpace> space,
-                 const TensorIndex<dim> &elem_index)
-    :
-    ReferenceElement(space,space->get_grid()->tensor_to_flat(elem_index))
-{}
-
 
 template <int dim, int range, int rank>
 ReferenceElement<dim, range, rank>::

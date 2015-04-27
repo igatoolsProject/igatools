@@ -261,9 +261,11 @@ fill_cache(ElementAccessor &elem, const int j)
         const auto &ref_values = ref_elem.template get_basis<   _Value,k>(j,DofProperties::active);
         const auto &ref_der_1  = ref_elem.template get_basis<_Gradient,k>(j,DofProperties::active);
         const auto &values = cache.template get_data<_Value>();
-        push_fwd_elem.template transform_1<PhysSpace::range,PhysSpace::rank, k>
-        (std::make_tuple(cref(ref_values), cref(ref_der_1)),values,
-         cache.template get_data<_Gradient>(), j);
+        push_fwd_elem.template transform_1<PhysSpace::range,PhysSpace::rank, k>(
+            std::make_tuple(cref(ref_values), cref(ref_der_1)),
+            values,
+            cache.template get_data<_Gradient>(),
+            j);
 
         cache.template set_status_filled<_Gradient>(true);
     }
@@ -274,10 +276,11 @@ fill_cache(ElementAccessor &elem, const int j)
         const auto &ref_der_2  = ref_elem.template get_basis< _Hessian,k>(j,DofProperties::active);
         const auto &values = cache.template get_data<   _Value>();
         const auto &der_1  = cache.template get_data<_Gradient>();
-        push_fwd_elem.template transform_2<PhysSpace::range,PhysSpace::rank, k>
-        (std::make_tuple(cref(ref_values), cref(ref_der_1), cref(ref_der_2)),
-         std::make_tuple(cref(values),cref(der_1)),
-         cache.template get_data<_Hessian>(), j);
+        push_fwd_elem.template transform_2<PhysSpace::range,PhysSpace::rank, k>(
+            std::make_tuple(cref(ref_values), cref(ref_der_1), cref(ref_der_2)),
+            std::make_tuple(cref(values),cref(der_1)),
+            cache.template get_data<_Hessian>(),
+            j);
 
         cache.template set_status_filled<_Hessian>(true);
     }
