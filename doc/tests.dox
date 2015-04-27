@@ -1,0 +1,20 @@
+/**
+   
+@defgroup tests Tests
+@brief The test suite
+
+*/
+
+
+
+/**
+@defgroup tests_base base
+@ingroup tests
+@brief base tests directory
+*/
+
+/**
+@defgroup tests_basis_functions basis_functions
+@ingroup tests
+@brief basis_functions tests directory
+*/
