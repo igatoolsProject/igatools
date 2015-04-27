@@ -745,7 +745,7 @@ WARN_LOGFILE           = doxygen_warnings.log
 
 INPUT                  = @CMAKE_CURRENT_SOURCE_DIR@/doc \
                          @CMAKE_CURRENT_SOURCE_DIR@/tutorial \
-                         @CMAKE_CURRENT_SOURCE_DIR@/include/igatools\
+                         @CMAKE_CURRENT_SOURCE_DIR@/include/igatools \
                          @CMAKE_CURRENT_SOURCE_DIR@/tests/base
 
 # This tag can be used to specify the character encoding of the source files
@@ -767,7 +767,7 @@ INPUT_ENCODING         = UTF-8
 # *.qsf, *.as and *.js.
 
 FILE_PATTERNS          = *.h \
-                         *.dox\
+                         *.dox \
                          *.cpp
 
 # The RECURSIVE tag can be used to specify whether or not subdirectories should
