@@ -4,7 +4,7 @@
    igatools is an open source, modern designed general purpose isogeometric analysis software library to 
    numerically solve partial differential equations (PDEs) using isogeometric spaces.
 
-   The library is implemented in C++11, its design is object oriented with extensive use of generic programming 
+   The library is implemented in C++14, its design is object oriented with extensive use of generic programming 
    techniques (a.k.a. <em>templates metaprogramming</em>).
 
    Some of its features are:
@@ -69,9 +69,8 @@
    - <b>Developers:</b> have provided substantial and continuous contribution to the library and hold a global 
    overview of the library.
      - Pablo Antolin (pablo.antolin.sanchez <em>at</em> gmail.com)
-     - Nicola Cavallini (nicola.cavallini <em>at</em> unipv.it)
    - <b>Contributors:</b> have provided important patches over the years.
-     - 
+     - Nicola Cavallini (nicola.cavallini <em>at</em> unipv.it)
 */
 
 /**
