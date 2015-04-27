@@ -21,7 +21,6 @@
 /**
  *  @file
  *  @brief Test for the exception throw mechanism
- *  @ingroup tests_base
  *  @author pauletti
  *  @date 2012-11-18
  */

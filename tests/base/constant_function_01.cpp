@@ -21,7 +21,6 @@
 /**
  *  @file
  *  @brief ConstantFunction
- *  @ingroup tests_base
  *  @author pauletti
  *  @date 2013-11-01
  */

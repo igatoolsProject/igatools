@@ -22,7 +22,6 @@
 /**
  *  @file
  *  @brief Test for bernstein polynomial class
- *  @ingroup tests_basis_functions
  *  @author pauletti
  *  @date 2013-01-10
  */
