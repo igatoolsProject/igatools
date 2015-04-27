@@ -40,6 +40,7 @@
 #include <boost/fusion/include/map_fwd.hpp>
 #include <boost/fusion/include/for_each.hpp>
 #include <boost/fusion/include/at_key.hpp>
+#include <boost/fusion/include/any.hpp>
 
 IGA_NAMESPACE_OPEN
 

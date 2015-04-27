@@ -169,6 +169,18 @@ public:
 };
 using _OuterNormal = ValueType<-9>;
 
+
+template<>
+class ValueType<-10>
+{
+public:
+    static constexpr int id = -10;
+    static constexpr int order = 2;
+    static const std::string name;
+    static const auto flag = ValueFlags::curvature;
+};
+using _Curvature = ValueType<-10>;
+
 IGA_NAMESPACE_CLOSE
 
 #endif //#ifndef  VALUE_TYPES_H_

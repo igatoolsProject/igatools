@@ -410,7 +410,8 @@ operator()(const Topology<sub_elem_dim> &sub_elem)
 
         using Cache = LocalCache<VCache>;
 
-        cache = shared_ptr<Cache>(new Cache);
+//        cache = shared_ptr<Cache>(new Cache);
+        cache = std::make_shared<Cache>();
     }
 
     const auto n_basis = elem_->get_num_basis();//elem_->get_num_basis(DofProperties::active);

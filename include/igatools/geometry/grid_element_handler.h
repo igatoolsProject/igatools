@@ -143,26 +143,17 @@ public:
     }
 
 public:
-    void print_info(LogStream &out) const
-    {
-        out.begin_item("Quadrature cache for all dimensions:");
 
-        boost::fusion::for_each(quad_all_sub_elems_,
-                                [&](const auto & data_same_topology_dim)
-        {
-            using PairType = typename std::remove_reference<decltype(data_same_topology_dim)>::type;
-            using SubDimType = typename PairType::first_type;
+    /**
+     * Function for printing some internal information.
+     * Its use is mostly intended for debugging and testing purposes.
+     */
+    void print_info(LogStream &out) const;
 
-            const auto &quad_same_subdim = data_same_topology_dim.second;
 
-            out.begin_item("Quadrature cache for dimension: " + std::to_string(SubDimType::value));
-            quad_same_subdim.print_info(out);
-            out.end_item();
-        }
-                               );
-        out.end_item();
-
-    }
+    /**
+     * Returns the grid upon which the object is built.
+     */
     std::shared_ptr<const GridType> get_grid() const;
 
 //    const TensorProductArray<dim> &get_lengths() const;

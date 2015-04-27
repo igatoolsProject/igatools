@@ -115,7 +115,7 @@ public:
 
     void fill_face_cache(ElemAccessor &elem, const int j)
     {
-        this->as_derived_class().template fill_cache<dim-1>(elem,j);
+        this->as_derived_class().template fill_cache<(dim > 0)?dim-1:0>(elem,j);
     }
 
     void fill_face_cache(ElemIterator &elem, const int j)

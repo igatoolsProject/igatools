@@ -23,13 +23,13 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
-#include <igatools/base/value_types.h>
+//#include <igatools/base/value_types.h>
 
 
-#include <boost/fusion/include/make_map.hpp>
-#include <boost/fusion/include/at_key.hpp>
-#include <boost/fusion/include/for_each.hpp>
-#include <boost/fusion/include/any.hpp>
+//#include <boost/fusion/include/make_map.hpp>
+//#include <boost/fusion/include/at_key.hpp>
+//#include <boost/fusion/include/for_each.hpp>
+//#include <boost/fusion/include/any.hpp>
 
 IGA_NAMESPACE_OPEN
 
@@ -69,7 +69,7 @@ struct FlagStatus
     //*/
 };
 
-
+#if 0
 inline
 ValueFlags
 mapping_to_function_flags(const ValueFlags &flags)
@@ -100,7 +100,7 @@ mapping_to_function_flags(const ValueFlags &flags)
 
     return f_flags;
 }
-
+#endif
 
 IGA_NAMESPACE_CLOSE
 

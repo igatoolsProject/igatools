@@ -109,7 +109,8 @@ init_cache(ElementAccessor &elem)
     if (cache == nullptr)
     {
         using Cache = typename ElementAccessor::CacheType;
-        cache = shared_ptr<Cache>(new Cache);
+//        cache = shared_ptr<Cache>(new Cache);
+        cache = std::make_shared<Cache>();
     }
 
     for (auto &s_id: Topology::template elems_ids<k>())
@@ -171,6 +172,31 @@ GridElementHandler<dim>::
 get_grid() const -> std::shared_ptr<const GridType>
 {
     return grid_;
+}
+
+
+template <int dim>
+void
+GridElementHandler<dim>::
+print_info(LogStream &out) const
+{
+    out.begin_item("Quadrature cache for all dimensions:");
+
+    boost::fusion::for_each(quad_all_sub_elems_,
+                            [&](const auto & data_same_topology_dim)
+    {
+        using PairType = typename std::remove_reference<decltype(data_same_topology_dim)>::type;
+        using SubDimType = typename PairType::first_type;
+
+        const auto &quad_same_subdim = data_same_topology_dim.second;
+
+        out.begin_item("Quadrature cache for dimension: " + std::to_string(SubDimType::value));
+        quad_same_subdim.print_info(out);
+        out.end_item();
+    }
+                           );
+    out.end_item();
+
 }
 
 
