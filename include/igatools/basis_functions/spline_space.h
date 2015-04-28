@@ -83,7 +83,6 @@ class SplineSpace :
 
 private:
     using GridType = CartesianGrid<dim>;
-    using Topology = UnitElement<dim>;
 
 public:
 
@@ -127,10 +126,7 @@ public:
 
         TensorSizeTable() = default;
 
-        TensorSizeTable(const base_t &n_basis)
-            :
-            base_t(n_basis)
-        {}
+        TensorSizeTable(const base_t &n_basis);
 
 
         TensorSizeTable(const TensorSizeTable &in) = default;
@@ -144,46 +140,13 @@ public:
 
 
 
-        Size get_component_size(const int comp) const
-        {
-            return (*this)[comp].flat_size();
-        }
+        Size get_component_size(const int comp) const;
 
+        Size total_dimension() const;
 
-        Size total_dimension() const
-        {
-            Index total_dimension = 0;
-            for (const auto comp : components)
-                total_dimension += this->get_component_size(comp);
+        ComponentContainer<Size> get_offset() const;
 
-            return total_dimension;
-        }
-
-        ComponentContainer<Size>
-        get_offset() const
-        {
-            ComponentContainer<Size> offset;
-            offset[0] = 0;
-            for (int comp = 1; comp < n_components; ++comp)
-                offset[comp] = offset[comp-1] + this->get_component_size(comp-1);
-
-            return offset;
-
-        }
-
-        void print_info(LogStream &out) const
-        {
-            base_t::print_info(out);
-
-            out.begin_item("Scalar components dimensions:");
-            out << "[ ";
-            for (auto comp : components)
-                out << this->get_component_size(comp) << " ";
-            out << "]";
-            out.end_item();
-
-            out << "Total Dimension: " << total_dimension() << std::endl;
-        }
+        void print_info(LogStream &out) const;
     };
 
 
@@ -290,7 +253,6 @@ public:
 public:
     void print_info(LogStream &out) const;
 private:
-//    std::shared_ptr<const MultiplicityTable> interior_mult_;
     MultiplicityTable interior_mult_;
 
     DegreeTable deg_;

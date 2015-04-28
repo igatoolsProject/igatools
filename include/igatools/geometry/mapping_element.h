@@ -60,10 +60,7 @@ public:
      * flat index @p elem_index of the Function @p func.
      */
     MappingElement(const std::shared_ptr<Func> func,
-                   const Index elem_index)
-        :
-        parent_t(func,elem_index)
-    {}
+                   const Index elem_index);
 
     /**
      * Copy constructor.
@@ -199,13 +196,7 @@ private:
      * Creates a new object performing a deep copy of the current object using the MappingElement
      * copy constructor.
      */
-    std::shared_ptr<MappingElement<dim_,codim_> > clone() const
-    {
-        auto elem = std::shared_ptr<MappingElement<dim_,codim_> >(
-                        new MappingElement(*this,CopyPolicy::deep));
-        Assert(elem != nullptr, ExcNullPtr());
-        return elem;
-    }
+    std::shared_ptr<MappingElement<dim_,codim_> > clone() const;
 
 };
 

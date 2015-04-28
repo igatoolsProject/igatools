@@ -24,6 +24,14 @@
 IGA_NAMESPACE_OPEN
 
 
+template<int dim_, int codim_>
+MappingElement<dim_, codim_>::
+MappingElement(const std::shared_ptr<Func> func,
+               const Index elem_index)
+    :
+    parent_t(func,elem_index)
+{}
+
 
 template<int dim_, int codim_>
 MappingElement<dim_, codim_>::
@@ -40,6 +48,8 @@ MappingElement(const self_t &elem,
             std::shared_ptr<CacheType>(new CacheType(*elem.local_cache_));
     }
 }
+
+
 
 template<int dim_, int codim_>
 auto
@@ -180,6 +190,15 @@ get_D_external_normals() const -> ValueVector< Derivative<1> >
 }
 
 
+template<int dim_, int codim_>
+auto
+MappingElement<dim_, codim_>::
+clone() const -> std::shared_ptr<self_t>
+{
+    auto elem = std::make_shared<self_t>(*this,CopyPolicy::deep);
+    Assert(elem != nullptr, ExcNullPtr());
+    return elem;
+}
 
 
 

@@ -141,7 +141,7 @@ get_tensor_entry(const std::array< vector<Index>, rank> &data,
     TensorIndex<rank> entry;
     auto tensor_index = flat_to_tensor_index(flat_index,weight);
     for (int i = 0; i < rank; ++i)
-        entry[i]=data[i][tensor_index[i]];
+        entry[i] = data[i][tensor_index[i]];
 
     return entry;
 }

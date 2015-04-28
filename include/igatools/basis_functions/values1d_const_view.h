@@ -148,6 +148,7 @@ public:
         }
 #endif
     }
+
     /**
      * Evaluate and returns one partial derivative in one point.
      * The order of the partial derivative is specified by the tensor-index
@@ -177,8 +178,8 @@ public:
         }
         else
         {
-            return TensorIndex<dim>(p_flat_id);
             Assert(false,ExcNotImplemented());
+            return TensorIndex<dim>(p_flat_id);
         }
     }
 

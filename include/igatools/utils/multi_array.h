@@ -275,22 +275,7 @@ public:
     /**
      * Returns an estimate of the memory used to define the object.
      */
-    auto memory_consumption() const
-    {
-        /*
-                const auto &data = this->get_data();
-
-                const auto n_objects = this->get_data().size();
-                const auto memory_single_object = sizeof(value_type);
-
-                return n_objects * memory_single_object +
-                       TensorSizedContainer<rank>::memory_consumption();
-                //*/
-
-        return sizeof(this->get_data()) +
-               TensorSizedContainer<rank>::memory_consumption();
-//*/
-    }
+    std::size_t memory_consumption() const;
 
 protected:
     /**

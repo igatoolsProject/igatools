@@ -82,16 +82,9 @@ public:
     IdentityFunction(std::shared_ptr<GridType> grid);
 
     static std::shared_ptr<parent_t>
-    create(std::shared_ptr<GridType> grid)
-    {
-        return std::shared_ptr<parent_t>(new self_t(grid));
-    }
+    create(std::shared_ptr<GridType> grid);
 
-    std::shared_ptr<parent_t> clone() const override final
-    {
-
-        return std::make_shared<self_t>(self_t(*this));
-    }
+    std::shared_ptr<parent_t> clone() const override final;
 
 
     void fill_cache(ElementAccessor &elem, const topology_variant &k,

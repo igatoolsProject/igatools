@@ -118,38 +118,19 @@ public:
     }
 
 
-    std::shared_ptr<const CartesianGrid<dim_> > get_grid() const
-    {
-        return F_->get_grid();
-    }
+    std::shared_ptr<const CartesianGrid<dim_> > get_grid() const;
 
-    auto get_function() const
-    {
-        return F_;
-    }
+    std::shared_ptr<FuncType> get_function() const;
 
-    std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const
-    {
-        auto elem = std::shared_ptr<ElementAccessor>(new
-                                                     ElementAccessor(this->get_function(),flat_index));
-        Assert(elem != nullptr, ExcNullPtr());
+    std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const;
 
-        return elem;
-    }
+    ElementIterator begin() const;
 
+    ElementIterator end();
 
-    auto begin()  const -> ElementIterator
-    {
-        return ElementIterator(this->create_element(0),ElementProperties::none);
-    }
-
-    auto end() const -> ElementIterator
-    {
-        return ElementIterator(this->create_element(IteratorState::pass_the_end),ElementProperties::none);
-    }
 protected:
     std::shared_ptr<typename ElementAccessor::CacheType>
-    &get_cache(ElementAccessor &elem);
+    get_cache(ElementAccessor &elem);
 
 private:
     std::shared_ptr<FuncType> F_;

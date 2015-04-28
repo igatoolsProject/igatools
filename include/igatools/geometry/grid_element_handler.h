@@ -158,8 +158,6 @@ public:
      */
     std::shared_ptr<const GridType> get_grid() const;
 
-//    const TensorProductArray<dim> &get_lengths() const;
-
 private:
     std::shared_ptr<GridType> grid_;
 

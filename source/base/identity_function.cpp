@@ -33,6 +33,23 @@ IdentityFunction(std::shared_ptr<GridType> grid)
 {}
 
 
+template<int dim,int space_dim>
+auto
+IdentityFunction<dim,space_dim>::
+create(std::shared_ptr<GridType> grid) -> std::shared_ptr<parent_t>
+{
+    return std::make_shared<self_t>(grid);
+}
+
+template<int dim,int space_dim>
+auto
+IdentityFunction<dim,space_dim>::
+clone() const -> std::shared_ptr<parent_t>
+{
+
+    return std::make_shared<self_t>(*this);
+}
+
 
 template<int dim,int space_dim>
 auto

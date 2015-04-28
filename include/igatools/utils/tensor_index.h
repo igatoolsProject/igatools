@@ -137,11 +137,7 @@ public:
     /**
      * Returns the memory used to define the object's data members.
      */
-    auto memory_consumption() const
-    {
-        return sizeof(static_cast<const std::array<Index,rank> &>(*this));
-//      return rank * sizeof(Index);
-    }
+    std::size_t memory_consumption() const;
 
 };
 

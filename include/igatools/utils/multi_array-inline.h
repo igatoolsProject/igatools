@@ -287,6 +287,28 @@ resize(const TensorSize<rank> &dim, const typename STLContainer::value_type &val
 
 
 
+template<class STLContainer, int rank>
+inline
+std::size_t
+MultiArray<STLContainer,rank>::
+memory_consumption() const
+{
+    /*
+            const auto &data = this->get_data();
+
+            const auto n_objects = this->get_data().size();
+            const auto memory_single_object = sizeof(value_type);
+
+            return n_objects * memory_single_object +
+                   TensorSizedContainer<rank>::memory_consumption();
+            //*/
+
+    return sizeof(this->get_data()) +
+           TensorSizedContainer<rank>::memory_consumption();
+//*/
+}
+
+
 IGA_NAMESPACE_CLOSE
 
 

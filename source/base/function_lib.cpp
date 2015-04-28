@@ -47,6 +47,14 @@ create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
 }
 
 
+template<int dim, int codim, int range, int rank>
+auto
+ConstantFunction<dim, codim, range, rank>::
+clone() const -> std::shared_ptr<base_t>
+{
+    return std::make_shared<self_t>(*this);
+}
+
 
 template<int dim, int codim, int range, int rank>
 auto
@@ -107,6 +115,13 @@ create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
 }
 
 
+template<int dim, int codim, int range>
+auto
+LinearFunction<dim, codim, range>::
+clone() const -> std::shared_ptr<base_t>
+{
+    return std::make_shared<self_t>(*this);
+}
 
 template<int dim, int codim, int range>
 auto
@@ -163,7 +178,15 @@ auto
 BallFunction<dim>::
 create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map) ->  std::shared_ptr<base_t>
 {
-    return std::shared_ptr<base_t>(new self_t(grid, map));
+    return std::shared_ptr<self_t>(new self_t(grid, map));
+}
+
+template<int dim>
+auto
+BallFunction<dim>::
+clone() const -> std::shared_ptr<base_t>
+{
+    return std::make_shared<self_t>(*this);
 }
 
 
@@ -187,11 +210,13 @@ BallFunction<dim>::get_aux_vals(const ValueVector<Point> &points) const
 
     for (int qp = 0; qp < n_points; ++qp)
     {
-        sin_val[0][qp][0] = points[qp][0];
+        const auto &point = points[qp];
+
+        sin_val[0][qp][0] = point[0];
         for (int i = 1; i < dim; ++i)
         {
-            sin_val[0][qp][i]   = sin(points[qp][i]);
-            cos_val[0][qp][i-1] = cos(points[qp][i]);
+            sin_val[0][qp][i]   = sin(point[i]);
+            cos_val[0][qp][i-1] = cos(point[i]);
         }
         cos_val[0][qp][dim-1] = 1;
 
@@ -386,9 +411,17 @@ auto
 SphereFunction<dim>::
 create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map) ->  std::shared_ptr<base_t>
 {
-    return std::shared_ptr<base_t>(new self_t(grid, map));
+    return std::shared_ptr<self_t>(new self_t(grid, map));
 }
 
+
+template<int dim>
+auto
+SphereFunction<dim>::
+clone() const -> std::shared_ptr<base_t>
+{
+    return std::make_shared<self_t>(*this);
+}
 
 
 template<int dim>
@@ -635,6 +668,14 @@ create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
 }
 
 
+template<int dim>
+auto
+CylindricalAnnulus<dim>::
+clone() const -> std::shared_ptr<base_t>
+{
+    return std::make_shared<self_t>(*this);
+}
+
 
 
 template<int dim>
@@ -681,12 +722,15 @@ evaluate_1(const ValueVector<Point> &points,
         const Real theta = pt[0];
         const Real r     = pt[1];
 
-        dF[0][0] = - dT_ * (dR_ * r + r0_) * sin(dT_ * theta);
-        dF[0][1] =   dT_ * (dR_ * r + r0_) * cos(dT_ * theta);
+        const auto s_dt_theta = sin(dT_ * theta);
+        const auto c_dt_theta = cos(dT_ * theta);
+
+        dF[0][0] = - dT_ * (dR_ * r + r0_) * s_dt_theta;
+        dF[0][1] =   dT_ * (dR_ * r + r0_) * c_dt_theta;
         dF[0][2] = 0.0;
 
-        dF[1][0] = dR_ * cos(dT_ * theta);
-        dF[1][1] = dR_ * sin(dT_ * theta);
+        dF[1][0] = dR_ * c_dt_theta;
+        dF[1][1] = dR_ * s_dt_theta;
         dF[1][2] = 0.0;
 
         dF[2][0] = 0.0;
@@ -714,12 +758,15 @@ evaluate_2(const ValueVector<Point> &points,
         const Real theta = pt[0];
         const Real r     = pt[1];
 
-        d2F[0][0][0] = - dT_ * dT_ * (dR_ * r + r0_) * cos(dT_ * theta);
-        d2F[0][0][1] = - dT_ * dT_ * (dR_ * r + r0_) * sin(dT_ * theta);
+        const auto s_dt_theta = sin(dT_ * theta);
+        const auto c_dt_theta = cos(dT_ * theta);
+
+        d2F[0][0][0] = - dT_ * dT_ * (dR_ * r + r0_) * c_dt_theta;
+        d2F[0][0][1] = - dT_ * dT_ * (dR_ * r + r0_) * s_dt_theta;
         d2F[0][0][2] = 0.0;
 
-        d2F[1][0][0] = -dT_ * dR_ * sin(dT_ * theta);
-        d2F[1][0][1] =  dT_ * dR_ * cos(dT_ * theta);
+        d2F[1][0][0] = -dT_ * dR_ * s_dt_theta;
+        d2F[1][0][1] =  dT_ * dR_ * c_dt_theta;
         d2F[1][0][2] = 0.0;
 
         d2F[2][0][0] = 0.0;
@@ -727,8 +774,8 @@ evaluate_2(const ValueVector<Point> &points,
         d2F[2][0][2] = 0.0;
 
 
-        d2F[0][1][0] = - dT_ * dR_ * sin(dT_ * theta);
-        d2F[0][1][1] =   dT_ * dR_ * cos(dT_ * theta);
+        d2F[0][1][0] = - dT_ * dR_ * s_dt_theta;
+        d2F[0][1][1] =   dT_ * dR_ * c_dt_theta;
         d2F[0][1][2] = 0.0;
 
         d2F[1][1][0] = 0.0;

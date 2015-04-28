@@ -62,19 +62,19 @@ mapping_to_function_flags(const ValueFlags &flags)
 };
 
 
-template<int dim, int codim>
+template<int dim_, int codim_>
 auto
-Mapping<dim, codim>::
+Mapping<dim_, codim_>::
 get_cache(ElementAccessor &elem)
--> std::shared_ptr<typename ElementAccessor::CacheType> &
+-> std::shared_ptr<typename ElementAccessor::CacheType>
 {
     return elem.local_cache_;
 }
 
 
 
-template<int dim, int codim>
-Mapping<dim, codim>::
+template<int dim_, int codim_>
+Mapping<dim_, codim_>::
 Mapping(std::shared_ptr<FuncType> F)
     :
     F_(F->clone())
@@ -82,26 +82,26 @@ Mapping(std::shared_ptr<FuncType> F)
 
 
 
-template<int dim, int codim>
-Mapping<dim, codim>::
+template<int dim_, int codim_>
+Mapping<dim_, codim_>::
 ~Mapping()
 {}
 
 
 
-template<int dim, int codim>
+template<int dim_, int codim_>
 auto
-Mapping<dim, codim>::
+Mapping<dim_, codim_>::
 create(std::shared_ptr<FuncType> F)-> std::shared_ptr<self_t>
 {
     return std::shared_ptr<self_t>(new self_t(F));
 }
 
 
-template<int dim, int codim>
+template<int dim_, int codim_>
 template <int k>
 auto
-Mapping<dim, codim>::
+Mapping<dim_, codim_>::
 reset(const ValueFlags flags, const Quadrature<k> &eval_pts) -> void
 {
     const auto valid_flags = ElementAccessor::get_valid_flags();
@@ -126,10 +126,10 @@ reset(const ValueFlags flags, const Quadrature<k> &eval_pts) -> void
 
 
 
-template<int dim, int codim>
+template<int dim_, int codim_>
 template <int k>
 auto
-Mapping<dim, codim>::
+Mapping<dim_, codim_>::
 fill_cache(ElementAccessor &elem, const int j) -> void
 {
     F_->template fill_cache(elem, Topology<k>(),j);
@@ -141,7 +141,7 @@ fill_cache(ElementAccessor &elem, const int j) -> void
 
     if (cache.template status_fill<_Measure>())
     {
-        auto &k_elem = UnitElement<dim>::template get_elem<k>(j);
+        auto &k_elem = UnitElement<dim_>::template get_elem<k>(j);
 
         const auto &DF = elem.template get_values<_Gradient, k>(j);
         typename MapFunction<k, space_dim>::Gradient DF1;
@@ -159,7 +159,7 @@ fill_cache(ElementAccessor &elem, const int j) -> void
 
     if (cache.template status_fill<_W_Measure>())
     {
-        const auto &w = elem.CartesianGridElement<dim>::template get_w_measures<k>(j);
+        const auto &w = elem.CartesianGridElement<dim_>::template get_w_measures<k>(j);
 
         const auto &measures = cache.template get_data<_Measure>();
 
@@ -191,10 +191,10 @@ fill_cache(ElementAccessor &elem, const int j) -> void
         auto &D2_invF       = cache.template get_data<_InvHessian>();
 
         for (int pt = 0 ; pt < n_points; ++pt)
-            for (int u=0; u<dim; ++u)
+            for (int u=0; u<dim_; ++u)
             {
                 const auto tmp_u = action(D2_F[pt], D1_invF[pt][u]);
-                for (int v=0; v<dim; ++v)
+                for (int v=0; v<dim_; ++v)
                 {
                     const auto tmp_u_v = action(tmp_u, D1_invF[pt][v]);
                     D2_invF[pt][u][v] = - action(D1_invF[pt], tmp_u_v);
@@ -206,7 +206,7 @@ fill_cache(ElementAccessor &elem, const int j) -> void
 
     if (cache.template status_fill<_BoundaryNormal>())
     {
-        Assert(dim == k+1, ExcNotImplemented());
+        Assert(dim_ == k+1, ExcNotImplemented());
         const auto &D1_invF = cache.template get_data<_InvGradient>();
         const auto n_hat  = this->get_grid()->template get_boundary_normals<k>(j)[0];
         auto &bndry_normal = cache.template get_data<_BoundaryNormal>();
@@ -223,15 +223,15 @@ fill_cache(ElementAccessor &elem, const int j) -> void
 
     if (cache.template status_fill<_OuterNormal>())
     {
-        Assert(k == dim, ExcNotImplemented());
-        Assert(codim == 1, ExcNotImplemented());
+        Assert(k == dim_, ExcNotImplemented());
+        Assert(codim_ == 1, ExcNotImplemented());
 
         const auto &DF = elem.template get_values<_Gradient, k>(j);
         auto &outer_normal = cache.template get_data<_OuterNormal>();
 
         for (int pt = 0; pt < n_points; ++pt)
         {
-            outer_normal[pt] = cross_product<dim, codim>(DF[pt]);
+            outer_normal[pt] = cross_product<dim_, codim_>(DF[pt]);
             outer_normal[pt] /= outer_normal[pt].norm();
         }
 
@@ -241,8 +241,8 @@ fill_cache(ElementAccessor &elem, const int j) -> void
 
     if (cache.template status_fill<_Curvature>())
     {
-        Assert(k == dim, ExcNotImplemented());
-        Assert(codim == 1, ExcNotImplemented());
+        Assert(k == dim_, ExcNotImplemented());
+        Assert(codim_ == 1, ExcNotImplemented());
 
         const auto H = elem.compute_second_fundamental_form();
         const auto G_inv = elem.compute_inv_first_fundamental_form();
@@ -267,10 +267,10 @@ fill_cache(ElementAccessor &elem, const int j) -> void
 
 
 
-template<int dim, int codim>
+template<int dim_, int codim_>
 template <int k>
 auto
-Mapping<dim, codim>::
+Mapping<dim_, codim_>::
 init_cache(ElementAccessor &elem) -> void
 {
     F_->init_cache(elem, Topology<k>());
@@ -282,7 +282,7 @@ init_cache(ElementAccessor &elem) -> void
         cache = shared_ptr<Cache>(new Cache);
     }
 
-    for (auto &s_id: UnitElement<dim>::template elems_ids<k>())
+    for (auto &s_id: UnitElement<dim_>::template elems_ids<k>())
     {
         auto &s_cache = cache->template get_sub_elem_cache<k>(s_id);
         const auto n_points = F_->template get_num_points<k>();
@@ -300,10 +300,10 @@ init_cache(ElementAccessor &elem) -> void
 //        auto &D2_invF = std::get<2>(cache->inv_derivatives_);
 //
 //        for (int i=0; i<n_points; ++i)
-//            for (int u=0; u<dim; ++u)
+//            for (int u=0; u<dim_; ++u)
 //            {
 //                const auto tmp_u = action(D2_F[i], D1_invF[i][u]);
-//                for (int v=0; v<dim; ++v)
+//                for (int v=0; v<dim_; ++v)
 //                {
 //                    const auto tmp_u_v = action(tmp_u, D1_invF[i][v]);
 //                    D2_invF[i][u][v] = - action(D1_invF[i], tmp_u_v);
@@ -311,6 +311,51 @@ init_cache(ElementAccessor &elem) -> void
 //            }
 //    }
 //}
+
+
+template<int dim_, int codim_>
+auto
+Mapping<dim_, codim_>::
+get_grid() const -> std::shared_ptr<const CartesianGrid<dim_> >
+{
+    return F_->get_grid();
+}
+
+template<int dim_, int codim_>
+auto
+Mapping<dim_, codim_>::
+get_function() const -> std::shared_ptr<FuncType>
+{
+    return F_;
+}
+
+template<int dim_, int codim_>
+auto
+Mapping<dim_, codim_>::
+create_element(const Index flat_index) const -> std::shared_ptr<ElementAccessor>
+{
+    auto elem = std::make_shared<ElementAccessor>(this->get_function(),flat_index);
+    Assert(elem != nullptr, ExcNullPtr());
+
+    return elem;
+}
+
+
+template<int dim_, int codim_>
+auto
+Mapping<dim_, codim_>::
+begin() const -> ElementIterator
+{
+    return ElementIterator(this->create_element(0),ElementProperties::none);
+}
+
+template<int dim_, int codim_>
+auto
+Mapping<dim_, codim_>::
+end() -> ElementIterator
+{
+    return ElementIterator(this->create_element(IteratorState::pass_the_end),ElementProperties::none);
+}
 
 
 IGA_NAMESPACE_CLOSE

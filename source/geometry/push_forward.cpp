@@ -137,6 +137,36 @@ reset(const ValueFlags flag, const TransformationFlags transf_flag, const Quadra
 }
 
 
+template<Transformation type, int dim, int codim>
+auto
+PushForward<type, dim, codim>::
+create_element(const Index flat_index) const -> std::shared_ptr<ElementAccessor>
+{
+    auto elem = std::make_shared<ElementAccessor>(this->get_function(),flat_index);
+    Assert(elem != nullptr,ExcNullPtr());
+
+    return elem;
+}
+
+
+template<Transformation type, int dim, int codim>
+auto
+PushForward<type, dim, codim>::
+begin() const -> ElementIterator
+{
+    return ElementIterator(this->create_element(0),ElementProperties::none);
+}
+
+
+template<Transformation type, int dim, int codim>
+auto
+PushForward<type, dim, codim>::
+end() const -> ElementIterator
+{
+    return ElementIterator(this->create_element(IteratorState::pass_the_end),ElementProperties::none);
+}
+
+
 
 IGA_NAMESPACE_CLOSE
 

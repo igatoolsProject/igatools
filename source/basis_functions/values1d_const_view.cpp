@@ -118,4 +118,26 @@ operator()(const Index point_id) const
     return (*funcs_)(func_id_,point_id);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 IGA_NAMESPACE_CLOSE

@@ -71,6 +71,15 @@ TensorIndex(std::initializer_list<Index> list) noexcept
 #endif
 }
 
+template <int rank>
+std::size_t
+TensorIndex<rank>::
+memory_consumption() const
+{
+    return sizeof(static_cast<const std::array<Index,rank> &>(*this));
+//      return rank * sizeof(Index);
+}
+
 
 
 template <int rank>
@@ -157,6 +166,9 @@ vector<TensorIndex<0>> tensor_range(TensorIndex<0> first, TensorIndex<0> last)
 
     return result;
 }
+
+
+
 
 IGA_NAMESPACE_CLOSE
 

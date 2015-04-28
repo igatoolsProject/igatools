@@ -52,10 +52,7 @@ public:
     create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
            const Value &b);
 
-    std::shared_ptr<base_t> clone() const override final
-    {
-        return std::make_shared<self_t>(self_t(*this));
-    }
+    std::shared_ptr<base_t> clone() const override final;
 
 
     ConstantFunction(const self_t &) = default;
@@ -112,10 +109,7 @@ public:
            const Gradient &A,
            const Value &b);
 
-    virtual std::shared_ptr<base_t> clone() const override final
-    {
-        return std::make_shared<self_t>(self_t(*this));
-    }
+    virtual std::shared_ptr<base_t> clone() const override final;
 
     LinearFunction(const self_t &) = default;
 
@@ -176,10 +170,7 @@ public:
     static std::shared_ptr<base_t>
     create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
 
-    std::shared_ptr<base_t> clone() const override final
-    {
-        return std::make_shared<self_t>(self_t(*this));
-    }
+    std::shared_ptr<base_t> clone() const override final;
 
     BallFunction(const self_t &) = default;
 
@@ -242,10 +233,7 @@ public:
     static std::shared_ptr<base_t>
     create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
 
-    std::shared_ptr<base_t> clone() const override final
-    {
-        return std::make_shared<self_t>(self_t(*this));
-    }
+    std::shared_ptr<base_t> clone() const override final;
 
     SphereFunction(const self_t &) = default;
 
@@ -328,10 +316,7 @@ public:
            const Real theta0,
            const Real theta1);
 
-    std::shared_ptr<base_t> clone() const override final
-    {
-        return std::make_shared<self_t>(self_t(*this));
-    }
+    std::shared_ptr<base_t> clone() const override final;
 
     CylindricalAnnulus(const self_t &) = default;
 

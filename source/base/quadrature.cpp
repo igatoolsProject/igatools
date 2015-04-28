@@ -314,8 +314,8 @@ get_points() const -> ValueVector<Point>
 {
     const int n_pts = this->get_num_points();
     ValueVector<Point> points(n_pts);
-    for (int ipt = 0 ; ipt < n_pts ; ++ipt)
-        points[ipt] = this->get_point(ipt);
+    for (int pt = 0 ; pt < n_pts ; ++pt)
+        points[pt] = this->get_point(pt);
 
     return points;
 }
@@ -340,8 +340,8 @@ get_weights() const
 {
     const int n_pts = this->get_num_points();
     ValueVector<Real> weights(n_pts);
-    for (int ipt = 0 ; ipt < n_pts ; ++ipt)
-        weights[ipt] = this->get_weight(ipt);
+    for (int pt = 0 ; pt < n_pts ; ++pt)
+        weights[pt] = this->get_weight(pt);
 
     return weights;
 }

@@ -565,7 +565,6 @@ public:
     int tensor_to_flat_index(const TensorIndex<rank_> &tensor_index) const noexcept;
     ///@}
 
-
     /**
      * Return the total number of entries of the tensor.
      */

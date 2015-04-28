@@ -278,7 +278,7 @@ template< int dim >
 std::shared_ptr< QGauss< dim > >
 QGauss< dim >::create(const Size num_points)
 {
-    return (std::shared_ptr< QGauss< dim > >(new QGauss< dim >(num_points))) ;
+    return (std::make_shared< QGauss<dim> >(num_points)) ;
 }
 
 
@@ -286,7 +286,7 @@ template< int dim >
 std::shared_ptr< QGauss< dim > >
 QGauss< dim >::create(const TensorSize<dim> num_points)
 {
-    return (std::shared_ptr< QGauss< dim > >(new QGauss< dim >(num_points))) ;
+    return (std::make_shared< QGauss<dim> >(num_points)) ;
 }
 
 
@@ -318,7 +318,7 @@ template< int dim >
 std::shared_ptr< QGaussLobatto< dim > >
 QGaussLobatto< dim >::create(const Size num_points)
 {
-    return (std::shared_ptr< QGaussLobatto< dim > >(new QGaussLobatto< dim >(num_points))) ;
+    return (std::make_shared< QGaussLobatto< dim > >(num_points)) ;
 }
 
 
@@ -327,7 +327,7 @@ template< int dim >
 std::shared_ptr< QGaussLobatto< dim > >
 QGaussLobatto< dim >::create(const TensorSize<dim> num_points)
 {
-    return (std::shared_ptr< QGaussLobatto< dim > >(new QGaussLobatto< dim >(num_points))) ;
+    return (std::make_shared< QGaussLobatto< dim > >(num_points)) ;
 }
 
 
@@ -359,7 +359,7 @@ template< int dim >
 std::shared_ptr< QUniform< dim > >
 QUniform< dim >::create(const Size num_points)
 {
-    return (std::shared_ptr< QUniform< dim > >(new QUniform< dim >(num_points))) ;
+    return (std::make_shared< QUniform<dim> >(num_points)) ;
 }
 
 
@@ -367,7 +367,7 @@ template< int dim >
 std::shared_ptr< QUniform< dim > >
 QUniform< dim >::create(const TensorSize<dim> num_points)
 {
-    return (std::shared_ptr< QUniform< dim > >(new QUniform< dim >(num_points))) ;
+    return (std::make_shared< QUniform<dim> >(num_points)) ;
 }
 
 
@@ -383,7 +383,7 @@ template< int dim >
 std::shared_ptr< QTrapez< dim > >
 QTrapez< dim >::create()
 {
-    return (std::shared_ptr< QTrapez< dim > >(new QTrapez< dim >())) ;
+    return (std::make_shared< QTrapez<dim> >()) ;
 }
 
 IGA_NAMESPACE_CLOSE

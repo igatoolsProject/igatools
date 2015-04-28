@@ -91,14 +91,14 @@ public:
            const int s_id,
            InterGridMap<sub_dim> &elem_map)
     {
-        return std::shared_ptr<base_t>(new self_t(grid, func, s_id, elem_map));
+        return std::make_shared<self_t>(grid, func, s_id, elem_map);
     }
 
 
     std::shared_ptr<base_t> clone() const override
     {
 
-        return std::make_shared<self_t>(self_t(*this));
+        return std::make_shared<self_t>(*this);
     }
 
     void reset(const ValueFlags &flag, const eval_pts_variant &eval_pts) override
@@ -245,7 +245,7 @@ public:
     create(std::shared_ptr<const SupFunc> func,
            const int s_id)
     {
-        return std::shared_ptr<base_t>(new self_t(func, s_id));
+        return std::make_shared<self_t>(func, s_id);
     }
 
     static std::shared_ptr<base_t>
@@ -254,7 +254,7 @@ public:
            const int s_id,
            InterGridMap<sub_dim> &elem_map)
     {
-        return std::shared_ptr<base_t>(new self_t(grid, func, s_id, elem_map));
+        return std::make_shared<self_t>(grid, func, s_id, elem_map);
     }
 
     void reset(const ValueFlags &flag, const eval_pts_variant &eval_pts) override

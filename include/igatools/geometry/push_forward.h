@@ -84,24 +84,11 @@ public:
     template<int k>
     void reset(const ValueFlags map_flag, const TransformationFlags transf_flag, const Quadrature<k> &eval_pts);
 
-    std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const
-    {
-        auto elem = std::shared_ptr<ElementAccessor>(
-                        new ElementAccessor(this->get_function(),flat_index));
-        Assert(elem != nullptr,ExcNullPtr());
+    std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const;
 
-        return elem;
-    }
+    ElementIterator begin() const;
 
-    auto begin()  const -> ElementIterator
-    {
-        return ElementIterator(this->create_element(0),ElementProperties::none);
-    }
-
-    auto end() const -> ElementIterator
-    {
-        return ElementIterator(this->create_element(IteratorState::pass_the_end),ElementProperties::none);
-    }
+    ElementIterator end() const;
 
 };
 

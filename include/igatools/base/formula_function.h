@@ -128,7 +128,6 @@ private:
                 }
                 if (cache.template status_fill<_Divergence>())
                     Assert(false,ExcNotImplemented());
-
             }
 
             cache.set_filled(true);

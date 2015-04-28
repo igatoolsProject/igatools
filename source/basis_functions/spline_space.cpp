@@ -89,7 +89,7 @@ init()
 
         const auto &periodic_comp = periodic_[comp];
 
-        for (const auto dir : Topology::active_directions)
+        for (const auto dir : UnitElement<dim>::active_directions)
         {
             const auto &deg =  deg_comp[dir];
             const auto &mult = mult_comp.get_data_direction(dir);
@@ -154,7 +154,7 @@ rebuild_after_insert_knots(
 #ifndef NDEBUG
     //---------------------------------------------------------------------------------------
     // check that the new knots are internal to the grid --- begin
-    for (const auto dir : Topology::active_directions)
+    for (const auto dir : UnitElement<dim>::active_directions)
     {
         const auto &knots_dir = old_unique_knots.get_data_direction(dir);
 
@@ -179,7 +179,7 @@ rebuild_after_insert_knots(
     {
         const auto &interior_mult_comp = spline_space_previous_refinement_->interior_mult_[comp];
 
-        for (const auto dir : Topology::active_directions)
+        for (const auto dir : UnitElement<dim>::active_directions)
         {
             const auto &old_unique_knots_dir = old_unique_knots.get_data_direction(dir);
             const auto &interior_mult_comp_dir = interior_mult_comp.get_data_direction(dir);
@@ -255,7 +255,7 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
 #ifndef NDEBUG
     for (auto iComp : components)
     {
-        for (const int j : Topology::active_directions)
+        for (const int j : UnitElement<dim>::active_directions)
         {
             const auto &l_knots = boundary_knots[iComp][j].get_data_direction(0);
             const auto &r_knots = boundary_knots[iComp][j].get_data_direction(1);
@@ -309,7 +309,7 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
         const auto     &mult_comp = interior_mult_[comp];
         const auto &periodic_comp = periodic_[comp];
 
-        for (const auto dir : Topology::active_directions)
+        for (const auto dir : UnitElement<dim>::active_directions)
         {
             const auto deg = degree_comp[dir];
             const auto order = deg + 1;
@@ -464,7 +464,7 @@ accumulated_interior_multiplicities() const -> MultiplicityTable
     {
         const auto &mult_comp = interior_mult_[comp];
 
-        for (const auto j : Topology::active_directions)
+        for (const auto j : UnitElement<dim>::active_directions)
         {
             // Assert(!periodic_[iComp][j], ExcMessage("periodic needs to be implemented"));
             const auto &mult = mult_comp.get_data_direction(j);
@@ -498,7 +498,7 @@ get_multiplicity_from_regularity(const InteriorReg reg,
 
 
     for (int comp : res.get_active_components_id())
-        for (const auto dir : Topology::active_directions)
+        for (const auto dir : UnitElement<dim>::active_directions)
         {
             int val;
             switch (reg)
@@ -646,6 +646,72 @@ get_periodic_table() const -> const PeriodicityTable &
     return periodic_;
 }
 
+
+
+template<int dim, int range, int rank>
+Size
+SplineSpace<dim, range, rank>::
+TensorSizeTable::
+get_component_size(const int comp) const
+{
+    return (*this)[comp].flat_size();
+}
+
+
+template<int dim, int range, int rank>
+Size
+SplineSpace<dim, range, rank>::
+TensorSizeTable::
+total_dimension() const
+{
+    Index total_dimension = 0;
+    for (const auto comp : components)
+        total_dimension += this->get_component_size(comp);
+
+    return total_dimension;
+}
+
+template<int dim, int range, int rank>
+auto
+SplineSpace<dim, range, rank>::
+TensorSizeTable::
+get_offset() const -> ComponentContainer<Size>
+{
+    ComponentContainer<Size> offset;
+    offset[0] = 0;
+    for (int comp = 1; comp < n_components; ++comp)
+        offset[comp] = offset[comp-1] + this->get_component_size(comp-1);
+
+    return offset;
+
+}
+
+template<int dim, int range, int rank>
+void
+SplineSpace<dim, range, rank>::
+TensorSizeTable::
+print_info(LogStream &out) const
+{
+    base_t::print_info(out);
+
+    out.begin_item("Scalar components dimensions:");
+    out << "[ ";
+    for (auto comp : components)
+        out << this->get_component_size(comp) << " ";
+    out << "]";
+    out.end_item();
+
+    out << "Total Dimension: " << total_dimension() << std::endl;
+}
+
+
+template<int dim, int range, int rank>
+SplineSpace<dim, range, rank>::
+TensorSizeTable::
+TensorSizeTable(const base_t &n_basis)
+    :
+    base_t(n_basis)
+{}
 
 IGA_NAMESPACE_CLOSE
 
