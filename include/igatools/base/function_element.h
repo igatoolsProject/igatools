@@ -59,13 +59,7 @@ public:
      * flat index @p elem_index of the CartesianGrid @p grid.
      */
     FunctionElement(const std::shared_ptr<const Func> func,
-                    const Index elem_index)
-        :
-        CartesianGridElement<dim>(func->get_grid(),elem_index),
-        func_(std::const_pointer_cast<Func>(func))
-    {
-        Assert(func_ != nullptr ,ExcNullPtr());
-    }
+                    const Index elem_index);
 
     /**
      * Copy constructor.
@@ -123,11 +117,7 @@ public:
      *
      * @note Internally it uses the function shallow_copy_from().
      */
-    FunctionElement<dim,codim,range,rank> &operator=(const FunctionElement<dim,codim,range,rank> &element)
-    {
-        shallow_copy_from(element);
-        return *this;
-    }
+    FunctionElement<dim,codim,range,rank> &operator=(const FunctionElement<dim,codim,range,rank> &element);
 
     /**
      * Move assignment operator.
@@ -141,8 +131,8 @@ public:
     auto
     get_values(const int j) const
     {
-        Assert(local_cache_ != nullptr,ExcNullPtr());
-        const auto &cache = local_cache_->template get_sub_elem_cache<k>(j);
+        Assert(all_sub_elems_cache_ != nullptr,ExcNullPtr());
+        const auto &cache = all_sub_elems_cache_->template get_sub_elem_cache<k>(j);
         return cache.template get_data<ValueType>();
     }
 
@@ -181,10 +171,7 @@ public:
      * @note The valid flags are defined to be the ones that can be inferred from the ValueType(s)
      * used as key of the boost::fusion::map in CType.
      */
-    static ValueFlags get_valid_flags()
-    {
-        return cacheutils::get_valid_flags_from_cache_type(CType());
-    }
+    static ValueFlags get_valid_flags();
 
 private:
 
@@ -200,7 +187,7 @@ private:
 
     using Cache = FuncValuesCache<dim,CType>;
 
-    std::shared_ptr<LocalCache<Cache>> local_cache_;
+    std::shared_ptr<LocalCache<Cache>> all_sub_elems_cache_;
 
 public:
     using CacheType = LocalCache<Cache>;
@@ -214,13 +201,7 @@ private:
      * Creates a new object performing a deep copy of the current object using the FunctionElement
      * copy constructor.
      */
-    std::shared_ptr<FunctionElement<dim,codim,range,rank> > clone() const
-    {
-        auto elem = std::shared_ptr<FunctionElement<dim,codim,range,rank> >(
-                        new FunctionElement(*this,CopyPolicy::deep));
-        Assert(elem != nullptr, ExcNullPtr());
-        return elem;
-    }
+    std::shared_ptr<FunctionElement<dim,codim,range,rank> > clone() const;
 };
 
 IGA_NAMESPACE_CLOSE

@@ -38,6 +38,15 @@ NURBSElementHandler(shared_ptr<const Space> space)
 }
 
 
+template<int dim_, int range_ , int rank_>
+auto
+NURBSElementHandler<dim_, range_, rank_>::
+create(std::shared_ptr<const Space> space) -> std::shared_ptr<base_t>
+{
+    return std::shared_ptr<self_t>(new self_t(space));
+}
+
+
 #if 0
 template<int dim_, int range_ , int rank_>
 NURBSElementHandler<dim_, range_, rank_>::

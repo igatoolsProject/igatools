@@ -192,44 +192,24 @@ public:
     /** @name Getting information about the space */
     ///@{
 
-    virtual bool is_bspline() const override final
-    {
-        return false;
-    }
+    virtual bool is_bspline() const override final;
 
-    virtual const DegreeTable &get_degree() const override final
-    {
-        return this->sp_space_->get_degree();
-    }
+    virtual const DegreeTable &get_degree() const override final;
 
     virtual void get_element_dofs(
         const CartesianGridElement<dim> &element,
         vector<Index> &dofs_global,
         vector<Index> &dofs_local_to_patch,
         vector<Index> &dofs_local_to_elem,
-        const std::string &dofs_property = DofProperties::active) const override final
-    {
-        this->sp_space_->get_element_dofs(
-            element,
-            dofs_global,
-            dofs_local_to_patch,
-            dofs_local_to_elem,
-            dofs_property);
-    }
+        const std::string &dofs_property = DofProperties::active) const override final;
 
 
-    std::set<Index> get_interior_dofs() const
-    {
-        return sp_space_->get_interior_dofs();
-    }
-
+    std::set<Index> get_interior_dofs() const;
 
     using typename BaseSpace::topology_variant;
+
     std::set<Index>
-    get_boundary_dofs(const int s_id, const topology_variant &k) const override
-    {
-        return sp_space_->get_boundary_dofs(s_id, k);
-    }
+    get_boundary_dofs(const int s_id, const topology_variant &k) const override final;
 
     ///@}
 
@@ -242,19 +222,13 @@ public:
      */
     const WeightFunctionPtrTable &get_weights() const;
 
-    const PeriodicityTable &get_periodicity() const override final
-    {
-        return sp_space_->get_periodicity();
-    }
+    const PeriodicityTable &get_periodicity() const override final;
 
 
     /**
      * Returns a const reference to the end behaviour table of the BSpline space.
      */
-    virtual const EndBehaviourTable &get_end_behaviour_table() const override final
-    {
-        return sp_space_->get_end_behaviour_table();
-    };
+    virtual const EndBehaviourTable &get_end_behaviour_table() const override final;
 
 
     /**
@@ -287,12 +261,7 @@ private:
 
 public:
     virtual std::shared_ptr<typename BaseSpace::ElementHandler>
-    create_elem_handler() const override final
-    {
-        const auto this_space =
-            std::enable_shared_from_this<self_t>::shared_from_this();
-        return ElementHandler::create(this_space);
-    }
+    create_elem_handler() const override final;
 
 };
 

@@ -302,6 +302,25 @@ create_elem_handler() const -> std::shared_ptr<ElementHandler>
     return ElementHandler::create(this_space);
 }
 
+
+
+template <int dim_, int range_, int rank_, int codim_, Transformation type_>
+auto
+PhysicalSpace<dim_, range_, rank_, codim_, type_>::
+get_map_func() const -> std::shared_ptr<MapFunc>
+{
+    return map_func_;
+}
+
+
+template <int dim_, int range_, int rank_, int codim_, Transformation type_>
+std::set<Index>
+PhysicalSpace<dim_, range_, rank_, codim_, type_>::
+get_interior_dofs() const
+{
+    return ref_space_->get_interior_dofs();
+}
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/physical_space.inst>

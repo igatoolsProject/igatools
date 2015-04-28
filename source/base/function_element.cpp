@@ -27,6 +27,18 @@ IGA_NAMESPACE_OPEN
 
 template<int dim, int codim, int range, int rank>
 FunctionElement<dim, codim, range, rank>::
+FunctionElement(const std::shared_ptr<const Func> func,
+                const Index elem_index)
+    :
+    CartesianGridElement<dim>(func->get_grid(),elem_index),
+    func_(std::const_pointer_cast<Func>(func))
+{
+    Assert(func_ != nullptr ,ExcNullPtr());
+}
+
+
+template<int dim, int codim, int range, int rank>
+FunctionElement<dim, codim, range, rank>::
 FunctionElement(const FunctionElement<dim,codim,range,rank> &elem,
                 const CopyPolicy &copy_policy)
     :
@@ -34,9 +46,39 @@ FunctionElement(const FunctionElement<dim,codim,range,rank> &elem,
     func_(elem.func_)
 {
     if (copy_policy == CopyPolicy::shallow)
-        local_cache_ = elem.local_cache_;
+        all_sub_elems_cache_ = elem.all_sub_elems_cache_;
     else
-        local_cache_ = std::shared_ptr<LocalCache<Cache>>(new LocalCache<Cache>(*elem.local_cache_));
+        all_sub_elems_cache_ = std::make_shared<LocalCache<Cache>>(*elem.all_sub_elems_cache_);
+}
+
+
+template<int dim, int codim, int range, int rank>
+FunctionElement<dim,codim,range,rank> &
+FunctionElement<dim, codim, range, rank>::
+operator=(const FunctionElement<dim,codim,range,rank> &element)
+{
+    shallow_copy_from(element);
+    return *this;
+}
+
+
+template<int dim, int codim, int range, int rank>
+std::shared_ptr<FunctionElement<dim,codim,range,rank> >
+FunctionElement<dim, codim, range, rank>::
+clone() const
+{
+    auto elem = std::make_shared<FunctionElement<dim,codim,range,rank> >(*this,CopyPolicy::deep);
+    Assert(elem != nullptr, ExcNullPtr());
+    return elem;
+}
+
+
+template<int dim, int codim, int range, int rank>
+ValueFlags
+FunctionElement<dim, codim, range, rank>::
+get_valid_flags()
+{
+    return cacheutils::get_valid_flags_from_cache_type(CType());
 }
 
 

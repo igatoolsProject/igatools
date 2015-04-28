@@ -31,6 +31,36 @@ using boost::numeric::ublas::matrix_row;
 
 IGA_NAMESPACE_OPEN
 
+auto
+BernsteinOperator::
+scale_action(const Real scale, const Values &b_values) const -> Values
+{
+    return scale * prec_prod(*this, b_values);
+}
+
+
+template<int dim, int range, int rank>
+auto
+BernsteinExtraction<dim, range, rank>::
+get_operator(const int dir, const int inter, const int comp) const -> const Operator &
+{
+    return ext_operators_[comp].get_data_direction(dir)[inter];
+}
+
+
+template<int dim, int range, int rank>
+auto
+BernsteinExtraction<dim, range, rank>::
+get_element_operators(TensorIndex<dim> idx) const -> ElemOperTable
+{
+    ElemOperTable result(ext_operators_.get_comp_map());
+    for (auto comp : result.get_active_components_id())
+        for (int dir = 0 ; dir < dim ; ++dir)
+            result[comp][dir] = &(ext_operators_[comp].get_data_direction(dir)[idx[dir]]);
+    return result;
+}
+
+
 template<int dim, int range, int rank>
 auto
 BernsteinExtraction<dim, range, rank>::

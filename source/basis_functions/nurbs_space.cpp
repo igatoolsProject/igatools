@@ -583,6 +583,88 @@ get_weight_coef_from_basis_id(const Index basis_id) const
 }
 
 
+
+template <int dim_, int range_, int rank_>
+bool
+NURBSSpace<dim_, range_, rank_>::
+is_bspline() const
+{
+    return false;
+}
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_degree() const -> const DegreeTable &
+{
+    return this->sp_space_->get_degree();
+}
+
+template <int dim_, int range_, int rank_>
+void
+NURBSSpace<dim_, range_, rank_>::
+get_element_dofs(
+    const CartesianGridElement<dim> &element,
+    vector<Index> &dofs_global,
+    vector<Index> &dofs_local_to_patch,
+    vector<Index> &dofs_local_to_elem,
+    const std::string &dofs_property) const
+{
+    this->sp_space_->get_element_dofs(
+        element,
+        dofs_global,
+        dofs_local_to_patch,
+        dofs_local_to_elem,
+        dofs_property);
+}
+
+template <int dim_, int range_, int rank_>
+std::set<Index>
+NURBSSpace<dim_, range_, rank_>::
+get_interior_dofs() const
+{
+    return sp_space_->get_interior_dofs();
+}
+
+
+template <int dim_, int range_, int rank_>
+std::set<Index>
+NURBSSpace<dim_, range_, rank_>::
+get_boundary_dofs(const int s_id, const topology_variant &k) const
+{
+    return sp_space_->get_boundary_dofs(s_id, k);
+}
+
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_periodicity() const -> const PeriodicityTable &
+{
+    return sp_space_->get_periodicity();
+}
+
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_end_behaviour_table() const -> const EndBehaviourTable &
+{
+    return sp_space_->get_end_behaviour_table();
+};
+
+
+template <int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+create_elem_handler() const -> std::shared_ptr<typename BaseSpace::ElementHandler>
+{
+    const auto this_space =
+    std::enable_shared_from_this<self_t>::shared_from_this();
+    return ElementHandler::create(this_space);
+}
+
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/nurbs_space.inst>

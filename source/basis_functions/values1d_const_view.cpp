@@ -24,6 +24,70 @@
 
 IGA_NAMESPACE_OPEN
 
+BasisValues1d::
+BasisValues1d()
+{}
+
+BasisValues1d::
+BasisValues1d(const int max_der_order, const int n_func, const int n_points)
+    :
+    values_(max_der_order, DenseMatrix(n_func, n_points))
+{}
+
+Size
+BasisValues1d::
+get_num_points() const
+{
+    return values_[0].size2();
+}
+
+Size
+BasisValues1d::
+get_num_functions() const
+{
+    return values_[0].size1();
+}
+
+void
+BasisValues1d::
+resize(const int max_der_order, const int n_func, const int n_points)
+{
+    values_.resize(max_der_order);
+    for (auto matrix: values_)
+        matrix.resize(n_func, n_points);
+}
+
+void
+BasisValues1d::
+print_info(LogStream &out) const
+{
+    values_.print_info(out);
+}
+
+DenseMatrix &
+BasisValues1d::
+get_derivative(const int order)
+{
+    return values_[order];
+}
+
+const DenseMatrix &
+BasisValues1d::
+get_derivative(const int order) const
+{
+    return values_[order];
+}
+
+
+const BasisValues1d *
+BasisValues1dConstView::
+operator->() const
+{
+    return funcs_;
+}
+
+
+
 Values1DConstView::
 Values1DConstView(const DenseMatrix &funcs,const Index func_id)
     :

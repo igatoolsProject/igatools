@@ -171,12 +171,7 @@ public:
     }
 
     virtual std::shared_ptr<ReferenceElement<dim,range,rank> >
-    clone() const override final
-    {
-        auto elem = std::make_shared<BSplineElement<dim,range,rank> >(*this,CopyPolicy::deep);
-        Assert(elem != nullptr, ExcNullPtr());
-        return elem;
-    }
+    clone() const override final;
 };
 
 IGA_NAMESPACE_CLOSE

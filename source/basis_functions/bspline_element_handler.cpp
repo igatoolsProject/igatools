@@ -168,6 +168,48 @@ BSplineElementHandler(shared_ptr<const Space> space)
     Assert(space != nullptr, ExcNullPtr());
 }
 
+
+template<int dim_, int range_ , int rank_>
+auto
+BSplineElementHandler<dim_, range_, rank_>::
+create(std::shared_ptr<const Space> space) -> std::shared_ptr<base_t>
+{
+    return std::shared_ptr<self_t>(new self_t(space));
+}
+
+
+template<int dim_, int range_ , int rank_>
+void
+BSplineElementHandler<dim_, range_, rank_>::
+fill_interval_values(const Real one_len,
+                     const BernsteinOperator &oper,
+                     const BasisValues1d &bernstein_vals,
+                     BasisValues1d &spline_vals)
+{
+    for (int order = 0; order < max_der; ++order)
+    {
+        auto &spline = spline_vals.get_derivative(order);
+        const auto &berns = bernstein_vals.get_derivative(order);
+        spline = oper.scale_action(std::pow(one_len, order), berns);
+    }
+}
+
+
+template<int dim_, int range_ , int rank_>
+void
+BSplineElementHandler<dim_, range_, rank_>::
+resize_and_fill_bernstein_values(
+    const int deg,
+    const vector<Real> &pt_coords,
+    BasisValues1d &bernstein_values)
+{
+    bernstein_values.resize(max_der, deg+1, pt_coords.size());
+    for (int order = 0; order < max_der; ++order)
+        bernstein_values.get_derivative(order) =
+            BernsteinBasis::derivative(order, deg, pt_coords);
+}
+
+
 template<int dim_, int range_ , int rank_>
 template<int sub_elem_dim>
 void
@@ -730,6 +772,80 @@ print_info(LogStream &out) const
     cacheutils::print_caches(splines1d_, out);
 //    splines1d_.print_info(out);
     out.end_item();
+}
+
+
+
+
+template<int dim_, int range_ , int rank_>
+BSplineElementHandler<dim_, range_, rank_>::
+GlobalCache::
+GlobalCache(const ComponentMap &component_map)
+    :
+    basis_values_1d_table_(BasisValues1dTable(component_map))
+{}
+
+template<int dim_, int range_ , int rank_>
+auto
+BSplineElementHandler<dim_, range_, rank_>::
+GlobalCache::
+entry(const int comp, const int dir, const Index interval_id) -> BasisValues1d &
+{
+    return basis_values_1d_table_[comp][dir][interval_id];
+}
+
+
+template<int dim_, int range_ , int rank_>
+void
+BSplineElementHandler<dim_, range_, rank_>::
+GlobalCache::
+print_info(LogStream &out) const
+{
+    using std::to_string;
+    for (const auto comp : basis_values_1d_table_.get_active_components_id())
+    {
+        out.begin_item("Active Component ID: " + to_string(comp));
+
+        for (const int dir : UnitElement<dim_>::active_directions)
+        {
+            out.begin_item("Direction : " + to_string(dir));
+
+            for (const auto &interv_id_and_basis : basis_values_1d_table_[comp][dir])
+            {
+                const auto interval_id = interv_id_and_basis.first;
+                const auto &basis = interv_id_and_basis.second;
+
+                out.begin_item("Interval ID: " + to_string(interval_id));
+                basis.print_info(out);
+                out.end_item();
+            }
+            out.end_item();
+        } // end loop dir
+        out.end_item();
+    } // end loop comp
+}
+
+
+template<int dim_, int range_ , int rank_>
+auto
+BSplineElementHandler<dim_, range_, rank_>::
+GlobalCache::
+get_element_values(const TensorIndex<dim> &id) const
+-> ComponentContainer<TensorProductFunctionEvaluator<dim> >
+{
+    ComponentContainer<TensorProductFunctionEvaluator<dim> >
+    result(basis_values_1d_table_.get_comp_map());
+
+    for (auto c : result.get_active_components_id())
+    {
+        const auto &value = basis_values_1d_table_[c];
+
+        for (const int i : UnitElement<dim_>::active_directions)
+            result[c][i] = BasisValues1dConstView(value[i].at(id[i]));
+
+        result[c].update_size();
+    }
+    return result;
 }
 
 IGA_NAMESPACE_CLOSE

@@ -197,10 +197,7 @@ public:
 
     std::shared_ptr<RefSpace> get_reference_space();
 
-    std::shared_ptr<MapFunc> get_map_func() const
-    {
-        return map_func_;
-    }
+    std::shared_ptr<MapFunc> get_map_func() const;
 
     template<int k>
     std::set<Index> get_boundary_dofs(const int s_id) const
@@ -208,10 +205,7 @@ public:
         return ref_space_->template get_boundary_dofs<k>(s_id);
     }
 
-    std::set<Index> get_interior_dofs() const
-    {
-        return ref_space_->get_interior_dofs();
-    }
+    std::set<Index> get_interior_dofs() const;
 
     void print_info(LogStream &out) const;
 
@@ -255,9 +249,9 @@ public:
 
     // TODO (pauletti, Apr 16, 2015): Not appropriate for a physical space
     const DegreeTable &get_degree() const
-       {
-           return ref_space_->get_degree();
-       }
+    {
+        return ref_space_->get_degree();
+    }
 #endif
 
 };

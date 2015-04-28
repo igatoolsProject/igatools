@@ -643,6 +643,14 @@ DeclException1(ExcFileNotOpen,
 DeclException0(ExcNotImplemented);
 
 /**
+ * Exception denoting a part of the
+ * library or application program
+ * that has been
+ * implemented but not tested.
+ */
+DeclException0(ExcNotTested);
+
+/**
  * This exception indicates that the cache is not filled.
  */
 DeclException0(ExcCacheNotFilled);

@@ -165,10 +165,7 @@ public :
         return push_fwd_element_->template get_measures<k>(j);
     }
 
-    ValueVector<Real> get_element_w_measures() const
-    {
-        return this->template get_w_measures<dim>(0);
-    }
+    ValueVector<Real> get_element_w_measures() const;
 
     template <int k = dim>
     ValueVector<PhysPoint> get_points(const int j = 0) const;
@@ -205,21 +202,7 @@ public :
         const std::string &dofs_property)
     {
         auto elem_handler = typename Space::ElementHandler::create(this->space_);
-#if 0
-        ValueFlags flags;
-        if (ValueType::id == _Value::id)
-            flags = ValueFlags::value;
-        else if (ValueType::id == _Gradient::id)
-            flags = ValueFlags::gradient;
-        else if (ValueType::id == _Hessian::id)
-            flags = ValueFlags::hessian;
-        else if (ValueType::id == _Divergence::id)
-            flags = ValueFlags::divergence;
-        else
-        {
-            Assert(false,ExcNotImplemented());
-        }
-#endif
+
         elem_handler->reset_one_element(ValueType::flag,points,this->get_flat_index());
         elem_handler->template init_cache<dim>(*this);
         elem_handler->template fill_cache<dim>(*this,0);
@@ -340,13 +323,7 @@ private:
      * Creates a new object performing a deep copy of the current object using the PhysicalSpaceElement
      * copy constructor.
      */
-    std::shared_ptr<self_t> clone() const
-    {
-        auto elem = std::shared_ptr<self_t>(
-                        new self_t(*this,CopyPolicy::deep));
-        Assert(elem != nullptr, ExcNullPtr());
-        return elem;
-    }
+    std::shared_ptr<self_t> clone() const;
 };
 
 

@@ -38,42 +38,25 @@ IGA_NAMESPACE_OPEN
 class BasisValues1d
 {
 public:
-    BasisValues1d()
-    {}
-    BasisValues1d(const int max_der_order, const int n_func, const int n_points)
-        :
-        values_(max_der_order, DenseMatrix(n_func, n_points))
-    {}
+    BasisValues1d();
 
-    Size get_num_points() const
-    {
-        return values_[0].size2();
-    }
-    Size get_num_functions() const
-    {
-        return values_[0].size1();
-    }
-    void resize(const int max_der_order, const int n_func, const int n_points)
-    {
-        values_.resize(max_der_order);
-        for (auto matrix: values_)
-            matrix.resize(n_func, n_points);
-    }
+    BasisValues1d(const int max_der_order, const int n_func, const int n_points);
 
-    void print_info(LogStream &out) const
-    {
-        values_.print_info(out);
-    }
+    Size get_num_points() const;
 
-    auto &get_dataivative(const int order)
-    {
-        return values_[order];
-    }
+    Size get_num_functions() const;
 
-    auto const &get_dataivative(const int order) const
-    {
-        return values_[order];
-    }
+    void resize(const int max_der_order, const int n_func, const int n_points);
+
+
+    void print_info(LogStream &out) const;
+
+
+    DenseMatrix &get_derivative(const int order);
+
+
+    const DenseMatrix &get_derivative(const int order) const;
+
 
 private:
     vector<DenseMatrix> values_;
@@ -111,10 +94,7 @@ public:
     ///@}
 
 
-    const BasisValues1d *operator->() const
-    {
-        return funcs_;
-    }
+    const BasisValues1d *operator->() const;
 
     /** Assignment operators */
     ///@{
@@ -178,9 +158,9 @@ public:
                   const TensorIndex<dim> &func,
                   const TensorIndex<dim> &pt) const
     {
-        Real res = (dim>0) ? (*this)[0]->get_dataivative(order[0])(func[0],pt[0]) : 1.0;
+        Real res = (dim>0) ? (*this)[0]->get_derivative(order[0])(func[0],pt[0]) : 1.0;
         for (int i = 1; i < dim; ++i)
-            res *= (*this)[i]->get_dataivative(order[i])(func[i], pt[i]);
+            res *= (*this)[i]->get_derivative(order[i])(func[i], pt[i]);
         return res;
     }
 

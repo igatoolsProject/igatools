@@ -515,6 +515,50 @@ print_info(LogStream &out) const
     out.end_item();
 }
 
+
+template<int dim_, int range_, int rank_>
+auto
+BSplineSpace<dim_, range_, rank_>::
+get_degree() const -> const DegreeTable &
+{
+    return this->space_data_->get_degree();
+}
+
+template<int dim_, int range_, int rank_>
+auto
+BSplineSpace<dim_, range_, rank_>::
+get_periodicity() const -> const PeriodicityTable &
+{
+    return space_data_->get_periodicity();
+}
+
+template<int dim_, int range_, int rank_>
+auto
+BSplineSpace<dim_, range_, rank_>::
+get_end_behaviour_table() const -> const EndBehaviourTable &
+{
+    return end_b_;
+};
+
+
+template<int dim_, int range_, int rank_>
+bool
+BSplineSpace<dim_, range_, rank_>::
+is_bspline() const
+{
+    return true;
+}
+
+template<int dim_, int range_, int rank_>
+auto
+BSplineSpace<dim_, range_, rank_>::
+create_elem_handler() const
+-> std::shared_ptr<ReferenceElementHandler<dim_,range_,rank_>>
+{
+    const auto this_space = std::enable_shared_from_this<self_t>::shared_from_this();
+    return ElementHandler::create(this_space);
+}
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/bspline_space.inst>

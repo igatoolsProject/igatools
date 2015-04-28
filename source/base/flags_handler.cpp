@@ -27,6 +27,14 @@
 IGA_NAMESPACE_OPEN
 
 
+void
+FlagStatus::
+print_info(LogStream &out) const
+{
+    out << "   fill = " << fill_ << "    filled = " << filled_;
+}
+
+
 #if 0
 //====================================================
 

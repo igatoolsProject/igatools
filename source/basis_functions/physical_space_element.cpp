@@ -61,10 +61,21 @@ PhysicalSpaceElement(const PhysicalSpaceElement<dim_,range_,rank_,codim_> &in,
             shared_ptr<PfElemAccessor>(new PfElemAccessor(*in.push_fwd_element_));
     }
 
-    Assert(false,ExcNotImplemented());
+    Assert(false,ExcNotTested());
 }
 
 
+template<int dim_,int range_,int rank_,int codim_>
+auto
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+clone() const -> std::shared_ptr<self_t>
+{
+//    auto elem = std::shared_ptr<self_t>(
+//                    new self_t(*this,CopyPolicy::deep));
+    auto elem = std::make_shared<self_t>(*this,CopyPolicy::deep);
+    Assert(elem != nullptr, ExcNullPtr());
+    return elem;
+}
 
 
 template<int dim_,int range_,int rank_,int codim_>
@@ -123,6 +134,15 @@ PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_element_points() const -> ValueVector<PhysPoint>
 {
     return this->template get_points<dim>(0);
+}
+
+
+template<int dim_,int range_,int rank_,int codim_>
+auto
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+get_element_w_measures() const -> ValueVector<Real>
+{
+    return this->template get_w_measures<dim>(0);
 }
 
 template<int dim_,int range_,int rank_,int codim_>

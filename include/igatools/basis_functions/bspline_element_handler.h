@@ -119,10 +119,7 @@ public:
      */
     virtual ~BSplineElementHandler() = default;
 
-    static std::shared_ptr<base_t> create(std::shared_ptr<const Space> space)
-    {
-        return std::shared_ptr<self_t>(new self_t(space));
-    }
+    static std::shared_ptr<base_t> create(std::shared_ptr<const Space> space);
 
     using topology_variant = typename base_t::topology_variant;
     using eval_pts_variant = typename base_t::eval_pts_variant;
@@ -154,28 +151,14 @@ private:
     fill_interval_values(const Real one_len,
                          const BernsteinOperator &oper,
                          const BasisValues1d &bernstein_vals,
-                         BasisValues1d &spline_vals)
-    {
-        for (int order = 0; order < max_der; ++order)
-        {
-            auto &spline = spline_vals.get_dataivative(order);
-            const auto &berns = bernstein_vals.get_dataivative(order);
-            spline = oper.scale_action(std::pow(one_len, order), berns);
-        }
-    }
+                         BasisValues1d &spline_vals);
 
 
     static void
     resize_and_fill_bernstein_values(
         const int deg,
         const vector<Real> &pt_coords,
-        BasisValues1d &bernstein_values)
-    {
-        bernstein_values.resize(max_der, deg+1, pt_coords.size());
-        for (int order = 0; order < max_der; ++order)
-            bernstein_values.get_dataivative(order) =
-                BernsteinBasis::derivative(order, deg, pt_coords);
-    }
+        BasisValues1d &bernstein_values);
 
 
     std::array<ValueFlags, dim_ + 1> flags_;
@@ -210,59 +193,15 @@ private:
 
         GlobalCache() = default;
 
-        GlobalCache(const ComponentMap &component_map)
-            :
-            basis_values_1d_table_(BasisValues1dTable(component_map))
-        {}
+        GlobalCache(const ComponentMap &component_map);
 
 
-        auto get_element_values(const TensorIndex<dim> &id) const
-        {
-            ComponentContainer<TensorProductFunctionEvaluator<dim> >
-            result(basis_values_1d_table_.get_comp_map());
+        ComponentContainer<TensorProductFunctionEvaluator<dim> >
+        get_element_values(const TensorIndex<dim> &id) const;
 
-            for (auto c : result.get_active_components_id())
-            {
-                const auto &value = basis_values_1d_table_[c];
+        BasisValues1d &entry(const int comp, const int dir, const Index interval_id);
 
-                for (const int i : UnitElement<dim_>::active_directions)
-                    result[c][i] = BasisValues1dConstView(value[i].at(id[i]));
-
-                result[c].update_size();
-            }
-            return result;
-        }
-
-        BasisValues1d &entry(const int comp, const int dir, const Index interval_id)
-        {
-            return basis_values_1d_table_[comp][dir][interval_id];
-        }
-
-        void print_info(LogStream &out) const
-        {
-            using std::to_string;
-            for (const auto comp : basis_values_1d_table_.get_active_components_id())
-            {
-                out.begin_item("Active Component ID: " + to_string(comp));
-
-                for (const int dir : UnitElement<dim_>::active_directions)
-                {
-                    out.begin_item("Direction : " + to_string(dir));
-
-                    for (const auto &interv_id_and_basis : basis_values_1d_table_[comp][dir])
-                    {
-                        const auto interval_id = interv_id_and_basis.first;
-                        const auto &basis = interv_id_and_basis.second;
-
-                        out.begin_item("Interval ID: " + to_string(interval_id));
-                        basis.print_info(out);
-                        out.end_item();
-                    }
-                    out.end_item();
-                } // end loop dir
-                out.end_item();
-            } // end loop comp
-        }
+        void print_info(LogStream &out) const;
 
     };
 

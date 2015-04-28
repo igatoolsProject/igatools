@@ -86,26 +86,7 @@ public:
      * uses the deep copy.
      */
     NURBSElement(const self_t &elem,
-                 const CopyPolicy &copy_policy = CopyPolicy::deep)
-        :
-        parent_t(elem,copy_policy),
-        bspline_elem_(elem.bspline_elem_,copy_policy),
-        weight_elem_table_(elem.weight_elem_table_)
-    {
-        if (copy_policy == CopyPolicy::shallow)
-        {
-            for (const auto &comp_id : weight_elem_table_.get_active_components_id())
-                weight_elem_table_[comp_id] = elem.weight_elem_table_[comp_id];
-
-        }
-        else
-        {
-            for (const auto &comp_id : weight_elem_table_.get_active_components_id())
-                weight_elem_table_[comp_id] =
-                    std::shared_ptr<WeightElem>(new WeightElem(*elem.weight_elem_table_[comp_id]));
-        }
-        Assert(false,ExcNotImplemented());
-    }
+                 const CopyPolicy &copy_policy = CopyPolicy::deep);
 //*/
 
     /**

@@ -305,6 +305,17 @@ get_bspline_space() const -> std::shared_ptr<const Space>
 }
 
 
+template <int dim, int range, int rank>
+std::shared_ptr<ReferenceElement<dim,range,rank> >
+BSplineElement<dim, range, rank>::
+clone() const
+{
+    auto elem = std::make_shared<BSplineElement<dim,range,rank> >(*this,CopyPolicy::deep);
+    Assert(elem != nullptr, ExcNullPtr());
+    return elem;
+}
+
+
 
 #if 0
 template <int dim, int range, int rank>

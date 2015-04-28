@@ -272,10 +272,7 @@ public:
 
 
 
-    virtual const DegreeTable &get_degree() const override final
-    {
-        return this->space_data_->get_degree();
-    }
+    virtual const DegreeTable &get_degree() const override final;
 
 
     virtual void get_element_dofs(
@@ -398,18 +395,12 @@ public:
 
     ///@}
 
-    const PeriodicityTable &get_periodicity() const override final
-    {
-        return space_data_->get_periodicity();
-    }
+    const PeriodicityTable &get_periodicity() const override final;
 
     /**
      * Returns a reference to the end behaviour table of the BSpline space.
      */
-    virtual const EndBehaviourTable &get_end_behaviour_table() const override final
-    {
-        return end_b_;
-    };
+    virtual const EndBehaviourTable &get_end_behaviour_table() const override final;
 
     /**
      * Prints internal information about the space.
@@ -460,16 +451,9 @@ public:
                    << " space.");
 
 
-    virtual bool is_bspline() const override final
-    {
-        return true;
-    }
+    virtual bool is_bspline() const override final;
 
-    virtual std::shared_ptr<typename ReferenceSpace<dim_,range_,rank_>::ElementHandler> create_elem_handler() const override final
-    {
-        const auto this_space = std::enable_shared_from_this<self_t>::shared_from_this();
-        return ElementHandler::create(this_space);
-    }
+    virtual std::shared_ptr<ReferenceElementHandler<dim_,range_,rank_>> create_elem_handler() const override final;
 
 
 private:

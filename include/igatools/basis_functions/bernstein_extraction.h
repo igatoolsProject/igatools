@@ -34,10 +34,7 @@ public:
     using Values = DenseMatrix;
     using DenseMatrix::DenseMatrix;
 
-    Values scale_action(const Real scale, const Values &b_values) const
-    {
-        return scale * prec_prod(*this, b_values);
-    }
+    Values scale_action(const Real scale, const Values &b_values) const;
 };
 
 /**
@@ -79,27 +76,12 @@ public:
      */
     void print_info(LogStream &out) const;
 
-//    const vector<Operator> &get_operator(const int comp, const int  dir) const
-//    {
-//        return ext_operators_[comp].get_data_direction(dir);
-//    }
+
+    const Operator &
+    get_operator(const int dir, const int inter, const int comp) const;
 
 
-    const Operator
-    &get_operator(const int dir, const int inter, const int comp) const
-    {
-        return ext_operators_[comp].get_data_direction(dir)[inter];
-    }
-
-
-    ElemOperTable get_element_operators(TensorIndex<dim> idx) const
-    {
-        ElemOperTable result(ext_operators_.get_comp_map());
-        for (auto comp : result.get_active_components_id())
-            for (int dir = 0 ; dir < dim ; ++dir)
-                result[comp][dir] = &(ext_operators_[comp].get_data_direction(dir)[idx[dir]]);
-        return result;
-    }
+    ElemOperTable get_element_operators(TensorIndex<dim> idx) const;
 
 private:
     vector<Operator>

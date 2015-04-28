@@ -23,13 +23,6 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
-//#include <igatools/base/value_types.h>
-
-
-//#include <boost/fusion/include/make_map.hpp>
-//#include <boost/fusion/include/at_key.hpp>
-//#include <boost/fusion/include/for_each.hpp>
-//#include <boost/fusion/include/any.hpp>
 
 IGA_NAMESPACE_OPEN
 
@@ -42,10 +35,8 @@ struct FlagStatus
     bool fill_ = false;
     bool filled_ = false;
 
-    void print_info(LogStream &out) const
-    {
-        out << "   fill = " << fill_ << "    filled = " << filled_;
-    }
+    void print_info(LogStream &out) const;
+
     /*
         bool fill() const
         {

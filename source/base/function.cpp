@@ -35,6 +35,102 @@ Function(std::shared_ptr<GridType> grid)
 {}
 
 
+template<int dim_, int codim_, int range_, int rank_>
+void
+Function<dim_, codim_, range_, rank_ >::
+reset(const ValueFlags &flag, const eval_pts_variant &quad)
+{
+    reset_impl_.flag_ = flag;
+    reset_impl_.grid_handler_ = this;
+    reset_impl_.flags_ = &flags_;
+    boost::apply_visitor(reset_impl_, quad);
+}
+
+template<int dim_, int codim_, int range_, int rank_>
+void
+Function<dim_, codim_, range_, rank_ >::
+reset_one_element(
+    const ValueFlags &flag,
+    const eval_pts_variant &eval_pts,
+    const Index elem_id)
+{
+    this->reset(flag,eval_pts);
+}
+
+template<int dim_, int codim_, int range_, int rank_>
+void
+Function<dim_, codim_, range_, rank_ >::
+init_cache(ElementAccessor &elem, const topology_variant &k)
+{
+    init_cache_impl_.grid_handler_ = this;
+    init_cache_impl_.elem_ = &elem;
+    init_cache_impl_.flags_ = &flags_;
+    init_cache_impl_.quad_ = &(this->quad_all_sub_elems_);
+    boost::apply_visitor(init_cache_impl_, k);
+}
+
+template<int dim_, int codim_, int range_, int rank_>
+void
+Function<dim_, codim_, range_, rank_ >::
+init_cache(ElementIterator &elem, const topology_variant &k)
+{
+    init_cache(*elem, k);
+}
+
+
+template<int dim_, int codim_, int range_, int rank_>
+void
+Function<dim_, codim_, range_, rank_ >::
+init_element_cache(ElementAccessor &elem)
+{
+    this->init_cache(elem, Topology<dim_>());
+}
+
+
+template<int dim_, int codim_, int range_, int rank_>
+void
+Function<dim_, codim_, range_, rank_ >::
+init_element_cache(ElementIterator &elem)
+{
+    this->init_cache(*elem, Topology<dim_>());
+}
+
+template<int dim_, int codim_, int range_, int rank_>
+void
+Function<dim_, codim_, range_, rank_ >::
+fill_cache(ElementAccessor &elem, const topology_variant &k,const int j)
+{
+    fill_cache_impl_.j_ = j;
+    fill_cache_impl_.grid_handler_ = this;
+    fill_cache_impl_.elem_ = &elem;
+    boost::apply_visitor(fill_cache_impl_, k);
+}
+
+template<int dim_, int codim_, int range_, int rank_>
+void
+Function<dim_, codim_, range_, rank_ >::
+fill_cache(ElementIterator &elem, const topology_variant &k, const int j)
+{
+    fill_cache(*elem, k, j);
+}
+
+
+template<int dim_, int codim_, int range_, int rank_>
+void
+Function<dim_, codim_, range_, rank_ >::
+fill_element_cache(ElementAccessor &elem)
+{
+    this->fill_cache(elem, Topology<dim_>(),0);
+}
+
+
+template<int dim_, int codim_, int range_, int rank_>
+void
+Function<dim_, codim_, range_, rank_ >::
+fill_element_cache(ElementIterator &elem)
+{
+    this->fill_cache(*elem, Topology<dim_>(),0);
+}
 
 template<int dim_, int codim_, int range_, int rank_>
 auto
@@ -42,10 +138,46 @@ Function<dim_, codim_, range_, rank_ >::
 get_cache(ElementAccessor &elem)
 -> std::shared_ptr<typename ElementAccessor::CacheType> &
 {
-    return elem.local_cache_;
+    Assert(elem.all_sub_elems_cache_ != nullptr,ExcNullPtr());
+    return elem.all_sub_elems_cache_;
+}
+
+template<int dim_, int codim_, int range_, int rank_>
+auto
+Function<dim_, codim_, range_, rank_ >::
+create_element(const Index flat_index) const -> std::shared_ptr<ElementAccessor>
+{
+    auto elem = std::make_shared<ElementAccessor>(this->shared_from_derived(),flat_index);
+    Assert(elem != nullptr,ExcNullPtr());
+
+    return elem;
 }
 
 
+template<int dim_, int codim_, int range_, int rank_>
+void
+Function<dim_, codim_, range_, rank_ >::
+print_info(LogStream &out) const
+{
+    parent_t::print_info(out);
+}
+
+
+template<int dim_, int codim_, int range_, int rank_>
+auto
+Function<dim_, codim_, range_, rank_ >::
+begin() const -> ElementIterator
+{
+    return ElementIterator(this->create_element(0),ElementProperties::none);
+}
+
+template<int dim_, int codim_, int range_, int rank_>
+auto
+Function<dim_, codim_, range_, rank_ >::
+end() const -> ElementIterator
+{
+    return ElementIterator(this->create_element(IteratorState::pass_the_end),ElementProperties::none);
+}
 
 IGA_NAMESPACE_CLOSE
 
