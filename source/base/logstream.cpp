@@ -47,7 +47,7 @@ LogStream::~LogStream()
         const unsigned int id =0;
         if ((outstreams.find(id) != outstreams.end())
             &&
-            (*outstreams[id] != 0)
+            (*outstreams[id])
             &&
             (outstreams[id]->str().length() > 0))
         {

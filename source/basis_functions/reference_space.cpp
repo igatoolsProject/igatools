@@ -203,6 +203,72 @@ get_dof_distribution() -> shared_ptr<DofDistribution<dim,range,rank> >
 }
 
 
+
+template<int dim, int range, int rank>
+int
+ReferenceSpace<dim, range, rank>::
+get_max_degree() const
+{
+    int max_degree = 0;
+
+    const auto &degree_table = this->get_degree();
+    for (const auto &degree_comp : degree_table)
+        for (const auto &degree_comp_dim : degree_comp)
+            max_degree = std::max(max_degree,degree_comp_dim);
+
+    return max_degree;
+}
+
+template<int dim, int range, int rank>
+auto
+ReferenceSpace<dim, range, rank>::
+get_num_basis_table() const -> const TensorSizeTable &
+{
+    return dof_distribution_->get_num_dofs_table();
+}
+
+template<int dim, int range, int rank>
+Size
+ReferenceSpace<dim, range, rank>::
+get_num_basis() const
+{
+    return dof_distribution_->get_num_dofs_table().total_dimension();
+}
+
+
+template<int dim, int range, int rank>
+Size
+ReferenceSpace<dim, range, rank>::
+get_num_basis(const int comp) const
+{
+    return dof_distribution_->get_num_dofs_table().get_component_size(comp);
+}
+
+template<int dim, int range, int rank>
+Size
+ReferenceSpace<dim, range, rank>::
+get_num_basis(const int comp, const int dir) const
+{
+    return dof_distribution_->get_num_dofs_table()[comp][dir];
+}
+
+template<int dim, int range, int rank>
+auto
+ReferenceSpace<dim, range, rank>::
+get_basis_offset() const -> ComponentContainer<Size>
+{
+    return dof_distribution_->get_num_dofs_table().get_offset();
+}
+
+template<int dim, int range, int rank>
+Size
+ReferenceSpace<dim, range, rank>::
+get_elem_num_basis() const
+{
+    return dof_distribution_->get_num_dofs_table().total_dimension();
+}
+
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/reference_space.inst>

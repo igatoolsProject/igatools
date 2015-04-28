@@ -565,6 +565,86 @@ print_info(LogStream &out) const
 }
 
 
+template<int dim, int range, int rank>
+auto
+SplineSpace<dim, range, rank>::
+get_degree() const -> const DegreeTable &
+{
+    return deg_;
+}
+
+template<int dim, int range, int rank>
+auto
+SplineSpace<dim, range, rank>::
+get_periodicity() const -> const PeriodicityTable &
+{
+    return periodic_;
+}
+
+template<int dim, int range, int rank>
+auto
+SplineSpace<dim, range, rank>::
+get_components_map() const -> const std::array<Index,n_components> &
+{
+    return interior_mult_.get_comp_map();
+}
+
+template<int dim, int range, int rank>
+auto
+SplineSpace<dim, range, rank>::
+get_active_components_id() const -> const vector<Index> &
+{
+    return interior_mult_.get_active_components_id();
+}
+
+template<int dim, int range, int rank>
+Size
+SplineSpace<dim, range, rank>::
+get_num_basis() const
+{
+    return space_dim_.total_dimension();
+}
+
+template<int dim, int range, int rank>
+Size
+SplineSpace<dim, range, rank>::
+get_num_basis(const int comp) const
+{
+    return space_dim_.get_component_size(comp);
+}
+
+template<int dim, int range, int rank>
+Size
+SplineSpace<dim, range, rank>::
+get_num_basis(const int comp, const int dir) const
+{
+    return space_dim_[comp][dir];
+}
+
+template<int dim, int range, int rank>
+auto
+SplineSpace<dim, range, rank>::
+get_num_basis_table() const -> const TensorSizeTable &
+{
+    return space_dim_;
+}
+
+
+template<int dim, int range, int rank>
+auto
+SplineSpace<dim, range, rank>::
+get_interior_mult() const -> const MultiplicityTable &
+{
+    return interior_mult_;
+}
+
+template<int dim, int range, int rank>
+auto
+SplineSpace<dim, range, rank>::
+get_periodic_table() const -> const PeriodicityTable &
+{
+    return periodic_;
+}
 
 
 IGA_NAMESPACE_CLOSE

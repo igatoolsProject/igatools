@@ -94,7 +94,8 @@ public:
     {
         return data_.data();
     }
-    constexpr size_type size() noexcept
+
+    constexpr size_type size() const noexcept
     {
         return data_.size();
     }

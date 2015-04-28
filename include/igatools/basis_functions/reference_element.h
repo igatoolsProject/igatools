@@ -101,12 +101,7 @@ public:
      * containing
      * a pointer to an object of kind ReferenceElement.
      */
-    virtual std::shared_ptr<ReferenceElement<dim,range,rank> > clone() const
-    {
-        Assert(false,ExcMessage("This function must not be called. "
-                                "You should call the clone() funtion of a derived base class."));
-        return nullptr;
-    }
+    virtual std::shared_ptr<ReferenceElement<dim,range,rank> > clone() const;
 
 
     /**
@@ -155,22 +150,22 @@ public:
         const std::string &dofs_property)
     {
         auto elem_handler = ReferenceElementHandler<dim,range,rank>::create(this->space_);
-
-        ValueFlags flags;
-        if (ValueType::id == _Value::id)
-            flags = ValueFlags::value;
-        else if (ValueType::id == _Gradient::id)
-            flags = ValueFlags::gradient;
-        else if (ValueType::id == _Hessian::id)
-            flags = ValueFlags::hessian;
-        else if (ValueType::id == _Divergence::id)
-            flags = ValueFlags::divergence;
-        else
-        {
-            Assert(false,ExcNotImplemented());
-        }
-
-        elem_handler->reset_one_element(flags,points,this->get_flat_index());
+        /*
+                ValueFlags flags;
+                if (ValueType::id == _Value::id)
+                    flags = ValueFlags::value;
+                else if (ValueType::id == _Gradient::id)
+                    flags = ValueFlags::gradient;
+                else if (ValueType::id == _Hessian::id)
+                    flags = ValueFlags::hessian;
+                else if (ValueType::id == _Divergence::id)
+                    flags = ValueFlags::divergence;
+                else
+                {
+                    Assert(false,ExcNotImplemented());
+                }
+        //*/
+        elem_handler->reset_one_element(ValueType::flag,points,this->get_flat_index());
         elem_handler->template init_cache<dim>(*this);
         elem_handler->template fill_cache<dim>(*this,0);
 
@@ -193,10 +188,7 @@ public:
     /**
      * Returns the gradient determinant of the identity map at the dilated quadrature points.
      */
-    ValueVector<Real> get_element_w_measures() const
-    {
-        return this->template get_w_measures<dim>(0);
-    }
+    ValueVector<Real> get_element_w_measures() const;
 
 
     using OffsetTable = typename Space::template ComponentContainer<int>;
@@ -246,10 +238,7 @@ protected:
 
 
 public:
-    std::shared_ptr<const Space> get_space() const
-    {
-        return space_;
-    }
+    std::shared_ptr<const Space> get_space() const;
 };
 
 

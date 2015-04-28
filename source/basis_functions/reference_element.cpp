@@ -132,6 +132,36 @@ print_info(LogStream &out) const
     out.end_item();
 }
 
+
+
+template <int dim, int range, int rank>
+std::shared_ptr<ReferenceElement<dim,range,rank> >
+ReferenceElement<dim, range, rank>::
+clone() const
+{
+    Assert(false,ExcMessage("This function must not be called. "
+                            "You should call the clone() funtion of a derived base class."));
+    return nullptr;
+}
+
+
+template <int dim, int range, int rank>
+auto
+ReferenceElement<dim, range, rank>::
+get_element_w_measures() const -> ValueVector<Real>
+{
+    return this->template get_w_measures<dim>(0);
+}
+
+
+template <int dim, int range, int rank>
+auto
+ReferenceElement<dim, range, rank>::
+get_space() const -> std::shared_ptr<const Space>
+{
+    return space_;
+}
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/reference_element.inst>

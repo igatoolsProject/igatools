@@ -47,11 +47,6 @@ template <int, int, int> class NURBSSpace;
 
 template <int,int,int> class DofDistribution;
 
-//template<int k_>
-//struct Int
-//{
-//    static const int k = k_;
-//};
 
 /**
  *
@@ -166,53 +161,24 @@ public:
      * Return the maximum value of the degree, for each component, for each direction;
      * @return
      */
-    int get_max_degree() const
-    {
-        int max_degree = 0;
-
-        const auto &degree_table = this->get_degree();
-        for (const auto &degree_comp : degree_table)
-            for (const auto &degree_comp_dim : degree_comp)
-                max_degree = std::max(max_degree,degree_comp_dim);
-
-        return max_degree;
-    }
+    int get_max_degree() const;
 
     /** @name Functions for retrieving information about the number of basis function. */
     ///@{
     // TODO (pauletti, Apr 10, 2015): if needed it should go in spline space not here
-    const TensorSizeTable &get_num_basis_table() const
-    {
-        return dof_distribution_->get_num_dofs_table();
-    }
+    const TensorSizeTable &get_num_basis_table() const;
+
     // TODO (pauletti, Apr 10, 2015): this one should go in spline space not here
-    Size get_num_basis() const
-    {
-        return dof_distribution_->get_num_dofs_table().total_dimension();
-    }
+    Size get_num_basis() const;
 
 
-    Size get_num_basis(const int comp) const
-    {
-        return dof_distribution_->get_num_dofs_table().get_component_size(comp);
-    }
+    Size get_num_basis(const int comp) const;
 
-    Size get_num_basis(const int comp, const int dir) const
-    {
-        return dof_distribution_->get_num_dofs_table()[comp][dir];
-    }
+    Size get_num_basis(const int comp, const int dir) const;
 
-    ComponentContainer<Size> get_basis_offset() const
-    {
-        return dof_distribution_->get_num_dofs_table().get_offset();
-    }
+    ComponentContainer<Size> get_basis_offset() const;
 
-    Size get_elem_num_basis() const
-    {
-        return dof_distribution_->get_num_dofs_table().total_dimension();
-    }
-
-
+    Size get_elem_num_basis() const;
     ///@}
 
 

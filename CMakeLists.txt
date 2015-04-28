@@ -157,8 +157,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include
 # the igatools library target
 add_library(${lib_name} SHARED  ${source_files})
 target_link_libraries(${lib_name} 
-  ${Trilinos_LIBRARIES} 
   ${Trilinos_TPL_LIBRARIES} 
+  ${Trilinos_LIBRARIES} 
   ${Petsc_LIBRARIES} 
   ${Boost_LIBRARIES})
 set_property(TARGET ${lib_name} PROPERTY VERSION ${IGATOOLS_VERSION})

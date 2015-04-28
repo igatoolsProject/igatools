@@ -39,7 +39,7 @@ IGA_NAMESPACE_OPEN
 enum class BasisEndBehaviour
 {
     /**
-     * Interpolatory basis functions at knots bounday (i.e. open knot vector).
+     * Interpolatory basis functions at knots boundary (i.e. open knot vector).
      */
     interpolatory,
 
@@ -209,25 +209,13 @@ protected:
                              PeriodicityTable(filled_array<bool,dim>(false)));
 
 public:
-    const DegreeTable &get_degree() const
-    {
-        return deg_;
-    }
+    const DegreeTable &get_degree() const;
 
-    const PeriodicityTable &get_periodicity() const
-    {
-        return periodic_;
-    }
+    const PeriodicityTable &get_periodicity() const;
 
-    const std::array<Index,n_components> &get_components_map() const
-    {
-        return interior_mult_.get_comp_map();
-    }
+    const std::array<Index,n_components> &get_components_map() const;
 
-    const auto &get_active_components_id() const
-    {
-        return interior_mult_.get_active_components_id();
-    }
+    const vector<Index> &get_active_components_id() const;
 
     /** @name Getting information about the space */
     ///@{
@@ -235,37 +223,25 @@ public:
      * Total number of basis functions. This is the dimensionality
      * of the space.
      */
-    Size get_num_basis() const
-    {
-        return space_dim_.total_dimension();
-    }
+    Size get_num_basis() const;
 
     /**
      * Total number of basis functions
      * for the comp space component.
      */
-    Size get_num_basis(const int comp) const
-    {
-        return space_dim_.get_component_size(comp);
-    }
+    Size get_num_basis(const int comp) const;
 
     /**
      *  Total number of basis functions for the comp space component
      *  and the dir direction.
      */
-    Size get_num_basis(const int comp, const int dir) const
-    {
-        return space_dim_[comp][dir];
-    }
+    Size get_num_basis(const int comp, const int dir) const;
 
     /**
      * Component-direction indexed table with the number of basis functions
      * in each direction and component
      */
-    const TensorSizeTable &get_num_basis_table() const
-    {
-        return space_dim_;
-    }
+    const TensorSizeTable &get_num_basis_table() const;
     ///@}
 
 
@@ -330,15 +306,9 @@ private:
 public:
 
     /** Returns the multiplicity of the internal knots that defines the space. */
-    const MultiplicityTable &get_interior_mult() const
-    {
-        return interior_mult_;
-    }
+    const MultiplicityTable &get_interior_mult() const;
 
-    const PeriodicityTable &get_periodic_table() const
-    {
-        return periodic_;
-    }
+    const PeriodicityTable &get_periodic_table() const;
 
 
 
