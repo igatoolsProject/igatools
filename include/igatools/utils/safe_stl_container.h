@@ -24,9 +24,6 @@
 #include <igatools/base/config.h>
 #include <igatools/base/print_info_utils.h>
 
-//#include <vector>
-//#include <array>
-
 IGA_NAMESPACE_OPEN
 
 /**

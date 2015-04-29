@@ -31,7 +31,7 @@ IGA_NAMESPACE_OPEN
 
 
 /**
- * @brief iga version on std::vector
+ * @brief iga version of std::vector.
  * It can be used as a std::vector but in Debug mode
  * it provides bounds checking.
  */

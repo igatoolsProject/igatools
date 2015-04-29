@@ -69,7 +69,7 @@ create(std::shared_ptr<const Space> space,
        const CoeffType &coeff,
        const std::string &property) ->  std::shared_ptr<self_t>
 {
-    auto ig_func = std::shared_ptr<self_t>(new self_t(space, coeff,property));
+    auto ig_func = std::make_shared<self_t>(space, coeff, property);
 
     Assert(ig_func != nullptr, ExcNullPtr());
 #if REFINE
@@ -105,11 +105,11 @@ reset_selected_elements(
     const vector<Index> &elements_flat_id)
 {
     parent_t::reset(flag, eval_pts);
-    reset_impl.flag = flag;
-    reset_impl.space_handler_ = space_filler_.get();
-    reset_impl.flags_ = &(this->flags_);
-    reset_impl.elements_flat_id_ = &elements_flat_id;
-    boost::apply_visitor(reset_impl, eval_pts);
+    reset_impl_.flag = flag;
+    reset_impl_.space_handler_ = space_filler_.get();
+    reset_impl_.flags_ = &(this->flags_);
+    reset_impl_.elements_flat_id_ = &elements_flat_id;
+    boost::apply_visitor(reset_impl_, eval_pts);
 }
 
 
@@ -120,9 +120,9 @@ IgFunction<Space>::
 init_cache(ElementAccessor &elem, const topology_variant &k) -> void
 {
     parent_t::init_cache(elem, k);
-    init_cache_impl.space_handler_ = space_filler_.get();
-    init_cache_impl.space_elem = &(*elem_);
-    boost::apply_visitor(init_cache_impl, k);
+    init_cache_impl_.space_handler_ = space_filler_.get();
+    init_cache_impl_.space_elem_ = &(*elem_);
+    boost::apply_visitor(init_cache_impl_, k);
 }
 
 
@@ -136,17 +136,17 @@ fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) -> voi
 
     elem_.move_to(elem.get_flat_index());
 
-    fill_cache_impl.space_handler_ = space_filler_.get();
-    fill_cache_impl.space_elem = &(*elem_);
-    fill_cache_impl.func_elem = &elem;
-    fill_cache_impl.function = this;
+    fill_cache_impl_.space_handler_ = space_filler_.get();
+    fill_cache_impl_.space_elem_ = &(*elem_);
+    fill_cache_impl_.func_elem_ = &elem;
+    fill_cache_impl_.function_ = this;
 
-    auto loc_coeff = coeff_.get_local_coeffs(elem_->get_local_to_global(property_));
+    auto loc_coeff_ = coeff_.get_local_coeffs(elem_->get_local_to_global(property_));
 
-    fill_cache_impl.loc_coeff = &loc_coeff;
-    fill_cache_impl.j = j;
-    fill_cache_impl.property = &property_;
-    boost::apply_visitor(fill_cache_impl, k);
+    fill_cache_impl_.loc_coeff_ = &loc_coeff_;
+    fill_cache_impl_.j = j;
+    fill_cache_impl_.property_ = &property_;
+    boost::apply_visitor(fill_cache_impl_, k);
 }
 
 

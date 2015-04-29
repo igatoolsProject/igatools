@@ -26,6 +26,13 @@
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/linear_algebra/epetra_vector.h>
 
+
+#include <boost/fusion/include/filter_if.hpp>
+//#include <boost/fusion/include/iterator.hpp>
+#include <boost/fusion/include/tag_of.hpp>
+#include <boost/fusion/include/key_of.hpp>
+#include <boost/mpl/not_equal_to.hpp>
+#include <boost/fusion/include/begin.hpp>
 IGA_NAMESPACE_OPEN
 
 using IgCoefficients = EpetraTools::Vector;
@@ -150,13 +157,12 @@ private:
         void operator()(const Topology<sub_elem_dim> &sub_elem)
         {
             Assert(space_handler_ != nullptr, ExcNullPtr());
-            space_handler_->template init_cache<sub_elem_dim>(*space_elem);
+            space_handler_->template init_cache<sub_elem_dim>(*space_elem_);
         }
 
         typename Space::ElementHandler  *space_handler_;
-        typename Space::ElementAccessor *space_elem;
+        typename Space::ElementAccessor *space_elem_;
     };
-
 
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
@@ -164,9 +170,9 @@ private:
         void operator()(const Topology<sub_elem_dim> &sub_elem)
         {
             Assert(space_handler_ != nullptr, ExcNullPtr());
-            space_handler_->template fill_cache<sub_elem_dim>(*space_elem,j);
+            space_handler_->template fill_cache<sub_elem_dim>(*space_elem_,j);
 
-            auto &local_cache = function->get_cache(*func_elem);
+            auto &local_cache = function_->get_cache(*func_elem_);
             auto &cache = local_cache->template get_sub_elem_cache<sub_elem_dim>(j);
 
 #if 0
@@ -179,36 +185,36 @@ private:
 
                 if (value.status_fill())
                 {
-                    value = space_elem->template linear_combination<ValueType,sub_elem_dim>(*loc_coeff,j, *property);
+                    value = space_elem_->template linear_combination<ValueType,sub_elem_dim>(*loc_coeff_,j, *property_);
                     value.set_status_filled(true);
                 }
             } // end lambda function
-                                                           );
+                                                            );
 #endif
-
+//#if 0
             //TODO (martinelli Mar 27,2015): bad style. Use the ValueType mechanism in order to avoid the if-switch
             if (cache.template status_fill<_Value>())
             {
                 cache.template get_data<_Value>() =
-                    space_elem->template linear_combination<_Value,sub_elem_dim>(*loc_coeff,j, *property);
+                    space_elem_->template linear_combination<_Value,sub_elem_dim>(*loc_coeff_,j, *property_);
                 cache.template set_status_filled<_Value>(true);
             }
             if (cache.template status_fill<_Gradient>())
             {
                 cache.template get_data<_Gradient>() =
-                    space_elem->template linear_combination<_Gradient,sub_elem_dim>(*loc_coeff,j, *property);
+                    space_elem_->template linear_combination<_Gradient,sub_elem_dim>(*loc_coeff_,j, *property_);
                 cache.template set_status_filled<_Gradient>(true);
             }
             if (cache.template status_fill<_Hessian>())
             {
                 cache.template get_data<_Hessian>() =
-                    space_elem->template linear_combination<_Hessian,sub_elem_dim>(*loc_coeff,j, *property);
+                    space_elem_->template linear_combination<_Hessian,sub_elem_dim>(*loc_coeff_,j, *property_);
                 cache.template set_status_filled<_Hessian>(true);
             }
             if (cache.template status_fill<_Divergence>())
             {
                 cache.template get_data<_Divergence>() =
-                    space_elem->template linear_combination<_Divergence,sub_elem_dim>(*loc_coeff,j, *property);
+                    space_elem_->template linear_combination<_Divergence,sub_elem_dim>(*loc_coeff_,j, *property_);
                 cache.template set_status_filled<_Divergence>(true);
             }
 //#endif
@@ -216,17 +222,17 @@ private:
         }
 
         int j;
-        self_t *function;
+        self_t *function_;
         typename Space::ElementHandler *space_handler_;
-        ElementAccessor *func_elem;
-        typename Space::ElementAccessor *space_elem;
-        vector<Real> *loc_coeff;
-        std::string const *property;
+        ElementAccessor *func_elem_;
+        typename Space::ElementAccessor *space_elem_;
+        vector<Real> *loc_coeff_;
+        std::string const *property_;
     };
 
-    ResetDispatcher reset_impl;
-    InitCacheDispatcher init_cache_impl;
-    FillCacheDispatcher fill_cache_impl;
+    ResetDispatcher reset_impl_;
+    InitCacheDispatcher init_cache_impl_;
+    FillCacheDispatcher fill_cache_impl_;
 
 #ifdef REFINE
     void create_connection_for_insert_knots(std::shared_ptr<self_t> ig_function);

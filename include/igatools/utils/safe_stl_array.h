@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef ARRAY_H_
-#define ARRAY_H_
+#ifndef SAFE_STL_ARRAY_H_
+#define SAFE_STL_ARRAY_H_
 
 #include <igatools/base/config.h>
 #include <igatools/utils/safe_stl_container.h>
@@ -27,142 +27,17 @@
 #include <array>
 
 IGA_NAMESPACE_OPEN
-#if 0
-/**
- * @brief iga version on std::array. It can be used as a std::array but in Debug mode
- * it provides bounds checking.
- */
-template<class T, Size N>
-class SafeSTLArray
-{
-private:
-    using base_t = std::array<T, N>;
-    base_t data_;
-public:
-    using size_type = Size;
-    using reference = typename std::array<T, N>::reference;
-    using const_reference = typename std::array<T, N>::const_reference;
-    using iterator = typename std::array<T, N>::iterator;
-    using const_iterator = typename std::array<T, N>::const_iterator;
-    using value_type = typename std::array<T, N>::value_type;
-
-    SafeSTLArray() = default;
-
-    SafeSTLArray(const T &val)
-    {
-        data_.fill(val);
-    }
-
-    /**
-     * Constructor using a std::array
-     */
-    SafeSTLArray(const base_t &data)
-        :
-        data_(data)
-    {};
-
-    /**
-     * Initializer-list constructor.
-     */
-    constexpr SafeSTLArray(const std::initializer_list<T> &list)
-        :
-        data_(list)
-    {};
-
-
-    iterator begin() noexcept
-    {
-        return data_.begin();
-    }
-    const_iterator begin() const noexcept
-    {
-        return data_.begin();
-    }
-    iterator end() noexcept
-    {
-        return data_.end();
-    }
-    const_iterator end() const noexcept
-    {
-        return data_.end();
-    }
-    value_type *data() noexcept
-    {
-        return data_.data();
-    }
-    const value_type *data() const noexcept
-    {
-        return data_.data();
-    }
-
-    constexpr size_type size() const noexcept
-    {
-        return data_.size();
-    }
-
-    reference operator[](Size n)
-    {
-        Assert(n >= 0 && n <size(), ExcIndexRange(n, 0, size()));
-        return data_[n];
-    }
-
-    const_reference operator[](Size n) const
-    {
-        Assert(n >= 0 && n < size(), ExcIndexRange(n, 0, size()));
-        return data_[n];
-    }
-    /**
-     * @name Printing info
-     */
-    ///@{
-    /**
-     * Prints the content of the vector on the LogStream @p out.
-     * Its use is intended mainly for testing and debugging purpose.
-     */
-private:
-    template <class A>
-    EnableIf<has_print_info<A>(0), void>
-    t_print_info(LogStream &out) const
-    {
-        for (auto &entry : data_)
-        {
-            entry.print_info(out);
-            out << std::endl;
-        }
-    }
-
-    template <class A>
-    EnableIf<(!has_print_info<A>(0)), void>
-    t_print_info(LogStream &out) const
-    {
-        out << "[ ";
-        for (auto &entry : data_)
-        {
-            out << entry << " ";
-        }
-        out << "]";
-    }
-
-public:
-    void print_info(LogStream &out) const
-    {
-        t_print_info<T>(out);
-    }
-    ///@}
-
-} ;
-#endif
 
 
 
 /**
- * @brief iga version on std::array.
+ * @brief iga version of std::array.
  * It can be used as a std::array but in Debug mode
  * it provides bounds checking.
  */
 template<class T,int N>
 class SafeSTLArray :
-		public SafeSTLContainer<std::array<T,N>>
+    public SafeSTLContainer<std::array<T,N>>
 {
 public :
     /** Inherit the constructors of the base class. */
@@ -181,7 +56,7 @@ public :
      */
     SafeSTLArray(const T &val)
     {
-    	std::array<T,N>::fill(val);
+        std::array<T,N>::fill(val);
     }
 
 } ;
@@ -189,4 +64,4 @@ public :
 IGA_NAMESPACE_CLOSE
 
 
-#endif
+#endif // SAFE_STL_ARRAY_H_
