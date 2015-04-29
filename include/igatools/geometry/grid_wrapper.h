@@ -23,7 +23,7 @@
 #define __GRID_WRAPPER_H_
 
 #include <igatools/base/config.h>
-#include <igatools/utils/array.h>
+#include <igatools/utils/safe_stl_array.h>
 #include <igatools/geometry/cartesian_grid.h>
 
 #include <array>
@@ -148,7 +148,7 @@ public:
      * Insert the @p knots_to_insert to the grid and to the object that are using the grid.
      * @note The @p knots_to_insert may contain multiple knot values in each direction.
      */
-    void insert_knots(special_array<vector<Real>,GridType::dim> &knots_to_insert);
+    void insert_knots(SafeSTLArray<vector<Real>,GridType::dim> &knots_to_insert);
     ///@}
 
 #if 0

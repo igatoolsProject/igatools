@@ -435,7 +435,7 @@ public:
      * @ingroup h_refinement
      */
     void rebuild_after_insert_knots(
-        const special_array<vector<Real>,dim> &knots_to_insert,
+        const SafeSTLArray<vector<Real>,dim> &knots_to_insert,
         const CartesianGrid<dim> &old_grid);
 
     void create_connection_for_insert_knots(std::shared_ptr<SplineSpace<dim,range,rank>> space);

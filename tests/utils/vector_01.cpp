@@ -28,7 +28,7 @@
 #include "../tests.h"
 
 #include <igatools/utils/vector.h>
-#include <igatools/utils/array.h>
+#include <igatools/utils/safe_stl_array.h>
 
 using namespace iga;
 
@@ -42,10 +42,10 @@ void vector_print_info()
 
 void array_print_info()
 {
-    special_array<Real, 5> arr;
+    SafeSTLArray<Real, 5> arr;
     arr.print_info(out);
     out<< endl;
-    // special_array<int, 3> a {1,2,3};
+    // SafeSTLArray<int, 3> a {1,2,3};
     // for (auto e : a)
     // out << e << endl;
 

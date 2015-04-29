@@ -619,7 +619,7 @@ refine_directions(
     const std::array<Size,dim_> &n_subdivisions)
 {
     //-------------------------------------------------------------
-    special_array<vector<Real>,dim_> knots_to_insert;
+    SafeSTLArray<vector<Real>,dim_> knots_to_insert;
     for (const auto dir : Topology::active_directions)
     {
         if (refinement_directions[dir])
@@ -991,7 +991,7 @@ test_if_element_has_property(const Index elem_flat_id, const std::string &proper
 template <int dim_>
 void
 CartesianGrid<dim_>::
-insert_knots(special_array<vector<Real>,dim_> &knots_to_insert)
+insert_knots(SafeSTLArray<vector<Real>,dim_> &knots_to_insert)
 {
     //----------------------------------------------------------------------------------
     // make a copy of the grid before the refinement

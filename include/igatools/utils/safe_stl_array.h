@@ -22,18 +22,18 @@
 #define ARRAY_H_
 
 #include <igatools/base/config.h>
-#include <igatools/base/print_info_utils.h>
+#include <igatools/utils/safe_stl_container.h>
 
 #include <array>
 
 IGA_NAMESPACE_OPEN
-
+#if 0
 /**
  * @brief iga version on std::array. It can be used as a std::array but in Debug mode
  * it provides bounds checking.
  */
 template<class T, Size N>
-class special_array
+class SafeSTLArray
 {
 private:
     using base_t = std::array<T, N>;
@@ -46,9 +46,9 @@ public:
     using const_iterator = typename std::array<T, N>::const_iterator;
     using value_type = typename std::array<T, N>::value_type;
 
-    special_array() = default;
+    SafeSTLArray() = default;
 
-    special_array(const T &val)
+    SafeSTLArray(const T &val)
     {
         data_.fill(val);
     }
@@ -56,7 +56,7 @@ public:
     /**
      * Constructor using a std::array
      */
-    special_array(const base_t &data)
+    SafeSTLArray(const base_t &data)
         :
         data_(data)
     {};
@@ -64,7 +64,7 @@ public:
     /**
      * Initializer-list constructor.
      */
-    constexpr special_array(const std::initializer_list<T> &list)
+    constexpr SafeSTLArray(const std::initializer_list<T> &list)
         :
         data_(list)
     {};
@@ -149,6 +149,40 @@ public:
         t_print_info<T>(out);
     }
     ///@}
+
+} ;
+#endif
+
+
+
+/**
+ * @brief iga version on std::array.
+ * It can be used as a std::array but in Debug mode
+ * it provides bounds checking.
+ */
+template<class T,int N>
+class SafeSTLArray :
+		public SafeSTLContainer<std::array<T,N>>
+{
+public :
+    /** Inherit the constructors of the base class. */
+    using SafeSTLContainer<std::array<T,N>>::SafeSTLContainer;
+
+    /**
+     * Default Constructor. It fills the <tt>N</tt> entries of the array with <tt>N</tt> copies
+     * of the default-construced object of type <tt>T</tt>.
+     */
+    SafeSTLArray() {};
+
+
+    /**
+     * Constructor. It fills the <tt>N</tt> entries of the array with <tt>N</tt> copies
+     * of the input argument <tt>val</tt>.
+     */
+    SafeSTLArray(const T &val)
+    {
+    	std::array<T,N>::fill(val);
+    }
 
 } ;
 

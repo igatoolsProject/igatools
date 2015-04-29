@@ -381,7 +381,7 @@ template<int dim_, int range_, int rank_>
 void
 BSplineSpace<dim_, range_, rank_>::
 rebuild_after_insert_knots(
-    const special_array<vector<Real>,dim> &knots_to_insert,
+    const SafeSTLArray<vector<Real>,dim> &knots_to_insert,
     const CartesianGrid<dim> &old_grid)
 {
     this->ref_space_previous_refinement_ =

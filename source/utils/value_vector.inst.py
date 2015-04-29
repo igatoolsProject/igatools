@@ -19,12 +19,12 @@
 #-+--------------------------------------------------------------------
 
 from init_instantiation_data import *
-include_files = ['utils/array.h']
+include_files = ['utils/safe_stl_array.h']
 data = Instantiation(include_files)
 f = data.file_output
 inst = data.inst
 
-normals = ['special_array<Points<%d>, %d>' %(x.dim, x.codim) for x in inst.all_mapping_dims]
+normals = ['SafeSTLArray<Points<%d>, %d>' %(x.dim, x.codim) for x in inst.all_mapping_dims]
 curvatures = ['vector<Real>']    
 value_vectors=['ValueVector<Real>']
 

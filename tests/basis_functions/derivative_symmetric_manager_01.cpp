@@ -29,7 +29,7 @@
 #include "../tests.h"
 
 #include <igatools/utils/vector.h>
-#include <igatools/utils/array.h>
+#include <igatools/utils/safe_stl_array.h>
 #include <igatools/utils/tensor_index.h>
 #include <igatools/base/array_utils.h>
 
@@ -135,11 +135,11 @@ public:
         copy_indices.print_info(out);
         out.end_item();
     }
-    special_array<TensorIndex<dim>, num_entries_eval> univariate_order;
+    SafeSTLArray<TensorIndex<dim>, num_entries_eval> univariate_order;
 
-    special_array<TensorIndex<order>, num_entries_eval> eval_indices;
+    SafeSTLArray<TensorIndex<order>, num_entries_eval> eval_indices;
 
-    special_array<vector<TensorIndex<order>>, num_entries_eval> copy_indices;
+    SafeSTLArray<vector<TensorIndex<order>>, num_entries_eval> copy_indices;
 
 };
 

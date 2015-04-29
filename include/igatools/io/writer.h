@@ -28,7 +28,7 @@
 #include <igatools/base/quadrature.h>
 #include <igatools/base/function_element.h>
 
-#include <igatools/utils/array.h>
+#include <igatools/utils/safe_stl_array.h>
 
 #include <string>
 
@@ -308,27 +308,27 @@ private:
 
 
     void fill_points_and_connectivity(
-        vector<vector<special_array<T,3> > > &points_in_iga_elements,
-        vector<vector<special_array<int,n_vertices_per_vtk_element_> > >
+        vector<vector<SafeSTLArray<T,3> > > &points_in_iga_elements,
+        vector<vector<SafeSTLArray<int,n_vertices_per_vtk_element_> > >
         &vtk_elements_connectivity) const;
 
     void get_subelements(
         const typename MapFunction<dim,dim+codim>::ElementAccessor &elem,
-        vector< special_array<int,n_vertices_per_vtk_element_> > &vtk_elements_connectivity,
-        vector< special_array<T,3> > &points_phys_iga_element) const;
+        vector< SafeSTLArray<int,n_vertices_per_vtk_element_> > &vtk_elements_connectivity,
+        vector< SafeSTLArray<T,3> > &points_phys_iga_element) const;
 
 
 
     template<class Out>
     void save_ascii(Out &file,
-                    const vector<vector<special_array<T,3> > > &points_in_iga_elements,
-                    const vector<vector<special_array<int,n_vertices_per_vtk_element_> > >
+                    const vector<vector<SafeSTLArray<T,3> > > &points_in_iga_elements,
+                    const vector<vector<SafeSTLArray<int,n_vertices_per_vtk_element_> > >
                     &vtk_elements_connectivity) const;
 
 
     void save_appended(const std::string &filename,
-                       const vector<vector<special_array<T,3> > > &points_in_iga_elements,
-                       const vector<vector<special_array< int,n_vertices_per_vtk_element_> > >
+                       const vector<vector<SafeSTLArray<T,3> > > &points_in_iga_elements,
+                       const vector<vector<SafeSTLArray< int,n_vertices_per_vtk_element_> > >
                        &vtk_elements_connectivity) const;
 
 

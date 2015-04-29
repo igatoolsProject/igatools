@@ -25,7 +25,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/utils/multi_array.h>
-#include <igatools/utils/array.h>
+#include <igatools/utils/safe_stl_array.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -45,7 +45,7 @@ IGA_NAMESPACE_OPEN
  *
  */
 template< class T, int dim, int rank >
-class StaticMultiArray : public MultiArray<special_array<T,constexpr_pow(dim,rank)>,rank>
+class StaticMultiArray : public MultiArray<SafeSTLArray<T,constexpr_pow(dim,rank)>,rank>
 {
 
 public:
@@ -116,7 +116,8 @@ public:
 private:
 
     /** Type of the base class. */
-    using base_t = MultiArray<special_array<T,n_entries>,rank>;
+    using base_t = MultiArray<SafeSTLArray<T,n_entries>,rank>;
+
 };
 
 IGA_NAMESPACE_CLOSE

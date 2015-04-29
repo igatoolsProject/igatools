@@ -24,7 +24,7 @@
 #include <igatools/base/config.h>
 #include <igatools/base/tensor.h>
 #include <igatools/base/logstream.h>
-#include <igatools/utils/array.h>
+#include <igatools/utils/safe_stl_array.h>
 #include <igatools/utils/cartesian_product_array.h>
 #include <igatools/utils/dynamic_multi_array.h>
 #include <igatools/geometry/unit_element.h>
@@ -545,7 +545,7 @@ private:
     /** Type for the insert_knots signal. */
     using signal_insert_knots_t =
         boost::signals2::signal<
-        void (const special_array<vector<Real>,dim_> &new_knots,const CartesianGrid<dim_> &old_grid)>;
+        void (const SafeSTLArray<vector<Real>,dim_> &new_knots,const CartesianGrid<dim_> &old_grid)>;
 
 public:
     /** Slot type for the refinement signal. */
@@ -609,7 +609,7 @@ public:
      * Insert the @p knots_to_insert to the grid and to the object that are using the grid.
      * @note The @p knots_to_insert may contain multiple knot values in each direction.
      */
-    void insert_knots(special_array<vector<Real>,dim_> &knots_to_insert);
+    void insert_knots(SafeSTLArray<vector<Real>,dim_> &knots_to_insert);
 
     /**
      * Returns the grid before the last refinement. If no refinement is

@@ -22,79 +22,28 @@
 #define VECTOR_H_
 
 #include <igatools/base/config.h>
-#include <igatools/base/print_info_utils.h>
+#include <igatools/utils/safe_stl_container.h>
 
 #include <vector>
 
 IGA_NAMESPACE_OPEN
 
+
+
 /**
  * @brief iga version on std::vector
+ * It can be used as a std::vector but in Debug mode
+ * it provides bounds checking.
  */
 template<class T>
-class vector : public std::vector<T>
+class vector :
+    public SafeSTLContainer<std::vector<T>>
 {
 public :
-    /** Inherith the constructors of the base class. */
-    using std::vector<T>::vector;
-
-    Size size() const noexcept
-    {
-        return std::vector<T>::size();
-    }
-
-    typename std::vector<T>::reference operator[](Size n)
-    {
-        Assert(n<size(), ExcIndexRange(n, 0, size()));
-        return std::vector<T>::operator[](n);
-    }
-
-    typename std::vector<T>::const_reference operator[](Size n) const
-    {
-        Assert(n<size(), ExcIndexRange(n, 0, size()));
-        return std::vector<T>::operator[](n);
-    }
-
-    /**
-     * @name Printing info
-     */
-    ///@{
-    /**
-     * Prints the content of the vector on the LogStream @p out.
-     * Its use is intended mainly for testing and debugging purpose.
-     */
-private:
-    template <class A>
-    EnableIf<has_print_info<A>(0), void>
-    t_print_info(LogStream &out) const
-    {
-        for (auto &entry : *this)
-        {
-            entry.print_info(out);
-            out << std::endl;
-        }
-    }
-
-    template <class A>
-    EnableIf<(!has_print_info<A>(0)), void>
-    t_print_info(LogStream &out) const
-    {
-        out << "[ ";
-        for (auto &entry : *this)
-        {
-            out << entry << " ";
-        }
-        out << "]";
-    }
-
-public:
-    void print_info(LogStream &out) const
-    {
-        t_print_info<T>(out);
-    }
-    ///@}
-
+    /** Inherit the constructors of the base class. */
+    using SafeSTLContainer<std::vector<T>>::SafeSTLContainer;
 } ;
+
 
 
 IGA_NAMESPACE_CLOSE

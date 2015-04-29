@@ -175,7 +175,7 @@ private:
     class GlobalCache
     {
     private:
-        using BasisValues1dTable = ComponentContainer<special_array<std::map<Index,BasisValues1d>,dim>>;
+        using BasisValues1dTable = ComponentContainer<SafeSTLArray<std::map<Index,BasisValues1d>,dim>>;
 
         /**
          * Values (and derivatives) of 1D basis precomputed in the initalized

@@ -155,8 +155,8 @@ Writer(const shared_ptr<const MapFunction<dim,dim+codim> > map,
 template<int dim, int codim, class T>
 void Writer<dim, codim, T>::
 fill_points_and_connectivity(
-    vector<vector<special_array<T,3> > > &points_in_iga_elements,
-    vector<vector<special_array<int,n_vertices_per_vtk_element_> > >
+    vector<vector<SafeSTLArray<T,3> > > &points_in_iga_elements,
+    vector<vector<SafeSTLArray<int,n_vertices_per_vtk_element_> > >
     &vtk_elements_connectivity) const
 {
     map_->reset(ValueFlags::value | ValueFlags::point, *quad_plot_);
@@ -187,8 +187,8 @@ template<int dim, int codim, class T>
 void Writer<dim, codim, T>::
 get_subelements(
     const typename MapFunction<dim,dim+codim>::ElementAccessor &elem,
-    vector< special_array<int,n_vertices_per_vtk_element_ > > &vtk_elements_connectivity,
-    vector< special_array<T,3> > &points_phys_iga_element) const
+    vector< SafeSTLArray<int,n_vertices_per_vtk_element_ > > &vtk_elements_connectivity,
+    vector< SafeSTLArray<T,3> > &points_phys_iga_element) const
 {
     Assert(Size(points_phys_iga_element.size()) == n_points_per_iga_element_,
            ExcDimensionMismatch(points_phys_iga_element.size(), n_points_per_iga_element_));
@@ -214,7 +214,7 @@ get_subelements(
 
     const int iga_element_id = elem.get_flat_index();
 
-    vector< special_array<int,dim> > delta_idx(n_vertices_per_vtk_element_);
+    vector< SafeSTLArray<int,dim> > delta_idx(n_vertices_per_vtk_element_);
 
     if (dim == 1)
     {
@@ -423,10 +423,10 @@ save(const string &filename, const string &format) const
            ExcMessage("Unsupported format."));
     //--------------------------------------------------------------------------
 
-    vector< vector< special_array<T,3> > >
-    points_in_iga_elements(n_iga_elements_, vector< special_array<T,3> >(n_points_per_iga_element_));
+    vector< vector< SafeSTLArray<T,3> > >
+    points_in_iga_elements(n_iga_elements_, vector< SafeSTLArray<T,3> >(n_points_per_iga_element_));
 
-    vector< vector< special_array< int, n_vertices_per_vtk_element_> > >
+    vector< vector< SafeSTLArray< int, n_vertices_per_vtk_element_> > >
     vtk_elements_connectivity(n_iga_elements_);
     for (auto &iga_elem_connectivity : vtk_elements_connectivity)
         iga_elem_connectivity.resize(n_vtk_elements_per_iga_element_);
@@ -455,8 +455,8 @@ template<int dim, int codim, class T>
 template<class Out>
 void Writer<dim, codim, T>::
 save_ascii(Out &file,
-           const vector< vector< special_array<T,3> > > &points_in_iga_elements,
-           const vector< vector< special_array<int,n_vertices_per_vtk_element_> > >
+           const vector< vector< SafeSTLArray<T,3> > > &points_in_iga_elements,
+           const vector< vector< SafeSTLArray<int,n_vertices_per_vtk_element_> > >
            &vtk_elements_connectivity) const
 {
     const string tab1("\t");
@@ -615,8 +615,8 @@ save_ascii(Out &file,
 template<int dim, int codim, class T>
 void Writer<dim, codim, T>::
 save_appended(const string &filename,
-              const vector< vector< special_array<T,3> > > &points_in_iga_elements,
-              const vector< vector< special_array< int,n_vertices_per_vtk_element_> > >
+              const vector< vector< SafeSTLArray<T,3> > > &points_in_iga_elements,
+              const vector< vector< SafeSTLArray< int,n_vertices_per_vtk_element_> > >
               &vtk_elements_connectivity) const
 {
     ofstream file(filename);
@@ -856,10 +856,10 @@ save_appended(const string &filename,
 template<int dim, int codim, class T>
 void Writer<dim, codim, T>::print_info(LogStream &out) const
 {
-    vector< vector< special_array<T,3> > >
-    points_in_iga_elements(n_iga_elements_, vector< special_array<T,3> >(n_points_per_iga_element_));
+    vector< vector< SafeSTLArray<T,3> > >
+    points_in_iga_elements(n_iga_elements_, vector< SafeSTLArray<T,3> >(n_points_per_iga_element_));
 
-    vector< vector< special_array< int, n_vertices_per_vtk_element_> > >
+    vector< vector< SafeSTLArray< int, n_vertices_per_vtk_element_> > >
     vtk_elements_connectivity(n_iga_elements_);
     for (auto &iga_elem_connectivity : vtk_elements_connectivity)
         iga_elem_connectivity.resize(n_vtk_elements_per_iga_element_);

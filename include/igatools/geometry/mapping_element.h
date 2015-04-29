@@ -21,7 +21,7 @@
 #ifndef MAPPING_ELEMENT_H_
 #define MAPPING_ELEMENT_H_
 
-#include <igatools/utils/array.h>
+#include <igatools/utils/safe_stl_array.h>
 #include <igatools/geometry/mapping.h>
 #include <igatools/base/function_element.h>
 

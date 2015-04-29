@@ -132,7 +132,7 @@ template<int dim, int range, int rank>
 void
 SplineSpace<dim, range, rank>::
 rebuild_after_insert_knots(
-    const special_array<vector<Real>,dim> &knots_to_insert,
+    const SafeSTLArray<vector<Real>,dim> &knots_to_insert,
     const CartesianGrid<dim> &old_grid)
 {
     const auto refined_grid = this->get_grid();

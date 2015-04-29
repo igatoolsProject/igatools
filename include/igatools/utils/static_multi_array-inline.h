@@ -47,7 +47,7 @@ StaticMultiArray(const T &val)
     :
     StaticMultiArray<T,dim,rank>()
 {
-    const_cast<special_array<T,n_entries>&>(this->get_data()) = special_array<T,n_entries>(val);
+    const_cast<SafeSTLArray<T,n_entries>&>(this->get_data()) = SafeSTLArray<T,n_entries>(val);
 }
 
 #if 0
