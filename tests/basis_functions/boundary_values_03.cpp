@@ -124,7 +124,7 @@ int main()
 {
     {
         const int dim = 2;
-        TensorSize<dim> n_knots { arr::sequence<dim>(2)};
+        TensorSize<dim> n_knots { sequence<dim>(2)};
         do_test<dim, 1, 1>(2, n_knots);
     }
 //    do_test<2,1,1>(3);

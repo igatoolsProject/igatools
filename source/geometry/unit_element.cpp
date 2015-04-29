@@ -24,10 +24,10 @@
 IGA_NAMESPACE_OPEN
 
 template <int dim>
-std::array<Size, dim+1>
+SafeSTLArray<Size, dim+1>
 fill_skeleton_size()
 {
-    std::array<Size,dim+1> res;
+    SafeSTLArray<Size,dim+1> res;
     for (int k=0; k<dim+1; ++k)
         res[k] = skel_size(dim, k);
     return res;
@@ -39,12 +39,12 @@ const int
 UnitElement<dim_>::dim;
 
 template <int dim_>
-const std::array<Size, dim_>
+const SafeSTLArray<Size, dim_>
 UnitElement<dim_>::active_directions = sequence<dim_>();
 
 
 template <int dim_>
-const std::array<Size, dim_ + 1>
+const SafeSTLArray<Size, dim_ + 1>
 UnitElement<dim_>::sub_elements_size = fill_skeleton_size<dim_>();
 
 

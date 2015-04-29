@@ -91,9 +91,9 @@ int main()
     face_values(TensorSize<2>(3));
     face_values(TensorSize<3>(3));
 
-    face_values(TensorSize<1>(arr::sequence<1>(2)));
-    face_values(TensorSize<2>(arr::sequence<2>(2)));
-    face_values(TensorSize<3>(arr::sequence<3>(2)));
+    face_values(TensorSize<1>(sequence<1>(2)));
+    face_values(TensorSize<2>(sequence<2>(2)));
+    face_values(TensorSize<3>(sequence<3>(2)));
 
     return  0;
 }

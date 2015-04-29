@@ -49,7 +49,7 @@ void  non_uniform(const int n_pts)
 {
     OUTSTART
 
-    const TensorSize<dim> n_points(arr::sequence<dim>(n_pts));
+    const TensorSize<dim> n_points(sequence<dim>(n_pts));
     QUniform<dim> quad(n_points);
     quad.print_info(out);
 

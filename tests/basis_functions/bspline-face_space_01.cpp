@@ -66,9 +66,9 @@ void sub_ref_space(TensorSize<dim> n, const int degree = 1)
 int main()
 {
 
-    sub_ref_space<0,1>(TensorSize<1>(arr::sequence<1>(2)));
-    sub_ref_space<1,2>(TensorSize<2>(arr::sequence<2>(2)));
-    sub_ref_space<2,3>(TensorSize<3>(arr::sequence<3>(2)));
+    sub_ref_space<0,1>(TensorSize<1>(sequence<1>(2)));
+    sub_ref_space<1,2>(TensorSize<2>(sequence<2>(2)));
+    sub_ref_space<2,3>(TensorSize<3>(sequence<3>(2)));
 
     return  0;
 }

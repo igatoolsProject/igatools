@@ -1,5 +1,5 @@
 ========================================================================
-void ball_map(int, int, std::string, bool) [with int dim = 1; int sub_dim = 1; std::string = std::basic_string<char>]
+void ball_map(int, int, std::__cxx11::string, bool) [with int dim = 1; int sub_dim = 1; std::__cxx11::string = std::__cxx11::basic_string<char>]
 ========================================================================
 Element 0
    Sub element id:  0
@@ -31,7 +31,7 @@ Element 0
 ========================================================================
 
 ========================================================================
-void ball_map(int, int, std::string, bool) [with int dim = 2; int sub_dim = 1; std::string = std::basic_string<char>]
+void ball_map(int, int, std::__cxx11::string, bool) [with int dim = 2; int sub_dim = 1; std::__cxx11::string = std::__cxx11::basic_string<char>]
 ========================================================================
 Element 0
    Sub element id:  0
@@ -1116,7 +1116,7 @@ Element 3
 ========================================================================
 
 ========================================================================
-void ball_map(int, int, std::string, bool) [with int dim = 3; int sub_dim = 3; std::string = std::basic_string<char>]
+void ball_map(int, int, std::__cxx11::string, bool) [with int dim = 3; int sub_dim = 3; std::__cxx11::string = std::__cxx11::basic_string<char>]
 ========================================================================
 Element 0
    Sub element id:  0

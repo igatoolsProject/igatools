@@ -22,6 +22,7 @@
 #define __IGA_ARRAY_UTILS_H_
 
 #include <igatools/base/config.h>
+#include <igatools/utils/safe_stl_array.h>
 
 #include <array>
 #include <algorithm>
@@ -29,7 +30,7 @@
 
 IGA_NAMESPACE_OPEN
 
-
+#if 0
 /**
  * Constant expression sequence generation
  */
@@ -37,18 +38,28 @@ template <typename Type, Type ...Indices>
 constexpr
 auto
 make_index_array(std::integer_sequence<Type, Indices...>)
--> std::array<Type, sizeof...(Indices)>
+-> SafeSTLArray<Type, sizeof...(Indices)>
 {
-    return std::array<Type, sizeof...(Indices)>{Indices...};
+    return SafeSTLArray<Type, sizeof...(Indices)>(
+    std::array<Type, sizeof...(Indices)>{Indices...}
+    );
 }
+#endif
 
-template<Size N>
+
+/**
+ * Returns an array filled with the sequence of <tt>N</tt> integers numbers
+ * from <tt>init</tt> to <tt>init+N-1</tt>.
+ */
+template<int N>
 constexpr
 auto
-sequence()
--> std::array<Size, N>
+sequence(const int init = 0)
+-> SafeSTLArray<int, N>
 {
-    return make_index_array(std::make_integer_sequence<Size, N>());
+    SafeSTLArray<int, N> seq;
+    std::iota(seq.begin(),seq.end(),init);
+    return seq;
 }
 
 
@@ -63,7 +74,7 @@ filled_array(const T &v)
     return res;
 }
 
-
+#if 0
 namespace arr
 {
 /**
@@ -79,6 +90,7 @@ sequence(const int init = 0)
     return res;
 }
 }
+#endif
 
 IGA_NAMESPACE_CLOSE
 

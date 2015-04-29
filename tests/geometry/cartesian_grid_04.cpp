@@ -62,9 +62,9 @@ int main()
 {
     out.depth_console(10);
 
-    get_subgrid<1>(TensorSize<1>(arr::sequence<1>(2)));
-    get_subgrid<2>(TensorSize<2>(arr::sequence<2>(2)));
-    get_subgrid<3>(TensorSize<3>(arr::sequence<3>(2)));
+    get_subgrid<1>(TensorSize<1>(sequence<1>(2)));
+    get_subgrid<2>(TensorSize<2>(sequence<2>(2)));
+    get_subgrid<3>(TensorSize<3>(sequence<3>(2)));
 
     return  0;
 }

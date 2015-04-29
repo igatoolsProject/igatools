@@ -213,7 +213,7 @@ vector<TensorIndex<k>> tensor_range(TensorIndex<k> first, TensorIndex<k> last)
 {
     Assert(first <= last, ExcMessage("first bigger than last"));
     vector<TensorIndex<k>> result;
-    TensorIndex<k-1> ind(arr::sequence<k-1>());
+    TensorIndex<k-1> ind(sequence<k-1>());
     auto vec = tensor_range<k-1>(first.get_sub_tensor(ind), last.get_sub_tensor(ind));
 
     for (int i=first[k-1]; i<last[k-1]; ++i)

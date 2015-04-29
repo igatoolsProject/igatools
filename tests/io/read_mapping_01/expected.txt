@@ -1,5 +1,5 @@
 ========================================================================
-void run_test(std::string&) [with int dim = 1; std::string = std::basic_string<char>]
+void run_test(std::__cxx11::string&) [with int dim = 1; std::__cxx11::string = std::__cxx11::basic_string<char>]
 ========================================================================
 IgFunction infos:
    Reference space info:
@@ -108,7 +108,7 @@ IgFunction infos:
    ========================================================================
    
    ========================================================================
-   void run_test(std::string&) [with int dim = 2; std::string = std::basic_string<char>]
+   void run_test(std::__cxx11::string&) [with int dim = 2; std::__cxx11::string = std::__cxx11::basic_string<char>]
    ========================================================================
    IgFunction infos:
       Reference space info:
@@ -288,7 +288,7 @@ IgFunction infos:
       ========================================================================
       
       ========================================================================
-      void run_test(std::string&) [with int dim = 3; std::string = std::basic_string<char>]
+      void run_test(std::__cxx11::string&) [with int dim = 3; std::__cxx11::string = std::__cxx11::basic_string<char>]
       ========================================================================
       IgFunction infos:
          Reference space info:

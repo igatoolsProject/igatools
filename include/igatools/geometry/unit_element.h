@@ -24,6 +24,7 @@
 #include <igatools/base/config.h>
 #include <igatools/base/tensor.h>
 #include <igatools/base/array_utils.h>
+#include <igatools/utils/safe_stl_array.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -38,10 +39,10 @@ constexpr int skel_size(int dim, int k)
 
 template <int dim, int k>
 EnableIf< (dim==0) || (k<0),
-          std::array<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)>>
+          SafeSTLArray<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)>>
                   fill_cube_elements()
 {
-    std::array<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)> res;
+    SafeSTLArray<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)> res;
     return res;
 }
 
@@ -49,10 +50,10 @@ EnableIf< (dim==0) || (k<0),
 
 template <int dim, int k>
 EnableIf< (dim==k) && (k>0),
-          std::array<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)>>
+          SafeSTLArray<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)>>
                   fill_cube_elements()
 {
-    std::array<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)> res;
+    SafeSTLArray<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)> res;
     res[0].active_directions = sequence<k>();
     return res;
 }
@@ -60,10 +61,10 @@ EnableIf< (dim==k) && (k>0),
 
 template <int dim, int k>
 EnableIf< (dim>k)  &&(k>=0),
-          std::array<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)>>
+          SafeSTLArray<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)>>
                   fill_cube_elements()
 {
-    std::array<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)> elements;
+    SafeSTLArray<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)> elements;
 
     auto sub_elems_1 = fill_cube_elements<dim-1, k>();
     auto sub_elems_0 = fill_cube_elements<dim-1, k-1>();
@@ -161,14 +162,14 @@ struct UnitElement
        \endcode
      *
      */
-    static const std::array<Size,dim_> active_directions;
+    static const SafeSTLArray<Size,dim_> active_directions;
 
 
     /**
      * Number of elements of dimension k=0,...,dim in the
      * hyper-cube of dimension dim
      */
-    static const std::array<Size, dim_ + 1> sub_elements_size;
+    static const SafeSTLArray<Size, dim_ + 1> sub_elements_size;
 
     /**
      * Element of dimension <tt>k</tt> in a cube of dimension <tt>dim</tt>.
@@ -178,9 +179,9 @@ struct UnitElement
     {
         SubElement() = default;
 
-        std::array<Size, dim_ - k> constant_directions;
-        std::array<Size, dim_ - k> constant_values;
-        std::array<Size, k>        active_directions;
+        SafeSTLArray<Size, dim_ - k> constant_directions;
+        SafeSTLArray<Size, dim_ - k> constant_values;
+        SafeSTLArray<Size, k>        active_directions;
     };
 
     /**
@@ -199,12 +200,11 @@ struct UnitElement
     template<int k>
     static const SubElement<k> &get_elem(const int j)
     {
-        //TODO: put assetion on j in proper range
         return (std::get<k>(all_elems)[j]);
     }
 
     template<int k>
-    static constexpr std::array<Index,num_elem<k>()>
+    static constexpr SafeSTLArray<Index,num_elem<k>()>
     elems_ids()
     {
         return sequence<num_elem<k>()>();

@@ -27,14 +27,8 @@
 #include <igatools/base/cache_status.h>
 #include <igatools/base/flags_handler.h>
 
-//#include <igatools/base/function.h>
-
-//#include <igatools/base/quadrature.h>
-
 #include <igatools/utils/value_vector.h>
 #include <igatools/utils/value_table.h>
-
-
 
 #include <boost/fusion/include/map.hpp>
 #include <boost/fusion/include/map_fwd.hpp>
@@ -59,8 +53,8 @@ template<class ValuesCache, int dim, std::size_t... I>
 auto
 tuple_of_caches(std::index_sequence<I...>)
 {
-    return boost::fusion::map<boost::fusion::pair<Topology<(dim>I) ? dim-I : 0>,std::array<ValuesCache,UnitElement<dim>::template num_elem<(dim>I) ? dim-I : 0>()>> ...>(
-               boost::fusion::pair<Topology<(dim>I) ? dim-I : 0>,std::array<ValuesCache,UnitElement<dim>::template num_elem<(dim>I) ? dim-I : 0>()>>() ...);
+    return boost::fusion::map<boost::fusion::pair<Topology<(dim>I) ? dim-I : 0>,SafeSTLArray<ValuesCache,UnitElement<dim>::template num_elem<(dim>I) ? dim-I : 0>()>> ...>(
+               boost::fusion::pair<Topology<(dim>I) ? dim-I : 0>,SafeSTLArray<ValuesCache,UnitElement<dim>::template num_elem<(dim>I) ? dim-I : 0>()>>() ...);
 }
 
 
