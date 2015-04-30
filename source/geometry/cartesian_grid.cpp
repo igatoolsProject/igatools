@@ -156,7 +156,7 @@ CartesianGrid(const KnotCoordinates &knot_coordinates,
     :
     TensorSizedContainer<dim_>(TensorSize<dim_>(knot_coordinates.tensor_size()-1)),
     kind_(kind),
-    boundary_id_(filled_array<int,Topology::n_faces>(0)),
+    boundary_id_(0),
     knot_coordinates_(knot_coordinates)
 {
 #ifndef NDEBUG
@@ -192,7 +192,7 @@ create(const KnotCoordinates &knot_coordinates) -> shared_ptr<self_t>
 
 template<int dim_>
 CartesianGrid<dim_>::
-CartesianGrid(const std::array<vector<Real>,dim_> &knot_coordinates)
+CartesianGrid(const SafeSTLArray<vector<Real>,dim_> &knot_coordinates)
     :
     self_t(CartesianProductArray<Real,dim_>(knot_coordinates),
            Kind::direction_uniform)
@@ -203,9 +203,9 @@ CartesianGrid(const std::array<vector<Real>,dim_> &knot_coordinates)
 template<int dim_>
 auto
 CartesianGrid<dim_>::
-create(const std::array<vector<Real>,dim_> &knot_coordinates) -> shared_ptr<self_t>
+create(const SafeSTLArray<vector<Real>,dim_> &knot_coordinates) -> shared_ptr<self_t>
 {
-    return shared_ptr< self_t >(new self_t(knot_coordinates));
+    return shared_ptr<self_t>(new self_t(knot_coordinates));
 }
 
 template<int dim_>
@@ -615,8 +615,8 @@ template <int dim_>
 void
 CartesianGrid<dim_>::
 refine_directions(
-    const std::array<bool,dim_> &refinement_directions,
-    const std::array<Size,dim_> &n_subdivisions)
+    const SafeSTLArray<bool,dim_> &refinement_directions,
+    const SafeSTLArray<Size,dim_> &n_subdivisions)
 {
     //-------------------------------------------------------------
     SafeSTLArray<vector<Real>,dim_> knots_to_insert;
@@ -659,10 +659,10 @@ refine_direction(const int direction_id, const Size n_subdivisions)
     Assert(direction_id >= 0 && direction_id < dim_,
            ExcIndexRange(direction_id, 0, dim_));
 
-    std::array<bool,dim_> refinement_directions = filled_array<bool,dim_>(false);
+    SafeSTLArray<bool,dim_> refinement_directions(false);
     refinement_directions[direction_id] = true;
 
-    std::array<Size,dim_> n_subdiv;
+    SafeSTLArray<Size,dim_> n_subdiv;
     n_subdiv[direction_id] = n_subdivisions;
 
     this->refine_directions(refinement_directions,n_subdiv);
@@ -678,8 +678,8 @@ refine(const Size n_subdivisions)
     Assert(n_subdivisions >= 2, ExcLowerRange(n_subdivisions,2));
 
     this->refine_directions(
-        filled_array<bool,dim_>(true),
-        filled_array<Size,dim_>(n_subdivisions));
+        SafeSTLArray<bool,dim_>(true),
+        SafeSTLArray<Size,dim_>(n_subdivisions));
 }
 
 
@@ -734,7 +734,7 @@ template<int k>
 auto
 CartesianGrid<dim_>::
 get_sub_grid(const int sub_elem_id, InterGridMap<k> &elem_map) const
--> std::shared_ptr<CartesianGrid<k>>
+-> shared_ptr<CartesianGrid<k>>
 {
     auto &k_elem = UnitElement<dim_>::template get_elem<k>(sub_elem_id);
     const auto active_dirs = TensorIndex<k>(k_elem.active_directions);
@@ -835,7 +835,7 @@ find_elements_id_of_point(const Points<dim_> &point) const
     Assert(false,ExcMessage("This function is not tested at all!"));
     vector<Index> elements_id;
 
-    std::array<vector<int>,dim> ids;
+    SafeSTLArray<vector<int>,dim> ids;
 
     TensorSize<dim_> n_elems_dir;
     for (const auto dir : Topology::active_directions)

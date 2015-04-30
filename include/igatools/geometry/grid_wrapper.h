@@ -117,8 +117,8 @@ public:
      * @ingroup h_refinement
      */
     void refine_h_directions(
-        const std::array<bool,Topology::dim> &refinement_directions,
-        const std::array<Size,Topology::dim> &n_subdiv_directions);
+        const SafeSTLArray<bool,Topology::dim> &refinement_directions,
+        const SafeSTLArray<Size,Topology::dim> &n_subdiv_directions);
 
     /**
      * Perform a uniform h-refinement of the grid along the @p direction_id direction,

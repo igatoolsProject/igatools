@@ -121,7 +121,7 @@ build_cartesian_grid_union(
 
     //---------------------------------------------------------
     // getting the coordinates from the two grids and building the grid union
-    array<vector<Real>,dim> knots_union;
+    SafeSTLArray<vector<Real>,dim> knots_union;
     for (int i = 0 ; i < dim ; ++i)
     {
         const auto &coords_grid_1 = grid_1.get_knot_coordinates(i);

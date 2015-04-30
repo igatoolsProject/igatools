@@ -32,8 +32,7 @@
 #include <igatools/geometry/cartesian_grid_iterator.h>
 #include <igatools/base/properties_id_container.h>
 
-// TODO (pauletti, Oct 9, 2014): should we use iga array
-#include <array>
+
 #include <memory>
 #include <map>
 #include <set>
@@ -236,7 +235,7 @@ protected:
 
     /**
      * Construct a cartesian grid where the knot coordinate in each
-     * direction is provided as std::array of vector<Real>.
+     * direction is provided as SafeSTLArray of vector<Real>.
      *
      * The knot coordinate in each direction must be sorted and without
      * repetition.
@@ -244,7 +243,7 @@ protected:
      * is perform and if not satistified an exception is raised.
      */
     explicit
-    CartesianGrid(const std::array<vector<Real>,dim_> &knot_coordinates);
+    CartesianGrid(const SafeSTLArray<vector<Real>,dim_> &knot_coordinates);
 
 public:
     /**
@@ -296,7 +295,7 @@ public:
 
     /**
      * Construct a cartesian grid where the knot coordinate in each
-     * direction is provided as std::array of vector<Real>.
+     * direction is provided as SafeSTLArray of vector<Real>.
      *
      * The knot coordinate in each direction must be sorted and without
      * repetition.
@@ -305,7 +304,7 @@ public:
      * is perform and if not satisfied an exception is raised.
      */
     static std::shared_ptr<self_t>
-    create(const std::array<vector<Real>,dim_> &knot_coordinates);
+    create(const SafeSTLArray<vector<Real>,dim_> &knot_coordinates);
 
     static std::shared_ptr<self_t>
     create(const BBox<dim_> &end_points, const Size n_knots);
@@ -467,7 +466,7 @@ public:
     void set_boundary_id(const int face, const boundary_id id);
 
     template<int sub_dim>
-    using BoundaryNormal = std::array<Points<dim_>, dim_-sub_dim>;
+    using BoundaryNormal = SafeSTLArray<Points<dim_>, dim_-sub_dim>;
 
     /**
      * Returns the outward pointing
@@ -540,7 +539,7 @@ private:
     /** Type for the refinement signal. */
     using signal_refine_t =
         boost::signals2::signal<
-        void (const std::array<bool,dim_> &,const CartesianGrid<dim_> &)>;
+        void (const SafeSTLArray<bool,dim_> &,const CartesianGrid<dim_> &)>;
 
     /** Type for the insert_knots signal. */
     using signal_insert_knots_t =
@@ -582,8 +581,8 @@ public:
      *  then the corresponding value <tt>n_subdivisions[i]</tt> will be ignored.
      */
     void refine_directions(
-        const std::array<bool,dim_> &refinement_directions,
-        const std::array<Size,dim_> &n_subdivisions);
+        const SafeSTLArray<bool,dim_> &refinement_directions,
+        const SafeSTLArray<Size,dim_> &n_subdivisions);
 
     /**
      * Refine the cartesian grid and the objects connected to it (if any),
@@ -623,7 +622,7 @@ private:
     Kind kind_ = Kind::non_uniform;
 
     /** Boundary ids, one id per face */
-    std::array<boundary_id, UnitElement<dim_>::template num_elem<dim_-1>()> boundary_id_;
+    SafeSTLArray<boundary_id, UnitElement<dim_>::template num_elem<dim_-1>()> boundary_id_;
 
     /**
      *  Knot coordinates along each coordinate direction.
