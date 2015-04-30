@@ -97,17 +97,15 @@ space_to_pf_flag(const ValueFlags flags, ValueFlags &map_flags, TransformationFl
 
 
 
-    TransformationFlags t_flags;
+    transf_flags = TransformationFlags::tran_none;
     if (contains(flags , ValueFlags::value))
-        t_flags |= TransformationFlags::tran_value;
+        transf_flags |= TransformationFlags::tran_value;
 
     if (contains(flags , ValueFlags::gradient))
-        t_flags |= TransformationFlags::tran_gradient;
+        transf_flags |= TransformationFlags::tran_gradient;
 
     if (contains(flags , ValueFlags::hessian))
-        t_flags |= TransformationFlags::tran_hessian;
-
-    transf_flags = t_flags;
+        transf_flags |= TransformationFlags::tran_hessian;
 }
 
 };

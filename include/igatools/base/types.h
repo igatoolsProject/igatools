@@ -171,14 +171,17 @@ const std::array<ValueFlags, max_der> DerivativeFlags =
 
 enum class TransformationFlags : std::int64_t
 {
+    /** transform nothing */
+    tran_none    =    1L << 0,
+
     /** transform the values of basis functions */
-    tran_value    =    1L << 22,
+    tran_value    =    1L << 1,
 
     /** transform the gradients of basis functions */
-    tran_gradient =    1L << 23,
+    tran_gradient =    1L << 2,
 
     /** transform the second derivatives of basis functions */
-    tran_hessian  =    1L << 24
+    tran_hessian  =    1L << 3
 };
 
 /**

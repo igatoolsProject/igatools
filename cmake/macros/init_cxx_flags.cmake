@@ -25,7 +25,7 @@ macro(init_cxx_flags)
   set(CMAKE_CXX_FLAGS                "-Wall")
   set(CMAKE_CXX_FLAGS_DEBUG          "-Wall -O0 -g -ftemplate-backtrace-limit=0")
   set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
-  set(CMAKE_CXX_FLAGS_RELEASE        "-O3 -mtune=native -DNDEBUG")
+  set(CMAKE_CXX_FLAGS_RELEASE        "-O3 -mtune=native -DNDEBUG -floop-parallelize-all -ftree-vectorize -fpeel-loops -mrtd")
   set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -mtune=native -DNDEBUG -g -p -pg")
 
   # Compiler-specific C++14 activation.

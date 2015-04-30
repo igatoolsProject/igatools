@@ -104,7 +104,7 @@ find_boost()
 option(REAL_IS_LONG_DOUBLE "Enable quadruple precision" OFF)
 option(use_other_templates "Enable a mechanism to use uninstantiated templates" ON)
 option(MPATCH "Enable multipatch features of the library (experimental)" OFF)
-option(NURBS "Enable NURBS support" OFF)
+option(NURBS "Enable NURBS support" ON)
 option(HIERARCHICAL "Enable Hierarchical splines support (experimental)" OFF)
 option(submit_test "Allow test submition" OFF)
 
