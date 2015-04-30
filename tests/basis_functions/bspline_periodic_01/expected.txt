@@ -11,7 +11,9 @@ Spline Space:
    Degrees:
       Raw componets: 
          Size: [ 1 ]  Weights: [1]
-      [ [1] ]
+         Entry id: 0
+         [ 1 ]
+      
       Components map: 
       [ 0 ]
       Active componets ids: 
@@ -27,7 +29,9 @@ Spline Space:
    Dimensionality Table:
       Raw componets: 
          Size: [ 1 ]  Weights: [1]
-      [ [ 4 ] ]
+         Entry id: 0
+         [ 4 ]
+      
       Components map: 
       [ 0 ]
       Active componets ids: 
@@ -74,7 +78,9 @@ Spline Space:
    Degrees:
       Raw componets: 
          Size: [ 1 ]  Weights: [1]
-      [ [1,1] ]
+         Entry id: 0
+         [ 1 1 ]
+      
       Components map: 
       [ 0 ]
       Active componets ids: 
@@ -92,7 +98,9 @@ Spline Space:
    Dimensionality Table:
       Raw componets: 
          Size: [ 1 ]  Weights: [1]
-      [ [ 4 4 ] ]
+         Entry id: 0
+         [ 4 4 ]
+      
       Components map: 
       [ 0 ]
       Active componets ids: 
@@ -147,7 +155,9 @@ Spline Space:
    Degrees:
       Raw componets: 
          Size: [ 1 ]  Weights: [1]
-      [ [1,1,1] ]
+         Entry id: 0
+         [ 1 1 1 ]
+      
       Components map: 
       [ 0 ]
       Active componets ids: 
@@ -167,7 +177,9 @@ Spline Space:
    Dimensionality Table:
       Raw componets: 
          Size: [ 1 ]  Weights: [1]
-      [ [ 4 4 4 ] ]
+         Entry id: 0
+         [ 4 4 4 ]
+      
       Components map: 
       [ 0 ]
       Active componets ids: 
@@ -224,7 +236,11 @@ Spline Space:
    Degrees:
       Raw componets: 
          Size: [ 2 ]  Weights: [2]
-      [ [1] [0] ]
+         Entry id: 0
+         [ 1 ]
+         Entry id: 1
+         [ 0 ]
+      
       Components map: 
       [ 0 0 ]
       Active componets ids: 
@@ -243,7 +259,11 @@ Spline Space:
    Dimensionality Table:
       Raw componets: 
          Size: [ 2 ]  Weights: [2]
-      [ [ 4 ] [ 4 ] ]
+         Entry id: 0
+         [ 4 ]
+         Entry id: 1
+         [ 4 ]
+      
       Components map: 
       [ 0 1 ]
       Active componets ids: 
@@ -299,7 +319,11 @@ Spline Space:
    Degrees:
       Raw componets: 
          Size: [ 2 ]  Weights: [2]
-      [ [1,1] [0,0] ]
+         Entry id: 0
+         [ 1 1 ]
+         Entry id: 1
+         [ 0 0 ]
+      
       Components map: 
       [ 0 0 ]
       Active componets ids: 
@@ -322,7 +346,11 @@ Spline Space:
    Dimensionality Table:
       Raw componets: 
          Size: [ 2 ]  Weights: [2]
-      [ [ 4 4 ] [ 4 4 ] ]
+         Entry id: 0
+         [ 4 4 ]
+         Entry id: 1
+         [ 4 4 ]
+      
       Components map: 
       [ 0 1 ]
       Active componets ids: 

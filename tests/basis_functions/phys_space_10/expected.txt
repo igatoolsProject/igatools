@@ -7,23 +7,35 @@ Splines 1D Cache:
          Active Component ID: 0
             Direction : 0
                Interval ID: 0
+                  Entry id: 0
                   [2,2]((0.788675,0.211325),(0.211325,0.788675))
+                  Entry id: 1
                   [2,2]((-4.00000,-4.00000),(4.00000,4.00000))
+                  Entry id: 2
                   [2,2]((0,0),(0,0))
                
                Interval ID: 1
+                  Entry id: 0
                   [2,2]((0.788675,0.211325),(0.211325,0.788675))
+                  Entry id: 1
                   [2,2]((-4.00000,-4.00000),(4.00000,4.00000))
+                  Entry id: 2
                   [2,2]((0,0),(0,0))
                
                Interval ID: 2
+                  Entry id: 0
                   [2,2]((0.788675,0.211325),(0.211325,0.788675))
+                  Entry id: 1
                   [2,2]((-4.00000,-4.00000),(4.00000,4.00000))
+                  Entry id: 2
                   [2,2]((0,0),(0,0))
                
                Interval ID: 3
+                  Entry id: 0
                   [2,2]((0.788675,0.211325),(0.211325,0.788675))
+                  Entry id: 1
                   [2,2]((-4.00000,-4.00000),(4.00000,4.00000))
+                  Entry id: 2
                   [2,2]((0,0),(0,0))
                
             
@@ -219,7 +231,9 @@ Reference space:
                Fill flags:
                   fill = 1    filled = 1
                Data:
-               ValueVector (num_points=2) : [ [ 0.0528312 ]  [ 0.197169 ]  ]
+                  ValueVector (num_points=2) :
+                  [ [ 0.0528312 ]  [ 0.197169 ]  ]
+               
             
             W_Measure: (memory consumption: 42 bytes)
                Fill flags:
@@ -263,11 +277,12 @@ Reference space:
                Fill flags:
                   fill = 1    filled = 1
                Data:
-                   (num_functions=2,num_points=2) :
-                  Function 0
-                  [ 0.788675 ]  [ 0.211325 ]  
-                  Function 1
-                  [ 0.211325 ]  [ 0.788675 ]  
+                  ValueTable (num_functions=2,num_points=2) :
+                     Function 0
+                     [ 0.788675 ]  [ 0.211325 ]  
+                     Function 1
+                     [ 0.211325 ]  [ 0.788675 ]  
+                  
                
             
             Gradient: (memory consumption: 42 bytes)
@@ -382,7 +397,9 @@ Reference space:
                Fill flags:
                   fill = 1    filled = 1
                Data:
-               ValueVector (num_points=2) : [ [ 0.302831 ]  [ 0.447169 ]  ]
+                  ValueVector (num_points=2) :
+                  [ [ 0.302831 ]  [ 0.447169 ]  ]
+               
             
             W_Measure: (memory consumption: 42 bytes)
                Fill flags:
@@ -426,11 +443,12 @@ Reference space:
                Fill flags:
                   fill = 1    filled = 1
                Data:
-                   (num_functions=2,num_points=2) :
-                  Function 0
-                  [ 0.788675 ]  [ 0.211325 ]  
-                  Function 1
-                  [ 0.211325 ]  [ 0.788675 ]  
+                  ValueTable (num_functions=2,num_points=2) :
+                     Function 0
+                     [ 0.788675 ]  [ 0.211325 ]  
+                     Function 1
+                     [ 0.211325 ]  [ 0.788675 ]  
+                  
                
             
             Gradient: (memory consumption: 42 bytes)
@@ -545,7 +563,9 @@ Reference space:
                Fill flags:
                   fill = 1    filled = 1
                Data:
-               ValueVector (num_points=2) : [ [ 0.552831 ]  [ 0.697169 ]  ]
+                  ValueVector (num_points=2) :
+                  [ [ 0.552831 ]  [ 0.697169 ]  ]
+               
             
             W_Measure: (memory consumption: 42 bytes)
                Fill flags:
@@ -589,11 +609,12 @@ Reference space:
                Fill flags:
                   fill = 1    filled = 1
                Data:
-                   (num_functions=2,num_points=2) :
-                  Function 0
-                  [ 0.788675 ]  [ 0.211325 ]  
-                  Function 1
-                  [ 0.211325 ]  [ 0.788675 ]  
+                  ValueTable (num_functions=2,num_points=2) :
+                     Function 0
+                     [ 0.788675 ]  [ 0.211325 ]  
+                     Function 1
+                     [ 0.211325 ]  [ 0.788675 ]  
+                  
                
             
             Gradient: (memory consumption: 42 bytes)
@@ -708,7 +729,9 @@ Reference space:
                Fill flags:
                   fill = 1    filled = 1
                Data:
-               ValueVector (num_points=2) : [ [ 0.802831 ]  [ 0.947169 ]  ]
+                  ValueVector (num_points=2) :
+                  [ [ 0.802831 ]  [ 0.947169 ]  ]
+               
             
             W_Measure: (memory consumption: 42 bytes)
                Fill flags:
@@ -752,11 +775,12 @@ Reference space:
                Fill flags:
                   fill = 1    filled = 1
                Data:
-                   (num_functions=2,num_points=2) :
-                  Function 0
-                  [ 0.788675 ]  [ 0.211325 ]  
-                  Function 1
-                  [ 0.211325 ]  [ 0.788675 ]  
+                  ValueTable (num_functions=2,num_points=2) :
+                     Function 0
+                     [ 0.788675 ]  [ 0.211325 ]  
+                     Function 1
+                     [ 0.211325 ]  [ 0.788675 ]  
+                  
                
             
             Gradient: (memory consumption: 42 bytes)
@@ -866,25 +890,29 @@ Pushforward:
 ========================================================================
 void cache_get_elem_values(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1; int codim = 0]
 ========================================================================
- (num_functions=2,num_points=2) :
-Function 0
-[ 0.788675 ]  [ 0.211325 ]  
-Function 1
-[ 0.211325 ]  [ 0.788675 ]  
- (num_functions=2,num_points=2) :
-Function 0
-[ 0.788675 ]  [ 0.211325 ]  
-Function 1
-[ 0.211325 ]  [ 0.788675 ]  
- (num_functions=2,num_points=2) :
-Function 0
-[ 0.788675 ]  [ 0.211325 ]  
-Function 1
-[ 0.211325 ]  [ 0.788675 ]  
- (num_functions=2,num_points=2) :
-Function 0
-[ 0.788675 ]  [ 0.211325 ]  
-Function 1
-[ 0.211325 ]  [ 0.788675 ]  
+ValueTable (num_functions=2,num_points=2) :
+   Function 0
+   [ 0.788675 ]  [ 0.211325 ]  
+   Function 1
+   [ 0.211325 ]  [ 0.788675 ]  
+
+ValueTable (num_functions=2,num_points=2) :
+   Function 0
+   [ 0.788675 ]  [ 0.211325 ]  
+   Function 1
+   [ 0.211325 ]  [ 0.788675 ]  
+
+ValueTable (num_functions=2,num_points=2) :
+   Function 0
+   [ 0.788675 ]  [ 0.211325 ]  
+   Function 1
+   [ 0.211325 ]  [ 0.788675 ]  
+
+ValueTable (num_functions=2,num_points=2) :
+   Function 0
+   [ 0.788675 ]  [ 0.211325 ]  
+   Function 1
+   [ 0.211325 ]  [ 0.788675 ]  
+
 ========================================================================
 

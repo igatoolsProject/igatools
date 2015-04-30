@@ -1,7 +1,14 @@
 univariate derivative orders:
-[ [0,0] ]
+   Entry id: 0
+   [ 0 0 ]
+
 Assigment indices:
-[ [] ]
+   Entry id: 0
+   [ ]
+
 all equal indices indices:
-   [ [] ]
+   Entry id: 0
+      Entry id: 0
+      [ ]
+   
 

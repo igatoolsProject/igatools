@@ -163,8 +163,8 @@ print_info(LogStream &out) const
 {
     // TODO (pauletti, Sep 12, 2014): should just called the parent print_info
     const auto n_funcs = this->get_num_functions();
-    out << " (num_functions=" << n_funcs;
-    out << ",num_points=" << this->get_num_points() << ") :" << std::endl ;
+    out.begin_item("ValueTable (num_functions=" + std::to_string(n_funcs) + ",num_points=" +
+                   std::to_string(this->get_num_points()) + ") :");
 
     for (int iFunc = 0 ; iFunc < n_funcs ; ++iFunc)
     {
@@ -176,6 +176,7 @@ print_info(LogStream &out) const
             out << value << " " ;
         out.end_item();
     }
+    out.end_item();
 }
 
 

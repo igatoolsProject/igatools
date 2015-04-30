@@ -43,9 +43,9 @@ TensorIndex(const Size val) noexcept
 
 template <int rank>
 TensorIndex<rank>::
-TensorIndex(const std::array<int,rank> &arr) noexcept
+TensorIndex(const SafeSTLArray<Index,rank> &arr) noexcept
 :
-std::array<int,rank>::array(arr)
+SafeSTLArray<Index,rank>(arr)
 {
 #ifndef NDEBUG
     for (const auto &idx : (*this))
@@ -76,7 +76,7 @@ std::size_t
 TensorIndex<rank>::
 memory_consumption() const
 {
-    return sizeof(static_cast<const std::array<Index,rank> &>(*this));
+    return sizeof(static_cast<const SafeSTLArray<Index,rank> &>(*this));
 //      return rank * sizeof(Index);
 }
 
@@ -145,7 +145,8 @@ operator<<(LogStream &out, const TensorIndex<rank> &tensor_index)
 
 
 template<>
-vector<TensorIndex<1>> tensor_range(TensorIndex<1> first, TensorIndex<1> last)
+vector<TensorIndex<1>>
+                    tensor_range(TensorIndex<1> first, TensorIndex<1> last)
 {
     Assert(first <= last, ExcMessage("first bigger than last"));
     vector<TensorIndex<1>> result(last[0]-first[0]);
@@ -158,7 +159,8 @@ vector<TensorIndex<1>> tensor_range(TensorIndex<1> first, TensorIndex<1> last)
 
 
 template<>
-vector<TensorIndex<0>> tensor_range(TensorIndex<0> first, TensorIndex<0> last)
+vector<TensorIndex<0>>
+                    tensor_range(TensorIndex<0> first, TensorIndex<0> last)
 {
     Assert(false, ExcNotImplemented());
     vector<TensorIndex<0>> result;

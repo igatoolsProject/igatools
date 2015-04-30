@@ -14,7 +14,9 @@ BSpline Space:
       Degrees:
          Raw componets: 
             Size: [ 1 ]  Weights: [1]
-         [ [3] ]
+            Entry id: 0
+            [ 3 ]
+         
          Components map: 
          [ 0 ]
          Active componets ids: 
@@ -30,7 +32,9 @@ BSpline Space:
       Dimensionality Table:
          Raw componets: 
             Size: [ 1 ]  Weights: [1]
-         [ [ 7 ] ]
+            Entry id: 0
+            [ 7 ]
+         
          Components map: 
          [ 0 ]
          Active componets ids: 
@@ -76,7 +80,9 @@ Weight function[0] :
          Degrees:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [3] ]
+               Entry id: 0
+               [ 3 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -92,7 +98,9 @@ Weight function[0] :
          Dimensionality Table:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [ 7 ] ]
+               Entry id: 0
+               [ 7 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -156,7 +164,11 @@ BSpline Space:
       Degrees:
          Raw componets: 
             Size: [ 2 ]  Weights: [2]
-         [ [3] [0] ]
+            Entry id: 0
+            [ 3 ]
+            Entry id: 1
+            [ 0 ]
+         
          Components map: 
          [ 0 0 ]
          Active componets ids: 
@@ -175,7 +187,11 @@ BSpline Space:
       Dimensionality Table:
          Raw componets: 
             Size: [ 2 ]  Weights: [2]
-         [ [ 7 ] [ 7 ] ]
+            Entry id: 0
+            [ 7 ]
+            Entry id: 1
+            [ 7 ]
+         
          Components map: 
          [ 0 1 ]
          Active componets ids: 
@@ -229,7 +245,9 @@ Weight function[0] :
          Degrees:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [3] ]
+               Entry id: 0
+               [ 3 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -245,7 +263,9 @@ Weight function[0] :
          Dimensionality Table:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [ 7 ] ]
+               Entry id: 0
+               [ 7 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -305,7 +325,9 @@ Weight function[1] :
          Degrees:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [3] ]
+               Entry id: 0
+               [ 3 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -321,7 +343,9 @@ Weight function[1] :
          Dimensionality Table:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [ 7 ] ]
+               Entry id: 0
+               [ 7 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -385,7 +409,13 @@ BSpline Space:
       Degrees:
          Raw componets: 
             Size: [ 3 ]  Weights: [3]
-         [ [3] [0] [0] ]
+            Entry id: 0
+            [ 3 ]
+            Entry id: 1
+            [ 0 ]
+            Entry id: 2
+            [ 0 ]
+         
          Components map: 
          [ 0 0 0 ]
          Active componets ids: 
@@ -407,7 +437,13 @@ BSpline Space:
       Dimensionality Table:
          Raw componets: 
             Size: [ 3 ]  Weights: [3]
-         [ [ 7 ] [ 7 ] [ 7 ] ]
+            Entry id: 0
+            [ 7 ]
+            Entry id: 1
+            [ 7 ]
+            Entry id: 2
+            [ 7 ]
+         
          Components map: 
          [ 0 1 2 ]
          Active componets ids: 
@@ -469,7 +505,9 @@ Weight function[0] :
          Degrees:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [3] ]
+               Entry id: 0
+               [ 3 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -485,7 +523,9 @@ Weight function[0] :
          Dimensionality Table:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [ 7 ] ]
+               Entry id: 0
+               [ 7 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -545,7 +585,9 @@ Weight function[1] :
          Degrees:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [3] ]
+               Entry id: 0
+               [ 3 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -561,7 +603,9 @@ Weight function[1] :
          Dimensionality Table:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [ 7 ] ]
+               Entry id: 0
+               [ 7 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -621,7 +665,9 @@ Weight function[2] :
          Degrees:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [3] ]
+               Entry id: 0
+               [ 3 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -637,7 +683,9 @@ Weight function[2] :
          Dimensionality Table:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [ 7 ] ]
+               Entry id: 0
+               [ 7 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -703,7 +751,9 @@ BSpline Space:
       Degrees:
          Raw componets: 
             Size: [ 1 ]  Weights: [1]
-         [ [3,2] ]
+            Entry id: 0
+            [ 3 2 ]
+         
          Components map: 
          [ 0 ]
          Active componets ids: 
@@ -721,7 +771,9 @@ BSpline Space:
       Dimensionality Table:
          Raw componets: 
             Size: [ 1 ]  Weights: [1]
-         [ [ 7 5 ] ]
+            Entry id: 0
+            [ 7 5 ]
+         
          Components map: 
          [ 0 ]
          Active componets ids: 
@@ -773,7 +825,9 @@ Weight function[0] :
          Degrees:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [3,2] ]
+               Entry id: 0
+               [ 3 2 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -791,7 +845,9 @@ Weight function[0] :
          Dimensionality Table:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [ 7 5 ] ]
+               Entry id: 0
+               [ 7 5 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -889,7 +945,11 @@ BSpline Space:
       Degrees:
          Raw componets: 
             Size: [ 2 ]  Weights: [2]
-         [ [3,2] [0,0] ]
+            Entry id: 0
+            [ 3 2 ]
+            Entry id: 1
+            [ 0 0 ]
+         
          Components map: 
          [ 0 0 ]
          Active componets ids: 
@@ -912,7 +972,11 @@ BSpline Space:
       Dimensionality Table:
          Raw componets: 
             Size: [ 2 ]  Weights: [2]
-         [ [ 7 5 ] [ 7 5 ] ]
+            Entry id: 0
+            [ 7 5 ]
+            Entry id: 1
+            [ 7 5 ]
+         
          Components map: 
          [ 0 1 ]
          Active componets ids: 
@@ -976,7 +1040,9 @@ Weight function[0] :
          Degrees:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [3,2] ]
+               Entry id: 0
+               [ 3 2 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -994,7 +1060,9 @@ Weight function[0] :
          Dimensionality Table:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [ 7 5 ] ]
+               Entry id: 0
+               [ 7 5 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -1088,7 +1156,9 @@ Weight function[1] :
          Degrees:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [3,2] ]
+               Entry id: 0
+               [ 3 2 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -1106,7 +1176,9 @@ Weight function[1] :
          Dimensionality Table:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [ 7 5 ] ]
+               Entry id: 0
+               [ 7 5 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -1204,7 +1276,13 @@ BSpline Space:
       Degrees:
          Raw componets: 
             Size: [ 3 ]  Weights: [3]
-         [ [3,2] [0,0] [0,0] ]
+            Entry id: 0
+            [ 3 2 ]
+            Entry id: 1
+            [ 0 0 ]
+            Entry id: 2
+            [ 0 0 ]
+         
          Components map: 
          [ 0 0 0 ]
          Active componets ids: 
@@ -1232,7 +1310,13 @@ BSpline Space:
       Dimensionality Table:
          Raw componets: 
             Size: [ 3 ]  Weights: [3]
-         [ [ 7 5 ] [ 7 5 ] [ 7 5 ] ]
+            Entry id: 0
+            [ 7 5 ]
+            Entry id: 1
+            [ 7 5 ]
+            Entry id: 2
+            [ 7 5 ]
+         
          Components map: 
          [ 0 1 2 ]
          Active componets ids: 
@@ -1308,7 +1392,9 @@ Weight function[0] :
          Degrees:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [3,2] ]
+               Entry id: 0
+               [ 3 2 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -1326,7 +1412,9 @@ Weight function[0] :
          Dimensionality Table:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [ 7 5 ] ]
+               Entry id: 0
+               [ 7 5 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -1420,7 +1508,9 @@ Weight function[1] :
          Degrees:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [3,2] ]
+               Entry id: 0
+               [ 3 2 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -1438,7 +1528,9 @@ Weight function[1] :
          Dimensionality Table:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [ 7 5 ] ]
+               Entry id: 0
+               [ 7 5 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -1532,7 +1624,9 @@ Weight function[2] :
          Degrees:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [3,2] ]
+               Entry id: 0
+               [ 3 2 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -1550,7 +1644,9 @@ Weight function[2] :
          Dimensionality Table:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [ 7 5 ] ]
+               Entry id: 0
+               [ 7 5 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -1650,7 +1746,9 @@ BSpline Space:
       Degrees:
          Raw componets: 
             Size: [ 1 ]  Weights: [1]
-         [ [3,2,1] ]
+            Entry id: 0
+            [ 3 2 1 ]
+         
          Components map: 
          [ 0 ]
          Active componets ids: 
@@ -1670,7 +1768,9 @@ BSpline Space:
       Dimensionality Table:
          Raw componets: 
             Size: [ 1 ]  Weights: [1]
-         [ [ 7 5 3 ] ]
+            Entry id: 0
+            [ 7 5 3 ]
+         
          Components map: 
          [ 0 ]
          Active componets ids: 
@@ -1727,7 +1827,9 @@ Weight function[0] :
          Degrees:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [3,2,1] ]
+               Entry id: 0
+               [ 3 2 1 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -1747,7 +1849,9 @@ Weight function[0] :
          Dimensionality Table:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [ 7 5 3 ] ]
+               Entry id: 0
+               [ 7 5 3 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -1920,7 +2024,13 @@ BSpline Space:
       Degrees:
          Raw componets: 
             Size: [ 3 ]  Weights: [3]
-         [ [3,2,1] [0,0,0] [0,0,0] ]
+            Entry id: 0
+            [ 3 2 1 ]
+            Entry id: 1
+            [ 0 0 0 ]
+            Entry id: 2
+            [ 0 0 0 ]
+         
          Components map: 
          [ 0 0 0 ]
          Active componets ids: 
@@ -1954,7 +2064,13 @@ BSpline Space:
       Dimensionality Table:
          Raw componets: 
             Size: [ 3 ]  Weights: [3]
-         [ [ 7 5 3 ] [ 7 5 3 ] [ 7 5 3 ] ]
+            Entry id: 0
+            [ 7 5 3 ]
+            Entry id: 1
+            [ 7 5 3 ]
+            Entry id: 2
+            [ 7 5 3 ]
+         
          Components map: 
          [ 0 1 2 ]
          Active componets ids: 
@@ -2041,7 +2157,9 @@ Weight function[0] :
          Degrees:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [3,2,1] ]
+               Entry id: 0
+               [ 3 2 1 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -2061,7 +2179,9 @@ Weight function[0] :
          Dimensionality Table:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [ 7 5 3 ] ]
+               Entry id: 0
+               [ 7 5 3 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -2230,7 +2350,9 @@ Weight function[1] :
          Degrees:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [3,2,1] ]
+               Entry id: 0
+               [ 3 2 1 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -2250,7 +2372,9 @@ Weight function[1] :
          Dimensionality Table:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [ 7 5 3 ] ]
+               Entry id: 0
+               [ 7 5 3 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -2419,7 +2543,9 @@ Weight function[2] :
          Degrees:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [3,2,1] ]
+               Entry id: 0
+               [ 3 2 1 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 
@@ -2439,7 +2565,9 @@ Weight function[2] :
          Dimensionality Table:
             Raw componets: 
                Size: [ 1 ]  Weights: [1]
-            [ [ 7 5 3 ] ]
+               Entry id: 0
+               [ 7 5 3 ]
+            
             Components map: 
             [ 0 ]
             Active componets ids: 

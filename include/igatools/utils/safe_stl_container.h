@@ -81,10 +81,13 @@ private:
     EnableIf<has_print_info<A>(0), void>
     t_print_info(LogStream &out) const
     {
+        int entry_id = 0;
         for (auto &entry : *this)
         {
+            out.begin_item("Entry id: " + std::to_string(entry_id++));
             entry.print_info(out);
-            out << std::endl;
+            out.end_item();
+//            out << std::endl;
         }
     }
 

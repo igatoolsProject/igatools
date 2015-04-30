@@ -13,7 +13,13 @@ Reference space info:
       Degrees:
          Raw componets: 
             Size: [ 3 ]  Weights: [3]
-         [ [1,1] [0,0] [0,0] ]
+            Entry id: 0
+            [ 1 1 ]
+            Entry id: 1
+            [ 0 0 ]
+            Entry id: 2
+            [ 0 0 ]
+         
          Components map: 
          [ 0 0 0 ]
          Active componets ids: 
@@ -41,7 +47,13 @@ Reference space info:
       Dimensionality Table:
          Raw componets: 
             Size: [ 3 ]  Weights: [3]
-         [ [ 4 4 ] [ 4 4 ] [ 4 4 ] ]
+            Entry id: 0
+            [ 4 4 ]
+            Entry id: 1
+            [ 4 4 ]
+            Entry id: 2
+            [ 4 4 ]
+         
          Components map: 
          [ 0 1 2 ]
          Active componets ids: 

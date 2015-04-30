@@ -2,62 +2,67 @@
 void sub_elem_values(int, int) [with int dim = 2; int k = 1]
 ========================================================================
 Element0
- (num_functions=4,num_points=4) :
-Function 0
-[ 0.622009 ]  [ 0.166667 ]  [ 0.166667 ]  [ 0.0446582 ]  
-Function 1
-[ 0.166667 ]  [ 0.622009 ]  [ 0.0446582 ]  [ 0.166667 ]  
-Function 2
-[ 0.166667 ]  [ 0.0446582 ]  [ 0.622009 ]  [ 0.166667 ]  
-Function 3
-[ 0.0446582 ]  [ 0.166667 ]  [ 0.166667 ]  [ 0.622009 ]  
+ValueTable (num_functions=4,num_points=4) :
+   Function 0
+   [ 0.622009 ]  [ 0.166667 ]  [ 0.166667 ]  [ 0.0446582 ]  
+   Function 1
+   [ 0.166667 ]  [ 0.622009 ]  [ 0.0446582 ]  [ 0.166667 ]  
+   Function 2
+   [ 0.166667 ]  [ 0.0446582 ]  [ 0.622009 ]  [ 0.166667 ]  
+   Function 3
+   [ 0.0446582 ]  [ 0.166667 ]  [ 0.166667 ]  [ 0.622009 ]  
+
 Sub Element: 0
 Values basis functions:
-    (num_functions=4,num_points=2) :
-   Function 0
-   [ 0.788675 ]  [ 0.211325 ]  
-   Function 1
-   [ 0 ]  [ 0 ]  
-   Function 2
-   [ 0.211325 ]  [ 0.788675 ]  
-   Function 3
-   [ 0 ]  [ 0 ]  
+   ValueTable (num_functions=4,num_points=2) :
+      Function 0
+      [ 0.788675 ]  [ 0.211325 ]  
+      Function 1
+      [ 0 ]  [ 0 ]  
+      Function 2
+      [ 0.211325 ]  [ 0.788675 ]  
+      Function 3
+      [ 0 ]  [ 0 ]  
+   
 
 Sub Element: 1
 Values basis functions:
-    (num_functions=4,num_points=2) :
-   Function 0
-   [ 0 ]  [ 0 ]  
-   Function 1
-   [ 0.788675 ]  [ 0.211325 ]  
-   Function 2
-   [ 0 ]  [ 0 ]  
-   Function 3
-   [ 0.211325 ]  [ 0.788675 ]  
+   ValueTable (num_functions=4,num_points=2) :
+      Function 0
+      [ 0 ]  [ 0 ]  
+      Function 1
+      [ 0.788675 ]  [ 0.211325 ]  
+      Function 2
+      [ 0 ]  [ 0 ]  
+      Function 3
+      [ 0.211325 ]  [ 0.788675 ]  
+   
 
 Sub Element: 2
 Values basis functions:
-    (num_functions=4,num_points=2) :
-   Function 0
-   [ 0.788675 ]  [ 0.211325 ]  
-   Function 1
-   [ 0.211325 ]  [ 0.788675 ]  
-   Function 2
-   [ 0 ]  [ 0 ]  
-   Function 3
-   [ 0 ]  [ 0 ]  
+   ValueTable (num_functions=4,num_points=2) :
+      Function 0
+      [ 0.788675 ]  [ 0.211325 ]  
+      Function 1
+      [ 0.211325 ]  [ 0.788675 ]  
+      Function 2
+      [ 0 ]  [ 0 ]  
+      Function 3
+      [ 0 ]  [ 0 ]  
+   
 
 Sub Element: 3
 Values basis functions:
-    (num_functions=4,num_points=2) :
-   Function 0
-   [ 0 ]  [ 0 ]  
-   Function 1
-   [ 0 ]  [ 0 ]  
-   Function 2
-   [ 0.788675 ]  [ 0.211325 ]  
-   Function 3
-   [ 0.211325 ]  [ 0.788675 ]  
+   ValueTable (num_functions=4,num_points=2) :
+      Function 0
+      [ 0 ]  [ 0 ]  
+      Function 1
+      [ 0 ]  [ 0 ]  
+      Function 2
+      [ 0.788675 ]  [ 0.211325 ]  
+      Function 3
+      [ 0.211325 ]  [ 0.788675 ]  
+   
 
 ========================================================================
 
@@ -65,26 +70,29 @@ Values basis functions:
 void sub_elem_values(int, int) [with int dim = 1; int k = 0]
 ========================================================================
 Element0
- (num_functions=2,num_points=2) :
-Function 0
-[ 0.788675 ]  [ 0.211325 ]  
-Function 1
-[ 0.211325 ]  [ 0.788675 ]  
+ValueTable (num_functions=2,num_points=2) :
+   Function 0
+   [ 0.788675 ]  [ 0.211325 ]  
+   Function 1
+   [ 0.211325 ]  [ 0.788675 ]  
+
 Sub Element: 0
 Values basis functions:
-    (num_functions=2,num_points=1) :
-   Function 0
-   [ 1.00000 ]  
-   Function 1
-   [ 0 ]  
+   ValueTable (num_functions=2,num_points=1) :
+      Function 0
+      [ 1.00000 ]  
+      Function 1
+      [ 0 ]  
+   
 
 Sub Element: 1
 Values basis functions:
-    (num_functions=2,num_points=1) :
-   Function 0
-   [ 0 ]  
-   Function 1
-   [ 1.00000 ]  
+   ValueTable (num_functions=2,num_points=1) :
+      Function 0
+      [ 0 ]  
+      Function 1
+      [ 1.00000 ]  
+   
 
 ========================================================================
 

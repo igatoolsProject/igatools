@@ -41,7 +41,7 @@ IGA_NAMESPACE_OPEN
  * @author pauletti 2015
  */
 template <int rank>
-class TensorIndex : public std::array<Index, rank>
+class TensorIndex : public SafeSTLArray<Index, rank>
 {
 public:
     /** @name Constructors */
@@ -54,7 +54,7 @@ public:
     explicit TensorIndex(const Size value = 0) noexcept ;
 
     /** Constructor using an std::array. */
-    explicit TensorIndex(const std::array<Index,rank> &arr) noexcept;
+    explicit TensorIndex(const SafeSTLArray<Index,rank> &arr) noexcept;
 
     /** Constructor using an initializer-list. */
     TensorIndex(std::initializer_list<Index> list) noexcept;
@@ -83,24 +83,6 @@ public:
     TensorIndex<rank> &operator=(TensorIndex<rank> &&arr) = default;
 
     ///@}
-
-    /** @name Access (read/write) operators */
-    ///@{
-    /**
-     * Read/write operator. Returns the reference to the i-th size.
-     * @note In Debug mode the index @p i is checked in order to be
-     * in the bounds of the array containing the different direction sizes.
-     */
-    Index &operator[](const Index i);
-
-    /**
-     * Read operator. Returns the const-reference to the i-th size.
-     * @note In Debug mode the index @p i is checked in order to be
-     * in the bounds of the array containing the different direction sizes.
-     */
-    const Index &operator[](const Index i) const;
-    ///@}
-
 
     /**
      * Returns a rank k tensor index formed by the component

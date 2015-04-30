@@ -1,8 +1,9 @@
 Raw componets: 
    Size: [ 1 ]  Weights: [1]
-   Size: [ 7 ]  Weights: [7]
-   Direction: 0
-   [ -2.00000 -1.00000 1.00000 2.00000 3.00000 5.00000 6.00000 ]
+   Entry id: 0
+      Size: [ 7 ]  Weights: [7]
+      Direction: 0
+      [ -2.00000 -1.00000 1.00000 2.00000 3.00000 5.00000 6.00000 ]
    
 
 Components map: 
@@ -14,9 +15,10 @@ Inactive componets ids:
 
 Raw componets: 
    Size: [ 1 ]  Weights: [1]
-   Size: [ 4 ]  Weights: [4]
-   Direction: 0
-   [ 0 1 2 3 ]
+   Entry id: 0
+      Size: [ 4 ]  Weights: [4]
+      Direction: 0
+      [ 0 1 2 3 ]
    
 
 Components map: 

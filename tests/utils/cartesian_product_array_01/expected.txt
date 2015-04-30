@@ -15,7 +15,11 @@ Direction: 0
 [ 1 2 ]
 
 Testing the get_flat_cartesian_product() function
-[ [1] [2] ]
+Entry id: 0
+[ 1 ]
+Entry id: 1
+[ 2 ]
+
 
 Testing the get_sub_product() function
 Size: [ ]  Weights: []
@@ -49,7 +53,19 @@ Direction: 1
 [ 3 4 5 ]
 
 Testing the get_flat_cartesian_product() function
-[ [1,3] [2,3] [1,4] [2,4] [1,5] [2,5] ]
+Entry id: 0
+[ 1 3 ]
+Entry id: 1
+[ 2 3 ]
+Entry id: 2
+[ 1 4 ]
+Entry id: 3
+[ 2 4 ]
+Entry id: 4
+[ 1 5 ]
+Entry id: 5
+[ 2 5 ]
+
 
 Testing the get_sub_product() function
 Size: [ 3 ]  Weights: [3]
@@ -93,7 +109,55 @@ Direction: 2
 [ 6 7 8 9 ]
 
 Testing the get_flat_cartesian_product() function
-[ [1,3,6] [2,3,6] [1,4,6] [2,4,6] [1,5,6] [2,5,6] [1,3,7] [2,3,7] [1,4,7] [2,4,7] [1,5,7] [2,5,7] [1,3,8] [2,3,8] [1,4,8] [2,4,8] [1,5,8] [2,5,8] [1,3,9] [2,3,9] [1,4,9] [2,4,9] [1,5,9] [2,5,9] ]
+Entry id: 0
+[ 1 3 6 ]
+Entry id: 1
+[ 2 3 6 ]
+Entry id: 2
+[ 1 4 6 ]
+Entry id: 3
+[ 2 4 6 ]
+Entry id: 4
+[ 1 5 6 ]
+Entry id: 5
+[ 2 5 6 ]
+Entry id: 6
+[ 1 3 7 ]
+Entry id: 7
+[ 2 3 7 ]
+Entry id: 8
+[ 1 4 7 ]
+Entry id: 9
+[ 2 4 7 ]
+Entry id: 10
+[ 1 5 7 ]
+Entry id: 11
+[ 2 5 7 ]
+Entry id: 12
+[ 1 3 8 ]
+Entry id: 13
+[ 2 3 8 ]
+Entry id: 14
+[ 1 4 8 ]
+Entry id: 15
+[ 2 4 8 ]
+Entry id: 16
+[ 1 5 8 ]
+Entry id: 17
+[ 2 5 8 ]
+Entry id: 18
+[ 1 3 9 ]
+Entry id: 19
+[ 2 3 9 ]
+Entry id: 20
+[ 1 4 9 ]
+Entry id: 21
+[ 2 4 9 ]
+Entry id: 22
+[ 1 5 9 ]
+Entry id: 23
+[ 2 5 9 ]
+
 
 Testing the get_sub_product() function
 Size: [ 3 4 ]  Weights: [3,12]

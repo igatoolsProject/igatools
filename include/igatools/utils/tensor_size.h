@@ -50,7 +50,7 @@ public:
     explicit TensorSize(const Size value = 0) noexcept ;
 
     /** Constructor using an std::array. */
-    explicit TensorSize(const std::array<Size,rank> &arr) noexcept;
+    explicit TensorSize(const SafeSTLArray<Size,rank> &arr) noexcept;
 
     /** Copy constructor converting a TensorIndex<rank> @p arr. */
     explicit TensorSize(const TensorIndex<rank> &arr) noexcept;

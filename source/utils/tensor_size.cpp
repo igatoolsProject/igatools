@@ -37,15 +37,10 @@ TensorIndex<rank>(val)
 
 template <int rank>
 TensorSize<rank>::
-TensorSize(const std::array<Size,rank> &arr) noexcept
+TensorSize(const SafeSTLArray<Size,rank> &arr) noexcept
 :
 TensorIndex<rank>::TensorIndex(arr)
-{
-#ifndef NDEBUG
-    for (const auto &size_dir : *this)
-        Assert(size_dir >= 0, ExcLowerRange(size_dir,0));
-#endif
-}
+{}
 
 
 

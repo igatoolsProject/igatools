@@ -11,7 +11,9 @@ Knots without repetition:
 Degrees:
    Raw componets: 
       Size: [ 1 ]  Weights: [1]
-   [ [1] ]
+      Entry id: 0
+      [ 1 ]
+   
    Components map: 
    [ 0 ]
    Active componets ids: 
@@ -27,7 +29,9 @@ Interior multiplicities:
 Dimensionality Table:
    Raw componets: 
       Size: [ 1 ]  Weights: [1]
-   [ [ 4 ] ]
+      Entry id: 0
+      [ 4 ]
+   
    Components map: 
    [ 0 ]
    Active componets ids: 
@@ -51,7 +55,11 @@ Knots without repetition:
 Degrees:
    Raw componets: 
       Size: [ 2 ]  Weights: [2]
-   [ [1] [0] ]
+      Entry id: 0
+      [ 1 ]
+      Entry id: 1
+      [ 0 ]
+   
    Components map: 
    [ 0 0 ]
    Active componets ids: 
@@ -70,7 +78,11 @@ Interior multiplicities:
 Dimensionality Table:
    Raw componets: 
       Size: [ 2 ]  Weights: [2]
-   [ [ 4 ] [ 4 ] ]
+      Entry id: 0
+      [ 4 ]
+      Entry id: 1
+      [ 4 ]
+   
    Components map: 
    [ 0 1 ]
    Active componets ids: 
@@ -96,7 +108,11 @@ Knots without repetition:
 Degrees:
    Raw componets: 
       Size: [ 2 ]  Weights: [2]
-   [ [3,3] [0,0] ]
+      Entry id: 0
+      [ 3 3 ]
+      Entry id: 1
+      [ 0 0 ]
+   
    Components map: 
    [ 0 0 ]
    Active componets ids: 
@@ -119,7 +135,11 @@ Interior multiplicities:
 Dimensionality Table:
    Raw componets: 
       Size: [ 2 ]  Weights: [2]
-   [ [ 6 6 ] [ 6 6 ] ]
+      Entry id: 0
+      [ 6 6 ]
+      Entry id: 1
+      [ 6 6 ]
+   
    Components map: 
    [ 0 1 ]
    Active componets ids: 
@@ -145,7 +165,11 @@ Knots without repetition:
 Degrees:
    Raw componets: 
       Size: [ 2 ]  Weights: [2]
-   [ [2,2] [0,0] ]
+      Entry id: 0
+      [ 2 2 ]
+      Entry id: 1
+      [ 0 0 ]
+   
    Components map: 
    [ 0 0 ]
    Active componets ids: 
@@ -168,7 +192,11 @@ Interior multiplicities:
 Dimensionality Table:
    Raw componets: 
       Size: [ 2 ]  Weights: [2]
-   [ [ 5 5 ] [ 5 5 ] ]
+      Entry id: 0
+      [ 5 5 ]
+      Entry id: 1
+      [ 5 5 ]
+   
    Components map: 
    [ 0 1 ]
    Active componets ids: 

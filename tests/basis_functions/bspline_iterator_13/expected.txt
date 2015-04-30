@@ -7,7 +7,9 @@ Element global connectivity (property="active"):
 Number of element basis: 
    Raw componets: 
       Size: [ 1 ]  Weights: [1]
-   [ [ 2 ] ]
+      Entry id: 0
+      [ 2 ]
+   
    Components map: 
    [ 0 ]
    Active componets ids: 
@@ -27,7 +29,9 @@ Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
             Fill flags:
                fill = 1    filled = 1
             Data:
-            ValueVector (num_points=2) : [ [ 0.211325 ]  [ 0.788675 ]  ]
+               ValueVector (num_points=2) :
+               [ [ 0.211325 ]  [ 0.788675 ]  ]
+            
          
          W_Measure: (memory consumption: 42 bytes)
             Fill flags:
@@ -71,11 +75,12 @@ Cache for all sub-elements in all dimensions: (memory consumption: 504 bytes)
             Fill flags:
                fill = 1    filled = 1
             Data:
-                (num_functions=2,num_points=2) :
-               Function 0
-               [ 0.788675 ]  [ 0.211325 ]  
-               Function 1
-               [ 0.211325 ]  [ 0.788675 ]  
+               ValueTable (num_functions=2,num_points=2) :
+                  Function 0
+                  [ 0.788675 ]  [ 0.211325 ]  
+                  Function 1
+                  [ 0.211325 ]  [ 0.788675 ]  
+               
             
          
          Gradient: (memory consumption: 42 bytes)
@@ -146,7 +151,9 @@ Element global connectivity (property="active"):
 Number of element basis: 
    Raw componets: 
       Size: [ 1 ]  Weights: [1]
-   [ [ 2 ] ]
+      Entry id: 0
+      [ 2 ]
+   
    Components map: 
    [ 0 ]
    Active componets ids: 
@@ -212,11 +219,12 @@ Cache for all sub-elements in all dimensions: (memory consumption: 504 bytes)
             Fill flags:
                fill = 1    filled = 1
             Data:
-                (num_functions=2,num_points=2) :
-               Function 0
-               [ [ -1.00000 ]  ]  [ [ -1.00000 ]  ]  
-               Function 1
-               [ [ 1.00000 ]  ]  [ [ 1.00000 ]  ]  
+               ValueTable (num_functions=2,num_points=2) :
+                  Function 0
+                  [ [ -1.00000 ]  ]  [ [ -1.00000 ]  ]  
+                  Function 1
+                  [ [ 1.00000 ]  ]  [ [ 1.00000 ]  ]  
+               
             
          
          Hessian: (memory consumption: 42 bytes)
@@ -283,7 +291,9 @@ Element global connectivity (property="active"):
 Number of element basis: 
    Raw componets: 
       Size: [ 1 ]  Weights: [1]
-   [ [ 2 ] ]
+      Entry id: 0
+      [ 2 ]
+   
    Components map: 
    [ 0 ]
    Active componets ids: 
@@ -353,11 +363,12 @@ Cache for all sub-elements in all dimensions: (memory consumption: 504 bytes)
             Fill flags:
                fill = 1    filled = 1
             Data:
-                (num_functions=2,num_points=2) :
-               Function 0
-               [ [ [ 0 ]  ]  ]  [ [ [ 0 ]  ]  ]  
-               Function 1
-               [ [ [ 0 ]  ]  ]  [ [ [ 0 ]  ]  ]  
+               ValueTable (num_functions=2,num_points=2) :
+                  Function 0
+                  [ [ [ 0 ]  ]  ]  [ [ [ 0 ]  ]  ]  
+                  Function 1
+                  [ [ [ 0 ]  ]  ]  [ [ [ 0 ]  ]  ]  
+               
             
          
          Divergence: (memory consumption: 42 bytes)
