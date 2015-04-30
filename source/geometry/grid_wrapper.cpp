@@ -111,7 +111,7 @@ connect_insert_knots_function(const typename GridType::SignalInsertKnotsSlot &su
 template <class GridType>
 void
 GridWrapper<GridType>::
-insert_knots(SafeSTLArray<vector<Real>,GridType::dim> &knots_to_insert)
+insert_knots(SafeSTLArray<SafeSTLVector<Real>,GridType::dim> &knots_to_insert)
 {
     grid_->insert_knots(knots_to_insert);
 }

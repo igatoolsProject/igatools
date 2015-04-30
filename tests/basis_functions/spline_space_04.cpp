@@ -34,7 +34,7 @@ using boost::numeric::ublas::matrix;
 using boost::numeric::ublas::matrix_row;
 
 matrix<Real> compute(const matrix<Real> &M_j_1,
-                     typename vector<Real>::const_iterator  y,
+                     typename SafeSTLVector<Real>::const_iterator  y,
                      const Real a,
                      const Real b)
 {
@@ -42,9 +42,9 @@ matrix<Real> compute(const matrix<Real> &M_j_1,
     const int j = M_j_1.size1() + 1;
     matrix<Real> M_j(j,j);
 
-    vector<Real> alpha(j);
-    vector<Real> one_alpha(j,1);
-    vector<Real> beta(j, b-a);
+    SafeSTLVector<Real> alpha(j);
+    SafeSTLVector<Real> one_alpha(j,1);
+    SafeSTLVector<Real> beta(j, b-a);
 
     for (int k = 0; k < j; ++k)
     {
@@ -84,10 +84,10 @@ matrix<Real> compute(const matrix<Real> &M_j_1,
 }
 
 void fill_extraction(const int degree,
-                     const vector<Real>    &knots,
-                     const vector<Real>    &rep_knots,
-                     const vector<Index>   &acum_mult)
-//,                    vector<matrix<Real>>  &extraction_operators)
+                     const SafeSTLVector<Real>    &knots,
+                     const SafeSTLVector<Real>    &rep_knots,
+                     const SafeSTLVector<Index>   &acum_mult)
+//,                    SafeSTLVector<matrix<Real>>  &extraction_operators)
 {
     // interval n
     const int n=0;
@@ -130,9 +130,9 @@ int main()
 
     {
         int degree = 1;
-        vector<Real>    knots = {0,1};
-        vector<Real>    rep_knots = {0,0,1,1};
-        vector<Index>   acum_mult = {0,2,4};
+        SafeSTLVector<Real>    knots = {0,1};
+        SafeSTLVector<Real>    rep_knots = {0,0,1,1};
+        SafeSTLVector<Index>   acum_mult = {0,2,4};
 
         fill_extraction(degree,knots,rep_knots, acum_mult);
     }
@@ -140,9 +140,9 @@ int main()
 
     {
         int degree = 2;
-        vector<Real>    knots = {0,1};
-        vector<Real>    rep_knots = {0,0,0,1,1,1};
-        vector<Index>   acum_mult = {0,3,6};
+        SafeSTLVector<Real>    knots = {0,1};
+        SafeSTLVector<Real>    rep_knots = {0,0,0,1,1,1};
+        SafeSTLVector<Index>   acum_mult = {0,3,6};
 
         fill_extraction(degree,knots,rep_knots, acum_mult);
     }
@@ -150,9 +150,9 @@ int main()
 
     {
         int degree = 3;
-        vector<Real>    knots = {0,1};
-        vector<Real>    rep_knots = {0,0,0,0,1,1,1,1};
-        vector<Index>   acum_mult = {0,4,8};
+        SafeSTLVector<Real>    knots = {0,1};
+        SafeSTLVector<Real>    rep_knots = {0,0,0,0,1,1,1,1};
+        SafeSTLVector<Index>   acum_mult = {0,4,8};
 
         fill_extraction(degree,knots,rep_knots, acum_mult);
     }

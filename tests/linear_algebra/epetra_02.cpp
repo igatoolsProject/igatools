@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-//TODO: This test should be splitted in: vector test, matrix test and solver test
+//TODO: This test should be splitted in: SafeSTLVector test, matrix test and solver test
 
 /*
  * Test for developing epetra minimal and efficient linear algebra interaction
@@ -48,7 +48,7 @@ void matrix_map(const int deg, const int n_knots)
     auto graph = EpetraTools::create_graph(space, "active", space, "active",map, map);
 
     auto matrix = EpetraTools::create_matrix(graph);
-    auto vector = EpetraTools::create_vector(map);
+    auto SafeSTLVector = EpetraTools::create_vector(map);
     auto sol = EpetraTools::create_vector(map);
 
     auto quad = QGauss<dim>(2);
@@ -93,19 +93,19 @@ void matrix_map(const int deg, const int n_knots)
 
         const auto loc_dofs = elem->get_local_to_global("active");
         matrix->add_block(loc_dofs, loc_dofs, loc_mat);
-        vector->add_block(loc_dofs, loc_rhs);
+        SafeSTLVector->add_block(loc_dofs, loc_rhs);
     }
 
     matrix->FillComplete();
 
-    auto solver = EpetraTools::create_solver(matrix, sol, vector);
+    auto solver = EpetraTools::create_solver(matrix, sol, SafeSTLVector);
     auto result = solver->solve();
     AssertThrow(result == Belos::ReturnType::Converged,
                 ExcMessage("No convergence."));
     out << solver->getNumIters() << endl;
 
     matrix->print_info(out);
-    vector->print_info(out);
+    SafeSTLVector->print_info(out);
     sol->print_info(out);
 
     OUTEND

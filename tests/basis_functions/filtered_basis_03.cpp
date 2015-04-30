@@ -85,7 +85,7 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
 
     std::set<boundary_id>  neu_ids = {bc::neu};
     auto neu_dofs = get_boundary_dofs<RefSpace>(space, neu_ids);
-    std::vector<Index> common(dim*range);
+    SafeSTLVector<Index> common(dim*range);
     auto end1 =
         std::set_intersection(neu_dofs.begin(), neu_dofs.end(),
                               dir_dofs.begin(), dir_dofs.end(), common.begin());

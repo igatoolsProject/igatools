@@ -55,7 +55,7 @@ Quadrature(const BBox<dim_> &bounding_box)
 template<int dim_>
 Quadrature<dim_>::
 Quadrature(const TensorSize<dim> &num_points,
-           void (*quad_1d)(int, iga::vector<double> &, iga::vector<double> &))
+           void (*quad_1d)(int, iga::SafeSTLVector<double> &, iga::SafeSTLVector<double> &))
     :
     points_1d_(num_points),
     weights_1d_(num_points),
@@ -64,8 +64,8 @@ Quadrature(const TensorSize<dim> &num_points,
 
     for (int i = 0; i<dim; ++i)
     {
-        iga::vector<double> pts(num_points[i]);
-        iga::vector<double> w(num_points[i]);
+        iga::SafeSTLVector<double> pts(num_points[i]);
+        iga::SafeSTLVector<double> w(num_points[i]);
         quad_1d(num_points[i],pts,w);
         points_1d_.copy_data_direction(i, pts);
         weights_1d_.copy_data_direction(i, w);
@@ -217,7 +217,7 @@ reset_points_points_1d_and_weights(
             coords_set.emplace(pt[i]);
 
         //inserting the point coordinates and removing the duplicates
-        points_1d_.copy_data_direction(i,vector<Real>(coords_set.begin(),coords_set.end()));
+        points_1d_.copy_data_direction(i,SafeSTLVector<Real>(coords_set.begin(),coords_set.end()));
         weights_1d_ = weights_1d;
 
 #ifndef NDEBUG
@@ -274,7 +274,7 @@ is_tensor_product() const
 
 
 template<int dim_>
-const vector<Real> &
+const SafeSTLVector<Real> &
 Quadrature<dim_>::
 get_coords_direction(const int i) const
 {
@@ -436,8 +436,8 @@ collapse_to_sub_element(const int sub_elem_id) const -> Quadrature<dim_>
         auto dir = k_elem.constant_directions[j];
         auto val = k_elem.constant_values[j];
 
-        new_coords_1d.copy_data_direction(dir, vector<Real>(1, val));
-        new_weights_1d.copy_data_direction(dir, vector<Real>(1, 1.));
+        new_coords_1d.copy_data_direction(dir, SafeSTLVector<Real>(1, val));
+        new_weights_1d.copy_data_direction(dir, SafeSTLVector<Real>(1, 1.));
 
     }
 
@@ -478,8 +478,8 @@ extend_sub_elem_quad(const Quadrature<k> &eval_pts,
     {
         const auto dir = k_elem.constant_directions[j];
         const auto val = k_elem.constant_values[j];
-        new_coords_1d.copy_data_direction(dir, vector<Real>(1, val));
-        new_weights_1d.copy_data_direction(dir, vector<Real>(1, 1.));
+        new_coords_1d.copy_data_direction(dir, SafeSTLVector<Real>(1, val));
+        new_weights_1d.copy_data_direction(dir, SafeSTLVector<Real>(1, 1.));
 
     }
     int ind = 0;

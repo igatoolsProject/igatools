@@ -177,7 +177,7 @@ public:
 
     const SafeSTLArray<Index,n_components> &get_components_map() const;
 
-    const vector<Index> &get_active_components_id() const;
+    const SafeSTLVector<Index> &get_active_components_id() const;
 
     /** @name Getting information about the space */
     ///@{
@@ -370,12 +370,12 @@ public:
             return comp_map_[i];
         }
 
-        const vector<Index> &get_active_components_id() const
+        const SafeSTLVector<Index> &get_active_components_id() const
         {
             return active_components_id_;
         }
 
-        const vector<Index> &get_inactive_components_id() const
+        const SafeSTLVector<Index> &get_inactive_components_id() const
         {
             return inactive_components_id_;
         }
@@ -413,10 +413,10 @@ public:
         SafeSTLArray<Index, n_entries> comp_map_;
 
         /** list of the active components */
-        vector<Index> active_components_id_;
+        SafeSTLVector<Index> active_components_id_;
 
         /** list of the inactive components */
-        vector<Index> inactive_components_id_;
+        SafeSTLVector<Index> inactive_components_id_;
 
 
     };
@@ -434,7 +434,7 @@ public:
      * @ingroup h_refinement
      */
     void rebuild_after_insert_knots(
-        const SafeSTLArray<vector<Real>,dim> &knots_to_insert,
+        const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
         const CartesianGrid<dim> &old_grid);
 
     void create_connection_for_insert_knots(std::shared_ptr<SplineSpace<dim,range,rank>> space);
@@ -456,11 +456,11 @@ protected:
 
 template <class T, int dim>
 inline
-vector<T>
+SafeSTLVector<T>
 unique_container(SafeSTLArray <T, dim> a)
 {
     auto it = std::unique(a.begin(), a.end());
-    return vector<T>(a.begin(), it);
+    return SafeSTLVector<T>(a.begin(), it);
 }
 
 

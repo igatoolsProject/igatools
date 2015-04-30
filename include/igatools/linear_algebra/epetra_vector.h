@@ -24,7 +24,7 @@
 #include <igatools/base/config.h>
 #include <igatools/linear_algebra/epetra_map.h>
 #include <igatools/linear_algebra/dense_vector.h>
-#include <igatools/utils/vector.h>
+#include <igatools/utils/safe_stl_vector.h>
 #include <igatools/base/properties.h>
 
 #include <Epetra_Vector.h>
@@ -44,12 +44,12 @@ public:
 
     Vector &operator +=(const Vector &vec);
 
-    void add_block(const vector<Index> &vec_id,
+    void add_block(const SafeSTLVector<Index> &vec_id,
                    const DenseVector &local_vector);
 
-    //TODO (pauletti, Apr 3, 2015): both vector<Real> and std::vector<Index>
+    //TODO (pauletti, Apr 3, 2015): both SafeSTLVector<Real> and std::vector<Index>
     // should be replace by a typedef and a proper type for fast comuniction with LA
-    vector<Real>
+    SafeSTLVector<Real>
     get_local_coeffs(const std::vector<Index> &global_ids) const;
 
     void print_info(LogStream &out) const;

@@ -151,11 +151,11 @@ end() const -> const_iterator
 }
 
 
-vector<std::string>
+SafeSTLVector<std::string>
 PropertiesIdContainer::
 get_properties() const
 {
-    vector<std::string> properties;
+    SafeSTLVector<std::string> properties;
 
     for (const auto &ids_same_property : properties_id_)
         properties.emplace_back(ids_same_property.first);

@@ -41,7 +41,7 @@ ValueVector(const Index num_points)
 
 template <class T>
 ValueVector<T>::
-ValueVector(const vector<T> &vector_in)
+ValueVector(const SafeSTLVector<T> &vector_in)
     : ValueVector<T>(vector_in.size())
 {
     std::copy(vector_in.begin(),vector_in.end(),this->begin());
@@ -50,7 +50,7 @@ ValueVector(const vector<T> &vector_in)
 template <class T>
 ValueVector<T>::
 ValueVector(const std::initializer_list<T> &list)
-    : ValueVector(vector<T>(list))
+    : ValueVector(SafeSTLVector<T>(list))
 {}
 //*/
 

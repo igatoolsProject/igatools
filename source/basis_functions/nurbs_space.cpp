@@ -232,7 +232,7 @@ template<int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
 get_ref_face_space(const Index face_id,
-                   vector<Index> &face_to_element_dofs,
+                   SafeSTLVector<Index> &face_to_element_dofs,
                    typename GridType::FaceGridMap &elem_map) const
 -> std::shared_ptr<RefFaceSpace>
 {
@@ -262,7 +262,7 @@ template<int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
 get_face_space(const Index face_id,
-               vector<Index> &face_to_element_dofs) const
+               SafeSTLVector<Index> &face_to_element_dofs) const
 -> std::shared_ptr<FaceSpace>
 {
     auto elem_map = std::make_shared<typename GridType::FaceGridMap>();
@@ -298,12 +298,12 @@ refine_h_weights(
         if (refinement_directions[direction_id])
         {
             // knots in the refined grid along the selected direction
-            vector<Real> knots_new = grid->get_knot_coordinates(direction_id);
+            SafeSTLVector<Real> knots_new = grid->get_knot_coordinates(direction_id);
 
             // knots in the original (unrefined) grid along the selected direction
-            vector<Real> knots_old = grid_old->get_knot_coordinates(direction_id);
+            SafeSTLVector<Real> knots_old = grid_old->get_knot_coordinates(direction_id);
 
-            vector<Real> knots_added(knots_new.size());
+            SafeSTLVector<Real> knots_added(knots_new.size());
 
             // find the knots in the refined grid that are not present in the old grid
             auto it = std::set_difference(
@@ -605,9 +605,9 @@ void
 NURBSSpace<dim_, range_, rank_>::
 get_element_dofs(
     const CartesianGridElement<dim> &element,
-    vector<Index> &dofs_global,
-    vector<Index> &dofs_local_to_patch,
-    vector<Index> &dofs_local_to_elem,
+    SafeSTLVector<Index> &dofs_global,
+    SafeSTLVector<Index> &dofs_local_to_patch,
+    SafeSTLVector<Index> &dofs_local_to_elem,
     const std::string &dofs_property) const
 {
     this->sp_space_->get_element_dofs(

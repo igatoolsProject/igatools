@@ -20,7 +20,7 @@
 /*
  *
  * Test for the Concatenated iterator class, using as base iterator the
- * vector<int>::iterator.
+ * SafeSTLVector<int>::iterator.
  *
  * martinelli
  * 30 May 2014
@@ -30,7 +30,7 @@
 #include "../tests.h"
 
 #include <igatools/utils/concatenated_iterator.h>
-#include <igatools/utils/vector.h>
+#include <igatools/utils/safe_stl_vector.h>
 
 
 
@@ -38,17 +38,17 @@
 void do_test_1_const()
 {
     out << "========== do_test_1_const() --- begin ==========" << endl;
-    vector<int> v0 = {1,2,3,4};
-    vector<int> v1 = {5,6,7,8,9};
-    vector<int> v2 = {10,11,12};
-    vector<int> v3 = {13};
+    SafeSTLVector<int> v0 = {1,2,3,4};
+    SafeSTLVector<int> v1 = {5,6,7,8,9};
+    SafeSTLVector<int> v2 = {10,11,12};
+    SafeSTLVector<int> v3 = {13};
 
-    using VecIterator = vector<int>::iterator;
-    using VecConstIterator = vector<int>::const_iterator;
+    using VecIterator = SafeSTLVector<int>::iterator;
+    using VecConstIterator = SafeSTLVector<int>::const_iterator;
     using VecView = MView<VecIterator,VecConstIterator>;
     using VecConstView = ConstView<VecIterator,VecConstIterator>;
 
-    vector<VecConstView> ranges;
+    SafeSTLVector<VecConstView> ranges;
     ranges.push_back(VecConstView(v0.begin(),v0.end()));
     ranges.push_back(VecConstView(v1.begin(),v1.end()));
     ranges.push_back(VecConstView(v2.begin(),v2.end()));
@@ -72,16 +72,16 @@ void do_test_1_const()
 void do_test_1_nonconst()
 {
     out << "========== do_test_1_nonconst() --- begin ==========" << endl;
-    vector<int> v0 = {1,2,3,4};
-    vector<int> v1 = {5,6,7,8,9};
-    vector<int> v2 = {10,11,12};
-    vector<int> v3 = {13};
+    SafeSTLVector<int> v0 = {1,2,3,4};
+    SafeSTLVector<int> v1 = {5,6,7,8,9};
+    SafeSTLVector<int> v2 = {10,11,12};
+    SafeSTLVector<int> v3 = {13};
 
-    using VecIterator = vector<int>::iterator;
-    using VecConstIterator = vector<int>::const_iterator;
+    using VecIterator = SafeSTLVector<int>::iterator;
+    using VecConstIterator = SafeSTLVector<int>::const_iterator;
     using VecView = MView<VecIterator,VecConstIterator>;
 
-    vector<VecView> ranges;
+    SafeSTLVector<VecView> ranges;
     ranges.push_back(VecView(v0.begin(),v0.end()));
     ranges.push_back(VecView(v1.begin(),v1.end()));
     ranges.push_back(VecView(v2.begin(),v2.end()));
@@ -108,19 +108,19 @@ void do_test_2()
 
     out << "========== do_test_2() --- begin ==========" << endl;
 
-    vector<int> v0a = {1};
-    vector<int> v1a = {2,3,4};
-    vector<int> v2a = {5,6,7,8,9};
+    SafeSTLVector<int> v0a = {1};
+    SafeSTLVector<int> v1a = {2,3,4};
+    SafeSTLVector<int> v2a = {5,6,7,8,9};
 
-    vector<int> v0b = {10,11,12};
-    vector<int> v1b = {13};
+    SafeSTLVector<int> v0b = {10,11,12};
+    SafeSTLVector<int> v1b = {13};
 
-    using ItType_0 = vector<int>::iterator;
-    using ConstItType_0 = vector<int>::iterator;
+    using ItType_0 = SafeSTLVector<int>::iterator;
+    using ConstItType_0 = SafeSTLVector<int>::iterator;
     using VecView = MView<ItType_0,ConstItType_0>;
     using VecConstView = ConstView<ItType_0,ConstItType_0>;
 
-    vector<VecConstView> ranges_a;
+    SafeSTLVector<VecConstView> ranges_a;
     ranges_a.push_back(VecConstView(v0a.begin(),v0a.end()));
     ranges_a.push_back(VecConstView(v1a.begin(),v1a.end()));
     ranges_a.push_back(VecConstView(v2a.begin(),v2a.end()));
@@ -130,7 +130,7 @@ void do_test_2()
     ItType_1 end_a(ranges_a,IteratorState::pass_the_end);
 
 
-    vector<VecConstView> ranges_b;
+    SafeSTLVector<VecConstView> ranges_b;
     ranges_b.push_back(VecConstView(v0b.begin(),v0b.end()));
     ranges_b.push_back(VecConstView(v1b.begin(),v1b.end()));
 
@@ -138,7 +138,7 @@ void do_test_2()
     ItType_1 end_b(ranges_b,IteratorState::pass_the_end);
 
 
-    vector<VecConstView> ranges;
+    SafeSTLVector<VecConstView> ranges;
     for (const auto &r : ranges_a)
         ranges.push_back(r);
     for (const auto &r : ranges_b)

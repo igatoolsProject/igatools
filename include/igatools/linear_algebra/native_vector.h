@@ -33,7 +33,7 @@ class Vector : public std::map<Index,Real>
 public:
     using std::map<Index,Real>::map;
 
-    IgCoefficients(const std::set<Index> &global_dofs, const vector<Real> &coeffs)
+    IgCoefficients(const std::set<Index> &global_dofs, const SafeSTLVector<Real> &coeffs)
     {
         Assert(Index(global_dofs.size()) == coeffs.size(),
                ExcDimensionMismatch(global_dofs.size(),coeffs.size()));
@@ -47,7 +47,7 @@ public:
     IgCoefficients(
         const Space &space,
         const std::string &dofs_property,
-        const vector<Real> &coeffs)
+        const SafeSTLVector<Real> &coeffs)
         :
         IgCoefficients(space.get_dof_distribution()->get_dofs_id_same_property(dofs_property),coeffs)
     {}
@@ -59,8 +59,8 @@ public:
         :
         IgCoefficients(
             space.get_dof_distribution()->get_dofs_id_same_property(dofs_property),
-            vector<Real>(space.get_dof_distribution()->
-                         get_dofs_id_same_property(dofs_property).size(),0.0))
+            SafeSTLVector<Real>(space.get_dof_distribution()->
+                                get_dofs_id_same_property(dofs_property).size(),0.0))
     {}
 
 
@@ -102,10 +102,10 @@ public:
         return *this;
     }
 
-    vector<Real> get_local_coeffs(const vector<Index> &elem_dofs) const
+    SafeSTLVector<Real> get_local_coeffs(const SafeSTLVector<Index> &elem_dofs) const
     {
 
-        vector<Real> loc_coeff;
+        SafeSTLVector<Real> loc_coeff;
         for (const auto &dof : elem_dofs)
             loc_coeff.emplace_back((*this)(dof));
         return  loc_coeff;

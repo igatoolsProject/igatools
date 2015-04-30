@@ -276,9 +276,9 @@ public:
 
     virtual void get_element_dofs(
         const CartesianGridElement<dim> &element,
-        vector<Index> &dofs_global,
-        vector<Index> &dofs_local_to_patch,
-        vector<Index> &dofs_local_to_elem,
+        SafeSTLVector<Index> &dofs_global,
+        SafeSTLVector<Index> &dofs_local_to_patch,
+        SafeSTLVector<Index> &dofs_local_to_elem,
         const std::string &dofs_property = DofProperties::active) const override final;
 
 
@@ -286,7 +286,7 @@ public:
     using InterGridMap = typename GridType::template InterGridMap<k>;
 
     template <int k>
-    using InterSpaceMap = vector<Index>;
+    using InterSpaceMap = SafeSTLVector<Index>;
 
     template <int k>
     using SubRefSpace = ReferenceSpace<k, range, rank>;
@@ -438,7 +438,7 @@ private:
      * @ingroup h_refinement
      */
     void rebuild_after_insert_knots(
-        const SafeSTLArray<vector<Real>,dim> &knots_to_insert,
+        const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
         const CartesianGrid<dim> &old_grid);
 
     void create_connection_for_insert_knots(std::shared_ptr<self_t> space);
@@ -457,8 +457,8 @@ public:
 
 private:
     // lookup table for the local dof id in each element component
-    typename SpaceData::template ComponentContainer<vector<TensorIndex<dim>>>
-                                                           dofs_tensor_id_elem_table_;
+    typename SpaceData::template ComponentContainer<SafeSTLVector<TensorIndex<dim>>>
+                                                    dofs_tensor_id_elem_table_;
 };
 
 IGA_NAMESPACE_CLOSE

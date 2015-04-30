@@ -36,7 +36,7 @@ test()
     auto grid = CartesianGrid<dim>::create(n_knots);
     Writer<dim> writer(grid);
 
-    vector<Real> cell_data(grid->get_num_all_elems());
+    SafeSTLVector<Real> cell_data(grid->get_num_all_elems());
     int n=1;
     for (auto elem : *grid)
     {

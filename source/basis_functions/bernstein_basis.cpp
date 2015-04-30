@@ -111,7 +111,7 @@ BernsteinBasis::derivative(
 
 
 matrix<Real>
-BernsteinBasis::evaluate(const int p,  const vector<Real> &points)
+BernsteinBasis::evaluate(const int p,  const SafeSTLVector<Real> &points)
 {
     /*
      * First we compute 2 table where each colum we store
@@ -158,7 +158,7 @@ matrix<Real>
 BernsteinBasis::derivative(
     const int order,
     const int p,
-    const vector< Real > &points)
+    const SafeSTLVector< Real > &points)
 {
     if (order > 0)
     {

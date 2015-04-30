@@ -42,7 +42,7 @@ sub_dim_members = \
 ['void elhandler::fill_cache<k>(ElementAccessor &elem, const int j);' ,
  'void elhandler::init_cache<k>(ElementAccessor &elem);',
  'void elhandler::reset<k>(const ValueFlags flag, const Quadrature<k> &quad);',
- 'void elhandler::reset_selected_elements<k>(const ValueFlags &flag, const Quadrature<k> &quad, const vector<Index> &elements_flat_id);']
+ 'void elhandler::reset_selected_elements<k>(const ValueFlags &flag, const Quadrature<k> &quad, const SafeSTLVector<Index> &elements_flat_id);']
 
 for space in inst.SubPhysSpaces:
     x = space.spec

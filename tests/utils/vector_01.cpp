@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 /*
- * Test for iga::vector
+ * Test for iga::SafeSTLVector
  * author: pauletti
  * date:   2014-08-26
  *
@@ -27,14 +27,14 @@
 
 #include "../tests.h"
 
-#include <igatools/utils/vector.h>
+#include <igatools/utils/safe_stl_vector.h>
 #include <igatools/utils/safe_stl_array.h>
 
 using namespace iga;
 
 void vector_print_info()
 {
-    iga::vector<Real> vec(5);
+    iga::SafeSTLVector<Real> vec(5);
     vec.print_info(out);
     out << endl;
 }

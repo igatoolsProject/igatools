@@ -91,7 +91,7 @@ reset(const ValueFlags &flag, const eval_pts_variant &eval_pts)
     this->reset_selected_elements(
         flag,
         eval_pts,
-        vector<Index>(elems_id.begin(),elems_id.end()));
+        SafeSTLVector<Index>(elems_id.begin(),elems_id.end()));
 }
 
 
@@ -102,7 +102,7 @@ IgFunction<Space>::
 reset_selected_elements(
     const ValueFlags &flag,
     const eval_pts_variant &eval_pts,
-    const vector<Index> &elements_flat_id)
+    const SafeSTLVector<Index> &elements_flat_id)
 {
     parent_t::reset(flag, eval_pts);
     reset_impl_.flag = flag;
@@ -189,7 +189,7 @@ template<class Space>
 void
 IgFunction<Space>::
 rebuild_after_insert_knots(
-    const SafeSTLArray<vector<Real>,dim> &knots_to_insert,
+    const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
     const CartesianGrid<dim> &grid_old)
 {
     using std::const_pointer_cast;

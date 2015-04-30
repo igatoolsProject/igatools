@@ -21,9 +21,7 @@
 #define VECTOR_TOOLS_H_
 
 #include <igatools/base/config.h>
-
-
-#include <vector>
+#include <igatools/utils/safe_stl_vector.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -52,9 +50,9 @@ namespace vector_tools
 template< class T >
 void
 count_and_remove_duplicates(
-    const vector<T> &vec_with_duplicates,
-    vector<T> &vec_without_duplicates,
-    vector<int> &multiplicities) ;
+    const SafeSTLVector<T> &vec_with_duplicates,
+    SafeSTLVector<T> &vec_without_duplicates,
+    SafeSTLVector<int> &multiplicities) ;
 
 } ;
 

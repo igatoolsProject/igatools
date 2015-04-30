@@ -47,7 +47,7 @@ filled_progression(const BBox<dim_> &end_points, const TensorSize<dim_> &n_knots
 {
     CartesianProductArray<Real,dim_> knot_coordinates(n_knots);
 
-    vector<Real> knots_1d;
+    SafeSTLVector<Real> knots_1d;
     for (const int i : UnitElement<dim_>::active_directions)
     {
         const Size n_i = n_knots[i];
@@ -168,7 +168,7 @@ CartesianGrid(const KnotCoordinates &knot_coordinates,
         AssertThrow(knots_i.size() > 1, ExcLowerRange(knots_i.size(), 2));
 
         // check if the array is sorted and does not contains duplicates
-        vector<Real> vec = knots_i ;
+        SafeSTLVector<Real> vec = knots_i ;
         std::sort(vec.begin(), vec.end());
         vec.erase(unique(vec.begin(), vec.end()), vec.end());
         AssertThrow(knots_i == vec,
@@ -192,7 +192,7 @@ create(const KnotCoordinates &knot_coordinates) -> shared_ptr<self_t>
 
 template<int dim_>
 CartesianGrid<dim_>::
-CartesianGrid(const SafeSTLArray<vector<Real>,dim_> &knot_coordinates)
+CartesianGrid(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knot_coordinates)
     :
     self_t(CartesianProductArray<Real,dim_>(knot_coordinates),
            Kind::direction_uniform)
@@ -203,7 +203,7 @@ CartesianGrid(const SafeSTLArray<vector<Real>,dim_> &knot_coordinates)
 template<int dim_>
 auto
 CartesianGrid<dim_>::
-create(const SafeSTLArray<vector<Real>,dim_> &knot_coordinates) -> shared_ptr<self_t>
+create(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knot_coordinates) -> shared_ptr<self_t>
 {
     return shared_ptr<self_t>(new self_t(knot_coordinates));
 }
@@ -232,7 +232,7 @@ CartesianGrid(const self_t &grid)
 
 
 template<int dim_>
-vector< Real > const &
+SafeSTLVector< Real > const &
 CartesianGrid<dim_>::
 get_knot_coordinates(const int i) const
 {
@@ -619,7 +619,7 @@ refine_directions(
     const SafeSTLArray<Size,dim_> &n_subdivisions)
 {
     //-------------------------------------------------------------
-    SafeSTLArray<vector<Real>,dim_> knots_to_insert;
+    SafeSTLArray<SafeSTLVector<Real>,dim_> knots_to_insert;
     for (const auto dir : Topology::active_directions)
     {
         if (refinement_directions[dir])
@@ -790,9 +790,9 @@ template <int dim_>
 auto
 CartesianGrid<dim_>::
 find_elements_of_points(const ValueVector<Points<dim_>> &points) const
--> std::map<ElementIterator, vector<int> >
+-> std::map<ElementIterator, SafeSTLVector<int> >
 {
-    std::map<ElementIterator, vector<int> > res;
+    std::map<ElementIterator, SafeSTLVector<int> > res;
 
     const int n_points = points.size();
     for (int k=0; k<n_points; ++k)
@@ -819,7 +819,7 @@ find_elements_of_points(const ValueVector<Points<dim_>> &points) const
 
         auto ans = res.emplace(
                        ElementIterator(this->shared_from_this(), this->tensor_to_flat(elem_t_id),ElementProperties::none),
-                       vector<int>(1,k));
+                       SafeSTLVector<int>(1,k));
 
         if (!ans.second)
             (ans.first)->second.push_back(k);
@@ -828,14 +828,14 @@ find_elements_of_points(const ValueVector<Points<dim_>> &points) const
 }
 
 template <int dim_>
-vector<Index>
+SafeSTLVector<Index>
 CartesianGrid<dim_>::
 find_elements_id_of_point(const Points<dim_> &point) const
 {
     Assert(false,ExcMessage("This function is not tested at all!"));
-    vector<Index> elements_id;
+    SafeSTLVector<Index> elements_id;
 
-    SafeSTLArray<vector<int>,dim> ids;
+    SafeSTLArray<SafeSTLVector<int>,dim> ids;
 
     TensorSize<dim_> n_elems_dir;
     for (const auto dir : Topology::active_directions)
@@ -897,7 +897,7 @@ operator==(const CartesianGrid<dim_> &grid) const
 }
 
 template <int dim_>
-vector<Index>
+SafeSTLVector<Index>
 CartesianGrid<dim_>::
 get_sub_elements_id(const TensorSize<dim_> &n_sub_elems, const Index elem_id) const
 {
@@ -920,7 +920,7 @@ get_sub_elements_id(const TensorSize<dim_> &n_sub_elems, const Index elem_id) co
 
 
     const int n_sub_elems_total = n_sub_elems.flat_size();
-    vector<Index> sub_elems_id(n_sub_elems_total);
+    SafeSTLVector<Index> sub_elems_id(n_sub_elems_total);
     TensorIndex<dim_> fine_elem_tensor_id;
     for (int sub_elem = 0 ; sub_elem < n_sub_elems_total ; ++sub_elem)
     {
@@ -991,7 +991,7 @@ test_if_element_has_property(const Index elem_flat_id, const std::string &proper
 template <int dim_>
 void
 CartesianGrid<dim_>::
-insert_knots(SafeSTLArray<vector<Real>,dim_> &knots_to_insert)
+insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert)
 {
     //----------------------------------------------------------------------------------
     // make a copy of the grid before the refinement
@@ -1010,8 +1010,8 @@ insert_knots(SafeSTLArray<vector<Real>,dim_> &knots_to_insert)
 
         knot_coordinates_.copy_data_direction(
             dir,
-            vector<Real>(new_coords_no_duplicates.begin(),
-                         new_coords_no_duplicates.end()));
+            SafeSTLVector<Real>(new_coords_no_duplicates.begin(),
+                                new_coords_no_duplicates.end()));
     }
     TensorSizedContainer<dim_>::reset_size(knot_coordinates_.tensor_size()-1);
     // inserts the knots into the current grid --- end

@@ -157,7 +157,7 @@ reset(const ValueFlags flag, const Quadrature<k> &eval_pts)
     this->reset_selected_elements(
         flag,
         eval_pts,
-        vector<int>(elems_id.begin(),elems_id.end()));
+        SafeSTLVector<int>(elems_id.begin(),elems_id.end()));
 }
 
 
@@ -168,7 +168,7 @@ PhysSpaceElementHandler<dim,range,rank,codim>::
 reset_selected_elements(
     const ValueFlags &flag,
     const Quadrature<k> &eval_pts,
-    const vector<Index> &elements_flat_id)
+    const SafeSTLVector<Index> &elements_flat_id)
 {
     ref_space_handler_->
     reset_selected_elements(space_to_ref_flag(PhysSpace::PushForwardType::type, flag), eval_pts, elements_flat_id);
@@ -192,7 +192,7 @@ reset_one_element(
     const Quadrature<k> &eval_pts,
     const int elem_flat_id)
 {
-    this->reset_selected_elements(flag,eval_pts,vector<int>(1,elem_flat_id));
+    this->reset_selected_elements(flag,eval_pts,SafeSTLVector<int>(1,elem_flat_id));
 }
 
 

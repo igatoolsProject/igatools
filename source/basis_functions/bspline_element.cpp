@@ -323,7 +323,7 @@ auto
 BSplineElement<dim, range, rank>::
 evaluate_univariate_derivatives_at_points(
     const int deriv_order,
-    const SafeSTLArray<vector<Real>,dim> &points) const
+    const SafeSTLArray<SafeSTLVector<Real>,dim> &points) const
 -> ComponentContainer<SafeSTLArray<ValueTable<Real>,dim> >
 {
     TensorSize<dim> n_points_direction;
@@ -391,7 +391,7 @@ BSplineElement<dim, range, rank>::
 evaluate_univariate_derivatives_at_points(const int deriv_order, const Quadrature<dim> &quad) const
 -> ComponentContainer<SafeSTLArray<ValueTable<Real>,dim> >
 {
-    SafeSTLArray<vector<Real>,dim> points_coords;
+    SafeSTLArray<SafeSTLVector<Real>,dim> points_coords;
     for (int i = 0 ; i < dim ; ++i)
         points_coords[i] = quad.get_points().get_data_direction(i);
 
@@ -405,7 +405,7 @@ evaluate_univariate_derivatives_at_points(
     const int deriv_order,
     const ValueVector<Point> &points) const -> ComponentContainer<SafeSTLArray<ValueTable<Real>,dim> >
 {
-    SafeSTLArray<vector<Real>,dim> points_coords;
+    SafeSTLArray<SafeSTLVector<Real>,dim> points_coords;
     for (const auto &pt : points)
         for (int i = 0 ; i < dim ; ++i)
             points_coords[i].push_back(pt[i]);

@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 /*
  *  Test for the l2_projection function.
- *  Bspline spaces, constant function, vector valued case
+ *  Bspline spaces, constant function, SafeSTLVector valued case
  *
  *  author: pauletti
  *  date: 2013-10-31

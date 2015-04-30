@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-//TODO: This test should be splitted in: vector test, matrix test and solver test
+//TODO: This test should be splitted in: SafeSTLVector test, matrix test and solver test
 
 /*
  * Test for developing epetra minimal and efficient linear algebra interaction
@@ -53,10 +53,10 @@ void matrix_map(const int deg, const int n_knots)
     graph->Print(out.get_file_stream());
 
     auto matrix = EpetraTools::create_matrix(graph);
-    auto vector = EpetraTools::create_vector(map);
+    auto SafeSTLVector = EpetraTools::create_vector(map);
 
     matrix->Print(out.get_file_stream());
-    vector->Print(out.get_file_stream());
+    SafeSTLVector->Print(out.get_file_stream());
 
     OUTEND
 }
@@ -114,7 +114,7 @@ void matrix_map2(const int deg, const int n_knots)
 
     std::set<boundary_id>  neu_ids = {1};
     auto neu_dofs = get_boundary_dofs<Space>(space, neu_ids);
-    std::vector<Index> common(dim*range);
+    SafeSTLVector<Index> common(dim*range);
     auto end1 =
         std::set_intersection(neu_dofs.begin(), neu_dofs.end(),
                               dir_dofs.begin(), dir_dofs.end(), common.begin());

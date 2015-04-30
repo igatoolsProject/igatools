@@ -40,7 +40,7 @@ Vector &Vector::operator +=(const Vector &vec)
 
 
 
-void Vector::add_block(const vector<Index> &vec_id,
+void Vector::add_block(const SafeSTLVector<Index> &vec_id,
                        const DenseVector &local_vector)
 {
     const auto   NumEntries = vec_id.size();
@@ -52,12 +52,12 @@ void Vector::add_block(const vector<Index> &vec_id,
 
 
 
-//TODO (pauletti, Apr 3, 2015): both vector<Real> and std::vector<Index>
+//TODO (pauletti, Apr 3, 2015): both SafeSTLVector<Real> and std::vector<Index>
 // should be replace by a typedef and a proper type for fast comuniction with LA
-vector<Real>
+SafeSTLVector<Real>
 Vector::get_local_coeffs(const std::vector<Index> &global_ids) const
 {
-    vector<Real> local_coefs;
+    SafeSTLVector<Real> local_coefs;
     for (const auto &global_id : global_ids)
         local_coefs.emplace_back((*this)[global_id]);
 

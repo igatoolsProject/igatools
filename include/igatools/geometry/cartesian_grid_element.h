@@ -256,7 +256,7 @@ public:
     /**
      * Return the properties defined for the element.
      */
-    vector<std::string> get_defined_properties() const;
+    SafeSTLVector<std::string> get_defined_properties() const;
 
 
     //TODO (martinelli, Apr 16, 2015): maybe the returned value should be Points<topology_dim>, i.e.

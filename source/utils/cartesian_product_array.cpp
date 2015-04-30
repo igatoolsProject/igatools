@@ -82,7 +82,7 @@ CartesianProductArray(const Size size)
 
 template< class T, int rank>
 CartesianProductArray<T,rank>::
-CartesianProductArray(const SafeSTLArray<vector<T>,rank> &data_directions)
+CartesianProductArray(const SafeSTLArray<SafeSTLVector<T>,rank> &data_directions)
 {
     TensorSize<rank> size;
     for (int i=0; i<rank; ++i)
@@ -153,7 +153,7 @@ entry(const int i, const int j) const
 template< class T, int rank>
 void
 CartesianProductArray<T,rank>::
-copy_data_direction(const int i, const vector<T> &data)
+copy_data_direction(const int i, const SafeSTLVector<T> &data)
 {
     data_[i] = data;
     TensorSize<rank> size = this->tensor_size();
@@ -183,10 +183,10 @@ template< class T, int rank>
 auto
 CartesianProductArray<T,rank>::
 get_flat_cartesian_product() const ->
-Conditional<std::is_floating_point<T>::value,ValueVector<point_t>,vector<point_t> >
+Conditional<std::is_floating_point<T>::value,ValueVector<point_t>,SafeSTLVector<point_t> >
 {
     using Container = Conditional<
-    std::is_floating_point<T>::value,ValueVector<point_t>,vector<point_t> >;
+    std::is_floating_point<T>::value,ValueVector<point_t>,SafeSTLVector<point_t> >;
 
     const Size flat_size = this->flat_size();
     Container result(flat_size);
@@ -214,7 +214,7 @@ get_sub_product(const TensorIndex<k> &index) const -> SubProduct<k>
 
 
 template< class T, int rank>
-const vector<T> &
+const SafeSTLVector<T> &
 CartesianProductArray<T,rank>::
 get_data_direction(const int i) const
 {
@@ -226,7 +226,7 @@ template <class T, int rank>
 CartesianProductArray<T, rank+1>
 insert(const CartesianProductArray<T, rank> &orig,
        const int index,
-       const vector<T> &new_vector)
+       const SafeSTLVector<T> &new_vector)
 {
     Assert(index<rank+1, ExcIndexRange(index,0,rank+1));
 

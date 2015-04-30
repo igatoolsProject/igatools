@@ -145,11 +145,11 @@ operator<<(LogStream &out, const TensorIndex<rank> &tensor_index)
 
 
 template<>
-vector<TensorIndex<1>>
-                    tensor_range(TensorIndex<1> first, TensorIndex<1> last)
+SafeSTLVector<TensorIndex<1>>
+                           tensor_range(TensorIndex<1> first, TensorIndex<1> last)
 {
     Assert(first <= last, ExcMessage("first bigger than last"));
-    vector<TensorIndex<1>> result(last[0]-first[0]);
+    SafeSTLVector<TensorIndex<1>> result(last[0]-first[0]);
     for (int i=first[0]; i<last[0]; ++i)
         result[i-first[0]][0] = i;
 
@@ -159,11 +159,11 @@ vector<TensorIndex<1>>
 
 
 template<>
-vector<TensorIndex<0>>
-                    tensor_range(TensorIndex<0> first, TensorIndex<0> last)
+SafeSTLVector<TensorIndex<0>>
+                           tensor_range(TensorIndex<0> first, TensorIndex<0> last)
 {
     Assert(false, ExcNotImplemented());
-    vector<TensorIndex<0>> result;
+    SafeSTLVector<TensorIndex<0>> result;
 
 
     return result;

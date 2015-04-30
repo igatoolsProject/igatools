@@ -25,7 +25,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/linear_algebra/dense_matrix.h>
-#include <igatools/utils/vector.h>
+#include <igatools/utils/safe_stl_vector.h>
 #include <igatools/utils/tensor_index.h>
 #include <igatools/utils/tensor_sized_container.h>
 
@@ -59,7 +59,7 @@ public:
 
 
 private:
-    vector<DenseMatrix> values_;
+    SafeSTLVector<DenseMatrix> values_;
 };
 
 

@@ -35,9 +35,9 @@ template< class T >
 inline
 void
 count_and_remove_duplicates(
-    const vector<T> &vec_with_duplicates,
-    vector<T> &vec_without_duplicates,
-    vector<int> &multiplicities)
+    const SafeSTLVector<T> &vec_with_duplicates,
+    SafeSTLVector<T> &vec_without_duplicates,
+    SafeSTLVector<int> &multiplicities)
 {
     Assert(vec_with_duplicates.empty()==false,ExcEmptyObject());
 

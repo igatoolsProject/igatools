@@ -26,7 +26,7 @@
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
 #include <igatools/base/tensor.h>
-#include <igatools/utils/vector.h>
+#include <igatools/utils/safe_stl_vector.h>
 #include <igatools/utils/tensor_sized_container.h>
 #include <igatools/utils/value_vector.h>
 
@@ -117,7 +117,7 @@ public:
      * Constructor. Construct a rank-dimensional CartesianProductArray where the
      * the i-th direction is initialized to be equal to @p data_directions[i]
      */
-    explicit CartesianProductArray(const SafeSTLArray<vector<T>,rank> &data_directions) ;
+    explicit CartesianProductArray(const SafeSTLArray<SafeSTLVector<T>,rank> &data_directions) ;
 
 
     /**
@@ -184,12 +184,12 @@ public:
      * @note The CartesianProductArray object will be internally resized (if needed)
      * in order to contains all the entries in the input @p data.
      */
-    void copy_data_direction(const int i, const vector<T> &data) ;
+    void copy_data_direction(const int i, const SafeSTLVector<T> &data) ;
 
     /**
      * Get a const-reference to the vector data of the <tt>i</tt>-th direction.
      */
-    const vector<T> &get_data_direction(const int i) const ;
+    const SafeSTLVector<T> &get_data_direction(const int i) const ;
 
     ///@}
 
@@ -245,7 +245,7 @@ public:
      * \{(1,4), (1,3), (2,4), (2, 3)\}
      * \f]
      */
-    Conditional<std::is_floating_point<T>::value,ValueVector<point_t>,vector<point_t> >
+    Conditional<std::is_floating_point<T>::value,ValueVector<point_t>,SafeSTLVector<point_t> >
     get_flat_cartesian_product() const;
     ///@}
 
@@ -269,7 +269,7 @@ protected:
      * data_[i][j] refers to the j-th data element  along the
      * i-th coordinate direction.
      */
-    SafeSTLArray<vector<T>,rank> data_ ;
+    SafeSTLArray<SafeSTLVector<T>,rank> data_ ;
 };
 
 
@@ -281,7 +281,7 @@ template <class T, int rank>
 CartesianProductArray<T, rank+1>
 insert(const CartesianProductArray<T, rank> &orig,
        const int index,
-       const vector<T> &new_vector);
+       const SafeSTLVector<T> &new_vector);
 
 
 IGA_NAMESPACE_CLOSE

@@ -129,7 +129,7 @@ public:
     Quadrature(const PointVector &points);
 
     Quadrature(const TensorSize<dim> &num_points,
-               void (*)(int, iga::vector<double> &, iga::vector<double> &));
+               void (*)(int, iga::SafeSTLVector<double> &, iga::SafeSTLVector<double> &));
     /**
      * Tensor product constructor
      */
@@ -242,7 +242,7 @@ public:
     /**
      * Returns coordinates of the points along the <tt>i</tt>-th direction.
      */
-    const vector<Real> &get_coords_direction(const int i) const;
+    const SafeSTLVector<Real> &get_coords_direction(const int i) const;
 
     const PointArray &get_points_1d() const;
 
@@ -327,7 +327,7 @@ private:
     /**
      * Map between the point (flat) ids and its coordinates ids.
      */
-    vector<TensorIndex<dim_>> map_point_id_to_coords_id_;
+    SafeSTLVector<TensorIndex<dim_>> map_point_id_to_coords_id_;
 
     // TODO (pauletti, Mar 6, 2015): should be const
     bool is_tensor_product_;

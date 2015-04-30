@@ -114,7 +114,7 @@ public:
     void reset_selected_elements(
         const ValueFlags &flag,
         const Quadrature<k> &eval_pts,
-        const vector<Index> &elements_flat_id);
+        const SafeSTLVector<Index> &elements_flat_id);
 
 
     /**

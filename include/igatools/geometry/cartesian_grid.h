@@ -239,7 +239,7 @@ protected:
 
     /**
      * Construct a cartesian grid where the knot coordinate in each
-     * direction is provided as SafeSTLArray of vector<Real>.
+     * direction is provided as SafeSTLArray of SafeSTLVector<Real>.
      *
      * The knot coordinate in each direction must be sorted and without
      * repetition.
@@ -247,7 +247,7 @@ protected:
      * is perform and if not satistified an exception is raised.
      */
     explicit
-    CartesianGrid(const SafeSTLArray<vector<Real>,dim_> &knot_coordinates);
+    CartesianGrid(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knot_coordinates);
 
 public:
     /**
@@ -299,7 +299,7 @@ public:
 
     /**
      * Construct a cartesian grid where the knot coordinate in each
-     * direction is provided as SafeSTLArray of vector<Real>.
+     * direction is provided as SafeSTLArray of SafeSTLVector<Real>.
      *
      * The knot coordinate in each direction must be sorted and without
      * repetition.
@@ -308,7 +308,7 @@ public:
      * is perform and if not satisfied an exception is raised.
      */
     static std::shared_ptr<self_t>
-    create(const SafeSTLArray<vector<Real>,dim_> &knot_coordinates);
+    create(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knot_coordinates);
 
     static std::shared_ptr<self_t>
     create(const BBox<dim_> &end_points, const Size n_knots);
@@ -377,7 +377,7 @@ public:
     /**
      * Returns the knot coordinates along the direction @p i.
      */
-    vector<Real> const &get_knot_coordinates(const int i) const;
+    SafeSTLVector<Real> const &get_knot_coordinates(const int i) const;
 
     /**
      * Returns the knot coordinates along all the directions (const version).
@@ -504,7 +504,7 @@ public:
      *
      * @endcode
      */
-    std::map<ElementIterator, vector<int> >
+    std::map<ElementIterator, SafeSTLVector<int> >
     find_elements_of_points(const ValueVector<Points<dim_>> &points) const;
 
     /**
@@ -514,7 +514,7 @@ public:
      * @note If the point is lying exactly on knot line(s),
      * then the point can have intersection with multiple elements.
      */
-    vector<Index>
+    SafeSTLVector<Index>
     find_elements_id_of_point(const Points<dim_> &point) const;
 
 
@@ -548,7 +548,7 @@ private:
     /** Type for the insert_knots signal. */
     using signal_insert_knots_t =
         boost::signals2::signal<
-        void (const SafeSTLArray<vector<Real>,dim_> &new_knots,const CartesianGrid<dim_> &old_grid)>;
+        void (const SafeSTLArray<SafeSTLVector<Real>,dim_> &new_knots,const CartesianGrid<dim_> &old_grid)>;
 
 public:
     /** Slot type for the refinement signal. */
@@ -612,7 +612,7 @@ public:
      * Insert the @p knots_to_insert to the grid and to the object that are using the grid.
      * @note The @p knots_to_insert may contain multiple knot values in each direction.
      */
-    void insert_knots(SafeSTLArray<vector<Real>,dim_> &knots_to_insert);
+    void insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert);
 
     /**
      * Returns the grid before the last refinement. If no refinement is
@@ -716,7 +716,7 @@ private:
      * referred to a CartesianGrid built as a refinement of the current one using
      * @p n_sub_elems for each element.
      */
-    vector<Index> get_sub_elements_id(const TensorSize<dim_> &n_sub_elems, const Index elem_id) const;
+    SafeSTLVector<Index> get_sub_elements_id(const TensorSize<dim_> &n_sub_elems, const Index elem_id) const;
 
 
     /**

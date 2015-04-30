@@ -24,7 +24,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
-#include <igatools/utils/vector.h>
+#include <igatools/utils/safe_stl_vector.h>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 
@@ -91,7 +91,7 @@ public:
      */
     DenseMatrix inverse(Real &det) const;
 
-    vector<Real> eigen_values() const;
+    SafeSTLVector<Real> eigen_values() const;
 
     Real determinant() const;
 

@@ -135,7 +135,7 @@ template <int rank>
 inline
 TensorIndex<rank>
 MultiArrayUtils<rank>::
-get_tensor_entry(const SafeSTLArray< vector<Index>, rank> &data,
+get_tensor_entry(const SafeSTLArray< SafeSTLVector<Index>, rank> &data,
                  const Index flat_index, const TensorIndex<rank> &weight) noexcept
 {
     TensorIndex<rank> entry;

@@ -64,7 +64,7 @@ test()
     shared_ptr<const Function<dim,0,dim,2>> tensor_function = TensorFunc::create(grid,identity_function,tensor_value);
 #endif
 
-    vector<Real> cell_data(grid->get_num_all_elems());
+    SafeSTLVector<Real> cell_data(grid->get_num_all_elems());
     int n=1;
     for (auto elem : *grid)
     {

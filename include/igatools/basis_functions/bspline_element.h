@@ -130,7 +130,7 @@ private:
      * at the quadrature points.
      * BasisValues1d[k] is a (p+1) x n_qp matrix
      */
-    using BasisValues1d = vector<DenseMatrix>;
+    using BasisValues1d = SafeSTLVector<DenseMatrix>;
 
 protected:
     /**

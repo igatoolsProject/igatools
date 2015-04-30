@@ -99,7 +99,7 @@ reset(const ValueFlags &flag, const eval_pts_variant &eval_pts)
     this->reset_selected_elements(
         flag,
         eval_pts,
-        vector<int>(elems_id.begin(),elems_id.end()));
+        SafeSTLVector<int>(elems_id.begin(),elems_id.end()));
 }
 
 
@@ -112,7 +112,7 @@ reset_one_element(
     const eval_pts_variant &eval_points,
     const int elem_flat_id)
 {
-    this->reset_selected_elements(flag,eval_points,vector<int>(1,elem_flat_id));
+    this->reset_selected_elements(flag,eval_points,SafeSTLVector<int>(1,elem_flat_id));
 }
 
 

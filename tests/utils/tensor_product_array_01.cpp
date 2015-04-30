@@ -84,7 +84,7 @@ void do_test()
 
 
     out << "Testing the insert() function" << endl;
-    vector<Real> new_values = {-2.0,-1.0};
+    SafeSTLVector<Real> new_values = {-2.0,-1.0};
     TensorProductArray<dim> data5 = insert(data4, dim-1,new_values);
     data5.print_info(out);
     out << endl;

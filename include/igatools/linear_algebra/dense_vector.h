@@ -64,7 +64,7 @@ public:
     void print_info(LogStream &out) const
     {
         Assert(false,ExcNotImplemented());
-        // out << vector<Real>::vector(*this);
+        // out << SafeSTLVector<Real>::SafeSTLVector(*this);
     }
 
     /** Returns the number of entries in the DenseVector. */

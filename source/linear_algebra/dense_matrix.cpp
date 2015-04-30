@@ -82,15 +82,15 @@ size2() const
 }
 
 
-vector<Real> DenseMatrix::eigen_values() const
+SafeSTLVector<Real> DenseMatrix::eigen_values() const
 {
     Assert(this->size1()==this->size2(), ExcMessage("Should be square"));
 
     Teuchos::LAPACK<int, double> lapack;
     const int n = this->size1();
     BoostMatrix A(*this);
-    vector<Real> e_values_re(n);
-    vector<Real> e_values_im(n);
+    SafeSTLVector<Real> e_values_re(n);
+    SafeSTLVector<Real> e_values_im(n);
     double e_v[6];
     int info;
     double ws[3*n];

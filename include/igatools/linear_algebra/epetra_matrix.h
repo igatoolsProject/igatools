@@ -39,8 +39,8 @@ class  Matrix : public Epetra_CrsMatrix
 public:
     using Epetra_CrsMatrix::Epetra_CrsMatrix;
 
-    void add_block(const vector<Index> &rows_id,
-                   const vector<Index> &cols_id,
+    void add_block(const SafeSTLVector<Index> &rows_id,
+                   const SafeSTLVector<Index> &cols_id,
                    const DenseMatrix &loc_matrix);
 
     void print_info(LogStream &out) const;

@@ -58,7 +58,7 @@ void bspline_map(const int deg = 2)
     CartesianProductArray<Real , dim> coord ;
     for (int i = 0; i < dim; ++i)
     {
-        vector<Real> tmp_coord;
+        SafeSTLVector<Real> tmp_coord;
         for (int j = 0; j < n_knots; ++j)
             tmp_coord.push_back(j);
         coord.copy_data_direction(i,tmp_coord);

@@ -99,7 +99,7 @@ public:
 
     void reset_selected_elements(const ValueFlags &flag,
                                  const eval_pts_variant &eval_pts,
-                                 const vector<Index> &elements_flat_id);
+                                 const SafeSTLVector<Index> &elements_flat_id);
 
     void init_cache(ElementAccessor &elem, const topology_variant &k) override;
 
@@ -147,7 +147,7 @@ private:
         /**
          * Elements to reset.
          */
-        const vector<Index> *elements_flat_id_;
+        const SafeSTLVector<Index> *elements_flat_id_;
     };
 
 
@@ -226,7 +226,7 @@ private:
         typename Space::ElementHandler *space_handler_;
         ElementAccessor *func_elem_;
         typename Space::ElementAccessor *space_elem_;
-        vector<Real> *loc_coeff_;
+        SafeSTLVector<Real> *loc_coeff_;
         std::string const *property_;
     };
 
@@ -238,7 +238,7 @@ private:
     void create_connection_for_insert_knots(std::shared_ptr<self_t> ig_function);
 
     void rebuild_after_insert_knots(
-        const SafeSTLArray<vector<Real>,dim> &knots_to_insert,
+        const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
         const CartesianGrid<dim> &old_grid);
 #endif
 

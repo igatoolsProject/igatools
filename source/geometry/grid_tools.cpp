@@ -43,7 +43,7 @@ build_map_elements_between_cartesian_grids(const CartesianGrid<dim> &grid_fine,
     //---------------------------------------------------------
 
     //---------------------------------------------------------
-    SafeSTLArray<vector<int>,dim> map_interv_fid_fine_coarse;
+    SafeSTLArray<SafeSTLVector<int>,dim> map_interv_fid_fine_coarse;
     for (int i = 0 ; i < dim ; ++i)
     {
         const auto &coords_coarse = grid_coarse.get_knot_coordinates(i);
@@ -121,7 +121,7 @@ build_cartesian_grid_union(
 
     //---------------------------------------------------------
     // getting the coordinates from the two grids and building the grid union
-    SafeSTLArray<vector<Real>,dim> knots_union;
+    SafeSTLArray<SafeSTLVector<Real>,dim> knots_union;
     for (int i = 0 ; i < dim ; ++i)
     {
         const auto &coords_grid_1 = grid_1.get_knot_coordinates(i);

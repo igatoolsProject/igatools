@@ -25,7 +25,7 @@
 
 #include <igatools/linear_algebra/dense_vector.h>
 #include <igatools/linear_algebra/dense_matrix.h>
-#include <igatools/utils/vector.h>
+#include <igatools/utils/safe_stl_vector.h>
 
 #include <Epetra_SerialComm.h>
 #include <Epetra_Map.h>
@@ -49,7 +49,7 @@ MapPtr create_map(const SpacePtr space,
     const auto dof_dist = space->get_dof_distribution();
     const auto dofs = dof_dist->get_dofs_id_same_property(property);
     //TODO (pauletti, Mar 28, 2015): this is double copy of data
-    const vector<Index> dofs_vec(dofs.begin(), dofs.end());
+    const SafeSTLVector<Index> dofs_vec(dofs.begin(), dofs.end());
     auto map = std::make_shared<Map>(-1, dofs_vec.size(), dofs_vec.data(), 0, comm);
     return map;
 }

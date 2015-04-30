@@ -43,9 +43,9 @@ using space_tools::get_boundary_dofs;
 
 template <int dim, int range=1, int rank=1, int codim = 0>
 shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>>
-create_space(shared_ptr<CartesianGrid<dim>> grid,
-             shared_ptr<MapFunction<dim,dim+codim>> map_func,
-             const int deg=1)
+        create_space(shared_ptr<CartesianGrid<dim>> grid,
+                     shared_ptr<MapFunction<dim,dim+codim>> map_func,
+                     const int deg=1)
 {
     using BspSpace = BSplineSpace<dim, range, rank>;
     using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
@@ -72,9 +72,9 @@ enum  bc : boundary_id
 
 template <int dim, int range=1, int rank=1, int codim = 0>
 shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>>
-create_space_prop(shared_ptr<CartesianGrid<dim>> grid,
-             shared_ptr<MapFunction<dim,dim+codim>> map_func,
-             const int deg=1)
+        create_space_prop(shared_ptr<CartesianGrid<dim>> grid,
+                          shared_ptr<MapFunction<dim,dim+codim>> map_func,
+                          const int deg=1)
 {
     const int neu_face = 0;
     grid->set_boundary_id(neu_face, bc::neu);
@@ -93,10 +93,10 @@ create_space_prop(shared_ptr<CartesianGrid<dim>> grid,
 
     std::set<boundary_id>  neu_ids = {bc::neu};
     auto neu_dofs = get_boundary_dofs<Space>(space, neu_ids);
-    std::vector<Index> common(dim*range);
+    SafeSTLVector<Index> common(dim*range);
     auto end1 =
-            std::set_intersection(neu_dofs.begin(), neu_dofs.end(),
-                                  dir_dofs.begin(), dir_dofs.end(), common.begin());
+        std::set_intersection(neu_dofs.begin(), neu_dofs.end(),
+                              dir_dofs.begin(), dir_dofs.end(), common.begin());
     common.resize(end1-common.begin());
     for (auto &id : common)
         neu_dofs.erase(id);
@@ -138,7 +138,7 @@ void elem_values(shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::
     sp_values.template init_cache<k>(*elem);
     for (; elem != end; ++elem)
     {
-        if ((no_boundary) || (elem->is_boundary()) )
+        if ((no_boundary) || (elem->is_boundary()))
         {
             out.begin_item("Element " + std::to_string(elem->get_flat_index()));
             for (auto &s_id : UnitElement<dim>::template elems_ids<k>())

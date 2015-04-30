@@ -132,7 +132,7 @@ template<int dim, int range, int rank>
 void
 SplineSpace<dim, range, rank>::
 rebuild_after_insert_knots(
-    const SafeSTLArray<vector<Real>,dim> &knots_to_insert,
+    const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
     const CartesianGrid<dim> &old_grid)
 {
     const auto refined_grid = this->get_grid();
@@ -188,7 +188,7 @@ rebuild_after_insert_knots(
             Assert(n_internal_knots_old == interior_mult_comp_dir.size(),
                    ExcDimensionMismatch(n_internal_knots_old,interior_mult_comp_dir.size()));
 
-            vector<Real> new_internal_knots(knots_to_insert[dir]);
+            SafeSTLVector<Real> new_internal_knots(knots_to_insert[dir]);
             for (int i = 0 ; i < n_internal_knots_old ; ++i)
             {
                 new_internal_knots.insert(new_internal_knots.end(),
@@ -197,8 +197,8 @@ rebuild_after_insert_knots(
             }
             std::sort(new_internal_knots.begin(),new_internal_knots.end());
 
-            vector<Real> new_internal_knots_unique;
-            vector<int> new_internal_mult_dir;
+            SafeSTLVector<Real> new_internal_knots_unique;
+            SafeSTLVector<int> new_internal_mult_dir;
             vector_tools::count_and_remove_duplicates(
                 new_internal_knots,
                 new_internal_knots_unique,
@@ -320,7 +320,7 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
             const int K = std::accumulate(mult.begin(),mult.end(),0);
 
 
-            vector<Real> rep_knots(2*order+K);
+            SafeSTLVector<Real> rep_knots(2*order+K);
 
             auto rep_it = rep_knots.begin() + m;
             auto m_it = mult.begin();
@@ -469,7 +469,7 @@ accumulated_interior_multiplicities() const -> MultiplicityTable
             // Assert(!periodic_[iComp][j], ExcMessage("periodic needs to be implemented"));
             const auto &mult = mult_comp.get_data_direction(j);
 
-            vector<Size> accum_mult;
+            SafeSTLVector<Size> accum_mult;
             const int size = mult.size();
             accum_mult.reserve(size + 1);
             accum_mult.push_back(0);
@@ -513,9 +513,9 @@ get_multiplicity_from_regularity(const InteriorReg reg,
 
             const auto size = n_elem[dir]-1;
 
-            vector<Size> mult(size);
+            SafeSTLVector<Size> mult(size);
             if (size>0)
-                res[comp].copy_data_direction(dir, vector<Size>(size, val));
+                res[comp].copy_data_direction(dir, SafeSTLVector<Size>(size, val));
         }
     return res;
 }
@@ -592,7 +592,7 @@ get_components_map() const -> const SafeSTLArray<Index,n_components> &
 template<int dim, int range, int rank>
 auto
 SplineSpace<dim, range, rank>::
-get_active_components_id() const -> const vector<Index> &
+get_active_components_id() const -> const SafeSTLVector<Index> &
 {
     return interior_mult_.get_active_components_id();
 }

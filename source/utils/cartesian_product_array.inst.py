@@ -40,7 +40,7 @@ for dim in inst.all_domain_dims:
 #matrix = 'DenseMatrix'
 matrix = 'BernsteinOperator'
 types = (matrix, "const %s *" %matrix, ) + \
-	('vector<%s>' %matrix, 'const vector<%s> *' %matrix)
+	('SafeSTLVector<%s>' %matrix, 'const SafeSTLVector<%s> *' %matrix)
 ma_list = ['CartesianProductArray<%s,%d>' %(t,dim) 
            for dim in inst.all_domain_dims for t in types]
 
@@ -54,5 +54,5 @@ for dim in inst.all_domain_dims:
 		for type in types:
 			ret_type = 'CartesianProductArray<%s,%d>' %(type,dim)
 			arg_type = 'CartesianProductArray<%s,%d>' %(type,dim-1)
-			f.write('template %s insert(const %s &,const int,const vector<%s>&); \n' % (ret_type,arg_type,type))
+			f.write('template %s insert(const %s &,const int,const SafeSTLVector<%s>&); \n' % (ret_type,arg_type,type))
 

@@ -206,7 +206,7 @@ template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 get_face_space(const Index face_id,
-               vector<Index> &face_to_element_dofs) const -> shared_ptr<FaceSpace>
+               SafeSTLVector<Index> &face_to_element_dofs) const -> shared_ptr<FaceSpace>
 {
     auto elem_map = std::make_shared<typename GridType::FaceGridMap >();
     auto face_ref_sp = ref_space_->get_ref_face_space(face_id, face_to_element_dofs, *elem_map);
@@ -236,9 +236,9 @@ void
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 get_element_dofs(
     const CartesianGridElement<dim> &element,
-    vector<Index> &dofs_global,
-    vector<Index> &dofs_local_to_patch,
-    vector<Index> &dofs_local_to_elem,
+    SafeSTLVector<Index> &dofs_global,
+    SafeSTLVector<Index> &dofs_local_to_patch,
+    SafeSTLVector<Index> &dofs_local_to_elem,
     const std::string &dofs_property) const
 {
     return ref_space_->get_element_dofs(

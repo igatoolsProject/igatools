@@ -39,13 +39,13 @@ test()
     const Size n_iga_elements = grid->get_num_all_elems();
     const Size n_points_iga_element = writer.get_num_points_per_iga_element();
 
-    using Vec = vector<Real>;
-    using VecOfVec = vector<Vec>;
-    vector<VecOfVec> data_scalar(n_iga_elements,VecOfVec(n_points_iga_element, Vec(1)));
+    using Vec = SafeSTLVector<Real>;
+    using VecOfVec = SafeSTLVector<Vec>;
+    SafeSTLVector<VecOfVec> data_scalar(n_iga_elements,VecOfVec(n_points_iga_element, Vec(1)));
 
-    vector<VecOfVec> data_vector(n_iga_elements,VecOfVec(n_points_iga_element, Vec(dim)));
+    SafeSTLVector<VecOfVec> data_vector(n_iga_elements,VecOfVec(n_points_iga_element, Vec(dim)));
 
-    vector<VecOfVec> data_tensor(n_iga_elements,VecOfVec(n_points_iga_element, Vec(dim * dim)));
+    SafeSTLVector<VecOfVec> data_tensor(n_iga_elements,VecOfVec(n_points_iga_element, Vec(dim * dim)));
 
     for (int i_el = 0; i_el < n_iga_elements; ++i_el)
     {

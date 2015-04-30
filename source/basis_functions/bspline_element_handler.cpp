@@ -47,10 +47,10 @@ namespace
  *
  */
 template<int size>
-vector<TensorIndex<size> >
+SafeSTLVector<TensorIndex<size> >
 partition(const int n)
 {
-    vector<TensorIndex<size>> v;
+    SafeSTLVector<TensorIndex<size>> v;
     TensorIndex<size> arr(0);
 
     arr[0] = n;
@@ -70,20 +70,20 @@ partition(const int n)
 }
 
 template<>
-vector<TensorIndex<1> >
+SafeSTLVector<TensorIndex<1> >
 partition<1>(const int n)
 {
     TensorIndex<1> arr(n);
-    return vector<TensorIndex<1>>(1,arr);
+    return SafeSTLVector<TensorIndex<1>>(1,arr);
 }
 
 
 
 template<>
-vector<TensorIndex<0> >
+SafeSTLVector<TensorIndex<0> >
 partition<0>(const int n)
 {
-    return vector<TensorIndex<0>>();
+    return SafeSTLVector<TensorIndex<0>>();
 }
 
 
@@ -114,7 +114,7 @@ public:
             }
 
             auto ind = sequence<order>();
-            vector<TensorIndex<order>> v;
+            SafeSTLVector<TensorIndex<order>> v;
             do
             {
                 TensorIndex<order> ti;
@@ -149,7 +149,7 @@ public:
 
     SafeSTLArray<TensorIndex<order>, num_entries_eval> eval_indices;
 
-    SafeSTLArray<vector<TensorIndex<order>>, num_entries_eval> copy_indices;
+    SafeSTLArray<SafeSTLVector<TensorIndex<order>>, num_entries_eval> copy_indices;
 
 };
 
@@ -200,7 +200,7 @@ void
 BSplineElementHandler<dim_, range_, rank_>::
 resize_and_fill_bernstein_values(
     const int deg,
-    const vector<Real> &pt_coords,
+    const SafeSTLVector<Real> &pt_coords,
     BasisValues1d &bernstein_values)
 {
     bernstein_values.resize(max_der, deg+1, pt_coords.size());
@@ -307,7 +307,7 @@ operator()(const Quadrature<sub_elem_dim> &quad1)
 
             if (intervals_id.front() == id_interval_left) // processing the leftmost interval
             {
-                vector<Real> pt_coords_left(n_coords[dir]);
+                SafeSTLVector<Real> pt_coords_left(n_coords[dir]);
 
                 for (auto comp : bernstein_values_left.get_active_components_id())
                 {
@@ -324,7 +324,7 @@ operator()(const Quadrature<sub_elem_dim> &quad1)
 
             if (intervals_id.back() == id_interval_right) // processing the rightmost interval
             {
-                vector<Real> pt_coords_right(n_coords[dir]);
+                SafeSTLVector<Real> pt_coords_right(n_coords[dir]);
 
                 for (auto comp : bernstein_values_right.get_active_components_id())
                 {
@@ -394,7 +394,7 @@ BSplineElementHandler<dim_, range_, rank_>::
 reset_selected_elements(
     const ValueFlags &flag,
     const eval_pts_variant &eval_points,
-    const vector<int> elements_flat_id)
+    const SafeSTLVector<int> elements_flat_id)
 {
     reset_impl_.grid_handler_ = &(this->grid_handler_);
     reset_impl_.flag_ = flag;
@@ -492,7 +492,7 @@ template <int dim, int range, int rank>
 void
 BSplineElementHandler<dim, range, rank>::
 FillCacheDispatcher::
-copy_to_inactive_components_values(const vector<Index> &inactive_comp,
+copy_to_inactive_components_values(const SafeSTLVector<Index> &inactive_comp,
                                    const SafeSTLArray<Index, n_components> &active_map,
                                    ValueTable<Value> &D_phi) const
 {
@@ -526,7 +526,7 @@ template <int order>
 void
 BSplineElementHandler<dim, range, rank>::
 FillCacheDispatcher::
-copy_to_inactive_components(const vector<Index> &inactive_comp,
+copy_to_inactive_components(const SafeSTLVector<Index> &inactive_comp,
                             const SafeSTLArray<Index, n_components> &active_map,
                             ValueTable<Derivative<order>> &D_phi) const
 {

@@ -28,7 +28,7 @@
 
 #include "../tests.h"
 
-#include <igatools/utils/vector.h>
+#include <igatools/utils/safe_stl_vector.h>
 #include <igatools/utils/safe_stl_array.h>
 #include <igatools/utils/tensor_index.h>
 #include <igatools/base/array_utils.h>
@@ -39,10 +39,10 @@
 
 
 template<int size>
-vector<TensorIndex<size>>
-                       partition(const int n)
+SafeSTLVector<TensorIndex<size>>
+                              partition(const int n)
 {
-    vector<TensorIndex<size>> v;
+    SafeSTLVector<TensorIndex<size>> v;
     TensorIndex<size> arr(0);
 
     arr[0] = n;
@@ -62,18 +62,18 @@ vector<TensorIndex<size>>
 }
 
 template<>
-vector<TensorIndex<1>>
-                    partition<1>(const int n)
+SafeSTLVector<TensorIndex<1>>
+                           partition<1>(const int n)
 {
     TensorIndex<1> arr(n);
-    return vector<TensorIndex<1>>(1,arr);
+    return SafeSTLVector<TensorIndex<1>>(1,arr);
 }
 
 //template<>
-//vector<TensorIndex<0>>
+//SafeSTLVector<TensorIndex<0>>
 //partition<0>(const int n)
 //{
-//    return vector<TensorIndex<0>>();
+//    return SafeSTLVector<TensorIndex<0>>();
 //}
 
 
@@ -104,7 +104,7 @@ public:
             }
 
             auto ind = sequence<order>();
-            vector<TensorIndex<order>> v;
+            SafeSTLVector<TensorIndex<order>> v;
             do
             {
                 TensorIndex<order> ti;
@@ -139,7 +139,7 @@ public:
 
     SafeSTLArray<TensorIndex<order>, num_entries_eval> eval_indices;
 
-    SafeSTLArray<vector<TensorIndex<order>>, num_entries_eval> copy_indices;
+    SafeSTLArray<SafeSTLVector<TensorIndex<order>>, num_entries_eval> copy_indices;
 
 };
 

@@ -51,15 +51,15 @@ void norm_difference(const int deg, const int n_knots = 10)
     auto g = functions::ConstantFunction<dim,0,1>::create(grid,
                                                           IdentityFunction<dim>::create(grid), val);
 
-    vector<Real> elem_err(grid->get_num_all_elems());
+    SafeSTLVector<Real> elem_err(grid->get_num_all_elems());
     auto err = space_tools::l2_norm_difference(*f, *g, quad, elem_err);
     out << std::pow(p+1, -dim/p) << "\t" << err << endl;
 
-    vector<Real> elem_err_h1(grid->get_num_all_elems());
+    SafeSTLVector<Real> elem_err_h1(grid->get_num_all_elems());
     auto err_h1 = space_tools::h1_norm_difference(*f, *g, quad, elem_err_h1);
     out <<  err_h1 << endl;
 
-    vector<Real> elem_err_inf(grid->get_num_all_elems());
+    SafeSTLVector<Real> elem_err_inf(grid->get_num_all_elems());
     auto err_inf = space_tools::inf_norm_difference(*f, *g, quad, elem_err_inf);
     out <<  err_inf << endl;
 
@@ -82,7 +82,7 @@ void norm_difference_p(const int deg, const int n_knots, const Real p)
     auto g = functions::ConstantFunction<dim,0,1>::create(grid,
                                                           IdentityFunction<dim>::create(grid), val);
 
-    vector<Real> elem_err(grid->get_num_all_elems());
+    SafeSTLVector<Real> elem_err(grid->get_num_all_elems());
     space_tools::norm_difference<0,dim>(*f, *g, quad, p, elem_err);
 
     Real err = 0;

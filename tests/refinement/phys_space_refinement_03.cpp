@@ -79,7 +79,7 @@ void test_evaluate()
 
     auto ref_space = ReferenceSpace<dim>::create(deg,grid,weights);
 
-    vector<Real> control_pts(ref_space->get_num_basis());
+    SafeSTLVector<Real> control_pts(ref_space->get_num_basis());
 
     if (dim == 1)
     {

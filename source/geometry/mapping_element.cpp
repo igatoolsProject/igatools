@@ -114,7 +114,7 @@ compute_second_fundamental_form() const -> ValueVector<MetricTensor>
 template<int dim_, int codim_>
 auto
 MappingElement<dim_, codim_>::
-get_principal_curvatures() const -> const ValueVector<vector<Real>> &
+get_principal_curvatures() const -> const ValueVector<SafeSTLVector<Real>> &
 {
 #if 0
     Assert(codim==1, ExcNotImplemented());
@@ -124,7 +124,7 @@ get_principal_curvatures() const -> const ValueVector<vector<Real>> &
 
     const auto n_points = H.get_num_points();
 
-    ValueVector<vector<Real>> res(n_points);
+    ValueVector<SafeSTLVector<Real>> res(n_points);
 
     for (int pt = 0; pt < n_points; ++pt)
     {
@@ -206,7 +206,7 @@ clone() const -> std::shared_ptr<self_t>
 //  const auto normal = this->get_external_normals();
 //
 //  const auto n_points = D2_F.get_num_points();
-//  ValueVector<vector<Real>> res(n_points);
+//  ValueVector<SafeSTLVector<Real>> res(n_points);
 //  const auto G_inv = compute_inv_first_fundamental_form();
 //  DenseMatrix A(dim, dim);
 //  for (int pt = 0; pt < n_points; ++pt)

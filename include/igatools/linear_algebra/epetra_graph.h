@@ -41,7 +41,7 @@ create_graph(const RowSpacePtr row_space, const std::string &row_property,
              MapPtr row_map_, MapPtr col_map_)
 {
     const auto n_rows = row_map_->NumMyElements();
-    vector<vector<Index>> loc_dofs(n_rows);
+    SafeSTLVector<SafeSTLVector<Index>> loc_dofs(n_rows);
     auto r_elem = row_space->begin();
     auto c_elem = col_space->begin();
     const auto end = row_space->end();
@@ -56,7 +56,7 @@ create_graph(const RowSpacePtr row_space, const std::string &row_property,
         }
     }
 
-    vector<Size> n_dofs_per_row(n_rows);
+    SafeSTLVector<Size> n_dofs_per_row(n_rows);
     {
         Index j=0;
         for (auto &dofs : loc_dofs)

@@ -84,7 +84,7 @@ DofDistribution(const TensorSizeTable &n_basis,
 
     //-----------------------------------------------------------------------
     // creating the dofs view from the dofs components views -- begin
-    vector<DofsComponentView> components_views;
+    SafeSTLVector<DofsComponentView> components_views;
     for (auto &index_table_comp : index_table_)
         components_views.emplace_back(index_table_comp.get_flat_view());
 

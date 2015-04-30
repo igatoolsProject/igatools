@@ -24,7 +24,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
-#include <igatools/utils/vector.h>
+#include <igatools/utils/safe_stl_vector.h>
 #include <igatools/base/array_utils.h>
 
 IGA_NAMESPACE_OPEN
@@ -191,10 +191,10 @@ operator<<(LogStream &out, const TensorIndex<rank> &tensor_index) ;
  *  @author pauletti 2015
  */
 template<int k>
-vector<TensorIndex<k>> tensor_range(TensorIndex<k> first, TensorIndex<k> last)
+SafeSTLVector<TensorIndex<k>> tensor_range(TensorIndex<k> first, TensorIndex<k> last)
 {
     Assert(first <= last, ExcMessage("first bigger than last"));
-    vector<TensorIndex<k>> result;
+    SafeSTLVector<TensorIndex<k>> result;
     TensorIndex<k-1> ind(sequence<k-1>());
     auto vec = tensor_range<k-1>(first.get_sub_tensor(ind), last.get_sub_tensor(ind));
 
@@ -213,10 +213,10 @@ vector<TensorIndex<k>> tensor_range(TensorIndex<k> first, TensorIndex<k> last)
 }
 
 template<>
-vector<TensorIndex<1>> tensor_range(TensorIndex<1> first, TensorIndex<1> last);
+SafeSTLVector<TensorIndex<1>> tensor_range(TensorIndex<1> first, TensorIndex<1> last);
 
 template<>
-vector<TensorIndex<0>> tensor_range(TensorIndex<0> first, TensorIndex<0> last);
+SafeSTLVector<TensorIndex<0>> tensor_range(TensorIndex<0> first, TensorIndex<0> last);
 
 IGA_NAMESPACE_CLOSE
 

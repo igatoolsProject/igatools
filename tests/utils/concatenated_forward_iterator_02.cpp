@@ -20,7 +20,7 @@
 /*
  *
  * Test for the Concatenated iterator class, using as base iterator the
- * vector<int>::iterator.
+ * SafeSTLVector<int>::iterator.
  *
  * martinelli
  * 30 May 2014
@@ -49,10 +49,10 @@ do_test_1()
     using VecView = MView<VecIt,VecConstIt>;
     using VecConstView = ConstView<VecIt,VecConstIt>;
 
-    vector<VecConstView> ranges;
+    SafeSTLVector<VecConstView> ranges;
 
     int n_spaces = 3;
-    vector<shared_ptr<RefSpace>> ref_spaces(n_spaces);
+    SafeSTLVector<shared_ptr<RefSpace>> ref_spaces(n_spaces);
 
 
     int dofs_offset = 0;
@@ -107,15 +107,15 @@ do_test_2()
     using Grid = CartesianGrid<dim>;
     using RefSpace = BSplineSpace<dim>;
     using DMA = DynamicMultiArray<Index,dim>;
-    using VecIt = typename vector<Index>::iterator;
-    using VecConstIt = typename vector<Index>::const_iterator;
+    using VecIt = typename SafeSTLVector<Index>::iterator;
+    using VecConstIt = typename SafeSTLVector<Index>::const_iterator;
     using VecView = MView<VecIt,VecConstIt>;
     using VecConstView = ConstView<VecIt,VecConstIt>;
 
-    vector<VecConstView> ranges;
+    SafeSTLVector<VecConstView> ranges;
 
     int n_spaces = 3;
-    vector<shared_ptr<RefSpace>> ref_spaces(n_spaces);
+    SafeSTLVector<shared_ptr<RefSpace>> ref_spaces(n_spaces);
 
 
     int dofs_offset = 0;

@@ -26,7 +26,7 @@
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
 #include <igatools/utils/container_view.h>
-#include <igatools/utils/vector.h>
+#include <igatools/utils/safe_stl_vector.h>
 
 
 IGA_NAMESPACE_OPEN
@@ -46,7 +46,7 @@ public:
     using value_type = typename Iterator::value_type;
 
 
-    vector<ViewType> get_ranges() const;
+    SafeSTLVector<ViewType> get_ranges() const;
 
     int get_range_id() const;
 
@@ -114,7 +114,7 @@ public:
 protected:
     ConcatenatedIteratorData();
 
-    ConcatenatedIteratorData(const vector<ViewType> &views,const Index index);
+    ConcatenatedIteratorData(const SafeSTLVector<ViewType> &views,const Index index);
 
     ConcatenatedIteratorData(const ConcatenatedIteratorData<ViewType,DerivedClass> &rhs) = default;
 
@@ -139,7 +139,7 @@ protected:
      * in the the form [begin,end), telling which is the begin of the range and which
      * is one-pass-end of the range.
      */
-    vector<ViewType> ranges_;
+    SafeSTLVector<ViewType> ranges_;
 
     /**
      * Index used to specify which range is spanned at a given moment by the
@@ -200,7 +200,7 @@ public:
      * Constructor.
      */
     ConcatenatedIterator(
-        const vector<ViewType> &ranges,
+        const SafeSTLVector<ViewType> &ranges,
         const Index index);
 
     /** Copy constructor. */
@@ -263,10 +263,10 @@ public:
  *
  * For example, if we want to iterate over the entries of the four vectors
  * @code{.cpp}
-   vector<int> v0 = {1,2,3,4};
-   vector<int> v1 = {5,6,7,8,9};
-   vector<int> v2 = {10,11,12};
-   vector<int> v3 = {13};
+   SafeSTLVector<int> v0 = {1,2,3,4};
+   SafeSTLVector<int> v1 = {5,6,7,8,9};
+   SafeSTLVector<int> v2 = {10,11,12};
+   SafeSTLVector<int> v3 = {13};
    @endcode
  * we can use different approaches:
  * - use one range-for-loop for each vector
@@ -296,16 +296,16 @@ public:
  * If we organize the vector or the iterators in another vector, we can reduce the previous 4 loops
  * to two nested loops:
  *@code
-  using IteratorType = vector<int>::const_iterator;
+  using IteratorType = SafeSTLVector<int>::const_iterator;
 
-  vector<IteratorType> begins;
+  SafeSTLVector<IteratorType> begins;
   begins.push_back(v0.cbegin());
   begins.push_back(v1.cbegin());
   begins.push_back(v2.cbegin());
   begins.push_back(v3.cbegin());
 
 
-  vector<IteratorType> begins;
+  SafeSTLVector<IteratorType> begins;
   ends.push_back(v0.cend());
   ends.push_back(v1.cend());
   ends.push_back(v2.cend());
@@ -317,10 +317,10 @@ public:
   @endcode
  *or, more nicely using a vector of iterators pairs:
  *@code
-  using IteratorType = vector<int>::const_iterator;
+  using IteratorType = SafeSTLVector<int>::const_iterator;
   using IteratorPair = std::pair<IteratorType,IteratorType>;
 
-  vector<IteratorPair> ranges;
+  SafeSTLVector<IteratorPair> ranges;
   ranges.push_back(IteratorPair(v0.cbegin(),v0.cend()));
   ranges.push_back(IteratorPair(v1.cbegin(),v1.cend()));
   ranges.push_back(IteratorPair(v2.cbegin(),v2.cend()));
@@ -334,10 +334,10 @@ public:
  * The ConcatenatedConstIterator class permits to iterate over the four vectors
  * (as made in the examples above) in this way:
  *@code
-  using IteratorType = vector<int>::const_iterator;
+  using IteratorType = SafeSTLVector<int>::const_iterator;
   using ViewType = ConstView<IteratorType>;
 
-  vector<IteratorView> ranges;
+  SafeSTLVector<IteratorView> ranges;
   ranges.push_back(ViewType(v0.cbegin(),v0.cend()));
   ranges.push_back(ViewType(v1.cbegin(),v1.cend()));
   ranges.push_back(ViewType(v2.cbegin(),v2.cend()));
@@ -373,7 +373,7 @@ public:
      * Constructor.
      */
     ConcatenatedConstIterator(
-        const vector<ConstViewType> &ranges,
+        const SafeSTLVector<ConstViewType> &ranges,
         const Index index);
 
     /** Builds a ConcatenatedConstIterator from a ConcatenatedIterator.*/

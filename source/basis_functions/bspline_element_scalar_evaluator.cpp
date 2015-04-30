@@ -27,7 +27,7 @@ IGA_NAMESPACE_OPEN
 
 template <int dim>
 BSplineElementScalarEvaluator<dim>::
-BSplineElementScalarEvaluator(const vector<SafeSTLArray<Values1DConstView,dim>> &values1D)
+BSplineElementScalarEvaluator(const SafeSTLVector<SafeSTLArray<Values1DConstView,dim>> &values1D)
     :
     values1D_(values1D)
 {

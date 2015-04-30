@@ -25,7 +25,7 @@ f = data.file_output
 inst = data.inst
 
 normals = ['SafeSTLArray<Points<%d>, %d>' %(x.dim, x.codim) for x in inst.all_mapping_dims]
-curvatures = ['vector<Real>']    
+curvatures = ['SafeSTLVector<Real>']    
 value_vectors=['ValueVector<Real>']
 
 for deriv in inst.derivatives + inst.values + inst.divs:

@@ -22,7 +22,7 @@
 #define __BERNSTEIN_BASIS_H
 
 #include <igatools/base/config.h>
-#include <igatools/utils/vector.h>
+#include <igatools/utils/safe_stl_vector.h>
 #include <boost/numeric/ublas/matrix.hpp>
 
 //TODO: document the implementation and expand introduction
@@ -77,7 +77,7 @@ evaluate(const int p, const Real x) ;
  *
  */
 boost::numeric::ublas::matrix<Real>
-evaluate(const int p, const vector<Real> &x) ;
+evaluate(const int p, const SafeSTLVector<Real> &x) ;
 
 
 /**
@@ -103,7 +103,7 @@ derivative(int k, const int p, const Real x) ;
  *
  */
 boost::numeric::ublas::matrix<Real>
-derivative(int k, const int p, const vector<Real> &x) ;
+derivative(int k, const int p, const SafeSTLVector<Real> &x) ;
 
 
 };

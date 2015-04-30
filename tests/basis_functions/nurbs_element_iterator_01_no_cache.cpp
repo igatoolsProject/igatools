@@ -54,7 +54,7 @@ void test()
     const auto n_scalar_basis = scalar_bsp_space->get_num_basis_table()[0];
 
     using WeightFunc = IgFunction<ReferenceSpace<dim,1,1>>;
-    vector<Real> weights_coef(n_scalar_basis.flat_size(),1.0);
+    SafeSTLVector<Real> weights_coef(n_scalar_basis.flat_size(),1.0);
 
     Epetra_SerialComm comm;
     auto map = create_map(scalar_bsp_space, "active", comm);

@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef VECTOR_H_
-#define VECTOR_H_
+#ifndef SAFE_STL_VECTOR_H_
+#define SAFE_STL_VECTOR_H_
 
 #include <igatools/base/config.h>
 #include <igatools/utils/safe_stl_container.h>
@@ -36,7 +36,7 @@ IGA_NAMESPACE_OPEN
  * it provides bounds checking.
  */
 template<class T>
-class vector :
+class SafeSTLVector :
     public SafeSTLContainer<std::vector<T>>
 {
 public :
@@ -49,4 +49,4 @@ public :
 IGA_NAMESPACE_CLOSE
 
 
-#endif
+#endif // SAFE_STL_VECTOR_H_

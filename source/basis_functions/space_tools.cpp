@@ -135,7 +135,7 @@ namespace space_tools
 Index find_span(
     const int p,
     const Real u,
-    const vector<Real> &U)
+    const SafeSTLVector<Real> &U)
 {
     const Index m = U.size()-1;
     const Index n = m-p;
@@ -169,7 +169,7 @@ integrate_difference(const typename Space::Func &exact_solution,
                      const Quadrature< Space::dim > &quad,
                      const Norm &norm_flag,
                      const Vector<la_pack> &solution_coefs,
-                     vector<Real> &element_error)
+                     SafeSTLVector<Real> &element_error)
 {
     bool is_L2_norm     = contains(norm_flag, Norm::L2);
     bool is_H1_norm     = contains(norm_flag, Norm::H1);
@@ -224,8 +224,8 @@ integrate_difference(const typename Space::Func &exact_solution,
     Assert(true, ExcMessage(" fix next line "));
     //elem->init_cache(flag, quad);
 
-    vector<Real>     norm_err_L2_square(n_elements);
-    vector<Real> seminorm_err_H1_square(n_elements);
+    SafeSTLVector<Real>     norm_err_L2_square(n_elements);
+    SafeSTLVector<Real> seminorm_err_H1_square(n_elements);
 
     for (; elem != end; ++elem)
     {
@@ -294,7 +294,7 @@ projection_l2(const typename Space::Func &func,
     Matrix<la_pack> matrix(*space_manager);
 
     const auto space_dofs_set = space_manager->get_row_dofs();
-    vector<Index> space_dofs(space_dofs_set.begin(),space_dofs_set.end());
+    SafeSTLVector<Index> space_dofs(space_dofs_set.begin(),space_dofs_set.end());
     Vector<la_pack> rhs(space_dofs);
     Vector<la_pack> sol(space_dofs);
 
@@ -384,7 +384,7 @@ project_boundary_values(const typename Space::Func &func,
 
     for (const Index &face_id : faces)
     {
-        vector<Index> dof_map;
+        SafeSTLVector<Index> dof_map;
         auto face_space = space->get_face_space(face_id, dof_map);
 
         Vector<la_pack> proj_on_face =
@@ -426,10 +426,10 @@ void reference_to_element(
 
 
         // get the point coordinates along the i-th direction
-        const vector< Real > pt_coords = points_ref[ iDim ];
+        const SafeSTLVector< Real > pt_coords = points_ref[ iDim ];
 
 
-        const vector< Real > knot_coords = reference_patch.get_knot_coordinates(iDim);
+        const SafeSTLVector< Real > knot_coords = reference_patch.get_knot_coordinates(iDim);
         const Real knot_min = knot_coords.front();
         const Real knot_max = knot_coords.back();
 
@@ -463,11 +463,11 @@ void reference_to_element(
 
     //----------------------------------------------------------------------------------------------
     // scale the points coordinates from the reference domain to the local element
-    SafeSTLArray< vector< Real >, dim > coords_scaled;
+    SafeSTLArray< SafeSTLVector< Real >, dim > coords_scaled;
     for (int iDim = 0; iDim < dim; iDim++)
     {
-        const vector< Real >   pt_coords = points_ref[ iDim ];
-        const vector< Real > knot_coords = reference_patch.get_knot_coordinates(iDim);
+        const SafeSTLVector< Real >   pt_coords = points_ref[ iDim ];
+        const SafeSTLVector< Real > knot_coords = reference_patch.get_knot_coordinates(iDim);
 
 
         for (int iPt = 0; iPt < num_points_dim[ iDim ]; iPt++)

@@ -25,14 +25,14 @@
 #include <igatools/base/logstream.h>
 #include <igatools/utils/value_container.h>
 
-#include <igatools/utils/vector.h>
+#include <igatools/utils/safe_stl_vector.h>
 
 IGA_NAMESPACE_OPEN
 
 /**
  * @brief Container for objects of type T that refers to different evaluation points.
  *
- * This container class is derived from vector<T> with added a
+ * This container class is derived from SafeSTLVector<T> with added a
  * function for printing its elements and a function for the reset of the element entries
  * using the proper default constructor.
  *
@@ -59,10 +59,10 @@ public :
     explicit ValueVector(const Index num_points) ;
 
     /**
-     * Constructor from a vector<T> object.
+     * Constructor from a SafeSTLVector<T> object.
      * Performs a deep copy of the elements in @p vector_in.
      */
-    explicit ValueVector(const vector<T> &vector_in) ;
+    explicit ValueVector(const SafeSTLVector<T> &vector_in) ;
 
 
     /**
@@ -100,7 +100,7 @@ public :
     /**
      * Copy assignment operator. Performs a deep copy of the content of the vector object.
      */
-    ValueVector<T> &operator=(const vector<T> &vector);
+    ValueVector<T> &operator=(const SafeSTLVector<T> &vector);
 
     /**
      * Move assignment operator.

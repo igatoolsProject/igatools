@@ -155,8 +155,8 @@ Writer(const shared_ptr<const MapFunction<dim,dim+codim> > map,
 template<int dim, int codim, class T>
 void Writer<dim, codim, T>::
 fill_points_and_connectivity(
-    vector<vector<SafeSTLArray<T,3> > > &points_in_iga_elements,
-    vector<vector<SafeSTLArray<int,n_vertices_per_vtk_element_> > >
+    SafeSTLVector<SafeSTLVector<SafeSTLArray<T,3> > > &points_in_iga_elements,
+    SafeSTLVector<SafeSTLVector<SafeSTLArray<int,n_vertices_per_vtk_element_> > >
     &vtk_elements_connectivity) const
 {
     map_->reset(ValueFlags::value | ValueFlags::point, *quad_plot_);
@@ -187,8 +187,8 @@ template<int dim, int codim, class T>
 void Writer<dim, codim, T>::
 get_subelements(
     const typename MapFunction<dim,dim+codim>::ElementAccessor &elem,
-    vector< SafeSTLArray<int,n_vertices_per_vtk_element_ > > &vtk_elements_connectivity,
-    vector< SafeSTLArray<T,3> > &points_phys_iga_element) const
+    SafeSTLVector< SafeSTLArray<int,n_vertices_per_vtk_element_ > > &vtk_elements_connectivity,
+    SafeSTLVector< SafeSTLArray<T,3> > &points_phys_iga_element) const
 {
     Assert(Size(points_phys_iga_element.size()) == n_points_per_iga_element_,
            ExcDimensionMismatch(points_phys_iga_element.size(), n_points_per_iga_element_));
@@ -214,7 +214,7 @@ get_subelements(
 
     const int iga_element_id = elem.get_flat_index();
 
-    vector< SafeSTLArray<int,dim> > delta_idx(n_vertices_per_vtk_element_);
+    SafeSTLVector< SafeSTLArray<int,dim> > delta_idx(n_vertices_per_vtk_element_);
 
     if (dim == 1)
     {
@@ -310,7 +310,7 @@ get_subelements(
 template<int dim, int codim, class T>
 void
 Writer<dim, codim, T>::
-add_element_data(const vector<double> &element_data,
+add_element_data(const SafeSTLVector<double> &element_data,
                  const std::string &name)
 {
     cell_data_double_.emplace_back(CellData<double>(element_data, name));
@@ -335,7 +335,7 @@ add_element_data(const vector<double> &element_data,
 template<int dim, int codim, class T>
 void
 Writer<dim, codim, T>::
-add_element_data(const vector<int> &element_data,
+add_element_data(const SafeSTLVector<int> &element_data,
                  const std::string &name)
 {
     cell_data_int_.emplace_back(CellData<int>(element_data, name));
@@ -362,7 +362,7 @@ void
 Writer<dim, codim, T>::
 add_point_data(const int n_values_per_point,
                const std::string &type,
-               const vector<vector<vector<T>>> &data_iga_elements,
+               const SafeSTLVector<SafeSTLVector<SafeSTLVector<T>>> &data_iga_elements,
                const std::string &name)
 {
     Assert(data_iga_elements.size() == n_iga_elements_,
@@ -370,7 +370,7 @@ add_point_data(const int n_values_per_point,
     Assert(type == "scalar" || type == "vector" || type == "tensor",
            ExcMessage("The point_data type can only be \"scalar\", \"vector\" or \"tensor\" (and not \"" + type + "\")"));
 
-    shared_ptr<vector<T>> data_ptr(new vector<T>(n_iga_elements_ * n_points_per_iga_element_ * n_values_per_point));
+    shared_ptr<SafeSTLVector<T>> data_ptr(new SafeSTLVector<T>(n_iga_elements_ * n_points_per_iga_element_ * n_values_per_point));
     auto &data = *data_ptr;
 
     Index pos = 0;
@@ -423,10 +423,10 @@ save(const string &filename, const string &format) const
            ExcMessage("Unsupported format."));
     //--------------------------------------------------------------------------
 
-    vector< vector< SafeSTLArray<T,3> > >
-    points_in_iga_elements(n_iga_elements_, vector< SafeSTLArray<T,3> >(n_points_per_iga_element_));
+    SafeSTLVector< SafeSTLVector< SafeSTLArray<T,3> > >
+    points_in_iga_elements(n_iga_elements_, SafeSTLVector< SafeSTLArray<T,3> >(n_points_per_iga_element_));
 
-    vector< vector< SafeSTLArray< int, n_vertices_per_vtk_element_> > >
+    SafeSTLVector< SafeSTLVector< SafeSTLArray< int, n_vertices_per_vtk_element_> > >
     vtk_elements_connectivity(n_iga_elements_);
     for (auto &iga_elem_connectivity : vtk_elements_connectivity)
         iga_elem_connectivity.resize(n_vtk_elements_per_iga_element_);
@@ -455,8 +455,8 @@ template<int dim, int codim, class T>
 template<class Out>
 void Writer<dim, codim, T>::
 save_ascii(Out &file,
-           const vector< vector< SafeSTLArray<T,3> > > &points_in_iga_elements,
-           const vector< vector< SafeSTLArray<int,n_vertices_per_vtk_element_> > >
+           const SafeSTLVector< SafeSTLVector< SafeSTLArray<T,3> > > &points_in_iga_elements,
+           const SafeSTLVector< SafeSTLVector< SafeSTLArray<int,n_vertices_per_vtk_element_> > >
            &vtk_elements_connectivity) const
 {
     const string tab1("\t");
@@ -615,8 +615,8 @@ save_ascii(Out &file,
 template<int dim, int codim, class T>
 void Writer<dim, codim, T>::
 save_appended(const string &filename,
-              const vector< vector< SafeSTLArray<T,3> > > &points_in_iga_elements,
-              const vector< vector< SafeSTLArray< int,n_vertices_per_vtk_element_> > >
+              const SafeSTLVector< SafeSTLVector< SafeSTLArray<T,3> > > &points_in_iga_elements,
+              const SafeSTLVector< SafeSTLVector< SafeSTLArray< int,n_vertices_per_vtk_element_> > >
               &vtk_elements_connectivity) const
 {
     ofstream file(filename);
@@ -688,7 +688,7 @@ save_appended(const string &filename,
         point_data_optional_attr+= "\"";
     }
 
-    vector<int> n_bytes_point_data;
+    SafeSTLVector<int> n_bytes_point_data;
     file << tab3 << "<PointData" << point_data_optional_attr << ">" << endl;
     for (const auto &point_data : fields_)
     {
@@ -732,7 +732,7 @@ save_appended(const string &filename,
 
     file << tab3 << "<CellData" << cell_data_optional_attr << ">" << endl;
 
-    vector<int> n_bytes_cell_data_double;
+    SafeSTLVector<int> n_bytes_cell_data_double;
     for (const auto &cell_data : cell_data_double_)
     {
         file << tab4 << "<DataArray Name=\"" << cell_data.name_
@@ -744,7 +744,7 @@ save_appended(const string &filename,
         offset += sizeof_int_ + n_bytes_cell_data_double.back();
     }
 
-    vector<int> n_bytes_cell_data_int;
+    SafeSTLVector<int> n_bytes_cell_data_int;
     for (const auto &cell_data : cell_data_int_)
     {
         file << tab4 << "<DataArray Name=\"" << cell_data.name_
@@ -825,7 +825,7 @@ save_appended(const string &filename,
 
         const int n_values = cell_data_double_[i].values_->size();
         //here we convert the type double in CellData.values_ to type T
-        vector<T> buffer(n_values);
+        SafeSTLVector<T> buffer(n_values);
         for (int j = 0; j < n_values; ++j)
             buffer[j] = (*cell_data_double_[i].values_)[j];
 
@@ -856,10 +856,10 @@ save_appended(const string &filename,
 template<int dim, int codim, class T>
 void Writer<dim, codim, T>::print_info(LogStream &out) const
 {
-    vector< vector< SafeSTLArray<T,3> > >
-    points_in_iga_elements(n_iga_elements_, vector< SafeSTLArray<T,3> >(n_points_per_iga_element_));
+    SafeSTLVector< SafeSTLVector< SafeSTLArray<T,3> > >
+    points_in_iga_elements(n_iga_elements_, SafeSTLVector< SafeSTLArray<T,3> >(n_points_per_iga_element_));
 
-    vector< vector< SafeSTLArray< int, n_vertices_per_vtk_element_> > >
+    SafeSTLVector< SafeSTLVector< SafeSTLArray< int, n_vertices_per_vtk_element_> > >
     vtk_elements_connectivity(n_iga_elements_);
     for (auto &iga_elem_connectivity : vtk_elements_connectivity)
         iga_elem_connectivity.resize(n_vtk_elements_per_iga_element_);

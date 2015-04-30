@@ -103,10 +103,10 @@ public:
     void print_info(LogStream &out) const;
 
 
-    void add_element_data(const vector<double> &element_data,
+    void add_element_data(const SafeSTLVector<double> &element_data,
                           const std::string &name);
 
-    void add_element_data(const vector<int> &element_data,
+    void add_element_data(const SafeSTLVector<int> &element_data,
                           const std::string &name);
 
     /**
@@ -130,7 +130,7 @@ public:
      */
     void add_point_data(const int n_values_per_point,
                         const std::string &type,
-                        const vector<vector<vector<T> > > &data_iga_elements,
+                        const SafeSTLVector<SafeSTLVector<SafeSTLVector<T> > > &data_iga_elements,
                         const std::string &name);
 
 
@@ -244,7 +244,7 @@ private:
             const Size num_elements,
             const Size num_points_per_element,
             const Size num_components,
-            std::shared_ptr< vector<T> > values)
+            std::shared_ptr< SafeSTLVector<T> > values)
             :
             name_(name),
             type_(type),
@@ -265,31 +265,31 @@ private:
         Size num_components_;
 
 
-        std::shared_ptr< vector<T> > values_;
+        std::shared_ptr< SafeSTLVector<T> > values_;
     };
 
-    vector< PointData > fields_;
+    SafeSTLVector< PointData > fields_;
 
 
-    vector<std::string> names_point_data_scalar_;
-    vector<std::string> names_point_data_vector_;
-    vector<std::string> names_point_data_tensor_;
+    SafeSTLVector<std::string> names_point_data_scalar_;
+    SafeSTLVector<std::string> names_point_data_vector_;
+    SafeSTLVector<std::string> names_point_data_tensor_;
 
 
     template<class data_type>
     struct CellData
     {
         CellData(
-            const vector<data_type> &values,
+            const SafeSTLVector<data_type> &values,
             const std::string &name)
             :
-            values_(new vector<data_type>(values)),
+            values_(new SafeSTLVector<data_type>(values)),
             name_(name),
             type_("scalar"),
             num_components_(1)
         {};
 
-        std::shared_ptr< vector<data_type> > values_;
+        std::shared_ptr< SafeSTLVector<data_type> > values_;
 
         const std::string name_;
 
@@ -297,38 +297,38 @@ private:
 
         iga::Size num_components_;
     };
-    vector< CellData<double> > cell_data_double_;
-    vector< CellData<int> > cell_data_int_;
+    SafeSTLVector< CellData<double> > cell_data_double_;
+    SafeSTLVector< CellData<int> > cell_data_int_;
 
 
-    vector<std::string> names_cell_data_scalar_;
-    vector<std::string> names_cell_data_vector_;
-    vector<std::string> names_cell_data_tensor_;
+    SafeSTLVector<std::string> names_cell_data_scalar_;
+    SafeSTLVector<std::string> names_cell_data_vector_;
+    SafeSTLVector<std::string> names_cell_data_tensor_;
 
 
 
     void fill_points_and_connectivity(
-        vector<vector<SafeSTLArray<T,3> > > &points_in_iga_elements,
-        vector<vector<SafeSTLArray<int,n_vertices_per_vtk_element_> > >
+        SafeSTLVector<SafeSTLVector<SafeSTLArray<T,3> > > &points_in_iga_elements,
+        SafeSTLVector<SafeSTLVector<SafeSTLArray<int,n_vertices_per_vtk_element_> > >
         &vtk_elements_connectivity) const;
 
     void get_subelements(
         const typename MapFunction<dim,dim+codim>::ElementAccessor &elem,
-        vector< SafeSTLArray<int,n_vertices_per_vtk_element_> > &vtk_elements_connectivity,
-        vector< SafeSTLArray<T,3> > &points_phys_iga_element) const;
+        SafeSTLVector< SafeSTLArray<int,n_vertices_per_vtk_element_> > &vtk_elements_connectivity,
+        SafeSTLVector< SafeSTLArray<T,3> > &points_phys_iga_element) const;
 
 
 
     template<class Out>
     void save_ascii(Out &file,
-                    const vector<vector<SafeSTLArray<T,3> > > &points_in_iga_elements,
-                    const vector<vector<SafeSTLArray<int,n_vertices_per_vtk_element_> > >
+                    const SafeSTLVector<SafeSTLVector<SafeSTLArray<T,3> > > &points_in_iga_elements,
+                    const SafeSTLVector<SafeSTLVector<SafeSTLArray<int,n_vertices_per_vtk_element_> > >
                     &vtk_elements_connectivity) const;
 
 
     void save_appended(const std::string &filename,
-                       const vector<vector<SafeSTLArray<T,3> > > &points_in_iga_elements,
-                       const vector<vector<SafeSTLArray< int,n_vertices_per_vtk_element_> > >
+                       const SafeSTLVector<SafeSTLVector<SafeSTLArray<T,3> > > &points_in_iga_elements,
+                       const SafeSTLVector<SafeSTLVector<SafeSTLArray< int,n_vertices_per_vtk_element_> > >
                        &vtk_elements_connectivity) const;
 
 
@@ -376,8 +376,8 @@ add_field(shared_ptr<const Function<dim, codim, range, rank>> function,
     const auto n_pts_per_elem = quad_plot_->get_num_points();
 
     const int n_values_per_pt = (range == 1 ? 1 : std::pow(range, rank)) ;
-    shared_ptr<vector<T> >
-    data_ptr(new vector<T>(n_elements * n_pts_per_elem * n_values_per_pt));
+    shared_ptr<SafeSTLVector<T> >
+    data_ptr(new SafeSTLVector<T>(n_elements * n_pts_per_elem * n_values_per_pt));
     auto &data = *data_ptr;
     if (rank == 0 || (rank == 1 && range == 1))
     {

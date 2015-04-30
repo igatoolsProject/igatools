@@ -121,7 +121,7 @@ public:
 
     ValueVector< Derivative<1> > get_D_external_normals() const;
 
-    const ValueVector<vector<Real> > &get_principal_curvatures() const;
+    const ValueVector<SafeSTLVector<Real> > &get_principal_curvatures() const;
 
 
     template<int sub_dim>
@@ -157,7 +157,7 @@ private:
                   boost::fusion::pair<    _InvHessian,DataWithFlagStatus<ValueVector<InvDerivative<2>>>>,
                   boost::fusion::pair<_BoundaryNormal,DataWithFlagStatus<ValueVector<Points<space_dim>>>>,
                   boost::fusion::pair<   _OuterNormal,DataWithFlagStatus<ValueVector<Points<space_dim>>>>,
-                  boost::fusion::pair<     _Curvature,DataWithFlagStatus<ValueVector<vector<Real>>>>
+                  boost::fusion::pair<     _Curvature,DataWithFlagStatus<ValueVector<SafeSTLVector<Real>>>>
                   >;
 
 

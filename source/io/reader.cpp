@@ -97,12 +97,12 @@ xml_element_is_unique(
 
 
 
-vector< boost::property_tree::ptree >
+SafeSTLVector< boost::property_tree::ptree >
 get_xml_element_vector(
     const boost::property_tree::ptree &tree,
     const string &tag_name)
 {
-    vector<boost::property_tree::ptree> element;
+    SafeSTLVector<boost::property_tree::ptree> element;
     for (const auto &leaf : tree)
         if (boost::iequals(leaf.first,tag_name))
             element.push_back(leaf.second);
@@ -132,10 +132,10 @@ get_xml_element(
 
 
 template <class ScalarType>
-vector<ScalarType>
+SafeSTLVector<ScalarType>
 get_vector_data_from_xml(const boost::property_tree::ptree &tree)
 {
-    vector<ScalarType> data;
+    SafeSTLVector<ScalarType> data;
 
     ScalarType v;
     std::stringstream line_stream(tree.get<std::string>(""));
@@ -166,7 +166,7 @@ get_interior_multiplicity_from_xml(const boost::property_tree::ptree &tree)
     const auto &mult_elements = get_xml_element_vector(tree,"InteriorMultiplicity");
     AssertThrow(mult_elements.size() == dim,ExcDimensionMismatch(mult_elements.size(),dim));
 
-    SafeSTLArray<vector<int>,dim> mlt_data;
+    SafeSTLArray<SafeSTLVector<int>,dim> mlt_data;
     for (const auto mlt_element : mult_elements)
     {
         const auto &mlt_attributes = get_xml_element_attributes(mlt_element);
@@ -297,7 +297,7 @@ get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
     const int n_ctrl_pts = ctrl_pts_attributes.get<int>("Size");
     AssertThrow(n_ctrl_pts >= 1,ExcLowerRange(n_ctrl_pts,1));
 
-    const vector<Real> cntrl_pts = get_vector_data_from_xml<Real>(ctrl_pts_tree);
+    const SafeSTLVector<Real> cntrl_pts = get_vector_data_from_xml<Real>(ctrl_pts_tree);
     AssertThrow(cntrl_pts.size() == n_ctrl_pts,ExcDimensionMismatch(cntrl_pts.size(),n_ctrl_pts));
     //-------------------------------------------------------------------------
 
@@ -380,7 +380,7 @@ get_cartesian_grid_from_xml(const boost::property_tree::ptree &tree)
     const auto &knots_elements = get_xml_element_vector(grid_tree,"Knots");
     AssertThrow(knots_elements.size() == dim,ExcDimensionMismatch(knots_elements.size(),dim));
 
-    SafeSTLArray<vector<Real>,dim> knots;
+    SafeSTLArray<SafeSTLVector<Real>,dim> knots;
     for (int i = 0 ; i < dim ; ++i)
     {
         const auto &knots_attributes = get_xml_element_attributes(knots_elements[i]);
@@ -452,7 +452,7 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
     const int n_components_map_entries = components_map_attributes.get<int>("Size");
     AssertThrow(space_t::n_components == n_components_map_entries,
                 ExcDimensionMismatch(space_t::n_components,n_components_map_entries));
-    vector<Index> components_map_vec = get_vector_data_from_xml<Index>(components_map_tree);
+    SafeSTLVector<Index> components_map_vec = get_vector_data_from_xml<Index>(components_map_tree);
     SafeSTLArray<Index,space_t::n_components> components_map;
     for (Index i = 0 ; i < space_t::n_components ; ++i)
         components_map[i] = components_map_vec[i];
@@ -490,7 +490,7 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
         const int dofs_rank = comp_dofs_tens_size_attributes.get<int>("Dim");
         AssertThrow(dofs_rank == dim,ExcDimensionMismatch(dofs_rank,dim));
 
-        vector<Index> dofs_size_vec = get_vector_data_from_xml<Index>(comp_dofs_tens_size_element);
+        SafeSTLVector<Index> dofs_size_vec = get_vector_data_from_xml<Index>(comp_dofs_tens_size_element);
         AssertThrow(dofs_rank == dofs_size_vec.size(),ExcDimensionMismatch(dofs_rank,dofs_size_vec.size()));
 
 
@@ -507,7 +507,7 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
         const int n_degree = comp_degree_attributes.get<int>("Dim");
         AssertThrow(n_degree == dim,ExcDimensionMismatch(n_degree,dim));
 
-        vector<Index> degrees_vec = get_vector_data_from_xml<Index>(comp_degree_element);
+        SafeSTLVector<Index> degrees_vec = get_vector_data_from_xml<Index>(comp_degree_element);
         AssertThrow(n_degree == degrees_vec.size(),ExcDimensionMismatch(n_degree,degrees_vec.size()));
 
         for (int i = 0 ; i < dim ; ++i)
@@ -592,7 +592,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     const int n_components_map_entries = components_map_attributes.get<int>("Size");
     AssertThrow(space_t::n_components == n_components_map_entries,
                 ExcDimensionMismatch(space_t::n_components,n_components_map_entries));
-    vector<Index> components_map_vec = get_vector_data_from_xml<Index>(components_map_tree);
+    SafeSTLVector<Index> components_map_vec = get_vector_data_from_xml<Index>(components_map_tree);
     SafeSTLArray<Index,space_t::n_components> components_map;
     for (Index i = 0 ; i < space_t::n_components ; ++i)
         components_map[i] = components_map_vec[i];
@@ -632,7 +632,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
         const int dofs_rank = comp_dofs_tens_size_attributes.get<int>("Dim");
         AssertThrow(dofs_rank == dim,ExcDimensionMismatch(dofs_rank,dim));
 
-        vector<Index> dofs_size_vec = get_vector_data_from_xml<Index>(comp_dofs_tens_size_element);
+        SafeSTLVector<Index> dofs_size_vec = get_vector_data_from_xml<Index>(comp_dofs_tens_size_element);
         AssertThrow(dofs_rank == dofs_size_vec.size(),ExcDimensionMismatch(dofs_rank,dofs_size_vec.size()));
 
 
@@ -649,7 +649,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
         const int n_degree = comp_degree_attributes.get<int>("Dim");
         AssertThrow(n_degree == dim,ExcDimensionMismatch(n_degree,dim));
 
-        vector<Index> degrees_vec = get_vector_data_from_xml<Index>(comp_degree_element);
+        SafeSTLVector<Index> degrees_vec = get_vector_data_from_xml<Index>(comp_degree_element);
         AssertThrow(n_degree == degrees_vec.size(),ExcDimensionMismatch(n_degree,degrees_vec.size()));
 
         for (int i = 0 ; i < dim ; ++i)
@@ -673,7 +673,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
         const int n_weights = weights_attributes.get<int>("Size");
         AssertThrow(n_weights == dofs_size.flat_size(),ExcLowerRange(n_weights,dofs_size.flat_size()));
 
-        vector<Real> weights_vec = get_vector_data_from_xml<Real>(weights_tree);
+        SafeSTLVector<Real> weights_vec = get_vector_data_from_xml<Real>(weights_tree);
         AssertThrow(!weights_vec.empty(), ExcEmptyObject());
         AssertThrow(weights_vec.size() == n_weights,ExcDimensionMismatch(weights_vec.size(),n_weights));
 
@@ -802,7 +802,7 @@ ig_mapping_reader_version_1_0(const std::string &filename)
     CartesianProductArray<Size, dim> multiplicities;
 
     TensorSize<dim> n_ctrl_points_dim;
-    array<vector<Real>,dim_phys> control_pts_coords;
+    array<SafeSTLVector<Real>,dim_phys> control_pts_coords;
     DynamicMultiArray<Real,dim> weights;
 
     bool is_nurbs_mapping = false;
@@ -827,8 +827,8 @@ ig_mapping_reader_version_1_0(const std::string &filename)
             Index direction_id = -1 ;
             Size n_break_pts = 0 ;
 
-            vector<Real> knots_unique_values_dir;
-            vector<Index> multiplicities_dir;
+            SafeSTLVector<Real> knots_unique_values_dir;
+            SafeSTLVector<Index> multiplicities_dir;
             for (const auto &knot : patch.second)
             {
                 if (boost::iequals(knot.first,"<xmlattr>"))
@@ -899,7 +899,7 @@ ig_mapping_reader_version_1_0(const std::string &filename)
                     AssertThrow(n_ctrl_pts >= 0, ExcLowerRange(n_ctrl_pts,0));
                 }
 
-                vector<Size> tmp;
+                SafeSTLVector<Size> tmp;
                 if (boost::iequals(cp.first, "NumDir"))
                 {
                     std::stringstream line_stream(cp.second.get<std::string>(""));
@@ -915,7 +915,7 @@ ig_mapping_reader_version_1_0(const std::string &filename)
 
                 if (boost::iequals(cp.first, "Coordinates"))
                 {
-                    vector<Real> control_pts_coord_dir;
+                    SafeSTLVector<Real> control_pts_coord_dir;
                     Index direction_id = -1 ;
 
                     Real v;
@@ -942,7 +942,7 @@ ig_mapping_reader_version_1_0(const std::string &filename)
                 {
                     is_nurbs_mapping = true;
 
-                    vector<Real> weights_vec;
+                    SafeSTLVector<Real> weights_vec;
                     std::stringstream line_stream(cp.second.get<std::string>(""));
                     Real w;
                     while (line_stream >> w)
@@ -987,7 +987,7 @@ ig_mapping_reader_version_1_0(const std::string &filename)
 
     }//PATCH LOOP
 
-    vector<Real> control_pts;
+    SafeSTLVector<Real> control_pts;
     for (int i = 0 ; i < dim_phys ; ++i)
         control_pts.insert(control_pts.end(),control_pts_coords[i].begin(),control_pts_coords[i].end());
 

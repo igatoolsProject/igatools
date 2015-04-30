@@ -42,7 +42,7 @@ void non_contig_indices()
 
 
     std::set<Index> dofs = {1, 3, 5};
-    const vector<Index> dofs_vec(dofs.begin(), dofs.end());
+    const SafeSTLVector<Index> dofs_vec(dofs.begin(), dofs.end());
     Epetra_SerialComm comm;
     auto map = std::make_shared<Map>(-1, dofs_vec.size(), dofs_vec.data(), 0, comm);
     auto vec = create_vector(map);

@@ -66,7 +66,7 @@ void do_test()
     out << endl;
 
     out << "Testing the get_flat_cartesian_product() function" <<endl;
-    vector<TensorIndex<dim>> flat_cartesian_product = data3.get_flat_cartesian_product();
+    SafeSTLVector<TensorIndex<dim>> flat_cartesian_product = data3.get_flat_cartesian_product();
     flat_cartesian_product.print_info(out);
     out << endl << endl;
 
@@ -80,7 +80,7 @@ void do_test()
 
 
     out << "Testing the insert() function" << endl;
-    vector<Index> new_values = {10,11};
+    SafeSTLVector<Index> new_values = {10,11};
     CartesianProductArray<Index,dim> data5 = insert(data4, dim-1,new_values);
     data5.print_info(out);
 

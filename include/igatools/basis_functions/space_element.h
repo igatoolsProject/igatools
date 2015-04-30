@@ -145,9 +145,9 @@ public:
 
         //--------------------------------------------------------------------------------------
         // filtering the values that correspond to the dofs with the given property --- begin
-        vector<Index> dofs_global;
-        vector<Index> dofs_local_to_patch;
-        vector<Index> dofs_local_to_elem;
+        SafeSTLVector<Index> dofs_global;
+        SafeSTLVector<Index> dofs_local_to_patch;
+        SafeSTLVector<Index> dofs_local_to_elem;
 
         this->space_->get_element_dofs(
             this->as_cartesian_grid_element_accessor(),
@@ -191,7 +191,7 @@ public:
 
     template <class ValueType, int sub_elem_dim = dim>
     auto
-    linear_combination(const vector<Real> &loc_coefs,
+    linear_combination(const SafeSTLVector<Real> &loc_coefs,
                        const int sub_elem_id,
                        const std::string &dofs_property) const
     {

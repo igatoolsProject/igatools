@@ -97,13 +97,13 @@ copy_from(const SpaceElementBase<dim> &elem,
 }
 
 template <int dim>
-vector<Index>
+SafeSTLVector<Index>
 SpaceElementBase<dim>::
 get_local_to_global(const std::string &dofs_property) const
 {
-    vector<Index> dofs_global;
-    vector<Index> dofs_loc_to_patch;
-    vector<Index> dofs_loc_to_elem;
+    SafeSTLVector<Index> dofs_global;
+    SafeSTLVector<Index> dofs_loc_to_patch;
+    SafeSTLVector<Index> dofs_loc_to_elem;
     this->space_->get_element_dofs(
         *this,
         dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
@@ -112,13 +112,13 @@ get_local_to_global(const std::string &dofs_property) const
 }
 
 template <int dim>
-vector<Index>
+SafeSTLVector<Index>
 SpaceElementBase<dim>::
 get_local_to_patch(const std::string &dofs_property) const
 {
-    vector<Index> dofs_global;
-    vector<Index> dofs_loc_to_patch;
-    vector<Index> dofs_loc_to_elem;
+    SafeSTLVector<Index> dofs_global;
+    SafeSTLVector<Index> dofs_loc_to_patch;
+    SafeSTLVector<Index> dofs_loc_to_elem;
     this->space_->get_element_dofs(
         *this,
         dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
@@ -127,13 +127,13 @@ get_local_to_patch(const std::string &dofs_property) const
 }
 
 template <int dim>
-vector<Index>
+SafeSTLVector<Index>
 SpaceElementBase<dim>::
 get_local_dofs(const std::string &dofs_property) const
 {
-    vector<Index> dofs_global;
-    vector<Index> dofs_loc_to_patch;
-    vector<Index> dofs_loc_to_elem;
+    SafeSTLVector<Index> dofs_global;
+    SafeSTLVector<Index> dofs_loc_to_patch;
+    SafeSTLVector<Index> dofs_loc_to_elem;
     this->space_->get_element_dofs(
         *this,
         dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);

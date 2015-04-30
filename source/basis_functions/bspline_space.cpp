@@ -381,7 +381,7 @@ template<int dim_, int range_, int rank_>
 void
 BSplineSpace<dim_, range_, rank_>::
 rebuild_after_insert_knots(
-    const SafeSTLArray<vector<Real>,dim> &knots_to_insert,
+    const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
     const CartesianGrid<dim> &old_grid)
 {
     this->ref_space_previous_refinement_ =
@@ -412,9 +412,9 @@ void
 BSplineSpace<dim_, range_, rank_>::
 get_element_dofs(
     const CartesianGridElement<dim> &element,
-    vector<Index> &dofs_global,
-    vector<Index> &dofs_local_to_patch,
-    vector<Index> &dofs_local_to_elem,
+    SafeSTLVector<Index> &dofs_global,
+    SafeSTLVector<Index> &dofs_local_to_patch,
+    SafeSTLVector<Index> &dofs_local_to_elem,
     const std::string &dofs_property) const
 {
     const auto &accum_mult = space_data_->accumulated_interior_multiplicities();

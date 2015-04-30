@@ -76,7 +76,7 @@ void test_evaluate()
 
     auto nurbs_space = NURBSSpace<dim,dim>::create(deg,grid,weights);
 
-    vector<Real> control_pts(nurbs_space->get_num_basis());
+    SafeSTLVector<Real> control_pts(nurbs_space->get_num_basis());
 
     if (dim == 1)
     {

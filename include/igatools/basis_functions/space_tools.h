@@ -360,7 +360,7 @@ void norm_difference(Function<dim, codim, range, rank> &f,
                      Function<dim, codim, range, rank> &g,
                      const Quadrature<dim> &quad,
                      const Real p,
-                     vector<Real> &element_error)
+                     SafeSTLVector<Real> &element_error)
 {
     const bool is_inf = p==std::numeric_limits<Real>::infinity()? true : false;
     auto flag = ValueFlags::point | ValueFlags::w_measure | order_to_flag[order];
@@ -410,7 +410,7 @@ template<int dim, int codim = 0, int range = 1, int rank = 1>
 Real l2_norm_difference(Function<dim, codim, range, rank> &f,
                         Function<dim, codim, range, rank> &g,
                         const Quadrature<dim> &quad,
-                        vector<Real> &elem_error)
+                        SafeSTLVector<Real> &elem_error)
 {
     const Real p=2.;
     const Real one_p = 1./p;
@@ -435,7 +435,7 @@ template<int dim, int codim = 0, int range = 1, int rank = 1>
 Real h1_norm_difference(Function<dim, codim, range, rank> &f,
                         Function<dim, codim, range, rank> &g,
                         const Quadrature<dim> &quad,
-                        vector<Real> &elem_error)
+                        SafeSTLVector<Real> &elem_error)
 {
     const Real p=2.;
     const Real one_p = 1./p;
@@ -459,7 +459,7 @@ template<int dim, int codim = 0, int range = 1, int rank = 1>
 Real inf_norm_difference(Function<dim, codim, range, rank> &f,
                          Function<dim, codim, range, rank> &g,
                          const Quadrature<dim> &quad,
-                         vector<Real> &elem_error)
+                         SafeSTLVector<Real> &elem_error)
 {
     const Real p=std::numeric_limits<Real>::infinity();
     space_tools::norm_difference<0, dim, codim, range, rank>(f, g, quad, p, elem_error);

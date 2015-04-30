@@ -76,8 +76,8 @@ long double eval_halley_update(const long double &f, const long double &d1f, con
 
 // Find the 1D Gauss-Legendre quadrature rule with n points
 void gauss_legendre_quadrature(const int n,
-                               vector<Real> &points,
-                               vector<Real> &weights)
+                               SafeSTLVector<Real> &points,
+                               SafeSTLVector<Real> &weights)
 {
     Assert(n>0, ExcMessage("n points should be bigger than 0"))
 
@@ -154,8 +154,8 @@ void gauss_legendre_quadrature(const int n,
 
 // Find the 1D Gauss-Lobatto quadrature rule with n points
 void gauss_lobatto_quadrature(const int n,
-                              vector<Real> &points,
-                              vector<Real> &weights)
+                              SafeSTLVector<Real> &points,
+                              SafeSTLVector<Real> &weights)
 {
 
     if (n == 0)
@@ -239,8 +239,8 @@ void gauss_lobatto_quadrature(const int n,
 // The points coordinate are the uniform subdivision of the [0,1] interval in n points
 // The weights are all equal to one divided by the number of points.
 void uniform_quadrature(const int n,
-                        vector<Real> &points,
-                        vector<Real> &weights)
+                        SafeSTLVector<Real> &points,
+                        SafeSTLVector<Real> &weights)
 {
     Assert(n >= 2, ExcLowerRange(n, 2)) ;
 

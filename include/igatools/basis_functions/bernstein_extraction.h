@@ -84,15 +84,15 @@ public:
     ElemOperTable get_element_operators(TensorIndex<dim> idx) const;
 
 private:
-    vector<Operator>
+    SafeSTLVector<Operator>
     fill_extraction(const int m,
-                    const vector<Real>    &knots,
-                    const vector<Real>    &rep_knots,
-                    const vector<Index>   &acum_mult);
+                    const SafeSTLVector<Real>    &knots,
+                    const SafeSTLVector<Real>    &rep_knots,
+                    const SafeSTLVector<Index>   &acum_mult);
 
     /** Given the M_{j-1} computes and returns de M_{j} */
     Operator compute(const Operator &M_j_1,
-                     typename vector<Real>::const_iterator  y,
+                     typename SafeSTLVector<Real>::const_iterator  y,
                      const Real a,
                      const Real b);
 

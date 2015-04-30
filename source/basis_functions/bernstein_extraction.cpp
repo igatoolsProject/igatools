@@ -65,16 +65,16 @@ template<int dim, int range, int rank>
 auto
 BernsteinExtraction<dim, range, rank>::
 compute(const Operator &M_j_1,
-        typename vector<Real>::const_iterator  y,
+        typename SafeSTLVector<Real>::const_iterator  y,
         const Real a,
         const Real b) -> Operator
 {
     const int j = M_j_1.size1() + 1;
     Operator M_j(j,j);
 
-    vector<Real> alpha(j);
-    vector<Real> one_alpha(j,1);
-    vector<Real> beta(j, b-a);
+    SafeSTLVector<Real> alpha(j);
+    SafeSTLVector<Real> one_alpha(j,1);
+    SafeSTLVector<Real> beta(j, b-a);
 
     for (int k = 0; k < j; ++k)
     {
@@ -138,13 +138,13 @@ template<int dim, int range, int rank>
 auto
 BernsteinExtraction<dim, range, rank>::
 fill_extraction(const int m,
-                const vector<Real>    &knots,
-                const vector<Real>    &rep_knots,
-                const vector<Index>   &acum_mult) -> vector<Operator>
+                const SafeSTLVector<Real>    &knots,
+                const SafeSTLVector<Real>    &rep_knots,
+                const SafeSTLVector<Index>   &acum_mult) -> SafeSTLVector<Operator>
 {
     const int n_elem = knots.size()-1;
 
-    vector<Operator>  operators(n_elem, Operator(m,m));
+    SafeSTLVector<Operator>  operators(n_elem, Operator(m,m));
     // const auto &x = knots;
     const auto &y = rep_knots;
 

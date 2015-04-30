@@ -92,13 +92,13 @@ int main()
 //    auto grid = CartesianGrid<dim_domain>::create(3);
 //    auto space = BSplineSpace<dim_domain, dim_range, rank>::create(degree, grid);
 //
-//    vector<Index> dof_map;
+//    SafeSTLVector<Index> dof_map;
 //
 //    int face_id = 0;
 //
 //    auto face_space = space->get_face_space(face_id,dof_map);
 //
-//    for (vector<Index>::iterator it=dof_map.begin() ; it < dof_map.end(); ++it)
+//    for (SafeSTLVector<Index>::iterator it=dof_map.begin() ; it < dof_map.end(); ++it)
 //        out<< "face_id = "<< face_id << ", dof_id = "<< *it << endl;
 //
 //    out << "-------------------------" <<endl;

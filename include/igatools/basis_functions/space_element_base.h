@@ -130,7 +130,7 @@ public:
       \endcode
      *
      */
-    vector<Index>
+    SafeSTLVector<Index>
     get_local_to_global(const std::string &dofs_property) const;
 
     /**
@@ -141,11 +141,11 @@ public:
      * If @p dof_property is equal to DofProperties::active, then no filter is applied.
      *
      */
-    vector<Index>
+    SafeSTLVector<Index>
     get_local_to_patch(const std::string &dofs_property) const;
 
 
-    vector<Index>
+    SafeSTLVector<Index>
     get_local_dofs(const std::string &dofs_property) const;
 
 

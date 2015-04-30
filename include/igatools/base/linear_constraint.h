@@ -22,7 +22,7 @@
 #define LINEAR_CONSTRAINT_H
 
 #include <igatools/base/config.h>
-#include <igatools/utils/vector.h>
+#include <igatools/utils/safe_stl_vector.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -47,13 +47,13 @@ public:
     /**
      * It builds and returns a std::shared_ptr wrapping a
      * LinearConstraint (associated to the @p global_dof_id) of the specified @type,
-     * from a vector of @p dofs defining the constraint,
+     * from a SafeSTLVector of @p dofs defining the constraint,
      * their relative @p coefficients and the tight hand side value @p rhs.
      */
     static std::shared_ptr<LinearConstraint>
     create(const Index global_dof_id,
            const LinearConstraintType &type,
-           const vector<Index> &dofs,const vector<Real> &coeffs,const Real rhs);
+           const SafeSTLVector<Index> &dofs,const SafeSTLVector<Real> &coeffs,const Real rhs);
 
     /** Destructor. */
     ~LinearConstraint() = default;
@@ -96,12 +96,12 @@ public:
     /**
      * Returns the dofs involved in the definition of the LinearConstraint.
      */
-    vector<Index> get_dofs_id() const;
+    SafeSTLVector<Index> get_dofs_id() const;
 
     /**
      * Returns the coefficients of the dofs involved in the definition of the LinearConstraint.
      */
-    vector<Real> get_coefficients() const;
+    SafeSTLVector<Real> get_coefficients() const;
 
     /**
      * Returns the type of the LinearConstraint.
@@ -135,7 +135,7 @@ public:
      * Returns the absolute error of the constraint if applied to the global dof coefficients @p
      * dof_coeffs.
      */
-    Real eval_absolute_error(const vector<Real> &dof_coeffs) const;
+    Real eval_absolute_error(const SafeSTLVector<Real> &dof_coeffs) const;
 
 
 
@@ -147,14 +147,14 @@ private:
 
     /**
      * Constructor. It builds the LinearConstraint (associated to the @p global_dof_id)
-     * of the specified @type, from a vector of @p dofs defining the constraint,
+     * of the specified @type, from a SafeSTLVector of @p dofs defining the constraint,
      * their relative @p coefficients and the tight hand side value @p rhs.
      *
      * @note Not allowed to be used. Use the associated create() function.
      */
     LinearConstraint(const Index global_dof_id,
                      const LinearConstraintType &type,
-                     const vector<Index> &dofs,const vector<Real> &coeffs,const Real rhs);
+                     const SafeSTLVector<Index> &dofs,const SafeSTLVector<Real> &coeffs,const Real rhs);
 
     /**
      * Copy constructor. Not allowed to be used.
@@ -184,9 +184,9 @@ private:
     /**
      * Left hand side of the linear equation.
      *
-     * Each entry of this vector is a pair (global dof id/coefficient).
+     * Each entry of this SafeSTLVector is a pair (global dof id/coefficient).
      */
-    vector<std::pair<Index,Real>> lhs_;
+    SafeSTLVector<std::pair<Index,Real>> lhs_;
 
     /**
      * Right hand side of the linear equation.

@@ -148,7 +148,7 @@ public:
      * Insert the @p knots_to_insert to the grid and to the object that are using the grid.
      * @note The @p knots_to_insert may contain multiple knot values in each direction.
      */
-    void insert_knots(SafeSTLArray<vector<Real>,GridType::dim> &knots_to_insert);
+    void insert_knots(SafeSTLArray<SafeSTLVector<Real>,GridType::dim> &knots_to_insert);
     ///@}
 
 #if 0

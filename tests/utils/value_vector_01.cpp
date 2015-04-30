@@ -53,7 +53,7 @@ void do_test()
 
 
     out << "Initializer-list constructor" << endl ;
-    vector<Real> vec = {1.0,2.0,3.0};
+    SafeSTLVector<Real> vec = {1.0,2.0,3.0};
     ClassToTest data3(vec);
     out << "data3:\n";
     data3.print_info(out);
@@ -145,7 +145,7 @@ void do_test1()
 
 }
 
-//Test the scalar-by-vector multiplication
+//Test the scalar-by-SafeSTLVector multiplication
 void do_test2()
 {
     out << "---------------------------------------" << endl ;

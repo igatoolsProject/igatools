@@ -58,7 +58,7 @@ public:
 
 
     /** Type alias for the dofs container used in each scalar component of a single-patch space. */
-    using DofsComponentContainer = vector<Index>;
+    using DofsComponentContainer = SafeSTLVector<Index>;
 
     /** Type alias for the View on the dofs in each scalar component of a single-patch space. */
     using DofsComponentView = ContainerView<DofsComponentContainer>;

@@ -45,7 +45,7 @@ public:
         return *this;
     }
 
-    void add_block(const vector<Index> &vec_id,
+    void add_block(const SafeSTLVector<Index> &vec_id,
                    const DenseVector &local_vector)
     {
         const auto   NumEntries = vec_id.size();
@@ -55,12 +55,12 @@ public:
         Epetra_Vector::SumIntoGlobalValues(NumEntries, Values, Indices);
     }
 
-    //TODO (pauletti, Apr 3, 2015): both vector<Real> and std::vector<Index>
+    //TODO (pauletti, Apr 3, 2015): both SafeSTLVector<Real> and std::vector<Index>
     // should be replace by a typedef and a proper type for fast comuniction with LA
-    vector<Real>
+    SafeSTLVector<Real>
     get_local_coeffs(const std::vector<Index> &global_ids) const
     {
-        vector<Real> local_coefs;
+        SafeSTLVector<Real> local_coefs;
         for (const auto &global_id : global_ids)
             local_coefs.emplace_back((*this)[global_id]);
 
@@ -90,8 +90,8 @@ class  Matrix : public Epetra_CrsMatrix
 public:
     using Epetra_CrsMatrix::Epetra_CrsMatrix;
 
-    void add_block(const vector<Index> &rows_id,
-                   const vector<Index> &cols_id,
+    void add_block(const SafeSTLVector<Index> &rows_id,
+                   const SafeSTLVector<Index> &cols_id,
                    const DenseMatrix &loc_matrix)
     {
         const auto n_rows = rows_id.size();
@@ -125,8 +125,8 @@ public:
             const auto global_row = row_map.GID(local_row);
 
             Index n_entries_row = NumGlobalEntries(global_row);
-            vector<Real> values(n_entries_row);
-            vector<Index> columns_id(n_entries_row);
+            SafeSTLVector<Real> values(n_entries_row);
+            SafeSTLVector<Index> columns_id(n_entries_row);
 
             Index nnz = 0;
             ExtractGlobalRowCopy(global_row,n_entries_row,nnz,values.data(),columns_id.data());
@@ -165,7 +165,7 @@ MapPtr create_map(const SpacePtr space,
     const auto dof_dist = space->get_dof_distribution();
     const auto dofs = dof_dist->get_dofs_id_same_property(property);
     //TODO (pauletti, Mar 28, 2015): this is double copy of data
-    const vector<Index> dofs_vec(dofs.begin(), dofs.end());
+    const SafeSTLVector<Index> dofs_vec(dofs.begin(), dofs.end());
     auto map = std::make_shared<Map>(-1, dofs_vec.size(), dofs_vec.data(), 0, comm);
     return map;
 }
@@ -177,7 +177,7 @@ create_graph(const RowSpacePtr row_space, const std::string &row_property,
              MapPtr row_map_, MapPtr col_map_)
 {
     const auto n_rows = row_map_->NumMyElements();
-    vector<vector<Index>> loc_dofs(n_rows);
+    SafeSTLVector<SafeSTLVector<Index>> loc_dofs(n_rows);
     auto r_elem = row_space->begin();
     auto c_elem = col_space->begin();
     const auto end = row_space->end();
@@ -192,7 +192,7 @@ create_graph(const RowSpacePtr row_space, const std::string &row_property,
         }
     }
 
-    vector<Size> n_dofs_per_row(n_rows);
+    SafeSTLVector<Size> n_dofs_per_row(n_rows);
     {
         Index j=0;
         for (auto &dofs : loc_dofs)

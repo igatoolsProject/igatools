@@ -113,7 +113,7 @@ get_point_view(const int i) const -> const_view
 template <class T>
 ValueVector<T>
 ValueTable<T>::
-evaluate_linear_combination(const vector<Real> &coefficients) const
+evaluate_linear_combination(const SafeSTLVector<Real> &coefficients) const
 {
     const auto n_funcs = this->get_num_functions();
     const auto n_pts = this->get_num_points();

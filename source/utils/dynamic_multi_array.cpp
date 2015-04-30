@@ -36,7 +36,7 @@ template<class T, int rank>
 DynamicMultiArray<T,rank>::
 DynamicMultiArray(const TensorSize<rank> &dim)
     :
-    MultiArray<vector<T>,rank>(dim)
+    MultiArray<SafeSTLVector<T>,rank>(dim)
 {
     this->resize(dim);
 }
@@ -56,7 +56,7 @@ template<class T, int rank>
 DynamicMultiArray<T,rank>::
 DynamicMultiArray(const TensorSize<rank> &dim, const T &val)
     :
-    MultiArray<vector<T>,rank>(dim)
+    MultiArray<SafeSTLVector<T>,rank>(dim)
 {
     this->resize(dim,val);
 }
@@ -68,7 +68,7 @@ void
 DynamicMultiArray<T,rank>::
 resize(const Size dim)
 {
-    MultiArray<vector<T>,rank>::resize(dim);
+    MultiArray<SafeSTLVector<T>,rank>::resize(dim);
 }
 
 
@@ -78,7 +78,7 @@ void
 DynamicMultiArray<T,rank>::
 resize(const TensorSize<rank> &dim)
 {
-    MultiArray<vector<T>,rank>::resize(dim);
+    MultiArray<SafeSTLVector<T>,rank>::resize(dim);
 }
 
 
@@ -88,7 +88,7 @@ void
 DynamicMultiArray<T,rank>::
 resize(const TensorSize<rank> &dim, const T &val)
 {
-    MultiArray<vector<T>,rank>::resize(dim,val);
+    MultiArray<SafeSTLVector<T>,rank>::resize(dim,val);
 }
 
 

@@ -82,7 +82,7 @@ NURBSElementHandler<dim_, range_, rank_>::
 reset_selected_elements(
     const ValueFlags &flag,
     const eval_pts_variant &quad,
-    const vector<int> elements_flat_id)
+    const SafeSTLVector<int> elements_flat_id)
 {
     //--------------------------------------------------
     // resetting the Function for the bspline (numerator and weight function at the denominator)
@@ -355,7 +355,7 @@ evaluate_nurbs_values_from_bspline(
         Assert(n_pts == Q.get_num_points(),
                ExcDimensionMismatch(n_pts,Q.get_num_points()));
 
-        vector<Real> invQ(n_pts);
+        SafeSTLVector<Real> invQ(n_pts);
         for (int pt = 0 ; pt < n_pts ; ++pt)
             invQ[pt] = 1.0 / Q[pt](0);
 
@@ -435,8 +435,8 @@ evaluate_nurbs_gradients_from_bspline(
                ExcDimensionMismatch(n_pts,Q.get_num_points()));
 
 
-        vector<Real> invQ(n_pts);
-        vector<SafeSTLArray<Real,dim>> dQ_invQ2(n_pts);
+        SafeSTLVector<Real> invQ(n_pts);
+        SafeSTLVector<SafeSTLArray<Real,dim>> dQ_invQ2(n_pts);
         for (int pt = 0 ; pt < n_pts ; ++pt)
         {
             invQ[pt] = 1.0 / Q[pt](0);
@@ -540,10 +540,10 @@ evaluate_nurbs_hessians_from_bspline(
                ExcDimensionMismatch(n_pts,Q.get_num_points()));
 
 
-        vector<Real> invQ(n_pts);
-        vector<Real> invQ2(n_pts);
-        vector<SafeSTLArray<Real,dim> > dQ_invQ2(n_pts);
-        vector<SafeSTLArray<SafeSTLArray<Real,dim>,dim> > Q_terms_2nd_order(n_pts);
+        SafeSTLVector<Real> invQ(n_pts);
+        SafeSTLVector<Real> invQ2(n_pts);
+        SafeSTLVector<SafeSTLArray<Real,dim> > dQ_invQ2(n_pts);
+        SafeSTLVector<SafeSTLArray<SafeSTLArray<Real,dim>,dim> > Q_terms_2nd_order(n_pts);
         for (int pt = 0 ; pt < n_pts ; ++pt)
         {
             auto &invQ_pt  = invQ[pt];

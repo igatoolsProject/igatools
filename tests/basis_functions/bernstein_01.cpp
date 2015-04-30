@@ -36,7 +36,7 @@ int main()
     out.depth_console(10);
 
     const int n=5;
-    vector< Real > points(n);
+    SafeSTLVector< Real > points(n);
     for (int i=0; i<n; ++i)
         points[i] = Real(i)/(n-1);
     out << "points: ";

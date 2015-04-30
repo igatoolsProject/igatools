@@ -24,7 +24,7 @@
 #include <igatools/base/config.h>
 #include <igatools/base/logstream.h>
 #include <igatools/base/properties.h>
-#include <igatools/utils/vector.h>
+#include <igatools/utils/safe_stl_vector.h>
 
 
 #include <set>
@@ -98,7 +98,7 @@ public:
     /**
      * Returns the properties defined.
      */
-    vector<std::string> get_properties() const;
+    SafeSTLVector<std::string> get_properties() const;
 
 
     /**

@@ -137,7 +137,7 @@ public:
     using InterGridMap = typename GridType::template InterGridMap<k>;
 
     template <int k>
-    using InterSpaceMap = vector<Index>;
+    using InterSpaceMap = SafeSTLVector<Index>;
 
     template <int k>
     using SubRefSpace = ReferenceSpace<k, range, rank>;

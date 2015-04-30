@@ -24,8 +24,8 @@ IGA_NAMESPACE_OPEN
 
 namespace EpetraTools
 {
-void Matrix::add_block(const vector<Index> &rows_id,
-                       const vector<Index> &cols_id,
+void Matrix::add_block(const SafeSTLVector<Index> &rows_id,
+                       const SafeSTLVector<Index> &cols_id,
                        const DenseMatrix &loc_matrix)
 {
     const auto n_rows = rows_id.size();
@@ -61,8 +61,8 @@ void Matrix::print_info(LogStream &out) const
         const auto global_row = row_map.GID(local_row);
 
         Index n_entries_row = NumGlobalEntries(global_row);
-        vector<Real> values(n_entries_row);
-        vector<Index> columns_id(n_entries_row);
+        SafeSTLVector<Real> values(n_entries_row);
+        SafeSTLVector<Index> columns_id(n_entries_row);
 
         Index nnz = 0;
         ExtractGlobalRowCopy(global_row,n_entries_row,nnz,values.data(),columns_id.data());

@@ -187,9 +187,9 @@ public:
 
     void get_element_dofs(
         const CartesianGridElement<dim> &element,
-        vector<Index> &dofs_global,
-        vector<Index> &dofs_local_to_patch,
-        vector<Index> &dofs_local_to_elem,
+        SafeSTLVector<Index> &dofs_global,
+        SafeSTLVector<Index> &dofs_local_to_patch,
+        SafeSTLVector<Index> &dofs_local_to_elem,
         const std::string &dofs_property = DofProperties::active) const;
 
 

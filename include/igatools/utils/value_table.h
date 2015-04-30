@@ -27,7 +27,6 @@
 #include <igatools/utils/container_view.h>
 #include <igatools/utils/value_container.h>
 
-#include <vector>
 
 IGA_NAMESPACE_OPEN
 
@@ -39,7 +38,7 @@ IGA_NAMESPACE_OPEN
  * at one single point. This means that the entries can be accessed specifying two
  * (flat) indices: one for the function and the other for the point.
  *
- * Internally the data are stored as single <tt>vector<T></tt>
+ * Internally the data are stored as single <tt>SafeSTLVector<T></tt>
  * (through the inherithance from DynamicMultiArray<T,2>) of length
  * <tt> num_functions * num_points</tt> and the memory is ordered as
  * <tt>num_functions</tt> chunks of length <tt>num_points</tt> objects of type @p T.
@@ -201,7 +200,7 @@ public :
      * The size of vector of the @p coefficients must be equal to the number of functions
      * represented in the ValueTable.
      */
-    ValueVector<T> evaluate_linear_combination(const vector<Real> &coefficients) const;
+    ValueVector<T> evaluate_linear_combination(const SafeSTLVector<Real> &coefficients) const;
 
 private:
 

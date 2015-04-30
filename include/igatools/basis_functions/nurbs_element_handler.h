@@ -132,7 +132,7 @@ public:
     virtual void reset_selected_elements(
         const ValueFlags &flag,
         const eval_pts_variant &eval_points,
-        const vector<int> elements_flat_id) override final;
+        const SafeSTLVector<int> elements_flat_id) override final;
 
     virtual void init_cache(RefElementAccessor &elem, const topology_variant &topology) override final;
 
@@ -161,7 +161,7 @@ private:
      * (basis function belonging to a BSplineSpace) and the active components for the denominator
      * (a ComponentTable of scalar IgFunction(s)).
      */
-    vector<int> get_active_components_id() const;
+    SafeSTLVector<int> get_active_components_id() const;
 
 
     /**
@@ -172,7 +172,7 @@ private:
      *
      * @see get_active_components_id()
      */
-    vector<int> get_inactive_components_id() const;
+    SafeSTLVector<int> get_inactive_components_id() const;
 #endif
 
 

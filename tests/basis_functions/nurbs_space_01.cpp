@@ -30,10 +30,10 @@ template< int dim, int range, int rank = 1>
 void do_test()
 {
     OUTSTART
-    using iga::vector;
-    vector<Real> coord_x {0,1,2,3,4};
-    vector<Real> coord_y {5,6,7,8};
-    vector<Real> coord_z {9, 10, 11};
+    using iga::SafeSTLVector;
+    SafeSTLVector<Real> coord_x {0,1,2,3,4};
+    SafeSTLVector<Real> coord_y {5,6,7,8};
+    SafeSTLVector<Real> coord_z {9, 10, 11};
 
     CartesianProductArray<Real, dim> coord;
     CartesianProductArray<Index , dim>  mult;
@@ -74,7 +74,7 @@ void do_test()
     auto  bsp = BSplineSpace<dim, range, rank >::create(degree, knots);
     const auto n_basis = bsp->get_num_basis_table();
 
-    vector<Real> weights(n_basis[0].flat_size(),1.0);
+    SafeSTLVector<Real> weights(n_basis[0].flat_size(),1.0);
 
     using ScalarBSplineSpace = BSplineSpace<dim>;
     using WeightFunc = IgFunction<ReferenceSpace<dim>>;

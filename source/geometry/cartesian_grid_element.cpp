@@ -416,13 +416,13 @@ print_cache_info(LogStream &out) const
 
 
 template <int dim>
-vector<std::string>
+SafeSTLVector<std::string>
 CartesianGridElement<dim>::
 get_defined_properties() const
 {
-    vector<std::string> elem_properties;
+    SafeSTLVector<std::string> elem_properties;
 
-    vector<std::string> grid_properties = grid_->properties_elements_id_.get_properties();
+    SafeSTLVector<std::string> grid_properties = grid_->properties_elements_id_.get_properties();
     for (const auto &property : grid_properties)
     {
         if (grid_->test_if_element_has_property(flat_index_, property))

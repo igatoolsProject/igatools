@@ -132,7 +132,7 @@ public:
     virtual void reset_selected_elements(
         const ValueFlags &flag,
         const eval_pts_variant &eval_points,
-        const vector<int> elements_flat_id) override final;
+        const SafeSTLVector<int> elements_flat_id) override final;
     ///@}
 
     virtual void init_cache(RefElementAccessor &elem,
@@ -157,7 +157,7 @@ private:
     static void
     resize_and_fill_bernstein_values(
         const int deg,
-        const vector<Real> &pt_coords,
+        const SafeSTLVector<Real> &pt_coords,
         BasisValues1d &bernstein_values);
 
 
@@ -222,7 +222,7 @@ private:
         /**
          * id of the intervals that must be processed
          */
-        SafeSTLArray<vector<int>,dim> intervals_id_directions_;
+        SafeSTLArray<SafeSTLVector<int>,dim> intervals_id_directions_;
     };
 
     ResetDispatcher reset_impl_;
@@ -281,13 +281,13 @@ private:
 
     private:
         void
-        copy_to_inactive_components_values(const vector<Index> &inactive_comp,
+        copy_to_inactive_components_values(const SafeSTLVector<Index> &inactive_comp,
                                            const SafeSTLArray<Index, n_components> &active_map,
                                            ValueTable<Value> &D_phi) const;
 
         template <int order>
         void
-        copy_to_inactive_components(const vector<Index> &inactive_comp,
+        copy_to_inactive_components(const SafeSTLVector<Index> &inactive_comp,
                                     const SafeSTLArray<Index, n_components> &active_map,
                                     ValueTable<Derivative<order>> &D_phi) const;
 

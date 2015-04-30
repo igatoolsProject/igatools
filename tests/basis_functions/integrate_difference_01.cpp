@@ -50,7 +50,7 @@ void do_test(const int deg, const int n_knots = 10)
     typename functions::ConstantFunction<dim,0,1>::Value val {0.};
     auto g = functions::ConstantFunction<dim,0,1>::create(grid, IdentityFunction<dim>::create(grid), val);
 
-    vector<Real> elem_err(grid->get_num_all_elems());
+    SafeSTLVector<Real> elem_err(grid->get_num_all_elems());
     Real err = space_tools::l2_norm_difference<dim>(*f, *g, quad, elem_err);
 
     const Real p=2;
