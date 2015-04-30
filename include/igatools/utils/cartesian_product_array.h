@@ -117,7 +117,7 @@ public:
      * Constructor. Construct a rank-dimensional CartesianProductArray where the
      * the i-th direction is initialized to be equal to @p data_directions[i]
      */
-    explicit CartesianProductArray(const std::array<vector<T>,rank> &data_directions) ;
+    explicit CartesianProductArray(const SafeSTLArray<vector<T>,rank> &data_directions) ;
 
 
     /**
@@ -163,7 +163,7 @@ private:
           Conditional<std::is_floating_point<T>::value,
           Points<rank>,
           TensorIndex<rank>>,
-          std::array<T,rank> >;
+          SafeSTLArray<T,rank> >;
 
 
 public:
@@ -231,7 +231,6 @@ public:
      */
     point_t cartesian_product(const TensorIndex<rank> &index) const;
 
-    std::array<T const &, rank> cartesian_product_adresss(const TensorIndex<rank> &index) const;
 
     /**
      * Returns a flat vector of the cartesian product of the
@@ -270,7 +269,7 @@ protected:
      * data_[i][j] refers to the j-th data element  along the
      * i-th coordinate direction.
      */
-    std::array<vector<T>,rank> data_ ;
+    SafeSTLArray<vector<T>,rank> data_ ;
 };
 
 

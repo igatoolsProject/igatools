@@ -82,7 +82,7 @@ CartesianProductArray(const Size size)
 
 template< class T, int rank>
 CartesianProductArray<T,rank>::
-CartesianProductArray(const array<vector<T>,rank> &data_directions)
+CartesianProductArray(const SafeSTLArray<vector<T>,rank> &data_directions)
 {
     TensorSize<rank> size;
     for (int i=0; i<rank; ++i)
@@ -135,10 +135,6 @@ T &
 CartesianProductArray<T,rank>::
 entry(const int i, const int j)
 {
-    Assert(i >= 0 && i < rank, ExcIndexRange(i,0,rank));
-    Assert(j >= 0 && j < this->tensor_size()[i],
-           ExcIndexRange(j,0,this->tensor_size()[i]));
-
     return data_[i][j];
 }
 
@@ -149,10 +145,6 @@ T const &
 CartesianProductArray<T,rank>::
 entry(const int i, const int j) const
 {
-    Assert(i >= 0 && i < rank, ExcIndexRange(i,0,rank));
-    Assert(j >= 0 && j < this->tensor_size()[i],
-           ExcIndexRange(j,0,this->tensor_size()[i]));
-
     return data_[i][j];
 }
 
@@ -163,7 +155,6 @@ void
 CartesianProductArray<T,rank>::
 copy_data_direction(const int i, const vector<T> &data)
 {
-    Assert(i>=0 && i<rank, ExcIndexRange(i,0,rank));
     data_[i] = data;
     TensorSize<rank> size = this->tensor_size();
     if (data_[i].size() != size[i])
@@ -215,10 +206,7 @@ get_sub_product(const TensorIndex<k> &index) const -> SubProduct<k>
 {
     SubProduct<k> sub_data;
     for (int i=0; i<k; ++i)
-    {
-        Assert(index[i]<rank, ExcIndexRange(index[i], 0, rank));
         sub_data.copy_data_direction(i, data_[index[i]]);
-    }
 
     return sub_data;
 }
@@ -230,7 +218,6 @@ const vector<T> &
 CartesianProductArray<T,rank>::
 get_data_direction(const int i) const
 {
-    Assert(i >= 0 && i < rank, ExcIndexRange(i, 0, rank)) ;
     return data_[i];
 }
 

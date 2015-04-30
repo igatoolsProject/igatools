@@ -166,7 +166,7 @@ get_interior_multiplicity_from_xml(const boost::property_tree::ptree &tree)
     const auto &mult_elements = get_xml_element_vector(tree,"InteriorMultiplicity");
     AssertThrow(mult_elements.size() == dim,ExcDimensionMismatch(mult_elements.size(),dim));
 
-    std::array<vector<int>,dim> mlt_data;
+    SafeSTLArray<vector<int>,dim> mlt_data;
     for (const auto mlt_element : mult_elements)
     {
         const auto &mlt_attributes = get_xml_element_attributes(mlt_element);
@@ -380,7 +380,7 @@ get_cartesian_grid_from_xml(const boost::property_tree::ptree &tree)
     const auto &knots_elements = get_xml_element_vector(grid_tree,"Knots");
     AssertThrow(knots_elements.size() == dim,ExcDimensionMismatch(knots_elements.size(),dim));
 
-    std::array<vector<Real>,dim> knots;
+    SafeSTLArray<vector<Real>,dim> knots;
     for (int i = 0 ; i < dim ; ++i)
     {
         const auto &knots_attributes = get_xml_element_attributes(knots_elements[i]);
