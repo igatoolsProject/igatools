@@ -436,7 +436,7 @@ evaluate_nurbs_gradients_from_bspline(
 
 
         vector<Real> invQ(n_pts);
-        vector<array<Real,dim>> dQ_invQ2(n_pts);
+        vector<SafeSTLArray<Real,dim>> dQ_invQ2(n_pts);
         for (int pt = 0 ; pt < n_pts ; ++pt)
         {
             invQ[pt] = 1.0 / Q[pt](0);
@@ -542,8 +542,8 @@ evaluate_nurbs_hessians_from_bspline(
 
         vector<Real> invQ(n_pts);
         vector<Real> invQ2(n_pts);
-        vector<array<Real,dim> > dQ_invQ2(n_pts);
-        vector<array<array<Real,dim>,dim> > Q_terms_2nd_order(n_pts);
+        vector<SafeSTLArray<Real,dim> > dQ_invQ2(n_pts);
+        vector<SafeSTLArray<SafeSTLArray<Real,dim>,dim> > Q_terms_2nd_order(n_pts);
         for (int pt = 0 ; pt < n_pts ; ++pt)
         {
             auto &invQ_pt  = invQ[pt];

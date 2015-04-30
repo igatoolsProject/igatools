@@ -408,7 +408,7 @@ reset_selected_elements(
     Assert(!elements_flat_id.empty(),ExcEmptyObject());
 
     const auto grid = reset_impl_.space_->get_grid();
-    array<set<int>,dim> intervals_id_unique;
+    SafeSTLArray<set<int>,dim> intervals_id_unique;
     for (const auto elem_id : elements_flat_id)
     {
         const auto elem_tensor_id = grid->flat_to_tensor(elem_id);
@@ -493,7 +493,7 @@ void
 BSplineElementHandler<dim, range, rank>::
 FillCacheDispatcher::
 copy_to_inactive_components_values(const vector<Index> &inactive_comp,
-                                   const std::array<Index, n_components> &active_map,
+                                   const SafeSTLArray<Index, n_components> &active_map,
                                    ValueTable<Value> &D_phi) const
 {
     Assert(D_phi.get_num_functions() == elem_->get_num_basis(),
@@ -527,7 +527,7 @@ void
 BSplineElementHandler<dim, range, rank>::
 FillCacheDispatcher::
 copy_to_inactive_components(const vector<Index> &inactive_comp,
-                            const std::array<Index, n_components> &active_map,
+                            const SafeSTLArray<Index, n_components> &active_map,
                             ValueTable<Derivative<order>> &D_phi) const
 {
     Assert(D_phi.get_num_functions() == elem_->get_num_basis(),

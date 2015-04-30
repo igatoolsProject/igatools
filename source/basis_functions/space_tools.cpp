@@ -37,7 +37,7 @@
 
 using std::shared_ptr;
 
-using std::array;
+
 using std::set;
 using std::map;
 
@@ -459,11 +459,11 @@ void reference_to_element(
     }
     //----------------------------------------------------------------------------------------------
 
-    array< int, dim > num_points_dim = points_ref.get_size();
+    SafeSTLArray< int, dim > num_points_dim = points_ref.get_size();
 
     //----------------------------------------------------------------------------------------------
     // scale the points coordinates from the reference domain to the local element
-    array< vector< Real >, dim > coords_scaled;
+    SafeSTLArray< vector< Real >, dim > coords_scaled;
     for (int iDim = 0; iDim < dim; iDim++)
     {
         const vector< Real >   pt_coords = points_ref[ iDim ];

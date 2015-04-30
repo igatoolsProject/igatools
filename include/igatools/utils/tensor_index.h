@@ -53,7 +53,7 @@ public:
      */
     explicit TensorIndex(const Size value = 0) noexcept ;
 
-    /** Constructor using an std::array. */
+    /** Constructor using an SafeSTLArray. */
     explicit TensorIndex(const SafeSTLArray<Index,rank> &arr) noexcept;
 
     /** Constructor using an initializer-list. */

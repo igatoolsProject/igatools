@@ -18,49 +18,43 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/*
- *  Common header file for all tests
+#ifndef BBOX_H_
+#define BBOX_H_
+
+#include <igatools/base/config.h>
+
+#include <igatools/utils/safe_stl_array.h>
+
+IGA_NAMESPACE_OPEN
+
+/**
+ * @brief Bounding Box, a dim-dimensional rectangular
+ * box described by the intervals.
+ *
+ * eg. BBox<2> box {{0,0.5},{1,2}}.
  */
-
-#include <igatools/base/logstream.h>
-#include <fstream>
-
-
-using std::shared_ptr;
-using std::make_shared;
-using std::const_pointer_cast;
-using std::dynamic_pointer_cast;
-using std::string;
-using std::to_string;
-using std::endl;
-using std::string;
-using std::ofstream;
-
-
-using namespace iga;
-
-class IgaTestOutput : public LogStream
+template<int dim>
+class BBox : public SafeSTLArray<SafeSTLArray<Real, 2>, dim>
 {
 public:
-    IgaTestOutput(std::ostream &o)
-        :
-        LogStream()
-    {
-        LogStream::test_mode();
-        LogStream::attach(o);
-        LogStream::depth_console(0);
-    }
+    using SafeSTLArray<SafeSTLArray<Real, 2>, dim>::SafeSTLArray;
 
-    void line(string title = "")
+    /**
+     * Default constructor. It builds a box representing the <tt>dim</tt>-dimensional
+     * unit hypercube \f$[0,1]^{dim}\f$.
+     */
+    BBox()
     {
-        (*this) << "========================================================================" << endl;
-        (*this) << title << endl;
+        for (auto &bounds_dir : (*this))
+        {
+            bounds_dir[0] = 0.0;
+            bounds_dir[1] = 1.0;
+        }
     }
 };
 
-std::ofstream file("output.txt");
-IgaTestOutput out(file);
 
-#define SEPARATOR "========================================================================"
-#define OUTSTART out << SEPARATOR << endl << __PRETTY_FUNCTION__ << endl << SEPARATOR << endl;
-#define OUTEND out << SEPARATOR << endl << endl;
+IGA_NAMESPACE_CLOSE
+
+
+#endif // BBOX_H

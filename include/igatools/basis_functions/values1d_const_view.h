@@ -117,7 +117,7 @@ private:
 
 
 template <int dim>
-using ElemFuncValues = std::array<BasisValues1dConstView, dim>;
+using ElemFuncValues = SafeSTLArray<BasisValues1dConstView, dim>;
 
 template <int dim>
 class TensorProductFunctionEvaluator :

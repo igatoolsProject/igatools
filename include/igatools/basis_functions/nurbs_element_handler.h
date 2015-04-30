@@ -145,7 +145,7 @@ private:
 //    std::shared_ptr<const Space> space_;
     std::shared_ptr<ReferenceElementHandler<dim_,range_,rank_>> bspline_handler_;
 
-    std::array<ValueFlags, dim + 1> flags_;
+    SafeSTLArray<ValueFlags, dim+1> flags_;
 
 
     using WeightElem = typename Space::WeightFunction::ElementAccessor;
@@ -183,7 +183,7 @@ private:
 
         GridElementHandler<dim_> *grid_handler_;
         ValueFlags flag_;
-        std::array<ValueFlags, dim + 1> *flags_;
+        SafeSTLArray<ValueFlags, dim+1> *flags_;
     };
 
     ResetDispatcher reset_impl_;
@@ -196,7 +196,7 @@ private:
         GridElementHandler<dim_> *grid_handler_;
         ReferenceElement<dim_,range_,rank_> *elem_;
         int n_points_;
-        std::array<ValueFlags, dim + 1> *flags_;
+        SafeSTLArray<ValueFlags, dim+1> *flags_;
 
     };
 

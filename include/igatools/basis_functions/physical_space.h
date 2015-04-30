@@ -85,7 +85,7 @@ public:
 
     static constexpr int n_components = constexpr_pow(range, rank);
 
-    static const std::array<int, n_components> components;
+    static const SafeSTLArray<int, n_components> components;
 
 
 public:

@@ -193,7 +193,7 @@ private:
 
         ValueFlags flag_;
         parent_t *grid_handler_;
-        std::array<ValueFlags, dim_ + 1> *flags_;
+        SafeSTLArray<ValueFlags, dim_ + 1> *flags_;
     };
 
     struct FillCacheDispatcher : boost::static_visitor<void>
@@ -233,7 +233,7 @@ private:
 
         parent_t *grid_handler_;
         ElementAccessor *elem_;
-        std::array<ValueFlags, dim_ + 1> *flags_;
+        SafeSTLArray<ValueFlags, dim_ + 1> *flags_;
         QuadList<dim_> *quad_;
     };
 
@@ -254,7 +254,7 @@ protected:
     /**
      * One flag for each possile subdim
      */
-    std::array<ValueFlags, dim_ + 1> flags_;
+    SafeSTLArray<ValueFlags, dim_ + 1> flags_;
 
 
 #ifdef REFINE

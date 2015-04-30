@@ -60,13 +60,6 @@ typedef unsigned int uint;
  */
 typedef unsigned long long ulongint;
 
-/**
- * This type is used in several places of the library for
- * indexing a product like structure, to simplify developers life
- * if it ever becomes a class on its own we use int_array
- */
-template<int dim>
-using int_array = std::array<int, dim >;
 
 
 /**

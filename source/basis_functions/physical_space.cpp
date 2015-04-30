@@ -22,7 +22,7 @@
 #include <igatools/base/sub_function.h>
 #include <igatools/basis_functions/phys_space_element_handler.h>
 
-using std::array;
+
 using std::shared_ptr;
 using std::make_shared;
 using std::const_pointer_cast;
@@ -32,8 +32,9 @@ IGA_NAMESPACE_OPEN
 
 
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
-const std::array<int, PhysicalSpace<dim_, range_, rank_, codim_, type_>::n_components>
-PhysicalSpace<dim_, range_, rank_, codim_, type_>::components = sequence<PhysicalSpace<dim_, range_, rank_, codim_, type_>::n_components>();
+const SafeSTLArray<int, PhysicalSpace<dim_, range_, rank_, codim_, type_>::n_components>
+PhysicalSpace<dim_, range_, rank_, codim_, type_>::components =
+    sequence<PhysicalSpace<dim_, range_, rank_, codim_, type_>::n_components>();
 
 
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>

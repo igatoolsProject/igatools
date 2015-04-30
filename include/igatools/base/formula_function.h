@@ -136,7 +136,7 @@ private:
         int j;
         self_t *function;
         ElementAccessor *elem;
-//        std::array<FunctionFlags, dim + 1> *flags_;
+//        SafeSTLArray<FunctionFlags, dim + 1> *flags_;
     };
 
     FillCacheDispatcher fill_cache_impl;

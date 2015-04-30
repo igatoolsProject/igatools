@@ -25,7 +25,7 @@
 //#include <igatools/base/exceptions.h>
 
 #ifdef NURBS
-using std::array;
+
 
 using std::to_string;
 using std::endl;
@@ -281,7 +281,7 @@ template <int dim_, int range_, int rank_>
 void
 NURBSSpace<dim_, range_, rank_>::
 refine_h_weights(
-    const std::array<bool,dim> &refinement_directions,
+    const SafeSTLArray<bool,dim> &refinement_directions,
     const GridType &grid_old1)
 {
     auto grid = this->get_grid();

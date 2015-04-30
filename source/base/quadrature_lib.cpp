@@ -24,7 +24,7 @@
 
 #include <limits>
 
-using std::array;
+
 
 IGA_NAMESPACE_OPEN
 

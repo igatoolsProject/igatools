@@ -509,7 +509,7 @@ public:
     ElementValuesCache elem_values_;
 
     /** Face values cache */
-    std::array<FaceValuesCache, n_faces> face_values_;
+    SafeSTLArray<FaceValuesCache, n_faces> face_values_;
 
 };
 
@@ -523,7 +523,7 @@ std::shared_ptr<ContainerType> mapping_;
  * @todo implement this function
  *TODO
  */
-std::array<ValueVector<ValueMap>, codim> transform_external_normals() const;
+SafeSTLArray<ValueVector<ValueMap>, codim> transform_external_normals() const;
 
 protected:
 /**

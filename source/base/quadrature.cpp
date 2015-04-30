@@ -25,7 +25,7 @@
 
 #include <set>
 
-using std::array;
+
 using std::endl;
 using std::set;
 

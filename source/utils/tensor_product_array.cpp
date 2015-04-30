@@ -22,7 +22,7 @@
 #include <igatools/base/exceptions.h>
 
 
-using std::array;
+
 
 
 IGA_NAMESPACE_OPEN

@@ -30,21 +30,6 @@
 
 IGA_NAMESPACE_OPEN
 
-#if 0
-/**
- * Constant expression sequence generation
- */
-template <typename Type, Type ...Indices>
-constexpr
-auto
-make_index_array(std::integer_sequence<Type, Indices...>)
--> SafeSTLArray<Type, sizeof...(Indices)>
-{
-    return SafeSTLArray<Type, sizeof...(Indices)>(
-    std::array<Type, sizeof...(Indices)>{Indices...}
-    );
-}
-#endif
 
 
 /**
@@ -62,35 +47,6 @@ sequence(const int init = 0)
     return seq;
 }
 
-
-#if 0
-
-template <class T, int dim>
-inline
-std::array<T, dim>
-filled_array(const T &v)
-{
-    std::array<T,dim> res;
-    res.fill(v);
-    return res;
-}
-
-namespace arr
-{
-/**
- * Returns an array filled with the sequence of numbers
- */
-template <int dim, class T = int>
-inline
-std::array<T,dim>
-sequence(const int init = 0)
-{
-    std::array<T,dim> res;
-    std::iota(res.begin(), res.end(), init);
-    return res;
-}
-}
-#endif
 
 IGA_NAMESPACE_CLOSE
 

@@ -23,7 +23,7 @@
 #include <igatools/geometry/unit_element.h>
 #include <algorithm>
 
-using std::array;
+
 using std::endl;
 
 IGA_NAMESPACE_OPEN

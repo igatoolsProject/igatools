@@ -21,7 +21,7 @@
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/base/exceptions.h>
 
-using std::array;
+
 using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN

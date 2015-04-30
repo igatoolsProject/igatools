@@ -22,7 +22,7 @@
 #include <set>
 
 
-using std::array;
+
 using std::set;
 
 IGA_NAMESPACE_OPEN
@@ -43,7 +43,7 @@ build_map_elements_between_cartesian_grids(const CartesianGrid<dim> &grid_fine,
     //---------------------------------------------------------
 
     //---------------------------------------------------------
-    array<vector<int>,dim> map_interv_fid_fine_coarse;
+    SafeSTLArray<vector<int>,dim> map_interv_fid_fine_coarse;
     for (int i = 0 ; i < dim ; ++i)
     {
         const auto &coords_coarse = grid_coarse.get_knot_coordinates(i);

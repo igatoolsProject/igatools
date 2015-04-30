@@ -23,7 +23,7 @@
 #include <boost/numeric/ublas/io.hpp>
 
 using std::endl;
-using std::array;
+
 
 using std::shared_ptr;
 using std::make_shared;

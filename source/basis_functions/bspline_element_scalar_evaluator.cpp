@@ -27,7 +27,7 @@ IGA_NAMESPACE_OPEN
 
 template <int dim>
 BSplineElementScalarEvaluator<dim>::
-BSplineElementScalarEvaluator(const vector<std::array<Values1DConstView,dim>> &values1D)
+BSplineElementScalarEvaluator(const vector<SafeSTLArray<Values1DConstView,dim>> &values1D)
     :
     values1D_(values1D)
 {
@@ -36,7 +36,7 @@ BSplineElementScalarEvaluator(const vector<std::array<Values1DConstView,dim>> &v
 
 
 template <int dim>
-const std::array<Values1DConstView,dim> &
+const SafeSTLArray<Values1DConstView,dim> &
 BSplineElementScalarEvaluator<dim>::
 get_dataivative_components_view(const int order) const
 {

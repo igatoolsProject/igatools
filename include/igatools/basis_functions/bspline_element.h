@@ -159,11 +159,11 @@ private:
     friend class BSplineElementHandler<dim, range, rank>;
 
 public:
-    ComponentContainer<std::array<ValueTable<Real>,dim> >
+    ComponentContainer<SafeSTLArray<ValueTable<Real>,dim> >
     evaluate_univariate_derivatives_at_points(const int deriv_order,
                                               const Quadrature<dim> &pts) const
     {
-        ComponentContainer<std::array<ValueTable<Real>,dim> > values;
+        ComponentContainer<SafeSTLArray<ValueTable<Real>,dim> > values;
 
         Assert(false,ExcNotImplemented());
 

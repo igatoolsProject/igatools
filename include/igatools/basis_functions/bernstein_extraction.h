@@ -56,7 +56,7 @@ public:
     using KnotsTable = typename Space::KnotsTable;
     using MultiplicityTable = typename Space::MultiplicityTable;
 
-    using ElemOper = std::array<Operator const *, dim>;
+    using ElemOper = SafeSTLArray<Operator const *, dim>;
     using ElemOperTable = typename Space::template ComponentContainer<ElemOper>;
 private:
     using Operators = CartesianProductArray<Operator, dim>;

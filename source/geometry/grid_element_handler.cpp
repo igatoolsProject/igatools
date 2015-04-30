@@ -23,7 +23,7 @@
 
 
 using std::shared_ptr;
-using std::array;
+
 
 IGA_NAMESPACE_OPEN
 

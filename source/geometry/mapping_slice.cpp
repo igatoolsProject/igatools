@@ -22,7 +22,7 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/base/exceptions.h>
 
-using std::array;
+
 
 using std::shared_ptr;
 using std::endl;

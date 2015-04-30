@@ -421,7 +421,7 @@ private:
 
     /** If end knots are not in the repeated knot vector */
     using EndIntervalTable = typename BaseSpace::template
-                             ComponentContainer<std::array<std::pair<Real, Real>, dim>>;
+                             ComponentContainer<SafeSTLArray<std::pair<Real, Real>, dim>>;
     EndIntervalTable end_interval_;
 
     friend class BSplineElement<dim, range, rank>;

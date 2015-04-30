@@ -49,7 +49,7 @@ public:
     /** Default constructor. Initializes all the direction indices to zero. */
     explicit TensorSize(const Size value = 0) noexcept ;
 
-    /** Constructor using an std::array. */
+    /** Constructor using an SafeSTLArray. */
     explicit TensorSize(const SafeSTLArray<Size,rank> &arr) noexcept;
 
     /** Copy constructor converting a TensorIndex<rank> @p arr. */

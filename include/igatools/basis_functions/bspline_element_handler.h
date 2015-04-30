@@ -55,7 +55,7 @@ class BSplineElementHandler : public ReferenceElementHandler<dim_,range_,rank_>
     using ComponentDirectionTable = ComponentContainer<CartesianProductArray<T,dim_>>;
 
     template<class T>
-    using ComponentDirectionContainer = ComponentContainer<std::array<T,dim_>>;
+    using ComponentDirectionContainer = ComponentContainer<SafeSTLArray<T,dim_>>;
 
     using TensorSizeTable = typename Space::TensorSizeTable;
 
@@ -161,7 +161,7 @@ private:
         BasisValues1d &bernstein_values);
 
 
-    std::array<ValueFlags, dim_ + 1> flags_;
+    SafeSTLArray<ValueFlags, dim_ + 1> flags_;
 
 //    template <class T>
 //    using DirectionTable = CartesianProductArray<T, dim_>;
@@ -215,14 +215,14 @@ private:
 
         GridElementHandler<dim_> *grid_handler_;
         ValueFlags flag_;
-        std::array<ValueFlags, dim + 1> *flags_;
+        SafeSTLArray<ValueFlags, dim+1> *flags_;
         CacheList<GlobalCache, dim> *splines1d_;
         const Space *space_;
 
         /**
          * id of the intervals that must be processed
          */
-        std::array<vector<int>,dim> intervals_id_directions_;
+        SafeSTLArray<vector<int>,dim> intervals_id_directions_;
     };
 
     ResetDispatcher reset_impl_;
@@ -234,7 +234,7 @@ private:
 
         GridElementHandler<dim_> *grid_handler_;
         ReferenceElement<dim_,range_,rank_> *elem_;
-        std::array<ValueFlags, dim + 1> *flags_;
+        SafeSTLArray<ValueFlags, dim+1> *flags_;
     };
 
     InitCacheDispatcher init_cache_impl_;
@@ -282,13 +282,13 @@ private:
     private:
         void
         copy_to_inactive_components_values(const vector<Index> &inactive_comp,
-                                           const std::array<Index, n_components> &active_map,
+                                           const SafeSTLArray<Index, n_components> &active_map,
                                            ValueTable<Value> &D_phi) const;
 
         template <int order>
         void
         copy_to_inactive_components(const vector<Index> &inactive_comp,
-                                    const std::array<Index, n_components> &active_map,
+                                    const SafeSTLArray<Index, n_components> &active_map,
                                     ValueTable<Derivative<order>> &D_phi) const;
 
     };

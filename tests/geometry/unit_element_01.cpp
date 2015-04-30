@@ -28,120 +28,47 @@
 #include "../tests.h"
 
 #include <igatools/geometry/unit_element.h>
-#include <igatools/base/quadrature.h>
 
 
-template<template<int> class Q, std::size_t... I>
-auto tuple_of_quads(std::index_sequence<I...>)
--> decltype(std::make_tuple(Q<I>() ...))
+template<int dim, int k>
+void all_cube_elements()
 {
-    return std::make_tuple(Q<I>() ...);
-}
+    OUTSTART
 
-template<int dim, template<int> class Q>
-using TupleList = decltype(tuple_of_quads<Q>(std::make_index_sequence<dim+1>()));
-
-
-template<int dim>
-using QuadList = TupleList<dim, Quadrature>;
-//using QuadList = TupleList<dim, Quadrature>;
-
-
-
-template<class ValuesCache, int dim, std::size_t... I>
-auto
-tuple_of_caches(
-    std::index_sequence<I...>,
-    const Quadrature<dim> &q,
-    const ValuesCache &)
--> decltype(std::make_tuple(std::array<ValuesCache,
-                            UnitElement<dim>::template num_elem<dim-I>()>() ...))
-{
-    return std::make_tuple(std::array<ValuesCache,
-                           UnitElement<dim>::template num_elem<dim-I>()>() ...);
-}
-
-
-template<int dim, int n_sub_elem>
-using CacheList =
-    decltype(tuple_of_caches(
-                 std::make_index_sequence<n_sub_elem+1>(),
-                 Quadrature<dim>(),3));
-
-
-template<class Func, class Tuple, std::size_t N, std::size_t Min>
-struct TupleFunc
-{
-    static void apply_func(Func &F, const Tuple &t)
+    const auto size = UnitElement<dim>::template num_elem<k>();
+    out << "Number of elements: " << size << endl;
+    for (auto i=0; i<size; ++i)
     {
-        TupleFunc<Func,Tuple, N-1, Min>::apply_func(F,t);
-        if (N>Min)
-            F.func(std::get<N-1>(t));
+        out.begin_item("Element: " + std::to_string(i));
+        auto &k_elem = UnitElement<dim>::template get_elem<k>(i);
+        const int n_dir = k_elem.constant_directions.size();
+        out << "Constant directions" << endl;
+        for (int j=0; j<n_dir; ++j)
+        {
+            out << "x["<< k_elem.constant_directions[j]<< "]";
+            out << " = " << k_elem.constant_values[j] << endl;
+        }
+        out << "Active directions" << endl;
+        for (auto &dir : k_elem.active_directions)
+            out << "x[" << dir << "]" << endl;
+        out.end_item();
     }
-};
-
-template<class Func, class Tuple, std::size_t N>
-struct TupleFunc<Func, Tuple, N, N>
-{
-    static void apply_func(Func &F, const Tuple &t)
-    {
-        F.func(std::get<N>(t));
-    }
-};
-
-
-
-
-struct PrintQuadFunc
-{
-    PrintQuadFunc(LogStream &out1)
-        :out(out1)
-    {}
-    template<std::size_t... I>
-    void func(const auto &q)
-    {
-        q.print_info(out);
-        out << endl;
-    }
-    LogStream &out;
-};
-
-template<class... Args>
-void print_quads(const std::tuple<Args...> &t, LogStream &out1)
-{
-    PrintQuadFunc f(out1);
-    TupleFunc<PrintQuadFunc, decltype(t), sizeof...(Args), 2>::apply_func(f,t);
+    OUTEND
 }
-
-
-
 
 int main()
 {
-
-
-
-    const int dim=3;
-    QuadList<dim>  list_of_quad;
-    print_quads(list_of_quad, out);
-
-#if 1
-
-    CacheList<3,1> list_values;
-    auto &cache0 = std::get<0>(list_values);
-    auto &cache1 = std::get<1>(list_values);
-
-    for (auto &c : cache0)
-        out << c << endl;
-
-    for (auto &c : cache1)
-        out << c << endl;
-
-    UnitElement<2>::num_elem<1>();
-    UnitElement<2>::get_elem<1>(0);
-#endif
-
-
+    out.depth_console(20);
+    all_cube_elements<0,0>();
+    all_cube_elements<1,1>();
+    all_cube_elements<1,0>();
+    all_cube_elements<2,2>();
+    all_cube_elements<2,1>();
+    all_cube_elements<2,0>();
+    all_cube_elements<3,3>();
+    all_cube_elements<3,2>();
+    all_cube_elements<3,1>();
+    all_cube_elements<3,0>();
 
     return 0;
 }

@@ -23,7 +23,7 @@
 #include <igatools/base/array_utils.h>
 
 
-using std::array;
+
 
 
 IGA_NAMESPACE_OPEN

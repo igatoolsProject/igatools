@@ -38,16 +38,6 @@
 
 IGA_NAMESPACE_OPEN
 
-#if 0
-template<int dim, int sub_elem_dim, class CacheSingleElem>
-class CacheSubElems : std::array<CacheSingleElem,UnitElement<dim>::template num_elem<sub_elem_dim>()>
-{
-    using self_t = std::array<CacheSingleElem,UnitElement<dim>::template num_elem<sub_elem_dim>()>;
-public:
-
-    using self_t::self_t;
-};
-#endif
 
 template<class ValuesCache, int dim, std::size_t... I>
 auto

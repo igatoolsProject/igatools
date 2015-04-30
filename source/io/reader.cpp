@@ -760,11 +760,10 @@ IGA_NAMESPACE_CLOSE
 #include <boost/algorithm/string.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 
-#include <array>
 #include <set>
 
 
-using std::array;
+
 using std::set;
 using std::make_shared;
 using namespace iga::reader_utils;

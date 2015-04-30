@@ -56,7 +56,7 @@ void test_evaluate()
     auto end  = map.end();
 
 
-    std::array<Real, UnitElement<dim>::template num_elem<sub_dim>()> face_area ;
+    SafeSTLArray<Real, UnitElement<dim>::template num_elem<sub_dim>()> face_area ;
     std::fill(face_area.begin(), face_area.end(), 0.0) ;
 
     map.template init_cache<sub_dim>(elem);

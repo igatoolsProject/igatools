@@ -196,7 +196,7 @@ template<int order>
 auto
 BallFunction<dim>::get_aux_vals(const ValueVector<Point> &points) const
 {
-    std::array<std::array<vector<std::array<double, dim> >, order>, 2> val_table;
+    SafeSTLArray<SafeSTLArray<vector<SafeSTLArray<double, dim> >, order>, 2> val_table;
     auto &cos_val = val_table[0];
     auto &sin_val = val_table[1];
 
@@ -429,7 +429,7 @@ template<int order>
 auto
 SphereFunction<dim>::get_aux_vals(const ValueVector<Point> &points) const
 {
-    std::array<std::array<vector<std::array<double, space_dim> >, order>, 2> val_table;
+    SafeSTLArray<SafeSTLArray<vector<SafeSTLArray<double, space_dim> >, order>, 2> val_table;
     auto &cos_val = val_table[0];
     auto &sin_val = val_table[1];
 

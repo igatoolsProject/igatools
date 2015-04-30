@@ -34,7 +34,7 @@ IGA_NAMESPACE_OPEN
  * @brief Static multi-dimensional array container, i.e. a tensor-like array
  * container of fixed dimension and fixed @p rank.
  *
- * Basically is a MultiArray in which the STL container is a std::array.
+ * Basically is a MultiArray in which the STL container is a SafeSTLArray.
  *
  * @see MultiArray
  *

@@ -22,7 +22,7 @@
 #include <igatools/geometry/push_forward.h>
 
 
-using std::array;
+
 using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN

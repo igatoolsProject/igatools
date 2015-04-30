@@ -35,7 +35,7 @@ using std::sort;
 
 using std::shared_ptr;
 using std::make_shared;
-using std::array;
+
 
 
 IGA_NAMESPACE_OPEN
@@ -101,41 +101,41 @@ public:
 
 
     static const int new_deriv_order = order>0?order:1;
-    const array<int,num_entries_eval> &get_entries_flat_id_evaluate() const
+    const SafeSTLArray<int,num_entries_eval> &get_entries_flat_id_evaluate() const
     {
         return entries_flat_id_evaluate_;
     }
 
-    const array<int,num_entries_copy> &get_entries_flat_id_copy_to() const
+    const SafeSTLArray<int,num_entries_copy> &get_entries_flat_id_copy_to() const
     {
         return entries_flat_id_copy_to_;
     }
 
-    const array<int,num_entries_copy> &get_entries_flat_id_copy_from() const
+    const SafeSTLArray<int,num_entries_copy> &get_entries_flat_id_copy_from() const
     {
         return entries_flat_id_copy_from_;
     }
 
-    const array<TensorIndex<new_deriv_order>,num_entries_total> &get_entries_tensor_id() const
+    const SafeSTLArray<TensorIndex<new_deriv_order>,num_entries_total> &get_entries_tensor_id() const
     {
         return entries_tensor_id_;
     }
 private:
 
-    bool test_if_evaluate(const array<int,order> &tensor_index) const;
+    bool test_if_evaluate(const SafeSTLArray<int,order> &tensor_index) const;
 
     /** Tensor ids of all the entries */
 
-    array<TensorIndex<new_deriv_order> ,num_entries_total> entries_tensor_id_;
+    SafeSTLArray<TensorIndex<new_deriv_order> ,num_entries_total> entries_tensor_id_;
 
     /** Flat ids of the entries that need to be computed */
-    array<int,num_entries_eval> entries_flat_id_evaluate_;
+    SafeSTLArray<int,num_entries_eval> entries_flat_id_evaluate_;
 
     /** Flat ids of the destination entries that need to be copied */
-    array<int,num_entries_copy> entries_flat_id_copy_to_;
+    SafeSTLArray<int,num_entries_copy> entries_flat_id_copy_to_;
 
     /** Flat ids of the source entries that need to be copied */
-    array<int,num_entries_copy> entries_flat_id_copy_from_;
+    SafeSTLArray<int,num_entries_copy> entries_flat_id_copy_from_;
 
     TensorSize<order> size_deriv_index_;
 };
@@ -199,7 +199,7 @@ template<int dim, int order>
 inline
 bool
 DerivativeSymmetryManager<dim,order>::
-test_if_evaluate(const array<int,order> &tensor_index) const
+test_if_evaluate(const SafeSTLArray<int,order> &tensor_index) const
 {
     bool test_result = true;
     for (int i = 0; i < order-1; ++i)
@@ -230,38 +230,38 @@ public:
         entries_flat_id_evaluate_[0] = 0;
     }
 
-    const array<int,num_entries_eval> &get_entries_flat_id_evaluate() const
+    const SafeSTLArray<int,num_entries_eval> &get_entries_flat_id_evaluate() const
     {
         return entries_flat_id_evaluate_;
     }
 
-    const array<int,num_entries_copy> &get_entries_flat_id_copy_to() const
+    const SafeSTLArray<int,num_entries_copy> &get_entries_flat_id_copy_to() const
     {
         return entries_flat_id_copy_to_;
     }
 
-    const array<int,num_entries_copy> &get_entries_flat_id_copy_from() const
+    const SafeSTLArray<int,num_entries_copy> &get_entries_flat_id_copy_from() const
     {
         return entries_flat_id_copy_from_;
     }
 
-    const array<TensorIndex<order>,num_entries_total> &get_entries_tensor_id() const
+    const SafeSTLArray<TensorIndex<order>,num_entries_total> &get_entries_tensor_id() const
     {
         return entries_tensor_id_;
     }
 
 private:
     /** Tensor ids of all the entries */
-    array<TensorIndex<order>,num_entries_total> entries_tensor_id_;
+    SafeSTLArray<TensorIndex<order>,num_entries_total> entries_tensor_id_;
 
     /** Flat ids of the entries that need to be computed */
-    array<int,num_entries_eval> entries_flat_id_evaluate_;
+    SafeSTLArray<int,num_entries_eval> entries_flat_id_evaluate_;
 
     /** Flat ids of the destination entries that need to be copied */
-    array<int,num_entries_copy> entries_flat_id_copy_to_;
+    SafeSTLArray<int,num_entries_copy> entries_flat_id_copy_to_;
 
     /** Flat ids of the source entries that need to be copied */
-    array<int,num_entries_copy> entries_flat_id_copy_from_;
+    SafeSTLArray<int,num_entries_copy> entries_flat_id_copy_from_;
 
 };
 
@@ -323,8 +323,8 @@ auto
 BSplineElement<dim, range, rank>::
 evaluate_univariate_derivatives_at_points(
     const int deriv_order,
-    const std::array<vector<Real>,dim> &points) const
--> ComponentContainer<std::array<ValueTable<Real>,dim> >
+    const SafeSTLArray<vector<Real>,dim> &points) const
+-> ComponentContainer<SafeSTLArray<ValueTable<Real>,dim> >
 {
     TensorSize<dim> n_points_direction;
     for (int i = 0 ; i < dim ; ++i)
@@ -338,7 +338,7 @@ evaluate_univariate_derivatives_at_points(
 
     auto bsp_space = this->get_bspline_space();
 
-    ComponentContainer< array<ValueTable<Real>,dim> > funcs1D_table(bsp_space->get_components_map());
+    ComponentContainer< SafeSTLArray<ValueTable<Real>,dim> > funcs1D_table(bsp_space->get_components_map());
 
     const auto degree_table = bsp_space->get_degree();
     const auto &bezier_op_ = bsp_space->operators_;
@@ -389,9 +389,9 @@ template <int dim, int range, int rank>
 auto
 BSplineElement<dim, range, rank>::
 evaluate_univariate_derivatives_at_points(const int deriv_order, const Quadrature<dim> &quad) const
--> ComponentContainer<std::array<ValueTable<Real>,dim> >
+-> ComponentContainer<SafeSTLArray<ValueTable<Real>,dim> >
 {
-    std::array<vector<Real>,dim> points_coords;
+    SafeSTLArray<vector<Real>,dim> points_coords;
     for (int i = 0 ; i < dim ; ++i)
         points_coords[i] = quad.get_points().get_data_direction(i);
 
@@ -403,9 +403,9 @@ auto
 BSplineElement<dim, range, rank>::
 evaluate_univariate_derivatives_at_points(
     const int deriv_order,
-    const ValueVector<Point> &points) const -> ComponentContainer<std::array<ValueTable<Real>,dim> >
+    const ValueVector<Point> &points) const -> ComponentContainer<SafeSTLArray<ValueTable<Real>,dim> >
 {
-    std::array<vector<Real>,dim> points_coords;
+    SafeSTLArray<vector<Real>,dim> points_coords;
     for (const auto &pt : points)
         for (int i = 0 ; i < dim ; ++i)
             points_coords[i].push_back(pt[i]);
@@ -459,7 +459,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
             {
                 //------------------------------------------------------------------------------
                 // evaluation of the values/derivarives of the 1D Bernstein polynomials -- begin
-                array<boost::numeric::ublas::vector<Real>,dim> bernstein_values;
+                SafeSTLArray<boost::numeric::ublas::vector<Real>,dim> bernstein_values;
                 for (int dir = 0 ; dir < dim ; ++dir)
                     bernstein_values[dir] = BernsteinBasis::derivative(0,degree[iComp][dir],point[dir]);
                 // evaluation of the values/derivarives of the 1D Bernstein polynomials -- end
@@ -470,7 +470,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                 // apply the Bezier extraction operator for the functions on this element -- begin
                 const auto &bezier_op_comp = bezier_op[iComp];
 
-                array<boost::numeric::ublas::vector<Real>,dim> bspline_basis;
+                SafeSTLArray<boost::numeric::ublas::vector<Real>,dim> bspline_basis;
                 for (int dir = 0 ; dir < dim ; ++dir)
                 {
                     const auto &M = *(bezier_op_comp[dir]);
@@ -557,7 +557,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
             {
                 //------------------------------------------------------------------------------
                 // evaluation of the values/derivarives of the 1D Bernstein polynomials -- begin
-                array<array<boost::numeric::ublas::vector<Real>,dim>,deriv_order+1> bernstein_values;
+                SafeSTLArray<SafeSTLArray<boost::numeric::ublas::vector<Real>,dim>,deriv_order+1> bernstein_values;
                 for (int order = 0 ; order <= deriv_order ; ++order)
                 {
                     for (int dir = 0 ; dir < dim ; ++dir)
@@ -577,7 +577,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                 // apply the Bezier extraction operator for the functions on this element -- begin
                 const auto &bezier_op_comp = bezier_op[iComp];
 
-                array<array<boost::numeric::ublas::vector<Real>,dim>,deriv_order+1> bspline_basis;
+                SafeSTLArray<SafeSTLArray<boost::numeric::ublas::vector<Real>,dim>,deriv_order+1> bspline_basis;
                 for (int order = 0 ; order <= deriv_order ; ++order)
                 {
                     for (int dir = 0 ; dir < dim ; ++dir)

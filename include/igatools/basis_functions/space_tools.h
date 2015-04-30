@@ -352,7 +352,7 @@ get_boundary_dofs(std::shared_ptr<const Space> space,
 
 
 // TODO (pauletti, Mar 18, 2015): this could be given a more general use
-static const std::array<ValueFlags, 3> order_to_flag =
+static const SafeSTLArray<ValueFlags, 3> order_to_flag =
 {ValueFlags::value,ValueFlags::gradient,ValueFlags::hessian};
 
 template<int order, int dim, int codim = 0, int range = 1, int rank = 1>
