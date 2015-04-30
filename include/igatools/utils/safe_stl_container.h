@@ -41,7 +41,6 @@ public:
     /** Inherit the constructors of the base class. */
     using STLContainer::STLContainer;
 
-
     /**
      * Returns the number of entries in the container.
      */

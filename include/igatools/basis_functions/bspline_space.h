@@ -184,9 +184,8 @@ public:
     create(const Degrees &degree,
            std::shared_ptr<GridType> knots,
            const InteriorReg interior_reg = InteriorReg::maximum,
-           const Periodicity &periodic = filled_array<bool, dim>(false),
-           const EndBehaviour &end_b =
-               filled_array<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory));
+           const Periodicity &periodic = Periodicity(false),
+           const EndBehaviour &end_b = EndBehaviour(BasisEndBehaviour::interpolatory));
 
     /**
      * Builds and returns a BSpline space over the CartesianGrid

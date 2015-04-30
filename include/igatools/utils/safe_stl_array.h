@@ -57,9 +57,18 @@ public :
     SafeSTLArray(const T &val)
     {
         std::array<T,N>::fill(val);
-    }
+    };
 
-} ;
+
+    SafeSTLArray(std::initializer_list<T> list)
+    {
+        Assert(list.size() == N, ExcDimensionMismatch(list.size(),N));
+
+        for (int i = 0 ; i < N ; ++i)
+            (*this)[i] = list.begin()[i] ;
+    };
+
+};
 
 IGA_NAMESPACE_CLOSE
 

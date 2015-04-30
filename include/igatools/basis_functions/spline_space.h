@@ -98,15 +98,15 @@ public:
 public:
     template<class> class ComponentContainer;
     static constexpr int n_components = ComponentContainer<Size>::n_entries;
-    static const std::array<Size, n_components> components;
+    static const SafeSTLArray<Size, n_components> components;
 
 public:
     using KnotCoordinates = typename GridType::KnotCoordinates;
-    using BoundaryKnots = std::array<CartesianProductArray<Real,2>, dim>;
+    using BoundaryKnots = SafeSTLArray<CartesianProductArray<Real,2>, dim>;
     using Degrees  = TensorIndex<dim>;
     using Multiplicity = CartesianProductArray<Size, dim>;
-    using Periodicity = std::array<bool, dim>;
-    using EndBehaviour = std::array<BasisEndBehaviour, dim>;
+    using Periodicity = SafeSTLArray<bool, dim>;
+    using EndBehaviour = SafeSTLArray<BasisEndBehaviour, dim>;
 
     using DegreeTable = ComponentContainer<Degrees>;
     using MultiplicityTable = ComponentContainer<Multiplicity>;
@@ -157,8 +157,7 @@ public:
         const DegreeTable &deg,
         std::shared_ptr<GridType> knots,
         const MultiplicityTable &interior_mult,
-        const PeriodicityTable &periodic =
-            PeriodicityTable(filled_array<bool,dim>(false)));
+        const PeriodicityTable &periodic = PeriodicityTable(SafeSTLArray<bool,dim>(false)));
 
 protected:
     /**
@@ -169,14 +168,14 @@ protected:
                          std::shared_ptr<GridType> knots,
                          const MultiplicityTable &interior_mult,
                          const PeriodicityTable &periodic =
-                             PeriodicityTable(filled_array<bool,dim>(false)));
+                             PeriodicityTable(SafeSTLArray<bool,dim>(false)));
 
 public:
     const DegreeTable &get_degree() const;
 
     const PeriodicityTable &get_periodicity() const;
 
-    const std::array<Index,n_components> &get_components_map() const;
+    const SafeSTLArray<Index,n_components> &get_components_map() const;
 
     const vector<Index> &get_active_components_id() const;
 
@@ -295,7 +294,7 @@ public:
     public:
         using base_t::n_entries;
 
-        using  ComponentMap = std::array <Index, n_entries>;
+        using  ComponentMap = SafeSTLArray<Index, n_entries>;
 
         ComponentContainer(const ComponentMap &comp_map =
                                sequence<n_entries>());
@@ -303,7 +302,7 @@ public:
         ComponentContainer(const ComponentMap &comp_map, const T &val);
 
         ComponentContainer(bool uniform, const T &val)
-            : ComponentContainer(filled_array<Index, n_entries>(0), val)
+            : ComponentContainer(ComponentMap(0), val)
         {}
 
         /**
@@ -404,14 +403,14 @@ public:
             out.end_item();
         }
 
-        const std::array <Index, n_entries> &get_comp_map() const
+        const SafeSTLArray <Index, n_entries> &get_comp_map() const
         {
             return comp_map_;
         }
 
     private:
         /** For each component return the index of the active component */
-        std::array <Index, n_entries> comp_map_;
+        SafeSTLArray<Index, n_entries> comp_map_;
 
         /** list of the active components */
         vector<Index> active_components_id_;
@@ -458,7 +457,7 @@ protected:
 template <class T, int dim>
 inline
 vector<T>
-unique_container(std::array <T, dim> a)
+unique_container(SafeSTLArray <T, dim> a)
 {
     auto it = std::unique(a.begin(), a.end());
     return vector<T>(a.begin(), it);
@@ -530,7 +529,7 @@ SplineSpace<dim, range, rank>::
 ComponentContainer<T>::
 ComponentContainer(const T &val)
     :
-    comp_map_(filled_array<Index, n_entries>(0)),
+    comp_map_(0),
     active_components_id_(1,0),
     inactive_components_id_(n_entries-1)
 {

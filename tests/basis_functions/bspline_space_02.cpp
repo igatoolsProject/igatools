@@ -41,10 +41,9 @@ void component_space(const int deg=3,  const int n_knots = 10)
     using VecSpace = BSplineSpace<dim, dim+codim>;
     using CompSpace  = BSplineSpace<dim, 1>;
     typename VecSpace::Degrees degt(deg);
-    typename VecSpace::Periodicity periodic = filled_array<bool, dim>(false);
+    typename VecSpace::Periodicity periodic(false);
     periodic[0] = true;
-    typename VecSpace::EndBehaviour end_b =
-        filled_array<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory);
+    typename VecSpace::EndBehaviour end_b(BasisEndBehaviour::interpolatory);
     end_b[0] = BasisEndBehaviour::periodic;
 
     auto space = VecSpace::create(degt, grid, InteriorReg::maximum, periodic, end_b);

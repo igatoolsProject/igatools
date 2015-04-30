@@ -61,10 +61,9 @@ void assemble_matrix(const int n_knots, const int deg)
     using Gradient = typename Function::Gradient;
 
     typename Space::Degrees degt(deg);
-    typename Space::Periodicity periodic = filled_array<bool, dim>(false);
+    typename Space::Periodicity periodic(false);
     periodic[0] = true;
-    typename Space::EndBehaviour end_b =
-        filled_array<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory);
+    typename Space::EndBehaviour end_b(BasisEndBehaviour::interpolatory);
 
     end_b[0] = BasisEndBehaviour::periodic;
 

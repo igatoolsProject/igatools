@@ -26,6 +26,8 @@
 #include <igatools/utils/tensor_product_array.h>
 #include <igatools/utils/value_vector.h>
 
+#include <igatools/geometry/bbox.h>
+
 IGA_NAMESPACE_OPEN
 
 /**

@@ -35,7 +35,7 @@ const Size SplineSpace<dim, range, rank>::n_components;
 
 
 template<int dim, int range, int rank>
-const std::array<Size, SplineSpace<dim, range, rank>::n_components>
+const SafeSTLArray<Size, SplineSpace<dim, range, rank>::n_components>
 SplineSpace<dim, range, rank>::components =
     sequence<SplineSpace<dim, range, rank>::n_components>();
 
@@ -584,7 +584,7 @@ get_periodicity() const -> const PeriodicityTable &
 template<int dim, int range, int rank>
 auto
 SplineSpace<dim, range, rank>::
-get_components_map() const -> const std::array<Index,n_components> &
+get_components_map() const -> const SafeSTLArray<Index,n_components> &
 {
     return interior_mult_.get_comp_map();
 }

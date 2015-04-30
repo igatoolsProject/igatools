@@ -60,8 +60,8 @@ create_space<2>(const int num_knots)
                              InteriorReg::maximum,
                              degree_table,
                              knots->get_num_intervals()),
-                         PeriodicityTable(true,filled_array<bool, 2>(false)),
-                         EndBehaviourTable(true,filled_array<BasisEndBehaviour, 2>(BasisEndBehaviour::interpolatory))) ;
+                         PeriodicityTable(true,SafeSTLArray<bool, 2>(false)),
+                         EndBehaviourTable(true,SafeSTLArray<BasisEndBehaviour,2>(BasisEndBehaviour::interpolatory))) ;
 }
 
 template <>
@@ -82,8 +82,8 @@ create_space<3>(const int num_knots)
                              InteriorReg::maximum,
                              degree_table,
                              knots->get_num_intervals()),
-                         PeriodicityTable(true,filled_array<bool,3>(false)),
-                         EndBehaviourTable(true,filled_array<BasisEndBehaviour,3>(BasisEndBehaviour::interpolatory))) ;
+                         PeriodicityTable(true,SafeSTLArray<bool,3>(false)),
+                         EndBehaviourTable(true,SafeSTLArray<BasisEndBehaviour,3>(BasisEndBehaviour::interpolatory))) ;
 }
 
 

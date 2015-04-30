@@ -105,7 +105,7 @@ public:
      * it returns an array with the corresponding data in each entry
      */
     static TensorIndex<rank>
-    get_tensor_entry(const std::array< vector<Index>, rank> &data,
+    get_tensor_entry(const SafeSTLArray< vector<Index>, rank> &data,
                      const Index flat_index, const TensorIndex<rank> &weight) noexcept ;
 };
 

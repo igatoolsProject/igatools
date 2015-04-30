@@ -93,7 +93,7 @@ template<int dim_>
 CartesianGrid<dim_>::
 CartesianGrid(const TensorSize<dim_> &n, const Kind kind)
     :
-    CartesianGrid(filled_array<std::array<Real,2>,dim_>(std::array<Real,2> {{0,1}}), n, kind)
+    CartesianGrid(BBox<dim_>(), n, kind)
 {}
 
 

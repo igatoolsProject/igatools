@@ -29,6 +29,7 @@
 #include <igatools/utils/dynamic_multi_array.h>
 #include <igatools/geometry/unit_element.h>
 #include <igatools/base/array_utils.h>
+#include <igatools/geometry/bbox.h>
 #include <igatools/geometry/cartesian_grid_iterator.h>
 #include <igatools/base/properties_id_container.h>
 
@@ -40,6 +41,9 @@
 #include <boost/signals2.hpp>
 
 IGA_NAMESPACE_OPEN
+
+
+
 
 template <int> class CartesianGridElement;
 template <int> class GridElementHandler;

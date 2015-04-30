@@ -39,8 +39,8 @@ BSplineSpace(const int degree,
              const BasisEndBehaviour end_b)
     :
     BSplineSpace(Degrees(degree), knots, interior_reg,
-                 Periodicity(filled_array<bool,dim>(periodic)),
-                 EndBehaviour(filled_array<BasisEndBehaviour,dim>(end_b)))
+                 Periodicity(periodic),
+                 EndBehaviour(end_b))
 {}
 
 

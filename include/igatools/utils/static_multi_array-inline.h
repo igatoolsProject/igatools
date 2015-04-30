@@ -50,25 +50,6 @@ StaticMultiArray(const T &val)
     const_cast<SafeSTLArray<T,n_entries>&>(this->get_data()) = SafeSTLArray<T,n_entries>(val);
 }
 
-#if 0
-//This code is wrong data_ has dim^rank entries and i goes from 0 to rank*dim
-template< class T, int dim, int rank >
-StaticMultiArray<T,dim,rank>::
-StaticMultiArray(const std::array<T,dim> &val)
-    :
-    StaticMultiArray<T,dim,rank>()
-{
-    LogStream out;
-    out << "flat size= " << this->flat_size() << std::endl;
-    Index i = 0 ;
-    for (int r=0 ; r <= rank ; ++r)
-        for (int d=0 ; d < dim ; ++d,++i)
-        {
-            out << "i= " << i << std::endl;
-            (*this)[i] = val[d];
-        }
-}
-#endif
 
 template< class T, int dim, int rank >
 StaticMultiArray<T,dim,rank>::

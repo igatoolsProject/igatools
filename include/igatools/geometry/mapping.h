@@ -135,7 +135,7 @@ protected:
 private:
     std::shared_ptr<FuncType> F_;
 
-    std::array<ValueFlags, dim_ + 1> flags_;
+    SafeSTLArray<ValueFlags, dim_ + 1> flags_;
 
     friend ElementAccessor;
 };

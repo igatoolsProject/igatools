@@ -33,7 +33,7 @@ macro(init_cxx_flags)
     execute_process(
       COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
   if (NOT (GCC_VERSION VERSION_GREATER 5.1.0 OR GCC_VERSION VERSION_EQUAL 5.1.0))
-      message(FATAL_ERROR "gcc version 5.1.0 or greater.")
+      message(FATAL_ERROR "To compile igatools is required g++ version 5.1.0 or greater.")
     endif()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
   elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")

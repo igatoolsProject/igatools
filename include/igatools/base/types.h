@@ -68,13 +68,6 @@ typedef unsigned long long ulongint;
 template<int dim>
 using int_array = std::array<int, dim >;
 
-/**
- * Bounding Box, a dim-dimensional rectangular
- * box described by the intervals.
- * eg. BBox<2> box {{0,0.5},{1,2}}.
- */
-template<int dim>
-using BBox = std::array<std::array<Real, 2>, dim>;
 
 /**
  * Id used for the boundary indicators,

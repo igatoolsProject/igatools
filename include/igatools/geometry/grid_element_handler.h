@@ -161,7 +161,7 @@ public:
 private:
     std::shared_ptr<GridType> grid_;
 
-    std::array<ValueFlags, dim + 1> flags_;
+    SafeSTLArray<ValueFlags, dim + 1> flags_;
 
 protected:
     QuadList<dim> quad_all_sub_elems_;

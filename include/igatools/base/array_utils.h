@@ -63,6 +63,7 @@ sequence(const int init = 0)
 }
 
 
+#if 0
 
 template <class T, int dim>
 inline
@@ -74,7 +75,6 @@ filled_array(const T &v)
     return res;
 }
 
-#if 0
 namespace arr
 {
 /**
