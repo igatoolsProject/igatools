@@ -24,6 +24,8 @@
 #include <igatools/base/config.h>
 #include <igatools/utils/safe_stl_container.h>
 
+#include <boost/serialization/vector.hpp>
+
 #include <vector>
 
 IGA_NAMESPACE_OPEN
@@ -42,6 +44,24 @@ class SafeSTLVector :
 public :
     /** Inherit the constructors of the base class. */
     using SafeSTLContainer<std::vector<T>>::SafeSTLContainer;
+
+
+
+private:
+    /**
+     * @name Functions needed for boost::serilization
+     */
+    ///@{
+    friend class boost::serialization::access;
+    // When the class Archive corresponds to an output archive, the
+    // & operator is defined similar to <<.  Likewise, when the class Archive
+    // is a type of input archive the & operator is defined similar to >>.
+    template<class Archive>
+    void serialize(Archive & ar, const unsigned int version)
+    {
+        ar & static_cast<std::vector<T> &>(*this);
+    }
+    ///@}
 } ;
 
 
