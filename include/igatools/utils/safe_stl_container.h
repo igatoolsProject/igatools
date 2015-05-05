@@ -89,7 +89,6 @@ private:
             out.begin_item("Entry id: " + std::to_string(entry_id++));
             entry.print_info(out);
             out.end_item();
-//            out << std::endl;
         }
     }
 
@@ -119,7 +118,6 @@ private:
         // is a type of input archive the & operator is defined similar to >>.
         std::string tag_name = "STLContainer";
         ar &boost::serialization::make_nvp(tag_name.c_str(),static_cast<STLContainer &>(*this));
-
     }
     ///@}
 
