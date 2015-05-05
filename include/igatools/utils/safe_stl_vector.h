@@ -24,7 +24,6 @@
 #include <igatools/base/config.h>
 #include <igatools/utils/safe_stl_container.h>
 
-#include <boost/serialization/vector.hpp>
 
 #include <vector>
 
@@ -41,27 +40,28 @@ template<class T>
 class SafeSTLVector :
     public SafeSTLContainer<std::vector<T>>
 {
+    using base_t = SafeSTLContainer<std::vector<T>>;
 public :
     /** Inherit the constructors of the base class. */
     using SafeSTLContainer<std::vector<T>>::SafeSTLContainer;
 
-
-
+#if 0
 private:
     /**
-     * @name Functions needed for boost::serilization
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
      */
     ///@{
     friend class boost::serialization::access;
-    // When the class Archive corresponds to an output archive, the
-    // & operator is defined similar to <<.  Likewise, when the class Archive
-    // is a type of input archive the & operator is defined similar to >>.
+
     template<class Archive>
-    void serialize(Archive & ar, const unsigned int version)
+    void serialize(Archive &ar, const unsigned int version)
     {
-        ar & static_cast<std::vector<T> &>(*this);
+        std::string tag_name = "SafeSTLVector";
+        ar &boost::serialization::make_nvp(tag_name.c_str(),static_cast<std::vector<T>&>(*this));
     }
     ///@}
+#endif
 } ;
 
 

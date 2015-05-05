@@ -39,7 +39,9 @@ template<class T,int N>
 class SafeSTLArray :
     public SafeSTLContainer<std::array<T,N>>
 {
+    using base_t = SafeSTLContainer<std::array<T,N>>;
 public :
+
     /** Inherit the constructors of the base class. */
     using SafeSTLContainer<std::array<T,N>>::SafeSTLContainer;
 
@@ -68,6 +70,24 @@ public :
             (*this)[i] = list.begin()[i] ;
     };
 
+#if 0
+private:
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void serialize(Archive &ar, const unsigned int version)
+    {
+        std::string tag_name = "SafeSTLArray";
+        ar &boost::serialization::make_nvp(tag_name.c_str(),static_cast<std::array<T,N>&>(*this));
+
+    }
+    ///@}
+#endif
 };
 
 IGA_NAMESPACE_CLOSE

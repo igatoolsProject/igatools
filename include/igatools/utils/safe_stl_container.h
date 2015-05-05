@@ -24,6 +24,9 @@
 #include <igatools/base/config.h>
 #include <igatools/base/print_info_utils.h>
 
+#include <boost/serialization/vector.hpp>
+#include <boost/serialization/array.hpp>
+
 IGA_NAMESPACE_OPEN
 
 /**
@@ -99,6 +102,29 @@ private:
             out << entry << " ";
         out << "]";
     }
+
+
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void serialize(Archive &ar, const unsigned int version)
+    {
+        // When the class Archive corresponds to an output archive, the
+        // & operator is defined similar to <<.  Likewise, when the class Archive
+        // is a type of input archive the & operator is defined similar to >>.
+//      ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(STLContainer);
+
+        std::string tag_name = "STLContainer";
+        ar &boost::serialization::make_nvp(tag_name.c_str(),static_cast<STLContainer &>(*this));
+
+    }
+    ///@}
+//#endif
 
 public:
 
