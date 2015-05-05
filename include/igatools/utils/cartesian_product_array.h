@@ -70,7 +70,7 @@ IGA_NAMESPACE_OPEN
  * @todo write code of how to use it
  *
  * @ingroup multi_array_containers
- * @author Martinelli, 2012, 2013, 2014
+ * @author Martinelli, 2012, 2013, 2014, 2015
  * @author Pauletti, 2012, 2013, 2014
  */
 template< class T, int rank>
@@ -270,6 +270,34 @@ protected:
      * i-th coordinate direction.
      */
     SafeSTLArray<SafeSTLVector<T>,rank> data_ ;
+
+
+private:
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive, int dummy_dim = rank>
+    void
+    serialize(Archive &ar, const unsigned int version,EnableIf<(dummy_dim > 0)> * = 0)
+    {
+        std::string tag_name = "TensorSizedContainer_" + std::to_string(rank);
+        ar &boost::serialization::make_nvp(
+            tag_name.c_str(),
+            boost::serialization::base_object<TensorSizedContainer<rank>>(*this));
+
+        ar &boost::serialization::make_nvp("Data",data_);
+    }
+
+    template<class Archive, int dummy_dim = rank>
+    void
+    serialize(Archive &ar, const unsigned int version,EnableIf<!(dummy_dim > 0)> * = 0)
+    {}
+    ///@}
+
 };
 
 

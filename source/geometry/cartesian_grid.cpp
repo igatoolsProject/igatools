@@ -156,8 +156,8 @@ CartesianGrid(const KnotCoordinates &knot_coordinates,
     :
     TensorSizedContainer<dim_>(TensorSize<dim_>(knot_coordinates.tensor_size()-1)),
     kind_(kind),
-    boundary_id_(0),
-    knot_coordinates_(knot_coordinates)
+    knot_coordinates_(knot_coordinates),
+    boundary_id_(0)
 {
 #ifndef NDEBUG
     for (const int i : Topology::active_directions)
@@ -224,8 +224,8 @@ CartesianGrid(const self_t &grid)
     :
     TensorSizedContainer<dim_>(grid),
     kind_(grid.kind_),
-    boundary_id_(grid.boundary_id_),
     knot_coordinates_(grid.knot_coordinates_),
+    boundary_id_(grid.boundary_id_),
     properties_elements_id_(grid.properties_elements_id_)
 {}
 
@@ -995,7 +995,7 @@ insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert)
 {
     //----------------------------------------------------------------------------------
     // make a copy of the grid before the refinement
-    grid_pre_refinement_ = make_shared<const self_t>(self_t(*this));
+    grid_pre_refinement_ = make_shared<self_t>(*this);
     //----------------------------------------------------------------------------------
 
 

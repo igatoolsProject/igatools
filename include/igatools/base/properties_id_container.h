@@ -33,6 +33,11 @@
 
 IGA_NAMESPACE_OPEN
 
+/**
+ *
+ *
+ * @ingroup serializable
+ */
 class PropertiesIdContainer
 {
 public:
@@ -121,6 +126,23 @@ public:
 
 private:
     std::map<std::string,std::set<Index>> properties_id_;
+
+
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("properties_id_",properties_id_);
+    }
+    ///@}
+
 };
 
 

@@ -267,7 +267,7 @@ because:
 @{
 */
 
-/** @}*/ //end of group infrastructure
+/** @}*/ //end of spaces_manager
 
 /**
 @defgroup linear_algebra Linear Algebra
@@ -275,6 +275,17 @@ because:
 @{
 */
 
-/** @}*/ //end of group infrastructure
+/** @}*/ //end of group linear_algebra
 
+
+/**
+@defgroup serializable Serializable classes
+@ingroup design
+@{
+@brief Classes that implements and use the 
+<a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a> library.
+@see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+*/
+
+/** @}*/ //end of group serializable
 

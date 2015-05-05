@@ -24,8 +24,6 @@
 #include <igatools/base/config.h>
 #include <igatools/base/print_info_utils.h>
 
-#include <boost/serialization/vector.hpp>
-#include <boost/serialization/array.hpp>
 
 IGA_NAMESPACE_OPEN
 
@@ -36,6 +34,8 @@ IGA_NAMESPACE_OPEN
  * @tparam STLContainer std::vector or std::array
  *
  * @author M. Martinelli, 2015
+ *
+ * @ingroup serializable
  */
 template <class STLContainer>
 class SafeSTLContainer : public STLContainer
@@ -117,14 +117,11 @@ private:
         // When the class Archive corresponds to an output archive, the
         // & operator is defined similar to <<.  Likewise, when the class Archive
         // is a type of input archive the & operator is defined similar to >>.
-//      ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(STLContainer);
-
         std::string tag_name = "STLContainer";
         ar &boost::serialization::make_nvp(tag_name.c_str(),static_cast<STLContainer &>(*this));
 
     }
     ///@}
-//#endif
 
 public:
 

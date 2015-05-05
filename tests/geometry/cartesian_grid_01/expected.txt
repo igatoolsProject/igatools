@@ -1,208 +1,368 @@
 ========================================================================
 void def_const() [with int dim = 0]
 ========================================================================
-Number of intervals per direction: [ ]
-Knot coordinates:
-   Size: [ ]  Weights: []
+Original grid.
+   Number of intervals per direction: [ ]
+   Knot coordinates:
+      Size: [ ]  Weights: []
+   
 
+Grid after serialize-deserialize.
+   Number of intervals per direction: [ ]
+   Knot coordinates:
+      Size: [ ]  Weights: []
+   
 
 ========================================================================
 
 ========================================================================
 void def_const() [with int dim = 1]
 ========================================================================
-Number of intervals per direction: [ 1 ]
-Knot coordinates:
-   Size: [ 2 ]  Weights: [2]
-   Direction: 0
-   [ 0 1.00000 ]
+Original grid.
+   Number of intervals per direction: [ 1 ]
+   Knot coordinates:
+      Size: [ 2 ]  Weights: [2]
+      Direction: 0
+      [ 0 1.00000 ]
+   
 
+Grid after serialize-deserialize.
+   Number of intervals per direction: [ 1 ]
+   Knot coordinates:
+      Size: [ 2 ]  Weights: [2]
+      Direction: 0
+      [ 0 1.00000 ]
+   
 
 ========================================================================
 
 ========================================================================
 void def_const() [with int dim = 2]
 ========================================================================
-Number of intervals per direction: [ 1 1 ]
-Knot coordinates:
-   Size: [ 2 2 ]  Weights: [2,4]
-   Direction: 0
-   [ 0 1.00000 ]
-   Direction: 1
-   [ 0 1.00000 ]
+Original grid.
+   Number of intervals per direction: [ 1 1 ]
+   Knot coordinates:
+      Size: [ 2 2 ]  Weights: [2,4]
+      Direction: 0
+      [ 0 1.00000 ]
+      Direction: 1
+      [ 0 1.00000 ]
+   
 
+Grid after serialize-deserialize.
+   Number of intervals per direction: [ 1 1 ]
+   Knot coordinates:
+      Size: [ 2 2 ]  Weights: [2,4]
+      Direction: 0
+      [ 0 1.00000 ]
+      Direction: 1
+      [ 0 1.00000 ]
+   
 
 ========================================================================
 
 ========================================================================
 void def_const() [with int dim = 3]
 ========================================================================
-Number of intervals per direction: [ 1 1 1 ]
-Knot coordinates:
-   Size: [ 2 2 2 ]  Weights: [2,4,8]
-   Direction: 0
-   [ 0 1.00000 ]
-   Direction: 1
-   [ 0 1.00000 ]
-   Direction: 2
-   [ 0 1.00000 ]
+Original grid.
+   Number of intervals per direction: [ 1 1 1 ]
+   Knot coordinates:
+      Size: [ 2 2 2 ]  Weights: [2,4,8]
+      Direction: 0
+      [ 0 1.00000 ]
+      Direction: 1
+      [ 0 1.00000 ]
+      Direction: 2
+      [ 0 1.00000 ]
+   
 
+Grid after serialize-deserialize.
+   Number of intervals per direction: [ 1 1 1 ]
+   Knot coordinates:
+      Size: [ 2 2 2 ]  Weights: [2,4,8]
+      Direction: 0
+      [ 0 1.00000 ]
+      Direction: 1
+      [ 0 1.00000 ]
+      Direction: 2
+      [ 0 1.00000 ]
+   
 
 ========================================================================
 
 ========================================================================
 void uniform_const(int) [with int dim = 0]
 ========================================================================
-Number of intervals per direction: [ ]
-Knot coordinates:
-   Size: [ ]  Weights: []
+Original grid.
+   Number of intervals per direction: [ ]
+   Knot coordinates:
+      Size: [ ]  Weights: []
+   
 
+Grid after serialize-deserialize.
+   Number of intervals per direction: [ ]
+   Knot coordinates:
+      Size: [ ]  Weights: []
+   
 
 ========================================================================
 
 ========================================================================
 void uniform_const(int) [with int dim = 1]
 ========================================================================
-Number of intervals per direction: [ 2 ]
-Knot coordinates:
-   Size: [ 3 ]  Weights: [3]
-   Direction: 0
-   [ 0 0.500000 1.00000 ]
+Original grid.
+   Number of intervals per direction: [ 2 ]
+   Knot coordinates:
+      Size: [ 3 ]  Weights: [3]
+      Direction: 0
+      [ 0 0.500000 1.00000 ]
+   
 
+Grid after serialize-deserialize.
+   Number of intervals per direction: [ 2 ]
+   Knot coordinates:
+      Size: [ 3 ]  Weights: [3]
+      Direction: 0
+      [ 0 0.500000 1.00000 ]
+   
 
 ========================================================================
 
 ========================================================================
 void uniform_const(int) [with int dim = 2]
 ========================================================================
-Number of intervals per direction: [ 2 2 ]
-Knot coordinates:
-   Size: [ 3 3 ]  Weights: [3,9]
-   Direction: 0
-   [ 0 0.500000 1.00000 ]
-   Direction: 1
-   [ 0 0.500000 1.00000 ]
+Original grid.
+   Number of intervals per direction: [ 2 2 ]
+   Knot coordinates:
+      Size: [ 3 3 ]  Weights: [3,9]
+      Direction: 0
+      [ 0 0.500000 1.00000 ]
+      Direction: 1
+      [ 0 0.500000 1.00000 ]
+   
 
+Grid after serialize-deserialize.
+   Number of intervals per direction: [ 2 2 ]
+   Knot coordinates:
+      Size: [ 3 3 ]  Weights: [3,9]
+      Direction: 0
+      [ 0 0.500000 1.00000 ]
+      Direction: 1
+      [ 0 0.500000 1.00000 ]
+   
 
 ========================================================================
 
 ========================================================================
 void uniform_const(int) [with int dim = 3]
 ========================================================================
-Number of intervals per direction: [ 2 2 2 ]
-Knot coordinates:
-   Size: [ 3 3 3 ]  Weights: [3,9,27]
-   Direction: 0
-   [ 0 0.500000 1.00000 ]
-   Direction: 1
-   [ 0 0.500000 1.00000 ]
-   Direction: 2
-   [ 0 0.500000 1.00000 ]
+Original grid.
+   Number of intervals per direction: [ 2 2 2 ]
+   Knot coordinates:
+      Size: [ 3 3 3 ]  Weights: [3,9,27]
+      Direction: 0
+      [ 0 0.500000 1.00000 ]
+      Direction: 1
+      [ 0 0.500000 1.00000 ]
+      Direction: 2
+      [ 0 0.500000 1.00000 ]
+   
 
+Grid after serialize-deserialize.
+   Number of intervals per direction: [ 2 2 2 ]
+   Knot coordinates:
+      Size: [ 3 3 3 ]  Weights: [3,9,27]
+      Direction: 0
+      [ 0 0.500000 1.00000 ]
+      Direction: 1
+      [ 0 0.500000 1.00000 ]
+      Direction: 2
+      [ 0 0.500000 1.00000 ]
+   
 
 ========================================================================
 
 ========================================================================
 void dim_uniform_const() [with int dim = 0]
 ========================================================================
-Number of intervals per direction: [ ]
-Knot coordinates:
-   Size: [ ]  Weights: []
+Original grid.
+   Number of intervals per direction: [ ]
+   Knot coordinates:
+      Size: [ ]  Weights: []
+   
 
+Grid after serialize-deserialize.
+   Number of intervals per direction: [ ]
+   Knot coordinates:
+      Size: [ ]  Weights: []
+   
 
 ========================================================================
 
 ========================================================================
 void dim_uniform_const() [with int dim = 1]
 ========================================================================
-Number of intervals per direction: [ 1 ]
-Knot coordinates:
-   Size: [ 2 ]  Weights: [2]
-   Direction: 0
-   [ 0 1.00000 ]
+Original grid.
+   Number of intervals per direction: [ 1 ]
+   Knot coordinates:
+      Size: [ 2 ]  Weights: [2]
+      Direction: 0
+      [ 0 1.00000 ]
+   
 
+Grid after serialize-deserialize.
+   Number of intervals per direction: [ 1 ]
+   Knot coordinates:
+      Size: [ 2 ]  Weights: [2]
+      Direction: 0
+      [ 0 1.00000 ]
+   
 
 ========================================================================
 
 ========================================================================
 void dim_uniform_const() [with int dim = 2]
 ========================================================================
-Number of intervals per direction: [ 1 3 ]
-Knot coordinates:
-   Size: [ 2 4 ]  Weights: [2,8]
-   Direction: 0
-   [ 0 1.00000 ]
-   Direction: 1
-   [ 0 0.333333 0.666667 1.00000 ]
+Original grid.
+   Number of intervals per direction: [ 1 3 ]
+   Knot coordinates:
+      Size: [ 2 4 ]  Weights: [2,8]
+      Direction: 0
+      [ 0 1.00000 ]
+      Direction: 1
+      [ 0 0.333333 0.666667 1.00000 ]
+   
 
+Grid after serialize-deserialize.
+   Number of intervals per direction: [ 1 3 ]
+   Knot coordinates:
+      Size: [ 2 4 ]  Weights: [2,8]
+      Direction: 0
+      [ 0 1.00000 ]
+      Direction: 1
+      [ 0 0.333333 0.666667 1.00000 ]
+   
 
 ========================================================================
 
 ========================================================================
 void dim_uniform_const() [with int dim = 3]
 ========================================================================
-Number of intervals per direction: [ 1 3 5 ]
-Knot coordinates:
-   Size: [ 2 4 6 ]  Weights: [2,8,48]
-   Direction: 0
-   [ 0 1.00000 ]
-   Direction: 1
-   [ 0 0.333333 0.666667 1.00000 ]
-   Direction: 2
-   [ 0 0.200000 0.400000 0.600000 0.800000 1.00000 ]
+Original grid.
+   Number of intervals per direction: [ 1 3 5 ]
+   Knot coordinates:
+      Size: [ 2 4 6 ]  Weights: [2,8,48]
+      Direction: 0
+      [ 0 1.00000 ]
+      Direction: 1
+      [ 0 0.333333 0.666667 1.00000 ]
+      Direction: 2
+      [ 0 0.200000 0.400000 0.600000 0.800000 1.00000 ]
+   
 
+Grid after serialize-deserialize.
+   Number of intervals per direction: [ 1 3 5 ]
+   Knot coordinates:
+      Size: [ 2 4 6 ]  Weights: [2,8,48]
+      Direction: 0
+      [ 0 1.00000 ]
+      Direction: 1
+      [ 0 0.333333 0.666667 1.00000 ]
+      Direction: 2
+      [ 0 0.200000 0.400000 0.600000 0.800000 1.00000 ]
+   
 
 ========================================================================
 
 ========================================================================
 void non_uniform_const() [with int dim = 0]
 ========================================================================
-Number of intervals per direction: [ ]
-Knot coordinates:
-   Size: [ ]  Weights: []
+Original grid.
+   Number of intervals per direction: [ ]
+   Knot coordinates:
+      Size: [ ]  Weights: []
+   
 
+Grid after serialize-deserialize.
+   Number of intervals per direction: [ ]
+   Knot coordinates:
+      Size: [ ]  Weights: []
+   
 
 ========================================================================
 
 ========================================================================
 void non_uniform_const() [with int dim = 1]
 ========================================================================
-Number of intervals per direction: [ 1 ]
-Knot coordinates:
-   Size: [ 2 ]  Weights: [2]
-   Direction: 0
-   [ 0 1.00000 ]
+Original grid.
+   Number of intervals per direction: [ 1 ]
+   Knot coordinates:
+      Size: [ 2 ]  Weights: [2]
+      Direction: 0
+      [ 0 1.00000 ]
+   
 
+Grid after serialize-deserialize.
+   Number of intervals per direction: [ 1 ]
+   Knot coordinates:
+      Size: [ 2 ]  Weights: [2]
+      Direction: 0
+      [ 0 1.00000 ]
+   
 
 ========================================================================
 
 ========================================================================
 void non_uniform_const() [with int dim = 2]
 ========================================================================
-Number of intervals per direction: [ 1 3 ]
-Knot coordinates:
-   Size: [ 2 4 ]  Weights: [2,8]
-   Direction: 0
-   [ 0 1.00000 ]
-   Direction: 1
-   [ 2.00000 3.00000 4.00000 5.00000 ]
+Original grid.
+   Number of intervals per direction: [ 1 3 ]
+   Knot coordinates:
+      Size: [ 2 4 ]  Weights: [2,8]
+      Direction: 0
+      [ 0 1.00000 ]
+      Direction: 1
+      [ 2.00000 3.00000 4.00000 5.00000 ]
+   
 
+Grid after serialize-deserialize.
+   Number of intervals per direction: [ 1 3 ]
+   Knot coordinates:
+      Size: [ 2 4 ]  Weights: [2,8]
+      Direction: 0
+      [ 0 1.00000 ]
+      Direction: 1
+      [ 2.00000 3.00000 4.00000 5.00000 ]
+   
 
 ========================================================================
 
 ========================================================================
 void non_uniform_const() [with int dim = 3]
 ========================================================================
-Number of intervals per direction: [ 1 3 5 ]
-Knot coordinates:
-   Size: [ 2 4 6 ]  Weights: [2,8,48]
-   Direction: 0
-   [ 0 1.00000 ]
-   Direction: 1
-   [ 2.00000 3.00000 4.00000 5.00000 ]
-   Direction: 2
-   [ 6.00000 7.00000 8.00000 9.00000 10.0000 11.0000 ]
+Original grid.
+   Number of intervals per direction: [ 1 3 5 ]
+   Knot coordinates:
+      Size: [ 2 4 6 ]  Weights: [2,8,48]
+      Direction: 0
+      [ 0 1.00000 ]
+      Direction: 1
+      [ 2.00000 3.00000 4.00000 5.00000 ]
+      Direction: 2
+      [ 6.00000 7.00000 8.00000 9.00000 10.0000 11.0000 ]
+   
 
+Grid after serialize-deserialize.
+   Number of intervals per direction: [ 1 3 5 ]
+   Knot coordinates:
+      Size: [ 2 4 6 ]  Weights: [2,8,48]
+      Direction: 0
+      [ 0 1.00000 ]
+      Direction: 1
+      [ 2.00000 3.00000 4.00000 5.00000 ]
+      Direction: 2
+      [ 6.00000 7.00000 8.00000 9.00000 10.0000 11.0000 ]
+   
 
 ========================================================================
 

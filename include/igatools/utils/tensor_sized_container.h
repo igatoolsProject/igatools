@@ -41,6 +41,9 @@ IGA_NAMESPACE_OPEN
  *
  * @author M. Martinelli
  * @date 27 Jan 2014
+ *
+ * @ingroup serializable
+ *
  */
 template <int rank>
 class TensorSizedContainer
@@ -143,6 +146,26 @@ private:
      * Weights for the index conversion.
      */
     TensorIndex<rank> weight_;
+
+
+
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void serialize(Archive &ar, const unsigned int version)
+    {
+        std::string tag_name = "size_";
+        ar &boost::serialization::make_nvp(tag_name.c_str(),size_);
+
+        tag_name = "weight_";
+        ar &boost::serialization::make_nvp(tag_name.c_str(),weight_);
+    }
+    ///@}
 };
 
 

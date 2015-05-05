@@ -151,6 +151,7 @@ template <int> class GridElementHandler;
  * @see get_cartesian_grid_from_xml()
  * @ingroup h_refinement
  * @ingroup containers
+ * @ingroup serializable
  * @todo document more
  */
 template<int dim_>
@@ -625,8 +626,6 @@ private:
     /** Flag for optimization use */
     Kind kind_ = Kind::non_uniform;
 
-    /** Boundary ids, one id per face */
-    SafeSTLArray<boundary_id, UnitElement<dim_>::template num_elem<dim_-1>()> boundary_id_;
 
     /**
      *  Knot coordinates along each coordinate direction.
@@ -635,7 +634,10 @@ private:
      */
     KnotCoordinates knot_coordinates_;
 
-private:
+
+    /** Boundary ids, one id per face */
+    SafeSTLArray<boundary_id, UnitElement<dim_>::template num_elem<dim_-1>()> boundary_id_;
+
     /**
      * Container for the element ids having a certain property.
      *
@@ -644,9 +646,7 @@ private:
     PropertiesIdContainer properties_elements_id_;
 
 public:
-//TODO (pauletti, Mar 3, 2015): element information is accessed through the accessor
-// maybe all members functions below are ill-designed, also the only valid index for an element
-// is an iterator
+
     /**
      * @name Functions related to the management/query of the element properties.
      */
@@ -723,7 +723,7 @@ private:
      * This class member is the grid before the last refinement. If no
      * refinement is performed, this is a null pointer.
      */
-    std::shared_ptr<const self_t> grid_pre_refinement_ = nullptr;
+    std::shared_ptr<self_t> grid_pre_refinement_ = nullptr;
 
 #if 0
     /**
@@ -741,6 +741,42 @@ private:
 
 
     friend class CartesianGridElement<dim_>;
+
+
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive, int dummy_dim = dim_>
+    void
+    serialize(Archive &ar, const unsigned int version,EnableIf<(dummy_dim > 0)> * = 0)
+    {
+        std::string tag_name = "Num.Elements";
+        ar &boost::serialization::make_nvp(
+            tag_name.c_str(),
+            boost::serialization::base_object<TensorSizedContainer<dim_>>(*this));
+
+
+        ar &boost::serialization::make_nvp("kind_",kind_);
+
+        ar &boost::serialization::make_nvp("knot_coordinates_",knot_coordinates_);
+
+        ar &boost::serialization::make_nvp("boundary_id_",boundary_id_);
+
+        ar &boost::serialization::make_nvp("properties_elements_id_",properties_elements_id_);
+
+        ar &boost::serialization::make_nvp("grid_pre_refinement_",grid_pre_refinement_);
+    }
+
+    template<class Archive, int dummy_dim = dim_>
+    void
+    serialize(Archive &ar, const unsigned int version,EnableIf<!(dummy_dim > 0)> * = 0)
+    {}
+    ///@}
+
 };
 
 IGA_NAMESPACE_CLOSE
