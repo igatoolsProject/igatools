@@ -113,11 +113,8 @@ private:
     template<class Archive>
     void serialize(Archive &ar, const unsigned int version)
     {
-        // When the class Archive corresponds to an output archive, the
-        // & operator is defined similar to <<.  Likewise, when the class Archive
-        // is a type of input archive the & operator is defined similar to >>.
-        std::string tag_name = "STLContainer";
-        ar &boost::serialization::make_nvp(tag_name.c_str(),static_cast<STLContainer &>(*this));
+        ar &boost::serialization::make_nvp("SafeSTLContainer_base_t",
+                                           boost::serialization::base_object<STLContainer>(*this));
     }
     ///@}
 

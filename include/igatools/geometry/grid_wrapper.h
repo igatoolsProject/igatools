@@ -184,12 +184,6 @@ private:
     /** Grid object. */
     std::shared_ptr<GridType> grid_ = nullptr;
 
-#if 0
-    /**
-     * Connection to the signal for the h-refinement.
-     */
-    boost::signals2::connection refine_h_connection_ ;
-#endif
 
     /**
      * Connection to the signal for the h-refinement.

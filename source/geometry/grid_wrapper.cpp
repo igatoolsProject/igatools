@@ -38,7 +38,6 @@ template <class GridType>
 GridWrapper<GridType>::
 ~GridWrapper()
 {
-//    refine_h_connection_.disconnect();
     insert_knots_connection_.disconnect();
 }
 
@@ -89,15 +88,6 @@ refine_h(const Size n_subdivisions)
     grid_->refine(n_subdivisions);
 }
 
-#if 0
-template <class GridType>
-void
-GridWrapper<GridType>::
-connect_refinement_h_function(const typename GridType::SignalRefineSlot &subscriber)
-{
-    refine_h_connection_ = grid_->connect_refinement(subscriber);
-}
-#endif
 
 template <class GridType>
 void

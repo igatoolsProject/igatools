@@ -17,7 +17,7 @@ void vector_serialization()
 <!DOCTYPE boost_serialization>
 <boost_serialization signature="serialization::archive" version="11">
 <vec class_id="0" tracking_level="0" version="0">
-	<STLContainer>
+	<SafeSTLContainer_base_t>
 		<count>5</count>
 		<item_version>0</item_version>
 		<item>2.00000000000000000e+00</item>
@@ -25,7 +25,7 @@ void vector_serialization()
 		<item>4.00000000000000000e+00</item>
 		<item>5.00000000000000000e+00</item>
 		<item>6.00000000000000000e+00</item>
-	</STLContainer>
+	</SafeSTLContainer_base_t>
 </vec>
 </boost_serialization>
 
@@ -41,14 +41,14 @@ void array_serialization()
 <!DOCTYPE boost_serialization>
 <boost_serialization signature="serialization::archive" version="11">
 <arr class_id="0" tracking_level="0" version="0">
-	<STLContainer class_id="1" tracking_level="0" version="0">
+	<SafeSTLContainer_base_t class_id="1" tracking_level="0" version="0">
 		<elems>
 			<count>3</count>
 			<item>0.00000000000000000e+00</item>
 			<item>-1.00000000000000000e+00</item>
 			<item>-2.00000000000000000e+00</item>
 		</elems>
-	</STLContainer>
+	</SafeSTLContainer_base_t>
 </arr>
 </boost_serialization>
 
