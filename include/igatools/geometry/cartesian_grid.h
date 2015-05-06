@@ -537,10 +537,6 @@ public:
     bool operator==(const CartesianGrid<dim_> &grid) const;
 
 private:
-    /** Type for the refinement signal. */
-    using signal_refine_t =
-        boost::signals2::signal<
-        void (const SafeSTLArray<bool,dim_> &,const CartesianGrid<dim_> &)>;
 
     /** Type for the insert_knots signal. */
     using signal_insert_knots_t =
@@ -548,10 +544,8 @@ private:
         void (const SafeSTLArray<SafeSTLVector<Real>,dim_> &new_knots,const CartesianGrid<dim_> &old_grid)>;
 
 public:
-    /** Slot type for the refinement signal. */
-    using SignalRefineSlot = typename signal_refine_t::slot_type;
 
-    /** Slot type for the refinement signal. */
+    /** Slot type for the insert_knots signal. */
     using SignalInsertKnotsSlot = typename signal_insert_knots_t::slot_type;
 
     /** @name Functions for performing grid refinement */
@@ -721,13 +715,6 @@ private:
      */
     std::shared_ptr<self_t> grid_pre_refinement_ = nullptr;
 
-#if 0
-    /**
-     * Signals for the h-refinement. It can be viewed as a FIFO list of
-     * function pointers.
-     */
-    signal_refine_t refine_signals_;
-#endif
 
     /**
      * Signals for the insert_knots() invocations. It can be viewed as a FIFO list of

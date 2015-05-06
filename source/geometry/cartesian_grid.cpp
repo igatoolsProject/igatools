@@ -641,12 +641,6 @@ refine_directions(
     }
     this->insert_knots(knots_to_insert);
     //-------------------------------------------------------------
-
-#if 0
-    // refining the objects that's are attached to the CartesianGrid
-    // (i.e. that are defined using this CartesianGrid object)
-    this->refine_signals_(refinement_directions,*grid_pre_refinement_);
-#endif
 }
 
 
@@ -683,15 +677,6 @@ refine(const Size n_subdivisions)
 }
 
 
-#if 0
-template <int dim_>
-boost::signals2::connection
-CartesianGrid<dim_>::
-connect_refinement(const SignalRefineSlot &subscriber)
-{
-    return refine_signals_.connect(subscriber);
-}
-#endif
 
 template <int dim_>
 boost::signals2::connection
@@ -723,8 +708,6 @@ print_info(LogStream &out) const
         out.end_item();
     }
     //-------------------------------------------------------
-
-
 }
 
 
@@ -1049,8 +1032,6 @@ insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert)
     // (i.e. that are defined using this CartesianGrid object)
     this->insert_knots_signals_(knots_to_insert,*grid_pre_refinement_);
     //----------------------------------------------------------------------------------
-
-//  Assert(false,ExcNotImplemented());
 }
 
 
