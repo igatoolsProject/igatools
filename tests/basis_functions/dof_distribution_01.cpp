@@ -18,21 +18,58 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test for the DofDistribution class
- *  author: pauletti
- *  date:
+ *  Test for the DofDistribution class and its serialization
+ *  author: pauletti, martinelli
+ *  date: May 06th, 2015
  *
  */
 
 // TODO (pauletti, Dec 26, 2014): make test dimension independent
-// TODO (pauletti, Dec 26, 2014): rename this test for dof_distribution_01
 
 #include "../tests.h"
 #include <igatools/basis_functions/dof_distribution.h>
 
+
+
+template <int dim>
+void serialize_deserialize(const DofDistribution<dim> &dof_admin)
+{
+    out.begin_item("Original DofDistribution.");
+    dof_admin.print_info(out);
+    out.end_item();
+
+
+
+    std::string filename = "dof_distribution_dim" + std::to_string(dim) + ".xml";
+    std::string tag_name = "DofDistribution_dim" + std::to_string(dim);
+    {
+        // serialize the DofDistribution object to an xml file
+        std::ofstream xml_ostream(filename);
+        boost::archive::xml_oarchive xml_out(xml_ostream);
+
+        xml_out << boost::serialization::make_nvp(tag_name.c_str(),dof_admin);
+        xml_ostream.close();
+    }
+
+    DofDistribution<dim> dof_admin_new;
+    {
+        // de-serialize the DofDistribution object from an xml file
+        std::ifstream xml_istream(filename);
+        boost::archive::xml_iarchive xml_in(xml_istream);
+        xml_in >> BOOST_SERIALIZATION_NVP(dof_admin_new);
+        xml_istream.close();
+    }
+    out.begin_item("DofDistribution after serialize-deserialize.");
+    dof_admin_new.print_info(out);
+    out.end_item();
+    //*/
+}
+
+
 template <int dim>
 void test1()
 {
+	OUTSTART
     using SplineSpace = SplineSpace<dim>;
     using MultiplicityTable = typename SplineSpace::MultiplicityTable;
 
@@ -69,12 +106,15 @@ void test1()
     //-----------------------------------------------------------------
 
 
-    dof_admin.print_info(out);
+    serialize_deserialize(dof_admin);
+
+    OUTEND
 }
 
 template <int dim>
 void test2()
 {
+	OUTSTART
     using SplineSpace = SplineSpace<dim>;
 
     typename SplineSpace::DegreeTable deg {{1,2}};
@@ -108,7 +148,9 @@ void test2()
     }
     //-----------------------------------------------------------------
 
-    basis_index.print_info(out);
+    serialize_deserialize(basis_index);
+
+    OUTEND
 }
 
 int main()

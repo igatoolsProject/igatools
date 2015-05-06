@@ -47,6 +47,38 @@ Spline Space:
    
 
 DoFs Distribution:
+   Num dofs table:
+      Raw componets: 
+         Size: [ 1 ]  Weights: [1]
+         Entry id: 0
+         [ 4 6 ]
+      
+      Components map: 
+      [ 0 ]
+      Active componets ids: 
+      [ 0 ]
+      Inactive componets ids: 
+      [ ]
+      Scalar components dimensions:
+      [ 24 ]
+      Total Dimension: 24
+   
+   Index table size:
+      Raw componets: 
+         Size: [ 1 ]  Weights: [1]
+         Entry id: 0
+         [ 6 6 ]
+      
+      Components map: 
+      [ 0 ]
+      Active componets ids: 
+      [ 0 ]
+      Inactive componets ids: 
+      [ ]
+      Scalar components dimensions:
+      [ 36 ]
+      Total Dimension: 36
+   
    Dof indices:
       Size: [ 6 6 ]  Weights: [6,36]
       [ 0 1 2 3 0 1 4 5 6 7 4 5 8 9 10 11 8 9 12 13 14 15 12 13 16 17 18 19 16 17 20 21 22 23 20 21 ]
@@ -570,6 +602,38 @@ Spline Space:
    
 
 DoFs Distribution:
+   Num dofs table:
+      Raw componets: 
+         Size: [ 1 ]  Weights: [1]
+         Entry id: 0
+         [ 5 8 ]
+      
+      Components map: 
+      [ 0 ]
+      Active componets ids: 
+      [ 0 ]
+      Inactive componets ids: 
+      [ ]
+      Scalar components dimensions:
+      [ 40 ]
+      Total Dimension: 40
+   
+   Index table size:
+      Raw componets: 
+         Size: [ 1 ]  Weights: [1]
+         Entry id: 0
+         [ 8 8 ]
+      
+      Components map: 
+      [ 0 ]
+      Active componets ids: 
+      [ 0 ]
+      Inactive componets ids: 
+      [ ]
+      Scalar components dimensions:
+      [ 64 ]
+      Total Dimension: 64
+   
    Dof indices:
       Size: [ 8 8 ]  Weights: [8,64]
       [ 0 1 2 3 4 0 1 2 5 6 7 8 9 5 6 7 10 11 12 13 14 10 11 12 15 16 17 18 19 15 16 17 20 21 22 23 24 20 21 22 25 26 27 28 29 25 26 27 30 31 32 33 34 30 31 32 35 36 37 38 39 35 36 37 ]

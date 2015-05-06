@@ -43,6 +43,38 @@ Reference space info:
       
    
    DoFs Distribution:
+      Num dofs table:
+         Raw componets: 
+            Size: [ 1 ]  Weights: [1]
+            Entry id: 0
+            [ ]
+         
+         Components map: 
+         [ 0 ]
+         Active componets ids: 
+         [ 0 ]
+         Inactive componets ids: 
+         [ ]
+         Scalar components dimensions:
+         [ 1 ]
+         Total Dimension: 1
+      
+      Index table size:
+         Raw componets: 
+            Size: [ 1 ]  Weights: [1]
+            Entry id: 0
+            [ ]
+         
+         Components map: 
+         [ 0 ]
+         Active componets ids: 
+         [ 0 ]
+         Inactive componets ids: 
+         [ ]
+         Scalar components dimensions:
+         [ 1 ]
+         Total Dimension: 1
+      
       Dof indices:
          Size: [ ]  Weights: []
          [ 0 ]
@@ -115,6 +147,38 @@ Reference space info:
       
    
    DoFs Distribution:
+      Num dofs table:
+         Raw componets: 
+            Size: [ 1 ]  Weights: [1]
+            Entry id: 0
+            [ 6 ]
+         
+         Components map: 
+         [ 0 ]
+         Active componets ids: 
+         [ 0 ]
+         Inactive componets ids: 
+         [ ]
+         Scalar components dimensions:
+         [ 6 ]
+         Total Dimension: 6
+      
+      Index table size:
+         Raw componets: 
+            Size: [ 1 ]  Weights: [1]
+            Entry id: 0
+            [ 6 ]
+         
+         Components map: 
+         [ 0 ]
+         Active componets ids: 
+         [ 0 ]
+         Inactive componets ids: 
+         [ ]
+         Scalar components dimensions:
+         [ 6 ]
+         Total Dimension: 6
+      
       Dof indices:
          Size: [ 6 ]  Weights: [6]
          [ 0 1 2 3 4 5 ]
@@ -200,6 +264,38 @@ Reference space info:
       
    
    DoFs Distribution:
+      Num dofs table:
+         Raw componets: 
+            Size: [ 1 ]  Weights: [1]
+            Entry id: 0
+            [ 6 6 ]
+         
+         Components map: 
+         [ 0 ]
+         Active componets ids: 
+         [ 0 ]
+         Inactive componets ids: 
+         [ ]
+         Scalar components dimensions:
+         [ 36 ]
+         Total Dimension: 36
+      
+      Index table size:
+         Raw componets: 
+            Size: [ 1 ]  Weights: [1]
+            Entry id: 0
+            [ 6 6 ]
+         
+         Components map: 
+         [ 0 ]
+         Active componets ids: 
+         [ 0 ]
+         Inactive componets ids: 
+         [ ]
+         Scalar components dimensions:
+         [ 36 ]
+         Total Dimension: 36
+      
       Dof indices:
          Size: [ 6 6 ]  Weights: [6,36]
          [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 ]
@@ -323,6 +419,38 @@ Reference space info:
       
    
    DoFs Distribution:
+      Num dofs table:
+         Raw componets: 
+            Size: [ 1 ]  Weights: [1]
+            Entry id: 0
+            [ 4 4 4 ]
+         
+         Components map: 
+         [ 0 ]
+         Active componets ids: 
+         [ 0 ]
+         Inactive componets ids: 
+         [ ]
+         Scalar components dimensions:
+         [ 64 ]
+         Total Dimension: 64
+      
+      Index table size:
+         Raw componets: 
+            Size: [ 1 ]  Weights: [1]
+            Entry id: 0
+            [ 4 4 4 ]
+         
+         Components map: 
+         [ 0 ]
+         Active componets ids: 
+         [ 0 ]
+         Inactive componets ids: 
+         [ ]
+         Scalar components dimensions:
+         [ 64 ]
+         Total Dimension: 64
+      
       Dof indices:
          Size: [ 4 4 4 ]  Weights: [4,16,64]
          [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 ]
@@ -492,6 +620,46 @@ Reference space info:
       
    
    DoFs Distribution:
+      Num dofs table:
+         Raw componets: 
+            Size: [ 3 ]  Weights: [3]
+            Entry id: 0
+            [ 4 4 ]
+            Entry id: 1
+            [ 4 4 ]
+            Entry id: 2
+            [ 4 4 ]
+         
+         Components map: 
+         [ 0 1 2 ]
+         Active componets ids: 
+         [ 0 1 2 ]
+         Inactive componets ids: 
+         [ ]
+         Scalar components dimensions:
+         [ 16 16 16 ]
+         Total Dimension: 48
+      
+      Index table size:
+         Raw componets: 
+            Size: [ 3 ]  Weights: [3]
+            Entry id: 0
+            [ 4 4 ]
+            Entry id: 1
+            [ 4 4 ]
+            Entry id: 2
+            [ 4 4 ]
+         
+         Components map: 
+         [ 0 1 2 ]
+         Active componets ids: 
+         [ 0 1 2 ]
+         Inactive componets ids: 
+         [ ]
+         Scalar components dimensions:
+         [ 16 16 16 ]
+         Total Dimension: 48
+      
       Dof indices:
          Size: [ 4 4 ]  Weights: [4,16]
          [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ]

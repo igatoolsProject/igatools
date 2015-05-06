@@ -29,7 +29,7 @@ IGA_NAMESPACE_OPEN
 
 /**
  *
- * Class to handle the distribution of the basis function
+ * @brief Class to handle the distribution of the basis function
  * indices that are defined on a single patch space,
  * storing what is known as the local to global map.
  *
@@ -43,6 +43,7 @@ IGA_NAMESPACE_OPEN
  * @author pauletti, 2014, 2015
  * @author M.Martinelli, 2014, 2015
  *
+ * @ingroup serializable
  */
 template<int dim, int range = 1, int rank = 1>
 class DofDistribution
@@ -78,22 +79,21 @@ public:
     /** Type alias for the ConstView on the dofs held by the single-patch space. */
     using DofsConstView = ConstView<DofsIterator,DofsConstIterator>;
 
-    enum class DistributionPolicy
-    {
-        standard, component, other
-    };
 
 
     /** @name Constructors */
     ///@{
-    /** Default constructor. Not allowed to be used. */
-    DofDistribution() = delete;
+    /**
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
+     */
+    DofDistribution() = default;
 
     //TODO: document this constructor
     DofDistribution(const TensorSizeTable &n_basis,
                     const DegreeTable &degree_table,
-                    const PeriodicityTable &periodic,
-                    DistributionPolicy pol = DistributionPolicy::standard);
+                    const PeriodicityTable &periodic);
 
     /** Copy constructor.*/
     DofDistribution(const DofDistribution &dof_ditribution) = delete;
@@ -172,17 +172,9 @@ public:
 
 
     /**
-     * Returns a view of the active dofs ids on a given single-patch space (non-const version).
+     * Returns a view of the dofs ids (without taking into accounts any property) on a given single-patch space
      */
-    DofsView &get_dofs_view();
-
-
-    //TODO (pauletti, Mar 21, 2015): the doc is wrong, what is active?
-    /**
-     * Returns a view of the active dofs ids on a given single-patch space
-     * (const version).
-     */
-    const DofsView &get_dofs_view() const;
+    DofsConstView get_dofs_view() const;
 
 
     /**
@@ -271,11 +263,6 @@ private:
      */
     IndexDistributionTable index_table_;
 
-    /**
-     * View of the active dofs ids on a given single-patch space.
-     */
-    DofsView dofs_view_;
-
 
     /**
      * Number of unique dofs, component-by-component and direction-by-direction.
@@ -286,10 +273,12 @@ private:
 
     /**
      * Size of the index_table_, component-by-component and direction-by-direction.
+     *
+     * @note The size of the <tt>index_table_</tt> can be different to the number of dofs
+     * (e.g for dofs associated to periodic spaces).
      */
     TensorSizeTable index_table_size_;
 
-    DistributionPolicy policy_;
 
 
     /**
@@ -298,6 +287,29 @@ private:
      * The property name is the key of the std::map.
      */
     PropertiesIdContainer properties_dofs_;
+
+
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("index_table_",index_table_);
+
+        ar &boost::serialization::make_nvp("num_dofs_table_",num_dofs_table_);
+
+        ar &boost::serialization::make_nvp("index_table_size_",index_table_size_);
+
+        ar &boost::serialization::make_nvp("properties_dofs_",properties_dofs_);
+    }
+    ///@}
+
 };
 
 IGA_NAMESPACE_CLOSE

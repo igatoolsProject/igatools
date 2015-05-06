@@ -22,6 +22,10 @@
  *  author: pauletti
  *  date:
  *
+ *
+ *  Test for the serialization of the Splinespace class
+ *  author: martinelli
+ *  date: May 06, 2015
  */
 
 // TODO (pauletti, Dec 26, 2014): make this test dim independent
@@ -62,7 +66,7 @@ void serialize_deserialize(std::shared_ptr<SplineSpace<dim,range>> sp_spec)
     std::string filename = "spline_space_dim" + std::to_string(dim) + "_range" + std::to_string(range) + ".xml";
     std::string tag_name = "SplineSpace_dim" + std::to_string(dim) + "_range" + std::to_string(range);
     {
-        // serialize the CartesianGrid object to an xml file
+        // serialize the SplineSpace object to an xml file
         std::ofstream xml_ostream(filename);
         boost::archive::xml_oarchive xml_out(xml_ostream);
 
@@ -75,7 +79,7 @@ void serialize_deserialize(std::shared_ptr<SplineSpace<dim,range>> sp_spec)
     typename SplineSpace<dim,range>::MultiplicityTable mult;
     auto sp_spec_new = SplineSpace<dim,range>::create(deg, grid, mult);
     {
-        // de-serialize the CartesianGrid object from an xml file
+        // de-serialize the SplineSpace object from an xml file
         std::ifstream xml_istream(filename);
         boost::archive::xml_iarchive xml_in(xml_istream);
         xml_in >> BOOST_SERIALIZATION_NVP(*sp_spec_new);

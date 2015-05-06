@@ -45,6 +45,38 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 0; int dim = 1; i
             
          
          DoFs Distribution:
+            Num dofs table:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                  [ ]
+               
+               Components map: 
+               [ 0 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+               Scalar components dimensions:
+               [ 1 ]
+               Total Dimension: 1
+            
+            Index table size:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                  [ ]
+               
+               Components map: 
+               [ 0 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+               Scalar components dimensions:
+               [ 1 ]
+               Total Dimension: 1
+            
             Dof indices:
                Size: [ ]  Weights: []
                [ 0 ]
@@ -107,6 +139,38 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 0; int dim = 1; i
             
          
          DoFs Distribution:
+            Num dofs table:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                  [ ]
+               
+               Components map: 
+               [ 0 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+               Scalar components dimensions:
+               [ 1 ]
+               Total Dimension: 1
+            
+            Index table size:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                  [ ]
+               
+               Components map: 
+               [ 0 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+               Scalar components dimensions:
+               [ 1 ]
+               Total Dimension: 1
+            
             Dof indices:
                Size: [ ]  Weights: []
                [ 0 ]
@@ -178,6 +242,38 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 2; i
             
          
          DoFs Distribution:
+            Num dofs table:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                  [ 3 ]
+               
+               Components map: 
+               [ 0 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+               Scalar components dimensions:
+               [ 3 ]
+               Total Dimension: 3
+            
+            Index table size:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                  [ 3 ]
+               
+               Components map: 
+               [ 0 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+               Scalar components dimensions:
+               [ 3 ]
+               Total Dimension: 3
+            
             Dof indices:
                Size: [ 3 ]  Weights: [3]
                [ 0 1 2 ]
@@ -247,6 +343,38 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 2; i
             
          
          DoFs Distribution:
+            Num dofs table:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                  [ 3 ]
+               
+               Components map: 
+               [ 0 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+               Scalar components dimensions:
+               [ 3 ]
+               Total Dimension: 3
+            
+            Index table size:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                  [ 3 ]
+               
+               Components map: 
+               [ 0 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+               Scalar components dimensions:
+               [ 3 ]
+               Total Dimension: 3
+            
             Dof indices:
                Size: [ 3 ]  Weights: [3]
                [ 0 1 2 ]
@@ -316,6 +444,38 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 2; i
             
          
          DoFs Distribution:
+            Num dofs table:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                  [ 2 ]
+               
+               Components map: 
+               [ 0 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+               Scalar components dimensions:
+               [ 2 ]
+               Total Dimension: 2
+            
+            Index table size:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                  [ 2 ]
+               
+               Components map: 
+               [ 0 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+               Scalar components dimensions:
+               [ 2 ]
+               Total Dimension: 2
+            
             Dof indices:
                Size: [ 2 ]  Weights: [2]
                [ 0 1 ]
@@ -384,6 +544,38 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 2; i
             
          
          DoFs Distribution:
+            Num dofs table:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                  [ 2 ]
+               
+               Components map: 
+               [ 0 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+               Scalar components dimensions:
+               [ 2 ]
+               Total Dimension: 2
+            
+            Index table size:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                  [ 2 ]
+               
+               Components map: 
+               [ 0 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+               Scalar components dimensions:
+               [ 2 ]
+               Total Dimension: 2
+            
             Dof indices:
                Size: [ 2 ]  Weights: [2]
                [ 0 1 ]
@@ -461,6 +653,38 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 3; i
             
          
          DoFs Distribution:
+            Num dofs table:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                  [ 3 4 ]
+               
+               Components map: 
+               [ 0 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+               Scalar components dimensions:
+               [ 12 ]
+               Total Dimension: 12
+            
+            Index table size:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                  [ 3 4 ]
+               
+               Components map: 
+               [ 0 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+               Scalar components dimensions:
+               [ 12 ]
+               Total Dimension: 12
+            
             Dof indices:
                Size: [ 3 4 ]  Weights: [3,12]
                [ 0 1 2 3 4 5 6 7 8 9 10 11 ]
@@ -538,6 +762,38 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 3; i
             
          
          DoFs Distribution:
+            Num dofs table:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                  [ 3 4 ]
+               
+               Components map: 
+               [ 0 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+               Scalar components dimensions:
+               [ 12 ]
+               Total Dimension: 12
+            
+            Index table size:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                  [ 3 4 ]
+               
+               Components map: 
+               [ 0 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+               Scalar components dimensions:
+               [ 12 ]
+               Total Dimension: 12
+            
             Dof indices:
                Size: [ 3 4 ]  Weights: [3,12]
                [ 0 1 2 3 4 5 6 7 8 9 10 11 ]
@@ -615,6 +871,38 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 3; i
             
          
          DoFs Distribution:
+            Num dofs table:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                  [ 2 4 ]
+               
+               Components map: 
+               [ 0 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+               Scalar components dimensions:
+               [ 8 ]
+               Total Dimension: 8
+            
+            Index table size:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                  [ 2 4 ]
+               
+               Components map: 
+               [ 0 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+               Scalar components dimensions:
+               [ 8 ]
+               Total Dimension: 8
+            
             Dof indices:
                Size: [ 2 4 ]  Weights: [2,8]
                [ 0 1 2 3 4 5 6 7 ]
@@ -691,6 +979,38 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 3; i
             
          
          DoFs Distribution:
+            Num dofs table:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                  [ 2 4 ]
+               
+               Components map: 
+               [ 0 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+               Scalar components dimensions:
+               [ 8 ]
+               Total Dimension: 8
+            
+            Index table size:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                  [ 2 4 ]
+               
+               Components map: 
+               [ 0 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+               Scalar components dimensions:
+               [ 8 ]
+               Total Dimension: 8
+            
             Dof indices:
                Size: [ 2 4 ]  Weights: [2,8]
                [ 0 1 2 3 4 5 6 7 ]
@@ -767,6 +1087,38 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 3; i
             
          
          DoFs Distribution:
+            Num dofs table:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                  [ 2 3 ]
+               
+               Components map: 
+               [ 0 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+               Scalar components dimensions:
+               [ 6 ]
+               Total Dimension: 6
+            
+            Index table size:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                  [ 2 3 ]
+               
+               Components map: 
+               [ 0 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+               Scalar components dimensions:
+               [ 6 ]
+               Total Dimension: 6
+            
             Dof indices:
                Size: [ 2 3 ]  Weights: [2,6]
                [ 0 1 2 3 4 5 ]
@@ -842,6 +1194,38 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 3; i
             
          
          DoFs Distribution:
+            Num dofs table:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                  [ 2 3 ]
+               
+               Components map: 
+               [ 0 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+               Scalar components dimensions:
+               [ 6 ]
+               Total Dimension: 6
+            
+            Index table size:
+               Raw componets: 
+                  Size: [ 1 ]  Weights: [1]
+                  Entry id: 0
+                  [ 2 3 ]
+               
+               Components map: 
+               [ 0 ]
+               Active componets ids: 
+               [ 0 ]
+               Inactive componets ids: 
+               [ ]
+               Scalar components dimensions:
+               [ 6 ]
+               Total Dimension: 6
+            
             Dof indices:
                Size: [ 2 3 ]  Weights: [2,6]
                [ 0 1 2 3 4 5 ]

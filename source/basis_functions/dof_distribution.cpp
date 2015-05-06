@@ -33,20 +33,14 @@ template<int dim, int range, int rank>
 DofDistribution<dim, range, rank>::
 DofDistribution(const TensorSizeTable &n_basis,
                 const DegreeTable &degree_table,
-                const PeriodicityTable &periodic,
-                DistributionPolicy pol)
+                const PeriodicityTable &periodic)
     :
     num_dofs_table_(n_basis),
-    index_table_size_(n_basis),
-    policy_(pol)
+    index_table_size_(n_basis)
 {
-    Assert(pol == DistributionPolicy::standard, ExcNotImplemented());
-
-    using Topology = UnitElement<dim>;
-
     //-----------------------------------------------------------------------
     for (const auto comp : Space::components)
-        for (const auto dir : Topology::active_directions)
+        for (const auto dir : UnitElement<dim>::active_directions)
             if (periodic[comp][dir])
                 index_table_size_[comp][dir] += degree_table[comp][dir] + 1;
     //-----------------------------------------------------------------------
@@ -70,7 +64,7 @@ DofDistribution(const TensorSizeTable &n_basis,
         for (int i = 0 ; i < n_indices_comp ; ++i)
         {
             auto t_ind = index_table_comp.flat_to_tensor(i);
-            for (const auto dir : Topology::active_directions)
+            for (const auto dir : UnitElement<dim>::active_directions)
                 t_ind[dir] %= n_dofs_comp[dir];
 
             const auto f_ind = MultiArrayUtils<dim>::tensor_to_flat_index(t_ind,w_dofs_comp);
@@ -83,26 +77,9 @@ DofDistribution(const TensorSizeTable &n_basis,
 
 
     //-----------------------------------------------------------------------
-    // creating the dofs view from the dofs components views -- begin
-    SafeSTLVector<DofsComponentView> components_views;
-    for (auto &index_table_comp : index_table_)
-        components_views.emplace_back(index_table_comp.get_flat_view());
-
-    dofs_view_ = DofsView(
-                     DofsIterator(components_views,0),
-                     DofsIterator(components_views,IteratorState::pass_the_end));
-    // creating the dofs view from the dofs components views -- end
-    //-----------------------------------------------------------------------
-
-
-    //-----------------------------------------------------------------------
     properties_dofs_.add_property(DofProperties::active);
-    properties_dofs_.set_ids_property_status(
-        DofProperties::active,
-        std::set<Index>(dofs_view_.cbegin(),dofs_view_.cend()),
-        true);
+    this->set_all_dofs_property_status(DofProperties::active,true);
     //-----------------------------------------------------------------------
-
 }
 
 
@@ -112,7 +89,8 @@ Index
 DofDistribution<dim, range, rank>::
 get_min_dof_id() const
 {
-    return *std::min_element(dofs_view_.cbegin(),dofs_view_.cend());
+    const auto dofs_view = this->get_dofs_view();
+    return *std::min_element(dofs_view.cbegin(),dofs_view.cend());
 }
 
 
@@ -122,7 +100,8 @@ Index
 DofDistribution<dim, range, rank>::
 get_max_dof_id() const
 {
-    return *std::max_element(dofs_view_.cbegin(),dofs_view_.cend());
+    const auto dofs_view = this->get_dofs_view();
+    return *std::max_element(dofs_view.cbegin(),dofs_view.cend());
 }
 
 
@@ -167,8 +146,9 @@ void
 DofDistribution<dim, range, rank>::
 add_dofs_offset(const Index offset)
 {
-    for (auto &dof : dofs_view_)
-        dof += offset;
+    for (auto &index_table_comp : index_table_)
+        for (auto &dof : index_table_comp.get_flat_view())
+            dof += offset;
 
     properties_dofs_.add_offset(offset);
 }
@@ -187,19 +167,16 @@ get_index_table() const -> const IndexDistributionTable &
 template<int dim, int range, int rank>
 auto
 DofDistribution<dim, range, rank>::
-get_dofs_view() -> DofsView &
+get_dofs_view() const -> DofsConstView
 {
-    return dofs_view_;
-}
+    // creating the dofs view from the dofs components views
+    SafeSTLVector<DofsComponentConstView> components_views;
+    for (auto &index_table_comp : index_table_)
+        components_views.emplace_back(index_table_comp.get_flat_view());
 
-template<int dim, int range, int rank>
-auto
-DofDistribution<dim, range, rank>::
-get_dofs_view() const -> const DofsView &
-{
-    return dofs_view_;
+    return DofsConstView(DofsConstIterator(components_views,0),
+                         DofsConstIterator(components_views,IteratorState::pass_the_end));
 }
-
 
 template<int dim, int range, int rank>
 Index
@@ -248,6 +225,14 @@ DofDistribution<dim, range, rank>::
 print_info(LogStream &out) const
 {
     using std::endl;
+
+    out.begin_item("Num dofs table:");
+    num_dofs_table_.print_info(out);
+    out.end_item();
+
+    out.begin_item("Index table size:");
+    index_table_size_.print_info(out);
+    out.end_item();
 
     out.begin_item("Dof indices:");
     for (const auto &index_table_comp : index_table_)
@@ -352,9 +337,10 @@ void
 DofDistribution<dim, range, rank>::
 set_all_dofs_property_status(const std::string &property, const bool status)
 {
+    const auto dofs_view = this->get_dofs_view();
     properties_dofs_.set_ids_property_status(
         property,
-        std::set<Index>(dofs_view_.cbegin(),dofs_view_.cend()),
+        std::set<Index>(dofs_view.cbegin(),dofs_view.cend()),
         status);
 }
 
