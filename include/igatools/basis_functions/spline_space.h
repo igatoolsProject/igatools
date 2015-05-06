@@ -75,6 +75,7 @@ enum class InteriorReg
  * @author pauletti, 2014
  * @author M. Martinelli, 2014, 2015
  *
+ * @ingroup serializable
  */
 template<int dim, int range = 1, int rank = 1>
 class SplineSpace :
@@ -279,6 +280,8 @@ public:
     /**
      *  Class to manage the component quantities with the knowledge of
      * uniform range spaces
+     *
+     * @ingroup serializable
      */
     template<class T>
     class ComponentContainer : public StaticMultiArray<T,range,rank>
@@ -419,10 +422,33 @@ public:
         SafeSTLVector<Index> inactive_components_id_;
 
 
+        /**
+         * @name Functions needed for boost::serialization
+         * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+         */
+        ///@{
+        friend class boost::serialization::access;
+
+        template<class Archive>
+        void
+        serialize(Archive &ar, const unsigned int version)
+        {
+            ar &boost::serialization::make_nvp(
+                "ComponentContainer_base_t",
+                boost::serialization::base_object<base_t>(*this));
+
+            ar &boost::serialization::make_nvp("comp_map_",comp_map_);
+
+            ar &boost::serialization::make_nvp("active_components_id_", active_components_id_);
+
+            ar &boost::serialization::make_nvp("inactive_components_id_", inactive_components_id_);
+        }
+        ///@}
+
     };
 
 
-    std::shared_ptr<const SplineSpace<dim,range,rank> > spline_space_previous_refinement_;
+    std::shared_ptr<SplineSpace<dim,range,rank> > spline_space_previous_refinement_;
 
     /**
      * Rebuild the internal state of the object after an insert_knots() function is invoked.
@@ -451,6 +477,48 @@ protected:
     /** This function initialize the member variables from the constructor
      * arguments or after an h-refinement. */
     void init();
+
+
+private:
+    /**
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
+     */
+    SplineSpace() = default;
+
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive, int dummy_dim = dim>
+    void
+    serialize(Archive &ar, const unsigned int version,EnableIf<(dummy_dim > 0)> * = 0)
+    {
+        ar &boost::serialization::make_nvp(
+            "SplineSpace_base_t",
+            boost::serialization::base_object<GridWrapper<CartesianGrid<dim>>>(*this));
+
+        ar &boost::serialization::make_nvp("interior_mult_",interior_mult_);
+
+        ar &boost::serialization::make_nvp("deg_", deg_);
+
+        ar &boost::serialization::make_nvp("space_dim_", space_dim_);
+
+        ar &boost::serialization::make_nvp("periodic_", periodic_);
+
+        ar &boost::serialization::make_nvp("spline_space_previous_refinement_", spline_space_previous_refinement_);
+    }
+
+    template<class Archive, int dummy_dim = dim>
+    void
+    serialize(Archive &ar, const unsigned int version,EnableIf<!(dummy_dim > 0)> * = 0)
+    {}
+    ///@}
+
 };
 
 

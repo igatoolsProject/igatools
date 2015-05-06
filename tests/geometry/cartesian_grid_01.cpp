@@ -50,7 +50,7 @@ void serialize_deserialize(std::shared_ptr<CartesianGrid<dim>> grid, const std::
     {
         // serialize the CartesianGrid object to an xml file
         std::ofstream xml_ostream(filename);
-        boost::archive::binary_oarchive xml_out(xml_ostream);
+        boost::archive::xml_oarchive xml_out(xml_ostream);
 
         xml_out << boost::serialization::make_nvp(tag_name.c_str(),*grid);
         xml_ostream.close();
@@ -60,7 +60,7 @@ void serialize_deserialize(std::shared_ptr<CartesianGrid<dim>> grid, const std::
     {
         // de-serialize the CartesianGrid object from an xml file
         std::ifstream xml_istream(filename);
-        boost::archive::binary_iarchive xml_in(xml_istream);
+        boost::archive::xml_iarchive xml_in(xml_istream);
         xml_in >> BOOST_SERIALIZATION_NVP(*grid_new);
         xml_istream.close();
     }

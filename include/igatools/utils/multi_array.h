@@ -91,9 +91,9 @@ IGA_NAMESPACE_OPEN
  * and that the entry access are managed by the iterators.
  *
  * @ingroup multi_array_containers
- *
+ * @ingroup serializable
  * @author M. Martinelli
- * @date 31 Jan 2014
+ * @date 2014, 2015
  */
 //TODO(pauletti, May 31, 2014): we should provide a tensorindex type for loop
 template<class STLContainer, int rank>
@@ -314,6 +314,28 @@ private:
      * Data of type Entry stored in a STL container.
      */
     STLContainer data_;
+
+
+
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp(
+            "MultiArray_base_t",
+            boost::serialization::base_object<TensorSizedContainer<rank>>(*this));
+
+        ar &boost::serialization::make_nvp("data_",data_);
+    }
+    ///@}
+
 };
 
 

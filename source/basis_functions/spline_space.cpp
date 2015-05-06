@@ -142,11 +142,8 @@ rebuild_after_insert_knots(
     Assert(&(*grid_pre_refinement) == &old_grid,ExcMessage("Different grids."));
 
     spline_space_previous_refinement_ =
-        make_shared<const SplineSpace<dim,range,rank> >(
-            SplineSpace<dim,range,rank>(
-                this->get_degree(),
-                grid_pre_refinement,
-                interior_mult_));
+        std::shared_ptr<SplineSpace<dim,range,rank> >(new
+                                                      SplineSpace<dim,range,rank>(deg_,grid_pre_refinement,interior_mult_));
 
 
     const auto &old_unique_knots = old_grid.get_knot_coordinates();

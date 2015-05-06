@@ -46,6 +46,7 @@ IGA_NAMESPACE_OPEN
  * <a href="http://www.boost.org/doc/libs/1_55_0/doc/html/signals2.html">Boost.Signals2</a> library.
  *
  * @ingroup h_refinement
+ * @ingroup serializable
  */
 template<class Grid_>
 class GridWrapper
@@ -59,9 +60,14 @@ public:
 
     /** @name Constructor and destructor. */
     ///@{
-    /** Default constructor. Not allowed to be used. */
-    GridWrapper() = delete;
-
+protected:
+    /**
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
+     */
+    GridWrapper() = default;
+public:
     /** Construct a GridWrapper copying the pointer @p grid. */
     GridWrapper(std::shared_ptr<GridType> grid);
 
@@ -176,7 +182,7 @@ public:
 
 private:
     /** Grid object. */
-    std::shared_ptr<GridType> grid_ ;
+    std::shared_ptr<GridType> grid_ = nullptr;
 
 #if 0
     /**
@@ -190,6 +196,22 @@ private:
      */
     boost::signals2::connection insert_knots_connection_ ;
 
+
+
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("grid_",grid_);
+    }
+    ///@}
 };
 
 
