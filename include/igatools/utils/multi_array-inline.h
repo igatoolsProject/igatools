@@ -70,8 +70,8 @@ auto
 MultiArray<STLContainer,rank>::
 operator[](const Index i) -> reference
 {
-    Assert((0<=i)  &&(i<this->flat_size()),
-    ExcIndexRange(i,0,this->flat_size()));
+//    Assert((0<=i)  &&(i<this->flat_size()),
+//    ExcIndexRange(i,0,this->flat_size()));
     return this->data_[i];
 }
 
@@ -81,8 +81,8 @@ auto
 MultiArray<STLContainer,rank>::
 operator[](const Index i) const -> const_reference
 {
-    Assert((0<=i) &&(i<this->flat_size()),
-           ExcIndexRange(i,0,this->flat_size()));
+//    Assert((0<=i) &&(i<this->flat_size()),
+//           ExcIndexRange(i,0,this->flat_size()));
     return this->data_[i];
 }
 //*/
@@ -102,9 +102,9 @@ operator()(const TensorIndex<rank> &tensor_index) -> reference
         ExcIndexRange(tensor_index[i],0,tensor_size[i]));
 #endif
 
-    Assert((this->tensor_to_flat(tensor_index) >= 0) &&
-    (this->tensor_to_flat(tensor_index) < this->flat_size()),
-    ExcIndexRange(this->tensor_to_flat(tensor_index),0,this->flat_size()));
+//    Assert((this->tensor_to_flat(tensor_index) >= 0) &&
+//    (this->tensor_to_flat(tensor_index) < this->flat_size()),
+//    ExcIndexRange(this->tensor_to_flat(tensor_index),0,this->flat_size()));
 
     return this->data_[this->tensor_to_flat(tensor_index)];
 }

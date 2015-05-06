@@ -70,6 +70,7 @@ IGA_NAMESPACE_OPEN
  * @todo write code of how to use it
  *
  * @ingroup multi_array_containers
+ * @ingroup serializable
  * @author Martinelli, 2012, 2013, 2014, 2015
  * @author Pauletti, 2012, 2013, 2014
  */
