@@ -160,7 +160,7 @@ CartesianGrid(const KnotCoordinates &knot_coordinates,
     boundary_id_(0)
 {
 #ifndef NDEBUG
-    for (const int i : Topology::active_directions)
+    for (const int i : UnitElement<dim_>::active_directions)
     {
         const auto &knots_i = knot_coordinates.get_data_direction(i);
         // checks that we have at least two knot values (i.e. one knot span) in
@@ -259,7 +259,7 @@ get_element_lengths() const -> KnotCoordinates
     auto const &size = get_num_intervals();
     KnotCoordinates length(size);
 
-    for (auto &i : Topology::active_directions)
+    for (auto &i : UnitElement<dim_>::active_directions)
     {
         const auto &knots_i = knot_coordinates_.get_data_direction(i);
         const auto n_elem = size[i];
@@ -620,7 +620,7 @@ refine_directions(
 {
     //-------------------------------------------------------------
     SafeSTLArray<SafeSTLVector<Real>,dim_> knots_to_insert;
-    for (const auto dir : Topology::active_directions)
+    for (const auto dir : UnitElement<dim_>::active_directions)
     {
         if (refinement_directions[dir])
         {
@@ -775,7 +775,7 @@ get_bounding_box() const -> BBox<dim_>
 {
     BBox<dim_> bounding_box;
 
-    for (const auto i : Topology::active_directions)
+    for (const auto i : UnitElement<dim_>::active_directions)
     {
         bounding_box[i][0] = knot_coordinates_.get_data_direction(i).front();
         bounding_box[i][1] = knot_coordinates_.get_data_direction(i).back();
@@ -799,7 +799,7 @@ find_elements_of_points(const ValueVector<Points<dim_>> &points) const
     {
         const auto &point = points[k];
         TensorIndex<dim_> elem_t_id;
-        for (const auto i : Topology::active_directions)
+        for (const auto i : UnitElement<dim_>::active_directions)
         {
             const auto &knots = knot_coordinates_.get_data_direction(i);
 
@@ -838,7 +838,7 @@ find_elements_id_of_point(const Points<dim_> &point) const
     SafeSTLArray<SafeSTLVector<int>,dim> ids;
 
     TensorSize<dim_> n_elems_dir;
-    for (const auto dir : Topology::active_directions)
+    for (const auto dir : UnitElement<dim_>::active_directions)
     {
         const auto &knots = knot_coordinates_.get_data_direction(dir);
 
@@ -872,7 +872,7 @@ find_elements_id_of_point(const Points<dim_> &point) const
     {
         const auto t_id = MultiArrayUtils<dim_>::flat_to_tensor_index(elem,w_elems_dir);
         TensorIndex<dim_> elem_t_id;
-        for (const auto dir : Topology::active_directions)
+        for (const auto dir : UnitElement<dim_>::active_directions)
             elem_t_id[dir] = ids[dir][t_id[dir]];
 
         elements_id.emplace_back(this->tensor_to_flat(elem_t_id));
@@ -886,7 +886,7 @@ CartesianGrid<dim_>::
 operator==(const CartesianGrid<dim_> &grid) const
 {
     bool same_knots_coordinates = true;
-    for (const auto i : Topology::active_directions)
+    for (const auto i : UnitElement<dim_>::active_directions)
     {
         const auto &knots_a =  this->knot_coordinates_.get_data_direction(i);
         const auto &knots_b =   grid.knot_coordinates_.get_data_direction(i);
@@ -908,7 +908,7 @@ get_sub_elements_id(const TensorSize<dim_> &n_sub_elems, const Index elem_id) co
     const TensorSize<dim_> n_elems_coarse_grid = this->get_num_intervals();
     TensorSize<dim_> n_elems_fine_grid;
     TensorIndex<dim_> first_fine_elem_tensor_id;
-    for (const auto &i : Topology::active_directions)
+    for (const auto &i : UnitElement<dim_>::active_directions)
     {
         Assert(n_sub_elems[i] > 0 ,ExcLowerRange(n_sub_elems[i],1));
 
@@ -927,7 +927,7 @@ get_sub_elements_id(const TensorSize<dim_> &n_sub_elems, const Index elem_id) co
         const auto sub_elem_tensor_id =
             MultiArrayUtils<dim_>::flat_to_tensor_index(sub_elem, weight_sub_elems);
 
-        for (const auto &i : Topology::active_directions)
+        for (const auto &i : UnitElement<dim_>::active_directions)
             fine_elem_tensor_id[i] = first_fine_elem_tensor_id[i] + sub_elem_tensor_id[i];
 
         sub_elems_id[sub_elem] =
@@ -1001,7 +1001,7 @@ insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert)
 
     //----------------------------------------------------------------------------------
     // inserts the knots into the current grid --- begin
-    for (const auto dir : Topology::active_directions)
+    for (const auto dir : UnitElement<dim_>::active_directions)
     {
         std::set<Real> new_coords_no_duplicates(knots_to_insert[dir].begin(),knots_to_insert[dir].end());
 
@@ -1060,7 +1060,7 @@ CartesianGrid<dim_>::
 same_knots_or_refinement_of(const CartesianGrid<dim_> &grid_to_compare_with) const
 {
     bool is_refinement = true;
-    for (auto dir : Topology::active_directions)
+    for (auto dir : UnitElement<dim_>::active_directions)
     {
         const auto &knots_coarse = grid_to_compare_with.get_knot_coordinates(dir);
         const auto &knots_fine   = this->get_knot_coordinates(dir);

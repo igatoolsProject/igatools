@@ -164,10 +164,6 @@ private:
     using self_t = CartesianGrid<dim_>;
 
 public:
-    /**
-     * Alias for the (static) class holding the topological information.
-     */
-    using Topology = UnitElement<dim_>;
 
     using Point = Points<dim_>;
 

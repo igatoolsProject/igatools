@@ -459,6 +459,24 @@ private:
     // lookup table for the local dof id in each element component
     typename SpaceData::template ComponentContainer<SafeSTLVector<TensorIndex<dim>>>
                                                     dofs_tensor_id_elem_table_;
+
+
+                                                    /**
+                                                     * @name Functions needed for boost::serialization
+                                                     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+                                                     */
+                                                    ///@{
+                                                    friend class boost::serialization::access;
+
+                                                    template<class Archive>
+                                                    void
+                                                    serialize(Archive &ar, const unsigned int version)
+    {
+        Assert(false,ExcNotImplemented());
+//        ar &boost::serialization::make_nvp("grid_",grid_);
+    }
+    ///@}
+
 };
 
 IGA_NAMESPACE_CLOSE

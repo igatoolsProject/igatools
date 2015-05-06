@@ -49,8 +49,6 @@ private:
 public:
     using typename GridWrapper<Grid_>::GridType;
 
-    using Topology = typename Grid_::Topology;
-
     using GridElement = typename Grid_::ElementAccessor;
 
     virtual void get_element_dofs(
@@ -64,8 +62,12 @@ public:
 protected:
     /** @name Constructor and destructor. */
     ///@{
-    /** Default constructor. Not allowed to be used. */
-    FunctionSpaceOnGrid() = delete;
+    /**
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
+     */
+    FunctionSpaceOnGrid() = default;
 
     /** Construct the object from the @p grid on which the function space will be built upon. */
     FunctionSpaceOnGrid(std::shared_ptr<GridType> grid);
@@ -97,6 +99,27 @@ public:
 
 protected:
     Index space_id_ = 0;
+
+
+private:
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("FunctionSpaceOnGrid_base_t",
+                                           boost::serialization::base_object<GridWrapper<Grid_>>(*this));
+
+        ar &boost::serialization::make_nvp("space_id_",space_id_);
+    }
+    ///@}
+
 };
 
 

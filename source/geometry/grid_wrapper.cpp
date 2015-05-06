@@ -64,8 +64,8 @@ template <class GridType>
 void
 GridWrapper<GridType>::
 refine_h_directions(
-    const SafeSTLArray<bool,Topology::dim> &refinement_directions,
-    const SafeSTLArray<Size,Topology::dim> &n_subdiv_directions)
+    const SafeSTLArray<bool,GridType::dim> &refinement_directions,
+    const SafeSTLArray<Size,GridType::dim> &n_subdiv_directions)
 {
     grid_->refine_directions(refinement_directions,n_subdiv_directions);
 }

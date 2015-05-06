@@ -54,9 +54,6 @@ class GridWrapper
 public:
     using GridType = Grid_;
 
-    using Topology = typename Grid_::Topology;
-
-//protected:
 
     /** @name Constructor and destructor. */
     ///@{
@@ -123,8 +120,8 @@ public:
      * @ingroup h_refinement
      */
     void refine_h_directions(
-        const SafeSTLArray<bool,Topology::dim> &refinement_directions,
-        const SafeSTLArray<Size,Topology::dim> &n_subdiv_directions);
+        const SafeSTLArray<bool,GridType::dim> &refinement_directions,
+        const SafeSTLArray<Size,GridType::dim> &n_subdiv_directions);
 
     /**
      * Perform a uniform h-refinement of the grid along the @p direction_id direction,
@@ -157,16 +154,6 @@ public:
     void insert_knots(SafeSTLArray<SafeSTLVector<Real>,GridType::dim> &knots_to_insert);
     ///@}
 
-#if 0
-    /**
-     * Connect the function @p subscriber to the h-refinement signal in the grid object and create
-     * the relative connection.
-     *
-     * @ingroup h_refinement
-     */
-    void
-    connect_refinement_h_function(const typename GridType::SignalRefineSlot &subscriber);
-#endif
 
     /**
      * Connect the function @p subscriber to the insert_knots signal in the grid object and create
