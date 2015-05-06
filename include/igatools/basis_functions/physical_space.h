@@ -221,7 +221,7 @@ private:
     friend ElementAccessor;
 
 public:
-    std::shared_ptr<ElementHandler> create_elem_handler() const;
+    std::shared_ptr<ElementHandler> get_elem_handler() const;
 
 
 protected:

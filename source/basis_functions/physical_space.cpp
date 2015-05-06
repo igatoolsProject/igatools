@@ -297,7 +297,7 @@ print_info(LogStream &out) const
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-create_elem_handler() const -> std::shared_ptr<ElementHandler>
+get_elem_handler() const -> std::shared_ptr<ElementHandler>
 {
     const auto this_space = std::enable_shared_from_this<self_t>::shared_from_this();
     return ElementHandler::create(this_space);

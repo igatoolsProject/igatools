@@ -116,7 +116,7 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
     auto solution = create_vector(map);
 
 
-    auto elem_handler = space->create_elem_handler();
+    auto elem_handler = space->get_elem_handler();
     auto flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::w_measure;
     QGauss<dim> elem_quad(deg+1);
     elem_handler->reset(flag, elem_quad);

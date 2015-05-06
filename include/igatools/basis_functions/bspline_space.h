@@ -452,7 +452,7 @@ public:
 
     virtual bool is_bspline() const override final;
 
-    virtual std::shared_ptr<ReferenceElementHandler<dim_,range_,rank_>> create_elem_handler() const override final;
+    virtual std::shared_ptr<ReferenceElementHandler<dim_,range_,rank_>> get_elem_handler() const override final;
 
 
 private:

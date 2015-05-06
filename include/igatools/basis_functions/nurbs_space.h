@@ -261,7 +261,7 @@ private:
 
 public:
     virtual std::shared_ptr<typename BaseSpace::ElementHandler>
-    create_elem_handler() const override final;
+    get_elem_handler() const override final;
 
 };
 

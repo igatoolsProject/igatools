@@ -552,7 +552,7 @@ is_bspline() const
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-create_elem_handler() const
+get_elem_handler() const
 -> std::shared_ptr<ReferenceElementHandler<dim_,range_,rank_>>
 {
     const auto this_space = std::enable_shared_from_this<self_t>::shared_from_this();

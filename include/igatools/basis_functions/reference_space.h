@@ -254,8 +254,7 @@ public:
     virtual void print_info(LogStream &out) const = 0;
 
 
-    //TODO (pauletti, Mar 24, 2015): for uniformity should be call get
-    virtual std::shared_ptr<ElementHandler> create_elem_handler() const = 0;
+    virtual std::shared_ptr<ElementHandler> get_elem_handler() const = 0;
 
 protected:
     /**

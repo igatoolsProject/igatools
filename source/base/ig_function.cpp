@@ -38,7 +38,7 @@ IgFunction(std::shared_ptr<const Space> space,
     coeff_(coeff),
     property_(property),
     elem_(space->begin()),
-    space_filler_(space->create_elem_handler())
+    space_filler_(space->get_elem_handler())
 {
     Assert(space_ != nullptr, ExcNullPtr());
 }
@@ -54,7 +54,7 @@ IgFunction(const self_t &fun)
     coeff_(fun.coeff_),
     property_(fun.property_),
     elem_(fun.space_->begin()),
-    space_filler_(fun.space_->create_elem_handler())
+    space_filler_(fun.space_->get_elem_handler())
 {
     Assert(space_ != nullptr,ExcNullPtr());
     //Assert(!coeff_.empty(),ExcEmptyObject());

@@ -53,7 +53,7 @@ void matrix_map(const int deg, const int n_knots)
 
     auto quad = QGauss<dim>(2);
     auto flag = ValueFlags::value | ValueFlags::w_measure;
-    auto elem_handler = space->create_elem_handler();
+    auto elem_handler = space->get_elem_handler();
     elem_handler->reset(flag, quad);
 
     auto elem = space->begin();

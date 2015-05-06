@@ -657,7 +657,7 @@ get_end_behaviour_table() const -> const EndBehaviourTable &
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-create_elem_handler() const -> std::shared_ptr<typename BaseSpace::ElementHandler>
+get_elem_handler() const -> std::shared_ptr<typename BaseSpace::ElementHandler>
 {
     const auto this_space =
     std::enable_shared_from_this<self_t>::shared_from_this();

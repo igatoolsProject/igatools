@@ -117,7 +117,7 @@ PhysSpaceElementHandler<dim,range,rank,codim>::
 PhysSpaceElementHandler(std::shared_ptr<const PhysSpace> space)
     :
     space_(space),
-    ref_space_handler_(space->get_reference_space()->create_elem_handler()),
+    ref_space_handler_(space->get_reference_space()->get_elem_handler()),
     push_fwd_(space->get_map_func())
 {}
 

@@ -94,7 +94,7 @@ void assemble_matrix(const int n_knots, const int deg)
     auto solution = create_vector(map);
 
     const QGauss<dim>  elem_quad(deg);
-    auto elem_handler = space->create_elem_handler();
+    auto elem_handler = space->get_elem_handler();
     auto flag = ValueFlags::value | ValueFlags::gradient |ValueFlags::w_measure;
     elem_handler->reset(flag, elem_quad);
     f->reset(ValueFlags::value, elem_quad);
