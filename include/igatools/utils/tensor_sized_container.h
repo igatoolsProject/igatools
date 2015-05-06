@@ -159,11 +159,9 @@ private:
     template<class Archive>
     void serialize(Archive &ar, const unsigned int version)
     {
-        std::string tag_name = "size_";
-        ar &boost::serialization::make_nvp(tag_name.c_str(),size_);
+        ar &boost::serialization::make_nvp("size_",size_);
 
-        tag_name = "weight_";
-        ar &boost::serialization::make_nvp(tag_name.c_str(),weight_);
+        ar &boost::serialization::make_nvp("weight_",weight_);
     }
     ///@}
 };

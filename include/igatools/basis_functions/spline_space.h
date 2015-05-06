@@ -391,10 +391,7 @@ public:
             out.end_item();
 
             out.begin_item("Components map: ");
-            out << "[ ";
-            for (const auto v : comp_map_)
-                out << v << " " ;
-            out << "]";
+            comp_map_.print_info(out);
             out.end_item();
 
             out.begin_item("Active componets ids: ");
