@@ -41,18 +41,20 @@ void array_serialization()
 <!DOCTYPE boost_serialization>
 <boost_serialization signature="serialization::archive" version="11">
 <arr class_id="0" tracking_level="0" version="0">
-	<SafeSTLContainer_base_t class_id="1" tracking_level="0" version="0">
-		<elems>
-			<count>3</count>
-			<item>0.00000000000000000e+00</item>
-			<item>-1.00000000000000000e+00</item>
-			<item>-2.00000000000000000e+00</item>
-		</elems>
-	</SafeSTLContainer_base_t>
+	<SafeSTLArray_base_t class_id="1" tracking_level="0" version="0">
+		<SafeSTLContainer_base_t class_id="2" tracking_level="0" version="0">
+			<elems>
+				<count>3</count>
+				<item>0.00000000000000000e+00</item>
+				<item>-1.00000000000000000e+00</item>
+				<item>-2.00000000000000000e+00</item>
+			</elems>
+		</SafeSTLContainer_base_t>
+	</SafeSTLArray_base_t>
 </arr>
 </boost_serialization>
 
-22 serialization::archive 11 0 0 0 0 3 0.00000000000000000e+00 -1.00000000000000000e+00 -2.00000000000000000e+00
+22 serialization::archive 11 0 0 0 0 0 0 3 0.00000000000000000e+00 -1.00000000000000000e+00 -2.00000000000000000e+00
 
 [ 0 -1.00000 -2.00000 ]
 ========================================================================

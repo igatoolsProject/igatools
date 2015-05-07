@@ -90,6 +90,7 @@ template <int, int, int> class BSplineElementHandler;
  *
  *
  * @ingroup containers
+ * @ingroup serializable
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
 class BSplineSpace :
@@ -214,6 +215,13 @@ public:
 protected:
     /** @name Constructors */
     ///@{
+    /**
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
+     */
+    BSplineSpace() = default;
+
     /**
      * Constructs a maximum regularity BSpline space over CartesianGrid
      * @p knots for the given @p degree in all directions and homogeneous
@@ -415,7 +423,7 @@ private:
     EndBehaviourTable end_b_;
 
 
-    /** @name Bezier extraction operator. */
+    /** Bezier extraction operator. */
     BernsteinExtraction<dim, range, rank> operators_;
 
 
@@ -460,6 +468,7 @@ private:
     typename SpaceData::template ComponentContainer<SafeSTLVector<TensorIndex<dim>>>
                                                     dofs_tensor_id_elem_table_;
 
+                                                private:
 
                                                     /**
                                                      * @name Functions needed for boost::serialization
@@ -472,8 +481,18 @@ private:
                                                     void
                                                     serialize(Archive &ar, const unsigned int version)
     {
-        Assert(false,ExcNotImplemented());
-//        ar &boost::serialization::make_nvp("grid_",grid_);
+        ar &boost::serialization::make_nvp("ReferenceSpace",
+                                           boost::serialization::base_object<BaseSpace>(*this));
+
+        ar &boost::serialization::make_nvp("space_data_",space_data_);
+
+        ar &boost::serialization::make_nvp("end_b_",end_b_);
+
+        ar &boost::serialization::make_nvp("operators_",operators_);
+
+        ar &boost::serialization::make_nvp("end_interval_",end_interval_);
+
+        ar &boost::serialization::make_nvp("dofs_tensor_id_elem_table_",dofs_tensor_id_elem_table_);
     }
     ///@}
 

@@ -70,7 +70,6 @@ public :
             (*this)[i] = list.begin()[i] ;
     };
 
-#if 0
 private:
     /**
      * @name Functions needed for boost::serialization
@@ -79,15 +78,17 @@ private:
     ///@{
     friend class boost::serialization::access;
 
-    template<class Archive>
-    void serialize(Archive &ar, const unsigned int version)
+    template<class Archive, int Size = N>
+    void serialize(Archive &ar, const unsigned int version, EnableIf<(Size > 0)> * = 0)
     {
-        std::string tag_name = "SafeSTLArray";
-        ar &boost::serialization::make_nvp(tag_name.c_str(),static_cast<std::array<T,N>&>(*this));
-
+        ar &boost::serialization::make_nvp("SafeSTLArray_base_t",
+                                           boost::serialization::base_object<base_t>(*this));
     }
+
+    template<class Archive, int Size = N>
+    void serialize(Archive &ar, const unsigned int version, EnableIf<!(Size > 0)> * = 0)
+    {}
     ///@}
-#endif
 };
 
 IGA_NAMESPACE_CLOSE

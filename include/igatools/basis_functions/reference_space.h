@@ -118,7 +118,12 @@ public:
     static const auto n_components = SpaceData::n_components;
 
 protected:
-    ReferenceSpace() = delete;
+    /**
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
+     */
+    ReferenceSpace() = default;
 
     explicit ReferenceSpace(
         const std::shared_ptr<CartesianGrid<dim_>> grid,
@@ -272,6 +277,31 @@ public:
     {
         return ref_space_previous_refinement_;
     }
+
+
+private:
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive,int dummy_dim = dim_>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("ReferenceSpace_base_t",
+                                           boost::serialization::base_object<FunctionSpaceOnGrid<CartesianGrid<dim_>>>(*this));
+
+        ar &boost::serialization::make_nvp("dof_distribution_",dof_distribution_);
+
+        ar &boost::serialization::make_nvp("ref_space_previous_refinement_",ref_space_previous_refinement_);
+
+        //TODO (martinelli, May 07, 2015): register the serialization for the derived classes
+    }
+    ///@}
+
 };
 
 IGA_NAMESPACE_CLOSE

@@ -38,6 +38,9 @@ public:
 };
 
 /**
+ * @brief Class used to store the coefficients that describe the B-Spline basis function as
+ * linear combination of the Bernstein polynomial.
+ *
  * A spline function restricted to each interval determined by
  * the knots is a polynomial of order m.
  *
@@ -45,6 +48,8 @@ public:
  * of the Bernstein polynomial.
  *
  * This class computes and stores theses coefficients.
+ *
+ * @ingroup serializable
  */
 template<int dim, int range = 1, int rank = 1>
 class BernsteinExtraction
@@ -63,6 +68,13 @@ private:
     using OperatorsTable = typename Space::template ComponentContainer<Operators>;
 
 public:
+    /**
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
+     */
+    BernsteinExtraction() = default;
+
     /**
      * Construct the extraction operators.
      */
@@ -83,6 +95,8 @@ public:
 
     ElemOperTable get_element_operators(TensorIndex<dim> idx) const;
 
+
+
 private:
     SafeSTLVector<Operator>
     fill_extraction(const int m,
@@ -98,6 +112,20 @@ private:
 
 private:
     OperatorsTable ext_operators_;
+
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("ext_operators_",ext_operators_);
+    }
+    ///@}
 
 };
 

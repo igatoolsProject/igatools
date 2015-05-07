@@ -30,6 +30,43 @@
 
 #include <igatools/basis_functions/bspline_space.h>
 
+
+
+template <int dim>
+void serialize_deserialize(const std::shared_ptr<BSplineSpace<dim>> space)
+{
+    out.begin_item("Original BSplineSpace:");
+    space->print_info(out);
+    out.end_item();
+
+
+    std::string filename = "bspline_space_dim" + std::to_string(dim) + ".xml";
+    std::string tag_name = "BSplineSpace_dim" + std::to_string(dim);
+    {
+        // serialize the DofDistribution object to an xml file
+        std::ofstream xml_ostream(filename);
+        boost::archive::xml_oarchive xml_out(xml_ostream);
+
+        xml_out << boost::serialization::make_nvp(tag_name.c_str(),space);
+        xml_ostream.close();
+    }
+
+    std::shared_ptr<BSplineSpace<dim>> space_new;
+    {
+        // de-serialize the DofDistribution object from an xml file
+        std::ifstream xml_istream(filename);
+        boost::archive::xml_iarchive xml_in(xml_istream);
+        xml_in >> BOOST_SERIALIZATION_NVP(space_new);
+        xml_istream.close();
+    }
+    out.begin_item("BSplineSpace after serialize-deserialize:");
+    space_new->print_info(out);
+    out.end_item();
+    //*/
+}
+
+
+
 namespace grid
 {
 template<int dim>
@@ -48,8 +85,9 @@ void uniform_degree(const int deg, shared_ptr<CartesianGrid<dim>> grid)
 {
     OUTSTART
     auto space = BSplineSpace<dim>::create(deg, grid);
-    space->print_info(out);
-    out << endl;
+
+    serialize_deserialize(space);
+
     OUTEND
 }
 
@@ -60,8 +98,9 @@ void direction_degree(const TensorIndex<dim> &deg,
 {
     OUTSTART
     auto space = BSplineSpace<dim>::create(deg, grid);
-    space->print_info(out);
-    out << endl;
+
+    serialize_deserialize(space);
+
     OUTEND
 }
 

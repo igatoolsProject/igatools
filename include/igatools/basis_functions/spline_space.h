@@ -491,9 +491,9 @@ private:
     ///@{
     friend class boost::serialization::access;
 
-    template<class Archive, int dummy_dim = dim>
+    template<class Archive>
     void
-    serialize(Archive &ar, const unsigned int version,EnableIf<(dummy_dim > 0)> * = 0)
+    serialize(Archive &ar, const unsigned int version)
     {
         ar &boost::serialization::make_nvp(
             "SplineSpace_base_t",
@@ -509,11 +509,6 @@ private:
 
         ar &boost::serialization::make_nvp("spline_space_previous_refinement_", spline_space_previous_refinement_);
     }
-
-    template<class Archive, int dummy_dim = dim>
-    void
-    serialize(Archive &ar, const unsigned int version,EnableIf<!(dummy_dim > 0)> * = 0)
-    {}
     ///@}
 
 };

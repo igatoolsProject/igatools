@@ -733,9 +733,9 @@ private:
     ///@{
     friend class boost::serialization::access;
 
-    template<class Archive, int dummy_dim = dim_>
+    template<class Archive>
     void
-    serialize(Archive &ar, const unsigned int version,EnableIf<(dummy_dim > 0)> * = 0)
+    serialize(Archive &ar, const unsigned int version)
     {
         std::string tag_name = "Num.Elements";
         ar &boost::serialization::make_nvp(
@@ -753,11 +753,6 @@ private:
 
         ar &boost::serialization::make_nvp("grid_pre_refinement_",grid_pre_refinement_);
     }
-
-    template<class Archive, int dummy_dim = dim_>
-    void
-    serialize(Archive &ar, const unsigned int version,EnableIf<!(dummy_dim > 0)> * = 0)
-    {}
     ///@}
 
 };
