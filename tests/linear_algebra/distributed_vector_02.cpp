@@ -61,16 +61,16 @@ void non_contig_indices()
     dof_distribution->set_dof_property_status(DofProperties::active,dofs,true);
 
     auto coeff = create_vector(space, DofProperties::active);
-    auto F = Function::create(space, *coeff);
+    auto F = Function::create(space, coeff);
     auto vec1 = F->get_coefficients();
     out.begin_item("vec1");
-    vec1.print_info(out);
+    vec1->print_info(out);
     out.end_item();
 
     auto func = F->clone();
     auto vec2 = std::dynamic_pointer_cast<Function>(func)->get_coefficients();
     out.begin_item("vec2");
-    vec2.print_info(out);
+    vec2->print_info(out);
     out.end_item();
 
     OUTEND

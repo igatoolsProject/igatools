@@ -72,7 +72,7 @@ int main()
 
     auto coeff = EpetraTools::create_vector(space, "active");
 
-    auto fun = IgFunction<ReferenceSpace<dim>>::create(space, *coeff);
+    auto fun = IgFunction<ReferenceSpace<dim>>::create(space, coeff);
 
     using_const_space<2>(fun);
     using_const_function<2>(fun);

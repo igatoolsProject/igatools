@@ -325,7 +325,7 @@ get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
     Epetra_SerialComm comm;
     auto emap = EpetraTools::create_map(ref_space, "active", comm);
     auto vec = cntrl_pts;
-    EpetraTools::Vector w(Copy, *emap, vec.data());
+    auto w = std::make_shared<EpetraTools::Vector>(Copy, *emap, vec.data());
     map = IgFunction<ref_space_t>::create(ref_space, w);
     //-------------------------------------------------------------------------
     AssertThrow(map != nullptr,ExcNullPtr());
@@ -726,7 +726,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
         Epetra_SerialComm comm;
         auto map = EpetraTools::create_map(scalar_spline_space, "active", comm);
         auto vec = w_coefs.get_data();
-        EpetraTools::Vector w(Copy, *map, vec.data());
+        auto w = std::make_shared<EpetraTools::Vector>(Copy, *map, vec.data());
         w_func_table[comp++] = WeightFuncPtr(new WeightFunc(scalar_spline_space, w));
     }
 

@@ -57,7 +57,7 @@ void ig_mapping(const int deg = 1)
     auto &coeff = *c_p;
 
     coeff[0] = 1.;
-    auto F = Function::create(space, coeff);
+    auto F = Function::create(space, c_p);
 
     auto map = Mapping::create(F);
     map->template reset<sub_dim>(flag, quad);

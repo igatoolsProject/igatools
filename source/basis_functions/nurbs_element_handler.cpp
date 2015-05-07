@@ -361,7 +361,7 @@ evaluate_nurbs_values_from_bspline(
 
         const int n_funcs_comp = bspline_elem.get_num_basis_comp(comp);
 
-        const auto w_coefs = nrb_space->weight_func_table_[comp]->get_coefficients();
+        const auto &w_coefs = *(nrb_space->weight_func_table_[comp]->get_coefficients());
         Assert(nrb_space->get_num_basis(comp) == w_coefs.size(),
                ExcDimensionMismatch(nrb_space->get_num_basis(comp),w_coefs.size()));
 
@@ -450,7 +450,7 @@ evaluate_nurbs_gradients_from_bspline(
 
         const int n_funcs_comp = bspline_elem.get_num_basis_comp(comp);
 
-        const auto w_coefs = nrb_space->weight_func_table_[comp]->get_coefficients();
+        const auto &w_coefs = *(nrb_space->weight_func_table_[comp]->get_coefficients());
         Assert(nrb_space->get_num_basis(comp) == w_coefs.size(),
                ExcDimensionMismatch(nrb_space->get_num_basis(comp),w_coefs.size()));
 
@@ -575,7 +575,8 @@ evaluate_nurbs_hessians_from_bspline(
 
         const int n_funcs_comp = bspline_elem.get_num_basis_comp(comp);
 
-        const auto w_coefs = nrb_space->weight_func_table_[comp]->get_coefficients();
+//        const auto w_coefs = nrb_space->weight_func_table_[comp]->get_coefficients();
+        const auto &w_coefs = *(nrb_space->weight_func_table_[comp]->get_coefficients());
         Assert(nrb_space->get_num_basis(comp) == w_coefs.size(),
                ExcDimensionMismatch(nrb_space->get_num_basis(comp),w_coefs.size()));
 

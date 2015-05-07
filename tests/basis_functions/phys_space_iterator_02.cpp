@@ -47,7 +47,8 @@ create_function(shared_ptr<BSplineSpace<dim, dim + codim>> space)
 
     Epetra_SerialComm comm;
     auto map = create_map(space, "active", comm);
-    Vector control_pts(*map);
+    auto c_p = std::make_shared<Vector>(*map);
+    auto &control_pts = *c_p;
 
     if (dim == 1)
     {
@@ -111,7 +112,7 @@ create_function(shared_ptr<BSplineSpace<dim, dim + codim>> space)
 
     }
 
-    return Function::create(space, control_pts);
+    return Function::create(space, c_p);
 }
 
 

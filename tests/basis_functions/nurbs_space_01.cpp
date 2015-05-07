@@ -26,6 +26,48 @@
 
 using namespace EpetraTools;
 
+
+template < int dim, int range, int rank>
+void serialize_deserialize(const std::shared_ptr<NURBSSpace<dim,range,rank>> space_in)
+{
+    std::shared_ptr<ReferenceSpace<dim,range,rank>> space = space_in;
+    out.begin_item("Original NURBSSpace:");
+    space->print_info(out);
+    out.end_item();
+    /*
+        using NRBSpace = NURBSSpace<dim,range,rank>;
+
+        std::string template_string_info = "_dim" + std::to_string(dim) +
+                                           "_range" + std::to_string(range) +
+                                           "_rank" + std::to_string(rank)
+        std::string filename = "nurbs_space" + template_string_info + ".xml";
+        std::string tag_name = "NURBSSpace" + template_string_info;
+        {
+            // serialize the BSplineSpace object to an xml file
+            std::ofstream xml_ostream(filename);
+            boost::archive::xml_oarchive xml_out(xml_ostream);
+            xml_out.template register_type<NRBSpace>();
+
+            xml_out << boost::serialization::make_nvp(tag_name.c_str(),space);
+            xml_ostream.close();
+        }
+
+        space.reset();
+        {
+            // de-serialize the BSplineSpace object from an xml file
+            std::ifstream xml_istream(filename);
+            boost::archive::xml_iarchive xml_in(xml_istream);
+            xml_in.template register_type<NRBSpace>();
+
+            xml_in >> BOOST_SERIALIZATION_NVP(space);
+            xml_istream.close();
+        }
+        out.begin_item("BSplineSpace after serialize-deserialize:");
+        space->print_info(out);
+        out.end_item();
+    //*/
+}
+
 template< int dim, int range, int rank = 1>
 void do_test()
 {
@@ -83,13 +125,18 @@ void do_test()
     Epetra_SerialComm comm;
     auto map = create_map(scalar_space, "active", comm);
     auto w_func = WeightFunc::create(scalar_space,
-                                     IgCoefficients(Copy, *map, weights.data()));
+                                     std::make_shared<IgCoefficients>(Copy, *map, weights.data()));
 
 
     using WeightFuncPtrTable = typename Space::WeightFunctionPtrTable;
     auto w_funcs_table = WeightFuncPtrTable(w_func);
     auto nurbs_space = Space::create(bsp, w_funcs_table);
-    nurbs_space->print_info(out);
+//    nurbs_space->print_info(out);
+
+
+    serialize_deserialize(nurbs_space);
+
+
 
     OUTEND
 

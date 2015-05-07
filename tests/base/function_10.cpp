@@ -51,7 +51,7 @@ void test()
     auto coeff = EpetraTools::create_vector(map);
     (*coeff)[0] = 1.;
 
-    auto F = Function::create(space, *coeff);
+    auto F = Function::create(space, coeff);
     F->reset(flag, quad);
 
     auto elem = F->begin();

@@ -49,8 +49,10 @@ template <int,int,int> class DofDistribution;
 
 
 /**
+ * @brief Base abstract class for reference spaces (i.e BSplineSpace and NURBSSpace).
  *
  * @ingroup containers
+ * @ingroup serializable
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
 class ReferenceSpace :
@@ -287,7 +289,7 @@ private:
     ///@{
     friend class boost::serialization::access;
 
-    template<class Archive,int dummy_dim = dim_>
+    template<class Archive>
     void
     serialize(Archive &ar, const unsigned int version)
     {

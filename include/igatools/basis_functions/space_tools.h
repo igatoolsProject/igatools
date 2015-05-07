@@ -169,8 +169,8 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
             elem->move_to(elems_pair.first ->get_flat_index());
             f_elem->move_to(elems_pair.second->get_flat_index());
 
-            const auto &elem_ref = *elem;
-            const auto &f_elem_ref = *elem;
+//            const auto &elem_ref = *elem;
+//            const auto &f_elem_ref = *elem;
 
             const int n_basis = elem->get_num_basis(dofs_property);
             DenseVector loc_rhs(n_basis);
@@ -243,7 +243,7 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
                 ExcMessage("No convergence."));
 
     return ProjFunc::create(std::const_pointer_cast<Space>(space),
-                            *sol, dofs_property);
+                            sol, dofs_property);
 }
 
 
@@ -306,7 +306,7 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
 
         auto proj = projection_l2<SubSpace>(sub_func, sub_space, quad);
 
-        const auto &coef = proj->get_coefficients();
+        const auto &coef = *(proj->get_coefficients());
         const int face_n_dofs = dof_map.size();
         for (Index i = 0; i< face_n_dofs; ++i)
             boundary_values[dof_map[i]] = coef[i];

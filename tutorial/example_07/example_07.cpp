@@ -80,7 +80,7 @@ void nurb_geometry()
     using Space = BSplineSpace<dim,dim>;
     auto space = Space::create(deg, grid);
 
-    auto control_pts = *create_vector(space,DofProperties::active);
+    auto control_pts = create_vector(space,DofProperties::active);
 
     DynamicMultiArray<Points<dim>, dim> c_points(deg-1+n_knots);
     const Real eps = 0.2;
@@ -104,8 +104,8 @@ void nurb_geometry()
     const int n_points = c_points.flat_size();
     for (int i = 0; i < n_points; ++i)
     {
-        control_pts[i] = flat_points[i][0];
-        control_pts[i+n_points] = flat_points[i][1];
+        (*control_pts)[i] = flat_points[i][0];
+        (*control_pts)[i+n_points] = flat_points[i][1];
     }
 
     auto F = Function::create(space, control_pts);

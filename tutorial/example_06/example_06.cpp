@@ -210,7 +210,7 @@ void PoissonProblem<dim>::output()
 
 
     using IgFunc = IgFunction<RefSpace>;
-    auto solution_function = IgFunc::create(space, *solution);
+    auto solution_function = IgFunc::create(space, solution);
     writer.template add_field<1,1>(solution_function, "solution");
     string filename = "poisson_problem-" + to_string(dim) + "d" ;
     writer.save(filename);

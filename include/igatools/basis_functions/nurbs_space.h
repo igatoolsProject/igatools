@@ -263,6 +263,28 @@ public:
     virtual std::shared_ptr<typename BaseSpace::ElementHandler>
     get_elem_handler() const override final;
 
+
+
+private:
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("ReferenceSpace",
+                                           boost::serialization::base_object<BaseSpace>(*this));
+
+        ar &boost::serialization::make_nvp("sp_space_",sp_space_);
+        ar &boost::serialization::make_nvp("weight_func_table_",weight_func_table_);
+    }
+    ///@}
+
 };
 
 IGA_NAMESPACE_CLOSE

@@ -48,18 +48,18 @@ void plot_basis(const int deg)
     // [plot function]
 
     // [init vec]
-    auto coeffs = *EpetraTools::create_vector(space);
+    auto coeffs = EpetraTools::create_vector(space);
     // [init vec]
 
     // [tensor to flat]
     TensorIndex<dim> basis_t_index(deg);
     auto basis_index = space->get_global_dof_id(basis_t_index, 0);
-    coeffs[basis_index] = 1.;
+    (*coeffs)[basis_index] = 1.;
     // [tensor to flat]
 
     // [print vector]
     out << "Coefficient vector of: " << basis_index << "-th basis" << endl;
-    coeffs.print_info(out);
+    coeffs->print_info(out);
     out << endl;
     // [print vector]
 

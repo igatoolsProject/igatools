@@ -176,7 +176,7 @@ void bspline_map(const int deg = 2)
 
     }
 
-    auto F = Function::create(space, control_pts);
+    auto F = Function::create(space, c_p);
     auto map = Mapping::create(F);
 
     auto quad = QGauss<dim>(3);

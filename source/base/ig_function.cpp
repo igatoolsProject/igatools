@@ -30,7 +30,7 @@ IGA_NAMESPACE_OPEN
 template<class Space>
 IgFunction<Space>::
 IgFunction(std::shared_ptr<const Space> space,
-           const CoeffType &coeff,
+           std::shared_ptr<const CoeffType> coeff,
            const std::string &property)
     :
     parent_t::Function(space->get_grid()),
@@ -41,6 +41,7 @@ IgFunction(std::shared_ptr<const Space> space,
     space_filler_(space->get_elem_handler())
 {
     Assert(space_ != nullptr, ExcNullPtr());
+    Assert(coeff_ != nullptr,ExcNullPtr());
 }
 
 
@@ -57,7 +58,7 @@ IgFunction(const self_t &fun)
     space_filler_(fun.space_->get_elem_handler())
 {
     Assert(space_ != nullptr,ExcNullPtr());
-    //Assert(!coeff_.empty(),ExcEmptyObject());
+    Assert(coeff_ != nullptr,ExcNullPtr());
 }
 
 
@@ -66,7 +67,7 @@ template<class Space>
 auto
 IgFunction<Space>::
 create(std::shared_ptr<const Space> space,
-       const CoeffType &coeff,
+       std::shared_ptr<const CoeffType> coeff,
        const std::string &property) ->  std::shared_ptr<self_t>
 {
     auto ig_func = std::make_shared<self_t>(space, coeff, property);
@@ -141,7 +142,7 @@ fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) -> voi
     fill_cache_impl_.func_elem_ = &elem;
     fill_cache_impl_.function_ = this;
 
-    auto loc_coeff_ = coeff_.get_local_coeffs(elem_->get_local_to_global(property_));
+    auto loc_coeff_ = coeff_->get_local_coeffs(elem_->get_local_to_global(property_));
 
     fill_cache_impl_.loc_coeff_ = &loc_coeff_;
     fill_cache_impl_.j = j;
@@ -164,7 +165,7 @@ get_ig_space() const -> std::shared_ptr<const Space>
 template<class Space>
 auto
 IgFunction<Space>::
-get_coefficients() const -> const CoeffType &
+get_coefficients() const -> std::shared_ptr<const CoeffType>
 {
     return coeff_;
 }
@@ -179,7 +180,8 @@ operator +=(const self_t &fun) -> self_t &
     Assert(space_ == fun.space_,
     ExcMessage("Functions defined on different spaces."));
 
-    coeff_ += fun.coeff_;
+    Assert(coeff_ != fun.coeff_,ExcMessage("Function coefficients cannot share the same memory."));
+    *std::const_pointer_cast<IgCoefficients>(coeff_) += (*fun.coeff_);
     return *this;
 }
 
@@ -240,7 +242,7 @@ print_info(LogStream &out) const
     out << std::endl;
 
     out.begin_item("Control points info (euclidean coordinates):");
-    coeff_.print_info(out);
+    coeff_->print_info(out);
     out.end_item();
 }
 

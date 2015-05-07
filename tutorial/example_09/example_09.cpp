@@ -217,7 +217,7 @@ void PoissonProblem<dim>::output()
     Writer<dim> writer(map, n_plot_points);
 
     using IgFunc = IgFunction<Space>;
-    auto solution_function = IgFunc::create(space, *solution);
+    auto solution_function = IgFunc::create(space, solution);
     writer.template add_field<1,1>(solution_function, "solution");
     string filename = "poisson_problem-" + to_string(dim) + "d" ;
     writer.save(filename);
