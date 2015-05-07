@@ -35,6 +35,13 @@
 #include <boost/fusion/include/begin.hpp>
 IGA_NAMESPACE_OPEN
 
+
+template <int,int,int>
+class BSplineSpace;
+
+template <int,int,int>
+class NURBSSpace;
+
 using IgCoefficients = EpetraTools::Vector;
 
 template<class Space>
@@ -119,7 +126,16 @@ public:
 
     void print_info(LogStream &out) const;
 
+protected:
+    /**
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
+     */
+    IgFunction() = default;
+
 private:
+
     std::shared_ptr<const Space> space_;
 
     std::shared_ptr<const CoeffType> coeff_;
@@ -242,6 +258,33 @@ private:
         const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
         const CartesianGrid<dim> &old_grid);
 #endif
+
+
+
+
+private:
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+//        ar &boost::serialization::make_nvp("IgFunction_base_t",
+//                                           boost::serialization::base_object<base_t>(*this));
+        ar.template register_type<BSplineSpace<dim,range,rank>>();
+        ar.template register_type<NURBSSpace<dim,range,rank>>();
+
+        ar &boost::serialization::make_nvp("space_",space_);
+//        ar &boost::serialization::make_nvp("coeff_",coeff_);
+        ar &boost::serialization::make_nvp("property_",const_cast<std::string &>(property_));
+        Assert(false,ExcNotImplemented());
+    }
+    ///@}
 
 };
 

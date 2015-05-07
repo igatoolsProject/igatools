@@ -39,6 +39,7 @@ template <int, int, int> class NURBSElementHandler;
  * valued NURBS space.
  *
  * @ingroup containers
+ * @ingroup serializable
  */
 template <int dim_, int range_ = 1, int rank_ = 1>
 class NURBSSpace :
@@ -175,6 +176,13 @@ public:
 protected:
     /** @name Constructor */
     ///@{
+    /**
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
+     */
+    NURBSSpace() = default;
+
     /**
      * Construct a NURBSSpace from a BSplineSpace and a table of weights.
      */

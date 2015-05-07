@@ -34,24 +34,24 @@ void serialize_deserialize(const std::shared_ptr<NURBSSpace<dim,range,rank>> spa
     out.begin_item("Original NURBSSpace:");
     space->print_info(out);
     out.end_item();
+
+    using NRBSpace = NURBSSpace<dim,range,rank>;
+
+    std::string template_string_info = "_dim" + std::to_string(dim) +
+                                       "_range" + std::to_string(range) +
+                                       "_rank" + std::to_string(rank);
+    std::string filename = "nurbs_space" + template_string_info + ".xml";
+    std::string tag_name = "NURBSSpace" + template_string_info;
+    {
+        // serialize the BSplineSpace object to an xml file
+        std::ofstream xml_ostream(filename);
+        boost::archive::xml_oarchive xml_out(xml_ostream);
+        xml_out.template register_type<NRBSpace>();
+
+        xml_out << boost::serialization::make_nvp(tag_name.c_str(),space);
+        xml_ostream.close();
+    }
     /*
-        using NRBSpace = NURBSSpace<dim,range,rank>;
-
-        std::string template_string_info = "_dim" + std::to_string(dim) +
-                                           "_range" + std::to_string(range) +
-                                           "_rank" + std::to_string(rank)
-        std::string filename = "nurbs_space" + template_string_info + ".xml";
-        std::string tag_name = "NURBSSpace" + template_string_info;
-        {
-            // serialize the BSplineSpace object to an xml file
-            std::ofstream xml_ostream(filename);
-            boost::archive::xml_oarchive xml_out(xml_ostream);
-            xml_out.template register_type<NRBSpace>();
-
-            xml_out << boost::serialization::make_nvp(tag_name.c_str(),space);
-            xml_ostream.close();
-        }
-
         space.reset();
         {
             // de-serialize the BSplineSpace object from an xml file
@@ -65,7 +65,7 @@ void serialize_deserialize(const std::shared_ptr<NURBSSpace<dim,range,rank>> spa
         out.begin_item("BSplineSpace after serialize-deserialize:");
         space->print_info(out);
         out.end_item();
-    //*/
+        //*/
 }
 
 template< int dim, int range, int rank = 1>

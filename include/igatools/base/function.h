@@ -105,6 +105,13 @@ public:
     /** @name Constructors and destructor. */
     ///@{
 protected:
+    /**
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
+     */
+    Function() = default;
+
     /** Constructor */
     Function(std::shared_ptr<GridType> grid);
 
