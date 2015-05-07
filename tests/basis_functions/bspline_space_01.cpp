@@ -31,10 +31,10 @@
 #include <igatools/basis_functions/bspline_space.h>
 
 
-
 template <int dim>
-void serialize_deserialize(const std::shared_ptr<BSplineSpace<dim>> space)
+void serialize_deserialize(const std::shared_ptr<BSplineSpace<dim>> space_in)
 {
+    std::shared_ptr<ReferenceSpace<dim>> space = space_in;
     out.begin_item("Original BSplineSpace:");
     space->print_info(out);
     out.end_item();
@@ -43,26 +43,29 @@ void serialize_deserialize(const std::shared_ptr<BSplineSpace<dim>> space)
     std::string filename = "bspline_space_dim" + std::to_string(dim) + ".xml";
     std::string tag_name = "BSplineSpace_dim" + std::to_string(dim);
     {
-        // serialize the DofDistribution object to an xml file
+        // serialize the BSplineSpace object to an xml file
         std::ofstream xml_ostream(filename);
         boost::archive::xml_oarchive xml_out(xml_ostream);
+        xml_out.template register_type<BSplineSpace<dim>>();
 
         xml_out << boost::serialization::make_nvp(tag_name.c_str(),space);
         xml_ostream.close();
     }
 
-    std::shared_ptr<BSplineSpace<dim>> space_new;
+    space.reset();
     {
-        // de-serialize the DofDistribution object from an xml file
+        // de-serialize the BSplineSpace object from an xml file
         std::ifstream xml_istream(filename);
         boost::archive::xml_iarchive xml_in(xml_istream);
-        xml_in >> BOOST_SERIALIZATION_NVP(space_new);
+        xml_in.template register_type<BSplineSpace<dim>>();
+
+        xml_in >> BOOST_SERIALIZATION_NVP(space);
         xml_istream.close();
     }
     out.begin_item("BSplineSpace after serialize-deserialize:");
-    space_new->print_info(out);
+    space->print_info(out);
     out.end_item();
-    //*/
+
 }
 
 
@@ -84,7 +87,7 @@ template<int dim>
 void uniform_degree(const int deg, shared_ptr<CartesianGrid<dim>> grid)
 {
     OUTSTART
-    auto space = BSplineSpace<dim>::create(deg, grid);
+    std::shared_ptr<BSplineSpace<dim>> space = BSplineSpace<dim>::create(deg, grid);
 
     serialize_deserialize(space);
 
@@ -97,7 +100,7 @@ void direction_degree(const TensorIndex<dim> &deg,
                       shared_ptr<CartesianGrid<dim>> grid)
 {
     OUTSTART
-    auto space = BSplineSpace<dim>::create(deg, grid);
+    std::shared_ptr<BSplineSpace<dim>> space = BSplineSpace<dim>::create(deg, grid);
 
     serialize_deserialize(space);
 
