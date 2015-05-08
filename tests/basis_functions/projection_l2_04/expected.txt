@@ -151,56 +151,53 @@ Reference space info:
    
 
 
-Control points info (euclidean coordinates):
-   -----------------------------
-   Global_ID        Value
-   0        0
-   1        0.333333
-   2        0.666667
-   3        1.00000
-   4        0
-   5        0.333333
-   6        0.666667
-   7        1.00000
-   8        0
-   9        0.333333
-   10        0.666667
-   11        1.00000
-   12        0
-   13        0.333333
-   14        0.666667
-   15        1.00000
-   16        0
-   17        0
-   18        0
-   19        0
-   20        0.333333
-   21        0.333333
-   22        0.333333
-   23        0.333333
-   24        0.666667
-   25        0.666667
-   26        0.666667
-   27        0.666667
-   28        1.00000
-   29        1.00000
-   30        1.00000
-   31        1.00000
-   32        -0.0370370
-   33        0.0740741
-   34        0.407407
-   35        0.962963
-   36        0.0740741
-   37        0.185185
-   38        0.518519
-   39        1.07407
-   40        0.407407
-   41        0.518519
-   42        0.851852
-   43        1.40741
-   44        0.962963
-   45        1.07407
-   46        1.40741
-   47        1.96296
-   -----------------------------
+Coefficients (a.k.a. "control values"):
+   Coef[loc_id=0 , glob_id=0] = 0
+   Coef[loc_id=1 , glob_id=1] = 0.333333
+   Coef[loc_id=2 , glob_id=2] = 0.666667
+   Coef[loc_id=3 , glob_id=3] = 1.00000
+   Coef[loc_id=4 , glob_id=4] = 0
+   Coef[loc_id=5 , glob_id=5] = 0.333333
+   Coef[loc_id=6 , glob_id=6] = 0.666667
+   Coef[loc_id=7 , glob_id=7] = 1.00000
+   Coef[loc_id=8 , glob_id=8] = 0
+   Coef[loc_id=9 , glob_id=9] = 0.333333
+   Coef[loc_id=10 , glob_id=10] = 0.666667
+   Coef[loc_id=11 , glob_id=11] = 1.00000
+   Coef[loc_id=12 , glob_id=12] = 0
+   Coef[loc_id=13 , glob_id=13] = 0.333333
+   Coef[loc_id=14 , glob_id=14] = 0.666667
+   Coef[loc_id=15 , glob_id=15] = 1.00000
+   Coef[loc_id=16 , glob_id=16] = 0
+   Coef[loc_id=17 , glob_id=17] = 0
+   Coef[loc_id=18 , glob_id=18] = 0
+   Coef[loc_id=19 , glob_id=19] = 0
+   Coef[loc_id=20 , glob_id=20] = 0.333333
+   Coef[loc_id=21 , glob_id=21] = 0.333333
+   Coef[loc_id=22 , glob_id=22] = 0.333333
+   Coef[loc_id=23 , glob_id=23] = 0.333333
+   Coef[loc_id=24 , glob_id=24] = 0.666667
+   Coef[loc_id=25 , glob_id=25] = 0.666667
+   Coef[loc_id=26 , glob_id=26] = 0.666667
+   Coef[loc_id=27 , glob_id=27] = 0.666667
+   Coef[loc_id=28 , glob_id=28] = 1.00000
+   Coef[loc_id=29 , glob_id=29] = 1.00000
+   Coef[loc_id=30 , glob_id=30] = 1.00000
+   Coef[loc_id=31 , glob_id=31] = 1.00000
+   Coef[loc_id=32 , glob_id=32] = -0.0370370
+   Coef[loc_id=33 , glob_id=33] = 0.0740741
+   Coef[loc_id=34 , glob_id=34] = 0.407407
+   Coef[loc_id=35 , glob_id=35] = 0.962963
+   Coef[loc_id=36 , glob_id=36] = 0.0740741
+   Coef[loc_id=37 , glob_id=37] = 0.185185
+   Coef[loc_id=38 , glob_id=38] = 0.518519
+   Coef[loc_id=39 , glob_id=39] = 1.07407
+   Coef[loc_id=40 , glob_id=40] = 0.407407
+   Coef[loc_id=41 , glob_id=41] = 0.518519
+   Coef[loc_id=42 , glob_id=42] = 0.851852
+   Coef[loc_id=43 , glob_id=43] = 1.40741
+   Coef[loc_id=44 , glob_id=44] = 0.962963
+   Coef[loc_id=45 , glob_id=45] = 1.07407
+   Coef[loc_id=46 , glob_id=46] = 1.40741
+   Coef[loc_id=47 , glob_id=47] = 1.96296
 

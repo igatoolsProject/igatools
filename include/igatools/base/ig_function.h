@@ -35,6 +35,8 @@
 #include <boost/fusion/include/begin.hpp>
 IGA_NAMESPACE_OPEN
 
+template <int,int,int>
+class ReferenceSpace;
 
 template <int,int,int>
 class BSplineSpace;
@@ -42,7 +44,71 @@ class BSplineSpace;
 template <int,int,int>
 class NURBSSpace;
 
-using IgCoefficients = EpetraTools::Vector;
+/**
+ * @brief Coefficients for the IgFunction.
+ *
+ * Basically it is a <tt>std::map<Index,Real></tt> in which its <tt>key</tt> is the global dof
+ * and the associated <tt>value</tt> is the coefficient associated to the dof.
+ *
+ * @note We do not use the EpetraTools::Vector because we want the IgCoefficient class to be
+ * <em>serializable</em> and to make EpetraTools::Vector serializable is not an easy task
+ * (it requires to make serializable all the attributes of EpetraTools::Vector).
+ *
+ * @ingroup serializable
+ */
+class IgCoefficients
+    : public std::map<Index,Real>
+{
+public:
+
+    const Real &operator[](const Index global_dof) const
+    {
+        return std::map<Index,Real>::at(global_dof);
+    }
+
+    Real &operator[](const Index global_dof)
+    {
+        return std::map<Index,Real>::operator[](global_dof);
+    }
+
+    Index size() const
+    {
+        return std::map<Index,Real>::size();
+    }
+
+    void print_info(LogStream &out) const
+    {
+        int loc_id = 0;
+        for (const auto &dof_value : (*this))
+        {
+            out << "Coef[loc_id=" << loc_id
+                << " , glob_id=" << dof_value.first << "] = "
+                << dof_value.second << std::endl;
+
+            ++loc_id;
+        }
+    }
+
+private:
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("IgCoeff_base_t",
+                                           boost::serialization::base_object<std::map<Index,Real>>(*this));
+    }
+    ///@}
+
+};
+
+
 
 template<class Space>
 class IgFunction :
@@ -71,7 +137,7 @@ private:
 public:
     //TODO (pauletti, Mar 23, 2015): should we make this private?
     IgFunction(std::shared_ptr<const Space> space,
-               std::shared_ptr<const CoeffType> coeff,
+               std::shared_ptr<const EpetraTools::Vector> coeff,
                const std::string &property = DofProperties::active);
 
     IgFunction(const self_t &);
@@ -93,7 +159,7 @@ public:
 public:
     static std::shared_ptr<self_t>
     create(std::shared_ptr<const Space> space,
-           std::shared_ptr<const CoeffType> coeff,
+           std::shared_ptr<const EpetraTools::Vector> coeff,
            const std::string &property = DofProperties::active);
 
 
@@ -115,7 +181,7 @@ public:
 
     std::shared_ptr<const Space> get_ig_space() const;
 
-    std::shared_ptr<const CoeffType> get_coefficients() const;
+    const CoeffType &get_coefficients() const;
 
     const std::string &get_property() const
     {
@@ -138,7 +204,7 @@ private:
 
     std::shared_ptr<const Space> space_;
 
-    std::shared_ptr<const CoeffType> coeff_;
+    CoeffType coeff_;
 
     const std::string property_;
 
@@ -280,7 +346,7 @@ private:
         ar.template register_type<NURBSSpace<dim,range,rank>>();
 
         ar &boost::serialization::make_nvp("space_",space_);
-//        ar &boost::serialization::make_nvp("coeff_",coeff_);
+        ar &boost::serialization::make_nvp("coeff_",coeff_);
         ar &boost::serialization::make_nvp("property_",const_cast<std::string &>(property_));
 //        Assert(false,ExcNotImplemented());
     }

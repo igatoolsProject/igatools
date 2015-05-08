@@ -30,18 +30,32 @@ IGA_NAMESPACE_OPEN
 template<class Space>
 IgFunction<Space>::
 IgFunction(std::shared_ptr<const Space> space,
-           std::shared_ptr<const CoeffType> coeff,
+           std::shared_ptr<const EpetraTools::Vector> coeff,
            const std::string &property)
     :
     parent_t::Function(space->get_grid()),
     space_(space),
-    coeff_(coeff),
     property_(property),
     elem_(space->begin()),
     space_filler_(space->get_elem_handler())
 {
     Assert(space_ != nullptr, ExcNullPtr());
-    Assert(coeff_ != nullptr,ExcNullPtr());
+    Assert(coeff != nullptr,ExcNullPtr());
+
+    const auto &dof_distribution = *(space_->get_dof_distribution());
+    const auto &active_dofs = dof_distribution.get_dofs_id_same_property(property);
+
+    const auto &c = *coeff;
+
+    const auto &epetra_map = c.Map();
+
+    for (const auto glob_dof : active_dofs)
+    {
+        auto loc_id = epetra_map.LID(glob_dof);
+        Assert(loc_id >= 0,
+               ExcMessage("The global dof " + std::to_string(glob_dof) + " not present in the input EpetraTools::Vector."));
+        coeff_[glob_dof] = c[loc_id];
+    }
 }
 
 
@@ -58,7 +72,6 @@ IgFunction(const self_t &fun)
     space_filler_(fun.space_->get_elem_handler())
 {
     Assert(space_ != nullptr,ExcNullPtr());
-    Assert(coeff_ != nullptr,ExcNullPtr());
 }
 
 
@@ -67,7 +80,7 @@ template<class Space>
 auto
 IgFunction<Space>::
 create(std::shared_ptr<const Space> space,
-       std::shared_ptr<const CoeffType> coeff,
+       std::shared_ptr<const EpetraTools::Vector> coeff,
        const std::string &property) ->  std::shared_ptr<self_t>
 {
     auto ig_func = std::make_shared<self_t>(space, coeff, property);
@@ -142,9 +155,12 @@ fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) -> voi
     fill_cache_impl_.func_elem_ = &elem;
     fill_cache_impl_.function_ = this;
 
-    auto loc_coeff_ = coeff_->get_local_coeffs(elem_->get_local_to_global(property_));
+    const auto elem_dofs = elem_->get_local_to_global(property_);
+    SafeSTLVector<Real> loc_coeff;
+    for (auto elem_dof : elem_dofs)
+        loc_coeff.push_back(coeff_[elem_dof]);
 
-    fill_cache_impl_.loc_coeff_ = &loc_coeff_;
+    fill_cache_impl_.loc_coeff_ = &loc_coeff;
     fill_cache_impl_.j = j;
     fill_cache_impl_.property_ = &property_;
     boost::apply_visitor(fill_cache_impl_, k);
@@ -165,7 +181,7 @@ get_ig_space() const -> std::shared_ptr<const Space>
 template<class Space>
 auto
 IgFunction<Space>::
-get_coefficients() const -> std::shared_ptr<const CoeffType>
+get_coefficients() const -> const CoeffType &
 {
     return coeff_;
 }
@@ -180,8 +196,9 @@ operator +=(const self_t &fun) -> self_t &
     Assert(space_ == fun.space_,
     ExcMessage("Functions defined on different spaces."));
 
-    Assert(coeff_ != fun.coeff_,ExcMessage("Function coefficients cannot share the same memory."));
-    *std::const_pointer_cast<IgCoefficients>(coeff_) += (*fun.coeff_);
+    for (const auto &f_dof_value : fun.coeff_)
+        coeff_[f_dof_value.first] += f_dof_value.second;
+
     return *this;
 }
 
@@ -241,8 +258,8 @@ print_info(LogStream &out) const
     out.end_item();
     out << std::endl;
 
-    out.begin_item("Control points info (euclidean coordinates):");
-    coeff_->print_info(out);
+    out.begin_item("Coefficients (a.k.a. \"control values\"):");
+    coeff_.print_info(out);
     out.end_item();
 }
 

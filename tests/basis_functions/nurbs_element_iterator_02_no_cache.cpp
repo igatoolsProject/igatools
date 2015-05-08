@@ -60,7 +60,7 @@ void test()
     auto map = create_map(scalar_bsp_space, "active", comm);
 
     auto w_func = WeightFunc::create(scalar_bsp_space,
-                                     std::make_shared<IgCoefficients>(Copy, *map, weights_coef.data()));
+                                     std::make_shared<typename EpetraTools::Vector>(Copy, *map, weights_coef.data()));
     auto weight_functions = typename Space::WeightFunctionPtrTable(w_func);
 
     auto nrb_space = Space::create(bsp_space,weight_functions);

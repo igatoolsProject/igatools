@@ -48,7 +48,7 @@ public:
                    const DenseVector &local_vector);
 
     //TODO (pauletti, Apr 3, 2015): both SafeSTLVector<Real> and std::vector<Index>
-    // should be replace by a typedef and a proper type for fast comuniction with LA
+    // should be replace by a typedef and a proper type for fast communication with LA
     SafeSTLVector<Real>
     get_local_coeffs(const std::vector<Index> &global_ids) const;
 

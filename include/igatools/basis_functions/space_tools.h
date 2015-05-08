@@ -306,7 +306,7 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
 
         auto proj = projection_l2<SubSpace>(sub_func, sub_space, quad);
 
-        const auto &coef = *(proj->get_coefficients());
+        const auto &coef = proj->get_coefficients();
         const int face_n_dofs = dof_map.size();
         for (Index i = 0; i< face_n_dofs; ++i)
             boundary_values[dof_map[i]] = coef[i];
