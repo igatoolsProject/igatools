@@ -32,10 +32,11 @@
 IGA_NAMESPACE_OPEN
 
 /**
- * Grid element value manager
+ * @brief Grid element value manager. Its purpose is to fill the cache of CartesianGridelement.
  *
- * computational optimization cache, storing the interval length
- * in each direction.
+ * It contains the Quadrature in each sub-element and the ValueFlags that are used to determine
+ * which quantity of CartesianGridelement's cache must be filled.
+ *
  *
  */
 template <int dim>
