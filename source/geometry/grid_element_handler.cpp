@@ -103,7 +103,7 @@ template <int dim>
 template <int k>
 void
 GridElementHandler<dim>::
-init_cache(ElementAccessor &elem)
+init_cache(ElementAccessor &elem) const
 {
     auto &cache = elem.all_sub_elems_cache_;
     if (cache == nullptr)
@@ -129,7 +129,7 @@ template <int dim>
 template <int k>
 void
 GridElementHandler<dim>::
-fill_cache(ElementAccessor &elem, const int j)
+fill_cache(ElementAccessor &elem, const int j) const
 {
     Assert(elem.all_sub_elems_cache_ != nullptr, ExcNullPtr());
     auto &cache = elem.all_sub_elems_cache_->template get_sub_elem_cache<k>(j);

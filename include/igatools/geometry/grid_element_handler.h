@@ -121,7 +121,7 @@ public:
     void reset(const ValueFlags flag, const Quadrature<k> &quad);
 
     template <int k>
-    void init_cache(ElementAccessor &elem);
+    void init_cache(ElementAccessor &elem) const;
 
 #if 0
     void init_all_caches(ElementAccessor &elem);
@@ -133,7 +133,7 @@ public:
 #endif
 
     template <int k>
-    void fill_cache(ElementAccessor &elem, const int j);
+    void fill_cache(ElementAccessor &elem, const int j) const;
     ///@}
 
 

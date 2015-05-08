@@ -190,63 +190,90 @@ private:
 
     struct ResetDispatcher : boost::static_visitor<void>
     {
+        ResetDispatcher(const ValueFlags flag_in,
+                        GridElementHandler<dim_> &grid_elem_handler,
+                        SafeSTLArray<ValueFlags, dim_ + 1> &flags)
+            :
+            flag_in_(flag_in),
+            grid_elem_handler_(grid_elem_handler),
+            flags_(flags)
+        {}
+
         template<int sub_elem_dim>
         void operator()(const Quadrature<sub_elem_dim> &quad)
         {
-            (*flags_)[sub_elem_dim] = flag_;
+            flags_[sub_elem_dim] = flag_in_;
 
-            grid_handler_->template reset<sub_elem_dim>(flag_, quad);
+            grid_elem_handler_.template reset<sub_elem_dim>(flag_in_, quad);
         }
 
-        ValueFlags flag_;
-        parent_t *grid_handler_;
-        SafeSTLArray<ValueFlags, dim_ + 1> *flags_;
+        const ValueFlags flag_in_;
+        GridElementHandler<dim_> &grid_elem_handler_;
+        SafeSTLArray<ValueFlags, dim_ + 1> &flags_;
     };
 
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
+        FillCacheDispatcher(const int sub_elem_id,
+                            const GridElementHandler<dim_> &grid_elem_handler,
+                            ElementAccessor &func_elem)
+            :
+            sub_elem_id_(sub_elem_id),
+            grid_elem_handler_(grid_elem_handler),
+            func_elem_(func_elem)
+        {}
+
         template<int sub_elem_dim>
         void operator()(const Topology<sub_elem_dim> &sub_elem)
         {
-            grid_handler_->template fill_cache<sub_elem_dim>(*elem_, j_);
+            grid_elem_handler_.template fill_cache<sub_elem_dim>(func_elem_, sub_elem_id_);
         }
 
-        int j_;
-        parent_t *grid_handler_;
-        ElementAccessor *elem_;
+        int sub_elem_id_;
+        const GridElementHandler<dim_> &grid_elem_handler_;
+        ElementAccessor &func_elem_;
     };
 
     struct InitCacheDispatcher : boost::static_visitor<void>
     {
+        InitCacheDispatcher(const GridElementHandler<dim_> &grid_elem_handler,
+                            const SafeSTLArray<ValueFlags, dim_ + 1> &flags,
+                            ElementAccessor &func_elem)
+            :
+            grid_elem_handler_(grid_elem_handler),
+            flags_(flags),
+            func_elem_(func_elem)
+        {}
+
+
         template<int sub_elem_dim>
         void operator()(const Topology<sub_elem_dim> &sub_elem)
         {
-            grid_handler_->template init_cache<sub_elem_dim>(*elem_);
+            grid_elem_handler_.template init_cache<sub_elem_dim>(func_elem_);
 
-            auto &cache = elem_->all_sub_elems_cache_;
+            auto &cache = func_elem_.all_sub_elems_cache_;
             if (cache == nullptr)
             {
                 using Cache = typename ElementAccessor::CacheType;
                 cache = std::make_shared<Cache>();
             }
 
-            for (auto &s_id: UnitElement<dim_>::template elems_ids<sub_elem_dim>())
+            const auto n_pts = grid_elem_handler_.template get_num_points<sub_elem_dim>();
+            for (const auto s_id: UnitElement<dim_>::template elems_ids<sub_elem_dim>())
             {
                 auto &s_cache = cache->template get_sub_elem_cache<sub_elem_dim>(s_id);
-                auto &s_quad = cacheutils::extract_sub_elements_data<sub_elem_dim>(*quad_);
-                s_cache.resize((*flags_)[sub_elem_dim], s_quad.get_num_points());
+                s_cache.resize(flags_[sub_elem_dim],n_pts);
             }
         }
 
-        parent_t *grid_handler_;
-        ElementAccessor *elem_;
-        SafeSTLArray<ValueFlags, dim_ + 1> *flags_;
-        QuadList<dim_> *quad_;
+        const GridElementHandler<dim_> &grid_elem_handler_;
+        const SafeSTLArray<ValueFlags, dim_ + 1> &flags_;
+        ElementAccessor &func_elem_;
     };
 
-    ResetDispatcher reset_impl_;
-    FillCacheDispatcher fill_cache_impl_;
-    InitCacheDispatcher init_cache_impl_;
+//    ResetDispatcher reset_impl_;
+//    FillCacheDispatcher fill_cache_impl_;
+//    InitCacheDispatcher init_cache_impl_;
 
 
 
