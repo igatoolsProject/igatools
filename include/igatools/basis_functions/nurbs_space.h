@@ -288,6 +288,8 @@ private:
         ar &boost::serialization::make_nvp("ReferenceSpace",
                                            boost::serialization::base_object<BaseSpace>(*this));
 
+        ar.template register_type<SpSpace>();
+
         ar &boost::serialization::make_nvp("sp_space_",sp_space_);
         ar &boost::serialization::make_nvp("weight_func_table_",weight_func_table_);
     }

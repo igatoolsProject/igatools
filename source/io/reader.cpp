@@ -698,7 +698,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     //----------------------------------------
     // building the weight function table --- begin
     using ScalarBSplineSpace = BSplineSpace<dim>;
-    using WeightFunc = IgFunction<ReferenceSpace<dim,1,1> >;
+//    using WeightFunc = IgFunction<ReferenceSpace<dim,1,1> >;
 
     using ScalarDegreeTable = typename ScalarBSplineSpace::DegreeTable;
     const ScalarDegreeTable scalar_degree_table(degrees[0]);
@@ -717,9 +717,10 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
         ScalarBSplineSpace::create(scalar_degree_table, new_grid,
                                    scalar_mult_table, scalar_periodic, scalar_end_behaviour);
 
-    using WeightFuncPtr = shared_ptr<WeightFunc>;
-    using WeightFuncPtrTable = typename space_t::template ComponentContainer<WeightFuncPtr>;
-    WeightFuncPtrTable w_func_table;
+//    using WeightFuncPtr = shared_ptr<WeightFunc>;
+    using WeightFunction = typename space_t::WeightFunction;
+    using WeightFunctionPtrTable = typename space_t::WeightFunctionPtrTable;
+    WeightFunctionPtrTable w_func_table;
     int comp = 0;
     for (const auto &w_coefs : weights)
     {
@@ -727,7 +728,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
         auto map = EpetraTools::create_map(scalar_spline_space, "active", comm);
         auto vec = w_coefs.get_data();
         auto w = std::make_shared<EpetraTools::Vector>(Copy, *map, vec.data());
-        w_func_table[comp++] = WeightFuncPtr(new WeightFunc(scalar_spline_space, w));
+        w_func_table[comp++] = std::make_shared<WeightFunction>(scalar_spline_space, w);
     }
 
     //*/

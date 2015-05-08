@@ -36,8 +36,8 @@ IgFunction(std::shared_ptr<const Space> space,
     parent_t::Function(space->get_grid()),
     space_(space),
     property_(property),
-    elem_(space->begin()),
-    space_filler_(space->get_elem_handler())
+    space_elem_(space->begin()),
+    space_elem_handler_(space->get_elem_handler())
 {
     Assert(space_ != nullptr, ExcNullPtr());
     Assert(coeff != nullptr,ExcNullPtr());
@@ -68,8 +68,8 @@ IgFunction(const self_t &fun)
     space_(fun.space_),
     coeff_(fun.coeff_),
     property_(fun.property_),
-    elem_(fun.space_->begin()),
-    space_filler_(fun.space_->get_elem_handler())
+    space_elem_(fun.space_->begin()),
+    space_elem_handler_(fun.space_->get_elem_handler())
 {
     Assert(space_ != nullptr,ExcNullPtr());
 }
@@ -114,16 +114,15 @@ template<class Space>
 void
 IgFunction<Space>::
 reset_selected_elements(
-    const ValueFlags &flag,
+    const ValueFlags &flag_in,
     const eval_pts_variant &eval_pts,
     const SafeSTLVector<Index> &elements_flat_id)
 {
-    parent_t::reset(flag, eval_pts);
-    reset_impl_.flag = flag;
-    reset_impl_.space_handler_ = space_filler_.get();
-    reset_impl_.flags_ = &(this->flags_);
-    reset_impl_.elements_flat_id_ = &elements_flat_id;
-    boost::apply_visitor(reset_impl_, eval_pts);
+    parent_t::reset(flag_in, eval_pts);
+
+    auto reset_dispatcher = ResetDispatcher(
+                                flag_in,elements_flat_id,*space_elem_handler_,this->flags_);
+    boost::apply_visitor(reset_dispatcher, eval_pts);
 }
 
 
@@ -134,9 +133,9 @@ IgFunction<Space>::
 init_cache(ElementAccessor &elem, const topology_variant &k) -> void
 {
     parent_t::init_cache(elem, k);
-    init_cache_impl_.space_handler_ = space_filler_.get();
-    init_cache_impl_.space_elem_ = &(*elem_);
-    boost::apply_visitor(init_cache_impl_, k);
+
+    auto init_cache_dispatcher = InitCacheDispatcher(*space_elem_handler_,*space_elem_);
+    boost::apply_visitor(init_cache_dispatcher, k);
 }
 
 
@@ -144,26 +143,23 @@ init_cache(ElementAccessor &elem, const topology_variant &k) -> void
 template<class Space>
 auto
 IgFunction<Space>::
-fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) -> void
+fill_cache(ElementAccessor &func_elem, const topology_variant &k, const int sub_elem_id) -> void
 {
-    parent_t::fill_cache(elem,k,j);
+    parent_t::fill_cache(func_elem,k,sub_elem_id);
 
-    elem_.move_to(elem.get_flat_index());
+    space_elem_.move_to(func_elem.get_flat_index());
 
-    fill_cache_impl_.space_handler_ = space_filler_.get();
-    fill_cache_impl_.space_elem_ = &(*elem_);
-    fill_cache_impl_.func_elem_ = &elem;
-    fill_cache_impl_.function_ = this;
-
-    const auto elem_dofs = elem_->get_local_to_global(property_);
+    const auto elem_dofs = space_elem_->get_local_to_global(property_);
     SafeSTLVector<Real> loc_coeff;
     for (auto elem_dof : elem_dofs)
         loc_coeff.push_back(coeff_[elem_dof]);
 
-    fill_cache_impl_.loc_coeff_ = &loc_coeff;
-    fill_cache_impl_.j = j;
-    fill_cache_impl_.property_ = &property_;
-    boost::apply_visitor(fill_cache_impl_, k);
+
+    auto fill_cache_dispatcher = FillCacheDispatcher(
+        sub_elem_id,*this,*space_elem_handler_,func_elem,*space_elem_,loc_coeff,property_);
+
+    boost::apply_visitor(fill_cache_dispatcher, k);
+
 }
 
 

@@ -25,6 +25,8 @@
 #include <igatools/base/function.h>
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/linear_algebra/epetra_vector.h>
+//#include <igatools/basis_functions/bspline_space.h>
+//#include <igatools/basis_functions/nurbs_space.h>
 
 
 #include <boost/fusion/include/filter_if.hpp>
@@ -35,6 +37,7 @@
 #include <boost/fusion/include/begin.hpp>
 IGA_NAMESPACE_OPEN
 
+
 template <int,int,int>
 class ReferenceSpace;
 
@@ -43,6 +46,7 @@ class BSplineSpace;
 
 template <int,int,int>
 class NURBSSpace;
+//*/
 
 /**
  * @brief Coefficients for the IgFunction.
@@ -208,55 +212,92 @@ private:
 
     const std::string property_;
 
-    typename Space::ElementIterator elem_;
+    typename Space::ElementIterator space_elem_;
 
-    std::shared_ptr<typename Space::ElementHandler> space_filler_;
+    std::shared_ptr<typename Space::ElementHandler> space_elem_handler_;
 
 private:
     struct ResetDispatcher : boost::static_visitor<void>
     {
+        ResetDispatcher(const ValueFlags flag_in,
+                        const SafeSTLVector<Index> &elements_flat_id,
+                        typename Space::ElementHandler &space_elem_handler,
+                        SafeSTLArray<ValueFlags, dim+1> &flags)
+            :
+            flag_in_(flag_in),
+            elements_flat_id_(elements_flat_id),
+            space_elem_handler_(space_elem_handler),
+            flags_(flags)
+        {}
+
         template<int sub_elem_dim>
         void operator()(const Quadrature<sub_elem_dim> &quad)
         {
-            (*flags_)[sub_elem_dim] = flag;
-            Assert(space_handler_ != nullptr, ExcNullPtr());
-            space_handler_->reset_selected_elements(flag, quad,*elements_flat_id_);
+            flags_[sub_elem_dim] = flag_in_;
+            space_elem_handler_.reset_selected_elements(flag_in_,quad,elements_flat_id_);
         }
 
-        ValueFlags flag;
-        typename Space::ElementHandler *space_handler_;
-        SafeSTLArray<ValueFlags, dim+1> *flags_;
+        const ValueFlags flag_in_;
 
         /**
          * Elements to reset.
          */
-        const SafeSTLVector<Index> *elements_flat_id_;
+        const SafeSTLVector<Index> &elements_flat_id_;
+
+        typename Space::ElementHandler &space_elem_handler_;
+
+        SafeSTLArray<ValueFlags, dim+1> &flags_;
+
     };
 
 
     struct InitCacheDispatcher : boost::static_visitor<void>
     {
+        InitCacheDispatcher(
+            typename Space::ElementHandler  &space_elem_handler,
+            typename Space::ElementAccessor &space_elem)
+            :
+            space_elem_handler_(space_elem_handler),
+            space_elem_(space_elem)
+        {}
+
         template<int sub_elem_dim>
         void operator()(const Topology<sub_elem_dim> &sub_elem)
         {
-            Assert(space_handler_ != nullptr, ExcNullPtr());
-            space_handler_->template init_cache<sub_elem_dim>(*space_elem_);
+            space_elem_handler_.template init_cache<sub_elem_dim>(space_elem_);
         }
 
-        typename Space::ElementHandler  *space_handler_;
-        typename Space::ElementAccessor *space_elem_;
+        typename Space::ElementHandler  &space_elem_handler_;
+        typename Space::ElementAccessor &space_elem_;
     };
 
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
+        FillCacheDispatcher(const int sub_elem_id,
+                            self_t &function,
+                            typename Space::ElementHandler &space_elem_handler,
+                            ElementAccessor &func_elem,
+                            typename Space::ElementAccessor &space_elem,
+                            SafeSTLVector<Real> &loc_coeff,
+                            const std::string  &property)
+            :
+            sub_elem_id_(sub_elem_id),
+            function_(function),
+            space_elem_handler_(space_elem_handler),
+            func_elem_(func_elem),
+            space_elem_(space_elem),
+            loc_coeff_(loc_coeff),
+            property_(property)
+        {}
+
+
         template<int sub_elem_dim>
         void operator()(const Topology<sub_elem_dim> &sub_elem)
         {
-            Assert(space_handler_ != nullptr, ExcNullPtr());
-            space_handler_->template fill_cache<sub_elem_dim>(*space_elem_,j);
+            space_elem_handler_.template fill_cache<sub_elem_dim>(space_elem_,sub_elem_id_);
 
-            auto &local_cache = function_->get_cache(*func_elem_);
-            auto &cache = local_cache->template get_sub_elem_cache<sub_elem_dim>(j);
+            auto &local_cache = function_.get_cache(func_elem_);
+            auto &cache = local_cache->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id_);
 
 #if 0
             boost::fusion::for_each(cache.get_values(),
@@ -279,43 +320,43 @@ private:
             if (cache.template status_fill<_Value>())
             {
                 cache.template get_data<_Value>() =
-                    space_elem_->template linear_combination<_Value,sub_elem_dim>(*loc_coeff_,j, *property_);
+                    space_elem_.template linear_combination<_Value,sub_elem_dim>(loc_coeff_,sub_elem_id_,property_);
                 cache.template set_status_filled<_Value>(true);
             }
             if (cache.template status_fill<_Gradient>())
             {
                 cache.template get_data<_Gradient>() =
-                    space_elem_->template linear_combination<_Gradient,sub_elem_dim>(*loc_coeff_,j, *property_);
+                    space_elem_.template linear_combination<_Gradient,sub_elem_dim>(loc_coeff_,sub_elem_id_, property_);
                 cache.template set_status_filled<_Gradient>(true);
             }
             if (cache.template status_fill<_Hessian>())
             {
                 cache.template get_data<_Hessian>() =
-                    space_elem_->template linear_combination<_Hessian,sub_elem_dim>(*loc_coeff_,j, *property_);
+                    space_elem_.template linear_combination<_Hessian,sub_elem_dim>(loc_coeff_,sub_elem_id_, property_);
                 cache.template set_status_filled<_Hessian>(true);
             }
             if (cache.template status_fill<_Divergence>())
             {
                 cache.template get_data<_Divergence>() =
-                    space_elem_->template linear_combination<_Divergence,sub_elem_dim>(*loc_coeff_,j, *property_);
+                    space_elem_.template linear_combination<_Divergence,sub_elem_dim>(loc_coeff_,sub_elem_id_, property_);
                 cache.template set_status_filled<_Divergence>(true);
             }
 //#endif
             cache.set_filled(true);
         }
 
-        int j;
-        self_t *function_;
-        typename Space::ElementHandler *space_handler_;
-        ElementAccessor *func_elem_;
-        typename Space::ElementAccessor *space_elem_;
-        SafeSTLVector<Real> *loc_coeff_;
-        std::string const *property_;
+        const int sub_elem_id_;
+        self_t &function_;
+        typename Space::ElementHandler &space_elem_handler_;
+        ElementAccessor &func_elem_;
+        typename Space::ElementAccessor &space_elem_;
+        SafeSTLVector<Real> &loc_coeff_;
+        const std::string  &property_;
     };
 
-    ResetDispatcher reset_impl_;
-    InitCacheDispatcher init_cache_impl_;
-    FillCacheDispatcher fill_cache_impl_;
+//    ResetDispatcher reset_impl_;
+//    InitCacheDispatcher init_cache_impl_;
+//    FillCacheDispatcher fill_cache_impl_;
 
 #ifdef REFINE
     void create_connection_for_insert_knots(std::shared_ptr<self_t> ig_function);
@@ -342,13 +383,18 @@ private:
     {
         ar &boost::serialization::make_nvp("IgFunction_base_t",
                                            boost::serialization::base_object<base_t>(*this));
+
         ar.template register_type<BSplineSpace<dim,range,rank>>();
         ar.template register_type<NURBSSpace<dim,range,rank>>();
+        auto non_nonst_space = std::const_pointer_cast<Space>(space_);
+        ar &boost::serialization::make_nvp("space_",non_nonst_space);
 
-        ar &boost::serialization::make_nvp("space_",space_);
         ar &boost::serialization::make_nvp("coeff_",coeff_);
+
         ar &boost::serialization::make_nvp("property_",const_cast<std::string &>(property_));
-//        Assert(false,ExcNotImplemented());
+//        ar &boost::serialization::make_nvp("space_elem_",space_elem_);
+//        ar &boost::serialization::make_nvp("space_elem_handler_",space_elem_handler_);
+        Assert(false,ExcNotImplemented());
     }
     ///@}
 

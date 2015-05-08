@@ -59,10 +59,10 @@ void serialize_deserialize(std::shared_ptr<NURBSSpace<dim,range,rank>> space_in)
         // de-serialize the NURBSSpace object from an xml file
         std::ifstream xml_istream(filename);
         boost::archive::xml_iarchive xml_in(xml_istream);
-        xml_in.template register_type<BSpSpace>();
+//        xml_in.template register_type<BSpSpace>();
         xml_in.template register_type<NRBSpace>();
 
-//            xml_in >> BOOST_SERIALIZATION_NVP(space);
+        xml_in >> BOOST_SERIALIZATION_NVP(space);
         xml_istream.close();
     }
     out.begin_item("BSplineSpace after serialize-deserialize:");
