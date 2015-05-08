@@ -75,6 +75,7 @@ IGA_NAMESPACE_OPEN
  * \f}
  *
  * @ingroup eval_pts_scheme
+ * @ingroup serializable
  *
  * @author M. Martinelli, pauletti
  * @date 2014, 2015
@@ -333,6 +334,26 @@ private:
     bool is_tensor_product_;
 
     BBox<dim_> bounding_box_;
+
+
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("points_1d_",points_1d_);
+        ar &boost::serialization::make_nvp("weights_1d_",weights_1d_);
+        ar &boost::serialization::make_nvp("map_point_id_to_coords_id_",map_point_id_to_coords_id_);
+        ar &boost::serialization::make_nvp("is_tensor_product_",is_tensor_product_);
+        ar &boost::serialization::make_nvp("bounding_box_",bounding_box_);
+    };
+    ///@}
 
 };
 

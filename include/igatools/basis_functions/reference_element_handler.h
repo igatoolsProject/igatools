@@ -117,7 +117,7 @@ public:
      * @name Init functions
      */
     ///@{
-    virtual void init_cache(ElementAccessor &elem, const topology_variant &topology) = 0;
+    virtual void init_cache(ElementAccessor &elem, const topology_variant &topology)= 0;
 
     template <int k>
     void init_cache(ElementAccessor &elem)

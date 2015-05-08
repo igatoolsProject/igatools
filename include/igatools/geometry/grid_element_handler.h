@@ -171,6 +171,33 @@ private:
 
 protected:
     QuadList<dim> quad_all_sub_elems_;
+
+
+private:
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+//        ar &boost::serialization::make_nvp("GridElementHandler__base_t",
+//            boost::serialization::base_object<ElementHandler<dim>>(*this));
+
+        auto non_const_grid = std::const_pointer_cast<CartesianGrid<dim>>(grid_);
+        ar &boost::serialization::make_nvp("grid_",non_const_grid);
+
+        ar &boost::serialization::make_nvp("flags_",flags_);
+
+        ar &boost::serialization::make_nvp("quad_all_sub_elems_",quad_all_sub_elems_);
+//        Assert(false,ExcNotImplemented());
+    }
+    ///@}
+
 };
 
 IGA_NAMESPACE_CLOSE

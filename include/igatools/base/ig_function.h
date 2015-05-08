@@ -274,15 +274,15 @@ private:
     void
     serialize(Archive &ar, const unsigned int version)
     {
-//        ar &boost::serialization::make_nvp("IgFunction_base_t",
-//                                           boost::serialization::base_object<base_t>(*this));
+        ar &boost::serialization::make_nvp("IgFunction_base_t",
+                                           boost::serialization::base_object<base_t>(*this));
         ar.template register_type<BSplineSpace<dim,range,rank>>();
         ar.template register_type<NURBSSpace<dim,range,rank>>();
 
         ar &boost::serialization::make_nvp("space_",space_);
 //        ar &boost::serialization::make_nvp("coeff_",coeff_);
         ar &boost::serialization::make_nvp("property_",const_cast<std::string &>(property_));
-        Assert(false,ExcNotImplemented());
+//        Assert(false,ExcNotImplemented());
     }
     ///@}
 

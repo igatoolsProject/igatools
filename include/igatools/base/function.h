@@ -38,6 +38,8 @@ template <int, int, int, int> class FunctionElement;
 
 /**
  * Function Class
+ *
+ * @ingroup serializable
  */
 template<int dim_, int codim_ = 0, int range_ = 1, int rank_ = 1>
 class Function
@@ -271,10 +273,6 @@ private:
         ElementAccessor &func_elem_;
     };
 
-//    ResetDispatcher reset_impl_;
-//    FillCacheDispatcher fill_cache_impl_;
-//    InitCacheDispatcher init_cache_impl_;
-
 
 
     // TODO (pauletti, Apr 10, 2015): next function should not be public
@@ -308,6 +306,27 @@ public:
         functions_knots_refinement_.refine_h(n_subdivisions);
     }
 #endif
+
+
+private:
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("grid_elem_handler_",
+                                           boost::serialization::base_object<GridElementHandler<dim_>>(*this));
+
+        ar &boost::serialization::make_nvp("flags_",flags_);
+    }
+    ///@}
+
 };
 
 
