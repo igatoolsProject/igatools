@@ -72,7 +72,7 @@ NURBSElementHandler<dim_, range_, rank_>::
 ResetDispatcher::
 operator()(const Quadrature<sub_elem_dim> &quad)
 {
-    (*flags_)[sub_elem_dim] = flag_;
+    flags_[sub_elem_dim] = flag_;
 }
 
 
@@ -135,13 +135,8 @@ reset_selected_elements(
 
 
     //--------------------------------------------------
-//    reset_impl_.grid_handler_ = &(this->grid_handler_);
-    reset_impl_.grid_handler_ =
-        const_cast<GridElementHandler<dim_> *>(&(bspline_handler_->get_grid_handler()));
-    reset_impl_.flag_ = flag;
-    reset_impl_.flags_ = &flags_;
-
-    boost::apply_visitor(reset_impl_, quad);
+    auto reset_dispatcher = ResetDispatcher(flag,flags_);
+    boost::apply_visitor(reset_dispatcher, quad);
     //--------------------------------------------------
 }
 
@@ -153,11 +148,9 @@ NURBSElementHandler<dim_, range_, rank_>::
 InitCacheDispatcher::
 operator()(const Topology<sub_elem_dim> &sub_elem)
 {
-    Assert(grid_handler_ != nullptr,ExcNullPtr());
-    Assert(elem_ != nullptr,ExcNullPtr());
-    grid_handler_->template init_cache<sub_elem_dim>(elem_->as_cartesian_grid_element_accessor());
+    grid_handler_.template init_cache<sub_elem_dim>(elem_.as_cartesian_grid_element_accessor());
 
-    auto &cache = elem_->get_local_cache();
+    auto &cache = elem_.get_local_cache();
     if (cache == nullptr)
     {
         using VCache = typename NURBSElement<dim_,range_,rank_>::parent_t::Cache;
@@ -167,9 +160,9 @@ operator()(const Topology<sub_elem_dim> &sub_elem)
         cache = shared_ptr<Cache>(new Cache);
     }
 
-    const auto n_basis = elem_->get_num_basis(DofProperties::active);
-    const auto n_points = grid_handler_->template get_num_points<sub_elem_dim>();
-    const auto flag = (*flags_)[sub_elem_dim];
+    const auto n_basis = elem_.get_num_basis(DofProperties::active);
+    const auto n_points = grid_handler_.template get_num_points<sub_elem_dim>();
+    const auto flag = flags_[sub_elem_dim];
 
     for (auto &s_id: UnitElement<dim>::template elems_ids<sub_elem_dim>())
     {
@@ -185,22 +178,20 @@ init_cache(RefElementAccessor &elem, const topology_variant &topology)
 {
     Assert(!elem.get_space()->is_bspline(),ExcMessage("Not a NURBSElement."));
 
-    auto nrb_elem = dynamic_cast<NURBSElement<dim_,range_,rank_>*>(&elem);
-    auto &bsp_elem = nrb_elem->bspline_elem_;
+    auto &nrb_elem = dynamic_cast<NURBSElement<dim_,range_,rank_>&>(elem);
+    auto &bsp_elem = nrb_elem.bspline_elem_;
     bspline_handler_->init_cache(bsp_elem,topology);
 
     const auto nrb_space = this->get_nurbs_space();
     for (const auto &comp_id : nrb_space->weight_func_table_.get_active_components_id())
-        nrb_space->weight_func_table_[comp_id]->init_cache(*(nrb_elem->weight_elem_table_[comp_id]),topology);
+        nrb_space->weight_func_table_[comp_id]->init_cache(*(nrb_elem.weight_elem_table_[comp_id]),topology);
 
 
     //-------------------------------------
-    init_cache_impl_.grid_handler_ =
-        const_cast<GridElementHandler<dim_> *>(&(bspline_handler_->get_grid_handler()));
-    init_cache_impl_.elem_ = nrb_elem;
-    init_cache_impl_.flags_ = &flags_;
-
-    boost::apply_visitor(init_cache_impl_,topology);
+    auto init_cache_dispatcher = InitCacheDispatcher(
+    		const_cast<GridElementHandler<dim_> &>(bspline_handler_->get_grid_handler()),
+    		nrb_elem,flags_);
+    boost::apply_visitor(init_cache_dispatcher,topology);
     //-------------------------------------
 }
 
@@ -213,13 +204,11 @@ NURBSElementHandler<dim_, range_, rank_>::
 FillCacheDispatcher::
 operator()(const Topology<sub_elem_dim> &sub_elem)
 {
-    Assert(nrb_elem_ != nullptr, ExcNullPtr());
+    Assert(nrb_elem_.all_sub_elems_cache_ != nullptr, ExcNullPtr());
+    auto &cache = nrb_elem_.all_sub_elems_cache_->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id_);
 
-    Assert(nrb_elem_->all_sub_elems_cache_ != nullptr, ExcNullPtr());
-    auto &cache = nrb_elem_->all_sub_elems_cache_->template get_sub_elem_cache<sub_elem_dim>(j_);
-
-    const auto &bsp_elem = nrb_elem_->bspline_elem_;
-    const auto &wght_table = nrb_elem_->weight_elem_table_;
+    const auto &bsp_elem = nrb_elem_.bspline_elem_;
+    const auto &wght_table = nrb_elem_.weight_elem_table_;
 
 //    auto &flags = cache.flags_handler_;
     if (cache.template status_fill<_Value>())
@@ -255,27 +244,26 @@ operator()(const Topology<sub_elem_dim> &sub_elem)
 template<int dim_, int range_ , int rank_>
 void
 NURBSElementHandler<dim_, range_, rank_>::
-fill_cache(RefElementAccessor &elem, const topology_variant &topology, const int j)
+fill_cache(RefElementAccessor &elem, const topology_variant &topology, const int sub_elem_id)
 {
     using Elem = NURBSElement<dim_,range_,rank_>;
-    const auto nrb_elem = dynamic_cast<Elem *>(&elem);
-    Assert(nrb_elem != nullptr, ExcNullPtr());
+    auto &nrb_elem = dynamic_cast<Elem &>(elem);
+    auto &bsp_elem = nrb_elem.bspline_elem_;
 
     const auto nrb_space = this->get_nurbs_space();
-    Assert(nrb_space == nrb_elem->get_nurbs_space(),
+    Assert(nrb_space == nrb_elem.get_nurbs_space(),
            ExcMessage("The element accessor and the element handler cannot have different spaces."));
 
-    bspline_handler_->fill_cache(nrb_elem->bspline_elem_,topology,j);
+    bspline_handler_->fill_cache(bsp_elem,topology,sub_elem_id);
 
     const auto &weight_func_table = nrb_space->weight_func_table_;
     for (const auto &comp_id : weight_func_table.get_active_components_id())
-        weight_func_table[comp_id]->fill_cache(*(nrb_elem->weight_elem_table_[comp_id]),topology,j);
+        weight_func_table[comp_id]->fill_cache(*(nrb_elem.weight_elem_table_[comp_id]),topology,sub_elem_id);
 
 
     //-----------------------------------------
-    fill_cache_impl_.j_ = j;
-    fill_cache_impl_.nrb_elem_ = nrb_elem;
-    boost::apply_visitor(fill_cache_impl_,topology);
+    auto fill_cache_dispatcher = FillCacheDispatcher(sub_elem_id,nrb_elem);
+    boost::apply_visitor(fill_cache_dispatcher,topology);
     //-----------------------------------------
 }
 
@@ -342,7 +330,7 @@ evaluate_nurbs_values_from_bspline(
 
     const auto bsp_local_to_patch = bspline_elem.get_local_to_patch(DofProperties::active);
 
-    const auto nrb_space = nrb_elem_->get_nurbs_space();
+    const auto nrb_space = nrb_elem_.get_nurbs_space();
     const auto comp_offset = nrb_space->sp_space_->get_basis_offset();
 
     int bsp_fn_id = 0;
@@ -419,7 +407,7 @@ evaluate_nurbs_gradients_from_bspline(
 
     const auto n_pts = P.get_num_points();
 
-    const auto nrb_space = nrb_elem_->get_nurbs_space();
+    const auto nrb_space = nrb_elem_.get_nurbs_space();
     const auto bsp_local_to_patch = bspline_elem.get_local_to_patch(DofProperties::active);
     const auto comp_offset = nrb_space->sp_space_->get_basis_offset();
 
@@ -523,7 +511,7 @@ evaluate_nurbs_hessians_from_bspline(
 
     const auto n_pts = P.get_num_points();
 
-    const auto nrb_space = nrb_elem_->get_nurbs_space();
+    const auto nrb_space = nrb_elem_.get_nurbs_space();
     const auto bsp_local_to_patch = bspline_elem.get_local_to_patch(DofProperties::active);
     const auto comp_offset = nrb_space->sp_space_->get_basis_offset();
 

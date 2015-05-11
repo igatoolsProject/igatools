@@ -32,6 +32,10 @@
 
 IGA_NAMESPACE_OPEN
 
+/**
+ *
+ * @ingroup serializable
+ */
 template<int dim, int range = 1, int rank = 1>
 class ReferenceElementHandler
     : public ElementHandler<ReferenceSpace<dim,range,rank>>
@@ -48,17 +52,18 @@ public:
     static std::shared_ptr<ReferenceElementHandler<dim,range,rank> >
     create(std::shared_ptr<const Space> space);
 
+protected:
     /** @name Constructors */
     ///@{
     /**
-     * Default constructor. Not allowed to be used.
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
      */
-    ReferenceElementHandler() = delete;
+    ReferenceElementHandler() = default;
 
-    /**
-     * Destructor.
-     */
-    virtual ~ReferenceElementHandler() = default;
+
+    ReferenceElementHandler(std::shared_ptr<const Space> space);
 
     /**
      * Copy constructor. Not allowed to be used.
@@ -69,8 +74,15 @@ public:
      * Move constructor. Not allowed to be used.
      */
     ReferenceElementHandler(ReferenceElementHandler<dim,range,rank> &&elem_handler) = delete;
-    ///@}
 
+public:
+
+    /**
+     * Destructor.
+     */
+    virtual ~ReferenceElementHandler() = default;
+
+    ///@}
 
     /**
      * @name Reset functions
@@ -106,12 +118,6 @@ public:
         const SafeSTLVector<int> elements_flat_id) = 0;
     ///@}
 
-
-protected:
-    ReferenceElementHandler(std::shared_ptr<const Space> space);
-
-
-public:
 
     /**
      * @name Init functions
@@ -166,6 +172,27 @@ public:
      * Returns the ReferenceSpace associated to the current ReferenceElementHandler (const version).
      */
     std::shared_ptr<const Space> get_space() const;
+
+
+private:
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("grid_handler_",grid_handler_);
+
+        auto non_const_space = std::const_pointer_cast<Space>(space_);
+        ar &boost::serialization::make_nvp("space_", non_const_space);
+    }
+    ///@}
+
 };
 
 

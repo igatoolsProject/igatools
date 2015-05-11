@@ -50,6 +50,8 @@ template<int,int,int> class NURBSElement;
 /**
  * Global NURBSSpace uniform quadrature
  * computational optimization cache.
+ *
+ * @ingroup serializable
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
 class NURBSElementHandler : public ReferenceElementHandler<dim_,range_,rank_>
@@ -85,9 +87,11 @@ private:
     /** @name Constructors.*/
     ///@{
     /**
-     * Default constructor. Not allowed to be used.
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
      */
-    NURBSElementHandler() = delete;
+    NURBSElementHandler() = default;
 
     NURBSElementHandler(std::shared_ptr<const Space> space);
 
@@ -142,8 +146,7 @@ public:
     virtual void print_info(LogStream &out) const override final;
 
 private:
-//    std::shared_ptr<const Space> space_;
-    std::shared_ptr<ReferenceElementHandler<dim_,range_,rank_>> bspline_handler_;
+    std::shared_ptr<BSplineElementHandler<dim_,range_,rank_>> bspline_handler_;
 
     SafeSTLArray<ValueFlags, dim+1> flags_;
 
@@ -178,32 +181,49 @@ private:
 
     struct ResetDispatcher : boost::static_visitor<void>
     {
+    	ResetDispatcher(const ValueFlags flag_in,
+				SafeSTLArray<ValueFlags, dim+1> &flags)
+						:
+							flag_(flag_in),
+							flags_(flags)
+							{}
+
         template<int sub_elem_dim>
         void operator()(const Quadrature<sub_elem_dim> &quad);
 
-        GridElementHandler<dim_> *grid_handler_;
-        ValueFlags flag_;
-        SafeSTLArray<ValueFlags, dim+1> *flags_;
+        const ValueFlags flag_;
+        SafeSTLArray<ValueFlags, dim+1> &flags_;
     };
 
-    ResetDispatcher reset_impl_;
 
     struct InitCacheDispatcher : boost::static_visitor<void>
     {
+    	InitCacheDispatcher(GridElementHandler<dim_> &grid_handler,
+    			ReferenceElement<dim_,range_,rank_> &elem,
+				SafeSTLArray<ValueFlags, dim+1> &flags)
+						:
+							grid_handler_(grid_handler),
+							elem_(elem),
+							flags_(flags)
+							{}
+
         template<int sub_elem_dim>
         void operator()(const Topology<sub_elem_dim> &sub_elem);
 
-        GridElementHandler<dim_> *grid_handler_;
-        ReferenceElement<dim_,range_,rank_> *elem_;
-        int n_points_;
-        SafeSTLArray<ValueFlags, dim+1> *flags_;
+        GridElementHandler<dim_> &grid_handler_;
+        ReferenceElement<dim_,range_,rank_> &elem_;
+        SafeSTLArray<ValueFlags, dim+1> &flags_;
 
     };
 
-    InitCacheDispatcher init_cache_impl_;
-
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
+    	FillCacheDispatcher(const int sub_elem_id,NURBSElement<dim_,range_,rank_> &nrb_elem)
+    			:
+    				sub_elem_id_(sub_elem_id),
+					nrb_elem_(nrb_elem)
+					{}
+
         template<int sub_elem_dim>
         void operator()(const Topology<sub_elem_dim> &sub_elem);
 
@@ -246,11 +266,11 @@ private:
             const WeightElemTable &weight_elem_table,
             ValueTable<Derivative<2>> &D2_phi) const;
 
-        int j_;
-        NURBSElement<dim_,range_,rank_> *nrb_elem_;
+        const int sub_elem_id_;
+        NURBSElement<dim_,range_,rank_> &nrb_elem_;
     };
 
-    FillCacheDispatcher fill_cache_impl_;
+//    FillCacheDispatcher fill_cache_impl_;
 
 
 
@@ -258,6 +278,45 @@ private:
      * Returns the NURBSSpace used to define the NURBSElementHandler object.
      */
     std::shared_ptr<const Space> get_nurbs_space() const;
+
+
+
+private:
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("NURBSElementHandler_base_t",
+                                           boost::serialization::base_object<base_t>(*this));
+
+        ar &boost::serialization::make_nvp("bspline_handler_",bspline_handler_);
+        ar &boost::serialization::make_nvp("flags_",flags_);
+
+/*
+        ar.template register_type<BSplineSpace<dim,range,rank>>();
+        ar.template register_type<NURBSSpace<dim,range,rank>>();
+        auto non_nonst_space = std::const_pointer_cast<Space>(space_);
+        ar &boost::serialization::make_nvp("space_",non_nonst_space);
+
+
+        ar &boost::serialization::make_nvp("property_",const_cast<std::string &>(property_));
+//        ar &boost::serialization::make_nvp("space_elem_",space_elem_);
+
+        ar.template register_type<BSplineElementHandler<dim,range,rank>>();
+        ar.template register_type<NURBSElementHandler<dim,range,rank>>();
+        ar &boost::serialization::make_nvp("space_elem_handler_",space_elem_handler_);
+        //*/
+        Assert(false,ExcNotImplemented());
+    }
+    ///@}
+
 };
 
 

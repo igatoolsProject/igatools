@@ -66,7 +66,7 @@ public:
      * @name Constructors
      */
     ///@{
-protected:
+public:
     /**
      * Default constructor. It does nothing but it is needed for the
      * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -74,7 +74,6 @@ protected:
      */
     GridElementHandler() = default;
 
-public:
 
     /**
      * Constructor.

@@ -38,14 +38,20 @@
 IGA_NAMESPACE_OPEN
 
 
-template <int,int,int>
-class ReferenceSpace;
+//template <int,int,int>
+//class ReferenceSpace;
 
 template <int,int,int>
 class BSplineSpace;
 
 template <int,int,int>
 class NURBSSpace;
+
+template <int,int,int>
+class BSplineElementHandler;
+
+template <int,int,int>
+class NURBSElementHandler;
 //*/
 
 /**
@@ -65,11 +71,23 @@ class IgCoefficients
 {
 public:
 
+	/**
+	 * Access operator.
+	 * Returns a reference to the mapped value of the element identified with key @p global_dof.
+	 * If @p global_dof does not match the key of any element in the container,
+	 * the function throws an <tt>out_of_range</tt> exception.
+	 */
     const Real &operator[](const Index global_dof) const
     {
         return std::map<Index,Real>::at(global_dof);
     }
 
+	/**
+	 * Access operator.
+	 * If @p global_dof matches the key of an element in the container, the function returns a reference to its mapped value.
+	 * If @p global_dof does not match the key of any element in the container,
+	 * the function inserts a new element with that key and returns a reference to its mapped value.
+	 */
     Real &operator[](const Index global_dof)
     {
         return std::map<Index,Real>::operator[](global_dof);
@@ -354,10 +372,6 @@ private:
         const std::string  &property_;
     };
 
-//    ResetDispatcher reset_impl_;
-//    InitCacheDispatcher init_cache_impl_;
-//    FillCacheDispatcher fill_cache_impl_;
-
 #ifdef REFINE
     void create_connection_for_insert_knots(std::shared_ptr<self_t> ig_function);
 
@@ -393,7 +407,10 @@ private:
 
         ar &boost::serialization::make_nvp("property_",const_cast<std::string &>(property_));
 //        ar &boost::serialization::make_nvp("space_elem_",space_elem_);
-//        ar &boost::serialization::make_nvp("space_elem_handler_",space_elem_handler_);
+
+        ar.template register_type<BSplineElementHandler<dim,range,rank>>();
+        ar.template register_type<NURBSElementHandler<dim,range,rank>>();
+        ar &boost::serialization::make_nvp("space_elem_handler_",space_elem_handler_);
         Assert(false,ExcNotImplemented());
     }
     ///@}
