@@ -37,7 +37,7 @@ IGA_NAMESPACE_OPEN
  * It contains the Quadrature in each sub-element and the ValueFlags that are used to determine
  * which quantity of CartesianGridelement's cache must be filled.
  *
- *
+ * @ingroup serializable
  */
 template <int dim>
 class GridElementHandler
@@ -184,16 +184,12 @@ private:
     void
     serialize(Archive &ar, const unsigned int version)
     {
-//        ar &boost::serialization::make_nvp("GridElementHandler__base_t",
-//            boost::serialization::base_object<ElementHandler<dim>>(*this));
-
         auto non_const_grid = std::const_pointer_cast<CartesianGrid<dim>>(grid_);
         ar &boost::serialization::make_nvp("grid_",non_const_grid);
 
         ar &boost::serialization::make_nvp("flags_",flags_);
 
         ar &boost::serialization::make_nvp("quad_all_sub_elems_",quad_all_sub_elems_);
-//        Assert(false,ExcNotImplemented());
     }
     ///@}
 

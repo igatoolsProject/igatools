@@ -48,10 +48,45 @@ tuple_of_caches(std::index_sequence<I...>)
 }
 
 
-template<class ValuesCache, int dim>
-using CacheList = decltype(tuple_of_caches<ValuesCache,dim>(
-                               std::make_index_sequence<(num_sub_elem <= dim ? num_sub_elem+1 : 1)>()));
+/**
+ * @brief List of ValuesCache for the sub-elements having their topological dimension
+ * ranging from <tt>dim</tt> to <tt>dim-num_sub_elem+1</tt>
+ *
+ * @note <tt>num_sub_elem</tt> is defined at configuration time in the main CMakeLists.txt file.
+ * @ingroup serializable
+ */
 
+template<class ValuesCache, int dim>
+class CacheList :
+    public decltype(tuple_of_caches<ValuesCache,dim>(
+                        std::make_index_sequence<(num_sub_elem <= dim ? num_sub_elem+1 : 1)>()))
+{
+
+private:
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        boost::fusion::for_each(*this,
+                                [&](auto & cache_same_topology_dim)
+        {
+            using PairType = typename std::remove_reference<decltype(cache_same_topology_dim)>::type;
+            using SubDimType = typename PairType::first_type;
+            std::string tag_name = "cache_" + std::to_string(SubDimType::value);
+
+            ar &boost::serialization::make_nvp(tag_name.c_str(),cache_same_topology_dim.second);
+        }
+                               );
+    };
+    ///@}
+};
 
 
 

@@ -298,22 +298,6 @@ private:
 
         ar &boost::serialization::make_nvp("bspline_handler_",bspline_handler_);
         ar &boost::serialization::make_nvp("flags_",flags_);
-
-        /*
-                ar.template register_type<BSplineSpace<dim,range,rank>>();
-                ar.template register_type<NURBSSpace<dim,range,rank>>();
-                auto non_nonst_space = std::const_pointer_cast<Space>(space_);
-                ar &boost::serialization::make_nvp("space_",non_nonst_space);
-
-
-                ar &boost::serialization::make_nvp("property_",const_cast<std::string &>(property_));
-        //        ar &boost::serialization::make_nvp("space_elem_",space_elem_);
-
-                ar.template register_type<BSplineElementHandler<dim,range,rank>>();
-                ar.template register_type<NURBSElementHandler<dim,range,rank>>();
-                ar &boost::serialization::make_nvp("space_elem_handler_",space_elem_handler_);
-                //*/
-        Assert(false,ExcNotImplemented());
     }
     ///@}
 

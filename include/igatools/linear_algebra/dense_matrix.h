@@ -39,6 +39,8 @@ IGA_NAMESPACE_OPEN
  * Therefore it can be used as a boost::numeric::ublas::matrix<Real>.
  *
  * @ingroup linear_algebra
+ * @ingroup serializable
+ *
  * @author M. Martinelli, 2012, 2013, 2014
  * @author S. Pauletti, 2012, 2013, 2014
  */
@@ -142,6 +144,24 @@ public:
     Size get_num_cols() const;
 
     void print_info(LogStream &out) const;
+
+private:
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("DenseMatrix_base_t",
+                                           boost::serialization::base_object<BoostMatrix>(*this));
+    }
+    ///@}
+
 };
 
 IGA_NAMESPACE_CLOSE

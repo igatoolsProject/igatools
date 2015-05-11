@@ -38,6 +38,8 @@ IGA_NAMESPACE_OPEN
  * Global BSplineSpace uniform quadrature
  * computational optimization cache, storing the interval length
  * in each direction
+ *
+ * @ingroup serializable
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
 class BSplineElementHandler : public ReferenceElementHandler<dim_,range_,rank_>
@@ -94,9 +96,11 @@ private:
     ///@{
 
     /**
-     * Default constructor. Not allowed to be used.
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
      */
-    BSplineElementHandler() = delete;
+    BSplineElementHandler() = default;
 
     BSplineElementHandler(std::shared_ptr<const Space> space);
 
@@ -161,16 +165,15 @@ private:
         BasisValues1d &bernstein_values);
 
 
-    SafeSTLArray<ValueFlags, dim_ + 1> flags_;
 
-//    template <class T>
-//    using DirectionTable = CartesianProductArray<T, dim_>;
 
     /**
-     * B-splines values and derivatives at quadrature points.
+     * One-dimensional B-splines values and derivatives at quadrature points.
      * The values are stored with the following index ordering:
      *
      * splines1d_[comp][dir][interval][order][function][point]
+     *
+     * @ingroup serializable
      */
     class GlobalCache
     {
@@ -203,9 +206,24 @@ private:
 
         void print_info(LogStream &out) const;
 
+    private:
+        /**
+         * @name Functions needed for boost::serialization
+         * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+         */
+        ///@{
+        friend class boost::serialization::access;
+
+        template<class Archive>
+        void
+        serialize(Archive &ar, const unsigned int version)
+        {
+            ar &boost::serialization::make_nvp("basis_values_1d_table_",basis_values_1d_table_);
+        }
+        ///@}
+
     };
 
-    CacheList<GlobalCache, dim> splines1d_;
 
 
     struct ResetDispatcher : boost::static_visitor<void>
@@ -328,6 +346,32 @@ private:
      * Returns the BSplineSpace used to define the BSplineElementHandler object.
      */
     std::shared_ptr<const Space> get_bspline_space() const;
+
+
+private:
+
+    SafeSTLArray<ValueFlags, dim_ + 1> flags_;
+
+    CacheList<GlobalCache, dim> splines1d_;
+
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("BSplineElementHandler_base_t",
+                                           boost::serialization::base_object<base_t>(*this));
+
+        ar &boost::serialization::make_nvp("flags_",flags_);
+        ar &boost::serialization::make_nvp("splines1d_",splines1d_);
+    }
+    ///@}
 
 };
 

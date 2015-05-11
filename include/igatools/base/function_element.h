@@ -204,6 +204,16 @@ private:
     std::shared_ptr<FunctionElement<dim,codim,range,rank> > clone() const;
 };
 
+
+#if 0
+template<int dim, int codim, int range = 1, int rank = 1>
+class IgFunctionElement
+    : public FunctionElement<dim,codim,range,rank>
+{
+
+};
+#endif
+
 IGA_NAMESPACE_CLOSE
 
 #endif
