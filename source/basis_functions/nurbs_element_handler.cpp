@@ -82,7 +82,7 @@ NURBSElementHandler<dim_, range_, rank_>::
 reset_selected_elements(
     const ValueFlags &flag,
     const eval_pts_variant &quad,
-    const SafeSTLVector<int> elements_flat_id)
+    const SafeSTLVector<int> &elements_flat_id)
 {
     //--------------------------------------------------
     // resetting the Function for the bspline (numerator and weight function at the denominator)
@@ -189,8 +189,8 @@ init_cache(RefElementAccessor &elem, const topology_variant &topology)
 
     //-------------------------------------
     auto init_cache_dispatcher = InitCacheDispatcher(
-    		const_cast<GridElementHandler<dim_> &>(bspline_handler_->get_grid_handler()),
-    		nrb_elem,flags_);
+                                     const_cast<GridElementHandler<dim_> &>(bspline_handler_->get_grid_handler()),
+                                     nrb_elem,flags_);
     boost::apply_visitor(init_cache_dispatcher,topology);
     //-------------------------------------
 }

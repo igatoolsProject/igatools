@@ -217,39 +217,39 @@ BSplineElementHandler<dim_, range_, rank_>::
 ResetDispatcher::
 operator()(const Quadrature<sub_elem_dim> &quad1)
 {
-    Assert(grid_handler_ != nullptr,ExcNullPtr());
-    grid_handler_->reset(flag_,quad1);
+//    Assert(grid_handler_ != nullptr,ExcNullPtr());
+    grid_handler_.reset(flag_,quad1);
 
 
-    Assert(flags_ != nullptr,ExcNullPtr());
-    (*flags_)[sub_elem_dim] = flag_;
+//    Assert(flags_ != nullptr,ExcNullPtr());
+    flags_[sub_elem_dim] = flag_;
 
 
-    Assert(splines1d_ != nullptr,ExcNullPtr());
+//    Assert(splines1d_ != nullptr,ExcNullPtr());
 
 
-    Assert(space_ != nullptr,ExcNullPtr());
+//    Assert(space_ != nullptr,ExcNullPtr());
 
-    const auto space_data = space_->space_data_;
+    const auto space_data = space_.space_data_;
 
 //    const auto n_basis = space_->get_num_all_element_basis();
-    const auto &degree = space_->get_degree();
+    const auto &degree = space_.get_degree();
 
     const auto &active_components_id = space_data->get_active_components_id();
 
     // number of intervals in the cartesian grid
-    const auto n_inter = space_->get_grid()->get_num_intervals();
+    const auto n_inter = space_.get_grid()->get_num_intervals();
 
 #ifndef NDEBUG
     for (const auto &intervals_id : intervals_id_directions_)
         Assert(!intervals_id.empty(),ExcEmptyObject());
 #endif
 
-    const auto &lengths = grid_handler_->get_grid()->get_element_lengths();
+    const auto &lengths = grid_handler_.get_grid()->get_element_lengths();
 
     for (auto &s_id: UnitElement<dim_>::template elems_ids<sub_elem_dim>())
     {
-        auto &g_cache = cacheutils::extract_sub_elements_data<sub_elem_dim>(*splines1d_)[s_id];
+        auto &g_cache = cacheutils::extract_sub_elements_data<sub_elem_dim>(splines1d_)[s_id];
 
         g_cache = GlobalCache(space_data->get_components_map());
 
@@ -279,8 +279,8 @@ operator()(const Quadrature<sub_elem_dim> &quad1)
          * For each direction, interval and component we compute the 1D bspline
          * basis evaluate at the 1D component of the tensor product quadrature
          */
-        const auto &bezier_op   = space_->operators_;
-        const auto &end_interval = space_->end_interval_;
+        const auto &bezier_op   = space_.operators_;
+        const auto &end_interval = space_.end_interval_;
 
         using BasisValues = ComponentContainer<BasisValues1d>;
         const auto &deg_comp_map = degree.get_comp_map();
@@ -392,22 +392,18 @@ template<int dim_, int range_ , int rank_>
 void
 BSplineElementHandler<dim_, range_, rank_>::
 reset_selected_elements(
-    const ValueFlags &flag,
+    const ValueFlags &flag_in,
     const eval_pts_variant &eval_points,
-    const SafeSTLVector<int> elements_flat_id)
+    const SafeSTLVector<int> &elements_flat_id)
 {
-    reset_impl_.grid_handler_ = &(this->grid_handler_);
-    reset_impl_.flag_ = flag;
-    reset_impl_.flags_ = &flags_;
-    reset_impl_.splines1d_ = &splines1d_;
-    reset_impl_.space_ = this->get_bspline_space().get();
-
+    auto reset_dispatcher = ResetDispatcher(
+                                *(this->get_bspline_space()),flag_in,this->grid_handler_,flags_,splines1d_);
 
     //-------------------------------------------------
     // here we get the interval indices from the element indices
     Assert(!elements_flat_id.empty(),ExcEmptyObject());
 
-    const auto grid = reset_impl_.space_->get_grid();
+    const auto grid = reset_dispatcher.space_.get_grid();
     SafeSTLArray<set<int>,dim> intervals_id_unique;
     for (const auto elem_id : elements_flat_id)
     {
@@ -419,12 +415,12 @@ reset_selected_elements(
 
     for (const int dir : UnitElement<dim_>::active_directions)
     {
-        reset_impl_.intervals_id_directions_[dir].assign(
+        reset_dispatcher.intervals_id_directions_[dir].assign(
             intervals_id_unique[dir].begin(),intervals_id_unique[dir].end());
     }
     //-------------------------------------------------
 
-    boost::apply_visitor(reset_impl_, eval_points);
+    boost::apply_visitor(reset_dispatcher, eval_points);
 }
 
 
@@ -474,19 +470,6 @@ init_cache(RefElementAccessor &elem, const topology_variant &topology)
            ExcMessage("The element accessor and the element handler cannot have different spaces."));
 
     Assert(elem.get_space()->is_bspline(),ExcMessage("Not a BSplineElement."));
-    /*
-    init_cache_impl_.grid_handler_ = &(this->grid_handler_);
-
-    Assert(this->get_space() == elem.get_space(),
-           ExcMessage("The element accessor and the element handler cannot have different spaces."));
-
-    Assert(elem.get_space()->is_bspline(),ExcMessage("Not a BSplineElement."));
-    init_cache_impl_.elem_ = &elem;
-
-    init_cache_impl_.flags_ = &flags_;
-
-    boost::apply_visitor(init_cache_impl_,topology);
-    //*/
 
     auto init_cache_dispatcher = InitCacheDispatcher(this->grid_handler_,elem,flags_);
     boost::apply_visitor(init_cache_dispatcher,topology);

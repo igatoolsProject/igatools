@@ -136,7 +136,7 @@ public:
     virtual void reset_selected_elements(
         const ValueFlags &flag,
         const eval_pts_variant &eval_points,
-        const SafeSTLVector<int> elements_flat_id) override final;
+        const SafeSTLVector<int> &elements_flat_id) override final;
 
     virtual void init_cache(RefElementAccessor &elem, const topology_variant &topology) override final;
 
@@ -181,12 +181,12 @@ private:
 
     struct ResetDispatcher : boost::static_visitor<void>
     {
-    	ResetDispatcher(const ValueFlags flag_in,
-				SafeSTLArray<ValueFlags, dim+1> &flags)
-						:
-							flag_(flag_in),
-							flags_(flags)
-							{}
+        ResetDispatcher(const ValueFlags flag_in,
+                        SafeSTLArray<ValueFlags, dim+1> &flags)
+            :
+            flag_(flag_in),
+            flags_(flags)
+        {}
 
         template<int sub_elem_dim>
         void operator()(const Quadrature<sub_elem_dim> &quad);
@@ -198,14 +198,14 @@ private:
 
     struct InitCacheDispatcher : boost::static_visitor<void>
     {
-    	InitCacheDispatcher(GridElementHandler<dim_> &grid_handler,
-    			ReferenceElement<dim_,range_,rank_> &elem,
-				SafeSTLArray<ValueFlags, dim+1> &flags)
-						:
-							grid_handler_(grid_handler),
-							elem_(elem),
-							flags_(flags)
-							{}
+        InitCacheDispatcher(GridElementHandler<dim_> &grid_handler,
+                            ReferenceElement<dim_,range_,rank_> &elem,
+                            SafeSTLArray<ValueFlags, dim+1> &flags)
+            :
+            grid_handler_(grid_handler),
+            elem_(elem),
+            flags_(flags)
+        {}
 
         template<int sub_elem_dim>
         void operator()(const Topology<sub_elem_dim> &sub_elem);
@@ -218,11 +218,11 @@ private:
 
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
-    	FillCacheDispatcher(const int sub_elem_id,NURBSElement<dim_,range_,rank_> &nrb_elem)
-    			:
-    				sub_elem_id_(sub_elem_id),
-					nrb_elem_(nrb_elem)
-					{}
+        FillCacheDispatcher(const int sub_elem_id,NURBSElement<dim_,range_,rank_> &nrb_elem)
+            :
+            sub_elem_id_(sub_elem_id),
+            nrb_elem_(nrb_elem)
+        {}
 
         template<int sub_elem_dim>
         void operator()(const Topology<sub_elem_dim> &sub_elem);
@@ -299,20 +299,20 @@ private:
         ar &boost::serialization::make_nvp("bspline_handler_",bspline_handler_);
         ar &boost::serialization::make_nvp("flags_",flags_);
 
-/*
-        ar.template register_type<BSplineSpace<dim,range,rank>>();
-        ar.template register_type<NURBSSpace<dim,range,rank>>();
-        auto non_nonst_space = std::const_pointer_cast<Space>(space_);
-        ar &boost::serialization::make_nvp("space_",non_nonst_space);
+        /*
+                ar.template register_type<BSplineSpace<dim,range,rank>>();
+                ar.template register_type<NURBSSpace<dim,range,rank>>();
+                auto non_nonst_space = std::const_pointer_cast<Space>(space_);
+                ar &boost::serialization::make_nvp("space_",non_nonst_space);
 
 
-        ar &boost::serialization::make_nvp("property_",const_cast<std::string &>(property_));
-//        ar &boost::serialization::make_nvp("space_elem_",space_elem_);
+                ar &boost::serialization::make_nvp("property_",const_cast<std::string &>(property_));
+        //        ar &boost::serialization::make_nvp("space_elem_",space_elem_);
 
-        ar.template register_type<BSplineElementHandler<dim,range,rank>>();
-        ar.template register_type<NURBSElementHandler<dim,range,rank>>();
-        ar &boost::serialization::make_nvp("space_elem_handler_",space_elem_handler_);
-        //*/
+                ar.template register_type<BSplineElementHandler<dim,range,rank>>();
+                ar.template register_type<NURBSElementHandler<dim,range,rank>>();
+                ar &boost::serialization::make_nvp("space_elem_handler_",space_elem_handler_);
+                //*/
         Assert(false,ExcNotImplemented());
     }
     ///@}

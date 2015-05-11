@@ -115,7 +115,7 @@ public:
     virtual void reset_selected_elements(
         const ValueFlags &flag,
         const eval_pts_variant &eval_points,
-        const SafeSTLVector<int> elements_flat_id) = 0;
+        const SafeSTLVector<int> &elements_flat_id) = 0;
     ///@}
 
 

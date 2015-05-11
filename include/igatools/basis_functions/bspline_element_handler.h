@@ -132,7 +132,7 @@ public:
     virtual void reset_selected_elements(
         const ValueFlags &flag,
         const eval_pts_variant &eval_points,
-        const SafeSTLVector<int> elements_flat_id) override final;
+        const SafeSTLVector<int> &elements_flat_id) override final;
     ///@}
 
     virtual void init_cache(RefElementAccessor &elem,
@@ -210,14 +210,27 @@ private:
 
     struct ResetDispatcher : boost::static_visitor<void>
     {
+        ResetDispatcher(const Space &space,
+                        const ValueFlags flag_in,
+                        GridElementHandler<dim_> &grid_handler,
+                        SafeSTLArray<ValueFlags, dim+1> &flags,
+                        CacheList<GlobalCache, dim> &splines1d)
+            :
+            space_(space),
+            flag_(flag_in),
+            grid_handler_(grid_handler),
+            flags_(flags),
+            splines1d_(splines1d)
+        {}
+
         template<int sub_elem_dim>
         void operator()(const Quadrature<sub_elem_dim> &quad);
 
-        GridElementHandler<dim_> *grid_handler_;
-        ValueFlags flag_;
-        SafeSTLArray<ValueFlags, dim+1> *flags_;
-        CacheList<GlobalCache, dim> *splines1d_;
-        const Space *space_;
+        const Space &space_;
+        const ValueFlags flag_;
+        GridElementHandler<dim_> &grid_handler_;
+        SafeSTLArray<ValueFlags, dim+1> &flags_;
+        CacheList<GlobalCache, dim> &splines1d_;
 
         /**
          * id of the intervals that must be processed
@@ -225,7 +238,7 @@ private:
         SafeSTLArray<SafeSTLVector<int>,dim> intervals_id_directions_;
     };
 
-    ResetDispatcher reset_impl_;
+//    ResetDispatcher reset_impl_;
 
     struct InitCacheDispatcher : boost::static_visitor<void>
     {
@@ -246,7 +259,6 @@ private:
         SafeSTLArray<ValueFlags, dim+1> &flags_;
     };
 
-//    InitCacheDispatcher init_cache_impl_;
 
 
     struct FillCacheDispatcher : boost::static_visitor<void>
