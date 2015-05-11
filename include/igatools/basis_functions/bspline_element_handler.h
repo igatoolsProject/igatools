@@ -119,7 +119,7 @@ public:
      */
     virtual ~BSplineElementHandler() = default;
 
-    static std::shared_ptr<base_t> create(std::shared_ptr<const Space> space);
+    static std::shared_ptr<self_t> create(std::shared_ptr<const Space> space);
 
     using topology_variant = typename base_t::topology_variant;
     using eval_pts_variant = typename base_t::eval_pts_variant;
@@ -229,15 +229,24 @@ private:
 
     struct InitCacheDispatcher : boost::static_visitor<void>
     {
+        InitCacheDispatcher(GridElementHandler<dim_> &grid_handler,
+                            ReferenceElement<dim_,range_,rank_> &elem,
+                            SafeSTLArray<ValueFlags, dim+1> &flags)
+            :
+            grid_handler_(grid_handler),
+            elem_(elem),
+            flags_(flags)
+        {}
+
         template<int sub_elem_dim>
         void operator()(const Topology<sub_elem_dim> &sub_elem);
 
-        GridElementHandler<dim_> *grid_handler_;
-        ReferenceElement<dim_,range_,rank_> *elem_;
-        SafeSTLArray<ValueFlags, dim+1> *flags_;
+        GridElementHandler<dim_> &grid_handler_;
+        ReferenceElement<dim_,range_,rank_> &elem_;
+        SafeSTLArray<ValueFlags, dim+1> &flags_;
     };
 
-    InitCacheDispatcher init_cache_impl_;
+//    InitCacheDispatcher init_cache_impl_;
 
 
     struct FillCacheDispatcher : boost::static_visitor<void>

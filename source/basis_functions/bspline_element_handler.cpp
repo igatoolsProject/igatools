@@ -172,7 +172,7 @@ BSplineElementHandler(shared_ptr<const Space> space)
 template<int dim_, int range_ , int rank_>
 auto
 BSplineElementHandler<dim_, range_, rank_>::
-create(std::shared_ptr<const Space> space) -> std::shared_ptr<base_t>
+create(std::shared_ptr<const Space> space) -> std::shared_ptr<self_t>
 {
     return std::shared_ptr<self_t>(new self_t(space));
 }
@@ -440,12 +440,10 @@ BSplineElementHandler<dim_, range_, rank_>::
 InitCacheDispatcher::
 operator()(const Topology<sub_elem_dim> &sub_elem)
 {
-    Assert(grid_handler_ != nullptr,ExcNullPtr());
-    Assert(elem_ != nullptr,ExcNullPtr());
-    grid_handler_->template init_cache<sub_elem_dim>(elem_->as_cartesian_grid_element_accessor());
+    grid_handler_.template init_cache<sub_elem_dim>(elem_.as_cartesian_grid_element_accessor());
 
 
-    auto &cache = elem_->get_local_cache();
+    auto &cache = elem_.get_local_cache();
     if (cache == nullptr)
     {
         using VCache = typename BSplineElement<dim_,range_,rank_>::parent_t::Cache;
@@ -456,9 +454,9 @@ operator()(const Topology<sub_elem_dim> &sub_elem)
         cache = std::make_shared<Cache>();
     }
 
-    const auto n_basis = elem_->get_num_basis();//elem_->get_num_basis(DofProperties::active);
-    const auto n_points = grid_handler_->template get_num_points<sub_elem_dim>();
-    const auto flag = (*flags_)[sub_elem_dim];
+    const auto n_basis = elem_.get_num_basis();//elem_->get_num_basis(DofProperties::active);
+    const auto n_points = grid_handler_.template get_num_points<sub_elem_dim>();
+    const auto flag = flags_[sub_elem_dim];
 
     for (auto &s_id: UnitElement<dim_>::template elems_ids<sub_elem_dim>())
     {
@@ -472,6 +470,11 @@ void
 BSplineElementHandler<dim_, range_, rank_>::
 init_cache(RefElementAccessor &elem, const topology_variant &topology)
 {
+    Assert(this->get_space() == elem.get_space(),
+           ExcMessage("The element accessor and the element handler cannot have different spaces."));
+
+    Assert(elem.get_space()->is_bspline(),ExcMessage("Not a BSplineElement."));
+    /*
     init_cache_impl_.grid_handler_ = &(this->grid_handler_);
 
     Assert(this->get_space() == elem.get_space(),
@@ -483,6 +486,10 @@ init_cache(RefElementAccessor &elem, const topology_variant &topology)
     init_cache_impl_.flags_ = &flags_;
 
     boost::apply_visitor(init_cache_impl_,topology);
+    //*/
+
+    auto init_cache_dispatcher = InitCacheDispatcher(this->grid_handler_,elem,flags_);
+    boost::apply_visitor(init_cache_dispatcher,topology);
 }
 
 
