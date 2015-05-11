@@ -140,7 +140,7 @@ public:
 
     virtual void fill_cache(RefElementAccessor &elem,
                             const topology_variant &topology,
-                            const int j) override final;
+                            const int sub_elem_id) override final;
 
     virtual void print_info(LogStream &out) const override final ;
 
@@ -238,7 +238,6 @@ private:
         SafeSTLArray<SafeSTLVector<int>,dim> intervals_id_directions_;
     };
 
-//    ResetDispatcher reset_impl_;
 
     struct InitCacheDispatcher : boost::static_visitor<void>
     {
@@ -263,6 +262,17 @@ private:
 
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
+        FillCacheDispatcher(const int sub_elem_id,
+                            const CacheList<GlobalCache, dim> &splines1d,
+                            GridElementHandler<dim_> &grid_handler,
+                            ReferenceElement<dim_,range_,rank_> &elem)
+            :
+            j_(sub_elem_id),
+            splines1d_(splines1d),
+            grid_handler_(grid_handler),
+            elem_(elem)
+        {}
+
         template<int sub_elem_dim>
         void operator()(const Topology<sub_elem_dim> &sub_elem);
 
@@ -295,10 +305,10 @@ private:
 
 
 
-        GridElementHandler<dim_> *grid_handler_;
-        int j_;
-        const CacheList<GlobalCache, dim> *splines1d_;
-        ReferenceElement<dim_,range_,rank_> *elem_;
+        const int j_;
+        const CacheList<GlobalCache, dim> &splines1d_;
+        GridElementHandler<dim_> &grid_handler_;
+        ReferenceElement<dim_,range_,rank_> &elem_;
 
     private:
         void
@@ -313,8 +323,6 @@ private:
                                     ValueTable<Derivative<order>> &D_phi) const;
 
     };
-
-    FillCacheDispatcher fill_cache_impl_;
 
     /**
      * Returns the BSplineSpace used to define the BSplineElementHandler object.
