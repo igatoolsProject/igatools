@@ -53,7 +53,7 @@ IgFunction(std::shared_ptr<const Space> space,
     {
         auto loc_id = epetra_map.LID(glob_dof);
         Assert(loc_id >= 0,
-               ExcMessage("The global dof " + std::to_string(glob_dof) + " not present in the input EpetraTools::Vector."));
+               ExcMessage("Global dof " + std::to_string(glob_dof) + " not present in the input EpetraTools::Vector."));
         coeff_[glob_dof] = c[loc_id];
     }
 }
@@ -70,9 +70,7 @@ IgFunction(const self_t &fun)
     property_(fun.property_),
     space_elem_(fun.space_->begin()),
     space_elem_handler_(fun.space_->get_elem_handler())
-{
-    Assert(space_ != nullptr,ExcNullPtr());
-}
+{}
 
 
 

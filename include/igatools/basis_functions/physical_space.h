@@ -34,6 +34,11 @@ IGA_NAMESPACE_OPEN
 
 class SpaceManager;
 
+//template <int,int,int> class BSplineSpace;
+//template <int,int,int> class NURBSSpace;
+template <class> class IgFunction;
+
+
 template <int,int,int,int> class PhysicalSpaceElement;
 
 template <int,int,int,int> class PhysSpaceElementHandler;
@@ -209,26 +214,9 @@ public:
 
     void print_info(LogStream &out) const;
 
-private:
-    PhysicalSpace(std::shared_ptr<RefSpace> ref_space,
-                  std::shared_ptr<MapFunc>  map_func);
-
-
-    std::shared_ptr<RefSpace> ref_space_;
-    std::shared_ptr<MapFunc>  map_func_;
-
-
-    friend ElementAccessor;
-
-public:
     std::shared_ptr<ElementHandler> get_elem_handler() const;
 
 
-protected:
-    std::shared_ptr<self_t> phys_space_previous_refinement_ = nullptr;
-
-
-public:
     std::shared_ptr<const self_t> get_space_previous_refinement() const
     {
         Assert(false,ExcNotImplemented());
@@ -236,24 +224,55 @@ public:
         return phys_space_previous_refinement_;
     }
 
-#if 0
-    // TODO (pauletti, Apr 16, 2015): Not appropriate for a physical space
+private:
+
     /**
-     * Return the maximum value of the degree, for each component, for each direction;
-     * @return
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
      */
-    int get_max_degree() const
-    {
-        return ref_space_->get_max_degree();
-    }
+    PhysicalSpace() = default;
 
-    // TODO (pauletti, Apr 16, 2015): Not appropriate for a physical space
-    const DegreeTable &get_degree() const
-    {
-        return ref_space_->get_degree();
-    }
-#endif
+    PhysicalSpace(std::shared_ptr<RefSpace> ref_space,
+                  std::shared_ptr<MapFunc>  map_func);
 
+
+    std::shared_ptr<RefSpace> ref_space_;
+    std::shared_ptr<MapFunc>  map_func_;
+
+    std::shared_ptr<self_t> phys_space_previous_refinement_ = nullptr;
+
+
+    friend ElementAccessor;
+
+
+
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("PhysicalSpace_base_t",
+                                           boost::serialization::base_object<BaseSpace>(*this));
+
+        ar.template register_type<BSplineSpace<dim_,range_,rank_> >();
+        ar.template register_type<NURBSSpace<dim_,range_,rank_> >();
+        ar &boost::serialization::make_nvp("ref_space_",ref_space_);
+        Assert(ref_space_ != nullptr,ExcNullPtr());
+
+        ar.template register_type<IgFunction<ReferenceSpace<dim,dim+codim> > >();
+        ar &boost::serialization::make_nvp("map_func_",map_func_);
+        Assert(map_func_ != nullptr,ExcNullPtr());
+
+        ar &boost::serialization::make_nvp("phys_space_previous_refinement_",phys_space_previous_refinement_);
+    }
+    ///@}
 };
 
 IGA_NAMESPACE_CLOSE

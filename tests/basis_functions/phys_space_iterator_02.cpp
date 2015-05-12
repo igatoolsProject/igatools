@@ -32,11 +32,60 @@
 #include <igatools/base/ig_function.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/physical_space.h>
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/basis_functions/phys_space_element_handler.h>
 
 using namespace EpetraTools;
+
+
+
+
+template <class Space>
+void serialize_deserialize(std::shared_ptr<Space> space)
+{
+    OUTSTART
+
+    out.begin_item("Original PhysicalSpace:");
+    space->print_info(out);
+    out.end_item();
+
+
+    std::string template_args =
+        "_dim" + std::to_string(Space::dim) +
+        "_range" + std::to_string(Space::range) +
+        "_rank" + std::to_string(Space::rank) +
+        "_codim" + std::to_string(Space::codim);
+    std::string filename = "phys_space" + template_args + ".xml";
+    std::string tag_name = "PhysicalSpace" + template_args;
+    {
+        // serialize the BSplineSpace object to an xml file
+        std::ofstream xml_ostream(filename);
+        boost::archive::xml_oarchive xml_out(xml_ostream);
+
+        xml_out << boost::serialization::make_nvp(tag_name.c_str(),space);
+        xml_ostream.close();
+    }
+
+    space.reset();
+    {
+        // de-serialize the BSplineSpace object from an xml file
+        std::ifstream xml_istream(filename);
+        boost::archive::xml_iarchive xml_in(xml_istream);
+
+        xml_in >> BOOST_SERIALIZATION_NVP(space);
+        xml_istream.close();
+    }
+    out.begin_item("PhysicalSpace after serialize-deserialize:");
+    space->print_info(out);
+    out.end_item();
+//*/
+
+    OUTEND
+}
+
+
 
 template<int dim, int codim=0>
 auto
@@ -134,6 +183,9 @@ void elem_values(const int n_knots = 2, const int deg=1)
 
     auto space = Space::create(ref_space, map_func);
 
+    serialize_deserialize(space);
+
+
     const int n_qp = 3;
     auto quad = QGauss<k>(n_qp);
 
@@ -177,6 +229,8 @@ void elem_values(const int n_knots = 2, const int deg=1)
 
         out.end_item();
     }
+
+
     OUTEND
 }
 

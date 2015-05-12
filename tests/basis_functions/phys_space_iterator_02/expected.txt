@@ -1,6 +1,203 @@
 ========================================================================
 void elem_values(int, int) [with int dim = 1; int order = 0; int range = 1; int rank = 1; int codim = 0]
 ========================================================================
+========================================================================
+void serialize_deserialize(std::shared_ptr<_Tp1>) [with Space = iga::PhysicalSpace<1, 1, 1, 0, (iga::Transformation)1>]
+========================================================================
+Original PhysicalSpace:
+   Reference space:
+      Spline Space:
+         Knots without repetition:
+            Number of intervals per direction: [ 1 ]
+            Knot coordinates:
+               Size: [ 2 ]  Weights: [2]
+               Direction: 0
+               [ 0 1.00000 ]
+            
+         
+         Degrees:
+            Raw components: 
+               Size: [ 1 ]  Weights: [1]
+               Entry id: 0
+               [ 1 ]
+            
+            Components map: 
+            [ 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ ]
+         
+         Interior multiplicities:
+            Size: [ 0 ]  Weights: [0]
+            Direction: 0
+            [ ]
+         
+         Dimensionality Table:
+            Raw components: 
+               Size: [ 1 ]  Weights: [1]
+               Entry id: 0
+               [ 2 ]
+            
+            Components map: 
+            [ 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 2 ]
+            Total Dimension: 2
+         
+      
+      DoFs Distribution:
+         Num dofs table:
+            Raw components: 
+               Size: [ 1 ]  Weights: [1]
+               Entry id: 0
+               [ 2 ]
+            
+            Components map: 
+            [ 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 2 ]
+            Total Dimension: 2
+         
+         Index table size:
+            Raw components: 
+               Size: [ 1 ]  Weights: [1]
+               Entry id: 0
+               [ 2 ]
+            
+            Components map: 
+            [ 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 2 ]
+            Total Dimension: 2
+         
+         Dof indices:
+            Size: [ 2 ]  Weights: [2]
+            [ 0 1 ]
+         
+         Dof properties:
+            IDs with property "active":
+               Num.: 2
+               Flat IDs: 0 1
+         
+      
+      Bernstein Extraction:
+         Component[0]: 
+         Direction[0]:
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+      
+   
+
+PhysicalSpace after serialize-deserialize:
+   Reference space:
+      Spline Space:
+         Knots without repetition:
+            Number of intervals per direction: [ 1 ]
+            Knot coordinates:
+               Size: [ 2 ]  Weights: [2]
+               Direction: 0
+               [ 0 1.00000 ]
+            
+         
+         Degrees:
+            Raw components: 
+               Size: [ 1 ]  Weights: [1]
+               Entry id: 0
+               [ 1 ]
+            
+            Components map: 
+            [ 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ ]
+         
+         Interior multiplicities:
+            Size: [ 0 ]  Weights: [0]
+            Direction: 0
+            [ ]
+         
+         Dimensionality Table:
+            Raw components: 
+               Size: [ 1 ]  Weights: [1]
+               Entry id: 0
+               [ 2 ]
+            
+            Components map: 
+            [ 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 2 ]
+            Total Dimension: 2
+         
+      
+      DoFs Distribution:
+         Num dofs table:
+            Raw components: 
+               Size: [ 1 ]  Weights: [1]
+               Entry id: 0
+               [ 2 ]
+            
+            Components map: 
+            [ 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 2 ]
+            Total Dimension: 2
+         
+         Index table size:
+            Raw components: 
+               Size: [ 1 ]  Weights: [1]
+               Entry id: 0
+               [ 2 ]
+            
+            Components map: 
+            [ 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 2 ]
+            Total Dimension: 2
+         
+         Dof indices:
+            Size: [ 2 ]  Weights: [2]
+            [ 0 1 ]
+         
+         Dof properties:
+            IDs with property "active":
+               Num.: 2
+               Flat IDs: 0 1
+         
+      
+      Bernstein Extraction:
+         Component[0]: 
+         Direction[0]:
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+      
+   
+
+========================================================================
+
 Element 0
    Reference space:
       Flat id = 0    Tensor id = [0]
@@ -68,6 +265,255 @@ Element 0
 ========================================================================
 void elem_values(int, int) [with int dim = 2; int order = 0; int range = 2; int rank = 1; int codim = 0]
 ========================================================================
+========================================================================
+void serialize_deserialize(std::shared_ptr<_Tp1>) [with Space = iga::PhysicalSpace<2, 2, 1, 0, (iga::Transformation)1>]
+========================================================================
+Original PhysicalSpace:
+   Reference space:
+      Spline Space:
+         Knots without repetition:
+            Number of intervals per direction: [ 1 1 ]
+            Knot coordinates:
+               Size: [ 2 2 ]  Weights: [2,4]
+               Direction: 0
+               [ 0 1.00000 ]
+               Direction: 1
+               [ 0 1.00000 ]
+            
+         
+         Degrees:
+            Raw components: 
+               Size: [ 2 ]  Weights: [2]
+               Entry id: 0
+               [ 1 1 ]
+               Entry id: 1
+               [ 0 0 ]
+            
+            Components map: 
+            [ 0 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ 1 ]
+         
+         Interior multiplicities:
+            Size: [ 0 0 ]  Weights: [0,0]
+            Direction: 0
+            [ ]
+            Direction: 1
+            [ ]
+            Size: [ 0 0 ]  Weights: [0,0]
+            Direction: 0
+            [ ]
+            Direction: 1
+            [ ]
+         
+         Dimensionality Table:
+            Raw components: 
+               Size: [ 2 ]  Weights: [2]
+               Entry id: 0
+               [ 2 2 ]
+               Entry id: 1
+               [ 2 2 ]
+            
+            Components map: 
+            [ 0 1 ]
+            Active components ids: 
+            [ 0 1 ]
+            Inactive components ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 4 4 ]
+            Total Dimension: 8
+         
+      
+      DoFs Distribution:
+         Num dofs table:
+            Raw components: 
+               Size: [ 2 ]  Weights: [2]
+               Entry id: 0
+               [ 2 2 ]
+               Entry id: 1
+               [ 2 2 ]
+            
+            Components map: 
+            [ 0 1 ]
+            Active components ids: 
+            [ 0 1 ]
+            Inactive components ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 4 4 ]
+            Total Dimension: 8
+         
+         Index table size:
+            Raw components: 
+               Size: [ 2 ]  Weights: [2]
+               Entry id: 0
+               [ 2 2 ]
+               Entry id: 1
+               [ 2 2 ]
+            
+            Components map: 
+            [ 0 1 ]
+            Active components ids: 
+            [ 0 1 ]
+            Inactive components ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 4 4 ]
+            Total Dimension: 8
+         
+         Dof indices:
+            Size: [ 2 2 ]  Weights: [2,4]
+            [ 0 1 2 3 ]
+            Size: [ 2 2 ]  Weights: [2,4]
+            [ 4 5 6 7 ]
+         
+         Dof properties:
+            IDs with property "active":
+               Num.: 8
+               Flat IDs: 0 1 2 3 4 5 6 7
+         
+      
+      Bernstein Extraction:
+         Component[0]: 
+         Direction[0]:
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         Direction[1]:
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         Component[1]: 
+         Direction[0]:
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         Direction[1]:
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+      
+   
+
+PhysicalSpace after serialize-deserialize:
+   Reference space:
+      Spline Space:
+         Knots without repetition:
+            Number of intervals per direction: [ 1 1 ]
+            Knot coordinates:
+               Size: [ 2 2 ]  Weights: [2,4]
+               Direction: 0
+               [ 0 1.00000 ]
+               Direction: 1
+               [ 0 1.00000 ]
+            
+         
+         Degrees:
+            Raw components: 
+               Size: [ 2 ]  Weights: [2]
+               Entry id: 0
+               [ 1 1 ]
+               Entry id: 1
+               [ 0 0 ]
+            
+            Components map: 
+            [ 0 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ 1 ]
+         
+         Interior multiplicities:
+            Size: [ 0 0 ]  Weights: [0,0]
+            Direction: 0
+            [ ]
+            Direction: 1
+            [ ]
+            Size: [ 0 0 ]  Weights: [0,0]
+            Direction: 0
+            [ ]
+            Direction: 1
+            [ ]
+         
+         Dimensionality Table:
+            Raw components: 
+               Size: [ 2 ]  Weights: [2]
+               Entry id: 0
+               [ 2 2 ]
+               Entry id: 1
+               [ 2 2 ]
+            
+            Components map: 
+            [ 0 1 ]
+            Active components ids: 
+            [ 0 1 ]
+            Inactive components ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 4 4 ]
+            Total Dimension: 8
+         
+      
+      DoFs Distribution:
+         Num dofs table:
+            Raw components: 
+               Size: [ 2 ]  Weights: [2]
+               Entry id: 0
+               [ 2 2 ]
+               Entry id: 1
+               [ 2 2 ]
+            
+            Components map: 
+            [ 0 1 ]
+            Active components ids: 
+            [ 0 1 ]
+            Inactive components ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 4 4 ]
+            Total Dimension: 8
+         
+         Index table size:
+            Raw components: 
+               Size: [ 2 ]  Weights: [2]
+               Entry id: 0
+               [ 2 2 ]
+               Entry id: 1
+               [ 2 2 ]
+            
+            Components map: 
+            [ 0 1 ]
+            Active components ids: 
+            [ 0 1 ]
+            Inactive components ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 4 4 ]
+            Total Dimension: 8
+         
+         Dof indices:
+            Size: [ 2 2 ]  Weights: [2,4]
+            [ 0 1 2 3 ]
+            Size: [ 2 2 ]  Weights: [2,4]
+            [ 4 5 6 7 ]
+         
+         Dof properties:
+            IDs with property "active":
+               Num.: 8
+               Flat IDs: 0 1 2 3 4 5 6 7
+         
+      
+      Bernstein Extraction:
+         Component[0]: 
+         Direction[0]:
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         Direction[1]:
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         Component[1]: 
+         Direction[0]:
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         Direction[1]:
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+      
+   
+
+========================================================================
+
 Element 0
    Reference space:
       Flat id = 0    Tensor id = [0,0]
@@ -185,6 +631,323 @@ Element 0
 ========================================================================
 void elem_values(int, int) [with int dim = 3; int order = 0; int range = 3; int rank = 1; int codim = 0]
 ========================================================================
+========================================================================
+void serialize_deserialize(std::shared_ptr<_Tp1>) [with Space = iga::PhysicalSpace<3, 3, 1, 0, (iga::Transformation)1>]
+========================================================================
+Original PhysicalSpace:
+   Reference space:
+      Spline Space:
+         Knots without repetition:
+            Number of intervals per direction: [ 1 1 1 ]
+            Knot coordinates:
+               Size: [ 2 2 2 ]  Weights: [2,4,8]
+               Direction: 0
+               [ 0 1.00000 ]
+               Direction: 1
+               [ 0 1.00000 ]
+               Direction: 2
+               [ 0 1.00000 ]
+            
+         
+         Degrees:
+            Raw components: 
+               Size: [ 3 ]  Weights: [3]
+               Entry id: 0
+               [ 1 1 1 ]
+               Entry id: 1
+               [ 0 0 0 ]
+               Entry id: 2
+               [ 0 0 0 ]
+            
+            Components map: 
+            [ 0 0 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ 1 2 ]
+         
+         Interior multiplicities:
+            Size: [ 0 0 0 ]  Weights: [0,0,0]
+            Direction: 0
+            [ ]
+            Direction: 1
+            [ ]
+            Direction: 2
+            [ ]
+            Size: [ 0 0 0 ]  Weights: [0,0,0]
+            Direction: 0
+            [ ]
+            Direction: 1
+            [ ]
+            Direction: 2
+            [ ]
+            Size: [ 0 0 0 ]  Weights: [0,0,0]
+            Direction: 0
+            [ ]
+            Direction: 1
+            [ ]
+            Direction: 2
+            [ ]
+         
+         Dimensionality Table:
+            Raw components: 
+               Size: [ 3 ]  Weights: [3]
+               Entry id: 0
+               [ 2 2 2 ]
+               Entry id: 1
+               [ 2 2 2 ]
+               Entry id: 2
+               [ 2 2 2 ]
+            
+            Components map: 
+            [ 0 1 2 ]
+            Active components ids: 
+            [ 0 1 2 ]
+            Inactive components ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 8 8 8 ]
+            Total Dimension: 24
+         
+      
+      DoFs Distribution:
+         Num dofs table:
+            Raw components: 
+               Size: [ 3 ]  Weights: [3]
+               Entry id: 0
+               [ 2 2 2 ]
+               Entry id: 1
+               [ 2 2 2 ]
+               Entry id: 2
+               [ 2 2 2 ]
+            
+            Components map: 
+            [ 0 1 2 ]
+            Active components ids: 
+            [ 0 1 2 ]
+            Inactive components ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 8 8 8 ]
+            Total Dimension: 24
+         
+         Index table size:
+            Raw components: 
+               Size: [ 3 ]  Weights: [3]
+               Entry id: 0
+               [ 2 2 2 ]
+               Entry id: 1
+               [ 2 2 2 ]
+               Entry id: 2
+               [ 2 2 2 ]
+            
+            Components map: 
+            [ 0 1 2 ]
+            Active components ids: 
+            [ 0 1 2 ]
+            Inactive components ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 8 8 8 ]
+            Total Dimension: 24
+         
+         Dof indices:
+            Size: [ 2 2 2 ]  Weights: [2,4,8]
+            [ 0 1 2 3 4 5 6 7 ]
+            Size: [ 2 2 2 ]  Weights: [2,4,8]
+            [ 8 9 10 11 12 13 14 15 ]
+            Size: [ 2 2 2 ]  Weights: [2,4,8]
+            [ 16 17 18 19 20 21 22 23 ]
+         
+         Dof properties:
+            IDs with property "active":
+               Num.: 24
+               Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
+         
+      
+      Bernstein Extraction:
+         Component[0]: 
+         Direction[0]:
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         Direction[1]:
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         Direction[2]:
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         Component[1]: 
+         Direction[0]:
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         Direction[1]:
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         Direction[2]:
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         Component[2]: 
+         Direction[0]:
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         Direction[1]:
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         Direction[2]:
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+      
+   
+
+PhysicalSpace after serialize-deserialize:
+   Reference space:
+      Spline Space:
+         Knots without repetition:
+            Number of intervals per direction: [ 1 1 1 ]
+            Knot coordinates:
+               Size: [ 2 2 2 ]  Weights: [2,4,8]
+               Direction: 0
+               [ 0 1.00000 ]
+               Direction: 1
+               [ 0 1.00000 ]
+               Direction: 2
+               [ 0 1.00000 ]
+            
+         
+         Degrees:
+            Raw components: 
+               Size: [ 3 ]  Weights: [3]
+               Entry id: 0
+               [ 1 1 1 ]
+               Entry id: 1
+               [ 0 0 0 ]
+               Entry id: 2
+               [ 0 0 0 ]
+            
+            Components map: 
+            [ 0 0 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ 1 2 ]
+         
+         Interior multiplicities:
+            Size: [ 0 0 0 ]  Weights: [0,0,0]
+            Direction: 0
+            [ ]
+            Direction: 1
+            [ ]
+            Direction: 2
+            [ ]
+            Size: [ 0 0 0 ]  Weights: [0,0,0]
+            Direction: 0
+            [ ]
+            Direction: 1
+            [ ]
+            Direction: 2
+            [ ]
+            Size: [ 0 0 0 ]  Weights: [0,0,0]
+            Direction: 0
+            [ ]
+            Direction: 1
+            [ ]
+            Direction: 2
+            [ ]
+         
+         Dimensionality Table:
+            Raw components: 
+               Size: [ 3 ]  Weights: [3]
+               Entry id: 0
+               [ 2 2 2 ]
+               Entry id: 1
+               [ 2 2 2 ]
+               Entry id: 2
+               [ 2 2 2 ]
+            
+            Components map: 
+            [ 0 1 2 ]
+            Active components ids: 
+            [ 0 1 2 ]
+            Inactive components ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 8 8 8 ]
+            Total Dimension: 24
+         
+      
+      DoFs Distribution:
+         Num dofs table:
+            Raw components: 
+               Size: [ 3 ]  Weights: [3]
+               Entry id: 0
+               [ 2 2 2 ]
+               Entry id: 1
+               [ 2 2 2 ]
+               Entry id: 2
+               [ 2 2 2 ]
+            
+            Components map: 
+            [ 0 1 2 ]
+            Active components ids: 
+            [ 0 1 2 ]
+            Inactive components ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 8 8 8 ]
+            Total Dimension: 24
+         
+         Index table size:
+            Raw components: 
+               Size: [ 3 ]  Weights: [3]
+               Entry id: 0
+               [ 2 2 2 ]
+               Entry id: 1
+               [ 2 2 2 ]
+               Entry id: 2
+               [ 2 2 2 ]
+            
+            Components map: 
+            [ 0 1 2 ]
+            Active components ids: 
+            [ 0 1 2 ]
+            Inactive components ids: 
+            [ ]
+            Scalar components dimensions:
+            [ 8 8 8 ]
+            Total Dimension: 24
+         
+         Dof indices:
+            Size: [ 2 2 2 ]  Weights: [2,4,8]
+            [ 0 1 2 3 4 5 6 7 ]
+            Size: [ 2 2 2 ]  Weights: [2,4,8]
+            [ 8 9 10 11 12 13 14 15 ]
+            Size: [ 2 2 2 ]  Weights: [2,4,8]
+            [ 16 17 18 19 20 21 22 23 ]
+         
+         Dof properties:
+            IDs with property "active":
+               Num.: 24
+               Flat IDs: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
+         
+      
+      Bernstein Extraction:
+         Component[0]: 
+         Direction[0]:
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         Direction[1]:
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         Direction[2]:
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         Component[1]: 
+         Direction[0]:
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         Direction[1]:
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         Direction[2]:
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         Component[2]: 
+         Direction[0]:
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         Direction[1]:
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         Direction[2]:
+         [2,2]((1.00000,0.00000),(0.00000,1.00000))
+      
+   
+
+========================================================================
+
 Element 0
    Reference space:
       Flat id = 0    Tensor id = [0,0,0]
