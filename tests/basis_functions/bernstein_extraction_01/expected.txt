@@ -1,4 +1,4 @@
-Raw componets: 
+Raw components: 
    Size: [ 1 ]  Weights: [1]
    Entry id: 0
       Size: [ 8 ]  Weights: [8]
@@ -8,9 +8,9 @@ Raw componets:
 
 Components map: 
 [ 0 ]
-Active componets ids: 
+Active components ids: 
 [ 0 ]
-Inactive componets ids: 
+Inactive components ids: 
 [ ]
 Component[0]: 
 Direction[0]:

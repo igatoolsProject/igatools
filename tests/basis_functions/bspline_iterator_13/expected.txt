@@ -5,16 +5,16 @@ Flat id = 0    Tensor id = [0]
 Element global connectivity (property="active"):
 [ 0 1 ]
 Number of element basis: 
-   Raw componets: 
+   Raw components: 
       Size: [ 1 ]  Weights: [1]
       Entry id: 0
       [ 2 ]
    
    Components map: 
    [ 0 ]
-   Active componets ids: 
+   Active components ids: 
    [ 0 ]
-   Inactive componets ids: 
+   Inactive components ids: 
    [ ]
    Scalar components dimensions:
    [ 2 ]
@@ -149,16 +149,16 @@ Flat id = 0    Tensor id = [0]
 Element global connectivity (property="active"):
 [ 0 1 ]
 Number of element basis: 
-   Raw componets: 
+   Raw components: 
       Size: [ 1 ]  Weights: [1]
       Entry id: 0
       [ 2 ]
    
    Components map: 
    [ 0 ]
-   Active componets ids: 
+   Active components ids: 
    [ 0 ]
-   Inactive componets ids: 
+   Inactive components ids: 
    [ ]
    Scalar components dimensions:
    [ 2 ]
@@ -289,16 +289,16 @@ Flat id = 0    Tensor id = [0]
 Element global connectivity (property="active"):
 [ 0 1 ]
 Number of element basis: 
-   Raw componets: 
+   Raw components: 
       Size: [ 1 ]  Weights: [1]
       Entry id: 0
       [ 2 ]
    
    Components map: 
    [ 0 ]
-   Active componets ids: 
+   Active components ids: 
    [ 0 ]
-   Inactive componets ids: 
+   Inactive components ids: 
    [ ]
    Scalar components dimensions:
    [ 2 ]

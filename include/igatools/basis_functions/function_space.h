@@ -59,9 +59,9 @@ public:
         const std::string &dofs_property = DofProperties::active) const = 0;
 
 
-protected:
     /** @name Constructor and destructor. */
     ///@{
+protected:
     /**
      * Default constructor. It does nothing but it is needed for the
      * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -78,6 +78,7 @@ protected:
     /** Move constructor. */
     FunctionSpaceOnGrid(self_t &&grid) = default;
 
+public:
     /** Destructor. */
     virtual ~FunctionSpaceOnGrid() = default;
     ///@}

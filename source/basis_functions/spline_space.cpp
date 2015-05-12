@@ -80,6 +80,17 @@ SplineSpace<dim, range, rank>::
 init()
 {
     //------------------------------------------------------------------------------
+    // the default value of a bool variable is undefined, so we need to set
+    // set the values of the inactive components of the perodicity table to true or false (we use false)
+    using PeriodicAsMArray = StaticMultiArray<Periodicity,range,rank>;
+    PeriodicAsMArray &periodic_as_static_m_array = static_cast<PeriodicAsMArray &>(periodic_);
+    for (const auto inactive_id : periodic_.get_inactive_components_id())
+        periodic_as_static_m_array[inactive_id] = Periodicity(false);
+    //------------------------------------------------------------------------------
+
+
+
+    //------------------------------------------------------------------------------
     // Determine the dimensionality of the spline space --- begin
     typename TensorSizeTable::base_t n_basis;
     for (const auto comp : components)

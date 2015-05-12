@@ -54,6 +54,8 @@ IGA_NAMESPACE_OPEN
  *
  * @author S.Pauletti, 2012, 2013, 2014
  * @author M.Martinelli, 2013, 2014, 2105
+ *
+ * @ingroup serializable
  */
 template <int dim>
 class CartesianGridElement
@@ -70,11 +72,15 @@ public:
 
     /** @name Constructors */
     ///@{
+protected:
     /**
-     * Default constructor. Not allowed to be used.
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
      */
-    CartesianGridElement() = delete;
+    CartesianGridElement() = default;
 
+public:
     /**
      * Construct an accessor pointing to the element with
      * flat index @p elem_index of the CartesianGrid @p grid.
@@ -370,6 +376,33 @@ private:
      * of deep_copy_from().
      */
     std::shared_ptr<CartesianGridElement<dim> > clone() const;
+
+
+private:
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        auto non_const_grid = std::const_pointer_cast<CartesianGrid<dim>>(grid_);
+        ar &boost::serialization::make_nvp("grid_",non_const_grid);
+        grid_ = non_const_grid;
+        Assert(grid_ != nullptr,ExcNullPtr());
+
+        ar &boost::serialization::make_nvp("flat_index_",flat_index_);
+
+        ar &boost::serialization::make_nvp("tensor_index_",tensor_index_);
+
+        ar &boost::serialization::make_nvp("all_sub_elems_cache_",all_sub_elems_cache_);
+    }
+    ///@}
+
 };
 
 IGA_NAMESPACE_CLOSE

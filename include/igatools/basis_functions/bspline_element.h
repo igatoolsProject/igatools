@@ -37,6 +37,7 @@ template <class Accessor> class CartesianGridIterator;
 /**
  * See module on \ref accessors_iterators for a general overview.
  * @ingroup elements
+ * @ingroup serializable
  */
 template <int dim, int range, int rank>
 class BSplineElement :
@@ -64,13 +65,17 @@ public:
     using typename parent_t::Point;
     using typename parent_t::Value;
 
-public:
     /** @name Constructors */
     ///@{
+public:
     /**
-     * Default constructor
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
      */
-    BSplineElement() = delete;
+    BSplineElement() = default;
+
+
 
     /**
      * Constructs an accessor to element number index of a
@@ -172,6 +177,27 @@ public:
 
     virtual std::shared_ptr<ReferenceElement<dim,range,rank> >
     clone() const override final;
+
+
+private:
+
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("BSplineElement_base_t",
+                                           boost::serialization::base_object<ReferenceElement<dim,range,rank>>(*this));
+
+    }
+    ///@}
+
 };
 
 IGA_NAMESPACE_CLOSE

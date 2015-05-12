@@ -13,7 +13,7 @@ Spline Space:
       
    
    Degrees:
-      Raw componets: 
+      Raw components: 
          Size: [ 3 ]  Weights: [3]
          Entry id: 0
          [ 3 3 ]
@@ -24,9 +24,9 @@ Spline Space:
       
       Components map: 
       [ 0 0 0 ]
-      Active componets ids: 
+      Active components ids: 
       [ 0 ]
-      Inactive componets ids: 
+      Inactive components ids: 
       [ 1 2 ]
    
    Interior multiplicities:
@@ -47,7 +47,7 @@ Spline Space:
       [ 1 1 1 1 1 1 1 1 ]
    
    Dimensionality Table:
-      Raw componets: 
+      Raw components: 
          Size: [ 3 ]  Weights: [3]
          Entry id: 0
          [ 8 12 ]
@@ -58,9 +58,9 @@ Spline Space:
       
       Components map: 
       [ 0 1 2 ]
-      Active componets ids: 
+      Active components ids: 
       [ 0 1 2 ]
-      Inactive componets ids: 
+      Inactive components ids: 
       [ ]
       Scalar components dimensions:
       [ 96 96 96 ]
@@ -69,7 +69,7 @@ Spline Space:
 
 DoFs Distribution:
    Num dofs table:
-      Raw componets: 
+      Raw components: 
          Size: [ 3 ]  Weights: [3]
          Entry id: 0
          [ 8 12 ]
@@ -80,16 +80,16 @@ DoFs Distribution:
       
       Components map: 
       [ 0 1 2 ]
-      Active componets ids: 
+      Active components ids: 
       [ 0 1 2 ]
-      Inactive componets ids: 
+      Inactive components ids: 
       [ ]
       Scalar components dimensions:
       [ 96 96 96 ]
       Total Dimension: 288
    
    Index table size:
-      Raw componets: 
+      Raw components: 
          Size: [ 3 ]  Weights: [3]
          Entry id: 0
          [ 12 12 ]
@@ -100,9 +100,9 @@ DoFs Distribution:
       
       Components map: 
       [ 0 1 2 ]
-      Active componets ids: 
+      Active components ids: 
       [ 0 1 2 ]
-      Inactive componets ids: 
+      Inactive components ids: 
       [ ]
       Scalar components dimensions:
       [ 144 144 144 ]
@@ -199,16 +199,16 @@ Spline Space:
       
    
    Degrees:
-      Raw componets: 
+      Raw components: 
          Size: [ 1 ]  Weights: [1]
          Entry id: 0
          [ 3 3 ]
       
       Components map: 
       [ 0 ]
-      Active componets ids: 
+      Active components ids: 
       [ 0 ]
-      Inactive componets ids: 
+      Inactive components ids: 
       [ ]
    
    Interior multiplicities:
@@ -219,16 +219,16 @@ Spline Space:
       [ 1 1 1 1 1 1 1 1 ]
    
    Dimensionality Table:
-      Raw componets: 
+      Raw components: 
          Size: [ 1 ]  Weights: [1]
          Entry id: 0
          [ 8 12 ]
       
       Components map: 
       [ 0 ]
-      Active componets ids: 
+      Active components ids: 
       [ 0 ]
-      Inactive componets ids: 
+      Inactive components ids: 
       [ ]
       Scalar components dimensions:
       [ 96 ]
@@ -237,32 +237,32 @@ Spline Space:
 
 DoFs Distribution:
    Num dofs table:
-      Raw componets: 
+      Raw components: 
          Size: [ 1 ]  Weights: [1]
          Entry id: 0
          [ 8 12 ]
       
       Components map: 
       [ 0 ]
-      Active componets ids: 
+      Active components ids: 
       [ 0 ]
-      Inactive componets ids: 
+      Inactive components ids: 
       [ ]
       Scalar components dimensions:
       [ 96 ]
       Total Dimension: 96
    
    Index table size:
-      Raw componets: 
+      Raw components: 
          Size: [ 1 ]  Weights: [1]
          Entry id: 0
          [ 12 12 ]
       
       Components map: 
       [ 0 ]
-      Active componets ids: 
+      Active components ids: 
       [ 0 ]
-      Inactive componets ids: 
+      Inactive components ids: 
       [ ]
       Scalar components dimensions:
       [ 144 ]

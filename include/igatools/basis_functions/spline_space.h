@@ -386,7 +386,7 @@ public:
         void
         print_info(LogStream &out) const
         {
-            out.begin_item("Raw componets: ");
+            out.begin_item("Raw components: ");
             base_t::print_info(out);
             out.end_item();
 
@@ -394,11 +394,11 @@ public:
             comp_map_.print_info(out);
             out.end_item();
 
-            out.begin_item("Active componets ids: ");
+            out.begin_item("Active components ids: ");
             active_components_id_.print_info(out);
             out.end_item();
 
-            out.begin_item("Inactive componets ids: ");
+            out.begin_item("Inactive components ids: ");
             inactive_components_id_.print_info(out);
             out.end_item();
         }
@@ -430,15 +430,23 @@ public:
         void
         serialize(Archive &ar, const unsigned int version)
         {
+
             ar &boost::serialization::make_nvp(
                 "ComponentContainer_base_t",
                 boost::serialization::base_object<base_t>(*this));
-
+//*/
             ar &boost::serialization::make_nvp("comp_map_",comp_map_);
 
             ar &boost::serialization::make_nvp("active_components_id_", active_components_id_);
 
             ar &boost::serialization::make_nvp("inactive_components_id_", inactive_components_id_);
+            /*
+                        for (const auto active_id : active_components_id_)
+                        {
+                            std::string tag_name = "raw_data[" + std::to_string(active_id) + "]";
+                            ar &boost::serialization::make_nvp(tag_name.c_str, base_t::operator[](active_id));
+                        }
+                        //*/
         }
         ///@}
 

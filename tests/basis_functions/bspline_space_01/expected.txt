@@ -10,32 +10,32 @@ Original BSplineSpace:
          
       
       Degrees:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
       
       Interior multiplicities:
          Size: [ ]  Weights: []
       
       Dimensionality Table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 1 ]
@@ -44,32 +44,32 @@ Original BSplineSpace:
    
    DoFs Distribution:
       Num dofs table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 1 ]
          Total Dimension: 1
       
       Index table size:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 1 ]
@@ -98,32 +98,32 @@ BSplineSpace after serialize-deserialize:
          
       
       Degrees:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
       
       Interior multiplicities:
          Size: [ ]  Weights: []
       
       Dimensionality Table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 1 ]
@@ -132,32 +132,32 @@ BSplineSpace after serialize-deserialize:
    
    DoFs Distribution:
       Num dofs table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 1 ]
          Total Dimension: 1
       
       Index table size:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 1 ]
@@ -193,16 +193,16 @@ Original BSplineSpace:
          
       
       Degrees:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 1 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
       
       Interior multiplicities:
@@ -211,16 +211,16 @@ Original BSplineSpace:
          [ ]
       
       Dimensionality Table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 2 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 2 ]
@@ -229,32 +229,32 @@ Original BSplineSpace:
    
    DoFs Distribution:
       Num dofs table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 2 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 2 ]
          Total Dimension: 2
       
       Index table size:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 2 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 2 ]
@@ -287,16 +287,16 @@ BSplineSpace after serialize-deserialize:
          
       
       Degrees:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 1 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
       
       Interior multiplicities:
@@ -305,16 +305,16 @@ BSplineSpace after serialize-deserialize:
          [ ]
       
       Dimensionality Table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 2 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 2 ]
@@ -323,32 +323,32 @@ BSplineSpace after serialize-deserialize:
    
    DoFs Distribution:
       Num dofs table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 2 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 2 ]
          Total Dimension: 2
       
       Index table size:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 2 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 2 ]
@@ -388,16 +388,16 @@ Original BSplineSpace:
          
       
       Degrees:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 1 1 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
       
       Interior multiplicities:
@@ -408,16 +408,16 @@ Original BSplineSpace:
          [ ]
       
       Dimensionality Table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 2 2 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 4 ]
@@ -426,32 +426,32 @@ Original BSplineSpace:
    
    DoFs Distribution:
       Num dofs table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 2 2 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 4 ]
          Total Dimension: 4
       
       Index table size:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 2 2 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 4 ]
@@ -488,16 +488,16 @@ BSplineSpace after serialize-deserialize:
          
       
       Degrees:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 1 1 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
       
       Interior multiplicities:
@@ -508,16 +508,16 @@ BSplineSpace after serialize-deserialize:
          [ ]
       
       Dimensionality Table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 2 2 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 4 ]
@@ -526,32 +526,32 @@ BSplineSpace after serialize-deserialize:
    
    DoFs Distribution:
       Num dofs table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 2 2 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 4 ]
          Total Dimension: 4
       
       Index table size:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 2 2 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 4 ]
@@ -595,16 +595,16 @@ Original BSplineSpace:
          
       
       Degrees:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 1 1 1 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
       
       Interior multiplicities:
@@ -617,16 +617,16 @@ Original BSplineSpace:
          [ ]
       
       Dimensionality Table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 2 2 2 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 8 ]
@@ -635,32 +635,32 @@ Original BSplineSpace:
    
    DoFs Distribution:
       Num dofs table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 2 2 2 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 8 ]
          Total Dimension: 8
       
       Index table size:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 2 2 2 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 8 ]
@@ -701,16 +701,16 @@ BSplineSpace after serialize-deserialize:
          
       
       Degrees:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 1 1 1 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
       
       Interior multiplicities:
@@ -723,16 +723,16 @@ BSplineSpace after serialize-deserialize:
          [ ]
       
       Dimensionality Table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 2 2 2 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 8 ]
@@ -741,32 +741,32 @@ BSplineSpace after serialize-deserialize:
    
    DoFs Distribution:
       Num dofs table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 2 2 2 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 8 ]
          Total Dimension: 8
       
       Index table size:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 2 2 2 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 8 ]
@@ -806,32 +806,32 @@ Original BSplineSpace:
          
       
       Degrees:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
       
       Interior multiplicities:
          Size: [ ]  Weights: []
       
       Dimensionality Table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 1 ]
@@ -840,32 +840,32 @@ Original BSplineSpace:
    
    DoFs Distribution:
       Num dofs table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 1 ]
          Total Dimension: 1
       
       Index table size:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 1 ]
@@ -894,32 +894,32 @@ BSplineSpace after serialize-deserialize:
          
       
       Degrees:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
       
       Interior multiplicities:
          Size: [ ]  Weights: []
       
       Dimensionality Table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 1 ]
@@ -928,32 +928,32 @@ BSplineSpace after serialize-deserialize:
    
    DoFs Distribution:
       Num dofs table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 1 ]
          Total Dimension: 1
       
       Index table size:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 1 ]
@@ -989,16 +989,16 @@ Original BSplineSpace:
          
       
       Degrees:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 1 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
       
       Interior multiplicities:
@@ -1007,16 +1007,16 @@ Original BSplineSpace:
          [ ]
       
       Dimensionality Table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 2 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 2 ]
@@ -1025,32 +1025,32 @@ Original BSplineSpace:
    
    DoFs Distribution:
       Num dofs table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 2 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 2 ]
          Total Dimension: 2
       
       Index table size:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 2 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 2 ]
@@ -1083,16 +1083,16 @@ BSplineSpace after serialize-deserialize:
          
       
       Degrees:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 1 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
       
       Interior multiplicities:
@@ -1101,16 +1101,16 @@ BSplineSpace after serialize-deserialize:
          [ ]
       
       Dimensionality Table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 2 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 2 ]
@@ -1119,32 +1119,32 @@ BSplineSpace after serialize-deserialize:
    
    DoFs Distribution:
       Num dofs table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 2 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 2 ]
          Total Dimension: 2
       
       Index table size:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 2 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 2 ]
@@ -1184,16 +1184,16 @@ Original BSplineSpace:
          
       
       Degrees:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 2 3 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
       
       Interior multiplicities:
@@ -1204,16 +1204,16 @@ Original BSplineSpace:
          [ ]
       
       Dimensionality Table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 3 4 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 12 ]
@@ -1222,32 +1222,32 @@ Original BSplineSpace:
    
    DoFs Distribution:
       Num dofs table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 3 4 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 12 ]
          Total Dimension: 12
       
       Index table size:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 3 4 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 12 ]
@@ -1284,16 +1284,16 @@ BSplineSpace after serialize-deserialize:
          
       
       Degrees:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 2 3 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
       
       Interior multiplicities:
@@ -1304,16 +1304,16 @@ BSplineSpace after serialize-deserialize:
          [ ]
       
       Dimensionality Table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 3 4 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 12 ]
@@ -1322,32 +1322,32 @@ BSplineSpace after serialize-deserialize:
    
    DoFs Distribution:
       Num dofs table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 3 4 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 12 ]
          Total Dimension: 12
       
       Index table size:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 3 4 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 12 ]
@@ -1391,16 +1391,16 @@ Original BSplineSpace:
          
       
       Degrees:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 3 4 5 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
       
       Interior multiplicities:
@@ -1413,16 +1413,16 @@ Original BSplineSpace:
          [ ]
       
       Dimensionality Table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 4 5 6 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 120 ]
@@ -1431,32 +1431,32 @@ Original BSplineSpace:
    
    DoFs Distribution:
       Num dofs table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 4 5 6 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 120 ]
          Total Dimension: 120
       
       Index table size:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 4 5 6 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 120 ]
@@ -1497,16 +1497,16 @@ BSplineSpace after serialize-deserialize:
          
       
       Degrees:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 3 4 5 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
       
       Interior multiplicities:
@@ -1519,16 +1519,16 @@ BSplineSpace after serialize-deserialize:
          [ ]
       
       Dimensionality Table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 4 5 6 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 120 ]
@@ -1537,32 +1537,32 @@ BSplineSpace after serialize-deserialize:
    
    DoFs Distribution:
       Num dofs table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 4 5 6 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 120 ]
          Total Dimension: 120
       
       Index table size:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 4 5 6 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 120 ]

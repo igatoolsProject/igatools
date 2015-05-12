@@ -66,7 +66,7 @@ void serialize_deserialize(std::shared_ptr<NURBSSpace<dim,range,rank>> space_in)
         xml_in >> BOOST_SERIALIZATION_NVP(space);
         xml_istream.close();
     }
-    out.begin_item("BSplineSpace after serialize-deserialize:");
+    out.begin_item("NURBSSpace after serialize-deserialize:");
     space->print_info(out);
     out.end_item();
     //*/
@@ -140,7 +140,6 @@ void do_test()
 
 
     serialize_deserialize(nurbs_space);
-
 
 
     OUTEND

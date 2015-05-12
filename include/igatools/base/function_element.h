@@ -28,6 +28,10 @@
 
 IGA_NAMESPACE_OPEN
 
+/**
+ *
+ * @ingroup serialization
+ */
 template<int dim, int codim, int range = 1, int rank = 1>
 class FunctionElement : public CartesianGridElement<dim>
 {
@@ -45,14 +49,18 @@ private:
     template <int order>
     using Derivative = typename Func::template Derivative<order>;
 
-public:
 
     /** @name Constructors */
     ///@{
+protected:
     /**
-     * Default constructor.
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
      */
-    FunctionElement() = delete;
+    FunctionElement() = default;
+
+public:
 
     /**
      * Construct an accessor pointing to the element with
@@ -202,6 +210,28 @@ private:
      * copy constructor.
      */
     std::shared_ptr<FunctionElement<dim,codim,range,rank> > clone() const;
+
+
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("FunctionElement_base_t",
+                                           boost::serialization::base_object<CartesianGridElement<dim>>(*this));
+
+        ar &boost::serialization::make_nvp("all_sub_elems_cache_",all_sub_elems_cache_);
+
+        ar &boost::serialization::make_nvp("func_",func_);
+    }
+    ///@}
+
 };
 
 

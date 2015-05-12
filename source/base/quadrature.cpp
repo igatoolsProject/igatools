@@ -31,16 +31,6 @@ using std::set;
 
 IGA_NAMESPACE_OPEN
 
-template<int dim_>
-Quadrature<dim_>::
-Quadrature()
-{
-    //  for (auto &box_direction : bounding_box_)
-    //    {
-    //        box_direction[0] = 0.0;
-    //        box_direction[1] = 1.0;
-    //    }
-}
 
 
 

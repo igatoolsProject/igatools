@@ -13,16 +13,16 @@ IgFunction infos:
             
          
          Degrees:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 2 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
          
          Interior multiplicities:
@@ -31,16 +31,16 @@ IgFunction infos:
             [ 1 ]
          
          Dimensionality Table:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 4 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 4 ]
@@ -49,32 +49,32 @@ IgFunction infos:
       
       DoFs Distribution:
          Num dofs table:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 4 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 4 ]
             Total Dimension: 4
          
          Index table size:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 4 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 4 ]
@@ -161,7 +161,7 @@ IgFunction infos:
                
             
             Degrees:
-               Raw componets: 
+               Raw components: 
                   Size: [ 2 ]  Weights: [2]
                   Entry id: 0
                   [ 2 1 ]
@@ -170,9 +170,9 @@ IgFunction infos:
                
                Components map: 
                [ 0 1 ]
-               Active componets ids: 
+               Active components ids: 
                [ 0 1 ]
-               Inactive componets ids: 
+               Inactive components ids: 
                [ ]
             
             Interior multiplicities:
@@ -188,7 +188,7 @@ IgFunction infos:
                [ ]
             
             Dimensionality Table:
-               Raw componets: 
+               Raw components: 
                   Size: [ 2 ]  Weights: [2]
                   Entry id: 0
                   [ 4 2 ]
@@ -197,9 +197,9 @@ IgFunction infos:
                
                Components map: 
                [ 0 1 ]
-               Active componets ids: 
+               Active components ids: 
                [ 0 1 ]
-               Inactive componets ids: 
+               Inactive components ids: 
                [ ]
                Scalar components dimensions:
                [ 8 8 ]
@@ -208,7 +208,7 @@ IgFunction infos:
          
          DoFs Distribution:
             Num dofs table:
-               Raw componets: 
+               Raw components: 
                   Size: [ 2 ]  Weights: [2]
                   Entry id: 0
                   [ 4 2 ]
@@ -217,16 +217,16 @@ IgFunction infos:
                
                Components map: 
                [ 0 1 ]
-               Active componets ids: 
+               Active components ids: 
                [ 0 1 ]
-               Inactive componets ids: 
+               Inactive components ids: 
                [ ]
                Scalar components dimensions:
                [ 8 8 ]
                Total Dimension: 16
             
             Index table size:
-               Raw componets: 
+               Raw components: 
                   Size: [ 2 ]  Weights: [2]
                   Entry id: 0
                   [ 4 2 ]
@@ -235,9 +235,9 @@ IgFunction infos:
                
                Components map: 
                [ 0 1 ]
-               Active componets ids: 
+               Active components ids: 
                [ 0 1 ]
-               Inactive componets ids: 
+               Inactive components ids: 
                [ ]
                Scalar components dimensions:
                [ 8 8 ]
@@ -388,7 +388,7 @@ IgFunction infos:
                   
                
                Degrees:
-                  Raw componets: 
+                  Raw components: 
                      Size: [ 3 ]  Weights: [3]
                      Entry id: 0
                      [ 2 1 1 ]
@@ -399,9 +399,9 @@ IgFunction infos:
                   
                   Components map: 
                   [ 0 0 0 ]
-                  Active componets ids: 
+                  Active components ids: 
                   [ 0 ]
-                  Inactive componets ids: 
+                  Inactive components ids: 
                   [ 1 2 ]
                
                Interior multiplicities:
@@ -428,7 +428,7 @@ IgFunction infos:
                   [ ]
                
                Dimensionality Table:
-                  Raw componets: 
+                  Raw components: 
                      Size: [ 3 ]  Weights: [3]
                      Entry id: 0
                      [ 4 2 2 ]
@@ -439,9 +439,9 @@ IgFunction infos:
                   
                   Components map: 
                   [ 0 1 2 ]
-                  Active componets ids: 
+                  Active components ids: 
                   [ 0 1 2 ]
-                  Inactive componets ids: 
+                  Inactive components ids: 
                   [ ]
                   Scalar components dimensions:
                   [ 16 16 16 ]
@@ -450,7 +450,7 @@ IgFunction infos:
             
             DoFs Distribution:
                Num dofs table:
-                  Raw componets: 
+                  Raw components: 
                      Size: [ 3 ]  Weights: [3]
                      Entry id: 0
                      [ 4 2 2 ]
@@ -461,16 +461,16 @@ IgFunction infos:
                   
                   Components map: 
                   [ 0 1 2 ]
-                  Active componets ids: 
+                  Active components ids: 
                   [ 0 1 2 ]
-                  Inactive componets ids: 
+                  Inactive components ids: 
                   [ ]
                   Scalar components dimensions:
                   [ 16 16 16 ]
                   Total Dimension: 48
                
                Index table size:
-                  Raw componets: 
+                  Raw components: 
                      Size: [ 3 ]  Weights: [3]
                      Entry id: 0
                      [ 4 2 2 ]
@@ -481,9 +481,9 @@ IgFunction infos:
                   
                   Components map: 
                   [ 0 1 2 ]
-                  Active componets ids: 
+                  Active components ids: 
                   [ 0 1 2 ]
-                  Inactive componets ids: 
+                  Inactive components ids: 
                   [ ]
                   Scalar components dimensions:
                   [ 16 16 16 ]

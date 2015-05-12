@@ -34,6 +34,7 @@ template <int, int, int> class ReferenceSpace;
 /**
  *
  * @ingroup elements
+ * @ingroup serializable
  */
 template <int dim, int range, int rank>
 class ReferenceElement : public SpaceElement<dim,0,range,rank>
@@ -59,8 +60,15 @@ public:
 
     using Div = typename Space::Div;
 
-    ReferenceElement() = delete;
+protected:
+    /**
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
+     */
+    ReferenceElement() = default;
 
+public:
     ReferenceElement(const ReferenceElement<dim,range,rank> &elem,
                      const iga::CopyPolicy &copy_policy = CopyPolicy::deep);
 
@@ -209,6 +217,8 @@ protected:
     /** Hash table for fast conversion between flat-to-tensor basis function ids. */
     IndexerPtrTable basis_functions_indexer_;
 
+    std::shared_ptr<const Space> space_;
+
 public:
     using parent_t::get_num_basis;
 
@@ -233,12 +243,38 @@ public:
 
     void print_info(LogStream &out) const;
 
-protected:
-    std::shared_ptr<const Space> space_;
 
 
 public:
     std::shared_ptr<const Space> get_space() const;
+
+private:
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("ReferenceElement_base_t_",
+                                           boost::serialization::base_object<SpaceElement<dim,0,range,rank>>(*this));
+
+
+        ar &boost::serialization::make_nvp("n_basis_direction_",n_basis_direction_);
+        ar &boost::serialization::make_nvp("comp_offset_",comp_offset_);
+        ar &boost::serialization::make_nvp("basis_functions_indexer_",basis_functions_indexer_);
+
+        auto non_const_space = std::const_pointer_cast<Space>(space_);
+        ar &boost::serialization::make_nvp("space_",non_const_space);
+        space_ = non_const_space;
+        Assert(space_ != nullptr,ExcNullPtr());
+    }
+    ///@}
+
 };
 
 

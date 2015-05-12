@@ -48,12 +48,17 @@ template <int rank>
 class CartesianProductIndexer
     : public DynamicMultiArray<TensorIndex<rank>,rank>
 {
-public:
     /** @name Constructors and destructor */
     ///@{
-    /** Default constructor. Not allowed to be used. */
-    CartesianProductIndexer() = delete;
+protected:
+    /**
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
+     */
+    CartesianProductIndexer() = default;
 
+public:
     /**
      * Constructor. Builds an indexer with <p>n_indices_direction[i]M</p>
      * indices along the i-th direction.
@@ -85,6 +90,25 @@ public:
 
     /** Returns the total number of indices. */
     Size get_num_indices() const ;
+
+
+private:
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("CartesianProductIndexer_base_t",
+                                           boost::serialization::base_object<DynamicMultiArray<TensorIndex<rank>,rank>>(*this));
+    }
+    ///@}
+
 };
 
 

@@ -25,6 +25,13 @@
 IGA_NAMESPACE_OPEN
 
 
+template<int dim,int codim,int range,int rank>
+SpaceElement<dim,codim,range,rank>::
+SpaceElement(const std::shared_ptr<const Space> space,
+             const Index elem_index)
+    :
+    base_t(space,elem_index)
+{}
 
 
 

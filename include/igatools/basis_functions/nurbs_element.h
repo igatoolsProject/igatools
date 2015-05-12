@@ -45,6 +45,7 @@ template <class Accessor> class CartesianGridIterator;
  *
  * See module on \ref accessors_iterators for a general overview.
  * @ingroup elements
+ * @ingroup serialization
  */
 template <int dim, int range, int rank>
 class NURBSElement :
@@ -66,11 +67,15 @@ public:
 
     /** @name Constructors */
     ///@{
+protected:
     /**
-     * Default constructor
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
      */
-    NURBSElement() = delete;
+    NURBSElement() = default;
 
+public:
     /**
      * Constructs an accessor to element number index of a
      * BsplineSpace space.
@@ -152,6 +157,27 @@ public:
         Assert(elem != nullptr, ExcNullPtr());
         return elem;
     }
+
+
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("NURBSElement_base_t",
+                                           boost::serialization::base_object<ReferenceElement<dim,range,rank>>(*this));
+
+        ar &boost::serialization::make_nvp("bspline_elem_",bspline_elem_);
+
+        ar &boost::serialization::make_nvp("weight_elem_table_",weight_elem_table_);
+    }
+    ///@}
 
 };
 

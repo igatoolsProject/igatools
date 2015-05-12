@@ -190,6 +190,8 @@ private:
 
         auto non_const_space = std::const_pointer_cast<Space>(space_);
         ar &boost::serialization::make_nvp("space_", non_const_space);
+        space_ = non_const_space;
+        Assert(space_ != nullptr,ExcNullPtr());
     }
     ///@}
 

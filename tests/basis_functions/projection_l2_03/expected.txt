@@ -10,32 +10,32 @@ Reference space info:
          
       
       Degrees:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
       
       Interior multiplicities:
          Size: [ ]  Weights: []
       
       Dimensionality Table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 1 ]
@@ -44,32 +44,32 @@ Reference space info:
    
    DoFs Distribution:
       Num dofs table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 1 ]
          Total Dimension: 1
       
       Index table size:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 1 ]
@@ -109,16 +109,16 @@ Reference space info:
          
       
       Degrees:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 3 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
       
       Interior multiplicities:
@@ -127,16 +127,16 @@ Reference space info:
          [ 1 1 ]
       
       Dimensionality Table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 6 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 6 ]
@@ -145,32 +145,32 @@ Reference space info:
    
    DoFs Distribution:
       Num dofs table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 6 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 6 ]
          Total Dimension: 6
       
       Index table size:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 6 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 6 ]
@@ -221,16 +221,16 @@ Reference space info:
          
       
       Degrees:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 3 3 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
       
       Interior multiplicities:
@@ -241,16 +241,16 @@ Reference space info:
          [ 1 1 ]
       
       Dimensionality Table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 6 6 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 36 ]
@@ -259,32 +259,32 @@ Reference space info:
    
    DoFs Distribution:
       Num dofs table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 6 6 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 36 ]
          Total Dimension: 36
       
       Index table size:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 6 6 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 36 ]
@@ -371,16 +371,16 @@ Reference space info:
          
       
       Degrees:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 1 1 1 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
       
       Interior multiplicities:
@@ -393,16 +393,16 @@ Reference space info:
          [ 1 1 ]
       
       Dimensionality Table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 4 4 4 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 64 ]
@@ -411,32 +411,32 @@ Reference space info:
    
    DoFs Distribution:
       Num dofs table:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 4 4 4 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 64 ]
          Total Dimension: 64
       
       Index table size:
-         Raw componets: 
+         Raw components: 
             Size: [ 1 ]  Weights: [1]
             Entry id: 0
             [ 4 4 4 ]
          
          Components map: 
          [ 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 64 ]
@@ -553,7 +553,7 @@ Reference space info:
          
       
       Degrees:
-         Raw componets: 
+         Raw components: 
             Size: [ 3 ]  Weights: [3]
             Entry id: 0
             [ 1 1 ]
@@ -564,9 +564,9 @@ Reference space info:
          
          Components map: 
          [ 0 0 0 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ 1 2 ]
       
       Interior multiplicities:
@@ -587,7 +587,7 @@ Reference space info:
          [ 1 1 ]
       
       Dimensionality Table:
-         Raw componets: 
+         Raw components: 
             Size: [ 3 ]  Weights: [3]
             Entry id: 0
             [ 4 4 ]
@@ -598,9 +598,9 @@ Reference space info:
          
          Components map: 
          [ 0 1 2 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 1 2 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 16 16 16 ]
@@ -609,7 +609,7 @@ Reference space info:
    
    DoFs Distribution:
       Num dofs table:
-         Raw componets: 
+         Raw components: 
             Size: [ 3 ]  Weights: [3]
             Entry id: 0
             [ 4 4 ]
@@ -620,16 +620,16 @@ Reference space info:
          
          Components map: 
          [ 0 1 2 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 1 2 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 16 16 16 ]
          Total Dimension: 48
       
       Index table size:
-         Raw componets: 
+         Raw components: 
             Size: [ 3 ]  Weights: [3]
             Entry id: 0
             [ 4 4 ]
@@ -640,9 +640,9 @@ Reference space info:
          
          Components map: 
          [ 0 1 2 ]
-         Active componets ids: 
+         Active components ids: 
          [ 0 1 2 ]
-         Inactive componets ids: 
+         Inactive components ids: 
          [ ]
          Scalar components dimensions:
          [ 16 16 16 ]

@@ -485,6 +485,7 @@ private:
                                            boost::serialization::base_object<BaseSpace>(*this));
 
         ar &boost::serialization::make_nvp("space_data_",space_data_);
+        Assert(space_data_ != nullptr,ExcNullPtr());
 
         ar &boost::serialization::make_nvp("end_b_",end_b_);
 

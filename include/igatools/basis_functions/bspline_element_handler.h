@@ -342,6 +342,7 @@ private:
 
     };
 
+
     /**
      * Returns the BSplineSpace used to define the BSplineElementHandler object.
      */

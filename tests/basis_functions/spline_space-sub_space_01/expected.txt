@@ -3,7 +3,7 @@ void sub_space(const iga::TensorSize<rank>&, const iga::TensorIndex<rank_>&) [wi
 ========================================================================
 Sub element id: 0
    Multiplicity
-      Raw componets: 
+      Raw components: 
          Size: [ 1 ]  Weights: [1]
          Entry id: 0
             Size: [ 2 ]  Weights: [2]
@@ -13,22 +13,22 @@ Sub element id: 0
       
       Components map: 
       [ 0 ]
-      Active componets ids: 
+      Active components ids: 
       [ 0 ]
-      Inactive componets ids: 
+      Inactive components ids: 
       [ ]
    
    Degree
-      Raw componets: 
+      Raw components: 
          Size: [ 1 ]  Weights: [1]
          Entry id: 0
          [ 3 ]
       
       Components map: 
       [ 0 ]
-      Active componets ids: 
+      Active components ids: 
       [ 0 ]
-      Inactive componets ids: 
+      Inactive components ids: 
       [ ]
    
    Periodicity
@@ -36,7 +36,7 @@ Sub element id: 0
 
 Sub element id: 1
    Multiplicity
-      Raw componets: 
+      Raw components: 
          Size: [ 1 ]  Weights: [1]
          Entry id: 0
             Size: [ 2 ]  Weights: [2]
@@ -46,22 +46,22 @@ Sub element id: 1
       
       Components map: 
       [ 0 ]
-      Active componets ids: 
+      Active components ids: 
       [ 0 ]
-      Inactive componets ids: 
+      Inactive components ids: 
       [ ]
    
    Degree
-      Raw componets: 
+      Raw components: 
          Size: [ 1 ]  Weights: [1]
          Entry id: 0
          [ 3 ]
       
       Components map: 
       [ 0 ]
-      Active componets ids: 
+      Active components ids: 
       [ 0 ]
-      Inactive componets ids: 
+      Inactive components ids: 
       [ ]
    
    Periodicity
@@ -69,7 +69,7 @@ Sub element id: 1
 
 Sub element id: 2
    Multiplicity
-      Raw componets: 
+      Raw components: 
          Size: [ 1 ]  Weights: [1]
          Entry id: 0
             Size: [ 1 ]  Weights: [1]
@@ -79,22 +79,22 @@ Sub element id: 2
       
       Components map: 
       [ 0 ]
-      Active componets ids: 
+      Active components ids: 
       [ 0 ]
-      Inactive componets ids: 
+      Inactive components ids: 
       [ ]
    
    Degree
-      Raw componets: 
+      Raw components: 
          Size: [ 1 ]  Weights: [1]
          Entry id: 0
          [ 1 ]
       
       Components map: 
       [ 0 ]
-      Active componets ids: 
+      Active components ids: 
       [ 0 ]
-      Inactive componets ids: 
+      Inactive components ids: 
       [ ]
    
    Periodicity
@@ -102,7 +102,7 @@ Sub element id: 2
 
 Sub element id: 3
    Multiplicity
-      Raw componets: 
+      Raw components: 
          Size: [ 1 ]  Weights: [1]
          Entry id: 0
             Size: [ 1 ]  Weights: [1]
@@ -112,22 +112,22 @@ Sub element id: 3
       
       Components map: 
       [ 0 ]
-      Active componets ids: 
+      Active components ids: 
       [ 0 ]
-      Inactive componets ids: 
+      Inactive components ids: 
       [ ]
    
    Degree
-      Raw componets: 
+      Raw components: 
          Size: [ 1 ]  Weights: [1]
          Entry id: 0
          [ 1 ]
       
       Components map: 
       [ 0 ]
-      Active componets ids: 
+      Active components ids: 
       [ 0 ]
-      Inactive componets ids: 
+      Inactive components ids: 
       [ ]
    
    Periodicity

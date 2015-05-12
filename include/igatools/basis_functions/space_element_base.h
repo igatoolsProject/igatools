@@ -34,15 +34,19 @@ template <class Grid> class FunctionSpaceOnGrid;
 
 //template <class Accessor> class CartesianGridIterator;
 
+/**
+ *
+ * @ingroup serializable
+ */
 template <int dim>
 class SpaceElementBase : private CartesianGridElement<dim>
 {
 protected:
     using base_t = CartesianGridElement<dim>;
+    using Space = FunctionSpaceOnGrid<CartesianGrid<dim>>;
 private:
     using self_t = SpaceElementBase<dim>;
 
-    using Space = FunctionSpaceOnGrid<CartesianGrid<dim>>;
 
 protected:
     std::shared_ptr<const Space> space_;
@@ -56,13 +60,17 @@ public:
 
     /** @name Constructors */
     ///@{
+protected:
     /**
-     * Default constructor. Not allowed to be used.
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
      */
-    SpaceElementBase() = delete;
+    SpaceElementBase() = default;
 
+public:
     /**
-     * Constructs an accessor to element number index of a
+     * Constructs an accessor to element number <tt>elem_index</tt> of a
      * function space.
      */
     SpaceElementBase(const std::shared_ptr<const Space> space,
@@ -196,6 +204,30 @@ public:
      * */
     bool operator>(const self_t &a) const;
     ///@}
+
+
+private:
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("SpaceElementBase_base_t",
+                                           boost::serialization::base_object<CartesianGridElement<dim>>(*this));
+
+        auto non_const_space = std::const_pointer_cast<Space>(space_);
+        ar &boost::serialization::make_nvp("space_",non_const_space);
+        space_ = non_const_space;
+        Assert(space_ != nullptr,ExcNullPtr());
+    }
+    ///@}
+
 };
 
 

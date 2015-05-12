@@ -107,18 +107,14 @@ public:
      * @name Constructors.
      */
     ///@{
-    /**
-     * Default constructor. It sets the bounding-box to be the hypercube
-     * \f$ [0,1]^{dim}\f$ with no points inside.
-     */
-protected:
+public:
+
     /**
      * Construct the object with a user-defined bounding-box, with no points inside.
+     * If the constructor is called without passing a bounding-box, then it will be used the one
+     * corresponding to the unit <tt>dim</tt>-dimensional cube \f$[0,1]^{dim}\f$
      */
-    Quadrature(const BBox<dim_> &bounding_box);
-
-public:
-    Quadrature();
+    Quadrature(const BBox<dim_> &bounding_box = BBox<dim_>());
 
     /**
      * Construct the object given a vector of <tt>points</tt>

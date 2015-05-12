@@ -11,32 +11,32 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 0; int dim = 
             
          
          Degrees:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
          
          Interior multiplicities:
             Size: [ ]  Weights: []
          
          Dimensionality Table:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 1 ]
@@ -45,32 +45,32 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 0; int dim = 
       
       DoFs Distribution:
          Num dofs table:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 1 ]
             Total Dimension: 1
          
          Index table size:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 1 ]
@@ -103,32 +103,32 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 0; int dim = 
             
          
          Degrees:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
          
          Interior multiplicities:
             Size: [ ]  Weights: []
          
          Dimensionality Table:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 1 ]
@@ -137,32 +137,32 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 0; int dim = 
       
       DoFs Distribution:
          Num dofs table:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 1 ]
             Total Dimension: 1
          
          Index table size:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 1 ]
@@ -202,16 +202,16 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
             
          
          Degrees:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 1 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
          
          Interior multiplicities:
@@ -220,16 +220,16 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
             [ 1 ]
          
          Dimensionality Table:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 3 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 3 ]
@@ -238,32 +238,32 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
       
       DoFs Distribution:
          Num dofs table:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 3 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 3 ]
             Total Dimension: 3
          
          Index table size:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 3 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 3 ]
@@ -301,16 +301,16 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
             
          
          Degrees:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 1 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
          
          Interior multiplicities:
@@ -319,16 +319,16 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
             [ 1 ]
          
          Dimensionality Table:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 3 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 3 ]
@@ -337,32 +337,32 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
       
       DoFs Distribution:
          Num dofs table:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 3 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 3 ]
             Total Dimension: 3
          
          Index table size:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 3 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 3 ]
@@ -400,16 +400,16 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
             
          
          Degrees:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 1 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
          
          Interior multiplicities:
@@ -418,16 +418,16 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
             [ ]
          
          Dimensionality Table:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 2 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 2 ]
@@ -436,32 +436,32 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
       
       DoFs Distribution:
          Num dofs table:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 2 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 2 ]
             Total Dimension: 2
          
          Index table size:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 2 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 2 ]
@@ -498,16 +498,16 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
             
          
          Degrees:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 1 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
          
          Interior multiplicities:
@@ -516,16 +516,16 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
             [ ]
          
          Dimensionality Table:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 2 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 2 ]
@@ -534,32 +534,32 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
       
       DoFs Distribution:
          Num dofs table:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 2 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 2 ]
             Total Dimension: 2
          
          Index table size:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 2 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 2 ]
@@ -603,16 +603,16 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             
          
          Degrees:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 1 1 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
          
          Interior multiplicities:
@@ -623,16 +623,16 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             [ 1 1 ]
          
          Dimensionality Table:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 3 4 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 12 ]
@@ -641,32 +641,32 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
       
       DoFs Distribution:
          Num dofs table:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 3 4 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 12 ]
             Total Dimension: 12
          
          Index table size:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 3 4 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 12 ]
@@ -710,16 +710,16 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             
          
          Degrees:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 1 1 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
          
          Interior multiplicities:
@@ -730,16 +730,16 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             [ 1 1 ]
          
          Dimensionality Table:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 3 4 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 12 ]
@@ -748,32 +748,32 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
       
       DoFs Distribution:
          Num dofs table:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 3 4 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 12 ]
             Total Dimension: 12
          
          Index table size:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 3 4 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 12 ]
@@ -817,16 +817,16 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             
          
          Degrees:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 1 1 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
          
          Interior multiplicities:
@@ -837,16 +837,16 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             [ 1 1 ]
          
          Dimensionality Table:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 2 4 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 8 ]
@@ -855,32 +855,32 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
       
       DoFs Distribution:
          Num dofs table:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 2 4 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 8 ]
             Total Dimension: 8
          
          Index table size:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 2 4 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 8 ]
@@ -923,16 +923,16 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             
          
          Degrees:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 1 1 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
          
          Interior multiplicities:
@@ -943,16 +943,16 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             [ 1 1 ]
          
          Dimensionality Table:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 2 4 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 8 ]
@@ -961,32 +961,32 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
       
       DoFs Distribution:
          Num dofs table:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 2 4 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 8 ]
             Total Dimension: 8
          
          Index table size:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 2 4 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 8 ]
@@ -1029,16 +1029,16 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             
          
          Degrees:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 1 1 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
          
          Interior multiplicities:
@@ -1049,16 +1049,16 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             [ 1 ]
          
          Dimensionality Table:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 2 3 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 6 ]
@@ -1067,32 +1067,32 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
       
       DoFs Distribution:
          Num dofs table:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 2 3 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 6 ]
             Total Dimension: 6
          
          Index table size:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 2 3 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 6 ]
@@ -1134,16 +1134,16 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             
          
          Degrees:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 1 1 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
          
          Interior multiplicities:
@@ -1154,16 +1154,16 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
             [ 1 ]
          
          Dimensionality Table:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 2 3 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 6 ]
@@ -1172,32 +1172,32 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 
       
       DoFs Distribution:
          Num dofs table:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 2 3 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 6 ]
             Total Dimension: 6
          
          Index table size:
-            Raw componets: 
+            Raw components: 
                Size: [ 1 ]  Weights: [1]
                Entry id: 0
                [ 2 3 ]
             
             Components map: 
             [ 0 ]
-            Active componets ids: 
+            Active components ids: 
             [ 0 ]
-            Inactive componets ids: 
+            Inactive components ids: 
             [ ]
             Scalar components dimensions:
             [ 6 ]

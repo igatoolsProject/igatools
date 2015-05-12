@@ -182,14 +182,15 @@ public:
 
     /** @name Constructors & destructor */
     ///@{
+protected:
     /**
-     * Default constructor. Not allowed to be used.
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
      */
-    CartesianGridIteratorBase()
-    {
-        Assert(false,ExcNotInitialized());
-    }
+    CartesianGridIteratorBase() = default;
 
+public:
     /**
      * Construct an iterator on the elements (with the specified <tt>property</tt>)
      * over a grid-type container.
@@ -337,6 +338,26 @@ protected:
     std::shared_ptr<Accessor> accessor_ ;
 
     std::string elem_property_;
+
+private:
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+
+        ar &boost::serialization::make_nvp("accessor_",accessor_);
+
+        ar &boost::serialization::make_nvp("elem_property_",elem_property_);
+    }
+    ///@}
+
 };
 
 
@@ -437,6 +458,7 @@ public:
      */
     const Accessor *operator->() const;
     ///@}
+
 
 };
 

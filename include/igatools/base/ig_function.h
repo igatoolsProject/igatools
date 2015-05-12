@@ -52,7 +52,12 @@ class BSplineElementHandler;
 
 template <int,int,int>
 class NURBSElementHandler;
-//*/
+
+template <int,int,int>
+class BSplineElement;
+
+template <int,int,int>
+class NURBSElement;
 
 /**
  * @brief Coefficients for the IgFunction.
@@ -71,23 +76,23 @@ class IgCoefficients
 {
 public:
 
-	/**
-	 * Access operator.
-	 * Returns a reference to the mapped value of the element identified with key @p global_dof.
-	 * If @p global_dof does not match the key of any element in the container,
-	 * the function throws an <tt>out_of_range</tt> exception.
-	 */
+    /**
+     * Access operator.
+     * Returns a reference to the mapped value of the element identified with key @p global_dof.
+     * If @p global_dof does not match the key of any element in the container,
+     * the function throws an <tt>out_of_range</tt> exception.
+     */
     const Real &operator[](const Index global_dof) const
     {
         return std::map<Index,Real>::at(global_dof);
     }
 
-	/**
-	 * Access operator.
-	 * If @p global_dof matches the key of an element in the container, the function returns a reference to its mapped value.
-	 * If @p global_dof does not match the key of any element in the container,
-	 * the function inserts a new element with that key and returns a reference to its mapped value.
-	 */
+    /**
+     * Access operator.
+     * If @p global_dof matches the key of an element in the container, the function returns a reference to its mapped value.
+     * If @p global_dof does not match the key of any element in the container,
+     * the function inserts a new element with that key and returns a reference to its mapped value.
+     */
     Real &operator[](const Index global_dof)
     {
         return std::map<Index,Real>::operator[](global_dof);
@@ -402,16 +407,23 @@ private:
         ar.template register_type<NURBSSpace<dim,range,rank>>();
         auto non_nonst_space = std::const_pointer_cast<Space>(space_);
         ar &boost::serialization::make_nvp("space_",non_nonst_space);
+        space_ = non_nonst_space;
+        Assert(space_ != nullptr,ExcNullPtr());
 
         ar &boost::serialization::make_nvp("coeff_",coeff_);
 
         ar &boost::serialization::make_nvp("property_",const_cast<std::string &>(property_));
-//        ar &boost::serialization::make_nvp("space_elem_",space_elem_);
+
+        ar.template register_type<BSplineElement<dim,range,rank>>();
+        ar.template register_type<NURBSElement<dim,range,rank>>();
+        ar &boost::serialization::make_nvp("space_elem_",space_elem_);
+
 
         ar.template register_type<BSplineElementHandler<dim,range,rank>>();
         ar.template register_type<NURBSElementHandler<dim,range,rank>>();
         ar &boost::serialization::make_nvp("space_elem_handler_",space_elem_handler_);
-        Assert(false,ExcNotImplemented());
+        Assert(space_elem_handler_ != nullptr,ExcNullPtr());
+//        Assert(false,ExcNotImplemented());
     }
     ///@}
 

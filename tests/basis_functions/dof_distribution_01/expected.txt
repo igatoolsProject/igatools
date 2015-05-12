@@ -3,32 +3,32 @@ void test1() [with int dim = 1]
 ========================================================================
 Original DofDistribution.
    Num dofs table:
-      Raw componets: 
+      Raw components: 
          Size: [ 1 ]  Weights: [1]
          Entry id: 0
          [ 7 ]
       
       Components map: 
       [ 0 ]
-      Active componets ids: 
+      Active components ids: 
       [ 0 ]
-      Inactive componets ids: 
+      Inactive components ids: 
       [ ]
       Scalar components dimensions:
       [ 7 ]
       Total Dimension: 7
    
    Index table size:
-      Raw componets: 
+      Raw components: 
          Size: [ 1 ]  Weights: [1]
          Entry id: 0
          [ 7 ]
       
       Components map: 
       [ 0 ]
-      Active componets ids: 
+      Active components ids: 
       [ 0 ]
-      Inactive componets ids: 
+      Inactive components ids: 
       [ ]
       Scalar components dimensions:
       [ 7 ]
@@ -46,32 +46,32 @@ Original DofDistribution.
 
 DofDistribution after serialize-deserialize.
    Num dofs table:
-      Raw componets: 
+      Raw components: 
          Size: [ 1 ]  Weights: [1]
          Entry id: 0
          [ 7 ]
       
       Components map: 
       [ 0 ]
-      Active componets ids: 
+      Active components ids: 
       [ 0 ]
-      Inactive componets ids: 
+      Inactive components ids: 
       [ ]
       Scalar components dimensions:
       [ 7 ]
       Total Dimension: 7
    
    Index table size:
-      Raw componets: 
+      Raw components: 
          Size: [ 1 ]  Weights: [1]
          Entry id: 0
          [ 7 ]
       
       Components map: 
       [ 0 ]
-      Active componets ids: 
+      Active components ids: 
       [ 0 ]
-      Inactive componets ids: 
+      Inactive components ids: 
       [ ]
       Scalar components dimensions:
       [ 7 ]
@@ -94,32 +94,32 @@ void test2() [with int dim = 2]
 ========================================================================
 Original DofDistribution.
    Num dofs table:
-      Raw componets: 
+      Raw components: 
          Size: [ 1 ]  Weights: [1]
          Entry id: 0
          [ 4 4 ]
       
       Components map: 
       [ 0 ]
-      Active componets ids: 
+      Active components ids: 
       [ 0 ]
-      Inactive componets ids: 
+      Inactive components ids: 
       [ ]
       Scalar components dimensions:
       [ 16 ]
       Total Dimension: 16
    
    Index table size:
-      Raw componets: 
+      Raw components: 
          Size: [ 1 ]  Weights: [1]
          Entry id: 0
          [ 4 4 ]
       
       Components map: 
       [ 0 ]
-      Active componets ids: 
+      Active components ids: 
       [ 0 ]
-      Inactive componets ids: 
+      Inactive components ids: 
       [ ]
       Scalar components dimensions:
       [ 16 ]
@@ -137,32 +137,32 @@ Original DofDistribution.
 
 DofDistribution after serialize-deserialize.
    Num dofs table:
-      Raw componets: 
+      Raw components: 
          Size: [ 1 ]  Weights: [1]
          Entry id: 0
          [ 4 4 ]
       
       Components map: 
       [ 0 ]
-      Active componets ids: 
+      Active components ids: 
       [ 0 ]
-      Inactive componets ids: 
+      Inactive components ids: 
       [ ]
       Scalar components dimensions:
       [ 16 ]
       Total Dimension: 16
    
    Index table size:
-      Raw componets: 
+      Raw components: 
          Size: [ 1 ]  Weights: [1]
          Entry id: 0
          [ 4 4 ]
       
       Components map: 
       [ 0 ]
-      Active componets ids: 
+      Active components ids: 
       [ 0 ]
-      Inactive componets ids: 
+      Inactive components ids: 
       [ ]
       Scalar components dimensions:
       [ 16 ]

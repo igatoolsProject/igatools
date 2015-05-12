@@ -53,6 +53,7 @@ tuple_of_caches(std::index_sequence<I...>)
  * ranging from <tt>dim</tt> to <tt>dim-num_sub_elem+1</tt>
  *
  * @note <tt>num_sub_elem</tt> is defined at configuration time in the main CMakeLists.txt file.
+ *
  * @ingroup serializable
  */
 
@@ -79,7 +80,7 @@ private:
         {
             using PairType = typename std::remove_reference<decltype(cache_same_topology_dim)>::type;
             using SubDimType = typename PairType::first_type;
-            std::string tag_name = "cache_" + std::to_string(SubDimType::value);
+            std::string tag_name = "cache_sub_elem_dim_" + std::to_string(SubDimType::value);
 
             ar &boost::serialization::make_nvp(tag_name.c_str(),cache_same_topology_dim.second);
         }
@@ -166,6 +167,8 @@ extract_sub_elements_data(FusionContainer &data)
  * in the element's cache (for a given dimension and for a given sub-element).
  *
  * @tparam DataType This should be a ValueTable or a ValueVector.
+ *
+ * @ingroup serializable
  */
 template < class DataType >
 class DataWithFlagStatus : public DataType
@@ -221,9 +224,31 @@ public:
 
 private:
     FlagStatus status_;
+
+
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("DataWithFlagStatus_base_t",
+                                           boost::serialization::base_object<DataType>(*this));
+        ar &boost::serialization::make_nvp("status_",status_);
+    };
+    ///@}
+
 };
 
-
+/**
+ *
+ * @ingroup serializable
+ */
 template<int dim,class CacheType>
 class ValuesCache : public CacheStatus
 {
@@ -363,6 +388,38 @@ public:
         return !fill_someone;
     }
     ///@}
+
+
+private:
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("ValuesCache_base_t_",
+                                           boost::serialization::base_object<CacheStatus>(*this));
+//        ar &boost::serialization::make_nvp("values_",values_);
+
+        boost::fusion::for_each(values_,
+                                [&](auto & type_and_value)
+        {
+            using ValueType_ValueContainer = typename std::remove_reference<decltype(type_and_value)>::type;
+            using ValueType = typename ValueType_ValueContainer::first_type;
+            auto &value = type_and_value.second;
+
+            ar &boost::serialization::make_nvp(ValueType::name.c_str(),value);
+        } // end lambda function
+                               );
+
+    };
+    ///@}
+
 };
 
 
@@ -414,9 +471,30 @@ public:
 
         this->set_initialized(true);
     }
+
+private:
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("BasisValuesCache_base_t",
+                                           boost::serialization::base_object<ValuesCache<dim,CacheType>>(*this));
+    };
+    ///@}
+
 };
 
-
+/**
+ *
+ * @ingroup serializable
+ */
 template<int dim, class CacheType>
 class FuncValuesCache : public ValuesCache<dim,CacheType>
 {
@@ -461,12 +539,33 @@ public:
 
         this->set_initialized(true);
     }
+
+private:
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("BasisValuesCache_base_t",
+                                           boost::serialization::base_object<ValuesCache<dim,CacheType>>(*this));
+    };
+    ///@}
+
 };
 
 
 
 
-
+/**
+ *
+ * @ingroup serializable
+ */
 template <class SubElemCache>
 class LocalCache
 {
@@ -558,6 +657,23 @@ public:
      * Cache for all sub-elements.
      */
     CacheList<SubElemCache, SubElemCache::get_dim()> cache_all_sub_elems_;
+
+
+private:
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("cache_all_sub_elems_",cache_all_sub_elems_);
+    };
+    ///@}
 
 };
 

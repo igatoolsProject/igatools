@@ -39,8 +39,9 @@ IGA_NAMESPACE_OPEN
  * - <b>filled_once</b>, true if the cache is filled exactly one time and ready to be used;
  * - <b>copied</b>, true if the cache is copied from another object.
  *
+ * @ingroup serializable
  * @author M.Martinelli
- * @date 2013
+ * @date 2013, 2015
  */
 class CacheStatus
 {
@@ -131,6 +132,25 @@ private:
 
     /** True if the cache is copied from another object. */
     bool copied_ = false;
+
+
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("initialized_counter_",initialized_counter_);
+        ar &boost::serialization::make_nvp("filled_counter_",filled_counter_);
+        ar &boost::serialization::make_nvp("copied_",copied_);
+    };
+    ///@}
+
 };
 
 

@@ -58,6 +58,23 @@ struct FlagStatus
             filled_ = filled_status;
         };
     //*/
+private:
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("fill_",fill_);
+        ar &boost::serialization::make_nvp("filled_",filled_);
+    };
+    ///@}
+
 };
 
 #if 0

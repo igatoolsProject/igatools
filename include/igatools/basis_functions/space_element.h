@@ -47,12 +47,17 @@ IGA_NAMESPACE_OPEN
 
 
 
-
+/**
+ *
+ *
+ * @ingroup serializable
+ */
 template<int dim,int codim,int range,int rank>
 class SpaceElement : public SpaceElementBase<dim>
 {
 protected:
     using base_t =  SpaceElementBase<dim>;
+    using Space = typename base_t::Space;
 private:
     using self_t = SpaceElement<dim,codim,range,rank>;
 
@@ -80,7 +85,22 @@ public:
 
     /** @name Constructors */
     ///@{
-    using SpaceElementBase<dim>::SpaceElementBase;
+protected:
+    /**
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
+     */
+    SpaceElement() = default;
+
+public:
+
+    /**
+     * Constructs an accessor to element number <tt>elem_index</tt> of a
+     * function space.
+     */
+    SpaceElement(const std::shared_ptr<const Space> space,
+                 const Index elem_index);
 
     /**
      * Copy constructor.
@@ -252,6 +272,24 @@ protected:
                    const CopyPolicy &copy_policy);
 
 
+private:
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("SpaceElement_base_t",
+                                           boost::serialization::base_object<SpaceElementBase<dim>>(*this));
+
+        ar &boost::serialization::make_nvp("all_sub_elems_cache_",all_sub_elems_cache_);
+    }
+    ///@}
 
 
 };
