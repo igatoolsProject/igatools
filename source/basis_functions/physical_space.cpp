@@ -322,6 +322,32 @@ get_interior_dofs() const
     return ref_space_->get_interior_dofs();
 }
 
+
+
+//#ifdef SERIALIZATION
+//template <int dim_, int range_, int rank_, int codim_, Transformation type_>
+//template<class Archive>
+//void
+//PhysicalSpace<dim_, range_, rank_, codim_, type_>::
+//serialize(Archive &ar, const unsigned int version)
+//{
+//    ar &boost::serialization::make_nvp("PhysicalSpace_base_t",
+//                                       boost::serialization::base_object<BaseSpace>(*this));
+//
+//    ar.template register_type<BSplineSpace<dim_,range_,rank_> >();
+//    ar.template register_type<NURBSSpace<dim_,range_,rank_> >();
+//    ar &boost::serialization::make_nvp("ref_space_",ref_space_);
+//    Assert(ref_space_ != nullptr,ExcNullPtr());
+//
+//    ar.template register_type<IgFunction<ReferenceSpace<dim,dim+codim> > >();
+//    ar &boost::serialization::make_nvp("map_func_",map_func_);
+//    Assert(map_func_ != nullptr,ExcNullPtr());
+//
+//    ar &boost::serialization::make_nvp("phys_space_previous_refinement_",phys_space_previous_refinement_);
+//}
+//#endif // SERIALIZATION
+
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/physical_space.inst>

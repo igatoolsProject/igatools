@@ -288,7 +288,7 @@ private:
      */
     PropertiesIdContainer properties_dofs_;
 
-
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -298,18 +298,9 @@ private:
 
     template<class Archive>
     void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        ar &boost::serialization::make_nvp("index_table_",index_table_);
-
-        ar &boost::serialization::make_nvp("num_dofs_table_",num_dofs_table_);
-
-        ar &boost::serialization::make_nvp("index_table_size_",index_table_size_);
-
-        ar &boost::serialization::make_nvp("properties_dofs_",properties_dofs_);
-    }
+    serialize(Archive &ar, const unsigned int version);
     ///@}
-
+#endif // SERIALIZATION
 };
 
 IGA_NAMESPACE_CLOSE

@@ -273,6 +273,8 @@ protected:
 
 
 private:
+
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -290,7 +292,7 @@ private:
         ar &boost::serialization::make_nvp("all_sub_elems_cache_",all_sub_elems_cache_);
     }
     ///@}
-
+#endif // SERIALIZATION
 
 };
 

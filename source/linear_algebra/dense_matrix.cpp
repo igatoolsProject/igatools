@@ -264,7 +264,8 @@ norm_one() const
     return norm;
 }
 
-void DenseMatrix::
+void
+DenseMatrix::
 print_info(LogStream &out) const
 {
     const auto size1 = this->size1();
@@ -292,5 +293,26 @@ print_info(LogStream &out) const
     out << ')';
 }
 
+#ifdef SERIALIZATION
+
+template<class Archive>
+void
+DenseMatrix::
+serialize(Archive &ar, const unsigned int version)
+{
+    ar &boost::serialization::make_nvp("DenseMatrix_base_t",
+                                       boost::serialization::base_object<BoostMatrix>(*this));
+}
+#endif //SERIALIZATION
+
 IGA_NAMESPACE_CLOSE
 
+
+
+#ifdef SERIALIZATION
+/*
+ * The next macro is needed to instantiate the serialize() function for the active archives
+ */
+BOOST_CLASS_EXPORT(iga::DenseMatrix)
+
+#endif // SERIALIZATION

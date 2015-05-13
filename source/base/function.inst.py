@@ -26,11 +26,32 @@ data = Instantiation(include_files)
 
 (f, inst) = (data.file_output, data.inst)
 
+functions = []
+
 for row in inst.all_function_dims:
     dims = '<%d, %d, %d, %d>' %(row.dim, row.codim, row.range, row.rank)
-    f.write('template class Function%s ;\n' %(dims))
+    func = 'Function%s' %(dims) 
+    functions.append(func)
+    f.write('template class %s ;\n' %(func))
     acc = 'FunctionElement%s' % (dims)
     f.write('template class %s ;\n' %(acc))
     for it in inst.iterators:
         iterator = it.replace('Accessor','%s' % (acc) )
         f.write('template class %s; \n' %iterator)
+
+
+
+#---------------------------------------------------
+# f.write('IGA_NAMESPACE_CLOSE\n')
+#  
+# f.write('#ifdef SERIALIZATION\n')
+# id = 0 
+# for func in unique(functions):
+#     alias = 'FunctionAlias%d' %(id)
+#     f.write('using %s = iga::%s; \n' % (alias, func))
+#     f.write('BOOST_CLASS_EXPORT(%s) \n' %alias)
+#     id += 1 
+# f.write('#endif // SERIALIZATION\n')
+#      
+# f.write('IGA_NAMESPACE_OPEN\n')
+#---------------------------------------------------

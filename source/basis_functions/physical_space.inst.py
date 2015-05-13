@@ -62,10 +62,14 @@ sub_dim_members = \
 #             s = fun.replace('class', space).replace('k', '%d' % (k));
 #             f.write('template ' + s + '\n')
                         
- 
+
+spaces = []
+
+
 for space in inst.SubPhysSpaces:
     x = space.spec
     f.write( 'template class %s;\n' %space.name)
+    spaces.append(space.name)
     for fun in sub_dim_members:
         k = x.dim
         s = fun.replace('class', space.name).replace('k', '%d' % (k));
@@ -75,7 +79,28 @@ for space in inst.SubPhysSpaces:
 for space in inst.PhysSpaces:
     x = space.spec
     f.write( 'template class %s;\n' %space.name)
+    spaces.append(space.name)
     for fun in sub_dim_members:
         for k in inst.sub_dims(x.dim):
             s = fun.replace('class', space.name).replace('k', '%d' % (k));
             f.write('template ' + s + '\n')
+
+
+
+
+
+#---------------------------------------------------
+# f.write('IGA_NAMESPACE_CLOSE\n')
+# 
+# f.write('#ifdef SERIALIZATION\n')
+# id = 0 
+# for space in unique(spaces):
+#     space_alias = 'PhysicalSpaceAlias%d' %(id)
+#     f.write('using %s = iga::%s; \n' % (space_alias, space.replace('Transformation','iga::Transformation')))
+#     f.write('BOOST_CLASS_EXPORT(%s) \n' %space_alias)
+#     id += 1 
+# f.write('#endif // SERIALIZATION\n')
+#     
+# f.write('IGA_NAMESPACE_OPEN\n')
+#---------------------------------------------------
+

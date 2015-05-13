@@ -726,6 +726,7 @@ private:
     friend class CartesianGridElement<dim_>;
 
 
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -735,26 +736,9 @@ private:
 
     template<class Archive>
     void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        std::string tag_name = "Num.Elements";
-        ar &boost::serialization::make_nvp(
-            tag_name.c_str(),
-            boost::serialization::base_object<TensorSizedContainer<dim_>>(*this));
-
-
-        ar &boost::serialization::make_nvp("kind_",kind_);
-
-        ar &boost::serialization::make_nvp("knot_coordinates_",knot_coordinates_);
-
-        ar &boost::serialization::make_nvp("boundary_id_",boundary_id_);
-
-        ar &boost::serialization::make_nvp("properties_elements_id_",properties_elements_id_);
-
-        ar &boost::serialization::make_nvp("grid_pre_refinement_",grid_pre_refinement_);
-    }
+    serialize(Archive &ar, const unsigned int version);
     ///@}
-
+#endif // SERIALIZATION
 };
 
 IGA_NAMESPACE_CLOSE

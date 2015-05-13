@@ -378,7 +378,7 @@ private:
     std::shared_ptr<CartesianGridElement<dim> > clone() const;
 
 
-private:
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -388,21 +388,9 @@ private:
 
     template<class Archive>
     void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        auto non_const_grid = std::const_pointer_cast<CartesianGrid<dim>>(grid_);
-        ar &boost::serialization::make_nvp("grid_",non_const_grid);
-        grid_ = non_const_grid;
-        Assert(grid_ != nullptr,ExcNullPtr());
-
-        ar &boost::serialization::make_nvp("flat_index_",flat_index_);
-
-        ar &boost::serialization::make_nvp("tensor_index_",tensor_index_);
-
-        ar &boost::serialization::make_nvp("all_sub_elems_cache_",all_sub_elems_cache_);
-    }
+    serialize(Archive &ar, const unsigned int version);
     ///@}
-
+#endif // SERIALIZATION
 };
 
 IGA_NAMESPACE_CLOSE

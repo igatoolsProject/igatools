@@ -269,6 +269,23 @@ get_elem_num_basis() const
 }
 
 
+//#ifdef SERIALIZATION
+//template<int dim, int range, int rank>
+//template<class Archive>
+//void
+//ReferenceSpace<dim, range, rank>::
+//serialize(Archive &ar, const unsigned int version)
+//{
+//    ar &boost::serialization::make_nvp("ReferenceSpace_base_t",
+//                                       boost::serialization::base_object<FunctionSpaceOnGrid<CartesianGrid<dim>>>(*this));
+//
+//    ar &boost::serialization::make_nvp("dof_distribution_",dof_distribution_);
+//
+//    ar &boost::serialization::make_nvp("ref_space_previous_refinement_",ref_space_previous_refinement_);
+//}
+//#endif // SERIALIZATION
+
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/reference_space.inst>

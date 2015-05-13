@@ -63,6 +63,7 @@ public:
 private:
     SafeSTLVector<DenseMatrix> values_;
 
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -72,11 +73,9 @@ private:
 
     template<class Archive>
     void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        ar &boost::serialization::make_nvp("values_(DenseMatrix)",values_);
-    }
+    serialize(Archive &ar, const unsigned int version);
     ///@}
+#endif // SERIALIZATION
 
 };
 

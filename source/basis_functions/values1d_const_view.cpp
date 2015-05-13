@@ -78,6 +78,17 @@ get_derivative(const int order) const
     return values_[order];
 }
 
+#ifdef SERIALIZATION
+
+template<class Archive>
+void
+BasisValues1d::
+serialize(Archive &ar, const unsigned int version)
+{
+    ar &boost::serialization::make_nvp("values_(DenseMatrix)",values_);
+}
+
+#endif //SERIALIZATION
 
 const BasisValues1d *
 BasisValues1dConstView::
@@ -120,24 +131,13 @@ operator()(const Index point_id) const
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 IGA_NAMESPACE_CLOSE
+
+#ifdef SERIALIZATION
+
+/*
+ * The next macro is needed to instantiate the serialize() function for the active archives
+ */
+BOOST_CLASS_EXPORT(iga::BasisValues1d)
+
+#endif // SERIALIZATION

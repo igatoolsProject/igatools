@@ -655,6 +655,29 @@ get_periodic_table() const -> const PeriodicityTable &
 }
 
 
+#ifdef SERIALIZATION
+template<int dim, int range, int rank>
+template<class Archive>
+void
+SplineSpace<dim, range, rank>::
+serialize(Archive &ar, const unsigned int version)
+{
+    ar &boost::serialization::make_nvp(
+        "SplineSpace_base_t",
+        boost::serialization::base_object<GridWrapper<CartesianGrid<dim>>>(*this));
+
+    ar &boost::serialization::make_nvp("interior_mult_",interior_mult_);
+
+    ar &boost::serialization::make_nvp("deg_", deg_);
+
+    ar &boost::serialization::make_nvp("space_dim_", space_dim_);
+
+    ar &boost::serialization::make_nvp("periodic_", periodic_);
+
+    ar &boost::serialization::make_nvp("spline_space_previous_refinement_", spline_space_previous_refinement_);
+}
+#endif // SERIALIZATION
+
 
 template<int dim, int range, int rank>
 Size
@@ -720,6 +743,10 @@ TensorSizeTable(const base_t &n_basis)
     :
     base_t(n_basis)
 {}
+
+
+
+
 
 IGA_NAMESPACE_CLOSE
 

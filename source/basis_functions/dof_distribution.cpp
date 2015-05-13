@@ -354,6 +354,24 @@ get_num_dofs_table() const -> const TensorSizeTable &
 }
 
 
+#ifdef SERIALIZATION
+template<int dim, int range, int rank>
+template<class Archive>
+void
+DofDistribution<dim, range, rank>::
+serialize(Archive &ar, const unsigned int version)
+{
+    ar &boost::serialization::make_nvp("index_table_",index_table_);
+
+    ar &boost::serialization::make_nvp("num_dofs_table_",num_dofs_table_);
+
+    ar &boost::serialization::make_nvp("index_table_size_",index_table_size_);
+
+    ar &boost::serialization::make_nvp("properties_dofs_",properties_dofs_);
+}
+#endif // SERIALIZATION
+
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/dof_distribution.inst>

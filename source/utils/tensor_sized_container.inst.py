@@ -26,3 +26,20 @@ data = Instantiation()
 ts_list=['TensorSizedContainer<%d>' %dim for dim in inst.all_domain_dims]
 for row in ts_list:
    f.write('template class %s; \n' % (row))
+
+
+
+#---------------------------------------------------
+f.write('IGA_NAMESPACE_CLOSE\n')
+
+f.write('#ifdef SERIALIZATION\n')
+id = 0 
+for ts in unique(ts_list):
+    alias = 'TensorSizedContainerAlias%d' %(id)
+    f.write('using %s = iga::%s; \n' % (alias, ts))
+    f.write('BOOST_CLASS_EXPORT(%s) \n' %alias)
+    id += 1 
+f.write('#endif // SERIALIZATION\n')
+    
+f.write('IGA_NAMESPACE_OPEN\n')
+#---------------------------------------------------

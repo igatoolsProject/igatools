@@ -138,6 +138,22 @@ print_cache_info(LogStream &out) const
 }
 
 
+//#ifdef SERIALIZATION
+//template<int dim,int codim,int range,int rank>
+//template<class Archive>
+//void
+//SpaceElement<dim,codim,range,rank>::
+//serialize(Archive &ar, const unsigned int version)
+//{
+//    ar &boost::serialization::make_nvp("SpaceElement_base_t",
+//                                       boost::serialization::base_object<SpaceElementBase<dim>>(*this));
+//
+//    ar &boost::serialization::make_nvp("all_sub_elems_cache_",all_sub_elems_cache_);
+//}
+//#endif // SERIALIZATION
+
+
+
 IGA_NAMESPACE_CLOSE
 
 

@@ -107,6 +107,7 @@ option(MPATCH "Enable multipatch features of the library (experimental)" OFF)
 option(NURBS "Enable NURBS support" ON)
 option(HIERARCHICAL "Enable Hierarchical splines support (experimental)" OFF)
 option(submit_test "Allow test submition" OFF)
+option(SERIALIZATION "Enable serialization support" ON)
 
 # Optinal libraries
 option(USE_TRILINOS "Use the linear algebra packages from Trilinos" ON)

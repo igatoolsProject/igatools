@@ -146,6 +146,8 @@ public:
     void print_info(LogStream &out) const;
 
 private:
+
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -155,13 +157,9 @@ private:
 
     template<class Archive>
     void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        ar &boost::serialization::make_nvp("DenseMatrix_base_t",
-                                           boost::serialization::base_object<BoostMatrix>(*this));
-    }
+    serialize(Archive &ar, const unsigned int version);
     ///@}
-
+#endif // SERIALIZATION
 };
 
 IGA_NAMESPACE_CLOSE

@@ -98,10 +98,12 @@ void vector_serialization()
         xml_out_1 << BOOST_SERIALIZATION_NVP(vec);
     }
 
+    /*
     {
         boost::archive::text_oarchive text_out(out.get_file_stream());
         text_out << vec;
     }
+    //*/
 
     out << endl;
 
@@ -143,11 +145,12 @@ void array_serialization()
         xml_out_1 << BOOST_SERIALIZATION_NVP(arr);
     }
 
-
-    {
-        boost::archive::text_oarchive text_out(out.get_file_stream());
-        text_out << arr;
-    }
+    /*
+        {
+            boost::archive::text_oarchive text_out(out.get_file_stream());
+            text_out << arr;
+        }
+    //*/
 
     out << endl;
 

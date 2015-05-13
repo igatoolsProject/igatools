@@ -136,6 +136,26 @@ set_filled(const bool status)
     }
 }
 
+#ifdef SERIALIZATION
 
+template<class Archive>
+void
+CacheStatus::
+serialize(Archive &ar, const unsigned int version)
+{
+    ar &boost::serialization::make_nvp("initialized_counter_",initialized_counter_);
+    ar &boost::serialization::make_nvp("filled_counter_",filled_counter_);
+    ar &boost::serialization::make_nvp("copied_",copied_);
+};
+
+#endif // SERIALIZATION
 
 IGA_NAMESPACE_CLOSE
+
+
+#ifdef SERIALIZATION
+/*
+ * The next macro is needed to instantiate the serialize() function for the active archives
+ */
+BOOST_CLASS_EXPORT(iga::CacheStatus)
+#endif // SERIALIZATION

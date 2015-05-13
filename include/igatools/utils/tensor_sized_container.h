@@ -148,7 +148,7 @@ private:
     TensorIndex<rank> weight_;
 
 
-
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -157,13 +157,9 @@ private:
     friend class boost::serialization::access;
 
     template<class Archive>
-    void serialize(Archive &ar, const unsigned int version)
-    {
-        ar &boost::serialization::make_nvp("size_",size_);
-
-        ar &boost::serialization::make_nvp("weight_",weight_);
-    }
+    void serialize(Archive &ar, const unsigned int version);
     ///@}
+#endif // SERIALIZATION
 };
 
 

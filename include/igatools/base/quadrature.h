@@ -332,6 +332,7 @@ private:
     BBox<dim_> bounding_box_;
 
 
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -341,15 +342,9 @@ private:
 
     template<class Archive>
     void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        ar &boost::serialization::make_nvp("points_1d_",points_1d_);
-        ar &boost::serialization::make_nvp("weights_1d_",weights_1d_);
-        ar &boost::serialization::make_nvp("map_point_id_to_coords_id_",map_point_id_to_coords_id_);
-        ar &boost::serialization::make_nvp("is_tensor_product_",is_tensor_product_);
-        ar &boost::serialization::make_nvp("bounding_box_",bounding_box_);
-    };
+    serialize(Archive &ar, const unsigned int version);
     ///@}
+#endif // SERIALIZATION
 
 };
 

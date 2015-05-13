@@ -34,10 +34,12 @@ sub_dim_members = [
              'bool CartesianGridElement<dim>::is_boundary<k>(const Index sub_elem_id) const;',
              'bool CartesianGridElement<dim>::is_boundary<k>() const;']
 
+elems = []
 
 for dim in inst.sub_domain_dims:
     acc = 'CartesianGridElement<%d>' %(dim) 
     f.write('template class %s; \n' %(acc))
+    elems.append(acc)
     for it in inst.iterators:
         iterator = it.replace('Accessor','%s' % (acc) )
         f.write('template class %s; \n' %iterator)
@@ -50,6 +52,7 @@ for dim in inst.sub_domain_dims:
 for dim in inst.domain_dims:
     acc = 'CartesianGridElement<%d>' %(dim) 
     f.write('template class %s; \n' %(acc))
+    elems.append(acc)
     for it in inst.iterators:
         iterator = it.replace('Accessor','%s' % (acc) )
         f.write('template class %s; \n' %iterator)
@@ -58,3 +61,19 @@ for dim in inst.domain_dims:
             s = fun.replace('k', '%d' % (k)).replace('dim', '%d' % (dim));
             f.write('template ' + s + '\n')
             
+
+
+#---------------------------------------------------
+f.write('IGA_NAMESPACE_CLOSE\n')
+
+f.write('#ifdef SERIALIZATION\n')
+id = 0 
+for elem in unique(elems):
+    alias = 'CartesianGridElementAlias%d' %(id)
+    f.write('using %s = iga::%s; \n' % (alias, elem))
+    f.write('BOOST_CLASS_EXPORT(%s) \n' %alias)
+    id += 1 
+f.write('#endif // SERIALIZATION\n')
+    
+f.write('IGA_NAMESPACE_OPEN\n')
+#---------------------------------------------------

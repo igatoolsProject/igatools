@@ -441,6 +441,28 @@ get_valid_flags()
     return cacheutils::get_valid_flags_from_cache_type(CType());
 }
 
+
+#ifdef SERIALIZATION
+template <int dim>
+template<class Archive>
+void
+CartesianGridElement<dim>::
+serialize(Archive &ar, const unsigned int version)
+{
+    auto non_const_grid = std::const_pointer_cast<CartesianGrid<dim>>(grid_);
+    ar &boost::serialization::make_nvp("grid_",non_const_grid);
+    grid_ = non_const_grid;
+    Assert(grid_ != nullptr,ExcNullPtr());
+
+    ar &boost::serialization::make_nvp("flat_index_",flat_index_);
+
+    ar &boost::serialization::make_nvp("tensor_index_",tensor_index_);
+
+    ar &boost::serialization::make_nvp("all_sub_elems_cache_",all_sub_elems_cache_);
+}
+#endif // SERIALIZATION
+
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/cartesian_grid_element.inst>

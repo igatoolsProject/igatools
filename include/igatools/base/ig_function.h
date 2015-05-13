@@ -23,6 +23,7 @@
 
 #include <igatools/base/value_types.h>
 #include <igatools/base/function.h>
+#include <igatools/base/ig_coefficients.h>
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/linear_algebra/epetra_vector.h>
 //#include <igatools/basis_functions/bspline_space.h>
@@ -59,84 +60,11 @@ class BSplineElement;
 template <int,int,int>
 class NURBSElement;
 
+
 /**
- * @brief Coefficients for the IgFunction.
- *
- * Basically it is a <tt>std::map<Index,Real></tt> in which its <tt>key</tt> is the global dof
- * and the associated <tt>value</tt> is the coefficient associated to the dof.
- *
- * @note We do not use the EpetraTools::Vector because we want the IgCoefficient class to be
- * <em>serializable</em> and to make EpetraTools::Vector serializable is not an easy task
- * (it requires to make serializable all the attributes of EpetraTools::Vector).
  *
  * @ingroup serializable
  */
-class IgCoefficients
-    : public std::map<Index,Real>
-{
-public:
-
-    /**
-     * Access operator.
-     * Returns a reference to the mapped value of the element identified with key @p global_dof.
-     * If @p global_dof does not match the key of any element in the container,
-     * the function throws an <tt>out_of_range</tt> exception.
-     */
-    const Real &operator[](const Index global_dof) const
-    {
-        return std::map<Index,Real>::at(global_dof);
-    }
-
-    /**
-     * Access operator.
-     * If @p global_dof matches the key of an element in the container, the function returns a reference to its mapped value.
-     * If @p global_dof does not match the key of any element in the container,
-     * the function inserts a new element with that key and returns a reference to its mapped value.
-     */
-    Real &operator[](const Index global_dof)
-    {
-        return std::map<Index,Real>::operator[](global_dof);
-    }
-
-    Index size() const
-    {
-        return std::map<Index,Real>::size();
-    }
-
-    void print_info(LogStream &out) const
-    {
-        int loc_id = 0;
-        for (const auto &dof_value : (*this))
-        {
-            out << "Coef[loc_id=" << loc_id
-                << " , glob_id=" << dof_value.first << "] = "
-                << dof_value.second << std::endl;
-
-            ++loc_id;
-        }
-    }
-
-private:
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
-
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        ar &boost::serialization::make_nvp("IgCoeff_base_t",
-                                           boost::serialization::base_object<std::map<Index,Real>>(*this));
-    }
-    ///@}
-
-};
-
-
-
 template<class Space>
 class IgFunction :
     public Function<Space::dim, Space::codim, Space::range, Space::rank>,
@@ -389,6 +317,8 @@ private:
 
 
 private:
+
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -423,10 +353,9 @@ private:
         ar.template register_type<NURBSElementHandler<dim,range,rank>>();
         ar &boost::serialization::make_nvp("space_elem_handler_",space_elem_handler_);
         Assert(space_elem_handler_ != nullptr,ExcNullPtr());
-//        Assert(false,ExcNotImplemented());
     }
     ///@}
-
+#endif // SERIALIZATION
 };
 
 IGA_NAMESPACE_CLOSE

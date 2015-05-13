@@ -485,6 +485,24 @@ extend_sub_elem_quad(const Quadrature<k> &eval_pts,
 }
 
 
+#ifdef SERIALIZATION
+
+template<int dim_>
+template<class Archive>
+void
+Quadrature<dim_>::
+serialize(Archive &ar, const unsigned int version)
+{
+    ar &boost::serialization::make_nvp("points_1d_",points_1d_);
+    ar &boost::serialization::make_nvp("weights_1d_",weights_1d_);
+    ar &boost::serialization::make_nvp("map_point_id_to_coords_id_",map_point_id_to_coords_id_);
+    ar &boost::serialization::make_nvp("is_tensor_product_",is_tensor_product_);
+    ar &boost::serialization::make_nvp("bounding_box_",bounding_box_);
+};
+
+#endif // SERIALIZATION
+
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/base/quadrature.inst>

@@ -48,6 +48,8 @@ template <int,int,int,int> class PhysSpaceElementHandler;
  * @sa FunctionSpace
  *
  * @ingroup containers
+ * @ingroup serializable
+ *
  */
 template <int dim_, int range_= 1, int rank_ = 1, int codim_ = 0,
           Transformation type_= Transformation::h_grad>
@@ -246,7 +248,7 @@ private:
     friend ElementAccessor;
 
 
-
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -272,7 +274,9 @@ private:
 
         ar &boost::serialization::make_nvp("phys_space_previous_refinement_",phys_space_previous_refinement_);
     }
+
     ///@}
+#endif
 };
 
 IGA_NAMESPACE_CLOSE

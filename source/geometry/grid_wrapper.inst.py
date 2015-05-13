@@ -25,6 +25,28 @@ include_files = ['geometry/cartesian_grid.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-cartesian_grids = ['CartesianGrid<%d>' %(dim) for dim in inst.all_domain_dims]
-for row in cartesian_grids:
-   f.write('template class GridWrapper<%s>; \n' % (row))
+grids = ['CartesianGrid<%d>' %(dim) for dim in inst.all_domain_dims]
+
+grid_wrappers = []
+
+for grid in grids:
+    grid_wrapper = 'GridWrapper<%s>' % (grid)
+    grid_wrappers.append(grid_wrapper)
+    f.write('template class %s; \n' % (grid_wrapper))
+
+
+
+#---------------------------------------------------
+f.write('IGA_NAMESPACE_CLOSE\n')
+ 
+f.write('#ifdef SERIALIZATION\n')
+id = 0 
+for grid in unique(grids):
+    alias = 'GridWrapperAlias%d' %(id)
+    f.write('using %s = iga::GridWrapper<iga::%s>; \n' % (alias, grid))
+    f.write('BOOST_CLASS_EXPORT(%s) \n' %alias)
+    id += 1 
+f.write('#endif // SERIALIZATION\n')
+     
+f.write('IGA_NAMESPACE_OPEN\n')
+#---------------------------------------------------

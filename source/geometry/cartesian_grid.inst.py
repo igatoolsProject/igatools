@@ -28,9 +28,11 @@ sub_dim_members = ['CartesianGrid<dim>::template BoundaryNormal<k> ' +
                    'CartesianGrid<dim>::get_boundary_normals<k>(const int s_id) const;',
                    'std::shared_ptr<CartesianGrid<k>> CartesianGrid<dim>::'+
                    'get_sub_grid<k>(const int sub_elem_id, InterGridMap<k> &elem_map) const;']
- 
+
+grids = [] 
 for dim in inst.sub_domain_dims:
     grid = 'CartesianGrid<%d>' %(dim)
+    grids.append(grid)
     f.write('template class %s; \n' % (grid))
     for fun in sub_dim_members:
         k = dim
@@ -39,9 +41,26 @@ for dim in inst.sub_domain_dims:
     
 for dim in inst.domain_dims:
     grid = 'CartesianGrid<%d>' %(dim)   
+    grids.append(grid)
     f.write('template class %s; \n' % (grid))
     for fun in sub_dim_members:
         for k in inst.sub_dims(dim):
             s = fun.replace('k', '%d' % (k)).replace('dim', '%d' % (dim));
             f.write('template ' + s + '\n')
        
+
+#---------------------------------------------------
+f.write('IGA_NAMESPACE_CLOSE\n')
+
+f.write('#ifdef SERIALIZATION\n')
+id = 0 
+for grid in unique(grids):
+#    f.write('template class %s ;\n' %space)
+    grid_alias = 'CartesianGridAlias%d' %(id)
+    f.write('using %s = iga::%s; \n' % (grid_alias, grid))
+    f.write('BOOST_CLASS_EXPORT(%s) \n' %grid_alias)
+    id += 1 
+f.write('#endif // SERIALIZATION\n')
+    
+f.write('IGA_NAMESPACE_OPEN\n')
+#---------------------------------------------------

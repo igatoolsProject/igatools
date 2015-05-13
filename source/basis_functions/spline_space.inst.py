@@ -29,9 +29,12 @@ sub_dim_members = \
   'typename class::template SubSpace<k>::DegreeTable class::get_sub_space_degree<k>(const Index s_id) const;',
   'typename class::template SubSpace<k>::PeriodicityTable class::get_sub_space_periodicity<k>(const Index s_id) const;']         
 
+spaces = []
+
 for x in inst.sub_ref_sp_dims:
     space = 'SplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class %s ;\n' %space)
+    spaces.append(space)
     for fun in sub_dim_members:
         k = x.dim
         s = fun.replace('class', space).replace('k', '%d' % (k));
@@ -41,8 +44,25 @@ for x in inst.sub_ref_sp_dims:
 for x in inst.ref_sp_dims:
     space = 'SplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class %s ;\n' %space)
+    spaces.append(space)
     for fun in sub_dim_members:
         for k in inst.sub_dims(x.dim):
             s = fun.replace('class', space).replace('k', '%d' % (k));
             f.write('template ' + s + '\n')
             
+
+
+#---------------------------------------------------
+f.write('IGA_NAMESPACE_CLOSE\n')
+ 
+f.write('#ifdef SERIALIZATION\n')
+id = 0 
+for space in unique(spaces):
+    alias = 'SplineSpaceAlias%d' %(id)
+    f.write('using %s = iga::%s; \n' % (alias, space))
+    f.write('BOOST_CLASS_EXPORT(%s) \n' %alias)
+    id += 1 
+f.write('#endif // SERIALIZATION\n')
+     
+f.write('IGA_NAMESPACE_OPEN\n')
+#---------------------------------------------------

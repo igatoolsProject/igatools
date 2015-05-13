@@ -209,4 +209,26 @@ empty() const noexcept
 }
 
 
+#ifdef SERIALIZATION
+
+template<class Archive>
+void
+PropertiesIdContainer::
+serialize(Archive &ar, const unsigned int version)
+{
+    ar &boost::serialization::make_nvp("properties_id_",properties_id_);
+}
+
+#endif // SERIALIZATION
+
 IGA_NAMESPACE_CLOSE
+
+
+#ifdef SERIALIZATION
+
+/*
+ * The next macro is needed to instantiate the serialize() function for the active archives
+ */
+BOOST_CLASS_EXPORT(iga::PropertiesIdContainer)
+
+#endif // SERIALIZATION

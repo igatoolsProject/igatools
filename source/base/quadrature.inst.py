@@ -23,11 +23,17 @@ from init_instantiation_data import *
 data = Instantiation()
 (f, inst) = (data.file_output, data.inst)
 
+quadratures = []
 for dim in inst.sub_domain_dims:
-    f.write('template class Quadrature<%d>; \n' %(dim))
+    quad = 'Quadrature<%d>' %(dim)
+    quadratures.append(quad)
+    f.write('template class %s; \n' %(quad))
+
 
 for dim in inst.domain_dims:
-    f.write('template class Quadrature<%d>; \n' %(dim))
+    quad = 'Quadrature<%d>' %(dim)
+    quadratures.append(quad)
+    f.write('template class %s; \n' %(quad))
 
 sub_dim_members = \
  ['Quadrature<dim> Quadrature<dim>::collapse_to_sub_element<k>(const int id) const;']
@@ -57,4 +63,20 @@ for dim in inst.domain_dims:
             s = fun.replace('dim', '%d' % (dim)).replace('k', '%d' % (k));
             f.write('template ' + s + '\n')
 
+
+
+#---------------------------------------------------
+f.write('IGA_NAMESPACE_CLOSE\n')
+
+f.write('#ifdef SERIALIZATION\n')
+id = 0 
+for quadrature in unique(quadratures):
+    quadrature_alias = 'QuadratureAlias%d' %(id)
+    f.write('using %s = iga::%s; \n' % (quadrature_alias, quadrature))
+    f.write('BOOST_CLASS_EXPORT(%s) \n' %quadrature_alias)
+    id += 1 
+f.write('#endif // SERIALIZATION\n')
+    
+f.write('IGA_NAMESPACE_OPEN\n')
+#---------------------------------------------------
 

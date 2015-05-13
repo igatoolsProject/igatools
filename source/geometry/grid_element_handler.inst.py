@@ -31,8 +31,10 @@ sub_dim_members = ['void GridElementHandler<dim>::fill_cache<k>(ElementAccessor 
              'void GridElementHandler<dim>::reset<k>(const ValueFlags flag, const Quadrature<k> &quad);',
              'Size GridElementHandler<dim>::get_num_points<k>() const;']
 
+handlers = []
 for dim in inst.sub_domain_dims:
-    gh = 'GridElementHandler<%d>' %(dim) 
+    gh = 'GridElementHandler<%d>' %(dim)
+    handlers.append(gh)
     f.write('template class %s; \n' %(gh))
     for fun in sub_dim_members:
         k = dim
@@ -41,8 +43,26 @@ for dim in inst.sub_domain_dims:
 
 for dim in inst.domain_dims:
     gh = 'GridElementHandler<%d>' %(dim) 
+    handlers.append(gh)
     f.write('template class %s; \n' %(gh))
     for fun in sub_dim_members:
         for k in inst.sub_dims(dim):
             s = fun.replace('k', '%d' % (k)).replace('dim', '%d' % (dim));
             f.write('template ' + s + '\n')
+
+
+
+#---------------------------------------------------
+f.write('IGA_NAMESPACE_CLOSE\n')
+ 
+f.write('#ifdef SERIALIZATION\n')
+id = 0 
+for gh in unique(handlers):
+    alias = 'GridElementHandlerAlias%d' %(id)
+    f.write('using %s = iga::%s; \n' % (alias, gh))
+    f.write('BOOST_CLASS_EXPORT(%s) \n' %alias)
+    id += 1 
+f.write('#endif // SERIALIZATION\n')
+     
+f.write('IGA_NAMESPACE_OPEN\n')
+#---------------------------------------------------

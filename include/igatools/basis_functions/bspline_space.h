@@ -468,8 +468,8 @@ private:
     typename SpaceData::template ComponentContainer<SafeSTLVector<TensorIndex<dim> > >
     dofs_tensor_id_elem_table_;
 
-private:
 
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -479,24 +479,9 @@ private:
 
     template<class Archive>
     void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        ar &boost::serialization::make_nvp("ReferenceSpace",
-                                           boost::serialization::base_object<BaseSpace>(*this));
-
-        ar &boost::serialization::make_nvp("space_data_",space_data_);
-        Assert(space_data_ != nullptr,ExcNullPtr());
-
-        ar &boost::serialization::make_nvp("end_b_",end_b_);
-
-        ar &boost::serialization::make_nvp("operators_",operators_);
-
-        ar &boost::serialization::make_nvp("end_interval_",end_interval_);
-
-        ar &boost::serialization::make_nvp("dofs_tensor_id_elem_table_",dofs_tensor_id_elem_table_);
-    }
+    serialize(Archive &ar, const unsigned int version);
     ///@}
-
+#endif // SERIALIZATION
 };
 
 

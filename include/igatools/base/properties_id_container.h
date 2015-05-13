@@ -128,6 +128,7 @@ private:
     std::map<std::string,std::set<Index>> properties_id_;
 
 
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -137,11 +138,9 @@ private:
 
     template<class Archive>
     void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        ar &boost::serialization::make_nvp("properties_id_",properties_id_);
-    }
+    serialize(Archive &ar, const unsigned int version);
     ///@}
+#endif //SERIALIZATION
 
 };
 

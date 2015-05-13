@@ -23,11 +23,29 @@ from init_instantiation_data import *
 data = Instantiation()
 f = data.file_output
 inst = data.inst
-              
+
+dof_distributions = []
 for x in inst.all_ref_sp_dims:
-    f.write('template class DofDistribution<%d, %d, %d> ;\n' 
-            %(x.dim, x.range, x.rank))
+    dof_distribution = 'DofDistribution<%d, %d, %d>' %(x.dim, x.range, x.rank)
+    dof_distributions.append(dof_distribution)
+    f.write('template class %s ;\n' %(dof_distribution))
     
 
 # # needed by igamapping
 # f.write('template class DofDistribution<0, 0, 1> ;\n')
+
+
+#---------------------------------------------------
+f.write('IGA_NAMESPACE_CLOSE\n')
+
+f.write('#ifdef SERIALIZATION\n')
+id = 0 
+for dof_distribution in unique(dof_distributions):
+    dof_distribution_alias = 'DofDistributionAlias%d' %(id)
+    f.write('using %s = iga::%s; \n' % (dof_distribution_alias, dof_distribution))
+    f.write('BOOST_CLASS_EXPORT(%s) \n' %dof_distribution_alias)
+    id += 1 
+f.write('#endif // SERIALIZATION\n')
+    
+f.write('IGA_NAMESPACE_OPEN\n')
+#---------------------------------------------------

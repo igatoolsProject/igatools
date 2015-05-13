@@ -1065,6 +1065,32 @@ same_knots_or_refinement_of(const CartesianGrid<dim_> &grid_to_compare_with) con
 }
 
 
+#ifdef SERIALIZATION
+
+template <int dim_>
+template<class Archive>
+void
+CartesianGrid<dim_>::
+serialize(Archive &ar, const unsigned int version)
+{
+    std::string tag_name = "CartesianGrid" + std::to_string(dim_) + "base_t";
+    ar &boost::serialization::make_nvp(
+        tag_name.c_str(),
+        boost::serialization::base_object<TensorSizedContainer<dim_>>(*this));
+
+    ar &boost::serialization::make_nvp("kind_",kind_);
+
+    ar &boost::serialization::make_nvp("knot_coordinates_",knot_coordinates_);
+
+    ar &boost::serialization::make_nvp("boundary_id_",boundary_id_);
+
+    ar &boost::serialization::make_nvp("properties_elements_id_",properties_elements_id_);
+
+    ar &boost::serialization::make_nvp("grid_pre_refinement_",grid_pre_refinement_);
+}
+#endif // SERIALIZATION
+
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/cartesian_grid.inst>

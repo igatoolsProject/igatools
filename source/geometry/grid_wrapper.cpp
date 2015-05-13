@@ -107,6 +107,17 @@ insert_knots(SafeSTLArray<SafeSTLVector<Real>,GridType::dim> &knots_to_insert)
 }
 
 
+#ifdef SERIALIZATION
+template <class GridType>
+template<class Archive>
+void
+GridWrapper<GridType>::
+serialize(Archive &ar, const unsigned int version)
+{
+    ar &boost::serialization::make_nvp("grid_",grid_);
+}
+#endif // SERIALIZATION
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/grid_wrapper.inst>

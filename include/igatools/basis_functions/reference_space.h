@@ -282,6 +282,8 @@ public:
 
 
 private:
+
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -294,16 +296,16 @@ private:
     serialize(Archive &ar, const unsigned int version)
     {
         ar &boost::serialization::make_nvp("ReferenceSpace_base_t",
-                                           boost::serialization::base_object<FunctionSpaceOnGrid<CartesianGrid<dim_>>>(*this));
+                                           boost::serialization::base_object<FunctionSpaceOnGrid<CartesianGrid<dim>>>(*this));
 
         ar &boost::serialization::make_nvp("dof_distribution_",dof_distribution_);
 
         ar &boost::serialization::make_nvp("ref_space_previous_refinement_",ref_space_previous_refinement_);
-
-        //TODO (martinelli, May 07, 2015): register the serialization for the derived classes
     }
-    ///@}
 
+
+    ///@}
+#endif // SERIALIZATION
 };
 
 IGA_NAMESPACE_CLOSE

@@ -36,10 +36,12 @@ sub_dim_members = \
   'std::shared_ptr<InterGridMap<k>> elem_map) const;',
   'std::set<Index> class::get_boundary_dofs<k>(const int s_id) const;']
 
+spaces = []
 
 for x in inst.sub_ref_sp_dims:
     space = 'ReferenceSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class %s ;\n' %space)
+    spaces.append(space)
     for fun in sub_dim_members:
         k = x.dim
         s = fun.replace('class', space).replace('k', '%d' % (k));
@@ -48,8 +50,28 @@ for x in inst.sub_ref_sp_dims:
 for x in inst.ref_sp_dims:
     space = 'ReferenceSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
     f.write('template class %s ;\n' %space)
+    spaces.append(space)
     for fun in sub_dim_members:
         for k in inst.sub_dims(x.dim):
             s = fun.replace('class', space).replace('k', '%d' % (k));
             f.write('template ' + s + '\n')
+
+
+
+
+#---------------------------------------------------
+#f.write('IGA_NAMESPACE_CLOSE\n')
+
+#f.write('#ifdef SERIALIZATION\n')
+#id = 0 
+#for space in unique(spaces):
+#for space in inst.AllRefSpaces:
+#    space_alias = 'ReferenceSpaceAlias%d' %(id)
+#    f.write('using %s = iga::%s; \n' % (space_alias, space.name))
+#    f.write('BOOST_CLASS_EXPORT(%s) \n' %space_alias)
+#    id += 1 
+#f.write('#endif // SERIALIZATION\n')
+#    
+#f.write('IGA_NAMESPACE_OPEN\n')
+#---------------------------------------------------
 

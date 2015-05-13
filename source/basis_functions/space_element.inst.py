@@ -61,7 +61,28 @@ for space in inst.PhysSpaces:
 
 
 
+#---------------------------------------------------
 for space_elem in unique(space_elem_list):
     f.write('template class %s ;\n' %space_elem)
+#---------------------------------------------------
+
+
+
+
+
+#---------------------------------------------------
+f.write('IGA_NAMESPACE_CLOSE\n')
+
+f.write('#ifdef SERIALIZATION\n')
+id = 0 
+for elem in unique(space_elem_list):
+    alias = 'SpaceElementAlias%d' %(id)
+    f.write('using %s = iga::%s; \n' % (alias, elem))
+    f.write('BOOST_CLASS_EXPORT(%s) \n' %alias)
+    id += 1 
+f.write('#endif // SERIALIZATION\n')
+    
+f.write('IGA_NAMESPACE_OPEN\n')
+#---------------------------------------------------
 
 

@@ -418,7 +418,7 @@ public:
         /** list of the inactive components */
         SafeSTLVector<Index> inactive_components_id_;
 
-
+#ifdef SERIALIZATION
         /**
          * @name Functions needed for boost::serialization
          * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -434,22 +434,15 @@ public:
             ar &boost::serialization::make_nvp(
                 "ComponentContainer_base_t",
                 boost::serialization::base_object<base_t>(*this));
-//*/
+
             ar &boost::serialization::make_nvp("comp_map_",comp_map_);
 
             ar &boost::serialization::make_nvp("active_components_id_", active_components_id_);
 
             ar &boost::serialization::make_nvp("inactive_components_id_", inactive_components_id_);
-            /*
-                        for (const auto active_id : active_components_id_)
-                        {
-                            std::string tag_name = "raw_data[" + std::to_string(active_id) + "]";
-                            ar &boost::serialization::make_nvp(tag_name.c_str, base_t::operator[](active_id));
-                        }
-                        //*/
         }
         ///@}
-
+#endif // SERIALIZATION
     };
 
 
@@ -492,6 +485,7 @@ private:
      */
     SplineSpace() = default;
 
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -501,24 +495,9 @@ private:
 
     template<class Archive>
     void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        ar &boost::serialization::make_nvp(
-            "SplineSpace_base_t",
-            boost::serialization::base_object<GridWrapper<CartesianGrid<dim>>>(*this));
-
-        ar &boost::serialization::make_nvp("interior_mult_",interior_mult_);
-
-        ar &boost::serialization::make_nvp("deg_", deg_);
-
-        ar &boost::serialization::make_nvp("space_dim_", space_dim_);
-
-        ar &boost::serialization::make_nvp("periodic_", periodic_);
-
-        ar &boost::serialization::make_nvp("spline_space_previous_refinement_", spline_space_previous_refinement_);
-    }
+    serialize(Archive &ar, const unsigned int version);
     ///@}
-
+#endif // SERIALIZATION
 };
 
 

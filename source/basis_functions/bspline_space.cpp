@@ -559,6 +559,32 @@ get_elem_handler() const
     return ElementHandler::create(this_space);
 }
 
+
+#ifdef SERIALIZATION
+
+template<int dim_, int range_, int rank_>
+template<class Archive>
+void
+BSplineSpace<dim_, range_, rank_>::
+serialize(Archive &ar, const unsigned int version)
+{
+    ar &boost::serialization::make_nvp("ReferenceSpace",
+                                       boost::serialization::base_object<BaseSpace>(*this));
+
+    ar &boost::serialization::make_nvp("space_data_",space_data_);
+    Assert(space_data_ != nullptr,ExcNullPtr());
+
+    ar &boost::serialization::make_nvp("end_b_",end_b_);
+
+    ar &boost::serialization::make_nvp("operators_",operators_);
+
+    ar &boost::serialization::make_nvp("end_interval_",end_interval_);
+
+    ar &boost::serialization::make_nvp("dofs_tensor_id_elem_table_",dofs_tensor_id_elem_table_);
+}
+
+#endif // SERIALIZATION
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/bspline_space.inst>

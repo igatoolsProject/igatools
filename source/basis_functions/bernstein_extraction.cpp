@@ -203,6 +203,18 @@ BernsteinExtraction(std::shared_ptr<CartesianGrid<dim> > grid,
     }
 }
 
+
+#ifdef SERIALIZATION
+template<int dim, int range, int rank>
+template<class Archive>
+void
+BernsteinExtraction<dim, range, rank>::
+serialize(Archive &ar, const unsigned int version)
+{
+    ar &boost::serialization::make_nvp("ext_operators_",ext_operators_);
+}
+#endif // SERIALIZATION
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/bernstein_extraction.inst>

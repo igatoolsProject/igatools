@@ -257,6 +257,43 @@ print_info(LogStream &out) const
     out.end_item();
 }
 
+
+//#ifdef SERIALIZATION
+//template<class Space>
+//template<class Archive>
+//void
+//IgFunction<Space>::
+//serialize(Archive &ar, const unsigned int version)
+//{
+//    ar &boost::serialization::make_nvp("IgFunction_base_t",
+//                                       boost::serialization::base_object<base_t>(*this));
+//
+//    ar.template register_type<BSplineSpace<dim,range,rank>>();
+//    ar.template register_type<NURBSSpace<dim,range,rank>>();
+//    auto non_nonst_space = std::const_pointer_cast<Space>(space_);
+//    ar &boost::serialization::make_nvp("space_",non_nonst_space);
+//    space_ = non_nonst_space;
+//    Assert(space_ != nullptr,ExcNullPtr());
+//
+//    ar &boost::serialization::make_nvp("coeff_",coeff_);
+//
+//    ar &boost::serialization::make_nvp("property_",const_cast<std::string &>(property_));
+//
+//    ar.template register_type<BSplineElement<dim,range,rank>>();
+//    ar.template register_type<NURBSElement<dim,range,rank>>();
+//    ar &boost::serialization::make_nvp("space_elem_",space_elem_);
+//
+//
+//    ar.template register_type<BSplineElementHandler<dim,range,rank>>();
+//    ar.template register_type<NURBSElementHandler<dim,range,rank>>();
+//    ar &boost::serialization::make_nvp("space_elem_handler_",space_elem_handler_);
+//    Assert(space_elem_handler_ != nullptr,ExcNullPtr());
+//}
+//#endif // SERIALIZATION
+
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/base/ig_function.inst>
+
+

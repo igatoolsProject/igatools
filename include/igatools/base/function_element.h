@@ -30,7 +30,7 @@ IGA_NAMESPACE_OPEN
 
 /**
  *
- * @ingroup serialization
+ * @ingroup serializable
  */
 template<int dim, int codim, int range = 1, int rank = 1>
 class FunctionElement : public CartesianGridElement<dim>
