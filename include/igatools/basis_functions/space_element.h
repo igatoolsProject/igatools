@@ -284,13 +284,7 @@ private:
 
     template<class Archive>
     void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        ar &boost::serialization::make_nvp("SpaceElement_base_t",
-                                           boost::serialization::base_object<SpaceElementBase<dim>>(*this));
-
-        ar &boost::serialization::make_nvp("all_sub_elems_cache_",all_sub_elems_cache_);
-    }
+    serialize(Archive &ar, const unsigned int version);
     ///@}
 #endif // SERIALIZATION
 

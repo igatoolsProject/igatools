@@ -39,12 +39,15 @@ sub_dim_members = \
 
 
 
+elements = []
+
 
 for x in inst.sub_ref_sp_dims:
 #    space = 'BSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
 #    space_elem = 'SpaceElement<%s,%d,0,%d,%d>' %(space,x.dim, x.range, x.rank)
 #    f.write('template class %s; \n' %space_elem)
     elem = 'BSplineElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
+    elements.append(elem)
     f.write('template class %s; \n' %elem)
 #    acc = 'ReferenceElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
 #    for it in inst.iterators:
@@ -64,6 +67,7 @@ for x in inst.ref_sp_dims:
 #    space_elem = 'SpaceElement<%s,%d,0,%d,%d>' %(space,x.dim, x.range, x.rank)
 #    f.write('template class %s>;' %space_elem)
     elem = 'BSplineElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
+    elements.append(elem)
     f.write('template class %s; \n' %elem)
 #    acc = 'ReferenceElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
 #    for it in inst.iterators:
@@ -76,4 +80,26 @@ for x in inst.ref_sp_dims:
             s = fun.replace('elhandler', elemhandler).replace('k', '%d' % (k));
             f.write('template ' + s + '\n')
         
+        
+        
+        
+        
+        
+        
+#---------------------------------------------------
+f.write('IGA_NAMESPACE_CLOSE\n')
+ 
+f.write('#ifdef SERIALIZATION\n')
+id = 0 
+for elem in unique(elements):
+    alias = 'BSplineElementAlias%d' %(id)
+    f.write('using %s = iga::%s; \n' % (alias, elem))
+    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
+    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
+    f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
+    id += 1 
+f.write('#endif // SERIALIZATION\n')
+     
+f.write('IGA_NAMESPACE_OPEN\n')
+#---------------------------------------------------
    

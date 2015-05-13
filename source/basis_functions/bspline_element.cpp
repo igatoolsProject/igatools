@@ -315,7 +315,17 @@ clone() const
     return elem;
 }
 
-
+#ifdef SERIALIZATION
+template <int dim, int range, int rank>
+template<class Archive>
+void
+BSplineElement<dim, range, rank>::
+serialize(Archive &ar, const unsigned int version)
+{
+    ar &boost::serialization::make_nvp("BSplineElement_base_t",
+                                       boost::serialization::base_object<ReferenceElement<dim,range,rank>>(*this));
+}
+#endif // SERIALIZATION
 
 #if 0
 template <int dim, int range, int rank>
