@@ -41,9 +41,11 @@ f.write('IGA_NAMESPACE_CLOSE\n')
 f.write('#ifdef SERIALIZATION\n')
 id = 0 
 for dof_distribution in unique(dof_distributions):
-    dof_distribution_alias = 'DofDistributionAlias%d' %(id)
-    f.write('using %s = iga::%s; \n' % (dof_distribution_alias, dof_distribution))
-    f.write('BOOST_CLASS_EXPORT(%s) \n' %dof_distribution_alias)
+    alias = 'DofDistributionAlias%d' %(id)
+    f.write('using %s = iga::%s; \n' % (alias, dof_distribution))
+    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
+    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
+    f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
     id += 1 
 f.write('#endif // SERIALIZATION\n')
     

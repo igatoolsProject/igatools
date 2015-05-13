@@ -36,9 +36,11 @@ f.write('IGA_NAMESPACE_CLOSE\n')
 f.write('#ifdef SERIALIZATION\n')
 id = 0 
 for c in unique(classes):
-    c_alias = 'BernsteinExtractionAlias%d' %(id)
-    f.write('using %s = iga::%s; \n' % (c_alias, c))
-    f.write('BOOST_CLASS_EXPORT(%s) \n' %c_alias)
+    alias = 'BernsteinExtractionAlias%d' %(id)
+    f.write('using %s = iga::%s; \n' % (alias, c))
+    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
+    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
+    f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
     id += 1 
 f.write('#endif // SERIALIZATION\n')
     

@@ -226,9 +226,8 @@ IGA_NAMESPACE_CLOSE
 
 #ifdef SERIALIZATION
 
-/*
- * The next macro is needed to instantiate the serialize() function for the active archives
- */
-BOOST_CLASS_EXPORT(iga::PropertiesIdContainer)
+BOOST_CLASS_EXPORT_IMPLEMENT(iga::PropertiesIdContainer)
+template void iga::PropertiesIdContainer::serialize(OArchive &, const unsigned int);
+template void iga::PropertiesIdContainer::serialize(IArchive &, const unsigned int);
 
 #endif // SERIALIZATION

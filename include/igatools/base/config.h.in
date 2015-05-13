@@ -61,6 +61,10 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 //*/
+
+using OArchive = boost::archive::xml_oarchive;
+using IArchive = boost::archive::xml_iarchive;
+
 #endif // SERIALIZATION
 //--------------------------------------------------------------------
 

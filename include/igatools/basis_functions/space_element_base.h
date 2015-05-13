@@ -207,6 +207,8 @@ public:
 
 
 private:
+
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -216,18 +218,9 @@ private:
 
     template<class Archive>
     void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        ar &boost::serialization::make_nvp("SpaceElementBase_base_t",
-                                           boost::serialization::base_object<CartesianGridElement<dim>>(*this));
-
-        auto non_const_space = std::const_pointer_cast<Space>(space_);
-        ar &boost::serialization::make_nvp("space_",non_const_space);
-        space_ = non_const_space;
-        Assert(space_ != nullptr,ExcNullPtr());
-    }
+    serialize(Archive &ar, const unsigned int version);
     ///@}
-
+#endif // SERIALIZATION
 };
 
 

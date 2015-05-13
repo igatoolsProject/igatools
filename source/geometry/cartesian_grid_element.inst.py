@@ -71,7 +71,9 @@ id = 0
 for elem in unique(elems):
     alias = 'CartesianGridElementAlias%d' %(id)
     f.write('using %s = iga::%s; \n' % (alias, elem))
-    f.write('BOOST_CLASS_EXPORT(%s) \n' %alias)
+    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
+    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
+    f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
     id += 1 
 f.write('#endif // SERIALIZATION\n')
     

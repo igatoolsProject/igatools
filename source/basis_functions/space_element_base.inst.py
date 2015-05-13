@@ -28,18 +28,36 @@ data = Instantiation(include_files)
 
 sub_dim_members = []
 
-space_elem_list = []
+spaces = []
 
 for dim in inst.sub_domain_dims:
-    space_element = 'SpaceElementBase<%d>' %(dim)
-    space_elem_list.append(space_element)
+    space = 'SpaceElementBase<%d>' %(dim)
+    spaces.append(space)
 
 
 for dim in inst.domain_dims:
-    space_element = 'SpaceElementBase<%d>' %(dim)
-    space_elem_list.append(space_element)
+    space = 'SpaceElementBase<%d>' %(dim)
+    spaces.append(space)
 
 
-for space_elem in unique(space_elem_list):
-    f.write('template class %s ;\n' %space_elem)
+for space in unique(spaces):
+    f.write('template class %s ;\n' %space)
 
+
+
+#---------------------------------------------------
+f.write('IGA_NAMESPACE_CLOSE\n')
+ 
+f.write('#ifdef SERIALIZATION\n')
+id = 0 
+for space in unique(spaces):
+    alias = 'SpaceElementBase%d' %(id)
+    f.write('using %s = iga::%s; \n' % (alias, space))
+    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
+    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
+    f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
+    id += 1 
+f.write('#endif // SERIALIZATION\n')
+     
+f.write('IGA_NAMESPACE_OPEN\n')
+#---------------------------------------------------

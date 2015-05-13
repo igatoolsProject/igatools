@@ -190,6 +190,23 @@ operator>(const self_t &a) const
     return this->as_cartesian_grid_element_accessor() > a.as_cartesian_grid_element_accessor();
 }
 
+#ifdef SERIALIZATION
+template <int dim>
+template<class Archive>
+void
+SpaceElementBase<dim>::
+serialize(Archive &ar, const unsigned int version)
+{
+    ar &boost::serialization::make_nvp("SpaceElementBase_base_t",
+                                       boost::serialization::base_object<CartesianGridElement<dim>>(*this));
+
+    auto non_const_space = std::const_pointer_cast<Space>(space_);
+    ar &boost::serialization::make_nvp("space_",non_const_space);
+    space_ = non_const_space;
+    Assert(space_ != nullptr,ExcNullPtr());
+}
+///@}
+#endif // SERIALIZATION
 
 IGA_NAMESPACE_CLOSE
 

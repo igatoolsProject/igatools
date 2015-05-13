@@ -310,9 +310,9 @@ IGA_NAMESPACE_CLOSE
 
 
 #ifdef SERIALIZATION
-/*
- * The next macro is needed to instantiate the serialize() function for the active archives
- */
-BOOST_CLASS_EXPORT(iga::DenseMatrix)
+
+BOOST_CLASS_EXPORT_IMPLEMENT(iga::DenseMatrix)
+template void iga::DenseMatrix::serialize(OArchive &, const unsigned int);
+template void iga::DenseMatrix::serialize(IArchive &, const unsigned int);
 
 #endif // SERIALIZATION
