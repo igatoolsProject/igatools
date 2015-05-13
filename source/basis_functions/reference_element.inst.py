@@ -31,10 +31,30 @@ data = Instantiation(include_files)
 accessors = [('ReferenceElement<%d, %d, %d>' %(x.dim, x.range, x.rank), x.dim)
              for x in inst.all_ref_sp_dims]
 
+elements = []
+
 for acc in accessors:
+    elements.append(acc[0])
     f.write('template class %s ;\n' %acc[0])
     for it in inst.iterators:
         iterator = it.replace('Accessor','%s' % (acc[0]) )
         f.write('template class %s; \n' %iterator)
 
 
+
+#---------------------------------------------------
+f.write('IGA_NAMESPACE_CLOSE\n')
+ 
+f.write('#ifdef SERIALIZATION\n')
+id = 0 
+for elem in unique(elements):
+    alias = 'ReferenceElementAlias%d' %(id)
+    f.write('using %s = iga::%s; \n' % (alias, elem))
+    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
+    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
+    f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
+    id += 1 
+f.write('#endif // SERIALIZATION\n')
+     
+f.write('IGA_NAMESPACE_OPEN\n')
+#---------------------------------------------------

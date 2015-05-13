@@ -249,6 +249,8 @@ public:
     std::shared_ptr<const Space> get_space() const;
 
 private:
+
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -258,23 +260,9 @@ private:
 
     template<class Archive>
     void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        ar &boost::serialization::make_nvp("ReferenceElement_base_t_",
-                                           boost::serialization::base_object<SpaceElement<dim,0,range,rank>>(*this));
-
-
-        ar &boost::serialization::make_nvp("n_basis_direction_",n_basis_direction_);
-        ar &boost::serialization::make_nvp("comp_offset_",comp_offset_);
-        ar &boost::serialization::make_nvp("basis_functions_indexer_",basis_functions_indexer_);
-
-        auto non_const_space = std::const_pointer_cast<Space>(space_);
-        ar &boost::serialization::make_nvp("space_",non_const_space);
-        space_ = non_const_space;
-        Assert(space_ != nullptr,ExcNullPtr());
-    }
+    serialize(Archive &ar, const unsigned int version);
     ///@}
-
+#endif // SERIALIZATION
 };
 
 
