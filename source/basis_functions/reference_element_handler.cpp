@@ -116,6 +116,21 @@ reset_one_element(
 }
 
 
+#ifdef SERIALIZATION
+template<int dim, int range , int rank>
+template<class Archive>
+void
+ReferenceElementHandler<dim, range, rank>::
+serialize(Archive &ar, const unsigned int version)
+{
+    ar &boost::serialization::make_nvp("grid_handler_",grid_handler_);
+
+    auto non_const_space = std::const_pointer_cast<Space>(space_);
+    ar &boost::serialization::make_nvp("space_", non_const_space);
+    space_ = non_const_space;
+    Assert(space_ != nullptr,ExcNullPtr());
+}
+#endif // SERIALIZATION
 
 IGA_NAMESPACE_CLOSE
 

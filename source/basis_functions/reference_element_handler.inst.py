@@ -37,6 +37,8 @@ sub_dim_members = \
 #'void elhandler::reset<k>(const ValueFlags flag, const Quadrature<k> &quad);']
 
 
+handlers = []
+
 for x in inst.sub_ref_sp_dims:
     space = 'ReferenceSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
 #    f.write('template class SpaceElement<%s>; \n' %space)
@@ -46,6 +48,7 @@ for x in inst.sub_ref_sp_dims:
         iterator = it.replace('Accessor','%s' % (acc) )
 #        f.write('template class %s; \n' %iterator)
     elemhandler = 'ReferenceElementHandler<%d, %d, %d>' %(x.dim, x.range, x.rank)
+    handlers.append(elemhandler)
     f.write('template class %s; \n'  %elemhandler)
 #    for fun in sub_dim_members:
 #        k = x.dim
@@ -62,10 +65,27 @@ for x in inst.ref_sp_dims:
         iterator = it.replace('Accessor','%s' % (acc) )
 #        f.write('template class %s; \n' %iterator)
     elemhandler = 'ReferenceElementHandler<%d, %d, %d>' %(x.dim, x.range, x.rank)
+    handlers.append(elemhandler)
     f.write('template class %s; \n'  %elemhandler)
 #    for fun in sub_dim_members:
 #        for k in inst.sub_dims(x.dim):
 #            s = fun.replace('elhandler', elemhandler).replace('k', '%d' % (k));
 #            f.write('template ' + s + '\n')
 
+#---------------------------------------------------
+f.write('IGA_NAMESPACE_CLOSE\n')
+ 
+f.write('#ifdef SERIALIZATION\n')
+id = 0 
+for handler in unique(handlers):
+    alias = 'ReferenceElementHandlerAlias%d' %(id)
+    f.write('using %s = iga::%s; \n' % (alias, handler))
+    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
+    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
+    f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
+    id += 1 
+f.write('#endif // SERIALIZATION\n')
+     
+f.write('IGA_NAMESPACE_OPEN\n')
+#---------------------------------------------------
 
