@@ -82,5 +82,22 @@ get_valid_flags()
 }
 
 
+#ifdef SERIALIZATION
+template<int dim, int codim, int range, int rank>
+template<class Archive>
+void
+FunctionElement<dim, codim, range, rank>::
+serialize(Archive &ar, const unsigned int version)
+{
+    ar &boost::serialization::make_nvp("FunctionElement_base_t",
+                                       boost::serialization::base_object<CartesianGridElement<dim>>(*this));
+
+    ar &boost::serialization::make_nvp("all_sub_elems_cache_",all_sub_elems_cache_);
+
+    ar &boost::serialization::make_nvp("func_",func_);
+}
+#endif // SERIALIZATION
+
+
 IGA_NAMESPACE_CLOSE
 

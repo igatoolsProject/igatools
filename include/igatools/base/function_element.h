@@ -211,7 +211,7 @@ private:
      */
     std::shared_ptr<FunctionElement<dim,codim,range,rank> > clone() const;
 
-
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -221,17 +221,9 @@ private:
 
     template<class Archive>
     void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        ar &boost::serialization::make_nvp("FunctionElement_base_t",
-                                           boost::serialization::base_object<CartesianGridElement<dim>>(*this));
-
-        ar &boost::serialization::make_nvp("all_sub_elems_cache_",all_sub_elems_cache_);
-
-        ar &boost::serialization::make_nvp("func_",func_);
-    }
+    serialize(Archive &ar, const unsigned int version);
     ///@}
-
+#endif // SERIALIZATION
 };
 
 
