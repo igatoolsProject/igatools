@@ -355,6 +355,7 @@ private:
 
     CacheList<GlobalCache, dim> splines1d_;
 
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -364,16 +365,9 @@ private:
 
     template<class Archive>
     void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        ar &boost::serialization::make_nvp("BSplineElementHandler_base_t",
-                                           boost::serialization::base_object<base_t>(*this));
-
-        ar &boost::serialization::make_nvp("flags_",flags_);
-        ar &boost::serialization::make_nvp("splines1d_",splines1d_);
-    }
+    serialize(Archive &ar, const unsigned int version);
     ///@}
-
+#endif
 };
 
 IGA_NAMESPACE_CLOSE
