@@ -53,17 +53,24 @@
 #include <boost/serialization/singleton.hpp>
 #include <boost/serialization/shared_ptr.hpp>
 #include <boost/serialization/export.hpp>
+
+#ifndef NDEBUG
 #include <boost/archive/xml_oarchive.hpp>
 #include <boost/archive/xml_iarchive.hpp>
-/*
+using OArchive = boost::archive::xml_oarchive;
+using IArchive = boost::archive::xml_iarchive;
+#else
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
+using OArchive = boost::archive::binary_oarchive;
+using IArchive = boost::archive::binary_iarchive;
+#endif
+
+/*
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 //*/
 
-using OArchive = boost::archive::xml_oarchive;
-using IArchive = boost::archive::xml_iarchive;
 
 #endif // SERIALIZATION
 //--------------------------------------------------------------------

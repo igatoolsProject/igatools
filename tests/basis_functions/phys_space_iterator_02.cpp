@@ -62,7 +62,7 @@ void serialize_deserialize(std::shared_ptr<Space> space)
     {
         // serialize the BSplineSpace object to an xml file
         std::ofstream xml_ostream(filename);
-        boost::archive::xml_oarchive xml_out(xml_ostream);
+        OArchive xml_out(xml_ostream);
 
         xml_out << boost::serialization::make_nvp(tag_name.c_str(),space);
         xml_ostream.close();
@@ -72,7 +72,7 @@ void serialize_deserialize(std::shared_ptr<Space> space)
     {
         // de-serialize the BSplineSpace object from an xml file
         std::ifstream xml_istream(filename);
-        boost::archive::xml_iarchive xml_in(xml_istream);
+        IArchive xml_in(xml_istream);
 
         xml_in >> BOOST_SERIALIZATION_NVP(space);
         xml_istream.close();

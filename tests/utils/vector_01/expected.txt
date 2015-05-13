@@ -13,47 +13,14 @@ void array_print_info()
 ========================================================================
 void vector_serialization()
 ========================================================================
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<!DOCTYPE boost_serialization>
-<boost_serialization signature="serialization::archive" version="11">
-<vec class_id="0" tracking_level="0" version="0">
-	<SafeSTLContainer_base_t>
-		<count>5</count>
-		<item_version>0</item_version>
-		<item>2.00000000000000000e+00</item>
-		<item>3.00000000000000000e+00</item>
-		<item>4.00000000000000000e+00</item>
-		<item>5.00000000000000000e+00</item>
-		<item>6.00000000000000000e+00</item>
-	</SafeSTLContainer_base_t>
-</vec>
-</boost_serialization>
 
-
-[ 2.00000 3.00000 4.00000 5.00000 6.00000 ]
+[ 1.00000 2.00000 3.00000 4.00000 5.00000 ]
 ========================================================================
 
 ========================================================================
 void array_serialization()
 ========================================================================
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<!DOCTYPE boost_serialization>
-<boost_serialization signature="serialization::archive" version="11">
-<arr class_id="0" tracking_level="0" version="0">
-	<SafeSTLArray_base_t class_id="1" tracking_level="0" version="0">
-		<SafeSTLContainer_base_t class_id="2" tracking_level="0" version="0">
-			<elems>
-				<count>3</count>
-				<item>0.00000000000000000e+00</item>
-				<item>-1.00000000000000000e+00</item>
-				<item>-2.00000000000000000e+00</item>
-			</elems>
-		</SafeSTLContainer_base_t>
-	</SafeSTLArray_base_t>
-</arr>
-</boost_serialization>
 
-
-[ 0 -1.00000 -2.00000 ]
+[ -1.00000 -2.00000 -3.00000 ]
 ========================================================================
 

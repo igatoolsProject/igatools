@@ -56,7 +56,7 @@ void serialize_deserialize(std::shared_ptr<IgFunction<ReferenceSpace<dim, dim+co
     {
         // serialize the IgFunction object to an xml file
         std::ofstream xml_ostream(filename);
-        boost::archive::xml_oarchive xml_out(xml_ostream);
+        OArchive xml_out(xml_ostream);
 //        xml_out.template register_type<BSplineSpace<dim,dim+codim>>();
 
         xml_out << boost::serialization::make_nvp(tag_name.c_str(),F);
@@ -67,7 +67,7 @@ void serialize_deserialize(std::shared_ptr<IgFunction<ReferenceSpace<dim, dim+co
     {
         // de-serialize the IgFunction object from an xml file
         std::ifstream xml_istream(filename);
-        boost::archive::xml_iarchive xml_in(xml_istream);
+        IArchive xml_in(xml_istream);
 //        xml_in.template register_type<BSplineSpace<dim,dim+codim>>();
 
         xml_in >> BOOST_SERIALIZATION_NVP(F);

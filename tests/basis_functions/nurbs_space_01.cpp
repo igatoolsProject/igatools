@@ -48,7 +48,7 @@ void serialize_deserialize(std::shared_ptr<NURBSSpace<dim,range,rank>> space_in)
     {
         // serialize the NURBSSpace object to an xml file
         std::ofstream xml_ostream(filename);
-        boost::archive::xml_oarchive xml_out(xml_ostream);
+        OArchive xml_out(xml_ostream);
         xml_out.template register_type<NRBSpace>();
 
         xml_out << boost::serialization::make_nvp(tag_name.c_str(),space);
@@ -59,7 +59,7 @@ void serialize_deserialize(std::shared_ptr<NURBSSpace<dim,range,rank>> space_in)
     {
         // de-serialize the NURBSSpace object from an xml file
         std::ifstream xml_istream(filename);
-        boost::archive::xml_iarchive xml_in(xml_istream);
+        IArchive xml_in(xml_istream);
 //        xml_in.template register_type<BSpSpace>();
         xml_in.template register_type<NRBSpace>();
 

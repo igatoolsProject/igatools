@@ -45,7 +45,7 @@ void serialize_deserialize(const DofDistribution<dim> &dof_admin)
     {
         // serialize the DofDistribution object to an xml file
         std::ofstream xml_ostream(filename);
-        boost::archive::xml_oarchive xml_out(xml_ostream);
+        OArchive xml_out(xml_ostream);
 
         xml_out << boost::serialization::make_nvp(tag_name.c_str(),dof_admin);
         xml_ostream.close();
@@ -55,7 +55,7 @@ void serialize_deserialize(const DofDistribution<dim> &dof_admin)
     {
         // de-serialize the DofDistribution object from an xml file
         std::ifstream xml_istream(filename);
-        boost::archive::xml_iarchive xml_in(xml_istream);
+        IArchive xml_in(xml_istream);
         xml_in >> BOOST_SERIALIZATION_NVP(dof_admin_new);
         xml_istream.close();
     }
@@ -69,7 +69,7 @@ void serialize_deserialize(const DofDistribution<dim> &dof_admin)
 template <int dim>
 void test1()
 {
-	OUTSTART
+    OUTSTART
     using SplineSpace = SplineSpace<dim>;
     using MultiplicityTable = typename SplineSpace::MultiplicityTable;
 
@@ -114,7 +114,7 @@ void test1()
 template <int dim>
 void test2()
 {
-	OUTSTART
+    OUTSTART
     using SplineSpace = SplineSpace<dim>;
 
     typename SplineSpace::DegreeTable deg {{1,2}};

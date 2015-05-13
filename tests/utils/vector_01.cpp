@@ -75,7 +75,7 @@ void vector_serialization()
     {
         // writing to an xml file
         std::ofstream xml_ostream("vector.xml");
-        boost::archive::xml_oarchive xml_out(xml_ostream);
+        OArchive xml_out(xml_ostream);
         xml_out << BOOST_SERIALIZATION_NVP(vec);
         xml_ostream.close();
     }
@@ -85,25 +85,11 @@ void vector_serialization()
     {
         // reading from an xml file
         std::ifstream xml_istream("vector.xml");
-        boost::archive::xml_iarchive xml_in(xml_istream);
+        IArchive xml_in(xml_istream);
         xml_in >> BOOST_SERIALIZATION_NVP(vec);
         xml_istream.close();
     }
 
-    for (auto &v : vec)
-        v += 1.0;
-
-    {
-        boost::archive::xml_oarchive xml_out_1(out.get_file_stream());
-        xml_out_1 << BOOST_SERIALIZATION_NVP(vec);
-    }
-
-    /*
-    {
-        boost::archive::text_oarchive text_out(out.get_file_stream());
-        text_out << vec;
-    }
-    //*/
 
     out << endl;
 
@@ -122,7 +108,7 @@ void array_serialization()
     {
         // writing to an xml file
         std::ofstream xml_ostream("array.xml");
-        boost::archive::xml_oarchive xml_out(xml_ostream);
+        OArchive xml_out(xml_ostream);
         xml_out << BOOST_SERIALIZATION_NVP(arr);
         xml_ostream.close();
     }
@@ -132,25 +118,11 @@ void array_serialization()
     {
         // reading from an xml file
         std::ifstream xml_istream("array.xml");
-        boost::archive::xml_iarchive xml_in(xml_istream);
+        IArchive xml_in(xml_istream);
         xml_in >> BOOST_SERIALIZATION_NVP(arr);
         xml_istream.close();
     }
 
-    for (auto &v : arr)
-        v += 1.0;
-
-    {
-        boost::archive::xml_oarchive xml_out_1(out.get_file_stream());
-        xml_out_1 << BOOST_SERIALIZATION_NVP(arr);
-    }
-
-    /*
-        {
-            boost::archive::text_oarchive text_out(out.get_file_stream());
-            text_out << arr;
-        }
-    //*/
 
     out << endl;
 
