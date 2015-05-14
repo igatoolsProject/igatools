@@ -32,6 +32,7 @@
 
 #include <igatools/basis_functions/spline_space.h>
 
+#include <igatools/basis_functions/space.h>
 #include <igatools/basis_functions/space_element_base.h>
 
 
@@ -51,6 +52,7 @@ class SpaceElement : public SpaceElementBase<dim>
 protected:
     using base_t =  SpaceElementBase<dim>;
 
+
 private:
     using self_t = SpaceElement<dim,codim,range,rank>;
 
@@ -66,6 +68,8 @@ public:
     using Div = typename Func::Div;
 
     static const int space_dim = Func::space_dim;
+
+    using ContainerType = CartesianGrid<dim>;
 
     /**
      * For each component gives a product array of the dimension
@@ -140,14 +144,30 @@ public:
      *
      * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
      */
-    void deep_copy_from(const self_t &element);
+    virtual void deep_copy_from(const self_t &element);
 
     /**
      * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
      * local cache used by the input @p element.
      */
-    void shallow_copy_from(const self_t &element);
+    virtual void shallow_copy_from(const self_t &element);
     ///@}
+
+
+    /**
+     * Creates a new object performing a deep copy of the current object using
+     * the
+     * copy constructor of the derived class.
+     *
+     * @note This function should be not called directly, but it should be
+     * called its
+     * specialization on a derived class. It would be better to define this
+     * function
+     * <em>pure virtual</em> but this will not allow to dereference an iterator
+     * containing
+     * a pointer to an object of kind SpaceElement.
+     */
+    virtual std::shared_ptr<self_t> clone() const;
 
 
     template <class ValueType, int sub_elem_dim = dim>

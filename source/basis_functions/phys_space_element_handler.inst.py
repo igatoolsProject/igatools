@@ -48,9 +48,9 @@ for space in inst.SubPhysSpaces:
     x = space.spec
     acc = 'PhysicalSpaceElement<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
     f.write('template class %s; \n' %acc)
-    for it in inst.iterators:
-        iterator = it.replace('Accessor','%s' % (acc) )
-        f.write('template class %s; \n' %iterator)
+#    for it in inst.iterators:
+#        iterator = it.replace('Accessor','%s' % (acc) )
+#        f.write('template class %s; \n' %iterator)
     elemhandler = 'PhysSpaceElementHandler<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
     f.write('template class %s; \n' %elemhandler)
     for fun in sub_dim_members:
@@ -63,9 +63,9 @@ for space in inst.PhysSpaces:
     x = space.spec
     acc = 'PhysicalSpaceElement<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
     f.write('template class %s; \n' %acc)
-    for it in inst.iterators:
-        iterator = it.replace('Accessor','%s' % (acc) )
-        f.write('template class %s; \n' %iterator)
+#    for it in inst.iterators:
+#        iterator = it.replace('Accessor','%s' % (acc) )
+#        f.write('template class %s; \n' %iterator)
     elemhandler = 'PhysSpaceElementHandler<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
     f.write('template class %s; \n' %elemhandler)
     for fun in sub_dim_members:

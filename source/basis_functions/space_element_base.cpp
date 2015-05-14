@@ -190,6 +190,15 @@ operator>(const self_t &a) const
     return this->as_cartesian_grid_element_accessor() > a.as_cartesian_grid_element_accessor();
 }
 
+template <int dim>
+void
+SpaceElementBase<dim>::
+move_to(const Index flat_index)
+{
+    this->as_cartesian_grid_element_accessor().move_to(flat_index);
+}
+
+
 #ifdef SERIALIZATION
 template <int dim>
 template<class Archive>

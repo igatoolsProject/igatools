@@ -27,9 +27,9 @@ using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
-template<class Space>
-IgFunction<Space>::
-IgFunction(std::shared_ptr<const Space> space,
+template<int dim,int codim,int range,int rank>
+IgFunction<dim,codim,range,rank>::
+IgFunction(std::shared_ptr<const Space<dim,codim,range,rank>> space,
            std::shared_ptr<const EpetraTools::Vector> coeff,
            const std::string &property)
     :
@@ -60,8 +60,8 @@ IgFunction(std::shared_ptr<const Space> space,
 
 
 
-template<class Space>
-IgFunction<Space>::
+template<int dim,int codim,int range,int rank>
+IgFunction<dim,codim,range,rank>::
 IgFunction(const self_t &fun)
     :
     parent_t::Function(fun.space_->get_grid()),
@@ -74,10 +74,10 @@ IgFunction(const self_t &fun)
 
 
 
-template<class Space>
+template<int dim,int codim,int range,int rank>
 auto
-IgFunction<Space>::
-create(std::shared_ptr<const Space> space,
+IgFunction<dim,codim,range,rank>::
+create(std::shared_ptr<const Space<dim,codim,range,rank>> space,
        std::shared_ptr<const EpetraTools::Vector> coeff,
        const std::string &property) ->  std::shared_ptr<self_t>
 {
@@ -92,9 +92,9 @@ create(std::shared_ptr<const Space> space,
 
 
 
-template<class Space>
+template<int dim,int codim,int range,int rank>
 void
-IgFunction<Space>::
+IgFunction<dim,codim,range,rank>::
 reset(const ValueFlags &flag, const eval_pts_variant &eval_pts)
 {
     const std::set<int> elems_id =
@@ -108,9 +108,9 @@ reset(const ValueFlags &flag, const eval_pts_variant &eval_pts)
 
 
 
-template<class Space>
+template<int dim,int codim,int range,int rank>
 void
-IgFunction<Space>::
+IgFunction<dim,codim,range,rank>::
 reset_selected_elements(
     const ValueFlags &flag_in,
     const eval_pts_variant &eval_pts,
@@ -125,9 +125,9 @@ reset_selected_elements(
 
 
 
-template<class Space>
+template<int dim,int codim,int range,int rank>
 auto
-IgFunction<Space>::
+IgFunction<dim,codim,range,rank>::
 init_cache(ElementAccessor &elem, const topology_variant &k) -> void
 {
     parent_t::init_cache(elem, k);
@@ -138,9 +138,9 @@ init_cache(ElementAccessor &elem, const topology_variant &k) -> void
 
 
 
-template<class Space>
+template<int dim,int codim,int range,int rank>
 auto
-IgFunction<Space>::
+IgFunction<dim,codim,range,rank>::
 fill_cache(ElementAccessor &func_elem, const topology_variant &k, const int sub_elem_id) -> void
 {
     parent_t::fill_cache(func_elem,k,sub_elem_id);
@@ -162,19 +162,19 @@ fill_cache(ElementAccessor &func_elem, const topology_variant &k, const int sub_
 
 
 
-template<class Space>
+template<int dim,int codim,int range,int rank>
 auto
-IgFunction<Space>::
-get_ig_space() const -> std::shared_ptr<const Space>
+IgFunction<dim,codim,range,rank>::
+get_ig_space() const -> std::shared_ptr<const Space<dim,codim,range,rank>>
 {
     return space_;
 }
 
 
 
-template<class Space>
+template<int dim,int codim,int range,int rank>
 auto
-IgFunction<Space>::
+IgFunction<dim,codim,range,rank>::
 get_coefficients() const -> const CoeffType &
 {
     return coeff_;
@@ -182,9 +182,9 @@ get_coefficients() const -> const CoeffType &
 
 
 
-template<class Space>
+template<int dim,int codim,int range,int rank>
 auto
-IgFunction<Space>::
+IgFunction<dim,codim,range,rank>::
 operator +=(const self_t &fun) -> self_t &
 {
     Assert(space_ == fun.space_,
@@ -198,15 +198,15 @@ operator +=(const self_t &fun) -> self_t &
 
 
 #if REFINE
-template<class Space>
+template<int dim,int codim,int range,int rank>
 void
-IgFunction<Space>::
+IgFunction<dim,codim,range,rank>::
 rebuild_after_insert_knots(
     const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
     const CartesianGrid<dim> &grid_old)
 {
     using std::const_pointer_cast;
-    auto function_previous_refinement = IgFunction<Space>::create(
+    auto function_previous_refinement = IgFunction<dim,codim,range,rank>::create(
                                             const_pointer_cast<Space>(space_->get_space_previous_refinement()),
                                             coeff_,
                                             property_);
@@ -222,9 +222,9 @@ rebuild_after_insert_knots(
 
 }
 
-template<class Space>
+template<int dim,int codim,int range,int rank>
 void
-IgFunction<Space>::
+IgFunction<dim,codim,range,rank>::
 create_connection_for_insert_knots(std::shared_ptr<self_t> ig_function)
 {
     Assert(ig_function != nullptr, ExcNullPtr());
@@ -242,9 +242,9 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> ig_function)
 }
 #endif
 
-template<class Space>
+template<int dim,int codim,int range,int rank>
 void
-IgFunction<Space>::
+IgFunction<dim,codim,range,rank>::
 print_info(LogStream &out) const
 {
     out.begin_item("Reference space info:");
@@ -259,10 +259,10 @@ print_info(LogStream &out) const
 
 
 //#ifdef SERIALIZATION
-//template<class Space>
+//template<int dim,int codim,int range,int rank>
 //template<class Archive>
 //void
-//IgFunction<Space>::
+//IgFunction<dim,codim,range,rank>::
 //serialize(Archive &ar, const unsigned int version)
 //{
 //    ar &boost::serialization::make_nvp("IgFunction_base_t",
@@ -270,7 +270,7 @@ print_info(LogStream &out) const
 //
 //    ar.template register_type<BSplineSpace<dim,range,rank>>();
 //    ar.template register_type<NURBSSpace<dim,range,rank>>();
-//    auto non_nonst_space = std::const_pointer_cast<Space>(space_);
+//    auto non_nonst_space = std::const_pointer_cast<Space<dim,codim,range,rank>>(space_);
 //    ar &boost::serialization::make_nvp("space_",non_nonst_space);
 //    space_ = non_nonst_space;
 //    Assert(space_ != nullptr,ExcNullPtr());

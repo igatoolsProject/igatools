@@ -82,14 +82,6 @@ ReferenceElement(const ReferenceElement<dim,range,rank> &elem,
 {};
 
 
-template <int dim, int range, int rank>
-void
-ReferenceElement<dim, range, rank>::
-move_to(const Index flat_index)
-{
-//    parent_t::move_to(flat_index);
-    this->as_cartesian_grid_element_accessor().move_to(flat_index);
-}
 
 
 
@@ -134,15 +126,6 @@ print_info(LogStream &out) const
 
 
 
-template <int dim, int range, int rank>
-std::shared_ptr<ReferenceElement<dim,range,rank> >
-ReferenceElement<dim, range, rank>::
-clone() const
-{
-    Assert(false,ExcMessage("This function must not be called. "
-                            "You should call the clone() funtion of a derived base class."));
-    return nullptr;
-}
 
 
 template <int dim, int range, int rank>

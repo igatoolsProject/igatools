@@ -123,6 +123,17 @@ get_nurbs_space() const -> std::shared_ptr<const Space>
     return nrb_space;
 }
 
+
+template <int dim, int range, int rank>
+std::shared_ptr<SpaceElement<dim,0,range,rank> >
+NURBSElement<dim, range, rank>::
+clone() const
+{
+    auto elem = std::make_shared<NURBSElement<dim,range,rank> >(*this,CopyPolicy::deep);
+    Assert(elem != nullptr, ExcNullPtr());
+    return elem;
+}
+
 IGA_NAMESPACE_CLOSE
 
 #endif // #ifdef NURBS

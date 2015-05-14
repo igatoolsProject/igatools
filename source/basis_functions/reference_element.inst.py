@@ -36,9 +36,9 @@ elements = []
 for acc in accessors:
     elements.append(acc[0])
     f.write('template class %s ;\n' %acc[0])
-    for it in inst.iterators:
-        iterator = it.replace('Accessor','%s' % (acc[0]) )
-        f.write('template class %s; \n' %iterator)
+#    for it in inst.iterators:
+#        iterator = it.replace('Accessor','%s' % (acc[0]) )
+#        f.write('template class %s; \n' %iterator)
 
 
 

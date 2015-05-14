@@ -24,10 +24,16 @@
 #include <igatools/base/config.h>
 #include <igatools/geometry/grid_wrapper.h>
 #include <igatools/geometry/cartesian_grid.h>
+//#include <igatools/basis_functions/space_element.h>
+
 
 IGA_NAMESPACE_OPEN
 
 template <int> class CartesianGridElementAccessor;
+template <int,int,int,int> class SpaceElement;
+template <int,int,int,int> class SpaceElementHandler;
+
+
 
 /**
  * @brief This is an auxiliary class used represent the "concept" of isogeometric function space, defined
@@ -122,6 +128,10 @@ private:
 
 
 
+
+template <int,int,int> class DofDistribution;
+
+
 /**
  * @brief This class represent the "concept" of isogeometric function space.
  * It is used as base class of ReferenceSpace and PhysicalSpace.
@@ -143,6 +153,52 @@ protected:
      * Inheriting the constructors from the base class.
      */
     using base_t::SpaceBase;
+
+public:
+
+    virtual std::shared_ptr<const DofDistribution<dim_,range_,rank_> >
+    get_dof_distribution() const = 0;
+
+    /**
+     * Create and element (defined on this space) with a given flat_index
+     */
+    virtual std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_>>
+            create_element(const Index flat_index) const = 0;
+
+    virtual std::shared_ptr< SpaceElementHandler<dim_,codim_,range_,rank_> >
+    get_elem_handler() const = 0;
+
+    virtual void print_info(LogStream &out) const = 0;
+
+    /**
+     * Default destructor.
+     */
+    virtual ~Space() = default;
+
+
+    using ElementAccessor = SpaceElement<dim_,codim_,range_,rank_>;
+    using ElementIterator = CartesianGridIterator<ElementAccessor>;
+
+    /** @name Functions involving the element iterator */
+    ///@{
+    /**
+     * Returns a element iterator to the first element of the patch
+     * with the property @p element_property.
+     */
+    ElementIterator begin(const std::string &element_property = ElementProperties::none) const;
+
+    /**
+     * Returns a element iterator to the last element of the patch
+     * with the property @p element_property.
+     */
+    ElementIterator last(const std::string &element_property = ElementProperties::none) const;
+
+    /**
+     * Returns a element iterator to one-pass the end of patch
+     * with the property @p element_property.
+     */
+    ElementIterator end(const std::string &element_property = ElementProperties::none) const;
+    ///@}
 
 private:
 #ifdef SERIALIZATION

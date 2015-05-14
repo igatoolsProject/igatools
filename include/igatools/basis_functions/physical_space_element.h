@@ -25,7 +25,8 @@
 #include <igatools/base/config.h>
 
 #include <igatools/base/quadrature.h>
-#include <igatools/basis_functions/reference_element.h>
+//#include <igatools/basis_functions/space_element.h>
+//#include <igatools/basis_functions/reference_element.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/nurbs_element.h>
 #include <igatools/geometry/push_forward_element.h>
@@ -55,7 +56,8 @@ public :
     using RefSpace = typename PhysSpace::RefSpace;
     using PushForwardType = typename PhysSpace::PushForwardType;
     using PfElemAccessor = typename PushForwardType::ElementAccessor;
-    using RefElemAccessor = typename RefSpace::ElementAccessor;
+//    using RefElemAccessor = typename RefSpace::ElementAccessor;
+    using RefElemAccessor = SpaceElement<RefSpace::dim,0,RefSpace::range,RefSpace::rank>;
 
     static const auto dim = PfElemAccessor::dim;
     static const auto space_dim = PfElemAccessor::space_dim;
@@ -323,7 +325,7 @@ private:
      * Creates a new object performing a deep copy of the current object using the PhysicalSpaceElement
      * copy constructor.
      */
-    std::shared_ptr<self_t> clone() const;
+    std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_>> clone() const override final;
 };
 
 

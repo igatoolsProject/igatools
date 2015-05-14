@@ -36,7 +36,8 @@ class PhysicalSpace;
  */
 template<int dim_,int range_,int rank_,int codim_>
 class PhysSpaceElementHandler
-    : public ElementHandler<PhysicalSpace<dim_,range_,rank_,codim_>>
+    : public ElementHandler<PhysicalSpace<dim_,range_,rank_,codim_>>,
+      public SpaceElementHandler<dim_,codim_,range_,rank_>
 {
 
     using PhysSpace = PhysicalSpace<dim_,range_,rank_,codim_>;
@@ -50,6 +51,7 @@ class PhysSpaceElementHandler
 
     using self_t = PhysSpaceElementHandler<dim_,range_,rank_,codim_>;
 
+    using eval_pts_variant = SubElemVariants<Quadrature,dim_>;
 
 public:
     static const int dim = dim_;
@@ -110,6 +112,14 @@ public:
     void reset(const ValueFlags flag, const Quadrature<k> &eval_pts);
 
 
+    virtual void reset_selected_elements(
+        const ValueFlags &flag,
+        const eval_pts_variant &eval_points,
+        const SafeSTLVector<int> &elements_flat_id) override final
+    {
+        Assert(false,ExcNotImplemented())
+    }
+
     template<int k>
     void reset_selected_elements(
         const ValueFlags &flag,
@@ -137,12 +147,13 @@ public:
     template <int k>
     void init_cache(ElementAccessor &elem);
 
-    void print_info(LogStream &out) const;
+    void print_info(LogStream &out) const override final;
 
 private:
     std::shared_ptr<const PhysSpace> space_;
 
-    std::shared_ptr<typename PhysSpace::RefSpace::ElementHandler> ref_space_handler_;
+    std::shared_ptr<SpaceElementHandler<RefSpace::dim,0,RefSpace::range,RefSpace::rank>>
+            ref_space_handler_;
 
 
     typename PhysSpace::PushForwardType push_fwd_;

@@ -44,14 +44,14 @@ namespace space_tools
  *  the projected function)
  */
 template<class Space, LAPack la_pack = LAPack::trilinos_epetra>
-std::shared_ptr<IgFunction<Space> >
+std::shared_ptr<IgFunction<Space::dim,Space::codim,Space::range,Space::rank> >
 projection_l2(const std::shared_ptr<const typename Space::Func> function,
               std::shared_ptr<const Space> space,
               const Quadrature<Space::dim> &quad,
               const std::string &dofs_property = DofProperties::active)
 {
-    using ProjFunc = IgFunction<Space>;
-    std::shared_ptr<ProjFunc> projection;
+    using ProjFunc = IgFunction<Space::dim,Space::codim,Space::range,Space::rank>;
+//    std::shared_ptr<ProjFunc> projection;
 
     Epetra_SerialComm comm;
 

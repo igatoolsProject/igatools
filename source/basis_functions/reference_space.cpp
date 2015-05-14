@@ -129,40 +129,6 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
 }
 
 
-template<int dim, int range, int rank>
-auto
-ReferenceSpace<dim, range, rank>::
-begin(const std::string &element_property) const -> ElementIterator
-{
-    return ElementIterator(
-               this->create_element(
-                   this->get_grid()->get_first_element_id_same_property(element_property)),
-               element_property);
-}
-
-
-
-template<int dim, int range, int rank>
-auto
-ReferenceSpace<dim, range, rank>::
-last(const std::string &element_property) const -> ElementIterator
-{
-    return ElementIterator(
-               this->create_element(
-                   this->get_grid()->get_last_element_id_same_property(element_property)),
-               element_property);
-}
-
-
-
-template<int dim, int range, int rank>
-auto
-ReferenceSpace<dim, range, rank>::
-end(const std::string &element_property) const -> ElementIterator
-{
-    return ElementIterator(this->create_element(IteratorState::pass_the_end),element_property);
-}
-
 
 
 

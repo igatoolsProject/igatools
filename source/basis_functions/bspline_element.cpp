@@ -306,7 +306,7 @@ get_bspline_space() const -> std::shared_ptr<const Space>
 
 
 template <int dim, int range, int rank>
-std::shared_ptr<ReferenceElement<dim,range,rank> >
+std::shared_ptr<SpaceElement<dim,0,range,rank> >
 BSplineElement<dim, range, rank>::
 clone() const
 {

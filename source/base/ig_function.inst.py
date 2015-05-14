@@ -51,12 +51,19 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 
-for sp in  inst.AllRefSpaces + inst.AllPhysSpaces:
-    func = 'IgFunction<%s>' %(sp.name)
-    s = ( 'template class %s ;\n'%func )
-    f.write(s)
+funcs = []
+
+for x in inst.all_phy_sp_dims:
+    func = 'IgFunction<%d,%d,%d,%d>' %(x.dim,x.codim,x.range,x.rank)
+    funcs.append(func)
+
+for x in inst.all_ref_sp_dims:
+    func = 'IgFunction<%d,0,%d,%d>' %(x.dim,x.range,x.rank)
+    funcs.append(func)
     
- 
+for func in unique(funcs):
+    f.write("template class %s ;\n" %(func))
+
  
 #---------------------------------------------------
 # f.write('IGA_NAMESPACE_CLOSE\n')

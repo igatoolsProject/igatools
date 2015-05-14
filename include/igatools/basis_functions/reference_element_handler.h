@@ -38,7 +38,8 @@ IGA_NAMESPACE_OPEN
  */
 template<int dim, int range = 1, int rank = 1>
 class ReferenceElementHandler
-    : public ElementHandler<ReferenceSpace<dim,range,rank>>
+    : public ElementHandler<ReferenceSpace<dim,range,rank>>,
+      public SpaceElementHandler<dim,0,range,rank>
 {
 public:
     using Space = ReferenceSpace<dim,range,rank>;
@@ -104,18 +105,6 @@ public:
         const eval_pts_variant &eval_points,
         const int elem_flat_id);
 
-    /**
-     * Resets all the internal data in order to use the
-     * same quadrature scheme for the elements of the space with ID specified by
-     * the input parameter <tt>elements_flat_id</tt>.
-     *
-     * @note This function is pure virtual and must be implemented in the class that are derived
-     * from ReferenceElementHandler.
-     */
-    virtual void reset_selected_elements(
-        const ValueFlags &flag,
-        const eval_pts_variant &eval_points,
-        const SafeSTLVector<int> &elements_flat_id) = 0;
     ///@}
 
 

@@ -41,29 +41,19 @@ handlers = []
 
 for x in inst.sub_ref_sp_dims:
     space = 'ReferenceSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
-#    f.write('template class SpaceElement<%s>; \n' %space)
     acc = 'ReferenceElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
-#    f.write('template class %s; \n' %acc)
     for it in inst.iterators:
         iterator = it.replace('Accessor','%s' % (acc) )
-#        f.write('template class %s; \n' %iterator)
     elemhandler = 'ReferenceElementHandler<%d, %d, %d>' %(x.dim, x.range, x.rank)
     handlers.append(elemhandler)
     f.write('template class %s; \n'  %elemhandler)
-#    for fun in sub_dim_members:
-#        k = x.dim
-#        s = fun.replace('elhandler', elemhandler).replace('k', '%d' % (k));
-#        f.write('template ' + s + '\n')
 
 
 for x in inst.ref_sp_dims:
     space = 'ReferenceSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
-#    f.write('template class SpaceElement<%s>;' %space)
     acc = 'ReferenceElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
-#    f.write('template class %s; \n' %acc)
     for it in inst.iterators:
         iterator = it.replace('Accessor','%s' % (acc) )
-#        f.write('template class %s; \n' %iterator)
     elemhandler = 'ReferenceElementHandler<%d, %d, %d>' %(x.dim, x.range, x.rank)
     handlers.append(elemhandler)
     f.write('template class %s; \n'  %elemhandler)

@@ -143,11 +143,20 @@ NURBSSpace(std::shared_ptr<SpSpace> bs_space,
 
         Assert(*this->get_grid() == *w_func->get_grid(),ExcMessage("Mismatching grids."));
 
-        Assert(w_func->get_ig_space()->is_bspline(),
+        using WeightRefSpace = ReferenceSpace<dim_,1,1>;
+        auto w_func_as_ref_space = std::dynamic_pointer_cast<const WeightRefSpace>(w_func->get_ig_space());
+        Assert(w_func_as_ref_space != nullptr,
+               ExcMessage("The space for the weight function is not of type ReferenceSpace<" +
+                          std::to_string(WeightRefSpace::dim) + "," +
+                          std::to_string(WeightRefSpace::range) + "," +
+                          std::to_string(WeightRefSpace::rank) + ">."));
+
+
+        Assert(w_func_as_ref_space->is_bspline(),
                ExcMessage("The space for the weight function is not BSplineSpace."));
 
         Assert(sp_space_->get_num_basis_table()[comp_id] ==
-               w_func->get_ig_space()->get_num_basis_table()[0],
+               w_func_as_ref_space->get_dof_distribution()->get_num_dofs_table()[0],
                ExcMessage("Mismatching number of basis functions and weight "
                           "coefficients for scalar component " + to_string(comp_id)));
 
@@ -197,10 +206,11 @@ perform_post_construction_checks() const
 template<int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-create_element(const Index flat_index) const -> std::shared_ptr<ReferenceElement<dim_,range_,rank_> >
+create_element(const Index flat_index) const
+-> std::shared_ptr<SpaceElement<dim_,0,range_,rank_> >
 {
     using Elem = NURBSElement<dim_,range_,rank_>;
-    auto elem = shared_ptr<Elem>(new Elem(this->shared_from_this(),flat_index));
+    auto elem = make_shared<Elem>(this->shared_from_this(),flat_index);
     Assert(elem != nullptr, ExcNullPtr());
 
     return elem;
@@ -657,7 +667,7 @@ get_end_behaviour_table() const -> const EndBehaviourTable &
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-get_elem_handler() const -> std::shared_ptr<typename BaseSpace::ElementHandler>
+get_elem_handler() const -> std::shared_ptr<SpaceElementHandler<dim_,0,range_,rank_>>
 {
     const auto this_space =
     std::enable_shared_from_this<self_t>::shared_from_this();

@@ -83,33 +83,6 @@ public:
     virtual ~ReferenceElement() = default;
 
 
-    /** @name Functions/operators for moving the element in the ReferenceSpace.*/
-    ///@{
-    /**
-     * Sets the index of the element using the flatten representation.
-     * @note This function also updates the index for the tensor representation.
-     * @warning This may be a dangerous function, be careful when using it
-     * as it is easy to use incorrectly. Only use it if you know what you
-     * are doing.
-     */
-    virtual void move_to(const Index flat_index) ;
-    ///@}
-
-
-    /**
-     * Creates a new object performing a deep copy of the current object using
-     * the
-     * copy constructor of the derived class.
-     *
-     * @note This function should be not called directly, but it should be
-     * called its
-     * specialization on a derived class. It would be better to define this
-     * function
-     * <em>pure virtual</em> but this will not allow to dereference an iterator
-     * containing
-     * a pointer to an object of kind ReferenceElement.
-     */
-    virtual std::shared_ptr<ReferenceElement<dim,range,rank> > clone() const;
 
 
     /**

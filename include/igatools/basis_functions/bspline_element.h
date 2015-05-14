@@ -175,7 +175,7 @@ public:
         return values;
     }
 
-    virtual std::shared_ptr<ReferenceElement<dim,range,rank> >
+    virtual std::shared_ptr<SpaceElement<dim,0,range,rank> >
     clone() const override final;
 
 

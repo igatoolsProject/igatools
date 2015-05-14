@@ -20,6 +20,7 @@
 
 #include <igatools/basis_functions/space.h>
 #include <igatools/utils/unique_id_generator.h>
+#include <igatools/basis_functions/space_element.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -58,6 +59,43 @@ serialize(Archive &ar, const unsigned int version)
 
 
 
+
+
+
+
+template <int dim_,int codim_,int range_,int rank_>
+auto
+Space<dim_,codim_,range_,rank_>::
+begin(const std::string &element_property) const -> ElementIterator
+{
+    return ElementIterator(
+               this->create_element(
+                   this->get_grid()->get_first_element_id_same_property(element_property)),
+               element_property);
+}
+
+
+
+template <int dim_,int codim_,int range_,int rank_>
+auto
+Space<dim_,codim_,range_,rank_>::
+last(const std::string &element_property) const -> ElementIterator
+{
+    return ElementIterator(
+               this->create_element(
+                   this->get_grid()->get_first_element_id_same_property(element_property)),
+               element_property);
+}
+
+
+
+template <int dim_,int codim_,int range_,int rank_>
+auto
+Space<dim_,codim_,range_,rank_>::
+end(const std::string &element_property) const -> ElementIterator
+{
+    return ElementIterator(this->create_element(IteratorState::pass_the_end),element_property);
+}
 
 #ifdef SERIALIZATION
 template <int dim_,int codim_,int range_,int rank_>

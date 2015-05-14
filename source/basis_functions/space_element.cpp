@@ -106,6 +106,15 @@ shallow_copy_from(const self_t &elem)
     this->copy_from(elem,CopyPolicy::shallow);
 }
 
+template<int dim,int codim,int range,int rank>
+auto
+SpaceElement<dim,codim,range,rank>::
+clone() const -> std::shared_ptr<self_t>
+{
+    Assert(false,ExcMessage("This function must not be called. "
+    "You should call the clone() function of a derived base class."));
+    return nullptr;
+}
 
 
 template<int dim,int codim,int range,int rank>

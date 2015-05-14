@@ -326,7 +326,7 @@ get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
     auto emap = EpetraTools::create_map(ref_space, "active", comm);
     auto vec = cntrl_pts;
     auto w = std::make_shared<EpetraTools::Vector>(Copy, *emap, vec.data());
-    map = IgFunction<ref_space_t>::create(ref_space, w);
+    map = IgFunction<dim,0,dim_phys,1>::create(ref_space, w);
     //-------------------------------------------------------------------------
     AssertThrow(map != nullptr,ExcNullPtr());
 

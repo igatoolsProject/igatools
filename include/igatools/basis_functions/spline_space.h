@@ -28,7 +28,7 @@
 #include <igatools/utils/cartesian_product_array.h>
 #include <igatools/utils/static_multi_array.h>
 #include <igatools/utils/dynamic_multi_array.h>
-#include <igatools/basis_functions/space.h>
+//#include <igatools/basis_functions/space.h>
 #include <igatools/geometry/cartesian_grid.h>
 
 IGA_NAMESPACE_OPEN

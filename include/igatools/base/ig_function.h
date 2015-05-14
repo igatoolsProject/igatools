@@ -41,6 +41,8 @@ IGA_NAMESPACE_OPEN
 
 //template <int,int,int>
 //class ReferenceSpace;
+template <int,int,int,int>
+class Space;
 
 template <int,int,int>
 class BSplineSpace;
@@ -48,11 +50,17 @@ class BSplineSpace;
 template <int,int,int>
 class NURBSSpace;
 
+template <int,int,int,int>
+class SpaceElementHandler;
+
 template <int,int,int>
 class BSplineElementHandler;
 
 template <int,int,int>
 class NURBSElementHandler;
+
+template <int,int,int,int>
+class SpaceElement;
 
 template <int,int,int>
 class BSplineElement;
@@ -65,24 +73,20 @@ class NURBSElement;
  *
  * @ingroup serializable
  */
-template<class Space>
+template<int dim,int codim,int range,int rank>
 class IgFunction :
-    public Function<Space::dim, Space::codim, Space::range, Space::rank>,
-    public std::enable_shared_from_this<IgFunction<Space>>
+    public Function<dim,codim,range,rank>,
+    public std::enable_shared_from_this<IgFunction<dim,codim,range,rank>>
 {
 public:
-    static const int dim = Space::dim;
-    static const int codim = Space::codim;
-    static const int range = Space::range;
-    static const int rank = Space::rank;
 
     using CoeffType = IgCoefficients;
 
 
 private:
-    using base_t = Function<dim, codim, range, rank>;
-    using parent_t = Function<dim, codim, range, rank>;
-    using self_t = IgFunction<Space>;
+    using base_t = Function<dim,codim,range,rank>;
+    using parent_t = Function<dim,codim,range,rank>;
+    using self_t = IgFunction<dim,codim,range,rank>;
 
     std::shared_ptr<const base_t> shared_from_derived() const override final
     {
@@ -91,7 +95,7 @@ private:
 
 public:
     //TODO (pauletti, Mar 23, 2015): should we make this private?
-    IgFunction(std::shared_ptr<const Space> space,
+    IgFunction(std::shared_ptr<const Space<dim,codim,range,rank>> space,
                std::shared_ptr<const EpetraTools::Vector> coeff,
                const std::string &property = DofProperties::active);
 
@@ -113,7 +117,7 @@ public:
 
 public:
     static std::shared_ptr<self_t>
-    create(std::shared_ptr<const Space> space,
+    create(std::shared_ptr<const Space<dim,codim,range,rank>> space,
            std::shared_ptr<const EpetraTools::Vector> coeff,
            const std::string &property = DofProperties::active);
 
@@ -134,7 +138,7 @@ public:
 
     void fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) override;
 
-    std::shared_ptr<const Space> get_ig_space() const;
+    std::shared_ptr<const Space<dim,codim,range,rank>> get_ig_space() const;
 
     const CoeffType &get_coefficients() const;
 
@@ -157,22 +161,24 @@ protected:
 
 private:
 
-    std::shared_ptr<const Space> space_;
+    std::shared_ptr<const Space<dim,codim,range,rank>> space_;
 
     CoeffType coeff_;
 
     const std::string property_;
 
-    typename Space::ElementIterator space_elem_;
+    using SpaceElem = SpaceElement<dim,codim,range,rank>;
+    CartesianGridIterator<SpaceElem> space_elem_;
 
-    std::shared_ptr<typename Space::ElementHandler> space_elem_handler_;
+    using SpaceElemHandler = SpaceElementHandler<dim,codim,range,rank>;
+    std::shared_ptr<SpaceElemHandler> space_elem_handler_;
 
 private:
     struct ResetDispatcher : boost::static_visitor<void>
     {
         ResetDispatcher(const ValueFlags flag_in,
                         const SafeSTLVector<Index> &elements_flat_id,
-                        typename Space::ElementHandler &space_elem_handler,
+                        SpaceElemHandler &space_elem_handler,
                         SafeSTLArray<ValueFlags, dim+1> &flags)
             :
             flag_in_(flag_in),
@@ -195,7 +201,7 @@ private:
          */
         const SafeSTLVector<Index> &elements_flat_id_;
 
-        typename Space::ElementHandler &space_elem_handler_;
+        SpaceElemHandler &space_elem_handler_;
 
         SafeSTLArray<ValueFlags, dim+1> &flags_;
 
@@ -205,8 +211,8 @@ private:
     struct InitCacheDispatcher : boost::static_visitor<void>
     {
         InitCacheDispatcher(
-            typename Space::ElementHandler  &space_elem_handler,
-            typename Space::ElementAccessor &space_elem)
+            SpaceElemHandler &space_elem_handler,
+            SpaceElem &space_elem)
             :
             space_elem_handler_(space_elem_handler),
             space_elem_(space_elem)
@@ -218,17 +224,17 @@ private:
             space_elem_handler_.template init_cache<sub_elem_dim>(space_elem_);
         }
 
-        typename Space::ElementHandler  &space_elem_handler_;
-        typename Space::ElementAccessor &space_elem_;
+        SpaceElemHandler &space_elem_handler_;
+        SpaceElem &space_elem_;
     };
 
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
         FillCacheDispatcher(const int sub_elem_id,
                             self_t &function,
-                            typename Space::ElementHandler &space_elem_handler,
+                            SpaceElemHandler &space_elem_handler,
                             ElementAccessor &func_elem,
-                            typename Space::ElementAccessor &space_elem,
+                            SpaceElem &space_elem,
                             SafeSTLVector<Real> &loc_coeff,
                             const std::string  &property)
             :
@@ -298,9 +304,9 @@ private:
 
         const int sub_elem_id_;
         self_t &function_;
-        typename Space::ElementHandler &space_elem_handler_;
+        SpaceElemHandler &space_elem_handler_;
         ElementAccessor &func_elem_;
-        typename Space::ElementAccessor &space_elem_;
+        SpaceElem &space_elem_;
         SafeSTLVector<Real> &loc_coeff_;
         const std::string  &property_;
     };
@@ -335,7 +341,7 @@ private:
 
         ar.template register_type<BSplineSpace<dim,range,rank>>();
         ar.template register_type<NURBSSpace<dim,range,rank>>();
-        auto non_nonst_space = std::const_pointer_cast<Space>(space_);
+        auto non_nonst_space = std::const_pointer_cast<Space<dim,codim,range,rank>>(space_);
         ar &boost::serialization::make_nvp("space_",non_nonst_space);
         space_ = non_nonst_space;
         Assert(space_ != nullptr,ExcNullPtr());

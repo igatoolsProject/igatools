@@ -24,7 +24,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/geometry/cartesian_grid_element.h>
-#include <igatools/basis_functions/space.h>
+//#include <igatools/basis_functions/space.h>
 
 
 IGA_NAMESPACE_OPEN
@@ -168,6 +168,18 @@ public:
     virtual Size get_num_basis() const = 0;
     ///@}
 
+
+    /** @name Functions/operators for moving the element in the CartesianGrid used to build the Space.*/
+    ///@{
+    /**
+     * Sets the index of the element using the flatten representation.
+     * @note This function also updates the index for the tensor representation.
+     * @warning This may be a dangerous function, be careful when using it
+     * as it is easy to use incorrectly. Only use it if you know what you
+     * are doing.
+     */
+    virtual void move_to(const Index flat_index) ;
+    ///@}
 
 
 public:

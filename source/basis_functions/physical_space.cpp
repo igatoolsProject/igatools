@@ -69,49 +69,16 @@ create(shared_ptr<RefSpace> ref_space,
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-create_element(const Index flat_index) const -> std::shared_ptr<ElementAccessor>
+create_element(const Index flat_index) const
+-> std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_>>
 {
-    auto elem = shared_ptr<ElementAccessor>(new ElementAccessor(this->shared_from_this(),flat_index));
+    auto elem = make_shared<ElementAccessor>(this->shared_from_this(),flat_index);
     Assert(elem != nullptr, ExcNullPtr());
 
     return elem;
 }
 
 
-
-template <int dim_, int range_, int rank_, int codim_, Transformation type_>
-auto
-PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-begin(const std::string &element_property) const -> ElementIterator
-{
-    return ElementIterator(
-               this->create_element(
-                   this->get_grid()->get_first_element_id_same_property(element_property)),
-               element_property);
-}
-
-
-
-template <int dim_, int range_, int rank_, int codim_, Transformation type_>
-auto
-PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-last(const std::string &element_property) const -> ElementIterator
-{
-    return ElementIterator(
-               this->create_element(
-                   this->get_grid()->get_first_element_id_same_property(element_property)),
-               element_property);
-}
-
-
-
-template <int dim_, int range_, int rank_, int codim_, Transformation type_>
-auto
-PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-end(const std::string &element_property) const -> ElementIterator
-{
-    return ElementIterator(this->create_element(IteratorState::pass_the_end),element_property);
-}
 
 #if 0
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
@@ -297,7 +264,7 @@ print_info(LogStream &out) const
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-get_elem_handler() const -> std::shared_ptr<ElementHandler>
+get_elem_handler() const -> std::shared_ptr<SpaceElementHandler<dim_,codim_,range_,rank_>>
 {
     const auto this_space = std::enable_shared_from_this<self_t>::shared_from_this();
     return ElementHandler::create(this_space);

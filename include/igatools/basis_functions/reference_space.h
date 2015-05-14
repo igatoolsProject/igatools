@@ -136,11 +136,6 @@ protected:
 public:
     virtual ~ReferenceSpace() = default;
 
-    /**
-     * Create and element (defined on this space) with a given flat_index
-     */
-    virtual std::shared_ptr<ElementAccessor>
-    create_element(const Index flat_index) const = 0;
 
     template <int k>
     using InterGridMap = typename GridType::template InterGridMap<k>;
@@ -209,7 +204,7 @@ public:
 
 
     std::shared_ptr<const DofDistribution<dim, range, rank> >
-    get_dof_distribution() const;
+    get_dof_distribution() const override final;
 
     std::shared_ptr<DofDistribution<dim, range, rank> >
     get_dof_distribution();
@@ -226,27 +221,7 @@ public:
     {
         return this-> get_boundary_dofs(s_id,Topology<k>());
     }
-    /** @name Functions involving the element iterator */
-    ///@{
-    /**
-     * Returns a element iterator to the first element of the patch
-     * with the property @p element_property.
-     */
-    ElementIterator begin(const std::string &element_property = ElementProperties::none) const;
 
-    /**
-     * Returns a element iterator to the last element of the patch
-     * with the property @p element_property.
-     */
-    ElementIterator last(const std::string &element_property = ElementProperties::none) const;
-
-
-    /**
-     * Returns a element iterator to one-pass the end of patch.
-     * with the property @p element_property.
-     */
-    ElementIterator end(const std::string &element_property = ElementProperties::none) const;
-    ///@}
 
     template<int k>
     std::shared_ptr< SubRefSpace<k> >
@@ -260,10 +235,7 @@ public:
                   std::shared_ptr<CartesianGrid<k>> sub_grid,
                   std::shared_ptr<InterGridMap<k>> elem_map) const;
 
-    virtual void print_info(LogStream &out) const = 0;
 
-
-    virtual std::shared_ptr<ElementHandler> get_elem_handler() const = 0;
 
 protected:
     /**

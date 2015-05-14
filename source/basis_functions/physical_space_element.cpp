@@ -23,6 +23,7 @@
 
 
 using std::shared_ptr;
+using std::make_shared;
 
 IGA_NAMESPACE_OPEN
 
@@ -33,8 +34,9 @@ PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
     :
     parent_t(phys_space,index),
     ref_space_element_(phys_space->get_reference_space()->create_element(index)),
-    push_fwd_element_(shared_ptr<PfElemAccessor>(new PfElemAccessor(phys_space->get_map_func(), index)))
+    push_fwd_element_(make_shared<PfElemAccessor>(phys_space->get_map_func(), index))
 {
+//    push_fwd_element_ = std::make_shared<PfElemAccessor>(phys_space->get_map_func(), index);
     Assert(ref_space_element_ != nullptr, ExcNullPtr());
     Assert(push_fwd_element_ != nullptr, ExcNullPtr());
 }
@@ -55,10 +57,8 @@ PhysicalSpaceElement(const PhysicalSpaceElement<dim_,range_,rank_,codim_> &in,
     }
     else
     {
-        ref_space_element_ =
-            shared_ptr<RefElemAccessor>(new RefElemAccessor(*in.ref_space_element_));
-        push_fwd_element_ =
-            shared_ptr<PfElemAccessor>(new PfElemAccessor(*in.push_fwd_element_));
+        ref_space_element_ = in.ref_space_element_->clone();
+        push_fwd_element_ = make_shared<PfElemAccessor>(*in.push_fwd_element_);
     }
 
     Assert(false,ExcNotTested());
@@ -68,10 +68,8 @@ PhysicalSpaceElement(const PhysicalSpaceElement<dim_,range_,rank_,codim_> &in,
 template<int dim_,int range_,int rank_,int codim_>
 auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_>::
-clone() const -> std::shared_ptr<self_t>
+clone() const -> std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_>>
 {
-//    auto elem = std::shared_ptr<self_t>(
-//                    new self_t(*this,CopyPolicy::deep));
     auto elem = std::make_shared<self_t>(*this,CopyPolicy::deep);
     Assert(elem != nullptr, ExcNullPtr());
     return elem;

@@ -23,21 +23,22 @@
 #define ELEMENT_HANDLER_H_
 
 #include <igatools/base/config.h>
+#include <igatools/basis_functions/space.h>
 
 IGA_NAMESPACE_OPEN
 
 
-template<class ElementContainer>
+template<class SpaceType>
 class ElementHandler
 {
 public:
-    using ElemIterator = typename ElementContainer::ElementIterator;
-    using ElemAccessor = typename ElementContainer::ElementAccessor;
-    using DerivedElemHandler = typename ElementContainer::ElementHandler;
+    using ElemIterator = typename SpaceType::ElementIterator;
+    using ElemAccessor = typename SpaceType::ElementAccessor;
+    using DerivedElemHandler = typename SpaceType::ElementHandler;
 
-    static const int dim = ElementContainer::dim;
-    static const int range = ElementContainer::range;
-    static const int rank = ElementContainer::rank;
+    static const int dim = SpaceType::dim;
+    static const int range = SpaceType::range;
+    static const int rank = SpaceType::rank;
 
 
     DerivedElemHandler &as_derived_class()
@@ -125,6 +126,54 @@ public:
     ///@}
 };
 
+
+
+template <int dim,int codim,int range,int rank>
+class SpaceElementHandler
+{
+public:
+    using ElementAccessor = typename Space<dim,codim,range,rank>::ElementAccessor;
+    using ElementIterator = typename Space<dim,codim,range,rank>::ElementIterator;
+
+private:
+    using eval_pts_variant = SubElemVariants<Quadrature,dim>;
+
+public:
+    /**
+     * Resets all the internal data in order to use the
+     * same quadrature scheme for the elements of the space with ID specified by
+     * the input parameter <tt>elements_flat_id</tt>.
+     *
+     * @note This function is pure virtual and must be implemented in the class that are derived
+     * from SpaceElementHandler.
+     */
+    virtual void reset_selected_elements(
+        const ValueFlags &flag,
+        const eval_pts_variant &eval_points,
+        const SafeSTLVector<int> &elements_flat_id) = 0;
+
+
+    template <int sub_elem_dim>
+    void init_cache(ElementAccessor &elem)
+    {
+        Assert(false,ExcNotImplemented());
+//        this->as_derived_class().template init_cache<sub_elem_dim>(elem);
+    }
+
+    template<int sub_elem_dim>
+    void fill_cache(ElementAccessor &elem, const int sub_elem_id)
+    {
+        Assert(false,ExcNotImplemented());
+//        this->as_derived_class().template fill_cache<sub_elem_dim>(elem,sub_elem_id);
+    }
+
+    virtual void print_info(LogStream &out) const
+    {
+        Assert(false,ExcNotImplemented());
+    }
+
+
+};
 
 IGA_NAMESPACE_CLOSE
 

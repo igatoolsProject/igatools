@@ -36,7 +36,7 @@ class SpaceManager;
 
 //template <int,int,int> class BSplineSpace;
 //template <int,int,int> class NURBSSpace;
-template <class> class IgFunction;
+template <int,int,int,int> class IgFunction;
 
 
 template <int,int,int,int> class PhysicalSpaceElement;
@@ -131,37 +131,18 @@ public:
     /**
      * Create an element (defined on this grid) with a given flat_index.
      */
-    std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const;
+    std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_>>
+                                                         create_element(const Index flat_index) const;
 
     /**
      * Total number of dofs of the space.
      */
     Index get_num_basis() const;
 
-    /** @name Functions involving the element iterator */
-    ///@{
-    /**
-     * Returns a element iterator to the first element of the patch
-     * with the property @p element_property.
-     */
-    ElementIterator begin(const std::string &element_property = ElementProperties::none) const;
-
-    /**
-     * Returns a element iterator to the last element of the patch
-     * with the property @p element_property.
-     */
-    ElementIterator last(const std::string &element_property = ElementProperties::none) const;
-
-    /**
-     * Returns a element iterator to one-pass the end of patch
-     * with the property @p element_property.
-     */
-    ElementIterator end(const std::string &element_property = ElementProperties::none) const;
-    ///@}
 
     /** Returns the container with the global dof distribution (const version). */
     std::shared_ptr<const DofDistribution<dim, range, rank> >
-    get_dof_distribution() const;
+    get_dof_distribution() const override final;
 
     /** Returns the container with the global dof distribution (non const version). */
     std::shared_ptr<DofDistribution<dim, range, rank> >
@@ -216,7 +197,7 @@ public:
 
     void print_info(LogStream &out) const;
 
-    std::shared_ptr<ElementHandler> get_elem_handler() const;
+    std::shared_ptr<SpaceElementHandler<dim_,codim_,range_,rank_>> get_elem_handler() const;
 
 
     std::shared_ptr<const self_t> get_space_previous_refinement() const
@@ -268,7 +249,7 @@ private:
         ar &boost::serialization::make_nvp("ref_space_",ref_space_);
         Assert(ref_space_ != nullptr,ExcNullPtr());
 
-        ar.template register_type<IgFunction<ReferenceSpace<dim,dim+codim> > >();
+        ar.template register_type<IgFunction<dim,0,dim+codim,1> >();
         ar &boost::serialization::make_nvp("map_func_",map_func_);
         Assert(map_func_ != nullptr,ExcNullPtr());
 

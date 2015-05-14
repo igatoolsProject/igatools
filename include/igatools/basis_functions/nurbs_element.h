@@ -151,12 +151,8 @@ private:
     friend class NURBSElementHandler<dim, range, rank>;
 
 public:
-    virtual std::shared_ptr<ReferenceElement<dim,range,rank> > clone() const override final
-    {
-        auto elem = std::make_shared<NURBSElement<dim,range,rank> >(*this,CopyPolicy::deep);
-        Assert(elem != nullptr, ExcNullPtr());
-        return elem;
-    }
+
+    virtual std::shared_ptr<SpaceElement<dim,0,range,rank> > clone() const override final;
 
 
     /**

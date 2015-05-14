@@ -64,9 +64,9 @@ for space in inst.PhysSpaces:
 #---------------------------------------------------
 for space_elem in unique(space_elem_list):
     f.write('template class %s ;\n' %space_elem)
-#---------------------------------------------------
-
-
+    for it in inst.iterators:
+        iterator = it.replace('Accessor','%s' % (space_elem) )
+        f.write('template class %s; \n' %iterator)
 
 
 
