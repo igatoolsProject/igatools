@@ -30,7 +30,7 @@
 IGA_NAMESPACE_OPEN
 
 
-template <int> class Space;
+template <int> class SpaceBase;
 
 //template <class Accessor> class CartesianGridIterator;
 
@@ -47,9 +47,6 @@ protected:
 private:
     using self_t = SpaceElementBase<dim>;
 
-
-protected:
-    std::shared_ptr<const Space<dim>> space_;
 
 public:
     using base_t::get_flat_index;
@@ -73,7 +70,7 @@ public:
      * Constructs an accessor to element number <tt>elem_index</tt> of a
      * function space.
      */
-    SpaceElementBase(const std::shared_ptr<const Space<dim>> space,
+    SpaceElementBase(const std::shared_ptr<const SpaceBase<dim>> space,
                      const Index elem_index);
 
 
@@ -207,6 +204,7 @@ public:
 
 
 private:
+    std::shared_ptr<const SpaceBase<dim>> space_;
 
 #ifdef SERIALIZATION
     /**

@@ -205,7 +205,7 @@ public:
     virtual const DegreeTable &get_degree() const override final;
 
     virtual void get_element_dofs(
-        const CartesianGridElement<dim> &element,
+        const Index element_id,
         SafeSTLVector<Index> &dofs_global,
         SafeSTLVector<Index> &dofs_local_to_patch,
         SafeSTLVector<Index> &dofs_local_to_elem,

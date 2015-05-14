@@ -40,7 +40,7 @@ ReferenceSpace(
     const std::shared_ptr<CartesianGrid<dim_>> grid,
     const std::shared_ptr<DofDistribution<dim_,range_,rank_>> dof_distribution)
     :
-    GridSpace(grid),
+    base_t(grid),
     dof_distribution_(dof_distribution)
 {
     Assert(this->get_grid() != nullptr,ExcNullPtr());
@@ -277,7 +277,7 @@ ReferenceSpace<dim, range, rank>::
 serialize(Archive &ar, const unsigned int version)
 {
     ar &boost::serialization::make_nvp("ReferenceSpace_base_t",
-                                       boost::serialization::base_object<Space<dim>>(*this));
+                                       boost::serialization::base_object<base_t>(*this));
 
     ar &boost::serialization::make_nvp("dof_distribution_",dof_distribution_);
 

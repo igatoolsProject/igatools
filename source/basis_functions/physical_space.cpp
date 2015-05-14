@@ -42,7 +42,7 @@ PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 PhysicalSpace(shared_ptr<RefSpace> ref_space,
               shared_ptr<MapFunc> map_func)
     :
-    BaseSpace(ref_space->get_grid()),
+    base_t(ref_space->get_grid()),
     ref_space_(ref_space),
     map_func_(map_func->clone())
 {
@@ -235,14 +235,14 @@ template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 void
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 get_element_dofs(
-    const CartesianGridElement<dim> &element,
+    const Index element_id,
     SafeSTLVector<Index> &dofs_global,
     SafeSTLVector<Index> &dofs_local_to_patch,
     SafeSTLVector<Index> &dofs_local_to_elem,
     const std::string &dofs_property) const
 {
     return ref_space_->get_element_dofs(
-               element,
+               element_id,
                dofs_global,
                dofs_local_to_patch,
                dofs_local_to_elem,dofs_property);

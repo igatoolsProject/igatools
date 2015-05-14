@@ -55,10 +55,10 @@ template <int dim_, int range_= 1, int rank_ = 1, int codim_ = 0,
           Transformation type_= Transformation::h_grad>
 class PhysicalSpace :
     public std::enable_shared_from_this<PhysicalSpace<dim_, range_, rank_, codim_, type_>>,
-            public Space<dim_>
+            public Space<dim_,codim_,range_,rank_>
 {
 private:
-    using BaseSpace = Space<dim_>;
+    using base_t = Space<dim_,codim_,range_,rank_>;
     using self_t = PhysicalSpace<dim_, range_, rank_, codim_, type_>;
 
 public:
@@ -193,11 +193,11 @@ public:
 
 
     void get_element_dofs(
-        const CartesianGridElement<dim> &element,
+        const Index element_id,
         SafeSTLVector<Index> &dofs_global,
         SafeSTLVector<Index> &dofs_local_to_patch,
         SafeSTLVector<Index> &dofs_local_to_elem,
-        const std::string &dofs_property = DofProperties::active) const;
+        const std::string &dofs_property = DofProperties::active) const override final;
 
 
     std::shared_ptr<const RefSpace> get_reference_space() const;
@@ -261,7 +261,7 @@ private:
     serialize(Archive &ar, const unsigned int version)
     {
         ar &boost::serialization::make_nvp("PhysicalSpace_base_t",
-                                           boost::serialization::base_object<BaseSpace>(*this));
+                                           boost::serialization::base_object<base_t>(*this));
 
         ar.template register_type<BSplineSpace<dim_,range_,rank_> >();
         ar.template register_type<NURBSSpace<dim_,range_,rank_> >();

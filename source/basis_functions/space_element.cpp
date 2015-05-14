@@ -27,10 +27,11 @@ IGA_NAMESPACE_OPEN
 
 template<int dim,int codim,int range,int rank>
 SpaceElement<dim,codim,range,rank>::
-SpaceElement(const std::shared_ptr<const Space<dim>> space,
+SpaceElement(const std::shared_ptr<const Space<dim,codim,range,rank>> space,
              const Index elem_index)
     :
-    base_t(space,elem_index)
+    base_t(space,elem_index),
+    space_(space)
 {}
 
 
@@ -67,7 +68,7 @@ copy_from(const self_t &elem,
     {
         base_t::copy_from(elem,copy_policy);
 
-
+        space_ = elem.space_;
         if (copy_policy == CopyPolicy::deep)
         {
             Assert(elem.all_sub_elems_cache_ != nullptr, ExcNullPtr());
@@ -149,6 +150,11 @@ serialize(Archive &ar, const unsigned int version)
                                        boost::serialization::base_object<SpaceElementBase<dim>>(*this));
 
     ar &boost::serialization::make_nvp("all_sub_elems_cache_",all_sub_elems_cache_);
+
+    auto non_const_space = std::const_pointer_cast<Space<dim,codim,range,rank>>(space_);
+    ar &boost::serialization::make_nvp("space_",non_const_space);
+    space_ = non_const_space;
+    Assert(space_ != nullptr,ExcNullPtr());
 }
 #endif // SERIALIZATION
 

@@ -411,7 +411,7 @@ template<int dim_, int range_, int rank_>
 void
 BSplineSpace<dim_, range_, rank_>::
 get_element_dofs(
-    const CartesianGridElement<dim> &element,
+    const Index element_id,
     SafeSTLVector<Index> &dofs_global,
     SafeSTLVector<Index> &dofs_local_to_patch,
     SafeSTLVector<Index> &dofs_local_to_elem,
@@ -424,7 +424,7 @@ get_element_dofs(
     dofs_local_to_patch.clear();
     dofs_local_to_elem.clear();
 
-    const auto &elem_tensor_id = element.get_tensor_index();
+    const auto &elem_tensor_id = this->get_grid()->flat_to_tensor(element_id);
 
     Index dof_loc_to_elem = 0;
     for (const auto comp : SpaceData::components)

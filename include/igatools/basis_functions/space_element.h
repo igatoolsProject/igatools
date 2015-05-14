@@ -23,17 +23,10 @@
 #define SPACE_ELEMENT_H_
 
 #include <igatools/base/config.h>
-//#include <igatools/base/value_types.h>
-//#include <igatools/base/cache_status.h>
-//#include <igatools/base/flags_handler.h>
-
-//#include <igatools/base/function.h>
 #include <igatools/basis_functions/values_cache.h>
 
 #include <igatools/base/quadrature.h>
 
-//#include <igatools/utils/value_vector.h>
-//#include <igatools/utils/value_table.h>
 #include <igatools/utils/static_multi_array.h>
 #include <igatools/utils/cartesian_product_indexer.h>
 
@@ -99,7 +92,7 @@ public:
      * Constructs an accessor to element number <tt>elem_index</tt> of a
      * function space.
      */
-    SpaceElement(const std::shared_ptr<const Space<dim>> space,
+    SpaceElement(const std::shared_ptr<const Space<dim,codim,range,rank>> space,
                  const Index elem_index);
 
     /**
@@ -170,7 +163,7 @@ public:
         SafeSTLVector<Index> dofs_local_to_elem;
 
         this->space_->get_element_dofs(
-            this->as_cartesian_grid_element_accessor(),
+            this->get_flat_index(),
             dofs_global,
             dofs_local_to_patch,
             dofs_local_to_elem,
@@ -273,6 +266,8 @@ protected:
 
 
 private:
+
+    std::shared_ptr<const Space<dim,codim,range,rank>> space_;
 
 #ifdef SERIALIZATION
     /**

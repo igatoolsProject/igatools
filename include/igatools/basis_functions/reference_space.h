@@ -56,8 +56,11 @@ template <int,int,int> class DofDistribution;
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
 class ReferenceSpace :
-    public Space<dim_>
+    public Space<dim_,0,range_,rank_>
 {
+    using base_t = Space<dim_,0,range_,rank_>;
+    using self_t = ReferenceSpace<dim_,range_,rank_>;
+
 public:
     static const int dim       = dim_;
     static const int codim     = 0;
@@ -85,8 +88,7 @@ public:
     using RefPoint = Point;
 
 
-    using GridSpace = Space<dim>;
-    using typename GridSpace::GridType;
+    using GridType = CartesianGrid<dim>;
 
 
 

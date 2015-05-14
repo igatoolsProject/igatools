@@ -27,7 +27,7 @@ IGA_NAMESPACE_OPEN
 
 template <int dim>
 SpaceElementBase<dim>::
-SpaceElementBase(const std::shared_ptr<const Space<dim>> space,
+SpaceElementBase(const std::shared_ptr<const SpaceBase<dim>> space,
                  const Index elem_index)
     :
     base_t(space->get_grid(), elem_index),
@@ -105,7 +105,7 @@ get_local_to_global(const std::string &dofs_property) const
     SafeSTLVector<Index> dofs_loc_to_patch;
     SafeSTLVector<Index> dofs_loc_to_elem;
     this->space_->get_element_dofs(
-        *this,
+        this->get_flat_index(),
         dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
 
     return dofs_global;
@@ -120,7 +120,7 @@ get_local_to_patch(const std::string &dofs_property) const
     SafeSTLVector<Index> dofs_loc_to_patch;
     SafeSTLVector<Index> dofs_loc_to_elem;
     this->space_->get_element_dofs(
-        *this,
+        this->get_flat_index(),
         dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
 
     return dofs_loc_to_patch;
@@ -135,7 +135,7 @@ get_local_dofs(const std::string &dofs_property) const
     SafeSTLVector<Index> dofs_loc_to_patch;
     SafeSTLVector<Index> dofs_loc_to_elem;
     this->space_->get_element_dofs(
-        *this,
+        this->get_flat_index(),
         dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
 
     return dofs_loc_to_elem;
@@ -200,7 +200,7 @@ serialize(Archive &ar, const unsigned int version)
     ar &boost::serialization::make_nvp("SpaceElementBase_base_t",
                                        boost::serialization::base_object<CartesianGridElement<dim>>(*this));
 
-    auto non_const_space = std::const_pointer_cast<Space<dim>>(space_);
+    auto non_const_space = std::const_pointer_cast<SpaceBase<dim>>(space_);
     ar &boost::serialization::make_nvp("space_",non_const_space);
     space_ = non_const_space;
     Assert(space_ != nullptr,ExcNullPtr());
