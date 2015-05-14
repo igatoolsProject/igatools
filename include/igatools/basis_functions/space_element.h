@@ -57,7 +57,7 @@ class SpaceElement : public SpaceElementBase<dim>
 {
 protected:
     using base_t =  SpaceElementBase<dim>;
-    using Space = typename base_t::Space;
+
 private:
     using self_t = SpaceElement<dim,codim,range,rank>;
 
@@ -99,7 +99,7 @@ public:
      * Constructs an accessor to element number <tt>elem_index</tt> of a
      * function space.
      */
-    SpaceElement(const std::shared_ptr<const Space> space,
+    SpaceElement(const std::shared_ptr<const Space<dim>> space,
                  const Index elem_index);
 
     /**

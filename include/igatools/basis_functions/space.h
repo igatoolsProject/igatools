@@ -18,38 +18,40 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __FUNCTION_SPACE_H_
-#define __FUNCTION_SPACE_H_
+#ifndef __SPACE_H_
+#define __SPACE_H_
 
 #include <igatools/base/config.h>
 #include <igatools/geometry/grid_wrapper.h>
-
-//#include <string>
+#include <igatools/geometry/cartesian_grid.h>
 
 IGA_NAMESPACE_OPEN
 
 
 /**
- * This class represent the "concept" of isogeometric function space
- * that is built on a certain type of grid.
+ * @brief This class represent the "concept" of isogeometric function space.
+ * It is used as base class of ReferenceSpace and PhysicalSpace.
  *
  * The main feature of this class is that contains a space identifier that is unique to the object,
  * i.e. two different objects will have two different space id.
  *
- * @author M.Martinelli, 2013, 2014.
+ * @author M.Martinelli, 2013, 2014, 2015.
+ *
+ * @ingroup serializable
  */
-template<class Grid_>
-class FunctionSpaceOnGrid :
-    public GridWrapper<Grid_>
+template<int dim_>
+class Space :
+    public GridWrapper<CartesianGrid<dim_>>
 {
 
 private:
-    using self_t = FunctionSpaceOnGrid<Grid_>;
+	using base_t = GridWrapper<CartesianGrid<dim_>>;
+    using self_t = Space<dim_>;
 
 public:
-    using typename GridWrapper<Grid_>::GridType;
+    using GridType = CartesianGrid<dim_>;
 
-    using GridElement = typename Grid_::ElementAccessor;
+    using GridElement = typename GridType::ElementAccessor;
 
     virtual void get_element_dofs(
         const GridElement &element,
@@ -67,20 +69,20 @@ protected:
      * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
      * mechanism.
      */
-    FunctionSpaceOnGrid() = default;
+    Space() = default;
 
     /** Construct the object from the @p grid on which the function space will be built upon. */
-    FunctionSpaceOnGrid(std::shared_ptr<GridType> grid);
+    Space(std::shared_ptr<GridType> grid);
 
     /** Copy constructor. */
-    FunctionSpaceOnGrid(const self_t &grid) = default;
+    Space(const self_t &grid) = default;
 
     /** Move constructor. */
-    FunctionSpaceOnGrid(self_t &&grid) = default;
+    Space(self_t &&grid) = default;
 
 public:
     /** Destructor. */
-    virtual ~FunctionSpaceOnGrid() = default;
+    virtual ~Space() = default;
     ///@}
 
     /** @name Assignment operator. */
@@ -103,6 +105,8 @@ protected:
 
 
 private:
+
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -112,18 +116,12 @@ private:
 
     template<class Archive>
     void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        ar &boost::serialization::make_nvp("FunctionSpaceOnGrid_base_t",
-                                           boost::serialization::base_object<GridWrapper<Grid_>>(*this));
-
-        ar &boost::serialization::make_nvp("space_id_",space_id_);
-    }
+    serialize(Archive &ar, const unsigned int version);
     ///@}
-
+#endif // SERIALIZATION
 };
 
 
 IGA_NAMESPACE_CLOSE
 
-#endif // __FUNCTION_SPACE_H_
+#endif // __SPACE_H_

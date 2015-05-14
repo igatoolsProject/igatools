@@ -53,7 +53,7 @@ private:
 public:
     using SpSpace = BSplineSpace<dim_, range_, rank_>;
 
-    /** see documentation in \ref FunctionSpaceOnGrid */
+    /** see documentation in \ref Space */
 
     using GridType = CartesianGrid<dim_>;
     static const int dim       = dim_;
@@ -67,9 +67,9 @@ public:
 
 
     /**
-     * See documentation in \ref FunctionSpaceOnGrid
+     * See documentation in \ref Space
      *
-     * @see FunctionSpaceOnGrid
+     * @see Space
      */
     using PushForwardType = typename BaseSpace::PushForwardType;
 

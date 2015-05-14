@@ -25,7 +25,7 @@
 #include <igatools/base/array_utils.h>
 #include <igatools/base/function_element.h>
 #include <igatools/utils/cartesian_product_array.h>
-#include <igatools/basis_functions/function_space.h>
+#include <igatools/basis_functions/space.h>
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/basis_functions/space_element.h>
 #include <igatools/basis_functions/spline_space.h>
@@ -56,7 +56,7 @@ template <int,int,int> class DofDistribution;
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
 class ReferenceSpace :
-    public FunctionSpaceOnGrid<CartesianGrid<dim_>>
+    public Space<dim_>
 {
 public:
     static const int dim       = dim_;
@@ -67,9 +67,9 @@ public:
     static const bool is_physical_space = false;
 
     /**
-     * See documentation in \ref FunctionSpaceOnGrid
+     * See documentation in \ref Space
      *
-     * @see FunctionSpaceOnGrid
+     * @see Space
      */
     using PushForwardType = PushForward<Transformation::h_grad, dim, codim>;
 
@@ -85,7 +85,7 @@ public:
     using RefPoint = Point;
 
 
-    using GridSpace = FunctionSpaceOnGrid<CartesianGrid<dim>>;
+    using GridSpace = Space<dim>;
     using typename GridSpace::GridType;
 
 

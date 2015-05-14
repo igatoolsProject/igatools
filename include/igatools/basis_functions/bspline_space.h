@@ -104,7 +104,7 @@ private:
     using self_t = BSplineSpace<dim_,range_,rank_>;
 
 public:
-    /** see documentation in \ref FunctionSpaceOnGrid */
+    /** see documentation in \ref Space */
 
     using GridType = CartesianGrid<dim_>;
     using ElementHandler = BSplineElementHandler<dim_, range_, rank_>;
@@ -124,9 +124,9 @@ public:
     using typename BaseSpace::Div;
 
     /**
-     * See documentation in \ref FunctionSpaceOnGrid
+     * See documentation in \ref Space
      *
-     * @see FunctionSpaceOnGrid
+     * @see Space
      */
     using PushForwardType = typename BaseSpace::PushForwardType;
 

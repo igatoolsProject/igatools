@@ -27,7 +27,7 @@ IGA_NAMESPACE_OPEN
 
 template <int dim>
 SpaceElementBase<dim>::
-SpaceElementBase(const std::shared_ptr<const Space> space,
+SpaceElementBase(const std::shared_ptr<const Space<dim>> space,
                  const Index elem_index)
     :
     base_t(space->get_grid(), elem_index),
@@ -200,7 +200,7 @@ serialize(Archive &ar, const unsigned int version)
     ar &boost::serialization::make_nvp("SpaceElementBase_base_t",
                                        boost::serialization::base_object<CartesianGridElement<dim>>(*this));
 
-    auto non_const_space = std::const_pointer_cast<Space>(space_);
+    auto non_const_space = std::const_pointer_cast<Space<dim>>(space_);
     ar &boost::serialization::make_nvp("space_",non_const_space);
     space_ = non_const_space;
     Assert(space_ != nullptr,ExcNullPtr());

@@ -24,13 +24,13 @@
 
 #include <igatools/base/config.h>
 #include <igatools/geometry/cartesian_grid_element.h>
-#include <igatools/basis_functions/function_space.h>
+#include <igatools/basis_functions/space.h>
 
 
 IGA_NAMESPACE_OPEN
 
 
-template <class Grid> class FunctionSpaceOnGrid;
+template <int> class Space;
 
 //template <class Accessor> class CartesianGridIterator;
 
@@ -43,13 +43,13 @@ class SpaceElementBase : private CartesianGridElement<dim>
 {
 protected:
     using base_t = CartesianGridElement<dim>;
-    using Space = FunctionSpaceOnGrid<CartesianGrid<dim>>;
+
 private:
     using self_t = SpaceElementBase<dim>;
 
 
 protected:
-    std::shared_ptr<const Space> space_;
+    std::shared_ptr<const Space<dim>> space_;
 
 public:
     using base_t::get_flat_index;
@@ -73,7 +73,7 @@ public:
      * Constructs an accessor to element number <tt>elem_index</tt> of a
      * function space.
      */
-    SpaceElementBase(const std::shared_ptr<const Space> space,
+    SpaceElementBase(const std::shared_ptr<const Space<dim>> space,
                      const Index elem_index);
 
 

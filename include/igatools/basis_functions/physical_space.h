@@ -25,7 +25,7 @@
 #include <igatools/geometry/mapping.h>
 #include <igatools/geometry/push_forward.h>
 #include <igatools/geometry/cartesian_grid_iterator.h>
-#include <igatools/basis_functions/function_space.h>
+#include <igatools/basis_functions/space.h>
 #include <igatools/basis_functions/reference_space.h>
 #include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/utils/static_multi_array.h>
@@ -55,18 +55,18 @@ template <int dim_, int range_= 1, int rank_ = 1, int codim_ = 0,
           Transformation type_= Transformation::h_grad>
 class PhysicalSpace :
     public std::enable_shared_from_this<PhysicalSpace<dim_, range_, rank_, codim_, type_>>,
-            public FunctionSpaceOnGrid<CartesianGrid<dim_> >
+            public Space<dim_>
 {
 private:
-    using BaseSpace = FunctionSpaceOnGrid<CartesianGrid<dim_> >;
+    using BaseSpace = Space<dim_>;
     using self_t = PhysicalSpace<dim_, range_, rank_, codim_, type_>;
 
 public:
     ///@{
     /**
-     * See documentation in \ref FunctionSpaceOnGrid
+     * See documentation in \ref Space
      *
-     * @see FunctionSpaceOnGrid
+     * @see Space
      */
     using PushForwardType = PushForward<type_, dim_, codim_>;
 
