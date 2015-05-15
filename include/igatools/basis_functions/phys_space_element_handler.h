@@ -144,9 +144,6 @@ public:
 
 
 
-    template <int k>
-    void init_cache(ElementAccessor &elem);
-
     void init_cache(SpaceElement<dim_,codim_,range_,rank_> &sp_elem,
                     const topology_variant &topology) override final
     {
@@ -160,8 +157,6 @@ public:
     }
 
 
-    template <int k>
-    void fill_cache(ElementAccessor &elem, const int j);
 
     void fill_cache(SpaceElement<dim_,codim_,range_,rank_> &sp_elem,
                     const topology_variant &topology,

@@ -150,6 +150,7 @@ get_num_basis(const std::string &dofs_property) const
     return dofs_global.size();
 }
 
+
 template <int dim>
 bool
 SpaceElementBase<dim>::

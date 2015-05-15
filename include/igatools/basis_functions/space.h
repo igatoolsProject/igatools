@@ -105,6 +105,7 @@ public:
      */
     Index get_space_id() const;
 
+
 protected:
     Index space_id_ = 0;
 
@@ -160,6 +161,8 @@ public:
 
     virtual std::shared_ptr<const DofDistribution<dim_,range_,rank_> >
     get_dof_distribution() const = 0;
+
+
 
     /**
      * Create and element (defined on this space) with a given flat_index

@@ -37,7 +37,7 @@ template<int dim, int range>
 void test()
 {
     using Space = BSplineSpace<dim>;
-    using Function = IgFunction<ReferenceSpace<dim>>;
+    using Function = IgFunction<dim,0,1,1>;
 
     auto flag = ValueFlags::value | ValueFlags::gradient |
                 ValueFlags::hessian;

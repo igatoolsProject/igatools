@@ -51,7 +51,7 @@ void test()
 
     const auto n_scalar_basis = scalar_bsp_space->get_num_basis_table()[0];
 
-    using WeightFunc = IgFunction<ReferenceSpace<dim,1,1>>;
+    using WeightFunc = IgFunction<dim,0,1,1>;
     SafeSTLVector<Real> weights_coef(n_scalar_basis.flat_size());
     const int n_entries = weights_coef.size();
     for (int i = 0 ; i < n_entries ; ++i)

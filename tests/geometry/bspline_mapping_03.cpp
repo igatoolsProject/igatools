@@ -44,7 +44,7 @@ void bspline_map(const int deg = 2)
     const int sub_dim = dim;
     using Space = BSplineSpace<dim, dim+codim>;
     using RefSpace = ReferenceSpace<dim, dim+codim>;
-    using Function = IgFunction<RefSpace>;
+    using Function = IgFunction<dim,0,dim+codim,1>;
     using Mapping   = Mapping<dim, codim>;
 
     auto grid = CartesianGrid<dim>::create(2);

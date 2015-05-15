@@ -183,6 +183,7 @@ public:
     ComponentContainer<Size> get_basis_offset() const;
 
     Size get_elem_num_basis() const;
+
     ///@}
 
 

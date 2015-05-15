@@ -150,7 +150,7 @@ void assemble_matrix(const int n_knots, const int deg)
     auto map1 = IdentityFunction<dim>::create(space->get_grid());
     Writer<dim> writer(map1, n_plot_points);
 
-    using IgFunc = IgFunction<RefSpace>;
+    using IgFunc = IgFunction<dim,0,range,1>;
     auto solution_function = IgFunc::create(space, solution);
     writer.template add_field<range,1>(solution_function, "solution");
     string filename = "poisson_problem-" + to_string(deg) + "-" + to_string(dim) + "d" ;

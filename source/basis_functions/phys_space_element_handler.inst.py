@@ -39,8 +39,8 @@ data = Instantiation(include_files)
  
  
 sub_dim_members = \
-['void elhandler::fill_cache<k>(ElementAccessor &elem, const int j);' ,
- 'void elhandler::init_cache<k>(ElementAccessor &elem);',
+['void elhandler::FillCacheDispatcher::operator()(const Topology<k> &);' ,
+ 'void elhandler::InitCacheDispatcher::operator()(const Topology<k> &);',
  'void elhandler::reset<k>(const ValueFlags flag, const Quadrature<k> &quad);',
  'void elhandler::reset_selected_elements<k>(const ValueFlags &flag, const Quadrature<k> &quad, const SafeSTLVector<Index> &elements_flat_id);']
 

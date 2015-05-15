@@ -44,7 +44,7 @@ using namespace EpetraTools;
 
 
 template <int dim,int codim>
-void serialize_deserialize(std::shared_ptr<IgFunction<ReferenceSpace<dim, dim+codim>>> F)
+void serialize_deserialize(std::shared_ptr<ReferenceSpace<dim, dim+codim>>> F)
 {
     out.begin_item("Original IgFunction:");
     F->print_info(out);
@@ -89,7 +89,7 @@ void bspline_map(const int deg = 1)
     const int sub_dim = dim;
     using Space = BSplineSpace<dim, dim+codim>;
     using RefSpace = ReferenceSpace<dim, dim+codim>;
-    using Function = IgFunction<RefSpace>;
+    using Function = IgFunction<dim,0,dim+codim,1>;
     using Mapping   = Mapping<dim, codim>;
 
     auto grid = CartesianGrid<dim>::create(2);

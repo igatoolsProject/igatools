@@ -216,6 +216,7 @@ public:
     }
 
 
+
     template <class ValueType>
     auto
     get_basis_element(const std::string &dofs_property = DofProperties::active) const
@@ -233,6 +234,36 @@ public:
             this->template get_basis<ValueType, sub_elem_dim>(sub_elem_id,dofs_property);
         return basis_values.evaluate_linear_combination(loc_coefs) ;
     }
+
+
+    /**
+     * @name Functions for the basis evaluations without the use of the cache.
+     */
+    ///@{
+    /**
+     * Returns a ValueTable with the quantity specified by the template parameter @p ValueType,
+     * computed for all local basis function,
+     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+     * @note This function does not use the cache and therefore can be called any time without
+     * needing to pre-call init_cache()/fill_cache().
+     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+     */
+    template <class ValueType>
+    auto
+    evaluate_basis_at_points(
+        const Quadrature<dim_> &points,
+        const std::string &dofs_property)
+    {
+        auto elem_handler = this->space_->get_elem_handler();
+        elem_handler->reset_one_element(ValueType::flag,points,this->get_flat_index());
+        elem_handler->template init_cache<dim_>(*this);
+        elem_handler->template fill_cache<dim_>(*this,0);
+
+        return this->template get_basis<ValueType,dim_>(0,dofs_property);
+    }
+
+    ///@}
 
 
 

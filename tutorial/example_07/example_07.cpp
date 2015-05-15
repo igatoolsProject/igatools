@@ -72,7 +72,7 @@ void analytical_geometry()
 void nurb_geometry()
 {
     const int dim = 2;
-    using Function = IgFunction<ReferenceSpace<dim, dim>>;
+    using Function = IgFunction<dim,0,dim,1>;
 
     const int deg = 2;
     const int n_knots = 3;

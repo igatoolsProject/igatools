@@ -104,13 +104,6 @@ get_basis_offset() const -> OffsetTable
 }
 
 
-template <int dim, int range, int rank>
-int
-ReferenceElement<dim, range, rank>::
-get_num_basis() const
-{
-    return this->n_basis_direction_.total_dimension();
-}
 
 
 template <int dim, int range, int rank>

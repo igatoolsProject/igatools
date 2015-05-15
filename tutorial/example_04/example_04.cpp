@@ -40,7 +40,7 @@ template <int dim>
 void plot_basis(const int deg)
 {
     using Space  = BSplineSpace<dim>;
-    using Func = IgFunction<ReferenceSpace<dim>>;
+    using Func = IgFunction<dim,0,1,1>;
 
     const int n_knots = deg + 2;
     auto grid  = CartesianGrid<dim>::create(n_knots);

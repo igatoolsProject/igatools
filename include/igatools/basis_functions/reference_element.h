@@ -154,10 +154,6 @@ protected:
 public:
     using parent_t::get_num_basis;
 
-    /**
-     * Returns the max. number of basis function that can have support on this element.
-     */
-    int get_num_basis() const override final;
 
     /**
      * Returns the basis function ID offset between the different components.

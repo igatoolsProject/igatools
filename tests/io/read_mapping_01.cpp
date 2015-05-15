@@ -40,7 +40,7 @@ void run_test(std::string &file_name)
 
     // Reading input file.
     using RefSpace = ReferenceSpace<dim,dim,1>;
-    auto map = dynamic_pointer_cast<IgFunction<RefSpace> >(get_mapping_from_file<dim,0>(file_name));
+    auto map = dynamic_pointer_cast<IgFunction<dim,0,dim,1> >(get_mapping_from_file<dim,0>(file_name));
 //    auto map = get_mapping_from_file<dim,0>(file_name);
     out.begin_item("IgFunction infos:");
     map->print_info(out);

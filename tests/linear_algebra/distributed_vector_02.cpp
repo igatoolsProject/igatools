@@ -52,7 +52,7 @@ void non_contig_indices()
 
     const int dim = 1;
     using Space = BSplineSpace<dim>;
-    using Function = IgFunction<ReferenceSpace<dim>>;
+    using Function = IgFunction<dim,0,1,1>;
     auto grid = CartesianGrid<dim>::create(5);
     const int deg = 1;
     auto space = Space::create(deg, grid);

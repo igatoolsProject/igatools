@@ -55,7 +55,7 @@ void run_test(std::string &file_name)
     out << endl;
 
 
-    const auto ref_space = dynamic_pointer_cast<IgFunction<RefSpace> >(map)->get_ig_space();
+    const auto ref_space = dynamic_pointer_cast<IgFunction<dim,0,dim,1> >(map)->get_ig_space();
 
     //------------------------------------------------------
     out.begin_item("Loop using the NURBSElement");

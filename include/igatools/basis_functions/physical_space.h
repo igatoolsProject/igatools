@@ -124,6 +124,8 @@ public:
 
     PhysicalSpace(const self_t &phys_space) = delete;
 
+    virtual ~PhysicalSpace() = default;
+
     static std::shared_ptr<self_t>
     create(std::shared_ptr<RefSpace> ref_space,
            std::shared_ptr<MapFunc> map_func);
@@ -138,6 +140,7 @@ public:
      * Total number of dofs of the space.
      */
     Index get_num_basis() const;
+
 
 
     /** Returns the container with the global dof distribution (const version). */
