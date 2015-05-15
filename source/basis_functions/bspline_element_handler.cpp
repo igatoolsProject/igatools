@@ -453,7 +453,7 @@ operator()(const Topology<sub_elem_dim> &sub_elem)
 template<int dim_, int range_ , int rank_>
 void
 BSplineElementHandler<dim_, range_, rank_>::
-init_cache(RefElementAccessor &elem, const topology_variant &topology)
+init_ref_elem_cache(RefElementAccessor &elem, const topology_variant &topology)
 {
     Assert(this->get_space() == elem.get_space(),
            ExcMessage("The element accessor and the element handler cannot have different spaces."));
@@ -699,7 +699,7 @@ operator()(const Topology<sub_elem_dim> &sub_elem)
 template<int dim_, int range_ , int rank_>
 void
 BSplineElementHandler<dim_, range_, rank_>::
-fill_cache(RefElementAccessor &elem, const topology_variant &topology, const int sub_elem_id)
+fill_ref_elem_cache(RefElementAccessor &elem, const topology_variant &topology, const int sub_elem_id)
 {
     Assert(this->get_space() == elem.get_space(),
            ExcMessage("The element accessor and the element handler cannot have different spaces."));

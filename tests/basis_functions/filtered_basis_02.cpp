@@ -142,7 +142,7 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
     const int n_plot_points = 4;
     auto map1 = IdentityFunction<dim>::create(space->get_grid());
     Writer<dim> writer(map1, n_plot_points);
-    using IgFunc = IgFunction<RefSpace>;
+    using IgFunc = IgFunction<dim,0,range,rank>;
     auto solution_function = IgFunc::create(space, solution, DofProp::interior);
     writer.template add_field<1,1>(solution_function, "solution");
     string filename = "poisson_problem-" + to_string(deg) + "-" + to_string(dim) + "d" ;

@@ -161,8 +161,9 @@ IGA_NAMESPACE_OPEN
  * @tparam Accessor Type of the accessor.
  *
  * @ingroup iterators
- * @author M.Martinelli, S.Pauletti
- * @date 2012,2013,2014
+ * @ingroup serializable
+ * @author M.Martinelli 2012,2013,2014,2015
+ * @author S.Pauletti 2012,2013,2014
  */
 template <class Accessor>
 class CartesianGridIteratorBase
@@ -340,6 +341,7 @@ protected:
     std::string elem_property_;
 
 private:
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -357,7 +359,7 @@ private:
         ar &boost::serialization::make_nvp("elem_property_",elem_property_);
     }
     ///@}
-
+#endif // SERIALIZATION
 };
 
 

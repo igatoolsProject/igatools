@@ -138,14 +138,18 @@ public:
         const eval_pts_variant &eval_points,
         const SafeSTLVector<int> &elements_flat_id) override final;
 
-    virtual void init_cache(RefElementAccessor &elem, const topology_variant &topology) override final;
-
-    virtual void fill_cache(RefElementAccessor &elem, const topology_variant &topology, const int j) override final;
 
 
     virtual void print_info(LogStream &out) const override final;
 
 private:
+
+    virtual void init_ref_elem_cache(RefElementAccessor &elem,
+                                     const topology_variant &topology) override final;
+
+    virtual void fill_ref_elem_cache(RefElementAccessor &elem,
+                                     const topology_variant &topology, const int j) override final;
+
     std::shared_ptr<BSplineElementHandler<dim_,range_,rank_>> bspline_handler_;
 
     SafeSTLArray<ValueFlags, dim+1> flags_;

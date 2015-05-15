@@ -116,7 +116,7 @@ template<int dim,int range,int rank,int codim>
 PhysSpaceElementHandler<dim,range,rank,codim>::
 PhysSpaceElementHandler(std::shared_ptr<const PhysSpace> space)
     :
-    space_(space),
+    base_t(space),
     ref_space_handler_(space->get_reference_space()->get_elem_handler()),
     push_fwd_(space->get_map_func())
 {}
@@ -150,7 +150,7 @@ reset(const ValueFlags flag, const Quadrature<k> &eval_pts)
     //*/
 
     const std::set<int> elems_id =
-        this->space_->get_grid()->get_elements_id();
+        this->get_space()->get_grid()->get_elements_id();
 
     this->reset_selected_elements(
         flag,

@@ -20,54 +20,77 @@
 
 from init_instantiation_data import *
 
-include_files = ['basis_functions/space_element.h']
+include_files = ['geometry/cartesian_grid.h',
+                 'geometry/cartesian_grid_element.h',
+                 'basis_functions/space_element.h',
+                 '../../source/geometry/cartesian_grid_iterator.cpp']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 
 sub_dim_members = \
-[]
+ ['ValueVector<Real> elem::get_w_measures<k>(const int) const;']
 
 
-space_elem_list = []
+elements = []
+templated_funcs = []
 
 #--------------------------------------------------------------------------------------
 # SpaceElement used by ReferenceSpaceElement 
-for x in inst.sub_ref_sp_dims:
-    space_elem = 'SpaceElement<%d,0,%d,%d>' %(x.dim, x.range, x.rank)
-    space_elem_list.append(space_elem)
+for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
+    elem = 'SpaceElement<%d,0,%d,%d>' %(x.dim, x.range, x.rank)
+    elements.append(elem)
+    for func in sub_dim_members:
+        k = x.dim
+        s = func.replace('elem', elem).replace('k', '%d' % (k));
+        templated_funcs.append(s)
 
 
 
-for x in inst.ref_sp_dims:
-    space_elem = 'SpaceElement<%d,0,%d,%d>' %(x.dim, x.range, x.rank)
-    space_elem_list.append(space_elem)
+
+# for x in inst.ref_sp_dims:
+#     elem = 'SpaceElement<%d,0,%d,%d>' %(x.dim, x.range, x.rank)
+#     elements.append(elem)
+#     for func in sub_dim_members:
+#         k = x.dim
+#         s = func.replace('elem', elem).replace('k', '%d' % (k));
+#         templated_funcs.append(s)
 #--------------------------------------------------------------------------------------
 
 
 #--------------------------------------------------------------------------------------
 # SpaceElement used by PhysicalSpaceElement 
-for space in inst.SubPhysSpaces:
+for space in inst.SubPhysSpaces + inst.PhysSpaces:
     x = space.spec
-    space_elem = 'SpaceElement<%d,%d,%d,%d>' %(x.dim,x.codim,x.range, x.rank)
-    space_elem_list.append(space_elem)
+    elem = 'SpaceElement<%d,%d,%d,%d>' %(x.dim,x.codim,x.range, x.rank)
+    elements.append(elem)
+    for func in sub_dim_members:
+        k = x.dim
+        s = func.replace('elem', elem).replace('k', '%d' % (k));
+        templated_funcs.append(s)
 
 
-for space in inst.PhysSpaces:
-    x = space.spec
-    space_elem = 'SpaceElement<%d,%d,%d,%d>' %(x.dim,x.codim,x.range, x.rank)
-    space_elem_list.append(space_elem)
+# for space in inst.PhysSpaces:
+#     x = space.spec
+#     elem = 'SpaceElement<%d,%d,%d,%d>' %(x.dim,x.codim,x.range, x.rank)
+#     elements.append(elem)
+#     for func in sub_dim_members:
+#         k = x.dim
+#         s = func.replace('elem', elem).replace('k', '%d' % (k));
+#         templated_funcs.append(s)
 #--------------------------------------------------------------------------------------
 
 
 
 #---------------------------------------------------
-for space_elem in unique(space_elem_list):
-    f.write('template class %s ;\n' %space_elem)
+for elem in unique(elements):
+    f.write('template class %s ;\n' %elem)
     for it in inst.iterators:
-        iterator = it.replace('Accessor','%s' % (space_elem) )
+        iterator = it.replace('Accessor','%s' % (elem) )
         f.write('template class %s; \n' %iterator)
 
+for func in unique(templated_funcs):
+    f.write('template %s ;\n' %func)
 
 
 #---------------------------------------------------
@@ -75,7 +98,7 @@ f.write('IGA_NAMESPACE_CLOSE\n')
 
 f.write('#ifdef SERIALIZATION\n')
 id = 0 
-for elem in unique(space_elem_list):
+for elem in unique(elements):
     alias = 'SpaceElementAlias%d' %(id)
     f.write('using %s = iga::%s; \n' % (alias, elem))
     f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)

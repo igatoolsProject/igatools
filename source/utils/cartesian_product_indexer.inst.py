@@ -23,5 +23,29 @@ from init_instantiation_data import *
 data = Instantiation()
 (f, inst) = (data.file_output, data.inst)
 
+
+objects = []
+
 for dim in inst.all_domain_dims:
-    f.write('template class CartesianProductIndexer<%d> ;\n' %dim)
+    obj = 'CartesianProductIndexer<%d>' %(dim)
+    objects.append(obj)
+    f.write('template class %s ;\n' %obj)
+
+
+
+#---------------------------------------------------
+f.write('IGA_NAMESPACE_CLOSE\n')
+
+f.write('#ifdef SERIALIZATION\n')
+id = 0 
+for obj in unique(objects):
+    alias = 'CartesianProductIndexerAlias%d' %(id)
+    f.write('using %s = iga::%s; \n' % (alias, obj))
+    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
+    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
+    f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
+    id += 1 
+f.write('#endif // SERIALIZATION\n')
+    
+f.write('IGA_NAMESPACE_OPEN\n')
+#---------------------------------------------------

@@ -27,7 +27,7 @@
 #include <igatools/base/quadrature.h>
 #include <igatools/utils/tensor_product_array.h>
 #include <igatools/geometry/cartesian_grid.h>
-#include <igatools/basis_functions/element_handler.h>
+#include <igatools/basis_functions/space_element_handler.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -41,7 +41,7 @@ IGA_NAMESPACE_OPEN
  */
 template <int dim>
 class GridElementHandler
-    : public ElementHandler<CartesianGrid<dim>>
+//    : public ElementHandler<CartesianGrid<dim>>
 {
 private:
     using self_t = GridElementHandler<dim>;

@@ -86,32 +86,6 @@ public:
 
 
     /**
-     * This boost::mpl::map is used to select the return type of the template function evaluate_basis_at_points()
-     * from its template parameter @p ValueType.
-     *
-     * @see evaluate_basis_at_points()
-     */
-    using map_ValueTypeId_ContainerType =
-        boost::mpl::map<
-        boost::mpl::pair<boost::mpl::int_<     _Value::id>,ValueTable<Value> >,
-        boost::mpl::pair<boost::mpl::int_<  _Gradient::id>,ValueTable<Derivative<1>> >,
-        boost::mpl::pair<boost::mpl::int_<   _Hessian::id>,ValueTable<Derivative<2>> >,
-        boost::mpl::pair<boost::mpl::int_<_Divergence::id>,ValueTable<Div>>
-        >;
-
-    /**
-     * This is a type-trait that convert a @p ValueType to the correspondent container returned
-     * by the function evaluate_basis_at_points().
-     *
-     * @see evaluate_basis_at_points()
-     */
-    template <class ValueType>
-    using ContType_from_ValueType = typename boost::mpl::at<
-                                    map_ValueTypeId_ContainerType,boost::mpl::int_<ValueType::id>>::type;
-
-
-
-    /**
      * @name Functions for the basis evaluations without the use of the cache.
      */
     ///@{
@@ -125,27 +99,12 @@ public:
      * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
      */
     template <class ValueType>
-    ContType_from_ValueType<ValueType>
+    auto
     evaluate_basis_at_points(
         const Quadrature<dim> &points,
         const std::string &dofs_property)
     {
         auto elem_handler = ReferenceElementHandler<dim,range,rank>::create(this->space_);
-        /*
-                ValueFlags flags;
-                if (ValueType::id == _Value::id)
-                    flags = ValueFlags::value;
-                else if (ValueType::id == _Gradient::id)
-                    flags = ValueFlags::gradient;
-                else if (ValueType::id == _Hessian::id)
-                    flags = ValueFlags::hessian;
-                else if (ValueType::id == _Divergence::id)
-                    flags = ValueFlags::divergence;
-                else
-                {
-                    Assert(false,ExcNotImplemented());
-                }
-        //*/
         elem_handler->reset_one_element(ValueType::flag,points,this->get_flat_index());
         elem_handler->template init_cache<dim>(*this);
         elem_handler->template fill_cache<dim>(*this,0);

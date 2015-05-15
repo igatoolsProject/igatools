@@ -139,13 +139,15 @@ public:
         const SafeSTLVector<int> &elements_flat_id) override final;
     ///@}
 
-    virtual void init_cache(RefElementAccessor &elem,
-                            const topology_variant &topology) override final;
+private:
+    virtual void init_ref_elem_cache(RefElementAccessor &elem,
+                                     const topology_variant &topology) override final;
 
-    virtual void fill_cache(RefElementAccessor &elem,
-                            const topology_variant &topology,
-                            const int sub_elem_id) override final;
+    virtual void fill_ref_elem_cache(RefElementAccessor &elem,
+                                     const topology_variant &topology,
+                                     const int sub_elem_id) override final;
 
+public:
     virtual void print_info(LogStream &out) const override final ;
 
 

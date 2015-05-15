@@ -25,7 +25,7 @@
 #include <igatools/base/flags_handler.h>
 #include <igatools/base/quadrature.h>
 
-#include <igatools/basis_functions/element_handler.h>
+#include <igatools/basis_functions/space_element_handler.h>
 #include <igatools/geometry/grid_element_handler.h>
 #include <igatools/basis_functions/reference_space.h>
 
@@ -38,9 +38,11 @@ IGA_NAMESPACE_OPEN
  */
 template<int dim, int range = 1, int rank = 1>
 class ReferenceElementHandler
-    : public ElementHandler<ReferenceSpace<dim,range,rank>>,
-      public SpaceElementHandler<dim,0,range,rank>
+    :
+    public SpaceElementHandler<dim,0,range,rank>
 {
+private:
+    using base_t = SpaceElementHandler<dim,0,range,rank>;
 public:
     using Space = ReferenceSpace<dim,range,rank>;
     using ElementIterator = typename Space::ElementIterator;
@@ -89,11 +91,6 @@ public:
      * @name Reset functions
      */
     ///@{
-    /**
-     * Resets all the internal data in order to use the
-     * same quadrature scheme for each active element of the space.
-     */
-    void reset(const ValueFlags &flag, const eval_pts_variant &quad);
 
     /**
      * Resets all the internal data in order to use the
@@ -108,32 +105,21 @@ public:
     ///@}
 
 
-    /**
-     * @name Init functions
-     */
-    ///@{
-    virtual void init_cache(ElementAccessor &elem, const topology_variant &topology)= 0;
 
-    template <int k>
-    void init_cache(ElementAccessor &elem)
+    virtual void init_cache(SpaceElement<dim,0,range,rank> &space_elem,
+                            const topology_variant &topology) override final
     {
-        this->init_cache(elem,Topology<k>());
+        auto &ref_elem = dynamic_cast<ElementAccessor &>(space_elem);
+        this->init_ref_elem_cache(ref_elem,topology);
     }
 
-    ///@}
-    /**
-     * @name Fill functions
-     */
-    ///@{
-    virtual void fill_cache(ElementAccessor &elem, const topology_variant &topology, const int j) = 0;
-
-    template<int k>
-    void fill_cache(ElementAccessor &elem, const int j)
+    virtual void fill_cache(SpaceElement<dim,0,range,rank> &space_elem,
+                            const topology_variant &topology,
+                            const int sub_elem_id) override final
     {
-        this->fill_cache(elem,Topology<k>(),j);
+        auto &ref_elem = dynamic_cast<ElementAccessor &>(space_elem);
+        this->fill_ref_elem_cache(ref_elem,topology,sub_elem_id);
     }
-
-    ///@}
 
 
     virtual void print_info(LogStream &out) const = 0;
@@ -145,6 +131,14 @@ public:
     }
 
 protected:
+
+    virtual void init_ref_elem_cache(ElementAccessor &elem,
+                                     const topology_variant &topology)= 0;
+
+    virtual void fill_ref_elem_cache(ElementAccessor &elem,
+                                     const topology_variant &topology,
+                                     const int sub_elem_id) = 0;
+
     GridElementHandler<dim> grid_handler_;
 
 private:
@@ -157,11 +151,12 @@ public:
      */
     const GridElementHandler<dim> &get_grid_handler() const;
 
+#if 0
     /**
      * Returns the ReferenceSpace associated to the current ReferenceElementHandler (const version).
      */
     std::shared_ptr<const Space> get_space() const;
-
+#endif
 
 private:
 

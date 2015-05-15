@@ -46,19 +46,19 @@ IGA_NAMESPACE_OPEN
  *
  * @ingroup serializable
  */
-template<int dim,int codim,int range,int rank>
-class SpaceElement : public SpaceElementBase<dim>
+template<int dim_,int codim_,int range_,int rank_>
+class SpaceElement : public SpaceElementBase<dim_>
 {
 protected:
-    using base_t =  SpaceElementBase<dim>;
+    using base_t =  SpaceElementBase<dim_>;
 
 
 private:
-    using self_t = SpaceElement<dim,codim,range,rank>;
+    using self_t = SpaceElement<dim_,codim_,range_,rank_>;
 
 public:
 
-    using Func = Function<dim,codim,range,rank>;
+    using Func = Function<dim_,codim_,range_,rank_>;
 
     using RefPoint = typename Func::RefPoint;
     using Point = typename Func::Point;
@@ -67,16 +67,17 @@ public:
     using Derivative = typename Func::template Derivative<order>;
     using Div = typename Func::Div;
 
+    static const int dim = dim_;
     static const int space_dim = Func::space_dim;
 
-    using ContainerType = CartesianGrid<dim>;
+    using ContainerType = Space<dim_,codim_,range_,rank_>;
 
     /**
      * For each component gives a product array of the dimension
      */
     template<class T>
-    using ComponentContainer = typename SplineSpace<dim,range,rank>::template ComponentContainer<T>;
-    using TensorSizeTable = typename SplineSpace<dim,range,rank>::TensorSizeTable;
+    using ComponentContainer = typename SplineSpace<dim_,range_,rank_>::template ComponentContainer<T>;
+    using TensorSizeTable = typename SplineSpace<dim_,range_,rank_>::TensorSizeTable;
     ///@}
 
 
@@ -96,7 +97,7 @@ public:
      * Constructs an accessor to element number <tt>elem_index</tt> of a
      * function space.
      */
-    SpaceElement(const std::shared_ptr<const Space<dim,codim,range,rank>> space,
+    SpaceElement(const std::shared_ptr<const Space<dim_,codim_,range_,rank_>> space,
                  const Index elem_index);
 
     /**
@@ -170,7 +171,7 @@ public:
     virtual std::shared_ptr<self_t> clone() const;
 
 
-    template <class ValueType, int sub_elem_dim = dim>
+    template <class ValueType, int sub_elem_dim = dim_>
     auto
     get_basis(const int sub_elem_id, const std::string &dofs_property = DofProperties::active) const
     {
@@ -219,10 +220,10 @@ public:
     auto
     get_basis_element(const std::string &dofs_property = DofProperties::active) const
     {
-        return this->template get_basis<ValueType,dim>(0,dofs_property);
+        return this->template get_basis<ValueType,dim_>(0,dofs_property);
     }
 
-    template <class ValueType, int sub_elem_dim = dim>
+    template <class ValueType, int sub_elem_dim = dim_>
     auto
     linear_combination(const SafeSTLVector<Real> &loc_coefs,
                        const int sub_elem_id,
@@ -234,6 +235,14 @@ public:
     }
 
 
+
+
+    /**
+     * Returns the <tt>k</tt> dimensional j-th sub-element measure
+     * multiplied by the weights of the quadrature.
+     */
+    template <int k>
+    ValueVector<Real> get_w_measures(const int j) const;
 
 
 
@@ -248,7 +257,7 @@ public:
                   boost::fusion::pair<_Divergence,DataWithFlagStatus<ValueTable<Div>>>
                   >;
 
-    using Cache = BasisValuesCache<dim,CType>;
+    using Cache = BasisValuesCache<dim_,CType>;
 
 protected:
 
@@ -287,7 +296,7 @@ protected:
 
 private:
 
-    std::shared_ptr<const Space<dim,codim,range,rank>> space_;
+    std::shared_ptr<const Space<dim_,codim_,range_,rank_>> space_;
 
 #ifdef SERIALIZATION
     /**

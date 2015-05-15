@@ -66,6 +66,19 @@ get_num_indices() const
 }
 
 
+#ifdef SERIALIZATION
+template <int rank>
+template<class Archive>
+void
+CartesianProductIndexer<rank>::
+serialize(Archive &ar, const unsigned int version)
+{
+    ar &boost::serialization::make_nvp("CartesianProductIndexer_base_t",
+                                       boost::serialization::base_object<DynamicMultiArray<TensorIndex<rank>,rank>>(*this));
+}
+///@}
+#endif // SERIALIZATION
+
 
 IGA_NAMESPACE_CLOSE
 

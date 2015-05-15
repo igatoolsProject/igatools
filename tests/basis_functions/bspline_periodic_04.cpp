@@ -177,7 +177,7 @@ void assemble_matrix(const int n_knots, const int deg)
     Writer<dim> writer(map1, n_plot_points);
 
 
-    using IgFunc = IgFunction<RefSpace>;
+    using IgFunc = IgFunction<dim,0,1,1>;
     auto solution_function = IgFunc::create(space, solution);
 
     writer.template add_field<1,1>(solution_function, "solution");

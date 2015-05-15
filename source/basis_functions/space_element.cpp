@@ -21,13 +21,16 @@
 
 
 #include <igatools/basis_functions/space_element.h>
+#include <igatools/basis_functions/reference_element.h>
+#include <igatools/basis_functions/physical_space_element.h>
+
 
 IGA_NAMESPACE_OPEN
 
 
-template<int dim,int codim,int range,int rank>
-SpaceElement<dim,codim,range,rank>::
-SpaceElement(const std::shared_ptr<const Space<dim,codim,range,rank>> space,
+template<int dim_,int codim_,int range_,int rank_>
+SpaceElement<dim_,codim_,range_,rank_>::
+SpaceElement(const std::shared_ptr<const Space<dim_,codim_,range_,rank_>> space,
              const Index elem_index)
     :
     base_t(space,elem_index),
@@ -36,8 +39,8 @@ SpaceElement(const std::shared_ptr<const Space<dim,codim,range,rank>> space,
 
 
 
-template<int dim,int codim,int range,int rank>
-SpaceElement<dim,codim,range,rank>::
+template<int dim_,int codim_,int range_,int rank_>
+SpaceElement<dim_,codim_,range_,rank_>::
 SpaceElement(const self_t &elem,
              const CopyPolicy &copy_policy)
     :
@@ -58,9 +61,9 @@ SpaceElement(const self_t &elem,
 
 
 
-template<int dim,int codim,int range,int rank>
+template<int dim_,int codim_,int range_,int rank_>
 void
-SpaceElement<dim,codim,range,rank>::
+SpaceElement<dim_,codim_,range_,rank_>::
 copy_from(const self_t &elem,
           const CopyPolicy &copy_policy)
 {
@@ -88,9 +91,9 @@ copy_from(const self_t &elem,
 
 
 
-template<int dim,int codim,int range,int rank>
+template<int dim_,int codim_,int range_,int rank_>
 void
-SpaceElement<dim,codim,range,rank>::
+SpaceElement<dim_,codim_,range_,rank_>::
 deep_copy_from(const self_t &elem)
 {
     this->copy_from(elem,CopyPolicy::deep);
@@ -98,17 +101,17 @@ deep_copy_from(const self_t &elem)
 
 
 
-template<int dim,int codim,int range,int rank>
+template<int dim_,int codim_,int range_,int rank_>
 void
-SpaceElement<dim,codim,range,rank>::
+SpaceElement<dim_,codim_,range_,rank_>::
 shallow_copy_from(const self_t &elem)
 {
     this->copy_from(elem,CopyPolicy::shallow);
 }
 
-template<int dim,int codim,int range,int rank>
+template<int dim_,int codim_,int range_,int rank_>
 auto
-SpaceElement<dim,codim,range,rank>::
+SpaceElement<dim_,codim_,range_,rank_>::
 clone() const -> std::shared_ptr<self_t>
 {
     Assert(false,ExcMessage("This function must not be called. "
@@ -117,9 +120,9 @@ clone() const -> std::shared_ptr<self_t>
 }
 
 
-template<int dim,int codim,int range,int rank>
+template<int dim_,int codim_,int range_,int rank_>
 auto
-SpaceElement<dim,codim,range,rank>::
+SpaceElement<dim_,codim_,range_,rank_>::
 operator=(const self_t &element) -> self_t &
 {
     this->shallow_copy_from(element);
@@ -128,17 +131,17 @@ operator=(const self_t &element) -> self_t &
 
 
 
-template<int dim,int codim,int range,int rank>
+template<int dim_,int codim_,int range_,int rank_>
 void
-SpaceElement<dim,codim,range,rank>::
+SpaceElement<dim_,codim_,range_,rank_>::
 print_info(LogStream &out) const
 {
     base_t::print_info(out);
 }
 
-template<int dim,int codim,int range,int rank>
+template<int dim_,int codim_,int range_,int rank_>
 void
-SpaceElement<dim,codim,range,rank>::
+SpaceElement<dim_,codim_,range_,rank_>::
 print_cache_info(LogStream &out) const
 {
     base_t::print_cache_info(out);
@@ -147,20 +150,42 @@ print_cache_info(LogStream &out) const
     all_sub_elems_cache_->print_info(out);
 }
 
+template<int dim_,int codim_,int range_,int rank_>
+template <int k>
+ValueVector<Real>
+SpaceElement<dim_,codim_,range_,rank_>::
+get_w_measures(const int j) const
+{
+    ValueVector<Real> w_measures;
+
+    using RefElem = const ReferenceElement<dim_,range_,rank_>;
+    RefElem *as_ref_elem = dynamic_cast<RefElem *>(this);
+    if (as_ref_elem)
+        w_measures = as_ref_elem->template get_w_measures<k>(j);
+
+    using PhysElem = const PhysicalSpaceElement<dim_,range_,rank_,codim_>;
+    PhysElem *as_phys_elem = dynamic_cast<PhysElem *>(this);
+    if (as_phys_elem)
+        w_measures = as_phys_elem->template get_w_measures<k>(j);
+
+    return w_measures;
+}
+
+
 
 #ifdef SERIALIZATION
-template<int dim,int codim,int range,int rank>
+template<int dim_,int codim_,int range_,int rank_>
 template<class Archive>
 void
-SpaceElement<dim,codim,range,rank>::
+SpaceElement<dim_,codim_,range_,rank_>::
 serialize(Archive &ar, const unsigned int version)
 {
     ar &boost::serialization::make_nvp("SpaceElement_base_t",
-                                       boost::serialization::base_object<SpaceElementBase<dim>>(*this));
+                                       boost::serialization::base_object<SpaceElementBase<dim_>>(*this));
 
     ar &boost::serialization::make_nvp("all_sub_elems_cache_",all_sub_elems_cache_);
 
-    auto non_const_space = std::const_pointer_cast<Space<dim,codim,range,rank>>(space_);
+    auto non_const_space = std::const_pointer_cast<Space<dim_,codim_,range_,rank_>>(space_);
     ar &boost::serialization::make_nvp("space_",non_const_space);
     space_ = non_const_space;
     Assert(space_ != nullptr,ExcNullPtr());

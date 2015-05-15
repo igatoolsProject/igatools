@@ -36,8 +36,9 @@ class PhysicalSpace;
  */
 template<int dim_,int range_,int rank_,int codim_>
 class PhysSpaceElementHandler
-    : public ElementHandler<PhysicalSpace<dim_,range_,rank_,codim_>>,
-      public SpaceElementHandler<dim_,codim_,range_,rank_>
+    :
+    //public ElementHandler<PhysicalSpace<dim_,range_,rank_,codim_>>,
+    public SpaceElementHandler<dim_,codim_,range_,rank_>
 {
 
     using PhysSpace = PhysicalSpace<dim_,range_,rank_,codim_>;
@@ -49,9 +50,11 @@ class PhysSpaceElementHandler
     using ElementAccessor = typename PhysSpace::ElementAccessor;
     using PfElemAccessor = typename PhysSpace::PushForwardType::ElementAccessor;
 
+    using base_t = SpaceElementHandler<dim_,codim_,range_,rank_>;
     using self_t = PhysSpaceElementHandler<dim_,range_,rank_,codim_>;
 
     using eval_pts_variant = SubElemVariants<Quadrature,dim_>;
+    using topology_variant = TopologyVariants<dim_>;
 
 public:
     static const int dim = dim_;
@@ -139,18 +142,32 @@ public:
         const int elem_flat_id);
 
 
-    //protected:
-    template <int k>
-    void fill_cache(ElementAccessor &elem, const int j);
 
 
     template <int k>
     void init_cache(ElementAccessor &elem);
 
+    void init_cache(SpaceElement<dim_,codim_,range_,rank_> &sp_elem,
+                    const topology_variant &topology) override final
+    {
+        Assert(false,ExcNotImplemented());
+    }
+
+
+    template <int k>
+    void fill_cache(ElementAccessor &elem, const int j);
+
+    void fill_cache(SpaceElement<dim_,codim_,range_,rank_> &sp_elem,
+                    const topology_variant &topology,
+                    const int sub_elem_id) override final
+    {
+        Assert(false,ExcNotImplemented());
+    }
+
     void print_info(LogStream &out) const override final;
 
 private:
-    std::shared_ptr<const PhysSpace> space_;
+//    std::shared_ptr<const PhysSpace> space_;
 
     std::shared_ptr<SpaceElementHandler<RefSpace::dim,0,RefSpace::range,RefSpace::rank>>
             ref_space_handler_;

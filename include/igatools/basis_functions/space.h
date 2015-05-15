@@ -156,6 +156,8 @@ protected:
 
 public:
 
+    static const int dim = dim_;
+
     virtual std::shared_ptr<const DofDistribution<dim_,range_,rank_> >
     get_dof_distribution() const = 0;
 

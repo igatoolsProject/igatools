@@ -29,6 +29,8 @@ IGA_NAMESPACE_OPEN
 /**
  * @brief This structure describes the possible two states (<tt>fill</tt> and <tt>filled</tt>)
  * of a cache associated to a given ValueType.
+ *
+ * @ingroup serializable
  */
 struct FlagStatus
 {
@@ -59,6 +61,8 @@ struct FlagStatus
         };
     //*/
 private:
+
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -68,13 +72,9 @@ private:
 
     template<class Archive>
     void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        ar &boost::serialization::make_nvp("fill_",fill_);
-        ar &boost::serialization::make_nvp("filled_",filled_);
-    };
+    serialize(Archive &ar, const unsigned int version);
     ///@}
-
+#endif // SERIALIZATION
 };
 
 #if 0

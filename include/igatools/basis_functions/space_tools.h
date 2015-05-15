@@ -104,7 +104,7 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
             auto phi = elem->template get_basis_element<_Value>(dofs_property);
 
             // computing the upper triangular part of the local matrix
-            auto w_meas = elem->get_element_w_measures();
+            auto w_meas = elem->template get_w_measures<dim>(0);
             for (int i = 0; i < n_basis; ++i)
             {
                 const auto phi_i = phi.get_function_view(i);
@@ -209,8 +209,7 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
             auto phi = elem->template get_basis_element<_Value>(dofs_property);
 
             // computing the upper triangular part of the local matrix
-//            auto w_meas = elem->template get_w_measures<dim>(0);
-            auto w_meas = elem->get_element_w_measures();
+            auto w_meas = elem->template get_w_measures<dim>(0);
             for (int i = 0; i < n_basis; ++i)
             {
                 const auto phi_i = phi.get_function_view(i);

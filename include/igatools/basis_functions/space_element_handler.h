@@ -19,15 +19,16 @@
 //-+--------------------------------------------------------------------
 
 
-#ifndef ELEMENT_HANDLER_H_
-#define ELEMENT_HANDLER_H_
+#ifndef SPACE_ELEMENT_HANDLER_H_
+#define SPACE_ELEMENT_HANDLER_H_
 
 #include <igatools/base/config.h>
 #include <igatools/basis_functions/space.h>
+#include <igatools/base/tuple_utils.h>
 
 IGA_NAMESPACE_OPEN
 
-
+#if 0
 template<class SpaceType>
 class ElementHandler
 {
@@ -125,7 +126,7 @@ public:
     }
     ///@}
 };
-
+#endif
 
 
 template <int dim,int codim,int range,int rank>
@@ -137,8 +138,49 @@ public:
 
 private:
     using eval_pts_variant = SubElemVariants<Quadrature,dim>;
+    using topology_variant = TopologyVariants<dim>;
+
+
+    protected:
+    /** @name Constructors */
+    ///@{
+    /**
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
+     */
+    SpaceElementHandler() = default;
+
+
+    SpaceElementHandler(std::shared_ptr<const Space<dim,codim,range,rank>> space);
+
+    /**
+     * Copy constructor. Not allowed to be used.
+     */
+    SpaceElementHandler(const SpaceElementHandler<dim,codim,range,rank> &elem_handler) = delete;
+
+    /**
+     * Move constructor. Not allowed to be used.
+     */
+    SpaceElementHandler(SpaceElementHandler<dim,codim,range,rank> &&elem_handler) = delete;
 
 public:
+
+    /**
+     * Destructor.
+     */
+    virtual ~SpaceElementHandler() = default;
+
+    ///@}
+
+public:
+
+    /**
+     * Resets all the internal data in order to use the
+     * same quadrature scheme for each active element of the space.
+     */
+    void reset(const ValueFlags &flag, const eval_pts_variant &quad);
+
     /**
      * Resets all the internal data in order to use the
      * same quadrature scheme for the elements of the space with ID specified by
@@ -153,28 +195,95 @@ public:
         const SafeSTLVector<int> &elements_flat_id) = 0;
 
 
+    virtual void init_cache(SpaceElement<dim,codim,range,rank> &elem,
+    		const topology_variant & topology) = 0;
+
     template <int sub_elem_dim>
-    void init_cache(ElementAccessor &elem)
+    void init_cache(SpaceElement<dim,codim,range,rank> &elem)
     {
-        Assert(false,ExcNotImplemented());
-//        this->as_derived_class().template init_cache<sub_elem_dim>(elem);
+    	this->init_cache(elem,Topology<sub_elem_dim>());
     }
 
-    template<int sub_elem_dim>
-    void fill_cache(ElementAccessor &elem, const int sub_elem_id)
+    /**
+     * Allocates the space in the cache of ElementAccessor <tt>element</tt>
+     * necessary for the given quadrature and flag combination.
+     * It also fills the invariant (not changing) members of
+     * the cache.
+     */
+    void init_element_cache(SpaceElement<dim,codim,range,rank> &elem)
     {
-        Assert(false,ExcNotImplemented());
-//        this->as_derived_class().template fill_cache<sub_elem_dim>(elem,sub_elem_id);
+        this->template init_cache<dim>(elem);
     }
+
+    void init_element_cache(ElementIterator &elem)
+    {
+        this->template init_cache<dim>(*elem);
+    }
+
+
+    virtual void fill_cache(
+    		SpaceElement<dim,codim,range,rank> &elem,
+    		const topology_variant & topology,
+			const int sub_elem_id) = 0;
+
+    template<int sub_elem_dim>
+    void fill_cache(SpaceElement<dim,codim,range,rank> &elem, const int sub_elem_id)
+    {
+    	this->fill_cache(elem,Topology<sub_elem_dim>(),sub_elem_id);
+    }
+
+    void fill_element_cache(SpaceElement<dim,codim,range,rank> &elem)
+    {
+        this->template fill_cache<dim>(elem,0);
+    }
+
+    void fill_element_cache(ElementIterator &elem)
+    {
+        this->template fill_cache<dim>(*elem,0);
+    }
+
 
     virtual void print_info(LogStream &out) const
     {
         Assert(false,ExcNotImplemented());
     }
 
+    template <int sub_elem_dim = dim>
+    Size get_num_points() const
+    {
+        Assert(false,ExcNotImplemented());
+//        return grid_handler_.template get_num_points<sub_elem_dim>();
+        return 0;
+    }
 
+    std::shared_ptr<const Space<dim,codim,range,rank>> get_space() const;
+
+private:
+    std::shared_ptr<const Space<dim,codim,range,rank>> space_;
+
+//#if 0
+#ifdef SERIALIZATION
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        auto non_const_space = std::const_pointer_cast<Space<dim,codim,range,rank>>(space_);
+        ar &boost::serialization::make_nvp("space_", non_const_space);
+        space_ = non_const_space;
+        Assert(space_ != nullptr,ExcNullPtr());
+    }
+    ///@}
+#endif // SERIALIZATION
+//#endif
 };
 
 IGA_NAMESPACE_CLOSE
 
-#endif // ELEMENT_HANDLER_H_
+#endif // SPACE_ELEMENT_HANDLER_H_

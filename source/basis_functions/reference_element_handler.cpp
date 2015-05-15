@@ -35,11 +35,10 @@ template<int dim, int range , int rank>
 ReferenceElementHandler<dim, range, rank>::
 ReferenceElementHandler(shared_ptr<const Space> space)
     :
-    grid_handler_(space->get_grid()),
-    space_(space)
-{
-    Assert(space != nullptr, ExcNullPtr());
-};
+    base_t(space),
+    grid_handler_(space->get_grid())//,
+//    space_(space)
+{};
 
 
 template<int dim, int range , int rank>
@@ -69,7 +68,7 @@ create(shared_ptr<const Space> space)
     return elem_handler;
 }
 
-
+#if 0
 template<int dim, int range , int rank>
 auto
 ReferenceElementHandler<dim, range, rank>::
@@ -78,6 +77,7 @@ get_space() const -> shared_ptr<const Space>
     Assert(space_ != nullptr,ExcNullPtr());
     return space_;
 }
+#endif
 
 template<int dim, int range , int rank>
 const GridElementHandler<dim> &
@@ -88,19 +88,6 @@ get_grid_handler() const
 }
 
 
-template<int dim, int range , int rank>
-void
-ReferenceElementHandler<dim, range, rank>::
-reset(const ValueFlags &flag, const eval_pts_variant &eval_pts)
-{
-    const std::set<int> elems_id =
-        this->get_space()->get_grid()->get_elements_id();
-
-    this->reset_selected_elements(
-        flag,
-        eval_pts,
-        SafeSTLVector<int>(elems_id.begin(),elems_id.end()));
-}
 
 
 
@@ -123,12 +110,15 @@ void
 ReferenceElementHandler<dim, range, rank>::
 serialize(Archive &ar, const unsigned int version)
 {
+    ar &boost::serialization::make_nvp("ReferenceHandler_base_t",
+                                       boost::serialization::base_object<base_t>(*this));
+
     ar &boost::serialization::make_nvp("grid_handler_",grid_handler_);
 
-    auto non_const_space = std::const_pointer_cast<Space>(space_);
-    ar &boost::serialization::make_nvp("space_", non_const_space);
-    space_ = non_const_space;
-    Assert(space_ != nullptr,ExcNullPtr());
+//    auto non_const_space = std::const_pointer_cast<Space>(space_);
+//    ar &boost::serialization::make_nvp("space_", non_const_space);
+//    space_ = non_const_space;
+//    Assert(space_ != nullptr,ExcNullPtr());
 }
 #endif // SERIALIZATION
 

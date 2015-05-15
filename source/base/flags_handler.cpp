@@ -35,6 +35,19 @@ print_info(LogStream &out) const
 }
 
 
+#ifdef SERIALIZATION
+template<class Archive>
+void
+FlagStatus::
+serialize(Archive &ar, const unsigned int version)
+{
+    ar &boost::serialization::make_nvp("fill_",fill_);
+    ar &boost::serialization::make_nvp("filled_",filled_);
+};
+///@}
+#endif // SERIALIZATION
+
+
 #if 0
 //====================================================
 

@@ -174,7 +174,7 @@ operator()(const Topology<sub_elem_dim> &sub_elem)
 template<int dim_, int range_ , int rank_>
 void
 NURBSElementHandler<dim_, range_, rank_>::
-init_cache(RefElementAccessor &elem, const topology_variant &topology)
+init_ref_elem_cache(RefElementAccessor &elem, const topology_variant &topology)
 {
     Assert(!elem.get_space()->is_bspline(),ExcMessage("Not a NURBSElement."));
 
@@ -244,7 +244,7 @@ operator()(const Topology<sub_elem_dim> &sub_elem)
 template<int dim_, int range_ , int rank_>
 void
 NURBSElementHandler<dim_, range_, rank_>::
-fill_cache(RefElementAccessor &elem, const topology_variant &topology, const int sub_elem_id)
+fill_ref_elem_cache(RefElementAccessor &elem, const topology_variant &topology, const int sub_elem_id)
 {
     using Elem = NURBSElement<dim_,range_,rank_>;
     auto &nrb_elem = dynamic_cast<Elem &>(elem);

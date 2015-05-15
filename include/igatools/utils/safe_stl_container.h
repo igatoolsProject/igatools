@@ -102,7 +102,7 @@ private:
         out << "]";
     }
 
-
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -117,6 +117,7 @@ private:
                                            boost::serialization::base_object<STLContainer>(*this));
     }
     ///@}
+#endif // SERIALIZATION
 
 public:
 

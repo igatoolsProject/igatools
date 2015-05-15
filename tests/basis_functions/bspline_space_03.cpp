@@ -38,7 +38,7 @@
 
 
 template<int dim, int codim=0>
-void using_const_space(shared_ptr<const IgFunction<ReferenceSpace<dim>>> fun)
+void using_const_space(shared_ptr<const IgFunction<dim,0,1,1>> fun)
 {
     OUTSTART
 
@@ -72,7 +72,7 @@ int main()
 
     auto coeff = EpetraTools::create_vector(space, "active");
 
-    auto fun = IgFunction<ReferenceSpace<dim>>::create(space, coeff);
+    auto fun = IgFunction<dim,0,1,1>::create(space, coeff);
 
     using_const_space<2>(fun);
     using_const_function<2>(fun);
