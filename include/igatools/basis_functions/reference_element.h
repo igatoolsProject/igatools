@@ -85,34 +85,6 @@ public:
 
 
 
-    /**
-     * @name Functions for the basis evaluations without the use of the cache.
-     */
-    ///@{
-    /**
-     * Returns a ValueTable with the quantity specified by the template parameter @p ValueType,
-     * computed for all local basis function,
-     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
-     * @note This function does not use the cache and therefore can be called any time without
-     * needing to pre-call init_cache()/fill_cache().
-     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
-     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
-     */
-    template <class ValueType>
-    auto
-    evaluate_basis_at_points(
-        const Quadrature<dim> &points,
-        const std::string &dofs_property)
-    {
-        auto elem_handler = ReferenceElementHandler<dim,range,rank>::create(this->space_);
-        elem_handler->reset_one_element(ValueType::flag,points,this->get_flat_index());
-        elem_handler->template init_cache<dim>(*this);
-        elem_handler->template fill_cache<dim>(*this,0);
-
-        return this->template get_basis<ValueType,dim>(0,dofs_property);
-    }
-
-    ///@}
 
 
     /**
