@@ -268,8 +268,8 @@ protected:
 
 public:
     // TODO (pauletti, Mar 17, 2015): this cannot be public, if needed it means wrong desing
-    std::shared_ptr<LocalCache<Cache>> &
-                                    get_local_cache()
+    std::shared_ptr<LocalCache<Cache> > &
+    get_all_sub_elems_cache()
     {
         return this->all_sub_elems_cache_;
     }
@@ -297,6 +297,7 @@ protected:
 private:
 
     std::shared_ptr<const Space<dim_,codim_,range_,rank_>> space_;
+
 
 #ifdef SERIALIZATION
     /**

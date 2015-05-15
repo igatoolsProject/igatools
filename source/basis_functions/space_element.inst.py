@@ -44,17 +44,6 @@ for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
         k = x.dim
         s = func.replace('elem', elem).replace('k', '%d' % (k));
         templated_funcs.append(s)
-
-
-
-
-# for x in inst.ref_sp_dims:
-#     elem = 'SpaceElement<%d,0,%d,%d>' %(x.dim, x.range, x.rank)
-#     elements.append(elem)
-#     for func in sub_dim_members:
-#         k = x.dim
-#         s = func.replace('elem', elem).replace('k', '%d' % (k));
-#         templated_funcs.append(s)
 #--------------------------------------------------------------------------------------
 
 
@@ -68,16 +57,6 @@ for space in inst.SubPhysSpaces + inst.PhysSpaces:
         k = x.dim
         s = func.replace('elem', elem).replace('k', '%d' % (k));
         templated_funcs.append(s)
-
-
-# for space in inst.PhysSpaces:
-#     x = space.spec
-#     elem = 'SpaceElement<%d,%d,%d,%d>' %(x.dim,x.codim,x.range, x.rank)
-#     elements.append(elem)
-#     for func in sub_dim_members:
-#         k = x.dim
-#         s = func.replace('elem', elem).replace('k', '%d' % (k));
-#         templated_funcs.append(s)
 #--------------------------------------------------------------------------------------
 
 
@@ -91,6 +70,7 @@ for elem in unique(elements):
 
 for func in unique(templated_funcs):
     f.write('template %s ;\n' %func)
+#---------------------------------------------------
 
 
 #---------------------------------------------------

@@ -36,8 +36,7 @@ ReferenceElementHandler<dim, range, rank>::
 ReferenceElementHandler(shared_ptr<const Space> space)
     :
     base_t(space),
-    grid_handler_(space->get_grid())//,
-//    space_(space)
+    grid_handler_(space->get_grid())
 {};
 
 
@@ -68,16 +67,6 @@ create(shared_ptr<const Space> space)
     return elem_handler;
 }
 
-#if 0
-template<int dim, int range , int rank>
-auto
-ReferenceElementHandler<dim, range, rank>::
-get_space() const -> shared_ptr<const Space>
-{
-    Assert(space_ != nullptr,ExcNullPtr());
-    return space_;
-}
-#endif
 
 template<int dim, int range , int rank>
 const GridElementHandler<dim> &

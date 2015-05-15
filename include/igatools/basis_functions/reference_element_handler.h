@@ -141,9 +141,6 @@ protected:
 
     GridElementHandler<dim> grid_handler_;
 
-private:
-    std::shared_ptr<const Space> space_;
-
 public:
     /**
      * Returns the const reference of the GridElementHandler used by the current ReferenceElementHandler.
@@ -151,12 +148,6 @@ public:
      */
     const GridElementHandler<dim> &get_grid_handler() const;
 
-#if 0
-    /**
-     * Returns the ReferenceSpace associated to the current ReferenceElementHandler (const version).
-     */
-    std::shared_ptr<const Space> get_space() const;
-#endif
 
 private:
 

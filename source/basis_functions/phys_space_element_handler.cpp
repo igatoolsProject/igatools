@@ -196,11 +196,70 @@ reset_one_element(
 
 
 template<int dim,int range,int rank,int codim>
+template<int sub_elem_dim>
+void
+PhysSpaceElementHandler<dim,range,rank,codim>::
+ResetDispatcher::
+operator()(const Quadrature<sub_elem_dim> &quad)
+{
+    flags_[sub_elem_dim] = flag_in_;
+    ref_space_handler_.reset_selected_elements(
+        space_to_ref_flag(PhysSpace::PushForwardType::type, flag_in_),
+        quad,
+        elements_flat_id_);
+
+
+    ValueFlags map_flags;
+    TransformationFlags transf_flags;
+    space_to_pf_flag(flag_in_,map_flags, transf_flags);
+
+    push_fwd_.template reset<sub_elem_dim>(map_flags,transf_flags,quad);
+}
+
+
+template<int dim,int range,int rank,int codim>
+template<int sub_elem_dim>
+void
+PhysSpaceElementHandler<dim,range,rank,codim>::
+InitCacheDispatcher::
+operator()(const Topology<sub_elem_dim> &topology)
+{
+    auto &ref_elem = phys_elem_.get_ref_space_element();
+    ref_space_handler_.template init_cache<sub_elem_dim>(ref_elem);
+
+    auto &push_fwd_elem = phys_elem_.get_push_forward_accessor();
+    push_fwd_.template init_cache<sub_elem_dim>(push_fwd_elem);
+
+
+    using RefSpHndlr = ReferenceElementHandler<dim,range,rank>;
+    const auto &grid_handler = dynamic_cast<RefSpHndlr &>(ref_space_handler_).get_grid_handler();
+
+    auto &all_sub_elems_cache = phys_elem_.get_all_sub_elems_cache();
+    if (all_sub_elems_cache == nullptr)
+    {
+        using VCache = typename PhysSpace::ElementAccessor::parent_t::Cache;
+
+        using Cache = LocalCache<VCache>;
+        all_sub_elems_cache = std::make_shared<Cache>();
+    }
+
+    const auto n_basis = ref_elem.get_num_basis(DofProperties::active);
+    const auto n_points = grid_handler.template get_num_points<sub_elem_dim>();
+    for (auto &s_id: UnitElement<dim>::template elems_ids<sub_elem_dim>())
+    {
+        auto &sub_elem_cache = all_sub_elems_cache->template get_sub_elem_cache<sub_elem_dim>(s_id);
+        sub_elem_cache.resize(flags_[sub_elem_dim], n_points, n_basis);
+    }
+}
+
+template<int dim,int range,int rank,int codim>
 template<int k>
 void
 PhysSpaceElementHandler<dim,range,rank,codim>::
 init_cache(ElementAccessor &elem)
 {
+    Assert(false,ExcNotImplemented());
+#if 0
     auto &ref_elem = elem.get_ref_space_element();
     ref_space_handler_->template init_cache<k>(ref_elem);
 
@@ -224,9 +283,75 @@ init_cache(ElementAccessor &elem)
 
         s_cache.resize(flags_[k], n_points, n_basis);
     }
+#endif
 }
 
+template<int dim,int range,int rank,int codim>
+template<int sub_elem_dim>
+void
+PhysSpaceElementHandler<dim,range,rank,codim>::
+FillCacheDispatcher::
+operator()(const Topology<sub_elem_dim> &topology)
+{
+    auto &ref_elem = phys_elem_.get_ref_space_element();
+    ref_space_handler_.template fill_cache<sub_elem_dim>(ref_elem, sub_elem_id_);
 
+    auto &push_fwd_elem = phys_elem_.get_push_forward_accessor();
+    push_fwd_.template fill_cache<sub_elem_dim>(push_fwd_elem, sub_elem_id_);
+
+    auto &all_sub_elems_cache = phys_elem_.get_all_sub_elems_cache();
+    Assert(all_sub_elems_cache != nullptr, ExcNullPtr());
+    auto &sub_elem_cache = all_sub_elems_cache->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id_);
+
+    using std::cref;
+    if (sub_elem_cache.template status_fill<_Value>())
+    {
+        auto &result = sub_elem_cache.template get_data<_Value>();
+        const auto &ref_values = ref_elem.template get_basis<_Value,sub_elem_dim>(sub_elem_id_,DofProperties::active);
+        push_fwd_elem.template transform_0<RefSpace::range,RefSpace::rank>
+        (ref_values, result);
+
+        sub_elem_cache.template set_status_filled<_Value>(true);
+    }
+    if (sub_elem_cache.template status_fill<_Gradient>())
+    {
+        const auto &ref_values = ref_elem.template get_basis<   _Value,sub_elem_dim>(sub_elem_id_,DofProperties::active);
+        const auto &ref_der_1  = ref_elem.template get_basis<_Gradient,sub_elem_dim>(sub_elem_id_,DofProperties::active);
+        const auto &values = sub_elem_cache.template get_data<_Value>();
+        push_fwd_elem.template transform_1<PhysSpace::range,PhysSpace::rank,sub_elem_dim>(
+            std::make_tuple(cref(ref_values), cref(ref_der_1)),
+            values,
+            sub_elem_cache.template get_data<_Gradient>(),
+            sub_elem_id_);
+
+        sub_elem_cache.template set_status_filled<_Gradient>(true);
+    }
+    if (sub_elem_cache.template status_fill<_Hessian>())
+    {
+        const auto &ref_values = ref_elem.template get_basis<   _Value,sub_elem_dim>(sub_elem_id_,DofProperties::active);
+        const auto &ref_der_1  = ref_elem.template get_basis<_Gradient,sub_elem_dim>(sub_elem_id_,DofProperties::active);
+        const auto &ref_der_2  = ref_elem.template get_basis< _Hessian,sub_elem_dim>(sub_elem_id_,DofProperties::active);
+        const auto &values = sub_elem_cache.template get_data<   _Value>();
+        const auto &der_1  = sub_elem_cache.template get_data<_Gradient>();
+        push_fwd_elem.template transform_2<PhysSpace::range,PhysSpace::rank, sub_elem_dim>(
+            std::make_tuple(cref(ref_values), cref(ref_der_1), cref(ref_der_2)),
+            std::make_tuple(cref(values),cref(der_1)),
+            sub_elem_cache.template get_data<_Hessian>(),
+            sub_elem_id_);
+
+        sub_elem_cache.template set_status_filled<_Hessian>(true);
+    }
+    if (sub_elem_cache.template status_fill<_Divergence>())
+    {
+        eval_divergences_from_gradients(
+            sub_elem_cache.template get_data<_Gradient>(),
+            sub_elem_cache.template get_data<_Divergence>());
+
+        sub_elem_cache.template set_status_filled<_Divergence>(true);
+    }
+
+    sub_elem_cache.set_filled(true);
+}
 
 template<int dim,int range,int rank,int codim>
 template<int k>

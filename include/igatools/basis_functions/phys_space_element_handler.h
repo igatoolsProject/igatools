@@ -110,17 +110,17 @@ public:
     static std::shared_ptr<self_t> create(std::shared_ptr<const PhysSpace> space);
     ///@}
 
-
     template<int k>
     void reset(const ValueFlags flag, const Quadrature<k> &eval_pts);
-
 
     virtual void reset_selected_elements(
         const ValueFlags &flag,
         const eval_pts_variant &eval_points,
         const SafeSTLVector<int> &elements_flat_id) override final
     {
-        Assert(false,ExcNotImplemented())
+        auto reset_selected_elems_dispatcher =
+            ResetDispatcher(flag,elements_flat_id,*ref_space_handler_,push_fwd_,flags_);
+        boost::apply_visitor(reset_selected_elems_dispatcher,eval_points);
     }
 
     template<int k>
@@ -150,7 +150,13 @@ public:
     void init_cache(SpaceElement<dim_,codim_,range_,rank_> &sp_elem,
                     const topology_variant &topology) override final
     {
-        Assert(false,ExcNotImplemented());
+        using PhysElem = PhysicalSpaceElement<dim_,range_,rank_,codim_>;
+        PhysElem *as_phys_elem = dynamic_cast<PhysElem *>(&sp_elem);
+        Assert(as_phys_elem != nullptr,ExcNullPtr());
+
+        auto init_cache_dispatcher =
+            InitCacheDispatcher(flags_,*ref_space_handler_,push_fwd_,*as_phys_elem);
+        boost::apply_visitor(init_cache_dispatcher,topology);
     }
 
 
@@ -161,21 +167,104 @@ public:
                     const topology_variant &topology,
                     const int sub_elem_id) override final
     {
-        Assert(false,ExcNotImplemented());
+        using PhysElem = PhysicalSpaceElement<dim_,range_,rank_,codim_>;
+        PhysElem *as_phys_elem = dynamic_cast<PhysElem *>(&sp_elem);
+        Assert(as_phys_elem != nullptr,ExcNullPtr());
+
+        auto fill_cache_dispatcher =
+            FillCacheDispatcher(sub_elem_id,*ref_space_handler_,push_fwd_,*as_phys_elem);
+        boost::apply_visitor(fill_cache_dispatcher,topology);
     }
 
     void print_info(LogStream &out) const override final;
 
 private:
-//    std::shared_ptr<const PhysSpace> space_;
+    using RefElemHandler = SpaceElementHandler<RefSpace::dim,0,RefSpace::range,RefSpace::rank>;
+//    using RefElemHandler = ReferenceElementHandler<RefSpace::dim,RefSpace::range,RefSpace::rank>;
+    std::shared_ptr<RefElemHandler> ref_space_handler_;
 
-    std::shared_ptr<SpaceElementHandler<RefSpace::dim,0,RefSpace::range,RefSpace::rank>>
-            ref_space_handler_;
 
+    using PushFwd = typename PhysSpace::PushForwardType;
+    PushFwd push_fwd_;
 
-    typename PhysSpace::PushForwardType push_fwd_;
 
     SafeSTLArray<ValueFlags, dim+1> flags_;
+
+
+    struct ResetDispatcher : boost::static_visitor<void>
+    {
+        ResetDispatcher(
+            const ValueFlags flag_in,
+            const SafeSTLVector<Index> &elements_flat_id,
+            RefElemHandler &ref_space_handler,
+            PushFwd &push_fwd,
+            SafeSTLArray<ValueFlags, dim+1> &flags)
+            :
+            flag_in_(flag_in),
+            elements_flat_id_(elements_flat_id),
+            ref_space_handler_(ref_space_handler),
+            push_fwd_(push_fwd),
+            flags_(flags)
+        {};
+
+        template<int sub_elem_dim>
+        void operator()(const Quadrature<sub_elem_dim> &quad);
+
+        const ValueFlags flag_in_;
+        const SafeSTLVector<Index> &elements_flat_id_;
+        RefElemHandler &ref_space_handler_;
+        PushFwd &push_fwd_;
+        SafeSTLArray<ValueFlags, dim+1> &flags_;
+    };
+
+
+    struct InitCacheDispatcher : boost::static_visitor<void>
+    {
+        InitCacheDispatcher(
+            const SafeSTLArray<ValueFlags, dim+1> &flags,
+            RefElemHandler &ref_space_handler,
+            PushFwd &push_fwd,
+            PhysicalSpaceElement<dim_,range_,rank_,codim_> &phys_elem)
+            :
+            flags_(flags),
+            ref_space_handler_(ref_space_handler),
+            push_fwd_(push_fwd),
+            phys_elem_(phys_elem)
+        {};
+
+        template<int sub_elem_dim>
+        void operator()(const Topology<sub_elem_dim> &topology);
+
+        const SafeSTLArray<ValueFlags, dim+1> &flags_;
+        RefElemHandler &ref_space_handler_;
+        PushFwd &push_fwd_;
+        PhysicalSpaceElement<dim_,range_,rank_,codim_> &phys_elem_;
+    };
+
+
+
+    struct FillCacheDispatcher : boost::static_visitor<void>
+    {
+        FillCacheDispatcher(
+            const int sub_elem_id,
+            RefElemHandler &ref_space_handler,
+            PushFwd &push_fwd,
+            PhysicalSpaceElement<dim_,range_,rank_,codim_> &phys_elem)
+            :
+            sub_elem_id_(sub_elem_id),
+            ref_space_handler_(ref_space_handler),
+            push_fwd_(push_fwd),
+            phys_elem_(phys_elem)
+        {};
+
+        template<int sub_elem_dim>
+        void operator()(const Topology<sub_elem_dim> &topology);
+
+        const int sub_elem_id_;
+        RefElemHandler &ref_space_handler_;
+        PushFwd &push_fwd_;
+        PhysicalSpaceElement<dim_,range_,rank_,codim_> &phys_elem_;
+    };
 
 };
 

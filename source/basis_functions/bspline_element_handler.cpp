@@ -430,7 +430,7 @@ operator()(const Topology<sub_elem_dim> &sub_elem)
     grid_handler_.template init_cache<sub_elem_dim>(elem_.as_cartesian_grid_element_accessor());
 
 
-    auto &cache = elem_.get_local_cache();
+    auto &cache = elem_.get_all_sub_elems_cache();
     if (cache == nullptr)
     {
         using VCache = typename BSplineElement<dim_,range_,rank_>::parent_t::Cache;
@@ -658,40 +658,41 @@ operator()(const Topology<sub_elem_dim> &sub_elem)
 
     const auto &g_cache = cacheutils::extract_sub_elements_data<sub_elem_dim>(splines1d_)[j_];
 
-    Assert(elem_.get_local_cache() != nullptr, ExcNullPtr());
-    auto &cache = elem_.get_local_cache()->template get_sub_elem_cache<sub_elem_dim>(j_);
+    auto &all_sub_elems_cache = elem_.get_all_sub_elems_cache();
+    Assert(all_sub_elems_cache != nullptr, ExcNullPtr());
+    auto &sub_elem_cache = all_sub_elems_cache->template get_sub_elem_cache<sub_elem_dim>(j_);
 
     const auto &elem_t_index = elem_.get_tensor_index();
 
     auto val_1d = g_cache.get_element_values(elem_t_index);
-    if (cache.template status_fill<_Value>())
+    if (sub_elem_cache.template status_fill<_Value>())
     {
-        auto &values = cache.template get_data<_Value>();
+        auto &values = sub_elem_cache.template get_data<_Value>();
         evaluate_bspline_values(val_1d, values);
-        cache.template set_status_filled<_Value>(true);
+        sub_elem_cache.template set_status_filled<_Value>(true);
     }
-    if (cache.template status_fill<_Gradient>())
+    if (sub_elem_cache.template status_fill<_Gradient>())
     {
-        auto &values = cache.template get_data<_Gradient>();
+        auto &values = sub_elem_cache.template get_data<_Gradient>();
         evaluate_bspline_derivatives<1>(val_1d, values);
-        cache.template set_status_filled<_Gradient>(true);
+        sub_elem_cache.template set_status_filled<_Gradient>(true);
     }
-    if (cache.template status_fill<_Hessian>())
+    if (sub_elem_cache.template status_fill<_Hessian>())
     {
-        auto &values = cache.template get_data<_Hessian>();
+        auto &values = sub_elem_cache.template get_data<_Hessian>();
         evaluate_bspline_derivatives<2>(val_1d, values);
-        cache.template set_status_filled<_Hessian>(true);
+        sub_elem_cache.template set_status_filled<_Hessian>(true);
     }
-    if (cache.template status_fill<_Divergence>())
+    if (sub_elem_cache.template status_fill<_Divergence>())
     {
         eval_divergences_from_gradients(
-            cache.template get_data<_Gradient>(),
-            cache.template get_data<_Divergence>());
-        cache.template set_status_filled<_Divergence>(true);
+            sub_elem_cache.template get_data<_Gradient>(),
+            sub_elem_cache.template get_data<_Divergence>());
+        sub_elem_cache.template set_status_filled<_Divergence>(true);
     }
 
 
-    cache.set_filled(true);
+    sub_elem_cache.set_filled(true);
 }
 
 

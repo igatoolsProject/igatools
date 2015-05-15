@@ -150,7 +150,7 @@ operator()(const Topology<sub_elem_dim> &sub_elem)
 {
     grid_handler_.template init_cache<sub_elem_dim>(elem_.as_cartesian_grid_element_accessor());
 
-    auto &cache = elem_.get_local_cache();
+    auto &cache = elem_.get_all_sub_elems_cache();
     if (cache == nullptr)
     {
         using VCache = typename NURBSElement<dim_,range_,rank_>::parent_t::Cache;
@@ -205,39 +205,38 @@ FillCacheDispatcher::
 operator()(const Topology<sub_elem_dim> &sub_elem)
 {
     Assert(nrb_elem_.all_sub_elems_cache_ != nullptr, ExcNullPtr());
-    auto &cache = nrb_elem_.all_sub_elems_cache_->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id_);
+    auto &sub_elem_cache = nrb_elem_.all_sub_elems_cache_->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id_);
 
     const auto &bsp_elem = nrb_elem_.bspline_elem_;
     const auto &wght_table = nrb_elem_.weight_elem_table_;
 
-//    auto &flags = cache.flags_handler_;
-    if (cache.template status_fill<_Value>())
+    if (sub_elem_cache.template status_fill<_Value>())
     {
-        auto &values = cache.template get_data<_Value>();
+        auto &values = sub_elem_cache.template get_data<_Value>();
         evaluate_nurbs_values_from_bspline(bsp_elem, wght_table, values);
-        cache.template set_status_filled<_Value>(true);
+        sub_elem_cache.template set_status_filled<_Value>(true);
     }
-    if (cache.template status_fill<_Gradient>())
+    if (sub_elem_cache.template status_fill<_Gradient>())
     {
-        auto &gradients = cache.template get_data<_Gradient>();
+        auto &gradients = sub_elem_cache.template get_data<_Gradient>();
         evaluate_nurbs_gradients_from_bspline(bsp_elem, wght_table, gradients);
-        cache.template set_status_filled<_Gradient>(true);
+        sub_elem_cache.template set_status_filled<_Gradient>(true);
     }
-    if (cache.template status_fill<_Hessian>())
+    if (sub_elem_cache.template status_fill<_Hessian>())
     {
-        auto &hessians = cache.template get_data<_Hessian>();
+        auto &hessians = sub_elem_cache.template get_data<_Hessian>();
         evaluate_nurbs_hessians_from_bspline(bsp_elem, wght_table, hessians);
-        cache.template set_status_filled<_Hessian>(true);
+        sub_elem_cache.template set_status_filled<_Hessian>(true);
     }
-    if (cache.template status_fill<_Divergence>())
+    if (sub_elem_cache.template status_fill<_Divergence>())
     {
         eval_divergences_from_gradients(
-            cache.template get_data<_Gradient>(),
-            cache.template get_data<_Divergence>());
-        cache.template set_status_filled<_Divergence>(true);
+            sub_elem_cache.template get_data<_Gradient>(),
+            sub_elem_cache.template get_data<_Divergence>());
+        sub_elem_cache.template set_status_filled<_Divergence>(true);
     }
 
-    cache.set_filled(true);
+    sub_elem_cache.set_filled(true);
 }
 
 

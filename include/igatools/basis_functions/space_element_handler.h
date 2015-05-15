@@ -141,7 +141,7 @@ private:
     using topology_variant = TopologyVariants<dim>;
 
 
-    protected:
+protected:
     /** @name Constructors */
     ///@{
     /**
@@ -196,12 +196,12 @@ public:
 
 
     virtual void init_cache(SpaceElement<dim,codim,range,rank> &elem,
-    		const topology_variant & topology) = 0;
+                            const topology_variant &topology) = 0;
 
     template <int sub_elem_dim>
     void init_cache(SpaceElement<dim,codim,range,rank> &elem)
     {
-    	this->init_cache(elem,Topology<sub_elem_dim>());
+        this->init_cache(elem,Topology<sub_elem_dim>());
     }
 
     /**
@@ -222,14 +222,14 @@ public:
 
 
     virtual void fill_cache(
-    		SpaceElement<dim,codim,range,rank> &elem,
-    		const topology_variant & topology,
-			const int sub_elem_id) = 0;
+        SpaceElement<dim,codim,range,rank> &elem,
+        const topology_variant &topology,
+        const int sub_elem_id) = 0;
 
     template<int sub_elem_dim>
     void fill_cache(SpaceElement<dim,codim,range,rank> &elem, const int sub_elem_id)
     {
-    	this->fill_cache(elem,Topology<sub_elem_dim>(),sub_elem_id);
+        this->fill_cache(elem,Topology<sub_elem_dim>(),sub_elem_id);
     }
 
     void fill_element_cache(SpaceElement<dim,codim,range,rank> &elem)
@@ -248,13 +248,6 @@ public:
         Assert(false,ExcNotImplemented());
     }
 
-    template <int sub_elem_dim = dim>
-    Size get_num_points() const
-    {
-        Assert(false,ExcNotImplemented());
-//        return grid_handler_.template get_num_points<sub_elem_dim>();
-        return 0;
-    }
 
     std::shared_ptr<const Space<dim,codim,range,rank>> get_space() const;
 
