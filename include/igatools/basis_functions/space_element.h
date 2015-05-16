@@ -256,7 +256,8 @@ public:
         const std::string &dofs_property)
     {
         auto elem_handler = this->space_->get_elem_handler();
-        elem_handler->reset_one_element(ValueType::flag,points,this->get_flat_index());
+//        elem_handler->reset_one_element(ValueType::flag,points,this->get_flat_index());
+        elem_handler->reset_selected_elements(ValueType::flag,points,SafeSTLVector<int>(1,this->get_flat_index()));
         elem_handler->template init_cache<dim_>(*this);
         elem_handler->template fill_cache<dim_>(*this,0);
 
