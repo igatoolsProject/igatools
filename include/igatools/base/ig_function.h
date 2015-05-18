@@ -50,6 +50,10 @@ class BSplineSpace;
 template <int,int,int>
 class NURBSSpace;
 
+template <int,int,int,int,class>
+class PhysicaSSpace;
+
+
 template <int,int,int,int>
 class SpaceElementHandler;
 
@@ -60,6 +64,9 @@ template <int,int,int>
 class NURBSElementHandler;
 
 template <int,int,int,int>
+class PhysSpaceElementHandler;
+
+template <int,int,int,int>
 class SpaceElement;
 
 template <int,int,int>
@@ -67,6 +74,9 @@ class BSplineElement;
 
 template <int,int,int>
 class NURBSElement;
+
+template <int,int,int,int>
+class PhysicalSpaceElement;
 
 
 /**
@@ -334,32 +344,7 @@ private:
 
     template<class Archive>
     void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        ar &boost::serialization::make_nvp("IgFunction_base_t",
-                                           boost::serialization::base_object<base_t>(*this));
-
-        ar.template register_type<BSplineSpace<dim,range,rank>>();
-        ar.template register_type<NURBSSpace<dim,range,rank>>();
-        auto non_nonst_space = std::const_pointer_cast<Space<dim,codim,range,rank>>(space_);
-        ar &boost::serialization::make_nvp("space_",non_nonst_space);
-        space_ = non_nonst_space;
-        Assert(space_ != nullptr,ExcNullPtr());
-
-        ar &boost::serialization::make_nvp("coeff_",coeff_);
-
-        ar &boost::serialization::make_nvp("property_",const_cast<std::string &>(property_));
-
-        ar.template register_type<BSplineElement<dim,range,rank>>();
-        ar.template register_type<NURBSElement<dim,range,rank>>();
-        ar &boost::serialization::make_nvp("space_elem_",space_elem_);
-
-
-        ar.template register_type<BSplineElementHandler<dim,range,rank>>();
-        ar.template register_type<NURBSElementHandler<dim,range,rank>>();
-        ar &boost::serialization::make_nvp("space_elem_handler_",space_elem_handler_);
-        Assert(space_elem_handler_ != nullptr,ExcNullPtr());
-    }
+    serialize(Archive &ar, const unsigned int version);
     ///@}
 #endif // SERIALIZATION
 };

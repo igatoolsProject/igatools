@@ -171,6 +171,14 @@ move_to(const Index flat_index)
 }
 
 
+template<int dim_,int range_,int rank_,int codim_>
+Size
+PhysicalSpaceElement<dim_,range_,rank_,codim_>::
+get_max_num_basis() const
+{
+    return ref_space_element_->get_max_num_basis();
+}
+
 
 template<int dim_,int range_,int rank_,int codim_>
 auto

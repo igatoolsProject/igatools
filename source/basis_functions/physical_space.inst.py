@@ -90,17 +90,17 @@ for space in inst.PhysSpaces:
 
 
 #---------------------------------------------------
-# f.write('IGA_NAMESPACE_CLOSE\n')
-# 
-# f.write('#ifdef SERIALIZATION\n')
-# id = 0 
-# for space in unique(spaces):
-#     space_alias = 'PhysicalSpaceAlias%d' %(id)
-#     f.write('using %s = iga::%s; \n' % (space_alias, space.replace('Transformation','iga::Transformation')))
-#     f.write('BOOST_CLASS_EXPORT(%s) \n' %space_alias)
-#     id += 1 
-# f.write('#endif // SERIALIZATION\n')
-#     
-# f.write('IGA_NAMESPACE_OPEN\n')
+f.write('IGA_NAMESPACE_CLOSE\n')
+ 
+f.write('#ifdef SERIALIZATION\n')
+id = 0 
+for space in unique(spaces):
+    space_alias = 'PhysicalSpaceAlias%d' %(id)
+    f.write('using %s = iga::%s; \n' % (space_alias, space.replace('Transformation','iga::Transformation')))
+    f.write('BOOST_CLASS_EXPORT(%s) \n' %space_alias)
+    id += 1 
+f.write('#endif // SERIALIZATION\n')
+     
+f.write('IGA_NAMESPACE_OPEN\n')
 #---------------------------------------------------
 

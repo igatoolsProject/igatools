@@ -92,19 +92,6 @@ public:
      */
     ///@{
 
-    /**
-     * Resets all the internal data in order to use the
-     * quadrature scheme for the single element of the space with ID specified by
-     * the input parameter <tt>elem_flat_id</tt>.
-     */
-    void reset_one_element(
-        const ValueFlags &flag,
-        const eval_pts_variant &eval_points,
-        const int elem_flat_id);
-
-    ///@}
-
-
 
     virtual void init_cache(SpaceElement<dim,0,range,rank> &space_elem,
                             const topology_variant &topology) override final

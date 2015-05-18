@@ -40,25 +40,22 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
     OUTSTART
 
     auto grid = CartesianGrid<dim>::create();
-    using RefSpace = ReferenceSpace<dim, range, rank>;
-    using RefElementHandler = typename RefSpace::ElementHandler;
     using Space = BSplineSpace<dim, range, rank>;
-    using ElementHandler = typename Space::ElementHandler;
     auto space = Space::create(deg, grid);
 
 
     QGauss<k> quad(n_qp);
     auto flag = ValueFlags::value|ValueFlags::gradient
                 |ValueFlags::hessian;
-    std::shared_ptr<RefElementHandler> cache = ElementHandler::create(space);
-    cache->reset(flag, quad);
+    auto elem_handler = space->get_elem_handler();
+    elem_handler->reset(flag, quad);
 
     auto elem = space->begin();
-    cache->init_element_cache(elem);
+    elem_handler->init_element_cache(elem);
 
     for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
     {
-        cache->fill_element_cache(elem);
+        elem_handler->fill_element_cache(elem);
 
         out << "Sub Element: " << s_id << endl;
         auto values    = elem->template get_basis<_Value,k>(s_id,DofProperties::active);
@@ -86,10 +83,7 @@ void bspline_iterator_active_dofs(const int deg = 2,const int n_qp = 3)
     OUTSTART
 
     auto grid = CartesianGrid<dim>::create();
-    using RefSpace = ReferenceSpace<dim, range, rank>;
-    using RefElementHandler = typename RefSpace::ElementHandler;
     using Space = BSplineSpace<dim, range, rank>;
-    using ElementHandler = typename Space::ElementHandler;
     auto space = Space::create(deg, grid);
 
     auto dof_distribution = space->get_dof_distribution();
@@ -103,15 +97,15 @@ void bspline_iterator_active_dofs(const int deg = 2,const int n_qp = 3)
     QGauss<k> quad(n_qp);
     auto flag = ValueFlags::value|ValueFlags::gradient
                 |ValueFlags::hessian;
-    std::shared_ptr<RefElementHandler> cache = ElementHandler::create(space);
-    cache->reset(flag, quad);
+    auto elem_handler = space->get_elem_handler();
+    elem_handler->reset(flag, quad);
 
     auto elem = space->begin();
-    cache->init_element_cache(elem);
+    elem_handler->init_element_cache(elem);
 
     for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
     {
-        cache->fill_element_cache(elem);
+        elem_handler->fill_element_cache(elem);
 
         out << "Sub Element: " << s_id << endl;
         auto values    = elem->template get_basis<_Value,k>(s_id,DofProperties::active);

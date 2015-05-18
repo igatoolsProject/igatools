@@ -177,6 +177,14 @@ get_w_measures(const int j) const
     return w_measures;
 }
 
+template<int dim_,int codim_,int range_,int rank_>
+Size
+SpaceElement<dim_,codim_,range_,rank_>::
+get_max_num_basis() const
+{
+    Assert(false,ExcMessage("This function should be called through a derived class."));
+    return 0;
+}
 
 
 #ifdef SERIALIZATION

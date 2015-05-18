@@ -79,7 +79,7 @@ get_grid_handler() const
 
 
 
-
+#if 0
 template<int dim, int range , int rank>
 void
 ReferenceElementHandler<dim, range, rank>::
@@ -90,7 +90,7 @@ reset_one_element(
 {
     this->reset_selected_elements(flag,eval_points,SafeSTLVector<int>(1,elem_flat_id));
 }
-
+#endif
 
 #ifdef SERIALIZATION
 template<int dim, int range , int rank>

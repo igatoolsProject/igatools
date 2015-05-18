@@ -104,6 +104,8 @@ void
 Space<dim_,codim_,range_,rank_>::
 serialize(Archive &ar, const unsigned int version)
 {
+//  ar.template register_type<BSplineSpace<dim_,range_,rank_>>();
+//  ar.template register_type<NURBSSpace<dim_,range_,rank_>>();
     ar &boost::serialization::make_nvp("Space_base_t",
                                        boost::serialization::base_object<base_t>(*this));
 }

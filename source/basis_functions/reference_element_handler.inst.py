@@ -30,37 +30,39 @@ data = Instantiation(include_files)
 
 sub_dim_members = \
 []
-#'void elhandler::fill_cache<k>(ElementAccessor &elem, const int j);']
-#,
-#'void elhandler::init_cache<k>(ElementAccessor &elem);']
-# ,
-#'void elhandler::reset<k>(const ValueFlags flag, const Quadrature<k> &quad);']
 
+       
+handlers = ['ReferenceElementHandler<0,0,1>']
+handler_templated_funcs = []
 
-handlers = []
 
 for x in inst.sub_ref_sp_dims:
-    space = 'ReferenceSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    acc = 'ReferenceElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    for it in inst.iterators:
-        iterator = it.replace('Accessor','%s' % (acc) )
-    elemhandler = 'ReferenceElementHandler<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    handlers.append(elemhandler)
-    f.write('template class %s; \n'  %elemhandler)
+    handler = 'ReferenceElementHandler<%d,%d,%d>' %(x.dim, x.range, x.rank)
+    handlers.append(handler)
+    for fun in sub_dim_members:
+        k = x.dim
+        s = fun.replace('elhandler', handler).replace('k', '%d' % (k));
+        handler_templated_funcs.append(s)
 
 
 for x in inst.ref_sp_dims:
-    space = 'ReferenceSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    acc = 'ReferenceElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    for it in inst.iterators:
-        iterator = it.replace('Accessor','%s' % (acc) )
-    elemhandler = 'ReferenceElementHandler<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    handlers.append(elemhandler)
-    f.write('template class %s; \n'  %elemhandler)
-#    for fun in sub_dim_members:
-#        for k in inst.sub_dims(x.dim):
-#            s = fun.replace('elhandler', elemhandler).replace('k', '%d' % (k));
-#            f.write('template ' + s + '\n')
+    handler = 'ReferenceElementHandler<%d,%d,%d>' %(x.dim, x.range, x.rank)
+    handlers.append(handler)
+    for fun in sub_dim_members:
+        for k in inst.sub_dims(x.dim):
+            s = fun.replace('elhandler', handler).replace('k', '%d' % (k));
+            handler_templated_funcs.append(s)
+        
+                
+    
+for handler in unique(handlers):
+    f.write('template class %s; \n' %handler)
+
+for func in unique(handler_templated_funcs):        
+    f.write('template %s; \n' %func)        
+   
+
+
 
 #---------------------------------------------------
 f.write('IGA_NAMESPACE_CLOSE\n')

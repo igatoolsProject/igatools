@@ -44,7 +44,7 @@ using namespace EpetraTools;
 
 
 template <int dim,int codim>
-void serialize_deserialize(std::shared_ptr<ReferenceSpace<dim, dim+codim>>> F)
+void serialize_deserialize(std::shared_ptr< MapFunction<dim, dim+codim> > F)
 {
     out.begin_item("Original IgFunction:");
     F->print_info(out);
@@ -163,7 +163,7 @@ void bspline_map(const int deg = 1)
     auto F = Function::create(space, c_p);
 
 
-//    serialize_deserialize<dim,codim>(F);
+    serialize_deserialize<dim,codim>(F);
 
 
     auto map = Mapping::create(F);

@@ -60,7 +60,7 @@ void serialize_deserialize(std::shared_ptr<Space> space)
     std::string filename = "phys_space" + template_args + ".xml";
     std::string tag_name = "PhysicalSpace" + template_args;
     {
-        // serialize the BSplineSpace object to an xml file
+        // serialize the PhysicalSpace object to an xml file
         std::ofstream xml_ostream(filename);
         OArchive xml_out(xml_ostream);
 
@@ -70,7 +70,7 @@ void serialize_deserialize(std::shared_ptr<Space> space)
 
     space.reset();
     {
-        // de-serialize the BSplineSpace object from an xml file
+        // de-serialize the PhysicalSpace object from an xml file
         std::ifstream xml_istream(filename);
         IArchive xml_in(xml_istream);
 
@@ -91,8 +91,8 @@ template<int dim, int codim=0>
 auto
 create_function(shared_ptr<BSplineSpace<dim, dim + codim>> space)
 {
-    using Space = ReferenceSpace<dim, dim + codim>;
-    using Function = IgFunction<Space>;
+//    using Space = ReferenceSpace<dim, dim + codim>;
+    using Function = IgFunction<dim,0,dim+codim,1>;
 
     Epetra_SerialComm comm;
     auto map = create_map(space, "active", comm);
@@ -195,15 +195,15 @@ void elem_values(const int n_knots = 2, const int deg=1)
                 ValueFlags::divergence |
                 ValueFlags::w_measure;
 
-    ElementHandler sp_values(space);
-    sp_values.template reset<k> (flag, quad);
+    auto elem_handler = space->get_elem_handler();
+    elem_handler->reset(flag, quad);
 
     auto elem = space->begin();
     auto end = space->end();
-    sp_values.init_element_cache(elem);
+    elem_handler->init_element_cache(elem);
     for (; elem != end; ++elem)
     {
-        sp_values.fill_element_cache(elem);
+        elem_handler->fill_element_cache(elem);
         out.begin_item("Element " + std::to_string(elem->get_flat_index()));
         elem->print_info(out);
 

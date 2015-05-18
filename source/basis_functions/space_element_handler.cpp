@@ -51,9 +51,9 @@ reset(const ValueFlags &flag, const eval_pts_variant &eval_pts)
 }
 
 template<int dim,int codim,int range,int rank>
-std::shared_ptr<const Space<dim,codim,range,rank>>
-                                                SpaceElementHandler<dim,codim,range,rank>::
-                                                get_space() const
+std::shared_ptr<const Space<dim,codim,range,rank> >
+SpaceElementHandler<dim,codim,range,rank>::
+get_space() const
 {
     return space_;
 }

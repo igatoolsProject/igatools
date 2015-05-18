@@ -158,7 +158,7 @@ public:
      *  Number of non zero basis functions with the given @p dofs_property,
      *  over the current element.
      */
-    Size get_num_basis(const std::string &dofs_property = DofProperties::active) const;
+    Size get_num_basis(const std::string &dofs_property) const;
     ///@}
 
 

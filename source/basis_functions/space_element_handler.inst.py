@@ -29,41 +29,31 @@ sub_dim_members = \
 []
 
 
-elements = []
+handlers = ['SpaceElementHandler<0,0,0,1>']
 
 #--------------------------------------------------------------------------------------
 # SpaceElement used by ReferenceSpaceElement 
-for x in inst.sub_ref_sp_dims:
-    elem = 'SpaceElementHandler<%d,0,%d,%d>' %(x.dim, x.range, x.rank)
-    elements.append(elem)
+for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
+    handler = 'SpaceElementHandler<%d,0,%d,%d>' %(x.dim, x.range, x.rank)
+    handlers.append(handler)
 
-
-
-for x in inst.ref_sp_dims:
-    elem = 'SpaceElementHandler<%d,0,%d,%d>' %(x.dim, x.range, x.rank)
-    elements.append(elem)
 #--------------------------------------------------------------------------------------
 
 
 #--------------------------------------------------------------------------------------
 # SpaceElement used by PhysicalSpaceElement 
-for space in inst.SubPhysSpaces:
+for space in inst.SubPhysSpaces + inst.PhysSpaces:
     x = space.spec
-    elem = 'SpaceElementHandler<%d,%d,%d,%d>' %(x.dim,x.codim,x.range, x.rank)
-    elements.append(elem)
+    handler = 'SpaceElementHandler<%d,%d,%d,%d>' %(x.dim,x.codim,x.range, x.rank)
+    handlers.append(handler)
 
-
-for space in inst.PhysSpaces:
-    x = space.spec
-    elem = 'SpaceElementHandler<%d,%d,%d,%d>' %(x.dim,x.codim,x.range, x.rank)
-    elements.append(elem)
 #--------------------------------------------------------------------------------------
 
 
 
 #---------------------------------------------------
-for elem in unique(elements):
-    f.write('template class %s ;\n' %elem)
+for handler in unique(handlers):
+    f.write('template class %s ;\n' %handler)
 
 
 
@@ -72,7 +62,7 @@ for elem in unique(elements):
 # 
 # f.write('#ifdef SERIALIZATION\n')
 # id = 0 
-# for elem in unique(elements):
+# for elem in unique(handlers):
 #     alias = 'SpaceElementHandlerAlias%d' %(id)
 #     f.write('using %s = iga::%s; \n' % (alias, elem))
 #     f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)

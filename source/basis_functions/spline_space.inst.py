@@ -29,11 +29,11 @@ sub_dim_members = \
   'typename class::template SubSpace<k>::DegreeTable class::get_sub_space_degree<k>(const Index s_id) const;',
   'typename class::template SubSpace<k>::PeriodicityTable class::get_sub_space_periodicity<k>(const Index s_id) const;']         
 
-spaces = []
+spaces = ['SplineSpace<0,0,1>']
+templated_funcs = []
 
 for x in inst.sub_ref_sp_dims:
-    space = 'SplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    f.write('template class %s ;\n' %space)
+    space = 'SplineSpace<%d,%d,%d>' %(x.dim, x.range, x.rank)
     spaces.append(space)
     for fun in sub_dim_members:
         k = x.dim
@@ -42,14 +42,19 @@ for x in inst.sub_ref_sp_dims:
     
 
 for x in inst.ref_sp_dims:
-    space = 'SplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    f.write('template class %s ;\n' %space)
+    space = 'SplineSpace<%d,%d,%d>' %(x.dim, x.range, x.rank)
     spaces.append(space)
     for fun in sub_dim_members:
         for k in inst.sub_dims(x.dim):
             s = fun.replace('class', space).replace('k', '%d' % (k));
-            f.write('template ' + s + '\n')
+            templated_funcs.append(s)
+
             
+for space in unique(spaces):
+    f.write('template class %s ;\n' %space)
+
+for func in unique(templated_funcs):
+    f.write('template %s ;\n' %func)
 
 
 #---------------------------------------------------

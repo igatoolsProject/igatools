@@ -24,8 +24,11 @@ from init_instantiation_data import *
 data = Instantiation()
 (f, inst) = (data.file_output, data.inst)
 
-classes = ['BernsteinExtraction<%d, %d, %d>' %(x.dim, x.range, x.rank)  
+classes = ['BernsteinExtraction<%d,%d,%d>' %(x.dim, x.range, x.rank)  
           for x in inst.all_ref_sp_dims]
+
+classes.append('BernsteinExtraction<0,0,1>')
+
 for c in classes:
    f.write('template class %s ;\n' %c)
 

@@ -36,27 +36,55 @@ sub_dim_members = \
   'std::shared_ptr<typename GridType::template InterGridMap<k>> elem_map) const;']
  
 
-spaces = []
+# spaces = []
+# 
+# for x in inst.sub_ref_sp_dims:
+#     space = 'BSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
+#     f.write('template class %s ;\n' %space)
+#     spaces.append(space)
+#     for fun in sub_dim_members:
+#         k = x.dim
+#         s = fun.replace('class', space).replace('k', '%d' % (k));
+#         f.write('template ' + s + '\n')
+# 
+# 
+# for x in inst.ref_sp_dims:
+#     space = 'BSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
+#     f.write('template class %s ;\n' %space)
+#     spaces.append(space)
+#     for fun in sub_dim_members:
+#         for k in inst.sub_dims(x.dim):
+#             s = fun.replace('class', space).replace('k', '%d' % (k));
+#             f.write('template ' + s + '\n')
+
+
+spaces = ['BSplineSpace<0,0,1>']
+templated_funcs = []
 
 for x in inst.sub_ref_sp_dims:
-    space = 'BSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    f.write('template class %s ;\n' %space)
+    space = 'BSplineSpace<%d,%d,%d>' %(x.dim, x.range, x.rank)
     spaces.append(space)
     for fun in sub_dim_members:
         k = x.dim
         s = fun.replace('class', space).replace('k', '%d' % (k));
-        f.write('template ' + s + '\n')
+        templated_funcs.append(s)
 
 
 for x in inst.ref_sp_dims:
-    space = 'BSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    f.write('template class %s ;\n' %space)
+    space = 'BSplineSpace<%d,%d,%d>' %(x.dim, x.range, x.rank)
     spaces.append(space)
     for fun in sub_dim_members:
         for k in inst.sub_dims(x.dim):
             s = fun.replace('class', space).replace('k', '%d' % (k));
-            f.write('template ' + s + '\n')
+            templated_funcs.append(s)
+            
+            
+            
+for space in unique(spaces):
+    f.write('template class %s ;\n' %space)
 
+for func in unique(templated_funcs):
+    f.write('template %s ;\n' %func)
 
 
 #---------------------------------------------------

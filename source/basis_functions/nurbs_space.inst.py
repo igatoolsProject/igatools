@@ -50,21 +50,49 @@ sub_dim_members = \
   'std::shared_ptr<typename GridType::template InterGridMap<k>> elem_map) const;']
 
 
+spaces = ['NURBSSpace<0,0,1>']
+templated_funcs = []
+
 for x in inst.sub_ref_sp_dims:
     space = 'NURBSSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    f.write('template class %s ;\n' %space)
+    spaces.append(space)
     for fun in sub_dim_members:
         k = x.dim
         s = fun.replace('class', space).replace('k', '%d' % (k));
-        f.write('template ' + s + '\n')
+        templated_funcs.append(s)
 
 
 for x in inst.ref_sp_dims:
     space = 'NURBSSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    f.write('template class %s ;\n' %space)
+    spaces.append(space)
     for fun in sub_dim_members:
         for k in inst.sub_dims(x.dim):
             s = fun.replace('class', space).replace('k', '%d' % (k));
-            f.write('template ' + s + '\n')
+            templated_funcs.append(s)
             
+            
+            
+for space in unique(spaces):
+    f.write('template class %s ;\n' %space)
+
+for func in unique(templated_funcs):
+    f.write('template %s ;\n' %func)
+            
+            
+#---------------------------------------------------
+f.write('IGA_NAMESPACE_CLOSE\n')
+
+f.write('#ifdef SERIALIZATION\n')
+id = 0 
+for space in unique(spaces):
+    alias = 'NURBSSpaceAlias%d' %(id)
+    f.write('using %s = iga::%s; \n' % (alias, space))
+    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
+    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
+    f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
+    id += 1 
+f.write('#endif // SERIALIZATION\n')
+    
+f.write('IGA_NAMESPACE_OPEN\n')
+#---------------------------------------------------
             

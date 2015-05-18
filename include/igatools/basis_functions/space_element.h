@@ -160,13 +160,12 @@ public:
      * the
      * copy constructor of the derived class.
      *
-     * @note This function should be not called directly, but it should be
-     * called its
-     * specialization on a derived class. It would be better to define this
-     * function
+     * @warning This function should be not called directly
+     * (if called it raises an assertion in Debug mode),
+     * instead it should be called its specialization on a derived class.
+     * It would be better to define this function
      * <em>pure virtual</em> but this will not allow to dereference an iterator
-     * containing
-     * a pointer to an object of kind SpaceElement.
+     * containing a pointer to an object of kind SpaceElement.
      */
     virtual std::shared_ptr<self_t> clone() const;
 
@@ -234,6 +233,21 @@ public:
             this->template get_basis<ValueType, sub_elem_dim>(sub_elem_id,dofs_property);
         return basis_values.evaluate_linear_combination(loc_coefs) ;
     }
+
+    /**
+     *  Maximum number of non zero basis functions, over the current element.
+     *  @note The "true" number of basis functions may differ from this value because
+     *  some basis functions may be defined to be "inactive".
+     *
+     * @warning This function should be not called directly
+     * (if called it raises an assertion in Debug mode),
+     * instead it should be called its specialization on a derived class.
+     * It would be better to define this function
+     * <em>pure virtual</em> but this will not allow to dereference an iterator
+     * containing a pointer to an object of kind SpaceElement.
+     *
+     */
+    virtual Size get_max_num_basis() const;
 
 
     /**
@@ -330,7 +344,6 @@ private:
 
     std::shared_ptr<const Space<dim_,codim_,range_,rank_>> space_;
 
-
 #ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
@@ -344,7 +357,6 @@ private:
     serialize(Archive &ar, const unsigned int version);
     ///@}
 #endif // SERIALIZATION
-
 };
 
 

@@ -54,7 +54,8 @@ f.write('IGA_NAMESPACE_OPEN\n')
 
 
 
-spaces = []
+spaces = ['Space<0,0,0,1>']
+
 for x in inst.all_phy_sp_dims:
     space = 'Space<%d,%d,%d,%d>' %(x.dim,x.codim,x.range,x.rank)
     spaces.append(space)

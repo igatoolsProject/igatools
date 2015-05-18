@@ -51,7 +51,8 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 
-funcs = []
+funcs = ['IgFunction<0,0,0,1>']
+
 
 for x in inst.all_phy_sp_dims:
     func = 'IgFunction<%d,%d,%d,%d>' %(x.dim,x.codim,x.range,x.rank)
@@ -66,20 +67,17 @@ for func in unique(funcs):
 
  
 #---------------------------------------------------
-# f.write('IGA_NAMESPACE_CLOSE\n')
-#   
-# f.write('#ifdef SERIALIZATION\n')
-# f.write('using iga::Transformation;\n')
-# id = 0 
-# #for sp in  inst.AllRefSpaces + inst.AllPhysSpaces:
-# for sp in  inst.AllRefSpaces:
-#     func = 'iga::IgFunction<iga::%s>' %(sp.name)
-#     alias = 'IgFunctionAlias%d' %(id)
-#     f.write('using %s = %s; \n' % (alias, func))
-#     f.write('BOOST_CLASS_EXPORT(%s) \n' %alias)
-#     id += 1 
-# f.write('#endif // SERIALIZATION\n')
-#       
-# f.write('IGA_NAMESPACE_OPEN\n')
+f.write('IGA_NAMESPACE_CLOSE\n')
+   
+f.write('#ifdef SERIALIZATION\n')
+id = 0 
+for func in unique(funcs):
+    alias = 'IgFunctionAlias%d' %(id)
+    f.write('using %s = iga::%s; \n' % (alias, func))
+    f.write('BOOST_CLASS_EXPORT(%s) \n' %alias)
+    id += 1 
+f.write('#endif // SERIALIZATION\n')
+       
+f.write('IGA_NAMESPACE_OPEN\n')
 #---------------------------------------------------
   

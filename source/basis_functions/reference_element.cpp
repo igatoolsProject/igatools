@@ -119,6 +119,13 @@ print_info(LogStream &out) const
 
 
 
+template <int dim, int range, int rank>
+Size
+ReferenceElement<dim, range, rank>::
+get_max_num_basis() const
+{
+    return n_basis_direction_.total_dimension();
+}
 
 
 template <int dim, int range, int rank>

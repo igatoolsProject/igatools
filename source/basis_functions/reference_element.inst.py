@@ -28,17 +28,23 @@ include_files = ['geometry/cartesian_grid.h',
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-accessors = [('ReferenceElement<%d, %d, %d>' %(x.dim, x.range, x.rank), x.dim)
-             for x in inst.all_ref_sp_dims]
 
-elements = []
 
-for acc in accessors:
-    elements.append(acc[0])
-    f.write('template class %s ;\n' %acc[0])
-#    for it in inst.iterators:
-#        iterator = it.replace('Accessor','%s' % (acc[0]) )
-#        f.write('template class %s; \n' %iterator)
+elements = ['ReferenceElement<0,0,1>']
+
+
+for x in inst.sub_ref_sp_dims:
+    elem = 'ReferenceElement<%d,%d,%d>' %(x.dim, x.range, x.rank)
+    elements.append(elem)
+
+
+for x in inst.ref_sp_dims:
+    elem = 'ReferenceElement<%d,%d,%d>' %(x.dim, x.range, x.rank)
+    elements.append(elem)
+
+
+for elem in unique(elements):
+    f.write('template class %s; \n' %elem)
 
 
 

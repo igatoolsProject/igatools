@@ -36,8 +36,6 @@ void serialize_deserialize(std::shared_ptr<NURBSSpace<dim,range,rank>> space_in)
     space->print_info(out);
     out.end_item();
 
-//    using RefSpace = ReferenceSpace<dim,range,rank>;
-    using BSpSpace = BSplineSpace<dim,range,rank>;
     using NRBSpace = NURBSSpace<dim,range,rank>;
 
     std::string template_string_info = "_dim" + std::to_string(dim) +
@@ -60,7 +58,6 @@ void serialize_deserialize(std::shared_ptr<NURBSSpace<dim,range,rank>> space_in)
         // de-serialize the NURBSSpace object from an xml file
         std::ifstream xml_istream(filename);
         IArchive xml_in(xml_istream);
-//        xml_in.template register_type<BSpSpace>();
         xml_in.template register_type<NRBSpace>();
 
         xml_in >> BOOST_SERIALIZATION_NVP(space);
@@ -124,7 +121,7 @@ void do_test()
     SafeSTLVector<Real> weights(n_basis[0].flat_size(),1.0);
 
     using ScalarBSplineSpace = BSplineSpace<dim>;
-    using WeightFunc = IgFunction<ReferenceSpace<dim>>;
+    using WeightFunc = IgFunction<dim,0,1,1>;
     auto scalar_space = ScalarBSplineSpace::create(degree,CartesianGrid<dim>::create(coord));
 
     Epetra_SerialComm comm;

@@ -72,7 +72,11 @@ private:
 
     template<class Archive>
     void
-    serialize(Archive &ar, const unsigned int version);
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("fill_",fill_);
+        ar &boost::serialization::make_nvp("filled_",filled_);
+    }
     ///@}
 #endif // SERIALIZATION
 };

@@ -24,15 +24,14 @@ data = Instantiation()
 f = data.file_output
 inst = data.inst
 
-dof_distributions = []
+dof_distributions = ['DofDistribution<0,0,1>']
 for x in inst.all_ref_sp_dims:
-    dof_distribution = 'DofDistribution<%d, %d, %d>' %(x.dim, x.range, x.rank)
+    dof_distribution = 'DofDistribution<%d,%d,%d>' %(x.dim, x.range, x.rank)
     dof_distributions.append(dof_distribution)
-    f.write('template class %s ;\n' %(dof_distribution))
     
 
-# # needed by igamapping
-# f.write('template class DofDistribution<0, 0, 1> ;\n')
+for dof_distribution in dof_distributions:
+    f.write('template class %s ;\n' %(dof_distribution))
 
 
 #---------------------------------------------------

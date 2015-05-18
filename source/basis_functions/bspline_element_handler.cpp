@@ -439,7 +439,7 @@ operator()(const Topology<sub_elem_dim> &sub_elem)
         cache = std::make_shared<Cache>();
     }
 
-    const auto n_basis = elem_.get_num_basis();//elem_->get_num_basis(DofProperties::active);
+    const auto n_basis = elem_.get_max_num_basis();//elem_->get_num_basis(DofProperties::active);
     const auto n_points = grid_handler_.template get_num_points<sub_elem_dim>();
     const auto flag = flags_[sub_elem_dim];
 
@@ -475,9 +475,9 @@ copy_to_inactive_components_values(const SafeSTLVector<Index> &inactive_comp,
                                    const SafeSTLArray<Index, n_components> &active_map,
                                    ValueTable<Value> &D_phi) const
 {
-    Assert(D_phi.get_num_functions() == elem_.get_num_basis(),
+    Assert(D_phi.get_num_functions() == elem_.get_max_num_basis(),
            ExcDimensionMismatch(D_phi.get_num_functions(),
-                                elem_.get_num_basis()));
+                                elem_.get_max_num_basis()));
 
     const auto comp_offset = elem_.get_basis_offset();
 
@@ -509,9 +509,9 @@ copy_to_inactive_components(const SafeSTLVector<Index> &inactive_comp,
                             const SafeSTLArray<Index, n_components> &active_map,
                             ValueTable<Derivative<order>> &D_phi) const
 {
-    Assert(D_phi.get_num_functions() == elem_.get_num_basis(),
+    Assert(D_phi.get_num_functions() == elem_.get_max_num_basis(),
            ExcDimensionMismatch(D_phi.get_num_functions(),
-                                elem_.get_num_basis()));
+                                elem_.get_max_num_basis()));
 
     const auto comp_offset = elem_.get_basis_offset();
 
@@ -548,9 +548,9 @@ evaluate_bspline_values(
     const ComponentContainer<TensorProductFunctionEvaluator<dim>> &elem_values,
     ValueTable<Value> &D_phi) const
 {
-    Assert(D_phi.get_num_functions() == elem_.get_num_basis(),
+    Assert(D_phi.get_num_functions() == elem_.get_max_num_basis(),
            ExcDimensionMismatch(D_phi.get_num_functions(),
-                                elem_.get_num_basis()));
+                                elem_.get_max_num_basis()));
 
     const auto comp_offset = elem_.get_basis_offset();
 
@@ -601,9 +601,9 @@ evaluate_bspline_derivatives(
     const Size n_points = D_phi.get_num_points();
 
 
-    Assert(D_phi.get_num_functions() == elem_.get_num_basis(),
+    Assert(D_phi.get_num_functions() == elem_.get_max_num_basis(),
            ExcDimensionMismatch(D_phi.get_num_functions(),
-                                elem_.get_num_basis()));
+                                elem_.get_max_num_basis()));
 
     const auto comp_offset = elem_.get_basis_offset();
 

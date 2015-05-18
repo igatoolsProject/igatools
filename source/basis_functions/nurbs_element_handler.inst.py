@@ -29,48 +29,44 @@ data = Instantiation(include_files)
 
 
 sub_dim_members = []
-#\
-#['void elhandler::fill_cache<k>(ElementAccessor &elem, const int j);',
-#'void elhandler::init_cache<k>(ElementAccessor &elem);']
-# ,
-#'void elhandler::reset<k>(const ValueFlags flag, const Quadrature<k> &quad);']
+
+        
+        
+        
+handlers = ['NURBSElementHandler<0,0,1>']
+elements = ['NURBSElement<0,0,1>']
+handler_templated_funcs = []
+
 
 for x in inst.sub_ref_sp_dims:
-#    space = 'NURBSSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
-#    space_elem = 'SpaceElement<%s,%d,0,%d,%d>' %(space,x.dim, x.range, x.rank)
-#    f.write('template class %s; \n' %space_elem)
-    elem = 'NURBSElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    f.write('template class %s; \n' %elem)
-#    acc = 'ReferenceElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
-#    for it in inst.iterators:
-#        iterator = it.replace('Accessor','%s' % (acc) )
-#        f.write('template class %s; \n' %iterator)
-#    f.write('template class CartesianGridIterator<%s>; \n' %acc)
-    elemhandler = 'NURBSElementHandler<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    f.write('template class %s; \n'  %elemhandler)
+    elem = 'NURBSElement<%d,%d,%d>' %(x.dim, x.range, x.rank)
+    elements.append(elem)
+    handler = 'NURBSElementHandler<%d,%d,%d>' %(x.dim, x.range, x.rank)
+    handlers.append(handler)
     for fun in sub_dim_members:
         k = x.dim
-        s = fun.replace('elhandler', elemhandler).replace('k', '%d' % (k));
-        f.write('template ' + s + '\n')
-
+        s = fun.replace('elhandler', handler).replace('k', '%d' % (k));
+        handler_templated_funcs.append(s)
 
 
 for x in inst.ref_sp_dims:
-#    space = 'NURBSSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
-#    space_elem = 'SpaceElement<%s,%d,0,%d,%d>' %(space,x.dim, x.range, x.rank)
-#    f.write('template class %s; \n' %space_elem)
-    elem = 'NURBSElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    f.write('template class %s; \n' %elem)
-#    acc = 'ReferenceElement<%d, %d, %d>' %(x.dim, x.range, x.rank)
-#    for it in inst.iterators:
-#        iterator = it.replace('Accessor','%s' % (acc) )
-#        f.write('template class %s; \n' %iterator)
-#    f.write('template class CartesianGridIterator<%s>; \n' %acc)
-    elemhandler = 'NURBSElementHandler<%d, %d, %d>' %(x.dim, x.range, x.rank)
-    f.write('template class %s; \n'  %elemhandler)
+    elem = 'NURBSElement<%d,%d,%d>' %(x.dim, x.range, x.rank)
+    elements.append(elem)
+    handler = 'NURBSElementHandler<%d,%d,%d>' %(x.dim, x.range, x.rank)
+    handlers.append(handler)
     for fun in sub_dim_members:
         for k in inst.sub_dims(x.dim):
-            s = fun.replace('elhandler', elemhandler).replace('k', '%d' % (k));
-            f.write('template ' + s + '\n')
+            s = fun.replace('elhandler', handler).replace('k', '%d' % (k));
+            handler_templated_funcs.append(s)
         
+        
+        
+for elem in unique(elements):
+    f.write('template class %s; \n' %elem)
+    
+for handler in unique(handlers):
+    f.write('template class %s; \n' %handler)
+
+for func in unique(handler_templated_funcs):        
+    f.write('template %s; \n' %func)        
    
