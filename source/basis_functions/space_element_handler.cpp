@@ -59,6 +59,95 @@ get_space() const
 }
 
 
+
+template<int dim,int codim,int range,int rank>
+template <int sub_elem_dim>
+void
+SpaceElementHandler<dim,codim,range,rank>::
+init_cache(SpaceElement<dim,codim,range,rank> &elem)
+{
+    this->init_cache(elem,Topology<sub_elem_dim>());
+}
+
+template<int dim,int codim,int range,int rank>
+void
+SpaceElementHandler<dim,codim,range,rank>::
+init_element_cache(ElementAccessor &elem)
+{
+    this->template init_cache<dim>(elem);
+}
+
+template<int dim,int codim,int range,int rank>
+void
+SpaceElementHandler<dim,codim,range,rank>::
+init_element_cache(ElementIterator &elem)
+{
+    this->template init_cache<dim>(*elem);
+}
+
+template<int dim,int codim,int range,int rank>
+void
+SpaceElementHandler<dim,codim,range,rank>::
+init_face_cache(ElementAccessor &elem)
+{
+    Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
+    this->template init_cache<(dim > 0)?dim-1:0>(elem);
+}
+
+template<int dim,int codim,int range,int rank>
+void
+SpaceElementHandler<dim,codim,range,rank>::
+init_face_cache(ElementIterator &elem)
+{
+    Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
+    this->template init_cache<(dim > 0)?dim-1:0>(*elem);
+}
+
+
+template<int dim,int codim,int range,int rank>
+template <int sub_elem_dim>
+void
+SpaceElementHandler<dim,codim,range,rank>::
+fill_cache(ElementAccessor &elem, const int sub_elem_id)
+{
+    this->fill_cache(elem,Topology<sub_elem_dim>(),sub_elem_id);
+}
+
+template<int dim,int codim,int range,int rank>
+void
+SpaceElementHandler<dim,codim,range,rank>::
+fill_element_cache(ElementAccessor &elem)
+{
+    this->template fill_cache<dim>(elem,0);
+}
+
+template<int dim,int codim,int range,int rank>
+void
+SpaceElementHandler<dim,codim,range,rank>::
+fill_element_cache(ElementIterator &elem)
+{
+    this->template fill_cache<dim>(*elem,0);
+}
+
+template<int dim,int codim,int range,int rank>
+void
+SpaceElementHandler<dim,codim,range,rank>::
+fill_face_cache(ElementAccessor &elem, const int face_id)
+{
+    Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
+    this->template fill_cache<(dim > 0)?dim-1:0>(elem,face_id);
+}
+
+template<int dim,int codim,int range,int rank>
+void
+SpaceElementHandler<dim,codim,range,rank>::
+fill_face_cache(ElementIterator &elem, const int face_id)
+{
+    Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
+    this->template fill_cache<(dim > 0)?dim-1:0>(*elem,face_id);
+}
+
+
 /*
 #ifdef SERIALIZATION
 template<int dim,int codim,int range,int rank>

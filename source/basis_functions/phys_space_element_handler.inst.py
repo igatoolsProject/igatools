@@ -36,42 +36,46 @@ data = Instantiation(include_files)
 
  
  
- 
- 
 sub_dim_members = \
 ['void elhandler::FillCacheDispatcher::operator()(const Topology<k> &);' ,
- 'void elhandler::InitCacheDispatcher::operator()(const Topology<k> &);',
- 'void elhandler::reset<k>(const ValueFlags flag, const Quadrature<k> &quad);',
- 'void elhandler::reset_selected_elements<k>(const ValueFlags &flag, const Quadrature<k> &quad, const SafeSTLVector<Index> &elements_flat_id);']
+ 'void elhandler::InitCacheDispatcher::operator()(const Topology<k> &);']
+
+elements = []
+handlers = []
+handler_templated_funcs = []
 
 for space in inst.SubPhysSpaces:
     x = space.spec
-    acc = 'PhysicalSpaceElement<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
-    f.write('template class %s; \n' %acc)
-#    for it in inst.iterators:
-#        iterator = it.replace('Accessor','%s' % (acc) )
-#        f.write('template class %s; \n' %iterator)
-    elemhandler = 'PhysSpaceElementHandler<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
-    f.write('template class %s; \n' %elemhandler)
+    elem = 'PhysicalSpaceElement<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
+    elements.append(elem)
+    handler = 'PhysSpaceElementHandler<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
+    handlers.append(handler)
     for fun in sub_dim_members:
         k = x.dim
-        s = fun.replace('elhandler', elemhandler).replace('k', '%d' % (k));
-        f.write('template ' + s + '\n')
+        s = fun.replace('elhandler', handler).replace('k', '%d' % (k));
+        handler_templated_funcs.append(s)
 
 
 for space in inst.PhysSpaces:
     x = space.spec
-    acc = 'PhysicalSpaceElement<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
-    f.write('template class %s; \n' %acc)
-#    for it in inst.iterators:
-#        iterator = it.replace('Accessor','%s' % (acc) )
-#        f.write('template class %s; \n' %iterator)
-    elemhandler = 'PhysSpaceElementHandler<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
-    f.write('template class %s; \n' %elemhandler)
+    elem = 'PhysicalSpaceElement<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
+    elements.append(elem)
+    handler = 'PhysSpaceElementHandler<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
+    handlers.append(handler)
     for fun in sub_dim_members:
         for k in inst.sub_dims(x.dim):
-            s = fun.replace('elhandler', elemhandler).replace('k', '%d' % (k));
-            f.write('template ' + s + '\n')
+            s = fun.replace('elhandler', handler).replace('k', '%d' % (k));
+            handler_templated_funcs.append(s)
 
+
+
+for elem in unique(elements):
+    f.write('template class %s; \n' %elem)
+
+for handler in unique(handlers):
+    f.write('template class %s; \n' %handler)
+
+for func in unique(handler_templated_funcs):        
+    f.write('template %s; \n' %func)
 
       

@@ -101,10 +101,7 @@ public:
                             const topology_variant &topology) = 0;
 
     template <int sub_elem_dim>
-    void init_cache(SpaceElement<dim,codim,range,rank> &elem)
-    {
-        this->init_cache(elem,Topology<sub_elem_dim>());
-    }
+    void init_cache(SpaceElement<dim,codim,range,rank> &elem);
 
     /**
      * Allocates the space in the cache of ElementAccessor <tt>element</tt>
@@ -112,27 +109,13 @@ public:
      * It also fills the invariant (not changing) members of
      * the cache.
      */
-    void init_element_cache(ElementAccessor &elem)
-    {
-        this->template init_cache<dim>(elem);
-    }
+    void init_element_cache(ElementAccessor &elem);
 
-    void init_element_cache(ElementIterator &elem)
-    {
-        this->template init_cache<dim>(*elem);
-    }
+    void init_element_cache(ElementIterator &elem);
 
-    void init_face_cache(ElementAccessor &elem)
-    {
-        Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
-        this->template init_cache<(dim > 0)?dim-1:0>(elem);
-    }
+    void init_face_cache(ElementAccessor &elem);
 
-    void init_face_cache(ElementIterator &elem)
-    {
-        Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
-        this->template init_cache<(dim > 0)?dim-1:0>(*elem);
-    }
+    void init_face_cache(ElementIterator &elem);
 
 
     virtual void fill_cache(
@@ -141,38 +124,18 @@ public:
         const int sub_elem_id) = 0;
 
     template<int sub_elem_dim>
-    void fill_cache(ElementAccessor &elem, const int sub_elem_id)
-    {
-        this->fill_cache(elem,Topology<sub_elem_dim>(),sub_elem_id);
-    }
+    void fill_cache(ElementAccessor &elem, const int sub_elem_id);
 
-    void fill_element_cache(ElementAccessor &elem)
-    {
-        this->template fill_cache<dim>(elem,0);
-    }
+    void fill_element_cache(ElementAccessor &elem);
 
-    void fill_element_cache(ElementIterator &elem)
-    {
-        this->template fill_cache<dim>(*elem,0);
-    }
+    void fill_element_cache(ElementIterator &elem);
 
-    void fill_face_cache(ElementAccessor &elem, const int face_id)
-    {
-        Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
-        this->template fill_cache<(dim > 0)?dim-1:0>(elem,face_id);
-    }
+    void fill_face_cache(ElementAccessor &elem, const int face_id);
 
-    void fill_face_cache(ElementIterator &elem, const int face_id)
-    {
-        Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
-        this->template fill_cache<(dim > 0)?dim-1:0>(*elem,face_id);
-    }
+    void fill_face_cache(ElementIterator &elem, const int face_id);
 
 
-    virtual void print_info(LogStream &out) const
-    {
-        Assert(false,ExcNotImplemented());
-    }
+    virtual void print_info(LogStream &out) const = 0;
 
 
     std::shared_ptr<const Space<dim,codim,range,rank>> get_space() const;
@@ -180,7 +143,7 @@ public:
 private:
     std::shared_ptr<const Space<dim,codim,range,rank>> space_;
 
-//#if 0
+
 #ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
@@ -200,7 +163,6 @@ private:
     }
     ///@}
 #endif // SERIALIZATION
-//#endif
 };
 
 IGA_NAMESPACE_CLOSE

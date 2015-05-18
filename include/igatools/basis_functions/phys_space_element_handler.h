@@ -37,7 +37,6 @@ class PhysicalSpace;
 template<int dim_,int range_,int rank_,int codim_>
 class PhysSpaceElementHandler
     :
-    //public ElementHandler<PhysicalSpace<dim_,range_,rank_,codim_>>,
     public SpaceElementHandler<dim_,codim_,range_,rank_>
 {
 
@@ -112,66 +111,26 @@ public:
     static std::shared_ptr<self_t> create(std::shared_ptr<const PhysSpace> space);
     ///@}
 
-    template<int k>
-    void reset(const ValueFlags flag, const Quadrature<k> &eval_pts);
-
-    virtual void reset_selected_elements(
-        const ValueFlags &flag,
-        const eval_pts_variant &eval_points,
-        const SafeSTLVector<int> &elements_flat_id) override final
-    {
-        auto reset_selected_elems_dispatcher =
-            ResetDispatcher(flag,elements_flat_id,*ref_space_handler_,push_fwd_,flags_);
-        boost::apply_visitor(reset_selected_elems_dispatcher,eval_points);
-    }
-
-    template<int k>
-    void reset_selected_elements(
-        const ValueFlags &flag,
-        const Quadrature<k> &eval_pts,
-        const SafeSTLVector<Index> &elements_flat_id);
-
 
     /**
      * Resets all the internal data in order to use the
-     * quadrature scheme for the single element of the space with ID specified by
-     * the input parameter <tt>elem_flat_id</tt>.
+     * quadrature scheme for the elements of the space with ID specified by
+     * the input parameter <tt>elements_flat_id</tt>.
      */
-    template<int k>
-    void reset_one_element(
+    virtual void reset_selected_elements(
         const ValueFlags &flag,
-        const Quadrature<k> &eval_pts,
-        const int elem_flat_id);
+        const eval_pts_variant &eval_points,
+        const SafeSTLVector<int> &elements_flat_id) override final;
 
 
+    virtual void init_cache(SpaceElement<dim_,codim_,range_,rank_> &sp_elem,
+                            const topology_variant &topology) override final;
 
 
-    void init_cache(SpaceElement<dim_,codim_,range_,rank_> &sp_elem,
-                    const topology_variant &topology) override final
-    {
-        using PhysElem = PhysicalSpaceElement<dim_,range_,rank_,codim_>;
-        PhysElem *as_phys_elem = dynamic_cast<PhysElem *>(&sp_elem);
-        Assert(as_phys_elem != nullptr,ExcNullPtr());
+    virtual void fill_cache(SpaceElement<dim_,codim_,range_,rank_> &sp_elem,
+                            const topology_variant &topology,
+                            const int sub_elem_id) override final;
 
-        auto init_cache_dispatcher =
-            InitCacheDispatcher(flags_,*ref_space_handler_,push_fwd_,*as_phys_elem);
-        boost::apply_visitor(init_cache_dispatcher,topology);
-    }
-
-
-
-    void fill_cache(SpaceElement<dim_,codim_,range_,rank_> &sp_elem,
-                    const topology_variant &topology,
-                    const int sub_elem_id) override final
-    {
-        using PhysElem = PhysicalSpaceElement<dim_,range_,rank_,codim_>;
-        PhysElem *as_phys_elem = dynamic_cast<PhysElem *>(&sp_elem);
-        Assert(as_phys_elem != nullptr,ExcNullPtr());
-
-        auto fill_cache_dispatcher =
-            FillCacheDispatcher(sub_elem_id,*ref_space_handler_,push_fwd_,*as_phys_elem);
-        boost::apply_visitor(fill_cache_dispatcher,topology);
-    }
 
     void print_info(LogStream &out) const override final;
 

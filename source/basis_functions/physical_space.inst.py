@@ -45,24 +45,6 @@ sub_dim_members = \
    'std::shared_ptr<InterGridMap<k>> elem_map) const;']
 
 
-# for x in inst.sub_ref_sp_dims:
-#     space = 'BSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
-#     f.write('template class %s ;\n' %space)
-#     for fun in sub_dim_members:
-#         k = x.dim
-#         s = fun.replace('class', space).replace('k', '%d' % (k));
-#         f.write('template ' + s + '\n')
-
-
-# for x in inst.ref_sp_dims:
-#     space = 'BSplineSpace<%d, %d, %d>' %(x.dim, x.range, x.rank)
-#     f.write('template class %s ;\n' %space)
-#     for fun in sub_dim_members:
-#         for k in inst.sub_dims(x.dim):
-#             s = fun.replace('class', space).replace('k', '%d' % (k));
-#             f.write('template ' + s + '\n')
-                        
-
 spaces = []
 
 

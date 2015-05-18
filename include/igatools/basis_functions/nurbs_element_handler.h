@@ -284,6 +284,8 @@ private:
 
 
 private:
+
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -293,16 +295,9 @@ private:
 
     template<class Archive>
     void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        ar &boost::serialization::make_nvp("NURBSElementHandler_base_t",
-                                           boost::serialization::base_object<base_t>(*this));
-
-        ar &boost::serialization::make_nvp("bspline_handler_",bspline_handler_);
-        ar &boost::serialization::make_nvp("flags_",flags_);
-    }
+    serialize(Archive &ar, const unsigned int version);
     ///@}
-
+#endif // SERIALIZATION
 };
 
 

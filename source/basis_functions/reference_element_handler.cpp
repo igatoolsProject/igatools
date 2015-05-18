@@ -77,6 +77,26 @@ get_grid_handler() const
 }
 
 
+template<int dim, int range , int rank>
+void
+ReferenceElementHandler<dim, range, rank>::
+init_cache(SpaceElement<dim,0,range,rank> &space_elem,
+           const topology_variant &topology)
+{
+    auto &ref_elem = dynamic_cast<ElementAccessor &>(space_elem);
+    this->init_ref_elem_cache(ref_elem,topology);
+}
+
+template<int dim, int range , int rank>
+void
+ReferenceElementHandler<dim, range, rank>::
+fill_cache(SpaceElement<dim,0,range,rank> &space_elem,
+           const topology_variant &topology,
+           const int sub_elem_id)
+{
+    auto &ref_elem = dynamic_cast<ElementAccessor &>(space_elem);
+    this->fill_ref_elem_cache(ref_elem,topology,sub_elem_id);
+}
 
 
 #if 0

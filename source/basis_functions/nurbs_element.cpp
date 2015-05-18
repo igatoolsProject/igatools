@@ -134,6 +134,34 @@ clone() const
     return elem;
 }
 
+
+
+
+
+#ifdef SERIALIZATION
+template <int dim, int range, int rank>
+template<class Archive>
+void
+NURBSElement<dim, range, rank>::
+serialize(Archive &ar, const unsigned int version)
+{
+    ar &boost::serialization::make_nvp("NURBSElement_base_t",
+                                       boost::serialization::base_object<ReferenceElement<dim,range,rank>>(*this));
+
+    ar &boost::serialization::make_nvp("bspline_elem_",bspline_elem_);
+
+    ar &boost::serialization::make_nvp("weight_elem_table_",weight_elem_table_);
+}
+///@}
+#endif // SERIALIZATION
+
+
+
+
+
+
+
+
 IGA_NAMESPACE_CLOSE
 
 #endif // #ifdef NURBS

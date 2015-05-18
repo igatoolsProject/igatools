@@ -94,22 +94,14 @@ public:
 
 
     virtual void init_cache(SpaceElement<dim,0,range,rank> &space_elem,
-                            const topology_variant &topology) override final
-    {
-        auto &ref_elem = dynamic_cast<ElementAccessor &>(space_elem);
-        this->init_ref_elem_cache(ref_elem,topology);
-    }
+                            const topology_variant &topology) override final;
 
     virtual void fill_cache(SpaceElement<dim,0,range,rank> &space_elem,
                             const topology_variant &topology,
-                            const int sub_elem_id) override final
-    {
-        auto &ref_elem = dynamic_cast<ElementAccessor &>(space_elem);
-        this->fill_ref_elem_cache(ref_elem,topology,sub_elem_id);
-    }
+                            const int sub_elem_id) override final;
 
 
-    virtual void print_info(LogStream &out) const = 0;
+//    virtual void print_info(LogStream &out) const = 0;
 
     template <int sub_elem_dim = dim>
     Size get_num_points() const

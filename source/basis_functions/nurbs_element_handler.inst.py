@@ -70,3 +70,32 @@ for handler in unique(handlers):
 for func in unique(handler_templated_funcs):        
     f.write('template %s; \n' %func)        
    
+
+
+#---------------------------------------------------
+f.write('IGA_NAMESPACE_CLOSE\n')
+ 
+f.write('#ifdef SERIALIZATION\n')
+
+id = 0 
+for elem in unique(elements):
+    alias = 'NURBSElementAlias%d' %(id)
+    f.write('using %s = iga::%s; \n' % (alias, elem))
+    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
+    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
+    f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
+    id += 1 
+    
+id = 0 
+for handler in unique(handlers):
+    alias = 'NURBSElementHandlerAlias%d' %(id)
+    f.write('using %s = iga::%s; \n' % (alias, handler))
+    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
+    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
+    f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
+    id += 1 
+    
+f.write('#endif // SERIALIZATION\n')
+     
+f.write('IGA_NAMESPACE_OPEN\n')
+#---------------------------------------------------

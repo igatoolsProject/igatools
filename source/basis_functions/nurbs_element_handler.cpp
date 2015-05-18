@@ -617,6 +617,23 @@ evaluate_nurbs_hessians_from_bspline(
 }
 
 
+#ifdef SERIALIZATION
+template<int dim_, int range_ , int rank_>
+template<class Archive>
+void
+NURBSElementHandler<dim_, range_, rank_>::
+serialize(Archive &ar, const unsigned int version)
+{
+    ar &boost::serialization::make_nvp("NURBSElementHandler_base_t",
+                                       boost::serialization::base_object<base_t>(*this));
+
+    ar &boost::serialization::make_nvp("bspline_handler_",bspline_handler_);
+    ar &boost::serialization::make_nvp("flags_",flags_);
+}
+///@}
+#endif // SERIALIZATION
+
+
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/basis_functions/nurbs_element_handler.inst>

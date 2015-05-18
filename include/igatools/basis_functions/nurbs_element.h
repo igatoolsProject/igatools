@@ -154,7 +154,7 @@ public:
 
     virtual std::shared_ptr<SpaceElement<dim,0,range,rank> > clone() const override final;
 
-
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -164,17 +164,9 @@ public:
 
     template<class Archive>
     void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        ar &boost::serialization::make_nvp("NURBSElement_base_t",
-                                           boost::serialization::base_object<ReferenceElement<dim,range,rank>>(*this));
-
-        ar &boost::serialization::make_nvp("bspline_elem_",bspline_elem_);
-
-        ar &boost::serialization::make_nvp("weight_elem_table_",weight_elem_table_);
-    }
+    serialize(Archive &ar, const unsigned int version);
     ///@}
-
+#endif // SERIALIZATION
 };
 
 IGA_NAMESPACE_CLOSE
