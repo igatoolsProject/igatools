@@ -116,11 +116,38 @@ public:
      * @name Functions for the cache's reset/init/fill mechanism.
      */
     ///@{
-    template<int k>
-    void reset(const ValueFlags flag, const Quadrature<k> &quad);
+    template<int sub_elem_dim>
+    void reset(const ValueFlags flag, const Quadrature<sub_elem_dim> &quad);
 
-    template <int k>
+    template <int sub_elem_dim>
     void init_cache(ElementAccessor &elem) const;
+
+
+    void init_element_cache(ElementAccessor &elem) const
+    {
+        this->template init_cache<dim>(elem);
+    }
+
+    void init_element_cache(ElementIterator &elem) const
+    {
+        this->template init_cache<dim>(*elem);
+    }
+
+
+    void init_face_cache(ElementAccessor &elem) const
+    {
+        Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
+        this->template init_cache<(dim > 0) ? dim-1 : 0>(elem);
+    }
+
+
+    void init_face_cache(ElementIterator &elem) const
+    {
+        Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
+        this->template init_cache<(dim > 0) ? dim-1 : 0>(*elem);
+    }
+
+
 
 #if 0
     void init_all_caches(ElementAccessor &elem);
@@ -131,22 +158,46 @@ public:
     }
 #endif
 
-    template <int k>
-    void fill_cache(ElementAccessor &elem, const int j) const;
-    ///@}
+    template <int sub_elem_dim>
+    void fill_cache(ElementAccessor &elem, const int sub_elem_id) const;
 
-
-    template <int k = dim>
-    const Quadrature<k> &get_quadrature() const
+    void fill_element_cache(ElementAccessor &elem) const
     {
-        return cacheutils::extract_sub_elements_data<k>(quad_all_sub_elems_);
+        this->template fill_cache<dim>(elem,0);
+    }
+
+    void fill_element_cache(ElementIterator &elem) const
+    {
+        this->template fill_cache<dim>(*elem,0);
+    }
+
+    void fill_face_cache(ElementAccessor &elem, const int sub_elem_id) const
+    {
+        Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
+        this->template fill_cache<(dim > 0) ? dim-1 : 0>(elem,sub_elem_id);
+    }
+
+    void fill_face_cache(ElementIterator &elem, const int sub_elem_id) const
+    {
+        Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
+        this->template fill_cache<(dim > 0) ? dim-1 : 0>(*elem,sub_elem_id);
     }
 
 
-    template <int k = dim>
+    ///@}
+
+
+    template <int sub_elem_dim = dim>
+    const Quadrature<sub_elem_dim> &get_quadrature() const
+    {
+        return cacheutils::extract_sub_elements_data<sub_elem_dim>(quad_all_sub_elems_);
+    }
+
+
+    template <int sub_elem_dim = dim>
     Size get_num_points() const
     {
-        return this->template get_quadrature<k>().get_num_points();
+        return this->template get_quadrature<sub_elem_dim>().get_num_points();
     }
 
 public:

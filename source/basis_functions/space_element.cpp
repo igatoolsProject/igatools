@@ -144,10 +144,15 @@ void
 SpaceElement<dim_,codim_,range_,rank_>::
 print_cache_info(LogStream &out) const
 {
+    out.begin_item("SpaceElementBase<" + std::to_string(dim_) + "> cache:");
     base_t::print_cache_info(out);
+    out.end_item();
 
-    Assert(all_sub_elems_cache_ != nullptr,ExcNullPtr());
-    all_sub_elems_cache_->print_info(out);
+//    Assert(all_sub_elems_cache_ != nullptr,ExcNullPtr());
+    if (all_sub_elems_cache_)
+        all_sub_elems_cache_->print_info(out);
+    else
+        out << "Cache not allocated." << std::endl;
 }
 
 

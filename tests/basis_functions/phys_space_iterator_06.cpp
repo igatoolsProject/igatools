@@ -59,9 +59,8 @@ void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
 {
     OUTSTART
     using BspSpace = BSplineSpace<dim, range, rank>;
-    using RefSpace = ReferenceSpace<dim, range,rank>;
+//    using RefSpace = ReferenceSpace<dim, range,rank>;
     using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
-    using ElementHandler = typename Space::ElementHandler;
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
 
@@ -75,12 +74,12 @@ void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
     auto flag = ValueFlags::value|ValueFlags::gradient|
                 ValueFlags::hessian | ValueFlags::point;
 
-    ElementHandler sp_values(space);
-    sp_values.template reset<k> (flag, quad);
+    auto elem_filler = space->get_elem_handler();
+    elem_filler->reset(flag, quad);
 
     auto elem = space->begin();
     auto end = space->end();
-    sp_values.init_face_cache(elem);
+    elem_filler->init_face_cache(elem);
     for (; elem != end; ++elem)
     {
         if (elem->is_boundary())
@@ -91,7 +90,7 @@ void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
                 if (elem->is_boundary(s_id))
                 {
                     out.begin_item("Face " + std::to_string(s_id));
-                    sp_values.fill_face_cache(elem,s_id);
+                    elem_filler->fill_face_cache(elem,s_id);
 
                     out.begin_item("Values: ");
                     elem->template get_basis<_Value, k>(s_id,DofProperties::active).print_info(out);

@@ -80,7 +80,9 @@ void
 SpaceElementBase<dim>::
 print_cache_info(LogStream &out) const
 {
+    out.begin_item("CartesianGridElement<" + std::to_string(dim) + "> cache:");
     base_t::print_cache_info(out);
+    out.end_item();
 }
 
 template <int dim>

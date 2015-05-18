@@ -70,8 +70,9 @@ public:
      */
     PhysSpaceElementHandler() = delete;
 
-    PhysSpaceElementHandler(std::shared_ptr<const PhysSpace> space);
+protected:
 
+    PhysSpaceElementHandler(std::shared_ptr<const PhysSpace> space);
     /**
      * Copy constructor. Not allowed to be used.
      */
@@ -82,6 +83,7 @@ public:
      */
     PhysSpaceElementHandler(self_t &&) = delete;
 
+public:
     /**
      * Destructor.
      */

@@ -39,7 +39,6 @@ void run_test(std::string &file_name)
     OUTSTART
 
     // Reading input file.
-    using RefSpace = ReferenceSpace<dim,dim,1>;
     auto map = dynamic_pointer_cast<IgFunction<dim,0,dim,1> >(get_mapping_from_file<dim,0>(file_name));
 //    auto map = get_mapping_from_file<dim,0>(file_name);
     out.begin_item("IgFunction infos:");
@@ -58,8 +57,7 @@ void run_test(std::string &file_name)
 
     //------------------------------------------------------
     out.begin_item("Loop using the BSplineElement");
-    using ElemHandler = typename RefSpace::ElementHandler;
-    auto sp_elem_handler = ElemHandler::create(ref_space);
+    auto sp_elem_handler = ref_space->get_elem_handler();
     sp_elem_handler->reset(ValueFlags::value,quad);
 
     auto sp_elem     = ref_space->begin();

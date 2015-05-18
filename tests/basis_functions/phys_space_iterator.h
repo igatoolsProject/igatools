@@ -122,20 +122,20 @@ void elem_values(shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::
                  const string &prop = DofProperties::active,
                  const bool no_boundary=true)
 {
-    using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
-    using ElementHandler = typename Space::ElementHandler;
+//    using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
+//    using ElementHandler = typename Space::ElementHandler;
 
     auto quad = QGauss<k>(n_qp);
     auto flag = ValueFlags::value|ValueFlags::gradient |
                 ValueFlags::hessian | ValueFlags::point |
                 ValueFlags::w_measure;
 
-    ElementHandler sp_values(space);
-    sp_values.template reset<k> (flag, quad);
+    auto elem_filler = space->get_elem_handler();
+    elem_filler->reset(flag, quad);
 
     auto elem = space->begin();
     auto end  = space->end();
-    sp_values.template init_cache<k>(*elem);
+    elem_filler->template init_cache<k>(*elem);
     for (; elem != end; ++elem)
     {
         if ((no_boundary) || (elem->is_boundary()))
@@ -146,7 +146,7 @@ void elem_values(shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::
                 if ((no_boundary) || (elem->is_boundary(s_id)))
                 {
                     out.begin_item("Sub element id:  " + std::to_string(s_id));
-                    sp_values.template fill_cache<k>(*elem, s_id);
+                    elem_filler->template fill_cache<k>(*elem, s_id);
 
                     out.begin_item("Values: ");
                     elem->template get_basis<_Value, k>(s_id,prop).print_info(out);

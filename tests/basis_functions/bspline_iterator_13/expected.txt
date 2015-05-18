@@ -20,48 +20,52 @@ Number of element basis:
    [ 2 ]
    Total Dimension: 2
 
-Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
-   Cache for sub-element(s) with dimension: 1  (memory consumption : 84 bytes.
-      Sub-element id: 0
-         Memory consumption: 84 bytes
-         
-         Point: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 1    filled = 1
-            Data:
-               ValueVector (num_points=2) :
-               [ [ 0.211325 ]  [ 0.788675 ]  ]
+SpaceElementBase<1> cache:
+   CartesianGridElement<1> cache:
+      Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
+         Cache for sub-element(s) with dimension: 1  (memory consumption : 84 bytes.
+            Sub-element id: 0
+               Memory consumption: 84 bytes
+               
+               Point: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 1    filled = 1
+                  Data:
+                     ValueVector (num_points=2) :
+                     [ [ 0.211325 ]  [ 0.788675 ]  ]
+                  
+               
+               W_Measure: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
             
          
-         W_Measure: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-      
-   
-   Cache for sub-element(s) with dimension: 0  (memory consumption : 168 bytes.
-      Sub-element id: 0
-         Memory consumption: 84 bytes
-         
-         Point: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         W_Measure: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-      
-      Sub-element id: 1
-         Memory consumption: 84 bytes
-         
-         Point: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         W_Measure: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
+         Cache for sub-element(s) with dimension: 0  (memory consumption : 168 bytes.
+            Sub-element id: 0
+               Memory consumption: 84 bytes
+               
+               Point: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               W_Measure: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+            
+            Sub-element id: 1
+               Memory consumption: 84 bytes
+               
+               Point: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               W_Measure: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+            
          
       
    
@@ -164,44 +168,48 @@ Number of element basis:
    [ 2 ]
    Total Dimension: 2
 
-Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
-   Cache for sub-element(s) with dimension: 1  (memory consumption : 84 bytes.
-      Sub-element id: 0
-         Memory consumption: 84 bytes
+SpaceElementBase<1> cache:
+   CartesianGridElement<1> cache:
+      Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
+         Cache for sub-element(s) with dimension: 1  (memory consumption : 84 bytes.
+            Sub-element id: 0
+               Memory consumption: 84 bytes
+               
+               Point: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               W_Measure: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+            
          
-         Point: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         W_Measure: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-      
-   
-   Cache for sub-element(s) with dimension: 0  (memory consumption : 168 bytes.
-      Sub-element id: 0
-         Memory consumption: 84 bytes
-         
-         Point: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         W_Measure: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-      
-      Sub-element id: 1
-         Memory consumption: 84 bytes
-         
-         Point: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         W_Measure: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
+         Cache for sub-element(s) with dimension: 0  (memory consumption : 168 bytes.
+            Sub-element id: 0
+               Memory consumption: 84 bytes
+               
+               Point: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               W_Measure: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+            
+            Sub-element id: 1
+               Memory consumption: 84 bytes
+               
+               Point: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               W_Measure: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+            
          
       
    
@@ -304,44 +312,48 @@ Number of element basis:
    [ 2 ]
    Total Dimension: 2
 
-Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
-   Cache for sub-element(s) with dimension: 1  (memory consumption : 84 bytes.
-      Sub-element id: 0
-         Memory consumption: 84 bytes
+SpaceElementBase<1> cache:
+   CartesianGridElement<1> cache:
+      Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
+         Cache for sub-element(s) with dimension: 1  (memory consumption : 84 bytes.
+            Sub-element id: 0
+               Memory consumption: 84 bytes
+               
+               Point: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               W_Measure: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+            
          
-         Point: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         W_Measure: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-      
-   
-   Cache for sub-element(s) with dimension: 0  (memory consumption : 168 bytes.
-      Sub-element id: 0
-         Memory consumption: 84 bytes
-         
-         Point: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         W_Measure: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-      
-      Sub-element id: 1
-         Memory consumption: 84 bytes
-         
-         Point: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         W_Measure: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
+         Cache for sub-element(s) with dimension: 0  (memory consumption : 168 bytes.
+            Sub-element id: 0
+               Memory consumption: 84 bytes
+               
+               Point: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               W_Measure: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+            
+            Sub-element id: 1
+               Memory consumption: 84 bytes
+               
+               Point: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               W_Measure: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+            
          
       
    

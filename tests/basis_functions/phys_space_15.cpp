@@ -71,7 +71,7 @@ void elem_values(const int n_knots = 5, const int deg=1)
     using BspSpace = BSplineSpace<dim, range, rank>;
     using RefSpace = ReferenceSpace<dim, range,rank>;
     using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
-    using ElementHandler = typename Space::ElementHandler;
+//    using ElementHandler = typename Space::ElementHandler;
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
 
@@ -96,15 +96,15 @@ void elem_values(const int n_knots = 5, const int deg=1)
 
     auto quad = QGauss<k>(2);
 
-    ElementHandler sp_values(space);
-    sp_values.template reset<k> (flag, quad);
+    auto elem_filler = space->get_elem_handler();
+    elem_filler->reset(flag, quad);
 
     auto elem = space->begin();
     auto end = space->end();
-    sp_values.init_element_cache(elem);
+    elem_filler->init_element_cache(elem);
     for (; elem != end; ++elem)
     {
-        sp_values.fill_element_cache(elem);
+        elem_filler->fill_element_cache(elem);
         elem->template get_basis<_Value, k>(0,DofProperties::active).print_info(out);
     }
 

@@ -181,6 +181,7 @@ public:
      */
     void reset(const ValueFlags &flag, const eval_pts_variant &quad);
 
+
     /**
      * Resets all the internal data in order to use the
      * same quadrature scheme for the elements of the space with ID specified by
@@ -210,7 +211,7 @@ public:
      * It also fills the invariant (not changing) members of
      * the cache.
      */
-    void init_element_cache(SpaceElement<dim,codim,range,rank> &elem)
+    void init_element_cache(ElementAccessor &elem)
     {
         this->template init_cache<dim>(elem);
     }
@@ -220,6 +221,18 @@ public:
         this->template init_cache<dim>(*elem);
     }
 
+    void init_face_cache(ElementAccessor &elem)
+    {
+        Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
+        this->template init_cache<(dim > 0)?dim-1:0>(elem);
+    }
+
+    void init_face_cache(ElementIterator &elem)
+    {
+        Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
+        this->template init_cache<(dim > 0)?dim-1:0>(*elem);
+    }
+
 
     virtual void fill_cache(
         SpaceElement<dim,codim,range,rank> &elem,
@@ -227,12 +240,12 @@ public:
         const int sub_elem_id) = 0;
 
     template<int sub_elem_dim>
-    void fill_cache(SpaceElement<dim,codim,range,rank> &elem, const int sub_elem_id)
+    void fill_cache(ElementAccessor &elem, const int sub_elem_id)
     {
         this->fill_cache(elem,Topology<sub_elem_dim>(),sub_elem_id);
     }
 
-    void fill_element_cache(SpaceElement<dim,codim,range,rank> &elem)
+    void fill_element_cache(ElementAccessor &elem)
     {
         this->template fill_cache<dim>(elem,0);
     }
@@ -240,6 +253,18 @@ public:
     void fill_element_cache(ElementIterator &elem)
     {
         this->template fill_cache<dim>(*elem,0);
+    }
+
+    void fill_face_cache(ElementAccessor &elem, const int face_id)
+    {
+        Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
+        this->template fill_cache<(dim > 0)?dim-1:0>(elem,face_id);
+    }
+
+    void fill_face_cache(ElementIterator &elem, const int face_id)
+    {
+        Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
+        this->template fill_cache<(dim > 0)?dim-1:0>(*elem,face_id);
     }
 
 

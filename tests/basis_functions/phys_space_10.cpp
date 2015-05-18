@@ -46,7 +46,6 @@ void cache_init(const ValueFlags flag,
 
     using BspSpace = BSplineSpace<dim, range, rank>;
     using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
-    using ElementHandler = typename Space::ElementHandler;
     auto grid      = CartesianGrid<dim>::create(n_knots);
     auto ref_space = BspSpace::create(deg, grid);
 
@@ -66,9 +65,9 @@ void cache_init(const ValueFlags flag,
     auto space = Space::create(ref_space, map_func);
 
 
-    ElementHandler sp_values(space);
-    sp_values.template reset<dim> (flag, quad);
-    sp_values.print_info(out);
+    auto elem_handler = space->get_elem_handler();
+    elem_handler->reset(flag, quad);
+    elem_handler->print_info(out);
 
     OUTEND
 }
@@ -84,7 +83,6 @@ void cache_init_elem(const ValueFlags flag,
 
     using BspSpace = BSplineSpace<dim, range, rank>;
     using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
-    using ElementHandler = typename Space::ElementHandler;
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
     auto ref_space = BspSpace::create(deg, grid);
@@ -104,11 +102,11 @@ void cache_init_elem(const ValueFlags flag,
     auto map_func = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
     auto space = Space::create(ref_space, map_func);
 
-    ElementHandler sp_values(space);
-    sp_values.template reset<dim> (flag, quad);
+    auto elem_handler = space->get_elem_handler();
+    elem_handler->reset(flag, quad);
 
     auto elem = space->begin();
-    sp_values.init_element_cache(elem);
+    elem_handler->init_element_cache(elem);
     elem->print_cache_info(out);
 
     OUTEND
@@ -124,7 +122,6 @@ void cache_fill_elem(const ValueFlags flag,
     const int k = dim;
     using BspSpace = BSplineSpace<dim, range, rank>;
     using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
-    using ElementHandler = typename Space::ElementHandler;
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
     auto ref_space = BspSpace::create(deg, grid);
@@ -144,15 +141,15 @@ void cache_fill_elem(const ValueFlags flag,
     auto map_func = Function::create(grid,IdentityFunction<dim>::create(grid), A, b);
     auto space = Space::create(ref_space, map_func);
 
-    ElementHandler sp_values(space);
-    sp_values.template reset<dim> (flag, quad);
+    auto elem_handler = space->get_elem_handler();
+    elem_handler->reset(flag, quad);
 
     auto elem = space->begin();
     auto end = space->end();
-    sp_values.init_element_cache(elem);
+    elem_handler->init_element_cache(elem);
     for (; elem != end; ++elem)
     {
-        sp_values.fill_element_cache(elem);
+        elem_handler->fill_element_cache(elem);
         elem->print_cache_info(out);
     }
 
@@ -169,7 +166,6 @@ void cache_get_elem_values(const ValueFlags flag,
     const int k = dim;
     using BspSpace = BSplineSpace<dim, range, rank>;
     using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
-    using ElementHandler = typename Space::ElementHandler;
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
     auto ref_space = BspSpace::create(deg, grid);
@@ -189,15 +185,15 @@ void cache_get_elem_values(const ValueFlags flag,
     auto map_func = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
     auto space = Space::create(ref_space, map_func);
 
-    ElementHandler sp_values(space);
-    sp_values.template reset<dim> (flag, quad);
+    auto elem_handler = space->get_elem_handler();
+    elem_handler->reset(flag, quad);
 
     auto elem = space->begin();
     auto end = space->end();
-    sp_values.init_element_cache(elem);
+    elem_handler->init_element_cache(elem);
     for (; elem != end; ++elem)
     {
-        sp_values.fill_element_cache(elem);
+        elem_handler->fill_element_cache(elem);
         elem->template get_basis<_Value, k>(0,DofProperties::active).print_info(out);
     }
 

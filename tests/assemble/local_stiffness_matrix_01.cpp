@@ -51,12 +51,11 @@ void loc_stiff_matrix(const int n_knots, const int deg)
     using PhysSpace = PhysicalSpace<dim,1,1,0,Transformation::h_grad>;
     auto phys_space = PhysSpace::create(ref_space, IdentityFunction<dim>::create(grid)) ;
 
-    using ElementHandler = typename PhysSpace::ElementHandler;
-    ElementHandler elem_handler(phys_space);
+    auto elem_handler = phys_space->get_elem_handler();
 
     auto quad = QGauss<dim>(deg+1);
     auto flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::w_measure;
-    elem_handler.reset(flag,quad);
+    elem_handler->reset(flag,quad);
 
     const int n_qpoints =  quad.get_num_points();
 
@@ -66,10 +65,10 @@ void loc_stiff_matrix(const int n_knots, const int deg)
     const int n_basis = elem->get_num_basis(DofProperties::active);
     DenseMatrix loc_mat(n_basis,n_basis);
 
-    elem_handler.init_element_cache(elem);
+    elem_handler->init_element_cache(elem);
     for (; elem != elem_end; ++elem)
     {
-        elem_handler.fill_element_cache(elem);
+        elem_handler->fill_element_cache(elem);
 
         loc_mat = 0.0;
 

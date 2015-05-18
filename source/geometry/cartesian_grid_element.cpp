@@ -410,8 +410,11 @@ void
 CartesianGridElement<dim>::
 print_cache_info(LogStream &out) const
 {
-    Assert(all_sub_elems_cache_ != nullptr, ExcNullPtr());
-    all_sub_elems_cache_->print_info(out);
+//    Assert(all_sub_elems_cache_ != nullptr, ExcNullPtr());
+    if (all_sub_elems_cache_)
+        all_sub_elems_cache_->print_info(out);
+    else
+        out << "Cache not allocated." << std::endl;
 }
 
 
