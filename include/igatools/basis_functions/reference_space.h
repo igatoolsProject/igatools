@@ -208,7 +208,7 @@ public:
     get_dof_distribution() const override final;
 
     std::shared_ptr<DofDistribution<dim, range, rank> >
-    get_dof_distribution();
+    get_dof_distribution() override final;
 
     virtual std::set<Index> get_interior_dofs() const = 0;
 

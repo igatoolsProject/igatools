@@ -163,15 +163,21 @@ public:
     get_dof_distribution() const = 0;
 
 
+    virtual std::shared_ptr<DofDistribution<dim_,range_,rank_> >
+    get_dof_distribution() = 0;
+
+
 
     /**
      * Create and element (defined on this space) with a given flat_index
      */
-    virtual std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_>>
-            create_element(const Index flat_index) const = 0;
+    virtual std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_> >
+    create_element(const Index flat_index) const = 0;
+
 
     virtual std::shared_ptr< SpaceElementHandler<dim_,codim_,range_,rank_> >
     get_elem_handler() const = 0;
+
 
     virtual void print_info(LogStream &out) const = 0;
 
@@ -204,6 +210,7 @@ public:
      */
     ElementIterator end(const std::string &element_property = ElementProperties::none) const;
     ///@}
+
 
 private:
 #ifdef SERIALIZATION

@@ -133,8 +133,8 @@ public:
     /**
      * Create an element (defined on this grid) with a given flat_index.
      */
-    std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_>>
-                                                         create_element(const Index flat_index) const;
+    std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_> >
+    create_element(const Index flat_index) const override final;
 
     /**
      * Total number of dofs of the space.
@@ -149,7 +149,7 @@ public:
 
     /** Returns the container with the global dof distribution (non const version). */
     std::shared_ptr<DofDistribution<dim, range, rank> >
-    get_dof_distribution();
+    get_dof_distribution() override final;
 
 
     /*
