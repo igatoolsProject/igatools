@@ -20,19 +20,43 @@
 
 from init_instantiation_data import *
 
-include_files = ['geometry/cartesian_grid.h',
-                 'geometry/cartesian_grid_element.h',
-                 'basis_functions/bspline_space.h',
-                 '../../source/geometry/cartesian_grid_iterator.cpp']
+include_files = []
+
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
- #for some reason the Element is instantiate in the handler
-# accessors = [('BSplineElement<%d, %d, %d>' %(x.dim, x.range, x.rank), x.dim)
-#              for x in inst.all_ref_sp_dims]
-
-# for acc in accessors:
-#     f.write('template class %s ;\n' %acc[0])
-#     f.write('template class CartesianGridIterator<%s> ;\n' %acc[0])
 
 
+
+elements = ['BSplineElement<0,0,1>']
+
+for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
+    elem = 'BSplineElement<%d,%d,%d>' %(x.dim, x.range, x.rank)
+    elements.append(elem)
+        
+        
+        
+for elem in unique(elements):
+    f.write('template class %s; \n' %elem)
+    
+        
+        
+#---------------------------------------------------
+f.write('IGA_NAMESPACE_CLOSE\n')
+ 
+f.write('#ifdef SERIALIZATION\n')
+
+id = 0 
+for elem in unique(elements):
+    alias = 'BSplineElementAlias%d' %(id)
+    f.write('using %s = iga::%s; \n' % (alias, elem))
+#    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
+    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
+    f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
+    id += 1 
+        
+f.write('#endif // SERIALIZATION\n')
+     
+f.write('IGA_NAMESPACE_OPEN\n')
+#---------------------------------------------------
+   

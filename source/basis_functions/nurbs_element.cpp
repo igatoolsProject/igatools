@@ -164,8 +164,9 @@ serialize(Archive &ar, const unsigned int version)
 
 IGA_NAMESPACE_CLOSE
 
+#include <igatools/basis_functions/nurbs_element.inst>
+
 #endif // #ifdef NURBS
 
-//#include <igatools/basis_functions/bspline_element.inst>
 
 

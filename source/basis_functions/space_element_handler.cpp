@@ -19,6 +19,7 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/basis_functions/space_element_handler.h>
+#include <igatools/basis_functions/space_element.h>
 
 
 using std::shared_ptr;
@@ -148,7 +149,7 @@ fill_face_cache(ElementIterator &elem, const int face_id)
 }
 
 
-/*
+
 #ifdef SERIALIZATION
 template<int dim,int codim,int range,int rank>
 template<class Archive>
@@ -162,7 +163,6 @@ serialize(Archive &ar, const unsigned int version)
     Assert(space_ != nullptr,ExcNullPtr());
 }
 #endif // SERIALIZATION
-*/
 
 IGA_NAMESPACE_CLOSE
 

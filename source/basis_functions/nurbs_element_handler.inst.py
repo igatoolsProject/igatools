@@ -20,10 +20,8 @@
 
 from init_instantiation_data import *
 
-include_files = ['basis_functions/nurbs_space.h',
-                 '../../source/basis_functions/nurbs_element.cpp',
-                 '../../source/geometry/cartesian_grid_iterator.cpp'
-                 ]
+include_files = ['basis_functions/nurbs_space.h']
+
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
@@ -34,13 +32,10 @@ sub_dim_members = []
         
         
 handlers = ['NURBSElementHandler<0,0,1>']
-elements = ['NURBSElement<0,0,1>']
 handler_templated_funcs = []
 
 
 for x in inst.sub_ref_sp_dims:
-    elem = 'NURBSElement<%d,%d,%d>' %(x.dim, x.range, x.rank)
-    elements.append(elem)
     handler = 'NURBSElementHandler<%d,%d,%d>' %(x.dim, x.range, x.rank)
     handlers.append(handler)
     for fun in sub_dim_members:
@@ -50,8 +45,6 @@ for x in inst.sub_ref_sp_dims:
 
 
 for x in inst.ref_sp_dims:
-    elem = 'NURBSElement<%d,%d,%d>' %(x.dim, x.range, x.rank)
-    elements.append(elem)
     handler = 'NURBSElementHandler<%d,%d,%d>' %(x.dim, x.range, x.rank)
     handlers.append(handler)
     for fun in sub_dim_members:
@@ -61,9 +54,6 @@ for x in inst.ref_sp_dims:
         
         
         
-for elem in unique(elements):
-    f.write('template class %s; \n' %elem)
-    
 for handler in unique(handlers):
     f.write('template class %s; \n' %handler)
 
@@ -76,15 +66,6 @@ for func in unique(handler_templated_funcs):
 f.write('IGA_NAMESPACE_CLOSE\n')
  
 f.write('#ifdef SERIALIZATION\n')
-
-id = 0 
-for elem in unique(elements):
-    alias = 'NURBSElementAlias%d' %(id)
-    f.write('using %s = iga::%s; \n' % (alias, elem))
-    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
-    f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
-    f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
-    id += 1 
     
 id = 0 
 for handler in unique(handlers):

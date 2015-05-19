@@ -25,53 +25,37 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 
-sub_dim_members = \
-[]
 
 
-handlers = ['SpaceElementHandler<0,0,0,1>']
+elements = ['NURBSElement<0,0,1>']
 
-#--------------------------------------------------------------------------------------
-# SpaceElement used by ReferenceSpaceElement 
 for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
-    handler = 'SpaceElementHandler<%d,0,%d,%d>' %(x.dim, x.range, x.rank)
-    handlers.append(handler)
-
-#--------------------------------------------------------------------------------------
-
-
-#--------------------------------------------------------------------------------------
-# SpaceElement used by PhysicalSpaceElement 
-for space in inst.SubPhysSpaces + inst.PhysSpaces:
-    x = space.spec
-    handler = 'SpaceElementHandler<%d,%d,%d,%d>' %(x.dim,x.codim,x.range, x.rank)
-    handlers.append(handler)
-
-#--------------------------------------------------------------------------------------
-
-
-
-#---------------------------------------------------
-for handler in unique(handlers):
-    f.write('template class %s ;\n' %handler)
-
-
-
+    elem = 'NURBSElement<%d,%d,%d>' %(x.dim, x.range, x.rank)
+    elements.append(elem)
+        
+        
+        
+for elem in unique(elements):
+    f.write('template class %s; \n' %elem)
+    
+        
+        
 #---------------------------------------------------
 f.write('IGA_NAMESPACE_CLOSE\n')
  
 f.write('#ifdef SERIALIZATION\n')
+
 id = 0 
-for elem in unique(handlers):
-    alias = 'SpaceElementHandlerAlias%d' %(id)
+for elem in unique(elements):
+    alias = 'NURBSElementAlias%d' %(id)
     f.write('using %s = iga::%s; \n' % (alias, elem))
-    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
+#    f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
     f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
     f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
     id += 1 
+        
 f.write('#endif // SERIALIZATION\n')
      
 f.write('IGA_NAMESPACE_OPEN\n')
 #---------------------------------------------------
-
-
+   

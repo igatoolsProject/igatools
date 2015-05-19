@@ -28,8 +28,7 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 
-sub_dim_members = \
-[]
+sub_dim_members = []
 
        
 handlers = ['ReferenceElementHandler<0,0,1>']

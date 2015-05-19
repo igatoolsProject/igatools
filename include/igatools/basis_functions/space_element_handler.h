@@ -30,6 +30,10 @@ IGA_NAMESPACE_OPEN
 
 
 
+/**
+ *
+ * @ingroup serializable
+ */
 template <int dim,int codim,int range,int rank>
 class SpaceElementHandler
 {
@@ -154,13 +158,7 @@ private:
 
     template<class Archive>
     void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        auto non_const_space = std::const_pointer_cast<Space<dim,codim,range,rank>>(space_);
-        ar &boost::serialization::make_nvp("space_", non_const_space);
-        space_ = non_const_space;
-        Assert(space_ != nullptr,ExcNullPtr());
-    }
+    serialize(Archive &ar, const unsigned int version);
     ///@}
 #endif // SERIALIZATION
 };

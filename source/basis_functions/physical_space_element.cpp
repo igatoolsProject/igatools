@@ -252,4 +252,4 @@ print_cache_info(LogStream &out) const
 
 IGA_NAMESPACE_CLOSE
 
-//#include <igatools/basis_functions/physical_space_element.inst>
+#include <igatools/basis_functions/physical_space_element.inst>

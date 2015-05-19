@@ -30,14 +30,10 @@ sub_dim_members = []
 
 spaces = []
 
-for dim in inst.sub_domain_dims:
+for dim in inst.sub_domain_dims + inst.domain_dims:
     space = 'SpaceElementBase<%d>' %(dim)
     spaces.append(space)
 
-
-for dim in inst.domain_dims:
-    space = 'SpaceElementBase<%d>' %(dim)
-    spaces.append(space)
 
 
 for space in unique(spaces):

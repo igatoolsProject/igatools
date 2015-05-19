@@ -690,6 +690,6 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 
 IGA_NAMESPACE_CLOSE
 
-//#include <igatools/basis_functions/bspline_element.inst>
+#include <igatools/basis_functions/bspline_element.inst>
 
 

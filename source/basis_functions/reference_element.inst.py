@@ -33,14 +33,10 @@ data = Instantiation(include_files)
 elements = ['ReferenceElement<0,0,1>']
 
 
-for x in inst.sub_ref_sp_dims:
+for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
     elem = 'ReferenceElement<%d,%d,%d>' %(x.dim, x.range, x.rank)
     elements.append(elem)
 
-
-for x in inst.ref_sp_dims:
-    elem = 'ReferenceElement<%d,%d,%d>' %(x.dim, x.range, x.rank)
-    elements.append(elem)
 
 
 for elem in unique(elements):
