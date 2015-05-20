@@ -20,6 +20,7 @@
 
 
 #include <igatools/geometry/push_forward.h>
+#include <igatools/geometry/push_forward_element.h>
 
 
 

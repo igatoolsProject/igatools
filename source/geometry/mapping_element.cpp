@@ -244,3 +244,5 @@ clone() const -> std::shared_ptr<self_t>
 //    }
 
 IGA_NAMESPACE_CLOSE
+
+#include <igatools/geometry/mapping_element.inst>

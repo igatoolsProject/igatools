@@ -20,35 +20,23 @@
 
 from init_instantiation_data import *
 
-include_files = []
-
+include_files = ['../../source/geometry/cartesian_grid_iterator.cpp']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 
-
-sub_dim_members = \
-['void Mapping<dim,cod>::fill_cache<k>(ElementAccessor &elem, const int j);',
- 'void Mapping<dim,cod>::init_cache<k>(ElementAccessor &elem);',
- 'void Mapping<dim,cod>::reset<k>(const ValueFlags flag, const Quadrature<k> &quad);']
-
-#mappings = []
-
 for x in inst.sub_mapping_dims:
-    mapping = 'Mapping<%d,%d>' %(x.dim, x.codim)
-#    mappings.append(mapping)
-    f.write('template class %s ;\n' %(mapping))
-    for fun in sub_dim_members:
-        k = x.dim
-        s = fun.replace('cod', '%d' % (x.codim)).replace('dim', '%d' % (x.dim)).replace('k', '%d' % (k));
-        f.write('template ' + s + '\n')
+    dims = '<Transformation::h_grad, %d, %d>' %(x.dim, x.codim)
+    acc = 'PushForwardElement%s' % (dims)
+    f.write('template class %s ;\n' %(acc))
+    for it in inst.iterators:
+        iterator = it.replace('Accessor','%s' % (acc) )
+        f.write('template class %s; \n' %iterator)
 
 for x in inst.mapping_dims:
-    mapping = 'Mapping<%d,%d>' %(x.dim, x.codim)
-#    mappings.append(mapping)
-    f.write('template class %s ;\n' %(mapping))
-    for fun in sub_dim_members:
-        for k in inst.sub_dims(x.dim):
-            s = fun.replace('dim','%d' %x.dim).replace('k','%d' %(k)).replace('cod','%d' %x.codim);
-            f.write('template ' + s + '\n')
- 
+    dims = '<Transformation::h_grad, %d, %d>' %(x.dim, x.codim)
+    acc = 'PushForwardElement%s' % (dims)
+    f.write('template class %s ;\n' %(acc))
+    for it in inst.iterators:
+        iterator = it.replace('Accessor','%s' % (acc) )
+        f.write('template class %s; \n' %iterator)

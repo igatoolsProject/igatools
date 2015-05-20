@@ -24,7 +24,6 @@
 #include <igatools/basis_functions/space_element.h>
 #include <igatools/basis_functions/reference_element_handler.h>
 
-
 IGA_NAMESPACE_OPEN
 
 

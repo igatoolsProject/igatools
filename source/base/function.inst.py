@@ -21,26 +21,18 @@
 from init_instantiation_data import *
 
 include_files = []
-#                 '../../source/base/function_element.cpp',
-#                 '../../source/geometry/cartesian_grid_iterator.cpp']
+
 data = Instantiation(include_files)
 
 (f, inst) = (data.file_output, data.inst)
 
 functions = []
-#elements = []
 
 for row in inst.all_function_dims:
     dims = '<%d, %d, %d, %d>' %(row.dim, row.codim, row.range, row.rank)
     func = 'Function%s' %(dims) 
     functions.append(func)
     f.write('template class %s ;\n' %(func))
-#    elem = 'FunctionElement%s' % (dims)
-#    elements.append(elem)
-#    f.write('template class %s ;\n' %(elem))
-#    for it in inst.iterators:
-#        iterator = it.replace('Accessor','%s' % (elem) )
-#        f.write('template class %s; \n' %iterator)
 
 
 

@@ -26,3 +26,6 @@ IGA_NAMESPACE_OPEN
 
 
 IGA_NAMESPACE_CLOSE
+
+
+#include <igatools/geometry/push_forward_element.inst>

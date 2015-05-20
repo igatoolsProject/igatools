@@ -30,21 +30,6 @@ include_files = [
                  'basis_functions/physical_space.h',
                  'basis_functions/physical_space_element.h',
                  'basis_functions/phys_space_element_handler.h']
-# include_files = ['basis_functions/bspline_space.h',
-#                  'basis_functions/bspline_element_accessor.h',
-#                  'basis_functions/bspline_uniform_quad_cache.h',
-#                  'basis_functions/nurbs_space.h',
-#                  'basis_functions/nurbs_element_accessor.h',
-#                  'basis_functions/nurbs_uniform_quad_cache.h',
-#                  'basis_functions/physical_space.h',
-#                  'geometry/cartesian_grid_element.h',
-#                  'geometry/mapping_element_accessor.h',
-#                  'geometry/push_forward_element_accessor.h',
-#                  'geometry/push_forward_uniform_quad_cache.h',
-#                  'basis_functions/physical_space_element_accessor.h',
-#                  'basis_functions/space_uniform_quad_cache.h']
-#include_files = ['../../source/base/function_element.cpp',
-#                 '../../source/geometry/cartesian_grid_iterator.cpp']
 
 data = Instantiation(include_files)
 

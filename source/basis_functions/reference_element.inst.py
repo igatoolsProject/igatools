@@ -21,10 +21,8 @@
 # QA (pauletti, Jun 27, 2014):
 from init_instantiation_data import *
 
-include_files = ['geometry/cartesian_grid.h',
-                 'geometry/cartesian_grid_element.h',
-                 'basis_functions/spline_space.h',
-                 '../../source/geometry/cartesian_grid_iterator.cpp']
+include_files = []
+
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
