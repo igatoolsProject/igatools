@@ -50,8 +50,8 @@ class BSplineSpace;
 template <int,int,int>
 class NURBSSpace;
 
-template <int,int,int,int,class>
-class PhysicaSSpace;
+//template <int,int,int,int,class>
+//class PhysicalSpace;
 
 
 template <int,int,int,int>

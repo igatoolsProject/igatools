@@ -64,6 +64,7 @@ class CacheList :
 {
 
 private:
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -87,6 +88,7 @@ private:
                                );
     };
     ///@}
+#endif // SERIALIZATION
 };
 
 
@@ -226,6 +228,7 @@ private:
     FlagStatus status_;
 
 
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -242,7 +245,7 @@ private:
         ar &boost::serialization::make_nvp("status_",status_);
     };
     ///@}
-
+#endif // SERIALIZATION
 };
 
 /**
@@ -391,6 +394,8 @@ public:
 
 
 private:
+
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -419,7 +424,7 @@ private:
 
     };
     ///@}
-
+#endif // SERIALIZATION
 };
 
 
@@ -473,6 +478,8 @@ public:
     }
 
 private:
+
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -488,7 +495,7 @@ private:
                                            boost::serialization::base_object<ValuesCache<dim,CacheType>>(*this));
     };
     ///@}
-
+#endif // SERIALIZATION
 };
 
 /**
@@ -541,6 +548,8 @@ public:
     }
 
 private:
+
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -556,7 +565,7 @@ private:
                                            boost::serialization::base_object<ValuesCache<dim,CacheType>>(*this));
     };
     ///@}
-
+#endif // SERIALIZATION
 };
 
 
@@ -660,6 +669,8 @@ public:
 
 
 private:
+
+#ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -674,7 +685,7 @@ private:
         ar &boost::serialization::make_nvp("cache_all_sub_elems_",cache_all_sub_elems_);
     };
     ///@}
-
+#endif // SERIALIZATION
 };
 
 

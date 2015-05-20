@@ -88,7 +88,8 @@ public:
 
     static const bool is_physical_space = true;
 
-    using MapFunc =  MapFunction<dim, space_dim>;
+//    using MapFunc =  MapFunction<dim, space_dim>;
+    using MapFunc = typename base_t::MapFunc;
 
     static constexpr int n_components = constexpr_pow(range, rank);
 
@@ -188,7 +189,7 @@ public:
 
     std::shared_ptr<RefSpace> get_reference_space();
 
-    std::shared_ptr<MapFunc> get_map_func() const;
+    std::shared_ptr<MapFunc> get_map_func() const override final;
 
     template<int k>
     std::set<Index> get_boundary_dofs(const int s_id) const
