@@ -19,18 +19,9 @@
 #-+--------------------------------------------------------------------
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Find Boost library (Required)
+# Find Paraview library (Required)
 #-------------------------------------------------------------------------------
-macro(find_boost)
-
-  if (SERIALIZATION)
-    find_package(Boost 1.54.0 REQUIRED COMPONENTS serialization)
-    include_directories(${Boost_INCLUDE_DIRS})
-    find_library (Boost_serialization boost_serialization ${Boost_LIBRARY_DIRS})
-    set(Boost_LIBRARIES "${Boost_serialization}")
-  else ()
-    find_package(Boost 1.54.0 REQUIRED)
-    include_directories(${Boost_INCLUDE_DIRS})
-  endif ()
-  
-endmacro(find_boost)
+macro(find_paraview)
+  find_package(ParaView REQUIRED)
+  include (${PARAVIEW_USE_FILE})
+endmacro(find_paraview)

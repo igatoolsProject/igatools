@@ -1,0 +1,91 @@
+<!--
+//=+=====================================================================
+// Igatools a general purpose Isogeometric analysis library.
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
+//
+// This file is part of the igatools library.
+//
+// The igatools library is free software: you can use it, redistribute
+// it and/or modify it under the terms of the GNU General Public
+// License as published by the Free Software Foundation, either
+// version 3 of the License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//=+=====================================================================
+-->
+
+<ServerManagerConfiguration>
+  <ProxyGroup name="sources">
+    <!-- ================================================================== -->
+    <SourceProxy name="vtkIgatoolsReader" class="vtkIgatoolsReader" label="vtkIgatoolsReader">
+      <Documentation
+         long_help="Read a .iga file."
+         short_help="Read a .iga file.">
+      </Documentation>
+      <StringVectorProperty
+            name="FileName"
+            animateable="0"
+            command="SetFileName"
+            number_of_elements="1">
+        <FileListDomain name="files"/>
+        <Documentation>
+          This property specifies the file name for the Igatools reader.
+        </Documentation>
+      </StringVectorProperty>
+
+      <IntVectorProperty command="SetGridType"
+                         default_values="0"
+                         name="GridType"
+                         label="Grid Type"
+                         number_of_elements="1">
+        <EnumerationDomain name="enum">
+          <Entry text="Solid grid"
+                 value="0" />
+          <Entry text="Control points mesh"
+                 value="1" />
+          <Entry text="Unit mesh"
+                 value="2" />
+        </EnumerationDomain>
+        <Documentation>
+          This propery specifies which type of grid must be shown.
+          The solid grid, the control mesh grid or the unitary grid.
+        </Documentation>
+      </IntVectorProperty>
+
+      <IntVectorProperty command="SetNumVisualizationPoints"
+                         default_values="2 2 2"
+                         name="Number of visualization points"
+                         number_of_elements="3">
+        <IntRangeDomain name="range" min="2" max="10"/>
+        <Documentation>Set the number of visualization points in each
+          parametric direction for every Bezier element.</Documentation>
+        <Hints>
+          <PropertyWidgetDecorator type="GenericDecorator"
+                                   mode="visibility"
+                                   property="GridType"
+                                   inverse="1"
+                                   value="1" />
+          <!-- show this widget when GlyphMode==0 -->
+<!--          <PropertyWidgetDecorator type="GenericDecorator"
+                                   mode="visibility"
+                                   property="GridType"
+                                   value="2" /> -->
+          <!-- show this widget when GlyphMode==2 -->
+        </Hints>
+      </IntVectorProperty>
+
+      <Hints>
+        <ReaderFactory extensions="iga"
+                       file_description="Igatools File Format" />
+      </Hints>
+    </SourceProxy>
+    <!-- End Reader -->
+  </ProxyGroup>
+  <!-- End Filters Group -->
+</ServerManagerConfiguration>
