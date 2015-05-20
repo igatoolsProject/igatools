@@ -22,9 +22,10 @@
 # Find Boost library (Required)
 #-------------------------------------------------------------------------------
 macro(find_boost)
-  find_package(Boost 1.54.0 REQUIRED)
+  find_package(Boost 1.54.0 REQUIRED COMPONENTS serialization)
   include_directories(${Boost_INCLUDE_DIRS})
-  
-  set(Boost_LIBRARIES "boost_serialization-mt")
+
+  find_library (Boost_serialization boost_serialization ${Boost_LIBRARY_DIRS})
+  set(Boost_LIBRARIES "${Boost_serialization}")
   
 endmacro(find_boost)
