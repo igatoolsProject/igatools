@@ -25,6 +25,8 @@ macro(find_boost)
   find_package(Boost 1.54.0 REQUIRED)
   include_directories(${Boost_INCLUDE_DIRS})
   
-  set(Boost_LIBRARIES "boost_serialization-mt")
+  if (SERIALIZATION EQUAL ON)
+	  set(Boost_LIBRARIES "boost_serialization-mt")
+  endif()
   
 endmacro(find_boost)

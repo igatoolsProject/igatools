@@ -21,7 +21,7 @@
 from init_instantiation_data import *
 
 include_files = ['basis_functions/bspline_space.h',
-                 '../../source/basis_functions/bspline_element.cpp',
+#                 '../../source/basis_functions/bspline_element.cpp',
                  '../../source/geometry/cartesian_grid_iterator.cpp'
                  ]
 data = Instantiation(include_files)
