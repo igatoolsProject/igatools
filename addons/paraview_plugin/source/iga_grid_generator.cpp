@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools_paraview/iga_grid_generator.h>
+#include <paraview_plugin/iga_grid_generator.h>
 
 #include <vtkInformationVector.h>
 #include <vtkInformation.h>
@@ -52,12 +52,14 @@ IGAVTKGridGenerator (const string& file_name, const string& file_path,
   file_name_ (file_name),
   file_path_ (file_path)
 {
+#if 0
   const auto xml_tree = this->parse_xml_file ();
   function_variant_ = this->create_function_from_xml (xml_tree);
   vector<Size> n_points (dim_);
   for (int dir = 0; dir < dim_; ++dir)
     n_points[dir] = *(num_visualization_points+dir);
   quadrature_variant_ = this->create_quadrature (n_points);
+#endif
 };
 
 
@@ -77,6 +79,7 @@ ptree
 IGAVTKGridGenerator::
 parse_xml_file () const
 {
+#if 0
   // TODO: Assert here if the file is not present.
   const auto& file_tree = get_xml_tree(file_name_);
 
@@ -91,6 +94,7 @@ parse_xml_file () const
   const auto& igatools_tree = get_xml_element (file_tree, "Igatools");
 
   return igatools_tree;
+#endif
 };
 
 
@@ -99,6 +103,7 @@ FunctionPtrVariant
 IGAVTKGridGenerator::
 create_function_from_xml (const ptree& xml_tree)
 {
+#if 0
   const auto dim_pair = this->get_dimensions_from_xml (xml_tree);
   dim_ = dim_pair.first;
   codim_ = dim_pair.second;
@@ -147,6 +152,7 @@ create_function_from_xml (const ptree& xml_tree)
     AssertThrow (false, ExcMessage ("Not valid codim and dim values."));
 
   return function;
+#endif
 };
 
 
@@ -156,6 +162,7 @@ std::pair<int, int>
 IGAVTKGridGenerator::
 get_dimensions_from_xml (const ptree& xml_tree) const
 {
+#if 0
   AssertThrow (xml_element_is_present (xml_tree, "IgMapping"),
                ExcMessage ("IgMapping element is not present."));
   AssertThrow (xml_element_is_unique (xml_tree, "IgMapping"),
@@ -192,6 +199,7 @@ get_dimensions_from_xml (const ptree& xml_tree) const
                "."));
 
   return dims;
+#endif
 };
 
 
@@ -200,6 +208,7 @@ int
 IGAVTKGridGenerator::
 fill_solid_output (vtkInformation* outInfo) const
 {
+#if 0
 
   // get the ouptut
   vtkUnstructuredGrid *output = vtkUnstructuredGrid::SafeDownCast(
@@ -243,6 +252,7 @@ fill_solid_output (vtkInformation* outInfo) const
   }
   else
     return 0;
+#endif
 };
 
 
@@ -251,6 +261,7 @@ int
 IGAVTKGridGenerator::
 fill_identity_output (vtkInformation* outInfo) const
 {
+#if 0
 
   // get the ouptut
   vtkUnstructuredGrid *output = vtkUnstructuredGrid::SafeDownCast(
@@ -275,6 +286,7 @@ fill_identity_output (vtkInformation* outInfo) const
   }
   else
     return 0;
+#endif
 };
 
 
@@ -283,6 +295,7 @@ int
 IGAVTKGridGenerator::
 fill_control_mesh_output (vtkInformation* outInfo) const
 {
+#if 0
   // get the ouptut
   vtkUnstructuredGrid *output = vtkUnstructuredGrid::SafeDownCast(
                     outInfo->Get(vtkDataObject::DATA_OBJECT()));
@@ -304,6 +317,7 @@ fill_control_mesh_output (vtkInformation* outInfo) const
   }
   else
     return 0;
+#endif
 }
 
 
@@ -312,6 +326,7 @@ QuadraturePtrVariant
 IGAVTKGridGenerator::
 create_quadrature (const vector<Size>& n_points) const
 {
+#if 0
   AssertThrow (n_points.size () == dim_,
                ExcMessage ("Invalid number of quadrature poins per direction."));
 
@@ -345,6 +360,7 @@ create_quadrature (const vector<Size>& n_points) const
     Assert (false, ExcMessage ("Invalid dimension."));
 
   return quad;
+#endif
 };
 
 
@@ -358,6 +374,7 @@ IGAVTKGridGenerator::FillSolidGridVisitor::operator()
    const QuadraturePtrVariant* const quad_var_ptr) ->
 result_type
 {
+#if 0
   // TODO: to manager here the return value.
   // Return false in not sucessfull cases.
 
@@ -417,6 +434,7 @@ result_type
   //--------------------------------------------------------------------------//
 
   return true;
+#endif
 };
 
 
@@ -430,6 +448,7 @@ IGAVTKGridGenerator::FillIdentityGridVisitor::operator()
    const QuadraturePtrVariant* const quad_var_ptr) ->
 result_type
 {
+#if 0
   // TODO: to manager here the return value.
   // Return false in not sucessfull cases.
 
@@ -494,6 +513,7 @@ result_type
   //--------------------------------------------------------------------------//
 
   return true;
+#endif
 };
 
 
@@ -506,6 +526,7 @@ IGAVTKGridGenerator::FillControlMeshGridVisitor::operator()
    const vtkSmartPointer<vtkCellArray> cellsArray) ->
 result_type
 {
+#if 0
   // TODO: to manager here the return value.
   // Return false in not sucessfull cases.
 
@@ -555,6 +576,7 @@ result_type
   //--------------------------------------------------------------------------//
 
   return true;
+#endif
 };
 
 
@@ -565,6 +587,7 @@ IGAVTKGridGenerator::
 create_cell_ids (const TensorSize<dim>& n_points_per_direction,
                  const Size& n_bezier_elements)
 {
+#if 0
   vtkSmartPointer<vtkIdTypeArray> cell_ids = vtkSmartPointer<vtkIdTypeArray>::New();
 
   const auto grid = CartesianGrid<dim>::create (n_points_per_direction);
@@ -596,6 +619,7 @@ create_cell_ids (const TensorSize<dim>& n_points_per_direction,
   }
 
   return cell_ids;
+#endif
 };
 
 
@@ -606,6 +630,7 @@ IGAVTKGridGenerator::
 create_connectivity_base (const TensorSize<dim>& n_points_per_direction) ->
 Connectivity_t_<dim>
 {
+#if 0
   vtkSmartPointer<vtkIdTypeArray> cell_ids = vtkSmartPointer<vtkIdTypeArray>::New();
 
   const auto grid = CartesianGrid<dim>::create (n_points_per_direction);
@@ -695,4 +720,5 @@ Connectivity_t_<dim>
   }
 
   return connectivity_base;
+#endif
 };
