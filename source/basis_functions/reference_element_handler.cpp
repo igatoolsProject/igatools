@@ -20,7 +20,7 @@
 
 #include <igatools/basis_functions/reference_element_handler.h>
 
-#include <igatools/basis_functions/bspline_element.h>
+#include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
 
 #include <igatools/basis_functions/nurbs_space.h>

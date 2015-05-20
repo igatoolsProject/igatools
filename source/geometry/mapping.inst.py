@@ -21,7 +21,6 @@
 from init_instantiation_data import *
 
 include_files = ['utils/safe_stl_array.h',
-                 '../../source/base/function_element.cpp',
                  '../../source/geometry/mapping_element.cpp',
                  '../../source/geometry/cartesian_grid_iterator.cpp']
 data = Instantiation(include_files)

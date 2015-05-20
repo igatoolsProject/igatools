@@ -329,11 +329,12 @@ private:
      */
     static ValueFlags get_valid_flags();
 
+public:
     using ValuesCache = FuncValuesCache<dim,CType>;
 
     using CacheType = LocalCache<ValuesCache>;
 
-
+private:
     /** The local cache. */
     std::shared_ptr<CacheType> all_sub_elems_cache_;
 

@@ -21,12 +21,13 @@
 #ifndef FUNCTION_ELEMENT_H
 #define FUNCTION_ELEMENT_H
 
-#include <igatools/base/function.h>
 #include <igatools/geometry/cartesian_grid_element.h>
 #include <igatools/base/value_types.h>
 #include <igatools/basis_functions/values_cache.h>
 
 IGA_NAMESPACE_OPEN
+
+template <int,int,int,int> class Function;
 
 /**
  *
@@ -163,7 +164,8 @@ public:
     template <class ValueType>
     decltype(auto) evaluate_at_points(const Quadrature<dim> &points)
     {
-        func_->reset_one_element(ValueType::flag,points,this->get_flat_index());
+        func_->reset(ValueType::flag,points);
+//        func_->reset_one_element(ValueType::flag,points,this->get_flat_index());
         const auto topology = Topology<dim>();
         func_->init_cache(*this,topology);
         func_->fill_cache(*this,topology,0);

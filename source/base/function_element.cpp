@@ -20,6 +20,7 @@
 
 
 #include <igatools/base/function_element.h>
+#include <igatools/base/function.h>
 
 
 IGA_NAMESPACE_OPEN
@@ -100,4 +101,6 @@ serialize(Archive &ar, const unsigned int version)
 
 
 IGA_NAMESPACE_CLOSE
+
+#include <igatools/base/function_element.inst>
 

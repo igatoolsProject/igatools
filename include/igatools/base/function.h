@@ -131,12 +131,12 @@ public:
 
 
     virtual void reset(const ValueFlags &flag, const eval_pts_variant &quad);
-
+#if 0
     void reset_one_element(
         const ValueFlags &flag,
         const eval_pts_variant &eval_pts,
         const Index elem_id);
-
+#endif
     virtual void init_cache(ElementAccessor &elem, const topology_variant &k);
 
     void init_cache(ElementIterator &elem, const topology_variant &k);

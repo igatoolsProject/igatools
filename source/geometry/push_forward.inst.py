@@ -20,8 +20,7 @@
 
 from init_instantiation_data import *
 
-include_files = ['../../source/base/function_element.cpp',
-                 '../../source/geometry/mapping_element.cpp',
+include_files = ['../../source/geometry/mapping_element.cpp',
                  '../../source/geometry/push_forward_element.cpp',
                  '../../source/geometry/cartesian_grid_iterator.cpp']
 data = Instantiation(include_files)
