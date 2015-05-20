@@ -34,6 +34,7 @@
 
 #include <igatools/base/ig_function.h>
 #include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/physical_space.h>
 
 
@@ -43,13 +44,19 @@ using std::static_pointer_cast;
 class FunctionsContainer
 {
 public:
-    /*
-        template<int dim, int space_dim>
-        void insert_map(std::shared_ptr<MapFunction<dim,space_dim>> map, const std::string &map_name)
-        {
 
-        }
-    //*/
+    template<int dim, int space_dim>
+    void insert_map(std::shared_ptr<MapFunction<dim,space_dim>> map, const std::string &map_name)
+    {
+        using boost::fusion::at_key;
+        auto &data_same_dim = at_key<Topology<dim>>(data_varying_dim_);
+        auto &data_same_dim_codim = at_key<Topology<space_dim-dim>>(data_same_dim.data_varying_codim_);
+
+        Assert(data_same_dim_codim.maps_and_data_varying_range_.count(map) == 0,
+               ExcMessage("Map already added in the container."));
+
+        data_same_dim_codim.maps_and_data_varying_range_[map].map_name_ = map_name;
+    };
 
     template<int dim, int codim,int range,int rank>
     void insert_function(
@@ -61,8 +68,10 @@ public:
         auto &data_same_dim = at_key<Topology<dim>>(data_varying_dim_);
         auto &data_same_dim_codim = at_key<Topology<codim>>(data_same_dim.data_varying_codim_);
 
+        Assert(data_same_dim_codim.maps_and_data_varying_range_.count(map) == 1,
+               ExcMessage("Map not present in the container."));
+
         auto &data_same_map = data_same_dim_codim.maps_and_data_varying_range_[map];
-        data_same_map.map_name_ = "map associated to function " + func_name;
 
         auto &data_same_dim_codim_range = at_key<Topology<range>>(data_same_map.funcs_);
 
@@ -103,10 +112,8 @@ private:
         using DictionaryFuncsName = std::map<FuncPtr<rank>,std::string>;
 
         boost::fusion::map<
-        boost::fusion::pair< Topology<0>,DictionaryFuncsName<0> >,
-              boost::fusion::pair< Topology<1>,DictionaryFuncsName<1> >,
-              boost::fusion::pair< Topology<2>,DictionaryFuncsName<2> >,
-              boost::fusion::pair< Topology<3>,DictionaryFuncsName<3> >
+        boost::fusion::pair< Topology<1>,DictionaryFuncsName<1> >,
+              boost::fusion::pair< Topology<2>,DictionaryFuncsName<2> >
               > data_varying_rank_;
 
         void print_info(LogStream &out) const
@@ -120,20 +127,52 @@ private:
                 out.begin_item("Rank : " + std::to_string(Type::value));
                 const auto &funcs_with_name = type_and_data_same_rank.second;
 
+
+                out.begin_item("Functions num. : " + std::to_string(funcs_with_name.size()));
                 for (const auto &f : funcs_with_name)
                     out << "Function name: " << f.second << std::endl;
+                out.end_item();
 
                 out.end_item();
             } // end lambda function
                                    );
         }; // end print_info()
 
+    private:
+#ifdef SERIALIZATION
+        /**
+         * @name Functions needed for boost::serialization
+         * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+         */
+///@{
+        friend class boost::serialization::access;
+
+        template<class Archive>
+        void
+        serialize(Archive &ar, const unsigned int version)
+        {
+            boost::fusion::for_each(data_varying_rank_,
+                                    [&](auto & type_and_data_same_rank)
+            {
+                using Type_Value = typename std::remove_reference<decltype(type_and_data_same_rank)>::type;
+                using Type = typename Type_Value::first_type;
+
+                ar.template register_type<IgFunction<dim,codim,range,Type::value>>();
+
+                const std::string tag_name = "funcs_rank_" + std::to_string(Type::value);
+                ar &boost::serialization::make_nvp(tag_name.c_str(),type_and_data_same_rank.second);
+            } // end lambda function
+                                   );
+
+        }
+///@}
+#endif // SERIALIZATION
+
     };
 
 
     template <int dim, int codim>
     using DataVaryingRange = boost::fusion::map<
-                             boost::fusion::pair< Topology<0>,StuffSameDimAndCodimAndRange<dim,codim,0> >,
                              boost::fusion::pair< Topology<1>,StuffSameDimAndCodimAndRange<dim,codim,1> >,
                              boost::fusion::pair< Topology<2>,StuffSameDimAndCodimAndRange<dim,codim,2> >,
                              boost::fusion::pair< Topology<3>,StuffSameDimAndCodimAndRange<dim,codim,3> >
@@ -149,6 +188,37 @@ private:
         {
             std::string map_name_;
             DataVaryingRange<dim,codim> funcs_;
+
+        private:
+#ifdef SERIALIZATION
+            /**
+             * @name Functions needed for boost::serialization
+             * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+             */
+            ///@{
+            friend class boost::serialization::access;
+
+            template<class Archive>
+            void
+            serialize(Archive &ar, const unsigned int version)
+            {
+                ar &boost::serialization::make_nvp("map_name_",map_name_);
+
+                boost::fusion::for_each(funcs_,
+                                        [&](auto & func)
+                {
+                    using Type_Value = typename std::remove_reference<decltype(func)>::type;
+                    using Type = typename Type_Value::first_type;
+
+                    const std::string tag_name = "funcs_range_" + std::to_string(Type::value);
+                    ar &boost::serialization::make_nvp(tag_name.c_str(),func.second);
+                } // end lambda function
+                                       );
+
+            }
+            ///@}
+#endif // SERIALIZATION
+
         };
 
         std::map<M,DataAssociatedToMap> maps_and_data_varying_range_;
@@ -156,6 +226,7 @@ private:
 
         void print_info(LogStream &out) const
         {
+            out.begin_item("Mappings num. : " + std::to_string(maps_and_data_varying_range_.size()));
             for (const auto &map_and_data_varying_range : maps_and_data_varying_range_)
             {
                 const auto &data_varying_range = map_and_data_varying_range.second;
@@ -172,11 +243,34 @@ private:
                     out.end_item();
                 } // end lambda function
                                        );
-
-
                 out.end_item();
             }
+            out.end_item();
         }; // end print_info()
+
+
+    private:
+
+#ifdef SERIALIZATION
+        /**
+         * @name Functions needed for boost::serialization
+         * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+         */
+        ///@{
+        friend class boost::serialization::access;
+
+        template<class Archive>
+        void
+        serialize(Archive &ar, const unsigned int version)
+        {
+//          ar.template register_type<IdentityFunction<dim,dim+codim>>();
+            ar.template register_type<IgFunction<dim,0,dim+codim,1>>();
+            ar &boost::serialization::make_nvp("maps_and_data_varying_range_",
+                                               maps_and_data_varying_range_);
+        }
+        ///@}
+#endif // SERIALIZATION
+
     };
 
 
@@ -186,9 +280,7 @@ private:
     public:
         boost::fusion::map<
         boost::fusion::pair< Topology<0>,StuffSameDimAndCodim<dim,0> >,
-              boost::fusion::pair< Topology<1>,StuffSameDimAndCodim<dim,1> >,
-              boost::fusion::pair< Topology<2>,StuffSameDimAndCodim<dim,2> >,
-              boost::fusion::pair< Topology<3>,StuffSameDimAndCodim<dim,3> >
+              boost::fusion::pair< Topology<1>,StuffSameDimAndCodim<dim,1> >
               > data_varying_codim_;
 
         void print_info(LogStream &out) const
@@ -207,20 +299,111 @@ private:
                                    );
         }
 
+    private:
+
+#ifdef SERIALIZATION
+        /**
+         * @name Functions needed for boost::serialization
+         * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+         */
+        ///@{
+        friend class boost::serialization::access;
+
+        template<class Archive>
+        void
+        serialize(Archive &ar, const unsigned int version)
+        {
+            boost::fusion::for_each(data_varying_codim_,
+                                    [&](auto & type_and_data_same_codim)
+            {
+                using Type_Value = typename std::remove_reference<decltype(type_and_data_same_codim)>::type;
+                using Type = typename Type_Value::first_type;
+
+                const string tag_name = "data_codim_" + std::to_string(Type::value);
+                ar &boost::serialization::make_nvp(tag_name.c_str(),type_and_data_same_codim.second);
+            } // end lambda function
+                                   );
+        }
+        ///@}
+#endif // SERIALIZATION
+
     };
 
     boost::fusion::map<
-    boost::fusion::pair< Topology<0>,StuffSameDim<0> >,
-          boost::fusion::pair< Topology<1>,StuffSameDim<1> >,
+    boost::fusion::pair< Topology<1>,StuffSameDim<1> >,
           boost::fusion::pair< Topology<2>,StuffSameDim<2> >,
           boost::fusion::pair< Topology<3>,StuffSameDim<3> >
           > data_varying_dim_;
+
+
+private:
+
+#ifdef SERIALIZATION
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        boost::fusion::for_each(data_varying_dim_,
+                                [&](auto & type_and_data_same_dim)
+        {
+            using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
+            using Type = typename Type_Value::first_type;
+
+            const string tag_name = "data_dim_" + std::to_string(Type::value);
+            ar &boost::serialization::make_nvp(tag_name.c_str(),type_and_data_same_dim.second);
+        } // end lambda function
+                               );
+    }
+    ///@}
+#endif // SERIALIZATION
 
 };
 
 
 
 
+void serialize_deserialize(std::shared_ptr<FunctionsContainer> funcs_container)
+{
+    OUTSTART
+
+    out.begin_item("Original FunctionsContainer:");
+    funcs_container->print_info(out);
+    out.end_item();
+
+    std::string filename = "functions_container.xml";
+    std::string tag_name = "FunctionsContainer";
+    {
+        // serialize the PhysicalSpace object to an xml file
+        std::ofstream xml_ostream(filename);
+        OArchive xml_out(xml_ostream);
+
+        xml_out << boost::serialization::make_nvp(tag_name.c_str(),funcs_container);
+        xml_ostream.close();
+    }
+
+    funcs_container.reset();
+    {
+        // de-serialize the PhysicalSpace object from an xml file
+        std::ifstream xml_istream(filename);
+        IArchive xml_in(xml_istream);
+
+        xml_in >> BOOST_SERIALIZATION_NVP(funcs_container);
+        xml_istream.close();
+    }
+    out.begin_item("FunctionsContainer after serialize-deserialize:");
+    funcs_container->print_info(out);
+    out.end_item();
+//*/
+
+    OUTEND
+}
 
 
 
@@ -228,7 +411,7 @@ template <int dim,int codim,int range>
 using Func = Function<dim,codim,range,1>;
 
 
-int main()
+void do_test()
 {
     int n_elem_per_side = 2;
     auto grid_1 = CartesianGrid<1>::create(n_elem_per_side+1);
@@ -290,13 +473,6 @@ int main()
     auto bsp_func_2_3 = IgFunction<2,0,3,1>::create(bsp_space_2_3, bsp_coeff_2_3);
 
 
-
-    /*
-        auto phys_space_dim_range_1_codim =
-                PhysicalSpace<dim,range,1,codim,Transformation::hgrad>::create(
-                        bsp_space_dim_range,
-                        bsp_func_dim_);
-    //*/
 
     auto phys_space_1_1_1_0 =
         PhysicalSpace<1,1,1,0,Transformation::h_grad>::create(
@@ -376,46 +552,85 @@ int main()
     auto phys_func_2_3_1_1 = IgFunction<2,1,3,1>::create(phys_space_2_3_1_1,phys_coeff_2_3_1_1);
 
 
-    FunctionsContainer func_container;
-//    func_container.insert_map(bsp_func_1_1,"bsp_func_1_1");
+    auto funcs_container = std::make_shared<FunctionsContainer>();
 
-    func_container.insert_function(
+    funcs_container->insert_map(
+        phys_func_1_1_1_0->get_ig_space()->get_map_func(),
+        "map_1_1_1_0");
+
+    funcs_container->insert_map(
+        phys_func_2_1_1_0->get_ig_space()->get_map_func(),
+        "map_2_1_1_0");
+
+    funcs_container->insert_map(
+        phys_func_3_1_1_0->get_ig_space()->get_map_func(),
+        "map_3_1_1_0");
+
+    funcs_container->insert_map(
+        phys_func_2_2_1_0->get_ig_space()->get_map_func(),
+        "map_2_2_1_0");
+
+    funcs_container->insert_map(
+        phys_func_3_3_1_0->get_ig_space()->get_map_func(),
+        "map_3_3_1_0");
+
+    funcs_container->insert_map(
+        phys_func_2_1_1_1->get_ig_space()->get_map_func(),
+        "map_2_1_1_1");
+
+    funcs_container->insert_map(
+        phys_func_2_3_1_1->get_ig_space()->get_map_func(),
+        "map_2_3_1_1");
+
+    funcs_container->insert_map(func_identity_1_1,"map_identity_1_1");
+    funcs_container->insert_map(func_identity_2_2,"map_identity_2_2");
+    funcs_container->insert_map(func_identity_3_3,"map_identity_3_3");
+
+    funcs_container->insert_function(
         phys_func_1_1_1_0->get_ig_space()->get_map_func(),
         static_pointer_cast<Func<1,0,1>>(phys_func_1_1_1_0),
         "phys_func_1_1_1_0");
 
-    func_container.insert_function(
+    funcs_container->insert_function(
         phys_func_2_1_1_0->get_ig_space()->get_map_func(),
         static_pointer_cast<Func<2,0,1>>(phys_func_2_1_1_0),
         "phys_func_2_1_1_0");
 
-    func_container.insert_function(
+    funcs_container->insert_function(
         phys_func_3_1_1_0->get_ig_space()->get_map_func(),
         static_pointer_cast<Func<3,0,1>>(phys_func_3_1_1_0),
         "phys_func_3_1_1_0");
 
-    func_container.insert_function(
+    funcs_container->insert_function(
         phys_func_2_2_1_0->get_ig_space()->get_map_func(),
         static_pointer_cast<Func<2,0,2>>(phys_func_2_2_1_0),
         "phys_func_2_2_1_0");
 
-    func_container.insert_function(
+    funcs_container->insert_function(
         phys_func_3_3_1_0->get_ig_space()->get_map_func(),
         static_pointer_cast<Func<3,0,3>>(phys_func_3_3_1_0),
         "phys_func_3_3_1_0");
 
-    func_container.insert_function(
+    funcs_container->insert_function(
         phys_func_2_1_1_1->get_ig_space()->get_map_func(),
         static_pointer_cast<Func<2,1,1>>(phys_func_2_1_1_1),
         "phys_func_2_1_1_1");
 
-    func_container.insert_function(
+    funcs_container->insert_function(
         phys_func_2_3_1_1->get_ig_space()->get_map_func(),
         static_pointer_cast<Func<2,1,3>>(phys_func_2_3_1_1),
         "phys_func_2_3_1_1");
 
-    func_container.print_info(out);
+//    funcs_container->print_info(out);
+
+    serialize_deserialize(funcs_container);
+}
+
+
+
+int main()
+{
+    do_test();
 
     return 0;
 }
-

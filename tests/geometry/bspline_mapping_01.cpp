@@ -44,7 +44,7 @@ using namespace EpetraTools;
 
 
 template <int dim,int codim>
-void serialize_deserialize(std::shared_ptr< MapFunction<dim, dim+codim> > F)
+void serialize_deserialize(std::shared_ptr< IgFunction<dim,0, dim+codim,1> > F)
 {
     out.begin_item("Original IgFunction:");
     F->print_info(out);
