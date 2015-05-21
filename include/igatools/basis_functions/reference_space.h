@@ -237,6 +237,8 @@ public:
                   std::shared_ptr<InterGridMap<k>> elem_map) const;
 
 
+    using MapFunc = typename base_t::MapFunc;
+    std::shared_ptr<MapFunc> get_map_func() const override final;
 
 protected:
     /**

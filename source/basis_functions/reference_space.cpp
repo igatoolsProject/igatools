@@ -25,6 +25,7 @@
 
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/nurbs_space.h>
+#include <igatools/base/identity_function.h>
 
 
 using std::shared_ptr;
@@ -232,6 +233,15 @@ ReferenceSpace<dim, range, rank>::
 get_elem_num_basis() const
 {
     return dof_distribution_->get_num_dofs_table().total_dimension();
+}
+
+
+template<int dim, int range, int rank>
+auto
+ReferenceSpace<dim, range, rank>::
+get_map_func() const -> std::shared_ptr<MapFunc>
+{
+    return std::make_shared<IdentityFunction<dim,dim>>(this->get_grid());
 }
 
 

@@ -51,9 +51,11 @@ public:
     /** @name Constructors */
     ///@{
     /**
-     * Default constructor. Not allowed to be used.
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
      */
-    MappingElement() = delete;
+    MappingElement() = default;
 
     /**
      * Construct an accessor pointing to the element with

@@ -54,7 +54,8 @@ template<int,int,int> class NURBSElement;
  * @ingroup serializable
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
-class NURBSElementHandler : public ReferenceElementHandler<dim_,range_,rank_>
+class NURBSElementHandler
+    : public ReferenceElementHandler<dim_,range_,rank_>
 {
     using base_t = ReferenceElementHandler<dim_,range_,rank_>;
     using self_t = NURBSElementHandler<dim_,range_,rank_>;

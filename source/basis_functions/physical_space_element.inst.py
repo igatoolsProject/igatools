@@ -32,7 +32,7 @@ sub_dim_members = \
 ['void elhandler::FillCacheDispatcher::operator()(const Topology<k> &);' ,
  'void elhandler::InitCacheDispatcher::operator()(const Topology<k> &);']
 
-elements = []
+elements = ['PhysicalSpaceElement<0,0,1,0>']
 
 for space in inst.SubPhysSpaces:
     x = space.spec

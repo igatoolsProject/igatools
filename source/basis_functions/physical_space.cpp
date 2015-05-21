@@ -19,6 +19,7 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/basis_functions/physical_space.h>
+#include <igatools/base/function.h>
 #include <igatools/base/sub_function.h>
 #include <igatools/basis_functions/phys_space_element_handler.h>
 

@@ -29,6 +29,8 @@ IGA_NAMESPACE_OPEN
 //Forward declaration to avoid including header file.
 template <int, int> class MappingElement;
 
+template <int,int,int,int> class IgFunction;
+
 /**
  * @brief The mapping is a deformation \f$ F : \hat\Omega \to \Omega\f$
  * which maps the reference domain \f$\hat\Omega \in \mathbb{R}^{dim}\f$ to the
@@ -42,8 +44,10 @@ template <int, int> class MappingElement;
  * specializations (unknown at compile time).
  *
  * @ingroup containers
+ * @ingroup serializable
  *
  * @author pauletti 2014
+ * @author M. Martinelli, 2015
  */
 template<int dim_, int codim_ = 0>
 class Mapping :
@@ -87,9 +91,15 @@ public:
 
 public:
 
+    /**
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
+     */
+    Mapping() = default;
+
     Mapping(std::shared_ptr<FuncType> F);
 
-    Mapping() = delete;
 
     ~Mapping();
 
@@ -128,9 +138,6 @@ public:
 
     ElementIterator end();
 
-protected:
-    std::shared_ptr<typename ElementAccessor::CacheType>
-    get_cache(ElementAccessor &elem);
 
 private:
     std::shared_ptr<FuncType> F_;
@@ -138,6 +145,26 @@ private:
     SafeSTLArray<ValueFlags, dim_ + 1> flags_;
 
     friend ElementAccessor;
+
+#ifdef SERIALIZATION
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar.template register_type<IgFunction<dim_,0,dim_+codim_,1> >();
+        ar &boost::serialization::make_nvp("F_",F_);
+        ar &boost::serialization::make_nvp("flags_",flags_);
+    }
+    ///@}
+#endif
+
 };
 
 IGA_NAMESPACE_CLOSE

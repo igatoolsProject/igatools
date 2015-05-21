@@ -62,16 +62,6 @@ mapping_to_function_flags(const ValueFlags &flags)
 };
 
 
-template<int dim_, int codim_>
-auto
-Mapping<dim_, codim_>::
-get_cache(ElementAccessor &elem)
--> std::shared_ptr<typename ElementAccessor::CacheType>
-{
-    return elem.local_cache_;
-}
-
-
 
 template<int dim_, int codim_>
 Mapping<dim_, codim_>::

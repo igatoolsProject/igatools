@@ -24,11 +24,15 @@
 #include <igatools/base/config.h>
 #include <igatools/geometry/grid_wrapper.h>
 #include <igatools/geometry/cartesian_grid.h>
+//#include <igatools/base/function.h>
+
 //#include <igatools/basis_functions/space_element.h>
+
 
 
 IGA_NAMESPACE_OPEN
 
+template <int,int,int,int> class Function;
 template <int> class CartesianGridElementAccessor;
 template <int,int,int,int> class SpaceElement;
 template <int,int,int,int> class SpaceElementHandler;
@@ -157,7 +161,12 @@ protected:
 
 public:
 
+
     static const int dim = dim_;
+
+
+    using MapFunc = Function<dim_,0,dim_+codim_,1>;
+    virtual std::shared_ptr<MapFunc> get_map_func() const = 0;
 
     virtual std::shared_ptr<const DofDistribution<dim_,range_,rank_> >
     get_dof_distribution() const = 0;

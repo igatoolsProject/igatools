@@ -32,7 +32,7 @@ sub_dim_members = \
 ['void elhandler::FillCacheDispatcher::operator()(const Topology<k> &);' ,
  'void elhandler::InitCacheDispatcher::operator()(const Topology<k> &);']
 
-handlers = []
+handlers = ['PhysSpaceElementHandler<0,0,1,0>']
 handler_templated_funcs = []
 
 for space in inst.SubPhysSpaces:

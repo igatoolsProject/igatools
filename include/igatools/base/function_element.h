@@ -165,7 +165,6 @@ public:
     decltype(auto) evaluate_at_points(const Quadrature<dim> &points)
     {
         func_->reset(ValueType::flag,points);
-//        func_->reset_one_element(ValueType::flag,points,this->get_flat_index());
         const auto topology = Topology<dim>();
         func_->init_cache(*this,topology);
         func_->fill_cache(*this,topology,0);

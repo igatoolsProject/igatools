@@ -247,6 +247,16 @@ void
 IgFunction<dim,codim,range,rank>::
 print_info(LogStream &out) const
 {
+    using std::to_string;
+    const std::string template_args= "<" + to_string(dim) + "," + to_string(codim) + ","
+                                     + to_string(range) + "," + to_string(rank) + ">";
+
+    out.begin_item("IgFunction" + template_args);
+
+    out.begin_item("Function" + template_args);
+    parent_t::print_info(out);
+    out.end_item();
+
     out.begin_item("Reference space info:");
     space_->print_info(out);
     out.end_item();
@@ -254,6 +264,8 @@ print_info(LogStream &out) const
 
     out.begin_item("Coefficients (a.k.a. \"control values\"):");
     coeff_.print_info(out);
+    out.end_item();
+
     out.end_item();
 }
 
@@ -283,13 +295,13 @@ serialize(Archive &ar, const unsigned int version)
 
     ar.template register_type<BSplineElement<dim,range,rank>>();
     ar.template register_type<NURBSElement<dim,range,rank>>();
-//    ar.template register_type<PhysicalSpaceElement<dim,range,rank,0>>();
+    ar.template register_type<PhysicalSpaceElement<dim,range,rank,codim>>();
     ar &boost::serialization::make_nvp("space_elem_",space_elem_);
 
 
     ar.template register_type<BSplineElementHandler<dim,range,rank>>();
     ar.template register_type<NURBSElementHandler<dim,range,rank>>();
-//    ar.template register_type<PhysSpaceElementHandler<dim,range,rank,0>>();
+    ar.template register_type<PhysSpaceElementHandler<dim,range,rank,codim>>();
     ar &boost::serialization::make_nvp("space_elem_handler_",space_elem_handler_);
     Assert(space_elem_handler_ != nullptr,ExcNullPtr());
 }

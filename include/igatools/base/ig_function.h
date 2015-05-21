@@ -50,8 +50,8 @@ class BSplineSpace;
 template <int,int,int>
 class NURBSSpace;
 
-template <int,int,int,int,class>
-class PhysicaSSpace;
+//template <int,int,int,int,class>
+//class PhysicalSpace;
 
 
 template <int,int,int,int>
@@ -159,7 +159,7 @@ public:
 
     self_t &operator +=(const self_t &fun);
 
-    void print_info(LogStream &out) const;
+    virtual void print_info(LogStream &out) const override final;
 
 protected:
     /**
