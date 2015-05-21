@@ -54,8 +54,6 @@ endforeach(item)
 # Finding the needed libraries.
 find_igatools ()
 
-# find_trilinos ()
-
 find_paraview ()
 #-------------------------------------------------------------------------------
 

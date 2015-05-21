@@ -22,6 +22,7 @@
 # Find Paraview library (Required)
 #-------------------------------------------------------------------------------
 macro(find_paraview)
-  find_package(ParaView REQUIRED)
+  find_package(ParaView REQUIRED QUIET)
   include (${PARAVIEW_USE_FILE})
+  message(STATUS "Found ParaView:  version ${ParaView_VERSION}.")
 endmacro(find_paraview)
