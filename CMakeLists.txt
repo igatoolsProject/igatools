@@ -108,6 +108,7 @@ option(NURBS "Enable NURBS support" ON)
 option(HIERARCHICAL "Enable Hierarchical splines support (experimental)" OFF)
 option(submit_test "Allow test submition" OFF)
 option(SERIALIZATION "Enable serialization support" ON)
+option(PARAVIEW_PLUGIN "Enable the building of the ParaView plugin" OFF)
 
 # Optinal libraries
 option(USE_TRILINOS "Use the linear algebra packages from Trilinos" ON)
@@ -196,6 +197,14 @@ create_install_target(${use_other_templates})
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Create target to generate documentation
 create_doc_target()
+#
+#-------------------------------------------------------------------------------
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# ParaView plugin section
+if (PARAVIEW_PLUGIN)
+  add_subdirectory(${PROJECT_SOURCE_DIR}/addons/paraview_plugin)
+endif()
 #
 #-------------------------------------------------------------------------------
 

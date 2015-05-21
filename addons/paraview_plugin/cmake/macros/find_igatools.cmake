@@ -19,18 +19,23 @@
 #-+--------------------------------------------------------------------
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Find Boost library (Required)
+# Find Igatools library (Required)
 #-------------------------------------------------------------------------------
-macro(find_boost)
+macro(find_igatools)
 
-  if (SERIALIZATION)
-    find_package(Boost 1.54.0 REQUIRED COMPONENTS serialization)
-    include_directories(${Boost_INCLUDE_DIRS})
-    find_library (Boost_serialization boost_serialization ${Boost_LIBRARY_DIRS})
-    set(Boost_LIBRARIES "${Boost_serialization}")
+  if (IGATOOLS_PREFIX)
+    set(igatools_PREFIX ${IGATOOLS_PREFIX} CACHE LOCATION 
+      "Location where igatools library is installed")
   else ()
-    find_package(Boost 1.54.0 REQUIRED)
-    include_directories(${Boost_INCLUDE_DIRS})
+    set(igatools_PREFIX $ENV{IGATOOLS_PREFIX} CACHE LOCATION 
+      "Location where igatools library is installed")
   endif ()
-  
-endmacro(find_boost)
+
+  set(CMAKE_PREFIX_PATH ${igatools_PREFIX}/lib ${CMAKE_PREFIX_PATH} )
+
+  find_package(igatools 1.0.0 REQUIRED PATHS ${igatools_PREFIX})
+  link_directories(${IGATOOLS_LIBRARY_DIR})
+  include_directories(${IGATOOLS_INCLUDE_DIRS})
+
+endmacro(find_igatools)
+

@@ -19,18 +19,11 @@
 #-+--------------------------------------------------------------------
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Find Boost library (Required)
-#-------------------------------------------------------------------------------
-macro(find_boost)
+# Create the install target
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-  if (SERIALIZATION)
-    find_package(Boost 1.54.0 REQUIRED COMPONENTS serialization)
-    include_directories(${Boost_INCLUDE_DIRS})
-    find_library (Boost_serialization boost_serialization ${Boost_LIBRARY_DIRS})
-    set(Boost_LIBRARIES "${Boost_serialization}")
-  else ()
-    find_package(Boost 1.54.0 REQUIRED)
-    include_directories(${Boost_INCLUDE_DIRS})
-  endif ()
-  
-endmacro(find_boost)
+macro(create_install_target)
+  install(TARGETS ${igatools_paraview_lib_name}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
+    LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+endmacro(create_install_target)
