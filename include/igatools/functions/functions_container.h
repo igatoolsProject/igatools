@@ -38,17 +38,30 @@
 
 IGA_NAMESPACE_OPEN
 
+/**
+ * Type alias for the associative container (a std::map) between a pointer to a
+ * Function<dim,codim,range,rank> and a string (e.g. the function's name).
+ */
 template <int dim,int codim,int range,int rank>
 using DictionaryFuncPtrName =
-		std::map<std::shared_ptr<Function<dim,codim,range,rank>>,std::string>;
+    std::map<std::shared_ptr<Function<dim,codim,range,rank>>,std::string>;
+
+
+/**
+ * Type alias for the heterogeneous associative container (a boost::fusion::map)
+ * between a type representing the <tt>rank</tt> index and a collection of functions
+ * with the same quadruplet <tt><dim,codim,range,rank</tt>.
+ */
+template <int dim,int codim,int range>
+using DataVaryingRank = boost::fusion::map<
+                        boost::fusion::pair< Topology<1>,DictionaryFuncPtrName<dim,codim,range,1> > >;
 
 
 template <int dim,int codim,int range>
 class StuffSameDimAndCodimAndRange
 {
 public:
-    boost::fusion::map<
-    boost::fusion::pair< Topology<1>,DictionaryFuncPtrName<dim,codim,range,1> > > data_varying_rank_;
+    DataVaryingRank<dim,codim,range> data_varying_rank_;
 
     void print_info(LogStream &out) const
     {
@@ -230,6 +243,9 @@ make_DataVaryingCodim(std::index_sequence<I...>)
                boost::fusion::pair<Topology<I>,StuffSameDimAndCodim<dim,I> >() ...);
 }
 
+/**
+ *
+ */
 template <int dim>
 using DataVaryingCodim = decltype(make_DataVaryingCodim<dim>(std::make_index_sequence<4-dim>()));
 
@@ -316,7 +332,7 @@ private:
             using Type_Value = typename std::remove_reference<decltype(type_and_data_same_codim)>::type;
             using Type = typename Type_Value::first_type;
 
-            const string tag_name = "data_codim_" + std::to_string(Type::value);
+            const std::string tag_name = "data_codim_" + std::to_string(Type::value);
             ar &boost::serialization::make_nvp(tag_name.c_str(),type_and_data_same_codim.second);
         } // end lambda function
                                );
@@ -336,14 +352,50 @@ make_DataVaryingDim(std::index_sequence<I...>)
                boost::fusion::pair<Topology<I+1>,StuffSameDim<I+1> >() ...);
 }
 
+
+/**
+ * Alias for the type representing the all the data in kept in the FunctionsContainer class.
+ */
 template <int dim>
 using DataVaryingDim = decltype(make_DataVaryingDim(std::make_index_sequence<dim>()));
 
-
+/**
+ * @brief Heterogeneous associative container between geometry parametrizations
+ * (the container's "key") and functions (the "value" associated to the "key").
+ *
+ * The container is heterogeneous in the sense that can hold data referred to different combinations
+ * of quadruplets <tt><dim,codim,range,rank></tt> and it is defined as a "4-index" container,
+ * and the data is organized following the quadruplets order <tt><dim,codim,range,rank></tt>.
+ * Therefore the first index selects the data identified with <tt>dim</tt> and the second
+ * index the data identified with the pair <tt>dim,codim</tt>: at this point we use an associative
+ * container (a std::map) having as a key a (shared) pointer to the geometry parametrization
+ * and as associated value, an object containing the name given to the geometry and the container
+ * holding all functions associated to the geometry.
+ *
+ * Unfortunately the STL library does not provide associative containers between heterogeneous
+ * types, so we used the boost::fusion library (and specifically the boost::fusion::map class)
+ * in order to have such kind of container.
+ *
+ * @ingroup serializable
+ *
+ * @author M. Martinelli, 2015
+ */
 class FunctionsContainer
 {
 public:
 
+    template <int dim>
+    const auto &get_data_dim() const
+    {
+        return boost::fusion::at_key<Topology<dim>>(data_varying_dim_);
+    }
+
+    /**
+     * Adds a @p map (i.e. a geometry paramtrization) with the given @p map_name to the container.
+     *
+     * @note In Debug mode, an assertion will be raised if
+     * the @p map is already present in the container,
+     */
     template<int dim, int space_dim>
     void insert_map(std::shared_ptr<MapFunction<dim,space_dim>> map, const std::string &map_name)
     {
@@ -357,10 +409,20 @@ public:
         data_same_dim_codim.maps_and_data_varying_range_[map].map_name_ = map_name;
     };
 
+    /**
+     * Adds the Function @p function to the container and creates an association with the
+     * MapFunction @p map. At the end, the @p function is tagged with the string @p func_name.
+     *
+     * @pre 1) The @p map should be present in the container (i.e. should be inserted with insert_map()).
+     * @pre 2) The association <tt>map-function</tt> must not be already established.
+     *
+     * @note In Debug mode an assertion will be raised if some of the two precondition
+     * above are unsatisfied.
+     */
     template<int dim, int codim,int range,int rank>
     void insert_function(
         std::shared_ptr<MapFunction<dim,dim+codim>> map,
-        std::shared_ptr<Function<dim,codim,range,rank>> func,
+        std::shared_ptr<Function<dim,codim,range,rank>> function,
         const std::string &func_name)
     {
         using boost::fusion::at_key;
@@ -376,35 +438,25 @@ public:
 
         auto &data_same_dim_codim_range_rank = at_key<Topology<rank>>(data_same_dim_codim_range.data_varying_rank_);
 
-        Assert(data_same_dim_codim_range_rank.count(func) == 0,
+        Assert(data_same_dim_codim_range_rank.count(function) == 0,
                ExcMessage("Function already added to the container."));
-        data_same_dim_codim_range_rank[func] = func_name;
+        data_same_dim_codim_range_rank[function] = func_name;
     }
 
-
-    void print_info(LogStream &out) const
-    {
-        boost::fusion::for_each(data_varying_dim_,
-                                [&](const auto & type_and_data_same_dim)
-        {
-            using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
-            using Type = typename Type_Value::first_type;
-
-            out.begin_item("Dim : " + std::to_string(Type::value));
-            type_and_data_same_dim.second.print_info(out);
-            out.end_item();
-
-        } // end lambda function
-                               );
-    }
+    /**
+     * Prints some internal information. Mostly used for testing and debugging purposes.
+     */
+    void print_info(LogStream &out) const;
 
 private:
 
 
+    /**
+     * All the data in the FunctionsContainer class, organized by the @p dim index.
+     */
     DataVaryingDim<3> data_varying_dim_;
 
 
-private:
 
 #ifdef SERIALIZATION
     /**
@@ -416,19 +468,7 @@ private:
 
     template<class Archive>
     void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        boost::fusion::for_each(data_varying_dim_,
-                                [&](auto & type_and_data_same_dim)
-        {
-            using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
-            using Type = typename Type_Value::first_type;
-
-            const string tag_name = "data_dim_" + std::to_string(Type::value);
-            ar &boost::serialization::make_nvp(tag_name.c_str(),type_and_data_same_dim.second);
-        } // end lambda function
-                               );
-    }
+    serialize(Archive &ar, const unsigned int version);
     ///@}
 #endif // SERIALIZATION
 
