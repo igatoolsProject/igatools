@@ -33,6 +33,8 @@ class PhysicalSpace;
 
 /**
  * Element handler for an isogeometric space
+ *
+ * @ingroup serializable
  */
 template<int dim_,int range_,int rank_,int codim_>
 class PhysSpaceElementHandler
@@ -223,6 +225,37 @@ private:
         PushFwd &push_fwd_;
         PhysicalSpaceElement<dim_,range_,rank_,codim_> &phys_elem_;
     };
+
+
+
+
+#ifdef SERIALIZATION
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("PhysSpaceElementHandler_base_t",
+                                           boost::serialization::base_object<base_t>(*this));
+
+        ar.template register_type<BSplineElementHandler<dim_,range_,rank_> >();
+        ar.template register_type<NURBSElementHandler<dim_,range_,rank_> >();
+        ar &boost::serialization::make_nvp("ref_space_handler_",ref_space_handler_);
+
+
+        ar &boost::serialization::make_nvp("push_fwd_",push_fwd_);
+
+
+        ar &boost::serialization::make_nvp("flags_",flags_);
+    }
+    ///@}
+#endif
 
 };
 

@@ -41,30 +41,32 @@ sub_dim_members = \
    'std::shared_ptr<InterGridMap<k>> elem_map) const;']
 
 
-spaces = []
+spaces = ['PhysicalSpace<0,0,1,0, Transformation::h_grad>']
 
 
-for space in inst.SubPhysSpaces:
-    x = space.spec
-    f.write( 'template class %s;\n' %space.name)
-    spaces.append(space.name)
+for sp in inst.SubPhysSpaces:
+    x = sp.spec
+#    f.write( 'template class %s;\n' %sp.name)
+    spaces.append(sp.name)
     for fun in sub_dim_members:
         k = x.dim
-        s = fun.replace('class', space.name).replace('k', '%d' % (k));
+        s = fun.replace('class', sp.name).replace('k', '%d' % (k));
         f.write('template ' + s + '\n')
 
 
-for space in inst.PhysSpaces:
-    x = space.spec
-    f.write( 'template class %s;\n' %space.name)
-    spaces.append(space.name)
+for sp in inst.PhysSpaces:
+    x = sp.spec
+#    f.write( 'template class %s;\n' %sp.name)
+    spaces.append(sp.name)
     for fun in sub_dim_members:
         for k in inst.sub_dims(x.dim):
-            s = fun.replace('class', space.name).replace('k', '%d' % (k));
+            s = fun.replace('class', sp.name).replace('k', '%d' % (k));
             f.write('template ' + s + '\n')
 
 
 
+for space in unique(spaces):
+    f.write( 'template class %s;\n' %space)
 
 
 #---------------------------------------------------

@@ -35,15 +35,23 @@ int physical_range(const int ref_range, const int space_dim, const Transformatio
 //Forward declaration to avoid including header file.
 template <Transformation, int, int> class PushForwardElement;
 
+
 /**
  *
+ *
  * @ingroup containers
+ * @ingroup serializable
+ *
+ * @author pauletti 2014
+ * @author M. Martinelli, 2015
+ *
  */
 template<Transformation type_, int dim_, int codim_ = 0>
 class PushForward : public Mapping<dim_, codim_>
 {
 private:
     using self_t = PushForward<type_, dim_, codim_>;
+    using base_t = Mapping<dim_, codim_>;
     using MapType = Mapping<dim_, codim_>;
     using typename MapType::FuncType;
 public:
@@ -97,6 +105,27 @@ public:
     ElementIterator begin() const;
 
     ElementIterator end() const;
+
+
+private:
+
+#ifdef SERIALIZATION
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("PushForward_base_t",
+                                           boost::serialization::base_object<base_t>(*this));
+    }
+    ///@}
+#endif
 
 };
 

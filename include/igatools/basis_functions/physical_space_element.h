@@ -38,6 +38,7 @@ template <class Accessor> class CartesianGridIterator;
 /**
  *
  * @ingroup elements
+ * @ingroup serializable
  */
 template<int dim_,int range_,int rank_,int codim_>
 class PhysicalSpaceElement
@@ -333,6 +334,33 @@ private:
      * copy constructor.
      */
     std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_>> clone() const override final;
+
+
+#ifdef SERIALIZATION
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("PhysicalSpaceElement_base_t",
+                                           boost::serialization::base_object<parent_t>(*this));
+
+        ar.template register_type<BSplineElement<dim_,range_,rank_> >();
+        ar.template register_type<NURBSElement<dim_,range_,rank_> >();
+        ar &boost::serialization::make_nvp("ref_space_element_",ref_space_element_);
+
+
+        ar &boost::serialization::make_nvp("push_fwd_element_",push_fwd_element_);
+    }
+    ///@}
+#endif
+
 };
 
 
