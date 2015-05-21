@@ -23,16 +23,12 @@
 #-------------------------------------------------------------------------------
 macro(find_boost)
 
-    message("Serialization ${SERIALIZATION}")
-
-  if (SERIALIZATION)
+    if (USE_SERIALIZATION)
     find_package(Boost 1.54.0 REQUIRED COMPONENTS serialization)
     include_directories(${Boost_INCLUDE_DIRS})
     find_library (Boost_serialization boost_serialization ${Boost_LIBRARY_DIRS})
-    message("${Boost_serialization}")
     set(Boost_LIBRARIES "${Boost_serialization}")
   else ()
-    message("${Boost_LIBRARY_DIRS}")
     find_package(Boost 1.54.0 REQUIRED)
     include_directories(${Boost_INCLUDE_DIRS})
   endif ()

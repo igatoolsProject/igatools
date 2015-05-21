@@ -96,10 +96,20 @@ find_boost()
 #
 #-------------------------------------------------------------------------------
 
-
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Optional features for building  igatools
 #
+
+# User defined variables at command line
+set(USE_SERIALIZATION ON CACHE BOOL "Enable serialization support")
+set(USE_PARAVIEW_PLUGIN OFF CACHE BOOL "Enable the building of the ParaView plugin")
+
+if ((NOT USE_SERIALIZATION) AND (USE_PARAVIEW_PLUGIN))
+    message (SEND_ERROR "USE_PARAVIEW_PLUGIN variable set to ON is not "
+    "compatible with USE_SERIALIZATION set to OFF. Serialization must be "
+    "activated.")
+endif ()
+
 # Choose the precision for the real values
 option(REAL_IS_LONG_DOUBLE "Enable quadruple precision" OFF)
 option(use_other_templates "Enable a mechanism to use uninstantiated templates" ON)
@@ -107,8 +117,7 @@ option(MPATCH "Enable multipatch features of the library (experimental)" OFF)
 option(NURBS "Enable NURBS support" ON)
 option(HIERARCHICAL "Enable Hierarchical splines support (experimental)" OFF)
 option(submit_test "Allow test submition" OFF)
-option(SERIALIZATION "Enable serialization support" ON)
-option(PARAVIEW_PLUGIN "Enable the building of the ParaView plugin" OFF)
+option(SERIALIZATION "Enable serialization support" ${USE_SERIALIZATION})
 
 # Optinal libraries
 option(USE_TRILINOS "Use the linear algebra packages from Trilinos" ON)
@@ -202,7 +211,7 @@ create_doc_target()
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # ParaView plugin section
-if (PARAVIEW_PLUGIN)
+if (USE_PARAVIEW_PLUGIN)
   add_subdirectory(${PROJECT_SOURCE_DIR}/addons/paraview_plugin)
 endif()
 #
