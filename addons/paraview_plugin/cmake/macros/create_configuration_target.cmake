@@ -37,13 +37,13 @@ macro(create_configuration_target)
 
   include_directories(${PROJECT_SOURCE_DIR}/include)
 
-  add_paraview_plugin (${igatools_paraview_lib_name} "${vtkIgatoolsReader_VERSION}"
+  add_paraview_plugin (${igatools_paraview_lib_name} "${IGATOOLS_PARAVIEW_VERSION}"
     SERVER_MANAGER_XML       ${manager_source_files_xml}
     SERVER_MANAGER_SOURCES   ${manager_source_files_cxx}
     SERVER_SOURCES           ${source_files_cxx}
     )
 
-  set_property(TARGET ${igatools_paraview_lib_name} PROPERTY VERSION ${vtkIgatoolsReader_VERSION})
+  set_property(TARGET ${igatools_paraview_lib_name} PROPERTY VERSION ${IGATOOLS_PARAVIEW_VERSION})
 
   target_link_libraries(${igatools_paraview_lib_name}
                         LINK_PRIVATE
