@@ -202,7 +202,7 @@ create_doc_target()
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # ParaView plugin section
-if (USE_TRILINOS)
+if (PARAVIEW_PLUGIN)
   add_subdirectory(${PROJECT_SOURCE_DIR}/addons/paraview_plugin)
 endif()
 #
