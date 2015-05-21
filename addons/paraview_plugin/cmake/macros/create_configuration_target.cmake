@@ -46,7 +46,7 @@ macro(create_configuration_target)
   set_property(TARGET ${igatools_paraview_lib_name} PROPERTY VERSION ${vtkIgatoolsReader_VERSION})
 
   target_link_libraries(${igatools_paraview_lib_name}
-          LINK_PRIVATE
+                        LINK_PRIVATE
                         ${IGATOOLS_LIBRARIES})
 
 endmacro(create_configuration_target)

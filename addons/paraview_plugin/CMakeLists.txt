@@ -34,9 +34,8 @@ set(IGATOOLS_PARAVIEW_VERSION
 #
 #-------------------------------------------------------------------------------
 
-set(igatools_paraview_name vtkIgatoolsReader.${IGATOOLS_PARAVIEW_VERSION})
-set(igatools_paraview_lib_name
-    vtkIgatoolsReader_${IGATOOLS_PARAVIEW_MAJOR_VERSION}_${IGATOOLS_PARAVIEW_MINOR_VERSION}_${IGATOOLS_PARAVIEW_PATCH_VERSION})
+set(igatools_paraview_name vtkIgatoolsReader)
+set(igatools_paraview_lib_name vtkIgatoolsReader)
 project (${igatools_paraview_name} CXX)
 
 message("Configuring igatools-ParaView plugin")
@@ -50,23 +49,16 @@ endforeach(item)
 #
 #-------------------------------------------------------------------------------
 
-#--------------------------------------------------------------
-# Finding the needed libraries.
-find_igatools ()
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Including dependencies
+set( CMAKE_PREFIX_PATH ${iga_BINARY_DIR} ${CMAKE_PREFIX_PATH} )
+find_package( igatools REQUIRED)
+
+include_directories(${IGATOOLS_INCLUDE_DIRS})
+link_directories(${IGATOOLS_LIBRARY_DIR})
 
 find_paraview ()
-#-------------------------------------------------------------------------------
-
-
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Compiler and compile flags
-init_cxx_flags()
-#
-#-------------------------------------------------------------------------------
-
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# igatools include directories
-include_directories(${PROJECT_SOURCE_DIR}/include)
 #-------------------------------------------------------------------------------
 
 
@@ -77,5 +69,5 @@ create_configuration_target ()
 
 create_install_target()
 
-create_doc_target()
+# create_doc_target()
 #-------------------------------------------------------------------------------
