@@ -159,7 +159,7 @@ public:
 
     self_t &operator +=(const self_t &fun);
 
-    void print_info(LogStream &out) const;
+    virtual void print_info(LogStream &out) const override final;
 
 protected:
     /**

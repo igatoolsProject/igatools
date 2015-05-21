@@ -50,18 +50,36 @@ clone() const -> std::shared_ptr<parent_t>
     return std::make_shared<self_t>(*this);
 }
 
+template<int dim,int space_dim>
+void
+IdentityFunction<dim,space_dim>::
+print_info(LogStream &out) const
+{
+    using std::to_string;
+    out.begin_item("IdentityFunction<" + to_string(dim) + "," + to_string(space_dim) + ">");
+
+    out.begin_item("Function<" + to_string(dim) + ",0," + to_string(space_dim) + ",1>");
+    parent_t::print_info(out);
+    out.end_item();
+
+    out.end_item();
+}
+
 
 template<int dim,int space_dim>
 auto
 IdentityFunction<dim,space_dim>::
-fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) -> void
+fill_cache(ElementAccessor &elem, const topology_variant &k, const int sub_elem_id) -> void
 {
-    parent_t::fill_cache(elem, k, j);
-    fill_cache_impl.j = j;
-    fill_cache_impl.function = this;
-    fill_cache_impl.elem = &elem;
-    fill_cache_impl.flags_ = &(this->flags_);
-    boost::apply_visitor(fill_cache_impl, k);
+    parent_t::fill_cache(elem, k, sub_elem_id);
+//    fill_cache_impl.j = j;
+//    fill_cache_impl.function = this;
+//    fill_cache_impl.elem = &elem;
+//    fill_cache_impl.flags_ = &(this->flags_);
+
+    auto fill_cache_dispatcher = FillCacheDispatcher(sub_elem_id,*this,elem);
+
+    boost::apply_visitor(fill_cache_dispatcher, k);
 }
 
 IGA_NAMESPACE_CLOSE

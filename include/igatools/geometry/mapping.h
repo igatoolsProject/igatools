@@ -138,9 +138,6 @@ public:
 
     ElementIterator end();
 
-protected:
-    std::shared_ptr<typename ElementAccessor::CacheType>
-    get_cache(ElementAccessor &elem);
 
 private:
     std::shared_ptr<FuncType> F_;

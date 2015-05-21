@@ -247,6 +247,16 @@ void
 IgFunction<dim,codim,range,rank>::
 print_info(LogStream &out) const
 {
+    using std::to_string;
+    const std::string template_args= "<" + to_string(dim) + "," + to_string(codim) + ","
+                                     + to_string(range) + "," + to_string(rank) + ">";
+
+    out.begin_item("IgFunction" + template_args);
+
+    out.begin_item("Function" + template_args);
+    parent_t::print_info(out);
+    out.end_item();
+
     out.begin_item("Reference space info:");
     space_->print_info(out);
     out.end_item();
@@ -254,6 +264,8 @@ print_info(LogStream &out) const
 
     out.begin_item("Coefficients (a.k.a. \"control values\"):");
     coeff_.print_info(out);
+    out.end_item();
+
     out.end_item();
 }
 

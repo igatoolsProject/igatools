@@ -42,7 +42,8 @@ IGA_NAMESPACE_OPEN
  * @ingroup serializable
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
-class BSplineElementHandler : public ReferenceElementHandler<dim_,range_,rank_>
+class BSplineElementHandler
+    : public ReferenceElementHandler<dim_,range_,rank_>
 {
     using base_t = ReferenceElementHandler<dim_,range_,rank_>;
     using self_t = BSplineElementHandler<dim_,range_,rank_>;

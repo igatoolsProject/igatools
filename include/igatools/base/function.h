@@ -275,14 +275,12 @@ private:
 
 
 
-    // TODO (pauletti, Apr 10, 2015): next function should not be public
-public:
+protected:
     std::shared_ptr<typename ElementAccessor::CacheType>
     &get_cache(ElementAccessor &elem);
 
 
 
-protected:
     /**
      * One flag for each possile subdim
      */

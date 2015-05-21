@@ -44,6 +44,9 @@ create_id_tensor()
  * @note this function is not inherited from formula function because
  * we want to optimize its computation
  *
+ *
+ * @ingroup serializable
+ *
  * @author martinelli 2015
  * @author pauletti 2015
  */
@@ -81,6 +84,8 @@ public:
 
     IdentityFunction(std::shared_ptr<GridType> grid);
 
+    virtual ~IdentityFunction() = default;
+
     static std::shared_ptr<parent_t>
     create(std::shared_ptr<GridType> grid);
 
@@ -88,25 +93,39 @@ public:
 
 
     void fill_cache(ElementAccessor &elem, const topology_variant &k,
-                    const int j) override;
+                    const int j) override final;
+
+    virtual void print_info(LogStream &out) const override final;
 
 private:
+    /**
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
+     */
+    IdentityFunction() = default;
+
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
+        FillCacheDispatcher(const int sub_elem_id,self_t &function,ElementAccessor &elem)
+            :
+            sub_elem_id_(sub_elem_id),
+            function_(function),
+            elem_(elem)
+        {}
+
         template<int sub_elem_dim>
         void operator()(const Topology<sub_elem_dim> &sub_elem)
         {
-            auto &local_cache = function->get_cache(*elem);
-            auto &cache = local_cache->template get_sub_elem_cache<sub_elem_dim>(j);
-//            auto &flags = cache.flags_handler_;
+            auto &local_cache = function_.get_cache(elem_);
+            auto &cache = local_cache->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id_);
 
             if (!cache.fill_none())
             {
-
                 if (cache.template status_fill<_Point>() || cache.template status_fill<_Value>())
                 {
                     const auto points =
-                        elem->CartesianGridElement<dim>::template get_points<sub_elem_dim>(j);
+                        elem_.CartesianGridElement<dim>::template get_points<sub_elem_dim>(sub_elem_id_);
 
                     if (cache.template status_fill<_Point>())
                     {
@@ -130,7 +149,7 @@ private:
                 if (cache.template status_fill<_Gradient>())
                 {
                     // TODO (pauletti, Apr 17, 2015): this can be static const
-                    auto identity = create_id_tensor<dim,space_dim>();
+                    const auto identity = create_id_tensor<dim,space_dim>();
                     cache.template get_data<_Gradient>().fill(identity);
 
                     cache.template set_status_filled<_Gradient>(true);
@@ -147,14 +166,32 @@ private:
             cache.set_filled(true);
         }
 
-        int j;
-        self_t *function;
-        ElementAccessor *elem;
-        SafeSTLArray<ValueFlags, dim+1> *flags_;
+        const int sub_elem_id_;
+        self_t &function_;
+        ElementAccessor &elem_;
     };
 
-    FillCacheDispatcher fill_cache_impl;
     friend class FillCacheDispatcher;
+
+
+#ifdef SERIALIZATION
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("IdentityFunction_base_t",
+                                           boost::serialization::base_object<parent_t>(*this));
+    }
+    ///@}
+#endif // SERIALIZATION
+
 };
 
 

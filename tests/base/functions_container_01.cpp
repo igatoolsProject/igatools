@@ -68,8 +68,13 @@ public:
 
 
             out.begin_item("Functions num. : " + std::to_string(funcs_with_name.size()));
+            int f_id = 0;
             for (const auto &f : funcs_with_name)
-                out << "Function name: " << f.second << std::endl;
+            {
+                out.begin_item("Function[" + std::to_string(f_id++) + "] name: " + f.second);
+//                f.first->print_info(out);
+                out.end_item();
+            }
             out.end_item();
 
             out.end_item();
@@ -165,11 +170,16 @@ public:
 
     void print_info(LogStream &out) const
     {
-        out.begin_item("Mappings num. : " + std::to_string(maps_and_data_varying_range_.size()));
+        using std::to_string;
+        out.begin_item("Mappings num. : " + to_string(maps_and_data_varying_range_.size()));
+        int map_id = 0;
         for (const auto &map_and_data_varying_range : maps_and_data_varying_range_)
         {
             const auto &data_varying_range = map_and_data_varying_range.second;
-            out.begin_item("Map name: " + data_varying_range.map_name_);
+            out.begin_item("Map[" + to_string(map_id++) + "] name: " + data_varying_range.map_name_);
+
+            const auto &map = *map_and_data_varying_range.first;
+            map.print_info(out);
 
             boost::fusion::for_each(data_varying_range.funcs_,
                                     [&](const auto & type_and_data_same_range)
@@ -177,13 +187,13 @@ public:
                 using Type_Value = typename std::remove_reference<decltype(type_and_data_same_range)>::type;
                 using Type = typename Type_Value::first_type;
 
-                out.begin_item("Range : " + std::to_string(Type::value));
+                out.begin_item("Range : " + to_string(Type::value));
                 type_and_data_same_range.second.print_info(out);
                 out.end_item();
             } // end lambda function
                                    );
             out.end_item();
-        }
+        } // end loop maps
         out.end_item();
     }; // end print_info()
 
@@ -202,7 +212,7 @@ private:
     void
     serialize(Archive &ar, const unsigned int version)
     {
-//          ar.template register_type<IdentityFunction<dim,dim+codim>>();
+        ar.template register_type<IdentityFunction<dim,dim+codim>>();
         ar.template register_type<IgFunction<dim,0,dim+codim,1>>();
 //        ar.template register_type<IgFunction<dim,0,dim+codim,1>>();
         ar &boost::serialization::make_nvp("maps_and_data_varying_range_",
@@ -628,9 +638,9 @@ void do_test()
         phys_func_2_3_1_1->get_ig_space()->get_map_func(),
         "map_2_3_1_1");
 
-//    funcs_container->insert_map(func_identity_1_1,"map_identity_1_1");
-//    funcs_container->insert_map(func_identity_2_2,"map_identity_2_2");
-//    funcs_container->insert_map(func_identity_3_3,"map_identity_3_3");
+    funcs_container->insert_map(func_identity_1_1,"map_identity_1_1");
+    funcs_container->insert_map(func_identity_2_2,"map_identity_2_2");
+    funcs_container->insert_map(func_identity_3_3,"map_identity_3_3");
 
     funcs_container->insert_function(
         phys_func_1_1_1_0->get_ig_space()->get_map_func(),

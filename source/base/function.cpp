@@ -40,26 +40,10 @@ void
 Function<dim_, codim_, range_, rank_ >::
 reset(const ValueFlags &flag, const eval_pts_variant &quad)
 {
-    /*
-    reset_impl_.flag_ = flag;
-    reset_impl_.grid_handler_ = this;
-    reset_impl_.flags_ = &flags_;
-    //*/
     auto reset_dispatcher = ResetDispatcher(flag,*this,flags_);
     boost::apply_visitor(reset_dispatcher, quad);
 }
-#if 0
-template<int dim_, int codim_, int range_, int rank_>
-void
-Function<dim_, codim_, range_, rank_ >::
-reset_one_element(
-    const ValueFlags &flag,
-    const eval_pts_variant &eval_pts,
-    const Index elem_id)
-{
-    this->reset(flag,eval_pts);
-}
-#endif
+
 template<int dim_, int codim_, int range_, int rank_>
 void
 Function<dim_, codim_, range_, rank_ >::
