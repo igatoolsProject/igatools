@@ -18,13 +18,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/*
- *  Test for SubFunction class
- *  author: pauletti
- *  date: Oct 12, 2014
- */
+#ifndef __FUNCTIONS_CONTAINER_H
+#define __FUNCTIONS_CONTAINER_H
 
-#include "../tests.h"
+#include <igatools/base/config.h>
+
+
 
 #include <igatools/base/identity_function.h>
 #include <igatools/base/quadrature_lib.h>
@@ -37,23 +36,19 @@
 #include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/physical_space.h>
 
+IGA_NAMESPACE_OPEN
 
-using std::shared_ptr;
-using std::static_pointer_cast;
+template <int dim,int codim,int range,int rank>
+using DictionaryFuncPtrName =
+		std::map<std::shared_ptr<Function<dim,codim,range,rank>>,std::string>;
 
 
 template <int dim,int codim,int range>
 class StuffSameDimAndCodimAndRange
 {
 public:
-    template <int rank>
-    using FuncPtr = std::shared_ptr<Function<dim,codim,range,rank>>;
-
-    template <int rank>
-    using DictionaryFuncsName = std::map<FuncPtr<rank>,std::string>;
-
     boost::fusion::map<
-    boost::fusion::pair< Topology<1>,DictionaryFuncsName<1> > > data_varying_rank_;
+    boost::fusion::pair< Topology<1>,DictionaryFuncPtrName<dim,codim,range,1> > > data_varying_rank_;
 
     void print_info(LogStream &out) const
     {
@@ -226,6 +221,20 @@ private:
 
 
 
+template<int dim, std::size_t... I>
+auto
+make_DataVaryingCodim(std::index_sequence<I...>)
+{
+    return boost::fusion::map<
+           boost::fusion::pair<Topology<I>,StuffSameDimAndCodim<dim,I> > ...>(
+               boost::fusion::pair<Topology<I>,StuffSameDimAndCodim<dim,I> >() ...);
+}
+
+template <int dim>
+using DataVaryingCodim = decltype(make_DataVaryingCodim<dim>(std::make_index_sequence<4-dim>()));
+
+//*/
+/*
 template <int dim>
 struct DataVaryingCodim;
 
@@ -235,8 +244,8 @@ struct DataVaryingCodim<0>
     using type = boost::fusion::map<
                  boost::fusion::pair< Topology<0>,StuffSameDimAndCodim<0,0> >,
                  boost::fusion::pair< Topology<1>,StuffSameDimAndCodim<0,1> >,
-                 boost::fusion::pair< Topology<1>,StuffSameDimAndCodim<0,2> >,
-                 boost::fusion::pair< Topology<1>,StuffSameDimAndCodim<0,3> > >;
+                 boost::fusion::pair< Topology<2>,StuffSameDimAndCodim<0,2> >,
+                 boost::fusion::pair< Topology<3>,StuffSameDimAndCodim<0,3> > >;
 };
 
 template <>
@@ -245,7 +254,7 @@ struct DataVaryingCodim<1>
     using type = boost::fusion::map<
                  boost::fusion::pair< Topology<0>,StuffSameDimAndCodim<1,0> >,
                  boost::fusion::pair< Topology<1>,StuffSameDimAndCodim<1,1> >,
-                 boost::fusion::pair< Topology<1>,StuffSameDimAndCodim<1,2> > >;
+                 boost::fusion::pair< Topology<2>,StuffSameDimAndCodim<1,2> > >;
 };
 
 template <>
@@ -262,13 +271,13 @@ struct DataVaryingCodim<3>
     using type = boost::fusion::map<
                  boost::fusion::pair< Topology<0>,StuffSameDimAndCodim<3,0> > >;
 };
-
+//*/
 
 template <int dim>
 class StuffSameDim
 {
 public:
-    typename DataVaryingCodim<dim>::type data_varying_codim_;
+    DataVaryingCodim<dim> data_varying_codim_;
 
 
     void print_info(LogStream &out) const
@@ -316,6 +325,19 @@ private:
 #endif // SERIALIZATION
 
 }; // end StuffSameDim
+
+
+template<std::size_t... I>
+auto
+make_DataVaryingDim(std::index_sequence<I...>)
+{
+    return boost::fusion::map<
+           boost::fusion::pair<Topology<I+1>,StuffSameDim<I+1> > ...>(
+               boost::fusion::pair<Topology<I+1>,StuffSameDim<I+1> >() ...);
+}
+
+template <int dim>
+using DataVaryingDim = decltype(make_DataVaryingDim(std::make_index_sequence<dim>()));
 
 
 class FunctionsContainer
@@ -379,17 +401,7 @@ public:
 private:
 
 
-
-
-
-
-
-
-    boost::fusion::map<
-    boost::fusion::pair< Topology<1>,StuffSameDim<1> >,
-          boost::fusion::pair< Topology<2>,StuffSameDim<2> >,
-          boost::fusion::pair< Topology<3>,StuffSameDim<3> >
-          > data_varying_dim_;
+    DataVaryingDim<3> data_varying_dim_;
 
 
 private:
@@ -425,268 +437,8 @@ private:
 
 
 
-void serialize_deserialize(std::shared_ptr<FunctionsContainer> funcs_container)
-{
-    OUTSTART
 
-    out.begin_item("Original FunctionsContainer:");
-    funcs_container->print_info(out);
-    out.end_item();
+IGA_NAMESPACE_CLOSE
 
-    std::string filename = "functions_container.xml";
-    std::string tag_name = "FunctionsContainer";
-    {
-        // serialize the PhysicalSpace object to an xml file
-        std::ofstream xml_ostream(filename);
-        OArchive xml_out(xml_ostream);
 
-        xml_out << boost::serialization::make_nvp(tag_name.c_str(),funcs_container);
-        xml_ostream.close();
-    }
-
-    funcs_container.reset();
-    {
-        // de-serialize the PhysicalSpace object from an xml file
-        std::ifstream xml_istream(filename);
-        IArchive xml_in(xml_istream);
-
-        xml_in >> BOOST_SERIALIZATION_NVP(funcs_container);
-        xml_istream.close();
-    }
-    out.begin_item("FunctionsContainer after serialize-deserialize:");
-    funcs_container->print_info(out);
-    out.end_item();
-//*/
-
-    OUTEND
-}
-
-
-
-template <int dim,int codim,int range>
-using Func = Function<dim,codim,range,1>;
-
-
-void do_test()
-{
-    int n_elem_per_side = 2;
-    auto grid_1 = CartesianGrid<1>::create(n_elem_per_side+1);
-    auto grid_2 = CartesianGrid<2>::create(n_elem_per_side+1);
-    auto grid_3 = CartesianGrid<3>::create(n_elem_per_side+1);
-//    create_fun<2, 0, 2>();
-
-    auto func_identity_1_1 = IdentityFunction<1,1>::create(grid_1);
-    auto func_identity_2_2 = IdentityFunction<2,2>::create(grid_2);
-    auto func_identity_3_3 = IdentityFunction<3,3>::create(grid_3);
-
-
-
-    const int deg = 3;
-    auto bsp_space_1_1 = BSplineSpace<1,1,1>::create(deg, grid_1);
-    auto bsp_space_2_1 = BSplineSpace<2,1,1>::create(deg, grid_2);
-    auto bsp_space_3_1 = BSplineSpace<3,1,1>::create(deg, grid_3);
-    auto bsp_space_2_2 = BSplineSpace<2,2,1>::create(deg, grid_2);
-    auto bsp_space_3_3 = BSplineSpace<3,3,1>::create(deg, grid_3);
-    auto bsp_space_2_3 = BSplineSpace<2,3,1>::create(deg, grid_2);
-
-
-    Epetra_SerialComm comm;
-    auto bsp_coeff_1_1 = EpetraTools::create_vector(
-                             EpetraTools::create_map(bsp_space_1_1, "active", comm));
-    (*bsp_coeff_1_1)[0] = 1.;
-
-
-    auto bsp_coeff_2_1 = EpetraTools::create_vector(
-                             EpetraTools::create_map(bsp_space_2_1, "active", comm));
-    (*bsp_coeff_2_1)[0] = 1.;
-
-
-    auto bsp_coeff_3_1 = EpetraTools::create_vector(
-                             EpetraTools::create_map(bsp_space_3_1, "active", comm));
-    (*bsp_coeff_3_1)[0] = 1.;
-
-
-    auto bsp_coeff_2_2 = EpetraTools::create_vector(
-                             EpetraTools::create_map(bsp_space_2_2, "active", comm));
-    (*bsp_coeff_2_2)[0] = 1.;
-
-
-    auto bsp_coeff_3_3 = EpetraTools::create_vector(
-                             EpetraTools::create_map(bsp_space_3_3, "active", comm));
-    (*bsp_coeff_3_3)[0] = 1.;
-
-
-    auto bsp_coeff_2_3 = EpetraTools::create_vector(
-                             EpetraTools::create_map(bsp_space_2_3, "active", comm));
-    (*bsp_coeff_2_3)[0] = 1.;
-
-
-    auto bsp_func_1_1 = IgFunction<1,0,1,1>::create(bsp_space_1_1, bsp_coeff_1_1);
-    auto bsp_func_2_1 = IgFunction<2,0,1,1>::create(bsp_space_2_1, bsp_coeff_2_1);
-    auto bsp_func_3_1 = IgFunction<3,0,1,1>::create(bsp_space_3_1, bsp_coeff_3_1);
-    auto bsp_func_2_2 = IgFunction<2,0,2,1>::create(bsp_space_2_2, bsp_coeff_2_2);
-    auto bsp_func_3_3 = IgFunction<3,0,3,1>::create(bsp_space_3_3, bsp_coeff_3_3);
-    auto bsp_func_2_3 = IgFunction<2,0,3,1>::create(bsp_space_2_3, bsp_coeff_2_3);
-
-
-
-    auto phys_space_1_1_1_0 =
-        PhysicalSpace<1,1,1,0,Transformation::h_grad>::create(
-            bsp_space_1_1,
-            bsp_func_1_1);
-
-    auto phys_space_2_1_1_0 =
-        PhysicalSpace<2,1,1,0,Transformation::h_grad>::create(
-            bsp_space_2_1,
-            bsp_func_2_2);
-
-    auto phys_space_3_1_1_0 =
-        PhysicalSpace<3,1,1,0,Transformation::h_grad>::create(
-            bsp_space_3_1,
-            bsp_func_3_3);
-
-    auto phys_space_2_2_1_0 =
-        PhysicalSpace<2,2,1,0,Transformation::h_grad>::create(
-            bsp_space_2_2,
-            bsp_func_2_2);
-
-    auto phys_space_3_3_1_0 =
-        PhysicalSpace<3,3,1,0,Transformation::h_grad>::create(
-            bsp_space_3_3,
-            bsp_func_3_3);
-
-    auto phys_space_2_1_1_1 =
-        PhysicalSpace<2,1,1,1,Transformation::h_grad>::create(
-            bsp_space_2_1,
-            bsp_func_2_3);
-
-    auto phys_space_2_3_1_1 =
-        PhysicalSpace<2,3,1,1,Transformation::h_grad>::create(
-            bsp_space_2_3,
-            bsp_func_2_3);
-
-    auto phys_coeff_1_1_1_0 = EpetraTools::create_vector(
-                                  EpetraTools::create_map(phys_space_1_1_1_0, "active", comm));
-    (*phys_coeff_1_1_1_0)[0] = 1.;
-
-
-    auto phys_coeff_2_1_1_0 = EpetraTools::create_vector(
-                                  EpetraTools::create_map(phys_space_2_1_1_0, "active", comm));
-    (*phys_coeff_2_1_1_0)[0] = 1.;
-
-
-    auto phys_coeff_3_1_1_0 = EpetraTools::create_vector(
-                                  EpetraTools::create_map(phys_space_3_1_1_0, "active", comm));
-    (*phys_coeff_3_1_1_0)[0] = 1.;
-
-
-    auto phys_coeff_2_2_1_0 = EpetraTools::create_vector(
-                                  EpetraTools::create_map(phys_space_2_2_1_0, "active", comm));
-    (*phys_coeff_2_2_1_0)[0] = 1.;
-
-
-    auto phys_coeff_3_3_1_0 = EpetraTools::create_vector(
-                                  EpetraTools::create_map(phys_space_3_3_1_0, "active", comm));
-    (*phys_coeff_3_3_1_0)[0] = 1.;
-
-
-    auto phys_coeff_2_1_1_1 = EpetraTools::create_vector(
-                                  EpetraTools::create_map(phys_space_2_1_1_1, "active", comm));
-    (*phys_coeff_2_1_1_1)[0] = 1.;
-
-
-    auto phys_coeff_2_3_1_1 = EpetraTools::create_vector(
-                                  EpetraTools::create_map(phys_space_2_3_1_1, "active", comm));
-    (*phys_coeff_2_3_1_1)[0] = 1.;
-
-    auto phys_func_1_1_1_0 = IgFunction<1,0,1,1>::create(phys_space_1_1_1_0,phys_coeff_1_1_1_0);
-    auto phys_func_2_1_1_0 = IgFunction<2,0,1,1>::create(phys_space_2_1_1_0,phys_coeff_2_1_1_0);
-    auto phys_func_3_1_1_0 = IgFunction<3,0,1,1>::create(phys_space_3_1_1_0,phys_coeff_3_1_1_0);
-    auto phys_func_2_2_1_0 = IgFunction<2,0,2,1>::create(phys_space_2_2_1_0,phys_coeff_2_2_1_0);
-    auto phys_func_3_3_1_0 = IgFunction<3,0,3,1>::create(phys_space_3_3_1_0,phys_coeff_3_3_1_0);
-    auto phys_func_2_1_1_1 = IgFunction<2,1,1,1>::create(phys_space_2_1_1_1,phys_coeff_2_1_1_1);
-    auto phys_func_2_3_1_1 = IgFunction<2,1,3,1>::create(phys_space_2_3_1_1,phys_coeff_2_3_1_1);
-
-
-    auto funcs_container = std::make_shared<FunctionsContainer>();
-
-    funcs_container->insert_map(
-        phys_func_1_1_1_0->get_ig_space()->get_map_func(),
-        "map_1_1_1_0");
-
-    funcs_container->insert_map(
-        phys_func_2_1_1_0->get_ig_space()->get_map_func(),
-        "map_2_1_1_0");
-
-    funcs_container->insert_map(
-        phys_func_3_1_1_0->get_ig_space()->get_map_func(),
-        "map_3_1_1_0");
-
-    funcs_container->insert_map(
-        phys_func_2_2_1_0->get_ig_space()->get_map_func(),
-        "map_2_2_1_0");
-
-    funcs_container->insert_map(
-        phys_func_3_3_1_0->get_ig_space()->get_map_func(),
-        "map_3_3_1_0");
-
-    funcs_container->insert_map(
-        phys_func_2_1_1_1->get_ig_space()->get_map_func(),
-        "map_2_1_1_1");
-
-    funcs_container->insert_map(
-        phys_func_2_3_1_1->get_ig_space()->get_map_func(),
-        "map_2_3_1_1");
-
-    funcs_container->insert_map(func_identity_1_1,"map_identity_1_1");
-    funcs_container->insert_map(func_identity_2_2,"map_identity_2_2");
-    funcs_container->insert_map(func_identity_3_3,"map_identity_3_3");
-
-    funcs_container->insert_function(
-        phys_func_1_1_1_0->get_ig_space()->get_map_func(),
-        static_pointer_cast<Func<1,0,1>>(phys_func_1_1_1_0),
-        "phys_func_1_1_1_0");
-
-    funcs_container->insert_function(
-        phys_func_2_1_1_0->get_ig_space()->get_map_func(),
-        static_pointer_cast<Func<2,0,1>>(phys_func_2_1_1_0),
-        "phys_func_2_1_1_0");
-
-    funcs_container->insert_function(
-        phys_func_3_1_1_0->get_ig_space()->get_map_func(),
-        static_pointer_cast<Func<3,0,1>>(phys_func_3_1_1_0),
-        "phys_func_3_1_1_0");
-
-    funcs_container->insert_function(
-        phys_func_2_2_1_0->get_ig_space()->get_map_func(),
-        static_pointer_cast<Func<2,0,2>>(phys_func_2_2_1_0),
-        "phys_func_2_2_1_0");
-
-    funcs_container->insert_function(
-        phys_func_3_3_1_0->get_ig_space()->get_map_func(),
-        static_pointer_cast<Func<3,0,3>>(phys_func_3_3_1_0),
-        "phys_func_3_3_1_0");
-
-    funcs_container->insert_function(
-        phys_func_2_1_1_1->get_ig_space()->get_map_func(),
-        static_pointer_cast<Func<2,1,1>>(phys_func_2_1_1_1),
-        "phys_func_2_1_1_1");
-
-    funcs_container->insert_function(
-        phys_func_2_3_1_1->get_ig_space()->get_map_func(),
-        static_pointer_cast<Func<2,1,3>>(phys_func_2_3_1_1),
-        "phys_func_2_3_1_1");
-
-//    funcs_container->print_info(out);
-
-    serialize_deserialize(funcs_container);
-}
-
-
-
-int main()
-{
-    do_test();
-
-    return 0;
-}
+#endif // __FUNCTIONS_CONTAINER_H

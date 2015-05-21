@@ -1,5 +1,5 @@
 ========================================================================
-void serialize_deserialize(std::shared_ptr<FunctionsContainer>)
+void serialize_deserialize(std::shared_ptr<iga::FunctionsContainer>)
 ========================================================================
 Original FunctionsContainer:
    Dim : 1
@@ -220,7 +220,7 @@ Original FunctionsContainer:
          Mappings num. : 0
          
       
-      Codim : 1
+      Codim : 2
          Mappings num. : 0
          
       
@@ -2817,7 +2817,7 @@ FunctionsContainer after serialize-deserialize:
          Mappings num. : 0
          
       
-      Codim : 1
+      Codim : 2
          Mappings num. : 0
          
       

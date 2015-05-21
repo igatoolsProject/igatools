@@ -145,7 +145,7 @@ set(num_sub_elem 1 CACHE STRINGS "number of sub element to consider 1 for faces"
 set(lib_name igatools)
 
 # igatools source files
-set (source_dirs base utils geometry basis_functions linear_algebra io contrib)
+set (source_dirs base utils geometry basis_functions linear_algebra io contrib functions)
 foreach(dir ${source_dirs})
   file(GLOB source ${PROJECT_SOURCE_DIR}/source/${dir}/*.cpp)
   list(APPEND source_files ${source})
