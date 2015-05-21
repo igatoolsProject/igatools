@@ -87,9 +87,15 @@ public:
 
 public:
 
+    /**
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
+     */
+    Mapping() = default;
+
     Mapping(std::shared_ptr<FuncType> F);
 
-    Mapping() = delete;
 
     ~Mapping();
 

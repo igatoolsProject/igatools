@@ -283,13 +283,13 @@ serialize(Archive &ar, const unsigned int version)
 
     ar.template register_type<BSplineElement<dim,range,rank>>();
     ar.template register_type<NURBSElement<dim,range,rank>>();
-//    ar.template register_type<PhysicalSpaceElement<dim,range,rank,0>>();
+    ar.template register_type<PhysicalSpaceElement<dim,range,rank,codim>>();
     ar &boost::serialization::make_nvp("space_elem_",space_elem_);
 
 
     ar.template register_type<BSplineElementHandler<dim,range,rank>>();
     ar.template register_type<NURBSElementHandler<dim,range,rank>>();
-//    ar.template register_type<PhysSpaceElementHandler<dim,range,rank,0>>();
+    ar.template register_type<PhysSpaceElementHandler<dim,range,rank,codim>>();
     ar &boost::serialization::make_nvp("space_elem_handler_",space_elem_handler_);
     Assert(space_elem_handler_ != nullptr,ExcNullPtr());
 }

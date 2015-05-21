@@ -65,9 +65,11 @@ public:
      */
     ///@{
     /**
-     * Default constructor. Not allowed to be used.
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
      */
-    PhysSpaceElementHandler() = delete;
+    PhysSpaceElementHandler() = default;
 
 protected:
 

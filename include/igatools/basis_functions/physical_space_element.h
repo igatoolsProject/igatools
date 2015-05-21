@@ -71,10 +71,13 @@ public :
      * @name Constructors
      */
     ///@{
+public:
     /**
-     * Default constructor. Not allowed to be used.
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
      */
-    PhysicalSpaceElement() = delete;
+    PhysicalSpaceElement() = default;
 
     PhysicalSpaceElement(const std::shared_ptr<ContainerType> space,
                          const Index index);
@@ -98,7 +101,7 @@ public :
     /**
      * Destructor.
      */
-    ~PhysicalSpaceElement() = default;
+    virtual ~PhysicalSpaceElement() = default;
 
     ///@}
 
