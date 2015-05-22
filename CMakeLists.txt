@@ -89,38 +89,72 @@ find_doxygen()
 #-------------------------------------------------------------------------------
 
 
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Find Required libraries
-#
-find_boost()
-#
-#-------------------------------------------------------------------------------
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Optional features for building  igatools
 #
 
-# User defined variables at command line
-set(USE_SERIALIZATION ON CACHE BOOL "Enable serialization support")
-set(USE_PARAVIEW_PLUGIN OFF CACHE BOOL "Enable the building of the ParaView plugin")
-
-if ((NOT USE_SERIALIZATION) AND (USE_PARAVIEW_PLUGIN))
-    message (SEND_ERROR "USE_PARAVIEW_PLUGIN variable set to ON is not "
-    "compatible with USE_SERIALIZATION set to OFF. Serialization must be "
-    "activated.")
-endif ()
-
-# Choose the precision for the real values
-option(REAL_IS_LONG_DOUBLE "Enable quadruple precision" OFF)
-option(use_other_templates "Enable a mechanism to use uninstantiated templates" ON)
-option(MPATCH "Enable multipatch features of the library (experimental)" OFF)
-option(NURBS "Enable NURBS support" ON)
-option(HIERARCHICAL "Enable Hierarchical splines support (experimental)" OFF)
-option(submit_test "Allow test submition" OFF)
-option(SERIALIZATION "Enable serialization support" ${USE_SERIALIZATION})
-
-# Optinal libraries
 option(USE_TRILINOS "Use the linear algebra packages from Trilinos" ON)
+
+option(NURBS "Enable NURBS support" ON)
+if (NURBS)
+    message("-- NURBS support is enabled.")
+else(NURBS)
+    message("-- NURBS support is not enabled.")    
+endif(NURBS)
+
+option(REAL_IS_LONG_DOUBLE "Enable quadruple precision" OFF)
+if (REAL_IS_LONG_DOUBLE)
+    message("-- Quadruple precision support (EXPERIMENTAL) is enabled.")
+else(REAL_IS_LONG_DOUBLE)
+    message("-- Quadruple precision support (EXPERIMENTAL) is not enabled.")    
+endif(REAL_IS_LONG_DOUBLE)
+
+option(MPATCH "Enable multipatch features of the library (experimental)" OFF)
+if (MPATCH)
+    message("-- Multipatch features (EXPERIMENTAL) are enabled.")
+else(MPATCH)
+    message("-- Multipatch features (EXPERIMENTAL) are not enabled.")    
+endif(MPATCH)
+
+option(HIERARCHICAL "Enable Hierarchical splines support (experimental)" OFF)
+if (HIERARCHICAL)
+    message("-- Hierarchical splines support (EXPERIMENTAL) is enabled.")
+else(HIERARCHICAL)
+    message("-- Hierarchical splines support (EXPERIMENTAL) is not enabled.")    
+endif(HIERARCHICAL)
+
+option(SERIALIZATION "Enable serialization support" ON)
+if (SERIALIZATION)
+    message("-- Serialization support (EXPERIMENTAL) is enabled.")
+else(SERIALIZATION)
+    message("-- Serialization support (EXPERIMENTAL) is not enabled.")    
+endif(SERIALIZATION)
+
+option(USE_PARAVIEW_PLUGIN "Enable the building of the ParaView plugin" OFF)
+if (USE_PARAVIEW_PLUGIN)
+    if (NOT SERIALIZATION)
+        message (FATAL_ERROR "USE_PARAVIEW_PLUGIN variable set to ON is not "
+        "compatible with SERIALIZATION set to OFF. Serialization must be "
+        "activated.")
+    endif ()
+    message("-- Paraview plugin building (EXPERIMENTAL) is enabled.")
+else(USE_PARAVIEW_PLUGIN)
+    message("-- Paraview plugin building (EXPERIMENTAL) is not enabled.")
+endif(USE_PARAVIEW_PLUGIN)
+
+
+option(use_other_templates "Enable a mechanism to use uninstantiated templates" ON)
+option(submit_test "Allow test submition" OFF)
+
+#
+#-------------------------------------------------------------------------------
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Find Required libraries
+#
+find_boost(${SERIALIZATION})
 #
 #-------------------------------------------------------------------------------
 

@@ -21,16 +21,24 @@
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Find Boost library (Required)
 #-------------------------------------------------------------------------------
-macro(find_boost)
+macro(find_boost USE_SERIALIZATION)
 
-    if (USE_SERIALIZATION)
+  if (${USE_SERIALIZATION})
+  
     find_package(Boost 1.54.0 REQUIRED COMPONENTS serialization)
+
     include_directories(${Boost_INCLUDE_DIRS})
+
     find_library (Boost_serialization boost_serialization ${Boost_LIBRARY_DIRS})
+
     set(Boost_LIBRARIES "${Boost_serialization}")
-  else ()
+    
+  else (${USE_SERIALIZATION})
+  
     find_package(Boost 1.54.0 REQUIRED)
+
     include_directories(${Boost_INCLUDE_DIRS})
-  endif ()
+
+  endif (${USE_SERIALIZATION})
   
 endmacro(find_boost)
