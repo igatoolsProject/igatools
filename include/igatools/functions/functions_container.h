@@ -176,17 +176,19 @@ public:
         return (maps_and_data_varying_range_.count(map) == 1)?true:false;
     }
 
-    const auto &get_map_data(const std::shared_ptr<MapFunction<dim,dim+codim>> map) const
+    const auto &get_mapping_data(const std::shared_ptr<MapFunction<dim,dim+codim>> map) const
     {
-        Assert(is_mapping_present(),
+        Assert(this->is_mapping_present(map),
                ExcMessage("Map not present in the container."));
+        return maps_and_data_varying_range_.at(map);
+    }
+
+    auto &get_mapping_data(const std::shared_ptr<MapFunction<dim,dim+codim>> map)
+    {
         return maps_and_data_varying_range_[map];
     }
 
-    auto &get_map_data(const std::shared_ptr<MapFunction<dim,dim+codim>> map)
-    {
-        return maps_and_data_varying_range_[map];
-    }
+
 
     /**
      * Returns an associative containers (a std::map) containing the geometry parametrizations
@@ -207,6 +209,8 @@ public:
     class DataAssociatedToMap
     {
     public:
+
+
         void set_mapping_name(const std::string map_name)
         {
             map_name_ = map_name;
@@ -590,7 +594,7 @@ public:
 
         Assert(!data_same_dim_codim.is_mapping_present(mapping),
                ExcMessage("Map already present in the container."));
-        auto &data_same_map = data_same_dim_codim.get_map_data(mapping);
+        auto &data_same_map = data_same_dim_codim.get_mapping_data(mapping);
 
         data_same_map.set_mapping_name(map_name);
     };
@@ -618,7 +622,7 @@ public:
         Assert(data_same_dim_codim.is_mapping_present(map),
                ExcMessage("Map not present in the container."));
 
-        auto &data_same_map = data_same_dim_codim.get_map_data(map);
+        auto &data_same_map = data_same_dim_codim.get_mapping_data(map);
 
         auto &data_same_dim_codim_range = data_same_map.template get_funcs_range<range>();
 
@@ -655,6 +659,30 @@ public:
     {
         return this->template get_data_dim_codim<dim,codim>().get_all_mappings();
     }
+
+
+    template <int dim,int codim>
+    const auto &
+    get_mapping_data(const MappingPtr<dim,codim> mapping) const
+    {
+        return this->template get_data_dim_codim<dim,codim>().get_mapping_data(mapping);
+    }
+
+
+    /**
+     * Returns all the functions of the type Function<dim,codim,range,rank> associated
+     * to the given @p mapping.
+     */
+    template <int dim,int codim,int range,int rank>
+    const DictionaryFuncPtrName<dim,codim,range,rank> &
+    get_functions_associated_to_mapping(const MappingPtr<dim,codim> mapping) const
+    {
+        return this->template get_mapping_data<dim,codim>(mapping).
+        template get_funcs_range<range>().
+        template get_data_rank<rank>();
+    }
+
+
 
     /**
      * Prints some internal information. Mostly used for testing and debugging purposes.

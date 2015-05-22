@@ -291,13 +291,25 @@ void do_test()
 
 
     const auto mappings_dim_2_codim_0 = funcs_container->template get_all_mappings<2,0>();
-    out.begin_item("Mappings_wit dimension 2 and codimension 0:");
+    out.begin_item("Mappings with dimension 2 and codimension 0:");
     int m_counter = 0;
     for (const auto &m : mappings_dim_2_codim_0)
     {
+        auto mapping = m.first;
         auto name    = m.second; // this is the string we associated to the mapping object when we used insert_mapping()
 
         out << "Mapping[" << m_counter++ << "]   name= " << name << std::endl;
+
+        const auto &funcs_dim_2_codim_0_range_1_rank_1 =
+            funcs_container->template get_functions_associated_to_mapping<2,0,1,1>(mapping);
+        out.begin_item("Functions<2,0,1,1>:");
+        int f_counter = 0;
+        for (const auto &f : funcs_dim_2_codim_0_range_1_rank_1)
+        {
+            out << "Function[" << f_counter++ << "]   name= " << f.second << std::endl;
+        }
+        out.end_item();
+
     }
 }
 
