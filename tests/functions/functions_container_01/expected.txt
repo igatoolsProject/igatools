@@ -5197,3 +5197,7 @@ FunctionsContainer after serialize-deserialize:
 
 ========================================================================
 
+Mappings_wit dimension 2 and codimension 0:
+   Mapping[0]   name= map_identity_2_2
+   Mapping[1]   name= map_2_2_1_0
+   Mapping[2]   name= map_2_1_1_0

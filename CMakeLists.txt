@@ -154,7 +154,7 @@ option(submit_test "Allow test submition" OFF)
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Find Required libraries
 #
-find_boost(${SERIALIZATION})
+find_boost()
 #
 #-------------------------------------------------------------------------------
 

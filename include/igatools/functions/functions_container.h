@@ -38,6 +38,9 @@
 
 IGA_NAMESPACE_OPEN
 
+template<int dim, int codim>
+using MappingPtr = std::shared_ptr<MapFunction<dim,dim+codim>>;
+
 /**
  * Type alias for the associative container (a std::map) between a pointer to a
  * Function<dim,codim,range,rank> and a string (e.g. the function's name).
@@ -47,26 +50,38 @@ using DictionaryFuncPtrName =
     std::map<std::shared_ptr<Function<dim,codim,range,rank>>,std::string>;
 
 
+
 /**
- * Type alias for the heterogeneous associative container (a boost::fusion::map)
- * between a type representing the <tt>rank</tt> index and a collection of functions
- * with the same quadruplet <tt><dim,codim,range,rank</tt>.
+ *
+ * @serializable
+ * @author M. Martinelli, 2015
  */
 template <int dim,int codim,int range>
-using DataVaryingRank = boost::fusion::map<
-                        boost::fusion::pair< Topology<1>,DictionaryFuncPtrName<dim,codim,range,1> > >;
-
-
-template <int dim,int codim,int range>
-class StuffSameDimAndCodimAndRange
+class FunctionsContainerDataSameDimAndCodimAndRange
 {
 public:
+    /**
+     * Type alias for the heterogeneous associative container (a boost::fusion::map)
+     * between a type representing the <tt>rank</tt> index and a collection of functions
+     * with the same quadruplet <tt><dim,codim,range,rank></tt>.
+     *
+     * @note Currently the type is defined to contain only data only for <tt>rank == 1</tt>.
+     */
+    using DataVaryingRank = boost::fusion::map<
+                            boost::fusion::pair< Topology<1>,DictionaryFuncPtrName<dim,codim,range,1> > >;
+
+    /**
+     * Returns a const-reference to the data identified by the index @p rank.
+     */
     template <int rank>
     const DictionaryFuncPtrName<dim,codim,range,rank> &get_data_rank() const
     {
         return boost::fusion::at_key<Topology<rank>>(data_varying_rank_);
     }
 
+    /**
+     * Returns a reference to the data identified by the index @p rank.
+     */
     template <int rank>
     DictionaryFuncPtrName<dim,codim,range,rank> &get_data_rank()
     {
@@ -74,6 +89,9 @@ public:
     }
 
 
+    /**
+     * Prints some internal information. Mostly used for testing and debugging purposes.
+     */
     void print_info(LogStream &out) const
     {
         boost::fusion::for_each(data_varying_rank_,
@@ -84,7 +102,6 @@ public:
 
             out.begin_item("Rank : " + std::to_string(Type::value));
             const auto &funcs_with_name = type_and_data_same_rank.second;
-
 
             out.begin_item("Functions num. : " + std::to_string(funcs_with_name.size()));
             int f_id = 0;
@@ -103,7 +120,7 @@ public:
 
 private:
 
-    DataVaryingRank<dim,codim,range> data_varying_rank_;
+    DataVaryingRank data_varying_rank_;
 
 #ifdef SERIALIZATION
     /**
@@ -140,24 +157,28 @@ private:
 template <int dim, int codim>
 using DataVaryingRange =
     boost::fusion::map<
-    boost::fusion::pair<Topology<1>,StuffSameDimAndCodimAndRange<dim,codim,1> >,
-    boost::fusion::pair<Topology<dim+codim>,StuffSameDimAndCodimAndRange<dim,codim,dim+codim> >
+    boost::fusion::pair<Topology<1>,FunctionsContainerDataSameDimAndCodimAndRange<dim,codim,1> >,
+    boost::fusion::pair<Topology<dim+codim>,FunctionsContainerDataSameDimAndCodimAndRange<dim,codim,dim+codim> >
     >;
 
+/**
+ *
+ * @serializable
+ * @author M. Martinelli, 2015
+ */
 template <int dim,int codim>
-class StuffSameDimAndCodim
+class FunctionsContainerDataSameDimAndCodim
 {
 public:
-    using MapPtr = std::shared_ptr<MapFunction<dim,dim+codim>>;
 
-    bool is_map_present(const std::shared_ptr<MapFunction<dim,dim+codim>> map) const
+    bool is_mapping_present(const std::shared_ptr<MapFunction<dim,dim+codim>> map) const
     {
         return (maps_and_data_varying_range_.count(map) == 1)?true:false;
     }
 
     const auto &get_map_data(const std::shared_ptr<MapFunction<dim,dim+codim>> map) const
     {
-        Assert(is_map_present(),
+        Assert(is_mapping_present(),
                ExcMessage("Map not present in the container."));
         return maps_and_data_varying_range_[map];
     }
@@ -167,15 +188,31 @@ public:
         return maps_and_data_varying_range_[map];
     }
 
+    /**
+     * Returns an associative containers (a std::map) containing the geometry parametrizations
+     * \f$ \mathbf{F}_i \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}} \f$
+     * (the container's "key") with their name ((the container's "value")).
+     */
+    std::map<MappingPtr<dim,codim>,std::string>
+    get_all_mappings() const
+    {
+        std::map<MappingPtr<dim,codim>,std::string> mappings_and_names;
+        for (const auto &m : maps_and_data_varying_range_)
+            mappings_and_names[m.first] = m.second.get_mapping_name();
+
+        return mappings_and_names;
+    }
+
+
     class DataAssociatedToMap
     {
     public:
-        void set_map_name(const std::string map_name)
+        void set_mapping_name(const std::string map_name)
         {
             map_name_ = map_name;
         }
 
-        const std::string &get_map_name() const
+        const std::string &get_mapping_name() const
         {
             return map_name_;
         }
@@ -192,6 +229,9 @@ public:
             return boost::fusion::at_key<Topology<range>>(funcs_);
         }
 
+        /**
+         * Prints some internal information. Mostly used for testing and debugging purposes.
+         */
         void print_info(LogStream &out) const
         {
             using std::to_string;
@@ -243,9 +283,11 @@ public:
 
     };
 
-    std::map<MapPtr,DataAssociatedToMap> maps_and_data_varying_range_;
 
 
+    /**
+     * Prints some internal information. Mostly used for testing and debugging purposes.
+     */
     void print_info(LogStream &out) const
     {
         using std::to_string;
@@ -254,7 +296,7 @@ public:
         for (const auto &map_and_data_varying_range : maps_and_data_varying_range_)
         {
             const auto &data_varying_range = map_and_data_varying_range.second;
-            out.begin_item("Map[" + to_string(map_id++) + "] name: " + data_varying_range.get_map_name());
+            out.begin_item("Map[" + to_string(map_id++) + "] name: " + data_varying_range.get_mapping_name());
 
             const auto &map = *map_and_data_varying_range.first;
             map.print_info(out);
@@ -268,6 +310,8 @@ public:
 
 
 private:
+
+    std::map<MappingPtr<dim,codim>,DataAssociatedToMap> maps_and_data_varying_range_;
 
 #ifdef SERIALIZATION
     /**
@@ -290,7 +334,7 @@ private:
     ///@}
 #endif // SERIALIZATION
 
-}; // end class StuffSameDimAndCodim
+}; // end class FunctionsContainerDataSameDimAndCodim
 
 
 
@@ -300,8 +344,8 @@ auto
 make_DataVaryingCodim(std::index_sequence<I...>)
 {
     return boost::fusion::map<
-           boost::fusion::pair<Topology<I>,StuffSameDimAndCodim<dim,I> > ...>(
-               boost::fusion::pair<Topology<I>,StuffSameDimAndCodim<dim,I> >() ...);
+           boost::fusion::pair<Topology<I>,FunctionsContainerDataSameDimAndCodim<dim,I> > ...>(
+               boost::fusion::pair<Topology<I>,FunctionsContainerDataSameDimAndCodim<dim,I> >() ...);
 }
 
 /**
@@ -319,53 +363,75 @@ template <>
 struct DataVaryingCodim<0>
 {
     using type = boost::fusion::map<
-                 boost::fusion::pair< Topology<0>,StuffSameDimAndCodim<0,0> >,
-                 boost::fusion::pair< Topology<1>,StuffSameDimAndCodim<0,1> >,
-                 boost::fusion::pair< Topology<2>,StuffSameDimAndCodim<0,2> >,
-                 boost::fusion::pair< Topology<3>,StuffSameDimAndCodim<0,3> > >;
+                 boost::fusion::pair< Topology<0>,FunctionsContainerDataSameDimAndCodim<0,0> >,
+                 boost::fusion::pair< Topology<1>,FunctionsContainerDataSameDimAndCodim<0,1> >,
+                 boost::fusion::pair< Topology<2>,FunctionsContainerDataSameDimAndCodim<0,2> >,
+                 boost::fusion::pair< Topology<3>,FunctionsContainerDataSameDimAndCodim<0,3> > >;
 };
 
 template <>
 struct DataVaryingCodim<1>
 {
     using type = boost::fusion::map<
-                 boost::fusion::pair< Topology<0>,StuffSameDimAndCodim<1,0> >,
-                 boost::fusion::pair< Topology<1>,StuffSameDimAndCodim<1,1> >,
-                 boost::fusion::pair< Topology<2>,StuffSameDimAndCodim<1,2> > >;
+                 boost::fusion::pair< Topology<0>,FunctionsContainerDataSameDimAndCodim<1,0> >,
+                 boost::fusion::pair< Topology<1>,FunctionsContainerDataSameDimAndCodim<1,1> >,
+                 boost::fusion::pair< Topology<2>,FunctionsContainerDataSameDimAndCodim<1,2> > >;
 };
 
 template <>
 struct DataVaryingCodim<2>
 {
     using type = boost::fusion::map<
-                 boost::fusion::pair< Topology<0>,StuffSameDimAndCodim<2,0> >,
-                 boost::fusion::pair< Topology<1>,StuffSameDimAndCodim<2,1> > >;
+                 boost::fusion::pair< Topology<0>,FunctionsContainerDataSameDimAndCodim<2,0> >,
+                 boost::fusion::pair< Topology<1>,FunctionsContainerDataSameDimAndCodim<2,1> > >;
 };
 
 template <>
 struct DataVaryingCodim<3>
 {
     using type = boost::fusion::map<
-                 boost::fusion::pair< Topology<0>,StuffSameDimAndCodim<3,0> > >;
+                 boost::fusion::pair< Topology<0>,FunctionsContainerDataSameDimAndCodim<3,0> > >;
 };
 //*/
 
+/**
+ * @brief Class used by FunctionsContainer in order to store all the data identified by the
+ * index <tt>dim</tt>.
+ *
+ * @serializable
+ * @author M. Martinelli, 2015
+ */
 template <int dim>
 class FunctionsContainerDataSameDim
 {
 public:
+    /**
+     * Returns a const-reference to the data identified by the index pair <tt><dim,codim></tt>.
+     *
+     * @note The returned container holds the geometry parametrizations
+     * \f$ \mathbf{F}_i \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}}\f$.
+     */
     template <int codim>
     const auto &get_data_codim() const
     {
         return boost::fusion::at_key<Topology<codim>>(data_varying_codim_);
     }
 
+    /**
+     * Returns a const-reference to the data identified by the index pair <tt><dim,codim></tt>.
+     *
+     * @note The returned container holds the geometry parametrizations
+     * \f$ \mathbf{F}_i \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}}\f$.
+     */
     template <int codim>
     auto &get_data_codim()
     {
         return boost::fusion::at_key<Topology<codim>>(data_varying_codim_);
     }
 
+    /**
+     * Prints some internal information. Mostly used for testing and debugging purposes.
+     */
     void print_info(LogStream &out) const
     {
         boost::fusion::for_each(data_varying_codim_,
@@ -440,6 +506,10 @@ using DataVaryingDim = decltype(make_DataVaryingDim(std::make_index_sequence<dim
  * @brief Heterogeneous associative container between geometry parametrizations
  * (the container's "key") and functions (the "value" associated to the "key").
  *
+ * The association is of the type <em>one-to-many</em> in the sense that
+ * for each geometry parametrization (i.e. for each "key") there can be associated any number of
+ * functions (including zero, meaning no-function associated to the geometry).
+ *
  * The container is heterogeneous in the sense that can hold data referred to different combinations
  * of quadruplets <tt><dim,codim,range,rank></tt> and it is defined as a "4-index" container,
  * and the data is organized following the quadruplets order <tt><dim,codim,range,rank></tt>.
@@ -450,7 +520,8 @@ using DataVaryingDim = decltype(make_DataVaryingDim(std::make_index_sequence<dim
  * holding all functions associated to the geometry.
  *
  * Unfortunately the STL library does not provide associative containers between heterogeneous
- * types, so we used the boost::fusion library (and specifically the boost::fusion::map class)
+ * types, so we used the <a href="http://www.boost.org/libs/fusion/">boost::fusion library</a>
+ * (and specifically the boost::fusion::map class)
  * in order to have such kind of container.
  *
  * @ingroup serializable
@@ -461,24 +532,42 @@ class FunctionsContainer
 {
 public:
 
+    /**
+     * Returns a const-reference to the data identified by the index @p dim.
+     */
     template <int dim>
     const auto &get_data_dim() const
     {
         return boost::fusion::at_key<Topology<dim>>(data_varying_dim_);
     }
 
+    /**
+     * Returns a reference to the data identified by the index @p dim.
+     */
     template <int dim>
     auto &get_data_dim()
     {
         return boost::fusion::at_key<Topology<dim>>(data_varying_dim_);
     }
 
+    /**
+     * Returns a const-reference to the data identified by the index pair <tt><dim,codim></tt>.
+     *
+     * @note The returned container holds the geometry parametrizations
+     * \f$ \mathbf{F}_i \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}}\f$.
+     */
     template <int dim,int codim>
     const auto &get_data_dim_codim() const
     {
         return this->template get_data_dim<dim>().template get_data_codim<codim>();
     }
 
+    /**
+     * Returns a reference to the data identified by the index pair <tt><dim,codim></tt>.
+     *
+     * @note The returned container holds the geometry parametrizations
+     * \f$ \mathbf{F}_i \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}}\f$.
+     */
     template <int dim,int codim>
     auto &get_data_dim_codim()
     {
@@ -487,29 +576,30 @@ public:
 
 
     /**
-     * Adds a @p map (i.e. a geometry paramtrization) with the given @p map_name to the container.
+     * Adds a @p mapping (i.e. a geometry parametrization)
+     * \f$ \mathbf{F}_i \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}} \f$
+     * with the given @p map_name to the container.
      *
      * @note In Debug mode, an assertion will be raised if
      * the @p map is already present in the container,
      */
     template<int dim, int space_dim>
-    void insert_map(std::shared_ptr<MapFunction<dim,space_dim>> map, const std::string &map_name)
+    void insert_mapping(std::shared_ptr<MapFunction<dim,space_dim>> mapping, const std::string &map_name)
     {
         auto &data_same_dim_codim = this->template get_data_dim_codim<dim,space_dim-dim>();
 
-        auto &data_same_map = data_same_dim_codim.get_map_data(map);
+        Assert(!data_same_dim_codim.is_mapping_present(mapping),
+               ExcMessage("Map already present in the container."));
+        auto &data_same_map = data_same_dim_codim.get_map_data(mapping);
 
-//        Assert(data_same_dim_codim.maps_and_data_varying_range_.count(map) == 0,
-//               ExcMessage("Map already added in the container."));
-
-        data_same_map.set_map_name(map_name);
+        data_same_map.set_mapping_name(map_name);
     };
 
     /**
      * Adds the Function @p function to the container and creates an association with the
      * MapFunction @p map. At the end, the @p function is tagged with the string @p func_name.
      *
-     * @pre 1) The @p map should be present in the container (i.e. should be inserted with insert_map()).
+     * @pre 1) The @p map should be present in the container (i.e. should be inserted with insert_mapping()).
      * @pre 2) The association <tt>map-function</tt> must not be already established.
      *
      * @note In Debug mode an assertion will be raised if some of the two precondition
@@ -517,7 +607,7 @@ public:
      */
     template<int dim, int codim,int range,int rank>
     void insert_function(
-        std::shared_ptr<MapFunction<dim,dim+codim>> map,
+        MappingPtr<dim,codim> map,
         std::shared_ptr<Function<dim,codim,range,rank>> function,
         const std::string &func_name)
     {
@@ -525,7 +615,7 @@ public:
 
         auto &data_same_dim_codim = this->template get_data_dim_codim<dim,codim>();
 
-        Assert(data_same_dim_codim.is_map_present(map),
+        Assert(data_same_dim_codim.is_mapping_present(map),
                ExcMessage("Map not present in the container."));
 
         auto &data_same_map = data_same_dim_codim.get_map_data(map);
@@ -538,6 +628,32 @@ public:
         Assert(data_same_dim_codim_range_rank.count(function) == 0,
                ExcMessage("Function already added to the container."));
         data_same_dim_codim_range_rank[function] = func_name;
+    }
+
+    /**
+     * Returns an associative containers (a std::map) containing the geometry parametrizations
+     * \f$ \mathbf{F}_i \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}} \f$
+     * (the container's "key") with their name ((the container's "value")).
+     *
+     * @code{.cpp}
+       FunctionsContainer funcs_container;
+       ... // populating the funcs_container with some mappings;
+
+       // here we retrieve all the mappings in the funcs_container object, with dimension 2 and codimension 1 (i.e. surfaces in 3D space)
+       const auto & all_mappings_dim_2_codim_1 = funcs_container.template get_all_mappings<2,1>();
+
+       for (const auto &m : all_mappings_dim2_codim_1)
+       {
+           auto mapping = m.first;  // this is a shared pointer to the mapping
+           auto name    = m.second; // this is the string we associated to the mapping object when we used insert_mapping()
+       }
+       @endcode
+     */
+    template <int dim,int codim>
+    std::map<MappingPtr<dim,codim>,std::string>
+    get_all_mappings() const
+    {
+        return this->template get_data_dim_codim<dim,codim>().get_all_mappings();
     }
 
     /**

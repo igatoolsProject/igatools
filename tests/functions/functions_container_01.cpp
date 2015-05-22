@@ -218,37 +218,37 @@ void do_test()
 
     auto funcs_container = std::make_shared<FunctionsContainer>();
 
-    funcs_container->insert_map(
+    funcs_container->insert_mapping(
         phys_func_1_1_1_0->get_ig_space()->get_map_func(),
         "map_1_1_1_0");
 
-    funcs_container->insert_map(
+    funcs_container->insert_mapping(
         phys_func_2_1_1_0->get_ig_space()->get_map_func(),
         "map_2_1_1_0");
 
-    funcs_container->insert_map(
+    funcs_container->insert_mapping(
         phys_func_3_1_1_0->get_ig_space()->get_map_func(),
         "map_3_1_1_0");
 
-    funcs_container->insert_map(
+    funcs_container->insert_mapping(
         phys_func_2_2_1_0->get_ig_space()->get_map_func(),
         "map_2_2_1_0");
 
-    funcs_container->insert_map(
+    funcs_container->insert_mapping(
         phys_func_3_3_1_0->get_ig_space()->get_map_func(),
         "map_3_3_1_0");
 
-    funcs_container->insert_map(
+    funcs_container->insert_mapping(
         phys_func_2_1_1_1->get_ig_space()->get_map_func(),
         "map_2_1_1_1");
 
-    funcs_container->insert_map(
+    funcs_container->insert_mapping(
         phys_func_2_3_1_1->get_ig_space()->get_map_func(),
         "map_2_3_1_1");
 
-    funcs_container->insert_map(func_identity_1_1,"map_identity_1_1");
-    funcs_container->insert_map(func_identity_2_2,"map_identity_2_2");
-    funcs_container->insert_map(func_identity_3_3,"map_identity_3_3");
+    funcs_container->insert_mapping(func_identity_1_1,"map_identity_1_1");
+    funcs_container->insert_mapping(func_identity_2_2,"map_identity_2_2");
+    funcs_container->insert_mapping(func_identity_3_3,"map_identity_3_3");
 
     funcs_container->insert_function(
         phys_func_1_1_1_0->get_ig_space()->get_map_func(),
@@ -288,6 +288,17 @@ void do_test()
 //    funcs_container->print_info(out);
 
     serialize_deserialize(funcs_container);
+
+
+    const auto mappings_dim_2_codim_0 = funcs_container->template get_all_mappings<2,0>();
+    out.begin_item("Mappings_wit dimension 2 and codimension 0:");
+    int m_counter = 0;
+    for (const auto &m : mappings_dim_2_codim_0)
+    {
+        auto name    = m.second; // this is the string we associated to the mapping object when we used insert_mapping()
+
+        out << "Mapping[" << m_counter++ << "]   name= " << name << std::endl;
+    }
 }
 
 
