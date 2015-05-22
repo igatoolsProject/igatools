@@ -21,13 +21,18 @@
 #ifndef VTK_IGATOOLS_READER_H_
 #define VTK_IGATOOLS_READER_H_
 
-#include "vtkUnstructuredGridAlgorithm.h"
+#include "vtkMultiBlockDataSetAlgorithm.h"
 
-class vtkIgatoolsReader : public vtkUnstructuredGridAlgorithm
+#include <paraview_plugin/iga_vtk.h>
+
+class vtkStructuredGrid;
+
+// class vtkIgatoolsReader : public vtkUnstructuredGridAlgorithm
+class vtkIgatoolsReader : public vtkMultiBlockDataSetAlgorithm
 {
 public:
 
-  vtkTypeMacro(vtkIgatoolsReader, vtkUnstructuredGridAlgorithm);
+  vtkTypeMacro(vtkIgatoolsReader, vtkMultiBlockDataSetAlgorithm);
 
   void PrintSelf(ostream& os, vtkIndent indent);
 
@@ -44,14 +49,14 @@ public:
   vtkSetVector3Macro (NumVisualizationPoints, int);
   vtkGetVectorMacro  (NumVisualizationPoints, int, 3);
 
-  /*
-   * Set/Get Grid type
-   *  - 0: solid grid.
-   *  - 1: control points mesh grid.
-   *  - 2: unit mesh grid.
-   */
-  vtkSetMacro(GridType, int);
-  vtkGetMacro(GridType,int);
+//   /*
+//    * Set/Get Grid type
+//    *  - 0: solid grid.
+//    *  - 1: control points mesh grid.
+//    *  - 2: unit mesh grid.
+//    */
+//   vtkSetMacro(GridType, int);
+//   vtkGetMacro(GridType,int);
 
 protected:
   /*
@@ -96,16 +101,21 @@ private:
    */
   void check_number_visualization_points ();
 
-  /*
-   * Grid type.
-   */
-  int GridType;
+//   /*
+//    * Grid type.
+//    */
+//   int GridType;
 
   /*
    * File name variable.
    */
   char* FileName = NULL;
   int   NumVisualizationPoints[3];
+
+  /*
+   * Iga vtk object.
+   */
+  IGAVTK iga_vtk_;
 };
 
 

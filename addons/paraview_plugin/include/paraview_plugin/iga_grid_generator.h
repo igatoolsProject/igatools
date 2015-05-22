@@ -24,7 +24,6 @@
 #include <igatools/base/config.h>
 
 #include <igatools/contrib/variant.h>
-#include <boost/property_tree/ptree.hpp>
 #include <memory>
 
 class vtkInformation;
@@ -36,31 +35,30 @@ class vtkIdTypeArray;
 namespace iga
 {
 template <int dim, int codim, int range, int rank> class Function;
-template <int dim> class QuadratureTensorProduct;
+template <int dim> class Quadrature;
 template <class T> class vector;
 template <class T, int dim> class special_array;
+class FunctionsContainer;
 template <int dim> class TensorSize;
 }
 
-using FunctionPtrVariant = Variant<
-std::shared_ptr<iga::Function<1,0,1,1>>,
-std::shared_ptr<iga::Function<1,0,2,1>>,
-std::shared_ptr<iga::Function<1,0,3,1>>,
-std::shared_ptr<iga::Function<2,0,1,1>>,
-std::shared_ptr<iga::Function<2,0,2,1>>,
-std::shared_ptr<iga::Function<2,0,3,1>>,
-std::shared_ptr<iga::Function<3,0,1,1>>,
-std::shared_ptr<iga::Function<3,0,3,1>>,
-std::shared_ptr<iga::Function<0,0,1,1>>,
-std::shared_ptr<iga::Function<0,0,2,1>>,
-std::shared_ptr<iga::Function<0,0,3,1>>>;
-
+// using FunctionPtrVariant = Variant<
+// std::shared_ptr<iga::Function<1,0,1,1>>,
+// std::shared_ptr<iga::Function<1,0,2,1>>,
+// std::shared_ptr<iga::Function<1,0,3,1>>,
+// std::shared_ptr<iga::Function<2,0,1,1>>,
+// std::shared_ptr<iga::Function<2,0,2,1>>,
+// std::shared_ptr<iga::Function<2,0,3,1>>,
+// std::shared_ptr<iga::Function<3,0,1,1>>,
+// std::shared_ptr<iga::Function<3,0,3,1>>,
+// std::shared_ptr<iga::Function<0,0,1,1>>,
+// std::shared_ptr<iga::Function<0,0,2,1>>,
+// std::shared_ptr<iga::Function<0,0,3,1>>>;
+// 
 using QuadraturePtrVariant = Variant<
-std::shared_ptr<iga::QuadratureTensorProduct<1>>,
-std::shared_ptr<iga::QuadratureTensorProduct<2>>,
-std::shared_ptr<iga::QuadratureTensorProduct<3>>>;
-
-
+std::shared_ptr<iga::Quadrature<1>>,
+std::shared_ptr<iga::Quadrature<2>>,
+std::shared_ptr<iga::Quadrature<3>>>;
 
 
 class IGAVTKGridGenerator
@@ -84,6 +82,12 @@ private:
   using Connectivity_t_ = iga::vector<iga::special_array<iga::Index, iga::constexpr_pow(2, dim)>>;
 
   /*
+   * Alias for a shared pointer of a Quadrature type.
+   */
+  template <int dim>
+  using QuadPtr_ = std::shared_ptr<iga::Quadrature<dim>>;
+
+  /*
    * Constructor, copy and assignement opertors not allowed to be used.
    */
   IGAVTKGridGenerator () = delete;
@@ -97,7 +101,7 @@ private:
    */
   IGAVTKGridGenerator (const std::string& file_name,
                        const std::string& file_path,
-                       const int* num_visualization_points);
+                       const int* const num_visualization_points);
 
 public:
   /*
@@ -105,7 +109,7 @@ public:
    */
   static SelfPtr_t_ create (const std::string& file_name,
                             const std::string& file_path,
-                            const int* num_visualization_points);
+                            const int* const num_visualization_points);
 
   /*
    * Fill the solid unstructured vtk grid output.
@@ -136,46 +140,62 @@ private:
   const std::string file_path_;
 
   /*
-   * Dimension of the IgMapping;
+   * Quadrature for 1D geometries.
    */
-  int dim_;
+  const QuadPtr_<1> quad_1D_;
 
   /*
-   * Codimension of the IgMapping;
+   * Quadrature for 2D geometries.
    */
-  int codim_;
+  const QuadPtr_<2> quad_2D_;
 
   /*
-   * Variant for containing the function read from the xml file.
+   * Quadrature for 3D geometries.
    */
-  FunctionPtrVariant function_variant_;
+  const QuadPtr_<3> quad_3D_;
 
   /*
-   * Variant for containing the quadratur for the visualization.
+   * Container for the mapping and field functions.
    */
-  QuadraturePtrVariant quadrature_variant_;
+  std::shared_ptr<iga::FunctionsContainer> funcs_container_;
 
   /*
-   * Retrieves the xml tree.
+   * Dimension of the patch with the higher dimension.
    */
-  boost::property_tree::ptree parse_xml_file () const;
+  iga::Index max_dim_;
+
+//   /*
+//    * Dimension of the IgMapping;
+//    */
+//   int dim_;
+// 
+//   /*
+//    * Codimension of the IgMapping;
+//    */
+//   int codim_;
+
+//   /*
+//    * Variant for containing the function read from the xml file.
+//    */
+//   FunctionPtrVariant function_variant_;
+
+//   /*
+//    * Variant for containing the quadratur for the visualization.
+//    */
+//   QuadraturePtrVariant quadrature_variant_;
+
+//   /*
+//    * Retrieves the dimensions of the function contained in the xml tree.
+//    */
+//   std::pair<int, int>
+//     get_dimensions_from_xml (const boost::property_tree::ptree& tree) const;
 
   /*
-   * Retrieves the dimensions of the function contained in the xml tree.
+   * Creates the quadrature for a given dimension given the number of points
+   * in every direction.
    */
-  std::pair<int, int>
-    get_dimensions_from_xml (const boost::property_tree::ptree& tree) const;
-
-  /*
-   * Builds the function from the xml file and stores it in function_variant_
-   */
-  FunctionPtrVariant
-    create_function_from_xml (const boost::property_tree::ptree& xml_tree);
-
-  /*
-   * Creates the quadrature given the points in every direction.
-   */
-  QuadraturePtrVariant create_quadrature (const iga::vector<iga::Size>& n_points) const;
+  template <int dim> static
+  QuadPtr_<dim> create_quadrature (const int* const num_visualization_points);
 
   /**
    * Visitor used for filling points and cells of the solid grid.
@@ -246,7 +266,7 @@ private:
    */
   template <int dim>
   static Connectivity_t_<dim>
-  create_connectivity_base (const iga::TensorSize<dim>& n_points_per_direction);
+  create_connectivity_base_vtu (const iga::TensorSize<dim>& n_points_per_direction);
 
 };
 

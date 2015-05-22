@@ -37,29 +37,40 @@
 #include <igatools/base/identity_function.h>
 #include <igatools/io/reader.h>
 #include <igatools/utils/multi_array_utils.h>
+#include <igatools/functions/functions_container.h>
 
 using namespace iga;
 using std::string;
 using std::shared_ptr;
-using boost::property_tree::ptree;
-using namespace reader_utils;
 
 
 IGAVTKGridGenerator::
 IGAVTKGridGenerator (const string& file_name, const string& file_path,
-                     const int* num_visualization_points)
+                     const int* const num_visualization_points)
   :
   file_name_ (file_name),
-  file_path_ (file_path)
+  file_path_ (file_path),
+  quad_1D_ (create_quadrature<1>(num_visualization_points)),
+  quad_2D_ (create_quadrature<2>(num_visualization_points)),
+  quad_3D_ (create_quadrature<3>(num_visualization_points))
 {
-#if 0
-  const auto xml_tree = this->parse_xml_file ();
-  function_variant_ = this->create_function_from_xml (xml_tree);
-  vector<Size> n_points (dim_);
-  for (int dir = 0; dir < dim_; ++dir)
-    n_points[dir] = *(num_visualization_points+dir);
-  quadrature_variant_ = this->create_quadrature (n_points);
-#endif
+  // TODO: to check here if the file exists.
+  // TODO: to check here if the file is correct.
+
+  ifstream xml_istream(file_name_);
+  IArchive xml_in(xml_istream);
+  xml_in >> BOOST_SERIALIZATION_NVP (funcs_container_);
+  xml_istream.close();
+
+  const auto& kk_2 = funcs_container_->get_data_dim_codim<2, 0>();
+  LogStream out;
+  kk_2.print_info (out);
+
+  const auto kk_3 = funcs_container_->get_data_dim_codim<3, 0>();
+
+  // TODO: set here max_dim;
+  max_dim_ = 3;
+
 };
 
 
@@ -75,94 +86,12 @@ SelfPtr_t_
 
 
 
-ptree
-IGAVTKGridGenerator::
-parse_xml_file () const
-{
+
 #if 0
-  // TODO: Assert here if the file is not present.
-  const auto& file_tree = get_xml_tree(file_name_);
-
-  const string format_version = get_xml_input_file_format (file_name_) ;
-  AssertThrow (format_version == "2.0",
-               ExcMessage ("Wrong igatools format version."));
-
-  Assert (xml_element_is_present (file_tree, "Igatools"),
-          ExcMessage ("Igatools element is not present."));
-  Assert (xml_element_is_unique (file_tree, "Igatools"),
-          ExcMessage ("Igatools element is not unique."));
-  const auto& igatools_tree = get_xml_element (file_tree, "Igatools");
-
-  return igatools_tree;
-#endif
-};
-
-
-
-FunctionPtrVariant
-IGAVTKGridGenerator::
-create_function_from_xml (const ptree& xml_tree)
-{
-#if 0
-  const auto dim_pair = this->get_dimensions_from_xml (xml_tree);
-  dim_ = dim_pair.first;
-  codim_ = dim_pair.second;
-
-  FunctionPtrVariant function;
-
-  // TODO: this is parsing ig function right now.
-  // In the future it should be more flexible.
-  if      (dim_ == 3 && codim_ == 0)
-  {
-    static const int st_dim_   = 3;
-    static const int st_codim_ = 0;
-    function = get_mapping_from_xml<st_dim_, st_codim_> (xml_tree);
-  }
-  else if (dim_ == 2 && codim_ == 1)
-  {
-    static const int st_dim_   = 2;
-    static const int st_codim_ = 1;
-    function = get_mapping_from_xml<st_dim_, st_codim_> (xml_tree);
-  }
-  else if (dim_ == 1 && codim_ == 2)
-  {
-    static const int st_dim_   = 1;
-    static const int st_codim_ = 2;
-    function = get_mapping_from_xml<st_dim_, st_codim_> (xml_tree);
-  }
-  else if (dim_ == 2 && codim_ == 0)
-  {
-    static const int st_dim_   = 2;
-    static const int st_codim_ = 0;
-    function = get_mapping_from_xml<st_dim_, st_codim_> (xml_tree);
-  }
-  else if (dim_ == 1 && codim_ == 1)
-  {
-    static const int st_dim_   = 1;
-    static const int st_codim_ = 1;
-    function = get_mapping_from_xml<st_dim_, st_codim_> (xml_tree);
-  }
-  else if (dim_ == 1 && codim_ == 0)
-  {
-    static const int st_dim_   = 1;
-    static const int st_codim_ = 0;
-    function = get_mapping_from_xml<st_dim_, st_codim_> (xml_tree);
-  }
-  else
-    AssertThrow (false, ExcMessage ("Not valid codim and dim values."));
-
-  return function;
-#endif
-};
-
-
-
-
 std::pair<int, int>
 IGAVTKGridGenerator::
 get_dimensions_from_xml (const ptree& xml_tree) const
 {
-#if 0
   AssertThrow (xml_element_is_present (xml_tree, "IgMapping"),
                ExcMessage ("IgMapping element is not present."));
   AssertThrow (xml_element_is_unique (xml_tree, "IgMapping"),
@@ -199,9 +128,8 @@ get_dimensions_from_xml (const ptree& xml_tree) const
                "."));
 
   return dims;
-#endif
 };
-
+#endif
 
 
 int
@@ -322,45 +250,21 @@ fill_control_mesh_output (vtkInformation* outInfo) const
 
 
 
-QuadraturePtrVariant
+template <int dim>
+auto
 IGAVTKGridGenerator::
-create_quadrature (const vector<Size>& n_points) const
+create_quadrature (const int* const num_visualization_points) -> QuadPtr_<dim>
 {
-#if 0
-  AssertThrow (n_points.size () == dim_,
-               ExcMessage ("Invalid number of quadrature poins per direction."));
+  TensorSize<dim> n_points;
 
-  QuadraturePtrVariant quad;
+  for (int dir = 0; dir < dim; ++dir)
+  {
+    Assert (*(num_visualization_points + dir) < 2,
+      ExcMessage ("Number of visualization points per direction must be > 1."));
+    n_points[dir] = *(num_visualization_points + dir);
+  }
 
-  if (dim_ == 3)
-  {
-    static const int st_dim_ = 3;
-    TensorSize<st_dim_> n_points_per_direction;
-    for (int dir = 0; dir < st_dim_; ++dir)
-      n_points_per_direction[dir] = n_points[dir];
-    quad = QUniform<st_dim_>::create (n_points_per_direction);
-  }
-  else if (dim_ == 2)
-  {
-    static const int st_dim_ = 2;
-    TensorSize<st_dim_> n_points_per_direction;
-    for (int dir = 0; dir < st_dim_; ++dir)
-      n_points_per_direction[dir] = n_points[dir];
-    quad = QUniform<st_dim_>::create (n_points_per_direction);
-  }
-  else if (dim_ == 1)
-  {
-    static const int st_dim_ = 1;
-    TensorSize<st_dim_> n_points_per_direction;
-    for (int dir = 0; dir < st_dim_; ++dir)
-      n_points_per_direction[dir] = n_points[dir];
-    quad = QUniform<st_dim_>::create (n_points_per_direction);
-  }
-  else
-    Assert (false, ExcMessage ("Invalid dimension."));
-
-  return quad;
-#endif
+  return QUniform<dim>::create (n_points);
 };
 
 
@@ -627,10 +531,9 @@ create_cell_ids (const TensorSize<dim>& n_points_per_direction,
 template <int dim>
 auto
 IGAVTKGridGenerator::
-create_connectivity_base (const TensorSize<dim>& n_points_per_direction) ->
+create_connectivity_base_vtu (const TensorSize<dim>& n_points_per_direction) ->
 Connectivity_t_<dim>
 {
-#if 0
   vtkSmartPointer<vtkIdTypeArray> cell_ids = vtkSmartPointer<vtkIdTypeArray>::New();
 
   const auto grid = CartesianGrid<dim>::create (n_points_per_direction);
@@ -720,5 +623,4 @@ Connectivity_t_<dim>
   }
 
   return connectivity_base;
-#endif
 };
