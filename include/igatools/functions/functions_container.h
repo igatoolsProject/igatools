@@ -38,6 +38,48 @@
 
 IGA_NAMESPACE_OPEN
 
+/**
+ *
+ * Returns a boost::fusion::map in which the keys are the <em>types</em>
+ * <tt>Topology<I_min>,Topology<I_min+1>,Topology<I_min+2>,...</tt>
+ * and the associated values are the <em>objects</em> of the type
+ * <tt>DataIndexed<I_min>,DataIndexed<I_min+1>,DataIndexed<I_min+2>,...</tt>.
+ *
+ * The last index used is given by the sum of <tt>I_min</tt> with the size of the index sequence
+ * used as input parameter of the function.
+ *
+ * It is used to infer (at compile time) the type of a boost::fusion::map when the
+ * keys and values are two classes indexed with an integer value.
+ *
+ * @warning This function is implemented using some ''<em>black magic</em>''
+ * template metaprogramming techniques.
+ */
+template<template <int> class DataIndexed,int I_min,std::size_t... I>
+auto
+make_fusion_map_indexed_data(std::index_sequence<I...>)
+{
+    return boost::fusion::map<
+           boost::fusion::pair<Topology<I+I_min>,DataIndexed<I+I_min> > ...>(
+               boost::fusion::pair<Topology<I+I_min>,DataIndexed<I+I_min> >() ...);
+}
+
+/**
+ * Alias for a boost::fusion::map container, in which the keys are the <em>types</em>
+ * <tt>Topology<I_min>,Topology<I_min+1>,Topology<I_min+2>,...</tt>
+ * and the associated values are the <em>objects</em> of the type
+ * <tt>DataSameId<I_min>,DataSameId<I_min+1>,DataSameId<I_min+2>,...,DataSameId<I_min+N></tt>.
+ *
+ * @sa make_fusion_map_indexed_data
+ */
+template <template <int> class DataSameId,int Id_min,int N>
+using DataVaryingId = decltype(make_fusion_map_indexed_data<DataSameId,Id_min>(std::make_index_sequence<N>()));
+
+
+/**
+ * Type alias for a shared pointer to an object representing the mapping
+ * \f$ \mathbf{F} \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}} \f$
+ *
+ */
 template<int dim, int codim>
 using MappingPtr = std::shared_ptr<MapFunction<dim,dim+codim>>;
 
@@ -51,459 +93,13 @@ using DictionaryFuncPtrName =
 
 
 
-/**
- *
- * @serializable
- * @author M. Martinelli, 2015
- */
-template <int dim,int codim,int range>
-class FunctionsContainerDataSameDimAndCodimAndRange
-{
-public:
-    /**
-     * Type alias for the heterogeneous associative container (a boost::fusion::map)
-     * between a type representing the <tt>rank</tt> index and a collection of functions
-     * with the same quadruplet <tt><dim,codim,range,rank></tt>.
-     *
-     * @note Currently the type is defined to contain only data only for <tt>rank == 1</tt>.
-     */
-    using DataVaryingRank = boost::fusion::map<
-                            boost::fusion::pair< Topology<1>,DictionaryFuncPtrName<dim,codim,range,1> > >;
 
-    /**
-     * Returns a const-reference to the data identified by the index @p rank.
-     */
-    template <int rank>
-    const DictionaryFuncPtrName<dim,codim,range,rank> &get_data_rank() const
-    {
-        return boost::fusion::at_key<Topology<rank>>(data_varying_rank_);
-    }
 
-    /**
-     * Returns a reference to the data identified by the index @p rank.
-     */
-    template <int rank>
-    DictionaryFuncPtrName<dim,codim,range,rank> &get_data_rank()
-    {
-        return boost::fusion::at_key<Topology<rank>>(data_varying_rank_);
-    }
 
 
-    /**
-     * Prints some internal information. Mostly used for testing and debugging purposes.
-     */
-    void print_info(LogStream &out) const
-    {
-        boost::fusion::for_each(data_varying_rank_,
-                                [&](const auto & type_and_data_same_rank)
-        {
-            using Type_Value = typename std::remove_reference<decltype(type_and_data_same_rank)>::type;
-            using Type = typename Type_Value::first_type;
 
-            out.begin_item("Rank : " + std::to_string(Type::value));
-            const auto &funcs_with_name = type_and_data_same_rank.second;
 
-            out.begin_item("Functions num. : " + std::to_string(funcs_with_name.size()));
-            int f_id = 0;
-            for (const auto &f : funcs_with_name)
-            {
-                out.begin_item("Function[" + std::to_string(f_id++) + "] name: " + f.second);
-//                f.first->print_info(out);
-                out.end_item();
-            }
-            out.end_item();
 
-            out.end_item();
-        } // end lambda function
-                               );
-    }; // end print_info()
-
-private:
-
-    DataVaryingRank data_varying_rank_;
-
-#ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-///@{
-    friend class boost::serialization::access;
-
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        boost::fusion::for_each(data_varying_rank_,
-                                [&](auto & type_and_data_same_rank)
-        {
-            using Type_Value = typename std::remove_reference<decltype(type_and_data_same_rank)>::type;
-            using Type = typename Type_Value::first_type;
-
-            ar.template register_type<IgFunction<dim,codim,range,Type::value>>();
-
-            const std::string tag_name = "funcs_rank_" + std::to_string(Type::value);
-            ar &boost::serialization::make_nvp(tag_name.c_str(),type_and_data_same_rank.second);
-        } // end lambda function
-                               );
-
-    }
-///@}
-#endif // SERIALIZATION
-
-};
-
-
-template <int dim, int codim>
-using DataVaryingRange =
-    boost::fusion::map<
-    boost::fusion::pair<Topology<1>,FunctionsContainerDataSameDimAndCodimAndRange<dim,codim,1> >,
-    boost::fusion::pair<Topology<dim+codim>,FunctionsContainerDataSameDimAndCodimAndRange<dim,codim,dim+codim> >
-    >;
-
-/**
- *
- * @serializable
- * @author M. Martinelli, 2015
- */
-template <int dim,int codim>
-class FunctionsContainerDataSameDimAndCodim
-{
-public:
-
-    bool is_mapping_present(const std::shared_ptr<MapFunction<dim,dim+codim>> map) const
-    {
-        return (maps_and_data_varying_range_.count(map) == 1)?true:false;
-    }
-
-    const auto &get_mapping_data(const std::shared_ptr<MapFunction<dim,dim+codim>> map) const
-    {
-        Assert(this->is_mapping_present(map),
-               ExcMessage("Map not present in the container."));
-        return maps_and_data_varying_range_.at(map);
-    }
-
-    auto &get_mapping_data(const std::shared_ptr<MapFunction<dim,dim+codim>> map)
-    {
-        return maps_and_data_varying_range_[map];
-    }
-
-
-
-    /**
-     * Returns an associative containers (a std::map) containing the geometry parametrizations
-     * \f$ \mathbf{F}_i \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}} \f$
-     * (the container's "key") with their name ((the container's "value")).
-     */
-    std::map<MappingPtr<dim,codim>,std::string>
-    get_all_mappings() const
-    {
-        std::map<MappingPtr<dim,codim>,std::string> mappings_and_names;
-        for (const auto &m : maps_and_data_varying_range_)
-            mappings_and_names[m.first] = m.second.get_mapping_name();
-
-        return mappings_and_names;
-    }
-
-
-    class DataAssociatedToMap
-    {
-    public:
-
-
-        void set_mapping_name(const std::string map_name)
-        {
-            map_name_ = map_name;
-        }
-
-        const std::string &get_mapping_name() const
-        {
-            return map_name_;
-        }
-
-        template <int range>
-        const auto &get_funcs_range() const
-        {
-            return boost::fusion::at_key<Topology<range>>(funcs_);
-        }
-
-        template <int range>
-        auto &get_funcs_range()
-        {
-            return boost::fusion::at_key<Topology<range>>(funcs_);
-        }
-
-        /**
-         * Prints some internal information. Mostly used for testing and debugging purposes.
-         */
-        void print_info(LogStream &out) const
-        {
-            using std::to_string;
-            boost::fusion::for_each(funcs_,
-                                    [&](const auto & type_and_data_same_range)
-            {
-                using Type_Value = typename std::remove_reference<decltype(type_and_data_same_range)>::type;
-                using Type = typename Type_Value::first_type;
-
-                out.begin_item("Range : " + to_string(Type::value));
-                type_and_data_same_range.second.print_info(out);
-                out.end_item();
-            } // end lambda function
-                                   );
-        }; // end print_info()
-
-    private:
-        std::string map_name_;
-        DataVaryingRange<dim,codim> funcs_;
-
-#ifdef SERIALIZATION
-        /**
-         * @name Functions needed for boost::serialization
-         * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-         */
-        ///@{
-        friend class boost::serialization::access;
-
-        template<class Archive>
-        void
-        serialize(Archive &ar, const unsigned int version)
-        {
-            ar &boost::serialization::make_nvp("map_name_",map_name_);
-
-            boost::fusion::for_each(funcs_,
-                                    [&](auto & func)
-            {
-                using Type_Value = typename std::remove_reference<decltype(func)>::type;
-                using Type = typename Type_Value::first_type;
-
-                const std::string tag_name = "funcs_range_" + std::to_string(Type::value);
-                ar &boost::serialization::make_nvp(tag_name.c_str(),func.second);
-            } // end lambda function
-                                   );
-
-        }
-        ///@}
-#endif // SERIALIZATION
-
-    };
-
-
-
-    /**
-     * Prints some internal information. Mostly used for testing and debugging purposes.
-     */
-    void print_info(LogStream &out) const
-    {
-        using std::to_string;
-        out.begin_item("Mappings num. : " + to_string(maps_and_data_varying_range_.size()));
-        int map_id = 0;
-        for (const auto &map_and_data_varying_range : maps_and_data_varying_range_)
-        {
-            const auto &data_varying_range = map_and_data_varying_range.second;
-            out.begin_item("Map[" + to_string(map_id++) + "] name: " + data_varying_range.get_mapping_name());
-
-            const auto &map = *map_and_data_varying_range.first;
-            map.print_info(out);
-
-            data_varying_range.print_info(out);
-
-            out.end_item();
-        } // end loop maps
-        out.end_item();
-    }; // end print_info()
-
-
-private:
-
-    std::map<MappingPtr<dim,codim>,DataAssociatedToMap> maps_and_data_varying_range_;
-
-#ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
-
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        ar.template register_type<IdentityFunction<dim,dim+codim>>();
-        ar.template register_type<IgFunction<dim,0,dim+codim,1>>();
-//        ar.template register_type<IgFunction<dim,0,dim+codim,1>>();
-        ar &boost::serialization::make_nvp("maps_and_data_varying_range_",
-                                           maps_and_data_varying_range_);
-    }
-    ///@}
-#endif // SERIALIZATION
-
-}; // end class FunctionsContainerDataSameDimAndCodim
-
-
-
-
-template<int dim, std::size_t... I>
-auto
-make_DataVaryingCodim(std::index_sequence<I...>)
-{
-    return boost::fusion::map<
-           boost::fusion::pair<Topology<I>,FunctionsContainerDataSameDimAndCodim<dim,I> > ...>(
-               boost::fusion::pair<Topology<I>,FunctionsContainerDataSameDimAndCodim<dim,I> >() ...);
-}
-
-/**
- *
- */
-template <int dim>
-using DataVaryingCodim = decltype(make_DataVaryingCodim<dim>(std::make_index_sequence<4-dim>()));
-
-//*/
-/*
-template <int dim>
-struct DataVaryingCodim;
-
-template <>
-struct DataVaryingCodim<0>
-{
-    using type = boost::fusion::map<
-                 boost::fusion::pair< Topology<0>,FunctionsContainerDataSameDimAndCodim<0,0> >,
-                 boost::fusion::pair< Topology<1>,FunctionsContainerDataSameDimAndCodim<0,1> >,
-                 boost::fusion::pair< Topology<2>,FunctionsContainerDataSameDimAndCodim<0,2> >,
-                 boost::fusion::pair< Topology<3>,FunctionsContainerDataSameDimAndCodim<0,3> > >;
-};
-
-template <>
-struct DataVaryingCodim<1>
-{
-    using type = boost::fusion::map<
-                 boost::fusion::pair< Topology<0>,FunctionsContainerDataSameDimAndCodim<1,0> >,
-                 boost::fusion::pair< Topology<1>,FunctionsContainerDataSameDimAndCodim<1,1> >,
-                 boost::fusion::pair< Topology<2>,FunctionsContainerDataSameDimAndCodim<1,2> > >;
-};
-
-template <>
-struct DataVaryingCodim<2>
-{
-    using type = boost::fusion::map<
-                 boost::fusion::pair< Topology<0>,FunctionsContainerDataSameDimAndCodim<2,0> >,
-                 boost::fusion::pair< Topology<1>,FunctionsContainerDataSameDimAndCodim<2,1> > >;
-};
-
-template <>
-struct DataVaryingCodim<3>
-{
-    using type = boost::fusion::map<
-                 boost::fusion::pair< Topology<0>,FunctionsContainerDataSameDimAndCodim<3,0> > >;
-};
-//*/
-
-/**
- * @brief Class used by FunctionsContainer in order to store all the data identified by the
- * index <tt>dim</tt>.
- *
- * @serializable
- * @author M. Martinelli, 2015
- */
-template <int dim>
-class FunctionsContainerDataSameDim
-{
-public:
-    /**
-     * Returns a const-reference to the data identified by the index pair <tt><dim,codim></tt>.
-     *
-     * @note The returned container holds the geometry parametrizations
-     * \f$ \mathbf{F}_i \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}}\f$.
-     */
-    template <int codim>
-    const auto &get_data_codim() const
-    {
-        return boost::fusion::at_key<Topology<codim>>(data_varying_codim_);
-    }
-
-    /**
-     * Returns a const-reference to the data identified by the index pair <tt><dim,codim></tt>.
-     *
-     * @note The returned container holds the geometry parametrizations
-     * \f$ \mathbf{F}_i \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}}\f$.
-     */
-    template <int codim>
-    auto &get_data_codim()
-    {
-        return boost::fusion::at_key<Topology<codim>>(data_varying_codim_);
-    }
-
-    /**
-     * Prints some internal information. Mostly used for testing and debugging purposes.
-     */
-    void print_info(LogStream &out) const
-    {
-        boost::fusion::for_each(data_varying_codim_,
-                                [&](const auto & type_and_data_same_codim)
-        {
-            using Type_Value = typename std::remove_reference<decltype(type_and_data_same_codim)>::type;
-            using Type = typename Type_Value::first_type;
-
-            out.begin_item("Codim : " + std::to_string(Type::value));
-            type_and_data_same_codim.second.print_info(out);
-            out.end_item();
-
-        } // end lambda function
-                               );
-    }
-
-
-
-private:
-
-    DataVaryingCodim<dim> data_varying_codim_;
-
-#ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
-
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        boost::fusion::for_each(data_varying_codim_,
-                                [&](auto & type_and_data_same_codim)
-        {
-            using Type_Value = typename std::remove_reference<decltype(type_and_data_same_codim)>::type;
-            using Type = typename Type_Value::first_type;
-
-            const std::string tag_name = "data_codim_" + std::to_string(Type::value);
-            ar &boost::serialization::make_nvp(tag_name.c_str(),type_and_data_same_codim.second);
-        } // end lambda function
-                               );
-    }
-    ///@}
-#endif // SERIALIZATION
-
-}; // end FunctionsContainerDataSameDim
-
-
-template<std::size_t... I>
-auto
-make_DataVaryingDim(std::index_sequence<I...>)
-{
-    return boost::fusion::map<
-           boost::fusion::pair<Topology<I+1>,FunctionsContainerDataSameDim<I+1> > ...>(
-               boost::fusion::pair<Topology<I+1>,FunctionsContainerDataSameDim<I+1> >() ...);
-}
-
-
-/**
- * Alias for the type representing the all the data in kept in the FunctionsContainer class.
- *
- * @note The data refers to dim = [1,2,3]
- */
-template <int dim>
-using DataVaryingDim = decltype(make_DataVaryingDim(std::make_index_sequence<dim>()));
 
 
 /**
@@ -534,6 +130,383 @@ using DataVaryingDim = decltype(make_DataVaryingDim(std::make_index_sequence<dim
  */
 class FunctionsContainer
 {
+
+    /**
+     * @brief Class used by FunctionsContainer in order to store all the data identified by the
+     * index <tt>dim</tt>.
+     *
+     * @serializable
+     * @author M. Martinelli, 2015
+     */
+    template <int dim>
+    class FunctionsContainerDataSameDim
+    {
+
+        /**
+         *
+         * @serializable
+         * @author M. Martinelli, 2015
+         */
+        template <int codim>
+        class FunctionsContainerDataSameDimAndCodim
+        {
+            /**
+             *
+             * @serializable
+             * @author M. Martinelli, 2015
+             */
+            template <int range>
+            class FunctionsContainerDataSameDimAndCodimAndRange
+            {
+            public:
+                /**
+                 * Type alias for the heterogeneous associative container (a boost::fusion::map)
+                 * between a type representing the <tt>rank</tt> index and a collection of functions
+                 * with the same quadruplet <tt><dim,codim,range,rank></tt>.
+                 *
+                 * @note Currently the type is defined to contain only data only for <tt>rank == 1</tt>.
+                 */
+                using DataVaryingRank = boost::fusion::map<
+                                        boost::fusion::pair< Topology<1>,DictionaryFuncPtrName<dim,codim,range,1> > >;
+
+                /**
+                 * Returns a const-reference to the data identified by the index @p rank.
+                 */
+                template <int rank>
+                const DictionaryFuncPtrName<dim,codim,range,rank> &get_data_rank() const
+                {
+                    return boost::fusion::at_key<Topology<rank>>(data_varying_rank_);
+                }
+
+                /**
+                 * Returns a reference to the data identified by the index @p rank.
+                 */
+                template <int rank>
+                DictionaryFuncPtrName<dim,codim,range,rank> &get_data_rank()
+                {
+                    return boost::fusion::at_key<Topology<rank>>(data_varying_rank_);
+                }
+
+
+                /**
+                 * Prints some internal information. Mostly used for testing and debugging purposes.
+                 */
+                void print_info(LogStream &out) const
+                {
+                    boost::fusion::for_each(data_varying_rank_,
+                                            [&](const auto & type_and_data_same_rank)
+                    {
+                        using Type_Value = typename std::remove_reference<decltype(type_and_data_same_rank)>::type;
+                        using Type = typename Type_Value::first_type;
+
+                        out.begin_item("Rank : " + std::to_string(Type::value));
+                        const auto &funcs_with_name = type_and_data_same_rank.second;
+
+                        out.begin_item("Functions num. : " + std::to_string(funcs_with_name.size()));
+                        int f_id = 0;
+                        for (const auto &f : funcs_with_name)
+                        {
+                            out.begin_item("Function[" + std::to_string(f_id++) + "] name: " + f.second);
+                            //                f.first->print_info(out);
+                            out.end_item();
+                        }
+                        out.end_item();
+
+                        out.end_item();
+                    } // end lambda function
+                                           );
+                }; // end print_info()
+
+            private:
+
+                DataVaryingRank data_varying_rank_;
+
+#ifdef SERIALIZATION
+                /**
+                 * @name Functions needed for boost::serialization
+                 * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+                 */
+                ///@{
+                friend class boost::serialization::access;
+
+                template<class Archive>
+                void
+                serialize(Archive &ar, const unsigned int version)
+                {
+                    boost::fusion::for_each(data_varying_rank_,
+                                            [&](auto & type_and_data_same_rank)
+                    {
+                        using Type_Value = typename std::remove_reference<decltype(type_and_data_same_rank)>::type;
+                        using Type = typename Type_Value::first_type;
+
+                        ar.template register_type<IgFunction<dim,codim,range,Type::value>>();
+
+                        const std::string tag_name = "funcs_rank_" + std::to_string(Type::value);
+                        ar &boost::serialization::make_nvp(tag_name.c_str(),type_and_data_same_rank.second);
+                    } // end lambda function
+                                           );
+
+                }
+                ///@}
+#endif // SERIALIZATION
+
+            }; // class FunctionsContainerDataSameDimAndCodimAndRange
+
+        public:
+            using DataVaryingRange =
+                boost::fusion::map<
+                boost::fusion::pair<Topology<1>,FunctionsContainerDataSameDimAndCodimAndRange<1> >,
+                boost::fusion::pair<Topology<dim+codim>,FunctionsContainerDataSameDimAndCodimAndRange<dim+codim> >
+                >;
+
+            bool is_mapping_present(const MappingPtr<dim,codim> mapping) const
+            {
+                return (maps_and_data_varying_range_.count(mapping) == 1)?true:false;
+            }
+
+            const auto &get_mapping_data(const MappingPtr<dim,codim> mapping) const
+            {
+                Assert(this->is_mapping_present(mapping),
+                       ExcMessage("Map not present in the container."));
+                return maps_and_data_varying_range_.at(mapping);
+            }
+
+            auto &get_mapping_data(const MappingPtr<dim,codim> mapping)
+            {
+                return maps_and_data_varying_range_[mapping];
+            }
+
+
+
+            /**
+             * Returns an associative containers (a std::map) containing the geometry parametrizations
+             * \f$ \mathbf{F}_i \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}} \f$
+             * (the container's "key") with their name ((the container's "value")).
+             */
+            std::map<MappingPtr<dim,codim>,std::string>
+            get_all_mappings() const
+            {
+                std::map<MappingPtr<dim,codim>,std::string> mappings_and_names;
+                for (const auto &m : maps_and_data_varying_range_)
+                    mappings_and_names[m.first] = m.second.get_mapping_name();
+
+                return mappings_and_names;
+            }
+
+
+            class DataAssociatedToMap
+            {
+            public:
+                void set_mapping_name(const std::string map_name)
+                {
+                    map_name_ = map_name;
+                }
+
+                const std::string &get_mapping_name() const
+                {
+                    return map_name_;
+                }
+
+                template <int range>
+                const auto &get_funcs_range() const
+                {
+                    return boost::fusion::at_key<Topology<range>>(funcs_);
+                }
+
+                template <int range>
+                auto &get_funcs_range()
+                {
+                    return boost::fusion::at_key<Topology<range>>(funcs_);
+                }
+
+                /**
+                 * Prints some internal information. Mostly used for testing and debugging purposes.
+                 */
+                void print_info(LogStream &out) const
+                {
+                    using std::to_string;
+                    boost::fusion::for_each(funcs_,
+                                            [&](const auto & type_and_data_same_range)
+                    {
+                        using Type_Value = typename std::remove_reference<decltype(type_and_data_same_range)>::type;
+                        using Type = typename Type_Value::first_type;
+
+                        out.begin_item("Range : " + to_string(Type::value));
+                        type_and_data_same_range.second.print_info(out);
+                        out.end_item();
+                    } // end lambda function
+                                           );
+                }; // end print_info()
+
+            private:
+                std::string map_name_;
+                DataVaryingRange funcs_;
+
+#ifdef SERIALIZATION
+                /**
+                 * @name Functions needed for boost::serialization
+                 * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+                 */
+                ///@{
+                friend class boost::serialization::access;
+
+                template<class Archive>
+                void
+                serialize(Archive &ar, const unsigned int version)
+                {
+                    ar &boost::serialization::make_nvp("map_name_",map_name_);
+
+                    boost::fusion::for_each(funcs_,
+                                            [&](auto & func)
+                    {
+                        using Type_Value = typename std::remove_reference<decltype(func)>::type;
+                        using Type = typename Type_Value::first_type;
+
+                        const std::string tag_name = "funcs_range_" + std::to_string(Type::value);
+                        ar &boost::serialization::make_nvp(tag_name.c_str(),func.second);
+                    } // end lambda function
+                                           );
+
+                }
+                ///@}
+#endif // SERIALIZATION
+
+            };
+
+
+
+            /**
+             * Prints some internal information. Mostly used for testing and debugging purposes.
+             */
+            void print_info(LogStream &out) const
+            {
+                using std::to_string;
+                out.begin_item("Mappings num. : " + to_string(maps_and_data_varying_range_.size()));
+                int map_id = 0;
+                for (const auto &map_and_data_varying_range : maps_and_data_varying_range_)
+                {
+                    const auto &data_varying_range = map_and_data_varying_range.second;
+                    out.begin_item("Map[" + to_string(map_id++) + "] name: " + data_varying_range.get_mapping_name());
+
+                    const auto &map = *map_and_data_varying_range.first;
+                    map.print_info(out);
+
+                    data_varying_range.print_info(out);
+
+                    out.end_item();
+                } // end loop maps
+                out.end_item();
+            }; // end print_info()
+
+
+        private:
+
+            std::map<MappingPtr<dim,codim>,DataAssociatedToMap> maps_and_data_varying_range_;
+
+#ifdef SERIALIZATION
+            /**
+             * @name Functions needed for boost::serialization
+             * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+             */
+            ///@{
+            friend class boost::serialization::access;
+
+            template<class Archive>
+            void
+            serialize(Archive &ar, const unsigned int version)
+            {
+                ar.template register_type<IdentityFunction<dim,dim+codim>>();
+                ar.template register_type<IgFunction<dim,0,dim+codim,1>>();
+                //        ar.template register_type<IgFunction<dim,0,dim+codim,1>>();
+                ar &boost::serialization::make_nvp("maps_and_data_varying_range_",
+                                                   maps_and_data_varying_range_);
+            }
+            ///@}
+#endif // SERIALIZATION
+
+        }; // end class FunctionsContainerDataSameDimAndCodim
+
+
+    public:
+        /**
+         * Returns a const-reference to the data identified by the index pair <tt><dim,codim></tt>.
+         *
+         * @note The returned container holds the geometry parametrizations
+         * \f$ \mathbf{F}_i \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}}\f$.
+         */
+        template <int codim>
+        const auto &get_data_codim() const
+        {
+            return boost::fusion::at_key<Topology<codim>>(data_varying_codim_);
+        }
+
+        /**
+         * Returns a const-reference to the data identified by the index pair <tt><dim,codim></tt>.
+         *
+         * @note The returned container holds the geometry parametrizations
+         * \f$ \mathbf{F}_i \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}}\f$.
+         */
+        template <int codim>
+        auto &get_data_codim()
+        {
+            return boost::fusion::at_key<Topology<codim>>(data_varying_codim_);
+        }
+
+        /**
+         * Prints some internal information. Mostly used for testing and debugging purposes.
+         */
+        void print_info(LogStream &out) const
+        {
+            boost::fusion::for_each(data_varying_codim_,
+                                    [&](const auto & type_and_data_same_codim)
+            {
+                using Type_Value = typename std::remove_reference<decltype(type_and_data_same_codim)>::type;
+                using Type = typename Type_Value::first_type;
+
+                out.begin_item("Codim : " + std::to_string(Type::value));
+                type_and_data_same_codim.second.print_info(out);
+                out.end_item();
+
+            } // end lambda function
+                                   );
+        }
+
+
+
+    private:
+
+        DataVaryingId<FunctionsContainerDataSameDimAndCodim,0,4-dim> data_varying_codim_;
+
+#ifdef SERIALIZATION
+        /**
+         * @name Functions needed for boost::serialization
+         * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+         */
+        ///@{
+        friend class boost::serialization::access;
+
+        template<class Archive>
+        void
+        serialize(Archive &ar, const unsigned int version)
+        {
+            boost::fusion::for_each(data_varying_codim_,
+                                    [&](auto & type_and_data_same_codim)
+            {
+                using Type_Value = typename std::remove_reference<decltype(type_and_data_same_codim)>::type;
+                using Type = typename Type_Value::first_type;
+
+                const std::string tag_name = "data_codim_" + std::to_string(Type::value);
+                ar &boost::serialization::make_nvp(tag_name.c_str(),type_and_data_same_codim.second);
+            } // end lambda function
+                                   );
+        }
+        ///@}
+#endif // SERIALIZATION
+
+    }; // end FunctionsContainerDataSameDim
+
+
+
 public:
 
     /**
@@ -661,6 +634,11 @@ public:
     }
 
 
+    /**
+     * Returns a const reference to the object associated to the geometry parametrization @p mapping
+     * \f$ \mathbf{F}_i \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}} \f$
+     * used as input argument.
+     */
     template <int dim,int codim>
     const auto &
     get_mapping_data(const MappingPtr<dim,codim> mapping) const
@@ -691,11 +669,11 @@ public:
 
 private:
 
-
     /**
-     * All the data in the FunctionsContainer class, organized by the @p dim index.
+     * All the data in the FunctionsContainer class, organized by the @p dim index
+     * (starting from 1 to 3)
      */
-    DataVaryingDim<3> data_varying_dim_;
+    DataVaryingId<FunctionsContainerDataSameDim,1,3> data_varying_dim_;
 
 
 
