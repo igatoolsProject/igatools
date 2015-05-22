@@ -1,6 +1,23 @@
 IgFunction<2,0,3,1>
    Function<2,0,3,1>
       Quadrature cache for all dimensions:
+         Quadrature cache for dimension: 1
+            Number of points:0
+            Weights:
+               ValueVector (num_points=0) :
+               [ ]
+            
+            
+            Coordinates:
+               Direction: 0
+               [ ]
+            
+            Points:
+               ValueVector (num_points=0) :
+               [ ]
+            
+            
+         
          Quadrature cache for dimension: 2
             Number of points:0
             Weights:
@@ -12,23 +29,6 @@ IgFunction<2,0,3,1>
                Direction: 0
                [ ]
                Direction: 1
-               [ ]
-            
-            Points:
-               ValueVector (num_points=0) :
-               [ ]
-            
-            
-         
-         Quadrature cache for dimension: 1
-            Number of points:0
-            Weights:
-               ValueVector (num_points=0) :
-               [ ]
-            
-            
-            Coordinates:
-               Direction: 0
                [ ]
             
             Points:

@@ -122,6 +122,21 @@ void test_proj(int, int) [with int dim = 1; int range = 1; int rank = 1; iga::LA
 IgFunction<1,0,1,1>
    Function<1,0,1,1>
       Quadrature cache for all dimensions:
+         Quadrature cache for dimension: 0
+            Number of points:0
+            Weights:
+               ValueVector (num_points=0) :
+               [ ]
+            
+            
+            Coordinates:
+            
+            Points:
+               ValueVector (num_points=0) :
+               [ ]
+            
+            
+         
          Quadrature cache for dimension: 1
             Number of points:0
             Weights:
@@ -132,21 +147,6 @@ IgFunction<1,0,1,1>
             Coordinates:
                Direction: 0
                [ ]
-            
-            Points:
-               ValueVector (num_points=0) :
-               [ ]
-            
-            
-         
-         Quadrature cache for dimension: 0
-            Number of points:0
-            Weights:
-               ValueVector (num_points=0) :
-               [ ]
-            
-            
-            Coordinates:
             
             Points:
                ValueVector (num_points=0) :
@@ -270,6 +270,23 @@ void test_proj(int, int) [with int dim = 2; int range = 1; int rank = 1; iga::LA
 IgFunction<2,0,1,1>
    Function<2,0,1,1>
       Quadrature cache for all dimensions:
+         Quadrature cache for dimension: 1
+            Number of points:0
+            Weights:
+               ValueVector (num_points=0) :
+               [ ]
+            
+            
+            Coordinates:
+               Direction: 0
+               [ ]
+            
+            Points:
+               ValueVector (num_points=0) :
+               [ ]
+            
+            
+         
          Quadrature cache for dimension: 2
             Number of points:0
             Weights:
@@ -281,23 +298,6 @@ IgFunction<2,0,1,1>
                Direction: 0
                [ ]
                Direction: 1
-               [ ]
-            
-            Points:
-               ValueVector (num_points=0) :
-               [ ]
-            
-            
-         
-         Quadrature cache for dimension: 1
-            Number of points:0
-            Weights:
-               ValueVector (num_points=0) :
-               [ ]
-            
-            
-            Coordinates:
-               Direction: 0
                [ ]
             
             Points:
@@ -460,6 +460,25 @@ void test_proj(int, int) [with int dim = 3; int range = 1; int rank = 1; iga::LA
 IgFunction<3,0,1,1>
    Function<3,0,1,1>
       Quadrature cache for all dimensions:
+         Quadrature cache for dimension: 2
+            Number of points:0
+            Weights:
+               ValueVector (num_points=0) :
+               [ ]
+            
+            
+            Coordinates:
+               Direction: 0
+               [ ]
+               Direction: 1
+               [ ]
+            
+            Points:
+               ValueVector (num_points=0) :
+               [ ]
+            
+            
+         
          Quadrature cache for dimension: 3
             Number of points:0
             Weights:
@@ -473,25 +492,6 @@ IgFunction<3,0,1,1>
                Direction: 1
                [ ]
                Direction: 2
-               [ ]
-            
-            Points:
-               ValueVector (num_points=0) :
-               [ ]
-            
-            
-         
-         Quadrature cache for dimension: 2
-            Number of points:0
-            Weights:
-               ValueVector (num_points=0) :
-               [ ]
-            
-            
-            Coordinates:
-               Direction: 0
-               [ ]
-               Direction: 1
                [ ]
             
             Points:
@@ -690,6 +690,23 @@ void test_proj(int, int) [with int dim = 2; int range = 3; int rank = 1; iga::LA
 IgFunction<2,0,3,1>
    Function<2,0,3,1>
       Quadrature cache for all dimensions:
+         Quadrature cache for dimension: 1
+            Number of points:0
+            Weights:
+               ValueVector (num_points=0) :
+               [ ]
+            
+            
+            Coordinates:
+               Direction: 0
+               [ ]
+            
+            Points:
+               ValueVector (num_points=0) :
+               [ ]
+            
+            
+         
          Quadrature cache for dimension: 2
             Number of points:0
             Weights:
@@ -701,23 +718,6 @@ IgFunction<2,0,3,1>
                Direction: 0
                [ ]
                Direction: 1
-               [ ]
-            
-            Points:
-               ValueVector (num_points=0) :
-               [ ]
-            
-            
-         
-         Quadrature cache for dimension: 1
-            Number of points:0
-            Weights:
-               ValueVector (num_points=0) :
-               [ ]
-            
-            
-            Coordinates:
-               Direction: 0
                [ ]
             
             Points:

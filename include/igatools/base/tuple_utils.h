@@ -36,25 +36,57 @@
 
 IGA_NAMESPACE_OPEN
 
-template<int dim, std::size_t... I>
+
+
+/**
+ *
+ * Returns a boost::fusion::map in which the keys are the <em>types</em>
+ * <tt>Topology<I_min>,Topology<I_min+1>,Topology<I_min+2>,...</tt>
+ * and the associated values are the <em>objects</em> of the type
+ * <tt>DataIndexed<I_min>,DataIndexed<I_min+1>,DataIndexed<I_min+2>,...</tt>.
+ *
+ * The last index used is given by the sum of <tt>I_min</tt> with the size of the index sequence
+ * used as input parameter of the function.
+ *
+ * It is used to infer (at compile time) the type of a boost::fusion::map when the
+ * keys and values are two classes indexed with an integer value.
+ *
+ * @warning This function is implemented using some ''<em>black magic</em>''
+ * template metaprogramming techniques.
+ */
+template<template <int> class DataIndexed,int I_min,std::size_t... I>
 auto
-tuple_of_quads(std::index_sequence<I...>)
+make_fusion_map_indexed_data(std::index_sequence<I...>)
 {
     return boost::fusion::map<
-           boost::fusion::pair<Topology<(dim>I) ? dim-I : 0>,Quadrature<(dim>I) ? dim-I : 0> > ...>(
-               boost::fusion::pair<Topology<(dim>I) ? dim-I : 0>,Quadrature<(dim>I) ? dim-I : 0> >() ...);
+           boost::fusion::pair<Topology<I+I_min>,DataIndexed<I+I_min> > ...>(
+               boost::fusion::pair<Topology<I+I_min>,DataIndexed<I+I_min> >() ...);
 }
 
 /**
+ * Alias for a boost::fusion::map container, in which the keys are the <em>types</em>
+ * <tt>Topology<I_min>,Topology<I_min+1>,Topology<I_min+2>,...</tt>
+ * and the associated values are the <em>objects</em> of the type
+ * <tt>DataSameId<I_min>,DataSameId<I_min+1>,DataSameId<I_min+2>,...,DataSameId<I_min+N></tt>.
+ *
+ * @sa make_fusion_map_indexed_data
+ */
+template <template <int> class DataSameId,int Id_min,int N>
+using DataVaryingId = decltype(make_fusion_map_indexed_data<DataSameId,Id_min>(std::make_index_sequence<N>()));
+
+
+
+
+/**
  * List of Quadrature for the sub-elements having their topological dimension
- * ranging from <tt>dim</tt> to <tt>dim-num_sub_elem+1</tt>
+ * ranging from <tt>dim-num_sub_elem</tt> to <tt>dim</tt>
  *
  * @note <tt>num_sub_elem</tt> is defined at configuration time in the main CMakeLists.txt file.
  * @ingroup serializable
  */
 template<int dim>
 class QuadList
-    : public decltype(tuple_of_quads<dim>(std::make_index_sequence<(num_sub_elem <= dim ? num_sub_elem+1 : 1)>()))
+    : public DataVaryingId<Quadrature,(num_sub_elem <= dim ? dim - num_sub_elem : dim),(num_sub_elem <= dim ? num_sub_elem+1 : 1)>
 {
 
 private:

@@ -25,8 +25,9 @@
 
 
 
+#include <igatools/base/tuple_utils.h>
 #include <igatools/base/identity_function.h>
-#include <igatools/base/quadrature_lib.h>
+//#include <igatools/base/quadrature_lib.h>
 #include <igatools/base/function_lib.h>
 #include <igatools/base/function_element.h>
 #include <igatools/base/sub_function.h>
@@ -37,42 +38,6 @@
 #include <igatools/basis_functions/physical_space.h>
 
 IGA_NAMESPACE_OPEN
-
-/**
- *
- * Returns a boost::fusion::map in which the keys are the <em>types</em>
- * <tt>Topology<I_min>,Topology<I_min+1>,Topology<I_min+2>,...</tt>
- * and the associated values are the <em>objects</em> of the type
- * <tt>DataIndexed<I_min>,DataIndexed<I_min+1>,DataIndexed<I_min+2>,...</tt>.
- *
- * The last index used is given by the sum of <tt>I_min</tt> with the size of the index sequence
- * used as input parameter of the function.
- *
- * It is used to infer (at compile time) the type of a boost::fusion::map when the
- * keys and values are two classes indexed with an integer value.
- *
- * @warning This function is implemented using some ''<em>black magic</em>''
- * template metaprogramming techniques.
- */
-template<template <int> class DataIndexed,int I_min,std::size_t... I>
-auto
-make_fusion_map_indexed_data(std::index_sequence<I...>)
-{
-    return boost::fusion::map<
-           boost::fusion::pair<Topology<I+I_min>,DataIndexed<I+I_min> > ...>(
-               boost::fusion::pair<Topology<I+I_min>,DataIndexed<I+I_min> >() ...);
-}
-
-/**
- * Alias for a boost::fusion::map container, in which the keys are the <em>types</em>
- * <tt>Topology<I_min>,Topology<I_min+1>,Topology<I_min+2>,...</tt>
- * and the associated values are the <em>objects</em> of the type
- * <tt>DataSameId<I_min>,DataSameId<I_min+1>,DataSameId<I_min+2>,...,DataSameId<I_min+N></tt>.
- *
- * @sa make_fusion_map_indexed_data
- */
-template <template <int> class DataSameId,int Id_min,int N>
-using DataVaryingId = decltype(make_fusion_map_indexed_data<DataSameId,Id_min>(std::make_index_sequence<N>()));
 
 
 /**

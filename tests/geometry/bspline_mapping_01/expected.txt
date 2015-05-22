@@ -5,6 +5,21 @@ Original IgFunction:
    IgFunction<1,0,1,1>
       Function<1,0,1,1>
          Quadrature cache for all dimensions:
+            Quadrature cache for dimension: 0
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
             Quadrature cache for dimension: 1
                Number of points:0
                Weights:
@@ -15,21 +30,6 @@ Original IgFunction:
                Coordinates:
                   Direction: 0
                   [ ]
-               
-               Points:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-            
-            Quadrature cache for dimension: 0
-               Number of points:0
-               Weights:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Coordinates:
                
                Points:
                   ValueVector (num_points=0) :
@@ -144,6 +144,21 @@ IgFunction after serialize-deserialize:
    IgFunction<1,0,1,1>
       Function<1,0,1,1>
          Quadrature cache for all dimensions:
+            Quadrature cache for dimension: 0
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
             Quadrature cache for dimension: 1
                Number of points:0
                Weights:
@@ -154,21 +169,6 @@ IgFunction after serialize-deserialize:
                Coordinates:
                   Direction: 0
                   [ ]
-               
-               Points:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-            
-            Quadrature cache for dimension: 0
-               Number of points:0
-               Weights:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Coordinates:
                
                Points:
                   ValueVector (num_points=0) :
@@ -296,6 +296,23 @@ Original IgFunction:
    IgFunction<2,0,2,1>
       Function<2,0,2,1>
          Quadrature cache for all dimensions:
+            Quadrature cache for dimension: 1
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
             Quadrature cache for dimension: 2
                Number of points:0
                Weights:
@@ -307,23 +324,6 @@ Original IgFunction:
                   Direction: 0
                   [ ]
                   Direction: 1
-                  [ ]
-               
-               Points:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-            
-            Quadrature cache for dimension: 1
-               Number of points:0
-               Weights:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Coordinates:
-                  Direction: 0
                   [ ]
                
                Points:
@@ -471,6 +471,23 @@ IgFunction after serialize-deserialize:
    IgFunction<2,0,2,1>
       Function<2,0,2,1>
          Quadrature cache for all dimensions:
+            Quadrature cache for dimension: 1
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
             Quadrature cache for dimension: 2
                Number of points:0
                Weights:
@@ -482,23 +499,6 @@ IgFunction after serialize-deserialize:
                   Direction: 0
                   [ ]
                   Direction: 1
-                  [ ]
-               
-               Points:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-            
-            Quadrature cache for dimension: 1
-               Number of points:0
-               Weights:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Coordinates:
-                  Direction: 0
                   [ ]
                
                Points:
@@ -659,6 +659,25 @@ Original IgFunction:
    IgFunction<3,0,3,1>
       Function<3,0,3,1>
          Quadrature cache for all dimensions:
+            Quadrature cache for dimension: 2
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+                  Direction: 1
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
             Quadrature cache for dimension: 3
                Number of points:0
                Weights:
@@ -672,25 +691,6 @@ Original IgFunction:
                   Direction: 1
                   [ ]
                   Direction: 2
-                  [ ]
-               
-               Points:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-            
-            Quadrature cache for dimension: 2
-               Number of points:0
-               Weights:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Coordinates:
-                  Direction: 0
-                  [ ]
-                  Direction: 1
                   [ ]
                
                Points:
@@ -888,6 +888,25 @@ IgFunction after serialize-deserialize:
    IgFunction<3,0,3,1>
       Function<3,0,3,1>
          Quadrature cache for all dimensions:
+            Quadrature cache for dimension: 2
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+                  Direction: 1
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
             Quadrature cache for dimension: 3
                Number of points:0
                Weights:
@@ -901,25 +920,6 @@ IgFunction after serialize-deserialize:
                   Direction: 1
                   [ ]
                   Direction: 2
-                  [ ]
-               
-               Points:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-            
-            Quadrature cache for dimension: 2
-               Number of points:0
-               Weights:
-                  ValueVector (num_points=0) :
-                  [ ]
-               
-               
-               Coordinates:
-                  Direction: 0
-                  [ ]
-                  Direction: 1
                   [ ]
                
                Points:
