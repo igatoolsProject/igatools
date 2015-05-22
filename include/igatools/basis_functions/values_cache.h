@@ -38,14 +38,19 @@
 
 IGA_NAMESPACE_OPEN
 
+template <class ValuesCache,int dim,int sub_elem_dim>
+using ValuesCacheAllSubElems = SafeSTLArray<ValuesCache,UnitElement<dim>::template num_elem<sub_elem_dim>()>;
 
 template<class ValuesCache, int dim, std::size_t... I>
 auto
 tuple_of_caches(std::index_sequence<I...>)
 {
-    return boost::fusion::map<boost::fusion::pair<Topology<(dim>I) ? dim-I : 0>,SafeSTLArray<ValuesCache,UnitElement<dim>::template num_elem<(dim>I) ? dim-I : 0>()>> ...>(
-               boost::fusion::pair<Topology<(dim>I) ? dim-I : 0>,SafeSTLArray<ValuesCache,UnitElement<dim>::template num_elem<(dim>I) ? dim-I : 0>()>>() ...);
+    return boost::fusion::map<boost::fusion::pair<Topology<(dim>I) ? dim-I : 0>,ValuesCacheAllSubElems<ValuesCache,dim,(dim>I) ? dim-I : 0> > ...>(
+               boost::fusion::pair<Topology<(dim>I) ? dim-I : 0>,ValuesCacheAllSubElems<ValuesCache,dim,(dim>I) ? dim-I : 0> >() ...);
 }
+
+//template <template <int> class DataSameId,int Id_min,int N>
+//using DataVaryingId = decltype(make_fusion_map_indexed_data<DataSameId,Id_min>(std::make_index_sequence<N>()));
 
 
 /**
