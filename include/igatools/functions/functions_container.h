@@ -77,17 +77,21 @@ using DictionaryFuncPtrName =
  *
  * The container is heterogeneous in the sense that can hold data referred to different combinations
  * of quadruplets <tt><dim,codim,range,rank></tt> and it is defined as a "4-index" container,
- * and the data is organized following the quadruplets order <tt><dim,codim,range,rank></tt>.
- * Therefore the first index selects the data identified with <tt>dim</tt> and the second
- * index the data identified with the pair <tt>dim,codim</tt>: at this point we use an associative
- * container (a std::map) having as a key a (shared) pointer to the geometry parametrization
- * and as associated value, an object containing the name given to the geometry and the container
- * holding all functions associated to the geometry.
+ * The data is organized following the quadruplets order <tt><dim,codim,range,rank></tt>:
+ * - the first index selects the data identified with <tt>dim</tt>
+ * - the second index selects the data identified with the pair <tt>dim,codim</tt>: at this point we use an associative
+ * container (a std::map) having as <tt>key</tt> a (shared) pointer to a geometry parametrization
+ * \f$ \mathbf{F}_i \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}} \f$
+ * and as associated <tt>value</tt>, an object containing the name given to the geometry and the container
+ * holding all functions associated to the geometry with <tt>range</tt> and <tt>rank</tt> values compatible with
+ * the <tt>dim,codim</tt> pair.
  *
  * Unfortunately the STL library does not provide associative containers between heterogeneous
  * types, so we used the <a href="http://www.boost.org/libs/fusion/">boost::fusion library</a>
  * (and specifically the boost::fusion::map class)
  * in order to have such kind of container.
+ *
+ * An example of the use of this class is given by the test tests/functions/functions_container_01.cpp
  *
  * @ingroup serializable
  *
