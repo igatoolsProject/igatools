@@ -307,31 +307,23 @@ refine_h_weights(
     {
         if (refinement_directions[direction_id])
         {
-            // knots in the refined grid along the selected direction
-            SafeSTLVector<Real> knots_new = grid->get_knot_coordinates(direction_id);
-
-            // knots in the original (unrefined) grid along the selected direction
-            SafeSTLVector<Real> knots_old = grid_old->get_knot_coordinates(direction_id);
-
-            SafeSTLVector<Real> knots_added(knots_new.size());
-
-            // find the knots in the refined grid that are not present in the old grid
-            auto it = std::set_difference(
-                          knots_new.begin(),knots_new.end(),
-                          knots_old.begin(),knots_old.end(),
-                          knots_added.begin());
-
-            knots_added.resize(it-knots_added.begin());
-            /*
-                        Assert(false,ExcNotImplemented());
-                        AssertThrow(false,ExcNotImplemented());
-            //*/
             for (const int comp_id : weights_.get_active_components_id())
             {
                 const int p = sp_space_->get_degree()[comp_id][direction_id];
                 const auto &U = knots_with_repetitions_pre_refinement[comp_id].get_data_direction(direction_id);
-                const auto &X = knots_added;
                 const auto &Ubar = knots_with_repetitions[comp_id].get_data_direction(direction_id);
+
+
+                SafeSTLVector<Real> knots_added(Ubar.size());
+
+                // find the knots in the refined space that are not present in the old space
+                auto it = std::set_difference(
+                              Ubar.begin(),Ubar.end(),
+                              U.begin(),U.end(),
+                              knots_added.begin());
+
+                knots_added.resize(it-knots_added.begin());
+                const auto &X = knots_added;
 
 
                 const int m = U.size()-1;
