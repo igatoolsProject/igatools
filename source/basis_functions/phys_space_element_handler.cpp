@@ -193,7 +193,7 @@ operator()(const Topology<sub_elem_dim> &topology)
     {
         using VCache = typename PhysSpace::ElementAccessor::parent_t::Cache;
 
-        using Cache = LocalCache<VCache>;
+        using Cache = AllSubElementsCache<VCache>;
         all_sub_elems_cache = std::make_shared<Cache>();
     }
 

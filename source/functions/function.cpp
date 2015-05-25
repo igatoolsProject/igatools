@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/base/function.h>
-#include <igatools/base/function_element.h>
+#include <igatools/functions/function.h>
+#include <igatools/functions/function_element.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -180,5 +180,5 @@ end() const -> ElementIterator
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/base/function.inst>
+#include <igatools/functions/function.inst>
 

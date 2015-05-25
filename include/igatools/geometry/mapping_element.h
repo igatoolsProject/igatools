@@ -23,7 +23,7 @@
 
 #include <igatools/utils/safe_stl_array.h>
 #include <igatools/geometry/mapping.h>
-#include <igatools/base/function_element.h>
+#include <igatools/functions/function_element.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -184,7 +184,7 @@ private:
 
 
 public:
-    using CacheType = LocalCache<Cache>;
+    using CacheType = AllSubElementsCache<Cache>;
 
 private:
 
@@ -491,19 +491,19 @@ struct FaceValuesCache : ValuesCache
 const ValuesCache &get_values_cache(const TopologyId<dim> &topology_id) const;
 
 
-class LocalCache
+class AllSubElementsCache
 {
 public:
-    LocalCache() = default;
+    AllSubElementsCache() = default;
 
-    LocalCache(const LocalCache &in) = default;
-    LocalCache(LocalCache &&in) = default;
+    AllSubElementsCache(const AllSubElementsCache &in) = default;
+    AllSubElementsCache(AllSubElementsCache &&in) = default;
 
-    ~LocalCache() = default;
+    ~AllSubElementsCache() = default;
 
 
-    LocalCache &operator=(const LocalCache &in) = delete;
-    LocalCache &operator=(LocalCache &&in) = delete;
+    AllSubElementsCache &operator=(const AllSubElementsCache &in) = delete;
+    AllSubElementsCache &operator=(AllSubElementsCache &&in) = delete;
 
     void print_info(LogStream &out) const;
 
@@ -515,7 +515,7 @@ public:
 
 };
 
-std::shared_ptr<LocalCache> local_cache_;
+std::shared_ptr<AllSubElementsCache> local_cache_;
 
 
 

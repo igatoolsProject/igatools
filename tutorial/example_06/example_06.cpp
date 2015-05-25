@@ -19,8 +19,8 @@
 //-+--------------------------------------------------------------------
 
 // [functions]
-#include <igatools/base/identity_function.h>
-#include <igatools/base/function_lib.h>
+#include <igatools/functions/identity_function.h>
+#include <igatools/functions/function_lib.h>
 // [functions]
 // [old includes]
 #include <igatools/basis_functions/bspline_space.h>

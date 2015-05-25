@@ -22,8 +22,9 @@
 #define __IG_FUNCTION_H
 
 #include <igatools/base/value_types.h>
-#include <igatools/base/function.h>
-#include <igatools/base/ig_coefficients.h>
+#include <igatools/functions/function.h>
+#include <igatools/functions/ig_coefficients.h>
+
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/linear_algebra/epetra_vector.h>
 //#include <igatools/basis_functions/bspline_space.h>
@@ -152,10 +153,7 @@ public:
 
     const CoeffType &get_coefficients() const;
 
-    const std::string &get_property() const
-    {
-        return property_;
-    }
+    const std::string &get_property() const;
 
     self_t &operator +=(const self_t &fun);
 

@@ -332,7 +332,7 @@ private:
 public:
     using ValuesCache = FuncValuesCache<dim,CType>;
 
-    using CacheType = LocalCache<ValuesCache>;
+    using CacheType = AllSubElementsCache<ValuesCache>;
 
 private:
     /** The local cache. */

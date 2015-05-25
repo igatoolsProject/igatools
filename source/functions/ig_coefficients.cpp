@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/base/ig_coefficients.h>
+#include <igatools/functions/ig_coefficients.h>
 
 
 IGA_NAMESPACE_OPEN

@@ -34,8 +34,8 @@
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/linear_algebra/epetra_solver.h>
-#include <igatools/base/identity_function.h>
-#include <igatools/base/ig_function.h>
+#include <igatools/functions/identity_function.h>
+#include <igatools/functions/ig_function.h>
 #include <igatools/io/writer.h>
 
 using namespace EpetraTools;

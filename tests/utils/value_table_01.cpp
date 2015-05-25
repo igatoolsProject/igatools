@@ -29,8 +29,8 @@
 #include "../tests.h"
 
 #include <igatools/base/tensor.h>
-#include <igatools/base/function.h>
-#include <igatools/base/function_element.h>
+#include <igatools/functions/function.h>
+#include <igatools/functions/function_element.h>
 #include <igatools/utils/value_table.h>
 
 void do_test(Size n_funcs, Size n_pts)

@@ -310,11 +310,11 @@ protected:
 
 
     /** The local (element and face) cache. */
-    std::shared_ptr<LocalCache<Cache>> all_sub_elems_cache_;
+    std::shared_ptr<AllSubElementsCache<Cache>> all_sub_elems_cache_;
 
 public:
     // TODO (pauletti, Mar 17, 2015): this cannot be public, if needed it means wrong desing
-    std::shared_ptr<LocalCache<Cache> > &
+    std::shared_ptr<AllSubElementsCache<Cache> > &
     get_all_sub_elems_cache()
     {
         return this->all_sub_elems_cache_;

@@ -29,9 +29,9 @@
 
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/base/identity_function.h>
-#include <igatools/base/formula_function.h>
-#include <igatools/base/function_lib.h>
+#include <igatools/functions/identity_function.h>
+#include <igatools/functions/formula_function.h>
+#include <igatools/functions/function_lib.h>
 
 
 // TODO (pauletti, Nov 13, 2014): delete this after cleaning and arranging test

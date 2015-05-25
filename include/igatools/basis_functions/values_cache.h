@@ -38,19 +38,30 @@
 
 IGA_NAMESPACE_OPEN
 
+/**
+ * @ingroup cache
+ */
 template <class ValuesCache,int dim,int sub_elem_dim>
 using ValuesCacheAllSubElems = SafeSTLArray<ValuesCache,UnitElement<dim>::template num_elem<sub_elem_dim>()>;
 
+/**
+ * @ingroup cache
+ */
 template<class ValuesCache, int dim, std::size_t... I>
 auto
-tuple_of_caches(std::index_sequence<I...>)
+make_fusion_map_cache_all_sub_elems(std::index_sequence<I...>)
 {
     return boost::fusion::map<boost::fusion::pair<Topology<(dim>I) ? dim-I : 0>,ValuesCacheAllSubElems<ValuesCache,dim,(dim>I) ? dim-I : 0> > ...>(
                boost::fusion::pair<Topology<(dim>I) ? dim-I : 0>,ValuesCacheAllSubElems<ValuesCache,dim,(dim>I) ? dim-I : 0> >() ...);
 }
 
-//template <template <int> class DataSameId,int Id_min,int N>
-//using DataVaryingId = decltype(make_fusion_map_indexed_data<DataSameId,Id_min>(std::make_index_sequence<N>()));
+
+/**
+ * @ingroup cache
+ */
+template <class ValuesCache,int dim>
+using DataCacheAllSubElems = decltype(make_fusion_map_cache_all_sub_elems<ValuesCache,dim>(
+                                          std::make_index_sequence<(num_sub_elem <= dim ? num_sub_elem+1 : 1)>()));
 
 
 /**
@@ -59,13 +70,14 @@ tuple_of_caches(std::index_sequence<I...>)
  *
  * @note <tt>num_sub_elem</tt> is defined at configuration time in the main CMakeLists.txt file.
  *
+ *
+ * @ingroup cache
+ *
  * @ingroup serializable
  */
-
 template<class ValuesCache, int dim>
 class CacheList :
-    public decltype(tuple_of_caches<ValuesCache,dim>(
-                        std::make_index_sequence<(num_sub_elem <= dim ? num_sub_elem+1 : 1)>()))
+    public DataCacheAllSubElems<ValuesCache,dim>
 {
 
 private:
@@ -101,6 +113,9 @@ private:
 
 
 
+/**
+ * @ingroup cache
+ */
 namespace cacheutils
 {
 
@@ -128,6 +143,9 @@ print_caches(const FusionContainer &data, LogStream &out)
 
 
 
+/**
+ * @ingroup cache
+ */
 template<class CacheType>
 ValueFlags
 get_valid_flags_from_cache_type(const CacheType &cache)
@@ -176,6 +194,7 @@ extract_sub_elements_data(FusionContainer &data)
  * @tparam DataType This should be a ValueTable or a ValueVector.
  *
  * @ingroup serializable
+ * @ingroup cache
  */
 template < class DataType >
 class DataWithFlagStatus : public DataType
@@ -256,6 +275,7 @@ private:
 /**
  *
  * @ingroup serializable
+ * @ingroup cache
  */
 template<int dim,class CacheType>
 class ValuesCache : public CacheStatus
@@ -434,7 +454,9 @@ private:
 
 
 
-
+/**
+ * @ingroup cache
+ */
 template<int dim, class CacheType>
 class BasisValuesCache : public ValuesCache<dim,CacheType>
 {
@@ -506,6 +528,8 @@ private:
 /**
  *
  * @ingroup serializable
+ *
+ * @ingroup cache
  */
 template<int dim, class CacheType>
 class FuncValuesCache : public ValuesCache<dim,CacheType>
@@ -579,23 +603,26 @@ private:
 /**
  *
  * @ingroup serializable
+ *
+ * @ingroup cache
+ *
  */
 template <class SubElemCache>
-class LocalCache
+class AllSubElementsCache
 {
 public:
-    LocalCache() = default;
+    AllSubElementsCache() = default;
 
-    LocalCache(const LocalCache &in) = default;
+    AllSubElementsCache(const AllSubElementsCache &in) = default;
 
-    LocalCache(LocalCache &&in) = default;
+    AllSubElementsCache(AllSubElementsCache &&in) = default;
 
-    ~LocalCache() = default;
+    ~AllSubElementsCache() = default;
 
 
-    LocalCache &operator=(const LocalCache &in) = delete;
+    AllSubElementsCache &operator=(const AllSubElementsCache &in) = delete;
 
-    LocalCache &operator=(LocalCache &&in) = delete;
+    AllSubElementsCache &operator=(AllSubElementsCache &&in) = delete;
 
     void print_info(LogStream &out) const
     {

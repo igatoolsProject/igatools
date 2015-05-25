@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/base/formula_function.h>
-#include <igatools/base/function_element.h>
+#include <igatools/functions/formula_function.h>
+#include <igatools/functions/function_element.h>
 
 using std::shared_ptr;
 
@@ -35,24 +35,57 @@ FormulaFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map)
 {}
 
 
+template<int dim, int codim, int range, int rank>
+FormulaFunction<dim, codim, range, rank>::
+FormulaFunction(const self_t &func)
+    :
+    parent_t::Function(func),
+    mapping_(func.mapping_->clone()),
+    map_elem_(func.mapping_->begin())
+{}
 
 template<int dim, int codim, int range, int rank>
-auto
+void
 FormulaFunction<dim, codim, range, rank>::
-fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) -> void
+reset(const ValueFlags &flag, const eval_pts_variant &quad)
 {
-    parent_t::fill_cache(elem,k,j);
-    map_elem_.move_to(elem.get_flat_index());
-    mapping_->fill_cache(map_elem_,k,j);
-    fill_cache_impl.j = j;
-    fill_cache_impl.function = this;
-    fill_cache_impl.elem = &elem;
-//    fill_cache_impl.flags_ = &(this->flags_);
-    boost::apply_visitor(fill_cache_impl, k);
+    parent_t::reset(flag, quad);
+    mapping_->reset(ValueFlags::value|ValueFlags::point, quad);
+}
+
+template<int dim, int codim, int range, int rank>
+void
+FormulaFunction<dim, codim, range, rank>::
+init_cache(ElementAccessor &elem, const topology_variant &k)
+{
+    parent_t::init_cache(elem, k);
+    mapping_->init_cache(map_elem_, k);
 }
 
 
 
+template<int dim, int codim, int range, int rank>
+auto
+FormulaFunction<dim, codim, range, rank>::
+fill_cache(ElementAccessor &elem, const topology_variant &k, const int sub_elem_id) -> void
+{
+    parent_t::fill_cache(elem,k,sub_elem_id);
+    map_elem_.move_to(elem.get_flat_index());
+    mapping_->fill_cache(map_elem_,k,sub_elem_id);
+
+    auto fill_cache_dispatcher = FillCacheDispatcher(sub_elem_id,*this,elem);
+    boost::apply_visitor(fill_cache_dispatcher, k);
+}
+
+template<int dim, int codim, int range, int rank>
+auto
+FormulaFunction<dim, codim, range, rank>::
+shared_from_derived() const -> std::shared_ptr<const parent_t>
+{
+    return this->shared_from_this();
+}
+
+
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/base/formula_function.inst>
+#include <igatools/functions/formula_function.inst>

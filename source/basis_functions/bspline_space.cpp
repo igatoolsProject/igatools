@@ -19,8 +19,8 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/basis_functions/bspline_space.h>
-#include <igatools/base/sub_function.h>
-#include <igatools/base/identity_function.h>
+#include <igatools/functions/sub_function.h>
+#include <igatools/functions/identity_function.h>
 
 using std::endl;
 

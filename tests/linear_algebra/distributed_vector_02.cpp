@@ -28,8 +28,8 @@
 #include "../tests.h"
 
 #include <igatools/linear_algebra/epetra_vector.h>
-#include <igatools/base/ig_function.h>
-#include <igatools/base/function_element.h>
+#include <igatools/functions/ig_function.h>
+#include <igatools/functions/function_element.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 

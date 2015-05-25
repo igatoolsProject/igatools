@@ -155,7 +155,7 @@ operator()(const Topology<sub_elem_dim> &sub_elem)
     {
         using VCache = typename NURBSElement<dim_,range_,rank_>::parent_t::Cache;
 
-        using Cache = LocalCache<VCache>;
+        using Cache = AllSubElementsCache<VCache>;
 
         cache = shared_ptr<Cache>(new Cache);
     }

@@ -53,6 +53,11 @@ IGA_NAMESPACE_OPEN
  *
  * @warning This function is implemented using some ''<em>black magic</em>''
  * template metaprogramming techniques.
+ *
+ * \tparam DataIndexed Template class representing the object that has to be indexed and used as
+ * <tt>value type</tt> in the boost::fusion::map container. The template argument of the class must be
+ * the integer used also for the indexing.
+ * \tparam I_min Minimum index value
  */
 template<template <int> class DataIndexed,int I_min,std::size_t... I>
 auto
@@ -65,9 +70,17 @@ make_fusion_map_indexed_data(std::index_sequence<I...>)
 
 /**
  * Alias for a boost::fusion::map container, in which the keys are the <em>types</em>
- * <tt>Topology<I_min>,Topology<I_min+1>,Topology<I_min+2>,...</tt>
+ * <tt>Topology<I_min>,Topology<I_min+1>,Topology<I_min+2>,...,Topology<I_min+N-1></tt>
  * and the associated values are the <em>objects</em> of the type
- * <tt>DataSameId<I_min>,DataSameId<I_min+1>,DataSameId<I_min+2>,...,DataSameId<I_min+N></tt>.
+ * <tt>DataSameId<I_min>,DataSameId<I_min+1>,DataSameId<I_min+2>,...,DataSameId<I_min+N-1></tt>.
+ *
+ * * \tparam DataSameId Template class representing the object that has to be indexed and used as
+ * <tt>value type</tt> in the boost::fusion::map container. The template argument of the class must be
+ * the integer used also for the indexing.
+ * \tparam I_min Minimum index value
+ * \tparam N Number of objects in the boost::fusion::map container.
+ *
+ * @note The indices used run from <tt>I_min</tt> to <tt>I_min+N-1</tt>.
  *
  * @sa make_fusion_map_indexed_data
  */

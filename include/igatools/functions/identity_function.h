@@ -21,7 +21,7 @@
 #ifndef IDENTITY_FUNCTIONS_H
 #define IDENTITY_FUNCTIONS_H
 
-#include <igatools/base/function.h>
+#include <igatools/functions/function.h>
 #include <igatools/base/value_types.h>
 
 IGA_NAMESPACE_OPEN

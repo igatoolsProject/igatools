@@ -20,7 +20,7 @@
 
 #include <igatools/io/reader.h>
 #include <igatools/base/exceptions.h>
-#include <igatools/base/ig_function.h>
+#include <igatools/functions/ig_function.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/nurbs_element.h>
 

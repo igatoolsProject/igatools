@@ -21,10 +21,10 @@
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 // [new include]
-#include <igatools/base/ig_function.h>
+#include <igatools/functions/ig_function.h>
 
 // TODO (pauletti, Nov 26, 2014): this is not correct, fix the writer
-#include <igatools/base/identity_function.h>
+#include <igatools/functions/identity_function.h>
 // [new include]
 #include <igatools/io/writer.h>
 #include <igatools/base/logstream.h>

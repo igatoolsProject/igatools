@@ -28,9 +28,9 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/base/sub_function.h>
-#include <igatools/base/identity_function.h>
-#include <igatools/base/function_element.h>
+#include <igatools/functions/sub_function.h>
+#include <igatools/functions/identity_function.h>
+#include <igatools/functions/function_element.h>
 
 template <int sub_dim, int dim, int codim = 0>
 void sub_function(const int n_knots = 3)

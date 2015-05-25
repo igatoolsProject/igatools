@@ -33,10 +33,10 @@
 #include <igatools/geometry/push_forward_element.h>
 #include <igatools/geometry/mapping_element.h>
 
-#include <igatools/base/function_lib.h>
-#include <igatools/base/identity_function.h>
+#include <igatools/functions/function_lib.h>
+#include <igatools/functions/identity_function.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/base/function_element.h>
+#include <igatools/functions/function_element.h>
 
 template<int dim, int codim>
 void test()

@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/array_utils.h>
-#include <igatools/base/function_element.h>
+#include <igatools/functions/function_element.h>
 #include <igatools/utils/cartesian_product_array.h>
 #include <igatools/basis_functions/space.h>
 #include <igatools/geometry/cartesian_grid.h>

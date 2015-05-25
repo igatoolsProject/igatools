@@ -26,13 +26,13 @@
 
 
 #include <igatools/base/tuple_utils.h>
-#include <igatools/base/identity_function.h>
+#include <igatools/functions/identity_function.h>
 //#include <igatools/base/quadrature_lib.h>
-#include <igatools/base/function_lib.h>
-#include <igatools/base/function_element.h>
-#include <igatools/base/sub_function.h>
+#include <igatools/functions/function_lib.h>
+#include <igatools/functions/function_element.h>
+#include <igatools/functions/sub_function.h>
+#include <igatools/functions/ig_function.h>
 
-#include <igatools/base/ig_function.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/physical_space.h>
@@ -112,6 +112,8 @@ class FunctionsContainer
     {
 
         /**
+         * @brief Class used by FunctionsContainerSameDim in order to store all the data identified by the
+         * index <tt>codim</tt>.
          *
          * @serializable
          * @author M. Martinelli, 2015
@@ -263,6 +265,17 @@ class FunctionsContainer
             }
 
 
+            /**
+             * @brief Class used to store the data associated to a mapping (i.e.e a geometry parametrization)
+             * \f$\mathbf{F} \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}} \f$
+             *
+             * The stored data are:
+             * - the name of the mapping
+             * - the functions associated to the mapping. The functions are stored using two
+             *   (nested) boost::fusion::map containers, one for the index <tt>range</tt> and the other
+             *   for the index <tt>rank</tt>.
+             *
+             */
             class DataAssociatedToMap
             {
             public:
@@ -444,6 +457,16 @@ class FunctionsContainer
 
     private:
 
+        /**
+         * Data for each <tt>codim</tt> index.
+         * The valid <tt>codim</tt> indices run from <tt>0</tt> to <tt>3-dim</tt>, so
+         * we have the following table:
+         * dim | codim
+         * ----|-------
+         *  1  | 0, 1, 2
+         *  2  | 0, 1
+         *  3  | 0
+         */
         DataVaryingId<FunctionsContainerDataSameDimAndCodim,0,4-dim> data_varying_codim_;
 
 #ifdef SERIALIZATION

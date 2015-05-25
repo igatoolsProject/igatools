@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/base/identity_function.h>
-#include <igatools/base/function_element.h>
+#include <igatools/functions/identity_function.h>
+#include <igatools/functions/function_element.h>
 
 using std::shared_ptr;
 
@@ -72,16 +72,11 @@ IdentityFunction<dim,space_dim>::
 fill_cache(ElementAccessor &elem, const topology_variant &k, const int sub_elem_id) -> void
 {
     parent_t::fill_cache(elem, k, sub_elem_id);
-//    fill_cache_impl.j = j;
-//    fill_cache_impl.function = this;
-//    fill_cache_impl.elem = &elem;
-//    fill_cache_impl.flags_ = &(this->flags_);
 
     auto fill_cache_dispatcher = FillCacheDispatcher(sub_elem_id,*this,elem);
-
     boost::apply_visitor(fill_cache_dispatcher, k);
 }
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/base/identity_function.inst>
+#include <igatools/functions/identity_function.inst>

@@ -21,9 +21,9 @@
 #ifndef SPACE_TOOLS_H_
 #define SPACE_TOOLS_H_
 
-#include <igatools/base/ig_function.h>
+#include <igatools/functions/ig_function.h>
 #include <igatools/geometry/grid_tools.h>
-#include <igatools/base/sub_function.h>
+#include <igatools/functions/sub_function.h>
 
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/basis_functions/phys_space_element_handler.h>

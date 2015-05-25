@@ -435,7 +435,7 @@ operator()(const Topology<sub_elem_dim> &sub_elem)
     {
         using VCache = typename BSplineElement<dim_,range_,rank_>::parent_t::Cache;
 
-        using Cache = LocalCache<VCache>;
+        using Cache = AllSubElementsCache<VCache>;
         cache = std::make_shared<Cache>();
     }
 

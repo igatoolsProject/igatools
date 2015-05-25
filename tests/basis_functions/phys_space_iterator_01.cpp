@@ -27,7 +27,7 @@
  *
  */
 
-#include <igatools/base/identity_function.h>
+#include <igatools/functions/identity_function.h>
 
 #include "phys_space_iterator.h"
 

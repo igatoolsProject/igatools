@@ -19,8 +19,8 @@
 //-+--------------------------------------------------------------------
 
 
-#include <igatools/base/function_element.h>
-#include <igatools/base/function.h>
+#include <igatools/functions/function_element.h>
+#include <igatools/functions/function.h>
 
 
 IGA_NAMESPACE_OPEN
@@ -49,7 +49,7 @@ FunctionElement(const FunctionElement<dim,codim,range,rank> &elem,
     if (copy_policy == CopyPolicy::shallow)
         all_sub_elems_cache_ = elem.all_sub_elems_cache_;
     else
-        all_sub_elems_cache_ = std::make_shared<LocalCache<Cache>>(*elem.all_sub_elems_cache_);
+        all_sub_elems_cache_ = std::make_shared<AllSubElementsCache<Cache>>(*elem.all_sub_elems_cache_);
 }
 
 
@@ -102,5 +102,5 @@ serialize(Archive &ar, const unsigned int version)
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/base/function_element.inst>
+#include <igatools/functions/function_element.inst>
 

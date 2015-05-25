@@ -29,7 +29,7 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/base/function.h>
+#include <igatools/functions/function.h>
 
 #include <igatools/basis_functions/bspline_space.h>
 

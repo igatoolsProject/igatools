@@ -289,3 +289,13 @@ because:
 
 /** @}*/ //end of group serializable
 
+
+/**
+@defgroup cache Cache
+@ingroup design
+@{
+*/
+
+/** @}*/ //end of group cache
+
+

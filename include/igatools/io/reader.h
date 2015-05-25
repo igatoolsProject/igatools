@@ -24,7 +24,7 @@
 #define READER_H_
 
 #include <igatools/base/config.h>
-#include <igatools/base/function.h>
+#include <igatools/functions/function.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/nurbs_space.h>
 

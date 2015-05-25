@@ -27,8 +27,8 @@
 
 #include "../tests.h"
 #include "igatools/io/writer.h"
-#include "igatools/base/identity_function.h"
-#include "igatools/base/function_lib.h"
+#include "igatools/functions/identity_function.h"
+#include "igatools/functions/function_lib.h"
 
 template<int dim>
 void

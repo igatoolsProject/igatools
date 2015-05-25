@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/base/ig_function.h>
-#include <igatools/base/function_element.h>
+#include <igatools/functions/ig_function.h>
+#include <igatools/functions/function_element.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/space_tools.h>
 
@@ -269,6 +269,13 @@ print_info(LogStream &out) const
     out.end_item();
 }
 
+template<int dim,int codim,int range,int rank>
+const std::string &
+IgFunction<dim,codim,range,rank>::
+get_property() const
+{
+    return property_;
+}
 
 #ifdef SERIALIZATION
 template<int dim,int codim,int range,int rank>
@@ -310,6 +317,6 @@ serialize(Archive &ar, const unsigned int version)
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/base/ig_function.inst>
+#include <igatools/functions/ig_function.inst>
 
 

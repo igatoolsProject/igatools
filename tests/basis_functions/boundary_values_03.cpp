@@ -29,8 +29,8 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/base/identity_function.h>
-#include <igatools/base/formula_function.h>
+#include <igatools/functions/identity_function.h>
+#include <igatools/functions/formula_function.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 

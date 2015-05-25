@@ -34,7 +34,7 @@
 #include <igatools/basis_functions/physical_space_element.h>
 //#include <igatools/basis_functions/space_uniform_quad_cache.h>
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/base/identity_function.h>
+#include <igatools/functions/identity_function.h>
 
 #include <igatools/linear_algebra/dense_matrix.h>
 

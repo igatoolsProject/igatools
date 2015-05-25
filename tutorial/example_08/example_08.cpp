@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/base/function_lib.h>
-#include <igatools/base/identity_function.h>
+#include <igatools/functions/function_lib.h>
+#include <igatools/functions/identity_function.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/physical_space.h>
 

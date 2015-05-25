@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/base/function_lib.h>
-#include <igatools/base/function_element.h>
+#include <igatools/functions/function_lib.h>
+#include <igatools/functions/function_element.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -807,4 +807,4 @@ evaluate_2(const ValueVector<Point> &points,
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/base/function_lib.inst>
+#include <igatools/functions/function_lib.inst>

@@ -54,7 +54,7 @@ SpaceElement(const self_t &elem,
         }
         else
         {
-            all_sub_elems_cache_ = std::make_shared<LocalCache<Cache>>(*elem.all_sub_elems_cache_);
+            all_sub_elems_cache_ = std::make_shared<AllSubElementsCache<Cache>>(*elem.all_sub_elems_cache_);
         }
     }
 }
@@ -75,7 +75,7 @@ copy_from(const self_t &elem,
         if (copy_policy == CopyPolicy::deep)
         {
             Assert(elem.all_sub_elems_cache_ != nullptr, ExcNullPtr());
-            all_sub_elems_cache_ = std::make_shared<LocalCache<Cache>>(*elem.all_sub_elems_cache_);
+            all_sub_elems_cache_ = std::make_shared<AllSubElementsCache<Cache>>(*elem.all_sub_elems_cache_);
         }
         else if (copy_policy == CopyPolicy::shallow)
         {

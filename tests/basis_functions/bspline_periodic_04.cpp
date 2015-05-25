@@ -30,15 +30,15 @@
 // has to be splitted into simpler tests (this one goes onto consistency test)
 
 #include "../tests.h"
-#include <igatools/base/function_lib.h>
+#include <igatools/functions/function_lib.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/base/quadrature_lib.h>
 
 #include <igatools/linear_algebra/epetra_solver.h>
 #include <igatools/io/writer.h>
-#include <igatools/base/identity_function.h>
-#include <igatools/base/ig_function.h>
+#include <igatools/functions/identity_function.h>
+#include <igatools/functions/ig_function.h>
 
 #include <igatools/basis_functions/space_tools.h>
 #include <igatools/linear_algebra/dof_tools.h>

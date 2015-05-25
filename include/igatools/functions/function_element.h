@@ -196,10 +196,10 @@ private:
 
     using Cache = FuncValuesCache<dim,CType>;
 
-    std::shared_ptr<LocalCache<Cache>> all_sub_elems_cache_;
+    std::shared_ptr<AllSubElementsCache<Cache>> all_sub_elems_cache_;
 
 public:
-    using CacheType = LocalCache<Cache>;
+    using CacheType = AllSubElementsCache<Cache>;
 private:
     std::shared_ptr<Func> func_;
 

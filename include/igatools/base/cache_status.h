@@ -40,6 +40,7 @@ IGA_NAMESPACE_OPEN
  * - <b>copied</b>, true if the cache is copied from another object.
  *
  * @ingroup serializable
+ * @ingroup cache
  * @author M.Martinelli
  * @date 2013, 2015
  */

@@ -21,7 +21,7 @@
 #ifndef FORMULA_FUNCTIONS_H
 #define FORMULA_FUNCTIONS_H
 
-#include <igatools/base/function.h>
+#include <igatools/functions/function.h>
 #include <igatools/base/value_types.h>
 
 IGA_NAMESPACE_OPEN
@@ -56,32 +56,18 @@ public:
 
     FormulaFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
 
-    FormulaFunction(const self_t &func)
-        :
-        parent_t::Function(func),
-        mapping_(func.mapping_->clone()),
-        map_elem_(func.mapping_->begin())
-    {}
+    FormulaFunction(const self_t &func);
 
-    void reset(const ValueFlags &flag, const eval_pts_variant &quad) override
-    {
-        parent_t::reset(flag, quad);
-        mapping_->reset(ValueFlags::value|ValueFlags::point, quad);
-    }
+    virtual ~FormulaFunction() = default;
 
-    void init_cache(ElementAccessor &elem, const topology_variant &k) override
-    {
-        parent_t::init_cache(elem, k);
-        mapping_->init_cache(map_elem_, k);
-    }
+    void reset(const ValueFlags &flag, const eval_pts_variant &quad) override final;
 
-    void fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) override;
+    void init_cache(ElementAccessor &elem, const topology_variant &k) override final;
+
+    void fill_cache(ElementAccessor &elem, const topology_variant &k, const int sub_elem_id) override final;
 
 protected:
-    std::shared_ptr<const parent_t> shared_from_derived() const override final
-    {
-        return this->shared_from_this();
-    }
+    std::shared_ptr<const parent_t> shared_from_derived() const override final;
 
 private:
 
@@ -100,30 +86,37 @@ private:
 
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
+        FillCacheDispatcher(const int sub_elem_id,self_t &function,ElementAccessor &elem)
+            :
+            sub_elem_id_(sub_elem_id),
+            function_(function),
+            elem_(elem)
+        {}
+
+
         template<int sub_elem_dim>
         void operator()(const Topology<sub_elem_dim> &sub_elem)
         {
-            auto &local_cache = function->get_cache(*elem);
-            auto &cache = local_cache->template get_sub_elem_cache<sub_elem_dim>(j);
-//            auto &flags = cache.flags_handler_;
+            auto &local_cache = function_.get_cache(elem_);
+            auto &cache = local_cache->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id_);
 
             if (!cache.fill_none())
             {
                 auto &cache_pts = cache.template get_data<_Point>();
-                cache_pts = function->map_elem_->template get_values<_Value, sub_elem_dim>(j);
+                cache_pts = function_.map_elem_->template get_values<_Value, sub_elem_dim>(sub_elem_id_);
                 if (cache.template status_fill<_Value>())
                 {
-                    function->evaluate_0(cache_pts, cache.template get_data<_Value>());
+                    function_.evaluate_0(cache_pts, cache.template get_data<_Value>());
                     cache.template set_status_filled<_Value>(true);
                 }
                 if (cache.template status_fill<_Gradient>())
                 {
-                    function->evaluate_1(cache_pts, cache.template get_data<_Gradient>());
+                    function_.evaluate_1(cache_pts, cache.template get_data<_Gradient>());
                     cache.template set_status_filled<_Gradient>(true);
                 }
                 if (cache.template status_fill<_Hessian>())
                 {
-                    function->evaluate_2(cache_pts, cache.template get_data<_Hessian>());
+                    function_.evaluate_2(cache_pts, cache.template get_data<_Hessian>());
                     cache.template set_status_filled<_Hessian>(true);
                 }
                 if (cache.template status_fill<_Divergence>())
@@ -133,13 +126,11 @@ private:
             cache.set_filled(true);
         }
 
-        int j;
-        self_t *function;
-        ElementAccessor *elem;
-//        SafeSTLArray<FunctionFlags, dim + 1> *flags_;
+        const int sub_elem_id_;
+        self_t &function_;
+        ElementAccessor &elem_;
     };
 
-    FillCacheDispatcher fill_cache_impl;
     friend class FillCacheDispatcher;
 };
 

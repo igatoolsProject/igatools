@@ -21,7 +21,7 @@
 #ifndef __IGA_FUNCTION_LIB_H_
 #define __IGA_FUNCTION_LIB_H_
 
-#include <igatools/base/formula_function.h>
+#include <igatools/functions/formula_function.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -56,6 +56,7 @@ public:
 
 
     ConstantFunction(const self_t &) = default;
+    virtual ~ConstantFunction() = default;
 
 protected:
     ConstantFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
@@ -112,6 +113,7 @@ public:
     virtual std::shared_ptr<base_t> clone() const override final;
 
     LinearFunction(const self_t &) = default;
+    virtual ~LinearFunction() = default;
 
 
 protected:
@@ -173,6 +175,7 @@ public:
     std::shared_ptr<base_t> clone() const override final;
 
     BallFunction(const self_t &) = default;
+    virtual ~BallFunction() = default;
 
 protected:
     BallFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
@@ -236,6 +239,7 @@ public:
     std::shared_ptr<base_t> clone() const override final;
 
     SphereFunction(const self_t &) = default;
+    virtual ~SphereFunction() = default;
 
 protected:
     SphereFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
@@ -319,6 +323,7 @@ public:
     std::shared_ptr<base_t> clone() const override final;
 
     CylindricalAnnulus(const self_t &) = default;
+    virtual ~CylindricalAnnulus() = default;
 
 protected:
     CylindricalAnnulus(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
