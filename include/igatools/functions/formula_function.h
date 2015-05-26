@@ -65,9 +65,6 @@ public:
 
     void fill_cache(ElementAccessor &elem, const topology_variant &k, const int sub_elem_id) override final;
 
-protected:
-    std::shared_ptr<const parent_t> shared_from_derived() const override final;
-
 private:
 
     virtual void evaluate_0(const ValueVector<Point> &points,

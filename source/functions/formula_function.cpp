@@ -77,13 +77,6 @@ fill_cache(ElementAccessor &elem, const topology_variant &k, const int sub_elem_
     boost::apply_visitor(fill_cache_dispatcher, k);
 }
 
-template<int dim, int codim, int range, int rank>
-auto
-FormulaFunction<dim, codim, range, rank>::
-shared_from_derived() const -> std::shared_ptr<const parent_t>
-{
-    return this->shared_from_this();
-}
 
 
 IGA_NAMESPACE_CLOSE

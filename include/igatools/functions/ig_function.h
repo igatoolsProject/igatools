@@ -98,11 +98,6 @@ private:
     using parent_t = Function<dim,codim,range,rank>;
     using self_t = IgFunction<dim,codim,range,rank>;
 
-    std::shared_ptr<const base_t> shared_from_derived() const override final
-    {
-        return this->shared_from_this();
-    }
-
 public:
     //TODO (pauletti, Mar 23, 2015): should we make this private?
     IgFunction(std::shared_ptr<const Space<dim,codim,range,rank>> space,

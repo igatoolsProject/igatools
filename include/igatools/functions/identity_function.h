@@ -58,11 +58,6 @@ private:
     using parent_t = Function<dim, 0, space_dim, 1>;
     using self_t = IdentityFunction<dim,space_dim>;
 
-    std::shared_ptr<const parent_t> shared_from_derived() const override final
-    {
-        return this->shared_from_this();
-    }
-
 protected:
     using typename parent_t::GridType;
 

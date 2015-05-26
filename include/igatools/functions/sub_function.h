@@ -54,11 +54,6 @@ public:
     template <int j>
     using InterGridMap = typename SuperGrid::template InterGridMap<j>;
 
-private:
-    std::shared_ptr<const base_t> shared_from_derived() const override final
-    {
-        return this->shared_from_this();
-    }
 
 public:
 
@@ -192,13 +187,6 @@ public:
     using SuperGrid = typename SupFunc::GridType;
     template <int j>
     using InterGridMap = typename SuperGrid::template InterGridMap<j>;
-
-private:
-    std::shared_ptr<const base_t> shared_from_derived() const override final
-    {
-        return this->shared_from_this();
-    }
-
 
 public:
 

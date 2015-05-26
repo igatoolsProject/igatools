@@ -130,7 +130,7 @@ auto
 Function<dim_, codim_, range_, rank_ >::
 create_element(const Index flat_index) const -> std::shared_ptr<ElementAccessor>
 {
-    auto elem = std::make_shared<ElementAccessor>(this->shared_from_derived(),flat_index);
+    auto elem = std::make_shared<ElementAccessor>(this->shared_from_this(),flat_index);
     Assert(elem != nullptr,ExcNullPtr());
 
     return elem;

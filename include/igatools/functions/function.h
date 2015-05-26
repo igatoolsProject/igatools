@@ -52,8 +52,6 @@ private:
     using parent_t = GridElementHandler<dim_>;
 
 
-    virtual std::shared_ptr<const self_t> shared_from_derived() const = 0;
-
 public:
     using GridType = const CartesianGrid<dim_>;
 
