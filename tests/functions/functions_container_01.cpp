@@ -86,20 +86,24 @@ void print_container(std::shared_ptr<FunctionsContainer> funcs_container)
 
         try
         {
-          const shared_ptr<IgFunction<2, 0, 2, 1>> ig_fun_ptr = std::dynamic_pointer_cast<IgFunction<2, 0, 2, 1>> (mapping);
-          if (ig_fun_ptr == nullptr)
-          {
-            const shared_ptr<IdentityFunction<2, 2>> id_fun_ptr = std::dynamic_pointer_cast<IdentityFunction<2, 2>> (mapping);
-            IdentityFunction<2, 2> id_fun = *id_fun_ptr;
-          }
-          else
-          {
-            IgFunction<2, 0, 2, 1> ig_fun = *ig_fun_ptr;
-          }
+            const shared_ptr<IgFunction<2, 0, 2, 1>> ig_fun_ptr = std::dynamic_pointer_cast<IgFunction<2, 0, 2, 1>> (mapping);
+            if (ig_fun_ptr == nullptr)
+            {
+            	out << "Identitity func start" << endl;
+                const shared_ptr<IdentityFunction<2, 2>> id_fun_ptr = std::dynamic_pointer_cast<IdentityFunction<2, 2>> (mapping);
+                const IdentityFunction<2, 2> &id_fun = *id_fun_ptr;
+            	out << "Identitity func stop" << endl;
+            }
+            else
+            {
+            	out << "Igfunc start" << endl;
+                const IgFunction<2, 0, 2, 1> &ig_fun = *ig_fun_ptr;
+            	out << "Igfunc stop" << endl;
+            }
         }
-        catch (const std::bad_weak_ptr& e)
+        catch (const std::bad_weak_ptr &e)
         {
-          out << "Catching " << e.what () << endl;
+            out << "Catching " << e.what() << endl;
         }
 
         out << "Mapping[" << m_counter++ << "]   name= " << name << std::endl;
@@ -128,7 +132,9 @@ void deserialize_only()
     xml_in >> BOOST_SERIALIZATION_NVP(funcs_container);
     xml_istream.close();
 
-    print_container (funcs_container);
+    out.begin_item("Inside deserialize_only()");
+    print_container(funcs_container);
+    out.end_item();
 }
 
 
@@ -343,9 +349,9 @@ void do_test()
         "phys_func_2_3_1_1");
 
     serialize_deserialize(funcs_container);
-    print_container (funcs_container);
+    print_container(funcs_container);
 
-    deserialize_only ();
+    deserialize_only();
 
 }
 
