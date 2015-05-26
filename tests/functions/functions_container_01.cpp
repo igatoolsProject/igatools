@@ -74,6 +74,63 @@ void serialize_deserialize(std::shared_ptr<FunctionsContainer> funcs_container)
 template <int dim,int codim,int range>
 using Func = Function<dim,codim,range,1>;
 
+void print_container(std::shared_ptr<FunctionsContainer> funcs_container)
+{
+    const auto mappings_dim_2_codim_0 = funcs_container->template get_all_mappings<2,0>();
+    out.begin_item("Mappings with dimension 2 and codimension 0:");
+    int m_counter = 0;
+    for (const auto &m : mappings_dim_2_codim_0)
+    {
+        auto mapping = m.first;
+        auto name    = m.second; // this is the string we associated to the mapping object when we used insert_mapping()
+
+        try
+        {
+          const shared_ptr<IgFunction<2, 0, 2, 1>> ig_fun_ptr = std::dynamic_pointer_cast<IgFunction<2, 0, 2, 1>> (mapping);
+          if (ig_fun_ptr == nullptr)
+          {
+            const shared_ptr<IdentityFunction<2, 2>> id_fun_ptr = std::dynamic_pointer_cast<IdentityFunction<2, 2>> (mapping);
+            IdentityFunction<2, 2> id_fun = *id_fun_ptr;
+          }
+          else
+          {
+            IgFunction<2, 0, 2, 1> ig_fun = *ig_fun_ptr;
+          }
+        }
+        catch (const std::bad_weak_ptr& e)
+        {
+          out << "Catching " << e.what () << endl;
+        }
+
+        out << "Mapping[" << m_counter++ << "]   name= " << name << std::endl;
+
+        const auto &funcs_dim_2_codim_0_range_1_rank_1 =
+            funcs_container->template get_functions_associated_to_mapping<2,0,1,1>(mapping);
+        out.begin_item("Functions<2,0,1,1>:");
+        int f_counter = 0;
+        for (const auto &f : funcs_dim_2_codim_0_range_1_rank_1)
+        {
+            out << "Function[" << f_counter++ << "]   name= " << f.second << std::endl;
+        }
+        out.end_item();
+
+    }
+}
+
+void deserialize_only()
+{
+    std::string filename = "functions_container.xml";
+
+    std::ifstream xml_istream(filename);
+    IArchive xml_in(xml_istream);
+
+    auto funcs_container = std::make_shared<FunctionsContainer>();
+    xml_in >> BOOST_SERIALIZATION_NVP(funcs_container);
+    xml_istream.close();
+
+    print_container (funcs_container);
+}
+
 
 void do_test()
 {
@@ -285,32 +342,11 @@ void do_test()
         static_pointer_cast<Func<2,1,3>>(phys_func_2_3_1_1),
         "phys_func_2_3_1_1");
 
-//    funcs_container->print_info(out);
-
     serialize_deserialize(funcs_container);
+    print_container (funcs_container);
 
+    deserialize_only ();
 
-    const auto mappings_dim_2_codim_0 = funcs_container->template get_all_mappings<2,0>();
-    out.begin_item("Mappings with dimension 2 and codimension 0:");
-    int m_counter = 0;
-    for (const auto &m : mappings_dim_2_codim_0)
-    {
-        auto mapping = m.first;
-        auto name    = m.second; // this is the string we associated to the mapping object when we used insert_mapping()
-
-        out << "Mapping[" << m_counter++ << "]   name= " << name << std::endl;
-
-        const auto &funcs_dim_2_codim_0_range_1_rank_1 =
-            funcs_container->template get_functions_associated_to_mapping<2,0,1,1>(mapping);
-        out.begin_item("Functions<2,0,1,1>:");
-        int f_counter = 0;
-        for (const auto &f : funcs_dim_2_codim_0_range_1_rank_1)
-        {
-            out << "Function[" << f_counter++ << "]   name= " << f.second << std::endl;
-        }
-        out.end_item();
-
-    }
 }
 
 
