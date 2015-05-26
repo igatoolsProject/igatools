@@ -86,8 +86,7 @@ class PhysicalSpaceElement;
  */
 template<int dim,int codim,int range,int rank>
 class IgFunction :
-    public Function<dim,codim,range,rank>,
-    public std::enable_shared_from_this<IgFunction<dim,codim,range,rank>>
+    public Function<dim,codim,range,rank>
 {
 public:
 

@@ -52,8 +52,7 @@ create_id_tensor()
  */
 template<int dim, int space_dim = dim>
 class IdentityFunction :
-    public Function<dim, 0, space_dim, 1>,
-    public std::enable_shared_from_this<IdentityFunction<dim,space_dim> >
+    public Function<dim, 0, space_dim, 1>
 {
 private:
     using parent_t = Function<dim, 0, space_dim, 1>;
