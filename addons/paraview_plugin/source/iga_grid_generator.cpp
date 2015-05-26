@@ -34,7 +34,7 @@
 #include <vtkPointData.h>
 
 #include <igatools/base/quadrature_lib.h>
-//#include <igatools/functions/identity_function.h>
+#include <igatools/functions/identity_function.h>
 #include <igatools/io/reader.h>
 #include <igatools/utils/multi_array_utils.h>
 #include <igatools/functions/functions_container.h>
