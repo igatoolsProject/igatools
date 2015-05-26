@@ -52,6 +52,8 @@ vtkIgatoolsReader::vtkIgatoolsReader()
   this->NumVisualizationPoints[1] = 2;
   this->NumVisualizationPoints[2] = 2;
 
+  this->GridType = 0;
+
   this->SetNumberOfInputPorts(0); // No vtk input, this is not a filter.
   this->SetNumberOfOutputPorts(1); // Just one output.
 }
@@ -558,7 +560,7 @@ int vtkIgatoolsReader::RequestData(
   mb->GetMetaData(index)->Set(vtkCompositeDataSet::NAME(), "Physical maps");
 
   iga_vtk_.parse_file ();
-  iga_vtk_.generate_vtk_grids (mb);
+  iga_vtk_.generate_vtk_grids (this->GetGridType(), mb);
 }
 
 void vtkIgatoolsReader::PrintSelf(ostream& os, vtkIndent indent)

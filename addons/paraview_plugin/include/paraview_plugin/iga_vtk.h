@@ -104,7 +104,8 @@ public:
   /*
    * Generates the VTK grids.
    */
-  void generate_vtk_grids(vtkMultiBlockDataSet* const mb) const;
+  void generate_vtk_grids(const int& grid_type,
+                          vtkMultiBlockDataSet* const mb) const;
 
 private:
   /*
@@ -132,9 +133,11 @@ private:
   /*
    * Generates the vtkgrids.
    */
-  template <int dim, int codim, bool identity>
+  template <int dim, int codim>
   void generate_grids (vtkMultiBlockDataSet* const mb,
-                       unsigned int& id) const;
+                       unsigned int& id,
+                       const bool identity_map,
+                       const bool unstructured) const;
 
   /*
    * Returns the namesof identity and mapped functions from the function
@@ -149,19 +152,12 @@ private:
   bool is_identity_mapping (std::shared_ptr<iga::Function<dim, 0, dim+codim, 1>> map) const;
 
   /*
-   * Creates the cells connectivity for vtk unstructured grids.
-   */
-  template <int dim>
-  static Connectivity_t_<dim>
-  create_connectivity_base_vtu (const iga::TensorSize<dim>& n_points_per_direction);
-
-  /*
    * Create the cell ids container needed for defining vtk cells.
    */
   template <int dim>
   static vtkSmartPointer<vtkIdTypeArray>
-  create_cell_ids (const iga::TensorSize<dim>& n_points_per_direction,
-                   const iga::Size& n_bezier_elements);
+  create_vtu_cell_ids (const iga::TensorSize<dim>& n_points_per_direction,
+                       const iga::Size& n_bezier_elements);
 
 };
 

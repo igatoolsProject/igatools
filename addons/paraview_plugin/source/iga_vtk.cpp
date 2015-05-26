@@ -25,27 +25,15 @@
 #include <vtkUnstructuredGrid.h>
 #include <vtkSmartPointer.h>
 #include <vtkInformation.h>
-
-#include <igatools/functions/functions_container.h>
-
-
-// #include <vtkInformationVector.h>
-// #include <vtkInformation.h>
 #include <vtkCellArray.h>
-
 #include <vtkHexahedron.h>
 #include <vtkQuad.h>
 #include <vtkLine.h>
-// 
-// #include <vtkTypeInt32Array.h>
-// #include <vtkPointData.h>
-// 
-// #include <igatools/base/quadrature_lib.h>
-// #include <igatools/base/identity_function.h>
-// #include <igatools/io/reader.h>
-// #include <igatools/utils/multi_array_utils.h>
-// #include <igatools/functions/functions_container.h>
+
+#include <igatools/functions/functions_container.h>
 #include <igatools/base/quadrature_lib.h>
+
+
 
 using namespace iga;
 using std::string;
@@ -94,7 +82,8 @@ clear ()
 
 void
 IGAVTK::
-generate_vtk_grids(vtkMultiBlockDataSet* const mb) const
+generate_vtk_grids(const int& grid_type,
+                   vtkMultiBlockDataSet* const mb) const
 {
   Assert (file_name_ != "", ExcMessage ("Not specified file name."));
   Assert (file_path_ != "", ExcMessage ("Not specified file path."));
@@ -128,20 +117,21 @@ generate_vtk_grids(vtkMultiBlockDataSet* const mb) const
     map_mb->GetMetaData(index++)->Set(vtkCompositeDataSet::NAME(), name.c_str());
 
 
+  const bool unstructured = grid_type == 0;
   unsigned int id_grid = 0;
-  this->generate_grids<2, 0, true>(id_mb, id_grid);
-  this->generate_grids<1, 1, true>(id_mb, id_grid);
-  this->generate_grids<3, 0, true>(id_mb, id_grid);
-  this->generate_grids<2, 1, true>(id_mb, id_grid);
-  this->generate_grids<1, 2, true>(id_mb, id_grid);
+  this->generate_grids<2, 0>(id_mb, id_grid, true, unstructured);
+  this->generate_grids<1, 1>(id_mb, id_grid, true, unstructured);
+  this->generate_grids<3, 0>(id_mb, id_grid, true, unstructured);
+  this->generate_grids<2, 1>(id_mb, id_grid, true, unstructured);
+  this->generate_grids<1, 2>(id_mb, id_grid, true, unstructured);
 
 
   unsigned int mp_grid = 0;
-  this->generate_grids<2, 0, false>(map_mb, mp_grid);
-  this->generate_grids<1, 1, false>(map_mb, mp_grid);
-  this->generate_grids<3, 0, false>(map_mb, mp_grid);
-  this->generate_grids<2, 1, false>(map_mb, mp_grid);
-  this->generate_grids<1, 2, false>(map_mb, mp_grid);
+  this->generate_grids<2, 0>(map_mb, mp_grid, false, unstructured);
+  this->generate_grids<1, 1>(map_mb, mp_grid, false, unstructured);
+  this->generate_grids<3, 0>(map_mb, mp_grid, false, unstructured);
+  this->generate_grids<2, 1>(map_mb, mp_grid, false, unstructured);
+  this->generate_grids<1, 2>(map_mb, mp_grid, false, unstructured);
 /*
   mb_0->SetNumberOfBlocks(2);
   mb_1->SetNumberOfBlocks(2);
@@ -165,25 +155,25 @@ generate_vtk_grids(vtkMultiBlockDataSet* const mb) const
 };
 
 
-template <int dim, int codim, bool identity>
+template <int dim, int codim>
 void
 IGAVTK::
 generate_grids(vtkMultiBlockDataSet* const mb,
-               unsigned int& id) const
+               unsigned int& id,
+               const bool identity_map,
+               const bool unstructured) const
 {
-
   const auto mappings = funcs_container_->template get_all_mappings<dim, codim>();
 
   for (const auto &m : mappings)
   {
       using Fun_ = Function<dim, 0, dim + codim, 1>;
       shared_ptr<Fun_> mapping = m.first;
-      auto name    = m.second;
 
-      if (this->is_identity_mapping<dim, codim> (mapping) != identity)
+      if (is_identity_mapping<dim, codim>(mapping) != identity_map)
         continue;
 
-      vtkSmartPointer<vtkUnstructuredGrid> grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
+      auto name    = m.second;
 
       const int vtk_enum_type = dim == 3 ? VTK_HEXAHEDRON :
                                 dim == 2 ? VTK_QUAD :
@@ -261,25 +251,46 @@ generate_grids(vtkMultiBlockDataSet* const mb,
           points->SetPoint (point_id++, point_tmp);
         }
       }
-      //--------------------------------------------------------------------------//
+      //----------------------------------------------------------------------//
 
-      // Setting the cells -------------------------------------------------------//
-      int n_cells_per_bezier = 1;
-      for (int dir = 0; dir < dim; ++dir)
-        n_cells_per_bezier *= num_visualization_points_[dir] - 1;
-      const int n_total_cells = n_bezier_elements * n_cells_per_bezier;
+      if (unstructured) // Creating an unstuctured grid.
+      {
+        // Setting the cells -------------------------------------------------//
+        int n_cells_per_bezier = 1;
+        for (int dir = 0; dir < dim; ++dir)
+          n_cells_per_bezier *= num_visualization_points_[dir] - 1;
+        const int n_total_cells = n_bezier_elements * n_cells_per_bezier;
 
-      const auto cell_ids = IGAVTK::create_cell_ids<dim>
-        (n_points, n_bezier_elements);
-      cellsArray->SetCells (n_total_cells , cell_ids);
+        const auto cell_ids = IGAVTK::create_vtu_cell_ids<dim>
+          (n_points, n_bezier_elements);
+        cellsArray->SetCells (n_total_cells , cell_ids);
 
-      //--------------------------------------------------------------------------//
+        //--------------------------------------------------------------------//
+        vtkSmartPointer<vtkUnstructuredGrid> grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
+        grid->Allocate(cellsArray->GetNumberOfCells (), 0);
+        grid->SetPoints(points);
+        grid->SetCells(vtk_enum_type, cellsArray);
+        mb->SetBlock (id, grid);
+      }
+      else  // Creating a stuctured grid.
+      {
+        vtkSmartPointer<vtkStructuredGrid> grid = vtkSmartPointer<vtkStructuredGrid>::New();
 
-      grid->Allocate (cellsArray->GetNumberOfCells (), 0);
-      grid->SetPoints(points);
-      grid->SetCells(vtk_enum_type, cellsArray);
+        // TODO: Revisit this.
+        if (dim == 1)
+          grid->SetDimensions(num_visualization_points_[0], 1, 1);
+        else if (dim == 2)
+          grid->SetDimensions(num_visualization_points_[0],
+                              num_visualization_points_[1], 1);
+        else if (dim == 3)
+          grid->SetDimensions(num_visualization_points_[0],
+                              num_visualization_points_[1],
+                              num_visualization_points_[2]);
 
-      mb->SetBlock (id, grid);
+        grid->SetPoints(points);
+        mb->SetBlock (id, grid);
+      }
+
       ++id;
   }
 
@@ -407,82 +418,37 @@ get_map_names () const
   }
 
   return std::make_pair (identity_names, mapped_names);
-
 };
 
+
+
 template <int dim>
-auto
+vtkSmartPointer<vtkIdTypeArray>
 IGAVTK::
-create_connectivity_base_vtu (const TensorSize<dim>& n_points_per_direction) ->
-Connectivity_t_<dim>
+create_vtu_cell_ids (const TensorSize<dim>& n_points_per_direction,
+                     const Size& n_bezier_elements)
 {
   vtkSmartPointer<vtkIdTypeArray> cell_ids = vtkSmartPointer<vtkIdTypeArray>::New();
 
   const auto grid = CartesianGrid<dim>::create (n_points_per_direction);
 
-  static constexpr iga::Size n_points_per_cell = pow (2, dim);
+  static constexpr iga::Size n_points_per_single_cell = pow (2, dim);
   const int n_cells_per_bezier = grid->get_num_all_elems ();
+  const int n_points_per_bezier_element = n_points_per_direction.flat_size ();
+  const int n_total_cells = n_bezier_elements * n_cells_per_bezier;
 
+  // Creating the connectivity base ------------------------------------------//
   Connectivity_t_<dim> connectivity_base (n_cells_per_bezier);
 
-  // Building the offsets container.
-  SafeSTLArray < SafeSTLArray<int, dim>, n_points_per_cell> delta_idx;
+  // Building the offsets container. According to the vtk elements connectivity.
+  using T_ = SafeSTLArray < SafeSTLArray<int, dim>, n_points_per_single_cell>;
+  const  T_ delta_idx =
+    dim == 1 ? T_({{0},       {1}})                          :   // dim = 1
+    dim == 2 ? T_({{0, 0},    {1, 0},    {1, 1},    {0, 1}}) :   // dim = 2
+               T_({{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
+                   {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}}); // dim = 3
 
-  if (dim == 1)
-  {
-      delta_idx[0][0] = 0;
-      delta_idx[1][0] = 1;
-  }
-  else if (dim == 2)
-  {
-      delta_idx[0][0] = 0;
-      delta_idx[0][1] = 0;
-
-      delta_idx[1][0] = 1;
-      delta_idx[1][1] = 0;
-
-      delta_idx[2][0] = 1;
-      delta_idx[2][1] = 1;
-
-      delta_idx[3][0] = 0;
-      delta_idx[3][1] = 1;
-  }
-  else if (dim == 3)
-  {
-      delta_idx[0][0] = 0;
-      delta_idx[0][1] = 0;
-      delta_idx[0][2] = 0;
-
-      delta_idx[1][0] = 1;
-      delta_idx[1][1] = 0;
-      delta_idx[1][2] = 0;
-
-      delta_idx[2][0] = 1;
-      delta_idx[2][1] = 1;
-      delta_idx[2][2] = 0;
-
-      delta_idx[3][0] = 0;
-      delta_idx[3][1] = 1;
-      delta_idx[3][2] = 0;
-
-      delta_idx[4][0] = 0;
-      delta_idx[4][1] = 0;
-      delta_idx[4][2] = 1;
-
-      delta_idx[5][0] = 1;
-      delta_idx[5][1] = 0;
-      delta_idx[5][2] = 1;
-
-      delta_idx[6][0] = 1;
-      delta_idx[6][1] = 1;
-      delta_idx[6][2] = 1;
-
-      delta_idx[7][0] = 0;
-      delta_idx[7][1] = 1;
-      delta_idx[7][2] = 1;
-  }
-
-  TensorIndex<dim> weight_points =
+  const TensorIndex<dim> weight_points =
     MultiArrayUtils< dim >::compute_weight(n_points_per_direction);
 
   TensorIndex<dim> vtk_vertex_tensor_idx;
@@ -495,7 +461,7 @@ Connectivity_t_<dim>
     SafeSTLArray<Index,dim> vtk_elem_tensor_idx = elem->get_tensor_index();
 
     auto conn = conn_el->begin ();
-    for (int iVertex = 0; iVertex < n_points_per_cell; ++iVertex, ++conn)
+    for (int iVertex = 0; iVertex < n_points_per_single_cell; ++iVertex, ++conn)
     {
         for (int i = 0; i < dim; ++i)
           vtk_vertex_tensor_idx[i] = vtk_elem_tensor_idx[i] + delta_idx[iVertex][i];
@@ -503,29 +469,8 @@ Connectivity_t_<dim>
         *conn = MultiArrayUtils<dim>::tensor_to_flat_index(vtk_vertex_tensor_idx, weight_points);
     }
   }
+  //--------------------------------------------------------------------------//
 
-  return connectivity_base;
-};
-
-
-
-
-template <int dim>
-vtkSmartPointer<vtkIdTypeArray>
-IGAVTK::
-create_cell_ids (const TensorSize<dim>& n_points_per_direction,
-                 const Size& n_bezier_elements)
-{
-  vtkSmartPointer<vtkIdTypeArray> cell_ids = vtkSmartPointer<vtkIdTypeArray>::New();
-
-  const auto grid = CartesianGrid<dim>::create (n_points_per_direction);
-
-  static constexpr iga::Size n_points_per_single_cell = pow (2, dim);
-  const int n_cells_per_bezier = grid->get_num_all_elems ();
-  const int n_points_per_bezier_element = n_points_per_direction.flat_size ();
-  const int n_total_cells = n_bezier_elements * n_cells_per_bezier;
-
-  const Connectivity_t_<dim> connectivity_base = IGAVTK::create_connectivity_base_vtu<dim>(n_points_per_direction);
   cell_ids->SetNumberOfComponents (n_points_per_single_cell + 1);
   cell_ids->SetNumberOfTuples (n_total_cells);
 

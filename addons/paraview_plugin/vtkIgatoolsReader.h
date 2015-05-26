@@ -49,14 +49,13 @@ public:
   vtkSetVector3Macro (NumVisualizationPoints, int);
   vtkGetVectorMacro  (NumVisualizationPoints, int, 3);
 
-//   /*
-//    * Set/Get Grid type
-//    *  - 0: solid grid.
-//    *  - 1: control points mesh grid.
-//    *  - 2: unit mesh grid.
-//    */
-//   vtkSetMacro(GridType, int);
-//   vtkGetMacro(GridType,int);
+  /*
+   * Set/Get Grid type
+   *  - 0: unstructured grid.
+   *  - 1: structured grid.
+   */
+  vtkSetMacro(GridType, int);
+  vtkGetMacro(GridType,int);
 
 protected:
   /*
@@ -101,10 +100,10 @@ private:
    */
   void check_number_visualization_points ();
 
-//   /*
-//    * Grid type.
-//    */
-//   int GridType;
+  /*
+   * Grid type.
+   */
+  int GridType;
 
   /*
    * File name variable.

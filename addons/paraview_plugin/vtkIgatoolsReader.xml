@@ -39,26 +39,24 @@
         </Documentation>
       </StringVectorProperty>
 
-      <!--
       <IntVectorProperty command="SetGridType"
                          default_values="0"
                          name="GridType"
                          label="Grid Type"
                          number_of_elements="1">
         <EnumerationDomain name="enum">
-          <Entry text="Solid grid"
+          <Entry text="VTK Unstructured grid"
                  value="0" />
-          <Entry text="Control points mesh"
+          <Entry text="VTK Structured grid"
                  value="1" />
-          <Entry text="Unit mesh"
-                 value="2" />
         </EnumerationDomain>
         <Documentation>
-          This propery specifies which type of grid must be shown.
-          The solid grid, the control mesh grid or the unitary grid.
+          This propery specifies which type of grid must be produced.
+          The produced VTK Structured grids have certain advantages over
+          VTK Unstructured grids, however, some issues can appear when some
+          filters are applied to them.
         </Documentation>
       </IntVectorProperty>
-      -->
 
       <IntVectorProperty command="SetNumVisualizationPoints"
                          default_values="2 2 2"
@@ -67,19 +65,15 @@
         <IntRangeDomain name="range" min="2" max="20"/>
         <Documentation>Set the number of visualization points in each
           parametric direction for every Bezier element.</Documentation>
+        <!--
         <Hints>
           <PropertyWidgetDecorator type="GenericDecorator"
                                    mode="visibility"
                                    property="GridType"
                                    inverse="1"
                                    value="1" />
-          <!-- show this widget when GlyphMode==0 -->
-<!--          <PropertyWidgetDecorator type="GenericDecorator"
-                                   mode="visibility"
-                                   property="GridType"
-                                   value="2" /> -->
-          <!-- show this widget when GlyphMode==2 -->
         </Hints>
+        -->
       </IntVectorProperty>
 
       <Hints>
