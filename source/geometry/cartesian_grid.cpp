@@ -1087,6 +1087,8 @@ serialize(Archive &ar, const unsigned int version)
     ar &boost::serialization::make_nvp("properties_elements_id_",properties_elements_id_);
 
     ar &boost::serialization::make_nvp("grid_pre_refinement_",grid_pre_refinement_);
+
+//    auto tmp = this->shared_from_this();
 }
 #endif // SERIALIZATION
 

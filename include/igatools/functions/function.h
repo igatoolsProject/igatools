@@ -317,14 +317,15 @@ private:
 
     template<class Archive>
     void
-    serialize(Archive &ar, const unsigned int version)
+    serialize(Archive &ar, const unsigned int version);
+    /*
     {
         ar &boost::serialization::make_nvp("grid_elem_handler_",
                                            boost::serialization::base_object<GridElementHandler<dim_>>(*this));
 
         ar &boost::serialization::make_nvp("flags_",flags_);
     }
-
+    //*/
     ///@}
 #endif // SERIALIZATION
 };
@@ -334,5 +335,8 @@ template<int dim, int space_dim>
 using MapFunction = Function<dim, 0, space_dim, 1>;
 
 IGA_NAMESPACE_CLOSE
+
+
+
 
 #endif

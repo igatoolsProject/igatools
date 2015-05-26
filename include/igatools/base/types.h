@@ -576,6 +576,28 @@ using TopologyVariants = SubElemVariants<Topology,dim>;
 
 
 
+#ifdef SERIALIZATION
+
+/**
+ * Extra to make <tt>shared_from_this</tt>  availableinside the saving code.
+ * This works by asking the archive to handle (and therefore create) a <tt>shared_ptr</tt> for the data
+ * before the main serialization code runs.
+ *
+ * @note This solution is quite ``hackish''. Maybe a better solution would be to use
+ * <a href="http://uscilab.github.io/cereal/">cereal</a>
+ *  serialization library that provides full serialization support of <tt>enable_shared_from_this</tt> class
+ *  (but does not provide serialization of raw pointers and references...).
+ *
+ * @ingroup serializable
+ */
+#define ALLOW_SHARED_THIS(type) \
+    namespace boost { namespace serialization { \
+    template<class Archive> inline void load_construct_data(Archive &ar, type *obj, const unsigned int file_version) { \
+        auto sharedPtr = std::make_shared<type>(); /* create instance */ \
+        obj = sharedPtr.get(); \
+    } \
+    }}
+#endif // SERIALIZATION
 IGA_NAMESPACE_CLOSE
 
 #endif /* __IGA_TYPES_H_ */

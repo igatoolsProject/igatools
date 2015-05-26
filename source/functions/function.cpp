@@ -163,19 +163,19 @@ end() const -> ElementIterator
 }
 
 
-//#ifdef SERIALIZATION
-//template<int dim_, int codim_, int range_, int rank_>
-//template<class Archive>
-//void
-//Function<dim_, codim_, range_, rank_ >::
-//serialize(Archive &ar, const unsigned int version)
-//{
-//    ar &boost::serialization::make_nvp("grid_elem_handler_",
-//                                       boost::serialization::base_object<GridElementHandler<dim_>>(*this));
-//
-//    ar &boost::serialization::make_nvp("flags_",flags_);
-//}
-//#endif // SERIALIZATION
+#ifdef SERIALIZATION
+template<int dim_, int codim_, int range_, int rank_>
+template<class Archive>
+void
+Function<dim_, codim_, range_, rank_ >::
+serialize(Archive &ar, const unsigned int version)
+{
+    ar &boost::serialization::make_nvp("grid_elem_handler_",
+                                       boost::serialization::base_object<GridElementHandler<dim_>>(*this));
+
+    ar &boost::serialization::make_nvp("flags_",flags_);
+}
+#endif // SERIALIZATION
 
 
 IGA_NAMESPACE_CLOSE

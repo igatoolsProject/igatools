@@ -57,6 +57,9 @@ id = 0
 for grid in unique(grids):
     alias = 'CartesianGridAlias%d' %(id)
     f.write('using %s = iga::%s; \n' % (alias, grid))
+    
+    f.write('ALLOW_SHARED_THIS(%s)\n' %alias )
+    
     f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
     f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
     f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)

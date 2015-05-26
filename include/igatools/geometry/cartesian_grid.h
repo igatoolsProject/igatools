@@ -193,7 +193,8 @@ public:
 
     /** @name Constructors*/
     ///@{
-protected:
+//protected:
+public:
     /**
      * Construct a uniform cartesian grid of the unit <tt>dim</tt>-dimensional
      * hypercube \f$[0,1]^{dim}\f$, with @p n knots (equally spaced) in each dimension.
