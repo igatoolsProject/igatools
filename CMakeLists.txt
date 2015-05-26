@@ -131,7 +131,7 @@ else(SERIALIZATION)
     message("-- Serialization support (EXPERIMENTAL) is not enabled.")    
 endif(SERIALIZATION)
 
-option(USE_PARAVIEW_PLUGIN "Enable the building of the ParaView plugin" OFF)
+option(USE_PARAVIEW_PLUGIN "Enable the building of the ParaView plugin" ON)
 if (USE_PARAVIEW_PLUGIN)
     if (NOT SERIALIZATION)
         message (FATAL_ERROR "USE_PARAVIEW_PLUGIN variable set to ON is not "
