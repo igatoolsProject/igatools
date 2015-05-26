@@ -105,6 +105,9 @@ public:
    * Generates the VTK grids.
    */
   void generate_vtk_grids(const int& grid_type,
+                          const bool& create_control_mesh,
+                          const bool& create_parametric_mesh,
+                          const bool& create_physical_mesh,
                           vtkMultiBlockDataSet* const mb) const;
 
 private:
@@ -131,19 +134,33 @@ private:
   std::shared_ptr<iga::FunctionsContainer> funcs_container_;
 
   /*
-   * Generates the vtkgrids.
+   * Generates the control mesh vtk grids.
    */
   template <int dim, int codim>
-  void generate_grids (vtkMultiBlockDataSet* const mb,
-                       unsigned int& id,
-                       const bool identity_map,
-                       const bool unstructured) const;
+  void generate_control_mesh_grids (vtkMultiBlockDataSet* const mb,
+                                    unsigned int& id) const;
+
+  /*
+   * Generates the parametric vtk grids.
+   */
+  template <int dim, int codim>
+  void generate_parametric_mesh_grids (vtkMultiBlockDataSet* const mb,
+                                       unsigned int& id,
+                                       const bool unstructured) const;
+
+  /*
+   * Generates the physical vtk grids.
+   */
+  template <int dim, int codim>
+  void generate_physical_mesh_grids (vtkMultiBlockDataSet* const mb,
+                                     unsigned int& id,
+                                     const bool unstructured) const;
 
   /*
    * Returns the namesof identity and mapped functions from the function
    * container.
    */
-  std::pair<iga::SafeSTLVector<std::string>, iga::SafeSTLVector<std::string>> get_map_names () const;
+  iga::SafeSTLArray<iga::SafeSTLVector<std::string>, 3> get_map_names () const;
 
   /*
    * Returns true if the passed mapping is and identity mapping. False elsewhere.

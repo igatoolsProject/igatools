@@ -53,10 +53,14 @@ vtkIgatoolsReader::vtkIgatoolsReader()
   this->NumVisualizationPoints[2] = 2;
 
   this->GridType = 0;
+  this->ControlMesh = false;
+  this->ParametricMesh = false;
+  this->PhysicalMesh = false;
 
   this->SetNumberOfInputPorts(0); // No vtk input, this is not a filter.
   this->SetNumberOfOutputPorts(1); // Just one output.
 }
+
 
 
 int vtkIgatoolsReader::RequestInformation(
@@ -549,18 +553,34 @@ int vtkIgatoolsReader::RequestData(
   vtkDataObject* output = info->Get(vtkDataObject::DATA_OBJECT());
   vtkMultiBlockDataSet* mb =  vtkMultiBlockDataSet::SafeDownCast(output);
 
-  // Two blocks: a block for identity maps and another for physical maps.
-  mb->SetNumberOfBlocks(2);
-  mb->SetBlock(0, vtkSmartPointer<vtkMultiBlockDataSet>::New ());
-  mb->SetBlock(1, vtkSmartPointer<vtkMultiBlockDataSet>::New ());
+  // Setting the blocks.
+  int num_blocks = 0;
+  if (this->GetControlMesh())
+    ++num_blocks;
+  if (this->GetParametricMesh())
+    ++num_blocks;
+  if (this->GetPhysicalMesh())
+    ++num_blocks;
+
+  mb->SetNumberOfBlocks(num_blocks);
+
+  for (unsigned int i = 0; i < num_blocks; ++i)
+    mb->SetBlock(i, vtkSmartPointer<vtkMultiBlockDataSet>::New ());
 
   unsigned int index = 0;
-  mb->GetMetaData(index)->Set(vtkCompositeDataSet::NAME(), "Identity maps");
-  ++index;
-  mb->GetMetaData(index)->Set(vtkCompositeDataSet::NAME(), "Physical maps");
+  if (this->GetControlMesh())
+    mb->GetMetaData(index++)->Set(vtkCompositeDataSet::NAME(), "Control mesh");
+  if (this->GetParametricMesh())
+    mb->GetMetaData(index++)->Set(vtkCompositeDataSet::NAME(), "Parametric mesh");
+  if (this->GetPhysicalMesh())
+    mb->GetMetaData(index++)->Set(vtkCompositeDataSet::NAME(), "Physical mesh");
 
   iga_vtk_.parse_file ();
-  iga_vtk_.generate_vtk_grids (this->GetGridType(), mb);
+  iga_vtk_.generate_vtk_grids (this->GetGridType(),
+                               this->GetControlMesh(),
+                               this->GetParametricMesh(),
+                               this->GetPhysicalMesh(),
+                               mb);
 }
 
 void vtkIgatoolsReader::PrintSelf(ostream& os, vtkIndent indent)

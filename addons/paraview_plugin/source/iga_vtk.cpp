@@ -83,8 +83,12 @@ clear ()
 void
 IGAVTK::
 generate_vtk_grids(const int& grid_type,
+                   const bool& create_control_mesh,
+                   const bool& create_parametric_mesh,
+                   const bool& create_physical_mesh,
                    vtkMultiBlockDataSet* const mb) const
 {
+  std::cout << "HOla" << std::endl;
   Assert (file_name_ != "", ExcMessage ("Not specified file name."));
   Assert (file_path_ != "", ExcMessage ("Not specified file path."));
   Assert (num_visualization_points_[0] > 1,
@@ -94,75 +98,76 @@ generate_vtk_grids(const int& grid_type,
   Assert (num_visualization_points_[2] > 1,
           ExcMessage ("Number of visualization points must be > 1 in every direction."));
 
-  unsigned int index = 0;
-  vtkMultiBlockDataSet* id_mb = vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(index));
-  ++index;
-  vtkMultiBlockDataSet* map_mb = vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(index));
-  if (id_mb == nullptr && map_mb == nullptr)
-    Assert (false, ExcNullPtr ());
+  const bool unstructured = grid_type == 0;
 
   const auto names = this->get_map_names ();
 
-  const auto& id_names = names.first;
-  const auto& map_names = names.second;
+  unsigned int block_index = 0;
+  if (create_control_mesh)
+  {
+    const auto& n = names[0];
+    vtkMultiBlockDataSet* internal_mb =
+      vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(block_index++));
+    Assert (internal_mb != nullptr, ExcNullPtr ());
+    internal_mb->SetNumberOfBlocks(n.size ());
 
-  id_mb->SetNumberOfBlocks(id_names.size ());
-  index = 0;
-  for (const auto& name : id_names)
-    id_mb->GetMetaData(index++)->Set(vtkCompositeDataSet::NAME(), name.c_str());
+    unsigned int internal_block_index = 0;
+    for (const auto& name : n)
+      internal_mb->GetMetaData(internal_block_index++)->Set(vtkCompositeDataSet::NAME(), name.c_str());
 
-  map_mb->SetNumberOfBlocks(map_names.size ());
-  index = 0;
-  for (const auto& name : map_names)
-    map_mb->GetMetaData(index++)->Set(vtkCompositeDataSet::NAME(), name.c_str());
+//     this->generate_control_mesh_grid<2, 0>(internal_mb, internal_block_index);
+//     this->generate_control_mesh_grid<1, 1>(internal_mb, internal_block_index);
+//     this->generate_control_mesh_grid<3, 0>(internal_mb, internal_block_index);
+//     this->generate_control_mesh_grid<2, 1>(internal_mb, internal_block_index);
+//     this->generate_control_mesh_grid<1, 2>(internal_mb, internal_block_index);
+  }
 
+  if (create_parametric_mesh)
+  {
+    const auto& n = names[1];
+    vtkMultiBlockDataSet* internal_mb =
+      vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(block_index++));
+    Assert (internal_mb != nullptr, ExcNullPtr ());
+    internal_mb->SetNumberOfBlocks(n.size ());
 
-  const bool unstructured = grid_type == 0;
-  unsigned int id_grid = 0;
-  this->generate_grids<2, 0>(id_mb, id_grid, true, unstructured);
-  this->generate_grids<1, 1>(id_mb, id_grid, true, unstructured);
-  this->generate_grids<3, 0>(id_mb, id_grid, true, unstructured);
-  this->generate_grids<2, 1>(id_mb, id_grid, true, unstructured);
-  this->generate_grids<1, 2>(id_mb, id_grid, true, unstructured);
+    unsigned int internal_block_index = 0;
+    for (const auto& name : n)
+      internal_mb->GetMetaData(internal_block_index++)->Set(vtkCompositeDataSet::NAME(), name.c_str());
+//     this->generate_parametric_mesh_grid<2, 0>(internal_mb, internal_block_index, unstructured);
+//     this->generate_parametric_mesh_grid<1, 1>(internal_mb, internal_block_index, unstructured);
+//     this->generate_parametric_mesh_grid<3, 0>(internal_mb, internal_block_index, unstructured);
+//     this->generate_parametric_mesh_grid<2, 1>(internal_mb, internal_block_index, unstructured);
+//     this->generate_parametric_mesh_grid<1, 2>(internal_mb, internal_block_index, unstructured);
+  }
 
+  if (create_physical_mesh)
+  {
+    const auto& n = names[2];
+    vtkMultiBlockDataSet* internal_mb =
+      vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(block_index++));
+    Assert (internal_mb != nullptr, ExcNullPtr ());
+    internal_mb->SetNumberOfBlocks(n.size ());
 
-  unsigned int mp_grid = 0;
-  this->generate_grids<2, 0>(map_mb, mp_grid, false, unstructured);
-  this->generate_grids<1, 1>(map_mb, mp_grid, false, unstructured);
-  this->generate_grids<3, 0>(map_mb, mp_grid, false, unstructured);
-  this->generate_grids<2, 1>(map_mb, mp_grid, false, unstructured);
-  this->generate_grids<1, 2>(map_mb, mp_grid, false, unstructured);
-/*
-  mb_0->SetNumberOfBlocks(2);
-  mb_1->SetNumberOfBlocks(2);
-
-  const auto grid_0 = this->make_grid (1);
-  const auto grid_1 = this->make_grid (2);
-  const auto grid_2 = this->make_grid (3);
-  const auto grid_3 = this->make_grid (4);
-  mb_0->SetBlock (0, grid_0);
-  mb_0->SetBlock (1, grid_1);
-  mb_1->SetBlock (0, grid_2);
-  mb_1->SetBlock (1, grid_3); */
-
-
-//   generate_grid<2, 0>(iden_mb, phys_mb);
-//   generate_grid<1, 1>(iden_mb, phys_mb);
-//   generate_grid<3, 0>(iden_mb, phys_mb);
-//   generate_grid<2, 1>(iden_mb, phys_mb);
-//   generate_grid<1, 2>(iden_mb, phys_mb);
-
+    unsigned int internal_block_index = 0;
+    for (const auto& name : n)
+      internal_mb->GetMetaData(internal_block_index++)->Set(vtkCompositeDataSet::NAME(), name.c_str());
+//     this->generate_physical_mesh_grid<2, 0>(internal_mb, internal_block_index, unstructured);
+//     this->generate_physical_mesh_grid<1, 1>(internal_mb, internal_block_index, unstructured);
+//     this->generate_physical_mesh_grid<3, 0>(internal_mb, internal_block_index, unstructured);
+//     this->generate_physical_mesh_grid<2, 1>(internal_mb, internal_block_index, unstructured);
+//     this->generate_physical_mesh_grid<1, 2>(internal_mb, internal_block_index, unstructured);
+  }
 };
 
 
 template <int dim, int codim>
 void
 IGAVTK::
-generate_grids(vtkMultiBlockDataSet* const mb,
-               unsigned int& id,
-               const bool identity_map,
-               const bool unstructured) const
+generate_physical_mesh_grids(vtkMultiBlockDataSet* const mb,
+                             unsigned int& id,
+                             const bool unstructured) const
 {
+#if 0
   const auto mappings = funcs_container_->template get_all_mappings<dim, codim>();
 
   for (const auto &m : mappings)
@@ -293,6 +298,7 @@ generate_grids(vtkMultiBlockDataSet* const mb,
 
       ++id;
   }
+#endif
 
 };
 
@@ -337,11 +343,17 @@ void
 IGAVTK::
 parse_file ()
 {
-  funcs_container_ = std::make_shared<FunctionsContainer> ();
+  std::cout << "parsing" << std::endl;
+//   funcs_container_ = std::make_shared<FunctionsContainer> ();
+  std::cout << "parsing" << std::endl;
   ifstream xml_istream(file_name_);
+  std::cout << "parsing" << std::endl;
   IArchive xml_in(xml_istream);
+  std::cout << "parsing " << file_name_ << std::endl;
   xml_in >> BOOST_SERIALIZATION_NVP (funcs_container_);
+  std::cout << "parsing" << std::endl;
   xml_istream.close();
+  std::cout << "parsing" << std::endl;
 
   // Assert here if funcs_container_ is void.
 };
@@ -360,12 +372,14 @@ is_identity_mapping (shared_ptr<Function<dim, 0, dim+codim, 1>> map) const
 
 
 
-pair<SafeSTLVector<string>, SafeSTLVector<string>>
+SafeSTLArray<SafeSTLVector<string>, 3>
 IGAVTK::
 get_map_names () const
 {
-  SafeSTLVector<string> identity_names;
-  SafeSTLVector<string> mapped_names;
+  SafeSTLArray<SafeSTLVector<string>, 3> names;
+  auto& all_names = names[0];
+  auto& identity_names = names[1];
+  auto& mapped_names = names[2];
 
   for (const auto& m : funcs_container_->template get_all_mappings<2, 0>())
   {
@@ -375,6 +389,7 @@ get_map_names () const
       identity_names.push_back(name);
     else
       mapped_names.push_back(name);
+    all_names.push_back(name);
   }
 
   for (const auto& m : funcs_container_->template get_all_mappings<1, 1>())
@@ -385,6 +400,7 @@ get_map_names () const
       identity_names.push_back(name);
     else
       mapped_names.push_back(name);
+    all_names.push_back(name);
   }
 
   for (const auto& m : funcs_container_->template get_all_mappings<3, 0>())
@@ -395,6 +411,7 @@ get_map_names () const
       identity_names.push_back(name);
     else
       mapped_names.push_back(name);
+    all_names.push_back(name);
   }
 
   for (const auto& m : funcs_container_->template get_all_mappings<2, 1>())
@@ -405,6 +422,7 @@ get_map_names () const
       identity_names.push_back(name);
     else
       mapped_names.push_back(name);
+    all_names.push_back(name);
   }
 
   for (const auto& m : funcs_container_->template get_all_mappings<1, 2>())
@@ -415,9 +433,10 @@ get_map_names () const
       identity_names.push_back(name);
     else
       mapped_names.push_back(name);
+    all_names.push_back(name);
   }
 
-  return std::make_pair (identity_names, mapped_names);
+  return names;
 };
 
 

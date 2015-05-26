@@ -55,7 +55,31 @@ public:
    *  - 1: structured grid.
    */
   vtkSetMacro(GridType, int);
-  vtkGetMacro(GridType,int);
+  vtkGetMacro(GridType, int);
+
+  /*
+   * Set/Get Control Mesh creation flag.
+   *  - true:  create the mesh.
+   *  - false: do not create the mesh.
+   */
+  vtkSetMacro(ControlMesh, bool);
+  vtkGetMacro(ControlMesh, bool);
+
+  /*
+   * Set/Get Parametric Mesh creation flag.
+   *  - true:  create the mesh.
+   *  - false: do not create the mesh.
+   */
+  vtkSetMacro(ParametricMesh, bool);
+  vtkGetMacro(ParametricMesh, bool);
+
+  /*
+   * Set/Get Physical Mesh creation flag.
+   *  - true:  create the mesh.
+   *  - false: do not create the mesh.
+   */
+  vtkSetMacro(PhysicalMesh, bool);
+  vtkGetMacro(PhysicalMesh, bool);
 
 protected:
   /*
@@ -104,6 +128,21 @@ private:
    * Grid type.
    */
   int GridType;
+
+  /*
+   * Control mesh creation flag.
+   */
+  bool ControlMesh;
+
+  /*
+   * Parametric mesh creation flag.
+   */
+  bool ParametricMesh;
+
+  /*
+   * Physical mesh creation flag.
+   */
+  bool PhysicalMesh;
 
   /*
    * File name variable.

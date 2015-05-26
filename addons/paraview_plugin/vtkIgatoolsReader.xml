@@ -58,6 +58,39 @@
         </Documentation>
       </IntVectorProperty>
 
+      <IntVectorProperty name="ControlMesh"
+                         command="SetControlMesh"
+                         number_of_elements="1"
+                         label="Create control mesh"
+                         default_values="0">
+        <BooleanDomain name="bool"/>
+        <Documentation>
+          Activates/deactivates the creation of the control mesh geometry.
+        </Documentation>
+      </IntVectorProperty>
+
+      <IntVectorProperty name="ParametricMesh"
+                         command="SetParametricMesh"
+                         number_of_elements="1"
+                         label="Create parametric geometries"
+                         default_values="0">
+        <BooleanDomain name="bool"/>
+        <Documentation>
+          Activates/deactivates the creation of the parametric mesh geometries.
+        </Documentation>
+      </IntVectorProperty>
+
+      <IntVectorProperty name="PhysicalMesh"
+                         command="SetPhysicalMesh"
+                         number_of_elements="1"
+                         label="Create physical geometries"
+                         default_values="1">
+        <BooleanDomain name="bool"/>
+        <Documentation>
+          Activates/deactivates the creation of the physical mesh geometries.
+        </Documentation>
+      </IntVectorProperty>
+
       <IntVectorProperty command="SetNumVisualizationPoints"
                          default_values="2 2 2"
                          name="Number of visualization points"
