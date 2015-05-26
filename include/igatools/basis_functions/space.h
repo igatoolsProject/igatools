@@ -147,7 +147,9 @@ template <int,int,int> class DofDistribution;
  */
 template <int dim_,int codim_,int range_,int rank_>
 class Space
-    : public SpaceBase<dim_>
+    :
+    public std::enable_shared_from_this<Space<dim_,codim_,range_,rank_> >,
+    public SpaceBase<dim_>
 {
 private:
     using base_t = SpaceBase<dim_>;

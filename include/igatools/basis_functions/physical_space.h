@@ -54,8 +54,7 @@ template <int,int,int,int> class PhysSpaceElementHandler;
 template <int dim_, int range_= 1, int rank_ = 1, int codim_ = 0,
           Transformation type_= Transformation::h_grad>
 class PhysicalSpace :
-    public std::enable_shared_from_this<PhysicalSpace<dim_, range_, rank_, codim_, type_>>,
-            public Space<dim_,codim_,range_,rank_>
+    public Space<dim_,codim_,range_,rank_>
 {
 private:
     using base_t = Space<dim_,codim_,range_,rank_>;

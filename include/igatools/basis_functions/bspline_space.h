@@ -94,7 +94,6 @@ template <int, int, int> class BSplineElementHandler;
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
 class BSplineSpace :
-//    public std::enable_shared_from_this<BSplineSpace<dim_,range_,rank_> >,
     public ReferenceSpace<dim_, range_, rank_>
 {
 private:

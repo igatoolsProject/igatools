@@ -210,8 +210,6 @@ create_element(const Index flat_index) const
 -> std::shared_ptr<SpaceElement<dim_,0,range_,rank_> >
 {
     using Elem = NURBSElement<dim_,range_,rank_>;
-//    auto elem = make_shared<Elem>(this->shared_from_this(),flat_index);
-//    Assert(elem != nullptr, ExcNullPtr());
 
     auto ref_sp = const_cast<self_t *>(this)->shared_from_this();
     auto nrb_space = std::dynamic_pointer_cast<self_t>(ref_sp);

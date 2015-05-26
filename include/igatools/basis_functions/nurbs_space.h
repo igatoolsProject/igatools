@@ -43,7 +43,6 @@ template <int, int, int> class NURBSElementHandler;
  */
 template <int dim_, int range_ = 1, int rank_ = 1>
 class NURBSSpace :
-//    public std::enable_shared_from_this<NURBSSpace<dim_,range_,rank_> >,
     public ReferenceSpace<dim_,range_,rank_>
 {
 private:
