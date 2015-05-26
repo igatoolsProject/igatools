@@ -137,11 +137,11 @@ generate_vtk_grids(vtkMultiBlockDataSet* const mb) const
 
 
   unsigned int mp_grid = 0;
-  this->generate_grids<2, 0, false>(id_mb, mp_grid);
-  this->generate_grids<1, 1, false>(id_mb, mp_grid);
-  this->generate_grids<3, 0, false>(id_mb, mp_grid);
-  this->generate_grids<2, 1, false>(id_mb, mp_grid);
-  this->generate_grids<1, 2, false>(id_mb, mp_grid);
+  this->generate_grids<2, 0, false>(map_mb, mp_grid);
+  this->generate_grids<1, 1, false>(map_mb, mp_grid);
+  this->generate_grids<3, 0, false>(map_mb, mp_grid);
+  this->generate_grids<2, 1, false>(map_mb, mp_grid);
+  this->generate_grids<1, 2, false>(map_mb, mp_grid);
 /*
   mb_0->SetNumberOfBlocks(2);
   mb_1->SetNumberOfBlocks(2);
@@ -176,13 +176,14 @@ generate_grids(vtkMultiBlockDataSet* const mb,
 
   for (const auto &m : mappings)
   {
-      auto mapping = m.first;
+      using Fun_ = Function<dim, 0, dim + codim, 1>;
+      shared_ptr<Fun_> mapping = m.first;
       auto name    = m.second;
 
       if (this->is_identity_mapping<dim, codim> (mapping) != identity)
         continue;
 
-      vtkSmartPointer<vtkUnstructuredGrid> grid;
+      vtkSmartPointer<vtkUnstructuredGrid> grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
 
       const int vtk_enum_type = dim == 3 ? VTK_HEXAHEDRON :
                                 dim == 2 ? VTK_QUAD :
@@ -201,13 +202,7 @@ generate_grids(vtkMultiBlockDataSet* const mb,
         n_points[dir] = num_visualization_points_[dir];
         Assert (n_points[dir] > 1, ExcMessage ("Wrong number of visualization points."));
       }
-
       QUniform<dim> quad (n_points);
-
-      const auto tmp = quad.get_num_coords_direction();
-      TensorSize <dim> n_points_per_direction;
-      for (int dir = 0; dir < dim; ++dir)
-        n_points_per_direction[dir] = tmp[dir]; 
 
       const int n_bezier_elements = mapping->get_grid ()->get_num_all_elems ();
       const int n_points_per_bezier_element = quad.get_num_points ();
@@ -216,14 +211,37 @@ generate_grids(vtkMultiBlockDataSet* const mb,
       // Setting the points ------------------------------------------------------//
       points->SetNumberOfPoints (total_num_points);
 
-      auto flag = ValueFlags::point | ValueFlags::value | ValueFlags::gradient |
-                  ValueFlags::hessian;
+      auto flag = ValueFlags::point | ValueFlags::value;
       mapping->reset(flag, quad);
 
+      using IgFun = IgFunction<dim, 0, dim+codim, 1>;
+      const auto ig_fun = std::dynamic_pointer_cast<IgFun>(mapping);
+      AssertThrow (ig_fun != nullptr, ExcNullPtr ());
+      LogStream out;
+      ig_fun->print_info (out);
 
-      using ElementIterator = typename  Function<dim, 0, dim+codim>::ElementIterator;
-      ElementIterator elem = mapping->begin();
-      ElementIterator end = mapping->end();
+      try
+      {
+        const auto kk = *ig_fun;
+      }
+      catch (const std::bad_weak_ptr& e)
+      {
+        std::cout << "Capturing ig mapping exception " << e.what() << std::endl;
+      }
+
+
+      using ElementIterator = typename  Fun_::ElementIterator;
+      ElementIterator elem;
+      ElementIterator end;
+      try
+      {
+        elem = mapping->begin();
+        end = mapping->end();
+      }
+      catch (const std::bad_weak_ptr& e)
+      {
+        std::cout << "Capturing element exception " << e.what() << std::endl;
+      }
 
       const auto topology = Topology<dim>();
 
@@ -248,11 +266,11 @@ generate_grids(vtkMultiBlockDataSet* const mb,
       // Setting the cells -------------------------------------------------------//
       int n_cells_per_bezier = 1;
       for (int dir = 0; dir < dim; ++dir)
-        n_cells_per_bezier *= n_points_per_direction[dir] - 1;
+        n_cells_per_bezier *= num_visualization_points_[dir] - 1;
       const int n_total_cells = n_bezier_elements * n_cells_per_bezier;
 
       const auto cell_ids = IGAVTK::create_cell_ids<dim>
-        (n_points_per_direction, n_bezier_elements);
+        (n_points, n_bezier_elements);
       cellsArray->SetCells (n_total_cells , cell_ids);
 
       //--------------------------------------------------------------------------//
@@ -308,6 +326,7 @@ void
 IGAVTK::
 parse_file ()
 {
+  funcs_container_ = std::make_shared<FunctionsContainer> ();
   ifstream xml_istream(file_name_);
   IArchive xml_in(xml_istream);
   xml_in >> BOOST_SERIALIZATION_NVP (funcs_container_);
