@@ -86,11 +86,15 @@ void print_container(std::shared_ptr<FunctionsContainer> funcs_container)
         auto name    = m.second; // this is the string we associated to the mapping object when we used insert_mapping()
 
         auto flag = ValueFlags::point | ValueFlags::value;
-        QUniform<2> quad (2);
+        QUniform<2> quad(2);
         mapping->reset(flag, quad);
 
-        auto elem = mapping->begin ();
-        auto end  = mapping->end ();
+        out.begin_item("Mapping before iterators");
+        mapping->print_info(out);
+        out.end_item();
+
+        auto elem = mapping->begin();
+        auto end  = mapping->end();
 
 
         try
@@ -98,16 +102,16 @@ void print_container(std::shared_ptr<FunctionsContainer> funcs_container)
             const shared_ptr<IgFunction<2, 0, 2, 1>> ig_fun_ptr = std::dynamic_pointer_cast<IgFunction<2, 0, 2, 1>> (mapping);
             if (ig_fun_ptr == nullptr)
             {
-            	out << "Identitity func start" << endl;
+                out << "Identitity func start" << endl;
                 const shared_ptr<IdentityFunction<2, 2>> id_fun_ptr = std::dynamic_pointer_cast<IdentityFunction<2, 2>> (mapping);
                 const IdentityFunction<2, 2> &id_fun = *id_fun_ptr;
-            	out << "Identitity func stop" << endl;
+                out << "Identitity func stop" << endl;
             }
             else
             {
-            	out << "Igfunc start" << endl;
+                out << "Igfunc start" << endl;
                 const IgFunction<2, 0, 2, 1> &ig_fun = *ig_fun_ptr;
-            	out << "Igfunc stop" << endl;
+                out << "Igfunc stop" << endl;
             }
         }
         catch (const std::bad_weak_ptr &e)

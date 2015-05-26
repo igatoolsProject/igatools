@@ -210,7 +210,14 @@ create_element(const Index flat_index) const
 -> std::shared_ptr<SpaceElement<dim_,0,range_,rank_> >
 {
     using Elem = NURBSElement<dim_,range_,rank_>;
-    auto elem = make_shared<Elem>(this->shared_from_this(),flat_index);
+//    auto elem = make_shared<Elem>(this->shared_from_this(),flat_index);
+//    Assert(elem != nullptr, ExcNullPtr());
+
+    auto ref_sp = const_cast<self_t *>(this)->shared_from_this();
+    auto nrb_space = std::dynamic_pointer_cast<self_t>(ref_sp);
+    Assert(nrb_space != nullptr,ExcNullPtr());
+
+    auto elem = make_shared<Elem>(nrb_space,flat_index);
     Assert(elem != nullptr, ExcNullPtr());
 
     return elem;
@@ -661,9 +668,11 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 get_elem_handler() const -> std::shared_ptr<SpaceElementHandler<dim_,0,range_,rank_>>
 {
-    const auto this_space =
-    std::enable_shared_from_this<self_t>::shared_from_this();
-    return ElementHandler::create(this_space);
+    auto ref_sp = const_cast<self_t *>(this)->shared_from_this();
+    auto nrb_space = std::dynamic_pointer_cast<self_t>(ref_sp);
+    Assert(nrb_space != nullptr,ExcNullPtr());
+
+    return ElementHandler::create(nrb_space);
 }
 
 

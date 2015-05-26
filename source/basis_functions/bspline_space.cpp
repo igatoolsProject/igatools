@@ -222,7 +222,13 @@ auto
 BSplineSpace<dim_, range_, rank_>::
 get_reference_space() const -> shared_ptr<const self_t>
 {
-    return this->shared_from_this();
+//    return this->shared_from_this();
+
+    auto ref_sp = const_cast<self_t *>(this)->shared_from_this();
+    auto bsp_space = std::dynamic_pointer_cast<self_t>(ref_sp);
+    Assert(bsp_space != nullptr,ExcNullPtr());
+
+    return bsp_space;
 }
 
 template<int dim_, int range_, int rank_>
@@ -232,7 +238,16 @@ create_element(const Index flat_index) const
 -> std::shared_ptr<SpaceElement<dim_,0,range_,rank_> >
 {
     using Elem = BSplineElement<dim_,range_,rank_>;
-    auto elem = make_shared<Elem>(this->shared_from_this(),flat_index);
+
+    /*
+    auto ref_sp = const_cast<self_t *>(this)->shared_from_this();
+    auto bsp_space = std::dynamic_pointer_cast<self_t>(ref_sp);
+    Assert(bsp_space != nullptr,ExcNullPtr());
+    //*/
+
+    auto bsp_space = this->get_reference_space();
+
+    auto elem = make_shared<Elem>(bsp_space,flat_index);
     Assert(elem != nullptr, ExcNullPtr());
 
     return elem;
@@ -554,7 +569,10 @@ BSplineSpace<dim_, range_, rank_>::
 get_elem_handler() const
 -> std::shared_ptr<SpaceElementHandler<dim_,0,range_,rank_>>
 {
-    const auto this_space = std::enable_shared_from_this<self_t>::shared_from_this();
+//    const auto this_space = std::enable_shared_from_this<self_t>::shared_from_this();
+
+    const auto this_space = this->get_reference_space();
+
     return ElementHandler::create(this_space);
 }
 
