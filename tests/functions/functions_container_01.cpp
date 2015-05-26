@@ -27,6 +27,7 @@
 #include "../tests.h"
 
 #include <igatools/functions/functions_container.h>
+#include <igatools/base/quadrature_lib.h>
 
 
 using std::shared_ptr;
@@ -83,6 +84,14 @@ void print_container(std::shared_ptr<FunctionsContainer> funcs_container)
     {
         auto mapping = m.first;
         auto name    = m.second; // this is the string we associated to the mapping object when we used insert_mapping()
+
+        auto flag = ValueFlags::point | ValueFlags::value;
+        QUniform<2> quad (2);
+        mapping->reset(flag, quad);
+
+        auto elem = mapping->begin ();
+        auto end  = mapping->end ();
+
 
         try
         {
