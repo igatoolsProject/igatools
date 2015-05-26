@@ -70,14 +70,23 @@ create(shared_ptr<RefSpace> ref_space,
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-create_element(const Index flat_index) const
--> std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_>>
+get_this_space() const -> std::shared_ptr<const self_t >
 {
     auto sp = const_cast<self_t *>(this)->shared_from_this();
     auto this_space = std::dynamic_pointer_cast<self_t>(sp);
     Assert(this_space != nullptr,ExcNullPtr());
 
-    auto elem = make_shared<ElementAccessor>(this_space,flat_index);
+    return this_space;
+}
+
+
+template <int dim_, int range_, int rank_, int codim_, Transformation type_>
+auto
+PhysicalSpace<dim_, range_, rank_, codim_, type_>::
+create_element(const Index flat_index) const
+-> std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_>>
+{
+    auto elem = make_shared<ElementAccessor>(this->get_this_space(),flat_index);
     Assert(elem != nullptr, ExcNullPtr());
 
     return elem;

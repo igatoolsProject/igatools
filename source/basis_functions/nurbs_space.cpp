@@ -202,6 +202,17 @@ perform_post_construction_checks() const
 }
 #endif
 
+template<int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_this_space() const -> std::shared_ptr<const self_t >
+{
+    auto ref_sp = const_cast<self_t *>(this)->shared_from_this();
+    auto nrb_space = std::dynamic_pointer_cast<self_t>(ref_sp);
+    Assert(nrb_space != nullptr,ExcNullPtr());
+
+    return nrb_space;
+}
 
 template<int dim_, int range_, int rank_>
 auto
@@ -211,9 +222,7 @@ create_element(const Index flat_index) const
 {
     using Elem = NURBSElement<dim_,range_,rank_>;
 
-    auto ref_sp = const_cast<self_t *>(this)->shared_from_this();
-    auto nrb_space = std::dynamic_pointer_cast<self_t>(ref_sp);
-    Assert(nrb_space != nullptr,ExcNullPtr());
+    const auto nrb_space = this->get_this_space();
 
     auto elem = make_shared<Elem>(nrb_space,flat_index);
     Assert(elem != nullptr, ExcNullPtr());
@@ -444,13 +453,6 @@ get_push_forward() const -> std::shared_ptr<const PushForwardType>
     return sp_space_->get_push_forward();
 }
 
-template <int dim_, int range_, int rank_>
-auto
-NURBSSpace<dim_, range_, rank_>::
-get_reference_space() const -> std::shared_ptr<const self_t >
-{
-    return this->shared_from_this();
-}
 #endif
 
 
@@ -666,11 +668,7 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 get_elem_handler() const -> std::shared_ptr<SpaceElementHandler<dim_,0,range_,rank_>>
 {
-    auto ref_sp = const_cast<self_t *>(this)->shared_from_this();
-    auto nrb_space = std::dynamic_pointer_cast<self_t>(ref_sp);
-    Assert(nrb_space != nullptr,ExcNullPtr());
-
-    return ElementHandler::create(nrb_space);
+    return ElementHandler::create(this->get_this_space());
 }
 
 

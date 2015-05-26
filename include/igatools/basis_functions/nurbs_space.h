@@ -266,6 +266,14 @@ private:
     Real get_weight_coef_from_basis_id(const Index basis_id) const;
 
 
+    /**
+     * Returns the current object wrapped by a std::shared_ptr.
+     *
+     * @note Internally uses the shared_from_this() function.
+     */
+    std::shared_ptr<const self_t > get_this_space() const;
+
+
 public:
     virtual std::shared_ptr<SpaceElementHandler<dim_,0,range_,rank_>>
             get_elem_handler() const override final;

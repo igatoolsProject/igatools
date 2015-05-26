@@ -398,10 +398,11 @@ public:
 
     std::set<Index> get_interior_dofs() const override;
 
-    std::shared_ptr<const self_t > get_reference_space() const;
+
 
     ///@}
 
+public:
     const PeriodicityTable &get_periodicity() const override final;
 
     /**
@@ -450,6 +451,13 @@ private:
         const CartesianGrid<dim> &old_grid);
 
     void create_connection_for_insert_knots(std::shared_ptr<self_t> space);
+
+    /**
+     * Returns the current object wrapped by a std::shared_ptr.
+     *
+     * @note Internally uses the shared_from_this() function.
+     */
+    std::shared_ptr<const self_t > get_this_space() const;
 
 
 public:

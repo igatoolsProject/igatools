@@ -232,6 +232,14 @@ private:
     friend ElementAccessor;
 
 
+    /**
+     * Returns the current object wrapped by a std::shared_ptr.
+     *
+     * @note Internally uses the shared_from_this() function.
+     */
+    std::shared_ptr<const self_t > get_this_space() const;
+
+
 #ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
