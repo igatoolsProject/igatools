@@ -62,7 +62,10 @@ serialize(Archive &ar, const unsigned int version)
 
 IGA_NAMESPACE_CLOSE
 
+#ifdef SERIALIZATION
 BOOST_CLASS_EXPORT_IMPLEMENT(iga::FunctionsContainer)
+
 template void iga::FunctionsContainer::serialize(OArchive &, const unsigned int);
 template void iga::FunctionsContainer::serialize(IArchive &, const unsigned int);
+#endif // SERIALIZATION
 
