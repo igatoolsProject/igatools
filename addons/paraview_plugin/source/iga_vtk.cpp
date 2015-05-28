@@ -88,7 +88,6 @@ generate_vtk_grids(const int& grid_type,
                    const bool& create_physical_mesh,
                    vtkMultiBlockDataSet* const mb) const
 {
-  std::cout << "HOla" << std::endl;
   Assert (file_name_ != "", ExcMessage ("Not specified file name."));
   Assert (file_path_ != "", ExcMessage ("Not specified file path."));
   Assert (num_visualization_points_[0] > 1,
@@ -115,6 +114,7 @@ generate_vtk_grids(const int& grid_type,
     for (const auto& name : n)
       internal_mb->GetMetaData(internal_block_index++)->Set(vtkCompositeDataSet::NAME(), name.c_str());
 
+    internal_block_index = 0;
 //     this->generate_control_mesh_grid<2, 0>(internal_mb, internal_block_index);
 //     this->generate_control_mesh_grid<1, 1>(internal_mb, internal_block_index);
 //     this->generate_control_mesh_grid<3, 0>(internal_mb, internal_block_index);
@@ -129,15 +129,18 @@ generate_vtk_grids(const int& grid_type,
       vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(block_index++));
     Assert (internal_mb != nullptr, ExcNullPtr ());
     internal_mb->SetNumberOfBlocks(n.size ());
+    const bool is_parametric = true;
 
     unsigned int internal_block_index = 0;
     for (const auto& name : n)
       internal_mb->GetMetaData(internal_block_index++)->Set(vtkCompositeDataSet::NAME(), name.c_str());
-//     this->generate_parametric_mesh_grid<2, 0>(internal_mb, internal_block_index, unstructured);
-//     this->generate_parametric_mesh_grid<1, 1>(internal_mb, internal_block_index, unstructured);
-//     this->generate_parametric_mesh_grid<3, 0>(internal_mb, internal_block_index, unstructured);
-//     this->generate_parametric_mesh_grid<2, 1>(internal_mb, internal_block_index, unstructured);
-//     this->generate_parametric_mesh_grid<1, 2>(internal_mb, internal_block_index, unstructured);
+
+    internal_block_index = 0;
+    this->generate_solid_mesh_grids<2, 0>(internal_mb, internal_block_index, unstructured, is_parametric);
+    this->generate_solid_mesh_grids<1, 1>(internal_mb, internal_block_index, unstructured, is_parametric);
+    this->generate_solid_mesh_grids<3, 0>(internal_mb, internal_block_index, unstructured, is_parametric);
+    this->generate_solid_mesh_grids<2, 1>(internal_mb, internal_block_index, unstructured, is_parametric);
+    this->generate_solid_mesh_grids<1, 2>(internal_mb, internal_block_index, unstructured, is_parametric);
   }
 
   if (create_physical_mesh)
@@ -147,27 +150,31 @@ generate_vtk_grids(const int& grid_type,
       vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(block_index++));
     Assert (internal_mb != nullptr, ExcNullPtr ());
     internal_mb->SetNumberOfBlocks(n.size ());
+    const bool is_parametric = false;
 
     unsigned int internal_block_index = 0;
     for (const auto& name : n)
       internal_mb->GetMetaData(internal_block_index++)->Set(vtkCompositeDataSet::NAME(), name.c_str());
-//     this->generate_physical_mesh_grid<2, 0>(internal_mb, internal_block_index, unstructured);
-//     this->generate_physical_mesh_grid<1, 1>(internal_mb, internal_block_index, unstructured);
-//     this->generate_physical_mesh_grid<3, 0>(internal_mb, internal_block_index, unstructured);
-//     this->generate_physical_mesh_grid<2, 1>(internal_mb, internal_block_index, unstructured);
-//     this->generate_physical_mesh_grid<1, 2>(internal_mb, internal_block_index, unstructured);
+
+    internal_block_index = 0;
+    this->generate_solid_mesh_grids<2, 0>(internal_mb, internal_block_index, unstructured, is_parametric);
+    this->generate_solid_mesh_grids<1, 1>(internal_mb, internal_block_index, unstructured, is_parametric);
+    this->generate_solid_mesh_grids<3, 0>(internal_mb, internal_block_index, unstructured, is_parametric);
+    this->generate_solid_mesh_grids<2, 1>(internal_mb, internal_block_index, unstructured, is_parametric);
+    this->generate_solid_mesh_grids<1, 2>(internal_mb, internal_block_index, unstructured, is_parametric);
   }
 };
+
 
 
 template <int dim, int codim>
 void
 IGAVTK::
-generate_physical_mesh_grids(vtkMultiBlockDataSet* const mb,
-                             unsigned int& id,
-                             const bool unstructured) const
+generate_solid_mesh_grids(vtkMultiBlockDataSet* const mb,
+                          unsigned int& id,
+                          const bool unstructured,
+                          const bool is_parametric) const
 {
-#if 0
   const auto mappings = funcs_container_->template get_all_mappings<dim, codim>();
 
   for (const auto &m : mappings)
@@ -175,14 +182,8 @@ generate_physical_mesh_grids(vtkMultiBlockDataSet* const mb,
       using Fun_ = Function<dim, 0, dim + codim, 1>;
       shared_ptr<Fun_> mapping = m.first;
 
-      if (is_identity_mapping<dim, codim>(mapping) != identity_map)
+      if (is_identity_mapping<dim, codim>(mapping) != is_parametric)
         continue;
-
-      auto name    = m.second;
-
-      const int vtk_enum_type = dim == 3 ? VTK_HEXAHEDRON :
-                                dim == 2 ? VTK_QUAD :
-                                           VTK_LINE;
 
       vtkSmartPointer<vtkPoints>   points = vtkSmartPointer<vtkPoints>::New();
       vtkSmartPointer<vtkCellArray> cellsArray = vtkSmartPointer<vtkCellArray>::New();
@@ -199,61 +200,47 @@ generate_physical_mesh_grids(vtkMultiBlockDataSet* const mb,
       }
       QUniform<dim> quad (n_points);
 
-      const int n_bezier_elements = mapping->get_grid ()->get_num_all_elems ();
-      const int n_points_per_bezier_element = quad.get_num_points ();
+      const int n_bezier_elements = mapping->get_grid()->get_num_all_elems();
+      const int n_points_per_bezier_element = quad.get_num_points();
       const int total_num_points = n_points_per_bezier_element * n_bezier_elements;
 
-      // Setting the points ------------------------------------------------------//
+      // Setting the points --------------------------------------------------//
       points->SetNumberOfPoints (total_num_points);
 
       auto flag = ValueFlags::point | ValueFlags::value;
       mapping->reset(flag, quad);
 
-      using IgFun = IgFunction<dim, 0, dim+codim, 1>;
-      const auto ig_fun = std::dynamic_pointer_cast<IgFun>(mapping);
-      AssertThrow (ig_fun != nullptr, ExcNullPtr ());
-      LogStream out;
-      ig_fun->print_info (out);
-
-      try
-      {
-        const auto kk = *ig_fun;
-      }
-      catch (const std::bad_weak_ptr& e)
-      {
-        std::cout << "Capturing ig mapping exception " << e.what() << std::endl;
-      }
-
-
-      using ElementIterator = typename  Fun_::ElementIterator;
-      ElementIterator elem;
-      ElementIterator end;
-      try
-      {
-        elem = mapping->begin();
-        end = mapping->end();
-      }
-      catch (const std::bad_weak_ptr& e)
-      {
-        std::cout << "Capturing element exception " << e.what() << std::endl;
-      }
+      auto elem = mapping->begin();
+      const auto end = mapping->end();
 
       const auto topology = Topology<dim>();
+      mapping->init_cache(elem, Topology<dim>());
 
-      mapping->init_cache(elem, topology);
+      const auto point_num_map =
+        create_points_numbering_map(mapping->get_grid(),
+                                    n_points, unstructured);
 
-      double point_tmp[3]; point_tmp[0] = 0.0; point_tmp[1] = 0.0; point_tmp[2] = 0.0;
-      int point_id = 0;
-      for (; elem != end; ++elem)
+      Assert (point_num_map.size() == n_bezier_elements,
+              ExcDimensionMismatch(point_num_map.size(), n_bezier_elements));
+#ifndef NDEBUG
+      for (const auto& it : point_num_map)
+        Assert (it.size() == n_points_per_bezier_element,
+              ExcDimensionMismatch(it.size(), n_points_per_bezier_element));
+#endif
+
+      double point_tmp[3] = {0.0, 0.0, 0.0};
+      auto pnm_it = point_num_map.cbegin();
+      for (; elem != end; ++elem, ++pnm_it)
       {
         mapping->fill_cache(elem, topology, 0);
 
         auto element_vertices_tmp = elem->template get_values<_Value, dim>(0);
+        auto pnm = pnm_it->cbegin();
         for (const auto& p : element_vertices_tmp)
         {
           for (int dir = 0; dir < dim ; ++dir)
             point_tmp[dir] = p[dir];
-          points->SetPoint (point_id++, point_tmp);
+          points->SetPoint (*pnm++, point_tmp);
         }
       }
       //----------------------------------------------------------------------//
@@ -274,6 +261,9 @@ generate_physical_mesh_grids(vtkMultiBlockDataSet* const mb,
         vtkSmartPointer<vtkUnstructuredGrid> grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
         grid->Allocate(cellsArray->GetNumberOfCells (), 0);
         grid->SetPoints(points);
+        const int vtk_enum_type = dim == 3 ? VTK_HEXAHEDRON :
+                                  dim == 2 ? VTK_QUAD :
+                                            VTK_LINE;
         grid->SetCells(vtk_enum_type, cellsArray);
         mb->SetBlock (id, grid);
       }
@@ -281,16 +271,16 @@ generate_physical_mesh_grids(vtkMultiBlockDataSet* const mb,
       {
         vtkSmartPointer<vtkStructuredGrid> grid = vtkSmartPointer<vtkStructuredGrid>::New();
 
-        // TODO: Revisit this.
+        const auto grid_elem = mapping->get_grid()->get_num_intervals ();
         if (dim == 1)
-          grid->SetDimensions(num_visualization_points_[0], 1, 1);
+          grid->SetDimensions(num_visualization_points_[0] * grid_elem[0], 1, 1);
         else if (dim == 2)
-          grid->SetDimensions(num_visualization_points_[0],
-                              num_visualization_points_[1], 1);
+          grid->SetDimensions(num_visualization_points_[0] * grid_elem[0],
+                              num_visualization_points_[1] * grid_elem[1], 1);
         else if (dim == 3)
-          grid->SetDimensions(num_visualization_points_[0],
-                              num_visualization_points_[1],
-                              num_visualization_points_[2]);
+          grid->SetDimensions(num_visualization_points_[0] * grid_elem[0],
+                              num_visualization_points_[1] * grid_elem[1],
+                              num_visualization_points_[2] * grid_elem[2]);
 
         grid->SetPoints(points);
         mb->SetBlock (id, grid);
@@ -298,43 +288,6 @@ generate_physical_mesh_grids(vtkMultiBlockDataSet* const mb,
 
       ++id;
   }
-#endif
-
-};
-
-
-vtkSmartPointer<vtkStructuredGrid>
-IGAVTK::
-make_grid (int i) const
-{
-  const auto grid = vtkSmartPointer<vtkStructuredGrid>::New();
-
-  const auto points = vtkSmartPointer<vtkPoints>::New();
-  double x, y, z;
-
-  x = 0.0;
-  y = 0.0;
-  z = 0.0;
-
-  for(unsigned int k = 0; k < 2; k++)
-  {
-    z += 2.0 * i;
-    for(unsigned int j = 0; j < 3; j++)
-    {
-      y += 1.0 * i;
-      for(unsigned int i = 0; i < 2; i++)
-      {
-        x += .5 * i;
-        points->InsertNextPoint(x, y, z);
-      }
-    }
-  }
-
-  // Specify the dimensions of the grid
-  grid->SetDimensions(2,3,2);
-  grid->SetPoints(points);
-
-  return grid;
 };
 
 
@@ -343,19 +296,153 @@ void
 IGAVTK::
 parse_file ()
 {
-  std::cout << "parsing" << std::endl;
-//   funcs_container_ = std::make_shared<FunctionsContainer> ();
-  std::cout << "parsing" << std::endl;
-  ifstream xml_istream(file_name_);
-  std::cout << "parsing" << std::endl;
-  IArchive xml_in(xml_istream);
-  std::cout << "parsing " << file_name_ << std::endl;
-  xml_in >> BOOST_SERIALIZATION_NVP (funcs_container_);
-  std::cout << "parsing" << std::endl;
-  xml_istream.close();
-  std::cout << "parsing" << std::endl;
+  // TODO: this is a temporary solution for avoiding runtime error in deserialization.
+//   ifstream xml_istream(file_name_);
+//   IArchive xml_in(xml_istream);
+//   xml_in >> BOOST_SERIALIZATION_NVP (funcs_container_);
+//   xml_istream.close();
+//   Assert here if funcs_container_ is void.
+  this->template create_geometries<3>();
+};
 
-  // Assert here if funcs_container_ is void.
+#include <igatools/io/reader.h>
+
+
+template <int dim>
+void
+IGAVTK::
+create_geometries ()
+{
+  using std::dynamic_pointer_cast;
+  using std::const_pointer_cast;
+
+  static const int codim = 0;
+  static const int space_dim = dim + codim;
+  static const int range = dim;
+  static const int rank = 1;
+  static const Transformation transf = Transformation::h_grad;
+
+  using Fun_ = Function<dim, codim, range, rank>;
+  using IgFun_ = IgFunction<dim, codim, range, rank>;
+  using PhysSpace_ = PhysicalSpace<dim, range, rank, codim, transf>;
+  using RefSpace_ = ReferenceSpace<dim, range, rank>;
+  using IdFun_ = IdentityFunction<dim, space_dim>;
+
+  // File names;
+  const string fname_0 = "patch_0_" + std::to_string (dim) + "D.xml";
+  const string fname_1 = "patch_1_" + std::to_string (dim) + "D.xml";
+  const string fname_2 = "patch_2_" + std::to_string (dim) + "D.xml";
+  const string fname_3 = "patch_3_" + std::to_string (dim) + "D.xml";
+
+  // Reading maps
+  const auto map_0 = get_mapping_from_file<dim, codim> (fname_0);
+  const auto map_1 = get_mapping_from_file<dim, codim> (fname_1);
+  const auto map_2 = get_mapping_from_file<dim, codim> (fname_2);
+  const auto map_3 = get_mapping_from_file<dim, codim> (fname_3);
+
+  // Transforming mapping to ig mapping.
+  const auto ig_func_0 = dynamic_pointer_cast<IgFun_>(map_0);
+  const auto ig_func_1 = dynamic_pointer_cast<IgFun_>(map_1);
+  const auto ig_func_2 = dynamic_pointer_cast<IgFun_>(map_2);
+  const auto ig_func_3 = dynamic_pointer_cast<IgFun_>(map_3);
+
+  // Getting ig spaces.
+  const auto space_0 = ig_func_0->get_ig_space ();
+  const auto space_1 = ig_func_1->get_ig_space ();
+  const auto space_2 = ig_func_2->get_ig_space ();
+  const auto space_3 = ig_func_3->get_ig_space ();
+
+  // Getting reference spaces.
+  const auto ref_space_0 = const_pointer_cast<RefSpace_>(dynamic_pointer_cast<const RefSpace_>(space_0));
+  const auto ref_space_1 = const_pointer_cast<RefSpace_>(dynamic_pointer_cast<const RefSpace_>(space_1));
+  const auto ref_space_2 = const_pointer_cast<RefSpace_>(dynamic_pointer_cast<const RefSpace_>(space_2));
+  const auto ref_space_3 = const_pointer_cast<RefSpace_>(dynamic_pointer_cast<const RefSpace_>(space_3));
+
+  // Building physical spaces.
+  const auto phys_space_0 = PhysSpace_::create (ref_space_0, map_0);
+  const auto phys_space_1 = PhysSpace_::create (ref_space_1, map_1);
+  const auto phys_space_2 = PhysSpace_::create (ref_space_2, map_2);
+  const auto phys_space_3 = PhysSpace_::create (ref_space_3, map_3);
+
+  // Getting grids;
+  const auto grid_0 = ref_space_0->get_grid ();
+  const auto grid_1 = ref_space_1->get_grid ();
+  const auto grid_2 = ref_space_2->get_grid ();
+  const auto grid_3 = ref_space_3->get_grid ();
+
+  // Creating identity functions.
+  auto id_map_0 = IdFun_::create (grid_0);
+  auto id_map_1 = IdFun_::create (grid_1);
+  auto id_map_2 = IdFun_::create (grid_2);
+  auto id_map_3 = IdFun_::create (grid_3);
+
+  Epetra_SerialComm comm;
+
+  // Creating coefficients for ig physical space functions.
+  auto phys_coeff_0 = EpetraTools::create_vector(
+                        EpetraTools::create_map(phys_space_0, "active", comm));
+  (*phys_coeff_0)[0] = 0.;
+  auto phys_coeff_1 = EpetraTools::create_vector(
+                        EpetraTools::create_map(phys_space_1, "active", comm));
+  (*phys_coeff_1)[0] = 1.;
+  auto phys_coeff_2 = EpetraTools::create_vector(
+                        EpetraTools::create_map(phys_space_2, "active", comm));
+  (*phys_coeff_2)[0] = 2.;
+  auto phys_coeff_3 = EpetraTools::create_vector(
+                        EpetraTools::create_map(phys_space_3, "active", comm));
+  (*phys_coeff_3)[0] = 3.;
+
+
+  // Creating coefficients for ig reference space functions.
+  auto ref_coeff_0 = EpetraTools::create_vector(
+                        EpetraTools::create_map(ref_space_0, "active", comm));
+  (*ref_coeff_0)[0] = 4.;
+  auto ref_coeff_1 = EpetraTools::create_vector(
+                        EpetraTools::create_map(ref_space_1, "active", comm));
+  (*ref_coeff_1)[0] = 5.;
+  auto ref_coeff_2 = EpetraTools::create_vector(
+                        EpetraTools::create_map(ref_space_2, "active", comm));
+  (*ref_coeff_2)[0] = 6.;
+  auto ref_coeff_3 = EpetraTools::create_vector(
+                        EpetraTools::create_map(ref_space_3, "active", comm));
+  (*ref_coeff_3)[0] = 7.;
+
+  // Creating ig functions for physical spaces.
+  auto ps_func_0 = dynamic_pointer_cast<Fun_>(IgFun_::create (phys_space_0, phys_coeff_0));
+  auto ps_func_1 = dynamic_pointer_cast<Fun_>(IgFun_::create (phys_space_1, phys_coeff_1));
+  auto ps_func_2 = dynamic_pointer_cast<Fun_>(IgFun_::create (phys_space_2, phys_coeff_2));
+  auto ps_func_3 = dynamic_pointer_cast<Fun_>(IgFun_::create (phys_space_3, phys_coeff_3));
+
+  // Creating ig functions for reference spaces.
+  auto rf_func_0 = dynamic_pointer_cast<Fun_>(IgFun_::create (ref_space_0, ref_coeff_0));
+  auto rf_func_1 = dynamic_pointer_cast<Fun_>(IgFun_::create (ref_space_1, ref_coeff_1));
+  auto rf_func_2 = dynamic_pointer_cast<Fun_>(IgFun_::create (ref_space_2, ref_coeff_2));
+  auto rf_func_3 = dynamic_pointer_cast<Fun_>(IgFun_::create (ref_space_3, ref_coeff_3));
+
+  // Adding all the stuff to the functions container.
+  funcs_container_ = std::make_shared<FunctionsContainer>();
+
+  // Inserting geometries.
+  funcs_container_->insert_mapping(map_0, "map_0");
+  funcs_container_->insert_mapping(map_1, "map_1");
+  funcs_container_->insert_mapping(map_2, "map_2");
+  funcs_container_->insert_mapping(map_3, "map_3");
+
+  funcs_container_->insert_mapping(id_map_0, "id_map_0");
+  funcs_container_->insert_mapping(id_map_1, "id_map_1");
+  funcs_container_->insert_mapping(id_map_2, "id_map_2");
+  funcs_container_->insert_mapping(id_map_3, "id_map_3");
+
+  // Inserting associated functions.
+  funcs_container_->insert_function(map_0, ps_func_0, "phys_func_0");
+  funcs_container_->insert_function(map_1, ps_func_1, "phys_func_1");
+  funcs_container_->insert_function(map_2, ps_func_2, "phys_func_2");
+  funcs_container_->insert_function(map_3, ps_func_3, "phys_func_3");
+
+  funcs_container_->insert_function(id_map_0, rf_func_0, "ref_func_0");
+  funcs_container_->insert_function(id_map_1, rf_func_1, "ref_func_1");
+  funcs_container_->insert_function(id_map_2, rf_func_2, "ref_func_2");
+  funcs_container_->insert_function(id_map_3, rf_func_3, "ref_func_3");
 };
 
 
@@ -378,7 +465,7 @@ get_map_names () const
 {
   SafeSTLArray<SafeSTLVector<string>, 3> names;
   auto& all_names = names[0];
-  auto& identity_names = names[1];
+  auto& parametric_names = names[1];
   auto& mapped_names = names[2];
 
   for (const auto& m : funcs_container_->template get_all_mappings<2, 0>())
@@ -386,7 +473,7 @@ get_map_names () const
     auto mapping = m.first;
     auto name    = m.second;
     if (this->is_identity_mapping<2, 0>(mapping))
-      identity_names.push_back(name);
+      parametric_names.push_back(name);
     else
       mapped_names.push_back(name);
     all_names.push_back(name);
@@ -397,7 +484,7 @@ get_map_names () const
     auto mapping = m.first;
     auto name    = m.second;
     if (this->is_identity_mapping<1, 1>(mapping))
-      identity_names.push_back(name);
+      parametric_names.push_back(name);
     else
       mapped_names.push_back(name);
     all_names.push_back(name);
@@ -408,7 +495,7 @@ get_map_names () const
     auto mapping = m.first;
     auto name    = m.second;
     if (this->is_identity_mapping<3, 0>(mapping))
-      identity_names.push_back(name);
+      parametric_names.push_back(name);
     else
       mapped_names.push_back(name);
     all_names.push_back(name);
@@ -419,7 +506,7 @@ get_map_names () const
     auto mapping = m.first;
     auto name    = m.second;
     if (this->is_identity_mapping<2, 1>(mapping))
-      identity_names.push_back(name);
+      parametric_names.push_back(name);
     else
       mapped_names.push_back(name);
     all_names.push_back(name);
@@ -430,7 +517,7 @@ get_map_names () const
     auto mapping = m.first;
     auto name    = m.second;
     if (this->is_identity_mapping<1, 2>(mapping))
-      identity_names.push_back(name);
+      parametric_names.push_back(name);
     else
       mapped_names.push_back(name);
     all_names.push_back(name);
@@ -510,4 +597,77 @@ create_vtu_cell_ids (const TensorSize<dim>& n_points_per_direction,
   }
 
   return cell_ids;
+};
+
+
+
+template <int dim>
+SafeSTLVector<SafeSTLVector<Index>>
+IGAVTK::
+create_points_numbering_map (const shared_ptr<const CartesianGrid<dim>> grid,
+                             const TensorSize<dim>& n_pts_per_vtk_elem,
+                             const bool is_unstructured) const
+{
+  const Size num_elems = grid->get_num_all_elems();
+
+  Size n_total_pts_per_element = 1;
+  for (int dir = 0; dir < dim; ++dir)
+    n_total_pts_per_element *= n_pts_per_vtk_elem[dir];
+
+  SafeSTLVector<SafeSTLVector<Index>>
+  points_map (num_elems, SafeSTLVector<Index> (n_total_pts_per_element));
+
+  if (is_unstructured) // Unstructured grid.
+  {
+    Index point_id = 0;
+    for (auto &npm_el : points_map)
+      for (auto &npm : npm_el)
+        npm = point_id++;
+  }
+  else // Structured grid.
+  {
+    TensorSize<dim>  n_pts_per_mesh;   // Number of points per direction of
+                                       // vtk mesh.
+    const auto grid_elems = grid->get_num_intervals();
+
+    for (int dir = 0 ; dir < dim ; ++dir)
+      n_pts_per_mesh[dir] = grid_elems[dir] * n_pts_per_vtk_elem[dir];
+
+    TensorIndex<dim> elem_t_id;        // Tensorial index of the Bezier element.
+    TensorIndex<dim> pt_mesh_t_offset; // Tensorial index of the first point in
+                                       // Bezier element.
+    TensorIndex<dim> pt_mesh_t_id;     // Tensorial index of the point.
+    TensorIndex<dim> pt_elem_t_id;     // Tensorial index of the point referred
+                                       // to the number of points in a
+                                       // single element.
+
+    const auto w_elem_pts = MultiArrayUtils<dim>::compute_weight(n_pts_per_vtk_elem);
+    const auto w_mesh_pts = MultiArrayUtils<dim>::compute_weight(n_pts_per_mesh);
+
+    Index i_el = 0;
+    for (auto &nmp_el : points_map)
+    {
+      // Computing the tensor index of the first point of the element.
+      elem_t_id = grid->flat_to_tensor(i_el++);
+      for (int dir = 0 ; dir < dim ; ++dir)
+        pt_mesh_t_offset[dir] = elem_t_id[dir] * n_pts_per_vtk_elem[dir];
+
+      Index point_id = 0;
+      for (auto &nmp : nmp_el) // Iterating along the points in a Bezier element.
+      {
+        // Computing the tensor index of the point referred to the number
+        // of points into a single Bezier element.
+        pt_elem_t_id = MultiArrayUtils<dim>::flat_to_tensor_index(point_id++, w_elem_pts);
+
+        // Computing the tensor index of the point referred to the number
+        // of points into the whole mesh.
+        for (int dir = 0 ; dir < dim ; ++dir)
+          pt_mesh_t_id[dir] = pt_mesh_t_offset[dir] + pt_elem_t_id[dir];
+
+        nmp = MultiArrayUtils<dim>::tensor_to_flat_index(pt_mesh_t_id, w_mesh_pts);
+      }
+    }
+  }
+
+  return points_map;
 };

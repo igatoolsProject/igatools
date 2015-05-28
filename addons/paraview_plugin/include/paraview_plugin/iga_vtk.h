@@ -31,6 +31,7 @@ namespace iga
   template<class T> class SafeSTLVector;
   template<class T, int N> class SafeSTLArray;
   template<int dim> class Quadrature;
+  template<int dim> class CartesianGrid;
   class FunctionsContainer;
   template<int dim, int codim, int range, int rank>  class Function;
 };
@@ -96,10 +97,17 @@ public:
    * Clears the class, destroying the read information.
    */
   void clear ();
+
   /*
    * Parses the input file.
    */
   void parse_file ();
+
+  /*
+   * Create temporary geometries.
+   */
+  template <int dim>
+  void create_geometries ();
 
   /*
    * Generates the VTK grids.
@@ -126,8 +134,6 @@ private:
    */
   iga::TensorSize<3> num_visualization_points_;
 
-  vtkSmartPointer<vtkStructuredGrid> make_grid (int i) const;
-
   /*
    * Container for the mapping and field functions.
    */
@@ -152,9 +158,10 @@ private:
    * Generates the physical vtk grids.
    */
   template <int dim, int codim>
-  void generate_physical_mesh_grids (vtkMultiBlockDataSet* const mb,
-                                     unsigned int& id,
-                                     const bool unstructured) const;
+  void generate_solid_mesh_grids (vtkMultiBlockDataSet* const mb,
+                                  unsigned int& id,
+                                  const bool unstructured,
+                                  const bool is_parametric) const;
 
   /*
    * Returns the namesof identity and mapped functions from the function
@@ -175,6 +182,16 @@ private:
   static vtkSmartPointer<vtkIdTypeArray>
   create_vtu_cell_ids (const iga::TensorSize<dim>& n_points_per_direction,
                        const iga::Size& n_bezier_elements);
+
+  /*
+   * Creates a map between the number of Bezier element and the number o point
+   * inside the element, and the global number of the point in the vtk grid.
+   */
+  template <int dim>
+  iga::SafeSTLVector<iga::SafeSTLVector<iga::Index>>
+  create_points_numbering_map (const std::shared_ptr<const iga::CartesianGrid<dim>> grid,
+                               const iga::TensorSize<dim>& n_points,
+                               const bool is_unstructured) const;
 
 };
 
