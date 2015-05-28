@@ -115,11 +115,11 @@ generate_vtk_grids(const int& grid_type,
       internal_mb->GetMetaData(internal_block_index++)->Set(vtkCompositeDataSet::NAME(), name.c_str());
 
     internal_block_index = 0;
-//     this->generate_control_mesh_grid<2, 0>(internal_mb, internal_block_index);
-//     this->generate_control_mesh_grid<1, 1>(internal_mb, internal_block_index);
-//     this->generate_control_mesh_grid<3, 0>(internal_mb, internal_block_index);
-//     this->generate_control_mesh_grid<2, 1>(internal_mb, internal_block_index);
-//     this->generate_control_mesh_grid<1, 2>(internal_mb, internal_block_index);
+    this->generate_control_mesh_grids<2, 0>(internal_mb, internal_block_index);
+    this->generate_control_mesh_grids<1, 1>(internal_mb, internal_block_index);
+    this->generate_control_mesh_grids<3, 0>(internal_mb, internal_block_index);
+    this->generate_control_mesh_grids<2, 1>(internal_mb, internal_block_index);
+    this->generate_control_mesh_grids<1, 2>(internal_mb, internal_block_index);
   }
 
   if (create_parametric_mesh)
@@ -186,7 +186,6 @@ generate_solid_mesh_grids(vtkMultiBlockDataSet* const mb,
         continue;
 
       vtkSmartPointer<vtkPoints>   points = vtkSmartPointer<vtkPoints>::New();
-      vtkSmartPointer<vtkCellArray> cellsArray = vtkSmartPointer<vtkCellArray>::New();
 
       // Generating visualization quadrature.
       // TODO: quadratures for 1D, 2D and 3D should be moved outside this
@@ -248,6 +247,7 @@ generate_solid_mesh_grids(vtkMultiBlockDataSet* const mb,
       if (unstructured) // Creating an unstuctured grid.
       {
         // Setting the cells -------------------------------------------------//
+        vtkSmartPointer<vtkCellArray> cells = vtkSmartPointer<vtkCellArray>::New();
         int n_cells_per_bezier = 1;
         for (int dir = 0; dir < dim; ++dir)
           n_cells_per_bezier *= num_visualization_points_[dir] - 1;
@@ -255,16 +255,16 @@ generate_solid_mesh_grids(vtkMultiBlockDataSet* const mb,
 
         const auto cell_ids = IGAVTK::create_vtu_cell_ids<dim>
           (n_points, n_bezier_elements);
-        cellsArray->SetCells (n_total_cells , cell_ids);
+        cells->SetCells (n_total_cells , cell_ids);
 
         //--------------------------------------------------------------------//
         vtkSmartPointer<vtkUnstructuredGrid> grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
-        grid->Allocate(cellsArray->GetNumberOfCells (), 0);
+        grid->Allocate(cells->GetNumberOfCells (), 0);
         grid->SetPoints(points);
         const int vtk_enum_type = dim == 3 ? VTK_HEXAHEDRON :
                                   dim == 2 ? VTK_QUAD :
                                             VTK_LINE;
-        grid->SetCells(vtk_enum_type, cellsArray);
+        grid->SetCells(vtk_enum_type, cells);
         mb->SetBlock (id, grid);
       }
       else  // Creating a stuctured grid.
@@ -292,6 +292,74 @@ generate_solid_mesh_grids(vtkMultiBlockDataSet* const mb,
 
 
 
+template <int dim, int codim>
+void
+IGAVTK::
+generate_control_mesh_grids(vtkMultiBlockDataSet* const mb,
+                            unsigned int& id) const
+{
+  const auto mappings = funcs_container_->template get_all_mappings<dim, codim>();
+
+  static const int space_dim = dim + codim;
+  using Fun_   =   Function<dim, 0, space_dim, 1>;
+  using IgFun_ = IgFunction<dim, 0, space_dim, 1>;
+
+  for (const auto &m : mappings)
+  {
+      shared_ptr<Fun_> mapping = m.first;
+      const auto name = m.second;
+
+      const auto ig_func = std::dynamic_pointer_cast<IgFun_>(mapping);
+      if (ig_func == nullptr)
+        continue;
+
+      const auto space = ig_func->get_ig_space();
+      const auto& coefs = ig_func->get_coefficients();
+      const auto& dofs = space->get_dof_distribution();
+
+      // TODO: include assert here to verify that all the components share the 
+      // same space.
+      const auto &dofs_table = dofs->get_num_dofs_table();
+      const auto n_pts_dir = dofs_table[0];
+
+      auto grid = vtkSmartPointer<vtkStructuredGrid>::New();
+      auto points = vtkSmartPointer<vtkPoints>::New();
+
+      const Size n_total_pts = dofs_table.get_component_size(0);
+      points->SetNumberOfPoints (n_total_pts);
+
+      // Setting all the points void.
+      const double point_void[3] = {0.0, 0.0, 0.0};
+      for (int i_pt = 0; i_pt < n_total_pts; ++i_pt)
+          points->SetPoint (i_pt, point_void);
+
+      Index comp;
+      Index local_id;
+      double point_tmp[3];
+      for (const auto &it : coefs)
+      {
+        dofs->global_to_comp_local(it.first, comp, local_id);
+        points->GetPoint (local_id, point_tmp);
+        point_tmp[comp] = it.second;
+        points->SetPoint (local_id, point_tmp);
+      }
+
+      if (dim == 1)
+        grid->SetDimensions(n_pts_dir[0], 1, 1);
+      else if (dim == 2)
+        grid->SetDimensions(n_pts_dir[0], n_pts_dir[1], 1);
+      else if (dim == 3)
+        grid->SetDimensions(n_pts_dir[0], n_pts_dir[1], n_pts_dir[2]);
+
+      grid->SetPoints(points);
+      mb->SetBlock (id, grid);
+
+      ++id;
+  }
+}
+
+
+
 void
 IGAVTK::
 parse_file ()
@@ -302,7 +370,7 @@ parse_file ()
 //   xml_in >> BOOST_SERIALIZATION_NVP (funcs_container_);
 //   xml_istream.close();
 //   Assert here if funcs_container_ is void.
-  this->template create_geometries<3>();
+  this->template create_geometries<2>();
 };
 
 #include <igatools/io/reader.h>
