@@ -598,6 +598,12 @@ DeclException0(ExcNotANumber);
 DeclException0(ExcOutOfMemory);
 
 /**
+ * Exception raised if a shared pointer has not a unique owner.
+ */
+DeclException0(ExcNotUnique);
+
+
+/**
  * A memory handler reached a point
  * where all allocated objects
  * should have been released. Since
