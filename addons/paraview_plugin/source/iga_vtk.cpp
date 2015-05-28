@@ -26,6 +26,8 @@
 #include <vtkSmartPointer.h>
 #include <vtkInformation.h>
 #include <vtkCellArray.h>
+#include <vtkDoubleArray.h>
+#include <vtkPointData.h>
 #include <vtkHexahedron.h>
 #include <vtkQuad.h>
 #include <vtkLine.h>
@@ -213,7 +215,7 @@ generate_solid_mesh_grids(vtkMultiBlockDataSet* const mb,
       const auto end = mapping->end();
 
       const auto topology = Topology<dim>();
-      mapping->init_cache(elem, Topology<dim>());
+      mapping->init_cache(elem, topology);
 
       const auto point_num_map =
         create_points_numbering_map(mapping->get_grid(),
@@ -266,6 +268,10 @@ generate_solid_mesh_grids(vtkMultiBlockDataSet* const mb,
                                             VTK_LINE;
         grid->SetCells(vtk_enum_type, cells);
         mb->SetBlock (id, grid);
+
+        auto point_data = grid->GetPointData();
+        this->template create_point_data<dim, codim>
+        (mapping, quad, point_num_map, point_data);
       }
       else  // Creating a stuctured grid.
       {
@@ -284,6 +290,10 @@ generate_solid_mesh_grids(vtkMultiBlockDataSet* const mb,
 
         grid->SetPoints(points);
         mb->SetBlock (id, grid);
+
+        auto point_data = grid->GetPointData();
+        this->template create_point_data<dim, codim>
+        (mapping, quad, point_num_map, point_data);
       }
 
       ++id;
@@ -449,31 +459,60 @@ create_geometries ()
   // Creating coefficients for ig physical space functions.
   auto phys_coeff_0 = EpetraTools::create_vector(
                         EpetraTools::create_map(phys_space_0, "active", comm));
-  (*phys_coeff_0)[0] = 0.;
+  const auto dofs_dist_0 = space_0->get_dof_distribution();
+  const Real val0 = 10.0;
+  for (const auto& d : dofs_dist_0->get_dofs_view ())
+    phys_coeff_0->ReplaceGlobalValues (1, &val0, &d);
+
   auto phys_coeff_1 = EpetraTools::create_vector(
                         EpetraTools::create_map(phys_space_1, "active", comm));
-  (*phys_coeff_1)[0] = 1.;
+  const auto dofs_dist_1 = space_1->get_dof_distribution();
+  const Real val1 = 11.0;
+  for (const auto& d : dofs_dist_1->get_dofs_view ())
+    phys_coeff_1->ReplaceGlobalValues (1, &val1, &d);
+
   auto phys_coeff_2 = EpetraTools::create_vector(
                         EpetraTools::create_map(phys_space_2, "active", comm));
   (*phys_coeff_2)[0] = 2.;
+  (*phys_coeff_2)[1] = 2.;
+  (*phys_coeff_2)[2] = 2.;
+  const auto dofs_dist_2 = space_2->get_dof_distribution();
+  const Real val2 = 12.0;
+  for (const auto& d : dofs_dist_2->get_dofs_view ())
+    phys_coeff_2->ReplaceGlobalValues (1, &val2, &d);
+
   auto phys_coeff_3 = EpetraTools::create_vector(
                         EpetraTools::create_map(phys_space_3, "active", comm));
-  (*phys_coeff_3)[0] = 3.;
+  const auto dofs_dist_3 = space_3->get_dof_distribution();
+  const Real val3 = 13.0;
+  for (const auto& d : dofs_dist_3->get_dofs_view ())
+    phys_coeff_3->ReplaceGlobalValues (1, &val3, &d);
 
 
   // Creating coefficients for ig reference space functions.
   auto ref_coeff_0 = EpetraTools::create_vector(
                         EpetraTools::create_map(ref_space_0, "active", comm));
-  (*ref_coeff_0)[0] = 4.;
+  const Real ref_val0 = 20.0;
+  for (const auto& d : dofs_dist_0->get_dofs_view ())
+    ref_coeff_0->ReplaceGlobalValues (1, &ref_val0, &d);
+
   auto ref_coeff_1 = EpetraTools::create_vector(
                         EpetraTools::create_map(ref_space_1, "active", comm));
-  (*ref_coeff_1)[0] = 5.;
+  const Real ref_val1 = 21.0;
+  for (const auto& d : dofs_dist_1->get_dofs_view ())
+    ref_coeff_1->ReplaceGlobalValues (1, &ref_val1, &d);
+
   auto ref_coeff_2 = EpetraTools::create_vector(
                         EpetraTools::create_map(ref_space_2, "active", comm));
-  (*ref_coeff_2)[0] = 6.;
+  const Real ref_val2 = 22.0;
+  for (const auto& d : dofs_dist_2->get_dofs_view ())
+    ref_coeff_2->ReplaceGlobalValues (1, &ref_val2, &d);
+
   auto ref_coeff_3 = EpetraTools::create_vector(
                         EpetraTools::create_map(ref_space_3, "active", comm));
-  (*ref_coeff_3)[0] = 7.;
+  const Real ref_val3 = 23.0;
+  for (const auto& d : dofs_dist_3->get_dofs_view ())
+    ref_coeff_3->ReplaceGlobalValues (1, &ref_val3, &d);
 
   // Creating ig functions for physical spaces.
   auto ps_func_0 = dynamic_pointer_cast<Fun_>(IgFun_::create (phys_space_0, phys_coeff_0));
@@ -492,25 +531,25 @@ create_geometries ()
 
   // Inserting geometries.
   funcs_container_->insert_mapping(map_0, "map_0");
-  funcs_container_->insert_mapping(map_1, "map_1");
-  funcs_container_->insert_mapping(map_2, "map_2");
-  funcs_container_->insert_mapping(map_3, "map_3");
-
-  funcs_container_->insert_mapping(id_map_0, "id_map_0");
-  funcs_container_->insert_mapping(id_map_1, "id_map_1");
-  funcs_container_->insert_mapping(id_map_2, "id_map_2");
-  funcs_container_->insert_mapping(id_map_3, "id_map_3");
+//   funcs_container_->insert_mapping(map_1, "map_1");
+//   funcs_container_->insert_mapping(map_2, "map_2");
+//   funcs_container_->insert_mapping(map_3, "map_3");
+// 
+//   funcs_container_->insert_mapping(id_map_0, "id_map_0");
+//   funcs_container_->insert_mapping(id_map_1, "id_map_1");
+//   funcs_container_->insert_mapping(id_map_2, "id_map_2");
+//   funcs_container_->insert_mapping(id_map_3, "id_map_3");
 
   // Inserting associated functions.
   funcs_container_->insert_function(map_0, ps_func_0, "phys_func_0");
-  funcs_container_->insert_function(map_1, ps_func_1, "phys_func_1");
-  funcs_container_->insert_function(map_2, ps_func_2, "phys_func_2");
-  funcs_container_->insert_function(map_3, ps_func_3, "phys_func_3");
-
-  funcs_container_->insert_function(id_map_0, rf_func_0, "ref_func_0");
-  funcs_container_->insert_function(id_map_1, rf_func_1, "ref_func_1");
-  funcs_container_->insert_function(id_map_2, rf_func_2, "ref_func_2");
-  funcs_container_->insert_function(id_map_3, rf_func_3, "ref_func_3");
+//   funcs_container_->insert_function(map_1, ps_func_1, "phys_func_1");
+//   funcs_container_->insert_function(map_2, ps_func_2, "phys_func_2");
+//   funcs_container_->insert_function(map_3, ps_func_3, "phys_func_3");
+// 
+//   funcs_container_->insert_function(id_map_0, rf_func_0, "ref_func_0");
+//   funcs_container_->insert_function(id_map_1, rf_func_1, "ref_func_1");
+//   funcs_container_->insert_function(id_map_2, rf_func_2, "ref_func_2");
+//   funcs_container_->insert_function(id_map_3, rf_func_3, "ref_func_3");
 };
 
 
@@ -738,4 +777,145 @@ create_points_numbering_map (const shared_ptr<const CartesianGrid<dim>> grid,
   }
 
   return points_map;
+};
+
+
+
+template <>
+void
+IGAVTK::
+create_point_data<2, 0> (const shared_ptr<Function<2, 0, 2, 1>> map,
+                         const Quadrature<2> &quad,
+                         const SafeSTLVector<SafeSTLVector<Index>>& points_map,
+                         vtkPointData* const point_data) const
+{
+  this->template create_point_data<2, 0, 1, 1>(map, quad, points_map, point_data);
+  this->template create_point_data<2, 0, 2, 1>(map, quad, points_map, point_data);
+};
+
+
+
+template <>
+void
+IGAVTK::
+create_point_data<1, 1> (const shared_ptr<Function<1, 0, 2, 1>> map,
+                         const Quadrature<1> &quad,
+                         const SafeSTLVector<SafeSTLVector<Index>>& points_map,
+                         vtkPointData* const point_data) const
+{
+  this->template create_point_data<1, 1, 1, 1>(map, quad, points_map, point_data);
+  this->template create_point_data<1, 1, 2, 1>(map, quad, points_map, point_data);
+};
+
+
+
+template <>
+void
+IGAVTK::
+create_point_data<3, 0> (const shared_ptr<Function<3, 0, 3, 1>> map,
+                         const Quadrature<3> &quad,
+                         const SafeSTLVector<SafeSTLVector<Index>>& points_map,
+                         vtkPointData* const point_data) const
+{
+  this->template create_point_data<3, 0, 1, 1>(map, quad, points_map, point_data);
+  this->template create_point_data<3, 0, 3, 1>(map, quad, points_map, point_data);
+};
+
+
+
+template <>
+void
+IGAVTK::
+create_point_data<2, 1> (const shared_ptr<Function<2, 0, 3, 1>> map,
+                         const Quadrature<2> &quad,
+                         const SafeSTLVector<SafeSTLVector<Index>>& points_map,
+                         vtkPointData* const point_data) const
+{
+  this->template create_point_data<2, 1, 1, 1>(map, quad, points_map, point_data);
+  this->template create_point_data<2, 1, 3, 1>(map, quad, points_map, point_data);
+};
+
+
+
+template <>
+void
+IGAVTK::
+create_point_data<1, 2> (const shared_ptr<Function<1, 0, 3, 1>> map,
+                         const Quadrature<1> &quad,
+                         const SafeSTLVector<SafeSTLVector<Index>>& points_map,
+                         vtkPointData* const point_data) const
+{
+  this->template create_point_data<1, 2, 1, 1>(map, quad, points_map, point_data);
+  this->template create_point_data<1, 2, 3, 1>(map, quad, points_map, point_data);
+};
+
+
+
+template <int dim, int codim, int range, int rank>
+void
+IGAVTK::
+create_point_data (const shared_ptr<Function<dim, 0, dim + codim, 1>> mapping,
+                   const Quadrature<dim> &quad,
+                   const SafeSTLVector<SafeSTLVector<Index>>& point_num_map,
+                   vtkPointData* const point_data) const
+{
+  const auto &funcs_map = funcs_container_->template
+    get_functions_associated_to_mapping<dim, codim, range, rank>(mapping);
+
+  using Value = typename Function<dim, codim, range, rank>::Value;
+
+  static constexpr int n_comp = constexpr_pow (range, rank);
+  const Size n_pts = quad.get_num_points();
+  Real tuple[n_comp];
+
+  auto flag = ValueFlags::value | ValueFlags::point;
+  for (const auto& it : funcs_map)
+  {
+    const auto &fun = it.first;
+    const auto &name = it.second;
+
+    const int n_bezier_elements = point_num_map.size ();
+    const vtkIdType n_tuples = n_bezier_elements * n_pts;
+
+    vtkSmartPointer<vtkDoubleArray> arr = vtkSmartPointer<vtkDoubleArray>::New();
+
+    arr->SetName(name.c_str());
+    arr->SetNumberOfComponents(n_comp);
+    arr->SetNumberOfTuples(n_tuples);
+
+    fun->reset(flag, quad);
+
+    auto elem = fun->begin();
+    const auto end = fun->end();
+
+    const auto topology = Topology<dim>();
+    fun->init_cache(elem, topology);
+
+    auto pnm_it = point_num_map.cbegin();
+    std::cout << name << std::endl;
+    for (; elem != end; ++elem, ++pnm_it)
+    {
+      std::cout << "Elem " << elem->get_flat_index () << std::endl;
+      fun->fill_cache(elem, topology, 0);
+
+      auto pnm = pnm_it->cbegin();
+      auto values = elem->template get_values<_Value, dim>(0);
+      Index pt_id = 0;
+      for (const auto& v : values)
+      {
+        this->template tensor_to_tuple<Value>(v, tuple);
+        std::cout << *pnm << " " << pt_id++ << " ";
+        for (int i = 0; i < n_comp; ++i)
+          std::cout << *(tuple+i) << " ";
+        std::cout << std::endl;
+        arr->SetTuple(*pnm++, tuple);
+      }
+    }
+
+    if (point_data->HasArray(name.c_str()));
+    {
+      // TODO: Throw warning.
+    }
+    point_data->AddArray(arr.Get());
+  }
 };

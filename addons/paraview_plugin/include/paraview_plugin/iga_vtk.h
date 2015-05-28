@@ -24,8 +24,10 @@
 #include <igatools/base/config.h>
 #include <igatools/utils/tensor_size.h>
 
+#include <igatools/base/tensor.h>
 #include <igatools/contrib/variant.h>
 #include <memory>
+
 namespace iga
 {
   template<class T> class SafeSTLVector;
@@ -40,6 +42,7 @@ template<class T> class vtkSmartPointer;
 class vtkStructuredGrid;
 class vtkMultiBlockDataSet;
 class vtkIdTypeArray;
+class vtkPointData;
 
 
 class IGAVTK
@@ -193,6 +196,46 @@ private:
                                const iga::TensorSize<dim>& n_points,
                                const bool is_unstructured) const;
 
+  template <int dim, int codim>
+  void
+  create_point_data (const std::shared_ptr<iga::Function<dim, 0, dim + codim, 1>> mapping,
+                     const iga::Quadrature<dim> &quad,
+                     const iga::SafeSTLVector<iga::SafeSTLVector<iga::Index>>& points_map,
+                     vtkPointData* const data) const;
+
+  template <int dim, int codim, int range, int rank>
+  void
+  create_point_data (const std::shared_ptr<iga::Function<dim, 0, dim + codim, 1>> mapping,
+                     const iga::Quadrature<dim> &quad,
+                     const iga::SafeSTLVector<iga::SafeSTLVector<iga::Index>>& point_num_map,
+                     vtkPointData* const data) const;
+
+
+  void
+  inline
+  tensor_to_tuple(const iga::Tdouble t, iga::Real* const tuple, int& pos) const
+  {
+    *(tuple + pos++) = t;
+  }
+
+
+  template <class Tensor>
+  inline
+  void
+  tensor_to_tuple (const Tensor& t, iga::Real* const tuple, int& pos) const
+  {
+    for (int i = 0; i < Tensor::size; ++i)
+      tensor_to_tuple (t[i], tuple, pos);
+  };
+
+  template <class Tensor>
+  inline
+  void
+  tensor_to_tuple (const Tensor& t, iga::Real* const tuple) const
+  {
+    int pos = 0;
+    tensor_to_tuple (t, tuple, pos);
+  };
 };
 
 #endif // IGA_VTK_H_
