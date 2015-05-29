@@ -150,14 +150,6 @@ private:
                                     unsigned int& id) const;
 
   /*
-   * Generates the parametric vtk grids.
-   */
-  template <int dim, int codim>
-  void generate_parametric_mesh_grids (vtkMultiBlockDataSet* const mb,
-                                       unsigned int& id,
-                                       const bool unstructured) const;
-
-  /*
    * Generates the physical vtk grids.
    */
   template <int dim, int codim>
@@ -165,6 +157,14 @@ private:
                                   unsigned int& id,
                                   const bool unstructured,
                                   const bool is_parametric) const;
+
+  /*
+   * Generates the knot mesh vtk grids.
+   */
+  template <int dim, int codim>
+  void generate_knot_mesh_grids (vtkMultiBlockDataSet* const mb,
+                                 unsigned int& id,
+                                 const bool is_parametric) const;
 
   /*
    * Returns the namesof identity and mapped functions from the function

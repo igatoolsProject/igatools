@@ -20,8 +20,6 @@
 
 #include <vtkIgatoolsReader.h>
 
-#include <paraview_plugin/iga_grid_generator.h>
-
 #include <vtkObjectFactory.h>
 #include <vtkInformationVector.h>
 #include <vtkInformation.h>
