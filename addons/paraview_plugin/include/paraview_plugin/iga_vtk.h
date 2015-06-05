@@ -187,6 +187,17 @@ private:
                        const iga::Size& n_bezier_elements);
 
   /*
+   * For the knot lines grid, creates the local to global point connectivity
+   * and the cell ids container needed for defining vtk cells of the grid.
+   */
+  template <int dim>
+  static std::pair<
+    iga::SafeSTLVector<iga::SafeSTLVector<iga::Index>>,
+    vtkSmartPointer<vtkIdTypeArray>>
+  create_knots_grid_connectivity_and_cells (const std::shared_ptr<const iga::CartesianGrid<dim>> grid,
+                                            const iga::TensorSize<dim>& n_points_per_direction);
+
+  /*
    * Creates a map between the number of Bezier element and the number o point
    * inside the element, and the global number of the point in the vtk grid.
    */
