@@ -96,7 +96,7 @@ void print_container(std::shared_ptr<FunctionsContainer> funcs_container)
         auto elem = mapping->begin();
         auto end  = mapping->end();
 
-
+#if 0
         try
         {
             const shared_ptr<IgFunction<2, 0, 2, 1>> ig_fun_ptr = std::dynamic_pointer_cast<IgFunction<2, 0, 2, 1>> (mapping);
@@ -118,7 +118,7 @@ void print_container(std::shared_ptr<FunctionsContainer> funcs_container)
         {
             out << "Catching " << e.what() << endl;
         }
-
+#endif
         out << "Mapping[" << m_counter++ << "]   name= " << name << std::endl;
 
         const auto &funcs_dim_2_codim_0_range_1_rank_1 =
