@@ -87,9 +87,11 @@ public:
   IGAVTK ();
 
   /*
-   * Set the number of visualization elements.
+   * Set the number of visualization elements and the flag for quadratic
+   * elements.
    */
-  void set_number_visualization_elements (const int* const num_visualization_elements);
+  void set_visualization_elements (const int* const num_visualization_elements,
+                                   const bool quadratic_elements);
 
   /*
    * Set the file name and path.
@@ -137,6 +139,11 @@ private:
    * Number of visualization elements per direction.
    */
   iga::TensorSize<3> num_visualization_elements_;
+
+  /*
+   * Flag for the use of quadratic elements.
+   */
+  bool quadratic_elements_;
 
   /*
    * Container for the mapping and field functions.

@@ -63,12 +63,14 @@ set_file (const string& file_name, const string& file_path)
 
 void
 IGAVTK::
-set_number_visualization_elements (const int* const num_visualization_elements)
+set_visualization_elements (const int* const num_visualization_elements,
+                            const bool quadratic_elements)
 {
-
   static const int dim = 3;
   for (int dir = 0; dir < dim; ++dir)
     num_visualization_elements_[dir] = *(num_visualization_elements + dir);
+
+  quadratic_elements_ = quadratic_elements;
 };
 
 
@@ -932,7 +934,6 @@ create_point_data (const shared_ptr<Function<dim, 0, dim + codim, 1>> mapping,
 
       auto pnm = pnm_it->cbegin();
       auto values = elem->template get_values<_Value, dim>(0);
-      Index pt_id = 0;
       for (const auto& v : values)
       {
 //         for (int c = 0; c < n_comp; ++c)

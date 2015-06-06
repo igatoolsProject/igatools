@@ -137,6 +137,17 @@
         -->
       </IntVectorProperty>
 
+      <IntVectorProperty name="QuadraticElements"
+                         command="SetQuadraticElements"
+                         number_of_elements="1"
+                         label="Use quadratic VTK elements"
+                         default_values="0">
+        <BooleanDomain name="bool"/>
+        <Documentation>
+          Activates/deactivates the use of quadratic VTK elements for unstructured grids (ncreation of the parametric mesh geometries.
+        </Documentation>
+      </IntVectorProperty>
+
       <Hints>
         <ReaderFactory extensions="iga"
                        file_description="Igatools File Format" />
