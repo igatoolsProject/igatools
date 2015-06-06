@@ -87,9 +87,9 @@ public:
   IGAVTK ();
 
   /*
-   * Set the number of visualization points.
+   * Set the number of visualization elements.
    */
-  void set_number_visualization_points (const int* const num_visualization_points);
+  void set_number_visualization_elements (const int* const num_visualization_elements);
 
   /*
    * Set the file name and path.
@@ -134,9 +134,9 @@ private:
   std::string file_path_;
 
   /*
-   * Number of visualization points per direction.
+   * Number of visualization elements per direction.
    */
-  iga::TensorSize<3> num_visualization_points_;
+  iga::TensorSize<3> num_visualization_elements_;
 
   /*
    * Container for the mapping and field functions.
@@ -172,6 +172,12 @@ private:
    * container.
    */
   iga::SafeSTLArray<iga::SafeSTLVector<std::string>, 3> get_map_names () const;
+
+  /*
+   * Returns true if the passed mapping is and identity mapping. False elsewhere.
+   */
+  template <int dim, int codim>
+  bool is_identity_mapping (std::shared_ptr<iga::Function<dim, 0, dim+codim, 1>> map) const;
 
   /*
    * Create the cell ids container needed for defining vtk cells.

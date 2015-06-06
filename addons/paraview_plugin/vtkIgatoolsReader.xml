@@ -119,12 +119,12 @@
         -->
       </IntVectorProperty>
 
-      <IntVectorProperty command="SetNumVisualizationPoints"
-                         default_values="2 2 2"
-                         name="Number of visualization points"
+      <IntVectorProperty command="SetNumVisualizationElements"
+                         default_values="1 1 1"
+                         name="Number of VTK cells per Bezier element"
                          number_of_elements="3">
-        <IntRangeDomain name="range" min="2" max="20"/>
-        <Documentation>Set the number of visualization points in each
+        <IntRangeDomain name="range" min="1" max="20"/>
+        <Documentation>Set the number of visualization VTK element in each
           parametric direction for every Bezier element.</Documentation>
         <!--
         <Hints>

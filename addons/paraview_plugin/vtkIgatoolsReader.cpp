@@ -46,9 +46,9 @@ vtkIgatoolsReader::vtkIgatoolsReader()
   this->DebugOn ();
 #endif
 
-  this->NumVisualizationPoints[0] = 2;
-  this->NumVisualizationPoints[1] = 2;
-  this->NumVisualizationPoints[2] = 2;
+  this->NumVisualizationElements[0] = 1;
+  this->NumVisualizationElements[1] = 1;
+  this->NumVisualizationElements[2] = 1;
 
   this->GridType = 0;
   this->ControlMesh = false;
@@ -71,13 +71,13 @@ int vtkIgatoolsReader::RequestInformation(
   vtkDebugMacro (<< "vtkIgatoolsReader RequestInformation: file name"
                  << FileName << "\n");
   vtkDebugMacro (<< "vtkIgatoolsReader RequestInformation: number of "
-                 << "visualization points: "
-                 << NumVisualizationPoints[0] << " "
-                 << NumVisualizationPoints[1] << " "
-                 << NumVisualizationPoints[2] << "\n");
+                 << "visualization elements: "
+                 << NumVisualizationElements[0] << " "
+                 << NumVisualizationElements[1] << " "
+                 << NumVisualizationElements[2] << "\n");
   vtkDebugMacro (<< "vtkIgatoolsReader RequestInformation end\n");
 
-  this->check_number_visualization_points ();
+  this->check_number_visualization_elements ();
 
   vtkInformation* info = outputVector->GetInformationObject(0);
 
@@ -94,27 +94,27 @@ int vtkIgatoolsReader::RequestInformation(
 
 void
 vtkIgatoolsReader::
-check_number_visualization_points ()
+check_number_visualization_elements ()
 {
-  if (NumVisualizationPoints[0] < 2 || NumVisualizationPoints[1] < 2 ||
-      NumVisualizationPoints[2] < 2)
+  if (NumVisualizationElements[0] < 1 || NumVisualizationElements[1] < 1 ||
+      NumVisualizationElements[2] < 1)
   {
-    int* num_points = this->GetNumVisualizationPoints ();
-    vtkWarningMacro (<< "In vtkIgatoolsReader invalid specified number of visualization points "
+    int* num_elements = this->GetNumVisualizationElements ();
+    vtkWarningMacro (<< "In vtkIgatoolsReader invalid specified number of visualization elements "
                      << "per Bezier element (" 
-                     << NumVisualizationPoints[0] << ", "
-                     << NumVisualizationPoints[1] << ", "
-                     << NumVisualizationPoints[2] << "). "
-                     << "All the values must be >=2.\n"
-                     << "The number of points was automatically set to ("
-                     << (num_points[0] > 1 ? num_points[0] : 2) << ", "
-                     << (num_points[1] > 1 ? num_points[1] : 2) << ", "
-                     << (num_points[2] > 1 ? num_points[2] : 2) << ").\n");
-    if (num_points[0] < 2) num_points[0] = 2;
-    if (num_points[1] < 2) num_points[1] = 2;
-    if (num_points[2] < 2) num_points[2] = 2;
+                     << NumVisualizationElements[0] << ", "
+                     << NumVisualizationElements[1] << ", "
+                     << NumVisualizationElements[2] << "). "
+                     << "All the values must be >= 1.\n"
+                     << "The number of elements was automatically set to ("
+                     << (num_elements[0] > 1 ? num_elements[0] : 1) << ", "
+                     << (num_elements[1] > 1 ? num_elements[1] : 1) << ", "
+                     << (num_elements[2] > 1 ? num_elements[2] : 1) << ").\n");
+    if (num_elements[0] < 2) num_elements[0] = 2;
+    if (num_elements[1] < 2) num_elements[1] = 2;
+    if (num_elements[2] < 2) num_elements[2] = 2;
 
-    this->SetNumVisualizationPoints (num_points);
+    this->SetNumVisualizationElements (num_elements);
   }
 };
 
@@ -130,7 +130,7 @@ int vtkIgatoolsReader::RequestData(
   this->get_file_and_path (file_name, file_path);
 
   iga_vtk_.set_file (file_name, file_path);
-  iga_vtk_.set_number_visualization_points (this->GetNumVisualizationPoints ());
+  iga_vtk_.set_number_visualization_elements (this->GetNumVisualizationElements ());
 
   vtkInformation* info = outputVector->GetInformationObject(0);
   vtkDataObject* output = info->Get(vtkDataObject::DATA_OBJECT());
@@ -148,7 +148,6 @@ int vtkIgatoolsReader::RequestData(
     ++num_blocks;
 
   mb->SetNumberOfBlocks(num_blocks);
-  std::cout << "Number of blocks " << num_blocks << std::endl;
 
   for (unsigned int i = 0; i < num_blocks; ++i)
     mb->SetBlock(i, vtkSmartPointer<vtkMultiBlockDataSet>::New ());

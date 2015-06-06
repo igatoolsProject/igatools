@@ -44,10 +44,10 @@ public:
   vtkGetStringMacro(FileName);
 
   // Description:
-  // Set the number of visualization points per direction for each Bezier
+  // Set the number of VTK visualization elements per direction for each Bezier
   // element.
-  vtkSetVector3Macro (NumVisualizationPoints, int);
-  vtkGetVectorMacro  (NumVisualizationPoints, int, 3);
+  vtkSetVector3Macro (NumVisualizationElements, int);
+  vtkGetVectorMacro  (NumVisualizationElements, int, 3);
 
   /*
    * Set/Get Grid type
@@ -128,9 +128,9 @@ private:
   void get_file_and_path (std::string& file_name, std::string& file_path);
 
   /*
-   * Check number of visualization points.
+   * Check number of visualization element.
    */
-  void check_number_visualization_points ();
+  void check_number_visualization_elements ();
 
   /*
    * Grid type.
@@ -161,7 +161,11 @@ private:
    * File name variable.
    */
   char* FileName = NULL;
-  int   NumVisualizationPoints[3];
+
+  /*
+   * Number of VTK visualization elements per direction per Bezier element.
+   */
+  int   NumVisualizationElements[3];
 
   /*
    * Iga vtk object.

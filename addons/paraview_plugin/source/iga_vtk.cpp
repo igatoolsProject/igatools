@@ -63,12 +63,12 @@ set_file (const string& file_name, const string& file_path)
 
 void
 IGAVTK::
-set_number_visualization_points (const int* const num_visualization_points)
+set_number_visualization_elements (const int* const num_visualization_elements)
 {
 
   static const int dim = 3;
   for (int dir = 0; dir < dim; ++dir)
-    num_visualization_points_[dir] = *(num_visualization_points + dir);
+    num_visualization_elements_[dir] = *(num_visualization_elements + dir);
 };
 
 
@@ -93,12 +93,12 @@ generate_vtk_grids(const int& grid_type,
 {
   Assert (file_name_ != "", ExcMessage ("Not specified file name."));
   Assert (file_path_ != "", ExcMessage ("Not specified file path."));
-  Assert (num_visualization_points_[0] > 1,
-          ExcMessage ("Number of visualization points must be > 1 in every direction."));
-  Assert (num_visualization_points_[1] > 1,
-          ExcMessage ("Number of visualization points must be > 1 in every direction."));
-  Assert (num_visualization_points_[2] > 1,
-          ExcMessage ("Number of visualization points must be > 1 in every direction."));
+  Assert (num_visualization_elements_[0] > 0,
+          ExcMessage ("Number of visualization elements must be > 0 in every direction."));
+  Assert (num_visualization_elements_[1] > 0,
+          ExcMessage ("Number of visualization elements must be > 0 in every direction."));
+  Assert (num_visualization_elements_[2] > 0,
+          ExcMessage ("Number of visualization elements must be > 0 in every direction."));
 
   const bool unstructured = grid_type == 0;
 
@@ -242,7 +242,7 @@ generate_solid_mesh_grids(vtkMultiBlockDataSet* const mb,
       TensorSize<dim> n_points;
       for (int dir = 0; dir < dim; ++dir)
       {
-        n_points[dir] = num_visualization_points_[dir];
+        n_points[dir] = num_visualization_elements_[dir] + 1;
         Assert (n_points[dir] > 1, ExcMessage ("Wrong number of visualization points."));
       }
       QUniform<dim> quad (n_points);
@@ -298,7 +298,7 @@ generate_solid_mesh_grids(vtkMultiBlockDataSet* const mb,
         vtkSmartPointer<vtkCellArray> cells = vtkSmartPointer<vtkCellArray>::New();
         int n_cells_per_bezier = 1;
         for (int dir = 0; dir < dim; ++dir)
-          n_cells_per_bezier *= num_visualization_points_[dir] - 1;
+          n_cells_per_bezier *= num_visualization_elements_[dir];
         const int n_total_cells = n_bezier_elements * n_cells_per_bezier;
 
         const auto cell_ids = IGAVTK::create_vtu_cell_ids<dim>
@@ -325,14 +325,14 @@ generate_solid_mesh_grids(vtkMultiBlockDataSet* const mb,
 
         const auto grid_elem = mapping->get_grid()->get_num_intervals ();
         if (dim == 1)
-          grid->SetDimensions(num_visualization_points_[0] * grid_elem[0], 1, 1);
+          grid->SetDimensions((num_visualization_elements_[0] + 1) * grid_elem[0], 1, 1);
         else if (dim == 2)
-          grid->SetDimensions(num_visualization_points_[0] * grid_elem[0],
-                              num_visualization_points_[1] * grid_elem[1], 1);
+          grid->SetDimensions((num_visualization_elements_[0] + 1) * grid_elem[0],
+                              (num_visualization_elements_[1] + 1) * grid_elem[1], 1);
         else if (dim == 3)
-          grid->SetDimensions(num_visualization_points_[0] * grid_elem[0],
-                              num_visualization_points_[1] * grid_elem[1],
-                              num_visualization_points_[2] * grid_elem[2]);
+          grid->SetDimensions((num_visualization_elements_[0] + 1) * grid_elem[0],
+                              (num_visualization_elements_[1] + 1) * grid_elem[1],
+                              (num_visualization_elements_[2] + 1) * grid_elem[2]);
 
         grid->SetPoints(points);
         mb->SetBlock (id, grid);
@@ -367,7 +367,7 @@ generate_knot_mesh_grids(vtkMultiBlockDataSet* const mb,
 
   SafeSTLArray<shared_ptr<Quadrature<1>>, dim> quadratures;
   for (int dir = 0; dir < dim; ++dir)
-    quadratures[dir] = QUniform<1>::create (num_visualization_points_[dir]);
+    quadratures[dir] = QUniform<1>::create (num_visualization_elements_[dir] + 1);
 
   SafeSTLVector<Real> zero_vec{{0.0}};
   SafeSTLVector<Real> one_vec{{1.0}};
@@ -398,7 +398,7 @@ generate_knot_mesh_grids(vtkMultiBlockDataSet* const mb,
           n_knot_lines *= (n_intervals[dir2] + 1);
         }
       }
-      const Size n_cells_in_knot_line = n_intervals[dir] * (num_visualization_points_[dir] - 1);
+      const Size n_cells_in_knot_line = n_intervals[dir] * (num_visualization_elements_[dir]);
       n_vtk_cells += n_knot_lines * n_cells_in_knot_line;
       n_vtk_points += n_knot_lines * (n_cells_in_knot_line + 1);
     }
