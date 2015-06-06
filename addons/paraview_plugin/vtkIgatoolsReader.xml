@@ -69,6 +69,17 @@
         </Documentation>
       </IntVectorProperty>
 
+      <IntVectorProperty name="KnotMesh"
+                         command="SetKnotMesh"
+                         number_of_elements="1"
+                         label="Create the knot mesh"
+                         default_values="0">
+        <BooleanDomain name="bool"/>
+        <Documentation>
+          Activates/deactivates the creation of the knot mesh geometry.
+        </Documentation>
+      </IntVectorProperty>
+
       <IntVectorProperty name="ParametricMesh"
                          command="SetParametricMesh"
                          number_of_elements="1"
@@ -89,6 +100,23 @@
         <Documentation>
           Activates/deactivates the creation of the physical mesh geometries.
         </Documentation>
+        <!--
+        <Hints>
+          <PropertyWidgetDecorator type="GenericDecorator"
+                                   mode="visibility"
+                                   property="PhysicalMesh"
+                                   inverse="1"
+                                   value="1" />
+        -->
+          <!-- show this widget when GlyphMode==0 -->
+<!--          <PropertyWidgetDecorator type="GenericDecorator"
+                                   mode="visibility"
+                                   property="GridType"
+                                   value="2" /> -->
+          <!-- show this widget when GlyphMode==2 -->
+        <!--
+        </Hints>
+        -->
       </IntVectorProperty>
 
       <IntVectorProperty command="SetNumVisualizationPoints"

@@ -66,6 +66,14 @@ public:
   vtkGetMacro(ControlMesh, bool);
 
   /*
+   * Set/Get Knot Mesh creation flag.
+   *  - true:  create the mesh.
+   *  - false: do not create the mesh.
+   */
+  vtkSetMacro(KnotMesh, bool);
+  vtkGetMacro(KnotMesh, bool);
+
+  /*
    * Set/Get Parametric Mesh creation flag.
    *  - true:  create the mesh.
    *  - false: do not create the mesh.
@@ -133,6 +141,11 @@ private:
    * Control mesh creation flag.
    */
   bool ControlMesh;
+
+  /*
+   * Knot mesh creation flag.
+   */
+  bool KnotMesh;
 
   /*
    * Parametric mesh creation flag.

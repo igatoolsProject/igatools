@@ -52,6 +52,7 @@ vtkIgatoolsReader::vtkIgatoolsReader()
 
   this->GridType = 0;
   this->ControlMesh = false;
+  this->KnotMesh = false;
   this->ParametricMesh = false;
   this->PhysicalMesh = false;
 
@@ -139,12 +140,15 @@ int vtkIgatoolsReader::RequestData(
   int num_blocks = 0;
   if (this->GetControlMesh())
     ++num_blocks;
+  if (this->GetKnotMesh())
+    ++num_blocks;
   if (this->GetParametricMesh())
     ++num_blocks;
   if (this->GetPhysicalMesh())
     ++num_blocks;
 
   mb->SetNumberOfBlocks(num_blocks);
+  std::cout << "Number of blocks " << num_blocks << std::endl;
 
   for (unsigned int i = 0; i < num_blocks; ++i)
     mb->SetBlock(i, vtkSmartPointer<vtkMultiBlockDataSet>::New ());
@@ -152,6 +156,8 @@ int vtkIgatoolsReader::RequestData(
   unsigned int index = 0;
   if (this->GetControlMesh())
     mb->GetMetaData(index++)->Set(vtkCompositeDataSet::NAME(), "Control mesh");
+  if (this->GetKnotMesh())
+    mb->GetMetaData(index++)->Set(vtkCompositeDataSet::NAME(), "Knot mesh");
   if (this->GetParametricMesh())
     mb->GetMetaData(index++)->Set(vtkCompositeDataSet::NAME(), "Parametric mesh");
   if (this->GetPhysicalMesh())
@@ -160,6 +166,7 @@ int vtkIgatoolsReader::RequestData(
   iga_vtk_.parse_file ();
   iga_vtk_.generate_vtk_grids (this->GetGridType(),
                                this->GetControlMesh(),
+                               this->GetKnotMesh(),
                                this->GetParametricMesh(),
                                this->GetPhysicalMesh(),
                                mb);

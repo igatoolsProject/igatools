@@ -117,6 +117,7 @@ public:
    */
   void generate_vtk_grids(const int& grid_type,
                           const bool& create_control_mesh,
+                          const bool& create_knot_mesh,
                           const bool& create_parametric_mesh,
                           const bool& create_physical_mesh,
                           vtkMultiBlockDataSet* const mb) const;
@@ -185,17 +186,6 @@ private:
   static vtkSmartPointer<vtkIdTypeArray>
   create_vtu_cell_ids (const iga::TensorSize<dim>& n_points_per_direction,
                        const iga::Size& n_bezier_elements);
-
-  /*
-   * For the knot lines grid, creates the local to global point connectivity
-   * and the cell ids container needed for defining vtk cells of the grid.
-   */
-  template <int dim>
-  static std::pair<
-    iga::SafeSTLVector<iga::SafeSTLVector<iga::Index>>,
-    vtkSmartPointer<vtkIdTypeArray>>
-  create_knots_grid_connectivity_and_cells (const std::shared_ptr<const iga::CartesianGrid<dim>> grid,
-                                            const iga::TensorSize<dim>& n_points_per_direction);
 
   /*
    * Creates a map between the number of Bezier element and the number o point
