@@ -141,7 +141,7 @@
                          command="SetQuadraticElements"
                          number_of_elements="1"
                          label="Use quadratic VTK elements"
-                         default_values="0">
+                         default_values="1">
         <BooleanDomain name="bool"/>
         <Documentation>
           Activates/deactivates the use of quadratic VTK elements for unstructured grids (ncreation of the parametric mesh geometries.

@@ -367,14 +367,18 @@ generate_knot_mesh_grids(vtkMultiBlockDataSet* const mb,
 
   AssertThrow (dim != 1, ExcNotImplemented());
 
+  const Size n_points_per_single_cell = quadratic_elements_ ? 3 : 2;
+  const SafeSTLVector<int> vtk_line_connectivity = quadratic_elements_ ?
+    SafeSTLVector<int>({{0, 2, 1}}) : SafeSTLVector<int>({{0, 1}});
+
+
   SafeSTLArray<shared_ptr<Quadrature<1>>, dim> quadratures;
   for (int dir = 0; dir < dim; ++dir)
-    quadratures[dir] = QUniform<1>::create (num_visualization_elements_[dir] + 1);
+    quadratures[dir] = QUniform<1>::create
+      (num_visualization_elements_[dir] * (n_points_per_single_cell - 1) + 1);
 
   SafeSTLVector<Real> zero_vec{{0.0}};
   SafeSTLVector<Real> one_vec{{1.0}};
-
-  const Size n_points_per_single_cell = 2;
 
   for (const auto &m : mappings)
   {
@@ -400,9 +404,9 @@ generate_knot_mesh_grids(vtkMultiBlockDataSet* const mb,
           n_knot_lines *= (n_intervals[dir2] + 1);
         }
       }
-      const Size n_cells_in_knot_line = n_intervals[dir] * (num_visualization_elements_[dir]);
+      const Size n_cells_in_knot_line = n_intervals[dir] * num_visualization_elements_[dir];
       n_vtk_cells += n_knot_lines * n_cells_in_knot_line;
-      n_vtk_points += n_knot_lines * (n_cells_in_knot_line + 1);
+      n_vtk_points += n_knot_lines * (n_cells_in_knot_line * (n_points_per_single_cell - 1) + 1);
     }
 
     vtkSmartPointer<vtkPoints> vtk_points = vtkSmartPointer<vtkPoints>::New();
@@ -435,7 +439,7 @@ generate_knot_mesh_grids(vtkMultiBlockDataSet* const mb,
       InterGridMap elem_map;
       const auto &sub_grid = cartesian_grid->template get_sub_grid<dim-1>(face_id, elem_map);
       const auto &face_coords_tensor = sub_grid->get_knot_coordinates();
-      const auto &face_coords = face_coords_tensor.get_flat_cartesian_product();
+      const Size n_pts_face = face_coords_tensor.flat_size();
 
       const auto &quad_dir = quadratures[dir];
       TensorSize<dim> n_quad_points(1);
@@ -445,11 +449,10 @@ generate_knot_mesh_grids(vtkMultiBlockDataSet* const mb,
       quad_points_1d.copy_data_direction(dir, quad_dir->get_coords_direction(0));
 
       // Iterating along every knot coordinates of the face
-      Index flat_id = 0;
       TensorIndex<dim> elem_t_id(0);
-      for (const auto &cpm : face_coords)
+      for (int i_pt = 0; i_pt < n_pts_face; ++i_pt)
       {
-        const auto t_id_face = face_coords_tensor.flat_to_tensor(flat_id++);
+        const auto t_id_face = face_coords_tensor.flat_to_tensor(i_pt);
         auto ad = active_directions.cbegin();
         for (const auto &t : t_id_face)
         {
@@ -484,19 +487,21 @@ generate_knot_mesh_grids(vtkMultiBlockDataSet* const mb,
             for (int dir2 = 0; dir2 < dim; ++dir2)
               point_tmp[dir2] = pp[dir2];
             vtk_points->SetPoint (vtk_pt_id++, point_tmp);
-          }
+          } // pp
           --vtk_pt_id;
 
-          for (int c_id = 0; c_id < physical_points.get_num_points()-1;  ++c_id,
+          for (int c_id = 0; c_id < num_visualization_elements_[dir];  ++c_id,
                 vtk_pt_id_0 += (n_points_per_single_cell-1))
           {
-            for (int i = 0; i < n_points_per_single_cell; ++i)
-              tuple[i+1] = vtk_pt_id_0 + i;
+            Index id = 1;
+            for (const auto &c : vtk_line_connectivity)
+              tuple[id++] = vtk_pt_id_0 + c;
+
             vtk_cell_ids->SetTupleValue(vtk_tuple_id++, tuple);
-          }
-        }
+          } // c_id
+        } // itv
         ++vtk_pt_id;
-      } // face_coords
+      } // i_pt
 
     } // dir
 
@@ -508,7 +513,7 @@ generate_knot_mesh_grids(vtkMultiBlockDataSet* const mb,
     vtkSmartPointer<vtkCellArray> vtk_cells = vtkSmartPointer<vtkCellArray>::New();
     vtk_cells->SetCells (n_vtk_cells, vtk_cell_ids);
     grid->Allocate(vtk_cells->GetNumberOfCells (), 0);
-    const int vtk_enum_type = VTK_LINE;
+    const int vtk_enum_type = quadratic_elements_ ? VTK_QUADRATIC_EDGE : VTK_LINE;
     grid->SetCells(vtk_enum_type, vtk_cells);
 
     mb->SetBlock (id, grid);
