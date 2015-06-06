@@ -23,23 +23,23 @@
 
 #include <igatools/base/config.h>
 #include <igatools/utils/tensor_size.h>
-
 #include <igatools/base/tensor.h>
-#include <igatools/contrib/variant.h>
-#include <memory>
 
 
 template<class T> class vtkSmartPointer;
 class vtkMultiBlockDataSet;
-class vtkIdTypeArray;
 class vtkPointData;
+class vtkPoints;
+class vtkStructuredGrid;
+class vtkUnstructuredGrid;
+class vtkCellArray;
 
 
 IGA_NAMESPACE_OPEN
 
 template <int dim> class Quadrature;
 template <int dim> class CartesianGrid;
-template <int dim, int codim> class Mapping;
+template <int dim> class TensorSize;
 template <int dim, int codim, int range, int rank> class Function;
 class FunctionsContainer;
 
@@ -92,10 +92,10 @@ public:
 
   /*
    * Set the number of visualization elements and the flag for quadratic
-   * elements.
+   * cells.
    */
   void set_visualization_element_properties (const int* const num_visualization_elements,
-                                             const bool quadratic_elements,
+                                             const bool quadratic_cells,
                                              const int& grid_type);
 
   /*
@@ -168,7 +168,7 @@ private:
   /*
    * Flag for the use of quadratic elements.
    */
-  bool quadratic_elements_;
+  bool quadratic_cells_;
 
   /*
    * Flag for the use of VTK unstructured grids.
@@ -210,12 +210,6 @@ private:
                            vtkMultiBlockDataSet* const vtk_block) const;
 
   /*
-   * Returns the namesof identity and mapped functions from the function
-   * container.
-   */
-  SafeSTLArray<SafeSTLVector<std::string>, 3> get_map_names () const;
-
-  /*
    * Returns the number of identity functions (first entry of the array),
    * not identity functions (second entry in the array and ig function functions
    * (third entry).
@@ -226,19 +220,37 @@ private:
    * Create the cell ids container needed for defining vtk cells.
    */
   template <int dim>
-  static vtkSmartPointer<vtkIdTypeArray>
-  create_vtu_cell_ids (const TensorSize<dim>& n_points_per_direction,
-                       const Size& n_bezier_elements);
+  static vtkSmartPointer<vtkCellArray>
+  create_cells_solid_vtu_grid (const TensorSize<dim> &n_visualization_elements,
+                               const Size &n_bezier_elements,
+                               const bool quadratic_cells);
 
   /*
-   * Creates a map between the number of Bezier element and the number o point
-   * inside the element, and the global number of the point in the vtk grid.
+   * Creates a VTK unstructured grid for the solid block.
    */
-  template <int dim>
-  SafeSTLVector<SafeSTLVector<Index>>
-  create_points_numbering_map (const std::shared_ptr<const CartesianGrid<dim>> grid,
-                               const TensorSize<dim>& n_points,
-                               const bool is_unstructured) const;
+  template <int dim, int codim>
+  static vtkSmartPointer<vtkUnstructuredGrid>
+  create_solid_vtu_grid(const MapFunPtr_<dim, codim> mapping,
+                        const TensorSize<dim> &n_vis_elements,
+                        const bool quadratic_cells);
+
+  /*
+   * Creates a VTK structured grid for the solid block.
+   */
+  template <int dim, int codim>
+  static vtkSmartPointer<vtkStructuredGrid>
+  create_solid_vts_grid(const MapFunPtr_<dim, codim> mapping,
+                        const TensorSize<dim> &n_vis_elements);
+
+  /*
+   * Creates a the points for the solid VTK grid.
+   */
+  template <int dim, int codim>
+  static vtkSmartPointer<vtkPoints>
+  create_points_solid_vtk_grid(const MapFunPtr_<dim, codim> mapping,
+                               const TensorSize<dim> &n_vis_elements,
+                               const bool is_structured,
+                               const bool is_quadratic);
 
   template <int dim, int codim>
   void
@@ -255,12 +267,27 @@ private:
                      vtkPointData* const data) const;
 
   /*
-   * Create the quadratures for VTK quadratic elements.
+   * Create the quadratures for VTK quadratic cells.
    */
   template <int dim>
   static std::shared_ptr<Quadrature<dim>>
   create_visualization_quadrature (const TensorSize<dim>& n_elements_per_direction,
                                    const bool is_quadratic);
+
+  /*
+   * Creates the mapping between the number of the points local to the element
+   * and the global points in the VTK grid.
+   * It also returns the mask for choosing the points in the element.
+   */
+  template <int dim>
+  static void
+  create_points_numbering_map (const std::shared_ptr<const CartesianGrid<dim>> grid,
+                               const std::shared_ptr<Quadrature<dim>> quad,
+                               const bool is_structured,
+                               const bool is_quadratic,
+                               SafeSTLVector<SafeSTLVector<Index>> &points_map,
+                               SafeSTLVector<Index> &points_mask,
+                               Size &n_total_points);
 
 
   void

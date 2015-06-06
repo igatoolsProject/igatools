@@ -45,6 +45,13 @@ IGA_NAMESPACE_OPEN
 
 IGAVTK::
 IGAVTK ()
+  :
+  file_name_(),
+  file_path_(),
+  num_visualization_elements_(TensorSize<3>(1)),
+  quadratic_cells_(false),
+  unstructured_grid_(true),
+  funcs_container_(std::make_shared<FunctionsContainer>())
 {};
 
 
@@ -63,14 +70,13 @@ set_file (const string& file_name, const string& file_path)
 void
 IGAVTK::
 set_visualization_element_properties (const int* const num_visualization_elements,
-                                      const bool quadratic_elements,
+                                      const bool quadratic_cells,
                                       const int& grid_type)
 {
-  static const int dim = 3;
-  for (int dir = 0; dir < dim; ++dir)
+  for (int dir = 0; dir < num_visualization_elements_.size(); ++dir)
     num_visualization_elements_[dir] = *(num_visualization_elements + dir);
 
-  quadratic_elements_ = quadratic_elements;
+  quadratic_cells_ = quadratic_cells;
 
   unstructured_grid_ = grid_type == 0;
 };
@@ -98,11 +104,14 @@ generate_vtk_grids(const bool& create_control_mesh,
   Assert (file_path_ != "", ExcMessage ("Not specified file path."));
 
   Assert (num_visualization_elements_[0] > 0,
-          ExcMessage ("Number of visualization elements must be > 0 in every direction."));
+          ExcMessage ("Number of visualization elements must be > 0 in every "
+                      "direction."));
   Assert (num_visualization_elements_[1] > 0,
-          ExcMessage ("Number of visualization elements must be > 0 in every direction."));
+          ExcMessage ("Number of visualization elements must be > 0 in every "
+                      "direction."));
   Assert (num_visualization_elements_[2] > 0,
-          ExcMessage ("Number of visualization elements must be > 0 in every direction."));
+          ExcMessage ("Number of visualization elements must be > 0 in every "
+                      "direction."));
 
   const auto n_functions = this->get_number_functions();
   const Size &n_identity_funcs = n_functions[0];
@@ -285,24 +294,145 @@ generate_solid_mesh_grids(const MapFunPtr_<dim, codim> mapping,
                           const Index& vtk_block_id,
                           vtkMultiBlockDataSet* const vtk_block) const
 {
-  vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
-
-  TensorSize<dim> n_quad_elements;
-  TensorSize<dim> n_quad_points;
+  TensorSize<dim> n_vis_elements;
   for (int dir = 0; dir < dim; ++dir)
+    n_vis_elements[dir] = num_visualization_elements_[dir];
+
+  if (unstructured_grid) // VTK unstructured grid.
   {
-    n_quad_elements[dir] = num_visualization_elements_[dir];
-    n_quad_points[dir] = num_visualization_elements_[dir] + 1;
+    const auto grid =
+      this->create_solid_vtu_grid<dim, codim>(mapping, n_vis_elements,
+                                              quadratic_cells_);
+    vtk_block->SetBlock (vtk_block_id, grid);
   }
+  else // VTK structured grid.
+  {
+    const auto grid =
+        this->create_solid_vts_grid<dim, codim>(mapping, n_vis_elements);
+    vtk_block->SetBlock (vtk_block_id, grid);
+  }
+};
+
+
+
+template <int dim, int codim>
+vtkSmartPointer<vtkUnstructuredGrid>
+IGAVTK::
+create_solid_vtu_grid(const MapFunPtr_<dim, codim> mapping,
+                      const TensorSize<dim> &n_vis_elements,
+                      const bool quadratic_cells)
+{
+  Assert (mapping != nullptr, ExcNullPtr());
+
+#ifndef NDEBUG
+  for (int dir = 0; dir < dim; ++dir)
+    Assert (n_vis_elements[dir] > 0,
+            ExcMessage ("Number of visualization elements must be > 0 in every "
+                        "direction."));
+#endif
+
+  vtkSmartPointer<vtkUnstructuredGrid> grid =
+    vtkSmartPointer<vtkUnstructuredGrid>::New();
+
+  const auto points =
+    IGAVTK::create_points_solid_vtk_grid<dim, codim>
+      (mapping, n_vis_elements, false, quadratic_cells);
+
+  grid->SetPoints(points);
+
+
+  const Size n_bezier_elements = mapping->get_grid()->get_num_all_elems ();
+  const auto cells = IGAVTK::create_cells_solid_vtu_grid<dim>
+    (n_vis_elements, n_bezier_elements, quadratic_cells);
+
+  grid->Allocate(cells->GetNumberOfCells (), 0);
+  const int vtk_enum_type = quadratic_cells ?
+                              dim == 3 ? VTK_QUADRATIC_HEXAHEDRON :
+                              dim == 2 ? VTK_QUADRATIC_QUAD :
+                                        VTK_QUADRATIC_EDGE
+                            :
+                              dim == 3 ? VTK_HEXAHEDRON :
+                              dim == 2 ? VTK_QUAD :
+                                        VTK_LINE;
+
+  grid->SetCells(vtk_enum_type, cells);
+
+  return grid;
+};
+
+
+
+template <int dim, int codim>
+vtkSmartPointer<vtkStructuredGrid>
+IGAVTK::
+create_solid_vts_grid(const MapFunPtr_<dim, codim> mapping,
+                      const TensorSize<dim> &n_vis_elements)
+{
+  Assert (mapping != nullptr, ExcNullPtr());
+
+#ifndef NDEBUG
+  for (int dir = 0; dir < dim; ++dir)
+    Assert (n_vis_elements[dir] > 0,
+            ExcMessage ("Number of visualization elements must be > 0 in every "
+                        "direction."));
+#endif
+
+  const auto points =
+    IGAVTK::create_points_solid_vtk_grid<dim, codim>(mapping, n_vis_elements,
+                                                     true, false);
+
+  vtkSmartPointer<vtkStructuredGrid> vts_grid =
+      vtkSmartPointer<vtkStructuredGrid>::New();
+
+  const auto n_intervals = mapping->get_grid()->get_num_intervals();
+  int grid_dim[3] = {1, 1, 1};
+  for (int dir = 0; dir < dim; ++dir)
+    grid_dim[dir] = (n_vis_elements[dir] + 1) * n_intervals[dir];
+  vts_grid->SetDimensions(grid_dim[0], grid_dim[1], grid_dim[2]);
+
+  vts_grid->SetPoints(points);
+
+  return vts_grid;
+};
+
+
+
+template <int dim, int codim>
+vtkSmartPointer<vtkPoints>
+IGAVTK::
+create_points_solid_vtk_grid(const MapFunPtr_<dim, codim> mapping,
+                             const TensorSize<dim> &n_vis_elements,
+                             const bool structured_grid,
+                             const bool quadratic_cells)
+{
+  Assert (mapping != nullptr, ExcNullPtr());
+
+  Assert (!(structured_grid && quadratic_cells),
+          ExcMessage("Not possible to create quadratic cells in VTK structured "
+                     "grid."));
+
+#ifndef NDEBUG
+  for (int dir = 0; dir < dim; ++dir)
+    Assert (n_vis_elements[dir] > 0,
+            ExcMessage ("Number of visualization elements must be > 0 in every "
+                        "direction."));
+#endif
+
   const auto quad = IGAVTK::create_visualization_quadrature<dim>
-    (n_quad_elements, quadratic_elements_);
+      (n_vis_elements, false);
+  const auto cartesian_grid = mapping->get_grid();
 
-  const int n_bezier_elements = mapping->get_grid()->get_num_all_elems();
-  const int n_points_per_bezier_element = quad->get_num_points();
-  const int total_num_points = n_points_per_bezier_element * n_bezier_elements;
+  SafeSTLVector<SafeSTLVector<Index>> points_map;
+  SafeSTLVector<Index> points_mask;
 
-  // Setting the points --------------------------------------------------//
-  points->SetNumberOfPoints (total_num_points);
+  Size n_total_points{0};
+  IGAVTK::create_points_numbering_map<dim>(cartesian_grid, quad,
+      structured_grid, quadratic_cells, points_map, points_mask, n_total_points);
+
+  vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
+  points->SetNumberOfPoints (n_total_points);
+
+  double point_tmp[3] = {0.0, 0.0, 0.0};
 
   auto flag = ValueFlags::point | ValueFlags::value;
   mapping->reset(flag, *quad);
@@ -313,77 +443,23 @@ generate_solid_mesh_grids(const MapFunPtr_<dim, codim> mapping,
   const auto topology = Topology<dim>();
   mapping->init_cache(elem, topology);
 
-  const auto point_num_map =
-    create_points_numbering_map(mapping->get_grid(),
-                                n_quad_points, unstructured_grid);
-
-  Assert (point_num_map.size() == n_bezier_elements,
-          ExcDimensionMismatch(point_num_map.size(), n_bezier_elements));
-#ifndef NDEBUG
-  for (const auto& it : point_num_map)
-    Assert (it.size() == n_points_per_bezier_element,
-          ExcDimensionMismatch(it.size(), n_points_per_bezier_element));
-#endif
-
-  double point_tmp[3] = {0.0, 0.0, 0.0};
-  auto pnm_it = point_num_map.cbegin();
-  for (; elem != end; ++elem, ++pnm_it)
+  auto pm_el = points_map.cbegin();
+  for (; elem != end; ++elem, ++pm_el)
   {
     mapping->fill_cache(elem, topology, 0);
 
     auto element_vertices_tmp = elem->template get_values<_Value, dim>(0);
-    auto pnm = pnm_it->cbegin();
-    for (const auto& p : element_vertices_tmp)
+    auto pm = pm_el->cbegin();
+    for (const auto &mask : points_mask)
     {
+      const auto &point = element_vertices_tmp[mask];
       for (int dir = 0; dir < dim ; ++dir)
-        point_tmp[dir] = p[dir];
-      points->SetPoint (*pnm++, point_tmp);
+        point_tmp[dir] = point[dir];
+      points->SetPoint (*pm++, point_tmp);
     }
   }
-  //----------------------------------------------------------------------//
 
-  if (unstructured_grid) // Creating an unstuctured grid.
-  {
-    // Setting the cells -------------------------------------------------//
-    vtkSmartPointer<vtkCellArray> cells = vtkSmartPointer<vtkCellArray>::New();
-    int n_cells_per_bezier = 1;
-    for (int dir = 0; dir < dim; ++dir)
-      n_cells_per_bezier *= num_visualization_elements_[dir];
-    const int n_total_cells = n_bezier_elements * n_cells_per_bezier;
-
-    const auto cell_ids = IGAVTK::create_vtu_cell_ids<dim>
-      (n_quad_points, n_bezier_elements);
-    cells->SetCells (n_total_cells , cell_ids);
-
-    //--------------------------------------------------------------------//
-    vtkSmartPointer<vtkUnstructuredGrid> grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
-    grid->Allocate(cells->GetNumberOfCells (), 0);
-    grid->SetPoints(points);
-    const int vtk_enum_type = dim == 3 ? VTK_HEXAHEDRON :
-                              dim == 2 ? VTK_QUAD :
-                                        VTK_LINE;
-    grid->SetCells(vtk_enum_type, cells);
-
-    vtk_block->SetBlock (vtk_block_id, grid);
-  }
-  else  // Creating a stuctured grid.
-  {
-    vtkSmartPointer<vtkStructuredGrid> grid = vtkSmartPointer<vtkStructuredGrid>::New();
-
-    const auto grid_elem = mapping->get_grid()->get_num_intervals ();
-    if (dim == 1)
-      grid->SetDimensions((num_visualization_elements_[0] + 1) * grid_elem[0], 1, 1);
-    else if (dim == 2)
-      grid->SetDimensions((num_visualization_elements_[0] + 1) * grid_elem[0],
-                          (num_visualization_elements_[1] + 1) * grid_elem[1], 1);
-    else if (dim == 3)
-      grid->SetDimensions((num_visualization_elements_[0] + 1) * grid_elem[0],
-                          (num_visualization_elements_[1] + 1) * grid_elem[1],
-                          (num_visualization_elements_[2] + 1) * grid_elem[2]);
-
-    grid->SetPoints(points);
-    vtk_block->SetBlock (vtk_block_id, grid);
-  }
+  return points;
 };
 
 
@@ -395,10 +471,12 @@ generate_knot_mesh_grids(const MapFunPtr_<dim, codim> mapping,
                          const Index& vtk_block_id,
                          vtkMultiBlockDataSet* const vtk_block) const
 {
+  // TODO: improve performance.
+
   AssertThrow (dim != 1, ExcNotImplemented());
 
-  const Size n_points_per_single_cell = quadratic_elements_ ? 3 : 2;
-  const SafeSTLVector<int> vtk_line_connectivity = quadratic_elements_ ?
+  const Size n_points_per_single_cell = quadratic_cells_ ? 3 : 2;
+  const SafeSTLVector<int> vtk_line_connectivity = quadratic_cells_ ?
     SafeSTLVector<int>({{0, 2, 1}}) : SafeSTLVector<int>({{0, 1}});
 
 
@@ -407,7 +485,7 @@ generate_knot_mesh_grids(const MapFunPtr_<dim, codim> mapping,
   for (int dir = 0; dir < dim; ++dir)
   {
     n_vis_elems[0] = num_visualization_elements_[dir];
-    quadratures[dir] = IGAVTK::create_visualization_quadrature<1>(n_vis_elems, quadratic_elements_);
+    quadratures[dir] = IGAVTK::create_visualization_quadrature<1>(n_vis_elems, quadratic_cells_);
   }
 
   SafeSTLVector<Real> zero_vec{{0.0}};
@@ -538,7 +616,7 @@ generate_knot_mesh_grids(const MapFunPtr_<dim, codim> mapping,
   vtkSmartPointer<vtkCellArray> vtk_cells = vtkSmartPointer<vtkCellArray>::New();
   vtk_cells->SetCells (n_vtk_cells, vtk_cell_ids);
   grid->Allocate(vtk_cells->GetNumberOfCells (), 0);
-  const int vtk_enum_type = quadratic_elements_ ? VTK_QUADRATIC_EDGE : VTK_LINE;
+  const int vtk_enum_type = quadratic_cells_ ? VTK_QUADRATIC_EDGE : VTK_LINE;
   grid->SetCells(vtk_enum_type, vtk_cells);
 
   vtk_block->SetBlock (vtk_block_id, grid);
@@ -618,75 +696,6 @@ parse_file ()
 
 
 
-SafeSTLArray<SafeSTLVector<string>, 3>
-IGAVTK::
-get_map_names () const
-{
-  SafeSTLArray<SafeSTLVector<string>, 3> names;
-  auto& all_names = names[0];
-  auto& parametric_names = names[1];
-  auto& mapped_names = names[2];
-
-  for (const auto& m : funcs_container_->template get_all_mappings<2, 0>())
-  {
-    auto mapping = m.first;
-    auto name    = m.second;
-    if (std::dynamic_pointer_cast<IdentityFunction<2, 2>>(mapping) != nullptr)
-      parametric_names.push_back(name);
-    else
-      mapped_names.push_back(name);
-    all_names.push_back(name);
-  }
-
-  for (const auto& m : funcs_container_->template get_all_mappings<1, 1>())
-  {
-    auto mapping = m.first;
-    auto name    = m.second;
-    if (std::dynamic_pointer_cast<IdentityFunction<1, 2>>(mapping) != nullptr)
-      parametric_names.push_back(name);
-    else
-      mapped_names.push_back(name);
-    all_names.push_back(name);
-  }
-
-  for (const auto& m : funcs_container_->template get_all_mappings<3, 0>())
-  {
-    auto mapping = m.first;
-    auto name    = m.second;
-    if (std::dynamic_pointer_cast<IdentityFunction<3, 3>>(mapping) != nullptr)
-      parametric_names.push_back(name);
-    else
-      mapped_names.push_back(name);
-    all_names.push_back(name);
-  }
-
-  for (const auto& m : funcs_container_->template get_all_mappings<2, 1>())
-  {
-    auto mapping = m.first;
-    auto name    = m.second;
-    if (std::dynamic_pointer_cast<IdentityFunction<2, 3>>(mapping) != nullptr)
-      parametric_names.push_back(name);
-    else
-      mapped_names.push_back(name);
-    all_names.push_back(name);
-  }
-
-  for (const auto& m : funcs_container_->template get_all_mappings<1, 2>())
-  {
-    auto mapping = m.first;
-    auto name    = m.second;
-    if (std::dynamic_pointer_cast<IdentityFunction<1, 3>>(mapping) != nullptr)
-      parametric_names.push_back(name);
-    else
-      mapped_names.push_back(name);
-    all_names.push_back(name);
-  }
-
-  return names;
-};
-
-
-
 SafeSTLArray<Size, 3>
 IGAVTK::
 get_number_functions () const
@@ -752,12 +761,26 @@ get_number_functions () const
 
 
 template <int dim>
-vtkSmartPointer<vtkIdTypeArray>
+vtkSmartPointer<vtkCellArray>
 IGAVTK::
-create_vtu_cell_ids (const TensorSize<dim>& n_points_per_direction,
-                     const Size& n_bezier_elements)
+create_cells_solid_vtu_grid (const TensorSize<dim> &n_vis_elements,
+                             const Size &n_bezier_elements,
+                             const bool quadratic_cells)
 {
+  Assert (!quadratic_cells, ExcNotImplemented());
+#ifndef NDEBUG
+  for (int dir = 0; dir < dim; ++dir)
+    Assert (n_vis_elements[dir] > 0,
+            ExcMessage ("Number of visualization elements must be > 0 in every "
+                        "direction."));
+#endif
+
   vtkSmartPointer<vtkIdTypeArray> cell_ids = vtkSmartPointer<vtkIdTypeArray>::New();
+
+  TensorSize<dim> n_points_per_direction;
+  // TODO: to be modified.
+  for (int dir = 0; dir < dim; ++dir)
+    n_points_per_direction[dir] = n_vis_elements[dir] + 1;
 
   const auto grid = CartesianGrid<dim>::create (n_points_per_direction);
 
@@ -771,7 +794,7 @@ create_vtu_cell_ids (const TensorSize<dim>& n_points_per_direction,
 
   // Building the offsets container. According to the vtk elements connectivity.
   using T_ = SafeSTLArray < SafeSTLArray<int, dim>, n_points_per_single_cell>;
-  const  T_ delta_idx =
+  const T_ delta_idx =
     dim == 1 ? T_({{0},       {1}})                          :   // dim = 1
     dim == 2 ? T_({{0, 0},    {1, 0},    {1, 1},    {0, 1}}) :   // dim = 2
                T_({{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
@@ -819,79 +842,10 @@ create_vtu_cell_ids (const TensorSize<dim>& n_points_per_direction,
     }
   }
 
-  return cell_ids;
-};
+  vtkSmartPointer<vtkCellArray> cells = vtkSmartPointer<vtkCellArray>::New();
+  cells->SetCells (cell_ids->GetNumberOfTuples() , cell_ids);
 
-
-template <int dim>
-SafeSTLVector<SafeSTLVector<Index>>
-IGAVTK::
-create_points_numbering_map (const shared_ptr<const CartesianGrid<dim>> grid,
-                             const TensorSize<dim>& n_pts_per_vtk_elem,
-                             const bool is_unstructured) const
-{
-  const Size num_elems = grid->get_num_all_elems();
-
-  Size n_total_pts_per_element = 1;
-  for (int dir = 0; dir < dim; ++dir)
-    n_total_pts_per_element *= n_pts_per_vtk_elem[dir];
-
-  SafeSTLVector<SafeSTLVector<Index>>
-  points_map (num_elems, SafeSTLVector<Index> (n_total_pts_per_element));
-
-  if (is_unstructured) // Unstructured grid.
-  {
-    Index point_id = 0;
-    for (auto &npm_el : points_map)
-      for (auto &npm : npm_el)
-        npm = point_id++;
-  }
-  else // Structured grid.
-  {
-    TensorSize<dim>  n_pts_per_mesh;   // Number of points per direction of
-                                       // vtk mesh.
-    const auto grid_elems = grid->get_num_intervals();
-
-    for (int dir = 0 ; dir < dim ; ++dir)
-      n_pts_per_mesh[dir] = grid_elems[dir] * n_pts_per_vtk_elem[dir];
-
-    TensorIndex<dim> elem_t_id;        // Tensorial index of the Bezier element.
-    TensorIndex<dim> pt_mesh_t_offset; // Tensorial index of the first point in
-                                       // Bezier element.
-    TensorIndex<dim> pt_mesh_t_id;     // Tensorial index of the point.
-    TensorIndex<dim> pt_elem_t_id;     // Tensorial index of the point referred
-                                       // to the number of points in a
-                                       // single element.
-
-    const auto w_elem_pts = MultiArrayUtils<dim>::compute_weight(n_pts_per_vtk_elem);
-    const auto w_mesh_pts = MultiArrayUtils<dim>::compute_weight(n_pts_per_mesh);
-
-    Index i_el = 0;
-    for (auto &nmp_el : points_map)
-    {
-      // Computing the tensor index of the first point of the element.
-      elem_t_id = grid->flat_to_tensor(i_el++);
-      for (int dir = 0 ; dir < dim ; ++dir)
-        pt_mesh_t_offset[dir] = elem_t_id[dir] * n_pts_per_vtk_elem[dir];
-
-      Index point_id = 0;
-      for (auto &nmp : nmp_el) // Iterating along the points in a Bezier element.
-      {
-        // Computing the tensor index of the point referred to the number
-        // of points into a single Bezier element.
-        pt_elem_t_id = MultiArrayUtils<dim>::flat_to_tensor_index(point_id++, w_elem_pts);
-
-        // Computing the tensor index of the point referred to the number
-        // of points into the whole mesh.
-        for (int dir = 0 ; dir < dim ; ++dir)
-          pt_mesh_t_id[dir] = pt_mesh_t_offset[dir] + pt_elem_t_id[dir];
-
-        nmp = MultiArrayUtils<dim>::tensor_to_flat_index(pt_mesh_t_id, w_mesh_pts);
-      }
-    }
-  }
-
-  return points_map;
+  return cells;
 };
 
 
@@ -1090,6 +1044,115 @@ create_visualization_quadrature (const TensorSize<dim>& n_elements_per_direction
 
   return std::make_shared<Quadrature<dim>> (uniform_quad);
 };
+
+
+
+template <int dim>
+void
+IGAVTK::
+create_points_numbering_map (const shared_ptr<const CartesianGrid<dim>> cartesian_grid,
+                             const shared_ptr<Quadrature<dim>> quad,
+                             const bool is_structured,
+                             const bool is_quadratic,
+                             SafeSTLVector<SafeSTLVector<Index>> &points_map,
+                             SafeSTLVector<Index> &points_mask,
+                             Size &n_total_points)
+{
+  points_map.clear();
+  points_mask.clear();
+
+  const Size n_bezier_elements = cartesian_grid->get_num_all_elems();
+
+  points_map.resize(n_bezier_elements);
+
+  if (is_structured) // VTK structured grid
+  {
+    // Total number of visualization points per Bezier element.
+    const Size n_pts_per_bezier_elem = quad->get_num_points();
+    // Number of visualization points per Bezier element in each direction.
+    const auto n_pts_dir_per_bezier_elem = quad->get_num_coords_direction();
+
+    points_mask.resize(n_pts_per_bezier_elem);
+    Index id = 0;
+    for (auto &pm : points_mask)
+      pm = id++;
+
+    n_total_points = n_pts_per_bezier_elem * n_bezier_elements;
+
+    TensorSize<dim>  n_pts_per_mesh;   // Number of points per direction of
+                                        // VTK structured grid.
+    const auto n_intervals = cartesian_grid->get_num_intervals();
+    for (int dir = 0 ; dir < dim ; ++dir)
+      n_pts_per_mesh[dir] = n_intervals[dir] * n_pts_dir_per_bezier_elem[dir];
+
+    TensorIndex<dim> elem_t_id;        // Tensorial index of the Bezier element.
+    TensorIndex<dim> pt_mesh_t_offset; // Tensorial index of the first point in
+                                        // Bezier element.
+    TensorIndex<dim> pt_mesh_t_id;     // Tensorial index of the point.
+    TensorIndex<dim> pt_elem_t_id;     // Tensorial index of the point referred
+                                        // to the number of points in a
+                                        // single element.
+
+    const auto w_elem_pts = MultiArrayUtils<dim>::compute_weight(n_pts_dir_per_bezier_elem);
+    const auto w_mesh_pts = MultiArrayUtils<dim>::compute_weight(n_pts_per_mesh);
+
+    for (int i_el = 0; i_el < n_bezier_elements; ++i_el)
+    {
+      auto &pmi = points_map[i_el];
+      pmi.resize(n_pts_per_bezier_elem);
+
+      // Computing the tensor index of the first point of the element.
+      elem_t_id = cartesian_grid->flat_to_tensor(i_el);
+      for (int dir = 0 ; dir < dim ; ++dir)
+        pt_mesh_t_offset[dir] = elem_t_id[dir] * n_pts_dir_per_bezier_elem[dir];
+
+      Index point_id = 0;
+      for (auto &pm : pmi)
+      {
+        // Computing the tensor index of the point referred to the number
+        // of points into a single Bezier element.
+        pt_elem_t_id = MultiArrayUtils<dim>::flat_to_tensor_index(point_id++, w_elem_pts);
+
+        // Computing the tensor index of the point referred to the number
+        // of points into the whole mesh.
+        for (int dir = 0 ; dir < dim ; ++dir)
+          pt_mesh_t_id[dir] = pt_mesh_t_offset[dir] + pt_elem_t_id[dir];
+
+        pm = MultiArrayUtils<dim>::tensor_to_flat_index(pt_mesh_t_id, w_mesh_pts);
+      }
+    }
+  }
+  else // VTK unstructured grid
+  {
+    if (is_quadratic) // VTK quadratic elements
+    {
+      AssertThrow(false, ExcNotImplemented());
+
+    } // VTK quadratic elements
+
+    else // VTK linear elements
+    {
+      // Total number of visualization points per Bezier element.
+      const Size n_pts_per_bezier_elem = quad->get_num_points();
+
+      points_mask.resize(n_pts_per_bezier_elem);
+      Index id = 0;
+      for (auto &pm : points_mask)
+        pm = id++;
+
+      Index point_id = 0;
+      for (auto &pm_el : points_map)
+      {
+        pm_el.resize(n_pts_per_bezier_elem);
+        for (auto &pm : pm_el)
+          pm = point_id++;
+      } // points_map
+      n_total_points = point_id;
+
+    } // VTK linear elements
+  }
+};
+
 
 IGA_NAMESPACE_CLOSE
 
