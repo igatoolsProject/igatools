@@ -174,12 +174,6 @@ private:
   iga::SafeSTLArray<iga::SafeSTLVector<std::string>, 3> get_map_names () const;
 
   /*
-   * Returns true if the passed mapping is and identity mapping. False elsewhere.
-   */
-  template <int dim, int codim>
-  bool is_identity_mapping (std::shared_ptr<iga::Function<dim, 0, dim+codim, 1>> map) const;
-
-  /*
    * Create the cell ids container needed for defining vtk cells.
    */
   template <int dim>

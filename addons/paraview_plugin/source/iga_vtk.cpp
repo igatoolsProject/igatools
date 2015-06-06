@@ -174,13 +174,13 @@ generate_vtk_grids(const int& grid_type,
       vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(block_index++));
     Assert (internal_mb != nullptr, ExcNullPtr ());
     internal_mb->SetNumberOfBlocks(n.size ());
-    const bool is_parametric = true;
 
     unsigned int internal_block_index = 0;
     for (const auto& name : n)
       internal_mb->GetMetaData(internal_block_index++)->Set(vtkCompositeDataSet::NAME(), name.c_str());
 
     internal_block_index = 0;
+    const bool is_parametric = true;
     this->generate_solid_mesh_grids<2, 0>(internal_mb, internal_block_index, unstructured, is_parametric);
     this->generate_solid_mesh_grids<1, 1>(internal_mb, internal_block_index, unstructured, is_parametric);
     this->generate_solid_mesh_grids<3, 0>(internal_mb, internal_block_index, unstructured, is_parametric);
@@ -221,7 +221,8 @@ generate_solid_mesh_grids(vtkMultiBlockDataSet* const mb,
                           const bool unstructured,
                           const bool is_parametric) const
 {
-  LogStream out;
+  static const int space_dim = dim + codim;
+
   const auto mappings = funcs_container_->template get_all_mappings<dim, codim>();
 
   for (const auto &m : mappings)
@@ -229,7 +230,7 @@ generate_solid_mesh_grids(vtkMultiBlockDataSet* const mb,
       using Fun_ = Function<dim, 0, dim + codim, 1>;
       shared_ptr<Fun_> mapping = m.first;
 
-      if (is_identity_mapping<dim, codim>(mapping) != is_parametric)
+      if ((std::dynamic_pointer_cast<IdentityFunction<dim, space_dim>>(mapping) != nullptr) != is_parametric)
         continue;
 
       vtkSmartPointer<vtkPoints>   points = vtkSmartPointer<vtkPoints>::New();
@@ -354,6 +355,8 @@ generate_knot_mesh_grids(vtkMultiBlockDataSet* const mb,
                          unsigned int& id,
                          const bool is_parametric) const
 {
+  static const int space_dim = dim + codim;
+
   const auto mappings = funcs_container_->template get_all_mappings<dim, codim>();
 
   using Mapping = Function<dim, 0, dim+codim, 1>;
@@ -376,7 +379,7 @@ generate_knot_mesh_grids(vtkMultiBlockDataSet* const mb,
     using Fun_ = Function<dim, 0, dim + codim, 1>;
     shared_ptr<Fun_> mapping = m.first;
 
-    if (is_identity_mapping<dim, codim>(mapping) != is_parametric)
+    if ((std::dynamic_pointer_cast<IdentityFunction<dim, space_dim>>(mapping) != nullptr) != is_parametric)
       continue;
 
     const auto cartesian_grid = mapping->get_grid();
@@ -597,18 +600,6 @@ parse_file ()
 };
 
 
-template <int dim, int codim>
-bool
-IGAVTK::
-is_identity_mapping (shared_ptr<Function<dim, 0, dim+codim, 1>> map) const
-{
-  using IdFun_ = IdentityFunction<dim, dim+codim>;
-  const auto id_func = std::dynamic_pointer_cast<IdFun_>(map);
-  return (id_func != nullptr);
-};
-
-
-
 
 SafeSTLArray<SafeSTLVector<string>, 3>
 IGAVTK::
@@ -623,7 +614,7 @@ get_map_names () const
   {
     auto mapping = m.first;
     auto name    = m.second;
-    if (this->is_identity_mapping<2, 0>(mapping))
+    if (std::dynamic_pointer_cast<IdentityFunction<2, 2>>(mapping) != nullptr)
       parametric_names.push_back(name);
     else
       mapped_names.push_back(name);
@@ -634,7 +625,7 @@ get_map_names () const
   {
     auto mapping = m.first;
     auto name    = m.second;
-    if (this->is_identity_mapping<1, 1>(mapping))
+    if (std::dynamic_pointer_cast<IdentityFunction<1, 2>>(mapping) != nullptr)
       parametric_names.push_back(name);
     else
       mapped_names.push_back(name);
@@ -645,7 +636,7 @@ get_map_names () const
   {
     auto mapping = m.first;
     auto name    = m.second;
-    if (this->is_identity_mapping<3, 0>(mapping))
+    if (std::dynamic_pointer_cast<IdentityFunction<3, 3>>(mapping) != nullptr)
       parametric_names.push_back(name);
     else
       mapped_names.push_back(name);
@@ -656,7 +647,7 @@ get_map_names () const
   {
     auto mapping = m.first;
     auto name    = m.second;
-    if (this->is_identity_mapping<2, 1>(mapping))
+    if (std::dynamic_pointer_cast<IdentityFunction<2, 3>>(mapping) != nullptr)
       parametric_names.push_back(name);
     else
       mapped_names.push_back(name);
@@ -667,7 +658,7 @@ get_map_names () const
   {
     auto mapping = m.first;
     auto name    = m.second;
-    if (this->is_identity_mapping<1, 2>(mapping))
+    if (std::dynamic_pointer_cast<IdentityFunction<1, 3>>(mapping) != nullptr)
       parametric_names.push_back(name);
     else
       mapped_names.push_back(name);
