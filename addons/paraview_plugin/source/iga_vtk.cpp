@@ -35,13 +35,12 @@
 #include <igatools/functions/functions_container.h>
 #include <igatools/base/quadrature_lib.h>
 
-
-
-using namespace iga;
 using std::string;
 using std::shared_ptr;
 using std::pair;
 
+
+IGA_NAMESPACE_OPEN
 
 
 IGAVTK::
@@ -63,14 +62,17 @@ set_file (const string& file_name, const string& file_path)
 
 void
 IGAVTK::
-set_visualization_elements (const int* const num_visualization_elements,
-                            const bool quadratic_elements)
+set_visualization_element_properties (const int* const num_visualization_elements,
+                                      const bool quadratic_elements,
+                                      const int& grid_type)
 {
   static const int dim = 3;
   for (int dir = 0; dir < dim; ++dir)
     num_visualization_elements_[dir] = *(num_visualization_elements + dir);
 
   quadratic_elements_ = quadratic_elements;
+
+  unstructured_grid_ = grid_type == 0;
 };
 
 
@@ -86,8 +88,7 @@ clear ()
 
 void
 IGAVTK::
-generate_vtk_grids(const int& grid_type,
-                   const bool& create_control_mesh,
+generate_vtk_grids(const bool& create_control_mesh,
                    const bool& create_knot_mesh,
                    const bool& create_parametric_mesh,
                    const bool& create_physical_mesh,
@@ -95,6 +96,7 @@ generate_vtk_grids(const int& grid_type,
 {
   Assert (file_name_ != "", ExcMessage ("Not specified file name."));
   Assert (file_path_ != "", ExcMessage ("Not specified file path."));
+
   Assert (num_visualization_elements_[0] > 0,
           ExcMessage ("Number of visualization elements must be > 0 in every direction."));
   Assert (num_visualization_elements_[1] > 0,
@@ -102,249 +104,174 @@ generate_vtk_grids(const int& grid_type,
   Assert (num_visualization_elements_[2] > 0,
           ExcMessage ("Number of visualization elements must be > 0 in every direction."));
 
-  const bool unstructured = grid_type == 0;
-
-  const auto names = this->get_map_names ();
+  const auto n_functions = this->get_number_functions();
+  const Size &n_identity_funcs = n_functions[0];
+  const Size &n_not_identity_funcs = n_functions[1];
+  const Size &n_ig_funcs = n_functions[2];
 
   unsigned int block_index = 0;
-  if (create_control_mesh)
-  {
-    const auto& n = names[0];
-    vtkMultiBlockDataSet* internal_mb =
-      vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(block_index++));
-    Assert (internal_mb != nullptr, ExcNullPtr ());
-    internal_mb->SetNumberOfBlocks(n.size ());
-
-    unsigned int internal_block_index = 0;
-    for (const auto& name : n)
-      internal_mb->GetMetaData(internal_block_index++)->Set(vtkCompositeDataSet::NAME(), name.c_str());
-
-    internal_block_index = 0;
-    this->generate_control_mesh_grids<2, 0>(internal_mb, internal_block_index);
-    this->generate_control_mesh_grids<1, 1>(internal_mb, internal_block_index);
-    this->generate_control_mesh_grids<3, 0>(internal_mb, internal_block_index);
-    this->generate_control_mesh_grids<2, 1>(internal_mb, internal_block_index);
-    this->generate_control_mesh_grids<1, 2>(internal_mb, internal_block_index);
-  }
-
-  if (create_knot_mesh)
-  {
-    vtkMultiBlockDataSet* internal_mb =
-      vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(block_index++));
-    Assert (internal_mb != nullptr, ExcNullPtr ());
-    int number_blocks = 0;
-    if (create_parametric_mesh)
-      number_blocks += names[1].size();
-    if (create_physical_mesh)
-      number_blocks += names[2].size();
-
-    internal_mb->SetNumberOfBlocks(number_blocks);
-
-    unsigned int internal_block_index = 0;
-    if (create_parametric_mesh)
-      for (const auto& name : names[1])
-        internal_mb->GetMetaData(internal_block_index++)->Set(vtkCompositeDataSet::NAME(), name.c_str());
-
-    if (create_physical_mesh)
-      for (const auto& name : names[2])
-        internal_mb->GetMetaData(internal_block_index++)->Set(vtkCompositeDataSet::NAME(), name.c_str());
-
-    internal_block_index = 0;
-    if (create_parametric_mesh)
-    {
-      this->generate_knot_mesh_grids<2, 0>(internal_mb, internal_block_index, true);
-  //     this->generate_knot_mesh_grids<1, 1>(internal_mb, internal_block_index, true);
-      this->generate_knot_mesh_grids<3, 0>(internal_mb, internal_block_index, true);
-      this->generate_knot_mesh_grids<2, 1>(internal_mb, internal_block_index, true);
-  //     this->generate_knot_mesh_grids<1, 2>(internal_mb, internal_block_index, true);
-    }
-
-    if (create_physical_mesh)
-    {
-      this->generate_knot_mesh_grids<2, 0>(internal_mb, internal_block_index, false);
-  //     this->generate_knot_mesh_grids<1, 1>(internal_mb, internal_block_index, false);
-      this->generate_knot_mesh_grids<3, 0>(internal_mb, internal_block_index, false);
-      this->generate_knot_mesh_grids<2, 1>(internal_mb, internal_block_index, false);
-  //     this->generate_knot_mesh_grids<1, 2>(internal_mb, internal_block_index, false);
-    }
-  }
-
   if (create_parametric_mesh)
   {
-    const auto& n = names[1];
-    vtkMultiBlockDataSet* internal_mb =
-      vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(block_index++));
-    Assert (internal_mb != nullptr, ExcNullPtr ());
-    internal_mb->SetNumberOfBlocks(n.size ());
-
-    unsigned int internal_block_index = 0;
-    for (const auto& name : n)
-      internal_mb->GetMetaData(internal_block_index++)->Set(vtkCompositeDataSet::NAME(), name.c_str());
-
-    internal_block_index = 0;
-    const bool is_parametric = true;
-    this->generate_solid_mesh_grids<2, 0>(internal_mb, internal_block_index, unstructured, is_parametric);
-    this->generate_solid_mesh_grids<1, 1>(internal_mb, internal_block_index, unstructured, is_parametric);
-    this->generate_solid_mesh_grids<3, 0>(internal_mb, internal_block_index, unstructured, is_parametric);
-    this->generate_solid_mesh_grids<2, 1>(internal_mb, internal_block_index, unstructured, is_parametric);
-    this->generate_solid_mesh_grids<1, 2>(internal_mb, internal_block_index, unstructured, is_parametric);
+    vtkMultiBlockDataSet* block =
+        vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(block_index));
+    this->fill_vtk_grids(block, n_identity_funcs, 0,
+                         true, false, create_knot_mesh);
+    ++block_index;
   }
 
   if (create_physical_mesh)
   {
-    const auto& n = names[2];
-    vtkMultiBlockDataSet* internal_mb =
-      vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(block_index++));
-    Assert (internal_mb != nullptr, ExcNullPtr ());
-    internal_mb->SetNumberOfBlocks(n.size ());
-    const bool is_parametric = false;
-
-    unsigned int internal_block_index = 0;
-    for (const auto& name : n)
-      internal_mb->GetMetaData(internal_block_index++)->Set(vtkCompositeDataSet::NAME(), name.c_str());
-
-    internal_block_index = 0;
-    this->generate_solid_mesh_grids<2, 0>(internal_mb, internal_block_index, unstructured, is_parametric);
-    this->generate_solid_mesh_grids<1, 1>(internal_mb, internal_block_index, unstructured, is_parametric);
-    this->generate_solid_mesh_grids<3, 0>(internal_mb, internal_block_index, unstructured, is_parametric);
-    this->generate_solid_mesh_grids<2, 1>(internal_mb, internal_block_index, unstructured, is_parametric);
-    this->generate_solid_mesh_grids<1, 2>(internal_mb, internal_block_index, unstructured, is_parametric);
+    vtkMultiBlockDataSet* block =
+        vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(block_index));
+    this->fill_vtk_grids(block, n_not_identity_funcs, n_ig_funcs,
+                         false, create_control_mesh, create_knot_mesh);
+    ++block_index;
   }
 };
 
+
+
+void
+IGAVTK::
+fill_vtk_grids(vtkMultiBlockDataSet *const mb,
+               const Size &n_solid_mesh,
+               const Size &n_control_mesh,
+               const bool is_identity,
+               const bool create_control_mesh,
+               const bool create_knot_mesh) const
+{
+  if (n_solid_mesh == 0)
+    return;
+
+  Size n_blocks = 1;
+  if (create_control_mesh)
+    ++n_blocks;
+  if (create_knot_mesh)
+    ++n_blocks;
+  mb->SetNumberOfBlocks(n_blocks);
+
+  unsigned int block_index = 0;
+  auto solid_block = vtkSmartPointer<vtkMultiBlockDataSet>::New ();
+  solid_block->SetNumberOfBlocks(n_solid_mesh);
+  mb->SetBlock(block_index, solid_block);
+  mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), "Solid mesh");
+  ++block_index;
+
+  vtkSmartPointer<vtkMultiBlockDataSet> control_block;
+  if (create_control_mesh)
+  {
+    control_block = vtkSmartPointer<vtkMultiBlockDataSet>::New ();
+    control_block->SetNumberOfBlocks(n_control_mesh);
+    mb->SetBlock(block_index, control_block);
+    mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), "Control mesh");
+    ++block_index;
+  }
+
+  vtkSmartPointer<vtkMultiBlockDataSet> knot_block;
+  if (create_knot_mesh)
+  {
+    knot_block = vtkSmartPointer<vtkMultiBlockDataSet>::New ();
+    knot_block->SetNumberOfBlocks(n_solid_mesh);
+    mb->SetBlock(block_index, knot_block);
+    mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), "Knot mesh");
+    ++block_index;
+  }
+
+
+  Index solid_mesh_index = 0;
+  Index control_mesh_index = 0;
+
+  this->template fill_vtk_grid<2, 0>(mb, is_identity,
+                                     create_control_mesh, create_knot_mesh,
+                                     solid_mesh_index, control_mesh_index);
+  this->template fill_vtk_grid<1, 1>(mb, is_identity,
+                                     create_control_mesh, create_knot_mesh,
+                                     solid_mesh_index, control_mesh_index);
+  this->template fill_vtk_grid<3, 0>(mb, is_identity,
+                                     create_control_mesh, create_knot_mesh,
+                                     solid_mesh_index, control_mesh_index);
+  this->template fill_vtk_grid<2, 1>(mb, is_identity,
+                                     create_control_mesh, create_knot_mesh,
+                                     solid_mesh_index, control_mesh_index);
+  this->template fill_vtk_grid<1, 2>(mb, is_identity,
+                                     create_control_mesh, create_knot_mesh,
+                                     solid_mesh_index, control_mesh_index);
+};
 
 
 
 template <int dim, int codim>
 void
 IGAVTK::
-generate_solid_mesh_grids(vtkMultiBlockDataSet* const mb,
-                          unsigned int& id,
-                          const bool unstructured,
-                          const bool is_parametric) const
+fill_vtk_grid(vtkMultiBlockDataSet *const mb,
+              const bool is_identity,
+              const bool create_control_mesh,
+              const bool create_knot_mesh,
+              Index& solid_mesh_index,
+              Index& control_mesh_index) const
 {
-  static const int space_dim = dim + codim;
 
   const auto mappings = funcs_container_->template get_all_mappings<dim, codim>();
+
+  if (mappings.size () == 0)
+    return;
+
+//   using Map = Mapping<dim, codim>;
+  using IdFun = IdentityFunction<dim, dim + codim>;
+  using MapFunPtr = MapFunPtr_<dim, codim>;
+
+  unsigned int block_index = 0;
+  vtkMultiBlockDataSet* solid_block =
+    vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(block_index));
+  ++block_index;
+
+  vtkMultiBlockDataSet* control_block;
+  if (create_control_mesh)
+  {
+    control_block = vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(block_index));
+    Assert (control_block != nullptr, ExcNullPtr());
+    ++block_index;
+  }
+
+  vtkMultiBlockDataSet* knot_block;
+  if (create_knot_mesh)
+  {
+    knot_block = vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(block_index));
+    Assert (knot_block != nullptr, ExcNullPtr());
+    ++block_index;
+  }
 
   for (const auto &m : mappings)
   {
-      using Fun_ = Function<dim, 0, dim + codim, 1>;
-      shared_ptr<Fun_> mapping = m.first;
+    const MapFunPtr mapping = m.first;
+    const string &name = m.second;
 
-      if ((std::dynamic_pointer_cast<IdentityFunction<dim, space_dim>>(mapping) != nullptr) != is_parametric)
-        continue;
+    if ((std::dynamic_pointer_cast<IdFun>(mapping) != nullptr) != is_identity)
+      continue;
 
-      vtkSmartPointer<vtkPoints>   points = vtkSmartPointer<vtkPoints>::New();
+    solid_block->GetMetaData(solid_mesh_index)->Set(vtkCompositeDataSet::NAME(),
+                                                    name.c_str());
+    this->generate_solid_mesh_grids<dim, codim>
+      (mapping, unstructured_grid_, solid_mesh_index, solid_block);
 
-      // Generating visualization quadrature.
-      // TODO: quadratures for 1D, 2D and 3D should be moved outside this
-      // function.
+    if (create_control_mesh)
+    {
+      control_block->GetMetaData(control_mesh_index)->Set(vtkCompositeDataSet::NAME(),
+                                                        name.c_str());
+      this->generate_control_mesh_grids<dim, codim>(mapping, control_mesh_index,
+                                                    control_block);
+      ++control_mesh_index;
+    }
 
-      TensorSize<dim> n_points;
-      for (int dir = 0; dir < dim; ++dir)
-      {
-        n_points[dir] = num_visualization_elements_[dir] + 1;
-        Assert (n_points[dir] > 1, ExcMessage ("Wrong number of visualization points."));
-      }
-      QUniform<dim> quad (n_points);
+    if (create_knot_mesh)
+    {
+      knot_block->GetMetaData(solid_mesh_index)->Set(vtkCompositeDataSet::NAME(),
+                                                     name.c_str());
+      this->generate_knot_mesh_grids<dim, codim>(mapping, solid_mesh_index,
+                                                 knot_block);
+    }
 
-      const int n_bezier_elements = mapping->get_grid()->get_num_all_elems();
-      const int n_points_per_bezier_element = quad.get_num_points();
-      const int total_num_points = n_points_per_bezier_element * n_bezier_elements;
-
-      // Setting the points --------------------------------------------------//
-      points->SetNumberOfPoints (total_num_points);
-
-      auto flag = ValueFlags::point | ValueFlags::value;
-      mapping->reset(flag, quad);
-
-      auto elem = mapping->begin();
-      const auto end = mapping->end();
-
-      const auto topology = Topology<dim>();
-      mapping->init_cache(elem, topology);
-
-      const auto point_num_map =
-        create_points_numbering_map(mapping->get_grid(),
-                                    n_points, unstructured);
-
-      Assert (point_num_map.size() == n_bezier_elements,
-              ExcDimensionMismatch(point_num_map.size(), n_bezier_elements));
-#ifndef NDEBUG
-      for (const auto& it : point_num_map)
-        Assert (it.size() == n_points_per_bezier_element,
-              ExcDimensionMismatch(it.size(), n_points_per_bezier_element));
-#endif
-
-      double point_tmp[3] = {0.0, 0.0, 0.0};
-      auto pnm_it = point_num_map.cbegin();
-      for (; elem != end; ++elem, ++pnm_it)
-      {
-        mapping->fill_cache(elem, topology, 0);
-
-        auto element_vertices_tmp = elem->template get_values<_Value, dim>(0);
-        auto pnm = pnm_it->cbegin();
-        for (const auto& p : element_vertices_tmp)
-        {
-          for (int dir = 0; dir < dim ; ++dir)
-            point_tmp[dir] = p[dir];
-          points->SetPoint (*pnm++, point_tmp);
-        }
-      }
-      //----------------------------------------------------------------------//
-
-      if (unstructured) // Creating an unstuctured grid.
-      {
-        // Setting the cells -------------------------------------------------//
-        vtkSmartPointer<vtkCellArray> cells = vtkSmartPointer<vtkCellArray>::New();
-        int n_cells_per_bezier = 1;
-        for (int dir = 0; dir < dim; ++dir)
-          n_cells_per_bezier *= num_visualization_elements_[dir];
-        const int n_total_cells = n_bezier_elements * n_cells_per_bezier;
-
-        const auto cell_ids = IGAVTK::create_vtu_cell_ids<dim>
-          (n_points, n_bezier_elements);
-        cells->SetCells (n_total_cells , cell_ids);
-
-        //--------------------------------------------------------------------//
-        vtkSmartPointer<vtkUnstructuredGrid> grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
-        grid->Allocate(cells->GetNumberOfCells (), 0);
-        grid->SetPoints(points);
-        const int vtk_enum_type = dim == 3 ? VTK_HEXAHEDRON :
-                                  dim == 2 ? VTK_QUAD :
-                                            VTK_LINE;
-        grid->SetCells(vtk_enum_type, cells);
-        mb->SetBlock (id, grid);
-
-        auto point_data = grid->GetPointData();
-        this->template create_point_data<dim, codim>
-        (mapping, quad, point_num_map, point_data);
-      }
-      else  // Creating a stuctured grid.
-      {
-        vtkSmartPointer<vtkStructuredGrid> grid = vtkSmartPointer<vtkStructuredGrid>::New();
-
-        const auto grid_elem = mapping->get_grid()->get_num_intervals ();
-        if (dim == 1)
-          grid->SetDimensions((num_visualization_elements_[0] + 1) * grid_elem[0], 1, 1);
-        else if (dim == 2)
-          grid->SetDimensions((num_visualization_elements_[0] + 1) * grid_elem[0],
-                              (num_visualization_elements_[1] + 1) * grid_elem[1], 1);
-        else if (dim == 3)
-          grid->SetDimensions((num_visualization_elements_[0] + 1) * grid_elem[0],
-                              (num_visualization_elements_[1] + 1) * grid_elem[1],
-                              (num_visualization_elements_[2] + 1) * grid_elem[2]);
-
-        grid->SetPoints(points);
-        mb->SetBlock (id, grid);
-
-        auto point_data = grid->GetPointData();
-        this->template create_point_data<dim, codim>
-        (mapping, quad, point_num_map, point_data);
-      }
-
-      ++id;
+    ++solid_mesh_index;
   }
 };
 
@@ -353,18 +280,121 @@ generate_solid_mesh_grids(vtkMultiBlockDataSet* const mb,
 template <int dim, int codim>
 void
 IGAVTK::
-generate_knot_mesh_grids(vtkMultiBlockDataSet* const mb,
-                         unsigned int& id,
-                         const bool is_parametric) const
+generate_solid_mesh_grids(const MapFunPtr_<dim, codim> mapping,
+                          const bool unstructured_grid,
+                          const Index& vtk_block_id,
+                          vtkMultiBlockDataSet* const vtk_block) const
 {
-  static const int space_dim = dim + codim;
+  vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
 
-  const auto mappings = funcs_container_->template get_all_mappings<dim, codim>();
+  TensorSize<dim> n_quad_elements;
+  TensorSize<dim> n_quad_points;
+  for (int dir = 0; dir < dim; ++dir)
+  {
+    n_quad_elements[dir] = num_visualization_elements_[dir];
+    n_quad_points[dir] = num_visualization_elements_[dir] + 1;
+  }
+  const auto quad = IGAVTK::create_visualization_quadrature<dim>
+    (n_quad_elements, quadratic_elements_);
 
-  using Mapping = Function<dim, 0, dim+codim, 1>;
-  using PhysPoint = typename Mapping::Value;
-  using ParamPoint = Points<dim>;
+  const int n_bezier_elements = mapping->get_grid()->get_num_all_elems();
+  const int n_points_per_bezier_element = quad->get_num_points();
+  const int total_num_points = n_points_per_bezier_element * n_bezier_elements;
 
+  // Setting the points --------------------------------------------------//
+  points->SetNumberOfPoints (total_num_points);
+
+  auto flag = ValueFlags::point | ValueFlags::value;
+  mapping->reset(flag, *quad);
+
+  auto elem = mapping->begin();
+  const auto end = mapping->end();
+
+  const auto topology = Topology<dim>();
+  mapping->init_cache(elem, topology);
+
+  const auto point_num_map =
+    create_points_numbering_map(mapping->get_grid(),
+                                n_quad_points, unstructured_grid);
+
+  Assert (point_num_map.size() == n_bezier_elements,
+          ExcDimensionMismatch(point_num_map.size(), n_bezier_elements));
+#ifndef NDEBUG
+  for (const auto& it : point_num_map)
+    Assert (it.size() == n_points_per_bezier_element,
+          ExcDimensionMismatch(it.size(), n_points_per_bezier_element));
+#endif
+
+  double point_tmp[3] = {0.0, 0.0, 0.0};
+  auto pnm_it = point_num_map.cbegin();
+  for (; elem != end; ++elem, ++pnm_it)
+  {
+    mapping->fill_cache(elem, topology, 0);
+
+    auto element_vertices_tmp = elem->template get_values<_Value, dim>(0);
+    auto pnm = pnm_it->cbegin();
+    for (const auto& p : element_vertices_tmp)
+    {
+      for (int dir = 0; dir < dim ; ++dir)
+        point_tmp[dir] = p[dir];
+      points->SetPoint (*pnm++, point_tmp);
+    }
+  }
+  //----------------------------------------------------------------------//
+
+  if (unstructured_grid) // Creating an unstuctured grid.
+  {
+    // Setting the cells -------------------------------------------------//
+    vtkSmartPointer<vtkCellArray> cells = vtkSmartPointer<vtkCellArray>::New();
+    int n_cells_per_bezier = 1;
+    for (int dir = 0; dir < dim; ++dir)
+      n_cells_per_bezier *= num_visualization_elements_[dir];
+    const int n_total_cells = n_bezier_elements * n_cells_per_bezier;
+
+    const auto cell_ids = IGAVTK::create_vtu_cell_ids<dim>
+      (n_quad_points, n_bezier_elements);
+    cells->SetCells (n_total_cells , cell_ids);
+
+    //--------------------------------------------------------------------//
+    vtkSmartPointer<vtkUnstructuredGrid> grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
+    grid->Allocate(cells->GetNumberOfCells (), 0);
+    grid->SetPoints(points);
+    const int vtk_enum_type = dim == 3 ? VTK_HEXAHEDRON :
+                              dim == 2 ? VTK_QUAD :
+                                        VTK_LINE;
+    grid->SetCells(vtk_enum_type, cells);
+
+    vtk_block->SetBlock (vtk_block_id, grid);
+  }
+  else  // Creating a stuctured grid.
+  {
+    vtkSmartPointer<vtkStructuredGrid> grid = vtkSmartPointer<vtkStructuredGrid>::New();
+
+    const auto grid_elem = mapping->get_grid()->get_num_intervals ();
+    if (dim == 1)
+      grid->SetDimensions((num_visualization_elements_[0] + 1) * grid_elem[0], 1, 1);
+    else if (dim == 2)
+      grid->SetDimensions((num_visualization_elements_[0] + 1) * grid_elem[0],
+                          (num_visualization_elements_[1] + 1) * grid_elem[1], 1);
+    else if (dim == 3)
+      grid->SetDimensions((num_visualization_elements_[0] + 1) * grid_elem[0],
+                          (num_visualization_elements_[1] + 1) * grid_elem[1],
+                          (num_visualization_elements_[2] + 1) * grid_elem[2]);
+
+    grid->SetPoints(points);
+    vtk_block->SetBlock (vtk_block_id, grid);
+  }
+};
+
+
+
+template <int dim, int codim>
+void
+IGAVTK::
+generate_knot_mesh_grids(const MapFunPtr_<dim, codim> mapping,
+                         const Index& vtk_block_id,
+                         vtkMultiBlockDataSet* const vtk_block) const
+{
   AssertThrow (dim != 1, ExcNotImplemented());
 
   const Size n_points_per_single_cell = quadratic_elements_ ? 3 : 2;
@@ -373,153 +403,145 @@ generate_knot_mesh_grids(vtkMultiBlockDataSet* const mb,
 
 
   SafeSTLArray<shared_ptr<Quadrature<1>>, dim> quadratures;
+  TensorSize<1> n_vis_elems;
   for (int dir = 0; dir < dim; ++dir)
-    quadratures[dir] = QUniform<1>::create
-      (num_visualization_elements_[dir] * (n_points_per_single_cell - 1) + 1);
+  {
+    n_vis_elems[0] = num_visualization_elements_[dir];
+    quadratures[dir] = IGAVTK::create_visualization_quadrature<1>(n_vis_elems, quadratic_elements_);
+  }
 
   SafeSTLVector<Real> zero_vec{{0.0}};
   SafeSTLVector<Real> one_vec{{1.0}};
 
-  for (const auto &m : mappings)
+  const auto cartesian_grid = mapping->get_grid();
+  const auto& n_intervals = cartesian_grid->get_num_intervals();
+
+  // Computing total number of vtk points and cells.
+  Size n_vtk_cells = 0;
+  Size n_vtk_points = 0;
+  for (int dir = 0; dir < dim; ++dir)
   {
-    using Fun_ = Function<dim, 0, dim + codim, 1>;
-    shared_ptr<Fun_> mapping = m.first;
-
-    if ((std::dynamic_pointer_cast<IdentityFunction<dim, space_dim>>(mapping) != nullptr) != is_parametric)
-      continue;
-
-    const auto cartesian_grid = mapping->get_grid();
-    const auto& n_intervals = cartesian_grid->get_num_intervals();
-
-    // Computing total number of vtk points and cells.
-    Size n_vtk_cells = 0;
-    Size n_vtk_points = 0;
-    for (int dir = 0; dir < dim; ++dir)
+    Size n_knot_lines = 1;
+    for (int dir2 = 0; dir2 < dim; ++dir2)
     {
-      Size n_knot_lines = 1;
-      for (int dir2 = 0; dir2 < dim; ++dir2)
+      if (dir2 != dir)
       {
-        if (dir2 != dir)
-        {
-          n_knot_lines *= (n_intervals[dir2] + 1);
-        }
+        n_knot_lines *= (n_intervals[dir2] + 1);
       }
-      const Size n_cells_in_knot_line = n_intervals[dir] * num_visualization_elements_[dir];
-      n_vtk_cells += n_knot_lines * n_cells_in_knot_line;
-      n_vtk_points += n_knot_lines * (n_cells_in_knot_line * (n_points_per_single_cell - 1) + 1);
     }
+    const Size n_cells_in_knot_line = n_intervals[dir] * num_visualization_elements_[dir];
+    n_vtk_cells += n_knot_lines * n_cells_in_knot_line;
+    n_vtk_points += n_knot_lines * (n_cells_in_knot_line * (n_points_per_single_cell - 1) + 1);
+  }
 
-    vtkSmartPointer<vtkPoints> vtk_points = vtkSmartPointer<vtkPoints>::New();
-    vtk_points->SetNumberOfPoints (n_vtk_points);
+  vtkSmartPointer<vtkPoints> vtk_points = vtkSmartPointer<vtkPoints>::New();
+  vtk_points->SetNumberOfPoints (n_vtk_points);
 
-    vtkSmartPointer<vtkIdTypeArray> vtk_cell_ids = vtkSmartPointer<vtkIdTypeArray>::New();
-    const Size tuple_size = n_points_per_single_cell + 1;
-    vtk_cell_ids->SetNumberOfComponents (tuple_size);
-    vtk_cell_ids->SetNumberOfTuples (n_vtk_cells);
+  vtkSmartPointer<vtkIdTypeArray> vtk_cell_ids = vtkSmartPointer<vtkIdTypeArray>::New();
+  const Size tuple_size = n_points_per_single_cell + 1;
+  vtk_cell_ids->SetNumberOfComponents (tuple_size);
+  vtk_cell_ids->SetNumberOfTuples (n_vtk_cells);
 
-    Index vtk_pt_id = 0;
-    double point_tmp[3] = {0.0, 0.0, 0.0};
+  Index vtk_pt_id = 0;
+  double point_tmp[3] = {0.0, 0.0, 0.0};
 
-    Index vtk_tuple_id = 0;
-    vtkIdType* tuple = new vtkIdType[tuple_size];
-    tuple[0] = n_points_per_single_cell;
+  Index vtk_tuple_id = 0;
+  vtkIdType* tuple = new vtkIdType[tuple_size];
+  tuple[0] = n_points_per_single_cell;
 
-    for (int dir = 0; dir < dim; ++dir) // Creating knot lines along each direction.
+  for (int dir = 0; dir < dim; ++dir) // Creating knot lines along each direction.
+  {
+    const Index face_id = dir * 2;
+    auto &k_elem = UnitElement<dim>::template get_elem<dim-1>(face_id);
+    const auto &active_directions = k_elem.active_directions;
+
+    auto flag = ValueFlags::point | ValueFlags::value;
+    auto elem = mapping->begin();
+    const auto topology = Topology<dim>();
+
+    // Looping along all the knot coordinates of the face.
+    using InterGridMap = typename CartesianGrid<dim>::template InterGridMap<dim-1>;
+    InterGridMap elem_map;
+    const auto &sub_grid = cartesian_grid->template get_sub_grid<dim-1>(face_id, elem_map);
+    const auto &face_coords_tensor = sub_grid->get_knot_coordinates();
+    const Size n_pts_face = face_coords_tensor.flat_size();
+
+    const auto &quad_dir = quadratures[dir];
+    TensorSize<dim> n_quad_points(1);
+    n_quad_points[dir] = quad_dir->get_num_points();
+    TensorProductArray<dim> quad_points_1d(n_quad_points);
+    TensorProductArray<dim> quad_weights_1d(n_quad_points);
+    quad_points_1d.copy_data_direction(dir, quad_dir->get_coords_direction(0));
+
+    // Iterating along every knot coordinates of the face
+    TensorIndex<dim> elem_t_id(0);
+    for (int i_pt = 0; i_pt < n_pts_face; ++i_pt)
     {
-      const Index face_id = dir * 2;
-      auto &k_elem = UnitElement<dim>::template get_elem<dim-1>(face_id);
-      const auto &active_directions = k_elem.active_directions;
-
-      auto flag = ValueFlags::point | ValueFlags::value;
-      auto elem = mapping->begin();
-      const auto topology = Topology<dim>();
-
-      // Looping along all the knot coordinates of the face.
-      using InterGridMap = typename CartesianGrid<dim>::template InterGridMap<dim-1>;
-      InterGridMap elem_map;
-      const auto &sub_grid = cartesian_grid->template get_sub_grid<dim-1>(face_id, elem_map);
-      const auto &face_coords_tensor = sub_grid->get_knot_coordinates();
-      const Size n_pts_face = face_coords_tensor.flat_size();
-
-      const auto &quad_dir = quadratures[dir];
-      TensorSize<dim> n_quad_points(1);
-      n_quad_points[dir] = quad_dir->get_num_points();
-      TensorProductArray<dim> quad_points_1d(n_quad_points);
-      TensorProductArray<dim> quad_weights_1d(n_quad_points);
-      quad_points_1d.copy_data_direction(dir, quad_dir->get_coords_direction(0));
-
-      // Iterating along every knot coordinates of the face
-      TensorIndex<dim> elem_t_id(0);
-      for (int i_pt = 0; i_pt < n_pts_face; ++i_pt)
+      const auto t_id_face = face_coords_tensor.flat_to_tensor(i_pt);
+      auto ad = active_directions.cbegin();
+      for (const auto &t : t_id_face)
       {
-        const auto t_id_face = face_coords_tensor.flat_to_tensor(i_pt);
-        auto ad = active_directions.cbegin();
-        for (const auto &t : t_id_face)
+        if (t == n_intervals[*ad])
         {
-          if (t == n_intervals[*ad])
-          {
-            elem_t_id[*ad] = t - 1;
-            quad_points_1d.copy_data_direction(*ad, one_vec);
-          }
-          else
-          {
-            elem_t_id[*ad] = t;
-            quad_points_1d.copy_data_direction(*ad, zero_vec);
-          }
-          ++ad;
+          elem_t_id[*ad] = t - 1;
+          quad_points_1d.copy_data_direction(*ad, one_vec);
         }
-        Quadrature<dim> quad (quad_points_1d, quad_weights_1d);
-
-        mapping->reset(flag, quad);
-        mapping->init_cache(elem, topology);
-        elem_t_id[dir] = 0;
-        for (int itv = 0; itv < n_intervals[dir]; ++itv)
+        else
         {
-          elem.move_to(cartesian_grid->tensor_to_flat(elem_t_id));
-          elem_t_id[dir] += 1;
+          elem_t_id[*ad] = t;
+          quad_points_1d.copy_data_direction(*ad, zero_vec);
+        }
+        ++ad;
+      }
+      Quadrature<dim> quad (quad_points_1d, quad_weights_1d);
 
-          mapping->fill_cache(elem, topology, 0);
-          auto physical_points = elem->template get_values<_Value, dim>(0);
+      mapping->reset(flag, quad);
+      mapping->init_cache(elem, topology);
+      elem_t_id[dir] = 0;
+      for (int itv = 0; itv < n_intervals[dir]; ++itv)
+      {
+        elem.move_to(cartesian_grid->tensor_to_flat(elem_t_id));
+        elem_t_id[dir] += 1;
 
-          Index vtk_pt_id_0 = vtk_pt_id;
-          for (const auto &pp : physical_points)
-          {
-            for (int dir2 = 0; dir2 < dim; ++dir2)
-              point_tmp[dir2] = pp[dir2];
-            vtk_points->SetPoint (vtk_pt_id++, point_tmp);
-          } // pp
-          --vtk_pt_id;
+        mapping->fill_cache(elem, topology, 0);
+        auto physical_points = elem->template get_values<_Value, dim>(0);
 
-          for (int c_id = 0; c_id < num_visualization_elements_[dir];  ++c_id,
-                vtk_pt_id_0 += (n_points_per_single_cell-1))
-          {
-            Index id = 1;
-            for (const auto &c : vtk_line_connectivity)
-              tuple[id++] = vtk_pt_id_0 + c;
+        Index vtk_pt_id_0 = vtk_pt_id;
+        for (const auto &pp : physical_points)
+        {
+          for (int dir2 = 0; dir2 < dim; ++dir2)
+            point_tmp[dir2] = pp[dir2];
+          vtk_points->SetPoint (vtk_pt_id++, point_tmp);
+        } // pp
+        --vtk_pt_id;
 
-            vtk_cell_ids->SetTupleValue(vtk_tuple_id++, tuple);
-          } // c_id
-        } // itv
-        ++vtk_pt_id;
-      } // i_pt
+        for (int c_id = 0; c_id < num_visualization_elements_[dir];  ++c_id,
+              vtk_pt_id_0 += (n_points_per_single_cell-1))
+        {
+          Index id = 1;
+          for (const auto &c : vtk_line_connectivity)
+            tuple[id++] = vtk_pt_id_0 + c;
 
-    } // dir
+          vtk_cell_ids->SetTupleValue(vtk_tuple_id++, tuple);
+        } // c_id
+      } // itv
+      ++vtk_pt_id;
+    } // i_pt
 
-    // Creating grid.
-    vtkSmartPointer<vtkUnstructuredGrid> grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
-    grid->SetPoints(vtk_points);
+  } // dir
 
-    // Creating cells.
-    vtkSmartPointer<vtkCellArray> vtk_cells = vtkSmartPointer<vtkCellArray>::New();
-    vtk_cells->SetCells (n_vtk_cells, vtk_cell_ids);
-    grid->Allocate(vtk_cells->GetNumberOfCells (), 0);
-    const int vtk_enum_type = quadratic_elements_ ? VTK_QUADRATIC_EDGE : VTK_LINE;
-    grid->SetCells(vtk_enum_type, vtk_cells);
+  // Creating grid.
+  vtkSmartPointer<vtkUnstructuredGrid> grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
+  grid->SetPoints(vtk_points);
 
-    mb->SetBlock (id, grid);
-    ++id;
+  // Creating cells.
+  vtkSmartPointer<vtkCellArray> vtk_cells = vtkSmartPointer<vtkCellArray>::New();
+  vtk_cells->SetCells (n_vtk_cells, vtk_cell_ids);
+  grid->Allocate(vtk_cells->GetNumberOfCells (), 0);
+  const int vtk_enum_type = quadratic_elements_ ? VTK_QUADRATIC_EDGE : VTK_LINE;
+  grid->SetCells(vtk_enum_type, vtk_cells);
 
-  } // mappings
+  vtk_block->SetBlock (vtk_block_id, grid);
 };
 
 
@@ -527,68 +549,56 @@ generate_knot_mesh_grids(vtkMultiBlockDataSet* const mb,
 template <int dim, int codim>
 void
 IGAVTK::
-generate_control_mesh_grids(vtkMultiBlockDataSet* const mb,
-                            unsigned int& id) const
+generate_control_mesh_grids(const MapFunPtr_<dim, codim> mapping,
+                            const Index& vtk_block_id,
+                            vtkMultiBlockDataSet* const vtk_block) const
 {
-  const auto mappings = funcs_container_->template get_all_mappings<dim, codim>();
-
   static const int space_dim = dim + codim;
-  using Fun_   =   Function<dim, 0, space_dim, 1>;
   using IgFun_ = IgFunction<dim, 0, space_dim, 1>;
+  const auto ig_func = std::dynamic_pointer_cast<IgFun_>(mapping);
+  Assert (ig_func != nullptr, ExcNullPtr());
 
-  for (const auto &m : mappings)
+  const auto space = ig_func->get_ig_space();
+  const auto& coefs = ig_func->get_coefficients();
+  const auto& dofs = space->get_dof_distribution();
+
+  // TODO: include assert here to verify that all the components share the
+  // same space.
+  const auto &dofs_table = dofs->get_num_dofs_table();
+  const auto n_pts_dir = dofs_table[0];
+
+  auto grid = vtkSmartPointer<vtkStructuredGrid>::New();
+  auto points = vtkSmartPointer<vtkPoints>::New();
+
+  const Size n_total_pts = dofs_table.get_component_size(0);
+  points->SetNumberOfPoints (n_total_pts);
+
+  // Setting all the points void.
+  const double point_void[3] = {0.0, 0.0, 0.0};
+  for (int i_pt = 0; i_pt < n_total_pts; ++i_pt)
+      points->SetPoint (i_pt, point_void);
+
+  Index comp;
+  Index local_id;
+  double point_tmp[3];
+  for (const auto &it : coefs)
   {
-      shared_ptr<Fun_> mapping = m.first;
-      const auto name = m.second;
-
-      const auto ig_func = std::dynamic_pointer_cast<IgFun_>(mapping);
-      if (ig_func == nullptr)
-        continue;
-
-      const auto space = ig_func->get_ig_space();
-      const auto& coefs = ig_func->get_coefficients();
-      const auto& dofs = space->get_dof_distribution();
-
-      // TODO: include assert here to verify that all the components share the 
-      // same space.
-      const auto &dofs_table = dofs->get_num_dofs_table();
-      const auto n_pts_dir = dofs_table[0];
-
-      auto grid = vtkSmartPointer<vtkStructuredGrid>::New();
-      auto points = vtkSmartPointer<vtkPoints>::New();
-
-      const Size n_total_pts = dofs_table.get_component_size(0);
-      points->SetNumberOfPoints (n_total_pts);
-
-      // Setting all the points void.
-      const double point_void[3] = {0.0, 0.0, 0.0};
-      for (int i_pt = 0; i_pt < n_total_pts; ++i_pt)
-          points->SetPoint (i_pt, point_void);
-
-      Index comp;
-      Index local_id;
-      double point_tmp[3];
-      for (const auto &it : coefs)
-      {
-        dofs->global_to_comp_local(it.first, comp, local_id);
-        points->GetPoint (local_id, point_tmp);
-        point_tmp[comp] = it.second;
-        points->SetPoint (local_id, point_tmp);
-      }
-
-      if (dim == 1)
-        grid->SetDimensions(n_pts_dir[0], 1, 1);
-      else if (dim == 2)
-        grid->SetDimensions(n_pts_dir[0], n_pts_dir[1], 1);
-      else if (dim == 3)
-        grid->SetDimensions(n_pts_dir[0], n_pts_dir[1], n_pts_dir[2]);
-
-      grid->SetPoints(points);
-      mb->SetBlock (id, grid);
-
-      ++id;
+    dofs->global_to_comp_local(it.first, comp, local_id);
+    points->GetPoint (local_id, point_tmp);
+    point_tmp[comp] = it.second;
+    points->SetPoint (local_id, point_tmp);
   }
-}
+
+  if (dim == 1)
+    grid->SetDimensions(n_pts_dir[0], 1, 1);
+  else if (dim == 2)
+    grid->SetDimensions(n_pts_dir[0], n_pts_dir[1], 1);
+  else if (dim == 3)
+    grid->SetDimensions(n_pts_dir[0], n_pts_dir[1], n_pts_dir[2]);
+
+  grid->SetPoints(points);
+  vtk_block->SetBlock (vtk_block_id, grid);
+};
 
 
 
@@ -673,6 +683,70 @@ get_map_names () const
   }
 
   return names;
+};
+
+
+
+SafeSTLArray<Size, 3>
+IGAVTK::
+get_number_functions () const
+{
+  SafeSTLArray<Size, 3> number_functions(0);
+  Size &n_identity = number_functions[0];
+  Size &n_not_identity = number_functions[1];
+  Size &n_ig_functions = number_functions[2];
+
+  for (const auto& m : funcs_container_->template get_all_mappings<2, 0>())
+    if (std::dynamic_pointer_cast<IdentityFunction<2, 2>>(m.first) != nullptr)
+      ++n_identity;
+    else
+    {
+      ++n_not_identity;
+      if (std::dynamic_pointer_cast<IgFunction<2, 0, 2, 1>>(m.first) != nullptr)
+        ++n_ig_functions;
+    }
+
+  for (const auto& m : funcs_container_->template get_all_mappings<1, 1>())
+    if (std::dynamic_pointer_cast<IdentityFunction<1, 2>>(m.first) != nullptr)
+      ++n_identity;
+    else
+    {
+      ++n_not_identity;
+      if (std::dynamic_pointer_cast<IgFunction<1, 0, 2, 1>>(m.first) != nullptr)
+        ++n_ig_functions;
+    }
+
+  for (const auto& m : funcs_container_->template get_all_mappings<3, 0>())
+    if (std::dynamic_pointer_cast<IdentityFunction<3, 3>>(m.first) != nullptr)
+      ++n_identity;
+    else
+    {
+      ++n_not_identity;
+      if (std::dynamic_pointer_cast<IgFunction<3, 0, 3, 1>>(m.first) != nullptr)
+        ++n_ig_functions;
+    }
+
+  for (const auto& m : funcs_container_->template get_all_mappings<2, 1>())
+    if (std::dynamic_pointer_cast<IdentityFunction<2, 3>>(m.first) != nullptr)
+      ++n_identity;
+    else
+    {
+      ++n_not_identity;
+      if (std::dynamic_pointer_cast<IgFunction<2, 0, 3, 1>>(m.first) != nullptr)
+        ++n_ig_functions;
+    }
+
+  for (const auto& m : funcs_container_->template get_all_mappings<1, 2>())
+    if (std::dynamic_pointer_cast<IdentityFunction<1, 3>>(m.first) != nullptr)
+      ++n_identity;
+    else
+    {
+      ++n_not_identity;
+      if (std::dynamic_pointer_cast<IgFunction<1, 0, 3, 1>>(m.first) != nullptr)
+        ++n_ig_functions;
+    }
+
+  return number_functions;
 };
 
 
@@ -941,8 +1015,6 @@ create_point_data (const shared_ptr<Function<dim, 0, dim + codim, 1>> mapping,
       auto values = elem->template get_values<_Value, dim>(0);
       for (const auto& v : values)
       {
-//         for (int c = 0; c < n_comp; ++c)
-//           *(tuple + c) = v[c];
         this->template tensor_to_tuple<Value>(v, tuple);
         arr->SetTuple(*pnm++, tuple);
       }
@@ -956,8 +1028,74 @@ create_point_data (const shared_ptr<Function<dim, 0, dim + codim, 1>> mapping,
   }
 };
 
+
+
+template <int dim>
+shared_ptr<Quadrature<dim>>
+IGAVTK::
+create_visualization_quadrature (const TensorSize<dim>& n_elements_per_direction,
+                                 const bool is_quadratic)
+{
+  const Size n_pts_per_cell_dir = is_quadratic ? 3 : 2;
+  TensorSize<dim> n_points;
+  for (int dir = 0; dir < dim; ++dir)
+  {
+    Assert (n_elements_per_direction[dir] > 0, ExcMessage ("Wrong number of visualization elements."));
+    n_points[dir] = n_elements_per_direction[dir] * (n_pts_per_cell_dir - 1) + 1;
+  }
+
+  QUniform<dim> uniform_quad (n_points);
+
+  if (!is_quadratic)
+  {
+    return std::make_shared<Quadrature<dim>> (uniform_quad);
+  }
+
+#if 0
+  // TODO: Right now is not possible to use non tensor product quadrature
+  // for cache elements in igatools. It will be in the future.
+  // The code below defines a non tensor product quadrature for VTK quadratic
+  // cells.
+
+  const auto &uniform_array_points = uniform_quad.get_points_1d();
+  const Size n_total_points = uniform_quad.get_num_points();
+
+  // The points that are not in an edge are removed from the quadrature points.
+  // The condition to be in an edge is that just one or zero directions are
+  // active. (This also works for the 1D case, where no point is removed.)
+  SafeSTLVector<Index> point_indices;
+  for (int i_pt = 0; i_pt < n_total_points; ++i_pt)
+  {
+    const auto t_id = uniform_array_points.flat_to_tensor(i_pt);
+
+    int active_directions = 0;
+    for (int dir = 0; dir < dim; ++dir)
+      if ( (t_id[dir] > 0) && (t_id[dir] < (n_points[dir] - 1)) )
+        ++active_directions;
+
+    if (active_directions < 2)
+      point_indices.push_back(i_pt);
+  }
+
+  ValueVector<Points<dim>> quad_points(point_indices.size());
+  auto qp = quad_points.begin();
+  for (const auto &id : point_indices)
+    *qp++ = uniform_quad.get_point(id);
+
+  BBox<dim> box;
+
+  return shared_ptr<Quadrature<dim>> (new Quadrature<dim> (quad_points,
+      uniform_quad.get_weights_1d(), box));
+#endif
+
+  return std::make_shared<Quadrature<dim>> (uniform_quad);
+};
+
+IGA_NAMESPACE_CLOSE
+
 #include <igatools/io/reader.h>
 
+IGA_NAMESPACE_OPEN
 
 template <int dim>
 void
@@ -1161,3 +1299,5 @@ create_geometries ()
   funcs_container_->insert_function(id_map_2, rf_func_2, "ref_func_2");
   funcs_container_->insert_function(id_map_3, rf_func_3, "ref_func_3");
 };
+
+IGA_NAMESPACE_CLOSE

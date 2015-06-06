@@ -180,7 +180,7 @@ private:
   /*
    * Iga vtk object.
    */
-  IGAVTK iga_vtk_;
+  iga::IGAVTK iga_vtk_;
 };
 
 

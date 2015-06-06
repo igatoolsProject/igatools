@@ -131,8 +131,9 @@ int vtkIgatoolsReader::RequestData(
   this->get_file_and_path (file_name, file_path);
 
   iga_vtk_.set_file (file_name, file_path);
-  iga_vtk_.set_visualization_elements (this->GetNumVisualizationElements(),
-                                       this->GetQuadraticElements());
+  iga_vtk_.set_visualization_element_properties (this->GetNumVisualizationElements(),
+                                                 this->GetQuadraticElements(),
+                                                 this->GetGridType());
 
   vtkInformation* info = outputVector->GetInformationObject(0);
   vtkDataObject* output = info->Get(vtkDataObject::DATA_OBJECT());
@@ -140,10 +141,6 @@ int vtkIgatoolsReader::RequestData(
 
   // Setting the blocks.
   int num_blocks = 0;
-  if (this->GetControlMesh())
-    ++num_blocks;
-  if (this->GetKnotMesh())
-    ++num_blocks;
   if (this->GetParametricMesh())
     ++num_blocks;
   if (this->GetPhysicalMesh())
@@ -154,19 +151,14 @@ int vtkIgatoolsReader::RequestData(
   for (unsigned int i = 0; i < num_blocks; ++i)
     mb->SetBlock(i, vtkSmartPointer<vtkMultiBlockDataSet>::New ());
 
-  unsigned int index = 0;
-  if (this->GetControlMesh())
-    mb->GetMetaData(index++)->Set(vtkCompositeDataSet::NAME(), "Control mesh");
-  if (this->GetKnotMesh())
-    mb->GetMetaData(index++)->Set(vtkCompositeDataSet::NAME(), "Knot mesh");
+  unsigned int block_index = 0;
   if (this->GetParametricMesh())
-    mb->GetMetaData(index++)->Set(vtkCompositeDataSet::NAME(), "Parametric mesh");
+    mb->GetMetaData(block_index++)->Set(vtkCompositeDataSet::NAME(), "Parametric mesh");
   if (this->GetPhysicalMesh())
-    mb->GetMetaData(index++)->Set(vtkCompositeDataSet::NAME(), "Physical mesh");
+    mb->GetMetaData(block_index++)->Set(vtkCompositeDataSet::NAME(), "Physical mesh");
 
   iga_vtk_.parse_file ();
-  iga_vtk_.generate_vtk_grids (this->GetGridType(),
-                               this->GetControlMesh(),
+  iga_vtk_.generate_vtk_grids (this->GetControlMesh(),
                                this->GetKnotMesh(),
                                this->GetParametricMesh(),
                                this->GetPhysicalMesh(),
