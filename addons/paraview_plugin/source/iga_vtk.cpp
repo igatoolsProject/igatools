@@ -1126,7 +1126,36 @@ create_points_numbering_map (const shared_ptr<const CartesianGrid<dim>> cartesia
   {
     if (is_quadratic) // VTK quadratic elements
     {
-      AssertThrow(false, ExcNotImplemented());
+      // Number of visualization points per Bezier element in each direction.
+      const auto n_pts_dir_per_bezier_elem = quad->get_num_coords_direction();
+
+      const auto &quad_points_1d = quad->get_points_1d();
+      const Size n_quad_points = quad->get_num_points();
+      for (int i_pt = 0; i_pt < n_quad_points; ++i_pt)
+      {
+        const auto tensor_id = quad_points_1d.flat_to_tensor(i_pt);
+
+        // NOTE: this also works for quadratic 1D elements.
+        int active_directions = 0;
+        for (int dir = 0; dir < dim; ++dir)
+          if ( (tensor_id[dir] > 0) && (tensor_id[dir] < (n_pts_dir_per_bezier_elem[dir] - 1)) )
+            ++active_directions;
+
+        if (active_directions < 2) // The point is on an edge.
+          points_mask.push_back(i_pt);
+      }
+
+      // Total number of visualization points per Bezier element.
+      const Size n_pts_per_bezier_elem = points_mask.size();
+
+      Index point_id = 0;
+      for (auto &pm_el : points_map)
+      {
+        pm_el.resize(n_pts_per_bezier_elem);
+        for (auto &pm : pm_el)
+          pm = point_id++;
+      } // points_map
+      n_total_points = point_id;
 
     } // VTK quadratic elements
 
