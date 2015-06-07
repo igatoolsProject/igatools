@@ -690,8 +690,8 @@ parse_file ()
 //   xml_in >> BOOST_SERIALIZATION_NVP (funcs_container_);
 //   xml_istream.close();
 //   Assert here if funcs_container_ is void.
-  this->template create_geometries<2>();
-//   this->template create_geometries<3>();
+//   this->template create_geometries<2>();
+  this->template create_geometries<3>();
 };
 
 
@@ -839,7 +839,103 @@ create_cells_solid_vtu_grid (const TensorSize<dim> &n_vis_elements,
 
     if (dim == 3)
     {
-      Assert (false, ExcNotImplemented());
+      //  This is the connectivity pattern of the 2D VTK quadratic element.
+      //
+      //         w = 0             w = 1             w = 2
+      //
+      //     3 -- 10 --  2    19 -------- 18     7 -- 14 --  6
+      //     |           |     |           |     |           |
+      //    11           9     |           |    15          13
+      //     |           |     |           |     |           |
+      //     0 --  8 --  1    16 -------- 17     4 -- 12 --  5
+      //
+
+      // This array constaints the offsets of the points along the
+      // first (u) direction.
+      //   Offset for the line:  3 -- 10 --  2   -> offset = 2
+      //   Offset for the line: 11 --------  9   -> offset = 1
+      //   Offset for the line:  0 --  8 --  1   -> offset = 2
+
+      //   Offset for the line: 19 -------- 18   -> offset = 1
+      //   Offset for the line: 16 -------- 17   -> offset = 1
+
+      //   Offset for the line:  7 -- 14 --  6   -> offset = 2
+      //   Offset for the line: 15 -------- 13   -> offset = 1
+      //   Offset for the line:  4 -- 12 --  5   -> offset = 2
+
+      const SafeSTLArray<Index, 20> offsets_u =
+        {{2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 2, 1, 2, 1, 1, 1, 1, 1}};
+
+      TensorSize <dim> n_full_points_per_dir_red;
+      for (int dir = 0; dir < dim; ++dir)
+        n_full_points_per_dir_red[dir] = n_full_points_per_dir[dir] - n_vis_elements[dir];
+
+      // This array constaints the offsets of the points along the
+      // second (v) direction.
+      //   Offset for the line:  3 -- 10 --  2   -> offset = ov0
+      //   Offset for the line: 11 --------  9   -> offset = ov0
+      //   Offset for the line:  0 --  8 --  1   -> offset = ov0
+
+      //   Offset for the line: 19 -------- 18   -> offset = ov1
+      //   Offset for the line: 16 -------- 17   -> offset = ov1
+
+      //   Offset for the line:  7 -- 14 --  6   -> offset = ov0
+      //   Offset for the line: 15 -------- 13   -> offset = ov0
+      //   Offset for the line:  4 -- 12 --  5   -> offset = ov0
+
+      const Index ov0 = n_full_points_per_dir[0] + n_full_points_per_dir_red[0];
+      const Index ov1 = n_full_points_per_dir_red[0];
+      const SafeSTLArray<Index, 20> offsets_v =
+        {{ov0, ov0, ov0, ov0, ov0, ov0, ov0, ov0, ov0, ov0, ov0, ov0, ov0, ov0,
+          ov0, ov0, ov1, ov1, ov1, ov1}};
+
+      // Offset along the third (w) direction.
+      const Size ow0 = n_full_points_per_dir[0] * n_full_points_per_dir_red[1]
+                      + n_full_points_per_dir_red[0] * n_vis_elements[1];
+      const Size ow1 = n_full_points_per_dir_red[0] * n_full_points_per_dir_red[1];
+
+      const Index offsets_w = ow0 + ow1;
+
+      SafeSTLVector<Index> vtk_vertex_id_0(n_points_per_single_cell);
+      vtk_vertex_id_0[0]  = 0;
+      vtk_vertex_id_0[8]  = 1;
+      vtk_vertex_id_0[1]  = 2;
+      vtk_vertex_id_0[11] = vtk_vertex_id_0[0]  + n_full_points_per_dir[0];
+      vtk_vertex_id_0[9]  = vtk_vertex_id_0[11] + 1;
+      vtk_vertex_id_0[3]  = vtk_vertex_id_0[11] + n_full_points_per_dir_red[0];
+      vtk_vertex_id_0[10] = vtk_vertex_id_0[3]  + 1;
+      vtk_vertex_id_0[2]  = vtk_vertex_id_0[3]  + 2;
+
+      vtk_vertex_id_0[16]  = vtk_vertex_id_0[0]  + ow0;
+      vtk_vertex_id_0[17]  = vtk_vertex_id_0[16] + 1;
+      vtk_vertex_id_0[19]  = vtk_vertex_id_0[16] + n_full_points_per_dir_red[0];
+      vtk_vertex_id_0[18]  = vtk_vertex_id_0[19] + 1;
+
+      vtk_vertex_id_0[4]  = vtk_vertex_id_0[16] + ow1;
+      vtk_vertex_id_0[12] = vtk_vertex_id_0[4]  + 1;
+      vtk_vertex_id_0[5]  = vtk_vertex_id_0[4]  + 2;
+      vtk_vertex_id_0[15] = vtk_vertex_id_0[4] + n_full_points_per_dir[0];
+      vtk_vertex_id_0[13] = vtk_vertex_id_0[15] + 1;
+      vtk_vertex_id_0[7]  = vtk_vertex_id_0[15] + n_full_points_per_dir_red[0];
+      vtk_vertex_id_0[14] = vtk_vertex_id_0[7]  + 1;
+      vtk_vertex_id_0[6] = vtk_vertex_id_0[7]  + 2;
+
+      auto conn_el = connectivity_base.begin ();
+      auto cell = cells_grid->begin();
+      const auto end = cells_grid->end();
+      for (; cell != end; ++cell, ++conn_el)
+      {
+        conn_el->resize(n_points_per_single_cell);
+
+        SafeSTLArray<Index,dim> vtk_elem_tensor_idx = cell->get_tensor_index();
+        auto conn = conn_el->begin();
+        for (int i_pt = 0; i_pt < n_points_per_single_cell; ++i_pt, ++conn)
+          *conn = vtk_vertex_id_0[i_pt]
+                + offsets_u[i_pt] * vtk_elem_tensor_idx[0]
+                + offsets_v[i_pt] * vtk_elem_tensor_idx[1]
+                + offsets_w       * vtk_elem_tensor_idx[2];
+      }
+
     }
     else if (dim == 2)
     {
@@ -853,16 +949,17 @@ create_cells_solid_vtu_grid (const TensorSize<dim> &n_vis_elements,
 
       // This array constaints the offsets of the points along the
       // first (u) direction.
-      //   First offset for the line:  0 -- 4 -- 1 -> offset = 2
-      //   Second offset for the line: 7         5 -> offset = 1
-      //   Third offset for the line:  3 -- 6 -- 2 -> offset = 2
+      //   Offset for the line:  3 -- 6 -- 2 -> offset = 2
+      //   Offset for the line:  7         5 -> offset = 1
+      //   Offset for the line:  0 -- 4 -- 1 -> offset = 2
+
       const SafeSTLArray<Index, 8> offsets_u = {{2, 2, 2, 2, 2, 1, 2, 1}};
 
       // This container if for the offsets of the points along the
       // second (v) direction.
       const Index offsets_v = n_full_points_per_dir[0] * 2 - n_vis_elements[0];
 
-      SafeSTLVector<Index> vtk_vertex_id_0(8);
+      SafeSTLVector<Index> vtk_vertex_id_0(n_points_per_single_cell);
       vtk_vertex_id_0[0] = 0;
       vtk_vertex_id_0[4] = 1;
       vtk_vertex_id_0[1] = 2;
@@ -883,7 +980,7 @@ create_cells_solid_vtu_grid (const TensorSize<dim> &n_vis_elements,
 
         SafeSTLArray<Index,dim> vtk_elem_tensor_idx = cell->get_tensor_index();
         auto conn = conn_el->begin();
-        for (int i_pt = 0; i_pt < 8; ++i_pt, ++conn)
+        for (int i_pt = 0; i_pt < n_points_per_single_cell; ++i_pt, ++conn)
           *conn = vtk_vertex_id_0[i_pt]
                 + offsets_u[i_pt] * vtk_elem_tensor_idx[0]
                 + offsets_v       * vtk_elem_tensor_idx[1];
@@ -1511,25 +1608,25 @@ create_geometries ()
 
   // Inserting geometries.
   funcs_container_->insert_mapping(map_0, "map_0");
-  funcs_container_->insert_mapping(map_1, "map_1");
-  funcs_container_->insert_mapping(map_2, "map_2");
-  funcs_container_->insert_mapping(map_3, "map_3");
+//   funcs_container_->insert_mapping(map_1, "map_1");
+//   funcs_container_->insert_mapping(map_2, "map_2");
+//   funcs_container_->insert_mapping(map_3, "map_3");
 
   funcs_container_->insert_mapping(id_map_0, "id_map_0");
-  funcs_container_->insert_mapping(id_map_1, "id_map_1");
-  funcs_container_->insert_mapping(id_map_2, "id_map_2");
-  funcs_container_->insert_mapping(id_map_3, "id_map_3");
+//   funcs_container_->insert_mapping(id_map_1, "id_map_1");
+//   funcs_container_->insert_mapping(id_map_2, "id_map_2");
+//   funcs_container_->insert_mapping(id_map_3, "id_map_3");
 
   // Inserting associated functions.
   funcs_container_->insert_function(map_0, ps_func_0, "phys_func_0");
-  funcs_container_->insert_function(map_1, ps_func_1, "phys_func_0");
-  funcs_container_->insert_function(map_2, ps_func_2, "phys_func_0");
-  funcs_container_->insert_function(map_3, ps_func_3, "phys_func_0");
+//   funcs_container_->insert_function(map_1, ps_func_1, "phys_func_0");
+//   funcs_container_->insert_function(map_2, ps_func_2, "phys_func_0");
+//   funcs_container_->insert_function(map_3, ps_func_3, "phys_func_0");
 
   funcs_container_->insert_function(id_map_0, rf_func_0, "ref_func_0");
-  funcs_container_->insert_function(id_map_1, rf_func_1, "ref_func_1");
-  funcs_container_->insert_function(id_map_2, rf_func_2, "ref_func_2");
-  funcs_container_->insert_function(id_map_3, rf_func_3, "ref_func_3");
+//   funcs_container_->insert_function(id_map_1, rf_func_1, "ref_func_1");
+//   funcs_container_->insert_function(id_map_2, rf_func_2, "ref_func_2");
+//   funcs_container_->insert_function(id_map_3, rf_func_3, "ref_func_3");
 };
 
 IGA_NAMESPACE_CLOSE
