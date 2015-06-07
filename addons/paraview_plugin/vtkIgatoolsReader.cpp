@@ -140,7 +140,7 @@ int vtkIgatoolsReader::RequestData(
   vtkMultiBlockDataSet* mb =  vtkMultiBlockDataSet::SafeDownCast(output);
 
   // Setting the blocks.
-  int num_blocks = 0;
+  unsigned int num_blocks = 0;
   if (this->GetParametricMesh())
     ++num_blocks;
   if (this->GetPhysicalMesh())
