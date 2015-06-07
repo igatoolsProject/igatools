@@ -33,6 +33,7 @@ class vtkPoints;
 class vtkStructuredGrid;
 class vtkUnstructuredGrid;
 class vtkCellArray;
+class vtkPointSet;
 
 
 IGA_NAMESPACE_OPEN
@@ -233,9 +234,10 @@ private:
 
   /*
    * Creates a VTK structured grid for the solid block.
+   * For the 1D case, a VTK unstructured grid is returned.
    */
   template <int dim, int codim>
-  static vtkSmartPointer<vtkStructuredGrid>
+  static vtkSmartPointer<vtkPointSet>
   create_solid_vts_grid(const MapFunPtr_<dim, codim> mapping,
                         const TensorSize<dim> &n_vis_elements);
 
