@@ -418,6 +418,8 @@ create_points_solid_vtk_grid(const MapFunPtr_<dim, codim> mapping,
                         "direction."));
 #endif
 
+  static const int space_dim = dim + codim;
+
   const auto quad = IGAVTK::create_visualization_quadrature<dim>
       (n_vis_elements, quadratic_cells);
   const auto cartesian_grid = mapping->get_grid();
@@ -453,7 +455,7 @@ create_points_solid_vtk_grid(const MapFunPtr_<dim, codim> mapping,
     for (const auto &mask : points_mask)
     {
       const auto &point = element_vertices_tmp[mask];
-      for (int dir = 0; dir < dim ; ++dir)
+      for (int dir = 0; dir < space_dim ; ++dir)
         point_tmp[dir] = point[dir];
       points->SetPoint (*pm++, point_tmp);
     }
