@@ -419,7 +419,7 @@ create_points_solid_vtk_grid(const MapFunPtr_<dim, codim> mapping,
 #endif
 
   const auto quad = IGAVTK::create_visualization_quadrature<dim>
-      (n_vis_elements, false);
+      (n_vis_elements, quadratic_cells);
   const auto cartesian_grid = mapping->get_grid();
 
   SafeSTLVector<SafeSTLVector<Index>> points_map;
@@ -690,8 +690,8 @@ parse_file ()
 //   xml_in >> BOOST_SERIALIZATION_NVP (funcs_container_);
 //   xml_istream.close();
 //   Assert here if funcs_container_ is void.
-//   this->template create_geometries<2>();
-  this->template create_geometries<3>();
+  this->template create_geometries<2>();
+//   this->template create_geometries<3>();
 };
 
 
@@ -767,7 +767,6 @@ create_cells_solid_vtu_grid (const TensorSize<dim> &n_vis_elements,
                              const Size &n_bezier_elements,
                              const bool quadratic_cells)
 {
-  Assert (!quadratic_cells, ExcNotImplemented());
 #ifndef NDEBUG
   for (int dir = 0; dir < dim; ++dir)
     Assert (n_vis_elements[dir] > 0,
@@ -775,74 +774,211 @@ create_cells_solid_vtu_grid (const TensorSize<dim> &n_vis_elements,
                         "direction."));
 #endif
 
-  vtkSmartPointer<vtkIdTypeArray> cell_ids = vtkSmartPointer<vtkIdTypeArray>::New();
+  AssertThrow (n_bezier_elements > 0, ExcMessage("0 Bezier elements found."));
 
-  TensorSize<dim> n_points_per_direction;
-  // TODO: to be modified.
+  // Number of vertices in a dim-dimensional square.
+  static constexpr int n_vertices = UnitElement<dim>::template num_elem<0>();
+
+  TensorSize<dim> n_elem_bound_per_dir;
   for (int dir = 0; dir < dim; ++dir)
-    n_points_per_direction[dir] = n_vis_elements[dir] + 1;
+    n_elem_bound_per_dir[dir] = n_vis_elements[dir] + 1;
 
-  const auto grid = CartesianGrid<dim>::create (n_points_per_direction);
+  // This grid is going to help in building the connectivity.
+  // Every element of the grid refers to a cell.
+  const auto cells_grid = CartesianGrid<dim>::create (n_elem_bound_per_dir);
 
-  static constexpr iga::Size n_points_per_single_cell = pow (2, dim);
-  const int n_cells_per_bezier = grid->get_num_all_elems ();
-  const int n_points_per_bezier_element = n_points_per_direction.flat_size ();
+  // Number of cells per Bezier element.
+  const Size n_cells_per_bezier = n_vis_elements.flat_size();
+
+  // Total number of cells.
   const int n_total_cells = n_bezier_elements * n_cells_per_bezier;
 
-  // Creating the connectivity base ------------------------------------------//
-  Connectivity_t_<dim> connectivity_base (n_cells_per_bezier);
-
-  // Building the offsets container. According to the vtk elements connectivity.
-  using T_ = SafeSTLArray < SafeSTLArray<int, dim>, n_points_per_single_cell>;
-  const T_ delta_idx =
-    dim == 1 ? T_({{0},       {1}})                          :   // dim = 1
-    dim == 2 ? T_({{0, 0},    {1, 0},    {1, 1},    {0, 1}}) :   // dim = 2
-               T_({{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
-                   {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}}); // dim = 3
-
-  const TensorIndex<dim> weight_points =
-    MultiArrayUtils< dim >::compute_weight(n_points_per_direction);
-
-  TensorIndex<dim> vtk_vertex_tensor_idx;
-
-  auto conn_el = connectivity_base.begin ();
-  auto elem = grid->begin();
-  const auto elem_end = grid->end();
-  for (; elem != elem_end; ++elem, ++conn_el)
-  {
-    SafeSTLArray<Index,dim> vtk_elem_tensor_idx = elem->get_tensor_index();
-
-    auto conn = conn_el->begin ();
-    for (int iVertex = 0; iVertex < n_points_per_single_cell; ++iVertex, ++conn)
-    {
-        for (int i = 0; i < dim; ++i)
-          vtk_vertex_tensor_idx[i] = vtk_elem_tensor_idx[i] + delta_idx[iVertex][i];
-
-        *conn = MultiArrayUtils<dim>::tensor_to_flat_index(vtk_vertex_tensor_idx, weight_points);
-    }
-  }
+  // These variables are filled inside the if-else blocks --------------------//
+  // Total number of VTK points into a single Bezier element.
+  Size n_points_per_bezier_element = 0;
+  // Connectivity of the VTK cells referrered to the VTK points numbering.
+  SafeSTLVector<SafeSTLVector<Index>> connectivity_base (n_cells_per_bezier);
   //--------------------------------------------------------------------------//
 
-  cell_ids->SetNumberOfComponents (n_points_per_single_cell + 1);
+
+  if (quadratic_cells) // VTK quadratic cells
+  {
+    // Total number of VTK points into a single quadratic cell.
+    const Size n_points_per_single_cell = dim == 1 ? 3 :  // 1D
+                                          dim == 2 ? 8 :  // 2D
+                                                    20;   // 3D
+
+    // Getting the total number of points into a single Bezier element.
+    n_points_per_bezier_element = 0;
+    switch (dim)
+    {
+      case 1:
+        n_points_per_bezier_element = n_vis_elements[0] * 2 + 1;
+        break;
+      case 2:
+        n_points_per_bezier_element =
+          (n_vis_elements[0] * 2 + 1) * (n_vis_elements[1] * 2 + 1) 
+          - n_cells_per_bezier;
+        break;
+      case 3:
+        n_points_per_bezier_element =
+          (n_vis_elements[0] * 2 + 1) * (n_vis_elements[1] * 2 + 1) 
+          * (n_vis_elements[2] * 2 + 1) - n_cells_per_bezier * 4
+          - n_vis_elements[0] * n_vis_elements[1]
+          - n_vis_elements[0] * n_vis_elements[2]
+          - n_vis_elements[1] * n_vis_elements[2];
+        break;
+      default:
+        break;
+    }
+
+    // Creating the connectivity base ----------------------------------------//
+    TensorSize<dim> n_full_points_per_dir;
+    for (int dir = 0; dir < dim; ++dir)
+      n_full_points_per_dir[dir] = n_vis_elements[dir] * 2 + 1;
+
+    if (dim == 3)
+    {
+      Assert (false, ExcNotImplemented());
+    }
+    else if (dim == 2)
+    {
+      //  This is the connectivity pattern of the 2D VTK quadratic element.
+      //
+      //         3 -- 6 -- 2
+      //         |         |
+      //         7         5
+      //         |         |
+      //         0 -- 4 -- 1
+
+      // This array constaints the offsets of the points along the
+      // first (u) direction.
+      //   First offset for the line:  0 -- 4 -- 1 -> offset = 2
+      //   Second offset for the line: 7         5 -> offset = 1
+      //   Third offset for the line:  3 -- 6 -- 2 -> offset = 2
+      const SafeSTLArray<Index, 8> offsets_u = {{2, 2, 2, 2, 2, 1, 2, 1}};
+
+      // This container if for the offsets of the points along the
+      // second (v) direction.
+      const Index offsets_v = n_full_points_per_dir[0] * 2 - n_vis_elements[0];
+
+      SafeSTLVector<Index> vtk_vertex_id_0(8);
+      vtk_vertex_id_0[0] = 0;
+      vtk_vertex_id_0[4] = 1;
+      vtk_vertex_id_0[1] = 2;
+
+      vtk_vertex_id_0[7] = n_full_points_per_dir[0];
+      vtk_vertex_id_0[5] = vtk_vertex_id_0[7] + 1;
+
+      vtk_vertex_id_0[3] = vtk_vertex_id_0[7] + n_full_points_per_dir[0] - n_vis_elements[0];
+      vtk_vertex_id_0[6] = vtk_vertex_id_0[3] + 1;
+      vtk_vertex_id_0[2] = vtk_vertex_id_0[3] + 2;
+
+      auto conn_el = connectivity_base.begin ();
+      auto cell = cells_grid->begin();
+      const auto end = cells_grid->end();
+      for (; cell != end; ++cell, ++conn_el)
+      {
+        conn_el->resize(n_points_per_single_cell);
+
+        SafeSTLArray<Index,dim> vtk_elem_tensor_idx = cell->get_tensor_index();
+        auto conn = conn_el->begin();
+        for (int i_pt = 0; i_pt < 8; ++i_pt, ++conn)
+          *conn = vtk_vertex_id_0[i_pt]
+                + offsets_u[i_pt] * vtk_elem_tensor_idx[0]
+                + offsets_v       * vtk_elem_tensor_idx[1];
+      }
+
+    }
+    else if (dim == 1)
+    {
+      //  This is the connectivity pattern of the 1D VTK quadratic element.
+      //
+      //         0 -- 2 -- 1
+
+      Index point_id = 0;
+      for (auto &conn_el : connectivity_base)
+      {
+        conn_el = {point_id, point_id+2, point_id+1};
+        point_id += 2;
+      }
+    }
+
+  } // VTK quadratic cells
+
+
+  else // VTK linear cells
+  {
+    n_points_per_bezier_element = n_elem_bound_per_dir.flat_size ();
+    const Size n_points_per_single_cell = n_vertices;
+
+    // Creating the connectivity base ----------------------------------------//
+
+    // Building the offsets container. According to the vtk elements connectivity.
+    using T_ = SafeSTLArray < SafeSTLArray<int, dim>, n_vertices>;
+    const T_ delta_idx =
+      dim == 1 ? T_({{0},       {1}})                          :   // dim = 1
+      dim == 2 ? T_({{0, 0},    {1, 0},    {1, 1},    {0, 1}}) :   // dim = 2
+                T_({{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
+                    {0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}}); // dim = 3
+
+    const TensorIndex<dim> weight_points =
+      MultiArrayUtils< dim >::compute_weight(n_elem_bound_per_dir);
+
+    TensorIndex<dim> vtk_vertex_tensor_idx;
+
+    auto conn_el = connectivity_base.begin ();
+    auto cell = cells_grid->begin();
+    const auto end = cells_grid->end();
+    for (; cell != end; ++cell, ++conn_el)
+    {
+      conn_el->resize(n_points_per_single_cell);
+
+      SafeSTLArray<Index,dim> vtk_elem_tensor_idx = cell->get_tensor_index();
+
+      auto conn = conn_el->begin ();
+      for (int iVertex = 0; iVertex < n_points_per_single_cell; ++iVertex, ++conn)
+      {
+          for (int i = 0; i < dim; ++i)
+            vtk_vertex_tensor_idx[i] = vtk_elem_tensor_idx[i]
+                                      + delta_idx[iVertex][i];
+
+          *conn = MultiArrayUtils<dim>::tensor_to_flat_index
+            (vtk_vertex_tensor_idx, weight_points);
+      }
+    }
+    //--------------------------------------------------------------------------//
+
+  } // VTK linear cells
+
+
+  auto cell_ids = vtkSmartPointer<vtkIdTypeArray>::New();
+
+  const Size n_points_per_single_cell = connectivity_base[0].size();
+  const Size tuple_size = n_points_per_single_cell + 1;
+  cell_ids->SetNumberOfComponents (tuple_size);
   cell_ids->SetNumberOfTuples (n_total_cells);
 
-  const int tuple_size = n_points_per_single_cell + 1;
-  int cell_id = 0;
+  vtkIdType* tuple = new vtkIdType[tuple_size];
+  tuple[0] = tuple_size - 1;
+
+  Index cell_id = 0;
   for (int be = 0; be < n_bezier_elements; ++be)
   {
     const int vtk_vertex_id_offset = n_points_per_bezier_element * be;
+
+    // Iterating along the cells of one Bezier element.
     for (const auto& cc : connectivity_base)
     {
-      vtkIdType* tuple = new vtkIdType[tuple_size];
-      tuple[0] = n_points_per_single_cell;
       int point_id = 1;
       for (const auto& c : cc)
         tuple[point_id++] = c + vtk_vertex_id_offset;
+
       cell_ids->SetTupleValue(cell_id++, tuple);
     }
   }
 
-  vtkSmartPointer<vtkCellArray> cells = vtkSmartPointer<vtkCellArray>::New();
+  auto cells = vtkSmartPointer<vtkCellArray>::New();
   cells->SetCells (cell_ids->GetNumberOfTuples() , cell_ids);
 
   return cells;
@@ -1129,19 +1265,23 @@ create_points_numbering_map (const shared_ptr<const CartesianGrid<dim>> cartesia
       // Number of visualization points per Bezier element in each direction.
       const auto n_pts_dir_per_bezier_elem = quad->get_num_coords_direction();
 
+      // Iteration along all the quadrature point.
+      // Only the points in an edge are added to the mask.
       const auto &quad_points_1d = quad->get_points_1d();
       const Size n_quad_points = quad->get_num_points();
       for (int i_pt = 0; i_pt < n_quad_points; ++i_pt)
       {
         const auto tensor_id = quad_points_1d.flat_to_tensor(i_pt);
 
-        // NOTE: this also works for quadratic 1D elements.
-        int active_directions = 0;
+        // If the number of odd values is > 1. This means that the point is
+        // not in an edge.
+        // For the case 1D, this conditions is never fulfilled, no
+        // points will be removed (this is what is desired).
+        Size n_odd_values = 0;
         for (int dir = 0; dir < dim; ++dir)
-          if ( (tensor_id[dir] > 0) && (tensor_id[dir] < (n_pts_dir_per_bezier_elem[dir] - 1)) )
-            ++active_directions;
+          n_odd_values += tensor_id[dir] % 2;
 
-        if (active_directions < 2) // The point is on an edge.
+        if (n_odd_values < 2) // It's on an edge.
           points_mask.push_back(i_pt);
       }
 

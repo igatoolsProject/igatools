@@ -57,14 +57,6 @@ private:
   typedef std::shared_ptr<Self_t_> SelfPtr_t_;
 
   /*
-   * Container type for the connectivity of a block of cells contained
-   * in a single Bezier element.
-   */
-  template <int dim>
-  using Connectivity_t_ = 
-    SafeSTLVector<SafeSTLArray<Index, constexpr_pow(2, dim)>>;
-
-  /*
    * Alias for a shared pointer of a Quadrature type.
    */
   template <int dim>
