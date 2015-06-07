@@ -281,6 +281,16 @@ private:
                                SafeSTLVector<Index> &points_mask,
                                Size &n_total_points);
 
+  /*
+   * Creates the connectivity of the VTK quadratic cells for a single
+   * Bezier element.
+   */
+  template <int dim>
+  static void create_VTK_quadratic_element_connectivity
+    (const TensorSize<dim> &n_vis_elements,
+     SafeSTLVector<SafeSTLVector<Index>> &connectivity,
+     Size &n_points_per_bezier_element);
+
 
   void
   inline
