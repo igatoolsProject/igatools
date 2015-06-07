@@ -150,6 +150,7 @@ fill_vtk_grids(vtkMultiBlockDataSet *const mb,
                const bool create_control_mesh,
                const bool create_knot_mesh) const
 {
+
   if (n_solid_mesh == 0)
     return;
 
@@ -191,6 +192,9 @@ fill_vtk_grids(vtkMultiBlockDataSet *const mb,
   Index solid_mesh_index = 0;
   Index control_mesh_index = 0;
 
+  this->template fill_vtk_grid<1, 0>(mb, is_identity,
+                                     create_control_mesh, create_knot_mesh,
+                                     solid_mesh_index, control_mesh_index);
   this->template fill_vtk_grid<2, 0>(mb, is_identity,
                                      create_control_mesh, create_knot_mesh,
                                      solid_mesh_index, control_mesh_index);
@@ -790,14 +794,13 @@ generate_control_mesh_grids(const MapFunPtr_<dim, codim> mapping,
   }
   else
   {
-    auto grid = vtkSmartPointer<vtkStructuredGrid>::New();
-    if (dim == 2)
-      grid->SetDimensions(n_pts_dir[0], n_pts_dir[1], 1);
-    else if (dim == 3)
-      grid->SetDimensions(n_pts_dir[0], n_pts_dir[1], n_pts_dir[2]);
+    double grid_dim[3] = {1, 1, 1};
+    for (int dir = 0; dir < dim; ++dir)
+      grid_dim[dir] = n_pts_dir[dir];;
 
+    auto grid = vtkSmartPointer<vtkStructuredGrid>::New();
+    grid->SetDimensions(grid_dim[0], grid_dim[1], grid_dim[2]);
     grid->SetPoints(points);
-    grid->PrintSelf(std::cout, vtkIndent());
     vtk_block->SetBlock (vtk_block_id, grid);
   }
 
@@ -815,7 +818,7 @@ parse_file ()
 //   xml_in >> BOOST_SERIALIZATION_NVP (funcs_container_);
 //   xml_istream.close();
 //   Assert here if funcs_container_ is void.
-  this->create_geometries_1D();
+      this->template create_geometries<1>();
 //   this->template create_geometries<2>();
 //   this->template create_geometries<3>();
 };
@@ -830,6 +833,16 @@ get_number_functions () const
   Size &n_identity = number_functions[0];
   Size &n_not_identity = number_functions[1];
   Size &n_ig_functions = number_functions[2];
+
+  for (const auto& m : funcs_container_->template get_all_mappings<1, 0>())
+    if (std::dynamic_pointer_cast<IdentityFunction<1, 1>>(m.first) != nullptr)
+      ++n_identity;
+    else
+    {
+      ++n_not_identity;
+      if (std::dynamic_pointer_cast<IgFunction<1, 0, 1, 1>>(m.first) != nullptr)
+        ++n_ig_functions;
+    }
 
   for (const auto& m : funcs_container_->template get_all_mappings<2, 0>())
     if (std::dynamic_pointer_cast<IdentityFunction<2, 2>>(m.first) != nullptr)
@@ -1616,220 +1629,22 @@ create_geometries ()
   using std::dynamic_pointer_cast;
   using std::const_pointer_cast;
 
-  static const int codim = 0;
-  static const int space_dim = dim + codim;
-  static const int range = dim;
-  static const int rank = 1;
-  static const Transformation transf = Transformation::h_grad;
-
-  using Fun_ = Function<dim, codim, range, rank>;
-  using IgFun_ = IgFunction<dim, codim, range, rank>;
-  using PhysSpace_ = PhysicalSpace<dim, range, rank, codim, transf>;
-  using RefSpace_ = ReferenceSpace<dim, range, rank>;
-  using IdFun_ = IdentityFunction<dim, space_dim>;
-
-  // File names;
-  const string fname_0 = "patch_0_" + std::to_string (dim) + "D.xml";
-  const string fname_1 = "patch_1_" + std::to_string (dim) + "D.xml";
-  const string fname_2 = "patch_2_" + std::to_string (dim) + "D.xml";
-  const string fname_3 = "patch_3_" + std::to_string (dim) + "D.xml";
-
-  // Reading maps
-  const auto map_0 = get_mapping_from_file<dim, codim> (fname_0);
-  const auto map_1 = get_mapping_from_file<dim, codim> (fname_1);
-  const auto map_2 = get_mapping_from_file<dim, codim> (fname_2);
-  const auto map_3 = get_mapping_from_file<dim, codim> (fname_3);
-
-  // Transforming mapping to ig mapping.
-  const auto ig_func_0 = dynamic_pointer_cast<IgFun_>(map_0);
-  const auto ig_func_1 = dynamic_pointer_cast<IgFun_>(map_1);
-  const auto ig_func_2 = dynamic_pointer_cast<IgFun_>(map_2);
-  const auto ig_func_3 = dynamic_pointer_cast<IgFun_>(map_3);
-
-  // Getting ig spaces.
-  const auto space_0 = ig_func_0->get_ig_space ();
-  const auto space_1 = ig_func_1->get_ig_space ();
-  const auto space_2 = ig_func_2->get_ig_space ();
-  const auto space_3 = ig_func_3->get_ig_space ();
-
-  // Getting reference spaces.
-  const auto ref_space_0 = const_pointer_cast<RefSpace_>(dynamic_pointer_cast<const RefSpace_>(space_0));
-  const auto ref_space_1 = const_pointer_cast<RefSpace_>(dynamic_pointer_cast<const RefSpace_>(space_1));
-  const auto ref_space_2 = const_pointer_cast<RefSpace_>(dynamic_pointer_cast<const RefSpace_>(space_2));
-  const auto ref_space_3 = const_pointer_cast<RefSpace_>(dynamic_pointer_cast<const RefSpace_>(space_3));
-
-  // Building physical spaces.
-  const auto phys_space_0 = PhysSpace_::create (ref_space_0, map_0);
-  const auto phys_space_1 = PhysSpace_::create (ref_space_1, map_1);
-  const auto phys_space_2 = PhysSpace_::create (ref_space_2, map_2);
-  const auto phys_space_3 = PhysSpace_::create (ref_space_3, map_3);
-
-  // Getting grids;
-  const auto grid_0 = ref_space_0->get_grid ();
-  const auto grid_1 = ref_space_1->get_grid ();
-  const auto grid_2 = ref_space_2->get_grid ();
-  const auto grid_3 = ref_space_3->get_grid ();
-
-  // Creating identity functions.
-  auto id_map_0 = IdFun_::create (grid_0);
-  auto id_map_1 = IdFun_::create (grid_1);
-  auto id_map_2 = IdFun_::create (grid_2);
-  auto id_map_3 = IdFun_::create (grid_3);
-
-  Epetra_SerialComm comm;
-
-  // Creating coefficients for ig physical space functions.
-  auto phys_coeff_0 = EpetraTools::create_vector(
-                        EpetraTools::create_map(phys_space_0, "active", comm));
-  const auto dofs_dist_0 = space_0->get_dof_distribution();
-  const Real val0 = 10.0;
-  Index counter = 0;
-  for (const auto& d : dofs_dist_0->get_dofs_view ())
-  {
-    double val = (counter++) * 1.5 + val0;
-    phys_coeff_0->ReplaceGlobalValues (1, &val, &d);
-//     phys_coeff_0->ReplaceGlobalValues (1, &val0, &d);
-  }
-
-  auto phys_coeff_1 = EpetraTools::create_vector(
-                        EpetraTools::create_map(phys_space_1, "active", comm));
-  const auto dofs_dist_1 = space_1->get_dof_distribution();
-  const Real val1 = 11.0;
-  counter = 0;
-  for (const auto& d : dofs_dist_1->get_dofs_view ())
-  {
-    double val = (counter++) * 1.5 + val1;
-    phys_coeff_1->ReplaceGlobalValues (1, &val, &d);
-//     phys_coeff_1->ReplaceGlobalValues (1, &val1, &d);
-  }
-
-  auto phys_coeff_2 = EpetraTools::create_vector(
-                        EpetraTools::create_map(phys_space_2, "active", comm));
-  const auto dofs_dist_2 = space_2->get_dof_distribution();
-  const Real val2 = 12.0;
-  counter = 0;
-  for (const auto& d : dofs_dist_2->get_dofs_view ())
-  {
-    double val = (counter++) * 1.5 + val2;
-    phys_coeff_2->ReplaceGlobalValues (1, &val, &d);
-//     phys_coeff_2->ReplaceGlobalValues (1, &val2, &d);
-  }
-
-  auto phys_coeff_3 = EpetraTools::create_vector(
-                        EpetraTools::create_map(phys_space_3, "active", comm));
-  const auto dofs_dist_3 = space_3->get_dof_distribution();
-  const Real val3 = 13.0;
-  counter = 0;
-  for (const auto& d : dofs_dist_3->get_dofs_view ())
-  {
-    double val = (counter++) * 1.5 + val3;
-    phys_coeff_3->ReplaceGlobalValues (1, &val, &d);
-//     phys_coeff_3->ReplaceGlobalValues (1, &val3, &d);
-  }
-
-
-  // Creating coefficients for ig reference space functions.
-  auto ref_coeff_0 = EpetraTools::create_vector(
-                        EpetraTools::create_map(ref_space_0, "active", comm));
-  const Real ref_val0 = 20.0;
-  counter = 0;
-  for (const auto& d : dofs_dist_0->get_dofs_view ())
-  {
-    double val = (counter++) * 1.5 + ref_val0;
-    ref_coeff_0->ReplaceGlobalValues (1, &val, &d);
-//     ref_coeff_0->ReplaceGlobalValues (1, &ref_val0, &d);
-  }
-
-  auto ref_coeff_1 = EpetraTools::create_vector(
-                        EpetraTools::create_map(ref_space_1, "active", comm));
-  const Real ref_val1 = 21.0;
-  counter = 0;
-  for (const auto& d : dofs_dist_1->get_dofs_view ())
-  {
-    double val = (counter++) * 1.5 + ref_val1;
-    ref_coeff_1->ReplaceGlobalValues (1, &val, &d);
-//     ref_coeff_1->ReplaceGlobalValues (1, &ref_val1, &d);
-  }
-
-  auto ref_coeff_2 = EpetraTools::create_vector(
-                        EpetraTools::create_map(ref_space_2, "active", comm));
-  const Real ref_val2 = 22.0;
-  counter = 0;
-  for (const auto& d : dofs_dist_2->get_dofs_view ())
-  {
-    double val = (counter++) * 1.5 + ref_val2;
-    ref_coeff_2->ReplaceGlobalValues (1, &val, &d);
-//     ref_coeff_2->ReplaceGlobalValues (1, &ref_val2, &d);
-  }
-
-  auto ref_coeff_3 = EpetraTools::create_vector(
-                        EpetraTools::create_map(ref_space_3, "active", comm));
-  const Real ref_val3 = 23.0;
-  counter = 0;
-  for (const auto& d : dofs_dist_3->get_dofs_view ())
-  {
-    double val = (counter++) * 1.5 + ref_val3;
-    ref_coeff_3->ReplaceGlobalValues (1, &val, &d);
-//     ref_coeff_3->ReplaceGlobalValues (1, &ref_val3, &d);
-  }
-
-  // Creating ig functions for physical spaces.
-  auto ps_func_0 = dynamic_pointer_cast<Fun_>(IgFun_::create (phys_space_0, phys_coeff_0));
-  auto ps_func_1 = dynamic_pointer_cast<Fun_>(IgFun_::create (phys_space_1, phys_coeff_1));
-  auto ps_func_2 = dynamic_pointer_cast<Fun_>(IgFun_::create (phys_space_2, phys_coeff_2));
-  auto ps_func_3 = dynamic_pointer_cast<Fun_>(IgFun_::create (phys_space_3, phys_coeff_3));
-
-  // Creating ig functions for reference spaces.
-  auto rf_func_0 = dynamic_pointer_cast<Fun_>(IgFun_::create (ref_space_0, ref_coeff_0));
-  auto rf_func_1 = dynamic_pointer_cast<Fun_>(IgFun_::create (ref_space_1, ref_coeff_1));
-  auto rf_func_2 = dynamic_pointer_cast<Fun_>(IgFun_::create (ref_space_2, ref_coeff_2));
-  auto rf_func_3 = dynamic_pointer_cast<Fun_>(IgFun_::create (ref_space_3, ref_coeff_3));
-
-  // Adding all the stuff to the functions container.
-  funcs_container_ = std::make_shared<FunctionsContainer>();
-
-  // Inserting geometries.
-  funcs_container_->insert_mapping(map_0, "map_0");
-//   funcs_container_->insert_mapping(map_1, "map_1");
-//   funcs_container_->insert_mapping(map_2, "map_2");
-//   funcs_container_->insert_mapping(map_3, "map_3");
-
-  funcs_container_->insert_mapping(id_map_0, "id_map_0");
-//   funcs_container_->insert_mapping(id_map_1, "id_map_1");
-//   funcs_container_->insert_mapping(id_map_2, "id_map_2");
-//   funcs_container_->insert_mapping(id_map_3, "id_map_3");
-
-  // Inserting associated functions.
-  funcs_container_->insert_function(map_0, ps_func_0, "phys_func_0");
-//   funcs_container_->insert_function(map_1, ps_func_1, "phys_func_0");
-//   funcs_container_->insert_function(map_2, ps_func_2, "phys_func_0");
-//   funcs_container_->insert_function(map_3, ps_func_3, "phys_func_0");
-
-  funcs_container_->insert_function(id_map_0, rf_func_0, "ref_func_0");
-//   funcs_container_->insert_function(id_map_1, rf_func_1, "ref_func_1");
-//   funcs_container_->insert_function(id_map_2, rf_func_2, "ref_func_2");
-//   funcs_container_->insert_function(id_map_3, rf_func_3, "ref_func_3");
-};
-
-void
-IGAVTK::
-create_geometries_1D ()
-{
-  using std::dynamic_pointer_cast;
-  using std::const_pointer_cast;
-
-  static const int dim = 1;
-  static const int codim = 1;
+  static const int codim = dim == 1 ? 1 : 0;
   static const int space_dim = dim + codim;
   static const int range = space_dim;
   static const int rank = 1;
   static const Transformation transf = Transformation::h_grad;
 
-  using Fun_ = Function<dim, codim, range, rank>;
+  using Fun_ = Function<dim, 0, range, rank>;
+  using FunPhys_ = Function<dim, codim, range, rank>;
   using IgFun_ = IgFunction<dim, 0, range, rank>;
-  using PhysSpace_ = PhysicalSpace<dim, range, rank, 0, transf>;
+  using IgFunPhys_ = IgFunction<dim, codim, range, rank>;
+  using PhysSpace_ = PhysicalSpace<dim, range, rank, codim, transf>;
   using RefSpace_ = ReferenceSpace<dim, range, rank>;
-  using IdFun_ = IdentityFunction<dim, space_dim>;
+  using IdFun_ = IdentityFunction<dim, dim>;
+  using MapFunction_ = Function<dim, 0, space_dim, 1>;
+  using Space_ = Space<dim, 0, space_dim, 1>;
+  using Grid_ = CartesianGrid<dim>;
 
   // File names;
   const string fname_0 = "patch_0_" + std::to_string (dim) + "D.xml";
@@ -1838,50 +1653,47 @@ create_geometries_1D ()
   const string fname_3 = "patch_3_" + std::to_string (dim) + "D.xml";
 
   // Reading maps
-  const auto map_0 = get_mapping_from_file<dim, codim> (fname_0);
-  const auto map_1 = get_mapping_from_file<dim, codim> (fname_1);
-  const auto map_2 = get_mapping_from_file<dim, codim> (fname_2);
-  const auto map_3 = get_mapping_from_file<dim, codim> (fname_3);
+  const shared_ptr<MapFunction_> map_0 = get_mapping_from_file<dim, codim> (fname_0);
+  const shared_ptr<MapFunction_> map_1 = get_mapping_from_file<dim, codim> (fname_1);
+  const shared_ptr<MapFunction_> map_2 = get_mapping_from_file<dim, codim> (fname_2);
+  const shared_ptr<MapFunction_> map_3 = get_mapping_from_file<dim, codim> (fname_3);
 
-#if 0
   // Transforming mapping to ig mapping.
-  const auto ig_func_0 = dynamic_pointer_cast<IgFun_>(map_0);
-  const auto ig_func_1 = dynamic_pointer_cast<IgFun_>(map_1);
-  const auto ig_func_2 = dynamic_pointer_cast<IgFun_>(map_2);
-  const auto ig_func_3 = dynamic_pointer_cast<IgFun_>(map_3);
+  const shared_ptr<IgFun_> ig_func_0 = dynamic_pointer_cast<IgFun_>(map_0);
+  const shared_ptr<IgFun_> ig_func_1 = dynamic_pointer_cast<IgFun_>(map_1);
+  const shared_ptr<IgFun_> ig_func_2 = dynamic_pointer_cast<IgFun_>(map_2);
+  const shared_ptr<IgFun_> ig_func_3 = dynamic_pointer_cast<IgFun_>(map_3);
 
   // Getting ig spaces.
-  const auto space_0 = ig_func_0->get_ig_space ();
-  const auto space_1 = ig_func_1->get_ig_space ();
-  const auto space_2 = ig_func_2->get_ig_space ();
-  const auto space_3 = ig_func_3->get_ig_space ();
+  const shared_ptr<const Space_> space_0 = ig_func_0->get_ig_space ();
+  const shared_ptr<const Space_> space_1 = ig_func_1->get_ig_space ();
+  const shared_ptr<const Space_> space_2 = ig_func_2->get_ig_space ();
+  const shared_ptr<const Space_> space_3 = ig_func_3->get_ig_space ();
 
   // Getting reference spaces.
-  const auto ref_space_0 = const_pointer_cast<RefSpace_>(dynamic_pointer_cast<const RefSpace_>(space_0));
-  const auto ref_space_1 = const_pointer_cast<RefSpace_>(dynamic_pointer_cast<const RefSpace_>(space_1));
-  const auto ref_space_2 = const_pointer_cast<RefSpace_>(dynamic_pointer_cast<const RefSpace_>(space_2));
-  const auto ref_space_3 = const_pointer_cast<RefSpace_>(dynamic_pointer_cast<const RefSpace_>(space_3));
+  const shared_ptr<RefSpace_> ref_space_0 = const_pointer_cast<RefSpace_>(dynamic_pointer_cast<const RefSpace_>(space_0));
+  const shared_ptr<RefSpace_> ref_space_1 = const_pointer_cast<RefSpace_>(dynamic_pointer_cast<const RefSpace_>(space_1));
+  const shared_ptr<RefSpace_> ref_space_2 = const_pointer_cast<RefSpace_>(dynamic_pointer_cast<const RefSpace_>(space_2));
+  const shared_ptr<RefSpace_> ref_space_3 = const_pointer_cast<RefSpace_>(dynamic_pointer_cast<const RefSpace_>(space_3));
 
   // Building physical spaces.
-  const auto phys_space_0 = PhysSpace_::create (ref_space_0, map_0);
-  const auto phys_space_1 = PhysSpace_::create (ref_space_1, map_1);
-  const auto phys_space_2 = PhysSpace_::create (ref_space_2, map_2);
-  const auto phys_space_3 = PhysSpace_::create (ref_space_3, map_3);
+  const shared_ptr<PhysSpace_> phys_space_0 = PhysSpace_::create (ref_space_0, map_0);
+  const shared_ptr<PhysSpace_> phys_space_1 = PhysSpace_::create (ref_space_1, map_1);
+  const shared_ptr<PhysSpace_> phys_space_2 = PhysSpace_::create (ref_space_2, map_2);
+  const shared_ptr<PhysSpace_> phys_space_3 = PhysSpace_::create (ref_space_3, map_3);
 
   // Getting grids;
-  const auto grid_0 = ref_space_0->get_grid ();
-  const auto grid_1 = ref_space_1->get_grid ();
-  const auto grid_2 = ref_space_2->get_grid ();
-  const auto grid_3 = ref_space_3->get_grid ();
+  const shared_ptr<Grid_> grid_0 = ref_space_0->get_grid ();
+  const shared_ptr<Grid_> grid_1 = ref_space_1->get_grid ();
+  const shared_ptr<Grid_> grid_2 = ref_space_2->get_grid ();
+  const shared_ptr<Grid_> grid_3 = ref_space_3->get_grid ();
 
   // Creating identity functions.
-  auto id_map_0 = IdFun_::create (grid_0);
-  auto id_map_1 = IdFun_::create (grid_1);
-  auto id_map_2 = IdFun_::create (grid_2);
-  auto id_map_3 = IdFun_::create (grid_3);
-#endif
+  const auto id_map_0 = IdFun_::create (grid_0);
+  const auto id_map_1 = IdFun_::create (grid_1);
+  const auto id_map_2 = IdFun_::create (grid_2);
+  const auto id_map_3 = IdFun_::create (grid_3);
 
-#if 0
   Epetra_SerialComm comm;
 
   // Creating coefficients for ig physical space functions.
@@ -1980,17 +1792,16 @@ create_geometries_1D ()
   }
 
   // Creating ig functions for physical spaces.
-  auto ps_func_0 = dynamic_pointer_cast<Fun_>(IgFun_::create (phys_space_0, phys_coeff_0));
-  auto ps_func_1 = dynamic_pointer_cast<Fun_>(IgFun_::create (phys_space_1, phys_coeff_1));
-  auto ps_func_2 = dynamic_pointer_cast<Fun_>(IgFun_::create (phys_space_2, phys_coeff_2));
-  auto ps_func_3 = dynamic_pointer_cast<Fun_>(IgFun_::create (phys_space_3, phys_coeff_3));
+  auto ps_func_0 = dynamic_pointer_cast<FunPhys_>(IgFunPhys_::create (phys_space_0, phys_coeff_0));
+  auto ps_func_1 = dynamic_pointer_cast<FunPhys_>(IgFunPhys_::create (phys_space_1, phys_coeff_1));
+  auto ps_func_2 = dynamic_pointer_cast<FunPhys_>(IgFunPhys_::create (phys_space_2, phys_coeff_2));
+  auto ps_func_3 = dynamic_pointer_cast<FunPhys_>(IgFunPhys_::create (phys_space_3, phys_coeff_3));
 
   // Creating ig functions for reference spaces.
   auto rf_func_0 = dynamic_pointer_cast<Fun_>(IgFun_::create (ref_space_0, ref_coeff_0));
   auto rf_func_1 = dynamic_pointer_cast<Fun_>(IgFun_::create (ref_space_1, ref_coeff_1));
   auto rf_func_2 = dynamic_pointer_cast<Fun_>(IgFun_::create (ref_space_2, ref_coeff_2));
   auto rf_func_3 = dynamic_pointer_cast<Fun_>(IgFun_::create (ref_space_3, ref_coeff_3));
-#endif
 
   // Adding all the stuff to the functions container.
   funcs_container_ = std::make_shared<FunctionsContainer>();
@@ -2001,7 +1812,6 @@ create_geometries_1D ()
 //   funcs_container_->insert_mapping(map_2, "map_2");
 //   funcs_container_->insert_mapping(map_3, "map_3");
 
-#if 0
   funcs_container_->insert_mapping(id_map_0, "id_map_0");
 //   funcs_container_->insert_mapping(id_map_1, "id_map_1");
 //   funcs_container_->insert_mapping(id_map_2, "id_map_2");
@@ -2013,7 +1823,8 @@ create_geometries_1D ()
 //   funcs_container_->insert_function(map_2, ps_func_2, "phys_func_0");
 //   funcs_container_->insert_function(map_3, ps_func_3, "phys_func_0");
 
-  funcs_container_->insert_function(id_map_0, rf_func_0, "ref_func_0");
+#if 0 // The combination dim=1, codim=1, range=2, rank=1 is not instantiated.
+  funcs_container_->template insert_function<dim, 0, range, rank>(id_map_0, rf_func_0, "ref_func_0");
 //   funcs_container_->insert_function(id_map_1, rf_func_1, "ref_func_1");
 //   funcs_container_->insert_function(id_map_2, rf_func_2, "ref_func_2");
 //   funcs_container_->insert_function(id_map_3, rf_func_3, "ref_func_3");

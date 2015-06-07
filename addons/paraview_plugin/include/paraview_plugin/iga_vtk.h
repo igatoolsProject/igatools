@@ -113,11 +113,6 @@ public:
   void create_geometries ();
 
   /*
-   * Create temporary geometries 1D.
-   */
-  void create_geometries_1D ();
-
-  /*
    * Generates the VTK grids.
    */
   void generate_vtk_grids(const bool& create_control_mesh,
