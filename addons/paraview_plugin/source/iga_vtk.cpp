@@ -471,6 +471,73 @@ generate_knot_mesh_grids(const MapFunPtr_<dim, codim> mapping,
                          const Index& vtk_block_id,
                          vtkMultiBlockDataSet* const vtk_block) const
 {
+  static const int space_dim = dim + codim;
+
+  const auto cartesian_grid = mapping->get_grid();
+  const auto& n_intervals = cartesian_grid->get_num_intervals();
+
+  if (dim == 1)
+  {
+    const QUniform<dim> quad (2);
+    const Size n_vtk_points = n_intervals[0] + 1;
+    const Size n_vtk_cells = n_vtk_points;
+
+    vtkSmartPointer<vtkPoints> vtk_points = vtkSmartPointer<vtkPoints>::New();
+    vtk_points->SetNumberOfPoints (n_vtk_points);
+
+    vtkSmartPointer<vtkIdTypeArray> vtk_cell_ids = vtkSmartPointer<vtkIdTypeArray>::New();
+    const Size tuple_size = 2;
+    vtk_cell_ids->SetNumberOfComponents (tuple_size);
+    vtk_cell_ids->SetNumberOfTuples (n_vtk_cells);
+
+    auto flag = ValueFlags::point | ValueFlags::value;
+    auto elem = mapping->begin();
+    auto end  = mapping->end();
+    const auto topology = Topology<dim>();
+
+    double point_tmp[3] = {0.0, 0.0, 0.0};
+    vtkIdType tuple[2] = {1, 0};
+
+    mapping->reset(flag, quad);
+    mapping->init_cache(elem, topology);
+
+    Index pt_id = 0;
+    for (; elem != end; ++elem)
+    {
+      mapping->fill_cache(elem, topology, 0);
+      auto points = elem->template get_values<_Value, dim>(0);
+      const auto &pp = points[0];
+      for (int dir = 0; dir < space_dim; ++dir)
+        point_tmp[dir] = pp[dir];
+      vtk_points->SetPoint (pt_id, point_tmp);
+      tuple[1] = pt_id;
+      vtk_cell_ids->SetTupleValue(pt_id, tuple);
+      ++pt_id;
+    }
+    auto points = elem->template get_values<_Value, dim>(0);
+    const auto &pp = points[1];
+    for (int dir = 0; dir < space_dim; ++dir)
+      point_tmp[dir] = pp[dir];
+    tuple[1] = pt_id;
+    vtk_cell_ids->SetTupleValue(pt_id, tuple);
+    vtk_points->SetPoint (pt_id, point_tmp);
+
+    // Creating grid.
+    vtkSmartPointer<vtkUnstructuredGrid> grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
+    grid->SetPoints(vtk_points);
+
+    // Creating cells.
+    vtkSmartPointer<vtkCellArray> vtk_cells = vtkSmartPointer<vtkCellArray>::New();
+    vtk_cells->SetCells (n_vtk_cells, vtk_cell_ids);
+    grid->Allocate(vtk_cells->GetNumberOfCells (), 0);
+    const int vtk_enum_type = VTK_VERTEX;
+    grid->SetCells(vtk_enum_type, vtk_cells);
+
+    vtk_block->SetBlock (vtk_block_id, grid);
+
+    return;
+  }
+
   // TODO: improve performance.
 
   AssertThrow (dim != 1, ExcNotImplemented());
@@ -490,9 +557,6 @@ generate_knot_mesh_grids(const MapFunPtr_<dim, codim> mapping,
 
   SafeSTLVector<Real> zero_vec{{0.0}};
   SafeSTLVector<Real> one_vec{{1.0}};
-
-  const auto cartesian_grid = mapping->get_grid();
-  const auto& n_intervals = cartesian_grid->get_num_intervals();
 
   // Computing total number of vtk points and cells.
   Size n_vtk_cells = 0;
@@ -587,7 +651,7 @@ generate_knot_mesh_grids(const MapFunPtr_<dim, codim> mapping,
         Index vtk_pt_id_0 = vtk_pt_id;
         for (const auto &pp : physical_points)
         {
-          for (int dir2 = 0; dir2 < dim; ++dir2)
+          for (int dir2 = 0; dir2 < space_dim; ++dir2)
             point_tmp[dir2] = pp[dir2];
           vtk_points->SetPoint (vtk_pt_id++, point_tmp);
         } // pp
