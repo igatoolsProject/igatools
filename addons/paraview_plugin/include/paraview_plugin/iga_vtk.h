@@ -88,7 +88,6 @@ public:
    * cells.
    */
   void set_visualization_element_properties (const int* const num_visualization_elements,
-                                             const bool quadratic_cells,
                                              const int& grid_type);
 
   /*

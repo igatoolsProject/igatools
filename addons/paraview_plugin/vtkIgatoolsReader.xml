@@ -45,16 +45,20 @@
                          label="Grid Type"
                          number_of_elements="1">
         <EnumerationDomain name="enum">
-          <Entry text="VTK Unstructured grid"
+          <Entry text="VTK Unstructured grid - quadratic elements"
                  value="0" />
-          <Entry text="VTK Structured grid"
+          <Entry text="VTK Unstructured grid - linear elements"
                  value="1" />
+          <Entry text="VTK Structured grid"
+                 value="2" />
         </EnumerationDomain>
         <Documentation>
           This propery specifies which type of grid must be produced.
           The produced VTK Structured grids have certain advantages over
           VTK Unstructured grids, however, some issues can appear when some
           filters are applied to them.
+          The use of quadratic elements improves the visualization
+          (mainly when tessellation filter is applied later).
         </Documentation>
       </IntVectorProperty>
 
@@ -135,17 +139,6 @@
                                    value="1" />
         </Hints>
         -->
-      </IntVectorProperty>
-
-      <IntVectorProperty name="QuadraticElements"
-                         command="SetQuadraticElements"
-                         number_of_elements="1"
-                         label="Use quadratic VTK elements"
-                         default_values="0">
-        <BooleanDomain name="bool"/>
-        <Documentation>
-          Activates/deactivates the use of quadratic VTK elements for unstructured grids (ncreation of the parametric mesh geometries.
-        </Documentation>
       </IntVectorProperty>
 
       <Hints>

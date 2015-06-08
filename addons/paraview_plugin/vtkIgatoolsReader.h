@@ -49,15 +49,11 @@ public:
   vtkSetVector3Macro (NumVisualizationElements, int);
   vtkGetVectorMacro  (NumVisualizationElements, int, 3);
 
-  // Description:
-  // Set the on/off the use of VTK quadratic elements for unstructured grids.
-  vtkSetMacro (QuadraticElements, bool);
-  vtkGetMacro (QuadraticElements, bool);
-
   /*
    * Set/Get Grid type
-   *  - 0: unstructured grid.
-   *  - 1: structured grid.
+   *  - 0: unstructured grid : quadratic elements.
+   *  - 1: unstructured grid : linear elements.
+   *  - 2: structured grid.
    */
   vtkSetMacro(GridType, int);
   vtkGetMacro(GridType, int);
@@ -161,11 +157,6 @@ private:
    * Physical mesh creation flag.
    */
   bool PhysicalMesh;
-
-  /*
-   * Quadratic elements flag.
-   */
-  bool QuadraticElements;
 
   /*
    * File name variable.

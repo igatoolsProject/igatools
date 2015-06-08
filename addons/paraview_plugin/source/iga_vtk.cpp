@@ -71,15 +71,29 @@ set_file (const string& file_name, const string& file_path)
 void
 IGAVTK::
 set_visualization_element_properties (const int* const num_visualization_elements,
-                                      const bool quadratic_cells,
                                       const int& grid_type)
 {
   for (int dir = 0; dir < num_visualization_elements_.size(); ++dir)
     num_visualization_elements_[dir] = *(num_visualization_elements + dir);
 
-  quadratic_cells_ = quadratic_cells;
+  // Grid type 0 : Unstructured grid : quadratic elements.
+  // Grid type 1 : Unstructured grid : linear elements.
+  // Grid type 2 : Structured grid.
+  Assert (grid_type >= 0 && grid_type <= 2, ExcIndexRange(grid_type, 0, 3));
 
-  unstructured_grid_ = grid_type == 0;
+  if (grid_type == 2) // Structured grid.
+  {
+    unstructured_grid_ = false;
+    quadratic_cells_ = false;
+  }
+  else  // Unstructured grid.
+  {
+    unstructured_grid_ = true;
+    if (grid_type == 0)
+      quadratic_cells_ = true;
+    else
+      quadratic_cells_ = false;
+  }
 };
 
 

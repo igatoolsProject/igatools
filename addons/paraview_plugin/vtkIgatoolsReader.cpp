@@ -55,7 +55,6 @@ vtkIgatoolsReader::vtkIgatoolsReader()
   this->KnotMesh = false;
   this->ParametricMesh = false;
   this->PhysicalMesh = false;
-  this->QuadraticElements = false;
 
   this->SetNumberOfInputPorts(0); // No vtk input, this is not a filter.
   this->SetNumberOfOutputPorts(1); // Just one output.
@@ -132,7 +131,6 @@ int vtkIgatoolsReader::RequestData(
 
   iga_vtk_.set_file (file_name, file_path);
   iga_vtk_.set_visualization_element_properties (this->GetNumVisualizationElements(),
-                                                 this->GetQuadraticElements(),
                                                  this->GetGridType());
 
   vtkInformation* info = outputVector->GetInformationObject(0);
