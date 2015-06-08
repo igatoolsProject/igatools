@@ -44,26 +44,74 @@ public:
   vtkGetStringMacro(FileName);
 
   // Description:
-  // Set the number of visualization points per direction for each Bezier
+  // Set the number of VTK visualization elements per direction for each Bezier
   // element.
-  vtkSetVector3Macro (NumVisualizationPoints, int);
-  vtkGetVectorMacro  (NumVisualizationPoints, int, 3);
+  vtkSetVector3Macro (NumVisualizationElementsPhysical, int);
+  vtkGetVectorMacro  (NumVisualizationElementsPhysical, int, 3);
+
+  // Description:
+  // Set the number of VTK visualization elements per direction for each Bezier
+  // element.
+  vtkSetVector3Macro (NumVisualizationElementsParametric, int);
+  vtkGetVectorMacro  (NumVisualizationElementsParametric, int, 3);
 
   /*
    * Set/Get Grid type
-   *  - 0: unstructured grid.
-   *  - 1: structured grid.
+   *  - 0: unstructured grid : quadratic elements.
+   *  - 1: unstructured grid : linear elements.
+   *  - 2: structured grid.
    */
-  vtkSetMacro(GridType, int);
-  vtkGetMacro(GridType, int);
+  vtkSetMacro(GridTypePhysical, int);
+  vtkGetMacro(GridTypePhysical, int);
+
+  /*
+   * Set/Get Grid type
+   *  - 0: unstructured grid : quadratic elements.
+   *  - 1: unstructured grid : linear elements.
+   *  - 2: structured grid.
+   */
+  vtkSetMacro(GridTypeParametric, int);
+  vtkGetMacro(GridTypeParametric, int);
+
+  /*
+   * Set/Get Solid Mesh creation flag.
+   *  - true:  create the mesh.
+   *  - false: do not create the mesh.
+   */
+  vtkSetMacro(SolidMeshPhysical, bool);
+  vtkGetMacro(SolidMeshPhysical, bool);
+
+  /*
+   * Set/Get Solid Mesh creation flag.
+   *  - true:  create the mesh.
+   *  - false: do not create the mesh.
+   */
+  vtkSetMacro(SolidMeshParametric, bool);
+  vtkGetMacro(SolidMeshParametric, bool);
 
   /*
    * Set/Get Control Mesh creation flag.
    *  - true:  create the mesh.
    *  - false: do not create the mesh.
    */
-  vtkSetMacro(ControlMesh, bool);
-  vtkGetMacro(ControlMesh, bool);
+  vtkSetMacro(ControlMeshPhysical, bool);
+  vtkGetMacro(ControlMeshPhysical, bool);
+
+  /*
+   * Set/Get Knot Mesh creation flag.
+   *  - true:  create the mesh.
+   *  - false: do not create the mesh.
+   */
+  vtkSetMacro(KnotMeshPhysical, bool);
+  vtkGetMacro(KnotMeshPhysical, bool);
+
+  /*
+   * Set/Get Knot Mesh creation flag.
+   *  - true:  create the mesh.
+   *  - false: do not create the mesh.
+   */
+  vtkSetMacro(KnotMeshParametric, bool);
+  vtkGetMacro(KnotMeshParametric, bool);
 
   /*
    * Set/Get Parametric Mesh creation flag.
@@ -120,19 +168,44 @@ private:
   void get_file_and_path (std::string& file_name, std::string& file_path);
 
   /*
-   * Check number of visualization points.
+   * Check number of visualization element.
    */
-  void check_number_visualization_points ();
+  void check_number_visualization_elements ();
 
   /*
    * Grid type.
    */
-  int GridType;
+  int GridTypePhysical;
+
+  /*
+   * Grid type.
+   */
+  int GridTypeParametric;
+
+  /*
+   * Solid mesh creation flag.
+   */
+  bool SolidMeshPhysical;
+
+  /*
+   * Solid mesh creation flag.
+   */
+  bool SolidMeshParametric;
 
   /*
    * Control mesh creation flag.
    */
-  bool ControlMesh;
+  bool ControlMeshPhysical;
+
+  /*
+   * Knot mesh creation flag.
+   */
+  bool KnotMeshPhysical;
+
+  /*
+   * Knot mesh creation flag.
+   */
+  bool KnotMeshParametric;
 
   /*
    * Parametric mesh creation flag.
@@ -148,12 +221,21 @@ private:
    * File name variable.
    */
   char* FileName = NULL;
-  int   NumVisualizationPoints[3];
+
+  /*
+   * Number of VTK visualization elements per direction per Bezier element.
+   */
+  int   NumVisualizationElementsPhysical[3];
+
+  /*
+   * Number of VTK visualization elements per direction per Bezier element.
+   */
+  int   NumVisualizationElementsParametric[3];
 
   /*
    * Iga vtk object.
    */
-  IGAVTK iga_vtk_;
+  iga::IGAVTK iga_vtk_;
 };
 
 

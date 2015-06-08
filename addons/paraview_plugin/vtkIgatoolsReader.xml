@@ -39,46 +39,15 @@
         </Documentation>
       </StringVectorProperty>
 
-      <IntVectorProperty command="SetGridType"
-                         default_values="0"
-                         name="GridType"
-                         label="Grid Type"
-                         number_of_elements="1">
-        <EnumerationDomain name="enum">
-          <Entry text="VTK Unstructured grid"
-                 value="0" />
-          <Entry text="VTK Structured grid"
-                 value="1" />
-        </EnumerationDomain>
-        <Documentation>
-          This propery specifies which type of grid must be produced.
-          The produced VTK Structured grids have certain advantages over
-          VTK Unstructured grids, however, some issues can appear when some
-          filters are applied to them.
-        </Documentation>
-      </IntVectorProperty>
+      <Hints>
+        <ReaderFactory extensions="iga"
+                       file_description="Igatools File Format" />
+      </Hints>
 
-      <IntVectorProperty name="ControlMesh"
-                         command="SetControlMesh"
-                         number_of_elements="1"
-                         label="Create control mesh"
-                         default_values="0">
-        <BooleanDomain name="bool"/>
-        <Documentation>
-          Activates/deactivates the creation of the control mesh geometry.
-        </Documentation>
-      </IntVectorProperty>
 
-      <IntVectorProperty name="ParametricMesh"
-                         command="SetParametricMesh"
-                         number_of_elements="1"
-                         label="Create parametric geometries"
-                         default_values="0">
-        <BooleanDomain name="bool"/>
-        <Documentation>
-          Activates/deactivates the creation of the parametric mesh geometries.
-        </Documentation>
-      </IntVectorProperty>
+      <!-- ################################################################# -->
+      <!-- Options for the physical mesh ################################### -->
+      <!-- ################################################################# -->
 
       <IntVectorProperty name="PhysicalMesh"
                          command="SetPhysicalMesh"
@@ -91,28 +60,251 @@
         </Documentation>
       </IntVectorProperty>
 
-      <IntVectorProperty command="SetNumVisualizationPoints"
-                         default_values="2 2 2"
-                         name="Number of visualization points"
-                         number_of_elements="3">
-        <IntRangeDomain name="range" min="2" max="20"/>
-        <Documentation>Set the number of visualization points in each
-          parametric direction for every Bezier element.</Documentation>
-        <!--
+      <IntVectorProperty name="SolidMeshPhysical"
+                         command="SetSolidMeshPhysical"
+                         number_of_elements="1"
+                         label="Create the solid mesh"
+                         default_values="1">
+        <BooleanDomain name="bool"/>
+        <Documentation>
+          Activates/deactivates the creation of the solid mesh geometry.
+        </Documentation>
+        <!-- This property is hidden when PhysicalMesh = 0 -->
         <Hints>
           <PropertyWidgetDecorator type="GenericDecorator"
                                    mode="visibility"
-                                   property="GridType"
+                                   property="PhysicalMesh"
                                    inverse="1"
-                                   value="1" />
+                                   value="0" />
         </Hints>
-        -->
       </IntVectorProperty>
 
-      <Hints>
-        <ReaderFactory extensions="iga"
-                       file_description="Igatools File Format" />
-      </Hints>
+      <IntVectorProperty name="ControlMeshPhysical"
+                         command="SetControlMeshPhysical"
+                         number_of_elements="1"
+                         label="Create control mesh"
+                         default_values="0">
+        <BooleanDomain name="bool"/>
+        <Documentation>
+          Activates/deactivates the creation of the control mesh geometry
+          for the physical mesh.
+        </Documentation>
+        <!-- This property is hidden when PhysicalMesh = 0 -->
+        <Hints>
+          <PropertyWidgetDecorator type="GenericDecorator"
+                                   mode="visibility"
+                                   property="PhysicalMesh"
+                                   inverse="1"
+                                   value="0" />
+        </Hints>
+      </IntVectorProperty>
+
+      <IntVectorProperty name="KnotMeshPhysical"
+                         command="SetKnotMeshPhysical"
+                         number_of_elements="1"
+                         label="Create the knot mesh"
+                         default_values="0">
+        <BooleanDomain name="bool"/>
+        <Documentation>
+          Activates/deactivates the creation of the knot mesh geometry.
+        </Documentation>
+        <!-- This property is hidden when PhysicalMesh = 0 -->
+        <Hints>
+          <PropertyWidgetDecorator type="GenericDecorator"
+                                   mode="visibility"
+                                   property="PhysicalMesh"
+                                   inverse="1"
+                                   value="0" />
+        </Hints>
+      </IntVectorProperty>
+
+      <IntVectorProperty command="SetGridTypePhysical"
+                         default_values="0"
+                         name="GridTypePhysical"
+                         label="VTK grid type"
+                         number_of_elements="1">
+        <EnumerationDomain name="enum">
+          <Entry text="VTK Unstructured grid - quadratic elements"
+                 value="0" />
+          <Entry text="VTK Unstructured grid - linear elements"
+                 value="1" />
+          <Entry text="VTK Structured grid"
+                 value="2" />
+        </EnumerationDomain>
+        <Documentation>
+          This propery specifies which type of grid must be produced
+          for the physical mesh.
+          The produced VTK Structured grids have certain advantages over
+          VTK Unstructured grids, however, some issues can appear when some
+          filters are applied to them.
+          The use of quadratic elements improves the visualization
+          (mainly when tessellation filter is applied later).
+        </Documentation>
+        <!-- This property is hidden when PhysicalMesh = 0 -->
+        <Hints>
+          <PropertyWidgetDecorator type="GenericDecorator"
+                                   mode="visibility"
+                                   property="PhysicalMesh"
+                                   inverse="1"
+                                   value="0" />
+        </Hints>
+      </IntVectorProperty>
+
+      <IntVectorProperty command="SetNumVisualizationElementsPhysical"
+                         default_values="1 1 1"
+                         name="NumVisualizationElementsPhysical"
+                         label="Number of VTK cells per Bezier element"
+                         number_of_elements="3">
+        <IntRangeDomain name="range" min="1" max="20"/>
+        <Documentation>Set the number of visualization VTK element in each
+          parametric direction for every Bezier element.
+        </Documentation>
+        <!-- This property is hidden when PhysicalMesh = 0 -->
+        <Hints>
+          <PropertyWidgetDecorator type="GenericDecorator"
+                                   mode="visibility"
+                                   property="PhysicalMesh"
+                                   inverse="1"
+                                   value="0" />
+        </Hints>
+      </IntVectorProperty>
+
+      <!-- ################################################################# -->
+      <!-- ################################################################# -->
+
+
+
+      <!-- ################################################################# -->
+      <!-- Options for the parametric mesh ################################# -->
+      <!-- ################################################################# -->
+
+      <IntVectorProperty name="ParametricMesh"
+                         command="SetParametricMesh"
+                         number_of_elements="1"
+                         label="Create parametric geometries"
+                         default_values="0">
+        <BooleanDomain name="bool"/>
+        <Documentation>
+          Activates/deactivates the creation of the parametric mesh geometries.
+        </Documentation>
+      </IntVectorProperty>
+
+      <IntVectorProperty name="SolidMeshParametric"
+                         command="SetSolidMeshParametric"
+                         number_of_elements="1"
+                         label="Create the solid mesh"
+                         default_values="0">
+        <BooleanDomain name="bool"/>
+        <Documentation>
+          Activates/deactivates the creation of the solid mesh geometry.
+        </Documentation>
+        <!-- This property is hidden when ParametricMesh = 0 -->
+        <Hints>
+          <PropertyWidgetDecorator type="GenericDecorator"
+                                   mode="visibility"
+                                   property="ParametricMesh"
+                                   inverse="1"
+                                   value="0" />
+        </Hints>
+      </IntVectorProperty>
+
+      <IntVectorProperty name="KnotMeshParametric"
+                         command="SetKnotMeshParametric"
+                         number_of_elements="1"
+                         label="Create the knot mesh"
+                         default_values="0">
+        <BooleanDomain name="bool"/>
+        <Documentation>
+          Activates/deactivates the creation of the knot mesh geometry.
+        </Documentation>
+        <!-- This property is hidden when ParametriMesh = 0 -->
+        <Hints>
+          <PropertyWidgetDecorator type="GenericDecorator"
+                                   mode="visibility"
+                                   property="ParametricMesh"
+                                   inverse="1"
+                                   value="0" />
+        </Hints>
+      </IntVectorProperty>
+
+      <IntVectorProperty command="SetGridTypeParametric"
+                         default_values="0"
+                         name="GridTypeParametric"
+                         label="VTK grid type"
+                         number_of_elements="1">
+        <EnumerationDomain name="enum">
+          <Entry text="VTK Unstructured grid - quadratic elements"
+                 value="0" />
+          <Entry text="VTK Unstructured grid - linear elements"
+                 value="1" />
+          <Entry text="VTK Structured grid"
+                 value="2" />
+        </EnumerationDomain>
+        <Documentation>
+          This propery specifies which type of grid must be produced
+          for the parametric mesh.
+          The produced VTK Structured grids have certain advantages over
+          VTK Unstructured grids, however, some issues can appear when some
+          filters are applied to them.
+          The use of quadratic elements improves the visualization
+          (mainly when tessellation filter is applied later).
+        </Documentation>
+        <!-- This property is hidden when ParametriMesh = 0 -->
+        <Hints>
+          <PropertyWidgetDecorator type="GenericDecorator"
+                                   mode="visibility"
+                                   property="ParametricMesh"
+                                   inverse="1"
+                                   value="0" />
+        </Hints>
+      </IntVectorProperty>
+
+      <IntVectorProperty command="SetNumVisualizationElementsParametric"
+                         default_values="1 1 1"
+                         name="NumVisualizationElementsParametric"
+                         label="Number of VTK cells per Bezier element"
+                         number_of_elements="3">
+        <IntRangeDomain name="range" min="1" max="20"/>
+        <Documentation>Set the number of visualization VTK element in each
+          parametric direction for every Bezier element.
+        </Documentation>
+        <!-- This property is hidden when ParametriMesh = 0 -->
+        <Hints>
+          <PropertyWidgetDecorator type="GenericDecorator"
+                                   mode="visibility"
+                                   property="ParametricMesh"
+                                   inverse="1"
+                                   value="0" />
+        </Hints>
+      </IntVectorProperty>
+
+      <!-- ################################################################# -->
+      <!-- ################################################################# -->
+ 
+
+      <!-- ################################################################# -->
+      <!-- Creating the groups inside the properties panel ################# -->
+      <PropertyGroup label="Physical geometry">
+        <Property name="PhysicalMesh" />
+        <Property name="SolidMeshPhysical" />
+        <Property name="KnotMeshPhysical" />
+        <Property name="ControlMeshPhysical" />
+        <Property name="GridTypePhysical" />
+        <Property name="NumVisualizationElementsPhysical" />
+      </PropertyGroup>
+
+      <PropertyGroup label="Parametric geometry">
+        <Property name="ParametricMesh" />
+        <Property name="SolidMeshParametric" />
+        <Property name="KnotMeshParametric" />
+        <Property name="GridTypeParametric" />
+        <Property name="NumVisualizationElementsParametric" />
+
+      <!-- ################################################################# -->
+      <!-- ################################################################# -->
+      </PropertyGroup>
+
+
     </SourceProxy>
     <!-- End Reader -->
   </ProxyGroup>
