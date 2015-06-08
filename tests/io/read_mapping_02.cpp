@@ -88,11 +88,12 @@ void run_test(std::string &file_name)
     auto map_elem     = map->begin();
     auto map_elem_end = map->end();
 
-    map->template init_cache<dim>(*map_elem);
+    const auto elem_topology = Topology<dim>();
+    map->init_cache(*map_elem,elem_topology);
 
     for (; map_elem != map_elem_end; ++map_elem)
     {
-        map->template fill_cache<dim>(*map_elem,0);
+        map->fill_cache(*map_elem,elem_topology,0);
         out << "Element id: " << map_elem->get_flat_index() << endl;
 
         const auto &points = map_elem->get_points();

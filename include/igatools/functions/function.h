@@ -127,32 +127,13 @@ public:
 
     virtual std::shared_ptr<base_t> clone() const = 0;
 
-
-
     virtual void reset(const ValueFlags &flag, const eval_pts_variant &quad);
-#if 0
-    void reset_one_element(
-        const ValueFlags &flag,
-        const eval_pts_variant &eval_pts,
-        const Index elem_id);
-#endif
+
     virtual void init_cache(ElementAccessor &elem, const topology_variant &k);
 
     void init_cache(ElementIterator &elem, const topology_variant &k);
 
-    template <int k>
-    void init_cache(ElementAccessor &elem)
-    {
-        this->init_cache(elem, Topology<k>());
-    }
-
     void init_element_cache(ElementAccessor &elem);
-
-    template <int k>
-    void init_cache(ElementIterator &elem)
-    {
-        this->template init_cache<k>(*elem);
-    }
 
     void init_element_cache(ElementIterator &elem);
 
@@ -160,19 +141,8 @@ public:
 
     void fill_cache(ElementIterator &elem, const topology_variant &k, const int j);
 
-    template <int k>
-    void fill_cache(ElementAccessor &elem, const int j)
-    {
-        this->fill_cache(elem,Topology<k>(),j);
-    }
-
     void fill_element_cache(ElementAccessor &elem);
 
-    template <int k>
-    void fill_cache(ElementIterator &elem, const int j)
-    {
-        this->template fill_cache<k>(*elem,j);
-    }
 
     void fill_element_cache(ElementIterator &elem);
 
