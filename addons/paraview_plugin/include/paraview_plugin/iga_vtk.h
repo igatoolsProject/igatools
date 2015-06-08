@@ -87,10 +87,14 @@ public:
      * Set the number of visualization elements and the flag for quadratic
      * cells.
      */
-    void set_visualization_element_properties(const int *const num_visualization_elements_physical,
-                                              const int &grid_type_physical,
-                                              const int *const num_visualization_elements_parametric,
-                                              const int &grid_type_parametric);
+    void set_visualization_element_properties(const int *const n_vis_elem_phys_solid,
+                                              const int &grid_type_phys_solid,
+                                              const int *const n_vis_elem_par_solid,
+                                              const int &grid_type_par_solid,
+                                              const int *const n_vis_elem_phys_knot,
+                                              const int &grid_type_phys_knot,
+                                              const int *const n_vis_elem_par_knot,
+                                              const int &grid_type_par_knot);
 
     /*
      * Set the file name and path.
@@ -148,34 +152,54 @@ private:
     std::string file_path_;
 
     /*
-     * Number of visualization elements per direction.
+     * Number of visualization elements per direction for the physical solid mesh.
      */
-    TensorSize<3> num_visualization_elements_physical_;
+    TensorSize<3> num_visualization_elements_physical_solid_;
 
     /*
-     * Number of visualization elements per direction.
+     * Number of visualization elements per direction for the parametric solid mesh.
      */
-    TensorSize<3> num_visualization_elements_parametric_;
+    TensorSize<3> num_visualization_elements_parametric_solid_;
 
     /*
-     * Flag for the use of quadratic elements.
+     * Number of visualization elements per direction for the parametric solid mesh.
      */
-    bool quadratic_cells_physical_;
+    TensorSize<3> num_visualization_elements_physical_knot_;
 
     /*
-     * Flag for the use of quadratic elements.
+     * Number of visualization elements per direction for the parametric knot mesh.
      */
-    bool quadratic_cells_parametric_;
+    TensorSize<3> num_visualization_elements_parametric_knot_;
 
     /*
-     * Flag for the use of VTK unstructured grids.
+     * Flag for the use of quadratic elements for the physical solid mesh.
      */
-    bool unstructured_grid_physical_;
+    bool quadratic_cells_physical_solid_;
 
     /*
-     * Flag for the use of VTK unstructured grids.
+     * Flag for the use of quadratic elements for the parametric solid mesh.
      */
-    bool unstructured_grid_parametric_;
+    bool quadratic_cells_parametric_solid_;
+
+    /*
+     * Flag for the use of quadratic elements for the physical knot mesh.
+     */
+    bool quadratic_cells_physical_knot_;
+
+    /*
+     * Flag for the use of quadratic elements for the parametric knot mesh.
+     */
+    bool quadratic_cells_parametric_knot_;
+
+    /*
+     * Flag for the use of VTK unstructured grids for the physical solid mesh.
+     */
+    bool unstructured_grid_physical_solid_;
+
+    /*
+     * Flag for the use of VTK unstructured grids for the parametric solid mesh.
+     */
+    bool unstructured_grid_parametric_solid_;
 
     /*
      * Container for the mapping and field functions.

@@ -38,40 +38,80 @@ public:
 
     static vtkIgatoolsReader *New();
 
-    // Description:
-    // Specify file name of the .iga file.
+    /*
+     * Description:
+     * Specify file name of the .iga file.
+     */
     vtkSetStringMacro(FileName);
     vtkGetStringMacro(FileName);
 
-    // Description:
-    // Set the number of VTK visualization elements per direction for each Bezier
-    // element.
-    vtkSetVector3Macro(NumVisualizationElementsPhysical, int);
-    vtkGetVectorMacro(NumVisualizationElementsPhysical, int, 3);
-
-    // Description:
-    // Set the number of VTK visualization elements per direction for each Bezier
-    // element.
-    vtkSetVector3Macro(NumVisualizationElementsParametric, int);
-    vtkGetVectorMacro(NumVisualizationElementsParametric, int, 3);
+    /*
+     * Description:
+     * Set the number of VTK visualization elements per direction for each Bezier
+     * element for the physical solid mesh.
+     */
+    vtkSetVector3Macro(NumVisualizationElementsPhysicalSolid, int);
+    vtkGetVectorMacro(NumVisualizationElementsPhysicalSolid, int, 3);
 
     /*
-     * Set/Get Grid type
+     * Description:
+     * Set the number of VTK visualization elements per direction for each Bezier
+     * element the parametric solid mesh.
+     */
+    vtkSetVector3Macro(NumVisualizationElementsParametricSolid, int);
+    vtkGetVectorMacro(NumVisualizationElementsParametricSolid, int, 3);
+
+    /*
+     * Description:
+     * Set the number of VTK visualization elements per direction for each Bezier
+     * element for the physical knot mesh.
+     */
+    vtkSetVector3Macro(NumVisualizationElementsPhysicalKnot, int);
+    vtkGetVectorMacro(NumVisualizationElementsPhysicalKnot, int, 3);
+
+    /*
+     * Description:
+     * Set the number of VTK visualization elements per direction for each Bezier
+     * element the parametric knot mesh.
+     */
+    vtkSetVector3Macro(NumVisualizationElementsParametricKnot, int);
+    vtkGetVectorMacro(NumVisualizationElementsParametricKnot, int, 3);
+
+    /*
+     * Set/Get Grid type for the physical solid mesh.
      *  - 0: unstructured grid : quadratic elements.
      *  - 1: unstructured grid : linear elements.
      *  - 2: structured grid.
      */
-    vtkSetMacro(GridTypePhysical, int);
-    vtkGetMacro(GridTypePhysical, int);
+    vtkSetMacro(GridTypePhysicalSolid, int);
+    vtkGetMacro(GridTypePhysicalSolid, int);
 
     /*
-     * Set/Get Grid type
+     * Set/Get Grid type for the parametric solid mesh
      *  - 0: unstructured grid : quadratic elements.
      *  - 1: unstructured grid : linear elements.
      *  - 2: structured grid.
      */
-    vtkSetMacro(GridTypeParametric, int);
-    vtkGetMacro(GridTypeParametric, int);
+    vtkSetMacro(GridTypeParametricSolid, int);
+    vtkGetMacro(GridTypeParametricSolid, int);
+
+    /*
+     * Set/Get Grid type for the physical knot mesh.
+     *  - 0: unstructured grid : quadratic elements.
+     *  - 1: unstructured grid : linear elements.
+     *  - 2: structured grid.
+     */
+    vtkSetMacro(GridTypePhysicalKnot, int);
+    vtkGetMacro(GridTypePhysicalKnot, int);
+
+    /*
+     * Set/Get Grid type for the parametric knot mesh
+     *  - 0: unstructured grid : quadratic elements.
+     *  - 1: unstructured grid : linear elements.
+     *  - 2: structured grid.
+     */
+    vtkSetMacro(GridTypeParametricKnot, int);
+    vtkGetMacro(GridTypeParametricKnot, int);
 
     /*
      * Set/Get Solid Mesh creation flag.
@@ -173,14 +213,24 @@ private:
     void check_number_visualization_elements();
 
     /*
-     * Grid type.
+     * Grid type for the physical solid mesh.
      */
-    int GridTypePhysical;
+    int GridTypePhysicalSolid;
 
     /*
-     * Grid type.
+     * Grid type for the parametric solid mesh.
      */
-    int GridTypeParametric;
+    int GridTypeParametricSolid;
+
+    /*
+     * Grid type for the physical knot mesh.
+     */
+    int GridTypePhysicalKnot;
+
+    /*
+     * Grid type for the parametric knot mesh.
+     */
+    int GridTypeParametricKnot;
 
     /*
      * Solid mesh creation flag.
@@ -223,14 +273,28 @@ private:
     char *FileName = NULL;
 
     /*
-     * Number of VTK visualization elements per direction per Bezier element.
+     * Number of VTK visualization elements per direction per Bezier element
+     * for the physical solid mesh.
      */
-    int   NumVisualizationElementsPhysical[3];
+    int NumVisualizationElementsPhysicalSolid[3];
 
     /*
-     * Number of VTK visualization elements per direction per Bezier element.
+     * Number of VTK visualization elements per direction per Bezier element
+     * for the parametric solid mesh.
      */
-    int   NumVisualizationElementsParametric[3];
+    int NumVisualizationElementsParametricSolid[3];
+
+    /*
+     * Number of VTK visualization elements per direction per Bezier element
+     * for the physical knot mesh.
+     */
+    int NumVisualizationElementsPhysicalKnot[3];
+
+    /*
+     * Number of VTK visualization elements per direction per Bezier element
+     * for the parametric knot mesh.
+     */
+    int NumVisualizationElementsParametricKnot[3];
 
     /*
      * Iga vtk object.

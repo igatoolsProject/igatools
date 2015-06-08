@@ -49,12 +49,16 @@ IGAVTK()
     :
     file_name_(),
     file_path_(),
-    num_visualization_elements_physical_(TensorSize<3>(1)),
-    num_visualization_elements_parametric_(TensorSize<3>(1)),
-    quadratic_cells_physical_(false),
-    quadratic_cells_parametric_(false),
-    unstructured_grid_physical_(true),
-    unstructured_grid_parametric_(true),
+    num_visualization_elements_physical_solid_(TensorSize<3>(1)),
+    num_visualization_elements_parametric_solid_(TensorSize<3>(1)),
+    num_visualization_elements_physical_knot_(TensorSize<3>(1)),
+    num_visualization_elements_parametric_knot_(TensorSize<3>(1)),
+    quadratic_cells_physical_solid_(false),
+    quadratic_cells_parametric_solid_(false),
+    quadratic_cells_physical_knot_(false),
+    quadratic_cells_parametric_knot_(false),
+    unstructured_grid_physical_solid_(true),
+    unstructured_grid_parametric_solid_(true),
     funcs_container_(std::make_shared<FunctionsContainer>())
 {};
 
@@ -73,50 +77,99 @@ set_file(const string &file_name, const string &file_path)
 
 void
 IGAVTK::
-set_visualization_element_properties(const int *const num_visualization_elements_physical,
-                                     const int &grid_type_physical,
-                                     const int *const num_visualization_elements_parametric,
-                                     const int &grid_type_parametric)
+set_visualization_element_properties(const int *const n_vis_elem_phys_solid,
+                                     const int &grid_type_phys_solid,
+                                     const int *const n_vis_elem_par_solid,
+                                     const int &grid_type_par_solid,
+                                     const int *const n_vis_elem_phys_knot,
+                                     const int &grid_type_phys_knot,
+                                     const int *const n_vis_elem_par_knot,
+                                     const int &grid_type_par_knot)
 {
-    for (int dir = 0; dir < num_visualization_elements_physical_.size(); ++dir)
-        num_visualization_elements_physical_[dir] = *(num_visualization_elements_physical + dir);
+    for (int dir = 0; dir < num_visualization_elements_physical_solid_.size(); ++dir)
+    {
+        num_visualization_elements_physical_solid_[dir] = *(n_vis_elem_phys_solid + dir);
+        Assert(num_visualization_elements_physical_solid_[dir] > 0,
+               ExcMessage("The number of visualization elements in each "
+                          "direction must be > 0."));
+    }
 
-    for (int dir = 0; dir < num_visualization_elements_parametric_.size(); ++dir)
-        num_visualization_elements_parametric_[dir] = *(num_visualization_elements_parametric + dir);
+    for (int dir = 0; dir < num_visualization_elements_parametric_solid_.size(); ++dir)
+    {
+        num_visualization_elements_parametric_solid_[dir] = *(n_vis_elem_par_solid + dir);
+        Assert(num_visualization_elements_parametric_solid_[dir] > 0,
+               ExcMessage("The number of visualization elements in each "
+                          "direction must be > 0."));
+    }
+
+    for (int dir = 0; dir < num_visualization_elements_physical_knot_.size(); ++dir)
+    {
+        num_visualization_elements_physical_knot_[dir] = *(n_vis_elem_phys_knot + dir);
+        Assert(num_visualization_elements_physical_knot_[dir] > 0,
+               ExcMessage("The number of visualization elements in each "
+                          "direction must be > 0."));
+    }
+
+    for (int dir = 0; dir < num_visualization_elements_parametric_knot_.size(); ++dir)
+    {
+        num_visualization_elements_parametric_knot_[dir] = *(n_vis_elem_par_knot + dir);
+        Assert(num_visualization_elements_parametric_knot_[dir] > 0,
+               ExcMessage("The number of visualization elements in each "
+                          "direction must be > 0."));
+    }
 
     // Grid type 0 : Unstructured grid : quadratic elements.
     // Grid type 1 : Unstructured grid : linear elements.
     // Grid type 2 : Structured grid.
-    Assert(grid_type_physical >= 0 && grid_type_physical <= 2, ExcIndexRange(grid_type_physical, 0, 3));
-    Assert(grid_type_parametric >= 0 && grid_type_parametric <= 2, ExcIndexRange(grid_type_parametric, 0, 3));
+    Assert(grid_type_phys_solid >= 0 && grid_type_phys_solid <= 2,
+           ExcIndexRange(grid_type_phys_solid, 0, 3));
+    Assert(grid_type_par_solid >= 0 && grid_type_par_solid <= 2,
+           ExcIndexRange(grid_type_par_solid, 0, 3));
 
-    if (grid_type_physical == 2) // Structured grid.
+    if (grid_type_phys_solid == 2) // Structured grid.
     {
-        unstructured_grid_physical_ = false;
-        quadratic_cells_physical_ = false;
+        unstructured_grid_physical_solid_ = false;
+        quadratic_cells_physical_solid_ = false;
     }
     else  // Unstructured grid.
     {
-        unstructured_grid_physical_ = true;
-        if (grid_type_physical == 0)
-            quadratic_cells_physical_ = true;
+        unstructured_grid_physical_solid_ = true;
+        if (grid_type_phys_solid == 0)
+            quadratic_cells_physical_solid_ = true;
         else
-            quadratic_cells_physical_ = false;
+            quadratic_cells_physical_solid_ = false;
     }
 
-    if (grid_type_parametric == 2) // Structured grid.
+    if (grid_type_par_solid == 2) // Structured grid.
     {
-        unstructured_grid_parametric_ = false;
-        quadratic_cells_parametric_ = false;
+        unstructured_grid_parametric_solid_ = false;
+        quadratic_cells_parametric_solid_ = false;
     }
     else  // Unstructured grid.
     {
-        unstructured_grid_parametric_ = true;
-        if (grid_type_parametric == 0)
-            quadratic_cells_parametric_ = true;
+        unstructured_grid_parametric_solid_ = true;
+        if (grid_type_par_solid == 0)
+            quadratic_cells_parametric_solid_ = true;
         else
-            quadratic_cells_parametric_ = false;
+            quadratic_cells_parametric_solid_ = false;
     }
+
+    // Grid type 0 : Unstructured grid : quadratic elements.
+    // Grid type 1 : Unstructured grid : linear elements.
+    Assert(grid_type_phys_knot >= 0 && grid_type_phys_knot <= 1,
+           ExcIndexRange(grid_type_phys_knot, 0, 2));
+    Assert(grid_type_par_knot >= 0 && grid_type_par_knot <= 1,
+           ExcIndexRange(grid_type_par_knot, 0, 2));
+
+    if (grid_type_phys_knot == 0) // Unstructured quadratic grid
+        quadratic_cells_physical_knot_ = true;
+    else // Unstructured linear grid
+        quadratic_cells_physical_knot_ = false;
+
+    if (grid_type_par_knot == 0) // Unstructured quadratic grid
+        quadratic_cells_parametric_knot_ = true;
+    else // Unstructured linear grid
+        quadratic_cells_parametric_knot_ = false;
 };
 
 
@@ -143,26 +196,6 @@ generate_vtk_grids(const bool &create_physical_mesh,
 {
     Assert(file_name_ != "", ExcMessage("Not specified file name."));
     Assert(file_path_ != "", ExcMessage("Not specified file path."));
-
-    Assert(num_visualization_elements_physical_[0] > 0,
-           ExcMessage("Number of visualization elements must be > 0 in every "
-                      "direction."));
-    Assert(num_visualization_elements_physical_[1] > 0,
-           ExcMessage("Number of visualization elements must be > 0 in every "
-                      "direction."));
-    Assert(num_visualization_elements_physical_[2] > 0,
-           ExcMessage("Number of visualization elements must be > 0 in every "
-                      "direction."));
-
-    Assert(num_visualization_elements_parametric_[0] > 0,
-           ExcMessage("Number of visualization elements must be > 0 in every "
-                      "direction."));
-    Assert(num_visualization_elements_parametric_[1] > 0,
-           ExcMessage("Number of visualization elements must be > 0 in every "
-                      "direction."));
-    Assert(num_visualization_elements_parametric_[2] > 0,
-           ExcMessage("Number of visualization elements must be > 0 in every "
-                      "direction."));
 
     const auto n_functions = this->get_number_functions();
     const Size &n_identity_funcs = n_functions[0];
@@ -331,16 +364,16 @@ generate_solid_mesh_grids(const MapFunPtr_<dim, codim> mapping,
                           vtkMultiBlockDataSet *const vtk_block) const
 {
     const auto &num_visualization_elements = is_identity ?
-                                             num_visualization_elements_parametric_ :
-                                             num_visualization_elements_physical_;
+                                             num_visualization_elements_parametric_solid_:
+                                             num_visualization_elements_physical_solid_;
 
     const bool &unstructured_grid = is_identity ?
-                                    unstructured_grid_parametric_ :
-                                    unstructured_grid_physical_;
+                                    unstructured_grid_parametric_solid_ :
+                                    unstructured_grid_physical_solid_;
 
     const bool &quadratic_cells = is_identity ?
-                                  quadratic_cells_parametric_ :
-                                  quadratic_cells_physical_;
+                                  quadratic_cells_parametric_solid_ :
+                                  quadratic_cells_physical_solid_;
 
     TensorSize<dim> n_vis_elements;
     for (int dir = 0; dir < dim; ++dir)
@@ -455,12 +488,12 @@ generate_knot_mesh_grids(const MapFunPtr_<dim, codim> mapping,
     static const int space_dim = dim + codim;
 
     const auto &num_visualization_elements = is_identity ?
-                                             num_visualization_elements_parametric_ :
-                                             num_visualization_elements_physical_;
+                                             num_visualization_elements_parametric_knot_ :
+                                             num_visualization_elements_physical_knot_;
 
     const bool &quadratic_cells = is_identity ?
-                                  quadratic_cells_parametric_ :
-                                  quadratic_cells_physical_;
+                                  quadratic_cells_parametric_knot_ :
+                                  quadratic_cells_physical_knot_;
 
     const auto cartesian_grid = mapping->get_grid();
     const auto &n_intervals = cartesian_grid->get_num_intervals();
