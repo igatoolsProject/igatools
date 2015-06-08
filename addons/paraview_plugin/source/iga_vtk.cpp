@@ -225,15 +225,6 @@ generate_vtk_grids(const bool &create_physical_mesh,
     const Size &n_ig_funcs = n_functions[2];
 
     unsigned int block_index = 0;
-    if (create_parametric_mesh)
-    {
-        vtkMultiBlockDataSet *block =
-            vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(block_index));
-        this->fill_vtk_grids(block, n_identity_funcs, 0,
-                             true, create_solid_parametric_mesh, false,
-                             create_knot_parametric_mesh);
-        ++block_index;
-    }
 
     if (create_physical_mesh)
     {
@@ -243,6 +234,16 @@ generate_vtk_grids(const bool &create_physical_mesh,
                              false, create_solid_physical_mesh,
                              create_control_physical_mesh,
                              create_knot_physical_mesh);
+        ++block_index;
+    }
+
+    if (create_parametric_mesh)
+    {
+        vtkMultiBlockDataSet *block =
+            vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(block_index));
+        this->fill_vtk_grids(block, n_identity_funcs, 0,
+                             true, create_solid_parametric_mesh, false,
+                             create_knot_parametric_mesh);
         ++block_index;
     }
 };
