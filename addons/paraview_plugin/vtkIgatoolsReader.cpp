@@ -163,6 +163,8 @@ int vtkIgatoolsReader::RequestData(
                                this->GetParametricMesh(),
                                this->GetPhysicalMesh(),
                                mb);
+
+  return 1;
 }
 
 void vtkIgatoolsReader::PrintSelf(ostream& os, vtkIndent indent)
