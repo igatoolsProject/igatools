@@ -221,9 +221,10 @@ fill_vtk_grids(vtkMultiBlockDataSet *const mb,
 
     unsigned int block_index = 0;
 
+    vtkSmartPointer<vtkMultiBlockDataSet> solid_block;
     if (create_solid_mesh)
     {
-        auto solid_block = vtkSmartPointer<vtkMultiBlockDataSet>::New();
+        solid_block = vtkSmartPointer<vtkMultiBlockDataSet>::New();
         solid_block->SetNumberOfBlocks(n_solid_mesh);
         mb->SetBlock(block_index, solid_block);
         mb->GetMetaData(block_index)->Set(vtkCompositeDataSet::NAME(), "Solid mesh");
@@ -255,117 +256,69 @@ fill_vtk_grids(vtkMultiBlockDataSet *const mb,
     Index control_mesh_index = 0;
     Index knot_mesh_index = 0;
 
-    this->template fill_vtk_grid<1, 0>(mb, is_identity, create_solid_mesh,
-                                       create_control_mesh, create_knot_mesh,
-                                       solid_mesh_index, control_mesh_index,
-                                       knot_mesh_index);
-    this->template fill_vtk_grid<2, 0>(mb, is_identity, create_solid_mesh,
-                                       create_control_mesh, create_knot_mesh,
-                                       solid_mesh_index, control_mesh_index,
-                                       knot_mesh_index);
-    this->template fill_vtk_grid<1, 1>(mb, is_identity, create_solid_mesh,
-                                       create_control_mesh, create_knot_mesh,
-                                       solid_mesh_index, control_mesh_index,
-                                       knot_mesh_index);
-    this->template fill_vtk_grid<3, 0>(mb, is_identity, create_solid_mesh,
-                                       create_control_mesh, create_knot_mesh,
-                                       solid_mesh_index, control_mesh_index,
-                                       knot_mesh_index);
-    this->template fill_vtk_grid<2, 1>(mb, is_identity, create_solid_mesh,
-                                       create_control_mesh, create_knot_mesh,
-                                       solid_mesh_index, control_mesh_index,
-                                       knot_mesh_index);
-    this->template fill_vtk_grid<1, 2>(mb, is_identity, create_solid_mesh,
-                                       create_control_mesh, create_knot_mesh,
-                                       solid_mesh_index, control_mesh_index,
-                                       knot_mesh_index);
+    const auto &funcs_container_data = funcs_container_->get_data();
+    boost::fusion::for_each(funcs_container_data,
+                            [&](const auto & type_and_data_same_dim)
+    {
+        using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
+        using Type = typename Type_Value::first_type;
+        const int dim = Type::value;
+
+        boost::fusion::for_each(type_and_data_same_dim.second.get_data(),
+                                [&](const auto & type_and_data_same_dim_codim)
+        {
+            using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim_codim)>::type;
+            using Type = typename Type_Value::first_type;
+            const int codim = Type::value;
+
+            using IdFun = IdentityFunction<dim, dim + codim>;
+            using MapFunPtr = MapFunPtr_<dim, codim>;
+
+            const auto &mappings = type_and_data_same_dim_codim.second.get_all_mappings();
+
+            for (const auto &map_and_name : mappings)
+            {
+                const MapFunPtr mapping = map_and_name.first;
+                const string &name = map_and_name.second;
+
+                if ((std::dynamic_pointer_cast<IdFun>(mapping) != nullptr) != is_identity)
+                    continue;
+
+                if (create_solid_mesh)
+                {
+                    solid_block->GetMetaData(solid_mesh_index)->Set(vtkCompositeDataSet::NAME(),
+                                                                    name.c_str());
+                    this->generate_solid_mesh_grids<dim, codim>
+                    (mapping, is_identity, solid_mesh_index, solid_block);
+                    ++solid_mesh_index;
+                }
+
+                if (create_control_mesh)
+                {
+                    control_block->GetMetaData(control_mesh_index)->Set(vtkCompositeDataSet::NAME(),
+                                                                        name.c_str());
+                    this->generate_control_mesh_grids<dim, codim>
+                    (mapping, control_mesh_index, control_block);
+                    ++control_mesh_index;
+                }
+
+                if (create_knot_mesh)
+                {
+                    knot_block->GetMetaData(knot_mesh_index)->Set(vtkCompositeDataSet::NAME(),
+                                                                  name.c_str());
+                    this->generate_knot_mesh_grids<dim, codim>
+                    (mapping, is_identity, knot_mesh_index, knot_block);
+                    ++knot_mesh_index;
+                }
+            } // endl loop on mappings with a given pair <dim,codim>
+
+        } // end lambda function on codim
+                               );
+
+    } // end lambda function on dim
+                           );
 };
 
-
-
-template <int dim, int codim>
-void
-IGAVTK::
-fill_vtk_grid(vtkMultiBlockDataSet *const mb,
-              const bool is_identity,
-              const bool create_solid_mesh,
-              const bool create_control_mesh,
-              const bool create_knot_mesh,
-              Index &solid_mesh_index,
-              Index &control_mesh_index,
-              Index &knot_mesh_index) const
-{
-    const auto mappings = funcs_container_->template get_mappings_dim_codim<dim, codim>();
-
-    if (mappings.size() == 0)
-        return;
-
-    using IdFun = IdentityFunction<dim, dim + codim>;
-    using MapFunPtr = MapFunPtr_<dim, codim>;
-
-    unsigned int block_index = 0;
-
-    vtkMultiBlockDataSet *solid_block;
-    if (create_solid_mesh)
-    {
-        solid_block = vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(block_index));
-        Assert(solid_block != nullptr, ExcNullPtr());
-        ++block_index;
-    }
-
-    vtkMultiBlockDataSet *control_block;
-    if (create_control_mesh)
-    {
-        control_block = vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(block_index));
-        Assert(control_block != nullptr, ExcNullPtr());
-        ++block_index;
-    }
-
-    vtkMultiBlockDataSet *knot_block;
-    if (create_knot_mesh)
-    {
-        knot_block = vtkMultiBlockDataSet::SafeDownCast(mb->GetBlock(block_index));
-        Assert(knot_block != nullptr, ExcNullPtr());
-        ++block_index;
-    }
-
-    for (const auto &m : mappings)
-    {
-        const MapFunPtr mapping = m.first;
-        const string &name = m.second;
-
-        if ((std::dynamic_pointer_cast<IdFun>(mapping) != nullptr) != is_identity)
-            continue;
-
-        if (create_solid_mesh)
-        {
-            solid_block->GetMetaData(solid_mesh_index)->Set(vtkCompositeDataSet::NAME(),
-                                                            name.c_str());
-            this->generate_solid_mesh_grids<dim, codim>
-            (mapping, is_identity, solid_mesh_index, solid_block);
-            ++solid_mesh_index;
-        }
-
-        if (create_control_mesh)
-        {
-            control_block->GetMetaData(control_mesh_index)->Set(vtkCompositeDataSet::NAME(),
-                                                                name.c_str());
-            this->generate_control_mesh_grids<dim, codim>
-            (mapping, control_mesh_index, control_block);
-            ++control_mesh_index;
-        }
-
-        if (create_knot_mesh)
-        {
-            knot_block->GetMetaData(knot_mesh_index)->Set(vtkCompositeDataSet::NAME(),
-                                                          name.c_str());
-            this->generate_knot_mesh_grids<dim, codim>
-            (mapping, is_identity, knot_mesh_index, knot_block);
-            ++knot_mesh_index;
-        }
-
-    }
-};
 
 
 

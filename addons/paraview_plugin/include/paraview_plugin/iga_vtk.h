@@ -136,19 +136,6 @@ public:
                         const bool create_control_mesh,
                         const bool create_knot_mesh) const;
 
-    /*
-     * Fill VTK grids.
-     */
-    template <int dim, int codim>
-    void fill_vtk_grid(vtkMultiBlockDataSet *const mb,
-                       const bool is_identity,
-                       const bool create_solid_mesh,
-                       const bool create_control_mesh,
-                       const bool create_knot_mesh,
-                       Index &solid_mesh_index,
-                       Index &control_mesh_index,
-                       Index &knot_mesh_index) const;
-
 private:
     /*
      * File name.
