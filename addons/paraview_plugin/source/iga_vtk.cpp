@@ -423,7 +423,8 @@ void
 IGAVTK::
 generate_control_mesh_grids(const MapFunPtr_<dim, codim> mapping,
                             const Index &vtk_block_id,
-                            vtkMultiBlockDataSet *const vtk_block) const
+                            vtkMultiBlockDataSet *const vtk_block,
+                            typename std::enable_if_t<dim == 1>*) const
 {
     static const int space_dim = dim + codim;
     using IgFun_ = IgFunction<dim, 0, space_dim, 1>;
@@ -460,40 +461,81 @@ generate_control_mesh_grids(const MapFunPtr_<dim, codim> mapping,
         points->SetPoint(local_id, point_tmp);
     }
 
-    if (dim == 1)
+    auto grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
+
+    grid->SetPoints(points);
+
+    vtkSmartPointer<vtkPolyLine> polyLine =  vtkSmartPointer<vtkPolyLine>::New();
+
+    const Size n_points = points->GetNumberOfPoints();
+    polyLine->GetPointIds()->SetNumberOfIds(n_points);
+    for (int i = 0; i < n_points; ++i)
+        polyLine->GetPointIds()->SetId(i, i);
+
+    // Create a cell array to store the lines in and add the lines to it
+    vtkSmartPointer<vtkCellArray> cells = vtkSmartPointer<vtkCellArray>::New();
+    cells->InsertNextCell(polyLine);
+
+    grid->Allocate(cells->GetNumberOfCells(), 0);
+    const int vtk_enum_type = VTK_POLY_LINE;
+    grid->SetCells(vtk_enum_type, cells);
+
+    vtk_block->SetBlock(vtk_block_id, grid);
+};
+
+
+
+template <int dim, int codim>
+void
+IGAVTK::
+generate_control_mesh_grids(const MapFunPtr_<dim, codim> mapping,
+                            const Index &vtk_block_id,
+                            vtkMultiBlockDataSet *const vtk_block,
+                            typename std::enable_if_t<(dim == 2 || dim == 3)>*) const
+{
+    static const int space_dim = dim + codim;
+    using IgFun_ = IgFunction<dim, 0, space_dim, 1>;
+    const auto ig_func = std::dynamic_pointer_cast<IgFun_>(mapping);
+    Assert(ig_func != nullptr, ExcNullPtr());
+
+    const auto space = ig_func->get_ig_space();
+    const auto &coefs = ig_func->get_coefficients();
+    const auto &dofs = space->get_dof_distribution();
+
+    // TODO: include assert here to verify that all the components share the
+    // same space.
+    const auto &dofs_table = dofs->get_num_dofs_table();
+    const auto n_pts_dir = dofs_table[0];
+
+    auto points = vtkSmartPointer<vtkPoints>::New();
+
+    const Size n_total_pts = dofs_table.get_component_size(0);
+    points->SetNumberOfPoints(n_total_pts);
+
+    // Setting all the points void.
+    const double point_void[3] = {0.0, 0.0, 0.0};
+    for (int i_pt = 0; i_pt < n_total_pts; ++i_pt)
+        points->SetPoint(i_pt, point_void);
+
+    Index comp;
+    Index local_id;
+    double point_tmp[3];
+    for (const auto &it : coefs)
     {
-        auto grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
-
-        grid->SetPoints(points);
-
-        vtkSmartPointer<vtkPolyLine> polyLine =  vtkSmartPointer<vtkPolyLine>::New();
-
-        const Size n_points = points->GetNumberOfPoints();
-        polyLine->GetPointIds()->SetNumberOfIds(n_points);
-        for (int i = 0; i < n_points; ++i)
-            polyLine->GetPointIds()->SetId(i, i);
-
-        // Create a cell array to store the lines in and add the lines to it
-        vtkSmartPointer<vtkCellArray> cells = vtkSmartPointer<vtkCellArray>::New();
-        cells->InsertNextCell(polyLine);
-
-        grid->Allocate(cells->GetNumberOfCells(), 0);
-        const int vtk_enum_type = VTK_POLY_LINE;
-        grid->SetCells(vtk_enum_type, cells);
-
-        vtk_block->SetBlock(vtk_block_id, grid);
+        dofs->global_to_comp_local(it.first, comp, local_id);
+        points->GetPoint(local_id, point_tmp);
+        point_tmp[comp] = it.second;
+        points->SetPoint(local_id, point_tmp);
     }
-    else
-    {
-        auto grid_dim = TensorSize<3>(1);
-        for (int dir = 0; dir < dim; ++dir)
-            grid_dim[dir] = n_pts_dir[dir];
 
-        auto grid = vtkSmartPointer<vtkStructuredGrid>::New();
-        grid->SetDimensions(grid_dim[0], grid_dim[1], grid_dim[2]);
-        grid->SetPoints(points);
-        vtk_block->SetBlock(vtk_block_id, grid);
-    }
+    auto grid_dim = TensorSize<3>(1);
+    for (int dir = 0; dir < dim; ++dir)
+        grid_dim[dir] = n_pts_dir[dir];
+
+    auto grid = vtkSmartPointer<vtkStructuredGrid>::New();
+    grid->SetDimensions(grid_dim[0], grid_dim[1], grid_dim[2]);
+    grid->SetPoints(points);
+    vtk_block->SetBlock(vtk_block_id, grid);
 
 };
 
@@ -505,8 +547,87 @@ IGAVTK::
 generate_knot_mesh_grids(const MapFunPtr_<dim, codim> mapping,
                          const bool is_identity,
                          const Index &vtk_block_id,
-                         vtkMultiBlockDataSet *const vtk_block) const
+                         vtkMultiBlockDataSet *const vtk_block,
+                         typename std::enable_if_t<dim == 1>*) const
 {
+    // Implementation for 1D case.
+
+    static const int space_dim = dim + codim;
+
+    const auto cartesian_grid = mapping->get_grid();
+    const auto &n_intervals = cartesian_grid->get_num_intervals();
+
+    const QUniform<dim> quad(2);
+    const Size n_vtk_points = n_intervals[0] + 1;
+    const Size n_vtk_cells = n_vtk_points;
+
+    vtkSmartPointer<vtkPoints> vtk_points = vtkSmartPointer<vtkPoints>::New();
+    vtk_points->SetNumberOfPoints(n_vtk_points);
+
+    vtkSmartPointer<vtkIdTypeArray> vtk_cell_ids = vtkSmartPointer<vtkIdTypeArray>::New();
+    const Size tuple_size = 2;
+    vtk_cell_ids->SetNumberOfComponents(tuple_size);
+    vtk_cell_ids->SetNumberOfTuples(n_vtk_cells);
+
+    auto flag = ValueFlags::point | ValueFlags::value;
+    auto elem = mapping->begin();
+    auto end  = mapping->end();
+    const auto topology = Topology<dim>();
+
+    double point_tmp[3] = {0.0, 0.0, 0.0};
+    vtkIdType tuple[2] = {1, 0};
+
+    mapping->reset(flag, quad);
+    mapping->init_cache(elem, topology);
+
+    Index pt_id = 0;
+    for (; elem != end; ++elem)
+    {
+        mapping->fill_cache(elem, topology, 0);
+        auto points = elem->template get_values<_Value, dim>(0);
+        const auto &pp = points[0];
+        for (int dir = 0; dir < space_dim; ++dir)
+            point_tmp[dir] = pp[dir];
+        vtk_points->SetPoint(pt_id, point_tmp);
+        tuple[1] = pt_id;
+        vtk_cell_ids->SetTupleValue(pt_id, tuple);
+        ++pt_id;
+    }
+    auto points = elem->template get_values<_Value, dim>(0);
+    const auto &pp = points[1];
+    for (int dir = 0; dir < space_dim; ++dir)
+        point_tmp[dir] = pp[dir];
+    tuple[1] = pt_id;
+    vtk_cell_ids->SetTupleValue(pt_id, tuple);
+    vtk_points->SetPoint(pt_id, point_tmp);
+
+    // Creating grid.
+    vtkSmartPointer<vtkUnstructuredGrid> grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
+    grid->SetPoints(vtk_points);
+
+    // Creating cells.
+    vtkSmartPointer<vtkCellArray> vtk_cells = vtkSmartPointer<vtkCellArray>::New();
+    vtk_cells->SetCells(n_vtk_cells, vtk_cell_ids);
+    grid->Allocate(vtk_cells->GetNumberOfCells(), 0);
+    const int vtk_enum_type = VTK_VERTEX;
+    grid->SetCells(vtk_enum_type, vtk_cells);
+
+    vtk_block->SetBlock(vtk_block_id, grid);
+};
+
+
+
+template <int dim, int codim>
+void
+IGAVTK::
+generate_knot_mesh_grids(const MapFunPtr_<dim, codim> mapping,
+                         const bool is_identity,
+                         const Index &vtk_block_id,
+                         vtkMultiBlockDataSet *const vtk_block,
+                         typename std::enable_if_t<(dim == 2 || dim == 3)>*) const
+{
+    // Implementation for 2D and 3D cases.
+
     static const int space_dim = dim + codim;
 
     const auto &num_visualization_elements = is_identity ?
@@ -520,71 +641,7 @@ generate_knot_mesh_grids(const MapFunPtr_<dim, codim> mapping,
     const auto cartesian_grid = mapping->get_grid();
     const auto &n_intervals = cartesian_grid->get_num_intervals();
 
-    if (dim == 1)
-    {
-        const QUniform<dim> quad(2);
-        const Size n_vtk_points = n_intervals[0] + 1;
-        const Size n_vtk_cells = n_vtk_points;
-
-        vtkSmartPointer<vtkPoints> vtk_points = vtkSmartPointer<vtkPoints>::New();
-        vtk_points->SetNumberOfPoints(n_vtk_points);
-
-        vtkSmartPointer<vtkIdTypeArray> vtk_cell_ids = vtkSmartPointer<vtkIdTypeArray>::New();
-        const Size tuple_size = 2;
-        vtk_cell_ids->SetNumberOfComponents(tuple_size);
-        vtk_cell_ids->SetNumberOfTuples(n_vtk_cells);
-
-        auto flag = ValueFlags::point | ValueFlags::value;
-        auto elem = mapping->begin();
-        auto end  = mapping->end();
-        const auto topology = Topology<dim>();
-
-        double point_tmp[3] = {0.0, 0.0, 0.0};
-        vtkIdType tuple[2] = {1, 0};
-
-        mapping->reset(flag, quad);
-        mapping->init_cache(elem, topology);
-
-        Index pt_id = 0;
-        for (; elem != end; ++elem)
-        {
-            mapping->fill_cache(elem, topology, 0);
-            auto points = elem->template get_values<_Value, dim>(0);
-            const auto &pp = points[0];
-            for (int dir = 0; dir < space_dim; ++dir)
-                point_tmp[dir] = pp[dir];
-            vtk_points->SetPoint(pt_id, point_tmp);
-            tuple[1] = pt_id;
-            vtk_cell_ids->SetTupleValue(pt_id, tuple);
-            ++pt_id;
-        }
-        auto points = elem->template get_values<_Value, dim>(0);
-        const auto &pp = points[1];
-        for (int dir = 0; dir < space_dim; ++dir)
-            point_tmp[dir] = pp[dir];
-        tuple[1] = pt_id;
-        vtk_cell_ids->SetTupleValue(pt_id, tuple);
-        vtk_points->SetPoint(pt_id, point_tmp);
-
-        // Creating grid.
-        vtkSmartPointer<vtkUnstructuredGrid> grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
-        grid->SetPoints(vtk_points);
-
-        // Creating cells.
-        vtkSmartPointer<vtkCellArray> vtk_cells = vtkSmartPointer<vtkCellArray>::New();
-        vtk_cells->SetCells(n_vtk_cells, vtk_cell_ids);
-        grid->Allocate(vtk_cells->GetNumberOfCells(), 0);
-        const int vtk_enum_type = VTK_VERTEX;
-        grid->SetCells(vtk_enum_type, vtk_cells);
-
-        vtk_block->SetBlock(vtk_block_id, grid);
-
-        return;
-    }
-
     // TODO: improve performance.
-
-    AssertThrow(dim != 1, ExcNotImplemented());
 
     const Size n_points_per_single_cell = quadratic_cells ? 3 : 2;
     const SafeSTLVector<int> vtk_line_connectivity = quadratic_cells ?
@@ -784,8 +841,56 @@ template <int dim, int codim>
 vtkSmartPointer<vtkPointSet>
 IGAVTK::
 create_solid_vts_grid(const MapFunPtr_<dim, codim> mapping,
-                      const TensorSize<dim> &n_vis_elements) const
+                      const TensorSize<dim> &n_vis_elements,
+                      typename std::enable_if_t<dim == 1>*) const
 {
+    // Implementation for 1D.
+    // The 1D structured grid are not visualized in VTK.
+    // Therefore, an unstructured grid is created instead.
+
+    Assert(mapping != nullptr, ExcNullPtr());
+
+    Assert(n_vis_elements[0] > 0,
+            ExcMessage("Number of visualization elements must be > 0 in every "
+                      "direction."));
+
+    auto vtu_grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
+
+    vtkPointData *const point_data = vtu_grid->GetPointData();
+    const auto points = this->create_points_solid_vtk_grid<dim, codim>
+                        (mapping, n_vis_elements, true, false, point_data);
+
+    vtu_grid->SetPoints(points);
+
+    vtkSmartPointer<vtkPolyLine> polyLine =  vtkSmartPointer<vtkPolyLine>::New();
+
+    const Size n_points = points->GetNumberOfPoints();
+    polyLine->GetPointIds()->SetNumberOfIds(n_points);
+    for (int i = 0; i < n_points; ++i)
+        polyLine->GetPointIds()->SetId(i, i);
+
+    // Create a cell array to store the lines in and add the lines to it
+    vtkSmartPointer<vtkCellArray> cells = vtkSmartPointer<vtkCellArray>::New();
+    cells->InsertNextCell(polyLine);
+
+    vtu_grid->Allocate(cells->GetNumberOfCells(), 0);
+    const int vtk_enum_type = VTK_POLY_LINE;
+    vtu_grid->SetCells(vtk_enum_type, cells);
+
+    return vtu_grid;
+};
+
+
+
+template <int dim, int codim>
+vtkSmartPointer<vtkPointSet>
+IGAVTK::
+create_solid_vts_grid(const MapFunPtr_<dim, codim> mapping,
+                      const TensorSize<dim> &n_vis_elements,
+                      typename std::enable_if_t<(dim == 2 || dim == 3)>*) const
+{
+    // Implementation for 2D and 3D.
+
     Assert(mapping != nullptr, ExcNullPtr());
 
 #ifndef NDEBUG
@@ -795,57 +900,22 @@ create_solid_vts_grid(const MapFunPtr_<dim, codim> mapping,
                           "direction."));
 #endif
 
+    vtkSmartPointer<vtkStructuredGrid> vts_grid =
+        vtkSmartPointer<vtkStructuredGrid>::New();
 
-    if (dim != 1)
-    {
+    vtkPointData *const point_data = vts_grid->GetPointData();
+    const auto points = this->create_points_solid_vtk_grid<dim, codim>
+                        (mapping, n_vis_elements, true, false, point_data);
 
-        vtkSmartPointer<vtkStructuredGrid> vts_grid =
-            vtkSmartPointer<vtkStructuredGrid>::New();
+    const auto n_intervals = mapping->get_grid()->get_num_intervals();
+    int grid_dim[3] = {1, 1, 1};
+    for (int dir = 0; dir < dim; ++dir)
+        grid_dim[dir] = (n_vis_elements[dir] + 1) * n_intervals[dir];
+    vts_grid->SetDimensions(grid_dim[0], grid_dim[1], grid_dim[2]);
 
-        vtkPointData *const point_data = vts_grid->GetPointData();
-        const auto points = this->create_points_solid_vtk_grid<dim, codim>
-                            (mapping, n_vis_elements, true, false, point_data);
+    vts_grid->SetPoints(points);
 
-        const auto n_intervals = mapping->get_grid()->get_num_intervals();
-        int grid_dim[3] = {1, 1, 1};
-        for (int dir = 0; dir < dim; ++dir)
-            grid_dim[dir] = (n_vis_elements[dir] + 1) * n_intervals[dir];
-        vts_grid->SetDimensions(grid_dim[0], grid_dim[1], grid_dim[2]);
-
-        vts_grid->SetPoints(points);
-
-        return vts_grid;
-    }
-    else // 1D
-    {
-        // The 1D structure grid are not visualized in VTK.
-        // Therefore, an unstructured grid is created instead.
-
-        auto vtu_grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
-
-        vtkPointData *const point_data = vtu_grid->GetPointData();
-        const auto points = this->create_points_solid_vtk_grid<dim, codim>
-                            (mapping, n_vis_elements, true, false, point_data);
-
-        vtu_grid->SetPoints(points);
-
-        vtkSmartPointer<vtkPolyLine> polyLine =  vtkSmartPointer<vtkPolyLine>::New();
-
-        const Size n_points = points->GetNumberOfPoints();
-        polyLine->GetPointIds()->SetNumberOfIds(n_points);
-        for (int i = 0; i < n_points; ++i)
-            polyLine->GetPointIds()->SetId(i, i);
-
-        // Create a cell array to store the lines in and add the lines to it
-        vtkSmartPointer<vtkCellArray> cells = vtkSmartPointer<vtkCellArray>::New();
-        cells->InsertNextCell(polyLine);
-
-        vtu_grid->Allocate(cells->GetNumberOfCells(), 0);
-        const int vtk_enum_type = VTK_POLY_LINE;
-        vtu_grid->SetCells(vtk_enum_type, cells);
-
-        return vtu_grid;
-    }
+    return vts_grid;
 };
 
 

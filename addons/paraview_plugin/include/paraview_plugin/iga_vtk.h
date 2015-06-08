@@ -218,22 +218,49 @@ private:
 
     /*
      * Generates the control mesh vtk grids.
+     * For the 1D case.
      */
     template <int dim, int codim>
     void
     generate_control_mesh_grids(const MapFunPtr_<dim, codim> mapping,
                                 const Index &vtk_block_id,
-                                vtkMultiBlockDataSet *const vtk_block) const;
+                                vtkMultiBlockDataSet *const vtk_block,
+                                typename std::enable_if_t<dim == 1>* = 0) const;
 
     /*
-     * Generates the knot mesh vtk grids.
+     * Generates the control mesh vtk grids.
+     * For the 2D and 3D cases.
+     */
+    template <int dim, int codim>
+    void
+    generate_control_mesh_grids(const MapFunPtr_<dim, codim> mapping,
+                                const Index &vtk_block_id,
+                                vtkMultiBlockDataSet *const vtk_block,
+                                typename std::enable_if_t<(dim == 2 || dim == 3)>* = 0) const;
+
+    /*
+     * Generates the knot mesh vtk grids. It is a VTK unstructured grid.
+     * For the 1D case, instead of lines, points are created.
      */
     template <int dim, int codim>
     void
     generate_knot_mesh_grids(const MapFunPtr_<dim, codim> mapping,
                              const bool is_identity,
                              const Index &vtk_block_id,
-                             vtkMultiBlockDataSet *const vtk_block) const;
+                             vtkMultiBlockDataSet *const vtk_block,
+                             typename std::enable_if_t<dim == 1>* = 0) const;
+
+    /*
+     * Generates the knot mesh vtk grids. It is a VTK unstructured grid.
+     * For 2D and 3D cases.
+     */
+    template <int dim, int codim>
+    void
+    generate_knot_mesh_grids(const MapFunPtr_<dim, codim> mapping,
+                             const bool is_identity,
+                             const Index &vtk_block_id,
+                             vtkMultiBlockDataSet *const vtk_block,
+                             typename std::enable_if_t<(dim == 2 || dim == 3)>* = 0) const;
 
     /*
      * Returns the number of identity functions (first entry of the array),
@@ -267,7 +294,18 @@ private:
     template <int dim, int codim>
     vtkSmartPointer<vtkPointSet>
     create_solid_vts_grid(const MapFunPtr_<dim, codim> mapping,
-                          const TensorSize<dim> &n_vis_elements) const;
+                          const TensorSize<dim> &n_vis_elements,
+                          typename std::enable_if_t<dim == 1>* = 0) const;
+
+    /*
+     * Creates a VTK structured grid for the solid block.
+     * For the 2D and 3D cases.
+     */
+    template <int dim, int codim>
+    vtkSmartPointer<vtkPointSet>
+    create_solid_vts_grid(const MapFunPtr_<dim, codim> mapping,
+                          const TensorSize<dim> &n_vis_elements,
+                          typename std::enable_if_t<(dim == 2 || dim == 3)>* = 0) const;
 
     /*
      * Creates a the points for the solid VTK grid.
