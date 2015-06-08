@@ -32,210 +32,210 @@ class vtkIgatoolsReader : public vtkMultiBlockDataSetAlgorithm
 {
 public:
 
-  vtkTypeMacro(vtkIgatoolsReader, vtkMultiBlockDataSetAlgorithm);
+    vtkTypeMacro(vtkIgatoolsReader, vtkMultiBlockDataSetAlgorithm);
 
-  void PrintSelf(ostream& os, vtkIndent indent);
+    void PrintSelf(ostream &os, vtkIndent indent);
 
-  static vtkIgatoolsReader *New();
+    static vtkIgatoolsReader *New();
 
-  // Description:
-  // Specify file name of the .iga file.
-  vtkSetStringMacro(FileName);
-  vtkGetStringMacro(FileName);
+    // Description:
+    // Specify file name of the .iga file.
+    vtkSetStringMacro(FileName);
+    vtkGetStringMacro(FileName);
 
-  // Description:
-  // Set the number of VTK visualization elements per direction for each Bezier
-  // element.
-  vtkSetVector3Macro (NumVisualizationElementsPhysical, int);
-  vtkGetVectorMacro  (NumVisualizationElementsPhysical, int, 3);
+    // Description:
+    // Set the number of VTK visualization elements per direction for each Bezier
+    // element.
+    vtkSetVector3Macro(NumVisualizationElementsPhysical, int);
+    vtkGetVectorMacro(NumVisualizationElementsPhysical, int, 3);
 
-  // Description:
-  // Set the number of VTK visualization elements per direction for each Bezier
-  // element.
-  vtkSetVector3Macro (NumVisualizationElementsParametric, int);
-  vtkGetVectorMacro  (NumVisualizationElementsParametric, int, 3);
+    // Description:
+    // Set the number of VTK visualization elements per direction for each Bezier
+    // element.
+    vtkSetVector3Macro(NumVisualizationElementsParametric, int);
+    vtkGetVectorMacro(NumVisualizationElementsParametric, int, 3);
 
-  /*
-   * Set/Get Grid type
-   *  - 0: unstructured grid : quadratic elements.
-   *  - 1: unstructured grid : linear elements.
-   *  - 2: structured grid.
-   */
-  vtkSetMacro(GridTypePhysical, int);
-  vtkGetMacro(GridTypePhysical, int);
+    /*
+     * Set/Get Grid type
+     *  - 0: unstructured grid : quadratic elements.
+     *  - 1: unstructured grid : linear elements.
+     *  - 2: structured grid.
+     */
+    vtkSetMacro(GridTypePhysical, int);
+    vtkGetMacro(GridTypePhysical, int);
 
-  /*
-   * Set/Get Grid type
-   *  - 0: unstructured grid : quadratic elements.
-   *  - 1: unstructured grid : linear elements.
-   *  - 2: structured grid.
-   */
-  vtkSetMacro(GridTypeParametric, int);
-  vtkGetMacro(GridTypeParametric, int);
+    /*
+     * Set/Get Grid type
+     *  - 0: unstructured grid : quadratic elements.
+     *  - 1: unstructured grid : linear elements.
+     *  - 2: structured grid.
+     */
+    vtkSetMacro(GridTypeParametric, int);
+    vtkGetMacro(GridTypeParametric, int);
 
-  /*
-   * Set/Get Solid Mesh creation flag.
-   *  - true:  create the mesh.
-   *  - false: do not create the mesh.
-   */
-  vtkSetMacro(SolidMeshPhysical, bool);
-  vtkGetMacro(SolidMeshPhysical, bool);
+    /*
+     * Set/Get Solid Mesh creation flag.
+     *  - true:  create the mesh.
+     *  - false: do not create the mesh.
+     */
+    vtkSetMacro(SolidMeshPhysical, bool);
+    vtkGetMacro(SolidMeshPhysical, bool);
 
-  /*
-   * Set/Get Solid Mesh creation flag.
-   *  - true:  create the mesh.
-   *  - false: do not create the mesh.
-   */
-  vtkSetMacro(SolidMeshParametric, bool);
-  vtkGetMacro(SolidMeshParametric, bool);
+    /*
+     * Set/Get Solid Mesh creation flag.
+     *  - true:  create the mesh.
+     *  - false: do not create the mesh.
+     */
+    vtkSetMacro(SolidMeshParametric, bool);
+    vtkGetMacro(SolidMeshParametric, bool);
 
-  /*
-   * Set/Get Control Mesh creation flag.
-   *  - true:  create the mesh.
-   *  - false: do not create the mesh.
-   */
-  vtkSetMacro(ControlMeshPhysical, bool);
-  vtkGetMacro(ControlMeshPhysical, bool);
+    /*
+     * Set/Get Control Mesh creation flag.
+     *  - true:  create the mesh.
+     *  - false: do not create the mesh.
+     */
+    vtkSetMacro(ControlMeshPhysical, bool);
+    vtkGetMacro(ControlMeshPhysical, bool);
 
-  /*
-   * Set/Get Knot Mesh creation flag.
-   *  - true:  create the mesh.
-   *  - false: do not create the mesh.
-   */
-  vtkSetMacro(KnotMeshPhysical, bool);
-  vtkGetMacro(KnotMeshPhysical, bool);
+    /*
+     * Set/Get Knot Mesh creation flag.
+     *  - true:  create the mesh.
+     *  - false: do not create the mesh.
+     */
+    vtkSetMacro(KnotMeshPhysical, bool);
+    vtkGetMacro(KnotMeshPhysical, bool);
 
-  /*
-   * Set/Get Knot Mesh creation flag.
-   *  - true:  create the mesh.
-   *  - false: do not create the mesh.
-   */
-  vtkSetMacro(KnotMeshParametric, bool);
-  vtkGetMacro(KnotMeshParametric, bool);
+    /*
+     * Set/Get Knot Mesh creation flag.
+     *  - true:  create the mesh.
+     *  - false: do not create the mesh.
+     */
+    vtkSetMacro(KnotMeshParametric, bool);
+    vtkGetMacro(KnotMeshParametric, bool);
 
-  /*
-   * Set/Get Parametric Mesh creation flag.
-   *  - true:  create the mesh.
-   *  - false: do not create the mesh.
-   */
-  vtkSetMacro(ParametricMesh, bool);
-  vtkGetMacro(ParametricMesh, bool);
+    /*
+     * Set/Get Parametric Mesh creation flag.
+     *  - true:  create the mesh.
+     *  - false: do not create the mesh.
+     */
+    vtkSetMacro(ParametricMesh, bool);
+    vtkGetMacro(ParametricMesh, bool);
 
-  /*
-   * Set/Get Physical Mesh creation flag.
-   *  - true:  create the mesh.
-   *  - false: do not create the mesh.
-   */
-  vtkSetMacro(PhysicalMesh, bool);
-  vtkGetMacro(PhysicalMesh, bool);
+    /*
+     * Set/Get Physical Mesh creation flag.
+     *  - true:  create the mesh.
+     *  - false: do not create the mesh.
+     */
+    vtkSetMacro(PhysicalMesh, bool);
+    vtkGetMacro(PhysicalMesh, bool);
 
 protected:
-  /*
-   * Deleter
-   */
-  vtkIgatoolsReader();
+    /*
+     * Deleter
+     */
+    vtkIgatoolsReader();
 
-  /*
-   * Destructor.
-   */
-  ~vtkIgatoolsReader(){}
+    /*
+     * Destructor.
+     */
+    ~vtkIgatoolsReader() {}
 
-  virtual int RequestData(vtkInformation *,
-                          vtkInformationVector **,
-                          vtkInformationVector *) override final;
+    virtual int RequestData(vtkInformation *,
+                            vtkInformationVector **,
+                            vtkInformationVector *) override final;
 
-  virtual int RequestInformation(vtkInformation* request,
-                                 vtkInformationVector** inputVector,
-                                 vtkInformationVector* outputVector) override final;
+    virtual int RequestInformation(vtkInformation *request,
+                                   vtkInformationVector **inputVector,
+                                   vtkInformationVector *outputVector) override final;
 
 public:
-  /*
-   * Test whether the file with the given name exists and can be read by this
-   * reader.
-   */
-  int CanReadFile(const char* name);
+    /*
+     * Test whether the file with the given name exists and can be read by this
+     * reader.
+     */
+    int CanReadFile(const char *name);
 
 private:
-  vtkIgatoolsReader(const vtkIgatoolsReader&) = delete;
-  vtkIgatoolsReader(const vtkIgatoolsReader&&) = delete;
-  void operator=(const vtkIgatoolsReader&) = delete;
-  void operator=(const vtkIgatoolsReader&&) = delete;
+    vtkIgatoolsReader(const vtkIgatoolsReader &) = delete;
+    vtkIgatoolsReader(const vtkIgatoolsReader &&) = delete;
+    void operator=(const vtkIgatoolsReader &) = delete;
+    void operator=(const vtkIgatoolsReader&&) = delete;
 
 
-  /*
-   * Retrieves the file name and the path of the file.
-   */
-  void get_file_and_path (std::string& file_name, std::string& file_path);
+    /*
+     * Retrieves the file name and the path of the file.
+     */
+    void get_file_and_path(std::string &file_name, std::string &file_path);
 
-  /*
-   * Check number of visualization element.
-   */
-  void check_number_visualization_elements ();
+    /*
+     * Check number of visualization element.
+     */
+    void check_number_visualization_elements();
 
-  /*
-   * Grid type.
-   */
-  int GridTypePhysical;
+    /*
+     * Grid type.
+     */
+    int GridTypePhysical;
 
-  /*
-   * Grid type.
-   */
-  int GridTypeParametric;
+    /*
+     * Grid type.
+     */
+    int GridTypeParametric;
 
-  /*
-   * Solid mesh creation flag.
-   */
-  bool SolidMeshPhysical;
+    /*
+     * Solid mesh creation flag.
+     */
+    bool SolidMeshPhysical;
 
-  /*
-   * Solid mesh creation flag.
-   */
-  bool SolidMeshParametric;
+    /*
+     * Solid mesh creation flag.
+     */
+    bool SolidMeshParametric;
 
-  /*
-   * Control mesh creation flag.
-   */
-  bool ControlMeshPhysical;
+    /*
+     * Control mesh creation flag.
+     */
+    bool ControlMeshPhysical;
 
-  /*
-   * Knot mesh creation flag.
-   */
-  bool KnotMeshPhysical;
+    /*
+     * Knot mesh creation flag.
+     */
+    bool KnotMeshPhysical;
 
-  /*
-   * Knot mesh creation flag.
-   */
-  bool KnotMeshParametric;
+    /*
+     * Knot mesh creation flag.
+     */
+    bool KnotMeshParametric;
 
-  /*
-   * Parametric mesh creation flag.
-   */
-  bool ParametricMesh;
+    /*
+     * Parametric mesh creation flag.
+     */
+    bool ParametricMesh;
 
-  /*
-   * Physical mesh creation flag.
-   */
-  bool PhysicalMesh;
+    /*
+     * Physical mesh creation flag.
+     */
+    bool PhysicalMesh;
 
-  /*
-   * File name variable.
-   */
-  char* FileName = NULL;
+    /*
+     * File name variable.
+     */
+    char *FileName = NULL;
 
-  /*
-   * Number of VTK visualization elements per direction per Bezier element.
-   */
-  int   NumVisualizationElementsPhysical[3];
+    /*
+     * Number of VTK visualization elements per direction per Bezier element.
+     */
+    int   NumVisualizationElementsPhysical[3];
 
-  /*
-   * Number of VTK visualization elements per direction per Bezier element.
-   */
-  int   NumVisualizationElementsParametric[3];
+    /*
+     * Number of VTK visualization elements per direction per Bezier element.
+     */
+    int   NumVisualizationElementsParametric[3];
 
-  /*
-   * Iga vtk object.
-   */
-  iga::IGAVTK iga_vtk_;
+    /*
+     * Iga vtk object.
+     */
+    iga::IGAVTK iga_vtk_;
 };
 
 

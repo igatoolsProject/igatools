@@ -411,6 +411,17 @@ class FunctionsContainer
 
     public:
         /**
+         * Returns a const-reference to the internal data.
+         *
+         * @note The returned object refers to different values of the <tt>codim</tt> parameter.
+         */
+        const auto &get_data() const
+        {
+            return data_varying_codim_;
+        }
+
+
+        /**
          * Returns a const-reference to the data identified by the index pair <tt><dim,codim></tt>.
          *
          * @note The returned container holds the geometry parametrizations
