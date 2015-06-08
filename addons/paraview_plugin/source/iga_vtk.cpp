@@ -121,55 +121,77 @@ set_visualization_element_properties(const int *const n_vis_elem_phys_solid,
     // Grid type 0 : Unstructured grid : quadratic elements.
     // Grid type 1 : Unstructured grid : linear elements.
     // Grid type 2 : Structured grid.
-    Assert(grid_type_phys_solid >= 0 && grid_type_phys_solid <= 2,
-           ExcIndexRange(grid_type_phys_solid, 0, 3));
-    Assert(grid_type_par_solid >= 0 && grid_type_par_solid <= 2,
-           ExcIndexRange(grid_type_par_solid, 0, 3));
 
-    if (grid_type_phys_solid == 2) // Structured grid.
+    switch (grid_type_phys_solid)
     {
+      case 0:
+        unstructured_grid_physical_solid_ = true;
+        quadratic_cells_physical_solid_ = true;
+        break;
+      case 1:
+        unstructured_grid_physical_solid_ = true;
+        quadratic_cells_physical_solid_ = false;
+        break;
+      case 2:
         unstructured_grid_physical_solid_ = false;
         quadratic_cells_physical_solid_ = false;
-    }
-    else  // Unstructured grid.
-    {
-        unstructured_grid_physical_solid_ = true;
-        if (grid_type_phys_solid == 0)
-            quadratic_cells_physical_solid_ = true;
-        else
-            quadratic_cells_physical_solid_ = false;
+        break;
+      default:
+        Assert(grid_type_phys_solid >= 0 && grid_type_phys_solid <= 2,
+               ExcIndexRange(grid_type_phys_solid, 0, 3));
+        break;
     }
 
-    if (grid_type_par_solid == 2) // Structured grid.
+    switch (grid_type_par_solid)
     {
+      case 0:
+        unstructured_grid_parametric_solid_ = true;
+        quadratic_cells_parametric_solid_ = true;
+        break;
+      case 1:
+        unstructured_grid_parametric_solid_ = true;
+        quadratic_cells_parametric_solid_ = false;
+        break;
+      case 2:
         unstructured_grid_parametric_solid_ = false;
         quadratic_cells_parametric_solid_ = false;
-    }
-    else  // Unstructured grid.
-    {
-        unstructured_grid_parametric_solid_ = true;
-        if (grid_type_par_solid == 0)
-            quadratic_cells_parametric_solid_ = true;
-        else
-            quadratic_cells_parametric_solid_ = false;
+        break;
+      default:
+        Assert(grid_type_par_solid >= 0 && grid_type_par_solid <= 2,
+               ExcIndexRange(grid_type_par_solid, 0, 3));
+        break;
     }
 
     // Grid type 0 : Unstructured grid : quadratic elements.
     // Grid type 1 : Unstructured grid : linear elements.
-    Assert(grid_type_phys_knot >= 0 && grid_type_phys_knot <= 1,
-           ExcIndexRange(grid_type_phys_knot, 0, 2));
-    Assert(grid_type_par_knot >= 0 && grid_type_par_knot <= 1,
-           ExcIndexRange(grid_type_par_knot, 0, 2));
 
-    if (grid_type_phys_knot == 0) // Unstructured quadratic grid
+    switch (grid_type_phys_knot)
+    {
+      case 0:
         quadratic_cells_physical_knot_ = true;
-    else // Unstructured linear grid
+        break;
+      case 1:
         quadratic_cells_physical_knot_ = false;
+        break;
+      default:
+        Assert(grid_type_phys_knot >= 0 && grid_type_phys_knot <= 1,
+               ExcIndexRange(grid_type_phys_knot, 0, 2));
+        break;
+    }
 
-    if (grid_type_par_knot == 0) // Unstructured quadratic grid
+    switch (grid_type_par_knot)
+    {
+      case 0:
         quadratic_cells_parametric_knot_ = true;
-    else // Unstructured linear grid
+        break;
+      case 1:
         quadratic_cells_parametric_knot_ = false;
+        break;
+      default:
+        Assert(grid_type_par_knot >= 0 && grid_type_par_knot <= 1,
+               ExcIndexRange(grid_type_par_knot, 0, 2));
+        break;
+    }
 };
 
 
