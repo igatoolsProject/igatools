@@ -341,29 +341,32 @@ fill_vtk_grids(vtkMultiBlockDataSet *const mb,
 
                 if (create_solid_mesh)
                 {
+                    const auto grid = this->create_solid_mesh_grid<dim, codim>
+                        (mapping, is_identity);
+                    Assert(grid != nullptr, ExcNullPtr());
                     solid_block->GetMetaData(solid_mesh_index)->Set(vtkCompositeDataSet::NAME(),
                                                                     name.c_str());
-                    this->generate_solid_mesh_grids<dim, codim>
-                    (mapping, is_identity, solid_mesh_index, solid_block);
-                    ++solid_mesh_index;
+                    solid_block->SetBlock(solid_mesh_index++, grid);
                 }
 
                 if (create_control_mesh)
                 {
+                    const auto grid =
+                      this->create_control_mesh_grid<dim, codim>(mapping);
+                    Assert(grid != nullptr, ExcNullPtr());
                     control_block->GetMetaData(control_mesh_index)->Set(vtkCompositeDataSet::NAME(),
                                                                         name.c_str());
-                    this->generate_control_mesh_grids<dim, codim>
-                    (mapping, control_mesh_index, control_block);
-                    ++control_mesh_index;
+                    control_block->SetBlock(control_mesh_index++, grid);
                 }
 
                 if (create_knot_mesh)
                 {
+                    const auto grid = this->create_knot_mesh_grid<dim, codim>
+                        (mapping, is_identity);
+                    Assert(grid != nullptr, ExcNullPtr());
                     knot_block->GetMetaData(knot_mesh_index)->Set(vtkCompositeDataSet::NAME(),
                                                                   name.c_str());
-                    this->generate_knot_mesh_grids<dim, codim>
-                    (mapping, is_identity, knot_mesh_index, knot_block);
-                    ++knot_mesh_index;
+                    knot_block->SetBlock(knot_mesh_index++, grid);
                 }
             } // endl loop on mappings with a given pair <dim,codim>
 
@@ -378,12 +381,10 @@ fill_vtk_grids(vtkMultiBlockDataSet *const mb,
 
 
 template <int dim, int codim>
-void
+vtkSmartPointer<vtkPointSet>
 IGAVTK::
-generate_solid_mesh_grids(const MapFunPtr_<dim, codim> mapping,
-                          const bool is_identity,
-                          const Index &vtk_block_id,
-                          vtkMultiBlockDataSet *const vtk_block) const
+create_solid_mesh_grid(const MapFunPtr_<dim, codim> mapping,
+                       const bool is_identity) const
 {
     const auto &num_visualization_elements = is_identity ?
                                              num_visualization_elements_parametric_solid_:
@@ -407,24 +408,19 @@ generate_solid_mesh_grids(const MapFunPtr_<dim, codim> mapping,
     vtkSmartPointer<vtkPointSet> grid;
 
     if (unstructured_grid) // VTK unstructured grid.
-        grid = this->create_solid_vtu_grid<dim, codim>(mapping, n_vis_elements,
+        return this->create_solid_vtu_grid<dim, codim>(mapping, n_vis_elements,
                                                        quadratic_cells);
     else // VTK structured grid.
-        grid = this->create_solid_vts_grid<dim, codim>(mapping, n_vis_elements);
-
-    Assert(grid != nullptr, ExcNullPtr());
-    vtk_block->SetBlock(vtk_block_id, grid);
+        return this->create_solid_vts_grid<dim, codim>(mapping, n_vis_elements);
 };
 
 
 
 template <int dim, int codim>
-void
+vtkSmartPointer<vtkPointSet>
 IGAVTK::
-generate_control_mesh_grids(const MapFunPtr_<dim, codim> mapping,
-                            const Index &vtk_block_id,
-                            vtkMultiBlockDataSet *const vtk_block,
-                            typename std::enable_if_t<dim == 1>*) const
+create_control_mesh_grid(const MapFunPtr_<dim, codim> mapping,
+                         typename std::enable_if_t<dim == 1>*) const
 {
     static const int space_dim = dim + codim;
     using IgFun_ = IgFunction<dim, 0, space_dim, 1>;
@@ -480,18 +476,16 @@ generate_control_mesh_grids(const MapFunPtr_<dim, codim> mapping,
     const int vtk_enum_type = VTK_POLY_LINE;
     grid->SetCells(vtk_enum_type, cells);
 
-    vtk_block->SetBlock(vtk_block_id, grid);
+    return grid;
 };
 
 
 
 template <int dim, int codim>
-void
+vtkSmartPointer<vtkPointSet>
 IGAVTK::
-generate_control_mesh_grids(const MapFunPtr_<dim, codim> mapping,
-                            const Index &vtk_block_id,
-                            vtkMultiBlockDataSet *const vtk_block,
-                            typename std::enable_if_t<(dim == 2 || dim == 3)>*) const
+create_control_mesh_grid(const MapFunPtr_<dim, codim> mapping,
+                         typename std::enable_if_t<(dim == 2 || dim == 3)>*) const
 {
     static const int space_dim = dim + codim;
     using IgFun_ = IgFunction<dim, 0, space_dim, 1>;
@@ -535,20 +529,18 @@ generate_control_mesh_grids(const MapFunPtr_<dim, codim> mapping,
     auto grid = vtkSmartPointer<vtkStructuredGrid>::New();
     grid->SetDimensions(grid_dim[0], grid_dim[1], grid_dim[2]);
     grid->SetPoints(points);
-    vtk_block->SetBlock(vtk_block_id, grid);
 
+    return grid;
 };
 
 
 
 template <int dim, int codim>
-void
+vtkSmartPointer<vtkUnstructuredGrid>
 IGAVTK::
-generate_knot_mesh_grids(const MapFunPtr_<dim, codim> mapping,
-                         const bool is_identity,
-                         const Index &vtk_block_id,
-                         vtkMultiBlockDataSet *const vtk_block,
-                         typename std::enable_if_t<dim == 1>*) const
+create_knot_mesh_grid(const MapFunPtr_<dim, codim> mapping,
+                      const bool is_identity,
+                      typename std::enable_if_t<dim == 1>*) const
 {
     // Implementation for 1D case.
 
@@ -612,19 +604,17 @@ generate_knot_mesh_grids(const MapFunPtr_<dim, codim> mapping,
     const int vtk_enum_type = VTK_VERTEX;
     grid->SetCells(vtk_enum_type, vtk_cells);
 
-    vtk_block->SetBlock(vtk_block_id, grid);
+    return grid;
 };
 
 
 
 template <int dim, int codim>
-void
+vtkSmartPointer<vtkUnstructuredGrid>
 IGAVTK::
-generate_knot_mesh_grids(const MapFunPtr_<dim, codim> mapping,
-                         const bool is_identity,
-                         const Index &vtk_block_id,
-                         vtkMultiBlockDataSet *const vtk_block,
-                         typename std::enable_if_t<(dim == 2 || dim == 3)>*) const
+create_knot_mesh_grid(const MapFunPtr_<dim, codim> mapping,
+                      const bool is_identity,
+                      typename std::enable_if_t<(dim == 2 || dim == 3)>*) const
 {
     // Implementation for 2D and 3D cases.
 
@@ -785,7 +775,7 @@ generate_knot_mesh_grids(const MapFunPtr_<dim, codim> mapping,
     const int vtk_enum_type = quadratic_cells ? VTK_QUADRATIC_EDGE : VTK_LINE;
     grid->SetCells(vtk_enum_type, vtk_cells);
 
-    vtk_block->SetBlock(vtk_block_id, grid);
+    return grid;
 };
 
 
