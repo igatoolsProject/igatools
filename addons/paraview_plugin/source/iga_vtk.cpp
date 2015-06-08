@@ -477,9 +477,9 @@ generate_control_mesh_grids(const MapFunPtr_<dim, codim> mapping,
     }
     else
     {
-        double grid_dim[3] = {1, 1, 1};
+        auto grid_dim = TensorSize<3>(1);
         for (int dir = 0; dir < dim; ++dir)
-            grid_dim[dir] = n_pts_dir[dir];;
+            grid_dim[dir] = n_pts_dir[dir];
 
         auto grid = vtkSmartPointer<vtkStructuredGrid>::New();
         grid->SetDimensions(grid_dim[0], grid_dim[1], grid_dim[2]);
@@ -906,7 +906,7 @@ create_points_solid_vtk_grid(const MapFunPtr_<dim, codim> mapping,
         }
     }
 
-    this->create_point_data<dim, codim>
+    this->create_point_data_dim_codim<dim, codim>
     (mapping, *quad, points_map, points_mask, point_data);
 
     return points;
@@ -1366,94 +1366,34 @@ create_cells_solid_vtu_grid(const TensorSize<dim> &n_vis_elements,
 
 
 
-template <>
+template <int dim, int codim>
 void
 IGAVTK::
-create_point_data<1, 0> (const shared_ptr<Function<1, 0, 1, 1>> map,
-                         const Quadrature<1> &quad,
-                         const SafeSTLVector<SafeSTLVector<Index>> &points_map,
-                         const SafeSTLVector<Index> &points_mask,
-                         vtkPointData *const point_data) const
+create_point_data_dim_codim(const std::shared_ptr<Function<dim, 0, dim + codim, 1>> map,
+                            const Quadrature<dim> &quad,
+                            const SafeSTLVector<SafeSTLVector<Index>> &points_map,
+                            const SafeSTLVector<Index> &points_mask,
+                            vtkPointData *const point_data,
+                            typename std::enable_if_t<(dim == 1 && codim == 0)>*) const
 {
     this->template create_point_data<1, 0, 1, 1>(map, quad, points_map, points_mask, point_data);
-//   this->template create_point_data<1, 0, 2, 1>(map, quad, points_map, points_mask, point_data);
-//   this->template create_point_data<1, 0, 3, 1>(map, quad, points_map, points_mask, point_data);
 };
 
 
-
-template <>
+template <int dim, int codim>
 void
 IGAVTK::
-create_point_data<2, 0> (const shared_ptr<Function<2, 0, 2, 1>> map,
-                         const Quadrature<2> &quad,
-                         const SafeSTLVector<SafeSTLVector<Index>> &points_map,
-                         const SafeSTLVector<Index> &points_mask,
-                         vtkPointData *const point_data) const
+create_point_data_dim_codim(const std::shared_ptr<Function<dim, 0, dim + codim, 1>> map,
+                            const Quadrature<dim> &quad,
+                            const SafeSTLVector<SafeSTLVector<Index>> &points_map,
+                            const SafeSTLVector<Index> &points_mask,
+                            vtkPointData *const point_data,
+                            typename std::enable_if_t<!(dim == 1 && codim == 0)>*) const
 {
-    this->template create_point_data<2, 0, 1, 1>(map, quad, points_map, points_mask, point_data);
-    this->template create_point_data<2, 0, 2, 1>(map, quad, points_map, points_mask, point_data);
+    this->template create_point_data<dim, codim,         1, 1>(map, quad, points_map, points_mask, point_data);
+    this->template create_point_data<dim, codim, dim+codim, 1>(map, quad, points_map, points_mask, point_data);
 };
 
-
-
-template <>
-void
-IGAVTK::
-create_point_data<1, 1> (const shared_ptr<Function<1, 0, 2, 1>> map,
-                         const Quadrature<1> &quad,
-                         const SafeSTLVector<SafeSTLVector<Index>> &points_map,
-                         const SafeSTLVector<Index> &points_mask,
-                         vtkPointData *const point_data) const
-{
-    this->template create_point_data<1, 1, 1, 1>(map, quad, points_map, points_mask, point_data);
-    this->template create_point_data<1, 1, 2, 1>(map, quad, points_map, points_mask, point_data);
-};
-
-
-
-template <>
-void
-IGAVTK::
-create_point_data<3, 0> (const shared_ptr<Function<3, 0, 3, 1>> map,
-                         const Quadrature<3> &quad,
-                         const SafeSTLVector<SafeSTLVector<Index>> &points_map,
-                         const SafeSTLVector<Index> &points_mask,
-                         vtkPointData *const point_data) const
-{
-    this->template create_point_data<3, 0, 1, 1>(map, quad, points_map, points_mask, point_data);
-    this->template create_point_data<3, 0, 3, 1>(map, quad, points_map, points_mask, point_data);
-};
-
-
-
-template <>
-void
-IGAVTK::
-create_point_data<2, 1> (const shared_ptr<Function<2, 0, 3, 1>> map,
-                         const Quadrature<2> &quad,
-                         const SafeSTLVector<SafeSTLVector<Index>> &points_map,
-                         const SafeSTLVector<Index> &points_mask,
-                         vtkPointData *const point_data) const
-{
-    this->template create_point_data<2, 1, 1, 1>(map, quad, points_map, points_mask, point_data);
-    this->template create_point_data<2, 1, 3, 1>(map, quad, points_map, points_mask, point_data);
-};
-
-
-
-template <>
-void
-IGAVTK::
-create_point_data<1, 2> (const shared_ptr<Function<1, 0, 3, 1>> map,
-                         const Quadrature<1> &quad,
-                         const SafeSTLVector<SafeSTLVector<Index>> &points_map,
-                         const SafeSTLVector<Index> &points_mask,
-                         vtkPointData *const point_data) const
-{
-    this->template create_point_data<1, 2, 1, 1>(map, quad, points_map, points_mask, point_data);
-    this->template create_point_data<1, 2, 3, 1>(map, quad, points_map, points_mask, point_data);
-};
 
 
 

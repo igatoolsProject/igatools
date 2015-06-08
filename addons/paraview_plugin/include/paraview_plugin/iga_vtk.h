@@ -271,11 +271,21 @@ private:
 
     template <int dim, int codim>
     void
-    create_point_data(const std::shared_ptr<Function<dim, 0, dim + codim, 1>> mapping,
-                      const Quadrature<dim> &quad,
-                      const SafeSTLVector<SafeSTLVector<Index>> &points_map,
-                      const SafeSTLVector<Index> &points_mask,
-                      vtkPointData *const data) const;
+    create_point_data_dim_codim(const std::shared_ptr<Function<dim, 0, dim + codim, 1>> mapping,
+                                const Quadrature<dim> &quad,
+                                const SafeSTLVector<SafeSTLVector<Index>> &points_map,
+                                const SafeSTLVector<Index> &points_mask,
+                                vtkPointData *const data,
+                                typename std::enable_if_t<(dim == 1 && codim == 0)>* = 0) const;
+
+    template <int dim, int codim>
+    void
+    create_point_data_dim_codim(const std::shared_ptr<Function<dim, 0, dim + codim, 1>> mapping,
+                                const Quadrature<dim> &quad,
+                                const SafeSTLVector<SafeSTLVector<Index>> &points_map,
+                                const SafeSTLVector<Index> &points_mask,
+                                vtkPointData *const data,
+                                typename std::enable_if_t<!(dim == 1 && codim == 0)>* = 0) const;
 
     template <int dim, int codim, int range, int rank>
     void
