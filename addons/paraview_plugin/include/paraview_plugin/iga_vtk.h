@@ -87,8 +87,10 @@ public:
    * Set the number of visualization elements and the flag for quadratic
    * cells.
    */
-  void set_visualization_element_properties (const int* const num_visualization_elements,
-                                             const int& grid_type);
+  void set_visualization_element_properties (const int* const num_visualization_elements_physical,
+                                             const int& grid_type_physical,
+                                             const int* const num_visualization_elements_parametric,
+                                             const int& grid_type_parametric);
 
   /*
    * Set the file name and path.
@@ -114,10 +116,13 @@ public:
   /*
    * Generates the VTK grids.
    */
-  void generate_vtk_grids(const bool& create_control_mesh,
-                          const bool& create_knot_mesh,
-                          const bool& create_parametric_mesh,
-                          const bool& create_physical_mesh,
+  void generate_vtk_grids(const bool &create_physical_mesh,
+                          const bool &create_solid_physical_mesh,
+                          const bool &create_control_physical_mesh,
+                          const bool &create_knot_physical_mesh,
+                          const bool &create_parametric_mesh,
+                          const bool &create_solid_parametric_mesh,
+                          const bool &create_knot_parametric_mesh,
                           vtkMultiBlockDataSet* const mb) const;
 
   /*
@@ -127,6 +132,7 @@ public:
                       const Size &n_solid_mesh,
                       const Size &n_control_mesh,
                       const bool is_identity,
+                      const bool create_solid_mesh,
                       const bool create_control_mesh,
                       const bool create_knot_mesh) const;
 
@@ -136,10 +142,12 @@ public:
   template <int dim, int codim>
   void fill_vtk_grid(vtkMultiBlockDataSet *const mb,
                      const bool is_identity,
+                     const bool create_solid_mesh,
                      const bool create_control_mesh,
                      const bool create_knot_mesh,
                      Index& solid_mesh_index,
-                     Index& control_mesh_index) const;
+                     Index& control_mesh_index,
+                     Index& knot_mesh_index) const;
 
 private:
   /*
@@ -155,22 +163,47 @@ private:
   /*
    * Number of visualization elements per direction.
    */
-  TensorSize<3> num_visualization_elements_;
+  TensorSize<3> num_visualization_elements_physical_;
+
+  /*
+   * Number of visualization elements per direction.
+   */
+  TensorSize<3> num_visualization_elements_parametric_;
 
   /*
    * Flag for the use of quadratic elements.
    */
-  bool quadratic_cells_;
+  bool quadratic_cells_physical_;
+
+  /*
+   * Flag for the use of quadratic elements.
+   */
+  bool quadratic_cells_parametric_;
 
   /*
    * Flag for the use of VTK unstructured grids.
    */
-  bool unstructured_grid_;
+  bool unstructured_grid_physical_;
+
+  /*
+   * Flag for the use of VTK unstructured grids.
+   */
+  bool unstructured_grid_parametric_;
 
   /*
    * Container for the mapping and field functions.
    */
   std::shared_ptr<FunctionsContainer> funcs_container_;
+
+  /*
+   * Generates the physical vtk grids.
+   */
+  template <int dim, int codim>
+  void
+  generate_solid_mesh_grids(const MapFunPtr_<dim, codim> mapping,
+                            const bool is_identity,
+                            const Index& vtk_block_id,
+                            vtkMultiBlockDataSet* const vtk_block) const;
 
   /*
    * Generates the control mesh vtk grids.
@@ -182,22 +215,12 @@ private:
                               vtkMultiBlockDataSet* const vtk_block) const;
 
   /*
-   * Generates the physical vtk grids.
-   */
-  template <int dim, int codim>
-  void
-  generate_solid_mesh_grids(const MapFunPtr_<dim, codim> mapping,
-                            const bool unstructured_grid,
-                            const Index& vtk_block_id,
-                            vtkMultiBlockDataSet* const vtk_block) const;
-
-
-  /*
    * Generates the knot mesh vtk grids.
    */
   template <int dim, int codim>
   void
   generate_knot_mesh_grids(const MapFunPtr_<dim, codim> mapping,
+                           const bool is_identity,
                            const Index& vtk_block_id,
                            vtkMultiBlockDataSet* const vtk_block) const;
 

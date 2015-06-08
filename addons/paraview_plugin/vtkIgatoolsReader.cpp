@@ -46,15 +46,24 @@ vtkIgatoolsReader::vtkIgatoolsReader()
   this->DebugOn ();
 #endif
 
-  this->NumVisualizationElements[0] = 1;
-  this->NumVisualizationElements[1] = 1;
-  this->NumVisualizationElements[2] = 1;
+  this->NumVisualizationElementsPhysical[0] = 1;
+  this->NumVisualizationElementsPhysical[1] = 1;
+  this->NumVisualizationElementsPhysical[2] = 1;
 
-  this->GridType = 0;
-  this->ControlMesh = false;
-  this->KnotMesh = false;
-  this->ParametricMesh = false;
+  this->NumVisualizationElementsParametric[0] = 1;
+  this->NumVisualizationElementsParametric[1] = 1;
+  this->NumVisualizationElementsParametric[2] = 1;
+
+  this->GridTypePhysical = 0;
+  this->SolidMeshPhysical = false;
+  this->ControlMeshPhysical = false;
+  this->KnotMeshPhysical = false;
   this->PhysicalMesh = false;
+
+  this->GridTypeParametric = 0;
+  this->SolidMeshParametric = false;
+  this->KnotMeshParametric = false;
+  this->ParametricMesh = false;
 
   this->SetNumberOfInputPorts(0); // No vtk input, this is not a filter.
   this->SetNumberOfOutputPorts(1); // Just one output.
@@ -71,10 +80,15 @@ int vtkIgatoolsReader::RequestInformation(
   vtkDebugMacro (<< "vtkIgatoolsReader RequestInformation: file name"
                  << FileName << "\n");
   vtkDebugMacro (<< "vtkIgatoolsReader RequestInformation: number of "
-                 << "visualization elements: "
-                 << NumVisualizationElements[0] << " "
-                 << NumVisualizationElements[1] << " "
-                 << NumVisualizationElements[2] << "\n");
+                 << "visualization elements for the physical mesh: "
+                 << NumVisualizationElementsPhysical[0] << " "
+                 << NumVisualizationElementsPhysical[1] << " "
+                 << NumVisualizationElementsPhysical[2] << "\n");
+  vtkDebugMacro (<< "vtkIgatoolsReader RequestInformation: number of "
+                 << "visualization elements for the parametric mesh: "
+                 << NumVisualizationElementsParametric[0] << " "
+                 << NumVisualizationElementsParametric[1] << " "
+                 << NumVisualizationElementsParametric[2] << "\n");
   vtkDebugMacro (<< "vtkIgatoolsReader RequestInformation end\n");
 
   this->check_number_visualization_elements ();
@@ -96,25 +110,48 @@ void
 vtkIgatoolsReader::
 check_number_visualization_elements ()
 {
-  if (NumVisualizationElements[0] < 1 || NumVisualizationElements[1] < 1 ||
-      NumVisualizationElements[2] < 1)
+  if (NumVisualizationElementsPhysical[0] < 1 ||
+      NumVisualizationElementsPhysical[1] < 1 ||
+      NumVisualizationElementsPhysical[2] < 1)
   {
-    int* num_elements = this->GetNumVisualizationElements ();
+    int* num_elements_physical = this->GetNumVisualizationElementsPhysical ();
     vtkWarningMacro (<< "In vtkIgatoolsReader invalid specified number of visualization elements "
-                     << "per Bezier element (" 
-                     << NumVisualizationElements[0] << ", "
-                     << NumVisualizationElements[1] << ", "
-                     << NumVisualizationElements[2] << "). "
+                     << "per Bezier element for the physical mesh(" 
+                     << NumVisualizationElementsPhysical[0] << ", "
+                     << NumVisualizationElementsPhysical[1] << ", "
+                     << NumVisualizationElementsPhysical[2] << "). "
                      << "All the values must be >= 1.\n"
                      << "The number of elements was automatically set to ("
-                     << (num_elements[0] > 1 ? num_elements[0] : 1) << ", "
-                     << (num_elements[1] > 1 ? num_elements[1] : 1) << ", "
-                     << (num_elements[2] > 1 ? num_elements[2] : 1) << ").\n");
-    if (num_elements[0] < 2) num_elements[0] = 2;
-    if (num_elements[1] < 2) num_elements[1] = 2;
-    if (num_elements[2] < 2) num_elements[2] = 2;
+                     << (num_elements_physical[0] > 1 ? num_elements_physical[0] : 1) << ", "
+                     << (num_elements_physical[1] > 1 ? num_elements_physical[1] : 1) << ", "
+                     << (num_elements_physical[2] > 1 ? num_elements_physical[2] : 1) << ").\n");
+    if (num_elements_physical[0] < 1) num_elements_physical[0] = 1;
+    if (num_elements_physical[1] < 1) num_elements_physical[1] = 1;
+    if (num_elements_physical[2] < 1) num_elements_physical[2] = 1;
 
-    this->SetNumVisualizationElements (num_elements);
+    this->SetNumVisualizationElementsPhysical (num_elements_physical);
+  }
+
+  if (NumVisualizationElementsParametric[0] < 1 ||
+      NumVisualizationElementsParametric[1] < 1 ||
+      NumVisualizationElementsParametric[2] < 1)
+  {
+    int* num_elements_parametric = this->GetNumVisualizationElementsParametric ();
+    vtkWarningMacro (<< "In vtkIgatoolsReader invalid specified number of visualization elements "
+                     << "per Bezier element for the parametric mesh(" 
+                     << NumVisualizationElementsParametric[0] << ", "
+                     << NumVisualizationElementsParametric[1] << ", "
+                     << NumVisualizationElementsParametric[2] << "). "
+                     << "All the values must be >= 1.\n"
+                     << "The number of elements was automatically set to ("
+                     << (num_elements_parametric[0] > 1 ? num_elements_parametric[0] : 1) << ", "
+                     << (num_elements_parametric[1] > 1 ? num_elements_parametric[1] : 1) << ", "
+                     << (num_elements_parametric[2] > 1 ? num_elements_parametric[2] : 1) << ").\n");
+    if (num_elements_parametric[0] < 1) num_elements_parametric[0] = 1;
+    if (num_elements_parametric[1] < 1) num_elements_parametric[1] = 1;
+    if (num_elements_parametric[2] < 1) num_elements_parametric[2] = 1;
+
+    this->SetNumVisualizationElementsParametric (num_elements_parametric);
   }
 };
 
@@ -130,8 +167,10 @@ int vtkIgatoolsReader::RequestData(
   this->get_file_and_path (file_name, file_path);
 
   iga_vtk_.set_file (file_name, file_path);
-  iga_vtk_.set_visualization_element_properties (this->GetNumVisualizationElements(),
-                                                 this->GetGridType());
+  iga_vtk_.set_visualization_element_properties (this->GetNumVisualizationElementsPhysical(),
+                                                 this->GetGridTypePhysical(),
+                                                 this->GetNumVisualizationElementsParametric(),
+                                                 this->GetGridTypeParametric());
 
   vtkInformation* info = outputVector->GetInformationObject(0);
   vtkDataObject* output = info->Get(vtkDataObject::DATA_OBJECT());
@@ -144,22 +183,27 @@ int vtkIgatoolsReader::RequestData(
   if (this->GetPhysicalMesh())
     ++num_blocks;
 
+  // TODO: if num_blocks == 0, throw warning.
+
   mb->SetNumberOfBlocks(num_blocks);
 
   for (unsigned int i = 0; i < num_blocks; ++i)
     mb->SetBlock(i, vtkSmartPointer<vtkMultiBlockDataSet>::New ());
 
   unsigned int block_index = 0;
-  if (this->GetParametricMesh())
-    mb->GetMetaData(block_index++)->Set(vtkCompositeDataSet::NAME(), "Parametric mesh");
   if (this->GetPhysicalMesh())
     mb->GetMetaData(block_index++)->Set(vtkCompositeDataSet::NAME(), "Physical mesh");
+  if (this->GetParametricMesh())
+    mb->GetMetaData(block_index++)->Set(vtkCompositeDataSet::NAME(), "Parametric mesh");
 
   iga_vtk_.parse_file ();
-  iga_vtk_.generate_vtk_grids (this->GetControlMesh(),
-                               this->GetKnotMesh(),
+  iga_vtk_.generate_vtk_grids (this->GetPhysicalMesh(),
+                               this->GetSolidMeshPhysical(),
+                               this->GetControlMeshPhysical(),
+                               this->GetKnotMeshPhysical(),
                                this->GetParametricMesh(),
-                               this->GetPhysicalMesh(),
+                               this->GetSolidMeshParametric(),
+                               this->GetKnotMeshParametric(),
                                mb);
 
   return 1;
