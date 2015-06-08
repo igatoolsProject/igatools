@@ -502,6 +502,17 @@ class FunctionsContainer
 public:
 
     /**
+     * Returns a const-reference to the internal data.
+     *
+     * @note The returned object refers to different values of the <tt>dim</tt> parameter.
+     */
+    const auto &get_data() const
+    {
+        return data_varying_dim_;
+    }
+
+
+    /**
      * Returns a const-reference to the data identified by the index @p dim.
      */
     template <int dim>
@@ -609,7 +620,7 @@ public:
        ... // populating the funcs_container with some mappings;
 
        // here we retrieve all the mappings in the funcs_container object, with dimension 2 and codimension 1 (i.e. surfaces in 3D space)
-       const auto & all_mappings_dim_2_codim_1 = funcs_container.template get_all_mappings<2,1>();
+       const auto & all_mappings_dim_2_codim_1 = funcs_container.template get_mappings_dim_codim<2,1>();
 
        for (const auto &m : all_mappings_dim2_codim_1)
        {
@@ -620,11 +631,27 @@ public:
      */
     template <int dim,int codim>
     std::map<MappingPtr<dim,codim>,std::string>
-    get_all_mappings() const
+    get_mappings_dim_codim() const
     {
         return this->template get_data_dim_codim<dim,codim>().get_all_mappings();
     }
 
+#if 0
+    void
+    get_all_mappings() const
+    {
+        /**
+         * All the data in the FunctionsContainer class, organized by the @p dim index
+         * (starting from 1 to 3)
+         */
+        DataVaryingId<
+        DataVaryingId<FunctionsContainerDataSameDimAndCodim,0,4-dim>
+        FunctionsContainerDataSameDim,
+        1,3> all_mappings;
+
+        Assert(false,ExcNotImplemented());
+    }
+#endif
 
     /**
      * Returns a const reference to the object associated to the geometry parametrization @p mapping

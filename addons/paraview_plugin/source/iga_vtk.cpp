@@ -179,7 +179,7 @@ generate_solid_mesh_grids(vtkMultiBlockDataSet *const mb,
                           const bool unstructured,
                           const bool is_parametric) const
 {
-    const auto mappings = funcs_container_->template get_all_mappings<dim, codim>();
+    const auto mappings = funcs_container_->template get_mappings_dim_codim<dim, codim>();
 
     for (const auto &m : mappings)
     {
@@ -311,7 +311,7 @@ generate_knot_mesh_grids(vtkMultiBlockDataSet *const mb,
                          unsigned int &id,
                          const bool is_parametric) const
 {
-    const auto mappings = funcs_container_->template get_all_mappings<dim, codim>();
+    const auto mappings = funcs_container_->template get_mappings_dim_codim<dim, codim>();
 
     using Mapping = Function<dim, 0, dim+codim, 1>;
     using Point = typename Mapping::Value;
@@ -448,7 +448,7 @@ IGAVTK::
 generate_control_mesh_grids(vtkMultiBlockDataSet *const mb,
                             unsigned int &id) const
 {
-    const auto mappings = funcs_container_->template get_all_mappings<dim, codim>();
+    const auto mappings = funcs_container_->template get_mappings_dim_codim<dim, codim>();
 
     static const int space_dim = dim + codim;
     using Fun_   =   Function<dim, 0, space_dim, 1>;
@@ -546,7 +546,9 @@ get_map_names() const
     auto &parametric_names = names[1];
     auto &mapped_names = names[2];
 
-    for (const auto &m : funcs_container_->template get_all_mappings<2, 0>())
+    const auto &funcs_container_data = funcs_container_->get_data();
+
+    for (const auto &m : funcs_container_->template get_mappings_dim_codim<2, 0>())
     {
         auto mapping = m.first;
         auto name    = m.second;
@@ -557,7 +559,7 @@ get_map_names() const
         all_names.push_back(name);
     }
 
-    for (const auto &m : funcs_container_->template get_all_mappings<1, 1>())
+    for (const auto &m : funcs_container_->template get_mappings_dim_codim<1, 1>())
     {
         auto mapping = m.first;
         auto name    = m.second;
@@ -568,7 +570,7 @@ get_map_names() const
         all_names.push_back(name);
     }
 
-    for (const auto &m : funcs_container_->template get_all_mappings<3, 0>())
+    for (const auto &m : funcs_container_->template get_mappings_dim_codim<3, 0>())
     {
         auto mapping = m.first;
         auto name    = m.second;
@@ -579,7 +581,7 @@ get_map_names() const
         all_names.push_back(name);
     }
 
-    for (const auto &m : funcs_container_->template get_all_mappings<2, 1>())
+    for (const auto &m : funcs_container_->template get_mappings_dim_codim<2, 1>())
     {
         auto mapping = m.first;
         auto name    = m.second;
@@ -590,7 +592,7 @@ get_map_names() const
         all_names.push_back(name);
     }
 
-    for (const auto &m : funcs_container_->template get_all_mappings<1, 2>())
+    for (const auto &m : funcs_container_->template get_mappings_dim_codim<1, 2>())
     {
         auto mapping = m.first;
         auto name    = m.second;

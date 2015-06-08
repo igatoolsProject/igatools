@@ -77,7 +77,7 @@ using Func = Function<dim,codim,range,1>;
 
 void print_container(std::shared_ptr<FunctionsContainer> funcs_container)
 {
-    const auto mappings_dim_2_codim_0 = funcs_container->template get_all_mappings<2,0>();
+    const auto mappings_dim_2_codim_0 = funcs_container->template get_mappings_dim_codim<2,0>();
     out.begin_item("Mappings with dimension 2 and codimension 0:");
     int m_counter = 0;
     for (const auto &m : mappings_dim_2_codim_0)
