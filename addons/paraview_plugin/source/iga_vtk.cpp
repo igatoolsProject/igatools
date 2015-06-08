@@ -303,20 +303,19 @@ generate_solid_mesh_grids(const MapFunPtr_<dim, codim> mapping,
   for (int dir = 0; dir < dim; ++dir)
     n_vis_elements[dir] = num_visualization_elements_[dir];
 
+  // An implicit cast it is done from
+  // vtkSmartPointer<vtkUnstructuredGrid> or vtkSmartPointer<vtkStructuredGrid>
+  // to vtkSmartPointer<vtkPointSet>.
+  vtkSmartPointer<vtkPointSet> grid;
+
   if (unstructured_grid) // VTK unstructured grid.
-  {
-    const auto grid =
-      this->create_solid_vtu_grid<dim, codim>(mapping, n_vis_elements,
-                                              quadratic_cells_);
-    vtk_block->SetBlock (vtk_block_id, grid);
-  }
+    grid = this->create_solid_vtu_grid<dim, codim>(mapping, n_vis_elements,
+                                                   quadratic_cells_);
   else // VTK structured grid.
-  {
-    // TODO: to fix this for 1D case.
-    const auto grid =
-        this->create_solid_vts_grid<dim, codim>(mapping, n_vis_elements);
-    vtk_block->SetBlock (vtk_block_id, grid);
-  }
+    grid = this->create_solid_vts_grid<dim, codim>(mapping, n_vis_elements);
+
+  Assert (grid != nullptr, ExcNullPtr());
+  vtk_block->SetBlock (vtk_block_id, grid);
 };
 
 
@@ -326,7 +325,7 @@ vtkSmartPointer<vtkUnstructuredGrid>
 IGAVTK::
 create_solid_vtu_grid(const MapFunPtr_<dim, codim> mapping,
                       const TensorSize<dim> &n_vis_elements,
-                      const bool quadratic_cells)
+                      const bool quadratic_cells) const
 {
   Assert (mapping != nullptr, ExcNullPtr());
 
@@ -337,21 +336,21 @@ create_solid_vtu_grid(const MapFunPtr_<dim, codim> mapping,
                         "direction."));
 #endif
 
-  vtkSmartPointer<vtkUnstructuredGrid> grid =
+  vtkSmartPointer<vtkUnstructuredGrid> vtu_grid =
     vtkSmartPointer<vtkUnstructuredGrid>::New();
 
-  const auto points =
-    IGAVTK::create_points_solid_vtk_grid<dim, codim>
-      (mapping, n_vis_elements, false, quadratic_cells);
+  vtkPointData* const point_data = vtu_grid->GetPointData();
+  const auto points = this->create_points_solid_vtk_grid<dim, codim>
+      (mapping, n_vis_elements, false, quadratic_cells, point_data);
 
-  grid->SetPoints(points);
+  vtu_grid->SetPoints(points);
 
 
   const Size n_bezier_elements = mapping->get_grid()->get_num_all_elems ();
-  const auto cells = IGAVTK::create_cells_solid_vtu_grid<dim>
+  const auto cells = this->template create_cells_solid_vtu_grid<dim>
     (n_vis_elements, n_bezier_elements, quadratic_cells);
 
-  grid->Allocate(cells->GetNumberOfCells (), 0);
+  vtu_grid->Allocate(cells->GetNumberOfCells (), 0);
   const int vtk_enum_type = quadratic_cells ?
                               dim == 3 ? VTK_QUADRATIC_HEXAHEDRON :
                               dim == 2 ? VTK_QUADRATIC_QUAD :
@@ -361,19 +360,18 @@ create_solid_vtu_grid(const MapFunPtr_<dim, codim> mapping,
                               dim == 2 ? VTK_QUAD :
                                         VTK_LINE;
 
-  grid->SetCells(vtk_enum_type, cells);
+  vtu_grid->SetCells(vtk_enum_type, cells);
 
-  return grid;
+  return vtu_grid;
 };
 
 
 
 template <int dim, int codim>
-// vtkSmartPointer<vtkStructuredGrid>
 vtkSmartPointer<vtkPointSet>
 IGAVTK::
 create_solid_vts_grid(const MapFunPtr_<dim, codim> mapping,
-                      const TensorSize<dim> &n_vis_elements)
+                      const TensorSize<dim> &n_vis_elements) const
 {
   Assert (mapping != nullptr, ExcNullPtr());
 
@@ -384,15 +382,16 @@ create_solid_vts_grid(const MapFunPtr_<dim, codim> mapping,
                         "direction."));
 #endif
 
-  const auto points =
-    IGAVTK::create_points_solid_vtk_grid<dim, codim>(mapping, n_vis_elements,
-                                                     true, false);
 
   if (dim != 1)
   {
 
     vtkSmartPointer<vtkStructuredGrid> vts_grid =
         vtkSmartPointer<vtkStructuredGrid>::New();
+
+    vtkPointData* const point_data = vts_grid->GetPointData();
+    const auto points = this->create_points_solid_vtk_grid<dim, codim>
+      (mapping, n_vis_elements, true, false, point_data);
 
     const auto n_intervals = mapping->get_grid()->get_num_intervals();
     int grid_dim[3] = {1, 1, 1};
@@ -410,6 +409,10 @@ create_solid_vts_grid(const MapFunPtr_<dim, codim> mapping,
     // Therefore, an unstructured grid is created instead.
 
     auto vtu_grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
+
+    vtkPointData* const point_data = vtu_grid->GetPointData();
+    const auto points = this->create_points_solid_vtk_grid<dim, codim>
+      (mapping, n_vis_elements, true, false, point_data);
 
     vtu_grid->SetPoints(points);
 
@@ -440,7 +443,8 @@ IGAVTK::
 create_points_solid_vtk_grid(const MapFunPtr_<dim, codim> mapping,
                              const TensorSize<dim> &n_vis_elements,
                              const bool structured_grid,
-                             const bool quadratic_cells)
+                             const bool quadratic_cells,
+                             vtkPointData* const point_data) const
 {
   Assert (mapping != nullptr, ExcNullPtr());
 
@@ -497,6 +501,9 @@ create_points_solid_vtk_grid(const MapFunPtr_<dim, codim> mapping,
       points->SetPoint (*pm++, point_tmp);
     }
   }
+
+  this->create_point_data<dim, codim>
+    (mapping, *quad, points_map, points_mask, point_data);
 
   return points;
 };
@@ -818,9 +825,11 @@ parse_file ()
 //   xml_in >> BOOST_SERIALIZATION_NVP (funcs_container_);
 //   xml_istream.close();
 //   Assert here if funcs_container_ is void.
-      this->template create_geometries<1>();
-//   this->template create_geometries<2>();
-//   this->template create_geometries<3>();
+
+  funcs_container_ = std::make_shared<FunctionsContainer>();
+  this->template create_geometries<1>();
+  this->template create_geometries<2>();
+  this->template create_geometries<3>();
 };
 
 
@@ -1155,7 +1164,7 @@ vtkSmartPointer<vtkCellArray>
 IGAVTK::
 create_cells_solid_vtu_grid (const TensorSize<dim> &n_vis_elements,
                              const Size &n_bezier_elements,
-                             const bool quadratic_cells)
+                             const bool quadratic_cells) const
 {
   AssertThrow (n_bezier_elements > 0, ExcMessage("0 Bezier elements found."));
 
@@ -1281,13 +1290,30 @@ create_cells_solid_vtu_grid (const TensorSize<dim> &n_vis_elements,
 template <>
 void
 IGAVTK::
+create_point_data<1, 0> (const shared_ptr<Function<1, 0, 1, 1>> map,
+                         const Quadrature<1> &quad,
+                         const SafeSTLVector<SafeSTLVector<Index>>& points_map,
+                         const SafeSTLVector<Index>& points_mask,
+                         vtkPointData* const point_data) const
+{
+  this->template create_point_data<1, 0, 1, 1>(map, quad, points_map, points_mask, point_data);
+//   this->template create_point_data<1, 0, 2, 1>(map, quad, points_map, points_mask, point_data);
+//   this->template create_point_data<1, 0, 3, 1>(map, quad, points_map, points_mask, point_data);
+};
+
+
+
+template <>
+void
+IGAVTK::
 create_point_data<2, 0> (const shared_ptr<Function<2, 0, 2, 1>> map,
                          const Quadrature<2> &quad,
                          const SafeSTLVector<SafeSTLVector<Index>>& points_map,
+                         const SafeSTLVector<Index>& points_mask,
                          vtkPointData* const point_data) const
 {
-  this->template create_point_data<2, 0, 1, 1>(map, quad, points_map, point_data);
-  this->template create_point_data<2, 0, 2, 1>(map, quad, points_map, point_data);
+  this->template create_point_data<2, 0, 1, 1>(map, quad, points_map, points_mask, point_data);
+  this->template create_point_data<2, 0, 2, 1>(map, quad, points_map, points_mask, point_data);
 };
 
 
@@ -1298,10 +1324,11 @@ IGAVTK::
 create_point_data<1, 1> (const shared_ptr<Function<1, 0, 2, 1>> map,
                          const Quadrature<1> &quad,
                          const SafeSTLVector<SafeSTLVector<Index>>& points_map,
+                         const SafeSTLVector<Index>& points_mask,
                          vtkPointData* const point_data) const
 {
-  this->template create_point_data<1, 1, 1, 1>(map, quad, points_map, point_data);
-  this->template create_point_data<1, 1, 2, 1>(map, quad, points_map, point_data);
+  this->template create_point_data<1, 1, 1, 1>(map, quad, points_map, points_mask, point_data);
+  this->template create_point_data<1, 1, 2, 1>(map, quad, points_map, points_mask, point_data);
 };
 
 
@@ -1312,10 +1339,11 @@ IGAVTK::
 create_point_data<3, 0> (const shared_ptr<Function<3, 0, 3, 1>> map,
                          const Quadrature<3> &quad,
                          const SafeSTLVector<SafeSTLVector<Index>>& points_map,
+                         const SafeSTLVector<Index>& points_mask,
                          vtkPointData* const point_data) const
 {
-  this->template create_point_data<3, 0, 1, 1>(map, quad, points_map, point_data);
-  this->template create_point_data<3, 0, 3, 1>(map, quad, points_map, point_data);
+  this->template create_point_data<3, 0, 1, 1>(map, quad, points_map, points_mask, point_data);
+  this->template create_point_data<3, 0, 3, 1>(map, quad, points_map, points_mask, point_data);
 };
 
 
@@ -1326,10 +1354,11 @@ IGAVTK::
 create_point_data<2, 1> (const shared_ptr<Function<2, 0, 3, 1>> map,
                          const Quadrature<2> &quad,
                          const SafeSTLVector<SafeSTLVector<Index>>& points_map,
+                         const SafeSTLVector<Index>& points_mask,
                          vtkPointData* const point_data) const
 {
-  this->template create_point_data<2, 1, 1, 1>(map, quad, points_map, point_data);
-  this->template create_point_data<2, 1, 3, 1>(map, quad, points_map, point_data);
+  this->template create_point_data<2, 1, 1, 1>(map, quad, points_map, points_mask, point_data);
+  this->template create_point_data<2, 1, 3, 1>(map, quad, points_map, points_mask, point_data);
 };
 
 
@@ -1340,10 +1369,11 @@ IGAVTK::
 create_point_data<1, 2> (const shared_ptr<Function<1, 0, 3, 1>> map,
                          const Quadrature<1> &quad,
                          const SafeSTLVector<SafeSTLVector<Index>>& points_map,
+                         const SafeSTLVector<Index>& points_mask,
                          vtkPointData* const point_data) const
 {
-  this->template create_point_data<1, 2, 1, 1>(map, quad, points_map, point_data);
-  this->template create_point_data<1, 2, 3, 1>(map, quad, points_map, point_data);
+  this->template create_point_data<1, 2, 1, 1>(map, quad, points_map, points_mask, point_data);
+  this->template create_point_data<1, 2, 3, 1>(map, quad, points_map, points_mask, point_data);
 };
 
 
@@ -1354,6 +1384,7 @@ IGAVTK::
 create_point_data (const shared_ptr<Function<dim, 0, dim + codim, 1>> mapping,
                    const Quadrature<dim> &quad,
                    const SafeSTLVector<SafeSTLVector<Index>>& point_num_map,
+                   const SafeSTLVector<Index> &points_mask,
                    vtkPointData* const point_data) const
 {
   const auto &funcs_map = funcs_container_->template
@@ -1395,9 +1426,9 @@ create_point_data (const shared_ptr<Function<dim, 0, dim + codim, 1>> mapping,
 
       auto pnm = pnm_it->cbegin();
       auto values = elem->template get_values<_Value, dim>(0);
-      for (const auto& v : values)
+      for (const auto &pm : points_mask)
       {
-        this->template tensor_to_tuple<Value>(v, tuple);
+        this->template tensor_to_tuple<Value>(values[pm], tuple);
         arr->SetTuple(*pnm++, tuple);
       }
     }
@@ -1804,30 +1835,45 @@ create_geometries ()
   auto rf_func_3 = dynamic_pointer_cast<Fun_>(IgFun_::create (ref_space_3, ref_coeff_3));
 
   // Adding all the stuff to the functions container.
-  funcs_container_ = std::make_shared<FunctionsContainer>();
 
   // Inserting geometries.
-  funcs_container_->insert_mapping(map_0, "map_0");
-//   funcs_container_->insert_mapping(map_1, "map_1");
-//   funcs_container_->insert_mapping(map_2, "map_2");
-//   funcs_container_->insert_mapping(map_3, "map_3");
+  const string map_name_0 = "map_0_" + std::to_string (dim) + "D";
+  const string map_name_1 = "map_1_" + std::to_string (dim) + "D";
+  const string map_name_2 = "map_2_" + std::to_string (dim) + "D";
+  const string map_name_3 = "map_3_" + std::to_string (dim) + "D";
+  funcs_container_->insert_mapping(map_0, map_name_0);
+  funcs_container_->insert_mapping(map_1, map_name_1);
+  funcs_container_->insert_mapping(map_2, map_name_2);
+  funcs_container_->insert_mapping(map_3, map_name_3);
 
-  funcs_container_->insert_mapping(id_map_0, "id_map_0");
-//   funcs_container_->insert_mapping(id_map_1, "id_map_1");
-//   funcs_container_->insert_mapping(id_map_2, "id_map_2");
-//   funcs_container_->insert_mapping(id_map_3, "id_map_3");
+  const string id_map_name_0 = "id_map_0_" + std::to_string (dim) + "D";
+  const string id_map_name_1 = "id_map_1_" + std::to_string (dim) + "D";
+  const string id_map_name_2 = "id_map_2_" + std::to_string (dim) + "D";
+  const string id_map_name_3 = "id_map_3_" + std::to_string (dim) + "D";
+  funcs_container_->insert_mapping(id_map_0, id_map_name_0);
+  funcs_container_->insert_mapping(id_map_1, id_map_name_1);
+  funcs_container_->insert_mapping(id_map_2, id_map_name_2);
+  funcs_container_->insert_mapping(id_map_3, id_map_name_3);
 
   // Inserting associated functions.
-  funcs_container_->insert_function(map_0, ps_func_0, "phys_func_0");
-//   funcs_container_->insert_function(map_1, ps_func_1, "phys_func_0");
-//   funcs_container_->insert_function(map_2, ps_func_2, "phys_func_0");
-//   funcs_container_->insert_function(map_3, ps_func_3, "phys_func_0");
+  const string fun_map_name_0 = "phys_func_0_" + std::to_string (dim) + "D";
+  const string fun_map_name_1 = "phys_func_1_" + std::to_string (dim) + "D";
+  const string fun_map_name_2 = "phys_func_2_" + std::to_string (dim) + "D";
+  const string fun_map_name_3 = "phys_func_3_" + std::to_string (dim) + "D";
+  funcs_container_->insert_function(map_0, ps_func_0, fun_map_name_0);
+  funcs_container_->insert_function(map_1, ps_func_1, fun_map_name_1);
+  funcs_container_->insert_function(map_2, ps_func_2, fun_map_name_2);
+  funcs_container_->insert_function(map_3, ps_func_3, fun_map_name_3);
 
 #if 0 // The combination dim=1, codim=1, range=2, rank=1 is not instantiated.
-  funcs_container_->template insert_function<dim, 0, range, rank>(id_map_0, rf_func_0, "ref_func_0");
-//   funcs_container_->insert_function(id_map_1, rf_func_1, "ref_func_1");
-//   funcs_container_->insert_function(id_map_2, rf_func_2, "ref_func_2");
-//   funcs_container_->insert_function(id_map_3, rf_func_3, "ref_func_3");
+  const string id_fun_map_name_0 = "ref_func_0_" + std::to_string (dim) + "D";
+  const string id_fun_map_name_1 = "ref_func_1_" + std::to_string (dim) + "D";
+  const string id_fun_map_name_2 = "ref_func_2_" + std::to_string (dim) + "D";
+  const string id_fun_map_name_3 = "ref_func_3_" + std::to_string (dim) + "D";
+  funcs_container_->insert_function(id_map_0, rf_func_0, id_fun_map_name_0);
+  funcs_container_->insert_function(id_map_1, rf_func_1, id_fun_map_name_1);
+  funcs_container_->insert_function(id_map_2, rf_func_2, id_fun_map_name_2);
+  funcs_container_->insert_function(id_map_3, rf_func_3, id_fun_map_name_3);
 #endif
 };
 

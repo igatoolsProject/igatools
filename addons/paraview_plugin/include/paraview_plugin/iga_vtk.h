@@ -213,44 +213,46 @@ private:
    * Create the cell ids container needed for defining vtk cells.
    */
   template <int dim>
-  static vtkSmartPointer<vtkCellArray>
+  vtkSmartPointer<vtkCellArray>
   create_cells_solid_vtu_grid (const TensorSize<dim> &n_visualization_elements,
                                const Size &n_bezier_elements,
-                               const bool quadratic_cells);
+                               const bool quadratic_cells) const;
 
   /*
    * Creates a VTK unstructured grid for the solid block.
    */
   template <int dim, int codim>
-  static vtkSmartPointer<vtkUnstructuredGrid>
+  vtkSmartPointer<vtkUnstructuredGrid>
   create_solid_vtu_grid(const MapFunPtr_<dim, codim> mapping,
                         const TensorSize<dim> &n_vis_elements,
-                        const bool quadratic_cells);
+                        const bool quadratic_cells) const;
 
   /*
    * Creates a VTK structured grid for the solid block.
    * For the 1D case, a VTK unstructured grid is returned.
    */
   template <int dim, int codim>
-  static vtkSmartPointer<vtkPointSet>
+  vtkSmartPointer<vtkPointSet>
   create_solid_vts_grid(const MapFunPtr_<dim, codim> mapping,
-                        const TensorSize<dim> &n_vis_elements);
+                        const TensorSize<dim> &n_vis_elements) const;
 
   /*
    * Creates a the points for the solid VTK grid.
    */
   template <int dim, int codim>
-  static vtkSmartPointer<vtkPoints>
+  vtkSmartPointer<vtkPoints>
   create_points_solid_vtk_grid(const MapFunPtr_<dim, codim> mapping,
                                const TensorSize<dim> &n_vis_elements,
                                const bool is_structured,
-                               const bool is_quadratic);
+                               const bool is_quadratic,
+                               vtkPointData* const point_data) const;
 
   template <int dim, int codim>
   void
   create_point_data (const std::shared_ptr<Function<dim, 0, dim + codim, 1>> mapping,
                      const Quadrature<dim> &quad,
                      const SafeSTLVector<SafeSTLVector<Index>>& points_map,
+                     const SafeSTLVector<Index> &points_mask,
                      vtkPointData* const data) const;
 
   template <int dim, int codim, int range, int rank>
@@ -258,6 +260,7 @@ private:
   create_point_data (const std::shared_ptr<Function<dim, 0, dim + codim, 1>> mapping,
                      const Quadrature<dim> &quad,
                      const SafeSTLVector<SafeSTLVector<Index>>& point_num_map,
+                     const SafeSTLVector<Index> &points_mask,
                      vtkPointData* const data) const;
 
   /*
