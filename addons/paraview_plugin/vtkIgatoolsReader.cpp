@@ -64,6 +64,7 @@ vtkIgatoolsReader::vtkIgatoolsReader()
 
     this->GridTypePhysicalSolid = 0;
     this->GridTypePhysicalKnot = 0;
+    this->GridTypePhysicalControl = 0;
     this->SolidMeshPhysical = false;
     this->ControlMeshPhysical = false;
     this->KnotMeshPhysical = false;
@@ -213,7 +214,8 @@ int vtkIgatoolsReader::RequestData(
                                                   this->GetNumVisualizationElementsPhysicalKnot(),
                                                   this->GetGridTypePhysicalKnot(),
                                                   this->GetNumVisualizationElementsParametricKnot(),
-                                                  this->GetGridTypeParametricKnot());
+                                                  this->GetGridTypeParametricKnot(),
+                                                  this->GetGridTypePhysicalControl());
 
     vtkInformation *info = outputVector->GetInformationObject(0);
     vtkDataObject *output = info->Get(vtkDataObject::DATA_OBJECT());

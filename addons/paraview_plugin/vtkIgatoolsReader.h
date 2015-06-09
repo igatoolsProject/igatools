@@ -99,7 +99,6 @@ public:
      * Set/Get Grid type for the physical knot mesh.
      *  - 0: unstructured grid : quadratic elements.
      *  - 1: unstructured grid : linear elements.
-     *  - 2: structured grid.
      */
     vtkSetMacro(GridTypePhysicalKnot, int);
     vtkGetMacro(GridTypePhysicalKnot, int);
@@ -108,10 +107,17 @@ public:
      * Set/Get Grid type for the parametric knot mesh
      *  - 0: unstructured grid : quadratic elements.
      *  - 1: unstructured grid : linear elements.
-     *  - 2: structured grid.
      */
     vtkSetMacro(GridTypeParametricKnot, int);
     vtkGetMacro(GridTypeParametricKnot, int);
+
+    /*
+     * Set/Get Grid type for the physical control mesh.
+     *  - 0: unstructured grid : linear elements.
+     *  - 1: structured grid.
+     */
+    vtkSetMacro(GridTypePhysicalControl, int);
+    vtkGetMacro(GridTypePhysicalControl, int);
 
     /*
      * Set/Get Solid Mesh creation flag.
@@ -231,6 +237,11 @@ private:
      * Grid type for the parametric knot mesh.
      */
     int GridTypeParametricKnot;
+
+    /*
+     * Grid type for the physical control mesh.
+     */
+    int GridTypePhysicalControl;
 
     /*
      * Solid mesh creation flag.

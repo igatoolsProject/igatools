@@ -94,7 +94,8 @@ public:
                                               const int *const n_vis_elem_phys_knot,
                                               const int &grid_type_phys_knot,
                                               const int *const n_vis_elem_par_knot,
-                                              const int &grid_type_par_knot);
+                                              const int &grid_type_par_knot,
+                                              const int &grid_type_phys_control);
 
     /*
      * Set the file name and path.
@@ -200,6 +201,11 @@ private:
      * Flag for the use of VTK unstructured grids for the parametric solid mesh.
      */
     bool unstructured_grid_parametric_solid_;
+
+    /*
+     * Flag for the use of VTK unstructured grids for the physical control mesh.
+     */
+    bool unstructured_grid_physical_control_;
 
     /*
      * Container for the mapping and field functions.

@@ -32,6 +32,7 @@
 #include <vtkQuad.h>
 #include <vtkLine.h>
 #include <vtkPolyLine.h>
+#include <vtkPolyVertex.h>
 
 #include <igatools/functions/functions_container.h>
 #include <igatools/base/quadrature_lib.h>
@@ -59,6 +60,7 @@ IGAVTK()
     quadratic_cells_parametric_knot_(false),
     unstructured_grid_physical_solid_(true),
     unstructured_grid_parametric_solid_(true),
+    unstructured_grid_physical_control_(true),
     funcs_container_(std::make_shared<FunctionsContainer>())
 {};
 
@@ -84,7 +86,8 @@ set_visualization_element_properties(const int *const n_vis_elem_phys_solid,
                                      const int *const n_vis_elem_phys_knot,
                                      const int &grid_type_phys_knot,
                                      const int *const n_vis_elem_par_knot,
-                                     const int &grid_type_par_knot)
+                                     const int &grid_type_par_knot,
+                                     const int &grid_type_phys_control)
 {
     for (int dir = 0; dir < num_visualization_elements_physical_solid_.size(); ++dir)
     {
@@ -190,6 +193,24 @@ set_visualization_element_properties(const int *const n_vis_elem_phys_solid,
       default:
         Assert(grid_type_par_knot >= 0 && grid_type_par_knot <= 1,
                ExcIndexRange(grid_type_par_knot, 0, 2));
+        break;
+    }
+
+
+    // Grid type 0 : Unstructured grid : linear elements.
+    // Grid type 1 : Structured grid.
+
+    switch (grid_type_phys_control)
+    {
+      case 0:
+        unstructured_grid_physical_control_ = true;
+        break;
+      case 1:
+        unstructured_grid_physical_control_ = false;
+        break;
+      default:
+        Assert(grid_type_phys_control >= 0 && grid_type_phys_control <= 1,
+               ExcIndexRange(grid_type_phys_control, 0, 2));
         break;
     }
 };
@@ -462,20 +483,30 @@ create_control_mesh_grid(const MapFunPtr_<dim, codim> mapping,
 
     grid->SetPoints(points);
 
-    vtkSmartPointer<vtkPolyLine> polyLine =  vtkSmartPointer<vtkPolyLine>::New();
+    // Creating poly line and poly vertex.
+    vtkSmartPointer<vtkPolyLine> line =  vtkSmartPointer<vtkPolyLine>::New();
+    vtkSmartPointer<vtkPolyVertex> vertices =  vtkSmartPointer<vtkPolyVertex>::New();
 
     const Size n_points = points->GetNumberOfPoints();
-    polyLine->GetPointIds()->SetNumberOfIds(n_points);
+    line->GetPointIds()->SetNumberOfIds(n_points);
+    auto line_points = line->GetPointIds();
+    auto vertex_points = vertices->GetPointIds();
+    line_points->SetNumberOfIds(n_points);
+    vertex_points->SetNumberOfIds(n_points);
     for (int i = 0; i < n_points; ++i)
-        polyLine->GetPointIds()->SetId(i, i);
+    {
+        line_points->SetId(i, i);
+        vertex_points->SetId(i, i);
+    }
 
-    // Create a cell array to store the lines in and add the lines to it
+    // Create a cell array to store the lines and vertices,
     vtkSmartPointer<vtkCellArray> cells = vtkSmartPointer<vtkCellArray>::New();
-    cells->InsertNextCell(polyLine);
+    cells->InsertNextCell(line);
+    cells->InsertNextCell(vertices);
 
     grid->Allocate(cells->GetNumberOfCells(), 0);
-    const int vtk_enum_type = VTK_POLY_LINE;
-    grid->SetCells(vtk_enum_type, cells);
+    int cell_types [2] = {VTK_POLY_LINE, VTK_POLY_VERTEX};
+    grid->SetCells(cell_types, cells);
 
     return grid;
 };
@@ -523,15 +554,24 @@ create_control_mesh_grid(const MapFunPtr_<dim, codim> mapping,
         points->SetPoint(local_id, point_tmp);
     }
 
-    auto grid_dim = TensorSize<3>(1);
-    for (int dir = 0; dir < dim; ++dir)
-        grid_dim[dir] = n_pts_dir[dir];
+    if (unstructured_grid_physical_control_)
+    {
+      auto grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
+//       grid->SetDimensions(grid_dim[0], grid_dim[1], grid_dim[2]);
+      grid->SetPoints(points);
+      return grid;
+    }
+    else
+    {
+      auto grid_dim = TensorSize<3>(1);
+      for (int dir = 0; dir < dim; ++dir)
+          grid_dim[dir] = n_pts_dir[dir];
 
-    auto grid = vtkSmartPointer<vtkStructuredGrid>::New();
-    grid->SetDimensions(grid_dim[0], grid_dim[1], grid_dim[2]);
-    grid->SetPoints(points);
-
-    return grid;
+      auto grid = vtkSmartPointer<vtkStructuredGrid>::New();
+      grid->SetDimensions(grid_dim[0], grid_dim[1], grid_dim[2]);
+      grid->SetPoints(points);
+      return grid;
+    }
 };
 
 
@@ -996,8 +1036,8 @@ parse_file()
 
     funcs_container_ = std::make_shared<FunctionsContainer>();
     this->template create_geometries<1>();
-    this->template create_geometries<2>();
-    this->template create_geometries<3>();
+//     this->template create_geometries<2>();
+//     this->template create_geometries<3>();
 };
 
 
@@ -1930,28 +1970,28 @@ create_geometries()
     const string map_name_2 = "map_2_" + std::to_string(dim) + "D";
     const string map_name_3 = "map_3_" + std::to_string(dim) + "D";
     funcs_container_->insert_mapping(map_0, map_name_0);
-    funcs_container_->insert_mapping(map_1, map_name_1);
-    funcs_container_->insert_mapping(map_2, map_name_2);
-    funcs_container_->insert_mapping(map_3, map_name_3);
+//     funcs_container_->insert_mapping(map_1, map_name_1);
+//     funcs_container_->insert_mapping(map_2, map_name_2);
+//     funcs_container_->insert_mapping(map_3, map_name_3);
 
     const string id_map_name_0 = "id_map_0_" + std::to_string(dim) + "D";
     const string id_map_name_1 = "id_map_1_" + std::to_string(dim) + "D";
     const string id_map_name_2 = "id_map_2_" + std::to_string(dim) + "D";
     const string id_map_name_3 = "id_map_3_" + std::to_string(dim) + "D";
-    funcs_container_->insert_mapping(id_map_0, id_map_name_0);
-    funcs_container_->insert_mapping(id_map_1, id_map_name_1);
-    funcs_container_->insert_mapping(id_map_2, id_map_name_2);
-    funcs_container_->insert_mapping(id_map_3, id_map_name_3);
+//     funcs_container_->insert_mapping(id_map_0, id_map_name_0);
+//     funcs_container_->insert_mapping(id_map_1, id_map_name_1);
+//     funcs_container_->insert_mapping(id_map_2, id_map_name_2);
+//     funcs_container_->insert_mapping(id_map_3, id_map_name_3);
 
     // Inserting associated functions.
     const string fun_map_name_0 = "phys_func_0_" + std::to_string(dim) + "D";
     const string fun_map_name_1 = "phys_func_1_" + std::to_string(dim) + "D";
     const string fun_map_name_2 = "phys_func_2_" + std::to_string(dim) + "D";
     const string fun_map_name_3 = "phys_func_3_" + std::to_string(dim) + "D";
-    funcs_container_->insert_function(map_0, ps_func_0, fun_map_name_0);
-    funcs_container_->insert_function(map_1, ps_func_1, fun_map_name_1);
-    funcs_container_->insert_function(map_2, ps_func_2, fun_map_name_2);
-    funcs_container_->insert_function(map_3, ps_func_3, fun_map_name_3);
+//     funcs_container_->insert_function(map_0, ps_func_0, fun_map_name_0);
+//     funcs_container_->insert_function(map_1, ps_func_1, fun_map_name_1);
+//     funcs_container_->insert_function(map_2, ps_func_2, fun_map_name_2);
+//     funcs_container_->insert_function(map_3, ps_func_3, fun_map_name_3);
 
 #if 0 // The combination dim=1, codim=1, range=2, rank=1 is not instantiated.
     const string id_fun_map_name_0 = "ref_func_0_" + std::to_string(dim) + "D";
