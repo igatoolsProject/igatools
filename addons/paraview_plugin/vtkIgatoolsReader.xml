@@ -45,10 +45,6 @@
       </Hints>
 
 
-      <!-- ################################################################# -->
-      <!-- Options for the physical mesh ################################### -->
-      <!-- ################################################################# -->
-
       <!-- Activates/deactives the creation of the physical mesh -->
       <IntVectorProperty name="PhysicalMesh"
                          command="SetPhysicalMesh"
@@ -60,6 +56,24 @@
           Activates/deactivates the creation of the physical mesh geometries.
         </Documentation>
       </IntVectorProperty>
+
+
+      <!-- Activates/deactives the creation of the parametric mesh -->
+      <IntVectorProperty name="ParametricMesh"
+                         command="SetParametricMesh"
+                         number_of_elements="1"
+                         label="Create parametric geometries"
+                         default_values="0">
+        <BooleanDomain name="bool"/>
+        <Documentation>
+          Activates/deactivates the creation of the parametric mesh geometries.
+        </Documentation>
+      </IntVectorProperty>
+
+
+      <!-- ################################################################# -->
+      <!-- Options for the physical mesh ################################### -->
+      <!-- ################################################################# -->
 
       <!-- Activates/deactives the creation of the physical solid mesh -->
       <IntVectorProperty name="SolidMeshPhysical"
@@ -85,7 +99,7 @@
       <IntVectorProperty command="SetGridTypePhysicalSolid"
                          default_values="0"
                          name="GridTypePhysicalSolid"
-                         label="Solid mesh grid type"
+                         label="Grid type"
                          number_of_elements="1">
         <EnumerationDomain name="enum">
           <Entry text="VTK Unstructured grid - quadratic cells"
@@ -119,7 +133,7 @@
       <IntVectorProperty command="SetNumVisualizationElementsPhysicalSolid"
                          default_values="1 1 1"
                          name="NumVisualizationElementsPhysicalSolid"
-                         label="Num of cells per Bezier element direction for the solid mesh"
+                         label="Num of cells per Bezier element direction"
                          number_of_elements="3">
         <IntRangeDomain name="range" min="1" max="20"/>
         <Documentation>Set the number of visualization VTK cells in each
@@ -160,7 +174,7 @@
                          default_values="0"
                          panel_visibility="advanced"
                          name="GridTypePhysicalKnot"
-                         label="Knot mesh grid type"
+                         label="Grid type"
                          number_of_elements="1">
         <EnumerationDomain name="enum">
           <Entry text="VTK Unstructured grid - quadratic cells"
@@ -193,7 +207,7 @@
                          default_values="5 5 5"
                          panel_visibility="advanced"
                          name="NumVisualizationElementsPhysicalKnot"
-                         label="Num of cells per Bezier element direction for the knot mesh"
+                         label="Num of cells per Bezier element direction"
                          number_of_elements="3">
         <IntRangeDomain name="range" min="1" max="20"/>
         <Documentation>Set the number of visualization VTK cell in each
@@ -230,6 +244,33 @@
         </Hints>
       </IntVectorProperty>
 
+      <!-- Sets the VTK cell type the physical control mesh -->
+      <IntVectorProperty command="SetGridTypePhysicalControl"
+                         default_values="0"
+                         panel_visibility="advanced"
+                         name="GridTypePhysicalControl"
+                         label="Grid type"
+                         number_of_elements="1">
+        <EnumerationDomain name="enum">
+          <Entry text="VTK Unstructured grid - points and lines"
+                 value="0" />
+          <Entry text="VTK Structured grid"
+                 value="1" />
+        </EnumerationDomain>
+        <Documentation>
+          This propery specifies which type of grid must be produced
+          for the physical control mesh.
+        </Documentation>
+        <Hints>
+          <!-- This property is hidden when PhysicalMesh = 0 -->
+          <PropertyWidgetDecorator type="GenericDecorator"
+                                   mode="visibility"
+                                   property="PhysicalMesh"
+                                   inverse="1"
+                                   value="0" />
+        </Hints>
+      </IntVectorProperty>
+
       <!-- ################################################################# -->
       <!-- ################################################################# -->
 
@@ -238,18 +279,6 @@
       <!-- ################################################################# -->
       <!-- Options for the parametric mesh ################################# -->
       <!-- ################################################################# -->
-
-      <!-- Activates/deactives the creation of the parametric mesh -->
-      <IntVectorProperty name="ParametricMesh"
-                         command="SetParametricMesh"
-                         number_of_elements="1"
-                         label="Create parametric geometries"
-                         default_values="0">
-        <BooleanDomain name="bool"/>
-        <Documentation>
-          Activates/deactivates the creation of the parametric mesh geometries.
-        </Documentation>
-      </IntVectorProperty>
 
       <!-- Activates/deactives the creation of the parametric solid mesh -->
       <IntVectorProperty name="SolidMeshParametric"
@@ -275,7 +304,7 @@
       <IntVectorProperty command="SetGridTypeParametricSolid"
                          default_values="0"
                          name="GridTypeParametricSolid"
-                         label="Solid mesh grid type"
+                         label="Grid type"
                          number_of_elements="1">
         <EnumerationDomain name="enum">
           <Entry text="VTK Unstructured grid - quadratic cells"
@@ -309,43 +338,11 @@
       <IntVectorProperty command="SetNumVisualizationElementsParametricSolid"
                          default_values="1 1 1"
                          name="NumVisualizationElementsParametricSolid"
-                         label="Num of cells per Bezier element direction for the solid mesh"
+                         label="Num of cells per Bezier element direction"
                          number_of_elements="3">
         <IntRangeDomain name="range" min="1" max="20"/>
         <Documentation>Set the number of visualization VTK cell in each
           parametric direction for every Bezier element of the physical solid mesh.
-        </Documentation>
-        <Hints>
-          <!-- This property is hidden when ParametricMesh = 0 -->
-          <PropertyWidgetDecorator type="GenericDecorator"
-                                   mode="visibility"
-                                   property="ParametricMesh"
-                                   inverse="1"
-                                   value="0" />
-        </Hints>
-      </IntVectorProperty>
-
-      <!-- Sets the VTK cell type the parametric knot mesh -->
-      <IntVectorProperty command="SetGridTypeParametricKnot"
-                         default_values="1"
-                         panel_visibility="advanced"
-                         name="GridTypeParametricKnot"
-                         label="Knot mesh grid type"
-                         number_of_elements="1">
-        <EnumerationDomain name="enum">
-          <Entry text="VTK Unstructured grid - quadratic cells"
-                 value="0" />
-          <Entry text="VTK Unstructured grid - linear cells"
-                 value="1" />
-        </EnumerationDomain>
-        <Documentation>
-          This propery specifies which type of grid must be produced
-          for the parametric knot mesh.
-          The produced VTK Structured grids have certain advantages over
-          VTK Unstructured grids, however, some issues can appear when some
-          filters are applied to them.
-          The use of quadratic cells improves the visualization
-          (mainly when tessellation filter is applied later).
         </Documentation>
         <Hints>
           <!-- This property is hidden when ParametricMesh = 0 -->
@@ -377,13 +374,45 @@
         </Hints>
       </IntVectorProperty>
 
+      <!-- Sets the VTK cell type the parametric knot mesh -->
+      <IntVectorProperty command="SetGridTypeParametricKnot"
+                         default_values="1"
+                         panel_visibility="advanced"
+                         name="GridTypeParametricKnot"
+                         label="Grid type"
+                         number_of_elements="1">
+        <EnumerationDomain name="enum">
+          <Entry text="VTK Unstructured grid - quadratic cells"
+                 value="0" />
+          <Entry text="VTK Unstructured grid - linear cells"
+                 value="1" />
+        </EnumerationDomain>
+        <Documentation>
+          This propery specifies which type of grid must be produced
+          for the parametric knot mesh.
+          The produced VTK Structured grids have certain advantages over
+          VTK Unstructured grids, however, some issues can appear when some
+          filters are applied to them.
+          The use of quadratic cells improves the visualization
+          (mainly when tessellation filter is applied later).
+        </Documentation>
+        <Hints>
+          <!-- This property is hidden when ParametricMesh = 0 -->
+          <PropertyWidgetDecorator type="GenericDecorator"
+                                   mode="visibility"
+                                   property="ParametricMesh"
+                                   inverse="1"
+                                   value="0" />
+        </Hints>
+      </IntVectorProperty>
+
       <!-- Sets the number of visualization cells per Bezier element
            for the parametric knot mesh -->
       <IntVectorProperty command="SetNumVisualizationElementsParametricKnot"
                          default_values="1 1 1"
                          panel_visibility="advanced"
                          name="NumVisualizationElementsParametricKnot"
-                         label="Num of cells per Bezier element direction for the knot mesh"
+                         label="Num of cells per Bezier element direction"
                          number_of_elements="3">
         <IntRangeDomain name="range" min="1" max="20"/>
         <Documentation>Set the number of visualization VTK cell in each
@@ -401,25 +430,37 @@
       <!-- ################################################################# -->
       <!-- ################################################################# -->
 
-
       <!-- ################################################################# -->
       <!-- Creating the groups inside the properties panel ################# -->
-      <PropertyGroup label="Physical geometry">
+      <PropertyGroup label=" ">
         <Property name="PhysicalMesh" />
+        <Property name="ParametricMesh" />
+      </PropertyGroup>
+
+      <PropertyGroup label="Physical mesh">
         <Property name="SolidMeshPhysical" />
         <Property name="GridTypePhysicalSolid" />
         <Property name="NumVisualizationElementsPhysicalSolid" />
+      </PropertyGroup>
+
+      <PropertyGroup label=" ">
         <Property name="KnotMeshPhysical" />
         <Property name="GridTypePhysicalKnot" />
         <Property name="NumVisualizationElementsPhysicalKnot" />
-        <Property name="ControlMeshPhysical" />
       </PropertyGroup>
 
-      <PropertyGroup label="Parametric geometry">
-        <Property name="ParametricMesh" />
+      <PropertyGroup label=" ">
+        <Property name="ControlMeshPhysical" />
+        <Property name="GridTypePhysicalControl" />
+      </PropertyGroup>
+
+      <PropertyGroup label="Parametric mesh">
         <Property name="SolidMeshParametric" />
         <Property name="GridTypeParametricSolid" />
         <Property name="NumVisualizationElementsParametricSolid" />
+      </PropertyGroup>
+
+      <PropertyGroup label=" ">
         <Property name="KnotMeshParametric" />
         <Property name="GridTypeParametricKnot" />
         <Property name="NumVisualizationElementsParametricKnot" />
