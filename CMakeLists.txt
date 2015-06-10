@@ -131,17 +131,17 @@ else(SERIALIZATION)
     message("-- Serialization support (EXPERIMENTAL) is not enabled.")    
 endif(SERIALIZATION)
 
-option(USE_PARAVIEW_PLUGIN "Enable the building of the ParaView plugin" ON)
-if (USE_PARAVIEW_PLUGIN)
+option(PARAVIEW_PLUGIN "Enable the building of the ParaView plugin" ON)
+if (PARAVIEW_PLUGIN)
     if (NOT SERIALIZATION)
-        message (FATAL_ERROR "USE_PARAVIEW_PLUGIN variable set to ON is not "
+        message (FATAL_ERROR "PARAVIEW_PLUGIN variable set to ON is not "
         "compatible with SERIALIZATION set to OFF. Serialization must be "
         "activated.")
     endif ()
     message("-- Paraview plugin building (EXPERIMENTAL) is enabled.")
-else(USE_PARAVIEW_PLUGIN)
+else(PARAVIEW_PLUGIN)
     message("-- Paraview plugin building (EXPERIMENTAL) is not enabled.")
-endif(USE_PARAVIEW_PLUGIN)
+endif(PARAVIEW_PLUGIN)
 
 
 option(use_other_templates "Enable a mechanism to use uninstantiated templates" ON)
@@ -245,7 +245,7 @@ create_doc_target()
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # ParaView plugin section
-if (USE_PARAVIEW_PLUGIN)
+if (PARAVIEW_PLUGIN)
   add_subdirectory(${PROJECT_SOURCE_DIR}/addons/paraview_plugin)
 endif()
 #
