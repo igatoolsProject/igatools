@@ -21,6 +21,8 @@
 #ifndef VTK_IGATOOLS_READER_H_
 #define VTK_IGATOOLS_READER_H_
 
+#ifdef PARAVIEW_PLUGIN
+
 #include "vtkMultiBlockDataSetAlgorithm.h"
 
 #include <paraview_plugin/iga_vtk.h>
@@ -313,5 +315,6 @@ private:
     iga::IGAVTK iga_vtk_;
 };
 
+#endif // PARAVIEW_PLUGIN
 
 #endif // VTK_IGATOOLS_READER_H_

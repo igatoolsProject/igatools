@@ -18,6 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+#if PARAVIEW_PLUGIN
+
 #include <vtkIgatoolsReader.h>
 
 #include <vtkObjectFactory.h>
@@ -345,3 +347,5 @@ CanReadFile(const char *name)
 //                     288     }
 //                     289   return this->CheckFile(fFp, this->FunctionFileName);
 //                     290 }
+
+#endif // PARAVIEW_PLUGIN

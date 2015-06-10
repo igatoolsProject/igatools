@@ -21,6 +21,8 @@
 #ifndef IGA_VTK_H_
 #define IGA_VTK_H_
 
+#ifdef PARAVIEW_PLUGIN
+
 #include <igatools/base/config.h>
 #include <igatools/utils/tensor_size.h>
 #include <igatools/base/tensor.h>
@@ -76,6 +78,31 @@ private:
     IGAVTK(const IGAVTK &&) = delete;
     void operator=(const IGAVTK &) = delete;
     void operator=(const IGAVTK &&) = delete;
+
+
+  template <int dim>
+  struct BezierVisPointInfo
+  {
+  public:
+  private:
+      const std::shared_ptr<const Quadrature<dim>> quadrature;
+      const SafeSTLVector<SafeSTLVector<Index>> points_map;
+      const SafeSTLVector<Index> points_mask;
+  };
+
+  template <int dim, vtkGridType grid_type>
+  using vtkPointSet1D = typename std::enable_if<dim == 1,
+    vtkSmartPointer<vtkPointSet>>::type;
+
+  template <int dim, vtkGridType grid_type>
+  using vtkPointSetUnstructured =
+    typename std::enable_if<(dim > 1 && grid_type != vtkGridType::Structured),
+                              vtkSmartPointer<vtkPointSet>>::type;
+
+  template <int dim, vtkGridType grid_type>
+  using vtkPointSetStructured =
+    typename std::enable_if<(dim > 1 && grid_type == vtkGridType::Structured),
+                            vtkSmartPointer<vtkPointSet>>::type;
 
 public:
     /*
@@ -217,8 +244,35 @@ private:
      */
     template <int dim, int codim>
     vtkSmartPointer<vtkPointSet>
+    create_solid_mesh_grid2(const MapFunPtr_<dim, codim> mapping,
+                            const bool is_identity) const;
+
+    /*
+     * Generates the physical vtk grids.
+     * Specialization for 1D case.
+     */
+    template <int dim, int codim, vtkGridType grid_type>
+    static vtkPointSet1D<dim, grid_type>
     create_solid_mesh_grid(const MapFunPtr_<dim, codim> mapping,
-                           const bool is_identity) const;
+                           const std::shared_ptr<BezierVisPointInfo<dim>> point_info);
+
+    /*
+     * Generates the physical vtk grids.
+     * Specialization for 2D/3D cases unstructured.
+     */
+    template <int dim, int codim, vtkGridType unstructured>
+    static vtkPointSetUnstructured<dim, unstructured>
+    create_solid_mesh_grid(const MapFunPtr_<dim, codim> mapping,
+                           const std::shared_ptr<BezierVisPointInfo<dim>> point_info);
+
+    /*
+     * Generates the physical vtk grids.
+     * Specialization for 2D/3D cases structured.
+     */
+    template <int dim, int codim, vtkGridType unstructured>
+    static vtkPointSetStructured<dim, unstructured>
+    create_solid_mesh_grid(const MapFunPtr_<dim, codim> mapping,
+                           const std::shared_ptr<BezierVisPointInfo<dim>> point_info);
 
     /*
      * Generates the control mesh vtk grids.
@@ -308,11 +362,16 @@ private:
      */
     template <int dim, int codim>
     vtkSmartPointer<vtkPoints>
+    create_points_solid_vtk_grid2(const MapFunPtr_<dim, codim> mapping,
+                                  const TensorSize<dim> &n_vis_elements,
+                                  const bool is_structured,
+                                  const bool is_quadratic,
+                                  vtkPointData *const point_data) const;
+
+    template <int dim, int codim>
+    static vtkSmartPointer<vtkPoints>
     create_points_solid_vtk_grid(const MapFunPtr_<dim, codim> mapping,
-                                 const TensorSize<dim> &n_vis_elements,
-                                 const bool is_structured,
-                                 const bool is_quadratic,
-                                 vtkPointData *const point_data) const;
+                                 const std::shared_ptr<BezierVisPointInfo<dim>> point_info);
 
     template <int dim, int codim>
     void
@@ -402,5 +461,7 @@ private:
 };
 
 IGA_NAMESPACE_CLOSE
+
+#endif // PARAVIEW_PLUGIN
 
 #endif // IGA_VTK_H_

@@ -18,6 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+#ifdef PARAVIEW_PLUGIN
+
 #include <paraview_plugin/iga_vtk.h>
 
 #include <vtkMultiBlockDataSet.h>
@@ -363,7 +365,7 @@ fill_vtk_grids(vtkMultiBlockDataSet *const mb,
 
                 if (create_solid_mesh)
                 {
-                    const auto grid = this->create_solid_mesh_grid<dim, codim>
+                    const auto grid = this->create_solid_mesh_grid2<dim, codim>
                         (mapping, is_identity);
                     Assert(grid != nullptr, ExcNullPtr());
                     solid_block->GetMetaData(solid_mesh_index)->Set(vtkCompositeDataSet::NAME(),
@@ -405,8 +407,8 @@ fill_vtk_grids(vtkMultiBlockDataSet *const mb,
 template <int dim, int codim>
 vtkSmartPointer<vtkPointSet>
 IGAVTK::
-create_solid_mesh_grid(const MapFunPtr_<dim, codim> mapping,
-                       const bool is_identity) const
+create_solid_mesh_grid2(const MapFunPtr_<dim, codim> mapping,
+                        const bool is_identity) const
 {
     const auto &num_visualization_elements = is_identity ?
                                              num_visualization_elements_parametric_solid_:
@@ -434,6 +436,77 @@ create_solid_mesh_grid(const MapFunPtr_<dim, codim> mapping,
                                                        quadratic_cells);
     else // VTK structured grid.
         return this->create_solid_vts_grid<dim, codim>(mapping, n_vis_elements);
+};
+
+
+
+template <int dim, int codim, IGAVTK::vtkGridType grid_type>
+auto
+IGAVTK::
+create_solid_mesh_grid(const MapFunPtr_<dim, codim> mapping,
+                       const shared_ptr<BezierVisPointInfo<dim>> point_info) ->
+vtkPointSet1D<dim, grid_type>
+{
+    // Missing to implement the filling of the point data.
+    AssertThrow(false, ExcNotImplemented());
+
+    // Implementation for 1D.
+    // The 1D structured grid are not visualized in VTK.
+    // Therefore, an unstructured grid is always created.
+
+    Assert (mapping != nullptr, ExcNullPtr());
+
+    auto vtu_grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
+
+    // Creating points
+    const auto points =
+      IGAVTK::create_points_solid_vtk_grid<dim, codim>(mapping, point_info);
+    vtu_grid->SetPoints(points);
+
+    // Missing to implement the filling of the point data.
+    vtkPointData *const point_data = vtu_grid->GetPointData();
+
+    // Creating the poly line for VTK unstructured grid.
+    vtkSmartPointer<vtkPolyLine> poly_line =  vtkSmartPointer<vtkPolyLine>::New();
+
+    const Size n_points = points->GetNumberOfPoints();
+    poly_line->GetPointIds()->SetNumberOfIds(n_points);
+    for (int i = 0; i < n_points; ++i)
+        poly_line->GetPointIds()->SetId(i, i);
+
+    // Create a cell array to store the lines in and add the lines to it
+    vtkSmartPointer<vtkCellArray> cells = vtkSmartPointer<vtkCellArray>::New();
+    cells->InsertNextCell(poly_line);
+
+    vtu_grid->Allocate(cells->GetNumberOfCells(), 0);
+    const int vtk_enum_type = VTK_POLY_LINE;
+    vtu_grid->SetCells(vtk_enum_type, cells);
+
+    return vtu_grid;
+};
+
+
+
+template <int dim, int codim, IGAVTK::vtkGridType grid_type>
+auto
+IGAVTK::
+create_solid_mesh_grid(const MapFunPtr_<dim, codim> mapping,
+                       const shared_ptr<BezierVisPointInfo<dim>> point_info) ->
+vtkPointSetUnstructured<dim, grid_type>
+{
+  AssertThrow(false, ExcNotImplemented());
+};
+
+
+
+template <int dim, int codim, IGAVTK::vtkGridType grid_type>
+auto
+IGAVTK::
+create_solid_mesh_grid(const MapFunPtr_<dim, codim> mapping,
+                       const shared_ptr<BezierVisPointInfo<dim>> point_info) ->
+vtkPointSetStructured<dim, grid_type>
+{
+  AssertThrow(false, ExcNotImplemented());
 };
 
 
@@ -841,7 +914,7 @@ create_solid_vtu_grid(const MapFunPtr_<dim, codim> mapping,
         vtkSmartPointer<vtkUnstructuredGrid>::New();
 
     vtkPointData *const point_data = vtu_grid->GetPointData();
-    const auto points = this->create_points_solid_vtk_grid<dim, codim>
+    const auto points = this->create_points_solid_vtk_grid2<dim, codim>
                         (mapping, n_vis_elements, false, quadratic_cells, point_data);
 
     vtu_grid->SetPoints(points);
@@ -888,7 +961,7 @@ create_solid_vts_grid(const MapFunPtr_<dim, codim> mapping,
     auto vtu_grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
 
     vtkPointData *const point_data = vtu_grid->GetPointData();
-    const auto points = this->create_points_solid_vtk_grid<dim, codim>
+    const auto points = this->create_points_solid_vtk_grid2<dim, codim>
                         (mapping, n_vis_elements, true, false, point_data);
 
     vtu_grid->SetPoints(points);
@@ -935,7 +1008,7 @@ create_solid_vts_grid(const MapFunPtr_<dim, codim> mapping,
         vtkSmartPointer<vtkStructuredGrid>::New();
 
     vtkPointData *const point_data = vts_grid->GetPointData();
-    const auto points = this->create_points_solid_vtk_grid<dim, codim>
+    const auto points = this->create_points_solid_vtk_grid2<dim, codim>
                         (mapping, n_vis_elements, true, false, point_data);
 
     const auto n_intervals = mapping->get_grid()->get_num_intervals();
@@ -954,7 +1027,7 @@ create_solid_vts_grid(const MapFunPtr_<dim, codim> mapping,
 template <int dim, int codim>
 vtkSmartPointer<vtkPoints>
 IGAVTK::
-create_points_solid_vtk_grid(const MapFunPtr_<dim, codim> mapping,
+create_points_solid_vtk_grid2(const MapFunPtr_<dim, codim> mapping,
                              const TensorSize<dim> &n_vis_elements,
                              const bool structured_grid,
                              const bool quadratic_cells,
@@ -1017,6 +1090,58 @@ create_points_solid_vtk_grid(const MapFunPtr_<dim, codim> mapping,
 
     this->create_point_data_dim_codim<dim, codim>
     (mapping, *quad, points_map, points_mask, point_data);
+
+    return points;
+};
+
+
+
+template <int dim, int codim>
+vtkSmartPointer<vtkPoints>
+IGAVTK::
+create_points_solid_vtk_grid(const MapFunPtr_<dim, codim> mapping,
+                             const shared_ptr<BezierVisPointInfo<dim>> point_info)
+{
+    static const int space_dim = dim + codim;
+
+    Assert(mapping != nullptr, ExcNullPtr());
+
+    const Size n_bezier_elements = mapping->get_grid()->get_num_all_elems();
+    const Size n_total_points = n_bezier_elements * point_info->get_num_points();
+
+    vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
+    points->SetNumberOfPoints(point_info->get_total_num_points());
+
+    double point_tmp[3] = {0.0, 0.0, 0.0};
+
+    const auto vis_quad = point_info->get_quadrature();
+    const auto &points_map = point_info->get_points_map();
+    const auto &points_mask = point_info->get_points_mask();
+
+    auto flag = ValueFlags::point | ValueFlags::value;
+    mapping->reset(flag, *vis_quad);
+
+    auto elem = mapping->begin();
+    const auto end = mapping->end();
+
+    const auto topology = Topology<dim>();
+    mapping->init_cache(elem, topology);
+
+    auto pm_el = points_map.cbegin();
+    for (; elem != end; ++elem, ++pm_el)
+    {
+        mapping->fill_cache(elem, topology, 0);
+
+        auto element_vertices_tmp = elem->template get_values<_Value, dim>(0);
+        auto pm = pm_el->cbegin();
+        for (const auto &mask : points_mask)
+        {
+            const auto &point = element_vertices_tmp[mask];
+            for (int dir = 0; dir < space_dim ; ++dir)
+                point_tmp[dir] = point[dir];
+            points->SetPoint(*pm++, point_tmp);
+        }
+    }
 
     return points;
 };
@@ -2006,3 +2131,5 @@ create_geometries()
 };
 
 IGA_NAMESPACE_CLOSE
+
+#endif // PARAVIEW_PLUGIN
