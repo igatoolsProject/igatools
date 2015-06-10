@@ -27,6 +27,7 @@
 #cmakedefine MPATCH
 #cmakedefine HIERARCHICAL
 #cmakedefine SERIALIZATION
+#cmakedefine PARAVIEW_PLUGIN
 
 #define max_der @max_der_order@ + 1
 #define num_sub_elem @num_sub_elem@
