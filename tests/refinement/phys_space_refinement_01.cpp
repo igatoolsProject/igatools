@@ -18,7 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test for the physical space element iterator
+ *  Test refinement of a basic PhysicalSpace using the BSplineSpace as reference space
+ *  and the IdentityFunction as mapping.
  *
  *  author: pauletti
  *  date: 2013-10-02
@@ -31,21 +32,11 @@
 #include <igatools/geometry/push_forward.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/physical_space.h>
-#include <igatools/basis_functions/physical_space_element_accessor.h>
-#include <igatools/geometry/identity_mapping.h>
-
-template <int dim>
-using RefSpace_t = BSplineSpace<dim>  ;
-
-template <int dim>
-using PushForward_t = PushForward<Transformation::h_grad,dim,0> ;
-
-template <int dim>
-using PhysicalSpace_t = PhysicalSpace< RefSpace_t<dim>, PushForward_t<dim> > ;
+#include <igatools/basis_functions/physical_space_element.h>
+#include <igatools/functions/identity_function.h>
 
 
-template <class T, int dim>
-using ComponentTable = StaticMultiArray<T, RefSpace_t<dim>::range, RefSpace_t<dim>::rank >;
+
 
 
 template <int dim>
@@ -55,32 +46,31 @@ void test_evaluate()
     grid->refine();
     out << endl;
 
-    auto map = IdentityMapping<dim>::create(grid);
-
-
-    auto push_forward = PushForward<Transformation::h_grad,dim,0>::create(map);
-
-
     const int deg = 2;
-    TensorSize<dim> n_weights_comp(pow(deg+2,dim));
 
-    auto ref_space = RefSpace_t<dim>::create(deg,grid);
-    auto phys_space = PhysicalSpace_t<dim>::create(ref_space, push_forward);
+    using RefSpace = ReferenceSpace<dim>;
+    using RefSpacePtr = std::shared_ptr<RefSpace>;
+    RefSpacePtr ref_space = BSplineSpace<dim>::create(deg,grid);
+    auto phys_space =
+        PhysicalSpace<dim,1,1,0,Transformation::h_grad>::create(
+            ref_space,IdentityFunction<dim>::create(grid));
 
 
     out << endl;
     out << endl;
 
     out << "===============================================================" << endl;
-    out << "O R I G I N A L     S P A C E" << endl;
+    out.begin_item("O R I G I N A L     S P A C E");
     phys_space->print_info(out);
+    out.end_item();
     out << "===============================================================" << endl;
     out << endl;
 
     out << "===============================================================" << endl;
-    out << "R E F I N E D     S P A C E" << endl;
+    out.begin_item("R E F I N E D     S P A C E");
     phys_space->refine_h();
     phys_space->print_info(out);
+    out.end_item();
     out << "===============================================================" << endl;
     out << endl;
 }

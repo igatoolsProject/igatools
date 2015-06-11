@@ -18,7 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test for the physical space element iterator
+ *  Test refinement of a basic PhysicalSpace using the NURBSSpace as reference space
+ *  and the IdentityFunction as mapping.
  *
  *  author: pauletti
  *  date: 2013-10-02
@@ -31,9 +32,10 @@
 #include <igatools/geometry/push_forward.h>
 #include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/physical_space.h>
-#include <igatools/basis_functions/physical_space_element_accessor.h>
-#include <igatools/geometry/identity_mapping.h>
+#include <igatools/basis_functions/physical_space_element.h>
+#include <igatools/functions/identity_function.h>
 
+/*
 template <int dim>
 using RefSpace_t = NURBSSpace<dim>  ;
 
@@ -46,7 +48,7 @@ using PhysicalSpace_t = PhysicalSpace< RefSpace_t<dim>, PushForward_t<dim> > ;
 
 template <class T, int dim>
 using ComponentTable = StaticMultiArray<T, RefSpace_t<dim>::range, RefSpace_t<dim>::rank >;
-
+//*/
 
 template <int dim>
 void test_evaluate()
@@ -55,34 +57,45 @@ void test_evaluate()
     grid->refine();
     out << endl;
 
-    auto map = IdentityMapping<dim>::create(grid);
-
-    auto push_forward = PushForward<Transformation::h_grad,dim,0>::create(map);
-
 
     const int deg = 2;
+    /*
+        TensorIndex<1> component_map = {0};
+        TensorSize<dim> n_weights_dir(deg+2);
 
-    TensorIndex<1> component_map = {0};
-    TensorSize<dim> n_weights_dir(deg+2);
-
-    typename RefSpace_t<dim>::WeightsTable weights(component_map);
-    for (auto &weights_comp : weights)
-    {
-        weights_comp.resize(n_weights_dir);
-
-        Index id = 0;
-        for (Index i=0 ; i < pow(4,dim-1) ; ++i)
+        typename RefSpace_t<dim>::WeightsTable weights(component_map);
+        for (auto &weights_comp : weights)
         {
-            weights_comp[id++] = 1.0 ;
-            weights_comp[id++] = 0.4 ;
-            weights_comp[id++] = 0.65 ;
-            weights_comp[id++] = 1.0 ;
-        }
-    }
+            weights_comp.resize(n_weights_dir);
 
+            Index id = 0;
+            for (Index i=0 ; i < pow(4,dim-1) ; ++i)
+            {
+                weights_comp[id++] = 1.0 ;
+                weights_comp[id++] = 0.4 ;
+                weights_comp[id++] = 0.65 ;
+                weights_comp[id++] = 1.0 ;
+            }
+        }
+    //*/
+
+    auto bsp_space = BSplineSpace<dim>::create(deg, grid);
+
+
+    using ScalarSpSpace = BSplineSpace<dim,1,1>;
+    auto scalar_bsp_space = ScalarSpSpace::create(deg, grid);
+
+    const auto n_scalar_basis = scalar_bsp_space->get_num_basis_table()[0];
+
+    using WeightFunc = IgFunction<dim,0,1,1>;
+    SafeSTLVector<Real> weights_coef(n_scalar_basis.flat_size(),1.0);
+
+    /*
     auto ref_space = RefSpace_t<dim>::create(deg,grid,weights);
 
-    auto phys_space = PhysicalSpace_t<dim>::create(ref_space, push_forward);
+    auto phys_space =
+            PhysicalSpace<dim,1,1,0,Transformation::h_grad>::create(
+                    ref_space,IdentityFunction<dim>::create(grid));
 
 
     out << endl;
@@ -100,6 +113,7 @@ void test_evaluate()
     phys_space->print_info(out);
     out << "===============================================================" << endl;
     out << endl;
+    //*/
 }
 
 int main()

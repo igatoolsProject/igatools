@@ -51,8 +51,8 @@ PhysicalSpace(shared_ptr<RefSpace> ref_space,
     Assert(ref_space_ != nullptr, ExcNullPtr());
     Assert(map_func_ != nullptr, ExcNullPtr());
 
-//    Assert(ref_space_->get_grid() == push_forward_->get_mapping()->get_grid(),
-//           ExcMessage("Reference space and mapping grids are not the same."))
+    Assert(ref_space_->get_grid() == map_func_->get_grid(),
+           ExcMessage("Reference space and mapping grids are not the same."))
 }
 
 
