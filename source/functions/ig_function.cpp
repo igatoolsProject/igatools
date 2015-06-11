@@ -59,6 +59,32 @@ IgFunction(std::shared_ptr<const Space<dim,codim,range,rank>> space,
 }
 
 
+template<int dim,int codim,int range,int rank>
+IgFunction<dim,codim,range,rank>::
+IgFunction(std::shared_ptr<const Space<dim,codim,range,rank>> space,
+           const IgCoefficients &coeff,
+           const std::string &property)
+    :
+    parent_t::Function(space->get_grid()),
+    space_(space),
+    property_(property),
+    space_elem_(space->begin()),
+    space_elem_handler_(space->get_elem_handler())
+{
+    Assert(space_ != nullptr, ExcNullPtr());
+
+#ifndef NDEBUG
+    const auto &dof_distribution = *(space_->get_dof_distribution());
+    const auto &active_dofs = dof_distribution.get_dofs_id_same_property(property);
+
+    for (const auto glob_dof : active_dofs)
+        coeff_[glob_dof] = coeff.at(glob_dof);
+#else
+    coeff_ = coeff;
+#endif
+}
+
+
 
 template<int dim,int codim,int range,int rank>
 IgFunction<dim,codim,range,rank>::
@@ -84,9 +110,26 @@ create(std::shared_ptr<const Space<dim,codim,range,rank>> space,
     auto ig_func = std::make_shared<self_t>(space, coeff, property);
 
     Assert(ig_func != nullptr, ExcNullPtr());
-#if REFINE
+#ifdef MESH_REFINEMENT
     ig_func->create_connection_for_insert_knots(ig_func);
-#endif
+#endif // MESH_REFINEMENT
+    return ig_func;
+}
+
+
+template<int dim,int codim,int range,int rank>
+auto
+IgFunction<dim,codim,range,rank>::
+create(std::shared_ptr<const Space<dim,codim,range,rank>> space,
+       const IgCoefficients &coeff,
+       const std::string &property) ->  std::shared_ptr<self_t>
+{
+    auto ig_func = std::make_shared<self_t>(space, coeff, property);
+
+    Assert(ig_func != nullptr, ExcNullPtr());
+#ifdef MESH_REFINEMENT
+    ig_func->create_connection_for_insert_knots(ig_func);
+#endif // MESH_REFINEMENT
     return ig_func;
 }
 
@@ -197,7 +240,7 @@ operator +=(const self_t &fun) -> self_t &
 }
 
 
-#if REFINE
+#ifdef MESH_REFINEMENT
 template<int dim,int codim,int range,int rank>
 void
 IgFunction<dim,codim,range,rank>::
@@ -207,18 +250,22 @@ rebuild_after_insert_knots(
 {
     using std::const_pointer_cast;
     auto function_previous_refinement = IgFunction<dim,codim,range,rank>::create(
-                                            const_pointer_cast<Space>(space_->get_space_previous_refinement()),
+                                            const_pointer_cast<Space<dim,codim,range,rank>>(space_->get_space_previous_refinement()),
                                             coeff_,
                                             property_);
 
-    QGauss<dim> quad(space_->get_max_degree()+1);
+
+    //TODO (martinelli, Jun 11, 2015): implement space_->get_max_degree();
+//    const int max_degree = space_->get_max_degree();
+    const int max_degree = 10;
+    QGauss<dim> quad(max_degree+1);
     auto function_refined = space_tools::projection_l2(
                                 function_previous_refinement,
-                                const_pointer_cast<const Space>(space_),
+                                const_pointer_cast<const Space<dim,codim,range,rank>>(space_),
                                 quad);
 
     this->coeff_ = std::move(function_refined->coeff_);
-    this->property_ = DofProperties::active;
+//    this->property_ = DofProperties::active;
 
 }
 
@@ -240,7 +287,7 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> ig_function)
     this->functions_knots_refinement_.connect_insert_knots_function(
         SlotType(func_to_connect).track_foreign(ig_function));
 }
-#endif
+#endif // MESH_REFINEMENT
 
 template<int dim,int codim,int range,int rank>
 void

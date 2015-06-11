@@ -46,10 +46,10 @@ SplineSpace(const DegreeTable &deg,
             const MultiplicityTable &interior_mult,
             const PeriodicityTable &periodic)
     :
-    GridWrapper<CartesianGrid<dim>>(knots),
-                                 interior_mult_(interior_mult),
-                                 deg_(deg),
-                                 periodic_(periodic)
+    GridWrapper<dim>(knots),
+    interior_mult_(interior_mult),
+    deg_(deg),
+    periodic_(periodic)
 {
     this->init();
 }
@@ -664,7 +664,7 @@ serialize(Archive &ar, const unsigned int version)
 {
     ar &boost::serialization::make_nvp(
         "SplineSpace_base_t",
-        boost::serialization::base_object<GridWrapper<CartesianGrid<dim>>>(*this));
+        boost::serialization::base_object<GridWrapper<dim>>(*this));
 
     ar &boost::serialization::make_nvp("interior_mult_",interior_mult_);
 

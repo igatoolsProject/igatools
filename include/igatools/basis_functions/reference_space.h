@@ -253,7 +253,7 @@ protected:
 
 
 public:
-    std::shared_ptr<const RefSpace> get_space_previous_refinement() const
+    std::shared_ptr<const base_t> get_space_previous_refinement() const
     {
         return ref_space_previous_refinement_;
     }

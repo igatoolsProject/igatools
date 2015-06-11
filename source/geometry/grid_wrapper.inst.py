@@ -25,12 +25,11 @@ include_files = ['geometry/cartesian_grid.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-grids = ['CartesianGrid<%d>' %(dim) for dim in inst.all_domain_dims]
 
 grid_wrappers = []
 
-for grid in grids:
-    grid_wrapper = 'GridWrapper<%s>' % (grid)
+for dim in inst.all_domain_dims:
+    grid_wrapper = 'GridWrapper<%d>' % (dim)
     grid_wrappers.append(grid_wrapper)
     f.write('template class %s; \n' % (grid_wrapper))
 
@@ -41,9 +40,9 @@ f.write('IGA_NAMESPACE_CLOSE\n')
  
 f.write('#ifdef SERIALIZATION\n')
 id = 0 
-for grid in unique(grids):
-    alias = 'GridWrapperAlias%d' %(id)
-    f.write('using %s = iga::GridWrapper<iga::%s>; \n' % (alias, grid))
+for dim in inst.all_domain_dims:
+    alias = 'GridWrapperAlias%d' %(dim)
+    f.write('using %s = iga::GridWrapper<%d>; \n' % (alias, dim))
     f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
     f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)
     f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)

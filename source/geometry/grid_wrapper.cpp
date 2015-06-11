@@ -24,94 +24,92 @@
 IGA_NAMESPACE_OPEN
 
 
-template <class GridType>
-GridWrapper<GridType>::
-GridWrapper(std::shared_ptr<GridType> grid)
+template <int dim>
+GridWrapper<dim>::
+GridWrapper(std::shared_ptr<CartesianGrid<dim>> grid)
     :
     grid_ {grid}
 {
     Assert(grid_ != nullptr,ExcNullPtr());
 }
 
-
-template <class GridType>
-GridWrapper<GridType>::
+template <int dim>
+GridWrapper<dim>::
 ~GridWrapper()
 {
     insert_knots_connection_.disconnect();
 }
 
-
-template <class GridType>
-std::shared_ptr<GridType>
-GridWrapper<GridType>::
-get_grid()
+template <int dim>
+std::shared_ptr<CartesianGrid<dim>>
+                                 GridWrapper<dim>::
+                                 get_grid()
 {
     return grid_;
 }
 
 
-template <class GridType>
-std::shared_ptr<const GridType>
-GridWrapper<GridType>::
-get_grid() const
+template <int dim>
+std::shared_ptr<const CartesianGrid<dim>>
+                                       GridWrapper<dim>::
+                                       get_grid() const
 {
     return grid_;
 }
 
 
-template <class GridType>
+template <int dim>
 void
-GridWrapper<GridType>::
+GridWrapper<dim>::
 refine_h_directions(
-    const SafeSTLArray<bool,GridType::dim> &refinement_directions,
-    const SafeSTLArray<Size,GridType::dim> &n_subdiv_directions)
+    const SafeSTLArray<bool,dim> &refinement_directions,
+    const SafeSTLArray<Size,dim> &n_subdiv_directions)
 {
     grid_->refine_directions(refinement_directions,n_subdiv_directions);
 }
 
 
-template <class GridType>
+template <int dim>
 void
-GridWrapper<GridType>::
+GridWrapper<dim>::
 refine_h_direction(const int direction_id, const Size n_subdivisions)
 {
     grid_->refine_direction(direction_id,n_subdivisions);
 }
 
 
-template <class GridType>
+template <int dim>
 void
-GridWrapper<GridType>::
+GridWrapper<dim>::
 refine_h(const Size n_subdivisions)
 {
     grid_->refine(n_subdivisions);
 }
 
 
-template <class GridType>
+template <int dim>
 void
-GridWrapper<GridType>::
-connect_insert_knots_function(const typename GridType::SignalInsertKnotsSlot &subscriber)
+GridWrapper<dim>::
+connect_insert_knots_function(const typename CartesianGrid<dim>::SignalInsertKnotsSlot &subscriber)
 {
     insert_knots_connection_ = grid_->connect_insert_knots(subscriber);
 }
 
 
-template <class GridType>
+template <int dim>
 void
-GridWrapper<GridType>::
-insert_knots(SafeSTLArray<SafeSTLVector<Real>,GridType::dim> &knots_to_insert)
+GridWrapper<dim>::
+insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert)
 {
     grid_->insert_knots(knots_to_insert);
 }
 
 
 #ifdef SERIALIZATION
-template <class GridType>
+template <int dim>
 template<class Archive>
 void
-GridWrapper<GridType>::
+GridWrapper<dim>::
 serialize(Archive &ar, const unsigned int version)
 {
     ar &boost::serialization::make_nvp("grid_",grid_);

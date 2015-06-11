@@ -36,7 +36,7 @@ IGA_NAMESPACE_OPEN
 
 //TODO(pauletti, Mar 4, 2014): the purpose of this class is not well explained
 /**
- * @brief This class wraps a grid of type @p GridType with a std::shared_ptr.
+ * @brief This class wraps a CartesianGrid with a std::shared_ptr.
  *
  * It is used as base class for classes that are based on a grid, e.g. BSplineSpace,
  * PhysicalSpace, Mapping, etc.
@@ -48,31 +48,31 @@ IGA_NAMESPACE_OPEN
  * @ingroup h_refinement
  * @ingroup serializable
  */
-template<class Grid_>
+template<int dim>
 class GridWrapper
 {
 public:
-    using GridType = Grid_;
+    using GridType = CartesianGrid<dim>;
 
 
     /** @name Constructor and destructor. */
     ///@{
-protected:
+public:
     /**
      * Default constructor. It does nothing but it is needed for the
      * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
      * mechanism.
      */
     GridWrapper() = default;
-public:
+
     /** Construct a GridWrapper copying the pointer @p grid. */
     GridWrapper(std::shared_ptr<GridType> grid);
 
     /** Copy constructor. */
-    GridWrapper(const GridWrapper<GridType> &grid) = default;
+    GridWrapper(const GridWrapper<dim> &grid) = default;
 
     /** Move constructor. Not allowed to be used. */
-    GridWrapper(GridWrapper<GridType> &&grid) = delete;
+    GridWrapper(GridWrapper<dim> &&grid) = delete;
 
     /** Destructor. */
     ~GridWrapper();
@@ -81,10 +81,10 @@ public:
     /** @name Assignment operator. */
     ///@{
     /** Copy assignment operator. Not allowed to be used. */
-    GridWrapper<GridType> &operator=(const GridWrapper<GridType> &grid) = delete ;
+    GridWrapper<dim> &operator=(const GridWrapper<dim> &grid) = delete ;
 
     /** Move assignment operator. Not allowed to be used. */
-    GridWrapper<GridType> &operator=(GridWrapper<GridType> &&grid) = delete ;
+    GridWrapper<dim> &operator=(GridWrapper<dim> &&grid) = delete ;
     ///@}
 
 
@@ -120,8 +120,8 @@ public:
      * @ingroup h_refinement
      */
     void refine_h_directions(
-        const SafeSTLArray<bool,GridType::dim> &refinement_directions,
-        const SafeSTLArray<Size,GridType::dim> &n_subdiv_directions);
+        const SafeSTLArray<bool,dim> &refinement_directions,
+        const SafeSTLArray<Size,dim> &n_subdiv_directions);
 
     /**
      * Perform a uniform h-refinement of the grid along the @p direction_id direction,
@@ -151,7 +151,7 @@ public:
      * Insert the @p knots_to_insert to the grid and to the object that are using the grid.
      * @note The @p knots_to_insert may contain multiple knot values in each direction.
      */
-    void insert_knots(SafeSTLArray<SafeSTLVector<Real>,GridType::dim> &knots_to_insert);
+    void insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert);
     ///@}
 
 

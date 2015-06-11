@@ -256,11 +256,11 @@ protected:
     SafeSTLArray<ValueFlags, dim_ + 1> flags_;
 
 
-#ifdef REFINE
+#ifdef MESH_REFINEMENT
     /**
      * This member is used to handle the knots-refinement.
      */
-    GridWrapper<GridType> functions_knots_refinement_;
+    GridWrapper<dim_> functions_knots_refinement_;
 
 public:
 
@@ -272,7 +272,7 @@ public:
     {
         functions_knots_refinement_.refine_h(n_subdivisions);
     }
-#endif
+#endif // MESH_REFINEMENT
 
 
 private:

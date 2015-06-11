@@ -57,7 +57,6 @@ create(const int degree,
     auto sp = shared_ptr<self_t>(new self_t(degree,knots,interior_reg,periodic,end_b));
     Assert(sp != nullptr, ExcNullPtr());
 
-//    sp->create_connection_for_h_refinement(sp);
     sp->create_connection_for_insert_knots(sp);
 
     return sp;

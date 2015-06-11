@@ -85,17 +85,27 @@ void test_evaluate()
     using ScalarSpSpace = BSplineSpace<dim,1,1>;
     auto scalar_bsp_space = ScalarSpSpace::create(deg, grid);
 
-    const auto n_scalar_basis = scalar_bsp_space->get_num_basis_table()[0];
+    const auto n_scalar_basis = scalar_bsp_space->get_num_basis();
+
+    IgCoefficients weights_coef;
+    for (int i = 0 ; i < n_scalar_basis ;)
+    {
+        weights_coef[i++] = 1.0;
+        weights_coef[i++] = 0.4;
+        weights_coef[i++] = 0.65;
+        weights_coef[i++] = 1.0;
+    }
 
     using WeightFunc = IgFunction<dim,0,1,1>;
-    SafeSTLVector<Real> weights_coef(n_scalar_basis.flat_size(),1.0);
+    auto w_func = WeightFunc::create(scalar_bsp_space,weights_coef);
 
-    /*
-    auto ref_space = RefSpace_t<dim>::create(deg,grid,weights);
+    using RefSpace = ReferenceSpace<dim>;
+    using RefSpacePtr = std::shared_ptr<RefSpace>;
+    RefSpacePtr ref_space = NURBSSpace<dim>::create(bsp_space,w_func);
 
     auto phys_space =
-            PhysicalSpace<dim,1,1,0,Transformation::h_grad>::create(
-                    ref_space,IdentityFunction<dim>::create(grid));
+        PhysicalSpace<dim,1,1,0,Transformation::h_grad>::create(
+            ref_space,IdentityFunction<dim>::create(grid));
 
 
     out << endl;

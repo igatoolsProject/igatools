@@ -79,7 +79,7 @@ enum class InteriorReg
  */
 template<int dim, int range = 1, int rank = 1>
 class SplineSpace :
-    public GridWrapper<CartesianGrid<dim> >
+    public GridWrapper<dim>
 {
 
 private:

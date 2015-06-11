@@ -33,7 +33,7 @@ sub_dim_members = \
 
 
 elements = ['SpaceElement<0,0,0,1>']
-templated_funcs = []
+templated_funcs = ['ValueVector<Real> SpaceElement<0,0,0,1>::get_w_measures<0>(const int) const;']
 
 #--------------------------------------------------------------------------------------
 # SpaceElement used by ReferenceSpaceElement 

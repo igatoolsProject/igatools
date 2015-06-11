@@ -124,6 +124,14 @@ else(HIERARCHICAL)
     message("-- Hierarchical splines support (EXPERIMENTAL) is not enabled.")    
 endif(HIERARCHICAL)
 
+option(MESH_REFINEMENT "Enable mesh refinement support" ON)
+if (MESH_REFINEMENT)
+    message("-- Mesh refinement support (EXPERIMENTAL) is enabled.")
+else(MESH_REFINEMENT)
+    message("-- Mesh refinement support (EXPERIMENTAL) is not enabled.")    
+endif(MESH_REFINEMENT)
+
+
 option(SERIALIZATION "Enable serialization support" ON)
 if (SERIALIZATION)
     message("-- Serialization support (EXPERIMENTAL) is enabled.")

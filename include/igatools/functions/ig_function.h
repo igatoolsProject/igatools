@@ -104,6 +104,11 @@ public:
                std::shared_ptr<const EpetraTools::Vector> coeff,
                const std::string &property = DofProperties::active);
 
+    IgFunction(std::shared_ptr<const Space<dim,codim,range,rank>> space,
+               const IgCoefficients &coeff,
+               const std::string &property = DofProperties::active);
+
+
     IgFunction(const self_t &);
 
     virtual ~IgFunction() = default;
@@ -124,6 +129,11 @@ public:
     static std::shared_ptr<self_t>
     create(std::shared_ptr<const Space<dim,codim,range,rank>> space,
            std::shared_ptr<const EpetraTools::Vector> coeff,
+           const std::string &property = DofProperties::active);
+
+    static std::shared_ptr<self_t>
+    create(std::shared_ptr<const Space<dim,codim,range,rank>> space,
+           const IgCoefficients &coeff,
            const std::string &property = DofProperties::active);
 
 
@@ -313,13 +323,13 @@ private:
         const std::string  &property_;
     };
 
-#ifdef REFINE
+#ifdef MESH_REFINEMENT
     void create_connection_for_insert_knots(std::shared_ptr<self_t> ig_function);
 
     void rebuild_after_insert_knots(
         const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
         const CartesianGrid<dim> &old_grid);
-#endif
+#endif // MESH_REFINEMENT
 
 
 

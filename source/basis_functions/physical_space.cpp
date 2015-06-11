@@ -63,7 +63,11 @@ PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 create(shared_ptr<RefSpace> ref_space,
        shared_ptr<MapFunc> map_func) -> shared_ptr<self_t>
 {
-    return shared_ptr<self_t>(new self_t(ref_space, map_func));
+    auto sp = shared_ptr<self_t>(new self_t(ref_space, map_func));
+
+    sp->create_connection_for_insert_knots(sp);
+
+    return sp;
 }
 
 
@@ -307,6 +311,59 @@ get_interior_dofs() const
     return ref_space_->get_interior_dofs();
 }
 
+
+template <int dim_, int range_, int rank_, int codim_, Transformation type_>
+void
+PhysicalSpace<dim_, range_, rank_, codim_, type_>::
+create_connection_for_insert_knots(std::shared_ptr<self_t> space)
+{
+    Assert(space != nullptr, ExcNullPtr());
+    Assert(&(*space) == &(*this), ExcMessage("Different objects."));
+
+    auto func_to_connect =
+        std::bind(&self_t::rebuild_after_insert_knots,
+                  space.get(),
+                  std::placeholders::_1,
+                  std::placeholders::_2);
+
+    using SlotType = typename CartesianGrid<dim>::SignalInsertKnotsSlot;
+    this->connect_insert_knots_function(
+        SlotType(func_to_connect).track_foreign(space));
+}
+
+
+
+template <int dim_, int range_, int rank_, int codim_, Transformation type_>
+void
+PhysicalSpace<dim_, range_, rank_, codim_, type_>::
+rebuild_after_insert_knots(
+    const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
+    const CartesianGrid<dim> &old_grid)
+{
+    Assert(false,ExcNotImplemented());
+
+    /*
+    this->ref_space_previous_refinement_ =
+        shared_ptr<BSplineSpace<dim_,range_,rank_>>(new
+                                                    BSplineSpace(
+                                                        const_pointer_cast<SpaceData>(
+                                                            this->space_data_->get_spline_space_previous_refinement()),
+                                                        this->end_b_));
+
+
+    this->dof_distribution_ = shared_ptr<DofDistribution<dim_,range_,rank_>>(
+                                  new DofDistribution<dim_,range_,rank_>(
+                                      this->space_data_->get_num_basis_table(),
+                                      this->space_data_->get_degree(),
+                                      this->space_data_->get_periodic_table()));
+
+    operators_ = BernsteinExtraction<dim, range, rank>(
+                     this->get_grid(),
+                     this->space_data_->compute_knots_with_repetition(end_b_),
+                     this->space_data_->accumulated_interior_multiplicities(),
+                     this->space_data_->get_degree());
+                     //*/
+}
 
 
 #ifdef SERIALIZATION

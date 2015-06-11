@@ -54,10 +54,10 @@ template <int,int,int,int> class SpaceElementHandler;
  */
 template<int dim_>
 class SpaceBase :
-    public GridWrapper<CartesianGrid<dim_>>
+    public GridWrapper<dim_>
 {
 private:
-    using base_t = GridWrapper<CartesianGrid<dim_>>;
+    using base_t = GridWrapper<dim_>;
     using self_t = SpaceBase<dim_>;
 
 
@@ -165,6 +165,9 @@ public:
 
 
     static const int dim = dim_;
+    static const int codim = codim_;
+    static const int range = range_;
+    static const int rank = rank_;
 
 
     using MapFunc = Function<dim_,0,dim_+codim_,1>;
@@ -221,6 +224,9 @@ public:
      */
     ElementIterator end(const std::string &element_property = ElementProperties::none) const;
     ///@}
+
+
+    virtual std::shared_ptr<const self_t> get_space_previous_refinement() const = 0;
 
 
 private:

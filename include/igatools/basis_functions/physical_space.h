@@ -203,7 +203,7 @@ public:
     std::shared_ptr<SpaceElementHandler<dim_,codim_,range_,rank_>> get_elem_handler() const;
 
 
-    std::shared_ptr<const self_t> get_space_previous_refinement() const
+    std::shared_ptr<const base_t> get_space_previous_refinement() const
     {
         Assert(false,ExcNotImplemented());
         AssertThrow(false,ExcNotImplemented());
@@ -238,6 +238,22 @@ private:
      * @note Internally uses the shared_from_this() function.
      */
     std::shared_ptr<const self_t > get_this_space() const;
+
+
+    /**
+     * Rebuild the internal state of the object after an insert_knots() function is invoked.
+     *
+     * @pre Before invoking this function, must be invoked the function grid_->insert_knots().
+     * @note This function is connected to the CartesianGrid's signal for the refinement, and
+     * it is necessary in order to avoid infinite loops in the insert_knots() function calls.
+     *
+     * @ingroup h_refinement
+     */
+    void rebuild_after_insert_knots(
+        const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
+        const CartesianGrid<dim> &old_grid);
+
+    void create_connection_for_insert_knots(std::shared_ptr<self_t> space);
 
 
 #ifdef SERIALIZATION

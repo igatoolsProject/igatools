@@ -45,7 +45,7 @@ namespace space_tools
  */
 template<class Space, LAPack la_pack = LAPack::trilinos_epetra>
 std::shared_ptr<IgFunction<Space::dim,Space::codim,Space::range,Space::rank> >
-projection_l2(const std::shared_ptr<const typename Space::Func> function,
+projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space::range,Space::rank>> function,
               std::shared_ptr<const Space> space,
               const Quadrature<Space::dim> &quad,
               const std::string &dofs_property = DofProperties::active)
@@ -73,8 +73,9 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
         auto func_flag = ValueFlags::point | ValueFlags::value;
         func->reset(func_flag, quad);
 
-        using ElementHandler = typename Space::ElementHandler;
-        auto sp_filler = ElementHandler::create(space);
+//        using ElementHandler = typename Space::ElementHandler;
+//        auto sp_filler = ElementHandler::create(space);
+        auto sp_filler = space->get_elem_handler();
         auto sp_flag = ValueFlags::point | ValueFlags::value |
                        ValueFlags::w_measure;
         sp_filler->reset(sp_flag, quad);
@@ -143,8 +144,9 @@ projection_l2(const std::shared_ptr<const typename Space::Func> function,
         auto func_flag = ValueFlags::point | ValueFlags::value;
         func->reset(func_flag, quad);
 
-        using ElementHandler = typename Space::ElementHandler;
-        auto sp_filler = ElementHandler::create(space);
+//        using ElementHandler = typename Space::ElementHandler;
+//        auto sp_filler = ElementHandler::create(space);
+        auto sp_filler = space->get_elem_handler();
         auto sp_flag = ValueFlags::point | ValueFlags::value |
                        ValueFlags::w_measure;
         sp_filler->reset(sp_flag, quad);
