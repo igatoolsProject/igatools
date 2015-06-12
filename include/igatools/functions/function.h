@@ -256,22 +256,25 @@ protected:
     SafeSTLArray<ValueFlags, dim_ + 1> flags_;
 
 
-#ifdef MESH_REFINEMENT
     /**
      * This member is used to handle the knots-refinement.
      */
-    GridWrapper<dim_> functions_knots_refinement_;
+    GridWrapper<dim_> grid_wrapper_;
+
+    std::shared_ptr<self_t> function_previous_refinement_;
+
+#ifdef MESH_REFINEMENT
 
 public:
 
-    /**
-     * Perform the h-refinement of the grid in all the directions.
-     * Each interval in the unrefined grid is uniformly divided in @p n_subdivisions sub-intervals.
-     */
-    void refine_h(const Size n_subdivisions=2)
+
+
+    std::shared_ptr<const self_t> get_function_previous_refinement() const
     {
-        functions_knots_refinement_.refine_h(n_subdivisions);
+        return function_previous_refinement_;
     }
+
+
 #endif // MESH_REFINEMENT
 
 

@@ -38,7 +38,13 @@ auto
 IdentityFunction<dim,space_dim>::
 create(std::shared_ptr<GridType> grid) -> std::shared_ptr<parent_t>
 {
-    return std::make_shared<self_t>(grid);
+    auto identity_function = std::make_shared<self_t>(grid);
+
+#ifdef MESH_REFINEMENT
+    identity_function->create_connection_for_insert_knots(identity_function);
+#endif // MESH_REFINEMENT
+
+    return identity_function;
 }
 
 template<int dim,int space_dim>
@@ -76,6 +82,46 @@ fill_cache(ElementAccessor &elem, const topology_variant &k, const int sub_elem_
     auto fill_cache_dispatcher = FillCacheDispatcher(sub_elem_id,*this,elem);
     boost::apply_visitor(fill_cache_dispatcher, k);
 }
+
+
+
+#ifdef MESH_REFINEMENT
+template<int dim,int space_dim>
+void
+IdentityFunction<dim,space_dim>::
+rebuild_after_insert_knots(
+    const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
+    const CartesianGrid<dim> &grid_old)
+{
+    using std::const_pointer_cast;
+
+    auto previous_grid = this->get_grid()->get_grid_pre_refinement();
+    Assert(previous_grid != nullptr,ExcNullPtr());
+
+    this->function_previous_refinement_ =
+        IdentityFunction<dim,space_dim>::create(previous_grid);
+}
+
+template<int dim,int space_dim>
+void
+IdentityFunction<dim,space_dim>::
+create_connection_for_insert_knots(std::shared_ptr<self_t> identity_function)
+{
+    Assert(identity_function != nullptr, ExcNullPtr());
+    Assert(&(*identity_function) == &(*this), ExcMessage("Different objects."));
+
+    using SlotType = typename CartesianGrid<dim>::SignalInsertKnotsSlot;
+
+    auto func_to_connect =
+        std::bind(&self_t::rebuild_after_insert_knots,
+                  identity_function.get(),
+                  std::placeholders::_1,
+                  std::placeholders::_2);
+    this->grid_wrapper_.connect_insert_knots_function(
+        SlotType(func_to_connect).track_foreign(identity_function));
+}
+#endif // MESH_REFINEMENT
+
 
 IGA_NAMESPACE_CLOSE
 

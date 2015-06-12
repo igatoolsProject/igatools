@@ -168,6 +168,16 @@ private:
     friend class FillCacheDispatcher;
 
 
+#ifdef MESH_REFINEMENT
+
+    void create_connection_for_insert_knots(std::shared_ptr<self_t> ig_function);
+
+    void rebuild_after_insert_knots(
+        const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
+        const CartesianGrid<dim> &old_grid);
+
+#endif // MESH_REFINEMENT
+
 #ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization

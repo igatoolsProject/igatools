@@ -45,11 +45,18 @@ PhysicalSpace(shared_ptr<RefSpace> ref_space,
     :
     base_t(ref_space->get_grid()),
     ref_space_(ref_space),
-    map_func_(map_func->clone())
+//    map_func_(map_func->clone())
+    map_func_(map_func)
 {
 //TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
     Assert(ref_space_ != nullptr, ExcNullPtr());
     Assert(map_func_ != nullptr, ExcNullPtr());
+
+//    auto grid_in = map_func->get_grid();
+//    auto grid_1 = map_func_->get_grid();
+//    auto grid_2 = ref_space_->get_grid();
+
+//    auto & tmp = *map_func_;
 
     Assert(ref_space_->get_grid() == map_func_->get_grid(),
            ExcMessage("Reference space and mapping grids are not the same."))
@@ -340,29 +347,15 @@ rebuild_after_insert_knots(
     const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
     const CartesianGrid<dim> &old_grid)
 {
-    Assert(false,ExcNotImplemented());
+    auto prev_ref_space = std::const_pointer_cast<RefSpace>(
+                              std::dynamic_pointer_cast<const RefSpace>(ref_space_->get_space_previous_refinement()));
+    Assert(prev_ref_space != nullptr, ExcNullPtr());
 
-    /*
-    this->ref_space_previous_refinement_ =
-        shared_ptr<BSplineSpace<dim_,range_,rank_>>(new
-                                                    BSplineSpace(
-                                                        const_pointer_cast<SpaceData>(
-                                                            this->space_data_->get_spline_space_previous_refinement()),
-                                                        this->end_b_));
+    auto prev_map_func = std::const_pointer_cast<MapFunc>(map_func_->get_function_previous_refinement());
+    Assert(prev_map_func != nullptr, ExcNullPtr());
 
-
-    this->dof_distribution_ = shared_ptr<DofDistribution<dim_,range_,rank_>>(
-                                  new DofDistribution<dim_,range_,rank_>(
-                                      this->space_data_->get_num_basis_table(),
-                                      this->space_data_->get_degree(),
-                                      this->space_data_->get_periodic_table()));
-
-    operators_ = BernsteinExtraction<dim, range, rank>(
-                     this->get_grid(),
-                     this->space_data_->compute_knots_with_repetition(end_b_),
-                     this->space_data_->accumulated_interior_multiplicities(),
-                     this->space_data_->get_degree());
-                     //*/
+    this->phys_space_previous_refinement_ =
+        PhysicalSpace<dim_,range_,rank_,codim_,type_>::create(prev_ref_space,prev_map_func);
 }
 
 

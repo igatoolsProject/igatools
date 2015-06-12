@@ -249,10 +249,10 @@ rebuild_after_insert_knots(
     const CartesianGrid<dim> &grid_old)
 {
     using std::const_pointer_cast;
-    auto function_previous_refinement = IgFunction<dim,codim,range,rank>::create(
-                                            const_pointer_cast<Space<dim,codim,range,rank>>(space_->get_space_previous_refinement()),
-                                            coeff_,
-                                            property_);
+    this->function_previous_refinement_ = IgFunction<dim,codim,range,rank>::create(
+                                              const_pointer_cast<Space<dim,codim,range,rank>>(space_->get_space_previous_refinement()),
+                                              coeff_,
+                                              property_);
 
 
     //TODO (martinelli, Jun 11, 2015): implement space_->get_max_degree();
@@ -260,7 +260,7 @@ rebuild_after_insert_knots(
     const int max_degree = 10;
     QGauss<dim> quad(max_degree+1);
     auto function_refined = space_tools::projection_l2(
-                                function_previous_refinement,
+                                this->function_previous_refinement_,
                                 const_pointer_cast<const Space<dim,codim,range,rank>>(space_),
                                 quad);
 
@@ -284,7 +284,7 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> ig_function)
                   ig_function.get(),
                   std::placeholders::_1,
                   std::placeholders::_2);
-    this->functions_knots_refinement_.connect_insert_knots_function(
+    this->grid_wrapper_.connect_insert_knots_function(
         SlotType(func_to_connect).track_foreign(ig_function));
 }
 #endif // MESH_REFINEMENT

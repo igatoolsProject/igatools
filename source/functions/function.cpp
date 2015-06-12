@@ -27,11 +27,8 @@ template<int dim_, int codim_, int range_, int rank_ >
 Function<dim_, codim_, range_, rank_ >::
 Function(std::shared_ptr<GridType> grid)
     :
-    GridElementHandler<dim_>(grid)
-#ifdef MESH_REFINEMENT
-    ,
-    functions_knots_refinement_(std::const_pointer_cast<CartesianGrid<dim_>>(grid))
-#endif
+    GridElementHandler<dim_>(grid),
+    grid_wrapper_(std::const_pointer_cast<CartesianGrid<dim_>>(grid))
 {}
 
 
@@ -175,9 +172,8 @@ serialize(Archive &ar, const unsigned int version)
 
     ar &boost::serialization::make_nvp("flags_",flags_);
 
-#ifdef MESH_REFINEMENT
-    ar &boost::serialization::make_nvp("functions_knots_refinement_",functions_knots_refinement_);
-#endif // MESH_REFINEMENT
+    ar &boost::serialization::make_nvp("grid_wrapper_",grid_wrapper_);
+    ar &boost::serialization::make_nvp("function_previous_refinement_",function_previous_refinement_);
 }
 #endif // SERIALIZATION
 
