@@ -41,21 +41,11 @@ ReferenceSpace(
     const std::shared_ptr<CartesianGrid<dim_>> grid,
     const std::shared_ptr<DofDistribution<dim_,range_,rank_>> dof_distribution)
     :
-    base_t(grid),
+    base_t(grid,std::make_shared<IdentityFunction<dim,dim>>(grid)),
     dof_distribution_(dof_distribution)
 {
     Assert(this->get_grid() != nullptr,ExcNullPtr());
     Assert(dof_distribution_ != nullptr,ExcNullPtr());
-
-    //------------------------------------------------------------------------------
-    /*
-    using DofDistrib = DofDistribution<dim,range,rank>;
-    dof_distribution_ = shared_ptr<DofDistrib>(new DofDistrib(
-                                                   space_data_->get_num_basis_table(),
-                                                   space_data_->get_degree(),
-                                                   space_data_->get_periodic_table()));
-    //*/
-    //------------------------------------------------------------------------------
 }
 
 
@@ -236,13 +226,6 @@ get_elem_num_basis() const
 }
 
 
-template<int dim, int range, int rank>
-auto
-ReferenceSpace<dim, range, rank>::
-get_map_func() const -> std::shared_ptr<MapFunc>
-{
-    return std::make_shared<IdentityFunction<dim,dim>>(this->get_grid());
-}
 
 
 #ifdef SERIALIZATION

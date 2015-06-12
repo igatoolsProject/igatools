@@ -105,7 +105,7 @@ rebuild_after_insert_knots(
 template<int dim,int space_dim>
 void
 IdentityFunction<dim,space_dim>::
-create_connection_for_insert_knots(std::shared_ptr<self_t> identity_function)
+create_connection_for_insert_knots(std::shared_ptr<self_t> &identity_function)
 {
     Assert(identity_function != nullptr, ExcNullPtr());
     Assert(&(*identity_function) == &(*this), ExcMessage("Different objects."));

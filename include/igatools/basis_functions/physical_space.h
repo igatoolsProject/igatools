@@ -188,7 +188,6 @@ public:
 
     std::shared_ptr<RefSpace> get_reference_space();
 
-    std::shared_ptr<MapFunc> get_map_func() const override final;
 
     template<int k>
     std::set<Index> get_boundary_dofs(const int s_id) const
@@ -224,7 +223,6 @@ private:
 
 
     std::shared_ptr<RefSpace> ref_space_;
-    std::unique_ptr<MapFunc>  map_func_;
 
     std::shared_ptr<self_t> phys_space_previous_refinement_ = nullptr;
 

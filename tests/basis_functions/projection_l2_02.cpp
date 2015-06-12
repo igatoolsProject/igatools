@@ -119,14 +119,16 @@ void do_test(const int p, const int num_knots = 10)
     {
         A[i][i] = 1+i;
     }
-    auto map_func = Function::create(knots, IdentityFunction<dim>::create(knots), A, b);
+//    auto map_func = Function::create(knots, IdentityFunction<dim>::create(knots), A, b);
 
-    auto space = Space::create(ref_space, map_func);
+    auto space = Space::create(
+                     ref_space,
+                     Function::create(knots, IdentityFunction<dim>::create(knots), A, b));
 
     const int n_qpoints = 4;
     QGauss<dim> quad(n_qpoints);
 
-    auto f = BoundaryFunction<dim>::create(knots, map_func);
+    auto f = BoundaryFunction<dim>::create(knots, space->get_map_func());
     auto proj_func = space_tools::projection_l2<Space,la_pack>(f, space, quad);
     proj_func->print_info(out);
 

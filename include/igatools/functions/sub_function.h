@@ -191,22 +191,22 @@ public:
 public:
 
     SubMapFunction(std::shared_ptr<GridType> grid,
-                   std::shared_ptr<const SupFunc> func,
+                   const SupFunc &func,
                    const int s_id,
                    InterGridMap<sub_dim> &elem_map)
         :
         base_t(grid),
-        sup_func_(func->clone()),
+        sup_func_(func.clone()),
         s_id_(s_id),
         elem_map_(elem_map),
         sup_elem_(sup_func_->begin())
     {}
 
-    SubMapFunction(std::shared_ptr<const SupFunc> func,
+    SubMapFunction(const SupFunc &func,
                    const int s_id)
         :
-        base_t(func->get_grid()->template get_sub_grid<sub_dim>(s_id, elem_map_)),
-        sup_func_(func->clone()),
+        base_t(func.get_grid()->template get_sub_grid<sub_dim>(s_id, elem_map_)),
+        sup_func_(func.clone()),
         s_id_(s_id),
         sup_elem_(sup_func_->begin())
     {}
@@ -228,7 +228,7 @@ public:
 
 
     static std::shared_ptr<base_t>
-    create(std::shared_ptr<const SupFunc> func,
+    create(const SupFunc &func,
            const int s_id)
     {
         return std::make_shared<self_t>(func, s_id);
@@ -236,7 +236,7 @@ public:
 
     static std::shared_ptr<base_t>
     create(std::shared_ptr<GridType> grid,
-           std::shared_ptr<const SupFunc> func,
+           const SupFunc &func,
            const int s_id,
            InterGridMap<sub_dim> &elem_map)
     {

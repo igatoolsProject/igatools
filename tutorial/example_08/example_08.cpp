@@ -45,11 +45,12 @@ void physical_space(const int deg)
     auto ref_space = RefSpace::create(deg, grid);
 
     using Function = functions::BallFunction<dim>;
-    auto map = Function::create(grid, IdentityFunction<dim>::create(grid));
-    auto space = Space::create(ref_space, map);
+    auto space = Space::create(
+                     ref_space,
+                     Function::create(grid, IdentityFunction<dim>::create(grid)));
 
     const int n_plot_points = 2;
-    Writer<dim> writer(map, n_plot_points);
+    Writer<dim> writer(space->get_map_func(), n_plot_points);
     string filename = "ball_geometry-" + to_string(dim) + "d" ;
     writer.save(filename);
 }

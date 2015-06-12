@@ -21,12 +21,18 @@
 #include <igatools/basis_functions/space.h>
 #include <igatools/utils/unique_id_generator.h>
 #include <igatools/basis_functions/space_element.h>
+#include <igatools/functions/ig_function.h>
+#include <igatools/functions/identity_function.h>
+
+
+using std::shared_ptr;
+using std::unique_ptr;
 
 IGA_NAMESPACE_OPEN
 
 template <int dim_>
 SpaceBase<dim_>::
-SpaceBase(std::shared_ptr<CartesianGrid<dim_>> grid)
+SpaceBase(shared_ptr<CartesianGrid<dim_>> grid)
     :
     base_t(grid),
     space_id_(UniqueIdGenerator::get_unique_id())
@@ -61,6 +67,20 @@ serialize(Archive &ar, const unsigned int version)
 
 
 
+template <int dim_,int codim_,int range_,int rank_>
+Space<dim_,codim_,range_,rank_>::
+Space(shared_ptr<CartesianGrid<dim_>> grid,
+      const shared_ptr<MapFunc> &map_func)
+    :
+    base_t(grid)
+{
+    Assert(map_func != nullptr, ExcNullPtr());
+    Assert(map_func.unique(), ExcNotUnique());
+
+    map_func_.swap(const_cast<shared_ptr<MapFunc> &>(map_func));
+    Assert(this->get_grid() == this->map_func_->get_grid(),
+           ExcMessage("Reference space and mapping grids are not the same."))
+}
 
 
 template <int dim_,int codim_,int range_,int rank_>
@@ -108,6 +128,12 @@ serialize(Archive &ar, const unsigned int version)
 //  ar.template register_type<NURBSSpace<dim_,range_,rank_>>();
     ar &boost::serialization::make_nvp("Space_base_t",
                                        boost::serialization::base_object<base_t>(*this));
+
+    ar.template register_type<IgFunction<dim_,0,dim_+codim_,1> >();
+    ar.template register_type<IdentityFunction<dim_,dim_> >();
+    ar &boost::serialization::make_nvp("map_func_",map_func_);
+    Assert(map_func_ != nullptr,ExcNullPtr());
+
 }
 ///@}
 #endif // SERIALIZATION

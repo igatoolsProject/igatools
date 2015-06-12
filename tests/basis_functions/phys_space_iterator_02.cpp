@@ -165,9 +165,8 @@ create_phys_space(shared_ptr<BSplineSpace<dim,range,rank>> ref_space)
 {
     using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 
-    const auto &map_func = create_function(ref_space);
-
-    return Space::create(ref_space,map_func);
+    return Space::create(ref_space,
+                         create_function(ref_space));
 }
 
 

@@ -26,6 +26,8 @@
 
 using std::shared_ptr;
 using std::make_shared;
+using std::unique_ptr;
+
 using std::const_pointer_cast;
 using std::endl;
 
@@ -43,19 +45,17 @@ PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 PhysicalSpace(shared_ptr<RefSpace> ref_space,
               const shared_ptr<MapFunc> &map_func)
     :
-    base_t(ref_space->get_grid()),
+    base_t(ref_space->get_grid(),map_func),
     ref_space_(ref_space)
-//    map_func_(map_func->clone())
 {
 //TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
     Assert(ref_space_ != nullptr, ExcNullPtr());
 
-    Assert(map_func != nullptr, ExcNullPtr());
-    Assert(map_func.unique(),ExcNotUnique());
-    map_func_ = map_func;
+    Assert(this->map_func_.unique(), ExcNotUnique());
 
-    Assert(ref_space_->get_grid() == map_func_->get_grid(),
+    Assert(this->get_grid() == this->map_func_->get_grid(),
            ExcMessage("Reference space and mapping grids are not the same."))
+
 }
 
 
@@ -67,7 +67,7 @@ create(shared_ptr<RefSpace> ref_space,
        const shared_ptr<MapFunc> &map_func) -> shared_ptr<self_t>
 {
     Assert(map_func != nullptr, ExcNullPtr());
-    Assert(map_func.unique(),ExcNotUnique());
+    Assert(map_func.unique(), ExcNotUnique());
     auto sp = shared_ptr<self_t>(new self_t(ref_space, map_func));
 
     sp->create_connection_for_insert_knots(sp);
@@ -185,7 +185,7 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
     auto grid =  this->get_grid();
 
     auto sub_ref_space = ref_space_->get_ref_sub_space(s_id, dof_map, sub_grid);
-    auto sub_map_func = SubMap::create(sub_grid,  map_func_, s_id, *elem_map);
+    auto sub_map_func = SubMap::create(sub_grid, *this->map_func_, s_id, *elem_map);
     auto sub_space = SubSpace<k>::create(sub_ref_space, sub_map_func);
     return sub_space;
 }
@@ -299,14 +299,6 @@ get_elem_handler() const -> std::shared_ptr<SpaceElementHandler<dim_,codim_,rang
 
 
 
-template <int dim_, int range_, int rank_, int codim_, Transformation type_>
-auto
-PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-get_map_func() const -> std::shared_ptr<MapFunc>
-{
-    return map_func_;
-}
-
 
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 std::set<Index>
@@ -349,7 +341,7 @@ rebuild_after_insert_knots(
                               std::dynamic_pointer_cast<const RefSpace>(ref_space_->get_space_previous_refinement()));
     Assert(prev_ref_space != nullptr, ExcNullPtr());
 
-    auto prev_map_func = std::const_pointer_cast<MapFunc>(map_func_->get_function_previous_refinement());
+    auto prev_map_func = std::const_pointer_cast<MapFunc>(this->map_func_->get_function_previous_refinement());
     Assert(prev_map_func != nullptr, ExcNullPtr());
 
     this->phys_space_previous_refinement_ =
@@ -372,9 +364,6 @@ serialize(Archive &ar, const unsigned int version)
     ar &boost::serialization::make_nvp("ref_space_",ref_space_);
     Assert(ref_space_ != nullptr,ExcNullPtr());
 
-    ar.template register_type<IgFunction<dim,0,dim+codim,1> >();
-    ar &boost::serialization::make_nvp("map_func_",map_func_);
-    Assert(map_func_ != nullptr,ExcNullPtr());
 
     ar &boost::serialization::make_nvp("phys_space_previous_refinement_",phys_space_previous_refinement_);
 }

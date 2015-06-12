@@ -155,11 +155,51 @@ private:
     using base_t = SpaceBase<dim_>;
     using self_t = Space<dim_,codim_,range_,rank_>;
 
+
+protected:
+    using MapFunc = Function<dim_,0,dim_+codim_,1>;
+
+
+    /** @name Constructor and destructor. */
+    ///@{
 protected:
     /**
-     * Inheriting the constructors from the base class.
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
      */
-    using base_t::SpaceBase;
+    Space() = default;
+
+    /**
+     * Construct the object from the @p grid on which the function space will be built upon
+     * and the function representing the mapping.
+     *
+     * @pre The shared_pointer <tt>map_func</tt> must be unique.
+     *
+     * @warning After the object construction the state of <tt>map_func</tt> will be no longer valid.
+     */
+    Space(std::shared_ptr<CartesianGrid<dim_>> grid,const std::shared_ptr<MapFunc> &map_func);
+
+    /** Copy constructor. */
+    Space(const self_t &) = default;
+
+    /** Move constructor. */
+    Space(self_t &&) = default;
+
+public:
+    /** Destructor. */
+    virtual ~Space() = default;
+    ///@}
+
+    /** @name Assignment operator. */
+    ///@{
+    /** Copy assignment operator. Not allowed to be used. */
+    self_t &operator=(const self_t &) = delete;
+
+    /** Move assignment operator. Not allowed to be used. */
+    self_t &operator=(self_t &&) = delete;
+    ///@}
+
 
 public:
 
@@ -170,8 +210,11 @@ public:
     static const int rank = rank_;
 
 
-    using MapFunc = Function<dim_,0,dim_+codim_,1>;
-    virtual std::shared_ptr<MapFunc> get_map_func() const = 0;
+
+    std::shared_ptr<MapFunc> get_map_func() const
+    {
+        return map_func_;
+    }
 
     virtual std::shared_ptr<const DofDistribution<dim_,range_,rank_> >
     get_dof_distribution() const = 0;
@@ -195,10 +238,6 @@ public:
 
     virtual void print_info(LogStream &out) const = 0;
 
-    /**
-     * Default destructor.
-     */
-    virtual ~Space() = default;
 
 
     using ElementAccessor = SpaceElement<dim_,codim_,range_,rank_>;
@@ -228,6 +267,8 @@ public:
 
     virtual std::shared_ptr<const self_t> get_space_previous_refinement() const = 0;
 
+
+    std::shared_ptr<MapFunc>  map_func_;
 
 private:
 #ifdef SERIALIZATION

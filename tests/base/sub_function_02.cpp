@@ -59,7 +59,7 @@ void sub_map(const int n_knots = 2)
         auto elem_map = std::make_shared<InterGridMap>(InterGridMap());
 
         auto sub_grid = grid->template get_sub_grid<sub_dim>(s_id, *elem_map);
-        auto sub_func = SubFunc::create(sub_grid, func, s_id, *elem_map);
+        auto sub_func = SubFunc::create(sub_grid, *func, s_id, *elem_map);
 
         QGauss<sub_dim> f_quad(1);
         auto sub_func_flag = ValueFlags::point | ValueFlags::value
