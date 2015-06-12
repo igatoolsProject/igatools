@@ -33,7 +33,6 @@ IGA_NAMESPACE_OPEN
 
 
 
-
 template <int, int, int, int> class FunctionElement;
 
 /**

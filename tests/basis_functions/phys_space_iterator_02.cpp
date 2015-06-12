@@ -86,18 +86,11 @@ void serialize_deserialize(std::shared_ptr<Space> space)
 }
 
 
-
 template<int dim, int codim=0>
 auto
 create_function(shared_ptr<BSplineSpace<dim, dim + codim>> space)
 {
-//    using Space = ReferenceSpace<dim, dim + codim>;
-    using Function = IgFunction<dim,0,dim+codim,1>;
-
-    Epetra_SerialComm comm;
-    auto map = create_map(space, "active", comm);
-    auto c_p = std::make_shared<Vector>(*map);
-    auto &control_pts = *c_p;
+    IgCoefficients control_pts;
 
     if (dim == 1)
     {
@@ -161,9 +154,21 @@ create_function(shared_ptr<BSplineSpace<dim, dim + codim>> space)
 
     }
 
-    return Function::create(space, c_p);
+    using Function = IgFunction<dim,0,dim+codim,1>;
+    return Function::create(space, control_pts);
 }
 
+
+template<int dim,int range=dim,int rank=1,int codim=0>
+auto
+create_phys_space(shared_ptr<BSplineSpace<dim,range,rank>> ref_space)
+{
+    using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
+
+    const auto &map_func = create_function(ref_space);
+
+    return Space::create(ref_space,map_func);
+}
 
 
 template <int dim, int order = 0, int range=dim, int rank=1, int codim = 0>
@@ -173,15 +178,14 @@ void elem_values(const int n_knots = 2, const int deg=1)
     const int k = dim;
     using BspSpace = BSplineSpace<dim, range, rank>;
 
-    using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
-    using ElementHandler = typename Space::ElementHandler;
+//    using ElementHandler = typename Space::ElementHandler;
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
 
     auto ref_space = BspSpace::create(deg, grid);
-    auto map_func = create_function(ref_space);
 
-    auto space = Space::create(ref_space, map_func);
+
+    auto space = create_phys_space(ref_space);
 
     serialize_deserialize(space);
 

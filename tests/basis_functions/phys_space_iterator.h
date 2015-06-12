@@ -44,7 +44,7 @@ using space_tools::get_boundary_dofs;
 template <int dim, int range=1, int rank=1, int codim = 0>
 shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>>
         create_space(shared_ptr<CartesianGrid<dim>> grid,
-                     shared_ptr<MapFunction<dim,dim+codim>> map_func,
+                     const shared_ptr<MapFunction<dim,dim+codim>> &map_func,
                      const int deg=1)
 {
     using BspSpace = BSplineSpace<dim, range, rank>;
@@ -73,7 +73,7 @@ enum  bc : boundary_id
 template <int dim, int range=1, int rank=1, int codim = 0>
 shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>>
         create_space_prop(shared_ptr<CartesianGrid<dim>> grid,
-                          shared_ptr<MapFunction<dim,dim+codim>> map_func,
+                          const shared_ptr<MapFunction<dim,dim+codim>> &map_func,
                           const int deg=1)
 {
     const int neu_face = 0;

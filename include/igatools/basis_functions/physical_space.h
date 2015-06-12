@@ -128,7 +128,7 @@ public:
 
     static std::shared_ptr<self_t>
     create(std::shared_ptr<RefSpace> ref_space,
-           std::shared_ptr<MapFunc> map_func);
+           const std::shared_ptr<MapFunc> &map_func);
 
     /**
      * Create an element (defined on this grid) with a given flat_index.
@@ -220,11 +220,11 @@ private:
     PhysicalSpace() = default;
 
     PhysicalSpace(std::shared_ptr<RefSpace> ref_space,
-                  std::shared_ptr<MapFunc>  map_func);
+                  const std::shared_ptr<MapFunc> &map_func);
 
 
     std::shared_ptr<RefSpace> ref_space_;
-    std::shared_ptr<MapFunc>  map_func_;
+    std::unique_ptr<MapFunc>  map_func_;
 
     std::shared_ptr<self_t> phys_space_previous_refinement_ = nullptr;
 

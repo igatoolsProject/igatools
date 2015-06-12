@@ -41,22 +41,18 @@ PhysicalSpace<dim_, range_, rank_, codim_, type_>::components =
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 PhysicalSpace(shared_ptr<RefSpace> ref_space,
-              shared_ptr<MapFunc> map_func)
+              const shared_ptr<MapFunc> &map_func)
     :
     base_t(ref_space->get_grid()),
-    ref_space_(ref_space),
+    ref_space_(ref_space)
 //    map_func_(map_func->clone())
-    map_func_(map_func)
 {
 //TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
     Assert(ref_space_ != nullptr, ExcNullPtr());
-    Assert(map_func_ != nullptr, ExcNullPtr());
 
-//    auto grid_in = map_func->get_grid();
-//    auto grid_1 = map_func_->get_grid();
-//    auto grid_2 = ref_space_->get_grid();
-
-//    auto & tmp = *map_func_;
+    Assert(map_func != nullptr, ExcNullPtr());
+    Assert(map_func.unique(),ExcNotUnique());
+    map_func_ = map_func;
 
     Assert(ref_space_->get_grid() == map_func_->get_grid(),
            ExcMessage("Reference space and mapping grids are not the same."))
@@ -68,8 +64,10 @@ template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 create(shared_ptr<RefSpace> ref_space,
-       shared_ptr<MapFunc> map_func) -> shared_ptr<self_t>
+       const shared_ptr<MapFunc> &map_func) -> shared_ptr<self_t>
 {
+    Assert(map_func != nullptr, ExcNullPtr());
+    Assert(map_func.unique(),ExcNotUnique());
     auto sp = shared_ptr<self_t>(new self_t(ref_space, map_func));
 
     sp->create_connection_for_insert_knots(sp);

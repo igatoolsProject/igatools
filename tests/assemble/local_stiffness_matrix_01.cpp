@@ -49,7 +49,8 @@ void loc_stiff_matrix(const int n_knots, const int deg)
     auto ref_space = Space::create(deg, grid) ;
 
     using PhysSpace = PhysicalSpace<dim,1,1,0,Transformation::h_grad>;
-    auto phys_space = PhysSpace::create(ref_space, IdentityFunction<dim>::create(grid)) ;
+    auto identity_mapping = IdentityFunction<dim>::create(grid);
+    auto phys_space = PhysSpace::create(ref_space, identity_mapping) ;
 
     auto elem_handler = phys_space->get_elem_handler();
 

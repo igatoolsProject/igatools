@@ -25,6 +25,10 @@
 
 IGA_NAMESPACE_OPEN
 
+
+//TODO (martinelli, Jun 12, 2015): fix the refinement for the functions in the function namespace
+
+
 /**
  * Collection of useful functions derived from the Function class.
  */
