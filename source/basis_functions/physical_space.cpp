@@ -343,6 +343,7 @@ rebuild_after_insert_knots(
 
     auto prev_map_func = std::const_pointer_cast<MapFunc>(this->map_func_->get_function_previous_refinement());
     Assert(prev_map_func != nullptr, ExcNullPtr());
+    Assert(prev_map_func.unique(), ExcNotUnique());
 
     this->phys_space_previous_refinement_ =
         PhysicalSpace<dim_,range_,rank_,codim_,type_>::create(prev_ref_space,prev_map_func);
