@@ -282,6 +282,25 @@ public:
 
 private:
 
+#ifdef MESH_REFINEMENT
+    /**
+     * Rebuild the internal state of the object after an insert_knots() function is invoked.
+     *
+     * @pre Before invoking this function, must be invoked the function grid_->insert_knots().
+     * @note This function is connected to the CartesianGrid's signal for the refinement, and
+     * it is necessary in order to avoid infinite loops in the insert_knots() function calls.
+     *
+     * @ingroup h_refinement
+     */
+    void rebuild_after_insert_knots(
+        const SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert,
+        const CartesianGrid<dim_> &old_grid);
+
+    void create_connection_for_insert_knots(std::shared_ptr<self_t> space);
+#endif // MESH_REFINEMENT
+
+
+
 #ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization

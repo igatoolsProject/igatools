@@ -136,7 +136,7 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
         Assert(space_grid->same_knots_or_refinement_of(*func_grid),
                ExcMessage("The space grid is not a refinement of the function grid."));
 
-        Assert(false,ExcNotImplemented());
+//        Assert(false,ExcNotImplemented());
         auto func = function->clone();
         const int dim = Space::dim;
 

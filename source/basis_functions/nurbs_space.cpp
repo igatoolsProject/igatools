@@ -172,7 +172,12 @@ NURBSSpace<dim_, range_, rank_>::
 create(std::shared_ptr<SpSpace> bs_space,
        const WeightFunctionPtrTable &weight_func_table) -> shared_ptr<self_t>
 {
-    return shared_ptr<self_t>(new self_t(bs_space,weight_func_table));
+    auto sp = shared_ptr<self_t>(new self_t(bs_space,weight_func_table));
+    Assert(sp != nullptr, ExcNullPtr());
+
+    sp->create_connection_for_insert_knots(sp);
+
+    return sp;
 }
 
 
@@ -670,6 +675,62 @@ get_elem_handler() const -> std::shared_ptr<SpaceElementHandler<dim_,0,range_,ra
 {
     return ElementHandler::create(this->get_this_space());
 }
+
+#ifdef MESH_REFINEMENT
+
+template<int dim_, int range_, int rank_>
+void
+NURBSSpace<dim_, range_, rank_>::
+create_connection_for_insert_knots(std::shared_ptr<self_t> space)
+{
+    Assert(space != nullptr, ExcNullPtr());
+    Assert(&(*space) == &(*this), ExcMessage("Different objects."));
+
+    auto func_to_connect =
+        std::bind(&self_t::rebuild_after_insert_knots,
+                  space.get(),
+                  std::placeholders::_1,
+                  std::placeholders::_2);
+
+    using SlotType = typename CartesianGrid<dim>::SignalInsertKnotsSlot;
+    this->connect_insert_knots_function(
+        SlotType(func_to_connect).track_foreign(space));
+}
+
+template<int dim_, int range_, int rank_>
+void
+NURBSSpace<dim_, range_, rank_>::
+rebuild_after_insert_knots(
+    const SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert,
+    const CartesianGrid<dim_> &old_grid)
+{
+    auto bsp_space_previous_refinement =
+        std::const_pointer_cast<SpSpace>(
+            std::dynamic_pointer_cast<const SpSpace>(sp_space_->get_space_previous_refinement()));
+    Assert(bsp_space_previous_refinement != nullptr,ExcNullPtr());
+
+    auto weight_func_table_previous_refinement_ =
+        WeightFunctionPtrTable(weight_func_table_.get_comp_map(),nullptr);
+
+    const auto &active_comp_ids = weight_func_table_.get_active_components_id();
+    for (const int comp_id : active_comp_ids)
+    {
+        weight_func_table_previous_refinement_[comp_id] =
+            std::dynamic_pointer_cast<WeightFunction>(
+                weight_func_table_[comp_id]->get_function_previous_refinement());
+        Assert(weight_func_table_previous_refinement_[comp_id] != nullptr,ExcNullPtr());
+    }
+
+    this->ref_space_previous_refinement_ =
+        NURBSSpace<dim_,range_,rank_>::create(
+            bsp_space_previous_refinement,weight_func_table_previous_refinement_);
+
+//  Assert(false,ExcNotImplemented());
+
+}
+
+#endif // MESH_REFINEMENT
+
 
 
 #ifdef SERIALIZATION

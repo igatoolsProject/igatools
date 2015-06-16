@@ -200,6 +200,11 @@ public:
            const MultiplicityTable &interior_mult,
            const PeriodicityTable &periodic,
            const EndBehaviourTable &end_b);
+
+    static std::shared_ptr<self_t>
+    create(std::shared_ptr<SpaceData> space_data,
+           const EndBehaviourTable &end_b);
+
     ///@}
 
     /**
@@ -436,7 +441,7 @@ private:
     friend class BSplineElement<dim, range, rank>;
     friend class BSplineElementHandler<dim, range, rank>;
 
-
+#ifdef MESH_REFINEMENT
     /**
      * Rebuild the internal state of the object after an insert_knots() function is invoked.
      *
@@ -451,6 +456,7 @@ private:
         const CartesianGrid<dim> &old_grid);
 
     void create_connection_for_insert_knots(std::shared_ptr<self_t> space);
+#endif // MESH_REFINEMENT
 
     /**
      * Returns the current object wrapped by a std::shared_ptr.

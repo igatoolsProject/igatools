@@ -215,6 +215,22 @@ create(const DegreeTable &deg,
 }
 
 
+template<int dim_, int range_, int rank_>
+auto
+BSplineSpace<dim_, range_, rank_>::
+create(std::shared_ptr<SpaceData> space_data,
+       const EndBehaviourTable &end_b)
+-> shared_ptr<self_t>
+{
+    auto sp = shared_ptr<self_t>(new self_t(space_data, end_b));
+    Assert(sp != nullptr, ExcNullPtr());
+
+    sp->create_connection_for_insert_knots(sp);
+
+    return sp;
+}
+
+
 
 template<int dim_, int range_, int rank_>
 auto
@@ -380,33 +396,6 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
 
 
 
-template<int dim_, int range_, int rank_>
-void
-BSplineSpace<dim_, range_, rank_>::
-rebuild_after_insert_knots(
-    const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
-    const CartesianGrid<dim> &old_grid)
-{
-    this->ref_space_previous_refinement_ =
-        shared_ptr<BSplineSpace<dim_,range_,rank_>>(new
-                                                    BSplineSpace(
-                                                        const_pointer_cast<SpaceData>(
-                                                            this->space_data_->get_spline_space_previous_refinement()),
-                                                        this->end_b_));
-
-
-    this->dof_distribution_ = shared_ptr<DofDistribution<dim_,range_,rank_>>(
-                                  new DofDistribution<dim_,range_,rank_>(
-                                      this->space_data_->get_num_basis_table(),
-                                      this->space_data_->get_degree(),
-                                      this->space_data_->get_periodic_table()));
-
-    operators_ = BernsteinExtraction<dim, range, rank>(
-                     this->get_grid(),
-                     this->space_data_->compute_knots_with_repetition(end_b_),
-                     this->space_data_->accumulated_interior_multiplicities(),
-                     this->space_data_->get_degree());
-}
 
 
 
@@ -477,6 +466,7 @@ get_element_dofs(
 
 
 
+#ifdef MESH_REFINEMENT
 
 template<int dim_, int range_, int rank_>
 void
@@ -497,6 +487,34 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> space)
         SlotType(func_to_connect).track_foreign(space));
 }
 
+
+template<int dim_, int range_, int rank_>
+void
+BSplineSpace<dim_, range_, rank_>::
+rebuild_after_insert_knots(
+    const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
+    const CartesianGrid<dim> &old_grid)
+{
+    this->ref_space_previous_refinement_ =
+        BSplineSpace<dim_,range_,rank_>::create(
+            const_pointer_cast<SpaceData>(
+                this->space_data_->get_spline_space_previous_refinement()),
+            this->end_b_);
+
+
+    this->dof_distribution_ = shared_ptr<DofDistribution<dim_,range_,rank_>>(
+                                  new DofDistribution<dim_,range_,rank_>(
+                                      this->space_data_->get_num_basis_table(),
+                                      this->space_data_->get_degree(),
+                                      this->space_data_->get_periodic_table()));
+
+    operators_ = BernsteinExtraction<dim, range, rank>(
+                     this->get_grid(),
+                     this->space_data_->compute_knots_with_repetition(end_b_),
+                     this->space_data_->accumulated_interior_multiplicities(),
+                     this->space_data_->get_degree());
+}
+#endif //MESH_REFINEMENT
 
 template<int dim_, int range_, int rank_>
 void
