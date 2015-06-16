@@ -268,8 +268,10 @@ public:
 
 
 
-    std::shared_ptr<const self_t> get_function_previous_refinement() const
+    const std::shared_ptr<self_t> &get_function_previous_refinement() const
     {
+//        std::cout << "Function::get_function_previous_refinement()    Counter = " << function_previous_refinement_.use_count() << std::endl;
+
         return function_previous_refinement_;
     }
 

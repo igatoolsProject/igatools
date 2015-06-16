@@ -337,16 +337,18 @@ rebuild_after_insert_knots(
     const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
     const CartesianGrid<dim> &old_grid)
 {
-    auto prev_ref_space = std::const_pointer_cast<RefSpace>(
-                              std::dynamic_pointer_cast<const RefSpace>(ref_space_->get_space_previous_refinement()));
+    auto prev_ref_space =
+        std::const_pointer_cast<RefSpace>(
+            std::dynamic_pointer_cast<const RefSpace>(ref_space_->get_space_previous_refinement()));
     Assert(prev_ref_space != nullptr, ExcNullPtr());
 
-    auto prev_map_func = std::const_pointer_cast<MapFunc>(this->map_func_->get_function_previous_refinement());
-    Assert(prev_map_func != nullptr, ExcNullPtr());
-    Assert(prev_map_func.unique(), ExcNotUnique());
+//    const auto &prev_map_func = std::const_pointer_cast<MapFunc>(this->map_func_->get_function_previous_refinement());
+    Assert(this->map_func_->get_function_previous_refinement() != nullptr, ExcNullPtr());
+//    std::cout << "Counter = " << prev_map_func.use_count() << std::endl;
+    Assert(this->map_func_->get_function_previous_refinement().unique(), ExcNotUnique());
 
     this->phys_space_previous_refinement_ =
-        PhysicalSpace<dim_,range_,rank_,codim_,type_>::create(prev_ref_space,prev_map_func);
+        PhysicalSpace<dim_,range_,rank_,codim_,type_>::create(prev_ref_space,this->map_func_->get_function_previous_refinement());
 }
 
 
