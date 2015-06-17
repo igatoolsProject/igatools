@@ -168,7 +168,7 @@ get_max_degree() const
 {
     int max_degree = 0;
 
-    const auto &degree_table = this->get_degree();
+    const auto &degree_table = this->get_degree_table();
     for (const auto &degree_comp : degree_table)
         for (const auto &degree_comp_dim : degree_comp)
             max_degree = std::max(max_degree,degree_comp_dim);

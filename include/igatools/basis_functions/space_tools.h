@@ -144,8 +144,6 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
         auto func_flag = ValueFlags::point | ValueFlags::value;
         func->reset(func_flag, quad);
 
-//        using ElementHandler = typename Space::ElementHandler;
-//        auto sp_filler = ElementHandler::create(space);
         auto sp_filler = space->get_elem_handler();
         auto sp_flag = ValueFlags::point | ValueFlags::value |
                        ValueFlags::w_measure;
@@ -155,9 +153,8 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
         auto elem = space->begin();
         auto end  = space->end();
 
-
-        auto map_elems_fine_coarse =
-            grid_tools::build_map_elements_between_cartesian_grids(
+        auto map_elems_id_fine_coarse =
+            grid_tools::build_map_elements_id_between_cartesian_grids(
                 *space->get_grid(),*func->get_grid());
 
         func->init_element_cache(f_elem);
@@ -165,14 +162,10 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
 
         const int n_qp = quad.get_num_points();
 
-//    for (; elem != end; ++elem, ++f_elem)
-        for (const auto &elems_pair : map_elems_fine_coarse)
+        for (const auto &elems_id_pair : map_elems_id_fine_coarse)
         {
-            elem->move_to(elems_pair.first ->get_flat_index());
-            f_elem->move_to(elems_pair.second->get_flat_index());
-
-//            const auto &elem_ref = *elem;
-//            const auto &f_elem_ref = *elem;
+            elem->move_to(elems_id_pair.first);
+            f_elem->move_to(elems_id_pair.second);
 
             const int n_basis = elem->get_num_basis(dofs_property);
             DenseVector loc_rhs(n_basis);
@@ -184,7 +177,6 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
             loc_mat = 0.;
             loc_rhs = 0.;
 
-//        auto f_at_qp = f_elem->template get_values<0,dim>(0);
 
             //---------------------------------------------------------------------------
             // the function is supposed to be defined on the same grid of the space or coarser

@@ -87,7 +87,7 @@ void test1()
     auto rep_knots = sp_spec->compute_knots_with_repetition(end_b,bdry_knots);
 
     auto n_basis = sp_spec->get_num_basis_table();
-    auto degree = sp_spec->get_degree();
+    auto degree = sp_spec->get_degree_table();
 
     DofDistribution<dim> dof_admin(n_basis, degree, sp_spec->get_periodic_table());
 
@@ -130,7 +130,7 @@ void test2()
 
 
     auto n_basis = sp_spec->get_num_basis_table();
-    auto degree = sp_spec->get_degree();
+    auto degree = sp_spec->get_degree_table();
 
     DofDistribution<dim> basis_index(n_basis, degree, sp_spec->get_periodic_table());
 

@@ -49,7 +49,7 @@ void component_space(const int deg=3,  const int n_knots = 10)
     auto space = VecSpace::create(degt, grid, InteriorReg::maximum, periodic, end_b);
     space->print_info(out);
 
-    auto comp_space = CompSpace::create(space->get_degree()[0],grid, InteriorReg::maximum,
+    auto comp_space = CompSpace::create(space->get_degree_table()[0],grid, InteriorReg::maximum,
                                         space->get_periodicity()[0],
                                         space->get_end_behaviour_table()[0]);
 

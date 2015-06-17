@@ -266,9 +266,9 @@ get_dof_distribution() -> std::shared_ptr<DofDistribution<dim, range, rank> >
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-get_degree() const -> const DegreeTable &
+get_degree_table() const -> const DegreeTable &
 {
-    return ref_space_->get_degree();
+    return ref_space_->get_degree_table();
 }
 
 #endif
@@ -308,6 +308,16 @@ get_interior_dofs() const
     return ref_space_->get_interior_dofs();
 }
 
+template <int dim_, int range_, int rank_, int codim_, Transformation type_>
+int
+PhysicalSpace<dim_, range_, rank_, codim_, type_>::
+get_max_degree() const
+{
+    return ref_space_->get_max_degree();
+}
+
+
+#ifdef MESH_REFINEMENT
 
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 void
@@ -351,6 +361,7 @@ rebuild_after_insert_knots(
         PhysicalSpace<dim_,range_,rank_,codim_,type_>::create(prev_ref_space,this->map_func_->get_function_previous_refinement());
 }
 
+#endif
 
 #ifdef SERIALIZATION
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>

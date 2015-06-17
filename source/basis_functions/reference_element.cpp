@@ -39,7 +39,7 @@ ReferenceElement(const std::shared_ptr<ConstSpace> space,
 //    Assert(this->get_space() != nullptr,ExcNullPtr());
 
     //-------------------------------------------------
-    const auto &degree_table = space->get_degree();
+    const auto &degree_table = space->get_degree_table();
     TensorSizeTable n_basis(degree_table.get_comp_map());
     for (auto comp : degree_table.get_active_components_id())
         n_basis[comp] = TensorSize<dim>(degree_table[comp]+1);

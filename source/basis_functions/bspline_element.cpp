@@ -350,7 +350,7 @@ evaluate_univariate_derivatives_at_points(
 
     ComponentContainer< SafeSTLArray<ValueTable<Real>,dim> > funcs1D_table(bsp_space->get_components_map());
 
-    const auto degree_table = bsp_space->get_degree();
+    const auto degree_table = bsp_space->get_degree_table();
     const auto &bezier_op_ = bsp_space->operators_;
 
     const auto element_lengths = CartesianGridElement<dim>::template get_coordinate_lengths<dim>(0);
@@ -464,7 +464,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                 ExcMessage("Evaluation point " + std::to_string(pt_id) + " not in the unit-domain."));
 #endif
 //            auto n_basis = this->n_basis_direction_;
-            auto degree = this->space_->get_degree();
+            auto degree = this->space_->get_degree_table();
             for (int iComp : bezier_op.get_active_components_id())
             {
                 //------------------------------------------------------------------------------
@@ -562,7 +562,7 @@ ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
                 ExcMessage("Evaluation point " + std::to_string(pt_id) + " not in the unit-domain."));
 #endif
 //            auto n_basis = this->n_basis_direction_;
-            auto degree = this->space_->get_degree();
+            auto degree = this->space_->get_degree_table();
             for (int iComp : bezier_op.get_active_components_id())
             {
                 //------------------------------------------------------------------------------

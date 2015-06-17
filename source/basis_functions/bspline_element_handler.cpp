@@ -224,7 +224,7 @@ operator()(const Quadrature<sub_elem_dim> &quad1)
 
     const auto space_data = space_.space_data_;
 
-    const auto &degree = space_.get_degree();
+    const auto &degree = space_.get_degree_table();
 
     const auto &active_components_id = space_data->get_active_components_id();
 

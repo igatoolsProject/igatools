@@ -152,21 +152,18 @@ public:
 
     virtual bool is_bspline() const = 0;
 
-    // TODO (pauletti, Apr 10, 2015): if needed it should go in spline space not here
     /**
      * Returns the degree of the BSpline space for each component and for each coordinate direction.
      * \return The degree of the BSpline space for each component and for each coordinate direction.
      * The first index of the returned object is the component id, the second index is the direction id.
      */
-    virtual const DegreeTable &get_degree() const = 0;
+    virtual const DegreeTable &get_degree_table() const = 0;
 
 
-    // TODO (pauletti, Apr 10, 2015): if needed it should go in spline space not here
     /**
-     * Return the maximum value of the degree, for each component, for each direction;
-     * @return
+     * Return the maximum value of the polynomial degree, for each component, for each direction;
      */
-    int get_max_degree() const;
+    virtual int get_max_degree() const override final;
 
     /** @name Functions for retrieving information about the number of basis function. */
     ///@{

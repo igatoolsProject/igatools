@@ -111,7 +111,7 @@ BSplineSpace(std::shared_ptr<SpaceData> space_data,
         std::make_shared<DofDistribution<dim_,range_,rank_>>(
             DofDistribution<dim_,range_,rank_>(
                 space_data->get_num_basis_table(),
-                space_data->get_degree(),
+                space_data->get_degree_table(),
                 space_data->get_periodic_table()))),
     space_data_(space_data),
     end_b_(end_b),
@@ -119,7 +119,7 @@ BSplineSpace(std::shared_ptr<SpaceData> space_data,
         this->space_data_->get_grid(),
         this->space_data_->compute_knots_with_repetition(end_b),
         this->space_data_->accumulated_interior_multiplicities(),
-        this->space_data_->get_degree()),
+        this->space_data_->get_degree_table()),
     end_interval_(end_b.get_comp_map())
 {
     Assert(space_data_ != nullptr,ExcNullPtr());
@@ -128,11 +128,9 @@ BSplineSpace(std::shared_ptr<SpaceData> space_data,
 // TODO (pauletti, Dec 24, 2014): after it work it should be recoded properly
 
     const auto grid = this->space_data_->get_grid();
-    const auto &degree_table = this->space_data_->get_degree();
+    const auto &degree_table = this->space_data_->get_degree_table();
     const auto rep_knots =
         this->space_data_->compute_knots_with_repetition(end_b_);
-
-    //const auto &degt = this->get_degree();
 
     for (auto i : end_interval_.get_active_components_id())
     {
@@ -505,14 +503,14 @@ rebuild_after_insert_knots(
     this->dof_distribution_ = shared_ptr<DofDistribution<dim_,range_,rank_>>(
                                   new DofDistribution<dim_,range_,rank_>(
                                       this->space_data_->get_num_basis_table(),
-                                      this->space_data_->get_degree(),
+                                      this->space_data_->get_degree_table(),
                                       this->space_data_->get_periodic_table()));
 
     operators_ = BernsteinExtraction<dim, range, rank>(
                      this->get_grid(),
                      this->space_data_->compute_knots_with_repetition(end_b_),
                      this->space_data_->accumulated_interior_multiplicities(),
-                     this->space_data_->get_degree());
+                     this->space_data_->get_degree_table());
 }
 #endif //MESH_REFINEMENT
 
@@ -540,9 +538,9 @@ print_info(LogStream &out) const
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-get_degree() const -> const DegreeTable &
+get_degree_table() const -> const DegreeTable &
 {
-    return this->space_data_->get_degree();
+    return this->space_data_->get_degree_table();
 }
 
 template<int dim_, int range_, int rank_>
@@ -578,6 +576,8 @@ get_elem_handler() const
 {
     return ElementHandler::create(this->get_this_space());
 }
+
+
 
 
 #ifdef SERIALIZATION

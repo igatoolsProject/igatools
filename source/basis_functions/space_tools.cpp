@@ -56,7 +56,7 @@ get_face_mult(std::shared_ptr<const RefSpace> ref_space, const Index face_id)
     const auto &active_dirs = UnitElement<RefSpace::dim>::face_active_directions[face_id];
     auto v_mult = ref_space->get_multiplicities();
 
-    auto v_degree = ref_space->get_degree();
+    auto v_degree = ref_space->get_degree_table();
     typename RefSpace::RefFaceSpace::DegreeTable f_degree;
     for (int comp=0; comp<RefSpace::n_components; ++comp)
         for (int j=0; j<RefSpace::dim-1; ++j)
@@ -76,7 +76,7 @@ typename RefSpace::RefFaceSpace::DegreeTable
 get_face_degree(std::shared_ptr<const RefSpace> ref_space, const Index face_id)
 {
     const auto &active_dirs = UnitElement<RefSpace::dim>::face_active_directions[face_id];
-    auto v_degree = ref_space->get_degree();
+    auto v_degree = ref_space->get_degree_table();
     typename RefSpace::RefFaceSpace::DegreeTable f_degree;
     for (int comp=0; comp<RefSpace::n_components; ++comp)
         for (int j=0; j<RefSpace::dim-1; ++j)

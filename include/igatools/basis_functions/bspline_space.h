@@ -284,7 +284,7 @@ public:
 
 
 
-    virtual const DegreeTable &get_degree() const override final;
+    virtual const DegreeTable &get_degree_table() const override final;
 
 
     virtual void get_element_dofs(
@@ -420,6 +420,8 @@ public:
      * @note Mostly used for debugging and testing.
      */
     virtual void print_info(LogStream &out) const override final;
+
+
 
 private:
 

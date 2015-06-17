@@ -224,6 +224,11 @@ public:
     get_dof_distribution() = 0;
 
 
+    /**
+     * Return the maximum value of the polynomial degree, for each component, for each direction;
+     */
+    virtual int get_max_degree() const = 0;
+
 
     /**
      * Create and element (defined on this space) with a given flat_index

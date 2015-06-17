@@ -28,9 +28,79 @@ IGA_NAMESPACE_OPEN
 namespace grid_tools
 {
 
+/**
+ * Returns true if all the values in <tt>knots_coarse</tt> are also present
+ * in <tt>knot_fine</tt>.
+ */
+bool test_if_knots_fine_contains_knots_coarse(
+    const SafeSTLVector<Real> &knots_fine,
+    const SafeSTLVector<Real> &knots_coarse);
+
+
+
+/**
+ * Given one grid <tt>grid_coarse</tt> and a refinement <tt>grid_fine</tt>,
+ * this function builds and returns the one-to-one mapping between the 1D intervals on the
+ * fine grid and the 1D intervals on the coarse grid, for each coordinate direction.
+ * @code{.cpp}
+   fine_to_coarse_intervals = build_map_intervals_between_cartesian_grids(grid_fine,grid_coarse);
+   // fine_to_coarse_intervals[dir][i] is the id of the interval along the dir direction
+   // of the coarse grid that fully contains the
+   // interval along the dir direction of the fine grid with flat_id equal to i.
+   @endcode
+ *
+ * @warning The grid must be defined on the same domain and each element on the fine grid must be
+ * FULLY contained in one element of the coarse grid, otherwise an exception will be raised
+ * (in Debug mode).
+ *
+ * @relates CartesianGrid
+ */
+template <int dim>
+SafeSTLArray<SafeSTLVector<Index>,dim>
+build_map_intervals_id_between_cartesian_grids(const CartesianGrid<dim> &grid_fine,
+                                               const CartesianGrid<dim> &grid_coarse);
+
+
+/**
+ * This function returns the maximum numbers of intervals in the <tt>fine_grid</tt>
+ * that are fully contained in an interval of the <tt>coarse_grid</tt>.
+ *
+ * @warning The grid must be defined on the same domain and each element on the fine grid must be
+ * FULLY contained in one element of the coarse grid, otherwise an exception will be raised
+ * (in Debug mode).
+ *
+ * @relates CartesianGrid
+ */
+template <int dim>
+SafeSTLArray<Index,dim>
+get_max_num_fine_intervals_in_coarse_interval(const CartesianGrid<dim> &grid_fine,
+                                              const CartesianGrid<dim> &grid_coarse);
+
+
 template<int dim>
 using InterGridMap = std::map<typename CartesianGrid<dim>::ElementConstIterator,
       typename CartesianGrid<dim>::ElementConstIterator>;
+
+/**
+ * Given one grid <tt>grid_coarse</tt> and a refinement <tt>grid_fine</tt>,
+ * this function builds and returns the one-to-one mapping between the elements on the
+ * fine and the elements on the coarse.
+ * @code{.cpp}
+   fine_to_coarse_elements_id = build_map_elements_id_between_cartesian_grids(grid_fine,grid_coarse);
+   // fine_to_coarse_elements_id[i] is the flat id of the element on the coarse grid that fully contains the
+   // element on the fine grid with flat_id equal to i.
+   @endcode
+ *
+ * @warning The grid must be defined on the same domain and each element on the fine grid must be
+ * FULLY contained in one element of the coarse grid, otherwise an exception will be raised
+ * (in Debug mode).
+ *
+ * @relates CartesianGrid
+ */
+template <int dim>
+std::map<Index,Index>
+build_map_elements_id_between_cartesian_grids(const CartesianGrid<dim> &grid_fine,
+                                              const CartesianGrid<dim> &grid_coarse);
 
 /**
  * Given one grid <tt>grid_coarse</tt> and a refinement <tt>grid_fine</tt>,

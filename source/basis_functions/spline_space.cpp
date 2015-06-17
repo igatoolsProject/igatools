@@ -576,7 +576,7 @@ print_info(LogStream &out) const
 template<int dim, int range, int rank>
 auto
 SplineSpace<dim, range, rank>::
-get_degree() const -> const DegreeTable &
+get_degree_table() const -> const DegreeTable &
 {
     return deg_;
 }

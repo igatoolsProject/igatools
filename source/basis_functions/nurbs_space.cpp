@@ -328,7 +328,7 @@ refine_h_weights(
         {
             for (const int comp_id : weights_.get_active_components_id())
             {
-                const int p = sp_space_->get_degree()[comp_id][direction_id];
+                const int p = sp_space_->get_degree_table()[comp_id][direction_id];
                 const auto &U = knots_with_repetitions_pre_refinement[comp_id].get_data_direction(direction_id);
                 const auto &Ubar = knots_with_repetitions[comp_id].get_data_direction(direction_id);
 
@@ -609,9 +609,9 @@ is_bspline() const
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-get_degree() const -> const DegreeTable &
+get_degree_table() const -> const DegreeTable &
 {
-    return this->sp_space_->get_degree();
+    return this->sp_space_->get_degree_table();
 }
 
 template <int dim_, int range_, int rank_>
@@ -675,6 +675,8 @@ get_elem_handler() const -> std::shared_ptr<SpaceElementHandler<dim_,0,range_,ra
 {
     return ElementHandler::create(this->get_this_space());
 }
+
+
 
 #ifdef MESH_REFINEMENT
 

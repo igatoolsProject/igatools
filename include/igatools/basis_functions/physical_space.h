@@ -209,6 +209,12 @@ public:
         return phys_space_previous_refinement_;
     }
 
+
+    /**
+     * Return the maximum value of the polynomial degree, for each component, for each direction;
+     */
+    virtual int get_max_degree() const override final;
+
 private:
 
     /**
@@ -238,6 +244,8 @@ private:
     std::shared_ptr<const self_t > get_this_space() const;
 
 
+#ifdef MESH_REFINEMENT
+
     /**
      * Rebuild the internal state of the object after an insert_knots() function is invoked.
      *
@@ -252,6 +260,8 @@ private:
         const CartesianGrid<dim> &old_grid);
 
     void create_connection_for_insert_knots(std::shared_ptr<self_t> space);
+
+#endif
 
 
 #ifdef SERIALIZATION

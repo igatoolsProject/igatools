@@ -27,15 +27,32 @@ using std::set;
 
 IGA_NAMESPACE_OPEN
 
+
 namespace grid_tools
 {
-template <int dim>
-InterGridMap<dim>
-build_map_elements_between_cartesian_grids(const CartesianGrid<dim> &grid_fine,
-                                           const CartesianGrid<dim> &grid_coarse)
-{
-    InterGridMap<dim> res;
 
+bool test_if_knots_fine_contains_knots_coarse(
+    const SafeSTLVector<Real> &knots_fine,
+    const SafeSTLVector<Real> &knots_coarse)
+{
+    Assert(std::is_sorted(knots_fine.begin(),knots_fine.end()),ExcMessage("Vector not sorted."));
+
+    return std::all_of(
+               knots_coarse.begin(),
+               knots_coarse.end(),
+               [&](const Real &knot_coarse)
+    {
+        return std::binary_search(knots_fine.begin(),knots_fine.end(),knot_coarse);
+    }
+           );
+}
+
+
+template <int dim>
+SafeSTLArray<SafeSTLVector<Index>,dim>
+build_map_intervals_id_between_cartesian_grids(const CartesianGrid<dim> &grid_fine,
+                                               const CartesianGrid<dim> &grid_coarse)
+{
     //---------------------------------------------------------
     // checks that the grid are on the same domain
     Assert(grid_fine.get_bounding_box() == grid_coarse.get_bounding_box(),
@@ -43,36 +60,98 @@ build_map_elements_between_cartesian_grids(const CartesianGrid<dim> &grid_fine,
     //---------------------------------------------------------
 
     //---------------------------------------------------------
-    SafeSTLArray<SafeSTLVector<int>,dim> map_interv_fid_fine_coarse;
+    SafeSTLArray<SafeSTLVector<Index>,dim> map_interv_id_fine_coarse;
     for (int i = 0 ; i < dim ; ++i)
     {
         const auto &coords_coarse = grid_coarse.get_knot_coordinates(i);
         const auto &coords_fine = grid_fine.get_knot_coordinates(i);
 
-#ifndef NDEBUG
-        const int n_intervals_coarse = coords_coarse.size() - 1;
-#endif
+        Assert(test_if_knots_fine_contains_knots_coarse(coords_fine,coords_coarse),
+               ExcMessage("The knots of the fine grid does not contains the knots of the coarse grid"
+                          " along the direction " + std::to_string(i)));
+
         const int n_intervals_fine = coords_fine.size() - 1;
 
+        int fid_coarse = 0;
         for (int fid_fine = 0 ; fid_fine < n_intervals_fine ; ++fid_fine)
         {
-            int fid_coarse = 0;
             while (!(coords_fine[fid_fine] >= coords_coarse[fid_coarse] &&
                      coords_fine[fid_fine+1] <= coords_coarse[fid_coarse+1]))
             {
                 ++fid_coarse;
             }
-            Assert(fid_coarse < n_intervals_coarse,
-                   ExcMessage("Impossible to find an interval "
-                              "on the coarse grid that fully contains the interval " +
-                              std::to_string(fid_fine) + " along the direction "
-                              + std::to_string(i) +
-                              "of the fine grid."));
 
-            map_interv_fid_fine_coarse[i].push_back(fid_coarse);
+            map_interv_id_fine_coarse[i].push_back(fid_coarse);
         }
     }
+    return map_interv_id_fine_coarse;
+}
 
+
+template <int dim>
+SafeSTLArray<Index,dim>
+get_max_num_fine_intervals_in_coarse_interval(const CartesianGrid<dim> &grid_fine,
+                                              const CartesianGrid<dim> &grid_coarse)
+{
+    const auto map_interv_id_fine_coarse =
+        build_map_intervals_id_between_cartesian_grids(grid_fine,grid_coarse);
+
+    //---------------------------------------------------------
+    SafeSTLArray<Index,dim> max_num_fine_intervals_in_coarse_interval(0);
+    for (int i = 0 ; i < dim ; ++i)
+    {
+        const int n_intervals_coarse = grid_coarse.get_knot_coordinates(i).size() - 1;
+
+        for (int fid_coarse = 0 ; fid_coarse < n_intervals_coarse ; ++fid_coarse)
+        {
+            const int n_fine_intervals_this_coarse_interval =
+                std::count(map_interv_id_fine_coarse[i].begin(),
+                           map_interv_id_fine_coarse[i].end(),
+                           fid_coarse);
+            max_num_fine_intervals_in_coarse_interval[i] =
+                std::max(max_num_fine_intervals_in_coarse_interval[i],n_fine_intervals_this_coarse_interval);
+        }
+    } // end loop i
+
+    return max_num_fine_intervals_in_coarse_interval;
+}
+
+
+template <int dim>
+std::map<Index,Index>
+build_map_elements_id_between_cartesian_grids(const CartesianGrid<dim> &grid_fine,
+                                              const CartesianGrid<dim> &grid_coarse)
+{
+    const auto map_interv_id_fine_coarse =
+        build_map_intervals_id_between_cartesian_grids(grid_fine,grid_coarse);
+
+    std::map<Index,Index> res;
+    const int n_elems_fine = grid_fine.get_num_all_elems();
+    for (int elem_fine_fid = 0 ; elem_fine_fid < n_elems_fine ; ++elem_fine_fid)
+    {
+        const auto elem_fine_tid = grid_fine.flat_to_tensor(elem_fine_fid);
+
+        TensorIndex<dim> elem_coarse_tid;
+        for (int i = 0 ; i < dim ; ++i)
+            elem_coarse_tid[i] = map_interv_id_fine_coarse[i][elem_fine_tid[i]];
+
+        const auto elem_coarse_fid = grid_coarse.tensor_to_flat(elem_coarse_tid);
+
+        res.emplace(elem_fine_fid, elem_coarse_fid);
+    }
+
+    return res;
+}
+
+template <int dim>
+InterGridMap<dim>
+build_map_elements_between_cartesian_grids(const CartesianGrid<dim> &grid_fine,
+                                           const CartesianGrid<dim> &grid_coarse)
+{
+    const auto map_interv_id_fine_coarse =
+        build_map_intervals_id_between_cartesian_grids(grid_fine,grid_coarse);
+
+    InterGridMap<dim> res;
     const int n_elems_fine = grid_fine.get_num_all_elems();
 
     auto f_elem = grid_fine.begin();
@@ -83,20 +162,11 @@ build_map_elements_between_cartesian_grids(const CartesianGrid<dim> &grid_fine,
 
         TensorIndex<dim> elem_coarse_tid;
         for (int i = 0 ; i < dim ; ++i)
-            elem_coarse_tid[i] = map_interv_fid_fine_coarse[i][f_elem.get_tensor_index()[i]];
-
+            elem_coarse_tid[i] = map_interv_id_fine_coarse[i][f_elem.get_tensor_index()[i]];
 
         c_elem.move_to(elem_coarse_tid);
 
         res.emplace(f_elem, c_elem);
-//        TensorIndex<dim> elem_fine_tid =
-//            grid_fine.flat_to_tensor_element_index(elem_fine_fid);
-//
-//
-//        const int elem_coarse_fid =
-//            grid_coarse.tensor_to_flat_element_index(elem_coarse_tid);
-//
-//        map_elem_fine_to_elem_coarse[elem_fine_fid] = elem_coarse_fid;
     }
 
     return res;
@@ -125,15 +195,19 @@ build_cartesian_grid_union(
     for (int i = 0 ; i < dim ; ++i)
     {
         const auto &coords_grid_1 = grid_1.get_knot_coordinates(i);
+        Assert(std::is_sorted(coords_grid_1.begin(),coords_grid_1.end()),ExcMessage("Vector not sorted."));
+
         const auto &coords_grid_2 = grid_2.get_knot_coordinates(i);
+        Assert(std::is_sorted(coords_grid_2.begin(),coords_grid_2.end()),ExcMessage("Vector not sorted."));
 
-        // here we remove the duplicates (if any)
-        set<Real> coords_unique(coords_grid_1.begin(),coords_grid_1.end());
-        std::copy(coords_grid_2.begin(), coords_grid_2.end(),
-                  std::inserter(coords_unique, coords_unique.end()));
+        auto &coords_grid_union = knots_union[i];
+        coords_grid_union.resize(coords_grid_1.size() + coords_grid_2.size());
 
-        std::copy(coords_unique.begin(),coords_unique.end(),
-                  std::back_inserter(knots_union[i]));
+        auto it = std::set_union(coords_grid_1.begin(),coords_grid_1.end(),
+                                 coords_grid_2.begin(),coords_grid_2.end(),
+                                 coords_grid_union.begin());
+
+        coords_grid_union.resize(it-coords_grid_union.begin());
     }
     auto grid_union = CartesianGrid<dim>::create(knots_union);
     //---------------------------------------------------------

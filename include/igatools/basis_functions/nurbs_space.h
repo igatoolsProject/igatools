@@ -201,7 +201,7 @@ public:
 
     virtual bool is_bspline() const override final;
 
-    virtual const DegreeTable &get_degree() const override final;
+    virtual const DegreeTable &get_degree_table() const override final;
 
     virtual void get_element_dofs(
         const Index element_id,
@@ -243,6 +243,8 @@ public:
      * @note Mostly used for debugging and testing.
      */
     virtual void print_info(LogStream &out) const override final;
+
+
 
 private:
     /**

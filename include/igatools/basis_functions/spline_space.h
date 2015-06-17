@@ -172,7 +172,7 @@ protected:
                              PeriodicityTable(SafeSTLArray<bool,dim>(false)));
 
 public:
-    const DegreeTable &get_degree() const;
+    const DegreeTable &get_degree_table() const;
 
     const PeriodicityTable &get_periodicity() const;
 
