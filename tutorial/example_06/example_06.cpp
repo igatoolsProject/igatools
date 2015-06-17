@@ -94,9 +94,9 @@ PoissonProblem(const int n_knots, const int deg)
     space(Space::create(deg, CartesianGrid<dim>::create(n_knots))),
     elem_quad(QGauss<dim>(deg+1)),
     face_quad(QGauss<dim-1>(deg+1)),
-    matrix(create_matrix(space)),
-    rhs(create_vector(space)),
-    solution(create_vector(space))
+    matrix(create_matrix(*space)),
+    rhs(create_vector(*space)),
+    solution(create_vector(*space))
 {}
 
 

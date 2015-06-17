@@ -47,7 +47,7 @@ void test()
     auto space = Space::create(deg, grid);
 
     Epetra_SerialComm comm;
-    auto map = EpetraTools::create_map(space, "active", comm);
+    auto map = EpetraTools::create_map(*space, "active", comm);
     auto coeff = EpetraTools::create_vector(map);
     (*coeff)[0] = 1.;
 

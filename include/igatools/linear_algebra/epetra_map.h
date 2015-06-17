@@ -41,12 +41,12 @@ using CommPtr = std::shared_ptr<const Comm>;
 using Map = Epetra_Map;
 using MapPtr = std::shared_ptr<Map>;
 
-template<class SpacePtr>
-MapPtr create_map(const SpacePtr space,
+template<class Space>
+MapPtr create_map(const Space &space,
                   const std::string &property,
                   Comm &comm)
 {
-    const auto dof_dist = space->get_dof_distribution();
+    const auto dof_dist = space.get_dof_distribution();
     const auto dofs = dof_dist->get_dofs_id_same_property(property);
     //TODO (pauletti, Mar 28, 2015): this is double copy of data
     const SafeSTLVector<Index> dofs_vec(dofs.begin(), dofs.end());

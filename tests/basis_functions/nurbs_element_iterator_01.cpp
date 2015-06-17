@@ -57,7 +57,7 @@ void test()
     SafeSTLVector<Real> weights_coef(n_scalar_basis.flat_size(),1.0);
 
     Epetra_SerialComm comm;
-    auto map = create_map(scalar_bsp_space, "active", comm);
+    auto map = create_map(*scalar_bsp_space, "active", comm);
 
     auto w_func = WeightFunc::create(scalar_bsp_space,
                                      std::make_shared<typename EpetraTools::Vector>(Copy, *map, weights_coef.data()));

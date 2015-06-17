@@ -57,7 +57,7 @@ void test()
     for (int i = 0 ; i < n_entries ; ++i)
         weights_coef[i] = (i+1) * (1.0 / n_entries) ;
     Epetra_SerialComm comm;
-    auto map = create_map(scalar_bsp_space, "active", comm);
+    auto map = create_map(*scalar_bsp_space, "active", comm);
 
     auto w_func = WeightFunc::create(scalar_bsp_space,
                                      std::make_shared<typename EpetraTools::Vector>(Copy, *map, weights_coef.data()));

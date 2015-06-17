@@ -60,9 +60,9 @@ using VectorPtr = std::shared_ptr<Vector>;
 
 VectorPtr create_vector(MapPtr map);
 
-template <class SpacePtr>
+template <class Space>
 VectorPtr
-create_vector(SpacePtr space, const std::string &prop = DofProperties::active)
+create_vector(const Space &space, const std::string &prop = DofProperties::active)
 {
     Epetra_SerialComm comm;
     auto map = EpetraTools::create_map(space, prop, comm);

@@ -73,8 +73,8 @@ void assemble_matrix(const int n_knots, const int deg)
     auto f = ConstFunction::create(grid, IdentityFunction<dim>::create(grid), A, b);
 
     Epetra_SerialComm comm;
-    auto map = create_map(space, "active", comm);
-    auto graph = create_graph(space, "active", space, "active", map, map);
+    auto map = create_map(*space, "active", comm);
+    auto graph = create_graph(*space, "active", *space, "active", *map, *map);
 
     auto matrix = create_matrix(graph);
     auto rhs = create_vector(map);

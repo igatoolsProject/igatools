@@ -34,11 +34,11 @@ using Graph = Epetra_CrsGraph;
 using GraphPtr = std::shared_ptr<Graph>;
 
 
-template<class RowSpacePtr, class ColSpacePtr>
+template<class RowSpace, class ColSpace>
 GraphPtr
-create_graph(const RowSpacePtr row_space, const std::string &row_property,
-             const ColSpacePtr col_space, const std::string &col_property,
-             MapPtr row_map_, MapPtr col_map_)
+create_graph(const RowSpace &row_space, const std::string &row_property,
+             const ColSpace &col_space, const std::string &col_property,
+             const Map &row_map_, const Map &col_map_)
 {
     /*
     LogStream out;
@@ -46,8 +46,8 @@ create_graph(const RowSpacePtr row_space, const std::string &row_property,
     row_space->print_info(out);
     out.end_item();
     //*/
-    const auto n_rows = row_map_->NumMyElements();
-    const auto dof_distribution_row_space = row_space->get_dof_distribution();
+    const auto n_rows = row_map_.NumMyElements();
+    const auto dof_distribution_row_space = row_space.get_dof_distribution();
     /*
     out.begin_item("Dof dof_distribution_row_space");
     dof_distribution_row_space->print_info(out);
@@ -59,19 +59,20 @@ create_graph(const RowSpacePtr row_space, const std::string &row_property,
            ExcDimensionMismatch(dof_distribution_row_space->get_num_dofs(row_property),n_rows));
 
     SafeSTLVector<SafeSTLVector<Index>> loc_dofs(n_rows);
-    auto r_elem = row_space->begin();
-    auto c_elem = col_space->begin();
-    const auto end = row_space->end();
+    auto r_elem = row_space.begin();
+    auto c_elem = col_space.begin();
+    const auto end = row_space.end();
     for (; r_elem != end; ++r_elem, ++c_elem)
     {
         auto r_dofs = r_elem->get_local_to_global(row_property);
         auto c_dofs = c_elem->get_local_to_global(col_property);
         for (auto &r_dof : r_dofs)
         {
-//          const int loc_r_dof = row_map_->LID(r_dof);
-//            auto &dof_vec = loc_dofs[loc_r_dof];
-            auto &dof_vec = loc_dofs[r_dof];
-            dof_vec.insert(dof_vec.begin(), c_dofs.begin(), c_dofs.end());
+            const int loc_r_dof = row_map_.LID(r_dof);
+            Assert(loc_r_dof != -1,ExcMessage("DOF id " + std::to_string(r_dof) + " not present in the row map."));
+
+            auto &dof_vec = loc_dofs[loc_r_dof];
+            dof_vec.insert(dof_vec.end(), c_dofs.begin(), c_dofs.end());
         }
     }
 
@@ -90,19 +91,19 @@ create_graph(const RowSpacePtr row_space, const std::string &row_property,
 
     const bool is_static_profile = true;
     auto graph_ = std::make_shared<Graph>(Epetra_DataAccess::Copy,
-                                          *row_map_, *col_map_,
+                                          row_map_, col_map_,
                                           n_dofs_per_row.data(),
                                           is_static_profile);
 
     Index j=0;
     for (auto &dofs : loc_dofs)
     {
-        const Index row_id = row_map_->GID(j);
+        const Index row_id = row_map_.GID(j);
         graph_->InsertGlobalIndices(row_id, dofs.size(), dofs.data());
         ++j;
     }
 
-    int res = graph_->FillComplete(*col_map_,*row_map_);
+    int res = graph_->FillComplete(col_map_,row_map_);
     AssertThrow(res==0, ExcMessage(" "));
 
     return graph_;

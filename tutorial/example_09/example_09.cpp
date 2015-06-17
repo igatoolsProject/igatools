@@ -99,9 +99,9 @@ PoissonProblem(const int deg, const TensorSize<dim> &n_knots)
     map = Function::create(grid, IdentityFunction<dim>::create(grid));
     space = Space::create(ref_space, map);
 
-    matrix = create_matrix(space);
-    rhs = create_vector(space);
-    solution=create_vector(space);
+    matrix = create_matrix(*space);
+    rhs = create_vector(*space);
+    solution=create_vector(*space);
 
 }
 

@@ -125,7 +125,7 @@ void do_test()
     auto scalar_space = ScalarBSplineSpace::create(degree,CartesianGrid<dim>::create(coord));
 
     Epetra_SerialComm comm;
-    auto map = create_map(scalar_space, "active", comm);
+    auto map = create_map(*scalar_space, "active", comm);
     auto w_func = WeightFunc::create(scalar_space,
                                      std::make_shared<typename EpetraTools::Vector>(Copy, *map, weights.data()));
 

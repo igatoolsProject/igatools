@@ -55,8 +55,8 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
 
     Epetra_SerialComm comm;
 
-    auto map = EpetraTools::create_map(space, "active", comm);
-    auto graph = EpetraTools::create_graph(space, "active", space, "active",map, map);
+    auto map = EpetraTools::create_map(*space, "active", comm);
+    auto graph = EpetraTools::create_graph(*space,"active",*space,"active",*map,*map);
 
     auto matrix = EpetraTools::create_matrix(graph);
     auto rhs = EpetraTools::create_vector(map);

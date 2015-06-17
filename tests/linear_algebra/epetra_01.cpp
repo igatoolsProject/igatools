@@ -46,10 +46,10 @@ void matrix_map(const int deg, const int n_knots)
     Epetra_SerialComm comm;
 
 
-    auto map = EpetraTools::create_map(space, "active", comm);
+    auto map = EpetraTools::create_map(*space, "active", comm);
     map->Print(out.get_file_stream());
 
-    auto graph = EpetraTools::create_graph(space, "active", space, "active",map, map);
+    auto graph = EpetraTools::create_graph(*space, "active", *space, "active",*map, *map);
     graph->Print(out.get_file_stream());
 
     auto matrix = EpetraTools::create_matrix(graph);
