@@ -31,9 +31,10 @@
 #include <igatools/geometry/push_forward.h>
 #include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/physical_space.h>
-#include <igatools/basis_functions/physical_space_element_accessor.h>
-#include <igatools/geometry/ig_mapping.h>
+#include <igatools/basis_functions/physical_space_element.h>
+#include <igatools/functions/ig_function.h>
 
+/*
 template <int dim>
 using ReferenceSpace = NURBSSpace<dim,dim>;
 
@@ -45,6 +46,7 @@ using PhysSpace = PhysicalSpace< ReferenceSpace<dim>, PushFwd<dim> > ;
 
 template <class T, int dim>
 using ComponentTable = StaticMultiArray<T, ReferenceSpace<dim>::range, ReferenceSpace<dim>::rank >;
+//*/
 
 template <int dim>
 void test_evaluate()
@@ -53,34 +55,31 @@ void test_evaluate()
     auto grid = CartesianGrid<dim>::create(2);
     grid->refine();
 
-
     const int deg = 2;
-    TensorSize<dim> n_weights_dir(deg+2);
+    auto bsp_space = BSplineSpace<dim,dim>::create(deg, grid);
 
-    TensorIndex<dim> component_map;
-    for (int i = 0 ; i < dim ; ++i)
-        component_map[i] = i;
+    using ScalarSpSpace = BSplineSpace<dim,1,1>;
+    auto scalar_bsp_space = ScalarSpSpace::create(deg, grid);
 
-    typename NURBSSpace<dim,dim>::WeightsTable weights(component_map);
-    for (auto &weights_comp : weights)
+    const auto n_scalar_basis = scalar_bsp_space->get_num_basis();
+
+    IgCoefficients weights_coef;
+    for (int i = 0 ; i < n_scalar_basis ;)
     {
-        weights_comp.resize(n_weights_dir);
-
-        Index id = 0;
-        for (Index i=0 ; i < pow(4,dim-1) ; ++i)
-        {
-            weights_comp[id++] = 1.0 ;
-            weights_comp[id++] = 0.853553390593274 ;
-            weights_comp[id++] = 0.853553390593274 ;
-            weights_comp[id++] = 1.0 ;
-        }
+        weights_coef[i++] = 1.0;
+        weights_coef[i++] = 0.853553390593274;
+        weights_coef[i++] = 0.853553390593274;
+        weights_coef[i++] = 1.0;
     }
 
+    using WeightFunc = IgFunction<dim,0,1,1>;
+    auto w_func = WeightFunc::create(scalar_bsp_space,weights_coef);
 
-    auto ref_space = ReferenceSpace<dim>::create(deg,grid,weights);
+    using RefSpace = ReferenceSpace<dim,dim>;
+    using RefSpacePtr = std::shared_ptr<RefSpace>;
+    RefSpacePtr ref_space = NURBSSpace<dim,dim>::create(bsp_space,w_func);
 
-    SafeSTLVector<Real> control_pts(ref_space->get_num_basis());
-
+    IgCoefficients control_pts;
     if (dim == 1)
     {
         control_pts[0] = 1.0;
@@ -144,11 +143,12 @@ void test_evaluate()
         AssertThrow(false,ExcNotImplemented());
     }
 
-    auto map = IgMapping<ReferenceSpace<dim>>::create(ref_space,control_pts);
+    std::shared_ptr<Function<dim,0,dim,1>> func_mapping =
+    		IgFunction<dim,0,dim,1>::create(ref_space,control_pts);
 
-    auto push_fwd = PushFwd<dim>::create(map);
+    auto phys_space =
+        PhysicalSpace<dim,dim,1,0,Transformation::h_grad>::create(ref_space,func_mapping);
 
-    auto phys_space = PhysSpace<dim>::create(ref_space,push_fwd);
 
 
     out << endl;
@@ -174,7 +174,6 @@ void test_evaluate()
     phys_space->print_info(out);
     out << "===============================================================" << endl;
     out << endl;
-
 }
 
 int main()

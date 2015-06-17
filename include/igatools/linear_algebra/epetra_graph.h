@@ -40,7 +40,24 @@ create_graph(const RowSpacePtr row_space, const std::string &row_property,
              const ColSpacePtr col_space, const std::string &col_property,
              MapPtr row_map_, MapPtr col_map_)
 {
+	/*
+	LogStream out;
+	out.begin_item("row space");
+	row_space->print_info(out);
+	out.end_item();
+//*/
     const auto n_rows = row_map_->NumMyElements();
+    const auto dof_distribution_row_space = row_space->get_dof_distribution();
+    /*
+    out.begin_item("Dof dof_distribution_row_space");
+    dof_distribution_row_space->print_info(out);
+    out.end_item();
+    out << "Dof distribution n.dofs = " << dof_distribution_row_space->get_num_dofs(row_property) << std::endl;
+    out << "n_rows = " << n_rows << std::endl;
+    //*/
+    Assert(dof_distribution_row_space->get_num_dofs(row_property) == n_rows,
+    		ExcDimensionMismatch(dof_distribution_row_space->get_num_dofs(row_property),n_rows));
+
     SafeSTLVector<SafeSTLVector<Index>> loc_dofs(n_rows);
     auto r_elem = row_space->begin();
     auto c_elem = col_space->begin();
@@ -51,7 +68,9 @@ create_graph(const RowSpacePtr row_space, const std::string &row_property,
         auto c_dofs = c_elem->get_local_to_global(col_property);
         for (auto &r_dof : r_dofs)
         {
-            auto &dof_vec = loc_dofs[row_map_->LID(r_dof)];
+//        	const int loc_r_dof = row_map_->LID(r_dof);
+//            auto &dof_vec = loc_dofs[loc_r_dof];
+            auto &dof_vec = loc_dofs[r_dof];
             dof_vec.insert(dof_vec.begin(), c_dofs.begin(), c_dofs.end());
         }
     }

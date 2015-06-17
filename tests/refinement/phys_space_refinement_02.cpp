@@ -35,20 +35,6 @@
 #include <igatools/basis_functions/physical_space_element.h>
 #include <igatools/functions/identity_function.h>
 
-/*
-template <int dim>
-using RefSpace_t = NURBSSpace<dim>  ;
-
-template <int dim>
-using PushForward_t = PushForward<Transformation::h_grad,dim,0> ;
-
-template <int dim>
-using PhysicalSpace_t = PhysicalSpace< RefSpace_t<dim>, PushForward_t<dim> > ;
-
-
-template <class T, int dim>
-using ComponentTable = StaticMultiArray<T, RefSpace_t<dim>::range, RefSpace_t<dim>::rank >;
-//*/
 
 template <int dim>
 void test_evaluate()
@@ -59,26 +45,6 @@ void test_evaluate()
 
 
     const int deg = 2;
-    /*
-        TensorIndex<1> component_map = {0};
-        TensorSize<dim> n_weights_dir(deg+2);
-
-        typename RefSpace_t<dim>::WeightsTable weights(component_map);
-        for (auto &weights_comp : weights)
-        {
-            weights_comp.resize(n_weights_dir);
-
-            Index id = 0;
-            for (Index i=0 ; i < pow(4,dim-1) ; ++i)
-            {
-                weights_comp[id++] = 1.0 ;
-                weights_comp[id++] = 0.4 ;
-                weights_comp[id++] = 0.65 ;
-                weights_comp[id++] = 1.0 ;
-            }
-        }
-    //*/
-
     auto bsp_space = BSplineSpace<dim>::create(deg, grid);
 
 
