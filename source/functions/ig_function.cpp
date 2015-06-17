@@ -250,16 +250,16 @@ rebuild_after_insert_knots(
 {
     using std::const_pointer_cast;
     this->function_previous_refinement_ =
-    		IgFunction<dim,codim,range,rank>::create(
-                                              const_pointer_cast<Space<dim,codim,range,rank>>(space_->get_space_previous_refinement()),
-                                              coeff_,
-                                              property_);
-/*
-    LogStream out;
-    out.begin_item("function_previous_refinement_");
-    this->function_previous_refinement_->print_info(out);
-    out.end_item();
-//*/
+        IgFunction<dim,codim,range,rank>::create(
+            const_pointer_cast<Space<dim,codim,range,rank>>(space_->get_space_previous_refinement()),
+            coeff_,
+            property_);
+    /*
+        LogStream out;
+        out.begin_item("function_previous_refinement_");
+        this->function_previous_refinement_->print_info(out);
+        out.end_item();
+    //*/
 
     const int max_degree = space_->get_max_degree();
 //    const int max_degree = 10;
@@ -268,11 +268,11 @@ rebuild_after_insert_knots(
                                 this->function_previous_refinement_,
                                 const_pointer_cast<const Space<dim,codim,range,rank>>(space_),
                                 quad);
-/*
-    out.begin_item("function_refined");
-    function_refined->print_info(out);
-    out.end_item();
-//*/
+    /*
+        out.begin_item("function_refined");
+        function_refined->print_info(out);
+        out.end_item();
+    //*/
 
     this->coeff_ = std::move(function_refined->coeff_);
 //    this->property_ = DofProperties::active;
