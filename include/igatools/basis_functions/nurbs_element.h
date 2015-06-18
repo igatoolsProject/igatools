@@ -146,7 +146,7 @@ private:
 
     using WeightFunction = typename Space::WeightFunction;
     using WeightElem = typename WeightFunction::ElementAccessor;
-    typename Space::template ComponentContainer<std::shared_ptr<WeightElem>> weight_elem_table_;
+    WeightElem weight_elem_;
 
     friend class NURBSElementHandler<dim, range, rank>;
 

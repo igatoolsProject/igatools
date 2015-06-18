@@ -34,11 +34,10 @@ NURBSElement(const std::shared_ptr<ContainerType> space,
     :
     parent_t(space,index),
     bspline_elem_(space->get_spline_space(),index),
-    weight_elem_table_(space->weight_func_table_.get_comp_map())
+    weight_elem_(std::shared_ptr<WeightElem>(new WeightElem(space->weight_func_,index)))
 {
-    for (const auto &comp_id : weight_elem_table_.get_active_components_id())
-        weight_elem_table_[comp_id] =
-            std::shared_ptr<WeightElem>(new WeightElem(space->weight_func_table_[comp_id],index));
+//    weight_elem_ =
+//        std::shared_ptr<WeightElem>(new WeightElem(space->weight_func_,index));
 }
 
 
@@ -49,20 +48,16 @@ NURBSElement(const self_t &elem,
              const CopyPolicy &copy_policy)
     :
     parent_t(elem,copy_policy),
-    bspline_elem_(elem.bspline_elem_,copy_policy),
-    weight_elem_table_(elem.weight_elem_table_)
+    bspline_elem_(elem.bspline_elem_,copy_policy)
+//    weight_elem_(elem.weight_elem_)
 {
     if (copy_policy == CopyPolicy::shallow)
     {
-        for (const auto &comp_id : weight_elem_table_.get_active_components_id())
-            weight_elem_table_[comp_id] = elem.weight_elem_table_[comp_id];
-
+        weight_elem_ = elem.weight_elem_;
     }
     else
     {
-        for (const auto &comp_id : weight_elem_table_.get_active_components_id())
-            weight_elem_table_[comp_id] =
-                std::shared_ptr<WeightElem>(new WeightElem(*elem.weight_elem_table_[comp_id]));
+        weight_elem_ = std::shared_ptr<WeightElem>(new WeightElem(*elem.weight_elem_));
     }
     Assert(false,ExcNotTested());
 }
@@ -108,8 +103,7 @@ move_to(const Index flat_index)
     parent_t::move_to(flat_index);
     bspline_elem_.move_to(flat_index);
 
-    for (const auto &comp_id : weight_elem_table_.get_active_components_id())
-        weight_elem_table_[comp_id]->move_to(flat_index);
+    weight_elem_->move_to(flat_index);
 }
 
 
@@ -150,7 +144,7 @@ serialize(Archive &ar, const unsigned int version)
 
     ar &boost::serialization::make_nvp("bspline_elem_",bspline_elem_);
 
-    ar &boost::serialization::make_nvp("weight_elem_table_",weight_elem_table_);
+    ar &boost::serialization::make_nvp("weight_elem_",weight_elem_);
 }
 ///@}
 #endif // SERIALIZATION

@@ -129,10 +129,7 @@ void do_test()
     auto w_func = WeightFunc::create(scalar_space,
                                      std::make_shared<typename EpetraTools::Vector>(Copy, *map, weights.data()));
 
-
-    using WeightFuncPtrTable = typename Space::WeightFunctionPtrTable;
-    auto w_funcs_table = WeightFuncPtrTable(w_func);
-    auto nurbs_space = Space::create(bsp, w_funcs_table);
+    auto nurbs_space = Space::create(bsp, w_func);
 //    nurbs_space->print_info(out);
 
 

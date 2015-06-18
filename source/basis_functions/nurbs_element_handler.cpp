@@ -128,9 +128,7 @@ reset_selected_elements(
 
     //--------------------------------------------------
     const auto nrb_space = this->get_nurbs_space();
-    const auto &w_func_table = nrb_space->weight_func_table_;
-    for (const auto &comp_id : w_func_table.get_active_components_id())
-        w_func_table[comp_id]->reset_selected_elements(bspline_flag,quad,elements_flat_id);
+    nrb_space->weight_func_->reset_selected_elements(bspline_flag,quad,elements_flat_id);
     //--------------------------------------------------
 
 
@@ -183,8 +181,7 @@ init_ref_elem_cache(RefElementAccessor &elem, const topology_variant &topology)
     bspline_handler_->init_cache(bsp_elem,topology);
 
     const auto nrb_space = this->get_nurbs_space();
-    for (const auto &comp_id : nrb_space->weight_func_table_.get_active_components_id())
-        nrb_space->weight_func_table_[comp_id]->init_cache(*(nrb_elem.weight_elem_table_[comp_id]),topology);
+    nrb_space->weight_func_->init_cache(*(nrb_elem.weight_elem_),topology);
 
 
     //-------------------------------------
@@ -208,24 +205,24 @@ operator()(const Topology<sub_elem_dim> &sub_elem)
     auto &sub_elem_cache = nrb_elem_.all_sub_elems_cache_->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id_);
 
     const auto &bsp_elem = nrb_elem_.bspline_elem_;
-    const auto &wght_table = nrb_elem_.weight_elem_table_;
+    const auto &weight_elem = *nrb_elem_.weight_elem_;
 
     if (sub_elem_cache.template status_fill<_Value>())
     {
         auto &values = sub_elem_cache.template get_data<_Value>();
-        evaluate_nurbs_values_from_bspline(bsp_elem, wght_table, values);
+        evaluate_nurbs_values_from_bspline(bsp_elem, weight_elem, values);
         sub_elem_cache.template set_status_filled<_Value>(true);
     }
     if (sub_elem_cache.template status_fill<_Gradient>())
     {
         auto &gradients = sub_elem_cache.template get_data<_Gradient>();
-        evaluate_nurbs_gradients_from_bspline(bsp_elem, wght_table, gradients);
+        evaluate_nurbs_gradients_from_bspline(bsp_elem, weight_elem, gradients);
         sub_elem_cache.template set_status_filled<_Gradient>(true);
     }
     if (sub_elem_cache.template status_fill<_Hessian>())
     {
         auto &hessians = sub_elem_cache.template get_data<_Hessian>();
-        evaluate_nurbs_hessians_from_bspline(bsp_elem, wght_table, hessians);
+        evaluate_nurbs_hessians_from_bspline(bsp_elem, weight_elem, hessians);
         sub_elem_cache.template set_status_filled<_Hessian>(true);
     }
     if (sub_elem_cache.template status_fill<_Divergence>())
@@ -255,9 +252,7 @@ fill_ref_elem_cache(RefElementAccessor &elem, const topology_variant &topology, 
 
     bspline_handler_->fill_cache(bsp_elem,topology,sub_elem_id);
 
-    const auto &weight_func_table = nrb_space->weight_func_table_;
-    for (const auto &comp_id : weight_func_table.get_active_components_id())
-        weight_func_table[comp_id]->fill_cache(*(nrb_elem.weight_elem_table_[comp_id]),topology,sub_elem_id);
+    nrb_space->weight_func_->fill_cache(*(nrb_elem.weight_elem_),topology,sub_elem_id);
 
 
     //-----------------------------------------
@@ -305,7 +300,7 @@ NURBSElementHandler<dim_, range_, rank_>::
 FillCacheDispatcher::
 evaluate_nurbs_values_from_bspline(
     const typename Space::SpSpace::ElementAccessor &bspline_elem,
-    const WeightElemTable &weight_elem_table,
+    const WeightElem &weight_elem,
     ValueTable<Value> &phi) const
 {
     /*
@@ -332,10 +327,13 @@ evaluate_nurbs_values_from_bspline(
     const auto nrb_space = nrb_elem_.get_nurbs_space();
     const auto comp_offset = nrb_space->sp_space_->get_basis_offset();
 
+    const auto &w_coefs = nrb_space->weight_func_->get_coefficients();
+
     int bsp_fn_id = 0;
     for (int comp = 0 ; comp < n_components ; ++comp)
     {
-        const auto &weight_elem = *weight_elem_table[comp];
+        Assert(nrb_space->get_num_basis(comp) == w_coefs.size(),
+               ExcDimensionMismatch(nrb_space->get_num_basis(comp),w_coefs.size()));
 
         const auto &Q = weight_elem.template get_values<_Value,dim>(0);
 
@@ -348,9 +346,6 @@ evaluate_nurbs_values_from_bspline(
 
         const int n_funcs_comp = bspline_elem.get_num_basis_comp(comp);
 
-        const auto &w_coefs = nrb_space->weight_func_table_[comp]->get_coefficients();
-        Assert(nrb_space->get_num_basis(comp) == w_coefs.size(),
-               ExcDimensionMismatch(nrb_space->get_num_basis(comp),w_coefs.size()));
 
         const auto offset = comp_offset[comp];
         for (int w_fn_id = 0 ; w_fn_id < n_funcs_comp ; ++w_fn_id, ++bsp_fn_id)
@@ -376,7 +371,7 @@ NURBSElementHandler<dim_, range_, rank_>::
 FillCacheDispatcher::
 evaluate_nurbs_gradients_from_bspline(
     const typename Space::SpSpace::ElementAccessor &bspline_elem,
-    const WeightElemTable &weight_elem_table,
+    const WeightElem &weight_elem,
     ValueTable<Derivative<1>> &D1_phi) const
 {
     /*
@@ -410,10 +405,13 @@ evaluate_nurbs_gradients_from_bspline(
     const auto bsp_local_to_patch = bspline_elem.get_local_to_patch(DofProperties::active);
     const auto comp_offset = nrb_space->sp_space_->get_basis_offset();
 
+    const auto &w_coefs = nrb_space->weight_func_->get_coefficients();
+
     int bsp_fn_id = 0;
     for (int comp = 0 ; comp < n_components ; ++comp)
     {
-        const auto &weight_elem = *weight_elem_table[comp];
+        Assert(nrb_space->get_num_basis(comp) == w_coefs.size(),
+               ExcDimensionMismatch(nrb_space->get_num_basis(comp),w_coefs.size()));
 
         const auto &Q  = weight_elem.template get_values<_Value,dim>(0);
         const auto &dQ = weight_elem.template get_values<_Gradient,dim>(0);
@@ -436,10 +434,6 @@ evaluate_nurbs_gradients_from_bspline(
         }
 
         const int n_funcs_comp = bspline_elem.get_num_basis_comp(comp);
-
-        const auto &w_coefs = nrb_space->weight_func_table_[comp]->get_coefficients();
-        Assert(nrb_space->get_num_basis(comp) == w_coefs.size(),
-               ExcDimensionMismatch(nrb_space->get_num_basis(comp),w_coefs.size()));
 
         const auto offset = comp_offset[comp];
         for (int w_fn_id = 0 ; w_fn_id < n_funcs_comp ; ++w_fn_id, ++bsp_fn_id)
@@ -474,7 +468,7 @@ NURBSElementHandler<dim_, range_, rank_>::
 FillCacheDispatcher::
 evaluate_nurbs_hessians_from_bspline(
     const typename Space::SpSpace::ElementAccessor &bspline_elem,
-    const WeightElemTable &weight_elem_table,
+    const WeightElem &weight_elem,
     ValueTable<Derivative<2>> &D2_phi) const
 {
     /*
@@ -514,10 +508,14 @@ evaluate_nurbs_hessians_from_bspline(
     const auto bsp_local_to_patch = bspline_elem.get_local_to_patch(DofProperties::active);
     const auto comp_offset = nrb_space->sp_space_->get_basis_offset();
 
+    const auto &w_coefs = nrb_space->weight_func_->get_coefficients();
+
     int bsp_fn_id = 0;
     for (int comp = 0 ; comp < n_components ; ++comp)
     {
-        const auto &weight_elem = *weight_elem_table[comp];
+        Assert(nrb_space->get_num_basis(comp) == w_coefs.size(),
+               ExcDimensionMismatch(nrb_space->get_num_basis(comp),w_coefs.size()));
+
 
         const auto &Q   = weight_elem.template get_values<_Value,dim>(0);
         const auto &dQ  = weight_elem.template get_values<_Gradient,dim>(0);
@@ -561,10 +559,6 @@ evaluate_nurbs_hessians_from_bspline(
 
 
         const int n_funcs_comp = bspline_elem.get_num_basis_comp(comp);
-
-        const auto &w_coefs = nrb_space->weight_func_table_[comp]->get_coefficients();
-        Assert(nrb_space->get_num_basis(comp) == w_coefs.size(),
-               ExcDimensionMismatch(nrb_space->get_num_basis(comp),w_coefs.size()));
 
         const auto offset = comp_offset[comp];
         for (int w_fn_id = 0 ; w_fn_id < n_funcs_comp ; ++w_fn_id, ++bsp_fn_id)

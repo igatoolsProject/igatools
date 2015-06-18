@@ -719,24 +719,21 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
 
 //    using WeightFuncPtr = shared_ptr<WeightFunc>;
     using WeightFunction = typename space_t::WeightFunction;
-    using WeightFunctionPtrTable = typename space_t::WeightFunctionPtrTable;
-    WeightFunctionPtrTable w_func_table;
-    int comp = 0;
-    for (const auto &w_coefs : weights)
-    {
-        Epetra_SerialComm comm;
-        auto map = EpetraTools::create_map(*scalar_spline_space, "active", comm);
-        auto vec = w_coefs.get_data();
-        auto w = std::make_shared<EpetraTools::Vector>(Copy, *map, vec.data());
-        w_func_table[comp++] = std::make_shared<WeightFunction>(scalar_spline_space, w);
-    }
+    const auto &w_coefs = weights[0];
+
+    Epetra_SerialComm comm;
+    auto map = EpetraTools::create_map(*scalar_spline_space, "active", comm);
+    auto vec = w_coefs.get_data();
+    auto w = std::make_shared<EpetraTools::Vector>(Copy, *map, vec.data());
+    auto w_func = std::make_shared<WeightFunction>(scalar_spline_space, w);
+
 
     //*/
     // building the weight function table --- end
     //----------------------------------------
 
 
-    auto ref_space = space_t::create(spline_space,w_func_table);
+    auto ref_space = space_t::create(spline_space,w_func);
 
     return ref_space;
 }

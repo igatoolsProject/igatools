@@ -242,7 +242,7 @@ private:
          */
         void evaluate_nurbs_values_from_bspline(
             const typename Space::SpSpace::ElementAccessor &bspline_elem,
-            const WeightElemTable &weight_elem_table,
+            const WeightElem &weight_elem,
             ValueTable<Value> &phi) const;
 
         /**
@@ -255,7 +255,7 @@ private:
          */
         void evaluate_nurbs_gradients_from_bspline(
             const typename Space::SpSpace::ElementAccessor &bspline_elem,
-            const WeightElemTable &weight_elem_table,
+            const WeightElem &weight_elem,
             ValueTable<Derivative<1>> &D1_phi) const;
 
         /**
@@ -268,7 +268,7 @@ private:
          */
         void evaluate_nurbs_hessians_from_bspline(
             const typename Space::SpSpace::ElementAccessor &bspline_elem,
-            const WeightElemTable &weight_elem_table,
+            const WeightElem &weight_elem,
             ValueTable<Derivative<2>> &D2_phi) const;
 
         const int sub_elem_id_;

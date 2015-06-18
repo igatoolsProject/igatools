@@ -127,41 +127,47 @@ create(const DegreeTable &deg,
 template <int dim_, int range_, int rank_>
 NURBSSpace<dim_, range_, rank_>::
 NURBSSpace(std::shared_ptr<SpSpace> bs_space,
-           const WeightFunctionPtrTable &weight_func_table)
+           const WeightFunctionPtr &weight_func)
     :
     BaseSpace(
         bs_space->get_grid(),
         bs_space->get_dof_distribution()),
     sp_space_(bs_space),
-    weight_func_table_(weight_func_table)
+    weight_func_(weight_func)
 {
 #ifndef NDEBUG
+//    int comp_id = 0;
+//    for (const auto &w_func : weight_func_table_)
+//    {
+    Assert(weight_func_ != nullptr, ExcNullPtr());
+
+    Assert(*this->get_grid() == *weight_func_->get_grid(),ExcMessage("Mismatching grids."));
+
+    using WeightRefSpace = ReferenceSpace<dim_,1,1>;
+    auto w_func_as_ref_space = std::dynamic_pointer_cast<const WeightRefSpace>(weight_func_->get_ig_space());
+    Assert(w_func_as_ref_space != nullptr,
+           ExcMessage("The space for the weight function is not of type ReferenceSpace<" +
+                      std::to_string(WeightRefSpace::dim) + "," +
+                      std::to_string(WeightRefSpace::range) + "," +
+                      std::to_string(WeightRefSpace::rank) + ">."));
+
+
+    Assert(w_func_as_ref_space->is_bspline(),
+           ExcMessage("The space for the weight function is not BSplineSpace."));
+
+#ifndef NDEBUG
+    const auto &n_basis_table = sp_space_->get_num_basis_table();
     int comp_id = 0;
-    for (const auto &w_func : weight_func_table_)
+    for (const auto &n_basis_comp : n_basis_table)
     {
-        Assert(w_func != nullptr, ExcNullPtr());
-
-        Assert(*this->get_grid() == *w_func->get_grid(),ExcMessage("Mismatching grids."));
-
-        using WeightRefSpace = ReferenceSpace<dim_,1,1>;
-        auto w_func_as_ref_space = std::dynamic_pointer_cast<const WeightRefSpace>(w_func->get_ig_space());
-        Assert(w_func_as_ref_space != nullptr,
-               ExcMessage("The space for the weight function is not of type ReferenceSpace<" +
-                          std::to_string(WeightRefSpace::dim) + "," +
-                          std::to_string(WeightRefSpace::range) + "," +
-                          std::to_string(WeightRefSpace::rank) + ">."));
-
-
-        Assert(w_func_as_ref_space->is_bspline(),
-               ExcMessage("The space for the weight function is not BSplineSpace."));
-
-        Assert(sp_space_->get_num_basis_table()[comp_id] ==
-               w_func_as_ref_space->get_dof_distribution()->get_num_dofs_table()[0],
+        Assert(n_basis_comp == w_func_as_ref_space->get_dof_distribution()->get_num_dofs_table()[0],
                ExcMessage("Mismatching number of basis functions and weight "
                           "coefficients for scalar component " + to_string(comp_id)));
 
         ++comp_id;
     }
+#endif
+    //*/
 #endif
 }
 
@@ -170,9 +176,9 @@ template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
 create(std::shared_ptr<SpSpace> bs_space,
-       const WeightFunctionPtrTable &weight_func_table) -> shared_ptr<self_t>
+       const WeightFunctionPtr &weight_func) -> shared_ptr<self_t>
 {
-    auto sp = shared_ptr<self_t>(new self_t(bs_space,weight_func_table));
+    auto sp = shared_ptr<self_t>(new self_t(bs_space,weight_func));
     Assert(sp != nullptr, ExcNullPtr());
 
     sp->create_connection_for_insert_knots(sp);
@@ -239,9 +245,9 @@ create_element(const Index flat_index) const
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-get_weights() const -> const WeightFunctionPtrTable &
+get_weight_func() const -> const WeightFunctionPtr &
 {
-    return weight_func_table_;
+    return weight_func_;
 }
 
 
@@ -563,16 +569,21 @@ print_info(LogStream &out) const
     sp_space_->print_info(out);
     out.end_item();
 
-    int comp_id = 0;
-    for (const auto &w_func :weight_func_table_)
-    {
+    out.begin_item("Weight function :");
+    weight_func_->print_info(out);
+    out.end_item();
+    /*
+        int comp_id = 0;
+        for (const auto &w_func :weight_func_table_)
+        {
 
-        out.begin_item("Weight function[" + to_string(comp_id) +"] :");
-        w_func->print_info(out);
-        out.end_item();
+            out.begin_item("Weight function[" + to_string(comp_id) +"] :");
+            w_func->print_info(out);
+            out.end_item();
 
-        ++comp_id;
-    }
+            ++comp_id;
+        }
+        //*/
 }
 
 
@@ -582,18 +593,22 @@ Real
 NURBSSpace<dim_, range_, rank_>::
 get_weight_coef_from_basis_id(const Index basis_id) const
 {
-    //TODO (pauletti, Mar 22, 2015): this looks like a forced function study its use
+    Assert(false,ExcDeprecated());
+    /*
+        //TODO (pauletti, Mar 22, 2015): this looks like a forced function study its use
 
-    const auto &basis_offset = sp_space_->get_basis_offset();
+        const auto &basis_offset = sp_space_->get_basis_offset();
 
-    int comp_id = 0;
-    for (; comp_id < n_components-1 ; ++comp_id)
-        if (basis_id < basis_offset[comp_id+1])
-            break;
+        int comp_id = 0;
+        for (; comp_id < n_components-1 ; ++comp_id)
+            if (basis_id < basis_offset[comp_id+1])
+                break;
 
-    const Index w_id = basis_id - basis_offset[comp_id];
+        const Index w_id = basis_id - basis_offset[comp_id];
 
-    return (weight_func_table_[comp_id]->get_coefficients())[w_id];
+        return (weight_func_table_[comp_id]->get_coefficients())[w_id];
+        //*/
+    return 0.0;
 }
 
 
@@ -711,21 +726,15 @@ rebuild_after_insert_knots(
             std::dynamic_pointer_cast<const SpSpace>(sp_space_->get_space_previous_refinement()));
     Assert(bsp_space_previous_refinement != nullptr,ExcNullPtr());
 
-    auto weight_func_table_previous_refinement_ =
-        WeightFunctionPtrTable(weight_func_table_.get_comp_map(),nullptr);
+    auto weight_func_previous_refinement_ =
+        std::dynamic_pointer_cast<WeightFunction>(
+            weight_func_->get_function_previous_refinement());
+    Assert(weight_func_previous_refinement_ != nullptr,ExcNullPtr());
 
-    const auto &active_comp_ids = weight_func_table_.get_active_components_id();
-    for (const int comp_id : active_comp_ids)
-    {
-        weight_func_table_previous_refinement_[comp_id] =
-            std::dynamic_pointer_cast<WeightFunction>(
-                weight_func_table_[comp_id]->get_function_previous_refinement());
-        Assert(weight_func_table_previous_refinement_[comp_id] != nullptr,ExcNullPtr());
-    }
 
     this->ref_space_previous_refinement_ =
         NURBSSpace<dim_,range_,rank_>::create(
-            bsp_space_previous_refinement,weight_func_table_previous_refinement_);
+            bsp_space_previous_refinement,weight_func_previous_refinement_);
 
 //  Assert(false,ExcNotImplemented());
 
@@ -748,7 +757,7 @@ serialize(Archive &ar, const unsigned int version)
     ar.template register_type<SpSpace>();
     ar &boost::serialization::make_nvp("sp_space_",sp_space_);
 
-    ar &boost::serialization::make_nvp("weight_func_table_",weight_func_table_);
+    ar &boost::serialization::make_nvp("weight_func_",weight_func_);
 }
 ///@}
 #endif // SERIALIZATION

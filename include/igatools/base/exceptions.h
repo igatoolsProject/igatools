@@ -648,6 +648,13 @@ DeclException1(ExcFileNotOpen,
  */
 DeclException0(ExcNotImplemented);
 
+
+/**
+ * Exception denoting a functions that is deprecated ashould be removed
+ * from the library.
+ */
+DeclException0(ExcDeprecated);
+
 /**
  * Exception denoting a part of the
  * library or application program

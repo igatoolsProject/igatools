@@ -61,9 +61,8 @@ void test()
 
     auto w_func = WeightFunc::create(scalar_bsp_space,
                                      std::make_shared<typename EpetraTools::Vector>(Copy, *map, weights_coef.data()));
-    auto weight_functions = typename Space::WeightFunctionPtrTable(w_func);
 
-    auto nrb_space = Space::create(bsp_space,weight_functions);
+    auto nrb_space = Space::create(bsp_space,w_func);
 
     const int n_points = 3;
     QGauss<dim> quad(n_points);

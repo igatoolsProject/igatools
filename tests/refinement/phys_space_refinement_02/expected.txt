@@ -99,7 +99,7 @@ Reference space:
          [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
       
    
-   Weight function[0] :
+   Weight function :
       IgFunction<1,0,1,1>
          Function<1,0,1,1>
             Quadrature cache for all dimensions:
@@ -344,7 +344,7 @@ Reference space:
          [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
       
    
-   Weight function[0] :
+   Weight function :
       IgFunction<1,0,1,1>
          Function<1,0,1,1>
             Quadrature cache for all dimensions:
@@ -602,7 +602,7 @@ Reference space:
          [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
       
    
-   Weight function[0] :
+   Weight function :
       IgFunction<2,0,1,1>
          Function<2,0,1,1>
             Quadrature cache for all dimensions:
@@ -879,7 +879,7 @@ Reference space:
          [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
       
    
-   Weight function[0] :
+   Weight function :
       IgFunction<2,0,1,1>
          Function<2,0,1,1>
             Quadrature cache for all dimensions:
@@ -1187,7 +1187,7 @@ Reference space:
          [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
       
    
-   Weight function[0] :
+   Weight function :
       IgFunction<3,0,1,1>
          Function<3,0,1,1>
             Quadrature cache for all dimensions:
@@ -1532,7 +1532,7 @@ Reference space:
          [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
       
    
-   Weight function[0] :
+   Weight function :
       IgFunction<3,0,1,1>
          Function<3,0,1,1>
             Quadrature cache for all dimensions:
