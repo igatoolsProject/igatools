@@ -176,32 +176,32 @@ void do_test()
 
     Epetra_SerialComm comm;
     auto bsp_coeff_1_1 = EpetraTools::create_vector(
-                             EpetraTools::create_map(bsp_space_1_1, "active", comm));
+                             EpetraTools::create_map(*bsp_space_1_1, "active", comm));
     (*bsp_coeff_1_1)[0] = 1.;
 
 
     auto bsp_coeff_2_1 = EpetraTools::create_vector(
-                             EpetraTools::create_map(bsp_space_2_1, "active", comm));
+                             EpetraTools::create_map(*bsp_space_2_1, "active", comm));
     (*bsp_coeff_2_1)[0] = 1.;
 
 
     auto bsp_coeff_3_1 = EpetraTools::create_vector(
-                             EpetraTools::create_map(bsp_space_3_1, "active", comm));
+                             EpetraTools::create_map(*bsp_space_3_1, "active", comm));
     (*bsp_coeff_3_1)[0] = 1.;
 
 
     auto bsp_coeff_2_2 = EpetraTools::create_vector(
-                             EpetraTools::create_map(bsp_space_2_2, "active", comm));
+                             EpetraTools::create_map(*bsp_space_2_2, "active", comm));
     (*bsp_coeff_2_2)[0] = 1.;
 
 
     auto bsp_coeff_3_3 = EpetraTools::create_vector(
-                             EpetraTools::create_map(bsp_space_3_3, "active", comm));
+                             EpetraTools::create_map(*bsp_space_3_3, "active", comm));
     (*bsp_coeff_3_3)[0] = 1.;
 
 
     auto bsp_coeff_2_3 = EpetraTools::create_vector(
-                             EpetraTools::create_map(bsp_space_2_3, "active", comm));
+                             EpetraTools::create_map(*bsp_space_2_3, "active", comm));
     (*bsp_coeff_2_3)[0] = 1.;
 
 
@@ -217,70 +217,70 @@ void do_test()
     auto phys_space_1_1_1_0 =
         PhysicalSpace<1,1,1,0,Transformation::h_grad>::create(
             bsp_space_1_1,
-            bsp_func_1_1);
+            bsp_func_1_1->clone());
 
     auto phys_space_2_1_1_0 =
         PhysicalSpace<2,1,1,0,Transformation::h_grad>::create(
             bsp_space_2_1,
-            bsp_func_2_2);
+            bsp_func_2_2->clone());
 
     auto phys_space_3_1_1_0 =
         PhysicalSpace<3,1,1,0,Transformation::h_grad>::create(
             bsp_space_3_1,
-            bsp_func_3_3);
+            bsp_func_3_3->clone());
 
     auto phys_space_2_2_1_0 =
         PhysicalSpace<2,2,1,0,Transformation::h_grad>::create(
             bsp_space_2_2,
-            bsp_func_2_2);
+            bsp_func_2_2->clone());
 
     auto phys_space_3_3_1_0 =
         PhysicalSpace<3,3,1,0,Transformation::h_grad>::create(
             bsp_space_3_3,
-            bsp_func_3_3);
+            bsp_func_3_3->clone());
 
     auto phys_space_2_1_1_1 =
         PhysicalSpace<2,1,1,1,Transformation::h_grad>::create(
             bsp_space_2_1,
-            bsp_func_2_3);
+            bsp_func_2_3->clone());
 
     auto phys_space_2_3_1_1 =
         PhysicalSpace<2,3,1,1,Transformation::h_grad>::create(
             bsp_space_2_3,
-            bsp_func_2_3);
+            bsp_func_2_3->clone());
 
     auto phys_coeff_1_1_1_0 = EpetraTools::create_vector(
-                                  EpetraTools::create_map(phys_space_1_1_1_0, "active", comm));
+                                  EpetraTools::create_map(*phys_space_1_1_1_0, "active", comm));
     (*phys_coeff_1_1_1_0)[0] = 1.;
 
 
     auto phys_coeff_2_1_1_0 = EpetraTools::create_vector(
-                                  EpetraTools::create_map(phys_space_2_1_1_0, "active", comm));
+                                  EpetraTools::create_map(*phys_space_2_1_1_0, "active", comm));
     (*phys_coeff_2_1_1_0)[0] = 1.;
 
 
     auto phys_coeff_3_1_1_0 = EpetraTools::create_vector(
-                                  EpetraTools::create_map(phys_space_3_1_1_0, "active", comm));
+                                  EpetraTools::create_map(*phys_space_3_1_1_0, "active", comm));
     (*phys_coeff_3_1_1_0)[0] = 1.;
 
 
     auto phys_coeff_2_2_1_0 = EpetraTools::create_vector(
-                                  EpetraTools::create_map(phys_space_2_2_1_0, "active", comm));
+                                  EpetraTools::create_map(*phys_space_2_2_1_0, "active", comm));
     (*phys_coeff_2_2_1_0)[0] = 1.;
 
 
     auto phys_coeff_3_3_1_0 = EpetraTools::create_vector(
-                                  EpetraTools::create_map(phys_space_3_3_1_0, "active", comm));
+                                  EpetraTools::create_map(*phys_space_3_3_1_0, "active", comm));
     (*phys_coeff_3_3_1_0)[0] = 1.;
 
 
     auto phys_coeff_2_1_1_1 = EpetraTools::create_vector(
-                                  EpetraTools::create_map(phys_space_2_1_1_1, "active", comm));
+                                  EpetraTools::create_map(*phys_space_2_1_1_1, "active", comm));
     (*phys_coeff_2_1_1_1)[0] = 1.;
 
 
     auto phys_coeff_2_3_1_1 = EpetraTools::create_vector(
-                                  EpetraTools::create_map(phys_space_2_3_1_1, "active", comm));
+                                  EpetraTools::create_map(*phys_space_2_3_1_1, "active", comm));
     (*phys_coeff_2_3_1_1)[0] = 1.;
 
     auto phys_func_1_1_1_0 = IgFunction<1,0,1,1>::create(phys_space_1_1_1_0,phys_coeff_1_1_1_0);
