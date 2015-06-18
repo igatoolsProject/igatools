@@ -34,7 +34,7 @@ NURBSElement(const std::shared_ptr<ContainerType> space,
     :
     parent_t(space,index),
     bspline_elem_(space->get_spline_space(),index),
-    weight_elem_(std::shared_ptr<WeightElem>(new WeightElem(space->weight_func_,index)))
+    weight_elem_(space->weight_func_,index)
 {
 //    weight_elem_ =
 //        std::shared_ptr<WeightElem>(new WeightElem(space->weight_func_,index));
@@ -48,9 +48,10 @@ NURBSElement(const self_t &elem,
              const CopyPolicy &copy_policy)
     :
     parent_t(elem,copy_policy),
-    bspline_elem_(elem.bspline_elem_,copy_policy)
-//    weight_elem_(elem.weight_elem_)
+    bspline_elem_(elem.bspline_elem_,copy_policy),
+    weight_elem_(elem.weight_elem_,copy_policy)
 {
+    /*
     if (copy_policy == CopyPolicy::shallow)
     {
         weight_elem_ = elem.weight_elem_;
@@ -59,6 +60,7 @@ NURBSElement(const self_t &elem,
     {
         weight_elem_ = std::shared_ptr<WeightElem>(new WeightElem(*elem.weight_elem_));
     }
+    //*/
     Assert(false,ExcNotTested());
 }
 
@@ -103,7 +105,7 @@ move_to(const Index flat_index)
     parent_t::move_to(flat_index);
     bspline_elem_.move_to(flat_index);
 
-    weight_elem_->move_to(flat_index);
+    weight_elem_.move_to(flat_index);
 }
 
 

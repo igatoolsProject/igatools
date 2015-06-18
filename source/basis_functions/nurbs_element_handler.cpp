@@ -181,7 +181,7 @@ init_ref_elem_cache(RefElementAccessor &elem, const topology_variant &topology)
     bspline_handler_->init_cache(bsp_elem,topology);
 
     const auto nrb_space = this->get_nurbs_space();
-    nrb_space->weight_func_->init_cache(*(nrb_elem.weight_elem_),topology);
+    nrb_space->weight_func_->init_cache(nrb_elem.weight_elem_,topology);
 
 
     //-------------------------------------
@@ -205,7 +205,7 @@ operator()(const Topology<sub_elem_dim> &sub_elem)
     auto &sub_elem_cache = nrb_elem_.all_sub_elems_cache_->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id_);
 
     const auto &bsp_elem = nrb_elem_.bspline_elem_;
-    const auto &weight_elem = *nrb_elem_.weight_elem_;
+    const auto &weight_elem = nrb_elem_.weight_elem_;
 
     if (sub_elem_cache.template status_fill<_Value>())
     {
@@ -252,7 +252,7 @@ fill_ref_elem_cache(RefElementAccessor &elem, const topology_variant &topology, 
 
     bspline_handler_->fill_cache(bsp_elem,topology,sub_elem_id);
 
-    nrb_space->weight_func_->fill_cache(*(nrb_elem.weight_elem_),topology,sub_elem_id);
+    nrb_space->weight_func_->fill_cache(nrb_elem.weight_elem_,topology,sub_elem_id);
 
 
     //-----------------------------------------

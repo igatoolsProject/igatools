@@ -50,10 +50,10 @@ private:
     template <int order>
     using Derivative = typename Func::template Derivative<order>;
 
+public:
 
     /** @name Constructors */
     ///@{
-protected:
     /**
      * Default constructor. It does nothing but it is needed for the
      * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -61,7 +61,6 @@ protected:
      */
     FunctionElement() = default;
 
-public:
 
     /**
      * Construct an accessor pointing to the element with
