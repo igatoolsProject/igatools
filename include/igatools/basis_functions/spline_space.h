@@ -148,6 +148,7 @@ public:
         ComponentContainer<Size> get_offset() const;
 
         void print_info(LogStream &out) const;
+
     };
 
 
@@ -408,6 +409,12 @@ public:
             return comp_map_;
         }
 
+        /**
+         * Equality comparison operator.
+         */
+        bool operator==(const self_t &table) const;
+
+
     private:
         /** For each component return the index of the active component */
         SafeSTLArray<Index, n_entries> comp_map_;
@@ -588,6 +595,31 @@ ComponentContainer(const T &val)
     base_t::operator[](0) = val;
 }
 
+
+
+template<int dim, int range, int rank>
+template<class T>
+bool
+SplineSpace<dim, range, rank>::
+ComponentContainer<T>::
+operator==(const self_t &table) const
+{
+    const bool same_comp_map = (comp_map_ == table.comp_map_);
+
+    const bool same_active_components_id = (active_components_id_ == table.active_components_id_);
+
+    const bool same_inactive_components_id = (inactive_components_id_ == table.inactive_components_id_);
+
+    bool same_data = false;
+    if (same_comp_map && same_active_components_id && same_inactive_components_id)
+    {
+        same_data = true;
+        for (const auto comp : active_components_id_)
+            same_data = same_data && (base_t::operator[](comp) == table[comp]);
+    }
+
+    return same_data;
+}
 
 
 template<int dim, int range, int rank>

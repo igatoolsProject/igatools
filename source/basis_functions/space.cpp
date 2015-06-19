@@ -162,6 +162,13 @@ get_global_dof_id(const TensorIndex<dim> &tensor_index,
     return this->get_dof_distribution()->get_index_table()[comp](tensor_index);
 }
 
+template <int dim_,int codim_,int range_,int rank_>
+auto
+Space<dim_,codim_,range_,rank_>::
+get_interior_dofs() const -> std::set<Index>
+{
+    return this->get_dof_distribution()->get_interior_dofs();
+}
 
 
 #ifdef SERIALIZATION

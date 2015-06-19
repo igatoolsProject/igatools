@@ -203,6 +203,13 @@ public:
     void global_to_comp_local(const Index global_dof_id,int &comp,int &dof_id) const;
 
     /**
+     * Returns the dofs that are on the interior of the <tt>dim</tt>-dimensional hypercube
+     * (i.e. the dofs that are not on the boundary).
+     */
+    std::set<Index> get_interior_dofs() const;
+
+
+    /**
      * @name Functions related to the management/query of the dof properties.
      */
     ///@{

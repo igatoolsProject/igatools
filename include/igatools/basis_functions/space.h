@@ -224,7 +224,11 @@ public:
     get_dof_distribution() = 0;
 
 
-    virtual std::set<Index> get_interior_dofs() const = 0;
+    /**
+     * Returns the dofs that are on the interior of the <tt>dim</tt>-dimensional hypercube
+     * (i.e. the dofs that are not on the boundary).
+     */
+    std::set<Index> get_interior_dofs() const;
 
     using topology_variant = TopologyVariants<dim_>;
 

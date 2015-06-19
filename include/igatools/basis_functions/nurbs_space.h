@@ -210,8 +210,6 @@ public:
         const std::string &dofs_property = DofProperties::active) const override final;
 
 
-    std::set<Index> get_interior_dofs() const;
-
     using typename BaseSpace::topology_variant;
 
     std::set<Index>

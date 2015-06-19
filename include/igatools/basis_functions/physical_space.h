@@ -198,8 +198,6 @@ public:
     }
 
 
-    virtual std::set<Index> get_interior_dofs() const override final;
-
     void print_info(LogStream &out) const override final;
 
     std::shared_ptr<SpaceElementHandler<dim_,codim_,range_,rank_>> get_elem_handler() const;

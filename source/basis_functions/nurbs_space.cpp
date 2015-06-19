@@ -537,13 +537,6 @@ get_element_dofs(
         dofs_property);
 }
 
-template <int dim_, int range_, int rank_>
-std::set<Index>
-NURBSSpace<dim_, range_, rank_>::
-get_interior_dofs() const
-{
-    return sp_space_->get_interior_dofs();
-}
 
 
 template <int dim_, int range_, int rank_>

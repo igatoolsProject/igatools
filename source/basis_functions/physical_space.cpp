@@ -305,13 +305,6 @@ get_elem_handler() const -> std::shared_ptr<SpaceElementHandler<dim_,codim_,rang
 
 
 
-template <int dim_, int range_, int rank_, int codim_, Transformation type_>
-std::set<Index>
-PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-get_interior_dofs() const
-{
-    return ref_space_->get_interior_dofs();
-}
 
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 int

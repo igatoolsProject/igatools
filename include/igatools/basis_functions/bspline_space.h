@@ -334,29 +334,37 @@ public:
     get_boundary_dofs(const int s_id, const topology_variant &k) const override
     {
         std::set<Index> dofs;
-        boundary_dofs_impl.s_id     = s_id;
-        boundary_dofs_impl.end_b_   = &end_b_;
-        boundary_dofs_impl.bs_space = this;
-        boundary_dofs_impl.dofs = &dofs;
+        GetBoundaryDofsDispatcher boundary_dofs_impl(s_id,end_b_,*this->get_dof_distribution(),dofs);
 
         boost::apply_visitor(boundary_dofs_impl, k);
         return dofs;
     }
 
-    struct get_boundary_dofs_disp : boost::static_visitor<void>
+    struct GetBoundaryDofsDispatcher : boost::static_visitor<void>
     {
+        GetBoundaryDofsDispatcher(const int s_id,
+                                  const EndBehaviourTable &end_b,
+                                  const DofDistribution<dim_,range_,rank_> &dof_distribution,
+                                  std::set<Index> &dofs)
+            :
+            s_id_(s_id),
+            end_b_(end_b),
+            dof_distribution_(dof_distribution),
+            dofs_(dofs)
+        {}
+
         template<int sub_elem_dim>
         void operator()(const Topology<sub_elem_dim> &sub_elem)
         {
-            auto &k_elem = UnitElement<dim>::template get_elem<sub_elem_dim>(s_id);
+            auto &k_elem = UnitElement<dim>::template get_elem<sub_elem_dim>(s_id_);
             const auto &active_dirs = k_elem.active_directions;
 
             const int n_dir = k_elem.constant_directions.size();
 
 #ifndef NDEBUG
-            for (int comp : end_b_->get_active_components_id())
+            for (int comp : end_b_.get_active_components_id())
                 for (int j=0; j<n_dir; ++j)
-                    Assert((*end_b_)[comp][k_elem.constant_directions[j]] ==
+                    Assert(end_b_[comp][k_elem.constant_directions[j]] ==
                            BasisEndBehaviour::interpolatory,
                            ExcNotImplemented());
 #endif
@@ -364,20 +372,21 @@ public:
             TensorIndex<dim> first;
             TensorIndex<dim> last;
 
-            const auto &space_index_table = bs_space->get_dof_distribution()->get_index_table();
+            const auto &space_index_table = dof_distribution_.get_index_table();
+            const auto &num_dofs_table = dof_distribution_.get_num_dofs_table();
             for (auto comp : SpaceData::components)
             {
                 for (int j = 0 ; j < sub_elem_dim ; ++j)
                 {
                     first[active_dirs[j]] = 0;
-                    last[active_dirs[j]] = bs_space->get_num_basis(comp, active_dirs[j]);
+                    last[active_dirs[j]] = num_dofs_table[comp][active_dirs[j]];
                 }
 
                 for (int j = 0 ; j < n_dir ; ++j)
                 {
                     auto dir = k_elem.constant_directions[j];
                     auto val = k_elem.constant_values[j];
-                    const int fixed_id = val * (bs_space->get_num_basis(comp, dir) - 1);
+                    const int fixed_id = val * (num_dofs_table[comp][dir] - 1);
                     first[dir] = fixed_id;
                     last[dir] = fixed_id + 1;
                 }
@@ -387,21 +396,19 @@ public:
                 const auto &elem_global_indices = space_index_table[comp];
 
                 for (auto &tensor_index : tensor_ind)
-                    dofs->insert(elem_global_indices(tensor_index));
+                    dofs_.insert(elem_global_indices(tensor_index));
             }
 
 
         }
-
-        int s_id;
-        EndBehaviourTable const *end_b_;
-        self_t const *bs_space;
-        std::set<Index> *dofs;
+    private:
+        const int s_id_;
+        const EndBehaviourTable &end_b_;
+        const DofDistribution<dim_,range_,rank_> &dof_distribution_;
+        std::set<Index> &dofs_;
     };
 
-    mutable get_boundary_dofs_disp boundary_dofs_impl;
 
-    std::set<Index> get_interior_dofs() const override;
 
 
 

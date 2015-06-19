@@ -354,6 +354,46 @@ get_num_dofs_table() const -> const TensorSizeTable &
 }
 
 
+
+
+template<int dim, int range, int rank>
+auto
+DofDistribution<dim, range, rank>::
+get_interior_dofs() const -> std::set<Index>
+{
+    Assert(num_dofs_table_ == index_table_size_,ExcNotImplemented());
+    /*
+    #ifndef NDEBUG
+    for (int comp : end_b_.get_active_components_id())
+        for (int j=0; j<dim; ++j)
+            Assert(end_b_[comp][j] == BasisEndBehaviour::interpolatory,
+            ExcNotImplemented());
+    #endif
+    //*/
+
+    std::set<Index> dofs;
+
+    TensorIndex<dim> first(1);
+    TensorIndex<dim> last;
+
+    for (int comp = 0 ; comp < IndexDistributionTable::n_entries ; ++comp)
+    {
+        for (int j = 0; j < dim ; ++j)
+        {
+//            first[j] = 1;
+            last[j] = num_dofs_table_[comp][j]-1;
+        }
+
+        auto tensor_ind = tensor_range(first, last);
+        const auto &elem_global_indices = index_table_[comp];
+
+        for (auto &tensor_index : tensor_ind)
+            dofs.insert(elem_global_indices(tensor_index));
+    }
+
+    return dofs;
+}
+
 #ifdef SERIALIZATION
 template<int dim, int range, int rank>
 template<class Archive>
