@@ -91,6 +91,25 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 0; int dim = 1; i
             Component[0]: 
          
       
+      Map function:
+         Quadrature cache for all dimensions:
+            Quadrature cache for dimension: 0
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
+         
+      
    
    Dofs sub element to space mapping:
    [ 0 ]
@@ -183,6 +202,25 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 0; int dim = 1; i
          
          Bernstein Extraction:
             Component[0]: 
+         
+      
+      Map function:
+         Quadrature cache for all dimensions:
+            Quadrature cache for dimension: 0
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
          
       
    
@@ -291,6 +329,42 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 2; i
             [2,2]((1.00000,0.00000),(0.00000,1.00000))
          
       
+      Map function:
+         Quadrature cache for all dimensions:
+            Quadrature cache for dimension: 0
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
+            Quadrature cache for dimension: 1
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
+         
+      
    
    Dofs sub element to space mapping:
    [ 0 2 4 ]
@@ -390,6 +464,42 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 2; i
             Direction[0]:
             [2,2]((1.00000,0.00000),(0.00000,1.00000))
             [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         
+      
+      Map function:
+         Quadrature cache for all dimensions:
+            Quadrature cache for dimension: 0
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
+            Quadrature cache for dimension: 1
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
          
       
    
@@ -492,6 +602,42 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 2; i
             [2,2]((1.00000,0.00000),(0.00000,1.00000))
          
       
+      Map function:
+         Quadrature cache for all dimensions:
+            Quadrature cache for dimension: 0
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
+            Quadrature cache for dimension: 1
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
+         
+      
    
    Dofs sub element to space mapping:
    [ 0 1 ]
@@ -590,6 +736,42 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 2; i
             Component[0]: 
             Direction[0]:
             [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         
+      
+      Map function:
+         Quadrature cache for all dimensions:
+            Quadrature cache for dimension: 0
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
+            Quadrature cache for dimension: 1
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
          
       
    
@@ -706,6 +888,46 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 3; i
             [2,2]((1.00000,0.00000),(0.00000,1.00000))
          
       
+      Map function:
+         Quadrature cache for all dimensions:
+            Quadrature cache for dimension: 1
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
+            Quadrature cache for dimension: 2
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+                  Direction: 1
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
+         
+      
    
    Dofs sub element to space mapping:
    [ 0 2 4 6 8 10 12 14 16 18 20 22 ]
@@ -813,6 +1035,46 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 3; i
             [2,2]((1.00000,0.00000),(0.00000,1.00000))
             [2,2]((1.00000,0.00000),(0.00000,1.00000))
             [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         
+      
+      Map function:
+         Quadrature cache for all dimensions:
+            Quadrature cache for dimension: 1
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
+            Quadrature cache for dimension: 2
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+                  Direction: 1
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
          
       
    
@@ -923,6 +1185,46 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 3; i
             [2,2]((1.00000,0.00000),(0.00000,1.00000))
          
       
+      Map function:
+         Quadrature cache for all dimensions:
+            Quadrature cache for dimension: 1
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
+            Quadrature cache for dimension: 2
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+                  Direction: 1
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
+         
+      
    
    Dofs sub element to space mapping:
    [ 0 1 6 7 12 13 18 19 ]
@@ -1029,6 +1331,46 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 3; i
             [2,2]((1.00000,0.00000),(0.00000,1.00000))
             [2,2]((1.00000,0.00000),(0.00000,1.00000))
             [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         
+      
+      Map function:
+         Quadrature cache for all dimensions:
+            Quadrature cache for dimension: 1
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
+            Quadrature cache for dimension: 2
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+                  Direction: 1
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
          
       
    
@@ -1138,6 +1480,46 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 3; i
             [2,2]((1.00000,0.00000),(0.00000,1.00000))
          
       
+      Map function:
+         Quadrature cache for all dimensions:
+            Quadrature cache for dimension: 1
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
+            Quadrature cache for dimension: 2
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+                  Direction: 1
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
+         
+      
    
    Dofs sub element to space mapping:
    [ 0 1 2 3 4 5 ]
@@ -1243,6 +1625,46 @@ void sub_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 3; i
             Direction[1]:
             [2,2]((1.00000,0.00000),(0.00000,1.00000))
             [2,2]((1.00000,0.00000),(0.00000,1.00000))
+         
+      
+      Map function:
+         Quadrature cache for all dimensions:
+            Quadrature cache for dimension: 1
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
+            Quadrature cache for dimension: 2
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+                  Direction: 1
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
          
       
    

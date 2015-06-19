@@ -57,7 +57,9 @@ create(const int degree,
     auto sp = shared_ptr<self_t>(new self_t(degree,knots,interior_reg,periodic,end_b));
     Assert(sp != nullptr, ExcNullPtr());
 
+#ifdef MESH_REFINEMENT
     sp->create_connection_for_insert_knots(sp);
+#endif
 
     return sp;
 }
@@ -95,7 +97,9 @@ create(const Degrees &deg,
     auto sp = shared_ptr<self_t>(new self_t(deg, knots, interior_reg, periodic, end_b));
     Assert(sp != nullptr, ExcNullPtr());
 
+#ifdef MESH_REFINEMENT
     sp->create_connection_for_insert_knots(sp);
+#endif
 
     return sp;
 }
@@ -207,7 +211,9 @@ create(const DegreeTable &deg,
     auto sp = shared_ptr<self_t>(new self_t(deg, knots, interior_mult, periodic, end_b));
     Assert(sp != nullptr, ExcNullPtr());
 
+#ifdef MESH_REFINEMENT
     sp->create_connection_for_insert_knots(sp);
+#endif
 
     return sp;
 }
@@ -223,7 +229,9 @@ create(std::shared_ptr<SpaceData> space_data,
     auto sp = shared_ptr<self_t>(new self_t(space_data, end_b));
     Assert(sp != nullptr, ExcNullPtr());
 
+#ifdef MESH_REFINEMENT
     sp->create_connection_for_insert_knots(sp);
+#endif
 
     return sp;
 }

@@ -51,9 +51,8 @@ PhysicalSpace(shared_ptr<RefSpace> ref_space,
 //TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
     Assert(ref_space_ != nullptr, ExcNullPtr());
 
-    Assert(this->map_func_.unique(), ExcNotUnique());
 
-    Assert(this->get_grid() == this->map_func_->get_grid(),
+    Assert(this->get_grid() == this->get_map_func()->get_grid(),
            ExcMessage("Reference space and mapping grids are not the same."))
 
 }
@@ -70,7 +69,9 @@ create(shared_ptr<RefSpace> ref_space,
     Assert(map_func.unique(), ExcNotUnique());
     auto sp = shared_ptr<self_t>(new self_t(ref_space, map_func));
 
+#ifdef MESH_REFINEMENT
     sp->create_connection_for_insert_knots(sp);
+#endif // MESH_REFINEMENT
 
     return sp;
 }
@@ -185,7 +186,7 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
     auto grid =  this->get_grid();
 
     auto sub_ref_space = ref_space_->get_ref_sub_space(s_id, dof_map, sub_grid);
-    auto sub_map_func = SubMap::create(sub_grid, *this->map_func_, s_id, *elem_map);
+    auto sub_map_func = SubMap::create(sub_grid, *this->get_map_func(), s_id, *elem_map);
     auto sub_space = SubSpace<k>::create(sub_ref_space, sub_map_func);
     return sub_space;
 }
@@ -281,6 +282,10 @@ print_info(LogStream &out) const
     out.begin_item("Reference space:");
     ref_space_->print_info(out);
     out.end_item();
+
+    out.begin_item("Map function:");
+    this->get_map_func()->print_info(out);
+    out.end_item();
 }
 
 
@@ -353,12 +358,12 @@ rebuild_after_insert_knots(
     Assert(prev_ref_space != nullptr, ExcNullPtr());
 
 //    const auto &prev_map_func = std::const_pointer_cast<MapFunc>(this->map_func_->get_function_previous_refinement());
-    Assert(this->map_func_->get_function_previous_refinement() != nullptr, ExcNullPtr());
+    Assert(this->get_map_func()->get_function_previous_refinement() != nullptr, ExcNullPtr());
 //    std::cout << "Counter = " << prev_map_func.use_count() << std::endl;
-    Assert(this->map_func_->get_function_previous_refinement().unique(), ExcNotUnique());
+    Assert(this->get_map_func()->get_function_previous_refinement().unique(), ExcNotUnique());
 
     this->phys_space_previous_refinement_ =
-        PhysicalSpace<dim_,range_,rank_,codim_,type_>::create(prev_ref_space,this->map_func_->get_function_previous_refinement());
+        PhysicalSpace<dim_,range_,rank_,codim_,type_>::create(prev_ref_space,this->get_map_func()->get_function_previous_refinement());
 }
 
 #endif

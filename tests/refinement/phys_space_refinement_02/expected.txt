@@ -242,6 +242,46 @@ Reference space:
       
    
 
+Map function:
+   IdentityFunction<1,1>
+      Function<1,0,1,1>
+         Quadrature cache for all dimensions:
+            Quadrature cache for dimension: 0
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
+            Quadrature cache for dimension: 1
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
+         
+      
+   
+
 ===============================================================
 
 ===============================================================
@@ -487,6 +527,46 @@ Reference space:
             Coef[loc_id=3 , glob_id=3] = 0.587500
             Coef[loc_id=4 , glob_id=4] = 0.825000
             Coef[loc_id=5 , glob_id=5] = 1.00000
+         
+      
+   
+
+Map function:
+   IdentityFunction<1,1>
+      Function<1,0,1,1>
+         Quadrature cache for all dimensions:
+            Quadrature cache for dimension: 0
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
+            Quadrature cache for dimension: 1
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
          
       
    
@@ -764,6 +844,50 @@ Reference space:
             Coef[loc_id=13 , glob_id=13] = 0.400000
             Coef[loc_id=14 , glob_id=14] = 0.650000
             Coef[loc_id=15 , glob_id=15] = 1.00000
+         
+      
+   
+
+Map function:
+   IdentityFunction<2,2>
+      Function<2,0,2,1>
+         Quadrature cache for all dimensions:
+            Quadrature cache for dimension: 1
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
+            Quadrature cache for dimension: 2
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+                  Direction: 1
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
          
       
    
@@ -1065,6 +1189,50 @@ Reference space:
             Coef[loc_id=33 , glob_id=33] = 0.587500
             Coef[loc_id=34 , glob_id=34] = 0.825000
             Coef[loc_id=35 , glob_id=35] = 1.00000
+         
+      
+   
+
+Map function:
+   IdentityFunction<2,2>
+      Function<2,0,2,1>
+         Quadrature cache for all dimensions:
+            Quadrature cache for dimension: 1
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
+            Quadrature cache for dimension: 2
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+                  Direction: 1
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
          
       
    
@@ -1408,6 +1576,54 @@ Reference space:
             Coef[loc_id=61 , glob_id=61] = 0.400000
             Coef[loc_id=62 , glob_id=62] = 0.650000
             Coef[loc_id=63 , glob_id=63] = 1.00000
+         
+      
+   
+
+Map function:
+   IdentityFunction<3,3>
+      Function<3,0,3,1>
+         Quadrature cache for all dimensions:
+            Quadrature cache for dimension: 2
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+                  Direction: 1
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
+            Quadrature cache for dimension: 3
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+                  Direction: 1
+                  [ ]
+                  Direction: 2
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
          
       
    
@@ -1911,6 +2127,54 @@ Reference space:
             Coef[loc_id=213 , glob_id=213] = 0.587500
             Coef[loc_id=214 , glob_id=214] = 0.825000
             Coef[loc_id=215 , glob_id=215] = 1.00000
+         
+      
+   
+
+Map function:
+   IdentityFunction<3,3>
+      Function<3,0,3,1>
+         Quadrature cache for all dimensions:
+            Quadrature cache for dimension: 2
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+                  Direction: 1
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
+            Quadrature cache for dimension: 3
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+                  Direction: 1
+                  [ ]
+                  Direction: 2
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
          
       
    

@@ -67,7 +67,9 @@ create(const DegreeTable &deg,
     auto sp = std::shared_ptr<SpSpace>(new SpSpace(deg, knots,interior_mult,periodic));
     Assert(sp != nullptr, ExcNullPtr());
 
+#ifdef MESH_REFINEMENT
     sp->create_connection_for_insert_knots(sp);
+#endif // MESH_REFINEMENT
 
     return sp;
 }
@@ -138,6 +140,7 @@ init()
 }
 
 
+#ifdef MESH_REFINEMENT
 
 template<int dim, int range, int rank>
 void
@@ -249,6 +252,28 @@ rebuild_after_insert_knots(
 
     this->init();
 }
+
+
+template<int dim, int range, int rank>
+void
+SplineSpace<dim, range, rank>::
+create_connection_for_insert_knots(std::shared_ptr<SplineSpace<dim,range,rank>> space)
+{
+    Assert(space != nullptr, ExcNullPtr());
+    Assert(&(*space) == &(*this), ExcMessage("Different objects."));
+
+    auto func_to_connect =
+        std::bind(&SplineSpace<dim,range,rank>::rebuild_after_insert_knots,
+                  space.get(),
+                  std::placeholders::_1,
+                  std::placeholders::_2);
+
+    using SlotType = typename CartesianGrid<dim>::SignalInsertKnotsSlot;
+    this->connect_insert_knots_function(
+        SlotType(func_to_connect).track_foreign(space));
+}
+
+#endif // MESH_REFINEMENT
 
 
 
@@ -529,24 +554,6 @@ get_multiplicity_from_regularity(const InteriorReg reg,
 }
 
 
-template<int dim, int range, int rank>
-void
-SplineSpace<dim, range, rank>::
-create_connection_for_insert_knots(std::shared_ptr<SplineSpace<dim,range,rank>> space)
-{
-    Assert(space != nullptr, ExcNullPtr());
-    Assert(&(*space) == &(*this), ExcMessage("Different objects."));
-
-    auto func_to_connect =
-        std::bind(&SplineSpace<dim,range,rank>::rebuild_after_insert_knots,
-                  space.get(),
-                  std::placeholders::_1,
-                  std::placeholders::_2);
-
-    using SlotType = typename CartesianGrid<dim>::SignalInsertKnotsSlot;
-    this->connect_insert_knots_function(
-        SlotType(func_to_connect).track_foreign(space));
-}
 
 template<int dim, int range, int rank>
 void

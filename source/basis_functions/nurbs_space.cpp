@@ -38,91 +38,6 @@ using std::placeholders::_2;
 IGA_NAMESPACE_OPEN
 
 
-#if 0
-
-template <int dim_, int range_, int rank_>
-NURBSSpace<dim_, range_, rank_>::
-NURBSSpace(const int degree,
-           shared_ptr< GridType > knots,
-           const WeightsTable &weights)
-    :
-    NURBSSpace(DegreeTable(TensorIndex<dim>(degree)), knots, weights)
-{}
-
-
-
-template <int dim_, int range_, int rank_>
-auto
-NURBSSpace<dim_, range_, rank_>::
-create(const int degree,
-       shared_ptr< GridType > knots,
-       const WeightsTable &weights) -> shared_ptr<self_t>
-{
-    return shared_ptr<self_t>(new self_t(degree, knots,  weights));
-}
-
-
-
-template <int dim_, int range_, int rank_>
-NURBSSpace<dim_, range_, rank_>::
-NURBSSpace(const DegreeTable &degree,
-           shared_ptr<GridType> knots,
-           const WeightsTable &weights)
-    :
-    BaseSpace(knots),
-    sp_space_(SpSpace::create(degree,knots)),
-    weights_(weights)
-{
-
-    create_refinement_connection();
-    perform_post_construction_checks();
-}
-
-
-
-template <int dim_, int range_, int rank_>
-auto
-NURBSSpace<dim_, range_, rank_>::
-create(const DegreeTable &degree, shared_ptr<GridType> knots,
-       const WeightsTable &weights)
--> shared_ptr<self_t>
-{
-    return shared_ptr<self_t>(new self_t(degree, knots, weights));
-}
-
-
-
-template <int dim_, int range_, int rank_>
-NURBSSpace<dim_, range_, rank_>::
-NURBSSpace(const DegreeTable &deg,
-           std::shared_ptr<GridType> knots,
-           std::shared_ptr<const MultiplicityTable> interior_mult,
-           const EndBehaviourTable &ends,
-           const WeightsTable &weights)
-    :
-    BaseSpace(knots),
-    sp_space_(SpSpace::create(deg, knots, interior_mult, ends)),
-    weights_(weights)
-{
-    create_refinement_connection();
-    perform_post_construction_checks();
-}
-
-
-
-template <int dim_, int range_, int rank_>
-auto
-NURBSSpace<dim_, range_, rank_>::
-create(const DegreeTable &deg,
-       std::shared_ptr<GridType> knots,
-       std::shared_ptr<const MultiplicityTable> interior_mult,
-       const EndBehaviourTable &ends,
-       const WeightsTable &weights) -> shared_ptr<self_t>
-{
-    return shared_ptr<self_t>(new self_t(deg, knots, interior_mult, ends, weights));
-}
-
-#endif
 
 template <int dim_, int range_, int rank_>
 NURBSSpace<dim_, range_, rank_>::
@@ -181,37 +96,14 @@ create(std::shared_ptr<SpSpace> bs_space,
     auto sp = shared_ptr<self_t>(new self_t(bs_space,weight_func));
     Assert(sp != nullptr, ExcNullPtr());
 
+#ifdef MESH_REFINEMENT
     sp->create_connection_for_insert_knots(sp);
+#endif // MESH_REFINEMENT
 
     return sp;
 }
 
 
-#if 0
-template <int dim_, int range_, int rank_>
-void
-NURBSSpace<dim_, range_, rank_>::
-create_refinement_connection()
-{
-    // create a signal and a connection for the grid refinement
-    this->connect_refinement_h_function(
-        bind(&self_t::refine_h_weights, this, std::placeholders::_1, std::placeholders::_2));
-}
-template <int dim_, int range_, int rank_>
-void
-NURBSSpace<dim_, range_, rank_>::
-perform_post_construction_checks() const
-{
-#ifndef NDEBUG
-    // check that the number of weights is equal to the number of basis functions in the space
-    for (auto comp : components)
-    {
-        Assert(sp_space_->get_num_basis(comp) == weights_[comp].flat_size(),
-               ExcDimensionMismatch(sp_space_->get_num_basis(comp),weights_[comp].flat_size()));
-    }
-#endif
-}
-#endif
 
 template<int dim_, int range_, int rank_>
 auto

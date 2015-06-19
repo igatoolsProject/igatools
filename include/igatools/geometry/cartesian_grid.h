@@ -537,6 +537,7 @@ public:
      */
     bool operator==(const CartesianGrid<dim_> &grid) const;
 
+#ifdef MESH_REFINEMENT
 private:
 
     /** Type for the insert_knots signal. */
@@ -612,6 +613,7 @@ public:
      */
     std::shared_ptr<const self_t > get_grid_pre_refinement() const;
     ///@}
+#endif // MESH_REFINEMENT
 
 private:
     /** Flag for optimization use */

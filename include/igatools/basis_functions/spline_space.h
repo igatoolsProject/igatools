@@ -448,6 +448,7 @@ public:
 
     std::shared_ptr<SplineSpace<dim,range,rank> > spline_space_previous_refinement_;
 
+#ifdef MESH_REFINEMENT
     /**
      * Rebuild the internal state of the object after an insert_knots() function is invoked.
      *
@@ -469,6 +470,7 @@ public:
     {
         return spline_space_previous_refinement_;
     }
+#endif // MESH_REFINEMENT
 
 protected:
 

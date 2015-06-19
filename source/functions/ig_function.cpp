@@ -125,11 +125,12 @@ create(std::shared_ptr<const Space<dim,codim,range,rank>> space,
        const std::string &property) ->  std::shared_ptr<self_t>
 {
     auto ig_func = std::make_shared<self_t>(space, coeff, property);
-
     Assert(ig_func != nullptr, ExcNullPtr());
+
 #ifdef MESH_REFINEMENT
     ig_func->create_connection_for_insert_knots(ig_func);
 #endif // MESH_REFINEMENT
+
     return ig_func;
 }
 
@@ -241,6 +242,7 @@ operator +=(const self_t &fun) -> self_t &
 
 
 #ifdef MESH_REFINEMENT
+
 template<int dim,int codim,int range,int rank>
 void
 IgFunction<dim,codim,range,rank>::
@@ -297,6 +299,7 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> ig_function)
     this->grid_wrapper_.connect_insert_knots_function(
         SlotType(func_to_connect).track_foreign(ig_function));
 }
+
 #endif // MESH_REFINEMENT
 
 template<int dim,int codim,int range,int rank>

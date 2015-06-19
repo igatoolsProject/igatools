@@ -261,7 +261,7 @@ private:
 
     void create_connection_for_insert_knots(std::shared_ptr<self_t> space);
 
-#endif
+#endif // MESH_REFINEMENT
 
 
 #ifdef SERIALIZATION

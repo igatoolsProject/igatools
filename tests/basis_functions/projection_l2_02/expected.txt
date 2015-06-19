@@ -156,6 +156,46 @@ IgFunction<2,0,1,1>
             [4,4]((0.166667,0.00000,0.00000,0.00000),(0.583333,0.500000,0.00000,0.00000),(0.250000,0.500000,1.00000,0.00000),(0.00000,0.00000,0.00000,1.00000))
          
       
+      Map function:
+         Quadrature cache for all dimensions:
+            Quadrature cache for dimension: 1
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
+            Quadrature cache for dimension: 2
+               Number of points:0
+               Weights:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+               Coordinates:
+                  Direction: 0
+                  [ ]
+                  Direction: 1
+                  [ ]
+               
+               Points:
+                  ValueVector (num_points=0) :
+                  [ ]
+               
+               
+            
+         
+      
    
    
    Coefficients (a.k.a. "control values"):

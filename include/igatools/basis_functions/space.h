@@ -272,10 +272,10 @@ public:
 
     virtual std::shared_ptr<const self_t> get_space_previous_refinement() const = 0;
 
+private:
 
     std::shared_ptr<MapFunc>  map_func_;
 
-private:
 #ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization

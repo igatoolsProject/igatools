@@ -98,6 +98,46 @@ O R I G I N A L     S P A C E
          [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
       
    
+   Map function:
+      IdentityFunction<1,1>
+         Function<1,0,1,1>
+            Quadrature cache for all dimensions:
+               Quadrature cache for dimension: 0
+                  Number of points:0
+                  Weights:
+                     ValueVector (num_points=0) :
+                     [ ]
+                  
+                  
+                  Coordinates:
+                  
+                  Points:
+                     ValueVector (num_points=0) :
+                     [ ]
+                  
+                  
+               
+               Quadrature cache for dimension: 1
+                  Number of points:0
+                  Weights:
+                     ValueVector (num_points=0) :
+                     [ ]
+                  
+                  
+                  Coordinates:
+                     Direction: 0
+                     [ ]
+                  
+                  Points:
+                     ValueVector (num_points=0) :
+                     [ ]
+                  
+                  
+               
+            
+         
+      
+   
 
 ===============================================================
 
@@ -198,6 +238,46 @@ R E F I N E D     S P A C E
          [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
          [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
          [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+      
+   
+   Map function:
+      IdentityFunction<1,1>
+         Function<1,0,1,1>
+            Quadrature cache for all dimensions:
+               Quadrature cache for dimension: 0
+                  Number of points:0
+                  Weights:
+                     ValueVector (num_points=0) :
+                     [ ]
+                  
+                  
+                  Coordinates:
+                  
+                  Points:
+                     ValueVector (num_points=0) :
+                     [ ]
+                  
+                  
+               
+               Quadrature cache for dimension: 1
+                  Number of points:0
+                  Weights:
+                     ValueVector (num_points=0) :
+                     [ ]
+                  
+                  
+                  Coordinates:
+                     Direction: 0
+                     [ ]
+                  
+                  Points:
+                     ValueVector (num_points=0) :
+                     [ ]
+                  
+                  
+               
+            
+         
       
    
 
@@ -311,6 +391,50 @@ O R I G I N A L     S P A C E
          [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
       
    
+   Map function:
+      IdentityFunction<2,2>
+         Function<2,0,2,1>
+            Quadrature cache for all dimensions:
+               Quadrature cache for dimension: 1
+                  Number of points:0
+                  Weights:
+                     ValueVector (num_points=0) :
+                     [ ]
+                  
+                  
+                  Coordinates:
+                     Direction: 0
+                     [ ]
+                  
+                  Points:
+                     ValueVector (num_points=0) :
+                     [ ]
+                  
+                  
+               
+               Quadrature cache for dimension: 2
+                  Number of points:0
+                  Weights:
+                     ValueVector (num_points=0) :
+                     [ ]
+                  
+                  
+                  Coordinates:
+                     Direction: 0
+                     [ ]
+                     Direction: 1
+                     [ ]
+                  
+                  Points:
+                     ValueVector (num_points=0) :
+                     [ ]
+                  
+                  
+               
+            
+         
+      
+   
 
 ===============================================================
 
@@ -420,6 +544,50 @@ R E F I N E D     S P A C E
          [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
          [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
          [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+      
+   
+   Map function:
+      IdentityFunction<2,2>
+         Function<2,0,2,1>
+            Quadrature cache for all dimensions:
+               Quadrature cache for dimension: 1
+                  Number of points:0
+                  Weights:
+                     ValueVector (num_points=0) :
+                     [ ]
+                  
+                  
+                  Coordinates:
+                     Direction: 0
+                     [ ]
+                  
+                  Points:
+                     ValueVector (num_points=0) :
+                     [ ]
+                  
+                  
+               
+               Quadrature cache for dimension: 2
+                  Number of points:0
+                  Weights:
+                     ValueVector (num_points=0) :
+                     [ ]
+                  
+                  
+                  Coordinates:
+                     Direction: 0
+                     [ ]
+                     Direction: 1
+                     [ ]
+                  
+                  Points:
+                     ValueVector (num_points=0) :
+                     [ ]
+                  
+                  
+               
+            
+         
       
    
 
@@ -540,6 +708,54 @@ O R I G I N A L     S P A C E
          [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
       
    
+   Map function:
+      IdentityFunction<3,3>
+         Function<3,0,3,1>
+            Quadrature cache for all dimensions:
+               Quadrature cache for dimension: 2
+                  Number of points:0
+                  Weights:
+                     ValueVector (num_points=0) :
+                     [ ]
+                  
+                  
+                  Coordinates:
+                     Direction: 0
+                     [ ]
+                     Direction: 1
+                     [ ]
+                  
+                  Points:
+                     ValueVector (num_points=0) :
+                     [ ]
+                  
+                  
+               
+               Quadrature cache for dimension: 3
+                  Number of points:0
+                  Weights:
+                     ValueVector (num_points=0) :
+                     [ ]
+                  
+                  
+                  Coordinates:
+                     Direction: 0
+                     [ ]
+                     Direction: 1
+                     [ ]
+                     Direction: 2
+                     [ ]
+                  
+                  Points:
+                     ValueVector (num_points=0) :
+                     [ ]
+                  
+                  
+               
+            
+         
+      
+   
 
 ===============================================================
 
@@ -658,6 +874,54 @@ R E F I N E D     S P A C E
          [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
          [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.500000),(0.00000,0.00000,0.500000))
          [3,3]((0.500000,0.00000,0.00000),(0.500000,1.00000,0.00000),(0.00000,0.00000,1.00000))
+      
+   
+   Map function:
+      IdentityFunction<3,3>
+         Function<3,0,3,1>
+            Quadrature cache for all dimensions:
+               Quadrature cache for dimension: 2
+                  Number of points:0
+                  Weights:
+                     ValueVector (num_points=0) :
+                     [ ]
+                  
+                  
+                  Coordinates:
+                     Direction: 0
+                     [ ]
+                     Direction: 1
+                     [ ]
+                  
+                  Points:
+                     ValueVector (num_points=0) :
+                     [ ]
+                  
+                  
+               
+               Quadrature cache for dimension: 3
+                  Number of points:0
+                  Weights:
+                     ValueVector (num_points=0) :
+                     [ ]
+                  
+                  
+                  Coordinates:
+                     Direction: 0
+                     [ ]
+                     Direction: 1
+                     [ ]
+                     Direction: 2
+                     [ ]
+                  
+                  Points:
+                     ValueVector (num_points=0) :
+                     [ ]
+                  
+                  
+               
+            
+         
       
    
 
