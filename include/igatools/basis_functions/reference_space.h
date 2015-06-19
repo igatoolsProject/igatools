@@ -164,33 +164,9 @@ public:
      */
     virtual int get_max_degree() const override final;
 
-    /** @name Functions for retrieving information about the number of basis function. */
-    ///@{
-    // TODO (pauletti, Apr 10, 2015): if needed it should go in spline space not here
-    const TensorSizeTable &get_num_basis_table() const;
-
-    // TODO (pauletti, Apr 10, 2015): this one should go in spline space not here
-    Size get_num_basis() const;
 
 
-    Size get_num_basis(const int comp) const;
 
-    Size get_num_basis(const int comp, const int dir) const;
-
-    ComponentContainer<Size> get_basis_offset() const;
-
-    Size get_elem_num_basis() const;
-
-    ///@}
-
-
-    /**
-     * This function returns the global dof id corresponding to the basis function
-     * with tensor index <p>tensor_index</p> on the @p comp component of the space.
-     */
-    Index
-    get_global_dof_id(const TensorIndex<dim> &tensor_index,
-                      const Index comp) const;
 
     /**
      * Returns a const reference to the end behaviour table of the BSpline space.

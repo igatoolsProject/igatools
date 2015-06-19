@@ -224,6 +224,26 @@ public:
     get_dof_distribution() = 0;
 
 
+    /** @name Functions for retrieving information about the number of basis function. */
+    ///@{
+    Size get_num_basis() const;
+
+    Size get_num_basis(const int comp) const;
+
+    Size get_num_basis(const int comp, const int dir) const;
+
+    Size get_elem_num_basis() const;
+
+    /**
+     * This function returns the global dof id corresponding to the basis function
+     * with tensor index <p>tensor_index</p> on the @p comp component of the space.
+     */
+    Index
+    get_global_dof_id(const TensorIndex<dim> &tensor_index,
+                      const Index comp) const;
+    ///@}
+
+
     /**
      * Return the maximum value of the polynomial degree, for each component, for each direction;
      */

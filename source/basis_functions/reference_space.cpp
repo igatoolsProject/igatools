@@ -121,26 +121,6 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
 
 
 
-#if 0
-template<int dim, int range, int rank>
-void
-ReferenceSpace<dim, range, rank>::
-add_dofs_offset(const Index offset)
-{
-    this->get_dof_distribution()->add_dofs_offset(offset);
-}
-#endif
-
-template<int dim, int range, int rank>
-Index
-ReferenceSpace<dim, range, rank>::
-get_global_dof_id(const TensorIndex<dim> &tensor_index,
-                  const Index comp) const
-{
-    return this->get_dof_distribution()->get_index_table()[comp](tensor_index);
-}
-
-
 
 template<int dim, int range, int rank>
 int
@@ -155,55 +135,6 @@ get_max_degree() const
             max_degree = std::max(max_degree,degree_comp_dim);
 
     return max_degree;
-}
-
-template<int dim, int range, int rank>
-auto
-ReferenceSpace<dim, range, rank>::
-get_num_basis_table() const -> const TensorSizeTable &
-{
-    return this->get_dof_distribution()->get_num_dofs_table();
-}
-
-template<int dim, int range, int rank>
-Size
-ReferenceSpace<dim, range, rank>::
-get_num_basis() const
-{
-    return this->get_dof_distribution()->get_num_dofs_table().total_dimension();
-}
-
-
-template<int dim, int range, int rank>
-Size
-ReferenceSpace<dim, range, rank>::
-get_num_basis(const int comp) const
-{
-    return this->get_dof_distribution()->get_num_dofs_table().get_component_size(comp);
-}
-
-template<int dim, int range, int rank>
-Size
-ReferenceSpace<dim, range, rank>::
-get_num_basis(const int comp, const int dir) const
-{
-    return this->get_dof_distribution()->get_num_dofs_table()[comp][dir];
-}
-
-template<int dim, int range, int rank>
-auto
-ReferenceSpace<dim, range, rank>::
-get_basis_offset() const -> ComponentContainer<Size>
-{
-    return this->get_dof_distribution()->get_num_dofs_table().get_offset();
-}
-
-template<int dim, int range, int rank>
-Size
-ReferenceSpace<dim, range, rank>::
-get_elem_num_basis() const
-{
-    return this->get_dof_distribution()->get_num_dofs_table().total_dimension();
 }
 
 

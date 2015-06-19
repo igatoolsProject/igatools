@@ -69,7 +69,7 @@ NURBSSpace(std::shared_ptr<SpSpace> bs_space,
            ExcMessage("The space for the weight function is not BSplineSpace."));
 
 #ifndef NDEBUG
-    const auto &n_basis_table = sp_space_->get_num_basis_table();
+    const auto &n_basis_table = this->get_dof_distribution()->get_num_dofs_table();
     int comp_id = 0;
     for (const auto &n_basis_comp : n_basis_table)
     {

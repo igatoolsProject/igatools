@@ -23,7 +23,7 @@
 #include <igatools/basis_functions/space_element.h>
 #include <igatools/functions/ig_function.h>
 #include <igatools/functions/identity_function.h>
-
+#include <igatools/basis_functions/dof_distribution.h>
 
 using std::shared_ptr;
 using std::unique_ptr;
@@ -116,6 +116,53 @@ end(const std::string &element_property) const -> ElementIterator
 {
     return ElementIterator(this->create_element(IteratorState::pass_the_end),element_property);
 }
+
+
+
+template <int dim_,int codim_,int range_,int rank_>
+auto
+Space<dim_,codim_,range_,rank_>::
+get_num_basis() const -> Size
+{
+    return this->get_dof_distribution()->get_num_dofs_table().total_dimension();
+}
+
+
+template <int dim_,int codim_,int range_,int rank_>
+auto
+Space<dim_,codim_,range_,rank_>::
+get_num_basis(const int comp) const -> Size
+{
+    return this->get_dof_distribution()->get_num_dofs_table().get_component_size(comp);
+}
+
+template <int dim_,int codim_,int range_,int rank_>
+auto
+Space<dim_,codim_,range_,rank_>::
+get_num_basis(const int comp, const int dir) const -> Size
+{
+    return this->get_dof_distribution()->get_num_dofs_table()[comp][dir];
+}
+
+
+template <int dim_,int codim_,int range_,int rank_>
+auto
+Space<dim_,codim_,range_,rank_>::
+get_elem_num_basis() const -> Size
+{
+    return this->get_dof_distribution()->get_num_dofs_table().total_dimension();
+}
+
+template <int dim_,int codim_,int range_,int rank_>
+auto
+Space<dim_,codim_,range_,rank_>::
+get_global_dof_id(const TensorIndex<dim> &tensor_index,
+                  const Index comp) const -> Index
+{
+    return this->get_dof_distribution()->get_index_table()[comp](tensor_index);
+}
+
+
 
 #ifdef SERIALIZATION
 template <int dim_,int codim_,int range_,int rank_>

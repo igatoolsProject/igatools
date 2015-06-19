@@ -51,10 +51,10 @@ void test()
     using ScalarSpSpace = BSplineSpace<dim,1,1>;
     auto scalar_bsp_space = ScalarSpSpace::create(degree, knots);
 
-    const auto n_scalar_basis = scalar_bsp_space->get_num_basis_table()[0];
+    const auto n_scalar_basis = scalar_bsp_space->get_num_basis();
 
     using WeightFunc = IgFunction<dim,0,1,1>;
-    SafeSTLVector<Real> weights_coef(n_scalar_basis.flat_size(),1.0);
+    SafeSTLVector<Real> weights_coef(n_scalar_basis,1.0);
 
     Epetra_SerialComm comm;
     auto map = create_map(*scalar_bsp_space, "active", comm);

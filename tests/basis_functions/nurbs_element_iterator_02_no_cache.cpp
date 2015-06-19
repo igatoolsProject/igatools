@@ -49,10 +49,10 @@ void test()
     using ScalarSpSpace = BSplineSpace<dim,1,1>;
     auto scalar_bsp_space = ScalarSpSpace::create(degree, knots);
 
-    const auto n_scalar_basis = scalar_bsp_space->get_num_basis_table()[0];
+    const auto n_scalar_basis = scalar_bsp_space->get_num_basis();
 
     using WeightFunc = IgFunction<dim,0,1,1>;
-    SafeSTLVector<Real> weights_coef(n_scalar_basis.flat_size());
+    SafeSTLVector<Real> weights_coef(n_scalar_basis);
     const int n_entries = weights_coef.size();
     for (int i = 0 ; i < n_entries ; ++i)
         weights_coef[i] = (i+1) * (1.0 / n_entries) ;

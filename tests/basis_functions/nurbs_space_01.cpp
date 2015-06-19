@@ -111,18 +111,16 @@ void do_test()
 
 
     using Space = NURBSSpace< dim, range, rank >;
-    //  using DegreeTable = typename Space::DegreeTable;
-    auto  knots = CartesianGrid<dim>::create(coord);
-    //  DegreeTable deg(degree);
+    auto grid = CartesianGrid<dim>::create(coord);
 
-    auto  bsp = BSplineSpace<dim, range, rank >::create(degree, knots);
-    const auto n_basis = bsp->get_num_basis_table();
-
-    SafeSTLVector<Real> weights(n_basis[0].flat_size(),1.0);
+    auto  bsp = BSplineSpace<dim, range, rank >::create(degree, grid);
 
     using ScalarBSplineSpace = BSplineSpace<dim>;
     using WeightFunc = IgFunction<dim,0,1,1>;
-    auto scalar_space = ScalarBSplineSpace::create(degree,CartesianGrid<dim>::create(coord));
+    auto scalar_space = ScalarBSplineSpace::create(degree,grid);
+    const auto n_scalar_basis = scalar_space->get_num_basis();
+
+    SafeSTLVector<Real> weights(n_scalar_basis,1.0);
 
     Epetra_SerialComm comm;
     auto map = create_map(*scalar_space, "active", comm);
