@@ -131,8 +131,7 @@ protected:
     ReferenceSpace() = default;
 
     explicit ReferenceSpace(
-        const std::shared_ptr<CartesianGrid<dim_>> grid,
-        const std::shared_ptr<DofDistribution<dim_,range_,rank_>> dof_distribution);
+        const std::shared_ptr<CartesianGrid<dim_>> grid);
 
 public:
     virtual ~ReferenceSpace() = default;
@@ -201,12 +200,14 @@ public:
 
     virtual const PeriodicityTable &get_periodicity() const = 0;
 
-
+#if 0
     std::shared_ptr<const DofDistribution<dim, range, rank> >
     get_dof_distribution() const override final;
 
     std::shared_ptr<DofDistribution<dim, range, rank> >
     get_dof_distribution() override final;
+#endif
+
 
     virtual std::set<Index> get_interior_dofs() const = 0;
 
@@ -236,12 +237,6 @@ public:
 
 
 protected:
-    /**
-     * Container with the local to global basis indices
-     * @note The concept of global indices refers to a global numbering of the
-     * dofs of all the spaces.
-     */
-    std::shared_ptr<DofDistribution<dim,range,rank> > dof_distribution_;
 
     std::shared_ptr<RefSpace> ref_space_previous_refinement_ = nullptr;
 

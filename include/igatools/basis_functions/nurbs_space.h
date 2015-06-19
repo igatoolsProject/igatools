@@ -243,6 +243,12 @@ public:
      */
     virtual void print_info(LogStream &out) const override final;
 
+    std::shared_ptr<const DofDistribution<dim, range, rank> >
+    get_dof_distribution() const override final;
+
+    std::shared_ptr<DofDistribution<dim, range, rank> >
+    get_dof_distribution() override final;
+
 
 
 private:

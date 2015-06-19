@@ -421,6 +421,13 @@ public:
      */
     virtual void print_info(LogStream &out) const override final;
 
+    std::shared_ptr<const DofDistribution<dim, range, rank> >
+    get_dof_distribution() const override final;
+
+    std::shared_ptr<DofDistribution<dim, range, rank> >
+    get_dof_distribution() override final;
+
+
 
 
 private:
@@ -439,6 +446,14 @@ private:
     using EndIntervalTable = typename BaseSpace::template
                              ComponentContainer<SafeSTLArray<std::pair<Real, Real>, dim>>;
     EndIntervalTable end_interval_;
+
+    /**
+     * Container with the local to global basis indices
+     * @note The concept of global indices refers to a global numbering of the
+     * dofs of all the spaces.
+     */
+    std::shared_ptr<DofDistribution<dim,range,rank> > dof_distribution_;
+
 
     friend class BSplineElement<dim, range, rank>;
     friend class BSplineElementHandler<dim, range, rank>;
@@ -481,7 +496,9 @@ public:
 
 
 private:
-    // lookup table for the local dof id in each element component
+    /**
+     * Lookup table for the local dof id in each element component
+     */
     typename SpaceData::template ComponentContainer<SafeSTLVector<TensorIndex<dim> > >
     dofs_tensor_id_elem_table_;
 

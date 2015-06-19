@@ -110,13 +110,7 @@ BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(std::shared_ptr<SpaceData> space_data,
              const EndBehaviourTable &end_b)
     :
-    BaseSpace(
-        space_data->get_grid(),
-        std::make_shared<DofDistribution<dim_,range_,rank_>>(
-            DofDistribution<dim_,range_,rank_>(
-                space_data->get_num_basis_table(),
-                space_data->get_degree_table(),
-                space_data->get_periodic_table()))),
+    BaseSpace(space_data->get_grid()),
     space_data_(space_data),
     end_b_(end_b),
     operators_(
@@ -124,9 +118,15 @@ BSplineSpace(std::shared_ptr<SpaceData> space_data,
         this->space_data_->compute_knots_with_repetition(end_b),
         this->space_data_->accumulated_interior_multiplicities(),
         this->space_data_->get_degree_table()),
-    end_interval_(end_b.get_comp_map())
+    end_interval_(end_b.get_comp_map()),
+    dof_distribution_(std::make_shared<DofDistribution<dim_,range_,rank_>>(
+                          DofDistribution<dim_,range_,rank_>(
+                              space_data->get_num_basis_table(),
+                              space_data->get_degree_table(),
+                              space_data->get_periodic_table())))
 {
     Assert(space_data_ != nullptr,ExcNullPtr());
+    Assert(dof_distribution_ != nullptr,ExcNullPtr());
 
     //------------------------------------------------------------------------------
 // TODO (pauletti, Dec 24, 2014): after it work it should be recoded properly
@@ -586,6 +586,22 @@ get_elem_handler() const
 }
 
 
+template<int dim_, int range_, int rank_>
+auto
+BSplineSpace<dim_, range_, rank_>::
+get_dof_distribution() const -> shared_ptr<const DofDistribution<dim,range,rank> >
+{
+    return dof_distribution_;
+}
+
+template<int dim_, int range_, int rank_>
+auto
+BSplineSpace<dim_, range_, rank_>::
+get_dof_distribution() -> shared_ptr<DofDistribution<dim,range,rank> >
+{
+    return dof_distribution_;
+}
+
 
 
 #ifdef SERIALIZATION
@@ -607,6 +623,8 @@ serialize(Archive &ar, const unsigned int version)
     ar &boost::serialization::make_nvp("operators_",operators_);
 
     ar &boost::serialization::make_nvp("end_interval_",end_interval_);
+
+    ar &boost::serialization::make_nvp("dof_distribution_",dof_distribution_);
 
     ar &boost::serialization::make_nvp("dofs_tensor_id_elem_table_",dofs_tensor_id_elem_table_);
 }

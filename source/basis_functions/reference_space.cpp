@@ -38,14 +38,11 @@ IGA_NAMESPACE_OPEN
 template<int dim_, int range_, int rank_>
 ReferenceSpace<dim_, range_, rank_>::
 ReferenceSpace(
-    const std::shared_ptr<CartesianGrid<dim_>> grid,
-    const std::shared_ptr<DofDistribution<dim_,range_,rank_>> dof_distribution)
+    const std::shared_ptr<CartesianGrid<dim_>> grid)
     :
-    base_t(grid,std::make_shared<IdentityFunction<dim,dim>>(grid)),
-    dof_distribution_(dof_distribution)
+    base_t(grid,std::make_shared<IdentityFunction<dim,dim>>(grid))
 {
     Assert(this->get_grid() != nullptr,ExcNullPtr());
-    Assert(dof_distribution_ != nullptr,ExcNullPtr());
 }
 
 
@@ -130,7 +127,7 @@ void
 ReferenceSpace<dim, range, rank>::
 add_dofs_offset(const Index offset)
 {
-    dof_distribution_->add_dofs_offset(offset);
+    this->get_dof_distribution()->add_dofs_offset(offset);
 }
 #endif
 
@@ -140,23 +137,7 @@ ReferenceSpace<dim, range, rank>::
 get_global_dof_id(const TensorIndex<dim> &tensor_index,
                   const Index comp) const
 {
-    return dof_distribution_->get_index_table()[comp](tensor_index);
-}
-
-template<int dim, int range, int rank>
-auto
-ReferenceSpace<dim, range, rank>::
-get_dof_distribution() const -> shared_ptr<const DofDistribution<dim,range,rank> >
-{
-    return dof_distribution_;
-}
-
-template<int dim, int range, int rank>
-auto
-ReferenceSpace<dim, range, rank>::
-get_dof_distribution() -> shared_ptr<DofDistribution<dim,range,rank> >
-{
-    return dof_distribution_;
+    return this->get_dof_distribution()->get_index_table()[comp](tensor_index);
 }
 
 
@@ -181,7 +162,7 @@ auto
 ReferenceSpace<dim, range, rank>::
 get_num_basis_table() const -> const TensorSizeTable &
 {
-    return dof_distribution_->get_num_dofs_table();
+    return this->get_dof_distribution()->get_num_dofs_table();
 }
 
 template<int dim, int range, int rank>
@@ -189,7 +170,7 @@ Size
 ReferenceSpace<dim, range, rank>::
 get_num_basis() const
 {
-    return dof_distribution_->get_num_dofs_table().total_dimension();
+    return this->get_dof_distribution()->get_num_dofs_table().total_dimension();
 }
 
 
@@ -198,7 +179,7 @@ Size
 ReferenceSpace<dim, range, rank>::
 get_num_basis(const int comp) const
 {
-    return dof_distribution_->get_num_dofs_table().get_component_size(comp);
+    return this->get_dof_distribution()->get_num_dofs_table().get_component_size(comp);
 }
 
 template<int dim, int range, int rank>
@@ -206,7 +187,7 @@ Size
 ReferenceSpace<dim, range, rank>::
 get_num_basis(const int comp, const int dir) const
 {
-    return dof_distribution_->get_num_dofs_table()[comp][dir];
+    return this->get_dof_distribution()->get_num_dofs_table()[comp][dir];
 }
 
 template<int dim, int range, int rank>
@@ -214,7 +195,7 @@ auto
 ReferenceSpace<dim, range, rank>::
 get_basis_offset() const -> ComponentContainer<Size>
 {
-    return dof_distribution_->get_num_dofs_table().get_offset();
+    return this->get_dof_distribution()->get_num_dofs_table().get_offset();
 }
 
 template<int dim, int range, int rank>
@@ -222,7 +203,7 @@ Size
 ReferenceSpace<dim, range, rank>::
 get_elem_num_basis() const
 {
-    return dof_distribution_->get_num_dofs_table().total_dimension();
+    return this->get_dof_distribution()->get_num_dofs_table().total_dimension();
 }
 
 
@@ -237,8 +218,6 @@ serialize(Archive &ar, const unsigned int version)
 {
     ar &boost::serialization::make_nvp("ReferenceSpace_base_t",
                                        boost::serialization::base_object<base_t>(*this));
-
-    ar &boost::serialization::make_nvp("dof_distribution_",dof_distribution_);
 
     ar &boost::serialization::make_nvp("ref_space_previous_refinement_",ref_space_previous_refinement_);
 }

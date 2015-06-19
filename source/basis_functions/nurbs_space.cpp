@@ -44,9 +44,7 @@ NURBSSpace<dim_, range_, rank_>::
 NURBSSpace(std::shared_ptr<SpSpace> bs_space,
            const WeightFunctionPtr &weight_func)
     :
-    BaseSpace(
-        bs_space->get_grid(),
-        bs_space->get_dof_distribution()),
+    BaseSpace(bs_space->get_grid()),
     sp_space_(bs_space),
     weight_func_(weight_func)
 {
@@ -584,6 +582,23 @@ get_elem_handler() const -> std::shared_ptr<SpaceElementHandler<dim_,0,range_,ra
 }
 
 
+template<int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_dof_distribution() const -> shared_ptr<const DofDistribution<dim,range,rank> >
+{
+    return sp_space_->get_dof_distribution();
+}
+
+template<int dim_, int range_, int rank_>
+auto
+NURBSSpace<dim_, range_, rank_>::
+get_dof_distribution() -> shared_ptr<DofDistribution<dim,range,rank> >
+{
+    return sp_space_->get_dof_distribution();
+}
+
+
 
 #ifdef MESH_REFINEMENT
 
@@ -618,7 +633,7 @@ rebuild_after_insert_knots(
             std::dynamic_pointer_cast<const SpSpace>(sp_space_->get_space_previous_refinement()));
     Assert(bsp_space_previous_refinement != nullptr,ExcNullPtr());
 
-    this->dof_distribution_ = sp_space_->get_dof_distribution();
+//    this->dof_distribution_ = sp_space_->get_dof_distribution();
 
     auto weight_func_previous_refinement_ =
         std::dynamic_pointer_cast<WeightFunction>(
