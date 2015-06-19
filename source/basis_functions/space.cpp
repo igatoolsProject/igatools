@@ -170,6 +170,14 @@ get_interior_dofs() const -> std::set<Index>
     return this->get_dof_distribution()->get_interior_dofs();
 }
 
+template <int dim_,int codim_,int range_,int rank_>
+auto
+Space<dim_,codim_,range_,rank_>::
+get_boundary_dofs(const int s_id, const topology_variant &topology) const -> std::set<Index>
+{
+    return this->get_dof_distribution()->get_boundary_dofs(s_id,topology);
+}
+
 
 #ifdef SERIALIZATION
 template <int dim_,int codim_,int range_,int rank_>

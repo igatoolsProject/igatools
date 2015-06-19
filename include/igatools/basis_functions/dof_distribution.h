@@ -210,6 +210,93 @@ public:
 
 
     /**
+     * Global indices of the basis functions whose support intersect the
+     * boundary.
+     */
+    std::set<Index>
+    get_boundary_dofs(const int s_id, const TopologyVariants<dim> &topology) const
+    {
+        std::set<Index> dofs;
+        GetBoundaryDofsDispatcher boundary_dofs_impl(
+            s_id,index_table_,num_dofs_table_,index_table_size_,dofs);
+
+        boost::apply_visitor(boundary_dofs_impl, topology);
+        return dofs;
+    }
+
+private:
+    struct GetBoundaryDofsDispatcher : boost::static_visitor<void>
+    {
+        GetBoundaryDofsDispatcher(const int s_id,
+                                  const IndexDistributionTable &index_table,
+                                  const TensorSizeTable &num_dofs_table,
+                                  const TensorSizeTable &index_table_size,
+                                  std::set<Index> &dofs)
+            :
+            s_id_(s_id),
+            index_table_(index_table),
+            num_dofs_table_(num_dofs_table),
+            index_table_size_(index_table_size),
+            dofs_(dofs)
+        {}
+
+        template<int sub_elem_dim>
+        void operator()(const Topology<sub_elem_dim> &sub_elem)
+        {
+            auto &k_elem = UnitElement<dim>::template get_elem<sub_elem_dim>(s_id_);
+            const auto &active_dirs = k_elem.active_directions;
+
+            const int n_dir = k_elem.constant_directions.size();
+
+#ifndef NDEBUG
+            for (int comp = 0 ; comp < IndexDistributionTable::n_entries ; ++comp)
+                for (const auto const_dir : k_elem.constant_directions)
+                {
+                    Assert(index_table_size_[comp][const_dir] == num_dofs_table_[comp][const_dir],
+                           ExcNotImplemented());
+                }
+#endif
+
+            TensorIndex<dim> first;
+            TensorIndex<dim> last;
+
+            for (int comp = 0 ; comp < IndexDistributionTable::n_entries ; ++comp)
+            {
+                for (int j = 0 ; j < sub_elem_dim ; ++j)
+                {
+                    first[active_dirs[j]] = 0;
+                    last[active_dirs[j]] = num_dofs_table_[comp][active_dirs[j]];
+                }
+
+                for (int j = 0 ; j < n_dir ; ++j)
+                {
+                    const auto dir = k_elem.constant_directions[j];
+                    const auto val = k_elem.constant_values[j];
+                    const int fixed_id = val * (num_dofs_table_[comp][dir] - 1);
+                    first[dir] = fixed_id;
+                    last[dir] = fixed_id + 1;
+                }
+                auto tensor_ind = tensor_range(first, last);
+
+
+                const auto &elem_global_indices = index_table_[comp];
+
+                for (auto &tensor_index : tensor_ind)
+                    dofs_.insert(elem_global_indices(tensor_index));
+            }
+
+
+        }
+    private:
+        const int s_id_;
+        const IndexDistributionTable &index_table_;
+        const TensorSizeTable &num_dofs_table_;
+        const TensorSizeTable &index_table_size_;
+        std::set<Index> &dofs_;
+    };
+
+public:
+    /**
      * @name Functions related to the management/query of the dof properties.
      */
     ///@{

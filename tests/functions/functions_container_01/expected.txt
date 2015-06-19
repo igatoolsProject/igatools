@@ -5917,9 +5917,8 @@ Mappings with dimension 2 and codimension 0:
                
             
          
-         Mapping[0]   name= map_2_1_1_0
+         Mapping[0]   name= map_2_2_1_0
          Functions<2,0,1,1>:
-            Function[0]   name= phys_func_2_1_1_0
          
          Mapping before iterators
             IgFunction<2,0,2,1>
@@ -6142,8 +6141,9 @@ Mappings with dimension 2 and codimension 0:
                
             
          
-         Mapping[1]   name= map_2_2_1_0
+         Mapping[1]   name= map_2_1_1_0
          Functions<2,0,1,1>:
+            Function[0]   name= phys_func_2_1_1_0
          
          Mapping before iterators
             IdentityFunction<2,2>

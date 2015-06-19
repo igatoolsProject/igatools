@@ -189,13 +189,6 @@ public:
     std::shared_ptr<RefSpace> get_reference_space();
 
 
-    using topology_variant = TopologyVariants<dim_>;
-
-    virtual std::set<Index> get_boundary_dofs(
-        const int s_id, const topology_variant &topology) const override final
-    {
-        return ref_space_->get_boundary_dofs(s_id,topology);
-    }
 
 
     void print_info(LogStream &out) const override final;

@@ -232,12 +232,12 @@ public:
 
     using topology_variant = TopologyVariants<dim_>;
 
-    virtual std::set<Index> get_boundary_dofs(const int s_id, const topology_variant &topology) const = 0;
+    std::set<Index> get_boundary_dofs(const int s_id, const topology_variant &topology) const;
 
     template<int k>
     std::set<Index> get_boundary_dofs(const int s_id) const
     {
-        return this-> get_boundary_dofs(s_id,Topology<k>());
+        return this->get_boundary_dofs(s_id,Topology<k>());
     }
 
     /** @name Functions for retrieving information about the number of basis function. */

@@ -209,12 +209,6 @@ public:
         SafeSTLVector<Index> &dofs_local_to_elem,
         const std::string &dofs_property = DofProperties::active) const override final;
 
-
-    using typename BaseSpace::topology_variant;
-
-    std::set<Index>
-    get_boundary_dofs(const int s_id, const topology_variant &k) const override final;
-
     ///@}
 
     const std::shared_ptr<SpSpace> get_spline_space() const;

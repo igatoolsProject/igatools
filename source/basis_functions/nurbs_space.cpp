@@ -539,13 +539,6 @@ get_element_dofs(
 
 
 
-template <int dim_, int range_, int rank_>
-std::set<Index>
-NURBSSpace<dim_, range_, rank_>::
-get_boundary_dofs(const int s_id, const topology_variant &k) const
-{
-    return sp_space_->get_boundary_dofs(s_id, k);
-}
 
 
 template <int dim_, int range_, int rank_>
