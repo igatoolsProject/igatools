@@ -224,6 +224,18 @@ public:
     get_dof_distribution() = 0;
 
 
+    virtual std::set<Index> get_interior_dofs() const = 0;
+
+    using topology_variant = TopologyVariants<dim_>;
+
+    virtual std::set<Index> get_boundary_dofs(const int s_id, const topology_variant &topology) const = 0;
+
+    template<int k>
+    std::set<Index> get_boundary_dofs(const int s_id) const
+    {
+        return this-> get_boundary_dofs(s_id,Topology<k>());
+    }
+
     /** @name Functions for retrieving information about the number of basis function. */
     ///@{
     Size get_num_basis() const;

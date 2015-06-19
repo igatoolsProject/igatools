@@ -176,27 +176,10 @@ public:
 
     virtual const PeriodicityTable &get_periodicity() const = 0;
 
-#if 0
-    std::shared_ptr<const DofDistribution<dim, range, rank> >
-    get_dof_distribution() const override final;
-
-    std::shared_ptr<DofDistribution<dim, range, rank> >
-    get_dof_distribution() override final;
-#endif
 
 
-    virtual std::set<Index> get_interior_dofs() const = 0;
-
-    using topology_variant = TopologyVariants<dim_>;
 
 
-    virtual std::set<Index> get_boundary_dofs(const int s_id, const topology_variant &k) const = 0;
-
-    template<int k>
-    std::set<Index> get_boundary_dofs(const int s_id) const
-    {
-        return this-> get_boundary_dofs(s_id,Topology<k>());
-    }
 
 
     template<int k>

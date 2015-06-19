@@ -309,9 +309,10 @@ get_boundary_dofs(std::shared_ptr<const Space> space,
             sub_elems.insert(s_id);
     }
 
+    Topology<sub_dim> sub_elem_topology;
     for (const Index &s_id : sub_elems)
     {
-        auto s_dofs = space->template get_boundary_dofs<sub_dim>(s_id);
+        auto s_dofs = space->get_boundary_dofs(s_id,sub_elem_topology);
         dofs.insert(s_dofs.begin(), s_dofs.end());
     }
 

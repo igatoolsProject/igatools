@@ -33,8 +33,7 @@ sub_dim_members = \
   'class::get_sub_space<k>(const int sub_elem_id, ' + 
   'InterSpaceMap<k> &dof_map, ' + 
   'std::shared_ptr<CartesianGrid<k>> sub_grid, ' +
-  'std::shared_ptr<InterGridMap<k>> elem_map) const;',
-  'std::set<Index> class::get_boundary_dofs<k>(const int s_id) const;']
+  'std::shared_ptr<InterGridMap<k>> elem_map) const;']
 
 spaces = ['ReferenceSpace<0,0,1>']
 templated_funcs = []
