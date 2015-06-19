@@ -180,8 +180,8 @@ int main()
 {
     out.depth_console(10);
 
-    test_evaluate<1>();
-//    test_evaluate<2>();
+//    test_evaluate<1>();
+    test_evaluate<2>();
 //    test_evaluate<3>();
 
     return 0;

@@ -223,8 +223,11 @@ private:
 
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
-        FillCacheDispatcher(const int sub_elem_id,NURBSElement<dim_,range_,rank_> &nrb_elem)
+        FillCacheDispatcher(const GridElementHandler<dim_> &grid_handler,
+                            const int sub_elem_id,
+                            NURBSElement<dim_,range_,rank_> &nrb_elem)
             :
+            grid_handler_(grid_handler),
             sub_elem_id_(sub_elem_id),
             nrb_elem_(nrb_elem)
         {}
@@ -271,6 +274,7 @@ private:
             const WeightElem &weight_elem,
             ValueTable<Derivative<2>> &D2_phi) const;
 
+        const GridElementHandler<dim_> &grid_handler_;
         const int sub_elem_id_;
         NURBSElement<dim_,range_,rank_> &nrb_elem_;
     };

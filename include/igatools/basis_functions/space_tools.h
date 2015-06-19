@@ -51,12 +51,25 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
               const std::string &dofs_property = DofProperties::active)
 {
     using ProjFunc = IgFunction<Space::dim,Space::codim,Space::range,Space::rank>;
-//    std::shared_ptr<ProjFunc> projection;
 
     Epetra_SerialComm comm;
+    /*
+        const auto dof_dist = space->get_dof_distribution();
+        const auto dofs = dof_dist->get_dofs_id_same_property(dofs_property);
+        LogStream out;
+        out.begin_item("dof distribution inside projection_l2");
+        dof_dist->print_info(out);
+        out.end_item();
 
-    auto map = EpetraTools::create_map(*space, "active", comm);
-    auto graph = EpetraTools::create_graph(*space,"active",*space,"active",*map,*map);
+
+        out.begin_item("space inside projection_l2 (before map creation)");
+        space->print_info(out);
+        out.end_item();
+    //*/
+
+    auto map = EpetraTools::create_map(*space, dofs_property, comm);
+    auto graph = EpetraTools::create_graph(*space,dofs_property,*space,dofs_property,*map,*map);
+
 
     auto matrix = EpetraTools::create_matrix(graph);
     auto rhs = EpetraTools::create_vector(map);

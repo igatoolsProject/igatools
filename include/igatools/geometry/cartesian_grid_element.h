@@ -344,7 +344,8 @@ private:
     get_values_from_cache(const int topology_id) const
     {
         Assert(all_sub_elems_cache_ != nullptr, ExcNullPtr());
-        return all_sub_elems_cache_->template get_sub_elem_cache<topology_dim>(topology_id).template get_data<ValueType>();
+        const auto &cache = all_sub_elems_cache_->template get_sub_elem_cache<topology_dim>(topology_id);
+        return cache.template get_data<ValueType>();
     }
     ///@}
 

@@ -115,6 +115,12 @@ reset_selected_elements(
         bspline_flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::hessian;
     else
         Assert(false,ExcMessage("Not a right value flag."));
+
+
+    if (contains(flag, ValueFlags::point))
+        bspline_flag |= ValueFlags::point;
+    if (contains(flag, ValueFlags::w_measure))
+        bspline_flag |= ValueFlags::w_measure;
     //--------------------------------------------------
 
 
@@ -201,6 +207,9 @@ NURBSElementHandler<dim_, range_, rank_>::
 FillCacheDispatcher::
 operator()(const Topology<sub_elem_dim> &sub_elem)
 {
+    grid_handler_.template fill_cache<sub_elem_dim>(
+        nrb_elem_.as_cartesian_grid_element_accessor(),sub_elem_id_);
+
     Assert(nrb_elem_.all_sub_elems_cache_ != nullptr, ExcNullPtr());
     auto &sub_elem_cache = nrb_elem_.all_sub_elems_cache_->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id_);
 
@@ -256,7 +265,8 @@ fill_ref_elem_cache(RefElementAccessor &elem, const topology_variant &topology, 
 
 
     //-----------------------------------------
-    auto fill_cache_dispatcher = FillCacheDispatcher(sub_elem_id,nrb_elem);
+    auto fill_cache_dispatcher =
+        FillCacheDispatcher(bspline_handler_->get_grid_handler(),sub_elem_id,nrb_elem);
     boost::apply_visitor(fill_cache_dispatcher,topology);
     //-----------------------------------------
 }

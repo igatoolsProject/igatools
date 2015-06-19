@@ -618,6 +618,8 @@ rebuild_after_insert_knots(
             std::dynamic_pointer_cast<const SpSpace>(sp_space_->get_space_previous_refinement()));
     Assert(bsp_space_previous_refinement != nullptr,ExcNullPtr());
 
+    this->dof_distribution_ = sp_space_->get_dof_distribution();
+
     auto weight_func_previous_refinement_ =
         std::dynamic_pointer_cast<WeightFunction>(
             weight_func_->get_function_previous_refinement());
