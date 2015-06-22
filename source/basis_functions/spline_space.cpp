@@ -46,7 +46,7 @@ SplineSpace(const DegreeTable &deg,
             const MultiplicityTable &interior_mult,
             const PeriodicityTable &periodic)
     :
-    GridWrapper<dim>(knots),
+    grid_(knots),
     interior_mult_(interior_mult),
     deg_(deg),
     periodic_(periodic)
@@ -81,6 +81,8 @@ void
 SplineSpace<dim, range, rank>::
 init()
 {
+    Assert(grid_ != nullptr,ExcNullPtr());
+
     //------------------------------------------------------------------------------
     // the default value of a bool variable is undefined, so we need to set
     // set the values of the inactive components of the perodicity table to true or false (we use false)
@@ -110,7 +112,7 @@ init()
             const auto order = deg + 1;
 
 #ifndef NDEBUG
-            Assert(mult.size() == this->get_grid()->get_num_knots_dim()[dir]-2,
+            Assert(mult.size() == grid_->get_num_knots_dim()[dir]-2,
                    ExcMessage("Interior multiplicity size does not match the grid"));
             if (!mult.empty())
             {
@@ -140,6 +142,15 @@ init()
 }
 
 
+template<int dim, int range, int rank>
+std::shared_ptr<CartesianGrid<dim> >
+SplineSpace<dim, range, rank>::
+get_grid() const
+{
+    return grid_;
+}
+
+
 #ifdef MESH_REFINEMENT
 
 template<int dim, int range, int rank>
@@ -149,7 +160,7 @@ rebuild_after_insert_knots(
     const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
     const CartesianGrid<dim> &old_grid)
 {
-    const auto refined_grid = this->get_grid();
+    const auto refined_grid = grid_;
     auto grid_pre_refinement =
         const_pointer_cast<CartesianGrid<dim>>(refined_grid->get_grid_pre_refinement());
 
@@ -269,7 +280,7 @@ create_connection_for_insert_knots(std::shared_ptr<SplineSpace<dim,range,rank>> 
                   std::placeholders::_2);
 
     using SlotType = typename CartesianGrid<dim>::SignalInsertKnotsSlot;
-    this->connect_insert_knots_function(
+    grid_->connect_insert_knots(
         SlotType(func_to_connect).track_foreign(space));
 }
 
@@ -314,7 +325,7 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
                 }
                 if (ends[iComp][j] == BasisEndBehaviour::end_knots)
                 {
-                    const auto &knots = this->get_grid()->get_knot_coordinates(j);
+                    const auto &knots = grid_->get_knot_coordinates(j);
                     const int m = deg_[iComp][j] + 1;
                     Assert(l_knots.size() == m,
                            ExcMessage("Wrong number of boundary knots"));
@@ -346,7 +357,7 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
         {
             const auto deg = degree_comp[dir];
             const auto order = deg + 1;
-            const auto &knots = this->get_grid()->get_knot_coordinates(dir);
+            const auto &knots = grid_->get_knot_coordinates(dir);
             const auto &mult  = mult_comp.get_data_direction(dir);
 
             const int m = order;
@@ -561,7 +572,7 @@ SplineSpace<dim, range, rank>::
 print_info(LogStream &out) const
 {
     out.begin_item("Knots without repetition:");
-    this->get_grid()->print_info(out);
+    grid_->print_info(out);
     out.end_item();
 
     out.begin_item("Degrees:");
@@ -669,9 +680,7 @@ void
 SplineSpace<dim, range, rank>::
 serialize(Archive &ar, const unsigned int version)
 {
-    ar &boost::serialization::make_nvp(
-        "SplineSpace_base_t",
-        boost::serialization::base_object<GridWrapper<dim>>(*this));
+    ar &boost::serialization::make_nvp("grid_",grid_);
 
     ar &boost::serialization::make_nvp("interior_mult_",interior_mult_);
 

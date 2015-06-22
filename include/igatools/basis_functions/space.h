@@ -22,7 +22,6 @@
 #define __SPACE_H_
 
 #include <igatools/base/config.h>
-#include <igatools/geometry/grid_wrapper.h>
 #include <igatools/geometry/cartesian_grid.h>
 //#include <igatools/base/function.h>
 
@@ -53,11 +52,12 @@ template <int,int,int,int> class SpaceElementHandler;
  * @ingroup serializable
  */
 template<int dim_>
-class SpaceBase :
-    public GridWrapper<dim_>
+class SpaceBase
+//      :
+//    public GridWrapper<dim_>
 {
 private:
-    using base_t = GridWrapper<dim_>;
+//    using base_t = GridWrapper<dim_>;
     using self_t = SpaceBase<dim_>;
 
 
@@ -110,11 +110,31 @@ public:
     Index get_space_id() const;
 
 
+    std::shared_ptr<CartesianGrid<dim_>> get_grid() const;
+
+
+#ifdef MESH_REFINEMENT
+
+    /**
+     * Perform the h-refinement of the space in all the directions.
+     *
+     * Each interval in the unrefined grid is uniformly divided in @p n_subdivisions
+     * sub-intervals.
+     *
+     * @ingroup h_refinement
+     */
+    void refine_h(const Size n_subdivisions = 2);
+
+#endif // MESH_REFINEMENT
+
 protected:
     Index space_id_ = 0;
 
 
 private:
+
+    std::shared_ptr<CartesianGrid<dim_> > grid_;
+
 
 #ifdef SERIALIZATION
     /**
@@ -306,7 +326,12 @@ public:
     ///@}
 
 
+#ifdef MESH_REFINEMENT
+
     virtual std::shared_ptr<const self_t> get_space_previous_refinement() const = 0;
+
+#endif
+
 
 private:
 

@@ -28,8 +28,10 @@ Function<dim_, codim_, range_, rank_ >::
 Function(std::shared_ptr<GridType> grid)
     :
     GridElementHandler<dim_>(grid),
-    grid_wrapper_(std::const_pointer_cast<CartesianGrid<dim_>>(grid))
-{}
+    grid_(std::const_pointer_cast<CartesianGrid<dim_>>(grid))
+{
+    Assert(grid != nullptr,ExcNullPtr());
+}
 
 
 template<int dim_, int codim_, int range_, int rank_>
@@ -172,7 +174,7 @@ serialize(Archive &ar, const unsigned int version)
 
     ar &boost::serialization::make_nvp("flags_",flags_);
 
-    ar &boost::serialization::make_nvp("grid_wrapper_",grid_wrapper_);
+    ar &boost::serialization::make_nvp("grid_",grid_);
     ar &boost::serialization::make_nvp("function_previous_refinement_",function_previous_refinement_);
 }
 #endif // SERIALIZATION

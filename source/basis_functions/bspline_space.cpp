@@ -454,8 +454,8 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> space)
                   std::placeholders::_2);
 
     using SlotType = typename CartesianGrid<dim>::SignalInsertKnotsSlot;
-    this->connect_insert_knots_function(
-        SlotType(func_to_connect).track_foreign(space));
+    std::const_pointer_cast<CartesianGrid<dim_>>(this->get_grid())->connect_insert_knots(
+                                                  SlotType(func_to_connect).track_foreign(space));
 }
 
 

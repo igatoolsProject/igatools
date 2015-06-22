@@ -296,7 +296,7 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> ig_function)
                   ig_function.get(),
                   std::placeholders::_1,
                   std::placeholders::_2);
-    this->grid_wrapper_.connect_insert_knots_function(
+    this->grid_->connect_insert_knots(
         SlotType(func_to_connect).track_foreign(ig_function));
 }
 

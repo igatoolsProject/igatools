@@ -34,9 +34,11 @@ template <int dim_>
 SpaceBase<dim_>::
 SpaceBase(shared_ptr<CartesianGrid<dim_>> grid)
     :
-    base_t(grid),
-    space_id_(UniqueIdGenerator::get_unique_id())
-{};
+    space_id_(UniqueIdGenerator::get_unique_id()),
+    grid_(grid)
+{
+    Assert(grid_ != nullptr,ExcNullPtr());
+};
 
 
 template <int dim_>
@@ -47,6 +49,26 @@ get_space_id() const
     return space_id_;
 }
 
+template <int dim_>
+std::shared_ptr<CartesianGrid<dim_>>
+                                  SpaceBase<dim_>::
+                                  get_grid() const
+{
+    return grid_;
+}
+
+#ifdef MESH_REFINEMENT
+
+template <int dim_>
+void
+SpaceBase<dim_>::
+refine_h(const Size n_subdivisions)
+{
+    grid_->refine(n_subdivisions);
+}
+
+#endif // MESH_REFINEMENT
+
 #ifdef SERIALIZATION
 template <int dim_>
 template<class Archive>
@@ -54,8 +76,7 @@ void
 SpaceBase<dim_>::
 serialize(Archive &ar, const unsigned int version)
 {
-    ar &boost::serialization::make_nvp("SpaceBase_base_t",
-                                       boost::serialization::base_object<base_t>(*this));
+    ar &boost::serialization::make_nvp("grid_",grid_);
 
     ar &boost::serialization::make_nvp("space_id_",space_id_);
 }

@@ -78,8 +78,9 @@ enum class InteriorReg
  * @ingroup serializable
  */
 template<int dim, int range = 1, int rank = 1>
-class SplineSpace :
-    public GridWrapper<dim>
+class SplineSpace
+//      :
+//    public GridWrapper<dim>
 {
 
 private:
@@ -251,9 +252,15 @@ public:
                                      const DegreeTable &deg,
                                      const TensorSize<dim> &n_elem);
 
-public:
+
     void print_info(LogStream &out) const;
+
+    std::shared_ptr<CartesianGrid<dim> > get_grid() const;
+
 private:
+
+    std::shared_ptr<CartesianGrid<dim> > grid_;
+
     MultiplicityTable interior_mult_;
 
     DegreeTable deg_;

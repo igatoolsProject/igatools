@@ -24,7 +24,6 @@
 #include <igatools/base/config.h>
 #include <igatools/base/tensor.h>
 #include <igatools/utils/value_vector.h>
-#include <igatools/geometry/grid_wrapper.h>
 #include <igatools/geometry/cartesian_grid_iterator.h>
 #include <igatools/geometry/grid_element_handler.h>
 #include <igatools/base/quadrature.h>
@@ -255,10 +254,7 @@ protected:
     SafeSTLArray<ValueFlags, dim_ + 1> flags_;
 
 
-    /**
-     * This member is used to handle the knots-refinement.
-     */
-    GridWrapper<dim_> grid_wrapper_;
+    std::shared_ptr<CartesianGrid<dim_> > grid_;
 
     std::shared_ptr<self_t> function_previous_refinement_;
 
