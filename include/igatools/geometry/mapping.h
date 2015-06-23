@@ -55,8 +55,8 @@ class Mapping :
 {
 private:
     using self_t = Mapping<dim_, codim_>;
-    using FuncType = MapFunction<dim_, dim_ + codim_>;
 public:
+    using FuncType = MapFunction<dim_, dim_ + codim_>;
     using ElementAccessor = MappingElement<dim_, codim_>;
     using ElementIterator = CartesianGridIterator<ElementAccessor>;
 

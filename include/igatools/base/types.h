@@ -167,7 +167,7 @@ enum class ValueFlags : std::int64_t
 
 
 const std::array<ValueFlags, max_der> DerivativeFlags =
-{ValueFlags::value, ValueFlags::gradient,  ValueFlags::hessian};
+{{ValueFlags::value, ValueFlags::gradient,  ValueFlags::hessian}};
 
 enum class TransformationFlags : std::int64_t
 {
@@ -359,7 +359,7 @@ std::ostream &operator<< (std::ostream &stream, const ValueFlags &flag)
  */
 constexpr int constexpr_pow(int a, int b)
 {
-    return (b>=1) ? a * pow(a,b-1) : 1 ;
+    return (b>=1) ? a * constexpr_pow(a,b-1) : 1 ;
 }
 
 

@@ -119,7 +119,10 @@ public:
     using typename BaseSpace::Func;
     using typename BaseSpace::Point;
     using typename BaseSpace::Value;
-    using typename BaseSpace::Derivative;
+
+    template <int order>
+    using Derivative = typename BaseSpace::template Derivative<order>;
+
     using typename BaseSpace::Div;
 
     /**

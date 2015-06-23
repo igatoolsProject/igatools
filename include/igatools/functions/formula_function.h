@@ -127,7 +127,7 @@ private:
         ElementAccessor &elem_;
     };
 
-    friend class FillCacheDispatcher;
+    friend struct FillCacheDispatcher;
 };
 
 IGA_NAMESPACE_CLOSE
