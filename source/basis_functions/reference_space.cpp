@@ -41,9 +41,7 @@ ReferenceSpace(
     const std::shared_ptr<CartesianGrid<dim_>> grid)
     :
     base_t(grid,std::make_shared<IdentityFunction<dim,dim>>(grid))
-{
-    Assert(this->get_grid() != nullptr,ExcNullPtr());
-}
+{}
 
 
 

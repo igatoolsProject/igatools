@@ -65,21 +65,6 @@ NURBSElement(const self_t &elem,
 }
 
 
-/*
-template <int dim, int range, int rank>
-void
-NURBSElement<dim, range, rank>::
-operator++()
-{
-    CartesianGridElement<dim>::operator++();
-
-    ++bspline_elem_;
-
-    for (const auto &comp_id : weight_elem_table_.get_active_components_id())
-        ++(*(weight_elem_table_[comp_id]));
-}
-//*/
-
 #if 0
 template <int dim, int range, int rank>
 bool

@@ -135,6 +135,7 @@ public:
     self_t &operator=(self_t &&elem) = default;
     ///@}
 
+#if 0
     /**
      * @name Functions for performing different kind of copy.
      */
@@ -153,7 +154,7 @@ public:
      */
     virtual void shallow_copy_from(const self_t &element);
     ///@}
-
+#endif
 
     /**
      * Creates a new object performing a deep copy of the current object using

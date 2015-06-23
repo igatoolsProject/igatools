@@ -55,10 +55,7 @@ BernsteinBasis::evaluate(const int p, const Real x)
         }
 
     for (int i = 0 ; i < n_basis ; ++i)
-    {
-        Real C = binomial_coefficient<Real>(p, i);
-        B(i) = C * t(i) * one_t(p-i) ;
-    }
+        B(i) = binomial_coefficient<Real>(p,i) * t(i) * one_t(p-i) ;
 
     return B;
 }
@@ -146,7 +143,7 @@ BernsteinBasis::evaluate(const int p,  const SafeSTLVector<Real> &points)
 
     for (int i = 0 ; i < n_basis ; ++i)
     {
-        Real C = binomial_coefficient<Real>(p, i);
+        const Real C = binomial_coefficient<Real>(p, i);
         for (int j = 0 ; j < n_points ; ++j)
             B(i,j) = C * t(i,j) * one_t(p-i,j) ;
     }
@@ -180,8 +177,8 @@ BernsteinBasis::derivative(
             return (boost::numeric::ublas::zero_matrix<Real>(p+1,n_points));
 
         matrix<Real> dB(p+1, n_points);
-        matrix<Real> B(p, n_points);
-        B = derivative(order-1,p-1,points);
+//        matrix<Real> B(p, n_points);
+        const auto B = derivative(order-1,p-1,points);
 
         row(dB,0) = - row(B,0);
         row(dB,p) =   row(B,p-1);

@@ -136,12 +136,6 @@ public:
     std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_> >
     create_element(const Index flat_index) const override final;
 
-    /**
-     * Total number of dofs of the space.
-     */
-    Index get_num_basis() const;
-
-
 
     /** Returns the container with the global dof distribution (const version). */
     std::shared_ptr<const DofDistribution<dim, range, rank> >
@@ -152,12 +146,6 @@ public:
     get_dof_distribution() override final;
 
 
-    /*
-    auto get_num_all_element_basis() const
-    {
-        return ref_space_->get_num_all_element_basis();
-    }
-    //*/
 
     template <int k>
     using SubSpace = PhysicalSpace<k, range, rank, codim + dim-k, type_>;
@@ -195,13 +183,6 @@ public:
 
     std::shared_ptr<SpaceElementHandler<dim_,codim_,range_,rank_>> get_elem_handler() const override final;
 
-
-    std::shared_ptr<const base_t> get_space_previous_refinement() const
-    {
-        Assert(false,ExcNotImplemented());
-        AssertThrow(false,ExcNotImplemented());
-        return phys_space_previous_refinement_;
-    }
 
 
     /**
@@ -255,8 +236,16 @@ private:
 
     void create_connection_for_insert_knots(std::shared_ptr<self_t> space);
 
+public:
+
+    std::shared_ptr<const base_t> get_space_previous_refinement() const
+    {
+        return phys_space_previous_refinement_;
+    }
+
 #endif // MESH_REFINEMENT
 
+private:
 
 #ifdef SERIALIZATION
     /**

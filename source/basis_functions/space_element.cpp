@@ -90,7 +90,7 @@ copy_from(const self_t &elem,
 }
 
 
-
+#if 0
 template<int dim_,int codim_,int range_,int rank_>
 void
 SpaceElement<dim_,codim_,range_,rank_>::
@@ -108,6 +108,7 @@ shallow_copy_from(const self_t &elem)
 {
     this->copy_from(elem,CopyPolicy::shallow);
 }
+#endif
 
 template<int dim_,int codim_,int range_,int rank_>
 auto
@@ -125,7 +126,8 @@ auto
 SpaceElement<dim_,codim_,range_,rank_>::
 operator=(const self_t &element) -> self_t &
 {
-    this->shallow_copy_from(element);
+    this->copy_from(element,CopyPolicy::shallow);
+//    this->shallow_copy_from(element);
     return (*this);
 }
 

@@ -479,31 +479,6 @@ print_info(LogStream &out) const
 
 
 template <int dim_, int range_, int rank_>
-Real
-NURBSSpace<dim_, range_, rank_>::
-get_weight_coef_from_basis_id(const Index basis_id) const
-{
-    Assert(false,ExcDeprecated());
-    /*
-        //TODO (pauletti, Mar 22, 2015): this looks like a forced function study its use
-
-        const auto &basis_offset = sp_space_->get_basis_offset();
-
-        int comp_id = 0;
-        for (; comp_id < n_components-1 ; ++comp_id)
-            if (basis_id < basis_offset[comp_id+1])
-                break;
-
-        const Index w_id = basis_id - basis_offset[comp_id];
-
-        return (weight_func_table_[comp_id]->get_coefficients())[w_id];
-        //*/
-    return 0.0;
-}
-
-
-
-template <int dim_, int range_, int rank_>
 bool
 NURBSSpace<dim_, range_, rank_>::
 is_bspline() const
