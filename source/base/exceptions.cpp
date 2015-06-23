@@ -457,7 +457,7 @@ struct preload_terminate_dummy
 {
     preload_terminate_dummy()
     {
-        std::set_terminate(__gnu_cxx::__verbose_terminate_handler);
+//        std::set_terminate(__gnu_cxx::__verbose_terminate_handler);
     }
 };
 
