@@ -27,6 +27,7 @@
 #include <array>
 #include <algorithm>
 #include <utility>
+#include <numeric>
 
 IGA_NAMESPACE_OPEN
 
