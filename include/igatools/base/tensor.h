@@ -436,7 +436,8 @@ public:
     /**
      * Default constructor. Sets all entries to 0.
      */
-    Tensor() = default;
+    Tensor()
+    {};
 
     /** Copy constructor */
     Tensor(const Tensor<dim_, rank_, tensor_type, value_type> &tensor) = default;

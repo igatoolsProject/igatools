@@ -175,7 +175,7 @@ fill_cache(ElementAccessor &elem, const int j) -> void
 
     if (cache.template status_fill<_InvHessian>())
     {
-        const auto &D1_F = elem.template get_values<_Gradient, k>(j);
+//        const auto &D1_F = elem.template get_values<_Gradient, k>(j);
         const auto &D2_F = elem.template get_values<_Hessian, k>(j);
         const auto &D1_invF = cache.template get_data<_InvGradient>();
         auto &D2_invF       = cache.template get_data<_InvHessian>();

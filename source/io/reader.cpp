@@ -216,7 +216,7 @@ get_xml_input_file_format(const std::string &filename)
 
 
 
-template <int dim, int codim = 0>
+template <int dim, int codim>
 std::shared_ptr< MapFunction<dim,dim+codim> >
 get_mapping_from_file(const std::string &filename)
 {
@@ -255,7 +255,7 @@ get_mapping_from_file(const std::string &filename)
 
 
 
-template <int dim, int codim = 0>
+template <int dim, int codim>
 std::shared_ptr< MapFunction<dim,dim+codim> >
 get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
 {
@@ -334,7 +334,7 @@ get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
 }
 
 
-template <int dim, int codim = 0>
+template <int dim, int codim>
 std::shared_ptr< MapFunction<dim,dim+codim> >
 get_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
 {
@@ -709,7 +709,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     const auto scalar_mult_table = ScalarMultiplicityTable(multiplicities[0]);
     // TODO (pauletti, Dec 26, 2014): read periodic, end_behaviour and boundary knots from file
     typename ScalarBSplineSpace::EndBehaviourTable
-    scalar_end_behaviour(SafeSTLArray<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory));
+    scalar_end_behaviour({SafeSTLArray<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory)});
     typename ScalarBSplineSpace::PeriodicityTable scalar_periodic(SafeSTLArray<bool, dim>(false));
 
 

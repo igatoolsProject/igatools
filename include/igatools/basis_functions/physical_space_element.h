@@ -189,7 +189,7 @@ public:
      * Prints internal information about the BSplineElementAccessor.
      * Its main use is for testing and debugging.
      */
-    void print_info(LogStream &out) const;
+    void print_info(LogStream &out) const override final;
 
     void print_cache_info(LogStream &out) const;
 
@@ -282,7 +282,7 @@ public:
      * as it is easy to use incorrectly. Only use it if you know what you
      * are doing.
      */
-    void move_to(const Index flat_index);
+    void move_to(const Index flat_index) override final;
     ///@}
 
 protected:

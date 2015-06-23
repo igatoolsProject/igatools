@@ -165,7 +165,7 @@ private:
         ElementAccessor &elem_;
     };
 
-    friend class FillCacheDispatcher;
+    friend struct FillCacheDispatcher;
 
 
 #ifdef MESH_REFINEMENT

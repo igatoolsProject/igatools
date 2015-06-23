@@ -200,12 +200,15 @@ protected:
     std::shared_ptr<RefSpace> ref_space_previous_refinement_ = nullptr;
 
 
+
+#ifdef MESH_REFINEMENT
+
 public:
-    std::shared_ptr<const base_t> get_space_previous_refinement() const
+    std::shared_ptr<const base_t> get_space_previous_refinement() const override final
     {
         return ref_space_previous_refinement_;
     }
-
+#endif // MESH_REFINEMENT
 
 private:
 

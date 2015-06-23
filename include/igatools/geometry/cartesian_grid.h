@@ -537,7 +537,6 @@ public:
      */
     bool operator==(const CartesianGrid<dim_> &grid) const;
 
-#ifdef MESH_REFINEMENT
 private:
 
     /** Type for the insert_knots signal. */
@@ -549,6 +548,8 @@ public:
 
     /** Slot type for the insert_knots signal. */
     using SignalInsertKnotsSlot = typename signal_insert_knots_t::slot_type;
+
+#ifdef MESH_REFINEMENT
 
     /** @name Functions for performing grid refinement */
     ///@{

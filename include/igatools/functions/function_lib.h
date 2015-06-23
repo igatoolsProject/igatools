@@ -190,17 +190,17 @@ private:
     get_aux_vals(const ValueVector<Point> &points) const;
 
 private:
-    void evaluate_0(const ValueVector<Point> &points,
-                    ValueVector<Value> &values) const;
+    virtual void evaluate_0(const ValueVector<Point> &points,
+                            ValueVector<Value> &values) const override final;
 
-    void evaluate_1(const ValueVector<Point> &points,
-                    ValueVector<Derivative<1>> &values) const;
+    virtual void evaluate_1(const ValueVector<Point> &points,
+                            ValueVector<Derivative<1>> &values) const override final;
 
-    void evaluate_2(const ValueVector<Point> &points,
-                    ValueVector<Derivative<2>> &values) const;
+    virtual void evaluate_2(const ValueVector<Point> &points,
+                            ValueVector<Derivative<2>> &values) const override final;
 
 private:
-    const Value b_;
+//    const Value b_;
 };
 //------------------------------------------------------------------------------
 

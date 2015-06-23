@@ -345,7 +345,7 @@ operator()(const Quadrature<sub_elem_dim> &quad1)
             {
                 for (auto comp : active_components_id)
                 {
-                    Real one_div_interval_length;
+                    Real one_div_interval_length = 1.0;
                     const BasisValues1d *berns_values_ptr = nullptr;
                     if (inter != id_interval_left && inter != id_interval_right)
                     {

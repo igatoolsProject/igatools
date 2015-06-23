@@ -30,44 +30,69 @@ IGA_NAMESPACE_OPEN
 
 template <int> struct UnitElement;
 
-constexpr int skel_size(int dim, int k)
+constexpr int skel_size(int dim, int sub_elem_dim)
 {
-    return dim==k ? 1 :
-           (((k==-1)||(k>dim)) ? 0 : (2*skel_size(dim-1, k) + skel_size(dim-1, k-1)));
+//  Assert(sub_elem_dim <= dim && sub_elem_dim >= 0,ExcIndexRange(sub_elem_dim,0,dim+1));
+    int res = 0;
+    if (dim == sub_elem_dim)
+    {
+        res = 1;
+    }
+    else if ((sub_elem_dim < dim) && (sub_elem_dim >= 0))
+    {
+        if (sub_elem_dim > 0)
+        {
+            res = 2*skel_size(dim-1, sub_elem_dim) + skel_size(dim-1, sub_elem_dim-1);
+        }
+        else
+        {
+            res = constexpr_pow(2,dim);
+        }
+    }
+
+    return res;
+    /*
+    return dim == sub_elem_dim ? 1 :
+           (
+                   ((sub_elem_dim==-1)||(sub_elem_dim>dim)) ?
+                           0 :
+                           (2*skel_size(dim-1, sub_elem_dim) + skel_size(dim-1, sub_elem_dim-1))
+           );
+           //*/
 }
 
 
-template <int dim, int k>
-EnableIf< (dim==0) || (k<0),
-          SafeSTLArray<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)>>
+template <int dim, int sub_elem_dim>
+EnableIf< (dim==0) || (sub_elem_dim<0),
+          SafeSTLArray<typename UnitElement<dim>::template SubElement<sub_elem_dim>, skel_size(dim, sub_elem_dim)>>
                   fill_cube_elements()
 {
-    SafeSTLArray<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)> res;
+    SafeSTLArray<typename UnitElement<dim>::template SubElement<sub_elem_dim>, skel_size(dim, sub_elem_dim)> res;
     return res;
 }
 
 
 
-template <int dim, int k>
-EnableIf< (dim==k) && (k>0),
-          SafeSTLArray<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)>>
+template <int dim, int sub_elem_dim>
+EnableIf< (dim==sub_elem_dim) && (sub_elem_dim>0),
+          SafeSTLArray<typename UnitElement<dim>::template SubElement<sub_elem_dim>, skel_size(dim, sub_elem_dim)>>
                   fill_cube_elements()
 {
-    SafeSTLArray<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)> res;
-    res[0].active_directions = sequence<k>();
+    SafeSTLArray<typename UnitElement<dim>::template SubElement<sub_elem_dim>, skel_size(dim, sub_elem_dim)> res;
+    res[0].active_directions = sequence<sub_elem_dim>();
     return res;
 }
 
 
-template <int dim, int k>
-EnableIf< (dim>k)  &&(k>=0),
-          SafeSTLArray<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)>>
+template <int dim, int sub_elem_dim>
+EnableIf< (dim>sub_elem_dim)  &&(sub_elem_dim>=0),
+          SafeSTLArray<typename UnitElement<dim>::template SubElement<sub_elem_dim>, skel_size(dim, sub_elem_dim)>>
                   fill_cube_elements()
 {
-    SafeSTLArray<typename UnitElement<dim>::template SubElement<k>, skel_size(dim, k)> elements;
+    SafeSTLArray<typename UnitElement<dim>::template SubElement<sub_elem_dim>, skel_size(dim, sub_elem_dim)> elements;
 
-    auto sub_elems_1 = fill_cube_elements<dim-1, k>();
-    auto sub_elems_0 = fill_cube_elements<dim-1, k-1>();
+    auto sub_elems_1 = fill_cube_elements<dim-1, sub_elem_dim>();
+    auto sub_elems_0 = fill_cube_elements<dim-1, sub_elem_dim-1>();
 
     auto elem = elements.begin();
 
@@ -89,9 +114,9 @@ EnableIf< (dim>k)  &&(k>=0),
                 auto &dirs       = elem->constant_directions;
                 auto &values       = elem->constant_values;
                 std::copy(sub_dirs_1.begin(), sub_dirs_1.end(), dirs.begin());
-                dirs[dim - k -1] = dim-1;
+                dirs[dim - sub_elem_dim -1] = dim-1;
                 std::copy(sub_values_1.begin(), sub_values_1.end(), values.begin());
-                values[dim - k -1] = j;
+                values[dim - sub_elem_dim -1] = j;
                 ++elem;
             }
         }
@@ -181,7 +206,7 @@ struct UnitElement
 
         SafeSTLArray<Size, dim_ - k> constant_directions;
         SafeSTLArray<Size, dim_ - k> constant_values;
-        SafeSTLArray<Size, k>        active_directions;
+        SafeSTLArray<Size, (k >= 0) ? k : 0> active_directions;
     };
 
     /**

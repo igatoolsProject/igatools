@@ -602,6 +602,8 @@ get_num_knots_dim() const -> TensorSize<dim_>
 }
 
 
+#ifdef MESH_REFINEMENT
+
 template<int dim_>
 auto
 CartesianGrid<dim_>::
@@ -686,6 +688,70 @@ connect_insert_knots(const SignalInsertKnotsSlot &subscriber)
     return insert_knots_signals_.connect(subscriber);
 }
 
+
+template <int dim_>
+void
+CartesianGrid<dim_>::
+insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert)
+{
+    //----------------------------------------------------------------------------------
+    // make a copy of the grid before the refinement
+    grid_pre_refinement_ = make_shared<self_t>(*this);
+    //----------------------------------------------------------------------------------
+
+
+    //----------------------------------------------------------------------------------
+    // inserts the knots into the current grid --- begin
+    for (const auto dir : UnitElement<dim_>::active_directions)
+    {
+        std::set<Real> new_coords_no_duplicates(knots_to_insert[dir].begin(),knots_to_insert[dir].end());
+
+        const auto &old_coords = knot_coordinates_.get_data_direction(dir);
+        new_coords_no_duplicates.insert(old_coords.begin(),old_coords.end());
+
+        knot_coordinates_.copy_data_direction(
+            dir,
+            SafeSTLVector<Real>(new_coords_no_duplicates.begin(),
+                                new_coords_no_duplicates.end()));
+    }
+    TensorSizedContainer<dim_>::reset_size(knot_coordinates_.tensor_size()-1);
+    // inserts the knots into the current grid --- end
+    //----------------------------------------------------------------------------------
+
+
+
+    //----------------------------------------------------------------------------------
+    // transferring the element properties from the old grid to the new grid --- begin
+    const auto fine_to_coarse_grid = grid_tools::build_map_elements_between_cartesian_grids(
+                                         *this,*grid_pre_refinement_);
+
+
+    for (auto &elem_properties : properties_elements_id_)
+        elem_properties.second.clear();
+
+    for (const auto &fine_coarse_elem : fine_to_coarse_grid)
+    {
+        const auto   &fine_elem = fine_coarse_elem.first;
+        const auto &coarse_elem = fine_coarse_elem.second;
+
+        const auto fine_elem_id = fine_elem->get_flat_index();
+
+        const auto old_elem_properties = coarse_elem->get_defined_properties();
+
+        for (const auto &property : old_elem_properties)
+            this->set_element_property_status(property,fine_elem_id,true);
+    }
+    // transferring the element properties from the old grid to the new grid --- end
+    //----------------------------------------------------------------------------------
+
+
+    //----------------------------------------------------------------------------------
+    // refining the objects that's are attached to the CartesianGrid
+    // (i.e. that are defined using this CartesianGrid object)
+    this->insert_knots_signals_(knots_to_insert,*grid_pre_refinement_);
+    //----------------------------------------------------------------------------------
+}
+#endif // MESH_REFINEMENT
 
 
 template <int dim_>
@@ -971,68 +1037,6 @@ test_if_element_has_property(const Index elem_flat_id, const std::string &proper
 }
 
 
-template <int dim_>
-void
-CartesianGrid<dim_>::
-insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert)
-{
-    //----------------------------------------------------------------------------------
-    // make a copy of the grid before the refinement
-    grid_pre_refinement_ = make_shared<self_t>(*this);
-    //----------------------------------------------------------------------------------
-
-
-    //----------------------------------------------------------------------------------
-    // inserts the knots into the current grid --- begin
-    for (const auto dir : UnitElement<dim_>::active_directions)
-    {
-        std::set<Real> new_coords_no_duplicates(knots_to_insert[dir].begin(),knots_to_insert[dir].end());
-
-        const auto &old_coords = knot_coordinates_.get_data_direction(dir);
-        new_coords_no_duplicates.insert(old_coords.begin(),old_coords.end());
-
-        knot_coordinates_.copy_data_direction(
-            dir,
-            SafeSTLVector<Real>(new_coords_no_duplicates.begin(),
-                                new_coords_no_duplicates.end()));
-    }
-    TensorSizedContainer<dim_>::reset_size(knot_coordinates_.tensor_size()-1);
-    // inserts the knots into the current grid --- end
-    //----------------------------------------------------------------------------------
-
-
-
-    //----------------------------------------------------------------------------------
-    // transferring the element properties from the old grid to the new grid --- begin
-    const auto fine_to_coarse_grid = grid_tools::build_map_elements_between_cartesian_grids(
-                                         *this,*grid_pre_refinement_);
-
-
-    for (auto &elem_properties : properties_elements_id_)
-        elem_properties.second.clear();
-
-    for (const auto &fine_coarse_elem : fine_to_coarse_grid)
-    {
-        const auto   &fine_elem = fine_coarse_elem.first;
-        const auto &coarse_elem = fine_coarse_elem.second;
-
-        const auto fine_elem_id = fine_elem->get_flat_index();
-
-        const auto old_elem_properties = coarse_elem->get_defined_properties();
-
-        for (const auto &property : old_elem_properties)
-            this->set_element_property_status(property,fine_elem_id,true);
-    }
-    // transferring the element properties from the old grid to the new grid --- end
-    //----------------------------------------------------------------------------------
-
-
-    //----------------------------------------------------------------------------------
-    // refining the objects that's are attached to the CartesianGrid
-    // (i.e. that are defined using this CartesianGrid object)
-    this->insert_knots_signals_(knots_to_insert,*grid_pre_refinement_);
-    //----------------------------------------------------------------------------------
-}
 
 
 template <int dim_>
