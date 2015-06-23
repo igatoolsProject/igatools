@@ -56,7 +56,6 @@ template <int,int,int> class DofDistribution;
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
 class ReferenceSpace :
-//    public std::enable_shared_from_this<ReferenceSpace<dim_,range_,rank_> >,
     public Space<dim_,0,range_,rank_>
 {
     using base_t = Space<dim_,0,range_,rank_>;

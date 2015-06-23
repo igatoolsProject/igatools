@@ -104,55 +104,6 @@ create_element(const Index flat_index) const
 
 
 
-#if 0
-template <int dim_, int range_, int rank_, int codim_, Transformation type_>
-auto
-PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-get_element(const Index elem_flat_id) const -> ElementAccessor
-{
-    Assert(elem_flat_id >= 0 && elem_flat_id < ref_space_->get_grid()->get_num_all_elems(),
-           ExcIndexRange(elem_flat_id,0,ref_space_->get_grid()->get_num_all_elems()));
-
-    auto elem = this->begin();
-    for (int i = 0 ; i < elem_flat_id ; ++i)
-        ++elem;
-
-    return *elem;
-}
-
-#endif
-
-template <int dim_, int range_, int rank_, int codim_, Transformation type_>
-Index
-PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-get_num_basis() const
-{
-    return ref_space_->get_num_basis();
-}
-
-
-
-#if 0
-template <int dim_, int range_, int rank_, int codim_, Transformation type_>
-int
-PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-get_num_basis_per_element() const
-{
-    return ref_space_->get_num_basis_per_element();
-}
-
-
-
-template <int dim_, int range_, int rank_, int codim_, Transformation type_>
-auto
-PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-get_push_forward() const -> shared_ptr<const PushForwardType>
-{
-    return shared_ptr<const PushForwardType>(push_forward_);
-}
-
-
-#endif
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
@@ -263,16 +214,6 @@ get_dof_distribution() -> std::shared_ptr<DofDistribution<dim, range, rank> >
 
 
 
-#if 0
-template <int dim_, int range_, int rank_, int codim_, Transformation type_>
-auto
-PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-get_degree_table() const -> const DegreeTable &
-{
-    return ref_space_->get_degree_table();
-}
-
-#endif
 
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 void

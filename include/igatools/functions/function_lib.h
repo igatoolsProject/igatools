@@ -255,13 +255,13 @@ private:
 
 private:
     void evaluate_0(const ValueVector<Point> &points,
-                    ValueVector<Value> &values) const;
+                    ValueVector<Value> &values) const override final;
 
     void evaluate_1(const ValueVector<Point> &points,
-                    ValueVector<Derivative<1>> &values) const;
+                    ValueVector<Derivative<1>> &values) const override final;
 
     void evaluate_2(const ValueVector<Point> &points,
-                    ValueVector<Derivative<2>> &values) const;
+                    ValueVector<Derivative<2>> &values) const override final;
 
     static const int R = 1.;
 
@@ -345,13 +345,13 @@ private:
 
 private:
     void evaluate_0(const ValueVector<Point> &points,
-                    ValueVector<Value> &values) const;
+                    ValueVector<Value> &values) const override final;
 
     void evaluate_1(const ValueVector<Point> &points,
-                    ValueVector<Derivative<1>> &values) const;
+                    ValueVector<Derivative<1>> &values) const override final;
 
     void evaluate_2(const ValueVector<Point> &points,
-                    ValueVector<Derivative<2>> &values) const;
+                    ValueVector<Derivative<2>> &values) const override final;
 
 private:
 private:

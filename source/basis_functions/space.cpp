@@ -50,9 +50,9 @@ get_space_id() const
 }
 
 template <int dim_>
-std::shared_ptr<CartesianGrid<dim_>>
-                                  SpaceBase<dim_>::
-                                  get_grid() const
+std::shared_ptr<CartesianGrid<dim_> >
+SpaceBase<dim_>::
+get_grid() const
 {
     return grid_;
 }

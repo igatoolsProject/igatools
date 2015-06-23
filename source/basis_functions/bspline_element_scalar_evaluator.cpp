@@ -38,7 +38,7 @@ BSplineElementScalarEvaluator(const SafeSTLVector<SafeSTLArray<Values1DConstView
 template <int dim>
 const SafeSTLArray<Values1DConstView,dim> &
 BSplineElementScalarEvaluator<dim>::
-get_dataivative_components_view(const int order) const
+get_derivative_components_view(const int order) const
 {
     Assert(order >= 0 && order< values1D_.size(),
            ExcIndexRange(order,0,values1D_.size()));
@@ -52,7 +52,7 @@ get_values_view(const int order,const int dir) const
 {
     Assert(dir >= 0 && dir < dim,
            ExcIndexRange(dir,0,dim));
-    return get_dataivative_components_view(order)[dim];
+    return get_derivative_components_view(order)[dim];
 }
 
 
@@ -125,7 +125,7 @@ evaluate_derivative_at_points(
     Assert(derivatives.tensor_size()[0] == n_points[0],
            ExcDimensionMismatch(derivatives.tensor_size()[0],n_points[0]));
 
-    const auto &deriv_dir_0 = this->get_dataivative_components_view(order_tensor_id[0])[0];
+    const auto &deriv_dir_0 = this->get_derivative_components_view(order_tensor_id[0])[0];
     for (Index flat_pt_id_0 = 0 ; flat_pt_id_0 < n_points[0] ; ++flat_pt_id_0)
         derivatives[flat_pt_id_0] = deriv_dir_0(flat_pt_id_0);
 }
@@ -145,8 +145,8 @@ evaluate_derivative_at_points(
                ExcDimensionMismatch(derivatives.tensor_size()[dir],n_points[dir]));
 #endif
 
-    const auto &deriv_dir_1 = this->get_dataivative_components_view(order_tensor_id[1])[1];
-    const auto &deriv_dir_0 = this->get_dataivative_components_view(order_tensor_id[0])[0];
+    const auto &deriv_dir_0 = this->get_derivative_components_view(order_tensor_id[0])[0];
+    const auto &deriv_dir_1 = this->get_derivative_components_view(order_tensor_id[1])[1];
 
     Index flat_pt_id = 0;
     for (Index flat_pt_id_1 = 0 ; flat_pt_id_1 < n_points[1] ; ++flat_pt_id_1)
@@ -173,9 +173,9 @@ evaluate_derivative_at_points(
                ExcDimensionMismatch(derivatives.tensor_size()[dir],n_points[dir]));
 #endif
 
-    const auto &deriv_dir_2 = this->get_dataivative_components_view(order_tensor_id[2])[2];
-    const auto &deriv_dir_1 = this->get_dataivative_components_view(order_tensor_id[1])[1];
-    const auto &deriv_dir_0 = this->get_dataivative_components_view(order_tensor_id[0])[0];
+    const auto &deriv_dir_0 = this->get_derivative_components_view(order_tensor_id[0])[0];
+    const auto &deriv_dir_1 = this->get_derivative_components_view(order_tensor_id[1])[1];
+    const auto &deriv_dir_2 = this->get_derivative_components_view(order_tensor_id[2])[2];
 
     Index flat_pt_id = 0;
     for (Index flat_pt_id_2 = 0 ; flat_pt_id_2 < n_points[2] ; ++flat_pt_id_2)

@@ -258,11 +258,6 @@ private:
     friend ElementAccessor;
     friend ElementHandler;
 
-    /**
-     * Returns the weight coefficient associated with a given basis function.
-     */
-    Real get_weight_coef_from_basis_id(const Index basis_id) const;
-
 
     /**
      * Returns the current object wrapped by a std::shared_ptr.
