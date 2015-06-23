@@ -140,7 +140,7 @@ private:
     };
 
     FillCacheDispatcher fill_cache_impl;
-    friend class FillCacheDispatcher;
+    friend struct FillCacheDispatcher;
 };
 
 IGA_NAMESPACE_CLOSE
