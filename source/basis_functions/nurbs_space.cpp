@@ -429,7 +429,7 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
               std::shared_ptr<CartesianGrid<k>> sub_grid,
-              std::shared_ptr<InterGridMap> elem_map) const
+              InterGridMap &elem_map) const
 -> std::shared_ptr<SubSpace<k> >
 {
     //TODO (martinelli Nov 27,2014): implement this function

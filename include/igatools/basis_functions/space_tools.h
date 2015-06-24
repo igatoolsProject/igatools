@@ -264,14 +264,14 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
     for (const Index &s_id : sub_elems)
     {
         using  InterGridMap = std::map<Index,Index>;
-        auto elem_map = std::make_shared<InterGridMap>(InterGridMap());
+        InterGridMap elem_map;
 
         auto grid = space->get_grid();
-        auto sub_grid = grid->template get_sub_grid<sub_dim>(s_id, *elem_map);
+        auto sub_grid = grid->template get_sub_grid<sub_dim>(s_id, elem_map);
 
         InterSpaceMap  dof_map;
         auto sub_space = space->template get_sub_space<sub_dim>(s_id, dof_map, sub_grid, elem_map);
-        auto sub_func = SubFunc::create(sub_grid, function, s_id, *elem_map);
+        auto sub_func = SubFunc::create(sub_grid, function, s_id, elem_map);
 
         auto proj = projection_l2<SubSpace>(sub_func, sub_space, quad);
 
