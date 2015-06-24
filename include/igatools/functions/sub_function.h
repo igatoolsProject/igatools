@@ -202,6 +202,13 @@ public:
         sup_elem_(sup_func_->begin())
     {}
 
+    // TODO: to fix or supress this functions.
+    // This is passing elem_map_ (that is of type InterGridMap<sub_dim> &)
+    // to get_sub_grid that is expecting a reference as input argument.
+    // So, no there is not object instantiation.
+    // Clang throws a warning, but gcc not.
+
+#if 0
     SubMapFunction(const SupFunc &func,
                    const int s_id)
         :
@@ -210,6 +217,7 @@ public:
         s_id_(s_id),
         sup_elem_(sup_func_->begin())
     {}
+#endif
 
     SubMapFunction(const self_t &sub_f)
         :
