@@ -276,7 +276,7 @@ get_ref_sub_space(const int s_id,
 {
     if (!(sub_grid))
     {
-        typename GridType::template InterGridMap<k>  elem_map;
+        InterGridMap elem_map;
         sub_grid   = this->get_grid()->template get_sub_grid<k>(s_id, elem_map);
     }
     auto sub_mult   = this->space_data_->template get_sub_space_mult<k>(s_id);
@@ -350,7 +350,7 @@ auto
 BSplineSpace<dim_, range_, rank_>::
 get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
               std::shared_ptr<CartesianGrid<k>> sub_grid,
-              std::shared_ptr<typename GridType::template InterGridMap<k>> elem_map) const
+              std::shared_ptr<InterGridMap> elem_map) const
 -> std::shared_ptr<SubSpace<k> >
 {
     using SubMap = SubMapFunction<k, dim, space_dim>;

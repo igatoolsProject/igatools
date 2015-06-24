@@ -89,7 +89,7 @@ void create_fun()
     for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
     {
         using Grid =  CartesianGrid<dim>;
-        using SubGridMap = typename Grid::template InterGridMap<k>;
+        using SubGridMap = std::map<Index,Index>;
         SubGridMap elem_map;
         auto sub_grid = grid->template get_sub_grid<k>(s_id, elem_map);
 

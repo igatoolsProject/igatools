@@ -477,8 +477,6 @@ public:
     template<int sub_dim>
     BoundaryNormal<sub_dim> get_boundary_normals(const int s_id) const;
 
-    template<int k>
-    using InterGridMap = std::map<typename CartesianGrid<k>::ElementIterator, ElementConstIterator>;
 
     /**
      * Construct a sub grid of dimension k conforming to
@@ -488,7 +486,7 @@ public:
      */
     template<int k>
     std::shared_ptr<CartesianGrid<k> >
-    get_sub_grid(const int sub_elem_id, InterGridMap<k> &elem_map) const;
+    get_sub_grid(const int sub_elem_id, std::map<Index,Index> &elem_map) const;
 
     ///@}
 

@@ -77,9 +77,7 @@ get_max_num_fine_intervals_in_coarse_interval(const CartesianGrid<dim> &grid_fin
                                               const CartesianGrid<dim> &grid_coarse);
 
 
-template<int dim>
-using InterGridMap = std::map<typename CartesianGrid<dim>::ElementConstIterator,
-      typename CartesianGrid<dim>::ElementConstIterator>;
+using InterGridMap = std::map<Index,Index>;
 
 /**
  * Given one grid <tt>grid_coarse</tt> and a refinement <tt>grid_fine</tt>,
@@ -98,9 +96,15 @@ using InterGridMap = std::map<typename CartesianGrid<dim>::ElementConstIterator,
  * @relates CartesianGrid
  */
 template <int dim>
-std::map<Index,Index>
+InterGridMap
 build_map_elements_id_between_cartesian_grids(const CartesianGrid<dim> &grid_fine,
                                               const CartesianGrid<dim> &grid_coarse);
+
+#if 0
+
+template<int dim>
+using InterGridMap = std::map<typename CartesianGrid<dim>::ElementConstIterator,
+      typename CartesianGrid<dim>::ElementConstIterator>;
 
 /**
  * Given one grid <tt>grid_coarse</tt> and a refinement <tt>grid_fine</tt>,
@@ -122,7 +126,7 @@ template <int dim>
 InterGridMap<dim>
 build_map_elements_between_cartesian_grids(const CartesianGrid<dim> &grid_fine,
                                            const CartesianGrid<dim> &grid_coarse);
-
+#endif
 
 /**
  * Given two grids <tt>grid_1</tt> and <tt>grid_2</tt> defined over the same domain,
@@ -132,10 +136,10 @@ build_map_elements_between_cartesian_grids(const CartesianGrid<dim> &grid_fine,
  *
  * @param[in] grid_1 First grid.
  * @param[in] grid_2 Second grid.
- * @param[out] map_elem_grid_union_to_elem_grid_1 One-to-one mapping between the elements in the
- * CartesianGrid union and the elements in the first grid.
- * @param[out] map_elem_grid_union_to_elem_grid_2 One-to-one mapping between the elements in the
- * CartesianGrid union and the elements in the second grid.
+ * @param[out] map_elem_id_grid_union_to_elem_id_grid_1 One-to-one mapping between the elements id in the
+ * CartesianGrid union and the elements id in the first grid.
+ * @param[out] map_elem_id_grid_union_to_elem_id_grid_2 One-to-one mapping between the elements id in the
+ * CartesianGrid union and the elements id in the second grid.
  * @return The CartesianGrid that contains the all the knots from <tt>grid_1</tt> and <tt>grid_2</tt>.
  *
  * @warning In Debug mode an assertion will be raised if
@@ -148,8 +152,9 @@ std::shared_ptr<CartesianGrid<dim> >
 build_cartesian_grid_union(
     const CartesianGrid<dim> &grid_1,
     const CartesianGrid<dim> &grid_2,
-    InterGridMap<dim> &map_elem_grid_union_to_elem_grid_1,
-    InterGridMap<dim> &map_elem_grid_union_to_elem_grid_2);
+    InterGridMap &map_elem_grid_union_to_elem_grid_1,
+    InterGridMap &map_elem_grid_union_to_elem_grid_2);
+
 }
 
 IGA_NAMESPACE_CLOSE

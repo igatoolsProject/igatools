@@ -55,7 +55,7 @@ void sub_map(const int n_knots = 2)
 
     for (auto &s_id : UnitElement<dim>::template elems_ids<sub_dim>())
     {
-        using  InterGridMap = typename GridType::template InterGridMap<sub_dim>;
+        using  InterGridMap = std::map<Index,Index>;
         auto elem_map = std::make_shared<InterGridMap>(InterGridMap());
 
         auto sub_grid = grid->template get_sub_grid<sub_dim>(s_id, *elem_map);

@@ -28,6 +28,7 @@
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
+#include <igatools/geometry/grid_tools.h>
 #include <igatools/functions/sub_function.h>
 #include <igatools/functions/identity_function.h>
 #include <igatools/functions/function_element.h>
@@ -47,7 +48,8 @@ void sub_function(const int n_knots = 3)
 
     for (auto &s_id : UnitElement<dim>::template elems_ids<sub_dim>())
     {
-        using  InterGridMap = typename GridType::template InterGridMap<sub_dim>;
+//        using  InterGridMap = typename GridType::template InterGridMap<sub_dim>;
+        using  InterGridMap = grid_tools::InterGridMap;
         auto elem_map = std::make_shared<InterGridMap>(InterGridMap());
         auto sub_grid = grid->template get_sub_grid<sub_dim>(s_id, *elem_map);
         auto sub_func = SubFunc::create(sub_grid, func, s_id, *elem_map);

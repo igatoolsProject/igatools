@@ -44,7 +44,7 @@ void sub_space(TensorSize<dim> n, const int degree = 1)
 
     for (auto i : UnitElement<dim>::template elems_ids<sub_dim>())
     {
-        auto elem_map = make_shared<typename CartesianGrid<dim>::template InterGridMap<sub_dim>>() ;
+        auto elem_map = make_shared<std::map<Index,Index>>() ;
         auto sub_grid = space->get_grid()->template get_sub_grid<sub_dim>(i, *elem_map);
         out.begin_item(to_string(i) + "-th " + "sub space:");
         auto sub_space =

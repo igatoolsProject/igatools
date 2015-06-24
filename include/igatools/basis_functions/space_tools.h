@@ -243,7 +243,7 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
     //const int space_dim = Space::space_dim;
 
     const int sub_dim = dim - 1;
-    using GridType = typename Space::GridType;
+//    using GridType = typename Space::GridType;
     using SubSpace = typename Space::template SubSpace<sub_dim>;
     using InterSpaceMap = typename Space::template InterSpaceMap<sub_dim>;
     using SubFunc = SubFunction<sub_dim, dim, codim, range, rank>;
@@ -263,7 +263,7 @@ project_boundary_values(const std::shared_ptr<const typename Space::Func> functi
 
     for (const Index &s_id : sub_elems)
     {
-        using  InterGridMap = typename GridType::template InterGridMap<sub_dim>;
+        using  InterGridMap = std::map<Index,Index>;
         auto elem_map = std::make_shared<InterGridMap>(InterGridMap());
 
         auto grid = space->get_grid();
