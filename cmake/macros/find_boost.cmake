@@ -28,8 +28,7 @@ macro(find_boost)
 
     include_directories(${Boost_INCLUDE_DIRS})
 
-    find_library (Boost_serialization boost_serialization ${Boost_LIBRARY_DIRS})
-
+    find_library (Boost_serialization boost_serialization PATHS ${Boost_LIBRARY_DIRS} NO_DEFAULT_PATH)
     set(Boost_LIBRARIES "${Boost_serialization}")
     
   else (SERIALIZATION)
