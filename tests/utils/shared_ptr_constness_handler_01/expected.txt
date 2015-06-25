@@ -1,0 +1,99 @@
+========================================================================
+int main()
+========================================================================
+========================================================================
+void do_test_nonconst()
+========================================================================
+SharedPtrConstnessHandler::print_info()
+   Pointer to non-const data
+      Number of intervals per direction: [ 1 ]
+      Knot coordinates:
+         Size: [ 2 ]  Weights: [2]
+         Direction: 0
+         [ 0 1.00000 ]
+      
+   
+
+SharedPtrConstnessHandler::get_ptr_data()
+   Number of intervals per direction: [ 1 ]
+   Knot coordinates:
+      Size: [ 2 ]  Weights: [2]
+      Direction: 0
+      [ 0 1.00000 ]
+   
+
+SharedPtrConstnessHandler::get_ptr_const_data()
+   Number of intervals per direction: [ 1 ]
+   Knot coordinates:
+      Size: [ 2 ]  Weights: [2]
+      Direction: 0
+      [ 0 1.00000 ]
+   
+
+SharedPtrConstnessHandler::get_ref_data()
+   Number of intervals per direction: [ 1 ]
+   Knot coordinates:
+      Size: [ 2 ]  Weights: [2]
+      Direction: 0
+      [ 0 1.00000 ]
+   
+
+SharedPtrConstnessHandler::get_ref_const_data()
+   Number of intervals per direction: [ 1 ]
+   Knot coordinates:
+      Size: [ 2 ]  Weights: [2]
+      Direction: 0
+      [ 0 1.00000 ]
+   
+
+========================================================================
+
+========================================================================
+void do_test_const()
+========================================================================
+SharedPtrConstnessHandler::print_info()
+   Pointer to const data
+      Number of intervals per direction: [ 1 ]
+      Knot coordinates:
+         Size: [ 2 ]  Weights: [2]
+         Direction: 0
+         [ 0 1.00000 ]
+      
+   
+
+SharedPtrConstnessHandler::get_ptr_const_data()
+   Number of intervals per direction: [ 1 ]
+   Knot coordinates:
+      Size: [ 2 ]  Weights: [2]
+      Direction: 0
+      [ 0 1.00000 ]
+   
+
+SharedPtrConstnessHandler::get_ref_const_data()
+   Number of intervals per direction: [ 1 ]
+   Knot coordinates:
+      Size: [ 2 ]  Weights: [2]
+      Direction: 0
+      [ 0 1.00000 ]
+   
+
+SharedPtrConstnessHandler::operator*()
+   Number of intervals per direction: [ 1 ]
+   Knot coordinates:
+      Size: [ 2 ]  Weights: [2]
+      Direction: 0
+      [ 0 1.00000 ]
+   
+
+SharedPtrConstnessHandler::operator->()
+   Number of intervals per direction: [ 1 ]
+   Knot coordinates:
+      Size: [ 2 ]  Weights: [2]
+      Direction: 0
+      [ 0 1.00000 ]
+   
+
+========================================================================
+
+========================================================================
+

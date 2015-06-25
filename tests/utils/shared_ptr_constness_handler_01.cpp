@@ -29,51 +29,9 @@
 #include "../tests.h"
 
 #include <igatools/geometry/cartesian_grid.h>
-
-IGA_NAMESPACE_OPEN
-
-template<class T>
-class SharedPtrConstnessHandler
-{
-public:
-    using Ptr = const std::shared_ptr<T>;
-    using PtrToConst = const std::shared_ptr<const T>;
+#include <igatools/utils/shared_ptr_constness_handler.h>
 
 
-    SharedPtrConstnessHandler(const Ptr &data)
-        :
-        data_(data),
-        data_is_const_(false)
-    {};
-
-    SharedPtrConstnessHandler(const PtrToConst &data)
-        :
-        data_(data),
-        data_is_const_(true)
-    {};
-
-    void print_info(LogStream &out) const
-    {
-        if (data_is_const_)
-        {
-            out << "Pointer to const data" << std::endl;
-            boost::get<PtrToConst>(data_)->print_info(out);
-        }
-        else
-        {
-            out << "Pointer to non-const data" << std::endl;
-            boost::get<Ptr>(data_)->print_info(out);
-        }
-    }
-
-private:
-    boost::variant<Ptr,PtrToConst> data_;
-
-    bool data_is_const_;
-};
-
-
-IGA_NAMESPACE_CLOSE
 
 
 
@@ -83,6 +41,7 @@ using std::shared_ptr;
 
 using Grid = CartesianGrid<1>;
 
+const std::string class_name = "SharedPtrConstnessHandler";
 
 void do_test_nonconst()
 {
@@ -90,17 +49,82 @@ void do_test_nonconst()
 
     shared_ptr<Grid> grid_nonconst = Grid::create();
 
-    SharedPtrConstnessHandler<Grid> const_handler(grid_nonconst);
-    const_handler.print_info(out);
+    SharedPtrConstnessHandler<Grid> constness_handler(grid_nonconst);
+
+    out.begin_item(class_name + "::print_info()");
+    constness_handler.print_info(out);
+    out.end_item();
+
+    out.begin_item(class_name + "::get_ptr_data()");
+    constness_handler.get_ptr_data()->print_info(out);
+    out.end_item();
+
+    out.begin_item(class_name + "::get_ptr_const_data()");
+    constness_handler.get_ptr_const_data()->print_info(out);
+    out.end_item();
+
+    out.begin_item(class_name + "::get_ref_data()");
+    constness_handler.get_ref_data().print_info(out);
+    out.end_item();
+
+    out.begin_item(class_name + "::get_ref_const_data()");
+    constness_handler.get_ref_const_data().print_info(out);
+    out.end_item();
+
+#if 0
+    out.begin_item(class_name + "::operator*()");
+    Grid &grid_ref = *constness_handler;
+    grid_ref.print_info(out);
+    out.end_item();
+
+    out.begin_item(class_name + "::operator->()");
+    constness_handler->print_info(out);
+    out.end_item();
+#endif
 
     OUTEND
 }
+
+
+void do_test_const()
+{
+    OUTSTART
+
+    shared_ptr<const Grid> grid_const = Grid::create();
+
+    SharedPtrConstnessHandler<Grid> constness_handler(grid_const);
+
+    out.begin_item(class_name + "::print_info()");
+    constness_handler.print_info(out);
+    out.end_item();
+
+    out.begin_item(class_name + "::get_ptr_const_data()");
+    constness_handler.get_ptr_const_data()->print_info(out);
+    out.end_item();
+
+    out.begin_item(class_name + "::get_ref_const_data()");
+    constness_handler.get_ref_const_data().print_info(out);
+    out.end_item();
+
+    out.begin_item(class_name + "::operator*()");
+    (*constness_handler).print_info(out);
+    out.end_item();
+
+    out.begin_item(class_name + "::operator->()");
+    constness_handler->print_info(out);
+    out.end_item();
+
+    OUTEND
+}
+
 
 int main()
 {
     OUTSTART
 
     do_test_nonconst();
+
+    do_test_const();
 
     OUTEND
 
