@@ -45,14 +45,14 @@ PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 PhysicalSpace(shared_ptr<RefSpace> ref_space,
               const shared_ptr<MapFunc> &map_func)
     :
-    base_t(ref_space->get_grid(),map_func),
+    base_t(ref_space->get_ptr_grid(),map_func),
     ref_space_(ref_space)
 {
 //TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
     Assert(ref_space_ != nullptr, ExcNullPtr());
 
 
-    Assert(this->get_grid() == this->get_map_func()->get_grid(),
+    Assert(this->get_ptr_grid() == this->get_map_func()->get_grid(),
            ExcMessage("Reference space and mapping grids are not the same."))
 
 }
@@ -134,7 +134,7 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
 -> std::shared_ptr<SubSpace<k> >
 {
     using SubMap = SubMapFunction<k, dim, space_dim>;
-    auto grid =  this->get_grid();
+    auto grid =  this->get_ptr_const_grid();
 
     auto sub_ref_space = ref_space_->get_ref_sub_space(s_id, dof_map, sub_grid);
     auto sub_map_func = SubMap::create(sub_grid, *this->get_map_func(), s_id, elem_map);
@@ -273,7 +273,7 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> space)
                   std::placeholders::_2);
 
     using SlotType = typename CartesianGrid<dim>::SignalInsertKnotsSlot;
-    std::const_pointer_cast<CartesianGrid<dim_>>(this->get_grid())->connect_insert_knots(
+    std::const_pointer_cast<CartesianGrid<dim_>>(this->get_ptr_grid())->connect_insert_knots(
                                                   SlotType(func_to_connect).track_foreign(space));
 }
 

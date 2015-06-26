@@ -55,7 +55,7 @@ test(const int deg = 1)
     out << endl;
     acum_mult.print_info(out);
     out << endl;
-    BernsteinExtraction<dim> operators(grid, rep_knots, acum_mult, degt);
+    BernsteinExtraction<dim> operators(*grid, rep_knots, acum_mult, degt);
     operators.print_info(out);
 }
 

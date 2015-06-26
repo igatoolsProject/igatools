@@ -27,10 +27,10 @@ IGA_NAMESPACE_OPEN
 
 template <int dim>
 SpaceElementBase<dim>::
-SpaceElementBase(const std::shared_ptr<const SpaceBase<dim>> space,
+SpaceElementBase(const std::shared_ptr<const SpaceBase<dim>> &space,
                  const Index elem_index)
     :
-    base_t(space->get_grid(), elem_index),
+    base_t(space->get_ptr_const_grid(), elem_index),
     space_(space)
 {
     Assert(space_ != nullptr, ExcNullPtr());

@@ -112,9 +112,9 @@ public:
     Index get_space_id() const;
 
 
-    std::shared_ptr<CartesianGrid<dim_>> get_grid();
+    std::shared_ptr<CartesianGrid<dim_>> get_ptr_grid();
 
-    std::shared_ptr<const CartesianGrid<dim_>> get_grid() const;
+    std::shared_ptr<const CartesianGrid<dim_>> get_ptr_const_grid() const;
 
 
 #ifdef MESH_REFINEMENT

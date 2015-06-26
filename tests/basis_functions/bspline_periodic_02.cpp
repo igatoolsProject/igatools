@@ -147,7 +147,7 @@ void assemble_matrix(const int n_knots, const int deg)
 
 
     const int n_plot_points = deg+1;
-    auto map1 = IdentityFunction<dim>::create(space->get_grid());
+    auto map1 = IdentityFunction<dim>::create(space->get_ptr_const_grid());
     Writer<dim> writer(map1, n_plot_points);
 
     using IgFunc = IgFunction<dim,0,range,1>;

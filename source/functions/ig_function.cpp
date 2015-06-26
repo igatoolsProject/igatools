@@ -33,7 +33,7 @@ IgFunction(std::shared_ptr<const Space<dim,codim,range,rank>> space,
            std::shared_ptr<const EpetraTools::Vector> coeff,
            const std::string &property)
     :
-    parent_t::Function(space->get_grid()),
+    parent_t::Function(space->get_ptr_const_grid()),
     space_(space),
     property_(property),
     space_elem_(space->begin()),
@@ -65,7 +65,7 @@ IgFunction(std::shared_ptr<const Space<dim,codim,range,rank>> space,
            const IgCoefficients &coeff,
            const std::string &property)
     :
-    parent_t::Function(space->get_grid()),
+    parent_t::Function(space->get_ptr_const_grid()),
     space_(space),
     property_(property),
     space_elem_(space->begin()),
@@ -90,7 +90,7 @@ template<int dim,int codim,int range,int rank>
 IgFunction<dim,codim,range,rank>::
 IgFunction(const self_t &fun)
     :
-    parent_t::Function(fun.space_->get_grid()),
+    parent_t::Function(fun.space_->get_ptr_const_grid()),
     space_(fun.space_),
     coeff_(fun.coeff_),
     property_(fun.property_),
@@ -142,7 +142,7 @@ IgFunction<dim,codim,range,rank>::
 reset(const ValueFlags &flag, const eval_pts_variant &eval_pts)
 {
     const std::set<int> elems_id =
-        this->get_ig_space()->get_grid()->get_elements_id();
+        this->get_ig_space()->get_ptr_const_grid()->get_elements_id();
 
     this->reset_selected_elements(
         flag,

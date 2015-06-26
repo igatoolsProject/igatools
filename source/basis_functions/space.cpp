@@ -57,7 +57,7 @@ get_space_id() const
 template <int dim_>
 std::shared_ptr<CartesianGrid<dim_> >
 SpaceBase<dim_>::
-get_grid()
+get_ptr_grid()
 {
     return grid_.get_ptr_data();
 }
@@ -65,7 +65,7 @@ get_grid()
 template <int dim_>
 std::shared_ptr<const CartesianGrid<dim_> >
 SpaceBase<dim_>::
-get_grid() const
+get_ptr_const_grid() const
 {
     return grid_.get_ptr_const_data();
 }
@@ -77,7 +77,7 @@ void
 SpaceBase<dim_>::
 refine_h(const Size n_subdivisions)
 {
-    this->get_grid()->refine(n_subdivisions);
+    this->get_ptr_grid()->refine(n_subdivisions);
 }
 
 #endif // MESH_REFINEMENT
@@ -113,7 +113,7 @@ Space(const shared_ptr<CartesianGrid<dim_>> &grid,
     map_func_.get_ref_ptr_data().swap(const_cast<shared_ptr<MapFunc> &>(map_func));
     Assert(map_func_.unique(), ExcNotUnique());
 
-    Assert(this->get_grid() == this->map_func_->get_grid(),
+    Assert(this->get_ptr_grid() == this->map_func_->get_grid(),
            ExcMessage("Reference space and mapping grids are not the same."))
 }
 
@@ -129,7 +129,7 @@ Space(const shared_ptr<const CartesianGrid<dim_>> &grid,
     map_func_.get_ref_ptr_data().swap(const_cast<shared_ptr<MapFunc> &>(map_func));
     Assert(map_func_.unique(), ExcNotUnique());
 
-    Assert(this->get_grid() == this->map_func_->get_grid(),
+    Assert(this->get_ptr_const_grid() == this->map_func_->get_grid(),
            ExcMessage("Reference space and mapping grids are not the same."))
 }
 
@@ -141,7 +141,7 @@ begin(const std::string &element_property) const -> ElementIterator
 {
     return ElementIterator(
                this->create_element(
-                   this->get_grid()->get_first_element_id_same_property(element_property)),
+                   this->get_ptr_const_grid()->get_first_element_id_same_property(element_property)),
                element_property);
 }
 
@@ -154,7 +154,7 @@ last(const std::string &element_property) const -> ElementIterator
 {
     return ElementIterator(
                this->create_element(
-                   this->get_grid()->get_first_element_id_same_property(element_property)),
+                   this->get_ptr_const_grid()->get_first_element_id_same_property(element_property)),
                element_property);
 }
 

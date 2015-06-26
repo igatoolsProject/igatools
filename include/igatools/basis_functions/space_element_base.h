@@ -70,7 +70,7 @@ public:
      * Constructs an accessor to element number <tt>elem_index</tt> of a
      * function space.
      */
-    SpaceElementBase(const std::shared_ptr<const SpaceBase<dim>> space,
+    SpaceElementBase(const std::shared_ptr<const SpaceBase<dim>> &space,
                      const Index elem_index);
 
 

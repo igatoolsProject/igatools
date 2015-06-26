@@ -44,7 +44,7 @@ NURBSSpace<dim_, range_, rank_>::
 NURBSSpace(std::shared_ptr<SpSpace> bs_space,
            const WeightFunctionPtr &weight_func)
     :
-    BaseSpace(bs_space->get_grid()),
+    BaseSpace(bs_space->get_ptr_grid()),
     sp_space_(bs_space),
     weight_func_(weight_func)
 {
@@ -54,7 +54,7 @@ NURBSSpace(std::shared_ptr<SpSpace> bs_space,
 //    {
     Assert(weight_func_ != nullptr, ExcNullPtr());
 
-    Assert(*this->get_grid() == *weight_func_->get_grid(),ExcMessage("Mismatching grids."));
+    Assert(*this->get_ptr_grid() == *weight_func_->get_grid(),ExcMessage("Mismatching grids."));
 
     using WeightRefSpace = ReferenceSpace<dim_,1,1>;
     auto w_func_as_ref_space = std::dynamic_pointer_cast<const WeightRefSpace>(weight_func_->get_ig_space());
@@ -578,7 +578,7 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> space)
                   std::placeholders::_2);
 
     using SlotType = typename CartesianGrid<dim>::SignalInsertKnotsSlot;
-    std::const_pointer_cast<CartesianGrid<dim_>>(this->get_grid())->connect_insert_knots(
+    std::const_pointer_cast<CartesianGrid<dim_>>(this->get_ptr_grid())->connect_insert_knots(
                                                   SlotType(func_to_connect).track_foreign(space));
 }
 

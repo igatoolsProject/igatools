@@ -33,28 +33,40 @@ IGA_NAMESPACE_OPEN
 template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(const int degree,
-             std::shared_ptr<GridType> knots,
+             const std::shared_ptr<GridType> &grid,
              const InteriorReg interior_reg,
              const bool periodic,
              const BasisEndBehaviour end_b)
     :
-    BSplineSpace(Degrees(degree), knots, interior_reg,
+    BSplineSpace(Degrees(degree), grid, interior_reg,
                  Periodicity(periodic),
                  EndBehaviour(end_b))
 {}
 
+template<int dim_, int range_, int rank_>
+BSplineSpace<dim_, range_, rank_>::
+BSplineSpace(const int degree,
+             const std::shared_ptr<const GridType> &grid,
+             const InteriorReg interior_reg,
+             const bool periodic,
+             const BasisEndBehaviour end_b)
+    :
+    BSplineSpace(Degrees(degree), grid, interior_reg,
+                 Periodicity(periodic),
+                 EndBehaviour(end_b))
+{}
 
 
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
 create(const int degree,
-       std::shared_ptr<GridType> knots,
+       const std::shared_ptr<GridType> &grid,
        const InteriorReg interior_reg,
        const bool periodic,
        const BasisEndBehaviour end_b) -> shared_ptr<self_t>
 {
-    auto sp = shared_ptr<self_t>(new self_t(degree,knots,interior_reg,periodic,end_b));
+    auto sp = shared_ptr<self_t>(new self_t(degree,grid,interior_reg,periodic,end_b));
     Assert(sp != nullptr, ExcNullPtr());
 
 #ifdef MESH_REFINEMENT
@@ -64,37 +76,66 @@ create(const int degree,
     return sp;
 }
 
+template<int dim_, int range_, int rank_>
+auto
+BSplineSpace<dim_, range_, rank_>::
+create(const int degree,
+       const std::shared_ptr<const GridType> &grid,
+       const InteriorReg interior_reg,
+       const bool periodic,
+       const BasisEndBehaviour end_b) -> shared_ptr<const self_t>
+{
+    auto sp = shared_ptr<const self_t>(new self_t(degree,grid,interior_reg,periodic,end_b));
+    Assert(sp != nullptr, ExcNullPtr());
+
+    return sp;
+}
 
 
 template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(const Degrees &deg,
-             std::shared_ptr<GridType> knots,
+             const std::shared_ptr<GridType> &grid,
              const InteriorReg interior_reg,
              const Periodicity &periodic,
              const EndBehaviour &end_b)
     :
     BSplineSpace(DegreeTable(true,deg),
-                 knots,
+                 grid,
                  SpaceData::get_multiplicity_from_regularity(interior_reg,DegreeTable(true,deg),
-                                                             knots->get_num_intervals()),
+                                                             grid->get_num_intervals()),
                  PeriodicityTable(true,periodic),
                  EndBehaviourTable(true,end_b))
 {}
 
+template<int dim_, int range_, int rank_>
+BSplineSpace<dim_, range_, rank_>::
+BSplineSpace(const Degrees &deg,
+             const std::shared_ptr<const GridType> &grid,
+             const InteriorReg interior_reg,
+             const Periodicity &periodic,
+             const EndBehaviour &end_b)
+    :
+    BSplineSpace(DegreeTable(true,deg),
+                 grid,
+                 SpaceData::get_multiplicity_from_regularity(interior_reg,DegreeTable(true,deg),
+                                                             grid->get_num_intervals()),
+                 PeriodicityTable(true,periodic),
+                 EndBehaviourTable(true,end_b))
+{}
 
 
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
 create(const Degrees &deg,
-       std::shared_ptr<GridType> knots,
+       const std::shared_ptr<GridType> &grid,
        const InteriorReg interior_reg,
        const Periodicity &periodic,
        const EndBehaviour &end_b)
 -> shared_ptr<self_t>
 {
-    auto sp = shared_ptr<self_t>(new self_t(deg, knots, interior_reg, periodic, end_b));
+    auto sp = shared_ptr<self_t>(new self_t(deg, grid, interior_reg, periodic, end_b));
     Assert(sp != nullptr, ExcNullPtr());
 
 #ifdef MESH_REFINEMENT
@@ -104,20 +145,31 @@ create(const Degrees &deg,
     return sp;
 }
 
+template<int dim_, int range_, int rank_>
+auto
+BSplineSpace<dim_, range_, rank_>::
+create(const Degrees &deg,
+       const std::shared_ptr<const GridType> &grid,
+       const InteriorReg interior_reg,
+       const Periodicity &periodic,
+       const EndBehaviour &end_b)
+-> shared_ptr<const self_t>
+{
+    auto sp = shared_ptr<const self_t>(new self_t(deg, grid, interior_reg, periodic, end_b));
+    Assert(sp != nullptr, ExcNullPtr());
+
+    return sp;
+}
 
 template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
-BSplineSpace(std::shared_ptr<SpaceData> space_data,
+BSplineSpace(const std::shared_ptr<SpaceData> &space_data,
              const EndBehaviourTable &end_b)
     :
-    BaseSpace(space_data->get_grid()),
+    BaseSpace(space_data->get_ptr_grid()),
     space_data_(space_data),
     end_b_(end_b),
-    operators_(
-        this->space_data_->get_grid(),
-        this->space_data_->compute_knots_with_repetition(end_b),
-        this->space_data_->accumulated_interior_multiplicities(),
-        this->space_data_->get_degree_table()),
+    operators_(*space_data_,end_b),
     end_interval_(end_b.get_comp_map()),
     dof_distribution_(std::make_shared<DofDistribution<dim_,range_,rank_>>(
                           DofDistribution<dim_,range_,rank_>(
@@ -125,16 +177,16 @@ BSplineSpace(std::shared_ptr<SpaceData> space_data,
                               space_data->get_degree_table(),
                               space_data->get_periodic_table())))
 {
-    Assert(space_data_ != nullptr,ExcNullPtr());
+//    Assert(space_data_ != nullptr,ExcNullPtr());
     Assert(dof_distribution_ != nullptr,ExcNullPtr());
 
     //------------------------------------------------------------------------------
 // TODO (pauletti, Dec 24, 2014): after it work it should be recoded properly
 
-    const auto grid = this->space_data_->get_grid();
-    const auto &degree_table = this->space_data_->get_degree_table();
-    const auto rep_knots =
-        this->space_data_->compute_knots_with_repetition(end_b_);
+    const auto &sp_data = *this->space_data_;
+    const auto &grid = *sp_data.get_ptr_const_grid();
+    const auto &degree_table = sp_data.get_degree_table();
+    const auto rep_knots = sp_data.compute_knots_with_repetition(end_b_);
 
     for (auto i : end_interval_.get_active_components_id())
     {
@@ -142,7 +194,7 @@ BSplineSpace(std::shared_ptr<SpaceData> space_data,
         {
             const auto p = degree_table[i][dir];
 
-            const auto &knots_coord_dir = grid->get_knot_coordinates().get_data_direction(dir);
+            const auto &knots_coord_dir = grid.get_knot_coordinates().get_data_direction(dir);
 
             const auto x1 = knots_coord_dir[1];
             const auto a = knots_coord_dir[0];
@@ -183,18 +235,101 @@ BSplineSpace(std::shared_ptr<SpaceData> space_data,
 #endif
 }
 
+template<int dim_, int range_, int rank_>
+BSplineSpace<dim_, range_, rank_>::
+BSplineSpace(const std::shared_ptr<const SpaceData> &space_data,
+             const EndBehaviourTable &end_b)
+    :
+    BaseSpace(space_data->get_ptr_const_grid()),
+    space_data_(space_data),
+    end_b_(end_b),
+    operators_(*space_data_,end_b),
+    end_interval_(end_b.get_comp_map()),
+    dof_distribution_(std::make_shared<DofDistribution<dim_,range_,rank_>>(
+                          DofDistribution<dim_,range_,rank_>(
+                              space_data->get_num_basis_table(),
+                              space_data->get_degree_table(),
+                              space_data->get_periodic_table())))
+{
+//    Assert(space_data_ != nullptr,ExcNullPtr());
+    Assert(dof_distribution_ != nullptr,ExcNullPtr());
+
+    //------------------------------------------------------------------------------
+// TODO (pauletti, Dec 24, 2014): after it work it should be recoded properly
+
+    const auto &sp_data = *this->space_data_;
+    const auto &grid = *sp_data.get_ptr_const_grid();
+    const auto &degree_table = sp_data.get_degree_table();
+    const auto rep_knots = sp_data.compute_knots_with_repetition(end_b_);
+
+    for (auto i : end_interval_.get_active_components_id())
+    {
+        for (int dir=0; dir<dim; ++dir)
+        {
+            const auto p = degree_table[i][dir];
+
+            const auto &knots_coord_dir = grid.get_knot_coordinates().get_data_direction(dir);
+
+            const auto x1 = knots_coord_dir[1];
+            const auto a = knots_coord_dir[0];
+            const auto x0 = rep_knots[i].get_data_direction(dir)[p];
+            end_interval_[i][dir].first = (x1-a) / (x1-x0);
+
+            const auto xk= *(knots_coord_dir.end()-2);
+            const auto b = *(knots_coord_dir.end()-1);
+            const auto xk1 = *(rep_knots[i].get_data_direction(dir).end() - (p+1));
+            end_interval_[i][dir].second = (b-xk) / (xk1-xk);
+        } // end loop dir
+    } // end loop i
+    //------------------------------------------------------------------------------
+
+
+
+    //------------------------------------------------------------------------------
+    // building the lookup table for the local dof id on the current component of the element --- begin
+    for (const auto comp : SpaceData::components)
+    {
+        const auto dofs_t_size_elem_comp = TensorSize<dim>(degree_table[comp]+1);
+        const auto dofs_f_size_elem_comp = dofs_t_size_elem_comp.flat_size();
+
+        auto &elem_comp_dof_t_id = dofs_tensor_id_elem_table_[comp];
+        const auto w_dofs_elem_comp = MultiArrayUtils<dim>::compute_weight(dofs_t_size_elem_comp);
+
+        for (int dof_f_id = 0 ; dof_f_id < dofs_f_size_elem_comp ; ++dof_f_id)
+            elem_comp_dof_t_id.emplace_back(MultiArrayUtils<dim>::flat_to_tensor_index(dof_f_id,w_dofs_elem_comp));
+    }
+    // building the lookup table for the local dof id on the current component of the element --- end
+    //------------------------------------------------------------------------------
+
+#if 0
+    //------------------------------------------------------------------------------
+    this->dof_distribution_->add_dofs_property(this->dofs_property_active_);
+    this->dof_distribution_->set_all_dofs_property_status(this->dofs_property_active_,true);
+    //------------------------------------------------------------------------------
+#endif
+}
 
 template<int dim_, int range_, int rank_>
 BSplineSpace<dim_, range_, rank_>::
 BSplineSpace(const DegreeTable &deg,
-             std::shared_ptr<GridType> knots,
+             const std::shared_ptr<GridType> &grid,
              const MultiplicityTable &interior_mult,
              const PeriodicityTable &periodic,
              const EndBehaviourTable &end_b)
     :
-    BSplineSpace(SpaceData::create(deg, knots, interior_mult, periodic),end_b)
+    BSplineSpace(SpaceData::create(deg, grid, interior_mult, periodic),end_b)
 {}
 
+template<int dim_, int range_, int rank_>
+BSplineSpace<dim_, range_, rank_>::
+BSplineSpace(const DegreeTable &deg,
+             const std::shared_ptr<const GridType> &grid,
+             const MultiplicityTable &interior_mult,
+             const PeriodicityTable &periodic,
+             const EndBehaviourTable &end_b)
+    :
+    BSplineSpace(SpaceData::create(deg, grid, interior_mult, periodic),end_b)
+{}
 
 
 
@@ -202,13 +337,13 @@ template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
 create(const DegreeTable &deg,
-       std::shared_ptr<GridType> knots,
+       const std::shared_ptr<GridType> &grid,
        const MultiplicityTable &interior_mult,
        const PeriodicityTable &periodic,
        const EndBehaviourTable &end_b)
 -> shared_ptr<self_t>
 {
-    auto sp = shared_ptr<self_t>(new self_t(deg, knots, interior_mult, periodic, end_b));
+    auto sp = shared_ptr<self_t>(new self_t(deg, grid, interior_mult, periodic, end_b));
     Assert(sp != nullptr, ExcNullPtr());
 
 #ifdef MESH_REFINEMENT
@@ -218,11 +353,27 @@ create(const DegreeTable &deg,
     return sp;
 }
 
+template<int dim_, int range_, int rank_>
+auto
+BSplineSpace<dim_, range_, rank_>::
+create(const DegreeTable &deg,
+       const std::shared_ptr<const GridType> &grid,
+       const MultiplicityTable &interior_mult,
+       const PeriodicityTable &periodic,
+       const EndBehaviourTable &end_b)
+-> shared_ptr<const self_t>
+{
+    auto sp = shared_ptr<const self_t>(new self_t(deg, grid, interior_mult, periodic, end_b));
+    Assert(sp != nullptr, ExcNullPtr());
+
+    return sp;
+}
+
 
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-create(std::shared_ptr<SpaceData> space_data,
+create(const std::shared_ptr<SpaceData> &space_data,
        const EndBehaviourTable &end_b)
 -> shared_ptr<self_t>
 {
@@ -236,6 +387,18 @@ create(std::shared_ptr<SpaceData> space_data,
     return sp;
 }
 
+template<int dim_, int range_, int rank_>
+auto
+BSplineSpace<dim_, range_, rank_>::
+create(const std::shared_ptr<const SpaceData> &space_data,
+       const EndBehaviourTable &end_b)
+-> shared_ptr<const self_t>
+{
+    auto sp = shared_ptr<self_t>(new self_t(space_data, end_b));
+    Assert(sp != nullptr, ExcNullPtr());
+
+    return sp;
+}
 
 
 template<int dim_, int range_, int rank_>
@@ -277,7 +440,7 @@ get_ref_sub_space(const int s_id,
     if (!(sub_grid))
     {
         InterGridMap elem_map;
-        sub_grid   = this->get_grid()->template get_sub_grid<k>(s_id, elem_map);
+        sub_grid   = this->get_ptr_const_grid()->template get_sub_grid<k>(s_id, elem_map);
     }
     auto sub_mult   = this->space_data_->template get_sub_space_mult<k>(s_id);
     auto sub_degree = this->space_data_->template get_sub_space_degree<k>(s_id);
@@ -354,7 +517,7 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
 -> std::shared_ptr<SubSpace<k> >
 {
     using SubMap = SubMapFunction<k, dim, space_dim>;
-    auto grid = const_pointer_cast<CartesianGrid<dim_> >(this->get_grid());
+    auto grid = const_pointer_cast<CartesianGrid<dim_> >(this->get_ptr_const_grid());
 
     auto sub_ref_space = get_ref_sub_space(s_id, dof_map, sub_grid);
     auto F = IdentityFunction<dim>::create(grid);
@@ -387,7 +550,7 @@ get_element_dofs(
     dofs_local_to_patch.clear();
     dofs_local_to_elem.clear();
 
-    const auto &elem_tensor_id = this->get_grid()->flat_to_tensor(element_id);
+    const auto &elem_tensor_id = this->get_ptr_const_grid()->flat_to_tensor(element_id);
 
     Index dof_loc_to_elem = 0;
     for (const auto comp : SpaceData::components)
@@ -454,7 +617,7 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> space)
                   std::placeholders::_2);
 
     using SlotType = typename CartesianGrid<dim>::SignalInsertKnotsSlot;
-    std::const_pointer_cast<CartesianGrid<dim_>>(this->get_grid())->connect_insert_knots(
+    std::const_pointer_cast<CartesianGrid<dim_>>(this->get_ptr_grid())->connect_insert_knots(
                                                   SlotType(func_to_connect).track_foreign(space));
 }
 
@@ -468,8 +631,7 @@ rebuild_after_insert_knots(
 {
     this->ref_space_previous_refinement_ =
         BSplineSpace<dim_,range_,rank_>::create(
-            const_pointer_cast<SpaceData>(
-                this->space_data_->get_spline_space_previous_refinement()),
+            this->space_data_->get_spline_space_previous_refinement(),
             this->end_b_);
 
 
@@ -479,11 +641,13 @@ rebuild_after_insert_knots(
                                       this->space_data_->get_degree_table(),
                                       this->space_data_->get_periodic_table()));
 
-    operators_ = BernsteinExtraction<dim, range, rank>(
-                     this->get_grid(),
+    operators_ = BernsteinExtraction<dim,range,rank>(*this->space_data_,end_b_);
+    /*
+                     *this->get_ptr_grid(),
                      this->space_data_->compute_knots_with_repetition(end_b_),
                      this->space_data_->accumulated_interior_multiplicities(),
                      this->space_data_->get_degree_table());
+                     //*/
 }
 #endif //MESH_REFINEMENT
 
@@ -581,7 +745,7 @@ serialize(Archive &ar, const unsigned int version)
                                        boost::serialization::base_object<BaseSpace>(*this));
 
     ar &boost::serialization::make_nvp("space_data_",space_data_);
-    Assert(space_data_ != nullptr,ExcNullPtr());
+//    Assert(space_data_ != nullptr,ExcNullPtr());
 
     ar &boost::serialization::make_nvp("end_b_",end_b_);
 

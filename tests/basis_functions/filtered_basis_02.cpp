@@ -140,7 +140,7 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
     solution->print_info(out);
 
     const int n_plot_points = 4;
-    auto map1 = IdentityFunction<dim>::create(space->get_grid());
+    auto map1 = IdentityFunction<dim>::create(space->get_ptr_const_grid());
     Writer<dim> writer(map1, n_plot_points);
     using IgFunc = IgFunction<dim,0,range,rank>;
     auto solution_function = IgFunc::create(space, solution, DofProp::interior);

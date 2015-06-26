@@ -166,48 +166,94 @@ public:
      */
     ///@{
     /**
-     * Builds and returns a maximum regularity BSpline space
-     * over CartesianGrid
-     * @p knots for the given @p degree in all directions and homogeneous
+     * Builds and returns a maximum regularity (non-const) BSpline space
+     * over a (non-const) CartesianGrid
+     * @p grid for the given @p degree in all directions and homogeneous
      * in all components.
      */
     static std::shared_ptr<self_t>
     create(const int degree,
-           std::shared_ptr<GridType> knots,
+           const std::shared_ptr<GridType> &grid,
            const InteriorReg interior_reg = InteriorReg::maximum,
            const bool periodic = false,
            const BasisEndBehaviour end_b = BasisEndBehaviour::interpolatory);
 
     /**
-     * Builds and returns a maximum regularity BSpline space over CartesianGrid
-     * @p knots for the given @p degree[i] in the i-th direction and homogeneous
+     * Builds and returns a maximum regularity (const) BSpline space
+     * over a (const) CartesianGrid
+     * @p grid for the given @p degree in all directions and homogeneous
+     * in all components.
+     */
+    static std::shared_ptr<const self_t>
+    create(const int degree,
+           const std::shared_ptr<const GridType> &grid,
+           const InteriorReg interior_reg = InteriorReg::maximum,
+           const bool periodic = false,
+           const BasisEndBehaviour end_b = BasisEndBehaviour::interpolatory);
+
+    /**
+     * Builds and returns a maximum regularity (non-const) BSpline space
+     * over a (non-const) CartesianGrid
+     * @p grid for the given @p degree[i] in the i-th direction and homogeneous
      * in all components.
      */
     static std::shared_ptr<self_t>
     create(const Degrees &degree,
-           std::shared_ptr<GridType> knots,
+           const std::shared_ptr<GridType> &grid,
            const InteriorReg interior_reg = InteriorReg::maximum,
            const Periodicity &periodic = Periodicity(false),
            const EndBehaviour &end_b = EndBehaviour(BasisEndBehaviour::interpolatory));
 
     /**
-     * Builds and returns a BSpline space over the CartesianGrid
-     * @p knots with the given multiplicity vector @p mult_vectors
+     * Builds and returns a maximum regularity (const) BSpline space
+     * over a (const) CartesianGrid
+     * @p grid for the given @p degree[i] in the i-th direction and homogeneous
+     * in all components.
+     */
+    static std::shared_ptr<const self_t>
+    create(const Degrees &degree,
+           const std::shared_ptr<const GridType> &grid,
+           const InteriorReg interior_reg = InteriorReg::maximum,
+           const Periodicity &periodic = Periodicity(false),
+           const EndBehaviour &end_b = EndBehaviour(BasisEndBehaviour::interpolatory));
+
+    /**
+     * Builds and returns a (non-const) BSpline space
+     * over a (non-const) CartesianGrid
+     * @p grid with the given multiplicity vector @p mult_vectors
      * for each component
      * and the given @p degree for each direction and for each
      * component.
      */
     static std::shared_ptr<self_t>
     create(const DegreeTable &deg,
-           std::shared_ptr<GridType> knots,
+           const std::shared_ptr<GridType> &grid,
+           const MultiplicityTable &interior_mult,
+           const PeriodicityTable &periodic,
+           const EndBehaviourTable &end_b);
+
+    /**
+     * Builds and returns a (const) BSpline space
+     * over a (const) CartesianGrid
+     * @p grid with the given multiplicity vector @p mult_vectors
+     * for each component
+     * and the given @p degree for each direction and for each
+     * component.
+     */
+    static std::shared_ptr<const self_t>
+    create(const DegreeTable &deg,
+           const std::shared_ptr<const GridType> &grid,
            const MultiplicityTable &interior_mult,
            const PeriodicityTable &periodic,
            const EndBehaviourTable &end_b);
 
     static std::shared_ptr<self_t>
-    create(std::shared_ptr<SpaceData> space_data,
+    create(const std::shared_ptr<SpaceData> &space_data,
            const EndBehaviourTable &end_b);
 
+    static std::shared_ptr<const self_t>
+    create(const std::shared_ptr<const SpaceData> &space_data,
+           const EndBehaviourTable &end_b);
     ///@}
 
     /**
@@ -231,44 +277,87 @@ protected:
     BSplineSpace() = default;
 
     /**
-     * Constructs a maximum regularity BSpline space over CartesianGrid
-     * @p knots for the given @p degree in all directions and homogeneous
+     * Constructs a maximum regularity BSpline space
+     * over a (non-const) CartesianGrid
+     * @p grid for the given @p degree in all directions and homogeneous
      * in all components.
      */
     explicit BSplineSpace(const int degree,
-                          std::shared_ptr<GridType> knots,
+                          const std::shared_ptr<GridType> &grid,
                           const InteriorReg interior_reg,
                           const bool periodic,
                           const BasisEndBehaviour end_b);
 
     /**
-     * Constructs a maximum regularity BSpline space over CartesianGrid
-     * @p knots for the given @p degree[i] in the i-th direction and homogeneous
+     * Constructs a maximum regularity BSpline space
+     * over a (const) CartesianGrid
+     * @p grid for the given @p degree in all directions and homogeneous
+     * in all components.
+     */
+    explicit BSplineSpace(const int degree,
+                          const std::shared_ptr<const GridType> &grid,
+                          const InteriorReg interior_reg,
+                          const bool periodic,
+                          const BasisEndBehaviour end_b);
+
+    /**
+     * Constructs a maximum regularity BSpline space over
+     * over a (non-const) CartesianGrid
+     * @p grid for the given @p degree[i] in the i-th direction and homogeneous
      * in all components.
      */
     explicit BSplineSpace(const Degrees &degree,
-                          std::shared_ptr<GridType> knots,
+                          const std::shared_ptr<GridType> &grid,
                           const InteriorReg interior_reg,
                           const Periodicity &periodic,
                           const EndBehaviour &end_b);
 
     /**
-     * Constructs a BSpline space over the CartesianGrid
-     * @p knots with the given multiplicity vector @p mult_vectors
+     * Constructs a maximum regularity BSpline space over
+     * over a (const) CartesianGrid
+     * @p grid for the given @p degree[i] in the i-th direction and homogeneous
+     * in all components.
+     */
+    explicit BSplineSpace(const Degrees &degree,
+                          const std::shared_ptr<const GridType> &grid,
+                          const InteriorReg interior_reg,
+                          const Periodicity &periodic,
+                          const EndBehaviour &end_b);
+
+    /**
+     * Constructs a BSpline space over
+     * over a (non-const) CartesianGrid
+     * @p grid with the given multiplicity vector @p mult_vectors
      * for each component
      * and the given @p degree for each direction and for each
      * component.
      */
     explicit BSplineSpace(const DegreeTable &deg,
-                          std::shared_ptr<GridType> knots,
+                          const std::shared_ptr<GridType> &grid,
+                          const MultiplicityTable &interior_mult,
+                          const PeriodicityTable &periodic,
+                          const EndBehaviourTable &end_b);
+
+    /**
+     * Constructs a BSpline space over
+     * over a (const) CartesianGrid
+     * @p grid with the given multiplicity vector @p mult_vectors
+     * for each component
+     * and the given @p degree for each direction and for each
+     * component.
+     */
+    explicit BSplineSpace(const DegreeTable &deg,
+                          const std::shared_ptr<const GridType> &grid,
                           const MultiplicityTable &interior_mult,
                           const PeriodicityTable &periodic,
                           const EndBehaviourTable &end_b);
 
 
-    explicit BSplineSpace(std::shared_ptr<SpaceData> space_data,
+    explicit BSplineSpace(const std::shared_ptr<SpaceData> &space_data,
                           const EndBehaviourTable &end_b);
 
+    explicit BSplineSpace(const std::shared_ptr<const SpaceData> &space_data,
+                          const EndBehaviourTable &end_b);
 
     /**
      * Copy constructor. Not allowed to be used.
@@ -361,7 +450,7 @@ public:
 
 private:
 
-    std::shared_ptr<SpaceData > space_data_;
+    SharedPtrConstnessHandler<SpaceData > space_data_;
 
 
     EndBehaviourTable end_b_;

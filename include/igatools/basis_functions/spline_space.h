@@ -158,18 +158,34 @@ public:
 public:
     static std::shared_ptr<SplineSpace<dim,range,rank> > create(
         const DegreeTable &deg,
-        std::shared_ptr<GridType> knots,
+        const std::shared_ptr<GridType> &grid,
+        const MultiplicityTable &interior_mult,
+        const PeriodicityTable &periodic = PeriodicityTable(SafeSTLArray<bool,dim>(false)));
+
+    static std::shared_ptr<const SplineSpace<dim,range,rank> > create(
+        const DegreeTable &deg,
+        const std::shared_ptr<const GridType> &grid,
         const MultiplicityTable &interior_mult,
         const PeriodicityTable &periodic = PeriodicityTable(SafeSTLArray<bool,dim>(false)));
 
 protected:
     /**
-     * Construct a spline space with the knots, degree and multiplicity
-     * as well as periodicity conditions
+     * Construct a spline space with the knots (inferred from the non-const @p grid
+     * and @p interior_multiplicity), degree and as periodicity conditions
      */
     explicit SplineSpace(const DegreeTable &deg,
-                         std::shared_ptr<GridType> knots,
-                         const MultiplicityTable &interior_mult,
+                         const std::shared_ptr<GridType> &grid,
+                         const MultiplicityTable &interior_multiplicity,
+                         const PeriodicityTable &periodic =
+                             PeriodicityTable(SafeSTLArray<bool,dim>(false)));
+
+    /**
+     * Construct a spline space with the knots (inferred from the const @p grid
+     * and @p interior_multiplicity), degree and as periodicity conditions
+     */
+    explicit SplineSpace(const DegreeTable &deg,
+                         const std::shared_ptr<const GridType> &grid,
+                         const MultiplicityTable &interior_multiplicity,
                          const PeriodicityTable &periodic =
                              PeriodicityTable(SafeSTLArray<bool,dim>(false)));
 
@@ -255,11 +271,13 @@ public:
 
     void print_info(LogStream &out) const;
 
-    std::shared_ptr<CartesianGrid<dim> > get_grid() const;
+    std::shared_ptr<CartesianGrid<dim> > get_ptr_grid();
+    std::shared_ptr<const CartesianGrid<dim> > get_ptr_const_grid() const;
+
 
 private:
 
-    std::shared_ptr<CartesianGrid<dim> > grid_;
+    SharedPtrConstnessHandler<CartesianGrid<dim> > grid_;
 
     MultiplicityTable interior_mult_;
 
@@ -460,7 +478,7 @@ public:
     };
 
 
-    std::shared_ptr<SplineSpace<dim,range,rank> > spline_space_previous_refinement_;
+    std::shared_ptr<const SplineSpace<dim,range,rank> > spline_space_previous_refinement_;
 
 #ifdef MESH_REFINEMENT
     /**
