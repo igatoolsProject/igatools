@@ -25,24 +25,29 @@
 #include <igatools/base/exceptions.h>
 #include <igatools/base/logstream.h>
 
+
+
+
 IGA_NAMESPACE_OPEN
 
 template<class T>
 class SharedPtrConstnessHandler
 {
 public:
-    using Ptr = const std::shared_ptr<T>;
-    using PtrToConst = const std::shared_ptr<const T>;
+    using Ptr = std::shared_ptr<T>;
+    using PtrToConst = std::shared_ptr<const T>;
 
     /**
      * @name Constructors and destructor
      */
     ///@{
-    SharedPtrConstnessHandler()
-        :
-        ptr_to_data_(nullptr),
-        data_is_const_(false)
-    {}
+
+    /**
+     * Default constructor. It does nothing but it is needed for the
+     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     * mechanism.
+     */
+    SharedPtrConstnessHandler() = default;
 
     /**
      * Constructs the object using a shared pointer to non-const data.
@@ -67,7 +72,7 @@ public:
     /**
      * Copy constructor;
      */
-    SharedPtrConstnessHandler(const SharedPtrConstnessHandler<T> &obj) = default;
+    SharedPtrConstnessHandler(const SharedPtrConstnessHandler<T> &obj) = delete;
 
     /**
      * Move constructor;
@@ -202,8 +207,21 @@ private:
     void
     serialize(Archive &ar, const unsigned int version)
     {
-        Assert(false,ExcNotImplemented());
+        ar &boost::serialization::make_nvp("data_is_const_",data_is_const_);
 
+        // In order to serialize the data, we need to cast them to non-const
+        Ptr tmp;
+        if (data_is_const_)
+            tmp = std::const_pointer_cast<T>(this->get_ptr_const_data());
+        else
+            tmp = this->get_ptr_data();
+        ar &boost::serialization::make_nvp("tmp_ptr_to_data_",tmp);
+
+        // When we deserializ we need to cast the data to the correct constness
+        if (data_is_const_)
+            ptr_to_data_ = std::const_pointer_cast<const T>(tmp);
+        else
+            ptr_to_data_ = tmp;
     }
     ///@}
 #endif // SERIALIZATION

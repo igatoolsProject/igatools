@@ -32,14 +32,19 @@ IGA_NAMESPACE_OPEN
 
 template <int dim_>
 SpaceBase<dim_>::
-SpaceBase(shared_ptr<CartesianGrid<dim_>> grid)
+SpaceBase(const shared_ptr<const CartesianGrid<dim_>> &grid)
     :
     space_id_(UniqueIdGenerator::get_unique_id()),
     grid_(grid)
-{
-    Assert(grid_ != nullptr,ExcNullPtr());
-};
+{};
 
+template <int dim_>
+SpaceBase<dim_>::
+SpaceBase(const shared_ptr<CartesianGrid<dim_>> &grid)
+    :
+    space_id_(UniqueIdGenerator::get_unique_id()),
+    grid_(grid)
+{};
 
 template <int dim_>
 Index
@@ -52,9 +57,17 @@ get_space_id() const
 template <int dim_>
 std::shared_ptr<CartesianGrid<dim_> >
 SpaceBase<dim_>::
+get_grid()
+{
+    return grid_.get_ptr_data();
+}
+
+template <int dim_>
+std::shared_ptr<const CartesianGrid<dim_> >
+SpaceBase<dim_>::
 get_grid() const
 {
-    return grid_;
+    return grid_.get_ptr_const_data();
 }
 
 #ifdef MESH_REFINEMENT
@@ -64,7 +77,7 @@ void
 SpaceBase<dim_>::
 refine_h(const Size n_subdivisions)
 {
-    grid_->refine(n_subdivisions);
+    this->get_grid()->refine(n_subdivisions);
 }
 
 #endif // MESH_REFINEMENT
@@ -90,7 +103,7 @@ serialize(Archive &ar, const unsigned int version)
 
 template <int dim_,int codim_,int range_,int rank_>
 Space<dim_,codim_,range_,rank_>::
-Space(shared_ptr<CartesianGrid<dim_>> grid,
+Space(const shared_ptr<CartesianGrid<dim_>> &grid,
       const shared_ptr<MapFunc> &map_func)
     :
     base_t(grid)

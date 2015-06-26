@@ -22,6 +22,7 @@
 #define __SPACE_H_
 
 #include <igatools/base/config.h>
+#include <igatools/utils/shared_ptr_constness_handler.h>
 #include <igatools/geometry/cartesian_grid.h>
 //#include <igatools/base/function.h>
 
@@ -53,8 +54,6 @@ template <int,int,int,int> class SpaceElementHandler;
  */
 template<int dim_>
 class SpaceBase
-//      :
-//    public GridWrapper<dim_>
 {
 private:
 //    using base_t = GridWrapper<dim_>;
@@ -80,8 +79,11 @@ protected:
      */
     SpaceBase() = default;
 
-    /** Construct the object from the @p grid on which the function space will be built upon. */
-    SpaceBase(std::shared_ptr<CartesianGrid<dim_>> grid);
+    /** Construct the object from the (const) @p grid on which the function space will be built upon. */
+    SpaceBase(const std::shared_ptr<const CartesianGrid<dim_>> &grid);
+
+    /** Construct the object from the (non-const) @p grid on which the function space will be built upon. */
+    SpaceBase(const std::shared_ptr<CartesianGrid<dim_>> &grid);
 
     /** Copy constructor. */
     SpaceBase(const self_t &) = default;
@@ -110,7 +112,9 @@ public:
     Index get_space_id() const;
 
 
-    std::shared_ptr<CartesianGrid<dim_>> get_grid() const;
+    std::shared_ptr<CartesianGrid<dim_>> get_grid();
+
+    std::shared_ptr<const CartesianGrid<dim_>> get_grid() const;
 
 
 #ifdef MESH_REFINEMENT
@@ -133,8 +137,9 @@ protected:
 
 private:
 
-    std::shared_ptr<CartesianGrid<dim_> > grid_;
+//    std::shared_ptr<CartesianGrid<dim_> > grid_;
 
+    SharedPtrConstnessHandler<CartesianGrid<dim_> > grid_;
 
 #ifdef SERIALIZATION
     /**
@@ -198,10 +203,10 @@ protected:
      *
      * @warning After the object construction the state of <tt>map_func</tt> will be no longer valid.
      */
-    Space(std::shared_ptr<CartesianGrid<dim_>> grid,const std::shared_ptr<MapFunc> &map_func);
+    Space(const std::shared_ptr<CartesianGrid<dim_>> &grid,const std::shared_ptr<MapFunc> &map_func);
 
     /** Copy constructor. */
-    Space(const self_t &) = default;
+    Space(const self_t &) = delete;
 
     /** Move constructor. */
     Space(self_t &&) = default;
