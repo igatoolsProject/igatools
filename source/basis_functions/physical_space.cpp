@@ -53,7 +53,7 @@ PhysicalSpace(shared_ptr<RefSpace> ref_space,
 
 
     Assert(this->get_ptr_grid() == this->get_map_func()->get_grid(),
-           ExcMessage("Reference space and mapping grids are not the same."))
+           ExcMessage("Reference space and mapping grids are not the same."));
 
 }
 
