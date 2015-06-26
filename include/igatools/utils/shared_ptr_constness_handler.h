@@ -23,6 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/exceptions.h>
+#include <igatools/base/logstream.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -37,11 +38,11 @@ public:
      * @name Constructors and destructor
      */
     ///@{
-    SharedPtrConstnessHandler() = delete;
-//    :
-//      ptr_to_data_(nullptr),
-//      data_is_const_(false)
-//    {}
+    SharedPtrConstnessHandler()
+        :
+        ptr_to_data_(nullptr),
+        data_is_const_(false)
+    {}
 
     /**
      * Constructs the object using a shared pointer to non-const data.
@@ -50,7 +51,9 @@ public:
         :
         ptr_to_data_(data),
         data_is_const_(false)
-    {};
+    {
+        Assert(data != nullptr, ExcNullPtr());
+    };
 
     /**
      * Constructs the object using a shared pointer to const data.
@@ -184,6 +187,27 @@ private:
     boost::variant<Ptr,PtrToConst> ptr_to_data_;
 
     bool data_is_const_ = false;
+
+
+
+#ifdef SERIALIZATION
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        Assert(false,ExcNotImplemented());
+
+    }
+    ///@}
+#endif // SERIALIZATION
+
 };
 
 
