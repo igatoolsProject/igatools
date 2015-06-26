@@ -88,7 +88,7 @@ auto
 ReferenceSpace<dim, range, rank>::
 get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
               std::shared_ptr<CartesianGrid<k>> sub_grid,
-              std::shared_ptr<InterGridMap<k>> elem_map) const
+              InterGridMap &elem_map) const
 -> std::shared_ptr<SubSpace<k> >
 {
     std::shared_ptr<SubSpace<k> > sub_space;
@@ -102,8 +102,10 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
     else
     {
 #ifdef NURBS
-
-        Assert(false,ExcNotImplemented());
+        const auto nrb_space =
+        dynamic_cast<const NURBSSpace<dim,range,rank> *>(this);
+        Assert(nrb_space != nullptr, ExcNullPtr());
+        sub_space = nrb_space->get_sub_space(s_id,dof_map,sub_grid, elem_map);
 #else
         Assert(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
         AssertThrow(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));

@@ -51,16 +51,17 @@ public:
     using typename base_t::ElementAccessor;
 
     using SuperGrid = typename SupFunc::GridType;
-    template <int j>
-    using InterGridMap = typename SuperGrid::template InterGridMap<j>;
+//    template <int j>
+//    using InterGridMap = typename SuperGrid::template InterGridMap<j>;
 
+    using InterGridMap = std::map<Index,Index>;
 
 public:
 
     SubFunction(std::shared_ptr<GridType> grid,
                 std::shared_ptr<const SupFunc> func,
                 const int s_id,
-                InterGridMap<sub_dim> &elem_map)
+                const InterGridMap &elem_map)
         :
         base_t(grid),
         sup_func_(func->clone()),
@@ -83,7 +84,7 @@ public:
     create(std::shared_ptr<GridType> grid,
            std::shared_ptr<const SupFunc> func,
            const int s_id,
-           InterGridMap<sub_dim> &elem_map)
+           const InterGridMap &elem_map)
     {
         return std::make_shared<self_t>(grid, func, s_id, elem_map);
     }
@@ -116,7 +117,7 @@ public:
         using ElementIt = typename CartesianGrid<sub_dim>::ElementIterator;
         ElementIt el_it(elem.get_grid(),elem.get_flat_index(),ElementProperties::none);
 
-        sup_elem_->move_to(elem_map_[el_it]->get_flat_index());
+        sup_elem_->move_to(elem_map_.at(el_it->get_flat_index()));
 
         base_t::fill_cache(elem,k1,j);
         sup_func_->fill_cache(sup_elem_, Topology<sub_dim>(),s_id_);
@@ -160,7 +161,7 @@ public:
 private:
     std::shared_ptr<SupFunc> sup_func_;
     const int s_id_;
-    InterGridMap<sub_dim> &elem_map_;
+    const InterGridMap elem_map_;
 
     typename SupFunc::ElementIterator sup_elem_;
 
@@ -185,15 +186,16 @@ public:
     using typename base_t::ElementAccessor;
 
     using SuperGrid = typename SupFunc::GridType;
-    template <int j>
-    using InterGridMap = typename SuperGrid::template InterGridMap<j>;
+//    template <int j>
+//    using InterGridMap = typename SuperGrid::template InterGridMap<j>;
+    using InterGridMap = std::map<Index,Index>;
 
 public:
 
     SubMapFunction(std::shared_ptr<GridType> grid,
                    const SupFunc &func,
                    const int s_id,
-                   InterGridMap<sub_dim> &elem_map)
+                   const InterGridMap &elem_map)
         :
         base_t(grid),
         sup_func_(func.clone()),
@@ -202,13 +204,13 @@ public:
         sup_elem_(sup_func_->begin())
     {}
 
+
+#if 0
     // TODO: to fix or supress this functions.
-    // This is passing elem_map_ (that is of type InterGridMap<sub_dim> &)
+    // This is passing elem_map_ (that is of type std::map<Index,Index> &)
     // to get_sub_grid that is expecting a reference as input argument.
     // So, no there is not object instantiation.
     // Clang throws a warning, but gcc not.
-
-#if 0
     SubMapFunction(const SupFunc &func,
                    const int s_id)
         :
@@ -234,19 +236,20 @@ public:
         return std::make_shared<self_t>(self_t(*this));
     }
 
-
+#if 0
     static std::shared_ptr<base_t>
     create(const SupFunc &func,
            const int s_id)
     {
         return std::make_shared<self_t>(func, s_id);
     }
+#endif
 
     static std::shared_ptr<base_t>
     create(std::shared_ptr<GridType> grid,
            const SupFunc &func,
            const int s_id,
-           InterGridMap<sub_dim> &elem_map)
+           const InterGridMap &elem_map)
     {
         return std::make_shared<self_t>(grid, func, s_id, elem_map);
     }
@@ -273,7 +276,7 @@ public:
         using ElementIt = typename CartesianGrid<sub_dim>::ElementIterator;
         ElementIt el_it(elem.get_grid()->create_element(elem.get_flat_index()),ElementProperties::none);
 
-        sup_elem_->move_to(elem_map_[el_it]->get_flat_index());
+        sup_elem_->move_to(elem_map_.at(el_it->get_flat_index()));
 
         base_t::fill_cache(elem, k1, j);
         sup_func_->fill_cache(sup_elem_,Topology<sub_dim>(),s_id_);
@@ -319,7 +322,7 @@ public:
 private:
     std::shared_ptr<SupFunc> sup_func_;
     const int s_id_;
-    InterGridMap<sub_dim> &elem_map_;
+    const InterGridMap elem_map_;
 
     typename SupFunc::ElementIterator sup_elem_;
 

@@ -130,14 +130,14 @@ auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
               std::shared_ptr<CartesianGrid<k>> sub_grid,
-              std::shared_ptr<InterGridMap<k>> elem_map) const
+              InterGridMap &elem_map) const
 -> std::shared_ptr<SubSpace<k> >
 {
     using SubMap = SubMapFunction<k, dim, space_dim>;
     auto grid =  this->get_grid();
 
     auto sub_ref_space = ref_space_->get_ref_sub_space(s_id, dof_map, sub_grid);
-    auto sub_map_func = SubMap::create(sub_grid, *this->get_map_func(), s_id, *elem_map);
+    auto sub_map_func = SubMap::create(sub_grid, *this->get_map_func(), s_id, elem_map);
     auto sub_space = SubSpace<k>::create(sub_ref_space, sub_map_func);
     return sub_space;
 }

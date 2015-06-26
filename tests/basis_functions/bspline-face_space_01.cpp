@@ -41,7 +41,7 @@ void sub_ref_space(TensorSize<dim> n, const int degree = 1)
     auto space = Space::create(degree, grid);
 
     typename Space::template InterSpaceMap<sub_dim> dof_map;
-    typename CartesianGrid<dim>::template InterGridMap<sub_dim> elem_map;
+    std::map<Index,Index> elem_map;
 
     for (auto i : UnitElement<dim>::template elems_ids<sub_dim>())
     {

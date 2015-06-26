@@ -722,19 +722,21 @@ insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert)
 
     //----------------------------------------------------------------------------------
     // transferring the element properties from the old grid to the new grid --- begin
-    const auto fine_to_coarse_grid = grid_tools::build_map_elements_between_cartesian_grids(
+    const auto fine_to_coarse_grid = grid_tools::build_map_elements_id_between_cartesian_grids(
                                          *this,*grid_pre_refinement_);
 
 
     for (auto &elem_properties : properties_elements_id_)
         elem_properties.second.clear();
 
-    for (const auto &fine_coarse_elem : fine_to_coarse_grid)
+    auto coarse_elem = grid_pre_refinement_->begin();
+    for (const auto &fine_coarse_elem_id : fine_to_coarse_grid)
     {
-        const auto   &fine_elem = fine_coarse_elem.first;
-        const auto &coarse_elem = fine_coarse_elem.second;
+        const auto   &fine_elem_id = fine_coarse_elem_id.first;
+        const auto &coarse_elem_id = fine_coarse_elem_id.second;
 
-        const auto fine_elem_id = fine_elem->get_flat_index();
+        coarse_elem->move_to(coarse_elem_id);
+//        const auto fine_elem_id = fine_elem->get_flat_index();
 
         const auto old_elem_properties = coarse_elem->get_defined_properties();
 
@@ -782,7 +784,7 @@ template <int dim_>
 template<int k>
 auto
 CartesianGrid<dim_>::
-get_sub_grid(const int sub_elem_id, InterGridMap<k> &elem_map) const
+get_sub_grid(const int sub_elem_id, std::map<Index,Index> &elem_map) const
 -> shared_ptr<CartesianGrid<k>>
 {
     auto &k_elem = UnitElement<dim_>::template get_elem<k>(sub_elem_id);
@@ -799,7 +801,9 @@ get_sub_grid(const int sub_elem_id, InterGridMap<k> &elem_map) const
         grid_index[dir] = val == 0 ? 0 : (knot_coordinates_.tensor_size()[dir]-2);
     }
 
-    auto v_elem = begin();
+//   auto v_elem = begin();
+    elem_map.clear();
+
     auto s_elem = sub_grid->begin();
     auto s_end  = sub_grid->end();
     for (; s_elem != s_end; ++s_elem)
@@ -808,8 +812,9 @@ get_sub_grid(const int sub_elem_id, InterGridMap<k> &elem_map) const
         for (int j = 0 ; j < k ; ++j)
             grid_index[active_dirs[j]] = s_index[j];
 
-        v_elem.move_to(grid_index);
-        elem_map.emplace(s_elem, v_elem);
+//        v_elem.move_to(grid_index);
+        elem_map.emplace(s_elem.get_flat_index(),
+        this->tensor_to_flat(grid_index));
     }
 
     return sub_grid;

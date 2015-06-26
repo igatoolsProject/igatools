@@ -38,7 +38,7 @@ sub_dim_members = \
  ['std::shared_ptr<typename class::SubSpace<k> > ' +
    'class::get_sub_space(const int s_id, InterSpaceMap<k> &dof_map, ' +
    'std::shared_ptr<CartesianGrid<k>> sub_grid, ' + 
-   'std::shared_ptr<InterGridMap<k>> elem_map) const;']
+   'InterGridMap &elem_map) const;']
 
 
 spaces = ['PhysicalSpace<0,0,1,0, Transformation::h_grad>']

@@ -150,8 +150,10 @@ public:
     template <int k>
     using SubSpace = PhysicalSpace<k, range, rank, codim + dim-k, type_>;
 
-    template <int k>
-    using InterGridMap = typename RefSpace::GridType::template InterGridMap<k>;
+//    template <int k>
+//    using InterGridMap = typename RefSpace::GridType::template InterGridMap<k>;
+
+    using InterGridMap = std::map<Index,Index>;
 
     template <int k>
     using InterSpaceMap = typename RefSpace::template InterSpaceMap<k>;
@@ -160,7 +162,7 @@ public:
     std::shared_ptr<SubSpace<k> >
     get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
                   std::shared_ptr<CartesianGrid<k>> sub_grid,
-                  std::shared_ptr<InterGridMap<k>> elem_map) const;
+                  InterGridMap &elem_map) const;
 
 
 
