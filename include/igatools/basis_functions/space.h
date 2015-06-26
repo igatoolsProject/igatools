@@ -86,7 +86,7 @@ protected:
     SpaceBase(const std::shared_ptr<CartesianGrid<dim_>> &grid);
 
     /** Copy constructor. */
-    SpaceBase(const self_t &) = default;
+    SpaceBase(const self_t &) = delete;
 
     /** Move constructor. */
     SpaceBase(self_t &&) = default;
@@ -236,9 +236,14 @@ public:
 
 
 
-    std::shared_ptr<MapFunc> get_map_func() const
+    std::shared_ptr<MapFunc> get_map_func()
     {
-        return map_func_;
+        return map_func_.get_ptr_data();
+    }
+
+    std::shared_ptr<const MapFunc> get_map_func() const
+    {
+        return map_func_.get_ptr_const_data();
     }
 
     virtual std::shared_ptr<const DofDistribution<dim_,range_,rank_> >
@@ -340,7 +345,7 @@ public:
 
 private:
 
-    std::shared_ptr<MapFunc>  map_func_;
+    SharedPtrConstnessHandler<MapFunc>  map_func_;
 
 #ifdef SERIALIZATION
     /**

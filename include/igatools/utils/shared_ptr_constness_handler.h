@@ -30,6 +30,22 @@
 
 IGA_NAMESPACE_OPEN
 
+/*
+namespace { // detail
+    template <typename T>
+    struct implicit_convert : boost::static_visitor<T> {
+        template <typename U> T operator()(U&& u) const { return std::forward<U>(u); }
+    };
+}
+//*/
+
+
+/*
+Ref getVal(std::string& name) {
+    return boost::apply_visitor(implicit_convert<Ref>(), map[name]);
+}
+//*/
+
 template<class T>
 class SharedPtrConstnessHandler
 {
@@ -51,13 +67,17 @@ public:
 
     /**
      * Constructs the object using a shared pointer to non-const data.
+     *
+     * @note In DEBUG mode is performed a check about the nullity of the input data:
+     * an assertion will be raised if the input data is a nullptr.
      */
     SharedPtrConstnessHandler(const Ptr &data)
         :
-        ptr_to_data_(data),
         data_is_const_(false)
     {
         Assert(data != nullptr, ExcNullPtr());
+
+        data_.ptr_ = data;
     };
 
     /**
@@ -65,9 +85,27 @@ public:
      */
     SharedPtrConstnessHandler(const PtrToConst &data)
         :
-        ptr_to_data_(data),
         data_is_const_(true)
-    {};
+    {
+        Assert(data != nullptr, ExcNullPtr());
+        data_.ptr_to_const_ = data;
+    };
+
+    SharedPtrConstnessHandler(Ptr &&data)
+        :
+        data_is_const_(false)
+    {
+        data_.ptr_(std::forward<Ptr>(data));
+        Assert(data_.ptr_ != nullptr, ExcNullPtr());
+    };
+
+    SharedPtrConstnessHandler(PtrToConst &&data)
+        :
+        data_is_const_(true)
+    {
+        data_.ptr_to_const_(std::forward<Ptr>(data));
+        Assert(data_.ptr_to_const_ != nullptr, ExcNullPtr());
+    };
 
     /**
      * Copy constructor;
@@ -114,9 +152,19 @@ public:
      */
     std::shared_ptr<T> get_ptr_data()
     {
-        Assert(!data_is_const_,ExcMessage("Data is build as const."));
-        return boost::get<Ptr>(ptr_to_data_);
+        Assert(!data_is_const_,ExcMessage("Data is built as const."));
+        return data_.ptr_;
     }
+
+    /**
+     * Return the non-const reference of the shared pointer that is pointing to the non-const data.
+     */
+    std::shared_ptr<T> &get_ref_ptr_data()
+    {
+        Assert(!data_is_const_,ExcMessage("Data is built as const."));
+        return data_.ptr_;
+    }
+
 
     /**
      * Return a const reference of the data.
@@ -132,9 +180,20 @@ public:
     std::shared_ptr<const T> get_ptr_const_data() const
     {
         if (data_is_const_)
-            return boost::get<PtrToConst>(ptr_to_data_);
+            return data_.ptr_to_const_;
         else
-            return boost::get<Ptr>(ptr_to_data_);
+            return data_.ptr_;
+    }
+
+    /**
+     * Return the non-const reference of the shared pointer that is pointing to the const data.
+     */
+    std::shared_ptr<const T> &get_ref_ptr_const_data() const
+    {
+        if (data_is_const_)
+            return data_.ptr_to_const_;
+        else
+            return data_.ptr_;
     }
 
     void print_info(LogStream &out) const
@@ -142,12 +201,12 @@ public:
         if (data_is_const_)
         {
             out.begin_item("Pointer to const data");
-            boost::get<PtrToConst>(ptr_to_data_)->print_info(out);
+            data_.ptr_to_const_->print_info(out);
         }
         else
         {
             out.begin_item("Pointer to non-const data");
-            boost::get<Ptr>(ptr_to_data_)->print_info(out);
+            data_.ptr_->print_info(out);
         }
         out.end_item();
     }
@@ -169,6 +228,18 @@ public:
         return this->get_ptr_const_data().get();
     }
 
+    /**
+     * Check if unique.
+     *
+     * Returns whether the shared_ptr object does not share ownership over its pointer with other shared_ptr objects (i.e., it is unique).
+     */
+    bool unique() const
+    {
+        if (data_is_const_)
+            return data_.ptr_to_const_.unique();
+        else
+            return data_.ptr_.unique();
+    }
 
 #if 0
     /**
@@ -189,7 +260,15 @@ public:
 #endif
 
 private:
-    boost::variant<Ptr,PtrToConst> ptr_to_data_;
+//    boost::variant<Ptr,PtrToConst> ptr_to_data_;
+
+
+    struct DataConstnessVariants
+    {
+        Ptr ptr_;
+        PtrToConst ptr_to_const_;
+    } data_;
+
 
     bool data_is_const_ = false;
 
@@ -209,19 +288,23 @@ private:
     {
         ar &boost::serialization::make_nvp("data_is_const_",data_is_const_);
 
-        // In order to serialize the data, we need to cast them to non-const
+
+        // In order to serialize the data, we need to cast it to non-const
         Ptr tmp;
         if (data_is_const_)
-            tmp = std::const_pointer_cast<T>(this->get_ptr_const_data());
+            tmp = std::const_pointer_cast<T>(data_.ptr_to_const_);
         else
-            tmp = this->get_ptr_data();
-        ar &boost::serialization::make_nvp("tmp_ptr_to_data_",tmp);
+            tmp = data_.ptr_;
 
-        // When we deserializ we need to cast the data to the correct constness
+        ar &boost::serialization::make_nvp("tmp_ptr_to_data_",tmp);
+        Assert(tmp != nullptr,ExcNullPtr());
+
+        // After deserialization we need to cast the data to the correct constness
         if (data_is_const_)
-            ptr_to_data_ = std::const_pointer_cast<const T>(tmp);
+            data_.ptr_to_const_ = std::const_pointer_cast<const T>(tmp);
         else
-            ptr_to_data_ = tmp;
+            data_.ptr_ = tmp;
+
     }
     ///@}
 #endif // SERIALIZATION

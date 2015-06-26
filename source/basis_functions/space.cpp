@@ -106,12 +106,13 @@ Space<dim_,codim_,range_,rank_>::
 Space(const shared_ptr<CartesianGrid<dim_>> &grid,
       const shared_ptr<MapFunc> &map_func)
     :
-    base_t(grid)
+    base_t(grid)//,
+//    map_func_(std::move(map_func))
 {
     Assert(map_func != nullptr, ExcNullPtr());
-    Assert(map_func.unique(), ExcNotUnique());
+    map_func_.get_ref_ptr_data().swap(const_cast<shared_ptr<MapFunc> &>(map_func));
+    Assert(map_func_.unique(), ExcNotUnique());
 
-    map_func_.swap(const_cast<shared_ptr<MapFunc> &>(map_func));
     Assert(this->get_grid() == this->map_func_->get_grid(),
            ExcMessage("Reference space and mapping grids are not the same."))
 }
@@ -228,7 +229,7 @@ serialize(Archive &ar, const unsigned int version)
     ar.template register_type<IgFunction<dim_,0,dim_+codim_,1> >();
     ar.template register_type<IdentityFunction<dim_,dim_> >();
     ar &boost::serialization::make_nvp("map_func_",map_func_);
-    Assert(map_func_ != nullptr,ExcNullPtr());
+//    Assert(map_func_ != nullptr,ExcNullPtr());
 
 }
 ///@}

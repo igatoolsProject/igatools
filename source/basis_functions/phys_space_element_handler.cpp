@@ -118,7 +118,7 @@ PhysSpaceElementHandler(std::shared_ptr<const PhysSpace> space)
     :
     base_t(space),
     ref_space_handler_(space->get_reference_space()->get_elem_handler()),
-    push_fwd_(space->get_map_func())
+    push_fwd_(std::const_pointer_cast<MapFunction<dim_,dim_+codim_>>(space->get_map_func()))
 {}
 
 template<int dim_,int range_,int rank_,int codim_>
