@@ -28,14 +28,27 @@ data = Instantiation(include_files)
 sub_dim_members = \
 []
 
+handlers = []
+handler_methods = []
 
-handlers = ['SpaceElementHandler<0,0,0,1>']
+handler = 'SpaceElementHandler<0,0,0,1>'
+handlers.append(handler)
+
+handler_method = 'void %s::init_cache<0>(SpaceElement<0,0,0,1> &)' % (handler)
+handler_methods.append(handler_method)
+handler_method = 'void %s::fill_cache<0>(ElementAccessor &, const int)' % (handler)
+handler_methods.append(handler_method)
 
 #--------------------------------------------------------------------------------------
 # SpaceElement used by ReferenceSpaceElement 
 for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
     handler = 'SpaceElementHandler<%d,0,%d,%d>' %(x.dim, x.range, x.rank)
     handlers.append(handler)
+    for k in inst.sub_dims(x.dim):
+      handler_method = 'void %s::init_cache<%d>(SpaceElement<%d,0,%d,%d> &)' % (handler, k, x.dim, x.range, x.rank)
+      handler_methods.append(handler_method)
+      handler_method = 'void %s::fill_cache<%d>(ElementAccessor &, const int)' % (handler, k)
+      handler_methods.append(handler_method)
 
 #--------------------------------------------------------------------------------------
 
@@ -46,6 +59,11 @@ for space in inst.SubPhysSpaces + inst.PhysSpaces:
     x = space.spec
     handler = 'SpaceElementHandler<%d,%d,%d,%d>' %(x.dim,x.codim,x.range, x.rank)
     handlers.append(handler)
+    for k in inst.sub_dims(x.dim):
+      handler_method = 'void %s::init_cache<%d>(SpaceElement<%d,%d,%d,%d> &)' % (handler, k, x.dim, x.codim, x.range, x.rank)
+      handler_methods.append(handler_method)
+      handler_method = 'void %s::fill_cache<%d>(ElementAccessor &, const int)' % (handler, k)
+      handler_methods.append(handler_method)
 
 #--------------------------------------------------------------------------------------
 
@@ -54,6 +72,9 @@ for space in inst.SubPhysSpaces + inst.PhysSpaces:
 #---------------------------------------------------
 for handler in unique(handlers):
     f.write('template class %s ;\n' %handler)
+
+for handler_method in unique(handler_methods):
+    f.write('template %s ;\n' % handler_method)
 
 
 
