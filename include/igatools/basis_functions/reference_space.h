@@ -130,7 +130,10 @@ protected:
     ReferenceSpace() = default;
 
     explicit ReferenceSpace(
-        const std::shared_ptr<CartesianGrid<dim_>> grid);
+        const std::shared_ptr<CartesianGrid<dim_>> &grid);
+
+    explicit ReferenceSpace(
+        const std::shared_ptr<const CartesianGrid<dim_>> &grid);
 
 public:
     virtual ~ReferenceSpace() = default;
@@ -197,7 +200,7 @@ public:
 
 protected:
 
-    std::shared_ptr<RefSpace> ref_space_previous_refinement_ = nullptr;
+    std::shared_ptr<const RefSpace> ref_space_previous_refinement_ = nullptr;
 
 
 

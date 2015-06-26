@@ -196,7 +196,7 @@ protected:
     Space() = default;
 
     /**
-     * Construct the object from the @p grid on which the function space will be built upon
+     * Construct the object from the (non-const) @p grid on which the function space will be built upon
      * and the function representing the mapping.
      *
      * @pre The shared_pointer <tt>map_func</tt> must be unique.
@@ -204,6 +204,16 @@ protected:
      * @warning After the object construction the state of <tt>map_func</tt> will be no longer valid.
      */
     Space(const std::shared_ptr<CartesianGrid<dim_>> &grid,const std::shared_ptr<MapFunc> &map_func);
+
+    /**
+     * Construct the object from the (const) @p grid on which the function space will be built upon
+     * and the function representing the mapping.
+     *
+     * @pre The shared_pointer <tt>map_func</tt> must be unique.
+     *
+     * @warning After the object construction the state of <tt>map_func</tt> will be no longer valid.
+     */
+    Space(const std::shared_ptr<const CartesianGrid<dim_>> &grid,const std::shared_ptr<MapFunc> &map_func);
 
     /** Copy constructor. */
     Space(const self_t &) = delete;
