@@ -514,12 +514,13 @@ public:
 
 
 private:
+#if 0
     /**
      * Lookup table for the local dof id in each element component
      */
     typename SpaceData::template ComponentContainer<SafeSTLVector<TensorIndex<dim> > >
     dofs_tensor_id_elem_table_;
-
+#endif
 
 #ifdef SERIALIZATION
     /**

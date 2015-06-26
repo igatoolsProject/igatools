@@ -22,6 +22,7 @@
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/base/array_utils.h>
 #include <igatools/utils/vector_tools.h>
+#include <igatools/utils/multi_array_utils.h>
 
 using std::unique_ptr;
 using std::shared_ptr;
@@ -168,6 +169,29 @@ init()
     space_dim_ = n_basis;
     // Determine the dimensionality of the spline space --- end
     //------------------------------------------------------------------------------
+
+
+
+
+
+
+
+    //------------------------------------------------------------------------------
+    // building the lookup table for the local dof id on the current component of an element --- begin
+    for (const auto comp : components)
+    {
+        const auto dofs_t_size_elem_comp = TensorSize<dim>(deg_[comp]+1);
+        const auto dofs_f_size_elem_comp = dofs_t_size_elem_comp.flat_size();
+
+        auto &elem_comp_dof_t_id = dofs_tensor_id_elem_table_[comp];
+        const auto w_dofs_elem_comp = MultiArrayUtils<dim>::compute_weight(dofs_t_size_elem_comp);
+
+        for (int dof_f_id = 0 ; dof_f_id < dofs_f_size_elem_comp ; ++dof_f_id)
+            elem_comp_dof_t_id.emplace_back(MultiArrayUtils<dim>::flat_to_tensor_index(dof_f_id,w_dofs_elem_comp));
+    }
+    // building the lookup table for the local dof id on the current component of an element --- end
+    //------------------------------------------------------------------------------
+
 }
 
 
@@ -345,9 +369,8 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
                        ExcMessage("Periodic inconsistency"));
                 Assert(l_knots.size()==0,
                        ExcMessage("Periodic inconsistency"));
-                Assert(l_knots.size()==0,
+                Assert(r_knots.size()==0,
                        ExcMessage("Periodic inconsistency"));
-
             }
             else
             {
@@ -355,7 +378,7 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
                 {
                     Assert(l_knots.size()==0,
                            ExcMessage("Interpolatory inconsistency"));
-                    Assert(l_knots.size()==0,
+                    Assert(r_knots.size()==0,
                            ExcMessage("Interpolatory inconsistency"));
                 }
                 if (ends[iComp][j] == BasisEndBehaviour::end_knots)
@@ -364,7 +387,7 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
                     const int m = deg_[iComp][j] + 1;
                     Assert(l_knots.size() == m,
                            ExcMessage("Wrong number of boundary knots"));
-                    Assert(l_knots.size() == m,
+                    Assert(r_knots.size() == m,
                            ExcMessage("Wrong number of boundary knots"));
                     Assert(knots.front() >= l_knots.back(),
                            ExcMessage("Boundary knots should be smaller or equal a"));
@@ -708,6 +731,16 @@ get_periodic_table() const -> const PeriodicityTable &
 }
 
 
+template<int dim, int range, int rank>
+auto
+SplineSpace<dim, range, rank>::
+get_dofs_tensor_id_elem_table() const
+-> const ComponentContainer<SafeSTLVector<TensorIndex<dim> > > &
+{
+    return dofs_tensor_id_elem_table_;
+}
+
+
 #ifdef SERIALIZATION
 template<int dim, int range, int rank>
 template<class Archive>
@@ -724,6 +757,9 @@ serialize(Archive &ar, const unsigned int version)
     ar &boost::serialization::make_nvp("space_dim_", space_dim_);
 
     ar &boost::serialization::make_nvp("periodic_", periodic_);
+
+
+    ar &boost::serialization::make_nvp("dofs_tensor_id_elem_table_",dofs_tensor_id_elem_table_);
 
     using self_t = SplineSpace<dim,range,rank>;
     auto tmp = std::const_pointer_cast<self_t>(spline_space_previous_refinement_);

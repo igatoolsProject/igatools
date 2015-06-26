@@ -172,10 +172,9 @@ BSplineSpace(const std::shared_ptr<SpaceData> &space_data,
     operators_(*space_data_,end_b),
     end_interval_(end_b.get_comp_map()),
     dof_distribution_(std::make_shared<DofDistribution<dim_,range_,rank_>>(
-                          DofDistribution<dim_,range_,rank_>(
-                              space_data->get_num_basis_table(),
-                              space_data->get_degree_table(),
-                              space_data->get_periodic_table())))
+                          space_data->get_num_basis_table(),
+                          space_data->get_degree_table(),
+                          space_data->get_periodic_table()))
 {
 //    Assert(space_data_ != nullptr,ExcNullPtr());
     Assert(dof_distribution_ != nullptr,ExcNullPtr());
@@ -210,22 +209,6 @@ BSplineSpace(const std::shared_ptr<SpaceData> &space_data,
     //------------------------------------------------------------------------------
 
 
-
-    //------------------------------------------------------------------------------
-    // building the lookup table for the local dof id on the current component of the element --- begin
-    for (const auto comp : SpaceData::components)
-    {
-        const auto dofs_t_size_elem_comp = TensorSize<dim>(degree_table[comp]+1);
-        const auto dofs_f_size_elem_comp = dofs_t_size_elem_comp.flat_size();
-
-        auto &elem_comp_dof_t_id = dofs_tensor_id_elem_table_[comp];
-        const auto w_dofs_elem_comp = MultiArrayUtils<dim>::compute_weight(dofs_t_size_elem_comp);
-
-        for (int dof_f_id = 0 ; dof_f_id < dofs_f_size_elem_comp ; ++dof_f_id)
-            elem_comp_dof_t_id.emplace_back(MultiArrayUtils<dim>::flat_to_tensor_index(dof_f_id,w_dofs_elem_comp));
-    }
-    // building the lookup table for the local dof id on the current component of the element --- end
-    //------------------------------------------------------------------------------
 
 #if 0
     //------------------------------------------------------------------------------
@@ -246,10 +229,9 @@ BSplineSpace(const std::shared_ptr<const SpaceData> &space_data,
     operators_(*space_data_,end_b),
     end_interval_(end_b.get_comp_map()),
     dof_distribution_(std::make_shared<DofDistribution<dim_,range_,rank_>>(
-                          DofDistribution<dim_,range_,rank_>(
-                              space_data->get_num_basis_table(),
-                              space_data->get_degree_table(),
-                              space_data->get_periodic_table())))
+                          space_data->get_num_basis_table(),
+                          space_data->get_degree_table(),
+                          space_data->get_periodic_table()))
 {
 //    Assert(space_data_ != nullptr,ExcNullPtr());
     Assert(dof_distribution_ != nullptr,ExcNullPtr());
@@ -283,23 +265,6 @@ BSplineSpace(const std::shared_ptr<const SpaceData> &space_data,
     } // end loop i
     //------------------------------------------------------------------------------
 
-
-
-    //------------------------------------------------------------------------------
-    // building the lookup table for the local dof id on the current component of the element --- begin
-    for (const auto comp : SpaceData::components)
-    {
-        const auto dofs_t_size_elem_comp = TensorSize<dim>(degree_table[comp]+1);
-        const auto dofs_f_size_elem_comp = dofs_t_size_elem_comp.flat_size();
-
-        auto &elem_comp_dof_t_id = dofs_tensor_id_elem_table_[comp];
-        const auto w_dofs_elem_comp = MultiArrayUtils<dim>::compute_weight(dofs_t_size_elem_comp);
-
-        for (int dof_f_id = 0 ; dof_f_id < dofs_f_size_elem_comp ; ++dof_f_id)
-            elem_comp_dof_t_id.emplace_back(MultiArrayUtils<dim>::flat_to_tensor_index(dof_f_id,w_dofs_elem_comp));
-    }
-    // building the lookup table for the local dof id on the current component of the element --- end
-    //------------------------------------------------------------------------------
 
 #if 0
     //------------------------------------------------------------------------------
@@ -559,7 +524,7 @@ get_element_dofs(
 
         const auto dof_t_origin = accum_mult[comp].cartesian_product(elem_tensor_id);
 
-        const auto &elem_comp_dof_t_id = dofs_tensor_id_elem_table_[comp];
+        const auto &elem_comp_dof_t_id = space_data_->get_dofs_tensor_id_elem_table()[comp];
 
 //        if (dofs_property == DofProperties::active)
 //        {
@@ -617,8 +582,7 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> space)
                   std::placeholders::_2);
 
     using SlotType = typename CartesianGrid<dim>::SignalInsertKnotsSlot;
-    std::const_pointer_cast<CartesianGrid<dim_>>(this->get_ptr_grid())->connect_insert_knots(
-                                                  SlotType(func_to_connect).track_foreign(space));
+    this->get_ptr_grid()->connect_insert_knots(SlotType(func_to_connect).track_foreign(space));
 }
 
 
@@ -755,7 +719,7 @@ serialize(Archive &ar, const unsigned int version)
 
     ar &boost::serialization::make_nvp("dof_distribution_",dof_distribution_);
 
-    ar &boost::serialization::make_nvp("dofs_tensor_id_elem_table_",dofs_tensor_id_elem_table_);
+//    ar &boost::serialization::make_nvp("dofs_tensor_id_elem_table_",dofs_tensor_id_elem_table_);
 }
 
 #endif // SERIALIZATION

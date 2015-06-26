@@ -275,6 +275,9 @@ public:
     std::shared_ptr<const CartesianGrid<dim> > get_ptr_const_grid() const;
 
 
+    const ComponentContainer<SafeSTLVector<TensorIndex<dim> > > &
+    get_dofs_tensor_id_elem_table() const;
+
 private:
 
     SharedPtrConstnessHandler<CartesianGrid<dim> > grid_;
@@ -288,6 +291,12 @@ private:
 
     //EndBehaviourTable end_behaviour_;
     PeriodicityTable periodic_;
+
+
+    /**
+     * Lookup table for the local dofs id in each element component
+     */
+    ComponentContainer<SafeSTLVector<TensorIndex<dim> > > dofs_tensor_id_elem_table_;
 
 
 
