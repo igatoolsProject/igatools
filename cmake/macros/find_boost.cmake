@@ -27,9 +27,7 @@ macro(find_boost)
     find_package(Boost 1.54.0 REQUIRED COMPONENTS serialization)
 
     include_directories(${Boost_INCLUDE_DIRS})
-
-    find_library (Boost_serialization boost_serialization PATHS ${Boost_LIBRARY_DIRS} NO_DEFAULT_PATH)
-    set(Boost_LIBRARIES "${Boost_serialization}")
+    set(Boost_LIBRARIES "${Boost_SERIALIZATION_LIBRARIES}")
     
   else (SERIALIZATION)
   
