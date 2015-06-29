@@ -299,7 +299,7 @@ class FunctionsContainer
 
 
             /**
-             * @brief Class used to store the data associated to a mapping (i.e.e a geometry parametrization)
+             * @brief Class used to store the data associated to a mapping (i.e. a geometry parametrization)
              * \f$\mathbf{F} \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}} \f$
              *
              * The stored data are:
@@ -633,6 +633,7 @@ public:
 
         Assert(!data_same_dim_codim.is_mapping_present(mapping),
                ExcMessage("Map already present in the container."));
+
         auto &data_same_map = data_same_dim_codim.get_mapping_data(mapping);
         data_same_map.set_ptr_mapping(mapping);
         data_same_map.set_mapping_name(map_name);
