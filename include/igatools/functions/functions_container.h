@@ -37,6 +37,8 @@
 #include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/physical_space.h>
 
+#include <unordered_map>
+
 IGA_NAMESPACE_OPEN
 
 
