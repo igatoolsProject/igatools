@@ -71,7 +71,7 @@ private:
 private:
     using RefSpace = ReferenceSpace<dim>;
     using Space = BSplineSpace<dim>;
-    shared_ptr<Space> space;
+    shared_ptr<const Space> space;
 
     const Quadrature<dim>   elem_quad;
     const Quadrature<dim-1> face_quad;

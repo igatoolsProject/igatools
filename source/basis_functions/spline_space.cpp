@@ -184,10 +184,12 @@ init()
         const auto dofs_f_size_elem_comp = dofs_t_size_elem_comp.flat_size();
 
         auto &elem_comp_dof_t_id = dofs_tensor_id_elem_table_[comp];
+        elem_comp_dof_t_id.resize(dofs_f_size_elem_comp);
+
         const auto w_dofs_elem_comp = MultiArrayUtils<dim>::compute_weight(dofs_t_size_elem_comp);
 
         for (int dof_f_id = 0 ; dof_f_id < dofs_f_size_elem_comp ; ++dof_f_id)
-            elem_comp_dof_t_id.emplace_back(MultiArrayUtils<dim>::flat_to_tensor_index(dof_f_id,w_dofs_elem_comp));
+            elem_comp_dof_t_id[dof_f_id] = MultiArrayUtils<dim>::flat_to_tensor_index(dof_f_id,w_dofs_elem_comp);
     }
     // building the lookup table for the local dof id on the current component of an element --- end
     //------------------------------------------------------------------------------

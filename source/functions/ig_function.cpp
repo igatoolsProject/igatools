@@ -42,7 +42,7 @@ IgFunction(std::shared_ptr<const Space<dim,codim,range,rank>> space,
     Assert(space_ != nullptr, ExcNullPtr());
     Assert(coeff != nullptr,ExcNullPtr());
 
-    const auto &dof_distribution = *(space_->get_dof_distribution());
+    const auto &dof_distribution = *(space_->get_ptr_const_dof_distribution());
     const auto &active_dofs = dof_distribution.get_dofs_id_same_property(property);
 
     const auto &c = *coeff;
@@ -74,7 +74,7 @@ IgFunction(std::shared_ptr<const Space<dim,codim,range,rank>> space,
     Assert(space_ != nullptr, ExcNullPtr());
 
 #ifndef NDEBUG
-    const auto &dof_distribution = *(space_->get_dof_distribution());
+    const auto &dof_distribution = *(space_->get_ptr_const_dof_distribution());
     const auto &active_dofs = dof_distribution.get_dofs_id_same_property(property);
 
     for (const auto glob_dof : active_dofs)

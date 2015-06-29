@@ -172,11 +172,11 @@ public:
      * in all components.
      */
     static std::shared_ptr<self_t>
-    create(const int degree,
-           const std::shared_ptr<GridType> &grid,
-           const InteriorReg interior_reg = InteriorReg::maximum,
-           const bool periodic = false,
-           const BasisEndBehaviour end_b = BasisEndBehaviour::interpolatory);
+    create_nonconst(const int degree,
+                    const std::shared_ptr<GridType> &grid,
+                    const InteriorReg interior_reg = InteriorReg::maximum,
+                    const bool periodic = false,
+                    const BasisEndBehaviour end_b = BasisEndBehaviour::interpolatory);
 
     /**
      * Builds and returns a maximum regularity (const) BSpline space
@@ -198,11 +198,11 @@ public:
      * in all components.
      */
     static std::shared_ptr<self_t>
-    create(const Degrees &degree,
-           const std::shared_ptr<GridType> &grid,
-           const InteriorReg interior_reg = InteriorReg::maximum,
-           const Periodicity &periodic = Periodicity(false),
-           const EndBehaviour &end_b = EndBehaviour(BasisEndBehaviour::interpolatory));
+    create_nonconst(const Degrees &degree,
+                    const std::shared_ptr<GridType> &grid,
+                    const InteriorReg interior_reg = InteriorReg::maximum,
+                    const Periodicity &periodic = Periodicity(false),
+                    const EndBehaviour &end_b = EndBehaviour(BasisEndBehaviour::interpolatory));
 
     /**
      * Builds and returns a maximum regularity (const) BSpline space
@@ -226,11 +226,11 @@ public:
      * component.
      */
     static std::shared_ptr<self_t>
-    create(const DegreeTable &deg,
-           const std::shared_ptr<GridType> &grid,
-           const MultiplicityTable &interior_mult,
-           const PeriodicityTable &periodic,
-           const EndBehaviourTable &end_b);
+    create_nonconst(const DegreeTable &deg,
+                    const std::shared_ptr<GridType> &grid,
+                    const MultiplicityTable &interior_mult,
+                    const PeriodicityTable &periodic,
+                    const EndBehaviourTable &end_b);
 
     /**
      * Builds and returns a (const) BSpline space
@@ -248,8 +248,8 @@ public:
            const EndBehaviourTable &end_b);
 
     static std::shared_ptr<self_t>
-    create(const std::shared_ptr<SpaceData> &space_data,
-           const EndBehaviourTable &end_b);
+    create_nonconst(const std::shared_ptr<SpaceData> &space_data,
+                    const EndBehaviourTable &end_b);
 
     static std::shared_ptr<const self_t>
     create(const std::shared_ptr<const SpaceData> &space_data,
@@ -440,10 +440,10 @@ public:
     virtual void print_info(LogStream &out) const override final;
 
     std::shared_ptr<const DofDistribution<dim, range, rank> >
-    get_dof_distribution() const override final;
+    get_ptr_const_dof_distribution() const override final;
 
     std::shared_ptr<DofDistribution<dim, range, rank> >
-    get_dof_distribution() override final;
+    get_ptr_dof_distribution() override final;
 
 
 

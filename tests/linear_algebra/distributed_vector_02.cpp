@@ -55,8 +55,8 @@ void non_contig_indices()
     using Function = IgFunction<dim,0,1,1>;
     auto grid = CartesianGrid<dim>::create(5);
     const int deg = 1;
-    auto space = Space::create(deg, grid);
-    auto dof_distribution = space->get_dof_distribution();
+    auto space = Space::create_nonconst(deg, grid);
+    auto dof_distribution = space->get_ptr_dof_distribution();
     dof_distribution->set_all_dofs_property_status(DofProperties::active,false);
     dof_distribution->set_dof_property_status(DofProperties::active,dofs,true);
 

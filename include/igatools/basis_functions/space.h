@@ -107,9 +107,9 @@ public:
 
 public:
     /**
-     * Returns the space id.
+     * Returns the unique identifier associated to each object instance.
      */
-    Index get_space_id() const;
+    Index get_object_id() const;
 
 
     std::shared_ptr<CartesianGrid<dim_>> get_ptr_grid();
@@ -132,7 +132,11 @@ public:
 #endif // MESH_REFINEMENT
 
 protected:
-    Index space_id_ = 0;
+
+    /**
+     * Unique identifier associated to each object instance.
+     */
+    Index object_id_ = 0;
 
 
 private:
@@ -246,22 +250,22 @@ public:
 
 
 
-    std::shared_ptr<MapFunc> get_map_func()
+    std::shared_ptr<MapFunc> get_ptr_map_func()
     {
         return map_func_.get_ptr_data();
     }
 
-    std::shared_ptr<const MapFunc> get_map_func() const
+    std::shared_ptr<const MapFunc> get_ptr_const_map_func() const
     {
         return map_func_.get_ptr_const_data();
     }
 
     virtual std::shared_ptr<const DofDistribution<dim_,range_,rank_> >
-    get_dof_distribution() const = 0;
+    get_ptr_const_dof_distribution() const = 0;
 
 
     virtual std::shared_ptr<DofDistribution<dim_,range_,rank_> >
-    get_dof_distribution() = 0;
+    get_ptr_dof_distribution() = 0;
 
 
     /**

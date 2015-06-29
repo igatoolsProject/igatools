@@ -531,7 +531,7 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
     end_behaviour(components_map, SafeSTLArray<BasisEndBehaviour,dim>(BasisEndBehaviour::interpolatory));
     typename space_t::PeriodicityTable periodic(components_map, SafeSTLArray<bool,dim>(false));
 
-    auto ref_space = space_t::create(degrees, grid, multiplicities, periodic, end_behaviour);
+    auto ref_space = space_t::create_nonconst(degrees, grid, multiplicities, periodic, end_behaviour);
     //-------------------------------------------------------------------------
 
     return ref_space;
@@ -690,7 +690,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     end_behaviour(components_map, SafeSTLArray<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory));
     typename space_t::SpSpace::PeriodicityTable periodic(components_map, SafeSTLArray<bool, dim>(false));
 
-    auto spline_space = space_t::SpSpace::create(degrees, grid, multiplicities, periodic, end_behaviour);
+    auto spline_space = space_t::SpSpace::create_nonconst(degrees, grid, multiplicities, periodic, end_behaviour);
 
     //---------------------------------------------------------------------------------
 
@@ -714,8 +714,8 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
 
 
     auto scalar_spline_space =
-        ScalarBSplineSpace::create(scalar_degree_table, new_grid,
-                                   scalar_mult_table, scalar_periodic, scalar_end_behaviour);
+        ScalarBSplineSpace::create_nonconst(scalar_degree_table, new_grid,
+                                            scalar_mult_table, scalar_periodic, scalar_end_behaviour);
 
 //    using WeightFuncPtr = shared_ptr<WeightFunc>;
     using WeightFunction = typename space_t::WeightFunction;
@@ -733,7 +733,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
     //----------------------------------------
 
 
-    auto ref_space = space_t::create(spline_space,w_func);
+    auto ref_space = space_t::create_nonconst(spline_space,w_func);
 
     return ref_space;
 }

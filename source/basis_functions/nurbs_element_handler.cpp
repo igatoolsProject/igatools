@@ -335,7 +335,7 @@ evaluate_nurbs_values_from_bspline(
     const auto bsp_local_to_patch = bspline_elem.get_local_to_patch(DofProperties::active);
 
     const auto nrb_space = nrb_elem_.get_nurbs_space();
-    const auto comp_offset = nrb_space->get_dof_distribution()->get_dofs_offset();
+    const auto comp_offset = nrb_space->get_ptr_const_dof_distribution()->get_dofs_offset();
 
     const auto &w_coefs = nrb_space->weight_func_->get_coefficients();
 
@@ -413,7 +413,7 @@ evaluate_nurbs_gradients_from_bspline(
 
     const auto nrb_space = nrb_elem_.get_nurbs_space();
     const auto bsp_local_to_patch = bspline_elem.get_local_to_patch(DofProperties::active);
-    const auto comp_offset = nrb_space->get_dof_distribution()->get_dofs_offset();
+    const auto comp_offset = nrb_space->get_ptr_const_dof_distribution()->get_dofs_offset();
 
     const auto &w_coefs = nrb_space->weight_func_->get_coefficients();
 
@@ -516,7 +516,7 @@ evaluate_nurbs_hessians_from_bspline(
 
     const auto nrb_space = nrb_elem_.get_nurbs_space();
     const auto bsp_local_to_patch = bspline_elem.get_local_to_patch(DofProperties::active);
-    const auto comp_offset = nrb_space->get_dof_distribution()->get_dofs_offset();
+    const auto comp_offset = nrb_space->get_ptr_const_dof_distribution()->get_dofs_offset();
 
     const auto &w_coefs = nrb_space->weight_func_->get_coefficients();
 

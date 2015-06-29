@@ -637,7 +637,18 @@ private:
      */
     PropertiesIdContainer properties_elements_id_;
 
+
+    /**
+     * Unique identifier associated to each object instance.
+     */
+    Index object_id_;
+
 public:
+
+    /**
+     * Returns the unique identifier associated to each object instance.
+     */
+    Index get_object_id() const;
 
     /**
      * @name Functions related to the management/query of the element properties.

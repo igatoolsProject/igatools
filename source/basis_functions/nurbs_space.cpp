@@ -68,11 +68,11 @@ NURBSSpace(const std::shared_ptr<SpSpace> &bs_space,
     Assert(w_func_as_ref_space->is_bspline(),
            ExcMessage("The space for the weight function is not BSplineSpace."));
 
-    const auto &n_basis_table = this->get_dof_distribution()->get_num_dofs_table();
+    const auto &n_basis_table = this->get_ptr_const_dof_distribution()->get_num_dofs_table();
     int comp_id = 0;
     for (const auto &n_basis_comp : n_basis_table)
     {
-        Assert(n_basis_comp == w_func_as_ref_space->get_dof_distribution()->get_num_dofs_table()[0],
+        Assert(n_basis_comp == w_func_as_ref_space->get_ptr_const_dof_distribution()->get_num_dofs_table()[0],
                ExcMessage("Mismatching number of basis functions and weight "
                           "coefficients for scalar component " + to_string(comp_id)));
 
@@ -95,7 +95,7 @@ NURBSSpace(const std::shared_ptr<const SpSpace> &bs_space,
 #ifndef NDEBUG
     Assert(weight_func_ != nullptr, ExcNullPtr());
 
-    Assert(*this->get_ptr_grid() == *weight_func_->get_grid(),ExcMessage("Mismatching grids."));
+    Assert(*this->get_ptr_const_grid() == *weight_func_->get_grid(),ExcMessage("Mismatching grids."));
 
     using WeightRefSpace = ReferenceSpace<dim_,1,1>;
     auto w_func_as_ref_space = std::dynamic_pointer_cast<const WeightRefSpace>(weight_func_->get_ig_space());
@@ -109,11 +109,11 @@ NURBSSpace(const std::shared_ptr<const SpSpace> &bs_space,
     Assert(w_func_as_ref_space->is_bspline(),
            ExcMessage("The space for the weight function is not BSplineSpace."));
 
-    const auto &n_basis_table = this->get_dof_distribution()->get_num_dofs_table();
+    const auto &n_basis_table = this->get_ptr_const_dof_distribution()->get_num_dofs_table();
     int comp_id = 0;
     for (const auto &n_basis_comp : n_basis_table)
     {
-        Assert(n_basis_comp == w_func_as_ref_space->get_dof_distribution()->get_num_dofs_table()[0],
+        Assert(n_basis_comp == w_func_as_ref_space->get_ptr_const_dof_distribution()->get_num_dofs_table()[0],
                ExcMessage("Mismatching number of basis functions and weight "
                           "coefficients for scalar component " + to_string(comp_id)));
 
@@ -126,8 +126,8 @@ NURBSSpace(const std::shared_ptr<const SpSpace> &bs_space,
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-create(const std::shared_ptr<SpSpace> &bs_space,
-       const WeightFunctionPtr &weight_func) -> shared_ptr<self_t>
+create_nonconst(const std::shared_ptr<SpSpace> &bs_space,
+                const WeightFunctionPtr &weight_func) -> shared_ptr<self_t>
 {
     auto sp = shared_ptr<self_t>(new self_t(bs_space,weight_func));
     Assert(sp != nullptr, ExcNullPtr());
@@ -441,7 +441,7 @@ get_ref_sub_space(const int s_id,
     for (auto comp : components)
     {
         const int n_basis = sub_space->get_num_basis(comp);
-        const auto &sub_local_indices = sub_space->get_dof_distribution_patch().get_index_table()[comp];
+        const auto &sub_local_indices = sub_space->get_ptr_const_dof_distribution_patch().get_index_table()[comp];
         const auto &elem_global_indices = dof_distribution_global_.get_index_table()[comp];
 
         for (Index sub_i = 0; sub_i < n_basis; ++sub_i, ++comp_i)
@@ -595,17 +595,17 @@ get_elem_handler() const -> std::shared_ptr<SpaceElementHandler<dim_,0,range_,ra
 template<int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-get_dof_distribution() const -> shared_ptr<const DofDistribution<dim,range,rank> >
+get_ptr_const_dof_distribution() const -> shared_ptr<const DofDistribution<dim,range,rank> >
 {
-    return sp_space_.get_ptr_const_data()->get_dof_distribution();
+    return sp_space_.get_ptr_const_data()->get_ptr_const_dof_distribution();
 }
 
 template<int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-get_dof_distribution() -> shared_ptr<DofDistribution<dim,range,rank> >
+get_ptr_dof_distribution() -> shared_ptr<DofDistribution<dim,range,rank> >
 {
-    return sp_space_.get_ptr_data()->get_dof_distribution();
+    return sp_space_.get_ptr_data()->get_ptr_dof_distribution();
 }
 
 
@@ -643,8 +643,6 @@ rebuild_after_insert_knots(
             std::dynamic_pointer_cast<const SpSpace>(sp_space_->get_space_previous_refinement()));
     Assert(bsp_space_previous_refinement != nullptr,ExcNullPtr());
 
-//    this->dof_distribution_ = sp_space_->get_dof_distribution();
-
     auto weight_func_previous_refinement_ =
         std::dynamic_pointer_cast<WeightFunction>(
             weight_func_->get_function_previous_refinement());
@@ -654,9 +652,6 @@ rebuild_after_insert_knots(
     this->ref_space_previous_refinement_ =
         NURBSSpace<dim_,range_,rank_>::create(
             bsp_space_previous_refinement,weight_func_previous_refinement_);
-
-//  Assert(false,ExcNotImplemented());
-
 }
 
 #endif // MESH_REFINEMENT

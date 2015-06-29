@@ -128,7 +128,7 @@ public:
 
     static std::shared_ptr<self_t>
     create_nonconst(const std::shared_ptr<RefSpace> &ref_space,
-           const std::shared_ptr<MapFunc> &map_func);
+                    const std::shared_ptr<MapFunc> &map_func);
 
     static std::shared_ptr<const self_t>
     create(const std::shared_ptr<const RefSpace> &ref_space,
@@ -143,11 +143,11 @@ public:
 
     /** Returns the container with the global dof distribution (const version). */
     std::shared_ptr<const DofDistribution<dim, range, rank> >
-    get_dof_distribution() const override final;
+    get_ptr_const_dof_distribution() const override final;
 
     /** Returns the container with the global dof distribution (non const version). */
     std::shared_ptr<DofDistribution<dim, range, rank> >
-    get_dof_distribution() override final;
+    get_ptr_dof_distribution() override final;
 
 
 

@@ -50,9 +50,9 @@ void test_evaluate()
 
     using RefSpace = ReferenceSpace<dim>;
     using RefSpacePtr = std::shared_ptr<RefSpace>;
-    RefSpacePtr ref_space = BSplineSpace<dim>::create(deg,grid);
+    RefSpacePtr ref_space = BSplineSpace<dim>::create_nonconst(deg,grid);
     auto phys_space =
-        PhysicalSpace<dim,1,1,0,Transformation::h_grad>::create(
+        PhysicalSpace<dim,1,1,0,Transformation::h_grad>::create_nonconst(
             ref_space,IdentityFunction<dim>::create(grid));
 
 

@@ -60,11 +60,11 @@ BSplineSpace(const int degree,
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-create(const int degree,
-       const std::shared_ptr<GridType> &grid,
-       const InteriorReg interior_reg,
-       const bool periodic,
-       const BasisEndBehaviour end_b) -> shared_ptr<self_t>
+create_nonconst(const int degree,
+                const std::shared_ptr<GridType> &grid,
+                const InteriorReg interior_reg,
+                const bool periodic,
+                const BasisEndBehaviour end_b) -> shared_ptr<self_t>
 {
     auto sp = shared_ptr<self_t>(new self_t(degree,grid,interior_reg,periodic,end_b));
     Assert(sp != nullptr, ExcNullPtr());
@@ -128,11 +128,11 @@ BSplineSpace(const Degrees &deg,
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-create(const Degrees &deg,
-       const std::shared_ptr<GridType> &grid,
-       const InteriorReg interior_reg,
-       const Periodicity &periodic,
-       const EndBehaviour &end_b)
+create_nonconst(const Degrees &deg,
+                const std::shared_ptr<GridType> &grid,
+                const InteriorReg interior_reg,
+                const Periodicity &periodic,
+                const EndBehaviour &end_b)
 -> shared_ptr<self_t>
 {
     auto sp = shared_ptr<self_t>(new self_t(deg, grid, interior_reg, periodic, end_b));
@@ -301,11 +301,11 @@ BSplineSpace(const DegreeTable &deg,
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-create(const DegreeTable &deg,
-       const std::shared_ptr<GridType> &grid,
-       const MultiplicityTable &interior_mult,
-       const PeriodicityTable &periodic,
-       const EndBehaviourTable &end_b)
+create_nonconst(const DegreeTable &deg,
+                const std::shared_ptr<GridType> &grid,
+                const MultiplicityTable &interior_mult,
+                const PeriodicityTable &periodic,
+                const EndBehaviourTable &end_b)
 -> shared_ptr<self_t>
 {
     auto sp = shared_ptr<self_t>(new self_t(deg, grid, interior_mult, periodic, end_b));
@@ -338,8 +338,8 @@ create(const DegreeTable &deg,
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-create(const std::shared_ptr<SpaceData> &space_data,
-       const EndBehaviourTable &end_b)
+create_nonconst(const std::shared_ptr<SpaceData> &space_data,
+                const EndBehaviourTable &end_b)
 -> shared_ptr<self_t>
 {
     auto sp = shared_ptr<self_t>(new self_t(space_data, end_b));
@@ -422,7 +422,7 @@ get_ref_sub_space(const int s_id,
         for (int j=0; j<k; ++j)
             sub_end_b[comp][j] = end_b_[comp][active_dirs[j]];
     auto sub_space =
-    SubRefSp::create(sub_degree, sub_grid, sub_mult, sub_periodic, sub_end_b);
+    SubRefSp::create_nonconst(sub_degree, sub_grid, sub_mult, sub_periodic, sub_end_b);
 
     // Creating the mapping between the space degrees of freedom
     const int n_dir = k_elem.constant_directions.size();
@@ -438,8 +438,8 @@ get_ref_sub_space(const int s_id,
     TensorIndex<dim> tensor_index;
     int comp_i = 0;
     dof_map.resize(sub_space->get_num_basis());
-    const auto &sub_space_index_table = sub_space->get_dof_distribution()->get_index_table();
-    const auto     &space_index_table = this->get_dof_distribution()->get_index_table();
+    const auto &sub_space_index_table = sub_space->get_ptr_const_dof_distribution()->get_index_table();
+    const auto     &space_index_table = this->get_ptr_const_dof_distribution()->get_index_table();
     for (auto comp : SpaceData::components)
     {
         const auto n_basis = sub_space->get_num_basis(comp);
@@ -508,8 +508,11 @@ get_element_dofs(
     SafeSTLVector<Index> &dofs_local_to_elem,
     const std::string &dofs_property) const
 {
-    const auto &accum_mult = space_data_->accumulated_interior_multiplicities();
-    const auto &index_table = this->dof_distribution_->get_index_table();
+    const auto &sp_data = *space_data_;
+    const auto &accum_mult = sp_data.accumulated_interior_multiplicities();
+
+    const auto &dof_distr = *this->dof_distribution_;
+    const auto &index_table = dof_distr.get_index_table();
 
     dofs_global.clear();
     dofs_local_to_patch.clear();
@@ -524,7 +527,7 @@ get_element_dofs(
 
         const auto dof_t_origin = accum_mult[comp].cartesian_product(elem_tensor_id);
 
-        const auto &elem_comp_dof_t_id = space_data_->get_dofs_tensor_id_elem_table()[comp];
+        const auto &elem_comp_dof_t_id = sp_data.get_dofs_tensor_id_elem_table()[comp];
 
 //        if (dofs_property == DofProperties::active)
 //        {
@@ -546,11 +549,11 @@ get_element_dofs(
             for (const auto loc_dof_t_id : elem_comp_dof_t_id)
             {
                 const auto dof_global = index_table_comp(dof_t_origin + loc_dof_t_id);
-                if (this->dof_distribution_->test_if_dof_has_property(dof_global, dofs_property))
+                if (dof_distr.test_if_dof_has_property(dof_global, dofs_property))
                 {
                     dofs_global.emplace_back(dof_global);
 
-                    const auto dof_loc_to_patch = this->dof_distribution_->global_to_patch_local(dof_global);
+                    const auto dof_loc_to_patch = dof_distr.global_to_patch_local(dof_global);
                     dofs_local_to_patch.emplace_back(dof_loc_to_patch);
 
                     dofs_local_to_elem.emplace_back(dof_loc_to_elem);
@@ -682,7 +685,7 @@ get_elem_handler() const
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-get_dof_distribution() const -> shared_ptr<const DofDistribution<dim,range,rank> >
+get_ptr_const_dof_distribution() const -> shared_ptr<const DofDistribution<dim,range,rank> >
 {
     return dof_distribution_;
 }
@@ -690,7 +693,7 @@ get_dof_distribution() const -> shared_ptr<const DofDistribution<dim,range,rank>
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-get_dof_distribution() -> shared_ptr<DofDistribution<dim,range,rank> >
+get_ptr_dof_distribution() -> shared_ptr<DofDistribution<dim,range,rank> >
 {
     return dof_distribution_;
 }

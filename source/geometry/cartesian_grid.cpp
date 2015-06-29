@@ -24,6 +24,7 @@
 #include <igatools/base/array_utils.h>
 #include <igatools/utils/vector_tools.h>
 #include <igatools/utils/multi_array_utils.h>
+#include <igatools/utils/unique_id_generator.h>
 
 #include <algorithm>
 using std::endl;
@@ -157,7 +158,8 @@ CartesianGrid(const KnotCoordinates &knot_coordinates,
     TensorSizedContainer<dim_>(TensorSize<dim_>(knot_coordinates.tensor_size()-1)),
     kind_(kind),
     knot_coordinates_(knot_coordinates),
-    boundary_id_(0)
+    boundary_id_(0),
+    object_id_(UniqueIdGenerator::get_unique_id())
 {
 #ifndef NDEBUG
     for (const int i : UnitElement<dim_>::active_directions)
@@ -226,9 +228,17 @@ CartesianGrid(const self_t &grid)
     kind_(grid.kind_),
     knot_coordinates_(grid.knot_coordinates_),
     boundary_id_(grid.boundary_id_),
-    properties_elements_id_(grid.properties_elements_id_)
+    properties_elements_id_(grid.properties_elements_id_),
+    object_id_(UniqueIdGenerator::get_unique_id())
 {}
 
+template<int dim_>
+Index
+CartesianGrid<dim_>::
+get_object_id() const
+{
+    return object_id_;
+}
 
 
 template<int dim_>
@@ -1094,6 +1104,8 @@ serialize(Archive &ar, const unsigned int version)
     ar &boost::serialization::make_nvp("boundary_id_",boundary_id_);
 
     ar &boost::serialization::make_nvp("properties_elements_id_",properties_elements_id_);
+
+    ar &boost::serialization::make_nvp("object_id_",object_id_);
 
     ar &boost::serialization::make_nvp("grid_pre_refinement_",grid_pre_refinement_);
 

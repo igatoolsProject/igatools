@@ -65,7 +65,7 @@ private:
     // [type aliases]
 
 
-    shared_ptr<Space>        space;
+    shared_ptr<const Space>        space;
     shared_ptr<MapFunction<dim, dim>> map;
 
     const Quadrature<dim>   elem_quad;
@@ -213,7 +213,7 @@ template<int dim>
 void PoissonProblem<dim>::output()
 {
     const int n_plot_points = 2;
-    auto map = space->get_map_func();
+    auto map = space->get_ptr_const_map_func();
     Writer<dim> writer(map, n_plot_points);
 
     using IgFunc = IgFunction<dim,0,1,1>;

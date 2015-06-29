@@ -165,8 +165,8 @@ create_phys_space(shared_ptr<BSplineSpace<dim,range,rank>> ref_space)
 {
     using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 
-    return Space::create(ref_space,
-                         create_function(ref_space));
+    return Space::create_nonconst(ref_space,
+                                  create_function(ref_space));
 }
 
 
@@ -181,7 +181,7 @@ void elem_values(const int n_knots = 2, const int deg=1)
 
     auto grid  = CartesianGrid<dim>::create(n_knots);
 
-    auto ref_space = BspSpace::create(deg, grid);
+    auto ref_space = BspSpace::create_nonconst(deg, grid);
 
 
     auto space = create_phys_space(ref_space);

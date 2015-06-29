@@ -34,7 +34,7 @@ template <int dim_>
 SpaceBase<dim_>::
 SpaceBase(const shared_ptr<const CartesianGrid<dim_>> &grid)
     :
-    space_id_(UniqueIdGenerator::get_unique_id()),
+    object_id_(UniqueIdGenerator::get_unique_id()),
     grid_(grid)
 {};
 
@@ -42,16 +42,16 @@ template <int dim_>
 SpaceBase<dim_>::
 SpaceBase(const shared_ptr<CartesianGrid<dim_>> &grid)
     :
-    space_id_(UniqueIdGenerator::get_unique_id()),
+    object_id_(UniqueIdGenerator::get_unique_id()),
     grid_(grid)
 {};
 
 template <int dim_>
 Index
 SpaceBase<dim_>::
-get_space_id() const
+get_object_id() const
 {
-    return space_id_;
+    return object_id_;
 }
 
 template <int dim_>
@@ -91,7 +91,7 @@ serialize(Archive &ar, const unsigned int version)
 {
     ar &boost::serialization::make_nvp("grid_",grid_);
 
-    ar &boost::serialization::make_nvp("space_id_",space_id_);
+    ar &boost::serialization::make_nvp("object_id_",object_id_);
 }
 ///@}
 #endif // SERIALIZATION
@@ -106,8 +106,7 @@ Space<dim_,codim_,range_,rank_>::
 Space(const shared_ptr<CartesianGrid<dim_>> &grid,
       const shared_ptr<MapFunc> &map_func)
     :
-    base_t(grid)//,
-    //    map_func_(std::move(map_func))
+    base_t(grid)
 {
     Assert(map_func != nullptr, ExcNullPtr());
     map_func_.get_ref_ptr_data().swap(const_cast<shared_ptr<MapFunc> &>(map_func));
@@ -122,8 +121,7 @@ Space<dim_,codim_,range_,rank_>::
 Space(const shared_ptr<const CartesianGrid<dim_>> &grid,
       const shared_ptr<MapFunc> &map_func)
     :
-    base_t(grid)//,
-//    map_func_(std::move(map_func))
+    base_t(grid)
 {
     Assert(map_func != nullptr, ExcNullPtr());
     map_func_.get_ref_ptr_data().swap(const_cast<shared_ptr<MapFunc> &>(map_func));
@@ -175,7 +173,7 @@ auto
 Space<dim_,codim_,range_,rank_>::
 get_num_basis() const -> Size
 {
-    return this->get_dof_distribution()->get_num_dofs_table().total_dimension();
+    return this->get_ptr_const_dof_distribution()->get_num_dofs_table().total_dimension();
 }
 
 
@@ -184,7 +182,7 @@ auto
 Space<dim_,codim_,range_,rank_>::
 get_num_basis(const int comp) const -> Size
 {
-    return this->get_dof_distribution()->get_num_dofs_table().get_component_size(comp);
+    return this->get_ptr_const_dof_distribution()->get_num_dofs_table().get_component_size(comp);
 }
 
 template <int dim_,int codim_,int range_,int rank_>
@@ -192,7 +190,7 @@ auto
 Space<dim_,codim_,range_,rank_>::
 get_num_basis(const int comp, const int dir) const -> Size
 {
-    return this->get_dof_distribution()->get_num_dofs_table()[comp][dir];
+    return this->get_ptr_const_dof_distribution()->get_num_dofs_table()[comp][dir];
 }
 
 
@@ -201,7 +199,7 @@ auto
 Space<dim_,codim_,range_,rank_>::
 get_elem_num_basis() const -> Size
 {
-    return this->get_dof_distribution()->get_num_dofs_table().total_dimension();
+    return this->get_ptr_const_dof_distribution()->get_num_dofs_table().total_dimension();
 }
 
 template <int dim_,int codim_,int range_,int rank_>
@@ -210,7 +208,7 @@ Space<dim_,codim_,range_,rank_>::
 get_global_dof_id(const TensorIndex<dim> &tensor_index,
                   const Index comp) const -> Index
 {
-    return this->get_dof_distribution()->get_index_table()[comp](tensor_index);
+    return this->get_ptr_const_dof_distribution()->get_index_table()[comp](tensor_index);
 }
 
 template <int dim_,int codim_,int range_,int rank_>
@@ -218,7 +216,7 @@ auto
 Space<dim_,codim_,range_,rank_>::
 get_interior_dofs() const -> std::set<Index>
 {
-    return this->get_dof_distribution()->get_interior_dofs();
+    return this->get_ptr_const_dof_distribution()->get_interior_dofs();
 }
 
 template <int dim_,int codim_,int range_,int rank_>
@@ -226,7 +224,7 @@ auto
 Space<dim_,codim_,range_,rank_>::
 get_boundary_dofs(const int s_id, const topology_variant &topology) const -> std::set<Index>
 {
-    return this->get_dof_distribution()->get_boundary_dofs(s_id,topology);
+    return this->get_ptr_const_dof_distribution()->get_boundary_dofs(s_id,topology);
 }
 
 

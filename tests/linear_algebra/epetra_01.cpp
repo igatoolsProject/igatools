@@ -122,7 +122,7 @@ void matrix_map2(const int deg, const int n_knots)
     for (auto &id : common)
         neu_dofs.erase(id);
 
-    auto dof_dist = space->get_dof_distribution();
+    auto dof_dist = space->get_ptr_dof_distribution();
     dof_dist->add_dofs_property(DofProp::interior);
     dof_dist->add_dofs_property(DofProp::dirichlet);
     dof_dist->add_dofs_property(DofProp::neumman);

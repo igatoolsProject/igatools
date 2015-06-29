@@ -49,7 +49,7 @@ PhysicalSpace(const shared_ptr<RefSpace> &ref_space,
     ref_space_(ref_space)
 {
 //TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
-    Assert(this->get_ptr_grid() == this->get_map_func()->get_grid(),
+    Assert(this->get_ptr_grid() == this->get_ptr_map_func()->get_grid(),
            ExcMessage("Reference space and mapping grids are not the same."));
 }
 
@@ -62,7 +62,7 @@ PhysicalSpace(const shared_ptr<const RefSpace> &ref_space,
     ref_space_(ref_space)
 {
 //TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
-    Assert(this->get_ptr_const_grid() == this->get_map_func()->get_grid(),
+    Assert(this->get_ptr_const_grid() == this->get_ptr_const_map_func()->get_grid(),
            ExcMessage("Reference space and mapping grids are not the same."));
 }
 
@@ -71,7 +71,7 @@ template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 create_nonconst(const shared_ptr<RefSpace> &ref_space,
-       const shared_ptr<MapFunc> &map_func) -> shared_ptr<self_t>
+                const shared_ptr<MapFunc> &map_func) -> shared_ptr<self_t>
 {
     Assert(map_func != nullptr, ExcNullPtr());
     Assert(map_func.unique(), ExcNotUnique());
@@ -157,7 +157,7 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
     auto grid =  this->get_ptr_const_grid();
 
     auto sub_ref_space = ref_space_->get_ref_sub_space(s_id, dof_map, sub_grid);
-    auto sub_map_func = SubMap::create(sub_grid, *this->get_map_func(), s_id, elem_map);
+    auto sub_map_func = SubMap::create(sub_grid, *this->get_ptr_const_map_func(), s_id, elem_map);
     auto sub_space = SubSpace<k>::create_nonconst(sub_ref_space, sub_map_func);
     return sub_space;
 }
@@ -217,9 +217,9 @@ get_element_dofs(
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-get_dof_distribution() const -> std::shared_ptr<const DofDistribution<dim, range, rank> >
+get_ptr_const_dof_distribution() const -> std::shared_ptr<const DofDistribution<dim, range, rank> >
 {
-    return ref_space_->get_dof_distribution();
+    return ref_space_->get_ptr_const_dof_distribution();
 }
 
 
@@ -227,9 +227,9 @@ get_dof_distribution() const -> std::shared_ptr<const DofDistribution<dim, range
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-get_dof_distribution() -> std::shared_ptr<DofDistribution<dim, range, rank> >
+get_ptr_dof_distribution() -> std::shared_ptr<DofDistribution<dim, range, rank> >
 {
-    return ref_space_.get_ptr_data()->get_dof_distribution();
+    return ref_space_.get_ptr_data()->get_ptr_dof_distribution();
 }
 
 
@@ -245,7 +245,7 @@ print_info(LogStream &out) const
     out.end_item();
 
     out.begin_item("Map function:");
-    this->get_map_func()->print_info(out);
+    this->get_ptr_const_map_func()->print_info(out);
     out.end_item();
 }
 
@@ -312,12 +312,13 @@ rebuild_after_insert_knots(
     Assert(prev_ref_space != nullptr, ExcNullPtr());
 
 //    const auto &prev_map_func = std::const_pointer_cast<MapFunc>(this->map_func_->get_function_previous_refinement());
-    Assert(this->get_map_func()->get_function_previous_refinement() != nullptr, ExcNullPtr());
+    Assert(this->get_ptr_map_func()->get_function_previous_refinement() != nullptr, ExcNullPtr());
 //    std::cout << "Counter = " << prev_map_func.use_count() << std::endl;
-    Assert(this->get_map_func()->get_function_previous_refinement().unique(), ExcNotUnique());
+    Assert(this->get_ptr_map_func()->get_function_previous_refinement().unique(), ExcNotUnique());
 
     this->phys_space_previous_refinement_ =
-        PhysicalSpace<dim_,range_,rank_,codim_,type_>::create(prev_ref_space,this->get_map_func()->get_function_previous_refinement());
+        PhysicalSpace<dim_,range_,rank_,codim_,type_>::create(
+            prev_ref_space,this->get_ptr_map_func()->get_function_previous_refinement());
 }
 
 #endif
@@ -335,10 +336,12 @@ serialize(Archive &ar, const unsigned int version)
     ar.template register_type<BSplineSpace<dim_,range_,rank_> >();
     ar.template register_type<NURBSSpace<dim_,range_,rank_> >();
     ar &boost::serialization::make_nvp("ref_space_",ref_space_);
-    Assert(ref_space_ != nullptr,ExcNullPtr());
+//    Assert(ref_space_ != nullptr,ExcNullPtr());
 
 
-    ar &boost::serialization::make_nvp("phys_space_previous_refinement_",phys_space_previous_refinement_);
+    auto tmp = const_pointer_cast<self_t>(phys_space_previous_refinement_);
+    ar &boost::serialization::make_nvp("phys_space_previous_refinement_",tmp);
+    phys_space_previous_refinement_ = tmp;
 }
 
 ///@}

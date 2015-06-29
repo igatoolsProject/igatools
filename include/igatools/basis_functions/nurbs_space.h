@@ -160,8 +160,8 @@ public:
      * (non-const) BSplineSpace and a scalar weight function.
      */
     static std::shared_ptr<self_t>
-    create(const std::shared_ptr<SpSpace> &bs_space,
-           const WeightFunctionPtr &weight_func);
+    create_nonconst(const std::shared_ptr<SpSpace> &bs_space,
+                    const WeightFunctionPtr &weight_func);
 
     /**
      * Returns a shared_ptr wrapping a (const) NURBSSpace from a
@@ -253,10 +253,10 @@ public:
     virtual void print_info(LogStream &out) const override final;
 
     std::shared_ptr<const DofDistribution<dim, range, rank> >
-    get_dof_distribution() const override final;
+    get_ptr_const_dof_distribution() const override final;
 
     std::shared_ptr<DofDistribution<dim, range, rank> >
-    get_dof_distribution() override final;
+    get_ptr_dof_distribution() override final;
 
 
 
