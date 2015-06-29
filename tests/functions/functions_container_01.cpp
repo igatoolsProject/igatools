@@ -127,7 +127,9 @@ void print_container(std::shared_ptr<FunctionsContainer> funcs_container)
         int f_counter = 0;
         for (const auto &f : funcs_dim_2_codim_0_range_1_rank_1)
         {
-            out << "Function[" << f_counter++ << "]   name= " << f.second << std::endl;
+            out << "Function[" << f_counter++ << "]"
+                << "   ID:" << f.first
+                << "   name= " << f.second.name_ << std::endl;
         }
         out.end_item();
 
