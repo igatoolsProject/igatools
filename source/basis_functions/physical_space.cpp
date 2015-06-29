@@ -42,27 +42,35 @@ PhysicalSpace<dim_, range_, rank_, codim_, type_>::components =
 
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-PhysicalSpace(shared_ptr<RefSpace> ref_space,
+PhysicalSpace(const shared_ptr<RefSpace> &ref_space,
               const shared_ptr<MapFunc> &map_func)
     :
     base_t(ref_space->get_ptr_grid(),map_func),
     ref_space_(ref_space)
 {
 //TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
-    Assert(ref_space_ != nullptr, ExcNullPtr());
-
-
     Assert(this->get_ptr_grid() == this->get_map_func()->get_grid(),
            ExcMessage("Reference space and mapping grids are not the same."));
-
 }
 
+template <int dim_, int range_, int rank_, int codim_, Transformation type_>
+PhysicalSpace<dim_, range_, rank_, codim_, type_>::
+PhysicalSpace(const shared_ptr<const RefSpace> &ref_space,
+              const shared_ptr<MapFunc> &map_func)
+    :
+    base_t(ref_space->get_ptr_const_grid(),map_func),
+    ref_space_(ref_space)
+{
+//TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
+    Assert(this->get_ptr_const_grid() == this->get_map_func()->get_grid(),
+           ExcMessage("Reference space and mapping grids are not the same."));
+}
 
 
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-create(shared_ptr<RefSpace> ref_space,
+create_nonconst(const shared_ptr<RefSpace> &ref_space,
        const shared_ptr<MapFunc> &map_func) -> shared_ptr<self_t>
 {
     Assert(map_func != nullptr, ExcNullPtr());
@@ -76,6 +84,18 @@ create(shared_ptr<RefSpace> ref_space,
     return sp;
 }
 
+template <int dim_, int range_, int rank_, int codim_, Transformation type_>
+auto
+PhysicalSpace<dim_, range_, rank_, codim_, type_>::
+create(const shared_ptr<const RefSpace> &ref_space,
+       const shared_ptr<MapFunc> &map_func) -> shared_ptr<const self_t>
+{
+    Assert(map_func != nullptr, ExcNullPtr());
+    Assert(map_func.unique(), ExcNotUnique());
+    auto sp = shared_ptr<const self_t>(new self_t(ref_space, map_func));
+
+    return sp;
+}
 
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
@@ -109,7 +129,7 @@ auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 get_reference_space() const -> shared_ptr<const RefSpace>
 {
-    return shared_ptr<const RefSpace>(ref_space_);
+    return ref_space_.get_ptr_const_data();
 }
 
 
@@ -119,7 +139,7 @@ auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 get_reference_space() -> shared_ptr<RefSpace>
 {
-    return ref_space_;
+    return ref_space_.get_ptr_data();
 }
 
 
@@ -138,7 +158,7 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
 
     auto sub_ref_space = ref_space_->get_ref_sub_space(s_id, dof_map, sub_grid);
     auto sub_map_func = SubMap::create(sub_grid, *this->get_map_func(), s_id, elem_map);
-    auto sub_space = SubSpace<k>::create(sub_ref_space, sub_map_func);
+    auto sub_space = SubSpace<k>::create_nonconst(sub_ref_space, sub_map_func);
     return sub_space;
 }
 
@@ -209,7 +229,7 @@ auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 get_dof_distribution() -> std::shared_ptr<DofDistribution<dim, range, rank> >
 {
-    return ref_space_->get_dof_distribution();
+    return ref_space_.get_ptr_data()->get_dof_distribution();
 }
 
 

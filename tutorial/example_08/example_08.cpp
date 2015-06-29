@@ -45,7 +45,7 @@ void physical_space(const int deg)
     auto ref_space = RefSpace::create(deg, grid);
 
     using Function = functions::BallFunction<dim>;
-    auto space = Space::create(
+    const auto space = Space::create(
                      ref_space,
                      Function::create(grid, IdentityFunction<dim>::create(grid)));
 

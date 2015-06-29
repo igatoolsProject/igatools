@@ -127,7 +127,11 @@ public:
     virtual ~PhysicalSpace() = default;
 
     static std::shared_ptr<self_t>
-    create(std::shared_ptr<RefSpace> ref_space,
+    create_nonconst(const std::shared_ptr<RefSpace> &ref_space,
+           const std::shared_ptr<MapFunc> &map_func);
+
+    static std::shared_ptr<const self_t>
+    create(const std::shared_ptr<const RefSpace> &ref_space,
            const std::shared_ptr<MapFunc> &map_func);
 
     /**
@@ -201,13 +205,16 @@ private:
      */
     PhysicalSpace() = default;
 
-    PhysicalSpace(std::shared_ptr<RefSpace> ref_space,
+    PhysicalSpace(const std::shared_ptr<RefSpace> &ref_space,
+                  const std::shared_ptr<MapFunc> &map_func);
+
+    PhysicalSpace(const std::shared_ptr<const RefSpace> &ref_space,
                   const std::shared_ptr<MapFunc> &map_func);
 
 
-    std::shared_ptr<RefSpace> ref_space_;
+    SharedPtrConstnessHandler<RefSpace> ref_space_;
 
-    std::shared_ptr<self_t> phys_space_previous_refinement_ = nullptr;
+    std::shared_ptr<const self_t> phys_space_previous_refinement_ = nullptr;
 
 
     friend ElementAccessor;
