@@ -47,7 +47,6 @@ create_graph(const RowSpace &row_space, const std::string &row_property,
     out.end_item();
     //*/
     const auto n_rows = row_map_.NumMyElements();
-    const auto dof_distribution_row_space = row_space.get_dof_distribution();
     /*
     out.begin_item("Dof dof_distribution_row_space");
     dof_distribution_row_space->print_info(out);
@@ -55,8 +54,8 @@ create_graph(const RowSpace &row_space, const std::string &row_property,
     out << "Dof distribution n.dofs = " << dof_distribution_row_space->get_num_dofs(row_property) << std::endl;
     out << "n_rows = " << n_rows << std::endl;
     //*/
-    Assert(dof_distribution_row_space->get_num_dofs(row_property) == n_rows,
-           ExcDimensionMismatch(dof_distribution_row_space->get_num_dofs(row_property),n_rows));
+    Assert(row_space.get_ptr_const_dof_distribution()->get_num_dofs(row_property) == n_rows,
+           ExcDimensionMismatch(row_space.get_ptr_const_dof_distribution()->get_num_dofs(row_property),n_rows));
 
     SafeSTLVector<SafeSTLVector<Index>> loc_dofs(n_rows);
     auto r_elem = row_space.begin();

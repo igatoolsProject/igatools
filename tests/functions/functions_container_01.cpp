@@ -127,7 +127,9 @@ void print_container(std::shared_ptr<FunctionsContainer> funcs_container)
         int f_counter = 0;
         for (const auto &f : funcs_dim_2_codim_0_range_1_rank_1)
         {
-            out << "Function[" << f_counter++ << "]   name= " << f.second << std::endl;
+            out << "Function[" << f_counter++ << "]"
+                << "   ID:" << f.first
+                << "   name= " << f.second.name_ << std::endl;
         }
         out.end_item();
 
@@ -295,31 +297,38 @@ void do_test()
     auto funcs_container = std::make_shared<FunctionsContainer>();
 
     funcs_container->insert_mapping(
-        phys_func_1_1_1_0->get_ig_space()->get_map_func(),
+        std::const_pointer_cast<MapFunction<1,1>>(
+            phys_func_1_1_1_0->get_ig_space()->get_ptr_const_map_func()),
         "map_1_1_1_0");
 
     funcs_container->insert_mapping(
-        phys_func_2_1_1_0->get_ig_space()->get_map_func(),
+        std::const_pointer_cast<MapFunction<2,2>>(
+            phys_func_2_1_1_0->get_ig_space()->get_ptr_const_map_func()),
         "map_2_1_1_0");
 
     funcs_container->insert_mapping(
-        phys_func_3_1_1_0->get_ig_space()->get_map_func(),
+        std::const_pointer_cast<MapFunction<3,3>>(
+            phys_func_3_1_1_0->get_ig_space()->get_ptr_const_map_func()),
         "map_3_1_1_0");
 
     funcs_container->insert_mapping(
-        phys_func_2_2_1_0->get_ig_space()->get_map_func(),
+        std::const_pointer_cast<MapFunction<2,2>>(
+            phys_func_2_2_1_0->get_ig_space()->get_ptr_const_map_func()),
         "map_2_2_1_0");
 
     funcs_container->insert_mapping(
-        phys_func_3_3_1_0->get_ig_space()->get_map_func(),
+        std::const_pointer_cast<MapFunction<3,3>>(
+            phys_func_3_3_1_0->get_ig_space()->get_ptr_const_map_func()),
         "map_3_3_1_0");
 
     funcs_container->insert_mapping(
-        phys_func_2_1_1_1->get_ig_space()->get_map_func(),
+        std::const_pointer_cast<MapFunction<2,3>>(
+            phys_func_2_1_1_1->get_ig_space()->get_ptr_const_map_func()),
         "map_2_1_1_1");
 
     funcs_container->insert_mapping(
-        phys_func_2_3_1_1->get_ig_space()->get_map_func(),
+        std::const_pointer_cast<MapFunction<2,3>>(
+            phys_func_2_3_1_1->get_ig_space()->get_ptr_const_map_func()),
         "map_2_3_1_1");
 
     funcs_container->insert_mapping(func_identity_1_1,"map_identity_1_1");
@@ -327,37 +336,44 @@ void do_test()
     funcs_container->insert_mapping(func_identity_3_3,"map_identity_3_3");
 
     funcs_container->insert_function(
-        phys_func_1_1_1_0->get_ig_space()->get_map_func(),
+        std::const_pointer_cast<MapFunction<1,1>>(
+            phys_func_1_1_1_0->get_ig_space()->get_ptr_const_map_func()),
         static_pointer_cast<Func<1,0,1>>(phys_func_1_1_1_0),
         "phys_func_1_1_1_0");
 
     funcs_container->insert_function(
-        phys_func_2_1_1_0->get_ig_space()->get_map_func(),
+        std::const_pointer_cast<MapFunction<2,2>>(
+            phys_func_2_1_1_0->get_ig_space()->get_ptr_const_map_func()),
         static_pointer_cast<Func<2,0,1>>(phys_func_2_1_1_0),
         "phys_func_2_1_1_0");
 
     funcs_container->insert_function(
-        phys_func_3_1_1_0->get_ig_space()->get_map_func(),
+        std::const_pointer_cast<MapFunction<3,3>>(
+            phys_func_3_1_1_0->get_ig_space()->get_ptr_const_map_func()),
         static_pointer_cast<Func<3,0,1>>(phys_func_3_1_1_0),
         "phys_func_3_1_1_0");
 
     funcs_container->insert_function(
-        phys_func_2_2_1_0->get_ig_space()->get_map_func(),
+        std::const_pointer_cast<MapFunction<2,2>>(
+            phys_func_2_2_1_0->get_ig_space()->get_ptr_const_map_func()),
         static_pointer_cast<Func<2,0,2>>(phys_func_2_2_1_0),
         "phys_func_2_2_1_0");
 
     funcs_container->insert_function(
-        phys_func_3_3_1_0->get_ig_space()->get_map_func(),
+        std::const_pointer_cast<MapFunction<3,3>>(
+            phys_func_3_3_1_0->get_ig_space()->get_ptr_const_map_func()),
         static_pointer_cast<Func<3,0,3>>(phys_func_3_3_1_0),
         "phys_func_3_3_1_0");
 
     funcs_container->insert_function(
-        phys_func_2_1_1_1->get_ig_space()->get_map_func(),
+        std::const_pointer_cast<MapFunction<2,3>>(
+            phys_func_2_1_1_1->get_ig_space()->get_ptr_const_map_func()),
         static_pointer_cast<Func<2,1,1>>(phys_func_2_1_1_1),
         "phys_func_2_1_1_1");
 
     funcs_container->insert_function(
-        phys_func_2_3_1_1->get_ig_space()->get_map_func(),
+        std::const_pointer_cast<MapFunction<2,3>>(
+            phys_func_2_3_1_1->get_ig_space()->get_ptr_const_map_func()),
         static_pointer_cast<Func<2,1,3>>(phys_func_2_3_1_1),
         "phys_func_2_3_1_1");
 

@@ -49,7 +49,7 @@ public:
         const std::string &dofs_property,
         const SafeSTLVector<Real> &coeffs)
         :
-        IgCoefficients(space.get_dof_distribution()->get_dofs_id_same_property(dofs_property),coeffs)
+        IgCoefficients(space.get_ptr_const_dof_distribution()->get_dofs_id_same_property(dofs_property),coeffs)
     {}
 
     template <class Space>
@@ -58,8 +58,8 @@ public:
         const std::string &dofs_property)
         :
         IgCoefficients(
-            space.get_dof_distribution()->get_dofs_id_same_property(dofs_property),
-            SafeSTLVector<Real>(space.get_dof_distribution()->
+            space.get_ptr_const_dof_distribution()->get_dofs_id_same_property(dofs_property),
+            SafeSTLVector<Real>(space.get_ptr_const_dof_distribution()->
                                 get_dofs_id_same_property(dofs_property).size(),0.0))
     {}
 

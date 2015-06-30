@@ -44,8 +44,8 @@ public:
 
 private:
     using Space = BSplineSpace<dim>;
-    shared_ptr<CartesianGrid<dim>>  grid;
-    shared_ptr<Space>   space;
+    shared_ptr<const CartesianGrid<dim>>  grid;
+    shared_ptr<const Space>   space;
 };
 // [class declaration]
 

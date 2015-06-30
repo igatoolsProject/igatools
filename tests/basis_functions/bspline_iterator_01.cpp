@@ -84,9 +84,9 @@ void bspline_iterator_active_dofs(const int deg = 2,const int n_qp = 3)
 
     auto grid = CartesianGrid<dim>::create();
     using Space = BSplineSpace<dim, range, rank>;
-    auto space = Space::create(deg, grid);
+    auto space = Space::create_nonconst(deg, grid);
 
-    auto dof_distribution = space->get_dof_distribution();
+    auto dof_distribution = space->get_ptr_dof_distribution();
     //dof_distribution->add_dofs_property(DofProperties::active);
     for (const auto dof: dof_distribution->get_dofs_view())
         if (dof % 2 == 0)

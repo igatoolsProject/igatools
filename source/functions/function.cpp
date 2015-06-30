@@ -20,6 +20,7 @@
 
 #include <igatools/functions/function.h>
 #include <igatools/functions/function_element.h>
+#include <igatools/utils/unique_id_generator.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -28,11 +29,29 @@ Function<dim_, codim_, range_, rank_ >::
 Function(std::shared_ptr<GridType> grid)
     :
     GridElementHandler<dim_>(grid),
+    object_id_(UniqueIdGenerator::get_unique_id()),
     grid_(std::const_pointer_cast<CartesianGrid<dim_>>(grid))
 {
     Assert(grid != nullptr,ExcNullPtr());
 }
 
+template<int dim_, int codim_, int range_, int rank_>
+Function<dim_, codim_, range_, rank_ >::
+Function(const self_t &func)
+    :
+    GridElementHandler<dim_>(func),
+    object_id_(UniqueIdGenerator::get_unique_id()),
+    grid_(func.grid_)
+{}
+
+
+template<int dim_, int codim_, int range_, int rank_>
+Index
+Function<dim_, codim_, range_, rank_ >::
+get_object_id() const
+{
+    return object_id_;
+}
 
 template<int dim_, int codim_, int range_, int rank_>
 void
@@ -171,6 +190,8 @@ serialize(Archive &ar, const unsigned int version)
 {
     ar &boost::serialization::make_nvp("grid_elem_handler_",
                                        boost::serialization::base_object<GridElementHandler<dim_>>(*this));
+
+    ar &boost::serialization::make_nvp("object_id_",object_id_);
 
     ar &boost::serialization::make_nvp("flags_",flags_);
 

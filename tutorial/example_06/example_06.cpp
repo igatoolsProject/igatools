@@ -71,7 +71,7 @@ private:
 private:
     using RefSpace = ReferenceSpace<dim>;
     using Space = BSplineSpace<dim>;
-    shared_ptr<Space> space;
+    shared_ptr<const Space> space;
 
     const Quadrature<dim>   elem_quad;
     const Quadrature<dim-1> face_quad;
@@ -104,7 +104,7 @@ PoissonProblem(const int n_knots, const int deg)
 template<int dim>
 void PoissonProblem<dim>::assemble()
 {
-    auto grid = space->get_grid();
+    auto grid = space->get_ptr_const_grid();
 
     using Function = Function<dim,0,1,1>;
     using ConstFunction = ConstantFunction<dim,0,1,1>;
@@ -205,7 +205,7 @@ template<int dim>
 void PoissonProblem<dim>::output()
 {
     const int n_plot_points = 2;
-    auto map = IdentityFunction<dim>::create(space->get_grid());
+    auto map = IdentityFunction<dim>::create(space->get_ptr_const_grid());
     Writer<dim> writer(map, n_plot_points);
 
 

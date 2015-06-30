@@ -222,14 +222,14 @@ operator()(const Quadrature<sub_elem_dim> &quad1)
     flags_[sub_elem_dim] = flag_;
 
 
-    const auto space_data = space_.space_data_;
+    const auto &space_data = *space_.space_data_;
 
     const auto &degree = space_.get_degree_table();
 
-    const auto &active_components_id = space_data->get_active_components_id();
+    const auto &active_components_id = space_data.get_active_components_id();
 
     // number of intervals in the cartesian grid
-    const auto n_inter = space_.get_grid()->get_num_intervals();
+    const auto n_inter = space_.get_ptr_const_grid()->get_num_intervals();
 
 #ifndef NDEBUG
     for (const auto &intervals_id : intervals_id_directions_)
@@ -242,7 +242,7 @@ operator()(const Quadrature<sub_elem_dim> &quad1)
     {
         auto &g_cache = cacheutils::extract_sub_elements_data<sub_elem_dim>(splines1d_)[s_id];
 
-        g_cache = GlobalCache(space_data->get_components_map());
+        g_cache = GlobalCache(space_data.get_components_map());
 
         const auto quad = extend_sub_elem_quad<sub_elem_dim,dim>(quad1, s_id);
         const auto &n_coords = quad.get_num_coords_direction();
@@ -394,11 +394,11 @@ reset_selected_elements(
     // here we get the interval indices from the element indices
     Assert(!elements_flat_id.empty(),ExcEmptyObject());
 
-    const auto grid = reset_dispatcher.space_.get_grid();
+    const auto &grid = *reset_dispatcher.space_.get_ptr_const_grid();
     SafeSTLArray<set<int>,dim> intervals_id_unique;
     for (const auto elem_id : elements_flat_id)
     {
-        const auto elem_tensor_id = grid->flat_to_tensor(elem_id);
+        const auto elem_tensor_id = grid.flat_to_tensor(elem_id);
 
         for (int dir = 0 ; dir < dim ; ++dir)
             intervals_id_unique[dir].insert(elem_tensor_id[dir]);

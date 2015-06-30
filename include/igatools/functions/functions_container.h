@@ -37,6 +37,8 @@
 #include <igatools/basis_functions/nurbs_space.h>
 #include <igatools/basis_functions/physical_space.h>
 
+#include <unordered_map>
+
 IGA_NAMESPACE_OPEN
 
 
@@ -48,13 +50,42 @@ IGA_NAMESPACE_OPEN
 template<int dim, int codim>
 using MappingPtr = std::shared_ptr<MapFunction<dim,dim+codim>>;
 
+template <int dim,int codim,int range,int rank>
+struct PairFuncPtrName
+{
+    std::shared_ptr<Function<dim,codim,range,rank>> func_ptr_;
+
+    std::string name_;
+
+#ifdef SERIALIZATION
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+        ar &boost::serialization::make_nvp("func_ptr_",func_ptr_);
+        ar &boost::serialization::make_nvp("name_",name_);
+    }
+    ///@}
+#endif // SERIALIZATION
+
+};
+
 /**
- * Type alias for the associative container (a std::map) between a pointer to a
+ * Type alias for the associative container (a std::map) between an object_id and
+ * the structure PairFuncPtrName that contains a pointer to a
  * Function<dim,codim,range,rank> and a string (e.g. the function's name).
  */
 template <int dim,int codim,int range,int rank>
 using DictionaryFuncPtrName =
-    std::map<std::shared_ptr<Function<dim,codim,range,rank>>,std::string>;
+    std::map<Index,PairFuncPtrName<dim,codim,range,rank> >;
+//    std::map<std::shared_ptr<Function<dim,codim,range,rank>>,std::string>;
 
 
 
@@ -177,7 +208,9 @@ class FunctionsContainer
                         int f_id = 0;
                         for (const auto &f : funcs_with_name)
                         {
-                            out.begin_item("Function[" + std::to_string(f_id++) + "] name: " + f.second);
+                            out.begin_item("Function[" + std::to_string(f_id++) + "]" +
+                                           "   ID: " + std::to_string(f.first) +
+                                           "   name: " + f.second.name_);
                             //                f.first->print_info(out);
                             out.end_item();
                         }
@@ -232,19 +265,19 @@ class FunctionsContainer
 
             bool is_mapping_present(const MappingPtr<dim,codim> mapping) const
             {
-                return (maps_and_data_varying_range_.count(mapping) == 1)?true:false;
+                return (maps_and_data_varying_range_.count(mapping->get_object_id()) == 1)?true:false;
             }
 
             const auto &get_mapping_data(const MappingPtr<dim,codim> mapping) const
             {
                 Assert(this->is_mapping_present(mapping),
                        ExcMessage("Map not present in the container."));
-                return maps_and_data_varying_range_.at(mapping);
+                return maps_and_data_varying_range_.at(mapping->get_object_id());
             }
 
             auto &get_mapping_data(const MappingPtr<dim,codim> mapping)
             {
-                return maps_and_data_varying_range_[mapping];
+                return maps_and_data_varying_range_[mapping->get_object_id()];
             }
 
 
@@ -259,18 +292,19 @@ class FunctionsContainer
             {
                 std::map<MappingPtr<dim,codim>,std::string> mappings_and_names;
                 for (const auto &m : maps_and_data_varying_range_)
-                    mappings_and_names[m.first] = m.second.get_mapping_name();
+                    mappings_and_names[m.second.get_ptr_mapping()] = m.second.get_mapping_name();
 
                 return mappings_and_names;
             }
 
 
             /**
-             * @brief Class used to store the data associated to a mapping (i.e.e a geometry parametrization)
+             * @brief Class used to store the data associated to a mapping (i.e. a geometry parametrization)
              * \f$\mathbf{F} \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}} \f$
              *
              * The stored data are:
-             * - the name of the mapping
+             * - a shared pointer, pointing to the mapping function;
+             * - the name of the mapping;
              * - the functions associated to the mapping. The functions are stored using two
              *   (nested) boost::fusion::map containers, one for the index <tt>range</tt> and the other
              *   for the index <tt>rank</tt>.
@@ -279,6 +313,17 @@ class FunctionsContainer
             class DataAssociatedToMap
             {
             public:
+                void set_ptr_mapping(const MappingPtr<dim,codim> &mapping)
+                {
+                    Assert(mapping != nullptr, ExcNullPtr());
+                    mapping_ = mapping;
+                }
+
+                const auto get_ptr_mapping() const
+                {
+                    return mapping_;
+                }
+
                 void set_mapping_name(const std::string map_name)
                 {
                     map_name_ = map_name;
@@ -321,7 +366,11 @@ class FunctionsContainer
                 }; // end print_info()
 
             private:
+
+                MappingPtr<dim,codim> mapping_;
+
                 std::string map_name_;
+
                 DataVaryingRange funcs_;
 
 #ifdef SERIALIZATION
@@ -336,6 +385,8 @@ class FunctionsContainer
                 void
                 serialize(Archive &ar, const unsigned int version)
                 {
+                    ar &boost::serialization::make_nvp("mapping_",mapping_);
+
                     ar &boost::serialization::make_nvp("map_name_",map_name_);
 
                     boost::fusion::for_each(funcs_,
@@ -348,7 +399,6 @@ class FunctionsContainer
                         ar &boost::serialization::make_nvp(tag_name.c_str(),func.second);
                     } // end lambda function
                                            );
-
                 }
                 ///@}
 #endif // SERIALIZATION
@@ -368,9 +418,11 @@ class FunctionsContainer
                 for (const auto &map_and_data_varying_range : maps_and_data_varying_range_)
                 {
                     const auto &data_varying_range = map_and_data_varying_range.second;
-                    out.begin_item("Map[" + to_string(map_id++) + "] name: " + data_varying_range.get_mapping_name());
+                    out.begin_item("Map[" + to_string(map_id++) + "]" +
+                                   "   ID: " + std::to_string(map_and_data_varying_range.first) +
+                                   "   name: " + data_varying_range.get_mapping_name());
 
-                    const auto &map = *map_and_data_varying_range.first;
+                    const auto &map = *map_and_data_varying_range.second.get_ptr_mapping();
                     map.print_info(out);
 
                     data_varying_range.print_info(out);
@@ -383,7 +435,7 @@ class FunctionsContainer
 
         private:
 
-            std::map<MappingPtr<dim,codim>,DataAssociatedToMap> maps_and_data_varying_range_;
+            std::map<Index,DataAssociatedToMap> maps_and_data_varying_range_;
 
 #ifdef SERIALIZATION
             /**
@@ -581,8 +633,9 @@ public:
 
         Assert(!data_same_dim_codim.is_mapping_present(mapping),
                ExcMessage("Map already present in the container."));
-        auto &data_same_map = data_same_dim_codim.get_mapping_data(mapping);
 
+        auto &data_same_map = data_same_dim_codim.get_mapping_data(mapping);
+        data_same_map.set_ptr_mapping(mapping);
         data_same_map.set_mapping_name(map_name);
     };
 
@@ -616,9 +669,11 @@ public:
         auto &data_same_dim_codim_range_rank =
             data_same_dim_codim_range.template get_data_rank<rank>();
 
-        Assert(data_same_dim_codim_range_rank.count(function) == 0,
+        Assert(data_same_dim_codim_range_rank.count(function->get_object_id()) == 0,
                ExcMessage("Function already added to the container."));
-        data_same_dim_codim_range_rank[function] = func_name;
+        auto &tmp = data_same_dim_codim_range_rank[function->get_object_id()];
+        tmp.func_ptr_ = function;
+        tmp.name_ = func_name;
     }
 
     /**

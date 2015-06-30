@@ -114,8 +114,10 @@ protected:
     /** Constructor */
     Function(std::shared_ptr<GridType> grid);
 
-
-    Function(const self_t &) = default;
+    /**
+     * Copy constructor.
+     */
+    Function(const self_t &func);
 
 public:
     /** Destructor */
@@ -154,7 +156,19 @@ public:
 
     virtual void print_info(LogStream &out) const;
 
+    /**
+     * Returns the unique identifier associated to each object instance.
+     */
+    Index get_object_id() const;
+
 private:
+
+    /**
+     * Unique identifier associated to each object instance.
+     */
+    Index object_id_;
+
+
 
 
     struct ResetDispatcher : boost::static_visitor<void>

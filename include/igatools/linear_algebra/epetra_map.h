@@ -46,7 +46,7 @@ MapPtr create_map(const Space &space,
                   const std::string &property,
                   Comm &comm)
 {
-    const auto dof_dist = space.get_dof_distribution();
+    const auto dof_dist = space.get_ptr_const_dof_distribution();
     const auto dofs = dof_dist->get_dofs_id_same_property(property);
     //TODO (pauletti, Mar 28, 2015): this is double copy of data
     const SafeSTLVector<Index> dofs_vec(dofs.begin(), dofs.end());

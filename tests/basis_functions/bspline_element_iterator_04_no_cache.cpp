@@ -39,11 +39,11 @@
 using std::shared_ptr;
 
 template <int dim>
-shared_ptr<BSplineSpace<dim,dim,1> >
+shared_ptr<const BSplineSpace<dim,dim,1> >
 create_space(const int num_knots) ;
 
 template <>
-shared_ptr<BSplineSpace<2,2,1> >
+shared_ptr<const BSplineSpace<2,2,1> >
 create_space<2>(const int num_knots)
 {
     auto knots = CartesianGrid<2>::create(num_knots);
@@ -65,7 +65,7 @@ create_space<2>(const int num_knots)
 }
 
 template <>
-shared_ptr<BSplineSpace<3,3,1> >
+shared_ptr<const BSplineSpace<3,3,1> >
 create_space<3>(const int num_knots)
 {
     auto knots = CartesianGrid<3>::create(num_knots);

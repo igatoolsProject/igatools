@@ -87,7 +87,7 @@ template<int dim>
 void uniform_degree(const int deg, shared_ptr<CartesianGrid<dim>> grid)
 {
     OUTSTART
-    std::shared_ptr<BSplineSpace<dim>> space = BSplineSpace<dim>::create(deg, grid);
+    std::shared_ptr<BSplineSpace<dim>> space = BSplineSpace<dim>::create_nonconst(deg, grid);
 
     serialize_deserialize(space);
 
@@ -100,7 +100,7 @@ void direction_degree(const TensorIndex<dim> &deg,
                       shared_ptr<CartesianGrid<dim>> grid)
 {
     OUTSTART
-    std::shared_ptr<BSplineSpace<dim>> space = BSplineSpace<dim>::create(deg, grid);
+    std::shared_ptr<BSplineSpace<dim>> space = BSplineSpace<dim>::create_nonconst(deg, grid);
 
     serialize_deserialize(space);
 

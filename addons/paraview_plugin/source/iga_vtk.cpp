@@ -129,42 +129,42 @@ set_visualization_element_properties(const int *const n_vis_elem_phys_solid,
 
     switch (grid_type_phys_solid)
     {
-      case 0:
-        unstructured_grid_physical_solid_ = true;
-        quadratic_cells_physical_solid_ = true;
-        break;
-      case 1:
-        unstructured_grid_physical_solid_ = true;
-        quadratic_cells_physical_solid_ = false;
-        break;
-      case 2:
-        unstructured_grid_physical_solid_ = false;
-        quadratic_cells_physical_solid_ = false;
-        break;
-      default:
-        Assert(grid_type_phys_solid >= 0 && grid_type_phys_solid <= 2,
-               ExcIndexRange(grid_type_phys_solid, 0, 3));
-        break;
+        case 0:
+            unstructured_grid_physical_solid_ = true;
+            quadratic_cells_physical_solid_ = true;
+            break;
+        case 1:
+            unstructured_grid_physical_solid_ = true;
+            quadratic_cells_physical_solid_ = false;
+            break;
+        case 2:
+            unstructured_grid_physical_solid_ = false;
+            quadratic_cells_physical_solid_ = false;
+            break;
+        default:
+            Assert(grid_type_phys_solid >= 0 && grid_type_phys_solid <= 2,
+                   ExcIndexRange(grid_type_phys_solid, 0, 3));
+            break;
     }
 
     switch (grid_type_par_solid)
     {
-      case 0:
-        unstructured_grid_parametric_solid_ = true;
-        quadratic_cells_parametric_solid_ = true;
-        break;
-      case 1:
-        unstructured_grid_parametric_solid_ = true;
-        quadratic_cells_parametric_solid_ = false;
-        break;
-      case 2:
-        unstructured_grid_parametric_solid_ = false;
-        quadratic_cells_parametric_solid_ = false;
-        break;
-      default:
-        Assert(grid_type_par_solid >= 0 && grid_type_par_solid <= 2,
-               ExcIndexRange(grid_type_par_solid, 0, 3));
-        break;
+        case 0:
+            unstructured_grid_parametric_solid_ = true;
+            quadratic_cells_parametric_solid_ = true;
+            break;
+        case 1:
+            unstructured_grid_parametric_solid_ = true;
+            quadratic_cells_parametric_solid_ = false;
+            break;
+        case 2:
+            unstructured_grid_parametric_solid_ = false;
+            quadratic_cells_parametric_solid_ = false;
+            break;
+        default:
+            Assert(grid_type_par_solid >= 0 && grid_type_par_solid <= 2,
+                   ExcIndexRange(grid_type_par_solid, 0, 3));
+            break;
     }
 
     // Grid type 0 : Unstructured grid : quadratic elements.
@@ -172,30 +172,30 @@ set_visualization_element_properties(const int *const n_vis_elem_phys_solid,
 
     switch (grid_type_phys_knot)
     {
-      case 0:
-        quadratic_cells_physical_knot_ = true;
-        break;
-      case 1:
-        quadratic_cells_physical_knot_ = false;
-        break;
-      default:
-        Assert(grid_type_phys_knot >= 0 && grid_type_phys_knot <= 1,
-               ExcIndexRange(grid_type_phys_knot, 0, 2));
-        break;
+        case 0:
+            quadratic_cells_physical_knot_ = true;
+            break;
+        case 1:
+            quadratic_cells_physical_knot_ = false;
+            break;
+        default:
+            Assert(grid_type_phys_knot >= 0 && grid_type_phys_knot <= 1,
+                   ExcIndexRange(grid_type_phys_knot, 0, 2));
+            break;
     }
 
     switch (grid_type_par_knot)
     {
-      case 0:
-        quadratic_cells_parametric_knot_ = true;
-        break;
-      case 1:
-        quadratic_cells_parametric_knot_ = false;
-        break;
-      default:
-        Assert(grid_type_par_knot >= 0 && grid_type_par_knot <= 1,
-               ExcIndexRange(grid_type_par_knot, 0, 2));
-        break;
+        case 0:
+            quadratic_cells_parametric_knot_ = true;
+            break;
+        case 1:
+            quadratic_cells_parametric_knot_ = false;
+            break;
+        default:
+            Assert(grid_type_par_knot >= 0 && grid_type_par_knot <= 1,
+                   ExcIndexRange(grid_type_par_knot, 0, 2));
+            break;
     }
 
 
@@ -204,16 +204,16 @@ set_visualization_element_properties(const int *const n_vis_elem_phys_solid,
 
     switch (grid_type_phys_control)
     {
-      case 0:
-        unstructured_grid_physical_control_ = true;
-        break;
-      case 1:
-        unstructured_grid_physical_control_ = false;
-        break;
-      default:
-        Assert(grid_type_phys_control >= 0 && grid_type_phys_control <= 1,
-               ExcIndexRange(grid_type_phys_control, 0, 2));
-        break;
+        case 0:
+            unstructured_grid_physical_control_ = true;
+            break;
+        case 1:
+            unstructured_grid_physical_control_ = false;
+            break;
+        default:
+            Assert(grid_type_phys_control >= 0 && grid_type_phys_control <= 1,
+                   ExcIndexRange(grid_type_phys_control, 0, 2));
+            break;
     }
 };
 
@@ -366,7 +366,7 @@ fill_vtk_grids(vtkMultiBlockDataSet *const mb,
                 if (create_solid_mesh)
                 {
                     const auto grid = this->create_solid_mesh_grid2<dim, codim>
-                        (mapping, is_identity);
+                                      (mapping, is_identity);
                     Assert(grid != nullptr, ExcNullPtr());
                     solid_block->GetMetaData(solid_mesh_index)->Set(vtkCompositeDataSet::NAME(),
                                                                     name.c_str());
@@ -376,7 +376,7 @@ fill_vtk_grids(vtkMultiBlockDataSet *const mb,
                 if (create_control_mesh)
                 {
                     const auto grid =
-                      this->create_control_mesh_grid<dim, codim>(mapping);
+                        this->create_control_mesh_grid<dim, codim>(mapping);
                     Assert(grid != nullptr, ExcNullPtr());
                     control_block->GetMetaData(control_mesh_index)->Set(vtkCompositeDataSet::NAME(),
                                                                         name.c_str());
@@ -386,7 +386,7 @@ fill_vtk_grids(vtkMultiBlockDataSet *const mb,
                 if (create_knot_mesh)
                 {
                     const auto grid = this->create_knot_mesh_grid<dim, codim>
-                        (mapping, is_identity);
+                                      (mapping, is_identity);
                     Assert(grid != nullptr, ExcNullPtr());
                     knot_block->GetMetaData(knot_mesh_index)->Set(vtkCompositeDataSet::NAME(),
                                                                   name.c_str());
@@ -454,13 +454,13 @@ vtkPointSet1D<dim, grid_type>
     // The 1D structured grid are not visualized in VTK.
     // Therefore, an unstructured grid is always created.
 
-    Assert (mapping != nullptr, ExcNullPtr());
+    Assert(mapping != nullptr, ExcNullPtr());
 
     auto vtu_grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
 
     // Creating points
     const auto points =
-      IGAVTK::create_points_solid_vtk_grid<dim, codim>(mapping, point_info);
+    IGAVTK::create_points_solid_vtk_grid<dim, codim>(mapping, point_info);
     vtu_grid->SetPoints(points);
 
     // Missing to implement the filling of the point data.
@@ -494,7 +494,7 @@ create_solid_mesh_grid(const MapFunPtr_<dim, codim> mapping,
                        const shared_ptr<BezierVisPointInfo<dim>> point_info) ->
 vtkPointSetUnstructured<dim, grid_type>
 {
-  AssertThrow(false, ExcNotImplemented());
+    AssertThrow(false, ExcNotImplemented());
 };
 
 
@@ -506,7 +506,7 @@ create_solid_mesh_grid(const MapFunPtr_<dim, codim> mapping,
                        const shared_ptr<BezierVisPointInfo<dim>> point_info) ->
 vtkPointSetStructured<dim, grid_type>
 {
-  AssertThrow(false, ExcNotImplemented());
+    AssertThrow(false, ExcNotImplemented());
 };
 
 
@@ -515,7 +515,7 @@ template <int dim, int codim>
 vtkSmartPointer<vtkPointSet>
 IGAVTK::
 create_control_mesh_grid(const MapFunPtr_<dim, codim> mapping,
-                         typename std::enable_if_t<dim == 1>*) const
+                         typename std::enable_if_t<dim == 1> *) const
 {
     static const int space_dim = dim + codim;
     using IgFun_ = IgFunction<dim, 0, space_dim, 1>;
@@ -524,7 +524,7 @@ create_control_mesh_grid(const MapFunPtr_<dim, codim> mapping,
 
     const auto space = ig_func->get_ig_space();
     const auto &coefs = ig_func->get_coefficients();
-    const auto &dofs = space->get_dof_distribution();
+    const auto &dofs = space->get_ptr_const_dof_distribution();
 
     // TODO: include assert here to verify that all the components share the
     // same space.
@@ -599,7 +599,7 @@ create_control_mesh_grid(const MapFunPtr_<dim, codim> mapping,
 
     const auto space = ig_func->get_ig_space();
     const auto &coefs = ig_func->get_coefficients();
-    const auto &dofs = space->get_dof_distribution();
+    const auto &dofs = space->get_ptr_const_dof_distribution();
 
     // TODO: include assert here to verify that all the components share the
     // same space.
@@ -629,21 +629,21 @@ create_control_mesh_grid(const MapFunPtr_<dim, codim> mapping,
 
     if (unstructured_grid_physical_control_)
     {
-      auto grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
+        auto grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
 //       grid->SetDimensions(grid_dim[0], grid_dim[1], grid_dim[2]);
-      grid->SetPoints(points);
-      return grid;
+        grid->SetPoints(points);
+        return grid;
     }
     else
     {
-      auto grid_dim = TensorSize<3>(1);
-      for (int dir = 0; dir < dim; ++dir)
-          grid_dim[dir] = n_pts_dir[dir];
+        auto grid_dim = TensorSize<3>(1);
+        for (int dir = 0; dir < dim; ++dir)
+            grid_dim[dir] = n_pts_dir[dir];
 
-      auto grid = vtkSmartPointer<vtkStructuredGrid>::New();
-      grid->SetDimensions(grid_dim[0], grid_dim[1], grid_dim[2]);
-      grid->SetPoints(points);
-      return grid;
+        auto grid = vtkSmartPointer<vtkStructuredGrid>::New();
+        grid->SetDimensions(grid_dim[0], grid_dim[1], grid_dim[2]);
+        grid->SetPoints(points);
+        return grid;
     }
 };
 
@@ -654,7 +654,7 @@ vtkSmartPointer<vtkUnstructuredGrid>
 IGAVTK::
 create_knot_mesh_grid(const MapFunPtr_<dim, codim> mapping,
                       const bool is_identity,
-                      typename std::enable_if_t<dim == 1>*) const
+                      typename std::enable_if_t<dim == 1> *) const
 {
     // Implementation for 1D case.
 
@@ -946,7 +946,7 @@ vtkSmartPointer<vtkPointSet>
 IGAVTK::
 create_solid_vts_grid(const MapFunPtr_<dim, codim> mapping,
                       const TensorSize<dim> &n_vis_elements,
-                      typename std::enable_if_t<dim == 1>*) const
+                      typename std::enable_if_t<dim == 1> *) const
 {
     // Implementation for 1D.
     // The 1D structured grid are not visualized in VTK.
@@ -955,7 +955,7 @@ create_solid_vts_grid(const MapFunPtr_<dim, codim> mapping,
     Assert(mapping != nullptr, ExcNullPtr());
 
     Assert(n_vis_elements[0] > 0,
-            ExcMessage("Number of visualization elements must be > 0 in every "
+           ExcMessage("Number of visualization elements must be > 0 in every "
                       "direction."));
 
     auto vtu_grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
@@ -1028,10 +1028,10 @@ template <int dim, int codim>
 vtkSmartPointer<vtkPoints>
 IGAVTK::
 create_points_solid_vtk_grid2(const MapFunPtr_<dim, codim> mapping,
-                             const TensorSize<dim> &n_vis_elements,
-                             const bool structured_grid,
-                             const bool quadratic_cells,
-                             vtkPointData *const point_data) const
+                              const TensorSize<dim> &n_vis_elements,
+                              const bool structured_grid,
+                              const bool quadratic_cells,
+                              vtkPointData *const point_data) const
 {
     Assert(mapping != nullptr, ExcNullPtr());
     Assert(!(structured_grid && quadratic_cells),
@@ -1983,7 +1983,7 @@ create_geometries()
     // Creating coefficients for ig physical space functions.
     auto phys_coeff_0 = EpetraTools::create_vector(
                             EpetraTools::create_map(phys_space_0, "active", comm));
-    const auto dofs_dist_0 = space_0->get_dof_distribution();
+    const auto dofs_dist_0 = space_0->get_ptr_const_dof_distribution();
     const Real val0 = 10.0;
     Index counter = 0;
     for (const auto &d : dofs_dist_0->get_dofs_view())
@@ -1995,7 +1995,7 @@ create_geometries()
 
     auto phys_coeff_1 = EpetraTools::create_vector(
                             EpetraTools::create_map(phys_space_1, "active", comm));
-    const auto dofs_dist_1 = space_1->get_dof_distribution();
+    const auto dofs_dist_1 = space_1->get_ptr_const_dof_distribution();
     const Real val1 = 11.0;
     counter = 0;
     for (const auto &d : dofs_dist_1->get_dofs_view())
@@ -2007,7 +2007,7 @@ create_geometries()
 
     auto phys_coeff_2 = EpetraTools::create_vector(
                             EpetraTools::create_map(phys_space_2, "active", comm));
-    const auto dofs_dist_2 = space_2->get_dof_distribution();
+    const auto dofs_dist_2 = space_2->get_ptr_const_dof_distribution();
     const Real val2 = 12.0;
     counter = 0;
     for (const auto &d : dofs_dist_2->get_dofs_view())
@@ -2019,7 +2019,7 @@ create_geometries()
 
     auto phys_coeff_3 = EpetraTools::create_vector(
                             EpetraTools::create_map(phys_space_3, "active", comm));
-    const auto dofs_dist_3 = space_3->get_dof_distribution();
+    const auto dofs_dist_3 = space_3->get_ptr_const_dof_distribution();
     const Real val3 = 13.0;
     counter = 0;
     for (const auto &d : dofs_dist_3->get_dofs_view())

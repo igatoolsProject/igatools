@@ -213,7 +213,7 @@ tensor_to_flat_index(const TensorIndex<0> &tensor_index) const noexcept
 
 
 inline
-const Size
+Size
 Tdouble::
 get_number_of_entries()
 {
@@ -490,7 +490,7 @@ flat_to_tensor_index(const int flat_index) const noexcept -> TensorIndex<rank_>
 
 template<int dim_, int rank_, class tensor_type, class value_type >
 inline
-const Size
+Size
 Tensor< dim_, rank_, tensor_type, value_type >::
 get_number_of_entries()
 {

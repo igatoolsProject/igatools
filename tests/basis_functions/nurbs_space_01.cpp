@@ -113,7 +113,7 @@ void do_test()
     using Space = NURBSSpace< dim, range, rank >;
     auto grid = CartesianGrid<dim>::create(coord);
 
-    auto  bsp = BSplineSpace<dim, range, rank >::create(degree, grid);
+    auto  bsp = BSplineSpace<dim, range, rank >::create_nonconst(degree, grid);
 
     using ScalarBSplineSpace = BSplineSpace<dim>;
     using WeightFunc = IgFunction<dim,0,1,1>;
@@ -127,7 +127,7 @@ void do_test()
     auto w_func = WeightFunc::create(scalar_space,
                                      std::make_shared<typename EpetraTools::Vector>(Copy, *map, weights.data()));
 
-    auto nurbs_space = Space::create(bsp, w_func);
+    auto nurbs_space = Space::create_nonconst(bsp, w_func);
 //    nurbs_space->print_info(out);
 
 

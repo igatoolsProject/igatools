@@ -45,11 +45,11 @@ void test_evaluate()
 
 
     const int deg = 2;
-    auto bsp_space = BSplineSpace<dim>::create(deg, grid);
+    auto bsp_space = BSplineSpace<dim>::create_nonconst(deg, grid);
 
 
     using ScalarSpSpace = BSplineSpace<dim,1,1>;
-    auto scalar_bsp_space = ScalarSpSpace::create(deg, grid);
+    auto scalar_bsp_space = ScalarSpSpace::create_nonconst(deg, grid);
 
     const auto n_scalar_basis = scalar_bsp_space->get_num_basis();
 
@@ -67,10 +67,10 @@ void test_evaluate()
 
     using RefSpace = ReferenceSpace<dim>;
     using RefSpacePtr = std::shared_ptr<RefSpace>;
-    RefSpacePtr ref_space = NURBSSpace<dim>::create(bsp_space,w_func);
+    RefSpacePtr ref_space = NURBSSpace<dim>::create_nonconst(bsp_space,w_func);
 
     auto phys_space =
-        PhysicalSpace<dim,1,1,0,Transformation::h_grad>::create(
+        PhysicalSpace<dim,1,1,0,Transformation::h_grad>::create_nonconst(
             ref_space,IdentityFunction<dim>::create(grid));
 
 
@@ -104,6 +104,6 @@ int main()
 
     test_evaluate<3>();
     out << endl ;
-
+//*/
     return 0;
 }

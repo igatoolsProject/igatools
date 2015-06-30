@@ -183,7 +183,7 @@ fill_extraction(const int m,
 
 template<int dim, int range, int rank>
 BernsteinExtraction<dim, range, rank>::
-BernsteinExtraction(std::shared_ptr<CartesianGrid<dim> > grid,
+BernsteinExtraction(const CartesianGrid<dim> &grid,
                     const KnotsTable &rep_knots,
                     const MultiplicityTable &acum_mult,
                     const DegreeTable &deg)
@@ -195,13 +195,24 @@ BernsteinExtraction(std::shared_ptr<CartesianGrid<dim> > grid,
             const int m = deg[i][j] + 1;
             auto opers =
                 fill_extraction(m,
-                                grid->get_knot_coordinates(j),
+                                grid.get_knot_coordinates(j),
                                 rep_knots[i].get_data_direction(j),
                                 acum_mult[i].get_data_direction(j));
             ext_operators_[i].copy_data_direction(j,opers);
         }
     }
 }
+
+template<int dim, int range, int rank>
+BernsteinExtraction<dim, range, rank>::
+BernsteinExtraction(const Space &space_data,
+                    const EndBehaviourTable &end_b)
+    :
+    BernsteinExtraction(*space_data.get_ptr_const_grid(),
+                        space_data.compute_knots_with_repetition(end_b),
+                        space_data.accumulated_interior_multiplicities(),
+                        space_data.get_degree_table())
+{}
 
 
 #ifdef SERIALIZATION

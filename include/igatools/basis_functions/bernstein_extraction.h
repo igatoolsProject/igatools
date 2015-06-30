@@ -60,6 +60,7 @@ public:
     using DegreeTable = typename Space::DegreeTable;
     using KnotsTable = typename Space::KnotsTable;
     using MultiplicityTable = typename Space::MultiplicityTable;
+    using EndBehaviourTable = typename Space::EndBehaviourTable;
 
     using ElemOper = SafeSTLArray<Operator const *, dim>;
     using ElemOperTable = typename Space::template ComponentContainer<ElemOper>;
@@ -78,10 +79,17 @@ public:
     /**
      * Construct the extraction operators.
      */
-    BernsteinExtraction(std::shared_ptr<CartesianGrid<dim> > grid,
+    BernsteinExtraction(const CartesianGrid<dim> &grid,
                         const KnotsTable &rep_knots,
                         const MultiplicityTable &acum_mult,
                         const DegreeTable &deg);
+
+
+    /**
+     * Construct the extraction operators.
+     */
+    BernsteinExtraction(const Space &space_data,
+                        const EndBehaviourTable &end_b);
 
     /**
      * Print the class content

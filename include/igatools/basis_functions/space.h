@@ -22,6 +22,7 @@
 #define __SPACE_H_
 
 #include <igatools/base/config.h>
+#include <igatools/utils/shared_ptr_constness_handler.h>
 #include <igatools/geometry/cartesian_grid.h>
 //#include <igatools/base/function.h>
 
@@ -53,8 +54,6 @@ template <int,int,int,int> class SpaceElementHandler;
  */
 template<int dim_>
 class SpaceBase
-//      :
-//    public GridWrapper<dim_>
 {
 private:
 //    using base_t = GridWrapper<dim_>;
@@ -80,11 +79,14 @@ protected:
      */
     SpaceBase() = default;
 
-    /** Construct the object from the @p grid on which the function space will be built upon. */
-    SpaceBase(std::shared_ptr<CartesianGrid<dim_>> grid);
+    /** Construct the object from the (const) @p grid on which the function space will be built upon. */
+    SpaceBase(const std::shared_ptr<const CartesianGrid<dim_>> &grid);
+
+    /** Construct the object from the (non-const) @p grid on which the function space will be built upon. */
+    SpaceBase(const std::shared_ptr<CartesianGrid<dim_>> &grid);
 
     /** Copy constructor. */
-    SpaceBase(const self_t &) = default;
+    SpaceBase(const self_t &) = delete;
 
     /** Move constructor. */
     SpaceBase(self_t &&) = default;
@@ -105,12 +107,14 @@ public:
 
 public:
     /**
-     * Returns the space id.
+     * Returns the unique identifier associated to each object instance.
      */
-    Index get_space_id() const;
+    Index get_object_id() const;
 
 
-    std::shared_ptr<CartesianGrid<dim_>> get_grid() const;
+    std::shared_ptr<CartesianGrid<dim_>> get_ptr_grid();
+
+    std::shared_ptr<const CartesianGrid<dim_>> get_ptr_const_grid() const;
 
 
 #ifdef MESH_REFINEMENT
@@ -128,13 +132,18 @@ public:
 #endif // MESH_REFINEMENT
 
 protected:
-    Index space_id_ = 0;
+
+    /**
+     * Unique identifier associated to each object instance.
+     */
+    Index object_id_ = 0;
 
 
 private:
 
-    std::shared_ptr<CartesianGrid<dim_> > grid_;
+//    std::shared_ptr<CartesianGrid<dim_> > grid_;
 
+    SharedPtrConstnessHandler<CartesianGrid<dim_> > grid_;
 
 #ifdef SERIALIZATION
     /**
@@ -191,17 +200,27 @@ protected:
     Space() = default;
 
     /**
-     * Construct the object from the @p grid on which the function space will be built upon
+     * Construct the object from the (non-const) @p grid on which the function space will be built upon
      * and the function representing the mapping.
      *
      * @pre The shared_pointer <tt>map_func</tt> must be unique.
      *
      * @warning After the object construction the state of <tt>map_func</tt> will be no longer valid.
      */
-    Space(std::shared_ptr<CartesianGrid<dim_>> grid,const std::shared_ptr<MapFunc> &map_func);
+    Space(const std::shared_ptr<CartesianGrid<dim_>> &grid,const std::shared_ptr<MapFunc> &map_func);
+
+    /**
+     * Construct the object from the (const) @p grid on which the function space will be built upon
+     * and the function representing the mapping.
+     *
+     * @pre The shared_pointer <tt>map_func</tt> must be unique.
+     *
+     * @warning After the object construction the state of <tt>map_func</tt> will be no longer valid.
+     */
+    Space(const std::shared_ptr<const CartesianGrid<dim_>> &grid,const std::shared_ptr<MapFunc> &map_func);
 
     /** Copy constructor. */
-    Space(const self_t &) = default;
+    Space(const self_t &) = delete;
 
     /** Move constructor. */
     Space(self_t &&) = default;
@@ -231,17 +250,22 @@ public:
 
 
 
-    std::shared_ptr<MapFunc> get_map_func() const
+    std::shared_ptr<MapFunc> get_ptr_map_func()
     {
-        return map_func_;
+        return map_func_.get_ptr_data();
+    }
+
+    std::shared_ptr<const MapFunc> get_ptr_const_map_func() const
+    {
+        return map_func_.get_ptr_const_data();
     }
 
     virtual std::shared_ptr<const DofDistribution<dim_,range_,rank_> >
-    get_dof_distribution() const = 0;
+    get_ptr_const_dof_distribution() const = 0;
 
 
     virtual std::shared_ptr<DofDistribution<dim_,range_,rank_> >
-    get_dof_distribution() = 0;
+    get_ptr_dof_distribution() = 0;
 
 
     /**
@@ -335,7 +359,7 @@ public:
 
 private:
 
-    std::shared_ptr<MapFunc>  map_func_;
+    SharedPtrConstnessHandler<MapFunc>  map_func_;
 
 #ifdef SERIALIZATION
     /**

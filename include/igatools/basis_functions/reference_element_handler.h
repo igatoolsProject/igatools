@@ -53,7 +53,7 @@ public:
 
 
     static std::shared_ptr<ReferenceElementHandler<dim,range,rank> >
-    create(std::shared_ptr<const Space> space);
+    create(const std::shared_ptr<const Space> &space);
 
 protected:
     /** @name Constructors */
@@ -66,7 +66,7 @@ protected:
     ReferenceElementHandler() = default;
 
 
-    ReferenceElementHandler(std::shared_ptr<const Space> space);
+    ReferenceElementHandler(const std::shared_ptr<const Space> &space);
 
     /**
      * Copy constructor. Not allowed to be used.

@@ -50,7 +50,7 @@ test()
 
     rep_knots.print_info(out);
 
-    BernsteinExtraction<dim> operators(grid, rep_knots, acum_mult, deg);
+    BernsteinExtraction<dim> operators(*grid, rep_knots, acum_mult, deg);
     operators.print_info(out);
 }
 

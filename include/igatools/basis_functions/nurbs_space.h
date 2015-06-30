@@ -156,10 +156,19 @@ public:
 
 public:
     /**
-     * Returns a shared_ptr wrapping a NURBSSpace from a BSplineSpace and a scalar weight function.
+     * Returns a shared_ptr wrapping a (non-const) NURBSSpace from a
+     * (non-const) BSplineSpace and a scalar weight function.
      */
     static std::shared_ptr<self_t>
-    create(std::shared_ptr<SpSpace> bs_space,
+    create_nonconst(const std::shared_ptr<SpSpace> &bs_space,
+                    const WeightFunctionPtr &weight_func);
+
+    /**
+     * Returns a shared_ptr wrapping a (const) NURBSSpace from a
+     * (const) BSplineSpace and a scalar weight function.
+     */
+    static std::shared_ptr<const self_t>
+    create(const std::shared_ptr<const SpSpace> &bs_space,
            const WeightFunctionPtr &weight_func);
 
     ///@}
@@ -184,9 +193,15 @@ protected:
     NURBSSpace() = default;
 
     /**
-     * Construct a NURBSSpace from a BSplineSpace and a scalar weight function.
+     * Construct a NURBSSpace from a (non-const) BSplineSpace and a scalar weight function.
      */
-    explicit NURBSSpace(std::shared_ptr<SpSpace> bs_space,
+    explicit NURBSSpace(const std::shared_ptr<SpSpace> &bs_space,
+                        const WeightFunctionPtr &weight_func);
+
+    /**
+     * Construct a NURBSSpace from a (const) BSplineSpace and a scalar weight function.
+     */
+    explicit NURBSSpace(const std::shared_ptr<const SpSpace> &bs_space,
                         const WeightFunctionPtr &weight_func);
 
     /**
@@ -213,7 +228,7 @@ public:
 
     ///@}
 
-    const std::shared_ptr<SpSpace> get_spline_space() const;
+    const std::shared_ptr<const SpSpace> get_spline_space() const;
 
 
 
@@ -238,10 +253,10 @@ public:
     virtual void print_info(LogStream &out) const override final;
 
     std::shared_ptr<const DofDistribution<dim, range, rank> >
-    get_dof_distribution() const override final;
+    get_ptr_const_dof_distribution() const override final;
 
     std::shared_ptr<DofDistribution<dim, range, rank> >
-    get_dof_distribution() override final;
+    get_ptr_dof_distribution() override final;
 
 
 
@@ -249,7 +264,7 @@ private:
     /**
      * B-spline space
      */
-    std::shared_ptr<SpSpace> sp_space_;
+    SharedPtrConstnessHandler<SpSpace> sp_space_;
 
     /**
      * Weight function.

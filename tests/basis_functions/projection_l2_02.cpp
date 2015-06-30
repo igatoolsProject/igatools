@@ -110,7 +110,7 @@ void do_test(const int p, const int num_knots = 10)
     using Space = PhysicalSpace<dim,range,rank,codim>;
 
     auto knots = CartesianGrid<dim>::create(num_knots);
-    auto ref_space = BspSpace::create(p, knots);
+    auto ref_space = BspSpace::create_nonconst(p, knots);
 
     using Function = functions::LinearFunction<dim, 0, dim + codim>;
     typename Function::Value    b;
@@ -121,14 +121,14 @@ void do_test(const int p, const int num_knots = 10)
     }
 //    auto map_func = Function::create(knots, IdentityFunction<dim>::create(knots), A, b);
 
-    auto space = Space::create(
+    auto space = Space::create_nonconst(
                      ref_space,
                      Function::create(knots, IdentityFunction<dim>::create(knots), A, b));
 
     const int n_qpoints = 4;
     QGauss<dim> quad(n_qpoints);
 
-    auto f = BoundaryFunction<dim>::create(knots, space->get_map_func());
+    auto f = BoundaryFunction<dim>::create(knots, space->get_ptr_map_func());
     auto proj_func = space_tools::projection_l2<Space,la_pack>(f, space, quad);
     proj_func->print_info(out);
 

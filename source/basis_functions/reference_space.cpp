@@ -38,11 +38,18 @@ IGA_NAMESPACE_OPEN
 template<int dim_, int range_, int rank_>
 ReferenceSpace<dim_, range_, rank_>::
 ReferenceSpace(
-    const std::shared_ptr<CartesianGrid<dim_>> grid)
+    const std::shared_ptr<CartesianGrid<dim_>> &grid)
     :
     base_t(grid,std::make_shared<IdentityFunction<dim,dim>>(grid))
 {}
 
+template<int dim_, int range_, int rank_>
+ReferenceSpace<dim_, range_, rank_>::
+ReferenceSpace(
+    const std::shared_ptr<const CartesianGrid<dim_>> &grid)
+    :
+    base_t(grid,std::make_shared<IdentityFunction<dim,dim>>(grid))
+{}
 
 
 template<int dim, int range, int rank>
@@ -150,7 +157,9 @@ serialize(Archive &ar, const unsigned int version)
     ar &boost::serialization::make_nvp("ReferenceSpace_base_t",
                                        boost::serialization::base_object<base_t>(*this));
 
-    ar &boost::serialization::make_nvp("ref_space_previous_refinement_",ref_space_previous_refinement_);
+    auto tmp = const_pointer_cast<RefSpace>(ref_space_previous_refinement_);
+    ar &boost::serialization::make_nvp("ref_space_previous_refinement_",tmp);
+    ref_space_previous_refinement_ = const_pointer_cast<const RefSpace>(tmp);
 }
 #endif // SERIALIZATION
 

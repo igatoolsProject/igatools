@@ -154,7 +154,7 @@ template <class Container>
 inline
 auto
 MultiArrayIteratorBase<Container>::
-operator->() const -> const pointer
+operator->() const -> const value_type *const
 {
     Assert(id_ != IteratorState::pass_the_end,ExcIteratorPastEnd());
     Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
@@ -166,7 +166,7 @@ template <class Container>
 inline
 auto
 MultiArrayIteratorBase<Container>::
-operator->() -> pointer
+operator->() -> value_type *
 {
     Assert(id_ != IteratorState::pass_the_end,ExcIteratorPastEnd());
     Assert(id_ != IteratorState::invalid,ExcInvalidIterator());

@@ -43,14 +43,14 @@ using space_tools::get_boundary_dofs;
 
 template <int dim, int range=1, int rank=1, int codim = 0>
 shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>>
-        create_space(shared_ptr<CartesianGrid<dim>> grid,
+        create_space(const shared_ptr<CartesianGrid<dim>> &grid,
                      const shared_ptr<MapFunction<dim,dim+codim>> &map_func,
                      const int deg=1)
 {
     using BspSpace = BSplineSpace<dim, range, rank>;
     using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
-    auto ref_space = BspSpace::create(deg, grid);
-    return Space::create(ref_space, map_func);
+    auto ref_space = BspSpace::create_nonconst(deg, grid);
+    return Space::create_nonconst(ref_space, map_func);
 }
 
 
@@ -72,7 +72,7 @@ enum  bc : boundary_id
 
 template <int dim, int range=1, int rank=1, int codim = 0>
 shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>>
-        create_space_prop(shared_ptr<CartesianGrid<dim>> grid,
+        create_space_prop(const shared_ptr<CartesianGrid<dim>> &grid,
                           const shared_ptr<MapFunction<dim,dim+codim>> &map_func,
                           const int deg=1)
 {
@@ -81,8 +81,8 @@ shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>>
 
     using BspSpace = BSplineSpace<dim, range, rank>;
     using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
-    auto ref_space = BspSpace::create(deg, grid);
-    auto space = Space::create(ref_space, map_func);
+    auto ref_space = BspSpace::create_nonconst(deg, grid);
+    auto space = Space::create_nonconst(ref_space, map_func);
 
     std::set<boundary_id>  dir_ids = {bc::dir};
     auto dir_dofs = get_boundary_dofs<Space>(space, dir_ids);
@@ -101,7 +101,7 @@ shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>>
     for (auto &id : common)
         neu_dofs.erase(id);
 
-    auto dof_dist = space->get_dof_distribution();
+    auto dof_dist = space->get_ptr_dof_distribution();
     dof_dist->add_dofs_property(DofProp::interior);
     dof_dist->add_dofs_property(DofProp::dirichlet);
     dof_dist->add_dofs_property(DofProp::neumman);

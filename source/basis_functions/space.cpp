@@ -32,29 +32,42 @@ IGA_NAMESPACE_OPEN
 
 template <int dim_>
 SpaceBase<dim_>::
-SpaceBase(shared_ptr<CartesianGrid<dim_>> grid)
+SpaceBase(const shared_ptr<const CartesianGrid<dim_>> &grid)
     :
-    space_id_(UniqueIdGenerator::get_unique_id()),
+    object_id_(UniqueIdGenerator::get_unique_id()),
     grid_(grid)
-{
-    Assert(grid_ != nullptr,ExcNullPtr());
-};
+{};
 
+template <int dim_>
+SpaceBase<dim_>::
+SpaceBase(const shared_ptr<CartesianGrid<dim_>> &grid)
+    :
+    object_id_(UniqueIdGenerator::get_unique_id()),
+    grid_(grid)
+{};
 
 template <int dim_>
 Index
 SpaceBase<dim_>::
-get_space_id() const
+get_object_id() const
 {
-    return space_id_;
+    return object_id_;
 }
 
 template <int dim_>
 std::shared_ptr<CartesianGrid<dim_> >
 SpaceBase<dim_>::
-get_grid() const
+get_ptr_grid()
 {
-    return grid_;
+    return grid_.get_ptr_data();
+}
+
+template <int dim_>
+std::shared_ptr<const CartesianGrid<dim_> >
+SpaceBase<dim_>::
+get_ptr_const_grid() const
+{
+    return grid_.get_ptr_const_data();
 }
 
 #ifdef MESH_REFINEMENT
@@ -64,7 +77,7 @@ void
 SpaceBase<dim_>::
 refine_h(const Size n_subdivisions)
 {
-    grid_->refine(n_subdivisions);
+    this->get_ptr_grid()->refine(n_subdivisions);
 }
 
 #endif // MESH_REFINEMENT
@@ -78,7 +91,7 @@ serialize(Archive &ar, const unsigned int version)
 {
     ar &boost::serialization::make_nvp("grid_",grid_);
 
-    ar &boost::serialization::make_nvp("space_id_",space_id_);
+    ar &boost::serialization::make_nvp("object_id_",object_id_);
 }
 ///@}
 #endif // SERIALIZATION
@@ -90,16 +103,31 @@ serialize(Archive &ar, const unsigned int version)
 
 template <int dim_,int codim_,int range_,int rank_>
 Space<dim_,codim_,range_,rank_>::
-Space(shared_ptr<CartesianGrid<dim_>> grid,
+Space(const shared_ptr<CartesianGrid<dim_>> &grid,
       const shared_ptr<MapFunc> &map_func)
     :
     base_t(grid)
 {
     Assert(map_func != nullptr, ExcNullPtr());
-    Assert(map_func.unique(), ExcNotUnique());
+    map_func_.get_ref_ptr_data().swap(const_cast<shared_ptr<MapFunc> &>(map_func));
+    Assert(map_func_.unique(), ExcNotUnique());
 
-    map_func_.swap(const_cast<shared_ptr<MapFunc> &>(map_func));
-    Assert(this->get_grid() == this->map_func_->get_grid(),
+    Assert(this->get_ptr_grid() == this->map_func_->get_grid(),
+           ExcMessage("Reference space and mapping grids are not the same."))
+}
+
+template <int dim_,int codim_,int range_,int rank_>
+Space<dim_,codim_,range_,rank_>::
+Space(const shared_ptr<const CartesianGrid<dim_>> &grid,
+      const shared_ptr<MapFunc> &map_func)
+    :
+    base_t(grid)
+{
+    Assert(map_func != nullptr, ExcNullPtr());
+    map_func_.get_ref_ptr_data().swap(const_cast<shared_ptr<MapFunc> &>(map_func));
+    Assert(map_func_.unique(), ExcNotUnique());
+
+    Assert(this->get_ptr_const_grid() == this->map_func_->get_grid(),
            ExcMessage("Reference space and mapping grids are not the same."))
 }
 
@@ -111,7 +139,7 @@ begin(const std::string &element_property) const -> ElementIterator
 {
     return ElementIterator(
                this->create_element(
-                   this->get_grid()->get_first_element_id_same_property(element_property)),
+                   this->get_ptr_const_grid()->get_first_element_id_same_property(element_property)),
                element_property);
 }
 
@@ -124,7 +152,7 @@ last(const std::string &element_property) const -> ElementIterator
 {
     return ElementIterator(
                this->create_element(
-                   this->get_grid()->get_first_element_id_same_property(element_property)),
+                   this->get_ptr_const_grid()->get_first_element_id_same_property(element_property)),
                element_property);
 }
 
@@ -145,7 +173,7 @@ auto
 Space<dim_,codim_,range_,rank_>::
 get_num_basis() const -> Size
 {
-    return this->get_dof_distribution()->get_num_dofs_table().total_dimension();
+    return this->get_ptr_const_dof_distribution()->get_num_dofs_table().total_dimension();
 }
 
 
@@ -154,7 +182,7 @@ auto
 Space<dim_,codim_,range_,rank_>::
 get_num_basis(const int comp) const -> Size
 {
-    return this->get_dof_distribution()->get_num_dofs_table().get_component_size(comp);
+    return this->get_ptr_const_dof_distribution()->get_num_dofs_table().get_component_size(comp);
 }
 
 template <int dim_,int codim_,int range_,int rank_>
@@ -162,7 +190,7 @@ auto
 Space<dim_,codim_,range_,rank_>::
 get_num_basis(const int comp, const int dir) const -> Size
 {
-    return this->get_dof_distribution()->get_num_dofs_table()[comp][dir];
+    return this->get_ptr_const_dof_distribution()->get_num_dofs_table()[comp][dir];
 }
 
 
@@ -171,7 +199,7 @@ auto
 Space<dim_,codim_,range_,rank_>::
 get_elem_num_basis() const -> Size
 {
-    return this->get_dof_distribution()->get_num_dofs_table().total_dimension();
+    return this->get_ptr_const_dof_distribution()->get_num_dofs_table().total_dimension();
 }
 
 template <int dim_,int codim_,int range_,int rank_>
@@ -180,7 +208,7 @@ Space<dim_,codim_,range_,rank_>::
 get_global_dof_id(const TensorIndex<dim> &tensor_index,
                   const Index comp) const -> Index
 {
-    return this->get_dof_distribution()->get_index_table()[comp](tensor_index);
+    return this->get_ptr_const_dof_distribution()->get_index_table()[comp](tensor_index);
 }
 
 template <int dim_,int codim_,int range_,int rank_>
@@ -188,7 +216,7 @@ auto
 Space<dim_,codim_,range_,rank_>::
 get_interior_dofs() const -> std::set<Index>
 {
-    return this->get_dof_distribution()->get_interior_dofs();
+    return this->get_ptr_const_dof_distribution()->get_interior_dofs();
 }
 
 template <int dim_,int codim_,int range_,int rank_>
@@ -196,7 +224,7 @@ auto
 Space<dim_,codim_,range_,rank_>::
 get_boundary_dofs(const int s_id, const topology_variant &topology) const -> std::set<Index>
 {
-    return this->get_dof_distribution()->get_boundary_dofs(s_id,topology);
+    return this->get_ptr_const_dof_distribution()->get_boundary_dofs(s_id,topology);
 }
 
 
@@ -215,7 +243,7 @@ serialize(Archive &ar, const unsigned int version)
     ar.template register_type<IgFunction<dim_,0,dim_+codim_,1> >();
     ar.template register_type<IdentityFunction<dim_,dim_> >();
     ar &boost::serialization::make_nvp("map_func_",map_func_);
-    Assert(map_func_ != nullptr,ExcNullPtr());
+//    Assert(map_func_ != nullptr,ExcNullPtr());
 
 }
 ///@}

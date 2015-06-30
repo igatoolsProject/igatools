@@ -22,11 +22,11 @@
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/base/array_utils.h>
 #include <igatools/utils/vector_tools.h>
+#include <igatools/utils/multi_array_utils.h>
 
 using std::unique_ptr;
 using std::shared_ptr;
 using std::make_shared;
-using std::const_pointer_cast;
 
 IGA_NAMESPACE_OPEN
 
@@ -42,11 +42,27 @@ SplineSpace<dim, range, rank>::components =
 template<int dim, int range, int rank>
 SplineSpace<dim, range, rank>::
 SplineSpace(const DegreeTable &deg,
-            std::shared_ptr<GridType> knots,
+            const std::shared_ptr<GridType> &grid,
             const MultiplicityTable &interior_mult,
             const PeriodicityTable &periodic)
     :
-    grid_(knots),
+    grid_(grid),
+    interior_mult_(interior_mult),
+    deg_(deg),
+    periodic_(periodic)
+{
+    this->init();
+}
+
+
+template<int dim, int range, int rank>
+SplineSpace<dim, range, rank>::
+SplineSpace(const DegreeTable &deg,
+            const std::shared_ptr<const GridType> &grid,
+            const MultiplicityTable &interior_mult,
+            const PeriodicityTable &periodic)
+    :
+    grid_(grid),
     interior_mult_(interior_mult),
     deg_(deg),
     periodic_(periodic)
@@ -59,12 +75,12 @@ template<int dim, int range, int rank>
 std::shared_ptr<SplineSpace<dim,range,rank> >
 SplineSpace<dim, range, rank>::
 create(const DegreeTable &deg,
-       std::shared_ptr<GridType> knots,
+       const std::shared_ptr<GridType> &grid,
        const MultiplicityTable &interior_mult,
        const PeriodicityTable &periodic)
 {
     using SpSpace = SplineSpace<dim,range,rank>;
-    auto sp = std::shared_ptr<SpSpace>(new SpSpace(deg, knots,interior_mult,periodic));
+    auto sp = std::shared_ptr<SpSpace>(new SpSpace(deg,grid,interior_mult,periodic));
     Assert(sp != nullptr, ExcNullPtr());
 
 #ifdef MESH_REFINEMENT
@@ -74,6 +90,20 @@ create(const DegreeTable &deg,
     return sp;
 }
 
+template<int dim, int range, int rank>
+std::shared_ptr<const SplineSpace<dim,range,rank> >
+SplineSpace<dim, range, rank>::
+create(const DegreeTable &deg,
+       const std::shared_ptr<const GridType> &grid,
+       const MultiplicityTable &interior_mult,
+       const PeriodicityTable &periodic)
+{
+    using SpSpace = SplineSpace<dim,range,rank>;
+    auto sp = std::shared_ptr<const SpSpace>(new SpSpace(deg,grid,interior_mult,periodic));
+    Assert(sp != nullptr, ExcNullPtr());
+
+    return sp;
+}
 
 
 template<int dim, int range, int rank>
@@ -81,7 +111,7 @@ void
 SplineSpace<dim, range, rank>::
 init()
 {
-    Assert(grid_ != nullptr,ExcNullPtr());
+//    Assert(grid_ != nullptr,ExcNullPtr());
 
     //------------------------------------------------------------------------------
     // the default value of a bool variable is undefined, so we need to set
@@ -139,17 +169,49 @@ init()
     space_dim_ = n_basis;
     // Determine the dimensionality of the spline space --- end
     //------------------------------------------------------------------------------
+
+
+
+
+
+
+
+    //------------------------------------------------------------------------------
+    // building the lookup table for the local dof id on the current component of an element --- begin
+    for (const auto comp : components)
+    {
+        const auto dofs_t_size_elem_comp = TensorSize<dim>(deg_[comp]+1);
+        const auto dofs_f_size_elem_comp = dofs_t_size_elem_comp.flat_size();
+
+        auto &elem_comp_dof_t_id = dofs_tensor_id_elem_table_[comp];
+        elem_comp_dof_t_id.resize(dofs_f_size_elem_comp);
+
+        const auto w_dofs_elem_comp = MultiArrayUtils<dim>::compute_weight(dofs_t_size_elem_comp);
+
+        for (int dof_f_id = 0 ; dof_f_id < dofs_f_size_elem_comp ; ++dof_f_id)
+            elem_comp_dof_t_id[dof_f_id] = MultiArrayUtils<dim>::flat_to_tensor_index(dof_f_id,w_dofs_elem_comp);
+    }
+    // building the lookup table for the local dof id on the current component of an element --- end
+    //------------------------------------------------------------------------------
+
 }
 
 
 template<int dim, int range, int rank>
 std::shared_ptr<CartesianGrid<dim> >
 SplineSpace<dim, range, rank>::
-get_grid() const
+get_ptr_grid()
 {
-    return grid_;
+    return grid_.get_ptr_data();
 }
 
+template<int dim, int range, int rank>
+std::shared_ptr<const CartesianGrid<dim> >
+SplineSpace<dim, range, rank>::
+get_ptr_const_grid() const
+{
+    return grid_.get_ptr_const_data();
+}
 
 #ifdef MESH_REFINEMENT
 
@@ -160,15 +222,14 @@ rebuild_after_insert_knots(
     const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
     const CartesianGrid<dim> &old_grid)
 {
-    const auto refined_grid = grid_;
-    auto grid_pre_refinement =
-        const_pointer_cast<CartesianGrid<dim>>(refined_grid->get_grid_pre_refinement());
+//    const auto refined_grid = grid_;
+    auto grid_pre_refinement = grid_.get_ptr_data()->get_grid_pre_refinement();
 
     Assert(&(*grid_pre_refinement) == &old_grid,ExcMessage("Different grids."));
 
     spline_space_previous_refinement_ =
-        std::shared_ptr<SplineSpace<dim,range,rank> >(new
-                                                      SplineSpace<dim,range,rank>(deg_,grid_pre_refinement,interior_mult_));
+        std::shared_ptr<SplineSpace<dim,range,rank> >(
+            new SplineSpace<dim,range,rank>(deg_,grid_pre_refinement,interior_mult_));
 
 
     const auto &old_unique_knots = old_grid.get_knot_coordinates();
@@ -229,7 +290,7 @@ rebuild_after_insert_knots(
 #ifndef NDEBUG
             //---------------------------------------------------------------------------------------
             // check that the new unique knots are the same of the new grid --- begin
-            const auto &unique_knots_dir_refined_grid = refined_grid->get_knot_coordinates(dir);
+            const auto &unique_knots_dir_refined_grid = grid_->get_knot_coordinates(dir);
 
             const int n_internal_knots_unique_new = unique_knots_dir_refined_grid.size() - 2;
             Assert(n_internal_knots_unique_new == new_internal_knots_unique.size(),
@@ -280,7 +341,7 @@ create_connection_for_insert_knots(std::shared_ptr<SplineSpace<dim,range,rank>> 
                   std::placeholders::_2);
 
     using SlotType = typename CartesianGrid<dim>::SignalInsertKnotsSlot;
-    grid_->connect_insert_knots(
+    grid_.get_ptr_data()->connect_insert_knots(
         SlotType(func_to_connect).track_foreign(space));
 }
 
@@ -310,9 +371,8 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
                        ExcMessage("Periodic inconsistency"));
                 Assert(l_knots.size()==0,
                        ExcMessage("Periodic inconsistency"));
-                Assert(l_knots.size()==0,
+                Assert(r_knots.size()==0,
                        ExcMessage("Periodic inconsistency"));
-
             }
             else
             {
@@ -320,7 +380,7 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
                 {
                     Assert(l_knots.size()==0,
                            ExcMessage("Interpolatory inconsistency"));
-                    Assert(l_knots.size()==0,
+                    Assert(r_knots.size()==0,
                            ExcMessage("Interpolatory inconsistency"));
                 }
                 if (ends[iComp][j] == BasisEndBehaviour::end_knots)
@@ -329,7 +389,7 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
                     const int m = deg_[iComp][j] + 1;
                     Assert(l_knots.size() == m,
                            ExcMessage("Wrong number of boundary knots"));
-                    Assert(l_knots.size() == m,
+                    Assert(r_knots.size() == m,
                            ExcMessage("Wrong number of boundary knots"));
                     Assert(knots.front() >= l_knots.back(),
                            ExcMessage("Boundary knots should be smaller or equal a"));
@@ -673,6 +733,16 @@ get_periodic_table() const -> const PeriodicityTable &
 }
 
 
+template<int dim, int range, int rank>
+auto
+SplineSpace<dim, range, rank>::
+get_dofs_tensor_id_elem_table() const
+-> const ComponentContainer<SafeSTLVector<TensorIndex<dim> > > &
+{
+    return dofs_tensor_id_elem_table_;
+}
+
+
 #ifdef SERIALIZATION
 template<int dim, int range, int rank>
 template<class Archive>
@@ -690,7 +760,13 @@ serialize(Archive &ar, const unsigned int version)
 
     ar &boost::serialization::make_nvp("periodic_", periodic_);
 
-    ar &boost::serialization::make_nvp("spline_space_previous_refinement_", spline_space_previous_refinement_);
+
+    ar &boost::serialization::make_nvp("dofs_tensor_id_elem_table_",dofs_tensor_id_elem_table_);
+
+    using self_t = SplineSpace<dim,range,rank>;
+    auto tmp = std::const_pointer_cast<self_t>(spline_space_previous_refinement_);
+    ar &boost::serialization::make_nvp("spline_space_previous_refinement_",tmp);
+    spline_space_previous_refinement_ = tmp;
 }
 #endif // SERIALIZATION
 

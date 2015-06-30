@@ -54,7 +54,7 @@ int main()
         auto acum_mult = sp_spec->accumulated_interior_multiplicities();
 
 
-        BernsteinExtraction<dim> operators(grid, rep_knots, acum_mult, deg);
+        BernsteinExtraction<dim> operators(*grid, rep_knots, acum_mult, deg);
         operators.print_info(out);
     }
 
@@ -77,7 +77,7 @@ int main()
         auto acum_mult = sp_spec->accumulated_interior_multiplicities();
 
 
-        BernsteinExtraction<dim> operators(grid, rep_knots, acum_mult, deg);
+        BernsteinExtraction<dim> operators(*grid, rep_knots, acum_mult, deg);
         operators.print_info(out);
     }
 

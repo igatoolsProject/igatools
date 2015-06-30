@@ -208,7 +208,7 @@ public:
     /**
      * Return the total number of entries of the tensor.
      */
-    static const Size get_number_of_entries();
+    static Size get_number_of_entries();
 
 private:
     value_t val_;
@@ -590,7 +590,7 @@ public:
     /**
      * Return the total number of entries of the tensor.
      */
-    static const Size get_number_of_entries();
+    static Size get_number_of_entries();
 
 private :
     static const int num_sub_tensor = (dim_== 0? 1: dim_) ;
