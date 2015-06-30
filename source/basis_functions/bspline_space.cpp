@@ -85,7 +85,7 @@ create(const int degree,
        const bool periodic,
        const BasisEndBehaviour end_b) -> shared_ptr<const self_t>
 {
-    auto sp = shared_ptr<const self_t>(new self_t(degree,grid,interior_reg,periodic,end_b));
+    shared_ptr<self_t> sp (new self_t(degree,grid,interior_reg,periodic,end_b));
     Assert(sp != nullptr, ExcNullPtr());
 
     return sp;
@@ -155,7 +155,7 @@ create(const Degrees &deg,
        const EndBehaviour &end_b)
 -> shared_ptr<const self_t>
 {
-    auto sp = shared_ptr<const self_t>(new self_t(deg, grid, interior_reg, periodic, end_b));
+    auto sp = shared_ptr<self_t>(new self_t(deg, grid, interior_reg, periodic, end_b));
     Assert(sp != nullptr, ExcNullPtr());
 
     return sp;
@@ -328,7 +328,7 @@ create(const DegreeTable &deg,
        const EndBehaviourTable &end_b)
 -> shared_ptr<const self_t>
 {
-    auto sp = shared_ptr<const self_t>(new self_t(deg, grid, interior_mult, periodic, end_b));
+    auto sp = shared_ptr<self_t>(new self_t(deg, grid, interior_mult, periodic, end_b));
     Assert(sp != nullptr, ExcNullPtr());
 
     return sp;
