@@ -293,6 +293,168 @@ print_info(LogStream &out) const
     out << ')';
 }
 
+
+
+void eig_dense_matrix(const DenseMatrix &A,
+                      SafeSTLVector<Real> &eigenvalues_real,
+                      SafeSTLVector<Real> &eigenvalues_imag,
+                      DenseMatrix &eigenvectors)
+{
+    const int n_rows = A.get_num_rows();
+    const int n_cols = A.get_num_cols();
+    Assert(n_rows == n_cols,ExcDimensionMismatch(n_rows,n_cols));
+
+    const int n = n_rows;
+
+    Assert(eigenvalues_real.size() == n,ExcDimensionMismatch(eigenvalues_real.size(),n));
+    Assert(eigenvalues_imag.size() == n,ExcDimensionMismatch(eigenvalues_imag.size(),n));
+
+    Assert(eigenvectors.get_num_rows() == n,ExcDimensionMismatch(eigenvectors.get_num_rows(),n));
+    Assert(eigenvectors.get_num_cols() == n,ExcDimensionMismatch(eigenvectors.get_num_cols(),n));
+
+    DenseMatrix eigenvectors_trans(n,n);
+
+    Teuchos::LAPACK<int, double> lapack;
+    int info;
+
+    const int workspace_size = 4*n; // thsi should be >= 3*n (higher values gives better performances)
+    double workspace[workspace_size];
+
+    double dummy;
+
+    // The Lapack GEEV routine assumes that the matrix entries are sorted column-wise
+    // (i.e. using the Fortran way), but in C/C++ the matrix entries are sorted row-wise,
+    // so we need to work on the transposte of the input matrix
+    DenseMatrix A_trans = boost::numeric::ublas::trans(A);
+
+    /*
+    out.begin_item("Matrix A_trans:");
+    A_trans.print_info(out);
+    out.end_item();
+    //*/
+
+    const char jobvl = 'N'; // the left  eigenvector is not computed
+    const char jobvr = 'V'; // the right eigenvector is computed
+    lapack.GEEV(jobvl,jobvr,n,const_cast<Real *>(&(A_trans.data()[0])),n,
+                eigenvalues_real.data(),
+                eigenvalues_imag.data(),
+                &dummy,1,
+                &(eigenvectors_trans.data()[0]),n,
+                workspace,
+                workspace_size,
+                &info);
+    if (info > 0)
+    {
+        AssertThrow(false,ExcMessage("The QR algorithm failed to compute all the "
+                                     "eigenvalues, and no eigenvectors have been computed. "
+                                     "Elements " + std::to_string(info) + ":" + std::to_string(n-1) +
+                                     " of eigenvalues_re and eigenvalues_im contain eigenvalues "
+                                     "which have converged."));
+    }
+    else if (info < 0)
+    {
+        AssertThrow(false,ExcMessage("The " + std::to_string(std::abs(info)-1) + "-th argument " +
+                                     "had an illegal value."));
+    }
+
+
+
+    std::map<Real,Index> eigval_real_sort;
+    for (int i = 0 ; i < n ; ++i)
+        eigval_real_sort[eigenvalues_real[i]] = i;
+
+
+    const auto eigenvalues_imag_tmp = eigenvalues_imag;
+    int i = 0;
+    for (const auto &eigval_id : eigval_real_sort)
+    {
+        const int id = eigval_id.second;
+//  out << "eigenvalue= " << eigval_id.first <<  "   id=" << eigval_id.second << endl;
+        eigenvalues_real[i] = eigval_id.first;
+        eigenvalues_imag[i] = eigenvalues_imag_tmp[id];
+
+        // transposing and reordering the eigenvectors
+        for (int row = 0 ; row < n ; ++row)
+            eigenvectors(row,i) = eigenvectors_trans(id,row);
+
+        ++i;
+    }
+}
+
+
+void eig_dense_matrix_symm(const DenseMatrix &A,
+                           SafeSTLVector<Real> &eigenvalues,
+                           DenseMatrix &eigenvectors)
+{
+    const int n_rows = A.get_num_rows();
+    const int n_cols = A.get_num_cols();
+    Assert(n_rows == n_cols,ExcDimensionMismatch(n_rows,n_cols));
+
+    const int n = n_rows;
+
+    Assert(eigenvalues.size() == n,ExcDimensionMismatch(eigenvalues.size(),n));
+
+    Assert(eigenvectors.get_num_rows() == n,ExcDimensionMismatch(eigenvectors.get_num_rows(),n));
+    Assert(eigenvectors.get_num_cols() == n,ExcDimensionMismatch(eigenvectors.get_num_cols(),n));
+
+    Teuchos::LAPACK<int, double> lapack;
+    int info;
+
+    const int workspace_size = 10*n; // thsi should be >= 3*n (higher values gives better performances)
+    double workspace[workspace_size];
+
+    // The Lapack SYEV routine assumes that the matrix entries are sorted column-wise
+    // (i.e. using the Fortran way), but in C/C++ the matrix entries are sorted row-wise,
+    // so we need to transpose the output matrix
+    DenseMatrix eigenvectors_trans = A;
+    const char jobz = 'V'; // computes eigenvalues and eigenvectors
+    const char uplo = 'L'; // using the lower triangular part of the matrix
+    lapack.SYEV(jobz,
+                uplo,
+                n,
+                const_cast<Real *>(&(eigenvectors_trans.data()[0])),
+                n,
+                eigenvalues.data(),
+                workspace,
+                workspace_size,
+                &info);
+    if (info > 0)
+    {
+        AssertThrow(false,ExcMessage("The algorithm failed to converge. " +
+                                     std::to_string(info -1) +
+                                     " off-diagonal elements of an intermediate tridiagonal "
+                                     "form did not converge to zero."));
+    }
+    else if (info < 0)
+    {
+        AssertThrow(false,ExcMessage("The " + std::to_string(std::abs(info)-1) + "-th argument " +
+                                     "had an illegal value."));
+    }
+
+
+
+    std::map<Real,Index> eigval_real_sort;
+    for (int i = 0 ; i < n ; ++i)
+        eigval_real_sort[eigenvalues[i]] = i;
+
+
+    int i = 0;
+    for (const auto &eigval_id : eigval_real_sort)
+    {
+        const int id = eigval_id.second;
+//  out << "eigenvalue= " << eigval_id.first <<  "   id=" << eigval_id.second << endl;
+
+        eigenvalues[i] = eigval_id.first;
+
+        // transposing and reordering the eigenvectors
+        for (int row = 0 ; row < n ; ++row)
+            eigenvectors(row,i) = eigenvectors_trans(id,row);
+//*/
+        ++i;
+    }
+}
+
+
 #ifdef SERIALIZATION
 
 template<class Archive>

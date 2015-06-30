@@ -162,6 +162,18 @@ private:
 #endif // SERIALIZATION
 };
 
+
+
+void eig_dense_matrix(const DenseMatrix &A,
+                      SafeSTLVector<Real> &eigenvalues_real,
+                      SafeSTLVector<Real> &eigenvalues_imag,
+                      DenseMatrix &eigenvectors);
+
+void eig_dense_matrix_symm(const DenseMatrix &A,
+                           SafeSTLVector<Real> &eigenvalues,
+                           DenseMatrix &eigenvectors);
+
+
 IGA_NAMESPACE_CLOSE
 
 #endif /* DENSE_MATRIX_H_ */
