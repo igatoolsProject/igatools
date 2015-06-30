@@ -1,5 +1,5 @@
 ========================================================================
-void uniform_degree(int, std::shared_ptr<iga::CartesianGrid<dim_> >) [with int dim = 0]
+uniform_degree
 ========================================================================
 Original BSplineSpace:
    Spline Space:
@@ -180,7 +180,7 @@ BSplineSpace after serialize-deserialize:
 ========================================================================
 
 ========================================================================
-void uniform_degree(int, std::shared_ptr<iga::CartesianGrid<dim_> >) [with int dim = 1]
+uniform_degree
 ========================================================================
 Original BSplineSpace:
    Spline Space:
@@ -373,7 +373,7 @@ BSplineSpace after serialize-deserialize:
 ========================================================================
 
 ========================================================================
-void uniform_degree(int, std::shared_ptr<iga::CartesianGrid<dim_> >) [with int dim = 2]
+uniform_degree
 ========================================================================
 Original BSplineSpace:
    Spline Space:
@@ -578,7 +578,7 @@ BSplineSpace after serialize-deserialize:
 ========================================================================
 
 ========================================================================
-void uniform_degree(int, std::shared_ptr<iga::CartesianGrid<dim_> >) [with int dim = 3]
+uniform_degree
 ========================================================================
 Original BSplineSpace:
    Spline Space:
@@ -795,7 +795,7 @@ BSplineSpace after serialize-deserialize:
 ========================================================================
 
 ========================================================================
-void direction_degree(const iga::TensorIndex<rank>&, std::shared_ptr<iga::CartesianGrid<dim_> >) [with int dim = 0]
+direction_degree
 ========================================================================
 Original BSplineSpace:
    Spline Space:
@@ -976,7 +976,7 @@ BSplineSpace after serialize-deserialize:
 ========================================================================
 
 ========================================================================
-void direction_degree(const iga::TensorIndex<rank>&, std::shared_ptr<iga::CartesianGrid<dim_> >) [with int dim = 1]
+direction_degree
 ========================================================================
 Original BSplineSpace:
    Spline Space:
@@ -1169,7 +1169,7 @@ BSplineSpace after serialize-deserialize:
 ========================================================================
 
 ========================================================================
-void direction_degree(const iga::TensorIndex<rank>&, std::shared_ptr<iga::CartesianGrid<dim_> >) [with int dim = 2]
+direction_degree
 ========================================================================
 Original BSplineSpace:
    Spline Space:
@@ -1374,7 +1374,7 @@ BSplineSpace after serialize-deserialize:
 ========================================================================
 
 ========================================================================
-void direction_degree(const iga::TensorIndex<rank>&, std::shared_ptr<iga::CartesianGrid<dim_> >) [with int dim = 3]
+direction_degree
 ========================================================================
 Original BSplineSpace:
    Spline Space:
