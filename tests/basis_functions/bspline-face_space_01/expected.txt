@@ -1,5 +1,5 @@
 ========================================================================
-void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 0; int dim = 1; int range = 1; int rank = 1]
+sub_ref_space
 ========================================================================
 0-th sub space:
    Reference Space:
@@ -188,7 +188,7 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 0; int dim = 
 ========================================================================
 
 ========================================================================
-void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 2; int range = 1; int rank = 1]
+sub_ref_space
 ========================================================================
 0-th sub space:
    Reference Space:
@@ -587,7 +587,7 @@ void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 1; int dim = 
 ========================================================================
 
 ========================================================================
-void sub_ref_space(iga::TensorSize<rank>, int) [with int sub_dim = 2; int dim = 3; int range = 1; int rank = 1]
+sub_ref_space
 ========================================================================
 0-th sub space:
    Reference Space:

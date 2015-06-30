@@ -1,5 +1,5 @@
 ========================================================================
-void component_space(int, int) [with int dim = 2; int codim = 1]
+component_space
 ========================================================================
 Spline Space:
    Knots without repetition:

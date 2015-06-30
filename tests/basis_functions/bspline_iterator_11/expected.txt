@@ -1,5 +1,5 @@
 ========================================================================
-void uniform_space_cache(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
+uniform_space_cache
 ========================================================================
 Splines 1D Cache:
    Cache for sub-element(s) with dimension: 1
@@ -60,7 +60,7 @@ Splines 1D Cache:
 ========================================================================
 
 ========================================================================
-void uniform_space_cache(iga::ValueFlags, int, int) [with int dim = 2; int range = 1; int rank = 1]
+uniform_space_cache
 ========================================================================
 Splines 1D Cache:
    Cache for sub-element(s) with dimension: 2
@@ -175,7 +175,7 @@ Splines 1D Cache:
 ========================================================================
 
 ========================================================================
-void uniform_space_cache(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
+uniform_space_cache
 ========================================================================
 Splines 1D Cache:
    Cache for sub-element(s) with dimension: 1

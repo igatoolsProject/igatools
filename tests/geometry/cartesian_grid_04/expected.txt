@@ -1,5 +1,5 @@
 ========================================================================
-void get_subgrid(const iga::TensorSize<rank>&) [with int dim = 1; int k = 0]
+get_subgrid
 ========================================================================
 Grid:
    Number of intervals per direction: [ 1 ]
@@ -27,7 +27,7 @@ Sub element: 1
 ========================================================================
 
 ========================================================================
-void get_subgrid(const iga::TensorSize<rank>&) [with int dim = 2; int k = 1]
+get_subgrid
 ========================================================================
 Grid:
    Number of intervals per direction: [ 1 2 ]
@@ -81,7 +81,7 @@ Sub element: 3
 ========================================================================
 
 ========================================================================
-void get_subgrid(const iga::TensorSize<rank>&) [with int dim = 3; int k = 2]
+get_subgrid
 ========================================================================
 Grid:
    Number of intervals per direction: [ 1 2 3 ]

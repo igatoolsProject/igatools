@@ -1,5 +1,5 @@
 ========================================================================
-void elem_derivatives(int, int) [with int der = 0; int dim = 1; int range = 1; int rank = 1]
+elem_derivatives
 ========================================================================
 ValueTable (num_functions=2,num_points=2) :
    Function 0
@@ -28,7 +28,7 @@ ValueTable (num_functions=2,num_points=2) :
 ========================================================================
 
 ========================================================================
-void elem_derivatives(int, int) [with int der = 0; int dim = 2; int range = 1; int rank = 1]
+elem_derivatives
 ========================================================================
 ValueTable (num_functions=4,num_points=4) :
    Function 0
@@ -193,7 +193,7 @@ ValueTable (num_functions=4,num_points=4) :
 ========================================================================
 
 ========================================================================
-void elem_derivatives(int, int) [with int der = 0; int dim = 1; int range = 2; int rank = 1]
+elem_derivatives
 ========================================================================
 ValueTable (num_functions=4,num_points=2) :
    Function 0
@@ -238,7 +238,7 @@ ValueTable (num_functions=4,num_points=2) :
 ========================================================================
 
 ========================================================================
-void elem_derivatives(int, int) [with int der = 0; int dim = 1; int range = 3; int rank = 1]
+elem_derivatives
 ========================================================================
 ValueTable (num_functions=6,num_points=2) :
    Function 0
@@ -299,7 +299,7 @@ ValueTable (num_functions=6,num_points=2) :
 ========================================================================
 
 ========================================================================
-void elem_derivatives(int, int) [with int der = 1; int dim = 1; int range = 1; int rank = 1]
+elem_derivatives
 ========================================================================
 ValueTable (num_functions=2,num_points=2) :
    Function 0
@@ -316,7 +316,7 @@ ValueTable (num_functions=2,num_points=2) :
 ========================================================================
 
 ========================================================================
-void elem_derivatives(int, int) [with int der = 1; int dim = 2; int range = 1; int rank = 1]
+elem_derivatives
 ========================================================================
 ValueTable (num_functions=4,num_points=4) :
    Function 0
@@ -481,7 +481,7 @@ ValueTable (num_functions=4,num_points=4) :
 ========================================================================
 
 ========================================================================
-void elem_derivatives(int, int) [with int der = 1; int dim = 1; int range = 2; int rank = 1]
+elem_derivatives
 ========================================================================
 ValueTable (num_functions=4,num_points=2) :
    Function 0
@@ -496,7 +496,7 @@ ValueTable (num_functions=4,num_points=2) :
 ========================================================================
 
 ========================================================================
-void elem_derivatives(int, int) [with int der = 1; int dim = 1; int range = 3; int rank = 1]
+elem_derivatives
 ========================================================================
 ValueTable (num_functions=6,num_points=2) :
    Function 0
@@ -557,7 +557,7 @@ ValueTable (num_functions=6,num_points=2) :
 ========================================================================
 
 ========================================================================
-void elem_derivatives(int, int) [with int der = 2; int dim = 1; int range = 1; int rank = 1]
+elem_derivatives
 ========================================================================
 ValueTable (num_functions=2,num_points=2) :
    Function 0
@@ -574,7 +574,7 @@ ValueTable (num_functions=2,num_points=2) :
 ========================================================================
 
 ========================================================================
-void elem_derivatives(int, int) [with int der = 2; int dim = 2; int range = 1; int rank = 1]
+elem_derivatives
 ========================================================================
 ValueTable (num_functions=4,num_points=4) :
    Function 0
@@ -739,7 +739,7 @@ ValueTable (num_functions=4,num_points=4) :
 ========================================================================
 
 ========================================================================
-void elem_derivatives(int, int) [with int der = 2; int dim = 1; int range = 2; int rank = 1]
+elem_derivatives
 ========================================================================
 ValueTable (num_functions=4,num_points=2) :
    Function 0
@@ -754,7 +754,7 @@ ValueTable (num_functions=4,num_points=2) :
 ========================================================================
 
 ========================================================================
-void elem_derivatives(int, int) [with int der = 2; int dim = 1; int range = 3; int rank = 1]
+elem_derivatives
 ========================================================================
 ValueTable (num_functions=6,num_points=2) :
    Function 0

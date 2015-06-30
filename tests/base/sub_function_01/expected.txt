@@ -1,5 +1,5 @@
 ========================================================================
-void sub_function(int) [with int sub_dim = 1; int dim = 2; int codim = 0]
+sub_function
 ========================================================================
 Sub structure: 0
    ValueVector (num_points=1) :
