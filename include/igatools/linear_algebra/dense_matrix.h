@@ -145,6 +145,12 @@ public:
 
     void print_info(LogStream &out) const;
 
+    /**
+     * Returns true if the matrix entries verify \f$ (A)_{ij} = (A)_{ji} \quad \forall i \, , \, j = 1,\dots,n\f$
+     * @return
+     */
+    bool is_symmetric() const;
+
 private:
 
 #ifdef SERIALIZATION
@@ -164,11 +170,29 @@ private:
 
 
 
+/**
+ * Computes the eigenvalues (and the associated eigenvectors) of the matrix @p A.
+ *
+ * The eigenvalues are sorted in ascending order relatively to their real part and for the i-th eigenvalue,
+ * the associated eigenvector is the i-th column of the matrix @p eigenvectors.
+ *
+ * @relates DenseMatrix
+ */
 void eig_dense_matrix(const DenseMatrix &A,
                       SafeSTLVector<Real> &eigenvalues_real,
                       SafeSTLVector<Real> &eigenvalues_imag,
                       DenseMatrix &eigenvectors);
 
+/**
+ * Computes the eigenvalues (and the associated eigenvectors) of the symmetric matrix @p A.
+ *
+ * The @p eigenvalues are sorted in ascending order and for the i-th eigenvalue, the associated eigenvector is
+ * the i-th column of the matrix @p eigenvectors.
+ *
+ * @note The input matrix A must be symmetric, otherwise an assertion will be raised (in Debug mode).
+ *
+ * @relates DenseMatrix
+ */
 void eig_dense_matrix_symm(const DenseMatrix &A,
                            SafeSTLVector<Real> &eigenvalues,
                            DenseMatrix &eigenvectors);

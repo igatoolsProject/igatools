@@ -264,6 +264,31 @@ norm_one() const
     return norm;
 }
 
+bool
+DenseMatrix::
+is_symmetric() const
+{
+    bool is_symmetric = true;
+
+    const Size n_rows = this->get_num_rows();
+    const Size n_cols = this->get_num_cols();
+    for (int row = 0 ; row < n_rows ; ++row)
+    {
+        for (int col = row+1 ; col < n_cols ; ++col)
+        {
+            if ((*this)(row,col) != (*this)(col,row))
+            {
+                is_symmetric = false;
+                break;
+            }
+        }
+
+    }
+
+    return is_symmetric;
+}
+
+
 void
 DenseMatrix::
 print_info(LogStream &out) const
@@ -359,25 +384,33 @@ void eig_dense_matrix(const DenseMatrix &A,
 
 
 
-    std::map<Real,Index> eigval_real_sort;
-    for (int i = 0 ; i < n ; ++i)
-        eigval_real_sort[eigenvalues_real[i]] = i;
-
-
-    const auto eigenvalues_imag_tmp = eigenvalues_imag;
-    int i = 0;
-    for (const auto &eigval_id : eigval_real_sort)
+    if (std::is_sorted(eigenvalues_real.begin(),eigenvalues_real.end()))
     {
-        const int id = eigval_id.second;
-//  out << "eigenvalue= " << eigval_id.first <<  "   id=" << eigval_id.second << endl;
-        eigenvalues_real[i] = eigval_id.first;
-        eigenvalues_imag[i] = eigenvalues_imag_tmp[id];
+        eigenvectors = boost::numeric::ublas::trans(eigenvectors_trans);
+    }
+    else
+    {
+        std::map<Real,std::set<Index>> eigval_real_sort;
+        for (int i = 0 ; i < n ; ++i)
+            eigval_real_sort[eigenvalues_real[i]].insert(i);
 
-        // transposing and reordering the eigenvectors
-        for (int row = 0 ; row < n ; ++row)
-            eigenvectors(row,i) = eigenvectors_trans(id,row);
+        const auto eigenvalues_imag_tmp = eigenvalues_imag;
+        int i = 0;
+        for (const auto &uniqueval_ids : eigval_real_sort)
+        {
+            const Real value = uniqueval_ids.first;
+            for (const auto id : uniqueval_ids.second)
+            {
+                eigenvalues_real[i] = value;
+                eigenvalues_imag[i] = eigenvalues_imag_tmp[id];
 
-        ++i;
+                // transposing and reordering the eigenvectors
+                for (int row = 0 ; row < n ; ++row)
+                    eigenvectors(row,i) = eigenvectors_trans(id,row);
+
+                ++i;
+            } // end loop ids with same eigenvalue
+        }
     }
 }
 
@@ -389,6 +422,7 @@ void eig_dense_matrix_symm(const DenseMatrix &A,
     const int n_rows = A.get_num_rows();
     const int n_cols = A.get_num_cols();
     Assert(n_rows == n_cols,ExcDimensionMismatch(n_rows,n_cols));
+    Assert(A.is_symmetric(),ExcMessage("The matrix is not symmetric."));
 
     const int n = n_rows;
 
@@ -432,25 +466,32 @@ void eig_dense_matrix_symm(const DenseMatrix &A,
     }
 
 
-
-    std::map<Real,Index> eigval_real_sort;
-    for (int i = 0 ; i < n ; ++i)
-        eigval_real_sort[eigenvalues[i]] = i;
-
-
-    int i = 0;
-    for (const auto &eigval_id : eigval_real_sort)
+    if (std::is_sorted(eigenvalues.begin(),eigenvalues.end()))
     {
-        const int id = eigval_id.second;
-//  out << "eigenvalue= " << eigval_id.first <<  "   id=" << eigval_id.second << endl;
+        eigenvectors = boost::numeric::ublas::trans(eigenvectors_trans);
+    }
+    else
+    {
+        // sorting the eigenvalues in ascending order
+        std::map<Real,std::set<Index>> eigval_real_sort;
+        for (int i = 0 ; i < n ; ++i)
+            eigval_real_sort[eigenvalues[i]].insert(i);
 
-        eigenvalues[i] = eigval_id.first;
+        int i = 0;
+        for (const auto &uniqueval_ids : eigval_real_sort)
+        {
+            const Real value = uniqueval_ids.first;
+            for (const auto id : uniqueval_ids.second)
+            {
+                eigenvalues[i] = value;
 
-        // transposing and reordering the eigenvectors
-        for (int row = 0 ; row < n ; ++row)
-            eigenvectors(row,i) = eigenvectors_trans(id,row);
-//*/
-        ++i;
+                // transposing and reordering the eigenvectors
+                for (int row = 0 ; row < n ; ++row)
+                    eigenvectors(row,i) = eigenvectors_trans(id,row);
+
+                ++i;
+            } // end loop ids with same eigenvalue
+        }
     }
 }
 
