@@ -1,5 +1,5 @@
 ========================================================================
-void space_cache_init_fill_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
+space_cache_init_fill_elem
 ========================================================================
 SpaceElementBase<1> cache:
    CartesianGridElement<1> cache:
@@ -128,7 +128,7 @@ Cache for all sub-elements in all dimensions: (memory consumption: 504 bytes)
 ========================================================================
 
 ========================================================================
-void space_cache_init_fill_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
+space_cache_init_fill_elem
 ========================================================================
 SpaceElementBase<1> cache:
    CartesianGridElement<1> cache:
@@ -253,7 +253,7 @@ Cache for all sub-elements in all dimensions: (memory consumption: 504 bytes)
 ========================================================================
 
 ========================================================================
-void space_cache_init_fill_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
+space_cache_init_fill_elem
 ========================================================================
 SpaceElementBase<1> cache:
    CartesianGridElement<1> cache:
@@ -378,7 +378,7 @@ Cache for all sub-elements in all dimensions: (memory consumption: 504 bytes)
 ========================================================================
 
 ========================================================================
-void space_cache_init_fill_elem(iga::ValueFlags, int, int) [with int dim = 2; int range = 1; int rank = 1]
+space_cache_init_fill_elem
 ========================================================================
 SpaceElementBase<2> cache:
    CartesianGridElement<2> cache:
@@ -575,7 +575,7 @@ Cache for all sub-elements in all dimensions: (memory consumption: 840 bytes)
 ========================================================================
 
 ========================================================================
-void space_cache_init_fill_elem(iga::ValueFlags, int, int) [with int dim = 2; int range = 1; int rank = 1]
+space_cache_init_fill_elem
 ========================================================================
 SpaceElementBase<2> cache:
    CartesianGridElement<2> cache:
@@ -768,7 +768,7 @@ Cache for all sub-elements in all dimensions: (memory consumption: 840 bytes)
 ========================================================================
 
 ========================================================================
-void space_cache_init_fill_elem(iga::ValueFlags, int, int) [with int dim = 2; int range = 1; int rank = 1]
+space_cache_init_fill_elem
 ========================================================================
 SpaceElementBase<2> cache:
    CartesianGridElement<2> cache:

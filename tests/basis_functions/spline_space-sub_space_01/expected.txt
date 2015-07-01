@@ -1,5 +1,5 @@
 ========================================================================
-void sub_space(const iga::TensorSize<rank>&, const iga::TensorIndex<rank_>&) [with int k = 1; int dim = 2; int range = 1; int rank = 1]
+sub_space
 ========================================================================
 Sub element id: 0
    Multiplicity

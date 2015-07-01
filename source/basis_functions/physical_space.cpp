@@ -92,7 +92,7 @@ create(const shared_ptr<const RefSpace> &ref_space,
 {
     Assert(map_func != nullptr, ExcNullPtr());
     Assert(map_func.unique(), ExcNotUnique());
-    auto sp = shared_ptr<const self_t>(new self_t(ref_space, map_func));
+    auto sp = shared_ptr<self_t>(new self_t(ref_space, map_func));
 
     return sp;
 }

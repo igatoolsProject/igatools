@@ -1,5 +1,5 @@
 ========================================================================
-void bspline_iterator(int, int) [with int dim = 1; int k = 1; int range = 1; int rank = 1]
+bspline_iterator
 ========================================================================
 Sub Element: 0
 Values basis functions:
@@ -33,7 +33,7 @@ Hessians basis functions:
    
 
 ========================================================================
-void bspline_iterator_active_dofs(int, int) [with int dim = 1; int k = 1; int range = 1; int rank = 1]
+bspline_iterator_active_dofs
 ========================================================================
 Sub Element: 0
 Values basis functions:
@@ -61,7 +61,7 @@ Hessians basis functions:
    
 
 ========================================================================
-void bspline_iterator(int, int) [with int dim = 1; int k = 1; int range = 2; int rank = 1]
+bspline_iterator
 ========================================================================
 Sub Element: 0
 Values basis functions:
@@ -113,7 +113,7 @@ Hessians basis functions:
    
 
 ========================================================================
-void bspline_iterator_active_dofs(int, int) [with int dim = 1; int k = 1; int range = 2; int rank = 1]
+bspline_iterator_active_dofs
 ========================================================================
 Sub Element: 0
 Values basis functions:
@@ -147,7 +147,7 @@ Hessians basis functions:
    
 
 ========================================================================
-void bspline_iterator(int, int) [with int dim = 1; int k = 1; int range = 3; int rank = 1]
+bspline_iterator
 ========================================================================
 Sub Element: 0
 Values basis functions:
@@ -217,7 +217,7 @@ Hessians basis functions:
    
 
 ========================================================================
-void bspline_iterator_active_dofs(int, int) [with int dim = 1; int k = 1; int range = 3; int rank = 1]
+bspline_iterator_active_dofs
 ========================================================================
 Sub Element: 0
 Values basis functions:
@@ -263,7 +263,7 @@ Hessians basis functions:
    
 
 ========================================================================
-void bspline_iterator(int, int) [with int dim = 2; int k = 2; int range = 1; int rank = 1]
+bspline_iterator
 ========================================================================
 Sub Element: 0
 Values basis functions:
@@ -333,7 +333,7 @@ Hessians basis functions:
    
 
 ========================================================================
-void bspline_iterator_active_dofs(int, int) [with int dim = 2; int k = 2; int range = 1; int rank = 1]
+bspline_iterator_active_dofs
 ========================================================================
 Sub Element: 0
 Values basis functions:
@@ -379,7 +379,7 @@ Hessians basis functions:
    
 
 ========================================================================
-void bspline_iterator(int, int) [with int dim = 2; int k = 2; int range = 2; int rank = 1]
+bspline_iterator
 ========================================================================
 Sub Element: 0
 Values basis functions:
@@ -503,7 +503,7 @@ Hessians basis functions:
    
 
 ========================================================================
-void bspline_iterator_active_dofs(int, int) [with int dim = 2; int k = 2; int range = 2; int rank = 1]
+bspline_iterator_active_dofs
 ========================================================================
 Sub Element: 0
 Values basis functions:
@@ -573,7 +573,7 @@ Hessians basis functions:
    
 
 ========================================================================
-void bspline_iterator(int, int) [with int dim = 2; int k = 2; int range = 3; int rank = 1]
+bspline_iterator
 ========================================================================
 Sub Element: 0
 Values basis functions:
@@ -751,7 +751,7 @@ Hessians basis functions:
    
 
 ========================================================================
-void bspline_iterator_active_dofs(int, int) [with int dim = 2; int k = 2; int range = 3; int rank = 1]
+bspline_iterator_active_dofs
 ========================================================================
 Sub Element: 0
 Values basis functions:
@@ -851,7 +851,7 @@ Hessians basis functions:
    
 
 ========================================================================
-void bspline_iterator(int, int) [with int dim = 3; int k = 3; int range = 1; int rank = 1]
+bspline_iterator
 ========================================================================
 Sub Element: 0
 Values basis functions:
@@ -1029,7 +1029,7 @@ Hessians basis functions:
    
 
 ========================================================================
-void bspline_iterator_active_dofs(int, int) [with int dim = 3; int k = 3; int range = 1; int rank = 1]
+bspline_iterator_active_dofs
 ========================================================================
 Sub Element: 0
 Values basis functions:
@@ -1129,7 +1129,7 @@ Hessians basis functions:
    
 
 ========================================================================
-void bspline_iterator(int, int) [with int dim = 3; int k = 3; int range = 3; int rank = 1]
+bspline_iterator
 ========================================================================
 Sub Element: 0
 Values basis functions:
@@ -1631,7 +1631,7 @@ Hessians basis functions:
    
 
 ========================================================================
-void bspline_iterator_active_dofs(int, int) [with int dim = 3; int k = 3; int range = 3; int rank = 1]
+bspline_iterator_active_dofs
 ========================================================================
 Sub Element: 0
 Values basis functions:

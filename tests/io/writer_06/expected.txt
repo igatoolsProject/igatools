@@ -1,5 +1,5 @@
 ========================================================================
-void write_sphere() [with int dim = 1]
+write_sphere
 ========================================================================
 <?xml version="1.0"?>
 <VTKFile type="UnstructuredGrid" byte_order="LittleEndian">
@@ -33,7 +33,7 @@ void write_sphere() [with int dim = 1]
 </VTKFile>========================================================================
 
 ========================================================================
-void write_sphere() [with int dim = 2]
+write_sphere
 ========================================================================
 <?xml version="1.0"?>
 <VTKFile type="UnstructuredGrid" byte_order="LittleEndian">

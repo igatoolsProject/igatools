@@ -1,5 +1,5 @@
 ========================================================================
-void sub_elem_values(int, int) [with int dim = 2; int k = 1]
+sub_elem_values
 ========================================================================
 Element0
 ValueTable (num_functions=4,num_points=4) :
@@ -67,7 +67,7 @@ Values basis functions:
 ========================================================================
 
 ========================================================================
-void sub_elem_values(int, int) [with int dim = 1; int k = 0]
+sub_elem_values
 ========================================================================
 Element0
 ValueTable (num_functions=2,num_points=2) :

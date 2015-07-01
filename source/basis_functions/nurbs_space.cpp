@@ -145,7 +145,7 @@ NURBSSpace<dim_, range_, rank_>::
 create(const std::shared_ptr<const SpSpace> &bs_space,
        const WeightFunctionPtr &weight_func) -> shared_ptr<const self_t>
 {
-    auto sp = shared_ptr<const self_t>(new self_t(bs_space,weight_func));
+    auto sp = shared_ptr<self_t>(new self_t(bs_space,weight_func));
     Assert(sp != nullptr, ExcNullPtr());
 
     return sp;

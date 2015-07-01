@@ -82,7 +82,7 @@ void test1()
 
     CartesianProductArray<Real,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
     typename SplineSpace::BoundaryKnotsTable bdry_knots { {bn_x} };
-    typename SplineSpace::EndBehaviourTable end_b(typename SplineSpace::EndBehaviourTable(SafeSTLArray<BasisEndBehaviour,dim>(BasisEndBehaviour::end_knots)));
+    typename SplineSpace::EndBehaviourTable end_b((typename SplineSpace::EndBehaviourTable(SafeSTLArray<BasisEndBehaviour,dim>(BasisEndBehaviour::end_knots))));
 
     auto rep_knots = sp_spec->compute_knots_with_repetition(end_b,bdry_knots);
 
@@ -124,7 +124,7 @@ void test2()
                     deg, grid->get_num_intervals());
     auto sp_spec = SplineSpace::create(deg, grid, int_mult);
 
-    typename SplineSpace::EndBehaviourTable end_b(typename SplineSpace::EndBehaviourTable(SafeSTLArray<BasisEndBehaviour,dim>(BasisEndBehaviour::interpolatory)));
+    typename SplineSpace::EndBehaviourTable end_b((typename SplineSpace::EndBehaviourTable(SafeSTLArray<BasisEndBehaviour,dim>(BasisEndBehaviour::interpolatory))));
 
     auto rep_knots = sp_spec->compute_knots_with_repetition(end_b);
 

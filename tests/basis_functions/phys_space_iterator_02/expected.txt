@@ -1,8 +1,8 @@
 ========================================================================
-void elem_values(int, int) [with int dim = 1; int order = 0; int range = 1; int rank = 1; int codim = 0]
+elem_values
 ========================================================================
 ========================================================================
-void serialize_deserialize(std::shared_ptr<_Tp1>) [with Space = iga::PhysicalSpace<1, 1, 1, 0, (iga::Transformation)1>]
+serialize_deserialize
 ========================================================================
 Original PhysicalSpace:
    Reference space:
@@ -541,10 +541,10 @@ Element 0
 ========================================================================
 
 ========================================================================
-void elem_values(int, int) [with int dim = 2; int order = 0; int range = 2; int rank = 1; int codim = 0]
+elem_values
 ========================================================================
 ========================================================================
-void serialize_deserialize(std::shared_ptr<_Tp1>) [with Space = iga::PhysicalSpace<2, 2, 1, 0, (iga::Transformation)1>]
+serialize_deserialize
 ========================================================================
 Original PhysicalSpace:
    Reference space:
@@ -1257,10 +1257,10 @@ Element 0
 ========================================================================
 
 ========================================================================
-void elem_values(int, int) [with int dim = 3; int order = 0; int range = 3; int rank = 1; int codim = 0]
+elem_values
 ========================================================================
 ========================================================================
-void serialize_deserialize(std::shared_ptr<_Tp1>) [with Space = iga::PhysicalSpace<3, 3, 1, 0, (iga::Transformation)1>]
+serialize_deserialize
 ========================================================================
 Original PhysicalSpace:
    Reference space:

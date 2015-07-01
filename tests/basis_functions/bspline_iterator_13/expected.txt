@@ -1,5 +1,5 @@
 ========================================================================
-void space_cache_fill_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
+space_cache_fill_elem
 ========================================================================
 Flat id = 0    Tensor id = [0]
 Element global connectivity (property="active"):
@@ -147,7 +147,7 @@ Cache for all sub-elements in all dimensions: (memory consumption: 504 bytes)
 ========================================================================
 
 ========================================================================
-void space_cache_fill_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
+space_cache_fill_elem
 ========================================================================
 Flat id = 0    Tensor id = [0]
 Element global connectivity (property="active"):
@@ -291,7 +291,7 @@ Cache for all sub-elements in all dimensions: (memory consumption: 504 bytes)
 ========================================================================
 
 ========================================================================
-void space_cache_fill_elem(iga::ValueFlags, int, int) [with int dim = 1; int range = 1; int rank = 1]
+space_cache_fill_elem
 ========================================================================
 Flat id = 0    Tensor id = [0]
 Element global connectivity (property="active"):

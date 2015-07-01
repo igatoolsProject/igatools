@@ -62,5 +62,5 @@ std::ofstream file("output.txt");
 IgaTestOutput out(file);
 
 #define SEPARATOR "========================================================================"
-#define OUTSTART out << SEPARATOR << endl << __PRETTY_FUNCTION__ << endl << SEPARATOR << endl;
+#define OUTSTART out << SEPARATOR << endl << __func__ << endl << SEPARATOR << endl;
 #define OUTEND out << SEPARATOR << endl << endl;

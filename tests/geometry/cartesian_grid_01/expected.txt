@@ -1,5 +1,5 @@
 ========================================================================
-void def_const() [with int dim = 0]
+def_const
 ========================================================================
 Original grid.
    Number of intervals per direction: [ ]
@@ -16,7 +16,7 @@ Grid after serialize-deserialize.
 ========================================================================
 
 ========================================================================
-void def_const() [with int dim = 1]
+def_const
 ========================================================================
 Original grid.
    Number of intervals per direction: [ 1 ]
@@ -37,7 +37,7 @@ Grid after serialize-deserialize.
 ========================================================================
 
 ========================================================================
-void def_const() [with int dim = 2]
+def_const
 ========================================================================
 Original grid.
    Number of intervals per direction: [ 1 1 ]
@@ -62,7 +62,7 @@ Grid after serialize-deserialize.
 ========================================================================
 
 ========================================================================
-void def_const() [with int dim = 3]
+def_const
 ========================================================================
 Original grid.
    Number of intervals per direction: [ 1 1 1 ]
@@ -91,7 +91,7 @@ Grid after serialize-deserialize.
 ========================================================================
 
 ========================================================================
-void uniform_const(int) [with int dim = 0]
+uniform_const
 ========================================================================
 Original grid.
    Number of intervals per direction: [ ]
@@ -108,7 +108,7 @@ Grid after serialize-deserialize.
 ========================================================================
 
 ========================================================================
-void uniform_const(int) [with int dim = 1]
+uniform_const
 ========================================================================
 Original grid.
    Number of intervals per direction: [ 2 ]
@@ -129,7 +129,7 @@ Grid after serialize-deserialize.
 ========================================================================
 
 ========================================================================
-void uniform_const(int) [with int dim = 2]
+uniform_const
 ========================================================================
 Original grid.
    Number of intervals per direction: [ 2 2 ]
@@ -154,7 +154,7 @@ Grid after serialize-deserialize.
 ========================================================================
 
 ========================================================================
-void uniform_const(int) [with int dim = 3]
+uniform_const
 ========================================================================
 Original grid.
    Number of intervals per direction: [ 2 2 2 ]
@@ -183,7 +183,7 @@ Grid after serialize-deserialize.
 ========================================================================
 
 ========================================================================
-void dim_uniform_const() [with int dim = 0]
+dim_uniform_const
 ========================================================================
 Original grid.
    Number of intervals per direction: [ ]
@@ -200,7 +200,7 @@ Grid after serialize-deserialize.
 ========================================================================
 
 ========================================================================
-void dim_uniform_const() [with int dim = 1]
+dim_uniform_const
 ========================================================================
 Original grid.
    Number of intervals per direction: [ 1 ]
@@ -221,7 +221,7 @@ Grid after serialize-deserialize.
 ========================================================================
 
 ========================================================================
-void dim_uniform_const() [with int dim = 2]
+dim_uniform_const
 ========================================================================
 Original grid.
    Number of intervals per direction: [ 1 3 ]
@@ -246,7 +246,7 @@ Grid after serialize-deserialize.
 ========================================================================
 
 ========================================================================
-void dim_uniform_const() [with int dim = 3]
+dim_uniform_const
 ========================================================================
 Original grid.
    Number of intervals per direction: [ 1 3 5 ]
@@ -275,7 +275,7 @@ Grid after serialize-deserialize.
 ========================================================================
 
 ========================================================================
-void non_uniform_const() [with int dim = 0]
+non_uniform_const
 ========================================================================
 Original grid.
    Number of intervals per direction: [ ]
@@ -292,7 +292,7 @@ Grid after serialize-deserialize.
 ========================================================================
 
 ========================================================================
-void non_uniform_const() [with int dim = 1]
+non_uniform_const
 ========================================================================
 Original grid.
    Number of intervals per direction: [ 1 ]
@@ -313,7 +313,7 @@ Grid after serialize-deserialize.
 ========================================================================
 
 ========================================================================
-void non_uniform_const() [with int dim = 2]
+non_uniform_const
 ========================================================================
 Original grid.
    Number of intervals per direction: [ 1 3 ]
@@ -338,7 +338,7 @@ Grid after serialize-deserialize.
 ========================================================================
 
 ========================================================================
-void non_uniform_const() [with int dim = 3]
+non_uniform_const
 ========================================================================
 Original grid.
    Number of intervals per direction: [ 1 3 5 ]
