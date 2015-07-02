@@ -54,13 +54,13 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
 
     Epetra_SerialComm comm;
 
-    auto map = EpetraTools::create_map(*space, dofs_property, comm);
-    auto graph = EpetraTools::create_graph(*space,dofs_property,*space,dofs_property,*map,*map);
+//    auto map = EpetraTools::create_map(*space, dofs_property, comm);
+    const auto graph = EpetraTools::create_graph(*space,dofs_property,*space,dofs_property,comm);
 
 
-    auto matrix = EpetraTools::create_matrix(graph);
-    auto rhs = EpetraTools::create_vector(map);
-    auto sol = EpetraTools::create_vector(map);
+    auto matrix = EpetraTools::create_matrix(*graph);
+    auto rhs = EpetraTools::create_vector(matrix->RangeMap());
+    auto sol = EpetraTools::create_vector(matrix->DomainMap());
 
     const auto space_grid = space->get_ptr_const_grid();
     const auto func_grid = function->get_grid();

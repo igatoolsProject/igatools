@@ -44,9 +44,7 @@ void using_const_space(shared_ptr<const IgFunction<dim,0,1,1>> fun)
 
     auto space = fun->get_ig_space();
     Epetra_SerialComm comm;
-    auto map = EpetraTools::create_map(*space, "active", comm);
-    auto graph = EpetraTools::create_graph(*space, "active", *space, "active", *map, *map);
-    auto matrix = EpetraTools::create_matrix(graph);
+    auto matrix = EpetraTools::create_matrix(*space,DofProperties::active,comm);
 
     OUTEND
 }
@@ -70,7 +68,8 @@ int main()
     auto grid = CartesianGrid<dim>::create(5);
     auto space = Space::create(1, grid);
 
-    auto coeff = EpetraTools::create_vector(*space, "active");
+    Epetra_SerialComm comm;
+    auto coeff = EpetraTools::create_vector(*space, DofProperties::active,comm);
 
     auto fun = IgFunction<dim,0,1,1>::create(space, coeff);
 

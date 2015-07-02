@@ -47,10 +47,10 @@ using MapPtr = std::shared_ptr<Map>;
 
 
 /**
- * Create an Epetra_Map object (wrapped by a shared pointer) from a set of @dofs.
+ * Create an Epetra_Map object (wrapped by a shared pointer) from a set of @p dofs.
  */
 MapPtr
-create_map(const std::set<Index> &dofs,Comm &comm);
+create_map(const std::set<Index> &dofs,const Comm &comm);
 
 /**
  * Create an Epetra_Map object (wrapped by a shared pointer) from a @p space and the @p dofs_property
@@ -59,7 +59,7 @@ create_map(const std::set<Index> &dofs,Comm &comm);
 template<class Space>
 MapPtr create_map(const Space &space,
                   const std::string &property,
-                  Comm &comm)
+                  const Comm &comm)
 {
     const auto &dof_dist = *space.get_ptr_const_dof_distribution();
 

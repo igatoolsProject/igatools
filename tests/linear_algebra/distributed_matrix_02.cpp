@@ -59,13 +59,11 @@ void fill_matrix_and_vector()
     out << endl;
 
     Epetra_SerialComm comm;
-    auto r_map = create_map(*r_space, "active", comm);
-    auto c_map = create_map(*c_space, "active", comm);
-    auto graph = create_graph(*r_space, "active",
-                              *c_space, "active", *r_map, *c_map);
+    auto graph = create_graph(*r_space, DofProperties::active,
+                              *c_space, DofProperties::active, comm);
 
 
-    auto A = create_matrix(graph);
+    auto A = create_matrix(*graph);
     A->FillComplete();
 
     out << "A matrix" << endl;

@@ -27,15 +27,13 @@ namespace EpetraTools
 
 GraphPtr
 create_graph(const std::map<Index,std::set<Index>> &dofs_connectivity,
-             const Map &row_map, const Map &col_map)
+             const Comm &comm)
 {
     const int n_rows = dofs_connectivity.size();
     SafeSTLVector<Size> n_dofs_per_row(n_rows);
 
-#ifndef NDEBUG
     std::set<Index> row_all_dofs;
     std::set<Index> col_all_dofs;
-#endif
 
     Index j = 0;
     for (const auto &row_id_and_dofs : dofs_connectivity)
@@ -43,24 +41,16 @@ create_graph(const std::map<Index,std::set<Index>> &dofs_connectivity,
         const auto &col_dofs = row_id_and_dofs.second;
         n_dofs_per_row[j++] = col_dofs.size();
 
-#ifndef NDEBUG
         row_all_dofs.insert(row_id_and_dofs.first);
         col_all_dofs.insert(col_dofs.begin(),col_dofs.end());
-#endif
     }
+    const auto row_map = create_map(row_all_dofs,comm);
+    const auto col_map = create_map(col_all_dofs,comm);
 
-
-#ifndef NDEBUG
-    for (const auto &row_dof : row_all_dofs)
-        Assert(row_map.LID(row_dof) != -1,ExcMessage("DOF id " + std::to_string(row_dof) + " not present in the row map."));
-
-    for (const auto &col_dof : col_all_dofs)
-        Assert(col_map.LID(col_dof) != -1,ExcMessage("DOF id " + std::to_string(col_dof) + " not present in the column map."));
-#endif
 
     const bool is_static_profile = true;
     auto graph = std::make_shared<Graph>(Epetra_DataAccess::Copy,
-                                         row_map, col_map,
+                                         *row_map, *col_map,
                                          n_dofs_per_row.data(),
                                          is_static_profile);
 
@@ -71,7 +61,7 @@ create_graph(const std::map<Index,std::set<Index>> &dofs_connectivity,
         graph->InsertGlobalIndices(row_id, cols_id.size(), cols_id.data());
     }
 
-    int res = graph->FillComplete(col_map,row_map);
+    int res = graph->FillComplete(*col_map,*row_map);
     AssertThrow(res == 0, ExcMessage("Error raised by Epetra_CrsGraph::FillComplete()"));
 
     return graph;

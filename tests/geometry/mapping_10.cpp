@@ -53,7 +53,7 @@ void ig_mapping(const int deg = 1)
 
     auto space = Space::create(deg, grid);
 
-    auto c_p = EpetraTools::create_vector(*space, DofProperties::active);
+    auto c_p = EpetraTools::create_vector(*space, DofProperties::active,Epetra_SerialComm());
     auto &coeff = *c_p;
 
     coeff[0] = 1.;

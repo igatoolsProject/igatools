@@ -84,9 +84,9 @@ void Vector::print_info(LogStream &out) const
 
 
 VectorPtr
-create_vector(MapPtr map)
+create_vector(const Map &map)
 {
-    return std::make_shared<Vector>(*map);
+    return std::make_shared<Vector>(map);
 }
 
 };

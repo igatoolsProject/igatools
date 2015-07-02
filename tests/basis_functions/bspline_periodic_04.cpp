@@ -85,13 +85,10 @@ void assemble_matrix(const int n_knots, const int deg)
 
     auto f = ConstFunction::create(grid, IdentityFunction<dim>::create(grid), A, b);
 
-    Epetra_SerialComm comm;
-    auto map = create_map(*space, "active", comm);
-    auto graph = create_graph(*space, "active", *space, "active", *map, *map);
+    auto matrix = create_matrix(*space,DofProperties::active,Epetra_SerialComm());
+    auto rhs = create_vector(matrix->RangeMap());
+    auto solution = create_vector(matrix->DomainMap());
 
-    auto matrix = create_matrix(graph);
-    auto rhs = create_vector(map);
-    auto solution = create_vector(map);
 
     const QGauss<dim>  elem_quad(deg);
     auto elem_handler = space->get_elem_handler();

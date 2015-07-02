@@ -45,7 +45,7 @@ void non_contig_indices()
     const SafeSTLVector<Index> dofs_vec(dofs.begin(), dofs.end());
     Epetra_SerialComm comm;
     auto map = std::make_shared<Map>(-1, dofs_vec.size(), dofs_vec.data(), 0, comm);
-    auto vec = create_vector(map);
+    auto vec = create_vector(*map);
     out.begin_item("vec");
     vec->print_info(out);
     out.end_item();
@@ -60,7 +60,7 @@ void non_contig_indices()
     dof_distribution->set_all_dofs_property_status(DofProperties::active,false);
     dof_distribution->set_dof_property_status(DofProperties::active,dofs,true);
 
-    auto coeff = create_vector(*space, DofProperties::active);
+    auto coeff = create_vector(*space, DofProperties::active,comm);
     out.begin_item("coeff");
     coeff->print_info(out);
     out.end_item();

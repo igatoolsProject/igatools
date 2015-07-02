@@ -27,7 +27,7 @@ namespace EpetraTools
 
 MapPtr
 create_map(const std::set<Index> &dofs,
-           Comm &comm)
+           const Comm &comm)
 {
     SafeSTLVector<Index> dofs_vec(dofs.begin(), dofs.end());
     return std::make_shared<Map>(-1, dofs_vec.size(), dofs_vec.data(), 0, comm);

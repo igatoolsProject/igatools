@@ -44,12 +44,12 @@ void matrix_map(const int deg, const int n_knots)
 
     Epetra_SerialComm comm;
 
-    auto map = EpetraTools::create_map(*space, "active", comm);
-    auto graph = EpetraTools::create_graph(*space, "active", *space, "active",*map, *map);
+//    auto map = EpetraTools::create_map(*space, "active", comm);
+    auto graph = EpetraTools::create_graph(*space, "active", *space, "active",comm);
 
-    auto matrix = EpetraTools::create_matrix(graph);
-    auto SafeSTLVector = EpetraTools::create_vector(map);
-    auto sol = EpetraTools::create_vector(map);
+    auto matrix = EpetraTools::create_matrix(*graph);
+    auto rhs = EpetraTools::create_vector(matrix->RangeMap());
+    auto sol = EpetraTools::create_vector(matrix->DomainMap());
 
     auto quad = QGauss<dim>(2);
     auto flag = ValueFlags::value | ValueFlags::w_measure;
@@ -93,19 +93,19 @@ void matrix_map(const int deg, const int n_knots)
 
         const auto loc_dofs = elem->get_local_to_global("active");
         matrix->add_block(loc_dofs, loc_dofs, loc_mat);
-        SafeSTLVector->add_block(loc_dofs, loc_rhs);
+        rhs->add_block(loc_dofs, loc_rhs);
     }
 
     matrix->FillComplete();
 
-    auto solver = EpetraTools::create_solver(matrix, sol, SafeSTLVector);
+    auto solver = EpetraTools::create_solver(matrix, sol, rhs);
     auto result = solver->solve();
     AssertThrow(result == Belos::ReturnType::Converged,
                 ExcMessage("No convergence."));
     out << solver->getNumIters() << endl;
 
     matrix->print_info(out);
-    SafeSTLVector->print_info(out);
+    rhs->print_info(out);
     sol->print_info(out);
 
     OUTEND

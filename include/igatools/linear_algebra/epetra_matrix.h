@@ -52,7 +52,7 @@ using MatrixPtr = std::shared_ptr<Matrix>;
  * Creates a pointer to the matrix
  */
 MatrixPtr
-create_matrix(GraphPtr graph);
+create_matrix(const Graph &graph);
 
 
 /**
@@ -60,12 +60,9 @@ create_matrix(GraphPtr graph);
  */
 template<class Space>
 MatrixPtr
-create_matrix(const Space &space, const std::string &prop = DofProperties::active)
+create_matrix(const Space &space, const std::string &prop, const Epetra_SerialComm &comm)
 {
-    Epetra_SerialComm comm;
-    auto map = create_map(space, prop, comm);
-    auto graph = create_graph(space, prop, space, prop, *map, *map);
-    return std::make_shared<Matrix>(Epetra_DataAccess::Copy, *graph);
+    return create_matrix(*create_graph(space, prop, space, prop, comm));
 }
 
 };

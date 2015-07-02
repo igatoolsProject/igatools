@@ -36,7 +36,7 @@ void run_test()
     SafeSTLVector<Index> dofs_vec;
     Epetra_SerialComm comm;
     auto map = std::make_shared<Map>(-1, dofs_vec.size(), dofs_vec.data(), 0, comm);
-    auto vec = create_vector(map);
+    auto vec = create_vector(*map);
 
     vec->print_info(out);
     out << endl;

@@ -58,15 +58,13 @@ public:
 
 using VectorPtr = std::shared_ptr<Vector>;
 
-VectorPtr create_vector(MapPtr map);
+VectorPtr create_vector(const Map &map);
 
 template <class Space>
 VectorPtr
-create_vector(const Space &space, const std::string &prop = DofProperties::active)
+create_vector(const Space &space, const std::string &prop,const Comm &comm)
 {
-    Epetra_SerialComm comm;
-    auto map = EpetraTools::create_map(space, prop, comm);
-    return EpetraTools::create_vector(map);
+    return create_vector(*create_map(space, prop, comm));
 }
 
 };

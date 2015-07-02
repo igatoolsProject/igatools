@@ -175,35 +175,28 @@ void do_test()
     auto bsp_space_3_3 = BSplineSpace<3,3,1>::create(deg, grid_3);
     auto bsp_space_2_3 = BSplineSpace<2,3,1>::create(deg, grid_2);
 
-
     Epetra_SerialComm comm;
-    auto bsp_coeff_1_1 = EpetraTools::create_vector(
-                             EpetraTools::create_map(*bsp_space_1_1, "active", comm));
+    auto bsp_coeff_1_1 = EpetraTools::create_vector(*bsp_space_1_1,DofProperties::active,comm);
     (*bsp_coeff_1_1)[0] = 1.;
 
 
-    auto bsp_coeff_2_1 = EpetraTools::create_vector(
-                             EpetraTools::create_map(*bsp_space_2_1, "active", comm));
+    auto bsp_coeff_2_1 = EpetraTools::create_vector(*bsp_space_2_1,DofProperties::active,comm);
     (*bsp_coeff_2_1)[0] = 1.;
 
 
-    auto bsp_coeff_3_1 = EpetraTools::create_vector(
-                             EpetraTools::create_map(*bsp_space_3_1, "active", comm));
+    auto bsp_coeff_3_1 = EpetraTools::create_vector(*bsp_space_3_1,DofProperties::active,comm);
     (*bsp_coeff_3_1)[0] = 1.;
 
 
-    auto bsp_coeff_2_2 = EpetraTools::create_vector(
-                             EpetraTools::create_map(*bsp_space_2_2, "active", comm));
+    auto bsp_coeff_2_2 = EpetraTools::create_vector(*bsp_space_2_2,DofProperties::active,comm);
     (*bsp_coeff_2_2)[0] = 1.;
 
 
-    auto bsp_coeff_3_3 = EpetraTools::create_vector(
-                             EpetraTools::create_map(*bsp_space_3_3, "active", comm));
+    auto bsp_coeff_3_3 = EpetraTools::create_vector(*bsp_space_3_3,DofProperties::active,comm);
     (*bsp_coeff_3_3)[0] = 1.;
 
 
-    auto bsp_coeff_2_3 = EpetraTools::create_vector(
-                             EpetraTools::create_map(*bsp_space_2_3, "active", comm));
+    auto bsp_coeff_2_3 = EpetraTools::create_vector(*bsp_space_2_3,DofProperties::active,comm);
     (*bsp_coeff_2_3)[0] = 1.;
 
 
@@ -251,38 +244,31 @@ void do_test()
             bsp_space_2_3,
             bsp_func_2_3->clone());
 
-    auto phys_coeff_1_1_1_0 = EpetraTools::create_vector(
-                                  EpetraTools::create_map(*phys_space_1_1_1_0, "active", comm));
+    auto phys_coeff_1_1_1_0 = EpetraTools::create_vector(*phys_space_1_1_1_0,DofProperties::active,comm);
     (*phys_coeff_1_1_1_0)[0] = 1.;
 
 
-    auto phys_coeff_2_1_1_0 = EpetraTools::create_vector(
-                                  EpetraTools::create_map(*phys_space_2_1_1_0, "active", comm));
+    auto phys_coeff_2_1_1_0 = EpetraTools::create_vector(*phys_space_2_1_1_0,DofProperties::active,comm);
     (*phys_coeff_2_1_1_0)[0] = 1.;
 
 
-    auto phys_coeff_3_1_1_0 = EpetraTools::create_vector(
-                                  EpetraTools::create_map(*phys_space_3_1_1_0, "active", comm));
+    auto phys_coeff_3_1_1_0 = EpetraTools::create_vector(*phys_space_3_1_1_0,DofProperties::active,comm);
     (*phys_coeff_3_1_1_0)[0] = 1.;
 
 
-    auto phys_coeff_2_2_1_0 = EpetraTools::create_vector(
-                                  EpetraTools::create_map(*phys_space_2_2_1_0, "active", comm));
+    auto phys_coeff_2_2_1_0 = EpetraTools::create_vector(*phys_space_2_2_1_0,DofProperties::active,comm);
     (*phys_coeff_2_2_1_0)[0] = 1.;
 
 
-    auto phys_coeff_3_3_1_0 = EpetraTools::create_vector(
-                                  EpetraTools::create_map(*phys_space_3_3_1_0, "active", comm));
+    auto phys_coeff_3_3_1_0 = EpetraTools::create_vector(*phys_space_3_3_1_0,DofProperties::active,comm);
     (*phys_coeff_3_3_1_0)[0] = 1.;
 
 
-    auto phys_coeff_2_1_1_1 = EpetraTools::create_vector(
-                                  EpetraTools::create_map(*phys_space_2_1_1_1, "active", comm));
+    auto phys_coeff_2_1_1_1 = EpetraTools::create_vector(*phys_space_2_1_1_1,DofProperties::active,comm);
     (*phys_coeff_2_1_1_1)[0] = 1.;
 
 
-    auto phys_coeff_2_3_1_1 = EpetraTools::create_vector(
-                                  EpetraTools::create_map(*phys_space_2_3_1_1, "active", comm));
+    auto phys_coeff_2_3_1_1 = EpetraTools::create_vector(*phys_space_2_3_1_1,DofProperties::active,comm);
     (*phys_coeff_2_3_1_1)[0] = 1.;
 
     auto phys_func_1_1_1_0 = IgFunction<1,0,1,1>::create(phys_space_1_1_1_0,phys_coeff_1_1_1_0);

@@ -40,12 +40,10 @@ using GraphPtr = std::shared_ptr<Graph>;
  * The @p dofs_connectivity is a std:map in which the key is the global row id and the associated value
  * is a std::set containing the global columns id associated to the row.
  *
- * @note The global rows id and the global columns id must also be defined in the @p row_map and @p column_map respectively,
- * otherwise in Debug mode an assertion will be raised.
  */
 GraphPtr
 create_graph(const std::map<Index,std::set<Index>> &dofs_connectivity,
-             const Map &row_map, const Map &col_map);
+             const Comm &comm);
 
 
 
@@ -54,25 +52,8 @@ template<class RowSpace, class ColSpace>
 GraphPtr
 create_graph(const RowSpace &row_space, const std::string &row_property,
              const ColSpace &col_space, const std::string &col_property,
-             const Map &row_map, const Map &col_map)
+             const Comm &comm)
 {
-    /*
-    LogStream out;
-    out.begin_item("row space");
-    row_space->print_info(out);
-    out.end_item();
-    //*/
-    const auto n_rows = row_map.NumMyElements();
-    /*
-    out.begin_item("Dof dof_distribution_row_space");
-    dof_distribution_row_space->print_info(out);
-    out.end_item();
-    out << "Dof distribution n.dofs = " << dof_distribution_row_space->get_num_dofs(row_property) << std::endl;
-    out << "n_rows = " << n_rows << std::endl;
-    //*/
-    Assert(row_space.get_ptr_const_dof_distribution()->get_num_dofs(row_property) == n_rows,
-           ExcDimensionMismatch(row_space.get_ptr_const_dof_distribution()->get_num_dofs(row_property),n_rows));
-
     std::map<Index,std::set<Index>> dofs_connectivity;
     auto r_elem = row_space.begin();
     auto c_elem = col_space.begin();
@@ -85,7 +66,7 @@ create_graph(const RowSpace &row_space, const std::string &row_property,
             dofs_connectivity[r_dof].insert(c_dofs.begin(),c_dofs.end());
     }
 
-    return create_graph(dofs_connectivity,row_map,col_map);
+    return create_graph(dofs_connectivity,comm);
 }
 
 };

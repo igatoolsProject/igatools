@@ -78,9 +78,9 @@ void Matrix::print_info(LogStream &out) const
 
 
 MatrixPtr
-create_matrix(GraphPtr graph)
+create_matrix(const Graph &graph)
 {
-    return std::make_shared<Matrix>(Epetra_DataAccess::Copy, *graph);
+    return std::make_shared<Matrix>(Epetra_DataAccess::Copy, graph);
 }
 
 
