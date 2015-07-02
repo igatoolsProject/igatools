@@ -34,6 +34,9 @@
 
 IGA_NAMESPACE_OPEN
 
+/**
+ * @brief This namespace contains some basic tools/interfaces for the creations of Trilinos/Epetra objects.
+ */
 namespace EpetraTools
 {
 using Comm = Epetra_Comm;
@@ -49,6 +52,10 @@ using MapPtr = std::shared_ptr<Map>;
 MapPtr
 create_map(const std::set<Index> &dofs,Comm &comm);
 
+/**
+ * Create an Epetra_Map object (wrapped by a shared pointer) from a @p space and the @p dofs_property
+ * used to extract the dofs from the space.
+ */
 template<class Space>
 MapPtr create_map(const Space &space,
                   const std::string &property,
