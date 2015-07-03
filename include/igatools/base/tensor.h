@@ -1223,11 +1223,12 @@ template< class T >
 Real
 trace(const T &A)
 {
+    //TODO (martinelli, July 03, 2015): check the implementation!
     Assert((T::dim == T::value_t::dim) || (T::rank==2),
            ExcMessage("Only for square tensors."));
     Real res = 0.;
     for (int i = 0; i < T::dim; ++i)
-        res += A[i][i];
+        res += A[i][i][0];
     return res;
 }
 
