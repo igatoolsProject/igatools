@@ -349,15 +349,16 @@ private:
 };
 
 /**
- * Given evaluation points on a dim dimensional face, of a dim+1
- * domain, this functions creates an extended dimension
+ * Given evaluation points on a <tt>sub_dim</tt>-dimensional face (with id <tt>sub_elem_id</tt>),
+ * of a <tt>dim</tt>-dimensional domain,
+ * this functions creates an extended dimension
  * version of this points applicable to the volume.
  *
  * @relates Quadrature
  */
-template<int k, int dim>
+template<int sub_dim, int dim>
 Quadrature<dim>
-extend_sub_elem_quad(const Quadrature<k> &quad, const int sub_elem_id);
+extend_sub_elem_quad(const Quadrature<sub_dim> &quad, const int sub_elem_id);
 
 IGA_NAMESPACE_CLOSE
 

@@ -444,17 +444,14 @@ collapse_to_sub_element(const int sub_elem_id) const -> Quadrature<dim_>
 
 
 
-template<int k, int dim>
+template<int sub_dim, int dim>
 Quadrature<dim>
-extend_sub_elem_quad(const Quadrature<k> &eval_pts,
-                     const int sub_elem_id)
+extend_sub_elem_quad(const Quadrature<sub_dim> &eval_pts,const int sub_elem_id)
 {
-
-    Assert(eval_pts.is_tensor_product(), ExcNotImplemented());
     using WeightArray = typename Quadrature<dim>::WeightArray;
     using PointArray = typename Quadrature<dim>::PointArray;
 
-    auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
+    auto &subdim_elem = UnitElement<dim>::template get_elem<sub_dim>(sub_elem_id);
 
     PointArray new_coords_1d;
     WeightArray new_weights_1d;
@@ -463,23 +460,24 @@ extend_sub_elem_quad(const Quadrature<k> &eval_pts,
     const auto &old_weights_1d = eval_pts.get_weights_1d();
     const auto &old_points_1d = eval_pts.get_points_1d();
 
-    const int n_dir = k_elem.constant_directions.size();
-    for (int j = 0 ; j < n_dir ; ++j)
+    const int n_new_dirs = subdim_elem.constant_directions.size();
+
+    const int n_points_new_dir = eval_pts.is_tensor_product() ? 1 : eval_pts.get_num_points();
+    for (int j = 0 ; j < n_new_dirs ; ++j)
     {
-        const auto dir = k_elem.constant_directions[j];
-        const auto val = k_elem.constant_values[j];
-        new_coords_1d.copy_data_direction(dir, SafeSTLVector<Real>(1, val));
-        new_weights_1d.copy_data_direction(dir, SafeSTLVector<Real>(1, 1.));
+        const auto dir = subdim_elem.constant_directions[j];
+        const auto val = subdim_elem.constant_values[j];
+        new_coords_1d.copy_data_direction(dir, SafeSTLVector<Real>(n_points_new_dir, val));
+        new_weights_1d.copy_data_direction(dir, SafeSTLVector<Real>(n_points_new_dir, 1.));
 
     }
     int ind = 0;
-    for (auto i : k_elem.active_directions)
+    for (auto i : subdim_elem.active_directions)
     {
         new_coords_1d.copy_data_direction(i, old_points_1d.get_data_direction(ind));
         new_weights_1d.copy_data_direction(i, old_weights_1d.get_data_direction(ind));
         ++ind;
     }
-
 
     return Quadrature<dim>(new_coords_1d, new_weights_1d);
 }
