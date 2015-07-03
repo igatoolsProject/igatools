@@ -52,10 +52,17 @@ public :
 
     /**
      * The i-th vector of the the array is initialized to be
-     * of size size[i], calling the default constructor of T for
+     * of size <tt>size[i]</tt>, calling the default constructor of T for
      * each entry of the vectors.
      */
     explicit TensorProductArray(const TensorSize<rank> &size);
+
+    /**
+     * The i-th vector of the the array is initialized to be
+     * of size <tt>size[i]</tt>,
+     * and to each entry of the vectors is given the value @p val.
+     */
+    explicit TensorProductArray(const TensorSize<rank> size, const Real &val);
 
     /**
      * Same as CartesianProductArray(const array< int, rank > size)

@@ -37,6 +37,13 @@ TensorProductArray(const TensorSize<rank> &size)
 
 template<int rank>
 TensorProductArray<rank>::
+TensorProductArray(const TensorSize<rank> size, const Real &val)
+    :
+    CartesianProductArray<Real,rank>(size,val)
+{}
+
+template<int rank>
+TensorProductArray<rank>::
 TensorProductArray(const Size size)
     :
     CartesianProductArray<Real,rank>(size)
@@ -48,6 +55,8 @@ TensorProductArray(const CartesianProductArray<Real,rank> &data)
     :
     CartesianProductArray<Real,rank>(data)
 {}
+
+
 
 template<int rank>
 void

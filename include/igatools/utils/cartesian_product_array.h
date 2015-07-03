@@ -100,11 +100,18 @@ public:
     /**
      * Construct a rank-dimensional CartesianProductArray where the
      * the i-th direction is initialized to be
-     * of size size[i], calling the default constructor of T for
+     * of size <tt>size[i]</tt>, calling the default constructor of T for
      * each entry of the vectors.
      */
     explicit CartesianProductArray(const TensorSize<rank> size);
 
+
+    /**
+     * Constructor. Construct a rank-dimensional CartesianProductArray where the
+     * the i-th direction is initialized to be
+     * of size <tt>size[i]</tt>,
+     * and to each entry is assigned the value @p val
+     */
     CartesianProductArray(const TensorSize<rank> size, const T &val);
 
     /**

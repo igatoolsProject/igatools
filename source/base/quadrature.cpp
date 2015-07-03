@@ -92,9 +92,9 @@ Quadrature(const ValueVector<Point> &pts)
 {
     const int n_pts = pts.size();
     TensorSize<dim_> size(n_pts);
-    WeightArray weights_1d(size);
+    WeightArray weights_1d(size,1.0);
 
-    Assert(false, ExcMessage("put weight to 1"));
+//    Assert(false, ExcMessage("put weight to 1"));
     this->reset_points_points_1d_and_weights(pts,weights_1d);
 }
 
