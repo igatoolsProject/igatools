@@ -23,6 +23,12 @@ Original FunctionsContainer:
                               [ ]
                            
                            
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                           
                         
                         Quadrature cache for dimension: 1
                            Number of points:0
@@ -39,6 +45,14 @@ Original FunctionsContainer:
                               ValueVector (num_points=0) :
                               [ ]
                            
+                           
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
                            
                         
                      
@@ -75,6 +89,12 @@ Original FunctionsContainer:
                               [ ]
                            
                            
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                           
                         
                         Quadrature cache for dimension: 1
                            Number of points:0
@@ -91,6 +111,14 @@ Original FunctionsContainer:
                               ValueVector (num_points=0) :
                               [ ]
                            
+                           
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
                            
                         
                      
@@ -248,6 +276,14 @@ Original FunctionsContainer:
                               [ ]
                            
                            
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                           
                         
                         Quadrature cache for dimension: 2
                            Number of points:0
@@ -266,6 +302,16 @@ Original FunctionsContainer:
                               ValueVector (num_points=0) :
                               [ ]
                            
+                           
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                              Entry id: 1
+                              [ 0 1.00000 ]
                            
                         
                      
@@ -304,6 +350,14 @@ Original FunctionsContainer:
                               [ ]
                            
                            
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                           
                         
                         Quadrature cache for dimension: 2
                            Number of points:0
@@ -322,6 +376,16 @@ Original FunctionsContainer:
                               ValueVector (num_points=0) :
                               [ ]
                            
+                           
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                              Entry id: 1
+                              [ 0 1.00000 ]
                            
                         
                      
@@ -539,6 +603,14 @@ Original FunctionsContainer:
                               [ ]
                            
                            
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                           
                         
                         Quadrature cache for dimension: 2
                            Number of points:0
@@ -557,6 +629,16 @@ Original FunctionsContainer:
                               ValueVector (num_points=0) :
                               [ ]
                            
+                           
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                              Entry id: 1
+                              [ 0 1.00000 ]
                            
                         
                      
@@ -778,6 +860,14 @@ Original FunctionsContainer:
                               [ ]
                            
                            
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                           
                         
                         Quadrature cache for dimension: 2
                            Number of points:0
@@ -796,6 +886,16 @@ Original FunctionsContainer:
                               ValueVector (num_points=0) :
                               [ ]
                            
+                           
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                              Entry id: 1
+                              [ 0 1.00000 ]
                            
                         
                      
@@ -1060,6 +1160,14 @@ Original FunctionsContainer:
                               [ ]
                            
                            
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                           
                         
                         Quadrature cache for dimension: 2
                            Number of points:0
@@ -1078,6 +1186,16 @@ Original FunctionsContainer:
                               ValueVector (num_points=0) :
                               [ ]
                            
+                           
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                              Entry id: 1
+                              [ 0 1.00000 ]
                            
                         
                      
@@ -1350,6 +1468,16 @@ Original FunctionsContainer:
                               [ ]
                            
                            
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                              Entry id: 1
+                              [ 0 1.00000 ]
+                           
                         
                         Quadrature cache for dimension: 3
                            Number of points:0
@@ -1370,6 +1498,18 @@ Original FunctionsContainer:
                               ValueVector (num_points=0) :
                               [ ]
                            
+                           
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                              Entry id: 1
+                              [ 0 1.00000 ]
+                              Entry id: 2
+                              [ 0 1.00000 ]
                            
                         
                      
@@ -1410,6 +1550,16 @@ Original FunctionsContainer:
                               [ ]
                            
                            
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                              Entry id: 1
+                              [ 0 1.00000 ]
+                           
                         
                         Quadrature cache for dimension: 3
                            Number of points:0
@@ -1430,6 +1580,18 @@ Original FunctionsContainer:
                               ValueVector (num_points=0) :
                               [ ]
                            
+                           
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                              Entry id: 1
+                              [ 0 1.00000 ]
+                              Entry id: 2
+                              [ 0 1.00000 ]
                            
                         
                      
@@ -2013,6 +2175,16 @@ Original FunctionsContainer:
                               [ ]
                            
                            
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                              Entry id: 1
+                              [ 0 1.00000 ]
+                           
                         
                         Quadrature cache for dimension: 3
                            Number of points:0
@@ -2033,6 +2205,18 @@ Original FunctionsContainer:
                               ValueVector (num_points=0) :
                               [ ]
                            
+                           
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                              Entry id: 1
+                              [ 0 1.00000 ]
+                              Entry id: 2
+                              [ 0 1.00000 ]
                            
                         
                      
@@ -2620,6 +2804,12 @@ FunctionsContainer after serialize-deserialize:
                               [ ]
                            
                            
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                           
                         
                         Quadrature cache for dimension: 1
                            Number of points:0
@@ -2636,6 +2826,14 @@ FunctionsContainer after serialize-deserialize:
                               ValueVector (num_points=0) :
                               [ ]
                            
+                           
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
                            
                         
                      
@@ -2672,6 +2870,12 @@ FunctionsContainer after serialize-deserialize:
                               [ ]
                            
                            
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                           
                         
                         Quadrature cache for dimension: 1
                            Number of points:0
@@ -2688,6 +2892,14 @@ FunctionsContainer after serialize-deserialize:
                               ValueVector (num_points=0) :
                               [ ]
                            
+                           
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
                            
                         
                      
@@ -2845,6 +3057,14 @@ FunctionsContainer after serialize-deserialize:
                               [ ]
                            
                            
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                           
                         
                         Quadrature cache for dimension: 2
                            Number of points:0
@@ -2863,6 +3083,16 @@ FunctionsContainer after serialize-deserialize:
                               ValueVector (num_points=0) :
                               [ ]
                            
+                           
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                              Entry id: 1
+                              [ 0 1.00000 ]
                            
                         
                      
@@ -2901,6 +3131,14 @@ FunctionsContainer after serialize-deserialize:
                               [ ]
                            
                            
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                           
                         
                         Quadrature cache for dimension: 2
                            Number of points:0
@@ -2919,6 +3157,16 @@ FunctionsContainer after serialize-deserialize:
                               ValueVector (num_points=0) :
                               [ ]
                            
+                           
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                              Entry id: 1
+                              [ 0 1.00000 ]
                            
                         
                      
@@ -3136,6 +3384,14 @@ FunctionsContainer after serialize-deserialize:
                               [ ]
                            
                            
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                           
                         
                         Quadrature cache for dimension: 2
                            Number of points:0
@@ -3154,6 +3410,16 @@ FunctionsContainer after serialize-deserialize:
                               ValueVector (num_points=0) :
                               [ ]
                            
+                           
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                              Entry id: 1
+                              [ 0 1.00000 ]
                            
                         
                      
@@ -3375,6 +3641,14 @@ FunctionsContainer after serialize-deserialize:
                               [ ]
                            
                            
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                           
                         
                         Quadrature cache for dimension: 2
                            Number of points:0
@@ -3393,6 +3667,16 @@ FunctionsContainer after serialize-deserialize:
                               ValueVector (num_points=0) :
                               [ ]
                            
+                           
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                              Entry id: 1
+                              [ 0 1.00000 ]
                            
                         
                      
@@ -3657,6 +3941,14 @@ FunctionsContainer after serialize-deserialize:
                               [ ]
                            
                            
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                           
                         
                         Quadrature cache for dimension: 2
                            Number of points:0
@@ -3675,6 +3967,16 @@ FunctionsContainer after serialize-deserialize:
                               ValueVector (num_points=0) :
                               [ ]
                            
+                           
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                              Entry id: 1
+                              [ 0 1.00000 ]
                            
                         
                      
@@ -3947,6 +4249,16 @@ FunctionsContainer after serialize-deserialize:
                               [ ]
                            
                            
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                              Entry id: 1
+                              [ 0 1.00000 ]
+                           
                         
                         Quadrature cache for dimension: 3
                            Number of points:0
@@ -3967,6 +4279,18 @@ FunctionsContainer after serialize-deserialize:
                               ValueVector (num_points=0) :
                               [ ]
                            
+                           
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                              Entry id: 1
+                              [ 0 1.00000 ]
+                              Entry id: 2
+                              [ 0 1.00000 ]
                            
                         
                      
@@ -4007,6 +4331,16 @@ FunctionsContainer after serialize-deserialize:
                               [ ]
                            
                            
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                              Entry id: 1
+                              [ 0 1.00000 ]
+                           
                         
                         Quadrature cache for dimension: 3
                            Number of points:0
@@ -4027,6 +4361,18 @@ FunctionsContainer after serialize-deserialize:
                               ValueVector (num_points=0) :
                               [ ]
                            
+                           
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                              Entry id: 1
+                              [ 0 1.00000 ]
+                              Entry id: 2
+                              [ 0 1.00000 ]
                            
                         
                      
@@ -4610,6 +4956,16 @@ FunctionsContainer after serialize-deserialize:
                               [ ]
                            
                            
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                              Entry id: 1
+                              [ 0 1.00000 ]
+                           
                         
                         Quadrature cache for dimension: 3
                            Number of points:0
@@ -4630,6 +4986,18 @@ FunctionsContainer after serialize-deserialize:
                               ValueVector (num_points=0) :
                               [ ]
                            
+                           
+                           Is tensor product: FALSE
+                           
+                           Map points id --- coordinates id:
+                           
+                           Bounding box:
+                              Entry id: 0
+                              [ 0 1.00000 ]
+                              Entry id: 1
+                              [ 0 1.00000 ]
+                              Entry id: 2
+                              [ 0 1.00000 ]
                            
                         
                      
@@ -5218,6 +5586,14 @@ Mappings with dimension 2 and codimension 0:
                      [ ]
                   
                   
+                  Is tensor product: FALSE
+                  
+                  Map points id --- coordinates id:
+                  
+                  Bounding box:
+                     Entry id: 0
+                     [ 0 1.00000 ]
+                  
                
                Quadrature cache for dimension: 2
                   Number of points:4
@@ -5236,6 +5612,24 @@ Mappings with dimension 2 and codimension 0:
                      ValueVector (num_points=4) :
                      [ [ 0 0 ]  [ 1.00000 0 ]  [ 0 1.00000 ]  [ 1.00000 1.00000 ]  ]
                   
+                  
+                  Is tensor product: TRUE
+                  
+                  Map points id --- coordinates id:
+                     Entry id: 0
+                     [ 0 0 ]
+                     Entry id: 1
+                     [ 1 0 ]
+                     Entry id: 2
+                     [ 0 1 ]
+                     Entry id: 3
+                     [ 1 1 ]
+                  
+                  Bounding box:
+                     Entry id: 0
+                     [ 0 1.00000 ]
+                     Entry id: 1
+                     [ 0 1.00000 ]
                   
                
             
@@ -5265,6 +5659,14 @@ Mappings with dimension 2 and codimension 0:
                      [ ]
                   
                   
+                  Is tensor product: FALSE
+                  
+                  Map points id --- coordinates id:
+                  
+                  Bounding box:
+                     Entry id: 0
+                     [ 0 1.00000 ]
+                  
                
                Quadrature cache for dimension: 2
                   Number of points:4
@@ -5283,6 +5685,24 @@ Mappings with dimension 2 and codimension 0:
                      ValueVector (num_points=4) :
                      [ [ 0 0 ]  [ 1.00000 0 ]  [ 0 1.00000 ]  [ 1.00000 1.00000 ]  ]
                   
+                  
+                  Is tensor product: TRUE
+                  
+                  Map points id --- coordinates id:
+                     Entry id: 0
+                     [ 0 0 ]
+                     Entry id: 1
+                     [ 1 0 ]
+                     Entry id: 2
+                     [ 0 1 ]
+                     Entry id: 3
+                     [ 1 1 ]
+                  
+                  Bounding box:
+                     Entry id: 0
+                     [ 0 1.00000 ]
+                     Entry id: 1
+                     [ 0 1.00000 ]
                   
                
             
@@ -5466,9 +5886,8 @@ Mappings with dimension 2 and codimension 0:
          
       
    
-   Mapping[1]   name= map_2_1_1_0
+   Mapping[1]   name= map_2_2_1_0
    Functions<2,0,1,1>:
-      Function[0]   ID:48   name= phys_func_2_1_1_0
    
    Mapping before iterators
       IgFunction<2,0,2,1>
@@ -5490,6 +5909,14 @@ Mappings with dimension 2 and codimension 0:
                      [ ]
                   
                   
+                  Is tensor product: FALSE
+                  
+                  Map points id --- coordinates id:
+                  
+                  Bounding box:
+                     Entry id: 0
+                     [ 0 1.00000 ]
+                  
                
                Quadrature cache for dimension: 2
                   Number of points:4
@@ -5508,6 +5935,24 @@ Mappings with dimension 2 and codimension 0:
                      ValueVector (num_points=4) :
                      [ [ 0 0 ]  [ 1.00000 0 ]  [ 0 1.00000 ]  [ 1.00000 1.00000 ]  ]
                   
+                  
+                  Is tensor product: TRUE
+                  
+                  Map points id --- coordinates id:
+                     Entry id: 0
+                     [ 0 0 ]
+                     Entry id: 1
+                     [ 1 0 ]
+                     Entry id: 2
+                     [ 0 1 ]
+                     Entry id: 3
+                     [ 1 1 ]
+                  
+                  Bounding box:
+                     Entry id: 0
+                     [ 0 1.00000 ]
+                     Entry id: 1
+                     [ 0 1.00000 ]
                   
                
             
@@ -5691,11 +6136,85 @@ Mappings with dimension 2 and codimension 0:
          
       
    
-   Mapping[2]   name= map_2_2_1_0
+   Mapping[2]   name= map_2_1_1_0
    Functions<2,0,1,1>:
+      Function[0]   ID:48   name= phys_func_2_1_1_0
    
    Inside deserialize_only()
       Mappings with dimension 2 and codimension 0:
+         Mapping before iterators
+            IdentityFunction<2,2>
+               Function<2,0,2,1>
+                  Quadrature cache for all dimensions:
+                     Quadrature cache for dimension: 1
+                        Number of points:0
+                        Weights:
+                           ValueVector (num_points=0) :
+                           [ ]
+                        
+                        
+                        Coordinates:
+                           Direction: 0
+                           [ ]
+                        
+                        Points:
+                           ValueVector (num_points=0) :
+                           [ ]
+                        
+                        
+                        Is tensor product: FALSE
+                        
+                        Map points id --- coordinates id:
+                        
+                        Bounding box:
+                           Entry id: 0
+                           [ 0 1.00000 ]
+                        
+                     
+                     Quadrature cache for dimension: 2
+                        Number of points:4
+                        Weights:
+                           ValueVector (num_points=4) :
+                           [ 0.250000 0.250000 0.250000 0.250000 ]
+                        
+                        
+                        Coordinates:
+                           Direction: 0
+                           [ 0 1.00000 ]
+                           Direction: 1
+                           [ 0 1.00000 ]
+                        
+                        Points:
+                           ValueVector (num_points=4) :
+                           [ [ 0 0 ]  [ 1.00000 0 ]  [ 0 1.00000 ]  [ 1.00000 1.00000 ]  ]
+                        
+                        
+                        Is tensor product: TRUE
+                        
+                        Map points id --- coordinates id:
+                           Entry id: 0
+                           [ 0 0 ]
+                           Entry id: 1
+                           [ 1 0 ]
+                           Entry id: 2
+                           [ 0 1 ]
+                           Entry id: 3
+                           [ 1 1 ]
+                        
+                        Bounding box:
+                           Entry id: 0
+                           [ 0 1.00000 ]
+                           Entry id: 1
+                           [ 0 1.00000 ]
+                        
+                     
+                  
+               
+            
+         
+         Mapping[0]   name= map_identity_2_2
+         Functions<2,0,1,1>:
+         
          Mapping before iterators
             IgFunction<2,0,2,1>
                Function<2,0,2,1>
@@ -5716,6 +6235,14 @@ Mappings with dimension 2 and codimension 0:
                            [ ]
                         
                         
+                        Is tensor product: FALSE
+                        
+                        Map points id --- coordinates id:
+                        
+                        Bounding box:
+                           Entry id: 0
+                           [ 0 1.00000 ]
+                        
                      
                      Quadrature cache for dimension: 2
                         Number of points:4
@@ -5734,6 +6261,24 @@ Mappings with dimension 2 and codimension 0:
                            ValueVector (num_points=4) :
                            [ [ 0 0 ]  [ 1.00000 0 ]  [ 0 1.00000 ]  [ 1.00000 1.00000 ]  ]
                         
+                        
+                        Is tensor product: TRUE
+                        
+                        Map points id --- coordinates id:
+                           Entry id: 0
+                           [ 0 0 ]
+                           Entry id: 1
+                           [ 1 0 ]
+                           Entry id: 2
+                           [ 0 1 ]
+                           Entry id: 3
+                           [ 1 1 ]
+                        
+                        Bounding box:
+                           Entry id: 0
+                           [ 0 1.00000 ]
+                           Entry id: 1
+                           [ 0 1.00000 ]
                         
                      
                   
@@ -5917,54 +6462,7 @@ Mappings with dimension 2 and codimension 0:
                
             
          
-         Mapping[0]   name= map_2_2_1_0
-         Functions<2,0,1,1>:
-         
-         Mapping before iterators
-            IdentityFunction<2,2>
-               Function<2,0,2,1>
-                  Quadrature cache for all dimensions:
-                     Quadrature cache for dimension: 1
-                        Number of points:0
-                        Weights:
-                           ValueVector (num_points=0) :
-                           [ ]
-                        
-                        
-                        Coordinates:
-                           Direction: 0
-                           [ ]
-                        
-                        Points:
-                           ValueVector (num_points=0) :
-                           [ ]
-                        
-                        
-                     
-                     Quadrature cache for dimension: 2
-                        Number of points:4
-                        Weights:
-                           ValueVector (num_points=4) :
-                           [ 0.250000 0.250000 0.250000 0.250000 ]
-                        
-                        
-                        Coordinates:
-                           Direction: 0
-                           [ 0 1.00000 ]
-                           Direction: 1
-                           [ 0 1.00000 ]
-                        
-                        Points:
-                           ValueVector (num_points=4) :
-                           [ [ 0 0 ]  [ 1.00000 0 ]  [ 0 1.00000 ]  [ 1.00000 1.00000 ]  ]
-                        
-                        
-                     
-                  
-               
-            
-         
-         Mapping[1]   name= map_identity_2_2
+         Mapping[1]   name= map_2_2_1_0
          Functions<2,0,1,1>:
          
          Mapping before iterators
@@ -5987,6 +6485,14 @@ Mappings with dimension 2 and codimension 0:
                            [ ]
                         
                         
+                        Is tensor product: FALSE
+                        
+                        Map points id --- coordinates id:
+                        
+                        Bounding box:
+                           Entry id: 0
+                           [ 0 1.00000 ]
+                        
                      
                      Quadrature cache for dimension: 2
                         Number of points:4
@@ -6005,6 +6511,24 @@ Mappings with dimension 2 and codimension 0:
                            ValueVector (num_points=4) :
                            [ [ 0 0 ]  [ 1.00000 0 ]  [ 0 1.00000 ]  [ 1.00000 1.00000 ]  ]
                         
+                        
+                        Is tensor product: TRUE
+                        
+                        Map points id --- coordinates id:
+                           Entry id: 0
+                           [ 0 0 ]
+                           Entry id: 1
+                           [ 1 0 ]
+                           Entry id: 2
+                           [ 0 1 ]
+                           Entry id: 3
+                           [ 1 1 ]
+                        
+                        Bounding box:
+                           Entry id: 0
+                           [ 0 1.00000 ]
+                           Entry id: 1
+                           [ 0 1.00000 ]
                         
                      
                   

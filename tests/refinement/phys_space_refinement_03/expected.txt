@@ -147,6 +147,14 @@ Reference space:
                      [ ]
                   
                   
+                  Is tensor product: FALSE
+                  
+                  Map points id --- coordinates id:
+                  
+                  Bounding box:
+                     Entry id: 0
+                     [ 0 1.00000 ]
+                  
                
                Quadrature cache for dimension: 2
                   Number of points:0
@@ -165,6 +173,16 @@ Reference space:
                      ValueVector (num_points=0) :
                      [ ]
                   
+                  
+                  Is tensor product: FALSE
+                  
+                  Map points id --- coordinates id:
+                  
+                  Bounding box:
+                     Entry id: 0
+                     [ 0 1.00000 ]
+                     Entry id: 1
+                     [ 0 1.00000 ]
                   
                
             
@@ -313,6 +331,14 @@ Map function:
                   [ ]
                
                
+               Is tensor product: FALSE
+               
+               Map points id --- coordinates id:
+               
+               Bounding box:
+                  Entry id: 0
+                  [ 0 1.00000 ]
+               
             
             Quadrature cache for dimension: 2
                Number of points:0
@@ -331,6 +357,16 @@ Map function:
                   ValueVector (num_points=0) :
                   [ ]
                
+               
+               Is tensor product: FALSE
+               
+               Map points id --- coordinates id:
+               
+               Bounding box:
+                  Entry id: 0
+                  [ 0 1.00000 ]
+                  Entry id: 1
+                  [ 0 1.00000 ]
                
             
          
@@ -480,6 +516,14 @@ Map function:
                            [ ]
                         
                         
+                        Is tensor product: FALSE
+                        
+                        Map points id --- coordinates id:
+                        
+                        Bounding box:
+                           Entry id: 0
+                           [ 0 1.00000 ]
+                        
                      
                      Quadrature cache for dimension: 2
                         Number of points:0
@@ -498,6 +542,16 @@ Map function:
                            ValueVector (num_points=0) :
                            [ ]
                         
+                        
+                        Is tensor product: FALSE
+                        
+                        Map points id --- coordinates id:
+                        
+                        Bounding box:
+                           Entry id: 0
+                           [ 0 1.00000 ]
+                           Entry id: 1
+                           [ 0 1.00000 ]
                         
                      
                   
@@ -820,6 +874,14 @@ Reference space:
                      [ ]
                   
                   
+                  Is tensor product: FALSE
+                  
+                  Map points id --- coordinates id:
+                  
+                  Bounding box:
+                     Entry id: 0
+                     [ 0 1.00000 ]
+                  
                
                Quadrature cache for dimension: 2
                   Number of points:9
@@ -838,6 +900,34 @@ Reference space:
                      ValueVector (num_points=9) :
                      [ [ 0.112702 0.112702 ]  [ 0.500000 0.112702 ]  [ 0.887298 0.112702 ]  [ 0.112702 0.500000 ]  [ 0.500000 0.500000 ]  [ 0.887298 0.500000 ]  [ 0.112702 0.887298 ]  [ 0.500000 0.887298 ]  [ 0.887298 0.887298 ]  ]
                   
+                  
+                  Is tensor product: TRUE
+                  
+                  Map points id --- coordinates id:
+                     Entry id: 0
+                     [ 0 0 ]
+                     Entry id: 1
+                     [ 1 0 ]
+                     Entry id: 2
+                     [ 2 0 ]
+                     Entry id: 3
+                     [ 0 1 ]
+                     Entry id: 4
+                     [ 1 1 ]
+                     Entry id: 5
+                     [ 2 1 ]
+                     Entry id: 6
+                     [ 0 2 ]
+                     Entry id: 7
+                     [ 1 2 ]
+                     Entry id: 8
+                     [ 2 2 ]
+                  
+                  Bounding box:
+                     Entry id: 0
+                     [ 0 1.00000 ]
+                     Entry id: 1
+                     [ 0 1.00000 ]
                   
                
             
@@ -1010,6 +1100,14 @@ Map function:
                   [ ]
                
                
+               Is tensor product: FALSE
+               
+               Map points id --- coordinates id:
+               
+               Bounding box:
+                  Entry id: 0
+                  [ 0 1.00000 ]
+               
             
             Quadrature cache for dimension: 2
                Number of points:0
@@ -1028,6 +1126,16 @@ Map function:
                   ValueVector (num_points=0) :
                   [ ]
                
+               
+               Is tensor product: FALSE
+               
+               Map points id --- coordinates id:
+               
+               Bounding box:
+                  Entry id: 0
+                  [ 0 1.00000 ]
+                  Entry id: 1
+                  [ 0 1.00000 ]
                
             
          
@@ -1185,6 +1293,14 @@ Map function:
                            [ ]
                         
                         
+                        Is tensor product: FALSE
+                        
+                        Map points id --- coordinates id:
+                        
+                        Bounding box:
+                           Entry id: 0
+                           [ 0 1.00000 ]
+                        
                      
                      Quadrature cache for dimension: 2
                         Number of points:9
@@ -1203,6 +1319,34 @@ Map function:
                            ValueVector (num_points=9) :
                            [ [ 0.112702 0.112702 ]  [ 0.500000 0.112702 ]  [ 0.887298 0.112702 ]  [ 0.112702 0.500000 ]  [ 0.500000 0.500000 ]  [ 0.887298 0.500000 ]  [ 0.112702 0.887298 ]  [ 0.500000 0.887298 ]  [ 0.887298 0.887298 ]  ]
                         
+                        
+                        Is tensor product: TRUE
+                        
+                        Map points id --- coordinates id:
+                           Entry id: 0
+                           [ 0 0 ]
+                           Entry id: 1
+                           [ 1 0 ]
+                           Entry id: 2
+                           [ 2 0 ]
+                           Entry id: 3
+                           [ 0 1 ]
+                           Entry id: 4
+                           [ 1 1 ]
+                           Entry id: 5
+                           [ 2 1 ]
+                           Entry id: 6
+                           [ 0 2 ]
+                           Entry id: 7
+                           [ 1 2 ]
+                           Entry id: 8
+                           [ 2 2 ]
+                        
+                        Bounding box:
+                           Entry id: 0
+                           [ 0 1.00000 ]
+                           Entry id: 1
+                           [ 0 1.00000 ]
                         
                      
                   
@@ -1621,6 +1765,14 @@ Reference space:
                      [ ]
                   
                   
+                  Is tensor product: FALSE
+                  
+                  Map points id --- coordinates id:
+                  
+                  Bounding box:
+                     Entry id: 0
+                     [ 0 1.00000 ]
+                  
                
                Quadrature cache for dimension: 2
                   Number of points:9
@@ -1639,6 +1791,34 @@ Reference space:
                      ValueVector (num_points=9) :
                      [ [ 0.112702 0.112702 ]  [ 0.500000 0.112702 ]  [ 0.887298 0.112702 ]  [ 0.112702 0.500000 ]  [ 0.500000 0.500000 ]  [ 0.887298 0.500000 ]  [ 0.112702 0.887298 ]  [ 0.500000 0.887298 ]  [ 0.887298 0.887298 ]  ]
                   
+                  
+                  Is tensor product: TRUE
+                  
+                  Map points id --- coordinates id:
+                     Entry id: 0
+                     [ 0 0 ]
+                     Entry id: 1
+                     [ 1 0 ]
+                     Entry id: 2
+                     [ 2 0 ]
+                     Entry id: 3
+                     [ 0 1 ]
+                     Entry id: 4
+                     [ 1 1 ]
+                     Entry id: 5
+                     [ 2 1 ]
+                     Entry id: 6
+                     [ 0 2 ]
+                     Entry id: 7
+                     [ 1 2 ]
+                     Entry id: 8
+                     [ 2 2 ]
+                  
+                  Bounding box:
+                     Entry id: 0
+                     [ 0 1.00000 ]
+                     Entry id: 1
+                     [ 0 1.00000 ]
                   
                
             
@@ -1987,6 +2167,14 @@ Map function:
                   [ ]
                
                
+               Is tensor product: FALSE
+               
+               Map points id --- coordinates id:
+               
+               Bounding box:
+                  Entry id: 0
+                  [ 0 1.00000 ]
+               
             
             Quadrature cache for dimension: 2
                Number of points:0
@@ -2005,6 +2193,16 @@ Map function:
                   ValueVector (num_points=0) :
                   [ ]
                
+               
+               Is tensor product: FALSE
+               
+               Map points id --- coordinates id:
+               
+               Bounding box:
+                  Entry id: 0
+                  [ 0 1.00000 ]
+                  Entry id: 1
+                  [ 0 1.00000 ]
                
             
          
@@ -2194,6 +2392,14 @@ Map function:
                            [ ]
                         
                         
+                        Is tensor product: FALSE
+                        
+                        Map points id --- coordinates id:
+                        
+                        Bounding box:
+                           Entry id: 0
+                           [ 0 1.00000 ]
+                        
                      
                      Quadrature cache for dimension: 2
                         Number of points:9
@@ -2212,6 +2418,34 @@ Map function:
                            ValueVector (num_points=9) :
                            [ [ 0.112702 0.112702 ]  [ 0.500000 0.112702 ]  [ 0.887298 0.112702 ]  [ 0.112702 0.500000 ]  [ 0.500000 0.500000 ]  [ 0.887298 0.500000 ]  [ 0.112702 0.887298 ]  [ 0.500000 0.887298 ]  [ 0.887298 0.887298 ]  ]
                         
+                        
+                        Is tensor product: TRUE
+                        
+                        Map points id --- coordinates id:
+                           Entry id: 0
+                           [ 0 0 ]
+                           Entry id: 1
+                           [ 1 0 ]
+                           Entry id: 2
+                           [ 2 0 ]
+                           Entry id: 3
+                           [ 0 1 ]
+                           Entry id: 4
+                           [ 1 1 ]
+                           Entry id: 5
+                           [ 2 1 ]
+                           Entry id: 6
+                           [ 0 2 ]
+                           Entry id: 7
+                           [ 1 2 ]
+                           Entry id: 8
+                           [ 2 2 ]
+                        
+                        Bounding box:
+                           Entry id: 0
+                           [ 0 1.00000 ]
+                           Entry id: 1
+                           [ 0 1.00000 ]
                         
                      
                   

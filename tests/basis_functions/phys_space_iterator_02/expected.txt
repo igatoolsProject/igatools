@@ -117,6 +117,12 @@ Original PhysicalSpace:
                      [ ]
                   
                   
+                  Is tensor product: FALSE
+                  
+                  Map points id --- coordinates id:
+                  
+                  Bounding box:
+                  
                
                Quadrature cache for dimension: 1
                   Number of points:0
@@ -133,6 +139,14 @@ Original PhysicalSpace:
                      ValueVector (num_points=0) :
                      [ ]
                   
+                  
+                  Is tensor product: FALSE
+                  
+                  Map points id --- coordinates id:
+                  
+                  Bounding box:
+                     Entry id: 0
+                     [ 0 1.00000 ]
                   
                
             
@@ -352,6 +366,12 @@ PhysicalSpace after serialize-deserialize:
                      [ ]
                   
                   
+                  Is tensor product: FALSE
+                  
+                  Map points id --- coordinates id:
+                  
+                  Bounding box:
+                  
                
                Quadrature cache for dimension: 1
                   Number of points:0
@@ -368,6 +388,14 @@ PhysicalSpace after serialize-deserialize:
                      ValueVector (num_points=0) :
                      [ ]
                   
+                  
+                  Is tensor product: FALSE
+                  
+                  Map points id --- coordinates id:
+                  
+                  Bounding box:
+                     Entry id: 0
+                     [ 0 1.00000 ]
                   
                
             
@@ -687,6 +715,14 @@ Original PhysicalSpace:
                      [ ]
                   
                   
+                  Is tensor product: FALSE
+                  
+                  Map points id --- coordinates id:
+                  
+                  Bounding box:
+                     Entry id: 0
+                     [ 0 1.00000 ]
+                  
                
                Quadrature cache for dimension: 2
                   Number of points:0
@@ -705,6 +741,16 @@ Original PhysicalSpace:
                      ValueVector (num_points=0) :
                      [ ]
                   
+                  
+                  Is tensor product: FALSE
+                  
+                  Map points id --- coordinates id:
+                  
+                  Bounding box:
+                     Entry id: 0
+                     [ 0 1.00000 ]
+                     Entry id: 1
+                     [ 0 1.00000 ]
                   
                
             
@@ -984,6 +1030,14 @@ PhysicalSpace after serialize-deserialize:
                      [ ]
                   
                   
+                  Is tensor product: FALSE
+                  
+                  Map points id --- coordinates id:
+                  
+                  Bounding box:
+                     Entry id: 0
+                     [ 0 1.00000 ]
+                  
                
                Quadrature cache for dimension: 2
                   Number of points:0
@@ -1002,6 +1056,16 @@ PhysicalSpace after serialize-deserialize:
                      ValueVector (num_points=0) :
                      [ ]
                   
+                  
+                  Is tensor product: FALSE
+                  
+                  Map points id --- coordinates id:
+                  
+                  Bounding box:
+                     Entry id: 0
+                     [ 0 1.00000 ]
+                     Entry id: 1
+                     [ 0 1.00000 ]
                   
                
             
@@ -1439,6 +1503,16 @@ Original PhysicalSpace:
                      [ ]
                   
                   
+                  Is tensor product: FALSE
+                  
+                  Map points id --- coordinates id:
+                  
+                  Bounding box:
+                     Entry id: 0
+                     [ 0 1.00000 ]
+                     Entry id: 1
+                     [ 0 1.00000 ]
+                  
                
                Quadrature cache for dimension: 3
                   Number of points:0
@@ -1459,6 +1533,18 @@ Original PhysicalSpace:
                      ValueVector (num_points=0) :
                      [ ]
                   
+                  
+                  Is tensor product: FALSE
+                  
+                  Map points id --- coordinates id:
+                  
+                  Bounding box:
+                     Entry id: 0
+                     [ 0 1.00000 ]
+                     Entry id: 1
+                     [ 0 1.00000 ]
+                     Entry id: 2
+                     [ 0 1.00000 ]
                   
                
             
@@ -1824,6 +1910,16 @@ PhysicalSpace after serialize-deserialize:
                      [ ]
                   
                   
+                  Is tensor product: FALSE
+                  
+                  Map points id --- coordinates id:
+                  
+                  Bounding box:
+                     Entry id: 0
+                     [ 0 1.00000 ]
+                     Entry id: 1
+                     [ 0 1.00000 ]
+                  
                
                Quadrature cache for dimension: 3
                   Number of points:0
@@ -1844,6 +1940,18 @@ PhysicalSpace after serialize-deserialize:
                      ValueVector (num_points=0) :
                      [ ]
                   
+                  
+                  Is tensor product: FALSE
+                  
+                  Map points id --- coordinates id:
+                  
+                  Bounding box:
+                     Entry id: 0
+                     [ 0 1.00000 ]
+                     Entry id: 1
+                     [ 0 1.00000 ]
+                     Entry id: 2
+                     [ 0 1.00000 ]
                   
                
             

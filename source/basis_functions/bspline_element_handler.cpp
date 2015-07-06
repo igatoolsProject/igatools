@@ -546,7 +546,7 @@ void
 BSplineElementHandler<dim, range, rank>::
 FillCacheDispatcher::
 evaluate_bspline_values(
-    const ComponentContainer<std::unique_ptr<TensorProductFunctionEvaluator<dim>>> &elem_values,
+    const ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>>> &elem_values,
     ValueTable<Value> &D_phi) const
 {
     Assert(D_phi.get_num_functions() == elem_.get_max_num_basis(),
@@ -588,7 +588,7 @@ void
 BSplineElementHandler<dim, range, rank>::
 FillCacheDispatcher::
 evaluate_bspline_derivatives(
-    const ComponentContainer<std::unique_ptr<TensorProductFunctionEvaluator<dim>>> &elem_values,
+    const ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>>> &elem_values,
     ValueTable<Derivative<order>> &D_phi) const
 {
     /*
@@ -804,20 +804,19 @@ auto
 BSplineElementHandler<dim_, range_, rank_>::
 GlobalCache::
 get_element_values(const TensorIndex<dim> &elem_tensor_id) const
--> ComponentContainer<std::unique_ptr<TensorProductFunctionEvaluator<dim>>>
+-> ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>>>
 {
-    ComponentContainer<std::unique_ptr<TensorProductFunctionEvaluator<dim>> >
+    ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>> >
     result(basis_values_1d_table_.get_comp_map());
 
+    SafeSTLArray<BasisValues1dConstView, dim> values_1D;
     for (auto c : result.get_active_components_id())
     {
-        result[c] = std::make_unique<TensorProductFunctionEvaluator<dim>>(this->quad_);
         const auto &value = basis_values_1d_table_[c];
+        for (int i = 0 ; i < dim_ ; ++i)
+            values_1D[i] = BasisValues1dConstView(value[i].at(elem_tensor_id[i]));
 
-        for (const int i : UnitElement<dim_>::active_directions)
-            (*result[c])[i] = BasisValues1dConstView(value[i].at(elem_tensor_id[i]));
-
-        result[c]->update_func_size();
+        result[c] = std::make_unique<const TensorProductFunctionEvaluator<dim>>(this->quad_,values_1D);
     }
     return result;
 }

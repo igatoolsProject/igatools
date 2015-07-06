@@ -138,20 +138,17 @@ template <int dim>
 using ElemFuncValues = SafeSTLArray<BasisValues1dConstView, dim>;
 
 template <int dim>
-class TensorProductFunctionEvaluator :
-    public ElemFuncValues<dim>
+class TensorProductFunctionEvaluator
 {
 public:
-    TensorProductFunctionEvaluator(const Quadrature<dim> &quad)
+    TensorProductFunctionEvaluator(const Quadrature<dim> &quad, const ElemFuncValues<dim> &values_1D)
         :
-        quad_(quad)
-    {}
-
-    void update_func_size()
+        quad_(quad),
+        values_1D_(values_1D)
     {
         TensorSize<dim> n_func;
         for (int i = 0; i < dim; ++i)
-            n_func[i] = (*this)[i]->get_num_functions();
+            n_func[i] = values_1D_[i]->get_num_functions();
 
         f_size_ = TensorSizedContainer<dim>(n_func);
     }
@@ -160,15 +157,16 @@ public:
      * Evaluate and returns one partial derivative in one point.
      * The order of the partial derivative is specified by the tensor-index
      * @p order_tensor_id,
-     * while the point is specified by its tensor-index @p point_tensor_id.
+     * while the the function is specified by the tensor-index @p func_tensor_id
+     * point is specified by the indices of its coordinates @p coords_tensor_id.
      */
-    Real evaluate(const TensorIndex<dim> &order,
-                  const TensorIndex<dim> &func,
-                  const TensorIndex<dim> &pt) const
+    Real evaluate(const TensorIndex<dim> &order_tensor_id,
+                  const TensorIndex<dim> &func_tensor_id,
+                  const TensorIndex<dim> &coords_tensor_id) const
     {
-        Real res = (dim>0) ? (*this)[0]->get_derivative(order[0])(func[0],pt[0]) : 1.0;
+        Real res = (dim>0) ? values_1D_[0]->get_derivative(order_tensor_id[0])(func_tensor_id[0],coords_tensor_id[0]) : 1.0;
         for (int i = 1; i < dim; ++i)
-            res *= (*this)[i]->get_derivative(order[i])(func[i], pt[i]);
+            res *= values_1D_[i]->get_derivative(order_tensor_id[i])(func_tensor_id[i], coords_tensor_id[i]);
         return res;
     }
 
@@ -187,7 +185,10 @@ public:
 private:
     Quadrature<dim> quad_;
 
+    ElemFuncValues<dim> values_1D_;
+
     TensorSizedContainer<dim> f_size_;
+
 };
 
 

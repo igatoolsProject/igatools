@@ -209,7 +209,7 @@ private:
         GlobalCache(const Quadrature<dim> &quad, const ComponentMap &component_map);
 
 
-        ComponentContainer<std::unique_ptr<TensorProductFunctionEvaluator<dim>> >
+        ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>> >
                 get_element_values(const TensorIndex<dim> &elem_tensor_id) const;
 
         BasisValues1d &entry(const int comp, const int dir, const Index interval_id);
@@ -317,7 +317,7 @@ private:
          * an exception will be raised.
          */
         void evaluate_bspline_values(
-            const ComponentContainer<std::unique_ptr<TensorProductFunctionEvaluator<dim>>> &elem_values,
+            const ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>>> &elem_values,
             ValueTable<Value> &D_phi) const;
 
         /**
@@ -330,7 +330,7 @@ private:
          */
         template <int order>
         void evaluate_bspline_derivatives(
-            const ComponentContainer<std::unique_ptr<TensorProductFunctionEvaluator<dim>>> &elem_values,
+            const ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>>> &elem_values,
             ValueTable<Derivative<order>> &D_phi) const;
 
 

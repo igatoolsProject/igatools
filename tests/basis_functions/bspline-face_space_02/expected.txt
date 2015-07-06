@@ -107,6 +107,12 @@ sub_space
                   [ ]
                
                
+               Is tensor product: FALSE
+               
+               Map points id --- coordinates id:
+               
+               Bounding box:
+               
             
          
       
@@ -219,6 +225,12 @@ sub_space
                   ValueVector (num_points=0) :
                   [ ]
                
+               
+               Is tensor product: FALSE
+               
+               Map points id --- coordinates id:
+               
+               Bounding box:
                
             
          
@@ -345,6 +357,12 @@ sub_space
                   [ ]
                
                
+               Is tensor product: FALSE
+               
+               Map points id --- coordinates id:
+               
+               Bounding box:
+               
             
             Quadrature cache for dimension: 1
                Number of points:0
@@ -361,6 +379,14 @@ sub_space
                   ValueVector (num_points=0) :
                   [ ]
                
+               
+               Is tensor product: FALSE
+               
+               Map points id --- coordinates id:
+               
+               Bounding box:
+                  Entry id: 0
+                  [ 0 1.00000 ]
                
             
          
@@ -482,6 +508,12 @@ sub_space
                   [ ]
                
                
+               Is tensor product: FALSE
+               
+               Map points id --- coordinates id:
+               
+               Bounding box:
+               
             
             Quadrature cache for dimension: 1
                Number of points:0
@@ -498,6 +530,14 @@ sub_space
                   ValueVector (num_points=0) :
                   [ ]
                
+               
+               Is tensor product: FALSE
+               
+               Map points id --- coordinates id:
+               
+               Bounding box:
+                  Entry id: 0
+                  [ 0 1.00000 ]
                
             
          
@@ -618,6 +658,12 @@ sub_space
                   [ ]
                
                
+               Is tensor product: FALSE
+               
+               Map points id --- coordinates id:
+               
+               Bounding box:
+               
             
             Quadrature cache for dimension: 1
                Number of points:0
@@ -634,6 +680,14 @@ sub_space
                   ValueVector (num_points=0) :
                   [ ]
                
+               
+               Is tensor product: FALSE
+               
+               Map points id --- coordinates id:
+               
+               Bounding box:
+                  Entry id: 0
+                  [ 0 1.00000 ]
                
             
          
@@ -754,6 +808,12 @@ sub_space
                   [ ]
                
                
+               Is tensor product: FALSE
+               
+               Map points id --- coordinates id:
+               
+               Bounding box:
+               
             
             Quadrature cache for dimension: 1
                Number of points:0
@@ -770,6 +830,14 @@ sub_space
                   ValueVector (num_points=0) :
                   [ ]
                
+               
+               Is tensor product: FALSE
+               
+               Map points id --- coordinates id:
+               
+               Bounding box:
+                  Entry id: 0
+                  [ 0 1.00000 ]
                
             
          
@@ -906,6 +974,14 @@ sub_space
                   [ ]
                
                
+               Is tensor product: FALSE
+               
+               Map points id --- coordinates id:
+               
+               Bounding box:
+                  Entry id: 0
+                  [ 0 1.00000 ]
+               
             
             Quadrature cache for dimension: 2
                Number of points:0
@@ -924,6 +1000,16 @@ sub_space
                   ValueVector (num_points=0) :
                   [ ]
                
+               
+               Is tensor product: FALSE
+               
+               Map points id --- coordinates id:
+               
+               Bounding box:
+                  Entry id: 0
+                  [ 0 1.00000 ]
+                  Entry id: 1
+                  [ 0 1.00000 ]
                
             
          
@@ -1055,6 +1141,14 @@ sub_space
                   [ ]
                
                
+               Is tensor product: FALSE
+               
+               Map points id --- coordinates id:
+               
+               Bounding box:
+                  Entry id: 0
+                  [ 0 1.00000 ]
+               
             
             Quadrature cache for dimension: 2
                Number of points:0
@@ -1073,6 +1167,16 @@ sub_space
                   ValueVector (num_points=0) :
                   [ ]
                
+               
+               Is tensor product: FALSE
+               
+               Map points id --- coordinates id:
+               
+               Bounding box:
+                  Entry id: 0
+                  [ 0 1.00000 ]
+                  Entry id: 1
+                  [ 0 1.00000 ]
                
             
          
@@ -1203,6 +1307,14 @@ sub_space
                   [ ]
                
                
+               Is tensor product: FALSE
+               
+               Map points id --- coordinates id:
+               
+               Bounding box:
+                  Entry id: 0
+                  [ 0 1.00000 ]
+               
             
             Quadrature cache for dimension: 2
                Number of points:0
@@ -1221,6 +1333,16 @@ sub_space
                   ValueVector (num_points=0) :
                   [ ]
                
+               
+               Is tensor product: FALSE
+               
+               Map points id --- coordinates id:
+               
+               Bounding box:
+                  Entry id: 0
+                  [ 0 1.00000 ]
+                  Entry id: 1
+                  [ 0 1.00000 ]
                
             
          
@@ -1351,6 +1473,14 @@ sub_space
                   [ ]
                
                
+               Is tensor product: FALSE
+               
+               Map points id --- coordinates id:
+               
+               Bounding box:
+                  Entry id: 0
+                  [ 0 1.00000 ]
+               
             
             Quadrature cache for dimension: 2
                Number of points:0
@@ -1369,6 +1499,16 @@ sub_space
                   ValueVector (num_points=0) :
                   [ ]
                
+               
+               Is tensor product: FALSE
+               
+               Map points id --- coordinates id:
+               
+               Bounding box:
+                  Entry id: 0
+                  [ 0 1.00000 ]
+                  Entry id: 1
+                  [ 0 1.00000 ]
                
             
          
@@ -1498,6 +1638,14 @@ sub_space
                   [ ]
                
                
+               Is tensor product: FALSE
+               
+               Map points id --- coordinates id:
+               
+               Bounding box:
+                  Entry id: 0
+                  [ 0 1.00000 ]
+               
             
             Quadrature cache for dimension: 2
                Number of points:0
@@ -1516,6 +1664,16 @@ sub_space
                   ValueVector (num_points=0) :
                   [ ]
                
+               
+               Is tensor product: FALSE
+               
+               Map points id --- coordinates id:
+               
+               Bounding box:
+                  Entry id: 0
+                  [ 0 1.00000 ]
+                  Entry id: 1
+                  [ 0 1.00000 ]
                
             
          
@@ -1645,6 +1803,14 @@ sub_space
                   [ ]
                
                
+               Is tensor product: FALSE
+               
+               Map points id --- coordinates id:
+               
+               Bounding box:
+                  Entry id: 0
+                  [ 0 1.00000 ]
+               
             
             Quadrature cache for dimension: 2
                Number of points:0
@@ -1663,6 +1829,16 @@ sub_space
                   ValueVector (num_points=0) :
                   [ ]
                
+               
+               Is tensor product: FALSE
+               
+               Map points id --- coordinates id:
+               
+               Bounding box:
+                  Entry id: 0
+                  [ 0 1.00000 ]
+                  Entry id: 1
+                  [ 0 1.00000 ]
                
             
          

@@ -404,14 +404,16 @@ print_info(LogStream &out) const
     out.end_item();
     out << endl;
 
-#if 0
+    out.begin_item("Is tensor product: " + std::string(is_tensor_product_?"TRUE":"FALSE"));
+    out.end_item();
+
     out.begin_item("Map points id --- coordinates id:");
     map_point_id_to_coords_id_.print_info(out);
     out.end_item();
 
-    out.begin_item("Is tensor producs: " + std::string(is_tensor_product_?"TRUE":"FALSE"));
+    out.begin_item("Bounding box:");
+    bounding_box_.print_info(out);
     out.end_item();
-#endif
 }
 
 

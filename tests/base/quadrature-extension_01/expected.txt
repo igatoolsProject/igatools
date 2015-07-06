@@ -15,6 +15,14 @@ Points:
    [ [ ]  ]
 
 
+Is tensor product: TRUE
+
+Map points id --- coordinates id:
+   Entry id: 0
+   [ ]
+
+Bounding box:
+
 
 Extended to subelement: 0
 Number of points:1
@@ -32,6 +40,16 @@ Points:
    [ [ 0 ]  ]
 
 
+Is tensor product: TRUE
+
+Map points id --- coordinates id:
+   Entry id: 0
+   [ 0 ]
+
+Bounding box:
+   Entry id: 0
+   [ 0 1.00000 ]
+
 Extended to subelement: 1
 Number of points:1
 Weights:
@@ -47,6 +65,16 @@ Points:
    ValueVector (num_points=1) :
    [ [ 1.00000 ]  ]
 
+
+Is tensor product: TRUE
+
+Map points id --- coordinates id:
+   Entry id: 0
+   [ 0 ]
+
+Bounding box:
+   Entry id: 0
+   [ 0 1.00000 ]
 
 ========================================================================
 
@@ -69,6 +97,18 @@ Points:
    [ [ 0.211325 ]  [ 0.788675 ]  ]
 
 
+Is tensor product: TRUE
+
+Map points id --- coordinates id:
+   Entry id: 0
+   [ 0 ]
+   Entry id: 1
+   [ 1 ]
+
+Bounding box:
+   Entry id: 0
+   [ 0 1.00000 ]
+
 
 Extended to subelement: 0
 Number of points:2
@@ -88,6 +128,20 @@ Points:
    [ [ 0 0.211325 ]  [ 0 0.788675 ]  ]
 
 
+Is tensor product: TRUE
+
+Map points id --- coordinates id:
+   Entry id: 0
+   [ 0 0 ]
+   Entry id: 1
+   [ 0 1 ]
+
+Bounding box:
+   Entry id: 0
+   [ 0 1.00000 ]
+   Entry id: 1
+   [ 0 1.00000 ]
+
 Extended to subelement: 1
 Number of points:2
 Weights:
@@ -105,6 +159,20 @@ Points:
    ValueVector (num_points=2) :
    [ [ 1.00000 0.211325 ]  [ 1.00000 0.788675 ]  ]
 
+
+Is tensor product: TRUE
+
+Map points id --- coordinates id:
+   Entry id: 0
+   [ 0 0 ]
+   Entry id: 1
+   [ 0 1 ]
+
+Bounding box:
+   Entry id: 0
+   [ 0 1.00000 ]
+   Entry id: 1
+   [ 0 1.00000 ]
 
 Extended to subelement: 2
 Number of points:2
@@ -124,6 +192,20 @@ Points:
    [ [ 0.211325 0 ]  [ 0.788675 0 ]  ]
 
 
+Is tensor product: TRUE
+
+Map points id --- coordinates id:
+   Entry id: 0
+   [ 0 0 ]
+   Entry id: 1
+   [ 1 0 ]
+
+Bounding box:
+   Entry id: 0
+   [ 0 1.00000 ]
+   Entry id: 1
+   [ 0 1.00000 ]
+
 Extended to subelement: 3
 Number of points:2
 Weights:
@@ -141,6 +223,20 @@ Points:
    ValueVector (num_points=2) :
    [ [ 0.211325 1.00000 ]  [ 0.788675 1.00000 ]  ]
 
+
+Is tensor product: TRUE
+
+Map points id --- coordinates id:
+   Entry id: 0
+   [ 0 0 ]
+   Entry id: 1
+   [ 1 0 ]
+
+Bounding box:
+   Entry id: 0
+   [ 0 1.00000 ]
+   Entry id: 1
+   [ 0 1.00000 ]
 
 ========================================================================
 
@@ -165,6 +261,24 @@ Points:
    [ [ 0.211325 0.211325 ]  [ 0.788675 0.211325 ]  [ 0.211325 0.788675 ]  [ 0.788675 0.788675 ]  ]
 
 
+Is tensor product: TRUE
+
+Map points id --- coordinates id:
+   Entry id: 0
+   [ 0 0 ]
+   Entry id: 1
+   [ 1 0 ]
+   Entry id: 2
+   [ 0 1 ]
+   Entry id: 3
+   [ 1 1 ]
+
+Bounding box:
+   Entry id: 0
+   [ 0 1.00000 ]
+   Entry id: 1
+   [ 0 1.00000 ]
+
 
 Extended to subelement: 0
 Number of points:4
@@ -186,6 +300,26 @@ Points:
    [ [ 0 0.211325 0.211325 ]  [ 0 0.788675 0.211325 ]  [ 0 0.211325 0.788675 ]  [ 0 0.788675 0.788675 ]  ]
 
 
+Is tensor product: TRUE
+
+Map points id --- coordinates id:
+   Entry id: 0
+   [ 0 0 0 ]
+   Entry id: 1
+   [ 0 1 0 ]
+   Entry id: 2
+   [ 0 0 1 ]
+   Entry id: 3
+   [ 0 1 1 ]
+
+Bounding box:
+   Entry id: 0
+   [ 0 1.00000 ]
+   Entry id: 1
+   [ 0 1.00000 ]
+   Entry id: 2
+   [ 0 1.00000 ]
+
 Extended to subelement: 1
 Number of points:4
 Weights:
@@ -205,6 +339,26 @@ Points:
    ValueVector (num_points=4) :
    [ [ 1.00000 0.211325 0.211325 ]  [ 1.00000 0.788675 0.211325 ]  [ 1.00000 0.211325 0.788675 ]  [ 1.00000 0.788675 0.788675 ]  ]
 
+
+Is tensor product: TRUE
+
+Map points id --- coordinates id:
+   Entry id: 0
+   [ 0 0 0 ]
+   Entry id: 1
+   [ 0 1 0 ]
+   Entry id: 2
+   [ 0 0 1 ]
+   Entry id: 3
+   [ 0 1 1 ]
+
+Bounding box:
+   Entry id: 0
+   [ 0 1.00000 ]
+   Entry id: 1
+   [ 0 1.00000 ]
+   Entry id: 2
+   [ 0 1.00000 ]
 
 Extended to subelement: 2
 Number of points:4
@@ -226,6 +380,26 @@ Points:
    [ [ 0.211325 0 0.211325 ]  [ 0.788675 0 0.211325 ]  [ 0.211325 0 0.788675 ]  [ 0.788675 0 0.788675 ]  ]
 
 
+Is tensor product: TRUE
+
+Map points id --- coordinates id:
+   Entry id: 0
+   [ 0 0 0 ]
+   Entry id: 1
+   [ 1 0 0 ]
+   Entry id: 2
+   [ 0 0 1 ]
+   Entry id: 3
+   [ 1 0 1 ]
+
+Bounding box:
+   Entry id: 0
+   [ 0 1.00000 ]
+   Entry id: 1
+   [ 0 1.00000 ]
+   Entry id: 2
+   [ 0 1.00000 ]
+
 Extended to subelement: 3
 Number of points:4
 Weights:
@@ -245,6 +419,26 @@ Points:
    ValueVector (num_points=4) :
    [ [ 0.211325 1.00000 0.211325 ]  [ 0.788675 1.00000 0.211325 ]  [ 0.211325 1.00000 0.788675 ]  [ 0.788675 1.00000 0.788675 ]  ]
 
+
+Is tensor product: TRUE
+
+Map points id --- coordinates id:
+   Entry id: 0
+   [ 0 0 0 ]
+   Entry id: 1
+   [ 1 0 0 ]
+   Entry id: 2
+   [ 0 0 1 ]
+   Entry id: 3
+   [ 1 0 1 ]
+
+Bounding box:
+   Entry id: 0
+   [ 0 1.00000 ]
+   Entry id: 1
+   [ 0 1.00000 ]
+   Entry id: 2
+   [ 0 1.00000 ]
 
 Extended to subelement: 4
 Number of points:4
@@ -266,6 +460,26 @@ Points:
    [ [ 0.211325 0.211325 0 ]  [ 0.788675 0.211325 0 ]  [ 0.211325 0.788675 0 ]  [ 0.788675 0.788675 0 ]  ]
 
 
+Is tensor product: TRUE
+
+Map points id --- coordinates id:
+   Entry id: 0
+   [ 0 0 0 ]
+   Entry id: 1
+   [ 1 0 0 ]
+   Entry id: 2
+   [ 0 1 0 ]
+   Entry id: 3
+   [ 1 1 0 ]
+
+Bounding box:
+   Entry id: 0
+   [ 0 1.00000 ]
+   Entry id: 1
+   [ 0 1.00000 ]
+   Entry id: 2
+   [ 0 1.00000 ]
+
 Extended to subelement: 5
 Number of points:4
 Weights:
@@ -285,6 +499,26 @@ Points:
    ValueVector (num_points=4) :
    [ [ 0.211325 0.211325 1.00000 ]  [ 0.788675 0.211325 1.00000 ]  [ 0.211325 0.788675 1.00000 ]  [ 0.788675 0.788675 1.00000 ]  ]
 
+
+Is tensor product: TRUE
+
+Map points id --- coordinates id:
+   Entry id: 0
+   [ 0 0 0 ]
+   Entry id: 1
+   [ 1 0 0 ]
+   Entry id: 2
+   [ 0 1 0 ]
+   Entry id: 3
+   [ 1 1 0 ]
+
+Bounding box:
+   Entry id: 0
+   [ 0 1.00000 ]
+   Entry id: 1
+   [ 0 1.00000 ]
+   Entry id: 2
+   [ 0 1.00000 ]
 
 ========================================================================
 
