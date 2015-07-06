@@ -69,22 +69,25 @@ void do_test()
         u[id++] = 1.0 ;
     }
 
-    QGauss< dim_domain > quad_scheme_1(2) ;
-//    const auto eval_points_1 = quad_scheme_1.get_points();
+    QGauss< dim_domain > quad_tensor_prod(2) ;
+    const auto eval_points = quad_tensor_prod.get_points();
+
+    Quadrature<dim_domain> quad_non_tensor_prod(eval_points);
 
     auto element1 = space->begin();
 
     out.begin_item("Basis values using QGauss<" + std::to_string(dim_domain) + "> with 2 points in each coordinate direction.");
-    auto values1 = element1->template evaluate_basis_at_points<_Value>(quad_scheme_1,DofProperties::active);
+    auto values1 = element1->template evaluate_basis_at_points<_Value>(quad_non_tensor_prod,DofProperties::active);
     values1.print_info(out);
     out.end_item();
 
     out.begin_item("Basis gradients using QGauss<" + std::to_string(dim_domain) + "> with 2 points in each coordinate direction.");
-    auto gradients1 = element1->template evaluate_basis_at_points<_Gradient>(quad_scheme_1,DofProperties::active);
+    auto gradients1 = element1->template evaluate_basis_at_points<_Gradient>(quad_non_tensor_prod,DofProperties::active);
     gradients1.print_info(out);
     out.end_item();
 
-    QUniform< dim_domain > quad_scheme_2(3) ;
+//    QUniform< dim_domain > quad_scheme_2(3) ;
+    Quadrature< dim_domain > quad_scheme_2(QUniform< dim_domain >(3).get_points()) ;
 
     out.begin_item("Basis values using QUniform<" + std::to_string(dim_domain) + "> with 2 points in each coordinate direction.");
     auto values2 = element1->template evaluate_basis_at_points<_Value>(quad_scheme_2,DofProperties::active);

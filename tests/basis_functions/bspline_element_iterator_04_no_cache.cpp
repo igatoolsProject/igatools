@@ -98,7 +98,7 @@ void do_test()
     auto space = create_space<dim_domain>(num_knots) ;
 
     const int n_points = 2;
-    QGauss< dim_domain > quad(n_points) ;
+    Quadrature<dim_domain> quad(QGauss<dim_domain>(n_points).get_points()) ;
 
     using std::to_string;
 

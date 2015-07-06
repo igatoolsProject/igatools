@@ -200,6 +200,7 @@ reset_points_points_1d_and_weights(
 
     //-----------------------------------------------------------------
     TensorSize<dim_> n_dirs;
+    SafeSTLArray<std::map<Real,set<int>>,dim_> map_coords_point_ids;
     for (int i = 0 ; i < dim_ ; ++i)
     {
         set<Real> coords_set;
@@ -208,6 +209,7 @@ reset_points_points_1d_and_weights(
 
         //inserting the point coordinates and removing the duplicates
         points_1d_.copy_data_direction(i,SafeSTLVector<Real>(coords_set.begin(),coords_set.end()));
+
         weights_1d_ = weights_1d;
 
 #ifndef NDEBUG
@@ -219,10 +221,8 @@ reset_points_points_1d_and_weights(
                    ExcMessage("Point coordinate outside the bounding box."));
 #endif
 
-
 //        Assert(n_dirs[i] == weights_1d[i].size(),
 //               ExcDimensionMismatch(n_dirs[i],weights_1d[i].size()));
-
     } // end loop i
     //-----------------------------------------------------------------
 
@@ -235,7 +235,7 @@ reset_points_points_1d_and_weights(
     map_point_id_to_coords_id_.resize(n_pts);
     for (int j = 0 ; j < n_pts ; ++j)
     {
-        auto &pt = pts[j];
+        const auto &pt = pts[j];
         TensorIndex<dim_> coords_tensor_id;
         for (int i = 0 ; i < dim_ ; ++i)
         {
@@ -246,7 +246,7 @@ reset_points_points_1d_and_weights(
 
             coords_tensor_id[i] = std::distance(coords_begin,it);
         }
-        map_point_id_to_coords_id_[j]=(coords_tensor_id);
+        map_point_id_to_coords_id_[j] = (coords_tensor_id);
     }
     //-----------------------------------------------------------------
 }
@@ -404,6 +404,14 @@ print_info(LogStream &out) const
     out.end_item();
     out << endl;
 
+#if 0
+    out.begin_item("Map points id --- coordinates id:");
+    map_point_id_to_coords_id_.print_info(out);
+    out.end_item();
+
+    out.begin_item("Is tensor producs: " + std::string(is_tensor_product_?"TRUE":"FALSE"));
+    out.end_item();
+#endif
 }
 
 

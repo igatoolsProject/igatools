@@ -65,7 +65,8 @@ void test()
     auto nrb_space = Space::create(bsp_space,w_func);
 
     const int n_points = 3;
-    QGauss<dim> quad(n_points);
+//    QGauss<dim> quad(n_points);
+    Quadrature<dim> quad(QGauss<dim>(n_points).get_points());
 
     auto elem     = nrb_space->begin();
     auto end_element = nrb_space->end();

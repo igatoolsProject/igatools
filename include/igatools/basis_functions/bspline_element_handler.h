@@ -183,6 +183,12 @@ private:
     private:
         using BasisValues1dTable = ComponentContainer<SafeSTLArray<std::map<Index,BasisValues1d>,dim>>;
 
+
+        /**
+         * Quadrature points used for the 1D basis evaluation.
+         */
+        Quadrature<dim> quad_;
+
         /**
          * Values (and derivatives) of 1D basis precomputed in the initalized
          * interval of a given direction.
@@ -194,16 +200,17 @@ private:
          */
         BasisValues1dTable basis_values_1d_table_;
 
+
     public:
         using ComponentMap = typename BasisValues1dTable::ComponentMap;
 
         GlobalCache() = default;
 
-        GlobalCache(const ComponentMap &component_map);
+        GlobalCache(const Quadrature<dim> &quad, const ComponentMap &component_map);
 
 
-        ComponentContainer<TensorProductFunctionEvaluator<dim> >
-        get_element_values(const TensorIndex<dim> &id) const;
+        ComponentContainer<std::unique_ptr<TensorProductFunctionEvaluator<dim>> >
+                get_element_values(const TensorIndex<dim> &elem_tensor_id) const;
 
         BasisValues1d &entry(const int comp, const int dir, const Index interval_id);
 
@@ -222,6 +229,7 @@ private:
         void
         serialize(Archive &ar, const unsigned int version)
         {
+            ar &boost::serialization::make_nvp("quad_",quad_);
             ar &boost::serialization::make_nvp("basis_values_1d_table_",basis_values_1d_table_);
         }
         ///@}
@@ -309,7 +317,7 @@ private:
          * an exception will be raised.
          */
         void evaluate_bspline_values(
-            const  ComponentContainer<TensorProductFunctionEvaluator<dim>> &elem_values,
+            const ComponentContainer<std::unique_ptr<TensorProductFunctionEvaluator<dim>>> &elem_values,
             ValueTable<Value> &D_phi) const;
 
         /**
@@ -322,7 +330,7 @@ private:
          */
         template <int order>
         void evaluate_bspline_derivatives(
-            const  ComponentContainer<TensorProductFunctionEvaluator<dim>> &elem_values,
+            const ComponentContainer<std::unique_ptr<TensorProductFunctionEvaluator<dim>>> &elem_values,
             ValueTable<Derivative<order>> &D_phi) const;
 
 

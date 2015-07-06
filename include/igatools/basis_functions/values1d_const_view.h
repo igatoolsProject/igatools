@@ -28,6 +28,7 @@
 #include <igatools/utils/safe_stl_vector.h>
 #include <igatools/utils/tensor_index.h>
 #include <igatools/utils/tensor_sized_container.h>
+#include <igatools/base/quadrature.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -141,29 +142,18 @@ class TensorProductFunctionEvaluator :
     public ElemFuncValues<dim>
 {
 public:
-    void update_size(bool points_have_tensor_product_struct = true)
+    TensorProductFunctionEvaluator(const Quadrature<dim> &quad)
+        :
+        quad_(quad)
+    {}
+
+    void update_func_size()
     {
-        points_have_tensor_product_struct_ = points_have_tensor_product_struct;
-
         TensorSize<dim> n_func;
-        TensorSize<dim> n_pts;
         for (int i = 0; i < dim; ++i)
-        {
             n_func[i] = (*this)[i]->get_num_functions();
-            n_pts[i] = (*this)[i]->get_num_points();
-        }
-        f_size_ = TensorSizedContainer<dim>(n_func);
-        p_size_ = TensorSizedContainer<dim>(n_pts);
 
-#ifndef NDEBUG
-        if (!points_have_tensor_product_struct_)
-        {
-            // if the points have not a tensor product structure,
-            // they must be the same number in all directions
-            for (int i = 1; i < dim; ++i)
-                Assert(n_pts[i] = n_pts[0],ExcDimensionMismatch(n_pts[i],n_pts[0]));
-        }
-#endif
+        f_size_ = TensorSizedContainer<dim>(n_func);
     }
 
     /**
@@ -182,39 +172,22 @@ public:
         return res;
     }
 
+
     auto func_flat_to_tensor(const Index func_id) const
     {
         return f_size_.flat_to_tensor(func_id);
     }
+//*/
 
-    auto points_flat_to_tensor(const Index p_flat_id) const
+    auto points_flat_id_to_coords_id(const Index p_flat_id) const
     {
-        if (points_have_tensor_product_struct_)
-        {
-            return p_size_.flat_to_tensor(p_flat_id);
-        }
-        else
-        {
-            Assert(false,ExcNotImplemented());
-            return TensorIndex<dim>(p_flat_id);
-        }
+        return quad_.get_coords_id_from_point_id(p_flat_id);
     }
 
 private:
-    TensorSizedContainer<dim> f_size_;
-    TensorSizedContainer<dim> p_size_;
+    Quadrature<dim> quad_;
 
-    /**
-     * TRUE if the points are arranged in tensor product way.
-     * In this case the total number of points is
-     * <t>p_size_[0] * p_size_[1] * ... * p_size_[dim-1]</t>
-     *
-     * FALSE if the points are not arranged in tensor product way.
-     * In this case it must hold
-     * <t>p_size_[0] == p_size_[1] == ... == p_size_[dim-1]</t>
-     * and each value along a specific direction refers to a single point.
-     */
-    bool points_have_tensor_product_struct_ = true;
+    TensorSizedContainer<dim> f_size_;
 };
 
 

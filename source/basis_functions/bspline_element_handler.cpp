@@ -242,9 +242,10 @@ operator()(const Quadrature<sub_elem_dim> &quad1)
     {
         auto &g_cache = cacheutils::extract_sub_elements_data<sub_elem_dim>(splines1d_)[s_id];
 
-        g_cache = GlobalCache(space_data.get_components_map());
-
         const auto quad = extend_sub_elem_quad<sub_elem_dim,dim>(quad1, s_id);
+
+        g_cache = GlobalCache(quad,space_data.get_components_map());
+
         const auto &n_coords = quad.get_num_coords_direction();
 
         // Allocate space for the BasisValues1D
@@ -545,7 +546,7 @@ void
 BSplineElementHandler<dim, range, rank>::
 FillCacheDispatcher::
 evaluate_bspline_values(
-    const ComponentContainer<TensorProductFunctionEvaluator<dim>> &elem_values,
+    const ComponentContainer<std::unique_ptr<TensorProductFunctionEvaluator<dim>>> &elem_values,
     ValueTable<Value> &D_phi) const
 {
     Assert(D_phi.get_num_functions() == elem_.get_max_num_basis(),
@@ -558,18 +559,18 @@ evaluate_bspline_values(
     const TensorIndex<dim> der_tensor_id; // [0,0,..,0] tensor index
     for (int comp : elem_values.get_active_components_id())
     {
-        auto &values = elem_values[comp];
+        const auto &values = *elem_values[comp];
         const int n_basis_comp = elem_.get_num_basis_comp(comp);
         const Size offset = comp_offset[comp];
 
         for (int func_id = 0; func_id < n_basis_comp; ++func_id)
         {
             auto D_phi_i = D_phi.get_function_view(offset + func_id);
-            auto const &func = values.func_flat_to_tensor(func_id);
+            auto const &func_tensor_id = values.func_flat_to_tensor(func_id);
             for (int point_id = 0; point_id < n_points; ++point_id)
             {
-                auto const &pts  = values.points_flat_to_tensor(point_id);
-                D_phi_i[point_id](comp) = values.evaluate(der_tensor_id, func, pts);
+                auto const &coords_id  = values.points_flat_id_to_coords_id(point_id);
+                D_phi_i[point_id](comp) = values.evaluate(der_tensor_id, func_tensor_id, coords_id);
             }
         } // end func_id loop
     } // end comp loop
@@ -587,7 +588,7 @@ void
 BSplineElementHandler<dim, range, rank>::
 FillCacheDispatcher::
 evaluate_bspline_derivatives(
-    const ComponentContainer<TensorProductFunctionEvaluator<dim>> &elem_values,
+    const ComponentContainer<std::unique_ptr<TensorProductFunctionEvaluator<dim>>> &elem_values,
     ValueTable<Derivative<order>> &D_phi) const
 {
     /*
@@ -615,14 +616,14 @@ evaluate_bspline_derivatives(
 
     for (int comp : elem_values.get_active_components_id())
     {
-        auto &values = elem_values[comp];
+        const auto &values = *elem_values[comp];
         const int n_basis_comp = elem_.get_num_basis_comp(comp);
         const Size offset = comp_offset[comp];
 
         for (int func_id = 0; func_id < n_basis_comp; ++func_id)
         {
             auto D_phi_i = D_phi.get_function_view(offset + func_id);
-            auto const &func = values.func_flat_to_tensor(func_id);
+            auto const &func_tensor_id = values.func_flat_to_tensor(func_id);
             for (int der_id = 0; der_id<n_der; ++der_id)
             {
                 const auto &copy_indices_der = copy_indices[der_id];
@@ -631,9 +632,10 @@ evaluate_bspline_derivatives(
                 auto const &der_tensor_id = univariate_order[der_id];
                 for (int point_id = 0; point_id < n_points; ++point_id)
                 {
-                    auto const &pts  = values.points_flat_to_tensor(point_id);
+//                    auto const &pts  = values.points_flat_to_tensor(point_id);
+                    auto const &coords_id  = values.points_flat_id_to_coords_id(point_id);
                     auto &der = D_phi_i[point_id];
-                    der(copy_indices_der[0])(comp) = values.evaluate(der_tensor_id, func, pts);
+                    der(copy_indices_der[0])(comp) = values.evaluate(der_tensor_id, func_tensor_id, coords_id);
                     for (int k=1; k<copy_indices_der_size; ++k)
                         der(copy_indices_der[k])(comp) = der(copy_indices_der[0])(comp);
                 }
@@ -750,8 +752,9 @@ print_info(LogStream &out) const
 template<int dim_, int range_ , int rank_>
 BSplineElementHandler<dim_, range_, rank_>::
 GlobalCache::
-GlobalCache(const ComponentMap &component_map)
+GlobalCache(const Quadrature<dim> &quad, const ComponentMap &component_map)
     :
+    quad_(quad),
     basis_values_1d_table_(BasisValues1dTable(component_map))
 {}
 
@@ -800,20 +803,21 @@ template<int dim_, int range_ , int rank_>
 auto
 BSplineElementHandler<dim_, range_, rank_>::
 GlobalCache::
-get_element_values(const TensorIndex<dim> &id) const
--> ComponentContainer<TensorProductFunctionEvaluator<dim> >
+get_element_values(const TensorIndex<dim> &elem_tensor_id) const
+-> ComponentContainer<std::unique_ptr<TensorProductFunctionEvaluator<dim>>>
 {
-    ComponentContainer<TensorProductFunctionEvaluator<dim> >
+    ComponentContainer<std::unique_ptr<TensorProductFunctionEvaluator<dim>> >
     result(basis_values_1d_table_.get_comp_map());
 
     for (auto c : result.get_active_components_id())
     {
+        result[c] = std::make_unique<TensorProductFunctionEvaluator<dim>>(this->quad_);
         const auto &value = basis_values_1d_table_[c];
 
         for (const int i : UnitElement<dim_>::active_directions)
-            result[c][i] = BasisValues1dConstView(value[i].at(id[i]));
+            (*result[c])[i] = BasisValues1dConstView(value[i].at(elem_tensor_id[i]));
 
-        result[c].update_size();
+        result[c]->update_func_size();
     }
     return result;
 }

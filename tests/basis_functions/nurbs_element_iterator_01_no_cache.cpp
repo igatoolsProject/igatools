@@ -69,7 +69,7 @@ void test()
     // to do so, we get the points from a Gauss quadrature scheme with 3 points
 
     const int n_points = 3;
-    QGauss<dim> quad(n_points);
+    Quadrature<dim> quad(QGauss<dim>(n_points).get_points());
 
     auto elem     = space->begin();
     auto end = space->end();

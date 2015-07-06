@@ -326,7 +326,16 @@ private:
      */
     SafeSTLVector<TensorIndex<dim_>> map_point_id_to_coords_id_;
 
-    // TODO (pauletti, Mar 6, 2015): should be const
+    /**
+     * TRUE if the points are arranged in tensor product way.
+     * In this case the total number of points is
+     * <tt>n_coords[0] * n_coords[1] * ... * n_coords[dim-1]</tt>
+     *
+     * FALSE if the points are not arranged in tensor product way.
+     * In this case it must hold
+     * <tt>n_coords[0] == n_coords[1] == ... == n_coords[dim-1]</tt>
+     * and each value along a specific direction refers to a single point.
+     */
     bool is_tensor_product_;
 
     BBox<dim_> bounding_box_;
