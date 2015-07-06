@@ -158,12 +158,13 @@ public:
      * The order of the partial derivative is specified by the tensor-index
      * @p order_tensor_id,
      * while the the function is specified by the tensor-index @p func_tensor_id
-     * point is specified by the indices of its coordinates @p coords_tensor_id.
+     * point is specified by the flat index @p point_flat_id.
      */
     Real evaluate(const TensorIndex<dim> &order_tensor_id,
                   const TensorIndex<dim> &func_tensor_id,
-                  const TensorIndex<dim> &coords_tensor_id) const
+                  const Index &point_flat_id) const
     {
+        const auto &coords_tensor_id = quad_.get_coords_id_from_point_id(point_flat_id);
         Real res = (dim>0) ? values_1D_[0]->get_derivative(order_tensor_id[0])(func_tensor_id[0],coords_tensor_id[0]) : 1.0;
         for (int i = 1; i < dim; ++i)
             res *= values_1D_[i]->get_derivative(order_tensor_id[i])(func_tensor_id[i], coords_tensor_id[i]);
@@ -175,20 +176,13 @@ public:
     {
         return f_size_.flat_to_tensor(func_id);
     }
-//*/
-
-    auto points_flat_id_to_coords_id(const Index p_flat_id) const
-    {
-        return quad_.get_coords_id_from_point_id(p_flat_id);
-    }
 
 private:
-    Quadrature<dim> quad_;
+    const Quadrature<dim> &quad_;
 
     ElemFuncValues<dim> values_1D_;
 
     TensorSizedContainer<dim> f_size_;
-
 };
 
 
