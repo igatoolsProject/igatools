@@ -131,12 +131,17 @@ public:
      * Tensor product constructor
      */
     Quadrature(const PointArray &points,
-               const WeightArray &weights_1d);
+               const WeightArray &weights_1d,
+               const BBox<dim_> &bounding_box);
     /**
-     * Construct the object given:
+     * Non-tensor product constructor.
+     *
+     * It Builds the object given:
      * - a vector of <tt>points</tt> in the <tt>dim_</tt>-dimensional space;
      * - the <tt>weights_1d</tt> are the weights associated to the points coordinates;
      * - the <tt>bounding_box</tt> in which the points are defined.
+     *
+     * @note The constructed Quadrature object has not the tensor-product structure.
      */
     Quadrature(const PointVector &points,
                const WeightArray &weights_1d,
@@ -189,19 +194,13 @@ public:
     ///@}
 
     /**
-     * @name Functions returning informations about the arrangement structure of the points and weights.
+     * @name Functions returning informations about the arrangement structure of the points.
      */
     ///@{
-    bool is_tensor_product() const;
     /**
      * Returns TRUE if the evaluation points have a tensor-product structure.
      */
-    //bool have_points_tensor_product_struct() const;
-
-    /**
-     * Returns TRUE if the weights have a tensor-product structure.
-     */
-    // bool have_weights_tensor_product_struct() const;
+    bool is_tensor_product() const;
     ///@}
 
     /**
@@ -245,12 +244,11 @@ public:
 
     const WeightArray &get_weights_1d() const;
 
-private:
     /**
      * Returns the bounding box in which the points are located.
      */
     const BBox<dim_> &get_bounding_box() const;
-public:
+
     /**
      * Returns the coordinates indices relative to the point with (flat)
      * index <tt>point_id</tt>.
@@ -293,7 +291,7 @@ private:
      */
     void reset_bounding_box(const BBox<dim_> &bounding_box);
 
-protected:
+//protected:
     /**
      * This function performs the following task:
      *   - reset the value of the points coordinates and the map point_id_to_coords_is,
@@ -302,8 +300,11 @@ protected:
      *
      * @note In DEBUG mode the points are tested if they are within the bounding box.
      * Points on the side of the bounding box are still valid points.
+     *
+     * @warning This function can be used only for quadrature schemes in which the points have not
+     * the tensor-product structure.
      */
-    void reset_points_points_1d_and_weights(
+    void reset_points_1d_and_weights_non_tensor_product_struct(
         const PointVector &pts,
         const WeightArray &weights_1d);
 

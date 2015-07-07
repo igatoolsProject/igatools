@@ -55,7 +55,7 @@ Map points id --- coordinates id:
 
 Bounding box:
    Entry id: 0
-   [ 0 1.00000 ]
+   [ 0 0 ]
 
 
 Quad collapse to subelement: 1
@@ -82,7 +82,7 @@ Map points id --- coordinates id:
 
 Bounding box:
    Entry id: 0
-   [ 0 1.00000 ]
+   [ 1.00000 1.00000 ]
 
 
 ========================================================================
@@ -166,7 +166,7 @@ Map points id --- coordinates id:
 
 Bounding box:
    Entry id: 0
-   [ 0 1.00000 ]
+   [ 0 0 ]
    Entry id: 1
    [ 0 1.00000 ]
 
@@ -201,7 +201,7 @@ Map points id --- coordinates id:
 
 Bounding box:
    Entry id: 0
-   [ 0 1.00000 ]
+   [ 1.00000 1.00000 ]
    Entry id: 1
    [ 0 1.00000 ]
 
@@ -238,7 +238,7 @@ Bounding box:
    Entry id: 0
    [ 0 1.00000 ]
    Entry id: 1
-   [ 0 1.00000 ]
+   [ 0 0 ]
 
 
 Quad collapse to subelement: 3
@@ -273,7 +273,7 @@ Bounding box:
    Entry id: 0
    [ 0 1.00000 ]
    Entry id: 1
-   [ 0 1.00000 ]
+   [ 1.00000 1.00000 ]
 
 
 ========================================================================
@@ -411,7 +411,7 @@ Map points id --- coordinates id:
 
 Bounding box:
    Entry id: 0
-   [ 0 1.00000 ]
+   [ 0 0 ]
    Entry id: 1
    [ 0 1.00000 ]
    Entry id: 2
@@ -462,7 +462,7 @@ Map points id --- coordinates id:
 
 Bounding box:
    Entry id: 0
-   [ 0 1.00000 ]
+   [ 1.00000 1.00000 ]
    Entry id: 1
    [ 0 1.00000 ]
    Entry id: 2
@@ -515,7 +515,7 @@ Bounding box:
    Entry id: 0
    [ 0 1.00000 ]
    Entry id: 1
-   [ 0 1.00000 ]
+   [ 0 0 ]
    Entry id: 2
    [ 0 1.00000 ]
 
@@ -566,7 +566,7 @@ Bounding box:
    Entry id: 0
    [ 0 1.00000 ]
    Entry id: 1
-   [ 0 1.00000 ]
+   [ 1.00000 1.00000 ]
    Entry id: 2
    [ 0 1.00000 ]
 
@@ -619,7 +619,7 @@ Bounding box:
    Entry id: 1
    [ 0 1.00000 ]
    Entry id: 2
-   [ 0 1.00000 ]
+   [ 0 0 ]
 
 
 Quad collapse to subelement: 5
@@ -670,7 +670,7 @@ Bounding box:
    Entry id: 1
    [ 0 1.00000 ]
    Entry id: 2
-   [ 0 1.00000 ]
+   [ 1.00000 1.00000 ]
 
 
 ========================================================================

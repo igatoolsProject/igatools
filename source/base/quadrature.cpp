@@ -71,12 +71,33 @@ Quadrature(const TensorSize<dim> &num_points,
 template<int dim_>
 Quadrature<dim_>::
 Quadrature(const PointArray &points,
-           const WeightArray &weights_1d)
+           const WeightArray &weights_1d,
+           const BBox<dim_> &bounding_box)
     :
     points_1d_(points),
     weights_1d_(weights_1d),
-    is_tensor_product_(true)
+    is_tensor_product_(true),
+    bounding_box_(bounding_box)
 {
+
+#ifndef NDEBUG
+    for (int i = 0 ; i < dim_ ; ++i)
+    {
+        // check that the points coordinate are within the bounding box
+        const auto box_min = bounding_box_[i][0];
+        const auto box_max = bounding_box_[i][1];
+        for (const auto &coord : points_1d_.get_data_direction(i))
+            Assert(coord >= box_min && coord <= box_max,
+                   ExcMessage("Point coordinate outside the bounding box."));
+
+
+        Assert(points_1d_.get_data_direction(i).size() == weights_1d_.get_data_direction(i).size(),
+               ExcDimensionMismatch(points_1d_.get_data_direction(i).size(),weights_1d_.get_data_direction(i).size()));
+
+    } // end loop i
+#endif
+
+
     const auto n_pts = points_1d_.flat_size();
     for (int i = 0 ; i < n_pts ; ++i)
         map_point_id_to_coords_id_.push_back(points_1d_.flat_to_tensor(i));
@@ -94,8 +115,7 @@ Quadrature(const ValueVector<Point> &pts)
     TensorSize<dim_> size(n_pts);
     WeightArray weights_1d(size,1.0);
 
-//    Assert(false, ExcMessage("put weight to 1"));
-    this->reset_points_points_1d_and_weights(pts,weights_1d);
+    this->reset_points_1d_and_weights_non_tensor_product_struct(pts,weights_1d);
 }
 
 
@@ -107,9 +127,10 @@ Quadrature(
     const WeightArray &weights_1d,
     const BBox<dim_> &bounding_box)
     :
-    Quadrature(bounding_box)
+    is_tensor_product_(false),
+    bounding_box_(bounding_box)
 {
-    this->reset_points_points_1d_and_weights(pts,weights_1d);
+    this->reset_points_1d_and_weights_non_tensor_product_struct(pts,weights_1d);
 }
 
 
@@ -190,16 +211,17 @@ dilate_translate(const Point &dilate, const Point &translate)
 template<int dim_>
 void
 Quadrature<dim_>::
-reset_points_points_1d_and_weights(
+reset_points_1d_and_weights_non_tensor_product_struct(
     const PointVector &pts,
     const WeightArray &weights_1d)
 {
-    Assert(!is_tensor_product_, ExcNotImplemented());
+    Assert(!is_tensor_product_,
+           ExcMessage("This routine is intended to be used only for points that have not the tensor-product_structure."));
     const int n_pts = pts.size();
     Assert(n_pts > 0 , ExcEmptyObject());
 
     //-----------------------------------------------------------------
-    TensorSize<dim_> n_dirs;
+//    TensorSize<dim_> n_dirs;
     SafeSTLArray<std::map<Real,set<int>>,dim_> map_coords_point_ids;
     for (int i = 0 ; i < dim_ ; ++i)
     {
@@ -229,9 +251,7 @@ reset_points_points_1d_and_weights(
 
 
     //-----------------------------------------------------------------
-    //for each point :
-    //  - we retrieve the coordinate index;
-    //  - we set the associated weight
+    //for each point, for each coordinate direction, we retrieve the coordinate index;
     map_point_id_to_coords_id_.resize(n_pts);
     for (int j = 0 ; j < n_pts ; ++j)
     {
@@ -430,6 +450,8 @@ collapse_to_sub_element(const int sub_elem_id) const -> Quadrature<dim_>
 
     PointArray new_coords_1d;
     WeightArray new_weights_1d;
+    BBox<dim_> new_bounding_box;
+
     const int n_dir = k_elem.constant_directions.size();
     for (int j = 0 ; j < n_dir; ++j)
     {
@@ -439,15 +461,20 @@ collapse_to_sub_element(const int sub_elem_id) const -> Quadrature<dim_>
         new_coords_1d.copy_data_direction(dir, SafeSTLVector<Real>(1, val));
         new_weights_1d.copy_data_direction(dir, SafeSTLVector<Real>(1, 1.));
 
+        new_bounding_box[dir][0] = val;
+        new_bounding_box[dir][1] = val;
+
     }
 
     for (auto i : k_elem.active_directions)
     {
         new_coords_1d.copy_data_direction(i, points_1d_.get_data_direction(i));
         new_weights_1d.copy_data_direction(i, weights_1d_.get_data_direction(i));
+
+        new_bounding_box[i] = bounding_box_[i];
     }
 
-    return self_t(new_coords_1d, new_weights_1d);
+    return self_t(new_coords_1d, new_weights_1d,new_bounding_box);
 
     return self_t();
 }
@@ -463,33 +490,80 @@ extend_sub_elem_quad(const Quadrature<sub_dim> &eval_pts,const int sub_elem_id)
 
     auto &subdim_elem = UnitElement<dim>::template get_elem<sub_dim>(sub_elem_id);
 
-    PointArray new_coords_1d;
-    WeightArray new_weights_1d;
-
 
     const auto &old_weights_1d = eval_pts.get_weights_1d();
-    const auto &old_points_1d = eval_pts.get_points_1d();
+    WeightArray new_weights_1d;
+
+    const auto &old_bounding_box = eval_pts.get_bounding_box();
 
     const int n_new_dirs = subdim_elem.constant_directions.size();
 
-    const int n_points_new_dir = eval_pts.is_tensor_product() ? 1 : eval_pts.get_num_points();
-    for (int j = 0 ; j < n_new_dirs ; ++j)
-    {
-        const auto dir = subdim_elem.constant_directions[j];
-        const auto val = subdim_elem.constant_values[j];
-        new_coords_1d.copy_data_direction(dir, SafeSTLVector<Real>(n_points_new_dir, val));
-        new_weights_1d.copy_data_direction(dir, SafeSTLVector<Real>(n_points_new_dir, 1.));
+    BBox<dim> new_bounding_box;
 
-    }
-    int ind = 0;
-    for (auto i : subdim_elem.active_directions)
+    if (eval_pts.is_tensor_product())
     {
-        new_coords_1d.copy_data_direction(i, old_points_1d.get_data_direction(ind));
-        new_weights_1d.copy_data_direction(i, old_weights_1d.get_data_direction(ind));
-        ++ind;
-    }
+        const auto &old_points_1d = eval_pts.get_points_1d();
+        PointArray new_coords_1d;
 
-    return Quadrature<dim>(new_coords_1d, new_weights_1d);
+        for (int j = 0 ; j < n_new_dirs ; ++j)
+        {
+            const auto dir = subdim_elem.constant_directions[j];
+            const auto val = subdim_elem.constant_values[j];
+            new_coords_1d.copy_data_direction(dir, SafeSTLVector<Real>(1, val));
+            new_weights_1d.copy_data_direction(dir, SafeSTLVector<Real>(1, 1.));
+
+            new_bounding_box[dir][0] = val;
+            new_bounding_box[dir][1] = val;
+        }
+        int ind = 0;
+        for (auto i : subdim_elem.active_directions)
+        {
+            new_coords_1d.copy_data_direction(i, old_points_1d.get_data_direction(ind));
+            new_weights_1d.copy_data_direction(i, old_weights_1d.get_data_direction(ind));
+
+            new_bounding_box[i] = old_bounding_box[ind];
+
+            ++ind;
+        }
+
+        return Quadrature<dim>(new_coords_1d,new_weights_1d,new_bounding_box);
+    }
+    else
+    {
+        const auto &old_points = eval_pts.get_points();
+
+        const auto n_pts = old_points.size();
+
+        ValueVector<Points<dim>> new_points(n_pts);
+        for (int pt = 0 ; pt < n_pts ; ++pt)
+        {
+            for (int j = 0 ; j < n_new_dirs ; ++j)
+            {
+                const auto dir = subdim_elem.constant_directions[j];
+                const auto val = subdim_elem.constant_values[j];
+                new_points[pt][dir] = val;
+
+                new_weights_1d.copy_data_direction(dir, SafeSTLVector<Real>(n_pts, 1.));
+
+                new_bounding_box[dir][0] = val;
+                new_bounding_box[dir][1] = val;
+            }
+            int ind = 0;
+            for (auto i : subdim_elem.active_directions)
+            {
+                new_points[pt][i] = old_points[pt][ind];
+
+                new_weights_1d.copy_data_direction(i, old_weights_1d.get_data_direction(ind));
+
+                new_bounding_box[i] = old_bounding_box[ind];
+
+                ++ind;
+            }
+
+        } // end loop pt
+
+        return Quadrature<dim>(new_points,new_weights_1d,new_bounding_box);
+    }
 }
 
 
