@@ -161,6 +161,16 @@ public:
      */
     Index get_object_id() const;
 
+    /**
+     * Get the name associated to the object instance.
+     */
+    const std::string &get_name() const;
+
+    /**
+     * Set the name associated to the object instance.
+     */
+    void set_name(const std::string &name);
+
 private:
 
     /**
@@ -168,7 +178,10 @@ private:
      */
     Index object_id_;
 
-
+    /**
+     * Name associated to the object instance.
+     */
+    std::string name_;
 
 
     struct ResetDispatcher : boost::static_visitor<void>

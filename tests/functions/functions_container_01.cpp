@@ -80,11 +80,9 @@ void print_container(std::shared_ptr<FunctionsContainer> funcs_container)
     const auto mappings_dim_2_codim_0 = funcs_container->template get_mappings_dim_codim<2,0>();
     out.begin_item("Mappings with dimension 2 and codimension 0:");
     int m_counter = 0;
-    for (const auto &m : mappings_dim_2_codim_0)
+    for (const auto &mapping : mappings_dim_2_codim_0)
     {
-        auto mapping = m.first;
-        auto name    = m.second; // this is the string we associated to the mapping object when we used insert_mapping()
-
+#if 0
         auto flag = ValueFlags::point | ValueFlags::value;
         QUniform<2> quad(2);
         mapping->reset(flag, quad);
@@ -95,6 +93,7 @@ void print_container(std::shared_ptr<FunctionsContainer> funcs_container)
 
         auto elem = mapping->begin();
         auto end  = mapping->end();
+#endif
 
 #if 0
         try
@@ -119,7 +118,8 @@ void print_container(std::shared_ptr<FunctionsContainer> funcs_container)
             out << "Catching " << e.what() << endl;
         }
 #endif
-        out << "Mapping[" << m_counter++ << "]   name= " << name << std::endl;
+        out << "Mapping[" << m_counter++ << "]   ID= " << mapping->get_object_id()
+            << "   name= " << mapping->get_name() << std::endl;
 
         const auto &funcs_dim_2_codim_0_range_1_rank_1 =
             funcs_container->template get_functions_associated_to_mapping<2,0,1,1>(mapping);
@@ -129,7 +129,7 @@ void print_container(std::shared_ptr<FunctionsContainer> funcs_container)
         {
             out << "Function[" << f_counter++ << "]"
                 << "   ID:" << f.first
-                << "   name= " << f.second.name_ << std::endl;
+                << "   name= " << f.second->get_name() << std::endl;
         }
         out.end_item();
 
@@ -364,7 +364,8 @@ void do_test()
         "phys_func_2_3_1_1");
 
     serialize_deserialize(funcs_container);
-    print_container(funcs_container);
+//    funcs_container->print_info(out);
+//    print_container(funcs_container);
 
     deserialize_only();
 

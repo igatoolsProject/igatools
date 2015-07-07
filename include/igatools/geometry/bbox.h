@@ -62,6 +62,12 @@ public:
     void
     dilate(const Points<dim> &dilation_factor);
 
+
+    /**
+     * Returns true if the bounding box represents the unit <tt>dim</tt>-dimensional hypercube
+     * \f$ [0,1]^{\text{dim}}\f$.
+     */
+    bool is_unit() const;
 };
 
 

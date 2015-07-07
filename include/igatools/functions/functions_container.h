@@ -41,7 +41,6 @@
 
 IGA_NAMESPACE_OPEN
 
-
 /**
  * Type alias for a shared pointer to an object representing the mapping
  * \f$ \mathbf{F} \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}} \f$
@@ -50,6 +49,7 @@ IGA_NAMESPACE_OPEN
 template<int dim, int codim>
 using MappingPtr = std::shared_ptr<MapFunction<dim,dim+codim>>;
 
+#if 0
 template <int dim,int codim,int range,int rank>
 struct PairFuncPtrName
 {
@@ -76,16 +76,16 @@ struct PairFuncPtrName
 #endif // SERIALIZATION
 
 };
+#endif
 
 /**
  * Type alias for the associative container (a std::map) between an object_id and
- * the structure PairFuncPtrName that contains a pointer to a
- * Function<dim,codim,range,rank> and a string (e.g. the function's name).
+ * the a shared pointer pointer to a
+ * Function<dim,codim,range,rank>.
  */
 template <int dim,int codim,int range,int rank>
-using DictionaryFuncPtrName =
-    std::map<Index,PairFuncPtrName<dim,codim,range,rank> >;
-//    std::map<std::shared_ptr<Function<dim,codim,range,rank>>,std::string>;
+using DictionaryFuncPtr =
+    std::map<Index,std::shared_ptr<Function<dim,codim,range,rank>> >;
 
 
 
@@ -169,13 +169,13 @@ class FunctionsContainer
                  * @note Currently the type is defined to contain only data only for <tt>rank == 1</tt>.
                  */
                 using DataVaryingRank = boost::fusion::map<
-                                        boost::fusion::pair< Topology<1>,DictionaryFuncPtrName<dim,codim,range,1> > >;
+                                        boost::fusion::pair< Topology<1>,DictionaryFuncPtr<dim,codim,range,1> > >;
 
                 /**
                  * Returns a const-reference to the data identified by the index @p rank.
                  */
                 template <int rank>
-                const DictionaryFuncPtrName<dim,codim,range,rank> &get_data_rank() const
+                const DictionaryFuncPtr<dim,codim,range,rank> &get_data_rank() const
                 {
                     return boost::fusion::at_key<Topology<rank>>(data_varying_rank_);
                 }
@@ -184,7 +184,7 @@ class FunctionsContainer
                  * Returns a reference to the data identified by the index @p rank.
                  */
                 template <int rank>
-                DictionaryFuncPtrName<dim,codim,range,rank> &get_data_rank()
+                DictionaryFuncPtr<dim,codim,range,rank> &get_data_rank()
                 {
                     return boost::fusion::at_key<Topology<rank>>(data_varying_rank_);
                 }
@@ -210,7 +210,7 @@ class FunctionsContainer
                         {
                             out.begin_item("Function[" + std::to_string(f_id++) + "]" +
                                            "   ID: " + std::to_string(f.first) +
-                                           "   name: " + f.second.name_);
+                                           "   name: " + f.second->get_name());
                             //                f.first->print_info(out);
                             out.end_item();
                         }
@@ -283,18 +283,17 @@ class FunctionsContainer
 
 
             /**
-             * Returns an associative containers (a std::map) containing the geometry parametrizations
+             * Returns SafeSTLVector containing the shared pointers to the geometry parametrizations
              * \f$ \mathbf{F}_i \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}} \f$
-             * (the container's "key") with their name ((the container's "value")).
              */
-            std::map<MappingPtr<dim,codim>,std::string>
-            get_all_mappings() const
+            SafeSTLVector<MappingPtr<dim,codim>>
+                                              get_all_mappings() const
             {
-                std::map<MappingPtr<dim,codim>,std::string> mappings_and_names;
+                SafeSTLVector<MappingPtr<dim,codim>> mappings;
                 for (const auto &m : maps_and_data_varying_range_)
-                    mappings_and_names[m.second.get_ptr_mapping()] = m.second.get_mapping_name();
+                    mappings.emplace_back(m.second.get_ptr_mapping());
 
-                return mappings_and_names;
+                return mappings;
             }
 
 
@@ -304,7 +303,6 @@ class FunctionsContainer
              *
              * The stored data are:
              * - a shared pointer, pointing to the mapping function;
-             * - the name of the mapping;
              * - the functions associated to the mapping. The functions are stored using two
              *   (nested) boost::fusion::map containers, one for the index <tt>range</tt> and the other
              *   for the index <tt>rank</tt>.
@@ -326,12 +324,12 @@ class FunctionsContainer
 
                 void set_mapping_name(const std::string map_name)
                 {
-                    map_name_ = map_name;
+                    mapping_->set_name(map_name);
                 }
 
                 const std::string &get_mapping_name() const
                 {
-                    return map_name_;
+                    return mapping_->get_name();
                 }
 
                 template <int range>
@@ -369,8 +367,6 @@ class FunctionsContainer
 
                 MappingPtr<dim,codim> mapping_;
 
-                std::string map_name_;
-
                 DataVaryingRange funcs_;
 
 #ifdef SERIALIZATION
@@ -386,8 +382,6 @@ class FunctionsContainer
                 serialize(Archive &ar, const unsigned int version)
                 {
                     ar &boost::serialization::make_nvp("mapping_",mapping_);
-
-                    ar &boost::serialization::make_nvp("map_name_",map_name_);
 
                     boost::fusion::for_each(funcs_,
                                             [&](auto & func)
@@ -671,15 +665,14 @@ public:
 
         Assert(data_same_dim_codim_range_rank.count(function->get_object_id()) == 0,
                ExcMessage("Function already added to the container."));
-        auto &tmp = data_same_dim_codim_range_rank[function->get_object_id()];
-        tmp.func_ptr_ = function;
-        tmp.name_ = func_name;
+        auto &fn = data_same_dim_codim_range_rank[function->get_object_id()];
+        fn = function;
+        fn->set_name(func_name);
     }
 
     /**
-     * Returns an associative containers (a std::map) containing the geometry parametrizations
+     * Returns a SafeSTLVector containing a shared pointer to the geometry parametrizations
      * \f$ \mathbf{F}_i \colon \mathbb{R}^{\text{dim}} \to \mathbb{R}^{\text{dim}+\text{codim}} \f$
-     * (the container's "key") with their name ((the container's "value")).
      *
      * @code{.cpp}
        FunctionsContainer funcs_container;
@@ -687,37 +680,15 @@ public:
 
        // here we retrieve all the mappings in the funcs_container object, with dimension 2 and codimension 1 (i.e. surfaces in 3D space)
        const auto & all_mappings_dim_2_codim_1 = funcs_container.template get_mappings_dim_codim<2,1>();
-
-       for (const auto &m : all_mappings_dim2_codim_1)
-       {
-           auto mapping = m.first;  // this is a shared pointer to the mapping
-           auto name    = m.second; // this is the string we associated to the mapping object when we used insert_mapping()
-       }
        @endcode
      */
     template <int dim,int codim>
-    std::map<MappingPtr<dim,codim>,std::string>
+    SafeSTLVector< MappingPtr<dim,codim> >
     get_mappings_dim_codim() const
     {
         return this->template get_data_dim_codim<dim,codim>().get_all_mappings();
     }
 
-#if 0
-    void
-    get_all_mappings() const
-    {
-        /**
-         * All the data in the FunctionsContainer class, organized by the @p dim index
-         * (starting from 1 to 3)
-         */
-        DataVaryingId<
-        DataVaryingId<FunctionsContainerDataSameDimAndCodim,0,4-dim>
-        FunctionsContainerDataSameDim,
-        1,3> all_mappings;
-
-        Assert(false,ExcNotImplemented());
-    }
-#endif
 
     /**
      * Returns a const reference to the object associated to the geometry parametrization @p mapping
@@ -737,7 +708,7 @@ public:
      * to the given @p mapping.
      */
     template <int dim,int codim,int range,int rank>
-    const DictionaryFuncPtrName<dim,codim,range,rank> &
+    const DictionaryFuncPtr<dim,codim,range,rank> &
     get_functions_associated_to_mapping(const MappingPtr<dim,codim> mapping) const
     {
         return this->template get_mapping_data<dim,codim>(mapping).

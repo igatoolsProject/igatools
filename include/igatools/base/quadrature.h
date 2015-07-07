@@ -116,8 +116,11 @@ public:
      */
     Quadrature(const BBox<dim_> &bounding_box = BBox<dim_>());
 
+protected:
     Quadrature(const TensorSize<dim> &num_points,
                void (*)(int, iga::SafeSTLVector<double> &, iga::SafeSTLVector<double> &));
+
+public:
     /**
      * Tensor product constructor
      */
@@ -312,6 +315,10 @@ private:
      */
     bool is_tensor_product_;
 
+
+    /**
+     * Bounding box in which the points are located.
+     */
     BBox<dim_> bounding_box_;
 
 

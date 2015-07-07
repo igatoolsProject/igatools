@@ -61,6 +61,16 @@ dilate(const Points<dim> &dilation_factor)
     }
 }
 
+template<int dim>
+bool BBox<dim>::
+is_unit() const
+{
+    return std::all_of(this->begin(),this->end(),
+                       [](const auto &interv)
+    {
+        return (interv[0] == 0.0 && interv[1] == 1.0);
+    });
+}
 
 IGA_NAMESPACE_CLOSE
 

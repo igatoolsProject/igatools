@@ -70,6 +70,24 @@ get_ptr_const_grid() const
     return grid_.get_ptr_const_data();
 }
 
+
+template <int dim_>
+const std::string &
+SpaceBase<dim_>::
+get_name() const
+{
+    return name_;
+}
+
+template <int dim_>
+void
+SpaceBase<dim_>::
+set_name(const std::string &name)
+{
+    name_ = name;
+}
+
+
 #ifdef MESH_REFINEMENT
 
 template <int dim_>
@@ -92,6 +110,9 @@ serialize(Archive &ar, const unsigned int version)
     ar &boost::serialization::make_nvp("grid_",grid_);
 
     ar &boost::serialization::make_nvp("object_id_",object_id_);
+
+    ar &boost::serialization::make_nvp("name_",name_);
+
 }
 ///@}
 #endif // SERIALIZATION

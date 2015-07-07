@@ -116,6 +116,17 @@ public:
 
     std::shared_ptr<const CartesianGrid<dim_>> get_ptr_const_grid() const;
 
+    /**
+     * Get the name associated to the object instance.
+     */
+    const std::string &get_name() const;
+
+    /**
+     * Set the name associated to the object instance.
+     */
+    void set_name(const std::string &name);
+
+
 
 #ifdef MESH_REFINEMENT
 
@@ -138,6 +149,10 @@ protected:
      */
     Index object_id_ = 0;
 
+    /**
+     * Name associated to the object instance.
+     */
+    std::string name_;
 
 private:
 

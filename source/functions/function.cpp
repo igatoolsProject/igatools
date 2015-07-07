@@ -180,6 +180,22 @@ end() const -> ElementIterator
     return ElementIterator(this->create_element(IteratorState::pass_the_end),ElementProperties::none);
 }
 
+template<int dim_, int codim_, int range_, int rank_>
+const std::string &
+Function<dim_, codim_, range_, rank_ >::
+get_name() const
+{
+    return name_;
+}
+
+template<int dim_, int codim_, int range_, int rank_>
+void
+Function<dim_, codim_, range_, rank_ >::
+set_name(const std::string &name)
+{
+    name_ = name;
+}
+
 
 #ifdef SERIALIZATION
 template<int dim_, int codim_, int range_, int rank_>
@@ -192,6 +208,7 @@ serialize(Archive &ar, const unsigned int version)
                                        boost::serialization::base_object<GridElementHandler<dim_>>(*this));
 
     ar &boost::serialization::make_nvp("object_id_",object_id_);
+    ar &boost::serialization::make_nvp("name_",name_);
 
     ar &boost::serialization::make_nvp("flags_",flags_);
 
