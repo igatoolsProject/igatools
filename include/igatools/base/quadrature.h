@@ -116,15 +116,6 @@ public:
      */
     Quadrature(const BBox<dim_> &bounding_box = BBox<dim_>());
 
-    /**
-     * Construct the object given a vector of <tt>points</tt>
-     * in the <tt>dim_</tt>-dimensional space,
-     * and assign the weights value to be equal to 1.
-     *
-     * @note It sets the bounding-box to be the hypercube \f$ [0,1]^{dim}\f$.
-     */
-    Quadrature(const PointVector &points);
-
     Quadrature(const TensorSize<dim> &num_points,
                void (*)(int, iga::SafeSTLVector<double> &, iga::SafeSTLVector<double> &));
     /**
@@ -136,16 +127,15 @@ public:
     /**
      * Non-tensor product constructor.
      *
-     * It Builds the object given:
-     * - a vector of <tt>points</tt> in the <tt>dim_</tt>-dimensional space;
-     * - the <tt>weights_1d</tt> are the weights associated to the points coordinates;
-     * - the <tt>bounding_box</tt> in which the points are defined.
+     * Constructs the object given a vector of <tt>points</tt>
+     * in the <tt>dim_</tt>-dimensional space,
+     * and the <tt>bounding_box</tt> in which the points are defined,
+     * and assign the weights value to be equal to 1.
      *
      * @note The constructed Quadrature object has not the tensor-product structure.
      */
     Quadrature(const PointVector &points,
-               const WeightArray &weights_1d,
-               const BBox<dim_> &bounding_box);
+               const BBox<dim_> &bounding_box = BBox<dim_>());
 
     /**
      * Copy constructor.
@@ -263,12 +253,12 @@ public:
     /**
      * Dilation of the points (and of the corresponding bounding box)
      */
-    void dilate(const Point &dilate);
+    void dilate(const Point &dilation_factor);
 
     /**
      * Translation of the points (and of the corresponding bounding box)
      */
-    void translate(const Point &translate);
+    void translate(const Point &translation_amount);
 
     /**
      * Dilation followed by a translation of the points (and of the corresponding bounding box).
@@ -291,24 +281,7 @@ private:
      */
     void reset_bounding_box(const BBox<dim_> &bounding_box);
 
-//protected:
-    /**
-     * This function performs the following task:
-     *   - reset the value of the points coordinates and the map point_id_to_coords_is,
-     * given a vector of points in the <t>dim_</t>-dimensional space
-     *   - reset the weight value associated to each point.
-     *
-     * @note In DEBUG mode the points are tested if they are within the bounding box.
-     * Points on the side of the bounding box are still valid points.
-     *
-     * @warning This function can be used only for quadrature schemes in which the points have not
-     * the tensor-product structure.
-     */
-    void reset_points_1d_and_weights_non_tensor_product_struct(
-        const PointVector &pts,
-        const WeightArray &weights_1d);
 
-private:
     /**
      * Coordinates of the points.
      *

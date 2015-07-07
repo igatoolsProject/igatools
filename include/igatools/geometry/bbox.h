@@ -22,7 +22,8 @@
 #define BBOX_H_
 
 #include <igatools/base/config.h>
-
+#include <igatools/base/exceptions.h>
+#include <igatools/base/tensor.h>
 #include <igatools/utils/safe_stl_array.h>
 
 IGA_NAMESPACE_OPEN
@@ -43,14 +44,24 @@ public:
      * Default constructor. It builds a box representing the <tt>dim</tt>-dimensional
      * unit hypercube \f$[0,1]^{dim}\f$.
      */
-    BBox()
-    {
-        for (auto &bounds_dir : (*this))
-        {
-            bounds_dir[0] = 0.0;
-            bounds_dir[1] = 1.0;
-        }
-    }
+    BBox();
+
+    /**
+     * Translates the BBox by the amount specified by <tt>translation_amount</tt>.
+     * @param translation_amount
+     */
+    void
+    translate(const Points<dim> &translation_amount);
+
+    /**
+     * Dilates the intervals defining the bounding box.
+     *
+     * @note The argument <tt>dilation_factor</tt> must be positive in each coordinate direction,
+     * otherwise (in Debug mode) an assertion will be raised.
+     */
+    void
+    dilate(const Points<dim> &dilation_factor);
+
 };
 
 

@@ -105,32 +105,64 @@ Quadrature(const PointArray &points,
 
 
 
-template<int dim_>
-Quadrature<dim_>::
-Quadrature(const ValueVector<Point> &pts)
-    :
-    is_tensor_product_(false)
-{
-    const int n_pts = pts.size();
-    TensorSize<dim_> size(n_pts);
-    WeightArray weights_1d(size,1.0);
-
-    this->reset_points_1d_and_weights_non_tensor_product_struct(pts,weights_1d);
-}
-
-
 
 template<int dim_>
 Quadrature<dim_>::
 Quadrature(
     const PointVector &pts,
-    const WeightArray &weights_1d,
     const BBox<dim_> &bounding_box)
     :
     is_tensor_product_(false),
     bounding_box_(bounding_box)
 {
-    this->reset_points_1d_and_weights_non_tensor_product_struct(pts,weights_1d);
+    const int n_pts = pts.size();
+    Assert(n_pts > 0 , ExcEmptyObject());
+
+    //-----------------------------------------------------------------
+    SafeSTLArray<std::map<Real,set<int>>,dim_> map_coords_point_ids;
+    for (int i = 0 ; i < dim_ ; ++i)
+    {
+        set<Real> coords_set;
+        for (const auto &pt : pts)
+            coords_set.emplace(pt[i]);
+
+        //inserting the point coordinates and removing the duplicates
+        points_1d_.copy_data_direction(i,SafeSTLVector<Real>(coords_set.begin(),coords_set.end()));
+
+        weights_1d_.copy_data_direction(i,SafeSTLVector<Real>(coords_set.size(),1.0));
+
+#ifndef NDEBUG
+        // check that the points coordinate are within the bounding box
+        const auto box_min = bounding_box_[i][0];
+        const auto box_max = bounding_box_[i][1];
+        for (const auto &coord : points_1d_.get_data_direction(i))
+            Assert(coord >= box_min && coord <= box_max,
+                   ExcMessage("Point coordinate " + std::to_string(i) + " outside the bounding box."));
+#endif
+    } // end loop i
+    //-----------------------------------------------------------------
+
+
+
+    //-----------------------------------------------------------------
+    //for each point, for each coordinate direction, we retrieve the coordinate index;
+    map_point_id_to_coords_id_.resize(n_pts);
+    for (int j = 0 ; j < n_pts ; ++j)
+    {
+        const auto &pt = pts[j];
+        TensorIndex<dim_> coords_tensor_id;
+        for (int i = 0 ; i < dim_ ; ++i)
+        {
+            const auto coords_begin = points_1d_.get_data_direction(i).begin();
+            const auto coords_end   = points_1d_.get_data_direction(i).end();
+
+            const auto it = std::find(coords_begin, coords_end, pt[i]);
+
+            coords_tensor_id[i] = std::distance(coords_begin,it);
+        }
+        map_point_id_to_coords_id_[j] = (coords_tensor_id);
+    }
+    //-----------------------------------------------------------------
 }
 
 
@@ -164,18 +196,12 @@ reset_bounding_box(const BBox<dim_> &bounding_box)
 template<int dim_>
 void
 Quadrature<dim_>::
-dilate(const Point &dilate)
+dilate(const Point &dilation_factor)
 {
-    points_1d_.dilate(dilate);
-    weights_1d_.dilate(dilate);
+    points_1d_.dilate(dilation_factor);
+    weights_1d_.dilate(dilation_factor);
 
-
-    for (int i = 0 ; i < dim_ ; ++i)
-    {
-        Assert(dilate[i] > 0., ExcMessage("Dilation factor must be positive."));
-        bounding_box_[i][0] *= dilate[i];
-        bounding_box_[i][1] *= dilate[i];
-    }
+    bounding_box_.dilate(dilation_factor);
 }
 
 
@@ -183,16 +209,11 @@ dilate(const Point &dilate)
 template<int dim_>
 void
 Quadrature<dim_>::
-translate(const Point &translate)
+translate(const Point &translation)
 {
-    points_1d_.translate(translate);
+    points_1d_.translate(translation);
 
-    // TODO (pauletti, Feb 27, 2015): code BBox translate
-    for (int i = 0 ; i < dim_ ; ++i)
-    {
-        bounding_box_[i][0] += translate[i];
-        bounding_box_[i][1] += translate[i];
-    }
+    bounding_box_.translate(translation);
 }
 
 
@@ -206,70 +227,6 @@ dilate_translate(const Point &dilate, const Point &translate)
     this->translate(translate);
 }
 
-
-
-template<int dim_>
-void
-Quadrature<dim_>::
-reset_points_1d_and_weights_non_tensor_product_struct(
-    const PointVector &pts,
-    const WeightArray &weights_1d)
-{
-    Assert(!is_tensor_product_,
-           ExcMessage("This routine is intended to be used only for points that have not the tensor-product_structure."));
-    const int n_pts = pts.size();
-    Assert(n_pts > 0 , ExcEmptyObject());
-
-    //-----------------------------------------------------------------
-//    TensorSize<dim_> n_dirs;
-    SafeSTLArray<std::map<Real,set<int>>,dim_> map_coords_point_ids;
-    for (int i = 0 ; i < dim_ ; ++i)
-    {
-        set<Real> coords_set;
-        for (const auto &pt : pts)
-            coords_set.emplace(pt[i]);
-
-        //inserting the point coordinates and removing the duplicates
-        points_1d_.copy_data_direction(i,SafeSTLVector<Real>(coords_set.begin(),coords_set.end()));
-
-        weights_1d_ = weights_1d;
-
-#ifndef NDEBUG
-        // check that the points coordinate are within the bounding box
-        const auto box_min = bounding_box_[i][0];
-        const auto box_max = bounding_box_[i][1];
-        for (const auto &coord : points_1d_.get_data_direction(i))
-            Assert(coord >= box_min && coord <= box_max,
-                   ExcMessage("Point coordinate outside the bounding box."));
-#endif
-
-//        Assert(n_dirs[i] == weights_1d[i].size(),
-//               ExcDimensionMismatch(n_dirs[i],weights_1d[i].size()));
-    } // end loop i
-    //-----------------------------------------------------------------
-
-
-
-    //-----------------------------------------------------------------
-    //for each point, for each coordinate direction, we retrieve the coordinate index;
-    map_point_id_to_coords_id_.resize(n_pts);
-    for (int j = 0 ; j < n_pts ; ++j)
-    {
-        const auto &pt = pts[j];
-        TensorIndex<dim_> coords_tensor_id;
-        for (int i = 0 ; i < dim_ ; ++i)
-        {
-            const auto coords_begin = points_1d_.get_data_direction(i).begin();
-            const auto coords_end   = points_1d_.get_data_direction(i).end();
-
-            const auto it = std::find(coords_begin, coords_end, pt[i]);
-
-            coords_tensor_id[i] = std::distance(coords_begin,it);
-        }
-        map_point_id_to_coords_id_[j] = (coords_tensor_id);
-    }
-    //-----------------------------------------------------------------
-}
 
 
 
@@ -491,19 +448,19 @@ extend_sub_elem_quad(const Quadrature<sub_dim> &eval_pts,const int sub_elem_id)
     auto &subdim_elem = UnitElement<dim>::template get_elem<sub_dim>(sub_elem_id);
 
 
-    const auto &old_weights_1d = eval_pts.get_weights_1d();
-    WeightArray new_weights_1d;
-
     const auto &old_bounding_box = eval_pts.get_bounding_box();
+    BBox<dim> new_bounding_box;
 
     const int n_new_dirs = subdim_elem.constant_directions.size();
 
-    BBox<dim> new_bounding_box;
 
     if (eval_pts.is_tensor_product())
     {
         const auto &old_points_1d = eval_pts.get_points_1d();
         PointArray new_coords_1d;
+
+        const auto &old_weights_1d = eval_pts.get_weights_1d();
+        WeightArray new_weights_1d;
 
         for (int j = 0 ; j < n_new_dirs ; ++j)
         {
@@ -527,7 +484,7 @@ extend_sub_elem_quad(const Quadrature<sub_dim> &eval_pts,const int sub_elem_id)
         }
 
         return Quadrature<dim>(new_coords_1d,new_weights_1d,new_bounding_box);
-    }
+    } // if (eval_pts.is_tensor_product())
     else
     {
         const auto &old_points = eval_pts.get_points();
@@ -543,8 +500,6 @@ extend_sub_elem_quad(const Quadrature<sub_dim> &eval_pts,const int sub_elem_id)
                 const auto val = subdim_elem.constant_values[j];
                 new_points[pt][dir] = val;
 
-                new_weights_1d.copy_data_direction(dir, SafeSTLVector<Real>(n_pts, 1.));
-
                 new_bounding_box[dir][0] = val;
                 new_bounding_box[dir][1] = val;
             }
@@ -553,8 +508,6 @@ extend_sub_elem_quad(const Quadrature<sub_dim> &eval_pts,const int sub_elem_id)
             {
                 new_points[pt][i] = old_points[pt][ind];
 
-                new_weights_1d.copy_data_direction(i, old_weights_1d.get_data_direction(ind));
-
                 new_bounding_box[i] = old_bounding_box[ind];
 
                 ++ind;
@@ -562,8 +515,8 @@ extend_sub_elem_quad(const Quadrature<sub_dim> &eval_pts,const int sub_elem_id)
 
         } // end loop pt
 
-        return Quadrature<dim>(new_points,new_weights_1d,new_bounding_box);
-    }
+        return Quadrature<dim>(new_points,new_bounding_box);
+    } // if (!eval_pts.is_tensor_product())
 }
 
 
