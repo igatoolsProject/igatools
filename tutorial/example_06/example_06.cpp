@@ -196,7 +196,7 @@ void PoissonProblem<dim>::assemble()
 template<int dim>
 void PoissonProblem<dim>::solve()
 {
-    auto solver = create_solver(matrix, solution, rhs);
+    auto solver = create_solver(*matrix, *solution, *rhs);
     solver->solve();
 }
 

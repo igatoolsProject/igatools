@@ -159,7 +159,7 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
     matrix->print_info(out);
     rhs->print_info(out);
 
-    auto solver = create_solver(matrix, solution, rhs);
+    auto solver = create_solver(*matrix, *solution, *rhs);
     solver->solve();
 
     solution->print_info(out);

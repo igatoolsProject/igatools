@@ -98,7 +98,7 @@ void matrix_map(const int deg, const int n_knots)
 
     matrix->FillComplete();
 
-    auto solver = EpetraTools::create_solver(matrix, sol, rhs);
+    auto solver = EpetraTools::create_solver(*matrix, *sol, *rhs);
     auto result = solver->solve();
     AssertThrow(result == Belos::ReturnType::Converged,
                 ExcMessage("No convergence."));

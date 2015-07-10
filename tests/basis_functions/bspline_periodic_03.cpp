@@ -141,7 +141,7 @@ void assemble_matrix(const int n_knots, const int deg)
     matrix->FillComplete();
     matrix->print_info(out);
 
-    auto solver = create_solver(matrix, solution, rhs);
+    auto solver = create_solver(*matrix, *solution, *rhs);
     solver->solve();
 
     const int n_plot_points = deg+1;

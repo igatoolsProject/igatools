@@ -206,7 +206,7 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
         matrix->FillComplete();
     }
 
-    auto solver = EpetraTools::create_solver(matrix, sol, rhs);
+    auto solver = EpetraTools::create_solver(*matrix, *sol, *rhs);
     auto result = solver->solve();
     AssertThrow(result == Belos::ReturnType::Converged,
                 ExcMessage("No convergence."));

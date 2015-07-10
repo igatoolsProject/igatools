@@ -26,7 +26,7 @@ IGA_NAMESPACE_OPEN
 namespace EpetraTools
 {
 
-SolverPtr create_solver(MatrixPtr A, VectorPtr x, VectorPtr b)
+SolverPtr create_solver(const Matrix &A, Vector &x, const Vector &b, const std::string &solver_type)
 {
     using Teuchos::ParameterList;
     using Teuchos::parameterList;
@@ -38,15 +38,16 @@ SolverPtr create_solver(MatrixPtr A, VectorPtr x, VectorPtr b)
     solverParams->set("Maximum Iterations", 400);
     solverParams->set("Convergence Tolerance", 1.0e-8);
 
-    SolverPtr solver = factory.create("CG", solverParams);
+//    SolverPtr solver = factory.create("CG", solverParams);
+    SolverPtr solver = factory.create(solver_type, solverParams);
     RCP<Belos::LinearProblem<double, MV, OP> > problem =
         rcp(new Belos::LinearProblem<double, MV, OP> (
-                rcp<OP>(A.get(),false),
-                rcp<MV>(x.get(),false),
-                rcp<MV>(b.get(),false)));
+                rcp<const OP>(&A,false),
+                rcp<MV>(&x,false),
+                rcp<const MV>(&b,false)));
 
     RCP<ML_Epetra::MultiLevelPreconditioner> Prec =
-        rcp(new ML_Epetra::MultiLevelPreconditioner(*(A.get()), true));
+        rcp(new ML_Epetra::MultiLevelPreconditioner(A, true));
 
     RCP<Belos::EpetraPrecOp> belosPrec = rcp(new Belos::EpetraPrecOp(Prec));
     problem->setLeftPrec(belosPrec);

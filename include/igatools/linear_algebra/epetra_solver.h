@@ -36,7 +36,7 @@ using OP = Epetra_Operator;
 using MV = Epetra_MultiVector;
 using SolverPtr = Teuchos::RCP<Belos::SolverManager<double, MV, OP> >;
 SolverPtr
-create_solver(MatrixPtr A, VectorPtr x, VectorPtr b);
+create_solver(const Matrix &A, Vector &x, const Vector &b,const std::string &solver_type = "CG");
 };
 
 IGA_NAMESPACE_CLOSE
