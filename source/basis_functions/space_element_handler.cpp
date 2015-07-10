@@ -104,7 +104,6 @@ init_face_cache(ElementIterator &elem)
     this->template init_cache<(dim > 0)?dim-1:0>(*elem);
 }
 
-
 template<int dim,int codim,int range,int rank>
 template <int sub_elem_dim>
 void

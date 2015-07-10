@@ -326,23 +326,24 @@ void eig_dense_matrix(const DenseMatrix &A,
                       DenseMatrix &eigenvectors)
 {
     const int n_rows = A.get_num_rows();
+#ifndef NDEBUG
     const int n_cols = A.get_num_cols();
     Assert(n_rows == n_cols,ExcDimensionMismatch(n_rows,n_cols));
 
+
+    Assert(eigenvalues_real.size() == n_rows,ExcDimensionMismatch(eigenvalues_real.size(),n_rows));
+    Assert(eigenvalues_imag.size() == n_rows,ExcDimensionMismatch(eigenvalues_imag.size(),n_rows));
+
+    Assert(eigenvectors.get_num_rows() == n_rows,ExcDimensionMismatch(eigenvectors.get_num_rows(),n_rows));
+    Assert(eigenvectors.get_num_cols() == n_cols,ExcDimensionMismatch(eigenvectors.get_num_cols(),n_cols));
+#endif
     const int n = n_rows;
-
-    Assert(eigenvalues_real.size() == n,ExcDimensionMismatch(eigenvalues_real.size(),n));
-    Assert(eigenvalues_imag.size() == n,ExcDimensionMismatch(eigenvalues_imag.size(),n));
-
-    Assert(eigenvectors.get_num_rows() == n,ExcDimensionMismatch(eigenvectors.get_num_rows(),n));
-    Assert(eigenvectors.get_num_cols() == n,ExcDimensionMismatch(eigenvectors.get_num_cols(),n));
-
     DenseMatrix eigenvectors_trans(n,n);
 
     Teuchos::LAPACK<int, double> lapack;
     int info;
 
-    const int workspace_size = 4*n; // thsi should be >= 3*n (higher values gives better performances)
+    const int workspace_size = 4*n; // this should be >= 3*n (higher values gives better performances)
     double workspace[workspace_size];
 
     double dummy;
@@ -420,20 +421,22 @@ void eig_dense_matrix_symm(const DenseMatrix &A,
                            DenseMatrix &eigenvectors)
 {
     const int n_rows = A.get_num_rows();
+#ifndef NDEBUG
     const int n_cols = A.get_num_cols();
     Assert(n_rows == n_cols,ExcDimensionMismatch(n_rows,n_cols));
     Assert(A.is_symmetric(),ExcMessage("The matrix is not symmetric."));
 
-    const int n = n_rows;
 
-    Assert(eigenvalues.size() == n,ExcDimensionMismatch(eigenvalues.size(),n));
+    Assert(eigenvalues.size() == n_rows,ExcDimensionMismatch(eigenvalues.size(),n_rows));
 
-    Assert(eigenvectors.get_num_rows() == n,ExcDimensionMismatch(eigenvectors.get_num_rows(),n));
-    Assert(eigenvectors.get_num_cols() == n,ExcDimensionMismatch(eigenvectors.get_num_cols(),n));
+    Assert(eigenvectors.get_num_rows() == n_rows,ExcDimensionMismatch(eigenvectors.get_num_rows(),n_rows));
+    Assert(eigenvectors.get_num_cols() == n_cols,ExcDimensionMismatch(eigenvectors.get_num_cols(),n_cols));
+#endif
 
     Teuchos::LAPACK<int, double> lapack;
     int info;
 
+    const int n = n_rows;
     const int workspace_size = 10*n; // thsi should be >= 3*n (higher values gives better performances)
     double workspace[workspace_size];
 

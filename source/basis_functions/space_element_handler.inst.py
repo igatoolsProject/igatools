@@ -45,11 +45,21 @@ for x in inst.sub_ref_sp_dims + inst.ref_sp_dims:
     handler = 'SpaceElementHandler<%d,0,%d,%d>' %(x.dim, x.range, x.rank)
     handlers.append(handler)
     for k in inst.sub_dims(x.dim):
-      handler_method = 'void %s::init_cache<%d>(SpaceElement<%d,0,%d,%d> &)' % (handler, k, x.dim, x.range, x.rank)
+#      handler_method = 'void %s::init_cache<%d>(SpaceElement<%d,0,%d,%d> &)' % (handler, k, x.dim, x.range, x.rank)
+      handler_method = 'void %s::init_cache<%d>(ElementAccessor &)' % (handler, k)
       handler_methods.append(handler_method)
       handler_method = 'void %s::fill_cache<%d>(ElementAccessor &, const int)' % (handler, k)
       handler_methods.append(handler_method)
 
+for x in inst.ref_sp_dims:
+    handler = 'SpaceElementHandler<%d,0,%d,%d>' %(x.dim, x.range, x.rank)
+    handlers.append(handler)
+    for k in inst.sub_dims(x.dim):
+#        handler_method = 'void %s::init_cache<%d>(SpaceElement<%d,0,%d,%d> &)' % (handler, k, x.dim, x.range, x.rank)
+        handler_method = 'void %s::init_cache<%d>(ElementAccessor &)' % (handler, k)
+        handler_methods.append(handler_method)
+        handler_method = 'void %s::fill_cache<%d>(ElementAccessor &, const int)' % (handler, k)
+        handler_methods.append(handler_method)
 #--------------------------------------------------------------------------------------
 
 
@@ -60,11 +70,22 @@ for space in inst.SubPhysSpaces + inst.PhysSpaces:
     handler = 'SpaceElementHandler<%d,%d,%d,%d>' %(x.dim,x.codim,x.range, x.rank)
     handlers.append(handler)
     for k in inst.sub_dims(x.dim):
-      handler_method = 'void %s::init_cache<%d>(SpaceElement<%d,%d,%d,%d> &)' % (handler, k, x.dim, x.codim, x.range, x.rank)
+#      handler_method = 'void %s::init_cache<%d>(SpaceElement<%d,%d,%d,%d> &)' % (handler, k, x.dim, x.codim, x.range, x.rank)
+      handler_method = 'void %s::init_cache<%d>(ElementAccessor &)' % (handler, k)
       handler_methods.append(handler_method)
       handler_method = 'void %s::fill_cache<%d>(ElementAccessor &, const int)' % (handler, k)
       handler_methods.append(handler_method)
 
+for space in inst.PhysSpaces:
+    x = space.spec
+    handler = 'SpaceElementHandler<%d,%d,%d,%d>' %(x.dim,x.codim,x.range, x.rank)
+    handlers.append(handler)
+    for k in inst.sub_dims(x.dim):
+#        handler_method = 'void %s::init_cache<%d>(SpaceElement<%d,%d,%d,%d> &)' % (handler, k, x.dim, x.codim,x.range, x.rank)
+        handler_method = 'void %s::init_cache<%d>(ElementAccessor &)' % (handler, k)
+        handler_methods.append(handler_method)
+        handler_method = 'void %s::fill_cache<%d>(ElementAccessor &, const int)' % (handler, k)
+        handler_methods.append(handler_method)
 #--------------------------------------------------------------------------------------
 
 
