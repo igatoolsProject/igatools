@@ -24,6 +24,9 @@
 #include <igatools/functions/ig_function.h>
 #include <igatools/functions/identity_function.h>
 #include <igatools/basis_functions/dof_distribution.h>
+#include <igatools/basis_functions/nurbs_space.h>
+
+
 
 using std::shared_ptr;
 using std::unique_ptr;
@@ -256,8 +259,10 @@ void
 Space<dim_,codim_,range_,rank_>::
 serialize(Archive &ar, const unsigned int version)
 {
-//  ar.template register_type<BSplineSpace<dim_,range_,rank_>>();
-//  ar.template register_type<NURBSSpace<dim_,range_,rank_>>();
+    ar.template register_type<BSplineSpace<dim_,range_,rank_>>();
+    ar.template register_type<NURBSSpace<dim_,range_,rank_>>();
+    ar.template register_type<PhysicalSpace<dim_,range_,rank_,codim_,Transformation::h_grad>>();
+
     ar &boost::serialization::make_nvp("Space_base_t",
                                        boost::serialization::base_object<base_t>(*this));
 

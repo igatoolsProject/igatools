@@ -347,10 +347,9 @@ serialize(Archive &ar, const unsigned int version)
     ar &boost::serialization::make_nvp("IgFunction_base_t",
                                        boost::serialization::base_object<base_t>(*this));
 
-    //TODO (martinelli, May 18, 2105): register PhysicalSpace, PhysicalSpaceElement and PhysSpaceElementHandler
     ar.template register_type<BSplineSpace<dim,range,rank>>();
     ar.template register_type<NURBSSpace<dim,range,rank>>();
-//    ar.template register_type<PhysicalSpace<dim,range,rank,0,Transformation::h_grad>>();
+    ar.template register_type<PhysicalSpace<dim,range,rank,codim,Transformation::h_grad>>();
     auto non_nonst_space = std::const_pointer_cast<Space<dim,codim,range,rank>>(space_);
     ar &boost::serialization::make_nvp("space_",non_nonst_space);
     space_ = non_nonst_space;
