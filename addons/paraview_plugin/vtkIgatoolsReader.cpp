@@ -48,6 +48,8 @@ vtkIgatoolsReader::vtkIgatoolsReader()
     this->DebugOn();
 #endif
 
+    // Initializing members.
+
     this->NumVisualizationElementsPhysicalSolid[0] = 1;
     this->NumVisualizationElementsPhysicalSolid[1] = 1;
     this->NumVisualizationElementsPhysicalSolid[2] = 1;
