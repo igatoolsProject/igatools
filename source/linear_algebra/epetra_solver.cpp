@@ -26,7 +26,10 @@ IGA_NAMESPACE_OPEN
 namespace EpetraTools
 {
 
-SolverPtr create_solver(const Matrix &A, Vector &x, const Vector &b, const std::string &solver_type)
+SolverPtr create_solver(const Matrix &A, Vector &x, const Vector &b,
+                        const std::string &solver_type,
+                        const Real tolerance,
+                        const int max_num_iters)
 {
     using Teuchos::ParameterList;
     using Teuchos::parameterList;
@@ -35,8 +38,8 @@ SolverPtr create_solver(const Matrix &A, Vector &x, const Vector &b, const std::
     Belos::SolverFactory<double, MV, OP> factory;
     RCP<ParameterList> solverParams = parameterList();
     solverParams->set("Num Blocks", 40);
-    solverParams->set("Maximum Iterations", 400);
-    solverParams->set("Convergence Tolerance", 1.0e-8);
+    solverParams->set("Maximum Iterations", max_num_iters);
+    solverParams->set("Convergence Tolerance", tolerance);
 
 //    SolverPtr solver = factory.create("CG", solverParams);
     SolverPtr solver = factory.create(solver_type, solverParams);
