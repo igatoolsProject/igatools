@@ -94,7 +94,7 @@ protected:
 
 
 template <class Iterator, class ConstIterator>
-class MView : public ViewData<Iterator>
+class NonConstView : public ViewData<Iterator>
 {
 public:
     /** Type of the iterator. */
@@ -113,34 +113,34 @@ public:
     /**
      * Default constructor. It does nothing.
      */
-    MView() = default;
+    NonConstView() = default;
 
     /**
      * Construct a view defined by the iterator @p begin pointing to the first element,
      * and the iterator @p end pointing to one-past-the-end element
      * satisfying the chosen criteria.
      */
-    explicit MView(const iterator begin, const iterator end);
+    explicit NonConstView(const iterator begin, const iterator end);
 
 
     /** Copy constructor. */
-    MView(const MView<Iterator,ConstIterator> &view) = default;
+    NonConstView(const NonConstView<Iterator,ConstIterator> &view) = default;
 
     /** Move constructor. */
-    MView(MView<Iterator,ConstIterator> &&view) = default;
+    NonConstView(NonConstView<Iterator,ConstIterator> &&view) = default;
 
     /** Destructor. */
-    ~MView() = default;
+    ~NonConstView() = default;
     ///@}
 
     /** @name Assignment operators */
     ///@{
 
     /** Copy assignment operator. */
-    MView<Iterator,ConstIterator> &operator=(const MView<Iterator,ConstIterator> &view) = default;
+    NonConstView<Iterator,ConstIterator> &operator=(const NonConstView<Iterator,ConstIterator> &view) = default;
 
     /** Move assignment operator. */
-    MView<Iterator,ConstIterator> &operator=(MView<Iterator,ConstIterator> &&view) = default;
+    NonConstView<Iterator,ConstIterator> &operator=(NonConstView<Iterator,ConstIterator> &&view) = default;
     ///@}
 
     /** @name Dealing with the iterator */
@@ -206,7 +206,7 @@ public:
     /**
      * Construct a ConstView from a View.
      */
-    explicit ConstView(const MView<Iterator,ConstIterator> &view);
+    explicit ConstView(const NonConstView<Iterator,ConstIterator> &view);
 
     /** Copy constructor. */
     ConstView(const ConstView<Iterator,ConstIterator> &view) = default;
@@ -291,10 +291,10 @@ public:
  * @date 2014
  */
 template <class Container>
-class ContainerView : public MView<typename Container::iterator,typename Container::const_iterator>
+class ContainerView : public NonConstView<typename Container::iterator,typename Container::const_iterator>
 {
 public:
-    using MView<typename Container::iterator,typename Container::const_iterator>::MView;
+    using NonConstView<typename Container::iterator,typename Container::const_iterator>::NonConstView;
 //  ContainerView(const ContainerView<Container> &view) = default;
 //  ContainerView(ContainerView<Container> &&view) = default;
 };
