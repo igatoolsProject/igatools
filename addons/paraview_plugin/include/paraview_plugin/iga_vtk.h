@@ -276,21 +276,11 @@ private:
 
     /*
      * Generates the control mesh vtk grids.
-     * For the 1D case.
      */
     template <int dim, int codim>
     vtkSmartPointer<vtkPointSet>
-    create_control_mesh_grid(const MapFunPtr_<dim, codim> mapping,
-                             typename std::enable_if_t<dim == 1>* = 0) const;
+    create_control_mesh_grid(const MapFunPtr_<dim, codim> mapping) const;
 
-    /*
-     * Generates the control mesh vtk grids.
-     * For the 2D and 3D cases.
-     */
-    template <int dim, int codim>
-    vtkSmartPointer<vtkPointSet>
-    create_control_mesh_grid(const MapFunPtr_<dim, codim> mapping,
-                              typename std::enable_if_t<(dim == 2 || dim == 3)>* = 0) const;
 
     /*
      * Generates the knot mesh vtk grids. It is a VTK unstructured grid.
