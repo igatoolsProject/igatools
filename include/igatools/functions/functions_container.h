@@ -623,6 +623,8 @@ public:
     template<int dim, int space_dim>
     void insert_mapping(std::shared_ptr<MapFunction<dim,space_dim>> mapping, const std::string &map_name)
     {
+        Assert(mapping != nullptr, ExcNullPtr());
+
         auto &data_same_dim_codim = this->template get_data_dim_codim<dim,space_dim-dim>();
 
         Assert(!data_same_dim_codim.is_mapping_present(mapping),
@@ -649,6 +651,8 @@ public:
         std::shared_ptr<Function<dim,codim,range,rank>> function,
         const std::string &func_name)
     {
+        Assert(function != nullptr, ExcNullPtr());
+
         using boost::fusion::at_key;
 
         auto &data_same_dim_codim = this->template get_data_dim_codim<dim,codim>();
