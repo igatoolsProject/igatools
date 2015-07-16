@@ -348,7 +348,11 @@ serialize(Archive &ar, const unsigned int version)
                                        boost::serialization::base_object<base_t>(*this));
 
     ar.template register_type<BSplineSpace<dim,range,rank>>();
+
+#ifdef NURBS
     ar.template register_type<NURBSSpace<dim,range,rank>>();
+#endif // NURBS
+
     ar.template register_type<PhysicalSpace<dim,range,rank,codim,Transformation::h_grad>>();
     auto non_nonst_space = std::const_pointer_cast<Space<dim,codim,range,rank>>(space_);
     ar &boost::serialization::make_nvp("space_",non_nonst_space);

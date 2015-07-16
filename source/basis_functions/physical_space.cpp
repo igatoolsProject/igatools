@@ -334,10 +334,11 @@ serialize(Archive &ar, const unsigned int version)
                                        boost::serialization::base_object<base_t>(*this));
 
     ar.template register_type<BSplineSpace<dim_,range_,rank_> >();
+#ifdef NURBS
     ar.template register_type<NURBSSpace<dim_,range_,rank_> >();
-    ar &boost::serialization::make_nvp("ref_space_",ref_space_);
-//    Assert(ref_space_ != nullptr,ExcNullPtr());
+#endif // NURBS
 
+    ar &boost::serialization::make_nvp("ref_space_",ref_space_);
 
     auto tmp = const_pointer_cast<self_t>(phys_space_previous_refinement_);
     ar &boost::serialization::make_nvp("phys_space_previous_refinement_",tmp);

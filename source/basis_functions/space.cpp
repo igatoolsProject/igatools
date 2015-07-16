@@ -260,7 +260,11 @@ Space<dim_,codim_,range_,rank_>::
 serialize(Archive &ar, const unsigned int version)
 {
     ar.template register_type<BSplineSpace<dim_,range_,rank_>>();
+
+#ifdef NURBS
     ar.template register_type<NURBSSpace<dim_,range_,rank_>>();
+#endif
+
     ar.template register_type<PhysicalSpace<dim_,range_,rank_,codim_,Transformation::h_grad>>();
 
     ar &boost::serialization::make_nvp("Space_base_t",
