@@ -172,10 +172,14 @@ public:
 
 
     /**
-     * Returns a view of the dofs ids (without taking into accounts any property) on a given single-patch space
+     * Returns a const view of the dofs ids (without taking into accounts any property) on a given single-patch space
      */
-    DofsConstView get_dofs_view() const;
+    DofsConstView get_dofs_const_view() const;
 
+    /**
+     * Returns a non-const view of the dofs ids (without taking into accounts any property) on a given single-patch space
+     */
+    DofsView get_dofs_view();
 
     /**
      * Return the container holding the number of unique dofs,

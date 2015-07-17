@@ -89,7 +89,7 @@ Index
 DofDistribution<dim, range, rank>::
 get_min_dof_id() const
 {
-    const auto dofs_view = this->get_dofs_view();
+    const auto dofs_view = this->get_dofs_const_view();
     return *std::min_element(dofs_view.cbegin(),dofs_view.cend());
 }
 
@@ -100,7 +100,7 @@ Index
 DofDistribution<dim, range, rank>::
 get_max_dof_id() const
 {
-    const auto dofs_view = this->get_dofs_view();
+    const auto dofs_view = this->get_dofs_const_view();
     return *std::max_element(dofs_view.cbegin(),dofs_view.cend());
 }
 
@@ -167,7 +167,7 @@ get_index_table() const -> const IndexDistributionTable &
 template<int dim, int range, int rank>
 auto
 DofDistribution<dim, range, rank>::
-get_dofs_view() const -> DofsConstView
+get_dofs_const_view() const -> DofsConstView
 {
     // creating the dofs view from the dofs components views
     SafeSTLVector<DofsComponentConstView> components_views;
@@ -176,6 +176,20 @@ get_dofs_view() const -> DofsConstView
 
     return DofsConstView(DofsConstIterator(components_views,0),
                          DofsConstIterator(components_views,IteratorState::pass_the_end));
+}
+
+template<int dim, int range, int rank>
+auto
+DofDistribution<dim, range, rank>::
+get_dofs_view() -> DofsView
+{
+    // creating the dofs view from the dofs components views
+    SafeSTLVector<DofsComponentView> components_views;
+    for (auto &index_table_comp : index_table_)
+        components_views.emplace_back(index_table_comp.get_flat_view());
+
+    return DofsView(DofsIterator(components_views,0),
+    DofsIterator(components_views,IteratorState::pass_the_end));
 }
 
 template<int dim, int range, int rank>
@@ -337,7 +351,7 @@ void
 DofDistribution<dim, range, rank>::
 set_all_dofs_property_status(const std::string &property, const bool status)
 {
-    const auto dofs_view = this->get_dofs_view();
+    const auto dofs_view = this->get_dofs_const_view();
     properties_dofs_.set_ids_property_status(
         property,
         std::set<Index>(dofs_view.cbegin(),dofs_view.cend()),

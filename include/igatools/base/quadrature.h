@@ -267,6 +267,12 @@ public:
      * Dilation followed by a translation of the points (and of the corresponding bounding box).
      */
     void dilate_translate(const Point &dilate, const Point &translate);
+
+
+    /**
+     * Translation followed by a dilation of the points (and of the corresponding bounding box).
+     */
+    void translate_dilate(const Point &translate, const Point &dilate);
     ///@}
 
     /**

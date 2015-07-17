@@ -297,11 +297,9 @@ CartesianGridElement<dim>::
 is_boundary() const
 {
     for (auto &id : UnitElement<dim>::template elems_ids<k>())
-    {
-        auto res = is_boundary<k>(id);
-        if (res)
-            return res;
-    }
+        if (is_boundary<k>(id))
+            return true;
+
     return false;
 }
 

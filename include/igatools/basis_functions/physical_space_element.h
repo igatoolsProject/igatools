@@ -176,6 +176,12 @@ public:
 
     ValueVector<PhysPoint> get_element_points() const;
 
+    template<int sub_dim>
+    const ValueVector<Points<space_dim> > &
+    get_boundary_normals(const int s_id) const
+    {
+        return push_fwd_element_->template get_boundary_normals<sub_dim>(s_id);
+    }
 
 
     /**

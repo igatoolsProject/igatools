@@ -228,7 +228,14 @@ dilate_translate(const Point &dilate, const Point &translate)
 }
 
 
-
+template<int dim_>
+void
+Quadrature<dim_>::
+translate_dilate(const Point &translate,const Point &dilate)
+{
+    this->translate(translate);
+    this->dilate(dilate);
+}
 
 template<int dim_>
 bool
