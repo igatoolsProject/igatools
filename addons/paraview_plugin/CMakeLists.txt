@@ -1,73 +1,104 @@
-#-+--------------------------------------------------------------------
-# Igatools a general purpose Isogeometric analysis library.
-# Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
-#
-# This file is part of the igatools library.
-#
-# The igatools library is free software: you can use it, redistribute
-# it and/or modify it under the terms of the GNU General Public
-# License as published by the Free Software Foundation, either
-# version 3 of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#-+--------------------------------------------------------------------
 
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# cmakefile for the igatools-ParaView plugin
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#------------------------------------------------------------------------------
+# Find and Use ParaView
+#------------------------------------------------------------------------------
 
+cmake_minimum_required(VERSION 2.8.10)
 
 #-------------------------------------------------------------------------------
 # Set the igatools-ParaView version 
 #
-set(IGATOOLS_PARAVIEW_MAJOR_VERSION 0)
-set(IGATOOLS_PARAVIEW_MINOR_VERSION 1)
+set(IGATOOLS_PARAVIEW_MAJOR_VERSION 1)
+set(IGATOOLS_PARAVIEW_MINOR_VERSION 0)
 set(IGATOOLS_PARAVIEW_PATCH_VERSION 0)
 set(IGATOOLS_PARAVIEW_VERSION
   ${IGATOOLS_PARAVIEW_MAJOR_VERSION}.${IGATOOLS_PARAVIEW_MINOR_VERSION}.${IGATOOLS_PARAVIEW_PATCH_VERSION})
 #
 #-------------------------------------------------------------------------------
 
-set(igatools_paraview_name vtkIgatoolsReader)
-set(igatools_paraview_lib_name vtkIgatoolsReader)
-project (${igatools_paraview_name} CXX)
+#-------------------------------------------------------------------------------
+# Set the igatools required version 
+#
+set(IGATOOLS_REQUIRED_MAJOR_VERSION 1)
+set(IGATOOLS_REQUIRED_MINOR_VERSION 0)
+set(IGATOOLS_REQUIRED_PATCH_VERSION 0)
+set(IGATOOLS_REQUIRED_VERSION
+  ${IGATOOLS_REQUIRED_MAJOR_VERSION}.${IGATOOLS_REQUIRED_MINOR_VERSION}.${IGATOOLS_REQUIRED_PATCH_VERSION})
+#
+#-------------------------------------------------------------------------------
+
+set(igatools_paraview_name IgatoolsParaViewReader)
+set(igatools_paraview_lib_name igatools_paraview)
+# project (${igatools_paraview_name} CXX)
 
 message("Configuring igatools-ParaView plugin")
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Include all local macros
-file(GLOB_RECURSE macro_list ${PROJECT_SOURCE_DIR}/cmake/*.cmake)
+# Include all local macros from the paraview plugin (and also from igatools)
+
+file(GLOB_RECURSE macro_list ${PROJECT_SOURCE_DIR}/cmake/*.cmake
+                             ${PROJECT_SOURCE_DIR}/../../cmake/*.cmake)
 foreach(item ${macro_list})
   include (${item})
 endforeach(item)
+
+#-------------------------------------------------------------------------------
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Make sure the build directory is not the source or
+# the install directory
+
+macro_ensure_out_of_source_build()
+macro_ensure_out_of_build_install()
+
+#-------------------------------------------------------------------------------
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# If the prefix is not provided by the user but the
+# enviroment variable IGATOOLS_PREFIX exists then we use it
+# instead of the default prefix
+if((DEFINED ENV{IGATOOLS_PREFIX}) AND (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT))
+set(CMAKE_INSTALL_PREFIX 
+   $ENV{IGATOOLS_PREFIX} CACHE PATH "Installation prefix" FORCE)
+endif()
 #
 #-------------------------------------------------------------------------------
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Including dependencies
-set( CMAKE_PREFIX_PATH ${iga_BINARY_DIR} ${CMAKE_PREFIX_PATH} )
-find_package( igatools REQUIRED)
+# Required libraries and programs
 
-include_directories(${IGATOOLS_INCLUDE_DIRS})
-link_directories(${IGATOOLS_LIBRARY_DIR})
+find_igatools (${IGATOOLS_REQUIRED_VERSION})
 
 find_paraview ()
+
+find_sed()
+
+find_python()
 #-------------------------------------------------------------------------------
 
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Create the configuration, install and documentation targets
+# Compiler and compile flags
 
-create_configuration_target ()
+if(CMAKE_BUILD_TYPE MATCHES Release)
+  message("-- Igatools ParaView plugin build type: RELEASE")
+else ()
+  message("-- Igatools ParaView plugin type: DEBUG")
+endif()
 
-create_install_target()
+init_cxx_flags()
 
-# create_doc_target()
+#-------------------------------------------------------------------------------
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Create the configuration, install and documentation targets and finishing
+
+create_paraview_plugin_configuration_target ()
+
+create_paraview_plugin_install_target()
+
+print_paraview_plugin_final_message()
 #-------------------------------------------------------------------------------
