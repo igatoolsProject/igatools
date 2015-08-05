@@ -38,10 +38,9 @@ namespace space_tools
 
 
 /**
- * Perform an (L2)-Projection the function @p func
- * onto the space @p space using the quadrature rule @p quad.
- *  The projection is a numerical vector (the coefficients of
- *  the projected function)
+ * Returns the (L2)-Projection of the function @p function
+ * onto the space @p space.
+ * The integrals in the computations are done using the quadrature @p Q.
  */
 template<class Space, LAPack la_pack = LAPack::trilinos_epetra>
 std::shared_ptr<IgFunction<Space::dim,Space::codim,Space::range,Space::rank> >
