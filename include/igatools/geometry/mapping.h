@@ -36,12 +36,6 @@ template <int,int,int,int> class IgFunction;
  * which maps the reference domain \f$\hat\Omega \in \mathbb{R}^{dim}\f$ to the
  * physical domain \f$\Omega \in \mathbb{R}^{dim+codim}\f$.
  *
- * In igatools the mapping is a grid-like container, so that on top
- * of being a deformation is aware of an underlying grid structure.
- *
- * Most of the methods in this class are virtual,
- * because we want to use Mapping as general interface for user-defined Mapping
- * specializations (unknown at compile time).
  *
  * @ingroup containers
  * @ingroup serializable
