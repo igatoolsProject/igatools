@@ -36,6 +36,12 @@ template <int,int,int,int> class IgFunction;
  * which maps the reference domain \f$\hat\Omega \in \mathbb{R}^{dim}\f$ to the
  * physical domain \f$\Omega \in \mathbb{R}^{dim+codim}\f$.
  *
+ * Mapping is the physical domain, wether of a function or a space.
+ *
+ * It is a function with special properties: it codim is 0 and the map is always the
+ * identity.
+ *
+ * @todo we should thing about renaming mapping to physical domain
  *
  * @ingroup containers
  * @ingroup serializable
