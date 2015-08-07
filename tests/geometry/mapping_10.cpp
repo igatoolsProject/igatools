@@ -18,16 +18,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/*
- *  Test for IgFunction in a Mapping
- *  author: pauletti
- *  date: Oct 23, 2014
+/**
+ *  @file
+ *  @brief Mapping using an IgFunction
+ *  @author pauletti
+ *  @date 2014-10-23
  */
 
 #include "../tests.h"
 
-#include <igatools/geometry/mapping.h>
-#include <igatools/geometry/mapping_element.h>
+//#include <igatools/geometry/mapping.h>
+//#include <igatools/geometry/mapping_element.h>
+#include <igatools/geometry/physical_domain.h>
+#include <igatools/geometry/physical_domain_element.h>
 #include <igatools/functions/ig_function.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline_space.h>
@@ -41,9 +44,9 @@ void ig_mapping(const int deg = 1)
     OUTSTART
 
     using Space = BSplineSpace<dim, dim+codim>;
-    using RefSpace = ReferenceSpace<dim, dim+codim>;
+  //  using RefSpace = ReferenceSpace<dim, dim+codim>;
     using Function = IgFunction<dim,0,dim+codim,1>;
-    using Mapping   = Mapping<dim, codim>;
+    using Mapping   = PhysicalDomain<dim, codim>;
 
 
     auto flag =  ValueFlags::value| ValueFlags::gradient
@@ -60,16 +63,16 @@ void ig_mapping(const int deg = 1)
     auto F = Function::create(space, c_p);
 
     auto map = Mapping::create(F);
-    map->template reset<sub_dim>(flag, quad);
+    map->reset(flag, quad);
 
     auto elem = map->begin();
     auto end  = map->end();
     const int s_id = 0;
 
-    map->template init_cache<sub_dim>(elem);
+    map->init_cache(elem, Topology<sub_dim>());
     for (; elem != end; ++elem)
     {
-        map->template fill_cache<sub_dim>(elem, s_id);
+        map->fill_cache(elem, Topology<sub_dim>(), s_id);
 
         elem->template get_values<_Value,sub_dim>(s_id).print_info(out);
         out << endl;
