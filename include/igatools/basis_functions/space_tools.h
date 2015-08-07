@@ -335,18 +335,18 @@ static const SafeSTLArray<ValueFlags, 3> order_to_flag =
  */
 template<int order, int dim, int codim = 0, int range = 1, int rank = 1>
 Conditional<order==0,
-			typename Function<dim, codim, range, rank>::Value,
-			typename Function<dim, codim, range, rank>::template Derivative<order>>
-integrate(Function<dim, codim, range, rank> &f,
-		       const Quadrature<dim> &quad,
-		       SafeSTLVector<Conditional<order==0,
-			                 typename Function<dim, codim, range, rank>::Value,
-							 typename Function<dim, codim, range, rank>::template Derivative<order>>
-			   > &element_error)
-{
-	using Value = Conditional<order==0,
             typename Function<dim, codim, range, rank>::Value,
-			typename Function<dim, codim, range, rank>::template Derivative<order>>;
+            typename Function<dim, codim, range, rank>::template Derivative<order>>
+integrate(Function<dim, codim, range, rank> &f,
+          const Quadrature<dim> &quad,
+          SafeSTLVector<Conditional<order==0,
+          typename Function<dim, codim, range, rank>::Value,
+          typename Function<dim, codim, range, rank>::template Derivative<order>>
+          > &element_error)
+{
+    using Value = Conditional<order==0,
+          typename Function<dim, codim, range, rank>::Value,
+          typename Function<dim, codim, range, rank>::template Derivative<order>>;
 
     auto flag = ValueFlags::point | ValueFlags::w_measure | order_to_flag[order];
 
@@ -370,14 +370,14 @@ integrate(Function<dim, codim, range, rank> &f,
 
         val = 0.0;
         for (int iPt = 0; iPt < n_points; ++iPt)
-        	val += f_val[iPt] * w_meas[iPt];
+            val += f_val[iPt] * w_meas[iPt];
 
         element_error[ elem_id ] = val;
     }
 
     val = 0.0;
     for (auto &el_val : element_error)
-    	val += el_val;
+        val += el_val;
     return val;
 }
 

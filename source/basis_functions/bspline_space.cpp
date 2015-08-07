@@ -85,7 +85,7 @@ create(const int degree,
        const bool periodic,
        const BasisEndBehaviour end_b) -> shared_ptr<const self_t>
 {
-    shared_ptr<self_t> sp (new self_t(degree,grid,interior_reg,periodic,end_b));
+    shared_ptr<self_t> sp(new self_t(degree,grid,interior_reg,periodic,end_b));
     Assert(sp != nullptr, ExcNullPtr());
 
     return sp;
