@@ -104,7 +104,10 @@ public:
     ~PhysicalDomain();
 
     static std::shared_ptr<self_t>  create(std::shared_ptr<FuncType> F);
-
+    std::shared_ptr<self_t> clone() const
+	{
+    	return std::make_shared<self_t>(self_t(this->F_->clone()));
+	}
 public:
     void reset(const ValueFlags flag, const eval_pts_variant &quad);
 

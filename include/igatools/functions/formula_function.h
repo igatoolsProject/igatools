@@ -18,10 +18,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef FORMULA_FUNCTIONS_H
-#define FORMULA_FUNCTIONS_H
+#ifndef FORMULA_FUNCTIONS_H_
+#define FORMULA_FUNCTIONS_H_
 
 #include <igatools/functions/function.h>
+#include <igatools/geometry/physical_domain.h>
+#include <igatools/geometry/physical_domain_element.h>
 #include <igatools/base/value_types.h>
 
 IGA_NAMESPACE_OPEN
@@ -50,8 +52,8 @@ public:
 
     template <int order>
     using Derivative = typename parent_t::template Derivative<order>;
-
     using Map = MapFunction<dim, space_dim>;
+    using PhysDom = PhysicalDomain<dim, codim>;
 
     FormulaFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
 
@@ -77,8 +79,8 @@ private:
                             ValueVector<Derivative<2>> &values) const = 0;
 
 private:
-    std::shared_ptr<Map> mapping_;
-    typename Map::ElementIterator map_elem_;
+    std::shared_ptr<PhysDom> mapping_;
+    typename PhysDom::ElementIterator map_elem_;
 
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
