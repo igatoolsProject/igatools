@@ -30,9 +30,10 @@ SpaceElementBase<dim>::
 SpaceElementBase(const std::shared_ptr<const SpaceBase<dim>> &space,
                  const Index elem_index)
     :
-    base_t(space->get_ptr_const_grid(), elem_index),
+	grid_elem_(space->get_ptr_const_grid()->create_element(elem_index)),
     space_(space)
 {
+    Assert(grid_elem_ != nullptr, ExcNullPtr());
     Assert(space_ != nullptr, ExcNullPtr());
 }
 
@@ -41,16 +42,22 @@ SpaceElementBase<dim>::
 SpaceElementBase(const self_t &elem,
                  const CopyPolicy &copy_policy)
     :
-    base_t(elem,copy_policy),
     space_(elem.space_)
-{}
+{
+	if (copy_policy == CopyPolicy::shallow)
+		grid_elem_ = elem.grid_elem_;
+	else if (copy_policy == CopyPolicy::deep)
+		grid_elem_ = std::make_shared<CartesianGridElement<dim>>(*elem.grid_elem_,copy_policy);
+	else
+		AssertThrow(false,ExcInvalidState());
+}
 
 template <int dim>
 CartesianGridElement<dim> &
 SpaceElementBase<dim>::
 as_cartesian_grid_element_accessor()
 {
-    return static_cast<CartesianGridElement<dim> &>(*this);
+    return *grid_elem_;
 }
 
 template <int dim>
@@ -58,7 +65,7 @@ const CartesianGridElement<dim> &
 SpaceElementBase<dim>::
 as_cartesian_grid_element_accessor() const
 {
-    return static_cast<const CartesianGridElement<dim> &>(*this);
+    return *grid_elem_;
 }
 
 template <int dim>
@@ -66,7 +73,7 @@ void
 SpaceElementBase<dim>::
 print_info(LogStream &out) const
 {
-    base_t::print_info(out);
+	grid_elem_->print_info(out);
 
     out.begin_item("Element global connectivity (property=\"" + DofProperties::active + "\"):");
     const auto glob_dofs = this->get_local_to_global(DofProperties::active);
@@ -81,7 +88,7 @@ SpaceElementBase<dim>::
 print_cache_info(LogStream &out) const
 {
     out.begin_item("CartesianGridElement<" + std::to_string(dim) + "> cache:");
-    base_t::print_cache_info(out);
+    grid_elem_->print_cache_info(out);
     out.end_item();
 }
 
@@ -93,10 +100,44 @@ copy_from(const SpaceElementBase<dim> &elem,
 {
     if (this != &elem)
     {
-        CartesianGridElement<dim>::copy_from(elem,copy_policy);
+    	if (copy_policy == CopyPolicy::shallow)
+    		grid_elem_ = elem.grid_elem_;
+    	else if (copy_policy == CopyPolicy::deep)
+    		grid_elem_ = std::make_shared<CartesianGridElement<dim>>(*elem.grid_elem_,copy_policy);
+    	else
+    		AssertThrow(false,ExcInvalidState());
+
         space_ = elem.space_;
     }
 }
+
+
+template <int dim>
+Index
+SpaceElementBase<dim>::
+get_flat_index() const
+{
+	return grid_elem_->get_flat_index();
+}
+
+template <int dim>
+TensorIndex<dim>
+SpaceElementBase<dim>::
+get_tensor_index() const
+{
+	return grid_elem_->get_tensor_index();
+}
+
+template <int dim>
+std::shared_ptr<const CartesianGrid<dim> >
+SpaceElementBase<dim>::
+get_grid() const
+{
+	return grid_elem_->get_grid();
+}
+
+
+
 
 template <int dim>
 SafeSTLVector<Index>
@@ -160,7 +201,7 @@ operator==(const self_t &a) const
 {
     Assert(space_ == a.space_,
            ExcMessage("Comparison between elements defined on different spaces"));
-    return this->as_cartesian_grid_element_accessor() == a.as_cartesian_grid_element_accessor();
+    return *grid_elem_ == *a.grid_elem_;
 }
 
 template <int dim>
@@ -170,7 +211,7 @@ operator!=(const self_t &a) const
 {
     Assert(space_ == a.space_,
            ExcMessage("Comparison between elements defined on different spaces"));
-    return this->as_cartesian_grid_element_accessor() != a.as_cartesian_grid_element_accessor();
+    return *grid_elem_ != *a.grid_elem_;
 }
 
 template <int dim>
@@ -180,7 +221,7 @@ operator<(const self_t &a) const
 {
     Assert(space_ == a.space_,
            ExcMessage("Comparison between elements defined on different spaces"));
-    return this->as_cartesian_grid_element_accessor() < a.as_cartesian_grid_element_accessor();
+    return *grid_elem_ < *a.grid_elem_;
 }
 
 template <int dim>
@@ -190,7 +231,7 @@ operator>(const self_t &a) const
 {
     Assert(space_ == a.space_,
            ExcMessage("Comparison between elements defined on different spaces"));
-    return this->as_cartesian_grid_element_accessor() > a.as_cartesian_grid_element_accessor();
+    return *grid_elem_ > *a.grid_elem_;
 }
 
 template <int dim>
@@ -198,7 +239,7 @@ void
 SpaceElementBase<dim>::
 move_to(const Index flat_index)
 {
-    this->as_cartesian_grid_element_accessor().move_to(flat_index);
+	grid_elem_->move_to(flat_index);
 }
 
 
@@ -209,8 +250,8 @@ void
 SpaceElementBase<dim>::
 serialize(Archive &ar, const unsigned int version)
 {
-    ar &boost::serialization::make_nvp("SpaceElementBase_base_t",
-                                       boost::serialization::base_object<CartesianGridElement<dim>>(*this));
+    ar &boost::serialization::make_nvp("grid_elem_",grid_elem);
+
 
     auto non_const_space = std::const_pointer_cast<SpaceBase<dim>>(space_);
     ar &boost::serialization::make_nvp("space_",non_const_space);

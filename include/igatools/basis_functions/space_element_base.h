@@ -39,21 +39,10 @@ template <int> class SpaceBase;
  * @ingroup serializable
  */
 template <int dim>
-class SpaceElementBase : private CartesianGridElement<dim>
+class SpaceElementBase
 {
-protected:
-    using base_t = CartesianGridElement<dim>;
-
 private:
     using self_t = SpaceElementBase<dim>;
-
-
-public:
-    using base_t::get_flat_index;
-    using base_t::get_tensor_index;
-    using base_t::get_grid;
-    using base_t::is_boundary;
-
 
     /** @name Constructors */
     ///@{
@@ -208,8 +197,42 @@ public:
     ///@}
 
 
+    /** @name Functions related to the indices of the element in the cartesian grid. */
+    ///@{
+    /** Returns the index of the element in its flatten representation. */
+    Index get_flat_index() const;
+
+    /** Returns the index of the element in its tensor representation. */
+    TensorIndex<dim> get_tensor_index() const;
+    ///@}
+
+    /** Return the cartesian grid from which the element belongs.*/
+    std::shared_ptr<const CartesianGrid<dim> > get_grid() const;
+
+    /**
+     * Test if the element has a boundary face.
+      */
+    template<int k = (dim > 0) ? (dim-1) : 0 >
+    bool is_boundary() const
+    {
+    	return grid_elem_->is_boundary();
+    }
+
+    /**
+     * Test if the face identified by @p face_id on the current element is on the
+     * boundary of the cartesian grid.
+     */
+    template<int k = (dim > 0) ? (dim-1) : 0>
+    bool is_boundary(const Index sub_elem_id) const
+    {
+    	return grid_elem_->is_boundary(sub_elem_id);
+    }
+
 private:
+    std::shared_ptr<CartesianGridElement<dim>> grid_elem_;
+
     std::shared_ptr<const SpaceBase<dim>> space_;
+
 
 #ifdef SERIALIZATION
     /**
