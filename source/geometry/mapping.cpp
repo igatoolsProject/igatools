@@ -33,19 +33,24 @@ namespace
 ValueFlags
 mapping_to_function_flags(const ValueFlags &flags)
 {
-    ValueFlags valid_func_flags = ValueFlags::value |
-                                  ValueFlags::gradient |
+	/*
+    ValueFlags valid_func_flags = ValueFlags::gradient |
                                   ValueFlags::hessian |
                                   ValueFlags::divergence |
                                   ValueFlags::point;
-
     ValueFlags transfer_flags = ValueFlags::measure |
                                 ValueFlags::w_measure |
                                 ValueFlags::boundary_normal |
                                 valid_func_flags;
+//*/
 
-
+	ValueFlags transfer_flags = ValueFlags::gradient |
+			                    ValueFlags::hessian;
     ValueFlags f_flags = flags & transfer_flags;
+
+    if (contains(flags, ValueFlags::point))
+        f_flags |= ValueFlags::value;
+
 
     if (contains(flags, ValueFlags::measure) ||
         contains(flags, ValueFlags::w_measure) ||
@@ -122,18 +127,37 @@ auto
 Mapping<dim_, codim_>::
 fill_cache(ElementAccessor &elem, const int j) -> void
 {
-    F_->template fill_cache(elem, Topology<k>(),j);
+    F_->template fill_cache(elem.get_func_element(), Topology<k>(),j);
 
     // TODO (pauletti, Nov 6, 2014): provide a lighter function for this
     const auto n_points = F_->template get_num_points<k>();
 
     auto &cache = elem.local_cache_->template get_sub_elem_cache<k>(j);
+    const auto &func_elem = elem.get_func_element();
+
+    if (cache.template status_fill<_Point>())
+    {
+        cache.template get_data<_Point>() =
+        		func_elem.template get_values<_Value,k>(j);
+    }
+
+    if (cache.template status_fill<_Gradient>())
+    {
+        cache.template get_data<_Gradient>() =
+        		func_elem.template get_values<_Gradient,k>(j);
+    }
+
+    if (cache.template status_fill<_Hessian>())
+    {
+        cache.template get_data<_Hessian>() =
+        		func_elem.template get_values<_Hessian,k>(j);
+    }
 
     if (cache.template status_fill<_Measure>())
     {
         auto &k_elem = UnitElement<dim_>::template get_elem<k>(j);
 
-        const auto &DF = elem.template get_values<_Gradient, k>(j);
+        const auto &DF = func_elem.template get_values<_Gradient, k>(j);
         typename MapFunction<k, space_dim>::Gradient DF1;
 
         auto &measures = cache.template get_data<_Measure>();
@@ -149,7 +173,7 @@ fill_cache(ElementAccessor &elem, const int j) -> void
 
     if (cache.template status_fill<_W_Measure>())
     {
-        const auto &w = elem.CartesianGridElement<dim_>::template get_w_measures<k>(j);
+        const auto &w = func_elem.CartesianGridElement<dim_>::template get_w_measures<k>(j);
 
         const auto &measures = cache.template get_data<_Measure>();
 
@@ -164,7 +188,7 @@ fill_cache(ElementAccessor &elem, const int j) -> void
     if (cache.template status_fill<_InvGradient>())
     {
         // TODO (pauletti, Nov 23, 2014): if also fill measure this could be done here
-        const auto &DF = elem.template get_values<_Gradient, k>(j);
+        const auto &DF = func_elem.template get_values<_Gradient, k>(j);
         auto &D_invF = cache.template get_data<_InvGradient>();
         Real det;
         for (int pt = 0 ; pt < n_points; ++pt)
@@ -176,7 +200,7 @@ fill_cache(ElementAccessor &elem, const int j) -> void
     if (cache.template status_fill<_InvHessian>())
     {
 //        const auto &D1_F = elem.template get_values<_Gradient, k>(j);
-        const auto &D2_F = elem.template get_values<_Hessian, k>(j);
+        const auto &D2_F = func_elem.template get_values<_Hessian, k>(j);
         const auto &D1_invF = cache.template get_data<_InvGradient>();
         auto &D2_invF       = cache.template get_data<_InvHessian>();
 
@@ -216,7 +240,7 @@ fill_cache(ElementAccessor &elem, const int j) -> void
         Assert(k == dim_, ExcNotImplemented());
         Assert(codim_ == 1, ExcNotImplemented());
 
-        const auto &DF = elem.template get_values<_Gradient, k>(j);
+        const auto &DF = func_elem.template get_values<_Gradient, k>(j);
         auto &outer_normal = cache.template get_data<_OuterNormal>();
 
         for (int pt = 0; pt < n_points; ++pt)
@@ -263,7 +287,7 @@ auto
 Mapping<dim_, codim_>::
 init_cache(ElementAccessor &elem) -> void
 {
-    F_->init_cache(elem, Topology<k>());
+    F_->init_cache(elem.get_func_element(), Topology<k>());
 
     auto &cache = elem.local_cache_;
     if (cache == nullptr)

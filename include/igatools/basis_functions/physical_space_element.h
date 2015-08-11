@@ -58,6 +58,8 @@ public :
 //    using RefElemAccessor = typename RefSpace::ElementAccessor;
     using RefElemAccessor = SpaceElement<RefSpace::dim,0,RefSpace::range,RefSpace::rank>;
 
+    using MapElem = MappingElement<dim_, codim_>;
+
     static const auto dim = PfElemAccessor::dim;
     static const auto space_dim = PfElemAccessor::space_dim;
     static const auto codim = PfElemAccessor::codim;
@@ -157,7 +159,7 @@ public:
     template <int k>
     ValueVector<Real> get_w_measures(const int j) const
     {
-        return push_fwd_element_->template get_w_measures<k>(j);
+        return map_element_->template get_w_measures<k>(j);
     }
 
     /**
@@ -166,7 +168,7 @@ public:
     template <int k>
     ValueVector<Real> get_measures(const int j) const
     {
-        return push_fwd_element_->template get_measures<k>(j);
+        return map_element_->template get_measures<k>(j);
     }
 
     ValueVector<Real> get_element_w_measures() const;
@@ -180,7 +182,7 @@ public:
     const ValueVector<Points<space_dim> > &
     get_boundary_normals(const int s_id) const
     {
-        return push_fwd_element_->template get_boundary_normals<sub_dim>(s_id);
+        return map_element_->template get_boundary_normals<sub_dim>(s_id);
     }
 
 
@@ -232,21 +234,25 @@ public:
 public:
 
     /**
-     * Return a const reference of this object as would be viewed as reference space element accessor.
-     * This means that the returned object can be queried (but not modified) as the reference space
-     * element accessor that is used as partial inheritance of the physical space element accessor.
+     * Return a const reference of the reference space element.
      */
     const RefElemAccessor &get_ref_space_element() const;
+
+    /**
+     * Return a non-const reference of the reference space element.
+     */
     RefElemAccessor &get_ref_space_element();
 
 
     /**
-     * Return a const reference of this object as would be viewed as push-forward element accessor.
-     * This means that the returned object can be queried (but not modified) as the push-forward
-     * element accessor that is used as partial inheritance of the physical space element accessor.
+     * Return a const reference of the mapping element.
      */
-    const PfElemAccessor &get_push_forward_accessor() const;
-    PfElemAccessor &get_push_forward_accessor();
+    const MapElem &get_map_element() const;
+
+    /**
+     * Return a non-const reference of the mapping element.
+     */
+    MapElem &get_map_element();
 
 public:
     using parent_t::get_num_basis;
@@ -330,8 +336,10 @@ private:
 
     std::shared_ptr<RefElemAccessor> ref_space_element_;
 
+    std::shared_ptr<MapElem> map_element_;
 
-    std::shared_ptr<PfElemAccessor> push_fwd_element_;
+
+//    std::shared_ptr<PfElemAccessor> push_fwd_element_;
 
     /**
      * Creates a new object performing a deep copy of the current object using the PhysicalSpaceElement

@@ -32,21 +32,22 @@ IGA_NAMESPACE_OPEN
  */
 template<Transformation type_, int dim_, int codim_ = 0>
 class PushForwardElement
-    : public MappingElement<dim_, codim_>
+//    : public MappingElement<dim_, codim_>
 {
 private:
     using self_t  = PushForwardElement<type_, dim_, codim_>;
-    using parent_t = MappingElement<dim_, codim_>;
+//    using parent_t = MappingElement<dim_, codim_>;
+    using MapElem = MappingElement<dim_, codim_>;
     using PF      = PushForward<type_, dim_, codim_>;
 public:
 
-    using parent_t::dim;
-    using parent_t::codim;
-    using parent_t::space_dim;
+    static const int dim = dim_;
+    static const int codim = codim_;
+    static const int space_dim = dim + codim;
 
     static const Transformation type = type_;
     using ContainerType = const PF;
-    using parent_t::parent_t;
+//    using parent_t::parent_t;
 
 
 
@@ -68,24 +69,25 @@ public:
 public:
 
     template <int range, int rank, Transformation ttype=type_>
-    void
+    static void
     transform_0(const ValueContainer<RefValue<range, rank>> &v_hat,
                 ValueContainer< PhysValue<range, rank> > &v,
-                EnableIf<ttype == Transformation::h_grad> * = 0) const
+                EnableIf<ttype == Transformation::h_grad> * = 0)
     {
         v = v_hat;
     }
 
 
     template <int range, int rank, int k, Transformation ttype=type_>
-    void
+    static void
     transform_1(const std::tuple<
                 const ValueContainer<RefValue<range, rank>> &,
                 const ValueContainer<RefDerivative<range, rank, 1>> &> &ref_values,
                 const ValueContainer<PhysValue<range, rank>>   &phys_values,
+				const MapElem & map_elem,
                 ValueContainer<PhysDerivative<range, rank, 1>> &Dv,
                 const int s_id,
-                EnableIf<ttype == Transformation::h_grad> * = 0) const
+                EnableIf<ttype == Transformation::h_grad> * = 0)
     {
         const auto &Dv_hat = std::get<1>(ref_values);
 
@@ -94,7 +96,7 @@ public:
         auto Dv_it     = Dv.begin();
         auto Dv_hat_it = Dv_hat.cbegin();
 
-        const auto &DF_inv = this->template get_values_from_cache<_InvGradient,k>(s_id);
+        const auto &DF_inv = map_elem.template get_values_from_cache<_InvGradient,k>(s_id);
         for (int fn = 0; fn < n_func; ++fn)
             for (Index pt = 0; pt < n_points; ++pt)
             {
@@ -106,7 +108,7 @@ public:
 
 
     template <int range, int rank, int k, Transformation ttype=type_>
-    void
+    static void
     transform_2(const std::tuple<
                 const ValueContainer<RefValue<range, rank>> &,
                 const ValueContainer<RefDerivative<range, rank, 1>> &,
@@ -114,9 +116,10 @@ public:
                 const std::tuple<
                 const ValueContainer<PhysValue<range, rank>> &,
                 const ValueContainer<PhysDerivative<range, rank, 1>> &> &phys_values,
+				const MapElem & map_elem,
                 ValueContainer<PhysDerivative<range, rank, 2>> &D2v,
                 const int s_id,
-                EnableIf<ttype == Transformation::h_grad> * = 0) const
+                EnableIf<ttype == Transformation::h_grad> * = 0)
     {
         const auto &D2v_hat = std::get<2>(ref_values);
         const auto &D1v     = std::get<1>(phys_values);
@@ -126,8 +129,8 @@ public:
         auto D2v_it     = D2v.begin();
         auto D1v_it     = D1v.cbegin();
         auto D2v_hat_it = D2v_hat.cbegin();
-        const auto D2F     =  this->template get_values<_Hessian,k>(s_id);
-        const auto &DF_inv =  this->template get_values_from_cache<_InvGradient,k>(s_id);
+        const auto D2F     =  map_elem.get_func_element().template get_values<_Hessian,k>(s_id);
+        const auto &DF_inv =  map_elem.template get_values_from_cache<_InvGradient,k>(s_id);
 
         for (int fn = 0; fn < n_func; ++fn)
             for (Index pt = 0; pt < n_points; ++pt)
@@ -166,6 +169,7 @@ public:
         EnableIf<ttype == Transformation::h_div> *= 0) const;
 #endif
 
+#if 0
 private:
     template <class Accessor> friend class CartesianGridIteratorBase;
     friend class PushForward<type_, dim_, codim_>;
@@ -181,6 +185,7 @@ private:
         Assert(elem != nullptr, ExcNullPtr());
         return elem;
     }
+#endif
 };
 
 IGA_NAMESPACE_CLOSE

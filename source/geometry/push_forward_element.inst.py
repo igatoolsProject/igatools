@@ -29,14 +29,14 @@ for x in inst.sub_mapping_dims:
     dims = '<Transformation::h_grad, %d, %d>' %(x.dim, x.codim)
     acc = 'PushForwardElement%s' % (dims)
     f.write('template class %s ;\n' %(acc))
-    for it in inst.iterators:
-        iterator = it.replace('Accessor','%s' % (acc) )
-        f.write('template class %s; \n' %iterator)
+#    for it in inst.iterators:
+#        iterator = it.replace('Accessor','%s' % (acc) )
+#        f.write('template class %s; \n' %iterator)
 
 for x in inst.mapping_dims:
     dims = '<Transformation::h_grad, %d, %d>' %(x.dim, x.codim)
     acc = 'PushForwardElement%s' % (dims)
     f.write('template class %s ;\n' %(acc))
-    for it in inst.iterators:
-        iterator = it.replace('Accessor','%s' % (acc) )
-        f.write('template class %s; \n' %iterator)
+#    for it in inst.iterators:
+#        iterator = it.replace('Accessor','%s' % (acc) )
+#        f.write('template class %s; \n' %iterator)

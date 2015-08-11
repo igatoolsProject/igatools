@@ -30,11 +30,99 @@ using std::shared_ptr;
 IGA_NAMESPACE_OPEN
 
 
-
-
-
 namespace
 {
+auto
+pushforward_to_mapping_flag(
+		const Transformation type,
+		const ValueFlags flags,
+		const TransformationFlags transf_flags)
+-> ValueFlags
+{
+    ValueFlags transfer_flag =
+    ValueFlags::measure |
+    ValueFlags::w_measure |
+    ValueFlags::outer_normal|
+    ValueFlags::boundary_normal|
+    ValueFlags::point|
+//    ValueFlags::value|
+    ValueFlags::gradient|
+    ValueFlags::hessian;
+
+    ValueFlags map_flag = flags & transfer_flag;
+
+    if (type == Transformation::h_grad)
+    {
+        if (contains(transf_flags, TransformationFlags::tran_value))
+        {}
+
+        if (contains(transf_flags, TransformationFlags::tran_gradient))
+            map_flag|= (ValueFlags::inv_gradient);
+
+        if (contains(transf_flags, TransformationFlags::tran_hessian))
+        {
+            map_flag |= (ValueFlags::hessian | ValueFlags::inv_gradient);
+        }
+    }
+//    else if (type == Transformation::h_div)
+//    {
+//        if (contains(v_flag,ValueFlags::tran_value))
+//            fill_flag |= (ValueFlags::map_gradient |
+//                          ValueFlags::map_face_gradient);
+//        if (contains(v_flag,ValueFlags::tran_gradient))
+//            fill_flag |= (ValueFlags::map_gradient |
+//                          ValueFlags::map_hessian |
+//                          ValueFlags::map_face_gradient |
+//                          ValueFlags::map_face_hessian);
+//        if (contains(v_flag,ValueFlags::tran_hessian))
+//            AssertThrow(false,ExcNotImplemented());
+//    }
+//    else if (type == Transformation::h_curl)
+//    {
+//        AssertThrow(false,ExcNotImplemented());
+//        if (contains(v_flag,ValueFlags::tran_value))
+//            fill_flag |= (ValueFlags::map_gradient |
+//                          ValueFlags::map_face_gradient);
+//        if (contains(v_flag,ValueFlags::tran_gradient))
+//            fill_flag |= (ValueFlags::map_gradient |
+//                          ValueFlags::map_hessian |
+//                          ValueFlags::map_face_gradient |
+//                          ValueFlags::map_face_hessian);
+//        if (contains(v_flag,ValueFlags::tran_hessian))
+//            AssertThrow(false,ExcNotImplemented());
+//    }
+//    else if (type == Transformation::l_2)
+//    {
+//        AssertThrow(false,ExcNotImplemented());
+//        if (contains(v_flag,ValueFlags::tran_value))
+//            AssertThrow(false,ExcNotImplemented());
+//        if (contains(v_flag,ValueFlags::tran_gradient))
+//            AssertThrow(false,ExcNotImplemented());
+//        if (contains(v_flag,ValueFlags::tran_hessian))
+//            AssertThrow(false,ExcNotImplemented());
+//    }
+//
+//
+//
+//    // We fill extra stuff as the computation is performed anyways
+//    if (contains(fill_flag , ValueFlags::measure))
+//        fill_flag |= (ValueFlags::map_gradient |
+//                      ValueFlags::map_face_gradient);
+//
+//    if (contains(fill_flag , ValueFlags::map_inv_gradient))
+//        fill_flag |= (ValueFlags::map_gradient |
+//                      ValueFlags::measure |
+//                      ValueFlags::map_face_gradient |
+//                      ValueFlags::face_measure);
+//
+//    if (contains(fill_flag , ValueFlags::map_inv_hessian))
+//        fill_flag |= (ValueFlags::map_hessian |
+//                      ValueFlags::map_face_hessian);
+
+    return map_flag;
+}
+
+
 auto
 space_to_ref_flag(const Transformation type, const ValueFlags flags)
 -> ValueFlags
@@ -118,7 +206,8 @@ PhysSpaceElementHandler(std::shared_ptr<const PhysSpace> space)
     :
     base_t(space),
     ref_space_handler_(space->get_reference_space()->get_elem_handler()),
-    push_fwd_(std::const_pointer_cast<MapFunction<dim_,dim_+codim_>>(space->get_ptr_const_map_func()))
+//    push_fwd_(std::const_pointer_cast<MapFunction<dim_,dim_+codim_>>(space->get_ptr_const_map_func()))
+    mapping_(std::const_pointer_cast<MapFunction<dim_,dim_+codim_>>(space->get_ptr_const_map_func()))
 {}
 
 template<int dim_,int range_,int rank_,int codim_>
@@ -151,7 +240,11 @@ operator()(const Quadrature<sub_elem_dim> &quad)
     TransformationFlags transf_flags;
     space_to_pf_flag(flag_in_,map_flags, transf_flags);
 
-    push_fwd_.template reset<sub_elem_dim>(map_flags,transf_flags,quad);
+    auto mapping_flags = pushforward_to_mapping_flag(
+    		PhysSpace::PushForwardType::type,
+			flag_in_,
+			transf_flags);
+    mapping_.template reset<sub_elem_dim>(mapping_flags,quad);
 }
 
 template<int dim_,int range_,int rank_,int codim_>
@@ -163,7 +256,7 @@ reset_selected_elements(
     const SafeSTLVector<int> &elements_flat_id)
 {
     auto reset_selected_elems_dispatcher =
-        ResetDispatcher(flag,elements_flat_id,*ref_space_handler_,push_fwd_,flags_);
+        ResetDispatcher(flag,elements_flat_id,*ref_space_handler_,mapping_,flags_);
     boost::apply_visitor(reset_selected_elems_dispatcher,eval_points);
 }
 
@@ -181,8 +274,8 @@ operator()(const Topology<sub_elem_dim> &topology)
     auto &ref_elem = phys_elem_.get_ref_space_element();
     ref_space_handler_.template init_cache<sub_elem_dim>(ref_elem);
 
-    auto &push_fwd_elem = phys_elem_.get_push_forward_accessor();
-    push_fwd_.template init_cache<sub_elem_dim>(push_fwd_elem);
+    auto &map_elem = phys_elem_.get_map_element();
+    mapping_.template init_cache<sub_elem_dim>(map_elem);
 
 
     using RefSpHndlr = ReferenceElementHandler<dim_,range_,rank_>;
@@ -217,7 +310,7 @@ init_cache(SpaceElement<dim_,codim_,range_,rank_> &sp_elem,
     Assert(as_phys_elem != nullptr,ExcNullPtr());
 
     auto init_cache_dispatcher =
-        InitCacheDispatcher(flags_,*ref_space_handler_,push_fwd_,*as_phys_elem);
+        InitCacheDispatcher(flags_,*ref_space_handler_,mapping_,*as_phys_elem);
     boost::apply_visitor(init_cache_dispatcher,topology);
 }
 
@@ -234,19 +327,20 @@ operator()(const Topology<sub_elem_dim> &topology)
     auto &ref_elem = phys_elem_.get_ref_space_element();
     ref_space_handler_.template fill_cache<sub_elem_dim>(ref_elem, sub_elem_id_);
 
-    auto &push_fwd_elem = phys_elem_.get_push_forward_accessor();
-    push_fwd_.template fill_cache<sub_elem_dim>(push_fwd_elem, sub_elem_id_);
+    auto &map_elem = phys_elem_.get_map_element();
+    mapping_.template fill_cache<sub_elem_dim>(map_elem, sub_elem_id_);
 
     auto &all_sub_elems_cache = phys_elem_.get_all_sub_elems_cache();
     Assert(all_sub_elems_cache != nullptr, ExcNullPtr());
     auto &sub_elem_cache = all_sub_elems_cache->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id_);
+
 
     using std::cref;
     if (sub_elem_cache.template status_fill<_Value>())
     {
         auto &result = sub_elem_cache.template get_data<_Value>();
         const auto &ref_values = ref_elem.template get_basis<_Value,sub_elem_dim>(sub_elem_id_,DofProperties::active);
-        push_fwd_elem.template transform_0<RefSpace::range,RefSpace::rank>
+        PfElemAccessor::template transform_0<RefSpace::range,RefSpace::rank>
         (ref_values, result);
 
         sub_elem_cache.template set_status_filled<_Value>(true);
@@ -256,9 +350,10 @@ operator()(const Topology<sub_elem_dim> &topology)
         const auto &ref_values = ref_elem.template get_basis<   _Value,sub_elem_dim>(sub_elem_id_,DofProperties::active);
         const auto &ref_der_1  = ref_elem.template get_basis<_Gradient,sub_elem_dim>(sub_elem_id_,DofProperties::active);
         const auto &values = sub_elem_cache.template get_data<_Value>();
-        push_fwd_elem.template transform_1<PhysSpace::range,PhysSpace::rank,sub_elem_dim>(
+        PfElemAccessor::template transform_1<PhysSpace::range,PhysSpace::rank,sub_elem_dim>(
             std::make_tuple(cref(ref_values), cref(ref_der_1)),
             values,
+			map_elem,
             sub_elem_cache.template get_data<_Gradient>(),
             sub_elem_id_);
 
@@ -271,9 +366,10 @@ operator()(const Topology<sub_elem_dim> &topology)
         const auto &ref_der_2  = ref_elem.template get_basis< _Hessian,sub_elem_dim>(sub_elem_id_,DofProperties::active);
         const auto &values = sub_elem_cache.template get_data<   _Value>();
         const auto &der_1  = sub_elem_cache.template get_data<_Gradient>();
-        push_fwd_elem.template transform_2<PhysSpace::range,PhysSpace::rank, sub_elem_dim>(
+        PfElemAccessor::template transform_2<PhysSpace::range,PhysSpace::rank, sub_elem_dim>(
             std::make_tuple(cref(ref_values), cref(ref_der_1), cref(ref_der_2)),
             std::make_tuple(cref(values),cref(der_1)),
+			map_elem,
             sub_elem_cache.template get_data<_Hessian>(),
             sub_elem_id_);
 
@@ -303,7 +399,7 @@ fill_cache(SpaceElement<dim_,codim_,range_,rank_> &sp_elem,
     Assert(as_phys_elem != nullptr,ExcNullPtr());
 
     auto fill_cache_dispatcher =
-        FillCacheDispatcher(sub_elem_id,*ref_space_handler_,push_fwd_,*as_phys_elem);
+        FillCacheDispatcher(sub_elem_id,*ref_space_handler_,mapping_,*as_phys_elem);
     boost::apply_visitor(fill_cache_dispatcher,topology);
 }
 

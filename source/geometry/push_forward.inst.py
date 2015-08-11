@@ -26,7 +26,8 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 sub_dim_members = \
-['void PushForward<Transformation::h_grad,dim,cod>::reset<k>(const ValueFlags flag, const TransformationFlags transf_flag, const Quadrature<k> &quad);']
+[]
+#['void PushForward<Transformation::h_grad,dim,cod>::reset<k>(const ValueFlags flag, const TransformationFlags transf_flag, const Quadrature<k> &quad);']
 
 
 for x in inst.sub_mapping_dims:

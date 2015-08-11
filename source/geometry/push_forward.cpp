@@ -28,6 +28,8 @@ using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
+
+#if 0
 namespace
 {
 auto
@@ -117,7 +119,7 @@ pushforward_to_mapping_flag(const Transformation type, const ValueFlags flags, c
     return map_flag;
 }
 }
-
+#endif
 
 template<Transformation type, int dim, int codim>
 PushForward<type, dim, codim>::
@@ -127,7 +129,7 @@ PushForward(std::shared_ptr<FuncType> F)
 {}
 
 
-
+#if 0
 template<Transformation type, int dim, int codim>
 template<int k>
 auto
@@ -136,7 +138,6 @@ reset(const ValueFlags flag, const TransformationFlags transf_flag, const Quadra
 {
     MapType::template reset<k>(pushforward_to_mapping_flag(type, flag, transf_flag), eval_pts);
 }
-
 
 template<Transformation type, int dim, int codim>
 auto
@@ -148,7 +149,6 @@ create_element(const Index flat_index) const -> std::shared_ptr<ElementAccessor>
 
     return elem;
 }
-
 
 template<Transformation type, int dim, int codim>
 auto
@@ -166,6 +166,7 @@ end() const -> ElementIterator
 {
     return ElementIterator(this->create_element(IteratorState::pass_the_end),ElementProperties::none);
 }
+#endif
 
 
 

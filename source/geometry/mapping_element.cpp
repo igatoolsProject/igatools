@@ -29,7 +29,7 @@ MappingElement<dim_, codim_>::
 MappingElement(const std::shared_ptr<Func> func,
                const Index elem_index)
     :
-    parent_t(func,elem_index)
+	func_elem_(std::make_shared<FuncElem>(func,elem_index))
 {}
 
 
@@ -37,18 +37,116 @@ template<int dim_, int codim_>
 MappingElement<dim_, codim_>::
 MappingElement(const self_t &elem,
                const CopyPolicy &copy_policy)
-    :
-    parent_t(elem,copy_policy)
 {
     if (copy_policy == CopyPolicy::shallow)
+    {
         local_cache_ = elem.local_cache_;
+        func_elem_ = elem.func_elem_;
+    }
     else
     {
-        local_cache_ =
-            std::shared_ptr<CacheType>(new CacheType(*elem.local_cache_));
+        local_cache_ = std::make_shared<CacheType>(*elem.local_cache_);
+    	func_elem_ = std::make_shared<FuncElem>(*elem.func_elem_,copy_policy);
     }
 }
 
+
+template<int dim_, int codim_>
+auto
+MappingElement<dim_, codim_>::
+get_func_element() -> FuncElem &
+{
+	return *func_elem_;
+}
+
+template<int dim_, int codim_>
+auto
+MappingElement<dim_, codim_>::
+get_func_element() const -> const FuncElem &
+{
+	return *func_elem_;
+}
+
+template<int dim_, int codim_>
+auto
+MappingElement<dim_, codim_>::
+get_flat_index() const -> Index
+{
+	return func_elem_->get_flat_index();
+}
+
+template<int dim_, int codim_>
+auto
+MappingElement<dim_, codim_>::
+get_tensor_index() const -> TensorIndex<dim>
+{
+	return func_elem_->get_tensor_index();
+}
+
+template<int dim_, int codim_>
+auto
+MappingElement<dim_, codim_>::
+get_grid() const -> std::shared_ptr<const CartesianGrid<dim> >
+{
+	return func_elem_->get_grid();
+}
+
+template<int dim_, int codim_>
+bool
+MappingElement<dim_, codim_>::
+operator==(const self_t &a) const
+{
+	return *func_elem_ == *a.func_elem_;
+}
+
+
+template<int dim_, int codim_>
+bool
+MappingElement<dim_, codim_>::
+operator!=(const self_t &a) const
+{
+	return *func_elem_ != *a.func_elem_;
+}
+
+template<int dim_, int codim_>
+bool
+MappingElement<dim_, codim_>::
+operator<(const self_t &a) const
+{
+	return *func_elem_ < *a.func_elem_;
+}
+
+template<int dim_, int codim_>
+bool
+MappingElement<dim_, codim_>::
+operator>(const self_t &a) const
+{
+	return *func_elem_ > *a.func_elem_;
+}
+
+template<int dim_, int codim_>
+void
+MappingElement<dim_, codim_>::
+move_to(const Index flat_index)
+{
+	func_elem_->move_to(flat_index);
+}
+
+template<int dim_, int codim_>
+void
+MappingElement<dim_, codim_>::
+print_info(LogStream &out) const
+{
+	func_elem_->print_info(out);
+}
+
+template<int dim_, int codim_>
+void
+MappingElement<dim_, codim_>::
+print_cache_info(LogStream &out) const
+{
+	func_elem_->print_cache_info(out);
+}
 
 
 template<int dim_, int codim_>
@@ -57,7 +155,7 @@ MappingElement<dim_, codim_>::
 compute_inv_first_fundamental_form() const -> ValueVector<MetricTensor>
 {
     ValueVector<MetricTensor> res;
-    const auto &DF = this->template get_values<_Gradient, dim>(0);
+    const auto &DF = func_elem_->template get_values<_Gradient, dim>(0);
     const auto n_points = DF.get_num_points();
 
     res.resize(n_points);
@@ -82,7 +180,7 @@ compute_second_fundamental_form() const -> ValueVector<MetricTensor>
 {
     Assert(codim==1, ExcNotImplemented());
 
-    const auto &D2_F  = this->template get_values<_Hessian, dim>(0);
+    const auto &D2_F  = func_elem_->template get_values<_Hessian, dim>(0);
     const auto normal = this->get_external_normals();
 
     const auto n_points = D2_F.get_num_points();
@@ -175,7 +273,7 @@ get_D_external_normals() const -> ValueVector< Derivative<1> >
     Assert(codim==1, ExcNotImplemented());
 
     const auto H = compute_second_fundamental_form();
-    const auto &DF = this->template get_values<_Gradient, dim>(0);
+    const auto &DF = func_elem_->template get_values<_Gradient, dim>(0);
     const auto G_inv = compute_inv_first_fundamental_form();
 
     const auto n_points = H.get_num_points();

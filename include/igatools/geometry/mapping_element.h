@@ -33,13 +33,19 @@ IGA_NAMESPACE_OPEN
  */
 template<int dim_, int codim_ = 0>
 class MappingElement
-    : public FunctionElement<dim_, 0, dim_+codim_>
+//    : public FunctionElement<dim_, 0, dim_+codim_>
 {
 private:
     using self_t  = MappingElement<dim_, codim_>;
-    using parent_t = FunctionElement<dim_, 0, dim_+codim_>;
+//    using parent_t = FunctionElement<dim_, 0, dim_+codim_>;
     using Map = Mapping<dim_, codim_>;
     using Func = MapFunction<dim_,dim_+codim_>;
+
+    using Point = typename Func::Point;
+    using Value = typename Func::Value;
+    using Gradient = typename Func::Gradient;
+    using Hessian  = typename Func::Hessian;
+    using Div      = typename Func::Div;
 
 public:
     using ContainerType = Map;
@@ -149,10 +155,74 @@ public:
         return get_values_from_cache<_BoundaryNormal,sub_dim>(s_id);
     }
 
+    template<class ValueType, int k>
+    auto
+    get_values(const int j) const
+    {
+        Assert(local_cache_ != nullptr,ExcNullPtr());
+        const auto &cache = local_cache_->template get_sub_elem_cache<k>(j);
+        return cache.template get_data<ValueType>();
+    }
+
+
+    /**
+     * @name Comparison operators.
+     *
+     * @brief The comparison operators compares the <em>position</em> of the element in the grid.
+     *
+     * @warning To be comparable, two Mapping objects must be defined using the same Function
+     * (and therefore on the same grid),
+     * otherwise an assertion will be raised (in Debug mode).
+     */
+    ///@{
+    /** Returns TRUE if the two elements have the same index on the grid. */
+    bool operator==(const self_t &a) const;
+
+
+    /** Returns TRUE if the two elements have different indices on the grid. */
+    bool operator!=(const self_t &a) const;
+
+    /**
+     * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
+     * is smaller than the the index of the element on the right.
+     * */
+    bool operator<(const self_t &a) const;
+
+    /**
+     * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
+     * is bigger than the the index of the element on the right.
+     * */
+    bool operator>(const self_t &a) const;
+    ///@}
+
+    /**
+     * Sets the index of the element using the flatten representation.
+     * @note This function also updates the index for the tensor representation.
+     * @warning This may be a dangerous function, be careful when using it
+     * as it is easy to use incorrectly. Only use it if you know what you
+     * are doing.
+     */
+    void move_to(const Index flat_index) ;
+
+
+    /** @name Functions related to the indices of the element in the cartesian grid. */
+    ///@{
+    /** Returns the index of the element in its flatten representation. */
+    Index get_flat_index() const;
+
+    /** Returns the index of the element in its tensor representation. */
+    TensorIndex<dim> get_tensor_index() const;
+    ///@}
+
+    /** Return the cartesian grid from which the element belongs.*/
+    std::shared_ptr<const CartesianGrid<dim> > get_grid() const;
 
 private:
 
     using CType = boost::fusion::map<
+				  boost::fusion::pair<         _Point,DataWithFlagStatus<ValueVector<Points<space_dim>>>>,
+                  boost::fusion::pair<      _Gradient,DataWithFlagStatus<ValueVector<Derivative<1>>>>,
+                  boost::fusion::pair<       _Hessian,DataWithFlagStatus<ValueVector<Derivative<2>>>>,
                   boost::fusion::pair<       _Measure,DataWithFlagStatus<ValueVector<Real>>>,
                   boost::fusion::pair<     _W_Measure,DataWithFlagStatus<ValueVector<Real>>>,
                   boost::fusion::pair<   _InvGradient,DataWithFlagStatus<ValueVector<InvDerivative<1>>>>,
@@ -167,17 +237,11 @@ private:
      * Returns the flags that are valid to be used with this class.
      *
      * @note The valid flags are defined to be the ones that can be inferred from the ValueType(s)
-     * used as key of the boost::fusion::map in CType, plus the flags valid for the FunctionElement.
+     * used as key of the boost::fusion::map in CType.
      */
     static ValueFlags get_valid_flags()
     {
-        const auto valid_func_flags = parent_t::get_valid_flags();
-
-        const auto valid_map_flags = cacheutils::get_valid_flags_from_cache_type(CType()) |
-                                     ValueFlags::curvature |
-                                     valid_func_flags;
-
-        return valid_map_flags;
+        return cacheutils::get_valid_flags_from_cache_type(CType());
     }
 
     using Cache = FuncValuesCache<dim,CType>;
@@ -186,7 +250,13 @@ private:
 public:
     using CacheType = AllSubElementsCache<Cache>;
 
+
+
 private:
+
+    using FuncElem = FunctionElement<dim_, 0, dim_+codim_>;
+
+    std::shared_ptr<FuncElem> func_elem_;
 
     std::shared_ptr<CacheType> local_cache_;
 
@@ -199,6 +269,15 @@ private:
      * copy constructor.
      */
     std::shared_ptr<MappingElement<dim_,codim_> > clone() const;
+
+public:
+    FuncElem & get_func_element();
+
+    const FuncElem & get_func_element() const;
+
+    void print_info(LogStream &out) const;
+
+    void print_cache_info(LogStream &out) const;
 
 };
 

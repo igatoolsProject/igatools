@@ -69,6 +69,8 @@ public:
      */
     using PushForwardType = PushForward<type_, dim_, codim_>;
 
+    using Map = Mapping<dim_, codim_>;
+
     using RefSpace = ReferenceSpace<dim_,range_,rank_>;
 
     using GridType = CartesianGrid<dim_>;

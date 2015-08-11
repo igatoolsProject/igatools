@@ -97,6 +97,7 @@ public:
 
     ~PushForward() = default;
 
+#if 0
     template<int k>
     void reset(const ValueFlags map_flag, const TransformationFlags transf_flag, const Quadrature<k> &eval_pts);
 
@@ -105,7 +106,7 @@ public:
     ElementIterator begin() const;
 
     ElementIterator end() const;
-
+#endif
 
 private:
 

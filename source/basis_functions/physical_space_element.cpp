@@ -34,13 +34,17 @@ PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
     :
     parent_t(phys_space,index),
     ref_space_element_(phys_space->get_reference_space()->create_element(index)),
-    push_fwd_element_(make_shared<PfElemAccessor>(
+    map_element_(make_shared<MapElem>(
                           std::const_pointer_cast<MapFunction<dim_,dim_+codim_>>(
                               phys_space->get_ptr_const_map_func()), index))
+//							  ,
+//    push_fwd_element_(make_shared<PfElemAccessor>(
+//                          std::const_pointer_cast<MapFunction<dim_,dim_+codim_>>(
+//                              phys_space->get_ptr_const_map_func()), index))
 {
 //    push_fwd_element_ = std::make_shared<PfElemAccessor>(phys_space->get_map_func(), index);
     Assert(ref_space_element_ != nullptr, ExcNullPtr());
-    Assert(push_fwd_element_ != nullptr, ExcNullPtr());
+    Assert(map_element_ != nullptr, ExcNullPtr());
 }
 
 
@@ -55,12 +59,12 @@ PhysicalSpaceElement(const PhysicalSpaceElement<dim_,range_,rank_,codim_> &in,
     if (copy_policy == CopyPolicy::shallow)
     {
         ref_space_element_ = in.ref_space_element_;
-        push_fwd_element_ = in.push_fwd_element_;
+        map_element_ = in.map_element_;
     }
     else
     {
         ref_space_element_ = in.ref_space_element_->clone();
-        push_fwd_element_ = make_shared<PfElemAccessor>(*in.push_fwd_element_);
+        map_element_ = make_shared<MapElem>(*in.map_element_);
     }
 
     Assert(false,ExcNotTested());
@@ -125,7 +129,7 @@ auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_>::
 get_points(const int j) const -> ValueVector<PhysPoint>
 {
-    return push_fwd_element_->template get_values<_Value,k>(j);
+    return map_element_->template get_values<_Point,k>(j);
 }
 
 template<int dim_,int range_,int rank_,int codim_>
@@ -169,7 +173,7 @@ move_to(const Index flat_index)
 {
     this->as_cartesian_grid_element_accessor().move_to(flat_index);
     ref_space_element_->move_to(flat_index);
-    push_fwd_element_->move_to(flat_index);
+    map_element_->move_to(flat_index);
 }
 
 
@@ -206,22 +210,23 @@ get_grid() const -> const std::shared_ptr<const CartesianGrid<dim> >
     return this->get_ref_space_element().get_grid();
 }
 
+
 template<int dim_,int range_,int rank_,int codim_>
 auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_>::
-get_push_forward_accessor() const -> const PfElemAccessor &
+get_map_element() const -> const MapElem &
 {
-    return *push_fwd_element_;
+    return *map_element_;
 }
 
 template<int dim_,int range_,int rank_,int codim_>
 auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_>::
-get_push_forward_accessor() -> PfElemAccessor &
+get_map_element() -> MapElem &
 {
-    return *push_fwd_element_;
+    return *map_element_;
 }
-
+//*/
 
 
 template<int dim_,int range_,int rank_,int codim_>
@@ -234,7 +239,7 @@ print_info(LogStream &out) const
     out.end_item();
 
     out.begin_item("Pushforward:");
-    push_fwd_element_->print_info(out);
+    map_element_->print_info(out);
     out.end_item();
 }
 
@@ -248,7 +253,7 @@ print_cache_info(LogStream &out) const
     out.end_item();
 
     out.begin_item("Pushforward:");
-    push_fwd_element_->print_cache_info(out);
+    map_element_->print_cache_info(out);
     out.end_item();
 }
 

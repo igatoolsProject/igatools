@@ -144,8 +144,11 @@ private:
     std::shared_ptr<RefElemHandler> ref_space_handler_;
 
 
-    using PushFwd = typename PhysSpace::PushForwardType;
-    PushFwd push_fwd_;
+//    using PushFwd = typename PhysSpace::PushForwardType;
+//    PushFwd push_fwd_;
+
+    using Map = typename PhysSpace::Map;
+    Map mapping_;
 
 
     SafeSTLArray<ValueFlags, dim+1> flags_;
@@ -157,13 +160,13 @@ private:
             const ValueFlags flag_in,
             const SafeSTLVector<Index> &elements_flat_id,
             RefElemHandler &ref_space_handler,
-            PushFwd &push_fwd,
+            Map &mapping,
             SafeSTLArray<ValueFlags, dim+1> &flags)
             :
             flag_in_(flag_in),
             elements_flat_id_(elements_flat_id),
             ref_space_handler_(ref_space_handler),
-            push_fwd_(push_fwd),
+            mapping_(mapping),
             flags_(flags)
         {};
 
@@ -173,7 +176,7 @@ private:
         const ValueFlags flag_in_;
         const SafeSTLVector<Index> &elements_flat_id_;
         RefElemHandler &ref_space_handler_;
-        PushFwd &push_fwd_;
+        Map &mapping_;
         SafeSTLArray<ValueFlags, dim+1> &flags_;
     };
 
@@ -183,12 +186,12 @@ private:
         InitCacheDispatcher(
             const SafeSTLArray<ValueFlags, dim+1> &flags,
             RefElemHandler &ref_space_handler,
-            PushFwd &push_fwd,
+			Map &mapping,
             PhysicalSpaceElement<dim_,range_,rank_,codim_> &phys_elem)
             :
             flags_(flags),
             ref_space_handler_(ref_space_handler),
-            push_fwd_(push_fwd),
+			mapping_(mapping),
             phys_elem_(phys_elem)
         {};
 
@@ -197,7 +200,7 @@ private:
 
         const SafeSTLArray<ValueFlags, dim+1> &flags_;
         RefElemHandler &ref_space_handler_;
-        PushFwd &push_fwd_;
+        Map &mapping_;
         PhysicalSpaceElement<dim_,range_,rank_,codim_> &phys_elem_;
     };
 
@@ -208,12 +211,12 @@ private:
         FillCacheDispatcher(
             const int sub_elem_id,
             RefElemHandler &ref_space_handler,
-            PushFwd &push_fwd,
+            Map &mapping,
             PhysicalSpaceElement<dim_,range_,rank_,codim_> &phys_elem)
             :
             sub_elem_id_(sub_elem_id),
             ref_space_handler_(ref_space_handler),
-            push_fwd_(push_fwd),
+			mapping_(mapping),
             phys_elem_(phys_elem)
         {};
 
@@ -222,7 +225,7 @@ private:
 
         const int sub_elem_id_;
         RefElemHandler &ref_space_handler_;
-        PushFwd &push_fwd_;
+        Map &mapping_;
         PhysicalSpaceElement<dim_,range_,rank_,codim_> &phys_elem_;
     };
 
