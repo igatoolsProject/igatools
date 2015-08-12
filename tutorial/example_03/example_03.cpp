@@ -22,6 +22,7 @@
 #include <igatools/geometry/cartesian_grid_element.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
+#include <igatools/basis_functions/bspline_element_handler.h>
 // [quad include]
 #include <igatools/base/quadrature_lib.h>
 // [quad include]

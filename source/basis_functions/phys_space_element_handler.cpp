@@ -350,7 +350,7 @@ operator()(const Topology<sub_elem_dim> &topology)
         const auto &ref_values = ref_elem.template get_basis<   _Value,sub_elem_dim>(sub_elem_id_,DofProperties::active);
         const auto &ref_der_1  = ref_elem.template get_basis<_Gradient,sub_elem_dim>(sub_elem_id_,DofProperties::active);
         const auto &values = sub_elem_cache.template get_data<_Value>();
-        PfElemAccessor::template transform_1<PhysSpace::range,PhysSpace::rank,sub_elem_dim,type_>(
+        PfElemAccessor::template transform_1<RefSpace::range,RefSpace::rank,sub_elem_dim,type_>(
         	ref_elem,
             std::make_tuple(cref(ref_values), cref(ref_der_1)),
             values,
@@ -368,7 +368,7 @@ operator()(const Topology<sub_elem_dim> &topology)
         const auto &ref_der_2  = ref_elem.template get_basis< _Hessian,sub_elem_dim>(sub_elem_id_,DofProperties::active);
         const auto &values = sub_elem_cache.template get_data<   _Value>();
         const auto &der_1  = sub_elem_cache.template get_data<_Gradient>();
-        PfElemAccessor::template transform_2<PhysSpace::range,PhysSpace::rank, sub_elem_dim>(
+        PfElemAccessor::template transform_2<RefSpace::range,RefSpace::rank, sub_elem_dim>(
         	ref_elem,
             std::make_tuple(cref(ref_values), cref(ref_der_1), cref(ref_der_2)),
             std::make_tuple(cref(values),cref(der_1)),

@@ -25,6 +25,7 @@
 // [old includes]
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
+#include <igatools/basis_functions/bspline_element_handler.h>
 #include <igatools/base/quadrature_lib.h>
 
 #include <igatools/linear_algebra/dense_matrix.h>
