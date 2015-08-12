@@ -27,9 +27,9 @@ using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
-template<int dim,int codim,int range,int rank>
-SpaceElementHandler<dim,codim,range,rank>::
-SpaceElementHandler(std::shared_ptr<const Space<dim,codim,range,rank>> space)
+template<int dim,int codim,int range,int rank,Transformation type>
+SpaceElementHandler<dim,codim,range,rank,type>::
+SpaceElementHandler(std::shared_ptr<const Sp> space)
     :
     space_(space)
 {
@@ -37,9 +37,9 @@ SpaceElementHandler(std::shared_ptr<const Space<dim,codim,range,rank>> space)
 }
 
 
-template<int dim,int codim,int range,int rank>
+template<int dim,int codim,int range,int rank,Transformation type>
 void
-SpaceElementHandler<dim,codim,range,rank>::
+SpaceElementHandler<dim,codim,range,rank,type>::
 reset(const ValueFlags &flag, const eval_pts_variant &eval_pts)
 {
     const std::set<int> elems_id =
@@ -51,96 +51,96 @@ reset(const ValueFlags &flag, const eval_pts_variant &eval_pts)
         SafeSTLVector<int>(elems_id.begin(),elems_id.end()));
 }
 
-template<int dim,int codim,int range,int rank>
-std::shared_ptr<const Space<dim,codim,range,rank> >
-SpaceElementHandler<dim,codim,range,rank>::
-get_space() const
+template<int dim,int codim,int range,int rank,Transformation type>
+auto
+SpaceElementHandler<dim,codim,range,rank,type>::
+get_space() const -> std::shared_ptr<const Sp>
 {
     return space_;
 }
 
 
 
-template<int dim,int codim,int range,int rank>
+template<int dim,int codim,int range,int rank,Transformation type>
 template <int sub_elem_dim>
 void
-SpaceElementHandler<dim,codim,range,rank>::
-init_cache(SpaceElement<dim,codim,range,rank> &elem)
+SpaceElementHandler<dim,codim,range,rank,type>::
+init_cache(SpaceElement<dim,codim,range,rank,type> &elem)
 {
     this->init_cache(elem,Topology<sub_elem_dim>());
 }
 
-template<int dim,int codim,int range,int rank>
+template<int dim,int codim,int range,int rank,Transformation type>
 void
-SpaceElementHandler<dim,codim,range,rank>::
+SpaceElementHandler<dim,codim,range,rank,type>::
 init_element_cache(ElementAccessor &elem)
 {
     this->template init_cache<dim>(elem);
 }
 
-template<int dim,int codim,int range,int rank>
+template<int dim,int codim,int range,int rank,Transformation type>
 void
-SpaceElementHandler<dim,codim,range,rank>::
+SpaceElementHandler<dim,codim,range,rank,type>::
 init_element_cache(ElementIterator &elem)
 {
     this->template init_cache<dim>(*elem);
 }
 
-template<int dim,int codim,int range,int rank>
+template<int dim,int codim,int range,int rank,Transformation type>
 void
-SpaceElementHandler<dim,codim,range,rank>::
+SpaceElementHandler<dim,codim,range,rank,type>::
 init_face_cache(ElementAccessor &elem)
 {
     Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
     this->template init_cache<(dim > 0)?dim-1:0>(elem);
 }
 
-template<int dim,int codim,int range,int rank>
+template<int dim,int codim,int range,int rank,Transformation type>
 void
-SpaceElementHandler<dim,codim,range,rank>::
+SpaceElementHandler<dim,codim,range,rank,type>::
 init_face_cache(ElementIterator &elem)
 {
     Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
     this->template init_cache<(dim > 0)?dim-1:0>(*elem);
 }
 
-template<int dim,int codim,int range,int rank>
+template<int dim,int codim,int range,int rank,Transformation type>
 template <int sub_elem_dim>
 void
-SpaceElementHandler<dim,codim,range,rank>::
+SpaceElementHandler<dim,codim,range,rank,type>::
 fill_cache(ElementAccessor &elem, const int sub_elem_id)
 {
     this->fill_cache(elem,Topology<sub_elem_dim>(),sub_elem_id);
 }
 
-template<int dim,int codim,int range,int rank>
+template<int dim,int codim,int range,int rank,Transformation type>
 void
-SpaceElementHandler<dim,codim,range,rank>::
+SpaceElementHandler<dim,codim,range,rank,type>::
 fill_element_cache(ElementAccessor &elem)
 {
     this->template fill_cache<dim>(elem,0);
 }
 
-template<int dim,int codim,int range,int rank>
+template<int dim,int codim,int range,int rank,Transformation type>
 void
-SpaceElementHandler<dim,codim,range,rank>::
+SpaceElementHandler<dim,codim,range,rank,type>::
 fill_element_cache(ElementIterator &elem)
 {
     this->template fill_cache<dim>(*elem,0);
 }
 
-template<int dim,int codim,int range,int rank>
+template<int dim,int codim,int range,int rank,Transformation type>
 void
-SpaceElementHandler<dim,codim,range,rank>::
+SpaceElementHandler<dim,codim,range,rank,type>::
 fill_face_cache(ElementAccessor &elem, const int face_id)
 {
     Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
     this->template fill_cache<(dim > 0)?dim-1:0>(elem,face_id);
 }
 
-template<int dim,int codim,int range,int rank>
+template<int dim,int codim,int range,int rank,Transformation type>
 void
-SpaceElementHandler<dim,codim,range,rank>::
+SpaceElementHandler<dim,codim,range,rank,type>::
 fill_face_cache(ElementIterator &elem, const int face_id)
 {
     Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
@@ -150,13 +150,13 @@ fill_face_cache(ElementIterator &elem, const int face_id)
 
 
 #ifdef SERIALIZATION
-template<int dim,int codim,int range,int rank>
+template<int dim,int codim,int range,int rank,Transformation type>
 template<class Archive>
 void
-SpaceElementHandler<dim,codim,range,rank>::
+SpaceElementHandler<dim,codim,range,rank,type>::
 serialize(Archive &ar, const unsigned int version)
 {
-    auto non_const_space = std::const_pointer_cast<Space<dim,codim,range,rank>>(space_);
+    auto non_const_space = std::const_pointer_cast<Sp>(space_);
     ar &boost::serialization::make_nvp("space_", non_const_space);
     space_ = non_const_space;
     Assert(space_ != nullptr,ExcNullPtr());

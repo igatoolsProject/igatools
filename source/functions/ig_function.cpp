@@ -29,7 +29,7 @@ IGA_NAMESPACE_OPEN
 
 template<int dim,int codim,int range,int rank>
 IgFunction<dim,codim,range,rank>::
-IgFunction(std::shared_ptr<const Space<dim,codim,range,rank>> space,
+IgFunction(std::shared_ptr<const Sp> space,
            std::shared_ptr<const EpetraTools::Vector> coeff,
            const std::string &property)
     :
@@ -61,7 +61,7 @@ IgFunction(std::shared_ptr<const Space<dim,codim,range,rank>> space,
 
 template<int dim,int codim,int range,int rank>
 IgFunction<dim,codim,range,rank>::
-IgFunction(std::shared_ptr<const Space<dim,codim,range,rank>> space,
+IgFunction(std::shared_ptr<const Sp> space,
            const IgCoefficients &coeff,
            const std::string &property)
     :
@@ -103,7 +103,7 @@ IgFunction(const self_t &fun)
 template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
-create(std::shared_ptr<const Space<dim,codim,range,rank>> space,
+create(std::shared_ptr<const Sp> space,
        std::shared_ptr<const EpetraTools::Vector> coeff,
        const std::string &property) ->  std::shared_ptr<self_t>
 {
@@ -120,7 +120,7 @@ create(std::shared_ptr<const Space<dim,codim,range,rank>> space,
 template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
-create(std::shared_ptr<const Space<dim,codim,range,rank>> space,
+create(std::shared_ptr<const Sp> space,
        const IgCoefficients &coeff,
        const std::string &property) ->  std::shared_ptr<self_t>
 {
@@ -209,7 +209,7 @@ fill_cache(ElementAccessor &func_elem, const topology_variant &k, const int sub_
 template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
-get_ig_space() const -> std::shared_ptr<const Space<dim,codim,range,rank>>
+get_ig_space() const -> std::shared_ptr<const Sp>
 {
     return space_;
 }
@@ -253,7 +253,7 @@ rebuild_after_insert_knots(
     using std::const_pointer_cast;
     this->function_previous_refinement_ =
         IgFunction<dim,codim,range,rank>::create(
-            const_pointer_cast<Space<dim,codim,range,rank>>(space_->get_space_previous_refinement()),
+            const_pointer_cast<Sp>(space_->get_space_previous_refinement()),
             coeff_,
             property_);
     /*
@@ -268,7 +268,7 @@ rebuild_after_insert_knots(
     QGauss<dim> quad(max_degree+1);
     auto function_refined = space_tools::projection_l2(
                                 this->function_previous_refinement_,
-                                const_pointer_cast<const Space<dim,codim,range,rank>>(space_),
+                                const_pointer_cast<const Sp>(space_),
                                 quad);
     /*
         out.begin_item("function_refined");

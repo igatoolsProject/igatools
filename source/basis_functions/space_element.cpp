@@ -28,9 +28,9 @@
 IGA_NAMESPACE_OPEN
 
 
-template<int dim_,int codim_,int range_,int rank_>
-SpaceElement<dim_,codim_,range_,rank_>::
-SpaceElement(const std::shared_ptr<const Space<dim_,codim_,range_,rank_>> space,
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+SpaceElement<dim_,codim_,range_,rank_,type_>::
+SpaceElement(const std::shared_ptr<const Space<dim_,codim_,range_,rank_,type_>> space,
              const Index elem_index)
     :
     base_t(space,elem_index),
@@ -39,8 +39,8 @@ SpaceElement(const std::shared_ptr<const Space<dim_,codim_,range_,rank_>> space,
 
 
 
-template<int dim_,int codim_,int range_,int rank_>
-SpaceElement<dim_,codim_,range_,rank_>::
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+SpaceElement<dim_,codim_,range_,rank_,type_>::
 SpaceElement(const self_t &elem,
              const CopyPolicy &copy_policy)
     :
@@ -61,9 +61,9 @@ SpaceElement(const self_t &elem,
 
 
 
-template<int dim_,int codim_,int range_,int rank_>
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
 void
-SpaceElement<dim_,codim_,range_,rank_>::
+SpaceElement<dim_,codim_,range_,rank_,type_>::
 copy_from(const self_t &elem,
           const CopyPolicy &copy_policy)
 {
@@ -91,9 +91,9 @@ copy_from(const self_t &elem,
 
 
 #if 0
-template<int dim_,int codim_,int range_,int rank_>
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
 void
-SpaceElement<dim_,codim_,range_,rank_>::
+SpaceElement<dim_,codim_,range_,rank_,type_>::
 deep_copy_from(const self_t &elem)
 {
     this->copy_from(elem,CopyPolicy::deep);
@@ -101,18 +101,18 @@ deep_copy_from(const self_t &elem)
 
 
 
-template<int dim_,int codim_,int range_,int rank_>
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
 void
-SpaceElement<dim_,codim_,range_,rank_>::
+SpaceElement<dim_,codim_,range_,rank_,type_>::
 shallow_copy_from(const self_t &elem)
 {
     this->copy_from(elem,CopyPolicy::shallow);
 }
 #endif
 
-template<int dim_,int codim_,int range_,int rank_>
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
 auto
-SpaceElement<dim_,codim_,range_,rank_>::
+SpaceElement<dim_,codim_,range_,rank_,type_>::
 clone() const -> std::shared_ptr<self_t>
 {
     Assert(false,ExcMessage("This function must not be called. "
@@ -121,9 +121,9 @@ clone() const -> std::shared_ptr<self_t>
 }
 
 
-template<int dim_,int codim_,int range_,int rank_>
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
 auto
-SpaceElement<dim_,codim_,range_,rank_>::
+SpaceElement<dim_,codim_,range_,rank_,type_>::
 operator=(const self_t &element) -> self_t &
 {
     this->copy_from(element,CopyPolicy::shallow);
@@ -133,17 +133,17 @@ operator=(const self_t &element) -> self_t &
 
 
 
-template<int dim_,int codim_,int range_,int rank_>
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
 void
-SpaceElement<dim_,codim_,range_,rank_>::
+SpaceElement<dim_,codim_,range_,rank_,type_>::
 print_info(LogStream &out) const
 {
     base_t::print_info(out);
 }
 
-template<int dim_,int codim_,int range_,int rank_>
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
 void
-SpaceElement<dim_,codim_,range_,rank_>::
+SpaceElement<dim_,codim_,range_,rank_,type_>::
 print_cache_info(LogStream &out) const
 {
     out.begin_item("SpaceElementBase<" + std::to_string(dim_) + "> cache:");
@@ -158,10 +158,10 @@ print_cache_info(LogStream &out) const
 }
 
 
-template<int dim_,int codim_,int range_,int rank_>
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
 template <int k>
 ValueVector<Real>
-SpaceElement<dim_,codim_,range_,rank_>::
+SpaceElement<dim_,codim_,range_,rank_,type_>::
 get_w_measures(const int j) const
 {
     ValueVector<Real> w_measures;
@@ -179,9 +179,9 @@ get_w_measures(const int j) const
     return w_measures;
 }
 
-template<int dim_,int codim_,int range_,int rank_>
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
 Size
-SpaceElement<dim_,codim_,range_,rank_>::
+SpaceElement<dim_,codim_,range_,rank_,type_>::
 get_max_num_basis() const
 {
     Assert(false,ExcMessage("This function should be called through a derived class."));
@@ -190,10 +190,10 @@ get_max_num_basis() const
 
 
 #ifdef SERIALIZATION
-template<int dim_,int codim_,int range_,int rank_>
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
 template<class Archive>
 void
-SpaceElement<dim_,codim_,range_,rank_>::
+SpaceElement<dim_,codim_,range_,rank_,type_>::
 serialize(Archive &ar, const unsigned int version)
 {
     ar &boost::serialization::make_nvp("SpaceElement_base_t",

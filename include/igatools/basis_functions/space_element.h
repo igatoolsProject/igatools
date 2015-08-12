@@ -46,7 +46,7 @@ IGA_NAMESPACE_OPEN
  *
  * @ingroup serializable
  */
-template<int dim_,int codim_,int range_,int rank_>
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
 class SpaceElement : public SpaceElementBase<dim_>
 {
 protected:
@@ -54,7 +54,7 @@ protected:
 
 
 private:
-    using self_t = SpaceElement<dim_,codim_,range_,rank_>;
+    using self_t = SpaceElement<dim_,codim_,range_,rank_,type_>;
 
 public:
 
@@ -70,7 +70,7 @@ public:
     static const int dim = dim_;
     static const int space_dim = Func::space_dim;
 
-    using ContainerType = Space<dim_,codim_,range_,rank_>;
+    using ContainerType = Space<dim_,codim_,range_,rank_,type_>;
 
     /**
      * For each component gives a product array of the dimension
@@ -97,7 +97,7 @@ public:
      * Constructs an accessor to element number <tt>elem_index</tt> of a
      * function space.
      */
-    SpaceElement(const std::shared_ptr<const Space<dim_,codim_,range_,rank_>> space,
+    SpaceElement(const std::shared_ptr<const Space<dim_,codim_,range_,rank_,type_>> space,
                  const Index elem_index);
 
     /**
@@ -342,7 +342,7 @@ protected:
 
 private:
 
-    std::shared_ptr<const Space<dim_,codim_,range_,rank_>> space_;
+    std::shared_ptr<const Space<dim_,codim_,range_,rank_,type_>> space_;
 
 #ifdef SERIALIZATION
     /**

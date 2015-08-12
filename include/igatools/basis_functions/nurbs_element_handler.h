@@ -53,7 +53,7 @@ template<int,int,int> class NURBSElement;
  *
  * @ingroup serializable
  */
-template<int dim_, int range_ = 1, int rank_ = 1>
+template<int dim_, int range_, int rank_>
 class NURBSElementHandler
     : public ReferenceElementHandler<dim_,range_,rank_>
 {

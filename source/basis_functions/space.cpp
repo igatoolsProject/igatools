@@ -125,8 +125,8 @@ serialize(Archive &ar, const unsigned int version)
 
 
 
-template <int dim_,int codim_,int range_,int rank_>
-Space<dim_,codim_,range_,rank_>::
+template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+Space<dim_,codim_,range_,rank_,type_>::
 Space(const shared_ptr<CartesianGrid<dim_>> &grid,
       const shared_ptr<MapFunc> &map_func)
     :
@@ -140,8 +140,8 @@ Space(const shared_ptr<CartesianGrid<dim_>> &grid,
            ExcMessage("Reference space and mapping grids are not the same."))
 }
 
-template <int dim_,int codim_,int range_,int rank_>
-Space<dim_,codim_,range_,rank_>::
+template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+Space<dim_,codim_,range_,rank_,type_>::
 Space(const shared_ptr<const CartesianGrid<dim_>> &grid,
       const shared_ptr<MapFunc> &map_func)
     :
@@ -156,9 +156,9 @@ Space(const shared_ptr<const CartesianGrid<dim_>> &grid,
 }
 
 
-template <int dim_,int codim_,int range_,int rank_>
+template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 auto
-Space<dim_,codim_,range_,rank_>::
+Space<dim_,codim_,range_,rank_,type_>::
 begin(const std::string &element_property) const -> ElementIterator
 {
     return ElementIterator(
@@ -169,9 +169,9 @@ begin(const std::string &element_property) const -> ElementIterator
 
 
 
-template <int dim_,int codim_,int range_,int rank_>
+template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 auto
-Space<dim_,codim_,range_,rank_>::
+Space<dim_,codim_,range_,rank_,type_>::
 last(const std::string &element_property) const -> ElementIterator
 {
     return ElementIterator(
@@ -182,9 +182,9 @@ last(const std::string &element_property) const -> ElementIterator
 
 
 
-template <int dim_,int codim_,int range_,int rank_>
+template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 auto
-Space<dim_,codim_,range_,rank_>::
+Space<dim_,codim_,range_,rank_,type_>::
 end(const std::string &element_property) const -> ElementIterator
 {
     return ElementIterator(this->create_element(IteratorState::pass_the_end),element_property);
@@ -192,60 +192,60 @@ end(const std::string &element_property) const -> ElementIterator
 
 
 
-template <int dim_,int codim_,int range_,int rank_>
+template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 auto
-Space<dim_,codim_,range_,rank_>::
+Space<dim_,codim_,range_,rank_,type_>::
 get_num_basis() const -> Size
 {
     return this->get_ptr_const_dof_distribution()->get_num_dofs_table().total_dimension();
 }
 
 
-template <int dim_,int codim_,int range_,int rank_>
+template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 auto
-Space<dim_,codim_,range_,rank_>::
+Space<dim_,codim_,range_,rank_,type_>::
 get_num_basis(const int comp) const -> Size
 {
     return this->get_ptr_const_dof_distribution()->get_num_dofs_table().get_component_size(comp);
 }
 
-template <int dim_,int codim_,int range_,int rank_>
+template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 auto
-Space<dim_,codim_,range_,rank_>::
+Space<dim_,codim_,range_,rank_,type_>::
 get_num_basis(const int comp, const int dir) const -> Size
 {
     return this->get_ptr_const_dof_distribution()->get_num_dofs_table()[comp][dir];
 }
 
 
-template <int dim_,int codim_,int range_,int rank_>
+template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 auto
-Space<dim_,codim_,range_,rank_>::
+Space<dim_,codim_,range_,rank_,type_>::
 get_elem_num_basis() const -> Size
 {
     return this->get_ptr_const_dof_distribution()->get_num_dofs_table().total_dimension();
 }
 
-template <int dim_,int codim_,int range_,int rank_>
+template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 auto
-Space<dim_,codim_,range_,rank_>::
+Space<dim_,codim_,range_,rank_,type_>::
 get_global_dof_id(const TensorIndex<dim> &tensor_index,
                   const Index comp) const -> Index
 {
     return this->get_ptr_const_dof_distribution()->get_index_table()[comp](tensor_index);
 }
 
-template <int dim_,int codim_,int range_,int rank_>
+template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 auto
-Space<dim_,codim_,range_,rank_>::
+Space<dim_,codim_,range_,rank_,type_>::
 get_interior_dofs() const -> std::set<Index>
 {
     return this->get_ptr_const_dof_distribution()->get_interior_dofs();
 }
 
-template <int dim_,int codim_,int range_,int rank_>
+template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 auto
-Space<dim_,codim_,range_,rank_>::
+Space<dim_,codim_,range_,rank_,type_>::
 get_boundary_dofs(const int s_id, const topology_variant &topology) const -> std::set<Index>
 {
     return this->get_ptr_const_dof_distribution()->get_boundary_dofs(s_id,topology);
@@ -253,10 +253,10 @@ get_boundary_dofs(const int s_id, const topology_variant &topology) const -> std
 
 
 #ifdef SERIALIZATION
-template <int dim_,int codim_,int range_,int rank_>
+template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 template<class Archive>
 void
-Space<dim_,codim_,range_,rank_>::
+Space<dim_,codim_,range_,rank_,type_>::
 serialize(Archive &ar, const unsigned int version)
 {
     ar.template register_type<BSplineSpace<dim_,range_,rank_>>();

@@ -27,7 +27,10 @@
 #include <igatools/base/quadrature.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/nurbs_element.h>
+#include <igatools/basis_functions/physical_space.h>
 #include <igatools/geometry/push_forward.h>
+
+
 
 IGA_NAMESPACE_OPEN
 
@@ -38,23 +41,24 @@ template <class Accessor> class CartesianGridIterator;
  * @ingroup elements
  * @ingroup serializable
  */
-template<int dim_,int range_,int rank_,int codim_>
+template<int dim_,int range_,int rank_,int codim_,Transformation type_ = Transformation::h_grad>
 class PhysicalSpaceElement
     :
-    public SpaceElement<dim_,codim_,range_,rank_>
+    public SpaceElement<dim_,codim_,range_,rank_,type_>
 {
 public :
-    using self_t = PhysicalSpaceElement<dim_,range_,rank_,codim_>;
-    using parent_t = SpaceElement<dim_,codim_,range_,rank_>;
+    using self_t = PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>;
+    using parent_t = SpaceElement<dim_,codim_,range_,rank_,type_>;
 
-    using PhysSpace = PhysicalSpace<dim_,range_,rank_,codim_>;
+    using PhysSpace = PhysicalSpace<dim_,range_,rank_,codim_,type_>;
     /** Type required by the CartesianGridIterator templated iterator */
     using ContainerType = const PhysSpace;
 
     using Space = PhysSpace;
     using RefSpace = typename PhysSpace::RefSpace;
     using PfElemAccessor = typename PhysSpace::PushForwardElem;
-    using RefElemAccessor = SpaceElement<RefSpace::dim,0,RefSpace::range,RefSpace::rank>;
+//    using RefElemAccessor = SpaceElement<RefSpace::dim,0,RefSpace::range,RefSpace::rank,Transformation::h_grad>;
+    using RefElemAccessor = ReferenceElement<RefSpace::dim,RefSpace::range,RefSpace::rank>;
 
     using MapElem = MappingElement<dim_, codim_>;
 
@@ -330,7 +334,7 @@ protected:
 
 private:
     template <class Accessor> friend class CartesianGridIteratorBase;
-    template <int,int,int,int> friend class PhysSpaceElementHandler;
+    template <int,int,int,int,Transformation> friend class PhysSpaceElementHandler;
 
     std::shared_ptr<RefElemAccessor> ref_space_element_;
 
@@ -343,7 +347,7 @@ private:
      * Creates a new object performing a deep copy of the current object using the PhysicalSpaceElement
      * copy constructor.
      */
-    std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_>> clone() const override final;
+    std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_,type_>> clone() const override final;
 
 
 #ifdef SERIALIZATION

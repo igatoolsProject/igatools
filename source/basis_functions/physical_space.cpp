@@ -114,7 +114,7 @@ template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 create_element(const Index flat_index) const
--> std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_>>
+-> std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_,type_>>
 {
     auto elem = make_shared<ElementAccessor>(this->get_this_space(),flat_index);
     Assert(elem != nullptr, ExcNullPtr());
@@ -254,7 +254,7 @@ print_info(LogStream &out) const
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-get_elem_handler() const -> std::shared_ptr<SpaceElementHandler<dim_,codim_,range_,rank_>>
+get_elem_handler() const -> std::shared_ptr<SpaceElementHandler<dim_,codim_,range_,rank_,type_>>
 {
     auto sp = const_cast<self_t *>(this)->shared_from_this();
     auto this_space = std::dynamic_pointer_cast<self_t>(sp);

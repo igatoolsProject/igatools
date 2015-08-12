@@ -21,6 +21,7 @@
 
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
+#include <igatools/basis_functions/bspline_element_handler.h>
 #include <igatools/basis_functions/bernstein_basis.h>
 
 #include <igatools/utils/multi_array_utils.h>
@@ -306,7 +307,7 @@ get_bspline_space() const -> std::shared_ptr<const Space>
 
 
 template <int dim, int range, int rank>
-std::shared_ptr<SpaceElement<dim,0,range,rank> >
+std::shared_ptr<SpaceElement<dim,0,range,rank,Transformation::h_grad> >
 BSplineElement<dim, range, rank>::
 clone() const
 {

@@ -176,7 +176,7 @@ public:
     /**
      * Create an element (defined on this space) with a given flat_index.
      */
-    virtual std::shared_ptr<SpaceElement<dim_,0,range_,rank_> >
+    virtual std::shared_ptr<SpaceElement<dim_,0,range_,rank_,Transformation::h_grad> >
     create_element(const Index flat_index) const override final;
 
     /** Destructor */
@@ -285,7 +285,7 @@ private:
 
 
 public:
-    virtual std::shared_ptr<SpaceElementHandler<dim_,0,range_,rank_>>
+    virtual std::shared_ptr<SpaceElementHandler<dim_,0,range_,rank_,Transformation::h_grad>>
             get_elem_handler() const override final;
 
 

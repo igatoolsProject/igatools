@@ -19,6 +19,7 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/basis_functions/nurbs_space.h>
+#include <igatools/basis_functions/nurbs_element_handler.h>
 //#include <igatools/basis_functions/space_tools.h>
 
 //#include <igatools/base/sub_function.h>
@@ -168,7 +169,7 @@ template<int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
 create_element(const Index flat_index) const
--> std::shared_ptr<SpaceElement<dim_,0,range_,rank_> >
+-> std::shared_ptr<SpaceElement<dim_,0,range_,rank_,Transformation::h_grad> >
 {
     using Elem = NURBSElement<dim_,range_,rank_>;
 
@@ -586,7 +587,7 @@ get_end_behaviour_table() const -> const EndBehaviourTable &
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-get_elem_handler() const -> std::shared_ptr<SpaceElementHandler<dim_,0,range_,rank_>>
+get_elem_handler() const -> std::shared_ptr<SpaceElementHandler<dim_,0,range_,rank_,Transformation::h_grad>>
 {
     return ElementHandler::create(this->get_this_space());
 }

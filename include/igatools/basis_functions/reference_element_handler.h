@@ -39,10 +39,10 @@ IGA_NAMESPACE_OPEN
 template<int dim, int range = 1, int rank = 1>
 class ReferenceElementHandler
     :
-    public SpaceElementHandler<dim,0,range,rank>
+    public SpaceElementHandler<dim,0,range,rank,Transformation::h_grad>
 {
 private:
-    using base_t = SpaceElementHandler<dim,0,range,rank>;
+    using base_t = SpaceElementHandler<dim,0,range,rank,Transformation::h_grad>;
 public:
     using Space = ReferenceSpace<dim,range,rank>;
     using ElementIterator = typename Space::ElementIterator;
@@ -93,10 +93,10 @@ public:
     ///@{
 
 
-    virtual void init_cache(SpaceElement<dim,0,range,rank> &space_elem,
+    virtual void init_cache(SpaceElement<dim,0,range,rank,Transformation::h_grad> &space_elem,
                             const topology_variant &topology) override final;
 
-    virtual void fill_cache(SpaceElement<dim,0,range,rank> &space_elem,
+    virtual void fill_cache(SpaceElement<dim,0,range,rank,Transformation::h_grad> &space_elem,
                             const topology_variant &topology,
                             const int sub_elem_id) override final;
 

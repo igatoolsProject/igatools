@@ -54,15 +54,20 @@ f.write('IGA_NAMESPACE_OPEN\n')
 
 
 
-spaces = ['Space<0,0,0,1>']
+
+transformations = ['Transformation::h_grad']
+
+spaces = ['Space<0,0,0,1,Transformation::h_grad>']
 
 for x in inst.all_phy_sp_dims:
-    space = 'Space<%d,%d,%d,%d>' %(x.dim,x.codim,x.range,x.rank)
-    spaces.append(space)
+    for t in transformations:
+        space = 'Space<%d,%d,%d,%d,%s>' %(x.dim,x.codim,x.range,x.rank,t)
+        spaces.append(space)
 
 for x in inst.all_ref_sp_dims:
-    space = 'Space<%d,0,%d,%d>' %(x.dim,x.range,x.rank)
-    spaces.append(space)
+    for t in transformations:
+        space = 'Space<%d,0,%d,%d,%s>' %(x.dim,x.range,x.rank,t)
+        spaces.append(space)
     
 for space in unique(spaces):
     f.write("template class %s ;\n" %(space))

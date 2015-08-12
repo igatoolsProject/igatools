@@ -27,17 +27,21 @@
 #ifdef NURBS
 
 #include <igatools/basis_functions/reference_element.h>
-#include <igatools/basis_functions/nurbs_element_handler.h>
 
 
 //#include <igatools/linear_algebra/dense_matrix.h>
 //#include <igatools/basis_functions/bernstein_basis.h>
 //#include <igatools/basis_functions/bspline_element_scalar_evaluator.h>
 
+
+
 IGA_NAMESPACE_OPEN
 
 
+
+
 template <int dim, int range, int rank> class NURBSSpace;
+template <int,int,int> class NURBSElementHandler;
 template <class Accessor> class CartesianGridIterator;
 
 /**
@@ -148,11 +152,13 @@ private:
     using WeightElem = typename WeightFunction::ElementAccessor;
     WeightElem weight_elem_;
 
-    friend class NURBSElementHandler<dim, range, rank>;
-
 public:
 
-    virtual std::shared_ptr<SpaceElement<dim,0,range,rank> > clone() const override final;
+    friend class NURBSElementHandler<dim, range, rank>;
+
+
+    virtual std::shared_ptr<SpaceElement<dim,0,range,rank,Transformation::h_grad> >
+    clone() const override final;
 
 #ifdef SERIALIZATION
     /**

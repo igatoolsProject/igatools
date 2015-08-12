@@ -33,12 +33,10 @@ IGA_NAMESPACE_OPEN
  */
 template<int dim_, int codim_ = 0>
 class MappingElement
-//    : public FunctionElement<dim_, 0, dim_+codim_>
 {
 private:
-    using self_t  = MappingElement<dim_, codim_>;
-//    using parent_t = FunctionElement<dim_, 0, dim_+codim_>;
-    using Map = Mapping<dim_, codim_>;
+    using self_t  = MappingElement<dim_,codim_>;
+    using Map = Mapping<dim_,codim_>;
     using Func = MapFunction<dim_,dim_+codim_>;
 
     using Point = typename Func::Point;
@@ -278,6 +276,7 @@ public:
     void print_info(LogStream &out) const;
 
     void print_cache_info(LogStream &out) const;
+
 
 };
 

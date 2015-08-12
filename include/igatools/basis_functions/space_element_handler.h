@@ -34,12 +34,17 @@ IGA_NAMESPACE_OPEN
  *
  * @ingroup serializable
  */
-template <int dim,int codim,int range,int rank>
+template <int dim,int codim,int range,int rank,Transformation type>
 class SpaceElementHandler
 {
+private:
+	using self_t = SpaceElementHandler<dim,codim,range,rank,type>;
+
 public:
-    using ElementAccessor = typename Space<dim,codim,range,rank>::ElementAccessor;
-    using ElementIterator = typename Space<dim,codim,range,rank>::ElementIterator;
+	using Sp = Space<dim,codim,range,rank,type>;
+    using ElementAccessor = typename Sp::ElementAccessor;
+    using ElementIterator = typename Sp::ElementIterator;
+
 
 private:
     using eval_pts_variant = SubElemVariants<Quadrature,dim>;
@@ -57,17 +62,17 @@ protected:
     SpaceElementHandler() = default;
 
 
-    SpaceElementHandler(std::shared_ptr<const Space<dim,codim,range,rank>> space);
+    SpaceElementHandler(std::shared_ptr<const Sp> space);
 
     /**
      * Copy constructor. Not allowed to be used.
      */
-    SpaceElementHandler(const SpaceElementHandler<dim,codim,range,rank> &elem_handler) = delete;
+    SpaceElementHandler(const self_t &elem_handler) = delete;
 
     /**
      * Move constructor. Not allowed to be used.
      */
-    SpaceElementHandler(SpaceElementHandler<dim,codim,range,rank> &&elem_handler) = delete;
+    SpaceElementHandler(self_t &&elem_handler) = delete;
 
 public:
 
@@ -101,11 +106,11 @@ public:
         const SafeSTLVector<int> &elements_flat_id) = 0;
 
 
-    virtual void init_cache(SpaceElement<dim,codim,range,rank> &elem,
+    virtual void init_cache(SpaceElement<dim,codim,range,rank,type> &elem,
                             const topology_variant &topology) = 0;
 
     template <int sub_elem_dim>
-    void init_cache(SpaceElement<dim,codim,range,rank> &elem);
+    void init_cache(SpaceElement<dim,codim,range,rank,type> &elem);
 
     /**
      * Allocates the space in the cache of ElementAccessor <tt>element</tt>
@@ -123,7 +128,7 @@ public:
 
 
     virtual void fill_cache(
-        SpaceElement<dim,codim,range,rank> &elem,
+        SpaceElement<dim,codim,range,rank,type> &elem,
         const topology_variant &topology,
         const int sub_elem_id) = 0;
 
@@ -142,10 +147,10 @@ public:
     virtual void print_info(LogStream &out) const = 0;
 
 
-    std::shared_ptr<const Space<dim,codim,range,rank>> get_space() const;
+    std::shared_ptr<const Sp> get_space() const;
 
 private:
-    std::shared_ptr<const Space<dim,codim,range,rank>> space_;
+    std::shared_ptr<const Sp> space_;
 
 
 #ifdef SERIALIZATION

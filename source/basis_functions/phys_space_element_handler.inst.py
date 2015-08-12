@@ -32,27 +32,32 @@ sub_dim_members = \
 ['void elhandler::FillCacheDispatcher::operator()(const Topology<k> &);' ,
  'void elhandler::InitCacheDispatcher::operator()(const Topology<k> &);']
 
-handlers = ['PhysSpaceElementHandler<0,0,1,0>']
+
+transformations = ['Transformation::h_grad']
+
+handlers = ['PhysSpaceElementHandler<0,0,1,0,Transformation::h_grad>']
 handler_templated_funcs = []
 
 for space in inst.SubPhysSpaces:
     x = space.spec
-    handler = 'PhysSpaceElementHandler<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
-    handlers.append(handler)
-    for fun in sub_dim_members:
-        k = x.dim
-        s = fun.replace('elhandler', handler).replace('k', '%d' % (k));
-        handler_templated_funcs.append(s)
+    for t in transformations:
+        handler = 'PhysSpaceElementHandler<%d,%d,%d,%d,%s>' %(x.dim,x.range,x.rank,x.codim,t)
+        handlers.append(handler)
+        for fun in sub_dim_members:
+            k = x.dim
+            s = fun.replace('elhandler', handler).replace('k', '%d' % (k));
+            handler_templated_funcs.append(s)
 
 
 for space in inst.PhysSpaces:
     x = space.spec
-    handler = 'PhysSpaceElementHandler<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
-    handlers.append(handler)
-    for fun in sub_dim_members:
-        for k in inst.sub_dims(x.dim):
-            s = fun.replace('elhandler', handler).replace('k', '%d' % (k));
-            handler_templated_funcs.append(s)
+    for t in transformations:
+        handler = 'PhysSpaceElementHandler<%d,%d,%d,%d,%s>' %(x.dim,x.range,x.rank,x.codim,t)
+        handlers.append(handler)
+        for fun in sub_dim_members:
+            for k in inst.sub_dims(x.dim):
+                s = fun.replace('elhandler', handler).replace('k', '%d' % (k));
+                handler_templated_funcs.append(s)
 
 
 for handler in unique(handlers):

@@ -80,7 +80,7 @@ get_grid_handler() const
 template<int dim, int range , int rank>
 void
 ReferenceElementHandler<dim, range, rank>::
-init_cache(SpaceElement<dim,0,range,rank> &space_elem,
+init_cache(SpaceElement<dim,0,range,rank,Transformation::h_grad> &space_elem,
            const topology_variant &topology)
 {
     auto &ref_elem = dynamic_cast<ElementAccessor &>(space_elem);
@@ -90,7 +90,7 @@ init_cache(SpaceElement<dim,0,range,rank> &space_elem,
 template<int dim, int range , int rank>
 void
 ReferenceElementHandler<dim, range, rank>::
-fill_cache(SpaceElement<dim,0,range,rank> &space_elem,
+fill_cache(SpaceElement<dim,0,range,rank,Transformation::h_grad> &space_elem,
            const topology_variant &topology,
            const int sub_elem_id)
 {

@@ -35,13 +35,13 @@ class PhysicalSpace;
  *
  * @ingroup serializable
  */
-template<int dim_,int range_,int rank_,int codim_>
+template<int dim_,int range_,int rank_,int codim_,Transformation type_>
 class PhysSpaceElementHandler
     :
-    public SpaceElementHandler<dim_,codim_,range_,rank_>
+    public SpaceElementHandler<dim_,codim_,range_,rank_,type_>
 {
 
-    using PhysSpace = PhysicalSpace<dim_,range_,rank_,codim_>;
+    using PhysSpace = PhysicalSpace<dim_,range_,rank_,codim_,type_>;
     using RefSpace =  typename PhysSpace::RefSpace;
     using RefPhysSpaceElementHandler = typename PhysSpace::RefSpace::ElementHandler;
 //    using PFCache = typename PhysSpace::PushForwardType;
@@ -50,8 +50,8 @@ class PhysSpaceElementHandler
     using ElementAccessor = typename PhysSpace::ElementAccessor;
     using PfElemAccessor = typename PhysSpace::PushForwardElem;
 
-    using base_t = SpaceElementHandler<dim_,codim_,range_,rank_>;
-    using self_t = PhysSpaceElementHandler<dim_,range_,rank_,codim_>;
+    using base_t = SpaceElementHandler<dim_,codim_,range_,rank_,type_>;
+    using self_t = PhysSpaceElementHandler<dim_,range_,rank_,codim_,type_>;
 
     using eval_pts_variant = SubElemVariants<Quadrature,dim_>;
     using topology_variant = TopologyVariants<dim_>;
@@ -89,7 +89,7 @@ public:
     /**
      * Destructor.
      */
-    ~PhysSpaceElementHandler() = default;
+    virtual ~PhysSpaceElementHandler() = default;
     ///@}
 
     /**
@@ -126,11 +126,11 @@ public:
         const SafeSTLVector<int> &elements_flat_id) override final;
 
 
-    virtual void init_cache(SpaceElement<dim_,codim_,range_,rank_> &sp_elem,
+    virtual void init_cache(SpaceElement<dim_,codim_,range_,rank_,type_> &sp_elem,
                             const topology_variant &topology) override final;
 
 
-    virtual void fill_cache(SpaceElement<dim_,codim_,range_,rank_> &sp_elem,
+    virtual void fill_cache(SpaceElement<dim_,codim_,range_,rank_,type_> &sp_elem,
                             const topology_variant &topology,
                             const int sub_elem_id) override final;
 
@@ -138,8 +138,7 @@ public:
     void print_info(LogStream &out) const override final;
 
 private:
-    using RefElemHandler = SpaceElementHandler<RefSpace::dim,0,RefSpace::range,RefSpace::rank>;
-//    using RefElemHandler = ReferenceElementHandler<RefSpace::dim,RefSpace::range,RefSpace::rank>;
+    using RefElemHandler = SpaceElementHandler<RefSpace::dim,0,RefSpace::range,RefSpace::rank,Transformation::h_grad>;
     std::shared_ptr<RefElemHandler> ref_space_handler_;
 
 
@@ -186,7 +185,7 @@ private:
             const SafeSTLArray<ValueFlags, dim+1> &flags,
             RefElemHandler &ref_space_handler,
 			Map &mapping,
-            PhysicalSpaceElement<dim_,range_,rank_,codim_> &phys_elem)
+            PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> &phys_elem)
             :
             flags_(flags),
             ref_space_handler_(ref_space_handler),
@@ -200,7 +199,7 @@ private:
         const SafeSTLArray<ValueFlags, dim+1> &flags_;
         RefElemHandler &ref_space_handler_;
         Map &mapping_;
-        PhysicalSpaceElement<dim_,range_,rank_,codim_> &phys_elem_;
+        PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> &phys_elem_;
     };
 
 
@@ -211,7 +210,7 @@ private:
             const int sub_elem_id,
             RefElemHandler &ref_space_handler,
             Map &mapping,
-            PhysicalSpaceElement<dim_,range_,rank_,codim_> &phys_elem)
+            PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> &phys_elem)
             :
             sub_elem_id_(sub_elem_id),
             ref_space_handler_(ref_space_handler),
@@ -225,7 +224,7 @@ private:
         const int sub_elem_id_;
         RefElemHandler &ref_space_handler_;
         Map &mapping_;
-        PhysicalSpaceElement<dim_,range_,rank_,codim_> &phys_elem_;
+        PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> &phys_elem_;
     };
 
 

@@ -21,6 +21,7 @@
 
 #include <igatools/basis_functions/nurbs_element.h>
 #include <igatools/basis_functions/nurbs_space.h>
+#include <igatools/basis_functions/nurbs_element_handler.h>
 
 #ifdef NURBS
 
@@ -106,7 +107,7 @@ get_nurbs_space() const -> std::shared_ptr<const Space>
 
 
 template <int dim, int range, int rank>
-std::shared_ptr<SpaceElement<dim,0,range,rank> >
+std::shared_ptr<SpaceElement<dim,0,range,rank,Transformation::h_grad> >
 NURBSElement<dim, range, rank>::
 clone() const
 {

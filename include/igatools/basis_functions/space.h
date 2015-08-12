@@ -34,8 +34,8 @@ IGA_NAMESPACE_OPEN
 
 template <int,int,int,int> class Function;
 template <int> class CartesianGridElementAccessor;
-template <int,int,int,int> class SpaceElement;
-template <int,int,int,int> class SpaceElementHandler;
+template <int,int,int,int,Transformation> class SpaceElement;
+template <int,int,int,int,Transformation> class SpaceElementHandler;
 
 
 
@@ -189,15 +189,15 @@ template <int,int,int> class DofDistribution;
  *
  * @ingroup serializable
  */
-template <int dim_,int codim_,int range_,int rank_>
+template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 class Space
     :
-    public std::enable_shared_from_this<Space<dim_,codim_,range_,rank_> >,
+    public std::enable_shared_from_this<Space<dim_,codim_,range_,rank_,type_> >,
     public SpaceBase<dim_>
 {
 private:
     using base_t = SpaceBase<dim_>;
-    using self_t = Space<dim_,codim_,range_,rank_>;
+    using self_t = Space<dim_,codim_,range_,rank_,type_>;
 
 
 protected:
@@ -328,11 +328,11 @@ public:
     /**
      * Create and element (defined on this space) with a given flat_index
      */
-    virtual std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_> >
+    virtual std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_,type_> >
     create_element(const Index flat_index) const = 0;
 
 
-    virtual std::shared_ptr< SpaceElementHandler<dim_,codim_,range_,rank_> >
+    virtual std::shared_ptr< SpaceElementHandler<dim_,codim_,range_,rank_,type_> >
     get_elem_handler() const = 0;
 
 
@@ -340,7 +340,7 @@ public:
 
 
 
-    using ElementAccessor = SpaceElement<dim_,codim_,range_,rank_>;
+    using ElementAccessor = SpaceElement<dim_,codim_,range_,rank_,type_>;
     using ElementIterator = CartesianGridIterator<ElementAccessor>;
 
     /** @name Functions involving the element iterator */

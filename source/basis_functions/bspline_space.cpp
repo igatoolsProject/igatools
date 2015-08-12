@@ -19,6 +19,7 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/basis_functions/bspline_space.h>
+#include <igatools/basis_functions/bspline_element_handler.h>
 #include <igatools/functions/sub_function.h>
 #include <igatools/functions/identity_function.h>
 
@@ -382,7 +383,7 @@ template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
 create_element(const Index flat_index) const
--> std::shared_ptr<SpaceElement<dim_,0,range_,rank_> >
+-> std::shared_ptr<SpaceElement<dim_,0,range_,rank_,Transformation::h_grad> >
 {
     using Elem = BSplineElement<dim_,range_,rank_>;
 
@@ -676,7 +677,7 @@ template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
 get_elem_handler() const
--> std::shared_ptr<SpaceElementHandler<dim_,0,range_,rank_>>
+-> std::shared_ptr<SpaceElementHandler<dim_,0,range_,rank_,Transformation::h_grad>>
 {
     return ElementHandler::create(this->get_this_space());
 }

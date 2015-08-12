@@ -39,9 +39,9 @@ class SpaceManager;
 template <int,int,int,int> class IgFunction;
 
 
-template <int,int,int,int> class PhysicalSpaceElement;
+template <int,int,int,int,Transformation> class PhysicalSpaceElement;
 
-template <int,int,int,int> class PhysSpaceElementHandler;
+template <int,int,int,int,Transformation> class PhysSpaceElementHandler;
 
 /**
  *
@@ -54,10 +54,10 @@ template <int,int,int,int> class PhysSpaceElementHandler;
 template <int dim_, int range_= 1, int rank_ = 1, int codim_ = 0,
           Transformation type_= Transformation::h_grad>
 class PhysicalSpace :
-    public Space<dim_,codim_,range_,rank_>
+    public Space<dim_,codim_,range_,rank_,type_>
 {
 private:
-    using base_t = Space<dim_,codim_,range_,rank_>;
+    using base_t = Space<dim_,codim_,range_,rank_,type_>;
     using self_t = PhysicalSpace<dim_, range_, rank_, codim_, type_>;
 
 public:
@@ -75,7 +75,7 @@ public:
 
     using GridType = CartesianGrid<dim_>;
     ///@}
-    using ElementHandler = PhysSpaceElementHandler<dim_,range_,rank_,codim_>;
+    using ElementHandler = PhysSpaceElementHandler<dim_,range_,rank_,codim_,type_>;
 
     static const int dim = dim_;
 
@@ -120,7 +120,7 @@ public:
 public:
 
 
-    using ElementAccessor = PhysicalSpaceElement<dim_,range_,rank_,codim_>;
+    using ElementAccessor = PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>;
     using ElementIterator = CartesianGridIterator<ElementAccessor>;
 
 
@@ -139,7 +139,7 @@ public:
     /**
      * Create an element (defined on this grid) with a given flat_index.
      */
-    std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_> >
+    std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_,type_> >
     create_element(const Index flat_index) const override final;
 
 
@@ -189,7 +189,8 @@ public:
 
     void print_info(LogStream &out) const override final;
 
-    std::shared_ptr<SpaceElementHandler<dim_,codim_,range_,rank_>> get_elem_handler() const override final;
+    std::shared_ptr<SpaceElementHandler<dim_,codim_,range_,rank_,type_>>
+	get_elem_handler() const override final;
 
 
 

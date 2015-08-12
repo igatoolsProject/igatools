@@ -23,7 +23,6 @@
 
 #include <igatools/base/config.h>
 #include <igatools/basis_functions/reference_element.h>
-#include <igatools/basis_functions/bspline_element_handler.h>
 
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <igatools/basis_functions/bernstein_basis.h>
@@ -32,6 +31,7 @@
 IGA_NAMESPACE_OPEN
 
 template <int dim, int range, int rank> class BSplineSpace;
+template <int dim, int range, int rank> class BSplineElementHandler;
 template <class Accessor> class CartesianGridIterator;
 
 /**
@@ -175,7 +175,7 @@ public:
         return values;
     }
 
-    virtual std::shared_ptr<SpaceElement<dim,0,range,rank> >
+    virtual std::shared_ptr<SpaceElement<dim,0,range,rank,Transformation::h_grad> >
     clone() const override final;
 
 

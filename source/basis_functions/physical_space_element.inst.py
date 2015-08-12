@@ -34,16 +34,21 @@ sub_dim_members = \
 
 elements = ['PhysicalSpaceElement<0,0,1,0>']
 
+transformations = ['Transformation::h_grad']
+
+
 for space in inst.SubPhysSpaces:
     x = space.spec
-    elem = 'PhysicalSpaceElement<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
-    elements.append(elem)
+    for t in transformations:
+        elem = 'PhysicalSpaceElement<%d,%d,%d,%d,%s>' %(x.dim,x.range,x.rank,x.codim,t)
+        elements.append(elem)
 
 
 for space in inst.PhysSpaces:
     x = space.spec
-    elem = 'PhysicalSpaceElement<%d,%d,%d,%d>' %(x.dim,x.range,x.rank,x.codim)
-    elements.append(elem)
+    for t in transformations:
+        elem = 'PhysicalSpaceElement<%d,%d,%d,%d,%s>' %(x.dim,x.range,x.rank,x.codim,t)
+        elements.append(elem)
 
 
 

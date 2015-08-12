@@ -22,9 +22,13 @@
 #define NEW_PUSH_FORWARD_ELEMENT_ACCESSOR_H_
 
 #include <igatools/geometry/mapping_element.h>
+#include <igatools/basis_functions/physical_space_element.h>
 
 IGA_NAMESPACE_OPEN
 
+
+template <int,int,int,int,Transformation>
+class PhysicalSpaceElement;
 
 constexpr
 int physical_range(const int ref_range, const int space_dim, const Transformation type)
@@ -44,6 +48,9 @@ class PushForward
 private:
     using self_t  = PushForward<type_, dim_, codim_>;
     using MapElem = MappingElement<dim_, codim_>;
+
+
+
 public:
 
     static const int dim = dim_;
@@ -70,27 +77,39 @@ public:
     template <int range, int rank, int order>
     using PhysDerivative = Derivatives<space_dim, PhysRange<range>::value, rank, order>;
 
+
+    template <int range,int rank>
+    using RefSpaceElem = ReferenceElement<dim_,range,rank>;
+
+
+    template <int range,int rank>
+    using PhysSpaceElem = PhysicalSpaceElement<dim_,PhysRange<range>::value,rank,codim,type_>;
+
 public:
 
     template <int range, int rank, Transformation ttype=type_>
     static void
-    transform_0(const ValueContainer<RefValue<range, rank>> &v_hat,
+    transform_0(const RefSpaceElem<range,rank> &ref_elem,
+    			const ValueContainer<RefValue<range, rank>> &v_hat,
                 ValueContainer< PhysValue<range, rank> > &v,
+				PhysSpaceElem<range,rank> & phys_elem,
                 EnableIf<ttype == Transformation::h_grad> * = 0)
     {
         v = v_hat;
     }
 
 
-    template <int range, int rank, int k, Transformation ttype=type_>
+    template <int range, int rank, int sub_elem_dim, Transformation ttype=type_>
     static void
-    transform_1(const std::tuple<
+    transform_1(const RefSpaceElem<range,rank> &ref_elem,
+    		const std::tuple<
                 const ValueContainer<RefValue<range, rank>> &,
                 const ValueContainer<RefDerivative<range, rank, 1>> &> &ref_values,
                 const ValueContainer<PhysValue<range, rank>>   &phys_values,
 				const MapElem & map_elem,
                 ValueContainer<PhysDerivative<range, rank, 1>> &Dv,
                 const int s_id,
+				PhysSpaceElem<range,rank> & phys_elem,
                 EnableIf<ttype == Transformation::h_grad> * = 0)
     {
         const auto &Dv_hat = std::get<1>(ref_values);
@@ -100,7 +119,7 @@ public:
         auto Dv_it     = Dv.begin();
         auto Dv_hat_it = Dv_hat.cbegin();
 
-        const auto &DF_inv = map_elem.template get_values_from_cache<_InvGradient,k>(s_id);
+        const auto &DF_inv = map_elem.template get_values_from_cache<_InvGradient,sub_elem_dim>(s_id);
         for (int fn = 0; fn < n_func; ++fn)
             for (Index pt = 0; pt < n_points; ++pt)
             {
@@ -113,7 +132,8 @@ public:
 
     template <int range, int rank, int k, Transformation ttype=type_>
     static void
-    transform_2(const std::tuple<
+    transform_2(const RefSpaceElem<range,rank> &ref_elem,
+    		const std::tuple<
                 const ValueContainer<RefValue<range, rank>> &,
                 const ValueContainer<RefDerivative<range, rank, 1>> &,
                 const ValueContainer<RefDerivative<range, rank, 2>> &> &ref_values,
@@ -123,6 +143,7 @@ public:
 				const MapElem & map_elem,
                 ValueContainer<PhysDerivative<range, rank, 2>> &D2v,
                 const int s_id,
+				PhysSpaceElem<range,rank> & phys_elem,
                 EnableIf<ttype == Transformation::h_grad> * = 0)
     {
         const auto &D2v_hat = std::get<2>(ref_values);

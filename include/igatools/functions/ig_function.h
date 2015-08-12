@@ -42,7 +42,7 @@ IGA_NAMESPACE_OPEN
 
 //template <int,int,int>
 //class ReferenceSpace;
-template <int,int,int,int>
+template <int,int,int,int,Transformation>
 class Space;
 
 template <int,int,int>
@@ -55,7 +55,7 @@ class NURBSSpace;
 //class PhysicalSpace;
 
 
-template <int,int,int,int>
+template <int,int,int,int,Transformation>
 class SpaceElementHandler;
 
 template <int,int,int>
@@ -64,10 +64,10 @@ class BSplineElementHandler;
 template <int,int,int>
 class NURBSElementHandler;
 
-template <int,int,int,int>
+template <int,int,int,int,Transformation>
 class PhysSpaceElementHandler;
 
-template <int,int,int,int>
+template <int,int,int,int,Transformation>
 class SpaceElement;
 
 template <int,int,int>
@@ -76,7 +76,7 @@ class BSplineElement;
 template <int,int,int>
 class NURBSElement;
 
-template <int,int,int,int>
+template <int,int,int,int,Transformation>
 class PhysicalSpaceElement;
 
 
@@ -97,14 +97,15 @@ private:
     using base_t = Function<dim,codim,range,rank>;
     using parent_t = Function<dim,codim,range,rank>;
     using self_t = IgFunction<dim,codim,range,rank>;
+    using Sp = Space<dim,codim,range,rank,Transformation::h_grad>;
 
 public:
     //TODO (pauletti, Mar 23, 2015): should we make this private?
-    IgFunction(std::shared_ptr<const Space<dim,codim,range,rank>> space,
+    IgFunction(std::shared_ptr<const Sp> space,
                std::shared_ptr<const EpetraTools::Vector> coeff,
                const std::string &property = DofProperties::active);
 
-    IgFunction(std::shared_ptr<const Space<dim,codim,range,rank>> space,
+    IgFunction(std::shared_ptr<const Sp> space,
                const IgCoefficients &coeff,
                const std::string &property = DofProperties::active);
 
@@ -127,12 +128,12 @@ public:
 
 public:
     static std::shared_ptr<self_t>
-    create(std::shared_ptr<const Space<dim,codim,range,rank>> space,
+    create(std::shared_ptr<const Sp> space,
            std::shared_ptr<const EpetraTools::Vector> coeff,
            const std::string &property = DofProperties::active);
 
     static std::shared_ptr<self_t>
-    create(std::shared_ptr<const Space<dim,codim,range,rank>> space,
+    create(std::shared_ptr<const Sp> space,
            const IgCoefficients &coeff,
            const std::string &property = DofProperties::active);
 
@@ -153,7 +154,7 @@ public:
 
     void fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) override;
 
-    std::shared_ptr<const Space<dim,codim,range,rank>> get_ig_space() const;
+    std::shared_ptr<const Sp> get_ig_space() const;
 
     const CoeffType &get_coefficients() const;
 
@@ -173,16 +174,16 @@ protected:
 
 private:
 
-    std::shared_ptr<const Space<dim,codim,range,rank>> space_;
+    std::shared_ptr<const Sp> space_;
 
     CoeffType coeff_;
 
     const std::string property_;
 
-    using SpaceElem = SpaceElement<dim,codim,range,rank>;
+    using SpaceElem = SpaceElement<dim,codim,range,rank,Transformation::h_grad>;
     CartesianGridIterator<SpaceElem> space_elem_;
 
-    using SpaceElemHandler = SpaceElementHandler<dim,codim,range,rank>;
+    using SpaceElemHandler = SpaceElementHandler<dim,codim,range,rank,Transformation::h_grad>;
     std::shared_ptr<SpaceElemHandler> space_elem_handler_;
 
 private:
