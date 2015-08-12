@@ -21,27 +21,22 @@
 from init_instantiation_data import *
 
 include_files = []
-
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-sub_dim_members = \
-[]
-#['void PushForward<Transformation::h_grad,dim,cod>::reset<k>(const ValueFlags flag, const TransformationFlags transf_flag, const Quadrature<k> &quad);']
 
+push_forwards = []
 
 for x in inst.sub_mapping_dims:
-    push_fwd = 'PushForward<Transformation::h_grad, %d, %d>' %(x.dim, x.codim)
-    f.write('template class %s ;\n' %(push_fwd))
-    for fun in sub_dim_members:
-        k = x.dim
-        s = fun.replace('cod', '%d' % (x.codim)).replace('dim', '%d' % (x.dim)).replace('k', '%d' % (k));
-        f.write('template ' + s + '\n')
+    dims = '<Transformation::h_grad, %d, %d>' %(x.dim, x.codim)
+    pf = 'PushForward%s' % (dims)
+    push_forwards.append(pf)
 
 for x in inst.mapping_dims:
-    push_fwd = 'PushForward<Transformation::h_grad, %d, %d>' %(x.dim, x.codim)
-    f.write('template class %s ;\n' %(push_fwd))
-    for fun in sub_dim_members:
-        for k in inst.sub_dims(x.dim):
-            s = fun.replace('cod', '%d' % (x.codim)).replace('dim', '%d' % (x.dim)).replace('k', '%d' % (k));
-            f.write('template ' + s + '\n')
+    dims = '<Transformation::h_grad, %d, %d>' %(x.dim, x.codim)
+    pf = 'PushForward%s' % (dims)
+    push_forwards.append(pf)
+
+
+for pf in unique(push_forwards):
+    f.write('template class %s ;\n' %(pf))

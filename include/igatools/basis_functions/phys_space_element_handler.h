@@ -24,7 +24,6 @@
 #include <igatools/base/config.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
 #include <igatools/basis_functions/nurbs_element_handler.h>
-#include <igatools/geometry/push_forward.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -45,11 +44,11 @@ class PhysSpaceElementHandler
     using PhysSpace = PhysicalSpace<dim_,range_,rank_,codim_>;
     using RefSpace =  typename PhysSpace::RefSpace;
     using RefPhysSpaceElementHandler = typename PhysSpace::RefSpace::ElementHandler;
-    using PFCache = typename PhysSpace::PushForwardType;
+//    using PFCache = typename PhysSpace::PushForwardType;
 
     using ElementIterator = typename PhysSpace::ElementIterator;
     using ElementAccessor = typename PhysSpace::ElementAccessor;
-    using PfElemAccessor = typename PhysSpace::PushForwardType::ElementAccessor;
+    using PfElemAccessor = typename PhysSpace::PushForwardElem;
 
     using base_t = SpaceElementHandler<dim_,codim_,range_,rank_>;
     using self_t = PhysSpaceElementHandler<dim_,range_,rank_,codim_>;

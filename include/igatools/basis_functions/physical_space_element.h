@@ -27,7 +27,7 @@
 #include <igatools/base/quadrature.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/nurbs_element.h>
-#include <igatools/geometry/push_forward_element.h>
+#include <igatools/geometry/push_forward.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -53,9 +53,7 @@ public :
 
     using Space = PhysSpace;
     using RefSpace = typename PhysSpace::RefSpace;
-    using PushForwardType = typename PhysSpace::PushForwardType;
-    using PfElemAccessor = typename PushForwardType::ElementAccessor;
-//    using RefElemAccessor = typename RefSpace::ElementAccessor;
+    using PfElemAccessor = typename PhysSpace::PushForwardElem;
     using RefElemAccessor = SpaceElement<RefSpace::dim,0,RefSpace::range,RefSpace::rank>;
 
     using MapElem = MappingElement<dim_, codim_>;

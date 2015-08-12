@@ -231,7 +231,7 @@ operator()(const Quadrature<sub_elem_dim> &quad)
 {
     flags_[sub_elem_dim] = flag_in_;
     ref_space_handler_.reset_selected_elements(
-        space_to_ref_flag(PhysSpace::PushForwardType::type, flag_in_),
+        space_to_ref_flag(PhysSpace::PushForwardElem::type, flag_in_),
         quad,
         elements_flat_id_);
 
@@ -241,7 +241,7 @@ operator()(const Quadrature<sub_elem_dim> &quad)
     space_to_pf_flag(flag_in_,map_flags, transf_flags);
 
     auto mapping_flags = pushforward_to_mapping_flag(
-    		PhysSpace::PushForwardType::type,
+    		PhysSpace::PushForwardElem::type,
 			flag_in_,
 			transf_flags);
     mapping_.template reset<sub_elem_dim>(mapping_flags,quad);

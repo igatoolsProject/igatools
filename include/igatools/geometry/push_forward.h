@@ -18,50 +18,38 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef NEW_PUSHFORWARD_H_
-#define NEW_PUSHFORWARD_H_
+#ifndef NEW_PUSH_FORWARD_ELEMENT_ACCESSOR_H_
+#define NEW_PUSH_FORWARD_ELEMENT_ACCESSOR_H_
 
-#include <igatools/base/config.h>
-#include <igatools/geometry/mapping.h>
 #include <igatools/geometry/mapping_element.h>
 
 IGA_NAMESPACE_OPEN
+
+
 constexpr
 int physical_range(const int ref_range, const int space_dim, const Transformation type)
 {
     return type == Transformation::h_grad ? ref_range : space_dim;
 }
 
-//Forward declaration to avoid including header file.
-template <Transformation, int, int> class PushForwardElement;
 
 
 /**
  *
- *
- * @ingroup containers
- * @ingroup serializable
- *
- * @author pauletti 2014
- * @author M. Martinelli, 2015
- *
+ * @ingroup elements
  */
 template<Transformation type_, int dim_, int codim_ = 0>
-class PushForward : public Mapping<dim_, codim_>
+class PushForward
 {
 private:
-    using self_t = PushForward<type_, dim_, codim_>;
-    using base_t = Mapping<dim_, codim_>;
-    using MapType = Mapping<dim_, codim_>;
-    using typename MapType::FuncType;
+    using self_t  = PushForward<type_, dim_, codim_>;
+    using MapElem = MappingElement<dim_, codim_>;
 public:
-    using Topology = UnitElement<dim_>;
 
-    using ElementAccessor = PushForwardElement<type_, dim_, codim_>;
-    using ElementIterator = CartesianGridIterator<ElementAccessor>;
-    using MapType::space_dim;
-    static const int dim   = dim_;
+    static const int dim = dim_;
     static const int codim = codim_;
+    static const int space_dim = dim + codim;
+
     static const Transformation type = type_;
 
     template<int ref_range>
@@ -82,54 +70,127 @@ public:
     template <int range, int rank, int order>
     using PhysDerivative = Derivatives<space_dim, PhysRange<range>::value, rank, order>;
 
-
 public:
 
-    /**
-     * Default constructor. It does nothing but it is needed for the
-     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     * mechanism.
-     */
-    PushForward() = default;
+    template <int range, int rank, Transformation ttype=type_>
+    static void
+    transform_0(const ValueContainer<RefValue<range, rank>> &v_hat,
+                ValueContainer< PhysValue<range, rank> > &v,
+                EnableIf<ttype == Transformation::h_grad> * = 0)
+    {
+        v = v_hat;
+    }
 
 
-    PushForward(std::shared_ptr<FuncType> F);
+    template <int range, int rank, int k, Transformation ttype=type_>
+    static void
+    transform_1(const std::tuple<
+                const ValueContainer<RefValue<range, rank>> &,
+                const ValueContainer<RefDerivative<range, rank, 1>> &> &ref_values,
+                const ValueContainer<PhysValue<range, rank>>   &phys_values,
+				const MapElem & map_elem,
+                ValueContainer<PhysDerivative<range, rank, 1>> &Dv,
+                const int s_id,
+                EnableIf<ttype == Transformation::h_grad> * = 0)
+    {
+        const auto &Dv_hat = std::get<1>(ref_values);
 
-    ~PushForward() = default;
+        const int n_func   = Dv_hat.get_num_functions();
+        const int n_points = Dv_hat.get_num_points();
+        auto Dv_it     = Dv.begin();
+        auto Dv_hat_it = Dv_hat.cbegin();
+
+        const auto &DF_inv = map_elem.template get_values_from_cache<_InvGradient,k>(s_id);
+        for (int fn = 0; fn < n_func; ++fn)
+            for (Index pt = 0; pt < n_points; ++pt)
+            {
+                (*Dv_it) = compose((*Dv_hat_it), DF_inv[pt]);
+                ++Dv_hat_it;
+                ++Dv_it;
+            }
+    }
+
+
+    template <int range, int rank, int k, Transformation ttype=type_>
+    static void
+    transform_2(const std::tuple<
+                const ValueContainer<RefValue<range, rank>> &,
+                const ValueContainer<RefDerivative<range, rank, 1>> &,
+                const ValueContainer<RefDerivative<range, rank, 2>> &> &ref_values,
+                const std::tuple<
+                const ValueContainer<PhysValue<range, rank>> &,
+                const ValueContainer<PhysDerivative<range, rank, 1>> &> &phys_values,
+				const MapElem & map_elem,
+                ValueContainer<PhysDerivative<range, rank, 2>> &D2v,
+                const int s_id,
+                EnableIf<ttype == Transformation::h_grad> * = 0)
+    {
+        const auto &D2v_hat = std::get<2>(ref_values);
+        const auto &D1v     = std::get<1>(phys_values);
+
+        const int n_func   = D2v_hat.get_num_functions();
+        const int n_points = D2v_hat.get_num_points();
+        auto D2v_it     = D2v.begin();
+        auto D1v_it     = D1v.cbegin();
+        auto D2v_hat_it = D2v_hat.cbegin();
+        const auto D2F     =  map_elem.get_func_element().template get_values<_Hessian,k>(s_id);
+        const auto &DF_inv =  map_elem.template get_values_from_cache<_InvGradient,k>(s_id);
+
+        for (int fn = 0; fn < n_func; ++fn)
+            for (Index pt = 0; pt < n_points; ++pt)
+            {
+                const auto &D2F_pt = D2F[pt];
+                const auto &DF_inv_pt = DF_inv[pt];
+                for (int u = 0 ; u < dim ; ++u)
+                {
+                    const auto &w = DF_inv_pt[u];
+                    (*D2v_it)[u] = compose(
+                                       action(*D2v_hat_it, w) - compose((*D1v_it),action(D2F_pt,w)),
+                                       DF_inv_pt);
+                }
+                ++D2v_hat_it;
+                ++D1v_it;
+                ++D2v_it;
+            }
+
+    }
+
 
 #if 0
-    template<int k>
-    void reset(const ValueFlags map_flag, const TransformationFlags transf_flag, const Quadrature<k> &eval_pts);
-
-    std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const;
-
-    ElementIterator begin() const;
-
-    ElementIterator end() const;
-#endif
-
-private:
-
-#ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
-
-    template<class Archive>
+    template <int order, int range, int rank, Transformation ttype=type >
     void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        ar &boost::serialization::make_nvp("PushForward_base_t",
-                                           boost::serialization::base_object<base_t>(*this));
-    }
-    ///@}
+    transform_0(const ValueContainer<RefValue<range, rank>> &D0v_hat,
+                ValueContainer< PhysValue<range, rank> > &D0v,
+                EnableIf<ttype == Transformation::h_grad> *= 0) const;
+
+
+
+    template < int range, int rank, Transformation ttype=type >
+    void
+    transform_values(
+        const ValueContainer< RefValue<range, rank> > &D0v_hat,
+        ValueContainer< PhysValue<range, rank> > &D0v,
+        EnableIf<ttype == Transformation::h_div> *= 0) const;
 #endif
 
-};
+#if 0
+private:
+    template <class Accessor> friend class CartesianGridIteratorBase;
+    friend class PushForward<type_, dim_, codim_>;
 
+    /**
+     * Creates a new object performing a deep copy of the current object using the PushForward
+     * copy constructor.
+     */
+    std::shared_ptr<PushForward<type_,dim_,codim_> > clone() const
+    {
+        auto elem = std::shared_ptr<PushForward<type_,dim_,codim_> >(
+                        new PushForward(*this,CopyPolicy::deep));
+        Assert(elem != nullptr, ExcNullPtr());
+        return elem;
+    }
+#endif
+};
 
 IGA_NAMESPACE_CLOSE
 

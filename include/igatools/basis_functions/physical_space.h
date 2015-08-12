@@ -23,8 +23,8 @@
 
 #include <igatools/base/config.h>
 #include <igatools/geometry/mapping.h>
-#include <igatools/geometry/push_forward.h>
 #include <igatools/geometry/cartesian_grid_iterator.h>
+#include <igatools/geometry/push_forward.h>
 #include <igatools/basis_functions/space.h>
 #include <igatools/basis_functions/reference_space.h>
 #include <igatools/basis_functions/dof_distribution.h>
@@ -67,7 +67,7 @@ public:
      *
      * @see Space
      */
-    using PushForwardType = PushForward<type_, dim_, codim_>;
+    using PushForwardElem = PushForward<type_, dim_, codim_>;
 
     using Map = Mapping<dim_, codim_>;
 
@@ -79,11 +79,11 @@ public:
 
     static const int dim = dim_;
 
-    static const int codim = PushForwardType::codim;
+    static const int codim = codim_;
 
-    static const int space_dim = PushForwardType::space_dim;
+    static const int space_dim = dim+codim;
 
-    static const int range = PushForwardType::template PhysRange<range_>::value;
+    static const int range = PushForwardElem::template PhysRange<range_>::value;
 
     static const int rank = rank_;
 
