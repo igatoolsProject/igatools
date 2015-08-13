@@ -87,75 +87,92 @@ public:
 
 public:
 
-    template <int range, int rank, Transformation ttype=type_>
+    template <int range, int rank, int sub_elem_dim, Transformation ttype=type_>
     static void
-    transform_0(const RefSpaceElem<range,rank> &ref_elem,
-    			const ValueContainer<RefValue<range, rank>> &v_hat,
-                ValueContainer< PhysValue<range, rank> > &v,
+    transform_0(const int sub_elem_id,
+    		    const RefSpaceElem<range,rank> &ref_elem,
+				const MapElem & map_elem,
 				PhysSpaceElem<range,rank> & phys_elem,
                 EnableIf<ttype == Transformation::h_grad> * = 0)
     {
+    	//---------------------------------------------------------------------
+    	//TODO (martinelli, Aug 13, 2015) this block of common code can be stored as reference in the PushForward class
+        auto &all_sub_elems_cache = phys_elem.get_all_sub_elems_cache();
+        Assert(all_sub_elems_cache != nullptr, ExcNullPtr());
+        auto &sub_elem_cache =
+        		all_sub_elems_cache->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id);
+    	//---------------------------------------------------------------------
+
+        auto &v = sub_elem_cache.template get_data<_Value>();
+        const auto &v_hat = ref_elem.template get_basis<_Value,sub_elem_dim>(sub_elem_id,DofProperties::active);
+
         v = v_hat;
     }
 
 
     template <int range, int rank, int sub_elem_dim, Transformation ttype=type_>
     static void
-    transform_1(const RefSpaceElem<range,rank> &ref_elem,
-    		const std::tuple<
-                const ValueContainer<RefValue<range, rank>> &,
-                const ValueContainer<RefDerivative<range, rank, 1>> &> &ref_values,
-                const ValueContainer<PhysValue<range, rank>>   &phys_values,
+    transform_1(const int sub_elem_id,
+    		    const RefSpaceElem<range,rank> &ref_elem,
 				const MapElem & map_elem,
-                ValueContainer<PhysDerivative<range, rank, 1>> &Dv,
-                const int s_id,
 				PhysSpaceElem<range,rank> & phys_elem,
                 EnableIf<ttype == Transformation::h_grad> * = 0)
     {
-        const auto &Dv_hat = std::get<1>(ref_values);
+    	//---------------------------------------------------------------------
+    	//TODO (martinelli, Aug 13, 2015) this block of common code can be stored as reference in the PushForward class
+        auto &all_sub_elems_cache = phys_elem.get_all_sub_elems_cache();
+        Assert(all_sub_elems_cache != nullptr, ExcNullPtr());
+        auto &sub_elem_cache =
+        		all_sub_elems_cache->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id);
+    	//---------------------------------------------------------------------
+
+
+        const auto &Dv_hat  = ref_elem.template get_basis<_Gradient,sub_elem_dim>(sub_elem_id,DofProperties::active);
+
+        auto & Dv = sub_elem_cache.template get_data<_Gradient>();
 
         const int n_func   = Dv_hat.get_num_functions();
         const int n_points = Dv_hat.get_num_points();
         auto Dv_it     = Dv.begin();
         auto Dv_hat_it = Dv_hat.cbegin();
 
-        const auto &DF_inv = map_elem.template get_values_from_cache<_InvGradient,sub_elem_dim>(s_id);
+        const auto &DF_inv = map_elem.template get_values_from_cache<_InvGradient,sub_elem_dim>(sub_elem_id);
         for (int fn = 0; fn < n_func; ++fn)
-            for (Index pt = 0; pt < n_points; ++pt)
-            {
+            for (int pt = 0; pt < n_points; ++pt, ++Dv_hat_it, ++Dv_it)
                 (*Dv_it) = compose((*Dv_hat_it), DF_inv[pt]);
-                ++Dv_hat_it;
-                ++Dv_it;
-            }
     }
 
 
-    template <int range, int rank, int k, Transformation ttype=type_>
+    template <int range, int rank, int sub_elem_dim, Transformation ttype=type_>
     static void
-    transform_2(const RefSpaceElem<range,rank> &ref_elem,
-    		const std::tuple<
-                const ValueContainer<RefValue<range, rank>> &,
-                const ValueContainer<RefDerivative<range, rank, 1>> &,
-                const ValueContainer<RefDerivative<range, rank, 2>> &> &ref_values,
-                const std::tuple<
-                const ValueContainer<PhysValue<range, rank>> &,
-                const ValueContainer<PhysDerivative<range, rank, 1>> &> &phys_values,
+    transform_2(const int sub_elem_id,
+    			const RefSpaceElem<range,rank> &ref_elem,
 				const MapElem & map_elem,
-                ValueContainer<PhysDerivative<range, rank, 2>> &D2v,
-                const int s_id,
 				PhysSpaceElem<range,rank> & phys_elem,
                 EnableIf<ttype == Transformation::h_grad> * = 0)
     {
-        const auto &D2v_hat = std::get<2>(ref_values);
-        const auto &D1v     = std::get<1>(phys_values);
+    	//---------------------------------------------------------------------
+    	//TODO (martinelli, Aug 13, 2015) this block of common code can be stored as reference in the PushForward class
+        auto &all_sub_elems_cache = phys_elem.get_all_sub_elems_cache();
+        Assert(all_sub_elems_cache != nullptr, ExcNullPtr());
+        auto &sub_elem_cache =
+        		all_sub_elems_cache->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id);
+    	//---------------------------------------------------------------------
+
+
+        const auto &D2v_hat  = ref_elem.template get_basis< _Hessian,sub_elem_dim>(sub_elem_id,DofProperties::active);
+
+        const auto &D1v  = sub_elem_cache.template get_data<_Gradient>();
+        auto &D2v  = sub_elem_cache.template get_data<_Hessian>();
+
 
         const int n_func   = D2v_hat.get_num_functions();
         const int n_points = D2v_hat.get_num_points();
         auto D2v_it     = D2v.begin();
         auto D1v_it     = D1v.cbegin();
         auto D2v_hat_it = D2v_hat.cbegin();
-        const auto D2F     =  map_elem.get_func_element().template get_values<_Hessian,k>(s_id);
-        const auto &DF_inv =  map_elem.template get_values_from_cache<_InvGradient,k>(s_id);
+        const auto D2F     =  map_elem.get_func_element().template get_values<_Hessian,sub_elem_dim>(sub_elem_id);
+        const auto &DF_inv =  map_elem.template get_values_from_cache<_InvGradient,sub_elem_dim>(sub_elem_id);
 
         for (int fn = 0; fn < n_func; ++fn)
             for (Index pt = 0; pt < n_points; ++pt)
@@ -173,7 +190,6 @@ public:
                 ++D1v_it;
                 ++D2v_it;
             }
-
     }
 
 
