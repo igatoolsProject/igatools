@@ -98,31 +98,31 @@ public:
      */
     Mapping() = default;
 
-    Mapping(std::shared_ptr<FuncType> F);
+    Mapping(std::shared_ptr<const FuncType> F);
 
 
     ~Mapping();
 
-    static std::shared_ptr<self_t>  create(std::shared_ptr<FuncType> F);
+    static std::shared_ptr<self_t> create(std::shared_ptr<const FuncType> F);
 
 public:
     template<int k>
     void reset(const ValueFlags flag, const Quadrature<k> &eval_pts);
 
     template <int k>
-    void init_cache(ElementAccessor &elem);
+    void init_cache(ElementAccessor &elem) const;
 
     template <int k>
-    void init_cache(ElementIterator &elem)
+    void init_cache(ElementIterator &elem) const
     {
         init_cache<k>(*elem);
     }
 
     template <int k>
-    void fill_cache(ElementAccessor &elem, const int j);
+    void fill_cache(ElementAccessor &elem, const int j) const;
 
     template <int k>
-    void fill_cache(ElementIterator &elem, const int j)
+    void fill_cache(ElementIterator &elem, const int j) const
     {
         fill_cache<k>(*elem, j);
     }
@@ -130,7 +130,7 @@ public:
 
     std::shared_ptr<const CartesianGrid<dim_> > get_grid() const;
 
-    std::shared_ptr<FuncType> get_function() const;
+    std::shared_ptr<const FuncType> get_function() const;
 
     std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const;
 
@@ -140,7 +140,7 @@ public:
 
 
 private:
-    std::shared_ptr<FuncType> F_;
+    std::shared_ptr<const FuncType> F_;
 
     SafeSTLArray<ValueFlags, dim_ + 1> flags_;
 

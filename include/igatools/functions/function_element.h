@@ -29,13 +29,19 @@ IGA_NAMESPACE_OPEN
 
 template <int,int,int,int> class Function;
 
+template <int,int> class Mapping;
+template <int,int> class MappingElement;
+
 /**
  *
  * @ingroup serializable
  */
 template<int dim, int codim, int range = 1, int rank = 1>
-class FunctionElement : public CartesianGridElement<dim>
+class FunctionElement
 {
+private:
+	using self_t = FunctionElement<dim,codim,range,rank>;
+
 public:
     using Func = Function<dim, codim, range, rank>;
     using Point = typename Func::Point;
@@ -181,6 +187,20 @@ public:
      */
     static ValueFlags get_valid_flags();
 
+
+    /**
+     * Returns the <tt>topology_dim</tt> dimensional topology_id-th sub-element measure
+     * multiplied by the weights of the quadrature.
+     */
+    template <int topology_dim>
+    ValueVector<Real> get_w_measures(const int topology_id) const
+	{
+    	ValueVector<Real> w_meas;
+    	Assert(false,ExcNotImplemented());
+
+    	return w_meas;
+	}
+
 private:
 
     using CType = boost::fusion::map<
@@ -197,10 +217,30 @@ private:
 
     std::shared_ptr<AllSubElementsCache<Cache>> all_sub_elems_cache_;
 
+
 public:
     using CacheType = AllSubElementsCache<Cache>;
+
+    //TODO (martinelli, Aug 13, 2015): this function should not be public.
+    std::shared_ptr<CacheType>
+    &get_cache()
+	{
+        Assert(all_sub_elems_cache_ != nullptr,ExcNullPtr());
+    	return all_sub_elems_cache_;
+	}
+
 private:
+
+
     std::shared_ptr<Func> func_;
+
+    using GridElem = CartesianGridElement<dim>;
+    std::shared_ptr<GridElem> grid_elem_;
+
+
+    using PhysDomain = Mapping<dim,codim>;
+    using PhysDomainElem = MappingElement<dim,codim>;
+    std::shared_ptr<PhysDomainElem> phys_domain_elem_;
 
     template <class Accessor> friend class CartesianGridIteratorBase;
     friend class Function<dim, codim, range, rank>;
@@ -210,6 +250,71 @@ private:
      * copy constructor.
      */
     std::shared_ptr<FunctionElement<dim,codim,range,rank> > clone() const;
+
+
+
+public:
+    const GridElem & get_grid_element() const;
+
+    void print_info(LogStream &out) const;
+
+    void print_cache_info(LogStream &out) const;
+
+    std::shared_ptr<const CartesianGrid<dim>> get_grid() const;
+
+    /**
+     * @name Comparison operators.
+     *
+     * @brief The comparison operators compares the <em>position</em> of the element in the grid.
+     *
+     * @warning To be comparable, two Function objects must be defined using the same Function
+     * (and therefore on the same grid),
+     * otherwise an assertion will be raised (in Debug mode).
+     */
+    ///@{
+    /** Returns TRUE if the two elements have the same index on the grid. */
+    bool operator==(const self_t &a) const;
+
+
+    /** Returns TRUE if the two elements have different indices on the grid. */
+    bool operator!=(const self_t &a) const;
+
+    /**
+     * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
+     * is smaller than the the index of the element on the right.
+     * */
+    bool operator<(const self_t &a) const;
+
+    /**
+     * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
+     * is bigger than the the index of the element on the right.
+     * */
+    bool operator>(const self_t &a) const;
+    ///@}
+
+    /**
+     * Sets the index of the element using the flatten representation.
+     * @note This function also updates the index for the tensor representation.
+     * @warning This may be a dangerous function, be careful when using it
+     * as it is easy to use incorrectly. Only use it if you know what you
+     * are doing.
+     */
+    void move_to(const Index flat_index) ;
+
+
+    /** @name Functions related to the indices of the element in the cartesian grid. */
+    ///@{
+    /** Returns the index of the element in its flatten representation. */
+    Index get_flat_index() const;
+
+    /** Returns the index of the element in its tensor representation. */
+    TensorIndex<dim> get_tensor_index() const;
+    ///@}
+
+
+
+private:
+
 
 #ifdef SERIALIZATION
     /**

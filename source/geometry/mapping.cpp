@@ -70,7 +70,7 @@ mapping_to_function_flags(const ValueFlags &flags)
 
 template<int dim_, int codim_>
 Mapping<dim_, codim_>::
-Mapping(std::shared_ptr<FuncType> F)
+Mapping(std::shared_ptr<const FuncType> F)
     :
     F_(F->clone())
 {}
@@ -87,7 +87,7 @@ Mapping<dim_, codim_>::
 template<int dim_, int codim_>
 auto
 Mapping<dim_, codim_>::
-create(std::shared_ptr<FuncType> F)-> std::shared_ptr<self_t>
+create(std::shared_ptr<const FuncType> F)-> std::shared_ptr<self_t>
 {
     return std::shared_ptr<self_t>(new self_t(F));
 }
@@ -115,7 +115,7 @@ reset(const ValueFlags flags, const Quadrature<k> &eval_pts) -> void
         m_flags |= ValueFlags::measure;
 
 
-    F_->reset(mapping_to_function_flags(m_flags), eval_pts);
+    std::const_pointer_cast<FuncType>(F_)->reset(mapping_to_function_flags(m_flags), eval_pts);
     flags_[k] = m_flags;
 }
 
@@ -125,7 +125,7 @@ template<int dim_, int codim_>
 template <int k>
 auto
 Mapping<dim_, codim_>::
-fill_cache(ElementAccessor &elem, const int j) -> void
+fill_cache(ElementAccessor &elem, const int j) const -> void
 {
     F_->template fill_cache(elem.get_func_element(), Topology<k>(),j);
 
@@ -173,7 +173,7 @@ fill_cache(ElementAccessor &elem, const int j) -> void
 
     if (cache.template status_fill<_W_Measure>())
     {
-        const auto &w = func_elem.CartesianGridElement<dim_>::template get_w_measures<k>(j);
+        const auto &w = func_elem.get_grid_element().template get_w_measures<k>(j);
 
         const auto &measures = cache.template get_data<_Measure>();
 
@@ -285,7 +285,7 @@ template<int dim_, int codim_>
 template <int k>
 auto
 Mapping<dim_, codim_>::
-init_cache(ElementAccessor &elem) -> void
+init_cache(ElementAccessor &elem) const -> void
 {
     F_->init_cache(elem.get_func_element(), Topology<k>());
 
@@ -338,7 +338,7 @@ get_grid() const -> std::shared_ptr<const CartesianGrid<dim_> >
 template<int dim_, int codim_>
 auto
 Mapping<dim_, codim_>::
-get_function() const -> std::shared_ptr<FuncType>
+get_function() const -> std::shared_ptr<const FuncType>
 {
     return F_;
 }

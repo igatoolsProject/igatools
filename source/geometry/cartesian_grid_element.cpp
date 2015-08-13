@@ -312,7 +312,7 @@ Real
 CartesianGridElement<dim>::
 get_measure(const int j) const
 {
-    const auto lengths = this->template get_coordinate_lengths<k>(j);
+    const auto lengths = this->template get_side_lengths<k>(j);
 
     auto &k_elem = UnitElement<dim>::template get_elem<k>(j);
 
@@ -343,7 +343,7 @@ template <int dim>
 template <int k>
 auto
 CartesianGridElement<dim>::
-get_coordinate_lengths(const int j) const -> const Point
+get_side_lengths(const int j) const -> const Point
 {
     Point lengths;
 #if 0

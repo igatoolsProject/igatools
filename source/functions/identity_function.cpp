@@ -75,7 +75,7 @@ print_info(LogStream &out) const
 template<int dim,int space_dim>
 auto
 IdentityFunction<dim,space_dim>::
-fill_cache(ElementAccessor &elem, const topology_variant &k, const int sub_elem_id) -> void
+fill_cache(FuncElem &elem, const topology_variant &k, const int sub_elem_id) const -> void
 {
     parent_t::fill_cache(elem, k, sub_elem_id);
 

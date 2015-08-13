@@ -69,9 +69,8 @@ public:
     using typename parent_t::Hessian;
 
     using typename parent_t::ElementIterator;
-    using typename parent_t::ElementAccessor;
 
-
+    using FuncElem = FunctionElement<dim, 0, space_dim, 1>;
 
     template <int order>
     using Derivative = typename parent_t::template Derivative<order>;
@@ -86,8 +85,8 @@ public:
     std::shared_ptr<parent_t> clone() const override final;
 
 
-    void fill_cache(ElementAccessor &elem, const topology_variant &k,
-                    const int j) override final;
+    void fill_cache(FuncElem &elem, const topology_variant &k,
+                    const int j) const override final;
 
     virtual void print_info(LogStream &out) const override final;
 
@@ -101,7 +100,7 @@ private:
 
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
-        FillCacheDispatcher(const int sub_elem_id,self_t &function,ElementAccessor &elem)
+        FillCacheDispatcher(const int sub_elem_id,const self_t &function,FuncElem &elem)
             :
             sub_elem_id_(sub_elem_id),
             function_(function),
@@ -161,8 +160,8 @@ private:
         }
 
         const int sub_elem_id_;
-        self_t &function_;
-        ElementAccessor &elem_;
+        const self_t &function_;
+        FuncElem &elem_;
     };
 
     friend struct FillCacheDispatcher;

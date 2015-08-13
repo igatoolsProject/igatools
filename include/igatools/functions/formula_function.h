@@ -61,9 +61,9 @@ public:
 
     void reset(const ValueFlags &flag, const eval_pts_variant &quad) override final;
 
-    void init_cache(ElementAccessor &elem, const topology_variant &k) override final;
+    void init_cache(ElementAccessor &elem, const topology_variant &k) const override final;
 
-    void fill_cache(ElementAccessor &elem, const topology_variant &k, const int sub_elem_id) override final;
+    void fill_cache(ElementAccessor &elem, const topology_variant &k, const int sub_elem_id) const override final;
 
 private:
 
@@ -82,7 +82,7 @@ private:
 
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
-        FillCacheDispatcher(const int sub_elem_id,self_t &function,ElementAccessor &elem)
+        FillCacheDispatcher(const int sub_elem_id,const self_t &function,ElementAccessor &elem)
             :
             sub_elem_id_(sub_elem_id),
             function_(function),
@@ -93,7 +93,7 @@ private:
         template<int sub_elem_dim>
         void operator()(const Topology<sub_elem_dim> &sub_elem)
         {
-            auto &local_cache = function_.get_cache(elem_);
+            auto &local_cache = elem_.get_cache();
             auto &cache = local_cache->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id_);
 
             if (!cache.fill_none())
@@ -123,7 +123,7 @@ private:
         }
 
         const int sub_elem_id_;
-        self_t &function_;
+        const self_t &function_;
         ElementAccessor &elem_;
     };
 

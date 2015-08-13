@@ -150,9 +150,9 @@ public:
                                  const eval_pts_variant &eval_pts,
                                  const SafeSTLVector<Index> &elements_flat_id);
 
-    void init_cache(ElementAccessor &elem, const topology_variant &k) override;
+    void init_cache(ElementAccessor &elem, const topology_variant &k) const override;
 
-    void fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) override;
+    void fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) const override;
 
     std::shared_ptr<const Sp> get_ig_space() const;
 

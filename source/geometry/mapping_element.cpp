@@ -26,7 +26,7 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_, int codim_>
 MappingElement<dim_, codim_>::
-MappingElement(const std::shared_ptr<Func> func,
+MappingElement(const std::shared_ptr<const Func> func,
                const Index elem_index)
     :
 	func_elem_(std::make_shared<FuncElem>(func,elem_index))
@@ -88,7 +88,7 @@ auto
 MappingElement<dim_, codim_>::
 get_grid() const -> std::shared_ptr<const CartesianGrid<dim> >
 {
-	return func_elem_->get_grid();
+	return func_elem_->get_grid_element().get_grid();
 }
 
 template<int dim_, int codim_>

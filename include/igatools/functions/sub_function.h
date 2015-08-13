@@ -105,13 +105,13 @@ public:
     }
 
 
-    void init_cache(ElementAccessor &elem, const topology_variant &k1) override
+    void init_cache(ElementAccessor &elem, const topology_variant &k1) const override
     {
         base_t::init_cache(elem, k1);
         sup_func_->init_cache(sup_elem_, Topology<sub_dim>());
     }
 
-    void fill_cache(ElementAccessor &elem, const topology_variant &k1, const int j) override
+    void fill_cache(ElementAccessor &elem, const topology_variant &k1, const int j) const override
     {
         Assert(j==0, ExcNotImplemented());
         using ElementIt = typename CartesianGrid<sub_dim>::ElementIterator;
@@ -263,37 +263,42 @@ public:
     }
 
 
-    void init_cache(ElementAccessor &elem, const topology_variant &k1) override
+    void init_cache(ElementAccessor &elem, const topology_variant &k1) const override
     {
         base_t::init_cache(elem, k1);
-        sup_func_->init_cache(sup_elem_, Topology<sub_dim>());
+        using SupElem = typename SupFunc::ElementAccessor;
+        auto & sup_elem_non_const = const_cast<SupElem &>(*sup_elem_);
+        sup_func_->init_cache(sup_elem_non_const, Topology<sub_dim>());
     }
 
-    void fill_cache(ElementAccessor &elem, const topology_variant &k1, const int j) override
+    void fill_cache(ElementAccessor &elem, const topology_variant &k1, const int j) const override
     {
+
         Assert(j==0, ExcNotImplemented());
 //        typename CartesianGrid<sub_dim>::ElementIterator el_it(elem);
         using ElementIt = typename CartesianGrid<sub_dim>::ElementIterator;
         ElementIt el_it(elem.get_grid()->create_element(elem.get_flat_index()),ElementProperties::none);
 
-        sup_elem_->move_to(elem_map_.at(el_it->get_flat_index()));
+        using SupElem = typename SupFunc::ElementAccessor;
+        auto & sup_elem_non_const = const_cast<SupElem &>(*sup_elem_);
+        sup_elem_non_const.move_to(elem_map_.at(el_it->get_flat_index()));
 
         base_t::fill_cache(elem, k1, j);
-        sup_func_->fill_cache(sup_elem_,Topology<sub_dim>(),s_id_);
-        auto &local_cache = this->get_cache(elem);
+        sup_func_->fill_cache(sup_elem_non_const,Topology<sub_dim>(),s_id_);
+        auto &local_cache = elem.get_cache();
         auto &cache = local_cache->template get_sub_elem_cache<sub_dim>(j);
 //        auto &flags = cache.flags_handler_;
 
         if (cache.template status_fill<_Value>())
         {
-            cache.template get_data<_Value>() = sup_elem_->template get_values<_Value, sub_dim>(s_id_);
+            cache.template get_data<_Value>() = sup_elem_non_const.template get_values<_Value, sub_dim>(s_id_);
 
             cache.template set_status_filled<_Value>(true);
         }
         if (cache.template status_fill<_Gradient>())
         {
             auto active = UnitElement<dim>::template get_elem<sub_dim>(s_id_).active_directions;
-            auto DSupF  = sup_elem_->template get_values<_Gradient, sub_dim>(s_id_);
+            auto DSupF  = sup_elem_non_const.template get_values<_Gradient, sub_dim>(s_id_);
             auto &DSubF = cache.template get_data<_Gradient>();
 
             const auto n_points = DSupF.get_num_points();

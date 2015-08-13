@@ -56,10 +56,11 @@ reset(const ValueFlags &flag, const eval_pts_variant &quad)
 template<int dim, int codim, int range, int rank>
 void
 FormulaFunction<dim, codim, range, rank>::
-init_cache(ElementAccessor &elem, const topology_variant &k)
+init_cache(ElementAccessor &elem, const topology_variant &k) const
 {
     parent_t::init_cache(elem, k);
-    mapping_->init_cache(map_elem_, k);
+    using MapElem = typename Map::ElementAccessor;
+    mapping_->init_cache(const_cast<MapElem &>(*map_elem_), k);
 }
 
 
@@ -67,11 +68,14 @@ init_cache(ElementAccessor &elem, const topology_variant &k)
 template<int dim, int codim, int range, int rank>
 auto
 FormulaFunction<dim, codim, range, rank>::
-fill_cache(ElementAccessor &elem, const topology_variant &k, const int sub_elem_id) -> void
+fill_cache(ElementAccessor &elem, const topology_variant &k, const int sub_elem_id) const  -> void
 {
     parent_t::fill_cache(elem,k,sub_elem_id);
-    map_elem_.move_to(elem.get_flat_index());
-    mapping_->fill_cache(map_elem_,k,sub_elem_id);
+    using MapElem = typename Map::ElementAccessor;
+
+    auto & map_elem_non_const = const_cast<MapElem &>(*map_elem_);
+    map_elem_non_const.move_to(elem.get_flat_index());
+    mapping_->fill_cache(map_elem_non_const,k,sub_elem_id);
 
     auto fill_cache_dispatcher = FillCacheDispatcher(sub_elem_id,*this,elem);
     boost::apply_visitor(fill_cache_dispatcher, k);

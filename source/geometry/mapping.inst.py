@@ -28,8 +28,8 @@ data = Instantiation(include_files)
 
 
 sub_dim_members = \
-['void Mapping<dim,cod>::fill_cache<k>(ElementAccessor &elem, const int j);',
- 'void Mapping<dim,cod>::init_cache<k>(ElementAccessor &elem);',
+['void Mapping<dim,cod>::fill_cache<k>(ElementAccessor &elem, const int j) const;',
+ 'void Mapping<dim,cod>::init_cache<k>(ElementAccessor &elem) const;',
  'void Mapping<dim,cod>::reset<k>(const ValueFlags flag, const Quadrature<k> &quad);']
 
 #mappings = []

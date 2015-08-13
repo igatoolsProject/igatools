@@ -65,7 +65,7 @@ public:
      * Construct an accessor pointing to the element with
      * flat index @p elem_index of the Function @p func.
      */
-    MappingElement(const std::shared_ptr<Func> func,
+    MappingElement(const std::shared_ptr<const Func> func,
                    const Index elem_index);
 
     /**
@@ -277,6 +277,25 @@ public:
 
     void print_cache_info(LogStream &out) const;
 
+private:
+
+#ifdef SERIALIZATION
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
+
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+    	Assert(false,ExcNotImplemented());
+    	AssertThrow(false,ExcNotImplemented());
+    }
+    ///@}
+#endif
 
 };
 

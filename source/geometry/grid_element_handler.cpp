@@ -141,7 +141,7 @@ fill_cache(ElementAccessor &elem, const int j) const
         const auto unit_points = quadrature.get_points();
 
         const auto translate = elem.vertex(0);
-        const auto dilate    = elem.template get_coordinate_lengths<k>(j);
+        const auto dilate    = elem.template get_side_lengths<k>(j);
 
         const auto n_pts = unit_points.get_num_points();
 

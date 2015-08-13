@@ -341,8 +341,6 @@ private:
     std::shared_ptr<MapElem> map_element_;
 
 
-//    std::shared_ptr<PfElemAccessor> push_fwd_element_;
-
     /**
      * Creates a new object performing a deep copy of the current object using the PhysicalSpaceElement
      * copy constructor.
@@ -370,7 +368,7 @@ private:
         ar &boost::serialization::make_nvp("ref_space_element_",ref_space_element_);
 
 
-       // ar &boost::serialization::make_nvp("push_fwd_element_",push_fwd_element_);
+        ar &boost::serialization::make_nvp("map_element_",push_fwd_element_);
     }
     ///@}
 #endif

@@ -172,7 +172,7 @@ reset_selected_elements(
 template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
-init_cache(ElementAccessor &elem, const topology_variant &k) -> void
+init_cache(ElementAccessor &elem, const topology_variant &k) const -> void
 {
     parent_t::init_cache(elem, k);
 
@@ -185,7 +185,9 @@ init_cache(ElementAccessor &elem, const topology_variant &k) -> void
 template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
-fill_cache(ElementAccessor &func_elem, const topology_variant &k, const int sub_elem_id) -> void
+fill_cache(ElementAccessor &func_elem,
+		const topology_variant &k,
+		const int sub_elem_id) const -> void
 {
     parent_t::fill_cache(func_elem,k,sub_elem_id);
 

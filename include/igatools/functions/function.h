@@ -129,22 +129,22 @@ public:
 
     virtual void reset(const ValueFlags &flag, const eval_pts_variant &quad);
 
-    virtual void init_cache(ElementAccessor &elem, const topology_variant &k);
+    virtual void init_cache(ElementAccessor &elem, const topology_variant &k) const;
 
-    void init_cache(ElementIterator &elem, const topology_variant &k);
+    void init_cache(ElementIterator &elem, const topology_variant &k) const;
 
-    void init_element_cache(ElementAccessor &elem);
+    void init_element_cache(ElementAccessor &elem) const;
 
-    void init_element_cache(ElementIterator &elem);
+    void init_element_cache(ElementIterator &elem) const;
 
-    virtual void fill_cache(ElementAccessor &elem, const topology_variant &k,const int j);
+    virtual void fill_cache(ElementAccessor &elem, const topology_variant &k,const int j) const;
 
-    void fill_cache(ElementIterator &elem, const topology_variant &k, const int j);
+    void fill_cache(ElementIterator &elem, const topology_variant &k, const int j) const;
 
-    void fill_element_cache(ElementAccessor &elem);
+    void fill_element_cache(ElementAccessor &elem) const;
 
 
-    void fill_element_cache(ElementIterator &elem);
+    void fill_element_cache(ElementIterator &elem) const;
 
     std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const;
 
@@ -270,8 +270,8 @@ private:
 
 
 protected:
-    std::shared_ptr<typename ElementAccessor::CacheType>
-    &get_cache(ElementAccessor &elem);
+//    std::shared_ptr<typename ElementAccessor::CacheType>
+//    &get_cache(ElementAccessor &elem);
 
 
 

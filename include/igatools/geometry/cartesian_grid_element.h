@@ -265,10 +265,11 @@ public:
     SafeSTLVector<std::string> get_defined_properties() const;
 
 
-    //TODO (martinelli, Apr 16, 2015): maybe the returned value should be Points<topology_dim>, i.e.
+    //TODO (martinelli, Apr 16, 2015): the returned value should be Points<topology_dim>, i.e.
     // the lengths should refer to the sub-element of dimension topology_dim
+    //TODO (martinelli, Aug 13, 2015): maybe it is wothy to declare this function private
     template<int topology_dim>
-    const Point get_coordinate_lengths(const int topology_id) const;
+    const Point get_side_lengths(const int topology_id) const;
 
     template <int topology_dim>
     Real get_measure(const int topology_id) const;

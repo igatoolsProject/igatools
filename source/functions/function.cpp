@@ -65,7 +65,7 @@ reset(const ValueFlags &flag, const eval_pts_variant &quad)
 template<int dim_, int codim_, int range_, int rank_>
 void
 Function<dim_, codim_, range_, rank_ >::
-init_cache(ElementAccessor &func_elem, const topology_variant &k)
+init_cache(ElementAccessor &func_elem, const topology_variant &k) const
 {
     auto init_cache_dispatcher = InitCacheDispatcher(*this,flags_,func_elem);
 
@@ -75,7 +75,7 @@ init_cache(ElementAccessor &func_elem, const topology_variant &k)
 template<int dim_, int codim_, int range_, int rank_>
 void
 Function<dim_, codim_, range_, rank_ >::
-init_cache(ElementIterator &elem, const topology_variant &k)
+init_cache(ElementIterator &elem, const topology_variant &k) const
 {
     init_cache(*elem, k);
 }
@@ -84,7 +84,7 @@ init_cache(ElementIterator &elem, const topology_variant &k)
 template<int dim_, int codim_, int range_, int rank_>
 void
 Function<dim_, codim_, range_, rank_ >::
-init_element_cache(ElementAccessor &elem)
+init_element_cache(ElementAccessor &elem) const
 {
     this->init_cache(elem, Topology<dim_>());
 }
@@ -93,7 +93,7 @@ init_element_cache(ElementAccessor &elem)
 template<int dim_, int codim_, int range_, int rank_>
 void
 Function<dim_, codim_, range_, rank_ >::
-init_element_cache(ElementIterator &elem)
+init_element_cache(ElementIterator &elem) const
 {
     this->init_cache(*elem, Topology<dim_>());
 }
@@ -101,7 +101,7 @@ init_element_cache(ElementIterator &elem)
 template<int dim_, int codim_, int range_, int rank_>
 void
 Function<dim_, codim_, range_, rank_ >::
-fill_cache(ElementAccessor &func_elem, const topology_variant &k,const int sub_elem_id)
+fill_cache(ElementAccessor &func_elem, const topology_variant &k,const int sub_elem_id) const
 {
     auto fill_cache_dispatcher = FillCacheDispatcher(sub_elem_id,*this,func_elem);
     boost::apply_visitor(fill_cache_dispatcher, k);
@@ -110,7 +110,7 @@ fill_cache(ElementAccessor &func_elem, const topology_variant &k,const int sub_e
 template<int dim_, int codim_, int range_, int rank_>
 void
 Function<dim_, codim_, range_, rank_ >::
-fill_cache(ElementIterator &elem, const topology_variant &k, const int j)
+fill_cache(ElementIterator &elem, const topology_variant &k, const int j) const
 {
     this->fill_cache(*elem, k, j);
 }
@@ -119,7 +119,7 @@ fill_cache(ElementIterator &elem, const topology_variant &k, const int j)
 template<int dim_, int codim_, int range_, int rank_>
 void
 Function<dim_, codim_, range_, rank_ >::
-fill_element_cache(ElementAccessor &elem)
+fill_element_cache(ElementAccessor &elem) const
 {
     this->fill_cache(elem, Topology<dim_>(),0);
 }
@@ -128,11 +128,12 @@ fill_element_cache(ElementAccessor &elem)
 template<int dim_, int codim_, int range_, int rank_>
 void
 Function<dim_, codim_, range_, rank_ >::
-fill_element_cache(ElementIterator &elem)
+fill_element_cache(ElementIterator &elem) const
 {
     this->fill_cache(*elem, Topology<dim_>(),0);
 }
 
+/*
 template<int dim_, int codim_, int range_, int rank_>
 auto
 Function<dim_, codim_, range_, rank_ >::
@@ -142,6 +143,7 @@ get_cache(ElementAccessor &elem)
     Assert(elem.all_sub_elems_cache_ != nullptr,ExcNullPtr());
     return elem.all_sub_elems_cache_;
 }
+//*/
 
 template<int dim_, int codim_, int range_, int rank_>
 auto

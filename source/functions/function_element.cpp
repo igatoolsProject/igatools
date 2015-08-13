@@ -22,6 +22,7 @@
 #include <igatools/functions/function_element.h>
 #include <igatools/functions/function.h>
 
+#include <igatools/geometry/mapping_element.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -31,10 +32,15 @@ FunctionElement<dim, codim, range, rank>::
 FunctionElement(const std::shared_ptr<const Func> func,
                 const Index elem_index)
     :
-    CartesianGridElement<dim>(func->get_grid(),elem_index),
-    func_(std::const_pointer_cast<Func>(func))
+    func_(std::const_pointer_cast<Func>(func)),
+	grid_elem_(func->get_grid()->create_element(elem_index))
 {
-    Assert(func_ != nullptr ,ExcNullPtr());
+    Assert(func_ != nullptr, ExcNullPtr());
+    Assert(grid_elem_ != nullptr, ExcNullPtr());
+
+	auto phys_domain = PhysDomain::create(func);
+	phys_domain_elem_ = phys_domain->create_element(elem_index);
+    Assert(phys_domain_elem_ != nullptr, ExcNullPtr());
 }
 
 
@@ -43,13 +49,20 @@ FunctionElement<dim, codim, range, rank>::
 FunctionElement(const FunctionElement<dim,codim,range,rank> &elem,
                 const CopyPolicy &copy_policy)
     :
-    CartesianGridElement<dim>(elem,copy_policy),
     func_(elem.func_)
 {
     if (copy_policy == CopyPolicy::shallow)
+    {
         all_sub_elems_cache_ = elem.all_sub_elems_cache_;
+        grid_elem_ = elem.grid_elem_;
+        phys_domain_elem_ = elem.phys_domain_elem_;
+    }
     else
+    {
         all_sub_elems_cache_ = std::make_shared<AllSubElementsCache<Cache>>(*elem.all_sub_elems_cache_);
+        grid_elem_ = std::make_shared<GridElem>(*elem.grid_elem_,CopyPolicy::deep);
+        phys_domain_elem_ = std::make_shared<PhysDomainElem>(*elem.phys_domain_elem_,CopyPolicy::deep);
+    }
 }
 
 
@@ -83,6 +96,121 @@ get_valid_flags()
 }
 
 
+template<int dim, int codim, int range, int rank>
+auto
+FunctionElement<dim, codim, range, rank>::
+get_grid_element() const -> const GridElem &
+{
+	return *grid_elem_;
+}
+
+
+
+
+template<int dim, int codim, int range, int rank>
+bool
+FunctionElement<dim, codim, range, rank>::
+operator==(const self_t &a) const
+{
+	Assert (this->get_grid() == a.get_grid(),
+			ExcMessage("The elements cannot be compared because defined on different grids."));
+	Assert (func_ == a.func_,
+			ExcMessage("The elements cannot be compared because defined with different functions."));
+	return (this->get_flat_index() == a.get_flat_index());
+}
+
+
+template<int dim, int codim, int range, int rank>
+bool
+FunctionElement<dim, codim, range, rank>::
+operator!=(const self_t &a) const
+{
+	Assert (this->get_grid() == a.get_grid(),
+			ExcMessage("The elements cannot be compared because defined on different grids."));
+	Assert (func_ == a.func_,
+			ExcMessage("The elements cannot be compared because defined with different functions."));
+	return (this->get_flat_index() != a.get_flat_index());
+}
+
+template<int dim, int codim, int range, int rank>
+bool
+FunctionElement<dim, codim, range, rank>::
+operator<(const self_t &a) const
+{
+	Assert (this->get_grid() == a.get_grid(),
+			ExcMessage("The elements cannot be compared because defined on different grids."));
+	Assert (func_ == a.func_,
+			ExcMessage("The elements cannot be compared because defined with different functions."));
+	return (this->get_flat_index() < a.get_flat_index());
+}
+
+
+template<int dim, int codim, int range, int rank>
+bool
+FunctionElement<dim, codim, range, rank>::
+operator>(const self_t &a) const
+{
+	Assert (this->get_grid() == a.get_grid(),
+			ExcMessage("The elements cannot be compared because defined on different grids."));
+	Assert (func_ == a.func_,
+			ExcMessage("The elements cannot be compared because defined with different functions."));
+	return (this->get_flat_index() > a.get_flat_index());
+}
+
+
+template<int dim, int codim, int range, int rank>
+void
+FunctionElement<dim, codim, range, rank>::
+move_to(const Index flat_index)
+{
+	grid_elem_->move_to(flat_index);
+	phys_domain_elem_->move_to(flat_index);
+}
+
+
+template<int dim, int codim, int range, int rank>
+Index
+FunctionElement<dim, codim, range, rank>::
+get_flat_index() const
+{
+	return grid_elem_->get_flat_index();
+}
+
+template<int dim, int codim, int range, int rank>
+TensorIndex<dim>
+FunctionElement<dim, codim, range, rank>::
+get_tensor_index() const
+{
+	return grid_elem_->get_tensor_index();
+}
+
+template<int dim, int codim, int range, int rank>
+void
+FunctionElement<dim, codim, range, rank>::
+print_info(LogStream &out) const
+{
+	grid_elem_->print_info(out);
+}
+
+template<int dim, int codim, int range, int rank>
+void
+FunctionElement<dim, codim, range, rank>::
+print_cache_info(LogStream &out) const
+{
+	grid_elem_->print_cache_info(out);
+}
+
+
+template<int dim, int codim, int range, int rank>
+std::shared_ptr<const CartesianGrid<dim>>
+FunctionElement<dim, codim, range, rank>::
+get_grid() const
+{
+	return grid_elem_->get_grid();
+}
+
+
+
 #ifdef SERIALIZATION
 template<int dim, int codim, int range, int rank>
 template<class Archive>
@@ -96,6 +224,8 @@ serialize(Archive &ar, const unsigned int version)
     ar &boost::serialization::make_nvp("all_sub_elems_cache_",all_sub_elems_cache_);
 
     ar &boost::serialization::make_nvp("func_",func_);
+    ar &boost::serialization::make_nvp("grid_elem_",grid_elem_);
+    ar &boost::serialization::make_nvp("phys_domain_elem_",phys_domain_elem_);
 }
 #endif // SERIALIZATION
 
