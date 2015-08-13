@@ -20,14 +20,48 @@
 
 /**
  *  @file
- *  @brief  DofDistribution class
- *  @author pauletti
- *  @date 2014-08-26
+ *  @brief  DofDistribution class serialization
+ *  @author martinelli
+ *  @date 2015-05-06
  *  @todo make test dimension independent and split
  */
 
 #include "../tests.h"
 #include <igatools/basis_functions/dof_distribution.h>
+
+template <int dim>
+void serialize_deserialize(const DofDistribution<dim> &dof_admin)
+{
+    out.begin_item("Original DofDistribution.");
+    dof_admin.print_info(out);
+    out.end_item();
+
+
+
+    std::string filename = "dof_distribution_dim" + std::to_string(dim) + ".xml";
+    std::string tag_name = "DofDistribution_dim" + std::to_string(dim);
+    {
+        // serialize the DofDistribution object to an xml file
+        std::ofstream xml_ostream(filename);
+        OArchive xml_out(xml_ostream);
+
+        xml_out << boost::serialization::make_nvp(tag_name.c_str(),dof_admin);
+        xml_ostream.close();
+    }
+
+    DofDistribution<dim> dof_admin_new;
+    {
+        // de-serialize the DofDistribution object from an xml file
+        std::ifstream xml_istream(filename);
+        IArchive xml_in(xml_istream);
+        xml_in >> BOOST_SERIALIZATION_NVP(dof_admin_new);
+        xml_istream.close();
+    }
+    out.begin_item("DofDistribution after serialize-deserialize.");
+    dof_admin_new.print_info(out);
+    out.end_item();
+    //*/
+}
 
 
 template <int dim>
@@ -58,6 +92,7 @@ void test1()
     //-----------------------------------------------------------------
     const auto &dofs_view = dof_admin.get_dofs_view();
     const std::string property_active = "active";
+    //dof_admin.add_dofs_property(property_active);
 
     for (const auto &dof : dofs_view)
     {
@@ -68,7 +103,8 @@ void test1()
     }
     //-----------------------------------------------------------------
 
-    dof_admin.print_info(out);
+
+    serialize_deserialize(dof_admin);
 
     OUTEND
 }
@@ -99,6 +135,7 @@ void test2()
     //-----------------------------------------------------------------
     const auto &dofs_view = basis_index.get_dofs_view();
     const std::string property_active = "active";
+    // basis_index.add_dofs_property(property_active);
 
     for (const auto &dof : dofs_view)
     {
@@ -109,7 +146,7 @@ void test2()
     }
     //-----------------------------------------------------------------
 
-    basis_index.print_info(out);
+    serialize_deserialize(basis_index);
 
     OUTEND
 }
