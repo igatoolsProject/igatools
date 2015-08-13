@@ -19,6 +19,15 @@
 //-+--------------------------------------------------------------------
 // TODO (pauletti, Oct 9, 2014): this test is missing header
 // TODO (pauletti, Oct 9, 2014): update the code style (its obsolete)
+
+/**
+ *  @file
+ *  @brief  NURBSSpace constructors
+ *  @author pauletti
+ *  @date 2014-10-23
+ *  @todo update standards
+ */
+
 #include "../tests.h"
 
 #include <igatools/basis_functions/nurbs_space.h>
@@ -27,48 +36,6 @@
 
 using namespace EpetraTools;
 
-
-template < int dim, int range, int rank>
-void serialize_deserialize(std::shared_ptr<NURBSSpace<dim,range,rank>> space_in)
-{
-    std::shared_ptr<ReferenceSpace<dim,range,rank>> space = space_in;
-    out.begin_item("Original NURBSSpace:");
-    space->print_info(out);
-    out.end_item();
-
-    using NRBSpace = NURBSSpace<dim,range,rank>;
-
-    std::string template_string_info = "_dim" + std::to_string(dim) +
-                                       "_range" + std::to_string(range) +
-                                       "_rank" + std::to_string(rank);
-    std::string filename = "nurbs_space" + template_string_info + ".xml";
-    std::string tag_name = "NURBSSpace" + template_string_info;
-    {
-        // serialize the NURBSSpace object to an xml file
-        std::ofstream xml_ostream(filename);
-        OArchive xml_out(xml_ostream);
-        xml_out.template register_type<NRBSpace>();
-
-        xml_out << boost::serialization::make_nvp(tag_name.c_str(),space);
-        xml_ostream.close();
-    }
-
-    space.reset();
-    {
-        // de-serialize the NURBSSpace object from an xml file
-        std::ifstream xml_istream(filename);
-        IArchive xml_in(xml_istream);
-        xml_in.template register_type<NRBSpace>();
-
-        xml_in >> BOOST_SERIALIZATION_NVP(space);
-        xml_istream.close();
-    }
-    out.begin_item("NURBSSpace after serialize-deserialize:");
-    space->print_info(out);
-    out.end_item();
-    //*/
-//*/
-}
 
 template< int dim, int range, int rank = 1>
 void do_test()
@@ -128,11 +95,7 @@ void do_test()
                                      std::make_shared<typename EpetraTools::Vector>(Copy, *map, weights.data()));
 
     auto nurbs_space = Space::create_nonconst(bsp, w_func);
-//    nurbs_space->print_info(out);
-
-
-    serialize_deserialize(nurbs_space);
-
+    nurbs_space->print_info(out);
 
     OUTEND
 
