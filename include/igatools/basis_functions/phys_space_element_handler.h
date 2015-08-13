@@ -250,7 +250,7 @@ private:
         ar &boost::serialization::make_nvp("ref_space_handler_",ref_space_handler_);
 
 
-        ar &boost::serialization::make_nvp("push_fwd_",push_fwd_);
+//        ar &boost::serialization::make_nvp("push_fwd_",push_fwd_);
 
 
         ar &boost::serialization::make_nvp("flags_",flags_);

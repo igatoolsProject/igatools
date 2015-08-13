@@ -1,0 +1,505 @@
+========================================================================
+test_1d
+========================================================================
+Original space.
+   Knots without repetition:
+      Number of intervals per direction: [ 3 ]
+      Knot coordinates:
+         Size: [ 4 ]  Weights: [4]
+         Direction: 0
+         [ 0 0.333333 0.666667 1.00000 ]
+      
+   
+   Degrees:
+      Raw components: 
+         Size: [ 1 ]  Weights: [1]
+         Entry id: 0
+         [ 2 ]
+      
+      Components map: 
+      [ 0 ]
+      Active components ids: 
+      [ 0 ]
+      Inactive components ids: 
+      [ ]
+   
+   Interior multiplicities:
+      Size: [ 2 ]  Weights: [2]
+      Direction: 0
+      [ 1 3 ]
+   
+   Dimensionality Table:
+      Raw components: 
+         Size: [ 1 ]  Weights: [1]
+         Entry id: 0
+         [ 7 ]
+      
+      Components map: 
+      [ 0 ]
+      Active components ids: 
+      [ 0 ]
+      Inactive components ids: 
+      [ ]
+      Scalar components dimensions:
+      [ 7 ]
+      Total Dimension: 7
+   
+
+Space after serialize-deserialize.
+   Knots without repetition:
+      Number of intervals per direction: [ 3 ]
+      Knot coordinates:
+         Size: [ 4 ]  Weights: [4]
+         Direction: 0
+         [ 0 0.333333 0.666667 1.00000 ]
+      
+   
+   Degrees:
+      Raw components: 
+         Size: [ 1 ]  Weights: [1]
+         Entry id: 0
+         [ 2 ]
+      
+      Components map: 
+      [ 0 ]
+      Active components ids: 
+      [ 0 ]
+      Inactive components ids: 
+      [ ]
+   
+   Interior multiplicities:
+      Size: [ 2 ]  Weights: [2]
+      Direction: 0
+      [ 1 3 ]
+   
+   Dimensionality Table:
+      Raw components: 
+         Size: [ 1 ]  Weights: [1]
+         Entry id: 0
+         [ 7 ]
+      
+      Components map: 
+      [ 0 ]
+      Active components ids: 
+      [ 0 ]
+      Inactive components ids: 
+      [ ]
+      Scalar components dimensions:
+      [ 7 ]
+      Total Dimension: 7
+   
+
+Boundary knots:
+Size: [ 3 3 ]  Weights: [3,9]
+Direction: 0
+[ -0.500000 0 0 ]
+Direction: 1
+[ 1.10000 1.20000 1.30000 ]
+Repeated knots:
+Size: [ 10 ]  Weights: [10]
+Direction: 0
+[ -0.500000 0 0 0.333333 0.666667 0.666667 0.666667 1.10000 1.20000 1.30000 ]
+========================================================================
+
+========================================================================
+test_2d
+========================================================================
+Original space.
+   Knots without repetition:
+      Number of intervals per direction: [ 2 4 ]
+      Knot coordinates:
+         Size: [ 3 5 ]  Weights: [3,15]
+         Direction: 0
+         [ 0 0.500000 1.00000 ]
+         Direction: 1
+         [ 0 0.250000 0.500000 0.750000 1.00000 ]
+      
+   
+   Degrees:
+      Raw components: 
+         Size: [ 1 ]  Weights: [1]
+         Entry id: 0
+         [ 1 3 ]
+      
+      Components map: 
+      [ 0 ]
+      Active components ids: 
+      [ 0 ]
+      Inactive components ids: 
+      [ ]
+   
+   Interior multiplicities:
+      Size: [ 1 3 ]  Weights: [1,3]
+      Direction: 0
+      [ 1 ]
+      Direction: 1
+      [ 1 3 1 ]
+   
+   Dimensionality Table:
+      Raw components: 
+         Size: [ 1 ]  Weights: [1]
+         Entry id: 0
+         [ 3 9 ]
+      
+      Components map: 
+      [ 0 ]
+      Active components ids: 
+      [ 0 ]
+      Inactive components ids: 
+      [ ]
+      Scalar components dimensions:
+      [ 27 ]
+      Total Dimension: 27
+   
+
+Space after serialize-deserialize.
+   Knots without repetition:
+      Number of intervals per direction: [ 2 4 ]
+      Knot coordinates:
+         Size: [ 3 5 ]  Weights: [3,15]
+         Direction: 0
+         [ 0 0.500000 1.00000 ]
+         Direction: 1
+         [ 0 0.250000 0.500000 0.750000 1.00000 ]
+      
+   
+   Degrees:
+      Raw components: 
+         Size: [ 1 ]  Weights: [1]
+         Entry id: 0
+         [ 1 3 ]
+      
+      Components map: 
+      [ 0 ]
+      Active components ids: 
+      [ 0 ]
+      Inactive components ids: 
+      [ ]
+   
+   Interior multiplicities:
+      Size: [ 1 3 ]  Weights: [1,3]
+      Direction: 0
+      [ 1 ]
+      Direction: 1
+      [ 1 3 1 ]
+   
+   Dimensionality Table:
+      Raw components: 
+         Size: [ 1 ]  Weights: [1]
+         Entry id: 0
+         [ 3 9 ]
+      
+      Components map: 
+      [ 0 ]
+      Active components ids: 
+      [ 0 ]
+      Inactive components ids: 
+      [ ]
+      Scalar components dimensions:
+      [ 27 ]
+      Total Dimension: 27
+   
+
+Boundary knots:
+Size: [ 2 2 ]  Weights: [2,4]
+Direction: 0
+[ -0.500000 0 ]
+Direction: 1
+[ 1.20000 1.30000 ]
+Size: [ 4 4 ]  Weights: [4,16]
+Direction: 0
+[ -0.600000 0 0 0 ]
+Direction: 1
+[ 1.00000 1.10000 1.60000 1.60000 ]
+Repeated knots:
+Size: [ 5 13 ]  Weights: [5,65]
+Direction: 0
+[ -0.500000 0 0.500000 1.20000 1.30000 ]
+Direction: 1
+[ -0.600000 0 0 0 0.250000 0.500000 0.500000 0.500000 0.750000 1.00000 1.10000 1.60000 1.60000 ]
+========================================================================
+
+========================================================================
+test_3d
+========================================================================
+Original space.
+   Knots without repetition:
+      Number of intervals per direction: [ 2 3 4 ]
+      Knot coordinates:
+         Size: [ 3 4 5 ]  Weights: [3,12,60]
+         Direction: 0
+         [ 0 0.500000 1.00000 ]
+         Direction: 1
+         [ 0 0.333333 0.666667 1.00000 ]
+         Direction: 2
+         [ 0 0.250000 0.500000 0.750000 1.00000 ]
+      
+   
+   Degrees:
+      Raw components: 
+         Size: [ 1 ]  Weights: [1]
+         Entry id: 0
+         [ 1 3 0 ]
+      
+      Components map: 
+      [ 0 ]
+      Active components ids: 
+      [ 0 ]
+      Inactive components ids: 
+      [ ]
+   
+   Interior multiplicities:
+      Size: [ 1 2 3 ]  Weights: [1,2,6]
+      Direction: 0
+      [ 1 ]
+      Direction: 1
+      [ 1 3 ]
+      Direction: 2
+      [ 1 1 1 ]
+   
+   Dimensionality Table:
+      Raw components: 
+         Size: [ 1 ]  Weights: [1]
+         Entry id: 0
+         [ 3 8 4 ]
+      
+      Components map: 
+      [ 0 ]
+      Active components ids: 
+      [ 0 ]
+      Inactive components ids: 
+      [ ]
+      Scalar components dimensions:
+      [ 96 ]
+      Total Dimension: 96
+   
+
+Space after serialize-deserialize.
+   Knots without repetition:
+      Number of intervals per direction: [ 2 3 4 ]
+      Knot coordinates:
+         Size: [ 3 4 5 ]  Weights: [3,12,60]
+         Direction: 0
+         [ 0 0.500000 1.00000 ]
+         Direction: 1
+         [ 0 0.333333 0.666667 1.00000 ]
+         Direction: 2
+         [ 0 0.250000 0.500000 0.750000 1.00000 ]
+      
+   
+   Degrees:
+      Raw components: 
+         Size: [ 1 ]  Weights: [1]
+         Entry id: 0
+         [ 1 3 0 ]
+      
+      Components map: 
+      [ 0 ]
+      Active components ids: 
+      [ 0 ]
+      Inactive components ids: 
+      [ ]
+   
+   Interior multiplicities:
+      Size: [ 1 2 3 ]  Weights: [1,2,6]
+      Direction: 0
+      [ 1 ]
+      Direction: 1
+      [ 1 3 ]
+      Direction: 2
+      [ 1 1 1 ]
+   
+   Dimensionality Table:
+      Raw components: 
+         Size: [ 1 ]  Weights: [1]
+         Entry id: 0
+         [ 3 8 4 ]
+      
+      Components map: 
+      [ 0 ]
+      Active components ids: 
+      [ 0 ]
+      Inactive components ids: 
+      [ ]
+      Scalar components dimensions:
+      [ 96 ]
+      Total Dimension: 96
+   
+
+Boundary knots:
+Size: [ 2 2 ]  Weights: [2,4]
+Direction: 0
+[ -0.500000 0 ]
+Direction: 1
+[ 1.20000 1.30000 ]
+Size: [ 4 4 ]  Weights: [4,16]
+Direction: 0
+[ -0.600000 0 0 0 ]
+Direction: 1
+[ 1.00000 1.00000 1.60000 1.60000 ]
+Size: [ 1 1 ]  Weights: [1,1]
+Direction: 0
+[ -0.600000 ]
+Direction: 1
+[ 1.60000 ]
+Repeated knots:
+Size: [ 5 12 5 ]  Weights: [5,60,300]
+Direction: 0
+[ -0.500000 0 0.500000 1.20000 1.30000 ]
+Direction: 1
+[ -0.600000 0 0 0 0.333333 0.666667 0.666667 0.666667 1.00000 1.00000 1.60000 1.60000 ]
+Direction: 2
+[ -0.600000 0.250000 0.500000 0.750000 1.60000 ]
+========================================================================
+
+========================================================================
+test_2d_2
+========================================================================
+Original space.
+   Knots without repetition:
+      Number of intervals per direction: [ 2 3 ]
+      Knot coordinates:
+         Size: [ 3 4 ]  Weights: [3,12]
+         Direction: 0
+         [ 0 0.500000 1.00000 ]
+         Direction: 1
+         [ 0 0.333333 0.666667 1.00000 ]
+      
+   
+   Degrees:
+      Raw components: 
+         Size: [ 2 ]  Weights: [2]
+         Entry id: 0
+         [ 1 3 ]
+         Entry id: 1
+         [ 3 1 ]
+      
+      Components map: 
+      [ 0 1 ]
+      Active components ids: 
+      [ 0 1 ]
+      Inactive components ids: 
+      [ ]
+   
+   Interior multiplicities:
+      Size: [ 1 2 ]  Weights: [1,2]
+      Direction: 0
+      [ 1 ]
+      Direction: 1
+      [ 1 3 ]
+      Size: [ 1 2 ]  Weights: [1,2]
+      Direction: 0
+      [ 1 ]
+      Direction: 1
+      [ 1 1 ]
+   
+   Dimensionality Table:
+      Raw components: 
+         Size: [ 2 ]  Weights: [2]
+         Entry id: 0
+         [ 3 8 ]
+         Entry id: 1
+         [ 5 4 ]
+      
+      Components map: 
+      [ 0 1 ]
+      Active components ids: 
+      [ 0 1 ]
+      Inactive components ids: 
+      [ ]
+      Scalar components dimensions:
+      [ 24 20 ]
+      Total Dimension: 44
+   
+
+Space after serialize-deserialize.
+   Knots without repetition:
+      Number of intervals per direction: [ 2 3 ]
+      Knot coordinates:
+         Size: [ 3 4 ]  Weights: [3,12]
+         Direction: 0
+         [ 0 0.500000 1.00000 ]
+         Direction: 1
+         [ 0 0.333333 0.666667 1.00000 ]
+      
+   
+   Degrees:
+      Raw components: 
+         Size: [ 2 ]  Weights: [2]
+         Entry id: 0
+         [ 1 3 ]
+         Entry id: 1
+         [ 3 1 ]
+      
+      Components map: 
+      [ 0 1 ]
+      Active components ids: 
+      [ 0 1 ]
+      Inactive components ids: 
+      [ ]
+   
+   Interior multiplicities:
+      Size: [ 1 2 ]  Weights: [1,2]
+      Direction: 0
+      [ 1 ]
+      Direction: 1
+      [ 1 3 ]
+      Size: [ 1 2 ]  Weights: [1,2]
+      Direction: 0
+      [ 1 ]
+      Direction: 1
+      [ 1 1 ]
+   
+   Dimensionality Table:
+      Raw components: 
+         Size: [ 2 ]  Weights: [2]
+         Entry id: 0
+         [ 3 8 ]
+         Entry id: 1
+         [ 5 4 ]
+      
+      Components map: 
+      [ 0 1 ]
+      Active components ids: 
+      [ 0 1 ]
+      Inactive components ids: 
+      [ ]
+      Scalar components dimensions:
+      [ 24 20 ]
+      Total Dimension: 44
+   
+
+Boundary knots:
+Size: [ 2 2 ]  Weights: [2,4]
+Direction: 0
+[ -0.500000 0 ]
+Direction: 1
+[ 1.20000 1.30000 ]
+Size: [ 4 4 ]  Weights: [4,16]
+Direction: 0
+[ -0.600000 0 0 0 ]
+Direction: 1
+[ 1.00000 1.00000 1.60000 1.60000 ]
+Size: [ 4 4 ]  Weights: [4,16]
+Direction: 0
+[ -0.600000 0 0 0 ]
+Direction: 1
+[ 1.00000 1.00000 1.60000 1.60000 ]
+Size: [ 2 2 ]  Weights: [2,4]
+Direction: 0
+[ -0.500000 0 ]
+Direction: 1
+[ 1.20000 1.30000 ]
+Repeated knots:
+Size: [ 5 12 ]  Weights: [5,60]
+Direction: 0
+[ -0.500000 0 0.500000 1.20000 1.30000 ]
+Direction: 1
+[ -0.600000 0 0 0 0.333333 0.666667 0.666667 0.666667 1.00000 1.00000 1.60000 1.60000 ]
+Size: [ 9 6 ]  Weights: [9,54]
+Direction: 0
+[ -0.600000 0 0 0 0.500000 1.00000 1.00000 1.60000 1.60000 ]
+Direction: 1
+[ -0.500000 0 0.333333 0.666667 1.20000 1.30000 ]
+========================================================================
+
