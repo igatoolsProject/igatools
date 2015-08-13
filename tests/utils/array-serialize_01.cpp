@@ -20,67 +20,50 @@
 
 /**
  *  @file
- *  @brief  SafeSTLVector serialization
+ *  @brief  SafeSTLArray serialization
  *  @author  martinelli
  *  @date 2015-05-05
  */
 
 #include "../tests.h"
+#include <igatools/utils/safe_stl_array.h>
 
-#include <igatools/utils/safe_stl_vector.h>
-
-using namespace iga;
-
-void vector_print_info()
+void array_serialization()
 {
     OUTSTART
 
-    SafeSTLVector<Real> vec(5,1);
-    vec.print_info(out);
-    out << endl;
-
-    OUTEND
-}
-
-
-
-void vector_serialization()
-{
-    OUTSTART
-
-    SafeSTLVector<Real> vec = {1.,2.,3.,4.,5.};
+    SafeSTLArray<Real,3> arr = {-1.,-2.,-3.};
 
     {
         // writing to an xml file
-        std::ofstream xml_ostream("vector.xml");
+        std::ofstream xml_ostream("array.xml");
         OArchive xml_out(xml_ostream);
-        xml_out << BOOST_SERIALIZATION_NVP(vec);
+        xml_out << BOOST_SERIALIZATION_NVP(arr);
         xml_ostream.close();
     }
 
-    vec.clear();
+    arr.fill(0);
 
     {
         // reading from an xml file
-        std::ifstream xml_istream("vector.xml");
+        std::ifstream xml_istream("array.xml");
         IArchive xml_in(xml_istream);
-        xml_in >> BOOST_SERIALIZATION_NVP(vec);
+        xml_in >> BOOST_SERIALIZATION_NVP(arr);
         xml_istream.close();
     }
 
 
     out << endl;
 
-    vec.print_info(out);
+    arr.print_info(out);
     out << endl;
 
     OUTEND
 }
 
 
-
 int main()
 {
-    vector_serialization();
+    array_serialization();
     return 0;
 }
