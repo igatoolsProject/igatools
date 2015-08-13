@@ -18,26 +18,16 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/*
- * Test for SafeSTLVector, SafeSTLArray and their serialization
- * author: pauletti, martinelli
- * date:   2014-08-26
- * date:   2015-05-05 (added the tests for serialization)
- *
+/**
+ *  @file
+ *  @brief  SafeSTLVector
+ *  @author pauletti
+ *  @date 2014-08-26
  */
 
 #include "../tests.h"
 
 #include <igatools/utils/safe_stl_vector.h>
-#include <igatools/utils/safe_stl_array.h>
-
-#include <fstream>
-
-//#include <boost/archive/text_oarchive.hpp>
-//#include <boost/archive/text_iarchive.hpp>
-
-
-using namespace iga;
 
 void vector_print_info()
 {
@@ -51,93 +41,9 @@ void vector_print_info()
 }
 
 
-void array_print_info()
-{
-    OUTSTART
-
-    SafeSTLArray<Real, 5> arr(2);
-    arr.print_info(out);
-    out<< endl;
-    // SafeSTLArray<int, 3> a {1,2,3};
-    // for (auto e : a)
-    // out << e << endl;
-
-    OUTEND
-}
-
-
-void vector_serialization()
-{
-    OUTSTART
-
-    SafeSTLVector<Real> vec = {1.,2.,3.,4.,5.};
-
-    {
-        // writing to an xml file
-        std::ofstream xml_ostream("vector.xml");
-        OArchive xml_out(xml_ostream);
-        xml_out << BOOST_SERIALIZATION_NVP(vec);
-        xml_ostream.close();
-    }
-
-    vec.clear();
-
-    {
-        // reading from an xml file
-        std::ifstream xml_istream("vector.xml");
-        IArchive xml_in(xml_istream);
-        xml_in >> BOOST_SERIALIZATION_NVP(vec);
-        xml_istream.close();
-    }
-
-
-    out << endl;
-
-    vec.print_info(out);
-    out << endl;
-
-    OUTEND
-}
-
-void array_serialization()
-{
-    OUTSTART
-
-    SafeSTLArray<Real,3> arr = {-1.,-2.,-3.};
-
-    {
-        // writing to an xml file
-        std::ofstream xml_ostream("array.xml");
-        OArchive xml_out(xml_ostream);
-        xml_out << BOOST_SERIALIZATION_NVP(arr);
-        xml_ostream.close();
-    }
-
-    arr.fill(0);
-
-    {
-        // reading from an xml file
-        std::ifstream xml_istream("array.xml");
-        IArchive xml_in(xml_istream);
-        xml_in >> BOOST_SERIALIZATION_NVP(arr);
-        xml_istream.close();
-    }
-
-
-    out << endl;
-
-    arr.print_info(out);
-    out << endl;
-
-    OUTEND
-}
 
 int main()
 {
     vector_print_info();
-    array_print_info();
-
-    vector_serialization();
-    array_serialization();
     return 0;
 }
