@@ -335,47 +335,25 @@ operator()(const Topology<sub_elem_dim> &topology)
     auto &sub_elem_cache = all_sub_elems_cache->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id_);
 
 
-    using std::cref;
+//    using std::cref;
     if (sub_elem_cache.template status_fill<_Value>())
     {
-        auto &result = sub_elem_cache.template get_data<_Value>();
-        const auto &ref_values = ref_elem.template get_basis<_Value,sub_elem_dim>(sub_elem_id_,DofProperties::active);
-        PfElemAccessor::template transform_0<RefSpace::range,RefSpace::rank,type_>
-        (ref_elem, ref_values, result,phys_elem_);
+        PfElemAccessor::template
+			transform_0<RefSpace::range,RefSpace::rank,sub_elem_dim>(sub_elem_id_,ref_elem,map_elem,phys_elem_);
 
         sub_elem_cache.template set_status_filled<_Value>(true);
     }
     if (sub_elem_cache.template status_fill<_Gradient>())
     {
-        const auto &ref_values = ref_elem.template get_basis<   _Value,sub_elem_dim>(sub_elem_id_,DofProperties::active);
-        const auto &ref_der_1  = ref_elem.template get_basis<_Gradient,sub_elem_dim>(sub_elem_id_,DofProperties::active);
-        const auto &values = sub_elem_cache.template get_data<_Value>();
-        PfElemAccessor::template transform_1<RefSpace::range,RefSpace::rank,sub_elem_dim,type_>(
-        	ref_elem,
-            std::make_tuple(cref(ref_values), cref(ref_der_1)),
-            values,
-			map_elem,
-            sub_elem_cache.template get_data<_Gradient>(),
-            sub_elem_id_,
-			phys_elem_);
+        PfElemAccessor::template
+			transform_1<RefSpace::range,RefSpace::rank,sub_elem_dim>(sub_elem_id_,ref_elem,map_elem,phys_elem_);
 
         sub_elem_cache.template set_status_filled<_Gradient>(true);
     }
     if (sub_elem_cache.template status_fill<_Hessian>())
     {
-        const auto &ref_values = ref_elem.template get_basis<   _Value,sub_elem_dim>(sub_elem_id_,DofProperties::active);
-        const auto &ref_der_1  = ref_elem.template get_basis<_Gradient,sub_elem_dim>(sub_elem_id_,DofProperties::active);
-        const auto &ref_der_2  = ref_elem.template get_basis< _Hessian,sub_elem_dim>(sub_elem_id_,DofProperties::active);
-        const auto &values = sub_elem_cache.template get_data<   _Value>();
-        const auto &der_1  = sub_elem_cache.template get_data<_Gradient>();
-        PfElemAccessor::template transform_2<RefSpace::range,RefSpace::rank, sub_elem_dim>(
-        	ref_elem,
-            std::make_tuple(cref(ref_values), cref(ref_der_1), cref(ref_der_2)),
-            std::make_tuple(cref(values),cref(der_1)),
-			map_elem,
-            sub_elem_cache.template get_data<_Hessian>(),
-            sub_elem_id_,
-			phys_elem_);
+        PfElemAccessor::template
+			transform_2<RefSpace::range,RefSpace::rank,sub_elem_dim>(sub_elem_id_,ref_elem,map_elem,phys_elem_);
 
         sub_elem_cache.template set_status_filled<_Hessian>(true);
     }
