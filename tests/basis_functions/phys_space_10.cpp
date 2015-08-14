@@ -78,7 +78,7 @@ template <int dim, int range=1, int rank=1, int codim = 0>
 void cache_init_elem(const ValueFlags flag,
                      const int n_knots = 5, const int deg=1)
 {
-    const int k = dim;
+//    const int k = dim;
     OUTSTART
 
     using BspSpace = BSplineSpace<dim, range, rank>;
@@ -119,7 +119,7 @@ void cache_fill_elem(const ValueFlags flag,
 {
     OUTSTART
 
-    const int k = dim;
+ //   const int k = dim;
     using BspSpace = BSplineSpace<dim, range, rank>;
     using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 

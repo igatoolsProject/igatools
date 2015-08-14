@@ -127,6 +127,10 @@ public:
     virtual ~Function() = default;
     ///@}
 
+    std::shared_ptr<const PhysDomain> get_phys_domain() const
+    {
+    	return phys_domain_;
+    }
 
     virtual std::shared_ptr<base_t> clone() const = 0;
 
@@ -285,10 +289,11 @@ protected:
 
     std::shared_ptr<CartesianGrid<dim_> > grid_;
 
-    std::shared_ptr<self_t> function_previous_refinement_;
+private:
+    std::shared_ptr<const PhysDomain> phys_domain_;
 
 #ifdef MESH_REFINEMENT
-
+    std::shared_ptr<self_t> function_previous_refinement_;
 public:
 
 
@@ -306,15 +311,7 @@ public:
 
 
 
-    std::shared_ptr<const Map> get_phys_domain() const
-    {
-    	return phys_domain_;
-    }
 
-
-private:
-
-    std::shared_ptr<const Map> phys_domain_;
 
 #ifdef SERIALIZATION
     /**

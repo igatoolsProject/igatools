@@ -47,13 +47,12 @@ public:
     using typename parent_t::ElementIterator;
     using typename parent_t::ElementAccessor;
     using parent_t::space_dim;
+    using typename parent_t::PhysDomain;
 
     template <int order>
     using Derivative = typename parent_t::template Derivative<order>;
 
-    using Map = MapFunction_new<dim, codim>;
-
-    FormulaFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
+    FormulaFunction(std::shared_ptr<GridType> grid, std::shared_ptr<PhysDomain> map);
 
     FormulaFunction(const self_t &func);
 
@@ -77,8 +76,9 @@ private:
                             ValueVector<Derivative<2>> &values) const = 0;
 
 private:
-    std::shared_ptr<Map> mapping_;
-    typename Map::ElementIterator map_elem_;
+    std::shared_ptr<PhysDomain> mapping_;
+
+    typename PhysDomain::ElementIterator map_elem_;
 
     struct FillCacheDispatcher : boost::static_visitor<void>
     {

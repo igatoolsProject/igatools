@@ -20,6 +20,7 @@
 
 #include <igatools/functions/formula_function.h>
 #include <igatools/functions/function_element.h>
+#include <igatools/geometry/mapping_element.h>
 
 using std::shared_ptr;
 
@@ -27,7 +28,7 @@ IGA_NAMESPACE_OPEN
 
 template<int dim, int codim, int range, int rank>
 FormulaFunction<dim, codim, range, rank>::
-FormulaFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map)
+FormulaFunction(std::shared_ptr<GridType> grid, std::shared_ptr<PhysDomain> map)
     :
     parent_t::Function(grid),
     mapping_(map),
@@ -40,7 +41,7 @@ FormulaFunction<dim, codim, range, rank>::
 FormulaFunction(const self_t &func)
     :
     parent_t::Function(func),
-    mapping_(func.mapping_->clone()),
+    mapping_(func.mapping_),
     map_elem_(func.mapping_->begin())
 {}
 
@@ -59,7 +60,7 @@ FormulaFunction<dim, codim, range, rank>::
 init_cache(ElementAccessor &elem, const topology_variant &k) const
 {
     parent_t::init_cache(elem, k);
-    using MapElem = typename Map::ElementAccessor;
+    using MapElem = typename PhysDomain::ElementAccessor;
     mapping_->init_cache(const_cast<MapElem &>(*map_elem_), k);
 }
 
@@ -71,7 +72,7 @@ FormulaFunction<dim, codim, range, rank>::
 fill_cache(ElementAccessor &elem, const topology_variant &k, const int sub_elem_id) const  -> void
 {
     parent_t::fill_cache(elem,k,sub_elem_id);
-    using MapElem = typename Map::ElementAccessor;
+    using MapElem = typename PhysDomain::ElementAccessor;
 
     auto & map_elem_non_const = const_cast<MapElem &>(*map_elem_);
     map_elem_non_const.move_to(elem.get_flat_index());
