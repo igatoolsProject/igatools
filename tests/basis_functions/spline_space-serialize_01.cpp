@@ -17,18 +17,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-/*
- *  Test for the SplineSpace class
- *  author: pauletti
- *  date:
- *
- *
- *  Test for the serialization of the Splinespace class
- *  author: martinelli
- *  date: May 06, 2015
+
+/**
+ *  @file
+ *  @brief  serialization of the Splinespace
+ *  @author martinelli
+ *  @date 2015-08-10
  */
 
 // TODO (pauletti, Dec 26, 2014): make this test dim independent
+
 #include "../tests.h"
 #include <igatools/basis_functions/spline_space.h>
 

@@ -18,11 +18,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/**
- *  @file
- *  @brief  BSplineSpace constructors
- *  @author pauletti
- *  @date 2014-10-23
+/*
+ *  Test for BSplineSpace constructors
+ *
+ *  author: pauletti
+ *  date: 2014-10-23
+ *
  */
 
 #include "../tests.h"
@@ -30,14 +31,55 @@
 #include <igatools/basis_functions/bspline_space.h>
 
 
+template <int dim>
+void serialize_deserialize(const std::shared_ptr<BSplineSpace<dim>> space_in)
+{
+    std::shared_ptr<ReferenceSpace<dim>> space = space_in;
+    out.begin_item("Original BSplineSpace:");
+    space->print_info(out);
+    out.end_item();
+
+
+    std::string filename = "bspline_space_dim" + std::to_string(dim) + ".xml";
+    std::string tag_name = "BSplineSpace_dim" + std::to_string(dim);
+    {
+        // serialize the BSplineSpace object to an xml file
+        std::ofstream xml_ostream(filename);
+        OArchive xml_out(xml_ostream);
+        xml_out.template register_type<BSplineSpace<dim>>();
+
+        xml_out << boost::serialization::make_nvp(tag_name.c_str(),space);
+        xml_ostream.close();
+    }
+
+    space.reset();
+    {
+        // de-serialize the BSplineSpace object from an xml file
+        std::ifstream xml_istream(filename);
+        IArchive xml_in(xml_istream);
+        xml_in.template register_type<BSplineSpace<dim>>();
+
+        xml_in >> BOOST_SERIALIZATION_NVP(space);
+        xml_istream.close();
+    }
+    out.begin_item("BSplineSpace after serialize-deserialize:");
+    space->print_info(out);
+    out.end_item();
+
+}
+
+
 
 namespace grid
 {
 template<int dim>
-shared_ptr<CartesianGrid<dim>> uniform(const int n_knots)
+shared_ptr<CartesianGrid<dim>>
+                            uniform(const int n_knots)
 {
     return CartesianGrid<dim>::create(n_knots);
 }
+
+
 };
 
 
@@ -46,7 +88,9 @@ void uniform_degree(const int deg, shared_ptr<CartesianGrid<dim>> grid)
 {
     OUTSTART
     std::shared_ptr<BSplineSpace<dim>> space = BSplineSpace<dim>::create_nonconst(deg, grid);
-    space->print_info(out);
+
+    serialize_deserialize(space);
+
     OUTEND
 }
 
@@ -57,7 +101,9 @@ void direction_degree(const TensorIndex<dim> &deg,
 {
     OUTSTART
     std::shared_ptr<BSplineSpace<dim>> space = BSplineSpace<dim>::create_nonconst(deg, grid);
-    space->print_info(out);
+
+    serialize_deserialize(space);
+
     OUTEND
 }
 

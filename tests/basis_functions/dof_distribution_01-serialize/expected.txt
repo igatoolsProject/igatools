@@ -1,0 +1,182 @@
+========================================================================
+test1
+========================================================================
+Original DofDistribution.
+   Num dofs table:
+      Raw components: 
+         Size: [ 1 ]  Weights: [1]
+         Entry id: 0
+         [ 7 ]
+      
+      Components map: 
+      [ 0 ]
+      Active components ids: 
+      [ 0 ]
+      Inactive components ids: 
+      [ ]
+      Scalar components dimensions:
+      [ 7 ]
+      Total Dimension: 7
+   
+   Index table size:
+      Raw components: 
+         Size: [ 1 ]  Weights: [1]
+         Entry id: 0
+         [ 7 ]
+      
+      Components map: 
+      [ 0 ]
+      Active components ids: 
+      [ 0 ]
+      Inactive components ids: 
+      [ ]
+      Scalar components dimensions:
+      [ 7 ]
+      Total Dimension: 7
+   
+   Dof indices:
+      Size: [ 7 ]  Weights: [7]
+      [ 0 1 2 3 4 5 6 ]
+   
+   Dof properties:
+      IDs with property "active":
+         Num.: 4
+         Flat IDs: 0 2 4 6
+   
+
+DofDistribution after serialize-deserialize.
+   Num dofs table:
+      Raw components: 
+         Size: [ 1 ]  Weights: [1]
+         Entry id: 0
+         [ 7 ]
+      
+      Components map: 
+      [ 0 ]
+      Active components ids: 
+      [ 0 ]
+      Inactive components ids: 
+      [ ]
+      Scalar components dimensions:
+      [ 7 ]
+      Total Dimension: 7
+   
+   Index table size:
+      Raw components: 
+         Size: [ 1 ]  Weights: [1]
+         Entry id: 0
+         [ 7 ]
+      
+      Components map: 
+      [ 0 ]
+      Active components ids: 
+      [ 0 ]
+      Inactive components ids: 
+      [ ]
+      Scalar components dimensions:
+      [ 7 ]
+      Total Dimension: 7
+   
+   Dof indices:
+      Size: [ 7 ]  Weights: [7]
+      [ 0 1 2 3 4 5 6 ]
+   
+   Dof properties:
+      IDs with property "active":
+         Num.: 4
+         Flat IDs: 0 2 4 6
+   
+
+========================================================================
+
+========================================================================
+test2
+========================================================================
+Original DofDistribution.
+   Num dofs table:
+      Raw components: 
+         Size: [ 1 ]  Weights: [1]
+         Entry id: 0
+         [ 4 4 ]
+      
+      Components map: 
+      [ 0 ]
+      Active components ids: 
+      [ 0 ]
+      Inactive components ids: 
+      [ ]
+      Scalar components dimensions:
+      [ 16 ]
+      Total Dimension: 16
+   
+   Index table size:
+      Raw components: 
+         Size: [ 1 ]  Weights: [1]
+         Entry id: 0
+         [ 4 4 ]
+      
+      Components map: 
+      [ 0 ]
+      Active components ids: 
+      [ 0 ]
+      Inactive components ids: 
+      [ ]
+      Scalar components dimensions:
+      [ 16 ]
+      Total Dimension: 16
+   
+   Dof indices:
+      Size: [ 4 4 ]  Weights: [4,16]
+      [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ]
+   
+   Dof properties:
+      IDs with property "active":
+         Num.: 8
+         Flat IDs: 0 2 4 6 8 10 12 14
+   
+
+DofDistribution after serialize-deserialize.
+   Num dofs table:
+      Raw components: 
+         Size: [ 1 ]  Weights: [1]
+         Entry id: 0
+         [ 4 4 ]
+      
+      Components map: 
+      [ 0 ]
+      Active components ids: 
+      [ 0 ]
+      Inactive components ids: 
+      [ ]
+      Scalar components dimensions:
+      [ 16 ]
+      Total Dimension: 16
+   
+   Index table size:
+      Raw components: 
+         Size: [ 1 ]  Weights: [1]
+         Entry id: 0
+         [ 4 4 ]
+      
+      Components map: 
+      [ 0 ]
+      Active components ids: 
+      [ 0 ]
+      Inactive components ids: 
+      [ ]
+      Scalar components dimensions:
+      [ 16 ]
+      Total Dimension: 16
+   
+   Dof indices:
+      Size: [ 4 4 ]  Weights: [4,16]
+      [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ]
+   
+   Dof properties:
+      IDs with property "active":
+         Num.: 8
+         Flat IDs: 0 2 4 6 8 10 12 14
+   
+
+========================================================================
+

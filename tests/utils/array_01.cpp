@@ -20,30 +20,29 @@
 
 /**
  *  @file
- *  @brief  SafeSTLVector
+ *  @brief  SafeSTLArray
  *  @author pauletti
  *  @date 2014-08-26
  */
 
 #include "../tests.h"
 
-#include <igatools/utils/safe_stl_vector.h>
+#include <igatools/utils/safe_stl_array.h>
 
-void vector_print_info()
+void array_print_info()
 {
     OUTSTART
 
-    SafeSTLVector<Real> vec(5,1);
-    vec.print_info(out);
-    out << endl;
+    SafeSTLArray<Real, 5> arr(2);
+    arr.print_info(out);
+    out<< endl;
 
     OUTEND
 }
 
 
-
 int main()
 {
-    vector_print_info();
+    array_print_info();
     return 0;
 }

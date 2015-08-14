@@ -20,30 +20,50 @@
 
 /**
  *  @file
- *  @brief  SafeSTLVector
- *  @author pauletti
- *  @date 2014-08-26
+ *  @brief  SafeSTLArray serialization
+ *  @author  martinelli
+ *  @date 2015-05-05
  */
 
 #include "../tests.h"
+#include <igatools/utils/safe_stl_array.h>
 
-#include <igatools/utils/safe_stl_vector.h>
-
-void vector_print_info()
+void array_serialization()
 {
     OUTSTART
 
-    SafeSTLVector<Real> vec(5,1);
-    vec.print_info(out);
+    SafeSTLArray<Real,3> arr = {-1.,-2.,-3.};
+
+    {
+        // writing to an xml file
+        std::ofstream xml_ostream("array.xml");
+        OArchive xml_out(xml_ostream);
+        xml_out << BOOST_SERIALIZATION_NVP(arr);
+        xml_ostream.close();
+    }
+
+    arr.fill(0);
+
+    {
+        // reading from an xml file
+        std::ifstream xml_istream("array.xml");
+        IArchive xml_in(xml_istream);
+        xml_in >> BOOST_SERIALIZATION_NVP(arr);
+        xml_istream.close();
+    }
+
+
+    out << endl;
+
+    arr.print_info(out);
     out << endl;
 
     OUTEND
 }
 
 
-
 int main()
 {
-    vector_print_info();
+    array_serialization();
     return 0;
 }

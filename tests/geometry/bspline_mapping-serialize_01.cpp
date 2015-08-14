@@ -17,12 +17,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-
-/**
- *  @file
- *  @brief   IgMapping class on Bspline space
- *  @author pauletti
- *  @date 2013-10-04
+/*
+ *  Test the IgMapping class on Bspline space
+ *  The map is the identity of degree one.
+ *
+ *  author: pauletti
+ *  date: 2013-10-04
+ *
  */
 
 #include "../tests.h"
@@ -36,6 +37,45 @@
 #include <igatools/functions/function_element.h>
 
 using namespace EpetraTools;
+
+
+template <int dim,int codim>
+void serialize_deserialize(std::shared_ptr< IgFunction<dim,0, dim+codim,1> > F)
+{
+    out.begin_item("Original IgFunction:");
+    F->print_info(out);
+    out.end_item();
+
+    std::string template_strdetails = "_dim" + std::to_string(dim) + "_codim" + std::to_string(codim);
+    std::string filename = "ig_function" + template_strdetails + ".xml";
+    std::string tag_name = "IgFunction" + template_strdetails;
+    {
+        // serialize the IgFunction object to an xml file
+        std::ofstream xml_ostream(filename);
+        OArchive xml_out(xml_ostream);
+//        xml_out.template register_type<BSplineSpace<dim,dim+codim>>();
+
+        xml_out << boost::serialization::make_nvp(tag_name.c_str(),F);
+        xml_ostream.close();
+    }
+
+    F.reset();
+    {
+        // de-serialize the IgFunction object from an xml file
+        std::ifstream xml_istream(filename);
+        IArchive xml_in(xml_istream);
+//        xml_in.template register_type<BSplineSpace<dim,dim+codim>>();
+
+        xml_in >> BOOST_SERIALIZATION_NVP(F);
+        xml_istream.close();
+    }
+    out.begin_item("IgFunction after serialize-deserialize:");
+    F->print_info(out);
+    out.end_item();
+//*/
+}
+
+
 
 template <int dim, int codim=0>
 void bspline_map(const int deg = 1)
@@ -117,6 +157,11 @@ void bspline_map(const int deg = 1)
     }
 
     auto F = Function::create(space, c_p);
+
+
+    serialize_deserialize<dim,codim>(F);
+
+
     auto map = Mapping::create(F);
 
     auto quad = QGauss<dim>(3);
@@ -139,6 +184,8 @@ void bspline_map(const int deg = 1)
         out << "Gradients:" << endl;
         elem->template get_values<_Gradient,sub_dim>(s_id).print_info(out);
         out << endl;
+//        elem->template get_values<2,sub_dim>(s_id).print_info(out);
+//        out << endl;
     }
 
     OUTEND
