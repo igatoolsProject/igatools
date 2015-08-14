@@ -171,13 +171,13 @@ private:
 
 template<int sub_dim, int dim, int space_dim>
 class SubMapFunction :
-    public MapFunction<sub_dim, space_dim>
+    public MapFunction_new<sub_dim, space_dim-sub_dim>
 {
 private:
     using self_t = SubMapFunction<sub_dim, dim, space_dim>;
 public:
-    using base_t  = MapFunction<sub_dim, space_dim>;
-    using SupFunc = MapFunction<dim, space_dim>;
+    using base_t  = MapFunction_new<sub_dim, space_dim-sub_dim>;
+    using SupFunc = MapFunction_new<dim, space_dim-dim>;
 
     using typename base_t::GridType;
 

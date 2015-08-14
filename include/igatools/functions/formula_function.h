@@ -51,7 +51,7 @@ public:
     template <int order>
     using Derivative = typename parent_t::template Derivative<order>;
 
-    using Map = MapFunction<dim, space_dim>;
+    using Map = MapFunction_new<dim, codim>;
 
     FormulaFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
 

@@ -158,7 +158,8 @@ fill_cache(ElementAccessor &elem, const int j) const -> void
         auto &k_elem = UnitElement<dim_>::template get_elem<k>(j);
 
         const auto &DF = func_elem.template get_values<_Gradient, k>(j);
-        typename MapFunction<k, space_dim>::Gradient DF1;
+//        typename MapFunction<k, space_dim>::Gradient DF1;
+        typename MapFunction_new<k, space_dim - k>::Gradient DF1;
 
         auto &measures = cache.template get_data<_Measure>();
         for (int pt = 0 ; pt < n_points; ++pt)

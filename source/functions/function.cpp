@@ -21,6 +21,7 @@
 #include <igatools/functions/function.h>
 #include <igatools/functions/function_element.h>
 #include <igatools/utils/unique_id_generator.h>
+#include <igatools/geometry/mapping.h>
 
 IGA_NAMESPACE_OPEN
 

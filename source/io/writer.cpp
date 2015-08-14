@@ -48,7 +48,7 @@ Writer(const shared_ptr<CartesianGrid<dim>> grid)
 
 template<int dim, int codim, class T>
 Writer<dim, codim, T>::
-Writer(const std::shared_ptr<const MapFunction<dim,dim+codim>> map,
+Writer(const std::shared_ptr<const MapFunction_new<dim,codim>> map,
        const Index num_points_direction)
     :
     Writer(map,shared_ptr<QUniform<dim> >(new QUniform<dim>(num_points_direction)))
@@ -56,7 +56,7 @@ Writer(const std::shared_ptr<const MapFunction<dim,dim+codim>> map,
 
 template<int dim, int codim, class T>
 Writer<dim, codim, T>::
-Writer(const shared_ptr<const MapFunction<dim,dim+codim> > map,
+Writer(const shared_ptr<const MapFunction_new<dim,codim> > map,
        const shared_ptr<const Quadrature<dim> > quadrature)
     :
     map_(map->clone()),
@@ -186,7 +186,7 @@ fill_points_and_connectivity(
 template<int dim, int codim, class T>
 void Writer<dim, codim, T>::
 get_subelements(
-    const typename MapFunction<dim,dim+codim>::ElementAccessor &elem,
+    const typename MapFunction_new<dim,codim>::ElementAccessor &elem,
     SafeSTLVector< SafeSTLArray<int,n_vertices_per_vtk_element_ > > &vtk_elements_connectivity,
     SafeSTLVector< SafeSTLArray<T,3> > &points_phys_iga_element) const
 {

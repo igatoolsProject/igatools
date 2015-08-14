@@ -217,12 +217,12 @@ get_xml_input_file_format(const std::string &filename)
 
 
 template <int dim, int codim>
-std::shared_ptr< MapFunction<dim,dim+codim> >
+std::shared_ptr< MapFunction_new<dim,codim> >
 get_mapping_from_file(const std::string &filename)
 {
     const string file_format_version = get_xml_input_file_format(filename) ;
 
-    shared_ptr< MapFunction<dim,dim+codim> > map;
+    shared_ptr< MapFunction_new<dim,codim> > map;
     if (file_format_version == "1.0")
     {
         Assert(false,ExcNotImplemented());
@@ -256,7 +256,7 @@ get_mapping_from_file(const std::string &filename)
 
 
 template <int dim, int codim>
-std::shared_ptr< MapFunction<dim,dim+codim> >
+std::shared_ptr< MapFunction_new<dim,codim> >
 get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
 {
     AssertThrow(xml_element_is_unique(igatools_tree,"IgMapping"),
@@ -304,7 +304,7 @@ get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
 
     //-------------------------------------------------------------------------
     // reading the reference space
-    shared_ptr< MapFunction<dim,dim+codim> > map;
+    shared_ptr< MapFunction_new<dim,codim> > map;
 
     const int dim_phys = dim + codim;
     using ref_space_t = ReferenceSpace<dim,dim_phys,1>;
@@ -335,10 +335,10 @@ get_ig_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
 
 
 template <int dim, int codim>
-std::shared_ptr< MapFunction<dim,dim+codim> >
+std::shared_ptr< MapFunction_new<dim,codim> >
 get_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
 {
-    shared_ptr< MapFunction<dim,dim+codim> > map;
+    shared_ptr< MapFunction_new<dim,codim> > map;
 
     if (xml_element_is_unique(igatools_tree,"IgMapping"))
     {

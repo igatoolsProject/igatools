@@ -58,7 +58,7 @@ public:
     Writer(const std::shared_ptr<CartesianGrid<dim> > grid);
 
 
-    Writer(const std::shared_ptr<const MapFunction<dim,dim+codim>> map,
+    Writer(const std::shared_ptr<const MapFunction_new<dim,codim>> map,
            const Index num_points_direction);
 
     /**
@@ -70,7 +70,7 @@ public:
      * otherwise an exception will be raised.
      * \see add_field
      */
-    Writer(const std::shared_ptr<const MapFunction<dim,dim+codim> > map,
+    Writer(const std::shared_ptr<const MapFunction_new<dim,codim> > map,
            const std::shared_ptr<const Quadrature<dim>> quadrature);
 
 
@@ -165,7 +165,7 @@ public:
 
 private:
 
-    std::shared_ptr<MapFunction<dim,dim+codim> > map_;
+    std::shared_ptr<MapFunction_new<dim,codim> > map_;
 
     /**
      * Unit element quadrature rule used for the plot.
@@ -313,7 +313,7 @@ private:
         &vtk_elements_connectivity) const;
 
     void get_subelements(
-        const typename MapFunction<dim,dim+codim>::ElementAccessor &elem,
+        const typename MapFunction_new<dim,codim>::ElementAccessor &elem,
         SafeSTLVector< SafeSTLArray<int,n_vertices_per_vtk_element_> > &vtk_elements_connectivity,
         SafeSTLVector< SafeSTLArray<T,3> > &points_phys_iga_element) const;
 

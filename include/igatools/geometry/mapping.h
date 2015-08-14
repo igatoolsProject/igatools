@@ -26,6 +26,10 @@
 
 IGA_NAMESPACE_OPEN
 
+
+template<int dim, int codim>
+using MapFunction_new = Function<dim, 0, dim + codim, 1>;
+
 //Forward declaration to avoid including header file.
 template <int, int> class MappingElement;
 
@@ -56,7 +60,7 @@ class Mapping :
 private:
     using self_t = Mapping<dim_, codim_>;
 public:
-    using FuncType = MapFunction<dim_, dim_ + codim_>;
+    using FuncType = MapFunction_new<dim_, codim_>;
     using ElementAccessor = MappingElement<dim_, codim_>;
     using ElementIterator = CartesianGridIterator<ElementAccessor>;
 

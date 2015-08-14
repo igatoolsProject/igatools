@@ -89,7 +89,6 @@ public:
 
     static const bool is_physical_space = true;
 
-//    using MapFunc =  MapFunction<dim, space_dim>;
     using MapFunc = typename base_t::MapFunc;
 
     static constexpr int n_components = constexpr_pow(range, rank);

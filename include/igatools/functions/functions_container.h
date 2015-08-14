@@ -47,7 +47,7 @@ IGA_NAMESPACE_OPEN
  *
  */
 template<int dim, int codim>
-using MappingPtr = std::shared_ptr<MapFunction<dim,dim+codim>>;
+using MappingPtr = std::shared_ptr<MapFunction_new<dim,codim>>;
 
 #if 0
 template <int dim,int codim,int range,int rank>
@@ -621,7 +621,7 @@ public:
      * the @p map is already present in the container,
      */
     template<int dim, int space_dim>
-    void insert_mapping(std::shared_ptr<MapFunction<dim,space_dim>> mapping, const std::string &map_name)
+    void insert_mapping(std::shared_ptr<MapFunction_new<dim,space_dim-dim>> mapping, const std::string &map_name)
     {
         Assert(mapping != nullptr, ExcNullPtr());
 

@@ -141,7 +141,7 @@ get_xml_input_file_format(const std::string &filename);
  * @date 04 Mar 2014
  */
 template <int dim, int codim = 0>
-std::shared_ptr< MapFunction<dim,dim+codim> >
+std::shared_ptr< MapFunction_new<dim,codim> >
 get_mapping_from_file(const std::string &filename);
 
 
@@ -158,7 +158,7 @@ get_mapping_from_file(const std::string &filename);
  * @date 04 Mar 2014
  */
 template <int dim, int codim = 0>
-std::shared_ptr< MapFunction<dim,dim+codim> >
+std::shared_ptr< MapFunction_new<dim,codim> >
 get_mapping_from_xml(const boost::property_tree::ptree &tree);
 
 

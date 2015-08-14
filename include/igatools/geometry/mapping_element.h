@@ -37,7 +37,7 @@ class MappingElement
 private:
     using self_t  = MappingElement<dim_,codim_>;
     using Map = Mapping<dim_,codim_>;
-    using Func = MapFunction<dim_,dim_+codim_>;
+    using Func = MapFunction_new<dim_,codim_>;
 
     using Point = typename Func::Point;
     using Value = typename Func::Value;

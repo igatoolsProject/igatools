@@ -37,7 +37,7 @@ PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
     		std::dynamic_pointer_cast<RefElemAccessor>(phys_space->get_reference_space()->create_element(index))
 			),
     map_element_(make_shared<MapElem>(
-                          std::const_pointer_cast<MapFunction<dim_,dim_+codim_>>(
+                          std::const_pointer_cast<MapFunction_new<dim_,codim_>>(
                               phys_space->get_ptr_const_map_func()), index))
 //							  ,
 //    push_fwd_element_(make_shared<PfElemAccessor>(

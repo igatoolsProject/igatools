@@ -44,6 +44,7 @@ private:
 
 public:
     using Func = Function<dim, codim, range, rank>;
+    using MapFunc = typename Func::MapFunc;
     using Point = typename Func::Point;
     using Value = typename Func::Value;
     using Gradient = typename Func::Gradient;

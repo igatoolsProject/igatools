@@ -28,7 +28,7 @@ data = Instantiation()
 (f, inst) = (data.file_output, data.inst)
 
 for x in inst.mapping_dims:
-    map = 'std::shared_ptr<MapFunction<%d,%d>>' %(x.dim, x.dim + x.codim)
+    map = 'std::shared_ptr<MapFunction_new<%d,%d>>' %(x.dim, x.codim)
     f.write('template %s get_mapping_from_file<%d,%d>(const std::string &);\n' %(map,x.dim,x.codim))
 
 

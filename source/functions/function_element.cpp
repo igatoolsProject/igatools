@@ -38,7 +38,7 @@ FunctionElement(const std::shared_ptr<const Func> func,
     Assert(func_ != nullptr, ExcNullPtr());
     Assert(grid_elem_ != nullptr, ExcNullPtr());
 
-	auto phys_domain = PhysDomain::create(func);
+	auto phys_domain = PhysDomain::create(func->get_phys_domain());
 	phys_domain_elem_ = phys_domain->create_element(elem_index);
     Assert(phys_domain_elem_ != nullptr, ExcNullPtr());
 }

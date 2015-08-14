@@ -30,7 +30,7 @@
 
 IGA_NAMESPACE_OPEN
 
-
+template <int,int> class Mapping;
 
 template <int, int, int, int> class FunctionElement;
 
@@ -52,6 +52,9 @@ private:
 
 public:
     using GridType = const CartesianGrid<dim_>;
+
+    using MapFunc = Function<dim_, 0, dim_ + codim_, 1>;
+    using PhysDomain = Mapping<dim_,codim_>;
 
     using topology_variant = TopologyVariants<dim_>;
     using eval_pts_variant = SubElemVariants<Quadrature,dim_>;
@@ -245,7 +248,7 @@ private:
         template<int sub_elem_dim>
         void operator()(const Topology<sub_elem_dim> &sub_elem)
         {
-            grid_elem_handler_.template init_cache<sub_elem_dim>(func_elem_);
+            grid_elem_handler_.template init_cache<sub_elem_dim>(func_elem_.get_grid_element());
 
             auto &cache = func_elem_.all_sub_elems_cache_;
             if (cache == nullptr)
@@ -301,7 +304,17 @@ public:
 #endif // MESH_REFINEMENT
 
 
+
+
+    std::shared_ptr<const Map> get_phys_domain() const
+    {
+    	return phys_domain_;
+    }
+
+
 private:
+
+    std::shared_ptr<const Map> phys_domain_;
 
 #ifdef SERIALIZATION
     /**
@@ -327,8 +340,6 @@ private:
 };
 
 
-template<int dim, int space_dim>
-using MapFunction = Function<dim, 0, space_dim, 1>;
 
 IGA_NAMESPACE_CLOSE
 
