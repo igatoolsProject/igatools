@@ -18,10 +18,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef FORMULA_FUNCTIONS_H
-#define FORMULA_FUNCTIONS_H
+#ifndef __FORMULA_FUNCTIONS_H_
+#define __FORMULA_FUNCTIONS_H_
 
 #include <igatools/functions/function.h>
+#include <igatools/geometry/physical_domain.h>
+#include <igatools/geometry/physical_domain_element.h>
 #include <igatools/base/value_types.h>
 
 IGA_NAMESPACE_OPEN

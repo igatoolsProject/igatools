@@ -18,16 +18,17 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/*
- *  Test for linear mapping class
- *  author: pauletti
- *  date: Oct 11, 2014
+/**
+ *  @file
+ *  @brief Mapping using a linear Function
+ *  @author pauletti
+ *  @date 2014-10-23
  */
 
 #include "../tests.h"
 
-#include <igatools/geometry/mapping.h>
-#include <igatools/geometry/mapping_element.h>
+#include <igatools/geometry/physical_domain.h>
+#include <igatools/geometry/physical_domain_element.h>
 #include <igatools/functions/function_lib.h>
 #include <igatools/functions/identity_function.h>
 #include <igatools/base/quadrature_lib.h>
@@ -40,7 +41,7 @@ void test()
 
     const int space_dim = dim+codim;
     using Function = functions::LinearFunction<dim, 0, space_dim>;
-    using Mapping  = Mapping<dim, codim>;
+    using Mapping   = PhysicalDomain<dim, codim>;
 
     typename Function::Value    b;
     typename Function::Gradient A;
@@ -59,15 +60,15 @@ void test()
     auto quad = QGauss<dim>(2);
 
     Mapping map(F);
-    map.template reset<dim>(flag, quad);
+    map.reset(flag, quad);
 
     auto elem = map.begin();
     auto end  = map.end();
 
-    map.template init_cache<dim>(elem);
+    map.init_cache(elem, Topology<dim>());;
     for (; elem != end; ++elem)
     {
-        map.template fill_cache<dim>(elem, 0);
+        map.fill_cache(elem, Topology<dim>(), 0);
         out << "Points:" << endl;
         elem->get_points().print_info(out);
         out << endl;

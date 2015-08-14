@@ -30,8 +30,11 @@
 
 IGA_NAMESPACE_OPEN
 
+<<<<<<< HEAD
 template <int,int> class Mapping;
 
+=======
+>>>>>>> physical_domain
 template <int, int, int, int> class FunctionElement;
 
 /**
@@ -150,7 +153,6 @@ public:
 
     void fill_element_cache(ElementAccessor &elem) const;
 
-
     void fill_element_cache(ElementIterator &elem) const;
 
     std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const;
@@ -158,8 +160,6 @@ public:
     ElementIterator begin() const;
 
     ElementIterator end() const;
-
-
 
     virtual void print_info(LogStream &out) const;
 

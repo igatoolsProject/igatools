@@ -30,6 +30,7 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/functions/function_lib.h>
 #include <igatools/functions/function_element.h>
+#include <igatools/geometry/physical_domain_element.h>
 #include <igatools/functions/sub_function.h>
 
 
@@ -88,7 +89,6 @@ void create_fun()
     const int k = dim - 1;
     for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
     {
-        using Grid =  CartesianGrid<dim>;
         using SubGridMap = std::map<Index,Index>;
         SubGridMap elem_map;
         auto sub_grid = grid->template get_sub_grid<k>(s_id, elem_map);
