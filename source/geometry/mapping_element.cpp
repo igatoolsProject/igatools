@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-
+#if 0
 #include <igatools/geometry/mapping_element.h>
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <boost/numeric/ublas/operation.hpp>
@@ -344,3 +344,4 @@ clone() const -> std::shared_ptr<self_t>
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/mapping_element.inst>
+#endif

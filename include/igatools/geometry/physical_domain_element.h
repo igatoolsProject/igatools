@@ -20,7 +20,7 @@
 
 #ifndef __PHYSICAL_DOMAIN_ELEMENT_H_
 #define __PHYSICAL_DOMAIN_ELEMENT_H_
-
+#if 0
 #include <igatools/utils/safe_stl_array.h>
 #include <igatools/geometry/physical_domain.h>
 #include <igatools/functions/function_element.h>
@@ -207,5 +207,5 @@ IGA_NAMESPACE_CLOSE
 
 #endif // PHYSICAL_DOMAIN_ELEMENT_H_
 
-
+#endif
 

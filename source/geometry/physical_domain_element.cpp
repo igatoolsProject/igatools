@@ -17,10 +17,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-
+#if 0
 #include <igatools/geometry/physical_domain_element.h>
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <boost/numeric/ublas/operation.hpp>
+
 IGA_NAMESPACE_OPEN
 
 
@@ -246,3 +247,4 @@ clone() const -> std::shared_ptr<self_t>
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/physical_domain_element.inst>
+#endif

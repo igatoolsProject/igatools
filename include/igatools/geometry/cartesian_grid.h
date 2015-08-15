@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef CARTESIAN_GRID_H_
-#define CARTESIAN_GRID_H_
+#ifndef __CARTESIAN_GRID_H_
+#define __CARTESIAN_GRID_H_
 
 #include <igatools/base/config.h>
 #include <igatools/base/tensor.h>
@@ -42,11 +42,9 @@
 
 IGA_NAMESPACE_OPEN
 
-
-
-
 template <int> class CartesianGridElement;
 template <int> class GridElementHandler;
+
 /**
  * @brief Grid in <tt>dim</tt>-dimensional space with cartesian-product structure.
  *
@@ -62,19 +60,24 @@ template <int> class GridElementHandler;
  *
  * The elements can be iterated with the CartesianGridIterator object.
  * The iterators for traversing the the entire set of elements of the grid
- * are build with the begin(), end(), cbegin(), cend() functions called with no arguments.
+ * are build with the begin(), end(), cbegin(), cend() functions called with no
+ * arguments.
  *
  * ### Element properties
- * The elements can have associated a certain list of <em>element properties</em> (identified by one std::string).
- * There is no pre-defined list of element properties: any property can be defined and added to the list
- * of properties stored within the CartesianGrid. This choice is made because the properties
- * are usually specific for a given problem (e.g. <em>active</em> elements in hierarchical grids or
- * <em>marked</em> elements for a-posteriori error estimators).
+ * The elements can have associated a certain list of <em>element properties</em>
+ * (identified by one std::string).
+ * There is no pre-defined list of element properties: any property can be
+ * defined and added to the list
+ * of properties stored within the CartesianGrid. This choice is made because
+ * the properties are usually specific for a given problem (e.g. <em>active</em>
+ * elements in hierarchical grids or <em>marked</em> elements for a-posteriori
+ * error estimators).
  *
- * For example, let suppose we want to build a bi-dimensional grid (over the unit square
- * \f$ [0,1]\times[0,1] \f$) made of 4 equally-sized intervals in each coordinate direction, and
- * then assign the property <tt>"active"</tt> to the elements with even flat-index and
- * the <tt>"marked"</tt> to the elements with odd flat-index
+ * For example, let suppose we want to build a bi-dimensional grid (over the
+ * unit square \f$ [0,1]\times[0,1] \f$) made of 4 equally-sized intervals in
+ * each coordinate direction, and then assign the property <tt>"active"</tt> to
+ *  the elements with even flat-index and the <tt>"marked"</tt> to the elements
+ *  with odd flat-index
  * @code{.cpp}
    auto grid = CartesianGrid<2>::create(5); // here we create a 4x4 grid
 
@@ -183,17 +186,8 @@ public:
     /** Type for the vector of knot vectors */
     using KnotCoordinates = CartesianProductArray<Real, dim_>;
 
-    /**
-     * Types of grid for future optimization
-     */
-    enum class Kind
-    {
-        uniform, direction_uniform, non_uniform
-    };
-
     /** @name Constructors*/
     ///@{
-//protected:
 public:
     /**
      * Construct a uniform cartesian grid of the unit <tt>dim</tt>-dimensional
@@ -201,6 +195,7 @@ public:
      */
     explicit CartesianGrid(const Size n = 2);
 
+protected:
     /**
      * Construct a uniform cartesian grid of the unit <tt>dim</tt>-dimensional
      * hypercube \f$[0,1]^{dim}\f$,
@@ -329,10 +324,6 @@ public:
 
     ///@}
 
-    /**
-     * Create an element (defined on this grid) with a given flat_index.
-     */
-    std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const;
 
     /**
      * @name Assignment operators
@@ -396,6 +387,11 @@ public:
 
     ///@name Iterating of grid elements
     ///@{
+    /**
+     * Create an element (defined on this grid) with a given flat_index.
+     */
+    std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const;
+
     /**
      * This function returns a element iterator to the first element of the patch.
      */
@@ -535,6 +531,9 @@ public:
      */
     bool operator==(const CartesianGrid<dim_> &grid) const;
 
+
+#ifdef MESH_REFINEMENT
+
 private:
 
     /** Type for the insert_knots signal. */
@@ -546,8 +545,6 @@ public:
 
     /** Slot type for the insert_knots signal. */
     using SignalInsertKnotsSlot = typename signal_insert_knots_t::slot_type;
-
-#ifdef MESH_REFINEMENT
 
     /** @name Functions for performing grid refinement */
     ///@{
