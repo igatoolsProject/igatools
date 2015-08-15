@@ -354,8 +354,6 @@ private:
 
     friend ElementAccessor;
 
-
-
 #ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization
@@ -374,7 +372,6 @@ private:
     }
     ///@}
 #endif
-
 };
 
 IGA_NAMESPACE_CLOSE
