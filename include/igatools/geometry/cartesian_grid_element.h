@@ -301,11 +301,9 @@ public:
 private:
     template <class Accessor> friend class CartesianGridIteratorBase;
     friend class GridElementHandler<dim>;
+
     /** Cartesian grid from which the element belongs.*/
     std::shared_ptr<ContainerType> grid_;
-
-    /** Flat (linear) index assigned to the current (sub)-element. */
-    Index flat_index_;
 
     /** Tensor product indices of the current struct index @p flat_index_. */
     TensorIndex<dim> tensor_index_;
