@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef PHYSICAL_DOMAIN_H_
-#define PHYSICAL_DOMAIN_H_
+#ifndef __PHYSICAL_DOMAIN_H_
+#define __PHYSICAL_DOMAIN_H_
 
 #include <igatools/base/config.h>
 #include <igatools/functions/function.h>
@@ -30,6 +30,9 @@ IGA_NAMESPACE_OPEN
 template <int, int> class PhysicalDomainElement;
 
 template <int,int,int,int> class IgFunction;
+
+template<int dim, int codim>
+using MapFunction = Function<dim, 0, dim + codim, 1>;
 
 /**
  * @brief The mapping is a deformation \f$ F : \hat\Omega \to \Omega\f$
@@ -56,7 +59,7 @@ class PhysicalDomain :
 private:
     using self_t = PhysicalDomain<dim_, codim_>;
 public:
-    using FuncType = MapFunction<dim_, dim_ + codim_>;
+    using FuncType = MapFunction<dim_, codim_>;
     using topology_variant = typename FuncType::topology_variant;
     using eval_pts_variant = typename FuncType::eval_pts_variant;
 
@@ -99,36 +102,40 @@ public:
      */
     PhysicalDomain() = default;
 
-    PhysicalDomain(std::shared_ptr<FuncType> F);
+    PhysicalDomain(std::shared_ptr<const FuncType> F);
 
     ~PhysicalDomain();
 
-    static std::shared_ptr<self_t>  create(std::shared_ptr<FuncType> F);
-    std::shared_ptr<self_t> clone() const
+    static std::shared_ptr<self_t>  create(std::shared_ptr<const FuncType> F);
+
+    std::shared_ptr<self_t> get_handler() const
 	{
     	return std::make_shared<self_t>(self_t(this->F_->clone()));
 	}
 public:
     void reset(const ValueFlags flag, const eval_pts_variant &quad);
 
-    void init_cache(ElementAccessor &elem, const topology_variant &k);
+    void init_cache(ElementAccessor &elem, const topology_variant &k) const;
 
-    void init_cache(ElementIterator &elem, const topology_variant &k)
+    void init_cache(ElementIterator &elem, const topology_variant &k) const
     {
         init_cache(*elem, k);
     }
 
-    void fill_cache(ElementAccessor &elem, const topology_variant &k, const int j);
+    void fill_cache(ElementAccessor &elem, const topology_variant &k,
+    		 const int j) const;
 
-    void fill_cache(ElementIterator &elem, const topology_variant &k, const int j)
+    void fill_cache(ElementIterator &elem, const topology_variant &k,
+    		const int j) const
     {
+
         fill_cache(*elem, k, j);
     }
 
 
-    std::shared_ptr<const CartesianGrid<dim_> > get_grid() const;
+    //std::shared_ptr<const CartesianGrid<dim_> > get_grid() const;
 
-    std::shared_ptr<FuncType> get_function() const;
+    std::shared_ptr<const FuncType> get_function() const;
 
     std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const;
 
@@ -341,7 +348,7 @@ private:
 
 
 private:
-    std::shared_ptr<FuncType> F_;
+    std::shared_ptr<const FuncType> F_;
 
     SafeSTLArray<ValueFlags, dim_ + 1> flags_;
 
