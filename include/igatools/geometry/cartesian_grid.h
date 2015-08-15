@@ -202,21 +202,19 @@ protected:
      * with <tt>n[0],..,n[dim-1</tt>] knots in each dimension
      * respectively.
      */
-    explicit CartesianGrid(const TensorSize<dim_> &n_knots, const Kind kind);
+    explicit CartesianGrid(const TensorSize<dim_> &n_knots);
 
     /**
      * @todo Document me
      */
     explicit CartesianGrid(const BBox<dim_> &end_points,
-                           const Size n_knots,
-                           const Kind kind);
+                           const Size n_knots);
 
     /**
      * @todo Document me
      */
     explicit CartesianGrid(const BBox<dim_> &end_points,
-                           const TensorSize<dim_> &n_knots,
-                           const Kind kind);
+                           const TensorSize<dim_> &n_knots);
     /**
      * Construct a cartesian grid where the knot coordinate in each
      * direction is provided as CartesianProductArray object.
@@ -227,8 +225,7 @@ protected:
      * is perform and if not satistified an exception is raised.
      */
     explicit
-    CartesianGrid(const KnotCoordinates &knot_coordinates,
-                  const Kind kind);
+    CartesianGrid(const KnotCoordinates &knot_coordinates);
 
     /**
      * Construct a cartesian grid where the knot coordinate in each
@@ -237,10 +234,10 @@ protected:
      * The knot coordinate in each direction must be sorted and without
      * repetition.
      * @note In Debug mode, a check for this precondition (up to machine precision)
-     * is perform and if not satistified an exception is raised.
+     * is perform and if not satisfied an exception is raised.
      */
     explicit
-    CartesianGrid(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knot_coordinates);
+    CartesianGrid(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knot_coords);
 
 public:
     /**
@@ -265,7 +262,8 @@ public:
     ///@{
     /**
      * Creates a uniform cartesian grid of the unit <tt>dim</tt>-dimensional
-     * hypercube \f$[0,1]^{dim}\f$, with @p n knots (equally spaced) in each dimension.
+     * hypercube \f$[0,1]^{dim}\f$, with @p n knots (equally spaced) in each
+     * dimension.
      */
     static std::shared_ptr<self_t> create(const Index n = 2);
 
@@ -612,10 +610,6 @@ public:
 #endif // MESH_REFINEMENT
 
 private:
-    /** Flag for optimization use */
-    Kind kind_ = Kind::non_uniform;
-
-
     /**
      *  Knot coordinates along each coordinate direction.
      *  For each direction the knot coordinates are sorted in an increasing
@@ -623,17 +617,14 @@ private:
      */
     KnotCoordinates knot_coordinates_;
 
-
     /** Boundary ids, one id per face */
     SafeSTLArray<boundary_id, UnitElement<dim_>::template num_elem<dim_-1>()> boundary_id_;
 
     /**
-     * Container for the element ids having a certain property.
-     *
-     * The property name is the key of the std::map.
+     * Properties assigned to the elements.
+     * Elements are referred to by their flat ids.
      */
     PropertiesIdContainer properties_elements_id_;
-
 
     /**
      * Unique identifier associated to each object instance.
@@ -641,7 +632,6 @@ private:
     Index object_id_;
 
 public:
-
     /**
      * Returns the unique identifier associated to each object instance.
      */
@@ -701,40 +691,43 @@ public:
      */
     void set_all_elements_property_status(const std::string &property,
                                           const bool status);
-
     ///@}
 
+    /**
+     * @name Functions that are not very portable as they rely to much on
+     * the internal data representation
+     */
+    ///@{
     /**
      * Returns the flat-id of the elements in the CartesianGrid.
      */
     std::set<Index> get_elements_id() const;
-
+    ///@}
 
 private:
     /**
-     * Returns the flat ids of the sub-elements corresponding to the element with index @p elem_id,
-     * referred to a CartesianGrid built as a refinement of the current one using
-     * @p n_sub_elems for each element.
+     * Returns the flat ids of the sub-elements corresponding to the element
+     * with index @p elem_id, referred to a CartesianGrid built as a refinement
+     * of the current one using@p n_sub_elems for each element.
      */
-    SafeSTLVector<Index> get_sub_elements_id(const TensorSize<dim_> &n_sub_elems, const Index elem_id) const;
-
-
+    SafeSTLVector<Index>
+    get_sub_elements_id(const TensorSize<dim_> &n_sub_elems,
+    		            const Index elem_id) const;
+#ifdef MESH_REFINEMENT
     /**
      * This class member is the grid before the last refinement. If no
      * refinement is performed, this is a null pointer.
      */
     std::shared_ptr<self_t> grid_pre_refinement_ = nullptr;
 
-
     /**
      * Signals for the insert_knots() invocations. It can be viewed as a FIFO list of
      * function pointers.
      */
     signal_insert_knots_t insert_knots_signals_;
-
+#endif
 
     friend class CartesianGridElement<dim_>;
-
 
 #ifdef SERIALIZATION
     /**
