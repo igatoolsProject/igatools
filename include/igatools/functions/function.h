@@ -30,11 +30,8 @@
 
 IGA_NAMESPACE_OPEN
 
-<<<<<<< HEAD
 template <int,int> class Mapping;
 
-=======
->>>>>>> physical_domain
 template <int, int, int, int> class FunctionElement;
 
 /**
