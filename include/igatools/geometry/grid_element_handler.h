@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef GRID_ELEMENT_HANDLER_H_
-#define GRID_ELEMENT_HANDLER_H_
+#ifndef __GRID_ELEMENT_HANDLER_H_
+#define __GRID_ELEMENT_HANDLER_H_
 
 #include <igatools/base/config.h>
 #include <igatools/basis_functions/values_cache.h>
@@ -27,7 +27,7 @@
 #include <igatools/base/quadrature.h>
 #include <igatools/utils/tensor_product_array.h>
 #include <igatools/geometry/cartesian_grid.h>
-#include <igatools/basis_functions/space_element_handler.h>
+//#include <igatools/basis_functions/space_element_handler.h>
 
 IGA_NAMESPACE_OPEN
 

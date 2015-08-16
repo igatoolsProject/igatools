@@ -42,8 +42,9 @@ IGA_NAMESPACE_OPEN
 template <typename IndexType>
 class PropertiesIdContainer
 {
-private:
+public:
 	using List = SafeSTLSet<IndexType>;
+private:
     using ContainerType = std::map<PropId, List>;
     using iterator = typename ContainerType::iterator;
     using const_iterator = typename ContainerType::const_iterator;

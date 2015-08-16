@@ -25,6 +25,7 @@
 #include <igatools/geometry/base_element.h>
 #include <igatools/basis_functions/values_cache.h>
 #include <igatools/base/quadrature.h>
+#include <igatools/geometry/cartesian_grid.h>
 #include <igatools/geometry/grid_element_handler.h>
 #include <igatools/geometry/cartesian_grid_iterator.h>
 #include <igatools/utils/value_vector.h>
@@ -55,14 +56,14 @@ IGA_NAMESPACE_OPEN
  */
 template <int dim>
 class CartesianGridElement
-:public BaseElement<dim>
 {
 private:
     using self_t = CartesianGridElement<dim>;
-    using base_t = BaseElement<dim>;
+
 public:
     /** Type required by the CartesianGridIterator templated iterator */
     using ContainerType = const CartesianGrid<dim>;
+    using IndexType = typename ContainerType::IndexType;
 
     using Point = Points<dim>;
 
@@ -142,7 +143,7 @@ public:
     ///@}
 
 
-    const base_t &get_index() const;
+    const IndexType &get_index() const;
 
     /** Return the cartesian grid from which the element belongs.*/
     const std::shared_ptr<const ContainerType> get_grid() const;
@@ -172,7 +173,7 @@ public:
      * as it is easy to use incorrectly. Only use it if you know what you
      * are doing.
      */
-    void move_to(const base_t&);
+    void move_to(const IndexType&);
 
     ///@}
 

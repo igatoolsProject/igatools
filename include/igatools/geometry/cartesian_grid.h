@@ -32,13 +32,11 @@
 #include <igatools/geometry/bbox.h>
 #include <igatools/geometry/cartesian_grid_iterator.h>
 #include <igatools/base/properties_id_container.h>
+#include <igatools/geometry/base_element.h>
 
-
-#include <memory>
-#include <map>
-#include <set>
-
+#ifdef MESH_REFINEMENT
 #include <boost/signals2.hpp>
+#endif
 
 IGA_NAMESPACE_OPEN
 
@@ -65,7 +63,7 @@ template <int> class GridElementHandler;
  *
  * ### Element properties
  * The elements can have associated a certain list of <em>element properties</em>
- * (identified by one std::string).
+ * (identified by one PropId).
  * There is no pre-defined list of element properties: any property can be
  * defined and added to the list
  * of properties stored within the CartesianGrid. This choice is made because
@@ -81,8 +79,8 @@ template <int> class GridElementHandler;
  * @code{.cpp}
    auto grid = CartesianGrid<2>::create(5); // here we create a 4x4 grid
 
-   const std::string property_active = "active"; // here we choose the string identifying the first property
-   const std::string property_marked = "marked"; // here we choose the string identifying the second property
+   const PropId property_active = "active"; // here we choose the string identifying the first property
+   const PropId property_marked = "marked"; // here we choose the string identifying the second property
 
    grid->add_elements_property(property_active); // here we add the first property to the elements property database managed by the grid
    grid->add_elements_property(property_marked); // here we add the second property to the elements property database managed by the grid
@@ -99,7 +97,7 @@ template <int> class GridElementHandler;
    @endcode
  *
  * The list of elements with a given property can be obtained from the CartesianGrid
- * using the function get_elements_id_same_property(const std::string &property).
+ * using the function get_elements_id_same_property(const PropId &property).
  * For example if we want the IDs of the elements having the property <tt>"marked"</tt> we can write
  * @code{.cpp}
    const auto & elems_id_marked = grid->get_elements_id_same_property("marked");
@@ -113,7 +111,7 @@ template <int> class GridElementHandler;
  * <tt>"active"</tt> (provided that property <tt>"active"</tt> is defined for some elements in the grid)
  * you can use
  * @code{.cpp}
-   std::string property_active = "active";
+   PropId property_active = "active";
    auto elem_active = grid->begin(property_active);
    auto  end_active = grid->end(property_active);
    for ( ; elem_active != end_active ; ++elem_active)
@@ -167,7 +165,6 @@ private:
     using self_t = CartesianGrid<dim_>;
 
 public:
-
     using Point = Points<dim_>;
 
     static const int dim = dim_;
@@ -182,6 +179,10 @@ public:
     using ElementConstIterator = CartesianGridConstIterator<ElementAccessor>;
 
     using ElementHandler = GridElementHandler<dim_>;
+
+    using PropertyList = PropertiesIdContainer<BaseElement<dim_>>;
+    using List = typename PropertyList::List;
+    using IndexType = BaseElement<dim_>;
 
     /** Type for the vector of knot vectors */
     using KnotCoordinates = CartesianProductArray<Real, dim_>;
@@ -344,7 +345,7 @@ public:
     /**
      * Returns the number of elements with the <tt>property</tt> specified as input argument.
      */
-    Size get_num_elements_same_property(const std::string &property) const;
+    Size get_num_elements_same_property(const PropId &property) const;
 
     /** Total number of elements, including active and non-active */
     Size get_num_all_elems() const;
@@ -393,47 +394,47 @@ public:
     /**
      * This function returns a element iterator to the first element of the patch.
      */
-    ElementIterator begin(const std::string &property = ElementProperties::none);
+    ElementIterator begin(const PropId &property = ElementProperties::active);
 
     /**
      * This function returns a element iterator to one-pass the end of patch.
      */
-    ElementIterator end(const std::string &property = ElementProperties::none);
+    ElementIterator end(const PropId &property = ElementProperties::active);
 
     /**
      * This function returns a element (const) iterator to the first element of the patch.
      */
-    ElementConstIterator begin(const std::string &property = ElementProperties::none) const;
+    ElementConstIterator begin(const PropId &property = ElementProperties::active) const;
 
     /**
      * This function returns a element (const) iterator to one-pass the end of patch.
      */
-    ElementConstIterator end(const std::string &property = ElementProperties::none) const;
+    ElementConstIterator end(const PropId &property = ElementProperties::active) const;
 
     /**
      * This function returns a element (const) iterator to the first element of the patch.
      */
-    ElementConstIterator cbegin(const std::string &property = ElementProperties::none) const;
+    ElementConstIterator cbegin(const PropId &property = ElementProperties::active) const;
 
     /**
      * This function returns a element (const) iterator to one-pass the end of patch.
      */
-    ElementConstIterator cend(const std::string &property = ElementProperties::none) const;
+    ElementConstIterator cend(const PropId &property = ElementProperties::active) const;
 
     /**
      * This function returns the iterator to the last active element on the grid.
      */
-    ElementIterator last(const std::string &property = ElementProperties::none);
+    ElementIterator last(const PropId &property = ElementProperties::active);
 
     /**
      * This function returns the (const) iterator to the last active element on the grid.
      */
-    ElementConstIterator last(const std::string &property = ElementProperties::none) const;
+    ElementConstIterator last(const PropId &property = ElementProperties::active) const;
 
     /**
      * This function returns the (const) iterator to the last active element on the grid.
      */
-    ElementConstIterator clast(const std::string &property = ElementProperties::none) const;
+    ElementConstIterator clast(const PropId &property = ElementProperties::active) const;
     ///@}
 
     /** @name Functions for the index transformations */
@@ -624,7 +625,7 @@ private:
      * Properties assigned to the elements.
      * Elements are referred to by their flat ids.
      */
-    PropertiesIdContainer properties_elements_id_;
+    PropertyList properties_elements_id_;
 
     /**
      * Unique identifier associated to each object instance.
@@ -641,55 +642,55 @@ public:
      * @name Functions related to the management/query of the element properties.
      */
     ///@{
-
     /**
      * Returns true if the element identified with <tt>elem_flat_id</tt> has
      * the ElementProperty <tt>property</tt>.
      */
-    bool test_if_element_has_property(const Index elem_flat_id, const std::string &property) const;
+    bool test_if_element_has_property(const IndexType elem_flat_id,
+    		const PropId &property) const;
 
     /**
      * Adds a new <tt>property</tt> definition for the elements in the CartesianGrid.
      *
      * @note If the <tt>property</tt> is already present, n assertion will be raised (in Debug mode).
      */
-    void add_elements_property(const std::string &property);
+    void add_elements_property(const PropId &property);
 
     /**
      * Returns the id of the first element with a given @p property.
-     * @note If the @p property is equal to ElementProperties::none, then the
+     * @note If the @p property is equal to ElementProperties::active, then the
      * first element index is 0 (zero).
      */
-    Index get_first_element_id_same_property(const std::string &property) const;
+    Index get_first_element_id_same_property(const PropId &property) const;
 
     /**
      * Returns the id of the last element with a given @p property.
-     * @note If the @p property is equal to ElementProperties::none, then the
+     * @note If the @p property is equal to ElementProperties::active, then the
      * last element index is equal to the number of elements in the grid minus 1.
      */
-    Index get_last_element_id_same_property(const std::string &property) const;
+    Index get_last_element_id_same_property(const PropId &property) const;
 
     /**
      * Returns the flat id of the elements having a certain @p property (non-const version).
      */
-    std::set<Index> &get_elements_id_same_property(const std::string &property);
+    std::set<Index> &get_elements_id_same_property(const PropId &property);
 
     /**
      * Returns the flat id of the elements having a certain @p property (const version).
      */
-    const std::set<Index> &get_elements_id_same_property(const std::string &property) const;
+    const std::set<Index> &get_elements_id_same_property(const PropId &property) const;
 
     /**
      * Sets the @p status of the given @p property for the element with flat id @p elem_flat_id.
      */
-    void set_element_property_status(const std::string &property,
-                                     const Index elem_flat_id,
+    void set_element_property_status(const PropId &property,
+                                     const IndexType &elem_index,
                                      const bool status);
 
     /**
      * Sets the @p status of the given @p property for the entire set of elements in the grid.
      */
-    void set_all_elements_property_status(const std::string &property,
+    void set_all_elements_property_status(const PropId &property,
                                           const bool status);
     ///@}
 

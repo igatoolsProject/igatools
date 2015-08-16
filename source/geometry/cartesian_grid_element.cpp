@@ -31,9 +31,9 @@ IGA_NAMESPACE_OPEN
 template <int dim>
 CartesianGridElement<dim>::
 CartesianGridElement(const std::shared_ptr<ContainerType> grid,
-                     const base_t &index)
+                     const IndexType &index)
     :
-	base_t(index),
+	IndexType(index),
     grid_(grid)
 {
 	Assert(grid_ != nullptr,ExcNullPtr());
@@ -56,7 +56,7 @@ template <int dim>
 CartesianGridElement<dim>::
 CartesianGridElement(const CartesianGridElement<dim> &elem, const CopyPolicy &copy_policy)
 :
-base_t(elem, copy_policy)
+IndexType(elem, copy_policy)
 {
 	grid_         = elem.grid_;
 
@@ -98,7 +98,7 @@ get_grid() const -> const std::shared_ptr<const CartesianGrid<dim> >
 
 template <int dim>
 auto
-get_index() const ->  const base_t &
+get_index() const ->  const IndexType &
 {
 	return *this;
 }
