@@ -23,6 +23,7 @@
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 #TODO: Define the configure time variable for dimension compilation
+#TODO: upadate to cmake >= 3
 
 cmake_minimum_required(VERSION 2.8.10)
 
@@ -64,7 +65,7 @@ endif()
 # Set the igatools version 
 #
 set(IGATOOLS_MAJOR_VERSION 1)
-set(IGATOOLS_MINOR_VERSION 0)
+set(IGATOOLS_MINOR_VERSION 99)
 set(IGATOOLS_PATCH_VERSION 0)
 set(IGATOOLS_VERSION
   ${IGATOOLS_MAJOR_VERSION}.${IGATOOLS_MINOR_VERSION}.${IGATOOLS_PATCH_VERSION})
@@ -204,7 +205,8 @@ set(num_sub_elem 1 CACHE STRINGS "number of sub element to consider 1 for faces"
 set(lib_name igatools)
 
 # igatools source files
-set (source_dirs base utils geometry basis_functions linear_algebra io contrib functions)
+#set (source_dirs base utils geometry basis_functions linear_algebra io contrib functions)
+set (source_dirs base utils geometry)
 foreach(dir ${source_dirs})
   file(GLOB source ${PROJECT_SOURCE_DIR}/source/${dir}/*.cpp)
   list(APPEND source_files ${source})

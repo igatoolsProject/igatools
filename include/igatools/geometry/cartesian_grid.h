@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef CARTESIAN_GRID_H_
-#define CARTESIAN_GRID_H_
+#ifndef __CARTESIAN_GRID_H_
+#define __CARTESIAN_GRID_H_
 
 #include <igatools/base/config.h>
 #include <igatools/base/tensor.h>
@@ -42,11 +42,9 @@
 
 IGA_NAMESPACE_OPEN
 
-
-
-
 template <int> class CartesianGridElement;
 template <int> class GridElementHandler;
+
 /**
  * @brief Grid in <tt>dim</tt>-dimensional space with cartesian-product structure.
  *
@@ -62,19 +60,24 @@ template <int> class GridElementHandler;
  *
  * The elements can be iterated with the CartesianGridIterator object.
  * The iterators for traversing the the entire set of elements of the grid
- * are build with the begin(), end(), cbegin(), cend() functions called with no arguments.
+ * are build with the begin(), end(), cbegin(), cend() functions called with no
+ * arguments.
  *
  * ### Element properties
- * The elements can have associated a certain list of <em>element properties</em> (identified by one std::string).
- * There is no pre-defined list of element properties: any property can be defined and added to the list
- * of properties stored within the CartesianGrid. This choice is made because the properties
- * are usually specific for a given problem (e.g. <em>active</em> elements in hierarchical grids or
- * <em>marked</em> elements for a-posteriori error estimators).
+ * The elements can have associated a certain list of <em>element properties</em>
+ * (identified by one std::string).
+ * There is no pre-defined list of element properties: any property can be
+ * defined and added to the list
+ * of properties stored within the CartesianGrid. This choice is made because
+ * the properties are usually specific for a given problem (e.g. <em>active</em>
+ * elements in hierarchical grids or <em>marked</em> elements for a-posteriori
+ * error estimators).
  *
- * For example, let suppose we want to build a bi-dimensional grid (over the unit square
- * \f$ [0,1]\times[0,1] \f$) made of 4 equally-sized intervals in each coordinate direction, and
- * then assign the property <tt>"active"</tt> to the elements with even flat-index and
- * the <tt>"marked"</tt> to the elements with odd flat-index
+ * For example, let suppose we want to build a bi-dimensional grid (over the
+ * unit square \f$ [0,1]\times[0,1] \f$) made of 4 equally-sized intervals in
+ * each coordinate direction, and then assign the property <tt>"active"</tt> to
+ *  the elements with even flat-index and the <tt>"marked"</tt> to the elements
+ *  with odd flat-index
  * @code{.cpp}
    auto grid = CartesianGrid<2>::create(5); // here we create a 4x4 grid
 
@@ -183,17 +186,8 @@ public:
     /** Type for the vector of knot vectors */
     using KnotCoordinates = CartesianProductArray<Real, dim_>;
 
-    /**
-     * Types of grid for future optimization
-     */
-    enum class Kind
-    {
-        uniform, direction_uniform, non_uniform
-    };
-
     /** @name Constructors*/
     ///@{
-//protected:
 public:
     /**
      * Construct a uniform cartesian grid of the unit <tt>dim</tt>-dimensional
@@ -201,27 +195,26 @@ public:
      */
     explicit CartesianGrid(const Size n = 2);
 
+protected:
     /**
      * Construct a uniform cartesian grid of the unit <tt>dim</tt>-dimensional
      * hypercube \f$[0,1]^{dim}\f$,
      * with <tt>n[0],..,n[dim-1</tt>] knots in each dimension
      * respectively.
      */
-    explicit CartesianGrid(const TensorSize<dim_> &n_knots, const Kind kind);
+    explicit CartesianGrid(const TensorSize<dim_> &n_knots);
 
     /**
      * @todo Document me
      */
     explicit CartesianGrid(const BBox<dim_> &end_points,
-                           const Size n_knots,
-                           const Kind kind);
+                           const Size n_knots);
 
     /**
      * @todo Document me
      */
     explicit CartesianGrid(const BBox<dim_> &end_points,
-                           const TensorSize<dim_> &n_knots,
-                           const Kind kind);
+                           const TensorSize<dim_> &n_knots);
     /**
      * Construct a cartesian grid where the knot coordinate in each
      * direction is provided as CartesianProductArray object.
@@ -232,8 +225,7 @@ public:
      * is perform and if not satistified an exception is raised.
      */
     explicit
-    CartesianGrid(const KnotCoordinates &knot_coordinates,
-                  const Kind kind);
+    CartesianGrid(const KnotCoordinates &knot_coordinates);
 
     /**
      * Construct a cartesian grid where the knot coordinate in each
@@ -242,10 +234,10 @@ public:
      * The knot coordinate in each direction must be sorted and without
      * repetition.
      * @note In Debug mode, a check for this precondition (up to machine precision)
-     * is perform and if not satistified an exception is raised.
+     * is perform and if not satisfied an exception is raised.
      */
     explicit
-    CartesianGrid(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knot_coordinates);
+    CartesianGrid(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knot_coords);
 
 public:
     /**
@@ -270,7 +262,8 @@ public:
     ///@{
     /**
      * Creates a uniform cartesian grid of the unit <tt>dim</tt>-dimensional
-     * hypercube \f$[0,1]^{dim}\f$, with @p n knots (equally spaced) in each dimension.
+     * hypercube \f$[0,1]^{dim}\f$, with @p n knots (equally spaced) in each
+     * dimension.
      */
     static std::shared_ptr<self_t> create(const Index n = 2);
 
@@ -329,10 +322,6 @@ public:
 
     ///@}
 
-    /**
-     * Create an element (defined on this grid) with a given flat_index.
-     */
-    std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const;
 
     /**
      * @name Assignment operators
@@ -396,6 +385,11 @@ public:
 
     ///@name Iterating of grid elements
     ///@{
+    /**
+     * Create an element (defined on this grid) with a given flat_index.
+     */
+    std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const;
+
     /**
      * This function returns a element iterator to the first element of the patch.
      */
@@ -535,6 +529,9 @@ public:
      */
     bool operator==(const CartesianGrid<dim_> &grid) const;
 
+
+#ifdef MESH_REFINEMENT
+
 private:
 
     /** Type for the insert_knots signal. */
@@ -546,8 +543,6 @@ public:
 
     /** Slot type for the insert_knots signal. */
     using SignalInsertKnotsSlot = typename signal_insert_knots_t::slot_type;
-
-#ifdef MESH_REFINEMENT
 
     /** @name Functions for performing grid refinement */
     ///@{
@@ -615,10 +610,6 @@ public:
 #endif // MESH_REFINEMENT
 
 private:
-    /** Flag for optimization use */
-    Kind kind_ = Kind::non_uniform;
-
-
     /**
      *  Knot coordinates along each coordinate direction.
      *  For each direction the knot coordinates are sorted in an increasing
@@ -626,17 +617,14 @@ private:
      */
     KnotCoordinates knot_coordinates_;
 
-
     /** Boundary ids, one id per face */
     SafeSTLArray<boundary_id, UnitElement<dim_>::template num_elem<dim_-1>()> boundary_id_;
 
     /**
-     * Container for the element ids having a certain property.
-     *
-     * The property name is the key of the std::map.
+     * Properties assigned to the elements.
+     * Elements are referred to by their flat ids.
      */
     PropertiesIdContainer properties_elements_id_;
-
 
     /**
      * Unique identifier associated to each object instance.
@@ -644,7 +632,6 @@ private:
     Index object_id_;
 
 public:
-
     /**
      * Returns the unique identifier associated to each object instance.
      */
@@ -704,40 +691,43 @@ public:
      */
     void set_all_elements_property_status(const std::string &property,
                                           const bool status);
-
     ///@}
 
+    /**
+     * @name Functions that are not very portable as they rely to much on
+     * the internal data representation
+     */
+    ///@{
     /**
      * Returns the flat-id of the elements in the CartesianGrid.
      */
     std::set<Index> get_elements_id() const;
-
+    ///@}
 
 private:
     /**
-     * Returns the flat ids of the sub-elements corresponding to the element with index @p elem_id,
-     * referred to a CartesianGrid built as a refinement of the current one using
-     * @p n_sub_elems for each element.
+     * Returns the flat ids of the sub-elements corresponding to the element
+     * with index @p elem_id, referred to a CartesianGrid built as a refinement
+     * of the current one using@p n_sub_elems for each element.
      */
-    SafeSTLVector<Index> get_sub_elements_id(const TensorSize<dim_> &n_sub_elems, const Index elem_id) const;
-
-
+    SafeSTLVector<Index>
+    get_sub_elements_id(const TensorSize<dim_> &n_sub_elems,
+    		            const Index elem_id) const;
+#ifdef MESH_REFINEMENT
     /**
      * This class member is the grid before the last refinement. If no
      * refinement is performed, this is a null pointer.
      */
     std::shared_ptr<self_t> grid_pre_refinement_ = nullptr;
 
-
     /**
      * Signals for the insert_knots() invocations. It can be viewed as a FIFO list of
      * function pointers.
      */
     signal_insert_knots_t insert_knots_signals_;
-
+#endif
 
     friend class CartesianGridElement<dim_>;
-
 
 #ifdef SERIALIZATION
     /**

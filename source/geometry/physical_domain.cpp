@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-
+#if 0
 #include <igatools/base/tensor.h>
 #include <igatools/geometry/physical_domain.h>
 #include <igatools/geometry/physical_domain_element.h>
@@ -219,4 +219,4 @@ end() -> ElementIterator
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/physical_domain.inst>
-
+#endif

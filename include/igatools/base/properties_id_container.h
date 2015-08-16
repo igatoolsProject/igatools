@@ -32,9 +32,9 @@
 #include <string>
 
 IGA_NAMESPACE_OPEN
-
+//TODO (pauletti, Aug 15, 2015): document this class
 /**
- *
+ * The property name is the key of the std::map.
  *
  * @ingroup serializable
  */

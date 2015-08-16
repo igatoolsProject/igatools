@@ -20,7 +20,7 @@
 
 #ifndef __PHYSICAL_DOMAIN_ELEMENT_H_
 #define __PHYSICAL_DOMAIN_ELEMENT_H_
-
+#if 0
 #include <igatools/utils/safe_stl_array.h>
 #include <igatools/geometry/physical_domain.h>
 #include <igatools/functions/function_element.h>
@@ -37,11 +37,11 @@ class PhysicalDomainElement
 private:
     using self_t  = PhysicalDomainElement<dim_, codim_>;
     using parent_t = FunctionElement<dim_, 0, dim_+codim_>;
-    using Map = PhysicalDomain<dim_, codim_>;
+    using PhysDom = PhysicalDomain<dim_, codim_>;
     using Func = MapFunction<dim_, codim_>;   
 
 public:
-    using ContainerType = Map;
+    using ContainerType = PhysDom;
     static const int dim = dim_;
     static const int codim = codim_;
     static const int space_dim = dim_+codim_;
@@ -60,7 +60,7 @@ public:
      * Construct an accessor pointing to the element with
      * flat index @p elem_index of the Function @p func.
      */
-    PhysicalDomainElement(const std::shared_ptr<const Func> func,
+    PhysicalDomainElement(const std::shared_ptr<const PhysDom> func,
                           const Index elem_index);
 
     /**
@@ -91,14 +91,17 @@ public:
     template <int order>
     using Derivative = typename Map::template Derivative<order>;
 
+private:
     template <class ValueType, int topology_dim = dim>
     auto &get_values_from_cache(const int topology_id = 0) const
     {
         Assert(local_cache_ != nullptr,ExcNullPtr());
-        const auto &cache = local_cache_->template get_sub_elem_cache<topology_dim>(topology_id);
+        const auto &cache = local_cache_->template
+        		get_sub_elem_cache<topology_dim>(topology_id);
         return cache.template get_data<ValueType>();
     }
 
+public:
     template<int k>
     ValueVector<Real> const &get_measures(const int j) const
     {
@@ -204,5 +207,5 @@ IGA_NAMESPACE_CLOSE
 
 #endif // PHYSICAL_DOMAIN_ELEMENT_H_
 
-
+#endif
 

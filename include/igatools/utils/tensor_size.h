@@ -18,13 +18,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
-#ifndef TENSOR_SIZE_H_
-#define TENSOR_SIZE_H_
+#ifndef __TENSOR_SIZE_H_
+#define __TENSOR_SIZE_H_
 
 #include <igatools/base/config.h>
 #include <igatools/utils/tensor_index.h>
-// QualityAssurance: martinelli, 21 Jan 2014
 
 IGA_NAMESPACE_OPEN
 
@@ -32,8 +30,9 @@ IGA_NAMESPACE_OPEN
  * @brief Type for the size of a tensor-like container.
  *
  * It is a list of rank number of sizes.
- * The main difference with the TensorIndex is due to the fact that TensorSize has the method
- * flat_size() that returns the multiplication of the sizes along each direction.
+ * The main difference with the TensorIndex is due to the fact that TensorSize
+ * has the method flat_size() that returns the multiplication of the sizes
+ * along each direction.
  *
  * @author M. Martinelli
  * @date 21 Jan 2014
@@ -42,7 +41,6 @@ template <int rank>
 class TensorSize : public TensorIndex<rank>
 {
 public:
-
     /** @name Constructors */
     ///@{
 
@@ -70,7 +68,6 @@ public:
 
     /** @name Assignment operators */
     ///@{
-
     /**
      * Copy assignment operator
      */
@@ -80,17 +77,15 @@ public:
      * Move assignment operator
      */
     TensorSize<rank> &operator=(TensorSize<rank> &&arr) = default;
-
     ///@}
 
-
-
-
     /**
-     * Return the flat size, i.e. the multiplications of the sizes along each direction.
+     * Return the flat size, i.e. the multiplications of the sizes along
+     * each direction.
      */
     Size flat_size() const noexcept ;
 };
+
 
 
 /**
@@ -101,7 +96,7 @@ public:
  */
 template <int rank>
 TensorSize<rank>
-operator-(const TensorSize<rank> &index,const Index j) ;
+operator-(const TensorSize<rank> &index,const Index j);
 
 
 
@@ -115,7 +110,5 @@ LogStream &
 operator<<(LogStream &out, const TensorSize<rank> &tensor_size);
 
 IGA_NAMESPACE_CLOSE
-
-
 
 #endif // #ifndef TENSOR_SIZE_H_

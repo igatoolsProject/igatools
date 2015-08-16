@@ -25,10 +25,9 @@
 #include <igatools/utils/vector_tools.h>
 #include <igatools/utils/multi_array_utils.h>
 #include <igatools/utils/unique_id_generator.h>
-
 #include <algorithm>
-using std::endl;
 
+using std::endl;
 using std::shared_ptr;
 using std::make_shared;
 
@@ -36,11 +35,10 @@ IGA_NAMESPACE_OPEN
 
 namespace
 {
-
 /**
- * Given the boundaries of a dim_-dimensional box, it
+ * Given the boundaries of a dim_-dimensional box, this function
  * computes and returns a vector of knot vectors uniformly
- * distrubuted with the required numbers of knots.
+ * distributed with the required numbers of knots.
  */
 template <int dim_>
 CartesianProductArray<Real,dim_>
@@ -70,12 +68,11 @@ filled_progression(const BBox<dim_> &end_points, const TensorSize<dim_> &n_knots
 
 
 
-
 template<int dim_>
 CartesianGrid<dim_>::
 CartesianGrid(const Size n)
     :
-    CartesianGrid(TensorSize<dim_>(n), Kind::uniform)
+    CartesianGrid(TensorSize<dim_>(n))
 {}
 
 
@@ -92,9 +89,9 @@ create(const Size n) -> shared_ptr<self_t>
 
 template<int dim_>
 CartesianGrid<dim_>::
-CartesianGrid(const TensorSize<dim_> &n, const Kind kind)
+CartesianGrid(const TensorSize<dim_> &n)
     :
-    CartesianGrid(BBox<dim_>(), n, kind)
+    CartesianGrid(BBox<dim_>(), n)
 {}
 
 
@@ -104,16 +101,16 @@ auto
 CartesianGrid<dim_>::
 create(const TensorSize<dim_> &n) -> shared_ptr<self_t>
 {
-    return shared_ptr<self_t>(new self_t(n, Kind::direction_uniform));
+    return shared_ptr<self_t>(new self_t(n));
 }
 
 
 
 template<int dim_>
 CartesianGrid<dim_>::
-CartesianGrid(const BBox<dim_> &end_points, const Size n_knots, const Kind kind)
+CartesianGrid(const BBox<dim_> &end_points, const Size n_knots)
     :
-    CartesianGrid(end_points, TensorSize<dim_>(n_knots), kind)
+    CartesianGrid(end_points, TensorSize<dim_>(n_knots))
 {}
 
 
@@ -123,7 +120,7 @@ auto
 CartesianGrid<dim_>::
 create(const BBox<dim_> &end_points, const Size n_knots) -> shared_ptr<self_t>
 {
-    return shared_ptr<self_t>(new self_t(end_points, n_knots, Kind::uniform));
+    return shared_ptr<self_t>(new self_t(end_points, n_knots));
 }
 
 
@@ -131,10 +128,9 @@ create(const BBox<dim_> &end_points, const Size n_knots) -> shared_ptr<self_t>
 template<int dim_>
 CartesianGrid<dim_>::
 CartesianGrid(const BBox<dim_> &end_points,
-              const TensorSize<dim_> &n,
-              const Kind kind)
+              const TensorSize<dim_> &n)
     :
-    CartesianGrid(filled_progression<dim_>(end_points, n), kind)
+    CartesianGrid(filled_progression<dim_>(end_points, n))
 {}
 
 
@@ -145,18 +141,16 @@ CartesianGrid<dim_>::
 create(const BBox<dim_> &end_points,
        const TensorSize<dim_> &n) -> shared_ptr<self_t>
 {
-    return shared_ptr<self_t>(new self_t(end_points, n, Kind::direction_uniform));
+    return shared_ptr<self_t>(new self_t(end_points, n));
 }
 
 
 
 template<int dim_>
 CartesianGrid<dim_>::
-CartesianGrid(const KnotCoordinates &knot_coordinates,
-              const Kind kind)
+CartesianGrid(const KnotCoordinates &knot_coordinates)
     :
     TensorSizedContainer<dim_>(TensorSize<dim_>(knot_coordinates.tensor_size()-1)),
-    kind_(kind),
     knot_coordinates_(knot_coordinates),
     boundary_id_(0),
     object_id_(UniqueIdGenerator::get_unique_id())
@@ -175,7 +169,6 @@ CartesianGrid(const KnotCoordinates &knot_coordinates,
         vec.erase(unique(vec.begin(), vec.end()), vec.end());
         AssertThrow(knots_i == vec,
                     ExcMessage("The knot coordinate vector is not sorted and/or contains duplicates"));
-
     }
 #endif
 }
@@ -187,7 +180,7 @@ auto
 CartesianGrid<dim_>::
 create(const KnotCoordinates &knot_coordinates) -> shared_ptr<self_t>
 {
-    return shared_ptr<self_t>(new self_t(knot_coordinates, Kind::non_uniform));
+    return shared_ptr<self_t>(new self_t(knot_coordinates));
 }
 
 
@@ -196,8 +189,7 @@ template<int dim_>
 CartesianGrid<dim_>::
 CartesianGrid(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knot_coordinates)
     :
-    self_t(CartesianProductArray<Real,dim_>(knot_coordinates),
-           Kind::direction_uniform)
+    self_t(CartesianProductArray<Real,dim_>(knot_coordinates))
 {}
 
 
@@ -205,10 +197,13 @@ CartesianGrid(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knot_coordinates)
 template<int dim_>
 auto
 CartesianGrid<dim_>::
-create(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knot_coordinates) -> shared_ptr<self_t>
+create(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knot_coordinates)
+-> shared_ptr<self_t>
 {
     return shared_ptr<self_t>(new self_t(knot_coordinates));
 }
+
+
 
 template<int dim_>
 auto
@@ -225,26 +220,25 @@ CartesianGrid<dim_>::
 CartesianGrid(const self_t &grid)
     :
     TensorSizedContainer<dim_>(grid),
-    kind_(grid.kind_),
     knot_coordinates_(grid.knot_coordinates_),
     boundary_id_(grid.boundary_id_),
     properties_elements_id_(grid.properties_elements_id_),
     object_id_(UniqueIdGenerator::get_unique_id())
 {}
 
+
+
 template<int dim_>
-Index
-CartesianGrid<dim_>::
-get_object_id() const
+Index CartesianGrid<dim_>::get_object_id() const
 {
     return object_id_;
 }
 
 
+
 template<int dim_>
 SafeSTLVector< Real > const &
-CartesianGrid<dim_>::
-get_knot_coordinates(const int i) const
+CartesianGrid<dim_>::get_knot_coordinates(const int i) const
 {
     return knot_coordinates_.get_data_direction(i);
 }
@@ -263,8 +257,7 @@ get_knot_coordinates() const -> CartesianProductArray<Real,dim_> const &
 
 template<int dim_>
 auto
-CartesianGrid<dim_>::
-get_element_lengths() const -> KnotCoordinates
+CartesianGrid<dim_>::get_element_lengths() const -> KnotCoordinates
 {
     auto const &size = get_num_intervals();
     KnotCoordinates length(size);
@@ -278,6 +271,7 @@ get_element_lengths() const -> KnotCoordinates
     }
     return length;
 }
+
 
 
 template<int dim_>
@@ -297,6 +291,8 @@ get_elements_id_same_property(const std::string &property)
     return properties_elements_id_.get_ids_same_property(property);
 }
 
+
+
 template<int dim_>
 const std::set<Index> &
 CartesianGrid<dim_>::
@@ -304,6 +300,8 @@ get_elements_id_same_property(const std::string &property) const
 {
     return properties_elements_id_.get_ids_same_property(property);
 }
+
+
 
 template<int dim_>
 Index
@@ -318,6 +316,8 @@ get_first_element_id_same_property(const std::string &property) const
 
     return first_id;
 }
+
+
 
 template<int dim_>
 Index
@@ -334,6 +334,7 @@ get_last_element_id_same_property(const std::string &property) const
 }
 
 
+
 template<int dim_>
 auto
 CartesianGrid<dim_>::
@@ -345,6 +346,7 @@ create_element(const Index flat_index) const -> std::shared_ptr<ElementAccessor>
 
     return elem;
 }
+
 
 
 template<int dim_>
@@ -378,8 +380,11 @@ auto
 CartesianGrid<dim_>::
 end(const std::string &property) -> ElementIterator
 {
-    return ElementIterator(this->create_element(IteratorState::pass_the_end),property);
+    return ElementIterator(this->create_element(IteratorState::pass_the_end),
+    		               property);
 }
+
+
 
 template<int dim_>
 auto
@@ -406,6 +411,8 @@ last(const std::string &property) -> ElementIterator
     return ElementIterator(this->shared_from_this(), id_last_elem, property);
 }
 
+
+
 template<int dim_>
 auto
 CartesianGrid<dim_>::
@@ -413,6 +420,8 @@ last(const std::string &property) const -> ElementConstIterator
 {
     return clast(property);
 }
+
+
 
 template<int dim_>
 auto
@@ -439,6 +448,8 @@ clast(const std::string &property) const -> ElementConstIterator
     return ElementConstIterator(this->shared_from_this(), id_last_elem, property);
 }
 
+
+
 template<int dim_>
 auto
 CartesianGrid<dim_>::
@@ -456,6 +467,8 @@ end(const std::string &property) const -> ElementConstIterator
 {
     return this->cend(property);
 }
+
+
 
 template<int dim_>
 auto
@@ -491,8 +504,6 @@ cend(const std::string &property) const -> ElementConstIterator
 {
     return ElementConstIterator(this->create_element(IteratorState::pass_the_end),property);
 }
-
-
 
 
 
@@ -560,6 +571,7 @@ get_boundary_normals(const int s_id) const -> BoundaryNormal<sub_dim>
 }
 
 
+
 template<int dim_>
 Size
 CartesianGrid<dim_>::
@@ -577,6 +589,8 @@ get_num_all_elems() const
 {
     return this->flat_size();
 }
+
+
 
 template<int dim_>
 std::set<Index>
@@ -891,6 +905,8 @@ find_elements_of_points(const ValueVector<Points<dim_>> &points) const
     return res;
 }
 
+
+
 template <int dim_>
 SafeSTLVector<Index>
 CartesianGrid<dim_>::
@@ -909,7 +925,8 @@ find_elements_id_of_point(const Points<dim_> &point) const
         const auto &p = point[dir];
 
         Assert(p >= knots.front() && p <= knots.back(),
-               ExcMessage("The point coordinate p[" + std::to_string(dir) + "]= " + std::to_string(p) +
+               ExcMessage("The point coordinate p[" + std::to_string(dir) + "]= "
+            		      + std::to_string(p) +
                           " is not in the interval spanned by the knots along the direction " +
                           std::to_string(dir)));
 
@@ -944,6 +961,8 @@ find_elements_id_of_point(const Points<dim_> &point) const
     return elements_id;
 }
 
+
+
 template <int dim_>
 bool
 CartesianGrid<dim_>::
@@ -959,6 +978,8 @@ operator==(const CartesianGrid<dim_> &grid) const
     }
     return same_knots_coordinates;
 }
+
+
 
 template <int dim_>
 SafeSTLVector<Index>
@@ -1002,6 +1023,7 @@ get_sub_elements_id(const TensorSize<dim_> &n_sub_elems, const Index elem_id) co
 }
 
 
+
 template <int dim_>
 void
 CartesianGrid<dim_>::
@@ -1025,6 +1047,7 @@ set_element_property_status(const std::string &property,
 }
 
 
+
 template <int dim_>
 void
 CartesianGrid<dim_>::
@@ -1034,6 +1057,8 @@ set_all_elements_property_status(const std::string &property,
     for (const auto &elem : (*this))
         this->set_element_property_status(property,elem.get_flat_index(),status);
 }
+
+
 
 template <int dim_>
 bool
@@ -1096,8 +1121,6 @@ serialize(Archive &ar, const unsigned int version)
     ar &boost::serialization::make_nvp(
         tag_name.c_str(),
         boost::serialization::base_object<TensorSizedContainer<dim_>>(*this));
-
-    ar &boost::serialization::make_nvp("kind_",kind_);
 
     ar &boost::serialization::make_nvp("knot_coordinates_",knot_coordinates_);
 

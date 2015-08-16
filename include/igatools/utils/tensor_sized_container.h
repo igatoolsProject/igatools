@@ -49,7 +49,6 @@ template <int rank>
 class TensorSizedContainer
 {
 public:
-
     /** @name Constructors and destructor */
     ///@{
 
