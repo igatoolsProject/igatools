@@ -22,7 +22,7 @@
 #define __BASE_ELEMENT_H_
 
 #include <igatools/base/config.h>
-//#include <igatools/geometry/cartesian_grid_iterator.h>
+#include <igatools/utils/tensor_index.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -55,7 +55,7 @@ protected:
      * flat index @p elem_index of the CartesianGrid @p grid.
      */
 public:
-    BaseElement(const Index elem_index, const TI &elem_index);
+    BaseElement(const Index f_index, const TI &t_index);
 
     /**
      * Copy constructor.

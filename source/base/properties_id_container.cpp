@@ -28,26 +28,20 @@ IGA_NAMESPACE_OPEN
 template <typename IndexType>
 bool
 PropertiesIdContainer<IndexType>::
-is_property_defined(const std::string &property) const
+is_property_defined(const PropId &property) const
 {
     return (properties_id_.count(property) > 0) ? true : false;
 }
 
 
+
 template <typename IndexType>
 bool
 PropertiesIdContainer<IndexType>::
-test_id_for_property(const IndexType id, const std::string &property) const
+test_id_for_property(const IndexType id, const PropId &property) const
 {
-//    if (property == Properties::none)
-//    {
-//        return true; // an element can always be considered without any property
-//    }
-//    else
-//    {
     const auto &ids_same_property = this->get_ids_same_property(property);
     return std::binary_search(ids_same_property.begin(),ids_same_property.end(),id);
-//    }
 }
 
 
@@ -55,40 +49,32 @@ test_id_for_property(const IndexType id, const std::string &property) const
 template <typename IndexType>
 void
 PropertiesIdContainer<IndexType>::
-add_property(const std::string &property)
+add_property(const PropId &property)
 {
-//    Assert(property != Properties::none,
-//           ExcMessage("The property \"" + property + "\" cannot be added to the list."));
-    Assert(properties_id_.count(property) == 0,
-           ExcMessage("The property \"" + property + "\" is already defined."));
-    properties_id_[property] = std::set<int>();
+    Assert(!is_property_defined(property), ExcPropAlreadyDefined(property));
+    properties_id_[property] = List();
 }
 
 
 
 template <typename IndexType>
-std::set<IndexType> &
+auto
 PropertiesIdContainer<IndexType>::
-get_ids_same_property(const std::string &property)
+get_ids_same_property(const PropId &property) -> List &
 {
-//    Assert(property != Properties::none,
-//           ExcMessage("The property \"" + property + "\" is invalid for this function."));
-    Assert(properties_id_.count(property) > 0,
-           ExcMessage("The property \"" + property + "\" is not defined."));
+    Assert(is_property_defined(property), ExcPropNotDefined(property));
     return properties_id_.at(property);
 }
 
 
 
 template <typename IndexType>
-const std::set<IndexType> &
+auto
 PropertiesIdContainer<IndexType>::
-get_ids_same_property(const std::string &property) const
+get_ids_same_property(const PropId &property) const
+-> const List &
 {
-//    Assert(property != Properties::none,
-//           ExcMessage("The property \"" + property + "\" is invalid for this function."));
-    Assert(properties_id_.count(property) > 0,
-           ExcMessage("The property \"" + property + "\" is not defined."));
+    Assert(is_property_defined(property), ExcPropNotDefined(property));
     return properties_id_.at(property);
 }
 
@@ -97,7 +83,7 @@ get_ids_same_property(const std::string &property) const
 template <typename IndexType>
 void
 PropertiesIdContainer<IndexType>::
-set_id_property_status(const std::string &property,
+set_id_property_status(const PropId &property,
                        const IndexType id,
                        const bool status)
 {
@@ -118,8 +104,8 @@ set_id_property_status(const std::string &property,
 template <typename IndexType>
 void
 PropertiesIdContainer<IndexType>::
-set_ids_property_status(const std::string &property,
-                        const std::set<IndexType> ids,
+set_ids_property_status(const PropId &property,
+                        const List ids,
                         const bool status)
 {
     for (const auto id : ids)
@@ -169,11 +155,11 @@ end() const -> const_iterator
 
 
 template <typename IndexType>
-SafeSTLVector<std::string>
+SafeSTLVector<PropId>
 PropertiesIdContainer<IndexType>::
 get_properties() const
 {
-    SafeSTLVector<std::string> properties;
+    SafeSTLVector<PropId> properties;
 
     for (const auto &ids_same_property : properties_id_)
         properties.emplace_back(ids_same_property.first);
@@ -208,22 +194,13 @@ void
 PropertiesIdContainer<IndexType>::
 print_info(LogStream &out) const
 {
-    using std::endl;
-    for (const auto &ids_same_property : properties_id_)
+    for (const auto &entry : properties_id_)
     {
-        const auto &property_name = ids_same_property.first;
-        const auto &ids = ids_same_property.second;
-        out.begin_item("IDs with property \"" + property_name + "\":");
-        out << "Num.: " << ids.size() << endl;
-        if (ids.size() > 0)
-        {
-            out << "   Flat IDs:";
-            for (const auto &id : ids)
-                out << " " << id ;
-        }
-        out.end_item();
+    	out.begin_item("IDs with property \"" + entry.first + "\":");
+        entry.second.print_info(out);
     }
 }
+
 
 
 template <typename IndexType>
@@ -250,11 +227,4 @@ serialize(Archive &ar, const unsigned int version)
 
 IGA_NAMESPACE_CLOSE
 
-
-#ifdef SERIALIZATION
-
-BOOST_CLASS_EXPORT_IMPLEMENT(iga::PropertiesIdContainer)
-template void iga::PropertiesIdContainer<IndexType>::serialize(OArchive &, const unsigned int);
-template void iga::PropertiesIdContainer<IndexType>::serialize(IArchive &, const unsigned int);
-
-#endif // SERIALIZATION
+#include <igatools/base/properties_id_container.inst>

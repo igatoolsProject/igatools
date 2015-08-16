@@ -18,7 +18,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
 #include <igatools/basis_functions/spline_space.h>
 #include <igatools/base/array_utils.h>
 #include <igatools/utils/vector_tools.h>

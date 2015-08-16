@@ -26,24 +26,42 @@
 #include <igatools/base/logstream.h>
 #include <igatools/utils/safe_stl_vector.h>
 
-#include <set>
 #include <map>
 
 IGA_NAMESPACE_OPEN
 //TODO (pauletti, Aug 15, 2015): document this class
 /**
- * The property name is the key of the std::map.
+ * Container indexed by a property, storing in each entry
+ * a list of of IndexType.
+ *
+ * @author martinelli 2014,2015
+ * @author pauletti 2015
  *
  * @ingroup serializable
  */
 template <typename IndexType>
 class PropertiesIdContainer
 {
+private:
+	using List = SafeSTLSet<IndexType>;
+    using ContainerType = std::map<PropId, List>;
+    using iterator = typename ContainerType::iterator;
+    using const_iterator = typename ContainerType::const_iterator;
+
 public:
-    /**
+	/**
+	 * Adds a new <tt>property</tt> definition.
+	 *
+	 * @note If the <tt>property</tt> is already present,
+	 * an assertion will be raised (in Debug mode).
+	 */
+	void add_property(const PropId &property);
+
+	/**
      * Returns TRUE if the @p property is defined.
      *
-     * @warning Returns true also if the @p property is defined but no ids are associated to the @p property.
+     * @warning Returns true also if the @p property is defined but no
+     * ids are associated to the @p property.
      */
     bool is_property_defined(const PropId &property) const;
 
@@ -52,24 +70,15 @@ public:
      */
     bool test_id_for_property(const IndexType id, const PropId &property) const;
 
-
-    /**
-     * Adds a new <tt>property</tt> definition.
-     *
-     * @note If the <tt>property</tt> is already present,
-     * an assertion will be raised (in Debug mode).
-     */
-    void add_property(const PropId &property);
-
     /**
      * Returns the the set of IDs having a certain @p property (non-const version).
      */
-    std::set<IndexType> &get_ids_same_property(const PropId &property);
+    List &get_ids_same_property(const PropId &property);
 
     /**
      * Returns the flat id of IDs having a certain @p property (const version).
      */
-    const std::set<IndexType> &get_ids_same_property(const PropId &property) const;
+    const List &get_ids_same_property(const PropId &property) const;
 
     /**
      * Sets the <tt>status</tt> of the given <tt>property</tt> for the given <tt>id</tt>.
@@ -82,7 +91,7 @@ public:
      * Sets the <tt>status</tt> of the given <tt>property</tt> for the given <tt>ids</tt>.
      */
     void set_ids_property_status(const PropId &property,
-                                 const std::set<IndexType> ids,
+                                 const List ids,
                                  const bool status);
 
 
@@ -111,10 +120,6 @@ public:
 //     */
 //    void add_offset(const IndexType offset);
 
-private:
-    using ContainerType = std::map<PropId,std::set<IndexType>>;
-    using iterator = typename ContainerType::iterator;
-    using const_iterator = typename ContainerType::const_iterator;
 
 public:
     iterator begin();
@@ -127,6 +132,10 @@ private:
     /** Property table */
     ContainerType properties_id_;
 
+    DeclException1(ExcPropNotDefined, PropId,
+    		<< "Property " << arg1 << "is not present.");
+    DeclException1(ExcPropAlreadyDefined, PropId,
+        		<< "Property " << arg1 << "is already present.");
 
 #ifdef SERIALIZATION
     /**
