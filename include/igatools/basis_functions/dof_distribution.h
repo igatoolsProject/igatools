@@ -41,7 +41,7 @@ IGA_NAMESPACE_OPEN
  *
  *
  * @author pauletti, 2014, 2015
- * @author M.Martinelli, 2014, 2015
+ * @author martinelli, 2014, 2015
  *
  * @ingroup serializable
  */

@@ -18,17 +18,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef CARTESIAN_GRID_ELEMENT_H_
-#define CARTESIAN_GRID_ELEMENT_H_
+#ifndef __CARTESIAN_GRID_ELEMENT_H_
+#define __CARTESIAN_GRID_ELEMENT_H_
 
 #include <igatools/base/config.h>
-//#include <igatools/base/cache_status.h>
-//#include <igatools/base/flags_handler.h>
+#include <igatools/geometry/base_element.h>
 #include <igatools/basis_functions/values_cache.h>
-
 #include <igatools/base/quadrature.h>
-
-
 #include <igatools/geometry/grid_element_handler.h>
 #include <igatools/geometry/cartesian_grid_iterator.h>
 #include <igatools/utils/value_vector.h>
@@ -52,8 +48,8 @@ IGA_NAMESPACE_OPEN
  * - _W_Measure i.e. quadrature weights associated to each quadrature point,
  * multiplied by the element <tt>dim</tt>-dimensional measure.
  *
- * @author S.Pauletti, 2012, 2013, 2014
- * @author M.Martinelli, 2013, 2014, 2105
+ * @author pauletti, 2012, 2013, 2014, 2015
+ * @author martinelli, 2013, 2014, 2105
  *
  * @ingroup serializable
  */

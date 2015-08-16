@@ -162,8 +162,8 @@ IGA_NAMESPACE_OPEN
  *
  * @ingroup iterators
  * @ingroup serializable
- * @author M.Martinelli 2012,2013,2014,2015
- * @author S.Pauletti 2012,2013,2014
+ * @author martinelli 2012,2013,2014,2015
+ * @author pauletti 2012,2013,2014
  */
 template <class Accessor>
 class CartesianGridIteratorBase
@@ -371,7 +371,7 @@ private:
  *
  * @ingroup iterators
  *
- * @author M.Martinelli, 2014
+ * @author martinelli, 2014
  */
 template <class Accessor>
 class CartesianGridIterator
@@ -427,7 +427,7 @@ public:
  *
  * @ingroup iterators
  *
- * @author M.Martinelli, 2014
+ * @author martinelli, 2014
  */
 template <class Accessor>
 class CartesianGridConstIterator

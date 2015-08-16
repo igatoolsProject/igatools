@@ -41,7 +41,7 @@ IGA_NAMESPACE_OPEN
  *
  * @ingroup serializable
  * @ingroup cache
- * @author M.Martinelli
+ * @author martinelli
  * @date 2013, 2015
  */
 class CacheStatus

@@ -294,7 +294,7 @@ private:
  *   radius \f$ r \in [r_0,r_1] \f$,
  *   height \f$ z \in[h_0,h_1] \f$.
  *
- * \author M.Martinelli
+ * \author martinelli
  * \date 31 Jan 2013
  */
 template<int dim>

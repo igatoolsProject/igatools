@@ -259,7 +259,7 @@ public:
  * For the class documentation see the analogous non-const version ContainerView.
  *
  * @see ContainerView
- * @author M.Martinelli
+ * @author martinelli
  * @date 2014
  */
 template <class Container>
@@ -287,7 +287,7 @@ public:
  *
  * @see ValueTable
  *
- * @author M.Martinelli
+ * @author martinelli
  * @date 2014
  */
 template <class Container>

@@ -25,7 +25,6 @@ using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
-
 template <class Accessor>
 CartesianGridIteratorBase<Accessor>::
 CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
@@ -57,9 +56,12 @@ CartesianGridIteratorBase(
 #endif
 }
 
+
+
 template <class Accessor>
 CartesianGridIteratorBase<Accessor>::
-CartesianGridIteratorBase(const CartesianGridIteratorBase<Accessor> &it,const CopyPolicy &copy_policy)
+CartesianGridIteratorBase(const CartesianGridIteratorBase<Accessor> &it,
+		                  const CopyPolicy &copy_policy)
     :
     elem_property_(it.elem_property_)
 {
@@ -77,6 +79,7 @@ CartesianGridIteratorBase(const CartesianGridIteratorBase<Accessor> &it,const Co
         AssertThrow(false,ExcNotImplemented());
     }
 }
+
 
 
 template <class Accessor>

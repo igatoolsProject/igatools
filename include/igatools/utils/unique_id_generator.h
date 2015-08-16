@@ -36,7 +36,7 @@ IGA_NAMESPACE_OPEN
  * Is basically a class with only static methods and data, in which the unique id is generated
  * by a static integer that increases its value each time the get_unique_id() method is invoked.
  *
- * @author M.Martinelli
+ * @author martinelli
  * @date 04 September 2014
  */
 class UniqueIdGenerator

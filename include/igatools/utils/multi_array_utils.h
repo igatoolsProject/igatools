@@ -59,7 +59,7 @@ IGA_NAMESPACE_OPEN
  *
  * @ingroup multi_array_containers
  *
- * @author S.Pauletti
+ * @author pauletti
  */
 template <int rank>
 class MultiArrayUtils

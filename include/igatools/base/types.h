@@ -266,7 +266,7 @@ enum class VerbosityLevel : int
 
    auto redValue = to_integral(Color::Red); //where Color is an enum class! *
    @endcode
- * @author M.Martinelli
+ * @author martinelli
  * @date 2013
  */
 template<typename E>
@@ -278,7 +278,7 @@ to_integral(E e) -> typename std::underlying_type<E>::type
 
 /**
  * Return the number of elements in any enum class.
- * @author M.Martinelli
+ * @author martinelli
  * @date 2013
  */
 template<typename E>

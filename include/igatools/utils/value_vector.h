@@ -38,7 +38,7 @@ IGA_NAMESPACE_OPEN
  *
  * @tparam T Type of elements stored in the object.
  *
- * @author M.Martinelli
+ * @author martinelli
  * @date 2102,2013,2014
  */
 template< class T >

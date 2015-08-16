@@ -37,7 +37,7 @@ IGA_NAMESPACE_OPEN
  * This class makes possible the
  * rank independent treatment of tensor type containers.
  *
- * @author M.Martinelli 2014
+ * @author martinelli 2014
  * @author pauletti 2015
  */
 template <int rank>

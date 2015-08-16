@@ -47,7 +47,6 @@ CartesianGridElement<dim>::
 CartesianGridElement(const CartesianGridElement<dim> &elem, const CopyPolicy &copy_policy)
 {
     grid_         = elem.grid_;
-    flat_index_   = elem.flat_index_;
     tensor_index_ = elem.tensor_index_;
 
     if (elem.all_sub_elems_cache_ != nullptr)
@@ -58,7 +57,6 @@ CartesianGridElement(const CartesianGridElement<dim> &elem, const CopyPolicy &co
         }
         else
         {
-//            all_sub_elems_cache_ = std::shared_ptr<CacheType>(new CacheType(*elem.all_sub_elems_cache_));
             all_sub_elems_cache_ = std::make_shared<CacheType>(*elem.all_sub_elems_cache_);
         }
     }

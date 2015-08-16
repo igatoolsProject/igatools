@@ -1078,7 +1078,6 @@ test_if_element_has_property(const Index elem_flat_id, const std::string &proper
 
 
 
-
 template <int dim_>
 bool
 CartesianGrid<dim_>::
@@ -1103,7 +1102,6 @@ same_knots_or_refinement_of(const CartesianGrid<dim_> &grid_to_compare_with) con
             break;
         }
     }
-
 
     return is_refinement;
 }
@@ -1135,7 +1133,6 @@ serialize(Archive &ar, const unsigned int version)
 //    auto tmp = this->shared_from_this();
 }
 #endif // SERIALIZATION
-
 
 IGA_NAMESPACE_CLOSE
 

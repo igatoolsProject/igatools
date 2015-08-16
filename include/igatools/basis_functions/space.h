@@ -48,7 +48,7 @@ template <int,int,int,int,Transformation> class SpaceElementHandler;
  * The main feature of this class is that contains a space identifier that is unique to the object,
  * i.e. two different objects will have two different space id.
  *
- * @author M.Martinelli, 2013, 2014, 2015.
+ * @author martinelli, 2013, 2014, 2015.
  *
  * @ingroup serializable
  */
@@ -185,7 +185,7 @@ template <int,int,int> class DofDistribution;
  * @brief This class represent the "concept" of isogeometric function space.
  * It is used as base class of ReferenceSpace and PhysicalSpace.
  *
- * @author M.Martinelli, 2015.
+ * @author martinelli, 2015.
  *
  * @ingroup serializable
  */

@@ -64,7 +64,7 @@ IGA_NAMESPACE_OPEN
  *
  *
  * @tparam T Type of the object to be stored in each entry of the table.
- * @author M.Martinelli
+ * @author martinelli
  * @date 2013,2014
  */
 template <class T>

@@ -28,7 +28,7 @@ IGA_NAMESPACE_OPEN
 
 /**
  * @brief Utility functions for vector
- * @author M.Martinelli
+ * @author martinelli
  * @date 2012
  */
 namespace vector_tools
