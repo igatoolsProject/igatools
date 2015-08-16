@@ -226,7 +226,6 @@ print_info(LogStream &out) const
 }
 
 
-
 template <typename IndexType>
 bool
 PropertiesIdContainer<IndexType>::
