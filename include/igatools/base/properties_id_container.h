@@ -18,18 +18,16 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef PROPERTIES_ID_CONTAINER_H_
-#define PROPERTIES_ID_CONTAINER_H_
+#ifndef __PROPERTIES_ID_CONTAINER_H_
+#define __PROPERTIES_ID_CONTAINER_H_
 
 #include <igatools/base/config.h>
-#include <igatools/base/logstream.h>
 #include <igatools/base/properties.h>
+#include <igatools/base/logstream.h>
 #include <igatools/utils/safe_stl_vector.h>
-
 
 #include <set>
 #include <map>
-#include <string>
 
 IGA_NAMESPACE_OPEN
 //TODO (pauletti, Aug 15, 2015): document this class
@@ -38,6 +36,7 @@ IGA_NAMESPACE_OPEN
  *
  * @ingroup serializable
  */
+template <typename IndexType>
 class PropertiesIdContainer
 {
 public:
@@ -46,12 +45,12 @@ public:
      *
      * @warning Returns true also if the @p property is defined but no ids are associated to the @p property.
      */
-    bool is_property_defined(const std::string &property) const;
+    bool is_property_defined(const PropId &property) const;
 
     /**
      * Returns TRUE if the @p id has the given @p property.
      */
-    bool test_id_for_property(const Index id, const std::string &property) const;
+    bool test_id_for_property(const IndexType id, const PropId &property) const;
 
 
     /**
@@ -60,30 +59,30 @@ public:
      * @note If the <tt>property</tt> is already present,
      * an assertion will be raised (in Debug mode).
      */
-    void add_property(const std::string &property);
+    void add_property(const PropId &property);
 
     /**
      * Returns the the set of IDs having a certain @p property (non-const version).
      */
-    std::set<Index> &get_ids_same_property(const std::string &property);
+    std::set<IndexType> &get_ids_same_property(const PropId &property);
 
     /**
      * Returns the flat id of IDs having a certain @p property (const version).
      */
-    const std::set<Index> &get_ids_same_property(const std::string &property) const;
+    const std::set<IndexType> &get_ids_same_property(const PropId &property) const;
 
     /**
      * Sets the <tt>status</tt> of the given <tt>property</tt> for the given <tt>id</tt>.
      */
-    void set_id_property_status(const std::string &property,
-                                const Index id,
+    void set_id_property_status(const PropId &property,
+                                const IndexType id,
                                 const bool status);
 
     /**
      * Sets the <tt>status</tt> of the given <tt>property</tt> for the given <tt>ids</tt>.
      */
-    void set_ids_property_status(const std::string &property,
-                                 const std::set<Index> ids,
+    void set_ids_property_status(const PropId &property,
+                                 const std::set<IndexType> ids,
                                  const bool status);
 
 
@@ -103,17 +102,17 @@ public:
     /**
      * Returns the properties defined.
      */
-    SafeSTLVector<std::string> get_properties() const;
+    SafeSTLVector<PropId> get_properties() const;
 
 
 //    /**
 //     * Add the @p offset value to the ids contained in the object.
 //     * @param offset
 //     */
-//    void add_offset(const Index offset);
+//    void add_offset(const IndexType offset);
 
 private:
-    using ContainerType = std::map<std::string,std::set<Index>>;
+    using ContainerType = std::map<PropId,std::set<IndexType>>;
     using iterator = typename ContainerType::iterator;
     using const_iterator = typename ContainerType::const_iterator;
 

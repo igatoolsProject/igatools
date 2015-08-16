@@ -18,26 +18,26 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
 #include <igatools/base/properties_id_container.h>
 #include <igatools/base/exceptions.h>
 
 #include <algorithm>
 
-
 IGA_NAMESPACE_OPEN
 
-
+template <typename IndexType>
 bool
-PropertiesIdContainer::
+PropertiesIdContainer<IndexType>::
 is_property_defined(const std::string &property) const
 {
     return (properties_id_.count(property) > 0) ? true : false;
 }
 
+
+template <typename IndexType>
 bool
-PropertiesIdContainer::
-test_id_for_property(const Index id, const std::string &property) const
+PropertiesIdContainer<IndexType>::
+test_id_for_property(const IndexType id, const std::string &property) const
 {
 //    if (property == Properties::none)
 //    {
@@ -51,8 +51,10 @@ test_id_for_property(const Index id, const std::string &property) const
 }
 
 
+
+template <typename IndexType>
 void
-PropertiesIdContainer::
+PropertiesIdContainer<IndexType>::
 add_property(const std::string &property)
 {
 //    Assert(property != Properties::none,
@@ -63,8 +65,10 @@ add_property(const std::string &property)
 }
 
 
-std::set<Index> &
-PropertiesIdContainer::
+
+template <typename IndexType>
+std::set<IndexType> &
+PropertiesIdContainer<IndexType>::
 get_ids_same_property(const std::string &property)
 {
 //    Assert(property != Properties::none,
@@ -76,8 +80,9 @@ get_ids_same_property(const std::string &property)
 
 
 
-const std::set<Index> &
-PropertiesIdContainer::
+template <typename IndexType>
+const std::set<IndexType> &
+PropertiesIdContainer<IndexType>::
 get_ids_same_property(const std::string &property) const
 {
 //    Assert(property != Properties::none,
@@ -89,11 +94,11 @@ get_ids_same_property(const std::string &property) const
 
 
 
-
+template <typename IndexType>
 void
-PropertiesIdContainer::
+PropertiesIdContainer<IndexType>::
 set_id_property_status(const std::string &property,
-                       const Index id,
+                       const IndexType id,
                        const bool status)
 {
     auto &ids_same_property = get_ids_same_property(property);
@@ -109,10 +114,12 @@ set_id_property_status(const std::string &property,
 }
 
 
+
+template <typename IndexType>
 void
-PropertiesIdContainer::
+PropertiesIdContainer<IndexType>::
 set_ids_property_status(const std::string &property,
-                        const std::set<Index> ids,
+                        const std::set<IndexType> ids,
                         const bool status)
 {
     for (const auto id : ids)
@@ -120,39 +127,50 @@ set_ids_property_status(const std::string &property,
 }
 
 
+
+template <typename IndexType>
 auto
-PropertiesIdContainer::
+PropertiesIdContainer<IndexType>::
 begin() -> iterator
 {
     return properties_id_.begin();
 }
 
 
+
+template <typename IndexType>
 auto
-PropertiesIdContainer::
+PropertiesIdContainer<IndexType>::
 end() -> iterator
 {
     return properties_id_.end();
 }
 
+
+
+template <typename IndexType>
 auto
-PropertiesIdContainer::
+PropertiesIdContainer<IndexType>::
 begin() const -> const_iterator
 {
     return properties_id_.begin();
 }
 
 
+
+template <typename IndexType>
 auto
-PropertiesIdContainer::
+PropertiesIdContainer<IndexType>::
 end() const -> const_iterator
 {
     return properties_id_.end();
 }
 
 
+
+template <typename IndexType>
 SafeSTLVector<std::string>
-PropertiesIdContainer::
+PropertiesIdContainer<IndexType>::
 get_properties() const
 {
     SafeSTLVector<std::string> properties;
@@ -163,14 +181,18 @@ get_properties() const
     return properties;
 }
 
+
+
+
+//template <typename IndexType>
 //void
-//PropertiesIdContainer::
-//add_offset(const Index offset)
+//PropertiesIdContainer<IndexType>::
+//add_offset(const IndexType offset)
 //{
 //    for (auto &property_id : properties_id_)
 //    {
-//        const std::set<Index> &old_dofs = property_id.second;
-//        std::set<Index> new_dofs;
+//        const std::set<IndexType> &old_dofs = property_id.second;
+//        std::set<IndexType> new_dofs;
 //        for (const auto &dof : old_dofs)
 //            new_dofs.insert(dof + offset);
 //
@@ -180,8 +202,10 @@ get_properties() const
 //}
 
 
+
+template <typename IndexType>
 void
-PropertiesIdContainer::
+PropertiesIdContainer<IndexType>::
 print_info(LogStream &out) const
 {
     using std::endl;
@@ -201,8 +225,11 @@ print_info(LogStream &out) const
     }
 }
 
+
+
+template <typename IndexType>
 bool
-PropertiesIdContainer::
+PropertiesIdContainer<IndexType>::
 empty() const noexcept
 {
     return properties_id_.empty();
@@ -212,8 +239,9 @@ empty() const noexcept
 #ifdef SERIALIZATION
 
 template<class Archive>
+template <typename IndexType>
 void
-PropertiesIdContainer::
+PropertiesIdContainer<IndexType>::
 serialize(Archive &ar, const unsigned int version)
 {
     ar &boost::serialization::make_nvp("properties_id_",properties_id_);
@@ -227,7 +255,7 @@ IGA_NAMESPACE_CLOSE
 #ifdef SERIALIZATION
 
 BOOST_CLASS_EXPORT_IMPLEMENT(iga::PropertiesIdContainer)
-template void iga::PropertiesIdContainer::serialize(OArchive &, const unsigned int);
-template void iga::PropertiesIdContainer::serialize(IArchive &, const unsigned int);
+template void iga::PropertiesIdContainer<IndexType>::serialize(OArchive &, const unsigned int);
+template void iga::PropertiesIdContainer<IndexType>::serialize(IArchive &, const unsigned int);
 
 #endif // SERIALIZATION
