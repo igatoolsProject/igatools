@@ -18,27 +18,27 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef PROPERTIES_H_
-#define PROPERTIES_H_
+#ifndef __PROPERTIES_H_
+#define __PROPERTIES_H_
 
 #include <igatools/base/config.h>
 #include <string>
 
 IGA_NAMESPACE_OPEN
 
+using PropId = std::string;
+
 struct ElementProperties
 {
-    static const std::string active;
+    static const PropId active;
 };
 
 
 struct DofProperties
 {
-    static const std::string active;
+    static const PropId active;
 };
 
 IGA_NAMESPACE_CLOSE
 
 #endif // #ifndef PROPERTIES_H_
-
-

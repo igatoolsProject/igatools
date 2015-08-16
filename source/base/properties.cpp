@@ -19,11 +19,10 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/base/properties.h>
-#include <igatools/base/exceptions.h>
 
 IGA_NAMESPACE_OPEN
 
-const std::string ElementProperties::active = "active";
-const std::string DofProperties::active = "active";
+const PropId ElementProperties::active = "active";
+const PropId DofProperties::active = "active";
 
 IGA_NAMESPACE_CLOSE
