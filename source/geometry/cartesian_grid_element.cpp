@@ -31,12 +31,22 @@ IGA_NAMESPACE_OPEN
 template <int dim>
 CartesianGridElement<dim>::
 CartesianGridElement(const std::shared_ptr<ContainerType> grid,
-                     const Index index)
+                     const base_t &index)
     :
+	base_t(index),
     grid_(grid)
 {
-    Assert(grid_ != nullptr,ExcNullPtr());
-    move_to(index);
+	Assert(grid_ != nullptr,ExcNullPtr());
+	Assert((flat_index == IteratorState::pass_the_end) ||
+			((flat_index >= 0) && (flat_index < grid_->get_num_all_elems())),
+			ExcIndexRange(flat_index, 0, grid_->get_num_all_elems()));
+
+	this->flat_index_ = flat_index ;
+
+	if (this->flat_index_ != IteratorState::pass_the_end)
+		this->tensor_index_ = grid_->flat_to_tensor(this->flat_index_);
+	else
+		this->tensor_index_.fill(IteratorState::pass_the_end);
 }
 
 
@@ -45,9 +55,10 @@ CartesianGridElement(const std::shared_ptr<ContainerType> grid,
 template <int dim>
 CartesianGridElement<dim>::
 CartesianGridElement(const CartesianGridElement<dim> &elem, const CopyPolicy &copy_policy)
+:
+base_t(elem, copy_policy)
 {
-    grid_         = elem.grid_;
-    tensor_index_ = elem.tensor_index_;
+	grid_         = elem.grid_;
 
     if (elem.all_sub_elems_cache_ != nullptr)
     {
@@ -63,17 +74,18 @@ CartesianGridElement(const CartesianGridElement<dim> &elem, const CopyPolicy &co
 }
 
 
-template <int dim>
-std::shared_ptr<CartesianGridElement<dim> >
-CartesianGridElement<dim>::
-clone() const
-{
-//    auto elem = std::shared_ptr<CartesianGridElement<dim> >(
-//                   new CartesianGridElement(*this,CopyPolicy::deep));
-    auto elem = std::make_shared<CartesianGridElement<dim>>(*this,CopyPolicy::deep);
-    Assert(elem != nullptr, ExcNullPtr());
-    return elem;
-}
+
+//template <int dim>
+//std::shared_ptr<CartesianGridElement<dim> >
+//CartesianGridElement<dim>::
+//clone() const
+//{
+//    auto elem = std::make_shared<CartesianGridElement<dim>>(*this,CopyPolicy::deep);
+//    Assert(elem != nullptr, ExcNullPtr());
+//    return elem;
+//}
+
+
 
 template <int dim>
 auto
@@ -84,32 +96,19 @@ get_grid() const -> const std::shared_ptr<const CartesianGrid<dim> >
 }
 
 
-
 template <int dim>
-inline
 auto
-CartesianGridElement<dim>::
-get_flat_index() const -> Index
+get_index() const ->  const base_t &
 {
-    return flat_index_ ;
+	return *this;
 }
 
-
-
-template <int dim>
-inline
-auto
-CartesianGridElement<dim>::
-get_tensor_index() const -> TensorIndex<dim>
-{
-    return tensor_index_ ;
-}
 
 
 template <int dim>
 void
 CartesianGridElement<dim>::
-move_to(const Index flat_index)
+move_to(const Index  &flat_index)
 {
     Assert((flat_index == IteratorState::pass_the_end) ||
            ((flat_index >= 0) && (flat_index < grid_->get_num_all_elems())),

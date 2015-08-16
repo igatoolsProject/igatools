@@ -106,11 +106,11 @@ public:
     SafeSTLVector<std::string> get_properties() const;
 
 
-    /**
-     * Add the @p offset value to the ids contained in the object.
-     * @param offset
-     */
-    void add_offset(const Index offset);
+//    /**
+//     * Add the @p offset value to the ids contained in the object.
+//     * @param offset
+//     */
+//    void add_offset(const Index offset);
 
 private:
     using ContainerType = std::map<std::string,std::set<Index>>;
@@ -125,7 +125,8 @@ public:
     const_iterator end() const;
 
 private:
-    std::map<std::string,std::set<Index>> properties_id_;
+    /** Property table */
+    ContainerType properties_id_;
 
 
 #ifdef SERIALIZATION

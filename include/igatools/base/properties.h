@@ -26,17 +26,8 @@
 
 IGA_NAMESPACE_OPEN
 
-struct Properties
+struct ElementProperties
 {
-    static const std::string none;
-};
-
-
-//TODO (pauletti, Mar 21, 2015): these may not be to be global but hierarchical only
-struct ElementProperties : public Properties
-{
-    using Properties::none;
-
     static const std::string active;
 };
 

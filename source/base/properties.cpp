@@ -18,20 +18,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
 #include <igatools/base/properties.h>
 #include <igatools/base/exceptions.h>
 
-
-
 IGA_NAMESPACE_OPEN
-
-
-const std::string Properties::none = "none";
 
 const std::string ElementProperties::active = "active";
 const std::string DofProperties::active = "active";
-
-
 
 IGA_NAMESPACE_CLOSE
