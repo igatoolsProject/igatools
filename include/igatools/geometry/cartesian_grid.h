@@ -346,9 +346,10 @@ public:
     ///@name Getting grid information
     ///@{
     /**
-     * Returns the number of elements with the <tt>property</tt> specified as input argument.
+     * Returns the number of elements with the <tt>property</tt> specified
+     * as input argument.
      */
-    Size get_num_elements_same_property(const PropId &property) const;
+    Size get_num_elements(const PropId &prop = ElementProperties::active) const;
 
     /** Total number of elements, including active and non-active */
     Size get_num_all_elems() const;
@@ -389,12 +390,7 @@ public:
 
     ///@name Iterating of grid elements
     ///@{
-private:
-    /**
-     * Create an element (defined on this grid) with a given flat_index.
-     */
-    std::shared_ptr<ElementAccessor>
-    create_element(const ListIt &index, const PropId &prop) const;
+
 
 public:
     /**
@@ -646,29 +642,37 @@ private:
             list.insert(IndexType(i, base_t::flat_to_tensor(i)));
         return list;
     }
+
+    /**
+     * Create an element (defined on this grid) with a given flat_index.
+     */
+    std::shared_ptr<ElementAccessor>
+    create_element(const ListIt &index, const PropId &prop) const;
+
 public:
     /**
      * Returns the unique identifier associated to each object instance.
      */
     Index get_object_id() const;
-
     /**
      * @name Functions related to the management/query of the element properties.
      */
     ///@{
     /**
-     * Returns true if the element identified with <tt>elem_flat_id</tt> has
-     * the ElementProperty <tt>property</tt>.
-     */
+    * Adds a new <tt>property</tt> definition for the elements in the CartesianGrid.
+    *
+    * @note If the <tt>property</tt> is already present, n assertion will be raised (in Debug mode).
+    */
+    void add_elements_property(const PropId &property);
+
+#if 0
+    /**
+         * Returns true if the element identified with <tt>elem_flat_id</tt> has
+         * the ElementProperty <tt>property</tt>.
+         */
     bool test_if_element_has_property(const IndexType elem_flat_id,
                                       const PropId &property) const;
 
-    /**
-     * Adds a new <tt>property</tt> definition for the elements in the CartesianGrid.
-     *
-     * @note If the <tt>property</tt> is already present, n assertion will be raised (in Debug mode).
-     */
-    void add_elements_property(const PropId &property);
 
     /**
      * Returns the id of the first element with a given @p property.
@@ -718,6 +722,7 @@ public:
      */
     List get_elements_id() const;
     ///@}
+#endif
 
 private:
     /**

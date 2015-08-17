@@ -231,6 +231,24 @@ CartesianGrid(const self_t &grid)
 
 
 
+template <int dim_>
+bool
+CartesianGrid<dim_>::
+operator==(const CartesianGrid<dim_> &grid) const
+{
+    bool same_knots_coordinates = true;
+    for (const auto i : UnitElement<dim_>::active_directions)
+    {
+        const auto &knots_a =  this->knot_coordinates_.get_data_direction(i);
+        const auto &knots_b =   grid.knot_coordinates_.get_data_direction(i);
+
+        same_knots_coordinates = same_knots_coordinates && (knots_a == knots_b);
+    }
+    return same_knots_coordinates;
+}
+
+
+
 template<int dim_>
 Index CartesianGrid<dim_>::get_object_id() const
 {
@@ -286,57 +304,6 @@ add_elements_property(const PropId &property)
 }
 
 
-template<int dim_>
-auto
-CartesianGrid<dim_>::
-get_elements_id_same_property(const PropId &property)
--> List &
-{
-    return elem_properties_.get_ids_same_property(property);
-}
-
-
-
-template<int dim_>
-auto
-CartesianGrid<dim_>::
-get_elements_id_same_property(const PropId &property) const
--> const List &
-{
-    return elem_properties_.get_ids_same_property(property);
-}
-
-
-
-template<int dim_>
-Index
-CartesianGrid<dim_>::
-get_first_element_id_same_property(const PropId &property) const
-{
-    Index first_id;
-    if (property == ElementProperties::active)
-        first_id = 0;
-    else
-        first_id = *(this->get_elements_id_same_property(property).cbegin());
-
-    return first_id;
-}
-
-
-
-template<int dim_>
-Index
-CartesianGrid<dim_>::
-get_last_element_id_same_property(const PropId &property) const
-{
-    Index last_id;
-    if (property == ElementProperties::active)
-        last_id = this->get_num_all_elems()-1;
-    else
-        last_id = *(this->get_elements_id_same_property(property).crbegin());
-
-    return last_id;
-}
 
 
 
@@ -519,9 +486,9 @@ get_boundary_normals(const int s_id) const -> BoundaryNormal<sub_dim>
 template<int dim_>
 Size
 CartesianGrid<dim_>::
-get_num_elements_same_property(const PropId &prop) const
+get_num_elements(const PropId &prop) const
 {
-    return this->get_elements_id_same_property(prop).size();
+    return elem_properties_[prop].size();
 }
 
 
@@ -532,22 +499,6 @@ CartesianGrid<dim_>::
 get_num_all_elems() const
 {
     return this->flat_size();
-}
-
-
-
-template<int dim_>
-auto
-CartesianGrid<dim_>::
-get_elements_id() const -> List
-{
-    const auto n_elems = this->get_num_all_elems();
-    List elems_id;
-    Assert(false, ExcNotImplemented());
-//    for (int id = 0 ; id < n_elems ; ++id)
-//        elems_id.emplace(id);
-
-    return elems_id;
 }
 
 
@@ -791,7 +742,8 @@ get_sub_grid(const int sub_elem_id, std::map<Index,Index> &elem_map) const
     const auto active_dirs = TensorIndex<k>(k_elem.active_directions);
     auto sub_knots = knot_coordinates_.template get_sub_product<k>(active_dirs);
     auto sub_grid = CartesianGrid<k>::create(sub_knots);
-
+    Assert(false, ExcNotImplemented());
+#if 0
     TensorIndex<dim_> grid_index;
     const int n_dir = k_elem.constant_directions.size();
     for (int j = 0 ; j < n_dir ; ++j)
@@ -808,7 +760,7 @@ get_sub_grid(const int sub_elem_id, std::map<Index,Index> &elem_map) const
     auto s_end  = sub_grid->end();
     for (; s_elem != s_end; ++s_elem)
     {
-        auto s_index = s_elem.get_tensor_index();
+        auto s_index = s_elem.get_index();
         for (int j = 0 ; j < k ; ++j)
             grid_index[active_dirs[j]] = s_index[j];
 
@@ -816,7 +768,7 @@ get_sub_grid(const int sub_elem_id, std::map<Index,Index> &elem_map) const
         elem_map.emplace(s_elem.get_flat_index(),
         this->tensor_to_flat(grid_index));
     }
-
+#endif
     return sub_grid;
 }
 
@@ -940,24 +892,6 @@ find_elements_id_of_point(const Points<dim_> &point) const
 
 
 template <int dim_>
-bool
-CartesianGrid<dim_>::
-operator==(const CartesianGrid<dim_> &grid) const
-{
-    bool same_knots_coordinates = true;
-    for (const auto i : UnitElement<dim_>::active_directions)
-    {
-        const auto &knots_a =  this->knot_coordinates_.get_data_direction(i);
-        const auto &knots_b =   grid.knot_coordinates_.get_data_direction(i);
-
-        same_knots_coordinates = same_knots_coordinates && (knots_a == knots_b);
-    }
-    return same_knots_coordinates;
-}
-
-
-
-template <int dim_>
 SafeSTLVector<Index>
 CartesianGrid<dim_>::
 get_sub_elements_id(const TensorSize<dim_> &n_sub_elems, const Index elem_id) const
@@ -996,6 +930,77 @@ get_sub_elements_id(const TensorSize<dim_> &n_sub_elems, const Index elem_id) co
     } // end loop sub_elem_flat_id
 
     return sub_elems_id;
+}
+
+
+
+#if 0
+template<int dim_>
+auto
+CartesianGrid<dim_>::
+get_elements_id() const -> List
+{
+    const auto n_elems = this->get_num_all_elems();
+    List elems_id;
+    Assert(false, ExcNotImplemented());
+//    for (int id = 0 ; id < n_elems ; ++id)
+//        elems_id.emplace(id);
+
+    return elems_id;
+}
+
+
+
+template<int dim_>
+auto
+CartesianGrid<dim_>::
+get_elements_id_same_property(const PropId &property)
+-> List &
+{
+    return elem_properties_.get_ids_same_property(property);
+}
+
+
+
+template<int dim_>
+auto
+CartesianGrid<dim_>::
+get_elements_id_same_property(const PropId &property) const
+-> const List &
+{
+    return elem_properties_.get_ids_same_property(property);
+}
+
+
+
+template<int dim_>
+Index
+CartesianGrid<dim_>::
+get_first_element_id_same_property(const PropId &property) const
+{
+    Index first_id;
+    if (property == ElementProperties::active)
+        first_id = 0;
+    else
+        first_id = *(this->get_elements_id_same_property(property).cbegin());
+
+    return first_id;
+}
+
+
+
+template<int dim_>
+Index
+CartesianGrid<dim_>::
+get_last_element_id_same_property(const PropId &property) const
+{
+    Index last_id;
+    if (property == ElementProperties::active)
+        last_id = this->get_num_all_elems()-1;
+    else
+        last_id = *(this->get_elements_id_same_property(property).crbegin());
+
+    return last_id;
 }
 
 
@@ -1047,7 +1052,7 @@ test_if_element_has_property(const IndexType elem_flat_id,
                               elem_list.end(),elem_flat_id);
 }
 
-
+#endif
 
 #ifdef SERIALIZATION
 
