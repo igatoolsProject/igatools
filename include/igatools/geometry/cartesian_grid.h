@@ -147,7 +147,7 @@ template <int> class GridElementHandler;
  * "breakpoints") along each coordinate direction.
  *
  * @author M. Martinelli 2012, 2013, 2014
- * @author pauletti 2012, 2013, 2014
+ * @author pauletti 2012, 2013, 2014, 2015
  *
  * @see get_cartesian_grid_from_xml()
  * @ingroup h_refinement
@@ -163,6 +163,7 @@ class CartesianGrid :
 private:
     /** Type for current class. */
     using self_t = CartesianGrid<dim_>;
+    using base_t = TensorSizedContainer<dim_>;
 
 public:
     using Point = Points<dim_>;
@@ -440,14 +441,14 @@ public:
     /** @name Functions for the index transformations */
     ///@{
     /**
-     * Transformation from a tensor-index to a flat-index.
-     */
-    Index tensor_to_flat(const TensorIndex<dim_> &tensor_index) const;
-
-    /**
-     * Transformation from a flat-index to a tensor-index.
-     */
-    TensorIndex<dim_> flat_to_tensor(const Index flat_index) const;
+//     * Transformation from a tensor-index to a flat-index.
+//     */
+//    Index tensor_to_flat(const TensorIndex<dim_> &tensor_index) const;
+//
+//    /**
+//     * Transformation from a flat-index to a tensor-index.
+//     */
+//    TensorIndex<dim_> flat_to_tensor(const Index flat_index) const;
     ///@}
 
     ///@name Dealing with boundary information
@@ -508,16 +509,6 @@ public:
     SafeSTLVector<Index>
     find_elements_id_of_point(const Points<dim_> &point) const;
 
-
-    /**
-     * This function returns TRUE if the current grid object is a <em>refinement</em> of
-     *  @p grid_to_compare_with,
-     * i.e. if the knots of the current grid object are present in @p grid_to_compare_with.
-     * @note The functions returns TRUE also if the knots in the current grid object
-     * are equal to the knots in @p grid_to_compare_with.
-     */
-    bool same_knots_or_refinement_of(const CartesianGrid<dim_> &grid_to_compare_with) const;
-
 public:
     /**
      * Prints debug information of the CartesianGrid to a LogStream.
@@ -532,6 +523,14 @@ public:
 
 
 #ifdef MESH_REFINEMENT
+    /**
+         * This function returns TRUE if the current grid object is a <em>refinement</em> of
+         *  @p grid_to_compare_with,
+         * i.e. if the knots of the current grid object are present in @p grid_to_compare_with.
+         * @note The functions returns TRUE also if the knots in the current grid object
+         * are equal to the knots in @p grid_to_compare_with.
+         */
+        bool same_knots_or_refinement_of(const CartesianGrid<dim_> &grid_to_compare_with) const;
 
 private:
 
@@ -632,6 +631,13 @@ private:
      */
     Index object_id_;
 
+private:
+    List list_of_indices() const
+    {
+    	List list;
+    	for (int i=0; i<get_num_all_elems(); ++i)
+    		list.insert(base_t::flat_to_tensor(i));
+    }
 public:
     /**
      * Returns the unique identifier associated to each object instance.
@@ -673,12 +679,12 @@ public:
     /**
      * Returns the flat id of the elements having a certain @p property (non-const version).
      */
-    std::set<Index> &get_elements_id_same_property(const PropId &property);
+    List &get_elements_id_same_property(const PropId &property);
 
     /**
      * Returns the flat id of the elements having a certain @p property (const version).
      */
-    const std::set<Index> &get_elements_id_same_property(const PropId &property) const;
+    const List &get_elements_id_same_property(const PropId &property) const;
 
     /**
      * Sets the @p status of the given @p property for the element with flat id @p elem_flat_id.
@@ -702,7 +708,7 @@ public:
     /**
      * Returns the flat-id of the elements in the CartesianGrid.
      */
-    std::set<Index> get_elements_id() const;
+    List get_elements_id() const;
     ///@}
 
 private:

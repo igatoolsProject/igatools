@@ -156,7 +156,8 @@ CartesianGrid(const KnotCoordinates &knot_coordinates)
     object_id_(UniqueIdGenerator::get_unique_id())
 {
 properties_elements_id_.add_property(ElementProperties::active);
-//properties_elements_id_.set_ids_property_status();
+properties_elements_id_.set_ids_property_status(ElementProperties::active,
+		list_of_indices, true);
 #ifndef NDEBUG
     for (const int i : UnitElement<dim_>::active_directions)
     {
@@ -286,9 +287,10 @@ add_elements_property(const PropId &property)
 
 
 template<int dim_>
-std::set<Index> &
+auto
 CartesianGrid<dim_>::
 get_elements_id_same_property(const PropId &property)
+-> List &
 {
     return properties_elements_id_.get_ids_same_property(property);
 }
@@ -296,9 +298,10 @@ get_elements_id_same_property(const PropId &property)
 
 
 template<int dim_>
-const std::set<Index> &
+auto
 CartesianGrid<dim_>::
 get_elements_id_same_property(const PropId &property) const
+-> const List &
 {
     return properties_elements_id_.get_ids_same_property(property);
 }
@@ -354,26 +357,10 @@ create_element(const Index flat_index) const -> std::shared_ptr<ElementAccessor>
 template<int dim_>
 auto
 CartesianGrid<dim_>::
-begin(const PropId &property) -> ElementIterator
+begin(const PropId &prop) -> ElementIterator
 {
-    int id_first_elem;
-    if (property == ElementProperties::active)
-    {
-        id_first_elem = 0;
-    }
-    else
-    {
-        const auto &elems_same_property = get_elements_id_same_property(property);
-        const auto elem_begin = elems_same_property.begin();
-        const auto elem_end   = elems_same_property.end();
-
-        if (elem_begin != elem_end)
-            id_first_elem = *elem_begin;
-        else
-            id_first_elem = IteratorState::pass_the_end;
-    }
-
-    return ElementIterator(this->shared_from_this(), id_first_elem, property);
+	auto init = properties_elements_id_[prop].begin();
+    return ElementIterator(this->shared_from_this(), init, prop);
 }
 
 
@@ -508,24 +495,18 @@ cend(const PropId &property) const -> ElementConstIterator
 }
 
 
+//
+//template<int dim_>
+//Index
+//CartesianGrid<dim_>::
+//tensor_to_flat(const TensorIndex<dim_> &tensor_index) const
+//{
+//    return TensorSizedContainer<dim_>::tensor_to_flat(tensor_index);
+//}
+//
 
-template<int dim_>
-Index
-CartesianGrid<dim_>::
-tensor_to_flat(const TensorIndex<dim_> &tensor_index) const
-{
-    return TensorSizedContainer<dim_>::tensor_to_flat(tensor_index);
-}
 
 
-
-template<int dim_>
-TensorIndex<dim_>
-CartesianGrid<dim_>::
-flat_to_tensor(const Index flat_index) const
-{
-    return TensorSizedContainer<dim_>::flat_to_tensor(flat_index);
-}
 
 
 
@@ -595,14 +576,15 @@ get_num_all_elems() const
 
 
 template<int dim_>
-std::set<Index>
+auto
 CartesianGrid<dim_>::
-get_elements_id() const
+get_elements_id() const -> List
 {
     const auto n_elems = this->get_num_all_elems();
-    std::set<Index> elems_id;
-    for (int id = 0 ; id < n_elems ; ++id)
-        elems_id.emplace(id);
+    List elems_id;
+    Assert(false, ExcNotImplemented());
+//    for (int id = 0 ; id < n_elems ; ++id)
+//        elems_id.emplace(id);
 
     return elems_id;
 }
@@ -779,7 +761,38 @@ insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert)
     this->insert_knots_signals_(knots_to_insert,*grid_pre_refinement_);
     //----------------------------------------------------------------------------------
 }
+
+
+
+template <int dim_>
+bool
+CartesianGrid<dim_>::
+same_knots_or_refinement_of(const CartesianGrid<dim_> &grid_to_compare_with) const
+{
+    bool is_refinement = true;
+    for (auto dir : UnitElement<dim_>::active_directions)
+    {
+        const auto &knots_coarse = grid_to_compare_with.get_knot_coordinates(dir);
+        const auto &knots_fine   = this->get_knot_coordinates(dir);
+
+        //look if there is any value in knots_coarse not in knots_fine
+        if (std::any_of(
+                knots_coarse.begin(),
+                knots_coarse.end(),
+                [&knots_fine](const Real &val)
+    {
+        return !std::binary_search(knots_fine.begin(),knots_fine.end(),val);
+        }))
+        {
+            is_refinement = false;
+            break;
+        }
+    }
+
+    return is_refinement;
+}
 #endif // MESH_REFINEMENT
+
 
 
 template <int dim_>
@@ -1073,35 +1086,6 @@ test_if_element_has_property(const IndexType elem_flat_id,
 			elem_list.end(),elem_flat_id);
 }
 
-
-
-template <int dim_>
-bool
-CartesianGrid<dim_>::
-same_knots_or_refinement_of(const CartesianGrid<dim_> &grid_to_compare_with) const
-{
-    bool is_refinement = true;
-    for (auto dir : UnitElement<dim_>::active_directions)
-    {
-        const auto &knots_coarse = grid_to_compare_with.get_knot_coordinates(dir);
-        const auto &knots_fine   = this->get_knot_coordinates(dir);
-
-        //look if there is any value in knots_coarse not in knots_fine
-        if (std::any_of(
-                knots_coarse.begin(),
-                knots_coarse.end(),
-                [&knots_fine](const Real &val)
-    {
-        return !std::binary_search(knots_fine.begin(),knots_fine.end(),val);
-        }))
-        {
-            is_refinement = false;
-            break;
-        }
-    }
-
-    return is_refinement;
-}
 
 
 #ifdef SERIALIZATION

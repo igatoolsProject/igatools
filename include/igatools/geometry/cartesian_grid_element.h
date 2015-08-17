@@ -64,6 +64,7 @@ public:
     /** Type required by the CartesianGridIterator templated iterator */
     using ContainerType = const CartesianGrid<dim>;
     using IndexType = typename ContainerType::IndexType;
+    using List = typename ContainerType::List;
 
     using Point = Points<dim>;
 
@@ -83,7 +84,8 @@ public:
      * flat index @p elem_index of the CartesianGrid @p grid.
      */
     CartesianGridElement(const std::shared_ptr<ContainerType> grid,
-                         const Index elem_index);
+                         const Index elem_index,
+						 const PropId &prop = ElementProperties::active);
 
 
     /**
@@ -173,8 +175,13 @@ public:
      * as it is easy to use incorrectly. Only use it if you know what you
      * are doing.
      */
-    void move_to(const IndexType&);
+   // void move_to(const IndexType&);
 
+
+    typename List::iterator &operator++()
+	{
+    	return (++index_it_);
+	}
     ///@}
 
     /**
@@ -285,9 +292,6 @@ public:
 
     void print_cache_info(LogStream &out) const;
 
-
-
-
 private:
     template <class Accessor> friend class CartesianGridIteratorBase;
     friend class GridElementHandler<dim>;
@@ -295,8 +299,10 @@ private:
     /** Cartesian grid from which the element belongs.*/
     std::shared_ptr<ContainerType> grid_;
 
-    /** Tensor product indices of the current struct index @p flat_index_. */
-    TensorIndex<dim> tensor_index_;
+    PropId property_;
+
+    /** Index in the property list of the current element */
+    typename List::iterator index_it_;
 
     /**
      * @name Types, data and methods for the cache.

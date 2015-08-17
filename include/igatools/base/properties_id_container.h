@@ -74,12 +74,12 @@ public:
     /**
      * Returns the the set of IDs having a certain @p property (non-const version).
      */
-    List &get_ids_same_property(const PropId &property);
+    List &operator[](const PropId &property);
 
     /**
      * Returns the flat id of IDs having a certain @p property (const version).
      */
-    const List &get_ids_same_property(const PropId &property) const;
+    const List &operator[](const PropId &property) const;
 
     /**
      * Sets the <tt>status</tt> of the given <tt>property</tt> for the given <tt>id</tt>.

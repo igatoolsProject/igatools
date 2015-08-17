@@ -100,27 +100,27 @@ template <int dim>
 auto
 get_index() const ->  const IndexType &
 {
-	return *this;
+	return *index_it;
 }
 
 
 
-template <int dim>
-void
-CartesianGridElement<dim>::
-move_to(const Index  &flat_index)
-{
-    Assert((flat_index == IteratorState::pass_the_end) ||
-           ((flat_index >= 0) && (flat_index < grid_->get_num_all_elems())),
-           ExcIndexRange(flat_index, 0, grid_->get_num_all_elems()));
-
-    flat_index_ = flat_index ;
-
-    if (flat_index_ != IteratorState::pass_the_end)
-        tensor_index_ = grid_->flat_to_tensor(flat_index_);
-    else
-        tensor_index_.fill(IteratorState::pass_the_end);
-}
+//template <int dim>
+//void
+//CartesianGridElement<dim>::
+//move_to(const Index  &flat_index)
+//{
+//    Assert((flat_index == IteratorState::pass_the_end) ||
+//           ((flat_index >= 0) && (flat_index < grid_->get_num_all_elems())),
+//           ExcIndexRange(flat_index, 0, grid_->get_num_all_elems()));
+//
+//    flat_index_ = flat_index ;
+//
+//    if (flat_index_ != IteratorState::pass_the_end)
+//        tensor_index_ = grid_->flat_to_tensor(flat_index_);
+//    else
+//        tensor_index_.fill(IteratorState::pass_the_end);
+//}
 
 
 

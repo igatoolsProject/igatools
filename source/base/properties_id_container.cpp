@@ -40,7 +40,7 @@ bool
 PropertiesIdContainer<IndexType>::
 test_id_for_property(const IndexType id, const PropId &property) const
 {
-    const auto &ids_same_property = this->get_ids_same_property(property);
+    const auto &ids_same_property = (*this)[property];
     return std::binary_search(ids_same_property.begin(),ids_same_property.end(),id);
 }
 
@@ -60,7 +60,7 @@ add_property(const PropId &property)
 template <typename IndexType>
 auto
 PropertiesIdContainer<IndexType>::
-get_ids_same_property(const PropId &property) -> List &
+operator[](const PropId &property) -> List &
 {
     Assert(is_property_defined(property), ExcPropNotDefined(property));
     return properties_id_.at(property);
@@ -71,7 +71,7 @@ get_ids_same_property(const PropId &property) -> List &
 template <typename IndexType>
 auto
 PropertiesIdContainer<IndexType>::
-get_ids_same_property(const PropId &property) const
+operator[](const PropId &property) const
 -> const List &
 {
     Assert(is_property_defined(property), ExcPropNotDefined(property));
@@ -87,15 +87,15 @@ set_id_property_status(const PropId &property,
                        const IndexType id,
                        const bool status)
 {
-    auto &ids_same_property = get_ids_same_property(property);
+    auto &list = (*this)[property];
     if (status)
     {
-        ids_same_property.insert(id);
+        list.insert(id);
     }
     else
     {
-        Assert(!ids_same_property.empty(),ExcEmptyObject());
-        ids_same_property.erase(id);
+        Assert(!list.empty(),ExcEmptyObject());
+        list.erase(id);
     }
 }
 
