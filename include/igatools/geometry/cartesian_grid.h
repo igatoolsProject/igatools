@@ -183,6 +183,7 @@ public:
 
     using PropertyList = PropertiesIdContainer<BaseElement<dim_>>;
     using List = typename PropertyList::List;
+    using ListIt = typename PropertyList::List::iterator;
     using IndexType = BaseElement<dim_>;
 
     /** Type for the vector of knot vectors */
@@ -387,11 +388,14 @@ public:
 
     ///@name Iterating of grid elements
     ///@{
+private:
     /**
      * Create an element (defined on this grid) with a given flat_index.
      */
-    std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const;
+    std::shared_ptr<ElementAccessor>
+    create_element(const ListIt &index, const PropId &prop) const;
 
+public:
     /**
      * This function returns a element iterator to the first element of the patch.
      */

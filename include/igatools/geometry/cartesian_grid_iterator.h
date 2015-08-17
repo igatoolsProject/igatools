@@ -179,7 +179,7 @@ public:
     /**
      * Alias for the tensor index.
      */
-    using TensIndex = TensorIndex<ContainerType::dim>;
+    using ListIt = typename ContainerType::List::iterator;
 
     /** @name Constructors & destructor */
     ///@{
@@ -200,17 +200,16 @@ public:
      * an assertion will be raised (in DEBUG mode).
      */
     CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
-                              const Index index,
-                              const std::string &property);
+                              const ListIt index,
+                              const PropId &property);
 
     /**
      * Construct an iterator using the underlying element pointer.
-     * @warning If the <tt>accessor_ptr</tt> refers to an element that has not the given <tt>property</tt>
+     * @warning If the <tt>accessor_ptr</tt> refers to an element that has not
+     * the given <tt>property</tt>
      * an assertion will be raised (in DEBUG mode).
      */
-    CartesianGridIteratorBase(
-        std::shared_ptr<Accessor> accessor_ptr,
-        const std::string &property);
+    CartesianGridIteratorBase(std::shared_ptr<Accessor> accessor_ptr);
 
 
     /**
@@ -218,7 +217,8 @@ public:
      *
      * @note By default it uses the deep copy.
      */
-    CartesianGridIteratorBase(const CartesianGridIteratorBase<Accessor> &it,const CopyPolicy &copy_policy = CopyPolicy::deep);
+    CartesianGridIteratorBase(const CartesianGridIteratorBase<Accessor> &it,
+                              const CopyPolicy &copy_policy = CopyPolicy::deep);
 
 
     /** Move constructor. */
@@ -238,7 +238,6 @@ public:
     operator=(const CartesianGridIteratorBase<Accessor> &it)
     {
         accessor_ = it.accessor_;
-        elem_property_ = it.elem_property_;
         return *this;
     }
 
@@ -278,6 +277,7 @@ public:
 
     ///@}
 
+#if 0
     /** @name Functions/operators for moving the element in the CartesianGrid.*/
     ///@{
     /**
@@ -307,7 +307,7 @@ public:
      * are doing.
      */
     void move_to(const TensIndex &tensor_index);
-
+#endif
     /**
      *  Prefix <tt>++</tt> operator: <tt>++i</tt>. This
      *  operator advances the iterator to
@@ -317,6 +317,7 @@ public:
     CartesianGridIteratorBase<Accessor> &operator++();
     ///@}
 
+#if 0
     /**
      * @name Functions related to the indices of the element in the CartesianGrid pointed
      * by the iterator.
@@ -328,7 +329,7 @@ public:
     /** Returns the index of the element in its tensor representation. */
     TensIndex get_tensor_index() const;
     ///@}
-
+#endif
 protected:
     /**
      * Pointer to the object holding the Real data.
@@ -337,8 +338,6 @@ protected:
      * that must be resolved at run-time.
      */
     std::shared_ptr<Accessor> accessor_ ;
-
-    std::string elem_property_;
 
 private:
 #ifdef SERIALIZATION

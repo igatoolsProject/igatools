@@ -343,10 +343,11 @@ get_last_element_id_same_property(const PropId &property) const
 template<int dim_>
 auto
 CartesianGrid<dim_>::
-create_element(const Index flat_index) const -> std::shared_ptr<ElementAccessor>
+create_element(const ListIt &index, const PropId &prop) const
+-> std::shared_ptr<ElementAccessor>
 {
     using Elem = CartesianGridElement<dim_>;
-    auto elem = shared_ptr<Elem>(new Elem(this->shared_from_this(),flat_index));
+    auto elem = shared_ptr<Elem>(new Elem(this->shared_from_this(), index, prop));
     Assert(elem != nullptr,ExcNullPtr());
 
     return elem;

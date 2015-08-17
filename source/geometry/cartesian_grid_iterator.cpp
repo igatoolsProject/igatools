@@ -28,14 +28,14 @@ IGA_NAMESPACE_OPEN
 template <class Accessor>
 CartesianGridIteratorBase<Accessor>::
 CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
-                          const Index index,
-                          const std::string &elem_property)
+                          const ListIt index,
+                          const PropId &prop)
     :
-    CartesianGridIteratorBase(grid->create_element(index),elem_property)
+    accessor_(grid->create_element(index,prop))
 {}
 
 
-
+#if 0
 template <class Accessor>
 CartesianGridIteratorBase<Accessor>::
 CartesianGridIteratorBase(
@@ -55,7 +55,7 @@ CartesianGridIteratorBase(
                           + elem_property_ + "\"."));
 #endif
 }
-
+#endif
 
 
 template <class Accessor>
