@@ -643,6 +643,7 @@ private:
         return list;
     }
 
+public:
     /**
      * Create an element (defined on this grid) with a given flat_index.
      */

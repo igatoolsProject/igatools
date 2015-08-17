@@ -91,7 +91,7 @@ public:
     self_t &operator=(self_t &&elem) = default;
     ///@}
 
-protected:
+public:
     /** @name Functions related to the indices of the element in the cartesian grid. */
     ///@{
     /** Returns the index of the element in its flatten representation. */

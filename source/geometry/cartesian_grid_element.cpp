@@ -32,8 +32,8 @@ CartesianGridElement(const std::shared_ptr<ContainerType> grid,
                      const PropId &prop)
     :
     grid_(grid),
-    index_it_(index),
-    property_(prop)
+    property_(prop),
+    index_it_(index)
 {}
 
 
@@ -44,8 +44,8 @@ CartesianGridElement(const CartesianGridElement<dim> &elem,
                      const CopyPolicy &copy_policy)
     :
     grid_(elem.grid_),
-    index_it_(elem.index_it_),
-    property_(elem.property_)
+    property_(elem.property_),
+    index_it_(elem.index_it_)
 {
     if (elem.all_sub_elems_cache_ != nullptr)
     {
@@ -83,11 +83,13 @@ get_grid() const -> const std::shared_ptr<const CartesianGrid<dim> >
 }
 
 
+
 template <int dim>
 auto
+CartesianGridElement<dim>::
 get_index() const ->  const IndexType &
 {
-    return *index_it;
+    return *index_it_;
 }
 
 
@@ -114,16 +116,11 @@ get_index() const ->  const IndexType &
 template <int dim>
 bool
 CartesianGridElement<dim>::
-is_property_true(const std::string &property) const
+has_property(const PropId &prop) const
 {
-    const auto &elems_same_property = grid_->get_elements_id_same_property(property);
-    return std::binary_search(elems_same_property.begin(),elems_same_property.end(),flat_index_);
+    const auto &list = grid_->elem_properties_[prop];
+    return std::binary_search(list.begin(), list.end(), get_index());
 }
-
-
-
-
-
 
 
 
@@ -132,8 +129,9 @@ bool
 CartesianGridElement<dim>::
 operator ==(const CartesianGridElement<dim> &elem) const
 {
-    Assert(this->get_grid() == elem.get_grid(), ExcMessage("Cannot compare elements on different grid."));
-    return (this->get_flat_index() == elem.get_flat_index());
+    Assert(this->get_grid() == elem.get_grid(),
+           ExcMessage("Cannot compare elements on different grid."));
+    return (this->get_index() == elem.get_index());
 }
 
 
@@ -143,8 +141,9 @@ bool
 CartesianGridElement<dim>::
 operator !=(const CartesianGridElement<dim> &elem) const
 {
-    Assert(this->get_grid() == elem.get_grid(), ExcMessage("Cannot compare elements on different grid."));
-    return (this->get_flat_index() != elem.get_flat_index());
+    Assert(this->get_grid() == elem.get_grid(),
+           ExcMessage("Cannot compare elements on different grid."));
+    return (this->get_index() != elem.get_index());
 }
 
 template <int dim>
@@ -152,8 +151,9 @@ bool
 CartesianGridElement<dim>::
 operator <(const CartesianGridElement<dim> &elem) const
 {
-    Assert(this->get_grid() == elem.get_grid(), ExcMessage("Cannot compare elements on different grid."));
-    return (this->get_flat_index() < elem.get_flat_index());
+    Assert(this->get_grid() == elem.get_grid(),
+           ExcMessage("Cannot compare elements on different grid."));
+    return (this->get_index() < elem.get_index());
 }
 
 template <int dim>
@@ -161,8 +161,9 @@ bool
 CartesianGridElement<dim>::
 operator >(const CartesianGridElement<dim> &elem) const
 {
-    Assert(this->get_grid() == elem.get_grid(), ExcMessage("Cannot compare elements on different grid."));
-    return (this->get_flat_index() > elem.get_flat_index());
+    Assert(this->get_grid() == elem.get_grid(),
+           ExcMessage("Cannot compare elements on different grid."));
+    return (this->get_index() > elem.get_index());
 }
 
 
@@ -182,12 +183,13 @@ CartesianGridElement<dim>::
 copy_from(const CartesianGridElement<dim> &elem,
           const CopyPolicy &copy_policy)
 {
-    Assert(this->get_grid() == elem.get_grid(), ExcMessage("Cannot copy from an element on different grid."));
+    Assert(this->get_grid() == elem.get_grid(),
+           ExcMessage("Cannot copy from an element on different grid."));
 
     if (this != &elem)
     {
-        flat_index_   = elem.flat_index_;
-        tensor_index_ = elem.tensor_index_;
+        index_it_   = elem.index_it_;
+        property_ = elem.property_;
 
         if (copy_policy == CopyPolicy::deep)
         {
@@ -236,7 +238,8 @@ vertex(const int i) const -> Point
     Assert(i < UnitElement<dim>::sub_elements_size[0],
            ExcIndexRange(i,0, UnitElement<dim>::sub_elements_size[0]));
 
-    TensorIndex<dim> index = this->get_tensor_index();
+    Assert(false, ExcNotImplemented());
+    TensorIndex<dim> index;// = this->get_index();
 
     auto all_elems = UnitElement<dim>::all_elems;
     for (const auto j : UnitElement<dim>::active_directions)
@@ -256,7 +259,7 @@ bool CartesianGridElement<dim>::
 is_boundary(const Index id) const
 {
     const auto &n_elem = this->get_grid()->get_num_intervals();
-    const auto &index = this->get_tensor_index();
+    const auto &index = this->get_index().get_tensor_index();
 
     auto &k_elem = UnitElement<dim>::template get_elem<k>(id);
 
@@ -310,7 +313,6 @@ get_measure(const int j) const
 
 
 
-
 template <int dim>
 template <int k>
 ValueVector<Real>
@@ -322,32 +324,28 @@ get_w_measures(const int j) const
 
 
 
-
 template <int dim>
-template <int k>
+template <int sdim>
 auto
 CartesianGridElement<dim>::
-get_side_lengths(const int j) const -> const Point
+get_side_lengths(const int sid) const -> const Points<sdim>
 {
-    Point lengths;
-#if 0
-    auto &k_elem = UnitElement<dim>::template get_elem<k>(j);
+    Points<sdim> lengths;
 
-    for (const int const_dir :k_elem.constant_directions)
+    auto &s_elem = UnitElement<dim>::template get_elem<sdim>(sid);
+
+    for (const int const_dir :s_elem.constant_directions)
         lengths[const_dir] = 0.0;
 
-    for (const int active_dir : k_elem.active_directions)
+    int i=0;
+    for (const int active_dir : s_elem.active_directions)
     {
         const auto &knots_active_dir = grid_->get_knot_coordinates(active_dir);
-        const int j = tensor_index_[active_dir];
-        lengths[active_dir] = knots_active_dir[j+1] - knots_active_dir[j];
-    }
-#endif
-    for (const int active_dir : UnitElement<dim>::active_directions)
-    {
-        const auto &knots_active_dir = grid_->get_knot_coordinates(active_dir);
-        const int j = tensor_index_[active_dir];
-        lengths[active_dir] = knots_active_dir[j+1] - knots_active_dir[j];
+        Assert(false, ExcNotImplemented());
+        //const int j = tensor_index_[active_dir];
+        int j=0;
+        lengths[i] = knots_active_dir[j+1] - knots_active_dir[j];
+        ++i;
     }
 
     return lengths;
@@ -381,8 +379,12 @@ void
 CartesianGridElement<dim>::
 print_info(LogStream &out) const
 {
-    out << "Flat id = "   << flat_index_ << "    ";
-    out << "Tensor id = " << tensor_index_ << std::endl;
+    out.begin_item("Property: ");
+    out << property_ << std::endl;
+    out.end_item();
+    out.begin_item("Index:");
+    index_it_->print_info(out);
+    out.end_item();
 }
 
 
@@ -392,14 +394,13 @@ void
 CartesianGridElement<dim>::
 print_cache_info(LogStream &out) const
 {
-//    Assert(all_sub_elems_cache_ != nullptr, ExcNullPtr());
     if (all_sub_elems_cache_)
         all_sub_elems_cache_->print_info(out);
     else
         out << "Cache not allocated." << std::endl;
 }
 
-
+#if 0
 template <int dim>
 SafeSTLVector<std::string>
 CartesianGridElement<dim>::
@@ -425,7 +426,7 @@ get_valid_flags()
 {
     return cacheutils::get_valid_flags_from_cache_type(CType());
 }
-
+#endif
 
 #ifdef SERIALIZATION
 template <int dim>

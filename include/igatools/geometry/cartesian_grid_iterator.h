@@ -161,7 +161,7 @@ IGA_NAMESPACE_OPEN
  * @ingroup iterators
  * @ingroup serializable
  * @author martinelli 2012,2013,2014,2015
- * @author pauletti 2012,2013,2014
+ * @author pauletti 2012,2013,2014,2015
  */
 template <class Accessor>
 class CartesianGridIteratorBase

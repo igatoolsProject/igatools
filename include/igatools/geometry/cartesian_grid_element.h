@@ -151,8 +151,6 @@ public:
     /** Return the cartesian grid from which the element belongs.*/
     const std::shared_ptr<const ContainerType> get_grid() const;
 
-
-
     /**
      * @name Functions for managing/querying the element properties.
      */
@@ -160,7 +158,7 @@ public:
     /**
      * Tests if a certain element @p property is TRUE.
      */
-    bool is_property_true(const std::string &property) const;
+    bool has_property(const PropId &property) const;
     ///@}
 
     /**
@@ -177,7 +175,6 @@ public:
      * are doing.
      */
     // void move_to(const IndexType&);
-
 
     typename List::iterator &operator++()
     {
@@ -257,17 +254,18 @@ public:
     Point vertex(const int i) const;
 
 
+#if 0
     /**
      * Return the properties defined for the element.
      */
     SafeSTLVector<std::string> get_defined_properties() const;
-
+#endif
 
     //TODO (martinelli, Apr 16, 2015): the returned value should be Points<topology_dim>, i.e.
     // the lengths should refer to the sub-element of dimension topology_dim
     //TODO (martinelli, Aug 13, 2015): maybe it is wothy to declare this function private
     template<int topology_dim>
-    const Point get_side_lengths(const int topology_id) const;
+    const Points<topology_dim> get_side_lengths(const int topology_id) const;
 
     template <int topology_dim>
     Real get_measure(const int topology_id) const;

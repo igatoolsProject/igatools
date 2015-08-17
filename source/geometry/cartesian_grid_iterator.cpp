@@ -62,16 +62,14 @@ template <class Accessor>
 CartesianGridIteratorBase<Accessor>::
 CartesianGridIteratorBase(const CartesianGridIteratorBase<Accessor> &it,
                           const CopyPolicy &copy_policy)
-    :
-    elem_property_(it.elem_property_)
 {
     if (copy_policy == CopyPolicy::deep)
     {
-        accessor_ = it.accessor_->clone();
+        accessor_->deep_copy_from(*(it.accessor_));
     }
     else if (copy_policy == CopyPolicy::shallow)
     {
-        accessor_ = it.accessor_;
+        accessor_->shallow_copy_from(*(it.accessor_));
     }
     else
     {
