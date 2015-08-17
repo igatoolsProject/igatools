@@ -21,9 +21,8 @@
 from init_instantiation_data import *
 
 iga_inc_files = ['base/tensor.h',
-				 'utils/value_table.h',
-                 'basis_functions/bernstein_extraction.h']
-#other_files   = ['igatools/linear_algebra/dense_matrix.h' ]
+		 'utils/value_table.h']
+#                 'basis_functions/bernstein_extraction.h']
 data = Instantiation(iga_inc_files)
 (f, inst) = (data.file_output, data.inst)
 
@@ -37,12 +36,11 @@ for dim in inst.all_domain_dims:
             f.write('template %s::SubProduct<%d> ' %(row, k) +
                     '%s::get_sub_product(const TensorIndex<%d> &index) const; \n'  %(row, k))
 
-#matrix = 'DenseMatrix'
-matrix = 'BernsteinOperator'
-types = (matrix, "const %s *" %matrix, ) + \
-	('SafeSTLVector<%s>' %matrix, 'const SafeSTLVector<%s> *' %matrix)
-ma_list = ['CartesianProductArray<%s,%d>' %(t,dim) 
-           for dim in inst.all_domain_dims for t in types]
+#matrix = 'BernsteinOperator'
+#types = (matrix, "const %s *" %matrix, ) + \
+	#('SafeSTLVector<%s>' %matrix, 'const SafeSTLVector<%s> *' %matrix)
+#ma_list = ['CartesianProductArray<%s,%d>' %(t,dim) 
+           #for dim in inst.all_domain_dims for t in types]
 
 for row in ma_list:
 	f.write('template class %s; \n' % (row))

@@ -147,17 +147,6 @@ public:
         this->template init_cache<(dim > 0) ? dim-1 : 0>(*elem);
     }
 
-
-
-#if 0
-    void init_all_caches(ElementAccessor &elem);
-
-    void init_all_caches(ElementIterator &elem)
-    {
-        init_all_caches(*elem);
-    }
-#endif
-
     template <int sub_elem_dim>
     void fill_cache(ElementAccessor &elem, const int sub_elem_id) const;
 

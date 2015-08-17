@@ -18,11 +18,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef GRID_TOOLS_H_
-#define GRID_TOOLS_H_
+#ifndef __GRID_TOOLS_H_
+#define __GRID_TOOLS_H_
 
 #include <igatools/geometry/cartesian_grid.h>
-
+#if 0
 IGA_NAMESPACE_OPEN
 
 namespace grid_tools
@@ -160,3 +160,4 @@ build_cartesian_grid_union(
 IGA_NAMESPACE_CLOSE
 
 #endif /* GRID_TOOLS_H_ */
+#endif

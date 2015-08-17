@@ -21,6 +21,7 @@
 #include <igatools/geometry/grid_tools.h>
 #include <set>
 
+#if 0
 
 
 using std::set;
@@ -228,3 +229,4 @@ build_cartesian_grid_union(
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/grid_tools.inst>
+#endif
