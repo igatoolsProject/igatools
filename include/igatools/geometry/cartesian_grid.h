@@ -181,10 +181,11 @@ public:
 
     using ElementHandler = GridElementHandler<dim_>;
 
-    using PropertyList = PropertiesIdContainer<BaseElement<dim_>>;
+    using IndexType = BaseElement<dim_>;
+    using PropertyList = PropertiesIdContainer<IndexType>;
     using List = typename PropertyList::List;
     using ListIt = typename PropertyList::List::iterator;
-    using IndexType = BaseElement<dim_>;
+
 
     /** Type for the vector of knot vectors */
     using KnotCoordinates = CartesianProductArray<Real, dim_>;
@@ -490,6 +491,7 @@ public:
 
     ///@}
 
+#if 0
     /**
      * Given a vector of points, this function return a map with
      * entries indexed by the grid element each point belongs to
@@ -512,6 +514,7 @@ public:
      */
     SafeSTLVector<Index>
     find_elements_id_of_point(const Points<dim_> &point) const;
+#endif
 
 public:
     /**
@@ -640,7 +643,8 @@ private:
     {
         List list;
         for (int i=0; i<get_num_all_elems(); ++i)
-            list.insert(base_t::flat_to_tensor(i));
+            list.insert(IndexType(i, base_t::flat_to_tensor(i)));
+        return list;
     }
 public:
     /**

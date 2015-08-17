@@ -23,43 +23,30 @@
 #include <igatools/geometry/unit_element.h>
 #include <algorithm>
 
-
-using std::endl;
-
 IGA_NAMESPACE_OPEN
 
 template <int dim>
 CartesianGridElement<dim>::
 CartesianGridElement(const std::shared_ptr<ContainerType> grid,
-                     const IndexType &index)
+                     const ListIt &index,
+                     const PropId &prop)
     :
-    IndexType(index),
-    grid_(grid)
-{
-    Assert(grid_ != nullptr,ExcNullPtr());
-    Assert((flat_index == IteratorState::pass_the_end) ||
-           ((flat_index >= 0) && (flat_index < grid_->get_num_all_elems())),
-           ExcIndexRange(flat_index, 0, grid_->get_num_all_elems()));
-
-    this->flat_index_ = flat_index ;
-
-    if (this->flat_index_ != IteratorState::pass_the_end)
-        this->tensor_index_ = grid_->flat_to_tensor(this->flat_index_);
-    else
-        this->tensor_index_.fill(IteratorState::pass_the_end);
-}
-
+    grid_(grid),
+    index_it_(index),
+    property_(prop)
+{}
 
 
 
 template <int dim>
 CartesianGridElement<dim>::
-CartesianGridElement(const CartesianGridElement<dim> &elem, const CopyPolicy &copy_policy)
+CartesianGridElement(const CartesianGridElement<dim> &elem,
+                     const CopyPolicy &copy_policy)
     :
-    IndexType(elem, copy_policy)
+    grid_(elem.grid_),
+    index_it_(elem.index_it_),
+    property_(elem.property_)
 {
-    grid_         = elem.grid_;
-
     if (elem.all_sub_elems_cache_ != nullptr)
     {
         if (copy_policy == CopyPolicy::shallow)
@@ -395,7 +382,7 @@ CartesianGridElement<dim>::
 print_info(LogStream &out) const
 {
     out << "Flat id = "   << flat_index_ << "    ";
-    out << "Tensor id = " << tensor_index_ << endl;
+    out << "Tensor id = " << tensor_index_ << std::endl;
 }
 
 

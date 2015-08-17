@@ -378,7 +378,7 @@ end(const PropId &prop) -> ElementIterator
 }
 
 
-
+#if 0
 template<int dim_>
 auto
 CartesianGrid<dim_>::
@@ -407,11 +407,11 @@ CartesianGrid<dim_>::
 clast(const PropId &prop) const -> ElementConstIterator
 {
     return ElementConstIterator(this->shared_from_this(),
-                                elem_properties_[prop].last(),
+                                elem_properties_[prop].rbegin(),
                                 prop);
 }
 
-
+#endif
 
 template<int dim_>
 auto
@@ -839,7 +839,7 @@ get_bounding_box() const -> BBox<dim_>
 }
 
 
-
+#if 0
 template <int dim_>
 auto
 CartesianGrid<dim_>::
@@ -872,7 +872,8 @@ find_elements_of_points(const ValueVector<Points<dim_>> &points) const
         }
 
         auto ans = res.emplace(
-                       ElementIterator(this->shared_from_this(), this->tensor_to_flat(elem_t_id),ElementProperties::active),
+                       ElementIterator(this->shared_from_this(),
+                                       this->tensor_to_flat(elem_t_id),ElementProperties::active),
                        SafeSTLVector<int>(1,k));
 
         if (!ans.second)
@@ -880,7 +881,6 @@ find_elements_of_points(const ValueVector<Points<dim_>> &points) const
     }
     return res;
 }
-
 
 
 template <int dim_>
@@ -936,7 +936,7 @@ find_elements_id_of_point(const Points<dim_> &point) const
     }
     return elements_id;
 }
-
+#endif
 
 
 template <int dim_>

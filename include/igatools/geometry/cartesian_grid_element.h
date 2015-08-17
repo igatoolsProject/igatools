@@ -65,6 +65,7 @@ public:
     using ContainerType = const CartesianGrid<dim>;
     using IndexType = typename ContainerType::IndexType;
     using List = typename ContainerType::List;
+    using ListIt = typename ContainerType::ListIt;
 
     using Point = Points<dim>;
 
@@ -84,7 +85,7 @@ public:
      * flat index @p elem_index of the CartesianGrid @p grid.
      */
     CartesianGridElement(const std::shared_ptr<ContainerType> grid,
-                         const Index elem_index,
+                         const ListIt &elem_index,
                          const PropId &prop = ElementProperties::active);
 
 
