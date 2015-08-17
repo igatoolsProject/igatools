@@ -44,7 +44,7 @@ void ig_mapping(const int deg = 1)
     OUTSTART
 
     using Space = BSplineSpace<dim, dim+codim>;
-  //  using RefSpace = ReferenceSpace<dim, dim+codim>;
+    //  using RefSpace = ReferenceSpace<dim, dim+codim>;
     using Function = IgFunction<dim,0,dim+codim,1>;
     using Mapping   = PhysicalDomain<dim, codim>;
 

@@ -267,7 +267,7 @@ public:
     {
         base_t::init_cache(elem, k1);
         using SupElem = typename SupFunc::ElementAccessor;
-        auto & sup_elem_non_const = const_cast<SupElem &>(*sup_elem_);
+        auto &sup_elem_non_const = const_cast<SupElem &>(*sup_elem_);
         sup_func_->init_cache(sup_elem_non_const, Topology<sub_dim>());
     }
 
@@ -280,7 +280,7 @@ public:
         ElementIt el_it(elem.get_grid()->create_element(elem.get_flat_index()),ElementProperties::none);
 
         using SupElem = typename SupFunc::ElementAccessor;
-        auto & sup_elem_non_const = const_cast<SupElem &>(*sup_elem_);
+        auto &sup_elem_non_const = const_cast<SupElem &>(*sup_elem_);
         sup_elem_non_const.move_to(elem_map_.at(el_it->get_flat_index()));
 
         base_t::fill_cache(elem, k1, j);

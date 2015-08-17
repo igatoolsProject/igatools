@@ -33,7 +33,7 @@ namespace
 ValueFlags
 mapping_to_function_flags(const ValueFlags &flags)
 {
-	/*
+    /*
     ValueFlags valid_func_flags = ValueFlags::gradient |
                                   ValueFlags::hessian |
                                   ValueFlags::divergence |
@@ -42,10 +42,10 @@ mapping_to_function_flags(const ValueFlags &flags)
                                 ValueFlags::w_measure |
                                 ValueFlags::boundary_normal |
                                 valid_func_flags;
-//*/
+    //*/
 
-	ValueFlags transfer_flags = ValueFlags::gradient |
-			                    ValueFlags::hessian;
+    ValueFlags transfer_flags = ValueFlags::gradient |
+                                ValueFlags::hessian;
     ValueFlags f_flags = flags & transfer_flags;
 
     if (contains(flags, ValueFlags::point))
@@ -138,19 +138,19 @@ fill_cache(ElementAccessor &elem, const int j) const -> void
     if (cache.template status_fill<_Point>())
     {
         cache.template get_data<_Point>() =
-        		func_elem.template get_values<_Value,k>(j);
+            func_elem.template get_values<_Value,k>(j);
     }
 
     if (cache.template status_fill<_Gradient>())
     {
         cache.template get_data<_Gradient>() =
-        		func_elem.template get_values<_Gradient,k>(j);
+            func_elem.template get_values<_Gradient,k>(j);
     }
 
     if (cache.template status_fill<_Hessian>())
     {
         cache.template get_data<_Hessian>() =
-        		func_elem.template get_values<_Hessian,k>(j);
+            func_elem.template get_values<_Hessian,k>(j);
     }
 
     if (cache.template status_fill<_Measure>())

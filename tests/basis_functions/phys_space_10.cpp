@@ -119,7 +119,7 @@ void cache_fill_elem(const ValueFlags flag,
 {
     OUTSTART
 
- //   const int k = dim;
+//   const int k = dim;
     using BspSpace = BSplineSpace<dim, range, rank>;
     using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 

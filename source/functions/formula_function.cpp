@@ -79,7 +79,7 @@ fill_cache(ElementAccessor &elem, const topology_variant &k, const int sub_elem_
     parent_t::fill_cache(elem,k,sub_elem_id);
     using MapElem = typename PhysDomain::ElementAccessor;
 
-    auto & map_elem_non_const = const_cast<MapElem &>(*map_elem_);
+    auto &map_elem_non_const = const_cast<MapElem &>(*map_elem_);
     map_elem_non_const.move_to(elem.get_flat_index());
     mapping_->fill_cache(map_elem_non_const,k,sub_elem_id);
 

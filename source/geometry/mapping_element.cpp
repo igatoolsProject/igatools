@@ -29,7 +29,7 @@ MappingElement<dim_, codim_>::
 MappingElement(const std::shared_ptr<const Func> func,
                const Index elem_index)
     :
-	func_elem_(std::make_shared<FuncElem>(func,elem_index))
+    func_elem_(std::make_shared<FuncElem>(func,elem_index))
 {}
 
 
@@ -46,7 +46,7 @@ MappingElement(const self_t &elem,
     else
     {
         local_cache_ = std::make_shared<CacheType>(*elem.local_cache_);
-    	func_elem_ = std::make_shared<FuncElem>(*elem.func_elem_,copy_policy);
+        func_elem_ = std::make_shared<FuncElem>(*elem.func_elem_,copy_policy);
     }
 }
 
@@ -56,7 +56,7 @@ auto
 MappingElement<dim_, codim_>::
 get_func_element() -> FuncElem &
 {
-	return *func_elem_;
+    return *func_elem_;
 }
 
 template<int dim_, int codim_>
@@ -64,7 +64,7 @@ auto
 MappingElement<dim_, codim_>::
 get_func_element() const -> const FuncElem &
 {
-	return *func_elem_;
+    return *func_elem_;
 }
 
 template<int dim_, int codim_>
@@ -72,7 +72,7 @@ auto
 MappingElement<dim_, codim_>::
 get_flat_index() const -> Index
 {
-	return func_elem_->get_flat_index();
+    return func_elem_->get_flat_index();
 }
 
 template<int dim_, int codim_>
@@ -80,7 +80,7 @@ auto
 MappingElement<dim_, codim_>::
 get_tensor_index() const -> TensorIndex<dim>
 {
-	return func_elem_->get_tensor_index();
+    return func_elem_->get_tensor_index();
 }
 
 template<int dim_, int codim_>
@@ -88,7 +88,7 @@ auto
 MappingElement<dim_, codim_>::
 get_grid() const -> std::shared_ptr<const CartesianGrid<dim> >
 {
-	return func_elem_->get_grid_element().get_grid();
+    return func_elem_->get_grid_element().get_grid();
 }
 
 template<int dim_, int codim_>
@@ -96,7 +96,7 @@ bool
 MappingElement<dim_, codim_>::
 operator==(const self_t &a) const
 {
-	return *func_elem_ == *a.func_elem_;
+    return *func_elem_ == *a.func_elem_;
 }
 
 
@@ -105,7 +105,7 @@ bool
 MappingElement<dim_, codim_>::
 operator!=(const self_t &a) const
 {
-	return *func_elem_ != *a.func_elem_;
+    return *func_elem_ != *a.func_elem_;
 }
 
 template<int dim_, int codim_>
@@ -113,7 +113,7 @@ bool
 MappingElement<dim_, codim_>::
 operator<(const self_t &a) const
 {
-	return *func_elem_ < *a.func_elem_;
+    return *func_elem_ < *a.func_elem_;
 }
 
 template<int dim_, int codim_>
@@ -121,7 +121,7 @@ bool
 MappingElement<dim_, codim_>::
 operator>(const self_t &a) const
 {
-	return *func_elem_ > *a.func_elem_;
+    return *func_elem_ > *a.func_elem_;
 }
 
 template<int dim_, int codim_>
@@ -129,7 +129,7 @@ void
 MappingElement<dim_, codim_>::
 move_to(const Index flat_index)
 {
-	func_elem_->move_to(flat_index);
+    func_elem_->move_to(flat_index);
 }
 
 template<int dim_, int codim_>
@@ -137,7 +137,7 @@ void
 MappingElement<dim_, codim_>::
 print_info(LogStream &out) const
 {
-	func_elem_->print_info(out);
+    func_elem_->print_info(out);
 }
 
 template<int dim_, int codim_>
@@ -145,7 +145,7 @@ void
 MappingElement<dim_, codim_>::
 print_cache_info(LogStream &out) const
 {
-	func_elem_->print_cache_info(out);
+    func_elem_->print_cache_info(out);
 }
 
 

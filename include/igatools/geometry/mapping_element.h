@@ -218,7 +218,7 @@ public:
 private:
 
     using CType = boost::fusion::map<
-				  boost::fusion::pair<         _Point,DataWithFlagStatus<ValueVector<Points<space_dim>>>>,
+                  boost::fusion::pair<         _Point,DataWithFlagStatus<ValueVector<Points<space_dim>>>>,
                   boost::fusion::pair<      _Gradient,DataWithFlagStatus<ValueVector<Derivative<1>>>>,
                   boost::fusion::pair<       _Hessian,DataWithFlagStatus<ValueVector<Derivative<2>>>>,
                   boost::fusion::pair<       _Measure,DataWithFlagStatus<ValueVector<Real>>>,
@@ -269,9 +269,9 @@ private:
     std::shared_ptr<MappingElement<dim_,codim_> > clone() const;
 
 public:
-    FuncElem & get_func_element();
+    FuncElem &get_func_element();
 
-    const FuncElem & get_func_element() const;
+    const FuncElem &get_func_element() const;
 
     void print_info(LogStream &out) const;
 
@@ -291,8 +291,8 @@ private:
     void
     serialize(Archive &ar, const unsigned int version)
     {
-    	Assert(false,ExcNotImplemented());
-    	AssertThrow(false,ExcNotImplemented());
+        Assert(false,ExcNotImplemented());
+        AssertThrow(false,ExcNotImplemented());
     }
     ///@}
 #endif

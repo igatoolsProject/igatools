@@ -34,9 +34,9 @@ namespace
 {
 auto
 pushforward_to_mapping_flag(
-		const Transformation type,
-		const ValueFlags flags,
-		const TransformationFlags transf_flags)
+    const Transformation type,
+    const ValueFlags flags,
+    const TransformationFlags transf_flags)
 -> ValueFlags
 {
     ValueFlags transfer_flag =
@@ -241,9 +241,9 @@ operator()(const Quadrature<sub_elem_dim> &quad)
     space_to_pf_flag(flag_in_,map_flags, transf_flags);
 
     auto mapping_flags = pushforward_to_mapping_flag(
-    		PhysSpace::PushForwardElem::type,
-			flag_in_,
-			transf_flags);
+                             PhysSpace::PushForwardElem::type,
+                             flag_in_,
+                             transf_flags);
     mapping_.template reset<sub_elem_dim>(mapping_flags,quad);
 }
 
@@ -339,21 +339,21 @@ operator()(const Topology<sub_elem_dim> &topology)
     if (sub_elem_cache.template status_fill<_Value>())
     {
         PfElemAccessor::template
-			transform_0<RefSpace::range,RefSpace::rank,sub_elem_dim>(sub_elem_id_,ref_elem,map_elem,phys_elem_);
+        transform_0<RefSpace::range,RefSpace::rank,sub_elem_dim>(sub_elem_id_,ref_elem,map_elem,phys_elem_);
 
         sub_elem_cache.template set_status_filled<_Value>(true);
     }
     if (sub_elem_cache.template status_fill<_Gradient>())
     {
         PfElemAccessor::template
-			transform_1<RefSpace::range,RefSpace::rank,sub_elem_dim>(sub_elem_id_,ref_elem,map_elem,phys_elem_);
+        transform_1<RefSpace::range,RefSpace::rank,sub_elem_dim>(sub_elem_id_,ref_elem,map_elem,phys_elem_);
 
         sub_elem_cache.template set_status_filled<_Gradient>(true);
     }
     if (sub_elem_cache.template status_fill<_Hessian>())
     {
         PfElemAccessor::template
-			transform_2<RefSpace::range,RefSpace::rank,sub_elem_dim>(sub_elem_id_,ref_elem,map_elem,phys_elem_);
+        transform_2<RefSpace::range,RefSpace::rank,sub_elem_dim>(sub_elem_id_,ref_elem,map_elem,phys_elem_);
 
         sub_elem_cache.template set_status_filled<_Hessian>(true);
     }

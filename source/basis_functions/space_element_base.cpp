@@ -30,7 +30,7 @@ SpaceElementBase<dim>::
 SpaceElementBase(const std::shared_ptr<const SpaceBase<dim>> &space,
                  const Index elem_index)
     :
-	grid_elem_(space->get_ptr_const_grid()->create_element(elem_index)),
+    grid_elem_(space->get_ptr_const_grid()->create_element(elem_index)),
     space_(space)
 {
     Assert(grid_elem_ != nullptr, ExcNullPtr());
@@ -44,12 +44,12 @@ SpaceElementBase(const self_t &elem,
     :
     space_(elem.space_)
 {
-	if (copy_policy == CopyPolicy::shallow)
-		grid_elem_ = elem.grid_elem_;
-	else if (copy_policy == CopyPolicy::deep)
-		grid_elem_ = std::make_shared<CartesianGridElement<dim>>(*elem.grid_elem_,copy_policy);
-	else
-		AssertThrow(false,ExcInvalidState());
+    if (copy_policy == CopyPolicy::shallow)
+        grid_elem_ = elem.grid_elem_;
+    else if (copy_policy == CopyPolicy::deep)
+        grid_elem_ = std::make_shared<CartesianGridElement<dim>>(*elem.grid_elem_,copy_policy);
+    else
+        AssertThrow(false,ExcInvalidState());
 }
 
 template <int dim>
@@ -73,7 +73,7 @@ void
 SpaceElementBase<dim>::
 print_info(LogStream &out) const
 {
-	grid_elem_->print_info(out);
+    grid_elem_->print_info(out);
 
     out.begin_item("Element global connectivity (property=\"" + DofProperties::active + "\"):");
     const auto glob_dofs = this->get_local_to_global(DofProperties::active);
@@ -100,12 +100,12 @@ copy_from(const SpaceElementBase<dim> &elem,
 {
     if (this != &elem)
     {
-    	if (copy_policy == CopyPolicy::shallow)
-    		grid_elem_ = elem.grid_elem_;
-    	else if (copy_policy == CopyPolicy::deep)
-    		grid_elem_ = std::make_shared<CartesianGridElement<dim>>(*elem.grid_elem_,copy_policy);
-    	else
-    		AssertThrow(false,ExcInvalidState());
+        if (copy_policy == CopyPolicy::shallow)
+            grid_elem_ = elem.grid_elem_;
+        else if (copy_policy == CopyPolicy::deep)
+            grid_elem_ = std::make_shared<CartesianGridElement<dim>>(*elem.grid_elem_,copy_policy);
+        else
+            AssertThrow(false,ExcInvalidState());
 
         space_ = elem.space_;
     }
@@ -117,7 +117,7 @@ Index
 SpaceElementBase<dim>::
 get_flat_index() const
 {
-	return grid_elem_->get_flat_index();
+    return grid_elem_->get_flat_index();
 }
 
 template <int dim>
@@ -125,7 +125,7 @@ TensorIndex<dim>
 SpaceElementBase<dim>::
 get_tensor_index() const
 {
-	return grid_elem_->get_tensor_index();
+    return grid_elem_->get_tensor_index();
 }
 
 template <int dim>
@@ -133,7 +133,7 @@ std::shared_ptr<const CartesianGrid<dim> >
 SpaceElementBase<dim>::
 get_grid() const
 {
-	return grid_elem_->get_grid();
+    return grid_elem_->get_grid();
 }
 
 
@@ -239,7 +239,7 @@ void
 SpaceElementBase<dim>::
 move_to(const Index flat_index)
 {
-	grid_elem_->move_to(flat_index);
+    grid_elem_->move_to(flat_index);
 }
 
 

@@ -61,7 +61,7 @@ CartesianGridIteratorBase(
 template <class Accessor>
 CartesianGridIteratorBase<Accessor>::
 CartesianGridIteratorBase(const CartesianGridIteratorBase<Accessor> &it,
-		                  const CopyPolicy &copy_policy)
+                          const CopyPolicy &copy_policy)
     :
     elem_property_(it.elem_property_)
 {
@@ -133,7 +133,7 @@ CartesianGridIteratorBase<Accessor> &
 CartesianGridIteratorBase<Accessor>::
 operator++()
 {
-	accessor_->operator++();
+    accessor_->operator++();
 //    const auto id_this_elem = accessor_->get_flat_index();
 //    const auto grid = accessor_->get_grid();
 //    if (elem_property_ == ElementProperties::none)

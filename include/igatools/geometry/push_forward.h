@@ -90,18 +90,18 @@ public:
     template <int range, int rank, int sub_elem_dim, Transformation ttype=type_>
     static void
     transform_0(const int sub_elem_id,
-    		    const RefSpaceElem<range,rank> &ref_elem,
-				const MapElem & map_elem,
-				PhysSpaceElem<range,rank> & phys_elem,
+                const RefSpaceElem<range,rank> &ref_elem,
+                const MapElem &map_elem,
+                PhysSpaceElem<range,rank> &phys_elem,
                 EnableIf<ttype == Transformation::h_grad> * = 0)
     {
-    	//---------------------------------------------------------------------
-    	//TODO (martinelli, Aug 13, 2015) this block of common code can be stored as reference in the PushForward class
+        //---------------------------------------------------------------------
+        //TODO (martinelli, Aug 13, 2015) this block of common code can be stored as reference in the PushForward class
         auto &all_sub_elems_cache = phys_elem.get_all_sub_elems_cache();
         Assert(all_sub_elems_cache != nullptr, ExcNullPtr());
         auto &sub_elem_cache =
-        		all_sub_elems_cache->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id);
-    	//---------------------------------------------------------------------
+            all_sub_elems_cache->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id);
+        //---------------------------------------------------------------------
 
         auto &v = sub_elem_cache.template get_data<_Value>();
         const auto &v_hat = ref_elem.template get_basis<_Value,sub_elem_dim>(sub_elem_id,DofProperties::active);
@@ -113,23 +113,23 @@ public:
     template <int range, int rank, int sub_elem_dim, Transformation ttype=type_>
     static void
     transform_1(const int sub_elem_id,
-    		    const RefSpaceElem<range,rank> &ref_elem,
-				const MapElem & map_elem,
-				PhysSpaceElem<range,rank> & phys_elem,
+                const RefSpaceElem<range,rank> &ref_elem,
+                const MapElem &map_elem,
+                PhysSpaceElem<range,rank> &phys_elem,
                 EnableIf<ttype == Transformation::h_grad> * = 0)
     {
-    	//---------------------------------------------------------------------
-    	//TODO (martinelli, Aug 13, 2015) this block of common code can be stored as reference in the PushForward class
+        //---------------------------------------------------------------------
+        //TODO (martinelli, Aug 13, 2015) this block of common code can be stored as reference in the PushForward class
         auto &all_sub_elems_cache = phys_elem.get_all_sub_elems_cache();
         Assert(all_sub_elems_cache != nullptr, ExcNullPtr());
         auto &sub_elem_cache =
-        		all_sub_elems_cache->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id);
-    	//---------------------------------------------------------------------
+            all_sub_elems_cache->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id);
+        //---------------------------------------------------------------------
 
 
         const auto &Dv_hat  = ref_elem.template get_basis<_Gradient,sub_elem_dim>(sub_elem_id,DofProperties::active);
 
-        auto & Dv = sub_elem_cache.template get_data<_Gradient>();
+        auto &Dv = sub_elem_cache.template get_data<_Gradient>();
 
         const int n_func   = Dv_hat.get_num_functions();
         const int n_points = Dv_hat.get_num_points();
@@ -146,18 +146,18 @@ public:
     template <int range, int rank, int sub_elem_dim, Transformation ttype=type_>
     static void
     transform_2(const int sub_elem_id,
-    			const RefSpaceElem<range,rank> &ref_elem,
-				const MapElem & map_elem,
-				PhysSpaceElem<range,rank> & phys_elem,
+                const RefSpaceElem<range,rank> &ref_elem,
+                const MapElem &map_elem,
+                PhysSpaceElem<range,rank> &phys_elem,
                 EnableIf<ttype == Transformation::h_grad> * = 0)
     {
-    	//---------------------------------------------------------------------
-    	//TODO (martinelli, Aug 13, 2015) this block of common code can be stored as reference in the PushForward class
+        //---------------------------------------------------------------------
+        //TODO (martinelli, Aug 13, 2015) this block of common code can be stored as reference in the PushForward class
         auto &all_sub_elems_cache = phys_elem.get_all_sub_elems_cache();
         Assert(all_sub_elems_cache != nullptr, ExcNullPtr());
         auto &sub_elem_cache =
-        		all_sub_elems_cache->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id);
-    	//---------------------------------------------------------------------
+            all_sub_elems_cache->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id);
+        //---------------------------------------------------------------------
 
 
         const auto &D2v_hat  = ref_elem.template get_basis< _Hessian,sub_elem_dim>(sub_elem_id,DofProperties::active);

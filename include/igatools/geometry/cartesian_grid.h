@@ -441,8 +441,8 @@ public:
     /** @name Functions for the index transformations */
     ///@{
     /**
-//     * Transformation from a tensor-index to a flat-index.
-//     */
+    //     * Transformation from a tensor-index to a flat-index.
+    //     */
 //    Index tensor_to_flat(const TensorIndex<dim_> &tensor_index) const;
 //
 //    /**
@@ -530,7 +530,7 @@ public:
          * @note The functions returns TRUE also if the knots in the current grid object
          * are equal to the knots in @p grid_to_compare_with.
          */
-        bool same_knots_or_refinement_of(const CartesianGrid<dim_> &grid_to_compare_with) const;
+    bool same_knots_or_refinement_of(const CartesianGrid<dim_> &grid_to_compare_with) const;
 
 private:
 
@@ -624,7 +624,7 @@ private:
      * Properties assigned to the elements.
      * Elements are referred to by their flat ids.
      */
-    PropertyList properties_elements_id_;
+    PropertyList elem_properties_;
 
     /**
      * Unique identifier associated to each object instance.
@@ -634,9 +634,9 @@ private:
 private:
     List list_of_indices() const
     {
-    	List list;
-    	for (int i=0; i<get_num_all_elems(); ++i)
-    		list.insert(base_t::flat_to_tensor(i));
+        List list;
+        for (int i=0; i<get_num_all_elems(); ++i)
+            list.insert(base_t::flat_to_tensor(i));
     }
 public:
     /**
@@ -653,7 +653,7 @@ public:
      * the ElementProperty <tt>property</tt>.
      */
     bool test_if_element_has_property(const IndexType elem_flat_id,
-    		const PropId &property) const;
+                                      const PropId &property) const;
 
     /**
      * Adds a new <tt>property</tt> definition for the elements in the CartesianGrid.
@@ -719,7 +719,7 @@ private:
      */
     SafeSTLVector<Index>
     get_sub_elements_id(const TensorSize<dim_> &n_sub_elems,
-    		            const Index elem_id) const;
+                        const Index elem_id) const;
 #ifdef MESH_REFINEMENT
     /**
      * This class member is the grid before the last refinement. If no

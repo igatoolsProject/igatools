@@ -29,9 +29,9 @@ IGA_NAMESPACE_OPEN
 template <int dim>
 BaseElement<dim>::
 BaseElement(const Index fi, const TI &ti)
-:
-flat_index_(fi),
-tensor_index_(ti)
+    :
+    flat_index_(fi),
+    tensor_index_(ti)
 {}
 
 

@@ -104,7 +104,7 @@ public:
     }
 
     recursive_wrapper &
-    operator=(recursive_wrapper&& rhs)
+    operator=(recursive_wrapper &&rhs)
     {
         delete m_t;
         m_t = rhs.m_t;
@@ -120,7 +120,7 @@ public:
     }
 
     recursive_wrapper &
-    operator=(T&& t)
+    operator=(T &&t)
     {
         assign(std::move(t));
         return *this;
@@ -211,8 +211,8 @@ private:
 
             static whichCaller callers[sizeof...(AllTypes)] =
             {
-                &visitor_caller<Internal&&, AllTypes,
-                VoidPtrCV&&, Visitor, Args&&...>...
+                &visitor_caller<Internal &&, AllTypes,
+                VoidPtrCV &&, Visitor, Args &&...>...
             }
             ;
 
@@ -358,13 +358,13 @@ private:
 
     template <size_t Which, typename Current, typename... MyTypes>
     struct initialiser<Which, Current, MyTypes...>
-            : public initialiser<Which+1, MyTypes...>
+        : public initialiser<Which+1, MyTypes...>
     {
         typedef initialiser<Which+1, MyTypes...> base;
         using base::initialise;
 
         static void
-        initialise(Variant &v, Current&& current)
+        initialise(Variant &v, Current &&current)
         {
             v.construct(std::forward<Current>(current));
             v.indicate_which(Which);
@@ -445,7 +445,7 @@ public:
         return *this;
     }
 
-    Variant &operator=(Variant&& rhs)
+    Variant &operator=(Variant &&rhs)
     {
         if (this != &rhs)
         {

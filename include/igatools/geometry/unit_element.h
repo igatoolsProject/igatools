@@ -74,7 +74,7 @@ EnableIf< (dim==0) || (sub_elem_dim<0),
 
 
 template <int dim, int sub_elem_dim>
-EnableIf< (dim==sub_elem_dim) && (sub_elem_dim>0),
+EnableIf< (dim==sub_elem_dim) &&(sub_elem_dim>0),
           SafeSTLArray<typename UnitElement<dim>::template SubElement<sub_elem_dim>, skel_size(dim, sub_elem_dim)>>
                   fill_cube_elements()
 {

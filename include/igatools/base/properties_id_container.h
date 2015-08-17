@@ -43,22 +43,22 @@ template <typename IndexType>
 class PropertiesIdContainer
 {
 public:
-	using List = SafeSTLSet<IndexType>;
+    using List = SafeSTLSet<IndexType>;
 private:
     using ContainerType = std::map<PropId, List>;
     using iterator = typename ContainerType::iterator;
     using const_iterator = typename ContainerType::const_iterator;
 
 public:
-	/**
-	 * Adds a new <tt>property</tt> definition.
-	 *
-	 * @note If the <tt>property</tt> is already present,
-	 * an assertion will be raised (in Debug mode).
-	 */
-	void add_property(const PropId &property);
+    /**
+     * Adds a new <tt>property</tt> definition.
+     *
+     * @note If the <tt>property</tt> is already present,
+     * an assertion will be raised (in Debug mode).
+     */
+    void add_property(const PropId &property);
 
-	/**
+    /**
      * Returns TRUE if the @p property is defined.
      *
      * @warning Returns true also if the @p property is defined but no
@@ -134,9 +134,9 @@ private:
     ContainerType properties_id_;
 
     DeclException1(ExcPropNotDefined, PropId,
-    		<< "Property " << arg1 << "is not present.");
+                   << "Property " << arg1 << "is not present.");
     DeclException1(ExcPropAlreadyDefined, PropId,
-        		<< "Property " << arg1 << "is already present.");
+                   << "Property " << arg1 << "is already present.");
 
 #ifdef SERIALIZATION
     /**

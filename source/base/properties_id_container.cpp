@@ -196,7 +196,7 @@ print_info(LogStream &out) const
 {
     for (const auto &entry : properties_id_)
     {
-    	out.begin_item("IDs with property \"" + entry.first + "\":");
+        out.begin_item("IDs with property \"" + entry.first + "\":");
         entry.second.print_info(out);
     }
 }

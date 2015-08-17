@@ -186,8 +186,8 @@ template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
 fill_cache(ElementAccessor &func_elem,
-		const topology_variant &k,
-		const int sub_elem_id) const -> void
+           const topology_variant &k,
+           const int sub_elem_id) const -> void
 {
     parent_t::fill_cache(func_elem,k,sub_elem_id);
 
@@ -200,7 +200,7 @@ fill_cache(ElementAccessor &func_elem,
 
 
     auto fill_cache_dispatcher = FillCacheDispatcher(
-        sub_elem_id,*this,*space_elem_handler_,func_elem,*space_elem_,loc_coeff,property_);
+                                     sub_elem_id,*this,*space_elem_handler_,func_elem,*space_elem_,loc_coeff,property_);
 
     boost::apply_visitor(fill_cache_dispatcher, k);
 

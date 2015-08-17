@@ -85,7 +85,7 @@ public:
      */
     CartesianGridElement(const std::shared_ptr<ContainerType> grid,
                          const Index elem_index,
-						 const PropId &prop = ElementProperties::active);
+                         const PropId &prop = ElementProperties::active);
 
 
     /**
@@ -175,13 +175,13 @@ public:
      * as it is easy to use incorrectly. Only use it if you know what you
      * are doing.
      */
-   // void move_to(const IndexType&);
+    // void move_to(const IndexType&);
 
 
     typename List::iterator &operator++()
-	{
-    	return (++index_it_);
-	}
+    {
+        return (++index_it_);
+    }
     ///@}
 
     /**

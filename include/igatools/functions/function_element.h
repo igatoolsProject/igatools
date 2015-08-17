@@ -40,7 +40,7 @@ template<int dim, int codim, int range = 1, int rank = 1>
 class FunctionElement
 {
 private:
-	using self_t = FunctionElement<dim,codim,range,rank>;
+    using self_t = FunctionElement<dim,codim,range,rank>;
 
 public:
     using Func = Function<dim, codim, range, rank>;
@@ -195,12 +195,12 @@ public:
      */
     template <int topology_dim>
     ValueVector<Real> get_w_measures(const int topology_id) const
-	{
-    	ValueVector<Real> w_meas;
-    	Assert(false,ExcNotImplemented());
+    {
+        ValueVector<Real> w_meas;
+        Assert(false,ExcNotImplemented());
 
-    	return w_meas;
-	}
+        return w_meas;
+    }
 
 private:
 
@@ -225,10 +225,10 @@ public:
     //TODO (martinelli, Aug 13, 2015): this function should not be public.
     std::shared_ptr<CacheType>
     &get_cache()
-	{
+    {
         Assert(all_sub_elems_cache_ != nullptr,ExcNullPtr());
-    	return all_sub_elems_cache_;
-	}
+        return all_sub_elems_cache_;
+    }
 
 private:
 
@@ -255,7 +255,7 @@ private:
 
 
 public:
-    const GridElem & get_grid_element() const;
+    const GridElem &get_grid_element() const;
 
     void print_info(LogStream &out) const;
 

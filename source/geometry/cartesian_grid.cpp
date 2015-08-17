@@ -155,9 +155,9 @@ CartesianGrid(const KnotCoordinates &knot_coordinates)
     boundary_id_(0),
     object_id_(UniqueIdGenerator::get_unique_id())
 {
-properties_elements_id_.add_property(ElementProperties::active);
-properties_elements_id_.set_ids_property_status(ElementProperties::active,
-		list_of_indices, true);
+    elem_properties_.add_property(ElementProperties::active);
+    elem_properties_.set_ids_property_status(ElementProperties::active,
+                                             list_of_indices(), true);
 #ifndef NDEBUG
     for (const int i : UnitElement<dim_>::active_directions)
     {
@@ -225,7 +225,7 @@ CartesianGrid(const self_t &grid)
     TensorSizedContainer<dim_>(grid),
     knot_coordinates_(grid.knot_coordinates_),
     boundary_id_(grid.boundary_id_),
-    properties_elements_id_(grid.properties_elements_id_),
+    elem_properties_(grid.elem_properties_),
     object_id_(UniqueIdGenerator::get_unique_id())
 {}
 
@@ -282,7 +282,7 @@ void
 CartesianGrid<dim_>::
 add_elements_property(const PropId &property)
 {
-    properties_elements_id_.add_property(property);
+    elem_properties_.add_property(property);
 }
 
 
@@ -292,7 +292,7 @@ CartesianGrid<dim_>::
 get_elements_id_same_property(const PropId &property)
 -> List &
 {
-    return properties_elements_id_.get_ids_same_property(property);
+    return elem_properties_.get_ids_same_property(property);
 }
 
 
@@ -303,7 +303,7 @@ CartesianGrid<dim_>::
 get_elements_id_same_property(const PropId &property) const
 -> const List &
 {
-    return properties_elements_id_.get_ids_same_property(property);
+    return elem_properties_.get_ids_same_property(property);
 }
 
 
@@ -359,18 +359,9 @@ auto
 CartesianGrid<dim_>::
 begin(const PropId &prop) -> ElementIterator
 {
-	auto init = properties_elements_id_[prop].begin();
-    return ElementIterator(this->shared_from_this(), init, prop);
-}
-
-
-template<int dim_>
-auto
-CartesianGrid<dim_>::
-end(const PropId &property) -> ElementIterator
-{
-    return ElementIterator(this->create_element(IteratorState::pass_the_end),
-    		               property);
+    return ElementIterator(this->shared_from_this(),
+    elem_properties_[prop].begin(),
+    prop);
 }
 
 
@@ -378,26 +369,23 @@ end(const PropId &property) -> ElementIterator
 template<int dim_>
 auto
 CartesianGrid<dim_>::
-last(const PropId &property) -> ElementIterator
+end(const PropId &prop) -> ElementIterator
 {
-    int id_last_elem;
-    if (property == ElementProperties::active)
-    {
-        id_last_elem = this->get_num_all_elems()-1;
-    }
-    else
-    {
-        const auto &elems_same_property = get_elements_id_same_property(property);
-        const auto elem_begin = elems_same_property.begin();
-        auto elem_end   = elems_same_property.end();
+    return ElementIterator(this->shared_from_this(),
+    elem_properties_[prop].end(),
+    prop);
+}
 
-        if (elem_begin != elem_end)
-            id_last_elem = *(--elem_end);
-        else
-            id_last_elem = IteratorState::pass_the_end;
-    }
 
-    return ElementIterator(this->shared_from_this(), id_last_elem, property);
+
+template<int dim_>
+auto
+CartesianGrid<dim_>::
+last(const PropId &prop) -> ElementIterator
+{
+    return ElementIterator(this->shared_from_this(),
+    elem_properties_[prop].last(),
+    prop);
 }
 
 
@@ -415,26 +403,11 @@ last(const PropId &property) const -> ElementConstIterator
 template<int dim_>
 auto
 CartesianGrid<dim_>::
-clast(const PropId &property) const -> ElementConstIterator
+clast(const PropId &prop) const -> ElementConstIterator
 {
-    int id_last_elem;
-    if (property == ElementProperties::active)
-    {
-        id_last_elem = this->get_num_all_elems()-1;
-    }
-    else
-    {
-        const auto &elems_same_property = get_elements_id_same_property(property);
-        const auto elem_begin = elems_same_property.begin();
-        auto elem_end   = elems_same_property.end();
-
-        if (elem_begin != elem_end)
-            id_last_elem = *(--elem_end);
-        else
-            id_last_elem = IteratorState::pass_the_end;
-    }
-
-    return ElementConstIterator(this->shared_from_this(), id_last_elem, property);
+    return ElementConstIterator(this->shared_from_this(),
+                                elem_properties_[prop].last(),
+                                prop);
 }
 
 
@@ -442,9 +415,9 @@ clast(const PropId &property) const -> ElementConstIterator
 template<int dim_>
 auto
 CartesianGrid<dim_>::
-begin(const PropId &property) const -> ElementConstIterator
+begin(const PropId &prop) const -> ElementConstIterator
 {
-    return this->cbegin(property);
+    return this->cbegin(prop);
 }
 
 
@@ -452,9 +425,9 @@ begin(const PropId &property) const -> ElementConstIterator
 template<int dim_>
 auto
 CartesianGrid<dim_>::
-end(const PropId &property) const -> ElementConstIterator
+end(const PropId &prop) const -> ElementConstIterator
 {
-    return this->cend(property);
+    return this->cend(prop);
 }
 
 
@@ -462,26 +435,11 @@ end(const PropId &property) const -> ElementConstIterator
 template<int dim_>
 auto
 CartesianGrid<dim_>::
-cbegin(const PropId &property) const -> ElementConstIterator
+cbegin(const PropId &prop) const -> ElementConstIterator
 {
-    int id_first_elem;
-    if (property == ElementProperties::active)
-    {
-        id_first_elem = 0;
-    }
-    else
-    {
-        const auto &elems_same_property = get_elements_id_same_property(property);
-        const auto elem_begin = elems_same_property.begin();
-        const auto elem_end   = elems_same_property.end();
-
-        if (elem_begin != elem_end)
-            id_first_elem = *elem_begin;
-        else
-            id_first_elem = IteratorState::pass_the_end;
-    }
-
-    return ElementConstIterator(this->shared_from_this(), id_first_elem, property);
+    return ElementConstIterator(this->shared_from_this(),
+                                elem_properties_[prop].begin(),
+                                prop);
 }
 
 
@@ -489,9 +447,11 @@ cbegin(const PropId &property) const -> ElementConstIterator
 template<int dim_>
 auto
 CartesianGrid<dim_>::
-cend(const PropId &property) const -> ElementConstIterator
+cend(const PropId &prop) const -> ElementConstIterator
 {
-    return ElementConstIterator(this->create_element(IteratorState::pass_the_end),property);
+    return ElementConstIterator(this->shared_from_this(),
+                                elem_properties_[prop].end(),
+                                prop);
 }
 
 
@@ -558,9 +518,9 @@ get_boundary_normals(const int s_id) const -> BoundaryNormal<sub_dim>
 template<int dim_>
 Size
 CartesianGrid<dim_>::
-get_num_elements_same_property(const PropId &property) const
+get_num_elements_same_property(const PropId &prop) const
 {
-    return this->get_elements_id_same_property(property).size();
+    return this->get_elements_id_same_property(prop).size();
 }
 
 
@@ -734,7 +694,7 @@ insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert)
                                          *this,*grid_pre_refinement_);
 
 
-    for (auto &elem_properties : properties_elements_id_)
+    for (auto &elem_properties : elem_properties_)
         elem_properties.second.clear();
 
     auto coarse_elem = grid_pre_refinement_->begin();
@@ -808,10 +768,10 @@ print_info(LogStream &out) const
 
 
     //-------------------------------------------------------------
-    if (!properties_elements_id_.empty())
+    if (!elem_properties_.empty())
     {
         out.begin_item("Element properties:");
-        properties_elements_id_.print_info(out);
+        elem_properties_.print_info(out);
         out.end_item();
     }
     //-------------------------------------------------------
@@ -941,7 +901,7 @@ find_elements_id_of_point(const Points<dim_> &point) const
 
         Assert(p >= knots.front() && p <= knots.back(),
                ExcMessage("The point coordinate p[" + std::to_string(dir) + "]= "
-            		      + std::to_string(p) +
+                          + std::to_string(p) +
                           " is not in the interval spanned by the knots along the direction " +
                           std::to_string(dir)));
 
@@ -1079,11 +1039,11 @@ template <int dim_>
 bool
 CartesianGrid<dim_>::
 test_if_element_has_property(const IndexType elem_flat_id,
-		const PropId &property) const
+                             const PropId &property) const
 {
-	const auto &elem_list = this->get_elements_id_same_property(property);
-	return std::binary_search(elem_list.begin(),
-			elem_list.end(),elem_flat_id);
+    const auto &elem_list = this->get_elements_id_same_property(property);
+    return std::binary_search(elem_list.begin(),
+                              elem_list.end(),elem_flat_id);
 }
 
 
@@ -1105,7 +1065,7 @@ serialize(Archive &ar, const unsigned int version)
 
     ar &boost::serialization::make_nvp("boundary_id_",boundary_id_);
 
-    ar &boost::serialization::make_nvp("properties_elements_id_",properties_elements_id_);
+    ar &boost::serialization::make_nvp("properties_elements_id_",elem_properties_);
 
     ar &boost::serialization::make_nvp("object_id_",object_id_);
 

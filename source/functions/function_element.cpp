@@ -33,13 +33,13 @@ FunctionElement(const std::shared_ptr<const Func> func,
                 const Index elem_index)
     :
     func_(std::const_pointer_cast<Func>(func)),
-	grid_elem_(func->get_grid()->create_element(elem_index))
+    grid_elem_(func->get_grid()->create_element(elem_index))
 {
     Assert(func_ != nullptr, ExcNullPtr());
     Assert(grid_elem_ != nullptr, ExcNullPtr());
 
-	auto phys_domain = PhysDomain::create(func->get_phys_domain());
-	phys_domain_elem_ = phys_domain->create_element(elem_index);
+    auto phys_domain = PhysDomain::create(func->get_phys_domain());
+    phys_domain_elem_ = phys_domain->create_element(elem_index);
     Assert(phys_domain_elem_ != nullptr, ExcNullPtr());
 }
 
@@ -101,7 +101,7 @@ auto
 FunctionElement<dim, codim, range, rank>::
 get_grid_element() const -> const GridElem &
 {
-	return *grid_elem_;
+    return *grid_elem_;
 }
 
 
@@ -112,11 +112,11 @@ bool
 FunctionElement<dim, codim, range, rank>::
 operator==(const self_t &a) const
 {
-	Assert (this->get_grid() == a.get_grid(),
-			ExcMessage("The elements cannot be compared because defined on different grids."));
-	Assert (func_ == a.func_,
-			ExcMessage("The elements cannot be compared because defined with different functions."));
-	return (this->get_flat_index() == a.get_flat_index());
+    Assert(this->get_grid() == a.get_grid(),
+           ExcMessage("The elements cannot be compared because defined on different grids."));
+    Assert(func_ == a.func_,
+           ExcMessage("The elements cannot be compared because defined with different functions."));
+    return (this->get_flat_index() == a.get_flat_index());
 }
 
 
@@ -125,11 +125,11 @@ bool
 FunctionElement<dim, codim, range, rank>::
 operator!=(const self_t &a) const
 {
-	Assert (this->get_grid() == a.get_grid(),
-			ExcMessage("The elements cannot be compared because defined on different grids."));
-	Assert (func_ == a.func_,
-			ExcMessage("The elements cannot be compared because defined with different functions."));
-	return (this->get_flat_index() != a.get_flat_index());
+    Assert(this->get_grid() == a.get_grid(),
+           ExcMessage("The elements cannot be compared because defined on different grids."));
+    Assert(func_ == a.func_,
+           ExcMessage("The elements cannot be compared because defined with different functions."));
+    return (this->get_flat_index() != a.get_flat_index());
 }
 
 template<int dim, int codim, int range, int rank>
@@ -137,11 +137,11 @@ bool
 FunctionElement<dim, codim, range, rank>::
 operator<(const self_t &a) const
 {
-	Assert (this->get_grid() == a.get_grid(),
-			ExcMessage("The elements cannot be compared because defined on different grids."));
-	Assert (func_ == a.func_,
-			ExcMessage("The elements cannot be compared because defined with different functions."));
-	return (this->get_flat_index() < a.get_flat_index());
+    Assert(this->get_grid() == a.get_grid(),
+           ExcMessage("The elements cannot be compared because defined on different grids."));
+    Assert(func_ == a.func_,
+           ExcMessage("The elements cannot be compared because defined with different functions."));
+    return (this->get_flat_index() < a.get_flat_index());
 }
 
 
@@ -150,11 +150,11 @@ bool
 FunctionElement<dim, codim, range, rank>::
 operator>(const self_t &a) const
 {
-	Assert (this->get_grid() == a.get_grid(),
-			ExcMessage("The elements cannot be compared because defined on different grids."));
-	Assert (func_ == a.func_,
-			ExcMessage("The elements cannot be compared because defined with different functions."));
-	return (this->get_flat_index() > a.get_flat_index());
+    Assert(this->get_grid() == a.get_grid(),
+           ExcMessage("The elements cannot be compared because defined on different grids."));
+    Assert(func_ == a.func_,
+           ExcMessage("The elements cannot be compared because defined with different functions."));
+    return (this->get_flat_index() > a.get_flat_index());
 }
 
 
@@ -163,8 +163,8 @@ void
 FunctionElement<dim, codim, range, rank>::
 move_to(const Index flat_index)
 {
-	grid_elem_->move_to(flat_index);
-	phys_domain_elem_->move_to(flat_index);
+    grid_elem_->move_to(flat_index);
+    phys_domain_elem_->move_to(flat_index);
 }
 
 
@@ -173,7 +173,7 @@ Index
 FunctionElement<dim, codim, range, rank>::
 get_flat_index() const
 {
-	return grid_elem_->get_flat_index();
+    return grid_elem_->get_flat_index();
 }
 
 template<int dim, int codim, int range, int rank>
@@ -181,7 +181,7 @@ TensorIndex<dim>
 FunctionElement<dim, codim, range, rank>::
 get_tensor_index() const
 {
-	return grid_elem_->get_tensor_index();
+    return grid_elem_->get_tensor_index();
 }
 
 template<int dim, int codim, int range, int rank>
@@ -189,7 +189,7 @@ void
 FunctionElement<dim, codim, range, rank>::
 print_info(LogStream &out) const
 {
-	grid_elem_->print_info(out);
+    grid_elem_->print_info(out);
 }
 
 template<int dim, int codim, int range, int rank>
@@ -197,16 +197,16 @@ void
 FunctionElement<dim, codim, range, rank>::
 print_cache_info(LogStream &out) const
 {
-	grid_elem_->print_cache_info(out);
+    grid_elem_->print_cache_info(out);
 }
 
 
 template<int dim, int codim, int range, int rank>
 std::shared_ptr<const CartesianGrid<dim>>
-FunctionElement<dim, codim, range, rank>::
-get_grid() const
+                                       FunctionElement<dim, codim, range, rank>::
+                                       get_grid() const
 {
-	return grid_elem_->get_grid();
+    return grid_elem_->get_grid();
 }
 
 

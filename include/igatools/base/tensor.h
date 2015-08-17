@@ -944,8 +944,8 @@ using Inverse =
 
 template<class T>
 inline
-EnableIf<(T::dim==0) && (T::value_t::dim == 0) &&
-(T::rank==1) && (T::value_t::rank == 1), Inverse<T> >
+EnableIf<(T::dim==0) &&(T::value_t::dim == 0) &&
+(T::rank==1) &&(T::value_t::rank == 1), Inverse<T> >
 inverse_(const T &A, Real &det)
 {
     det = 1.;
@@ -954,8 +954,8 @@ inverse_(const T &A, Real &det)
 
 template<class T>
 inline
-EnableIf<(T::dim==1) && (T::value_t::dim == 1) &&
-(T::rank==1) && (T::value_t::rank == 1), Inverse<T> >
+EnableIf<(T::dim==1) &&(T::value_t::dim == 1) &&
+(T::rank==1) &&(T::value_t::rank == 1), Inverse<T> >
 inverse_(const T &A, Real &det)
 {
     det = A[0][0];
@@ -971,8 +971,8 @@ inverse_(const T &A, Real &det)
 
 template<class T>
 inline
-EnableIf<(T::dim==2) && (T::value_t::dim == 2) &&
-(T::rank==1) && (T::value_t::rank == 1), Inverse<T> >
+EnableIf<(T::dim==2) &&(T::value_t::dim == 2) &&
+(T::rank==1) &&(T::value_t::rank == 1), Inverse<T> >
 inverse_(const T &A, Real &det)
 {
     det = A[0][0] * A[1][1] - A[0][1] * A[1][0];
@@ -993,8 +993,8 @@ inverse_(const T &A, Real &det)
 
 template<class T>
 inline
-EnableIf<(T::dim==3) && (T::value_t::dim == 3) &&
-(T::rank==1) && (T::value_t::rank == 1), Inverse<T> >
+EnableIf<(T::dim==3) &&(T::value_t::dim == 3) &&
+(T::rank==1) &&(T::value_t::rank == 1), Inverse<T> >
 inverse_(const T &A, Real &det)
 {
     Inverse<T> A_inv;

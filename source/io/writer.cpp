@@ -43,7 +43,7 @@ Writer<dim, codim, T>::
 Writer(const shared_ptr<CartesianGrid<dim>> grid)
     :
     Writer(IdentityFunction<dim,dim+codim>::create(grid),
-           shared_ptr< QUniform<dim> >(new QUniform<dim>(2)))
+          shared_ptr< QUniform<dim> >(new QUniform<dim>(2)))
 {}
 
 template<int dim, int codim, class T>

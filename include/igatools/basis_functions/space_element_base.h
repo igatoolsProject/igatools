@@ -215,7 +215,7 @@ public:
     template<int k = (dim > 0) ? (dim-1) : 0 >
     bool is_boundary() const
     {
-    	return grid_elem_->is_boundary();
+        return grid_elem_->is_boundary();
     }
 
     /**
@@ -225,7 +225,7 @@ public:
     template<int k = (dim > 0) ? (dim-1) : 0>
     bool is_boundary(const Index sub_elem_id) const
     {
-    	return grid_elem_->is_boundary(sub_elem_id);
+        return grid_elem_->is_boundary(sub_elem_id);
     }
 
 private:

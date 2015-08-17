@@ -58,7 +58,10 @@ public:
      */
     explicit ValueContainer(const Size num_functions, const Size num_points)
         :
-        DynamicMultiArray<T,2>(TensorSize<2>({num_points,num_functions}))
+        DynamicMultiArray<T,2>(TensorSize<2>(
+    {
+        num_points,num_functions
+    }))
     {
         Assert(num_functions >= 0, ExcLowerRange(num_functions,0));
         Assert(num_points >= 0, ExcLowerRange(num_points,0));

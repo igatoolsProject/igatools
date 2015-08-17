@@ -184,12 +184,12 @@ private:
         InitCacheDispatcher(
             const SafeSTLArray<ValueFlags, dim+1> &flags,
             RefElemHandler &ref_space_handler,
-			Map &mapping,
+            Map &mapping,
             PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> &phys_elem)
             :
             flags_(flags),
             ref_space_handler_(ref_space_handler),
-			mapping_(mapping),
+            mapping_(mapping),
             phys_elem_(phys_elem)
         {};
 
@@ -214,7 +214,7 @@ private:
             :
             sub_elem_id_(sub_elem_id),
             ref_space_handler_(ref_space_handler),
-			mapping_(mapping),
+            mapping_(mapping),
             phys_elem_(phys_elem)
         {};
 

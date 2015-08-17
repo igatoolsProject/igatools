@@ -33,20 +33,20 @@ CartesianGridElement<dim>::
 CartesianGridElement(const std::shared_ptr<ContainerType> grid,
                      const IndexType &index)
     :
-	IndexType(index),
+    IndexType(index),
     grid_(grid)
 {
-	Assert(grid_ != nullptr,ExcNullPtr());
-	Assert((flat_index == IteratorState::pass_the_end) ||
-			((flat_index >= 0) && (flat_index < grid_->get_num_all_elems())),
-			ExcIndexRange(flat_index, 0, grid_->get_num_all_elems()));
+    Assert(grid_ != nullptr,ExcNullPtr());
+    Assert((flat_index == IteratorState::pass_the_end) ||
+           ((flat_index >= 0) && (flat_index < grid_->get_num_all_elems())),
+           ExcIndexRange(flat_index, 0, grid_->get_num_all_elems()));
 
-	this->flat_index_ = flat_index ;
+    this->flat_index_ = flat_index ;
 
-	if (this->flat_index_ != IteratorState::pass_the_end)
-		this->tensor_index_ = grid_->flat_to_tensor(this->flat_index_);
-	else
-		this->tensor_index_.fill(IteratorState::pass_the_end);
+    if (this->flat_index_ != IteratorState::pass_the_end)
+        this->tensor_index_ = grid_->flat_to_tensor(this->flat_index_);
+    else
+        this->tensor_index_.fill(IteratorState::pass_the_end);
 }
 
 
@@ -55,10 +55,10 @@ CartesianGridElement(const std::shared_ptr<ContainerType> grid,
 template <int dim>
 CartesianGridElement<dim>::
 CartesianGridElement(const CartesianGridElement<dim> &elem, const CopyPolicy &copy_policy)
-:
-IndexType(elem, copy_policy)
+    :
+    IndexType(elem, copy_policy)
 {
-	grid_         = elem.grid_;
+    grid_         = elem.grid_;
 
     if (elem.all_sub_elems_cache_ != nullptr)
     {
@@ -100,7 +100,7 @@ template <int dim>
 auto
 get_index() const ->  const IndexType &
 {
-	return *index_it;
+    return *index_it;
 }
 
 

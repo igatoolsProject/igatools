@@ -109,9 +109,9 @@ public:
     static std::shared_ptr<self_t>  create(std::shared_ptr<const FuncType> F);
 
     std::shared_ptr<self_t> get_handler() const
-	{
-    	return std::make_shared<self_t>(self_t(this->F_->clone()));
-	}
+    {
+        return std::make_shared<self_t>(self_t(this->F_->clone()));
+    }
 public:
     void reset(const ValueFlags flag, const eval_pts_variant &quad);
 
@@ -123,10 +123,10 @@ public:
     }
 
     void fill_cache(ElementAccessor &elem, const topology_variant &k,
-    		 const int j) const;
+                    const int j) const;
 
     void fill_cache(ElementIterator &elem, const topology_variant &k,
-    		const int j) const
+                    const int j) const
     {
 
         fill_cache(*elem, k, j);
