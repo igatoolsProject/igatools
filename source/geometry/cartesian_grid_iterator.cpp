@@ -81,7 +81,7 @@ CartesianGridIteratorBase(const CartesianGridIteratorBase<Accessor> &it,
 }
 
 
-
+#if 0
 template <class Accessor>
 bool
 CartesianGridIteratorBase<Accessor>::
@@ -126,7 +126,7 @@ move_to(const TensIndex &tensor_index)
 {
     this->move_to(accessor_->get_grid()->tensor_to_flat(tensor_index));
 }
-
+#endif
 
 template <class Accessor>
 CartesianGridIteratorBase<Accessor> &
@@ -134,34 +134,8 @@ CartesianGridIteratorBase<Accessor>::
 operator++()
 {
     accessor_->operator++();
-//    const auto id_this_elem = accessor_->get_flat_index();
-//    const auto grid = accessor_->get_grid();
-//    if (elem_property_ == ElementProperties::none)
-//    {
-//        const auto id_next_elem = id_this_elem + 1;
-//        if (id_next_elem < grid->get_num_all_elems())
-//            accessor_->move_to(id_next_elem);
-//        else
-//            accessor_->move_to(IteratorState::pass_the_end);
-//    }
-//    else
-//    {
-//        const auto &elems_same_property =
-//            grid->get_elements_id_same_property(elem_property_);
-//
-//        const auto id_next_elem = ++(elems_same_property.find(id_this_elem));
-//        if (id_next_elem != elems_same_property.end())
-//            accessor_->move_to(*id_next_elem);
-//        else
-//            accessor_->move_to(IteratorState::pass_the_end);
-//    }
-
     return *this;
 }
-
-
-
-
 
 
 
@@ -170,10 +144,9 @@ bool
 CartesianGridIteratorBase<Accessor>::
 operator==(const CartesianGridIteratorBase<Accessor> &i) const
 {
-    Assert(elem_property_ == i.elem_property_,
-           ExcMessage("Iterators comparison not possible because they are defined with different ElementProperty"));
     return *accessor_ == *i.accessor_;
 }
+
 
 
 template <class Accessor>
@@ -181,8 +154,6 @@ bool
 CartesianGridIteratorBase<Accessor>::
 operator>(const CartesianGridIteratorBase<Accessor> &i) const
 {
-    Assert(elem_property_ == i.elem_property_,
-           ExcMessage("Iterators comparison not possible because they are defined with different ElementProperty"));
     return (*accessor_ > *i.accessor_);
 }
 
@@ -191,8 +162,6 @@ bool
 CartesianGridIteratorBase<Accessor>::
 operator<(const CartesianGridIteratorBase<Accessor> &i) const
 {
-    Assert(elem_property_ == i.elem_property_,
-           ExcMessage("Iterators comparison not possible because they are defined with different ElementProperty"));
     return (*accessor_ < *i.accessor_);
 }
 
@@ -203,11 +172,10 @@ bool
 CartesianGridIteratorBase<Accessor>::
 operator!=(const CartesianGridIteratorBase<Accessor> &i) const
 {
-    Assert(elem_property_ == i.elem_property_,
-           ExcMessage("Iterators comparison not possible because they are defined with different ElementProperty"));
     return accessor_->operator != (*(i.accessor_));
 }
 
+#if 0
 template <class Accessor>
 Index
 CartesianGridIteratorBase<Accessor>::
@@ -223,6 +191,8 @@ get_tensor_index() const -> TensIndex
 {
     return accessor_->get_tensor_index();
 }
+#endif
+
 
 
 template <class Accessor>
@@ -234,6 +204,7 @@ operator * ()
 }
 
 
+
 template <class Accessor>
 Accessor *
 CartesianGridIterator<Accessor>::
@@ -242,6 +213,7 @@ operator -> ()
     return this->accessor_.get();
 }
 
+
 template <class Accessor>
 const Accessor &
 CartesianGridIterator<Accessor>::
@@ -277,8 +249,5 @@ operator -> () const
 {
     return this->accessor_.get();
 }
-
-
-
 
 IGA_NAMESPACE_CLOSE

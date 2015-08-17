@@ -18,18 +18,16 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef CARTESIAN_GRID_ITERATOR_H_
-#define CARTESIAN_GRID_ITERATOR_H_
+#ifndef __CARTESIAN_GRID_ITERATOR_H_
+#define __CARTESIAN_GRID_ITERATOR_H_
 
 #include <igatools/base/config.h>
-#include <igatools/utils/tensor_index.h>
+#include <igatools/base/properties.h>
 
 #include <iterator>
 #include <memory>
 
 IGA_NAMESPACE_OPEN
-
-//TODO(pauletti, Oct 11, 2014): the class name should be change to GridIterator
 
 /**
  * @brief Base class for iterator on collection of objects build over a CartesianGrid and
