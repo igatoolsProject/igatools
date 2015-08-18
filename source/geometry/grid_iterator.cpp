@@ -28,8 +28,8 @@ IGA_NAMESPACE_OPEN
 template <class Element>
 GridIteratorBase<Element>::
 GridIteratorBase(std::shared_ptr<ContainerType> grid,
-                          const ListIt index,
-                          const PropId &prop)
+                 const ListIt index,
+                 const PropId &prop)
     :
     elem_(grid->create_element(index,prop))
 {}
@@ -39,7 +39,7 @@ GridIteratorBase(std::shared_ptr<ContainerType> grid,
 template <class Element>
 GridIteratorBase<Element>::
 GridIteratorBase(const GridIteratorBase<Element> &it,
-                          const CopyPolicy &copy_policy)
+                 const CopyPolicy &copy_policy)
 {
     if (copy_policy == CopyPolicy::deep)
     {

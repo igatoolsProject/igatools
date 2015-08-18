@@ -198,8 +198,8 @@ public:
      * an assertion will be raised (in DEBUG mode).
      */
     GridIteratorBase(std::shared_ptr<ContainerType> grid,
-                              const ListIt &index,
-                              const PropId &property);
+                     const ListIt &index,
+                     const PropId &property);
 
     /**
      * Construct an iterator using the underlying element pointer.
@@ -215,7 +215,7 @@ public:
      * @note By default it uses the deep copy.
      */
     GridIteratorBase(const GridIteratorBase<Element> &it,
-                              const CopyPolicy &copy_policy = CopyPolicy::deep);
+                     const CopyPolicy &copy_policy = CopyPolicy::deep);
 
     /** Move constructor. */
     GridIteratorBase(GridIteratorBase<Element> &&it) = default;

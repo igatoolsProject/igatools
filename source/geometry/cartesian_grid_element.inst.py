@@ -43,16 +43,16 @@ for dim in inst.sub_domain_dims+inst.domain_dims:
         s = fun.replace('k', '%d' % (k)).replace('dim', '%d' % (dim));
         f.write('template ' + s + '\n')
 
-accs =  ['GridElement',       'ConstGridElement']
+accs1 =  ['GridElement',       'ConstGridElement']
 for dim in inst.sub_domain_dims+inst.domain_dims: 
-  for acc in accs: 
-      f.write('template class ' + acc + '<%d>' %(dim) + ';\n'
+  for acc in accs1: 
+      f.write('template class ' + acc + '<%d>' %(dim) + ';\n')
 
-accs =  ['GridElement',       'ConstGridElement', 'GridElement', 'ConstGridElement']
+accs=  ['GridElement',       'ConstGridElement', 'GridElement', 'ConstGridElement']
 iters =  ['GridIteratorBase', 'GridIteratorBase',   'GridIterator', 'ConstGridIterator']
 for dim in inst.sub_domain_dims+inst.domain_dims:
   for i in range(len(accs)):
-    acc = iters(i) + '<' + accs(i) + '<%d>' %(dim) + '>' 
+    acc = iters[i] + '<' + accs[i] + '<%d>' %(dim) + '>' 
     f.write('template class %s; \n' %(acc))
   
 #---------------------------------------------------

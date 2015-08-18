@@ -25,11 +25,11 @@
 
 IGA_NAMESPACE_OPEN
 
-template <int dim>
-GridElementBase<dim>::
+template <int dim, class ContainerType_>
+GridElementBase<dim, ContainerType_>::
 GridElementBase(const std::shared_ptr<ContainerType> grid,
-                     const ListIt &index,
-                     const PropId &prop)
+                const ListIt &index,
+                const PropId &prop)
     :
     grid_(grid),
     property_(prop),
@@ -38,10 +38,10 @@ GridElementBase(const std::shared_ptr<ContainerType> grid,
 
 
 
-template <int dim>
-GridElementBase<dim>::
-GridElementBase(const GridElementBase<dim> &elem,
-                     const CopyPolicy &copy_policy)
+template <int dim, class ContainerType_>
+GridElementBase<dim, ContainerType_>::
+GridElementBase(const self_t &elem,
+                const CopyPolicy &copy_policy)
     :
     grid_(elem.grid_),
     property_(elem.property_),
@@ -62,31 +62,31 @@ GridElementBase(const GridElementBase<dim> &elem,
 
 
 
-//template <int dim>
-//std::shared_ptr<GridElementBase<dim> >
-//GridElementBase<dim>::
+//template <int dim, class ContainerType_>
+//std::shared_ptr<self_t >
+//GridElementBase<dim, ContainerType_>::
 //clone() const
 //{
-//    auto elem = std::make_shared<GridElementBase<dim>>(*this,CopyPolicy::deep);
+//    auto elem = std::make_shared<self_t>(*this,CopyPolicy::deep);
 //    Assert(elem != nullptr, ExcNullPtr());
 //    return elem;
 //}
 
 
 
-template <int dim>
+template <int dim, class ContainerType_>
 auto
-GridElementBase<dim>::
-get_grid() const -> const std::shared_ptr<const CartesianGrid<dim> >
+GridElementBase<dim, ContainerType_>::
+get_grid() const -> const std::shared_ptr<const ContainerType>
 {
     return grid_;
 }
 
 
 
-template <int dim>
+template <int dim, class ContainerType_>
 auto
-GridElementBase<dim>::
+GridElementBase<dim, ContainerType_>::
 get_index() const ->  const IndexType &
 {
     return *index_it_;
@@ -94,9 +94,9 @@ get_index() const ->  const IndexType &
 
 
 
-//template <int dim>
+//template <int dim, class ContainerType_>
 //void
-//GridElementBase<dim>::
+//GridElementBase<dim, ContainerType_>::
 //move_to(const Index  &flat_index)
 //{
 //    Assert((flat_index == IteratorState::pass_the_end) ||
@@ -113,9 +113,9 @@ get_index() const ->  const IndexType &
 
 
 
-template <int dim>
+template <int dim, class ContainerType_>
 bool
-GridElementBase<dim>::
+GridElementBase<dim, ContainerType_>::
 has_property(const PropId &prop) const
 {
     const auto &list = grid_->elem_properties_[prop];
@@ -124,10 +124,10 @@ has_property(const PropId &prop) const
 
 
 
-template <int dim>
+template <int dim, class ContainerType_>
 bool
-GridElementBase<dim>::
-operator ==(const GridElementBase<dim> &elem) const
+GridElementBase<dim, ContainerType_>::
+operator ==(const self_t &elem) const
 {
     Assert(this->get_grid() == elem.get_grid(),
            ExcMessage("Cannot compare elements on different grid."));
@@ -136,30 +136,30 @@ operator ==(const GridElementBase<dim> &elem) const
 
 
 
-template <int dim>
+template <int dim, class ContainerType_>
 bool
-GridElementBase<dim>::
-operator !=(const GridElementBase<dim> &elem) const
+GridElementBase<dim, ContainerType_>::
+operator !=(const self_t &elem) const
 {
     Assert(this->get_grid() == elem.get_grid(),
            ExcMessage("Cannot compare elements on different grid."));
     return (this->get_index() != elem.get_index());
 }
 
-template <int dim>
+template <int dim, class ContainerType_>
 bool
-GridElementBase<dim>::
-operator <(const GridElementBase<dim> &elem) const
+GridElementBase<dim, ContainerType_>::
+operator <(const self_t &elem) const
 {
     Assert(this->get_grid() == elem.get_grid(),
            ExcMessage("Cannot compare elements on different grid."));
     return (this->get_index() < elem.get_index());
 }
 
-template <int dim>
+template <int dim, class ContainerType_>
 bool
-GridElementBase<dim>::
-operator >(const GridElementBase<dim> &elem) const
+GridElementBase<dim, ContainerType_>::
+operator >(const self_t &elem) const
 {
     Assert(this->get_grid() == elem.get_grid(),
            ExcMessage("Cannot compare elements on different grid."));
@@ -167,21 +167,20 @@ operator >(const GridElementBase<dim> &elem) const
 }
 
 
-template <int dim>
-GridElementBase<dim> &
-GridElementBase<dim>::
-operator=(const GridElementBase<dim> &element)
+template <int dim, class ContainerType_>
+auto
+GridElementBase<dim, ContainerType_>::
+operator=(const self_t &element) -> self_t &
 {
     shallow_copy_from(element);
     return *this;
 }
 
 
-template <int dim>
+template <int dim, class ContainerType_>
 void
-GridElementBase<dim>::
-copy_from(const GridElementBase<dim> &elem,
-          const CopyPolicy &copy_policy)
+GridElementBase<dim, ContainerType_>::
+copy_from(const self_t &elem, const CopyPolicy &copy_policy)
 {
     Assert(this->get_grid() == elem.get_grid(),
            ExcMessage("Cannot copy from an element on different grid."));
@@ -210,29 +209,29 @@ copy_from(const GridElementBase<dim> &elem,
 
 
 
-template <int dim>
+template <int dim, class ContainerType_>
 void
-GridElementBase<dim>::
-deep_copy_from(const GridElementBase<dim> &elem)
+GridElementBase<dim, ContainerType_>::
+deep_copy_from(const self_t &elem)
 {
     copy_from(elem,CopyPolicy::deep);
 }
 
 
 
-template <int dim>
+template <int dim, class ContainerType_>
 void
-GridElementBase<dim>::
-shallow_copy_from(const GridElementBase<dim> &elem)
+GridElementBase<dim, ContainerType_>::
+shallow_copy_from(const self_t &elem)
 {
     copy_from(elem,CopyPolicy::shallow);
 }
 
 
 
-template <int dim>
+template <int dim, class ContainerType_>
 auto
-GridElementBase<dim>::
+GridElementBase<dim, ContainerType_>::
 vertex(const int i) const -> Point
 {
     Assert(i < UnitElement<dim>::sub_elements_size[0],
@@ -253,9 +252,9 @@ vertex(const int i) const -> Point
 
 
 
-template <int dim>
+template <int dim, class ContainerType_>
 template <int k>
-bool GridElementBase<dim>::
+bool GridElementBase<dim, ContainerType_>::
 is_boundary(const Index id) const
 {
     const auto &n_elem = this->get_grid()->get_num_intervals();
@@ -277,10 +276,10 @@ is_boundary(const Index id) const
 
 
 
-template <int dim>
+template <int dim, class ContainerType_>
 template <int k>
 bool
-GridElementBase<dim>::
+GridElementBase<dim, ContainerType_>::
 is_boundary() const
 {
     for (auto &id : UnitElement<dim>::template elems_ids<k>())
@@ -293,10 +292,10 @@ is_boundary() const
 
 
 
-template <int dim>
+template <int dim, class ContainerType_>
 template <int k>
 Real
-GridElementBase<dim>::
+GridElementBase<dim, ContainerType_>::
 get_measure(const int j) const
 {
     const auto lengths = this->template get_side_lengths<k>(j);
@@ -313,10 +312,10 @@ get_measure(const int j) const
 
 
 
-template <int dim>
+template <int dim, class ContainerType_>
 template <int k>
 ValueVector<Real>
-GridElementBase<dim>::
+GridElementBase<dim, ContainerType_>::
 get_w_measures(const int j) const
 {
     return this->template get_values_from_cache<_W_Measure,k>(j);
@@ -324,10 +323,10 @@ get_w_measures(const int j) const
 
 
 
-template <int dim>
+template <int dim, class ContainerType_>
 template <int sdim>
 auto
-GridElementBase<dim>::
+GridElementBase<dim, ContainerType_>::
 get_side_lengths(const int sid) const -> const Points<sdim>
 {
     Points<sdim> lengths;
@@ -353,10 +352,10 @@ get_side_lengths(const int sid) const -> const Points<sdim>
 
 
 
-template <int dim>
+template <int dim, class ContainerType_>
 template <int k>
 auto
-GridElementBase<dim>::
+GridElementBase<dim, ContainerType_>::
 get_points(const int j) const ->ValueVector<Point>
 {
     return this->template get_values_from_cache<_Point,k>(j);
@@ -365,18 +364,18 @@ get_points(const int j) const ->ValueVector<Point>
 
 
 
-template <int dim>
+template <int dim, class ContainerType_>
 auto
-GridElementBase<dim>::
+GridElementBase<dim, ContainerType_>::
 get_element_points() const -> ValueVector<Point>
 {
     return this->template get_points<dim>(0);
 }
 
 
-template <int dim>
+template <int dim, class ContainerType_>
 void
-GridElementBase<dim>::
+GridElementBase<dim, ContainerType_>::
 print_info(LogStream &out) const
 {
     out.begin_item("Property: ");
@@ -389,9 +388,9 @@ print_info(LogStream &out) const
 
 
 
-template <int dim>
+template <int dim, class ContainerType_>
 void
-GridElementBase<dim>::
+GridElementBase<dim, ContainerType_>::
 print_cache_info(LogStream &out) const
 {
     if (all_sub_elems_cache_)
@@ -400,10 +399,12 @@ print_cache_info(LogStream &out) const
         out << "Cache not allocated." << std::endl;
 }
 
+
+
 #if 0
-template <int dim>
+template <int dim, class ContainerType_>
 SafeSTLVector<std::string>
-GridElementBase<dim>::
+GridElementBase<dim, ContainerType_>::
 get_defined_properties() const
 {
     SafeSTLVector<std::string> elem_properties;
@@ -419,9 +420,9 @@ get_defined_properties() const
 
 
 
-template <int dim>
+template <int dim, class ContainerType_>
 ValueFlags
-GridElementBase<dim>::
+GridElementBase<dim, ContainerType_>::
 get_valid_flags()
 {
     return cacheutils::get_valid_flags_from_cache_type(CType());
@@ -429,10 +430,10 @@ get_valid_flags()
 #endif
 
 #ifdef SERIALIZATION
-template <int dim>
+template <int dim, class ContainerType_>
 template<class Archive>
 void
-GridElementBase<dim>::
+GridElementBase<dim, ContainerType_>::
 serialize(Archive &ar, const unsigned int version)
 {
     auto non_const_grid = std::const_pointer_cast<CartesianGrid<dim>>(grid_);
@@ -451,4 +452,4 @@ serialize(Archive &ar, const unsigned int version)
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/geometry/cartesian_grid_element.inst>
+//#include <igatools/geometry/cartesian_grid_element.inst>

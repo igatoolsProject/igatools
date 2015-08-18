@@ -30,7 +30,7 @@
 #include <igatools/geometry/unit_element.h>
 #include <igatools/base/array_utils.h>
 #include <igatools/geometry/bbox.h>
-//#include <igatools/geometry/cartesian_grid_iterator.h>
+#include <igatools/geometry/grid_iterator.h>
 #include <igatools/base/properties_id_container.h>
 
 #ifdef MESH_REFINEMENT
@@ -39,7 +39,8 @@
 
 IGA_NAMESPACE_OPEN
 
-template <int> class CartesianGridElement;
+template <int> class GridElement;
+template <int> class ConstGridElement;
 template <int> class GridElementHandler;
 
 /**
@@ -170,13 +171,14 @@ public:
     static const int dim = dim_;
 
     /** Type for the element accessor. */
-    using ElementAccessor = CartesianGridElement<dim_>;
+    using ElementAccessor = GridElement<dim_>;
+    using ConstElementAccessor = ConstGridElement<dim_>;
 
     /** Type for the iterator over the elements of the grid (non-const version).  */
-    using ElementIterator = ElementAccessor;
+    using ElementIterator = GridIterator<ElementAccessor>;
 
     /** Type for the iterator over the elements of the grid (const version).  */
-    using ElementConstIterator = ConstGridIterator<ElementAccessor>;
+    using ElementConstIterator = ConstGridIterator<ConstElementAccessor>;
 
     using ElementHandler = GridElementHandler<dim_>;
 
@@ -744,7 +746,8 @@ private:
     signal_insert_knots_t insert_knots_signals_;
 #endif
 
-    friend class CartesianGridElement<dim_>;
+    friend class GridElement<dim_>;
+    friend class ConstGridElement<dim_>;
 
 #ifdef SERIALIZATION
     /**

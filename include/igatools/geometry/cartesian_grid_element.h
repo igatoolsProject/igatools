@@ -58,14 +58,14 @@ template <int dim, class ContainerType_>
 class GridElementBase
 {
 private:
-    using self_t = GridElementBase<dim>;
+    using self_t = GridElementBase<dim, ContainerType_>;
 
 public:
     /** Type required by the CartesianGridIterator templated iterator */
     using ContainerType = ContainerType_;
-    using IndexType = typename ContainerType::IndexType;
-    using List = typename ContainerType::List;
-    using ListIt = typename ContainerType::ListIt;
+    using IndexType = typename ContainerType_::IndexType;
+    using List = typename ContainerType_::List;
+    using ListIt = typename ContainerType_::ListIt;
 
     using Point = Points<dim>;
 
@@ -84,9 +84,9 @@ public:
      * Construct an accessor pointing to the element with
      * flat index @p elem_index of the CartesianGrid @p grid.
      */
-    GridElementBase(const std::shared_ptr<ContainerType> grid,
-                         const ListIt &elem_index,
-                         const PropId &prop = ElementProperties::active);
+    GridElementBase(const std::shared_ptr<ContainerType_> grid,
+                    const ListIt &index,
+                    const PropId &prop = ElementProperties::active);
 
     /**
      * Copy constructor.
@@ -97,7 +97,7 @@ public:
      * uses the <b>deep</b> copy.
      */
     GridElementBase(const self_t &elem,
-                         const CopyPolicy &copy_policy = CopyPolicy::deep);
+                    const CopyPolicy &copy_policy = CopyPolicy::deep);
 
     /**
      * Move constructor.
@@ -378,17 +378,17 @@ protected:
 
 template <int dim>
 class ConstGridElement
-: public GridElementBase<dim, const CartesianGrid<dim>>
+    : public GridElementBase<dim, const CartesianGrid<dim>>
 {
-	 using GridElementBase<Element>::GridElementBase;
+    using GridElementBase<dim, const CartesianGrid<dim>>::GridElementBase;
 };
 
 
 template <int dim>
 class GridElement
-: public GridElementBase<dim, CartesianGrid<dim>>
+    : public GridElementBase<dim, CartesianGrid<dim>>
 {
-	 using GridElementBase<Element>::GridElementBase;
+    using GridElementBase<dim, CartesianGrid<dim>>::GridElementBase;
 };
 
 
