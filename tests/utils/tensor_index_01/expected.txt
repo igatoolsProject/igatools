@@ -15,41 +15,41 @@ Tensor range 2D:
    Entry id: 0
    [ 3 5 ]
    Entry id: 1
-   [ 4 5 ]
-   Entry id: 2
-   [ 5 5 ]
-   Entry id: 3
-   [ 6 5 ]
-   Entry id: 4
    [ 3 6 ]
-   Entry id: 5
-   [ 4 6 ]
-   Entry id: 6
-   [ 5 6 ]
-   Entry id: 7
-   [ 6 6 ]
-   Entry id: 8
+   Entry id: 2
    [ 3 7 ]
-   Entry id: 9
-   [ 4 7 ]
-   Entry id: 10
-   [ 5 7 ]
-   Entry id: 11
-   [ 6 7 ]
-   Entry id: 12
+   Entry id: 3
    [ 3 8 ]
-   Entry id: 13
-   [ 4 8 ]
-   Entry id: 14
-   [ 5 8 ]
-   Entry id: 15
-   [ 6 8 ]
-   Entry id: 16
+   Entry id: 4
    [ 3 9 ]
-   Entry id: 17
+   Entry id: 5
+   [ 4 5 ]
+   Entry id: 6
+   [ 4 6 ]
+   Entry id: 7
+   [ 4 7 ]
+   Entry id: 8
+   [ 4 8 ]
+   Entry id: 9
    [ 4 9 ]
-   Entry id: 18
+   Entry id: 10
+   [ 5 5 ]
+   Entry id: 11
+   [ 5 6 ]
+   Entry id: 12
+   [ 5 7 ]
+   Entry id: 13
+   [ 5 8 ]
+   Entry id: 14
    [ 5 9 ]
+   Entry id: 15
+   [ 6 5 ]
+   Entry id: 16
+   [ 6 6 ]
+   Entry id: 17
+   [ 6 7 ]
+   Entry id: 18
+   [ 6 8 ]
    Entry id: 19
    [ 6 9 ]
 
@@ -57,81 +57,81 @@ Tensor range 3D:
    Entry id: 0
    [ 3 5 1 ]
    Entry id: 1
-   [ 4 5 1 ]
-   Entry id: 2
-   [ 5 5 1 ]
-   Entry id: 3
-   [ 6 5 1 ]
-   Entry id: 4
-   [ 3 6 1 ]
-   Entry id: 5
-   [ 4 6 1 ]
-   Entry id: 6
-   [ 5 6 1 ]
-   Entry id: 7
-   [ 6 6 1 ]
-   Entry id: 8
-   [ 3 7 1 ]
-   Entry id: 9
-   [ 4 7 1 ]
-   Entry id: 10
-   [ 5 7 1 ]
-   Entry id: 11
-   [ 6 7 1 ]
-   Entry id: 12
-   [ 3 8 1 ]
-   Entry id: 13
-   [ 4 8 1 ]
-   Entry id: 14
-   [ 5 8 1 ]
-   Entry id: 15
-   [ 6 8 1 ]
-   Entry id: 16
-   [ 3 9 1 ]
-   Entry id: 17
-   [ 4 9 1 ]
-   Entry id: 18
-   [ 5 9 1 ]
-   Entry id: 19
-   [ 6 9 1 ]
-   Entry id: 20
    [ 3 5 2 ]
-   Entry id: 21
-   [ 4 5 2 ]
-   Entry id: 22
-   [ 5 5 2 ]
-   Entry id: 23
-   [ 6 5 2 ]
-   Entry id: 24
+   Entry id: 2
+   [ 3 6 1 ]
+   Entry id: 3
    [ 3 6 2 ]
-   Entry id: 25
-   [ 4 6 2 ]
-   Entry id: 26
-   [ 5 6 2 ]
-   Entry id: 27
-   [ 6 6 2 ]
-   Entry id: 28
+   Entry id: 4
+   [ 3 7 1 ]
+   Entry id: 5
    [ 3 7 2 ]
-   Entry id: 29
-   [ 4 7 2 ]
-   Entry id: 30
-   [ 5 7 2 ]
-   Entry id: 31
-   [ 6 7 2 ]
-   Entry id: 32
+   Entry id: 6
+   [ 3 8 1 ]
+   Entry id: 7
    [ 3 8 2 ]
-   Entry id: 33
-   [ 4 8 2 ]
-   Entry id: 34
-   [ 5 8 2 ]
-   Entry id: 35
-   [ 6 8 2 ]
-   Entry id: 36
+   Entry id: 8
+   [ 3 9 1 ]
+   Entry id: 9
    [ 3 9 2 ]
-   Entry id: 37
+   Entry id: 10
+   [ 4 5 1 ]
+   Entry id: 11
+   [ 4 5 2 ]
+   Entry id: 12
+   [ 4 6 1 ]
+   Entry id: 13
+   [ 4 6 2 ]
+   Entry id: 14
+   [ 4 7 1 ]
+   Entry id: 15
+   [ 4 7 2 ]
+   Entry id: 16
+   [ 4 8 1 ]
+   Entry id: 17
+   [ 4 8 2 ]
+   Entry id: 18
+   [ 4 9 1 ]
+   Entry id: 19
    [ 4 9 2 ]
-   Entry id: 38
+   Entry id: 20
+   [ 5 5 1 ]
+   Entry id: 21
+   [ 5 5 2 ]
+   Entry id: 22
+   [ 5 6 1 ]
+   Entry id: 23
+   [ 5 6 2 ]
+   Entry id: 24
+   [ 5 7 1 ]
+   Entry id: 25
+   [ 5 7 2 ]
+   Entry id: 26
+   [ 5 8 1 ]
+   Entry id: 27
+   [ 5 8 2 ]
+   Entry id: 28
+   [ 5 9 1 ]
+   Entry id: 29
    [ 5 9 2 ]
+   Entry id: 30
+   [ 6 5 1 ]
+   Entry id: 31
+   [ 6 5 2 ]
+   Entry id: 32
+   [ 6 6 1 ]
+   Entry id: 33
+   [ 6 6 2 ]
+   Entry id: 34
+   [ 6 7 1 ]
+   Entry id: 35
+   [ 6 7 2 ]
+   Entry id: 36
+   [ 6 8 1 ]
+   Entry id: 37
+   [ 6 8 2 ]
+   Entry id: 38
+   [ 6 9 1 ]
    Entry id: 39
    [ 6 9 2 ]
 

@@ -41,9 +41,9 @@ for dim in inst.domain_dims:
     f.write('template class %s; \n' %(acc))
     elems.append(acc)
     for fun in sub_dim_members:
-        k = dim
-        s = fun.replace('k', '%d' % (k)).replace('Element', '%s' % (acc));
-        f.write('template ' + s + '\n')
+        for k in inst.sub_dims(dim):
+          s = fun.replace('k', '%d' % (k)).replace('Element', '%s' % (acc));
+          f.write('template ' + s + '\n')
         
 for dim in inst.sub_domain_dims:
   for el in els:
@@ -51,7 +51,7 @@ for dim in inst.sub_domain_dims:
     f.write('template class %s; \n' %(acc))
     elems.append(acc)
     for fun in sub_dim_members:
-        k = dim.dim
+        k = dim
         s = fun.replace('k', '%d' % (k)).replace('Element', '%s' % (acc));
         f.write('template ' + s + '\n')
 

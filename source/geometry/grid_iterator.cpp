@@ -31,7 +31,7 @@ GridIteratorBase(std::shared_ptr<ContainerType> grid,
                  const ListIt &index,
                  const PropId &prop)
     :
-    elem_(grid->create_element(index,prop))
+				 elem_(std::make_shared<Element>(Element(grid, index, prop)))
 {}
 
 
@@ -130,7 +130,7 @@ Element &
 GridIterator<Element>::
 operator * ()
 {
-    return *this->accessor_;
+    return *this->elem_;
 }
 
 
@@ -140,7 +140,7 @@ Element *
 GridIterator<Element>::
 operator -> ()
 {
-    return this->accessor_.get();
+    return this->elem_.get();
 }
 
 
@@ -149,7 +149,7 @@ const Element &
 GridIterator<Element>::
 operator * () const
 {
-    return *this->accessor_;
+    return *this->elem_;
 }
 
 
@@ -158,7 +158,7 @@ const Element *
 GridIterator<Element>::
 operator -> () const
 {
-    return this->accessor_.get();
+    return this->elem_.get();
 }
 
 
@@ -167,7 +167,7 @@ const Element &
 ConstGridIterator<Element>::
 operator * () const
 {
-    return *this->accessor_;
+    return *this->elem_;
 }
 
 
@@ -177,7 +177,7 @@ const Element *
 ConstGridIterator<Element>::
 operator -> () const
 {
-    return this->accessor_.get();
+    return this->elem_.get();
 }
 
 IGA_NAMESPACE_CLOSE
