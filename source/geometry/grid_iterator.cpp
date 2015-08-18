@@ -28,7 +28,7 @@ IGA_NAMESPACE_OPEN
 template <class Element>
 GridIteratorBase<Element>::
 GridIteratorBase(std::shared_ptr<ContainerType> grid,
-                 const ListIt index,
+                 const ListIt &index,
                  const PropId &prop)
     :
     elem_(grid->create_element(index,prop))

@@ -25,22 +25,34 @@ data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
 sub_dim_members = [
-             'Real GridElementBase<dim>::get_measure<k>(const int j) const;',
-             'ValueVector<Real> GridElementBase<dim>::get_w_measures<k>(const int j) const;',
-             'const Points<k> GridElementBase<dim>::get_side_lengths<k>(const int j) const;',
-             'ValueVector<typename GridElementBase<dim>::Point> GridElementBase<dim>::get_points<k>(const int j) const;',
-             'bool GridElementBase<dim>::is_boundary<k>(const Index sub_elem_id) const;',
-             'bool GridElementBase<dim>::is_boundary<k>() const;']
+             'Real Element::get_measure<k>(const int j) const;',
+             'ValueVector<Real> Element::get_w_measures<k>(const int j) const;',
+             'const Points<k> Element::get_side_lengths<k>(const int j) const;',
+             'ValueVector<typename Element::Point> Element::get_points<k>(const int j) const;',
+             'bool Element::is_boundary<k>(const Index sub_elem_id) const;',
+             'bool Element::is_boundary<k>() const;']
 
 elems = []
 
-for dim in inst.sub_domain_dims+inst.domain_dims:
-    acc = 'GridElementBase<%d>' %(dim) 
+els =['const CartesianGrid', ' CartesianGrid']
+for dim in inst.domain_dims:
+  for el in els:
+    acc = 'GridElementBase<%d,' %(dim) + el + '<%d>>' %(dim)
     f.write('template class %s; \n' %(acc))
     elems.append(acc)
     for fun in sub_dim_members:
         k = dim
-        s = fun.replace('k', '%d' % (k)).replace('dim', '%d' % (dim));
+        s = fun.replace('k', '%d' % (k)).replace('Element', '%s' % (acc));
+        f.write('template ' + s + '\n')
+        
+for dim in inst.sub_domain_dims:
+  for el in els:
+    acc = 'GridElementBase<%d,' %(dim) + el + '< %d>>' %(dim)
+    f.write('template class %s; \n' %(acc))
+    elems.append(acc)
+    for fun in sub_dim_members:
+        k = dim.dim
+        s = fun.replace('k', '%d' % (k)).replace('Element', '%s' % (acc));
         f.write('template ' + s + '\n')
 
 accs1 =  ['GridElement',       'ConstGridElement']

@@ -39,6 +39,7 @@
 
 IGA_NAMESPACE_OPEN
 
+template <int, class> class GridElementBase;
 template <int> class GridElement;
 template <int> class ConstGridElement;
 template <int> class GridElementHandler;
@@ -635,17 +636,13 @@ private:
      */
     Index object_id_;
 
-private:
-    List list_of_indices() const
-    {
-        return el_tensor_range<dim>(TensorIndex<dim>(), get_num_intervals());
-    }
+
 
 public:
     /**
      * Create an element (defined on this grid) with a given flat_index.
      */
-    std::shared_ptr<ElementAccessor>
+    std::shared_ptr<ConstElementAccessor>
     create_element(const ListIt &index, const PropId &prop) const;
 
 public:
@@ -745,7 +742,8 @@ private:
      */
     signal_insert_knots_t insert_knots_signals_;
 #endif
-
+    friend class GridElementBase<dim_, CartesianGrid<dim_>>;
+    friend class GridElementBase<dim_, const CartesianGrid<dim_>>;
     friend class GridElement<dim_>;
     friend class ConstGridElement<dim_>;
 

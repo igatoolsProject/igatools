@@ -25,6 +25,7 @@
 #include <igatools/utils/vector_tools.h>
 #include <igatools/utils/multi_array_utils.h>
 #include <igatools/utils/unique_id_generator.h>
+#include <igatools/utils/tensor_range.h>
 #include <algorithm>
 
 using std::endl;
@@ -157,7 +158,9 @@ CartesianGrid(const KnotCoordinates &knot_coordinates)
 {
     elem_properties_.add_property(ElementProperties::active);
     elem_properties_.set_ids_property_status(ElementProperties::active,
-                                             list_of_indices(), true);
+                                             el_tensor_range<dim>(TensorIndex<dim>(), get_num_intervals()),
+                                             true);
+
 #ifndef NDEBUG
     for (const int i : UnitElement<dim_>::active_directions)
     {
@@ -311,9 +314,10 @@ template<int dim_>
 auto
 CartesianGrid<dim_>::
 create_element(const ListIt &index, const PropId &prop) const
--> std::shared_ptr<ElementAccessor>
+-> std::shared_ptr<ConstElementAccessor>
 {
-    using Elem = CartesianGridElement<dim_>;
+
+    using Elem =ConstElementAccessor;
     auto elem = shared_ptr<Elem>(new Elem(this->shared_from_this(), index, prop));
     Assert(elem != nullptr,ExcNullPtr());
 
