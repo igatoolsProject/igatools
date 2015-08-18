@@ -44,8 +44,8 @@ TensorIndex(const Size val) noexcept
 template <int rank>
 TensorIndex<rank>::
 TensorIndex(const SafeSTLArray<Index,rank> &arr) noexcept
-    :
-    SafeSTLArray<Index,rank>(arr)
+:
+SafeSTLArray<Index,rank>(arr)
 {
 #ifndef NDEBUG
     for (const auto &idx : (*this))
@@ -145,6 +145,7 @@ operator<<(LogStream &out, const TensorIndex<rank> &tensor_index)
 
 
 
+#if 0
 template<>
 SafeSTLVector<TensorIndex<1> >
 tensor_range(TensorIndex<1> first, TensorIndex<1> last)
@@ -168,6 +169,8 @@ tensor_range(TensorIndex<0> first, TensorIndex<0> last)
 
     return result;
 }
+#endif
+
 
 IGA_NAMESPACE_CLOSE
 

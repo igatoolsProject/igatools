@@ -25,7 +25,7 @@ data = Instantiation(include_files)
 
 quadratures = []
 for dim in inst.sub_domain_dims + inst.domain_dims:
-    quad = 'PropertiesIdContainer<BaseElement<%d>>' %(dim)
+    quad = 'PropertiesIdContainer<TensorIndex<%d>>' %(dim)
     quadratures.append(quad)
     f.write('template class %s; \n' %(quad))
 

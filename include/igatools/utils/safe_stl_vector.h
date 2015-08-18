@@ -18,18 +18,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef SAFE_STL_VECTOR_H_
-#define SAFE_STL_VECTOR_H_
+#ifndef __SAFE_STL_VECTOR_H_
+#define __SAFE_STL_VECTOR_H_
 
 #include <igatools/base/config.h>
 #include <igatools/utils/safe_stl_container.h>
-
-
 #include <vector>
-#include <set>
+
 IGA_NAMESPACE_OPEN
-
-
 
 /**
  * @brief iga version of std::vector.
@@ -45,23 +41,8 @@ public :
     /** Inherit the constructors of the base class. */
     using SafeSTLContainer<std::vector<T>>::SafeSTLContainer;
 
-} ;
-
-
-template<class T>
-class SafeSTLSet :
-    public SafeSTLContainer<std::set<T>>
-{
-    using base_t = SafeSTLContainer<std::set<T>>;
-public :
-    /** Inherit the constructors of the base class. */
-    using SafeSTLContainer<std::set<T>>::SafeSTLContainer;
-
-} ;
-
-
+};
 
 IGA_NAMESPACE_CLOSE
-
 
 #endif // SAFE_STL_VECTOR_H_

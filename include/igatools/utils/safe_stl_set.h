@@ -18,35 +18,31 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/geometry/base_element.h>
+#ifndef __SAFE_STL_SET_H_
+#define __SAFE_STL_SET_H_
+
+#include <igatools/base/config.h>
+#include <igatools/utils/safe_stl_container.h>
+#include <set>
 
 IGA_NAMESPACE_OPEN
 
-template<>
-SafeSTLSet<BaseElement<1> >
-el_tensor_range(TensorIndex<1> first, TensorIndex<1> last)
+/**
+ * @brief iga version of std::set.
+ * It can be used as a std::set with print_info support
+ */
+
+template<class T>
+class SafeSTLSet :
+    public SafeSTLContainer<std::set<T>>
 {
-    Assert(first <= last, ExcMessage("first bigger than last"));
-    SafeSTLSet<BaseElement<1>> result;
-    for (int i=first[0]; i<last[0]; ++i)
-    {
-        BaseElement<1> el{i};
-        result.insert(el);
-    }
+    using base_t = SafeSTLContainer<std::set<T>>;
+public :
+    /** Inherit the constructors of the base class. */
+    using SafeSTLContainer<std::set<T>>::SafeSTLContainer;
 
-    return result;
-}
-
-
-
-template<>
-SafeSTLSet<BaseElement<0> >
-el_tensor_range(TensorIndex<0> first, TensorIndex<0> last)
-{
-    Assert(false, ExcNotImplemented());
-    SafeSTLSet<BaseElement<0>> result;
-
-    return result;
-}
+};
 
 IGA_NAMESPACE_CLOSE
+
+#endif // SAFE_STL_SET_H_

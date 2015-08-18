@@ -18,7 +18,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
 #ifndef __TENSOR_INDEX_H_
 #define __TENSOR_INDEX_H_
 
@@ -199,7 +198,7 @@ template <int rank>
 LogStream &
 operator<<(LogStream &out, const TensorIndex<rank> &tensor_index) ;
 
-
+#if 0
 /**
  * Generates a vector with the tensor indices of the given
  * rectangular range.
@@ -234,6 +233,7 @@ SafeSTLVector<TensorIndex<1>> tensor_range(TensorIndex<1> first, TensorIndex<1> 
 
 template<>
 SafeSTLVector<TensorIndex<0>> tensor_range(TensorIndex<0> first, TensorIndex<0> last);
+#endif
 
 IGA_NAMESPACE_CLOSE
 

@@ -27,7 +27,7 @@ data = Instantiation(include_files)
 elems = []
 
 for dim in inst.domain_dims+inst.sub_domain_dims:
-    acc = 'BaseElement<%d>' %(dim) 
+    acc = 'TensorIndex<%d>' %(dim) 
     f.write('template class %s; \n' %(acc))
     elems.append(acc)
    
@@ -39,7 +39,7 @@ f.write('IGA_NAMESPACE_CLOSE\n')
 f.write('#ifdef SERIALIZATION\n')
 id = 0 
 for elem in unique(elems):
-    alias = 'BaseElementAlias%d' %(id)
+    alias = 'TensorIndexAlias%d' %(id)
     f.write('using %s = iga::%s; \n' % (alias, elem))
     f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
     f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)

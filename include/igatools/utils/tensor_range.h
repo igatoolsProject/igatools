@@ -18,37 +18,26 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __BASE_ELEMENT_H_
-#define __BASE_ELEMENT_H_
+#ifndef __TENSOR_RANGE_H_
+#define __TENSOR_RANGE_H_
 
 #include <igatools/base/config.h>
 #include <igatools/utils/tensor_index.h>
-#include <igatools/utils/safe_stl_vector.h>
+#include <igatools/utils/safe_stl_set.h>
 
 IGA_NAMESPACE_OPEN
 
 /**
- * @brief Cartesian Product Element iterator (without properties)
- *
- * @author pauletti, 2015
- *
- * @ingroup serializable
- */
-template <int dim>
-using BaseElement = TensorIndex<dim>;
-
-/**
- * Generates a vector with the tensor indices of the given
+ * Generates a set(list) with the tensor indices of the given
  * rectangular range.
  *
  *  @relates TensorIndex
  *  @author pauletti 2015
  */
 template<int k>
-SafeSTLSet<BaseElement<k>> el_tensor_range(TensorIndex<k> first, TensorIndex<k> last)
+SafeSTLSet<TensorIndex<k>> el_tensor_range(TensorIndex<k> first, TensorIndex<k> last)
 {
-    Assert(first <= last, ExcMessage("first bigger than last"));
-    SafeSTLSet<BaseElement<k>> result;
+    SafeSTLSet<TensorIndex<k>> result;
     TensorIndex<k-1> ind(sequence<k-1>());
     auto vec = el_tensor_range<k-1>(first.get_sub_tensor(ind), last.get_sub_tensor(ind));
 
@@ -56,7 +45,7 @@ SafeSTLSet<BaseElement<k>> el_tensor_range(TensorIndex<k> first, TensorIndex<k> 
     {
         for (auto &t_k_1 : vec)
         {
-            BaseElement<k> t_k;
+            TensorIndex<k> t_k;
             for (int j=0; j<k-1; ++j)
                 t_k[j] = t_k_1[j];
             t_k[k-1] = i;
@@ -67,13 +56,12 @@ SafeSTLSet<BaseElement<k>> el_tensor_range(TensorIndex<k> first, TensorIndex<k> 
 }
 
 template<>
-SafeSTLSet<BaseElement<1> >
+SafeSTLSet<TensorIndex<1> >
 el_tensor_range(TensorIndex<1> first, TensorIndex<1> last);
+
 template<>
-SafeSTLSet<BaseElement<0> >
+SafeSTLSet<TensorIndex<0> >
 el_tensor_range(TensorIndex<0> first, TensorIndex<0> last);
-
-
 
 IGA_NAMESPACE_CLOSE
 

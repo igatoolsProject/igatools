@@ -18,49 +18,35 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/**
- *  @file
- *  @brief Tensor range generator function
- *  @author pauletti
- *  @date 2015-03-07
- */
+#include <igatools/geometry/base_element.h>
 
+IGA_NAMESPACE_OPEN
 
-#include "../tests.h"
-#include <igatools/utils/tensor_index.h>
-
-void get_range()
+template<>
+SafeSTLSet<TensorIndex<1> >
+el_tensor_range(TensorIndex<1> first, TensorIndex<1> last)
 {
-    OUTSTART
+    Assert(first <= last, ExcMessage("first bigger than last"));
+    SafeSTLSet<TensorIndex<1>> result;
+    for (int i=first[0]; i<last[0]; ++i)
     {
-        TensorIndex<1> first{3};
-        TensorIndex<1> last{7};
-        out.begin_item("Tensor range 1D:");
-        tensor_range(first, last).print_info(out);
-        out.end_item();
+        TensorIndex<1> el {i};
+        result.insert(el);
     }
 
-    {
-        TensorIndex<2> first{3,5};
-        TensorIndex<2> last{7,10};
-        out.begin_item("Tensor range 2D:");
-        tensor_range(first, last).print_info(out);
-        out.end_item();
-    }
-
-    {
-        TensorIndex<3> first{3,5,1};
-        TensorIndex<3> last{7,10, 3};
-        out.begin_item("Tensor range 3D:");
-        tensor_range(first, last).print_info(out);
-        out.end_item();
-    }
-    OUTEND
+    return result;
 }
 
 
-int main()
+
+template<>
+SafeSTLSet<TensorIndex<0> >
+el_tensor_range(TensorIndex<0> first, TensorIndex<0> last)
 {
-    get_range();
-    return 0;
+    Assert(false, ExcNotImplemented());
+    SafeSTLSet<TensorIndex<0>> result;
+
+    return result;
 }
+
+IGA_NAMESPACE_CLOSE

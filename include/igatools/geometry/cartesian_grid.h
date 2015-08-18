@@ -181,7 +181,7 @@ public:
 
     using ElementHandler = GridElementHandler<dim_>;
 
-    using IndexType = BaseElement<dim_>;
+    using IndexType = TensorIndex<dim_>;
     using PropertyList = PropertiesIdContainer<IndexType>;
     using List = typename PropertyList::List;
     using ListIt = typename PropertyList::List::iterator;
