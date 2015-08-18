@@ -26,7 +26,7 @@ data = Instantiation(include_files)
 
 elems = []
 
-for dim in inst.domain_dims:
+for dim in inst.domain_dims+inst.sub_domain_dims:
     acc = 'BaseElement<%d>' %(dim) 
     f.write('template class %s; \n' %(acc))
     elems.append(acc)

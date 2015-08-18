@@ -637,10 +637,7 @@ private:
 private:
     List list_of_indices() const
     {
-        List list;
-        for (int i=0; i<get_num_all_elems(); ++i)
-            list.insert(IndexType(i, base_t::flat_to_tensor(i)));
-        return list;
+        return el_tensor_range<dim>(TensorIndex<dim>(), get_num_intervals());
     }
 
 public:

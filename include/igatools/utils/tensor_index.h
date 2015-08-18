@@ -152,6 +152,7 @@ template <int rank>
 TensorIndex<rank>
 operator-(const TensorIndex<rank> &index,const Index j) ;
 
+#if 0 //already implemente in std::array
 template <int rank>
 bool
 operator<(const TensorIndex<rank> &index_a,const TensorIndex<rank> &index_b)
@@ -173,6 +174,22 @@ operator<=(const TensorIndex<rank> &index_a,const TensorIndex<rank> &index_b)
     return true;
 }
 
+
+template <int rank>
+bool
+operator>(const TensorIndex<rank> &index_a,const TensorIndex<rank> &index_b)
+{
+    return (!(index_a <= index_b));
+}
+
+
+template <int rank>
+bool
+operator>=(const TensorIndex<rank> &index_a,const TensorIndex<rank> &index_b)
+{
+    return (!(index_a < index_b));
+}
+#endif
 /**
  * Output operator for TensorIndex.
  *
@@ -206,7 +223,7 @@ SafeSTLVector<TensorIndex<k>> tensor_range(TensorIndex<k> first, TensorIndex<k> 
             for (int j=0; j<k-1; ++j)
                 t_k[j] = t_k_1[j];
             t_k[k-1] = i;
-            result.emplace_back(t_k);
+            result.insert(t_k);
         }
     }
     return result;

@@ -71,13 +71,14 @@ TensorIndex(std::initializer_list<Index> list) noexcept
 #endif
 }
 
+
+
 template <int rank>
 std::size_t
 TensorIndex<rank>::
 memory_consumption() const
 {
     return sizeof(static_cast<const SafeSTLArray<Index,rank> &>(*this));
-//      return rank * sizeof(Index);
 }
 
 
@@ -145,8 +146,8 @@ operator<<(LogStream &out, const TensorIndex<rank> &tensor_index)
 
 
 template<>
-SafeSTLVector<TensorIndex<1>>
-                           tensor_range(TensorIndex<1> first, TensorIndex<1> last)
+SafeSTLVector<TensorIndex<1> >
+tensor_range(TensorIndex<1> first, TensorIndex<1> last)
 {
     Assert(first <= last, ExcMessage("first bigger than last"));
     SafeSTLVector<TensorIndex<1>> result(last[0]-first[0]);
@@ -159,18 +160,14 @@ SafeSTLVector<TensorIndex<1>>
 
 
 template<>
-SafeSTLVector<TensorIndex<0>>
-                           tensor_range(TensorIndex<0> first, TensorIndex<0> last)
+SafeSTLVector<TensorIndex<0> >
+tensor_range(TensorIndex<0> first, TensorIndex<0> last)
 {
     Assert(false, ExcNotImplemented());
     SafeSTLVector<TensorIndex<0>> result;
 
-
     return result;
 }
-
-
-
 
 IGA_NAMESPACE_CLOSE
 

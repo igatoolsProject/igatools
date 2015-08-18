@@ -23,163 +23,57 @@
 
 #include <igatools/base/config.h>
 #include <igatools/utils/tensor_index.h>
+#include <igatools/utils/safe_stl_vector.h>
 
 IGA_NAMESPACE_OPEN
 
 /**
- * @brief Element accessor for the CartesianGrid type of element.
+ * @brief Cartesian Product Element iterator (without properties)
  *
  * @author pauletti, 2015
  *
  * @ingroup serializable
  */
 template <int dim>
-class BaseElement
+using BaseElement = TensorIndex<dim>;
+
+/**
+ * Generates a vector with the tensor indices of the given
+ * rectangular range.
+ *
+ *  @relates TensorIndex
+ *  @author pauletti 2015
+ */
+template<int k>
+SafeSTLSet<BaseElement<k>> el_tensor_range(TensorIndex<k> first, TensorIndex<k> last)
 {
-private:
-    using self_t = BaseElement<dim>;
-    using TI = TensorIndex<dim>;
+    Assert(first <= last, ExcMessage("first bigger than last"));
+    SafeSTLSet<BaseElement<k>> result;
+    TensorIndex<k-1> ind(sequence<k-1>());
+    auto vec = el_tensor_range<k-1>(first.get_sub_tensor(ind), last.get_sub_tensor(ind));
 
-    /** @name Constructors */
-    ///@{
-protected:
-    /**
-     * Default constructor. It does nothing but it is needed for the
-     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     * mechanism.
-     */
-    BaseElement() = default;
+    for (int i=first[k-1]; i<last[k-1]; ++i)
+    {
+        for (auto &t_k_1 : vec)
+        {
+            BaseElement<k> t_k;
+            for (int j=0; j<k-1; ++j)
+                t_k[j] = t_k_1[j];
+            t_k[k-1] = i;
+            result.insert(t_k);
+        }
+    }
+    return result;
+}
 
-    /**
-     * Construct an accessor pointing to the element with
-     * flat index @p elem_index of the CartesianGrid @p grid.
-     */
-public:
-    BaseElement(const Index f_index, const TI &t_index);
+template<>
+SafeSTLSet<BaseElement<1> >
+el_tensor_range(TensorIndex<1> first, TensorIndex<1> last);
+template<>
+SafeSTLSet<BaseElement<0> >
+el_tensor_range(TensorIndex<0> first, TensorIndex<0> last);
 
-    /**
-     * Copy constructor.
-     * It can be used with different copy policies
-     * (i.e. deep copy or shallow copy).
-     * The default behaviour (i.e. using the proper interface of a
-     * classic copy constructor)
-     * uses the <b>deep</b> copy.
-     */
-    BaseElement(const self_t &elem) = default;
 
-    /**
-     * Move constructor.
-     */
-    BaseElement(self_t &&elem) = default;
-
-    /**
-     * Destructor.
-     */
-    ~BaseElement() = default;
-    ///@}
-
-    /** @name Assignment operators */
-    ///@{
-    /**
-     * Copy assignment operator.
-     */
-    self_t &operator=(const self_t &element) = default;
-
-    /**
-     * Move assignment operator.
-     */
-    self_t &operator=(self_t &&elem) = default;
-    ///@}
-
-public:
-    /** @name Functions related to the indices of the element in the cartesian grid. */
-    ///@{
-    /** Returns the index of the element in its flatten representation. */
-    Index get_flat_index() const;
-
-    /** Returns the index of the element in its tensor representation. */
-    TensorIndex<dim> get_tensor_index() const;
-    ///@}
-
-public:
-
-    /**
-     * @name Functions/operators for moving the element in the CartesianGrid.
-     *
-     * @note They should be called only by the CartesianGridIterator.
-     */
-    ///@{
-    /**
-     * Sets the index of the element using the flatten representation.
-     * @note This function also updates the index for the tensor representation.
-     * @warning This may be a dangerous function, be careful when using it
-     * as it is easy to use incorrectly. Only use it if you know what you
-     * are doing.
-     */
-    void move_to(const self_t &elem);
-
-    ///@}
-
-    /**
-     * @name Comparison operators
-     * @note In order to be meaningful, the comparison must be performed on elements defined on
-     * the <b>same grid</b>
-     * (in the sense that the pointer to the grid held by the element must point to the same
-     * grid object).
-     */
-    ///@{
-    /**
-     * True if the elements have the same index.
-     *  @note In debug mode, it is also check they both refer to
-     *  the same cartesian grid. No check is done on the cache.
-     */
-    bool operator==(const self_t &elem) const;
-
-    /**
-     * True if the elements have different index.
-     *  @note In debug mode, it is also check they both refer to
-     *  the same cartesian grid. No check is done on the cache.
-     */
-    bool operator!=(const self_t &elem) const;
-
-    /**
-     * True if the flat-index of the element on the left is smaller than
-     * the flat-index of the element on the right.
-     *  @note In debug mode, it is also check they both refer to
-     *  the same cartesian grid. No check is done on the cache.
-     */
-    bool operator<(const self_t &elem) const;
-
-    /**
-     * True if the flat-index of the element on the left is bigger than
-     * the flat-index of the element on the right.
-     *  @note In debug mode, it is also check they both refer to
-     *  the same cartesian grid. No check is done on the cache.
-     */
-    bool operator>(const self_t &elem) const;
-    ///@}
-
-    void print_info(LogStream &out) const;
-
-private:
-    /** Tensor product indices of the current struct index @p flat_index_. */
-    TensorIndex<dim> tensor_index_;
-    Index            flat_index_;
-
-#ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
-
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version);
-    ///@}
-#endif // SERIALIZATION
-};
 
 IGA_NAMESPACE_CLOSE
 

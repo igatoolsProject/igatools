@@ -321,7 +321,7 @@ private:
      * @note The valid flags are defined to be the ones that can be inferred from the ValueType(s)
      * used as key of the boost::fusion::map in CType.
      */
-    static ValueFlags get_valid_flags();
+    //  static ValueFlags get_valid_flags();
 
 public:
     using ValuesCache = FuncValuesCache<dim,CType>;

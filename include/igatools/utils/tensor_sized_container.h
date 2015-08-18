@@ -107,6 +107,8 @@ public:
 
     /** @name Functions for the index transformations */
     ///@{
+    bool valid_index(const TensorIndex<rank> &tensor_index) const;
+
     /**
      * Transformation from a tensor-index to a flat-index.
      */

@@ -30,8 +30,17 @@
 
 IGA_NAMESPACE_OPEN
 
-
-
+template<int rank>
+inline
+bool
+TensorSizedContainer<rank>::
+valid_index(const TensorIndex<rank> &tensor_index) const
+{
+    for (int i = 0 ; i < rank ; ++i)
+        if ((tensor_index[i] < 0) || (tensor_index[i] >= size_[i]))
+            return false;
+    return true;
+}
 
 
 template<int rank>
@@ -40,11 +49,7 @@ Index
 TensorSizedContainer<rank>::
 tensor_to_flat(const TensorIndex<rank> &tensor_index) const
 {
-#ifndef NDEBUG
-    for (int i = 0 ; i < rank ; ++i)
-        Assert(tensor_index[i] >= 0 && tensor_index[i] < size_[i],
-               ExcIndexRange(tensor_index[i],0,size_[i]));
-#endif
+    Assert(valid_index(tensor_index), ExcMessage("Index Range"));
     return MultiArrayUtils<rank>::tensor_to_flat_index(tensor_index, weight_);
 }
 

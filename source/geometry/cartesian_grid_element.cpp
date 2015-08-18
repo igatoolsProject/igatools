@@ -259,7 +259,7 @@ bool CartesianGridElement<dim>::
 is_boundary(const Index id) const
 {
     const auto &n_elem = this->get_grid()->get_num_intervals();
-    const auto &index = this->get_index().get_tensor_index();
+    const auto &index = this->get_index();
 
     auto &k_elem = UnitElement<dim>::template get_elem<k>(id);
 

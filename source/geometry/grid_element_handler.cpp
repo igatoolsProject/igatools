@@ -19,11 +19,8 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/geometry/grid_element_handler.h>
-//#include <igatools/geometry/unit_element.h>
-
 
 using std::shared_ptr;
-
 
 IGA_NAMESPACE_OPEN
 
@@ -54,6 +51,7 @@ GridElementHandler<dim>::
 reset(const ValueFlags flag,
       const Quadrature<k> &quad)
 {
+#if 0
     const auto valid_flags = ElementAccessor::get_valid_flags();
     auto grid_flag = flag & valid_flags;
 
@@ -63,6 +61,7 @@ reset(const ValueFlags flag,
     flags_[k] = grid_flag;
 
     cacheutils::extract_sub_elements_data<k>(quad_all_sub_elems_) = quad;
+#endif
 }
 
 #if 0

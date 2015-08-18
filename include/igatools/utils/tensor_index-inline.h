@@ -18,17 +18,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
-// QualityAssurance: martinelli, 21 Jan 2014
-
-#ifndef TENSOR_INDEX_INLINE_H_
-#define TENSOR_INDEX_INLINE_H_
+#ifndef __TENSOR_INDEX_INLINE_H_
+#define __TENSOR_INDEX_INLINE_H_
 
 #include <igatools/utils/tensor_index.h>
 
 IGA_NAMESPACE_OPEN
-
-
 
 template <int rank>
 inline
@@ -55,6 +50,8 @@ operator -=(const TensorIndex<rank> &ti) noexcept
     return *this;
 }
 
+
+
 template <int rank>
 inline
 TensorIndex<rank> &
@@ -71,6 +68,8 @@ operator -=(const int j) noexcept
     return *this;
 }
 
+
+
 template <int rank>
 inline
 TensorIndex<rank> &
@@ -84,8 +83,6 @@ operator +=(const int j) noexcept
     return *this;
 }
 
-
 IGA_NAMESPACE_CLOSE
-
 
 #endif // TENSOR_INDEX_INLINE_H_
