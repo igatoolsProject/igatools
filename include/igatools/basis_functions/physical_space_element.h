@@ -34,7 +34,7 @@
 
 IGA_NAMESPACE_OPEN
 
-template <class Accessor> class CartesianGridIterator;
+template <class Accessor> class GridIterator;
 
 /**
  *
@@ -333,7 +333,7 @@ protected:
 
 
 private:
-    template <class Accessor> friend class CartesianGridIteratorBase;
+    template <class Accessor> friend class GridIteratorBase;
     template <int,int,int,int,Transformation> friend class PhysSpaceElementHandler;
 
     std::shared_ptr<RefElemAccessor> ref_space_element_;

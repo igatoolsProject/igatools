@@ -140,7 +140,7 @@ public:
     using ElementAccessor = BSplineElement<dim,range,rank>;
 
     /** Type for iterator over the elements.  */
-    using ElementIterator = CartesianGridIterator<ReferenceElement<dim,range,rank>>;
+    using ElementIterator = GridIterator<ReferenceElement<dim,range,rank>>;
 
 
     using SpaceData = SplineSpace<dim_,range_,rank_>;

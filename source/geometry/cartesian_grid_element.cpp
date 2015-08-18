@@ -26,8 +26,8 @@
 IGA_NAMESPACE_OPEN
 
 template <int dim>
-CartesianGridElement<dim>::
-CartesianGridElement(const std::shared_ptr<ContainerType> grid,
+GridElementBase<dim>::
+GridElementBase(const std::shared_ptr<ContainerType> grid,
                      const ListIt &index,
                      const PropId &prop)
     :
@@ -39,8 +39,8 @@ CartesianGridElement(const std::shared_ptr<ContainerType> grid,
 
 
 template <int dim>
-CartesianGridElement<dim>::
-CartesianGridElement(const CartesianGridElement<dim> &elem,
+GridElementBase<dim>::
+GridElementBase(const GridElementBase<dim> &elem,
                      const CopyPolicy &copy_policy)
     :
     grid_(elem.grid_),
@@ -63,11 +63,11 @@ CartesianGridElement(const CartesianGridElement<dim> &elem,
 
 
 //template <int dim>
-//std::shared_ptr<CartesianGridElement<dim> >
-//CartesianGridElement<dim>::
+//std::shared_ptr<GridElementBase<dim> >
+//GridElementBase<dim>::
 //clone() const
 //{
-//    auto elem = std::make_shared<CartesianGridElement<dim>>(*this,CopyPolicy::deep);
+//    auto elem = std::make_shared<GridElementBase<dim>>(*this,CopyPolicy::deep);
 //    Assert(elem != nullptr, ExcNullPtr());
 //    return elem;
 //}
@@ -76,7 +76,7 @@ CartesianGridElement(const CartesianGridElement<dim> &elem,
 
 template <int dim>
 auto
-CartesianGridElement<dim>::
+GridElementBase<dim>::
 get_grid() const -> const std::shared_ptr<const CartesianGrid<dim> >
 {
     return grid_;
@@ -86,7 +86,7 @@ get_grid() const -> const std::shared_ptr<const CartesianGrid<dim> >
 
 template <int dim>
 auto
-CartesianGridElement<dim>::
+GridElementBase<dim>::
 get_index() const ->  const IndexType &
 {
     return *index_it_;
@@ -96,7 +96,7 @@ get_index() const ->  const IndexType &
 
 //template <int dim>
 //void
-//CartesianGridElement<dim>::
+//GridElementBase<dim>::
 //move_to(const Index  &flat_index)
 //{
 //    Assert((flat_index == IteratorState::pass_the_end) ||
@@ -115,7 +115,7 @@ get_index() const ->  const IndexType &
 
 template <int dim>
 bool
-CartesianGridElement<dim>::
+GridElementBase<dim>::
 has_property(const PropId &prop) const
 {
     const auto &list = grid_->elem_properties_[prop];
@@ -126,8 +126,8 @@ has_property(const PropId &prop) const
 
 template <int dim>
 bool
-CartesianGridElement<dim>::
-operator ==(const CartesianGridElement<dim> &elem) const
+GridElementBase<dim>::
+operator ==(const GridElementBase<dim> &elem) const
 {
     Assert(this->get_grid() == elem.get_grid(),
            ExcMessage("Cannot compare elements on different grid."));
@@ -138,8 +138,8 @@ operator ==(const CartesianGridElement<dim> &elem) const
 
 template <int dim>
 bool
-CartesianGridElement<dim>::
-operator !=(const CartesianGridElement<dim> &elem) const
+GridElementBase<dim>::
+operator !=(const GridElementBase<dim> &elem) const
 {
     Assert(this->get_grid() == elem.get_grid(),
            ExcMessage("Cannot compare elements on different grid."));
@@ -148,8 +148,8 @@ operator !=(const CartesianGridElement<dim> &elem) const
 
 template <int dim>
 bool
-CartesianGridElement<dim>::
-operator <(const CartesianGridElement<dim> &elem) const
+GridElementBase<dim>::
+operator <(const GridElementBase<dim> &elem) const
 {
     Assert(this->get_grid() == elem.get_grid(),
            ExcMessage("Cannot compare elements on different grid."));
@@ -158,8 +158,8 @@ operator <(const CartesianGridElement<dim> &elem) const
 
 template <int dim>
 bool
-CartesianGridElement<dim>::
-operator >(const CartesianGridElement<dim> &elem) const
+GridElementBase<dim>::
+operator >(const GridElementBase<dim> &elem) const
 {
     Assert(this->get_grid() == elem.get_grid(),
            ExcMessage("Cannot compare elements on different grid."));
@@ -168,9 +168,9 @@ operator >(const CartesianGridElement<dim> &elem) const
 
 
 template <int dim>
-CartesianGridElement<dim> &
-CartesianGridElement<dim>::
-operator=(const CartesianGridElement<dim> &element)
+GridElementBase<dim> &
+GridElementBase<dim>::
+operator=(const GridElementBase<dim> &element)
 {
     shallow_copy_from(element);
     return *this;
@@ -179,8 +179,8 @@ operator=(const CartesianGridElement<dim> &element)
 
 template <int dim>
 void
-CartesianGridElement<dim>::
-copy_from(const CartesianGridElement<dim> &elem,
+GridElementBase<dim>::
+copy_from(const GridElementBase<dim> &elem,
           const CopyPolicy &copy_policy)
 {
     Assert(this->get_grid() == elem.get_grid(),
@@ -212,8 +212,8 @@ copy_from(const CartesianGridElement<dim> &elem,
 
 template <int dim>
 void
-CartesianGridElement<dim>::
-deep_copy_from(const CartesianGridElement<dim> &elem)
+GridElementBase<dim>::
+deep_copy_from(const GridElementBase<dim> &elem)
 {
     copy_from(elem,CopyPolicy::deep);
 }
@@ -222,8 +222,8 @@ deep_copy_from(const CartesianGridElement<dim> &elem)
 
 template <int dim>
 void
-CartesianGridElement<dim>::
-shallow_copy_from(const CartesianGridElement<dim> &elem)
+GridElementBase<dim>::
+shallow_copy_from(const GridElementBase<dim> &elem)
 {
     copy_from(elem,CopyPolicy::shallow);
 }
@@ -232,7 +232,7 @@ shallow_copy_from(const CartesianGridElement<dim> &elem)
 
 template <int dim>
 auto
-CartesianGridElement<dim>::
+GridElementBase<dim>::
 vertex(const int i) const -> Point
 {
     Assert(i < UnitElement<dim>::sub_elements_size[0],
@@ -255,7 +255,7 @@ vertex(const int i) const -> Point
 
 template <int dim>
 template <int k>
-bool CartesianGridElement<dim>::
+bool GridElementBase<dim>::
 is_boundary(const Index id) const
 {
     const auto &n_elem = this->get_grid()->get_num_intervals();
@@ -280,7 +280,7 @@ is_boundary(const Index id) const
 template <int dim>
 template <int k>
 bool
-CartesianGridElement<dim>::
+GridElementBase<dim>::
 is_boundary() const
 {
     for (auto &id : UnitElement<dim>::template elems_ids<k>())
@@ -296,7 +296,7 @@ is_boundary() const
 template <int dim>
 template <int k>
 Real
-CartesianGridElement<dim>::
+GridElementBase<dim>::
 get_measure(const int j) const
 {
     const auto lengths = this->template get_side_lengths<k>(j);
@@ -316,7 +316,7 @@ get_measure(const int j) const
 template <int dim>
 template <int k>
 ValueVector<Real>
-CartesianGridElement<dim>::
+GridElementBase<dim>::
 get_w_measures(const int j) const
 {
     return this->template get_values_from_cache<_W_Measure,k>(j);
@@ -327,7 +327,7 @@ get_w_measures(const int j) const
 template <int dim>
 template <int sdim>
 auto
-CartesianGridElement<dim>::
+GridElementBase<dim>::
 get_side_lengths(const int sid) const -> const Points<sdim>
 {
     Points<sdim> lengths;
@@ -356,7 +356,7 @@ get_side_lengths(const int sid) const -> const Points<sdim>
 template <int dim>
 template <int k>
 auto
-CartesianGridElement<dim>::
+GridElementBase<dim>::
 get_points(const int j) const ->ValueVector<Point>
 {
     return this->template get_values_from_cache<_Point,k>(j);
@@ -367,7 +367,7 @@ get_points(const int j) const ->ValueVector<Point>
 
 template <int dim>
 auto
-CartesianGridElement<dim>::
+GridElementBase<dim>::
 get_element_points() const -> ValueVector<Point>
 {
     return this->template get_points<dim>(0);
@@ -376,7 +376,7 @@ get_element_points() const -> ValueVector<Point>
 
 template <int dim>
 void
-CartesianGridElement<dim>::
+GridElementBase<dim>::
 print_info(LogStream &out) const
 {
     out.begin_item("Property: ");
@@ -391,7 +391,7 @@ print_info(LogStream &out) const
 
 template <int dim>
 void
-CartesianGridElement<dim>::
+GridElementBase<dim>::
 print_cache_info(LogStream &out) const
 {
     if (all_sub_elems_cache_)
@@ -403,7 +403,7 @@ print_cache_info(LogStream &out) const
 #if 0
 template <int dim>
 SafeSTLVector<std::string>
-CartesianGridElement<dim>::
+GridElementBase<dim>::
 get_defined_properties() const
 {
     SafeSTLVector<std::string> elem_properties;
@@ -421,7 +421,7 @@ get_defined_properties() const
 
 template <int dim>
 ValueFlags
-CartesianGridElement<dim>::
+GridElementBase<dim>::
 get_valid_flags()
 {
     return cacheutils::get_valid_flags_from_cache_type(CType());
@@ -432,7 +432,7 @@ get_valid_flags()
 template <int dim>
 template<class Archive>
 void
-CartesianGridElement<dim>::
+GridElementBase<dim>::
 serialize(Archive &ar, const unsigned int version)
 {
     auto non_const_grid = std::const_pointer_cast<CartesianGrid<dim>>(grid_);

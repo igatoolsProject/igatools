@@ -32,7 +32,7 @@ IGA_NAMESPACE_OPEN
 
 template <int dim, int range, int rank> class BSplineSpace;
 template <int dim, int range, int rank> class BSplineElementHandler;
-template <class Accessor> class CartesianGridIterator;
+template <class Accessor> class GridIterator;
 
 /**
  * See module on \ref accessors_iterators for a general overview.
@@ -160,7 +160,7 @@ private:
     std::shared_ptr<const Space> get_bspline_space() const;
 
 
-    template <class Accessor> friend class CartesianGridIterator;
+    template <class Accessor> friend class GridIterator;
     friend class BSplineElementHandler<dim, range, rank>;
 
 public:

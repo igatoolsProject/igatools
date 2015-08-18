@@ -51,13 +51,13 @@ IGA_NAMESPACE_OPEN
  * - the postfix operator <tt>++</tt> is not defined.
  *
  * The object pointed to the CartesianGridIteratorBase is called <em>accessor</em>
- * and its type is passed as template argument <tt>Accessor</tt>
+ * and its type is passed as template argument <tt>Element</tt>
  * of the CartesianGridIteratorBase.
  *
  * The <em>accessor</em> is an object that can fetch and use data stored in objects that have
  * a "grid-like" structure. The type of the object with this "grid-like" structure,
- * associated to the type <tt>Accessor</tt> can be retrieved with the type
- * <tt>Accessor::ContainerType</tt>.
+ * associated to the type <tt>Element</tt> can be retrieved with the type
+ * <tt>Element::ContainerType</tt>.
  *
  * Using the accessor, the structure of the "grid-like" classes is hidden
  * from the application program.
@@ -82,7 +82,7 @@ IGA_NAMESPACE_OPEN
  * The same previous loop can be performed or using the C++11 syntax called
  * <em>range-based for loop</em>
  * @code
-   for (const auto & elem : grid) // the elem type is: const Accessor&
+   for (const auto & elem : grid) // the elem type is: const Element&
      if (elem.at_boundary())
         elem.vertex(k);
   @endcode
@@ -101,7 +101,7 @@ IGA_NAMESPACE_OPEN
  * hidden from the user, though you can still create an iterator
  * pointing to an arbitrary element.  Actually, the operation of
  * moving iterator forward is not done in the iterator
- * classes, but rather in the <tt>Accessor</tt> classes.
+ * classes, but rather in the <tt>Element</tt> classes.
  * Since these are passed
  * as template arguments, you can write your own versions here to add
  * more functionality.
@@ -115,8 +115,8 @@ IGA_NAMESPACE_OPEN
  * <h3>Implementation</h3>
  *
  * The iterator class itself does not have much functionality. It only
- * becomes useful when assigned an <tt>Accessor</tt> (the template
- * parameter), which really does the access to data. An <tt>Accessor</tt>
+ * becomes useful when assigned an <tt>Element</tt> (the template
+ * parameter), which really does the access to data. An <tt>Element</tt>
  * has to fulfill some requirements:
  *
  * <ul>
@@ -136,7 +136,7 @@ IGA_NAMESPACE_OPEN
  * whitin the container.
  * </ul>
  * Then the iterator is able to do what it is supposed to. All of the
- * necessary functions are implemented in the <tt>Accessor</tt> base
+ * necessary functions are implemented in the <tt>Element</tt> base
  * class, but you may write your own version (non-virtual, since we
  * use templates) to add functionality.
  *
@@ -156,23 +156,23 @@ IGA_NAMESPACE_OPEN
  *
  * @sa CartesianGridIterator, CartesianGridConstIterator
  *
- * @tparam Accessor Type of the accessor.
+ * @tparam Element Type of the accessor.
  *
  * @ingroup iterators
  * @ingroup serializable
  * @author martinelli 2012,2013,2014,2015
  * @author pauletti 2012,2013,2014,2015
  */
-template <class Accessor>
-class CartesianGridIteratorBase
-    : public std::iterator<std::forward_iterator_tag, Accessor>
+template <class Element>
+class GridIteratorBase
+    : public std::iterator<std::random_access_iterator_tag, Element>
 {
 public:
     /** Type of the accessor. */
-    using AccessorType = Accessor;
+    using AccessorType = Element;
 
     /** Type of the grid-like container . */
-    using ContainerType = typename Accessor::ContainerType;
+    using ContainerType = typename Element::ContainerType;
 
     /**
      * Alias for the tensor index.
@@ -187,7 +187,7 @@ protected:
      * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
      * mechanism.
      */
-    CartesianGridIteratorBase() = default;
+    GridIteratorBase() = default;
 
 public:
     /**
@@ -197,8 +197,8 @@ public:
      * @warning If the <tt>index</tt> refers to an element that has not the given <tt>property</tt>
      * an assertion will be raised (in DEBUG mode).
      */
-    CartesianGridIteratorBase(std::shared_ptr<ContainerType> grid,
-                              const ListIt index,
+    GridIteratorBase(std::shared_ptr<ContainerType> grid,
+                              const ListIt &index,
                               const PropId &property);
 
     /**
@@ -207,135 +207,88 @@ public:
      * the given <tt>property</tt>
      * an assertion will be raised (in DEBUG mode).
      */
-    CartesianGridIteratorBase(std::shared_ptr<Accessor> accessor_ptr);
-
+    GridIteratorBase(std::shared_ptr<Element> accessor_ptr);
 
     /**
      * Copy constructor. It may be used with different CopyPolicy (i.e. shallow or deep).
      *
      * @note By default it uses the deep copy.
      */
-    CartesianGridIteratorBase(const CartesianGridIteratorBase<Accessor> &it,
+    GridIteratorBase(const GridIteratorBase<Element> &it,
                               const CopyPolicy &copy_policy = CopyPolicy::deep);
 
-
     /** Move constructor. */
-    CartesianGridIteratorBase(CartesianGridIteratorBase<Accessor> &&it) = default;
+    GridIteratorBase(GridIteratorBase<Element> &&it) = default;
 
     /** Destructor */
-    ~CartesianGridIteratorBase() = default ;
+    ~GridIteratorBase() = default ;
     ///@}
 
     /** @name Assignment operators */
     ///@{
     /**
      * Copy assignment operator.
-     * It performs a <b>shallow</b> copy of the Accessor hold by the CartesianGridIteratorBase.
+     * It performs a <b>shallow</b> copy of the Element hold by the CartesianGridIteratorBase.
      */
-    CartesianGridIteratorBase<Accessor> &
-    operator=(const CartesianGridIteratorBase<Accessor> &it)
+    GridIteratorBase<Element> &
+    operator=(const GridIteratorBase<Element> &it)
     {
-        accessor_ = it.accessor_;
+        elem_ = it.elem_;
         return *this;
     }
 
     /** Move assignment operator. */
-    CartesianGridIteratorBase<Accessor> &
-    operator=(CartesianGridIteratorBase<Accessor> &&) = default;
+    GridIteratorBase<Element> &
+    operator=(GridIteratorBase<Element> &&) = default;
     ///@}
-
 
     /** @name Comparison operators */
     ///@{
     /**
      * Compares for equality.
-     * @note Internally uses the equality comparison operator implemented by the Accessor object.
+     * @note Internally uses the equality comparison operator implemented by the Element object.
      */
-    bool operator== (const CartesianGridIteratorBase &) const;
+    bool operator== (const GridIteratorBase &) const;
 
     /**
      * Compares for inequality.
-     * @note Internally uses the inequality comparison operator implemented by the Accessor object.
+     * @note Internally uses the inequality comparison operator implemented by the Element object.
      */
-    bool operator!= (const CartesianGridIteratorBase &) const;
+    bool operator!= (const GridIteratorBase &) const;
 
     /**
      * "Greather than" comparison operator.
      *
-     * @note Internally uses the "greater than" comparison operator implemented by the Accessor object.
+     * @note Internally uses the "greater than" comparison operator implemented by the Element object.
      */
-    bool operator> (const CartesianGridIteratorBase &) const;
+    bool operator> (const GridIteratorBase &) const;
 
     /**
      * "Smaller than" comparison operator.
      *
-     * @note Internally uses the "smaller than" comparison operator implemented by the Accessor object.
+     * @note Internally uses the "smaller than" comparison operator implemented by the Element object.
      */
-    bool operator< (const CartesianGridIteratorBase &) const;
+    bool operator< (const GridIteratorBase &) const;
 
     ///@}
 
-#if 0
-    /** @name Functions/operators for moving the element in the CartesianGrid.*/
-    ///@{
-    /**
-     * Moves the iterator to the position that differs from the current one
-     * for the quantity given by @p increment.
-     *
-     * If the resulting position after the movement is valid (i.e. within the grid), then the function
-     * returns true, otherwise it returns false.
-     */
-    bool jump(const TensIndex &increment);
-
-    /**
-     * Sets the index of the iterator using the flatten representation.
-     * @note This function also updates the index for the tensor representation.
-     * @warning This may be a dangerous function, be careful when using it
-     * as it is easy to use incorrectly. Only use it if you know what you
-     * are doing.
-     */
-    void move_to(const Index flat_index);
-
-
-    /**
-     * Sets the index of the iterator using the tensor representation.
-     * @note This function also updates the index for the flatten representation.
-     * @warning this may be a dangerous function, be careful when using it
-     * as it is easy to use incorrectly. Only use it if you know what you
-     * are doing.
-     */
-    void move_to(const TensIndex &tensor_index);
-#endif
     /**
      *  Prefix <tt>++</tt> operator: <tt>++i</tt>. This
      *  operator advances the iterator to
      *  the next element and returns
      *  a reference to <tt>*this</tt>.
      */
-    CartesianGridIteratorBase<Accessor> &operator++();
+    GridIteratorBase<Element> &operator++();
     ///@}
 
-#if 0
-    /**
-     * @name Functions related to the indices of the element in the CartesianGrid pointed
-     * by the iterator.
-     */
-    ///@{
-    /** Returns the index of the element in its flatten representation. */
-    Index get_flat_index() const;
-
-    /** Returns the index of the element in its tensor representation. */
-    TensIndex get_tensor_index() const;
-    ///@}
-#endif
 protected:
     /**
      * Pointer to the object holding the Real data.
-     * @note We use a pointer instead of a reference object because the type Accessor
+     * @note We use a pointer instead of a reference object because the type Element
      * can be a pure abstract class (and therefore have some virtual functions)
      * that must be resolved at run-time.
      */
-    std::shared_ptr<Accessor> accessor_ ;
+    std::shared_ptr<Element> elem_ ;
 
 private:
 #ifdef SERIALIZATION
@@ -351,7 +304,7 @@ private:
     serialize(Archive &ar, const unsigned int version)
     {
 
-        ar &boost::serialization::make_nvp("accessor_",accessor_);
+        ar &boost::serialization::make_nvp("accessor_",elem_);
 
         ar &boost::serialization::make_nvp("elem_property_",elem_property_);
     }
@@ -370,47 +323,47 @@ private:
  *
  * @author martinelli, 2014
  */
-template <class Accessor>
-class CartesianGridIterator
+template <class Element>
+class GridIterator
     :
-    public CartesianGridIteratorBase<Accessor>
+    public GridIteratorBase<Element>
 {
 public:
     /** Type of the accessor. */
-    using AccessorType = Accessor;
+    using AccessorType = Element;
 
     /** Type of the grid-like container . */
-    using ContainerType = typename Accessor::ContainerType;
+    using ContainerType = typename Element::ContainerType;
 
     /** The constructors are inherited from the parent class CartesianGridIteratorBase */
-    using CartesianGridIteratorBase<Accessor>::CartesianGridIteratorBase;
+    using GridIteratorBase<Element>::GridIteratorBase;
 
 
     /** @name Dereferencing operators */
     ///@{
     /**
      *  Dereferencing operator, returns a
-     *  reference to the Accessor object.
+     *  reference to the Element object.
      */
-    Accessor &operator*();
+    Element &operator*();
 
     /**
      *  Dereferencing operator, returns a
-     *  pointer to the Accessor object.
+     *  pointer to the Element object.
      */
-    Accessor *operator->();
+    Element *operator->();
 
     /**
      *  Dereferencing operator, returns a
-     *  const reference to the Accessor object.
+     *  const reference to the Element object.
      */
-    const Accessor &operator*() const ;
+    const Element &operator*() const ;
 
     /**
      *  Dereferencing operator, returns a
-     *  pointer to the const Accessor object.
+     *  pointer to the const Element object.
      */
-    const Accessor *operator->() const;
+    const Element *operator->() const;
     ///@}
 
 };
@@ -426,44 +379,37 @@ public:
  *
  * @author martinelli, 2014
  */
-template <class Accessor>
-class CartesianGridConstIterator
+template <class Element>
+class ConstGridIterator
     :
-    public CartesianGridIteratorBase<Accessor>
+    public GridIteratorBase<Element>
 {
 public:
     /** Type of the accessor. */
-    using AccessorType = Accessor;
+    using AccessorType = Element;
 
     /** Type of the grid-like container . */
-    using ContainerType = typename Accessor::ContainerType;
+    using ContainerType = typename Element::ContainerType;
 
     /** The constructors are inherited from the parent class CartesianGridIteratorBase */
-    using CartesianGridIteratorBase<Accessor>::CartesianGridIteratorBase;
-
+    using GridIteratorBase<Element>::GridIteratorBase;
 
     /** @name Dereferencing operators */
     ///@{
     /**
      *  Dereferencing operator, returns a
-     *  const reference to the Accessor object.
+     *  const reference to the Element object.
      */
-    const Accessor &operator*() const;
-
+    const Element &operator*() const;
 
     /**
      *  Dereferencing operator, returns a
-     *  pointer to the const Accessor object.
+     *  pointer to the const Element object.
      */
-    const Accessor *operator->() const;
+    const Element *operator->() const;
     ///@}
-
-
 };
 
-
-
 IGA_NAMESPACE_CLOSE
-
 
 #endif /* CARTESIAN_GRID_ITERATOR_H_ */

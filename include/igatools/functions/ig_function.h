@@ -181,7 +181,7 @@ private:
     const std::string property_;
 
     using SpaceElem = SpaceElement<dim,codim,range,rank,Transformation::h_grad>;
-    CartesianGridIterator<SpaceElem> space_elem_;
+    GridIterator<SpaceElem> space_elem_;
 
     using SpaceElemHandler = SpaceElementHandler<dim,codim,range,rank,Transformation::h_grad>;
     std::shared_ptr<SpaceElemHandler> space_elem_handler_;

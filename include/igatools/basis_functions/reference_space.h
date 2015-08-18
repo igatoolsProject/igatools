@@ -96,7 +96,7 @@ public:
     using ElementAccessor = ReferenceElement<dim,range,rank>;
 
     /** Type for iterator over the elements.  */
-    using ElementIterator = CartesianGridIterator<ElementAccessor>;
+    using ElementIterator = GridIterator<ElementAccessor>;
 
     using ElementHandler = ReferenceElementHandler<dim_, range_, rank_>;
 

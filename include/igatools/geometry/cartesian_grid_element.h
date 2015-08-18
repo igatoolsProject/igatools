@@ -22,13 +22,13 @@
 #define __CARTESIAN_GRID_ELEMENT_H_
 
 #include <igatools/base/config.h>
-#include <igatools/geometry/base_element.h>
-#include <igatools/basis_functions/values_cache.h>
+#include <igatools/utils/tensor_range.h>
 #include <igatools/base/quadrature.h>
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/geometry/grid_element_handler.h>
-#include <igatools/geometry/cartesian_grid_iterator.h>
 #include <igatools/utils/value_vector.h>
+#include <igatools/basis_functions/values_cache.h>
+#include <iterator>
 
 IGA_NAMESPACE_OPEN
 
@@ -54,15 +54,15 @@ IGA_NAMESPACE_OPEN
  *
  * @ingroup serializable
  */
-template <int dim>
-class CartesianGridElement
+template <int dim, class ContainerType_>
+class GridElementBase
 {
 private:
-    using self_t = CartesianGridElement<dim>;
+    using self_t = GridElementBase<dim>;
 
 public:
     /** Type required by the CartesianGridIterator templated iterator */
-    using ContainerType = const CartesianGrid<dim>;
+    using ContainerType = ContainerType_;
     using IndexType = typename ContainerType::IndexType;
     using List = typename ContainerType::List;
     using ListIt = typename ContainerType::ListIt;
@@ -77,17 +77,16 @@ protected:
      * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
      * mechanism.
      */
-    CartesianGridElement() = default;
+    GridElementBase() = default;
 
 public:
     /**
      * Construct an accessor pointing to the element with
      * flat index @p elem_index of the CartesianGrid @p grid.
      */
-    CartesianGridElement(const std::shared_ptr<ContainerType> grid,
+    GridElementBase(const std::shared_ptr<ContainerType> grid,
                          const ListIt &elem_index,
                          const PropId &prop = ElementProperties::active);
-
 
     /**
      * Copy constructor.
@@ -97,18 +96,18 @@ public:
      * classic copy constructor)
      * uses the <b>deep</b> copy.
      */
-    CartesianGridElement(const self_t &elem,
+    GridElementBase(const self_t &elem,
                          const CopyPolicy &copy_policy = CopyPolicy::deep);
 
     /**
      * Move constructor.
      */
-    CartesianGridElement(self_t &&elem) = default;
+    GridElementBase(self_t &&elem) = default;
 
     /**
      * Destructor.
      */
-    ~CartesianGridElement() = default;
+    ~GridElementBase() = default;
     ///@}
 
     /**
@@ -292,7 +291,7 @@ public:
     void print_cache_info(LogStream &out) const;
 
 private:
-    template <class Accessor> friend class CartesianGridIteratorBase;
+    template <class Accessor> friend class GridIteratorBase;
     friend class GridElementHandler<dim>;
 
     /** Cartesian grid from which the element belongs.*/
@@ -376,6 +375,22 @@ protected:
     ///@}
 #endif // SERIALIZATION
 };
+
+template <int dim>
+class ConstGridElement
+: public GridElementBase<dim, const CartesianGrid<dim>>
+{
+	 using GridElementBase<Element>::GridElementBase;
+};
+
+
+template <int dim>
+class GridElement
+: public GridElementBase<dim, CartesianGrid<dim>>
+{
+	 using GridElementBase<Element>::GridElementBase;
+};
+
 
 IGA_NAMESPACE_CLOSE
 

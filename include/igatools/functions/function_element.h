@@ -243,7 +243,7 @@ private:
     using PhysDomainElem = MappingElement<dim,codim>;
     std::shared_ptr<PhysDomainElem> phys_domain_elem_;
 
-    template <class Accessor> friend class CartesianGridIteratorBase;
+    template <class Accessor> friend class GridIteratorBase;
     friend class Function<dim, codim, range, rank>;
 
     /**

@@ -24,9 +24,9 @@
 #include <igatools/base/config.h>
 #include <igatools/base/tensor.h>
 #include <igatools/utils/value_vector.h>
-#include <igatools/geometry/cartesian_grid_iterator.h>
 #include <igatools/geometry/grid_element_handler.h>
 #include <igatools/base/quadrature.h>
+#include <igatools/geometry/grid_iterator.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -60,7 +60,7 @@ public:
     using eval_pts_variant = SubElemVariants<Quadrature,dim_>;
 
     using ElementAccessor = FunctionElement<dim_, codim_, range_, rank_>;
-    using ElementIterator = CartesianGridIterator<ElementAccessor>;
+    using ElementIterator = GridIterator<ElementAccessor>;
 
     static const int space_dim = dim_ + codim_;
     static const int dim       = dim_;

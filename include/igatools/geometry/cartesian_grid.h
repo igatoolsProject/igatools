@@ -30,9 +30,8 @@
 #include <igatools/geometry/unit_element.h>
 #include <igatools/base/array_utils.h>
 #include <igatools/geometry/bbox.h>
-#include <igatools/geometry/cartesian_grid_iterator.h>
+//#include <igatools/geometry/cartesian_grid_iterator.h>
 #include <igatools/base/properties_id_container.h>
-#include <igatools/geometry/base_element.h>
 
 #ifdef MESH_REFINEMENT
 #include <boost/signals2.hpp>
@@ -174,10 +173,10 @@ public:
     using ElementAccessor = CartesianGridElement<dim_>;
 
     /** Type for the iterator over the elements of the grid (non-const version).  */
-    using ElementIterator = CartesianGridIterator<ElementAccessor>;
+    using ElementIterator = ElementAccessor;
 
     /** Type for the iterator over the elements of the grid (const version).  */
-    using ElementConstIterator = CartesianGridConstIterator<ElementAccessor>;
+    using ElementConstIterator = ConstGridIterator<ElementAccessor>;
 
     using ElementHandler = GridElementHandler<dim_>;
 

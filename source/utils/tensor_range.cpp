@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/geometry/base_element.h>
+#include <igatools/utils/tensor_range.h>
 
 IGA_NAMESPACE_OPEN
 

@@ -19,7 +19,7 @@
 #-+--------------------------------------------------------------------
 
 from init_instantiation_data import *
-include_files = ['geometry/base_element.h']
+include_files = ['utils/tensor_index.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 

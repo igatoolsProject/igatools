@@ -20,56 +20,48 @@
 
 from init_instantiation_data import *
 
-include_files = ['../../source/geometry/cartesian_grid_iterator.cpp']
+include_files = ['../../source/geometry/grid_iterator.cpp']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-
-
 sub_dim_members = [
-             'Real CartesianGridElement<dim>::get_measure<k>(const int j) const;',
-             'ValueVector<Real> CartesianGridElement<dim>::get_w_measures<k>(const int j) const;',
-             'const Points<k> CartesianGridElement<dim>::get_side_lengths<k>(const int j) const;',
-             'ValueVector<typename CartesianGridElement<dim>::Point> CartesianGridElement<dim>::get_points<k>(const int j) const;',
-             'bool CartesianGridElement<dim>::is_boundary<k>(const Index sub_elem_id) const;',
-             'bool CartesianGridElement<dim>::is_boundary<k>() const;']
+             'Real GridElementBase<dim>::get_measure<k>(const int j) const;',
+             'ValueVector<Real> GridElementBase<dim>::get_w_measures<k>(const int j) const;',
+             'const Points<k> GridElementBase<dim>::get_side_lengths<k>(const int j) const;',
+             'ValueVector<typename GridElementBase<dim>::Point> GridElementBase<dim>::get_points<k>(const int j) const;',
+             'bool GridElementBase<dim>::is_boundary<k>(const Index sub_elem_id) const;',
+             'bool GridElementBase<dim>::is_boundary<k>() const;']
 
 elems = []
 
-for dim in inst.sub_domain_dims:
-    acc = 'CartesianGridElement<%d>' %(dim) 
+for dim in inst.sub_domain_dims+inst.domain_dims:
+    acc = 'GridElementBase<%d>' %(dim) 
     f.write('template class %s; \n' %(acc))
     elems.append(acc)
-    for it in inst.iterators:
-        iterator = it.replace('Accessor','%s' % (acc) )
-        f.write('template class %s; \n' %iterator)
     for fun in sub_dim_members:
         k = dim
         s = fun.replace('k', '%d' % (k)).replace('dim', '%d' % (dim));
         f.write('template ' + s + '\n')
 
+accs =  ['GridElement',       'ConstGridElement']
+for dim in inst.sub_domain_dims+inst.domain_dims: 
+  for acc in accs: 
+      f.write('template class ' + acc + '<%d>' %(dim) + ';\n'
 
-for dim in inst.domain_dims:
-    acc = 'CartesianGridElement<%d>' %(dim) 
+accs =  ['GridElement',       'ConstGridElement', 'GridElement', 'ConstGridElement']
+iters =  ['GridIteratorBase', 'GridIteratorBase',   'GridIterator', 'ConstGridIterator']
+for dim in inst.sub_domain_dims+inst.domain_dims:
+  for i in range(len(accs)):
+    acc = iters(i) + '<' + accs(i) + '<%d>' %(dim) + '>' 
     f.write('template class %s; \n' %(acc))
-    elems.append(acc)
-    for it in inst.iterators:
-        iterator = it.replace('Accessor','%s' % (acc) )
-        f.write('template class %s; \n' %iterator)
-    for fun in sub_dim_members:
-        for k in inst.sub_dims(dim):
-            s = fun.replace('k', '%d' % (k)).replace('dim', '%d' % (dim));
-            f.write('template ' + s + '\n')
-            
-
-
+  
 #---------------------------------------------------
 f.write('IGA_NAMESPACE_CLOSE\n')
 
 f.write('#ifdef SERIALIZATION\n')
 id = 0 
 for elem in unique(elems):
-    alias = 'CartesianGridElementAlias%d' %(id)
+    alias = 'GridElementBaseAlias%d' %(id)
     f.write('using %s = iga::%s; \n' % (alias, elem))
     f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
     f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)

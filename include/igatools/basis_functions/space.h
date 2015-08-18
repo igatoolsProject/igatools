@@ -341,7 +341,7 @@ public:
 
 
     using ElementAccessor = SpaceElement<dim_,codim_,range_,rank_,type_>;
-    using ElementIterator = CartesianGridIterator<ElementAccessor>;
+    using ElementIterator = GridIterator<ElementAccessor>;
 
     /** @name Functions involving the element iterator */
     ///@{

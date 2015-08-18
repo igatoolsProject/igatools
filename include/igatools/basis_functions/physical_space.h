@@ -23,11 +23,11 @@
 
 #include <igatools/base/config.h>
 #include <igatools/geometry/mapping.h>
-#include <igatools/geometry/cartesian_grid_iterator.h>
 #include <igatools/geometry/push_forward.h>
 #include <igatools/basis_functions/space.h>
 #include <igatools/basis_functions/reference_space.h>
 #include <igatools/basis_functions/dof_distribution.h>
+#include <igatools/geometry/grid_iterator.h>
 #include <igatools/utils/static_multi_array.h>
 
 IGA_NAMESPACE_OPEN
@@ -120,7 +120,7 @@ public:
 
 
     using ElementAccessor = PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>;
-    using ElementIterator = CartesianGridIterator<ElementAccessor>;
+    using ElementIterator = GridIterator<ElementAccessor>;
 
 
     PhysicalSpace(const self_t &phys_space) = delete;

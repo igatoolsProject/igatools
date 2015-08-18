@@ -24,6 +24,7 @@
 #include <igatools/base/config.h>
 #include <igatools/base/properties.h>
 #include <igatools/base/logstream.h>
+#include <igatools/utils/safe_stl_set.h>
 #include <igatools/utils/safe_stl_vector.h>
 
 #include <map>
