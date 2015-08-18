@@ -42,8 +42,8 @@ for dim in inst.all_domain_dims:
 #ma_list = ['CartesianProductArray<%s,%d>' %(t,dim) 
            #for dim in inst.all_domain_dims for t in types]
 
-for row in ma_list:
-	f.write('template class %s; \n' % (row))
+#for row in ma_list:
+	#f.write('template class %s; \n' % (row))
 
 
 types = ['double','Index']
