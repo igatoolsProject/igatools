@@ -272,24 +272,24 @@ public:
     SafeSTLVector<std::string> get_defined_properties() const;
 #endif
 
-    //TODO (martinelli, Apr 16, 2015): the returned value should be Points<topology_dim>, i.e.
-    // the lengths should refer to the sub-element of dimension topology_dim
+    //TODO (martinelli, Apr 16, 2015): the returned value should be Points<sdimology_dim>, i.e.
+    // the lengths should refer to the sub-element of dimension sdim
     //TODO (martinelli, Aug 13, 2015): maybe it is wothy to declare this function private
-    template<int topology_dim>
-    const Points<topology_dim> get_side_lengths(const int topology_id) const;
+    template<int sdim>
+    const Points<sdim> get_side_lengths(const int topology_id) const;
 
-    template <int topology_dim>
+    template <int sdim>
     Real get_measure(const int topology_id) const;
 
     /**
-     * Returns the <tt>topology_dim</tt> dimensional topology_id-th sub-element measure
+     * Returns the <tt>sdim</tt> dimensional topology_id-th sub-element measure
      * multiplied by the weights of the quadrature.
      */
-    template <int topology_dim>
+    template <int sdim>
     ValueVector<Real> get_w_measures(const int topology_id) const;
 
 
-    template <int topology_dim = dim>
+    template <int sdim = dim>
     ValueVector<Point> get_points(const int topology_id = 0) const;
 
     ValueVector<Point> get_element_points() const;
@@ -354,12 +354,12 @@ private:
     std::shared_ptr<CacheType> all_sub_elems_cache_;
 
 
-    template <class ValueType, int topology_dim>
+    template <class ValueType, int sdim>
     const auto &
     get_values_from_cache(const int topology_id) const
     {
         Assert(all_sub_elems_cache_ != nullptr, ExcNullPtr());
-        const auto &cache = all_sub_elems_cache_->template get_sub_elem_cache<topology_dim>(topology_id);
+        const auto &cache = all_sub_elems_cache_->template get_sub_elem_cache<sdim>(topology_id);
         return cache.template get_data<ValueType>();
     }
     ///@}

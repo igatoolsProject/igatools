@@ -390,11 +390,9 @@ public:
     BBox<dim_> get_bounding_box() const;
     ///@}
 
+
     ///@name Iterating of grid elements
     ///@{
-
-
-public:
     /**
      * This function returns a element iterator to the first element of the patch.
      */
@@ -424,7 +422,8 @@ public:
      * This function returns a element (const) iterator to one-pass the end of patch.
      */
     ElementConstIterator cend(const PropId &property = ElementProperties::active) const;
-
+    ///@}
+#if 0
     /**
      * This function returns the iterator to the last active element on the grid.
      */
@@ -452,8 +451,8 @@ public:
 //     * Transformation from a flat-index to a tensor-index.
 //     */
 //    TensorIndex<dim_> flat_to_tensor(const Index flat_index) const;
-    ///@}
 
+#endif
     ///@name Dealing with boundary information
     ///@{
     /**

@@ -18,12 +18,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/*
- *  Test for the  CartesianGrid::get_sub_grid<k>
- *
- *  author: pauletti
- *  date: 2014-10-27
-  */
+/**
+ *  @file
+ *  @brief  CartesianGrid::get_sub_grid<k>
+ *  @author pauletti
+ *  @date  2015-08-19
+ */
 
 #include "../tests.h"
 #include <igatools/geometry/cartesian_grid.h>
