@@ -210,7 +210,7 @@ struct UnitElement
     };
 
     /**
-     * This tuple of size dim+1 provides the caracterization of all
+     * This tuple of size dim+1 provides the characterization of all
      * j dimensional skeleton of the unit cube
      */
     static const AllCubeElements<dim_> all_elems;
@@ -236,6 +236,7 @@ struct UnitElement
     }
 
     static constexpr auto n_faces = num_elem<dim_-1>();
+    static const SafeSTLArray<Index, n_faces> faces;
 
 };
 

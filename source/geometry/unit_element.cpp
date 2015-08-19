@@ -50,6 +50,11 @@ UnitElement<dim_>::sub_elements_size = fill_skeleton_size<dim_>();
 
 
 template <int dim_>
+const SafeSTLArray<Index,UnitElement<dim_>::n_faces> UnitElement<dim_>::faces = elems_ids<dim_-1>();
+
+
+
+template <int dim_>
 const decltype(tuple_of_elements<dim_>(std::make_index_sequence<dim_+1>()))
 UnitElement<dim_>::all_elems = construct_cube_elements<dim_>();
 

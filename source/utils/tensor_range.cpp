@@ -43,9 +43,7 @@ template<>
 SafeSTLSet<TensorIndex<0> >
 el_tensor_range(TensorIndex<0> first, TensorIndex<0> last)
 {
-    Assert(false, ExcNotImplemented());
     SafeSTLSet<TensorIndex<0>> result;
-
     return result;
 }
 
