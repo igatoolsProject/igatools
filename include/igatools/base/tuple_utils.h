@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __IGA_TUPLE_UTILS_H_
-#define __IGA_TUPLE_UTILS_H_
+#ifndef __TUPLE_UTILS_H_
+#define __TUPLE_UTILS_H_
 
 #include <igatools/base/config.h>
 #include <igatools/geometry/unit_element.h>
@@ -33,10 +33,8 @@
 #include <boost/fusion/include/make_map.hpp>
 #include <boost/fusion/include/for_each.hpp>
 
-
+#include <memory>
 IGA_NAMESPACE_OPEN
-
-
 
 /**
  *
@@ -45,11 +43,11 @@ IGA_NAMESPACE_OPEN
  * and the associated values are the <em>objects</em> of the type
  * <tt>DataIndexed<I_min>,DataIndexed<I_min+1>,DataIndexed<I_min+2>,...</tt>.
  *
- * The last index used is given by the sum of <tt>I_min</tt> with the size of the index sequence
- * used as input parameter of the function.
+ * The last index used is given by the sum of <tt>I_min</tt> with the size of
+ * the index sequence used as input parameter of the function.
  *
- * It is used to infer (at compile time) the type of a boost::fusion::map when the
- * keys and values are two classes indexed with an integer value.
+ * It is used to infer (at compile time) the type of a boost::fusion::map when
+ * the keys and values are two classes indexed with an integer value.
  *
  * @warning This function is implemented using some ''<em>black magic</em>''
  * template metaprogramming techniques.
@@ -89,18 +87,28 @@ using DataVaryingId = decltype(make_fusion_map_indexed_data<DataSameId,Id_min>(s
 
 
 
-
+//TODO (pauletti, Aug 18, 2015): put this class in another file?
 /**
  * List of Quadrature for the sub-elements having their topological dimension
  * ranging from <tt>dim-num_sub_elem</tt> to <tt>dim</tt>
  *
- * @note <tt>num_sub_elem</tt> is defined at configuration time in the main CMakeLists.txt file.
+ * @note <tt>num_sub_elem</tt> is defined at configuration time in the main
+ * CMakeLists.txt file.
  * @ingroup serializable
  */
+template <int dim>
+using QuadPtr = std::shared_ptr<Quadrature<dim>>;
+
 template<int dim>
 class QuadList
-    : public DataVaryingId<Quadrature,(num_sub_elem <= dim ? dim - num_sub_elem : dim),(num_sub_elem <= dim ? num_sub_elem+1 : 1)>
+    : public DataVaryingId<QuadPtr, (num_sub_elem <= dim ? dim - num_sub_elem : dim), (num_sub_elem <= dim ? num_sub_elem+1 : 1)>
 {
+public:
+    template<int sdim>
+    auto get_quad()
+    {
+        return boost::fusion::at_key<Topology<sdim>>(*this);
+    }
 
 private:
     /**

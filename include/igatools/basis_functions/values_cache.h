@@ -281,22 +281,15 @@ template<int dim,class CacheType>
 class ValuesCache : public CacheStatus
 {
 public:
-
     static constexpr int get_dim()
     {
         return dim;
     }
 
 protected:
-
-
     CacheType values_;
 
-
-
 public:
-
-
     CacheType &get_values()
     {
         return values_;
@@ -542,19 +535,20 @@ public:
      * of the element at quadrature points
      * as specify by the flag
      */
-    void resize(const ValueFlags &flags,
-                const Size n_points)
+    template<class Flags>
+    void resize(const Flags &flags, const Size n_points)
     {
         Assert(n_points >= 0, ExcLowerRange(n_points,1));
 
         boost::fusion::for_each(this->values_,
                                 [&](auto & type_and_value) -> void
         {
-            using ValueType_ValueContainer = typename std::remove_reference<decltype(type_and_value)>::type;
+            using ValueType_ValueContainer =
+            typename std::remove_reference<decltype(type_and_value)>::type;
             using ValueType = typename ValueType_ValueContainer::first_type;
             auto &value = type_and_value.second;
 
-            if (contains(flags,ValueType::flag))
+            if (contains(flags, ValueType::flag))
             {
                 value.set_status_fill(true);
 

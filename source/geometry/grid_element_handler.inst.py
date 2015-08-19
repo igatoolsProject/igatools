@@ -27,9 +27,8 @@ data = Instantiation(include_files)
 
 
 sub_dim_members = ['void GridElementHandler<dim>::fill_cache<k>(ElementAccessor &elem, const int j) const;',
-             'void GridElementHandler<dim>::init_cache<k>(ElementAccessor &elem) const;',
-             'void GridElementHandler<dim>::reset<k>(const ValueFlags flag, const Quadrature<k> &quad);',
-             'Size GridElementHandler<dim>::get_num_points<k>() const;']
+             'void GridElementHandler<dim>::init_cache<k>(ElementAccessor &elem,std::shared_ptr<const Quadrature<k>> quad) const;',
+             'void GridElementHandler<dim>::reset<k>(const typename ElementAccessor::Flags flag);']
 
 handlers = []
 for dim in inst.sub_domain_dims:

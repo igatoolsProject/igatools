@@ -69,6 +69,18 @@ public:
 
     using Point = Points<dim>;
 
+    enum class Flags
+    {
+        /** Fill nothing */
+        none           =    0,
+
+        /** Quadrature points on the element */
+        point          =    1L << 1,
+
+        /** Quadrature weigths on the element */
+        w_measure      =    1L << 2
+    };
+
     /** @name Constructors */
     ///@{
 protected:
@@ -310,17 +322,24 @@ private:
     /**
      * Alias used to define the container for the values in the cache.
      */
+    class _Point
+    {
+    public:
+        static const std::string name;
+        static const auto flag = Flags::point;
+    };
+
+    class _W_Measure
+    {
+    public:
+        static const std::string name;
+        static const auto flag = Flags::w_measure;
+    };
+
     using CType = boost::fusion::map<
                   boost::fusion::pair<    _Point,DataWithFlagStatus<ValueVector<Points<dim>>>>,
                   boost::fusion::pair<_W_Measure,DataWithFlagStatus<ValueVector<Real>>>
                   >;
-    /**
-     * Returns the flags that are valid to be used with this class.
-     *
-     * @note The valid flags are defined to be the ones that can be inferred from the ValueType(s)
-     * used as key of the boost::fusion::map in CType.
-     */
-    //  static ValueFlags get_valid_flags();
 
 public:
     using ValuesCache = FuncValuesCache<dim,CType>;
@@ -328,6 +347,9 @@ public:
     using CacheType = AllSubElementsCache<ValuesCache>;
 
 private:
+    /** List of quadrature pointers for all sub elements */
+    QuadList<dim> quad_list_;
+
     /** The local cache. */
     std::shared_ptr<CacheType> all_sub_elems_cache_;
 

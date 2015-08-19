@@ -48,18 +48,11 @@ template <int dim>
 template<int k>
 void
 GridElementHandler<dim>::
-reset(const ValueFlags flag,
-      const Quadrature<k> &quad)
+reset(const typename ElementAccessor::Flags flag)
 {
+    flags_[k] = flag;
+
 #if 0
-    const auto valid_flags = ElementAccessor::get_valid_flags();
-    auto grid_flag = flag & valid_flags;
-
-    if (contains(flag, ValueFlags::value))
-        grid_flag |= ValueFlags::point;
-
-    flags_[k] = grid_flag;
-
     cacheutils::extract_sub_elements_data<k>(quad_all_sub_elems_) = quad;
 #endif
 }
@@ -99,10 +92,11 @@ init_all_caches(ElementAccessor &elem)
 #endif
 
 template <int dim>
-template <int k>
+template <int sdim>
 void
 GridElementHandler<dim>::
-init_cache(ElementAccessor &elem) const
+init_cache(ElementAccessor &elem,
+           std::shared_ptr<const Quadrature<sdim>> quad) const
 {
     auto &cache = elem.all_sub_elems_cache_;
     if (cache == nullptr)
@@ -111,12 +105,10 @@ init_cache(ElementAccessor &elem) const
         cache = std::make_shared<Cache>();
     }
 
-    for (auto &s_id: UnitElement<dim>::template elems_ids<k>())
+    for (auto &s_id: UnitElement<dim>::template elems_ids<sdim>())
     {
-        auto &s_cache = cache->template get_sub_elem_cache<k>(s_id);
-//        s_cache.resize(flags_[k], extend_sub_elem_quad<k, dim>(
-//                           cacheutils::extract_sub_elements_data<k>(quad_all_sub_elems_), s_id));
-        s_cache.resize(flags_[k], this->template get_num_points<k>());
+        auto &s_cache = cache->template get_sub_elem_cache<sdim>(s_id);
+        s_cache.resize(flags_[sdim], quad->get_num_points());
 
     }
 }
@@ -130,14 +122,16 @@ void
 GridElementHandler<dim>::
 fill_cache(ElementAccessor &elem, const int j) const
 {
+    using _Point = typename ElementAccessor::_Point;
+    using _W_Measure = typename ElementAccessor::_W_Measure;
     Assert(elem.all_sub_elems_cache_ != nullptr, ExcNullPtr());
     auto &cache = elem.all_sub_elems_cache_->template get_sub_elem_cache<k>(j);
 
-    const auto &quadrature = this->template get_quadrature<k>();
+    const auto quad = elem.quad_list_.template get_quad<k>();
 
     if (cache.template status_fill<_Point>())
     {
-        const auto unit_points = quadrature.get_points();
+        const auto unit_points = quad->get_points();
 
         const auto translate = elem.vertex(0);
         const auto dilate    = elem.template get_side_lengths<k>(j);
@@ -173,7 +167,8 @@ fill_cache(ElementAccessor &elem, const int j) const
 
     if (cache.template status_fill<_W_Measure>())
     {
-        cache.template get_data<_W_Measure>() = elem.template get_measure<k>(j) * quadrature.get_weights();
+        cache.template get_data<_W_Measure>() =
+            elem.template get_measure<k>(j) * quad->get_weights();
         cache.template set_status_filled<_W_Measure>(true);
     }
 
@@ -208,7 +203,7 @@ print_info(LogStream &out) const
         const auto &quad_same_subdim = data_same_topology_dim.second;
 
         out.begin_item("Quadrature cache for dimension: " + std::to_string(SubDimType::value));
-        quad_same_subdim.print_info(out);
+        quad_same_subdim->print_info(out);
         out.end_item();
     }
                            );

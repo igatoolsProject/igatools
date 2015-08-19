@@ -374,6 +374,14 @@ get_element_points() const -> ValueVector<Point>
 
 
 template <int dim, class ContainerType_>
+const std::string  GridElementBase<dim, ContainerType_>::_Point::name = "Element Quadrature Points";
+
+template <int dim, class ContainerType_>
+const std::string GridElementBase<dim, ContainerType_>::_W_Measure::name = "Element Quadrature Weights";
+
+
+
+template <int dim, class ContainerType_>
 void
 GridElementBase<dim, ContainerType_>::
 print_info(LogStream &out) const

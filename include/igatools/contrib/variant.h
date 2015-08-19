@@ -358,7 +358,7 @@ private:
 
     template <size_t Which, typename Current, typename... MyTypes>
     struct initialiser<Which, Current, MyTypes...>
-            : public initialiser<Which+1, MyTypes...>
+        : public initialiser<Which+1, MyTypes...>
     {
         typedef initialiser<Which+1, MyTypes...> base;
         using base::initialise;
