@@ -18,13 +18,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/*
- * Test for ValueTable and associated iterator and views
- * martinelli
- * 25 Feb 2014
- *
+/**
+ *  @file
+ *  @brief ValueTable and associated iterator and views
+ *  @author martinelli
+ *  @date  2014-02-25
  */
-// TODO (pauletti, Nov 24, 2014): fix header format
+
 // TODO (pauletti, Nov 24, 2014): update output format
 #include "../tests.h"
 
@@ -33,22 +33,23 @@
 #include <igatools/functions/function_element.h>
 #include <igatools/utils/value_table.h>
 
-void do_test(Size n_funcs, Size n_pts)
-{
-    out << "========== BEGIN do_test (n_funcs=" << n_funcs
-        << ",n_pts=" << n_pts <<") ==========" << endl ;
 
-    using Grad = typename Function<1,0,1,1>::Gradient;
-    using ClassToTest = ValueTable<Grad>;
+template <int dim=1, int k=1>
+void value_table(Size n_funcs, Size n_pts)
+{
+    OUTSTART
+
+    using Value = typename Function<dim>::template Derivative<k>;
+    using ValueTable = ValueTable<Value>;
 
     out << "Default constructor" << endl;
-    ClassToTest table1;
+    ValueTable table1;
     table1.print_info(out);
     out << endl;
 
 
     out << "Standard constructor (n_funcs=" << n_funcs << ",n_pts=" << n_pts <<")" << endl;
-    ClassToTest table2(n_funcs,n_pts);
+    ValueTable table2(n_funcs,n_pts);
     table2.print_info(out);
     out << endl;
 
@@ -112,20 +113,17 @@ void do_test(Size n_funcs, Size n_pts)
         out << endl;
     }
 
-    out << "========== END do_test (n_funcs=" << n_funcs
-        << ",n_pts=" << n_pts <<") ==========" << endl ;
-    out << endl;
-
+    OUTEND
 }
 
 
 
 int main()
 {
-    do_test(3,2);
-    do_test(3,4);
+    value_table(3,2);
+    value_table(3,4);
 
-    do_test(6,3);
+    value_table(6,3);
 
     return 0;
 }

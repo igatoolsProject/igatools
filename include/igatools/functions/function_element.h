@@ -235,7 +235,7 @@ private:
 
     std::shared_ptr<Func> func_;
 
-    using GridElem = CartesianGridElement<dim>;
+    using GridElem = GridElement<dim>;
     std::shared_ptr<GridElem> grid_elem_;
 
 

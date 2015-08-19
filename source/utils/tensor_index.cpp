@@ -44,8 +44,8 @@ TensorIndex(const Size val) noexcept
 template <int rank>
 TensorIndex<rank>::
 TensorIndex(const SafeSTLArray<Index,rank> &arr) noexcept
-    :
-    SafeSTLArray<Index,rank>(arr)
+:
+SafeSTLArray<Index,rank>(arr)
 {
 #ifndef NDEBUG
     for (const auto &idx : (*this))

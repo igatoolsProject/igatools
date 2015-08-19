@@ -40,8 +40,8 @@ BSplineSpace(const int degree,
              const BasisEndBehaviour end_b)
     :
     BSplineSpace(Degrees(degree), grid, interior_reg,
-                Periodicity(periodic),
-                EndBehaviour(end_b))
+                 Periodicity(periodic),
+                 EndBehaviour(end_b))
 {}
 
 template<int dim_, int range_, int rank_>
@@ -53,8 +53,8 @@ BSplineSpace(const int degree,
              const BasisEndBehaviour end_b)
     :
     BSplineSpace(Degrees(degree), grid, interior_reg,
-                Periodicity(periodic),
-                EndBehaviour(end_b))
+                 Periodicity(periodic),
+                 EndBehaviour(end_b))
 {}
 
 
@@ -102,11 +102,11 @@ BSplineSpace(const Degrees &deg,
              const EndBehaviour &end_b)
     :
     BSplineSpace(DegreeTable(true,deg),
-                grid,
-                SpaceData::get_multiplicity_from_regularity(interior_reg,DegreeTable(true,deg),
-                                                            grid->get_num_intervals()),
-                PeriodicityTable(true,periodic),
-                EndBehaviourTable(true,end_b))
+                 grid,
+                 SpaceData::get_multiplicity_from_regularity(interior_reg,DegreeTable(true,deg),
+                                                             grid->get_num_intervals()),
+                 PeriodicityTable(true,periodic),
+                 EndBehaviourTable(true,end_b))
 {}
 
 template<int dim_, int range_, int rank_>
@@ -118,11 +118,11 @@ BSplineSpace(const Degrees &deg,
              const EndBehaviour &end_b)
     :
     BSplineSpace(DegreeTable(true,deg),
-                grid,
-                SpaceData::get_multiplicity_from_regularity(interior_reg,DegreeTable(true,deg),
-                                                            grid->get_num_intervals()),
-                PeriodicityTable(true,periodic),
-                EndBehaviourTable(true,end_b))
+                 grid,
+                 SpaceData::get_multiplicity_from_regularity(interior_reg,DegreeTable(true,deg),
+                                                             grid->get_num_intervals()),
+                 PeriodicityTable(true,periodic),
+                 EndBehaviourTable(true,end_b))
 {}
 
 
@@ -173,9 +173,9 @@ BSplineSpace(const std::shared_ptr<SpaceData> &space_data,
     operators_(*space_data_,end_b),
     end_interval_(end_b.get_comp_map()),
     dof_distribution_(std::make_shared<DofDistribution<dim_,range_,rank_>>(
-                         space_data->get_num_basis_table(),
-                         space_data->get_degree_table(),
-                         space_data->get_periodic_table()))
+                          space_data->get_num_basis_table(),
+                          space_data->get_degree_table(),
+                          space_data->get_periodic_table()))
 {
 //    Assert(space_data_ != nullptr,ExcNullPtr());
     Assert(dof_distribution_ != nullptr,ExcNullPtr());
@@ -230,9 +230,9 @@ BSplineSpace(const std::shared_ptr<const SpaceData> &space_data,
     operators_(*space_data_,end_b),
     end_interval_(end_b.get_comp_map()),
     dof_distribution_(std::make_shared<DofDistribution<dim_,range_,rank_>>(
-                         space_data->get_num_basis_table(),
-                         space_data->get_degree_table(),
-                         space_data->get_periodic_table()))
+                          space_data->get_num_basis_table(),
+                          space_data->get_degree_table(),
+                          space_data->get_periodic_table()))
 {
 //    Assert(space_data_ != nullptr,ExcNullPtr());
     Assert(dof_distribution_ != nullptr,ExcNullPtr());
