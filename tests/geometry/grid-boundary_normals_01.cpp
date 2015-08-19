@@ -18,29 +18,29 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/*
- *  Test for CartesianGrid normal spaces
- *
- *  author: pauletti
- *  date: 2014-10-27
+/**
+ *  @file
+ *  @brief Grid get_boundary_normals()
+ *  @author pauletti
+ *  @date  2015-08-19
  */
 
 #include "../tests.h"
 #include <igatools/geometry/cartesian_grid.h>
 
-template <int dim, int k>
-void normal_space()
+template <int dim, int sdim>
+void boundary_normals()
 {
     OUTSTART
 
     auto grid = CartesianGrid<dim>::create();
-    const int n_elems = UnitElement<dim>::template num_elem<k>();
+    const int n_elems = UnitElement<dim>::template num_elem<sdim>();
     for (int j = 0; j < n_elems; ++j)
     {
         out << "Sub element index: " << j << endl;
-        auto normals = grid->template get_boundary_normals<k>(j);
+        auto normals = grid->template get_boundary_normals<sdim>(j);
         out << "Outer normals: ";
-        for (int i=0; i<dim-k; ++i)
+        for (int i=0; i<dim-sdim; ++i)
             out << normals[i] << " " << endl;
     }
 
@@ -51,9 +51,9 @@ void normal_space()
 
 int main()
 {
-    normal_space<1, 0>();
-    normal_space<2, 1>();
-    normal_space<3, 2>();
+    boundary_normals<1,0>();
+    boundary_normals<2,1>();
+    boundary_normals<3,2>();
 
     return 0;
 }
