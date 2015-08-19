@@ -49,6 +49,7 @@ void boundary_ids()
         out << "Face number: " << j << endl;
         out << "Face boundary id: " << grid->get_boundary_id(j) << endl;
     }
+
     OUTEND
 }
 
