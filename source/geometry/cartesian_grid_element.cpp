@@ -333,16 +333,11 @@ get_side_lengths(const int sid) const -> const Points<sdim>
 
     auto &s_elem = UnitElement<dim>::template get_elem<sdim>(sid);
 
-    for (const int const_dir :s_elem.constant_directions)
-        lengths[const_dir] = 0.0;
-
     int i=0;
     for (const int active_dir : s_elem.active_directions)
     {
         const auto &knots_active_dir = grid_->get_knot_coordinates(active_dir);
-        Assert(false, ExcNotImplemented());
-        //const int j = tensor_index_[active_dir];
-        int j=0;
+        const int j = get_index()[active_dir];
         lengths[i] = knots_active_dir[j+1] - knots_active_dir[j];
         ++i;
     }

@@ -275,9 +275,10 @@ public:
     //TODO (martinelli, Apr 16, 2015): the returned value should be Points<sdimology_dim>, i.e.
     // the lengths should refer to the sub-element of dimension sdim
     //TODO (martinelli, Aug 13, 2015): maybe it is wothy to declare this function private
+private:
     template<int sdim>
     const Points<sdim> get_side_lengths(const int topology_id) const;
-
+public:
     template <int sdim>
     Real get_measure(const int topology_id) const;
 
