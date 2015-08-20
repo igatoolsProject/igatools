@@ -293,18 +293,18 @@ is_boundary() const
 
 
 template <int dim, class ContainerType_>
-template <int k>
+template <int sdim>
 Real
 GridElementBase<dim, ContainerType_>::
-get_measure(const int j) const
+get_measure(const int s_id) const
 {
-    const auto lengths = this->template get_side_lengths<k>(j);
+    const auto lengths = get_side_lengths<sdim>(s_id);
 
-    auto &k_elem = UnitElement<dim>::template get_elem<k>(j);
+    //  auto &k_elem = UnitElement<dim>::template get_elem<k>(j);
 
     Real measure = 1.0;
-    for (const int active_dir : k_elem.active_directions)
-        measure *= lengths[active_dir];
+    for (auto len : lengths)
+        measure *= len;
 
     return measure;
 }
@@ -327,9 +327,9 @@ template <int dim, class ContainerType_>
 template <int sdim>
 auto
 GridElementBase<dim, ContainerType_>::
-get_side_lengths(const int sid) const -> const Points<sdim>
+get_side_lengths(const int sid) const -> const SafeSTLArray<Real, sdim>
 {
-    Points<sdim> lengths;
+    SafeSTLArray<Real, sdim> lengths;
 
     auto &s_elem = UnitElement<dim>::template get_elem<sdim>(sid);
 

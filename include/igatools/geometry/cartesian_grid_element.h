@@ -277,21 +277,22 @@ public:
     //TODO (martinelli, Aug 13, 2015): maybe it is wothy to declare this function private
 private:
     template<int sdim>
-    const Points<sdim> get_side_lengths(const int topology_id) const;
+    const SafeSTLArray<Real, sdim> get_side_lengths(const int s_id) const;
+
 public:
     template <int sdim>
-    Real get_measure(const int topology_id) const;
+    Real get_measure(const int s_id) const;
 
     /**
-     * Returns the <tt>sdim</tt> dimensional topology_id-th sub-element measure
+     * Returns the <tt>sdim</tt> dimensional s_id-th sub-element measure
      * multiplied by the weights of the quadrature.
      */
     template <int sdim>
-    ValueVector<Real> get_w_measures(const int topology_id) const;
+    ValueVector<Real> get_w_measures(const int s_id) const;
 
 
     template <int sdim = dim>
-    ValueVector<Point> get_points(const int topology_id = 0) const;
+    ValueVector<Point> get_points(const int s_id = 0) const;
 
     ValueVector<Point> get_element_points() const;
 
@@ -357,10 +358,10 @@ private:
 
     template <class ValueType, int sdim>
     const auto &
-    get_values_from_cache(const int topology_id) const
+    get_values_from_cache(const int s_id) const
     {
         Assert(all_sub_elems_cache_ != nullptr, ExcNullPtr());
-        const auto &cache = all_sub_elems_cache_->template get_sub_elem_cache<sdim>(topology_id);
+        const auto &cache = all_sub_elems_cache_->template get_sub_elem_cache<sdim>(s_id);
         return cache.template get_data<ValueType>();
     }
     ///@}

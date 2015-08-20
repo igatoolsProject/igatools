@@ -41,7 +41,9 @@ void iterate(const int n_knots = 5)
 
     for (auto &elem : *grid)
     {
-        out << elem.template get_measure<sdim>(0) << endl;
+        for (auto &s_id : UnitElement<dim>::template elems_ids<sdim>())
+            out << elem.template get_measure<sdim>(s_id) << endl;
+        out << endl;
     }
 
     OUTEND
@@ -55,6 +57,10 @@ int main()
     iterate<1>();
     iterate<2>();
     iterate<3>();
+
+    iterate<1,0>();
+    iterate<2,1>();
+    iterate<3,2>();
 
     return  0;
 }
