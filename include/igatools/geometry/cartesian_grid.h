@@ -281,6 +281,9 @@ public:
      */
     static std::shared_ptr<self_t> create(const TensorSize<dim_> &n);
 
+    static std::shared_ptr<self_t>
+    create(const BBox<dim_> &end_points, const Size n_knots);
+
     /**
      * Construct a cartesian grid where the knot coordinate in each
      * direction is provided as CartesianProductArray object.
@@ -307,8 +310,7 @@ public:
     static std::shared_ptr<self_t>
     create(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knot_coordinates);
 
-    static std::shared_ptr<self_t>
-    create(const BBox<dim_> &end_points, const Size n_knots);
+
 
     /**
      * @todo document me

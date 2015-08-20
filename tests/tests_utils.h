@@ -1,3 +1,4 @@
+/*
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
 // Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
@@ -18,43 +19,32 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/**
- *  @file
- *  @brief  get_measure
- *  @author pauletti
- *  @date   2015-08-19
+/ * test_utils.h
+ *
+ *  Created on: Aug 20, 2015
+ *      Author: pauletti
  */
 
-#include "../tests.h"
-
-#include <igatools/geometry/cartesian_grid.h>
-#include <igatools/geometry/cartesian_grid_element.h>
-
-#include "../tests_utils.h"
-
-template <int dim, int sdim = dim>
-void iterate(const int n_knots = 5)
+#ifndef __TESTS_TEST_UTILS_H_
+template <int dim>
+auto non_uniform_grid(const int max_nodes = 5)
 {
-    OUTSTART
-
-    auto grid = non_uniform_grid<dim>();
-
-    for (auto &elem : *grid)
+	SafeSTLArray<SafeSTLVector<Real>,dim> knots;
+    for(int i=0; i<dim; ++i)
     {
-        out << elem.template get_measure<sdim>(0) << endl;
+    	knots[i].resize(max_nodes-i);
+    	auto prog=knots[i];
+    	 std::iota (prog.begin(), prog.end(),0);
+    	std::partial_sum (prog.begin(), prog.end(), knots[i].begin());
     }
 
-    OUTEND
+    return CartesianGrid<dim>::create(knots);
 }
 
+#define __TESTS_TEST_UTILS_H_
 
 
-int main()
-{
-    iterate<0>();
-    iterate<1>();
-    iterate<2>();
-    iterate<3>();
 
-    return  0;
-}
+
+
+#endif /* TESTS_TEST_UTILS_H_ */
