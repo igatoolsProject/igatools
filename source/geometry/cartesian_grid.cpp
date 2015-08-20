@@ -384,6 +384,17 @@ clast(const PropId &prop) const -> ElementConstIterator
 
 #endif
 
+
+
+template<int dim_>
+auto
+CartesianGrid<dim_>::create_cache_handler() -> std::shared_ptr<ElementHandler>
+{
+    return std::make_shared<ElementHandler>(this->shared_from_this());
+}
+
+
+
 template<int dim_>
 auto
 CartesianGrid<dim_>::

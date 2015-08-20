@@ -31,7 +31,20 @@
 #include <iterator>
 
 IGA_NAMESPACE_OPEN
+namespace grid_element
+{
+enum class Flags
+{
+    /** Fill nothing */
+    none           =    0,
 
+    /** Quadrature points on the element */
+    point          =    1L << 1,
+
+    /** Quadrature weigths on the element */
+    w_measure      =    1L << 2
+};
+}
 /**
  * @brief Element accessor for the CartesianGrid.
  *
@@ -69,18 +82,7 @@ public:
 
     using Point = Points<dim>;
 
-    enum class Flags
-    {
-        /** Fill nothing */
-        none           =    0,
-
-        /** Quadrature points on the element */
-        point          =    1L << 1,
-
-        /** Quadrature weigths on the element */
-        w_measure      =    1L << 2
-    };
-
+    using Flags = grid_element::Flags;
     /** @name Constructors */
     ///@{
 protected:
@@ -415,6 +417,14 @@ class GridElement
     using GridElementBase<dim, CartesianGrid<dim>>::GridElementBase;
 };
 
+
+//template <int dim>
+//inline std::ostream &operator<<(std::ostream & Str, MyEnum V) {
+//  switch (V) {
+//  case foo: return Str << "foo";
+//  case bar: return Str << "bar";
+//  default: return Str << (int) V;
+//}
 
 IGA_NAMESPACE_CLOSE
 

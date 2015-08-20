@@ -33,7 +33,7 @@
 #include "../tests_utils.h"
 
 template <int dim, int sdim = dim>
-void iterate(const int n_knots = 5)
+void iterate()
 {
     OUTSTART
 

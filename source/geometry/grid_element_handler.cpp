@@ -48,7 +48,7 @@ template <int dim>
 template<int k>
 void
 GridElementHandler<dim>::
-reset(const typename ElementAccessor::Flags flag)
+set_flags(const typename ElementAccessor::Flags flag)
 {
     flags_[k] = flag;
 
@@ -98,6 +98,9 @@ GridElementHandler<dim>::
 init_cache(ElementAccessor &elem,
            std::shared_ptr<const Quadrature<sdim>> quad) const
 {
+    auto &q = elem.quad_list_.template get_quad<sdim>();
+    q = quad;
+
     auto &cache = elem.all_sub_elems_cache_;
     if (cache == nullptr)
     {
@@ -127,7 +130,7 @@ fill_cache(ElementAccessor &elem, const int j) const
     Assert(elem.all_sub_elems_cache_ != nullptr, ExcNullPtr());
     auto &cache = elem.all_sub_elems_cache_->template get_sub_elem_cache<k>(j);
 
-    const auto quad = elem.quad_list_.template get_quad<k>();
+    const auto &quad = elem.quad_list_.template get_quad<k>();
 
     if (cache.template status_fill<_Point>())
     {
@@ -192,21 +195,8 @@ void
 GridElementHandler<dim>::
 print_info(LogStream &out) const
 {
-    out.begin_item("Quadrature cache for all dimensions:");
-
-    boost::fusion::for_each(quad_all_sub_elems_,
-                            [&](const auto & data_same_topology_dim)
-    {
-        using PairType = typename std::remove_reference<decltype(data_same_topology_dim)>::type;
-        using SubDimType = typename PairType::first_type;
-
-        const auto &quad_same_subdim = data_same_topology_dim.second;
-
-        out.begin_item("Quadrature cache for dimension: " + std::to_string(SubDimType::value));
-        quad_same_subdim->print_info(out);
-        out.end_item();
-    }
-                           );
+    out.begin_item("Flags for each subdimension");
+    // flags_.print_info(out);
     out.end_item();
 
 }

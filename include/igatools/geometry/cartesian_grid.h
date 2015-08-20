@@ -33,6 +33,7 @@
 #include <igatools/geometry/grid_iterator.h>
 #include <igatools/base/properties_id_container.h>
 
+#include<memory>
 #ifdef MESH_REFINEMENT
 #include <boost/signals2.hpp>
 #endif
@@ -392,6 +393,8 @@ public:
     BBox<dim_> get_bounding_box() const;
     ///@}
 
+    std::shared_ptr<ElementHandler> create_cache_handler();
+
 
     ///@name Iterating of grid elements
     ///@{
@@ -639,7 +642,7 @@ private:
 
 
 
-public:
+private:
     /**
      * Create an element (defined on this grid) with a given flat_index.
      */

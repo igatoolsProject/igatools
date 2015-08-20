@@ -97,7 +97,7 @@ using DataVaryingId = decltype(make_fusion_map_indexed_data<DataSameId,Id_min>(s
  * @ingroup serializable
  */
 template <int dim>
-using QuadPtr = std::shared_ptr<Quadrature<dim>>;
+using QuadPtr = std::shared_ptr<const Quadrature<dim>>;
 
 template<int dim>
 class QuadList
@@ -105,7 +105,7 @@ class QuadList
 {
 public:
     template<int sdim>
-    auto get_quad()
+    QuadPtr<sdim> &get_quad()
     {
         return boost::fusion::at_key<Topology<sdim>>(*this);
     }

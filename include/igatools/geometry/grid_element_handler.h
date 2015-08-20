@@ -65,7 +65,7 @@ public:
      * @name Constructors
      */
     ///@{
-public:
+protected:
     /**
      * Default constructor. It does nothing but it is needed for the
      * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -73,7 +73,7 @@ public:
      */
     GridElementHandler() = default;
 
-
+public:
     /**
      * Constructor.
      */
@@ -115,83 +115,59 @@ public:
      * @name Functions for the cache's reset/init/fill mechanism.
      */
     ///@{
-    template<int sub_elem_dim>
-    void reset(const typename ElementAccessor::Flags flag);
+    template<int sdim>
+    void set_flags(const typename ElementAccessor::Flags flag);
 
     template <int sdim>
     void init_cache(ElementAccessor &elem,
                     std::shared_ptr<const Quadrature<sdim>> quad) const;
 
-
-    void init_element_cache(ElementAccessor &elem,
-                            std::shared_ptr<const Quadrature<dim>> quad) const
+    template <int sdim>
+    void init_cache(ElementIterator &elem,
+                    std::shared_ptr<const Quadrature<sdim>> quad) const
     {
-        this->template init_cache<dim>(elem, quad);
+        init_cache<sdim>(*elem, quad);
     }
+
 
     void init_element_cache(ElementIterator &elem,
                             std::shared_ptr<const Quadrature<dim>> quad) const
     {
-        this->template init_cache<dim>(*elem, quad);
+        init_cache<dim>(*elem, quad);
     }
-
-
-    void init_face_cache(ElementAccessor &elem,
-                         std::shared_ptr<const Quadrature<(dim > 0) ? dim-1 : 0>> quad) const
-    {
-        Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
-        this->template init_cache<(dim > 0) ? dim-1 : 0>(elem, quad);
-    }
-
 
     void init_face_cache(ElementIterator &elem,
                          std::shared_ptr<const Quadrature<(dim > 0) ? dim-1 : 0>> quad) const
     {
         Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
-        this->template init_cache<(dim > 0) ? dim-1 : 0>(*elem, quad);
+        init_cache<(dim > 0) ? dim-1 : 0>(*elem, quad);
     }
 
-    template <int sub_elem_dim>
-    void fill_cache(ElementAccessor &elem, const int sub_elem_id) const;
+    template <int sdim>
+    void fill_cache(ElementAccessor &elem, const int s_id) const;
 
-    void fill_element_cache(ElementAccessor &elem) const
+
+    template <int sdim>
+    void fill_cache(ElementIterator &elem, const int s_id) const
     {
-        this->template fill_cache<dim>(elem,0);
+        fill_cache<sdim>(*elem, s_id);
     }
+
+
 
     void fill_element_cache(ElementIterator &elem) const
     {
-        this->template fill_cache<dim>(*elem,0);
+        fill_cache<dim>(*elem,0);
     }
 
-    void fill_face_cache(ElementAccessor &elem, const int sub_elem_id) const
+
+    void fill_face_cache(ElementIterator &elem, const int s_id) const
     {
         Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
-        this->template fill_cache<(dim > 0) ? dim-1 : 0>(elem,sub_elem_id);
+        fill_cache<(dim > 0) ? dim-1 : 0>(*elem,s_id);
     }
-
-    void fill_face_cache(ElementIterator &elem, const int sub_elem_id) const
-    {
-        Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
-        this->template fill_cache<(dim > 0) ? dim-1 : 0>(*elem,sub_elem_id);
-    }
-
-
     ///@}
 
-
-//    template <int sub_elem_dim = dim>
-//    const Quadrature<sub_elem_dim> &get_quadrature() const
-//    {
-//        return cacheutils::extract_sub_elements_data<sub_elem_dim>(quad_all_sub_elems_);
-//    }
-//
-//
-//    template <int sub_elem_dim = dim>
-//    Size get_num_points() const
-//    {
-//        return this->template get_quadrature<sub_elem_dim>().get_num_points();
-//    }
 
 public:
 
@@ -211,10 +187,6 @@ private:
     std::shared_ptr<GridType> grid_;
 
     SafeSTLArray<typename ElementAccessor::Flags, dim + 1> flags_;
-
-protected:
-    QuadList<dim> quad_all_sub_elems_;
-
 
 private:
 

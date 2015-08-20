@@ -18,12 +18,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/*
- *  Test for the CartesianGrid Iterator get_measure()
- *
- *  author: pauletti
- *  date: 2014-08-15
- *
+/**
+ *  @file
+ *  @brief  get_weihts()
+ *  @author pauletti
+ *  @date   2015-08-19
  */
 
 #include "../tests.h"
@@ -34,29 +33,32 @@
 #include <igatools/geometry/cartesian_grid_element.h>
 
 
-template <int dim>
-void elem_measure(const int n_knots = 5)
+template <int dim, int sdim = dim>
+void elem_weights(const int n_knots = 5)
 {
     OUTSTART
 
-    auto grid = CartesianGrid<dim>::create(n_knots);
-    auto flag = ValueFlags::measure|ValueFlags::w_measure;
+    using Grid = CartesianGrid<dim>;
+    using Flags = typename Grid::ElementAccessor::Flags;
+    auto grid = Grid::create(n_knots);
 
-    QGauss<dim> quad(2);
-    GridElementHandler<dim> cache(grid);
-    cache.template reset<dim>(flag, quad);
+    auto flag = Flags::w_measure;
+    auto cache_handler = grid->create_cache_handler();
+    cache_handler->template set_flags<sdim>(flag);
+
+    auto quad = QGauss<sdim>::create(2);
     auto elem = grid->begin();
-    cache.init_element_cache(elem);
+    cache_handler->template init_cache<sdim>(elem, quad);
 
     for (; elem != grid->end(); ++elem)
     {
-        elem->print_info(out);
-
-        cache.fill_element_cache(elem);
-        out << "Measure: " << elem->template get_measure<dim>(0) << endl;
-        out.begin_item("Weighted Measure:");
-        elem->template get_w_measures<dim>(0).print_info(out);
-        out.end_item();
+        for (auto &s_id : UnitElement<dim>::template elems_ids<sdim>())
+        {
+            cache_handler->template fill_cache<sdim>(elem, s_id);
+            elem->template get_w_measures<sdim>(s_id).print_info(out);
+            out << endl;
+        }
+        out << endl;
     }
 
     OUTEND
@@ -66,9 +68,13 @@ void elem_measure(const int n_knots = 5)
 
 int main()
 {
-    elem_measure<1>();
-    elem_measure<2>();
-    elem_measure<3>();
+    elem_weights<0>();
+    elem_weights<1>();
+    elem_weights<2>();
+    elem_weights<3>();
+    elem_weights<1,0>();
+    elem_weights<2,1>();
+    elem_weights<3,2>();
 
     return  0;
 }
