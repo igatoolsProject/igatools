@@ -280,7 +280,7 @@ public:
     //TODO (martinelli, Aug 13, 2015): maybe it is wothy to declare this function private
 private:
     template<int sdim>
-    const SafeSTLArray<Real, sdim> get_side_lengths(const int s_id) const;
+    const Points<sdim> get_side_lengths(const int s_id) const;
 
 public:
     template <int sdim>

@@ -120,7 +120,7 @@ init_cache(ElementAccessor &elem,
 
 
 template <int dim>
-template <int k>
+template <int sdim>
 void
 GridElementHandler<dim>::
 fill_cache(ElementAccessor &elem, const int j) const
@@ -128,53 +128,29 @@ fill_cache(ElementAccessor &elem, const int j) const
     using _Point = typename ElementAccessor::_Point;
     using _W_Measure = typename ElementAccessor::_W_Measure;
     Assert(elem.all_sub_elems_cache_ != nullptr, ExcNullPtr());
-    auto &cache = elem.all_sub_elems_cache_->template get_sub_elem_cache<k>(j);
+    auto &cache = elem.all_sub_elems_cache_->template get_sub_elem_cache<sdim>(j);
 
-    const auto &quad = elem.quad_list_.template get_quad<k>();
+    const auto &s_quad = elem.quad_list_.template get_quad<sdim>();
 
     if (cache.template status_fill<_Point>())
     {
-        const auto unit_points = quad->get_points();
+        auto quad = extend_sub_elem_quad<sdim,dim>(*s_quad, j);
 
         const auto translate = elem.vertex(0);
-        const auto dilate    = elem.template get_side_lengths<k>(j);
-
-        const auto n_pts = unit_points.get_num_points();
-
-        const auto &sub_unit_elem = UnitElement<dim>::template get_elem<k>(j);
+        const auto dilate    = elem.template get_side_lengths<dim>(0);
+        quad.dilate(dilate);
+        quad.translate(translate);
         auto &ref_pts = cache.template get_data<_Point>();
-        for (int pt = 0 ; pt < n_pts ; ++pt)
-        {
-            const auto &unit_pt = unit_points[pt];
-            auto &ref_pt = ref_pts[pt];
-
-            int sub_elem_dir = 0;
-            for (const auto active_dir : sub_unit_elem.active_directions)
-            {
-                ref_pt[active_dir] = translate[active_dir] +
-                                     dilate[active_dir] * unit_pt[sub_elem_dir] ;
-                ++sub_elem_dir;
-            }
-
-            sub_elem_dir = 0;
-            for (const auto constant_dir : sub_unit_elem.constant_directions)
-            {
-                ref_pt[constant_dir] = translate[constant_dir] +
-                                       dilate[constant_dir] * sub_unit_elem.constant_values[sub_elem_dir];
-                ++sub_elem_dir;
-            }
-        }
-
+        ref_pts = quad.get_points();
         cache.template set_status_filled<_Point>(true);
     }
 
     if (cache.template status_fill<_W_Measure>())
     {
         cache.template get_data<_W_Measure>() =
-            elem.template get_measure<k>(j) * quad->get_weights();
+            elem.template get_measure<sdim>(j) * s_quad->get_weights();
         cache.template set_status_filled<_W_Measure>(true);
     }
-
 
     cache.set_filled(true);
 }

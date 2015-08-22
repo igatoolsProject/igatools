@@ -237,17 +237,17 @@ vertex(const int i) const -> Point
     Assert(i < UnitElement<dim>::sub_elements_size[0],
            ExcIndexRange(i,0, UnitElement<dim>::sub_elements_size[0]));
 
-    Assert(false, ExcNotImplemented());
-    TensorIndex<dim> index;// = this->get_index();
+    TensorIndex<dim> index = this->get_index();
 
     auto all_elems = UnitElement<dim>::all_elems;
+    const auto &vertex = std::get<0>(all_elems)[i];
+
     for (const auto j : UnitElement<dim>::active_directions)
     {
-        auto vertex = std::get<0>(all_elems)[i];
         index[j] += vertex.constant_values[j];
     }
 
-    return grid_->get_knot_coordinates().cartesian_product(index);
+    return grid_->knot_coordinates_.cartesian_product(index);
 }
 
 
@@ -303,8 +303,8 @@ get_measure(const int s_id) const
     //  auto &k_elem = UnitElement<dim>::template get_elem<k>(j);
 
     Real measure = 1.0;
-    for (auto len : lengths)
-        measure *= len;
+    for (int i=0; i<sdim; ++i)
+        measure *= lengths[i];
 
     return measure;
 }
@@ -327,9 +327,9 @@ template <int dim, class ContainerType_>
 template <int sdim>
 auto
 GridElementBase<dim, ContainerType_>::
-get_side_lengths(const int sid) const -> const SafeSTLArray<Real, sdim>
+get_side_lengths(const int sid) const -> const Points<sdim>
 {
-    SafeSTLArray<Real, sdim> lengths;
+    Points<sdim> lengths;
 
     auto &s_elem = UnitElement<dim>::template get_elem<sdim>(sid);
 

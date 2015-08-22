@@ -345,7 +345,8 @@ private:
 };
 
 /**
- * Given evaluation points on a <tt>sub_dim</tt>-dimensional face (with id <tt>sub_elem_id</tt>),
+ * Given evaluation points on a <tt>sub_dim</tt>-dimensional face
+ * (with id <tt>sub_elem_id</tt>),
  * of a <tt>dim</tt>-dimensional domain,
  * this functions creates an extended dimension
  * version of this points applicable to the volume.

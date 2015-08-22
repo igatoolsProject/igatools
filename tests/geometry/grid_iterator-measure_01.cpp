@@ -20,7 +20,7 @@
 
 /**
  *  @file
- *  @brief  get_weihts()
+ *  @brief  get_weights()
  *  @author pauletti
  *  @date   2015-08-19
  */
