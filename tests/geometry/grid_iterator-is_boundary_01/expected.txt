@@ -1,0 +1,309 @@
+========================================================================
+boundaryId
+========================================================================
+========================================================================
+
+========================================================================
+boundaryId
+========================================================================
+Property: 
+   active
+
+Index:
+[ 0 ]
+Boundary subelements:
+
+Property: 
+   active
+
+Index:
+[ 1 ]
+Boundary subelements:
+
+========================================================================
+
+========================================================================
+boundaryId
+========================================================================
+Property: 
+   active
+
+Index:
+[ 0 0 ]
+Boundary subelements:
+
+Property: 
+   active
+
+Index:
+[ 0 1 ]
+Boundary subelements:
+
+Property: 
+   active
+
+Index:
+[ 1 0 ]
+Boundary subelements:
+
+Property: 
+   active
+
+Index:
+[ 1 1 ]
+Boundary subelements:
+
+========================================================================
+
+========================================================================
+boundaryId
+========================================================================
+Property: 
+   active
+
+Index:
+[ 0 0 0 ]
+Boundary subelements:
+
+Property: 
+   active
+
+Index:
+[ 0 0 1 ]
+Boundary subelements:
+
+Property: 
+   active
+
+Index:
+[ 0 1 0 ]
+Boundary subelements:
+
+Property: 
+   active
+
+Index:
+[ 0 1 1 ]
+Boundary subelements:
+
+Property: 
+   active
+
+Index:
+[ 1 0 0 ]
+Boundary subelements:
+
+Property: 
+   active
+
+Index:
+[ 1 0 1 ]
+Boundary subelements:
+
+Property: 
+   active
+
+Index:
+[ 1 1 0 ]
+Boundary subelements:
+
+Property: 
+   active
+
+Index:
+[ 1 1 1 ]
+Boundary subelements:
+
+========================================================================
+
+========================================================================
+boundaryId
+========================================================================
+Property: 
+   active
+
+Index:
+[ 0 ]
+Boundary subelements:
+0,
+Property: 
+   active
+
+Index:
+[ 1 ]
+Boundary subelements:
+1,
+========================================================================
+
+========================================================================
+boundaryId
+========================================================================
+Property: 
+   active
+
+Index:
+[ 0 0 ]
+Boundary subelements:
+0,2,
+Property: 
+   active
+
+Index:
+[ 0 1 ]
+Boundary subelements:
+0,3,
+Property: 
+   active
+
+Index:
+[ 1 0 ]
+Boundary subelements:
+1,2,
+Property: 
+   active
+
+Index:
+[ 1 1 ]
+Boundary subelements:
+1,3,
+========================================================================
+
+========================================================================
+boundaryId
+========================================================================
+Property: 
+   active
+
+Index:
+[ 0 0 0 ]
+Boundary subelements:
+0,2,4,
+Property: 
+   active
+
+Index:
+[ 0 0 1 ]
+Boundary subelements:
+0,2,5,
+Property: 
+   active
+
+Index:
+[ 0 1 0 ]
+Boundary subelements:
+0,3,4,
+Property: 
+   active
+
+Index:
+[ 0 1 1 ]
+Boundary subelements:
+0,3,5,
+Property: 
+   active
+
+Index:
+[ 1 0 0 ]
+Boundary subelements:
+1,2,4,
+Property: 
+   active
+
+Index:
+[ 1 0 1 ]
+Boundary subelements:
+1,2,5,
+Property: 
+   active
+
+Index:
+[ 1 1 0 ]
+Boundary subelements:
+1,3,4,
+Property: 
+   active
+
+Index:
+[ 1 1 1 ]
+Boundary subelements:
+1,3,5,
+========================================================================
+
+========================================================================
+boundaryId
+========================================================================
+Property: 
+   active
+
+Index:
+[ 0 ]
+Boundary subelements:
+0,1,
+========================================================================
+
+========================================================================
+boundaryId
+========================================================================
+Property: 
+   active
+
+Index:
+[ 0 0 ]
+Boundary subelements:
+0,1,2,
+Property: 
+   active
+
+Index:
+[ 0 1 ]
+Boundary subelements:
+0,1,3,
+========================================================================
+
+========================================================================
+boundaryId
+========================================================================
+Property: 
+   active
+
+Index:
+[ 0 0 0 ]
+Boundary subelements:
+0,1,2,4,
+Property: 
+   active
+
+Index:
+[ 0 0 1 ]
+Boundary subelements:
+0,1,2,
+Property: 
+   active
+
+Index:
+[ 0 0 2 ]
+Boundary subelements:
+0,1,2,5,
+Property: 
+   active
+
+Index:
+[ 0 1 0 ]
+Boundary subelements:
+0,1,3,4,
+Property: 
+   active
+
+Index:
+[ 0 1 1 ]
+Boundary subelements:
+0,1,3,
+Property: 
+   active
+
+Index:
+[ 0 1 2 ]
+Boundary subelements:
+0,1,3,5,
+========================================================================
+

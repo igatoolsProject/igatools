@@ -166,6 +166,7 @@ get_grid() const -> std::shared_ptr<const GridType>
 }
 
 
+
 template <int dim>
 void
 GridElementHandler<dim>::
