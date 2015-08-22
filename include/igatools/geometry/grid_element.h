@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __CARTESIAN_GRID_ELEMENT_H_
-#define __CARTESIAN_GRID_ELEMENT_H_
+#ifndef __GRID_ELEMENT_H_
+#define __GRID_ELEMENT_H_
 
 #include <igatools/base/config.h>
 #include <igatools/utils/tensor_range.h>

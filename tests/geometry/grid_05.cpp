@@ -27,7 +27,7 @@
 #include "../tests.h"
 
 #include <igatools/geometry/cartesian_grid.h>
-#include <igatools/geometry/cartesian_grid_element.h>
+#include <igatools/geometry/grid_element.h>
 
 template<int dim>
 void do_test()

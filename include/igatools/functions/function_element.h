@@ -21,7 +21,7 @@
 #ifndef FUNCTION_ELEMENT_H
 #define FUNCTION_ELEMENT_H
 
-#include <igatools/geometry/cartesian_grid_element.h>
+#include <igatools/geometry/grid_element.h>
 #include <igatools/base/value_types.h>
 #include <igatools/basis_functions/values_cache.h>
 

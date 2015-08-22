@@ -21,7 +21,7 @@
 
 from init_instantiation_data import *
  
-# include_files = ['geometry/cartesian_grid_element.h',
+# include_files = ['geometry/grid_element.h',
 #                   'basis_functions/bspline_element.h',
 #                   'basis_functions/nurbs_element.h']
 # data = Instantiation(include_files)
@@ -34,7 +34,7 @@ from init_instantiation_data import *
 
 
 
-include_files = ['geometry/cartesian_grid_element.h',
+include_files = ['geometry/grid_element.h',
                  'basis_functions/nurbs_element.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)

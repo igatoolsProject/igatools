@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 
-#include <igatools/geometry/cartesian_grid_element.h>
+#include <igatools/geometry/grid_element.h>
 #include <igatools/geometry/unit_element.h>
 #include <algorithm>
 

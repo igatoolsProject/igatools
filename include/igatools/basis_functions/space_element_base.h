@@ -23,7 +23,7 @@
 #define SPACE_ELEMENT_BASE_H_
 
 #include <igatools/base/config.h>
-#include <igatools/geometry/cartesian_grid_element.h>
+#include <igatools/geometry/grid_element.h>
 //#include <igatools/basis_functions/space.h>
 
 

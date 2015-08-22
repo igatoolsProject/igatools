@@ -32,7 +32,7 @@
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/geometry/grid_element_handler.h>
-#include <igatools/geometry/cartesian_grid_element.h>
+#include <igatools/geometry/grid_element.h>
 
 template <int dim, int k = dim-1>
 void face_values(const TensorSize<dim> &n_knots)
