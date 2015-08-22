@@ -25,7 +25,7 @@
 #include <igatools/utils/tensor_range.h>
 #include <igatools/base/quadrature.h>
 #include <igatools/geometry/cartesian_grid.h>
-#include <igatools/geometry/grid_element_handler.h>
+#include <igatools/geometry/grid_cache_handler.h>
 #include <igatools/utils/value_vector.h>
 #include <igatools/basis_functions/values_cache.h>
 #include <iterator>
@@ -161,9 +161,10 @@ public:
 
     const IndexType &get_index() const;
 
+private:
     /** Return the cartesian grid from which the element belongs.*/
     const std::shared_ptr<const ContainerType> get_grid() const;
-
+public:
     /**
      * @name Functions for managing/querying the element properties.
      */
@@ -293,11 +294,13 @@ public:
     ValueVector<Real> get_w_measures(const int s_id) const;
 
 
-    template <int sdim = dim>
+    template <int sdim>
     ValueVector<Point> get_points(const int s_id = 0) const;
 
+private:
     ValueVector<Point> get_element_points() const;
 
+public:
     /**
      * Prints internal information about the CartesianGridElementAccessor.
      * Its main use is for testing and debugging.
