@@ -1,939 +1,1719 @@
 ========================================================================
 elem_measure
 ========================================================================
-Flat id = 0    Tensor id = [0]
-Measure: 0.250000
-Weighted Measure:
-   ValueVector (num_points=2) :
-   [ 0.125000 0.125000 ]
+ValueVector (num_points=2) :
+[ 0.125000 0.125000 ]
 
-Sub elem Measure: 1.00000
-Weighted Measure:
-   ValueVector (num_points=1) :
-   [ 1.00000 ]
+ValueVector (num_points=1) :
+[ [ 0 ]  ]
 
-Flat id = 1    Tensor id = [1]
-Measure: 0.250000
-Weighted Measure:
-   ValueVector (num_points=2) :
-   [ 0.125000 0.125000 ]
+ValueVector (num_points=1) :
+[ [ 0.250000 ]  ]
 
-Sub elem Measure: 1.00000
-Weighted Measure:
-   ValueVector (num_points=1) :
-   [ 1.00000 ]
 
-Flat id = 2    Tensor id = [2]
-Measure: 0.250000
-Weighted Measure:
-   ValueVector (num_points=2) :
-   [ 0.125000 0.125000 ]
+ValueVector (num_points=2) :
+[ 0.125000 0.125000 ]
 
-Sub elem Measure: 1.00000
-Weighted Measure:
-   ValueVector (num_points=1) :
-   [ 1.00000 ]
+ValueVector (num_points=1) :
+[ [ 0.250000 ]  ]
 
-Flat id = 3    Tensor id = [3]
-Measure: 0.250000
-Weighted Measure:
-   ValueVector (num_points=2) :
-   [ 0.125000 0.125000 ]
+ValueVector (num_points=1) :
+[ [ 0.500000 ]  ]
 
-Sub elem Measure: 1.00000
-Weighted Measure:
-   ValueVector (num_points=1) :
-   [ 1.00000 ]
+
+ValueVector (num_points=2) :
+[ 0.125000 0.125000 ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 ]  ]
+
+
+ValueVector (num_points=2) :
+[ 0.125000 0.125000 ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 1.00000 ]  ]
+
 
 ========================================================================
 
 ========================================================================
 elem_measure
 ========================================================================
-Flat id = 0    Tensor id = [0,0]
-Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+ValueVector (num_points=4) :
+[ 0.0156250 0.0156250 0.0156250 0.0156250 ]
 
-Sub elem Measure: 0.250000
-Weighted Measure:
-   ValueVector (num_points=2) :
-   [ 0.125000 0.125000 ]
+ValueVector (num_points=1) :
+[ [ 0 0.125000 ]  ]
 
-Flat id = 1    Tensor id = [1,0]
-Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+ValueVector (num_points=1) :
+[ [ 0.250000 0.125000 ]  ]
 
-Sub elem Measure: 0.250000
-Weighted Measure:
-   ValueVector (num_points=2) :
-   [ 0.125000 0.125000 ]
+ValueVector (num_points=1) :
+[ [ 0.125000 0 ]  ]
 
-Flat id = 2    Tensor id = [2,0]
-Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+ValueVector (num_points=1) :
+[ [ 0.125000 0.250000 ]  ]
 
-Sub elem Measure: 0.250000
-Weighted Measure:
-   ValueVector (num_points=2) :
-   [ 0.125000 0.125000 ]
 
-Flat id = 3    Tensor id = [3,0]
-Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+ValueVector (num_points=4) :
+[ 0.0156250 0.0156250 0.0156250 0.0156250 ]
 
-Sub elem Measure: 0.250000
-Weighted Measure:
-   ValueVector (num_points=2) :
-   [ 0.125000 0.125000 ]
+ValueVector (num_points=1) :
+[ [ 0 0.375000 ]  ]
 
-Flat id = 4    Tensor id = [0,1]
-Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+ValueVector (num_points=1) :
+[ [ 0.250000 0.375000 ]  ]
 
-Sub elem Measure: 0.250000
-Weighted Measure:
-   ValueVector (num_points=2) :
-   [ 0.125000 0.125000 ]
+ValueVector (num_points=1) :
+[ [ 0.125000 0.250000 ]  ]
 
-Flat id = 5    Tensor id = [1,1]
-Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+ValueVector (num_points=1) :
+[ [ 0.125000 0.500000 ]  ]
 
-Sub elem Measure: 0.250000
-Weighted Measure:
-   ValueVector (num_points=2) :
-   [ 0.125000 0.125000 ]
 
-Flat id = 6    Tensor id = [2,1]
-Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+ValueVector (num_points=4) :
+[ 0.0156250 0.0156250 0.0156250 0.0156250 ]
 
-Sub elem Measure: 0.250000
-Weighted Measure:
-   ValueVector (num_points=2) :
-   [ 0.125000 0.125000 ]
+ValueVector (num_points=1) :
+[ [ 0 0.625000 ]  ]
 
-Flat id = 7    Tensor id = [3,1]
-Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+ValueVector (num_points=1) :
+[ [ 0.250000 0.625000 ]  ]
 
-Sub elem Measure: 0.250000
-Weighted Measure:
-   ValueVector (num_points=2) :
-   [ 0.125000 0.125000 ]
+ValueVector (num_points=1) :
+[ [ 0.125000 0.500000 ]  ]
 
-Flat id = 8    Tensor id = [0,2]
-Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+ValueVector (num_points=1) :
+[ [ 0.125000 0.750000 ]  ]
 
-Sub elem Measure: 0.250000
-Weighted Measure:
-   ValueVector (num_points=2) :
-   [ 0.125000 0.125000 ]
 
-Flat id = 9    Tensor id = [1,2]
-Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+ValueVector (num_points=4) :
+[ 0.0156250 0.0156250 0.0156250 0.0156250 ]
 
-Sub elem Measure: 0.250000
-Weighted Measure:
-   ValueVector (num_points=2) :
-   [ 0.125000 0.125000 ]
+ValueVector (num_points=1) :
+[ [ 0 0.875000 ]  ]
 
-Flat id = 10    Tensor id = [2,2]
-Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+ValueVector (num_points=1) :
+[ [ 0.250000 0.875000 ]  ]
 
-Sub elem Measure: 0.250000
-Weighted Measure:
-   ValueVector (num_points=2) :
-   [ 0.125000 0.125000 ]
+ValueVector (num_points=1) :
+[ [ 0.125000 0.750000 ]  ]
 
-Flat id = 11    Tensor id = [3,2]
-Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+ValueVector (num_points=1) :
+[ [ 0.125000 1.00000 ]  ]
 
-Sub elem Measure: 0.250000
-Weighted Measure:
-   ValueVector (num_points=2) :
-   [ 0.125000 0.125000 ]
 
-Flat id = 12    Tensor id = [0,3]
-Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+ValueVector (num_points=4) :
+[ 0.0156250 0.0156250 0.0156250 0.0156250 ]
 
-Sub elem Measure: 0.250000
-Weighted Measure:
-   ValueVector (num_points=2) :
-   [ 0.125000 0.125000 ]
+ValueVector (num_points=1) :
+[ [ 0.250000 0.125000 ]  ]
 
-Flat id = 13    Tensor id = [1,3]
-Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+ValueVector (num_points=1) :
+[ [ 0.500000 0.125000 ]  ]
 
-Sub elem Measure: 0.250000
-Weighted Measure:
-   ValueVector (num_points=2) :
-   [ 0.125000 0.125000 ]
+ValueVector (num_points=1) :
+[ [ 0.375000 0 ]  ]
 
-Flat id = 14    Tensor id = [2,3]
-Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+ValueVector (num_points=1) :
+[ [ 0.375000 0.250000 ]  ]
 
-Sub elem Measure: 0.250000
-Weighted Measure:
-   ValueVector (num_points=2) :
-   [ 0.125000 0.125000 ]
 
-Flat id = 15    Tensor id = [3,3]
-Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+ValueVector (num_points=4) :
+[ 0.0156250 0.0156250 0.0156250 0.0156250 ]
 
-Sub elem Measure: 0.250000
-Weighted Measure:
-   ValueVector (num_points=2) :
-   [ 0.125000 0.125000 ]
+ValueVector (num_points=1) :
+[ [ 0.250000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.250000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.500000 ]  ]
+
+
+ValueVector (num_points=4) :
+[ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.500000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.750000 ]  ]
+
+
+ValueVector (num_points=4) :
+[ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.750000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 1.00000 ]  ]
+
+
+ValueVector (num_points=4) :
+[ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.250000 ]  ]
+
+
+ValueVector (num_points=4) :
+[ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.250000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.500000 ]  ]
+
+
+ValueVector (num_points=4) :
+[ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.500000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.750000 ]  ]
+
+
+ValueVector (num_points=4) :
+[ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.750000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 1.00000 ]  ]
+
+
+ValueVector (num_points=4) :
+[ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 1.00000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.250000 ]  ]
+
+
+ValueVector (num_points=4) :
+[ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 1.00000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.250000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.500000 ]  ]
+
+
+ValueVector (num_points=4) :
+[ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 1.00000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.500000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.750000 ]  ]
+
+
+ValueVector (num_points=4) :
+[ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 1.00000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.750000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 1.00000 ]  ]
+
 
 ========================================================================
 
 ========================================================================
 elem_measure
 ========================================================================
-Flat id = 0    Tensor id = [0,0,0]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 1    Tensor id = [1,0,0]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 2    Tensor id = [2,0,0]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 3    Tensor id = [3,0,0]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 4    Tensor id = [0,1,0]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 5    Tensor id = [1,1,0]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 6    Tensor id = [2,1,0]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 7    Tensor id = [3,1,0]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 8    Tensor id = [0,2,0]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 9    Tensor id = [1,2,0]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 10    Tensor id = [2,2,0]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 11    Tensor id = [3,2,0]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 12    Tensor id = [0,3,0]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 13    Tensor id = [1,3,0]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 14    Tensor id = [2,3,0]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 15    Tensor id = [3,3,0]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 16    Tensor id = [0,0,1]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 17    Tensor id = [1,0,1]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 18    Tensor id = [2,0,1]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 19    Tensor id = [3,0,1]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 20    Tensor id = [0,1,1]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 21    Tensor id = [1,1,1]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 22    Tensor id = [2,1,1]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 23    Tensor id = [3,1,1]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 24    Tensor id = [0,2,1]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 25    Tensor id = [1,2,1]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 26    Tensor id = [2,2,1]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 27    Tensor id = [3,2,1]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 28    Tensor id = [0,3,1]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 29    Tensor id = [1,3,1]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 30    Tensor id = [2,3,1]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 31    Tensor id = [3,3,1]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 32    Tensor id = [0,0,2]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 33    Tensor id = [1,0,2]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 34    Tensor id = [2,0,2]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 35    Tensor id = [3,0,2]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 36    Tensor id = [0,1,2]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 37    Tensor id = [1,1,2]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 38    Tensor id = [2,1,2]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 39    Tensor id = [3,1,2]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 40    Tensor id = [0,2,2]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 41    Tensor id = [1,2,2]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 42    Tensor id = [2,2,2]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 43    Tensor id = [3,2,2]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 44    Tensor id = [0,3,2]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 45    Tensor id = [1,3,2]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 46    Tensor id = [2,3,2]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 47    Tensor id = [3,3,2]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 48    Tensor id = [0,0,3]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 49    Tensor id = [1,0,3]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 50    Tensor id = [2,0,3]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 51    Tensor id = [3,0,3]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 52    Tensor id = [0,1,3]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 53    Tensor id = [1,1,3]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 54    Tensor id = [2,1,3]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 55    Tensor id = [3,1,3]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 56    Tensor id = [0,2,3]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 57    Tensor id = [1,2,3]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 58    Tensor id = [2,2,3]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 59    Tensor id = [3,2,3]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 60    Tensor id = [0,3,3]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 61    Tensor id = [1,3,3]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 62    Tensor id = [2,3,3]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
-
-Flat id = 63    Tensor id = [3,3,3]
-Measure: 0.0156250
-Weighted Measure:
-   ValueVector (num_points=8) :
-   [ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
-
-Sub elem Measure: 0.0625000
-Weighted Measure:
-   ValueVector (num_points=4) :
-   [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0 0.125000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.125000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.250000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.125000 0 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.125000 0.250000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0 0.125000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.125000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.250000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.125000 0.250000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.125000 0.500000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0 0.125000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.125000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.250000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.125000 0.500000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.125000 0.750000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0 0.125000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.125000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.250000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.125000 0.750000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.125000 1.00000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0 0.375000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.375000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.250000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.500000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.375000 0 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.375000 0.250000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0 0.375000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.375000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.250000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.500000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.375000 0.250000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.375000 0.500000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0 0.375000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.375000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.250000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.500000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.375000 0.500000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.375000 0.750000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0 0.375000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.375000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.250000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.500000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.375000 0.750000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.375000 1.00000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0 0.625000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.625000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.500000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.750000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.625000 0 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.625000 0.250000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0 0.625000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.625000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.500000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.750000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.625000 0.250000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.625000 0.500000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0 0.625000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.625000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.500000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.750000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.625000 0.500000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.625000 0.750000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0 0.625000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.625000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.500000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.750000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.625000 0.750000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.625000 1.00000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0 0.875000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.875000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.750000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 1.00000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.875000 0 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.875000 0.250000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0 0.875000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.875000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.750000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 1.00000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.875000 0.250000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.875000 0.500000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0 0.875000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.875000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.750000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 1.00000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.875000 0.500000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.875000 0.750000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0 0.875000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.875000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.750000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 1.00000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.875000 0.750000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.125000 0.875000 1.00000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.125000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.125000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.250000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.125000 0 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.125000 0.250000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.125000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.125000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.250000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.125000 0.250000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.125000 0.500000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.125000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.125000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.250000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.125000 0.500000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.125000 0.750000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.125000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.125000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.250000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.125000 0.750000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.125000 1.00000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.375000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.375000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.250000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.500000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.375000 0 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.375000 0.250000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.375000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.375000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.250000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.500000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.375000 0.250000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.375000 0.500000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.375000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.375000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.250000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.500000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.375000 0.500000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.375000 0.750000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.375000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.375000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.250000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.500000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.375000 0.750000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.375000 1.00000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.625000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.625000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.500000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.750000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.625000 0 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.625000 0.250000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.625000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.625000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.500000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.750000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.625000 0.250000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.625000 0.500000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.625000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.625000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.500000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.750000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.625000 0.500000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.625000 0.750000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.625000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.625000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.500000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.750000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.625000 0.750000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.625000 1.00000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.875000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.875000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.750000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 1.00000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.875000 0 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.875000 0.250000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.875000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.875000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.750000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 1.00000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.875000 0.250000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.875000 0.500000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.875000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.875000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.750000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 1.00000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.875000 0.500000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.875000 0.750000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.250000 0.875000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.875000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.750000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 1.00000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.875000 0.750000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.375000 0.875000 1.00000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.125000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.125000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.250000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.125000 0 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.125000 0.250000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.125000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.125000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.250000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.125000 0.250000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.125000 0.500000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.125000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.125000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.250000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.125000 0.500000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.125000 0.750000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.125000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.125000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.250000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.125000 0.750000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.125000 1.00000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.375000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.375000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.250000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.500000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.375000 0 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.375000 0.250000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.375000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.375000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.250000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.500000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.375000 0.250000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.375000 0.500000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.375000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.375000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.250000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.500000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.375000 0.500000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.375000 0.750000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.375000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.375000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.250000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.500000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.375000 0.750000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.375000 1.00000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.625000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.625000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.500000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.750000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.625000 0 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.625000 0.250000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.625000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.625000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.500000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.750000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.625000 0.250000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.625000 0.500000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.625000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.625000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.500000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.750000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.625000 0.500000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.625000 0.750000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.625000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.625000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.500000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.750000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.625000 0.750000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.625000 1.00000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.875000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.875000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.750000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 1.00000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.875000 0 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.875000 0.250000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.875000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.875000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.750000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 1.00000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.875000 0.250000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.875000 0.500000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.875000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.875000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.750000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 1.00000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.875000 0.500000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.875000 0.750000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.500000 0.875000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.875000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.750000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 1.00000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.875000 0.750000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.625000 0.875000 1.00000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.125000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 1.00000 0.125000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.250000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.125000 0 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.125000 0.250000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.125000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 1.00000 0.125000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.250000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.125000 0.250000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.125000 0.500000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.125000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 1.00000 0.125000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.250000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.125000 0.500000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.125000 0.750000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.125000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 1.00000 0.125000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.250000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.125000 0.750000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.125000 1.00000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.375000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 1.00000 0.375000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.250000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.500000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.375000 0 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.375000 0.250000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.375000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 1.00000 0.375000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.250000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.500000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.375000 0.250000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.375000 0.500000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.375000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 1.00000 0.375000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.250000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.500000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.375000 0.500000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.375000 0.750000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.375000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 1.00000 0.375000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.250000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.500000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.375000 0.750000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.375000 1.00000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.625000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 1.00000 0.625000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.500000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.750000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.625000 0 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.625000 0.250000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.625000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 1.00000 0.625000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.500000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.750000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.625000 0.250000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.625000 0.500000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.625000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 1.00000 0.625000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.500000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.750000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.625000 0.500000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.625000 0.750000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.625000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 1.00000 0.625000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.500000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.750000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.625000 0.750000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.625000 1.00000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.875000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 1.00000 0.875000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.750000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 1.00000 0.125000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.875000 0 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.875000 0.250000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.875000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 1.00000 0.875000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.750000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 1.00000 0.375000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.875000 0.250000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.875000 0.500000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.875000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 1.00000 0.875000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.750000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 1.00000 0.625000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.875000 0.500000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.875000 0.750000 ]  ]
+
+
+ValueVector (num_points=8) :
+[ 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 0.00195313 ]
+
+ValueVector (num_points=1) :
+[ [ 0.750000 0.875000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 1.00000 0.875000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.750000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 1.00000 0.875000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.875000 0.750000 ]  ]
+
+ValueVector (num_points=1) :
+[ [ 0.875000 0.875000 1.00000 ]  ]
+
 
 ========================================================================
 

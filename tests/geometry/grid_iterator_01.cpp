@@ -18,12 +18,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/*
- *  Test for the CartesianGrid Iterator init_all_caches(...)
- *
- *  author: pauletti
- *  date: 2014-10-31
- *
+/**
+ *  @file
+ *  @brief  Simultaneous use of element with two sub elements
+ *  @author pauletti
+ *  @date   2015-08-19
  */
 
 #include "../tests.h"
@@ -34,44 +33,41 @@
 #include <igatools/geometry/grid_element.h>
 
 
-template <int dim>
-void elem_measure(const int n_knots = 5)
+template <int dim, int sdim = dim-1>
+void iterate(const int n_knots = 5)
 {
     OUTSTART
 
-    auto grid = CartesianGrid<dim>::create(n_knots);
-    auto flag = ValueFlags::measure|ValueFlags::w_measure;
+    using Grid = CartesianGrid<dim>;
+    using Flags = typename Grid::ElementAccessor::Flags;
+    auto grid = Grid::create(n_knots);
 
-    QGauss<dim> quad(2);
-    QGauss<dim-1> quad_face(2);
-    const int face_id = 0;
+    auto flag = Flags::w_measure;
+    auto s_flag = Flags::point;
+    auto cache_handler = grid->create_cache_handler();
+    cache_handler->template set_flags<dim>(flag);
+    cache_handler->template set_flags<sdim>(s_flag);
 
-    GridElementHandler<dim> cache(grid);
-    cache.template reset<dim>(flag, quad);
+    auto quad   = QGauss<dim>::create(2);
+    auto s_quad = QGauss<sdim>::create(1);
+
     auto elem = grid->begin();
-    cache.init_element_cache(elem);
-
-    cache.template reset<dim-1>(flag, quad_face);
-    cache.init_face_cache(elem);
-//    cache.template init_cache<dim-1>(elem);
-
-//    cache.init_all_caches(elem);
+    cache_handler->template init_cache<dim>(elem, quad);
+    cache_handler->template init_cache<sdim>(elem, s_quad);
 
     for (; elem != grid->end(); ++elem)
     {
-        elem->print_info(out);
-
-        cache.fill_element_cache(elem);
-        out << "Measure: " << elem->template get_measure<dim>(0) << endl;
-        out.begin_item("Weighted Measure:");
+        cache_handler->template fill_cache<dim>(elem, 0);
         elem->template get_w_measures<dim>(0).print_info(out);
-        out.end_item();
+        out << endl;
 
-        cache.fill_face_cache(elem, face_id);
-        out << "Sub elem Measure: " << elem->template get_measure<dim-1>(face_id) << endl;
-        out.begin_item("Weighted Measure:");
-        elem->template get_w_measures<dim-1>(face_id).print_info(out);
-        out.end_item();
+        for (auto &s_id : UnitElement<dim>::template elems_ids<sdim>())
+        {
+            cache_handler->template fill_cache<sdim>(elem, s_id);
+            elem->template get_points<sdim>(s_id).print_info(out);
+            out << endl;
+        }
+        out << endl;
     }
 
     OUTEND
@@ -81,9 +77,9 @@ void elem_measure(const int n_knots = 5)
 
 int main()
 {
-    elem_measure<1>();
-    elem_measure<2>();
-    elem_measure<3>();
+    iterate<1>();
+    iterate<2>();
+    iterate<3>();
 
     return  0;
 }
