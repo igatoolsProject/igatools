@@ -214,13 +214,13 @@ protected:
     /**
      * @todo Document me
      */
-    explicit CartesianGrid(const BBox<dim_> &end_points,
+    explicit CartesianGrid(const BBox<dim_> &bbox,
                            const Size n_knots);
 
     /**
      * @todo Document me
      */
-    explicit CartesianGrid(const BBox<dim_> &end_points,
+    explicit CartesianGrid(const BBox<dim_> &bbox,
                            const TensorSize<dim_> &n_knots);
     /**
      * Construct a cartesian grid where the knot coordinate in each
@@ -232,7 +232,7 @@ protected:
      * is perform and if not satistified an exception is raised.
      */
     explicit
-    CartesianGrid(const KnotCoordinates &knot_coordinates);
+    CartesianGrid(const KnotCoordinates &knots);
 
     /**
      * Construct a cartesian grid where the knot coordinate in each
@@ -272,23 +272,34 @@ public:
      * hypercube \f$[0,1]^{dim}\f$, with @p n knots (equally spaced) in each
      * dimension.
      */
-    static std::shared_ptr<self_t> create(const Index n = 2);
-    static std::shared_ptr<const self_t> const_create(const Index n = 2)
+    static std::shared_ptr<self_t> create(const Index n_knots = 2);
+    static std::shared_ptr<const self_t> const_create(const Index n_knots = 2)
     {
-        return create(n);
+        return create(n_knots);
     }
 
     /**
      * Creates a uniform cartesian grid of the unit <tt>dim</tt>-dimensional
      * hypercube \f$[0,1]^{dim}\f$,
-     * with <tt>n[0],..,n[dim-1</tt>] knots in each dimension
+     * with <tt>n_knots[0],..,n_knots[dim-1</tt>] knots in each dimension
      * respectively.
      */
-    static std::shared_ptr<self_t> create(const TensorSize<dim_> &n);
+    static std::shared_ptr<self_t>
+    create(const TensorSize<dim_> &n_knots);
+    static std::shared_ptr<const self_t>
+    const_create(const TensorSize<dim_> &n_knots)
+	{
+    	return create(n_knots);
+	}
+
 
     static std::shared_ptr<self_t>
-    create(const BBox<dim_> &end_points, const Size n_knots);
-
+    create(const BBox<dim_> &bbox, const Size n_knots);
+    static std::shared_ptr<const self_t>
+    const_create(const BBox<dim_> &bbox, const Size n_knots)
+	{
+    	return create(bbox, n_knots);
+	}
     /**
      * Construct a cartesian grid where the knot coordinate in each
      * direction is provided as CartesianProductArray object.
@@ -300,7 +311,12 @@ public:
      * is perform and if not satisfied an exception is raised.
      */
     static std::shared_ptr<self_t>
-    create(const KnotCoordinates &knot_coordinates);
+    create(const KnotCoordinates &knots);
+    static std::shared_ptr<const self_t>
+    const_create(const KnotCoordinates &knots)
+	{
+    	return create(knots);
+	}
 
     /**
      * Construct a cartesian grid where the knot coordinate in each
@@ -313,15 +329,23 @@ public:
      * is perform and if not satisfied an exception is raised.
      */
     static std::shared_ptr<self_t>
-    create(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knot_coordinates);
-
-
+    create(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knots);
+    static std::shared_ptr<const self_t>
+    const_create(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knots)
+	{
+    	return create(knots);
+	}
 
     /**
      * @todo document me
      */
     static std::shared_ptr<self_t>
-    create(const BBox<dim_> &end_points, const TensorSize<dim_> &n);
+    create(const BBox<dim_> &bbox, const TensorSize<dim_> &n_knots);
+    static std::shared_ptr<const self_t>
+    const_create(const BBox<dim_> &bbox, const TensorSize<dim_> &n_knots)
+	{
+    	return create(bbox, n_knots);
+	}
 
     /**
      * Creates a CastesianGrid object (wrapped by a shared_ptr) using
@@ -330,8 +354,11 @@ public:
      * @note A grid built in this way is totally uncoupled from the grid used as argument
      * of this function. For example, a refinement of a grid does not affect the other gird.
      */
-    static std::shared_ptr<self_t>
-    create(const self_t &grid);
+    static std::shared_ptr<self_t> create(const self_t &grid);
+    static std::shared_ptr<const self_t> const_create(const self_t &grid)
+	{
+    	return create(grid);
+	}
 
     ///@}
 
