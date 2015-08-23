@@ -144,6 +144,7 @@ operator -> ()
 }
 
 
+
 template <class Element>
 const Element &
 GridIterator<Element>::
@@ -153,28 +154,10 @@ operator * () const
 }
 
 
+
 template <class Element>
 const Element *
 GridIterator<Element>::
-operator -> () const
-{
-    return this->elem_.get();
-}
-
-
-template <class Element>
-const Element &
-ConstGridIterator<Element>::
-operator * () const
-{
-    return *this->elem_;
-}
-
-
-
-template <class Element>
-const Element *
-ConstGridIterator<Element>::
 operator -> () const
 {
     return this->elem_.get();

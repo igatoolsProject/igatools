@@ -288,18 +288,18 @@ public:
     create(const TensorSize<dim_> &n_knots);
     static std::shared_ptr<const self_t>
     const_create(const TensorSize<dim_> &n_knots)
-	{
-    	return create(n_knots);
-	}
+    {
+        return create(n_knots);
+    }
 
 
     static std::shared_ptr<self_t>
     create(const BBox<dim_> &bbox, const Size n_knots);
     static std::shared_ptr<const self_t>
     const_create(const BBox<dim_> &bbox, const Size n_knots)
-	{
-    	return create(bbox, n_knots);
-	}
+    {
+        return create(bbox, n_knots);
+    }
     /**
      * Construct a cartesian grid where the knot coordinate in each
      * direction is provided as CartesianProductArray object.
@@ -314,9 +314,9 @@ public:
     create(const KnotCoordinates &knots);
     static std::shared_ptr<const self_t>
     const_create(const KnotCoordinates &knots)
-	{
-    	return create(knots);
-	}
+    {
+        return create(knots);
+    }
 
     /**
      * Construct a cartesian grid where the knot coordinate in each
@@ -332,9 +332,9 @@ public:
     create(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knots);
     static std::shared_ptr<const self_t>
     const_create(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knots)
-	{
-    	return create(knots);
-	}
+    {
+        return create(knots);
+    }
 
     /**
      * @todo document me
@@ -343,9 +343,9 @@ public:
     create(const BBox<dim_> &bbox, const TensorSize<dim_> &n_knots);
     static std::shared_ptr<const self_t>
     const_create(const BBox<dim_> &bbox, const TensorSize<dim_> &n_knots)
-	{
-    	return create(bbox, n_knots);
-	}
+    {
+        return create(bbox, n_knots);
+    }
 
     /**
      * Creates a CastesianGrid object (wrapped by a shared_ptr) using
@@ -356,9 +356,9 @@ public:
      */
     static std::shared_ptr<self_t> create(const self_t &grid);
     static std::shared_ptr<const self_t> const_create(const self_t &grid)
-	{
-    	return create(grid);
-	}
+    {
+        return create(grid);
+    }
 
     ///@}
 

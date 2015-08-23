@@ -40,7 +40,7 @@ void handler_two_elems(const int n_knots = 3)
 
     using Grid = CartesianGrid<dim>;
     using Flags = typename Grid::ElementAccessor::Flags;
-    auto grid = Grid::create(n_knots);
+    auto grid = Grid::const_create(n_knots);
 
     auto flag = Flags::point;
 
@@ -50,8 +50,8 @@ void handler_two_elems(const int n_knots = 3)
     auto quad1 = QGauss<dim>::create(2);
     auto quad2 = QGauss<dim>::create(1);
 
-    auto elem1 = grid->begin();
-    auto elem2 = grid->begin();
+    auto elem1 = grid->cbegin();
+    auto elem2 = grid->cbegin();
 
     cache_handler->template init_cache<dim>(elem1, quad1);
     cache_handler->template init_cache<dim>(elem2, quad2);

@@ -38,7 +38,7 @@ void boundaryId(const TensorSize<dim> &n_knots)
     OUTSTART
 
     using Grid = CartesianGrid<dim>;
-    auto grid = Grid::create(n_knots);
+    auto grid = Grid::const_create(n_knots);
 
     for (const auto &elem : *grid)
     {

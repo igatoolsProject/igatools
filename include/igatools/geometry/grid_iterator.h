@@ -163,6 +163,8 @@ IGA_NAMESPACE_OPEN
  * @author martinelli 2012,2013,2014,2015
  * @author pauletti 2012,2013,2014,2015
  */
+//TODO (pauletti, Aug 23, 2015): both based and derived should be merged
+// as the constness in in the Element type
 template <class Element>
 class GridIteratorBase
     : public std::iterator<std::random_access_iterator_tag, Element>
@@ -366,48 +368,6 @@ public:
 
 };
 
-
-
-/**
- * @brief Iterator on const objects that have a "grid-like" structure.
- *
- * @sa CartesianGridIterator, CartesianGridIteratorBase
- *
- * @ingroup iterators
- *
- * @author martinelli, 2014
- */
-template <class Element>
-class ConstGridIterator
-    :
-    public GridIteratorBase<Element>
-{
-public:
-    /** Type of the accessor. */
-    using AccessorType = Element;
-
-    /** Type of the grid-like container . */
-    using ContainerType = typename Element::ContainerType;
-
-    /** The constructors are inherited from the parent class CartesianGridIteratorBase */
-    using GridIteratorBase<Element>::GridIteratorBase;
-
-    /** @name Dereferencing operators */
-    ///@{
-    /**
-     *  Dereferencing operator, returns a
-     *  const reference to the Element object.
-     */
-    const Element &operator*() const;
-
-    /**
-     *  Dereferencing operator, returns a
-     *  pointer to the const Element object.
-     */
-    const Element *operator->() const;
-    ///@}
-};
-
 IGA_NAMESPACE_CLOSE
 
-#endif /* CARTESIAN_GRID_ITERATOR_H_ */
+#endif /* __GRID_ITERATOR_H_ */

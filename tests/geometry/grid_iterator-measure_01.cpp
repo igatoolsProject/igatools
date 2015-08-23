@@ -40,7 +40,7 @@ void elem_weights(const int n_knots = 5)
 
     using Grid = CartesianGrid<dim>;
     using Flags = typename Grid::ElementAccessor::Flags;
-    auto grid = Grid::create(n_knots);
+    auto grid = Grid::const_create(n_knots);
 
     auto flag = Flags::w_measure;
     auto cache_handler = grid->create_cache_handler();
