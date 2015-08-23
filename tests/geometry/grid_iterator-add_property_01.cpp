@@ -39,8 +39,8 @@ void iterate(const int n_knots = 5)
     const string blue = "blue";
 
     auto grid = CartesianGrid<dim>::create(n_knots);
-    grid->add_elements_property(red);
-    grid->add_elements_property(blue);
+    grid->add_property(red);
+    grid->add_property(blue);
 
     const TensorIndex<dim> center(2);
     for (auto &elem : *grid)
