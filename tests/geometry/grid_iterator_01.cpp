@@ -40,7 +40,7 @@ void iterate(const int n_knots = 5)
 
     using Grid = CartesianGrid<dim>;
     using Flags = typename Grid::ElementAccessor::Flags;
-    auto grid = Grid::create(n_knots);
+    auto grid = Grid::const_create(n_knots);
 
     auto flag = Flags::w_measure;
     auto s_flag = Flags::point;
@@ -51,11 +51,11 @@ void iterate(const int n_knots = 5)
     auto quad   = QGauss<dim>::create(2);
     auto s_quad = QGauss<sdim>::create(1);
 
-    auto elem = grid->begin();
+    auto elem = grid->cbegin();
     cache_handler->template init_cache<dim>(elem, quad);
     cache_handler->template init_cache<sdim>(elem, s_quad);
 
-    for (; elem != grid->end(); ++elem)
+    for (; elem != grid->cend(); ++elem)
     {
         cache_handler->template fill_cache<dim>(elem, 0);
         elem->template get_w_measures<dim>(0).print_info(out);

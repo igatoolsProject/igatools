@@ -50,9 +50,10 @@ public:
 
 
 protected:
-    using ElementIterator = typename GridType::ElementIterator;
-    using ElementAccessor = typename GridType::ElementAccessor;
-
+    // using ElementIterator = typename GridType::ElementIterator;
+    // using ElementAccessor = typename GridType::ElementAccessor;
+    using ElementIterator = typename GridType::ElementConstIterator;
+    using ElementAccessor = typename GridType::ConstElementAccessor;
 public:
     /**
      * @name Creators.

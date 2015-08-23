@@ -180,7 +180,7 @@ public:
     using ElementIterator = GridIterator<ElementAccessor>;
 
     /** Type for the iterator over the elements of the grid (const version).  */
-    using ElementConstIterator = ConstGridIterator<ConstElementAccessor>;
+    using ElementConstIterator = GridIterator<ConstElementAccessor>;
 
     using ElementHandler = GridElementHandler<dim_>;
 
@@ -273,6 +273,10 @@ public:
      * dimension.
      */
     static std::shared_ptr<self_t> create(const Index n = 2);
+    static std::shared_ptr<const self_t> const_create(const Index n = 2)
+    {
+        return create(n);
+    }
 
     /**
      * Creates a uniform cartesian grid of the unit <tt>dim</tt>-dimensional
@@ -393,7 +397,7 @@ public:
     BBox<dim_> get_bounding_box() const;
     ///@}
 
-    std::shared_ptr<ElementHandler> create_cache_handler();
+    std::shared_ptr<ElementHandler> create_cache_handler() const;
 
 
     ///@name Iterating of grid elements
@@ -428,36 +432,7 @@ public:
      */
     ElementConstIterator cend(const PropId &property = ElementProperties::active) const;
     ///@}
-#if 0
-    /**
-     * This function returns the iterator to the last active element on the grid.
-     */
-    ElementIterator last(const PropId &property = ElementProperties::active);
 
-    /**
-     * This function returns the (const) iterator to the last active element on the grid.
-     */
-    ElementConstIterator last(const PropId &property = ElementProperties::active) const;
-
-    /**
-     * This function returns the (const) iterator to the last active element on the grid.
-     */
-    ElementConstIterator clast(const PropId &property = ElementProperties::active) const;
-    ///@}
-
-    /** @name Functions for the index transformations */
-    ///@{
-    /**
-    //     * Transformation from a tensor-index to a flat-index.
-    //     */
-//    Index tensor_to_flat(const TensorIndex<dim_> &tensor_index) const;
-//
-//    /**
-//     * Transformation from a flat-index to a tensor-index.
-//     */
-//    TensorIndex<dim_> flat_to_tensor(const Index flat_index) const;
-
-#endif
     ///@name Dealing with boundary information
     ///@{
     /**

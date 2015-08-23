@@ -47,10 +47,11 @@ void elem_weights(const int n_knots = 5)
     cache_handler->template set_flags<sdim>(flag);
 
     auto quad = QGauss<sdim>::create(2);
-    auto elem = grid->begin();
+    auto elem = grid->cbegin();
+    auto end = grid->cend();
     cache_handler->template init_cache<sdim>(elem, quad);
 
-    for (; elem != grid->end(); ++elem)
+    for (; elem != end; ++elem)
     {
         for (auto &s_id : UnitElement<dim>::template elems_ids<sdim>())
         {

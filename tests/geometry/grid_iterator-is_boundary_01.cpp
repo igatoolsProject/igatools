@@ -20,7 +20,7 @@
 
 /**
  *  @file
- *  @brief  is_boundary()
+ *  @brief  elem.is_boundary()
  *  @author pauletti
  *  @date   2015-08-19
  */

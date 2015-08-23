@@ -349,46 +349,11 @@ end(const PropId &prop) -> ElementIterator
 }
 
 
-#if 0
-template<int dim_>
-auto
-CartesianGrid<dim_>::
-last(const PropId &prop) -> ElementIterator
-{
-    return ElementIterator(this->shared_from_this(),
-    elem_properties_[prop].last(),
-    prop);
-}
-
-
 
 template<int dim_>
 auto
-CartesianGrid<dim_>::
-last(const PropId &property) const -> ElementConstIterator
-{
-    return clast(property);
-}
-
-
-
-template<int dim_>
-auto
-CartesianGrid<dim_>::
-clast(const PropId &prop) const -> ElementConstIterator
-{
-    return ElementConstIterator(this->shared_from_this(),
-                                elem_properties_[prop].rbegin(),
-                                prop);
-}
-
-#endif
-
-
-
-template<int dim_>
-auto
-CartesianGrid<dim_>::create_cache_handler() -> std::shared_ptr<ElementHandler>
+CartesianGrid<dim_>::create_cache_handler() const
+-> std::shared_ptr<ElementHandler>
 {
     return std::make_shared<ElementHandler>(this->shared_from_this());
 }
