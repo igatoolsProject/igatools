@@ -18,54 +18,67 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/*
- *   CartesianGrid Iterator and ElementHandler interaction
- *
- *  author: pauletti
- *  date: 2014-08-15
- *
+/**
+ *  @file
+ *  @brief  One cache handler with two different elements
+ *  @author pauletti
+ *  @date   2015-08-19
  */
 
 #include "../tests.h"
 
 #include <igatools/base/quadrature_lib.h>
-#include <igatools/geometry/grid_cache_handler.h>
 #include <igatools/geometry/cartesian_grid.h>
+#include <igatools/geometry/grid_cache_handler.h>
 #include <igatools/geometry/grid_element.h>
 
 
 template <int dim>
-void run_test()
+void handler_two_elems(const int n_knots = 3)
 {
-    using Grid = CartesianGrid<dim>;
-    using ElementHandler = typename Grid::ElementHandler;
-    const int n_knots = 5;
+    OUTSTART
 
+    using Grid = CartesianGrid<dim>;
+    using Flags = typename Grid::ElementAccessor::Flags;
     auto grid = Grid::create(n_knots);
 
-    QGauss<dim> q1(2);
-    ElementHandler cache1(grid);
-    cache1.template reset<dim>(ValueFlags::w_measure, q1);
+    auto flag = Flags::point;
 
-    QGauss<dim> q2(1);
-    ElementHandler cache2(grid);
-    cache2.template reset<dim>(ValueFlags::w_measure, q2);
+    auto cache_handler = grid->create_cache_handler();
+    cache_handler->template set_flags<dim>(flag);
 
-    auto el1 = grid->begin();
-    cache1.init_element_cache(el1);
-    cache2.init_element_cache(el1);
+    auto quad1 = QGauss<dim>::create(2);
+    auto quad2 = QGauss<dim>::create(1);
 
-    auto el2 = grid->begin();
-    cache2.init_element_cache(el2);
+    auto elem1 = grid->begin();
+    auto elem2 = grid->begin();
+
+    cache_handler->template init_cache<dim>(elem1, quad1);
+    cache_handler->template init_cache<dim>(elem2, quad2);
+
+    cache_handler->template fill_cache<dim>(elem1, 0);
+    elem1->template get_points<dim>(0).print_info(out);
+    out << endl;
+
+    ++elem1;
+    cache_handler->template fill_cache<dim>(elem1, 0);
+    elem1->template get_points<dim>(0).print_info(out);
+    out << endl;
+
+    cache_handler->template fill_cache<dim>(elem2, 0);
+    elem2->template get_points<dim>(0).print_info(out);
+    out << endl;
+
+    OUTEND
 }
 
 
 int main()
 {
 
-    run_test<1>();
-    run_test<2>();
-    run_test<3>();
+    handler_two_elems<1>();
+    handler_two_elems<2>();
+    handler_two_elems<3>();
 
     return  0;
 }
