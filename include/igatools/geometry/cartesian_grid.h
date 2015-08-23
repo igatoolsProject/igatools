@@ -661,9 +661,11 @@ public:
      */
     ///@{
     /**
-    * Adds a new <tt>property</tt> definition for the elements in the CartesianGrid.
+    * Adds a new <tt>property</tt> definition for the elements in the
+    * CartesianGrid.
     *
-    * @note If the <tt>property</tt> is already present, n assertion will be raised (in Debug mode).
+    * @note If the <tt>property</tt> is already present, an assertion will
+    *  be raised (in Debug mode).
     */
     void add_elements_property(const PropId &property);
 
