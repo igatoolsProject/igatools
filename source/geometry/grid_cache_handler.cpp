@@ -126,7 +126,7 @@ GridElementHandler<dim>::
 fill_cache(ElementAccessor &elem, const int j) const
 {
     using _Point = typename ElementAccessor::_Point;
-    using _W_Measure = typename ElementAccessor::_W_Measure;
+    using _Weight = typename ElementAccessor::_Weight;
     Assert(elem.all_sub_elems_cache_ != nullptr, ExcNullPtr());
     auto &cache = elem.all_sub_elems_cache_->template get_sub_elem_cache<sdim>(j);
 
@@ -145,11 +145,11 @@ fill_cache(ElementAccessor &elem, const int j) const
         cache.template set_status_filled<_Point>(true);
     }
 
-    if (cache.template status_fill<_W_Measure>())
+    if (cache.template status_fill<_Weight>())
     {
-        cache.template get_data<_W_Measure>() =
+        cache.template get_data<_Weight>() =
             elem.template get_measure<sdim>(j) * s_quad->get_weights();
-        cache.template set_status_filled<_W_Measure>(true);
+        cache.template set_status_filled<_Weight>(true);
     }
 
     cache.set_filled(true);

@@ -316,9 +316,9 @@ template <int dim, class ContainerType_>
 template <int k>
 ValueVector<Real>
 GridElementBase<dim, ContainerType_>::
-get_w_measures(const int j) const
+get_weights(const int j) const
 {
-    return this->template get_values_from_cache<_W_Measure,k>(j);
+    return this->template get_values_from_cache<_Weight,k>(j);
 }
 
 
@@ -363,7 +363,7 @@ template <int dim, class ContainerType_>
 const std::string  GridElementBase<dim, ContainerType_>::_Point::name = "Element Quadrature Points";
 
 template <int dim, class ContainerType_>
-const std::string GridElementBase<dim, ContainerType_>::_W_Measure::name = "Element Quadrature Weights";
+const std::string GridElementBase<dim, ContainerType_>::_Weight::name = "Element Quadrature Weights";
 
 
 

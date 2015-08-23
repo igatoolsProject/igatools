@@ -287,13 +287,16 @@ public:
     Real get_measure(const int s_id) const;
 
     /**
-     * Returns the <tt>sdim</tt> dimensional s_id-th sub-element measure
-     * multiplied by the weights of the quadrature.
+     * Returns the quadrature weights corresponding to the <tt>sdim</tt>
+     * dimensional s_id-th sub-element.
      */
     template <int sdim>
-    ValueVector<Real> get_w_measures(const int s_id) const;
+    ValueVector<Real> get_weights(const int s_id) const;
 
-
+    /**
+     * Returns the quadrature points corresponding to the <tt>sdim</tt>
+     * dimensional s_id-th sub-element.
+     */
     template <int sdim>
     ValueVector<Point> get_points(const int s_id = 0) const;
 
@@ -336,7 +339,7 @@ private:
         static const auto flag = Flags::point;
     };
 
-    class _W_Measure
+    class _Weight
     {
     public:
         static const std::string name;
@@ -345,7 +348,7 @@ private:
 
     using CType = boost::fusion::map<
                   boost::fusion::pair<    _Point,DataWithFlagStatus<ValueVector<Points<dim>>>>,
-                  boost::fusion::pair<_W_Measure,DataWithFlagStatus<ValueVector<Real>>>
+                  boost::fusion::pair<_Weight,DataWithFlagStatus<ValueVector<Real>>>
                   >;
 
 public:
