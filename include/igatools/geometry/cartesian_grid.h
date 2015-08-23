@@ -667,7 +667,15 @@ public:
     * @note If the <tt>property</tt> is already present, an assertion will
     *  be raised (in Debug mode).
     */
-    void add_elements_property(const PropId &property);
+    void add_property(const PropId &property);
+
+    /**
+     * Prefer the use through the element iterator instead of
+     * this function
+     */
+    const List &get_element_property(const PropId &prop) const;
+
+    List &get_element_property(const PropId &prop);
 
 #if 0
     /**

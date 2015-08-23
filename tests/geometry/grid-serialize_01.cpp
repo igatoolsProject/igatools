@@ -17,38 +17,27 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-/*
- *  Test for CartesianGrid constructors and serialization
- *
- *  author: pauletti
- *  date: 2013-10-25
- *  QA: v0.2 (2013-10-25)
- *
- *
- *  author: martinelli
- *  date: 2015-05-05 (added the tests for serialization)
- *
- *
+
+/**
+ *  @file
+ *  @brief  grid serialization
+ *  @author pauletti
+ *  @date   2015-08-19
  */
 
 #include "../tests.h"
-
 #include <igatools/geometry/cartesian_grid.h>
 
-#include <igatools/base/quadrature.h>
-
-
-
 template <int dim>
-void serialize_deserialize(std::shared_ptr<CartesianGrid<dim>> grid, const std::string &filename)
+void serialize_deserialize(std::shared_ptr<const CartesianGrid<dim>> grid,
+                           const std::string &filename)
 {
     out.begin_item("Original grid.");
     grid->print_info(out);
     out.end_item();
 
-    std::string tag_name = "CartesianGrid_" + std::to_string(dim) + "d";
+    string tag_name = "CartesianGrid_" + std::to_string(dim) + "d";
     {
-        // serialize the CartesianGrid object to an xml file
         std::ofstream xml_ostream(filename);
         OArchive xml_out(xml_ostream);
 
@@ -58,12 +47,12 @@ void serialize_deserialize(std::shared_ptr<CartesianGrid<dim>> grid, const std::
 
     auto grid_new = CartesianGrid<dim>::create(4);
     {
-        // de-serialize the CartesianGrid object from an xml file
-        std::ifstream xml_istream(filename);
+        ifstream xml_istream(filename);
         IArchive xml_in(xml_istream);
         xml_in >> BOOST_SERIALIZATION_NVP(*grid_new);
         xml_istream.close();
     }
+
     out.begin_item("Grid after serialize-deserialize.");
     grid_new->print_info(out);
     out.end_item();
@@ -71,12 +60,12 @@ void serialize_deserialize(std::shared_ptr<CartesianGrid<dim>> grid, const std::
 
 
 template<int dim>
-void def_const()
+void serialize_grid(const int n_knots = 4)
 {
     OUTSTART
-    auto grid = CartesianGrid<dim>::create();
 
-    std::string filename = "grid_" + std::to_string(dim) + "d.xml";
+    auto grid = CartesianGrid<dim>::const_create(n_knots);
+    string filename = "grid_" + std::to_string(dim) + "d.xml";
     serialize_deserialize(grid,filename);
 
     OUTEND
@@ -86,10 +75,10 @@ void def_const()
 
 int main()
 {
-    def_const<0>();
-    def_const<1>();
-    def_const<2>();
-    def_const<3>();
+    serialize_grid<0>();
+    serialize_grid<1>();
+    serialize_grid<2>();
+    serialize_grid<3>();
 
     return 0;
 }

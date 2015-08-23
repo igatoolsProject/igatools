@@ -303,12 +303,32 @@ CartesianGrid<dim_>::get_element_lengths() const -> KnotCoordinates
 template<int dim_>
 void
 CartesianGrid<dim_>::
-add_elements_property(const PropId &property)
+add_property(const PropId &property)
 {
     elem_properties_.add_property(property);
 }
 
 
+
+template<int dim_>
+auto
+CartesianGrid<dim_>::
+get_element_property(const PropId &prop) const
+-> const List &
+{
+    return elem_properties_[prop];
+}
+
+
+
+template<int dim_>
+auto
+CartesianGrid<dim_>::
+get_element_property(const PropId &prop)
+-> List &
+{
+    return elem_properties_[prop];
+}
 
 
 

@@ -1,0 +1,272 @@
+========================================================================
+serialize_grid
+========================================================================
+Original grid.
+   Number of intervals per direction: [ ]
+   Knot coordinates:
+      Size: [ ]  Weights: []
+   
+   Element properties:
+      IDs with property "active":
+      
+   
+   Grid after serialize-deserialize.
+      Number of intervals per direction: [ ]
+      Knot coordinates:
+         Size: [ ]  Weights: []
+      
+      Element properties:
+         IDs with property "active":
+         
+      
+      ========================================================================
+      
+      ========================================================================
+      serialize_grid
+      ========================================================================
+      Original grid.
+         Number of intervals per direction: [ 3 ]
+         Knot coordinates:
+            Size: [ 4 ]  Weights: [4]
+            Direction: 0
+            [ 0 0.333333 0.666667 1.00000 ]
+         
+         Element properties:
+            IDs with property "active":
+               Entry id: 0
+               [ 0 ]
+               Entry id: 1
+               [ 1 ]
+               Entry id: 2
+               [ 2 ]
+            
+         
+         Grid after serialize-deserialize.
+            Number of intervals per direction: [ 3 ]
+            Knot coordinates:
+               Size: [ 4 ]  Weights: [4]
+               Direction: 0
+               [ 0 0.333333 0.666667 1.00000 ]
+            
+            Element properties:
+               IDs with property "active":
+                  Entry id: 0
+                  [ 0 ]
+                  Entry id: 1
+                  [ 1 ]
+                  Entry id: 2
+                  [ 2 ]
+               
+            
+            ========================================================================
+            
+            ========================================================================
+            serialize_grid
+            ========================================================================
+            Original grid.
+               Number of intervals per direction: [ 3 3 ]
+               Knot coordinates:
+                  Size: [ 4 4 ]  Weights: [4,16]
+                  Direction: 0
+                  [ 0 0.333333 0.666667 1.00000 ]
+                  Direction: 1
+                  [ 0 0.333333 0.666667 1.00000 ]
+               
+               Element properties:
+                  IDs with property "active":
+                     Entry id: 0
+                     [ 0 0 ]
+                     Entry id: 1
+                     [ 0 1 ]
+                     Entry id: 2
+                     [ 0 2 ]
+                     Entry id: 3
+                     [ 1 0 ]
+                     Entry id: 4
+                     [ 1 1 ]
+                     Entry id: 5
+                     [ 1 2 ]
+                     Entry id: 6
+                     [ 2 0 ]
+                     Entry id: 7
+                     [ 2 1 ]
+                     Entry id: 8
+                     [ 2 2 ]
+                  
+               
+               Grid after serialize-deserialize.
+                  Number of intervals per direction: [ 3 3 ]
+                  Knot coordinates:
+                     Size: [ 4 4 ]  Weights: [4,16]
+                     Direction: 0
+                     [ 0 0.333333 0.666667 1.00000 ]
+                     Direction: 1
+                     [ 0 0.333333 0.666667 1.00000 ]
+                  
+                  Element properties:
+                     IDs with property "active":
+                        Entry id: 0
+                        [ 0 0 ]
+                        Entry id: 1
+                        [ 0 1 ]
+                        Entry id: 2
+                        [ 0 2 ]
+                        Entry id: 3
+                        [ 1 0 ]
+                        Entry id: 4
+                        [ 1 1 ]
+                        Entry id: 5
+                        [ 1 2 ]
+                        Entry id: 6
+                        [ 2 0 ]
+                        Entry id: 7
+                        [ 2 1 ]
+                        Entry id: 8
+                        [ 2 2 ]
+                     
+                  
+                  ========================================================================
+                  
+                  ========================================================================
+                  serialize_grid
+                  ========================================================================
+                  Original grid.
+                     Number of intervals per direction: [ 3 3 3 ]
+                     Knot coordinates:
+                        Size: [ 4 4 4 ]  Weights: [4,16,64]
+                        Direction: 0
+                        [ 0 0.333333 0.666667 1.00000 ]
+                        Direction: 1
+                        [ 0 0.333333 0.666667 1.00000 ]
+                        Direction: 2
+                        [ 0 0.333333 0.666667 1.00000 ]
+                     
+                     Element properties:
+                        IDs with property "active":
+                           Entry id: 0
+                           [ 0 0 0 ]
+                           Entry id: 1
+                           [ 0 0 1 ]
+                           Entry id: 2
+                           [ 0 0 2 ]
+                           Entry id: 3
+                           [ 0 1 0 ]
+                           Entry id: 4
+                           [ 0 1 1 ]
+                           Entry id: 5
+                           [ 0 1 2 ]
+                           Entry id: 6
+                           [ 0 2 0 ]
+                           Entry id: 7
+                           [ 0 2 1 ]
+                           Entry id: 8
+                           [ 0 2 2 ]
+                           Entry id: 9
+                           [ 1 0 0 ]
+                           Entry id: 10
+                           [ 1 0 1 ]
+                           Entry id: 11
+                           [ 1 0 2 ]
+                           Entry id: 12
+                           [ 1 1 0 ]
+                           Entry id: 13
+                           [ 1 1 1 ]
+                           Entry id: 14
+                           [ 1 1 2 ]
+                           Entry id: 15
+                           [ 1 2 0 ]
+                           Entry id: 16
+                           [ 1 2 1 ]
+                           Entry id: 17
+                           [ 1 2 2 ]
+                           Entry id: 18
+                           [ 2 0 0 ]
+                           Entry id: 19
+                           [ 2 0 1 ]
+                           Entry id: 20
+                           [ 2 0 2 ]
+                           Entry id: 21
+                           [ 2 1 0 ]
+                           Entry id: 22
+                           [ 2 1 1 ]
+                           Entry id: 23
+                           [ 2 1 2 ]
+                           Entry id: 24
+                           [ 2 2 0 ]
+                           Entry id: 25
+                           [ 2 2 1 ]
+                           Entry id: 26
+                           [ 2 2 2 ]
+                        
+                     
+                     Grid after serialize-deserialize.
+                        Number of intervals per direction: [ 3 3 3 ]
+                        Knot coordinates:
+                           Size: [ 4 4 4 ]  Weights: [4,16,64]
+                           Direction: 0
+                           [ 0 0.333333 0.666667 1.00000 ]
+                           Direction: 1
+                           [ 0 0.333333 0.666667 1.00000 ]
+                           Direction: 2
+                           [ 0 0.333333 0.666667 1.00000 ]
+                        
+                        Element properties:
+                           IDs with property "active":
+                              Entry id: 0
+                              [ 0 0 0 ]
+                              Entry id: 1
+                              [ 0 0 1 ]
+                              Entry id: 2
+                              [ 0 0 2 ]
+                              Entry id: 3
+                              [ 0 1 0 ]
+                              Entry id: 4
+                              [ 0 1 1 ]
+                              Entry id: 5
+                              [ 0 1 2 ]
+                              Entry id: 6
+                              [ 0 2 0 ]
+                              Entry id: 7
+                              [ 0 2 1 ]
+                              Entry id: 8
+                              [ 0 2 2 ]
+                              Entry id: 9
+                              [ 1 0 0 ]
+                              Entry id: 10
+                              [ 1 0 1 ]
+                              Entry id: 11
+                              [ 1 0 2 ]
+                              Entry id: 12
+                              [ 1 1 0 ]
+                              Entry id: 13
+                              [ 1 1 1 ]
+                              Entry id: 14
+                              [ 1 1 2 ]
+                              Entry id: 15
+                              [ 1 2 0 ]
+                              Entry id: 16
+                              [ 1 2 1 ]
+                              Entry id: 17
+                              [ 1 2 2 ]
+                              Entry id: 18
+                              [ 2 0 0 ]
+                              Entry id: 19
+                              [ 2 0 1 ]
+                              Entry id: 20
+                              [ 2 0 2 ]
+                              Entry id: 21
+                              [ 2 1 0 ]
+                              Entry id: 22
+                              [ 2 1 1 ]
+                              Entry id: 23
+                              [ 2 1 2 ]
+                              Entry id: 24
+                              [ 2 2 0 ]
+                              Entry id: 25
+                              [ 2 2 1 ]
+                              Entry id: 26
+                              [ 2 2 2 ]
+                           
+                        
+                        ========================================================================
+                        

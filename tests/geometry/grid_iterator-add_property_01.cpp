@@ -35,7 +35,7 @@ void iterate(const int n_knots = 5)
 {
     OUTSTART
 
-	const string red = "red";
+    const string red = "red";
     const string blue = "blue";
 
     auto grid = CartesianGrid<dim>::create(n_knots);
@@ -46,23 +46,23 @@ void iterate(const int n_knots = 5)
     for (auto &elem : *grid)
     {
         if (elem.get_index() <= center)
-        	elem.add_property(red);
+            elem.add_property(red);
         else
-        	elem.add_property(blue);
+            elem.add_property(blue);
     }
 
     auto elem = grid->cbegin(red);
     auto end  = grid->cend(red);
-    for(;elem != end; ++elem)
+    for (; elem != end; ++elem)
     {
-    	elem->print_info(out);
+        elem->print_info(out);
     }
 
     elem = grid->cbegin(blue);
     end  = grid->cend(blue);
-    for(;elem != end; ++elem)
+    for (; elem != end; ++elem)
     {
-    	elem->print_info(out);
+        elem->print_info(out);
     }
 
     OUTEND
