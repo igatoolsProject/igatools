@@ -1070,29 +1070,24 @@ test_if_element_has_property(const IndexType elem_flat_id,
 #endif
 
 #ifdef SERIALIZATION
-
 template <int dim_>
 template<class Archive>
 void
 CartesianGrid<dim_>::
 serialize(Archive &ar, const unsigned int version)
 {
+    using namespace boost::serialization;
     std::string tag_name = "CartesianGrid" + std::to_string(dim_) + "base_t";
-    ar &boost::serialization::make_nvp(
-        tag_name.c_str(),
-        boost::serialization::base_object<TensorSizedContainer<dim_>>(*this));
+    ar &make_nvp(tag_name.c_str(),
+                 base_object<TensorSizedContainer<dim_>>(*this));
 
-    ar &boost::serialization::make_nvp("knot_coordinates_",knot_coordinates_);
-
-    ar &boost::serialization::make_nvp("boundary_id_",boundary_id_);
-
-    ar &boost::serialization::make_nvp("properties_elements_id_",elem_properties_);
-
-    ar &boost::serialization::make_nvp("object_id_",object_id_);
-
-    ar &boost::serialization::make_nvp("grid_pre_refinement_",grid_pre_refinement_);
-
-//    auto tmp = this->shared_from_this();
+    ar &make_nvp("knot_coordinates_",knot_coordinates_);
+    ar &make_nvp("boundary_id_",boundary_id_);
+    ar &make_nvp("properties_elements_id_",elem_properties_);
+    ar &make_nvp("object_id_",object_id_);
+#ifdef MESH_REFINEMENT
+    ar &make_nvp("grid_pre_refinement_",grid_pre_refinement_);
+#endif
 }
 #endif // SERIALIZATION
 

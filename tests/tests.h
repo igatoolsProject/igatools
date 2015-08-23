@@ -35,6 +35,7 @@ using std::to_string;
 using std::endl;
 using std::string;
 using std::ofstream;
+using std::ifstream;
 
 
 using namespace iga;

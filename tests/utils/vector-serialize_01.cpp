@@ -26,23 +26,7 @@
  */
 
 #include "../tests.h"
-
 #include <igatools/utils/safe_stl_vector.h>
-
-using namespace iga;
-
-void vector_print_info()
-{
-    OUTSTART
-
-    SafeSTLVector<Real> vec(5,1);
-    vec.print_info(out);
-    out << endl;
-
-    OUTEND
-}
-
-
 
 void vector_serialization()
 {
@@ -51,8 +35,7 @@ void vector_serialization()
     SafeSTLVector<Real> vec = {1.,2.,3.,4.,5.};
 
     {
-        // writing to an xml file
-        std::ofstream xml_ostream("vector.xml");
+        ofstream xml_ostream("vector.xml");
         OArchive xml_out(xml_ostream);
         xml_out << BOOST_SERIALIZATION_NVP(vec);
         xml_ostream.close();
@@ -61,19 +44,14 @@ void vector_serialization()
     vec.clear();
 
     {
-        // reading from an xml file
-        std::ifstream xml_istream("vector.xml");
+        ifstream xml_istream("vector.xml");
         IArchive xml_in(xml_istream);
         xml_in >> BOOST_SERIALIZATION_NVP(vec);
         xml_istream.close();
     }
 
-
-    out << endl;
-
     vec.print_info(out);
     out << endl;
-
     OUTEND
 }
 

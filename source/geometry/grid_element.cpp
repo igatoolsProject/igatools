@@ -360,20 +360,20 @@ get_points(const int j) const ->ValueVector<Point>
 
 
 template <int dim, class ContainerType_>
+const std::string  GridElementBase<dim, ContainerType_>::_Point::name = "Element Quadrature Points";
+
+template <int dim, class ContainerType_>
+const std::string GridElementBase<dim, ContainerType_>::_W_Measure::name = "Element Quadrature Weights";
+
+
+
+template <int dim, class ContainerType_>
 auto
 GridElementBase<dim, ContainerType_>::
 get_element_points() const -> ValueVector<Point>
 {
     return this->template get_points<dim>(0);
 }
-
-
-template <int dim, class ContainerType_>
-const std::string  GridElementBase<dim, ContainerType_>::_Point::name = "Element Quadrature Points";
-
-template <int dim, class ContainerType_>
-const std::string GridElementBase<dim, ContainerType_>::_W_Measure::name = "Element Quadrature Weights";
-
 
 
 template <int dim, class ContainerType_>
@@ -421,15 +421,6 @@ get_defined_properties() const
     return elem_properties;
 }
 
-
-
-template <int dim, class ContainerType_>
-ValueFlags
-GridElementBase<dim, ContainerType_>::
-get_valid_flags()
-{
-    return cacheutils::get_valid_flags_from_cache_type(CType());
-}
 #endif
 
 #ifdef SERIALIZATION
@@ -439,19 +430,19 @@ void
 GridElementBase<dim, ContainerType_>::
 serialize(Archive &ar, const unsigned int version)
 {
+    using namespace boost::serialization;
     auto non_const_grid = std::const_pointer_cast<CartesianGrid<dim>>(grid_);
-    ar &boost::serialization::make_nvp("grid_",non_const_grid);
+    ar &make_nvp("grid_",non_const_grid);
     grid_ = non_const_grid;
-    Assert(grid_ != nullptr,ExcNullPtr());
+    Assert(grid_ != nullptr, ExcNullPtr());
 
-    ar &boost::serialization::make_nvp("flat_index_",flat_index_);
-
-    ar &boost::serialization::make_nvp("tensor_index_",tensor_index_);
-
-    ar &boost::serialization::make_nvp("all_sub_elems_cache_",all_sub_elems_cache_);
+    ar &make_nvp("property_", property_);
+    Assert(false, ExcNotImplemented());
+    //ar &make_nvp("index_it_", index_it_);
+    ar &make_nvp("quad_list_", quad_list_);
+    ar &make_nvp("all_sub_elems_cache_",all_sub_elems_cache_);
 }
 #endif // SERIALIZATION
-
 
 IGA_NAMESPACE_CLOSE
 

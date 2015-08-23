@@ -752,6 +752,7 @@ private:
     friend class ConstGridElement<dim_>;
 
 #ifdef SERIALIZATION
+private:
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>

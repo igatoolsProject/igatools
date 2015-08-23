@@ -35,8 +35,7 @@ void array_serialization()
     SafeSTLArray<Real,3> arr = {-1.,-2.,-3.};
 
     {
-        // writing to an xml file
-        std::ofstream xml_ostream("array.xml");
+        ofstream xml_ostream("array.xml");
         OArchive xml_out(xml_ostream);
         xml_out << BOOST_SERIALIZATION_NVP(arr);
         xml_ostream.close();
@@ -45,15 +44,11 @@ void array_serialization()
     arr.fill(0);
 
     {
-        // reading from an xml file
-        std::ifstream xml_istream("array.xml");
+        ifstream xml_istream("array.xml");
         IArchive xml_in(xml_istream);
         xml_in >> BOOST_SERIALIZATION_NVP(arr);
         xml_istream.close();
     }
-
-
-    out << endl;
 
     arr.print_info(out);
     out << endl;

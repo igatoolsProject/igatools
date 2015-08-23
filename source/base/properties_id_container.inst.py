@@ -23,23 +23,22 @@ include_files = ['utils/tensor_index.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-quadratures = []
+containers = []
 for dim in inst.sub_domain_dims + inst.domain_dims:
-    quad = 'PropertiesIdContainer<TensorIndex<%d>>' %(dim)
-    quadratures.append(quad)
+    quad = 'PropertiesIdContainer<iga::TensorIndex<%d>>' %(dim)
+    containers.append(quad)
     f.write('template class %s; \n' %(quad))
 
-quad = 'PropertiesIdContainer<Index>'
-quadratures.append(quad)
+quad = 'PropertiesIdContainer<iga::Index>'
+containers.append(quad)
 f.write('template class %s; \n' %(quad))
 
-
-#---------------------------------------------------
 f.write('IGA_NAMESPACE_CLOSE\n')
+
 
 f.write('#ifdef SERIALIZATION\n')
 id = 0 
-for quadrature in unique(quadratures):
+for quadrature in unique(containers):
     alias = 'PropertiesIdContainerAlias%d' %(id)
     f.write('using %s = iga::%s; \n' % (alias, quadrature))
     f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
@@ -47,7 +46,5 @@ for quadrature in unique(quadratures):
     f.write('template void %s::serialize(IArchive &, const unsigned int);\n' % alias)
     id += 1 
 f.write('#endif // SERIALIZATION\n')
-    
-f.write('IGA_NAMESPACE_OPEN\n')
 #---------------------------------------------------
-
+f.write('IGA_NAMESPACE_OPEN\n')

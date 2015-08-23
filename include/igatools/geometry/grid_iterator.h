@@ -290,8 +290,8 @@ protected:
      */
     std::shared_ptr<Element> elem_ ;
 
-private:
 #ifdef SERIALIZATION
+private:
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -303,10 +303,8 @@ private:
     void
     serialize(Archive &ar, const unsigned int version)
     {
-
-        ar &boost::serialization::make_nvp("accessor_",elem_);
-
-        ar &boost::serialization::make_nvp("elem_property_",elem_property_);
+        using namespace boost::serialization;
+        ar &make_nvp("accessor_",elem_);
     }
     ///@}
 #endif // SERIALIZATION

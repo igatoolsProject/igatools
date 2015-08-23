@@ -122,16 +122,24 @@ private:
     void
     serialize(Archive &ar, const unsigned int version)
     {
-        boost::fusion::for_each(*this,
-                                [&](auto & quad_same_topology_dim)
+        using namespace boost::serialization;
+        using namespace boost::fusion;
+        for_each(*this,
+                 [&](auto & quad_same_topology_dim)
         {
+
+
             using PairType = typename std::remove_reference<decltype(quad_same_topology_dim)>::type;
             using SubDimType = typename PairType::first_type;
             std::string tag_name = "quad_" + std::to_string(SubDimType::value);
+            auto non_const = std::const_pointer_cast<Quadrature<SubDimType::value>>(quad_same_topology_dim.second);
 
-            ar &boost::serialization::make_nvp(tag_name.c_str(),quad_same_topology_dim.second);
+            ar &make_nvp(tag_name.c_str(), non_const);
+            quad_same_topology_dim.second = non_const;
+            Assert(quad_same_topology_dim.second != nullptr, ExcNullPtr());
+
         }
-                               );
+                );
 
     };
     ///@}

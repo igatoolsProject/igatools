@@ -214,8 +214,8 @@ empty() const noexcept
 
 #ifdef SERIALIZATION
 
-template<class Archive>
 template <typename IndexType>
+template<class Archive>
 void
 PropertiesIdContainer<IndexType>::
 serialize(Archive &ar, const unsigned int version)
