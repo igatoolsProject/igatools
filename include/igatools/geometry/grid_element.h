@@ -275,12 +275,6 @@ public:
     SafeSTLVector<std::string> get_defined_properties() const;
 #endif
 
-    //TODO (martinelli, Apr 16, 2015): the returned value should be Points<sdimology_dim>, i.e.
-    // the lengths should refer to the sub-element of dimension sdim
-    //TODO (martinelli, Aug 13, 2015): maybe it is wothy to declare this function private
-private:
-    template<int sdim>
-    const Points<sdim> get_side_lengths(const int s_id) const;
 
 public:
     template <int sdim>
@@ -313,12 +307,18 @@ public:
     void print_cache_info(LogStream &out) const;
 
 private:
+    template<int sdim>
+    const Points<sdim> get_side_lengths(const int s_id) const;
+
+private:
     template <class Accessor> friend class GridIteratorBase;
     friend class GridElementHandler<dim>;
 
+protected:
     /** Cartesian grid from which the element belongs.*/
     std::shared_ptr<ContainerType> grid_;
 
+private:
     PropId property_;
 
     /** Index in the property list of the current element */
@@ -421,6 +421,11 @@ class GridElement
     : public GridElementBase<dim, CartesianGrid<dim>>
 {
     using GridElementBase<dim, CartesianGrid<dim>>::GridElementBase;
+public:
+    void add_property(const PropId &prop)
+    {
+        this->grid_->elem_properties_[prop].insert(this->get_index());
+    }
 };
 
 

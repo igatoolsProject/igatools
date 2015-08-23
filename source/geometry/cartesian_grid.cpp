@@ -157,9 +157,11 @@ CartesianGrid(const KnotCoordinates &knot_coordinates)
     object_id_(UniqueIdGenerator::get_unique_id())
 {
     elem_properties_.add_property(ElementProperties::active);
-    elem_properties_.set_ids_property_status(ElementProperties::active,
-                                             el_tensor_range<dim>(TensorIndex<dim>(), get_num_intervals()),
-                                             true);
+    elem_properties_[ElementProperties::active] =
+        el_tensor_range<dim>(TensorIndex<dim>(), get_num_intervals());
+//    elem_properties_.set_ids_property_status(ElementProperties::active,
+//                                             el_tensor_range<dim>(TensorIndex<dim>(), get_num_intervals()),
+//                                             true);
 
 #ifndef NDEBUG
     for (const int i : UnitElement<dim_>::active_directions)
