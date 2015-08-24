@@ -27,6 +27,7 @@
 #include "../tests.h"
 
 #include <igatools/geometry/cartesian_grid.h>
+#include <igatools/geometry/grid_element.h>
 
 template<int dim>
 void do_test()
@@ -37,12 +38,12 @@ void do_test()
     auto grid = CartesianGrid<dim>::create(n_knots);
 
     out << "Dimension: " << dim << endl;
-    const auto n_elems = grid->get_num_all_elems();
-    for (int i = 0; i < n_elems; ++i)
+
+    int i = 0;
+    for (const auto &elem : *grid)
     {
-        const auto ti = grid->flat_to_tensor(i);
-        const auto fi = grid->tensor_to_flat(ti);
-        out << "Element " << fi << ": " << ti << endl;
+        out << "Element " << i << ": " << elem.get_index() << endl;
+        ++i;
     }
     out << endl;
     out << endl;
