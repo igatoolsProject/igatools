@@ -491,7 +491,7 @@ public:
      */
     template<int k>
     std::shared_ptr<CartesianGrid<k> >
-    get_sub_grid(const int sub_elem_id, std::map<Index,Index> &elem_map) const;
+    get_sub_grid(const int sub_elem_id, std::map<typename CartesianGrid<k>::IndexType,IndexType> &elem_map) const;
 
     ///@}
 

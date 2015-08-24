@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test for CartesianGrid::find_elements_of_points
+ *  Test for the index of a GridElement
  *
  *  author: pauletti
  *  date: 2014-08-07

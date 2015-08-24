@@ -43,11 +43,13 @@ void get_subgrid(const TensorSize<dim> &n_knots)
     for (auto &i : UnitElement<dim>::template elems_ids<k>())
     {
         out.begin_item("Sub element: " + to_string(i));
-        std::map<Index,Index> elem_map;
+        std::map<typename CartesianGrid<k>::IndexType,typename Grid::IndexType> elem_map;
         auto sub_grid = grid->template get_sub_grid<k>(i, elem_map);
         sub_grid->print_info(out);
         for (auto x : elem_map)
-            out << x.first << " " << x.second << endl;
+            out << "Elem. in Grid<" << k << ">: " << x.first
+                << "   ---   "
+                << "Elem. in Grid<" << dim << ">: " << x.second << endl;
         out.end_item();
     }
     out << endl;

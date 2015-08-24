@@ -347,7 +347,7 @@ private:
     };
 
     using CType = boost::fusion::map<
-                  boost::fusion::pair<    _Point,DataWithFlagStatus<ValueVector<Points<dim>>>>,
+                  boost::fusion::pair< _Point,DataWithFlagStatus<ValueVector<Points<dim>>>>,
                   boost::fusion::pair<_Weight,DataWithFlagStatus<ValueVector<Real>>>
                   >;
 

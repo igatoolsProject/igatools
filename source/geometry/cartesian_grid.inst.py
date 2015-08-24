@@ -27,7 +27,7 @@ data = Instantiation(include_files)
 sub_dim_members = ['CartesianGrid<dim>::template BoundaryNormal<k> ' +
                    'CartesianGrid<dim>::get_boundary_normals<k>(const int s_id) const;',
                    'std::shared_ptr<CartesianGrid<k>> CartesianGrid<dim>::'+
-                   'get_sub_grid<k>(const int sub_elem_id, std::map<Index,Index> &elem_map) const;']
+                   'get_sub_grid<k>(const int sub_elem_id, std::map<typename CartesianGrid<k>::IndexType,IndexType> &elem_map) const;']
 
 grids = [] 
 for dim in inst.sub_domain_dims:

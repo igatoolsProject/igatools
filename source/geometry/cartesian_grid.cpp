@@ -737,16 +737,15 @@ template <int dim_>
 template<int k>
 auto
 CartesianGrid<dim_>::
-get_sub_grid(const int sub_elem_id, std::map<Index,Index> &elem_map) const
+get_sub_grid(const int sub_elem_id, std::map<typename CartesianGrid<k>::IndexType,IndexType> &elem_map) const
 -> shared_ptr<CartesianGrid<k>>
 {
     auto &k_elem = UnitElement<dim_>::template get_elem<k>(sub_elem_id);
     const auto active_dirs = TensorIndex<k>(k_elem.active_directions);
     auto sub_knots = knot_coordinates_.template get_sub_product<k>(active_dirs);
     auto sub_grid = CartesianGrid<k>::create(sub_knots);
-    Assert(false, ExcNotImplemented());
-#if 0
-    TensorIndex<dim_> grid_index;
+
+    IndexType grid_index;
     const int n_dir = k_elem.constant_directions.size();
     for (int j = 0 ; j < n_dir ; ++j)
     {
@@ -755,22 +754,15 @@ get_sub_grid(const int sub_elem_id, std::map<Index,Index> &elem_map) const
         grid_index[dir] = val == 0 ? 0 : (knot_coordinates_.tensor_size()[dir]-2);
     }
 
-//   auto v_elem = begin();
     elem_map.clear();
-
-    auto s_elem = sub_grid->begin();
-    auto s_end  = sub_grid->end();
-    for (; s_elem != s_end; ++s_elem)
+    for (const auto &s_elem : *sub_grid)
     {
-        auto s_index = s_elem.get_index();
+        const auto s_index = s_elem.get_index();
         for (int j = 0 ; j < k ; ++j)
             grid_index[active_dirs[j]] = s_index[j];
 
-//        v_elem.move_to(grid_index);
-        elem_map.emplace(s_elem.get_flat_index(),
-        this->tensor_to_flat(grid_index));
+        elem_map.emplace(s_index,grid_index);
     }
-#endif
     return sub_grid;
 }
 
