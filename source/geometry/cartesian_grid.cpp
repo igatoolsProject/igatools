@@ -465,16 +465,16 @@ get_boundary_id(const int face) const
 
 
 template<int dim_>
-template<int sub_dim>
+template<int sdim>
 auto
 CartesianGrid<dim_>::
-get_boundary_normals(const int s_id) const -> BoundaryNormal<sub_dim>
+get_boundary_normals(const int s_id) const -> BoundaryNormal<sdim>
 {
     auto all_elems = UnitElement<dim_>::all_elems;
-    auto element = std::get<sub_dim>(all_elems)[s_id];
+    auto element = std::get<sdim>(all_elems)[s_id];
 
-    BoundaryNormal<sub_dim> normals;
-    for (int i=0; i<dim_-sub_dim; ++i)
+    BoundaryNormal<sdim> normals;
+    for (int i=0; i<dim_-sdim; ++i)
     {
         auto val = 2*element.constant_values[i]-1;
         normals[i][element.constant_directions[i]] = val;
@@ -734,23 +734,23 @@ print_info(LogStream &out) const
 
 
 template <int dim_>
-template<int k>
+template<int sdim>
 auto
 CartesianGrid<dim_>::
-get_sub_grid(const int sub_elem_id, std::map<typename CartesianGrid<k>::IndexType,IndexType> &elem_map) const
--> shared_ptr<CartesianGrid<k>>
+get_sub_grid(const int s_id, SubGridMap<sdim> &elem_map) const
+-> shared_ptr<CartesianGrid<sdim>>
 {
-    auto &k_elem = UnitElement<dim_>::template get_elem<k>(sub_elem_id);
-    const auto active_dirs = TensorIndex<k>(k_elem.active_directions);
-    auto sub_knots = knot_coordinates_.template get_sub_product<k>(active_dirs);
-    auto sub_grid = CartesianGrid<k>::create(sub_knots);
+    auto &s_elem = UnitElement<dim_>::template get_elem<sdim>(s_id);
+    const auto active_dirs = TensorIndex<sdim>(s_elem.active_directions);
+    auto sub_knots = knot_coordinates_.template get_sub_product<sdim>(active_dirs);
+    auto sub_grid = CartesianGrid<sdim>::create(sub_knots);
 
     IndexType grid_index;
-    const int n_dir = k_elem.constant_directions.size();
+    const int n_dir = s_elem.constant_directions.size();
     for (int j = 0 ; j < n_dir ; ++j)
     {
-        auto dir = k_elem.constant_directions[j];
-        auto val = k_elem.constant_values[j];
+        auto dir = s_elem.constant_directions[j];
+        auto val = s_elem.constant_values[j];
         grid_index[dir] = val == 0 ? 0 : (knot_coordinates_.tensor_size()[dir]-2);
     }
 
@@ -758,7 +758,7 @@ get_sub_grid(const int sub_elem_id, std::map<typename CartesianGrid<k>::IndexTyp
     for (const auto &s_elem : *sub_grid)
     {
         const auto s_index = s_elem.get_index();
-        for (int j = 0 ; j < k ; ++j)
+        for (int j = 0 ; j < sdim ; ++j)
             grid_index[active_dirs[j]] = s_index[j];
 
         elem_map.emplace(s_index,grid_index);

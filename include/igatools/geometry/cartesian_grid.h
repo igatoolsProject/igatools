@@ -292,7 +292,6 @@ public:
         return create(n_knots);
     }
 
-
     static std::shared_ptr<self_t>
     create(const BBox<dim_> &bbox, const Size n_knots);
     static std::shared_ptr<const self_t>
@@ -300,6 +299,7 @@ public:
     {
         return create(bbox, n_knots);
     }
+
     /**
      * Construct a cartesian grid where the knot coordinate in each
      * direction is provided as CartesianProductArray object.
@@ -359,9 +359,7 @@ public:
     {
         return create(grid);
     }
-
     ///@}
-
 
     /**
      * @name Assignment operators
@@ -426,7 +424,6 @@ public:
 
     std::shared_ptr<ElementHandler> create_cache_handler() const;
 
-
     ///@name Iterating of grid elements
     ///@{
     /**
@@ -472,27 +469,28 @@ public:
      */
     void set_boundary_id(const int face, const boundary_id id);
 
-    template<int sub_dim>
-    using BoundaryNormal = SafeSTLArray<Points<dim_>, dim_-sub_dim>;
+    template<int sdim>
+    using BoundaryNormal = SafeSTLArray<Points<dim_>, dim_-sdim>;
 
     /**
      * Returns the outward pointing
      * unit normal vector space to the element of sub dim_ k.
      */
-    template<int sub_dim>
-    BoundaryNormal<sub_dim> get_boundary_normals(const int s_id) const;
+    template<int sdim>
+    BoundaryNormal<sdim> get_boundary_normals(const int s_id) const;
 
-
+    template<int sdim>
+    using SubGridMap =
+        std::map<typename CartesianGrid<sdim>::IndexType, IndexType>;
     /**
      * Construct a sub grid of dimension k conforming to
      * the grid sub element sub_elem_id and a map from the elements of
      * the sub_element grid to the corresponding element of the current
      * grid.
      */
-    template<int k>
-    std::shared_ptr<CartesianGrid<k> >
-    get_sub_grid(const int sub_elem_id, std::map<typename CartesianGrid<k>::IndexType,IndexType> &elem_map) const;
-
+    template<int sdim>
+    std::shared_ptr<CartesianGrid<sdim> >
+    get_sub_grid(const int sub_elem_id, SubGridMap<sdim> &elem_map) const;
     ///@}
 
 #if 0
@@ -531,7 +529,6 @@ public:
      * are equal.
      */
     bool operator==(const CartesianGrid<dim_> &grid) const;
-
 
 #ifdef MESH_REFINEMENT
     /**
@@ -642,8 +639,6 @@ private:
      */
     Index object_id_;
 
-
-
 private:
     /**
      * Create an element (defined on this grid) with a given flat_index.
@@ -684,7 +679,6 @@ public:
          */
     bool test_if_element_has_property(const IndexType elem_flat_id,
                                       const PropId &property) const;
-
 
     /**
      * Returns the id of the first element with a given @p property.
