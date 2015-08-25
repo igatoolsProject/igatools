@@ -515,8 +515,13 @@ public:
      * then the point can have intersection with multiple elements.
      */
     SafeSTLVector<IndexType>
-    find_elements_id_of_points(const ValueVector<Points<dim_>> &point) const;
+    find_elements_id_of_points(const ValueVector<Points<dim_>> &points) const;
 #endif
+
+    /**
+     * Returns TRUE if the point is exactly on an internal knots line.
+     */
+    bool test_if_point_on_internal_knots_line(const Points<dim_> &point) const;
 
 public:
     /**

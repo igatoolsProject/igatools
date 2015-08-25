@@ -786,6 +786,24 @@ get_bounding_box() const -> BBox<dim_>
 
 
 template <int dim_>
+bool
+CartesianGrid<dim_>::
+test_if_point_on_internal_knots_line(const Points<dim_> &point) const
+{
+    bool res = false;
+    for (const auto i : UnitElement<dim_>::active_directions)
+    {
+        const auto &knots = knot_coordinates_.get_data_direction(i);
+        if (std::binary_search(knots.begin()+1,knots.end()-1,point[i]))
+        {
+            res = true;
+            break;
+        }
+    }
+    return res;
+}
+
+template <int dim_>
 auto
 CartesianGrid<dim_>::
 find_elements_id_of_points(const ValueVector<Points<dim_>> &points) const
@@ -797,6 +815,10 @@ find_elements_id_of_points(const ValueVector<Points<dim_>> &points) const
     for (int k = 0 ; k < n_points ; ++k)
     {
         const auto &point = points[k];
+
+        Assert(!test_if_point_on_internal_knots_line(point),
+        ExcMessage("The " + std::to_string(k) + "-th point is on an intenal knots line."));
+
         TensorIndex<dim_> elem_t_id;
         for (const auto i : UnitElement<dim_>::active_directions)
         {
