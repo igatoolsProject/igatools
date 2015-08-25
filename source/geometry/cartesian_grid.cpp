@@ -785,17 +785,16 @@ get_bounding_box() const -> BBox<dim_>
 }
 
 
-#if 0
 template <int dim_>
 auto
 CartesianGrid<dim_>::
-find_elements_of_points(const ValueVector<Points<dim_>> &points) const
--> std::map<ElementIterator, SafeSTLVector<int> >
+find_elements_id_of_points(const ValueVector<Points<dim_>> &points) const
+-> std::map<IndexType, SafeSTLVector<int> >
 {
-    std::map<ElementIterator, SafeSTLVector<int> > res;
+    std::map<IndexType, SafeSTLVector<int> > res;
 
     const int n_points = points.size();
-    for (int k=0; k<n_points; ++k)
+    for (int k = 0 ; k < n_points ; ++k)
     {
         const auto &point = points[k];
         TensorIndex<dim_> elem_t_id;
@@ -816,57 +815,69 @@ find_elements_of_points(const ValueVector<Points<dim_>> &points) const
 
             elem_t_id[i] = (j>0) ? j-1 : 0;
         }
+        /*
+                auto ans = res.emplace(
+                      elem_t_id,
+                               SafeSTLVector<int>(1,k));
 
-        auto ans = res.emplace(
-                       ElementIterator(this->shared_from_this(),
-                                       this->tensor_to_flat(elem_t_id),ElementProperties::active),
-                       SafeSTLVector<int>(1,k));
+                if (!ans.second)
+                    (ans.first)->second.push_back(k);
+                    //*/
+        res[elem_t_id].push_back(k);
 
-        if (!ans.second)
-            (ans.first)->second.push_back(k);
     }
     return res;
 }
 
 
+#if 0
 template <int dim_>
-SafeSTLVector<Index>
+auto
 CartesianGrid<dim_>::
-find_elements_id_of_point(const Points<dim_> &point) const
+find_elements_id_of_points(const ValueVector<Points<dim_>> &points) const -> SafeSTLVector<IndexType>
 {
-    Assert(false,ExcMessage("This function is not tested at all!"));
-    SafeSTLVector<Index> elements_id;
+//    Assert(false,ExcNotImplemented());
+//    Assert(false,ExcMessage("This function is not tested at all!"));
+    SafeSTLVector<IndexType> elements_id;
 
-    SafeSTLArray<SafeSTLVector<int>,dim> ids;
+//    SafeSTLArray<SafeSTLVector<int>,dim> ids;
 
-    TensorSize<dim_> n_elems_dir;
-    for (const auto dir : UnitElement<dim_>::active_directions)
+//    TensorSize<dim_> n_elems_dir;
+
+    IndexType elem_t_id;
+    for (const auto &point : points)
     {
-        const auto &knots = knot_coordinates_.get_data_direction(dir);
-
-        const auto &p = point[dir];
-
-        Assert(p >= knots.front() && p <= knots.back(),
-               ExcMessage("The point coordinate p[" + std::to_string(dir) + "]= "
-                          + std::to_string(p) +
-                          " is not in the interval spanned by the knots along the direction " +
-                          std::to_string(dir)));
-
-        //find the index j in the knots for which knots[j] <= point[dir]
-        const auto low = std::lower_bound(knots.begin(),knots.end(),p);
-        const Index j = low - knots.begin();
-
-        if (j > 0)
+        for (const auto dir : UnitElement<dim_>::active_directions)
         {
-            ids[dir].push_back(j-1);
-            if (p == knots[j])
-                ids[dir].push_back(j);
+            const auto &knots = knot_coordinates_.get_data_direction(dir);
+
+            const auto &p = point[dir];
+
+            Assert(p >= knots.front() && p <= knots.back(),
+            ExcMessage("The point coordinate p[" + std::to_string(dir) + "]= "
+            + std::to_string(p) +
+            " is not in the interval spanned by the knots along the direction " +
+            std::to_string(dir)));
+
+            //find the index j in the knots for which knots[j] <= point[dir]
+            const auto low = std::lower_bound(knots.begin(),knots.end(),p);
+            const Index j = low - knots.begin();
+
+            elem_t_id[dir] = (j>0) ? j-1 : 0;
+            /*
+                        if (j > 0)
+                        {
+                            ids[dir].push_back(j-1);
+                            if (p == knots[j])
+                                ids[dir].push_back(j);
+                        }
+                        else
+                        {
+                            ids[dir].push_back(0);
+                        }
+                        n_elems_dir[dir] = ids[dir].size();
+                        //*/
         }
-        else
-        {
-            ids[dir].push_back(0);
-        }
-        n_elems_dir[dir] = ids[dir].size();
     }
 
     const auto n_elems = n_elems_dir.flat_size();
@@ -878,7 +889,7 @@ find_elements_id_of_point(const Points<dim_> &point) const
         for (const auto dir : UnitElement<dim_>::active_directions)
             elem_t_id[dir] = ids[dir][t_id[dir]];
 
-        elements_id.emplace_back(this->tensor_to_flat(elem_t_id));
+        elements_id.emplace_back(elem_t_id);
     }
     return elements_id;
 }

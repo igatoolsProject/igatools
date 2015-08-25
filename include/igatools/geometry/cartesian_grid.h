@@ -494,29 +494,29 @@ public:
     get_sub_grid(const int sub_elem_id, SubGridMap<sdim> &elem_map) const;
     ///@}
 
-#if 0
     /**
      * Given a vector of points, this function return a map with
-     * entries indexed by the grid element each point belongs to
-     * containing a list of indices of the points that belong to
-     * this element.
-     * For ex.
-     * @code
+     * in which the keys are the element id and the associated value is
+     * a list containing the point id lying on the associated element.
      *
-     * @endcode
+     * @warning If the point is lying exactly on knot line(s),
+     * then the point can have intersection with multiple elements, but the function
+     * returns only the first element that owns the point.
      */
-    std::map<ElementIterator, SafeSTLVector<int> >
-    find_elements_of_points(const ValueVector<Points<dim_>> &points) const;
 
+    std::map<IndexType, SafeSTLVector<int> >
+    find_elements_id_of_points(const ValueVector<Points<dim_>> &points) const;
+
+#if 0
     /**
-     * Given a point, this function return the id of the
+     * Given a vector of points, this function return the id of the
      * elements that intersects with the point.
      *
      * @note If the point is lying exactly on knot line(s),
      * then the point can have intersection with multiple elements.
      */
-    SafeSTLVector<Index>
-    find_elements_id_of_point(const Points<dim_> &point) const;
+    SafeSTLVector<IndexType>
+    find_elements_id_of_points(const ValueVector<Points<dim_>> &point) const;
 #endif
 
 public:

@@ -53,10 +53,11 @@ void do_test()
     points[1] = p_mid;
     points[2] = p_end;
 
-    auto elem_list = grid->find_elements_of_points(points);
+    auto elem_list = grid->find_elements_id_of_points(points);
     for (auto el : elem_list)
     {
-        out << "The element: " << el.first->get_flat_index();
+//        out << "The element: " << el.first->get_flat_index();
+        out << "The element: " << el.first;
         out << " contains the points: ";
         for (auto p : el.second)
             out << points[p] << " ";
