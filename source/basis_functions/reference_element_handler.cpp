@@ -76,7 +76,7 @@ get_grid_handler() const
     return this->grid_handler_;
 }
 
-
+#if 0
 template<int dim, int range , int rank>
 void
 ReferenceElementHandler<dim, range, rank>::
@@ -97,7 +97,7 @@ fill_cache(SpaceElement<dim,0,range,rank,Transformation::h_grad> &space_elem,
     auto &ref_elem = dynamic_cast<ElementAccessor &>(space_elem);
     this->fill_ref_elem_cache(ref_elem,topology,sub_elem_id);
 }
-
+#endif
 
 #if 0
 template<int dim, int range , int rank>

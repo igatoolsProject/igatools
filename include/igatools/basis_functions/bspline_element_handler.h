@@ -50,6 +50,7 @@ class BSplineElementHandler
     using Space = BSplineSpace<dim_,range_,rank_>;
     static const Size n_components =  SplineSpace<dim_,range_,rank_>::n_components;
 
+    using IndexType = typename CartesianGrid<dim_>::IndexType;
 
     template<class T>
     using ComponentContainer = typename Space::template ComponentContainer<T>;
@@ -129,7 +130,7 @@ public:
     using topology_variant = typename base_t::topology_variant;
     using eval_pts_variant = typename base_t::eval_pts_variant;
 
-
+#if 0
     /**
      * @name Reset functions
      */
@@ -137,7 +138,7 @@ public:
     virtual void reset_selected_elements(
         const ValueFlags &flag,
         const eval_pts_variant &eval_points,
-        const SafeSTLVector<int> &elements_flat_id) override final;
+        const SafeSTLVector<IndexType> &elements_id) override final;
     ///@}
 
 private:
@@ -147,6 +148,7 @@ private:
     virtual void fill_ref_elem_cache(RefElementAccessor &elem,
                                      const topology_variant &topology,
                                      const int sub_elem_id) override final;
+#endif
 
 public:
     virtual void print_info(LogStream &out) const override final ;
@@ -187,7 +189,7 @@ private:
         /**
          * Quadrature points used for the 1D basis evaluation.
          */
-        Quadrature<dim> quad_;
+        std::shared_ptr<const Quadrature<dim>> quad_;
 
         /**
          * Values (and derivatives) of 1D basis precomputed in the initalized
@@ -206,7 +208,7 @@ private:
 
         GlobalCache() = default;
 
-        GlobalCache(const Quadrature<dim> &quad, const ComponentMap &component_map);
+        GlobalCache(const std::shared_ptr<const Quadrature<dim>> &quad, const ComponentMap &component_map);
 
 
         ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>> >
@@ -237,7 +239,7 @@ private:
     };
 
 
-
+#if 0
     struct ResetDispatcher : boost::static_visitor<void>
     {
         ResetDispatcher(const Space &space,
@@ -254,7 +256,7 @@ private:
         {}
 
         template<int sub_elem_dim>
-        void operator()(const Quadrature<sub_elem_dim> &quad);
+        void operator()(const std::shared_ptr<const Quadrature<sub_elem_dim>> &quad);
 
         const Space &space_;
         const ValueFlags flag_;
@@ -353,7 +355,7 @@ private:
                                     ValueTable<Derivative<order>> &D_phi) const;
 
     };
-
+#endif
 
     /**
      * Returns the BSplineSpace used to define the BSplineElementHandler object.

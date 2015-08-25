@@ -81,6 +81,9 @@ public:
     ///@}
 
 
+    using Flags = space_element::Flags;
+
+
     /** @name Constructors */
     ///@{
 protected:

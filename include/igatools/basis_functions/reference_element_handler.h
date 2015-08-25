@@ -92,14 +92,14 @@ public:
      */
     ///@{
 
-
+#if 0
     virtual void init_cache(SpaceElement<dim,0,range,rank,Transformation::h_grad> &space_elem,
                             const topology_variant &topology) override final;
 
     virtual void fill_cache(SpaceElement<dim,0,range,rank,Transformation::h_grad> &space_elem,
                             const topology_variant &topology,
                             const int sub_elem_id) override final;
-
+#endif
 
 //    virtual void print_info(LogStream &out) const = 0;
 
@@ -111,12 +111,14 @@ public:
 
 protected:
 
+#if 0
     virtual void init_ref_elem_cache(ElementAccessor &elem,
                                      const topology_variant &topology)= 0;
 
     virtual void fill_ref_elem_cache(ElementAccessor &elem,
                                      const topology_variant &topology,
                                      const int sub_elem_id) = 0;
+#endif
 
     GridElementHandler<dim> grid_handler_;
 

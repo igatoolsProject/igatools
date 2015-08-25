@@ -64,7 +64,7 @@ NURBSElementHandler(shared_ptr<const Space> space)
 }
 #endif
 
-
+#if 0
 template<int dim_, int range_ , int rank_>
 template<int sub_elem_dim>
 void
@@ -82,7 +82,7 @@ NURBSElementHandler<dim_, range_, rank_>::
 reset_selected_elements(
     const ValueFlags &flag,
     const eval_pts_variant &quad,
-    const SafeSTLVector<int> &elements_flat_id)
+    const SafeSTLVector<IndexType> &elements_id)
 {
     //--------------------------------------------------
     // resetting the Function for the bspline (numerator and weight function at the denominator)
@@ -128,13 +128,13 @@ reset_selected_elements(
     //--------------------------------------
     // resetting the BSplineElementHandler (for the numerator)
     Assert(bspline_handler_ != nullptr, ExcNullPtr());
-    bspline_handler_->reset_selected_elements(bspline_flag, quad, elements_flat_id);
+    bspline_handler_->reset_selected_elements(bspline_flag, quad, elements_id);
     //--------------------------------------
 
 
     //--------------------------------------------------
     const auto nrb_space = this->get_nurbs_space();
-    nrb_space->weight_func_->reset_selected_elements(bspline_flag,quad,elements_flat_id);
+    nrb_space->weight_func_->reset_selected_elements(bspline_flag,quad,elements_id);
     //--------------------------------------------------
 
 
@@ -270,7 +270,7 @@ fill_ref_elem_cache(RefElementAccessor &elem, const topology_variant &topology, 
     boost::apply_visitor(fill_cache_dispatcher,topology);
     //-----------------------------------------
 }
-
+#endif
 
 
 
@@ -304,6 +304,7 @@ print_info(LogStream &out) const
 #endif
 }
 
+#if 0
 template<int dim_, int range_ , int rank_>
 void
 NURBSElementHandler<dim_, range_, rank_>::
@@ -619,7 +620,7 @@ evaluate_nurbs_hessians_from_bspline(
         } // end loop w_fn_id
     } // end loop comp
 }
-
+#endif
 
 #ifdef SERIALIZATION
 template<int dim_, int range_ , int rank_>

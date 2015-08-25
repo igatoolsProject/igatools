@@ -37,6 +37,19 @@ SpaceElementHandler(std::shared_ptr<const Sp> space)
 }
 
 
+
+
+template<int dim,int codim,int range,int rank,Transformation type>
+auto
+SpaceElementHandler<dim,codim,range,rank,type>::
+get_space() const -> std::shared_ptr<const Sp>
+{
+    return space_;
+}
+
+
+#if 0
+
 template<int dim,int codim,int range,int rank,Transformation type>
 void
 SpaceElementHandler<dim,codim,range,rank,type>::
@@ -50,16 +63,6 @@ reset(const ValueFlags &flag, const eval_pts_variant &eval_pts)
         eval_pts,
         SafeSTLVector<int>(elems_id.begin(),elems_id.end()));
 }
-
-template<int dim,int codim,int range,int rank,Transformation type>
-auto
-SpaceElementHandler<dim,codim,range,rank,type>::
-get_space() const -> std::shared_ptr<const Sp>
-{
-    return space_;
-}
-
-
 
 template<int dim,int codim,int range,int rank,Transformation type>
 template <int sub_elem_dim>
@@ -146,7 +149,7 @@ fill_face_cache(ElementIterator &elem, const int face_id)
     Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
     this->template fill_cache<(dim > 0)?dim-1:0>(*elem,face_id);
 }
-
+#endif
 
 
 #ifdef SERIALIZATION

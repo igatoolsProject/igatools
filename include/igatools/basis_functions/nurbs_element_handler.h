@@ -62,6 +62,8 @@ class NURBSElementHandler
     using Space = NURBSSpace<dim_,range_,rank_>;
     static const Size n_components =  Space::n_components;
 
+    using IndexType = typename CartesianGrid<dim_>::IndexType;
+
     template<class T>
     using ComponentContainer = typename Space::template ComponentContainer<T>;
 
@@ -134,22 +136,25 @@ public:
     using topology_variant = typename base_t::topology_variant;
     using eval_pts_variant = typename base_t::eval_pts_variant;
 
+#if 0
     virtual void reset_selected_elements(
         const ValueFlags &flag,
         const eval_pts_variant &eval_points,
-        const SafeSTLVector<int> &elements_flat_id) override final;
-
+        const SafeSTLVector<IndexType> &elements_id) override final;
+#endif
 
 
     virtual void print_info(LogStream &out) const override final;
 
 private:
 
+#if 0
     virtual void init_ref_elem_cache(RefElementAccessor &elem,
                                      const topology_variant &topology) override final;
 
     virtual void fill_ref_elem_cache(RefElementAccessor &elem,
                                      const topology_variant &topology, const int j) override final;
+#endif
 
     std::shared_ptr<BSplineElementHandler<dim_,range_,rank_>> bspline_handler_;
 
@@ -184,6 +189,7 @@ private:
 #endif
 
 
+#if 0
     struct ResetDispatcher : boost::static_visitor<void>
     {
         ResetDispatcher(const ValueFlags flag_in,
@@ -278,7 +284,7 @@ private:
         const int sub_elem_id_;
         NURBSElement<dim_,range_,rank_> &nrb_elem_;
     };
-
+#endif
 
 
     /**

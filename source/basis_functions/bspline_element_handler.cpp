@@ -177,7 +177,6 @@ create(std::shared_ptr<const Space> space) -> std::shared_ptr<self_t>
     return std::shared_ptr<self_t>(new self_t(space));
 }
 
-
 template<int dim_, int range_ , int rank_>
 void
 BSplineElementHandler<dim_, range_, rank_>::
@@ -210,14 +209,19 @@ resize_and_fill_bernstein_values(
 }
 
 
+#if 0
 template<int dim_, int range_ , int rank_>
 template<int sub_elem_dim>
 void
 BSplineElementHandler<dim_, range_, rank_>::
 ResetDispatcher::
-operator()(const Quadrature<sub_elem_dim> &quad1)
+operator()(const std::shared_ptr<const Quadrature<sub_elem_dim>> &quad1)
 {
-    grid_handler_.reset(flag_,quad1);
+//    grid_handler_.reset(flag_,quad1);
+    Assert(false,ExcNotImplemented())
+    grid_element::Flags grid_flags = grid_element::Flags::point |
+                                     grid_element::Flags::w_measure;
+    grid_handler_.template set_flags<sub_elem_dim>(grid_flags);
 
     flags_[sub_elem_dim] = flag_;
 
@@ -386,23 +390,23 @@ BSplineElementHandler<dim_, range_, rank_>::
 reset_selected_elements(
     const ValueFlags &flag_in,
     const eval_pts_variant &eval_points,
-    const SafeSTLVector<int> &elements_flat_id)
+    const SafeSTLVector<IndexType> &elements_id)
 {
     auto reset_dispatcher = ResetDispatcher(
                                 *(this->get_bspline_space()),flag_in,this->grid_handler_,flags_,splines1d_);
 
     //-------------------------------------------------
     // here we get the interval indices from the element indices
-    Assert(!elements_flat_id.empty(),ExcEmptyObject());
+    Assert(!elements_id.empty(),ExcEmptyObject());
 
-    const auto &grid = *reset_dispatcher.space_.get_ptr_const_grid();
+//    const auto &grid = *reset_dispatcher.space_.get_ptr_const_grid();
     SafeSTLArray<set<int>,dim> intervals_id_unique;
-    for (const auto elem_id : elements_flat_id)
+    for (const auto elem_id : elements_id)
     {
-        const auto elem_tensor_id = grid.flat_to_tensor(elem_id);
+//        const auto elem_tensor_id = grid.flat_to_tensor(elem_id);
 
         for (int dir = 0 ; dir < dim ; ++dir)
-            intervals_id_unique[dir].insert(elem_tensor_id[dir]);
+            intervals_id_unique[dir].insert(elem_id[dir]);
     }
 
     for (const int dir : UnitElement<dim_>::active_directions)
@@ -708,7 +712,7 @@ fill_ref_elem_cache(RefElementAccessor &elem, const topology_variant &topology, 
     boost::apply_visitor(fill_cache_dispatcher,topology);
 }
 
-
+#endif
 
 template<int dim_, int range_ , int rank_>
 auto
@@ -747,7 +751,7 @@ print_info(LogStream &out) const
 template<int dim_, int range_ , int rank_>
 BSplineElementHandler<dim_, range_, rank_>::
 GlobalCache::
-GlobalCache(const Quadrature<dim> &quad, const ComponentMap &component_map)
+GlobalCache(const std::shared_ptr<const Quadrature<dim>> &quad, const ComponentMap &component_map)
     :
     quad_(quad),
     basis_values_1d_table_(BasisValues1dTable(component_map))
@@ -811,7 +815,7 @@ get_element_values(const TensorIndex<dim> &elem_tensor_id) const
         for (int i = 0 ; i < dim_ ; ++i)
             values_1D[i] = BasisValues1dConstView(value[i].at(elem_tensor_id[i]));
 
-        result[c] = std::make_unique<const TensorProductFunctionEvaluator<dim>>(this->quad_,values_1D);
+        result[c] = std::make_unique<const TensorProductFunctionEvaluator<dim>>(*this->quad_,values_1D);
     }
     return result;
 }

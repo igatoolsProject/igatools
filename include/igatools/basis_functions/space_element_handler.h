@@ -46,6 +46,9 @@ public:
     using ElementIterator = typename Sp::ElementIterator;
 
 
+    using IndexType = typename Sp::IndexType;
+
+
 private:
     using eval_pts_variant = SubElemVariants<Quadrature,dim>;
     using topology_variant = TopologyVariants<dim>;
@@ -85,6 +88,8 @@ public:
 
 public:
 
+
+#if 0
     /**
      * Resets all the internal data in order to use the
      * same quadrature scheme for each active element of the space.
@@ -103,7 +108,7 @@ public:
     virtual void reset_selected_elements(
         const ValueFlags &flag,
         const eval_pts_variant &eval_points,
-        const SafeSTLVector<int> &elements_flat_id) = 0;
+        const SafeSTLVector<IndexType> &elements_id) = 0;
 
 
     virtual void init_cache(SpaceElement<dim,codim,range,rank,type> &elem,
@@ -142,7 +147,7 @@ public:
     void fill_face_cache(ElementAccessor &elem, const int face_id);
 
     void fill_face_cache(ElementIterator &elem, const int face_id);
-
+#endif
 
     virtual void print_info(LogStream &out) const = 0;
 
