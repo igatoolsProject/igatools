@@ -20,7 +20,7 @@
 
 /**
  *  @file
- *  @brief  CartesianGrid::get_sub_grid<k>
+ *  @brief  CartesianGrid::get_sub_grid
  *  @author pauletti
  *  @date  2015-08-19
  */
@@ -29,30 +29,30 @@
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/geometry/grid_element.h>
 
-template<int dim, int k = dim-1>
+template<int dim, int sdim = dim-1>
 void get_subgrid(const TensorSize<dim> &n_knots)
 {
     OUTSTART
+
     using Grid =  CartesianGrid<dim>;
-
-    auto grid = Grid::create(n_knots);
+    auto grid = Grid::const_create(n_knots);
     out.begin_item("Grid:");
-    grid->print_info(out);
+    //grid->print_info(out);
+    out << "help";
     out.end_item();
+    out << "help" << endl;
 
-    for (auto &i : UnitElement<dim>::template elems_ids<k>())
-    {
-        out.begin_item("Sub element: " + to_string(i));
-        std::map<typename CartesianGrid<k>::IndexType,typename Grid::IndexType> elem_map;
-        auto sub_grid = grid->template get_sub_grid<k>(i, elem_map);
-        sub_grid->print_info(out);
-        for (auto x : elem_map)
-            out << "Elem. in Grid<" << k << ">: " << x.first
-                << "   ---   "
-                << "Elem. in Grid<" << dim << ">: " << x.second << endl;
-        out.end_item();
-    }
-    out << endl;
+//    for (auto &i : UnitElement<dim>::template elems_ids<sdim>())
+//    {
+//    	typename CartesianGrid<dim>::template SubGridMap<sdim> map;
+//    	out.begin_item("Sub element: " + to_string(i));
+//        auto sub_grid = grid->template get_sub_grid<sdim>(i, map);
+//        sub_grid->print_info(out);
+//        map.print_info(out);
+//        out.pop();
+//        out.end_item();
+//    }
+//    out << endl;
 
     OUTEND
 }
@@ -61,11 +61,9 @@ void get_subgrid(const TensorSize<dim> &n_knots)
 
 int main()
 {
-    out.depth_console(10);
-
-    get_subgrid<1>(TensorSize<1>(sequence<1>(2)));
-    get_subgrid<2>(TensorSize<2>(sequence<2>(2)));
-    get_subgrid<3>(TensorSize<3>(sequence<3>(2)));
+   get_subgrid<1>(TensorSize<1>(sequence<1>(2)));
+   get_subgrid<2>(TensorSize<2>(sequence<2>(2)));
+   get_subgrid<3>(TensorSize<3>(sequence<3>(2)));
 
     return  0;
 }

@@ -25,6 +25,7 @@
 #include <igatools/base/tensor.h>
 #include <igatools/base/logstream.h>
 #include <igatools/utils/safe_stl_array.h>
+#include <igatools/utils/safe_stl_map.h>
 #include <igatools/utils/cartesian_product_array.h>
 #include <igatools/utils/dynamic_multi_array.h>
 #include <igatools/geometry/unit_element.h>
@@ -481,7 +482,7 @@ public:
 
     template<int sdim>
     using SubGridMap =
-        std::map<typename CartesianGrid<sdim>::IndexType, IndexType>;
+        SafeSTLMap<typename CartesianGrid<sdim>::IndexType, IndexType>;
     /**
      * Construct a sub grid of dimension k conforming to
      * the grid sub element sub_elem_id and a map from the elements of

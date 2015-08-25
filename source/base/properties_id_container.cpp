@@ -198,6 +198,7 @@ print_info(LogStream &out) const
     {
         out.begin_item("IDs with property \"" + entry.first + "\":");
         entry.second.print_info(out);
+        out.end_item();
     }
 }
 
