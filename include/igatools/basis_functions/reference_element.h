@@ -41,7 +41,7 @@ class ReferenceElement : public SpaceElement<dim,0,range,rank,Transformation::h_
 {
 public:
     /** Type for the grid accessor. */
-    using GridAccessor = CartesianGridElement<dim>;
+    using GridAccessor = GridElement<dim>;
 
     /** Type required by the GridForwardIterator templated iterator */
     using ContainerType = const ReferenceSpace<dim,range,rank> ;
@@ -94,7 +94,7 @@ public:
     template <int k>
     ValueVector<Real> get_w_measures(const int j) const
     {
-        return this->as_cartesian_grid_element_accessor().template get_w_measures<k>(j);
+        return this->get_grid_element().template get_w_measures<k>(j);
     }
 
     /**

@@ -23,7 +23,7 @@ from init_instantiation_data import *
 include_files = ['geometry/cartesian_grid.h',
                  'geometry/grid_element.h',
                  'basis_functions/space_element.h',
-                 '../../source/geometry/cartesian_grid_iterator.cpp']
+                 '../../source/geometry/grid_iterator.cpp']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 

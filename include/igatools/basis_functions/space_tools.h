@@ -155,7 +155,7 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
 
             //---------------------------------------------------------------------------
             // the function is supposed to be defined on the same grid of the space or coarser
-            const auto &elem_grid_accessor = elem->as_cartesian_grid_element_accessor();
+            const auto &elem_grid_accessor = elem->get_grid_element();
             auto quad_in_func_elem = quad;
             quad_in_func_elem.dilate_translate(
                 elem_grid_accessor.

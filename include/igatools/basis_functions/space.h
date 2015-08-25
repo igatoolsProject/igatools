@@ -33,7 +33,7 @@
 IGA_NAMESPACE_OPEN
 
 template <int,int,int,int> class Function;
-template <int> class CartesianGridElementAccessor;
+template <int> class GridElement;
 template <int,int,int,int,Transformation> class SpaceElement;
 template <int,int,int,int,Transformation> class SpaceElementHandler;
 
@@ -257,6 +257,11 @@ public:
 
 public:
 
+    using IndexType = TensorIndex<dim_>;
+    using PropertyList = PropertiesIdContainer<IndexType>;
+    using List = typename PropertyList::List;
+    using ListIt = typename PropertyList::List::iterator;
+
 
     static const int dim = dim_;
     static const int codim = codim_;
@@ -349,19 +354,19 @@ public:
      * Returns a element iterator to the first element of the patch
      * with the property @p element_property.
      */
-    ElementIterator begin(const std::string &element_property = ElementProperties::none) const;
+    ElementIterator begin(const std::string &element_property = ElementProperties::active) const;
 
     /**
      * Returns a element iterator to the last element of the patch
      * with the property @p element_property.
      */
-    ElementIterator last(const std::string &element_property = ElementProperties::none) const;
+    ElementIterator last(const std::string &element_property = ElementProperties::active) const;
 
     /**
      * Returns a element iterator to one-pass the end of patch
      * with the property @p element_property.
      */
-    ElementIterator end(const std::string &element_property = ElementProperties::none) const;
+    ElementIterator end(const std::string &element_property = ElementProperties::active) const;
     ///@}
 
 

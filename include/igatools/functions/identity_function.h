@@ -118,7 +118,7 @@ private:
                 if (cache.template status_fill<_Point>() || cache.template status_fill<_Value>())
                 {
                     const auto points =
-                        elem_.CartesianGridElement<dim>::template get_points<sub_elem_dim>(sub_elem_id_);
+                        elem_.GridElement<dim>::template get_points<sub_elem_dim>(sub_elem_id_);
 
                     if (cache.template status_fill<_Point>())
                     {

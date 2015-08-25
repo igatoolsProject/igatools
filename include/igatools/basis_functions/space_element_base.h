@@ -85,12 +85,16 @@ public:
     ///@}
 
 
-    /** Return a reference to "*this" as being an object of type CartesianGridElementAccessor.*/
-    CartesianGridElement<dim> &as_cartesian_grid_element_accessor();
+    /**
+     * Return a reference to the GridElement.
+     */
+    GridElement<dim> &get_grid_element();
 
 
-    /** Return a const-reference to "*this" as being an object of type CartesianGridElementAccessor.*/
-    const CartesianGridElement<dim> &as_cartesian_grid_element_accessor() const;
+    /**
+     * Return a const-reference to the GridElement.
+     */
+    const GridElement<dim> &get_grid_element() const;
 
     void print_info(LogStream &out) const;
 
@@ -229,7 +233,7 @@ public:
     }
 
 private:
-    std::shared_ptr<CartesianGridElement<dim>> grid_elem_;
+    std::shared_ptr<GridElement<dim>> grid_elem_;
 
     std::shared_ptr<const SpaceBase<dim>> space_;
 

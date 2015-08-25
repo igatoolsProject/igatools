@@ -219,7 +219,7 @@ FunctionElement<dim, codim, range, rank>::
 serialize(Archive &ar, const unsigned int version)
 {
     ar &boost::serialization::make_nvp("FunctionElement_base_t",
-                                       boost::serialization::base_object<CartesianGridElement<dim>>(*this));
+                                       boost::serialization::base_object<GridElement<dim>>(*this));
 
     ar &boost::serialization::make_nvp("all_sub_elems_cache_",all_sub_elems_cache_);
 

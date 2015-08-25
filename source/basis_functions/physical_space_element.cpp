@@ -173,7 +173,7 @@ void
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 move_to(const Index flat_index)
 {
-    this->as_cartesian_grid_element_accessor().move_to(flat_index);
+    this->get_grid_element().move_to(flat_index);
     ref_space_element_->move_to(flat_index);
     map_element_->move_to(flat_index);
 }

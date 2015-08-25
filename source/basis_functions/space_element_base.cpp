@@ -47,23 +47,23 @@ SpaceElementBase(const self_t &elem,
     if (copy_policy == CopyPolicy::shallow)
         grid_elem_ = elem.grid_elem_;
     else if (copy_policy == CopyPolicy::deep)
-        grid_elem_ = std::make_shared<CartesianGridElement<dim>>(*elem.grid_elem_,copy_policy);
+        grid_elem_ = std::make_shared<GridElement<dim>>(*elem.grid_elem_,copy_policy);
     else
         AssertThrow(false,ExcInvalidState());
 }
 
 template <int dim>
-CartesianGridElement<dim> &
+GridElement<dim> &
 SpaceElementBase<dim>::
-as_cartesian_grid_element_accessor()
+get_grid_element()
 {
     return *grid_elem_;
 }
 
 template <int dim>
-const CartesianGridElement<dim> &
+const GridElement<dim> &
 SpaceElementBase<dim>::
-as_cartesian_grid_element_accessor() const
+get_grid_element() const
 {
     return *grid_elem_;
 }
@@ -87,7 +87,7 @@ void
 SpaceElementBase<dim>::
 print_cache_info(LogStream &out) const
 {
-    out.begin_item("CartesianGridElement<" + std::to_string(dim) + "> cache:");
+    out.begin_item("GridElement<" + std::to_string(dim) + "> cache:");
     grid_elem_->print_cache_info(out);
     out.end_item();
 }
@@ -103,7 +103,7 @@ copy_from(const SpaceElementBase<dim> &elem,
         if (copy_policy == CopyPolicy::shallow)
             grid_elem_ = elem.grid_elem_;
         else if (copy_policy == CopyPolicy::deep)
-            grid_elem_ = std::make_shared<CartesianGridElement<dim>>(*elem.grid_elem_,copy_policy);
+            grid_elem_ = std::make_shared<GridElement<dim>>(*elem.grid_elem_,copy_policy);
         else
             AssertThrow(false,ExcInvalidState());
 

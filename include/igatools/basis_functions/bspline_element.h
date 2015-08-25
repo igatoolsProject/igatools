@@ -49,7 +49,7 @@ private:
 
 public:
     /** Type for the grid accessor. */
-    using GridAccessor = CartesianGridElement<dim>;
+    using GridAccessor = GridElement<dim>;
 
     /** Type required by the CartesianGridIterator templated iterator */
     using ContainerType = const BSplineSpace<dim, range, rank> ;

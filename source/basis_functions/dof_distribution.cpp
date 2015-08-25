@@ -150,7 +150,10 @@ add_dofs_offset(const Index offset)
         for (auto &dof : index_table_comp.get_flat_view())
             dof += offset;
 
-    properties_dofs_.add_offset(offset);
+
+    for (auto &property_dofs : properties_dofs_)
+        for (auto &dof : property_dofs.second)
+            const_cast<Index &>(dof) += offset;
 }
 
 
@@ -299,7 +302,7 @@ Size
 DofDistribution<dim, range, rank>::
 get_num_dofs(const std::string &property) const
 {
-    return properties_dofs_.get_ids_same_property(property).size();
+    return properties_dofs_[property].size();
 }
 
 
@@ -310,7 +313,7 @@ std::set<Index> &
 DofDistribution<dim, range, rank>::
 get_dofs_id_same_property(const std::string &property)
 {
-    return properties_dofs_.get_ids_same_property(property);
+    return properties_dofs_[property];
 }
 
 
@@ -320,7 +323,7 @@ const std::set<Index> &
 DofDistribution<dim, range, rank>::
 get_dofs_id_same_property(const std::string &property) const
 {
-    return properties_dofs_.get_ids_same_property(property);
+    return properties_dofs_[property];
 }
 
 
@@ -329,7 +332,11 @@ void
 DofDistribution<dim, range, rank>::
 set_dof_property_status(const std::string &property, const Index dof_id, const bool status)
 {
-    properties_dofs_.set_id_property_status(property,dof_id,status);
+    if (status)
+        properties_dofs_[property].insert(dof_id);
+    else
+        properties_dofs_[property].erase(dof_id);
+
 }
 
 
@@ -341,7 +348,10 @@ set_dof_property_status(const std::string &property,
                         const std::set<Index> ids,
                         const bool status)
 {
-    properties_dofs_.set_ids_property_status(property,ids,status);
+    if (status)
+        properties_dofs_[property].insert(ids.begin(),ids.end());
+    else
+        properties_dofs_[property].erase(ids.begin(),ids.end());
 }
 
 
@@ -352,10 +362,13 @@ DofDistribution<dim, range, rank>::
 set_all_dofs_property_status(const std::string &property, const bool status)
 {
     const auto dofs_view = this->get_dofs_const_view();
-    properties_dofs_.set_ids_property_status(
-        property,
-        std::set<Index>(dofs_view.cbegin(),dofs_view.cend()),
-        status);
+    if (status)
+        properties_dofs_[property].insert(dofs_view.cbegin(),dofs_view.cend());
+    else
+    {
+        for (const auto &dof : dofs_view)
+            properties_dofs_[property].erase(dof);
+    }
 }
 
 
@@ -398,7 +411,7 @@ get_interior_dofs() const -> std::set<Index>
             last[j] = num_dofs_table_[comp][j]-1;
         }
 
-        auto tensor_ind = tensor_range(first, last);
+        auto tensor_ind = el_tensor_range<dim>(first, last);
         const auto &elem_global_indices = index_table_[comp];
 
         for (auto &tensor_index : tensor_ind)

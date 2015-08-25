@@ -280,7 +280,7 @@ private:
                     first[dir] = fixed_id;
                     last[dir] = fixed_id + 1;
                 }
-                auto tensor_ind = tensor_range(first, last);
+                auto tensor_ind = el_tensor_range(first, last);
 
 
                 const auto &elem_global_indices = index_table_[comp];
@@ -384,7 +384,7 @@ private:
      *
      * The property name is the key of the std::map.
      */
-    PropertiesIdContainer properties_dofs_;
+    PropertiesIdContainer<Index> properties_dofs_;
 
 #ifdef SERIALIZATION
     /**

@@ -115,7 +115,7 @@ public:
     {
         Assert(j==0, ExcNotImplemented());
         using ElementIt = typename CartesianGrid<sub_dim>::ElementIterator;
-        ElementIt el_it(elem.get_grid(),elem.get_flat_index(),ElementProperties::none);
+        ElementIt el_it(elem.get_grid(),elem.get_flat_index(),ElementProperties::active);
 
         sup_elem_->move_to(elem_map_.at(el_it->get_flat_index()));
 
@@ -277,7 +277,7 @@ public:
         Assert(j==0, ExcNotImplemented());
 //        typename CartesianGrid<sub_dim>::ElementIterator el_it(elem);
         using ElementIt = typename CartesianGrid<sub_dim>::ElementIterator;
-        ElementIt el_it(elem.get_grid()->create_element(elem.get_flat_index()),ElementProperties::none);
+        ElementIt el_it(elem.get_grid()->create_element(elem.get_flat_index()),ElementProperties::active);
 
         using SupElem = typename SupFunc::ElementAccessor;
         auto &sup_elem_non_const = const_cast<SupElem &>(*sup_elem_);

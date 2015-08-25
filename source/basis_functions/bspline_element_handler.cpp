@@ -428,7 +428,7 @@ BSplineElementHandler<dim_, range_, rank_>::
 InitCacheDispatcher::
 operator()(const Topology<sub_elem_dim> &sub_elem)
 {
-    grid_handler_.template init_cache<sub_elem_dim>(elem_.as_cartesian_grid_element_accessor());
+    grid_handler_.template init_cache<sub_elem_dim>(elem_.get_grid_element());
 
 
     auto &cache = elem_.get_all_sub_elems_cache();
@@ -651,7 +651,7 @@ BSplineElementHandler<dim_, range_, rank_>::
 FillCacheDispatcher::
 operator()(const Topology<sub_elem_dim> &sub_elem)
 {
-    grid_handler_.template fill_cache<sub_elem_dim>(elem_.as_cartesian_grid_element_accessor(),j_);
+    grid_handler_.template fill_cache<sub_elem_dim>(elem_.get_grid_element(),j_);
 
     const auto &g_cache = cacheutils::extract_sub_elements_data<sub_elem_dim>(splines1d_)[j_];
 

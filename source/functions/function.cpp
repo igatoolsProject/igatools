@@ -172,7 +172,7 @@ auto
 Function<dim_, codim_, range_, rank_ >::
 begin() const -> ElementIterator
 {
-    return ElementIterator(this->create_element(0),ElementProperties::none);
+    return ElementIterator(this->create_element(0),ElementProperties::active);
 }
 
 template<int dim_, int codim_, int range_, int rank_>
@@ -180,7 +180,7 @@ auto
 Function<dim_, codim_, range_, rank_ >::
 end() const -> ElementIterator
 {
-    return ElementIterator(this->create_element(IteratorState::pass_the_end),ElementProperties::none);
+    return ElementIterator(this->create_element(IteratorState::pass_the_end),ElementProperties::active);
 }
 
 template<int dim_, int codim_, int range_, int rank_>

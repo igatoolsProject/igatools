@@ -31,7 +31,7 @@ FormulaFunction<dim, codim, range, rank>::
 FormulaFunction(std::shared_ptr<GridType> grid, std::shared_ptr<PhysDomain> map)
     :
     parent_t::Function(grid),
-    mapping_(PhysDom::create(map)),
+    mapping_(PhysDomain::create(map)),
     map_elem_(mapping_->begin())
 {}
 

@@ -368,7 +368,7 @@ private:
         ar &boost::serialization::make_nvp("ref_space_element_",ref_space_element_);
 
 
-        ar &boost::serialization::make_nvp("map_element_",push_fwd_element_);
+        ar &boost::serialization::make_nvp("map_element_",map_element_);
     }
     ///@}
 #endif

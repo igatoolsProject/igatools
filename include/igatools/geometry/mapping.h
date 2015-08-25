@@ -20,7 +20,7 @@
 
 #ifndef NEW_MAPPING_H_
 #define NEW_MAPPING_H_
-#if 0
+
 #include <igatools/base/config.h>
 #include <igatools/functions/function.h>
 
@@ -29,6 +29,8 @@ IGA_NAMESPACE_OPEN
 
 template<int dim, int codim>
 using MapFunction_new = Function<dim, 0, dim + codim, 1>;
+
+#if 0
 
 //Forward declaration to avoid including header file.
 template <int, int> class MappingElement;
@@ -171,7 +173,8 @@ private:
 
 };
 
+#endif
+
 IGA_NAMESPACE_CLOSE
 
-#endif
 #endif

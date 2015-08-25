@@ -152,7 +152,7 @@ NURBSElementHandler<dim_, range_, rank_>::
 InitCacheDispatcher::
 operator()(const Topology<sub_elem_dim> &sub_elem)
 {
-    grid_handler_.template init_cache<sub_elem_dim>(elem_.as_cartesian_grid_element_accessor());
+    grid_handler_.template init_cache<sub_elem_dim>(elem_.get_grid_element());
 
     auto &cache = elem_.get_all_sub_elems_cache();
     if (cache == nullptr)
@@ -208,7 +208,7 @@ FillCacheDispatcher::
 operator()(const Topology<sub_elem_dim> &sub_elem)
 {
     grid_handler_.template fill_cache<sub_elem_dim>(
-        nrb_elem_.as_cartesian_grid_element_accessor(),sub_elem_id_);
+        nrb_elem_.get_grid_element(),sub_elem_id_);
 
     Assert(nrb_elem_.all_sub_elems_cache_ != nullptr, ExcNullPtr());
     auto &sub_elem_cache = nrb_elem_.all_sub_elems_cache_->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id_);
