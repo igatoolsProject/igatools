@@ -37,22 +37,18 @@ void get_subgrid(const TensorSize<dim> &n_knots)
     using Grid =  CartesianGrid<dim>;
     auto grid = Grid::const_create(n_knots);
     out.begin_item("Grid:");
-    //grid->print_info(out);
-    out << "help";
+    grid->print_info(out);
     out.end_item();
-    out << "help" << endl;
 
-//    for (auto &i : UnitElement<dim>::template elems_ids<sdim>())
-//    {
-//    	typename CartesianGrid<dim>::template SubGridMap<sdim> map;
-//    	out.begin_item("Sub element: " + to_string(i));
-//        auto sub_grid = grid->template get_sub_grid<sdim>(i, map);
-//        sub_grid->print_info(out);
-//        map.print_info(out);
-//        out.pop();
-//        out.end_item();
-//    }
-//    out << endl;
+    for (auto &i : UnitElement<dim>::template elems_ids<sdim>())
+    {
+    	typename CartesianGrid<dim>::template SubGridMap<sdim> map;
+    	out.begin_item("Sub element: " + to_string(i));
+        auto sub_grid = grid->template get_sub_grid<sdim>(i, map);
+        sub_grid->print_info(out);
+        map.print_info(out);
+        out.end_item();
+    }
 
     OUTEND
 }
