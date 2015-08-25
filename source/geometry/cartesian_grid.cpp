@@ -640,17 +640,45 @@ insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert)
     // inserts the knots into the current grid --- end
     //----------------------------------------------------------------------------------
 
-
-
+//Assert(false,ExcNotImplemented());
     //----------------------------------------------------------------------------------
     // transferring the element properties from the old grid to the new grid --- begin
-    const auto fine_to_coarse_grid = grid_tools::build_map_elements_id_between_cartesian_grids(
-                                         *this,*grid_pre_refinement_);
 
+    elem_properties_[ElementProperties::active] =
+        el_tensor_range<dim>(TensorIndex<dim>(), get_num_intervals());
 
-    for (auto &elem_properties : elem_properties_)
-        elem_properties.second.clear();
+    const auto fine_to_coarse_elems_id = grid_tools::build_map_elements_id_between_cartesian_grids(
+                                             *this,*grid_pre_refinement_);
 
+    std::map<IndexType,std::set<IndexType>> coarse_to_fine_elems_id;
+    for (const auto &fine_to_coarse_elem_id : fine_to_coarse_elems_id)
+    {
+        const auto &elem_id_fine   = fine_to_coarse_elem_id.first;
+        const auto &elem_id_coarse = fine_to_coarse_elem_id.second;
+        coarse_to_fine_elems_id[elem_id_coarse].insert(elem_id_fine);
+    }
+
+    for (auto &elems_property : elem_properties_)
+    {
+        const auto &property_name = elems_property.first;
+
+        if (property_name != ElementProperties::active)
+        {
+            auto &elems_id_fine_with_property = elems_property.second;
+            elems_id_fine_with_property.clear();
+
+            const auto &elems_id_coarse_with_property =
+                grid_pre_refinement_->get_element_property(property_name);
+
+            for (const auto &elem_id_coarse : elems_id_coarse_with_property)
+            {
+                const auto &elems_id_fine = coarse_to_fine_elems_id[elem_id_coarse];
+                elems_id_fine_with_property.insert(elems_id_fine.begin(),elems_id_fine.end());
+            }
+        }
+    }
+
+#if 0
     auto coarse_elem = grid_pre_refinement_->begin();
     for (const auto &fine_coarse_elem_id : fine_to_coarse_grid)
     {
@@ -667,7 +695,7 @@ insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert)
     }
     // transferring the element properties from the old grid to the new grid --- end
     //----------------------------------------------------------------------------------
-
+#endif
 
     //----------------------------------------------------------------------------------
     // refining the objects that's are attached to the CartesianGrid

@@ -136,9 +136,9 @@ private:
     ContainerType properties_id_;
 
     DeclException1(ExcPropNotDefined, PropId,
-                   << "Property " << arg1 << "is not present.");
+                   << "Property \"" << arg1 << "\" is not present.");
     DeclException1(ExcPropAlreadyDefined, PropId,
-                   << "Property " << arg1 << "is already present.");
+                   << "Property \"" << arg1 << "\" is already present.");
 
 #ifdef SERIALIZATION
     /**
