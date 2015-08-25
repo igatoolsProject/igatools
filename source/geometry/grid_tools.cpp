@@ -21,7 +21,6 @@
 #include <igatools/geometry/grid_tools.h>
 #include <set>
 
-#if 0
 
 
 using std::set;
@@ -31,7 +30,6 @@ IGA_NAMESPACE_OPEN
 
 namespace grid_tools
 {
-
 bool test_if_knots_fine_contains_knots_coarse(
     const SafeSTLVector<Real> &knots_fine,
     const SafeSTLVector<Real> &knots_coarse)
@@ -47,7 +45,6 @@ bool test_if_knots_fine_contains_knots_coarse(
     }
            );
 }
-
 
 template <int dim>
 SafeSTLArray<SafeSTLVector<Index>,dim>
@@ -88,7 +85,7 @@ build_map_intervals_id_between_cartesian_grids(const CartesianGrid<dim> &grid_fi
     return map_interv_id_fine_coarse;
 }
 
-
+#if 0
 template <int dim>
 SafeSTLArray<Index,dim>
 get_max_num_fine_intervals_in_coarse_interval(const CartesianGrid<dim> &grid_fine,
@@ -116,29 +113,27 @@ get_max_num_fine_intervals_in_coarse_interval(const CartesianGrid<dim> &grid_fin
 
     return max_num_fine_intervals_in_coarse_interval;
 }
+#endif
 
 
 template <int dim>
-std::map<Index,Index>
+InterGridMap<dim>
 build_map_elements_id_between_cartesian_grids(const CartesianGrid<dim> &grid_fine,
                                               const CartesianGrid<dim> &grid_coarse)
 {
     const auto map_interv_id_fine_coarse =
         build_map_intervals_id_between_cartesian_grids(grid_fine,grid_coarse);
 
-    std::map<Index,Index> res;
-    const int n_elems_fine = grid_fine.get_num_all_elems();
-    for (int elem_fine_fid = 0 ; elem_fine_fid < n_elems_fine ; ++elem_fine_fid)
+    InterGridMap<dim> res;
+    for (const auto &elem_fine : grid_fine)
     {
-        const auto elem_fine_tid = grid_fine.flat_to_tensor(elem_fine_fid);
+        const auto elem_fine_tid = elem_fine.get_index();
 
         TensorIndex<dim> elem_coarse_tid;
         for (int i = 0 ; i < dim ; ++i)
             elem_coarse_tid[i] = map_interv_id_fine_coarse[i][elem_fine_tid[i]];
 
-        const auto elem_coarse_fid = grid_coarse.tensor_to_flat(elem_coarse_tid);
-
-        res.emplace(elem_fine_fid, elem_coarse_fid);
+        res.emplace(elem_fine_tid, elem_coarse_tid);
     }
 
     return res;
@@ -175,13 +170,14 @@ build_map_elements_between_cartesian_grids(const CartesianGrid<dim> &grid_fine,
 }
 #endif
 
+
 template <int dim>
 std::shared_ptr<CartesianGrid<dim> >
 build_cartesian_grid_union(
     const CartesianGrid<dim> &grid_1,
     const CartesianGrid<dim> &grid_2,
-    InterGridMap &map_elem_id_grid_union_to_elem_id_grid_1,
-    InterGridMap &map_elem_id_grid_union_to_elem_id_grid_2)
+    InterGridMap<dim> &map_elem_id_grid_union_to_elem_id_grid_1,
+    InterGridMap<dim> &map_elem_id_grid_union_to_elem_id_grid_2)
 {
     //---------------------------------------------------------
     // checks that the grid are on the same domain
@@ -196,10 +192,7 @@ build_cartesian_grid_union(
     for (int i = 0 ; i < dim ; ++i)
     {
         const auto &coords_grid_1 = grid_1.get_knot_coordinates(i);
-        Assert(std::is_sorted(coords_grid_1.begin(),coords_grid_1.end()),ExcMessage("Vector not sorted."));
-
         const auto &coords_grid_2 = grid_2.get_knot_coordinates(i);
-        Assert(std::is_sorted(coords_grid_2.begin(),coords_grid_2.end()),ExcMessage("Vector not sorted."));
 
         auto &coords_grid_union = knots_union[i];
         coords_grid_union.resize(coords_grid_1.size() + coords_grid_2.size());
@@ -229,4 +222,4 @@ build_cartesian_grid_union(
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/grid_tools.inst>
-#endif
+

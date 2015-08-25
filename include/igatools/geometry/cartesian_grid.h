@@ -503,7 +503,6 @@ public:
      * then the point can have intersection with multiple elements, but the function
      * returns only the first element that owns the point.
      */
-
     std::map<IndexType, SafeSTLVector<int> >
     find_elements_id_of_points(const ValueVector<Points<dim_>> &points) const;
 

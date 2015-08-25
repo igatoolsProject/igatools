@@ -52,8 +52,8 @@ void do_test()
 
     out << endl;
 
-    grid_tools::InterGridMap map_elem_grid_union_to_elem_grid_1;
-    grid_tools::InterGridMap map_elem_grid_union_to_elem_grid_2;
+    grid_tools::InterGridMap<dim> map_elem_grid_union_to_elem_grid_1;
+    grid_tools::InterGridMap<dim> map_elem_grid_union_to_elem_grid_2;
     auto grid_union = grid_tools::build_cartesian_grid_union
                       (*grid_1, *grid_2,
                        map_elem_grid_union_to_elem_grid_1,map_elem_grid_union_to_elem_grid_2);

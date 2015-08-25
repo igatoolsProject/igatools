@@ -26,22 +26,18 @@ data = Instantiation(include_files)
 
 cartesian_grids = ['CartesianGrid<%d>' % (dim) for dim in inst.all_domain_dims]
 for grid in cartesian_grids:
-#    it = 'typename %s::ElementConstIterator' % (grid)
-    map = "std::map<Index,Index>"
-#    f.write('template %s' % (map) +
-#            ' grid_tools::build_map_elements_between_cartesian_grids('
-#           'const %s &,const %s &); \n' % (grid,grid))
+    map = 'std::map<typename %s::IndexType,typename %s::IndexType>' %(grid,grid)
     f.write('template std::shared_ptr<%s> grid_tools::build_cartesian_grid_union('
             'const %s &,const %s &,%s &,%s &); \n' % (grid,grid,grid, map,map))
     
-for dim in inst.all_domain_dims:
-    grid = 'CartesianGrid<%d>' % (dim)
-    f.write('template std::map<Index,Index>'+
-            ' grid_tools::build_map_elements_id_between_cartesian_grids('
-           'const %s &,const %s &); \n' % (grid,grid))
-    f.write('template SafeSTLArray<SafeSTLVector<Index>,%d>' % (dim)+
-            ' grid_tools::build_map_intervals_id_between_cartesian_grids('
-            'const %s &,const %s &); \n' % (grid,grid))
-    f.write('template SafeSTLArray<Index,%d>' % (dim)+
-            ' grid_tools::get_max_num_fine_intervals_in_coarse_interval('
-            'const %s &,const %s &); \n' % (grid,grid))
+#for dim in inst.all_domain_dims:
+#    grid = 'CartesianGrid<%d>' % (dim)
+#    f.write('template std::map<Index,Index>'+
+#            ' grid_tools::build_map_elements_id_between_cartesian_grids('
+#           'const %s &,const %s &); \n' % (grid,grid))
+#    f.write('template SafeSTLArray<SafeSTLVector<Index>,%d>' % (dim)+
+#            ' grid_tools::build_map_intervals_id_between_cartesian_grids('
+#            'const %s &,const %s &); \n' % (grid,grid))
+#    f.write('template SafeSTLArray<Index,%d>' % (dim)+
+#            ' grid_tools::get_max_num_fine_intervals_in_coarse_interval('
+#            'const %s &,const %s &); \n' % (grid,grid))

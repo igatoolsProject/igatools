@@ -22,7 +22,6 @@
 #define __GRID_TOOLS_H_
 
 #include <igatools/geometry/cartesian_grid.h>
-#if 0
 IGA_NAMESPACE_OPEN
 
 namespace grid_tools
@@ -35,8 +34,6 @@ namespace grid_tools
 bool test_if_knots_fine_contains_knots_coarse(
     const SafeSTLVector<Real> &knots_fine,
     const SafeSTLVector<Real> &knots_coarse);
-
-
 
 /**
  * Given one grid <tt>grid_coarse</tt> and a refinement <tt>grid_fine</tt>,
@@ -60,7 +57,7 @@ SafeSTLArray<SafeSTLVector<Index>,dim>
 build_map_intervals_id_between_cartesian_grids(const CartesianGrid<dim> &grid_fine,
                                                const CartesianGrid<dim> &grid_coarse);
 
-
+#if 0
 /**
  * This function returns the maximum numbers of intervals in the <tt>fine_grid</tt>
  * that are fully contained in an interval of the <tt>coarse_grid</tt>.
@@ -77,10 +74,19 @@ get_max_num_fine_intervals_in_coarse_interval(const CartesianGrid<dim> &grid_fin
                                               const CartesianGrid<dim> &grid_coarse);
 
 
-using InterGridMap = std::map<Index,Index>;
+#endif
 
 /**
- * Given one grid <tt>grid_coarse</tt> and a refinement <tt>grid_fine</tt>,
+ * Type alias for the container that associates element indices between two CartesianGrid.
+ *
+ * @relates CartesianGrid
+ */
+template<int dim>
+using InterGridMap = std::map<typename CartesianGrid<dim>::IndexType,typename CartesianGrid<dim>::IndexType>;
+
+
+/**
+ * Given one CartesianGrid <tt>grid_coarse</tt> and a refinement <tt>grid_fine</tt>,
  * this function builds and returns the one-to-one mapping between the elements on the
  * fine and the elements on the coarse.
  * @code{.cpp}
@@ -96,7 +102,7 @@ using InterGridMap = std::map<Index,Index>;
  * @relates CartesianGrid
  */
 template <int dim>
-InterGridMap
+InterGridMap<dim>
 build_map_elements_id_between_cartesian_grids(const CartesianGrid<dim> &grid_fine,
                                               const CartesianGrid<dim> &grid_coarse);
 
@@ -128,10 +134,13 @@ build_map_elements_between_cartesian_grids(const CartesianGrid<dim> &grid_fine,
                                            const CartesianGrid<dim> &grid_coarse);
 #endif
 
+
+
+
 /**
- * Given two grids <tt>grid_1</tt> and <tt>grid_2</tt> defined over the same domain,
+ * Given two CartesianGrid <tt>grid_1</tt> and <tt>grid_2</tt> defined over the same domain,
  * this function returns the grid that contains both. Moreover, this function gives back
- * the one-to-one mapping between the flat id of the elements in the CartesianGrid union with the
+ * the one-to-one mapping between the elements in the CartesianGrid union with the
  * elements in the two starting grids.
  *
  * @param[in] grid_1 First grid.
@@ -152,12 +161,11 @@ std::shared_ptr<CartesianGrid<dim> >
 build_cartesian_grid_union(
     const CartesianGrid<dim> &grid_1,
     const CartesianGrid<dim> &grid_2,
-    InterGridMap &map_elem_grid_union_to_elem_grid_1,
-    InterGridMap &map_elem_grid_union_to_elem_grid_2);
+    InterGridMap<dim> &map_elem_grid_union_to_elem_grid_1,
+    InterGridMap<dim> &map_elem_grid_union_to_elem_grid_2);
 
 }
 
 IGA_NAMESPACE_CLOSE
 
 #endif /* GRID_TOOLS_H_ */
-#endif
