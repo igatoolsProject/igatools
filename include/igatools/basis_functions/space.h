@@ -32,6 +32,8 @@
 
 IGA_NAMESPACE_OPEN
 
+template <int,int> class Mapping;
+
 template <int,int,int,int> class Function;
 template <int> class GridElement;
 template <int,int,int,int,Transformation> class SpaceElement;
@@ -61,12 +63,18 @@ private:
 
 
 public:
+
+    using IndexType = TensorIndex<dim_>;
+
+
+
     virtual void get_element_dofs(
-        const Index element_id,
+        const IndexType element_id,
         SafeSTLVector<Index> &dofs_global,
         SafeSTLVector<Index> &dofs_local_to_patch,
         SafeSTLVector<Index> &dofs_local_to_elem,
         const std::string &dofs_property = DofProperties::active) const = 0;
+
 
 
     /** @name Constructor and destructor. */
@@ -195,6 +203,10 @@ class Space
     public std::enable_shared_from_this<Space<dim_,codim_,range_,rank_,type_> >,
     public SpaceBase<dim_>
 {
+public:
+
+    using PhysDomain = Mapping<dim_,codim_>;
+
 private:
     using base_t = SpaceBase<dim_>;
     using self_t = Space<dim_,codim_,range_,rank_,type_>;
@@ -334,7 +346,7 @@ public:
      * Create and element (defined on this space) with a given flat_index
      */
     virtual std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_,type_> >
-    create_element(const Index flat_index) const = 0;
+    create_element(const ListIt &index, const PropId &property) const = 0;
 
 
     virtual std::shared_ptr< SpaceElementHandler<dim_,codim_,range_,rank_,type_> >
@@ -354,19 +366,14 @@ public:
      * Returns a element iterator to the first element of the patch
      * with the property @p element_property.
      */
-    ElementIterator begin(const std::string &element_property = ElementProperties::active) const;
+    ElementIterator begin(const PropId &element_property = ElementProperties::active);
 
-    /**
-     * Returns a element iterator to the last element of the patch
-     * with the property @p element_property.
-     */
-    ElementIterator last(const std::string &element_property = ElementProperties::active) const;
 
     /**
      * Returns a element iterator to one-pass the end of patch
      * with the property @p element_property.
      */
-    ElementIterator end(const std::string &element_property = ElementProperties::active) const;
+    ElementIterator end(const PropId &element_property = ElementProperties::active);
     ///@}
 
 
@@ -376,10 +383,17 @@ public:
 
 #endif
 
+    std::shared_ptr<const PhysDomain> get_physical_domain() const
+    {
+        return phys_domain_;
+    }
+
 
 private:
 
     SharedPtrConstnessHandler<MapFunc>  map_func_;
+
+    std::shared_ptr<const PhysDomain> phys_domain_;
 
 #ifdef SERIALIZATION
     /**

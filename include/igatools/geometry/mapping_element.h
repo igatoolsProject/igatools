@@ -20,7 +20,7 @@
 
 #ifndef MAPPING_ELEMENT_H_
 #define MAPPING_ELEMENT_H_
-#if 0
+
 #include <igatools/utils/safe_stl_array.h>
 #include <igatools/geometry/mapping.h>
 #include <igatools/functions/function_element.h>
@@ -36,7 +36,7 @@ class MappingElement
 {
 private:
     using self_t  = MappingElement<dim_,codim_>;
-    using Map = Mapping<dim_,codim_>;
+    using PhysDomain = Mapping<dim_,codim_>;
     using Func = MapFunction_new<dim_,codim_>;
 
     using Point = typename Func::Point;
@@ -46,10 +46,15 @@ private:
     using Div      = typename Func::Div;
 
 public:
-    using ContainerType = Map;
+    using ContainerType = PhysDomain;
     static const int dim = dim_;
     static const int codim = codim_;
     static const int space_dim = dim_+codim_;
+
+    using Grid = CartesianGrid<dim_>;
+    using IndexType = typename Grid::IndexType;
+    using List = typename Grid::List;
+    using ListIt = typename Grid::ListIt;
 
 
     /** @name Constructors */
@@ -65,8 +70,9 @@ public:
      * Construct an accessor pointing to the element with
      * flat index @p elem_index of the Function @p func.
      */
-    MappingElement(const std::shared_ptr<const Func> func,
-                   const Index elem_index);
+    MappingElement(const std::shared_ptr<const PhysDomain> phys_domain,
+                   const ListIt &index,
+                   const PropId &prop = ElementProperties::active);
 
     /**
      * Copy constructor.
@@ -90,11 +96,36 @@ public:
     ~MappingElement() = default;
     ///@}
 
+    /**
+     * @name Functions for performing different kind of copy.
+     */
+    ///@{
+    /**
+     * Performs a deep copy of the input @p element,
+     * i.e. a new local cache is built using the copy constructor on the local cache of @p element.
+     *
+     * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
+     */
+    void deep_copy_from(const self_t &element)
+    {
+        Assert(false,ExcNotImplemented());
+    }
+
+    /**
+     * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
+     * local cache used by the input @p element.
+     */
+    void shallow_copy_from(const self_t &element)
+    {
+        Assert(false,ExcNotImplemented());
+    }
+    ///@}
+
     template<int order>
-    using InvDerivative = typename Map::template InvDerivative<order>;
+    using InvDerivative = typename PhysDomain::template InvDerivative<order>;
 
     template <int order>
-    using Derivative = typename Map::template Derivative<order>;
+    using Derivative = typename PhysDomain::template Derivative<order>;
 
     template <class ValueType, int topology_dim = dim>
     auto &get_values_from_cache(const int topology_id = 0) const
@@ -193,6 +224,7 @@ public:
     bool operator>(const self_t &a) const;
     ///@}
 
+#if 0
     /**
      * Sets the index of the element using the flatten representation.
      * @note This function also updates the index for the tensor representation.
@@ -201,16 +233,16 @@ public:
      * are doing.
      */
     void move_to(const Index flat_index) ;
+#endif
 
 
-    /** @name Functions related to the indices of the element in the cartesian grid. */
-    ///@{
-    /** Returns the index of the element in its flatten representation. */
-    Index get_flat_index() const;
+    typename List::iterator &operator++()
+    {
+        return (++(*func_elem_));
+    }
 
-    /** Returns the index of the element in its tensor representation. */
-    TensorIndex<dim> get_tensor_index() const;
-    ///@}
+    /** Returns the index of the element. */
+    IndexType get_index() const;
 
     /** Return the cartesian grid from which the element belongs.*/
     std::shared_ptr<const CartesianGrid<dim> > get_grid() const;
@@ -650,5 +682,4 @@ static void evaluate_inverse_hessian(const HessianMap &D2F,
                                      Derivatives<space_dim,dim,1,2> &D2F_inv);
 };
 
-#endif
 #endif

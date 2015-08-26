@@ -644,14 +644,13 @@ private:
      */
     Index object_id_;
 
-private:
+public:
     /**
-     * Create an element (defined on this grid) with a given flat_index.
+     * Create an element (defined on this grid) with a given index and the given property
      */
     std::shared_ptr<ConstElementAccessor>
-    create_element(const ListIt &index, const PropId &prop) const;
+    create_element(const ListIt &index, const PropId &property) const;
 
-public:
     /**
      * Returns the unique identifier associated to each object instance.
      */

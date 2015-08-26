@@ -382,12 +382,12 @@ get_this_space() const -> shared_ptr<const self_t>
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-create_element(const Index flat_index) const
+create_element(const ListIt &index, const PropId &property) const
 -> std::shared_ptr<SpaceElement<dim_,0,range_,rank_,Transformation::h_grad> >
 {
     using Elem = BSplineElement<dim_,range_,rank_>;
 
-    auto elem = make_shared<Elem>(this->get_this_space(),flat_index);
+    auto elem = make_shared<Elem>(this->get_this_space(),index,property);
     Assert(elem != nullptr, ExcNullPtr());
 
     return elem;
@@ -405,7 +405,7 @@ get_ref_sub_space(const int s_id,
 {
     if (!(sub_grid))
     {
-        InterGridMap elem_map;
+        SubGridMap<k> elem_map;
         sub_grid   = this->get_ptr_const_grid()->template get_sub_grid<k>(s_id, elem_map);
     }
     auto sub_mult   = this->space_data_->template get_sub_space_mult<k>(s_id);
@@ -479,7 +479,7 @@ auto
 BSplineSpace<dim_, range_, rank_>::
 get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
               std::shared_ptr<CartesianGrid<k>> sub_grid,
-              InterGridMap &elem_map) const
+              SubGridMap<k> &elem_map) const
 -> std::shared_ptr<SubSpace<k> >
 {
     using SubMap = SubMapFunction<k, dim, space_dim>;
@@ -503,7 +503,7 @@ template<int dim_, int range_, int rank_>
 void
 BSplineSpace<dim_, range_, rank_>::
 get_element_dofs(
-    const Index element_id,
+    const IndexType elem_tensor_id,
     SafeSTLVector<Index> &dofs_global,
     SafeSTLVector<Index> &dofs_local_to_patch,
     SafeSTLVector<Index> &dofs_local_to_elem,
@@ -519,7 +519,7 @@ get_element_dofs(
     dofs_local_to_patch.clear();
     dofs_local_to_elem.clear();
 
-    const auto &elem_tensor_id = this->get_ptr_const_grid()->flat_to_tensor(element_id);
+//    const auto &elem_tensor_id = this->get_ptr_const_grid()->flat_to_tensor(element_id);
 
     Index dof_loc_to_elem = 0;
     for (const auto comp : SpaceData::components)

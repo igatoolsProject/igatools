@@ -84,9 +84,10 @@ public:
 
     std::shared_ptr<parent_t> clone() const override final;
 
-
+#if 0
     void fill_cache(FuncElem &elem, const topology_variant &k,
                     const int j) const override final;
+#endif
 
     virtual void print_info(LogStream &out) const override final;
 
@@ -98,6 +99,7 @@ private:
      */
     IdentityFunction() = default;
 
+#if 0
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
         FillCacheDispatcher(const int sub_elem_id,const self_t &function,FuncElem &elem)
@@ -165,7 +167,7 @@ private:
     };
 
     friend struct FillCacheDispatcher;
-
+#endif
 
 #ifdef MESH_REFINEMENT
 

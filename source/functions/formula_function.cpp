@@ -21,6 +21,7 @@
 #include <igatools/functions/formula_function.h>
 #include <igatools/functions/function_element.h>
 #include <igatools/geometry/physical_domain_element.h>
+#include <igatools/geometry/mapping.h>
 
 using std::shared_ptr;
 
@@ -31,8 +32,9 @@ FormulaFunction<dim, codim, range, rank>::
 FormulaFunction(std::shared_ptr<GridType> grid, std::shared_ptr<PhysDomain> map)
     :
     parent_t::Function(grid),
-    mapping_(PhysDomain::create(map)),
-    map_elem_(mapping_->begin())
+    mapping_(map)
+//,
+//    map_elem_(mapping_->begin())
 {}
 
 
@@ -42,12 +44,13 @@ FormulaFunction<dim, codim, range, rank>::
 FormulaFunction(const self_t &func)
     :
     parent_t::Function(func),
-    mapping_(func.mapping_),
-    map_elem_(func.mapping_->begin())
+    mapping_(func.mapping_)
+//,
+//    map_elem_(func.mapping_->begin())
 {}
 
 
-
+#if 0
 template<int dim, int codim, int range, int rank>
 void
 FormulaFunction<dim, codim, range, rank>::
@@ -86,6 +89,7 @@ fill_cache(ElementAccessor &elem, const topology_variant &k, const int sub_elem_
     auto fill_cache_dispatcher = FillCacheDispatcher(sub_elem_id,*this,elem);
     boost::apply_visitor(fill_cache_dispatcher, k);
 }
+#endif
 
 IGA_NAMESPACE_CLOSE
 

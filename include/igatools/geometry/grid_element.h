@@ -161,10 +161,9 @@ public:
 
     const IndexType &get_index() const;
 
-private:
     /** Return the cartesian grid from which the element belongs.*/
     const std::shared_ptr<const ContainerType> get_grid() const;
-public:
+
     /**
      * @name Functions for managing/querying the element properties.
      */
@@ -280,12 +279,15 @@ public:
     template <int sdim>
     Real get_measure(const int s_id) const;
 
+
     /**
      * Returns the quadrature weights corresponding to the <tt>sdim</tt>
      * dimensional s_id-th sub-element.
      */
     template <int sdim>
     ValueVector<Real> get_weights(const int s_id) const;
+
+
 
     /**
      * Returns the quadrature points corresponding to the <tt>sdim</tt>

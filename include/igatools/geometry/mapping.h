@@ -30,7 +30,6 @@ IGA_NAMESPACE_OPEN
 template<int dim, int codim>
 using MapFunction_new = Function<dim, 0, dim + codim, 1>;
 
-#if 0
 
 //Forward declaration to avoid including header file.
 template <int, int> class MappingElement;
@@ -64,7 +63,14 @@ private:
 public:
     using FuncType = MapFunction_new<dim_, codim_>;
     using ElementAccessor = MappingElement<dim_, codim_>;
-    using ElementIterator = CartesianGridIterator<ElementAccessor>;
+    using ElementIterator = GridIterator<ElementAccessor>;
+
+
+    using IndexType = TensorIndex<dim_>;
+    using PropertyList = PropertiesIdContainer<IndexType>;
+    using List = typename PropertyList::List;
+    using ListIt = typename PropertyList::List::iterator;
+
 
     static const int dim = dim_;
     static const int space_dim = dim_ + codim_;
@@ -112,6 +118,7 @@ public:
     static std::shared_ptr<self_t> create(std::shared_ptr<const FuncType> F);
 
 public:
+#if 0
     template<int k>
     void reset(const ValueFlags flag, const Quadrature<k> &eval_pts);
 
@@ -132,17 +139,17 @@ public:
     {
         fill_cache<k>(*elem, j);
     }
-
+#endif
 
     std::shared_ptr<const CartesianGrid<dim_> > get_grid() const;
 
     std::shared_ptr<const FuncType> get_function() const;
 
-    std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const;
+    std::shared_ptr<ElementAccessor> create_element(const ListIt &index, const PropId &property) const;
 
-    ElementIterator begin() const;
+    ElementIterator begin(const PropId &prop = ElementProperties::active);
 
-    ElementIterator end();
+    ElementIterator end(const PropId &prop = ElementProperties::active);
 
 
 private:
@@ -173,8 +180,8 @@ private:
 
 };
 
-#endif
 
 IGA_NAMESPACE_CLOSE
 
 #endif
+

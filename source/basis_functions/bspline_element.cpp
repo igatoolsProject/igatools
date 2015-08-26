@@ -275,9 +275,10 @@ private:
 template <int dim, int range, int rank>
 BSplineElement<dim, range, rank>::
 BSplineElement(const std::shared_ptr<ContainerType> space,
-               const Index index)
+               const ListIt &index,
+               const PropId &prop)
     :
-    parent_t(space,index)
+    parent_t(space,index,prop)
 {}
 
 

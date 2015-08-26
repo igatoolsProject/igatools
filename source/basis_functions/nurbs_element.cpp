@@ -31,11 +31,12 @@ IGA_NAMESPACE_OPEN
 template <int dim, int range, int rank>
 NURBSElement<dim, range, rank>::
 NURBSElement(const std::shared_ptr<ContainerType> space,
-             const Index index)
+             const ListIt &index,
+             const PropId &prop)
     :
-    parent_t(space,index),
-    bspline_elem_(space->get_spline_space(),index),
-    weight_elem_(space->weight_func_,index)
+    parent_t(space,index,prop),
+    bspline_elem_(space->get_spline_space(),index,prop),
+    weight_elem_(space->weight_func_,index,prop)
 {
 //    weight_elem_ =
 //        std::shared_ptr<WeightElem>(new WeightElem(space->weight_func_,index));
@@ -83,6 +84,7 @@ jump(const TensorIndex<dim> &increment)
 }
 #endif
 
+#if 0
 template <int dim, int range, int rank>
 void
 NURBSElement<dim, range, rank>::
@@ -93,7 +95,7 @@ move_to(const Index flat_index)
 
     weight_elem_.move_to(flat_index);
 }
-
+#endif
 
 template <int dim, int range, int rank>
 auto

@@ -30,15 +30,14 @@ IGA_NAMESPACE_OPEN
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
-                     const Index index)
+                     const ListIt &index,
+                     const PropId &prop)
     :
-    parent_t(phys_space,index),
+    parent_t(phys_space,index,prop),
     ref_space_element_(
-       std::dynamic_pointer_cast<RefElemAccessor>(phys_space->get_reference_space()->create_element(index))
+       std::dynamic_pointer_cast<RefElemAccessor>(phys_space->get_reference_space()->create_element(index,prop))
     ),
-    map_element_(make_shared<MapElem>(
-                    std::const_pointer_cast<MapFunction_new<dim_,codim_>>(
-                        phys_space->get_ptr_const_map_func()), index))
+    map_element_(make_shared<MapElem>(phys_space->get_physical_domain(), index, prop))
 //                            ,
 //    push_fwd_element_(make_shared<PfElemAccessor>(
 //                          std::const_pointer_cast<MapFunction<dim_,dim_+codim_>>(
@@ -151,23 +150,16 @@ get_element_w_measures() const -> ValueVector<Real>
     return this->template get_w_measures<dim>(0);
 }
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
-Index
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
-get_flat_index() const
-{
-    return parent_t::get_flat_index();
-}
 
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
 auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
-get_tensor_index() const -> TensorIndex<dim>
+get_index() const -> IndexType
 {
-    return parent_t::get_tensor_index();
+    return parent_t::get_index();
 }
 
-
+#if 0
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
 void
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
@@ -177,7 +169,7 @@ move_to(const Index flat_index)
     ref_space_element_->move_to(flat_index);
     map_element_->move_to(flat_index);
 }
-
+#endif
 
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
 Size

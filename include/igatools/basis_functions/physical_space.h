@@ -67,7 +67,7 @@ public:
      *
      * @see Space
      */
-    using PushForwardElem = PushForward<type_, dim_, codim_>;
+    using PushFwd = PushForward<type_, dim_, codim_>;
 
     using Map = Mapping<dim_, codim_>;
 
@@ -83,7 +83,7 @@ public:
 
     static const int space_dim = dim+codim;
 
-    static const int range = PushForwardElem::template PhysRange<range_>::value;
+    static const int range = PushFwd::template PhysRange<range_>::value;
 
     static const int rank = rank_;
 
@@ -95,6 +95,11 @@ public:
 
     static const SafeSTLArray<int, n_components> components;
 
+
+    using IndexType = TensorIndex<dim_>;
+    using PropertyList = PropertiesIdContainer<IndexType>;
+    using List = typename PropertyList::List;
+    using ListIt = typename PropertyList::List::iterator;
 
 public:
     using Func = Function<dim, codim, range, rank>;
@@ -136,10 +141,10 @@ public:
            const std::shared_ptr<MapFunc> &map_func);
 
     /**
-     * Create an element (defined on this grid) with a given flat_index.
+     * Create an element (defined on this grid) with a given index.
      */
     std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_,type_> >
-    create_element(const Index flat_index) const override final;
+    create_element(const ListIt &index, const PropId &property) const override final;
 
 
     /** Returns the container with the global dof distribution (const version). */
@@ -155,24 +160,26 @@ public:
     template <int k>
     using SubSpace = PhysicalSpace<k, range, rank, codim + dim-k, type_>;
 
-//    template <int k>
-//    using InterGridMap = typename RefSpace::GridType::template InterGridMap<k>;
+    template <int sdim>
+    using SubGridMap = typename RefSpace::GridType::template SubGridMap<sdim>;
 
-    using InterGridMap = std::map<Index,Index>;
+//    using InterGridMap = std::map<Index,Index>;
 
     template <int k>
     using InterSpaceMap = typename RefSpace::template InterSpaceMap<k>;
+
+
 
     template<int k>
     std::shared_ptr<SubSpace<k> >
     get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
                   std::shared_ptr<CartesianGrid<k>> sub_grid,
-                  InterGridMap &elem_map) const;
+                  SubGridMap<k> &elem_map) const;
 
 
 
     void get_element_dofs(
-        const Index element_id,
+        const IndexType element_id,
         SafeSTLVector<Index> &dofs_global,
         SafeSTLVector<Index> &dofs_local_to_patch,
         SafeSTLVector<Index> &dofs_local_to_elem,

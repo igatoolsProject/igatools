@@ -69,6 +69,12 @@ public:
     /** Type required for the generic algorithm on the spaces (plots??) */
     using Space = NURBSSpace<dim, range, rank> ;
 
+
+    using Grid = CartesianGrid<dim>;
+    using IndexType = typename Grid::IndexType;
+    using List = typename Grid::List;
+    using ListIt = typename Grid::ListIt;
+
     /** @name Constructors */
     ///@{
 protected:
@@ -85,7 +91,8 @@ public:
      * BsplineSpace space.
      */
     NURBSElement(const std::shared_ptr<ContainerType> space,
-                 const Index elem_index);
+                 const ListIt &index,
+                 const PropId &prop = ElementProperties::active);
 
 
     /**
@@ -124,6 +131,7 @@ public:
     self_t &operator=(self_t &&elem) = default;
     ///@}
 
+#if 0
     /** @name Functions/operators for moving the element in the NURBSSpace.*/
     ///@{
     /**
@@ -135,7 +143,7 @@ public:
      */
     virtual void move_to(const Index flat_index) override final;
     ///@}
-
+#endif
 
     /**
      * Returns the NURBSSpace in which the NURBSElement is defined.

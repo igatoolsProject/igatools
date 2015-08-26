@@ -89,10 +89,12 @@ for space in inst.SubPhysSpaces + inst.PhysSpaces:
 
 
 #---------------------------------------------------
+iters =  ['GridIteratorBase' , 'GridIterator']
+
 for elem in unique(elements):
     f.write('template class %s ;\n' %elem)
-    for it in inst.iterators:
-        iterator = it.replace('Accessor','%s' % (elem) )
+    for it in iters:
+        iterator = '%s<%s>' % (it,elem)
         f.write('template class %s; \n' %iterator)
 
 for func in unique(templated_funcs):

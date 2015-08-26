@@ -56,18 +56,23 @@ public :
 
     using Space = PhysSpace;
     using RefSpace = typename PhysSpace::RefSpace;
-    using PfElemAccessor = typename PhysSpace::PushForwardElem;
+    using PushFwd = typename PhysSpace::PushFwd;
 //    using RefElemAccessor = SpaceElement<RefSpace::dim,0,RefSpace::range,RefSpace::rank,Transformation::h_grad>;
     using RefElemAccessor = ReferenceElement<RefSpace::dim,RefSpace::range,RefSpace::rank>;
 
     using MapElem = MappingElement<dim_, codim_>;
 
-    static const auto dim = PfElemAccessor::dim;
-    static const auto space_dim = PfElemAccessor::space_dim;
-    static const auto codim = PfElemAccessor::codim;
-    static const auto type = PfElemAccessor::type;
+    static const auto dim = PushFwd::dim;
+    static const auto space_dim = PushFwd::space_dim;
+    static const auto codim = PushFwd::codim;
+    static const auto type = PushFwd::type;
 
     using PhysPoint = typename Space::Point;
+
+    using Grid = CartesianGrid<dim>;
+    using IndexType = typename Grid::IndexType;
+    using List = typename Grid::List;
+    using ListIt = typename Grid::ListIt;
 
 
     /**
@@ -83,7 +88,8 @@ public:
     PhysicalSpaceElement() = default;
 
     PhysicalSpaceElement(const std::shared_ptr<ContainerType> space,
-                         const Index index);
+                         const ListIt &index,
+                         const PropId &prop = ElementProperties::active);
 
 
     /**
@@ -261,16 +267,8 @@ public:
 
 
 
-    /**
-     * @name Functions related to get the indices of the element.
-     */
-    ///@{
-    /** Returns the index of the element in its flatten representation. */
-    Index get_flat_index() const;
-
-    /** Returns the index of the element in its tensor representation. */
-    TensorIndex<dim> get_tensor_index() const;
-    ///@}
+    /** Returns the index of the element. */
+    IndexType get_index() const;
 
 
     /** Return the cartesian grid from which the element belongs.*/
@@ -287,6 +285,8 @@ public:
     ValueFlags get_face_flags(const ValueFlags fill_flag) const ;
 
 #endif
+
+#if 0
     /** @name Functions/operators for moving the element in the CartesianGrid.*/
     ///@{
     /**
@@ -298,6 +298,7 @@ public:
      */
     void move_to(const Index flat_index) override final;
     ///@}
+#endif
 
 protected:
 

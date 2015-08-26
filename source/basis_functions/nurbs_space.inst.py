@@ -47,7 +47,7 @@ sub_dim_members = \
   'std::shared_ptr<typename class::template SubSpace<k>> ' + 
   'class::get_sub_space<k>(const int sub_elem_id, ' + 
   'InterSpaceMap<k> &dof_map, std::shared_ptr<CartesianGrid<k>> sub_grid,' + 
-  'InterGridMap &elem_map) const;']
+  'SubGridMap<k> &elem_map) const;']
 
 
 spaces = ['NURBSSpace<0,0,1>']

@@ -28,6 +28,8 @@
 
 IGA_NAMESPACE_OPEN
 
+
+
 /**
  *
  * @author pauletti 2014
@@ -51,8 +53,9 @@ public:
     using typename base_t::ElementAccessor;
 
     using SuperGrid = typename SupFunc::GridType;
+
 //    template <int j>
-//    using InterGridMap = typename SuperGrid::template InterGridMap<j>;
+//    using SubGridMap = typename SuperGrid::template SubGridMap<j>;
 
     using InterGridMap = std::map<Index,Index>;
 
@@ -96,6 +99,7 @@ public:
         return std::make_shared<self_t>(*this);
     }
 
+#if 0
     void reset(const ValueFlags &flag, const eval_pts_variant &eval_pts) override
     {
         base_t::reset(flag, eval_pts);
@@ -157,6 +161,7 @@ public:
         cache.set_filled(true);
 
     }
+#endif
 
 private:
     std::shared_ptr<SupFunc> sup_func_;
@@ -169,15 +174,16 @@ private:
 
 
 
+
 template<int sub_dim, int dim, int space_dim>
 class SubMapFunction :
-    public MapFunction_new<sub_dim, space_dim-sub_dim>
+    public Function<sub_dim, 0, space_dim, 1>
 {
 private:
     using self_t = SubMapFunction<sub_dim, dim, space_dim>;
 public:
-    using base_t  = MapFunction_new<sub_dim, space_dim-sub_dim>;
-    using SupFunc = MapFunction_new<dim, space_dim-dim>;
+    using base_t  = Function<sub_dim, 0, space_dim, 1>;
+    using SupFunc = Function<dim, 0, space_dim, 1>;
 
     using typename base_t::GridType;
 
@@ -187,8 +193,8 @@ public:
 
     using SuperGrid = typename SupFunc::GridType;
 //    template <int j>
-//    using InterGridMap = typename SuperGrid::template InterGridMap<j>;
-    using InterGridMap = std::map<Index,Index>;
+    using InterGridMap = typename SuperGrid::template SubGridMap<sub_dim>;
+//    using InterGridMap = std::map<Index,Index>;
 
 public:
 
@@ -254,6 +260,7 @@ public:
         return std::make_shared<self_t>(grid, func, s_id, elem_map);
     }
 
+#if 0
     void reset(const ValueFlags &flag, const eval_pts_variant &eval_pts) override
     {
         base_t::reset(flag, eval_pts);
@@ -323,6 +330,7 @@ public:
         cache.set_filled(true);
 
     }
+#endif
 
 private:
     std::shared_ptr<SupFunc> sup_func_;

@@ -28,6 +28,9 @@
 
 IGA_NAMESPACE_OPEN
 
+
+template <int,int> class Mapping;
+
 /**
  *
  */
@@ -60,11 +63,13 @@ public:
 
     virtual ~FormulaFunction() = default;
 
+#if 0
     void reset(const ValueFlags &flag, const eval_pts_variant &quad) override final;
 
     void init_cache(ElementAccessor &elem, const topology_variant &k) const override final;
 
     void fill_cache(ElementAccessor &elem, const topology_variant &k, const int sub_elem_id) const override final;
+#endif
 
 private:
 
@@ -80,8 +85,9 @@ private:
 private:
     std::shared_ptr<PhysDomain> mapping_;
 
-    typename PhysDomain::ElementIterator map_elem_;
+//    typename PhysDomain::ElementIterator map_elem_;
 
+#if 0
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
         FillCacheDispatcher(const int sub_elem_id,const self_t &function,ElementAccessor &elem)
@@ -130,6 +136,8 @@ private:
     };
 
     friend struct FillCacheDispatcher;
+#endif
+
 };
 
 IGA_NAMESPACE_CLOSE

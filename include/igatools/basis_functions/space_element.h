@@ -58,6 +58,11 @@ private:
 
 public:
 
+    using Grid = CartesianGrid<dim_>;
+    using IndexType = typename Grid::IndexType;
+    using List = typename Grid::List;
+    using ListIt = typename Grid::ListIt;
+
     using Func = Function<dim_,codim_,range_,rank_>;
 
     using RefPoint = typename Func::RefPoint;
@@ -96,12 +101,9 @@ protected:
 
 public:
 
-    /**
-     * Constructs an accessor to element number <tt>elem_index</tt> of a
-     * function space.
-     */
     SpaceElement(const std::shared_ptr<const Space<dim_,codim_,range_,rank_,type_>> space,
-                 const Index elem_index);
+                 const ListIt &index,
+                 const PropId &prop = ElementProperties::active);
 
     /**
      * Copy constructor.
@@ -138,7 +140,7 @@ public:
     self_t &operator=(self_t &&elem) = default;
     ///@}
 
-#if 0
+
     /**
      * @name Functions for performing different kind of copy.
      */
@@ -149,15 +151,21 @@ public:
      *
      * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
      */
-    virtual void deep_copy_from(const self_t &element);
+    void deep_copy_from(const self_t &element)
+    {
+        Assert(false,ExcNotImplemented());
+    }
 
     /**
      * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
      * local cache used by the input @p element.
      */
-    virtual void shallow_copy_from(const self_t &element);
+    void shallow_copy_from(const self_t &element)
+    {
+        Assert(false,ExcNotImplemented());
+    }
     ///@}
-#endif
+
 
     /**
      * Creates a new object performing a deep copy of the current object using
@@ -172,6 +180,12 @@ public:
      * containing a pointer to an object of kind SpaceElement.
      */
     virtual std::shared_ptr<self_t> clone() const;
+
+
+    virtual typename List::iterator &operator++() override
+    {
+        return ++this->get_grid_element();
+    }
 
 
     template <class ValueType, int sub_elem_dim = dim_>

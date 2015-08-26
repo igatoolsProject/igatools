@@ -68,6 +68,13 @@ public:
     static const int range     = range_;
     static const int rank      = rank_;
 
+
+    using IndexType = TensorIndex<dim_>;
+    using PropertyList = PropertiesIdContainer<IndexType>;
+    using List = typename PropertyList::List;
+    using ListIt = typename PropertyList::List::iterator;
+
+
     /** Types for the input/output evaluation arguments */
     ///@{
     using RefPoint = Points<dim>;
@@ -134,6 +141,7 @@ public:
 
     virtual std::shared_ptr<base_t> clone() const = 0;
 
+#if 0
     virtual void reset(const ValueFlags &flag, const eval_pts_variant &quad);
 
     virtual void init_cache(ElementAccessor &elem, const topology_variant &k) const;
@@ -151,12 +159,9 @@ public:
     void fill_element_cache(ElementAccessor &elem) const;
 
     void fill_element_cache(ElementIterator &elem) const;
+#endif
 
-    std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const;
-
-    ElementIterator begin() const;
-
-    ElementIterator end() const;
+    std::shared_ptr<ElementAccessor> create_element(const ListIt &index, const PropId &property) const;
 
     virtual void print_info(LogStream &out) const;
 
@@ -175,6 +180,23 @@ public:
      */
     void set_name(const std::string &name);
 
+
+    /** @name Functions involving the element iterator */
+    ///@{
+    /**
+     * Returns a element iterator to the first element of the patch
+     * with the property @p element_property.
+     */
+    ElementIterator begin(const PropId &element_property = ElementProperties::active);
+
+
+    /**
+     * Returns a element iterator to one-pass the end of patch
+     * with the property @p element_property.
+     */
+    ElementIterator end(const PropId &element_property = ElementProperties::active);
+    ///@}
+
 private:
 
     /**
@@ -187,7 +209,7 @@ private:
      */
     std::string name_;
 
-
+#if 0
     struct ResetDispatcher : boost::static_visitor<void>
     {
         ResetDispatcher(const ValueFlags flag_in,
@@ -271,7 +293,7 @@ private:
         ElementAccessor &func_elem_;
     };
 
-
+#endif
 
 protected:
 //    std::shared_ptr<typename ElementAccessor::CacheType>

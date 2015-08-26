@@ -31,9 +31,10 @@ IGA_NAMESPACE_OPEN
 template<int dim_,int codim_,int range_,int rank_,Transformation type_>
 SpaceElement<dim_,codim_,range_,rank_,type_>::
 SpaceElement(const std::shared_ptr<const Space<dim_,codim_,range_,rank_,type_>> space,
-             const Index elem_index)
+             const ListIt &index,
+             const PropId &prop)
     :
-    base_t(space,elem_index),
+    base_t(space,index,prop),
     space_(space)
 {}
 

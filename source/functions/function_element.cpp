@@ -30,16 +30,17 @@ IGA_NAMESPACE_OPEN
 template<int dim, int codim, int range, int rank>
 FunctionElement<dim, codim, range, rank>::
 FunctionElement(const std::shared_ptr<const Func> func,
-                const Index elem_index)
+                const ListIt &index,
+                const PropId &prop)
     :
     func_(std::const_pointer_cast<Func>(func)),
-    grid_elem_(func->get_grid()->create_element(elem_index))
+    grid_elem_(func->get_grid()->create_element(index,prop))
 {
     Assert(func_ != nullptr, ExcNullPtr());
     Assert(grid_elem_ != nullptr, ExcNullPtr());
 
-    auto phys_domain = PhysDomain::create(func->get_phys_domain());
-    phys_domain_elem_ = phys_domain->create_element(elem_index);
+    auto phys_domain = func->get_phys_domain();
+    phys_domain_elem_ = phys_domain->create_element(index,prop);
     Assert(phys_domain_elem_ != nullptr, ExcNullPtr());
 }
 
@@ -116,7 +117,7 @@ operator==(const self_t &a) const
            ExcMessage("The elements cannot be compared because defined on different grids."));
     Assert(func_ == a.func_,
            ExcMessage("The elements cannot be compared because defined with different functions."));
-    return (this->get_flat_index() == a.get_flat_index());
+    return (this->get_index() == a.get_index());
 }
 
 
@@ -129,7 +130,7 @@ operator!=(const self_t &a) const
            ExcMessage("The elements cannot be compared because defined on different grids."));
     Assert(func_ == a.func_,
            ExcMessage("The elements cannot be compared because defined with different functions."));
-    return (this->get_flat_index() != a.get_flat_index());
+    return (this->get_index() != a.get_index());
 }
 
 template<int dim, int codim, int range, int rank>
@@ -141,7 +142,7 @@ operator<(const self_t &a) const
            ExcMessage("The elements cannot be compared because defined on different grids."));
     Assert(func_ == a.func_,
            ExcMessage("The elements cannot be compared because defined with different functions."));
-    return (this->get_flat_index() < a.get_flat_index());
+    return (this->get_index() < a.get_index());
 }
 
 
@@ -154,10 +155,10 @@ operator>(const self_t &a) const
            ExcMessage("The elements cannot be compared because defined on different grids."));
     Assert(func_ == a.func_,
            ExcMessage("The elements cannot be compared because defined with different functions."));
-    return (this->get_flat_index() > a.get_flat_index());
+    return (this->get_index() > a.get_index());
 }
 
-
+#if 0
 template<int dim, int codim, int range, int rank>
 void
 FunctionElement<dim, codim, range, rank>::
@@ -166,22 +167,14 @@ move_to(const Index flat_index)
     grid_elem_->move_to(flat_index);
     phys_domain_elem_->move_to(flat_index);
 }
-
-
-template<int dim, int codim, int range, int rank>
-Index
-FunctionElement<dim, codim, range, rank>::
-get_flat_index() const
-{
-    return grid_elem_->get_flat_index();
-}
+#endif
 
 template<int dim, int codim, int range, int rank>
-TensorIndex<dim>
+auto
 FunctionElement<dim, codim, range, rank>::
-get_tensor_index() const
+get_index() const -> IndexType
 {
-    return grid_elem_->get_tensor_index();
+    return grid_elem_->get_index();
 }
 
 template<int dim, int codim, int range, int rank>

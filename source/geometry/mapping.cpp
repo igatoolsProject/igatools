@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-#if 0
+
 #include <igatools/base/tensor.h>
 #include <igatools/geometry/mapping.h>
 #include <igatools/geometry/mapping_element.h>
@@ -92,7 +92,7 @@ create(std::shared_ptr<const FuncType> F)-> std::shared_ptr<self_t>
     return std::shared_ptr<self_t>(new self_t(F));
 }
 
-
+#if 0
 template<int dim_, int codim_>
 template <int k>
 auto
@@ -305,7 +305,7 @@ init_cache(ElementAccessor &elem) const -> void
     }
 
 }
-
+#endif
 
 //    if (flag_.fill_inv_hessians())
 //    {
@@ -347,9 +347,9 @@ get_function() const -> std::shared_ptr<const FuncType>
 template<int dim_, int codim_>
 auto
 Mapping<dim_, codim_>::
-create_element(const Index flat_index) const -> std::shared_ptr<ElementAccessor>
+create_element(const ListIt &index, const PropId &property) const -> std::shared_ptr<ElementAccessor>
 {
-    auto elem = std::make_shared<ElementAccessor>(this->get_function(),flat_index);
+    auto elem = std::make_shared<ElementAccessor>(this->shared_from_this(),index,property);
     Assert(elem != nullptr, ExcNullPtr());
 
     return elem;
@@ -359,21 +359,25 @@ create_element(const Index flat_index) const -> std::shared_ptr<ElementAccessor>
 template<int dim_, int codim_>
 auto
 Mapping<dim_, codim_>::
-begin() const -> ElementIterator
+begin(const PropId &prop) -> ElementIterator
 {
-    return ElementIterator(this->create_element(0),ElementProperties::active);
+    return ElementIterator(this->shared_from_this(),
+    this->get_grid()->get_element_property(prop).begin(),
+    prop);
 }
 
 template<int dim_, int codim_>
 auto
 Mapping<dim_, codim_>::
-end() -> ElementIterator
+end(const PropId &prop) -> ElementIterator
 {
-    return ElementIterator(this->create_element(IteratorState::pass_the_end),ElementProperties::active);
+    return ElementIterator(this->shared_from_this(),
+    this->get_grid()->get_element_property(prop).end(),
+    prop);
 }
 
 
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/mapping.inst>
-#endif
+

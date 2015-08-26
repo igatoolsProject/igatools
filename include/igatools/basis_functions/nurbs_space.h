@@ -52,6 +52,7 @@ private:
 public:
     using SpSpace = BSplineSpace<dim_, range_, rank_>;
 
+
     /** see documentation in \ref Space */
 
     using GridType = CartesianGrid<dim_>;
@@ -74,6 +75,11 @@ public:
 
     using RefSpace = typename BaseSpace::RefSpace;
 
+
+    using IndexType = TensorIndex<dim_>;
+    using PropertyList = PropertiesIdContainer<IndexType>;
+    using List = typename PropertyList::List;
+    using ListIt = typename PropertyList::List::iterator;
 
 
 public:
@@ -98,10 +104,10 @@ public:
 
 
 
-//    template <int k>
-//    using InterGridMap = typename GridType::template InterGridMap<k>;
+    template <int sdim>
+    using SubGridMap = typename GridType::template SubGridMap<sdim>;
 
-    using InterGridMap = std::map<Index,Index>;
+//    using InterGridMap = std::map<Index,Index>;
 
     template <int k>
     using InterSpaceMap = SafeSTLVector<Index>;
@@ -128,7 +134,7 @@ public:
     std::shared_ptr<SubSpace<k> >
     get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
                   std::shared_ptr<CartesianGrid<k>> sub_grid,
-                  InterGridMap &elem_map) const;
+                  SubGridMap<k> &elem_map) const;
 
 public:
 //    /** Container indexed by the components of the space */
@@ -177,7 +183,7 @@ public:
      * Create an element (defined on this space) with a given flat_index.
      */
     virtual std::shared_ptr<SpaceElement<dim_,0,range_,rank_,Transformation::h_grad> >
-    create_element(const Index flat_index) const override final;
+    create_element(const ListIt &index, const PropId &property) const override final;
 
     /** Destructor */
     virtual ~NURBSSpace() = default;
@@ -220,7 +226,7 @@ public:
     virtual const DegreeTable &get_degree_table() const override final;
 
     virtual void get_element_dofs(
-        const Index element_id,
+        const IndexType element_id,
         SafeSTLVector<Index> &dofs_global,
         SafeSTLVector<Index> &dofs_local_to_patch,
         SafeSTLVector<Index> &dofs_local_to_elem,

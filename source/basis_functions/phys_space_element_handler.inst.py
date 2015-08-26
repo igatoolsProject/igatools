@@ -46,7 +46,7 @@ for space in inst.SubPhysSpaces:
         for fun in sub_dim_members:
             k = x.dim
             s = fun.replace('elhandler', handler).replace('k', '%d' % (k));
-            handler_templated_funcs.append(s)
+#            handler_templated_funcs.append(s)
 
 
 for space in inst.PhysSpaces:
@@ -57,7 +57,7 @@ for space in inst.PhysSpaces:
         for fun in sub_dim_members:
             for k in inst.sub_dims(x.dim):
                 s = fun.replace('elhandler', handler).replace('k', '%d' % (k));
-                handler_templated_funcs.append(s)
+#                handler_templated_funcs.append(s)
 
 
 for handler in unique(handlers):

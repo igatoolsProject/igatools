@@ -41,7 +41,7 @@ for x in inst.sub_mapping_dims:
     for fun in sub_dim_members:
         k = x.dim
         s = fun.replace('cod', '%d' % (x.codim)).replace('dim', '%d' % (x.dim)).replace('k', '%d' % (k));
-        f.write('template ' + s + '\n')
+#        f.write('template ' + s + '\n')
 
 for x in inst.mapping_dims:
     mapping = 'Mapping<%d,%d>' %(x.dim, x.codim)
@@ -50,5 +50,5 @@ for x in inst.mapping_dims:
     for fun in sub_dim_members:
         for k in inst.sub_dims(x.dim):
             s = fun.replace('dim','%d' %x.dim).replace('k','%d' %(k)).replace('cod','%d' %x.codim);
-            f.write('template ' + s + '\n')
+#            f.write('template ' + s + '\n')
  

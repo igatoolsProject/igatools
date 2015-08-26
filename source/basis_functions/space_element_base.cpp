@@ -20,7 +20,7 @@
 
 
 #include <igatools/basis_functions/space_element_base.h>
-
+#include <igatools/basis_functions/physical_space.h>
 
 
 IGA_NAMESPACE_OPEN
@@ -28,9 +28,10 @@ IGA_NAMESPACE_OPEN
 template <int dim>
 SpaceElementBase<dim>::
 SpaceElementBase(const std::shared_ptr<const SpaceBase<dim>> &space,
-                 const Index elem_index)
+                 const ListIt &index,
+                 const PropId &prop)
     :
-    grid_elem_(space->get_ptr_const_grid()->create_element(elem_index)),
+    grid_elem_(space->get_ptr_const_grid()->create_element(index,prop)),
     space_(space)
 {
     Assert(grid_elem_ != nullptr, ExcNullPtr());
@@ -47,13 +48,17 @@ SpaceElementBase(const self_t &elem,
     if (copy_policy == CopyPolicy::shallow)
         grid_elem_ = elem.grid_elem_;
     else if (copy_policy == CopyPolicy::deep)
-        grid_elem_ = std::make_shared<GridElement<dim>>(*elem.grid_elem_,copy_policy);
+    {
+//        grid_elem_ = std::make_shared<GridElement<dim>>(*elem.grid_elem_,copy_policy);
+        Assert(false,ExcNotImplemented());
+    }
     else
         AssertThrow(false,ExcInvalidState());
 }
 
+
 template <int dim>
-GridElement<dim> &
+ConstGridElement<dim> &
 SpaceElementBase<dim>::
 get_grid_element()
 {
@@ -61,7 +66,7 @@ get_grid_element()
 }
 
 template <int dim>
-const GridElement<dim> &
+const ConstGridElement<dim> &
 SpaceElementBase<dim>::
 get_grid_element() const
 {
@@ -103,7 +108,10 @@ copy_from(const SpaceElementBase<dim> &elem,
         if (copy_policy == CopyPolicy::shallow)
             grid_elem_ = elem.grid_elem_;
         else if (copy_policy == CopyPolicy::deep)
-            grid_elem_ = std::make_shared<GridElement<dim>>(*elem.grid_elem_,copy_policy);
+        {
+//            grid_elem_ = std::make_shared<GridElement<dim>>(*elem.grid_elem_,copy_policy);
+            Assert(false,ExcNotImplemented());
+        }
         else
             AssertThrow(false,ExcInvalidState());
 
@@ -112,20 +120,13 @@ copy_from(const SpaceElementBase<dim> &elem,
 }
 
 
-template <int dim>
-Index
-SpaceElementBase<dim>::
-get_flat_index() const
-{
-    return grid_elem_->get_flat_index();
-}
 
 template <int dim>
-TensorIndex<dim>
+auto
 SpaceElementBase<dim>::
-get_tensor_index() const
+get_index() const -> IndexType
 {
-    return grid_elem_->get_tensor_index();
+    return grid_elem_->get_index();
 }
 
 template <int dim>
@@ -148,8 +149,11 @@ get_local_to_global(const std::string &dofs_property) const
     SafeSTLVector<Index> dofs_loc_to_patch;
     SafeSTLVector<Index> dofs_loc_to_elem;
     this->space_->get_element_dofs(
-        this->get_flat_index(),
-        dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
+        this->get_index(),
+        dofs_global,
+        dofs_loc_to_patch,
+        dofs_loc_to_elem,
+        dofs_property);
 
     return dofs_global;
 }
@@ -163,8 +167,11 @@ get_local_to_patch(const std::string &dofs_property) const
     SafeSTLVector<Index> dofs_loc_to_patch;
     SafeSTLVector<Index> dofs_loc_to_elem;
     this->space_->get_element_dofs(
-        this->get_flat_index(),
-        dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
+        this->get_index(),
+        dofs_global,
+        dofs_loc_to_patch,
+        dofs_loc_to_elem,
+        dofs_property);
 
     return dofs_loc_to_patch;
 }
@@ -178,8 +185,11 @@ get_local_dofs(const std::string &dofs_property) const
     SafeSTLVector<Index> dofs_loc_to_patch;
     SafeSTLVector<Index> dofs_loc_to_elem;
     this->space_->get_element_dofs(
-        this->get_flat_index(),
-        dofs_global,dofs_loc_to_patch,dofs_loc_to_elem,dofs_property);
+        this->get_index(),
+        dofs_global,
+        dofs_loc_to_patch,
+        dofs_loc_to_elem,
+        dofs_property);
 
     return dofs_loc_to_elem;
 }
@@ -234,6 +244,7 @@ operator>(const self_t &a) const
     return *grid_elem_ > *a.grid_elem_;
 }
 
+#if 0
 template <int dim>
 void
 SpaceElementBase<dim>::
@@ -241,7 +252,7 @@ move_to(const Index flat_index)
 {
     grid_elem_->move_to(flat_index);
 }
-
+#endif
 
 #ifdef SERIALIZATION
 template <int dim>

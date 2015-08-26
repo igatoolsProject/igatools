@@ -48,7 +48,7 @@ class PhysSpaceElementHandler
 
     using ElementIterator = typename PhysSpace::ElementIterator;
     using ElementAccessor = typename PhysSpace::ElementAccessor;
-    using PfElemAccessor = typename PhysSpace::PushForwardElem;
+    using PushFwd = typename PhysSpace::PushFwd;
 
     using base_t = SpaceElementHandler<dim_,codim_,range_,rank_,type_>;
     using self_t = PhysSpaceElementHandler<dim_,range_,rank_,codim_,type_>;
@@ -114,7 +114,7 @@ public:
     static std::shared_ptr<self_t> create(std::shared_ptr<const PhysSpace> space);
     ///@}
 
-
+#if 0
     /**
      * Resets all the internal data in order to use the
      * quadrature scheme for the elements of the space with ID specified by
@@ -133,7 +133,7 @@ public:
     virtual void fill_cache(SpaceElement<dim_,codim_,range_,rank_,type_> &sp_elem,
                             const topology_variant &topology,
                             const int sub_elem_id) override final;
-
+#endif
 
     void print_info(LogStream &out) const override final;
 
@@ -151,7 +151,7 @@ private:
 
     SafeSTLArray<ValueFlags, dim+1> flags_;
 
-
+#if 0
     struct ResetDispatcher : boost::static_visitor<void>
     {
         ResetDispatcher(
@@ -227,7 +227,7 @@ private:
         PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> &phys_elem_;
     };
 
-
+#endif
 
 
 #ifdef SERIALIZATION

@@ -27,6 +27,7 @@
 #include <igatools/base/quadrature.h>
 #include <igatools/utils/tensor_product_array.h>
 #include <igatools/geometry/cartesian_grid.h>
+#include <igatools/geometry/grid_element.h>
 //#include <igatools/basis_functions/space_element_handler.h>
 
 IGA_NAMESPACE_OPEN

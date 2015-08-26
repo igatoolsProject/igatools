@@ -53,6 +53,12 @@ public:
 //    using ContainerType = const CartesianGrid<dim>;
     using ContainerType = const Func;
 
+
+    using Grid = CartesianGrid<dim>;
+    using IndexType = typename Grid::IndexType;
+    using List = typename Grid::List;
+    using ListIt = typename Grid::ListIt;
+
 private:
     template <int order>
     using Derivative = typename Func::template Derivative<order>;
@@ -74,7 +80,8 @@ public:
      * flat index @p elem_index of the CartesianGrid @p grid.
      */
     FunctionElement(const std::shared_ptr<const Func> func,
-                    const Index elem_index);
+                    const ListIt &index,
+                    const PropId &prop = ElementProperties::active);
 
     /**
      * Copy constructor.
@@ -202,6 +209,13 @@ public:
         return w_meas;
     }
 
+
+
+    typename List::iterator &operator++()
+    {
+        return (++(*phys_domain_elem_));
+    }
+
 private:
 
     using CType = boost::fusion::map<
@@ -235,7 +249,7 @@ private:
 
     std::shared_ptr<Func> func_;
 
-    using GridElem = GridElement<dim>;
+    using GridElem = ConstGridElement<dim>;
     std::shared_ptr<GridElem> grid_elem_;
 
 
@@ -293,6 +307,7 @@ public:
     bool operator>(const self_t &a) const;
     ///@}
 
+#if 0
     /**
      * Sets the index of the element using the flatten representation.
      * @note This function also updates the index for the tensor representation.
@@ -301,16 +316,10 @@ public:
      * are doing.
      */
     void move_to(const Index flat_index) ;
+#endif
 
-
-    /** @name Functions related to the indices of the element in the cartesian grid. */
-    ///@{
-    /** Returns the index of the element in its flatten representation. */
-    Index get_flat_index() const;
-
-    /** Returns the index of the element in its tensor representation. */
-    TensorIndex<dim> get_tensor_index() const;
-    ///@}
+    /** Returns the index of the element. */
+    IndexType get_index() const;
 
 
 

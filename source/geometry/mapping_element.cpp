@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-#if 0
+
 #include <igatools/geometry/mapping_element.h>
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <boost/numeric/ublas/operation.hpp>
@@ -26,10 +26,11 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_, int codim_>
 MappingElement<dim_, codim_>::
-MappingElement(const std::shared_ptr<const Func> func,
-               const Index elem_index)
+MappingElement(const std::shared_ptr<const PhysDomain> phys_domain,
+               const ListIt &index,
+               const PropId &prop)
     :
-    func_elem_(std::make_shared<FuncElem>(func,elem_index))
+    func_elem_(std::make_shared<FuncElem>(phys_domain->get_function(),index,prop))
 {}
 
 
@@ -67,20 +68,13 @@ get_func_element() const -> const FuncElem &
     return *func_elem_;
 }
 
-template<int dim_, int codim_>
-auto
-MappingElement<dim_, codim_>::
-get_flat_index() const -> Index
-{
-    return func_elem_->get_flat_index();
-}
 
 template<int dim_, int codim_>
 auto
 MappingElement<dim_, codim_>::
-get_tensor_index() const -> TensorIndex<dim>
+get_index() const -> IndexType
 {
-    return func_elem_->get_tensor_index();
+    return func_elem_->get_index();
 }
 
 template<int dim_, int codim_>
@@ -124,6 +118,7 @@ operator>(const self_t &a) const
     return *func_elem_ > *a.func_elem_;
 }
 
+#if 0
 template<int dim_, int codim_>
 void
 MappingElement<dim_, codim_>::
@@ -131,6 +126,7 @@ move_to(const Index flat_index)
 {
     func_elem_->move_to(flat_index);
 }
+#endif
 
 template<int dim_, int codim_>
 void
@@ -344,4 +340,3 @@ clone() const -> std::shared_ptr<self_t>
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/mapping_element.inst>
-#endif

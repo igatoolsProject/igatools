@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-
+#if 0
 #include <igatools/functions/function_lib.h>
 #include <igatools/functions/function_element.h>
 #include <igatools/geometry/physical_domain_element.h>
@@ -808,3 +808,4 @@ evaluate_2(const ValueVector<Point> &points,
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/functions/function_lib.inst>
+#endif

@@ -137,7 +137,9 @@ Space(const shared_ptr<CartesianGrid<dim_>> &grid,
     Assert(map_func_.unique(), ExcNotUnique());
 
     Assert(this->get_ptr_grid() == this->map_func_->get_grid(),
-           ExcMessage("Reference space and mapping grids are not the same."))
+           ExcMessage("Reference space and mapping grids are not the same."));
+
+    Assert(phys_domain_ != nullptr,ExcNullPtr());
 }
 
 template <int dim_,int codim_,int range_,int rank_,Transformation type_>
@@ -152,32 +154,18 @@ Space(const shared_ptr<const CartesianGrid<dim_>> &grid,
     Assert(map_func_.unique(), ExcNotUnique());
 
     Assert(this->get_ptr_const_grid() == this->map_func_->get_grid(),
-           ExcMessage("Reference space and mapping grids are not the same."))
+           ExcMessage("Reference space and mapping grids are not the same."));
 }
 
 
 template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 auto
 Space<dim_,codim_,range_,rank_,type_>::
-begin(const std::string &element_property) const -> ElementIterator
+begin(const PropId &prop) -> ElementIterator
 {
-    return ElementIterator(
-               this->create_element(
-                   this->get_ptr_const_grid()->get_first_element_id_same_property(element_property)),
-               element_property);
-}
-
-
-
-template <int dim_,int codim_,int range_,int rank_,Transformation type_>
-auto
-Space<dim_,codim_,range_,rank_,type_>::
-last(const std::string &element_property) const -> ElementIterator
-{
-    return ElementIterator(
-               this->create_element(
-                   this->get_ptr_const_grid()->get_first_element_id_same_property(element_property)),
-               element_property);
+    return ElementIterator(this->shared_from_this(),
+    this->get_ptr_grid()->get_element_property(prop).begin(),
+    prop);
 }
 
 
@@ -185,9 +173,11 @@ last(const std::string &element_property) const -> ElementIterator
 template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 auto
 Space<dim_,codim_,range_,rank_,type_>::
-end(const std::string &element_property) const -> ElementIterator
+end(const PropId &prop) -> ElementIterator
 {
-    return ElementIterator(this->create_element(IteratorState::pass_the_end),element_property);
+    return ElementIterator(this->shared_from_this(),
+    this->get_ptr_grid()->get_element_property(prop).begin(),
+    prop);
 }
 
 

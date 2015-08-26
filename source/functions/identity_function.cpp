@@ -71,7 +71,7 @@ print_info(LogStream &out) const
     out.end_item();
 }
 
-
+#if 0
 template<int dim,int space_dim>
 auto
 IdentityFunction<dim,space_dim>::
@@ -82,7 +82,7 @@ fill_cache(FuncElem &elem, const topology_variant &k, const int sub_elem_id) con
     auto fill_cache_dispatcher = FillCacheDispatcher(sub_elem_id,*this,elem);
     boost::apply_visitor(fill_cache_dispatcher, k);
 }
-
+#endif
 
 
 #ifdef MESH_REFINEMENT

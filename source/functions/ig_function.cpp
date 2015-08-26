@@ -36,7 +36,7 @@ IgFunction(std::shared_ptr<const Sp> space,
     parent_t::Function(space->get_ptr_const_grid()),
     space_(space),
     property_(property),
-    space_elem_(space->begin()),
+    space_elem_(std::const_pointer_cast<Sp>(space)->begin()),
     space_elem_handler_(space->get_elem_handler())
 {
     Assert(space_ != nullptr, ExcNullPtr());
@@ -68,7 +68,7 @@ IgFunction(std::shared_ptr<const Sp> space,
     parent_t::Function(space->get_ptr_const_grid()),
     space_(space),
     property_(property),
-    space_elem_(space->begin()),
+    space_elem_(std::const_pointer_cast<Sp>(space)->begin()),
     space_elem_handler_(space->get_elem_handler())
 {
     Assert(space_ != nullptr, ExcNullPtr());
@@ -94,7 +94,7 @@ IgFunction(const self_t &fun)
     space_(fun.space_),
     coeff_(fun.coeff_),
     property_(fun.property_),
-    space_elem_(fun.space_->begin()),
+    space_elem_(std::const_pointer_cast<Sp>(fun.space_)->begin()),
     space_elem_handler_(fun.space_->get_elem_handler())
 {}
 
@@ -135,6 +135,7 @@ create(std::shared_ptr<const Sp> space,
 }
 
 
+#if 0
 
 template<int dim,int codim,int range,int rank>
 void
@@ -181,7 +182,6 @@ init_cache(ElementAccessor &elem, const topology_variant &k) const -> void
 }
 
 
-
 template<int dim,int codim,int range,int rank>
 auto
 IgFunction<dim,codim,range,rank>::
@@ -205,7 +205,7 @@ fill_cache(ElementAccessor &func_elem,
     boost::apply_visitor(fill_cache_dispatcher, k);
 
 }
-
+#endif
 
 
 template<int dim,int codim,int range,int rank>

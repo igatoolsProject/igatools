@@ -168,14 +168,14 @@ get_this_space() const -> std::shared_ptr<const self_t >
 template<int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-create_element(const Index flat_index) const
+create_element(const ListIt &index, const PropId &property) const
 -> std::shared_ptr<SpaceElement<dim_,0,range_,rank_,Transformation::h_grad> >
 {
     using Elem = NURBSElement<dim_,range_,rank_>;
 
     const auto nrb_space = this->get_this_space();
 
-    auto elem = make_shared<Elem>(nrb_space,flat_index);
+    auto elem = make_shared<Elem>(nrb_space,index,property);
     Assert(elem != nullptr, ExcNullPtr());
 
     return elem;
@@ -479,7 +479,7 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
               std::shared_ptr<CartesianGrid<k>> sub_grid,
-              InterGridMap &elem_map) const
+              SubGridMap<k> &elem_map) const
 -> std::shared_ptr<SubSpace<k> >
 {
     //TODO (martinelli Nov 27,2014): implement this function
@@ -548,7 +548,7 @@ template <int dim_, int range_, int rank_>
 void
 NURBSSpace<dim_, range_, rank_>::
 get_element_dofs(
-    const Index element_id,
+    const IndexType element_id,
     SafeSTLVector<Index> &dofs_global,
     SafeSTLVector<Index> &dofs_local_to_patch,
     SafeSTLVector<Index> &dofs_local_to_elem,

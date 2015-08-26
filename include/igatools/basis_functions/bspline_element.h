@@ -59,6 +59,11 @@ public:
 
 //    using ValuesCache = typename parent_t::ValuesCache;
 
+    using Grid = CartesianGrid<dim>;
+    using IndexType = typename Grid::IndexType;
+    using List = typename Grid::List;
+    using ListIt = typename Grid::ListIt;
+
 public:
     template <int order>
     using Derivative = typename parent_t::template Derivative<order>;
@@ -82,7 +87,8 @@ public:
      * BsplineSpace space.
      */
     BSplineElement(const std::shared_ptr<ContainerType> space,
-                   const Index elem_index);
+                   const ListIt &index,
+                   const PropId &prop = ElementProperties::active);
 
     /**
      * Copy constructor.
@@ -119,6 +125,8 @@ public:
      */
     self_t &operator=(self_t &&elem) = default;
     ///@}
+
+
 
 private:
     /**

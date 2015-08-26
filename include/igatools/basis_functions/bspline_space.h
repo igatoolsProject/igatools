@@ -107,6 +107,7 @@ public:
     using GridType = CartesianGrid<dim_>;
     using ElementHandler = BSplineElementHandler<dim_, range_, rank_>;
 
+
     static const int dim       = dim_;
     static const int codim     = 0;
     static const int space_dim = dim_;
@@ -158,6 +159,11 @@ public:
     using EndBehaviourTable = typename SpaceData::EndBehaviourTable;
 
     using BaseSpace::ComponentContainer;
+
+    using IndexType = TensorIndex<dim_>;
+    using PropertyList = PropertiesIdContainer<IndexType>;
+    using List = typename PropertyList::List;
+    using ListIt = typename PropertyList::List::iterator;
 
 public:
     /**
@@ -259,7 +265,7 @@ public:
      * Create an element (defined on this space) with a given flat_index.
      */
     virtual std::shared_ptr<SpaceElement<dim_,0,range_,rank_,Transformation::h_grad> >
-    create_element(const Index flat_index) const override final;
+    create_element(const ListIt &index, const PropId &property) const override final;
 
 
     /** Destructor. */
@@ -379,17 +385,17 @@ public:
 
 
     virtual void get_element_dofs(
-        const Index element_id,
+        const IndexType element_id,
         SafeSTLVector<Index> &dofs_global,
         SafeSTLVector<Index> &dofs_local_to_patch,
         SafeSTLVector<Index> &dofs_local_to_elem,
         const std::string &dofs_property = DofProperties::active) const override final;
 
 
-//    template <int k>
-//    using InterGridMap = typename GridType::template InterGridMap<k>;
+    template <int sdim>
+    using SubGridMap = typename GridType::template SubGridMap<sdim>;
 
-    using InterGridMap = std::map<Index,Index>;
+//    using InterGridMap = std::map<Index,Index>;
 
     template <int k>
     using InterSpaceMap = SafeSTLVector<Index>;
@@ -416,7 +422,7 @@ public:
     std::shared_ptr<SubSpace<k> >
     get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
                   std::shared_ptr<CartesianGrid<k>> sub_grid,
-                  InterGridMap &elem_map) const;
+                  SubGridMap<k> &elem_map) const;
 
 
 

@@ -27,12 +27,15 @@ data = Instantiation(include_files)
 
 elements = []
 
+
+iters =  ['GridIteratorBase', 'GridIterator']
+
 for row in inst.all_function_dims:
     elem = 'FunctionElement<%d,%d,%d,%d>' %(row.dim, row.codim, row.range, row.rank)
     elements.append(elem)
     f.write('template class %s ;\n' %(elem))
-    for it in inst.iterators:
-        iterator = it.replace('Accessor','%s' % (elem) )
+    for it in iters:
+        iterator = '%s<%s>' % (it,elem)
         f.write('template class %s; \n' %iterator)
 
 

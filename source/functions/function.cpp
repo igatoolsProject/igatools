@@ -54,6 +54,7 @@ get_object_id() const
     return object_id_;
 }
 
+#if 0
 template<int dim_, int codim_, int range_, int rank_>
 void
 Function<dim_, codim_, range_, rank_ >::
@@ -133,6 +134,7 @@ fill_element_cache(ElementIterator &elem) const
 {
     this->fill_cache(*elem, Topology<dim_>(),0);
 }
+#endif
 
 /*
 template<int dim_, int codim_, int range_, int rank_>
@@ -149,9 +151,9 @@ get_cache(ElementAccessor &elem)
 template<int dim_, int codim_, int range_, int rank_>
 auto
 Function<dim_, codim_, range_, rank_ >::
-create_element(const Index flat_index) const -> std::shared_ptr<ElementAccessor>
+create_element(const ListIt &index, const PropId &property) const -> std::shared_ptr<ElementAccessor>
 {
-    auto elem = std::make_shared<ElementAccessor>(this->shared_from_this(),flat_index);
+    auto elem = std::make_shared<ElementAccessor>(this->shared_from_this(),index,property);
     Assert(elem != nullptr,ExcNullPtr());
 
     return elem;
@@ -170,17 +172,21 @@ print_info(LogStream &out) const
 template<int dim_, int codim_, int range_, int rank_>
 auto
 Function<dim_, codim_, range_, rank_ >::
-begin() const -> ElementIterator
+begin(const PropId &prop) -> ElementIterator
 {
-    return ElementIterator(this->create_element(0),ElementProperties::active);
+    return ElementIterator(this->shared_from_this(),
+    grid_->get_element_property(prop).begin(),
+    prop);
 }
 
 template<int dim_, int codim_, int range_, int rank_>
 auto
 Function<dim_, codim_, range_, rank_ >::
-end() const -> ElementIterator
+end(const PropId &prop) -> ElementIterator
 {
-    return ElementIterator(this->create_element(IteratorState::pass_the_end),ElementProperties::active);
+    return ElementIterator(this->shared_from_this(),
+    grid_->get_element_property(prop).end(),
+    prop);
 }
 
 template<int dim_, int codim_, int range_, int rank_>

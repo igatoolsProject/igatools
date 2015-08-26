@@ -143,7 +143,7 @@ public:
         return std::make_shared<self_t>(self_t(*this));
     }
 
-
+#if 0
     void reset(const ValueFlags &flag, const eval_pts_variant &eval_pts) override;
 
     void reset_selected_elements(const ValueFlags &flag,
@@ -153,6 +153,7 @@ public:
     void init_cache(ElementAccessor &elem, const topology_variant &k) const override;
 
     void fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) const override;
+#endif
 
     std::shared_ptr<const Sp> get_ig_space() const;
 
@@ -187,6 +188,7 @@ private:
     std::shared_ptr<SpaceElemHandler> space_elem_handler_;
 
 private:
+#if 0
     struct ResetDispatcher : boost::static_visitor<void>
     {
         ResetDispatcher(const ValueFlags flag_in,
@@ -323,7 +325,7 @@ private:
         SafeSTLVector<Real> &loc_coeff_;
         const std::string  &property_;
     };
-
+#endif
 
 #ifdef MESH_REFINEMENT
 

@@ -60,6 +60,12 @@ public:
 
     using Div = typename Space::Div;
 
+
+    using Grid = CartesianGrid<dim>;
+    using IndexType = typename Grid::IndexType;
+    using List = typename Grid::List;
+    using ListIt = typename Grid::ListIt;
+
 protected:
     /**
      * Default constructor. It does nothing but it is needed for the
@@ -77,7 +83,8 @@ public:
      * ReferenceSpace space.
      */
     ReferenceElement(const std::shared_ptr<ConstSpace> space,
-                     const Index elem_index);
+                     const ListIt &index,
+                     const PropId &prop = ElementProperties::active);
 
 
     virtual ~ReferenceElement() = default;
@@ -94,7 +101,7 @@ public:
     template <int k>
     ValueVector<Real> get_w_measures(const int j) const
     {
-        return this->get_grid_element().template get_w_measures<k>(j);
+        return this->get_grid_element().template get_weights<k>(j);
     }
 
     /**

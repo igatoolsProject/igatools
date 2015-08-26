@@ -66,6 +66,12 @@ class SpaceElementBase
 private:
     using self_t = SpaceElementBase<dim>;
 
+public:
+    using Grid = CartesianGrid<dim>;
+    using IndexType = typename Grid::IndexType;
+    using List = typename Grid::List;
+    using ListIt = typename Grid::ListIt;
+
     /** @name Constructors */
     ///@{
 protected:
@@ -78,11 +84,12 @@ protected:
 
 public:
     /**
-     * Constructs an accessor to element number <tt>elem_index</tt> of a
+     * Constructs an accessor to element with index pointed by the iterator <tt>index</tt> of a
      * function space.
      */
     SpaceElementBase(const std::shared_ptr<const SpaceBase<dim>> &space,
-                     const Index elem_index);
+                     const ListIt &index,
+                     const PropId &prop = ElementProperties::active);
 
 
 
@@ -110,13 +117,12 @@ public:
     /**
      * Return a reference to the GridElement.
      */
-    GridElement<dim> &get_grid_element();
-
+    ConstGridElement<dim> &get_grid_element();
 
     /**
      * Return a const-reference to the GridElement.
      */
-    const GridElement<dim> &get_grid_element() const;
+    const ConstGridElement<dim> &get_grid_element() const;
 
     void print_info(LogStream &out) const;
 
@@ -176,7 +182,7 @@ public:
     Size get_num_basis(const std::string &dofs_property) const;
     ///@}
 
-
+#if 0
     /** @name Functions/operators for moving the element in the CartesianGrid used to build the Space.*/
     ///@{
     /**
@@ -188,7 +194,9 @@ public:
      */
     virtual void move_to(const Index flat_index) ;
     ///@}
+#endif
 
+    virtual typename List::iterator &operator++() = 0;
 
 public:
 
@@ -223,14 +231,8 @@ public:
     ///@}
 
 
-    /** @name Functions related to the indices of the element in the cartesian grid. */
-    ///@{
-    /** Returns the index of the element in its flatten representation. */
-    Index get_flat_index() const;
-
-    /** Returns the index of the element in its tensor representation. */
-    TensorIndex<dim> get_tensor_index() const;
-    ///@}
+    /** Returns the index of the element. */
+    IndexType get_index() const;
 
     /** Return the cartesian grid from which the element belongs.*/
     std::shared_ptr<const CartesianGrid<dim> > get_grid() const;
@@ -255,7 +257,7 @@ public:
     }
 
 private:
-    std::shared_ptr<GridElement<dim>> grid_elem_;
+    std::shared_ptr<ConstGridElement<dim>> grid_elem_;
 
     std::shared_ptr<const SpaceBase<dim>> space_;
 

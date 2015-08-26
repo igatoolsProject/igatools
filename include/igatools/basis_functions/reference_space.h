@@ -139,9 +139,8 @@ public:
     virtual ~ReferenceSpace() = default;
 
 
-//    template <int k>
-//    using InterGridMap = typename GridType::template InterGridMap<k>;
-    using InterGridMap = std::map<Index,Index>;
+    template <int sdim>
+    using SubGridMap = typename GridType::template SubGridMap<sdim>;
 
     template <int k>
     using InterSpaceMap = SafeSTLVector<Index>;
@@ -195,7 +194,7 @@ public:
     std::shared_ptr<SubSpace<k> >
     get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
                   std::shared_ptr<CartesianGrid<k>> sub_grid,
-                  InterGridMap &elem_map) const;
+                  SubGridMap<k> &elem_map) const;
 
 
 protected:
