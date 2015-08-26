@@ -154,7 +154,7 @@ ReferenceElement<dim, range, rank>::
 serialize(Archive &ar, const unsigned int version)
 {
     ar &boost::serialization::make_nvp("ReferenceElement_base_t_",
-                                       boost::serialization::base_object<SpaceElement<dim,0,range,rank>>(*this));
+                                       boost::serialization::base_object<SpaceElement<dim,0,range,rank,Transformation::h_grad>>(*this));
 
 
     ar &boost::serialization::make_nvp("n_basis_direction_",n_basis_direction_);

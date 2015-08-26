@@ -222,7 +222,10 @@ serialize(Archive &ar, const unsigned int version)
     ar &boost::serialization::make_nvp("flags_",flags_);
 
     ar &boost::serialization::make_nvp("grid_",grid_);
+
+#ifdef MESH_REFINEMENT
     ar &boost::serialization::make_nvp("function_previous_refinement_",function_previous_refinement_);
+#endif // MESH_REFINEMENT
 }
 #endif // SERIALIZATION
 

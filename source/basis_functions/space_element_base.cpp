@@ -261,7 +261,7 @@ void
 SpaceElementBase<dim>::
 serialize(Archive &ar, const unsigned int version)
 {
-    ar &boost::serialization::make_nvp("grid_elem_",grid_elem);
+    ar &boost::serialization::make_nvp("grid_elem_",grid_elem_);
 
 
     auto non_const_space = std::const_pointer_cast<SpaceBase<dim>>(space_);

@@ -202,7 +202,7 @@ serialize(Archive &ar, const unsigned int version)
 
     ar &boost::serialization::make_nvp("all_sub_elems_cache_",all_sub_elems_cache_);
 
-    auto non_const_space = std::const_pointer_cast<Space<dim_,codim_,range_,rank_>>(space_);
+    auto non_const_space = std::const_pointer_cast<Space<dim_,codim_,range_,rank_,type_>>(space_);
     ar &boost::serialization::make_nvp("space_",non_const_space);
     space_ = non_const_space;
     Assert(space_ != nullptr,ExcNullPtr());

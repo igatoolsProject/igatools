@@ -130,7 +130,8 @@ Space<dim_,codim_,range_,rank_,type_>::
 Space(const shared_ptr<CartesianGrid<dim_>> &grid,
       const shared_ptr<MapFunc> &map_func)
     :
-    base_t(grid)
+    base_t(grid),
+    phys_domain_(std::make_shared<PhysDomain>(map_func))
 {
     Assert(map_func != nullptr, ExcNullPtr());
     map_func_.get_ref_ptr_data().swap(const_cast<shared_ptr<MapFunc> &>(map_func));
