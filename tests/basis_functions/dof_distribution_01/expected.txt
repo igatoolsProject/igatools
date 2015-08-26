@@ -39,8 +39,7 @@ Dof indices:
 
 Dof properties:
    IDs with property "active":
-      Num.: 4
-      Flat IDs: 0 2 4 6
+   [ 0 2 4 6 ]
 
 ========================================================================
 
@@ -85,8 +84,7 @@ Dof indices:
 
 Dof properties:
    IDs with property "active":
-      Num.: 8
-      Flat IDs: 0 2 4 6 8 10 12 14
+   [ 0 2 4 6 8 10 12 14 ]
 
 ========================================================================
 

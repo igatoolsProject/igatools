@@ -134,13 +134,14 @@ Space(const shared_ptr<CartesianGrid<dim_>> &grid,
     phys_domain_(std::make_shared<PhysDomain>(map_func))
 {
     Assert(map_func != nullptr, ExcNullPtr());
-    map_func_.get_ref_ptr_data().swap(const_cast<shared_ptr<MapFunc> &>(map_func));
-    Assert(map_func_.unique(), ExcNotUnique());
-
-    Assert(this->get_ptr_grid() == this->map_func_->get_grid(),
-           ExcMessage("Reference space and mapping grids are not the same."));
+//    map_func_.get_ref_ptr_data().swap(const_cast<shared_ptr<MapFunc> &>(map_func));
+//    Assert(map_func_.unique(), ExcNotUnique());
 
     Assert(phys_domain_ != nullptr,ExcNullPtr());
+
+    Assert(this->get_ptr_grid() == phys_domain_->get_grid(),
+           ExcMessage("Reference space and mapping grids are not the same."));
+
 }
 
 template <int dim_,int codim_,int range_,int rank_,Transformation type_>
@@ -148,13 +149,17 @@ Space<dim_,codim_,range_,rank_,type_>::
 Space(const shared_ptr<const CartesianGrid<dim_>> &grid,
       const shared_ptr<MapFunc> &map_func)
     :
-    base_t(grid)
+    base_t(grid),
+    phys_domain_(std::make_shared<PhysDomain>(map_func))
 {
     Assert(map_func != nullptr, ExcNullPtr());
-    map_func_.get_ref_ptr_data().swap(const_cast<shared_ptr<MapFunc> &>(map_func));
-    Assert(map_func_.unique(), ExcNotUnique());
+//    map_func_.get_ref_ptr_data().swap(const_cast<shared_ptr<MapFunc> &>(map_func));
+//    Assert(map_func_.unique(), ExcNotUnique());
 
-    Assert(this->get_ptr_const_grid() == this->map_func_->get_grid(),
+
+    Assert(phys_domain_ != nullptr,ExcNullPtr());
+
+    Assert(this->get_ptr_const_grid() == phys_domain_->get_grid(),
            ExcMessage("Reference space and mapping grids are not the same."));
 }
 

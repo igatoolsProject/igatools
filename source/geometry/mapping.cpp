@@ -339,9 +339,17 @@ get_grid() const -> std::shared_ptr<const CartesianGrid<dim_> >
 template<int dim_, int codim_>
 auto
 Mapping<dim_, codim_>::
-get_function() const -> std::shared_ptr<const FuncType>
+get_ptr_const_function() const -> std::shared_ptr<const FuncType>
 {
     return F_;
+}
+
+template<int dim_, int codim_>
+auto
+Mapping<dim_, codim_>::
+get_ptr_function() -> std::shared_ptr<FuncType>
+{
+    return std::const_pointer_cast<FuncType>(F_);
 }
 
 template<int dim_, int codim_>

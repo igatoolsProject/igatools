@@ -281,15 +281,16 @@ public:
     static const int rank = rank_;
 
 
-
     std::shared_ptr<MapFunc> get_ptr_map_func()
     {
-        return map_func_.get_ptr_data();
+//        return map_func_.get_ptr_data();
+        return std::const_pointer_cast<PhysDomain>(phys_domain_)->get_ptr_function();
     }
 
     std::shared_ptr<const MapFunc> get_ptr_const_map_func() const
     {
-        return map_func_.get_ptr_const_data();
+//        return map_func_.get_ptr_const_data();
+        return phys_domain_->get_ptr_const_function();
     }
 
     virtual std::shared_ptr<const DofDistribution<dim_,range_,rank_> >
@@ -391,7 +392,7 @@ public:
 
 private:
 
-    SharedPtrConstnessHandler<MapFunc>  map_func_;
+//    SharedPtrConstnessHandler<MapFunc>  map_func_;
 
     std::shared_ptr<const PhysDomain> phys_domain_;
 

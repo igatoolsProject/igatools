@@ -143,7 +143,9 @@ public:
 
     std::shared_ptr<const CartesianGrid<dim_> > get_grid() const;
 
-    std::shared_ptr<const FuncType> get_function() const;
+    std::shared_ptr<const FuncType> get_ptr_const_function() const;
+
+    std::shared_ptr<FuncType> get_ptr_function();
 
     std::shared_ptr<ElementAccessor> create_element(const ListIt &index, const PropId &property) const;
 

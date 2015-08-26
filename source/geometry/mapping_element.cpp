@@ -30,7 +30,7 @@ MappingElement(const std::shared_ptr<const PhysDomain> phys_domain,
                const ListIt &index,
                const PropId &prop)
     :
-    func_elem_(std::make_shared<FuncElem>(phys_domain->get_function(),index,prop))
+    func_elem_(std::make_shared<FuncElem>(phys_domain->get_ptr_const_function(),index,prop))
 {}
 
 
