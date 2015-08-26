@@ -21,6 +21,7 @@
 #ifndef NEW_MAPPING_H_
 #define NEW_MAPPING_H_
 
+#if 0
 #include <igatools/base/config.h>
 #include <igatools/functions/function.h>
 
@@ -181,6 +182,7 @@ private:
 #endif
 
 };
+#endif
 
 
 IGA_NAMESPACE_CLOSE

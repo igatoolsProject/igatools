@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-
+#if 0
 #include <igatools/base/tensor.h>
 #include <igatools/geometry/mapping.h>
 #include <igatools/geometry/mapping_element.h>
@@ -92,7 +92,7 @@ create(std::shared_ptr<const FuncType> F)-> std::shared_ptr<self_t>
     return std::shared_ptr<self_t>(new self_t(F));
 }
 
-#if 0
+
 template<int dim_, int codim_>
 template <int k>
 auto
@@ -305,7 +305,6 @@ init_cache(ElementAccessor &elem) const -> void
     }
 
 }
-#endif
 
 //    if (flag_.fill_inv_hessians())
 //    {
@@ -388,4 +387,5 @@ end(const PropId &prop) -> ElementIterator
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/mapping.inst>
+#endif
 

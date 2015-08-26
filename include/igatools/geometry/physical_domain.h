@@ -20,7 +20,7 @@
 
 #ifndef __PHYSICAL_DOMAIN_H_
 #define __PHYSICAL_DOMAIN_H_
-#if 0
+
 #include <igatools/base/config.h>
 #include <igatools/functions/function.h>
 
@@ -377,4 +377,4 @@ private:
 IGA_NAMESPACE_CLOSE
 
 #endif
-#endif
+

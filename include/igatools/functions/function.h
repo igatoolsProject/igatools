@@ -30,8 +30,7 @@
 
 IGA_NAMESPACE_OPEN
 
-template <int,int> class Mapping;
-
+template <int,int> class PhysicalDomain;
 template <int, int, int, int> class FunctionElement;
 
 /**
@@ -40,33 +39,39 @@ template <int, int, int, int> class FunctionElement;
  * @ingroup serializable
  */
 template<int dim_, int codim_ = 0, int range_ = 1, int rank_ = 1>
-class Function
-    : public GridElementHandler<dim_>,
+class Function :
       public std::enable_shared_from_this<Function<dim_,codim_,range_,rank_> >
 {
 private:
     using base_t = Function<dim_, codim_, range_, rank_>;
     using self_t = Function<dim_, codim_, range_, rank_>;
-    using parent_t = GridElementHandler<dim_>;
-
 
 public:
-    using GridType = const CartesianGrid<dim_>;
-
-    using MapFunc = Function<dim_, 0, dim_ + codim_, 1>;
-    using PhysDomain = Mapping<dim_,codim_>;
-
-    using topology_variant = TopologyVariants<dim_>;
-    using eval_pts_variant = SubElemVariants<Quadrature,dim_>;
-
-    using ElementAccessor = FunctionElement<dim_, codim_, range_, rank_>;
-    using ElementIterator = GridIterator<ElementAccessor>;
-
     static const int space_dim = dim_ + codim_;
     static const int dim       = dim_;
     static const int codim     = codim_;
     static const int range     = range_;
     static const int rank      = rank_;
+
+    using GridType = const CartesianGrid<dim_>;
+    using MapFunc = Function<dim_, 0, dim_ + codim_, 1>;
+    using PhysDomain = Mapping<dim_,codim_>;
+
+
+
+    using ElementAccessor = FunctionElement<dim_, codim_, range_, rank_>;
+    //using ConstElementAccessor = ConstunctionElement<dim_, codim_, range_, rank_>;
+
+    /** Type for the iterator over the elements of the grid (non-const version).  */
+    using ElementIterator = GridIterator<ElementAccessor>;
+
+    /** Type for the iterator over the elements of the grid (const version).  */
+//    using ElementConstIterator = GridIterator<ConstElementAccessor>;
+
+    using ElementHandler = Function<dim_, codim_, range_, rank_>;
+
+
+
 
 
     using IndexType = TensorIndex<dim_>;
@@ -108,8 +113,11 @@ public:
     /**
      * Type for the divergence of function.
      */
-    using Div = Values<space_dim, range_, rank_-1>;
+    using Div = Values<dim, codim, space_dim, rank_-1>;
     ///@}
+
+    using topology_variant = TopologyVariants<dim_>;
+    using eval_pts_variant = SubElemVariants<Quadrature,dim_>;
 
     /** @name Constructors and destructor. */
     ///@{
@@ -141,7 +149,7 @@ public:
 
     virtual std::shared_ptr<base_t> clone() const = 0;
 
-#if 0
+
     virtual void reset(const ValueFlags &flag, const eval_pts_variant &quad);
 
     virtual void init_cache(ElementAccessor &elem, const topology_variant &k) const;
@@ -159,10 +167,12 @@ public:
     void fill_element_cache(ElementAccessor &elem) const;
 
     void fill_element_cache(ElementIterator &elem) const;
-#endif
 
+
+private:
     std::shared_ptr<ElementAccessor> create_element(const ListIt &index, const PropId &property) const;
 
+public:
     virtual void print_info(LogStream &out) const;
 
     /**
@@ -197,8 +207,15 @@ public:
     ElementIterator end(const PropId &element_property = ElementProperties::active);
     ///@}
 
-private:
 
+protected:
+    std::shared_ptr<CartesianGrid<dim_> > grid_;
+
+    SafeSTLArray<typename ElementAccessor::Flags, dim + 1> flags_;
+private:
+    std::shared_ptr<const PhysDomain> phys_domain_;
+
+private:
     /**
      * Unique identifier associated to each object instance.
      */
@@ -209,7 +226,7 @@ private:
      */
     std::string name_;
 
-#if 0
+
     struct ResetDispatcher : boost::static_visitor<void>
     {
         ResetDispatcher(const ValueFlags flag_in,
@@ -293,23 +310,9 @@ private:
         ElementAccessor &func_elem_;
     };
 
-#endif
-
-protected:
-//    std::shared_ptr<typename ElementAccessor::CacheType>
-//    &get_cache(ElementAccessor &elem);
 
 
 
-    /**
-     * One flag for each possile subdim
-     */
-    SafeSTLArray<ValueFlags, dim_ + 1> flags_;
-
-    std::shared_ptr<CartesianGrid<dim_> > grid_;
-
-private:
-    std::shared_ptr<const PhysDomain> phys_domain_;
 
 #ifdef MESH_REFINEMENT
     std::shared_ptr<self_t> function_previous_refinement_;

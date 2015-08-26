@@ -169,8 +169,6 @@ private:
     using base_t = TensorSizedContainer<dim_>;
 
 public:
-    using Point = Points<dim_>;
-
     static const int dim = dim_;
 
     /** Type for the element accessor. */
@@ -184,6 +182,9 @@ public:
     using ElementConstIterator = GridIterator<ConstElementAccessor>;
 
     using ElementHandler = GridElementHandler<dim_>;
+
+
+    using Point = Points<dim_>;
 
     using IndexType = TensorIndex<dim_>;
     using PropertyList = PropertiesIdContainer<IndexType>;
