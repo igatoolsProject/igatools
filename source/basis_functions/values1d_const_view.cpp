@@ -29,15 +29,16 @@ BasisValues1d()
 {}
 
 BasisValues1d::
-BasisValues1d(const int max_der_order, const int n_func, const int n_points)
+BasisValues1d(const int max_num_derivatives, const int n_func, const int n_points)
     :
-    values_(max_der_order, DenseMatrix(n_func, n_points))
+    values_(max_num_derivatives, DenseMatrix(n_func, n_points))
 {}
 
 Size
 BasisValues1d::
 get_num_points() const
 {
+    Assert(!values_.empty(),ExcEmptyObject());
     return values_[0].size2();
 }
 
@@ -45,15 +46,16 @@ Size
 BasisValues1d::
 get_num_functions() const
 {
+    Assert(!values_.empty(),ExcEmptyObject());
     return values_[0].size1();
 }
 
 void
 BasisValues1d::
-resize(const int max_der_order, const int n_func, const int n_points)
+resize(const int max_num_derivatives, const int n_func, const int n_points)
 {
-    values_.resize(max_der_order);
-    for (auto matrix: values_)
+    values_.resize(max_num_derivatives);
+    for (auto &matrix: values_)
         matrix.resize(n_func, n_points);
 }
 

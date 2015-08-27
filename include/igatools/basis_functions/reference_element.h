@@ -153,8 +153,6 @@ public:
 
 
 
-public:
-    std::shared_ptr<const Space> get_space() const;
 
 private:
 

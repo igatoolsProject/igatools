@@ -101,6 +101,77 @@ public:
         this->init_cache_impl(elem,quad);
     }
 
+    template <int sdim>
+    void init_cache(ElementIterator &elem,
+                    std::shared_ptr<const Quadrature<sdim>> quad) const
+    {
+        init_cache<sdim>(*elem, quad);
+    }
+
+    void init_element_cache(ElementAccessor &elem,
+                            std::shared_ptr<const Quadrature<dim>> quad) const
+    {
+        init_cache<dim>(elem, quad);
+    }
+
+    void init_element_cache(ElementIterator &elem,
+                            std::shared_ptr<const Quadrature<dim>> quad) const
+    {
+        init_element_cache(*elem, quad);
+    }
+
+    void init_face_cache(ElementAccessor &elem,
+                         std::shared_ptr<const Quadrature<(dim > 0) ? dim-1 : 0>> quad) const
+    {
+        Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
+        init_cache<(dim > 0) ? dim-1 : 0>(elem, quad);
+    }
+
+    void init_face_cache(ElementIterator &elem,
+                         std::shared_ptr<const Quadrature<(dim > 0) ? dim-1 : 0>> quad) const
+    {
+        init_face_cache(*elem, quad);
+    }
+
+
+    template <int sdim>
+    void fill_cache(ElementAccessor &elem, const int s_id) const
+    {
+        Assert(s_id >= 0 && s_id < UnitElement<sdim>::n_faces,
+               ExcIndexRange(s_id,0,UnitElement<sdim>::n_faces));
+        this->fill_cache_impl(elem,Topology<sdim>(),s_id);
+    }
+
+
+    template <int sdim>
+    void fill_cache(ElementIterator &elem, const int s_id) const
+    {
+        fill_cache<sdim>(*elem, s_id);
+    }
+
+    void fill_element_cache(ElementAccessor &elem) const
+    {
+        fill_cache<dim>(elem,0);
+    }
+
+    void fill_element_cache(ElementIterator &elem) const
+    {
+        fill_element_cache(*elem);
+    }
+
+
+    void fill_face_cache(ElementAccessor &elem, const int s_id) const
+    {
+        Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
+        fill_cache<(dim > 0) ? dim-1 : 0>(elem,s_id);
+    }
+
+    void fill_face_cache(ElementIterator &elem, const int s_id) const
+    {
+        fill_face_cache(*elem,s_id);
+    }
+
+
 public:
 
 
@@ -183,6 +254,14 @@ private:
     {
         Assert(false,ExcNotImplemented());
     }
+
+    virtual void fill_cache_impl(ElementAccessor &elem,
+                                 const topology_variant &topology,
+                                 const int s_id) const
+    {
+        Assert(false,ExcNotImplemented());
+    }
+
 
 
 #ifdef SERIALIZATION

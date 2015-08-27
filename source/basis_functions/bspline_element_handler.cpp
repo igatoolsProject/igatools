@@ -185,7 +185,7 @@ fill_interval_values(const Real one_len,
                      const BasisValues1d &bernstein_vals,
                      BasisValues1d &spline_vals)
 {
-    for (int order = 0; order < max_der; ++order)
+    for (int order = 0; order < MAX_NUM_DERIVATIVES; ++order)
     {
         auto &spline = spline_vals.get_derivative(order);
         const auto &berns = bernstein_vals.get_derivative(order);
@@ -202,8 +202,8 @@ resize_and_fill_bernstein_values(
     const SafeSTLVector<Real> &pt_coords,
     BasisValues1d &bernstein_values)
 {
-    bernstein_values.resize(max_der, deg+1, pt_coords.size());
-    for (int order = 0; order < max_der; ++order)
+    bernstein_values.resize(MAX_NUM_DERIVATIVES, deg+1, pt_coords.size());
+    for (int order = 0; order < MAX_NUM_DERIVATIVES; ++order)
         bernstein_values.get_derivative(order) =
             BernsteinBasis::derivative(order, deg, pt_coords);
 }
@@ -266,7 +266,7 @@ operator()(const std::shared_ptr<const Quadrature<sub_elem_dim>> &quad1)
                 for (const int &interv_id : intervals_id)
                 {
                     auto &splines1d = g_cache.entry(comp, dir, interv_id);
-                    splines1d.resize(max_der, n_basis_comp_dir, n_pts);
+                    splines1d.resize(MAX_NUM_DERIVATIVES, n_basis_comp_dir, n_pts);
                 } // end loop interv_id
             } // end loop dir
         } // end loop comp
@@ -468,13 +468,14 @@ init_ref_elem_cache(RefElementAccessor &elem, const topology_variant &topology)
     boost::apply_visitor(init_cache_dispatcher,topology);
 }
 
+#endif
 
 
 
 template <int dim, int range, int rank>
 void
 BSplineElementHandler<dim, range, rank>::
-FillCacheDispatcher::
+FillCacheDispatcherNoGlobalCache::
 copy_to_inactive_components_values(const SafeSTLVector<Index> &inactive_comp,
                                    const SafeSTLArray<Index, n_components> &active_map,
                                    ValueTable<Value> &D_phi) const
@@ -483,13 +484,14 @@ copy_to_inactive_components_values(const SafeSTLVector<Index> &inactive_comp,
            ExcDimensionMismatch(D_phi.get_num_functions(),
                                 elem_.get_max_num_basis()));
 
-    const auto comp_offset = elem_.get_basis_offset();
+    const auto &bsp_elem = dynamic_cast<BSplineElement<dim,range,rank> &>(elem_);
+    const auto comp_offset = bsp_elem.get_basis_offset();
 
     const Size n_points = D_phi.get_num_points();
     for (int comp : inactive_comp)
     {
         const auto act_comp = active_map[comp];
-        const auto n_basis_comp = elem_.get_num_basis_comp(comp);
+        const auto n_basis_comp = bsp_elem.get_num_basis_comp(comp);
         const Size act_offset = comp_offset[act_comp];
         const Size offset     = comp_offset[comp];
         for (Size basis_i = 0; basis_i < n_basis_comp;  ++basis_i)
@@ -508,7 +510,7 @@ template <int dim, int range, int rank>
 template <int order>
 void
 BSplineElementHandler<dim, range, rank>::
-FillCacheDispatcher::
+FillCacheDispatcherNoGlobalCache::
 copy_to_inactive_components(const SafeSTLVector<Index> &inactive_comp,
                             const SafeSTLArray<Index, n_components> &active_map,
                             ValueTable<Derivative<order>> &D_phi) const
@@ -517,14 +519,15 @@ copy_to_inactive_components(const SafeSTLVector<Index> &inactive_comp,
            ExcDimensionMismatch(D_phi.get_num_functions(),
                                 elem_.get_max_num_basis()));
 
-    const auto comp_offset = elem_.get_basis_offset();
+    const auto &bsp_elem = dynamic_cast<BSplineElement<dim,range,rank> &>(elem_);
+    const auto comp_offset = bsp_elem.get_basis_offset();
 
     const Size n_points = D_phi.get_num_points();
     const Size n_ders = Derivative<order>::size;
     for (int comp : inactive_comp)
     {
         const auto act_comp = active_map[comp];
-        const auto n_basis_comp = elem_.get_num_basis_comp(comp);
+        const auto n_basis_comp = bsp_elem.get_num_basis_comp(comp);
         const Size act_offset = comp_offset[act_comp];
         const Size offset     = comp_offset[comp];
         for (Size basis_i = 0; basis_i < n_basis_comp;  ++basis_i)
@@ -547,7 +550,7 @@ copy_to_inactive_components(const SafeSTLVector<Index> &inactive_comp,
 template <int dim, int range, int rank>
 void
 BSplineElementHandler<dim, range, rank>::
-FillCacheDispatcher::
+FillCacheDispatcherNoGlobalCache::
 evaluate_bspline_values(
     const ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>>> &elem_values,
     ValueTable<Value> &D_phi) const
@@ -556,14 +559,23 @@ evaluate_bspline_values(
            ExcDimensionMismatch(D_phi.get_num_functions(),
                                 elem_.get_max_num_basis()));
 
-    const auto comp_offset = elem_.get_basis_offset();
+    const auto &bsp_elem = dynamic_cast<BSplineElement<dim,range,rank> &>(elem_);
+    const auto comp_offset = bsp_elem.get_basis_offset();
+
+#if 0
+    using OffsetTable = ComponentContainer<int>;
+    OffsetTable comp_offset;
+    comp_offset[0] = 0;
+    for (int comp = 1 ; comp < OffsetTable::n_entries ; ++comp)
+        comp_offset[comp] += comp_offset[comp-1] + elem_values[comp-1]->get_num_multivariate_functions();
+#endif
 
     const Size n_points = D_phi.get_num_points();
     const TensorIndex<dim> der_tensor_id; // [0,0,..,0] tensor index
     for (int comp : elem_values.get_active_components_id())
     {
         const auto &values = *elem_values[comp];
-        const int n_basis_comp = elem_.get_num_basis_comp(comp);
+        const int n_basis_comp = bsp_elem.get_num_basis_comp(comp);
         const Size offset = comp_offset[comp];
 
         for (int func_id = 0; func_id < n_basis_comp; ++func_id)
@@ -586,7 +598,7 @@ template <int dim, int range, int rank>
 template <int order>
 void
 BSplineElementHandler<dim, range, rank>::
-FillCacheDispatcher::
+FillCacheDispatcherNoGlobalCache::
 evaluate_bspline_derivatives(
     const ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>>> &elem_values,
     ValueTable<Derivative<order>> &D_phi) const
@@ -606,10 +618,19 @@ evaluate_bspline_derivatives(
            ExcDimensionMismatch(D_phi.get_num_functions(),
                                 elem_.get_max_num_basis()));
 
-    const auto comp_offset = elem_.get_basis_offset();
+    const auto &bsp_elem = dynamic_cast<BSplineElement<dim,range,rank> &>(elem_);
+    const auto comp_offset = bsp_elem.get_basis_offset();
+
+#if 0
+    using OffsetTable = ComponentContainer<int>;
+    OffsetTable comp_offset;
+    comp_offset[0] = 0;
+    for (int comp = 1 ; comp < OffsetTable::n_entries ; ++comp)
+        comp_offset[comp] += comp_offset[comp-1] + elem_values[comp-1]->get_num_multivariate_functions();
+#endif
 
     TensorFunctionDerivativesSymmetry<dim,order> sym;
-    const auto n_der =  TensorFunctionDerivativesSymmetry<dim,order>::num_entries_eval;
+    const auto n_der = TensorFunctionDerivativesSymmetry<dim,order>::num_entries_eval;
 
     const auto &univariate_order = sym.univariate_order ;
     const auto &copy_indices = sym.copy_indices;
@@ -617,7 +638,7 @@ evaluate_bspline_derivatives(
     for (int comp : elem_values.get_active_components_id())
     {
         const auto &values = *elem_values[comp];
-        const int n_basis_comp = elem_.get_num_basis_comp(comp);
+        const int n_basis_comp = bsp_elem.get_num_basis_comp(comp);
         const Size offset = comp_offset[comp];
 
         for (int func_id = 0; func_id < n_basis_comp; ++func_id)
@@ -646,6 +667,8 @@ evaluate_bspline_derivatives(
                                        elem_values.get_comp_map(), D_phi);
 }
 
+
+#if 0
 
 template<int dim_, int range_ , int rank_>
 template<int sub_elem_dim>
@@ -738,15 +761,17 @@ print_info(LogStream &out) const
     out.end_item();
     //*/
 
+#if 0
     out.begin_item("Splines 1D Cache:");
     cacheutils::print_caches(splines1d_, out);
 //    splines1d_.print_info(out);
     out.end_item();
+#endif
 }
 
 
 
-
+#if 0
 template<int dim_, int range_ , int rank_>
 BSplineElementHandler<dim_, range_, rank_>::
 GlobalCache::
@@ -818,7 +843,7 @@ get_element_values(const TensorIndex<dim> &elem_tensor_id) const
     }
     return result;
 }
-
+#endif
 
 #ifdef SERIALIZATION
 template<int dim_, int range_ , int rank_>
@@ -831,7 +856,9 @@ serialize(Archive &ar, const unsigned int version)
                                        boost::serialization::base_object<base_t>(*this));
 
     ar &boost::serialization::make_nvp("flags_",flags_);
+#if 0
     ar &boost::serialization::make_nvp("splines1d_",splines1d_);
+#endif
 }
 #endif
 

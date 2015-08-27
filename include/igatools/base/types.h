@@ -166,7 +166,7 @@ enum class ValueFlags : std::int64_t
 };
 
 
-const std::array<ValueFlags, max_der> DerivativeFlags =
+const std::array<ValueFlags, MAX_NUM_DERIVATIVES> DerivativeFlags =
 {{ValueFlags::value, ValueFlags::gradient,  ValueFlags::hessian}};
 
 enum class TransformationFlags : std::int64_t

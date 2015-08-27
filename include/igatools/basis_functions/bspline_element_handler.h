@@ -195,6 +195,13 @@ private:
 
     using BaseElem = SpaceElement<dim_,0,range_,rank_,Transformation::h_grad>;
 
+    virtual void init_cache_impl(BaseElem &elem,
+                                 const eval_pts_variant &quad) const override final
+    {
+        auto init_cache_dispatcher = InitCacheDispatcher(this->grid_handler_,flags_,elem);
+        boost::apply_visitor(init_cache_dispatcher,quad);
+    }
+
     struct InitCacheDispatcher : boost::static_visitor<void>
     {
         InitCacheDispatcher(const GridElementHandler<dim_> &grid_handler,
@@ -236,12 +243,266 @@ private:
         BaseElem &elem_;
     };
 
-    virtual void init_cache_impl(BaseElem &elem,
-                                 const eval_pts_variant &quad) const override final
+
+    virtual void fill_cache_impl(BaseElem &elem,
+                                 const topology_variant &topology,
+                                 const int s_id) const override final
     {
-        auto init_cache_dispatcher = InitCacheDispatcher(this->grid_handler_,flags_,elem);
-        boost::apply_visitor(init_cache_dispatcher,quad);
+        auto fill_cache_dispatcher = FillCacheDispatcherNoGlobalCache(s_id,this->grid_handler_,elem);
+        boost::apply_visitor(fill_cache_dispatcher,topology);
     }
+
+
+    struct FillCacheDispatcherNoGlobalCache : boost::static_visitor<void>
+    {
+        FillCacheDispatcherNoGlobalCache(const int s_id,
+                                         const GridElementHandler<dim_> &grid_handler,
+                                         BaseElem &elem)
+            :
+            s_id_(s_id),
+            grid_handler_(grid_handler),
+            elem_(elem)
+        {}
+
+        template<int sdim>
+        void operator()(const Topology<sdim> &topology)
+        {
+            auto &grid_elem = elem_.get_grid_element();
+            grid_handler_.template fill_cache<sdim>(grid_elem,s_id_);
+
+
+
+            //--------------------------------------------------------------------------------------
+            // filling the 1D cache --- begin
+
+            const auto &grid = *grid_elem.get_grid();
+            const auto n_inter = grid.get_num_intervals();
+
+            const auto elem_size = grid_elem.template get_side_lengths<dim>(0);
+            const auto elem_tensor_id = grid_elem.get_index();
+
+            const auto &bsp_space = dynamic_cast<const Space &>(*elem_.get_space());
+
+            const auto &space_data = *bsp_space.space_data_;
+
+            const auto &degree = bsp_space.get_degree_table();
+
+            const auto &active_components_id = space_data.get_active_components_id();
+
+            const auto quad_in_cache = grid_elem.template get_quadrature<sdim>();
+
+            const auto quad = extend_sub_elem_quad<sdim,dim>(*quad_in_cache, s_id_);
+
+            using BasisValues1dTable = ComponentContainer<SafeSTLArray<BasisValues1d,dim>>;
+            BasisValues1dTable splines_derivatives_1D_table(space_data.get_components_map());
+
+            const auto &n_coords = quad.get_num_coords_direction();
+
+            /*
+             * For each direction, interval and component we compute the 1D bspline
+             * basis evaluate at the 1D component of the tensor product quadrature
+             */
+            const auto &bezier_op   = bsp_space.operators_;
+            const auto &end_interval = bsp_space.end_interval_;
+
+            using BasisValues = ComponentContainer<BasisValues1d>;
+            const auto &deg_comp_map = degree.get_comp_map();
+            BasisValues bernstein_values(deg_comp_map);
+
+            for (const int dir : UnitElement<dim>::active_directions)
+            {
+                const auto &pt_coords_internal = quad.get_coords_direction(dir);
+
+                const auto len = elem_size[dir];
+
+                const auto interval_id = elem_tensor_id[dir];
+
+                Real alpha;
+
+                const int n_pts_1D = n_coords[dir];
+
+                SafeSTLVector<Real> pt_coords_boundary(n_pts_1D);
+
+                const SafeSTLVector<Real> *pt_coords_ptr = nullptr;
+
+                for (auto comp : active_components_id)
+                {
+                    const int deg = degree[comp][dir];
+
+                    auto &splines_derivatives_1D = splines_derivatives_1D_table[comp][dir];
+                    splines_derivatives_1D.resize(MAX_NUM_DERIVATIVES,deg+1,n_pts_1D);
+
+                    if (interval_id == 0) // processing the leftmost interval
+                    {
+                        // first interval (i.e. left-most interval)
+
+                        alpha = end_interval[comp][dir].first;
+                        const Real one_minus_alpha = 1. - alpha;
+
+                        for (int ipt = 0 ; ipt < n_pts_1D ; ++ipt)
+                            pt_coords_boundary[ipt] = one_minus_alpha +
+                                                      pt_coords_internal[ipt] * alpha;
+
+                        pt_coords_ptr = &pt_coords_boundary;
+                    } // end process_interval_left
+                    else if (interval_id == n_inter[dir]-1) // processing the rightmost interval
+                    {
+                        // last interval (i.e. right-most interval)
+
+                        alpha = end_interval[comp][dir].second;
+
+                        for (int ipt = 0 ; ipt < n_pts_1D ; ++ipt)
+                            pt_coords_boundary[ipt] = pt_coords_internal[ipt] *
+                                                      alpha;
+
+                        pt_coords_ptr = &pt_coords_boundary;
+                    } // end process_interval_right
+                    else
+                    {
+                        // internal interval
+
+                        alpha = 1.0;
+
+                        pt_coords_ptr = &pt_coords_internal;
+                    } // end process_interval_internal
+
+
+                    const Real alpha_div_interval_length = alpha / len;
+
+                    const auto &oper = bezier_op.get_operator(dir,interval_id,comp);
+
+                    //------------------------------------------------------------
+                    //resize_and_fill_bernstein_values
+                    bernstein_values[comp].resize(MAX_NUM_DERIVATIVES,deg+1,n_pts_1D);
+                    for (int order = 0; order < MAX_NUM_DERIVATIVES; ++order)
+                    {
+                        auto &berns = bernstein_values[comp].get_derivative(order);
+                        berns = BernsteinBasis::derivative(order, deg,*pt_coords_ptr);
+
+                        auto &splines = splines_derivatives_1D.get_derivative(order);
+                        splines = oper.scale_action(
+                                      std::pow(alpha_div_interval_length, order),
+                                      berns);
+                    }
+                    //------------------------------------------------------------
+
+                } // end loop comp
+
+            } // end loop dir
+            //
+            // filling the 1D cache --- end
+            //-------------------------------------------------------------------------------
+
+
+
+            //-------------------------------------------------------------------------------
+            // Multi-variate spline evaluation from 1D values --- begin
+            using TPFE = const TensorProductFunctionEvaluator<dim>;
+            ComponentContainer<std::unique_ptr<TPFE>> val_1d(splines_derivatives_1D_table.get_comp_map());
+
+            SafeSTLArray<BasisValues1dConstView, dim> values_1D;
+            for (auto c : val_1d.get_active_components_id())
+            {
+                const auto &value = splines_derivatives_1D_table[c];
+                for (int i = 0 ; i < dim_ ; ++i)
+                    values_1D[i] = BasisValues1dConstView(value[i]);
+
+                val_1d[c] = std::make_unique<TPFE>(quad,values_1D);
+            }
+            // Multi-variate spline evaluation from 1D values --- end
+            //-------------------------------------------------------------------------------
+
+
+
+            auto &all_sub_elems_cache = elem_.get_all_sub_elems_cache();
+            Assert(all_sub_elems_cache != nullptr, ExcNullPtr());
+            auto &sub_elem_cache = all_sub_elems_cache->template get_sub_elem_cache<sdim>(s_id_);
+//#if 0
+//            const auto val_1d = g_cache.get_element_values();
+
+            using Elem = SpaceElement<dim_,0,range_,rank_,Transformation::h_grad>;
+            using _Value      = typename Elem::_Value;
+            using _Gradient   = typename Elem::_Gradient;
+            using _Hessian    = typename Elem::_Hessian;
+            using _Divergence = typename Elem::_Divergence;
+
+            if (sub_elem_cache.template status_fill<_Value>())
+            {
+                auto &values = sub_elem_cache.template get_data<_Value>();
+                evaluate_bspline_values(val_1d, values);
+                sub_elem_cache.template set_status_filled<_Value>(true);
+            }
+            if (sub_elem_cache.template status_fill<_Gradient>())
+            {
+                auto &values = sub_elem_cache.template get_data<_Gradient>();
+                evaluate_bspline_derivatives<1>(val_1d, values);
+                sub_elem_cache.template set_status_filled<_Gradient>(true);
+            }
+            if (sub_elem_cache.template status_fill<_Hessian>())
+            {
+                auto &values = sub_elem_cache.template get_data<_Hessian>();
+                evaluate_bspline_derivatives<2>(val_1d, values);
+                sub_elem_cache.template set_status_filled<_Hessian>(true);
+            }
+            if (sub_elem_cache.template status_fill<_Divergence>())
+            {
+                eval_divergences_from_gradients(
+                    sub_elem_cache.template get_data<_Gradient>(),
+                    sub_elem_cache.template get_data<_Divergence>());
+                sub_elem_cache.template set_status_filled<_Divergence>(true);
+            }
+//#endif
+            sub_elem_cache.set_filled(true);
+        }
+
+//#if 0
+        /**
+         * Computes the values (i.e. the 0-th order derivative) of the non-zero
+         *  B-spline basis
+         * functions over the current element,
+         *   at the evaluation points pre-allocated in the cache.
+         *
+         * \warning If the output result @p D_phi is not correctly
+         * pre-allocated,
+         * an exception will be raised.
+         */
+        void evaluate_bspline_values(
+            const ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>>> &elem_values,
+            ValueTable<Value> &D_phi) const;
+
+        /**
+         * Computes the k-th order derivative of the non-zero B-spline basis
+         * functions over the current element,
+         *   at the evaluation points pre-allocated in the cache.
+         *
+         * \warning If the output result @p D_phi is not correctly pre-allocated,
+         * an exception will be raised.
+         */
+        template <int order>
+        void evaluate_bspline_derivatives(
+            const ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>>> &elem_values,
+            ValueTable<Derivative<order>> &D_phi) const;
+//#endif
+
+        const int s_id_;
+        const GridElementHandler<dim_> &grid_handler_;
+        BaseElem &elem_;
+
+    private:
+
+//#if 0
+        void
+        copy_to_inactive_components_values(const SafeSTLVector<Index> &inactive_comp,
+                                           const SafeSTLArray<Index, n_components> &active_map,
+                                           ValueTable<Value> &D_phi) const;
+
+        template <int order>
+        void
+        copy_to_inactive_components(const SafeSTLVector<Index> &inactive_comp,
+                                    const SafeSTLArray<Index, n_components> &active_map,
+                                    ValueTable<Derivative<order>> &D_phi) const;
+//#endif
+    };
 
 
     static void
@@ -259,7 +520,7 @@ private:
 
 
 
-
+#if 0
     /**
      * One-dimensional B-splines values and derivatives at quadrature points.
      * The values are stored with the following index ordering:
@@ -271,13 +532,15 @@ private:
     class GlobalCache
     {
     private:
-        using BasisValues1dTable = ComponentContainer<SafeSTLArray<std::map<Index,BasisValues1d>,dim>>;
 
 
         /**
          * Quadrature points used for the 1D basis evaluation.
          */
         std::shared_ptr<const Quadrature<dim>> quad_;
+
+
+        using BasisValues1dTable = ComponentContainer<SafeSTLArray<std::map<Index,BasisValues1d>,dim>>;
 
         /**
          * Values (and derivatives) of 1D basis precomputed in the initalized
@@ -325,6 +588,7 @@ private:
         ///@}
 #endif // SERIALIZATION
     };
+#endif
 
 
 #if 0
@@ -425,6 +689,7 @@ private:
                                     ValueTable<Derivative<order>> &D_phi) const;
 
     };
+
 #endif
 
     /**
@@ -437,7 +702,9 @@ private:
 
     SafeSTLArray<typename space_element::Flags, dim_ + 1> flags_;
 
+#if 0
     CacheList<GlobalCache, dim> splines1d_;
+#endif
 
 #ifdef SERIALIZATION
     /**

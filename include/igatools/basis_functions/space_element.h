@@ -75,7 +75,8 @@ public:
     static const int dim = dim_;
     static const int space_dim = Func::space_dim;
 
-    using ContainerType = Space<dim_,codim_,range_,rank_,type_>;
+    using Sp = Space<dim_,codim_,range_,rank_,type_>;
+    using ContainerType = Sp;
 
     /**
      * For each component gives a product array of the dimension
@@ -201,7 +202,7 @@ public:
         SafeSTLVector<Index> dofs_local_to_elem;
 
         this->space_->get_element_dofs(
-            this->get_flat_index(),
+            this->get_index(),
             dofs_global,
             dofs_local_to_patch,
             dofs_local_to_elem,
@@ -364,6 +365,8 @@ public:
         return this->all_sub_elems_cache_;
     }
 
+    std::shared_ptr<const Sp> get_space() const;
+
 private:
     template <class ValueType, int topology_dim>
     const auto &
@@ -386,7 +389,7 @@ protected:
 
 private:
 
-    std::shared_ptr<const Space<dim_,codim_,range_,rank_,type_>> space_;
+    std::shared_ptr<const Sp> space_;
 
 
 

@@ -180,6 +180,14 @@ get_w_measures(const int j) const
     return w_measures;
 }
 
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+auto
+SpaceElement<dim_,codim_,range_,rank_,type_>::
+get_space() const -> std::shared_ptr<const Sp>
+{
+    return space_;
+}
+
 
 
 template<int dim_,int codim_,int range_,int rank_,Transformation type_>

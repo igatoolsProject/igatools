@@ -56,13 +56,14 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
     elem_handler->template set_flags<k>(flag);
     elem_handler->template init_cache<k>(*elem,quad);
 
-#if 0
-    auto elem = space->begin();
-    elem_handler->init_element_cache(elem);
+    using Elem = typename Space::ElementAccessor;
+    using _Value = typename Elem::_Value;
+    using _Gradient = typename Elem::_Gradient;
+    using _Hessian = typename Elem::_Hessian;
 
     for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
     {
-        elem_handler->fill_element_cache(elem);
+        elem_handler->template fill_cache<k>(*elem,0);
 
         out << "Sub Element: " << s_id << endl;
         auto values    = elem->template get_basis<_Value,k>(s_id,DofProperties::active);
@@ -81,7 +82,6 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
         hessians.print_info(out);
         out.end_item();
     }
-#endif
 }
 
 
@@ -112,10 +112,12 @@ void bspline_iterator_active_dofs(const int deg = 2,const int n_qp = 3)
     auto elem_handler = space->get_elem_handler();
 
     elem_handler->template set_flags<k>(flag);
-    elem_handler->template init_cache<k>(*elem,quad);
-//    elem_handler->reset(flag, quad);
-#if 0
-    elem_handler->init_element_cache(elem);
+    elem_handler->init_element_cache(elem,quad);
+
+    using Elem = typename Space::ElementAccessor;
+    using _Value = typename Elem::_Value;
+    using _Gradient = typename Elem::_Gradient;
+    using _Hessian = typename Elem::_Hessian;
 
     for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
     {
@@ -138,7 +140,6 @@ void bspline_iterator_active_dofs(const int deg = 2,const int n_qp = 3)
         hessians.print_info(out);
         out.end_item();
     }
-#endif
 }
 
 

@@ -105,6 +105,14 @@ class QuadList
 {
 public:
     template<int sdim>
+    const QuadPtr<sdim> &get_quad() const
+    {
+        const auto &quad = boost::fusion::at_key<Topology<sdim>>(*this);
+        Assert(quad != nullptr,ExcNullPtr());
+        return quad;
+    }
+
+    template<int sdim>
     QuadPtr<sdim> &get_quad()
     {
         return boost::fusion::at_key<Topology<sdim>>(*this);

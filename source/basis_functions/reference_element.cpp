@@ -131,13 +131,6 @@ get_element_w_measures() const -> ValueVector<Real>
 }
 
 
-template <int dim, int range, int rank>
-auto
-ReferenceElement<dim, range, rank>::
-get_space() const -> std::shared_ptr<const Space>
-{
-    return space_;
-}
 
 
 #ifdef SERIALIZATION

@@ -296,6 +296,17 @@ public:
     template <int sdim>
     ValueVector<Point> get_points(const int s_id = 0) const;
 
+
+    /**
+     * Returns the unitary quadrature scheme corresponding to the <tt>sdim</tt>
+     * dimensional s_id-th sub-element.
+     */
+    template <int sdim>
+    std::shared_ptr<const Quadrature<sdim>> get_quadrature() const
+    {
+        return quad_list_.template get_quad<sdim>();
+    }
+
 private:
     ValueVector<Point> get_element_points() const;
 
@@ -308,7 +319,6 @@ public:
 
     void print_cache_info(LogStream &out) const;
 
-private:
     template<int sdim>
     const Points<sdim> get_side_lengths(const int s_id) const;
 

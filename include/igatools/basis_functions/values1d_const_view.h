@@ -43,13 +43,13 @@ class BasisValues1d
 public:
     BasisValues1d();
 
-    BasisValues1d(const int max_der_order, const int n_func, const int n_points);
+    BasisValues1d(const int max_num_derivatives, const int n_func, const int n_points);
 
     Size get_num_points() const;
 
     Size get_num_functions() const;
 
-    void resize(const int max_der_order, const int n_func, const int n_points);
+    void resize(const int max_num_derivatives, const int n_func, const int n_points);
 
 
     void print_info(LogStream &out) const;
@@ -175,6 +175,11 @@ public:
     auto func_flat_to_tensor(const Index func_id) const
     {
         return f_size_.flat_to_tensor(func_id);
+    }
+
+    int get_num_multivariate_functions() const
+    {
+        return f_size_.flat_size();
     }
 
 private:
