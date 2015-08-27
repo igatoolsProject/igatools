@@ -22,7 +22,7 @@
 #define __PHYSICAL_DOMAIN_H_
 
 #include <igatools/base/config.h>
-#include <igatools/functions/function.h>
+
 
 IGA_NAMESPACE_OPEN
 
@@ -103,7 +103,8 @@ public:
      */
     PhysicalDomain() = default;
 
-    PhysicalDomain(std::shared_ptr<const FuncType> F);
+    PhysicalDomain(std::shared_ptr<const GridType> grid,
+    		       std::shared_ptr<const FuncType> F);
 
     ~PhysicalDomain();
 

@@ -17,57 +17,59 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-#if 0
-#include <igatools/base/tensor.h>
+
 #include <igatools/geometry/physical_domain.h>
 #include <igatools/geometry/physical_domain_element.h>
+#include <igatools/functions/function.h>
 
 using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
 
-namespace
-{
-
-ValueFlags
-mapping_to_function_flags(const ValueFlags &flags)
-{
-    ValueFlags valid_func_flags = ValueFlags::value |
-                                  ValueFlags::gradient |
-                                  ValueFlags::hessian |
-                                  ValueFlags::divergence |
-                                  ValueFlags::point;
-
-    ValueFlags transfer_flags = ValueFlags::measure |
-                                ValueFlags::w_measure |
-                                ValueFlags::boundary_normal |
-                                valid_func_flags;
-
-
-    ValueFlags f_flags = flags & transfer_flags;
-
-    if (contains(flags, ValueFlags::measure) ||
-        contains(flags, ValueFlags::w_measure) ||
-        contains(flags, ValueFlags::inv_gradient) ||
-        contains(flags, ValueFlags::outer_normal))
-        f_flags |=  ValueFlags::gradient;
-
-    if (contains(flags, ValueFlags::inv_hessian) ||
-        contains(flags, ValueFlags::curvature))
-        f_flags |=  ValueFlags::gradient | ValueFlags::hessian;
-
-    return f_flags;
-}
-};
+//namespace
+//{
+//
+//ValueFlags
+//mapping_to_function_flags(const ValueFlags &flags)
+//{
+//    ValueFlags valid_func_flags = ValueFlags::value |
+//                                  ValueFlags::gradient |
+//                                  ValueFlags::hessian |
+//                                  ValueFlags::divergence |
+//                                  ValueFlags::point;
+//
+//    ValueFlags transfer_flags = ValueFlags::measure |
+//                                ValueFlags::w_measure |
+//                                ValueFlags::boundary_normal |
+//                                valid_func_flags;
+//
+//
+//    ValueFlags f_flags = flags & transfer_flags;
+//
+//    if (contains(flags, ValueFlags::measure) ||
+//        contains(flags, ValueFlags::w_measure) ||
+//        contains(flags, ValueFlags::inv_gradient) ||
+//        contains(flags, ValueFlags::outer_normal))
+//        f_flags |=  ValueFlags::gradient;
+//
+//    if (contains(flags, ValueFlags::inv_hessian) ||
+//        contains(flags, ValueFlags::curvature))
+//        f_flags |=  ValueFlags::gradient | ValueFlags::hessian;
+//
+//    return f_flags;
+//}
+//};
 
 
 
 template<int dim_, int codim_>
 PhysicalDomain<dim_, codim_>::
-PhysicalDomain(std::shared_ptr<FuncType> F)
+PhysicalDomain(std::shared_ptr<const GridType> grid,
+	           std::shared_ptr<const FuncType> F)
     :
-    F_(F->clone())
+   grid_(grid),
+   F_(F)
 {}
 
 
@@ -219,4 +221,4 @@ end() -> ElementIterator
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/physical_domain.inst>
-#endif
+
