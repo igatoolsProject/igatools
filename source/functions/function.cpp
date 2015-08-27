@@ -47,37 +47,47 @@ Function(const self_t &func)
 
 
 template<int dim_, int codim_, int range_, int rank_>
-Index
+void
 Function<dim_, codim_, range_, rank_ >::
-get_object_id() const
+set_flags(const topology_variant &sdim,
+          const typename ElementAccessor::Flags &flag)
 {
-    return object_id_;
+    auto reset_dispatcher = ResetDispatcher(flag,*this,flags_);
+    boost::apply_visitor(reset_dispatcher);
 }
+
+
+
+template<int dim_, int codim_, int range_, int rank_>
+void
+Function<dim_, codim_, range_, rank_ >::
+init_cache(ElementAccessor &elem,
+           const eval_pts_variant &quad) const
+{
+    auto init_dispatcher = InitCacheDispatcher(*this, elem);
+    boost::apply_visitor(init_dispatcher, quad);
+}
+
+
+
+template<int dim_, int codim_, int range_, int rank_>
+void
+Function<dim_, codim_, range_, rank_ >::
+fill_cache(const topology_variant &sdim,
+           ElementAccessor &elem,
+           const int s_id) const
+{
+    auto fill_dispatcher = FillCacheDispatcher(s_id, *this, func_elem);
+    boost::apply_visitor(fill_dispatcher, s_id);
+}
+
+
 
 #if 0
 template<int dim_, int codim_, int range_, int rank_>
 void
 Function<dim_, codim_, range_, rank_ >::
-reset(const ValueFlags &flag, const eval_pts_variant &quad)
-{
-    auto reset_dispatcher = ResetDispatcher(flag,*this,flags_);
-    boost::apply_visitor(reset_dispatcher, quad);
-}
-
-template<int dim_, int codim_, int range_, int rank_>
-void
-Function<dim_, codim_, range_, rank_ >::
-init_cache(ElementAccessor &func_elem, const topology_variant &k) const
-{
-    auto init_cache_dispatcher = InitCacheDispatcher(*this,flags_,func_elem);
-
-    boost::apply_visitor(init_cache_dispatcher, k);
-}
-
-template<int dim_, int codim_, int range_, int rank_>
-void
-Function<dim_, codim_, range_, rank_ >::
-init_cache(ElementIterator &elem, const topology_variant &k) const
+init_cache(ElementIterator &elem, const topology_variant &sdim) const
 {
     init_cache(*elem, k);
 }
@@ -99,20 +109,15 @@ init_element_cache(ElementIterator &elem) const
 {
     this->init_cache(*elem, Topology<dim_>());
 }
+#endif
 
+
+
+#if 0
 template<int dim_, int codim_, int range_, int rank_>
 void
 Function<dim_, codim_, range_, rank_ >::
-fill_cache(ElementAccessor &func_elem, const topology_variant &k,const int sub_elem_id) const
-{
-    auto fill_cache_dispatcher = FillCacheDispatcher(sub_elem_id,*this,func_elem);
-    boost::apply_visitor(fill_cache_dispatcher, k);
-}
-
-template<int dim_, int codim_, int range_, int rank_>
-void
-Function<dim_, codim_, range_, rank_ >::
-fill_cache(ElementIterator &elem, const topology_variant &k, const int j) const
+fill_cache(ElementIterator &elem, const topology_variant &sdim, const int j) const
 {
     this->fill_cache(*elem, k, j);
 }
@@ -149,18 +154,6 @@ get_cache(ElementAccessor &elem)
 //*/
 
 template<int dim_, int codim_, int range_, int rank_>
-auto
-Function<dim_, codim_, range_, rank_ >::
-create_element(const ListIt &index, const PropId &property) const -> std::shared_ptr<ElementAccessor>
-{
-    auto elem = std::make_shared<ElementAccessor>(this->shared_from_this(),index,property);
-    Assert(elem != nullptr,ExcNullPtr());
-
-    return elem;
-}
-
-
-template<int dim_, int codim_, int range_, int rank_>
 void
 Function<dim_, codim_, range_, rank_ >::
 print_info(LogStream &out) const
@@ -190,6 +183,15 @@ end(const PropId &prop) -> ElementIterator
 }
 
 template<int dim_, int codim_, int range_, int rank_>
+Index
+Function<dim_, codim_, range_, rank_ >::
+get_object_id() const
+{
+    return object_id_;
+}
+
+
+template<int dim_, int codim_, int range_, int rank_>
 const std::string &
 Function<dim_, codim_, range_, rank_ >::
 get_name() const
@@ -208,6 +210,18 @@ set_name(const std::string &name)
 
 #ifdef SERIALIZATION
 template<int dim_, int codim_, int range_, int rank_>
+template<int dim_, int codim_, int range_, int rank_>
+auto
+Function<dim_, codim_, range_, rank_ >::
+create_element(const ListIt &index, const PropId &property) const -> std::shared_ptr<ElementAccessor>
+{
+    auto elem = std::make_shared<ElementAccessor>(this->shared_from_this(),index,property);
+    Assert(elem != nullptr,ExcNullPtr());
+
+    return elem;
+}
+
+
 template<class Archive>
 void
 Function<dim_, codim_, range_, rank_ >::

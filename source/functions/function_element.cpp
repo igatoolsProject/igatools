@@ -27,11 +27,11 @@
 IGA_NAMESPACE_OPEN
 
 
-template<int dim, int codim, int range, int rank>
-FunctionElement<dim, codim, range, rank>::
-FunctionElement(const std::shared_ptr<const Func> func,
-                const ListIt &index,
-                const PropId &prop)
+template<int dim, int codim, int range, int rank,  class ContainerType_>
+FunctionElementBase<dim, codim, range, rank, ContainerType_>::
+FunctionElementBase(const std::shared_ptr<Func> func,
+                    const ListIt &index,
+                    const PropId &prop)
     :
     func_(std::const_pointer_cast<Func>(func)),
     grid_elem_(func->get_grid()->create_element(index,prop))
@@ -45,10 +45,10 @@ FunctionElement(const std::shared_ptr<const Func> func,
 }
 
 
-template<int dim, int codim, int range, int rank>
-FunctionElement<dim, codim, range, rank>::
-FunctionElement(const FunctionElement<dim,codim,range,rank> &elem,
-                const CopyPolicy &copy_policy)
+template<int dim, int codim, int range, int rank,  class ContainerType_>
+FunctionElementBase<dim, codim, range, rank, ContainerType_>::
+FunctionElementBase(const FunctionElement<dim,codim,range,rank> &elem,
+                    const CopyPolicy &copy_policy)
     :
     func_(elem.func_)
 {
@@ -67,9 +67,9 @@ FunctionElement(const FunctionElement<dim,codim,range,rank> &elem,
 }
 
 
-template<int dim, int codim, int range, int rank>
+template<int dim, int codim, int range, int rank,  class ContainerType_>
 FunctionElement<dim,codim,range,rank> &
-FunctionElement<dim, codim, range, rank>::
+FunctionElementBase<dim, codim, range, rank, ContainerType_>::
 operator=(const FunctionElement<dim,codim,range,rank> &element)
 {
     shallow_copy_from(element);
@@ -77,40 +77,32 @@ operator=(const FunctionElement<dim,codim,range,rank> &element)
 }
 
 
-template<int dim, int codim, int range, int rank>
-std::shared_ptr<FunctionElement<dim,codim,range,rank> >
-FunctionElement<dim, codim, range, rank>::
-clone() const
-{
-    auto elem = std::make_shared<FunctionElement<dim,codim,range,rank> >(*this,CopyPolicy::deep);
-    Assert(elem != nullptr, ExcNullPtr());
-    return elem;
-}
+//template<int dim, int codim, int range, int rank,  class ContainerType_>
+//std::shared_ptr<FunctionElement<dim,codim,range,rank> >
+//FunctionElementBase<dim, codim, range, rank, ContainerType_>::
+//clone() const
+//{
+//    auto elem = std::make_shared<FunctionElement<dim,codim,range,rank> >(*this,CopyPolicy::deep);
+//    Assert(elem != nullptr, ExcNullPtr());
+//    return elem;
+//}
 
 
-template<int dim, int codim, int range, int rank>
-ValueFlags
-FunctionElement<dim, codim, range, rank>::
-get_valid_flags()
-{
-    return cacheutils::get_valid_flags_from_cache_type(CType());
-}
 
-
-template<int dim, int codim, int range, int rank>
+template<int dim, int codim, int range, int rank,  class ContainerType_>
 auto
-FunctionElement<dim, codim, range, rank>::
-get_grid_element() const -> const GridElem &
+FunctionElementBase<dim, codim, range, rank, ContainerType_>::
+get_domain_element() const -> const PhysicalDomainElement &
 {
-    return *grid_elem_;
+    return *phys_dom_elem_;
 }
 
 
 
-
-template<int dim, int codim, int range, int rank>
+#if 0
+template<int dim, int codim, int range, int rank,  class ContainerType_>
 bool
-FunctionElement<dim, codim, range, rank>::
+FunctionElementBase<dim, codim, range, rank, ContainerType_>::
 operator==(const self_t &a) const
 {
     Assert(this->get_grid() == a.get_grid(),
@@ -121,9 +113,9 @@ operator==(const self_t &a) const
 }
 
 
-template<int dim, int codim, int range, int rank>
+template<int dim, int codim, int range, int rank,  class ContainerType_>
 bool
-FunctionElement<dim, codim, range, rank>::
+FunctionElementBase<dim, codim, range, rank, ContainerType_>::
 operator!=(const self_t &a) const
 {
     Assert(this->get_grid() == a.get_grid(),
@@ -133,9 +125,9 @@ operator!=(const self_t &a) const
     return (this->get_index() != a.get_index());
 }
 
-template<int dim, int codim, int range, int rank>
+template<int dim, int codim, int range, int rank,  class ContainerType_>
 bool
-FunctionElement<dim, codim, range, rank>::
+FunctionElementBase<dim, codim, range, rank, ContainerType_>::
 operator<(const self_t &a) const
 {
     Assert(this->get_grid() == a.get_grid(),
@@ -146,9 +138,9 @@ operator<(const self_t &a) const
 }
 
 
-template<int dim, int codim, int range, int rank>
+template<int dim, int codim, int range, int rank,  class ContainerType_>
 bool
-FunctionElement<dim, codim, range, rank>::
+FunctionElementBase<dim, codim, range, rank, ContainerType_>::
 operator>(const self_t &a) const
 {
     Assert(this->get_grid() == a.get_grid(),
@@ -157,46 +149,49 @@ operator>(const self_t &a) const
            ExcMessage("The elements cannot be compared because defined with different functions."));
     return (this->get_index() > a.get_index());
 }
+#endif
 
 #if 0
-template<int dim, int codim, int range, int rank>
+template<int dim, int codim, int range, int rank,  class ContainerType_>
 void
-FunctionElement<dim, codim, range, rank>::
+FunctionElementBase<dim, codim, range, rank, ContainerType_>::
 move_to(const Index flat_index)
 {
     grid_elem_->move_to(flat_index);
     phys_domain_elem_->move_to(flat_index);
 }
-#endif
 
-template<int dim, int codim, int range, int rank>
+
+template<int dim, int codim, int range, int rank,  class ContainerType_>
 auto
-FunctionElement<dim, codim, range, rank>::
+FunctionElementBase<dim, codim, range, rank, ContainerType_>::
 get_index() const -> IndexType
 {
     return grid_elem_->get_index();
 }
 
-template<int dim, int codim, int range, int rank>
+#endif
+
+template<int dim, int codim, int range, int rank,  class ContainerType_>
 void
-FunctionElement<dim, codim, range, rank>::
+FunctionElementBase<dim, codim, range, rank, ContainerType_>::
 print_info(LogStream &out) const
 {
     grid_elem_->print_info(out);
 }
 
-template<int dim, int codim, int range, int rank>
+template<int dim, int codim, int range, int rank,  class ContainerType_>
 void
-FunctionElement<dim, codim, range, rank>::
+FunctionElementBase<dim, codim, range, rank, ContainerType_>::
 print_cache_info(LogStream &out) const
 {
     grid_elem_->print_cache_info(out);
 }
 
 
-template<int dim, int codim, int range, int rank>
+template<int dim, int codim, int range, int rank,  class ContainerType_>
 std::shared_ptr<const CartesianGrid<dim>>
-                                       FunctionElement<dim, codim, range, rank>::
+                                       FunctionElementBase<dim, codim, range, rank, ContainerType_>::
                                        get_grid() const
 {
     return grid_elem_->get_grid();
@@ -205,10 +200,10 @@ std::shared_ptr<const CartesianGrid<dim>>
 
 
 #ifdef SERIALIZATION
-template<int dim, int codim, int range, int rank>
+template<int dim, int codim, int range, int rank,  class ContainerType_>
 template<class Archive>
 void
-FunctionElement<dim, codim, range, rank>::
+FunctionElementBase<dim, codim, range, rank, ContainerType_>::
 serialize(Archive &ar, const unsigned int version)
 {
     ar &boost::serialization::make_nvp("FunctionElement_base_t",

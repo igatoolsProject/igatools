@@ -571,6 +571,27 @@ using Topology = boost::mpl::int_<dim>;
 
 template <int dim>
 using TopologyVariants = SubElemVariants<Topology,dim>;
+
+
+template<template<int> class Q, int start, std::size_t N>
+struct seq_ptr;
+
+template<template<int> class Q, int start>
+struct seq_ptr<Q, start, start>
+{
+    using type = boost::mpl::vector<std::shared_ptr<Q<start>>>;
+};
+
+template<template<int> class Q, int start, std::size_t N>
+struct seq_ptr
+{
+    using v1 = typename seq<std::shared_ptr<Q>, start, N-1>::type;
+    using type = typename boost::mpl::push_back<v1, std::shared_ptr<Q<N>>>::type;
+};
+
+template <template<int> class T,int dim>
+using SubElemPtrVariants = typename boost::make_variant_over<typename seq_ptr<T, iga::max(0, dim-num_sub_elem), dim>::type>::type;
+
 //---------------------------------------------------------------------------------------
 
 

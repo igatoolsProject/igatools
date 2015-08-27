@@ -40,7 +40,7 @@ template <int, int, int, int> class FunctionElement;
  */
 template<int dim_, int codim_ = 0, int range_ = 1, int rank_ = 1>
 class Function :
-      public std::enable_shared_from_this<Function<dim_,codim_,range_,rank_> >
+    public std::enable_shared_from_this<Function<dim_,codim_,range_,rank_> >
 {
 private:
     using base_t = Function<dim_, codim_, range_, rank_>;
@@ -55,7 +55,7 @@ public:
 
     using GridType = const CartesianGrid<dim_>;
     using MapFunc = Function<dim_, 0, dim_ + codim_, 1>;
-    using PhysDomain = Mapping<dim_,codim_>;
+    using PhysDomain = PhysicalDomain<dim_, codim_>;
 
 
 
@@ -70,19 +70,15 @@ public:
 
     using ElementHandler = Function<dim_, codim_, range_, rank_>;
 
-
-
-
-
-    using IndexType = TensorIndex<dim_>;
-    using PropertyList = PropertiesIdContainer<IndexType>;
-    using List = typename PropertyList::List;
-    using ListIt = typename PropertyList::List::iterator;
+//    using IndexType = TensorIndex<dim_>;
+//    using PropertyList = PropertiesIdContainer<IndexType>;
+//    using List = typename PropertyList::List;
+//    using ListIt = typename PropertyList::List::iterator;
 
 
     /** Types for the input/output evaluation arguments */
     ///@{
-    using RefPoint = Points<dim>;
+    //using RefPoint = Points<dim>;
 
     /**
      * Type for the input argument of the function.
@@ -117,7 +113,7 @@ public:
     ///@}
 
     using topology_variant = TopologyVariants<dim_>;
-    using eval_pts_variant = SubElemVariants<Quadrature,dim_>;
+    using eval_pts_variant = SubElemPtrVariants<Quadrature,dim_>;
 
     /** @name Constructors and destructor. */
     ///@{
@@ -147,26 +143,40 @@ public:
         return phys_domain_;
     }
 
-    virtual std::shared_ptr<base_t> clone() const = 0;
+    //virtual std::shared_ptr<base_t> clone() const = 0;
 
 
-    virtual void reset(const ValueFlags &flag, const eval_pts_variant &quad);
+    virtual void set_flags(const topology_variant &sdim,
+                           const typename ElementAccessor::Flags &flag);
 
-    virtual void init_cache(ElementAccessor &elem, const topology_variant &k) const;
+    virtual void init_cache(ElementAccessor &elem,
+                            const eval_pts_variant &quad) const;
 
-    void init_cache(ElementIterator &elem, const topology_variant &k) const;
+    void init_cache(ElementIterator &elem,
+                    const eval_pts_variant &quad) const
+    {
+        this->init_cache(*elem, quad);
+    }
 
-    void init_element_cache(ElementAccessor &elem) const;
 
-    void init_element_cache(ElementIterator &elem) const;
+//    void init_element_cache(ElementAccessor &elem) const;
+//
+//    void init_element_cache(ElementIterator &elem) const;
 
-    virtual void fill_cache(ElementAccessor &elem, const topology_variant &k,const int j) const;
+    virtual void fill_cache(const topology_variant &sdim,
+                            ElementAccessor &elem,
+                            const int s_id) const;
 
-    void fill_cache(ElementIterator &elem, const topology_variant &k, const int j) const;
+    void fill_cache(const topology_variant &sdim,
+                    ElementIterator &elem,
+                    const int s_id) const
+    {
+        this->fill_cache(sdim, *elem, s_id);
+    }
 
-    void fill_element_cache(ElementAccessor &elem) const;
-
-    void fill_element_cache(ElementIterator &elem) const;
+//    void fill_element_cache(ElementAccessor &elem) const;
+//
+//    void fill_element_cache(ElementIterator &elem) const;
 
 
 private:
@@ -209,7 +219,7 @@ public:
 
 
 protected:
-    std::shared_ptr<CartesianGrid<dim_> > grid_;
+    //std::shared_ptr<CartesianGrid<dim_> > grid_;
 
     SafeSTLArray<typename ElementAccessor::Flags, dim + 1> flags_;
 private:
@@ -229,26 +239,26 @@ private:
 
     struct ResetDispatcher : boost::static_visitor<void>
     {
-        ResetDispatcher(const ValueFlags flag_in,
+        ResetDispatcher(const Flags flag_in,
                         GridElementHandler<dim_> &grid_elem_handler,
-                        SafeSTLArray<ValueFlags, dim_ + 1> &flags)
+                        SafeSTLArray<Flags, dim_ + 1> &flags)
             :
             flag_in_(flag_in),
             grid_elem_handler_(grid_elem_handler),
             flags_(flags)
         {}
 
-        template<int sub_elem_dim>
-        void operator()(const Quadrature<sub_elem_dim> &quad)
+        template<int sdim>
+        void operator()(const Quadrature<sdim> &quad)
         {
-            flags_[sub_elem_dim] = flag_in_;
+            flags_[sdim] = flag_in_;
 
-            grid_elem_handler_.template reset<sub_elem_dim>(flag_in_, quad);
+            grid_elem_handler_.template reset<sdim>(flag_in_, quad);
         }
 
-        const ValueFlags flag_in_;
+        const Flags flag_in_;
         GridElementHandler<dim_> &grid_elem_handler_;
-        SafeSTLArray<ValueFlags, dim_ + 1> &flags_;
+        SafeSTLArray<Flags, dim_ + 1> &flags_;
     };
 
     struct FillCacheDispatcher : boost::static_visitor<void>
@@ -262,10 +272,10 @@ private:
             func_elem_(func_elem)
         {}
 
-        template<int sub_elem_dim>
-        void operator()(const Topology<sub_elem_dim> &sub_elem)
+        template<int sdim>
+        void operator()(const Topology<sdim> &sub_elem)
         {
-            grid_elem_handler_.template fill_cache<sub_elem_dim>(func_elem_, sub_elem_id_);
+            grid_elem_handler_.template fill_cache<sdim>(func_elem_, sub_elem_id_);
         }
 
         int sub_elem_id_;
@@ -276,7 +286,7 @@ private:
     struct InitCacheDispatcher : boost::static_visitor<void>
     {
         InitCacheDispatcher(const GridElementHandler<dim_> &grid_elem_handler,
-                            const SafeSTLArray<ValueFlags, dim_ + 1> &flags,
+                            const SafeSTLArray<Flags, dim_ + 1> &flags,
                             ElementAccessor &func_elem)
             :
             grid_elem_handler_(grid_elem_handler),
@@ -285,10 +295,10 @@ private:
         {}
 
 
-        template<int sub_elem_dim>
-        void operator()(const Topology<sub_elem_dim> &sub_elem)
+        template<int sdim>
+        void operator()(const Topology<sdim> &sub_elem)
         {
-            grid_elem_handler_.template init_cache<sub_elem_dim>(func_elem_.get_grid_element());
+            grid_elem_handler_.template init_cache<sdim>(func_elem_.get_grid_element());
 
             auto &cache = func_elem_.all_sub_elems_cache_;
             if (cache == nullptr)
@@ -297,43 +307,29 @@ private:
                 cache = std::make_shared<Cache>();
             }
 
-            const auto n_pts = grid_elem_handler_.template get_num_points<sub_elem_dim>();
-            for (const auto s_id: UnitElement<dim_>::template elems_ids<sub_elem_dim>())
+            const auto n_pts = grid_elem_handler_.template get_num_points<sdim>();
+            for (const auto s_id: UnitElement<dim_>::template elems_ids<sdim>())
             {
-                auto &s_cache = cache->template get_sub_elem_cache<sub_elem_dim>(s_id);
-                s_cache.resize(flags_[sub_elem_dim],n_pts);
+                auto &s_cache = cache->template get_sub_elem_cache<sdim>(s_id);
+                s_cache.resize(flags_[sdim],n_pts);
             }
         }
 
         const GridElementHandler<dim_> &grid_elem_handler_;
-        const SafeSTLArray<ValueFlags, dim_ + 1> &flags_;
+        const SafeSTLArray<Flags, dim_ + 1> &flags_;
         ElementAccessor &func_elem_;
     };
-
-
-
-
 
 #ifdef MESH_REFINEMENT
     std::shared_ptr<self_t> function_previous_refinement_;
 public:
-
-
-
     const std::shared_ptr<self_t> &get_function_previous_refinement() const
     {
-//        std::cout << "Function::get_function_previous_refinement()    Counter = " << function_previous_refinement_.use_count() << std::endl;
-
         return function_previous_refinement_;
     }
 
 
 #endif // MESH_REFINEMENT
-
-
-
-
-
 
 #ifdef SERIALIZATION
     /**
@@ -358,11 +354,6 @@ public:
 #endif // SERIALIZATION
 };
 
-
-
 IGA_NAMESPACE_CLOSE
-
-
-
 
 #endif

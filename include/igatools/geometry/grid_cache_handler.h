@@ -28,15 +28,11 @@
 #include <igatools/utils/tensor_product_array.h>
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/geometry/grid_element.h>
-//#include <igatools/basis_functions/space_element_handler.h>
 
 IGA_NAMESPACE_OPEN
 
 /**
- * @brief Grid element value manager. Its purpose is to fill the cache of CartesianGridelement.
- *
- * It contains the Quadrature in each sub-element and the ValueFlags that are used to determine
- * which quantity of CartesianGridelement's cache must be filled.
+ * @brief Grid caches manager
  *
  * @ingroup serializable
  */

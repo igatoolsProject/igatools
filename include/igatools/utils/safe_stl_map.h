@@ -72,9 +72,9 @@ private:
     {
         for (auto &entry : *this)
         {
-        	out << "{ " << entry.first;
-        	out	<< ", " << entry.second  << "}";
-        	out << std::endl;
+            out << "{ " << entry.first;
+            out << ", " << entry.second  << "}";
+            out << std::endl;
         }
     }
 
