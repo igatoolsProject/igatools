@@ -228,6 +228,24 @@ private:
 };
 
 
+template <int dim, int codim>
+class ConstPhysicalDomainElement
+    : public PhysicalDomainElementBase<dim, codim,
+      const PhysicalDomain<dim,codim>>
+{
+    using PhysicalDomainElementBase<dim, codim,
+          const PhysicalDomain<dim,codim>>::PhysicalDomainElementBase;
+};
+
+template <int dim, int codim>
+class PhysicalDomainElement
+    : public PhysicalDomainElementBase<dim, codim,
+      PhysicalDomain<dim,codim>>
+{
+    using PhysicalDomainElementBase<dim, codim,
+          const PhysicalDomain<dim,codim>>::PhysicalDomainElementBase;
+};
+
 IGA_NAMESPACE_CLOSE
 
 #endif // PHYSICAL_DOMAIN_ELEMENT_H_

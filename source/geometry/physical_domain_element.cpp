@@ -26,8 +26,8 @@ IGA_NAMESPACE_OPEN
 
 
 template<int dim_, int codim_, class ContainerType_>
-PhysicalDomainElementBaseBase<dim_, codim_, ContainerType_>::
-PhysicalDomainElementBaseBase(std::shared_ptr<ContainerType_> phys_dom,
+PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
+PhysicalDomainElementBase(std::shared_ptr<ContainerType_> phys_dom,
                               const ListIt &index,
                               const PropId &prop)
     :
@@ -39,8 +39,8 @@ PhysicalDomainElementBaseBase(std::shared_ptr<ContainerType_> phys_dom,
 
 
 template<int dim_, int codim_, class ContainerType_>
-PhysicalDomainElementBaseBase<dim_, codim_, ContainerType_>::
-PhysicalDomainElementBaseBase(const self_t &elem,
+PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
+PhysicalDomainElementBase(const self_t &elem,
                               const CopyPolicy &copy_policy)
     :
     phys_dom_(elem.phys_dom_)

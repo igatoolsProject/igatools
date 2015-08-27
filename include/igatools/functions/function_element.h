@@ -342,18 +342,12 @@ class ConstFunctionElement
 };
 
 
-//template <int dim, int codim, int range, int rank>
-//class FunctionElement
-//    : public FunctionElementBase<dim, CartesianFunction<dim>>
-//{
-//    using FunctionElementBase<dim, CartesianFunction<dim>>::FunctionElementBase;
-//public:
-//    void add_property(const PropId &prop)
-//    {
-//        this->grid_->elem_properties_[prop].insert(this->get_index());
-//    }
-//};
-
+template <int dim, int codim, int range, int rank>
+class FunctionElement
+    : public FunctionElementBase<dim, CartesianFunction<dim>>
+{
+    using FunctionElementBase<dim, CartesianFunction<dim>>::FunctionElementBase;
+};
 
 IGA_NAMESPACE_CLOSE
 

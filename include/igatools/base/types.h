@@ -585,7 +585,7 @@ struct seq_ptr<Q, start, start>
 template<template<int> class Q, int start, std::size_t N>
 struct seq_ptr
 {
-    using v1 = typename seq<std::shared_ptr<Q>, start, N-1>::type;
+    using v1 = typename seq<Q, start, N-1>::type;
     using type = typename boost::mpl::push_back<v1, std::shared_ptr<Q<N>>>::type;
 };
 
