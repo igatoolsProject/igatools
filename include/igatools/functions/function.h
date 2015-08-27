@@ -217,13 +217,12 @@ public:
     ElementIterator end(const PropId &element_property = ElementProperties::active);
     ///@}
 
-
-protected:
-    //std::shared_ptr<CartesianGrid<dim_> > grid_;
-
-    SafeSTLArray<typename ElementAccessor::Flags, dim + 1> flags_;
 private:
     std::shared_ptr<const PhysDomain> phys_domain_;
+
+protected:
+    SafeSTLArray<typename ElementAccessor::Flags, dim + 1> flags_;
+
 
 private:
     /**
@@ -237,68 +236,70 @@ private:
     std::string name_;
 
 
-    struct ResetDispatcher : boost::static_visitor<void>
+    struct SetFlagsDispatcher : boost::static_visitor<void>
     {
-        ResetDispatcher(const Flags flag_in,
-                        GridElementHandler<dim_> &grid_elem_handler,
+        SetFlagsDispatcher(const Flags flag_in,
+                        PhysicalDomain &phys_dom,
                         SafeSTLArray<Flags, dim_ + 1> &flags)
             :
             flag_in_(flag_in),
-            grid_elem_handler_(grid_elem_handler),
+            phys_dom_(phys_dom),
             flags_(flags)
         {}
 
         template<int sdim>
-        void operator()(const Quadrature<sdim> &quad)
+        void operator()(const Topology<sdim> &s_elem)
         {
             flags_[sdim] = flag_in_;
-
-            grid_elem_handler_.template reset<sdim>(flag_in_, quad);
+            //TODO Do a function to phys domain flag
+            phys_dom_.set_flags(s_elem, flag_in_);
         }
 
         const Flags flag_in_;
-        GridElementHandler<dim_> &grid_elem_handler_;
+        PhysicalDomain &phys_dom_;
         SafeSTLArray<Flags, dim_ + 1> &flags_;
     };
 
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
-        FillCacheDispatcher(const int sub_elem_id,
-                            const GridElementHandler<dim_> &grid_elem_handler,
+        FillCacheDispatcher(const int s_id,
+                            const PhysicalDomain &phys_dom,
                             ElementAccessor &func_elem)
             :
-            sub_elem_id_(sub_elem_id),
-            grid_elem_handler_(grid_elem_handler),
+            s_id_(s_id),
+            phys_dom_(phys_dom),
             func_elem_(func_elem)
         {}
 
         template<int sdim>
         void operator()(const Topology<sdim> &sub_elem)
         {
-            grid_elem_handler_.template fill_cache<sdim>(func_elem_, sub_elem_id_);
+        	auto domain_elem_ = func_elem_.get_domain_element();
+            phys_dom_.fill_cache(sub_elem, domain_elem_, s_id_);
         }
 
-        int sub_elem_id_;
-        const GridElementHandler<dim_> &grid_elem_handler_;
+        int s_id_;
+        const PhysicalDomain &phys_dom_;
         ElementAccessor &func_elem_;
     };
 
     struct InitCacheDispatcher : boost::static_visitor<void>
     {
-        InitCacheDispatcher(const GridElementHandler<dim_> &grid_elem_handler,
+        InitCacheDispatcher(const PhysicalDomain &phys_dom,
                             const SafeSTLArray<Flags, dim_ + 1> &flags,
                             ElementAccessor &func_elem)
             :
-            grid_elem_handler_(grid_elem_handler),
+            phys_dom_(phys_dom),
             flags_(flags),
             func_elem_(func_elem)
         {}
 
 
         template<int sdim>
-        void operator()(const Topology<sdim> &sub_elem)
+        void operator()(const Quadrature<sdim> &quad)
         {
-            grid_elem_handler_.template init_cache<sdim>(func_elem_.get_grid_element());
+        	auto domain_elem_ = func_elem_.get_domain_element();
+            phys_dom_.init_cache(domain_elem_, quad);
 
             auto &cache = func_elem_.all_sub_elems_cache_;
             if (cache == nullptr)
@@ -307,7 +308,7 @@ private:
                 cache = std::make_shared<Cache>();
             }
 
-            const auto n_pts = grid_elem_handler_.template get_num_points<sdim>();
+            const auto n_pts = phys_dom_.template get_num_points<sdim>();
             for (const auto s_id: UnitElement<dim_>::template elems_ids<sdim>())
             {
                 auto &s_cache = cache->template get_sub_elem_cache<sdim>(s_id);
@@ -315,8 +316,8 @@ private:
             }
         }
 
-        const GridElementHandler<dim_> &grid_elem_handler_;
-        const SafeSTLArray<Flags, dim_ + 1> &flags_;
+        const PhysicalDomain &phys_dom_;
+
         ElementAccessor &func_elem_;
     };
 
@@ -345,7 +346,7 @@ public:
     /*
     {
         ar &boost::serialization::make_nvp("grid_elem_handler_",
-                                           boost::serialization::base_object<GridElementHandler<dim_>>(*this));
+                                           boost::serialization::base_object<PhysicalDomain>(*this));
 
         ar &boost::serialization::make_nvp("flags_",flags_);
     }

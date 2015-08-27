@@ -52,8 +52,8 @@ Function<dim_, codim_, range_, rank_ >::
 set_flags(const topology_variant &sdim,
           const typename ElementAccessor::Flags &flag)
 {
-    auto reset_dispatcher = ResetDispatcher(flag,*this,flags_);
-    boost::apply_visitor(reset_dispatcher);
+    auto set_flags_dispatcher = SetFlagsDispatcher(flag,  phys_domain_, flags_);
+    boost::apply_visitor(set_flags_dispatcher, sdim);
 }
 
 
@@ -78,7 +78,7 @@ fill_cache(const topology_variant &sdim,
            const int s_id) const
 {
     auto fill_dispatcher = FillCacheDispatcher(s_id, *this, func_elem);
-    boost::apply_visitor(fill_dispatcher, s_id);
+    boost::apply_visitor(fill_dispatcher, sdim);
 }
 
 
