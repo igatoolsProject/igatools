@@ -26,10 +26,10 @@
 
 IGA_NAMESPACE_OPEN
 
-//Forward declaration to avoid including header file.
 template <int, int> class PhysicalDomainElement;
+template <int, int, int, int> class Function;
 
-template <int,int,int,int> class IgFunction;
+//template <int,int,int,int> class IgFunction;
 
 template<int dim, int codim>
 using MapFunction = Function<dim, 0, dim + codim, 1>;
@@ -59,15 +59,14 @@ class PhysicalDomain :
 private:
     using self_t = PhysicalDomain<dim_, codim_>;
 public:
+    using GridType = const CartesianGrid<dim_>;
     using FuncType = MapFunction<dim_, codim_>;
-    using topology_variant = typename FuncType::topology_variant;
-    using eval_pts_variant = typename FuncType::eval_pts_variant;
 
     using ElementAccessor = PhysicalDomainElement<dim_, codim_>;
-    using ElementIterator = CartesianGridIterator<ElementAccessor>;
+    using ElementIterator = GridIterator<ElementAccessor>;
 
-    static const int dim = dim_;
     static const int space_dim = dim_ + codim_;
+    static const int dim = dim_;
 
 public:
     /** Type for the given order derivatives of the
@@ -93,8 +92,10 @@ public:
     /** Typedef for the mapping hessian. */
     using Hessian = typename FuncType::Hessian;
 
-public:
+    using topology_variant = typename FuncType::topology_variant;
+    using eval_pts_variant = typename FuncType::eval_pts_variant;
 
+public:
     /**
      * Default constructor. It does nothing but it is needed for the
      * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -106,12 +107,24 @@ public:
 
     ~PhysicalDomain();
 
-    static std::shared_ptr<self_t>  create(std::shared_ptr<const FuncType> F);
+//    static std::shared_ptr<self_t>  create(std::shared_ptr<const FuncType> F);
+//
+//    std::shared_ptr<self_t> get_handler() const
+//    {
+//        return std::make_shared<self_t>(self_t(this->F_->clone()));
+//    }
 
-    std::shared_ptr<self_t> get_handler() const
+
+    std::shared_ptr<const GridType> get_grid() const
     {
-        return std::make_shared<self_t>(self_t(this->F_->clone()));
+        return grid_;
     }
+
+    std::shared_ptr<const FuncType> get_function() const
+    {
+        return F_;
+    }
+
 public:
     void reset(const ValueFlags flag, const eval_pts_variant &quad);
 
@@ -348,6 +361,7 @@ private:
 
 
 private:
+    std::shared_ptr<const GridType> grid_;
     std::shared_ptr<const FuncType> F_;
 
     SafeSTLArray<ValueFlags, dim_ + 1> flags_;

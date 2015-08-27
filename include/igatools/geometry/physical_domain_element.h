@@ -20,48 +20,69 @@
 
 #ifndef __PHYSICAL_DOMAIN_ELEMENT_H_
 #define __PHYSICAL_DOMAIN_ELEMENT_H_
-#if 0
+
 #include <igatools/utils/safe_stl_array.h>
 #include <igatools/geometry/physical_domain.h>
 #include <igatools/functions/function_element.h>
 
 IGA_NAMESPACE_OPEN
 
+namespace physical_domain_element
+{
+enum class Flags
+{
+    /** Fill nothing */
+    none           =    0,
+
+    /** Quadrature points on the element */
+    points          =    1L << 1,
+
+    /** Quadrature weigths on the element */
+    w_measure       =    1L << 2
+};
+
+template <int,int,int,int> class Function;
+template <int,int,int,int> class FunctionElement;
+template <int,int> class PhysicalDomain;
+
 /**
  *
  * @ingroup elements
  */
-template<int dim_, int codim_ = 0>
-class PhysicalDomainElement
+template<int dim_, int codim_, class ContainerType_>
+class PhysicalDomainElementBase
 {
 private:
-    using self_t  = PhysicalDomainElement<dim_, codim_>;
-    using parent_t = FunctionElement<dim_, 0, dim_+codim_>;
-    using PhysDom = PhysicalDomain<dim_, codim_>;
-    using Func = MapFunction<dim_, codim_>;
+    using self_t  = PhysicalDomainElementBase<dim_, codim_, ContainerType_>;
 
 public:
-    using ContainerType = PhysDom;
+    using ContainerType = ContainerType_;
+    using FuncType = typename ContainerType_::FuncType;
+
     static const int dim = dim_;
     static const int codim = codim_;
     static const int space_dim = dim_+codim_;
 
+    using ListIt = typename FuncType::ListIt;
 
     /** @name Constructors */
     ///@{
+protected:
     /**
      * Default constructor. It does nothing but it is needed for the
      * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
      * mechanism.
      */
-    PhysicalDomainElement() = default;
+    PhysicalDomainElementBase() = default;
 
+public:
     /**
      * Construct an accessor pointing to the element with
      * flat index @p elem_index of the Function @p func.
      */
-    PhysicalDomainElement(const std::shared_ptr<const PhysDom> func,
-                          const Index elem_index);
+    PhysicalDomainElementBase(const std::shared_ptr<ContainerType_> phys_dom,
+                              const ListIt &index,
+                              const PropId &prop = ElementProperties::active);
 
     /**
      * Copy constructor.
@@ -71,35 +92,27 @@ public:
      * classic copy constructor)
      * uses the deep copy.
      */
-    PhysicalDomainElement(const self_t &elem,
-                          const CopyPolicy &copy_policy = CopyPolicy::deep);
+    PhysicalDomainElementBase(const self_t &elem,
+                              const CopyPolicy &copy_policy = CopyPolicy::deep);
 
     /**
      * Move constructor.
      */
-    PhysicalDomainElement(self_t &&elem) = default;
+    PhysicalDomainElementBase(self_t &&elem) = default;
 
     /**
      * Destructor.
      */
-    ~PhysicalDomainElement() = default;
+    ~PhysicalDomainElementBase() = default;
     ///@}
 
-    template<int order>
-    using InvDerivative = typename Map::template InvDerivative<order>;
+//    template<int order>
+//    using InvDerivative = typename Map::template InvDerivative<order>;
+//
+//    template <int order>
+//    using Derivative = typename Map::template Derivative<order>;
 
-    template <int order>
-    using Derivative = typename Map::template Derivative<order>;
 
-private:
-    template <class ValueType, int topology_dim = dim>
-    auto &get_values_from_cache(const int topology_id = 0) const
-    {
-        Assert(local_cache_ != nullptr,ExcNullPtr());
-        const auto &cache = local_cache_->template
-                            get_sub_elem_cache<topology_dim>(topology_id);
-        return cache.template get_data<ValueType>();
-    }
 
 public:
     template<int k>
@@ -113,7 +126,7 @@ public:
     {
         return get_values_from_cache<_W_Measure,k>(j);
     }
-
+#if 0
     const ValueVector<Points<space_dim> > &get_external_normals() const;
 
     using MetricTensor =
@@ -150,8 +163,17 @@ public:
 #endif
         return get_values_from_cache<_BoundaryNormal,sub_dim>(s_id);
     }
+#endif
 
-
+private:
+    template <class ValueType, int topology_dim = dim>
+    auto &get_values_from_cache(const int topology_id = 0) const
+    {
+        Assert(local_cache_ != nullptr,ExcNullPtr());
+        const auto &cache = local_cache_->template
+                            get_sub_elem_cache<topology_dim>(topology_id);
+        return cache.template get_data<ValueType>();
+    }
 private:
 
     using CType = boost::fusion::map<
@@ -165,16 +187,16 @@ private:
                   >;
 
 
-    /**
-     * Returns the flags that are valid to be used with this class.
-     *
-     * @note The valid flags are defined to be the ones that can be inferred from the ValueType(s)
-     * used as key of the boost::fusion::map in CType.
-     */
-    static ValueFlags get_valid_flags()
-    {
-        return cacheutils::get_valid_flags_from_cache_type(CType());
-    }
+//    /**
+//     * Returns the flags that are valid to be used with this class.
+//     *
+//     * @note The valid flags are defined to be the ones that can be inferred from the ValueType(s)
+//     * used as key of the boost::fusion::map in CType.
+//     */
+//    static ValueFlags get_valid_flags()
+//    {
+//        return cacheutils::get_valid_flags_from_cache_type(CType());
+//    }
 
     using Cache = FuncValuesCache<dim,CType>;
 
@@ -183,22 +205,25 @@ public:
     using CacheType = AllSubElementsCache<Cache>;
 
 private:
+    using FuncElem = typename FuncType::ElementAccessor;
+    using GridElem = GridElement<dim_>;
 
-    using FuncElem = FunctionElement<dim_, 0, dim_+codim_>;
+    std::shared_ptr<ContainerType_> phys_dom_;
+
+    std::shared_ptr<GridElem> grid_elem_;
 
     std::shared_ptr<FuncElem> func_elem_;
 
     std::shared_ptr<CacheType> local_cache_;
 
-
-    template <class Accessor> friend class CartesianGridIteratorBase;
+    template <class Accessor> friend class GridIteratorBase;
     friend class PhysicalDomain<dim, codim>;
 
-    /**
-     * Creates a new object performing a deep copy of the current object using the PhysicalDomainElement
-     * copy constructor.
-     */
-    std::shared_ptr<PhysicalDomainElement<dim_,codim_> > clone() const;
+//    /**
+//     * Creates a new object performing a deep copy of the current object using the PhysicalDomainElement
+//     * copy constructor.
+//     */
+//    std::shared_ptr<PhysicalDomainElement<dim_,codim_> > clone() const;
 
 };
 
@@ -207,5 +232,4 @@ IGA_NAMESPACE_CLOSE
 
 #endif // PHYSICAL_DOMAIN_ELEMENT_H_
 
-#endif
 

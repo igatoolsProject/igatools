@@ -154,15 +154,6 @@ get_cache(ElementAccessor &elem)
 //*/
 
 template<int dim_, int codim_, int range_, int rank_>
-void
-Function<dim_, codim_, range_, rank_ >::
-print_info(LogStream &out) const
-{
-    parent_t::print_info(out);
-}
-
-
-template<int dim_, int codim_, int range_, int rank_>
 auto
 Function<dim_, codim_, range_, rank_ >::
 begin(const PropId &prop) -> ElementIterator
@@ -171,6 +162,8 @@ begin(const PropId &prop) -> ElementIterator
     grid_->get_element_property(prop).begin(),
     prop);
 }
+
+
 
 template<int dim_, int codim_, int range_, int rank_>
 auto
@@ -181,6 +174,32 @@ end(const PropId &prop) -> ElementIterator
     grid_->get_element_property(prop).end(),
     prop);
 }
+
+
+
+template<int dim_, int codim_, int range_, int rank_>
+template<int dim_, int codim_, int range_, int rank_>
+void
+Function<dim_, codim_, range_, rank_ >::
+print_info(LogStream &out) const
+{
+    parent_t::print_info(out);
+}
+
+
+
+#ifdef SERIALIZATION
+template<int dim_, int codim_, int range_, int rank_>
+auto
+Function<dim_, codim_, range_, rank_ >::
+create_element(const ListIt &index, const PropId &property) const -> std::shared_ptr<ElementAccessor>
+{
+    auto elem = std::make_shared<ElementAccessor>(this->shared_from_this(),index,property);
+    Assert(elem != nullptr,ExcNullPtr());
+
+    return elem;
+}
+
 
 template<int dim_, int codim_, int range_, int rank_>
 Index
@@ -205,20 +224,6 @@ Function<dim_, codim_, range_, rank_ >::
 set_name(const std::string &name)
 {
     name_ = name;
-}
-
-
-#ifdef SERIALIZATION
-template<int dim_, int codim_, int range_, int rank_>
-template<int dim_, int codim_, int range_, int rank_>
-auto
-Function<dim_, codim_, range_, rank_ >::
-create_element(const ListIt &index, const PropId &property) const -> std::shared_ptr<ElementAccessor>
-{
-    auto elem = std::make_shared<ElementAccessor>(this->shared_from_this(),index,property);
-    Assert(elem != nullptr,ExcNullPtr());
-
-    return elem;
 }
 
 

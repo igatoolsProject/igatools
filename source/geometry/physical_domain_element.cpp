@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
-#if 0
+
 #include <igatools/geometry/physical_domain_element.h>
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <boost/numeric/ublas/operation.hpp>
@@ -25,36 +25,46 @@
 IGA_NAMESPACE_OPEN
 
 
-template<int dim_, int codim_>
-PhysicalDomainElement<dim_, codim_>::
-PhysicalDomainElement(const std::shared_ptr<Func> func,
-                      const Index elem_index)
+template<int dim_, int codim_, class ContainerType_>
+PhysicalDomainElementBaseBase<dim_, codim_, ContainerType_>::
+PhysicalDomainElementBaseBase(std::shared_ptr<ContainerType_> phys_dom,
+                              const ListIt &index,
+                              const PropId &prop)
     :
-    parent_t(func,elem_index)
+    phys_dom_(phys_dom),
+    grid_elem_(phys_dom_->get_grid()->create_element(index,prop)),
+    func_elem_(phys_dom_->get_function()->create_element(index,prop))
 {}
 
 
-template<int dim_, int codim_>
-PhysicalDomainElement<dim_, codim_>::
-PhysicalDomainElement(const self_t &elem,
-                      const CopyPolicy &copy_policy)
+
+template<int dim_, int codim_, class ContainerType_>
+PhysicalDomainElementBaseBase<dim_, codim_, ContainerType_>::
+PhysicalDomainElementBaseBase(const self_t &elem,
+                              const CopyPolicy &copy_policy)
     :
-    parent_t(elem,copy_policy)
+    phys_dom_(elem.phys_dom_)
 {
     if (copy_policy == CopyPolicy::shallow)
+    {
+        grid_elem_ = elem.grid_elem_;
+        func_elem_ = elem.func_elem_;
         local_cache_ = elem.local_cache_;
+    }
     else
     {
         local_cache_ =
             std::shared_ptr<CacheType>(new CacheType(*elem.local_cache_));
+        grid_elem_ = std::make_shared<GridElem>(*elem.grid_elem_,CopyPolicy::deep);
+        func_elem_ = std::make_shared<FuncElem>(*elem.func_elem_,CopyPolicy::deep);
     }
 }
 
 
-
-template<int dim_, int codim_>
+#if 0
+template<int dim_, int codim_, class ContainerType_>
 auto
-PhysicalDomainElement<dim_, codim_>::
+PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
 compute_inv_first_fundamental_form() const -> ValueVector<MetricTensor>
 {
     ValueVector<MetricTensor> res;
@@ -76,9 +86,9 @@ compute_inv_first_fundamental_form() const -> ValueVector<MetricTensor>
 
 
 
-template<int dim_, int codim_>
+template<int dim_, int codim_, class ContainerType_>
 auto
-PhysicalDomainElement<dim_, codim_>::
+PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
 compute_second_fundamental_form() const -> ValueVector<MetricTensor>
 {
     Assert(codim==1, ExcNotImplemented());
@@ -112,9 +122,9 @@ compute_second_fundamental_form() const -> ValueVector<MetricTensor>
 }
 
 
-template<int dim_, int codim_>
+template<int dim_, int codim_, class ContainerType_>
 auto
-PhysicalDomainElement<dim_, codim_>::
+PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
 get_principal_curvatures() const -> const ValueVector<SafeSTLVector<Real>> &
 {
 #if 0
@@ -141,11 +151,9 @@ get_principal_curvatures() const -> const ValueVector<SafeSTLVector<Real>> &
 
 
 
-
-
-template<int dim_, int codim_>
+template<int dim_, int codim_, class ContainerType_>
 auto
-PhysicalDomainElement<dim_, codim_>::
+PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
 get_external_normals() const -> const ValueVector<Points<space_dim> > &
 {
 #if 0
@@ -168,9 +176,11 @@ get_external_normals() const -> const ValueVector<Points<space_dim> > &
     return get_values_from_cache<_OuterNormal,dim_>(0);
 }
 
-template<int dim_, int codim_>
+
+
+template<int dim_, int codim_, class ContainerType_>
 auto
-PhysicalDomainElement<dim_, codim_>::
+PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
 get_D_external_normals() const -> ValueVector< Derivative<1> >
 {
     Assert(codim==1, ExcNotImplemented());
@@ -189,17 +199,18 @@ get_D_external_normals() const -> ValueVector< Derivative<1> >
     }
     return Dn;
 }
+#endif
 
 
-template<int dim_, int codim_>
-auto
-PhysicalDomainElement<dim_, codim_>::
-clone() const -> std::shared_ptr<self_t>
-{
-    auto elem = std::make_shared<self_t>(*this,CopyPolicy::deep);
-    Assert(elem != nullptr, ExcNullPtr());
-    return elem;
-}
+//template<int dim_, int codim_, class ContainerType_>
+//auto
+//PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
+//clone() const -> std::shared_ptr<self_t>
+//{
+//    auto elem = std::make_shared<self_t>(*this,CopyPolicy::deep);
+//    Assert(elem != nullptr, ExcNullPtr());
+//    return elem;
+//}
 
 
 
@@ -247,4 +258,4 @@ clone() const -> std::shared_ptr<self_t>
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/physical_domain_element.inst>
-#endif
+

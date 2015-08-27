@@ -26,6 +26,7 @@
 #include <igatools/basis_functions/values_cache.h>
 
 IGA_NAMESPACE_OPEN
+
 namespace function_element
 {
 enum class Flags
@@ -66,10 +67,11 @@ public:
     using Div      = typename Func::Div;
 
     using Flags = function_element::Flags;
-//    using Grid = CartesianGrid<dim>;
-//    using IndexType = typename Grid::IndexType;
-//    using List = typename Grid::List;
-//    using ListIt = typename Grid::ListIt;
+
+    using Grid = CartesianGrid<dim>;
+    //using IndexType = typename Grid::IndexType;
+    //using List = typename Grid::List;
+    using ListIt = typename Grid::ListIt;
 
 private:
     template <int order>
@@ -242,7 +244,7 @@ private:
 
     using Cache = FuncValuesCache<dim,CType>;
 
-    std::shared_ptr<AllSubElementsCache<Cache>> all_sub_elems_cache_;
+
 
 
 private:
@@ -257,23 +259,17 @@ private:
     }
 
 private:
-    std::shared_ptr<Func> func_;
-
-
-//    using GridElem = ConstGridElement<dim>;
-//    std::shared_ptr<GridElem> grid_elem_;
-
-
-    using PhysDomain = typename Func::PhysDomain;
+    //using PhysDomain = typename Func::PhysDomain;
     using PhysDomainElem = typename Func::PhysDomain::ElementAccessor;
+
+    std::shared_ptr<ContainerType_> func_;
+
     std::shared_ptr<PhysDomainElem> phys_domain_elem_;
+
+    std::shared_ptr<AllSubElementsCache<Cache>> all_sub_elems_cache_;
 
     template <class Accessor> friend class GridIteratorBase;
     friend class Function<dim, codim, range, rank>;
-
-
-
-
 
 public:
     const PhysicalDomainElement &get_domain_element() const;

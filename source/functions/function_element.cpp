@@ -29,25 +29,25 @@ IGA_NAMESPACE_OPEN
 
 template<int dim, int codim, int range, int rank,  class ContainerType_>
 FunctionElementBase<dim, codim, range, rank, ContainerType_>::
-FunctionElementBase(const std::shared_ptr<Func> func,
+FunctionElementBase(const std::shared_ptr<ContainerType_> func,
                     const ListIt &index,
                     const PropId &prop)
     :
-    func_(std::const_pointer_cast<Func>(func)),
-    grid_elem_(func->get_grid()->create_element(index,prop))
+    func_(func),
+    phys_domain_elem_(func->get_physical_domain()->create_element(index,prop))
 {
-    Assert(func_ != nullptr, ExcNullPtr());
-    Assert(grid_elem_ != nullptr, ExcNullPtr());
-
-    auto phys_domain = func->get_phys_domain();
-    phys_domain_elem_ = phys_domain->create_element(index,prop);
-    Assert(phys_domain_elem_ != nullptr, ExcNullPtr());
+//    Assert(func_ != nullptr, ExcNullPtr());
+//    Assert(grid_elem_ != nullptr, ExcNullPtr());
+//
+//    auto phys_domain = func->get_phys_domain();
+//    phys_domain_elem_ = phys_domain->create_element(index,prop);
+//    Assert(phys_domain_elem_ != nullptr, ExcNullPtr());
 }
 
 
 template<int dim, int codim, int range, int rank,  class ContainerType_>
 FunctionElementBase<dim, codim, range, rank, ContainerType_>::
-FunctionElementBase(const FunctionElement<dim,codim,range,rank> &elem,
+FunctionElementBase(const self_t &elem,
                     const CopyPolicy &copy_policy)
     :
     func_(elem.func_)
@@ -55,13 +55,13 @@ FunctionElementBase(const FunctionElement<dim,codim,range,rank> &elem,
     if (copy_policy == CopyPolicy::shallow)
     {
         all_sub_elems_cache_ = elem.all_sub_elems_cache_;
-        grid_elem_ = elem.grid_elem_;
+        //  grid_elem_ = elem.grid_elem_;
         phys_domain_elem_ = elem.phys_domain_elem_;
     }
     else
     {
         all_sub_elems_cache_ = std::make_shared<AllSubElementsCache<Cache>>(*elem.all_sub_elems_cache_);
-        grid_elem_ = std::make_shared<GridElem>(*elem.grid_elem_,CopyPolicy::deep);
+        // grid_elem_ = std::make_shared<GridElem>(*elem.grid_elem_,CopyPolicy::deep);
         phys_domain_elem_ = std::make_shared<PhysDomainElem>(*elem.phys_domain_elem_,CopyPolicy::deep);
     }
 }
@@ -70,7 +70,7 @@ FunctionElementBase(const FunctionElement<dim,codim,range,rank> &elem,
 template<int dim, int codim, int range, int rank,  class ContainerType_>
 FunctionElement<dim,codim,range,rank> &
 FunctionElementBase<dim, codim, range, rank, ContainerType_>::
-operator=(const FunctionElement<dim,codim,range,rank> &element)
+operator=(const self_t &element)
 {
     shallow_copy_from(element);
     return *this;
@@ -177,25 +177,19 @@ void
 FunctionElementBase<dim, codim, range, rank, ContainerType_>::
 print_info(LogStream &out) const
 {
-    grid_elem_->print_info(out);
+    // grid_elem_->print_info(out);
 }
+
+
 
 template<int dim, int codim, int range, int rank,  class ContainerType_>
 void
 FunctionElementBase<dim, codim, range, rank, ContainerType_>::
 print_cache_info(LogStream &out) const
 {
-    grid_elem_->print_cache_info(out);
+    all_sub_elems_cache_->print_info(out);
 }
 
-
-template<int dim, int codim, int range, int rank,  class ContainerType_>
-std::shared_ptr<const CartesianGrid<dim>>
-                                       FunctionElementBase<dim, codim, range, rank, ContainerType_>::
-                                       get_grid() const
-{
-    return grid_elem_->get_grid();
-}
 
 
 

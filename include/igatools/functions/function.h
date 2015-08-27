@@ -53,7 +53,7 @@ public:
     static const int range     = range_;
     static const int rank      = rank_;
 
-    using GridType = const CartesianGrid<dim_>;
+//    using GridType = const CartesianGrid<dim_>;
     using MapFunc = Function<dim_, 0, dim_ + codim_, 1>;
     using PhysDomain = PhysicalDomain<dim_, codim_>;
 
@@ -138,7 +138,7 @@ public:
     virtual ~Function() = default;
     ///@}
 
-    std::shared_ptr<const PhysDomain> get_phys_domain() const
+    std::shared_ptr<const PhysDomain> get_physical_domain() const
     {
         return phys_domain_;
     }
@@ -182,25 +182,9 @@ public:
 private:
     std::shared_ptr<ElementAccessor> create_element(const ListIt &index, const PropId &property) const;
 
+
+
 public:
-    virtual void print_info(LogStream &out) const;
-
-    /**
-     * Returns the unique identifier associated to each object instance.
-     */
-    Index get_object_id() const;
-
-    /**
-     * Get the name associated to the object instance.
-     */
-    const std::string &get_name() const;
-
-    /**
-     * Set the name associated to the object instance.
-     */
-    void set_name(const std::string &name);
-
-
     /** @name Functions involving the element iterator */
     ///@{
     /**
@@ -209,13 +193,14 @@ public:
      */
     ElementIterator begin(const PropId &element_property = ElementProperties::active);
 
-
     /**
      * Returns a element iterator to one-pass the end of patch
      * with the property @p element_property.
      */
     ElementIterator end(const PropId &element_property = ElementProperties::active);
     ///@}
+
+    virtual void print_info(LogStream &out) const;
 
 private:
     std::shared_ptr<const PhysDomain> phys_domain_;
@@ -224,23 +209,14 @@ protected:
     SafeSTLArray<typename ElementAccessor::Flags, dim + 1> flags_;
 
 
-private:
-    /**
-     * Unique identifier associated to each object instance.
-     */
-    Index object_id_;
 
-    /**
-     * Name associated to the object instance.
-     */
-    std::string name_;
 
 
     struct SetFlagsDispatcher : boost::static_visitor<void>
     {
         SetFlagsDispatcher(const Flags flag_in,
-                        PhysicalDomain &phys_dom,
-                        SafeSTLArray<Flags, dim_ + 1> &flags)
+                           PhysicalDomain &phys_dom,
+                           SafeSTLArray<Flags, dim_ + 1> &flags)
             :
             flag_in_(flag_in),
             phys_dom_(phys_dom),
@@ -274,7 +250,7 @@ private:
         template<int sdim>
         void operator()(const Topology<sdim> &sub_elem)
         {
-        	auto domain_elem_ = func_elem_.get_domain_element();
+            auto domain_elem_ = func_elem_.get_domain_element();
             phys_dom_.fill_cache(sub_elem, domain_elem_, s_id_);
         }
 
@@ -298,7 +274,7 @@ private:
         template<int sdim>
         void operator()(const Quadrature<sdim> &quad)
         {
-        	auto domain_elem_ = func_elem_.get_domain_element();
+            auto domain_elem_ = func_elem_.get_domain_element();
             phys_dom_.init_cache(domain_elem_, quad);
 
             auto &cache = func_elem_.all_sub_elems_cache_;
@@ -322,17 +298,43 @@ private:
     };
 
 #ifdef MESH_REFINEMENT
+private:
     std::shared_ptr<self_t> function_previous_refinement_;
 public:
     const std::shared_ptr<self_t> &get_function_previous_refinement() const
     {
         return function_previous_refinement_;
     }
-
-
 #endif // MESH_REFINEMENT
 
 #ifdef SERIALIZATION
+public:
+    /**
+     * Returns the unique identifier associated to each object instance.
+     */
+    Index get_object_id() const;
+
+    /**
+     * Get the name associated to the object instance.
+     */
+    const std::string &get_name() const;
+
+    /**
+     * Set the name associated to the object instance.
+     */
+    void set_name(const std::string &name);
+
+private:
+    /**
+     * Unique identifier associated to each object instance.
+     */
+    Index object_id_;
+
+    /**
+     * Name associated to the object instance.
+     */
+    std::string name_;
+public:
     /**
      * @name Functions needed for boost::serialization
      * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
