@@ -182,7 +182,7 @@ public:
     virtual std::shared_ptr<self_t> clone() const;
 
 
-    virtual typename List::iterator &operator++() override
+    virtual typename List::iterator &operator++()
     {
         return ++this->get_grid_element();
     }

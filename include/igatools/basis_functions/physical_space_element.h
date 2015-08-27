@@ -275,6 +275,13 @@ public:
     const std::shared_ptr<const CartesianGrid<dim>> get_grid() const;
 
 
+    virtual typename List::iterator &operator++() override final
+    {
+        ++(*map_element_);
+        return ++(*ref_space_element_);
+        Assert(false,ExcNotImplemented());
+    }
+
 
 #if 0
     /**

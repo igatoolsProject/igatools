@@ -25,6 +25,7 @@
 #include <igatools/base/config.h>
 #include <igatools/basis_functions/space.h>
 #include <igatools/base/tuple_utils.h>
+#include <igatools/basis_functions/space_element.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -85,6 +86,12 @@ public:
     virtual ~SpaceElementHandler() = default;
 
     ///@}
+
+    template<int sdim>
+    void set_flags(const typename space_element::Flags &flag)
+    {
+        this->set_flags_impl(flag,Topology<sdim>());
+    }
 
 public:
 
@@ -156,6 +163,12 @@ public:
 
 private:
     std::shared_ptr<const Sp> space_;
+
+
+    virtual void set_flags_impl(const typename space_element::Flags &flag, const topology_variant &topology)
+    {
+        Assert(false,ExcNotImplemented());
+    }
 
 
 #ifdef SERIALIZATION

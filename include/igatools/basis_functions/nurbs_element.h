@@ -168,6 +168,14 @@ public:
     virtual std::shared_ptr<SpaceElement<dim,0,range,rank,Transformation::h_grad> >
     clone() const override final;
 
+
+    virtual typename List::iterator &operator++() override final
+    {
+        ++weight_elem_;
+        return ++bspline_elem_;
+        Assert(false,ExcNotImplemented());
+    }
+
 #ifdef SERIALIZATION
     /**
      * @name Functions needed for boost::serialization

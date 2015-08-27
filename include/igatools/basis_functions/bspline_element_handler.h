@@ -130,6 +130,8 @@ public:
     using topology_variant = typename base_t::topology_variant;
     using eval_pts_variant = typename base_t::eval_pts_variant;
 
+
+
 #if 0
     /**
      * @name Reset functions
@@ -155,6 +157,41 @@ public:
 
 
 private:
+
+    virtual void set_flags_impl(const typename space_element::Flags &flag, const topology_variant &topology) override final
+    {
+        auto set_flag_dispatcher = SetFlagDispatcher(flag,this->grid_handler_,flags_);
+        boost::apply_visitor(set_flag_dispatcher,topology);
+    }
+
+    struct SetFlagDispatcher : boost::static_visitor<void>
+    {
+        SetFlagDispatcher(const typename space_element::Flags flag_in,
+                          GridElementHandler<dim_> &grid_handler,
+                          SafeSTLArray<typename space_element::Flags, dim+1> &flags)
+            :
+            flag_in_(flag_in),
+            grid_handler_(grid_handler),
+            flags_(flags)
+        {}
+
+        template<int sdim>
+        void operator()(const Topology<sdim> &topology)
+        {
+            using GridFlags = grid_element::Flags;
+            //TODO (martinelli, Aug 27, 2015): select the proper grid flags depending on the BSpline element flags
+            const auto grid_flags = GridFlags::point |
+                                    GridFlags::w_measure;
+            grid_handler_.template set_flags<sdim>(grid_flags);
+
+            flags_[sdim] = flag_in_;
+        }
+
+        const typename space_element::Flags flag_in_;
+        GridElementHandler<dim_> &grid_handler_;
+        SafeSTLArray<typename space_element::Flags, dim+1> &flags_;
+    };
+
 
     static void
     fill_interval_values(const Real one_len,
@@ -365,7 +402,7 @@ private:
 
 private:
 
-    SafeSTLArray<ValueFlags, dim_ + 1> flags_;
+    SafeSTLArray<typename space_element::Flags, dim_ + 1> flags_;
 
     CacheList<GlobalCache, dim> splines1d_;
 

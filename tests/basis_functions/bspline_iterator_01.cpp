@@ -45,11 +45,15 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
 
 
     QGauss<k> quad(n_qp);
-    auto flag = ValueFlags::value|ValueFlags::gradient
-                |ValueFlags::hessian;
-    auto elem_handler = space->get_elem_handler();
-    elem_handler->reset(flag, quad);
+    auto flag = space_element::Flags::value |
+                space_element::Flags::gradient |
+                space_element::Flags::hessian;
 
+    auto elem_handler = space->get_elem_handler();
+
+    elem_handler->template set_flags<k>(flag);
+
+#if 0
     auto elem = space->begin();
     elem_handler->init_element_cache(elem);
 
@@ -74,6 +78,7 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
         hessians.print_info(out);
         out.end_item();
     }
+#endif
 }
 
 
@@ -95,11 +100,16 @@ void bspline_iterator_active_dofs(const int deg = 2,const int n_qp = 3)
             dof_distribution->set_dof_property_status(DofProperties::active,dof,false);
 
     QGauss<k> quad(n_qp);
-    auto flag = ValueFlags::value|ValueFlags::gradient
-                |ValueFlags::hessian;
-    auto elem_handler = space->get_elem_handler();
-    elem_handler->reset(flag, quad);
+    auto flag = space_element::Flags::value |
+                space_element::Flags::gradient |
+                space_element::Flags::hessian;
 
+    auto elem_handler = space->get_elem_handler();
+
+    elem_handler->template set_flags<k>(flag);
+
+//    elem_handler->reset(flag, quad);
+#if 0
     auto elem = space->begin();
     elem_handler->init_element_cache(elem);
 
@@ -124,6 +134,7 @@ void bspline_iterator_active_dofs(const int deg = 2,const int n_qp = 3)
         hessians.print_info(out);
         out.end_item();
     }
+#endif
 }
 
 

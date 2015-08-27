@@ -196,7 +196,7 @@ public:
     ///@}
 #endif
 
-    virtual typename List::iterator &operator++() = 0;
+//    virtual typename List::iterator &operator++() = 0;
 
 public:
 
@@ -229,6 +229,7 @@ public:
      * */
     bool operator>(const self_t &a) const;
     ///@}
+
 
 
     /** Returns the index of the element. */

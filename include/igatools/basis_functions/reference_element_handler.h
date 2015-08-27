@@ -52,6 +52,8 @@ public:
     using eval_pts_variant = SubElemVariants<Quadrature,dim>;
 
 
+    using Flags = space_element::Flags;
+
     static std::shared_ptr<ReferenceElementHandler<dim,range,rank> >
     create(const std::shared_ptr<const Space> &space);
 
@@ -127,7 +129,7 @@ public:
      * Returns the const reference of the GridElementHandler used by the current ReferenceElementHandler.
      * @return
      */
-    const GridElementHandler<dim> &get_grid_handler() const;
+//    const GridElementHandler<dim> &get_grid_handler() const;
 
 
 private:
