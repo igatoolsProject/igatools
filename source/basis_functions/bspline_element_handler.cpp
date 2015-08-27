@@ -177,256 +177,28 @@ create(std::shared_ptr<const Space> space) -> std::shared_ptr<self_t>
     return std::shared_ptr<self_t>(new self_t(space));
 }
 
-template<int dim_, int range_ , int rank_>
-void
-BSplineElementHandler<dim_, range_, rank_>::
-fill_interval_values(const Real one_len,
-                     const BernsteinOperator &oper,
-                     const BasisValues1d &bernstein_vals,
-                     BasisValues1d &spline_vals)
-{
-    for (int order = 0; order < MAX_NUM_DERIVATIVES; ++order)
-    {
-        auto &spline = spline_vals.get_derivative(order);
-        const auto &berns = bernstein_vals.get_derivative(order);
-        spline = oper.scale_action(std::pow(one_len, order), berns);
-    }
-}
-
 
 template<int dim_, int range_ , int rank_>
+template<int sdim>
 void
 BSplineElementHandler<dim_, range_, rank_>::
-resize_and_fill_bernstein_values(
-    const int deg,
-    const SafeSTLVector<Real> &pt_coords,
-    BasisValues1d &bernstein_values)
+SetFlagDispatcher::
+operator()(const Topology<sdim> &topology)
 {
-    bernstein_values.resize(MAX_NUM_DERIVATIVES, deg+1, pt_coords.size());
-    for (int order = 0; order < MAX_NUM_DERIVATIVES; ++order)
-        bernstein_values.get_derivative(order) =
-            BernsteinBasis::derivative(order, deg, pt_coords);
-}
+    using GridFlags = grid_element::Flags;
+    //TODO (martinelli, Aug 27, 2015): select the proper grid flags depending on the BSpline element flags
+    const auto grid_flags = GridFlags::point |
+                            GridFlags::w_measure;
+    grid_handler_.template set_flags<sdim>(grid_flags);
 
-
-#if 0
-template<int dim_, int range_ , int rank_>
-template<int sub_elem_dim>
-void
-BSplineElementHandler<dim_, range_, rank_>::
-ResetDispatcher::
-operator()(const std::shared_ptr<const Quadrature<sub_elem_dim>> &quad1)
-{
-//    grid_handler_.reset(flag_,quad1);
-    Assert(false,ExcNotImplemented())
-    grid_element::Flags grid_flags = grid_element::Flags::point |
-                                     grid_element::Flags::w_measure;
-    grid_handler_.template set_flags<sub_elem_dim>(grid_flags);
-
-    flags_[sub_elem_dim] = flag_;
-
-
-    const auto &space_data = *space_.space_data_;
-
-    const auto &degree = space_.get_degree_table();
-
-    const auto &active_components_id = space_data.get_active_components_id();
-
-    // number of intervals in the cartesian grid
-    const auto n_inter = space_.get_ptr_const_grid()->get_num_intervals();
-
-#ifndef NDEBUG
-    for (const auto &intervals_id : intervals_id_directions_)
-        Assert(!intervals_id.empty(),ExcEmptyObject());
-#endif
-
-    const auto &lengths = grid_handler_.get_grid()->get_element_lengths();
-
-    for (auto &s_id: UnitElement<dim_>::template elems_ids<sub_elem_dim>())
-    {
-        auto &g_cache = cacheutils::extract_sub_elements_data<sub_elem_dim>(splines1d_)[s_id];
-
-        const auto quad = extend_sub_elem_quad<sub_elem_dim,dim>(quad1, s_id);
-
-        g_cache = GlobalCache(quad,space_data.get_components_map());
-
-        const auto &n_coords = quad.get_num_coords_direction();
-
-        // Allocate space for the BasisValues1D
-        for (auto comp : active_components_id)
-        {
-            for (const int dir : UnitElement<dim_>::active_directions)
-            {
-                const auto &intervals_id = intervals_id_directions_[dir];
-
-                const auto &n_pts = n_coords[dir];
-
-                const auto n_basis_comp_dir = degree[comp][dir]+1;
-
-                for (const int &interv_id : intervals_id)
-                {
-                    auto &splines1d = g_cache.entry(comp, dir, interv_id);
-                    splines1d.resize(MAX_NUM_DERIVATIVES, n_basis_comp_dir, n_pts);
-                } // end loop interv_id
-            } // end loop dir
-        } // end loop comp
-
-        /*
-         * For each direction, interval and component we compute the 1D bspline
-         * basis evaluate at the 1D component of the tensor product quadrature
-         */
-        const auto &bezier_op   = space_.operators_;
-        const auto &end_interval = space_.end_interval_;
-
-        using BasisValues = ComponentContainer<BasisValues1d>;
-        const auto &deg_comp_map = degree.get_comp_map();
-        BasisValues bernstein_values_internal(deg_comp_map);
-        BasisValues bernstein_values_left(deg_comp_map);
-        BasisValues bernstein_values_right(deg_comp_map);
-
-        using LengthCompContainer = ComponentContainer<Points<dim>>;
-
-        LengthCompContainer len_left(end_interval.get_comp_map());
-        LengthCompContainer len_right(end_interval.get_comp_map());
-
-        // First/last interval treatment
-        for (const int dir : UnitElement<dim_>::active_directions)
-        {
-            const auto &intervals_id = intervals_id_directions_[dir];
-
-            const int id_interval_left  = 0;
-            const int id_interval_right = n_inter[dir]-1;
-
-            const auto &pt_coords_internal = quad.get_coords_direction(dir);
-            const auto &len_internal = lengths.get_data_direction(dir);
-
-
-            if (intervals_id.front() == id_interval_left) // processing the leftmost interval
-            {
-                SafeSTLVector<Real> pt_coords_left(n_coords[dir]);
-
-                for (auto comp : bernstein_values_left.get_active_components_id())
-                {
-                    const Real alpha = end_interval[comp][dir].first;
-                    const Real one_alpha = 1. - alpha;
-                    len_left[comp][dir] = lengths.get_data_direction(dir)[id_interval_left]/alpha;
-
-                    for (int ipt = 0 ; ipt < n_coords[dir] ; ++ipt)
-                        pt_coords_left[ipt] = one_alpha + pt_coords_internal[ipt] * alpha;
-
-                    resize_and_fill_bernstein_values(degree[comp][dir],pt_coords_left,bernstein_values_left[comp]);
-                } // end loop comp
-            } // end process_interval_left
-
-            if (intervals_id.back() == id_interval_right) // processing the rightmost interval
-            {
-                SafeSTLVector<Real> pt_coords_right(n_coords[dir]);
-
-                for (auto comp : bernstein_values_right.get_active_components_id())
-                {
-                    const Real alpha = end_interval[comp][dir].second;
-                    len_right[comp][dir] = lengths.get_data_direction(dir)[id_interval_right]/alpha;
-
-                    for (int ipt = 0 ; ipt < n_coords[dir] ; ++ipt)
-                        pt_coords_right[ipt] = pt_coords_internal[ipt] * alpha;
-
-                    resize_and_fill_bernstein_values(degree[comp][dir],pt_coords_right,bernstein_values_right[comp]);
-                } // end loop comp
-            } // end process_interval_right
-
-            if (std::any_of(intervals_id.begin(),intervals_id.end(),
-                            [&id_interval_left,&id_interval_right](int i)
-        {
-            return (i > id_interval_left) && (i < id_interval_right);
-            }))
-            {
-                // processing the internal intervals
-                for (auto comp : bernstein_values_internal.get_active_components_id())
-                    resize_and_fill_bernstein_values(degree[comp][dir],pt_coords_internal,bernstein_values_internal[comp]);
-            } // end process_interval_internal
-
-
-            for (auto &inter : intervals_id)
-            {
-                for (auto comp : active_components_id)
-                {
-                    Real one_div_interval_length = 1.0;
-                    const BasisValues1d *berns_values_ptr = nullptr;
-                    if (inter != id_interval_left && inter != id_interval_right)
-                    {
-                        // internal intervals
-                        one_div_interval_length = 1.0 / len_internal[inter];
-                        berns_values_ptr = &bernstein_values_internal[comp];
-                    }
-                    else if (inter == id_interval_left)
-                    {
-                        // first interval (i.e. left-most interval)
-                        one_div_interval_length = 1.0 / len_left[comp][dir];
-                        berns_values_ptr = &bernstein_values_left[comp];
-                    }
-                    else if (inter == id_interval_right)
-                    {
-                        // last interval (i.e. right-most interval)
-                        one_div_interval_length = 1.0 / len_right[comp][dir];
-                        berns_values_ptr = &bernstein_values_right[comp];
-                    }
-
-                    auto &basis = g_cache.entry(comp, dir, inter);
-                    const auto &oper = bezier_op.get_operator(dir, inter, comp);
-
-                    fill_interval_values(one_div_interval_length, oper, *berns_values_ptr, basis);
-                } // end loop comp
-            } // end loop inter
-
-        } // end loop dir
-
-    } // end loop s_id
-}
-
-
-template<int dim_, int range_ , int rank_>
-void
-BSplineElementHandler<dim_, range_, rank_>::
-reset_selected_elements(
-    const ValueFlags &flag_in,
-    const eval_pts_variant &eval_points,
-    const SafeSTLVector<IndexType> &elements_id)
-{
-    auto reset_dispatcher = ResetDispatcher(
-                                *(this->get_bspline_space()),flag_in,this->grid_handler_,flags_,splines1d_);
-
-    //-------------------------------------------------
-    // here we get the interval indices from the element indices
-    Assert(!elements_id.empty(),ExcEmptyObject());
-
-//    const auto &grid = *reset_dispatcher.space_.get_ptr_const_grid();
-    SafeSTLArray<set<int>,dim> intervals_id_unique;
-    for (const auto elem_id : elements_id)
-    {
-//        const auto elem_tensor_id = grid.flat_to_tensor(elem_id);
-
-        for (int dir = 0 ; dir < dim ; ++dir)
-            intervals_id_unique[dir].insert(elem_id[dir]);
-    }
-
-    for (const int dir : UnitElement<dim_>::active_directions)
-    {
-        reset_dispatcher.intervals_id_directions_[dir].assign(
-            intervals_id_unique[dir].begin(),intervals_id_unique[dir].end());
-    }
-    //-------------------------------------------------
-
-    boost::apply_visitor(reset_dispatcher, eval_points);
+    flags_[sdim] = flag_in_;
 }
 
 
 
 
-
-
-
 template<int dim_, int range_ , int rank_>
-template<int sub_elem_dim>
+template<int sdim>
 void
 BSplineElementHandler<dim_, range_, rank_>::
 InitCacheDispatcher::
@@ -454,21 +226,7 @@ operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
     }
 }
 
-template<int dim_, int range_ , int rank_>
-void
-BSplineElementHandler<dim_, range_, rank_>::
-init_ref_elem_cache(RefElementAccessor &elem, const topology_variant &topology)
-{
-    Assert(this->get_space() == elem.get_space(),
-           ExcMessage("The element accessor and the element handler cannot have different spaces."));
 
-    Assert(elem.get_space()->is_bspline(),ExcMessage("Not a BSplineElement."));
-
-    auto init_cache_dispatcher = InitCacheDispatcher(this->grid_handler_,elem,flags_);
-    boost::apply_visitor(init_cache_dispatcher,topology);
-}
-
-#endif
 
 
 
@@ -562,13 +320,6 @@ evaluate_bspline_values(
     const auto &bsp_elem = dynamic_cast<BSplineElement<dim,range,rank> &>(elem_);
     const auto comp_offset = bsp_elem.get_basis_offset();
 
-#if 0
-    using OffsetTable = ComponentContainer<int>;
-    OffsetTable comp_offset;
-    comp_offset[0] = 0;
-    for (int comp = 1 ; comp < OffsetTable::n_entries ; ++comp)
-        comp_offset[comp] += comp_offset[comp-1] + elem_values[comp-1]->get_num_multivariate_functions();
-#endif
 
     const Size n_points = D_phi.get_num_points();
     const TensorIndex<dim> der_tensor_id; // [0,0,..,0] tensor index
@@ -621,14 +372,6 @@ evaluate_bspline_derivatives(
     const auto &bsp_elem = dynamic_cast<BSplineElement<dim,range,rank> &>(elem_);
     const auto comp_offset = bsp_elem.get_basis_offset();
 
-#if 0
-    using OffsetTable = ComponentContainer<int>;
-    OffsetTable comp_offset;
-    comp_offset[0] = 0;
-    for (int comp = 1 ; comp < OffsetTable::n_entries ; ++comp)
-        comp_offset[comp] += comp_offset[comp-1] + elem_values[comp-1]->get_num_multivariate_functions();
-#endif
-
     TensorFunctionDerivativesSymmetry<dim,order> sym;
     const auto n_der = TensorFunctionDerivativesSymmetry<dim,order>::num_entries_eval;
 
@@ -668,26 +411,173 @@ evaluate_bspline_derivatives(
 }
 
 
-#if 0
 
 template<int dim_, int range_ , int rank_>
-template<int sub_elem_dim>
+template<int sdim>
 void
 BSplineElementHandler<dim_, range_, rank_>::
-FillCacheDispatcher::
-operator()(const Topology<sub_elem_dim> &sub_elem)
+FillCacheDispatcherNoGlobalCache::
+operator()(const Topology<sdim> &topology)
 {
-    grid_handler_.template fill_cache<sub_elem_dim>(elem_.get_grid_element(),j_);
+    auto &grid_elem = elem_.get_grid_element();
+    grid_handler_.template fill_cache<sdim>(grid_elem,s_id_);
 
-    const auto &g_cache = cacheutils::extract_sub_elements_data<sub_elem_dim>(splines1d_)[j_];
 
+
+    //--------------------------------------------------------------------------------------
+    // filling the 1D cache --- begin
+
+    const auto &grid = *grid_elem.get_grid();
+    const auto n_inter = grid.get_num_intervals();
+
+    const auto elem_size = grid_elem.template get_side_lengths<dim>(0);
+    const auto elem_tensor_id = grid_elem.get_index();
+
+    const auto &bsp_space = dynamic_cast<const Space &>(*elem_.get_space());
+
+    const auto &space_data = *bsp_space.space_data_;
+
+    const auto &degree = bsp_space.get_degree_table();
+
+    const auto &active_components_id = space_data.get_active_components_id();
+
+    const auto quad_in_cache = grid_elem.template get_quadrature<sdim>();
+
+    const auto quad = extend_sub_elem_quad<sdim,dim>(*quad_in_cache, s_id_);
+
+    using BasisValues1dTable = ComponentContainer<SafeSTLArray<BasisValues1d,dim>>;
+    BasisValues1dTable splines_derivatives_1D_table(space_data.get_components_map());
+
+    const auto &n_coords = quad.get_num_coords_direction();
+
+    /*
+     * For each direction, interval and component we compute the 1D bspline
+     * basis evaluate at the 1D component of the tensor product quadrature
+     */
+    const auto &bezier_op   = bsp_space.operators_;
+    const auto &end_interval = bsp_space.end_interval_;
+
+    using BasisValues = ComponentContainer<BasisValues1d>;
+    const auto &deg_comp_map = degree.get_comp_map();
+    BasisValues bernstein_values(deg_comp_map);
+
+    for (const int dir : UnitElement<dim>::active_directions)
+    {
+        const auto &pt_coords_internal = quad.get_coords_direction(dir);
+
+        const auto len = elem_size[dir];
+
+        const auto interval_id = elem_tensor_id[dir];
+
+        Real alpha;
+
+        const int n_pts_1D = n_coords[dir];
+
+        SafeSTLVector<Real> pt_coords_boundary(n_pts_1D);
+
+        const SafeSTLVector<Real> *pt_coords_ptr = nullptr;
+
+        for (auto comp : active_components_id)
+        {
+            const int deg = degree[comp][dir];
+
+            auto &splines_derivatives_1D = splines_derivatives_1D_table[comp][dir];
+            splines_derivatives_1D.resize(MAX_NUM_DERIVATIVES,deg+1,n_pts_1D);
+
+            if (interval_id == 0) // processing the leftmost interval
+            {
+                // first interval (i.e. left-most interval)
+
+                alpha = end_interval[comp][dir].first;
+                const Real one_minus_alpha = 1. - alpha;
+
+                for (int ipt = 0 ; ipt < n_pts_1D ; ++ipt)
+                    pt_coords_boundary[ipt] = one_minus_alpha +
+                                              pt_coords_internal[ipt] * alpha;
+
+                pt_coords_ptr = &pt_coords_boundary;
+            } // end process_interval_left
+            else if (interval_id == n_inter[dir]-1) // processing the rightmost interval
+            {
+                // last interval (i.e. right-most interval)
+
+                alpha = end_interval[comp][dir].second;
+
+                for (int ipt = 0 ; ipt < n_pts_1D ; ++ipt)
+                    pt_coords_boundary[ipt] = pt_coords_internal[ipt] *
+                                              alpha;
+
+                pt_coords_ptr = &pt_coords_boundary;
+            } // end process_interval_right
+            else
+            {
+                // internal interval
+
+                alpha = 1.0;
+
+                pt_coords_ptr = &pt_coords_internal;
+            } // end process_interval_internal
+
+
+            const Real alpha_div_interval_length = alpha / len;
+
+            const auto &oper = bezier_op.get_operator(dir,interval_id,comp);
+
+            //------------------------------------------------------------
+            //resize_and_fill_bernstein_values
+            bernstein_values[comp].resize(MAX_NUM_DERIVATIVES,deg+1,n_pts_1D);
+            for (int order = 0; order < MAX_NUM_DERIVATIVES; ++order)
+            {
+                auto &berns = bernstein_values[comp].get_derivative(order);
+                berns = BernsteinBasis::derivative(order, deg,*pt_coords_ptr);
+
+                auto &splines = splines_derivatives_1D.get_derivative(order);
+                splines = oper.scale_action(
+                              std::pow(alpha_div_interval_length, order),
+                              berns);
+            }
+            //------------------------------------------------------------
+
+        } // end loop comp
+
+    } // end loop dir
+    //
+    // filling the 1D cache --- end
+    //-------------------------------------------------------------------------------
+
+
+
+    //-------------------------------------------------------------------------------
+    // Multi-variate spline evaluation from 1D values --- begin
+    using TPFE = const TensorProductFunctionEvaluator<dim>;
+    ComponentContainer<std::unique_ptr<TPFE>> val_1d(splines_derivatives_1D_table.get_comp_map());
+
+    SafeSTLArray<BasisValues1dConstView, dim> values_1D;
+    for (auto c : val_1d.get_active_components_id())
+    {
+        const auto &value = splines_derivatives_1D_table[c];
+        for (int i = 0 ; i < dim_ ; ++i)
+            values_1D[i] = BasisValues1dConstView(value[i]);
+
+        val_1d[c] = std::make_unique<TPFE>(quad,values_1D);
+    }
+    // Multi-variate spline evaluation from 1D values --- end
+    //-------------------------------------------------------------------------------
+
+
+
+    //-------------------------------------------------------------------------------
     auto &all_sub_elems_cache = elem_.get_all_sub_elems_cache();
     Assert(all_sub_elems_cache != nullptr, ExcNullPtr());
-    auto &sub_elem_cache = all_sub_elems_cache->template get_sub_elem_cache<sub_elem_dim>(j_);
+    auto &sub_elem_cache = all_sub_elems_cache->template get_sub_elem_cache<sdim>(s_id_);
 
-    const auto &elem_t_index = elem_.get_tensor_index();
 
-    auto val_1d = g_cache.get_element_values(elem_t_index);
+    using Elem = SpaceElement<dim_,0,range_,rank_,Transformation::h_grad>;
+    using _Value      = typename Elem::_Value;
+    using _Gradient   = typename Elem::_Gradient;
+    using _Hessian    = typename Elem::_Hessian;
+    using _Divergence = typename Elem::_Divergence;
+
     if (sub_elem_cache.template status_fill<_Value>())
     {
         auto &values = sub_elem_cache.template get_data<_Value>();
@@ -714,27 +604,10 @@ operator()(const Topology<sub_elem_dim> &sub_elem)
         sub_elem_cache.template set_status_filled<_Divergence>(true);
     }
 
-
     sub_elem_cache.set_filled(true);
+    //-------------------------------------------------------------------------------
 }
 
-
-
-template<int dim_, int range_ , int rank_>
-void
-BSplineElementHandler<dim_, range_, rank_>::
-fill_ref_elem_cache(RefElementAccessor &elem, const topology_variant &topology, const int sub_elem_id)
-{
-    Assert(this->get_space() == elem.get_space(),
-           ExcMessage("The element accessor and the element handler cannot have different spaces."));
-
-    Assert(elem.get_space()->is_bspline(),ExcMessage("Not a BSplineElement."));
-
-    auto fill_cache_dispatcher = FillCacheDispatcher(sub_elem_id,splines1d_,this->grid_handler_,elem);
-    boost::apply_visitor(fill_cache_dispatcher,topology);
-}
-
-#endif
 
 template<int dim_, int range_ , int rank_>
 auto
