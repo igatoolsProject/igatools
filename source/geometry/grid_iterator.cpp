@@ -31,7 +31,8 @@ GridIteratorBase(std::shared_ptr<ContainerType> grid,
                  const ListIt &index,
                  const PropId &prop)
     :
-    elem_(std::make_shared<Element>(Element(grid, index, prop)))
+//    elem_(std::make_shared<Element>(Element(grid, index, prop)))
+    elem_(grid->create_element(index, prop))
 {}
 
 

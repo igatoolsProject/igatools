@@ -57,7 +57,7 @@ public:
     using PhysDomain = Mapping<dim_,codim_>;
 
     using topology_variant = TopologyVariants<dim_>;
-    using eval_pts_variant = SubElemVariants<Quadrature,dim_>;
+    using eval_pts_variant = QuadVariants<dim_>;
 
     using ElementAccessor = FunctionElement<dim_, codim_, range_, rank_>;
     using ElementIterator = GridIterator<ElementAccessor>;

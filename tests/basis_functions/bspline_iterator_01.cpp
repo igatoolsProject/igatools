@@ -41,17 +41,20 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
 
     auto grid = CartesianGrid<dim>::create();
     using Space = BSplineSpace<dim, range, rank>;
-    auto space = Space::create(deg, grid);
+    auto space = Space::create_nonconst(deg, grid);
 
 
-    QGauss<k> quad(n_qp);
+    auto quad = QGauss<k>::create(n_qp);
     auto flag = space_element::Flags::value |
                 space_element::Flags::gradient |
                 space_element::Flags::hessian;
 
+    auto elem = space->begin();
+
     auto elem_handler = space->get_elem_handler();
 
     elem_handler->template set_flags<k>(flag);
+    elem_handler->template init_cache<k>(*elem,quad);
 
 #if 0
     auto elem = space->begin();
@@ -99,18 +102,19 @@ void bspline_iterator_active_dofs(const int deg = 2,const int n_qp = 3)
         else
             dof_distribution->set_dof_property_status(DofProperties::active,dof,false);
 
-    QGauss<k> quad(n_qp);
+    auto quad = QGauss<k>::create(n_qp);
     auto flag = space_element::Flags::value |
                 space_element::Flags::gradient |
                 space_element::Flags::hessian;
 
+    auto elem = space->begin();
+
     auto elem_handler = space->get_elem_handler();
 
     elem_handler->template set_flags<k>(flag);
-
+    elem_handler->template init_cache<k>(*elem,quad);
 //    elem_handler->reset(flag, quad);
 #if 0
-    auto elem = space->begin();
     elem_handler->init_element_cache(elem);
 
     for (auto &s_id : UnitElement<dim>::template elems_ids<k>())

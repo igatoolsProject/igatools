@@ -43,7 +43,8 @@ SpaceElementBase<dim>::
 SpaceElementBase(const self_t &elem,
                  const CopyPolicy &copy_policy)
     :
-    space_(elem.space_)
+    space_(elem.space_),
+    max_num_basis_(elem.max_num_basis_)
 {
     if (copy_policy == CopyPolicy::shallow)
         grid_elem_ = elem.grid_elem_;
@@ -244,6 +245,15 @@ operator>(const self_t &a) const
     return *grid_elem_ > *a.grid_elem_;
 }
 
+
+template <int dim>
+int
+SpaceElementBase<dim>::
+get_max_num_basis() const
+{
+    return max_num_basis_;
+}
+
 #if 0
 template <int dim>
 void
@@ -268,6 +278,9 @@ serialize(Archive &ar, const unsigned int version)
     ar &boost::serialization::make_nvp("space_",non_const_space);
     space_ = non_const_space;
     Assert(space_ != nullptr,ExcNullPtr());
+
+    ar &boost::serialization::make_nvp("max_num_basis_",max_num_basis_);
+
 }
 ///@}
 #endif // SERIALIZATION

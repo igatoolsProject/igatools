@@ -430,10 +430,9 @@ template<int sub_elem_dim>
 void
 BSplineElementHandler<dim_, range_, rank_>::
 InitCacheDispatcher::
-operator()(const Topology<sub_elem_dim> &sub_elem)
+operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
 {
-    grid_handler_.template init_cache<sub_elem_dim>(elem_.get_grid_element());
-
+    grid_handler_.template init_cache<sdim>(elem_.get_grid_element(),quad);
 
     auto &cache = elem_.get_all_sub_elems_cache();
     if (cache == nullptr)
@@ -444,13 +443,13 @@ operator()(const Topology<sub_elem_dim> &sub_elem)
         cache = std::make_shared<Cache>();
     }
 
-    const auto n_basis = elem_.get_max_num_basis();//elem_->get_num_basis(DofProperties::active);
-    const auto n_points = grid_handler_.template get_num_points<sub_elem_dim>();
-    const auto flag = flags_[sub_elem_dim];
+    const auto n_basis = elem_.get_max_num_basis();
+    const auto n_points = quad->get_num_points();
+    const auto flag = flags_[sdim];
 
-    for (auto &s_id: UnitElement<dim_>::template elems_ids<sub_elem_dim>())
+    for (auto &s_id: UnitElement<dim_>::template elems_ids<sdim>())
     {
-        auto &s_cache = cache->template get_sub_elem_cache<sub_elem_dim>(s_id);
+        auto &s_cache = cache->template get_sub_elem_cache<sdim>(s_id);
         s_cache.resize(flag, n_points, n_basis);
     }
 }

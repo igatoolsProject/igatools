@@ -180,14 +180,19 @@ get_w_measures(const int j) const
     return w_measures;
 }
 
+
+
 template<int dim_,int codim_,int range_,int rank_,Transformation type_>
-Size
-SpaceElement<dim_,codim_,range_,rank_,type_>::
-get_max_num_basis() const
-{
-    Assert(false,ExcMessage("This function should be called through a derived class."));
-    return 0;
-}
+const std::string SpaceElement<dim_,codim_,range_,rank_,type_>::_Value::name = "Basis function values";
+
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+const std::string SpaceElement<dim_,codim_,range_,rank_,type_>::_Gradient::name = "Basis function gradients";
+
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+const std::string SpaceElement<dim_,codim_,range_,rank_,type_>::_Hessian::name = "Basis function hessians";
+
+template<int dim_,int codim_,int range_,int rank_,Transformation type_>
+const std::string SpaceElement<dim_,codim_,range_,rank_,type_>::_Divergence::name = "Basis function divergences";
 
 
 #ifdef SERIALIZATION

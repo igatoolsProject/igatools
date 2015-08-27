@@ -98,6 +98,8 @@ GridElementHandler<dim>::
 init_cache(ElementAccessor &elem,
            std::shared_ptr<const Quadrature<sdim>> quad) const
 {
+    Assert(quad != nullptr,ExcNullPtr());
+
     auto &q = elem.quad_list_.template get_quad<sdim>();
     q = quad;
 

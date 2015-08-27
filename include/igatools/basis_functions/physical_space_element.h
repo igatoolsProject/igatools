@@ -195,13 +195,6 @@ public:
 
 
     /**
-     *  Maximum number of non zero basis functions, over the current element.
-     *  @note The "true" number of basis functions may differ from this value because
-     *  some basis functions may be defined to be "inactive".
-     */
-    virtual Size get_max_num_basis() const override final;
-
-    /**
      * Prints internal information about the BSplineElementAccessor.
      * Its main use is for testing and debugging.
      */

@@ -29,26 +29,6 @@
 
 IGA_NAMESPACE_OPEN
 
-namespace space_element
-{
-enum class Flags
-{
-    /** Fill nothing */
-    none           =    0,
-
-    /** Basis functions value */
-    value          =    1L << 1,
-
-    /** Basis functions gradient */
-    gradient          =    1L << 2,
-
-    /** Basis functions hessian */
-    hessian          =    1L << 3,
-
-    /** Basis functions divergence */
-    divergence          =    1L << 4
-};
-}
 
 
 
@@ -276,6 +256,20 @@ private:
     serialize(Archive &ar, const unsigned int version);
     ///@}
 #endif // SERIALIZATION
+
+
+protected:
+    int max_num_basis_;
+
+
+public:
+
+    /**
+     *  Maximum number of non zero basis functions, over the current element.
+     *  @note The "true" number of basis functions may differ from this value because
+     *  some basis functions may be defined to be "inactive".
+     */
+    int get_max_num_basis() const;
 };
 
 

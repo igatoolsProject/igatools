@@ -193,6 +193,57 @@ private:
     };
 
 
+    using BaseElem = SpaceElement<dim_,0,range_,rank_,Transformation::h_grad>;
+
+    struct InitCacheDispatcher : boost::static_visitor<void>
+    {
+        InitCacheDispatcher(const GridElementHandler<dim_> &grid_handler,
+                            const SafeSTLArray<typename space_element::Flags, dim+1> &flags,
+                            BaseElem &elem)
+            :
+            grid_handler_(grid_handler),
+            flags_(flags),
+            elem_(elem)
+        {}
+
+        template<int sdim>
+        void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
+        {
+            grid_handler_.template init_cache<sdim>(elem_.get_grid_element(),quad);
+
+            auto &cache = elem_.get_all_sub_elems_cache();
+            if (cache == nullptr)
+            {
+                using VCache = typename BSplineElement<dim_,range_,rank_>::parent_t::Cache;
+
+                using Cache = AllSubElementsCache<VCache>;
+                cache = std::make_shared<Cache>();
+            }
+
+            const auto n_basis = elem_.get_max_num_basis();
+            const auto n_points = quad->get_num_points();
+            const auto flag = flags_[sdim];
+
+            for (auto &s_id: UnitElement<dim_>::template elems_ids<sdim>())
+            {
+                auto &s_cache = cache->template get_sub_elem_cache<sdim>(s_id);
+                s_cache.resize(flag, n_points, n_basis);
+            }
+        }
+
+        const GridElementHandler<dim_> &grid_handler_;
+        const SafeSTLArray<typename space_element::Flags, dim+1> &flags_;
+        BaseElem &elem_;
+    };
+
+    virtual void init_cache_impl(BaseElem &elem,
+                                 const eval_pts_variant &quad) const override final
+    {
+        auto init_cache_dispatcher = InitCacheDispatcher(this->grid_handler_,flags_,elem);
+        boost::apply_visitor(init_cache_dispatcher,quad);
+    }
+
+
     static void
     fill_interval_values(const Real one_len,
                          const BernsteinOperator &oper,
@@ -308,24 +359,6 @@ private:
     };
 
 
-    struct InitCacheDispatcher : boost::static_visitor<void>
-    {
-        InitCacheDispatcher(GridElementHandler<dim_> &grid_handler,
-                            ReferenceElement<dim_,range_,rank_> &elem,
-                            SafeSTLArray<ValueFlags, dim+1> &flags)
-            :
-            grid_handler_(grid_handler),
-            elem_(elem),
-            flags_(flags)
-        {}
-
-        template<int sub_elem_dim>
-        void operator()(const Topology<sub_elem_dim> &sub_elem);
-
-        GridElementHandler<dim_> &grid_handler_;
-        ReferenceElement<dim_,range_,rank_> &elem_;
-        SafeSTLArray<ValueFlags, dim+1> &flags_;
-    };
 
 
 

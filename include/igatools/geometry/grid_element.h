@@ -341,6 +341,9 @@ private:
         static const auto flag = Flags::point;
     };
 
+    /**
+     * Alias used to define the container for the quadrature weights in the cache.
+     */
     class _Weight
     {
     public:

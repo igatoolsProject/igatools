@@ -53,7 +53,7 @@ class PhysSpaceElementHandler
     using base_t = SpaceElementHandler<dim_,codim_,range_,rank_,type_>;
     using self_t = PhysSpaceElementHandler<dim_,range_,rank_,codim_,type_>;
 
-    using eval_pts_variant = SubElemVariants<Quadrature,dim_>;
+    using eval_pts_variant = QuadVariants<dim_>;
     using topology_variant = TopologyVariants<dim_>;
 
 public:

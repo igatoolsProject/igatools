@@ -279,7 +279,9 @@ BSplineElement(const std::shared_ptr<ContainerType> space,
                const PropId &prop)
     :
     parent_t(space,index,prop)
-{}
+{
+
+}
 
 
 

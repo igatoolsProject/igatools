@@ -51,7 +51,7 @@ public:
 
 
 private:
-    using eval_pts_variant = SubElemVariants<Quadrature,dim>;
+    using eval_pts_variant = QuadVariants<dim>;
     using topology_variant = TopologyVariants<dim>;
 
 
@@ -91,6 +91,14 @@ public:
     void set_flags(const typename space_element::Flags &flag)
     {
         this->set_flags_impl(flag,Topology<sdim>());
+    }
+
+
+    template <int sdim>
+    void init_cache(ElementAccessor &elem,
+                    const std::shared_ptr<const Quadrature<sdim>> &quad) const
+    {
+        this->init_cache_impl(elem,quad);
     }
 
 public:
@@ -166,6 +174,12 @@ private:
 
 
     virtual void set_flags_impl(const typename space_element::Flags &flag, const topology_variant &topology)
+    {
+        Assert(false,ExcNotImplemented());
+    }
+
+    virtual void init_cache_impl(ElementAccessor &elem,
+                                 const eval_pts_variant &quad) const
     {
         Assert(false,ExcNotImplemented());
     }

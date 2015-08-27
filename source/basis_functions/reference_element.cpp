@@ -46,6 +46,7 @@ ReferenceElement(const std::shared_ptr<ConstSpace> space,
         n_basis[comp] = TensorSize<dim>(degree_table[comp]+1);
 
     n_basis_direction_ = n_basis;
+    this->max_num_basis_ = n_basis_direction_.total_dimension();
     //-------------------------------------------------
 
 
@@ -119,13 +120,6 @@ print_info(LogStream &out) const
 
 
 
-template <int dim, int range, int rank>
-Size
-ReferenceElement<dim, range, rank>::
-get_max_num_basis() const
-{
-    return n_basis_direction_.total_dimension();
-}
 
 
 template <int dim, int range, int rank>

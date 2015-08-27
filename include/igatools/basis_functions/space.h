@@ -367,7 +367,7 @@ public:
      * Returns a element iterator to the first element of the patch
      * with the property @p element_property.
      */
-    ElementIterator begin(const PropId &element_property = ElementProperties::active);
+    ElementIterator begin(const PropId &element_property = ElementProperties::active) ;
 
 
     /**

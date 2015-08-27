@@ -46,6 +46,8 @@ PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
 //    push_fwd_element_ = std::make_shared<PfElemAccessor>(phys_space->get_map_func(), index);
     Assert(ref_space_element_ != nullptr, ExcNullPtr());
     Assert(map_element_ != nullptr, ExcNullPtr());
+
+    this->max_num_basis_ = ref_space_element_->get_max_num_basis();
 }
 
 
@@ -171,13 +173,6 @@ move_to(const Index flat_index)
 }
 #endif
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
-Size
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
-get_max_num_basis() const
-{
-    return ref_space_element_->get_max_num_basis();
-}
 
 
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>

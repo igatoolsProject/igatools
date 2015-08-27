@@ -49,7 +49,7 @@ public:
     using ElementAccessor = typename Space::ElementAccessor;
 
     using topology_variant = TopologyVariants<dim>;
-    using eval_pts_variant = SubElemVariants<Quadrature,dim>;
+    using eval_pts_variant = QuadVariants<dim>;
 
 
     using Flags = space_element::Flags;

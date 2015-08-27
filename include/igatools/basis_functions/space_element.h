@@ -252,20 +252,6 @@ public:
         return basis_values.evaluate_linear_combination(loc_coefs) ;
     }
 
-    /**
-     *  Maximum number of non zero basis functions, over the current element.
-     *  @note The "true" number of basis functions may differ from this value because
-     *  some basis functions may be defined to be "inactive".
-     *
-     * @warning This function should be not called directly
-     * (if called it raises an assertion in Debug mode),
-     * instead it should be called its specialization on a derived class.
-     * It would be better to define this function
-     * <em>pure virtual</em> but this will not allow to dereference an iterator
-     * containing a pointer to an object of kind SpaceElement.
-     *
-     */
-    virtual Size get_max_num_basis() const;
 
 
     /**
@@ -312,6 +298,47 @@ public:
     virtual void print_info(LogStream &out) const;
 
     void print_cache_info(LogStream &out) const;
+
+
+    /**
+     * Alias used to define the container for the basis function values in the cache.
+     */
+    class _Value
+    {
+    public:
+        static const std::string name;
+        static const auto flag = Flags::value;
+    };
+
+    /**
+     * Alias used to define the container for the basis function gradients in the cache.
+     */
+    class _Gradient
+    {
+    public:
+        static const std::string name;
+        static const auto flag = Flags::gradient;
+    };
+
+    /**
+     * Alias used to define the container for the basis function hessians in the cache.
+     */
+    class _Hessian
+    {
+    public:
+        static const std::string name;
+        static const auto flag = Flags::hessian;
+    };
+
+    /**
+     * Alias used to define the container for the basis function divergences in the cache.
+     */
+    class _Divergence
+    {
+    public:
+        static const std::string name;
+        static const auto flag = Flags::divergence;
+    };
 
     using CType = boost::fusion::map<
                   boost::fusion::pair<     _Value,DataWithFlagStatus<ValueTable<Value>>>,
@@ -360,6 +387,8 @@ protected:
 private:
 
     std::shared_ptr<const Space<dim_,codim_,range_,rank_,type_>> space_;
+
+
 
 #ifdef SERIALIZATION
     /**

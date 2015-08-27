@@ -652,6 +652,12 @@ public:
     create_element(const ListIt &index, const PropId &property) const;
 
     /**
+     * Create an element (defined on this grid) with a given index and the given property
+     */
+    std::shared_ptr<ElementAccessor>
+    create_element(const ListIt &index, const PropId &property);
+
+    /**
      * Returns the unique identifier associated to each object instance.
      */
     Index get_object_id() const;

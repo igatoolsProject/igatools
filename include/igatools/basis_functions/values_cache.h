@@ -460,7 +460,7 @@ public:
      * of the element basis functions at quadrature points
      * as specify by the flag
      */
-    void resize(const ValueFlags &flags,
+    void resize(const typename space_element::Flags &flags,
                 const Size n_points,
                 const Size n_basis)
     {

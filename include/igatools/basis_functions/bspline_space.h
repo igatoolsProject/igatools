@@ -141,7 +141,7 @@ public:
     using ElementAccessor = BSplineElement<dim,range,rank>;
 
     /** Type for iterator over the elements.  */
-    using ElementIterator = GridIterator<ReferenceElement<dim,range,rank>>;
+    using ElementIterator = GridIterator<SpaceElement<dim,0,range,rank,Transformation::h_grad>>;
 
 
     using SpaceData = SplineSpace<dim_,range_,rank_>;
@@ -270,6 +270,8 @@ public:
 
     /** Destructor. */
     virtual ~BSplineSpace() = default;
+
+
 
 protected:
     /** @name Constructors */
