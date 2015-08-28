@@ -22,7 +22,8 @@
 #define __PHYSICAL_DOMAIN_H_
 
 #include <igatools/base/config.h>
-//#include <igatools/functions/function.h>
+#include <igatools/geometry/cartesian_grid.h>
+#include <igatools/geometry/grid_cache_handler.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -364,7 +365,7 @@ private:
 
 private:
     std::shared_ptr<const GridType> grid_;
-    std::shared_ptr<GridHandle> grid_handler;
+    std::shared_ptr<GridHandle> grid_handler_;
     std::shared_ptr<const FuncType> F_;
 
     SafeSTLArray<ValueFlags, dim_ + 1> flags_;

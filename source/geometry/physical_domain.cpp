@@ -82,13 +82,13 @@ PhysicalDomain<dim_, codim_>::
 
 
 
-template<int dim_, int codim_>
-auto
-PhysicalDomain<dim_, codim_>::
-create(std::shared_ptr<FuncType> F)-> std::shared_ptr<self_t>
-{
-    return std::shared_ptr<self_t>(new self_t(F));
-}
+//template<int dim_, int codim_>
+//auto
+//PhysicalDomain<dim_, codim_>::
+//create(std::shared_ptr<FuncType> F)-> std::shared_ptr<self_t>
+//{
+//    return std::shared_ptr<self_t>(new self_t(F));
+//}
 
 
 
@@ -98,7 +98,8 @@ PhysicalDomain<dim_, codim_>::
 set_flags(const topology_variant &sdim,
           const typename ElementAccessor::Flags &flag) -> void
 {
-    const auto valid_flags = ElementAccessor::get_valid_flags();
+#if 0
+	const auto valid_flags = ElementAccessor::get_valid_flags();
     auto m_flags = flags & valid_flags;
 
     if (contains(flags, ValueFlags::boundary_normal) ||
@@ -115,6 +116,7 @@ set_flags(const topology_variant &sdim,
 
     auto reset_dispatcher = ResetDispatcher(m_flags, flags_);
     boost::apply_visitor(reset_dispatcher, eval_pts);
+#endif
 
 }
 
