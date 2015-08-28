@@ -52,7 +52,7 @@ ReferenceElement(const std::shared_ptr<ConstSpace> space,
 
     //----------------------------------------------------------------
     comp_offset_[0] = 0;
-    for (int comp = 1; comp < Space::n_components; ++comp)
+    for (int comp = 1; comp <= Space::n_components; ++comp)
         comp_offset_[comp] = comp_offset_[comp-1] +
                              this->n_basis_direction_.get_component_size(comp-1);
     //----------------------------------------------------------------

@@ -57,7 +57,6 @@ public:
     /** Type required for the generic algorithm on the spaces (plots??) */
     using Space = BSplineSpace<dim, range, rank> ;
 
-//    using ValuesCache = typename parent_t::ValuesCache;
 
     using Grid = CartesianGrid<dim>;
     using IndexType = typename Grid::IndexType;
@@ -128,40 +127,7 @@ public:
 
 
 
-private:
-    /**
-     * @name Containers for the cache of the element values and for the
-     * cache of the face values
-     */
-    ///@{
-#if 0
-    /**
-     * This type store the values, first second derivatives
-     * of a 1D Bspline functions, i.e BasisValues1d[k]
-     * stores the values of the k-th derivative of the (p+1) basis function
-     * on a given interval
-     * at the quadrature points.
-     * BasisValues1d[k] is a (p+1) x n_qp matrix
-     */
-    using BasisValues1d = SafeSTLVector<DenseMatrix>;
-#endif
 
-protected:
-    /**
-     * For each component gives a product array of the dimension
-     */
-    template<class T>
-    using ComponentContainer =
-        typename Space::template ComponentContainer<T>;
-
-#if 0
-    /**
-     * For each component gives a product array of the dimension
-     */
-    template<class T>
-    using ComponentDirectionTable =
-        ComponentContainer<CartesianProductArray<T,dim>>;
-#endif
 
 private:
     /**
@@ -173,6 +139,10 @@ private:
     template <class Accessor> friend class GridIterator;
     friend class BSplineElementHandler<dim, range, rank>;
 
+
+    template<class T>
+    using ComponentContainer =
+        typename Space::template ComponentContainer<T>;
 
 
     using Splines1D = BasisValues1d;

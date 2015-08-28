@@ -140,7 +140,12 @@ private:
 
     virtual void set_flags_impl(const typename space_element::Flags &flag, const topology_variant &topology) override final
     {
-        auto set_flag_dispatcher = SetFlagDispatcher(flag,this->grid_handler_,flags_);
+        auto elem_flags = flag;
+        if (contains(flag,space_element::Flags::divergence))
+            elem_flags |= space_element::Flags::gradient;
+
+
+        auto set_flag_dispatcher = SetFlagDispatcher(elem_flags,this->grid_handler_,flags_);
         boost::apply_visitor(set_flag_dispatcher,topology);
     }
 
@@ -361,9 +366,6 @@ private:
 
     SafeSTLArray<typename space_element::Flags, dim_ + 1> flags_;
 
-#if 0
-    CacheList<GlobalCache, dim> splines1d_;
-#endif
 
 #ifdef SERIALIZATION
     /**

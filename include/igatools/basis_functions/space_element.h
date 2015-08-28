@@ -271,15 +271,15 @@ public:
     template <class ValueType>
     auto
     evaluate_basis_at_points(
-        const Quadrature<dim_> &points,
+        const std::shared_ptr<const Quadrature<dim_>> &points,
         const std::string &dofs_property)
     {
         auto elem_handler = this->space_->get_elem_handler();
-        elem_handler->reset_selected_elements(ValueType::flag,points,SafeSTLVector<int>(1,this->get_flat_index()));
-        elem_handler->template init_cache<dim_>(*this);
-        elem_handler->template fill_cache<dim_>(*this,0);
+        elem_handler->template set_flags<dim_>(ValueType::flag);
+        elem_handler->init_element_cache(*this,points);
+        elem_handler->fill_element_cache(*this);
 
-        return this->template get_basis<ValueType,dim_>(0,dofs_property);
+        return this->template get_basis_element<ValueType>(dofs_property);
     }
 
     ///@}

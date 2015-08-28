@@ -121,6 +121,21 @@ protected:
                void (*)(int, iga::SafeSTLVector<double> &, iga::SafeSTLVector<double> &));
 
 public:
+
+    /**
+     * Retuirns a Quadrature object wrapped by a std::shared_ptr,
+     * given a vector of <tt>points</tt>
+     * in the <tt>dim_</tt>-dimensional space,
+     * and the <tt>bounding_box</tt> in which the points are defined,
+     * and assign the weights value to be equal to 1.
+     *
+     * @note The constructed Quadrature object has not the tensor-product structure.
+     */
+    static std::shared_ptr<self_t> create(
+        const PointVector &points,
+        const BBox<dim_> &bounding_box = BBox<dim_>());
+
+
     /**
      * Tensor product constructor
      */
@@ -247,6 +262,13 @@ public:
      * index <tt>point_id</tt>.
      */
     TensorIndex<dim_> get_coords_id_from_point_id(const int point_id) const;
+
+
+    /**
+     * Returns a const-reference to SafeSTLVector representing the association
+     * between the point (flat) indices and their coordinates inidices.
+     */
+    const SafeSTLVector<TensorIndex<dim_>> &get_map_point_id_to_coords_id() const;
     ///@}
 
     /**

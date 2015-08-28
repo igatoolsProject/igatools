@@ -110,7 +110,9 @@ public:
     ValueVector<Real> get_element_w_measures() const;
 
 
-    using OffsetTable = typename Space::template ComponentContainer<int>;
+//    using OffsetTable = typename Space::template ComponentContainer<int>;
+    using OffsetTable = SafeSTLArray<int,Space::n_components+1>;
+
     using TensorSizeTable = typename Space::TensorSizeTable;
 
 protected:
@@ -118,7 +120,11 @@ protected:
     /** Number of scalar basis functions along each direction, for all space components. */
     TensorSizeTable n_basis_direction_;
 
-    /** Basis function ID offset between the different components. */
+    /**
+     * Offset of the scalar basis functions across the different components.
+     *
+     * @note The last entry of the array contains the total number of scalar basis functions.
+     */
     OffsetTable comp_offset_;
 
     using Indexer = CartesianProductIndexer<dim>;

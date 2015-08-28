@@ -93,13 +93,14 @@ serialize(Archive &ar, const unsigned int version)
 
 #endif //SERIALIZATION
 
+#if 0
 const BasisValues1d *
 BasisValues1dConstView::
 operator->() const
 {
     return funcs_;
 }
-
+#endif
 
 
 Values1DConstView::

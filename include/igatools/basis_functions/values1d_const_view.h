@@ -81,7 +81,7 @@ private:
 };
 
 
-
+#if 0
 /**
  * Reference (View) of a BasisValues1d
  */
@@ -122,20 +122,17 @@ public:
     /** Move assignment operator. */
     BasisValues1dConstView &operator=(BasisValues1dConstView &&view) = default;
     ///@}
-//
-//    /** Returns the value of the fucntion at the <tt>point_id</tt>-th point. */
-//    Real operator()(const Index point_id) const;
-//
-//    /** Return the number of points for which the function is evaluated. */
-//    Size get_num_points() const;
 
 private:
     BasisValues1d const *funcs_;
 };
+#endif
 
+//template <int dim>
+//using ElemFuncValues = SafeSTLArray<BasisValues1dConstView, dim>;
 
 template <int dim>
-using ElemFuncValues = SafeSTLArray<BasisValues1dConstView, dim>;
+using ElemFuncValues = SafeSTLArray<BasisValues1d, dim>;
 
 template <int dim>
 class TensorProductFunctionEvaluator
@@ -143,51 +140,59 @@ class TensorProductFunctionEvaluator
 public:
     TensorProductFunctionEvaluator(const Quadrature<dim> &quad, const ElemFuncValues<dim> &values_1D)
         :
-        quad_(quad),
-        values_1D_(values_1D)
+        values_1D_(values_1D),
+        points_flat_to_tensor_id_(quad.get_map_point_id_to_coords_id())
     {
-        TensorSize<dim> n_func;
+        TensorSize<dim> n_funcs;
         for (int i = 0; i < dim; ++i)
-            n_func[i] = values_1D_[i]->get_num_functions();
+            n_funcs[i] = values_1D_[i].get_num_functions();
 
-        f_size_ = TensorSizedContainer<dim>(n_func);
+        const auto f_size = TensorSizedContainer<dim>(n_funcs);
+
+        const int n_funcs_total = n_funcs.flat_size();
+        funcs_flat_to_tensor_id_.resize(n_funcs_total);
+        for (int fn = 0 ; fn < n_funcs_total ; ++fn)
+            funcs_flat_to_tensor_id_[fn] = f_size.flat_to_tensor(fn);
     }
 
     /**
      * Evaluate and returns one partial derivative in one point.
      * The order of the partial derivative is specified by the tensor-index
-     * @p order_tensor_id,
-     * while the the function is specified by the tensor-index @p func_tensor_id
-     * point is specified by the flat index @p point_flat_id.
+     * @p order_t_id,
+     * while the the function is specified by the tensor-index @p func_t_id
+     * point is specified by the flat index @p point_f_id.
      */
-    Real evaluate(const TensorIndex<dim> &order_tensor_id,
-                  const TensorIndex<dim> &func_tensor_id,
+    Real evaluate(const TensorIndex<dim> &order_t_id,
+                  const TensorIndex<dim> &func_t_id,
                   const Index &point_flat_id) const
     {
-        const auto &coords_tensor_id = quad_.get_coords_id_from_point_id(point_flat_id);
-        Real res = (dim>0) ? values_1D_[0]->get_derivative(order_tensor_id[0])(func_tensor_id[0],coords_tensor_id[0]) : 1.0;
+        const auto &coords_t_id = points_flat_to_tensor_id_[point_flat_id];
+
+        Real res = (dim > 0) ? values_1D_[0].get_derivative(order_t_id[0])(func_t_id[0],coords_t_id[0]) : 1.0;
+
         for (int i = 1; i < dim; ++i)
-            res *= values_1D_[i]->get_derivative(order_tensor_id[i])(func_tensor_id[i], coords_tensor_id[i]);
+            res *= values_1D_[i].get_derivative(order_t_id[i])(func_t_id[i], coords_t_id[i]);
         return res;
     }
 
-
     auto func_flat_to_tensor(const Index func_id) const
     {
-        return f_size_.flat_to_tensor(func_id);
+        return funcs_flat_to_tensor_id_[func_id];
     }
 
+#if 0
     int get_num_multivariate_functions() const
     {
         return f_size_.flat_size();
     }
+#endif
 
 private:
-    const Quadrature<dim> &quad_;
+    const ElemFuncValues<dim> &values_1D_;
 
-    ElemFuncValues<dim> values_1D_;
+    const SafeSTLVector<TensorIndex<dim>> &points_flat_to_tensor_id_;
 
-    TensorSizedContainer<dim> f_size_;
+    SafeSTLVector<TensorIndex<dim>>  funcs_flat_to_tensor_id_;
 };
 
 
@@ -265,7 +270,7 @@ public:
     Values1DConstView &operator=(Values1DConstView &&view) = default;
     ///@}
 
-    /** Returns the value of the fucntion at the <tt>point_id</tt>-th point. */
+    /** Returns the value of the function at the <tt>point_id</tt>-th point. */
     Real operator()(const Index point_id) const;
 
     /** Return the number of points for which the function is evaluated. */

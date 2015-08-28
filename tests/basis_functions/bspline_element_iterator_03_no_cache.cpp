@@ -47,7 +47,7 @@ void do_test()
     const int degree = 1;
     const int rank =  1 ;
     using Space = BSplineSpace< dim_domain, dim_range, rank >;
-    auto space = Space::create(degree, grid);
+    auto space = Space::create_nonconst(degree, grid);
 
     const auto  num = space->get_num_basis();
     Epetra_SerialComm comm;
@@ -72,9 +72,15 @@ void do_test()
     QGauss< dim_domain > quad_tensor_prod(2) ;
     const auto eval_points = quad_tensor_prod.get_points();
 
-    Quadrature<dim_domain> quad_non_tensor_prod(eval_points);
+    auto quad_non_tensor_prod = Quadrature<dim_domain>::create(eval_points);
 
     auto element1 = space->begin();
+
+    using Elem = typename Space::ElementAccessor;
+    using _Value = typename Elem::_Value;
+    using _Gradient = typename Elem::_Gradient;
+    using _Hessian = typename Elem::_Hessian;
+    using _Divergence = typename Elem::_Divergence;
 
     out.begin_item("Basis values using QGauss<" + std::to_string(dim_domain) + "> with 2 points in each coordinate direction.");
     auto values1 = element1->template evaluate_basis_at_points<_Value>(quad_non_tensor_prod,DofProperties::active);
@@ -87,7 +93,7 @@ void do_test()
     out.end_item();
 
 //    QUniform< dim_domain > quad_scheme_2(3) ;
-    Quadrature< dim_domain > quad_scheme_2(QUniform< dim_domain >(3).get_points()) ;
+    auto quad_scheme_2 = Quadrature< dim_domain >::create(QUniform< dim_domain >(3).get_points()) ;
 
     out.begin_item("Basis values using QUniform<" + std::to_string(dim_domain) + "> with 2 points in each coordinate direction.");
     auto values2 = element1->template evaluate_basis_at_points<_Value>(quad_scheme_2,DofProperties::active);

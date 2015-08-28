@@ -164,9 +164,7 @@ BSplineElementHandler<dim_, range_, rank_>::
 BSplineElementHandler(shared_ptr<const Space> space)
     :
     base_t(space)
-{
-    Assert(space != nullptr, ExcNullPtr());
-}
+{}
 
 
 template<int dim_, int range_ , int rank_>
@@ -253,9 +251,6 @@ BSplineElementHandler<dim_, range_, rank_>::
 InitCacheDispatcher::
 init_cache_multiD()
 {
-    const auto &quad = *elem_.get_grid_element().template get_quadrature<sdim>();
-
-
     auto &cache = elem_.get_all_sub_elems_cache();
     if (cache == nullptr)
     {
@@ -265,14 +260,20 @@ init_cache_multiD()
         cache = std::make_shared<Cache>();
     }
 
-    const auto n_basis = elem_.get_max_num_basis();
-    const auto n_points = quad.get_num_points();
+
+    using BSpElem = BSplineElement<dim_,range_,rank_>;
+    auto &bsp_elem  = dynamic_cast<BSpElem &>(elem_);
+
+    const auto n_basis = bsp_elem.get_basis_offset()[BaseSpace::n_components];
+
+    const auto n_pts = elem_.get_grid_element().template get_quadrature<sdim>()->get_num_points();
+
     const auto flag = flags_[sdim];
 
     for (auto &s_id: UnitElement<dim_>::template elems_ids<sdim>())
     {
         auto &s_cache = cache->template get_sub_elem_cache<sdim>(s_id);
-        s_cache.resize(flag, n_points, n_basis);
+        s_cache.resize(flag, n_pts, n_basis);
     }
 }
 
@@ -283,7 +284,6 @@ BSplineElementHandler<dim_, range_, rank_>::
 InitCacheDispatcher::
 operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
 {
-//    auto &grid_elem = elem_.get_grid_element();
     grid_handler_.template init_cache<sdim>(elem_.get_grid_element(),quad);
 
     init_cache_1D<sdim>();
@@ -303,12 +303,13 @@ copy_to_inactive_components_values(const SafeSTLVector<Index> &inactive_comp,
                                    const SafeSTLArray<Index, n_components> &active_map,
                                    ValueTable<Value> &D_phi) const
 {
-    Assert(D_phi.get_num_functions() == elem_.get_max_num_basis(),
-           ExcDimensionMismatch(D_phi.get_num_functions(),
-                                elem_.get_max_num_basis()));
-
     const auto &bsp_elem = dynamic_cast<BSplineElement<dim,range,rank> &>(elem_);
-    const auto comp_offset = bsp_elem.get_basis_offset();
+    const auto &comp_offset = bsp_elem.get_basis_offset();
+
+    Assert(D_phi.get_num_functions() == comp_offset[BaseSpace::n_components],
+           ExcDimensionMismatch(D_phi.get_num_functions(),
+                                comp_offset[BaseSpace::n_components]));
+
 
     const Size n_points = D_phi.get_num_points();
     for (int comp : inactive_comp)
@@ -338,12 +339,12 @@ copy_to_inactive_components(const SafeSTLVector<Index> &inactive_comp,
                             const SafeSTLArray<Index, n_components> &active_map,
                             ValueTable<Derivative<order>> &D_phi) const
 {
-    Assert(D_phi.get_num_functions() == elem_.get_max_num_basis(),
-           ExcDimensionMismatch(D_phi.get_num_functions(),
-                                elem_.get_max_num_basis()));
-
     const auto &bsp_elem = dynamic_cast<BSplineElement<dim,range,rank> &>(elem_);
-    const auto comp_offset = bsp_elem.get_basis_offset();
+    const auto &comp_offset = bsp_elem.get_basis_offset();
+
+    Assert(D_phi.get_num_functions() == comp_offset[BaseSpace::n_components],
+           ExcDimensionMismatch(D_phi.get_num_functions(),
+                                comp_offset[BaseSpace::n_components]));
 
     const Size n_points = D_phi.get_num_points();
     const Size n_ders = Derivative<order>::size;
@@ -357,11 +358,17 @@ copy_to_inactive_components(const SafeSTLVector<Index> &inactive_comp,
         {
             const auto act_D_phi = D_phi.get_function_view(act_offset+basis_i);
             auto     inact_D_phi = D_phi.get_function_view(offset+basis_i);
-            for (int qp = 0; qp < n_points; ++qp)
+
+            for (int pt = 0; pt < n_points; ++pt)
+            {
+                const auto &act_D_phi_pt = act_D_phi[pt];
+                auto &inact_D_phi_pt = inact_D_phi[pt];
+
                 for (int der = 0; der < n_ders; ++der)
-                    inact_D_phi[qp](der)(comp) = act_D_phi[qp](der)(act_comp);
-        }
-    }
+                    inact_D_phi_pt(der)(comp) = act_D_phi_pt(der)(act_comp);
+            } // end loop pt
+        } // end loop basis_i
+    } // end loop comp
 }
 
 
@@ -378,13 +385,12 @@ evaluate_bspline_values(
     const ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>>> &elem_values,
     ValueTable<Value> &D_phi) const
 {
-    Assert(D_phi.get_num_functions() == elem_.get_max_num_basis(),
-           ExcDimensionMismatch(D_phi.get_num_functions(),
-                                elem_.get_max_num_basis()));
-
     const auto &bsp_elem = dynamic_cast<BSplineElement<dim,range,rank> &>(elem_);
-    const auto comp_offset = bsp_elem.get_basis_offset();
+    const auto &comp_offset = bsp_elem.get_basis_offset();
 
+    Assert(D_phi.get_num_functions() == comp_offset[BaseSpace::n_components],
+           ExcDimensionMismatch(D_phi.get_num_functions(),
+                                comp_offset[BaseSpace::n_components]));
 
     const Size n_points = D_phi.get_num_points();
     const TensorIndex<dim> der_tensor_id; // [0,0,..,0] tensor index
@@ -398,8 +404,9 @@ evaluate_bspline_values(
         {
             auto D_phi_i = D_phi.get_function_view(offset + func_id);
             auto const &func_tensor_id = values.func_flat_to_tensor(func_id);
-            for (int point_id = 0; point_id < n_points; ++point_id)
-                D_phi_i[point_id](comp) = values.evaluate(der_tensor_id, func_tensor_id, point_id);
+
+            for (int pt = 0; pt < n_points; ++pt)
+                D_phi_i[pt](comp) = values.evaluate(der_tensor_id, func_tensor_id, pt);
         } // end func_id loop
     } // end comp loop
 
@@ -427,15 +434,15 @@ evaluate_bspline_derivatives(
      */
 
     Assert(D_phi.size() > 0, ExcEmptyObject());
-    const Size n_points = D_phi.get_num_points();
+    const int n_points = D_phi.get_num_points();
 
-
-    Assert(D_phi.get_num_functions() == elem_.get_max_num_basis(),
-           ExcDimensionMismatch(D_phi.get_num_functions(),
-                                elem_.get_max_num_basis()));
 
     const auto &bsp_elem = dynamic_cast<BSplineElement<dim,range,rank> &>(elem_);
-    const auto comp_offset = bsp_elem.get_basis_offset();
+    const auto &comp_offset = bsp_elem.get_basis_offset();
+
+    Assert(D_phi.get_num_functions() == comp_offset[BaseSpace::n_components],
+           ExcDimensionMismatch(D_phi.get_num_functions(),
+                                comp_offset[BaseSpace::n_components]));
 
     TensorFunctionDerivativesSymmetry<dim,order> sym;
     const auto n_der = TensorFunctionDerivativesSymmetry<dim,order>::num_entries_eval;
@@ -447,28 +454,45 @@ evaluate_bspline_derivatives(
     {
         const auto &values = *elem_values[comp];
         const int n_basis_comp = bsp_elem.get_num_basis_comp(comp);
-        const Size offset = comp_offset[comp];
+        const int offset = comp_offset[comp];
 
-        for (int func_id = 0; func_id < n_basis_comp; ++func_id)
+        for (int func_id = 0 ; func_id < n_basis_comp; ++func_id)
         {
             auto D_phi_i = D_phi.get_function_view(offset + func_id);
+
             auto const &func_tensor_id = values.func_flat_to_tensor(func_id);
-            for (int der_id = 0; der_id<n_der; ++der_id)
+
+            for (int der_id = 0 ; der_id < n_der ; ++der_id)
             {
-                const auto &copy_indices_der = copy_indices[der_id];
-                const auto copy_indices_der_size = copy_indices_der.size();
-
                 auto const &der_tensor_id = univariate_order[der_id];
-                for (int point_id = 0; point_id < n_points; ++point_id)
-                {
-                    auto &der = D_phi_i[point_id];
-                    der(copy_indices_der[0])(comp) = values.evaluate(der_tensor_id, func_tensor_id, point_id);
-                    for (int k=1; k<copy_indices_der_size; ++k)
-                        der(copy_indices_der[k])(comp) = der(copy_indices_der[0])(comp);
-                }
-            }
 
-        }
+                const auto &copy_indices_der = copy_indices[der_id];
+//                const auto copy_indices_der_size = copy_indices_der.size();
+
+                const auto &copy_indices_der_0 = copy_indices_der[0];
+
+                const auto copy_indices_der_end = copy_indices_der.end();
+
+                for (int pt = 0; pt < n_points; ++pt)
+                {
+                    auto &der = D_phi_i[pt];
+                    Real &der_copy_indices_der_0_comp = der(copy_indices_der_0)(comp);
+
+                    der_copy_indices_der_0_comp = values.evaluate(der_tensor_id, func_tensor_id, pt);
+
+//                    for (int k = 1 ; k < copy_indices_der_size ; ++k)
+//                        der(copy_indices_der[k])(comp) = der_copy_indices_der_0_comp;
+
+                    auto copy_indices_der_it = copy_indices_der.begin()+1;
+                    for (; copy_indices_der_it != copy_indices_der_end ; ++copy_indices_der_it)
+                        der(*copy_indices_der_it)(comp) = der_copy_indices_der_0_comp;
+
+                } // end loop pt
+
+            } // end loop der_id
+
+        } // end loop func_id
+
     } // end comp loop
 
     copy_to_inactive_components<order>(elem_values.get_inactive_components_id(),
@@ -606,7 +630,7 @@ fill_cache_multiD(const Quadrature<dim> &extended_sub_elem_quad)
     // Multi-variate spline evaluation from 1D values --- begin
 
     using BSpElem = BSplineElement<dim_,range_,rank_>;
-    auto &bsp_elem  = dynamic_cast<BSpElem &>(elem_);
+    auto &bsp_elem = dynamic_cast<BSpElem &>(elem_);
 
     const auto &splines_1D_table_subelems = bsp_elem.all_splines_1D_table_[sdim];
     const auto &splines_1D_table = splines_1D_table_subelems[s_id_];
@@ -614,15 +638,9 @@ fill_cache_multiD(const Quadrature<dim> &extended_sub_elem_quad)
     using TPFE = const TensorProductFunctionEvaluator<dim>;
     ComponentContainer<std::unique_ptr<TPFE>> val_1d(splines_1D_table.get_comp_map());
 
-    SafeSTLArray<BasisValues1dConstView, dim> values_1D;
     for (auto c : val_1d.get_active_components_id())
-    {
-        const auto &splines_1D_comp = splines_1D_table[c];
-        for (int i = 0 ; i < dim_ ; ++i)
-            values_1D[i] = BasisValues1dConstView(splines_1D_comp[i]);
+        val_1d[c] = std::make_unique<TPFE>(extended_sub_elem_quad,splines_1D_table[c]);
 
-        val_1d[c] = std::make_unique<TPFE>(extended_sub_elem_quad,values_1D);
-    }
     // Multi-variate spline evaluation from 1D values --- end
     //-------------------------------------------------------------------------------
 
@@ -681,10 +699,10 @@ operator()(const Topology<sdim> &topology)
     auto &grid_elem = elem_.get_grid_element();
     grid_handler_.template fill_cache<sdim>(grid_elem,s_id_);
 
-
-    const auto &quad_in_cache = *elem_.get_grid_element().template get_quadrature<sdim>();
-
-    const auto extended_sub_elem_quad = extend_sub_elem_quad<sdim,dim>(quad_in_cache,s_id_);
+    const auto extended_sub_elem_quad =
+        extend_sub_elem_quad<sdim,dim>(
+            *elem_.get_grid_element().template get_quadrature<sdim>(),
+            s_id_);
 
     fill_cache_1D<sdim>(extended_sub_elem_quad);
 

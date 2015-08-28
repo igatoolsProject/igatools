@@ -104,7 +104,14 @@ Quadrature(const PointArray &points,
 }
 
 
-
+template<int dim_>
+std::shared_ptr<Quadrature<dim_>>
+                               Quadrature<dim_>::
+                               create(const PointVector &points,
+                                      const BBox<dim_> &bounding_box)
+{
+    return std::make_shared<self_t>(points,bounding_box);
+}
 
 template<int dim_>
 Quadrature<dim_>::
@@ -176,6 +183,14 @@ get_bounding_box() const
 }
 
 
+
+template<int dim_>
+const SafeSTLVector<TensorIndex<dim_>> &
+                                    Quadrature<dim_>::
+                                    get_map_point_id_to_coords_id() const
+{
+    return map_point_id_to_coords_id_;
+}
 
 template<int dim_>
 void
