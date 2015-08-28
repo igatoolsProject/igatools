@@ -22,7 +22,7 @@
 #include <igatools/functions/function_element.h>
 #include <igatools/functions/function.h>
 
-#include <igatools/geometry/mapping_element.h>
+#include <igatools/geometry/physical_domain_element.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -68,7 +68,7 @@ FunctionElementBase(const self_t &elem,
 
 
 template<int dim, int codim, int range, int rank,  class ContainerType_>
-FunctionElement<dim,codim,range,rank> &
+FunctionElementBase<dim,codim,range,rank, ContainerType_> &
 FunctionElementBase<dim, codim, range, rank, ContainerType_>::
 operator=(const self_t &element)
 {
@@ -92,9 +92,9 @@ operator=(const self_t &element)
 template<int dim, int codim, int range, int rank,  class ContainerType_>
 auto
 FunctionElementBase<dim, codim, range, rank, ContainerType_>::
-get_domain_element() const -> const PhysicalDomainElement &
+get_domain_element() const -> const PhysDomainElem &
 {
-    return *phys_dom_elem_;
+    return *phys_domain_elem_;
 }
 
 
@@ -214,5 +214,5 @@ serialize(Archive &ar, const unsigned int version)
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/functions/function_element.inst>
+//#include <igatools/functions/function_element.inst>
 
