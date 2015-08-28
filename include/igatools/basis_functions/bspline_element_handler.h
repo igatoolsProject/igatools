@@ -193,6 +193,12 @@ private:
         const GridElementHandler<dim_> &grid_handler_;
         const SafeSTLArray<typename space_element::Flags, dim+1> &flags_;
         BaseElem &elem_;
+
+        template<int sdim>
+        void init_cache_1D();
+
+        template<int sdim>
+        void init_cache_multiD();
     };
 
 

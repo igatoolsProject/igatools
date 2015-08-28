@@ -195,25 +195,15 @@ operator()(const Topology<sdim> &topology)
 }
 
 
-
-
 template<int dim_, int range_ , int rank_>
 template<int sdim>
 void
 BSplineElementHandler<dim_, range_, rank_>::
 InitCacheDispatcher::
-operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
+init_cache_1D()
 {
-//    auto &grid_elem = elem_.get_grid_element();
-    grid_handler_.template init_cache<sdim>(elem_.get_grid_element(),quad);
+    const auto &quad = *elem_.get_grid_element().template get_quadrature<sdim>();
 
-
-
-
-
-
-    //--------------------------------------------------------------------------------------
-    // filling the 1D cache --- begin
     using BSpElem = BSplineElement<dim_,range_,rank_>;
     auto &bsp_elem  = dynamic_cast<BSpElem &>(elem_);
     const auto &bsp_space = dynamic_cast<const Space &>(*bsp_elem.get_space());
@@ -224,7 +214,7 @@ operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
 
     const auto &active_components_id = space_data.get_active_components_id();
 
-    const auto n_pts = quad->get_num_coords_direction();
+    const auto n_pts = quad.get_num_coords_direction();
 
     using BasisValues1dTable = ComponentContainer<SafeSTLArray<BasisValues1d,dim>>;
 
@@ -259,18 +249,20 @@ operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
 
         } // end loop dir
     } // end loop sub_elem
-    //
-    // filling the 1D cache --- end
-    //-------------------------------------------------------------------------------
+
+}
 
 
+template<int dim_, int range_ , int rank_>
+template<int sdim>
+void
+BSplineElementHandler<dim_, range_, rank_>::
+InitCacheDispatcher::
+init_cache_multiD()
+{
+    const auto &quad = *elem_.get_grid_element().template get_quadrature<sdim>();
 
 
-
-
-
-
-    //---------------------------------------------------------------------------
     auto &cache = elem_.get_all_sub_elems_cache();
     if (cache == nullptr)
     {
@@ -281,7 +273,7 @@ operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
     }
 
     const auto n_basis = elem_.get_max_num_basis();
-    const auto n_points = quad->get_num_points();
+    const auto n_points = quad.get_num_points();
     const auto flag = flags_[sdim];
 
     for (auto &s_id: UnitElement<dim_>::template elems_ids<sdim>())
@@ -289,7 +281,22 @@ operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
         auto &s_cache = cache->template get_sub_elem_cache<sdim>(s_id);
         s_cache.resize(flag, n_points, n_basis);
     }
-    //---------------------------------------------------------------------------
+}
+
+template<int dim_, int range_ , int rank_>
+template<int sdim>
+void
+BSplineElementHandler<dim_, range_, rank_>::
+InitCacheDispatcher::
+operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
+{
+//    auto &grid_elem = elem_.get_grid_element();
+    grid_handler_.template init_cache<sdim>(elem_.get_grid_element(),quad);
+
+
+    init_cache_1D<sdim>();
+
+    init_cache_multiD<sdim>();
 }
 
 
