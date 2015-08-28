@@ -278,8 +278,7 @@ BSplineElement(const std::shared_ptr<ContainerType> space,
                const ListIt &index,
                const PropId &prop)
     :
-    parent_t(space,index,prop),
-    splines_derivatives_1D_table_(space->space_data_->get_components_map())
+    parent_t(space,index,prop)
 {
 
 }

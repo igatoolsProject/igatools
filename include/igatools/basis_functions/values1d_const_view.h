@@ -43,13 +43,13 @@ class BasisValues1d
 public:
     BasisValues1d();
 
-    BasisValues1d(const int max_num_derivatives, const int n_func, const int n_points);
+    BasisValues1d(const int n_func, const int n_points);
 
     Size get_num_points() const;
 
     Size get_num_functions() const;
 
-    void resize(const int max_num_derivatives, const int n_func, const int n_points);
+    void resize(const int n_funcs, const int n_points);
 
 
     void print_info(LogStream &out) const;
@@ -62,7 +62,7 @@ public:
 
 
 private:
-    SafeSTLVector<DenseMatrix> values_;
+    SafeSTLArray<DenseMatrix,MAX_NUM_DERIVATIVES> values_;
 
 #ifdef SERIALIZATION
     /**

@@ -176,7 +176,9 @@ private:
 
 
     using BasisValues1dTable = ComponentContainer<SafeSTLArray<BasisValues1d,dim>>;
-    BasisValues1dTable splines_derivatives_1D_table_;
+    using AllBasisValues1dTable = SafeSTLArray<SafeSTLVector<BasisValues1dTable>,dim+1>;
+
+    AllBasisValues1dTable all_splines_derivatives_1D_table_;
 
 public:
     ComponentContainer<SafeSTLArray<ValueTable<Real>,dim> >
