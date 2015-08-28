@@ -99,7 +99,7 @@ set_flags(const topology_variant &sdim,
           const typename ElementAccessor::Flags &flag) -> void
 {
 #if 0
-	const auto valid_flags = ElementAccessor::get_valid_flags();
+    const auto valid_flags = ElementAccessor::get_valid_flags();
     auto m_flags = flags & valid_flags;
 
     if (contains(flags, ValueFlags::boundary_normal) ||
@@ -117,28 +117,18 @@ set_flags(const topology_variant &sdim,
     auto reset_dispatcher = ResetDispatcher(m_flags, flags_);
     boost::apply_visitor(reset_dispatcher, eval_pts);
 #endif
-
 }
 
 
 
-template<int dim_, int codim_>
-auto
-PhysicalDomain<dim_, codim_>::
-fill_cache(ElementAccessor &elem, const topology_variant &k, const int j) -> void
-{
-    F_->template fill_cache(elem, k, j);
-    auto fill_cache_dispatcher =FillCacheDispatcher(*F_, elem, j);
-    boost::apply_visitor(fill_cache_dispatcher, k);
-}
-
-
 
 template<int dim_, int codim_>
-auto
+void
 PhysicalDomain<dim_, codim_>::
-init_cache(ElementAccessor &elem, const topology_variant &k) -> void
+init_cache(ElementAccessor &elem,
+           const eval_pts_variant &quad) const
 {
+#if 0
     F_->init_cache(elem, k);
 
     auto &cache = elem.local_cache_;
@@ -150,10 +140,27 @@ init_cache(ElementAccessor &elem, const topology_variant &k) -> void
 
     auto init_cache_dispatcher = InitCacheDispatcher(*F_, elem, flags_);
     boost::apply_visitor(init_cache_dispatcher, k);
-
-
-
+#endif
 }
+
+
+
+template<int dim_, int codim_>
+auto
+PhysicalDomain<dim_, codim_>::
+fill_cache(const topology_variant &sdim,
+           ElementAccessor &elem,
+           const int s_id) const-> void
+{
+#if 0
+    F_->template fill_cache(elem, k, j);
+    auto fill_cache_dispatcher =FillCacheDispatcher(*F_, elem, j);
+    boost::apply_visitor(fill_cache_dispatcher, k);
+#endif
+}
+
+
+
 
 
 //    if (flag_.fill_inv_hessians())
@@ -190,13 +197,13 @@ get_grid() const -> std::shared_ptr<const CartesianGrid<dim_> >
 template<int dim_, int codim_>
 auto
 PhysicalDomain<dim_, codim_>::
-get_function() const -> std::shared_ptr<FuncType>
+get_function() const -> std::shared_ptr<const FuncType>
 {
     return F_;
 }
 
 
-
+#if 0
 template<int dim_, int codim_>
 auto
 PhysicalDomain<dim_, codim_>::
@@ -207,7 +214,7 @@ create_element(const Index flat_index) const -> std::shared_ptr<ElementAccessor>
 
     return elem;
 }
-
+#endif
 
 template<int dim_, int codim_>
 auto

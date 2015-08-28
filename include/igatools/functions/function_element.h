@@ -69,10 +69,10 @@ public:
 
     using Flags = function_element::Flags;
 
-    using Grid = CartesianGrid<dim>;
+    //using Grid = CartesianGrid<dim>;
     //using IndexType = typename Grid::IndexType;
     //using List = typename Grid::List;
-    using ListIt = typename Grid::ListIt;
+    using ListIt = typename Func::ListIt;
     //using PhysDomain = typename Func::PhysDomain;
     using PhysDomainElem = typename Func::PhysDomain::ElementAccessor;
 private:

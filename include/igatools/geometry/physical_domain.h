@@ -27,10 +27,8 @@
 
 IGA_NAMESPACE_OPEN
 
-template <int, int> class PhysicalDomainElement;
 template <int, int, int, int> class Function;
-
-//template <int,int,int,int> class IgFunction;
+template <int, int> class PhysicalDomainElement;
 
 template<int dim, int codim>
 using MapFunction = Function<dim, 0, dim + codim, 1>;
@@ -59,6 +57,7 @@ class PhysicalDomain :
 {
 private:
     using self_t = PhysicalDomain<dim_, codim_>;
+
 public:
     using GridType = const CartesianGrid<dim_>;
     using GridHandle = typename CartesianGrid<dim_>::ElementHandler;
@@ -130,22 +129,26 @@ public:
     void set_flags(const topology_variant &sdim,
                    const typename ElementAccessor::Flags &flag);
 
-    void init_cache(ElementAccessor &elem, const topology_variant &k) const;
+    void init_cache(ElementAccessor &elem,
+                    const eval_pts_variant &quad) const;
 
-    void init_cache(ElementIterator &elem, const topology_variant &k) const
+    void init_cache(ElementIterator &elem,
+                    const eval_pts_variant &quad) const
     {
-        init_cache(*elem, k);
+        this->init_cache(*elem, quad);
     }
 
-    void fill_cache(ElementAccessor &elem, const topology_variant &k,
-                    const int j) const;
+    void fill_cache(const topology_variant &sdim,
+                    ElementAccessor &elem,
+                    const int s_id) const;
 
-    void fill_cache(ElementIterator &elem, const topology_variant &k,
-                    const int j) const
+    void fill_cache(const topology_variant &sdim,
+                    ElementIterator &elem,
+                    const int s_id) const
     {
-
-        fill_cache(*elem, k, j);
+        this->fill_cache(sdim, *elem, s_id);
     }
+
 
 
     //std::shared_ptr<const CartesianGrid<dim_> > get_grid() const;

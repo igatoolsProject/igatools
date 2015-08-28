@@ -23,8 +23,8 @@
 
 #include <igatools/base/config.h>
 #include <igatools/base/tensor.h>
+#include <igatools/geometry/unit_element.h>
 #include <igatools/utils/value_vector.h>
-#include <igatools/geometry/grid_cache_handler.h>
 #include <igatools/base/quadrature.h>
 #include <igatools/geometry/grid_iterator.h>
 
@@ -43,7 +43,6 @@ class Function :
     public std::enable_shared_from_this<Function<dim_,codim_,range_,rank_> >
 {
 private:
-    using base_t = Function<dim_, codim_, range_, rank_>;
     using self_t = Function<dim_, codim_, range_, rank_>;
 
 public:
