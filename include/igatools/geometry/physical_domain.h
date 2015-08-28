@@ -22,12 +22,12 @@
 #define __PHYSICAL_DOMAIN_H_
 
 #include <igatools/base/config.h>
-
+#include <igatools/functions/function.h>
 
 IGA_NAMESPACE_OPEN
 
 template <int, int> class PhysicalDomainElement;
-template <int, int, int, int> class Function;
+//template <int, int, int, int> class Function;
 
 //template <int,int,int,int> class IgFunction;
 
@@ -60,10 +60,14 @@ private:
     using self_t = PhysicalDomain<dim_, codim_>;
 public:
     using GridType = const CartesianGrid<dim_>;
+    using GridHandle = typename CartesianGrid<dim_>::ElementHandler;
     using FuncType = MapFunction<dim_, codim_>;
 
     using ElementAccessor = PhysicalDomainElement<dim_, codim_>;
     using ElementIterator = GridIterator<ElementAccessor>;
+
+
+    using ListIt = typename GridType::ListIt;
 
     static const int space_dim = dim_ + codim_;
     static const int dim = dim_;
@@ -104,7 +108,7 @@ public:
     PhysicalDomain() = default;
 
     PhysicalDomain(std::shared_ptr<const GridType> grid,
-    		       std::shared_ptr<const FuncType> F);
+                   std::shared_ptr<const FuncType> F);
 
     ~PhysicalDomain();
 
@@ -116,18 +120,14 @@ public:
 //    }
 
 
-    std::shared_ptr<const GridType> get_grid() const
-    {
-        return grid_;
-    }
+    std::shared_ptr<const GridType> get_grid() const;
 
-    std::shared_ptr<const FuncType> get_function() const
-    {
-        return F_;
-    }
+    std::shared_ptr<const FuncType> get_function() const;
 
 public:
-    void reset(const ValueFlags flag, const eval_pts_variant &quad);
+
+    void set_flags(const topology_variant &sdim,
+                   const typename ElementAccessor::Flags &flag);
 
     void init_cache(ElementAccessor &elem, const topology_variant &k) const;
 
@@ -149,13 +149,13 @@ public:
 
     //std::shared_ptr<const CartesianGrid<dim_> > get_grid() const;
 
-    std::shared_ptr<const FuncType> get_function() const;
-
     std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const;
 
     ElementIterator begin() const;
 
     ElementIterator end();
+
+
 
 private:
 
@@ -187,42 +187,43 @@ private:
             :
             F_(F),
             domain_elem_(domain_elem),
-            sub_elem_id_(sub_elem_id)
+            s_id_(sub_elem_id)
 
         {}
 
-        template<int k>
-        void operator()(const Topology<k> &sub_elem)
+        template<int sdim>
+        void operator()(const Topology<sdim> &sub_elem)
         {
-            const int j=sub_elem_id_;
+            const int s_id=s_id_;
             auto &elem = domain_elem_;
 
             // TODO (pauletti, Nov 6, 2014): provide a lighter function for this
-            const auto n_points = F_.template get_num_points<k>();
+            const auto n_points = elem.get_grid_elem()->template get_quad<sdim>()->
+            get_num_points();
 
-            auto &cache = elem.local_cache_->template get_sub_elem_cache<k>(j);
+            auto &cache = elem.local_cache_->template get_sub_elem_cache<sdim>(s_id);
 
             if (cache.template status_fill<_Measure>())
             {
-                auto &k_elem = UnitElement<dim_>::template get_elem<k>(j);
+                auto &s_elem = UnitElement<dim_>::template get_elem<sdim>(s_id);
 
-                const auto &DF = elem.template get_values<_Gradient, k>(j);
-                typename MapFunction<k, space_dim>::Gradient DF1;
+                const auto &DF = elem.template get_values<_Gradient, sdim>(s_id);
+                typename MapFunction<sdim, space_dim>::Gradient DF1;
 
                 auto &measures = cache.template get_data<_Measure>();
                 for (int pt = 0 ; pt < n_points; ++pt)
                 {
-                    for (int l=0; l<k; ++l)
-                        DF1[l] = DF[pt][k_elem.active_directions[l]];
+                    for (int l=0; l<sdim; ++l)
+                        DF1[l] = DF[pt][s_elem.active_directions[l]];
 
-                    measures[pt] = fabs(determinant<k,space_dim>(DF1));
+                    measures[pt] = fabs(determinant<sdim,space_dim>(DF1));
                 }
                 cache.template set_status_filled<_Measure>(true);
             }
 
             if (cache.template status_fill<_W_Measure>())
             {
-                const auto &w = elem.CartesianGridElement<dim_>::template get_w_measures<k>(j);
+                const auto &w = elem.grid_elem_->template get_weights<sdim>(s_id);
 
                 const auto &measures = cache.template get_data<_Measure>();
 
@@ -237,7 +238,7 @@ private:
             if (cache.template status_fill<_InvGradient>())
             {
                 // TODO (pauletti, Nov 23, 2014): if also fill measure this could be done here
-                const auto &DF = elem.template get_values<_Gradient, k>(j);
+                const auto &DF = elem.template get_values<_Gradient, sdim>(s_id);
                 auto &D_invF = cache.template get_data<_InvGradient>();
                 Real det;
                 for (int pt = 0 ; pt < n_points; ++pt)
@@ -249,7 +250,7 @@ private:
             if (cache.template status_fill<_InvHessian>())
             {
                 //        const auto &D1_F = elem.template get_values<_Gradient, k>(j);
-                const auto &D2_F = elem.template get_values<_Hessian, k>(j);
+                const auto &D2_F = elem.template get_values<_Hessian, sdim>(s_id);
                 const auto &D1_invF = cache.template get_data<_InvGradient>();
                 auto &D2_invF       = cache.template get_data<_InvHessian>();
 
@@ -269,9 +270,9 @@ private:
 
             if (cache.template status_fill<_BoundaryNormal>())
             {
-                Assert(dim_ == k+1, ExcNotImplemented());
+                Assert(dim_ == sdim+1, ExcNotImplemented());
                 const auto &D1_invF = cache.template get_data<_InvGradient>();
-                const auto n_hat  = F_.get_grid()->template get_boundary_normals<k>(j)[0];
+                const auto n_hat  = F_.get_grid()->template get_boundary_normals<sdim>(s_id)[0];
                 auto &bndry_normal = cache.template get_data<_BoundaryNormal>();
 
                 for (int pt = 0; pt < n_points; ++pt)
@@ -286,10 +287,10 @@ private:
 
             if (cache.template status_fill<_OuterNormal>())
             {
-                Assert(k == dim_, ExcNotImplemented());
+                Assert(sdim == dim_, ExcNotImplemented());
                 Assert(codim_ == 1, ExcNotImplemented());
 
-                const auto &DF = elem.template get_values<_Gradient, k>(j);
+                const auto &DF = elem.template get_values<_Gradient, sdim>(s_id);
                 auto &outer_normal = cache.template get_data<_OuterNormal>();
 
                 for (int pt = 0; pt < n_points; ++pt)
@@ -304,7 +305,7 @@ private:
 
             if (cache.template status_fill<_Curvature>())
             {
-                Assert(k == dim_, ExcNotImplemented());
+                Assert(sdim == dim_, ExcNotImplemented());
                 Assert(codim_ == 1, ExcNotImplemented());
 
                 const auto H = elem.compute_second_fundamental_form();
@@ -327,7 +328,7 @@ private:
 
         const FuncType &F_;
         ElementAccessor &domain_elem_;
-        int sub_elem_id_;
+        int s_id_;
     };
 
 
@@ -363,6 +364,7 @@ private:
 
 private:
     std::shared_ptr<const GridType> grid_;
+    std::shared_ptr<GridHandle> grid_handler;
     std::shared_ptr<const FuncType> F_;
 
     SafeSTLArray<ValueFlags, dim_ + 1> flags_;

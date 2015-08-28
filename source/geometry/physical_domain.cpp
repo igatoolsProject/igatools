@@ -66,10 +66,11 @@ IGA_NAMESPACE_OPEN
 template<int dim_, int codim_>
 PhysicalDomain<dim_, codim_>::
 PhysicalDomain(std::shared_ptr<const GridType> grid,
-	           std::shared_ptr<const FuncType> F)
+               std::shared_ptr<const FuncType> F)
     :
-   grid_(grid),
-   F_(F)
+    grid_(grid),
+    grid_handler_(grid->create_handler()),
+    F_(F)
 {}
 
 
@@ -94,7 +95,8 @@ create(std::shared_ptr<FuncType> F)-> std::shared_ptr<self_t>
 template<int dim_, int codim_>
 auto
 PhysicalDomain<dim_, codim_>::
-reset(const ValueFlags flags, const eval_pts_variant &eval_pts) -> void
+set_flags(const topology_variant &sdim,
+          const typename ElementAccessor::Flags &flag) -> void
 {
     const auto valid_flags = ElementAccessor::get_valid_flags();
     auto m_flags = flags & valid_flags;
@@ -178,8 +180,10 @@ auto
 PhysicalDomain<dim_, codim_>::
 get_grid() const -> std::shared_ptr<const CartesianGrid<dim_> >
 {
-    return F_->get_grid();
+    return grid_;
 }
+
+
 
 template<int dim_, int codim_>
 auto
@@ -188,6 +192,8 @@ get_function() const -> std::shared_ptr<FuncType>
 {
     return F_;
 }
+
+
 
 template<int dim_, int codim_>
 auto
@@ -220,5 +226,5 @@ end() -> ElementIterator
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/geometry/physical_domain.inst>
+//#include <igatools/geometry/physical_domain.inst>
 

@@ -40,6 +40,7 @@ enum class Flags
     /** Quadrature weigths on the element */
     w_measure       =    1L << 2
 };
+}
 
 template <int,int,int,int> class Function;
 template <int,int,int,int> class FunctionElement;
@@ -64,6 +65,8 @@ public:
     static const int space_dim = dim_+codim_;
 
     using ListIt = typename FuncType::ListIt;
+    using FuncElem = typename FuncType::ElementAccessor;
+    using GridElem = GridElement<dim_>;
 
     /** @name Constructors */
     ///@{
@@ -106,13 +109,23 @@ public:
     ~PhysicalDomainElementBase() = default;
     ///@}
 
-//    template<int order>
-//    using InvDerivative = typename Map::template InvDerivative<order>;
-//
-//    template <int order>
-//    using Derivative = typename Map::template Derivative<order>;
+    template<int order>
+    using InvDerivative = typename FuncType::template InvDerivative<order>;
+
+    template <int order>
+    using Derivative = typename FuncType::template Derivative<order>;
+
+public:
+    ListIt &operator++()
+    {
+        return (++grid_elem_);
+    }
 
 
+    std::shared_ptr<GridElem> get_grid_element() const
+    {
+        return grid_elem_;
+    }
 
 public:
     template<int k>
@@ -205,8 +218,7 @@ public:
     using CacheType = AllSubElementsCache<Cache>;
 
 private:
-    using FuncElem = typename FuncType::ElementAccessor;
-    using GridElem = GridElement<dim_>;
+
 
     std::shared_ptr<ContainerType_> phys_dom_;
 

@@ -69,11 +69,12 @@ public:
 //    using ElementConstIterator = GridIterator<ConstElementAccessor>;
 
     using ElementHandler = Function<dim_, codim_, range_, rank_>;
+    using Flags = typename ElementAccessor::Flags;
 
 //    using IndexType = TensorIndex<dim_>;
 //    using PropertyList = PropertiesIdContainer<IndexType>;
 //    using List = typename PropertyList::List;
-//    using ListIt = typename PropertyList::List::iterator;
+    using ListIt = typename PhysDomain::ListIt;
 
 
     /** Types for the input/output evaluation arguments */
@@ -109,7 +110,7 @@ public:
     /**
      * Type for the divergence of function.
      */
-    using Div = Values<dim, codim, space_dim, rank_-1>;
+    using Div = Values<space_dim, space_dim, rank_-1>;
     ///@}
 
     using topology_variant = TopologyVariants<dim_>;
@@ -126,7 +127,7 @@ protected:
     Function() = default;
 
     /** Constructor */
-    Function(std::shared_ptr<GridType> grid);
+    Function(std::shared_ptr<const PhysDomain> phys_dom);
 
     /**
      * Copy constructor.
@@ -180,7 +181,8 @@ public:
 
 
 private:
-    std::shared_ptr<ElementAccessor> create_element(const ListIt &index, const PropId &property) const;
+    std::shared_ptr<ElementAccessor>
+    create_element(const ListIt &index, const PropId &prop) const;
 
 
 
@@ -202,20 +204,20 @@ public:
 
     virtual void print_info(LogStream &out) const;
 
+    std::shared_ptr<typename ElementAccessor::CacheType>
+    &get_cache(ElementAccessor &elem);
+
 private:
     std::shared_ptr<const PhysDomain> phys_domain_;
 
 protected:
-    SafeSTLArray<typename ElementAccessor::Flags, dim + 1> flags_;
-
-
-
+    SafeSTLArray<Flags, dim + 1> flags_;
 
 
     struct SetFlagsDispatcher : boost::static_visitor<void>
     {
         SetFlagsDispatcher(const Flags flag_in,
-                           PhysicalDomain &phys_dom,
+                           PhysDomain &phys_dom,
                            SafeSTLArray<Flags, dim_ + 1> &flags)
             :
             flag_in_(flag_in),
@@ -232,14 +234,14 @@ protected:
         }
 
         const Flags flag_in_;
-        PhysicalDomain &phys_dom_;
+        PhysDomain &phys_dom_;
         SafeSTLArray<Flags, dim_ + 1> &flags_;
     };
 
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
         FillCacheDispatcher(const int s_id,
-                            const PhysicalDomain &phys_dom,
+                            const PhysDomain &phys_dom,
                             ElementAccessor &func_elem)
             :
             s_id_(s_id),
@@ -255,13 +257,13 @@ protected:
         }
 
         int s_id_;
-        const PhysicalDomain &phys_dom_;
+        const PhysDomain &phys_dom_;
         ElementAccessor &func_elem_;
     };
 
     struct InitCacheDispatcher : boost::static_visitor<void>
     {
-        InitCacheDispatcher(const PhysicalDomain &phys_dom,
+        InitCacheDispatcher(const PhysDomain &phys_dom,
                             const SafeSTLArray<Flags, dim_ + 1> &flags,
                             ElementAccessor &func_elem)
             :
@@ -292,8 +294,8 @@ protected:
             }
         }
 
-        const PhysicalDomain &phys_dom_;
-
+        const PhysDomain &phys_dom_;
+        const SafeSTLArray<Flags, dim_ + 1> &flags_;
         ElementAccessor &func_elem_;
     };
 

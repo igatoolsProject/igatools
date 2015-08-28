@@ -25,64 +25,45 @@ using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
-template<int dim,int space_dim>
-IdentityFunction<dim,space_dim>::
-IdentityFunction(std::shared_ptr<GridType> grid)
-    :
-    parent_t::Function(grid)
-{}
+//template<int dim,int space_dim>
+//auto
+//IdentityFunction<dim,space_dim>::
+//create(std::shared_ptr<GridType> grid) -> std::shared_ptr<parent_t>
+//{
+//    auto identity_function = std::make_shared<self_t>(grid);
+//
+//#ifdef MESH_REFINEMENT
+//    identity_function->create_connection_for_insert_knots(identity_function);
+//#endif // MESH_REFINEMENT
+//
+//    return identity_function;
+//}
+
+
+
+//template<int dim,int space_dim>
+//auto
+//IdentityFunction<dim,space_dim>::
+//clone() const -> std::shared_ptr<parent_t>
+//{
+//
+//    return std::make_shared<self_t>(*this);
+//}
+
+
 
 
 template<int dim,int space_dim>
 auto
 IdentityFunction<dim,space_dim>::
-create(std::shared_ptr<GridType> grid) -> std::shared_ptr<parent_t>
+fill_cache(const topology_variant &sdim,
+           ElementAccessor &elem,
+           const int s_id) const -> void
 {
-    auto identity_function = std::make_shared<self_t>(grid);
-
-#ifdef MESH_REFINEMENT
-    identity_function->create_connection_for_insert_knots(identity_function);
-#endif // MESH_REFINEMENT
-
-    return identity_function;
+    auto fill_dispatcher = FillCacheDispatcher(s_id, *this, elem);
+    boost::apply_visitor(fill_dispatcher, sdim);
 }
 
-template<int dim,int space_dim>
-auto
-IdentityFunction<dim,space_dim>::
-clone() const -> std::shared_ptr<parent_t>
-{
-
-    return std::make_shared<self_t>(*this);
-}
-
-template<int dim,int space_dim>
-void
-IdentityFunction<dim,space_dim>::
-print_info(LogStream &out) const
-{
-    using std::to_string;
-    out.begin_item("IdentityFunction<" + to_string(dim) + "," + to_string(space_dim) + ">");
-
-    out.begin_item("Function<" + to_string(dim) + ",0," + to_string(space_dim) + ",1>");
-    parent_t::print_info(out);
-    out.end_item();
-
-    out.end_item();
-}
-
-#if 0
-template<int dim,int space_dim>
-auto
-IdentityFunction<dim,space_dim>::
-fill_cache(FuncElem &elem, const topology_variant &k, const int sub_elem_id) const -> void
-{
-    parent_t::fill_cache(elem, k, sub_elem_id);
-
-    auto fill_cache_dispatcher = FillCacheDispatcher(sub_elem_id,*this,elem);
-    boost::apply_visitor(fill_cache_dispatcher, k);
-}
-#endif
 
 
 #ifdef MESH_REFINEMENT

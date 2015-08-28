@@ -40,6 +40,7 @@ enum class Flags
     /** Quadrature weigths on the element */
     gradient       =    1L << 2
 };
+}
 
 template <int,int,int,int> class Function;
 template <int,int> class PhysicalDomain;
@@ -72,7 +73,8 @@ public:
     //using IndexType = typename Grid::IndexType;
     //using List = typename Grid::List;
     using ListIt = typename Grid::ListIt;
-
+    //using PhysDomain = typename Func::PhysDomain;
+    using PhysDomainElem = typename Func::PhysDomain::ElementAccessor;
 private:
     template <int order>
     using Derivative = typename Func::template Derivative<order>;
@@ -110,12 +112,12 @@ public:
     /**
      * Move constructor.
      */
-    FunctionElement(self_t &&elem) = default;
+    FunctionElementBase(self_t &&elem) = default;
 
     /**
      * Destructor.
      */
-    ~FunctionElement() = default;
+    ~FunctionElementBase() = default;
     ///@}
 
     /**
@@ -161,6 +163,8 @@ public:
     ///@}
 
 
+
+    const PhysDomainElem &get_domain_element() const;
 
     template<class ValueType, int sdim>
     auto
@@ -225,7 +229,7 @@ public:
 
 
 
-    typename List::iterator &operator++()
+    ListIt &operator++()
     {
         return (++(*phys_domain_elem_));
     }
@@ -259,8 +263,7 @@ private:
     }
 
 private:
-    //using PhysDomain = typename Func::PhysDomain;
-    using PhysDomainElem = typename Func::PhysDomain::ElementAccessor;
+
 
     std::shared_ptr<ContainerType_> func_;
 
@@ -272,8 +275,6 @@ private:
     friend class Function<dim, codim, range, rank>;
 
 public:
-    const PhysicalDomainElement &get_domain_element() const;
-
     void print_info(LogStream &out) const;
 
     void print_cache_info(LogStream &out) const;
@@ -344,9 +345,11 @@ class ConstFunctionElement
 
 template <int dim, int codim, int range, int rank>
 class FunctionElement
-    : public FunctionElementBase<dim, CartesianFunction<dim>>
+    : public FunctionElementBase<dim, codim, range, rank,
+      const Function<dim,codim,range,rank>>
 {
-    using FunctionElementBase<dim, CartesianFunction<dim>>::FunctionElementBase;
+    using FunctionElementBase<dim, codim, range, rank,
+          const Function<dim,codim,range,rank>>::FunctionElementBase;
 };
 
 IGA_NAMESPACE_CLOSE

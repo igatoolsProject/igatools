@@ -164,6 +164,12 @@ public:
     /** Return the cartesian grid from which the element belongs.*/
     const std::shared_ptr<const ContainerType> get_grid() const;
 
+    template <int sdim>
+    std::shared_ptr<const Quadrature<sdim>>
+                                         get_quad()
+    {
+        return quad_list_.template get_quad<sdim>();
+    }
     /**
      * @name Functions for managing/querying the element properties.
      */

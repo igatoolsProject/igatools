@@ -59,7 +59,7 @@ private:
     using self_t = IdentityFunction<dim,space_dim>;
 
 protected:
-    using typename parent_t::GridType;
+//    using typename parent_t::GridType;
 
 public:
     using typename parent_t::topology_variant;
@@ -69,25 +69,24 @@ public:
     using typename parent_t::Hessian;
 
     using typename parent_t::ElementIterator;
+    using typename parent_t::ElementAccessor;
 
-    using FuncElem = FunctionElement<dim, 0, space_dim, 1>;
+//    template <int order>
+//    using Derivative = typename parent_t::template Derivative<order>;
+    // IdentityFunction(std::shared_ptr<GridType> grid);
 
-    template <int order>
-    using Derivative = typename parent_t::template Derivative<order>;
-
-    IdentityFunction(std::shared_ptr<GridType> grid);
+    IdentityFunction();
 
     virtual ~IdentityFunction() = default;
 
-    static std::shared_ptr<parent_t>
-    create(std::shared_ptr<GridType> grid);
+//    static std::shared_ptr<parent_t>
+//    create(std::shared_ptr<GridType> grid);
+//
+//    std::shared_ptr<parent_t> clone() const override final;
 
-    std::shared_ptr<parent_t> clone() const override final;
 
-#if 0
-    void fill_cache(FuncElem &elem, const topology_variant &k,
-                    const int j) const override final;
-#endif
+    void fill_cache(const topology_variant &sdim, ElementAccessor &elem,
+                    const int s_id) const override final;
 
     virtual void print_info(LogStream &out) const override final;
 
@@ -97,47 +96,35 @@ private:
      * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
      * mechanism.
      */
-    IdentityFunction() = default;
+//    IdentityFunction() = default;
 
-#if 0
+
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
-        FillCacheDispatcher(const int sub_elem_id,const self_t &function,FuncElem &elem)
+        FillCacheDispatcher(const int s_id, const self_t &func, ElementAccessor &elem)
             :
-            sub_elem_id_(sub_elem_id),
-            function_(function),
+            s_id_(s_id),
+            funct_(func),
             elem_(elem)
         {}
 
-        template<int sub_elem_dim>
-        void operator()(const Topology<sub_elem_dim> &sub_elem)
+        template<int sdim>
+        void operator()(const Topology<sdim> &sub_elem)
         {
-            auto &local_cache = function_.get_cache(elem_);
-            auto &cache = local_cache->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id_);
+            auto &local_cache = funct_.get_cache(elem_);
+            auto &cache = local_cache->template get_sub_elem_cache<sdim>(s_id_);
 
             if (!cache.fill_none())
             {
-                if (cache.template status_fill<_Point>() || cache.template status_fill<_Value>())
+                if (cache.template status_fill<_Value>())
                 {
                     const auto points =
-                        elem_.GridElement<dim>::template get_points<sub_elem_dim>(sub_elem_id_);
-
-                    if (cache.template status_fill<_Point>())
-                    {
-                        auto &cache_pts = cache.template get_data<_Point>();
-                        cache_pts = points;
-
-                        cache.template set_status_filled<_Point>(true);
-                    }
+                        elem_.get_domain_element()->
+                        get_grid_element()->template get_points<sdim>(s_id_);
                     if (cache.template status_fill<_Value>())
                     {
-                        const auto n_pts = points.get_num_points();
-
                         auto &values = cache.template get_data<_Value>();
-                        for (int pt = 0 ; pt < n_pts ; ++pt)
-                            for (int i = 0 ; i < dim ; ++i)
-                                values[pt][i] = points[pt][i];
-
+                        values = points;
                         cache.template set_status_filled<_Value>(true);
                     }
                 }
@@ -161,13 +148,13 @@ private:
             cache.set_filled(true);
         }
 
-        const int sub_elem_id_;
-        const self_t &function_;
-        FuncElem &elem_;
+        const int s_id_;
+        const self_t &funct_;
+        ElementAccessor &elem_;
     };
 
     friend struct FillCacheDispatcher;
-#endif
+
 
 #ifdef MESH_REFINEMENT
 
@@ -198,8 +185,6 @@ private:
 #endif // SERIALIZATION
 
 };
-
-
 
 IGA_NAMESPACE_CLOSE
 

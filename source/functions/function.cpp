@@ -20,30 +20,31 @@
 
 #include <igatools/functions/function.h>
 #include <igatools/functions/function_element.h>
-#include <igatools/utils/unique_id_generator.h>
-#include <igatools/geometry/mapping.h>
+//#include <igatools/utils/unique_id_generator.h>
+#include <igatools/geometry/physical_domain.h>
+#include <igatools/geometry/physical_domain_element.h>
 
 IGA_NAMESPACE_OPEN
 
 template<int dim_, int codim_, int range_, int rank_ >
 Function<dim_, codim_, range_, rank_ >::
-Function(std::shared_ptr<GridType> grid)
+Function(std::shared_ptr<const PhysicalDomain<dim_, codim_>> phys_dom)
     :
-    GridElementHandler<dim_>(grid),
-    object_id_(UniqueIdGenerator::get_unique_id()),
-    grid_(std::const_pointer_cast<CartesianGrid<dim_>>(grid))
+    phys_domain_(phys_dom)
+    // object_id_(UniqueIdGenerator::get_unique_id())
 {
-    Assert(grid != nullptr,ExcNullPtr());
+    Assert(phys_dom != nullptr,ExcNullPtr());
 }
+
+
 
 template<int dim_, int codim_, int range_, int rank_>
 Function<dim_, codim_, range_, rank_ >::
 Function(const self_t &func)
     :
-    GridElementHandler<dim_>(func),
-    object_id_(UniqueIdGenerator::get_unique_id()),
-    grid_(func.grid_)
+    phys_domain_(func.phys_domain_)
 {}
+
 
 
 template<int dim_, int codim_, int range_, int rank_>
@@ -77,7 +78,7 @@ fill_cache(const topology_variant &sdim,
            ElementAccessor &elem,
            const int s_id) const
 {
-    auto fill_dispatcher = FillCacheDispatcher(s_id, *this, func_elem);
+    auto fill_dispatcher = FillCacheDispatcher(s_id, *this, elem);
     boost::apply_visitor(fill_dispatcher, sdim);
 }
 
@@ -141,7 +142,8 @@ fill_element_cache(ElementIterator &elem) const
 }
 #endif
 
-/*
+
+
 template<int dim_, int codim_, int range_, int rank_>
 auto
 Function<dim_, codim_, range_, rank_ >::
@@ -151,7 +153,8 @@ get_cache(ElementAccessor &elem)
     Assert(elem.all_sub_elems_cache_ != nullptr,ExcNullPtr());
     return elem.all_sub_elems_cache_;
 }
-//*/
+
+
 
 template<int dim_, int codim_, int range_, int rank_>
 auto
@@ -159,7 +162,7 @@ Function<dim_, codim_, range_, rank_ >::
 begin(const PropId &prop) -> ElementIterator
 {
     return ElementIterator(this->shared_from_this(),
-    grid_->get_element_property(prop).begin(),
+    phys_domain_->get_element_property(prop).begin(),
     prop);
 }
 
@@ -171,20 +174,10 @@ Function<dim_, codim_, range_, rank_ >::
 end(const PropId &prop) -> ElementIterator
 {
     return ElementIterator(this->shared_from_this(),
-    grid_->get_element_property(prop).end(),
+    phys_domain_->get_element_property(prop).end(),
     prop);
 }
 
-
-
-template<int dim_, int codim_, int range_, int rank_>
-template<int dim_, int codim_, int range_, int rank_>
-void
-Function<dim_, codim_, range_, rank_ >::
-print_info(LogStream &out) const
-{
-    parent_t::print_info(out);
-}
 
 
 
