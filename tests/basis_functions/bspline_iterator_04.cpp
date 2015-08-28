@@ -32,9 +32,12 @@
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
 
-const SafeSTLArray<ValueFlags, 3> der_flag = {ValueFlags::value,
-                                              ValueFlags::gradient, ValueFlags::hessian
-                                             };
+const SafeSTLArray<space_element::Flags, 3> der_flag =
+{
+    space_element::Flags::value,
+    space_element::Flags::gradient,
+    space_element::Flags::hessian
+};
 
 template <int der, int dim, int range=1, int rank=1>
 void elem_derivatives(const int n_knots,
@@ -49,23 +52,55 @@ void elem_derivatives(const int n_knots,
     typename Space::EndBehaviourTable ebt((typename Space::EndBehaviour(SafeSTLArray<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory))));
     auto int_mult = SplineSpace<dim,range,rank>::get_multiplicity_from_regularity(InteriorReg::maximum,
                     deg, grid->get_num_intervals());
-    auto space = Space::create(deg, grid, int_mult, periodic, ebt);
+    auto space = Space::create_nonconst(deg, grid, int_mult, periodic, ebt);
 
     auto flag = der_flag[der];
-    auto quad = QGauss<dim>(2);
-    using ElementHandler = typename Space::ElementHandler;
-    auto value_handler = ElementHandler::create(space);
-    value_handler->reset(flag, quad);
+//    auto flag = space_element::Flags::value | space_element::Flags::gradient | space_element::Flags::hessian;
+    auto quad = QGauss<dim>::create(2);
+
 
     auto elem = space->begin();
-    auto end = space->end();
+    auto end  = space->end();
 
-    value_handler->init_element_cache(elem);
+    auto elem_handler = space->get_elem_handler();
+    elem_handler->template set_flags<dim>(flag);
+    elem_handler->init_element_cache(elem,quad);
+
+    using Elem = typename Space::ElementAccessor;
+    using _Value = typename Elem::_Value;
+    using _Gradient = typename Elem::_Gradient;
+    using _Hessian = typename Elem::_Hessian;
+//    using _Divergence = typename Elem::_Divergence;
+
+//    elem_handler->fill_element_cache(elem);
+//    elem->template get_basis<_Value,dim>(0,DofProperties::active).print_info(out);
+
+//  out << "Element index : " << elem->get_index();
+//  out << "Element end index : " << end->get_index();
+
+    out.begin_item("Derivative order : " +std::to_string(der));
     for (; elem != end; ++elem)
     {
-        value_handler->fill_element_cache(elem);
-        elem->template get_basis<ValueType<der>,dim>(0,DofProperties::active).print_info(out);
+        out << "Element index : " << elem->get_index() << std::endl;
+        elem_handler->fill_element_cache(elem);
+        if (der == 0)
+        {
+            elem->template get_basis<_Value,dim>(0,DofProperties::active).print_info(out);
+        }
+        else if (der == 1)
+        {
+            elem->template get_basis<_Gradient,dim>(0,DofProperties::active).print_info(out);
+        }
+        else if (der == 2)
+        {
+            elem->template get_basis<_Hessian,dim>(0,DofProperties::active).print_info(out);
+        }
+        else
+            AssertThrow(false,ExcMessage("Invalid derivative order."));
+        //*/
     }
+    out.end_item();
+
     OUTEND
 }
 
@@ -89,6 +124,6 @@ int main()
     elem_derivatives<values, 3, 3>(n_knots, deg2);
     elem_derivatives<grad,   3, 3>(n_knots, deg2);
     elem_derivatives<hess,   3, 3>(n_knots, deg2);
-
+//*/
 }
 

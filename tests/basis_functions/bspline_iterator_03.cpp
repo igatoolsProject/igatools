@@ -42,9 +42,8 @@ void evaluate_field(const int deg = 1)
     auto grid = CartesianGrid<dim>::create();
 
     using Space = BSplineSpace<dim,range,rank>;
-    using ElementHandler = typename Space::ElementHandler;
 
-    auto space = Space::create(deg, grid);
+    auto space = Space::create_nonconst(deg, grid);
     const auto  num = space->get_num_basis();
     Epetra_SerialComm comm;
     Epetra_Map map(num, num, 0, comm);
@@ -65,23 +64,45 @@ void evaluate_field(const int deg = 1)
         u[id++] = 1.0 ;
     }
 
-    QGauss<dim> quad(2) ;
-    const auto flag = ValueFlags::value|ValueFlags::gradient;
-    auto cache1 = ElementHandler::create(space);
-    cache1->reset(flag, quad);
+    auto quad = QGauss<dim>::create(2);
+    auto flag = space_element::Flags::value |
+                space_element::Flags::gradient |
+                space_element::Flags::hessian |
+                space_element::Flags::divergence;
+
 
     auto elem = space->begin();
-    cache1->init_element_cache(elem);
-    cache1->fill_element_cache(elem);
+
+    auto elem_handler = space->get_elem_handler();
+
+    elem_handler->template set_flags<dim>(flag);
+    elem_handler->init_element_cache(elem,quad);
+    elem_handler->fill_element_cache(elem);
+
+    using Elem = typename Space::ElementAccessor;
+    using _Value = typename Elem::_Value;
+    using _Gradient = typename Elem::_Gradient;
+    using _Hessian = typename Elem::_Hessian;
+    using _Divergence = typename Elem::_Divergence;
 
     const auto elem_dofs = elem->get_local_to_global(DofProperties::active);
 
     const auto &loc_coef = u.get_local_coeffs(elem_dofs);
+    out.begin_item("Linear combination of basis values:");
     elem->template linear_combination<_Value,dim>(loc_coef,0,DofProperties::active).print_info(out);
+    out.end_item();
 
-    out << endl;
+    out.begin_item("Linear combination of basis gradients:");
     elem->template linear_combination<_Gradient,dim>(loc_coef,0,DofProperties::active).print_info(out);
-    out << endl;
+    out.end_item();
+
+    out.begin_item("Linear combination of basis hessians:");
+    elem->template linear_combination<_Hessian,dim>(loc_coef,0,DofProperties::active).print_info(out);
+    out.end_item();
+
+    out.begin_item("Linear combination of basis divergence:");
+    elem->template linear_combination<_Divergence,dim>(loc_coef,0,DofProperties::active).print_info(out);
+    out.end_item();
 
     OUTEND
 }

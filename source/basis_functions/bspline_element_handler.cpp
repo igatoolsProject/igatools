@@ -216,15 +216,15 @@ init_cache_1D()
 
     const auto n_pts = quad.get_num_coords_direction();
 
-    auto &caches_1D_table = bsp_elem.all_caches_1D_table_[sdim];
+    auto &splines_1D_table = bsp_elem.all_splines_1D_table_[sdim];
 
     const int n_sub_elems = UnitElement<dim>::template num_elem<sdim>();
-    caches_1D_table.resize(n_sub_elems);
+    splines_1D_table.resize(n_sub_elems);
 
     for (auto s_id = 0 ; s_id < n_sub_elems ; ++s_id)
     {
-        auto &caches_1D_table_sub_elem = caches_1D_table[s_id];
-        caches_1D_table_sub_elem = typename BSpElem::Cache1DTable(space_data.get_components_map());
+        auto &splines_1D_table_sub_elem = splines_1D_table[s_id];
+        splines_1D_table_sub_elem = typename BSpElem::Splines1DTable(space_data.get_components_map());
 
         const auto &sub_elem = UnitElement<dim>::template get_elem<sdim>(s_id);
         TensorSize<dim> n_coords(1);
@@ -232,22 +232,15 @@ init_cache_1D()
             n_coords[sub_elem.active_directions[dir]] = n_pts[dir];
 
 
-
         for (auto comp : active_components_id)
         {
-            auto &caches_1D_comp = caches_1D_table_sub_elem[comp];
+            auto &splines_1D_comp = splines_1D_table_sub_elem[comp];
 
             const auto &deg_comp = degree[comp];
 
             for (const int dir : UnitElement<dim>::active_directions)
-            {
-                const int n_pts_1D = n_coords[dir];
-                const int n_funcs_1D = deg_comp[dir] + 1;
-
-                caches_1D_comp[dir].resize(n_funcs_1D,n_pts_1D);
-            } // end loop comp
-
-        } // end loop dir
+                splines_1D_comp[dir].resize(deg_comp[dir]+1,n_coords[dir]);
+        } // end loop comp
     } // end loop sub_elem
 
 }
@@ -292,7 +285,6 @@ operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
 {
 //    auto &grid_elem = elem_.get_grid_element();
     grid_handler_.template init_cache<sdim>(elem_.get_grid_element(),quad);
-
 
     init_cache_1D<sdim>();
 
@@ -484,16 +476,14 @@ evaluate_bspline_derivatives(
 }
 
 
-
 template<int dim_, int range_ , int rank_>
 template<int sdim>
 void
 BSplineElementHandler<dim_, range_, rank_>::
 FillCacheDispatcherNoGlobalCache::
-operator()(const Topology<sdim> &topology)
+fill_cache_1D(const Quadrature<dim> &extended_sub_elem_quad)
 {
     auto &grid_elem = elem_.get_grid_element();
-    grid_handler_.template fill_cache<sdim>(grid_elem,s_id_);
 
 
 
@@ -516,26 +506,17 @@ operator()(const Topology<sdim> &topology)
 
     const auto &active_components_id = space_data.get_active_components_id();
 
-    const auto quad_in_cache = grid_elem.template get_quadrature<sdim>();
+    const auto &n_coords = extended_sub_elem_quad.get_num_coords_direction();
 
-    const auto quad = extend_sub_elem_quad<sdim,dim>(*quad_in_cache, s_id_);
-
-
-    const auto &n_coords = quad.get_num_coords_direction();
-
-    /*
-     * For each direction, interval and component we compute the 1D bspline
-     * basis evaluate at the 1D component of the tensor product quadrature
-     */
     const auto &bezier_op   = bsp_space.operators_;
     const auto &end_interval = bsp_space.end_interval_;
 
-    auto &caches_1D_table_subelems = bsp_elem.all_caches_1D_table_[sdim];
-    auto &caches_1D_table = caches_1D_table_subelems[s_id_];
+    auto &splines_1D_table_subelems = bsp_elem.all_splines_1D_table_[sdim];
+    auto &splines_1D_table = splines_1D_table_subelems[s_id_];
 
     for (const int dir : UnitElement<dim>::active_directions)
     {
-        const auto &pt_coords_internal = quad.get_coords_direction(dir);
+        const auto &pt_coords_internal = extended_sub_elem_quad.get_coords_direction(dir);
 
         const auto len = elem_size[dir];
 
@@ -594,21 +575,16 @@ operator()(const Topology<sdim> &topology)
             //resize_and_fill_bernstein_values
             const int deg = degree[comp][dir];
 
-            auto &caches_1D_comp = caches_1D_table[comp];
-            auto &caches_1D = caches_1D_comp[dir];
-            auto &bernstein = caches_1D.bernstein_polynomials_;
-            auto &splines_derivatives_1D = caches_1D.splines_;
+            auto &splines_1D_comp = splines_1D_table[comp];
+            auto &splines_1D = splines_1D_comp[dir];
 
             for (int order = 0; order < MAX_NUM_DERIVATIVES; ++order)
             {
-                auto &berns = bernstein.get_derivative(order);
-                berns = BernsteinBasis::derivative(order, deg,*pt_coords_ptr);
-
-                auto &splines = splines_derivatives_1D.get_derivative(order);
+                auto &splines = splines_1D.get_derivative(order);
                 splines = oper.scale_action(
                               std::pow(alpha_div_interval_length, order),
-                              berns);
-            }
+                              BernsteinBasis::derivative(order, deg,*pt_coords_ptr));
+            } // end loop order
             //------------------------------------------------------------
 
         } // end loop comp
@@ -617,26 +593,39 @@ operator()(const Topology<sdim> &topology)
     //
     // filling the 1D cache --- end
     //-------------------------------------------------------------------------------
+}
 
-
-
+template<int dim_, int range_ , int rank_>
+template<int sdim>
+void
+BSplineElementHandler<dim_, range_, rank_>::
+FillCacheDispatcherNoGlobalCache::
+fill_cache_multiD(const Quadrature<dim> &extended_sub_elem_quad)
+{
     //-------------------------------------------------------------------------------
     // Multi-variate spline evaluation from 1D values --- begin
+
+    using BSpElem = BSplineElement<dim_,range_,rank_>;
+    auto &bsp_elem  = dynamic_cast<BSpElem &>(elem_);
+
+    const auto &splines_1D_table_subelems = bsp_elem.all_splines_1D_table_[sdim];
+    const auto &splines_1D_table = splines_1D_table_subelems[s_id_];
+
     using TPFE = const TensorProductFunctionEvaluator<dim>;
-    ComponentContainer<std::unique_ptr<TPFE>> val_1d(caches_1D_table.get_comp_map());
+    ComponentContainer<std::unique_ptr<TPFE>> val_1d(splines_1D_table.get_comp_map());
 
     SafeSTLArray<BasisValues1dConstView, dim> values_1D;
     for (auto c : val_1d.get_active_components_id())
     {
-        const auto &caches_1D_comp = caches_1D_table[c];
-//  const auto &value = caches_1D_table[c].splines_;
+        const auto &splines_1D_comp = splines_1D_table[c];
         for (int i = 0 ; i < dim_ ; ++i)
-            values_1D[i] = BasisValues1dConstView(caches_1D_comp[i].splines_);
+            values_1D[i] = BasisValues1dConstView(splines_1D_comp[i]);
 
-        val_1d[c] = std::make_unique<TPFE>(quad,values_1D);
+        val_1d[c] = std::make_unique<TPFE>(extended_sub_elem_quad,values_1D);
     }
     // Multi-variate spline evaluation from 1D values --- end
     //-------------------------------------------------------------------------------
+
 
 
 
@@ -680,6 +669,26 @@ operator()(const Topology<sdim> &topology)
 
     sub_elem_cache.set_filled(true);
     //-------------------------------------------------------------------------------
+}
+
+template<int dim_, int range_ , int rank_>
+template<int sdim>
+void
+BSplineElementHandler<dim_, range_, rank_>::
+FillCacheDispatcherNoGlobalCache::
+operator()(const Topology<sdim> &topology)
+{
+    auto &grid_elem = elem_.get_grid_element();
+    grid_handler_.template fill_cache<sdim>(grid_elem,s_id_);
+
+
+    const auto &quad_in_cache = *elem_.get_grid_element().template get_quadrature<sdim>();
+
+    const auto extended_sub_elem_quad = extend_sub_elem_quad<sdim,dim>(quad_in_cache,s_id_);
+
+    fill_cache_1D<sdim>(extended_sub_elem_quad);
+
+    fill_cache_multiD<sdim>(extended_sub_elem_quad);
 }
 
 

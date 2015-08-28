@@ -227,6 +227,12 @@ private:
 
     private:
 
+        template<int sdim>
+        void fill_cache_1D(const Quadrature<dim> &extended_sub_elem_quad);
+
+        template<int sdim>
+        void fill_cache_multiD(const Quadrature<dim> &extended_sub_elem_quad);
+
         /**
          * Computes the values (i.e. the 0-th order derivative) of the non-zero
          *  B-spline basis
