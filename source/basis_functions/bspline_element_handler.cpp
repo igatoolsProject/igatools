@@ -216,35 +216,35 @@ init_cache_1D()
 
     const auto n_pts = quad.get_num_coords_direction();
 
-    using BasisValues1dTable = ComponentContainer<SafeSTLArray<BasisValues1d,dim>>;
+    auto &caches_1D_table = bsp_elem.all_caches_1D_table_[sdim];
 
-    auto &splines_derivatives_1D_table_subelems = bsp_elem.all_splines_derivatives_1D_table_[sdim];
     const int n_sub_elems = UnitElement<dim>::template num_elem<sdim>();
-    splines_derivatives_1D_table_subelems.resize(n_sub_elems);
+    caches_1D_table.resize(n_sub_elems);
 
     for (auto s_id = 0 ; s_id < n_sub_elems ; ++s_id)
     {
-        auto &splines_derivatives_1D_table = splines_derivatives_1D_table_subelems[s_id];
-        splines_derivatives_1D_table = BasisValues1dTable(space_data.get_components_map());
-
+        auto &caches_1D_table_sub_elem = caches_1D_table[s_id];
+        caches_1D_table_sub_elem = typename BSpElem::Cache1DTable(space_data.get_components_map());
 
         const auto &sub_elem = UnitElement<dim>::template get_elem<sdim>(s_id);
-
         TensorSize<dim> n_coords(1);
         for (int dir = 0 ; dir < sdim ; ++dir)
             n_coords[sub_elem.active_directions[dir]] = n_pts[dir];
 
 
-        for (const int dir : UnitElement<dim>::active_directions)
+
+        for (auto comp : active_components_id)
         {
-            const int n_pts_1D = n_coords[dir];
+            auto &caches_1D_comp = caches_1D_table_sub_elem[comp];
 
-            for (auto comp : active_components_id)
+            const auto &deg_comp = degree[comp];
+
+            for (const int dir : UnitElement<dim>::active_directions)
             {
-                const int n_funcs_1D = degree[comp][dir] + 1;
+                const int n_pts_1D = n_coords[dir];
+                const int n_funcs_1D = deg_comp[dir] + 1;
 
-                auto &splines_derivatives_1D = splines_derivatives_1D_table[comp][dir];
-                splines_derivatives_1D.resize(n_funcs_1D,n_pts_1D);
+                caches_1D_comp[dir].resize(n_funcs_1D,n_pts_1D);
             } // end loop comp
 
         } // end loop dir
@@ -520,8 +520,6 @@ operator()(const Topology<sdim> &topology)
 
     const auto quad = extend_sub_elem_quad<sdim,dim>(*quad_in_cache, s_id_);
 
-//    using BasisValues1dTable = ComponentContainer<SafeSTLArray<BasisValues1d,dim>>;
-//    BasisValues1dTable splines_derivatives_1D_table(space_data.get_components_map());
 
     const auto &n_coords = quad.get_num_coords_direction();
 
@@ -532,12 +530,8 @@ operator()(const Topology<sdim> &topology)
     const auto &bezier_op   = bsp_space.operators_;
     const auto &end_interval = bsp_space.end_interval_;
 
-    using BasisValues = ComponentContainer<BasisValues1d>;
-    const auto &deg_comp_map = degree.get_comp_map();
-    BasisValues bernstein_values(deg_comp_map);
-
-    auto &splines_derivatives_1D_table_subelems = bsp_elem.all_splines_derivatives_1D_table_[sdim];
-    auto &splines_derivatives_1D_table = splines_derivatives_1D_table_subelems[s_id_];
+    auto &caches_1D_table_subelems = bsp_elem.all_caches_1D_table_[sdim];
+    auto &caches_1D_table = caches_1D_table_subelems[s_id_];
 
     for (const int dir : UnitElement<dim>::active_directions)
     {
@@ -557,10 +551,6 @@ operator()(const Topology<sdim> &topology)
 
         for (auto comp : active_components_id)
         {
-            auto &splines_derivatives_1D_comp = splines_derivatives_1D_table[comp];
-
-            auto &splines_derivatives_1D = splines_derivatives_1D_comp[dir];
-
             if (interval_id == 0) // processing the leftmost interval
             {
                 // first interval (i.e. left-most interval)
@@ -604,12 +594,14 @@ operator()(const Topology<sdim> &topology)
             //resize_and_fill_bernstein_values
             const int deg = degree[comp][dir];
 
-            const int n_funcs_1D = deg + 1;
+            auto &caches_1D_comp = caches_1D_table[comp];
+            auto &caches_1D = caches_1D_comp[dir];
+            auto &bernstein = caches_1D.bernstein_polynomials_;
+            auto &splines_derivatives_1D = caches_1D.splines_;
 
-            bernstein_values[comp].resize(n_funcs_1D,n_pts_1D);
             for (int order = 0; order < MAX_NUM_DERIVATIVES; ++order)
             {
-                auto &berns = bernstein_values[comp].get_derivative(order);
+                auto &berns = bernstein.get_derivative(order);
                 berns = BernsteinBasis::derivative(order, deg,*pt_coords_ptr);
 
                 auto &splines = splines_derivatives_1D.get_derivative(order);
@@ -631,14 +623,15 @@ operator()(const Topology<sdim> &topology)
     //-------------------------------------------------------------------------------
     // Multi-variate spline evaluation from 1D values --- begin
     using TPFE = const TensorProductFunctionEvaluator<dim>;
-    ComponentContainer<std::unique_ptr<TPFE>> val_1d(splines_derivatives_1D_table.get_comp_map());
+    ComponentContainer<std::unique_ptr<TPFE>> val_1d(caches_1D_table.get_comp_map());
 
     SafeSTLArray<BasisValues1dConstView, dim> values_1D;
     for (auto c : val_1d.get_active_components_id())
     {
-        const auto &value = splines_derivatives_1D_table[c];
+        const auto &caches_1D_comp = caches_1D_table[c];
+//  const auto &value = caches_1D_table[c].splines_;
         for (int i = 0 ; i < dim_ ; ++i)
-            values_1D[i] = BasisValues1dConstView(value[i]);
+            values_1D[i] = BasisValues1dConstView(caches_1D_comp[i].splines_);
 
         val_1d[c] = std::make_unique<TPFE>(quad,values_1D);
     }

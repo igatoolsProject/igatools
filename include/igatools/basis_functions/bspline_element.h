@@ -174,11 +174,26 @@ private:
     friend class BSplineElementHandler<dim, range, rank>;
 
 
+    struct Cache1D
+    {
+        void resize(const int n_funcs, const int n_pts)
+        {
+            if (bernstein_polynomials_.get_num_functions() != n_funcs ||
+                bernstein_polynomials_.get_num_points() != n_pts)
+            {
+                bernstein_polynomials_.resize(n_funcs,n_pts);
+                splines_.resize(n_funcs,n_pts);
+            }
+        }
 
-    using BasisValues1dTable = ComponentContainer<SafeSTLArray<BasisValues1d,dim>>;
-    using AllBasisValues1dTable = SafeSTLArray<SafeSTLVector<BasisValues1dTable>,dim+1>;
+        BasisValues1d bernstein_polynomials_;
+        BasisValues1d splines_;
+    };
 
-    AllBasisValues1dTable all_splines_derivatives_1D_table_;
+
+    using Cache1DTable = ComponentContainer<SafeSTLArray<Cache1D,dim>>;
+    using AllCaches1DTable = SafeSTLArray<SafeSTLVector<Cache1DTable>,dim+1>;
+    AllCaches1DTable all_caches_1D_table_;
 
 public:
     ComponentContainer<SafeSTLArray<ValueTable<Real>,dim> >
