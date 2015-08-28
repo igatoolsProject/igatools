@@ -28,7 +28,7 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_, int codim_, int range_, int rank_ >
 Function<dim_, codim_, range_, rank_ >::
-Function(std::shared_ptr<const PhysicalDomain<dim_, codim_>> phys_dom)
+Function(std::shared_ptr<const PhysDomain> phys_dom)
     :
     phys_domain_(phys_dom)
     // object_id_(UniqueIdGenerator::get_unique_id())

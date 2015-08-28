@@ -21,9 +21,10 @@
 #ifndef __FUNCTION_ELEMENT_H
 #define __FUNCTION_ELEMENT_H
 
-#include <igatools/geometry/grid_element.h>
+#include <igatools/functions/function.h>
 #include <igatools/base/value_types.h>
 #include <igatools/basis_functions/values_cache.h>
+
 
 IGA_NAMESPACE_OPEN
 
@@ -42,7 +43,6 @@ enum class Flags
 };
 }
 
-template <int,int,int,int> class Function;
 template <int,int> class PhysicalDomain;
 template <int,int> class PhysicalDomainElement;
 
@@ -61,7 +61,7 @@ public:
     using ContainerType = ContainerType_;
     using Func = ContainerType_;
     using MapFunc = typename Func::MapFunc;
-    using Point = typename Func::Point;
+
     using Value = typename Func::Value;
     using Gradient = typename Func::Gradient;
     using Hessian  = typename Func::Hessian;
@@ -240,8 +240,7 @@ private:
                   boost::fusion::pair<     _Value,DataWithFlagStatus<ValueVector<Value>>>,
                   boost::fusion::pair<  _Gradient,DataWithFlagStatus<ValueVector<Derivative<1>>>>,
                   boost::fusion::pair<   _Hessian,DataWithFlagStatus<ValueVector<Derivative<2>>>>,
-                  boost::fusion::pair<_Divergence,DataWithFlagStatus<ValueVector<Div>>>,
-                  boost::fusion::pair<     _Point,DataWithFlagStatus<ValueVector<Point>>>
+                  boost::fusion::pair<_Divergence,DataWithFlagStatus<ValueVector<Div>>>
                   >;
 
 

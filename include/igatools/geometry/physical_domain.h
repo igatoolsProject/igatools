@@ -22,12 +22,12 @@
 #define __PHYSICAL_DOMAIN_H_
 
 #include <igatools/base/config.h>
-#include <igatools/functions/function.h>
+//#include <igatools/functions/function.h>
 
 IGA_NAMESPACE_OPEN
 
 template <int, int> class PhysicalDomainElement;
-//template <int, int, int, int> class Function;
+template <int, int, int, int> class Function;
 
 //template <int,int,int,int> class IgFunction;
 
