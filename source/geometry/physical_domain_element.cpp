@@ -19,8 +19,8 @@
 //-+--------------------------------------------------------------------
 
 #include <igatools/geometry/physical_domain_element.h>
-#include <igatools/linear_algebra/dense_matrix.h>
-#include <boost/numeric/ublas/operation.hpp>
+//#include <igatools/linear_algebra/dense_matrix.h>
+//#include <boost/numeric/ublas/operation.hpp>
 
 IGA_NAMESPACE_OPEN
 
@@ -32,8 +32,9 @@ PhysicalDomainElementBase(std::shared_ptr<ContainerType_> phys_dom,
                           const PropId &prop)
     :
     phys_dom_(phys_dom),
-    grid_elem_(phys_dom_->get_grid()->create_element(index,prop)),
-    func_elem_(phys_dom_->get_function()->create_element(index,prop))
+    grid_elem_(phys_dom_->get_grid()->create_element(index,prop))
+//	,
+//    func_elem_(phys_dom_->get_function()->create_element(index,prop))
 {}
 
 
@@ -48,7 +49,7 @@ PhysicalDomainElementBase(const self_t &elem,
     if (copy_policy == CopyPolicy::shallow)
     {
         grid_elem_ = elem.grid_elem_;
-        func_elem_ = elem.func_elem_;
+       /// func_elem_ = elem.func_elem_;
         local_cache_ = elem.local_cache_;
     }
     else
@@ -56,7 +57,7 @@ PhysicalDomainElementBase(const self_t &elem,
         local_cache_ =
             std::shared_ptr<CacheType>(new CacheType(*elem.local_cache_));
         grid_elem_ = std::make_shared<GridElem>(*elem.grid_elem_,CopyPolicy::deep);
-        func_elem_ = std::make_shared<FuncElem>(*elem.func_elem_,CopyPolicy::deep);
+     //   func_elem_ = std::make_shared<FuncElem>(*elem.func_elem_,CopyPolicy::deep);
     }
 }
 

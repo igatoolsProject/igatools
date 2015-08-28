@@ -21,28 +21,17 @@
 #ifndef __PHYSICAL_DOMAIN_ELEMENT_H_
 #define __PHYSICAL_DOMAIN_ELEMENT_H_
 
-#include <igatools/utils/safe_stl_array.h>
+#include <igatools/geometry/grid_element.h>
 #include <igatools/geometry/physical_domain.h>
-#include <igatools/functions/function_element.h>
+
+//#include <igatools/utils/safe_stl_array.h>
 
 IGA_NAMESPACE_OPEN
 
-namespace physical_domain_element
-{
-enum class Flags
-{
-    /** Fill nothing */
-    none           =    0,
 
-    /** Quadrature points on the element */
-    points          =    1L << 1,
-
-    /** Quadrature weigths on the element */
-    w_measure       =    1L << 2
-};
-}
 
 template <int,int,int,int> class Function;
+template <int,int,int,int> class FunctionElementBase;
 template <int,int,int,int> class FunctionElement;
 template <int,int> class PhysicalDomain;
 
@@ -58,15 +47,21 @@ private:
 
 public:
     using ContainerType = ContainerType_;
-    using FuncType = typename ContainerType_::FuncType;
-
-    static const int dim = dim_;
-    static const int codim = codim_;
-    static const int space_dim = dim_+codim_;
-
-    using ListIt = typename FuncType::ListIt;
-    using FuncElem = typename FuncType::ElementAccessor;
     using GridElem = GridElement<dim_>;
+
+    using ListIt = typename ContainerType_::ListIt;
+
+    using Flags = physical_domain_element::Flags;
+
+   // using FuncType = typename ContainerType_::FuncType;
+
+//    static const int dim = dim_;
+//    static const int codim = codim_;
+//    static const int space_dim = dim_+codim_;
+
+    //using ListIt = typename FuncType::ListIt;
+    //using FuncElem = typename FuncType::ElementAccessor;
+
 
     /** @name Constructors */
     ///@{
@@ -109,11 +104,13 @@ public:
     ~PhysicalDomainElementBase() = default;
     ///@}
 
+#if 0
     template<int order>
     using InvDerivative = typename FuncType::template InvDerivative<order>;
 
     template <int order>
     using Derivative = typename FuncType::template Derivative<order>;
+#endif
 
 public:
     ListIt &operator++()
@@ -179,7 +176,7 @@ public:
 #endif
 
 private:
-    template <class ValueType, int topology_dim = dim>
+    template <class ValueType, int topology_dim = dim_>
     auto &get_values_from_cache(const int topology_id = 0) const
     {
         Assert(local_cache_ != nullptr,ExcNullPtr());
@@ -191,13 +188,14 @@ private:
 
     using CType = boost::fusion::map<
                   boost::fusion::pair<       _Measure,DataWithFlagStatus<ValueVector<Real>>>,
-                  boost::fusion::pair<     _W_Measure,DataWithFlagStatus<ValueVector<Real>>>,
-                  boost::fusion::pair<   _InvGradient,DataWithFlagStatus<ValueVector<InvDerivative<1>>>>,
-                  boost::fusion::pair<    _InvHessian,DataWithFlagStatus<ValueVector<InvDerivative<2>>>>,
-                  boost::fusion::pair<_BoundaryNormal,DataWithFlagStatus<ValueVector<Points<space_dim>>>>,
-                  boost::fusion::pair<   _OuterNormal,DataWithFlagStatus<ValueVector<Points<space_dim>>>>,
-                  boost::fusion::pair<     _Curvature,DataWithFlagStatus<ValueVector<SafeSTLVector<Real>>>>
-                  >;
+                  boost::fusion::pair<     _W_Measure,DataWithFlagStatus<ValueVector<Real>>>>;
+//				  ,
+//                  boost::fusion::pair<   _InvGradient,DataWithFlagStatus<ValueVector<InvDerivative<1>>>>,
+//                  boost::fusion::pair<    _InvHessian,DataWithFlagStatus<ValueVector<InvDerivative<2>>>>,
+//                  boost::fusion::pair<_BoundaryNormal,DataWithFlagStatus<ValueVector<Points<space_dim>>>>,
+//                  boost::fusion::pair<   _OuterNormal,DataWithFlagStatus<ValueVector<Points<space_dim>>>>,
+//                  boost::fusion::pair<     _Curvature,DataWithFlagStatus<ValueVector<SafeSTLVector<Real>>>>
+//                  >;
 
 
 //    /**
@@ -211,7 +209,7 @@ private:
 //        return cacheutils::get_valid_flags_from_cache_type(CType());
 //    }
 
-    using Cache = FuncValuesCache<dim,CType>;
+    using Cache = FuncValuesCache<dim_,CType>;
 
 
 public:
@@ -224,12 +222,12 @@ private:
 
     std::shared_ptr<GridElem> grid_elem_;
 
-    std::shared_ptr<FuncElem> func_elem_;
+  //  std::shared_ptr<FuncElem> func_elem_;
 
     std::shared_ptr<CacheType> local_cache_;
 
     template <class Accessor> friend class GridIteratorBase;
-    friend class PhysicalDomain<dim, codim>;
+    friend class PhysicalDomain<dim_, codim_>;
 
 //    /**
 //     * Creates a new object performing a deep copy of the current object using the PhysicalDomainElement

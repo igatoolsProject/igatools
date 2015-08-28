@@ -65,12 +65,14 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_, int codim_>
 PhysicalDomain<dim_, codim_>::
-PhysicalDomain(std::shared_ptr<const GridType> grid,
-               std::shared_ptr<const FuncType> F)
+PhysicalDomain(std::shared_ptr<const GridType> grid)
+//		,
+//               std::shared_ptr<const FuncType> F)
     :
     grid_(grid),
-    grid_handler_(grid->create_handler()),
-    F_(F)
+    grid_handler_(grid->create_handler())
+//	,
+//    F_(F)
 {}
 
 
@@ -193,14 +195,14 @@ get_grid() const -> std::shared_ptr<const CartesianGrid<dim_> >
 }
 
 
-
-template<int dim_, int codim_>
-auto
-PhysicalDomain<dim_, codim_>::
-get_function() const -> std::shared_ptr<const FuncType>
-{
-    return F_;
-}
+//
+//template<int dim_, int codim_>
+//auto
+//PhysicalDomain<dim_, codim_>::
+//get_function() const -> std::shared_ptr<const FuncType>
+//{
+//    return F_;
+//}
 
 
 #if 0

@@ -27,11 +27,25 @@
 
 IGA_NAMESPACE_OPEN
 
-template <int, int, int, int> class Function;
-template <int, int> class PhysicalDomainElement;
+namespace physical_domain_element
+{
+enum class Flags
+{
+    /** Fill nothing */
+    none           =    0,
 
-template<int dim, int codim>
-using MapFunction = Function<dim, 0, dim + codim, 1>;
+    /** Quadrature points on the element */
+    points          =    1L << 1,
+
+    /** Quadrature weigths on the element */
+    w_measure       =    1L << 2
+};
+}
+
+template <int, int, int, int> class Function;
+
+template <int, int, class> class PhysicalDomainElementBase;
+template <int, int> class PhysicalDomainElement;
 
 /**
  * @brief The mapping is a deformation \f$ F : \hat\Omega \to \Omega\f$
@@ -59,19 +73,19 @@ private:
     using self_t = PhysicalDomain<dim_, codim_>;
 
 public:
+    static const int space_dim = dim_ + codim_;
+    static const int dim = dim_;
+
     using GridType = const CartesianGrid<dim_>;
     using GridHandle = typename CartesianGrid<dim_>::ElementHandler;
-    using FuncType = MapFunction<dim_, codim_>;
+    using FuncType =  Function<dim_, 0, dim_ + codim_, 1>;
 
     using ElementAccessor = PhysicalDomainElement<dim_, codim_>;
     using ElementIterator = GridIterator<ElementAccessor>;
 
-
     using ListIt = typename GridType::ListIt;
-
-    static const int space_dim = dim_ + codim_;
-    static const int dim = dim_;
-
+    using Flags = physical_domain_element::Flags;
+#if 0
 public:
     /** Type for the given order derivatives of the
      *  the mapping. */
@@ -98,7 +112,9 @@ public:
 
     using topology_variant = typename FuncType::topology_variant;
     using eval_pts_variant = typename FuncType::eval_pts_variant;
-
+#endif
+    using topology_variant = TopologyVariants<dim_>;
+    using eval_pts_variant = SubElemPtrVariants<Quadrature,dim_>;
 public:
     /**
      * Default constructor. It does nothing but it is needed for the
@@ -107,8 +123,7 @@ public:
      */
     PhysicalDomain() = default;
 
-    PhysicalDomain(std::shared_ptr<const GridType> grid,
-                   std::shared_ptr<const FuncType> F);
+    PhysicalDomain(std::shared_ptr<const GridType> grid);//,std::shared_ptr<const FuncType> F);
 
     ~PhysicalDomain();
 
@@ -122,7 +137,7 @@ public:
 
     std::shared_ptr<const GridType> get_grid() const;
 
-    std::shared_ptr<const FuncType> get_function() const;
+   // std::shared_ptr<const FuncType> get_function() const;
 
 public:
 
@@ -149,20 +164,11 @@ public:
         this->fill_cache(sdim, *elem, s_id);
     }
 
-
-
-    //std::shared_ptr<const CartesianGrid<dim_> > get_grid() const;
-
-    std::shared_ptr<ElementAccessor> create_element(const Index flat_index) const;
-
     ElementIterator begin() const;
 
     ElementIterator end();
-
-
-
+#if 0
 private:
-
     struct ResetDispatcher : boost::static_visitor<void>
     {
         ResetDispatcher(const ValueFlags flag_in,
@@ -364,14 +370,14 @@ private:
         ElementAccessor &domain_elem_;
         const SafeSTLArray<ValueFlags, dim_ + 1> &flags_;
     };
-
+#endif
 
 private:
     std::shared_ptr<const GridType> grid_;
     std::shared_ptr<GridHandle> grid_handler_;
-    std::shared_ptr<const FuncType> F_;
+    //std::shared_ptr<const FuncType> F_;
 
-    SafeSTLArray<ValueFlags, dim_ + 1> flags_;
+    SafeSTLArray<Flags, dim_ + 1> flags_;
 
     friend ElementAccessor;
 
