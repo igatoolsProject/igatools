@@ -134,7 +134,7 @@ private:
      * cache of the face values
      */
     ///@{
-
+#if 0
     /**
      * This type store the values, first second derivatives
      * of a 1D Bspline functions, i.e BasisValues1d[k]
@@ -144,6 +144,7 @@ private:
      * BasisValues1d[k] is a (p+1) x n_qp matrix
      */
     using BasisValues1d = SafeSTLVector<DenseMatrix>;
+#endif
 
 protected:
     /**
@@ -151,15 +152,16 @@ protected:
      */
     template<class T>
     using ComponentContainer =
-        typename Space::BaseSpace::template ComponentContainer<T>;
+        typename Space::template ComponentContainer<T>;
 
+#if 0
     /**
      * For each component gives a product array of the dimension
      */
     template<class T>
     using ComponentDirectionTable =
         ComponentContainer<CartesianProductArray<T,dim>>;
-
+#endif
 
 private:
     /**
@@ -170,6 +172,11 @@ private:
 
     template <class Accessor> friend class GridIterator;
     friend class BSplineElementHandler<dim, range, rank>;
+
+
+
+    using BasisValues1dTable = ComponentContainer<SafeSTLArray<BasisValues1d,dim>>;
+    BasisValues1dTable splines_derivatives_1D_table_;
 
 public:
     ComponentContainer<SafeSTLArray<ValueTable<Real>,dim> >

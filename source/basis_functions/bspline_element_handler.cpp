@@ -433,7 +433,9 @@ operator()(const Topology<sdim> &topology)
     const auto elem_size = grid_elem.template get_side_lengths<dim>(0);
     const auto elem_tensor_id = grid_elem.get_index();
 
-    const auto &bsp_space = dynamic_cast<const Space &>(*elem_.get_space());
+    using BSpElem = BSplineElement<dim_,range_,rank_>;
+    auto &bsp_elem  = dynamic_cast<BSpElem &>(elem_);
+    const auto &bsp_space = dynamic_cast<const Space &>(*bsp_elem.get_space());
 
     const auto &space_data = *bsp_space.space_data_;
 
@@ -445,8 +447,8 @@ operator()(const Topology<sdim> &topology)
 
     const auto quad = extend_sub_elem_quad<sdim,dim>(*quad_in_cache, s_id_);
 
-    using BasisValues1dTable = ComponentContainer<SafeSTLArray<BasisValues1d,dim>>;
-    BasisValues1dTable splines_derivatives_1D_table(space_data.get_components_map());
+//    using BasisValues1dTable = ComponentContainer<SafeSTLArray<BasisValues1d,dim>>;
+//    BasisValues1dTable splines_derivatives_1D_table(space_data.get_components_map());
 
     const auto &n_coords = quad.get_num_coords_direction();
 
@@ -481,7 +483,9 @@ operator()(const Topology<sdim> &topology)
         {
             const int deg = degree[comp][dir];
 
-            auto &splines_derivatives_1D = splines_derivatives_1D_table[comp][dir];
+//            SafeSTLArray<BasisValues1d,dim> & splines_derivatives_1D_comp = bsp_elem.splines_derivatives_1D_table_[comp];
+//            BasisValues1d & splines_derivatives_1D = splines_derivatives_1D_comp[dir];
+            auto &splines_derivatives_1D = bsp_elem.splines_derivatives_1D_table_[comp][dir];
             splines_derivatives_1D.resize(MAX_NUM_DERIVATIVES,deg+1,n_pts_1D);
 
             if (interval_id == 0) // processing the leftmost interval
@@ -550,12 +554,12 @@ operator()(const Topology<sdim> &topology)
     //-------------------------------------------------------------------------------
     // Multi-variate spline evaluation from 1D values --- begin
     using TPFE = const TensorProductFunctionEvaluator<dim>;
-    ComponentContainer<std::unique_ptr<TPFE>> val_1d(splines_derivatives_1D_table.get_comp_map());
+    ComponentContainer<std::unique_ptr<TPFE>> val_1d(bsp_elem.splines_derivatives_1D_table_.get_comp_map());
 
     SafeSTLArray<BasisValues1dConstView, dim> values_1D;
     for (auto c : val_1d.get_active_components_id())
     {
-        const auto &value = splines_derivatives_1D_table[c];
+        const auto &value = bsp_elem.splines_derivatives_1D_table_[c];
         for (int i = 0 ; i < dim_ ; ++i)
             values_1D[i] = BasisValues1dConstView(value[i]);
 
