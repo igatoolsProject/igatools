@@ -71,7 +71,10 @@ PhysicalDomain(std::shared_ptr<const GridType> grid,
     grid_(grid),
     grid_handler_(grid->create_cache_handler()),
     func_(F)
-{}
+{
+//	Assert(func_->get_physical_domain() == nullptr,
+//			ExcMessage("Must be a Null pointer"));
+}
 
 
 
