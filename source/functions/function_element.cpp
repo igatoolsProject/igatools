@@ -18,11 +18,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+#include <igatools/geometry/physical_domain_element.h>
 #include <igatools/functions/function.h>
 #include <igatools/functions/function_element.h>
 
 
-#include <igatools/geometry/physical_domain_element.h>
 
 IGA_NAMESPACE_OPEN
 

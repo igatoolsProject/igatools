@@ -89,8 +89,32 @@ public:
     using ListIt = typename GridType::ListIt;
     using Flags = physical_domain_element::Flags;
 
-#if 0
 public:
+    //TODO: explain we can not use FuncType::Value (due to ciclic deps)
+    /**
+         * Type for the return of the function.
+         */
+        using Value = Values<dim, space_dim, 1>;
+
+        /**
+         * Type for the derivative of the function.
+         */
+        template <int order>
+        using Derivative = Derivatives<dim, space_dim, 1, order>;
+
+        /**
+         * Type for the gradient of the function.
+         */
+        using Gradient = Derivative<1>;
+
+        /**
+         * Type for the hessian of the function.
+         */
+        using Hessian = Derivative<2>;
+
+        ///@}
+
+#if 0
     /** Type for the given order derivatives of the
      *  the mapping. */
     template<int order>
@@ -104,10 +128,8 @@ public:
 
     /** Type of the mapping evaluation point. */
     using Point = typename FuncType::Point;
-
     /** Type of the mapping return value. */
-    using Value = typename FuncType::Value;
-
+   using Value = typename FuncType::Value;
     /** Type of the mapping gradient. */
     using Gradient = typename FuncType::Gradient;
 

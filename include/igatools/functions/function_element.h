@@ -21,14 +21,17 @@
 #ifndef __FUNCTION_ELEMENT_H_
 #define __FUNCTION_ELEMENT_H_
 
-#include <igatools/geometry/physical_domain_element.h>
+
 #include <igatools/functions/function.h>
+//#include <igatools/geometry/physical_domain_element.h>
 
 #include <igatools/base/value_types.h>
 #include <igatools/basis_functions/values_cache.h>
 
 IGA_NAMESPACE_OPEN
-
+template<int , int , class> class PhysicalDomainElementBase;
+template <int,int> class PhysicalDomainElement;
+template <int,int> class ConstPhysicalDomainElement;
 //template <int,int> class PhysicalDomain;
 //template <int,int> class PhysicalDomainElement;
 
