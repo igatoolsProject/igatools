@@ -28,7 +28,7 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_, int codim_, int range_, int rank_ >
 Function<dim_, codim_, range_, rank_ >::
-Function(std::shared_ptr<const PhysDomain> phys_dom)
+Function(std::shared_ptr<const DomainType> phys_dom)
     :
     phys_domain_(phys_dom)
     // object_id_(UniqueIdGenerator::get_unique_id())
@@ -51,10 +51,12 @@ template<int dim_, int codim_, int range_, int rank_>
 void
 Function<dim_, codim_, range_, rank_ >::
 set_flags(const topology_variant &sdim,
-          const typename ElementAccessor::Flags &flag)
+          const Flags &flag)
 {
-    auto set_flags_dispatcher = SetFlagsDispatcher(flag,  phys_domain_, flags_);
-    boost::apply_visitor(set_flags_dispatcher, sdim);
+#if 0
+    auto dispatcher = SetFlagsDispatcher(flag,  phys_domain_, flags_);
+    boost::apply_visitor(dispatcher, sdim);
+#endif
 }
 
 
@@ -65,8 +67,10 @@ Function<dim_, codim_, range_, rank_ >::
 init_cache(ElementAccessor &elem,
            const eval_pts_variant &quad) const
 {
+#if 0
     auto init_dispatcher = InitCacheDispatcher(*this, elem);
     boost::apply_visitor(init_dispatcher, quad);
+#endif
 }
 
 
@@ -78,8 +82,10 @@ fill_cache(const topology_variant &sdim,
            ElementAccessor &elem,
            const int s_id) const
 {
+#if 0
     auto fill_dispatcher = FillCacheDispatcher(s_id, *this, elem);
     boost::apply_visitor(fill_dispatcher, sdim);
+#endif
 }
 
 
@@ -144,15 +150,15 @@ fill_element_cache(ElementIterator &elem) const
 
 
 
-template<int dim_, int codim_, int range_, int rank_>
-auto
-Function<dim_, codim_, range_, rank_ >::
-get_cache(ElementAccessor &elem)
--> std::shared_ptr<typename ElementAccessor::CacheType> &
-{
-    Assert(elem.all_sub_elems_cache_ != nullptr,ExcNullPtr());
-    return elem.all_sub_elems_cache_;
-}
+//template<int dim_, int codim_, int range_, int rank_>
+//auto
+//Function<dim_, codim_, range_, rank_ >::
+//get_cache(ElementAccessor &elem)
+//-> std::shared_ptr<typename ElementAccessor::CacheType> &
+//{
+//    Assert(elem.all_sub_elems_cache_ != nullptr,ExcNullPtr());
+//    return elem.all_sub_elems_cache_;
+//}
 
 
 
@@ -162,7 +168,7 @@ Function<dim_, codim_, range_, rank_ >::
 begin(const PropId &prop) -> ElementIterator
 {
     return ElementIterator(this->shared_from_this(),
-    phys_domain_->get_element_property(prop).begin(),
+    phys_domain_->get_grid()->get_element_property(prop).begin(),
     prop);
 }
 
@@ -174,7 +180,7 @@ Function<dim_, codim_, range_, rank_ >::
 end(const PropId &prop) -> ElementIterator
 {
     return ElementIterator(this->shared_from_this(),
-    phys_domain_->get_element_property(prop).end(),
+    phys_domain_->get_grid()->get_element_property(prop).end(),
     prop);
 }
 
@@ -244,5 +250,5 @@ serialize(Archive &ar, const unsigned int version)
 
 IGA_NAMESPACE_CLOSE
 
-//#include <igatools/functions/function.inst>
+#include <igatools/functions/function.inst>
 

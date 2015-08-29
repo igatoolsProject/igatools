@@ -18,9 +18,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
-#include <igatools/functions/function_element.h>
 #include <igatools/functions/function.h>
+#include <igatools/functions/function_element.h>
+
 
 #include <igatools/geometry/physical_domain_element.h>
 
@@ -55,14 +55,12 @@ FunctionElementBase(const self_t &elem,
     if (copy_policy == CopyPolicy::shallow)
     {
         all_sub_elems_cache_ = elem.all_sub_elems_cache_;
-        //  grid_elem_ = elem.grid_elem_;
         phys_domain_elem_ = elem.phys_domain_elem_;
     }
     else
     {
         all_sub_elems_cache_ = std::make_shared<AllSubElementsCache<Cache>>(*elem.all_sub_elems_cache_);
-        // grid_elem_ = std::make_shared<GridElem>(*elem.grid_elem_,CopyPolicy::deep);
-        phys_domain_elem_ = std::make_shared<PhysDomainElem>(*elem.phys_domain_elem_,CopyPolicy::deep);
+        phys_domain_elem_ = std::make_shared<DomainElem>(*elem.phys_domain_elem_,CopyPolicy::deep);
     }
 }
 
@@ -92,7 +90,7 @@ operator=(const self_t &element)
 template<int dim, int codim, int range, int rank,  class ContainerType_>
 auto
 FunctionElementBase<dim, codim, range, rank, ContainerType_>::
-get_domain_element() const -> const PhysDomainElem &
+get_domain_element() const -> const DomainElem &
 {
     return *phys_domain_elem_;
 }
@@ -214,5 +212,5 @@ serialize(Archive &ar, const unsigned int version)
 
 IGA_NAMESPACE_CLOSE
 
-//#include <igatools/functions/function_element.inst>
+#include <igatools/functions/function_element.inst>
 

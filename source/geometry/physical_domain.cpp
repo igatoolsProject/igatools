@@ -98,7 +98,7 @@ template<int dim_, int codim_>
 auto
 PhysicalDomain<dim_, codim_>::
 set_flags(const topology_variant &sdim,
-          const typename ElementAccessor::Flags &flag) -> void
+          const Flags &flag) -> void
 {
 #if 0
     const auto valid_flags = ElementAccessor::get_valid_flags();
@@ -238,6 +238,18 @@ end(const PropId &prop) -> ElementIterator
     prop);
 }
 
+template<int dim_, int codim_>
+auto
+PhysicalDomain<dim_, codim_>::
+create_element(const ListIt &index, const PropId &prop) const
+-> std::shared_ptr<ConstElementAccessor>
+{
+	using Elem =ConstElementAccessor;
+	auto elem = shared_ptr<Elem>(new Elem(this->shared_from_this(), index, prop));
+	Assert(elem != nullptr,ExcNullPtr());
+
+	return elem;
+}
 
 IGA_NAMESPACE_CLOSE
 

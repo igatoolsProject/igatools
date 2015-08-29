@@ -18,33 +18,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __FUNCTION_ELEMENT_H
-#define __FUNCTION_ELEMENT_H
+#ifndef __FUNCTION_ELEMENT_H_
+#define __FUNCTION_ELEMENT_H_
 
+#include <igatools/geometry/physical_domain_element.h>
 #include <igatools/functions/function.h>
+
 #include <igatools/base/value_types.h>
 #include <igatools/basis_functions/values_cache.h>
 
-
 IGA_NAMESPACE_OPEN
 
-namespace function_element
-{
-enum class Flags
-{
-    /** Fill nothing */
-    none           =    0,
-
-    /** Quadrature points on the element */
-    value          =    1L << 1,
-
-    /** Quadrature weigths on the element */
-    gradient       =    1L << 2
-};
-}
-
-template <int,int> class PhysicalDomain;
-template <int,int> class PhysicalDomainElement;
+//template <int,int> class PhysicalDomain;
+//template <int,int> class PhysicalDomainElement;
 
 /**
  *
@@ -59,25 +45,18 @@ private:
 public:
 
     using ContainerType = ContainerType_;
-    using Func = ContainerType_;
-    using MapFunc = typename Func::MapFunc;
+    using DomainElem = typename ContainerType_::DomainType::ConstElementAccessor;
 
-    using Value = typename Func::Value;
-    using Gradient = typename Func::Gradient;
-    using Hessian  = typename Func::Hessian;
-    using Div      = typename Func::Div;
-
+    using ListIt = typename ContainerType_::ListIt;
     using Flags = function_element::Flags;
 
-    //using Grid = CartesianGrid<dim>;
-    //using IndexType = typename Grid::IndexType;
-    //using List = typename Grid::List;
-    using ListIt = typename Func::ListIt;
-    //using PhysDomain = typename Func::PhysDomain;
-    using PhysDomainElem = typename Func::PhysDomain::ElementAccessor;
+    using Value = typename ContainerType_::Value;
+    using Gradient = typename ContainerType_::Gradient;
+    using Hessian  = typename ContainerType_::Hessian;
+    using Div      = typename ContainerType_::Div;
 private:
     template <int order>
-    using Derivative = typename Func::template Derivative<order>;
+    using Derivative = typename ContainerType_::template Derivative<order>;
 
 protected:
     /** @name Constructors */
@@ -164,7 +143,7 @@ public:
 
 
 
-    const PhysDomainElem &get_domain_element() const;
+    const DomainElem &get_domain_element() const;
 
     template<class ValueType, int sdim>
     auto
@@ -247,11 +226,11 @@ private:
 
     using Cache = FuncValuesCache<dim,CType>;
 
-
-
+public:
+    using CacheType = AllSubElementsCache<Cache>;
 
 private:
-    using CacheType = AllSubElementsCache<Cache>;
+
 
     //TODO (martinelli, Aug 13, 2015): this function should not be public.
     std::shared_ptr<CacheType>
@@ -266,7 +245,7 @@ private:
 
     std::shared_ptr<ContainerType_> func_;
 
-    std::shared_ptr<PhysDomainElem> phys_domain_elem_;
+    std::shared_ptr<DomainElem> phys_domain_elem_;
 
     std::shared_ptr<AllSubElementsCache<Cache>> all_sub_elems_cache_;
 
@@ -335,7 +314,7 @@ private:
 template <int dim, int codim, int range, int rank>
 class ConstFunctionElement
     : public FunctionElementBase<dim, codim, range, rank,
-      const Function<dim,codim,range,rank>>
+      const Function<dim,codim,range,rank> >
 {
     using FunctionElementBase<dim, codim, range, rank,
           const Function<dim,codim,range,rank>>::FunctionElementBase;
@@ -345,10 +324,10 @@ class ConstFunctionElement
 template <int dim, int codim, int range, int rank>
 class FunctionElement
     : public FunctionElementBase<dim, codim, range, rank,
-      const Function<dim,codim,range,rank>>
+      Function<dim,codim,range,rank> >
 {
     using FunctionElementBase<dim, codim, range, rank,
-          const Function<dim,codim,range,rank>>::FunctionElementBase;
+          Function<dim,codim,range,rank>>::FunctionElementBase;
 };
 
 IGA_NAMESPACE_CLOSE

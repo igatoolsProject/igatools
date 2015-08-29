@@ -24,14 +24,10 @@
 #include <igatools/geometry/grid_element.h>
 #include <igatools/geometry/physical_domain.h>
 
-//#include <igatools/utils/safe_stl_array.h>
-
 IGA_NAMESPACE_OPEN
 
-
-
 template <int,int,int,int> class Function;
-template <int,int,int,int> class FunctionElementBase;
+template <int,int,int,int, class> class FunctionElementBase;
 template <int,int,int,int> class FunctionElement;
 //template <int,int> class PhysicalDomain;
 

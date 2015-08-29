@@ -30,7 +30,24 @@
 
 IGA_NAMESPACE_OPEN
 
+
+namespace function_element
+{
+enum class Flags
+{
+    /** Fill nothing */
+    none           =    0,
+
+    /** Quadrature points on the element */
+    value          =    1L << 1,
+
+    /** Quadrature weigths on the element */
+    gradient       =    1L << 2
+};
+}
+
 template <int,int> class PhysicalDomain;
+template <int, int, int, int, class> class FunctionElementBase;
 template <int, int, int, int> class FunctionElement;
 
 /**
@@ -52,34 +69,19 @@ public:
     static const int range     = range_;
     static const int rank      = rank_;
 
-//    using GridType = const CartesianGrid<dim_>;
-    using MapFunc = Function<dim_, 0, dim_ + codim_, 1>;
-    using PhysDomain = PhysicalDomain<dim_, codim_>;
-
-
+    using DomainType = PhysicalDomain<dim_, codim_>;
 
     using ElementAccessor = FunctionElement<dim_, codim_, range_, rank_>;
-    //using ConstElementAccessor = ConstunctionElement<dim_, codim_, range_, rank_>;
-
-    /** Type for the iterator over the elements of the grid (non-const version).  */
     using ElementIterator = GridIterator<ElementAccessor>;
 
-    /** Type for the iterator over the elements of the grid (const version).  */
-//    using ElementConstIterator = GridIterator<ConstElementAccessor>;
 
-    using ElementHandler = Function<dim_, codim_, range_, rank_>;
-    using Flags = typename ElementAccessor::Flags;
-
-//    using IndexType = TensorIndex<dim_>;
-//    using PropertyList = PropertiesIdContainer<IndexType>;
-//    using List = typename PropertyList::List;
-    using ListIt = typename PhysDomain::ListIt;
+    using List = typename DomainType::List;
+    using ListIt = typename DomainType::ListIt;
+    using Flags = function_element::Flags;
 
 
     /** Types for the input/output evaluation arguments */
     ///@{
-    //using RefPoint = Points<dim>;
-
     /**
      * Type for the input argument of the function.
      */
@@ -126,7 +128,7 @@ protected:
     Function() = default;
 
     /** Constructor */
-    Function(std::shared_ptr<const PhysDomain> phys_dom);
+    Function(std::shared_ptr<const DomainType> phys_dom);
 
     /**
      * Copy constructor.
@@ -138,7 +140,7 @@ public:
     virtual ~Function() = default;
     ///@}
 
-    std::shared_ptr<const PhysDomain> get_physical_domain() const
+    std::shared_ptr<const DomainType> get_physical_domain() const
     {
         return phys_domain_;
     }
@@ -147,7 +149,7 @@ public:
 
 
     virtual void set_flags(const topology_variant &sdim,
-                           const typename ElementAccessor::Flags &flag);
+                           const Flags &flag);
 
     virtual void init_cache(ElementAccessor &elem,
                             const eval_pts_variant &quad) const;
@@ -203,20 +205,21 @@ public:
 
     virtual void print_info(LogStream &out) const;
 
-    std::shared_ptr<typename ElementAccessor::CacheType>
-    &get_cache(ElementAccessor &elem);
+//    std::shared_ptr<typename ElementAccessor::CacheType>
+//    &get_cache(ElementAccessor &elem);
 
 private:
-    std::shared_ptr<const PhysDomain> phys_domain_;
+    std::shared_ptr<const DomainType> phys_domain_;
 
 protected:
     SafeSTLArray<Flags, dim + 1> flags_;
 
-
+#if 0
+private:
     struct SetFlagsDispatcher : boost::static_visitor<void>
     {
         SetFlagsDispatcher(const Flags flag_in,
-                           PhysDomain &phys_dom,
+                           DomainType &phys_dom,
                            SafeSTLArray<Flags, dim_ + 1> &flags)
             :
             flag_in_(flag_in),
@@ -233,14 +236,14 @@ protected:
         }
 
         const Flags flag_in_;
-        PhysDomain &phys_dom_;
+        DomainType &phys_dom_;
         SafeSTLArray<Flags, dim_ + 1> &flags_;
     };
 
     struct FillCacheDispatcher : boost::static_visitor<void>
     {
         FillCacheDispatcher(const int s_id,
-                            const PhysDomain &phys_dom,
+                            const DomainType &phys_dom,
                             ElementAccessor &func_elem)
             :
             s_id_(s_id),
@@ -256,13 +259,13 @@ protected:
         }
 
         int s_id_;
-        const PhysDomain &phys_dom_;
+        const DomainType &phys_dom_;
         ElementAccessor &func_elem_;
     };
 
     struct InitCacheDispatcher : boost::static_visitor<void>
     {
-        InitCacheDispatcher(const PhysDomain &phys_dom,
+        InitCacheDispatcher(const DomainType &phys_dom,
                             const SafeSTLArray<Flags, dim_ + 1> &flags,
                             ElementAccessor &func_elem)
             :
@@ -293,10 +296,11 @@ protected:
             }
         }
 
-        const PhysDomain &phys_dom_;
+        const DomainType &phys_dom_;
         const SafeSTLArray<Flags, dim_ + 1> &flags_;
         ElementAccessor &func_elem_;
     };
+#endif
 
 #ifdef MESH_REFINEMENT
 private:

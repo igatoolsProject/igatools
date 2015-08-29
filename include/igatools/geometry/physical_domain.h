@@ -46,7 +46,7 @@ template <int, int, int, int> class Function;
 
 template <int, int, class> class PhysicalDomainElementBase;
 template <int, int> class PhysicalDomainElement;
-
+template <int, int> class ConstPhysicalDomainElement;
 /**
  * @brief The mapping is a deformation \f$ F : \hat\Omega \to \Omega\f$
  * which maps the reference domain \f$\hat\Omega \in \mathbb{R}^{dim}\f$ to the
@@ -82,6 +82,8 @@ public:
 
     using ElementAccessor = PhysicalDomainElement<dim_, codim_>;
     using ElementIterator = GridIterator<ElementAccessor>;
+    using ConstElementAccessor = ConstPhysicalDomainElement<dim_, codim_>;
+    using ConstElementIterator = GridIterator<ConstElementAccessor>;
 
     using List = typename GridType::List;
     using ListIt = typename GridType::ListIt;
@@ -169,6 +171,9 @@ public:
     ElementIterator begin(const PropId &property = ElementProperties::active);
 
     ElementIterator end(const PropId &property = ElementProperties::active);
+
+    std::shared_ptr<ConstElementAccessor>
+    create_element(const ListIt &index, const PropId &property) const;
 
 #if 0
 private:
