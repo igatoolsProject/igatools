@@ -44,7 +44,7 @@ private:
 public:
     using ContainerType = ContainerType_;
     using GridElem = typename ContainerType_::GridType::ConstElementAccessor;
-    using FuncElem = typename ContainerType_::FuncType::ElementAccessor;
+    using FuncElem = typename ContainerType_::FuncType::ConstElementAccessor;
     using ListIt = typename ContainerType_::ListIt;
 
     using Flags = physical_domain_element::Flags;

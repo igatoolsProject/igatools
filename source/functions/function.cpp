@@ -185,21 +185,22 @@ end(const PropId &prop) -> ElementIterator
 }
 
 
-
-
-#ifdef SERIALIZATION
 template<int dim_, int codim_, int range_, int rank_>
 auto
 Function<dim_, codim_, range_, rank_ >::
-create_element(const ListIt &index, const PropId &property) const -> std::shared_ptr<ElementAccessor>
+create_element(const ListIt &index, const PropId &property) const
+-> std::shared_ptr<ElementAccessor>
 {
-    auto elem = std::make_shared<ElementAccessor>(this->shared_from_this(),index,property);
+    using Elem = ConstElementAccessor;
+    auto elem = std::make_shared<Elem>(this->shared_from_this(), index, prop);
     Assert(elem != nullptr,ExcNullPtr());
 
     return elem;
 }
 
 
+
+#ifdef SERIALIZATION
 template<int dim_, int codim_, int range_, int rank_>
 Index
 Function<dim_, codim_, range_, rank_ >::

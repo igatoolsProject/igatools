@@ -49,6 +49,7 @@ enum class Flags
 template <int,int> class PhysicalDomain;
 template <int, int, int, int, class> class FunctionElementBase;
 template <int, int, int, int> class FunctionElement;
+template <int, int, int, int> class ConstFunctionElement;
 
 /**
  * Function Class

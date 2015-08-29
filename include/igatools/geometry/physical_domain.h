@@ -128,7 +128,7 @@ public:
     PhysicalDomain() = default;
 
     PhysicalDomain(std::shared_ptr<const GridType> grid,
-    		std::shared_ptr<const FuncType> F);
+                   std::shared_ptr<const FuncType> F);
 
     ~PhysicalDomain();
 

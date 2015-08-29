@@ -34,7 +34,7 @@ PhysicalDomainElementBase(std::shared_ptr<ContainerType_> phys_dom,
     :
     phys_dom_(phys_dom),
     grid_elem_(phys_dom_->get_grid()->create_element(index,prop)),
-	func_elem_(phys_dom_->get_function()->create_element(index,prop))
+    func_elem_(phys_dom_->get_function()->create_element(index,prop))
 {}
 
 

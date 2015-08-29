@@ -338,9 +338,8 @@ CartesianGrid<dim_>::
 create_element(const ListIt &index, const PropId &prop) const
 -> std::shared_ptr<ConstElementAccessor>
 {
-
-    using Elem =ConstElementAccessor;
-    auto elem = shared_ptr<Elem>(new Elem(this->shared_from_this(), index, prop));
+    using Elem = ConstElementAccessor;
+    auto elem = std::make_shared<Elem>(this->shared_from_this(), index, prop);
     Assert(elem != nullptr,ExcNullPtr());
 
     return elem;

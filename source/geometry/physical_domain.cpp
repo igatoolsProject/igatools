@@ -66,11 +66,11 @@ IGA_NAMESPACE_OPEN
 template<int dim_, int codim_>
 PhysicalDomain<dim_, codim_>::
 PhysicalDomain(std::shared_ptr<const GridType> grid,
-		std::shared_ptr<const FuncType> F)
+               std::shared_ptr<const FuncType> F)
     :
     grid_(grid),
     grid_handler_(grid->create_cache_handler()),
-	func_(F)
+    func_(F)
 {}
 
 
@@ -203,18 +203,21 @@ get_function() const -> std::shared_ptr<const FuncType>
 }
 
 
-#if 0
+
 template<int dim_, int codim_>
 auto
 PhysicalDomain<dim_, codim_>::
-create_element(const Index flat_index) const -> std::shared_ptr<ElementAccessor>
+create_element(const ListIt &index, const PropId &prop) const
+-> std::shared_ptr<ConstElementAccessor>
 {
-    auto elem = std::make_shared<ElementAccessor>(this->get_function(),flat_index);
-    Assert(elem != nullptr, ExcNullPtr());
+    using Elem = ConstElementAccessor;
+    auto elem = std::make_shared<Elem>(this->shared_from_this(), index, prop);
+    Assert(elem != nullptr,ExcNullPtr());
 
     return elem;
 }
-#endif
+
+
 
 template<int dim_, int codim_>
 auto
@@ -234,19 +237,6 @@ end(const PropId &prop) -> ElementIterator
     return ElementIterator(this->shared_from_this(),
     grid_->get_element_property(prop).end(),
     prop);
-}
-
-template<int dim_, int codim_>
-auto
-PhysicalDomain<dim_, codim_>::
-create_element(const ListIt &index, const PropId &prop) const
--> std::shared_ptr<ConstElementAccessor>
-{
-    using Elem =ConstElementAccessor;
-    auto elem = shared_ptr<Elem>(new Elem(this->shared_from_this(), index, prop));
-    Assert(elem != nullptr,ExcNullPtr());
-
-    return elem;
 }
 
 IGA_NAMESPACE_CLOSE
