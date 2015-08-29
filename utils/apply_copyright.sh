@@ -82,8 +82,8 @@ files="$files `find . -name "*.cmake.in"`"
 files="$files `find . -name "CMakeLists.txt"`"
 copyright "#" "./utils/copyright_header.txt" "$files"
 
-files=`find ./utils/logo -name "*.tex"`
-copyright "%" "./utils/copyright_header.txt" "$files"
+#files=`find ./utils/logo -name "*.tex"`
+#copyright "%" "./utils/copyright_header.txt" "$files"
 
 # apply copyright to dealii copied files
 files="include/igatools/base/exceptions.h 

@@ -1,4 +1,3 @@
-/*
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
 // Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
