@@ -45,38 +45,38 @@
 template<int dim , int codim, int range ,int rank>
 void do_test(const int p, const int num_knots = 10)
 {
-    const int sub_dim = dim - 1;
+  const int sub_dim = dim - 1;
 
-    using BspSpace = BSplineSpace<dim,range,rank>;
-    using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
-
-
-    auto grid = CartesianGrid<dim>::create(num_knots);
-    auto ref_space = BspSpace::create(p, grid) ;
-    auto map = IdentityFunction<dim>::create(grid);
-    auto space = Space::create(ref_space, map);
-
-    auto f = BoundaryFunction<dim>::create(grid);
+  using BspSpace = BSplineSpace<dim,range,rank>;
+  using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 
 
-    const int n_qpoints = 4;
-    QGauss<sub_dim> quad(n_qpoints);
+  auto grid = CartesianGrid<dim>::create(num_knots);
+  auto ref_space = BspSpace::create(p, grid) ;
+  auto map = IdentityFunction<dim>::create(grid);
+  auto space = Space::create(ref_space, map);
 
-    const boundary_id dirichlet = 1;
-    grid->set_boundary_id(0, dirichlet);
-    std::set<boundary_id> bdry_ids;
-    bdry_ids.insert(dirichlet);
-
+  auto f = BoundaryFunction<dim>::create(grid);
 
 
-    std::map<Index,Real> boundary_values;
-    space_tools::project_boundary_values<Space>(
-        f, space, quad, bdry_ids,
-        boundary_values);
+  const int n_qpoints = 4;
+  QGauss<sub_dim> quad(n_qpoints);
 
-    out << "basis index \t value" << endl;
-    for (auto entry : boundary_values)
-        out << entry.first << "\t" << entry.second << endl;
+  const boundary_id dirichlet = 1;
+  grid->set_boundary_id(0, dirichlet);
+  std::set<boundary_id> bdry_ids;
+  bdry_ids.insert(dirichlet);
+
+
+
+  std::map<Index,Real> boundary_values;
+  space_tools::project_boundary_values<Space>(
+    f, space, quad, bdry_ids,
+    boundary_values);
+
+  out << "basis index \t value" << endl;
+  for (auto entry : boundary_values)
+    out << entry.first << "\t" << entry.second << endl;
 
 }
 
@@ -86,12 +86,12 @@ int main()
 {
 
 
-    do_test<2, 0, 1, 1>(3);
+  do_test<2, 0, 1, 1>(3);
 
-    //do_test<3,3,1,1>(3);
+  //do_test<3,3,1,1>(3);
 
-    //do_test<2,3,1,0>(3);
+  //do_test<2,3,1,0>(3);
 
-    return 0;
+  return 0;
 }
 

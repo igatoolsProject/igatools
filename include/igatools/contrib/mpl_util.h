@@ -60,23 +60,23 @@ struct max_storage_helper;
 template<template <typename> class Size, typename SoFar>
 struct max_storage_helper<Size, SoFar>
 {
-    static constexpr decltype(Size<SoFar>::value) value = Size<SoFar>::value;
-    using type = SoFar;
+  static constexpr decltype(Size<SoFar>::value) value = Size<SoFar>::value;
+  using type = SoFar;
 };
 
 template<template <typename> class Size,typename SoFar,typename Next,typename... Args>
 struct max_storage_helper<Size, SoFar, Next, Args...>
 {
 private:
-    using m_next =  typename std::conditional<
-                    (Size<Next>::value > Size<SoFar>::value),
-                    max_storage_helper<Size, Next, Args...>,
-                    max_storage_helper<Size, SoFar, Args...> >::type;
+  using m_next =  typename std::conditional<
+                  (Size<Next>::value > Size<SoFar>::value),
+                  max_storage_helper<Size, Next, Args...>,
+                  max_storage_helper<Size, SoFar, Args...> >::type;
 
 public:
-    static constexpr decltype(Size<SoFar>::value) value = m_next::value;
+  static constexpr decltype(Size<SoFar>::value) value = m_next::value;
 
-    using type = typename m_next::type;
+  using type = typename m_next::type;
 };
 }
 
@@ -87,12 +87,12 @@ template<template <typename> class Size,typename First,typename... Args>
 struct max_storage<Size, First, Args...>
 {
 private:
-    using m_size_type = decltype(Size<First>::value);
-    using m_helper = typename detail::max_storage_helper<Size,First,Args...>;
+  using m_size_type = decltype(Size<First>::value);
+  using m_helper = typename detail::max_storage_helper<Size,First,Args...>;
 
 public:
-    static constexpr m_size_type value = m_helper::value;
-    using type = typename m_helper::type;
+  static constexpr m_size_type value = m_helper::value;
+  using type = typename m_helper::type;
 };
 
 #endif // #ifndef MPL_UTIL_H_

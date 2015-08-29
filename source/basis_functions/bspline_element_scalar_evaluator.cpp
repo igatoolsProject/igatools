@@ -28,10 +28,10 @@ IGA_NAMESPACE_OPEN
 template <int dim>
 BSplineElementScalarEvaluator<dim>::
 BSplineElementScalarEvaluator(const SafeSTLVector<SafeSTLArray<Values1DConstView,dim>> &values1D)
-    :
-    values1D_(values1D)
+  :
+  values1D_(values1D)
 {
-    Assert(!values1D_.empty(),ExcEmptyObject());
+  Assert(!values1D_.empty(),ExcEmptyObject());
 }
 
 
@@ -40,9 +40,9 @@ const SafeSTLArray<Values1DConstView,dim> &
 BSplineElementScalarEvaluator<dim>::
 get_derivative_components_view(const int order) const
 {
-    Assert(order >= 0 && order< values1D_.size(),
-           ExcIndexRange(order,0,values1D_.size()));
-    return values1D_[order];
+  Assert(order >= 0 && order< values1D_.size(),
+         ExcIndexRange(order,0,values1D_.size()));
+  return values1D_[order];
 }
 
 template <int dim>
@@ -50,9 +50,9 @@ const Values1DConstView &
 BSplineElementScalarEvaluator<dim>::
 get_values_view(const int order,const int dir) const
 {
-    Assert(dir >= 0 && dir < dim,
-           ExcIndexRange(dir,0,dim));
-    return get_derivative_components_view(order)[dim];
+  Assert(dir >= 0 && dir < dim,
+         ExcIndexRange(dir,0,dim));
+  return get_derivative_components_view(order)[dim];
 }
 
 
@@ -63,20 +63,20 @@ TensorSize<dim>
 BSplineElementScalarEvaluator<dim>::
 get_num_points() const
 {
-    Assert(!values1D_.empty(),ExcEmptyObject());
+  Assert(!values1D_.empty(),ExcEmptyObject());
 
-    TensorSize<dim> n_points;
-    for (int i = 0 ; i < dim ; ++i)
-    {
-        n_points[i] = values1D_[0][i].get_num_points();
+  TensorSize<dim> n_points;
+  for (int i = 0 ; i < dim ; ++i)
+  {
+    n_points[i] = values1D_[0][i].get_num_points();
 
 #ifndef NDEBUG
-        for (const auto &values : values1D_)
-            Assert(n_points[i] == values[i].get_num_points(),
-                   ExcDimensionMismatch(n_points[i],values[i].get_num_points()));
+    for (const auto &values : values1D_)
+      Assert(n_points[i] == values[i].get_num_points(),
+             ExcDimensionMismatch(n_points[i],values[i].get_num_points()));
 #endif
-    }
-    return n_points;
+  }
+  return n_points;
 }
 
 
@@ -84,32 +84,32 @@ template <int dim>
 Real
 BSplineElementScalarEvaluator<dim>::
 evaluate_derivative(
-    const TensorIndex<dim> &order_tensor_id,
-    const TensorIndex<dim> &point_tensor_id) const
+  const TensorIndex<dim> &order_tensor_id,
+  const TensorIndex<dim> &point_tensor_id) const
 {
 #ifndef NDEBUG
-    for (int i = 0 ; i < dim ; ++i)
-        Assert(order_tensor_id[i] >= 0 && order_tensor_id[i] < values1D_.size(),
-               ExcIndexRange(order_tensor_id[i],0,values1D_.size()));
+  for (int i = 0 ; i < dim ; ++i)
+    Assert(order_tensor_id[i] >= 0 && order_tensor_id[i] < values1D_.size(),
+           ExcIndexRange(order_tensor_id[i],0,values1D_.size()));
 #endif
 
-    // Main computation
-    Real partial_derivative = values1D_[order_tensor_id[0]][0](point_tensor_id[0]);
-    for (int i = 1; i < dim; ++i)
-        partial_derivative *= values1D_[order_tensor_id[i]][i](point_tensor_id[i]);
+  // Main computation
+  Real partial_derivative = values1D_[order_tensor_id[0]][0](point_tensor_id[0]);
+  for (int i = 1; i < dim; ++i)
+    partial_derivative *= values1D_[order_tensor_id[i]][i](point_tensor_id[i]);
 
 
-    return partial_derivative;
+  return partial_derivative;
 }
 
 template <>
 Real
 BSplineElementScalarEvaluator<0>::
 evaluate_derivative(
-    const TensorIndex<0> &order_tensor_id,
-    const TensorIndex<0> &point_tensor_id) const
+  const TensorIndex<0> &order_tensor_id,
+  const TensorIndex<0> &point_tensor_id) const
 {
-    return 0.0;
+  return 0.0;
 }
 
 
@@ -117,80 +117,80 @@ template <>
 void
 BSplineElementScalarEvaluator<1>::
 evaluate_derivative_at_points(
-    const TensorIndex<1> &order_tensor_id,
-    DynamicMultiArray<Real,1> &derivatives) const
+  const TensorIndex<1> &order_tensor_id,
+  DynamicMultiArray<Real,1> &derivatives) const
 {
-    TensorSize<1> n_points = this->get_num_points();
+  TensorSize<1> n_points = this->get_num_points();
 
-    Assert(derivatives.tensor_size()[0] == n_points[0],
-           ExcDimensionMismatch(derivatives.tensor_size()[0],n_points[0]));
+  Assert(derivatives.tensor_size()[0] == n_points[0],
+         ExcDimensionMismatch(derivatives.tensor_size()[0],n_points[0]));
 
-    const auto &deriv_dir_0 = this->get_derivative_components_view(order_tensor_id[0])[0];
-    for (Index flat_pt_id_0 = 0 ; flat_pt_id_0 < n_points[0] ; ++flat_pt_id_0)
-        derivatives[flat_pt_id_0] = deriv_dir_0(flat_pt_id_0);
+  const auto &deriv_dir_0 = this->get_derivative_components_view(order_tensor_id[0])[0];
+  for (Index flat_pt_id_0 = 0 ; flat_pt_id_0 < n_points[0] ; ++flat_pt_id_0)
+    derivatives[flat_pt_id_0] = deriv_dir_0(flat_pt_id_0);
 }
 
 template <>
 void
 BSplineElementScalarEvaluator<2>::
 evaluate_derivative_at_points(
-    const TensorIndex<2> &order_tensor_id,
-    DynamicMultiArray<Real,2> &derivatives) const
+  const TensorIndex<2> &order_tensor_id,
+  DynamicMultiArray<Real,2> &derivatives) const
 {
-    TensorSize<2> n_points = this->get_num_points();
+  TensorSize<2> n_points = this->get_num_points();
 
 #ifndef NDEBUG
-    for (int dir = 0 ; dir < 2 ; ++dir)
-        Assert(derivatives.tensor_size()[dir] == n_points[dir],
-               ExcDimensionMismatch(derivatives.tensor_size()[dir],n_points[dir]));
+  for (int dir = 0 ; dir < 2 ; ++dir)
+    Assert(derivatives.tensor_size()[dir] == n_points[dir],
+           ExcDimensionMismatch(derivatives.tensor_size()[dir],n_points[dir]));
 #endif
 
-    const auto &deriv_dir_0 = this->get_derivative_components_view(order_tensor_id[0])[0];
-    const auto &deriv_dir_1 = this->get_derivative_components_view(order_tensor_id[1])[1];
+  const auto &deriv_dir_0 = this->get_derivative_components_view(order_tensor_id[0])[0];
+  const auto &deriv_dir_1 = this->get_derivative_components_view(order_tensor_id[1])[1];
 
-    Index flat_pt_id = 0;
-    for (Index flat_pt_id_1 = 0 ; flat_pt_id_1 < n_points[1] ; ++flat_pt_id_1)
-    {
-        const Real deriv_dir_1_pt = deriv_dir_1(flat_pt_id_1);
+  Index flat_pt_id = 0;
+  for (Index flat_pt_id_1 = 0 ; flat_pt_id_1 < n_points[1] ; ++flat_pt_id_1)
+  {
+    const Real deriv_dir_1_pt = deriv_dir_1(flat_pt_id_1);
 
-        for (Index flat_pt_id_0 = 0 ; flat_pt_id_0 < n_points[0] ; ++flat_pt_id_0)
-            derivatives[flat_pt_id++] = deriv_dir_0(flat_pt_id_0) * deriv_dir_1_pt;
-    }
+    for (Index flat_pt_id_0 = 0 ; flat_pt_id_0 < n_points[0] ; ++flat_pt_id_0)
+      derivatives[flat_pt_id++] = deriv_dir_0(flat_pt_id_0) * deriv_dir_1_pt;
+  }
 }
 
 template <>
 void
 BSplineElementScalarEvaluator<3>::
 evaluate_derivative_at_points(
-    const TensorIndex<3> &order_tensor_id,
-    DynamicMultiArray<Real,3> &derivatives) const
+  const TensorIndex<3> &order_tensor_id,
+  DynamicMultiArray<Real,3> &derivatives) const
 {
-    TensorSize<3> n_points = this->get_num_points();
+  TensorSize<3> n_points = this->get_num_points();
 
 #ifndef NDEBUG
-    for (int dir = 0 ; dir < 3 ; ++dir)
-        Assert(derivatives.tensor_size()[dir] == n_points[dir],
-               ExcDimensionMismatch(derivatives.tensor_size()[dir],n_points[dir]));
+  for (int dir = 0 ; dir < 3 ; ++dir)
+    Assert(derivatives.tensor_size()[dir] == n_points[dir],
+           ExcDimensionMismatch(derivatives.tensor_size()[dir],n_points[dir]));
 #endif
 
-    const auto &deriv_dir_0 = this->get_derivative_components_view(order_tensor_id[0])[0];
-    const auto &deriv_dir_1 = this->get_derivative_components_view(order_tensor_id[1])[1];
-    const auto &deriv_dir_2 = this->get_derivative_components_view(order_tensor_id[2])[2];
+  const auto &deriv_dir_0 = this->get_derivative_components_view(order_tensor_id[0])[0];
+  const auto &deriv_dir_1 = this->get_derivative_components_view(order_tensor_id[1])[1];
+  const auto &deriv_dir_2 = this->get_derivative_components_view(order_tensor_id[2])[2];
 
-    Index flat_pt_id = 0;
-    for (Index flat_pt_id_2 = 0 ; flat_pt_id_2 < n_points[2] ; ++flat_pt_id_2)
+  Index flat_pt_id = 0;
+  for (Index flat_pt_id_2 = 0 ; flat_pt_id_2 < n_points[2] ; ++flat_pt_id_2)
+  {
+    const Real deriv_dir_2_pt = deriv_dir_2(flat_pt_id_2);
+
+    for (Index flat_pt_id_1 = 0 ; flat_pt_id_1 < n_points[1] ; ++flat_pt_id_1)
     {
-        const Real deriv_dir_2_pt = deriv_dir_2(flat_pt_id_2);
+      const Real deriv_dir_1_pt =  deriv_dir_1(flat_pt_id_1);
+      const Real deriv_old_dirs_pt = deriv_dir_2_pt * deriv_dir_1_pt;
 
-        for (Index flat_pt_id_1 = 0 ; flat_pt_id_1 < n_points[1] ; ++flat_pt_id_1)
-        {
-            const Real deriv_dir_1_pt =  deriv_dir_1(flat_pt_id_1);
-            const Real deriv_old_dirs_pt = deriv_dir_2_pt * deriv_dir_1_pt;
-
-            for (Index flat_pt_id_0 = 0 ; flat_pt_id_0 < n_points[0] ; ++flat_pt_id_0)
-                derivatives[flat_pt_id++] = deriv_dir_0(flat_pt_id_0) * deriv_old_dirs_pt;
-        }
+      for (Index flat_pt_id_0 = 0 ; flat_pt_id_0 < n_points[0] ; ++flat_pt_id_0)
+        derivatives[flat_pt_id++] = deriv_dir_0(flat_pt_id_0) * deriv_old_dirs_pt;
     }
+  }
 }
 
 
@@ -198,11 +198,11 @@ template <int dim>
 void
 BSplineElementScalarEvaluator<dim>::
 evaluate_derivative_at_points(
-    const TensorIndex<dim> &order_tensor_id,
-    DynamicMultiArray<Real,dim> &derivatives) const
+  const TensorIndex<dim> &order_tensor_id,
+  DynamicMultiArray<Real,dim> &derivatives) const
 {
-    Assert(false,ExcNotImplemented());
-    AssertThrow(false,ExcNotImplemented());
+  Assert(false,ExcNotImplemented());
+  AssertThrow(false,ExcNotImplemented());
 }
 
 

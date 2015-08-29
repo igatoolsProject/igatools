@@ -41,22 +41,22 @@
 template<int dim , int range ,int rank, LAPack la_pack>
 void project_l2(const int p, const int num_knots = 10)
 {
-    OUTSTART
+  OUTSTART
 
-    using Space =  BSplineSpace<dim,range,rank>;
-    using RefSpace =  ReferenceSpace<dim,range,rank>;
+  using Space =  BSplineSpace<dim,range,rank>;
+  using RefSpace =  ReferenceSpace<dim,range,rank>;
 
-    auto knots = CartesianGrid<dim>::create(num_knots);
-    auto space = Space::create(p, knots) ;
+  auto knots = CartesianGrid<dim>::create(num_knots);
+  auto space = Space::create(p, knots) ;
 
-    const int n_qpoints = 4;
-    QGauss<dim> quad(n_qpoints);
+  const int n_qpoints = 4;
+  QGauss<dim> quad(n_qpoints);
 
-    auto f = BoundaryFunction<dim>::create(knots);
-    auto proj_func = space_tools::projection_l2<RefSpace,la_pack>(f, space, quad);
-    proj_func->print_info(out);
+  auto f = BoundaryFunction<dim>::create(knots);
+  auto proj_func = space_tools::projection_l2<RefSpace,la_pack>(f, space, quad);
+  proj_func->print_info(out);
 
-    OUTEND
+  OUTEND
 }
 
 
@@ -64,16 +64,16 @@ void project_l2(const int p, const int num_knots = 10)
 int main()
 {
 #if defined(USE_TRILINOS)
-    const auto la_pack = LAPack::trilinos_epetra;
+  const auto la_pack = LAPack::trilinos_epetra;
 #elif defined(USE_PETSC)
-    const auto la_pack = LAPack::petsc;
+  const auto la_pack = LAPack::petsc;
 #endif
 
-    project_l2<0,1,1, la_pack>(1);
-    project_l2<1,1,1, la_pack>(3);
-    project_l2<2,1,1, la_pack>(3);
-    project_l2<3,1,1, la_pack>(1);
+  project_l2<0,1,1, la_pack>(1);
+  project_l2<1,1,1, la_pack>(3);
+  project_l2<2,1,1, la_pack>(3);
+  project_l2<3,1,1, la_pack>(1);
 
-    return 0;
+  return 0;
 }
 

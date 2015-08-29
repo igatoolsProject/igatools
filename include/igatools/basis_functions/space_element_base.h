@@ -33,20 +33,20 @@ namespace space_element
 {
 enum class Flags
 {
-    /** Fill nothing */
-    none           =    0,
+  /** Fill nothing */
+  none           =    0,
 
-    /** Basis functions value */
-    value          =    1L << 1,
+  /** Basis functions value */
+  value          =    1L << 1,
 
-    /** Basis functions gradient */
-    gradient          =    1L << 2,
+  /** Basis functions gradient */
+  gradient          =    1L << 2,
 
-    /** Basis functions hessian */
-    hessian          =    1L << 3,
+  /** Basis functions hessian */
+  hessian          =    1L << 3,
 
-    /** Basis functions divergence */
-    divergence          =    1L << 4
+  /** Basis functions divergence */
+  divergence          =    1L << 4
 };
 }
 
@@ -64,216 +64,216 @@ template <int dim>
 class SpaceElementBase
 {
 private:
-    using self_t = SpaceElementBase<dim>;
+  using self_t = SpaceElementBase<dim>;
 
 public:
-    using Grid = CartesianGrid<dim>;
-    using IndexType = typename Grid::IndexType;
-    using List = typename Grid::List;
-    using ListIt = typename Grid::ListIt;
+  using Grid = CartesianGrid<dim>;
+  using IndexType = typename Grid::IndexType;
+  using List = typename Grid::List;
+  using ListIt = typename Grid::ListIt;
 
-    /** @name Constructors */
-    ///@{
+  /** @name Constructors */
+  ///@{
 protected:
-    /**
-     * Default constructor. It does nothing but it is needed for the
-     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     * mechanism.
-     */
-    SpaceElementBase() = default;
+  /**
+   * Default constructor. It does nothing but it is needed for the
+   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * mechanism.
+   */
+  SpaceElementBase() = default;
 
 public:
-    /**
-     * Constructs an accessor to element with index pointed by the iterator <tt>index</tt> of a
-     * function space.
-     */
-    SpaceElementBase(const std::shared_ptr<const SpaceBase<dim>> &space,
-                     const ListIt &index,
-                     const PropId &prop = ElementProperties::active);
+  /**
+   * Constructs an accessor to element with index pointed by the iterator <tt>index</tt> of a
+   * function space.
+   */
+  SpaceElementBase(const std::shared_ptr<const SpaceBase<dim>> &space,
+                   const ListIt &index,
+                   const PropId &prop = ElementProperties::active);
 
 
 
-    /**
-     * Copy constructor.
-     * It can be used with different copy policies (i.e. deep copy or shallow copy).
-     * The default behaviour (i.e. using the proper interface of a classic copy constructor)
-     * uses the deep copy.
-     */
-    SpaceElementBase(const self_t &elem,
-                     const CopyPolicy &copy_policy = CopyPolicy::deep);
+  /**
+   * Copy constructor.
+   * It can be used with different copy policies (i.e. deep copy or shallow copy).
+   * The default behaviour (i.e. using the proper interface of a classic copy constructor)
+   * uses the deep copy.
+   */
+  SpaceElementBase(const self_t &elem,
+                   const CopyPolicy &copy_policy = CopyPolicy::deep);
 
-    /**
-     * Move constructor.
-     */
-    SpaceElementBase(self_t &&elem) = default;
+  /**
+   * Move constructor.
+   */
+  SpaceElementBase(self_t &&elem) = default;
 
-    /**
-     * Destructor.
-     */
-    ~SpaceElementBase() = default;
-    ///@}
-
-
-    /**
-     * Return a reference to the GridElement.
-     */
-    ConstGridElement<dim> &get_grid_element();
-
-    /**
-     * Return a const-reference to the GridElement.
-     */
-    const ConstGridElement<dim> &get_grid_element() const;
-
-    void print_info(LogStream &out) const;
-
-    void print_cache_info(LogStream &out) const;
-
-    void
-    copy_from(const SpaceElementBase<dim> &elem,const CopyPolicy &copy_policy);
+  /**
+   * Destructor.
+   */
+  ~SpaceElementBase() = default;
+  ///@}
 
 
-    /**
-     * @name Functions for getting information about the element connectivity.
-     */
-    ///@{
-    /**
-     * Returns the global dofs of the local (non zero) basis functions
-     * on the element.
-     *
-     * @note The dofs can be filtered invoking the function with the argument @p dof_property.
-     * If @p dof_property is equal to DofProperties::active, then no filter is applied.
-     *
-     * For example:
-     * \code
-       auto loc_to_glob_all = elem->get_local_to_global(DofProperties::active);
-       // loc_to_glob_all[0] is the global id of the first basis function on the element
-       // loc_to_glob_all[1] is the global id of the second basis function on the element
-       // ...
-       auto loc_to_glob_active = elem->get_local_to_global(DofProperties::active);
-       // loc_to_glob_active[0] is the global id of the first active basis function on the element
-       // loc_to_glob_active[1] is the global id of the second active basis function on the element
-       // ...
-      \endcode
-     *
-     */
-    SafeSTLVector<Index>
-    get_local_to_global(const std::string &dofs_property) const;
+  /**
+   * Return a reference to the GridElement.
+   */
+  ConstGridElement<dim> &get_grid_element();
 
-    /**
-     * Returns the patch dofs of the local (non zero) basis functions
-     * on the element.
-     *
-     * @note The dofs can be filtered invoking the function with the argument @p dof_property.
-     * If @p dof_property is equal to DofProperties::active, then no filter is applied.
-     *
-     */
-    SafeSTLVector<Index>
-    get_local_to_patch(const std::string &dofs_property) const;
+  /**
+   * Return a const-reference to the GridElement.
+   */
+  const ConstGridElement<dim> &get_grid_element() const;
+
+  void print_info(LogStream &out) const;
+
+  void print_cache_info(LogStream &out) const;
+
+  void
+  copy_from(const SpaceElementBase<dim> &elem,const CopyPolicy &copy_policy);
 
 
-    SafeSTLVector<Index>
-    get_local_dofs(const std::string &dofs_property) const;
+  /**
+   * @name Functions for getting information about the element connectivity.
+   */
+  ///@{
+  /**
+   * Returns the global dofs of the local (non zero) basis functions
+   * on the element.
+   *
+   * @note The dofs can be filtered invoking the function with the argument @p dof_property.
+   * If @p dof_property is equal to DofProperties::active, then no filter is applied.
+   *
+   * For example:
+   * \code
+     auto loc_to_glob_all = elem->get_local_to_global(DofProperties::active);
+     // loc_to_glob_all[0] is the global id of the first basis function on the element
+     // loc_to_glob_all[1] is the global id of the second basis function on the element
+     // ...
+     auto loc_to_glob_active = elem->get_local_to_global(DofProperties::active);
+     // loc_to_glob_active[0] is the global id of the first active basis function on the element
+     // loc_to_glob_active[1] is the global id of the second active basis function on the element
+     // ...
+    \endcode
+   *
+   */
+  SafeSTLVector<Index>
+  get_local_to_global(const std::string &dofs_property) const;
+
+  /**
+   * Returns the patch dofs of the local (non zero) basis functions
+   * on the element.
+   *
+   * @note The dofs can be filtered invoking the function with the argument @p dof_property.
+   * If @p dof_property is equal to DofProperties::active, then no filter is applied.
+   *
+   */
+  SafeSTLVector<Index>
+  get_local_to_patch(const std::string &dofs_property) const;
 
 
-    /**
-     *  Number of non zero basis functions with the given @p dofs_property,
-     *  over the current element.
-     */
-    Size get_num_basis(const std::string &dofs_property) const;
-    ///@}
+  SafeSTLVector<Index>
+  get_local_dofs(const std::string &dofs_property) const;
+
+
+  /**
+   *  Number of non zero basis functions with the given @p dofs_property,
+   *  over the current element.
+   */
+  Size get_num_basis(const std::string &dofs_property) const;
+  ///@}
 
 #if 0
-    /** @name Functions/operators for moving the element in the CartesianGrid used to build the Space.*/
-    ///@{
-    /**
-     * Sets the index of the element using the flatten representation.
-     * @note This function also updates the index for the tensor representation.
-     * @warning This may be a dangerous function, be careful when using it
-     * as it is easy to use incorrectly. Only use it if you know what you
-     * are doing.
-     */
-    virtual void move_to(const Index flat_index) ;
-    ///@}
+  /** @name Functions/operators for moving the element in the CartesianGrid used to build the Space.*/
+  ///@{
+  /**
+   * Sets the index of the element using the flatten representation.
+   * @note This function also updates the index for the tensor representation.
+   * @warning This may be a dangerous function, be careful when using it
+   * as it is easy to use incorrectly. Only use it if you know what you
+   * are doing.
+   */
+  virtual void move_to(const Index flat_index) ;
+  ///@}
 #endif
 
-    virtual typename List::iterator &operator++() = 0;
+  virtual typename List::iterator &operator++() = 0;
 
 public:
 
-    /**
-     * @name Comparison operators.
-     *
-     * @brief The comparison operators compares the <em>position</em> of the element in the grid.
-     *
-     * @warning To be comparable, two SpaceElementBase objects must be defined on the same space
-     * (and therefore on the same grid),
-     * otherwise an assertion will be raised (in Debug mode).
-     */
-    ///@{
-    /** Returns TRUE if the two elements have the same index on the grid. */
-    bool operator==(const self_t &a) const;
+  /**
+   * @name Comparison operators.
+   *
+   * @brief The comparison operators compares the <em>position</em> of the element in the grid.
+   *
+   * @warning To be comparable, two SpaceElementBase objects must be defined on the same space
+   * (and therefore on the same grid),
+   * otherwise an assertion will be raised (in Debug mode).
+   */
+  ///@{
+  /** Returns TRUE if the two elements have the same index on the grid. */
+  bool operator==(const self_t &a) const;
 
 
-    /** Returns TRUE if the two elements have different indices on the grid. */
-    bool operator!=(const self_t &a) const;
+  /** Returns TRUE if the two elements have different indices on the grid. */
+  bool operator!=(const self_t &a) const;
 
-    /**
-     * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
-     * is smaller than the the index of the element on the right.
-     * */
-    bool operator<(const self_t &a) const;
+  /**
+   * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
+   * is smaller than the the index of the element on the right.
+   * */
+  bool operator<(const self_t &a) const;
 
-    /**
-     * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
-     * is bigger than the the index of the element on the right.
-     * */
-    bool operator>(const self_t &a) const;
-    ///@}
+  /**
+   * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
+   * is bigger than the the index of the element on the right.
+   * */
+  bool operator>(const self_t &a) const;
+  ///@}
 
 
-    /** Returns the index of the element. */
-    IndexType get_index() const;
+  /** Returns the index of the element. */
+  IndexType get_index() const;
 
-    /** Return the cartesian grid from which the element belongs.*/
-    std::shared_ptr<const CartesianGrid<dim> > get_grid() const;
+  /** Return the cartesian grid from which the element belongs.*/
+  std::shared_ptr<const CartesianGrid<dim> > get_grid() const;
 
-    /**
-     * Test if the element has a boundary face.
-      */
-    template<int k = (dim > 0) ? (dim-1) : 0 >
-    bool is_boundary() const
-    {
-        return grid_elem_->is_boundary();
-    }
+  /**
+   * Test if the element has a boundary face.
+    */
+  template<int k = (dim > 0) ? (dim-1) : 0 >
+  bool is_boundary() const
+  {
+    return grid_elem_->is_boundary();
+  }
 
-    /**
-     * Test if the face identified by @p face_id on the current element is on the
-     * boundary of the cartesian grid.
-     */
-    template<int k = (dim > 0) ? (dim-1) : 0>
-    bool is_boundary(const Index sub_elem_id) const
-    {
-        return grid_elem_->is_boundary(sub_elem_id);
-    }
+  /**
+   * Test if the face identified by @p face_id on the current element is on the
+   * boundary of the cartesian grid.
+   */
+  template<int k = (dim > 0) ? (dim-1) : 0>
+  bool is_boundary(const Index sub_elem_id) const
+  {
+    return grid_elem_->is_boundary(sub_elem_id);
+  }
 
 private:
-    std::shared_ptr<ConstGridElement<dim>> grid_elem_;
+  std::shared_ptr<ConstGridElement<dim>> grid_elem_;
 
-    std::shared_ptr<const SpaceBase<dim>> space_;
+  std::shared_ptr<const SpaceBase<dim>> space_;
 
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version);
-    ///@}
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version);
+  ///@}
 #endif // SERIALIZATION
 };
 

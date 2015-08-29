@@ -29,47 +29,47 @@ template<int rdim, int cdim>
 void do_inverse()
 {
 
-    Tensor<cdim, 1, tensor::covariant, Tensor< rdim, 1, tensor::contravariant, Tdouble> > A;
+  Tensor<cdim, 1, tensor::covariant, Tensor< rdim, 1, tensor::contravariant, Tdouble> > A;
 
-    Tensor< cdim, 1, tensor::contravariant, Tdouble> u;
-    Tensor< rdim, 1, tensor::contravariant, Tdouble> v;
+  Tensor< cdim, 1, tensor::contravariant, Tdouble> u;
+  Tensor< rdim, 1, tensor::contravariant, Tdouble> v;
 
-    for (int i = 0; i < cdim; i++)
-    {
-        u[i] = i+1;
-        for (int j = 0; j < rdim; j++)
-            A[i][j] = cos(i*j)   ;
-    }
+  for (int i = 0; i < cdim; i++)
+  {
+    u[i] = i+1;
+    for (int j = 0; j < rdim; j++)
+      A[i][j] = cos(i*j)   ;
+  }
 
-    out << "Case:" << rdim << " " << cdim << std::endl;
-    out << "The Tensor A is:" << std::endl;
-    out << A << std::endl;
+  out << "Case:" << rdim << " " << cdim << std::endl;
+  out << "The Tensor A is:" << std::endl;
+  out << A << std::endl;
 
-    out << "Its action on:" << std::endl;
-    out << u << std::endl;
-    out << "is:" << std::endl;
-    v = action(A,u);
-    out << v << std::endl;
+  out << "Its action on:" << std::endl;
+  out << u << std::endl;
+  out << "is:" << std::endl;
+  v = action(A,u);
+  out << v << std::endl;
 
 
-    Real det;
-    out << "Its inverse is:" << std::endl;
-    auto B = inverse(A,det);
-    out << B << std::endl;
+  Real det;
+  out << "Its inverse is:" << std::endl;
+  auto B = inverse(A,det);
+  out << B << std::endl;
 
-    out << "compose A by its inverse to get:" << std::endl;
-    out << compose(A,B)  << std::endl;
+  out << "compose A by its inverse to get:" << std::endl;
+  out << compose(A,B)  << std::endl;
 
-    out << std::endl;
+  out << std::endl;
 }
 
 int main()
 {
-    do_inverse<2,2>();
-    do_inverse<3,2>();
-    do_inverse<3,3>();
+  do_inverse<2,2>();
+  do_inverse<3,2>();
+  do_inverse<3,3>();
 
-    return 0;
+  return 0;
 
 }
 

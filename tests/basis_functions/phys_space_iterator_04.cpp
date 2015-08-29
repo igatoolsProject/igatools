@@ -42,66 +42,66 @@ template<int dim, int codim=0>
 auto
 create_function(shared_ptr<CartesianGrid<dim>> grid)
 {
-    using Function = functions::CylindricalAnnulus<dim>;
-    auto map = Function::create(grid, IdentityFunction<dim>::create(grid),
-                                1.0, 2.0, 0.0, 1.0, 0.0, numbers::PI/3.0);
-    return map;
+  using Function = functions::CylindricalAnnulus<dim>;
+  auto map = Function::create(grid, IdentityFunction<dim>::create(grid),
+                              1.0, 2.0, 0.0, 1.0, 0.0, numbers::PI/3.0);
+  return map;
 }
 
 template <int dim, int order = 0, int range=1, int rank=1, int codim = 0>
 void elem_values(const int n_knots = 2, const int deg=1)
 {
 
-    const int k = dim;
-    using BspSpace = BSplineSpace<dim, range, rank>;
-    using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
+  const int k = dim;
+  using BspSpace = BSplineSpace<dim, range, rank>;
+  using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 
-    auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto grid  = CartesianGrid<dim>::create(n_knots);
 
-    auto ref_space = BspSpace::create(deg, grid);
-    auto map_func = create_function(grid);
+  auto ref_space = BspSpace::create(deg, grid);
+  auto map_func = create_function(grid);
 
-    auto space = Space::create(ref_space, map_func);
+  auto space = Space::create(ref_space, map_func);
 
-    const int n_qp = 2;
-    auto quad = QGauss<k>(n_qp);
-    auto flag = ValueFlags::value |
-                ValueFlags::gradient |
-                ValueFlags::hessian |
-                ValueFlags::point;
+  const int n_qp = 2;
+  auto quad = QGauss<k>(n_qp);
+  auto flag = ValueFlags::value |
+              ValueFlags::gradient |
+              ValueFlags::hessian |
+              ValueFlags::point;
 
-    auto elem_filler = space->get_elem_handler();
-    elem_filler->reset(flag, quad);
+  auto elem_filler = space->get_elem_handler();
+  elem_filler->reset(flag, quad);
 
-    auto elem = space->begin();
-    auto end = space->end();
-    elem_filler->init_element_cache(elem);
+  auto elem = space->begin();
+  auto end = space->end();
+  elem_filler->init_element_cache(elem);
 
-    for (; elem != end; ++elem)
-    {
-        elem_filler->fill_element_cache(elem);
+  for (; elem != end; ++elem)
+  {
+    elem_filler->fill_element_cache(elem);
 
-        out << "Basis values: " << endl;
-        elem->template get_basis<_Value, k>(0,DofProperties::active).print_info(out);
-        out << endl;
+    out << "Basis values: " << endl;
+    elem->template get_basis<_Value, k>(0,DofProperties::active).print_info(out);
+    out << endl;
 
-        out << "Basis gradients: " << endl;
-        elem->template get_basis<_Gradient, k>(0,DofProperties::active).print_info(out);
-        out << endl;
+    out << "Basis gradients: " << endl;
+    elem->template get_basis<_Gradient, k>(0,DofProperties::active).print_info(out);
+    out << endl;
 
-        out << "Basis hessians: " << endl;
-        elem->template get_basis<_Hessian, k>(0,DofProperties::active).print_info(out);
-    }
+    out << "Basis hessians: " << endl;
+    elem->template get_basis<_Hessian, k>(0,DofProperties::active).print_info(out);
+  }
 
-    out << endl << endl;
+  out << endl << endl;
 }
 
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
-    elem_values<3>();
+  elem_values<3>();
 
-    return 0;
+  return 0;
 }

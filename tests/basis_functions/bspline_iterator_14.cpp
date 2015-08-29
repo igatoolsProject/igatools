@@ -39,55 +39,55 @@ const SafeSTLArray<ValueFlags, 3> der_flag = {ValueFlags::value,
 template <int der, int dim, int range=1, int rank=1>
 void elem_derivatives(const int n_knots = 5, const int deg=1)
 {
-    OUTSTART
+  OUTSTART
 
-    using Space = BSplineSpace<dim, range, rank>;
-    auto grid  = CartesianGrid<dim>::create(n_knots);
-    auto space = Space::create(deg, grid);
+  using Space = BSplineSpace<dim, range, rank>;
+  auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto space = Space::create(deg, grid);
 
-    auto flag = der_flag[der];
-    auto quad = QGauss<dim>(2);
+  auto flag = der_flag[der];
+  auto quad = QGauss<dim>(2);
 
-    using ElemHandler = typename Space::ElementHandler ;
-    auto value_handler = ElemHandler::create(space);
-    value_handler->reset(flag, quad);
+  using ElemHandler = typename Space::ElementHandler ;
+  auto value_handler = ElemHandler::create(space);
+  value_handler->reset(flag, quad);
 
-    auto elem = space->begin();
-    auto end = space->end();
+  auto elem = space->begin();
+  auto end = space->end();
 
-    value_handler->init_element_cache(elem);
-    for (; elem != end; ++elem)
-    {
-        value_handler->fill_element_cache(elem);
-        elem->template get_basis<ValueType<der>, dim>(0,DofProperties::active).print_info(out);
-    }
+  value_handler->init_element_cache(elem);
+  for (; elem != end; ++elem)
+  {
+    value_handler->fill_element_cache(elem);
+    elem->template get_basis<ValueType<der>, dim>(0,DofProperties::active).print_info(out);
+  }
 
-    OUTEND
+  OUTEND
 }
 
 
 int main()
 {
-    const int values = 0;
-    const int grad   = 1;
-    const int hess   = 2;
+  const int values = 0;
+  const int grad   = 1;
+  const int hess   = 2;
 
-    elem_derivatives<values, 1>();
-    elem_derivatives<values, 2>();
-    elem_derivatives<values,1,2>();
-    elem_derivatives<values,1,3>();
-
-
-    elem_derivatives<grad, 1>(3);
-    elem_derivatives<grad, 2>();
-    elem_derivatives<grad,1,2>(2);
-    elem_derivatives<grad,1,3>();
-
-    elem_derivatives<hess, 1>(3);
-    elem_derivatives<hess, 2>();
-    elem_derivatives<hess,1,2>(2);
-    elem_derivatives<hess,1,3>();
+  elem_derivatives<values, 1>();
+  elem_derivatives<values, 2>();
+  elem_derivatives<values,1,2>();
+  elem_derivatives<values,1,3>();
 
 
-    return  0;
+  elem_derivatives<grad, 1>(3);
+  elem_derivatives<grad, 2>();
+  elem_derivatives<grad,1,2>(2);
+  elem_derivatives<grad,1,3>();
+
+  elem_derivatives<hess, 1>(3);
+  elem_derivatives<hess, 2>();
+  elem_derivatives<hess,1,2>(2);
+  elem_derivatives<hess,1,3>();
+
+
+  return  0;
 }

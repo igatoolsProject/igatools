@@ -34,45 +34,45 @@
 template<int rdim, int cdim>
 void compute_inverse()
 {
-    OUTSTART
+  OUTSTART
 
-    Tensor<cdim, 1, tensor::covariant, Tensor< rdim, 1, tensor::contravariant, Tdouble> > A;
+  Tensor<cdim, 1, tensor::covariant, Tensor< rdim, 1, tensor::contravariant, Tdouble> > A;
 
-    for (int i = 0; i < cdim; ++i)
-        for (int j = 0; j < rdim; ++j)
-            A[i][j] = cos(i*j);
+  for (int i = 0; i < cdim; ++i)
+    for (int j = 0; j < rdim; ++j)
+      A[i][j] = cos(i*j);
 
-    out << "A =" << endl;
-    out << A << endl;
+  out << "A =" << endl;
+  out << A << endl;
 
-    Real det;
-    auto B = inverse(A, det);
-    out << "Determinant(A) = " << det << endl;
+  Real det;
+  auto B = inverse(A, det);
+  out << "Determinant(A) = " << det << endl;
 
-    out << "A^(-1) =" << endl;
-    out << B << endl;
+  out << "A^(-1) =" << endl;
+  out << B << endl;
 
-    out << "A o A^(-1) =" << endl;
-    out << compose(A,B)  << endl;
-    out << "A^(-1) o A =" << endl;
-    out << compose(B,A)  << endl;
+  out << "A o A^(-1) =" << endl;
+  out << compose(A,B)  << endl;
+  out << "A^(-1) o A =" << endl;
+  out << compose(B,A)  << endl;
 
-    OUTEND
+  OUTEND
 }
 
 
 int main()
 {
-    compute_inverse<1,1>();
-    compute_inverse<2,2>();
-    compute_inverse<3,3>();
-    compute_inverse<4,4>();
+  compute_inverse<1,1>();
+  compute_inverse<2,2>();
+  compute_inverse<3,3>();
+  compute_inverse<4,4>();
 
-    compute_inverse<1,2>();
-    compute_inverse<2,1>();
+  compute_inverse<1,2>();
+  compute_inverse<2,1>();
 
-    compute_inverse<3,2>();
-    compute_inverse<2,3>();
+  compute_inverse<3,2>();
+  compute_inverse<2,3>();
 
-    return 0;
+  return 0;
 }

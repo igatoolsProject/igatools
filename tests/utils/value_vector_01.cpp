@@ -31,154 +31,154 @@
 //Test the different constructors
 void do_test()
 {
-    out << "---------------------------------------" << endl ;
-    out << "Test the different constructors" << endl << endl ;
+  out << "---------------------------------------" << endl ;
+  out << "Test the different constructors" << endl << endl ;
 
-    typedef ValueVector<Real> ClassToTest ;
-
-
-    out << "Default constructor" << endl ;
-    ClassToTest data1;
-    out << "data1:\n";
-    data1.print_info(out);
-    out << endl ;
+  typedef ValueVector<Real> ClassToTest ;
 
 
-    out << "Constructor with the size of the vector" << endl ;
-    const int size = 3 ;
-    ClassToTest data2(size);
-    out << "data2:\n";
-    data2.print_info(out);
-    out << endl ;
+  out << "Default constructor" << endl ;
+  ClassToTest data1;
+  out << "data1:\n";
+  data1.print_info(out);
+  out << endl ;
 
 
-    out << "Initializer-list constructor" << endl ;
-    SafeSTLVector<Real> vec = {1.0,2.0,3.0};
-    ClassToTest data3(vec);
-    out << "data3:\n";
-    data3.print_info(out);
-    out << endl ;
+  out << "Constructor with the size of the vector" << endl ;
+  const int size = 3 ;
+  ClassToTest data2(size);
+  out << "data2:\n";
+  data2.print_info(out);
+  out << endl ;
 
 
-    out << "Copy constructor" << endl ;
-    ClassToTest data4 = data3 ;
-    out << "data4:\n";
-    data4.print_info(out);
-    out << endl;
-    out << "data3:\n";
-    data3.print_info(out);
-    out << endl ;
+  out << "Initializer-list constructor" << endl ;
+  SafeSTLVector<Real> vec = {1.0,2.0,3.0};
+  ClassToTest data3(vec);
+  out << "data3:\n";
+  data3.print_info(out);
+  out << endl ;
 
 
-    out << "Move constructor" << endl ;
-    ClassToTest data5 = std::move(data3);
-    out << "data5:\n";
-    data5.print_info(out);
-    out << endl;
+  out << "Copy constructor" << endl ;
+  ClassToTest data4 = data3 ;
+  out << "data4:\n";
+  data4.print_info(out);
+  out << endl;
+  out << "data3:\n";
+  data3.print_info(out);
+  out << endl ;
 
-    out << "---------------------------------------" << endl ;
 
-    out << endl ;
+  out << "Move constructor" << endl ;
+  ClassToTest data5 = std::move(data3);
+  out << "data5:\n";
+  data5.print_info(out);
+  out << endl;
+
+  out << "---------------------------------------" << endl ;
+
+  out << endl ;
 
 }
 
 //Test the copy/move assignment operators
 void do_test1()
 {
-    out << "---------------------------------------" << endl ;
-    out << "Test the copy/move assignment operators" << endl << endl ;
+  out << "---------------------------------------" << endl ;
+  out << "Test the copy/move assignment operators" << endl << endl ;
 
-    typedef ValueVector<Real> ClassToTest ;
+  typedef ValueVector<Real> ClassToTest ;
 
-    ClassToTest data1 = {1.0,2.0,3.0};
+  ClassToTest data1 = {1.0,2.0,3.0};
 
-    out << "Copy assignment" << endl ;
-    ClassToTest data2 ;
-    out << "before copy" << endl ;
-    out.push("\t") ;
-    out << "data1:\n";
-    data1.print_info(out);
-    out << endl ;
-    out << "data2:\n";
-    data2.print_info(out);
-    out << endl ;
-    out.pop() ;
+  out << "Copy assignment" << endl ;
+  ClassToTest data2 ;
+  out << "before copy" << endl ;
+  out.push("\t") ;
+  out << "data1:\n";
+  data1.print_info(out);
+  out << endl ;
+  out << "data2:\n";
+  data2.print_info(out);
+  out << endl ;
+  out.pop() ;
 
-    data2 = data1 ;
-    out << "after copy" << endl ;
-    out.push("\t") ;
-    out << "data1:\n";
-    data1.print_info(out);
-    out << endl;
-    out << "data2:\n";
-    data2.print_info(out);
-    out << endl;
+  data2 = data1 ;
+  out << "after copy" << endl ;
+  out.push("\t") ;
+  out << "data1:\n";
+  data1.print_info(out);
+  out << endl;
+  out << "data2:\n";
+  data2.print_info(out);
+  out << endl;
 
-    out.pop() ;
-    out << endl ;
+  out.pop() ;
+  out << endl ;
 
-    out << "Move assignment" << endl ;
-    ClassToTest data3 ;
-    out << "before move" << endl ;
-    out.push("\t") ;
-    out << "data1:\n";
-    data1.print_info(out);
-    out << endl;
-    out << "data3:\n";
-    data3.print_info(out);
-    out << endl;
-    out.pop() ;
+  out << "Move assignment" << endl ;
+  ClassToTest data3 ;
+  out << "before move" << endl ;
+  out.push("\t") ;
+  out << "data1:\n";
+  data1.print_info(out);
+  out << endl;
+  out << "data3:\n";
+  data3.print_info(out);
+  out << endl;
+  out.pop() ;
 
-    data3 = std::move(data1) ;
-    out << "after move" << endl ;
-    out.push("\t") ;
+  data3 = std::move(data1) ;
+  out << "after move" << endl ;
+  out.push("\t") ;
 //    data1.print_info(out);
-    out << "data3:\n";
-    data3.print_info(out);
-    out << endl;
-    out.pop() ;
+  out << "data3:\n";
+  data3.print_info(out);
+  out << endl;
+  out.pop() ;
 
 
-    out << "---------------------------------------" << std::endl ;
+  out << "---------------------------------------" << std::endl ;
 
-    out << endl ;
+  out << endl ;
 
 }
 
 //Test the scalar-by-SafeSTLVector multiplication
 void do_test2()
 {
-    out << "---------------------------------------" << endl ;
-    out << "Test the scalar-by-vector multiplication" << endl << endl ;
+  out << "---------------------------------------" << endl ;
+  out << "Test the scalar-by-vector multiplication" << endl << endl ;
 
-    typedef ValueVector<Real> ClassToTest ;
+  typedef ValueVector<Real> ClassToTest ;
 
-    ClassToTest data = {1.0,2.0,3.0};
-    out << "Original data =" << endl ;
-    data.print_info(out);
-    out << endl ;
+  ClassToTest data = {1.0,2.0,3.0};
+  out << "Original data =" << endl ;
+  data.print_info(out);
+  out << endl ;
 
-    const double a = -1.0 ;
-    ClassToTest data1 = a * data ;
-    out << "-1.0 * data =" << endl ;
-    data1.print_info(out);
-    out << endl ;
+  const double a = -1.0 ;
+  ClassToTest data1 = a * data ;
+  out << "-1.0 * data =" << endl ;
+  data1.print_info(out);
+  out << endl ;
 
-    const double b = 2.0 ;
-    ClassToTest data2 = data * b ;
-    out << "data * 2.0 =" << endl ;
-    data2.print_info(out);
-    out << endl;
-    out << "---------------------------------------" << endl ;
-    out << endl ;
+  const double b = 2.0 ;
+  ClassToTest data2 = data * b ;
+  out << "data * 2.0 =" << endl ;
+  data2.print_info(out);
+  out << endl;
+  out << "---------------------------------------" << endl ;
+  out << endl ;
 }
 
 
 int main(int argc, char *argv[])
 {
-    do_test();
-    do_test1();
-    do_test2();
+  do_test();
+  do_test1();
+  do_test2();
 
-    return 0;
+  return 0;
 }

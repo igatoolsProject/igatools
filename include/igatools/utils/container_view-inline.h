@@ -32,11 +32,11 @@ IGA_NAMESPACE_OPEN
 template <class IteratorType>
 ViewData<IteratorType>::
 ViewData(const IteratorType begin, const IteratorType end)
-    :
-    begin_(begin),
-    end_(end)
+  :
+  begin_(begin),
+  end_(end)
 {
-    Assert(begin_ < end_, ExcInvalidIterator());
+  Assert(begin_ < end_, ExcInvalidIterator());
 //    Assert(begin_ < end_ || begin_ == end_, ExcInvalidIterator());
 }
 
@@ -46,7 +46,7 @@ Size
 ViewData<IteratorType>::
 get_num_entries() const
 {
-    return end_ - begin_;
+  return end_ - begin_;
 }
 
 
@@ -56,12 +56,12 @@ ViewData<IteratorType> &
 ViewData<IteratorType>::
 operator=(const ViewData<IteratorType> &view_data)
 {
-    if (this != &view_data)
-    {
-        begin_ = view_data.begin_;
-        end_   = view_data.end_;
-    }
-    return *this;
+  if (this != &view_data)
+  {
+    begin_ = view_data.begin_;
+    end_   = view_data.end_;
+  }
+  return *this;
 }
 
 
@@ -69,8 +69,8 @@ template <class Iterator,class ConstIterator>
 inline
 NonConstView<Iterator,ConstIterator>::
 NonConstView(const iterator begin, const iterator end)
-    :
-    ViewData<Iterator>(begin,end)
+  :
+  ViewData<Iterator>(begin,end)
 {}
 
 
@@ -80,7 +80,7 @@ auto
 NonConstView<Iterator,ConstIterator>::
 begin() -> iterator
 {
-    return this->begin_;
+  return this->begin_;
 }
 
 template <class Iterator,class ConstIterator>
@@ -89,7 +89,7 @@ auto
 NonConstView<Iterator,ConstIterator>::
 begin() const -> const_iterator
 {
-    return ConstIterator(this->begin_);
+  return ConstIterator(this->begin_);
 }
 
 template <class Iterator,class ConstIterator>
@@ -98,7 +98,7 @@ auto
 NonConstView<Iterator,ConstIterator>::
 cbegin() const -> const_iterator
 {
-    return ConstIterator(this->begin_);
+  return ConstIterator(this->begin_);
 }
 
 template <class Iterator,class ConstIterator>
@@ -107,7 +107,7 @@ auto
 NonConstView<Iterator,ConstIterator>::
 end() -> iterator
 {
-    return this->end_;
+  return this->end_;
 }
 
 template <class Iterator,class ConstIterator>
@@ -116,7 +116,7 @@ auto
 NonConstView<Iterator,ConstIterator>::
 end() const -> const_iterator
 {
-    return ConstIterator(this->end_);
+  return ConstIterator(this->end_);
 }
 
 template <class Iterator,class ConstIterator>
@@ -125,7 +125,7 @@ auto
 NonConstView<Iterator,ConstIterator>::
 cend() const -> const_iterator
 {
-    return ConstIterator(this->end_);
+  return ConstIterator(this->end_);
 }
 
 template <class Iterator,class ConstIterator>
@@ -135,10 +135,10 @@ NonConstView<Iterator,ConstIterator>::
 operator[](const Index n) -> reference
 {
 #ifndef NDEBUG
-    auto tmp = this->begin_;
-    Assert(tmp+n < this->end_, ExcIteratorPastEnd());
+  auto tmp = this->begin_;
+  Assert(tmp+n < this->end_, ExcIteratorPastEnd());
 #endif
-    return this->begin_[n];
+  return this->begin_[n];
 }
 
 template <class Iterator,class ConstIterator>
@@ -148,19 +148,19 @@ NonConstView<Iterator,ConstIterator>::
 operator[](const Index n) const -> const reference
 {
 #ifndef NDEBUG
-    auto tmp = this->begin_;
-    Assert(tmp+n < this->end_, ExcIteratorPastEnd());
+  auto tmp = this->begin_;
+  Assert(tmp+n < this->end_, ExcIteratorPastEnd());
 #endif
 //    return const_cast<const Iterator &>(this->begin_)[n];
-    return this->begin_[n];
+  return this->begin_[n];
 }
 
 template <class Iterator,class ConstIterator>
 inline
 ConstView<Iterator,ConstIterator>::
 ConstView(const const_iterator begin, const const_iterator end)
-    :
-    ViewData<ConstIterator>(begin,end)
+  :
+  ViewData<ConstIterator>(begin,end)
 {}
 
 
@@ -168,8 +168,8 @@ template <class Iterator,class ConstIterator>
 inline
 ConstView<Iterator,ConstIterator>::
 ConstView(const NonConstView<Iterator,ConstIterator> &view)
-    :
-    ViewData<ConstIterator>(view.begin(),view.end())
+  :
+  ViewData<ConstIterator>(view.begin(),view.end())
 {
 //  this->begin_ = view.begin();
 //  this->end_   = view.end();
@@ -181,7 +181,7 @@ auto
 ConstView<Iterator,ConstIterator>::
 begin() const -> const_iterator
 {
-    return this->begin_;
+  return this->begin_;
 }
 
 template <class Iterator,class ConstIterator>
@@ -190,7 +190,7 @@ auto
 ConstView<Iterator,ConstIterator>::
 end() const -> const_iterator
 {
-    return this->end_;
+  return this->end_;
 }
 
 template <class Iterator,class ConstIterator>
@@ -199,7 +199,7 @@ auto
 ConstView<Iterator,ConstIterator>::
 cbegin() const -> const_iterator
 {
-    return this->begin_;
+  return this->begin_;
 }
 
 template <class Iterator,class ConstIterator>
@@ -208,7 +208,7 @@ auto
 ConstView<Iterator,ConstIterator>::
 cend() const -> const_iterator
 {
-    return this->end_;
+  return this->end_;
 }
 
 template <class Iterator,class ConstIterator>
@@ -217,8 +217,8 @@ auto
 ConstView<Iterator,ConstIterator>::
 operator[](const Index n) const -> const reference
 {
-    Assert(this->begin_+n < this->end_, ExcIteratorPastEnd());
-    return this->begin_[n];
+  Assert(this->begin_+n < this->end_, ExcIteratorPastEnd());
+  return this->begin_[n];
 }
 
 

@@ -48,46 +48,46 @@
 template< int dim >
 void do_scalar_product1()
 {
-    const int rank = 1;
-    out << "Test for Tensor of rank: " << rank << " and dim: " << dim << endl;
-    Tensor < dim, rank, tensor::contravariant, Tdouble > t1, t2;
-    for (int i = 0 ; i < dim ; i++)
-    {
-        t1[i]=i;
-        t2[i]=dim+i;
-    }
+  const int rank = 1;
+  out << "Test for Tensor of rank: " << rank << " and dim: " << dim << endl;
+  Tensor < dim, rank, tensor::contravariant, Tdouble > t1, t2;
+  for (int i = 0 ; i < dim ; i++)
+  {
+    t1[i]=i;
+    t2[i]=dim+i;
+  }
 
-    out << "The scalar product of:" << std::endl;
-    out << t1 << std::endl;
-    out << "with:" << std::endl;
-    out << t2 << std::endl;
-    out << "is:" << std::endl;
-    out << scalar_product(t1, t2) << std::endl;
-    out << endl;
+  out << "The scalar product of:" << std::endl;
+  out << t1 << std::endl;
+  out << "with:" << std::endl;
+  out << t2 << std::endl;
+  out << "is:" << std::endl;
+  out << scalar_product(t1, t2) << std::endl;
+  out << endl;
 }
 
 
 template< int dim >
 void do_scalar_product2()
 {
-    const int rank = 2;
-    out << "Test for Tensor of rank: " << rank << " and dim: " << dim << endl;
-    Tensor < dim, rank, tensor::contravariant, Tdouble > t1, t2;
-    for (int i = 0 ; i < dim ; ++i)
-        for (int j = 0 ; j < dim ; ++j)
-        {
-            t1[i][j]=i*dim+j;
-            t2[i][j]=pow(dim,rank) + t1[i][j];
-        }
+  const int rank = 2;
+  out << "Test for Tensor of rank: " << rank << " and dim: " << dim << endl;
+  Tensor < dim, rank, tensor::contravariant, Tdouble > t1, t2;
+  for (int i = 0 ; i < dim ; ++i)
+    for (int j = 0 ; j < dim ; ++j)
+    {
+      t1[i][j]=i*dim+j;
+      t2[i][j]=pow(dim,rank) + t1[i][j];
+    }
 
-    out << "The scalar product of:" << std::endl;
-    out << t1 << std::endl;
-    out << "with:" << std::endl;
-    out << t2 << std::endl;
-    out << "is:" << std::endl;
-    out << scalar_product(t1, t2) << std::endl;
+  out << "The scalar product of:" << std::endl;
+  out << t1 << std::endl;
+  out << "with:" << std::endl;
+  out << t2 << std::endl;
+  out << "is:" << std::endl;
+  out << scalar_product(t1, t2) << std::endl;
 
-    out << endl;
+  out << endl;
 }
 
 
@@ -117,50 +117,50 @@ void do_scalar_product2()
 template< int dim >
 void do_scalar_product11()
 {
-    const int rank = 1;
-    out << "Test for Tensor of rank: " << 2*rank << " and dim: " << dim << endl;
-    Tensor < dim, rank, tensor::covariant,
-           Tensor < dim, 1, tensor::contravariant, Tdouble >> t1, t2;
+  const int rank = 1;
+  out << "Test for Tensor of rank: " << 2*rank << " and dim: " << dim << endl;
+  Tensor < dim, rank, tensor::covariant,
+         Tensor < dim, 1, tensor::contravariant, Tdouble >> t1, t2;
 
-    for (int i = 0 ; i < dim ; i++)
-        for (int j = 0 ; j < dim ; j++)
-        {
-            t1[i][j]=i*dim+j;
-            t2[i][j]=pow(dim,rank+1) + t1[i][j];
-        }
+  for (int i = 0 ; i < dim ; i++)
+    for (int j = 0 ; j < dim ; j++)
+    {
+      t1[i][j]=i*dim+j;
+      t2[i][j]=pow(dim,rank+1) + t1[i][j];
+    }
 
-    out << "The scalar product of:" << std::endl;
-    out << t1 << std::endl;
-    out << "with:" << std::endl;
-    out << t2 << std::endl;
-    out << "is:" << std::endl;
-    out << scalar_product(t1, t2) << std::endl;
-    out << endl;
+  out << "The scalar product of:" << std::endl;
+  out << t1 << std::endl;
+  out << "with:" << std::endl;
+  out << t2 << std::endl;
+  out << "is:" << std::endl;
+  out << scalar_product(t1, t2) << std::endl;
+  out << endl;
 }
 
 
 int main(int argc, char *argv[])
 {
 
-    out.depth_console(10);
+  out.depth_console(10);
 //  do_scalar_product0<1>();
 //  do_scalar_product0<3>();
 
-    do_scalar_product1<1>();
-    do_scalar_product1<2>();
-    do_scalar_product1<3>();
+  do_scalar_product1<1>();
+  do_scalar_product1<2>();
+  do_scalar_product1<3>();
 
-    do_scalar_product2<1>();
-    do_scalar_product2<2>();
-    do_scalar_product2<3>();
+  do_scalar_product2<1>();
+  do_scalar_product2<2>();
+  do_scalar_product2<3>();
 
 //  do_scalar_product01<1>();
 //  do_scalar_product01<2>();
 //  do_scalar_product01<3>();
 
-    do_scalar_product11<1>();
-    do_scalar_product11<2>();
-    do_scalar_product11<3>();
+  do_scalar_product11<1>();
+  do_scalar_product11<2>();
+  do_scalar_product11<3>();
 
 }
 

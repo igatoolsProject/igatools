@@ -33,42 +33,42 @@
 template<int dim, int k>
 void all_cube_elements()
 {
-    OUTSTART
+  OUTSTART
 
-    const auto size = UnitElement<dim>::template num_elem<k>();
-    out << "Number of elements: " << size << endl;
-    for (auto i=0; i<size; ++i)
+  const auto size = UnitElement<dim>::template num_elem<k>();
+  out << "Number of elements: " << size << endl;
+  for (auto i=0; i<size; ++i)
+  {
+    out.begin_item("Element: " + std::to_string(i));
+    auto &k_elem = UnitElement<dim>::template get_elem<k>(i);
+    const int n_dir = k_elem.constant_directions.size();
+    out << "Constant directions" << endl;
+    for (int j=0; j<n_dir; ++j)
     {
-        out.begin_item("Element: " + std::to_string(i));
-        auto &k_elem = UnitElement<dim>::template get_elem<k>(i);
-        const int n_dir = k_elem.constant_directions.size();
-        out << "Constant directions" << endl;
-        for (int j=0; j<n_dir; ++j)
-        {
-            out << "x["<< k_elem.constant_directions[j]<< "]";
-            out << " = " << k_elem.constant_values[j] << endl;
-        }
-        out << "Active directions" << endl;
-        for (auto &dir : k_elem.active_directions)
-            out << "x[" << dir << "]" << endl;
-        out.end_item();
+      out << "x["<< k_elem.constant_directions[j]<< "]";
+      out << " = " << k_elem.constant_values[j] << endl;
     }
-    OUTEND
+    out << "Active directions" << endl;
+    for (auto &dir : k_elem.active_directions)
+      out << "x[" << dir << "]" << endl;
+    out.end_item();
+  }
+  OUTEND
 }
 
 int main()
 {
-    out.depth_console(20);
-    all_cube_elements<0,0>();
-    all_cube_elements<1,1>();
-    all_cube_elements<1,0>();
-    all_cube_elements<2,2>();
-    all_cube_elements<2,1>();
-    all_cube_elements<2,0>();
-    all_cube_elements<3,3>();
-    all_cube_elements<3,2>();
-    all_cube_elements<3,1>();
-    all_cube_elements<3,0>();
+  out.depth_console(20);
+  all_cube_elements<0,0>();
+  all_cube_elements<1,1>();
+  all_cube_elements<1,0>();
+  all_cube_elements<2,2>();
+  all_cube_elements<2,1>();
+  all_cube_elements<2,0>();
+  all_cube_elements<3,3>();
+  all_cube_elements<3,2>();
+  all_cube_elements<3,1>();
+  all_cube_elements<3,0>();
 
-    return 0;
+  return 0;
 }

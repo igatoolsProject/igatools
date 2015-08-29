@@ -42,36 +42,36 @@ using namespace EpetraTools;
 template <int dim,int codim>
 void serialize_deserialize(std::shared_ptr< IgFunction<dim,0, dim+codim,1> > F)
 {
-    out.begin_item("Original IgFunction:");
-    F->print_info(out);
-    out.end_item();
+  out.begin_item("Original IgFunction:");
+  F->print_info(out);
+  out.end_item();
 
-    std::string template_strdetails = "_dim" + std::to_string(dim) + "_codim" + std::to_string(codim);
-    std::string filename = "ig_function" + template_strdetails + ".xml";
-    std::string tag_name = "IgFunction" + template_strdetails;
-    {
-        // serialize the IgFunction object to an xml file
-        std::ofstream xml_ostream(filename);
-        OArchive xml_out(xml_ostream);
+  std::string template_strdetails = "_dim" + std::to_string(dim) + "_codim" + std::to_string(codim);
+  std::string filename = "ig_function" + template_strdetails + ".xml";
+  std::string tag_name = "IgFunction" + template_strdetails;
+  {
+    // serialize the IgFunction object to an xml file
+    std::ofstream xml_ostream(filename);
+    OArchive xml_out(xml_ostream);
 //        xml_out.template register_type<BSplineSpace<dim,dim+codim>>();
 
-        xml_out << boost::serialization::make_nvp(tag_name.c_str(),F);
-        xml_ostream.close();
-    }
+    xml_out << boost::serialization::make_nvp(tag_name.c_str(),F);
+    xml_ostream.close();
+  }
 
-    F.reset();
-    {
-        // de-serialize the IgFunction object from an xml file
-        std::ifstream xml_istream(filename);
-        IArchive xml_in(xml_istream);
+  F.reset();
+  {
+    // de-serialize the IgFunction object from an xml file
+    std::ifstream xml_istream(filename);
+    IArchive xml_in(xml_istream);
 //        xml_in.template register_type<BSplineSpace<dim,dim+codim>>();
 
-        xml_in >> BOOST_SERIALIZATION_NVP(F);
-        xml_istream.close();
-    }
-    out.begin_item("IgFunction after serialize-deserialize:");
-    F->print_info(out);
-    out.end_item();
+    xml_in >> BOOST_SERIALIZATION_NVP(F);
+    xml_istream.close();
+  }
+  out.begin_item("IgFunction after serialize-deserialize:");
+  F->print_info(out);
+  out.end_item();
 //*/
 }
 
@@ -80,123 +80,123 @@ void serialize_deserialize(std::shared_ptr< IgFunction<dim,0, dim+codim,1> > F)
 template <int dim, int codim=0>
 void bspline_map(const int deg = 1)
 {
-    OUTSTART
+  OUTSTART
 
-    const int sub_dim = dim;
-    using Space = BSplineSpace<dim, dim+codim>;
-    using RefSpace = ReferenceSpace<dim, dim+codim>;
-    using Function = IgFunction<dim,0,dim+codim,1>;
-    using Mapping   = Mapping<dim, codim>;
+  const int sub_dim = dim;
+  using Space = BSplineSpace<dim, dim+codim>;
+  using RefSpace = ReferenceSpace<dim, dim+codim>;
+  using Function = IgFunction<dim,0,dim+codim,1>;
+  using Mapping   = Mapping<dim, codim>;
 
-    auto grid = CartesianGrid<dim>::create(2);
-    auto space = Space::create(deg, grid);
+  auto grid = CartesianGrid<dim>::create(2);
+  auto space = Space::create(deg, grid);
 
-    auto c_p = EpetraTools::create_vector(*space, "active",Epetra_SerialComm());
-    auto &control_pts = *c_p;
+  auto c_p = EpetraTools::create_vector(*space, "active",Epetra_SerialComm());
+  auto &control_pts = *c_p;
 
-    if (dim == 1)
-    {
-        int id = 0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 1.0 ;
-    }
-    else if (dim == 2)
-    {
-        int id = 0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 1.0 ;
+  if (dim == 1)
+  {
+    int id = 0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 1.0 ;
+  }
+  else if (dim == 2)
+  {
+    int id = 0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 1.0 ;
 
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 1.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 1.0 ;
 
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
 
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-    }
-    else if (dim == 3)
-    {
-        int id = 0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
+  }
+  else if (dim == 3)
+  {
+    int id = 0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 1.0 ;
 
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 1.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 1.0 ;
 
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 1.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 1.0 ;
 
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 1.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 1.0 ;
 
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
 
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
 
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
 
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
 
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
 
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
 
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
 
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
 
-    }
+  }
 
-    auto F = Function::create(space, c_p);
-
-
-    serialize_deserialize<dim,codim>(F);
+  auto F = Function::create(space, c_p);
 
 
-    auto map = Mapping::create(F);
+  serialize_deserialize<dim,codim>(F);
 
-    auto quad = QGauss<dim>(3);
-    auto flag =  ValueFlags::value| ValueFlags::gradient
-                 | ValueFlags::hessian;
 
-    map->template reset<sub_dim>(flag, quad);
+  auto map = Mapping::create(F);
 
-    auto elem = map->begin();
-    auto end  = map->end();
-    const int s_id = 0;
+  auto quad = QGauss<dim>(3);
+  auto flag =  ValueFlags::value| ValueFlags::gradient
+               | ValueFlags::hessian;
 
-    map->template init_cache<sub_dim>(elem);
-    for (; elem != end; ++elem)
-    {
-        map->template fill_cache<sub_dim>(elem, s_id);
-        out << "Values (x1,x2,...):" << endl;
-        elem->template get_values<_Value,sub_dim>(s_id).print_info(out);
-        out << endl;
-        out << "Gradients:" << endl;
-        elem->template get_values<_Gradient,sub_dim>(s_id).print_info(out);
-        out << endl;
+  map->template reset<sub_dim>(flag, quad);
+
+  auto elem = map->begin();
+  auto end  = map->end();
+  const int s_id = 0;
+
+  map->template init_cache<sub_dim>(elem);
+  for (; elem != end; ++elem)
+  {
+    map->template fill_cache<sub_dim>(elem, s_id);
+    out << "Values (x1,x2,...):" << endl;
+    elem->template get_values<_Value,sub_dim>(s_id).print_info(out);
+    out << endl;
+    out << "Gradients:" << endl;
+    elem->template get_values<_Gradient,sub_dim>(s_id).print_info(out);
+    out << endl;
 //        elem->template get_values<2,sub_dim>(s_id).print_info(out);
 //        out << endl;
-    }
+  }
 
-    OUTEND
+  OUTEND
 }
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
-    bspline_map<1>();
-    bspline_map<2>();
-    bspline_map<3>();
+  bspline_map<1>();
+  bspline_map<2>();
+  bspline_map<3>();
 
 }

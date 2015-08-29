@@ -35,29 +35,29 @@
 template <int dim, class type>
 void run_test1()
 {
-    const int rank = 2;
-    out << "Test accesing  a tensor using tensor indices" << endl;
-    out << "Tensor of rank: " << rank << " and dim: " << dim << endl;
+  const int rank = 2;
+  out << "Test accesing  a tensor using tensor indices" << endl;
+  out << "Tensor of rank: " << rank << " and dim: " << dim << endl;
 
-    Tensor< dim, rank, type, Tdouble > A;
+  Tensor< dim, rank, type, Tdouble > A;
 
-    TensorIndex<dim> index;
+  TensorIndex<dim> index;
 
-    for (int i=0; i<dim; ++i)
-        for (int j=0; j<dim; ++j)
-            A[i][j] = i*dim + j;
-    out << A << endl;
+  for (int i=0; i<dim; ++i)
+    for (int j=0; j<dim; ++j)
+      A[i][j] = i*dim + j;
+  out << A << endl;
 
 
-    for (int i=0; i<dim; ++i)
-        for (int j=0; j<dim; ++j)
-        {
-            index[0] = i;
-            index[1] = j;
-            out << A(index) << "  ";
-            out << A[i][j]  << endl;
-        }
-    out << endl;
+  for (int i=0; i<dim; ++i)
+    for (int j=0; j<dim; ++j)
+    {
+      index[0] = i;
+      index[1] = j;
+      out << A(index) << "  ";
+      out << A[i][j]  << endl;
+    }
+  out << endl;
 }
 
 
@@ -65,34 +65,34 @@ void run_test1()
 template <int dim, class type>
 void run_test2()
 {
-    const int rank = 2;
-    out << "Test the access to a tensor using tensor indices," << endl;
-    out << "on a tensor of rank: " << rank << " and dim: " << dim << ".\n";
+  const int rank = 2;
+  out << "Test the access to a tensor using tensor indices," << endl;
+  out << "on a tensor of rank: " << rank << " and dim: " << dim << ".\n";
 
-    Tensor< dim, rank, type, Tdouble > A;
+  Tensor< dim, rank, type, Tdouble > A;
 
-    TensorIndex<rank> index;
+  TensorIndex<rank> index;
 
-    for (int i=0; i<dim; ++i)
-        for (int j=0; j<dim; ++j)
-            A[i][j] = i*dim + j;
-    out << A << endl;
+  for (int i=0; i<dim; ++i)
+    for (int j=0; j<dim; ++j)
+      A[i][j] = i*dim + j;
+  out << A << endl;
 
 
-    const int size = Tensor< dim, rank, type, Tdouble >::size;
+  const int size = Tensor< dim, rank, type, Tdouble >::size;
 
-    out << "using linear indices" << endl;
-    for (int i=0; i<size; ++i)
-        out << A(i) << endl;
+  out << "using linear indices" << endl;
+  for (int i=0; i<size; ++i)
+    out << A(i) << endl;
 
-    out << "transforming linear to tensor indices" << endl;
-    for (int i=0; i<size; ++i)
-    {
-        auto index = A.flat_to_tensor_index(i);
-        out << A(i) << "\t" << A(index) << endl;
-    }
+  out << "transforming linear to tensor indices" << endl;
+  for (int i=0; i<size; ++i)
+  {
+    auto index = A.flat_to_tensor_index(i);
+    out << A(i) << "\t" << A(index) << endl;
+  }
 
-    out << endl;
+  out << endl;
 }
 
 
@@ -100,45 +100,45 @@ void run_test2()
 template <int dim, class type>
 void run_test3()
 {
-    const int rank = 3;
-    out << "Test the access to a tensor using tensor indices," << endl;
-    out << "on a tensor of rank: " << rank << " and dim: " << dim << ".\n";
+  const int rank = 3;
+  out << "Test the access to a tensor using tensor indices," << endl;
+  out << "on a tensor of rank: " << rank << " and dim: " << dim << ".\n";
 
-    Tensor< dim, rank, type, Tdouble > A;
+  Tensor< dim, rank, type, Tdouble > A;
 
-    TensorIndex<rank> index;
+  TensorIndex<rank> index;
 
-    for (int i=0; i<dim; ++i)
-        for (int j=0; j<dim; ++j)
-            for (int k=0; k<dim; ++k)
-                A[i][j][k] = i*(dim*dim) + j*dim + k;
-    out << A << endl;
+  for (int i=0; i<dim; ++i)
+    for (int j=0; j<dim; ++j)
+      for (int k=0; k<dim; ++k)
+        A[i][j][k] = i*(dim*dim) + j*dim + k;
+  out << A << endl;
 
 
-    const int size = Tensor< dim, rank, type, Tdouble >::size;
+  const int size = Tensor< dim, rank, type, Tdouble >::size;
 
-    out << "using linear indices" << endl;
-    for (int i=0; i<size; ++i)
-        out << A(i) << endl;
+  out << "using linear indices" << endl;
+  for (int i=0; i<size; ++i)
+    out << A(i) << endl;
 
-    out << "transforming linear to tensor indices" << endl;
-    for (int i=0; i<size; ++i)
-    {
-        auto index = A.flat_to_tensor_index(i);
-        out << A(i) << "\t" << A(index) << endl;
-    }
+  out << "transforming linear to tensor indices" << endl;
+  for (int i=0; i<size; ++i)
+  {
+    auto index = A.flat_to_tensor_index(i);
+    out << A(i) << "\t" << A(index) << endl;
+  }
 
-    out << endl;
+  out << endl;
 }
 
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
-    run_test3<2, tensor::covariant>();
-    run_test2<3, tensor::covariant>();
+  run_test3<2, tensor::covariant>();
+  run_test2<3, tensor::covariant>();
 
-    return  0;
+  return  0;
 }
 

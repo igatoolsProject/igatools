@@ -35,65 +35,65 @@ class EqualityConstraint
 {
 public:
 
-    /** @name Constructor and destructor. */
-    ///@{
-    /**
-     * Default constructor. Not allowed to be used.
-     */
-    EqualityConstraint() = delete;
+  /** @name Constructor and destructor. */
+  ///@{
+  /**
+   * Default constructor. Not allowed to be used.
+   */
+  EqualityConstraint() = delete;
 
-    /**
-     * Builds the equality constraint between the two degrees of freedom specified by
-     * @p dof_id_master and @p dof_id_slave.
-     *
-     * @warning The two degrees of freedom must be different and <tt> >= 0</tt>,
-     * otherwise in DEBUG mode an assertion will be raised.
-     */
-    EqualityConstraint(const Index dof_id_master,const Index dof_id_slave);
+  /**
+   * Builds the equality constraint between the two degrees of freedom specified by
+   * @p dof_id_master and @p dof_id_slave.
+   *
+   * @warning The two degrees of freedom must be different and <tt> >= 0</tt>,
+   * otherwise in DEBUG mode an assertion will be raised.
+   */
+  EqualityConstraint(const Index dof_id_master,const Index dof_id_slave);
 
-    /**
-     * Copy constructor.
-     */
-    EqualityConstraint(const EqualityConstraint &constraint) = default;
+  /**
+   * Copy constructor.
+   */
+  EqualityConstraint(const EqualityConstraint &constraint) = default;
 
-    /**
-     * Move constructor.
-     */
-    EqualityConstraint(EqualityConstraint &&constraint) = default;
+  /**
+   * Move constructor.
+   */
+  EqualityConstraint(EqualityConstraint &&constraint) = default;
 
-    /**
-     * Destructor.
-     */
-    ~EqualityConstraint() = default;
-    ///@}
+  /**
+   * Destructor.
+   */
+  ~EqualityConstraint() = default;
+  ///@}
 
 
-    /**
-     * Returns the id of the master dof.
-     */
-    Index get_dof_id_master() const;
+  /**
+   * Returns the id of the master dof.
+   */
+  Index get_dof_id_master() const;
 
-    /**
-     * Returns the id of the slave dof.
-     */
-    Index get_dof_id_slave() const;
+  /**
+   * Returns the id of the slave dof.
+   */
+  Index get_dof_id_slave() const;
 
-    /**
-     * Prints the dofs id defining the equality constraint.
-     */
-    void print_info(LogStream &out) const;
+  /**
+   * Prints the dofs id defining the equality constraint.
+   */
+  void print_info(LogStream &out) const;
 
 private:
 
-    /**
-     * Id of the master dof.
-     */
-    Index dof_id_master_;
+  /**
+   * Id of the master dof.
+   */
+  Index dof_id_master_;
 
-    /**
-     * Id of the slave dof.
-     */
-    Index dof_id_slave_;
+  /**
+   * Id of the slave dof.
+   */
+  Index dof_id_slave_;
 };
 
 

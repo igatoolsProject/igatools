@@ -28,32 +28,32 @@
 template<int rdim, int cdim>
 void do_action()
 {
-    Tensor<cdim, 1, tensor::covariant, Tensor< rdim, 1, tensor::contravariant, Tdouble> > t1;
-    Tensor<cdim, 1, tensor::contravariant, Tdouble> t2;
+  Tensor<cdim, 1, tensor::covariant, Tensor< rdim, 1, tensor::contravariant, Tdouble> > t1;
+  Tensor<cdim, 1, tensor::contravariant, Tdouble> t2;
 
-    for (int i = 0; i < cdim; i++)
-    {
-        t2[i] = i;
-        for (int j = 0; j < rdim; j++)
-            t1[i][j] = cdim*i+j;
-    }
+  for (int i = 0; i < cdim; i++)
+  {
+    t2[i] = i;
+    for (int j = 0; j < rdim; j++)
+      t1[i][j] = cdim*i+j;
+  }
 
-    out << "The action of:" << std::endl;
-    out << t1 << std::endl;
-    out << "on:" << std::endl;
-    out << t2 << std::endl;
-    out << "is:" << std::endl;
-    out << action(t1, t2) << std::endl;
+  out << "The action of:" << std::endl;
+  out << t1 << std::endl;
+  out << "on:" << std::endl;
+  out << t2 << std::endl;
+  out << "is:" << std::endl;
+  out << action(t1, t2) << std::endl;
 }
 
 int main(int argc, char *argv[])
 {
-    do_action<1,1>();
-    do_action<2,3>();
-    do_action<2,2>();
-    do_action<3,2>();
-    do_action<2,3>();
-    do_action<3,3>();
+  do_action<1,1>();
+  do_action<2,3>();
+  do_action<2,2>();
+  do_action<3,2>();
+  do_action<2,3>();
+  do_action<3,3>();
 
 }
 

@@ -47,124 +47,124 @@ IGA_NAMESPACE_OPEN
 class DenseMatrix : public boost::numeric::ublas::matrix<Real>
 {
 public:
-    /** Type of the base class. */
-    using BoostMatrix =  boost::numeric::ublas::matrix<Real> ;
+  /** Type of the base class. */
+  using BoostMatrix =  boost::numeric::ublas::matrix<Real> ;
 
-    /** We inherith the constructors of the base class. */
-    using BoostMatrix::BoostMatrix;
+  /** We inherith the constructors of the base class. */
+  using BoostMatrix::BoostMatrix;
 #if 0
-    DenseMatrix(const Index n, const bool init_to_zero = true);
-    DenseMatrix(const Index n_rows, const Index n_cols, const bool init_to_zero = true);
+  DenseMatrix(const Index n, const bool init_to_zero = true);
+  DenseMatrix(const Index n_rows, const Index n_cols, const bool init_to_zero = true);
 
-    DenseMatrix(const DenseMatrix &matrix) = default;
-    DenseMatrix(DenseMatrix &&matrix) = default;
+  DenseMatrix(const DenseMatrix &matrix) = default;
+  DenseMatrix(DenseMatrix &&matrix) = default;
 #endif
 
-    /**
-     * Assignment operator for assigning zeros to all entries of the matrix
-     * by writing
-     * @code
-       DenseMatrix matrix;
-       ... // working with the matrix
-       matrix = 0.0; // reset the matrix entries to zero
-       @endcode
-     * @note If used in Debug mode with a @p value different from zero,
-     * an assertion will be raised.
-     */
-    DenseMatrix &operator=(const Real value) ;
+  /**
+   * Assignment operator for assigning zeros to all entries of the matrix
+   * by writing
+   * @code
+     DenseMatrix matrix;
+     ... // working with the matrix
+     matrix = 0.0; // reset the matrix entries to zero
+     @endcode
+   * @note If used in Debug mode with a @p value different from zero,
+   * an assertion will be raised.
+   */
+  DenseMatrix &operator=(const Real value) ;
 
-    /** Type for a row of the matrix. */
-    using MatrixRowType = boost::numeric::ublas::matrix_row<const BoostMatrix> ;
+  /** Type for a row of the matrix. */
+  using MatrixRowType = boost::numeric::ublas::matrix_row<const BoostMatrix> ;
 
-    /** Returns the mtrix row identified by @p row_id. */
-    MatrixRowType
-    get_row(const int row_id) const;
+  /** Returns the mtrix row identified by @p row_id. */
+  MatrixRowType
+  get_row(const int row_id) const;
 
-    /** Returns the number of rows in the DenseMatrix. */
-    int size1() const;
+  /** Returns the number of rows in the DenseMatrix. */
+  int size1() const;
 
-    /** Returns the number of columns in the DenseMatrix. */
-    int size2() const;
+  /** Returns the number of columns in the DenseMatrix. */
+  int size2() const;
 
 
-    /**
-     * Matrix inversion routine.
-     * @note Uses lu_factorize and lu_substitute in uBLAS to invert a matrix
-     */
-    DenseMatrix inverse(Real &det) const;
+  /**
+   * Matrix inversion routine.
+   * @note Uses lu_factorize and lu_substitute in uBLAS to invert a matrix
+   */
+  DenseMatrix inverse(Real &det) const;
 
-    SafeSTLVector<Real> eigen_values() const;
+  SafeSTLVector<Real> eigen_values() const;
 
-    Real determinant() const;
+  Real determinant() const;
 
-    /**
-     * Returns the <em>Frobenius norm</em> of the matrix, i.e.
-     * \f[
-       || A ||_F = \biggl( \sum_{i,j} |a_{ij}|^2 \biggr)^{1/2}
-       \f]
-     * where \f$ a_{ij} \f$ is the
-     * entry in the \f$i\f$-th row and \f$j\f$-th column of the matrix \f$ A\f$.
-     */
-    Real norm_frobenius() const;
+  /**
+   * Returns the <em>Frobenius norm</em> of the matrix, i.e.
+   * \f[
+     || A ||_F = \biggl( \sum_{i,j} |a_{ij}|^2 \biggr)^{1/2}
+     \f]
+   * where \f$ a_{ij} \f$ is the
+   * entry in the \f$i\f$-th row and \f$j\f$-th column of the matrix \f$ A\f$.
+   */
+  Real norm_frobenius() const;
 
-    /**
-     * Returns the <em>max-norm</em> (or <em>uniform norm</em>) of the matrix, i.e.
-     * \f[
-       || A ||_{\text{max}} = \max_{i,j} |a_{ij}|
-       \f]
-     * where \f$ a_{ij} \f$ is the
-     * entry in the \f$i\f$-th row and \f$j\f$-th column of the matrix \f$ A\f$.
-     */
-    Real norm_max() const;
+  /**
+   * Returns the <em>max-norm</em> (or <em>uniform norm</em>) of the matrix, i.e.
+   * \f[
+     || A ||_{\text{max}} = \max_{i,j} |a_{ij}|
+     \f]
+   * where \f$ a_{ij} \f$ is the
+   * entry in the \f$i\f$-th row and \f$j\f$-th column of the matrix \f$ A\f$.
+   */
+  Real norm_max() const;
 
-    /**
-     * Returns the <em>one-norm</em> of the matrix, i.e.
-     * \f[
-       || A ||_1 = \max_{j} \sum_{i} |a_{ij}|
-       \f]
-     * where \f$ a_{ij} \f$ is the
-     * entry in the \f$i\f$-th row and \f$j\f$-th column of the matrix \f$ A\f$.
-     */
-    Real norm_one() const;
+  /**
+   * Returns the <em>one-norm</em> of the matrix, i.e.
+   * \f[
+     || A ||_1 = \max_{j} \sum_{i} |a_{ij}|
+     \f]
+   * where \f$ a_{ij} \f$ is the
+   * entry in the \f$i\f$-th row and \f$j\f$-th column of the matrix \f$ A\f$.
+   */
+  Real norm_one() const;
 
-    /**
-     * Returns the <em>infinity-norm</em> of the matrix, i.e.
-     * \f[
-       || A ||_{\infty} = \max_{i} \sum_{j} |a_{ij}|
-       \f]
-     * where \f$ a_{ij} \f$ is the
-     * entry in the \f$i\f$-th row and \f$j\f$-th column of the matrix \f$ A\f$.
-     */
-    Real norm_infinity() const;
+  /**
+   * Returns the <em>infinity-norm</em> of the matrix, i.e.
+   * \f[
+     || A ||_{\infty} = \max_{i} \sum_{j} |a_{ij}|
+     \f]
+   * where \f$ a_{ij} \f$ is the
+   * entry in the \f$i\f$-th row and \f$j\f$-th column of the matrix \f$ A\f$.
+   */
+  Real norm_infinity() const;
 
-    /** Returns the number of rows of the matrix. */
-    Size get_num_rows() const;
+  /** Returns the number of rows of the matrix. */
+  Size get_num_rows() const;
 
-    /** Returns the number of columns of the matrix. */
-    Size get_num_cols() const;
+  /** Returns the number of columns of the matrix. */
+  Size get_num_cols() const;
 
-    void print_info(LogStream &out) const;
+  void print_info(LogStream &out) const;
 
-    /**
-     * Returns true if the matrix entries verify \f$ (A)_{ij} = (A)_{ji} \quad \forall i \, , \, j = 1,\dots,n\f$
-     * @return
-     */
-    bool is_symmetric() const;
+  /**
+   * Returns true if the matrix entries verify \f$ (A)_{ij} = (A)_{ji} \quad \forall i \, , \, j = 1,\dots,n\f$
+   * @return
+   */
+  bool is_symmetric() const;
 
 private:
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version);
-    ///@}
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version);
+  ///@}
 #endif // SERIALIZATION
 };
 

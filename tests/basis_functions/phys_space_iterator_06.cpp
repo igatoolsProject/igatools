@@ -43,91 +43,91 @@ auto
 create_function(shared_ptr<CartesianGrid<dim>> grid)
 {
 
-    using Function = functions::LinearFunction<dim, 0, dim+codim>;
-    typename Function::Value    b;
-    typename Function::Gradient A;
+  using Function = functions::LinearFunction<dim, 0, dim+codim>;
+  typename Function::Value    b;
+  typename Function::Gradient A;
 
-    for (int j=0; j<dim; j++)
-        A[j][j] = 1.;
+  for (int j=0; j<dim; j++)
+    A[j][j] = 1.;
 
-    return Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
+  return Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
 }
 
 
 template <int dim, int k, int range=1, int rank=1, int codim = 0>
 void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
 {
-    OUTSTART
-    using BspSpace = BSplineSpace<dim, range, rank>;
+  OUTSTART
+  using BspSpace = BSplineSpace<dim, range, rank>;
 //    using RefSpace = ReferenceSpace<dim, range,rank>;
-    using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
+  using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 
-    auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto grid  = CartesianGrid<dim>::create(n_knots);
 
-    auto ref_space = BspSpace::create(deg, grid);
-    auto map_func = create_function(grid);
+  auto ref_space = BspSpace::create(deg, grid);
+  auto map_func = create_function(grid);
 
-    auto space = Space::create(ref_space, map_func);
+  auto space = Space::create(ref_space, map_func);
 
 
-    auto quad = QGauss<k>(n_qp);
-    auto flag = ValueFlags::value|ValueFlags::gradient|
-                ValueFlags::hessian | ValueFlags::point;
+  auto quad = QGauss<k>(n_qp);
+  auto flag = ValueFlags::value|ValueFlags::gradient|
+              ValueFlags::hessian | ValueFlags::point;
 
-    auto elem_filler = space->get_elem_handler();
-    elem_filler->reset(flag, quad);
+  auto elem_filler = space->get_elem_handler();
+  elem_filler->reset(flag, quad);
 
-    auto elem = space->begin();
-    auto end = space->end();
-    elem_filler->init_face_cache(elem);
-    for (; elem != end; ++elem)
+  auto elem = space->begin();
+  auto end = space->end();
+  elem_filler->init_face_cache(elem);
+  for (; elem != end; ++elem)
+  {
+    if (elem->is_boundary())
     {
-        if (elem->is_boundary())
+      out.begin_item("Element " + std::to_string(elem->get_flat_index()));
+      for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
+      {
+        if (elem->is_boundary(s_id))
         {
-            out.begin_item("Element " + std::to_string(elem->get_flat_index()));
-            for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
-            {
-                if (elem->is_boundary(s_id))
-                {
-                    out.begin_item("Face " + std::to_string(s_id));
-                    elem_filler->fill_face_cache(elem,s_id);
+          out.begin_item("Face " + std::to_string(s_id));
+          elem_filler->fill_face_cache(elem,s_id);
 
-                    out.begin_item("Values: ");
-                    elem->template get_basis<_Value, k>(s_id,DofProperties::active).print_info(out);
-                    out.end_item();
+          out.begin_item("Values: ");
+          elem->template get_basis<_Value, k>(s_id,DofProperties::active).print_info(out);
+          out.end_item();
 
-                    out.begin_item("Gradients: ");
-                    elem->template get_basis<_Gradient, k>(s_id,DofProperties::active).print_info(out);
-                    out.end_item();
+          out.begin_item("Gradients: ");
+          elem->template get_basis<_Gradient, k>(s_id,DofProperties::active).print_info(out);
+          out.end_item();
 
-                    out.begin_item("Hessians: ");
-                    elem->template get_basis<_Hessian, k>(s_id,DofProperties::active).print_info(out);
-                    out.end_item();
+          out.begin_item("Hessians: ");
+          elem->template get_basis<_Hessian, k>(s_id,DofProperties::active).print_info(out);
+          out.end_item();
 
-                    out.end_item();
-                }
-            }
-            out.end_item();
+          out.end_item();
         }
+      }
+      out.end_item();
     }
-    OUTEND
+  }
+  OUTEND
 
 }
 
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
-    const int p = 1;
+  const int p = 1;
 
-    for (int num_knots = 2; num_knots<4; ++num_knots)
-    {
-        elem_values<2,1>(num_knots, p, 2);
-        elem_values<3,2>(num_knots, p, 2);
-    }
+  for (int num_knots = 2; num_knots<4; ++num_knots)
+  {
+    elem_values<2,1>(num_knots, p, 2);
+    elem_values<3,2>(num_knots, p, 2);
+  }
 
-    return 0;
+  return 0;
 }
 
 

@@ -42,31 +42,31 @@ template<int size>
 SafeSTLVector<TensorIndex<size>>
                               partition(const int n)
 {
-    SafeSTLVector<TensorIndex<size>> v;
-    TensorIndex<size> arr(0);
+  SafeSTLVector<TensorIndex<size>> v;
+  TensorIndex<size> arr(0);
 
-    arr[0] = n;
-    v.push_back(arr);
+  arr[0] = n;
+  v.push_back(arr);
 
-    for (int j=1; j<n+1; ++j)
+  for (int j=1; j<n+1; ++j)
+  {
+    auto w = partition<size-1>(j);
+    for (auto a : w)
     {
-        auto w = partition<size-1>(j);
-        for (auto a : w)
-        {
-            arr[0] = n-j;
-            std::copy(a.begin(), a.end(), arr.begin()+1);
-            v.push_back(arr);
-        }
+      arr[0] = n-j;
+      std::copy(a.begin(), a.end(), arr.begin()+1);
+      v.push_back(arr);
     }
-    return v;
+  }
+  return v;
 }
 
 template<>
 SafeSTLVector<TensorIndex<1>>
                            partition<1>(const int n)
 {
-    TensorIndex<1> arr(n);
-    return SafeSTLVector<TensorIndex<1>>(1,arr);
+  TensorIndex<1> arr(n);
+  return SafeSTLVector<TensorIndex<1>>(1,arr);
 }
 
 //template<>
@@ -83,63 +83,63 @@ class TensorFunctionDerivativesSymmetry
 {
 public:
 //    static const int num_entries_total = pow(dim,order);
-    static const int num_entries_eval = constexpr_binomial_coefficient(dim-1+order,order);
+  static const int num_entries_eval = constexpr_binomial_coefficient(dim-1+order,order);
 
-    TensorFunctionDerivativesSymmetry()
+  TensorFunctionDerivativesSymmetry()
+  {
+    auto uni_indices = partition<dim>(order);
+    std::copy(uni_indices.begin(), uni_indices.end(), univariate_order.begin());
+
+
+
+    for (int j=0; j<num_entries_eval; ++j)
     {
-        auto uni_indices = partition<dim>(order);
-        std::copy(uni_indices.begin(), uni_indices.end(), univariate_order.begin());
+      auto &der_ind = eval_indices[j];
+      int s=0;
+      for (int dir=0; dir<dim; ++dir)
+      {
+        for (int l=0; l<uni_indices[j][dir]; ++l)
+          der_ind[s+l] = dir;
+        s += uni_indices[j][dir];
+      }
 
+      auto ind = sequence<order>();
+      SafeSTLVector<TensorIndex<order>> v;
+      do
+      {
+        TensorIndex<order> ti;
+        for (int i=0; i<order; ++i)
+          ti[i] = eval_indices[j][ind[i]];
+        v.push_back(ti);
+      }
+      while (std::next_permutation(ind.begin(),ind.end()));
 
+      auto it = std::unique(v.begin(), v.end());
+      v.resize(std::distance(v.begin(),it));
 
-        for (int j=0; j<num_entries_eval; ++j)
-        {
-            auto &der_ind = eval_indices[j];
-            int s=0;
-            for (int dir=0; dir<dim; ++dir)
-            {
-                for (int l=0; l<uni_indices[j][dir]; ++l)
-                    der_ind[s+l] = dir;
-                s += uni_indices[j][dir];
-            }
-
-            auto ind = sequence<order>();
-            SafeSTLVector<TensorIndex<order>> v;
-            do
-            {
-                TensorIndex<order> ti;
-                for (int i=0; i<order; ++i)
-                    ti[i] = eval_indices[j][ind[i]];
-                v.push_back(ti);
-            }
-            while (std::next_permutation(ind.begin(),ind.end()));
-
-            auto it = std::unique(v.begin(), v.end());
-            v.resize(std::distance(v.begin(),it));
-
-            copy_indices[j] = v;
-        }
+      copy_indices[j] = v;
     }
+  }
 
-    void print_info(LogStream &out) const
-    {
-        out.begin_item("univariate derivative orders:");
-        univariate_order.print_info(out);
-        out.end_item();
+  void print_info(LogStream &out) const
+  {
+    out.begin_item("univariate derivative orders:");
+    univariate_order.print_info(out);
+    out.end_item();
 
-        out.begin_item("Assigment indices:");
-        eval_indices.print_info(out);
-        out.end_item();
+    out.begin_item("Assigment indices:");
+    eval_indices.print_info(out);
+    out.end_item();
 
-        out.begin_item("all equal indices indices:");
-        copy_indices.print_info(out);
-        out.end_item();
-    }
-    SafeSTLArray<TensorIndex<dim>, num_entries_eval> univariate_order;
+    out.begin_item("all equal indices indices:");
+    copy_indices.print_info(out);
+    out.end_item();
+  }
+  SafeSTLArray<TensorIndex<dim>, num_entries_eval> univariate_order;
 
-    SafeSTLArray<TensorIndex<order>, num_entries_eval> eval_indices;
+  SafeSTLArray<TensorIndex<order>, num_entries_eval> eval_indices;
 
-    SafeSTLArray<SafeSTLVector<TensorIndex<order>>, num_entries_eval> copy_indices;
+  SafeSTLArray<SafeSTLVector<TensorIndex<order>>, num_entries_eval> copy_indices;
 
 };
 
@@ -149,23 +149,23 @@ public:
 template <int order, int dim>
 void indices()
 {
-    auto v = partition<dim>(order);
-    v.print_info(out);
-    out << endl;
+  auto v = partition<dim>(order);
+  v.print_info(out);
+  out << endl;
 }
 
 
 
 int main()
 {
-    // indices<3,2>();
-    //indices<2,3>();
+  // indices<3,2>();
+  //indices<2,3>();
 
-    //indices<0,2>();
+  //indices<0,2>();
 
-    TensorFunctionDerivativesSymmetry<2,0> a;
-    a.print_info(out);
+  TensorFunctionDerivativesSymmetry<2,0> a;
+  a.print_info(out);
 
 
-    return  0;
+  return  0;
 }

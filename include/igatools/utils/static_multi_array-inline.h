@@ -34,33 +34,33 @@ IGA_NAMESPACE_OPEN
 template< class T, int dim, int rank >
 StaticMultiArray<T,dim,rank>::
 StaticMultiArray()
-    :
-    base_t(TensorSize<rank>(dim))
+  :
+  base_t(TensorSize<rank>(dim))
 {
-    Assert(this->flat_size() == n_entries, ExcDimensionMismatch(this->flat_size(),n_entries));
+  Assert(this->flat_size() == n_entries, ExcDimensionMismatch(this->flat_size(),n_entries));
 }
 
 
 template< class T, int dim, int rank >
 StaticMultiArray<T,dim,rank>::
 StaticMultiArray(const T &val)
-    :
-    StaticMultiArray<T,dim,rank>()
+  :
+  StaticMultiArray<T,dim,rank>()
 {
-    const_cast<SafeSTLArray<T,n_entries>&>(this->get_data()) = SafeSTLArray<T,n_entries>(val);
+  const_cast<SafeSTLArray<T,n_entries>&>(this->get_data()) = SafeSTLArray<T,n_entries>(val);
 }
 
 
 template< class T, int dim, int rank >
 StaticMultiArray<T,dim,rank>::
 StaticMultiArray(std::initializer_list<T> list)
-    :
-    StaticMultiArray<T,dim,rank>()
+  :
+  StaticMultiArray<T,dim,rank>()
 {
-    Assert(list.size() == n_entries, ExcDimensionMismatch(list.size(),n_entries));
+  Assert(list.size() == n_entries, ExcDimensionMismatch(list.size(),n_entries));
 
-    for (int i = 0 ; i < n_entries  ; ++i)
-        (*this)[i] = list.begin()[i] ;
+  for (int i = 0 ; i < n_entries  ; ++i)
+    (*this)[i] = list.begin()[i] ;
 }
 
 

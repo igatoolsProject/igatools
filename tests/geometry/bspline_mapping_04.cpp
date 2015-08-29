@@ -43,212 +43,212 @@ using namespace EpetraTools;
 template <int dim, int codim = 0, int rank = 1>
 void bspline_map(const int deg = 2)
 {
-    const int sub_dim = dim;
+  const int sub_dim = dim;
 
-    using Space = BSplineSpace<dim, dim+codim, rank>;
-    using RefSpace = ReferenceSpace<dim, dim+codim>;
-    using Function = IgFunction<dim,0,dim+codim,1>;
-    using Mapping   = Mapping<dim, codim>;
-
-
-
-    //----------------------------------------------------------------------------------------------
-    out << "Dim: " << dim << endl ;
-    int n_knots = 2;
-    CartesianProductArray<Real , dim> coord ;
-    for (int i = 0; i < dim; ++i)
-    {
-        SafeSTLVector<Real> tmp_coord;
-        for (int j = 0; j < n_knots; ++j)
-            tmp_coord.push_back(j);
-        coord.copy_data_direction(i,tmp_coord);
-    }
+  using Space = BSplineSpace<dim, dim+codim, rank>;
+  using RefSpace = ReferenceSpace<dim, dim+codim>;
+  using Function = IgFunction<dim,0,dim+codim,1>;
+  using Mapping   = Mapping<dim, codim>;
 
 
-    auto grid = CartesianGrid<dim>::create(coord);
-    auto space = Space::create(deg, grid);
 
-    auto c_p = EpetraTools::create_vector(*space, "active",Epetra_SerialComm());
-    auto &control_pts = *c_p;
-
-    if (dim == 2)
-    {
-        int id = 0 ;
-
-        // x coords
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 1.5 ;
-        control_pts[id++] = 1.5 ;
-
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 2.0 ;
-        control_pts[id++] = 2.0 ;
+  //----------------------------------------------------------------------------------------------
+  out << "Dim: " << dim << endl ;
+  int n_knots = 2;
+  CartesianProductArray<Real , dim> coord ;
+  for (int i = 0; i < dim; ++i)
+  {
+    SafeSTLVector<Real> tmp_coord;
+    for (int j = 0; j < n_knots; ++j)
+      tmp_coord.push_back(j);
+    coord.copy_data_direction(i,tmp_coord);
+  }
 
 
-        // y coords
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 0.0 ;
+  auto grid = CartesianGrid<dim>::create(coord);
+  auto space = Space::create(deg, grid);
 
-        control_pts[id++] = 1.5 ;
-        control_pts[id++] = 1.5 ;
-        control_pts[id++] = 0.0 ;
+  auto c_p = EpetraTools::create_vector(*space, "active",Epetra_SerialComm());
+  auto &control_pts = *c_p;
 
-        control_pts[id++] = 2.0 ;
-        control_pts[id++] = 2.0 ;
-        control_pts[id++] = 0.0 ;
-    }
-    else if (dim == 3)
-    {
-        int id = 0 ;
+  if (dim == 2)
+  {
+    int id = 0 ;
 
-        // x coords
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
+    // x coords
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
 
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 1.5 ;
-        control_pts[id++] = 1.5 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 1.5 ;
+    control_pts[id++] = 1.5 ;
 
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 2.0 ;
-        control_pts[id++] = 2.0 ;
-
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 1.5 ;
-        control_pts[id++] = 1.5 ;
-
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 2.0 ;
-        control_pts[id++] = 2.0 ;
-
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 1.5 ;
-        control_pts[id++] = 1.5 ;
-
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 2.0 ;
-        control_pts[id++] = 2.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 2.0 ;
+    control_pts[id++] = 2.0 ;
 
 
-        // y coords
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 0.0 ;
+    // y coords
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 0.0 ;
 
-        control_pts[id++] = 1.5 ;
-        control_pts[id++] = 1.5 ;
-        control_pts[id++] = 0.0 ;
+    control_pts[id++] = 1.5 ;
+    control_pts[id++] = 1.5 ;
+    control_pts[id++] = 0.0 ;
 
-        control_pts[id++] = 2.0 ;
-        control_pts[id++] = 2.0 ;
-        control_pts[id++] = 0.0 ;
+    control_pts[id++] = 2.0 ;
+    control_pts[id++] = 2.0 ;
+    control_pts[id++] = 0.0 ;
+  }
+  else if (dim == 3)
+  {
+    int id = 0 ;
 
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 0.0 ;
+    // x coords
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
 
-        control_pts[id++] = 1.5 ;
-        control_pts[id++] = 1.5 ;
-        control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 1.5 ;
+    control_pts[id++] = 1.5 ;
 
-        control_pts[id++] = 2.0 ;
-        control_pts[id++] = 2.0 ;
-        control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 2.0 ;
+    control_pts[id++] = 2.0 ;
 
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
 
-        control_pts[id++] = 1.5 ;
-        control_pts[id++] = 1.5 ;
-        control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 1.5 ;
+    control_pts[id++] = 1.5 ;
 
-        control_pts[id++] = 2.0 ;
-        control_pts[id++] = 2.0 ;
-        control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 2.0 ;
+    control_pts[id++] = 2.0 ;
 
-        // z coords
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
 
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 1.5 ;
+    control_pts[id++] = 1.5 ;
 
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 2.0 ;
+    control_pts[id++] = 2.0 ;
 
-    }
-    auto F = Function::create(space, c_p);
-    auto map = Mapping::create(F);
 
-    auto quad = QGauss<dim>(3);
-    auto flag =  ValueFlags::value| ValueFlags::gradient
-                 | ValueFlags::hessian;
+    // y coords
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 0.0 ;
 
-    map->template reset<sub_dim>(flag, quad);
+    control_pts[id++] = 1.5 ;
+    control_pts[id++] = 1.5 ;
+    control_pts[id++] = 0.0 ;
 
-    auto elem = map->begin();
-    auto end  = map->end();
-    const int s_id = 0;
+    control_pts[id++] = 2.0 ;
+    control_pts[id++] = 2.0 ;
+    control_pts[id++] = 0.0 ;
 
-    map->template init_cache<sub_dim>(elem);
-    for (; elem != end; ++elem)
-    {
-        map->template fill_cache<sub_dim>(elem, s_id);
-        out << "Values : ";
-        elem->template get_values<_Value,sub_dim>(s_id).print_info(out);
-        out << endl;
-        out << "Gradients : ";
-        elem->template get_values<_Gradient,sub_dim>(s_id).print_info(out);
-        out << endl;
-        out << "Hessians : ";
-        elem->template get_values<_Hessian,sub_dim>(s_id).print_info(out);
-        out << endl;
-    }
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 0.0 ;
+
+    control_pts[id++] = 1.5 ;
+    control_pts[id++] = 1.5 ;
+    control_pts[id++] = 0.0 ;
+
+    control_pts[id++] = 2.0 ;
+    control_pts[id++] = 2.0 ;
+    control_pts[id++] = 0.0 ;
+
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 0.0 ;
+
+    control_pts[id++] = 1.5 ;
+    control_pts[id++] = 1.5 ;
+    control_pts[id++] = 0.0 ;
+
+    control_pts[id++] = 2.0 ;
+    control_pts[id++] = 2.0 ;
+    control_pts[id++] = 0.0 ;
+
+    // z coords
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 0.5 ;
+
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
+
+  }
+  auto F = Function::create(space, c_p);
+  auto map = Mapping::create(F);
+
+  auto quad = QGauss<dim>(3);
+  auto flag =  ValueFlags::value| ValueFlags::gradient
+               | ValueFlags::hessian;
+
+  map->template reset<sub_dim>(flag, quad);
+
+  auto elem = map->begin();
+  auto end  = map->end();
+  const int s_id = 0;
+
+  map->template init_cache<sub_dim>(elem);
+  for (; elem != end; ++elem)
+  {
+    map->template fill_cache<sub_dim>(elem, s_id);
+    out << "Values : ";
+    elem->template get_values<_Value,sub_dim>(s_id).print_info(out);
+    out << endl;
+    out << "Gradients : ";
+    elem->template get_values<_Gradient,sub_dim>(s_id).print_info(out);
+    out << endl;
+    out << "Hessians : ";
+    elem->template get_values<_Hessian,sub_dim>(s_id).print_info(out);
+    out << endl;
+  }
 
 
 }
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
-    bspline_map<2>();
-    bspline_map<3>();
+  bspline_map<2>();
+  bspline_map<3>();
 
 }

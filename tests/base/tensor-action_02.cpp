@@ -31,9 +31,9 @@
 template<int dim, int rdim>
 void test_action()
 {
-    const int order = 2;
-    Derivatives <dim, rdim, 1, order> D2F;
-    Points<dim> u;
+  const int order = 2;
+  Derivatives <dim, rdim, 1, order> D2F;
+  Points<dim> u;
 //
 //  for (int i = 0; i < cdim; i++)
 //  {
@@ -42,20 +42,20 @@ void test_action()
 //          t1[i][j] = cdim*i+j;
 //  }
 
-    out << "The action of:" << std::endl;
-    out << D2F << endl;
-    out << "on:" << endl;
-    out << u << std::endl;
-    out << "is:" << std::endl;
-    out << action(D2F, u) << endl;
+  out << "The action of:" << std::endl;
+  out << D2F << endl;
+  out << "on:" << endl;
+  out << u << std::endl;
+  out << "is:" << std::endl;
+  out << action(D2F, u) << endl;
 }
 
 int main(int argc, char *argv[])
 {
-    out.depth_console(1);
+  out.depth_console(1);
 //    do_action<1,1>();
 //  do_action<2,3>();
-    test_action<2,2>();
+  test_action<2,2>();
 //  do_action<3,2>();
 //  do_action<2,3>();
 //  do_action<3,3>();

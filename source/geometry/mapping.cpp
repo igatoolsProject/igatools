@@ -33,36 +33,36 @@ namespace
 ValueFlags
 mapping_to_function_flags(const ValueFlags &flags)
 {
-    /*
-    ValueFlags valid_func_flags = ValueFlags::gradient |
-                                  ValueFlags::hessian |
-                                  ValueFlags::divergence |
-                                  ValueFlags::point;
-    ValueFlags transfer_flags = ValueFlags::measure |
-                                ValueFlags::w_measure |
-                                ValueFlags::boundary_normal |
-                                valid_func_flags;
-    //*/
+  /*
+  ValueFlags valid_func_flags = ValueFlags::gradient |
+                                ValueFlags::hessian |
+                                ValueFlags::divergence |
+                                ValueFlags::point;
+  ValueFlags transfer_flags = ValueFlags::measure |
+                              ValueFlags::w_measure |
+                              ValueFlags::boundary_normal |
+                              valid_func_flags;
+  //*/
 
-    ValueFlags transfer_flags = ValueFlags::gradient |
-                                ValueFlags::hessian;
-    ValueFlags f_flags = flags & transfer_flags;
+  ValueFlags transfer_flags = ValueFlags::gradient |
+                              ValueFlags::hessian;
+  ValueFlags f_flags = flags & transfer_flags;
 
-    if (contains(flags, ValueFlags::point))
-        f_flags |= ValueFlags::value;
+  if (contains(flags, ValueFlags::point))
+    f_flags |= ValueFlags::value;
 
 
-    if (contains(flags, ValueFlags::measure) ||
-        contains(flags, ValueFlags::w_measure) ||
-        contains(flags, ValueFlags::inv_gradient) ||
-        contains(flags, ValueFlags::outer_normal))
-        f_flags |=  ValueFlags::gradient;
+  if (contains(flags, ValueFlags::measure) ||
+      contains(flags, ValueFlags::w_measure) ||
+      contains(flags, ValueFlags::inv_gradient) ||
+      contains(flags, ValueFlags::outer_normal))
+    f_flags |=  ValueFlags::gradient;
 
-    if (contains(flags, ValueFlags::inv_hessian) ||
-        contains(flags, ValueFlags::curvature))
-        f_flags |=  ValueFlags::gradient | ValueFlags::hessian;
+  if (contains(flags, ValueFlags::inv_hessian) ||
+      contains(flags, ValueFlags::curvature))
+    f_flags |=  ValueFlags::gradient | ValueFlags::hessian;
 
-    return f_flags;
+  return f_flags;
 }
 };
 
@@ -71,8 +71,8 @@ mapping_to_function_flags(const ValueFlags &flags)
 template<int dim_, int codim_>
 Mapping<dim_, codim_>::
 Mapping(std::shared_ptr<const FuncType> F)
-    :
-    F_(F->clone())
+  :
+  F_(F->clone())
 {}
 
 
@@ -89,7 +89,7 @@ auto
 Mapping<dim_, codim_>::
 create(std::shared_ptr<const FuncType> F)-> std::shared_ptr<self_t>
 {
-    return std::shared_ptr<self_t>(new self_t(F));
+  return std::shared_ptr<self_t>(new self_t(F));
 }
 
 
@@ -99,24 +99,24 @@ auto
 Mapping<dim_, codim_>::
 reset(const ValueFlags flags, const Quadrature<k> &eval_pts) -> void
 {
-    const auto valid_flags = ElementAccessor::get_valid_flags();
-    auto m_flags = flags & valid_flags;
+  const auto valid_flags = ElementAccessor::get_valid_flags();
+  auto m_flags = flags & valid_flags;
 
-    if (contains(flags, ValueFlags::boundary_normal) ||
-    contains(flags, ValueFlags::curvature))
-        m_flags |= ValueFlags::inv_gradient;
-
-
-    if (contains(flags, ValueFlags::curvature))
-        m_flags |= ValueFlags::outer_normal;
+  if (contains(flags, ValueFlags::boundary_normal) ||
+  contains(flags, ValueFlags::curvature))
+    m_flags |= ValueFlags::inv_gradient;
 
 
-    if (contains(flags, ValueFlags::w_measure))
-        m_flags |= ValueFlags::measure;
+  if (contains(flags, ValueFlags::curvature))
+    m_flags |= ValueFlags::outer_normal;
 
 
-    std::const_pointer_cast<FuncType>(F_)->reset(mapping_to_function_flags(m_flags), eval_pts);
-    flags_[k] = m_flags;
+  if (contains(flags, ValueFlags::w_measure))
+    m_flags |= ValueFlags::measure;
+
+
+  std::const_pointer_cast<FuncType>(F_)->reset(mapping_to_function_flags(m_flags), eval_pts);
+  flags_[k] = m_flags;
 }
 
 
@@ -127,157 +127,157 @@ auto
 Mapping<dim_, codim_>::
 fill_cache(ElementAccessor &elem, const int j) const -> void
 {
-    F_->template fill_cache(elem.get_func_element(), Topology<k>(),j);
+  F_->template fill_cache(elem.get_func_element(), Topology<k>(),j);
 
-    // TODO (pauletti, Nov 6, 2014): provide a lighter function for this
-    const auto n_points = F_->template get_num_points<k>();
+  // TODO (pauletti, Nov 6, 2014): provide a lighter function for this
+  const auto n_points = F_->template get_num_points<k>();
 
-    auto &cache = elem.local_cache_->template get_sub_elem_cache<k>(j);
-    const auto &func_elem = elem.get_func_element();
+  auto &cache = elem.local_cache_->template get_sub_elem_cache<k>(j);
+  const auto &func_elem = elem.get_func_element();
 
-    if (cache.template status_fill<_Point>())
-    {
-        cache.template get_data<_Point>() =
-            func_elem.template get_values<_Value,k>(j);
-    }
+  if (cache.template status_fill<_Point>())
+  {
+    cache.template get_data<_Point>() =
+      func_elem.template get_values<_Value,k>(j);
+  }
 
-    if (cache.template status_fill<_Gradient>())
-    {
-        cache.template get_data<_Gradient>() =
-            func_elem.template get_values<_Gradient,k>(j);
-    }
+  if (cache.template status_fill<_Gradient>())
+  {
+    cache.template get_data<_Gradient>() =
+      func_elem.template get_values<_Gradient,k>(j);
+  }
 
-    if (cache.template status_fill<_Hessian>())
-    {
-        cache.template get_data<_Hessian>() =
-            func_elem.template get_values<_Hessian,k>(j);
-    }
+  if (cache.template status_fill<_Hessian>())
+  {
+    cache.template get_data<_Hessian>() =
+      func_elem.template get_values<_Hessian,k>(j);
+  }
 
-    if (cache.template status_fill<_Measure>())
-    {
-        auto &k_elem = UnitElement<dim_>::template get_elem<k>(j);
+  if (cache.template status_fill<_Measure>())
+  {
+    auto &k_elem = UnitElement<dim_>::template get_elem<k>(j);
 
-        const auto &DF = func_elem.template get_values<_Gradient, k>(j);
+    const auto &DF = func_elem.template get_values<_Gradient, k>(j);
 //        typename MapFunction<k, space_dim>::Gradient DF1;
-        typename MapFunction_new<k, space_dim - k>::Gradient DF1;
+    typename MapFunction_new<k, space_dim - k>::Gradient DF1;
 
-        auto &measures = cache.template get_data<_Measure>();
-        for (int pt = 0 ; pt < n_points; ++pt)
-        {
-            for (int l=0; l<k; ++l)
-                DF1[l] = DF[pt][k_elem.active_directions[l]];
-
-            measures[pt] = fabs(determinant<k,space_dim>(DF1));
-        }
-        cache.template set_status_filled<_Measure>(true);
-    }
-
-    if (cache.template status_fill<_W_Measure>())
+    auto &measures = cache.template get_data<_Measure>();
+    for (int pt = 0 ; pt < n_points; ++pt)
     {
-        const auto &w = func_elem.get_grid_element().template get_w_measures<k>(j);
+      for (int l=0; l<k; ++l)
+        DF1[l] = DF[pt][k_elem.active_directions[l]];
 
-        const auto &measures = cache.template get_data<_Measure>();
-
-        auto &w_measures = cache.template get_data<_W_Measure>();
-
-        for (int pt = 0 ; pt < n_points; ++pt)
-            w_measures[pt] = w[pt] * measures[pt];
-
-        cache.template set_status_filled<_W_Measure>(true);
+      measures[pt] = fabs(determinant<k,space_dim>(DF1));
     }
+    cache.template set_status_filled<_Measure>(true);
+  }
 
-    if (cache.template status_fill<_InvGradient>())
-    {
-        // TODO (pauletti, Nov 23, 2014): if also fill measure this could be done here
-        const auto &DF = func_elem.template get_values<_Gradient, k>(j);
-        auto &D_invF = cache.template get_data<_InvGradient>();
-        Real det;
-        for (int pt = 0 ; pt < n_points; ++pt)
-            D_invF[pt] = inverse(DF[pt], det);
+  if (cache.template status_fill<_W_Measure>())
+  {
+    const auto &w = func_elem.get_grid_element().template get_w_measures<k>(j);
 
-        cache.template set_status_filled<_InvGradient>(true);
-    }
+    const auto &measures = cache.template get_data<_Measure>();
 
-    if (cache.template status_fill<_InvHessian>())
-    {
+    auto &w_measures = cache.template get_data<_W_Measure>();
+
+    for (int pt = 0 ; pt < n_points; ++pt)
+      w_measures[pt] = w[pt] * measures[pt];
+
+    cache.template set_status_filled<_W_Measure>(true);
+  }
+
+  if (cache.template status_fill<_InvGradient>())
+  {
+    // TODO (pauletti, Nov 23, 2014): if also fill measure this could be done here
+    const auto &DF = func_elem.template get_values<_Gradient, k>(j);
+    auto &D_invF = cache.template get_data<_InvGradient>();
+    Real det;
+    for (int pt = 0 ; pt < n_points; ++pt)
+      D_invF[pt] = inverse(DF[pt], det);
+
+    cache.template set_status_filled<_InvGradient>(true);
+  }
+
+  if (cache.template status_fill<_InvHessian>())
+  {
 //        const auto &D1_F = elem.template get_values<_Gradient, k>(j);
-        const auto &D2_F = func_elem.template get_values<_Hessian, k>(j);
-        const auto &D1_invF = cache.template get_data<_InvGradient>();
-        auto &D2_invF       = cache.template get_data<_InvHessian>();
+    const auto &D2_F = func_elem.template get_values<_Hessian, k>(j);
+    const auto &D1_invF = cache.template get_data<_InvGradient>();
+    auto &D2_invF       = cache.template get_data<_InvHessian>();
 
-        for (int pt = 0 ; pt < n_points; ++pt)
-            for (int u=0; u<dim_; ++u)
-            {
-                const auto tmp_u = action(D2_F[pt], D1_invF[pt][u]);
-                for (int v=0; v<dim_; ++v)
-                {
-                    const auto tmp_u_v = action(tmp_u, D1_invF[pt][v]);
-                    D2_invF[pt][u][v] = - action(D1_invF[pt], tmp_u_v);
-                }
-            }
-
-        cache.template set_status_filled<_InvHessian>(true);
-    }
-
-    if (cache.template status_fill<_BoundaryNormal>())
-    {
-        Assert(dim_ == k+1, ExcNotImplemented());
-        const auto &D1_invF = cache.template get_data<_InvGradient>();
-        const auto n_hat  = this->get_grid()->template get_boundary_normals<k>(j)[0];
-        auto &bndry_normal = cache.template get_data<_BoundaryNormal>();
-
-        for (int pt = 0; pt < n_points; ++pt)
+    for (int pt = 0 ; pt < n_points; ++pt)
+      for (int u=0; u<dim_; ++u)
+      {
+        const auto tmp_u = action(D2_F[pt], D1_invF[pt][u]);
+        for (int v=0; v<dim_; ++v)
         {
-            const auto D1_invF_t = co_tensor(transpose(D1_invF[pt]));
-            bndry_normal[pt] = action(D1_invF_t, n_hat);
-            bndry_normal[pt] /= bndry_normal[pt].norm();
+          const auto tmp_u_v = action(tmp_u, D1_invF[pt][v]);
+          D2_invF[pt][u][v] = - action(D1_invF[pt], tmp_u_v);
         }
+      }
 
-        cache.template set_status_filled<_BoundaryNormal>(true);
+    cache.template set_status_filled<_InvHessian>(true);
+  }
+
+  if (cache.template status_fill<_BoundaryNormal>())
+  {
+    Assert(dim_ == k+1, ExcNotImplemented());
+    const auto &D1_invF = cache.template get_data<_InvGradient>();
+    const auto n_hat  = this->get_grid()->template get_boundary_normals<k>(j)[0];
+    auto &bndry_normal = cache.template get_data<_BoundaryNormal>();
+
+    for (int pt = 0; pt < n_points; ++pt)
+    {
+      const auto D1_invF_t = co_tensor(transpose(D1_invF[pt]));
+      bndry_normal[pt] = action(D1_invF_t, n_hat);
+      bndry_normal[pt] /= bndry_normal[pt].norm();
     }
 
-    if (cache.template status_fill<_OuterNormal>())
+    cache.template set_status_filled<_BoundaryNormal>(true);
+  }
+
+  if (cache.template status_fill<_OuterNormal>())
+  {
+    Assert(k == dim_, ExcNotImplemented());
+    Assert(codim_ == 1, ExcNotImplemented());
+
+    const auto &DF = func_elem.template get_values<_Gradient, k>(j);
+    auto &outer_normal = cache.template get_data<_OuterNormal>();
+
+    for (int pt = 0; pt < n_points; ++pt)
     {
-        Assert(k == dim_, ExcNotImplemented());
-        Assert(codim_ == 1, ExcNotImplemented());
-
-        const auto &DF = func_elem.template get_values<_Gradient, k>(j);
-        auto &outer_normal = cache.template get_data<_OuterNormal>();
-
-        for (int pt = 0; pt < n_points; ++pt)
-        {
-            outer_normal[pt] = cross_product<dim_, codim_>(DF[pt]);
-            outer_normal[pt] /= outer_normal[pt].norm();
-        }
-
-        cache.template set_status_filled<_OuterNormal>(true);
+      outer_normal[pt] = cross_product<dim_, codim_>(DF[pt]);
+      outer_normal[pt] /= outer_normal[pt].norm();
     }
 
+    cache.template set_status_filled<_OuterNormal>(true);
+  }
 
-    if (cache.template status_fill<_Curvature>())
+
+  if (cache.template status_fill<_Curvature>())
+  {
+    Assert(k == dim_, ExcNotImplemented());
+    Assert(codim_ == 1, ExcNotImplemented());
+
+    const auto H = elem.compute_second_fundamental_form();
+    const auto G_inv = elem.compute_inv_first_fundamental_form();
+
+    auto &curvatures = cache.template get_data<_Curvature>();
+
+    for (int pt = 0; pt < n_points; ++pt)
     {
-        Assert(k == dim_, ExcNotImplemented());
-        Assert(codim_ == 1, ExcNotImplemented());
-
-        const auto H = elem.compute_second_fundamental_form();
-        const auto G_inv = elem.compute_inv_first_fundamental_form();
-
-        auto &curvatures = cache.template get_data<_Curvature>();
-
-        for (int pt = 0; pt < n_points; ++pt)
-        {
 //          const MetricTensor B = compose(H[pt], G_inv[pt]);
-            const auto B = compose(H[pt], G_inv[pt]);
-            const auto A = unroll_to_matrix(B);
-            curvatures[pt] = A.eigen_values();
-        }
-
-        cache.template set_status_filled<_Curvature>(true);
+      const auto B = compose(H[pt], G_inv[pt]);
+      const auto A = unroll_to_matrix(B);
+      curvatures[pt] = A.eigen_values();
     }
 
+    cache.template set_status_filled<_Curvature>(true);
+  }
 
 
-    cache.set_filled(true);
+
+  cache.set_filled(true);
 }
 
 
@@ -288,21 +288,21 @@ auto
 Mapping<dim_, codim_>::
 init_cache(ElementAccessor &elem) const -> void
 {
-    F_->init_cache(elem.get_func_element(), Topology<k>());
+  F_->init_cache(elem.get_func_element(), Topology<k>());
 
-    auto &cache = elem.local_cache_;
-    if (cache == nullptr)
-    {
-        using Cache = typename ElementAccessor::CacheType;
-        cache = shared_ptr<Cache>(new Cache);
-    }
+  auto &cache = elem.local_cache_;
+  if (cache == nullptr)
+  {
+    using Cache = typename ElementAccessor::CacheType;
+    cache = shared_ptr<Cache>(new Cache);
+  }
 
-    for (auto &s_id: UnitElement<dim_>::template elems_ids<k>())
-    {
-        auto &s_cache = cache->template get_sub_elem_cache<k>(s_id);
-        const auto n_points = F_->template get_num_points<k>();
-        s_cache.resize(flags_[k], n_points);
-    }
+  for (auto &s_id: UnitElement<dim_>::template elems_ids<k>())
+  {
+    auto &s_cache = cache->template get_sub_elem_cache<k>(s_id);
+    const auto n_points = F_->template get_num_points<k>();
+    s_cache.resize(flags_[k], n_points);
+  }
 
 }
 
@@ -332,7 +332,7 @@ auto
 Mapping<dim_, codim_>::
 get_grid() const -> std::shared_ptr<const CartesianGrid<dim_> >
 {
-    return F_->get_grid();
+  return F_->get_grid();
 }
 
 template<int dim_, int codim_>
@@ -340,7 +340,7 @@ auto
 Mapping<dim_, codim_>::
 get_ptr_const_function() const -> std::shared_ptr<const FuncType>
 {
-    return F_;
+  return F_;
 }
 
 template<int dim_, int codim_>
@@ -348,7 +348,7 @@ auto
 Mapping<dim_, codim_>::
 get_ptr_function() -> std::shared_ptr<FuncType>
 {
-    return std::const_pointer_cast<FuncType>(F_);
+  return std::const_pointer_cast<FuncType>(F_);
 }
 
 template<int dim_, int codim_>
@@ -356,10 +356,10 @@ auto
 Mapping<dim_, codim_>::
 create_element(const ListIt &index, const PropId &property) const -> std::shared_ptr<ElementAccessor>
 {
-    auto elem = std::make_shared<ElementAccessor>(this->shared_from_this(),index,property);
-    Assert(elem != nullptr, ExcNullPtr());
+  auto elem = std::make_shared<ElementAccessor>(this->shared_from_this(),index,property);
+  Assert(elem != nullptr, ExcNullPtr());
 
-    return elem;
+  return elem;
 }
 
 
@@ -368,9 +368,9 @@ auto
 Mapping<dim_, codim_>::
 begin(const PropId &prop) -> ElementIterator
 {
-    return ElementIterator(this->shared_from_this(),
-    this->get_grid()->get_element_property(prop).begin(),
-    prop);
+  return ElementIterator(this->shared_from_this(),
+  this->get_grid()->get_element_property(prop).begin(),
+  prop);
 }
 
 template<int dim_, int codim_>
@@ -378,9 +378,9 @@ auto
 Mapping<dim_, codim_>::
 end(const PropId &prop) -> ElementIterator
 {
-    return ElementIterator(this->shared_from_this(),
-    this->get_grid()->get_element_property(prop).end(),
-    prop);
+  return ElementIterator(this->shared_from_this(),
+  this->get_grid()->get_element_property(prop).end(),
+  prop);
 }
 
 

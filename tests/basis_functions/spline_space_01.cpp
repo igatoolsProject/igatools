@@ -32,132 +32,132 @@
 
 template <int dim,int range>
 void print_boundary_and_repeated_knots(
-    std::shared_ptr<SplineSpace<dim,range>> sp_spec,
-    typename SplineSpace<dim,range>::BoundaryKnotsTable bdry_knots)
+  std::shared_ptr<SplineSpace<dim,range>> sp_spec,
+  typename SplineSpace<dim,range>::BoundaryKnotsTable bdry_knots)
 {
-    using SplineSpace = SplineSpace<dim,range>;
+  using SplineSpace = SplineSpace<dim,range>;
 
-    typename SplineSpace::EndBehaviour eb(BasisEndBehaviour::end_knots);
-    typename SplineSpace::EndBehaviourTable ebt(eb);
+  typename SplineSpace::EndBehaviour eb(BasisEndBehaviour::end_knots);
+  typename SplineSpace::EndBehaviourTable ebt(eb);
 
-    auto rep_knots = sp_spec->compute_knots_with_repetition(ebt, bdry_knots);
-    out << "Boundary knots:\n";
-    for (const auto &v : bdry_knots)
-        for (const auto &w : v)
-            w.print_info(out);
-    out << "Repeated knots:\n";
-    for (const auto &v : rep_knots)
-        v.print_info(out);
+  auto rep_knots = sp_spec->compute_knots_with_repetition(ebt, bdry_knots);
+  out << "Boundary knots:\n";
+  for (const auto &v : bdry_knots)
+    for (const auto &w : v)
+      w.print_info(out);
+  out << "Repeated knots:\n";
+  for (const auto &v : rep_knots)
+    v.print_info(out);
 }
 
 
 
 void test_1d()
 {
-    OUTSTART
+  OUTSTART
 
-    const int dim=1;
-    using SplineSpace = SplineSpace<dim>;
-    using MultiplicityTable = typename SplineSpace::MultiplicityTable;
+  const int dim=1;
+  using SplineSpace = SplineSpace<dim>;
+  using MultiplicityTable = typename SplineSpace::MultiplicityTable;
 
-    auto grid = CartesianGrid<dim>::create(4);
-    typename SplineSpace::DegreeTable deg {{2}};
-    auto int_mult = MultiplicityTable({ {{1,3}} });
-    auto sp_spec = SplineSpace::create(deg, grid, int_mult);
+  auto grid = CartesianGrid<dim>::create(4);
+  typename SplineSpace::DegreeTable deg {{2}};
+  auto int_mult = MultiplicityTable({ {{1,3}} });
+  auto sp_spec = SplineSpace::create(deg, grid, int_mult);
 
-    CartesianProductArray<Real,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
-    typename SplineSpace::BoundaryKnotsTable bdry_knots { {bn_x} };
+  CartesianProductArray<Real,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
+  typename SplineSpace::BoundaryKnotsTable bdry_knots { {bn_x} };
 
-    print_boundary_and_repeated_knots(sp_spec,bdry_knots);
+  print_boundary_and_repeated_knots(sp_spec,bdry_knots);
 
-    OUTEND
+  OUTEND
 }
 
 
 
 void test_2d()
 {
-    OUTSTART
+  OUTSTART
 
-    const int dim=2;
-    using SplineSpace = SplineSpace<dim>;
-    using MultiplicityTable = typename SplineSpace::MultiplicityTable;
-    auto grid = CartesianGrid<dim>::create({3,5});
-    typename SplineSpace::DegreeTable deg {{1,3}};
+  const int dim=2;
+  using SplineSpace = SplineSpace<dim>;
+  using MultiplicityTable = typename SplineSpace::MultiplicityTable;
+  auto grid = CartesianGrid<dim>::create({3,5});
+  typename SplineSpace::DegreeTable deg {{1,3}};
 
-    auto int_mult = MultiplicityTable({ {{1}, {1,3,1}} });
+  auto int_mult = MultiplicityTable({ {{1}, {1,3,1}} });
 
-    auto sp_spec = SplineSpace::create(deg, grid, int_mult);
+  auto sp_spec = SplineSpace::create(deg, grid, int_mult);
 
-    iga::CartesianProductArray<double, 2> bk_x {{-0.5, 0}, {1.2, 1.3}};
-    iga::CartesianProductArray<double, 2> bk_y {{-0.6,0,0,0}, {1,1.1,1.6, 1.6}};
-    typename SplineSpace::BoundaryKnotsTable bdry_knots { {bk_x, bk_y} };
+  iga::CartesianProductArray<double, 2> bk_x {{-0.5, 0}, {1.2, 1.3}};
+  iga::CartesianProductArray<double, 2> bk_y {{-0.6,0,0,0}, {1,1.1,1.6, 1.6}};
+  typename SplineSpace::BoundaryKnotsTable bdry_knots { {bk_x, bk_y} };
 
-    print_boundary_and_repeated_knots(sp_spec,bdry_knots);
+  print_boundary_and_repeated_knots(sp_spec,bdry_knots);
 
-    OUTEND
+  OUTEND
 }
 
 
 void test_3d()
 {
-    OUTSTART
+  OUTSTART
 
-    const int dim=3;
-    using SplineSpace = SplineSpace<dim>;
-    using MultiplicityTable = typename SplineSpace::MultiplicityTable;
-    auto grid = CartesianGrid<dim>::create({3,4,5});
-    typename SplineSpace::DegreeTable deg {{1,3,0}};
-    auto int_mult = MultiplicityTable({ {{1}, {1,3}, {1,1,1}} });
+  const int dim=3;
+  using SplineSpace = SplineSpace<dim>;
+  using MultiplicityTable = typename SplineSpace::MultiplicityTable;
+  auto grid = CartesianGrid<dim>::create({3,4,5});
+  typename SplineSpace::DegreeTable deg {{1,3,0}};
+  auto int_mult = MultiplicityTable({ {{1}, {1,3}, {1,1,1}} });
 
-    auto sp_spec = SplineSpace::create(deg, grid, int_mult);
+  auto sp_spec = SplineSpace::create(deg, grid, int_mult);
 
-    iga::CartesianProductArray<double, 2> bk_x {{-0.5, 0}, {1.2, 1.3}};
-    iga::CartesianProductArray<double, 2> bk_y {{-0.6,0,0,0}, {1,1,1.6, 1.6}};
-    iga::CartesianProductArray<double, 2> bk_z {{-0.6}, {1.6}};
-    typename SplineSpace::BoundaryKnotsTable bdry_knots { {bk_x, bk_y, bk_z} };
+  iga::CartesianProductArray<double, 2> bk_x {{-0.5, 0}, {1.2, 1.3}};
+  iga::CartesianProductArray<double, 2> bk_y {{-0.6,0,0,0}, {1,1,1.6, 1.6}};
+  iga::CartesianProductArray<double, 2> bk_z {{-0.6}, {1.6}};
+  typename SplineSpace::BoundaryKnotsTable bdry_knots { {bk_x, bk_y, bk_z} };
 
-    print_boundary_and_repeated_knots(sp_spec,bdry_knots);
+  print_boundary_and_repeated_knots(sp_spec,bdry_knots);
 
-    OUTEND
+  OUTEND
 }
 
 
 void test_2d_2()
 {
-    OUTSTART
+  OUTSTART
 
-    const int dim=2;
-    const int range=2;
-    using SplineSpace = SplineSpace<dim, range, 1>;
-    using MultiplicityTable = typename SplineSpace::MultiplicityTable;
-    auto grid = CartesianGrid<dim>::create({3,4});
-    typename SplineSpace::DegreeTable deg {{1,3},{3,1}};
+  const int dim=2;
+  const int range=2;
+  using SplineSpace = SplineSpace<dim, range, 1>;
+  using MultiplicityTable = typename SplineSpace::MultiplicityTable;
+  auto grid = CartesianGrid<dim>::create({3,4});
+  typename SplineSpace::DegreeTable deg {{1,3},{3,1}};
 
-    auto int_mult = MultiplicityTable({ {{1}, {1,3}},{{1}, {1,1}}});
+  auto int_mult = MultiplicityTable({ {{1}, {1,3}},{{1}, {1,1}}});
 
-    auto sp_spec = SplineSpace::create(deg, grid, int_mult);
+  auto sp_spec = SplineSpace::create(deg, grid, int_mult);
 
-    iga::CartesianProductArray<double, 2> bk_x {{-0.5, 0}, {1.2, 1.3}};
-    iga::CartesianProductArray<double, 2> bk_y {{-0.6,0,0,0}, {1,1,1.6, 1.6}};
+  iga::CartesianProductArray<double, 2> bk_x {{-0.5, 0}, {1.2, 1.3}};
+  iga::CartesianProductArray<double, 2> bk_y {{-0.6,0,0,0}, {1,1,1.6, 1.6}};
 
-    typename SplineSpace::BoundaryKnotsTable bdry_knots { {bk_x, bk_y}, {bk_y, bk_x} };
+  typename SplineSpace::BoundaryKnotsTable bdry_knots { {bk_x, bk_y}, {bk_y, bk_x} };
 
-    print_boundary_and_repeated_knots(sp_spec,bdry_knots);
+  print_boundary_and_repeated_knots(sp_spec,bdry_knots);
 
-    OUTEND
+  OUTEND
 }
 
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
-    test_1d();
-    test_2d();
-    test_3d();
+  test_1d();
+  test_2d();
+  test_3d();
 
-    test_2d_2();
+  test_2d_2();
 
-    return 0;
+  return 0;
 }

@@ -31,19 +31,19 @@
 
 void vector_print_info()
 {
-    OUTSTART
+  OUTSTART
 
-    SafeSTLVector<Real> vec(5,1);
-    vec.print_info(out);
-    out << endl;
+  SafeSTLVector<Real> vec(5,1);
+  vec.print_info(out);
+  out << endl;
 
-    OUTEND
+  OUTEND
 }
 
 
 
 int main()
 {
-    vector_print_info();
-    return 0;
+  vector_print_info();
+  return 0;
 }

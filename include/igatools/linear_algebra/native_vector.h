@@ -31,95 +31,95 @@ namespace NativeTools
 class Vector : public std::map<Index,Real>
 {
 public:
-    using std::map<Index,Real>::map;
+  using std::map<Index,Real>::map;
 
-    IgCoefficients(const std::set<Index> &global_dofs, const SafeSTLVector<Real> &coeffs)
-    {
-        Assert(Index(global_dofs.size()) == coeffs.size(),
-               ExcDimensionMismatch(global_dofs.size(),coeffs.size()));
+  IgCoefficients(const std::set<Index> &global_dofs, const SafeSTLVector<Real> &coeffs)
+  {
+    Assert(Index(global_dofs.size()) == coeffs.size(),
+           ExcDimensionMismatch(global_dofs.size(),coeffs.size()));
 
-        int i = 0;
-        for (const auto dof : global_dofs)
-            (*this)[dof] = coeffs[i++];
-    }
+    int i = 0;
+    for (const auto dof : global_dofs)
+      (*this)[dof] = coeffs[i++];
+  }
 
-    template <class Space>
+  template <class Space>
+  IgCoefficients(
+    const Space &space,
+    const std::string &dofs_property,
+    const SafeSTLVector<Real> &coeffs)
+    :
+    IgCoefficients(space.get_ptr_const_dof_distribution()->get_dofs_id_same_property(dofs_property),coeffs)
+  {}
+
+  template <class Space>
+  IgCoefficients(
+    const Space &space,
+    const std::string &dofs_property)
+    :
     IgCoefficients(
-        const Space &space,
-        const std::string &dofs_property,
-        const SafeSTLVector<Real> &coeffs)
-        :
-        IgCoefficients(space.get_ptr_const_dof_distribution()->get_dofs_id_same_property(dofs_property),coeffs)
-    {}
-
-    template <class Space>
-    IgCoefficients(
-        const Space &space,
-        const std::string &dofs_property)
-        :
-        IgCoefficients(
-           space.get_ptr_const_dof_distribution()->get_dofs_id_same_property(dofs_property),
-           SafeSTLVector<Real>(space.get_ptr_const_dof_distribution()->
-                               get_dofs_id_same_property(dofs_property).size(),0.0))
-    {}
+     space.get_ptr_const_dof_distribution()->get_dofs_id_same_property(dofs_property),
+     SafeSTLVector<Real>(space.get_ptr_const_dof_distribution()->
+                         get_dofs_id_same_property(dofs_property).size(),0.0))
+  {}
 
 
-    Real &operator()(const Index &global_dof)
-    {
+  Real &operator()(const Index &global_dof)
+  {
 #ifdef NDEBUG
-        return (*this)[global_dof];
+    return (*this)[global_dof];
 #else
-        return (*this).at(global_dof);
+    return (*this).at(global_dof);
 #endif
-    }
+  }
 
-    const Real &operator()(const Index &global_dof) const
-    {
+  const Real &operator()(const Index &global_dof) const
+  {
 #ifdef NDEBUG
-        return (*this)[global_dof];
+    return (*this)[global_dof];
 #else
-        return (*this).at(global_dof);
+    return (*this).at(global_dof);
 #endif
-    }
+  }
 
 
-    Size size() const
-    {
-        return std::map<Index,Real>::size();
-    }
+  Size size() const
+  {
+    return std::map<Index,Real>::size();
+  }
 
-    IgCoefficients &operator+=(const IgCoefficients &coeffs)
-    {
-        Assert(this->size() == coeffs.size(),ExcDimensionMismatch(this->size(),coeffs.size()));
+  IgCoefficients &operator+=(const IgCoefficients &coeffs)
+  {
+    Assert(this->size() == coeffs.size(),ExcDimensionMismatch(this->size(),coeffs.size()));
 #ifdef NDEBUG
-        for (const auto &c : coeffs)
-            (*this)[c.first] += c.second;
+    for (const auto &c : coeffs)
+      (*this)[c.first] += c.second;
 #else
-        for (const auto &c : coeffs)
-            (*this).at(c.first) += c.second;
+    for (const auto &c : coeffs)
+      (*this).at(c.first) += c.second;
 #endif
 
-        return *this;
-    }
+    return *this;
+  }
 
-    SafeSTLVector<Real> get_local_coeffs(const SafeSTLVector<Index> &elem_dofs) const
+  SafeSTLVector<Real> get_local_coeffs(const SafeSTLVector<Index> &elem_dofs) const
+  {
+
+    SafeSTLVector<Real> loc_coeff;
+    for (const auto &dof : elem_dofs)
+      loc_coeff.emplace_back((*this)(dof));
+    return  loc_coeff;
+  }
+
+  void print_info(LogStream &out) const
+  {
+    int i = 0;
+    for (const auto &c : (*this))
     {
-
-        SafeSTLVector<Real> loc_coeff;
-        for (const auto &dof : elem_dofs)
-            loc_coeff.emplace_back((*this)(dof));
-        return  loc_coeff;
+      out << "coeff[local_id=" << i << ", global_id=" << c.first << "] = " << c.second << std::endl;
+      ++i;
     }
-
-    void print_info(LogStream &out) const
-    {
-        int i = 0;
-        for (const auto &c : (*this))
-        {
-            out << "coeff[local_id=" << i << ", global_id=" << c.first << "] = " << c.second << std::endl;
-            ++i;
-        }
-    }
+  }
 };
 };
 #endif

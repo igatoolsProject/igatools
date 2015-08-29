@@ -34,63 +34,63 @@
 template <int dim>
 void do_test()
 {
-    out << "========= BEGIN do_test<" << dim << "> =========" << endl ;
+  out << "========= BEGIN do_test<" << dim << "> =========" << endl ;
 
-    using ClassToTest = TensorProductArray<dim>;
+  using ClassToTest = TensorProductArray<dim>;
 
-    out<< "Testing the default constructor" << endl;
-    ClassToTest data1;
-    data1.print_info(out);
-    out << endl;
+  out<< "Testing the default constructor" << endl;
+  ClassToTest data1;
+  data1.print_info(out);
+  out << endl;
 
-    TensorSize<dim> size;
-    for (int i = 0; i < dim; ++i)
-        size[i] = 2+i;
+  TensorSize<dim> size;
+  for (int i = 0; i < dim; ++i)
+    size[i] = 2+i;
 
-    out << "Testing the entry() function"<<endl;
-    ClassToTest data2(size);
-    Index id = 1;
-    for (int i = 0; i < dim ; ++i)
-        for (int j = 0; j < size[i] ; ++j, ++id)
-            data2.entry(i,j) = id*1.0;
+  out << "Testing the entry() function"<<endl;
+  ClassToTest data2(size);
+  Index id = 1;
+  for (int i = 0; i < dim ; ++i)
+    for (int j = 0; j < size[i] ; ++j, ++id)
+      data2.entry(i,j) = id*1.0;
 
-    data2.print_info(out);
-    out << endl;
-
-
-
-    out<< "Testing the copy constructor" << endl;
-    ClassToTest data3 = data2;
-    data3.print_info(out);
-    out << endl;
-
-    out << "Testing the get_flat_cartesian_product() function" <<endl;
-    const auto flat_cartesian_product = data3.get_flat_cartesian_product();
-    flat_cartesian_product.print_info(out);
-    out << endl << endl;
-
-    out << "Testing the get_flat_tensor_product() function" <<endl;
-    const auto flat_tensor_product = data3.get_flat_tensor_product();
-    flat_tensor_product.print_info(out);
-    out << endl << endl;
-
-    out<< "Testing the get_sub_product() function" << endl;
-    TensorIndex<dim-1> sub_id;
-    for (int i = 0 ; i < dim-1 ; ++i)
-        sub_id[i] = i+1;
-    TensorProductArray<dim-1> data4 = data3.get_sub_product(sub_id);
-    data4.print_info(out);
-    out << endl;
+  data2.print_info(out);
+  out << endl;
 
 
-    out << "Testing the insert() function" << endl;
-    SafeSTLVector<Real> new_values = {-2.0,-1.0};
-    TensorProductArray<dim> data5 = insert(data4, dim-1,new_values);
-    data5.print_info(out);
-    out << endl;
 
-    out << "========= END do_test<" << dim << "> =========" << endl ;
-    out << endl;
+  out<< "Testing the copy constructor" << endl;
+  ClassToTest data3 = data2;
+  data3.print_info(out);
+  out << endl;
+
+  out << "Testing the get_flat_cartesian_product() function" <<endl;
+  const auto flat_cartesian_product = data3.get_flat_cartesian_product();
+  flat_cartesian_product.print_info(out);
+  out << endl << endl;
+
+  out << "Testing the get_flat_tensor_product() function" <<endl;
+  const auto flat_tensor_product = data3.get_flat_tensor_product();
+  flat_tensor_product.print_info(out);
+  out << endl << endl;
+
+  out<< "Testing the get_sub_product() function" << endl;
+  TensorIndex<dim-1> sub_id;
+  for (int i = 0 ; i < dim-1 ; ++i)
+    sub_id[i] = i+1;
+  TensorProductArray<dim-1> data4 = data3.get_sub_product(sub_id);
+  data4.print_info(out);
+  out << endl;
+
+
+  out << "Testing the insert() function" << endl;
+  SafeSTLVector<Real> new_values = {-2.0,-1.0};
+  TensorProductArray<dim> data5 = insert(data4, dim-1,new_values);
+  data5.print_info(out);
+  out << endl;
+
+  out << "========= END do_test<" << dim << "> =========" << endl ;
+  out << endl;
 }
 
 
@@ -99,10 +99,10 @@ void do_test()
 
 int main(int argc, char *argv[])
 {
-    do_test<1>();
-    do_test<2>();
-    do_test<3>();
+  do_test<1>();
+  do_test<2>();
+  do_test<3>();
 
 
-    return 0;
+  return 0;
 }

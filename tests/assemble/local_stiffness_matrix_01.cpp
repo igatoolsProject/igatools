@@ -42,56 +42,56 @@
 template<int dim>
 void loc_stiff_matrix(const int n_knots, const int deg)
 {
-    OUTSTART
+  OUTSTART
 
-    auto grid = CartesianGrid<dim>::create(n_knots);
-    using Space = BSplineSpace<dim>;
-    auto ref_space = Space::create(deg, grid) ;
+  auto grid = CartesianGrid<dim>::create(n_knots);
+  using Space = BSplineSpace<dim>;
+  auto ref_space = Space::create(deg, grid) ;
 
-    using PhysSpace = PhysicalSpace<dim,1,1,0,Transformation::h_grad>;
-    auto identity_mapping = IdentityFunction<dim>::create(grid);
-    auto phys_space = PhysSpace::create(ref_space, identity_mapping) ;
+  using PhysSpace = PhysicalSpace<dim,1,1,0,Transformation::h_grad>;
+  auto identity_mapping = IdentityFunction<dim>::create(grid);
+  auto phys_space = PhysSpace::create(ref_space, identity_mapping) ;
 
-    auto elem_handler = phys_space->get_elem_handler();
+  auto elem_handler = phys_space->get_elem_handler();
 
-    auto quad = QGauss<dim>(deg+1);
-    auto flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::w_measure;
-    elem_handler->reset(flag,quad);
+  auto quad = QGauss<dim>(deg+1);
+  auto flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::w_measure;
+  elem_handler->reset(flag,quad);
 
-    const int n_qpoints =  quad.get_num_points();
+  const int n_qpoints =  quad.get_num_points();
 
-    auto elem           = phys_space->begin();
-    const auto elem_end = phys_space->end();
+  auto elem           = phys_space->begin();
+  const auto elem_end = phys_space->end();
 
-    const int n_basis = elem->get_num_basis(DofProperties::active);
-    DenseMatrix loc_mat(n_basis,n_basis);
+  const int n_basis = elem->get_num_basis(DofProperties::active);
+  DenseMatrix loc_mat(n_basis,n_basis);
 
-    elem_handler->init_element_cache(elem);
-    for (; elem != elem_end; ++elem)
+  elem_handler->init_element_cache(elem);
+  for (; elem != elem_end; ++elem)
+  {
+    elem_handler->fill_element_cache(elem);
+
+    loc_mat = 0.0;
+
+    const auto w_meas = elem->template get_w_measures<dim>(0);
+    const auto grad = elem->template get_basis<_Gradient,dim>(0,DofProperties::active);
+
+    for (int i=0; i<n_basis; ++i)
     {
-        elem_handler->fill_element_cache(elem);
+      const auto grad_i = grad.get_function_view(i);
 
-        loc_mat = 0.0;
-
-        const auto w_meas = elem->template get_w_measures<dim>(0);
-        const auto grad = elem->template get_basis<_Gradient,dim>(0,DofProperties::active);
-
-        for (int i=0; i<n_basis; ++i)
-        {
-            const auto grad_i = grad.get_function_view(i);
-
-            for (int j=0; j<n_basis; ++j)
-            {
-                const auto grad_j = grad.get_function_view(j);
-                for (int qp = 0; qp < n_qpoints; ++qp)
-                    loc_mat(i,j) += scalar_product(grad_i[qp], grad_j[qp]) * w_meas[qp];
-            }
-        }
-        loc_mat.print_info(out);
-        out << endl;
+      for (int j=0; j<n_basis; ++j)
+      {
+        const auto grad_j = grad.get_function_view(j);
+        for (int qp = 0; qp < n_qpoints; ++qp)
+          loc_mat(i,j) += scalar_product(grad_i[qp], grad_j[qp]) * w_meas[qp];
+      }
     }
+    loc_mat.print_info(out);
+    out << endl;
+  }
 
-    OUTEND
+  OUTEND
 
 }
 
@@ -100,12 +100,12 @@ void loc_stiff_matrix(const int n_knots, const int deg)
 
 int main()
 {
-    const int n_knots = 6;
-    const int deg = 1;
+  const int n_knots = 6;
+  const int deg = 1;
 
-    loc_stiff_matrix<1>(n_knots, deg);
-    loc_stiff_matrix<2>(n_knots, deg);
-    loc_stiff_matrix<3>(n_knots, deg);
+  loc_stiff_matrix<1>(n_knots, deg);
+  loc_stiff_matrix<2>(n_knots, deg);
+  loc_stiff_matrix<3>(n_knots, deg);
 
-    return  0;
+  return  0;
 }

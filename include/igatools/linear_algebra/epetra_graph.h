@@ -54,19 +54,19 @@ create_graph(const RowSpace &row_space, const std::string &row_property,
              const ColSpace &col_space, const std::string &col_property,
              const Comm &comm)
 {
-    std::map<Index,std::set<Index>> dofs_connectivity;
-    auto r_elem = row_space.begin();
-    auto c_elem = col_space.begin();
-    const auto end = row_space.end();
-    for (; r_elem != end; ++r_elem, ++c_elem)
-    {
-        const auto r_dofs = r_elem->get_local_to_global(row_property);
-        const auto c_dofs = c_elem->get_local_to_global(col_property);
-        for (auto &r_dof : r_dofs)
-            dofs_connectivity[r_dof].insert(c_dofs.begin(),c_dofs.end());
-    }
+  std::map<Index,std::set<Index>> dofs_connectivity;
+  auto r_elem = row_space.begin();
+  auto c_elem = col_space.begin();
+  const auto end = row_space.end();
+  for (; r_elem != end; ++r_elem, ++c_elem)
+  {
+    const auto r_dofs = r_elem->get_local_to_global(row_property);
+    const auto c_dofs = c_elem->get_local_to_global(col_property);
+    for (auto &r_dof : r_dofs)
+      dofs_connectivity[r_dof].insert(c_dofs.begin(),c_dofs.end());
+  }
 
-    return create_graph(dofs_connectivity,comm);
+  return create_graph(dofs_connectivity,comm);
 }
 
 };

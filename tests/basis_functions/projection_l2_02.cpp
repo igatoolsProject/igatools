@@ -48,56 +48,56 @@ template<int dim>
 class BoundaryFunction : public FormulaFunction<dim>
 {
 private:
-    using base_t = Function<dim>;
-    using parent_t = FormulaFunction<dim>;
-    using self_t = BoundaryFunction<dim>;
-    using typename base_t::GridType;
+  using base_t = Function<dim>;
+  using parent_t = FormulaFunction<dim>;
+  using self_t = BoundaryFunction<dim>;
+  using typename base_t::GridType;
 public:
-    using typename parent_t::Point;
-    using typename parent_t::Value;
-    template <int order>
-    using Derivative = typename parent_t::template Derivative<order>;
-    using typename parent_t::Map;
+  using typename parent_t::Point;
+  using typename parent_t::Value;
+  template <int order>
+  using Derivative = typename parent_t::template Derivative<order>;
+  using typename parent_t::Map;
 public:
-    BoundaryFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map)
-        : FormulaFunction<dim>(grid, map)
-    {}
+  BoundaryFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map)
+    : FormulaFunction<dim>(grid, map)
+  {}
 
-    static std::shared_ptr<base_t>
-    create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map)
+  static std::shared_ptr<base_t>
+  create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map)
+  {
+    return std::shared_ptr<base_t>(new self_t(grid, map));
+  }
+
+  std::shared_ptr<base_t> clone() const override
+  {
+    return std::make_shared<self_t>(self_t(*this));
+  }
+
+  Real value(Points<dim> x) const
+  {
+    Real f = 1;
+    for (int i = 0; i<dim; ++i)
+      f = f * cos(2*PI*x[i]);
+    return f;
+  }
+
+  void evaluate_0(const ValueVector<Point> &points,
+                  ValueVector<Value> &values) const override
+  {
+    for (int i = 0; i<points.size(); ++i)
     {
-        return std::shared_ptr<base_t>(new self_t(grid, map));
+      Points<dim> p = points[i];
+      values[i][0] = this->value(p);
     }
+  }
+  void evaluate_1(const ValueVector<Point> &points,
+                  ValueVector<Derivative<1>> &values) const override
+  {}
 
-    std::shared_ptr<base_t> clone() const override
-    {
-        return std::make_shared<self_t>(self_t(*this));
-    }
-
-    Real value(Points<dim> x) const
-    {
-        Real f = 1;
-        for (int i = 0; i<dim; ++i)
-            f = f * cos(2*PI*x[i]);
-        return f;
-    }
-
-    void evaluate_0(const ValueVector<Point> &points,
-                    ValueVector<Value> &values) const override
-    {
-        for (int i = 0; i<points.size(); ++i)
-        {
-            Points<dim> p = points[i];
-            values[i][0] = this->value(p);
-        }
-    }
-    void evaluate_1(const ValueVector<Point> &points,
-                    ValueVector<Derivative<1>> &values) const override
-    {}
-
-    void evaluate_2(const ValueVector<Point> &points,
-                    ValueVector<Derivative<2>> &values) const override
-    {}
+  void evaluate_2(const ValueVector<Point> &points,
+                  ValueVector<Derivative<2>> &values) const override
+  {}
 };
 
 
@@ -105,32 +105,32 @@ public:
 template<int dim, int codim, int range, int rank, LAPack la_pack>
 void do_test(const int p, const int num_knots = 10)
 {
-    using RefSpace = ReferenceSpace<dim,range,rank>;
-    using BspSpace = BSplineSpace<dim,range,rank>;
-    using Space = PhysicalSpace<dim,range,rank,codim>;
+  using RefSpace = ReferenceSpace<dim,range,rank>;
+  using BspSpace = BSplineSpace<dim,range,rank>;
+  using Space = PhysicalSpace<dim,range,rank,codim>;
 
-    auto knots = CartesianGrid<dim>::create(num_knots);
-    auto ref_space = BspSpace::create_nonconst(p, knots);
+  auto knots = CartesianGrid<dim>::create(num_knots);
+  auto ref_space = BspSpace::create_nonconst(p, knots);
 
-    using Function = functions::LinearFunction<dim, 0, dim + codim>;
-    typename Function::Value    b;
-    typename Function::Gradient A;
-    for (int i = 0; i < dim; ++i)
-    {
-        A[i][i] = 1+i;
-    }
+  using Function = functions::LinearFunction<dim, 0, dim + codim>;
+  typename Function::Value    b;
+  typename Function::Gradient A;
+  for (int i = 0; i < dim; ++i)
+  {
+    A[i][i] = 1+i;
+  }
 //    auto map_func = Function::create(knots, IdentityFunction<dim>::create(knots), A, b);
 
-    auto space = Space::create_nonconst(
-                     ref_space,
-                     Function::create(knots, IdentityFunction<dim>::create(knots), A, b));
+  auto space = Space::create_nonconst(
+                 ref_space,
+                 Function::create(knots, IdentityFunction<dim>::create(knots), A, b));
 
-    const int n_qpoints = 4;
-    QGauss<dim> quad(n_qpoints);
+  const int n_qpoints = 4;
+  QGauss<dim> quad(n_qpoints);
 
-    auto f = BoundaryFunction<dim>::create(knots, space->get_ptr_map_func());
-    auto proj_func = space_tools::projection_l2<Space,la_pack>(f, space, quad);
-    proj_func->print_info(out);
+  auto f = BoundaryFunction<dim>::create(knots, space->get_ptr_map_func());
+  auto proj_func = space_tools::projection_l2<Space,la_pack>(f, space, quad);
+  proj_func->print_info(out);
 
 }
 
@@ -139,15 +139,15 @@ void do_test(const int p, const int num_knots = 10)
 int main()
 {
 #if defined(USE_TRILINOS)
-    const auto la_pack = LAPack::trilinos_epetra;
+  const auto la_pack = LAPack::trilinos_epetra;
 #elif defined(USE_PETSC)
-    const auto la_pack = LAPack::petsc;
+  const auto la_pack = LAPack::petsc;
 #endif
-    out.depth_console(20);
-    // do_test<1,1,1>(3);
-    do_test<2,0,1,1, la_pack>(3);
-    //do_test<3,1,1>(1);
+  out.depth_console(20);
+  // do_test<1,1,1>(3);
+  do_test<2,0,1,1, la_pack>(3);
+  //do_test<3,1,1>(1);
 
-    return 0;
+  return 0;
 }
 

@@ -35,36 +35,36 @@
 template<int dim, int range = 1, int rank = 1>
 void integrate(const int deg,  const int n_knots)
 {
-    using Space = BSplineSpace<dim, range, rank>;
+  using Space = BSplineSpace<dim, range, rank>;
 
-    auto grid = CartesianGrid<dim>::create(n_knots);
-    auto space = Space::create(deg, grid);
+  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto space = Space::create(deg, grid);
 
-    const int n_qpoints = ceil((2*dim + 1)/2.);
-    QGauss<dim> quad(n_qpoints);
-
-
-    auto f = NormFunction<dim>::create(grid, IdentityFunction<dim>::create(grid));
-
-    typename functions::ConstantFunction<dim,0,1>::Value val {0.};
-    auto g = functions::ConstantFunction<dim,0,1>::create(grid, IdentityFunction<dim>::create(grid), val);
+  const int n_qpoints = ceil((2*dim + 1)/2.);
+  QGauss<dim> quad(n_qpoints);
 
 
-    SafeSTLVector<Real> elem_err(grid->get_num_all_elems());
-    Real err = space_tools::l2_norm_difference<dim>(*f, *g, quad, elem_err);
+  auto f = NormFunction<dim>::create(grid, IdentityFunction<dim>::create(grid));
 
-    out << err << endl;
+  typename functions::ConstantFunction<dim,0,1>::Value val {0.};
+  auto g = functions::ConstantFunction<dim,0,1>::create(grid, IdentityFunction<dim>::create(grid), val);
+
+
+  SafeSTLVector<Real> elem_err(grid->get_num_all_elems());
+  Real err = space_tools::l2_norm_difference<dim>(*f, *g, quad, elem_err);
+
+  out << err << endl;
 }
 
 
 
 int main()
 {
-    out.depth_console(20);
+  out.depth_console(20);
 
-    integrate<3,1,1>(1,3);
+  integrate<3,1,1>(1,3);
 
 
-    return 0;
+  return 0;
 }
 

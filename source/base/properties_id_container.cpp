@@ -30,7 +30,7 @@ bool
 PropertiesIdContainer<IndexType>::
 is_property_defined(const PropId &property) const
 {
-    return (properties_id_.count(property) > 0) ? true : false;
+  return (properties_id_.count(property) > 0) ? true : false;
 }
 
 
@@ -40,8 +40,8 @@ bool
 PropertiesIdContainer<IndexType>::
 test_id_for_property(const IndexType id, const PropId &property) const
 {
-    const auto &ids_same_property = (*this)[property];
-    return std::binary_search(ids_same_property.begin(),ids_same_property.end(),id);
+  const auto &ids_same_property = (*this)[property];
+  return std::binary_search(ids_same_property.begin(),ids_same_property.end(),id);
 }
 
 
@@ -51,8 +51,8 @@ void
 PropertiesIdContainer<IndexType>::
 add_property(const PropId &property)
 {
-    Assert(!is_property_defined(property), ExcPropAlreadyDefined(property));
-    properties_id_[property] = List();
+  Assert(!is_property_defined(property), ExcPropAlreadyDefined(property));
+  properties_id_[property] = List();
 }
 
 
@@ -62,8 +62,8 @@ auto
 PropertiesIdContainer<IndexType>::
 operator[](const PropId &property) -> List &
 {
-    Assert(is_property_defined(property), ExcPropNotDefined(property));
-    return properties_id_.at(property);
+  Assert(is_property_defined(property), ExcPropNotDefined(property));
+  return properties_id_.at(property);
 }
 
 
@@ -74,8 +74,8 @@ PropertiesIdContainer<IndexType>::
 operator[](const PropId &property) const
 -> const List &
 {
-    Assert(is_property_defined(property), ExcPropNotDefined(property));
-    return properties_id_.at(property);
+  Assert(is_property_defined(property), ExcPropNotDefined(property));
+  return properties_id_.at(property);
 }
 
 
@@ -87,16 +87,16 @@ set_id_property_status(const PropId &property,
                        const IndexType id,
                        const bool status)
 {
-    auto &list = (*this)[property];
-    if (status)
-    {
-        list.insert(id);
-    }
-    else
-    {
-        Assert(!list.empty(),ExcEmptyObject());
-        list.erase(id);
-    }
+  auto &list = (*this)[property];
+  if (status)
+  {
+    list.insert(id);
+  }
+  else
+  {
+    Assert(!list.empty(),ExcEmptyObject());
+    list.erase(id);
+  }
 }
 
 
@@ -108,8 +108,8 @@ set_ids_property_status(const PropId &property,
                         const List ids,
                         const bool status)
 {
-    for (const auto id : ids)
-        set_id_property_status(property,id,status);
+  for (const auto id : ids)
+    set_id_property_status(property,id,status);
 }
 
 
@@ -119,7 +119,7 @@ auto
 PropertiesIdContainer<IndexType>::
 begin() -> iterator
 {
-    return properties_id_.begin();
+  return properties_id_.begin();
 }
 
 
@@ -129,7 +129,7 @@ auto
 PropertiesIdContainer<IndexType>::
 end() -> iterator
 {
-    return properties_id_.end();
+  return properties_id_.end();
 }
 
 
@@ -139,7 +139,7 @@ auto
 PropertiesIdContainer<IndexType>::
 begin() const -> const_iterator
 {
-    return properties_id_.begin();
+  return properties_id_.begin();
 }
 
 
@@ -149,7 +149,7 @@ auto
 PropertiesIdContainer<IndexType>::
 end() const -> const_iterator
 {
-    return properties_id_.end();
+  return properties_id_.end();
 }
 
 
@@ -159,12 +159,12 @@ SafeSTLVector<PropId>
 PropertiesIdContainer<IndexType>::
 get_properties() const
 {
-    SafeSTLVector<PropId> properties;
+  SafeSTLVector<PropId> properties;
 
-    for (const auto &ids_same_property : properties_id_)
-        properties.emplace_back(ids_same_property.first);
+  for (const auto &ids_same_property : properties_id_)
+    properties.emplace_back(ids_same_property.first);
 
-    return properties;
+  return properties;
 }
 
 
@@ -194,12 +194,12 @@ void
 PropertiesIdContainer<IndexType>::
 print_info(LogStream &out) const
 {
-    for (const auto &entry : properties_id_)
-    {
-        out.begin_item("IDs with property \"" + entry.first + "\":");
-        entry.second.print_info(out);
-        out.end_item();
-    }
+  for (const auto &entry : properties_id_)
+  {
+    out.begin_item("IDs with property \"" + entry.first + "\":");
+    entry.second.print_info(out);
+    out.end_item();
+  }
 }
 
 
@@ -209,7 +209,7 @@ bool
 PropertiesIdContainer<IndexType>::
 empty() const noexcept
 {
-    return properties_id_.empty();
+  return properties_id_.empty();
 }
 
 
@@ -221,7 +221,7 @@ void
 PropertiesIdContainer<IndexType>::
 serialize(Archive &ar, const unsigned int version)
 {
-    ar &boost::serialization::make_nvp("properties_id_",properties_id_);
+  ar &boost::serialization::make_nvp("properties_id_",properties_id_);
 }
 
 #endif // SERIALIZATION

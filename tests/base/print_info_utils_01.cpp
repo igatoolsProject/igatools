@@ -32,7 +32,7 @@
 class A
 {
 public:
-    void print_info(LogStream &) {}
+  void print_info(LogStream &) {}
 };
 
 
@@ -54,9 +54,9 @@ print_info(LogStream &out)
 
 int main()
 {
-    out << has_print_info<A>(0) << endl;
-    out << has_print_info<B>(0) << endl;
-    print_info<A>(out);
-    print_info<B>(out);
-    return 0;
+  out << has_print_info<A>(0) << endl;
+  out << has_print_info<B>(0) << endl;
+  print_info<A>(out);
+  print_info<B>(out);
+  return 0;
 }

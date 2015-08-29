@@ -33,13 +33,13 @@ using namespace EpetraTools;
 
 void run_test()
 {
-    SafeSTLVector<Index> dofs_vec;
-    Epetra_SerialComm comm;
-    auto map = std::make_shared<Map>(-1, dofs_vec.size(), dofs_vec.data(), 0, comm);
-    auto vec = create_vector(*map);
+  SafeSTLVector<Index> dofs_vec;
+  Epetra_SerialComm comm;
+  auto map = std::make_shared<Map>(-1, dofs_vec.size(), dofs_vec.data(), 0, comm);
+  auto vec = create_vector(*map);
 
-    vec->print_info(out);
-    out << endl;
+  vec->print_info(out);
+  out << endl;
 
 
 
@@ -47,15 +47,15 @@ void run_test()
 
 int main()
 {
-    out.begin_item("Testing Trilinos/Tpetra vector:");
-    run_test();
-    out.end_item();
+  out.begin_item("Testing Trilinos/Tpetra vector:");
+  run_test();
+  out.end_item();
 
-    out.begin_item("Testing Trilinos/Epetra vector:");
-    run_test();
-    out.end_item();
+  out.begin_item("Testing Trilinos/Epetra vector:");
+  run_test();
+  out.end_item();
 
 
 
-    return  0;
+  return  0;
 }

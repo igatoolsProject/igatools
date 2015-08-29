@@ -38,46 +38,46 @@
 template<int dim>
 void ig_mapping(const int deg = 1)
 {
-    OUTSTART
+  OUTSTART
 
-    using Space = BSplineSpace<dim,dim>;
-    using RefSpace = ReferenceSpace<dim, dim>;
-    using Function = IgFunction<dim,0,dim,1>;
-    using Mapping   = Mapping<dim,0>;
+  using Space = BSplineSpace<dim,dim>;
+  using RefSpace = ReferenceSpace<dim, dim>;
+  using Function = IgFunction<dim,0,dim,1>;
+  using Mapping   = Mapping<dim,0>;
 
 
-    auto quad = QGauss<dim>(2);
-    auto grid = CartesianGrid<dim>::create(3);
+  auto quad = QGauss<dim>(2);
+  auto grid = CartesianGrid<dim>::create(3);
 
-    auto space = Space::create(deg, grid);
-    auto coeff = EpetraTools::create_vector(*space, DofProperties::active,Epetra_SerialComm());
-    (*coeff)[0] = 1.;
-    auto F = Function::create(space, coeff);
+  auto space = Space::create(deg, grid);
+  auto coeff = EpetraTools::create_vector(*space, DofProperties::active,Epetra_SerialComm());
+  (*coeff)[0] = 1.;
+  auto F = Function::create(space, coeff);
 
-    auto map = Mapping::create(F);
+  auto map = Mapping::create(F);
 
-    auto elem = map->begin();
-    auto end  = map->end();
+  auto elem = map->begin();
+  auto end  = map->end();
 
-    for (; elem != end; ++elem)
-    {
-        elem->template evaluate_at_points<_Value>(quad).print_info(out);
-        out << endl;
-        elem->template evaluate_at_points<_Gradient>(quad).print_info(out);
-        out << endl;
-        elem->template evaluate_at_points<_Hessian>(quad).print_info(out);
-        out << endl;
-    }
+  for (; elem != end; ++elem)
+  {
+    elem->template evaluate_at_points<_Value>(quad).print_info(out);
+    out << endl;
+    elem->template evaluate_at_points<_Gradient>(quad).print_info(out);
+    out << endl;
+    elem->template evaluate_at_points<_Hessian>(quad).print_info(out);
+    out << endl;
+  }
 
-    OUTEND
+  OUTEND
 }
 
 
 int main()
 {
-    ig_mapping<2>();
-    ig_mapping<3>();
+  ig_mapping<2>();
+  ig_mapping<3>();
 
-    return 0;
+  return 0;
 }
 

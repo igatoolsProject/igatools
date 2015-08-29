@@ -36,76 +36,76 @@ template <class Key, class T>
 class SafeSTLMap : public std::map<Key, T>
 {
 public:
-    /** Inherit the constructors of the base class. */
-    using std::map<Key, T>::map;
+  /** Inherit the constructors of the base class. */
+  using std::map<Key, T>::map;
 
-    /**
-     * Returns the number of entries in the container.
-     */
-    Size size() const noexcept
-    {
-        return std::map<Key, T>::size();
-    }
+  /**
+   * Returns the number of entries in the container.
+   */
+  Size size() const noexcept
+  {
+    return std::map<Key, T>::size();
+  }
 
-    /**
-     * @name Printing info
-     */
-    ///@{
+  /**
+   * @name Printing info
+   */
+  ///@{
 private:
-    template <class A>
-    EnableIf<has_print_info<A>(0), void>
-    t_print_info(LogStream &out) const
+  template <class A>
+  EnableIf<has_print_info<A>(0), void>
+  t_print_info(LogStream &out) const
+  {
+    for (auto &entry : *this)
     {
-        for (auto &entry : *this)
-        {
-            out << "{";
-            entry.first.print_info(out);
-            out << ", ";
-            entry.second.print_info(out);
-            out << "}" << std::endl;
-        }
+      out << "{";
+      entry.first.print_info(out);
+      out << ", ";
+      entry.second.print_info(out);
+      out << "}" << std::endl;
     }
+  }
 
-    template <class A>
-    EnableIf<(!has_print_info<A>(0)), void>
-    t_print_info(LogStream &out) const
+  template <class A>
+  EnableIf<(!has_print_info<A>(0)), void>
+  t_print_info(LogStream &out) const
+  {
+    for (auto &entry : *this)
     {
-        for (auto &entry : *this)
-        {
-            out << "{ " << entry.first;
-            out << ", " << entry.second  << "}";
-            out << std::endl;
-        }
+      out << "{ " << entry.first;
+      out << ", " << entry.second  << "}";
+      out << std::endl;
     }
+  }
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void serialize(Archive &ar, const unsigned int version)
-    {
-        ar &boost::serialization::make_nvp("SafeSTLContainer_base_t",
-                                           boost::serialization::base_object<std::map>(*this));
-    }
-    ///@}
+  template<class Archive>
+  void serialize(Archive &ar, const unsigned int version)
+  {
+    ar &boost::serialization::make_nvp("SafeSTLContainer_base_t",
+                                       boost::serialization::base_object<std::map>(*this));
+  }
+  ///@}
 #endif // SERIALIZATION
 
 public:
 
-    /**
-     * Prints the content of the vector on the LogStream @p out.
-     * Its use is intended mainly for testing and debugging purpose.
-     */
-    void print_info(LogStream &out) const
-    {
-        t_print_info<T>(out);
-    }
-    ///@}
+  /**
+   * Prints the content of the vector on the LogStream @p out.
+   * Its use is intended mainly for testing and debugging purpose.
+   */
+  void print_info(LogStream &out) const
+  {
+    t_print_info<T>(out);
+  }
+  ///@}
 };
 
 

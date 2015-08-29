@@ -59,127 +59,127 @@ class SpaceBase
 {
 private:
 //    using base_t = GridWrapper<dim_>;
-    using self_t = SpaceBase<dim_>;
+  using self_t = SpaceBase<dim_>;
 
 
 public:
 
-    using IndexType = TensorIndex<dim_>;
+  using IndexType = TensorIndex<dim_>;
 
 
 
-    virtual void get_element_dofs(
-        const IndexType element_id,
-        SafeSTLVector<Index> &dofs_global,
-        SafeSTLVector<Index> &dofs_local_to_patch,
-        SafeSTLVector<Index> &dofs_local_to_elem,
-        const std::string &dofs_property = DofProperties::active) const = 0;
+  virtual void get_element_dofs(
+    const IndexType element_id,
+    SafeSTLVector<Index> &dofs_global,
+    SafeSTLVector<Index> &dofs_local_to_patch,
+    SafeSTLVector<Index> &dofs_local_to_elem,
+    const std::string &dofs_property = DofProperties::active) const = 0;
 
 
 
-    /** @name Constructor and destructor. */
-    ///@{
+  /** @name Constructor and destructor. */
+  ///@{
 protected:
-    /**
-     * Default constructor. It does nothing but it is needed for the
-     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     * mechanism.
-     */
-    SpaceBase() = default;
+  /**
+   * Default constructor. It does nothing but it is needed for the
+   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * mechanism.
+   */
+  SpaceBase() = default;
 
-    /** Construct the object from the (const) @p grid on which the function space will be built upon. */
-    SpaceBase(const std::shared_ptr<const CartesianGrid<dim_>> &grid);
+  /** Construct the object from the (const) @p grid on which the function space will be built upon. */
+  SpaceBase(const std::shared_ptr<const CartesianGrid<dim_>> &grid);
 
-    /** Construct the object from the (non-const) @p grid on which the function space will be built upon. */
-    SpaceBase(const std::shared_ptr<CartesianGrid<dim_>> &grid);
+  /** Construct the object from the (non-const) @p grid on which the function space will be built upon. */
+  SpaceBase(const std::shared_ptr<CartesianGrid<dim_>> &grid);
 
-    /** Copy constructor. */
-    SpaceBase(const self_t &) = delete;
+  /** Copy constructor. */
+  SpaceBase(const self_t &) = delete;
 
-    /** Move constructor. */
-    SpaceBase(self_t &&) = default;
-
-public:
-    /** Destructor. */
-    virtual ~SpaceBase() = default;
-    ///@}
-
-    /** @name Assignment operator. */
-    ///@{
-    /** Copy assignment operator. Not allowed to be used. */
-    self_t &operator=(const self_t &) = delete;
-
-    /** Move assignment operator. Not allowed to be used. */
-    self_t &operator=(self_t &&) = delete;
-    ///@}
+  /** Move constructor. */
+  SpaceBase(self_t &&) = default;
 
 public:
-    /**
-     * Returns the unique identifier associated to each object instance.
-     */
-    Index get_object_id() const;
+  /** Destructor. */
+  virtual ~SpaceBase() = default;
+  ///@}
+
+  /** @name Assignment operator. */
+  ///@{
+  /** Copy assignment operator. Not allowed to be used. */
+  self_t &operator=(const self_t &) = delete;
+
+  /** Move assignment operator. Not allowed to be used. */
+  self_t &operator=(self_t &&) = delete;
+  ///@}
+
+public:
+  /**
+   * Returns the unique identifier associated to each object instance.
+   */
+  Index get_object_id() const;
 
 
-    std::shared_ptr<CartesianGrid<dim_>> get_ptr_grid();
+  std::shared_ptr<CartesianGrid<dim_>> get_ptr_grid();
 
-    std::shared_ptr<const CartesianGrid<dim_>> get_ptr_const_grid() const;
+  std::shared_ptr<const CartesianGrid<dim_>> get_ptr_const_grid() const;
 
-    /**
-     * Get the name associated to the object instance.
-     */
-    const std::string &get_name() const;
+  /**
+   * Get the name associated to the object instance.
+   */
+  const std::string &get_name() const;
 
-    /**
-     * Set the name associated to the object instance.
-     */
-    void set_name(const std::string &name);
+  /**
+   * Set the name associated to the object instance.
+   */
+  void set_name(const std::string &name);
 
 
 
 #ifdef MESH_REFINEMENT
 
-    /**
-     * Perform the h-refinement of the space in all the directions.
-     *
-     * Each interval in the unrefined grid is uniformly divided in @p n_subdivisions
-     * sub-intervals.
-     *
-     * @ingroup h_refinement
-     */
-    void refine_h(const Size n_subdivisions = 2);
+  /**
+   * Perform the h-refinement of the space in all the directions.
+   *
+   * Each interval in the unrefined grid is uniformly divided in @p n_subdivisions
+   * sub-intervals.
+   *
+   * @ingroup h_refinement
+   */
+  void refine_h(const Size n_subdivisions = 2);
 
 #endif // MESH_REFINEMENT
 
 protected:
 
-    /**
-     * Unique identifier associated to each object instance.
-     */
-    Index object_id_ = 0;
+  /**
+   * Unique identifier associated to each object instance.
+   */
+  Index object_id_ = 0;
 
-    /**
-     * Name associated to the object instance.
-     */
-    std::string name_;
+  /**
+   * Name associated to the object instance.
+   */
+  std::string name_;
 
 private:
 
 //    std::shared_ptr<CartesianGrid<dim_> > grid_;
 
-    SharedPtrConstnessHandler<CartesianGrid<dim_> > grid_;
+  SharedPtrConstnessHandler<CartesianGrid<dim_> > grid_;
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version);
-    ///@}
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version);
+  ///@}
 #endif // SERIALIZATION
 };
 
@@ -199,215 +199,215 @@ template <int,int,int> class DofDistribution;
  */
 template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 class Space
-    :
-    public std::enable_shared_from_this<Space<dim_,codim_,range_,rank_,type_> >,
-    public SpaceBase<dim_>
+  :
+  public std::enable_shared_from_this<Space<dim_,codim_,range_,rank_,type_> >,
+  public SpaceBase<dim_>
 {
 public:
 
-    using PhysDomain = Mapping<dim_,codim_>;
+  using PhysDomain = Mapping<dim_,codim_>;
 
 private:
-    using base_t = SpaceBase<dim_>;
-    using self_t = Space<dim_,codim_,range_,rank_,type_>;
+  using base_t = SpaceBase<dim_>;
+  using self_t = Space<dim_,codim_,range_,rank_,type_>;
 
 
 protected:
-    using MapFunc = Function<dim_,0,dim_+codim_,1>;
+  using MapFunc = Function<dim_,0,dim_+codim_,1>;
 
 
-    /** @name Constructor and destructor. */
-    ///@{
+  /** @name Constructor and destructor. */
+  ///@{
 protected:
-    /**
-     * Default constructor. It does nothing but it is needed for the
-     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     * mechanism.
-     */
-    Space() = default;
+  /**
+   * Default constructor. It does nothing but it is needed for the
+   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * mechanism.
+   */
+  Space() = default;
 
-    /**
-     * Construct the object from the (non-const) @p grid on which the function space will be built upon
-     * and the function representing the mapping.
-     *
-     * @pre The shared_pointer <tt>map_func</tt> must be unique.
-     *
-     * @warning After the object construction the state of <tt>map_func</tt> will be no longer valid.
-     */
-    Space(const std::shared_ptr<CartesianGrid<dim_>> &grid,const std::shared_ptr<MapFunc> &map_func);
+  /**
+   * Construct the object from the (non-const) @p grid on which the function space will be built upon
+   * and the function representing the mapping.
+   *
+   * @pre The shared_pointer <tt>map_func</tt> must be unique.
+   *
+   * @warning After the object construction the state of <tt>map_func</tt> will be no longer valid.
+   */
+  Space(const std::shared_ptr<CartesianGrid<dim_>> &grid,const std::shared_ptr<MapFunc> &map_func);
 
-    /**
-     * Construct the object from the (const) @p grid on which the function space will be built upon
-     * and the function representing the mapping.
-     *
-     * @pre The shared_pointer <tt>map_func</tt> must be unique.
-     *
-     * @warning After the object construction the state of <tt>map_func</tt> will be no longer valid.
-     */
-    Space(const std::shared_ptr<const CartesianGrid<dim_>> &grid,const std::shared_ptr<MapFunc> &map_func);
+  /**
+   * Construct the object from the (const) @p grid on which the function space will be built upon
+   * and the function representing the mapping.
+   *
+   * @pre The shared_pointer <tt>map_func</tt> must be unique.
+   *
+   * @warning After the object construction the state of <tt>map_func</tt> will be no longer valid.
+   */
+  Space(const std::shared_ptr<const CartesianGrid<dim_>> &grid,const std::shared_ptr<MapFunc> &map_func);
 
-    /** Copy constructor. */
-    Space(const self_t &) = delete;
+  /** Copy constructor. */
+  Space(const self_t &) = delete;
 
-    /** Move constructor. */
-    Space(self_t &&) = default;
-
-public:
-    /** Destructor. */
-    virtual ~Space() = default;
-    ///@}
-
-    /** @name Assignment operator. */
-    ///@{
-    /** Copy assignment operator. Not allowed to be used. */
-    self_t &operator=(const self_t &) = delete;
-
-    /** Move assignment operator. Not allowed to be used. */
-    self_t &operator=(self_t &&) = delete;
-    ///@}
-
+  /** Move constructor. */
+  Space(self_t &&) = default;
 
 public:
+  /** Destructor. */
+  virtual ~Space() = default;
+  ///@}
 
-    using IndexType = TensorIndex<dim_>;
-    using PropertyList = PropertiesIdContainer<IndexType>;
-    using List = typename PropertyList::List;
-    using ListIt = typename PropertyList::List::iterator;
+  /** @name Assignment operator. */
+  ///@{
+  /** Copy assignment operator. Not allowed to be used. */
+  self_t &operator=(const self_t &) = delete;
+
+  /** Move assignment operator. Not allowed to be used. */
+  self_t &operator=(self_t &&) = delete;
+  ///@}
 
 
-    static const int dim = dim_;
-    static const int codim = codim_;
-    static const int range = range_;
-    static const int rank = rank_;
+public:
+
+  using IndexType = TensorIndex<dim_>;
+  using PropertyList = PropertiesIdContainer<IndexType>;
+  using List = typename PropertyList::List;
+  using ListIt = typename PropertyList::List::iterator;
 
 
-    std::shared_ptr<MapFunc> get_ptr_map_func()
-    {
+  static const int dim = dim_;
+  static const int codim = codim_;
+  static const int range = range_;
+  static const int rank = rank_;
+
+
+  std::shared_ptr<MapFunc> get_ptr_map_func()
+  {
 //        return map_func_.get_ptr_data();
-        return std::const_pointer_cast<PhysDomain>(phys_domain_)->get_ptr_function();
-    }
+    return std::const_pointer_cast<PhysDomain>(phys_domain_)->get_ptr_function();
+  }
 
-    std::shared_ptr<const MapFunc> get_ptr_const_map_func() const
-    {
+  std::shared_ptr<const MapFunc> get_ptr_const_map_func() const
+  {
 //        return map_func_.get_ptr_const_data();
-        return phys_domain_->get_ptr_const_function();
-    }
+    return phys_domain_->get_ptr_const_function();
+  }
 
-    virtual std::shared_ptr<const DofDistribution<dim_,range_,rank_> >
-    get_ptr_const_dof_distribution() const = 0;
-
-
-    virtual std::shared_ptr<DofDistribution<dim_,range_,rank_> >
-    get_ptr_dof_distribution() = 0;
+  virtual std::shared_ptr<const DofDistribution<dim_,range_,rank_> >
+  get_ptr_const_dof_distribution() const = 0;
 
 
-    /**
-     * Returns the dofs that are on the interior of the <tt>dim</tt>-dimensional hypercube
-     * (i.e. the dofs that are not on the boundary).
-     */
-    std::set<Index> get_interior_dofs() const;
-
-    using topology_variant = TopologyVariants<dim_>;
-
-    std::set<Index> get_boundary_dofs(const int s_id, const topology_variant &topology) const;
-
-    template<int k>
-    std::set<Index> get_boundary_dofs(const int s_id) const
-    {
-        return this->get_boundary_dofs(s_id,Topology<k>());
-    }
-
-    /** @name Functions for retrieving information about the number of basis function. */
-    ///@{
-    Size get_num_basis() const;
-
-    Size get_num_basis(const int comp) const;
-
-    Size get_num_basis(const int comp, const int dir) const;
-
-    Size get_elem_num_basis() const;
-
-    /**
-     * This function returns the global dof id corresponding to the basis function
-     * with tensor index <p>tensor_index</p> on the @p comp component of the space.
-     */
-    Index
-    get_global_dof_id(const TensorIndex<dim> &tensor_index,
-                      const Index comp) const;
-    ///@}
+  virtual std::shared_ptr<DofDistribution<dim_,range_,rank_> >
+  get_ptr_dof_distribution() = 0;
 
 
-    /**
-     * Return the maximum value of the polynomial degree, for each component, for each direction;
-     */
-    virtual int get_max_degree() const = 0;
+  /**
+   * Returns the dofs that are on the interior of the <tt>dim</tt>-dimensional hypercube
+   * (i.e. the dofs that are not on the boundary).
+   */
+  std::set<Index> get_interior_dofs() const;
+
+  using topology_variant = TopologyVariants<dim_>;
+
+  std::set<Index> get_boundary_dofs(const int s_id, const topology_variant &topology) const;
+
+  template<int k>
+  std::set<Index> get_boundary_dofs(const int s_id) const
+  {
+    return this->get_boundary_dofs(s_id,Topology<k>());
+  }
+
+  /** @name Functions for retrieving information about the number of basis function. */
+  ///@{
+  Size get_num_basis() const;
+
+  Size get_num_basis(const int comp) const;
+
+  Size get_num_basis(const int comp, const int dir) const;
+
+  Size get_elem_num_basis() const;
+
+  /**
+   * This function returns the global dof id corresponding to the basis function
+   * with tensor index <p>tensor_index</p> on the @p comp component of the space.
+   */
+  Index
+  get_global_dof_id(const TensorIndex<dim> &tensor_index,
+                    const Index comp) const;
+  ///@}
 
 
-    /**
-     * Create and element (defined on this space) with a given flat_index
-     */
-    virtual std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_,type_> >
-    create_element(const ListIt &index, const PropId &property) const = 0;
+  /**
+   * Return the maximum value of the polynomial degree, for each component, for each direction;
+   */
+  virtual int get_max_degree() const = 0;
 
 
-    virtual std::shared_ptr< SpaceElementHandler<dim_,codim_,range_,rank_,type_> >
-    get_elem_handler() const = 0;
+  /**
+   * Create and element (defined on this space) with a given flat_index
+   */
+  virtual std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_,type_> >
+  create_element(const ListIt &index, const PropId &property) const = 0;
 
 
-    virtual void print_info(LogStream &out) const = 0;
+  virtual std::shared_ptr< SpaceElementHandler<dim_,codim_,range_,rank_,type_> >
+  get_elem_handler() const = 0;
+
+
+  virtual void print_info(LogStream &out) const = 0;
 
 
 
-    using ElementAccessor = SpaceElement<dim_,codim_,range_,rank_,type_>;
-    using ElementIterator = GridIterator<ElementAccessor>;
+  using ElementAccessor = SpaceElement<dim_,codim_,range_,rank_,type_>;
+  using ElementIterator = GridIterator<ElementAccessor>;
 
-    /** @name Functions involving the element iterator */
-    ///@{
-    /**
-     * Returns a element iterator to the first element of the patch
-     * with the property @p element_property.
-     */
-    ElementIterator begin(const PropId &element_property = ElementProperties::active);
+  /** @name Functions involving the element iterator */
+  ///@{
+  /**
+   * Returns a element iterator to the first element of the patch
+   * with the property @p element_property.
+   */
+  ElementIterator begin(const PropId &element_property = ElementProperties::active);
 
 
-    /**
-     * Returns a element iterator to one-pass the end of patch
-     * with the property @p element_property.
-     */
-    ElementIterator end(const PropId &element_property = ElementProperties::active);
-    ///@}
+  /**
+   * Returns a element iterator to one-pass the end of patch
+   * with the property @p element_property.
+   */
+  ElementIterator end(const PropId &element_property = ElementProperties::active);
+  ///@}
 
 
 #ifdef MESH_REFINEMENT
 
-    virtual std::shared_ptr<const self_t> get_space_previous_refinement() const = 0;
+  virtual std::shared_ptr<const self_t> get_space_previous_refinement() const = 0;
 
 #endif
 
-    std::shared_ptr<const PhysDomain> get_physical_domain() const
-    {
-        return phys_domain_;
-    }
+  std::shared_ptr<const PhysDomain> get_physical_domain() const
+  {
+    return phys_domain_;
+  }
 
 
 private:
 
 //    SharedPtrConstnessHandler<MapFunc>  map_func_;
 
-    std::shared_ptr<const PhysDomain> phys_domain_;
+  std::shared_ptr<const PhysDomain> phys_domain_;
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version);
-    ///@}
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version);
+  ///@}
 #endif // SERIALIZATION
 
 };

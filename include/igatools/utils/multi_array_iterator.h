@@ -47,182 +47,182 @@ IGA_NAMESPACE_OPEN
  */
 template <class Container>
 class MultiArrayIteratorBase
-    : public std::iterator<
-      std::random_access_iterator_tag,
-      typename Container::value_type >
+  : public std::iterator<
+    std::random_access_iterator_tag,
+    typename Container::value_type >
 {
 public:
-    using parent_t = std::iterator<
-                     std::random_access_iterator_tag,
-                     typename Container::value_type >;
+  using parent_t = std::iterator<
+                   std::random_access_iterator_tag,
+                   typename Container::value_type >;
 
-    /**
-     * Type for the values referenced by the iterator.
-     * If the @p Container type is declared to be @p const then also
-     * the @p Value type will be @p const.
-     */
-    using value_type = typename Container::value_type;
+  /**
+   * Type for the values referenced by the iterator.
+   * If the @p Container type is declared to be @p const then also
+   * the @p Value type will be @p const.
+   */
+  using value_type = typename Container::value_type;
 
-    /** Type for the reference. */
-    using reference = typename Container::reference;
-
-
-    /** Type for the pointer. */
-    using pointer = value_type *;
-
-    using difference_type = typename std::iterator_traits<parent_t>::difference_type;
+  /** Type for the reference. */
+  using reference = typename Container::reference;
 
 
-    /** @name Constructors and destructor */
-    ///@{
+  /** Type for the pointer. */
+  using pointer = value_type *;
 
-    /** Default constructor.*/
-    MultiArrayIteratorBase();
-
-    /** Copy constructor. */
-    MultiArrayIteratorBase(const MultiArrayIteratorBase<Container> &in) = default;
-
-    /** Move constructor.*/
-    MultiArrayIteratorBase(MultiArrayIteratorBase<Container> &&in) = default;
+  using difference_type = typename std::iterator_traits<parent_t>::difference_type;
 
 
-    /**
-     * Construct a iterator on a tensor sized container
-     * like type pointed to by the @p container, the @p index of the
-     * object pointed to by the iterator and the @p stride used
-     * to advance to the next entry in the container.
-     *
-     * @note In order to successfully build the iterator, the @p container must not be empty,
-     * otherwise, in DEBUG mode, an exception will be raised.
-     */
-    MultiArrayIteratorBase(Container &container,const Index id,const Index stride=1);
+  /** @name Constructors and destructor */
+  ///@{
 
-    /** Destructor. */
-    ~MultiArrayIteratorBase() = default;
-    ///@}
+  /** Default constructor.*/
+  MultiArrayIteratorBase();
+
+  /** Copy constructor. */
+  MultiArrayIteratorBase(const MultiArrayIteratorBase<Container> &in) = default;
+
+  /** Move constructor.*/
+  MultiArrayIteratorBase(MultiArrayIteratorBase<Container> &&in) = default;
 
 
-    /** @name Assignment operators */
-    ///@{
-    /** Copy assignment operator.*/
-    MultiArrayIteratorBase<Container> &operator=(
-        const MultiArrayIteratorBase<Container> &it) = default;
+  /**
+   * Construct a iterator on a tensor sized container
+   * like type pointed to by the @p container, the @p index of the
+   * object pointed to by the iterator and the @p stride used
+   * to advance to the next entry in the container.
+   *
+   * @note In order to successfully build the iterator, the @p container must not be empty,
+   * otherwise, in DEBUG mode, an exception will be raised.
+   */
+  MultiArrayIteratorBase(Container &container,const Index id,const Index stride=1);
 
-    /** Move assignment operator.*/
-    MultiArrayIteratorBase<Container> &operator=(
-        MultiArrayIteratorBase<Container> &&) = default;
-
-    ///@}
-
-
-    /** @name Advance operators */
-    ///@{
-    /**
-     *  Prefix <tt>++</tt> operator: <tt>++i</tt>. This
-     *  operator advances the iterator to
-     *  the next entry and returns
-     *  a reference to <tt>*this</tt>.
-     */
-    MultiArrayIteratorBase<Container> &operator++();
-
-    /**
-     *  Postfix <tt>++</tt> operator: <tt>i++</tt>.
-     */
-    MultiArrayIteratorBase<Container> operator++(int);
+  /** Destructor. */
+  ~MultiArrayIteratorBase() = default;
+  ///@}
 
 
-    /**
-     * This operator returns an iterator pointing to the entry obtained by advancing
-     * @p n positions from the current one.
-     *
-     * @note The positions are ``counted'' considering the stride used to build the iterator so,
-     * if the original iterator was pointing the position identified by @p id, the returned iterator
-     * will point the position identified by <tt>id + n*stride</tt>.
-     */
-    MultiArrayIteratorBase<Container> operator+(const Index n) const;
+  /** @name Assignment operators */
+  ///@{
+  /** Copy assignment operator.*/
+  MultiArrayIteratorBase<Container> &operator=(
+    const MultiArrayIteratorBase<Container> &it) = default;
+
+  /** Move assignment operator.*/
+  MultiArrayIteratorBase<Container> &operator=(
+    MultiArrayIteratorBase<Container> &&) = default;
+
+  ///@}
 
 
-    /**
-     * This operator returns an iterator pointing to the entry obtained by going back
-     * @p n positions from the current one.
-     *
-     * @note The positions are ``counted'' considering the stride used to build the iterator so,
-     * if the original iterator was pointing the position identified by @p id, the returned iterator
-     * will point the position identified by <tt>id - n*stride</tt>.
-     */
-    MultiArrayIteratorBase<Container> operator-(const Index n) const;
+  /** @name Advance operators */
+  ///@{
+  /**
+   *  Prefix <tt>++</tt> operator: <tt>++i</tt>. This
+   *  operator advances the iterator to
+   *  the next entry and returns
+   *  a reference to <tt>*this</tt>.
+   */
+  MultiArrayIteratorBase<Container> &operator++();
 
-    /**
-     * Returns <tt>n</tt> such that <tt>a + n == (*this)</tt>, where <tt>(*this) == a + ( (*this) - a)</tt>.
-     *
-     */
-    difference_type
-    operator-(const MultiArrayIteratorBase<Container> &a) const;
-    ///@}
-
-    /** @name Dereferencing operators */
-    ///@{
-    /** Dereferencing operator (const version).*/
-    const reference operator* () const;
-
-    /** Dereferencing operator (non-const version).*/
-    reference operator* ();
-
-    /** Dereferencing operator (const version).*/
-    const value_type *const operator-> () const;
-
-    /** Dereferencing operator (non-const version).*/
-    value_type *operator->();
+  /**
+   *  Postfix <tt>++</tt> operator: <tt>i++</tt>.
+   */
+  MultiArrayIteratorBase<Container> operator++(int);
 
 
-    /** Dereferencing operator (const version). Returns the i-th entry in the iterator. */
-    const reference operator[](const Index i) const;
-
-    /** Dereferencing operator (non-const version). Returns the i-th entry in the iterator. */
-    reference operator[](const Index i);
-
-    ///@}
-
-
-    /** @name Comparison operators. */
-    ///@{
-    /** Compare for equality. */
-    bool operator==(const MultiArrayIteratorBase<Container> &) const;
+  /**
+   * This operator returns an iterator pointing to the entry obtained by advancing
+   * @p n positions from the current one.
+   *
+   * @note The positions are ``counted'' considering the stride used to build the iterator so,
+   * if the original iterator was pointing the position identified by @p id, the returned iterator
+   * will point the position identified by <tt>id + n*stride</tt>.
+   */
+  MultiArrayIteratorBase<Container> operator+(const Index n) const;
 
 
-    /** Compare for inequality.*/
-    bool operator!=(const MultiArrayIteratorBase<Container> &) const;
+  /**
+   * This operator returns an iterator pointing to the entry obtained by going back
+   * @p n positions from the current one.
+   *
+   * @note The positions are ``counted'' considering the stride used to build the iterator so,
+   * if the original iterator was pointing the position identified by @p id, the returned iterator
+   * will point the position identified by <tt>id - n*stride</tt>.
+   */
+  MultiArrayIteratorBase<Container> operator-(const Index n) const;
+
+  /**
+   * Returns <tt>n</tt> such that <tt>a + n == (*this)</tt>, where <tt>(*this) == a + ( (*this) - a)</tt>.
+   *
+   */
+  difference_type
+  operator-(const MultiArrayIteratorBase<Container> &a) const;
+  ///@}
+
+  /** @name Dereferencing operators */
+  ///@{
+  /** Dereferencing operator (const version).*/
+  const reference operator* () const;
+
+  /** Dereferencing operator (non-const version).*/
+  reference operator* ();
+
+  /** Dereferencing operator (const version).*/
+  const value_type *const operator-> () const;
+
+  /** Dereferencing operator (non-const version).*/
+  value_type *operator->();
 
 
-    /**
-     * Returns true if,
-     * given two iterators (on the same @p Container object and with the same @p stride),
-     * the left one is pointing to previous entry w.r.t. the right one.
-     */
-    bool operator<(const MultiArrayIteratorBase<Container> &) const;
+  /** Dereferencing operator (const version). Returns the i-th entry in the iterator. */
+  const reference operator[](const Index i) const;
 
-    /** Compare for less-than or equality. */
-    bool operator<=(const MultiArrayIteratorBase<Container> &) const;
-    ///@}
+  /** Dereferencing operator (non-const version). Returns the i-th entry in the iterator. */
+  reference operator[](const Index i);
+
+  ///@}
 
 
+  /** @name Comparison operators. */
+  ///@{
+  /** Compare for equality. */
+  bool operator==(const MultiArrayIteratorBase<Container> &) const;
 
-    /** Returns the flat index of the entry in the container pointed by the iterator. */
-    Index get_id() const;
 
-    /** Returns the stride used to advance to the next entry in the container. */
-    Index get_stride() const;
+  /** Compare for inequality.*/
+  bool operator!=(const MultiArrayIteratorBase<Container> &) const;
+
+
+  /**
+   * Returns true if,
+   * given two iterators (on the same @p Container object and with the same @p stride),
+   * the left one is pointing to previous entry w.r.t. the right one.
+   */
+  bool operator<(const MultiArrayIteratorBase<Container> &) const;
+
+  /** Compare for less-than or equality. */
+  bool operator<=(const MultiArrayIteratorBase<Container> &) const;
+  ///@}
+
+
+
+  /** Returns the flat index of the entry in the container pointed by the iterator. */
+  Index get_id() const;
+
+  /** Returns the stride used to advance to the next entry in the container. */
+  Index get_stride() const;
 
 private:
 
-    /** Container upon which the iterator is built for. */
-    Container *container_;
+  /** Container upon which the iterator is built for. */
+  Container *container_;
 
-    /** Flat index of the entry in the container pointed by the iterator. */
-    Index id_;
+  /** Flat index of the entry in the container pointed by the iterator. */
+  Index id_;
 
-    /** Stride used to advance to the next entry in the container. */
-    Index stride_;
+  /** Stride used to advance to the next entry in the container. */
+  Index stride_;
 
 };
 
@@ -231,41 +231,41 @@ private:
 
 template <class Container>
 class MultiArrayConstIterator
-    : public MultiArrayIteratorBase<Container>
+  : public MultiArrayIteratorBase<Container>
 {
 public:
-    MultiArrayConstIterator() = default;
+  MultiArrayConstIterator() = default;
 
-    /**
-     * Construct a iterator on a tensor sized container
-     * like type pointed to by the @p container, the @p index of the
-     * object pointed to by the iterator and the @p stride used
-     * to advance to the next entry in the container.
-     *
-     * @note In order to successfully build the iterator, the @p container must not be empty,
-     * otherwise, in DEBUG mode, an exception will be raised.
-     */
-    MultiArrayConstIterator(const Container &container,const Index id,const Index stride=1);
+  /**
+   * Construct a iterator on a tensor sized container
+   * like type pointed to by the @p container, the @p index of the
+   * object pointed to by the iterator and the @p stride used
+   * to advance to the next entry in the container.
+   *
+   * @note In order to successfully build the iterator, the @p container must not be empty,
+   * otherwise, in DEBUG mode, an exception will be raised.
+   */
+  MultiArrayConstIterator(const Container &container,const Index id,const Index stride=1);
 };
 
 
 template <class Container>
 class MultiArrayIterator
-    : public MultiArrayConstIterator<Container>
+  : public MultiArrayConstIterator<Container>
 {
 public:
-    MultiArrayIterator() = default;
+  MultiArrayIterator() = default;
 
-    /**
-     * Construct a iterator on a tensor sized container
-     * like type pointed to by the @p container, the @p index of the
-     * object pointed to by the iterator and the @p stride used
-     * to advance to the next entry in the container.
-     *
-     * @note In order to successfully build the iterator, the @p container must not be empty,
-     * otherwise, in DEBUG mode, an exception will be raised.
-     */
-    MultiArrayIterator(Container &container,const Index id,const Index stride=1);
+  /**
+   * Construct a iterator on a tensor sized container
+   * like type pointed to by the @p container, the @p index of the
+   * object pointed to by the iterator and the @p stride used
+   * to advance to the next entry in the container.
+   *
+   * @note In order to successfully build the iterator, the @p container must not be empty,
+   * otherwise, in DEBUG mode, an exception will be raised.
+   */
+  MultiArrayIterator(Container &container,const Index id,const Index stride=1);
 };
 
 

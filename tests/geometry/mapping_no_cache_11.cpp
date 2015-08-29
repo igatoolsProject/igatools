@@ -37,54 +37,54 @@
 template<int dim, int codim>
 void test()
 {
-    OUTSTART
+  OUTSTART
 
-    const int space_dim = dim+codim;
-    using Function = functions::LinearFunction<dim, 0, space_dim>;
-    using Mapping  = Mapping<dim, codim>;
+  const int space_dim = dim+codim;
+  using Function = functions::LinearFunction<dim, 0, space_dim>;
+  using Mapping  = Mapping<dim, codim>;
 
-    typename Function::Value    b;
-    typename Function::Gradient A;
-    for (int i=0; i<space_dim; i++)
-    {
-        for (int j=0; j<dim; j++)
-            if (j == i)
-                A[j][j] = 2.;
-        b[i] = i;
-    }
-    auto grid = CartesianGrid<dim>::create(3);
-    auto F = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
+  typename Function::Value    b;
+  typename Function::Gradient A;
+  for (int i=0; i<space_dim; i++)
+  {
+    for (int j=0; j<dim; j++)
+      if (j == i)
+        A[j][j] = 2.;
+    b[i] = i;
+  }
+  auto grid = CartesianGrid<dim>::create(3);
+  auto F = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
 
-    auto quad = QGauss<dim>(2);
+  auto quad = QGauss<dim>(2);
 
-    Mapping map(F);
+  Mapping map(F);
 
-    auto elem = map.begin();
-    auto end  = map.end();
+  auto elem = map.begin();
+  auto end  = map.end();
 
-    for (; elem != end; ++elem)
-    {
-        out << "Values:" << endl;
-        elem->template evaluate_at_points<_Value>(quad).print_info(out);
-        out << endl;
-        out << "Gradients:" << endl;
-        elem->template evaluate_at_points<_Gradient>(quad).print_info(out);
-        out << endl;
-        out << "Hessians:" << endl;
-        elem->template evaluate_at_points<_Hessian>(quad).print_info(out);
-        out << endl;
-    }
+  for (; elem != end; ++elem)
+  {
+    out << "Values:" << endl;
+    elem->template evaluate_at_points<_Value>(quad).print_info(out);
+    out << endl;
+    out << "Gradients:" << endl;
+    elem->template evaluate_at_points<_Gradient>(quad).print_info(out);
+    out << endl;
+    out << "Hessians:" << endl;
+    elem->template evaluate_at_points<_Hessian>(quad).print_info(out);
+    out << endl;
+  }
 
-    OUTEND
+  OUTEND
 }
 
 
 int main()
 {
-    test<2,0>();
-    test<3,0>();
-    test<2,1>();
+  test<2,0>();
+  test<3,0>();
+  test<2,1>();
 
-    return 0;
+  return 0;
 }
 

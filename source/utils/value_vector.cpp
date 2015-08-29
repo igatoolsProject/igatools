@@ -33,24 +33,24 @@ ValueVector() : ValueVector<T>(0)
 template <class T>
 ValueVector<T>::
 ValueVector(const Index num_points)
-    : ValueContainer<T>(1,num_points)
+  : ValueContainer<T>(1,num_points)
 {
-    Assert(num_points >= 0,ExcLowerRange(num_points,0));
-    this->zero();
+  Assert(num_points >= 0,ExcLowerRange(num_points,0));
+  this->zero();
 }
 
 template <class T>
 ValueVector<T>::
 ValueVector(const SafeSTLVector<T> &vector_in)
-    : ValueVector<T>(vector_in.size())
+  : ValueVector<T>(vector_in.size())
 {
-    std::copy(vector_in.begin(),vector_in.end(),this->begin());
+  std::copy(vector_in.begin(),vector_in.end(),this->begin());
 }
 
 template <class T>
 ValueVector<T>::
 ValueVector(const std::initializer_list<T> &list)
-    : ValueVector(SafeSTLVector<T>(list))
+  : ValueVector(SafeSTLVector<T>(list))
 {}
 //*/
 
@@ -59,7 +59,7 @@ void
 ValueVector<T>::
 resize(const Size num_points)
 {
-    ValueContainer<T>::resize(1,num_points);
+  ValueContainer<T>::resize(1,num_points);
 }
 
 
@@ -69,7 +69,7 @@ void
 ValueVector<T>::
 clear() noexcept
 {
-    this->resize(0);
+  this->resize(0);
 }
 
 template <class T>
@@ -77,9 +77,9 @@ void
 ValueVector<T>::
 print_info(LogStream &out) const
 {
-    out.begin_item("ValueVector (num_points=" + std::to_string(this->get_num_points()) + ") :");
-    this->get_data().print_info(out);
-    out.end_item();
+  out.begin_item("ValueVector (num_points=" + std::to_string(this->get_num_points()) + ") :");
+  this->get_data().print_info(out);
+  out.end_item();
 }
 
 
@@ -90,24 +90,24 @@ template< class T>
 ValueVector<T>
 operator*(const ValueVector<T> &a, const Real scalar)
 {
-    ValueVector<T> result = a ;
+  ValueVector<T> result = a ;
 
-    for (auto &r : result)
-        r *= scalar ;
+  for (auto &r : result)
+    r *= scalar ;
 
-    return result ;
+  return result ;
 }
 
 template< class T>
 ValueVector<T>
 operator*(const Real scalar, const ValueVector<T> &a)
 {
-    ValueVector<T> result = a ;
+  ValueVector<T> result = a ;
 
-    for (auto &r : result)
-        r *= scalar ;
+  for (auto &r : result)
+    r *= scalar ;
 
-    return result ;
+  return result ;
 }
 
 

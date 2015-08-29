@@ -41,56 +41,56 @@
 template<int dim, int codim, int sub_dim=dim>
 void ig_mapping(const int deg = 1)
 {
-    OUTSTART
+  OUTSTART
 
-    using Space = BSplineSpace<dim, dim+codim>;
-    //  using RefSpace = ReferenceSpace<dim, dim+codim>;
-    using Function = IgFunction<dim,0,dim+codim,1>;
-    using Mapping   = PhysicalDomain<dim, codim>;
+  using Space = BSplineSpace<dim, dim+codim>;
+  //  using RefSpace = ReferenceSpace<dim, dim+codim>;
+  using Function = IgFunction<dim,0,dim+codim,1>;
+  using Mapping   = PhysicalDomain<dim, codim>;
 
 
-    auto flag =  ValueFlags::value| ValueFlags::gradient
-                 | ValueFlags::hessian;
-    auto quad = QGauss<dim>(2);
-    auto grid = CartesianGrid<dim>::create(3);
+  auto flag =  ValueFlags::value| ValueFlags::gradient
+               | ValueFlags::hessian;
+  auto quad = QGauss<dim>(2);
+  auto grid = CartesianGrid<dim>::create(3);
 
-    auto space = Space::create(deg, grid);
+  auto space = Space::create(deg, grid);
 
-    auto c_p = EpetraTools::create_vector(*space, DofProperties::active,Epetra_SerialComm());
-    auto &coeff = *c_p;
+  auto c_p = EpetraTools::create_vector(*space, DofProperties::active,Epetra_SerialComm());
+  auto &coeff = *c_p;
 
-    coeff[0] = 1.;
-    auto F = Function::create(space, c_p);
+  coeff[0] = 1.;
+  auto F = Function::create(space, c_p);
 
-    auto map = Mapping::create(F);
-    map->reset(flag, quad);
+  auto map = Mapping::create(F);
+  map->reset(flag, quad);
 
-    auto elem = map->begin();
-    auto end  = map->end();
-    const int s_id = 0;
+  auto elem = map->begin();
+  auto end  = map->end();
+  const int s_id = 0;
 
-    map->init_cache(elem, Topology<sub_dim>());
-    for (; elem != end; ++elem)
-    {
-        map->fill_cache(elem, Topology<sub_dim>(), s_id);
+  map->init_cache(elem, Topology<sub_dim>());
+  for (; elem != end; ++elem)
+  {
+    map->fill_cache(elem, Topology<sub_dim>(), s_id);
 
-        elem->template get_values<_Value,sub_dim>(s_id).print_info(out);
-        out << endl;
-        elem->template get_values<_Gradient,sub_dim>(s_id).print_info(out);
-        out << endl;
-        elem->template get_values<_Hessian,sub_dim>(s_id).print_info(out);
-        out << endl;
-    }
+    elem->template get_values<_Value,sub_dim>(s_id).print_info(out);
+    out << endl;
+    elem->template get_values<_Gradient,sub_dim>(s_id).print_info(out);
+    out << endl;
+    elem->template get_values<_Hessian,sub_dim>(s_id).print_info(out);
+    out << endl;
+  }
 
-    OUTEND
+  OUTEND
 }
 
 
 int main()
 {
-    ig_mapping<2,0>();
-    ig_mapping<3,0>();
+  ig_mapping<2,0>();
+  ig_mapping<3,0>();
 
-    return 0;
+  return 0;
 }
 

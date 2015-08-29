@@ -31,9 +31,9 @@ IGA_NAMESPACE_OPEN
 template<int dim, int codim, int range, int rank>
 FormulaFunction<dim, codim, range, rank>::
 FormulaFunction(std::shared_ptr<GridType> grid, std::shared_ptr<PhysDomain> map)
-    :
-    parent_t::Function(grid),
-    mapping_(map)
+  :
+  parent_t::Function(grid),
+  mapping_(map)
 //,
 //    map_elem_(mapping_->begin())
 {}
@@ -43,9 +43,9 @@ FormulaFunction(std::shared_ptr<GridType> grid, std::shared_ptr<PhysDomain> map)
 template<int dim, int codim, int range, int rank>
 FormulaFunction<dim, codim, range, rank>::
 FormulaFunction(const self_t &func)
-    :
-    parent_t::Function(func),
-    mapping_(func.mapping_)
+  :
+  parent_t::Function(func),
+  mapping_(func.mapping_)
 //,
 //    map_elem_(func.mapping_->begin())
 {}
@@ -57,8 +57,8 @@ void
 FormulaFunction<dim, codim, range, rank>::
 reset(const ValueFlags &flag, const eval_pts_variant &quad)
 {
-    parent_t::reset(flag, quad);
-    mapping_->reset(ValueFlags::value|ValueFlags::point, quad);
+  parent_t::reset(flag, quad);
+  mapping_->reset(ValueFlags::value|ValueFlags::point, quad);
 }
 
 
@@ -68,9 +68,9 @@ void
 FormulaFunction<dim, codim, range, rank>::
 init_cache(ElementAccessor &elem, const topology_variant &k) const
 {
-    parent_t::init_cache(elem, k);
-    using MapElem = typename PhysDomain::ElementAccessor;
-    mapping_->init_cache(const_cast<MapElem &>(*map_elem_), k);
+  parent_t::init_cache(elem, k);
+  using MapElem = typename PhysDomain::ElementAccessor;
+  mapping_->init_cache(const_cast<MapElem &>(*map_elem_), k);
 }
 
 
@@ -80,15 +80,15 @@ auto
 FormulaFunction<dim, codim, range, rank>::
 fill_cache(ElementAccessor &elem, const topology_variant &k, const int sub_elem_id) const  -> void
 {
-    parent_t::fill_cache(elem,k,sub_elem_id);
-    using MapElem = typename PhysDomain::ElementAccessor;
+  parent_t::fill_cache(elem,k,sub_elem_id);
+  using MapElem = typename PhysDomain::ElementAccessor;
 
-    auto &map_elem_non_const = const_cast<MapElem &>(*map_elem_);
-    map_elem_non_const.move_to(elem.get_flat_index());
-    mapping_->fill_cache(map_elem_non_const,k,sub_elem_id);
+  auto &map_elem_non_const = const_cast<MapElem &>(*map_elem_);
+  map_elem_non_const.move_to(elem.get_flat_index());
+  mapping_->fill_cache(map_elem_non_const,k,sub_elem_id);
 
-    auto fill_cache_dispatcher = FillCacheDispatcher(sub_elem_id,*this,elem);
-    boost::apply_visitor(fill_cache_dispatcher, k);
+  auto fill_cache_dispatcher = FillCacheDispatcher(sub_elem_id,*this,elem);
+  boost::apply_visitor(fill_cache_dispatcher, k);
 }
 #endif
 

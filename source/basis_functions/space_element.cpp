@@ -33,9 +33,9 @@ SpaceElement<dim_,codim_,range_,rank_,type_>::
 SpaceElement(const std::shared_ptr<const Space<dim_,codim_,range_,rank_,type_>> space,
              const ListIt &index,
              const PropId &prop)
-    :
-    base_t(space,index,prop),
-    space_(space)
+  :
+  base_t(space,index,prop),
+  space_(space)
 {}
 
 
@@ -44,20 +44,20 @@ template<int dim_,int codim_,int range_,int rank_,Transformation type_>
 SpaceElement<dim_,codim_,range_,rank_,type_>::
 SpaceElement(const self_t &elem,
              const CopyPolicy &copy_policy)
-    :
-    base_t(elem,copy_policy)
+  :
+  base_t(elem,copy_policy)
 {
-    if (elem.all_sub_elems_cache_ != nullptr)
+  if (elem.all_sub_elems_cache_ != nullptr)
+  {
+    if (copy_policy == CopyPolicy::shallow)
     {
-        if (copy_policy == CopyPolicy::shallow)
-        {
-            all_sub_elems_cache_ = elem.all_sub_elems_cache_;
-        }
-        else
-        {
-            all_sub_elems_cache_ = std::make_shared<AllSubElementsCache<Cache>>(*elem.all_sub_elems_cache_);
-        }
+      all_sub_elems_cache_ = elem.all_sub_elems_cache_;
     }
+    else
+    {
+      all_sub_elems_cache_ = std::make_shared<AllSubElementsCache<Cache>>(*elem.all_sub_elems_cache_);
+    }
+  }
 }
 
 
@@ -68,26 +68,26 @@ SpaceElement<dim_,codim_,range_,rank_,type_>::
 copy_from(const self_t &elem,
           const CopyPolicy &copy_policy)
 {
-    if (this != &elem)
-    {
-        base_t::copy_from(elem,copy_policy);
+  if (this != &elem)
+  {
+    base_t::copy_from(elem,copy_policy);
 
-        space_ = elem.space_;
-        if (copy_policy == CopyPolicy::deep)
-        {
-            Assert(elem.all_sub_elems_cache_ != nullptr, ExcNullPtr());
-            all_sub_elems_cache_ = std::make_shared<AllSubElementsCache<Cache>>(*elem.all_sub_elems_cache_);
-        }
-        else if (copy_policy == CopyPolicy::shallow)
-        {
-            all_sub_elems_cache_ = elem.all_sub_elems_cache_;
-        }
-        else
-        {
-            Assert(false,ExcNotImplemented());
-            AssertThrow(false,ExcNotImplemented());
-        }
+    space_ = elem.space_;
+    if (copy_policy == CopyPolicy::deep)
+    {
+      Assert(elem.all_sub_elems_cache_ != nullptr, ExcNullPtr());
+      all_sub_elems_cache_ = std::make_shared<AllSubElementsCache<Cache>>(*elem.all_sub_elems_cache_);
     }
+    else if (copy_policy == CopyPolicy::shallow)
+    {
+      all_sub_elems_cache_ = elem.all_sub_elems_cache_;
+    }
+    else
+    {
+      Assert(false,ExcNotImplemented());
+      AssertThrow(false,ExcNotImplemented());
+    }
+  }
 }
 
 
@@ -97,7 +97,7 @@ void
 SpaceElement<dim_,codim_,range_,rank_,type_>::
 deep_copy_from(const self_t &elem)
 {
-    this->copy_from(elem,CopyPolicy::deep);
+  this->copy_from(elem,CopyPolicy::deep);
 }
 
 
@@ -107,7 +107,7 @@ void
 SpaceElement<dim_,codim_,range_,rank_,type_>::
 shallow_copy_from(const self_t &elem)
 {
-    this->copy_from(elem,CopyPolicy::shallow);
+  this->copy_from(elem,CopyPolicy::shallow);
 }
 #endif
 
@@ -116,9 +116,9 @@ auto
 SpaceElement<dim_,codim_,range_,rank_,type_>::
 clone() const -> std::shared_ptr<self_t>
 {
-    Assert(false,ExcMessage("This function must not be called. "
-    "You should call the clone() function of a derived base class."));
-    return nullptr;
+  Assert(false,ExcMessage("This function must not be called. "
+  "You should call the clone() function of a derived base class."));
+  return nullptr;
 }
 
 
@@ -127,9 +127,9 @@ auto
 SpaceElement<dim_,codim_,range_,rank_,type_>::
 operator=(const self_t &element) -> self_t &
 {
-    this->copy_from(element,CopyPolicy::shallow);
+  this->copy_from(element,CopyPolicy::shallow);
 //    this->shallow_copy_from(element);
-    return (*this);
+  return (*this);
 }
 
 
@@ -139,7 +139,7 @@ void
 SpaceElement<dim_,codim_,range_,rank_,type_>::
 print_info(LogStream &out) const
 {
-    base_t::print_info(out);
+  base_t::print_info(out);
 }
 
 template<int dim_,int codim_,int range_,int rank_,Transformation type_>
@@ -147,15 +147,15 @@ void
 SpaceElement<dim_,codim_,range_,rank_,type_>::
 print_cache_info(LogStream &out) const
 {
-    out.begin_item("SpaceElementBase<" + std::to_string(dim_) + "> cache:");
-    base_t::print_cache_info(out);
-    out.end_item();
+  out.begin_item("SpaceElementBase<" + std::to_string(dim_) + "> cache:");
+  base_t::print_cache_info(out);
+  out.end_item();
 
 //    Assert(all_sub_elems_cache_ != nullptr,ExcNullPtr());
-    if (all_sub_elems_cache_)
-        all_sub_elems_cache_->print_info(out);
-    else
-        out << "Cache not allocated." << std::endl;
+  if (all_sub_elems_cache_)
+    all_sub_elems_cache_->print_info(out);
+  else
+    out << "Cache not allocated." << std::endl;
 }
 
 
@@ -165,19 +165,19 @@ ValueVector<Real>
 SpaceElement<dim_,codim_,range_,rank_,type_>::
 get_w_measures(const int j) const
 {
-    ValueVector<Real> w_measures;
+  ValueVector<Real> w_measures;
 
-    using RefElem = const ReferenceElement<dim_,range_,rank_>;
-    RefElem *as_ref_elem = dynamic_cast<RefElem *>(this);
-    if (as_ref_elem)
-        w_measures = as_ref_elem->template get_w_measures<k>(j);
+  using RefElem = const ReferenceElement<dim_,range_,rank_>;
+  RefElem *as_ref_elem = dynamic_cast<RefElem *>(this);
+  if (as_ref_elem)
+    w_measures = as_ref_elem->template get_w_measures<k>(j);
 
-    using PhysElem = const PhysicalSpaceElement<dim_,range_,rank_,codim_>;
-    PhysElem *as_phys_elem = dynamic_cast<PhysElem *>(this);
-    if (as_phys_elem)
-        w_measures = as_phys_elem->template get_w_measures<k>(j);
+  using PhysElem = const PhysicalSpaceElement<dim_,range_,rank_,codim_>;
+  PhysElem *as_phys_elem = dynamic_cast<PhysElem *>(this);
+  if (as_phys_elem)
+    w_measures = as_phys_elem->template get_w_measures<k>(j);
 
-    return w_measures;
+  return w_measures;
 }
 
 template<int dim_,int codim_,int range_,int rank_,Transformation type_>
@@ -185,8 +185,8 @@ Size
 SpaceElement<dim_,codim_,range_,rank_,type_>::
 get_max_num_basis() const
 {
-    Assert(false,ExcMessage("This function should be called through a derived class."));
-    return 0;
+  Assert(false,ExcMessage("This function should be called through a derived class."));
+  return 0;
 }
 
 
@@ -197,15 +197,15 @@ void
 SpaceElement<dim_,codim_,range_,rank_,type_>::
 serialize(Archive &ar, const unsigned int version)
 {
-    ar &boost::serialization::make_nvp("SpaceElement_base_t",
-                                       boost::serialization::base_object<SpaceElementBase<dim_>>(*this));
+  ar &boost::serialization::make_nvp("SpaceElement_base_t",
+                                     boost::serialization::base_object<SpaceElementBase<dim_>>(*this));
 
-    ar &boost::serialization::make_nvp("all_sub_elems_cache_",all_sub_elems_cache_);
+  ar &boost::serialization::make_nvp("all_sub_elems_cache_",all_sub_elems_cache_);
 
-    auto non_const_space = std::const_pointer_cast<Space<dim_,codim_,range_,rank_,type_>>(space_);
-    ar &boost::serialization::make_nvp("space_",non_const_space);
-    space_ = non_const_space;
-    Assert(space_ != nullptr,ExcNullPtr());
+  auto non_const_space = std::const_pointer_cast<Space<dim_,codim_,range_,rank_,type_>>(space_);
+  ar &boost::serialization::make_nvp("space_",non_const_space);
+  space_ = non_const_space;
+  Assert(space_ != nullptr,ExcNullPtr());
 }
 #endif // SERIALIZATION
 

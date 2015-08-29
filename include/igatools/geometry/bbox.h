@@ -38,36 +38,36 @@ template<int dim>
 class BBox : public SafeSTLArray<SafeSTLArray<Real, 2>, dim>
 {
 public:
-    using SafeSTLArray<SafeSTLArray<Real, 2>, dim>::SafeSTLArray;
+  using SafeSTLArray<SafeSTLArray<Real, 2>, dim>::SafeSTLArray;
 
-    /**
-     * Default constructor. It builds a box representing the <tt>dim</tt>-dimensional
-     * unit hypercube \f$[0,1]^{dim}\f$.
-     */
-    BBox();
+  /**
+   * Default constructor. It builds a box representing the <tt>dim</tt>-dimensional
+   * unit hypercube \f$[0,1]^{dim}\f$.
+   */
+  BBox();
 
-    /**
-     * Translates the BBox by the amount specified by <tt>translation_amount</tt>.
-     * @param translation_amount
-     */
-    void
-    translate(const Points<dim> &translation_amount);
+  /**
+   * Translates the BBox by the amount specified by <tt>translation_amount</tt>.
+   * @param translation_amount
+   */
+  void
+  translate(const Points<dim> &translation_amount);
 
-    /**
-     * Dilates the intervals defining the bounding box.
-     *
-     * @note The argument <tt>dilation_factor</tt> must be positive in each coordinate direction,
-     * otherwise (in Debug mode) an assertion will be raised.
-     */
-    void
-    dilate(const Points<dim> &dilation_factor);
+  /**
+   * Dilates the intervals defining the bounding box.
+   *
+   * @note The argument <tt>dilation_factor</tt> must be positive in each coordinate direction,
+   * otherwise (in Debug mode) an assertion will be raised.
+   */
+  void
+  dilate(const Points<dim> &dilation_factor);
 
 
-    /**
-     * Returns true if the bounding box represents the unit <tt>dim</tt>-dimensional hypercube
-     * \f$ [0,1]^{\text{dim}}\f$.
-     */
-    bool is_unit() const;
+  /**
+   * Returns true if the bounding box represents the unit <tt>dim</tt>-dimensional hypercube
+   * \f$ [0,1]^{\text{dim}}\f$.
+   */
+  bool is_unit() const;
 };
 
 

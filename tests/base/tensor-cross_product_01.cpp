@@ -34,21 +34,21 @@ template <int dim, int codim = 1>
 void
 compute_cp()
 {
-    OUTSTART
-    Derivatives<dim, dim+1, 1, 1> DF;
-    for (int i = 0; i < dim; ++i)
-    {
-        DF[i][i] = 1;
-    }
+  OUTSTART
+  Derivatives<dim, dim+1, 1, 1> DF;
+  for (int i = 0; i < dim; ++i)
+  {
+    DF[i][i] = 1;
+  }
 
-    auto cp = cross_product<dim, codim>(DF);
-    out << "cross product: " << cp << endl;
+  auto cp = cross_product<dim, codim>(DF);
+  out << "cross product: " << cp << endl;
 
-    for (int i = 0; i < dim; ++i)
-    {
-        out << "scalar product: " << i << ": " << scalar_product(cp, DF[i]) << endl;
-    }
-    OUTEND
+  for (int i = 0; i < dim; ++i)
+  {
+    out << "scalar product: " << i << ": " << scalar_product(cp, DF[i]) << endl;
+  }
+  OUTEND
 }
 
 
@@ -57,32 +57,32 @@ template <int dim, int codim = 1>
 void
 compute_cp2()
 {
-    OUTSTART
-    Derivatives<dim, dim+1, 1, 1> DF;
-    for (int i = 0; i < dim; ++i)
-    {
-        for (int j = 0; j < dim+1; ++j)
-            DF[i][j] = i+j;
-    }
+  OUTSTART
+  Derivatives<dim, dim+1, 1, 1> DF;
+  for (int i = 0; i < dim; ++i)
+  {
+    for (int j = 0; j < dim+1; ++j)
+      DF[i][j] = i+j;
+  }
 
-    auto cp = cross_product<dim, codim>(DF);
-    out << "cross product: " << cp << endl;
+  auto cp = cross_product<dim, codim>(DF);
+  out << "cross product: " << cp << endl;
 
-    for (int i = 0; i < dim; ++i)
-    {
-        out << "scalar product: " << i << ": " << scalar_product(cp, DF[i]) << endl;
-    }
-    OUTEND
+  for (int i = 0; i < dim; ++i)
+  {
+    out << "scalar product: " << i << ": " << scalar_product(cp, DF[i]) << endl;
+  }
+  OUTEND
 }
 
 
 int main()
 {
-    compute_cp<1>();
-    compute_cp<2>();
+  compute_cp<1>();
+  compute_cp<2>();
 
-    compute_cp2<1>();
-    compute_cp2<2>();
+  compute_cp2<1>();
+  compute_cp2<2>();
 
-    return 0;
+  return 0;
 }

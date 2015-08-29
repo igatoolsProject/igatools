@@ -32,34 +32,34 @@
 template<int dim, int sdim = dim-1>
 void get_subgrid(const TensorSize<dim> &n_knots)
 {
-    OUTSTART
+  OUTSTART
 
-    using Grid =  CartesianGrid<dim>;
-    auto grid = Grid::const_create(n_knots);
-    out.begin_item("Grid:");
-    grid->print_info(out);
+  using Grid =  CartesianGrid<dim>;
+  auto grid = Grid::const_create(n_knots);
+  out.begin_item("Grid:");
+  grid->print_info(out);
+  out.end_item();
+
+  for (auto &i : UnitElement<dim>::template elems_ids<sdim>())
+  {
+    typename CartesianGrid<dim>::template SubGridMap<sdim> map;
+    out.begin_item("Sub element: " + to_string(i));
+    auto sub_grid = grid->template get_sub_grid<sdim>(i, map);
+    sub_grid->print_info(out);
+    map.print_info(out);
     out.end_item();
+  }
 
-    for (auto &i : UnitElement<dim>::template elems_ids<sdim>())
-    {
-        typename CartesianGrid<dim>::template SubGridMap<sdim> map;
-        out.begin_item("Sub element: " + to_string(i));
-        auto sub_grid = grid->template get_sub_grid<sdim>(i, map);
-        sub_grid->print_info(out);
-        map.print_info(out);
-        out.end_item();
-    }
-
-    OUTEND
+  OUTEND
 }
 
 
 
 int main()
 {
-    get_subgrid<1>(TensorSize<1>(sequence<1>(2)));
-    get_subgrid<2>(TensorSize<2>(sequence<2>(2)));
-    get_subgrid<3>(TensorSize<3>(sequence<3>(2)));
+  get_subgrid<1>(TensorSize<1>(sequence<1>(2)));
+  get_subgrid<2>(TensorSize<2>(sequence<2>(2)));
+  get_subgrid<3>(TensorSize<3>(sequence<3>(2)));
 
-    return  0;
+  return  0;
 }

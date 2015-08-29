@@ -49,21 +49,21 @@ using std::to_string;
 template<int dim>
 void analytical_geometry()
 {
-    using Function = functions::BallFunction<dim>;
+  using Function = functions::BallFunction<dim>;
 
-    BBox<dim> box;
-    box[0] = {{0.5,1}};
-    for (int i=1; i<dim; ++i)
-        box[i] = {{PI/4,PI/2}};
+  BBox<dim> box;
+  box[0] = {{0.5,1}};
+  for (int i=1; i<dim; ++i)
+    box[i] = {{PI/4,PI/2}};
 
-    const int n_knots = 3;
-    auto grid = CartesianGrid<dim>::create(box, n_knots);
-    auto map  = Function::create(grid, IdentityFunction<dim>::create(grid));
+  const int n_knots = 3;
+  auto grid = CartesianGrid<dim>::create(box, n_knots);
+  auto map  = Function::create(grid, IdentityFunction<dim>::create(grid));
 
-    const int n_plot_points = 2;
-    Writer<dim> writer(map, n_plot_points);
-    string filename = "ball_geometry-" + to_string(dim) + "d" ;
-    writer.save(filename);
+  const int n_plot_points = 2;
+  Writer<dim> writer(map, n_plot_points);
+  string filename = "ball_geometry-" + to_string(dim) + "d" ;
+  writer.save(filename);
 }
 // [an geometry]
 
@@ -71,50 +71,50 @@ void analytical_geometry()
 // [bspline geometry]
 void nurb_geometry()
 {
-    const int dim = 2;
-    using Function = IgFunction<dim,0,dim,1>;
+  const int dim = 2;
+  using Function = IgFunction<dim,0,dim,1>;
 
-    const int deg = 2;
-    const int n_knots = 3;
-    auto grid = CartesianGrid<dim>::create(n_knots);
-    using Space = BSplineSpace<dim,dim>;
-    auto space = Space::create(deg, grid);
+  const int deg = 2;
+  const int n_knots = 3;
+  auto grid = CartesianGrid<dim>::create(n_knots);
+  using Space = BSplineSpace<dim,dim>;
+  auto space = Space::create(deg, grid);
 
-    auto control_pts = create_vector(*space,DofProperties::active,Epetra_SerialComm());
+  auto control_pts = create_vector(*space,DofProperties::active,Epetra_SerialComm());
 
-    DynamicMultiArray<Points<dim>, dim> c_points(deg-1+n_knots);
-    const Real eps = 0.2;
-    c_points({0,0}) = {0.0, 0.0};
-    c_points({1,0}) = {0.3, 0.0};
-    c_points({2,0}) = {0.6, 0.0};
-    c_points({3,0}) = {1.0, 0.0};
-    c_points({0,1}) = {-eps, 0.3};
-    c_points({1,1}) = {0.3-eps, 0.3};
-    c_points({2,1}) = {0.6+eps, 0.3};
-    c_points({3,1}) = {1.0+eps, 0.3};
-    c_points({0,2}) = {0.0+eps, 0.6};
-    c_points({1,2}) = {0.3+eps, 0.6};
-    c_points({2,2}) = {0.6-eps, 0.6};
-    c_points({3,2}) = {1.0-eps, 0.6};
-    c_points({0,3}) = {0.0, 1.0};
-    c_points({1,3}) = {0.3, 1.0};
-    c_points({2,3}) = {0.6, 1.0};
-    c_points({3,3}) = {1.0, 1.0};
-    auto flat_points = c_points.get_data();
-    const int n_points = c_points.flat_size();
-    for (int i = 0; i < n_points; ++i)
-    {
-        (*control_pts)[i] = flat_points[i][0];
-        (*control_pts)[i+n_points] = flat_points[i][1];
-    }
+  DynamicMultiArray<Points<dim>, dim> c_points(deg-1+n_knots);
+  const Real eps = 0.2;
+  c_points({0,0}) = {0.0, 0.0};
+  c_points({1,0}) = {0.3, 0.0};
+  c_points({2,0}) = {0.6, 0.0};
+  c_points({3,0}) = {1.0, 0.0};
+  c_points({0,1}) = {-eps, 0.3};
+  c_points({1,1}) = {0.3-eps, 0.3};
+  c_points({2,1}) = {0.6+eps, 0.3};
+  c_points({3,1}) = {1.0+eps, 0.3};
+  c_points({0,2}) = {0.0+eps, 0.6};
+  c_points({1,2}) = {0.3+eps, 0.6};
+  c_points({2,2}) = {0.6-eps, 0.6};
+  c_points({3,2}) = {1.0-eps, 0.6};
+  c_points({0,3}) = {0.0, 1.0};
+  c_points({1,3}) = {0.3, 1.0};
+  c_points({2,3}) = {0.6, 1.0};
+  c_points({3,3}) = {1.0, 1.0};
+  auto flat_points = c_points.get_data();
+  const int n_points = c_points.flat_size();
+  for (int i = 0; i < n_points; ++i)
+  {
+    (*control_pts)[i] = flat_points[i][0];
+    (*control_pts)[i+n_points] = flat_points[i][1];
+  }
 
-    auto F = Function::create(space, control_pts);
+  auto F = Function::create(space, control_pts);
 
 
-    const int n_plot_points = 10;
-    Writer<dim> writer(F, n_plot_points);
-    string filename = "nurb_geometry-" + to_string(dim) + "d" ;
-    writer.save(filename);
+  const int n_plot_points = 10;
+  Writer<dim> writer(F, n_plot_points);
+  string filename = "nurb_geometry-" + to_string(dim) + "d" ;
+  writer.save(filename);
 }
 // [bspline geometry]
 
@@ -123,14 +123,14 @@ void nurb_geometry()
 template<int dim>
 void nurb_geometry_from_file()
 {
-    string input_file = "nurb_geometry-" + to_string(dim) + "d_v2.xml";
+  string input_file = "nurb_geometry-" + to_string(dim) + "d_v2.xml";
 
-    auto map = get_mapping_from_file<dim>(input_file);
+  auto map = get_mapping_from_file<dim>(input_file);
 
-    const int n_plot_points = 10;
-    Writer<dim> writer(map, n_plot_points);
-    string filename = "nurb_geometry_from_file-" + to_string(dim) + "d" ;
-    writer.save(filename);
+  const int n_plot_points = 10;
+  Writer<dim> writer(map, n_plot_points);
+  string filename = "nurb_geometry_from_file-" + to_string(dim) + "d" ;
+  writer.save(filename);
 }
 
 
@@ -138,14 +138,14 @@ void nurb_geometry_from_file()
 int main()
 {
 
-    analytical_geometry<1>();
-    analytical_geometry<2>();
-    analytical_geometry<3>();
+  analytical_geometry<1>();
+  analytical_geometry<2>();
+  analytical_geometry<3>();
 
-    nurb_geometry();
+  nurb_geometry();
 
-    nurb_geometry_from_file<2>();
-    nurb_geometry_from_file<3>();
+  nurb_geometry_from_file<2>();
+  nurb_geometry_from_file<3>();
 
-    return  0;
+  return  0;
 }

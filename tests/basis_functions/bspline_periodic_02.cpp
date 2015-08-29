@@ -45,125 +45,125 @@ using functions::ConstantFunction;
 template <int dim, int range=1>
 void assemble_matrix(const int n_knots, const int deg)
 {
-    using Space  = BSplineSpace<dim, range>;
-    using RefSpace  = ReferenceSpace<dim, range>;
+  using Space  = BSplineSpace<dim, range>;
+  using RefSpace  = ReferenceSpace<dim, range>;
 
-    using Function = Function<dim,0,range,1>;
-    using ConstFunction = functions::LinearFunction<dim,0, range>;
-    using Value = typename Function::Value;
-    using Gradient = typename Function::Gradient;
+  using Function = Function<dim,0,range,1>;
+  using ConstFunction = functions::LinearFunction<dim,0, range>;
+  using Value = typename Function::Value;
+  using Gradient = typename Function::Gradient;
 
 
-    TensorIndex<dim> deg1(deg);
-    typename Space::DegreeTable degt(deg1);
+  TensorIndex<dim> deg1(deg);
+  typename Space::DegreeTable degt(deg1);
 
-    auto grid  = CartesianGrid<dim>::create(n_knots);
-    auto space = Space::create(deg, grid, InteriorReg::maximum, true,
-                               BasisEndBehaviour::periodic);
-    Gradient A;
-    Value b;
-    for (int j = 0; j < range; ++j)
+  auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto space = Space::create(deg, grid, InteriorReg::maximum, true,
+                             BasisEndBehaviour::periodic);
+  Gradient A;
+  Value b;
+  for (int j = 0; j < range; ++j)
+  {
+    for (int i = 0; i < dim; ++i)
+      if (i==j)
+        A[i][j]=10.*(i+1);
+    b[j] = -5.;
+  }
+
+  auto f = ConstFunction::create(grid, IdentityFunction<dim>::create(grid), A, b);
+
+
+  auto matrix = create_matrix(*space,DofProperties::active,Epetra_SerialComm());
+  auto rhs = create_vector(matrix->RangeMap());
+  auto solution = create_vector(matrix->DomainMap());
+
+  const QGauss<dim>  elem_quad(deg);
+  auto elem_handler = space->get_elem_handler();
+  auto flag = ValueFlags::value | ValueFlags::gradient |ValueFlags::w_measure;
+  elem_handler->reset(flag, elem_quad);
+  f->reset(ValueFlags::value, elem_quad);
+
+  auto elem   = space->begin();
+  const auto elem_end = space->end();
+  auto f_elem = f->begin();
+
+  elem_handler->init_element_cache(elem);
+  f->init_element_cache(f_elem);
+
+  const int n_qp = elem_quad.get_num_points();
+  for (; elem != elem_end; ++elem, ++f_elem)
+  {
+    const int n_basis = elem->get_num_basis(DofProperties::active);
+    DenseMatrix loc_mat(n_basis, n_basis);
+    loc_mat = 0.0;
+
+    DenseVector loc_rhs(n_basis);
+    loc_rhs = 0.0;
+
+    elem_handler->fill_element_cache(elem);
+    f->fill_element_cache(f_elem);
+
+    auto phi = elem->template get_basis<_Value, dim>(0,DofProperties::active);
+    auto grad_phi  = elem->template get_basis<_Gradient, dim>(0,DofProperties::active);
+    auto w_meas = elem->template get_w_measures<dim>(0);
+
+    grad_phi.print_info(out);
+
+    auto f_values = f_elem->template get_values<_Value,dim>(0);
+    for (int i = 0; i < n_basis; ++i)
     {
-        for (int i = 0; i < dim; ++i)
-            if (i==j)
-                A[i][j]=10.*(i+1);
-        b[j] = -5.;
+      auto grad_phi_i = grad_phi.get_function_view(i);
+      auto phi_i = phi.get_function_view(i);
+      for (int j = 0; j < n_basis; ++j)
+      {
+        auto grad_phi_j = grad_phi.get_function_view(j);
+        auto phi_j = phi.get_function_view(j);
+        for (int qp = 0; qp < n_qp; ++qp)
+          loc_mat(i,j) +=
+            (scalar_product(grad_phi_i[qp], grad_phi_j[qp])
+             +
+             scalar_product(phi_i[qp], phi_j[qp])
+            )
+            * w_meas[qp];
+      }
+
+      for (int qp=0; qp<n_qp; ++qp)
+        loc_rhs(i) += scalar_product(phi_i[qp], f_values[qp])
+                      * w_meas[qp];
     }
 
-    auto f = ConstFunction::create(grid, IdentityFunction<dim>::create(grid), A, b);
+    const auto loc_dofs = elem->get_local_to_global(DofProperties::active);
+    matrix->add_block(loc_dofs, loc_dofs,loc_mat);
+    rhs->add_block(loc_dofs, loc_rhs);
+  }
+  matrix->FillComplete();
+  matrix->print_info(out);
+
+  auto solver = create_solver(*matrix, *solution, *rhs);
+  solver->solve();
 
 
-    auto matrix = create_matrix(*space,DofProperties::active,Epetra_SerialComm());
-    auto rhs = create_vector(matrix->RangeMap());
-    auto solution = create_vector(matrix->DomainMap());
+  const int n_plot_points = deg+1;
+  auto map1 = IdentityFunction<dim>::create(space->get_ptr_const_grid());
+  Writer<dim> writer(map1, n_plot_points);
 
-    const QGauss<dim>  elem_quad(deg);
-    auto elem_handler = space->get_elem_handler();
-    auto flag = ValueFlags::value | ValueFlags::gradient |ValueFlags::w_measure;
-    elem_handler->reset(flag, elem_quad);
-    f->reset(ValueFlags::value, elem_quad);
-
-    auto elem   = space->begin();
-    const auto elem_end = space->end();
-    auto f_elem = f->begin();
-
-    elem_handler->init_element_cache(elem);
-    f->init_element_cache(f_elem);
-
-    const int n_qp = elem_quad.get_num_points();
-    for (; elem != elem_end; ++elem, ++f_elem)
-    {
-        const int n_basis = elem->get_num_basis(DofProperties::active);
-        DenseMatrix loc_mat(n_basis, n_basis);
-        loc_mat = 0.0;
-
-        DenseVector loc_rhs(n_basis);
-        loc_rhs = 0.0;
-
-        elem_handler->fill_element_cache(elem);
-        f->fill_element_cache(f_elem);
-
-        auto phi = elem->template get_basis<_Value, dim>(0,DofProperties::active);
-        auto grad_phi  = elem->template get_basis<_Gradient, dim>(0,DofProperties::active);
-        auto w_meas = elem->template get_w_measures<dim>(0);
-
-        grad_phi.print_info(out);
-
-        auto f_values = f_elem->template get_values<_Value,dim>(0);
-        for (int i = 0; i < n_basis; ++i)
-        {
-            auto grad_phi_i = grad_phi.get_function_view(i);
-            auto phi_i = phi.get_function_view(i);
-            for (int j = 0; j < n_basis; ++j)
-            {
-                auto grad_phi_j = grad_phi.get_function_view(j);
-                auto phi_j = phi.get_function_view(j);
-                for (int qp = 0; qp < n_qp; ++qp)
-                    loc_mat(i,j) +=
-                        (scalar_product(grad_phi_i[qp], grad_phi_j[qp])
-                         +
-                         scalar_product(phi_i[qp], phi_j[qp])
-                        )
-                        * w_meas[qp];
-            }
-
-            for (int qp=0; qp<n_qp; ++qp)
-                loc_rhs(i) += scalar_product(phi_i[qp], f_values[qp])
-                              * w_meas[qp];
-        }
-
-        const auto loc_dofs = elem->get_local_to_global(DofProperties::active);
-        matrix->add_block(loc_dofs, loc_dofs,loc_mat);
-        rhs->add_block(loc_dofs, loc_rhs);
-    }
-    matrix->FillComplete();
-    matrix->print_info(out);
-
-    auto solver = create_solver(*matrix, *solution, *rhs);
-    solver->solve();
-
-
-    const int n_plot_points = deg+1;
-    auto map1 = IdentityFunction<dim>::create(space->get_ptr_const_grid());
-    Writer<dim> writer(map1, n_plot_points);
-
-    using IgFunc = IgFunction<dim,0,range,1>;
-    auto solution_function = IgFunc::create(space, solution);
-    writer.template add_field<range,1>(solution_function, "solution");
-    string filename = "poisson_problem-" + to_string(deg) + "-" + to_string(dim) + "d" ;
-    writer.save(filename);
+  using IgFunc = IgFunction<dim,0,range,1>;
+  auto solution_function = IgFunc::create(space, solution);
+  writer.template add_field<range,1>(solution_function, "solution");
+  string filename = "poisson_problem-" + to_string(deg) + "-" + to_string(dim) + "d" ;
+  writer.save(filename);
 }
 
 
 int main()
 {
-    const int max_deg=3;
-    for (int deg = 1; deg<max_deg; ++deg)
-    {
-        const int n_knots = 5 + deg;
-        assemble_matrix<1>(n_knots, deg);
-        assemble_matrix<2>(n_knots, deg);
-        assemble_matrix<2,2>(n_knots, deg);
-    }
-    return 0;
+  const int max_deg=3;
+  for (int deg = 1; deg<max_deg; ++deg)
+  {
+    const int n_knots = 5 + deg;
+    assemble_matrix<1>(n_knots, deg);
+    assemble_matrix<2>(n_knots, deg);
+    assemble_matrix<2,2>(n_knots, deg);
+  }
+  return 0;
 }

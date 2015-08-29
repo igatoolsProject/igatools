@@ -36,7 +36,7 @@ const Size SplineSpace<dim, range, rank>::n_components;
 template<int dim, int range, int rank>
 const SafeSTLArray<Size, SplineSpace<dim, range, rank>::n_components>
 SplineSpace<dim, range, rank>::components =
-    sequence<SplineSpace<dim, range, rank>::n_components>();
+  sequence<SplineSpace<dim, range, rank>::n_components>();
 
 template<int dim, int range, int rank>
 SplineSpace<dim, range, rank>::
@@ -44,13 +44,13 @@ SplineSpace(const DegreeTable &deg,
             const std::shared_ptr<GridType> &grid,
             const MultiplicityTable &interior_mult,
             const PeriodicityTable &periodic)
-    :
-    grid_(grid),
-    interior_mult_(interior_mult),
-    deg_(deg),
-    periodic_(periodic)
+  :
+  grid_(grid),
+  interior_mult_(interior_mult),
+  deg_(deg),
+  periodic_(periodic)
 {
-    this->init();
+  this->init();
 }
 
 
@@ -60,13 +60,13 @@ SplineSpace(const DegreeTable &deg,
             const std::shared_ptr<const GridType> &grid,
             const MultiplicityTable &interior_mult,
             const PeriodicityTable &periodic)
-    :
-    grid_(grid),
-    interior_mult_(interior_mult),
-    deg_(deg),
-    periodic_(periodic)
+  :
+  grid_(grid),
+  interior_mult_(interior_mult),
+  deg_(deg),
+  periodic_(periodic)
 {
-    this->init();
+  this->init();
 }
 
 
@@ -78,15 +78,15 @@ create(const DegreeTable &deg,
        const MultiplicityTable &interior_mult,
        const PeriodicityTable &periodic)
 {
-    using SpSpace = SplineSpace<dim,range,rank>;
-    auto sp = std::shared_ptr<SpSpace>(new SpSpace(deg,grid,interior_mult,periodic));
-    Assert(sp != nullptr, ExcNullPtr());
+  using SpSpace = SplineSpace<dim,range,rank>;
+  auto sp = std::shared_ptr<SpSpace>(new SpSpace(deg,grid,interior_mult,periodic));
+  Assert(sp != nullptr, ExcNullPtr());
 
 #ifdef MESH_REFINEMENT
-    sp->create_connection_for_insert_knots(sp);
+  sp->create_connection_for_insert_knots(sp);
 #endif // MESH_REFINEMENT
 
-    return sp;
+  return sp;
 }
 
 template<int dim, int range, int rank>
@@ -97,11 +97,11 @@ create(const DegreeTable &deg,
        const MultiplicityTable &interior_mult,
        const PeriodicityTable &periodic)
 {
-    using SpSpace = SplineSpace<dim,range,rank>;
-    auto sp = std::shared_ptr<const SpSpace>(new SpSpace(deg,grid,interior_mult,periodic));
-    Assert(sp != nullptr, ExcNullPtr());
+  using SpSpace = SplineSpace<dim,range,rank>;
+  auto sp = std::shared_ptr<const SpSpace>(new SpSpace(deg,grid,interior_mult,periodic));
+  Assert(sp != nullptr, ExcNullPtr());
 
-    return sp;
+  return sp;
 }
 
 
@@ -112,86 +112,86 @@ init()
 {
 //    Assert(grid_ != nullptr,ExcNullPtr());
 
-    //------------------------------------------------------------------------------
-    // the default value of a bool variable is undefined, so we need to set
-    // set the values of the inactive components of the perodicity table to true or false (we use false)
-    using PeriodicAsMArray = StaticMultiArray<Periodicity,range,rank>;
-    PeriodicAsMArray &periodic_as_static_m_array = static_cast<PeriodicAsMArray &>(periodic_);
-    for (const auto inactive_id : periodic_.get_inactive_components_id())
-        periodic_as_static_m_array[inactive_id] = Periodicity(false);
-    //------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------
+  // the default value of a bool variable is undefined, so we need to set
+  // set the values of the inactive components of the perodicity table to true or false (we use false)
+  using PeriodicAsMArray = StaticMultiArray<Periodicity,range,rank>;
+  PeriodicAsMArray &periodic_as_static_m_array = static_cast<PeriodicAsMArray &>(periodic_);
+  for (const auto inactive_id : periodic_.get_inactive_components_id())
+    periodic_as_static_m_array[inactive_id] = Periodicity(false);
+  //------------------------------------------------------------------------------
 
 
 
-    //------------------------------------------------------------------------------
-    // Determine the dimensionality of the spline space --- begin
-    typename TensorSizeTable::base_t n_basis;
-    for (const auto comp : components)
+  //------------------------------------------------------------------------------
+  // Determine the dimensionality of the spline space --- begin
+  typename TensorSizeTable::base_t n_basis;
+  for (const auto comp : components)
+  {
+    const auto &deg_comp =              deg_[comp];
+    const auto &mult_comp = interior_mult_[comp];
+
+    const auto &periodic_comp = periodic_[comp];
+
+    for (const auto dir : UnitElement<dim>::active_directions)
     {
-        const auto &deg_comp =              deg_[comp];
-        const auto &mult_comp = interior_mult_[comp];
+      const auto &deg =  deg_comp[dir];
+      const auto &mult = mult_comp.get_data_direction(dir);
 
-        const auto &periodic_comp = periodic_[comp];
-
-        for (const auto dir : UnitElement<dim>::active_directions)
-        {
-            const auto &deg =  deg_comp[dir];
-            const auto &mult = mult_comp.get_data_direction(dir);
-
-            const auto order = deg + 1;
+      const auto order = deg + 1;
 
 #ifndef NDEBUG
-            Assert(mult.size() == grid_->get_num_knots_dim()[dir]-2,
-                   ExcMessage("Interior multiplicity size does not match the grid"));
-            if (!mult.empty())
-            {
-                auto result = std::minmax_element(mult.begin(), mult.end());
-                Assert((*result.first > 0) && (*result.second <= order),
-                       ExcMessage("multiplicity values not between 0 and p+1"));
-            }
+      Assert(mult.size() == grid_->get_num_knots_dim()[dir]-2,
+             ExcMessage("Interior multiplicity size does not match the grid"));
+      if (!mult.empty())
+      {
+        auto result = std::minmax_element(mult.begin(), mult.end());
+        Assert((*result.first > 0) && (*result.second <= order),
+               ExcMessage("multiplicity values not between 0 and p+1"));
+      }
 #endif
 
-            n_basis[comp][dir] = std::accumulate(
-                                     mult.begin(),
-                                     mult.end(),
-                                     periodic_comp[dir] ? 0 : order);
+      n_basis[comp][dir] = std::accumulate(
+                             mult.begin(),
+                             mult.end(),
+                             periodic_comp[dir] ? 0 : order);
 
 #ifndef NDEBUG
-            if (periodic_comp[dir])
-                Assert(n_basis[comp][dir] > order,
-                       ExcMessage("Not enough basis functions"));
+      if (periodic_comp[dir])
+        Assert(n_basis[comp][dir] > order,
+               ExcMessage("Not enough basis functions"));
 #endif
 
-        } // end loop dir
-    } // end loop comp
+    } // end loop dir
+  } // end loop comp
 
-    space_dim_ = n_basis;
-    // Determine the dimensionality of the spline space --- end
-    //------------------------------------------------------------------------------
-
-
+  space_dim_ = n_basis;
+  // Determine the dimensionality of the spline space --- end
+  //------------------------------------------------------------------------------
 
 
 
 
 
-    //------------------------------------------------------------------------------
-    // building the lookup table for the local dof id on the current component of an element --- begin
-    for (const auto comp : components)
-    {
-        const auto dofs_t_size_elem_comp = TensorSize<dim>(deg_[comp]+1);
-        const auto dofs_f_size_elem_comp = dofs_t_size_elem_comp.flat_size();
 
-        auto &elem_comp_dof_t_id = dofs_tensor_id_elem_table_[comp];
-        elem_comp_dof_t_id.resize(dofs_f_size_elem_comp);
 
-        const auto w_dofs_elem_comp = MultiArrayUtils<dim>::compute_weight(dofs_t_size_elem_comp);
+  //------------------------------------------------------------------------------
+  // building the lookup table for the local dof id on the current component of an element --- begin
+  for (const auto comp : components)
+  {
+    const auto dofs_t_size_elem_comp = TensorSize<dim>(deg_[comp]+1);
+    const auto dofs_f_size_elem_comp = dofs_t_size_elem_comp.flat_size();
 
-        for (int dof_f_id = 0 ; dof_f_id < dofs_f_size_elem_comp ; ++dof_f_id)
-            elem_comp_dof_t_id[dof_f_id] = MultiArrayUtils<dim>::flat_to_tensor_index(dof_f_id,w_dofs_elem_comp);
-    }
-    // building the lookup table for the local dof id on the current component of an element --- end
-    //------------------------------------------------------------------------------
+    auto &elem_comp_dof_t_id = dofs_tensor_id_elem_table_[comp];
+    elem_comp_dof_t_id.resize(dofs_f_size_elem_comp);
+
+    const auto w_dofs_elem_comp = MultiArrayUtils<dim>::compute_weight(dofs_t_size_elem_comp);
+
+    for (int dof_f_id = 0 ; dof_f_id < dofs_f_size_elem_comp ; ++dof_f_id)
+      elem_comp_dof_t_id[dof_f_id] = MultiArrayUtils<dim>::flat_to_tensor_index(dof_f_id,w_dofs_elem_comp);
+  }
+  // building the lookup table for the local dof id on the current component of an element --- end
+  //------------------------------------------------------------------------------
 
 }
 
@@ -201,7 +201,7 @@ std::shared_ptr<CartesianGrid<dim> >
 SplineSpace<dim, range, rank>::
 get_ptr_grid()
 {
-    return grid_.get_ptr_data();
+  return grid_.get_ptr_data();
 }
 
 template<int dim, int range, int rank>
@@ -209,7 +209,7 @@ std::shared_ptr<const CartesianGrid<dim> >
 SplineSpace<dim, range, rank>::
 get_ptr_const_grid() const
 {
-    return grid_.get_ptr_const_data();
+  return grid_.get_ptr_const_data();
 }
 
 #ifdef MESH_REFINEMENT
@@ -218,110 +218,110 @@ template<int dim, int range, int rank>
 void
 SplineSpace<dim, range, rank>::
 rebuild_after_insert_knots(
-    const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
-    const CartesianGrid<dim> &old_grid)
+  const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
+  const CartesianGrid<dim> &old_grid)
 {
 //    const auto refined_grid = grid_;
-    auto grid_pre_refinement = grid_.get_ptr_data()->get_grid_pre_refinement();
+  auto grid_pre_refinement = grid_.get_ptr_data()->get_grid_pre_refinement();
 
-    Assert(&(*grid_pre_refinement) == &old_grid,ExcMessage("Different grids."));
+  Assert(&(*grid_pre_refinement) == &old_grid,ExcMessage("Different grids."));
 
-    spline_space_previous_refinement_ =
-        std::shared_ptr<SplineSpace<dim,range,rank> >(
-            new SplineSpace<dim,range,rank>(deg_,grid_pre_refinement,interior_mult_));
+  spline_space_previous_refinement_ =
+    std::shared_ptr<SplineSpace<dim,range,rank> >(
+      new SplineSpace<dim,range,rank>(deg_,grid_pre_refinement,interior_mult_));
 
 
-    const auto &old_unique_knots = old_grid.get_knot_coordinates();
+  const auto &old_unique_knots = old_grid.get_knot_coordinates();
 
 #ifndef NDEBUG
-    //---------------------------------------------------------------------------------------
-    // check that the new knots are internal to the grid --- begin
+  //---------------------------------------------------------------------------------------
+  // check that the new knots are internal to the grid --- begin
+  for (const auto dir : UnitElement<dim>::active_directions)
+  {
+    const auto &knots_dir = old_unique_knots.get_data_direction(dir);
+
+    for (const auto &knt_value : knots_to_insert[dir])
+    {
+      Assert(knt_value > knots_dir.front() && knt_value < knots_dir.back(),
+             ExcMessage("The knot value" + std::to_string(knt_value) +
+                        " inserted along the direction " + std::to_string(dir) +
+                        " is not contained in the open interval (" +
+                        std::to_string(knots_dir.front()) + " , " +
+                        std::to_string(knots_dir.back()) + ")"));
+    }
+  }
+  // check that the new knots are internal to the grid --- end
+  //---------------------------------------------------------------------------------------
+#endif
+
+
+  //---------------------------------------------------------------------------------------
+  // build the new internal knots with repetitions --- begin
+  for (const auto comp : components)
+  {
+    const auto &interior_mult_comp = spline_space_previous_refinement_->interior_mult_[comp];
+
     for (const auto dir : UnitElement<dim>::active_directions)
     {
-        const auto &knots_dir = old_unique_knots.get_data_direction(dir);
+      const auto &old_unique_knots_dir = old_unique_knots.get_data_direction(dir);
+      const auto &interior_mult_comp_dir = interior_mult_comp.get_data_direction(dir);
 
-        for (const auto &knt_value : knots_to_insert[dir])
-        {
-            Assert(knt_value > knots_dir.front() && knt_value < knots_dir.back(),
-                   ExcMessage("The knot value" + std::to_string(knt_value) +
-                              " inserted along the direction " + std::to_string(dir) +
-                              " is not contained in the open interval (" +
-                              std::to_string(knots_dir.front()) + " , " +
-                              std::to_string(knots_dir.back()) + ")"));
-        }
-    }
-    // check that the new knots are internal to the grid --- end
-    //---------------------------------------------------------------------------------------
-#endif
+      const int n_internal_knots_old = old_unique_knots_dir.size() - 2;
+      Assert(n_internal_knots_old == interior_mult_comp_dir.size(),
+             ExcDimensionMismatch(n_internal_knots_old,interior_mult_comp_dir.size()));
 
+      SafeSTLVector<Real> new_internal_knots(knots_to_insert[dir]);
+      for (int i = 0 ; i < n_internal_knots_old ; ++i)
+      {
+        new_internal_knots.insert(new_internal_knots.end(),
+                                  interior_mult_comp_dir[i],
+                                  old_unique_knots_dir[i+1]);
+      }
+      std::sort(new_internal_knots.begin(),new_internal_knots.end());
 
-    //---------------------------------------------------------------------------------------
-    // build the new internal knots with repetitions --- begin
-    for (const auto comp : components)
-    {
-        const auto &interior_mult_comp = spline_space_previous_refinement_->interior_mult_[comp];
-
-        for (const auto dir : UnitElement<dim>::active_directions)
-        {
-            const auto &old_unique_knots_dir = old_unique_knots.get_data_direction(dir);
-            const auto &interior_mult_comp_dir = interior_mult_comp.get_data_direction(dir);
-
-            const int n_internal_knots_old = old_unique_knots_dir.size() - 2;
-            Assert(n_internal_knots_old == interior_mult_comp_dir.size(),
-                   ExcDimensionMismatch(n_internal_knots_old,interior_mult_comp_dir.size()));
-
-            SafeSTLVector<Real> new_internal_knots(knots_to_insert[dir]);
-            for (int i = 0 ; i < n_internal_knots_old ; ++i)
-            {
-                new_internal_knots.insert(new_internal_knots.end(),
-                                          interior_mult_comp_dir[i],
-                                          old_unique_knots_dir[i+1]);
-            }
-            std::sort(new_internal_knots.begin(),new_internal_knots.end());
-
-            SafeSTLVector<Real> new_internal_knots_unique;
-            SafeSTLVector<int> new_internal_mult_dir;
-            vector_tools::count_and_remove_duplicates(
-                new_internal_knots,
-                new_internal_knots_unique,
-                new_internal_mult_dir);
+      SafeSTLVector<Real> new_internal_knots_unique;
+      SafeSTLVector<int> new_internal_mult_dir;
+      vector_tools::count_and_remove_duplicates(
+        new_internal_knots,
+        new_internal_knots_unique,
+        new_internal_mult_dir);
 
 #ifndef NDEBUG
-            //---------------------------------------------------------------------------------------
-            // check that the new unique knots are the same of the new grid --- begin
-            const auto &unique_knots_dir_refined_grid = grid_->get_knot_coordinates(dir);
+      //---------------------------------------------------------------------------------------
+      // check that the new unique knots are the same of the new grid --- begin
+      const auto &unique_knots_dir_refined_grid = grid_->get_knot_coordinates(dir);
 
-            const int n_internal_knots_unique_new = unique_knots_dir_refined_grid.size() - 2;
-            Assert(n_internal_knots_unique_new == new_internal_knots_unique.size(),
-                   ExcDimensionMismatch(n_internal_knots_unique_new,new_internal_knots_unique.size()));
-            for (int i = 0 ; i < n_internal_knots_unique_new ; ++i)
-            {
-                Assert(new_internal_knots_unique[i] == unique_knots_dir_refined_grid[i+1],
-                       ExcMessage(
-                           "The knot value " + std::to_string(new_internal_knots_unique[i]) +
-                           " is not present along the direction " + std::to_string(dir) +
-                           " of the refined grid."));
-            }
-            // check that the new unique knots are the same of the new grid --- end
-            //---------------------------------------------------------------------------------------
+      const int n_internal_knots_unique_new = unique_knots_dir_refined_grid.size() - 2;
+      Assert(n_internal_knots_unique_new == new_internal_knots_unique.size(),
+             ExcDimensionMismatch(n_internal_knots_unique_new,new_internal_knots_unique.size()));
+      for (int i = 0 ; i < n_internal_knots_unique_new ; ++i)
+      {
+        Assert(new_internal_knots_unique[i] == unique_knots_dir_refined_grid[i+1],
+               ExcMessage(
+                 "The knot value " + std::to_string(new_internal_knots_unique[i]) +
+                 " is not present along the direction " + std::to_string(dir) +
+                 " of the refined grid."));
+      }
+      // check that the new unique knots are the same of the new grid --- end
+      //---------------------------------------------------------------------------------------
 
 
-            //---------------------------------------------------------------------------------------
-            // check that the multiplicity is compatible with the degree --- begin
-            for (const auto mult : new_internal_mult_dir)
-                Assert(mult <= deg_[comp][dir],ExcIndexRange(mult,1,deg_[comp][dir]+1))
+      //---------------------------------------------------------------------------------------
+      // check that the multiplicity is compatible with the degree --- begin
+      for (const auto mult : new_internal_mult_dir)
+        Assert(mult <= deg_[comp][dir],ExcIndexRange(mult,1,deg_[comp][dir]+1))
 
-                // check that the multiplicity is compatible with the degree --- end
-                //---------------------------------------------------------------------------------------
+        // check that the multiplicity is compatible with the degree --- end
+        //---------------------------------------------------------------------------------------
 #endif
 
-                interior_mult_[comp].copy_data_direction(dir,new_internal_mult_dir);
-        }
+        interior_mult_[comp].copy_data_direction(dir,new_internal_mult_dir);
     }
-    // build the new internal knots with repetitions --- end
-    //---------------------------------------------------------------------------------------
+  }
+  // build the new internal knots with repetitions --- end
+  //---------------------------------------------------------------------------------------
 
-    this->init();
+  this->init();
 }
 
 
@@ -330,18 +330,18 @@ void
 SplineSpace<dim, range, rank>::
 create_connection_for_insert_knots(std::shared_ptr<SplineSpace<dim,range,rank>> space)
 {
-    Assert(space != nullptr, ExcNullPtr());
-    Assert(&(*space) == &(*this), ExcMessage("Different objects."));
+  Assert(space != nullptr, ExcNullPtr());
+  Assert(&(*space) == &(*this), ExcMessage("Different objects."));
 
-    auto func_to_connect =
-        std::bind(&SplineSpace<dim,range,rank>::rebuild_after_insert_knots,
-                  space.get(),
-                  std::placeholders::_1,
-                  std::placeholders::_2);
+  auto func_to_connect =
+    std::bind(&SplineSpace<dim,range,rank>::rebuild_after_insert_knots,
+              space.get(),
+              std::placeholders::_1,
+              std::placeholders::_2);
 
-    using SlotType = typename CartesianGrid<dim>::SignalInsertKnotsSlot;
-    grid_.get_ptr_data()->connect_insert_knots(
-        SlotType(func_to_connect).track_foreign(space));
+  using SlotType = typename CartesianGrid<dim>::SignalInsertKnotsSlot;
+  grid_.get_ptr_data()->connect_insert_knots(
+    SlotType(func_to_connect).track_foreign(space));
 }
 
 #endif // MESH_REFINEMENT
@@ -357,135 +357,135 @@ compute_knots_with_repetition(const EndBehaviourTable &ends,
 {
 
 #ifndef NDEBUG
-    for (auto iComp : components)
+  for (auto iComp : components)
+  {
+    for (const int j : UnitElement<dim>::active_directions)
     {
-        for (const int j : UnitElement<dim>::active_directions)
-        {
-            const auto &l_knots = boundary_knots[iComp][j].get_data_direction(0);
-            const auto &r_knots = boundary_knots[iComp][j].get_data_direction(1);
+      const auto &l_knots = boundary_knots[iComp][j].get_data_direction(0);
+      const auto &r_knots = boundary_knots[iComp][j].get_data_direction(1);
 
-            if (periodic_[iComp][j])
-            {
-                Assert(ends[iComp][j] == BasisEndBehaviour::periodic,
-                       ExcMessage("Periodic inconsistency"));
-                Assert(l_knots.size()==0,
-                       ExcMessage("Periodic inconsistency"));
-                Assert(r_knots.size()==0,
-                       ExcMessage("Periodic inconsistency"));
-            }
-            else
-            {
-                if (ends[iComp][j] == BasisEndBehaviour::interpolatory)
-                {
-                    Assert(l_knots.size()==0,
-                           ExcMessage("Interpolatory inconsistency"));
-                    Assert(r_knots.size()==0,
-                           ExcMessage("Interpolatory inconsistency"));
-                }
-                if (ends[iComp][j] == BasisEndBehaviour::end_knots)
-                {
-                    const auto &knots = grid_->get_knot_coordinates(j);
-                    const int m = deg_[iComp][j] + 1;
-                    Assert(l_knots.size() == m,
-                           ExcMessage("Wrong number of boundary knots"));
-                    Assert(r_knots.size() == m,
-                           ExcMessage("Wrong number of boundary knots"));
-                    Assert(knots.front() >= l_knots.back(),
-                           ExcMessage("Boundary knots should be smaller or equal a"));
-                    Assert(knots.back() <= r_knots.front(),
-                           ExcMessage("Boundary knots should be greater or equal b"));
-                    Assert(std::is_sorted(l_knots.begin(), l_knots.end()),
-                           ExcMessage("Boundary knots is not sorted"));
-                    Assert(std::is_sorted(r_knots.begin(), r_knots.end()),
-                           ExcMessage("Boundary knots is not sorted"));
-                }
-            }
+      if (periodic_[iComp][j])
+      {
+        Assert(ends[iComp][j] == BasisEndBehaviour::periodic,
+               ExcMessage("Periodic inconsistency"));
+        Assert(l_knots.size()==0,
+               ExcMessage("Periodic inconsistency"));
+        Assert(r_knots.size()==0,
+               ExcMessage("Periodic inconsistency"));
+      }
+      else
+      {
+        if (ends[iComp][j] == BasisEndBehaviour::interpolatory)
+        {
+          Assert(l_knots.size()==0,
+                 ExcMessage("Interpolatory inconsistency"));
+          Assert(r_knots.size()==0,
+                 ExcMessage("Interpolatory inconsistency"));
         }
+        if (ends[iComp][j] == BasisEndBehaviour::end_knots)
+        {
+          const auto &knots = grid_->get_knot_coordinates(j);
+          const int m = deg_[iComp][j] + 1;
+          Assert(l_knots.size() == m,
+                 ExcMessage("Wrong number of boundary knots"));
+          Assert(r_knots.size() == m,
+                 ExcMessage("Wrong number of boundary knots"));
+          Assert(knots.front() >= l_knots.back(),
+                 ExcMessage("Boundary knots should be smaller or equal a"));
+          Assert(knots.back() <= r_knots.front(),
+                 ExcMessage("Boundary knots should be greater or equal b"));
+          Assert(std::is_sorted(l_knots.begin(), l_knots.end()),
+                 ExcMessage("Boundary knots is not sorted"));
+          Assert(std::is_sorted(r_knots.begin(), r_knots.end()),
+                 ExcMessage("Boundary knots is not sorted"));
+        }
+      }
     }
+  }
 #endif
 
-    KnotsTable result;
+  KnotsTable result;
 
-    for (int comp = 0; comp < n_components; ++comp)
+  for (int comp = 0; comp < n_components; ++comp)
+  {
+    const auto   &degree_comp = deg_[comp];
+    const auto     &mult_comp = interior_mult_[comp];
+    const auto &periodic_comp = periodic_[comp];
+
+    for (const auto dir : UnitElement<dim>::active_directions)
     {
-        const auto   &degree_comp = deg_[comp];
-        const auto     &mult_comp = interior_mult_[comp];
-        const auto &periodic_comp = periodic_[comp];
+      const auto deg = degree_comp[dir];
+      const auto order = deg + 1;
+      const auto &knots = grid_->get_knot_coordinates(dir);
+      const auto &mult  = mult_comp.get_data_direction(dir);
 
-        for (const auto dir : UnitElement<dim>::active_directions)
+      const int m = order;
+      const int K = std::accumulate(mult.begin(),mult.end(),0);
+
+
+      SafeSTLVector<Real> rep_knots(2*order+K);
+
+      auto rep_it = rep_knots.begin() + m;
+      auto m_it = mult.begin();
+      auto k_it = ++knots.begin();
+      auto end = mult.end();
+      for (; m_it !=end; ++m_it, ++k_it)
+      {
+        for (int iMult = 0; iMult < *m_it; ++iMult, ++rep_it)
+          *rep_it = *k_it;
+      }
+
+
+      if (periodic_comp[dir])
+      {
+        const Real a = knots.front();
+        const Real b = knots.back();
+        const Real L = b - a;
+        for (int i=0; i<m; ++i)
         {
-            const auto deg = degree_comp[dir];
-            const auto order = deg + 1;
-            const auto &knots = grid_->get_knot_coordinates(dir);
-            const auto &mult  = mult_comp.get_data_direction(dir);
+          rep_knots[i] = rep_knots[K+i] - L;
+          rep_knots[K+m+i] = rep_knots[m+i] + L;
+        }
+      }
+      else
+      {
+        const auto &endb = ends[comp][dir];
+        switch (endb)
+        {
+          case BasisEndBehaviour::interpolatory:
+          {
+            const Real a = knots.front();
+            const Real b = knots.back();
 
-            const int m = order;
-            const int K = std::accumulate(mult.begin(),mult.end(),0);
-
-
-            SafeSTLVector<Real> rep_knots(2*order+K);
-
-            auto rep_it = rep_knots.begin() + m;
-            auto m_it = mult.begin();
-            auto k_it = ++knots.begin();
-            auto end = mult.end();
-            for (; m_it !=end; ++m_it, ++k_it)
+            for (int i=0; i<m; ++i)
             {
-                for (int iMult = 0; iMult < *m_it; ++iMult, ++rep_it)
-                    *rep_it = *k_it;
+              rep_knots[i] = a;
+              rep_knots[m+K+i] = b;
             }
+          }
+          break;
+          case BasisEndBehaviour::end_knots:
+          {
+            const auto &left_knts = boundary_knots[comp][dir].get_data_direction(0);
+            const auto &right_knts = boundary_knots[comp][dir].get_data_direction(1);
 
-
-            if (periodic_comp[dir])
+            for (int i=0; i<m; ++i)
             {
-                const Real a = knots.front();
-                const Real b = knots.back();
-                const Real L = b - a;
-                for (int i=0; i<m; ++i)
-                {
-                    rep_knots[i] = rep_knots[K+i] - L;
-                    rep_knots[K+m+i] = rep_knots[m+i] + L;
-                }
+              rep_knots[i]     = left_knts[i];
+              rep_knots[K+m+i] = right_knts[i];
             }
-            else
-            {
-                const auto &endb = ends[comp][dir];
-                switch (endb)
-                {
-                    case BasisEndBehaviour::interpolatory:
-                    {
-                        const Real a = knots.front();
-                        const Real b = knots.back();
+          }
+          break;
+          case BasisEndBehaviour::periodic:
+            Assert(false, ExcMessage("Impossible"));
+        }
+      }
 
-                        for (int i=0; i<m; ++i)
-                        {
-                            rep_knots[i] = a;
-                            rep_knots[m+K+i] = b;
-                        }
-                    }
-                    break;
-                    case BasisEndBehaviour::end_knots:
-                    {
-                        const auto &left_knts = boundary_knots[comp][dir].get_data_direction(0);
-                        const auto &right_knts = boundary_knots[comp][dir].get_data_direction(1);
+      result[comp].copy_data_direction(dir,rep_knots);
+    } // end loop dir
+  } // end loop comp
 
-                        for (int i=0; i<m; ++i)
-                        {
-                            rep_knots[i]     = left_knts[i];
-                            rep_knots[K+m+i] = right_knts[i];
-                        }
-                    }
-                    break;
-                    case BasisEndBehaviour::periodic:
-                        Assert(false, ExcMessage("Impossible"));
-                }
-            }
-
-            result[comp].copy_data_direction(dir,rep_knots);
-        } // end loop dir
-    } // end loop comp
-
-    return result;
+  return result;
 }
 
 
@@ -497,19 +497,19 @@ SplineSpace<dim, range, rank>::
 get_sub_space_mult(const Index sub_elem_id) const
 -> typename SubSpace<k>::MultiplicityTable
 {
-    using SubMultT = typename SubSpace<k>::MultiplicityTable;
-    const auto &v_mult = interior_mult_;
+  using SubMultT = typename SubSpace<k>::MultiplicityTable;
+  const auto &v_mult = interior_mult_;
 
-    auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
-    const auto &active_dirs = k_elem.active_directions;
+  auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
+  const auto &active_dirs = k_elem.active_directions;
 
-    auto sub_mult = SubMultT(v_mult.get_comp_map());
-    for (int comp : sub_mult.get_active_components_id())
-    {
-        for (int j=0; j<k; ++j)
-            sub_mult[comp].copy_data_direction(j, v_mult[comp].get_data_direction(active_dirs[j]));
-    }
-    return sub_mult;
+  auto sub_mult = SubMultT(v_mult.get_comp_map());
+  for (int comp : sub_mult.get_active_components_id())
+  {
+    for (int j=0; j<k; ++j)
+      sub_mult[comp].copy_data_direction(j, v_mult[comp].get_data_direction(active_dirs[j]));
+  }
+  return sub_mult;
 }
 
 
@@ -521,17 +521,17 @@ SplineSpace<dim, range, rank>::
 get_sub_space_degree(const Index sub_elem_id) const
 -> typename SubSpace<k>::DegreeTable
 {
-    using SubDegreeT = typename SubSpace<k>::DegreeTable;
-    auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
-    const auto &active_dirs = k_elem.active_directions;
+  using SubDegreeT = typename SubSpace<k>::DegreeTable;
+  auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
+  const auto &active_dirs = k_elem.active_directions;
 
-    SubDegreeT sub_degree(deg_.get_comp_map());
+  SubDegreeT sub_degree(deg_.get_comp_map());
 
-    for (int comp : sub_degree.get_active_components_id())
-        for (int j=0; j<k; ++j)
-            sub_degree[comp][j] = deg_[comp][active_dirs[j]];
+  for (int comp : sub_degree.get_active_components_id())
+    for (int j=0; j<k; ++j)
+      sub_degree[comp][j] = deg_[comp][active_dirs[j]];
 
-    return sub_degree;
+  return sub_degree;
 }
 
 
@@ -543,17 +543,17 @@ SplineSpace<dim, range, rank>::
 get_sub_space_periodicity(const Index sub_elem_id) const
 -> typename SubSpace<k>::PeriodicityTable
 {
-    using SubPeriodicT = typename SubSpace<k>::PeriodicityTable;
-    auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
-    const auto &active_dirs = k_elem.active_directions;
+  using SubPeriodicT = typename SubSpace<k>::PeriodicityTable;
+  auto &k_elem = UnitElement<dim>::template get_elem<k>(sub_elem_id);
+  const auto &active_dirs = k_elem.active_directions;
 
-    SubPeriodicT sub_periodic(periodic_.get_comp_map());
+  SubPeriodicT sub_periodic(periodic_.get_comp_map());
 
-    for (int comp : periodic_.get_active_components_id())
-        for (int j=0; j<k; ++j)
-            sub_periodic[comp][j] = periodic_[comp][active_dirs[j]];
+  for (int comp : periodic_.get_active_components_id())
+    for (int j=0; j<k; ++j)
+      sub_periodic[comp][j] = periodic_[comp][active_dirs[j]];
 
-    return sub_periodic;
+  return sub_periodic;
 }
 
 
@@ -562,29 +562,29 @@ template<int dim, int range, int rank>
 auto SplineSpace<dim, range, rank>::
 accumulated_interior_multiplicities() const -> MultiplicityTable
 {
-    MultiplicityTable result;
-    for (const auto comp : components)
+  MultiplicityTable result;
+  for (const auto comp : components)
+  {
+    const auto &mult_comp = interior_mult_[comp];
+
+    for (const auto j : UnitElement<dim>::active_directions)
     {
-        const auto &mult_comp = interior_mult_[comp];
+      // Assert(!periodic_[iComp][j], ExcMessage("periodic needs to be implemented"));
+      const auto &mult = mult_comp.get_data_direction(j);
 
-        for (const auto j : UnitElement<dim>::active_directions)
-        {
-            // Assert(!periodic_[iComp][j], ExcMessage("periodic needs to be implemented"));
-            const auto &mult = mult_comp.get_data_direction(j);
+      SafeSTLVector<Size> accum_mult;
+      const int size = mult.size();
+      accum_mult.reserve(size + 1);
+      accum_mult.push_back(0);
+      for (int i = 0; i < size; ++i)
+        accum_mult.push_back(accum_mult[i] + mult[i]);
 
-            SafeSTLVector<Size> accum_mult;
-            const int size = mult.size();
-            accum_mult.reserve(size + 1);
-            accum_mult.push_back(0);
-            for (int i = 0; i < size; ++i)
-                accum_mult.push_back(accum_mult[i] + mult[i]);
+      result[comp].copy_data_direction(j, accum_mult);
 
-            result[comp].copy_data_direction(j, accum_mult);
-
-            //TODO(pauletti, May 3, 2014): write some post assertions
-        }
+      //TODO(pauletti, May 3, 2014): write some post assertions
     }
-    return result;
+  }
+  return result;
 }
 
 
@@ -597,30 +597,30 @@ get_multiplicity_from_regularity(const InteriorReg reg,
                                  const TensorSize<dim> &n_elem)
 -> MultiplicityTable
 {
-    auto res = MultiplicityTable(deg.get_comp_map());
+  auto res = MultiplicityTable(deg.get_comp_map());
 
 
-    for (int comp : res.get_active_components_id())
-        for (const auto dir : UnitElement<dim>::active_directions)
-        {
-            int val;
-            switch (reg)
-            {
-                case InteriorReg::maximum:
-                    val = 1;
-                    break;
-                case InteriorReg::minimun:
-                    val = deg[comp][dir] + 1;
-                    break;
-            }
+  for (int comp : res.get_active_components_id())
+    for (const auto dir : UnitElement<dim>::active_directions)
+    {
+      int val;
+      switch (reg)
+      {
+        case InteriorReg::maximum:
+          val = 1;
+          break;
+        case InteriorReg::minimun:
+          val = deg[comp][dir] + 1;
+          break;
+      }
 
-            const auto size = n_elem[dir]-1;
+      const auto size = n_elem[dir]-1;
 
-            SafeSTLVector<Size> mult(size);
-            if (size>0)
-                res[comp].copy_data_direction(dir, SafeSTLVector<Size>(size, val));
-        }
-    return res;
+      SafeSTLVector<Size> mult(size);
+      if (size>0)
+        res[comp].copy_data_direction(dir, SafeSTLVector<Size>(size, val));
+    }
+  return res;
 }
 
 
@@ -630,23 +630,23 @@ void
 SplineSpace<dim, range, rank>::
 print_info(LogStream &out) const
 {
-    out.begin_item("Knots without repetition:");
-    grid_->print_info(out);
-    out.end_item();
+  out.begin_item("Knots without repetition:");
+  grid_->print_info(out);
+  out.end_item();
 
-    out.begin_item("Degrees:");
-    deg_.print_info(out);
-    out.end_item();
+  out.begin_item("Degrees:");
+  deg_.print_info(out);
+  out.end_item();
 
-    out.begin_item("Interior multiplicities:");
-    const MultiplicityTable &interior_mult_ref = interior_mult_;
-    for (const auto &v : interior_mult_ref)
-        v.print_info(out);
-    out.end_item();
+  out.begin_item("Interior multiplicities:");
+  const MultiplicityTable &interior_mult_ref = interior_mult_;
+  for (const auto &v : interior_mult_ref)
+    v.print_info(out);
+  out.end_item();
 
-    out.begin_item("Dimensionality Table:");
-    space_dim_.print_info(out);
-    out.end_item();
+  out.begin_item("Dimensionality Table:");
+  space_dim_.print_info(out);
+  out.end_item();
 }
 
 
@@ -655,7 +655,7 @@ auto
 SplineSpace<dim, range, rank>::
 get_degree_table() const -> const DegreeTable &
 {
-    return deg_;
+  return deg_;
 }
 
 template<int dim, int range, int rank>
@@ -663,7 +663,7 @@ auto
 SplineSpace<dim, range, rank>::
 get_periodicity() const -> const PeriodicityTable &
 {
-    return periodic_;
+  return periodic_;
 }
 
 template<int dim, int range, int rank>
@@ -671,7 +671,7 @@ auto
 SplineSpace<dim, range, rank>::
 get_components_map() const -> const SafeSTLArray<Index,n_components> &
 {
-    return interior_mult_.get_comp_map();
+  return interior_mult_.get_comp_map();
 }
 
 template<int dim, int range, int rank>
@@ -679,7 +679,7 @@ auto
 SplineSpace<dim, range, rank>::
 get_active_components_id() const -> const SafeSTLVector<Index> &
 {
-    return interior_mult_.get_active_components_id();
+  return interior_mult_.get_active_components_id();
 }
 
 template<int dim, int range, int rank>
@@ -687,7 +687,7 @@ Size
 SplineSpace<dim, range, rank>::
 get_num_basis() const
 {
-    return space_dim_.total_dimension();
+  return space_dim_.total_dimension();
 }
 
 template<int dim, int range, int rank>
@@ -695,7 +695,7 @@ Size
 SplineSpace<dim, range, rank>::
 get_num_basis(const int comp) const
 {
-    return space_dim_.get_component_size(comp);
+  return space_dim_.get_component_size(comp);
 }
 
 template<int dim, int range, int rank>
@@ -703,7 +703,7 @@ Size
 SplineSpace<dim, range, rank>::
 get_num_basis(const int comp, const int dir) const
 {
-    return space_dim_[comp][dir];
+  return space_dim_[comp][dir];
 }
 
 template<int dim, int range, int rank>
@@ -711,7 +711,7 @@ auto
 SplineSpace<dim, range, rank>::
 get_num_basis_table() const -> const TensorSizeTable &
 {
-    return space_dim_;
+  return space_dim_;
 }
 
 
@@ -720,7 +720,7 @@ auto
 SplineSpace<dim, range, rank>::
 get_interior_mult() const -> const MultiplicityTable &
 {
-    return interior_mult_;
+  return interior_mult_;
 }
 
 template<int dim, int range, int rank>
@@ -728,7 +728,7 @@ auto
 SplineSpace<dim, range, rank>::
 get_periodic_table() const -> const PeriodicityTable &
 {
-    return periodic_;
+  return periodic_;
 }
 
 
@@ -738,7 +738,7 @@ SplineSpace<dim, range, rank>::
 get_dofs_tensor_id_elem_table() const
 -> const ComponentContainer<SafeSTLVector<TensorIndex<dim> > > &
 {
-    return dofs_tensor_id_elem_table_;
+  return dofs_tensor_id_elem_table_;
 }
 
 
@@ -749,23 +749,23 @@ void
 SplineSpace<dim, range, rank>::
 serialize(Archive &ar, const unsigned int version)
 {
-    ar &boost::serialization::make_nvp("grid_",grid_);
+  ar &boost::serialization::make_nvp("grid_",grid_);
 
-    ar &boost::serialization::make_nvp("interior_mult_",interior_mult_);
+  ar &boost::serialization::make_nvp("interior_mult_",interior_mult_);
 
-    ar &boost::serialization::make_nvp("deg_", deg_);
+  ar &boost::serialization::make_nvp("deg_", deg_);
 
-    ar &boost::serialization::make_nvp("space_dim_", space_dim_);
+  ar &boost::serialization::make_nvp("space_dim_", space_dim_);
 
-    ar &boost::serialization::make_nvp("periodic_", periodic_);
+  ar &boost::serialization::make_nvp("periodic_", periodic_);
 
 
-    ar &boost::serialization::make_nvp("dofs_tensor_id_elem_table_",dofs_tensor_id_elem_table_);
+  ar &boost::serialization::make_nvp("dofs_tensor_id_elem_table_",dofs_tensor_id_elem_table_);
 
-    using self_t = SplineSpace<dim,range,rank>;
-    auto tmp = std::const_pointer_cast<self_t>(spline_space_previous_refinement_);
-    ar &boost::serialization::make_nvp("spline_space_previous_refinement_",tmp);
-    spline_space_previous_refinement_ = tmp;
+  using self_t = SplineSpace<dim,range,rank>;
+  auto tmp = std::const_pointer_cast<self_t>(spline_space_previous_refinement_);
+  ar &boost::serialization::make_nvp("spline_space_previous_refinement_",tmp);
+  spline_space_previous_refinement_ = tmp;
 }
 #endif // SERIALIZATION
 
@@ -776,7 +776,7 @@ SplineSpace<dim, range, rank>::
 TensorSizeTable::
 get_component_size(const int comp) const
 {
-    return (*this)[comp].flat_size();
+  return (*this)[comp].flat_size();
 }
 
 
@@ -786,11 +786,11 @@ SplineSpace<dim, range, rank>::
 TensorSizeTable::
 total_dimension() const
 {
-    Index total_dimension = 0;
-    for (const auto comp : components)
-        total_dimension += this->get_component_size(comp);
+  Index total_dimension = 0;
+  for (const auto comp : components)
+    total_dimension += this->get_component_size(comp);
 
-    return total_dimension;
+  return total_dimension;
 }
 
 template<int dim, int range, int rank>
@@ -799,12 +799,12 @@ SplineSpace<dim, range, rank>::
 TensorSizeTable::
 get_offset() const -> ComponentContainer<Size>
 {
-    ComponentContainer<Size> offset;
-    offset[0] = 0;
-    for (int comp = 1; comp < n_components; ++comp)
-        offset[comp] = offset[comp-1] + this->get_component_size(comp-1);
+  ComponentContainer<Size> offset;
+  offset[0] = 0;
+  for (int comp = 1; comp < n_components; ++comp)
+    offset[comp] = offset[comp-1] + this->get_component_size(comp-1);
 
-    return offset;
+  return offset;
 
 }
 
@@ -814,16 +814,16 @@ SplineSpace<dim, range, rank>::
 TensorSizeTable::
 print_info(LogStream &out) const
 {
-    base_t::print_info(out);
+  base_t::print_info(out);
 
-    out.begin_item("Scalar components dimensions:");
-    out << "[ ";
-    for (auto comp : components)
-        out << this->get_component_size(comp) << " ";
-    out << "]";
-    out.end_item();
+  out.begin_item("Scalar components dimensions:");
+  out << "[ ";
+  for (auto comp : components)
+    out << this->get_component_size(comp) << " ";
+  out << "]";
+  out.end_item();
 
-    out << "Total Dimension: " << total_dimension() << std::endl;
+  out << "Total Dimension: " << total_dimension() << std::endl;
 }
 
 
@@ -831,8 +831,8 @@ template<int dim, int range, int rank>
 SplineSpace<dim, range, rank>::
 TensorSizeTable::
 TensorSizeTable(const base_t &n_basis)
-    :
-    base_t(n_basis)
+  :
+  base_t(n_basis)
 {}
 
 

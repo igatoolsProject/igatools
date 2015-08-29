@@ -36,41 +36,41 @@ template <class Container>
 inline
 MultiArrayIteratorBase<Container>::
 MultiArrayIteratorBase()
-    :
-    container_(nullptr),
-    id_(IteratorState::invalid),
-    stride_(0)
+  :
+  container_(nullptr),
+  id_(IteratorState::invalid),
+  stride_(0)
 {}
 
 template <class Container>
 inline
 MultiArrayIteratorBase<Container>::
 MultiArrayIteratorBase(Container &container,const Index id,const Index stride)
-    :
-    container_(&container),
-    id_(id),
-    stride_(stride)
+  :
+  container_(&container),
+  id_(id),
+  stride_(stride)
 {
-    Assert(container_ != nullptr,ExcNullPtr());
-    Assert(id_ >= 0 || IteratorState::pass_the_end,ExcInvalidState());
+  Assert(container_ != nullptr,ExcNullPtr());
+  Assert(id_ >= 0 || IteratorState::pass_the_end,ExcInvalidState());
 
 #ifndef NDEBUG
-    if (container_->flat_size() != 0)
-    {
-        Assert(stride_ > 0 && stride <= container_->flat_size(),
-               ExcIndexRange(stride_,1,container_->flat_size()+1));
-    }
+  if (container_->flat_size() != 0)
+  {
+    Assert(stride_ > 0 && stride <= container_->flat_size(),
+           ExcIndexRange(stride_,1,container_->flat_size()+1));
+  }
 #endif
 
 
-    Assert(id_ <= container_->flat_size(),ExcIteratorPastEnd());
-    if (container_->flat_size() > 0)
-    {
-        if (id_ == container_->flat_size())
-            id_ = IteratorState::pass_the_end;
-    }
-    else
-        id_ = IteratorState::invalid;
+  Assert(id_ <= container_->flat_size(),ExcIteratorPastEnd());
+  if (container_->flat_size() > 0)
+  {
+    if (id_ == container_->flat_size())
+      id_ = IteratorState::pass_the_end;
+  }
+  else
+    id_ = IteratorState::invalid;
 }
 
 
@@ -81,14 +81,14 @@ MultiArrayIteratorBase<Container> &
 MultiArrayIteratorBase<Container>::
 operator++()
 {
-    Assert(id_ != IteratorState::pass_the_end,ExcIteratorPastEnd());
-    Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
+  Assert(id_ != IteratorState::pass_the_end,ExcIteratorPastEnd());
+  Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
 
-    id_ += stride_ ;
+  id_ += stride_ ;
 
-    if (id_ >= container_->flat_size())
-        id_ = IteratorState::pass_the_end;
-    return (*this);
+  if (id_ >= container_->flat_size())
+    id_ = IteratorState::pass_the_end;
+  return (*this);
 }
 
 template <class Container>
@@ -97,9 +97,9 @@ MultiArrayIteratorBase<Container>
 MultiArrayIteratorBase<Container>::
 operator++(int)
 {
-    MultiArrayIteratorBase<Container> tmp(*this);
-    operator++();
-    return tmp;
+  MultiArrayIteratorBase<Container> tmp(*this);
+  operator++();
+  return tmp;
 }
 
 
@@ -109,9 +109,9 @@ auto
 MultiArrayIteratorBase<Container>::
 operator*() const -> const reference
 {
-    Assert(id_ != IteratorState::pass_the_end,ExcIteratorPastEnd());
-    Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
-    return (*container_)[id_];
+  Assert(id_ != IteratorState::pass_the_end,ExcIteratorPastEnd());
+  Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
+  return (*container_)[id_];
 }
 
 template <class Container>
@@ -120,9 +120,9 @@ auto
 MultiArrayIteratorBase<Container>::
 operator*() -> reference
 {
-    Assert(id_ != IteratorState::pass_the_end,ExcIteratorPastEnd());
-    Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
-    return (*container_)[id_];
+  Assert(id_ != IteratorState::pass_the_end,ExcIteratorPastEnd());
+  Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
+  return (*container_)[id_];
 }
 
 template <class Container>
@@ -131,10 +131,10 @@ auto
 MultiArrayIteratorBase<Container>::
 operator[](const Index i) const -> const reference
 {
-    Assert(i >= 0,ExcLowerRange(i,0));
-    Assert(id_ + i*stride_ < container_->flat_size(),ExcIteratorPastEnd());
-    Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
-    return (*container_)[id_ + i*stride_];
+  Assert(i >= 0,ExcLowerRange(i,0));
+  Assert(id_ + i*stride_ < container_->flat_size(),ExcIteratorPastEnd());
+  Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
+  return (*container_)[id_ + i*stride_];
 }
 
 template <class Container>
@@ -143,10 +143,10 @@ auto
 MultiArrayIteratorBase<Container>::
 operator[](const Index i) -> reference
 {
-    Assert(i >= 0,ExcLowerRange(i,0));
-    Assert(id_ + i*stride_ < container_->flat_size(),ExcIteratorPastEnd());
-    Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
-    return (*container_)[id_ + i *stride_];
+  Assert(i >= 0,ExcLowerRange(i,0));
+  Assert(id_ + i*stride_ < container_->flat_size(),ExcIteratorPastEnd());
+  Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
+  return (*container_)[id_ + i *stride_];
 }
 
 
@@ -156,10 +156,10 @@ auto
 MultiArrayIteratorBase<Container>::
 operator->() const -> const value_type *const
 {
-    Assert(id_ != IteratorState::pass_the_end,ExcIteratorPastEnd());
-    Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
+  Assert(id_ != IteratorState::pass_the_end,ExcIteratorPastEnd());
+  Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
 //    return &container_->get_data()[id_];
-    return &(*container_)[id_];
+  return &(*container_)[id_];
 }
 
 template <class Container>
@@ -168,9 +168,9 @@ auto
 MultiArrayIteratorBase<Container>::
 operator->() -> value_type *
 {
-    Assert(id_ != IteratorState::pass_the_end,ExcIteratorPastEnd());
-    Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
-    return &(*container_)[id_];
+  Assert(id_ != IteratorState::pass_the_end,ExcIteratorPastEnd());
+  Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
+  return &(*container_)[id_];
 }
 
 template <class Container>
@@ -179,7 +179,7 @@ bool
 MultiArrayIteratorBase<Container>::
 operator==(const MultiArrayIteratorBase<Container> &it) const
 {
-    return (id_ == it.id_ && stride_ == it.stride_ && container_ == it.container_)?true:false;
+  return (id_ == it.id_ && stride_ == it.stride_ && container_ == it.container_)?true:false;
 }
 
 template <class Container>
@@ -188,7 +188,7 @@ bool
 MultiArrayIteratorBase<Container>::
 operator!=(const MultiArrayIteratorBase<Container> &it) const
 {
-    return (id_ != it.id_ || stride_ != it.stride_ || container_ != it.container_)?true:false;
+  return (id_ != it.id_ || stride_ != it.stride_ || container_ != it.container_)?true:false;
 }
 
 
@@ -198,21 +198,21 @@ bool
 MultiArrayIteratorBase<Container>::
 operator<(const MultiArrayIteratorBase<Container> &it) const
 {
-    Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
-    Assert(it.id_ != IteratorState::invalid,ExcInvalidIterator());
+  Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
+  Assert(it.id_ != IteratorState::invalid,ExcInvalidIterator());
 
-    // check if the iterators are comparable
-    Assert(stride_ == it.stride_ && container_ == it.container_,
-           ExcInvalidIterator());
+  // check if the iterators are comparable
+  Assert(stride_ == it.stride_ && container_ == it.container_,
+         ExcInvalidIterator());
 
-    bool ret = false ;
-    if (id_ != IteratorState::pass_the_end)
-    {
-        if (it.id_ == IteratorState::pass_the_end || id_ < it.id_)
-            ret = true;
-    }
+  bool ret = false ;
+  if (id_ != IteratorState::pass_the_end)
+  {
+    if (it.id_ == IteratorState::pass_the_end || id_ < it.id_)
+      ret = true;
+  }
 
-    return ret;
+  return ret;
 }
 
 template <class Container>
@@ -221,7 +221,7 @@ bool
 MultiArrayIteratorBase<Container>::
 operator<=(const MultiArrayIteratorBase<Container> &it) const
 {
-    return ((*this) < it || (*this) == it)?true:false;
+  return ((*this) < it || (*this) == it)?true:false;
 }
 
 
@@ -231,16 +231,16 @@ MultiArrayIteratorBase<Container>
 MultiArrayIteratorBase<Container>::
 operator+(const Index n) const
 {
-    Assert(n >= 0,ExcLowerRange(n,0));
+  Assert(n >= 0,ExcLowerRange(n,0));
 //    Assert(id_ + n*stride_ < container_->flat_size(),ExcIteratorPastEnd());
-    Assert(id_ != IteratorState::pass_the_end,ExcInvalidIterator());
-    Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
+  Assert(id_ != IteratorState::pass_the_end,ExcInvalidIterator());
+  Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
 
-    const Index pos = id_ + n*stride_;
-    if (pos < container_->flat_size())
-        return MultiArrayIteratorBase<Container>(*container_,pos,stride_);
-    else
-        return MultiArrayIteratorBase<Container>(*container_,IteratorState::pass_the_end,stride_);
+  const Index pos = id_ + n*stride_;
+  if (pos < container_->flat_size())
+    return MultiArrayIteratorBase<Container>(*container_,pos,stride_);
+  else
+    return MultiArrayIteratorBase<Container>(*container_,IteratorState::pass_the_end,stride_);
 }
 
 template <class Container>
@@ -249,12 +249,12 @@ MultiArrayIteratorBase<Container>
 MultiArrayIteratorBase<Container>::
 operator-(const Index n) const
 {
-    Assert(n >= 0,ExcLowerRange(n,0));
-    Assert(id_ != IteratorState::pass_the_end,ExcInvalidIterator());
-    Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
-    Assert(id_ - n*stride_ >=0, ExcLowerRange(id_ - n*stride_,0));
-    Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
-    return MultiArrayIteratorBase<Container>(*container_,id_ - n*stride_,stride_);
+  Assert(n >= 0,ExcLowerRange(n,0));
+  Assert(id_ != IteratorState::pass_the_end,ExcInvalidIterator());
+  Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
+  Assert(id_ - n*stride_ >=0, ExcLowerRange(id_ - n*stride_,0));
+  Assert(id_ != IteratorState::invalid,ExcInvalidIterator());
+  return MultiArrayIteratorBase<Container>(*container_,id_ - n*stride_,stride_);
 }
 
 template <class Container>
@@ -263,32 +263,32 @@ auto
 MultiArrayIteratorBase<Container>::
 operator-(const MultiArrayIteratorBase<Container> &a) const -> difference_type
 {
-    // check if the iterators are comparable
-    Assert(a.stride_ == stride_ && a.container_ == container_,
-           ExcInvalidIterator());
+  // check if the iterators are comparable
+  Assert(a.stride_ == stride_ && a.container_ == container_,
+         ExcInvalidIterator());
 
-    Assert(a <= (*this), ExcInvalidIterator());
+  Assert(a <= (*this), ExcInvalidIterator());
 
-    difference_type position_difference;
-    if (id_ != IteratorState::pass_the_end)
-    {
-        position_difference = id_ - a.id_;
-    }
+  difference_type position_difference;
+  if (id_ != IteratorState::pass_the_end)
+  {
+    position_difference = id_ - a.id_;
+  }
+  else
+  {
+    if (a.id_ != IteratorState::pass_the_end)
+      position_difference = container_->flat_size() - a.id_;
     else
-    {
-        if (a.id_ != IteratorState::pass_the_end)
-            position_difference = container_->flat_size() - a.id_;
-        else
-            position_difference = 0;
-    }
+      position_difference = 0;
+  }
 
-    Assert(position_difference >= 0,ExcLowerRange(position_difference,0));
+  Assert(position_difference >= 0,ExcLowerRange(position_difference,0));
 
-    const difference_type n = position_difference / a.stride_;
-    Assert(n >= 0,ExcLowerRange(n,0));
+  const difference_type n = position_difference / a.stride_;
+  Assert(n >= 0,ExcLowerRange(n,0));
 
-    Assert(a+n == (*this), ExcMessage("Iterator a cannot advance to (*this)."));
-    return n;
+  Assert(a+n == (*this), ExcMessage("Iterator a cannot advance to (*this)."));
+  return n;
 }
 
 
@@ -299,7 +299,7 @@ Index
 MultiArrayIteratorBase<Container>::
 get_id() const
 {
-    return id_;
+  return id_;
 }
 
 template <class Container>
@@ -308,7 +308,7 @@ Index
 MultiArrayIteratorBase<Container>::
 get_stride() const
 {
-    return stride_;
+  return stride_;
 }
 
 
@@ -318,8 +318,8 @@ template <class Container>
 inline
 MultiArrayConstIterator<Container>::
 MultiArrayConstIterator(const Container &container,const Index id,const Index stride)
-    :
-    MultiArrayIteratorBase<Container>(const_cast<Container &>(container),id,stride)
+  :
+  MultiArrayIteratorBase<Container>(const_cast<Container &>(container),id,stride)
 {}
 
 
@@ -327,8 +327,8 @@ template <class Container>
 inline
 MultiArrayIterator<Container>::
 MultiArrayIterator(Container &container,const Index id,const Index stride)
-    :
-    MultiArrayConstIterator<Container>(container,id,stride)
+  :
+  MultiArrayConstIterator<Container>(container,id,stride)
 {}
 
 

@@ -35,32 +35,32 @@
 template <int dim, int sdim = dim>
 void iterate()
 {
-    OUTSTART
+  OUTSTART
 
-    auto grid = non_uniform_grid<dim>();
+  auto grid = non_uniform_grid<dim>();
 
-    for (auto &elem : *grid)
-    {
-        for (auto &s_id : UnitElement<dim>::template elems_ids<sdim>())
-            out << elem.template get_measure<sdim>(s_id) << endl;
-        out << endl;
-    }
+  for (auto &elem : *grid)
+  {
+    for (auto &s_id : UnitElement<dim>::template elems_ids<sdim>())
+      out << elem.template get_measure<sdim>(s_id) << endl;
+    out << endl;
+  }
 
-    OUTEND
+  OUTEND
 }
 
 
 
 int main()
 {
-    iterate<0>();
-    iterate<1>();
-    iterate<2>();
-    iterate<3>();
+  iterate<0>();
+  iterate<1>();
+  iterate<2>();
+  iterate<3>();
 
-    iterate<1,0>();
-    iterate<2,1>();
-    iterate<3,2>();
+  iterate<1,0>();
+  iterate<2,1>();
+  iterate<3,2>();
 
-    return  0;
+  return  0;
 }

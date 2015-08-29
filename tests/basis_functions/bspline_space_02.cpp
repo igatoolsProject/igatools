@@ -35,27 +35,27 @@
 template<int dim, int codim=0>
 void component_space(const int deg=3,  const int n_knots = 10)
 {
-    OUTSTART
+  OUTSTART
 
-    auto grid  = CartesianGrid<dim>::create(n_knots);
-    using VecSpace = BSplineSpace<dim, dim+codim>;
-    using CompSpace  = BSplineSpace<dim, 1>;
-    typename VecSpace::Degrees degt(deg);
-    typename VecSpace::Periodicity periodic(false);
-    periodic[0] = true;
-    typename VecSpace::EndBehaviour end_b(BasisEndBehaviour::interpolatory);
-    end_b[0] = BasisEndBehaviour::periodic;
+  auto grid  = CartesianGrid<dim>::create(n_knots);
+  using VecSpace = BSplineSpace<dim, dim+codim>;
+  using CompSpace  = BSplineSpace<dim, 1>;
+  typename VecSpace::Degrees degt(deg);
+  typename VecSpace::Periodicity periodic(false);
+  periodic[0] = true;
+  typename VecSpace::EndBehaviour end_b(BasisEndBehaviour::interpolatory);
+  end_b[0] = BasisEndBehaviour::periodic;
 
-    auto space = VecSpace::create(degt, grid, InteriorReg::maximum, periodic, end_b);
-    space->print_info(out);
+  auto space = VecSpace::create(degt, grid, InteriorReg::maximum, periodic, end_b);
+  space->print_info(out);
 
-    auto comp_space = CompSpace::create(space->get_degree_table()[0],grid, InteriorReg::maximum,
-                                        space->get_periodicity()[0],
-                                        space->get_end_behaviour_table()[0]);
+  auto comp_space = CompSpace::create(space->get_degree_table()[0],grid, InteriorReg::maximum,
+                                      space->get_periodicity()[0],
+                                      space->get_end_behaviour_table()[0]);
 
-    comp_space->print_info(out);
+  comp_space->print_info(out);
 
-    OUTEND
+  OUTEND
 }
 
 
@@ -64,7 +64,7 @@ void component_space(const int deg=3,  const int n_knots = 10)
 int main()
 {
 
-    component_space<2, 1>();
+  component_space<2, 1>();
 
-    return 0;
+  return 0;
 }

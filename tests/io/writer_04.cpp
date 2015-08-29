@@ -32,60 +32,60 @@ template<int dim>
 void
 test()
 {
-    const int n_knots = 4;
-    auto grid = CartesianGrid<dim>::create(n_knots);
-    Writer<dim> writer(grid);
+  const int n_knots = 4;
+  auto grid = CartesianGrid<dim>::create(n_knots);
+  Writer<dim> writer(grid);
 
-    const Size n_iga_elements = grid->get_num_all_elems();
-    const Size n_points_iga_element = writer.get_num_points_per_iga_element();
+  const Size n_iga_elements = grid->get_num_all_elems();
+  const Size n_points_iga_element = writer.get_num_points_per_iga_element();
 
-    using Vec = SafeSTLVector<Real>;
-    using VecOfVec = SafeSTLVector<Vec>;
-    SafeSTLVector<VecOfVec> data_scalar(n_iga_elements,VecOfVec(n_points_iga_element, Vec(1)));
+  using Vec = SafeSTLVector<Real>;
+  using VecOfVec = SafeSTLVector<Vec>;
+  SafeSTLVector<VecOfVec> data_scalar(n_iga_elements,VecOfVec(n_points_iga_element, Vec(1)));
 
-    SafeSTLVector<VecOfVec> data_vector(n_iga_elements,VecOfVec(n_points_iga_element, Vec(dim)));
+  SafeSTLVector<VecOfVec> data_vector(n_iga_elements,VecOfVec(n_points_iga_element, Vec(dim)));
 
-    SafeSTLVector<VecOfVec> data_tensor(n_iga_elements,VecOfVec(n_points_iga_element, Vec(dim * dim)));
+  SafeSTLVector<VecOfVec> data_tensor(n_iga_elements,VecOfVec(n_points_iga_element, Vec(dim * dim)));
 
-    for (int i_el = 0; i_el < n_iga_elements; ++i_el)
+  for (int i_el = 0; i_el < n_iga_elements; ++i_el)
+  {
+    for (int i_Pt = 0; i_Pt < n_points_iga_element; ++i_Pt)
     {
-        for (int i_Pt = 0; i_Pt < n_points_iga_element; ++i_Pt)
-        {
-            auto &data_scalar_el_Pt = data_scalar[i_el][i_Pt];
-            auto &data_vector_el_Pt = data_vector[i_el][i_Pt];
-            auto &data_tensor_el_Pt = data_tensor[i_el][i_Pt];
+      auto &data_scalar_el_Pt = data_scalar[i_el][i_Pt];
+      auto &data_vector_el_Pt = data_vector[i_el][i_Pt];
+      auto &data_tensor_el_Pt = data_tensor[i_el][i_Pt];
 
-            // Scalar field
-            data_scalar_el_Pt[0] = i_Pt % 2;
+      // Scalar field
+      data_scalar_el_Pt[0] = i_Pt % 2;
 
-            // Vector field
-            for (uint i = 0; i < dim; ++i)
-                data_vector_el_Pt[i] = i_Pt % 2 + i;
+      // Vector field
+      for (uint i = 0; i < dim; ++i)
+        data_vector_el_Pt[i] = i_Pt % 2 + i;
 
-            // Tensor field
-            for (uint i = 0; i < dim * dim; ++i)
-                data_tensor_el_Pt[i] = i_Pt % 2 + i;
+      // Tensor field
+      for (uint i = 0; i < dim * dim; ++i)
+        data_tensor_el_Pt[i] = i_Pt % 2 + i;
 
-        }
     }
+  }
 
-    writer.add_point_data(1, "scalar", data_scalar, "scalar field");
-    writer.add_point_data(dim, "vector", data_vector, "vector field");
-    writer.add_point_data(dim * dim, "tensor", data_tensor, "tensor field");
+  writer.add_point_data(1, "scalar", data_scalar, "scalar field");
+  writer.add_point_data(dim, "vector", data_vector, "vector field");
+  writer.add_point_data(dim * dim, "tensor", data_tensor, "tensor field");
 
-    string filename = "grid_field" + to_string(dim);
-    writer.save(filename);
-    writer.save(filename,"appended");
-    writer.print_info(out);
+  string filename = "grid_field" + to_string(dim);
+  writer.save(filename);
+  writer.save(filename,"appended");
+  writer.print_info(out);
 }
 
 
 int main()
 {
-    test<1>();
-    test<2>();
-    test<3>();
+  test<1>();
+  test<2>();
+  test<3>();
 
-    return 0;
+  return 0;
 }
 

@@ -33,7 +33,7 @@ IGA_NAMESPACE_OPEN
  */
 template<class T>
 using print_info_type =
-    decltype(std::declval<T>().print_info(std::declval<LogStream &>()));
+  decltype(std::declval<T>().print_info(std::declval<LogStream &>()));
 
 
 template<class T>
@@ -41,14 +41,14 @@ constexpr
 EnableIf<std::is_void<print_info_type<T>>::value, bool >
                                        has_print_info(int)
 {
-    return true;
+  return true;
 }
 
 template<class T>
 constexpr bool
 has_print_info(long)
 {
-    return false;
+  return false;
 }
 
 IGA_NAMESPACE_CLOSE

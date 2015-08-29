@@ -61,8 +61,8 @@ fill_cache(const topology_variant &sdim,
            ElementAccessor &elem,
            const int s_id) const -> void
 {
-    auto fill_dispatcher = FillCacheDispatcher(s_id, *this, elem);
-    boost::apply_visitor(fill_dispatcher, sdim);
+  auto fill_dispatcher = FillCacheDispatcher(s_id, *this, elem);
+  boost::apply_visitor(fill_dispatcher, sdim);
 }
 
 
@@ -72,16 +72,16 @@ template<int dim,int space_dim>
 void
 IdentityFunction<dim,space_dim>::
 rebuild_after_insert_knots(
-    const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
-    const CartesianGrid<dim> &grid_old)
+  const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
+  const CartesianGrid<dim> &grid_old)
 {
-    using std::const_pointer_cast;
+  using std::const_pointer_cast;
 
-    auto previous_grid = this->get_grid()->get_grid_pre_refinement();
-    Assert(previous_grid != nullptr,ExcNullPtr());
+  auto previous_grid = this->get_grid()->get_grid_pre_refinement();
+  Assert(previous_grid != nullptr,ExcNullPtr());
 
-    this->function_previous_refinement_ =
-        IdentityFunction<dim,space_dim>::create(previous_grid);
+  this->function_previous_refinement_ =
+    IdentityFunction<dim,space_dim>::create(previous_grid);
 }
 
 template<int dim,int space_dim>
@@ -89,18 +89,18 @@ void
 IdentityFunction<dim,space_dim>::
 create_connection_for_insert_knots(std::shared_ptr<self_t> &identity_function)
 {
-    Assert(identity_function != nullptr, ExcNullPtr());
-    Assert(&(*identity_function) == &(*this), ExcMessage("Different objects."));
+  Assert(identity_function != nullptr, ExcNullPtr());
+  Assert(&(*identity_function) == &(*this), ExcMessage("Different objects."));
 
-    using SlotType = typename CartesianGrid<dim>::SignalInsertKnotsSlot;
+  using SlotType = typename CartesianGrid<dim>::SignalInsertKnotsSlot;
 
-    auto func_to_connect =
-        std::bind(&self_t::rebuild_after_insert_knots,
-                  identity_function.get(),
-                  std::placeholders::_1,
-                  std::placeholders::_2);
-    std::const_pointer_cast<CartesianGrid<dim>>(this->get_grid())->connect_insert_knots(
-                                                 SlotType(func_to_connect).track_foreign(identity_function));
+  auto func_to_connect =
+    std::bind(&self_t::rebuild_after_insert_knots,
+              identity_function.get(),
+              std::placeholders::_1,
+              std::placeholders::_2);
+  std::const_pointer_cast<CartesianGrid<dim>>(this->get_grid())->connect_insert_knots(
+                                             SlotType(func_to_connect).track_foreign(identity_function));
 }
 #endif // MESH_REFINEMENT
 

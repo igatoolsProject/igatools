@@ -50,72 +50,72 @@ namespace internal
 struct TableEntry
 {
 public:
-    /**
-     * Default constructor.
-     */
-    TableEntry();
+  /**
+   * Default constructor.
+   */
+  TableEntry();
 
-    /**
-     * Constructor. Initialize this table element with the value <code>t</code>.
-     */
-    template <typename T>
-    TableEntry(const T &t);
+  /**
+   * Constructor. Initialize this table element with the value <code>t</code>.
+   */
+  template <typename T>
+  TableEntry(const T &t);
 
-    /**
-     * Return the value stored by this object. The template type
-     * T must be one of <code>int,int,double,std::string</code>
-     * and it must match the data type of the object originally stored
-     * in this TableEntry object.
-     */
-    template <typename T>
-    T get() const;
+  /**
+   * Return the value stored by this object. The template type
+   * T must be one of <code>int,int,double,std::string</code>
+   * and it must match the data type of the object originally stored
+   * in this TableEntry object.
+   */
+  template <typename T>
+  T get() const;
 
-    /**
-     * Return the numeric value of this object if data has been stored in
-     * it either as an integer, an integer, or a double.
-     *
-     * @return double
-     **/
-    double get_numeric_value() const;
+  /**
+   * Return the numeric value of this object if data has been stored in
+   * it either as an integer, an integer, or a double.
+   *
+   * @return double
+   **/
+  double get_numeric_value() const;
 
-    /**
-     * Return a TableEntry object that has the same data type
-     * of the stored value but with a value that is default
-     * constructed for this data type. This is used to pad
-     * columns below previously set ones.
-     */
-    TableEntry get_default_constructed_copy() const;
+  /**
+   * Return a TableEntry object that has the same data type
+   * of the stored value but with a value that is default
+   * constructed for this data type. This is used to pad
+   * columns below previously set ones.
+   */
+  TableEntry get_default_constructed_copy() const;
 
-    /**
-     * Write the data of this object to a
-     * stream for the purpose of
-     * serialization.
-     */
-    template <class Archive>
-    void save(Archive &ar, const int version) const;
+  /**
+   * Write the data of this object to a
+   * stream for the purpose of
+   * serialization.
+   */
+  template <class Archive>
+  void save(Archive &ar, const int version) const;
 
-    /**
-     * Read the data of this object from a
-     * stream for the purpose of
-     * serialization.
-     */
-    template <class Archive>
-    void load(Archive &ar, const int version);
+  /**
+   * Read the data of this object from a
+   * stream for the purpose of
+   * serialization.
+   */
+  template <class Archive>
+  void load(Archive &ar, const int version);
 
-    BOOST_SERIALIZATION_SPLIT_MEMBER()
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
 
 private:
-    /**
-     * Abbreviation for the data type stored by this object.
-     */
-    typedef boost::variant<int,int,double,std::string> value_type;
+  /**
+   * Abbreviation for the data type stored by this object.
+   */
+  typedef boost::variant<int,int,double,std::string> value_type;
 
-    /**
-     * Stored value.
-     */
-    value_type value;
+  /**
+   * Stored value.
+   */
+  value_type value;
 
-    friend class iga::TableHandler;
+  friend class iga::TableHandler;
 };
 }
 
@@ -242,230 +242,302 @@ private:
 class TableHandler
 {
 public:
+  /**
+   * Set of options how a table should be formatted when output with
+   * the write_text() function. The following possibilities exist:
+   *
+   * - <code>table_with_headers</code>: The table is formatted in such a way
+   *   that the contents are aligned under the key of each column, i.e. the
+   *   key sits atop each column. This is suitable for tables with few columns
+   *   where the entire table can be displayed on the screen. Output looks
+   *   like this:
+   *   @code
+   *     key1 key2 key3
+   *     0    0    ""
+   *     1    0    ""
+   *     2    13   a
+   *     1    0    ""
+   *   @endcode
+   * - <code>table_with_separate_column_description</code>: This is a better
+   *   format when there are many columns and the table as a whole can not
+   *   be displayed on the screen. Here, the column keys are first listed
+   *   one-by-one on lines of their own, and are numbered for better readability.
+   *   In addition, each of these description lines are prefixed by '#' to mark
+   *   these lines as comments for programs that want to read the following
+   *   table as data and should ignore these descriptive lines. GNUPLOT is
+   *   one such program that will automatically ignore lines so prefixed.
+   *   Output with this option looks like this:
+   *   @code
+   *     # 1: key1
+   *     # 2: key2
+   *     # 3: key3
+   *     0 0  ""
+   *     1 0  ""
+   *     2 13 a
+   *     1 0  ""
+   *   @endcode
+   **/
+  enum TextOutputFormat
+  {
+    table_with_headers,
+    table_with_separate_column_description
+  };
+
+  /**
+   * Constructor.
+   */
+  TableHandler();
+
+  /**
+   * Adds a column (if not yet existent)
+   * with the key <tt>key</tt> and adds the
+   * value of type <tt>T</tt> to the
+   * column. ElementValues of type <tt>T</tt> must
+   * be convertible to one of <code>int,
+   * int, double,
+   * std::string</code> or a compiler error
+   * will result.
+   */
+  template <typename T>
+  void add_value(const std::string &key,
+                 const T            value);
+
+  /**
+   * Switch auto-fill mode on or off. See the general documentation
+   * of this class for a description of what auto-fill mode does.
+   */
+  void set_auto_fill_mode(const bool state);
+
+  /**
+   * Creates a supercolumn (if not
+   * yet existent) and includes
+   * column to it.  The keys of the
+   * column and the supercolumn are
+   * <tt>key</tt> and <tt>superkey</tt>,
+   * respectively.  To merge two
+   * columns <tt>c1</tt> and <tt>c2</tt> to a
+   * supercolumn <tt>sc</tt> hence call
+   * <tt>add_column_to_supercolumn(c1,sc)</tt>
+   * and
+   * <tt>add_column_to_supercolumn(c2,sc)</tt>.
+   *
+   * Concerning the order of the
+   * columns, the supercolumn
+   * replaces the first column that
+   * is added to the supercolumn.
+   * Within the supercolumn the
+   * order of output follows the
+   * order the columns are added to
+   * the supercolumn.
+   */
+  void add_column_to_supercolumn(const std::string &key,
+                                 const std::string &superkey);
+
+  /**
+   * Change the order of columns and
+   * supercolumns in the table.
+   *
+   * <tt>new_order</tt> includes the
+   * keys and superkeys of the
+   * columns and supercolumns in
+   * the order the user like to.
+   * If a superkey is included the
+   * keys of the subcolumns need
+   * not to be additionally
+   * mentioned in this vector.  The
+   * order of subcolumns within a
+   * supercolumn is not changeable
+   * and keeps the order in which
+   * the columns are added to the
+   * supercolumn.
+   *
+   * This function may also be used
+   * to break big tables with too
+   * many columns into smaller
+   * ones. Call this function with
+   * the first e.g. five columns
+   * and then <tt>write_*</tt>.
+   * Afterwards call this function
+   * with the next e.g. five
+   * columns and again <tt>write_*</tt>,
+   * and so on.
+   */
+  void set_column_order(const std::vector<std::string> &new_order);
+
+  /**
+   * Sets the <tt>precision</tt>
+   * e.g. double or float variables
+   * are written
+   * with. <tt>precision</tt> is the
+   * same as in calling
+   * <tt>out<<setprecision(precision)</tt>.
+   */
+  void set_precision(const std::string &key,
+                     const int precision);
+
+  /**
+   * Sets the
+   * <tt>scientific_flag</tt>. True
+   * means scientific, false means
+   * fixed point notation.
+   */
+  void set_scientific(const std::string &key,
+                      const bool         scientific);
+
+  /**
+   * Sets the caption of the column
+   * <tt>key</tt> for tex output. You
+   * may want to chose this
+   * different from <tt>key</tt>, if it
+   * contains formulas or similar
+   * constructs.
+   */
+  void set_tex_caption(const std::string &key,
+                       const std::string &tex_caption);
+
+  /**
+    * Sets the tex caption of the entire
+    * <tt>table</tt> for tex output.
+    */
+  void set_tex_table_caption(const std::string &table_caption);
+
+  /**
+   * Sets the label of this
+   * <tt>table</tt> for tex output.
+   */
+  void set_tex_table_label(const std::string &table_label);
+
+  /**
+   * Sets the caption the the
+   * supercolumn <tt>superkey</tt> for
+   * tex output. You may want to
+   * chose this different from
+   * <tt>superkey</tt>, if it contains
+   * formulas or similar
+   * constructs.
+   */
+  void set_tex_supercaption(const std::string &superkey,
+                            const std::string &tex_supercaption);
+
+  /**
+   * Sets the tex output format of
+   * a column, e.g. <tt>c</tt>, <tt>r</tt>,
+   * <tt>l</tt>, or <tt>p{3cm}</tt>. The
+   * default is <tt>c</tt>. Also if this
+   * function is not called for a
+   * column, the default is preset
+   * to be <tt>c</tt>.
+   */
+  void set_tex_format(const std::string &key,
+                      const std::string &format="c");
+
+  /**
+   * Write table as formatted text to the
+   * given stream. The text is formatted in
+   * such as way that it represents data as
+   * formatted columns of text. To avoid
+   * problems when reading these tables
+   * automatically, for example for
+   * postprocessing, if an entry in a element
+   * of this table is empty (i.e. it has
+   * been created by calling the
+   * add_value() function with an empty
+   * string), then the entry of the table
+   * is printed as <code>""</code>.
+   *
+   * The second argument indicates how
+   * column keys are to be displayed. See
+   * the description of TextOutputFormat
+   * for more information
+   */
+  void write_text(std::ostream &out,
+                  const TextOutputFormat format = table_with_headers) const;
+
+  /**
+   * Write table as a tex file. If
+   * with_header is set to false
+   * (it is true by default), then
+   * no "\documentclass{...}",
+   * "\begin{document}" and
+   * "\end{document}" are used. In
+   * this way the file can be
+   * included into an existing tex
+   * file using a command like
+   * "\input{table_file}".
+   */
+  void write_tex(std::ostream &file, const bool with_header=true) const;
+
+  /**
+   * Read or write the data of this
+   * object to or from a stream for
+   * the purpose of serialization.
+   */
+  template <class Archive>
+  void serialize(Archive &ar, const int version);
+
+  /** @addtogroup Exceptions
+   * @{ */
+
+  /**
+   * Exception
+   */
+  DeclException1(ExcColumnNotExistent,
+                 std::string,
+                 << "Column <" << arg1 << "> does not exist.");
+
+  /**
+   * Exception
+   */
+  DeclException1(ExcSuperColumnNotExistent,
+                 std::string,
+                 << "Supercolumn <" << arg1 << "> does not exist.");
+
+  /**
+   * Exception
+   */
+  DeclException1(ExcColumnOrSuperColumnNotExistent,
+                 std::string,
+                 << "Column or supercolumn <" << arg1 << "> does not exist.");
+
+  /**
+   * Exception
+   */
+  DeclException4(ExcWrongNumberOfDataEntries,
+                 std::string, int, std::string, int,
+                 << "Column <" << arg1 << "> has got " << arg2
+                 << " rows, but Column <" << arg3 << "> has got " << arg4 << ".");
+
+  /**
+   * Exception
+   */
+  DeclException1(ExcUndefinedTexFormat,
+                 std::string,
+                 << "<" << arg1 << "> is not a tex column format. Use l,c,r.");
+  //@}
+protected:
+
+  /**
+   * Structure encapsulating all the data
+   * that is needed to describe one column
+   * of a table.
+   */
+  struct Column
+  {
     /**
-     * Set of options how a table should be formatted when output with
-     * the write_text() function. The following possibilities exist:
-     *
-     * - <code>table_with_headers</code>: The table is formatted in such a way
-     *   that the contents are aligned under the key of each column, i.e. the
-     *   key sits atop each column. This is suitable for tables with few columns
-     *   where the entire table can be displayed on the screen. Output looks
-     *   like this:
-     *   @code
-     *     key1 key2 key3
-     *     0    0    ""
-     *     1    0    ""
-     *     2    13   a
-     *     1    0    ""
-     *   @endcode
-     * - <code>table_with_separate_column_description</code>: This is a better
-     *   format when there are many columns and the table as a whole can not
-     *   be displayed on the screen. Here, the column keys are first listed
-     *   one-by-one on lines of their own, and are numbered for better readability.
-     *   In addition, each of these description lines are prefixed by '#' to mark
-     *   these lines as comments for programs that want to read the following
-     *   table as data and should ignore these descriptive lines. GNUPLOT is
-     *   one such program that will automatically ignore lines so prefixed.
-     *   Output with this option looks like this:
-     *   @code
-     *     # 1: key1
-     *     # 2: key2
-     *     # 3: key3
-     *     0 0  ""
-     *     1 0  ""
-     *     2 13 a
-     *     1 0  ""
-     *   @endcode
-     **/
-    enum TextOutputFormat
-    {
-        table_with_headers,
-        table_with_separate_column_description
-    };
+     * Constructor needed by STL maps.
+     */
+    Column();
 
     /**
      * Constructor.
      */
-    TableHandler();
+    Column(const std::string &tex_caption);
 
     /**
-     * Adds a column (if not yet existent)
-     * with the key <tt>key</tt> and adds the
-     * value of type <tt>T</tt> to the
-     * column. ElementValues of type <tt>T</tt> must
-     * be convertible to one of <code>int,
-     * int, double,
-     * std::string</code> or a compiler error
-     * will result.
+     * Pad this column with default constructed elements to the
+     * number of rows given by the argument.
      */
-    template <typename T>
-    void add_value(const std::string &key,
-                   const T            value);
-
-    /**
-     * Switch auto-fill mode on or off. See the general documentation
-     * of this class for a description of what auto-fill mode does.
-     */
-    void set_auto_fill_mode(const bool state);
-
-    /**
-     * Creates a supercolumn (if not
-     * yet existent) and includes
-     * column to it.  The keys of the
-     * column and the supercolumn are
-     * <tt>key</tt> and <tt>superkey</tt>,
-     * respectively.  To merge two
-     * columns <tt>c1</tt> and <tt>c2</tt> to a
-     * supercolumn <tt>sc</tt> hence call
-     * <tt>add_column_to_supercolumn(c1,sc)</tt>
-     * and
-     * <tt>add_column_to_supercolumn(c2,sc)</tt>.
-     *
-     * Concerning the order of the
-     * columns, the supercolumn
-     * replaces the first column that
-     * is added to the supercolumn.
-     * Within the supercolumn the
-     * order of output follows the
-     * order the columns are added to
-     * the supercolumn.
-     */
-    void add_column_to_supercolumn(const std::string &key,
-                                   const std::string &superkey);
-
-    /**
-     * Change the order of columns and
-     * supercolumns in the table.
-     *
-     * <tt>new_order</tt> includes the
-     * keys and superkeys of the
-     * columns and supercolumns in
-     * the order the user like to.
-     * If a superkey is included the
-     * keys of the subcolumns need
-     * not to be additionally
-     * mentioned in this vector.  The
-     * order of subcolumns within a
-     * supercolumn is not changeable
-     * and keeps the order in which
-     * the columns are added to the
-     * supercolumn.
-     *
-     * This function may also be used
-     * to break big tables with too
-     * many columns into smaller
-     * ones. Call this function with
-     * the first e.g. five columns
-     * and then <tt>write_*</tt>.
-     * Afterwards call this function
-     * with the next e.g. five
-     * columns and again <tt>write_*</tt>,
-     * and so on.
-     */
-    void set_column_order(const std::vector<std::string> &new_order);
-
-    /**
-     * Sets the <tt>precision</tt>
-     * e.g. double or float variables
-     * are written
-     * with. <tt>precision</tt> is the
-     * same as in calling
-     * <tt>out<<setprecision(precision)</tt>.
-     */
-    void set_precision(const std::string &key,
-                       const int precision);
-
-    /**
-     * Sets the
-     * <tt>scientific_flag</tt>. True
-     * means scientific, false means
-     * fixed point notation.
-     */
-    void set_scientific(const std::string &key,
-                        const bool         scientific);
-
-    /**
-     * Sets the caption of the column
-     * <tt>key</tt> for tex output. You
-     * may want to chose this
-     * different from <tt>key</tt>, if it
-     * contains formulas or similar
-     * constructs.
-     */
-    void set_tex_caption(const std::string &key,
-                         const std::string &tex_caption);
-
-    /**
-      * Sets the tex caption of the entire
-      * <tt>table</tt> for tex output.
-      */
-    void set_tex_table_caption(const std::string &table_caption);
-
-    /**
-     * Sets the label of this
-     * <tt>table</tt> for tex output.
-     */
-    void set_tex_table_label(const std::string &table_label);
-
-    /**
-     * Sets the caption the the
-     * supercolumn <tt>superkey</tt> for
-     * tex output. You may want to
-     * chose this different from
-     * <tt>superkey</tt>, if it contains
-     * formulas or similar
-     * constructs.
-     */
-    void set_tex_supercaption(const std::string &superkey,
-                              const std::string &tex_supercaption);
-
-    /**
-     * Sets the tex output format of
-     * a column, e.g. <tt>c</tt>, <tt>r</tt>,
-     * <tt>l</tt>, or <tt>p{3cm}</tt>. The
-     * default is <tt>c</tt>. Also if this
-     * function is not called for a
-     * column, the default is preset
-     * to be <tt>c</tt>.
-     */
-    void set_tex_format(const std::string &key,
-                        const std::string &format="c");
-
-    /**
-     * Write table as formatted text to the
-     * given stream. The text is formatted in
-     * such as way that it represents data as
-     * formatted columns of text. To avoid
-     * problems when reading these tables
-     * automatically, for example for
-     * postprocessing, if an entry in a element
-     * of this table is empty (i.e. it has
-     * been created by calling the
-     * add_value() function with an empty
-     * string), then the entry of the table
-     * is printed as <code>""</code>.
-     *
-     * The second argument indicates how
-     * column keys are to be displayed. See
-     * the description of TextOutputFormat
-     * for more information
-     */
-    void write_text(std::ostream &out,
-                    const TextOutputFormat format = table_with_headers) const;
-
-    /**
-     * Write table as a tex file. If
-     * with_header is set to false
-     * (it is true by default), then
-     * no "\documentclass{...}",
-     * "\begin{document}" and
-     * "\end{document}" are used. In
-     * this way the file can be
-     * included into an existing tex
-     * file using a command like
-     * "\input{table_file}".
-     */
-    void write_tex(std::ostream &file, const bool with_header=true) const;
+    void pad_column_below(const uint length);
 
     /**
      * Read or write the data of this
@@ -475,231 +547,159 @@ public:
     template <class Archive>
     void serialize(Archive &ar, const int version);
 
-    /** @addtogroup Exceptions
-     * @{ */
-
     /**
-     * Exception
+     * List of entries within
+     * this column. ElementValues are
+     * always immediately
+     * converted to strings to
+     * provide a uniform method
+     * of lookup.
      */
-    DeclException1(ExcColumnNotExistent,
-                   std::string,
-                   << "Column <" << arg1 << "> does not exist.");
+    std::vector<internal::TableEntry> entries;
 
     /**
-     * Exception
+     * The caption of the column
+     * in tex output.  By
+     * default, this is the key
+     * string that is given to
+     * the <tt>TableHandler</tt> by
+     * <tt>TableHandler::add_value(...)</tt>. This
+     * may be changed by calling
+     * <tt>TableHandler::set_tex_caption(...)</tt>.
      */
-    DeclException1(ExcSuperColumnNotExistent,
-                   std::string,
-                   << "Supercolumn <" << arg1 << "> does not exist.");
+    std::string tex_caption;
 
     /**
-     * Exception
+     * The column format in tex
+     * output.  By default, this
+     * is <tt>"c"</tt>, meaning
+     * `centered'. This may be
+     * changed by calling
+     * <tt>TableHandler::set_tex_format(...)</tt>
+     * with <tt>"c", "r", "l"</tt> for
+     * centered, right or left.
      */
-    DeclException1(ExcColumnOrSuperColumnNotExistent,
-                   std::string,
-                   << "Column or supercolumn <" << arg1 << "> does not exist.");
+
+    std::string tex_format;
 
     /**
-     * Exception
+     * Double or float entries
+     * are written with this
+     * precision (set by the
+     * user).  The default is 4.
      */
-    DeclException4(ExcWrongNumberOfDataEntries,
-                   std::string, int, std::string, int,
-                   << "Column <" << arg1 << "> has got " << arg2
-                   << " rows, but Column <" << arg3 << "> has got " << arg4 << ".");
+    int precision;
 
     /**
-     * Exception
+     * <tt>scientific</tt>=false means
+     * fixed point notation.
      */
-    DeclException1(ExcUndefinedTexFormat,
-                   std::string,
-                   << "<" << arg1 << "> is not a tex column format. Use l,c,r.");
-    //@}
-protected:
+    bool scientific;
 
     /**
-     * Structure encapsulating all the data
-     * that is needed to describe one column
-     * of a table.
-     */
-    struct Column
-    {
-        /**
-         * Constructor needed by STL maps.
-         */
-        Column();
-
-        /**
-         * Constructor.
-         */
-        Column(const std::string &tex_caption);
-
-        /**
-         * Pad this column with default constructed elements to the
-         * number of rows given by the argument.
-         */
-        void pad_column_below(const uint length);
-
-        /**
-         * Read or write the data of this
-         * object to or from a stream for
-         * the purpose of serialization.
-         */
-        template <class Archive>
-        void serialize(Archive &ar, const int version);
-
-        /**
-         * List of entries within
-         * this column. ElementValues are
-         * always immediately
-         * converted to strings to
-         * provide a uniform method
-         * of lookup.
-         */
-        std::vector<internal::TableEntry> entries;
-
-        /**
-         * The caption of the column
-         * in tex output.  By
-         * default, this is the key
-         * string that is given to
-         * the <tt>TableHandler</tt> by
-         * <tt>TableHandler::add_value(...)</tt>. This
-         * may be changed by calling
-         * <tt>TableHandler::set_tex_caption(...)</tt>.
-         */
-        std::string tex_caption;
-
-        /**
-         * The column format in tex
-         * output.  By default, this
-         * is <tt>"c"</tt>, meaning
-         * `centered'. This may be
-         * changed by calling
-         * <tt>TableHandler::set_tex_format(...)</tt>
-         * with <tt>"c", "r", "l"</tt> for
-         * centered, right or left.
-         */
-
-        std::string tex_format;
-
-        /**
-         * Double or float entries
-         * are written with this
-         * precision (set by the
-         * user).  The default is 4.
-         */
-        int precision;
-
-        /**
-         * <tt>scientific</tt>=false means
-         * fixed point notation.
-         */
-        bool scientific;
-
-        /**
-         * Flag that may be used by
-         * derived classes for
-         * arbitrary purposes.
-         *
-         * In particular, the
-         * ConvergenceTable class uses the
-         * flag to denote columns for which
-         * convergence information has
-         * already been computed, or should
-         * not be computed at all.
-         */
-        int flag;
-    };
-
-    /**
-     * Help function that gives a
-     * vector of the keys of all
-     * columns that are mentioned in
-     * <tt>column_order</tt>, where each
-     * supercolumn key is replaced by
-     * its subcolumn keys.
+     * Flag that may be used by
+     * derived classes for
+     * arbitrary purposes.
      *
-     * This function implicitly
-     * checks the consistency of the
-     * data. The result is returned
-     * in <tt>sel_columns</tt>.
+     * In particular, the
+     * ConvergenceTable class uses the
+     * flag to denote columns for which
+     * convergence information has
+     * already been computed, or should
+     * not be computed at all.
      */
-    void get_selected_columns(std::vector<std::string> &sel_columns) const;
+    int flag;
+  };
 
-    /**
-     * Builtin function, that gives
-     * the number of rows in the
-     * table and that checks if the
-     * number of rows is equal in
-     * every column. This function is
-     * e.g. called before writing
-     * output.
-     */
-    int n_rows() const;
+  /**
+   * Help function that gives a
+   * vector of the keys of all
+   * columns that are mentioned in
+   * <tt>column_order</tt>, where each
+   * supercolumn key is replaced by
+   * its subcolumn keys.
+   *
+   * This function implicitly
+   * checks the consistency of the
+   * data. The result is returned
+   * in <tt>sel_columns</tt>.
+   */
+  void get_selected_columns(std::vector<std::string> &sel_columns) const;
 
-    /**
-     * Stores the column and
-     * supercolumn keys in the order
-     * desired by the user.  By
-     * default this is the order of
-     * adding the columns. This order
-     * may be changed by
-     * <tt>set_column_order(...)</tt>.
-     */
-    std::vector<std::string> column_order;
+  /**
+   * Builtin function, that gives
+   * the number of rows in the
+   * table and that checks if the
+   * number of rows is equal in
+   * every column. This function is
+   * e.g. called before writing
+   * output.
+   */
+  int n_rows() const;
 
-    /**
-     * Maps the column keys to the
-     * columns (not supercolumns).
-     *
-     * The field is declared mutable so
-     * that the write_text() and write_tex()
-     * functions can be const, even though they
-     * may pad columns below if auto_fill_mode
-     * is on.
-     */
-    mutable std::map<std::string,Column> columns;
+  /**
+   * Stores the column and
+   * supercolumn keys in the order
+   * desired by the user.  By
+   * default this is the order of
+   * adding the columns. This order
+   * may be changed by
+   * <tt>set_column_order(...)</tt>.
+   */
+  std::vector<std::string> column_order;
 
-    /**
-     * Maps each supercolumn key to
-     * the the keys of its subcolumns
-     * in the right order.  It is
-     * allowed that a supercolumn has
-     * got the same key as a column.
-     *
-     * Note that we do not use a <tt>multimap</tt>
-     * here since the order of column
-     * keys for each supercolumn key is
-     * relevant.
-     */
-    std::map<std::string, std::vector<std::string> > supercolumns;
+  /**
+   * Maps the column keys to the
+   * columns (not supercolumns).
+   *
+   * The field is declared mutable so
+   * that the write_text() and write_tex()
+   * functions can be const, even though they
+   * may pad columns below if auto_fill_mode
+   * is on.
+   */
+  mutable std::map<std::string,Column> columns;
 
-    /**
-     * Maps the supercolumn keys to
-     * the captions of the
-     * supercolumns that are used in
-     * tex output.
-     *
-     * By default these are just the
-     * supercolumn keys but they may
-     * be changed by
-     * <tt>set_tex_supercaptions(...)</tt>.
-     */
-    std::map<std::string, std::string> tex_supercaptions;
+  /**
+   * Maps each supercolumn key to
+   * the the keys of its subcolumns
+   * in the right order.  It is
+   * allowed that a supercolumn has
+   * got the same key as a column.
+   *
+   * Note that we do not use a <tt>multimap</tt>
+   * here since the order of column
+   * keys for each supercolumn key is
+   * relevant.
+   */
+  std::map<std::string, std::vector<std::string> > supercolumns;
 
-    /**
-     * The caption of the table itself.
-     */
-    std::string tex_table_caption;
-    /**
-     * The label of the table.
-     */
-    std::string tex_table_label;
+  /**
+   * Maps the supercolumn keys to
+   * the captions of the
+   * supercolumns that are used in
+   * tex output.
+   *
+   * By default these are just the
+   * supercolumn keys but they may
+   * be changed by
+   * <tt>set_tex_supercaptions(...)</tt>.
+   */
+  std::map<std::string, std::string> tex_supercaptions;
 
-    /**
-     * Flag indicating whether auto-fill mode should be used.
-     */
-    bool auto_fill_mode;
+  /**
+   * The caption of the table itself.
+   */
+  std::string tex_table_caption;
+  /**
+   * The label of the table.
+   */
+  std::string tex_table_label;
+
+  /**
+   * Flag indicating whether auto-fill mode should be used.
+   */
+  bool auto_fill_mode;
 };
 
 
@@ -707,29 +707,29 @@ namespace internal
 {
 template <typename T>
 TableEntry::TableEntry(const T &t)
-    :
-    value(t)
+  :
+  value(t)
 {}
 
 
 template <typename T>
 T TableEntry::get() const
 {
-    // we don't quite know the data type in 'value', but
-    // it must be one of the ones in the type list of the
-    // boost::variant. so if T is not in the list, or if
-    // the data stored in the TableEntry is not of type
-    // T, then we will get an exception that we can
-    // catch and produce an error message
-    try
-    {
-        return boost::get<T>(value);
-    }
-    catch (...)
-    {
-        Assert(false, ExcMessage("This TableEntry object does not store a datum of type T"));
-        throw;
-    }
+  // we don't quite know the data type in 'value', but
+  // it must be one of the ones in the type list of the
+  // boost::variant. so if T is not in the list, or if
+  // the data stored in the TableEntry is not of type
+  // T, then we will get an exception that we can
+  // catch and produce an error message
+  try
+  {
+    return boost::get<T>(value);
+  }
+  catch (...)
+  {
+    Assert(false, ExcMessage("This TableEntry object does not store a datum of type T"));
+    throw;
+  }
 }
 
 
@@ -738,31 +738,31 @@ template <class Archive>
 void TableEntry::save(Archive &ar,
                       const int) const
 {
-    // write first an identifier for the kind
-    // of data stored and then the actual
-    // data, in its correct data type
-    if (const int *p = boost::get<int>(&value))
-    {
-        char c = 'i';
-        ar &c & *p;
-    }
-    else if (const int *p = boost::get<int>(&value))
-    {
-        char c = 'u';
-        ar &c & *p;
-    }
-    else if (const double *p = boost::get<double>(&value))
-    {
-        char c = 'd';
-        ar &c & *p;
-    }
-    else if (const std::string *p = boost::get<std::string>(&value))
-    {
-        char c = 's';
-        ar &c & *p;
-    }
-    else
-        Assert(false, ExcInternalError());
+  // write first an identifier for the kind
+  // of data stored and then the actual
+  // data, in its correct data type
+  if (const int *p = boost::get<int>(&value))
+  {
+    char c = 'i';
+    ar &c & *p;
+  }
+  else if (const int *p = boost::get<int>(&value))
+  {
+    char c = 'u';
+    ar &c & *p;
+  }
+  else if (const double *p = boost::get<double>(&value))
+  {
+    char c = 'd';
+    ar &c & *p;
+  }
+  else if (const std::string *p = boost::get<std::string>(&value))
+  {
+    char c = 's';
+    ar &c & *p;
+  }
+  else
+    Assert(false, ExcInternalError());
 }
 
 
@@ -771,51 +771,51 @@ template <class Archive>
 void TableEntry::load(Archive &ar,
                       const int)
 {
-    // following what we do in the save()
-    // function, first read in the data type
-    // as a one-character id, and then read
-    // the data
-    char c;
-    ar &c;
+  // following what we do in the save()
+  // function, first read in the data type
+  // as a one-character id, and then read
+  // the data
+  char c;
+  ar &c;
 
-    switch (c)
+  switch (c)
+  {
+    case 'i':
     {
-        case 'i':
-        {
-            int val;
-            ar &val;
-            value = val;
-            break;
-        }
-
-        case 'u':
-        {
-            int val;
-            ar &val;
-            value = val;
-            break;
-        }
-
-        case 'd':
-        {
-            double val;
-            ar &val;
-            value = val;
-            break;
-        }
-
-        case 's':
-        {
-            std::string val;
-            ar &val;
-            value = val;
-            break;
-        }
-
-        default:
-            Assert(false, ExcInternalError());
-            break;
+      int val;
+      ar &val;
+      value = val;
+      break;
     }
+
+    case 'u':
+    {
+      int val;
+      ar &val;
+      value = val;
+      break;
+    }
+
+    case 'd':
+    {
+      double val;
+      ar &val;
+      value = val;
+      break;
+    }
+
+    case 's':
+    {
+      std::string val;
+      ar &val;
+      value = val;
+      break;
+    }
+
+    default:
+      Assert(false, ExcInternalError());
+      break;
+  }
 }
 }
 
@@ -823,28 +823,28 @@ template <typename T>
 void TableHandler::add_value(const std::string &key,
                              const T            value)
 {
-    // see if the column already exists
-    if (columns.find(key) == columns.end())
-    {
-        std::pair<std::string, Column> new_column(key, Column(key));
-        columns.insert(new_column);
-        column_order.push_back(key);
-    }
+  // see if the column already exists
+  if (columns.find(key) == columns.end())
+  {
+    std::pair<std::string, Column> new_column(key, Column(key));
+    columns.insert(new_column);
+    column_order.push_back(key);
+  }
 
-    if (auto_fill_mode == true)
-    {
-        // follow the algorithm given in the introduction to this class
-        // of padding columns as necessary
-        int n = 0;
-        for (std::map< std::string, Column >::iterator p = columns.begin(); p != columns.end(); ++p)
-            n = (n >= int(p->second.entries.size()) ? n : int(p->second.entries.size()));
+  if (auto_fill_mode == true)
+  {
+    // follow the algorithm given in the introduction to this class
+    // of padding columns as necessary
+    int n = 0;
+    for (std::map< std::string, Column >::iterator p = columns.begin(); p != columns.end(); ++p)
+      n = (n >= int(p->second.entries.size()) ? n : int(p->second.entries.size()));
 
-        while (int(columns[key].entries.size()+1) < n)
-            columns[key].entries.push_back(internal::TableEntry(T()));
-    }
+    while (int(columns[key].entries.size()+1) < n)
+      columns[key].entries.push_back(internal::TableEntry(T()));
+  }
 
-    // now push the value given to this function
-    columns[key].entries.push_back(internal::TableEntry(value));
+  // now push the value given to this function
+  columns[key].entries.push_back(internal::TableEntry(value));
 }
 
 
@@ -854,10 +854,10 @@ void
 TableHandler::Column::serialize(Archive &ar,
                                 const int)
 {
-    ar &entries &tex_caption
-    & tex_format &precision
-    & scientific
-    & flag;
+  ar &entries &tex_caption
+  & tex_format &precision
+  & scientific
+  & flag;
 }
 
 
@@ -867,11 +867,11 @@ void
 TableHandler::serialize(Archive &ar,
                         const int)
 {
-    ar &column_order &columns
-    & supercolumns &tex_supercaptions
-    & tex_table_caption
-    & tex_table_label
-    & auto_fill_mode;
+  ar &column_order &columns
+  & supercolumns &tex_supercaptions
+  & tex_table_caption
+  & tex_table_label
+  & auto_fill_mode;
 }
 
 

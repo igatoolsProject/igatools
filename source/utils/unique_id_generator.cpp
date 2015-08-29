@@ -34,13 +34,13 @@ Index
 UniqueIdGenerator::
 get_unique_id()
 {
-    const Index int_max = std::numeric_limits<Index>::max();
-    Assert(id_ < int_max,ExcIndexRange(id_,0,int_max-1));
-    AssertThrow(id_ < int_max,ExcIndexRange(id_,0,int_max-1));
+  const Index int_max = std::numeric_limits<Index>::max();
+  Assert(id_ < int_max,ExcIndexRange(id_,0,int_max-1));
+  AssertThrow(id_ < int_max,ExcIndexRange(id_,0,int_max-1));
 
-    Index ret = id_;
-    id_++;
-    return ret;
+  Index ret = id_;
+  id_++;
+  return ret;
 }
 
 

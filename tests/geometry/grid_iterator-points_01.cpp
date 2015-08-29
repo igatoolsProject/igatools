@@ -35,45 +35,45 @@
 template <int dim, int sdim = dim>
 void elem_points(const int n_knots = 5)
 {
-    OUTSTART
+  OUTSTART
 
-    using Grid = CartesianGrid<dim>;
-    using Flags = typename Grid::ElementAccessor::Flags;
-    auto grid = Grid::const_create(n_knots);
+  using Grid = CartesianGrid<dim>;
+  using Flags = typename Grid::ElementAccessor::Flags;
+  auto grid = Grid::const_create(n_knots);
 
-    auto flag = Flags::point;
-    auto cache_handler = grid->create_cache_handler();
-    cache_handler->template set_flags<sdim>(flag);
+  auto flag = Flags::point;
+  auto cache_handler = grid->create_cache_handler();
+  cache_handler->template set_flags<sdim>(flag);
 
-    auto quad = QGauss<sdim>::create(2);
-    auto elem = grid->cbegin();
-    cache_handler->template init_cache<sdim>(elem, quad);
+  auto quad = QGauss<sdim>::create(2);
+  auto elem = grid->cbegin();
+  cache_handler->template init_cache<sdim>(elem, quad);
 
-    for (; elem != grid->cend(); ++elem)
+  for (; elem != grid->cend(); ++elem)
+  {
+    for (auto &s_id : UnitElement<dim>::template elems_ids<sdim>())
     {
-        for (auto &s_id : UnitElement<dim>::template elems_ids<sdim>())
-        {
-            cache_handler->template fill_cache<sdim>(elem, s_id);
-            elem->template get_points<sdim>(s_id).print_info(out);
-            out << endl;
-        }
-        out << endl;
+      cache_handler->template fill_cache<sdim>(elem, s_id);
+      elem->template get_points<sdim>(s_id).print_info(out);
+      out << endl;
     }
+    out << endl;
+  }
 
-    OUTEND
+  OUTEND
 }
 
 
 
 int main()
 {
-    elem_points<0>();
-    elem_points<1>();
-    elem_points<2>();
-    elem_points<3>();
-    elem_points<1,0>();
-    elem_points<2,1>();
-    elem_points<3,2>();
+  elem_points<0>();
+  elem_points<1>();
+  elem_points<2>();
+  elem_points<3>();
+  elem_points<1,0>();
+  elem_points<2,1>();
+  elem_points<3,2>();
 
-    return  0;
+  return  0;
 }

@@ -33,30 +33,30 @@
 template<int dim, int k = dim-1>
 void quad_collapse(const int num_pts = 3)
 {
-    OUTSTART
+  OUTSTART
 
-    QGauss<dim> quad(num_pts);
-    out << "Original quadrature:" << endl;
-    quad.print_info(out);
+  QGauss<dim> quad(num_pts);
+  out << "Original quadrature:" << endl;
+  quad.print_info(out);
 
-    for (auto &id : UnitElement<dim>::template elems_ids<k>())
-    {
-        auto collapsed_quad = quad.template collapse_to_sub_element<k>(id);
-        out << "Quad collapse to subelement: "<< id << endl;
-        collapsed_quad.print_info(out);
-        out << endl;
-    }
+  for (auto &id : UnitElement<dim>::template elems_ids<k>())
+  {
+    auto collapsed_quad = quad.template collapse_to_sub_element<k>(id);
+    out << "Quad collapse to subelement: "<< id << endl;
+    collapsed_quad.print_info(out);
+    out << endl;
+  }
 
-    OUTEND
+  OUTEND
 }
 
 int main()
 {
 
-    quad_collapse<1>();
-    quad_collapse<2>();
-    quad_collapse<3>();
+  quad_collapse<1>();
+  quad_collapse<2>();
+  quad_collapse<3>();
 
-    return 0;
+  return 0;
 }
 

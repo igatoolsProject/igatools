@@ -29,8 +29,8 @@ IGA_NAMESPACE_OPEN
 template <int rank>
 TensorSize<rank>::
 TensorSize(Size val) noexcept
-    :
-    TensorIndex<rank>(val)
+  :
+  TensorIndex<rank>(val)
 {}
 
 
@@ -38,8 +38,8 @@ TensorSize(Size val) noexcept
 template <int rank>
 TensorSize<rank>::
 TensorSize(const SafeSTLArray<Size,rank> &arr) noexcept
-    :
-    TensorIndex<rank>::TensorIndex(arr)
+  :
+  TensorIndex<rank>::TensorIndex(arr)
 {}
 
 
@@ -47,8 +47,8 @@ TensorSize(const SafeSTLArray<Size,rank> &arr) noexcept
 template <int rank>
 TensorSize<rank>::
 TensorSize(const TensorIndex<rank> &arr) noexcept
-    :
-    TensorIndex<rank>::TensorIndex(arr)
+  :
+  TensorIndex<rank>::TensorIndex(arr)
 {}
 
 
@@ -57,8 +57,8 @@ template <int rank>
 inline
 TensorSize<rank>::
 TensorSize(std::initializer_list<Size> list) noexcept
-    :
-    TensorIndex<rank>::TensorIndex(list)
+  :
+  TensorIndex<rank>::TensorIndex(list)
 {}
 
 
@@ -68,10 +68,10 @@ Size
 TensorSize<rank>::
 flat_size() const noexcept
 {
-    Size res=1;
-    for (const auto &size_dir : *this)
-        res *= size_dir;
-    return res;
+  Size res=1;
+  for (const auto &size_dir : *this)
+    res *= size_dir;
+  return res;
 }
 
 
@@ -79,11 +79,11 @@ template <int rank>
 LogStream &
 operator<<(LogStream &out, const TensorSize<rank> &tensor_size)
 {
-    out << "[ ";
-    for (const auto &v : tensor_size)
-        out << v << " ";
-    out << "]";
-    return out;
+  out << "[ ";
+  for (const auto &v : tensor_size)
+    out << v << " ";
+  out << "]";
+  return out;
 }
 
 
@@ -91,7 +91,7 @@ template <int rank>
 TensorSize<rank>
 operator-(const TensorSize<rank> &index,const Index j)
 {
-    return TensorSize<rank>(static_cast<TensorIndex<rank>>(index)-j);
+  return TensorSize<rank>(static_cast<TensorIndex<rank>>(index)-j);
 }
 
 

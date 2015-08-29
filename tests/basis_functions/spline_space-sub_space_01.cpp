@@ -33,45 +33,45 @@
 template<int k, int dim, int range=1, int rank=1>
 void sub_space(const TensorSize<dim> &n_knots, const TensorIndex<dim> &degree)
 {
-    OUTSTART
-    using SplineSpace = SplineSpace<dim, range, rank>;
-    auto grid = CartesianGrid<dim>::create(n_knots);
-    typename SplineSpace::DegreeTable deg {degree};
-    auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
-                    deg, grid->get_num_intervals());
-    auto space = SplineSpace::create(deg, grid, int_mult);
+  OUTSTART
+  using SplineSpace = SplineSpace<dim, range, rank>;
+  auto grid = CartesianGrid<dim>::create(n_knots);
+  typename SplineSpace::DegreeTable deg {degree};
+  auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
+                  deg, grid->get_num_intervals());
+  auto space = SplineSpace::create(deg, grid, int_mult);
 
-    for (auto  s_id : UnitElement<dim>::template elems_ids<k>())
-    {
-        out.begin_item("Sub element id: " + std::to_string(s_id));
+  for (auto  s_id : UnitElement<dim>::template elems_ids<k>())
+  {
+    out.begin_item("Sub element id: " + std::to_string(s_id));
 
-        out.begin_item("Multiplicity");
-        auto sub_mult = space->template get_sub_space_mult<k>(s_id);
-        sub_mult.print_info(out);
-        out.end_item();
+    out.begin_item("Multiplicity");
+    auto sub_mult = space->template get_sub_space_mult<k>(s_id);
+    sub_mult.print_info(out);
+    out.end_item();
 
-        out.begin_item("Degree");
-        auto sub_deg = space->template get_sub_space_degree<k>(s_id);
-        sub_deg.print_info(out);
-        out.end_item();
+    out.begin_item("Degree");
+    auto sub_deg = space->template get_sub_space_degree<k>(s_id);
+    sub_deg.print_info(out);
+    out.end_item();
 
-        out.begin_item("Periodicity");
-        auto sub_periodic = space->template get_sub_space_periodicity<k>(s_id);
-        //sub_periodic.print_info(out);
-        out.end_item();
+    out.begin_item("Periodicity");
+    auto sub_periodic = space->template get_sub_space_periodicity<k>(s_id);
+    //sub_periodic.print_info(out);
+    out.end_item();
 
-        out.end_item();
-    }
-    OUTEND
+    out.end_item();
+  }
+  OUTEND
 }
 
 
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
-    sub_space<1,2>(TensorSize<2>({3,4}), TensorIndex<2>({1,3}));
+  sub_space<1,2>(TensorSize<2>({3,4}), TensorIndex<2>({1,3}));
 
-    return  0;
+  return  0;
 }

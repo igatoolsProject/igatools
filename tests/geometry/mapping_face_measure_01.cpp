@@ -38,60 +38,60 @@
 template <int dim, int sub_dim = dim-1>
 void test_evaluate()
 {
-    using Function = functions::CylindricalAnnulus<dim>;
-    using Mapping   = Mapping<dim, 0>;
+  using Function = functions::CylindricalAnnulus<dim>;
+  using Mapping   = Mapping<dim, 0>;
 
-    auto grid = CartesianGrid<dim>::create();
+  auto grid = CartesianGrid<dim>::create();
 
-    auto F = Function::create(grid, IdentityFunction<dim>::create(grid),
-                              1., 2., 0., 1.0, 0.0, numbers::PI/2.0);
-    Mapping map(F);
+  auto F = Function::create(grid, IdentityFunction<dim>::create(grid),
+                            1., 2., 0., 1.0, 0.0, numbers::PI/2.0);
+  Mapping map(F);
 
-    auto flag = ValueFlags::point | ValueFlags::w_measure;
-    auto quad = QGauss<sub_dim>(3);
+  auto flag = ValueFlags::point | ValueFlags::w_measure;
+  auto quad = QGauss<sub_dim>(3);
 
-    map.reset(flag, quad);
+  map.reset(flag, quad);
 
-    auto elem = map.begin();
-    auto end  = map.end();
+  auto elem = map.begin();
+  auto end  = map.end();
 
 
-    SafeSTLArray<Real, UnitElement<dim>::template num_elem<sub_dim>()> face_area ;
-    std::fill(face_area.begin(), face_area.end(), 0.0) ;
+  SafeSTLArray<Real, UnitElement<dim>::template num_elem<sub_dim>()> face_area ;
+  std::fill(face_area.begin(), face_area.end(), 0.0) ;
 
-    map.template init_cache<sub_dim>(elem);
+  map.template init_cache<sub_dim>(elem);
 
-    for (; elem != end; ++elem)
+  for (; elem != end; ++elem)
+  {
+    if (elem->is_boundary())
     {
-        if (elem->is_boundary())
+      for (auto &s_id : UnitElement<dim>::template elems_ids<sub_dim>())
+      {
+        if (elem->is_boundary(s_id))
         {
-            for (auto &s_id : UnitElement<dim>::template elems_ids<sub_dim>())
-            {
-                if (elem->is_boundary(s_id))
-                {
-                    map.template fill_cache<sub_dim>(elem, s_id);
-                    auto w_meas = elem->template get_w_measures<sub_dim>(s_id);
-                    for (auto &w : w_meas)
-                        face_area[s_id] += w;
-                }
-            }
+          map.template fill_cache<sub_dim>(elem, s_id);
+          auto w_meas = elem->template get_w_measures<sub_dim>(s_id);
+          for (auto &w : w_meas)
+            face_area[s_id] += w;
         }
+      }
     }
+  }
 
-    out << "Dimension " << dim << endl;
-    for (Index face_id = 0; face_id < UnitElement<dim>::template num_elem<sub_dim>(); ++face_id)
-    {
-        out << "Area of face " << face_id << " : " << face_area[face_id] << endl;
-    }
+  out << "Dimension " << dim << endl;
+  for (Index face_id = 0; face_id < UnitElement<dim>::template num_elem<sub_dim>(); ++face_id)
+  {
+    out << "Area of face " << face_id << " : " << face_area[face_id] << endl;
+  }
 
 
 }
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
 //    test_evaluate<2>();
-    test_evaluate<3>();
+  test_evaluate<3>();
 
 }

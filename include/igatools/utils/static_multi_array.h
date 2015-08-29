@@ -50,65 +50,65 @@ class StaticMultiArray : public MultiArray<SafeSTLArray<T,constexpr_pow(dim,rank
 
 public:
 
-    /** Number of entries of type T in the StaticMultiArray */
-    static constexpr Size n_entries = constexpr_pow(dim,rank);
+  /** Number of entries of type T in the StaticMultiArray */
+  static constexpr Size n_entries = constexpr_pow(dim,rank);
 
 
 
-    /** @name Constructors and destructor */
-    ///@{
-    /**
-     * Construct a StaticMultiArray in which its elements are in undefined state.
-     */
-    StaticMultiArray();
+  /** @name Constructors and destructor */
+  ///@{
+  /**
+   * Construct a StaticMultiArray in which its elements are in undefined state.
+   */
+  StaticMultiArray();
 
-    /**
-     * Construct a StaticMultiArray in which its elements are set to be equal
-     * to the argument value @p val.
-     */
-    explicit StaticMultiArray(const T &val);
-
-
-    /**
-     * Initializer list constructor.
-     * Each element in the list is copied to the data_ vector.
-     * @note The size of the list must be equal to the number of entries in the
-     * StaticMultiArray object, otherwise in Debug mode an exception will be raised.
-     */
-    StaticMultiArray(std::initializer_list<T> list);
-
-    /**
-     * Copy constructor. It performs a deep copy of the StaticMultiArray @p m_array.
-     */
-    StaticMultiArray(const StaticMultiArray<T,dim,rank> &m_array) = default;
+  /**
+   * Construct a StaticMultiArray in which its elements are set to be equal
+   * to the argument value @p val.
+   */
+  explicit StaticMultiArray(const T &val);
 
 
-    /**
-     * Move constructor.
-     */
-    StaticMultiArray(StaticMultiArray<T,dim,rank> &&m_array) = default;
+  /**
+   * Initializer list constructor.
+   * Each element in the list is copied to the data_ vector.
+   * @note The size of the list must be equal to the number of entries in the
+   * StaticMultiArray object, otherwise in Debug mode an exception will be raised.
+   */
+  StaticMultiArray(std::initializer_list<T> list);
 
-    /**
-     * Destructor. It does nothing.
-     */
-    ~StaticMultiArray() = default;
-    ///@}
+  /**
+   * Copy constructor. It performs a deep copy of the StaticMultiArray @p m_array.
+   */
+  StaticMultiArray(const StaticMultiArray<T,dim,rank> &m_array) = default;
 
 
-    /** @name Assignment operators */
-    ///@{
+  /**
+   * Move constructor.
+   */
+  StaticMultiArray(StaticMultiArray<T,dim,rank> &&m_array) = default;
 
-    /** Copy assignment operator. Performs a deep copy of the static multi-array @p m_array. */
-    StaticMultiArray<T,dim,rank> &operator=(const StaticMultiArray<T,dim,rank> &m_array) = default;
+  /**
+   * Destructor. It does nothing.
+   */
+  ~StaticMultiArray() = default;
+  ///@}
 
-    /** Move assignment operator.*/
-    StaticMultiArray<T,dim,rank> &operator=(StaticMultiArray<T,dim,rank> &&m_array) = default;
-    ///@}
+
+  /** @name Assignment operators */
+  ///@{
+
+  /** Copy assignment operator. Performs a deep copy of the static multi-array @p m_array. */
+  StaticMultiArray<T,dim,rank> &operator=(const StaticMultiArray<T,dim,rank> &m_array) = default;
+
+  /** Move assignment operator.*/
+  StaticMultiArray<T,dim,rank> &operator=(StaticMultiArray<T,dim,rank> &&m_array) = default;
+  ///@}
 
 private:
 
-    /** Type of the base class. */
-    using base_t = MultiArray<SafeSTLArray<T,n_entries>,rank>;
+  /** Type of the base class. */
+  using base_t = MultiArray<SafeSTLArray<T,n_entries>,rank>;
 
 };
 

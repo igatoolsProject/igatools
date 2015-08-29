@@ -41,95 +41,95 @@ template <class STLContainer>
 class SafeSTLContainer : public STLContainer
 {
 public:
-    /** Inherit the constructors of the base class. */
-    using STLContainer::STLContainer;
+  /** Inherit the constructors of the base class. */
+  using STLContainer::STLContainer;
 
-    /**
-     * Returns the number of entries in the container.
-     */
-    Size size() const noexcept
-    {
-        return STLContainer::size();
-    }
-
-
-    /**
-     * Returns a reference to the <tt>n</tt>-th entry of the container.
-     * @note In Debug mode the value of <tt>n</tt> is checked if within the valid bounds of the container.
-     */
-    typename STLContainer::reference operator[](Size n)
-    {
-        Assert(n < size(), ExcIndexRange(n, 0, size()));
-        return STLContainer::operator[](n);
-    }
-
-    /**
-     * Returns a const-reference to the <tt>n</tt>-th entry of the container.
-     * @note In Debug mode the value of <tt>n</tt> is checked if within the valid bounds of the container.
-     */
-    typename STLContainer::const_reference operator[](Size n) const
-    {
-        Assert(n < size(), ExcIndexRange(n, 0, size()));
-        return STLContainer::operator[](n);
-    }
+  /**
+   * Returns the number of entries in the container.
+   */
+  Size size() const noexcept
+  {
+    return STLContainer::size();
+  }
 
 
-    /**
-     * @name Printing info
-     */
-    ///@{
+  /**
+   * Returns a reference to the <tt>n</tt>-th entry of the container.
+   * @note In Debug mode the value of <tt>n</tt> is checked if within the valid bounds of the container.
+   */
+  typename STLContainer::reference operator[](Size n)
+  {
+    Assert(n < size(), ExcIndexRange(n, 0, size()));
+    return STLContainer::operator[](n);
+  }
+
+  /**
+   * Returns a const-reference to the <tt>n</tt>-th entry of the container.
+   * @note In Debug mode the value of <tt>n</tt> is checked if within the valid bounds of the container.
+   */
+  typename STLContainer::const_reference operator[](Size n) const
+  {
+    Assert(n < size(), ExcIndexRange(n, 0, size()));
+    return STLContainer::operator[](n);
+  }
+
+
+  /**
+   * @name Printing info
+   */
+  ///@{
 private:
-    template <class A>
-    EnableIf<has_print_info<A>(0), void>
-    t_print_info(LogStream &out) const
+  template <class A>
+  EnableIf<has_print_info<A>(0), void>
+  t_print_info(LogStream &out) const
+  {
+    int entry_id = 0;
+    for (auto &entry : *this)
     {
-        int entry_id = 0;
-        for (auto &entry : *this)
-        {
-            out.begin_item("Entry id: " + std::to_string(entry_id++));
-            entry.print_info(out);
-            out.end_item();
-        }
+      out.begin_item("Entry id: " + std::to_string(entry_id++));
+      entry.print_info(out);
+      out.end_item();
     }
+  }
 
-    template <class A>
-    EnableIf<(!has_print_info<A>(0)), void>
-    t_print_info(LogStream &out) const
-    {
-        out << "[ ";
-        for (auto &entry : *this)
-            out << entry << " ";
-        out << "]";
-    }
+  template <class A>
+  EnableIf<(!has_print_info<A>(0)), void>
+  t_print_info(LogStream &out) const
+  {
+    out << "[ ";
+    for (auto &entry : *this)
+      out << entry << " ";
+    out << "]";
+  }
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void serialize(Archive &ar, const unsigned int version)
-    {
-        ar &boost::serialization::make_nvp("SafeSTLContainer_base_t",
-                                           boost::serialization::base_object<STLContainer>(*this));
-    }
-    ///@}
+  template<class Archive>
+  void serialize(Archive &ar, const unsigned int version)
+  {
+    ar &boost::serialization::make_nvp("SafeSTLContainer_base_t",
+                                       boost::serialization::base_object<STLContainer>(*this));
+  }
+  ///@}
 #endif // SERIALIZATION
 
 public:
 
-    /**
-     * Prints the content of the vector on the LogStream @p out.
-     * Its use is intended mainly for testing and debugging purpose.
-     */
-    void print_info(LogStream &out) const
-    {
-        t_print_info<typename STLContainer::value_type>(out);
-    }
-    ///@}
+  /**
+   * Prints the content of the vector on the LogStream @p out.
+   * Its use is intended mainly for testing and debugging purpose.
+   */
+  void print_info(LogStream &out) const
+  {
+    t_print_info<typename STLContainer::value_type>(out);
+  }
+  ///@}
 };
 
 

@@ -30,33 +30,33 @@
 template<int dim, int range, int rank>
 void test(const int deg1)
 {
-    using SplineSpace = SplineSpace<dim, range, rank>;
+  using SplineSpace = SplineSpace<dim, range, rank>;
 
-    auto grid = CartesianGrid<dim>::create(4);
-    typename SplineSpace::Degrees deg2(deg1);
-    typename SplineSpace::DegreeTable deg(deg2);
+  auto grid = CartesianGrid<dim>::create(4);
+  typename SplineSpace::Degrees deg2(deg1);
+  typename SplineSpace::DegreeTable deg(deg2);
 
-    deg.get_active_components_id().print_info(out);
-    out << endl;
-    deg.get_inactive_components_id().print_info(out);
-    out << endl;
+  deg.get_active_components_id().print_info(out);
+  out << endl;
+  deg.get_inactive_components_id().print_info(out);
+  out << endl;
 
-    auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
-                    deg, grid->get_num_intervals());
-    auto sp_spec = SplineSpace::create(deg, grid, int_mult);
-    sp_spec->print_info(out);
+  auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
+                  deg, grid->get_num_intervals());
+  auto sp_spec = SplineSpace::create(deg, grid, int_mult);
+  sp_spec->print_info(out);
 }
 
 
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
-    test<1, 1, 1>(1);
-    test<1, 2, 1>(1);
-    test<2, 2, 1>(3);
-    test<2, 2, 1>(2);
+  test<1, 1, 1>(1);
+  test<1, 2, 1>(1);
+  test<2, 2, 1>(3);
+  test<2, 2, 1>(2);
 
-    return 0;
+  return 0;
 }

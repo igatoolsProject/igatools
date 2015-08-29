@@ -87,259 +87,259 @@ template <int dim_>
 class Quadrature
 {
 private:
-    using self_t = Quadrature<dim_>;
+  using self_t = Quadrature<dim_>;
 public:
-    /**
-     * @brief Alias for the point-type that is returned by the function Quadrature::get_point()
-     */
-    using Point = Points<dim_>;
-    using PointVector = ValueVector<Point>;
-    using WeigthVector = ValueVector<Real>;
-    using PointArray  = TensorProductArray<dim_>;
-    using WeightArray = TensorProductArray<dim_>;
+  /**
+   * @brief Alias for the point-type that is returned by the function Quadrature::get_point()
+   */
+  using Point = Points<dim_>;
+  using PointVector = ValueVector<Point>;
+  using WeigthVector = ValueVector<Real>;
+  using PointArray  = TensorProductArray<dim_>;
+  using WeightArray = TensorProductArray<dim_>;
 
-    /**
-     * Dimensionality of the space in which the points are located
-     * (equivalent to the number of the coordinates of each point).
-     */
-    static const int dim = dim_;
-    /**
-     * @name Constructors.
-     */
-    ///@{
+  /**
+   * Dimensionality of the space in which the points are located
+   * (equivalent to the number of the coordinates of each point).
+   */
+  static const int dim = dim_;
+  /**
+   * @name Constructors.
+   */
+  ///@{
 public:
 
-    /**
-     * Construct the object with a user-defined bounding-box, with no points inside.
-     * If the constructor is called without passing a bounding-box, then it will be used the one
-     * corresponding to the unit <tt>dim</tt>-dimensional cube \f$[0,1]^{dim}\f$
-     */
-    Quadrature(const BBox<dim_> &bounding_box = BBox<dim_>());
+  /**
+   * Construct the object with a user-defined bounding-box, with no points inside.
+   * If the constructor is called without passing a bounding-box, then it will be used the one
+   * corresponding to the unit <tt>dim</tt>-dimensional cube \f$[0,1]^{dim}\f$
+   */
+  Quadrature(const BBox<dim_> &bounding_box = BBox<dim_>());
 
 protected:
-    Quadrature(const TensorSize<dim> &num_points,
-               void (*)(int, iga::SafeSTLVector<double> &, iga::SafeSTLVector<double> &));
+  Quadrature(const TensorSize<dim> &num_points,
+             void (*)(int, iga::SafeSTLVector<double> &, iga::SafeSTLVector<double> &));
 
 public:
-    /**
-     * Tensor product constructor
-     */
-    Quadrature(const PointArray &points,
-               const WeightArray &weights_1d,
-               const BBox<dim_> &bounding_box);
-    /**
-     * Non-tensor product constructor.
-     *
-     * Constructs the object given a vector of <tt>points</tt>
-     * in the <tt>dim_</tt>-dimensional space,
-     * and the <tt>bounding_box</tt> in which the points are defined,
-     * and assign the weights value to be equal to 1.
-     *
-     * @note The constructed Quadrature object has not the tensor-product structure.
-     */
-    Quadrature(const PointVector &points,
-               const BBox<dim_> &bounding_box = BBox<dim_>());
+  /**
+   * Tensor product constructor
+   */
+  Quadrature(const PointArray &points,
+             const WeightArray &weights_1d,
+             const BBox<dim_> &bounding_box);
+  /**
+   * Non-tensor product constructor.
+   *
+   * Constructs the object given a vector of <tt>points</tt>
+   * in the <tt>dim_</tt>-dimensional space,
+   * and the <tt>bounding_box</tt> in which the points are defined,
+   * and assign the weights value to be equal to 1.
+   *
+   * @note The constructed Quadrature object has not the tensor-product structure.
+   */
+  Quadrature(const PointVector &points,
+             const BBox<dim_> &bounding_box = BBox<dim_>());
 
-    /**
-     * Copy constructor.
-     */
-    Quadrature(const self_t &) = default;
+  /**
+   * Copy constructor.
+   */
+  Quadrature(const self_t &) = default;
 
-    /**
-     * Move constructor.
-     */
-    Quadrature(self_t &&) = default;
+  /**
+   * Move constructor.
+   */
+  Quadrature(self_t &&) = default;
 
-    /**
-     * Destructor.
-     */
-    ~Quadrature() = default;
-    ///@}
+  /**
+   * Destructor.
+   */
+  ~Quadrature() = default;
+  ///@}
 
-    /**
-     * @name Assignment operators.
-     */
-    ///@{
-    /**
-     * Copy assignment operator.
-     */
-    self_t &operator=(const self_t &) = default;
+  /**
+   * @name Assignment operators.
+   */
+  ///@{
+  /**
+   * Copy assignment operator.
+   */
+  self_t &operator=(const self_t &) = default;
 
-    /**
-     * Move assignment operator.
-     */
-    self_t &operator=(self_t &&) = default;
-    ///@}
+  /**
+   * Move assignment operator.
+   */
+  self_t &operator=(self_t &&) = default;
+  ///@}
 
-    /**
-     * @name Functions returning information about the number of points and coordinates.
-     */
-    ///@{
-    /**
-     * Returns the total number of evaluation points.
-     */
-    int get_num_points() const;
+  /**
+   * @name Functions returning information about the number of points and coordinates.
+   */
+  ///@{
+  /**
+   * Returns the total number of evaluation points.
+   */
+  int get_num_points() const;
 
-    /**
-     * Returns the number of point coordinates along each direction.
-     */
-    TensorSize<dim_> get_num_coords_direction() const noexcept;
-    ///@}
+  /**
+   * Returns the number of point coordinates along each direction.
+   */
+  TensorSize<dim_> get_num_coords_direction() const noexcept;
+  ///@}
 
-    /**
-     * @name Functions returning informations about the arrangement structure of the points.
-     */
-    ///@{
-    /**
-     * Returns TRUE if the evaluation points have a tensor-product structure.
-     */
-    bool is_tensor_product() const;
-    ///@}
+  /**
+   * @name Functions returning informations about the arrangement structure of the points.
+   */
+  ///@{
+  /**
+   * Returns TRUE if the evaluation points have a tensor-product structure.
+   */
+  bool is_tensor_product() const;
+  ///@}
 
-    /**
-     * Prints internal information about the evaluation points.
-     * \note Mostly used for debugging and testing.
-     */
-    void print_info(LogStream &out) const;
+  /**
+   * Prints internal information about the evaluation points.
+   * \note Mostly used for debugging and testing.
+   */
+  void print_info(LogStream &out) const;
 
-    /**
-     * @name Functions returning internal data (points, weights, coordinates,
-     *  bounding box, etc.)
-     */
-    ///@{
-    /**
-     * Returns all the points.
-     */
-    PointVector get_points() const;
+  /**
+   * @name Functions returning internal data (points, weights, coordinates,
+   *  bounding box, etc.)
+   */
+  ///@{
+  /**
+   * Returns all the points.
+   */
+  PointVector get_points() const;
 
-    /**
-     * Returns the coordinates of the the point with (flat) index <tt>pt_id</tt>
-     */
-    Point get_point(const int pt_id) const;
+  /**
+   * Returns the coordinates of the the point with (flat) index <tt>pt_id</tt>
+   */
+  Point get_point(const int pt_id) const;
 
-    /**
-     * Returns all the weights.
-     */
-    ValueVector<Real> get_weights() const;
+  /**
+   * Returns all the weights.
+   */
+  ValueVector<Real> get_weights() const;
 
-    /**
-     * Returns the weight of the the point with (flat) index <tt>pt_id</tt>
-     */
-    Real get_weight(const int pt_id) const;
-
-
-    /**
-     * Returns coordinates of the points along the <tt>i</tt>-th direction.
-     */
-    const SafeSTLVector<Real> &get_coords_direction(const int i) const;
-
-    const PointArray &get_points_1d() const;
-
-    const WeightArray &get_weights_1d() const;
-
-    /**
-     * Returns the bounding box in which the points are located.
-     */
-    const BBox<dim_> &get_bounding_box() const;
-
-    /**
-     * Returns the coordinates indices relative to the point with (flat)
-     * index <tt>point_id</tt>.
-     */
-    TensorIndex<dim_> get_coords_id_from_point_id(const int point_id) const;
-    ///@}
-
-    /**
-     * @name Functions for performing dilation and translation of the points (and weights).
-     */
-    //@{
-    /**
-     * Dilation of the points (and of the corresponding bounding box)
-     */
-    void dilate(const Point &dilation_factor);
-
-    /**
-     * Translation of the points (and of the corresponding bounding box)
-     */
-    void translate(const Point &translation_amount);
-
-    /**
-     * Dilation followed by a translation of the points (and of the corresponding bounding box).
-     */
-    void dilate_translate(const Point &dilate, const Point &translate);
+  /**
+   * Returns the weight of the the point with (flat) index <tt>pt_id</tt>
+   */
+  Real get_weight(const int pt_id) const;
 
 
-    /**
-     * Translation followed by a dilation of the points (and of the corresponding bounding box).
-     */
-    void translate_dilate(const Point &translate, const Point &dilate);
-    ///@}
+  /**
+   * Returns coordinates of the points along the <tt>i</tt>-th direction.
+   */
+  const SafeSTLVector<Real> &get_coords_direction(const int i) const;
 
-    /**
-     * Returns a dim dimensional quadrature obtained by using
-     * a single point on the active sub-element direction.
-     * @todo write example
-     * Usually use for face values
-     */
-    template<int k>
-    Quadrature<dim_> collapse_to_sub_element(const int id) const;
+  const PointArray &get_points_1d() const;
+
+  const WeightArray &get_weights_1d() const;
+
+  /**
+   * Returns the bounding box in which the points are located.
+   */
+  const BBox<dim_> &get_bounding_box() const;
+
+  /**
+   * Returns the coordinates indices relative to the point with (flat)
+   * index <tt>point_id</tt>.
+   */
+  TensorIndex<dim_> get_coords_id_from_point_id(const int point_id) const;
+  ///@}
+
+  /**
+   * @name Functions for performing dilation and translation of the points (and weights).
+   */
+  //@{
+  /**
+   * Dilation of the points (and of the corresponding bounding box)
+   */
+  void dilate(const Point &dilation_factor);
+
+  /**
+   * Translation of the points (and of the corresponding bounding box)
+   */
+  void translate(const Point &translation_amount);
+
+  /**
+   * Dilation followed by a translation of the points (and of the corresponding bounding box).
+   */
+  void dilate_translate(const Point &dilate, const Point &translate);
+
+
+  /**
+   * Translation followed by a dilation of the points (and of the corresponding bounding box).
+   */
+  void translate_dilate(const Point &translate, const Point &dilate);
+  ///@}
+
+  /**
+   * Returns a dim dimensional quadrature obtained by using
+   * a single point on the active sub-element direction.
+   * @todo write example
+   * Usually use for face values
+   */
+  template<int k>
+  Quadrature<dim_> collapse_to_sub_element(const int id) const;
 
 private:
-    /**
-     * Reset the <tt>bounding_box</tt> in which the points must be located.
-     */
-    void reset_bounding_box(const BBox<dim_> &bounding_box);
+  /**
+   * Reset the <tt>bounding_box</tt> in which the points must be located.
+   */
+  void reset_bounding_box(const BBox<dim_> &bounding_box);
 
 
-    /**
-     * Coordinates of the points.
-     *
-     * It does not contain multiple values.
-     */
-    PointArray points_1d_;
+  /**
+   * Coordinates of the points.
+   *
+   * It does not contain multiple values.
+   */
+  PointArray points_1d_;
 
-    /**
-     * Weights associated to the points coordinates. By default are set to be equal to one.
-     */
-    WeightArray weights_1d_;
-
-
-    /**
-     * Map between the point (flat) ids and its coordinates ids.
-     */
-    SafeSTLVector<TensorIndex<dim_>> map_point_id_to_coords_id_;
-
-    /**
-     * TRUE if the points are arranged in tensor product way.
-     * In this case the total number of points is
-     * <tt>n_coords[0] * n_coords[1] * ... * n_coords[dim-1]</tt>
-     *
-     * FALSE if the points are not arranged in tensor product way.
-     * In this case it must hold
-     * <tt>n_coords[0] == n_coords[1] == ... == n_coords[dim-1]</tt>
-     * and each value along a specific direction refers to a single point.
-     */
-    bool is_tensor_product_;
+  /**
+   * Weights associated to the points coordinates. By default are set to be equal to one.
+   */
+  WeightArray weights_1d_;
 
 
-    /**
-     * Bounding box in which the points are located.
-     */
-    BBox<dim_> bounding_box_;
+  /**
+   * Map between the point (flat) ids and its coordinates ids.
+   */
+  SafeSTLVector<TensorIndex<dim_>> map_point_id_to_coords_id_;
+
+  /**
+   * TRUE if the points are arranged in tensor product way.
+   * In this case the total number of points is
+   * <tt>n_coords[0] * n_coords[1] * ... * n_coords[dim-1]</tt>
+   *
+   * FALSE if the points are not arranged in tensor product way.
+   * In this case it must hold
+   * <tt>n_coords[0] == n_coords[1] == ... == n_coords[dim-1]</tt>
+   * and each value along a specific direction refers to a single point.
+   */
+  bool is_tensor_product_;
+
+
+  /**
+   * Bounding box in which the points are located.
+   */
+  BBox<dim_> bounding_box_;
 
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version);
-    ///@}
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version);
+  ///@}
 #endif // SERIALIZATION
 
 };

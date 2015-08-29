@@ -30,13 +30,13 @@ using PropId = std::string;
 
 struct ElementProperties
 {
-    static const PropId active;
+  static const PropId active;
 };
 
 
 struct DofProperties
 {
-    static const PropId active;
+  static const PropId active;
 };
 
 IGA_NAMESPACE_CLOSE

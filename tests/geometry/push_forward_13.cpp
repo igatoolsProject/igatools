@@ -41,56 +41,56 @@
 template<int dim, int codim>
 void test()
 {
-    const int space_dim = dim + codim;
-    using Function = functions::LinearFunction<dim, codim, space_dim>;
-    using PForward  = PushForward<Transformation::h_grad, dim, codim>;
+  const int space_dim = dim + codim;
+  using Function = functions::LinearFunction<dim, codim, space_dim>;
+  using PForward  = PushForward<Transformation::h_grad, dim, codim>;
 
-    typename Function::Value    b;
-    typename Function::Gradient A;
-    for (int i=0; i<space_dim; i++)
-    {
-        for (int j=0; j<dim; j++)
-            if (j == i)
-                A[j][j] = 2.;
-        b[i] = i;
-    }
+  typename Function::Value    b;
+  typename Function::Gradient A;
+  for (int i=0; i<space_dim; i++)
+  {
+    for (int j=0; j<dim; j++)
+      if (j == i)
+        A[j][j] = 2.;
+    b[i] = i;
+  }
 
-    auto quad = QGauss<dim>(2);
-    auto grid = CartesianGrid<dim>::create(3);
+  auto quad = QGauss<dim>(2);
+  auto grid = CartesianGrid<dim>::create(3);
 
-    auto flag = ValueFlags::point | ValueFlags::value
-                | ValueFlags::gradient | ValueFlags::hessian|
-                ValueFlags::measure |
-                ValueFlags::w_measure;
+  auto flag = ValueFlags::point | ValueFlags::value
+              | ValueFlags::gradient | ValueFlags::hessian|
+              ValueFlags::measure |
+              ValueFlags::w_measure;
 
-    auto t_flag = TransformationFlags::tran_value;
+  auto t_flag = TransformationFlags::tran_value;
 
-    auto F = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
-    PForward pf(F);
+  auto F = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
+  PForward pf(F);
 
-    pf.template reset<dim>(flag, t_flag, quad);
+  pf.template reset<dim>(flag, t_flag, quad);
 
-    auto elem = pf.begin();
-    auto end  = pf.end();
+  auto elem = pf.begin();
+  auto end  = pf.end();
 
-    pf.template init_cache<dim>(*elem);
+  pf.template init_cache<dim>(*elem);
 
-    for (; elem != end; ++elem)
-    {
-        pf.template fill_cache<dim>(*elem, 0);
-        elem->get_points().print_info(out);
-        out << endl;
-        elem->template get_values<_Value,dim>(0).print_info(out);
-        out << endl;
-        elem->template get_values<_Gradient,dim>(0).print_info(out);
-        out << endl;
-        elem->template get_values<_Hessian,dim>(0).print_info(out);
-        out << endl;
-        elem->template get_measures<dim>(0).print_info(out);
-        out << endl;
-        elem->template get_w_measures<dim>(0).print_info(out);
-        out << endl;
-    }
+  for (; elem != end; ++elem)
+  {
+    pf.template fill_cache<dim>(*elem, 0);
+    elem->get_points().print_info(out);
+    out << endl;
+    elem->template get_values<_Value,dim>(0).print_info(out);
+    out << endl;
+    elem->template get_values<_Gradient,dim>(0).print_info(out);
+    out << endl;
+    elem->template get_values<_Hessian,dim>(0).print_info(out);
+    out << endl;
+    elem->template get_measures<dim>(0).print_info(out);
+    out << endl;
+    elem->template get_w_measures<dim>(0).print_info(out);
+    out << endl;
+  }
 
 
 }
@@ -98,9 +98,9 @@ void test()
 
 int main()
 {
-    test<2,0>();
+  test<2,0>();
 //    test<3,3>();
 
-    return 0;
+  return 0;
 }
 

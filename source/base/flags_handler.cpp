@@ -31,7 +31,7 @@ void
 FlagStatus::
 print_info(LogStream &out) const
 {
-    out << "   fill = " << fill_ << "    filled = " << filled_;
+  out << "   fill = " << fill_ << "    filled = " << filled_;
 }
 
 
@@ -53,25 +53,25 @@ DeclException2(ExcFillFlagNotSupported, ValueFlags, ValueFlags,
 #if 0
 GridFlags::
 GridFlags(const ValueFlags &flags)
-    :
-    GridFlags()
+  :
+  GridFlags()
 {
-    this->set_fill_status_true_from_value_flags(flags);
+  this->set_fill_status_true_from_value_flags(flags);
 }
 #endif
 
 #if 0
 FunctionFlags::
 FunctionFlags(const ValueFlags &flags)
-    :
-    FunctionFlags()
+  :
+  FunctionFlags()
 {
-    const auto valid_flags = this->get_valid_flags();
-    auto f_flags = flags & valid_flags;
-    if (contains(f_flags, ValueFlags::divergence))
-        f_flags |= ValueFlags::gradient;
+  const auto valid_flags = this->get_valid_flags();
+  auto f_flags = flags & valid_flags;
+  if (contains(f_flags, ValueFlags::divergence))
+    f_flags |= ValueFlags::gradient;
 
-    this->set_fill_status_true_from_value_flags(f_flags);
+  this->set_fill_status_true_from_value_flags(f_flags);
 }
 #endif
 
@@ -79,14 +79,14 @@ FunctionFlags(const ValueFlags &flags)
 ValueFlags
 FunctionFlags::to_grid_flags(const ValueFlags &flags)
 {
-    ValueFlags transfer_flag = ValueFlags::w_measure |
-                               ValueFlags::boundary_normal;
-    ValueFlags g_flag = flags & transfer_flag;
-    if (contains(flags, ValueFlags::point) || contains(flags, ValueFlags::value))
-    {
-        g_flag |= ValueFlags::point;
-    }
-    return g_flag;
+  ValueFlags transfer_flag = ValueFlags::w_measure |
+                             ValueFlags::boundary_normal;
+  ValueFlags g_flag = flags & transfer_flag;
+  if (contains(flags, ValueFlags::point) || contains(flags, ValueFlags::value))
+  {
+    g_flag |= ValueFlags::point;
+  }
+  return g_flag;
 }
 #endif
 
@@ -94,20 +94,20 @@ FunctionFlags::to_grid_flags(const ValueFlags &flags)
 #if 0
 MappingFlags::
 MappingFlags(const ValueFlags &flags)
-    :
-    MappingFlags()
+  :
+  MappingFlags()
 {
-    const auto valid_flags = this->get_valid_flags();
-    auto m_flags = flags & valid_flags;
+  const auto valid_flags = this->get_valid_flags();
+  auto m_flags = flags & valid_flags;
 
-    if (contains(flags, ValueFlags::boundary_normal) ||
-        contains(flags, ValueFlags::curvature))
-        m_flags |= ValueFlags::inv_gradient;
+  if (contains(flags, ValueFlags::boundary_normal) ||
+      contains(flags, ValueFlags::curvature))
+    m_flags |= ValueFlags::inv_gradient;
 
-    if (contains(flags, ValueFlags::w_measure))
-        m_flags |= ValueFlags::measure;
+  if (contains(flags, ValueFlags::w_measure))
+    m_flags |= ValueFlags::measure;
 
-    this->set_fill_status_true_from_value_flags(m_flags);
+  this->set_fill_status_true_from_value_flags(m_flags);
 }
 #endif
 
@@ -115,27 +115,27 @@ MappingFlags(const ValueFlags &flags)
 ValueFlags
 MappingFlags::to_function_flags(const ValueFlags &flags)
 {
-    FunctionFlags func_flags;
+  FunctionFlags func_flags;
 
-    ValueFlags transfer_flag = ValueFlags::measure |
-                               ValueFlags::w_measure |
-                               ValueFlags::boundary_normal |
-                               func_flags.get_valid_flags();
+  ValueFlags transfer_flag = ValueFlags::measure |
+                             ValueFlags::w_measure |
+                             ValueFlags::boundary_normal |
+                             func_flags.get_valid_flags();
 
 
-    ValueFlags f_flag = flags & transfer_flag;
+  ValueFlags f_flag = flags & transfer_flag;
 
-    if (contains(flags, ValueFlags::measure) ||
-        contains(flags, ValueFlags::w_measure) ||
-        contains(flags, ValueFlags::inv_gradient) ||
-        contains(flags, ValueFlags::outer_normal))
-        f_flag |=  ValueFlags::gradient;
+  if (contains(flags, ValueFlags::measure) ||
+      contains(flags, ValueFlags::w_measure) ||
+      contains(flags, ValueFlags::inv_gradient) ||
+      contains(flags, ValueFlags::outer_normal))
+    f_flag |=  ValueFlags::gradient;
 
-    if (contains(flags, ValueFlags::inv_hessian) ||
-        contains(flags, ValueFlags::curvature))
-        f_flag |=  ValueFlags::gradient | ValueFlags::hessian;
+  if (contains(flags, ValueFlags::inv_hessian) ||
+      contains(flags, ValueFlags::curvature))
+    f_flag |=  ValueFlags::gradient | ValueFlags::hessian;
 
-    return f_flag;
+  return f_flag;
 }
 #endif
 

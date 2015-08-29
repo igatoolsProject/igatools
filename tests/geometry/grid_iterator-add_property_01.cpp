@@ -33,49 +33,49 @@
 template <int dim>
 void iterate(const int n_knots = 5)
 {
-    OUTSTART
+  OUTSTART
 
-    const string red = "red";
-    const string blue = "blue";
+  const string red = "red";
+  const string blue = "blue";
 
-    auto grid = CartesianGrid<dim>::create(n_knots);
-    grid->add_property(red);
-    grid->add_property(blue);
+  auto grid = CartesianGrid<dim>::create(n_knots);
+  grid->add_property(red);
+  grid->add_property(blue);
 
-    const TensorIndex<dim> center(2);
-    for (auto &elem : *grid)
-    {
-        if (elem.get_index() <= center)
-            elem.add_property(red);
-        else
-            elem.add_property(blue);
-    }
+  const TensorIndex<dim> center(2);
+  for (auto &elem : *grid)
+  {
+    if (elem.get_index() <= center)
+      elem.add_property(red);
+    else
+      elem.add_property(blue);
+  }
 
-    auto elem = grid->cbegin(red);
-    auto end  = grid->cend(red);
-    for (; elem != end; ++elem)
-    {
-        elem->print_info(out);
-    }
+  auto elem = grid->cbegin(red);
+  auto end  = grid->cend(red);
+  for (; elem != end; ++elem)
+  {
+    elem->print_info(out);
+  }
 
-    elem = grid->cbegin(blue);
-    end  = grid->cend(blue);
-    for (; elem != end; ++elem)
-    {
-        elem->print_info(out);
-    }
+  elem = grid->cbegin(blue);
+  end  = grid->cend(blue);
+  for (; elem != end; ++elem)
+  {
+    elem->print_info(out);
+  }
 
-    OUTEND
+  OUTEND
 }
 
 
 
 int main()
 {
-    iterate<0>();
-    iterate<1>();
-    iterate<2>();
-    iterate<3>();
+  iterate<0>();
+  iterate<1>();
+  iterate<2>();
+  iterate<3>();
 
-    return  0;
+  return  0;
 }

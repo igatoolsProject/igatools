@@ -35,31 +35,31 @@ template <int dim, int range=1, int rank=1>
 void uniform_space_cache(const ValueFlags flag,
                          const int n_knots = 5, const int deg=1)
 {
-    OUTSTART
+  OUTSTART
 
-    using Space = BSplineSpace<dim, range, rank>;
-    auto grid  = CartesianGrid<dim>::create(n_knots);
-    auto space = Space::create(deg, grid);
+  using Space = BSplineSpace<dim, range, rank>;
+  auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto space = Space::create(deg, grid);
 
 
-    auto quad = QGauss<dim>(2);
-    using ElemHandler = typename Space::ElementHandler;
-    auto value_handler = ElemHandler::create(space);
-    value_handler->reset(flag, quad);
-    value_handler->print_info(out);
+  auto quad = QGauss<dim>(2);
+  using ElemHandler = typename Space::ElementHandler;
+  auto value_handler = ElemHandler::create(space);
+  value_handler->reset(flag, quad);
+  value_handler->print_info(out);
 
-    OUTEND
+  OUTEND
 }
 
 
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
-    uniform_space_cache<1>(ValueFlags::value);
-    uniform_space_cache<2>(ValueFlags::value);
+  uniform_space_cache<1>(ValueFlags::value);
+  uniform_space_cache<2>(ValueFlags::value);
 
-    uniform_space_cache<1>(ValueFlags::gradient);
-    return  0;
+  uniform_space_cache<1>(ValueFlags::gradient);
+  return  0;
 }

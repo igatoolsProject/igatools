@@ -40,13 +40,13 @@ template <int dim>
 class PoissonPreparation
 {
 public:
-    PoissonPreparation(const int n_knots,  const int deg);
-    void local_assemble();
+  PoissonPreparation(const int n_knots,  const int deg);
+  void local_assemble();
 
 private:
-    using Space = BSplineSpace<dim>;
-    shared_ptr<const CartesianGrid<dim>>  grid;
-    shared_ptr<const Space>   space;
+  using Space = BSplineSpace<dim>;
+  shared_ptr<const CartesianGrid<dim>>  grid;
+  shared_ptr<const Space>   space;
 };
 // [class declaration]
 
@@ -54,9 +54,9 @@ private:
 // [constructor]
 template <int dim>
 PoissonPreparation<dim>::PoissonPreparation(const int n_knots,  const int deg)
-    :
-    grid {CartesianGrid<dim>::create(n_knots)},
-    space {BSplineSpace<dim>::create(deg, grid)}
+  :
+  grid {CartesianGrid<dim>::create(n_knots)},
+  space {BSplineSpace<dim>::create(deg, grid)}
 {}
 // [constructor]
 
@@ -65,83 +65,83 @@ PoissonPreparation<dim>::PoissonPreparation(const int n_knots,  const int deg)
 template <int dim>
 void  PoissonPreparation<dim>::local_assemble()
 {
-    out << "Assembling local contributions for the " << dim;
-    out << "-dimensional laplace problem." << endl;
-    // [assemble function]
+  out << "Assembling local contributions for the " << dim;
+  out << "-dimensional laplace problem." << endl;
+  // [assemble function]
 
 
+  // [iterate as before]
+  using ElementHandler = typename Space::ElementHandler;
+  auto elem_handler = ElementHandler::create(space);
+  auto quad = QGauss<dim>(2);
+  auto flag = ValueFlags::value | ValueFlags::gradient |
+              ValueFlags::w_measure;
+
+  elem_handler->reset(flag, quad);
+
+  auto elem = space->begin();
+  const auto elem_end = space->end();
+  elem_handler->init_element_cache(elem);
+
+  const int n_qp = quad.get_num_points();
+  for (; elem != elem_end; ++elem)
+  {
     // [iterate as before]
-    using ElementHandler = typename Space::ElementHandler;
-    auto elem_handler = ElementHandler::create(space);
-    auto quad = QGauss<dim>(2);
-    auto flag = ValueFlags::value | ValueFlags::gradient |
-                ValueFlags::w_measure;
 
-    elem_handler->reset(flag, quad);
+    // [local matrix]
+    const int n_basis = elem->get_num_basis(DofProperties::active);
 
-    auto elem = space->begin();
-    const auto elem_end = space->end();
-    elem_handler->init_element_cache(elem);
+    DenseMatrix loc_mat(n_basis, n_basis);
+    loc_mat = 0.0;
 
-    const int n_qp = quad.get_num_points();
-    for (; elem != elem_end; ++elem)
+    DenseVector loc_rhs(n_basis);
+    loc_rhs = 0.0;
+    // [local matrix]
+
+    // [get the values]
+    elem_handler->fill_element_cache(elem);
+    auto values = elem->template get_basis<_Value, dim>(0,DofProperties::active);
+    auto grads  = elem->template get_basis<_Gradient, dim>(0,DofProperties::active);
+    auto w_meas = elem->template get_w_measures<dim>(0);
+    // [get the values]
+
+    // [assemble]
+    for (int i=0; i<n_basis; ++i)
     {
-        // [iterate as before]
-
-        // [local matrix]
-        const int n_basis = elem->get_num_basis(DofProperties::active);
-
-        DenseMatrix loc_mat(n_basis, n_basis);
-        loc_mat = 0.0;
-
-        DenseVector loc_rhs(n_basis);
-        loc_rhs = 0.0;
-        // [local matrix]
-
-        // [get the values]
-        elem_handler->fill_element_cache(elem);
-        auto values = elem->template get_basis<_Value, dim>(0,DofProperties::active);
-        auto grads  = elem->template get_basis<_Gradient, dim>(0,DofProperties::active);
-        auto w_meas = elem->template get_w_measures<dim>(0);
-        // [get the values]
-
-        // [assemble]
-        for (int i=0; i<n_basis; ++i)
-        {
-            auto grd_phi_i = grads.get_function_view(i);
-            for (int j=0; j<n_basis; ++j)
-            {
-                auto grd_phi_j = grads.get_function_view(j);
-                for (int qp=0; qp<n_qp; ++qp)
-                    loc_mat(i,j) +=
-                        scalar_product(grd_phi_i[qp], grd_phi_j[qp])
-                        * w_meas[qp];
-            }
-            auto phi_i = values.get_function_view(i);
-            for (int qp=0; qp<n_qp; ++qp)
-                loc_rhs(i) += phi_i[qp][0] * w_meas[qp];
-        }
-        // [assemble]
-
-        // [print info]
-        out << "Element matrix:" << endl;
-        out << loc_mat << endl;
-        out << "Element vector:" << endl;
-        out << loc_rhs << endl;
-        // [print info]
+      auto grd_phi_i = grads.get_function_view(i);
+      for (int j=0; j<n_basis; ++j)
+      {
+        auto grd_phi_j = grads.get_function_view(j);
+        for (int qp=0; qp<n_qp; ++qp)
+          loc_mat(i,j) +=
+            scalar_product(grd_phi_i[qp], grd_phi_j[qp])
+            * w_meas[qp];
+      }
+      auto phi_i = values.get_function_view(i);
+      for (int qp=0; qp<n_qp; ++qp)
+        loc_rhs(i) += phi_i[qp][0] * w_meas[qp];
     }
+    // [assemble]
+
+    // [print info]
+    out << "Element matrix:" << endl;
+    out << loc_mat << endl;
+    out << "Element vector:" << endl;
+    out << loc_rhs << endl;
+    // [print info]
+  }
 }
 
 
 
 int main()
 {
-    const int deg = 1;
-    const int n_knots = 2;
-    PoissonPreparation<2> problem_2d(n_knots, deg);
-    problem_2d.local_assemble();
+  const int deg = 1;
+  const int n_knots = 2;
+  PoissonPreparation<2> problem_2d(n_knots, deg);
+  problem_2d.local_assemble();
 
-    return 0;
+  return 0;
 }
 
 

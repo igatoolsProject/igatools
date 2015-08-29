@@ -33,24 +33,24 @@ MultiArrayUtils<rank>::
 flat_to_tensor_index(const Index flat_index,
                      const TensorIndex<rank> &weight) noexcept
 {
-    /*
-     * To compute the tensor index we basically use
-     * the integer division algorithm.
-     * The last index is how many times weight[last index] units
-     * fits in flat_index and continue this weight with the
-     * remainder.
-     */
-    TensorIndex<rank> tensor_index;
+  /*
+   * To compute the tensor index we basically use
+   * the integer division algorithm.
+   * The last index is how many times weight[last index] units
+   * fits in flat_index and continue this weight with the
+   * remainder.
+   */
+  TensorIndex<rank> tensor_index;
 
-    int l = flat_index;
-    for (int i = rank-1; i > 0 ; --i)
-    {
-        tensor_index[i] = l / weight[i-1];
-        l %= weight[i-1];
-    }
-    tensor_index[0] = l;
+  int l = flat_index;
+  for (int i = rank-1; i > 0 ; --i)
+  {
+    tensor_index[i] = l / weight[i-1];
+    l %= weight[i-1];
+  }
+  tensor_index[0] = l;
 
-    return tensor_index;
+  return tensor_index;
 }
 
 template <>
@@ -60,8 +60,8 @@ MultiArrayUtils<0>::
 flat_to_tensor_index(const Index flat_index,
                      const TensorIndex<0> &weight) noexcept
 {
-    TensorIndex<0> tensor_index;
-    return tensor_index;
+  TensorIndex<0> tensor_index;
+  return tensor_index;
 }
 
 template <>
@@ -71,7 +71,7 @@ MultiArrayUtils<0>::
 tensor_to_flat_index(const TensorIndex<0> &tensor_index,
                      const TensorIndex<0> &weight) noexcept
 {
-    return 0;
+  return 0;
 }
 
 template <int rank>
@@ -81,11 +81,11 @@ MultiArrayUtils<rank>::
 tensor_to_flat_index(const TensorIndex<rank> &tensor_index,
                      const TensorIndex<rank> &weight) noexcept
 {
-    Index flat_index = tensor_index[0];
-    for (int i = 1; i < rank; ++i)
-        flat_index += weight[i-1] * tensor_index[i];
+  Index flat_index = tensor_index[0];
+  for (int i = 1; i < rank; ++i)
+    flat_index += weight[i-1] * tensor_index[i];
 
-    return flat_index;
+  return flat_index;
 }
 
 
@@ -96,13 +96,13 @@ TensorIndex<rank>
 MultiArrayUtils<rank>::
 compute_weight(const TensorSize<rank> &size) noexcept
 {
-    TensorIndex<rank> weight;
+  TensorIndex<rank> weight;
 
-    weight[0] = size[0];
-    for (int i = 1; i < rank; ++i)
-        weight[i] = weight[i-1] * size[i];
+  weight[0] = size[0];
+  for (int i = 1; i < rank; ++i)
+    weight[i] = weight[i-1] * size[i];
 
-    return weight;
+  return weight;
 }
 
 template <>
@@ -111,8 +111,8 @@ TensorIndex<0>
 MultiArrayUtils<0>::
 compute_weight(const TensorSize<0> &size) noexcept
 {
-    TensorIndex<0> weight;
-    return weight;
+  TensorIndex<0> weight;
+  return weight;
 }
 
 
@@ -122,13 +122,13 @@ Size
 MultiArrayUtils<rank>::
 size(const TensorIndex<rank> &extend) noexcept
 {
-    Size res=1;
-    for (int i = 0; i < rank; ++i)
-    {
-        Assert(extend[i] > 0, ExcLowerRange(extend[i],1)) ;
-        res *= extend[i];
-    }
-    return res;
+  Size res=1;
+  for (int i = 0; i < rank; ++i)
+  {
+    Assert(extend[i] > 0, ExcLowerRange(extend[i],1)) ;
+    res *= extend[i];
+  }
+  return res;
 }
 
 template <int rank>
@@ -138,12 +138,12 @@ MultiArrayUtils<rank>::
 get_tensor_entry(const SafeSTLArray< SafeSTLVector<Index>, rank> &data,
                  const Index flat_index, const TensorIndex<rank> &weight) noexcept
 {
-    TensorIndex<rank> entry;
-    auto tensor_index = flat_to_tensor_index(flat_index,weight);
-    for (int i = 0; i < rank; ++i)
-        entry[i] = data[i][tensor_index[i]];
+  TensorIndex<rank> entry;
+  auto tensor_index = flat_to_tensor_index(flat_index,weight);
+  for (int i = 0; i < rank; ++i)
+    entry[i] = data[i][tensor_index[i]];
 
-    return entry;
+  return entry;
 }
 
 

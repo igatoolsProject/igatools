@@ -32,30 +32,30 @@
 template <int k, int dim = k+1>
 void quad_extension(const int num_pts = 2)
 {
-    OUTSTART
+  OUTSTART
 
-    QGauss<k> sub_quad(num_pts);
-    out << "Original quadrature" << endl;
-    sub_quad.print_info(out);
-    out << endl;
+  QGauss<k> sub_quad(num_pts);
+  out << "Original quadrature" << endl;
+  sub_quad.print_info(out);
+  out << endl;
 
-    for (auto &i : UnitElement<dim>::template elems_ids<k>())
-    {
-        out << "Extended to subelement: " << i << endl;
-        const auto vol_quad = extend_sub_elem_quad<k, dim>(sub_quad, i);
-        vol_quad.print_info(out);
-    }
-    OUTEND
+  for (auto &i : UnitElement<dim>::template elems_ids<k>())
+  {
+    out << "Extended to subelement: " << i << endl;
+    const auto vol_quad = extend_sub_elem_quad<k, dim>(sub_quad, i);
+    vol_quad.print_info(out);
+  }
+  OUTEND
 }
 
 
 int main()
 {
 
-    quad_extension<0>();
-    quad_extension<1>();
-    quad_extension<2>();
+  quad_extension<0>();
+  quad_extension<1>();
+  quad_extension<2>();
 
-    return 0;
+  return 0;
 }
 

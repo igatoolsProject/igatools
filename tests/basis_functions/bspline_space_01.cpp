@@ -36,7 +36,7 @@ namespace grid
 template<int dim>
 shared_ptr<CartesianGrid<dim>> uniform(const int n_knots)
 {
-    return CartesianGrid<dim>::create(n_knots);
+  return CartesianGrid<dim>::create(n_knots);
 }
 };
 
@@ -44,10 +44,10 @@ shared_ptr<CartesianGrid<dim>> uniform(const int n_knots)
 template<int dim>
 void uniform_degree(const int deg, shared_ptr<CartesianGrid<dim>> grid)
 {
-    OUTSTART
-    std::shared_ptr<BSplineSpace<dim>> space = BSplineSpace<dim>::create_nonconst(deg, grid);
-    space->print_info(out);
-    OUTEND
+  OUTSTART
+  std::shared_ptr<BSplineSpace<dim>> space = BSplineSpace<dim>::create_nonconst(deg, grid);
+  space->print_info(out);
+  OUTEND
 }
 
 
@@ -55,33 +55,33 @@ template<int dim>
 void direction_degree(const TensorIndex<dim> &deg,
                       shared_ptr<CartesianGrid<dim>> grid)
 {
-    OUTSTART
-    std::shared_ptr<BSplineSpace<dim>> space = BSplineSpace<dim>::create_nonconst(deg, grid);
-    space->print_info(out);
-    OUTEND
+  OUTSTART
+  std::shared_ptr<BSplineSpace<dim>> space = BSplineSpace<dim>::create_nonconst(deg, grid);
+  space->print_info(out);
+  OUTEND
 }
 
 
 int main()
 {
-    const int deg = 1;
-    const int n_knots = 2;
-    uniform_degree<0>(deg, grid::uniform<0>(n_knots));
-    uniform_degree<1>(deg, grid::uniform<1>(n_knots));
-    uniform_degree<2>(deg, grid::uniform<2>(n_knots));
-    uniform_degree<3>(deg, grid::uniform<3>(n_knots));
+  const int deg = 1;
+  const int n_knots = 2;
+  uniform_degree<0>(deg, grid::uniform<0>(n_knots));
+  uniform_degree<1>(deg, grid::uniform<1>(n_knots));
+  uniform_degree<2>(deg, grid::uniform<2>(n_knots));
+  uniform_degree<3>(deg, grid::uniform<3>(n_knots));
 
-    TensorIndex<0> deg0;
-    direction_degree<0>(deg0, grid::uniform<0>(n_knots));
+  TensorIndex<0> deg0;
+  direction_degree<0>(deg0, grid::uniform<0>(n_knots));
 
-    TensorIndex<1> deg1 = {1};
-    direction_degree<1>(deg1, grid::uniform<1>(n_knots));
+  TensorIndex<1> deg1 = {1};
+  direction_degree<1>(deg1, grid::uniform<1>(n_knots));
 
-    TensorIndex<2> deg2 = {2,3};
-    direction_degree<2>(deg2, grid::uniform<2>(n_knots));
+  TensorIndex<2> deg2 = {2,3};
+  direction_degree<2>(deg2, grid::uniform<2>(n_knots));
 
-    TensorIndex<3> deg3 = {3,4,5};
-    direction_degree<3>(deg3, grid::uniform<3>(n_knots));
+  TensorIndex<3> deg3 = {3,4,5};
+  direction_degree<3>(deg3, grid::uniform<3>(n_knots));
 
-    return 0;
+  return 0;
 }

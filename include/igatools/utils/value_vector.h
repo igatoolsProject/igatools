@@ -43,101 +43,101 @@ IGA_NAMESPACE_OPEN
  */
 template< class T >
 class ValueVector :
-    public ValueContainer<T>
+  public ValueContainer<T>
 {
 public :
-    /**
-     * @name Constructors
-     */
-    ///@{
-    explicit ValueVector() ;
+  /**
+   * @name Constructors
+   */
+  ///@{
+  explicit ValueVector() ;
 
-    /**
-     * Constructor. It builds a vector with num_points elements of type T, initialized using
-     * the default constructor T().
-     */
-    explicit ValueVector(const Index num_points) ;
+  /**
+   * Constructor. It builds a vector with num_points elements of type T, initialized using
+   * the default constructor T().
+   */
+  explicit ValueVector(const Index num_points) ;
 
-    /**
-     * Constructor from a SafeSTLVector<T> object.
-     * Performs a deep copy of the elements in @p vector_in.
-     */
-    explicit ValueVector(const SafeSTLVector<T> &vector_in) ;
-
-
-    /**
-     * Constructor from an initializer list.
-     */
-    ValueVector(const std::initializer_list<T> &list);
-
-    /**
-     * Copy constructor. Performs a deep copy of the content of the ValueVector object @p vector_in
-     */
-    ValueVector(const ValueVector<T> &vector_in) = default;
-
-    /**
-     * Move constructor.
-     */
-    ValueVector(ValueVector<T> &&vector_in) = default;
+  /**
+   * Constructor from a SafeSTLVector<T> object.
+   * Performs a deep copy of the elements in @p vector_in.
+   */
+  explicit ValueVector(const SafeSTLVector<T> &vector_in) ;
 
 
-    /**
-     * Destructor.
-     */
-    ~ValueVector() = default ;
-    ///@}
+  /**
+   * Constructor from an initializer list.
+   */
+  ValueVector(const std::initializer_list<T> &list);
 
-    /**
-     * @name Assignment operators
-     */
-    ///@{
+  /**
+   * Copy constructor. Performs a deep copy of the content of the ValueVector object @p vector_in
+   */
+  ValueVector(const ValueVector<T> &vector_in) = default;
 
-    /**
-     * Copy assignment operator. Performs a deep copy of the content of the ValueVector object.
-     */
-    ValueVector<T> &operator=(const ValueVector<T> &value_vector) = default ;
-
-    /**
-     * Copy assignment operator. Performs a deep copy of the content of the vector object.
-     */
-    ValueVector<T> &operator=(const SafeSTLVector<T> &vector);
-
-    /**
-     * Move assignment operator.
-     */
-    ValueVector<T> &operator=(ValueVector<T> &&value_vector) = default ;
-
-    ///@}
-
-    /**
-     * @name Functions for resizing
-     */
-    ///@{
-    /**
-     * Resize the ValueTable in order to allocate space for
-     * @p num_points points.
-     */
-    void resize(const Size num_points);
+  /**
+   * Move constructor.
+   */
+  ValueVector(ValueVector<T> &&vector_in) = default;
 
 
-    /**
-     * Removes all elements from the ValueVector, leaving the container with a size of 0.
-     */
-    void clear() noexcept;
-    ///@}
+  /**
+   * Destructor.
+   */
+  ~ValueVector() = default ;
+  ///@}
+
+  /**
+   * @name Assignment operators
+   */
+  ///@{
+
+  /**
+   * Copy assignment operator. Performs a deep copy of the content of the ValueVector object.
+   */
+  ValueVector<T> &operator=(const ValueVector<T> &value_vector) = default ;
+
+  /**
+   * Copy assignment operator. Performs a deep copy of the content of the vector object.
+   */
+  ValueVector<T> &operator=(const SafeSTLVector<T> &vector);
+
+  /**
+   * Move assignment operator.
+   */
+  ValueVector<T> &operator=(ValueVector<T> &&value_vector) = default ;
+
+  ///@}
+
+  /**
+   * @name Functions for resizing
+   */
+  ///@{
+  /**
+   * Resize the ValueTable in order to allocate space for
+   * @p num_points points.
+   */
+  void resize(const Size num_points);
+
+
+  /**
+   * Removes all elements from the ValueVector, leaving the container with a size of 0.
+   */
+  void clear() noexcept;
+  ///@}
 
 
 
-    /**
-     * @name Printing info
-     */
-    ///@{
-    /**
-     * Prints the content of the ValueVector on the LogStream @p out.
-     * Its use is intended mainly for testing and debugging purpose.
-     */
-    void print_info(LogStream &out) const ;
-    ///@}
+  /**
+   * @name Printing info
+   */
+  ///@{
+  /**
+   * Prints the content of the ValueVector on the LogStream @p out.
+   * Its use is intended mainly for testing and debugging purpose.
+   */
+  void print_info(LogStream &out) const ;
+  ///@}
 
 } ;
 

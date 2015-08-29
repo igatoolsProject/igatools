@@ -37,37 +37,37 @@ void apply_boundary_values(const std::map<Index,Real> &boundary_values,
                            Vector &rhs,
                            Vector &solution)
 {
-    auto dof = boundary_values.begin();
-    const auto dof_end = boundary_values.end();
-    const auto &graph = matrix.Graph();
-    const auto &map = graph.RowMap();
+  auto dof = boundary_values.begin();
+  const auto dof_end = boundary_values.end();
+  const auto &graph = matrix.Graph();
+  const auto &map = graph.RowMap();
 
-    for (; dof != dof_end; ++dof)
-    {
-        const Index row_id = dof->first;
-        const Index loc_id = map.LID(dof->first);
+  for (; dof != dof_end; ++dof)
+  {
+    const Index row_id = dof->first;
+    const Index loc_id = map.LID(dof->first);
 
-        const Real bc_value = dof->second;
+    const Real bc_value = dof->second;
 
-        int NumIndices;
-        int *Indices;
-        graph.ExtractMyRowView(loc_id, NumIndices, Indices);
+    int NumIndices;
+    int *Indices;
+    graph.ExtractMyRowView(loc_id, NumIndices, Indices);
 
-        int NumEntries;
-        double *Values;
-        matrix.ExtractGlobalRowView(row_id, NumEntries, Values);
+    int NumEntries;
+    double *Values;
+    matrix.ExtractGlobalRowView(row_id, NumEntries, Values);
 
 
-        Real mat_value = NAN;
-        for (int i=0; i<NumEntries; ++i)
-            if (Indices[i] != row_id)
-                Values[i] = 0.;
-            else mat_value = Values[i];
+    Real mat_value = NAN;
+    for (int i=0; i<NumEntries; ++i)
+      if (Indices[i] != row_id)
+        Values[i] = 0.;
+      else mat_value = Values[i];
 
-        Assert(mat_value != NAN, ExcInternalError());
-        rhs[row_id] = bc_value * mat_value;
-        solution[row_id] = bc_value;
-    }
+    Assert(mat_value != NAN, ExcInternalError());
+    rhs[row_id] = bc_value * mat_value;
+    solution[row_id] = bc_value;
+  }
 }
 
 }

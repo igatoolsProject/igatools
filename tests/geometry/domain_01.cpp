@@ -34,30 +34,30 @@
 template<int dim, int codim>
 void domain()
 {
-    OUTSTART
+  OUTSTART
 
-    using Grid = CartesianGrid<dim>;
-    using Function = Function<dim,0,dim+codim,1>;
-    using Domain   = PhysicalDomain<dim, codim>;
+  using Grid = CartesianGrid<dim>;
+  using Function = Function<dim,0,dim+codim,1>;
+  using Domain   = PhysicalDomain<dim, codim>;
 
-    auto grid = Grid::const_create();
-    //auto F = Function::create();
-    std::shared_ptr<const Function> F;
+  auto grid = Grid::const_create();
+  //auto F = Function::create();
+  std::shared_ptr<const Function> F;
 
-    auto dom = Domain::create(grid, F);
+  auto dom = Domain::create(grid, F);
 
-    OUTEND
+  OUTEND
 }
 
 
 int main()
 {
-    domain<0,0>();
-    domain<1,0>();
-    domain<2,0>();
-    domain<3,0>();
-    domain<2,1>();
+  domain<0,0>();
+  domain<1,0>();
+  domain<2,0>();
+  domain<3,0>();
+  domain<2,1>();
 
-    return 0;
+  return 0;
 }
 

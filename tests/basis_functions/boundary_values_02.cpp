@@ -43,34 +43,34 @@
 template<int dim , int range ,int rank>
 void do_test(const int p, const int num_knots = 10)
 {
-    const int sub_dim = dim - 1;
-    out << "Dimension: " << dim << endl;
-    using Space = BSplineSpace<dim, range, rank>;
+  const int sub_dim = dim - 1;
+  out << "Dimension: " << dim << endl;
+  using Space = BSplineSpace<dim, range, rank>;
 
 
-    auto grid = CartesianGrid<dim>::create(num_knots);
-    auto space = Space::create(p, grid) ;
-    auto f = BoundaryFunction<dim>::create(grid);
+  auto grid = CartesianGrid<dim>::create(num_knots);
+  auto space = Space::create(p, grid) ;
+  auto f = BoundaryFunction<dim>::create(grid);
 
 
-    const int n_qpoints = 4;
-    QGauss<sub_dim> quad(n_qpoints);
+  const int n_qpoints = 4;
+  QGauss<sub_dim> quad(n_qpoints);
 
-    const boundary_id dirichlet = 1;
-    grid->set_boundary_id(0, dirichlet);
-    std::set<boundary_id> bdry_ids;
-    bdry_ids.insert(dirichlet);
+  const boundary_id dirichlet = 1;
+  grid->set_boundary_id(0, dirichlet);
+  std::set<boundary_id> bdry_ids;
+  bdry_ids.insert(dirichlet);
 
 
 
-    std::map<Index,Real> boundary_values;
-    space_tools::project_boundary_values<Space>(
-        f, space, quad, bdry_ids,
-        boundary_values);
+  std::map<Index,Real> boundary_values;
+  space_tools::project_boundary_values<Space>(
+    f, space, quad, bdry_ids,
+    boundary_values);
 
-    out << "basis index \t value" << endl;
-    for (auto entry : boundary_values)
-        out << entry.first << "\t" << entry.second << endl;
+  out << "basis index \t value" << endl;
+  for (auto entry : boundary_values)
+    out << entry.first << "\t" << entry.second << endl;
 
 }
 
@@ -79,10 +79,10 @@ void do_test(const int p, const int num_knots = 10)
 int main()
 {
 
-    // do_test<1,1,1>(3);
-    do_test<2,1,1>(3);
-    do_test<3,1,1>(2);
+  // do_test<1,1,1>(3);
+  do_test<2,1,1>(3);
+  do_test<3,1,1>(2);
 
-    return 0;
+  return 0;
 }
 

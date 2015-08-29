@@ -33,26 +33,26 @@
 template <int dim>
 void iterate(const int n_knots = 5)
 {
-    OUTSTART
+  OUTSTART
 
-    auto grid = CartesianGrid<dim>::const_create(n_knots);
+  auto grid = CartesianGrid<dim>::const_create(n_knots);
 
-    for (auto &elem : *grid)
-    {
-        elem.print_info(out);
-    }
+  for (auto &elem : *grid)
+  {
+    elem.print_info(out);
+  }
 
-    OUTEND
+  OUTEND
 }
 
 
 
 int main()
 {
-    iterate<0>();
-    iterate<1>();
-    iterate<2>();
-    iterate<3>();
+  iterate<0>();
+  iterate<1>();
+  iterate<2>();
+  iterate<3>();
 
-    return  0;
+  return  0;
 }

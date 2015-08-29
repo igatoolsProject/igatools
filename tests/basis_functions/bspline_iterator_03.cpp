@@ -37,62 +37,62 @@ using namespace EpetraTools;
 template<int dim, int range, int rank =  1>
 void evaluate_field(const int deg = 1)
 {
-    OUTSTART
+  OUTSTART
 
-    auto grid = CartesianGrid<dim>::create();
+  auto grid = CartesianGrid<dim>::create();
 
-    using Space = BSplineSpace<dim,range,rank>;
-    using ElementHandler = typename Space::ElementHandler;
+  using Space = BSplineSpace<dim,range,rank>;
+  using ElementHandler = typename Space::ElementHandler;
 
-    auto space = Space::create(deg, grid);
-    const auto  num = space->get_num_basis();
-    Epetra_SerialComm comm;
-    Epetra_Map map(num, num, 0, comm);
+  auto space = Space::create(deg, grid);
+  const auto  num = space->get_num_basis();
+  Epetra_SerialComm comm;
+  Epetra_Map map(num, num, 0, comm);
 
-    Vector u(map);
-    {
-        int id = 0 ;
-        u[id++] = 0.0 ;
-        u[id++] = 1.0 ;
+  Vector u(map);
+  {
+    int id = 0 ;
+    u[id++] = 0.0 ;
+    u[id++] = 1.0 ;
 
-        u[id++] = 0.0 ;
-        u[id++] = 1.0 ;
+    u[id++] = 0.0 ;
+    u[id++] = 1.0 ;
 
-        u[id++] = 0.0 ;
-        u[id++] = 0.0 ;
+    u[id++] = 0.0 ;
+    u[id++] = 0.0 ;
 
-        u[id++] = 1.0 ;
-        u[id++] = 1.0 ;
-    }
+    u[id++] = 1.0 ;
+    u[id++] = 1.0 ;
+  }
 
-    QGauss<dim> quad(2) ;
-    const auto flag = ValueFlags::value|ValueFlags::gradient;
-    auto cache1 = ElementHandler::create(space);
-    cache1->reset(flag, quad);
+  QGauss<dim> quad(2) ;
+  const auto flag = ValueFlags::value|ValueFlags::gradient;
+  auto cache1 = ElementHandler::create(space);
+  cache1->reset(flag, quad);
 
-    auto elem = space->begin();
-    cache1->init_element_cache(elem);
-    cache1->fill_element_cache(elem);
+  auto elem = space->begin();
+  cache1->init_element_cache(elem);
+  cache1->fill_element_cache(elem);
 
-    const auto elem_dofs = elem->get_local_to_global(DofProperties::active);
+  const auto elem_dofs = elem->get_local_to_global(DofProperties::active);
 
-    const auto &loc_coef = u.get_local_coeffs(elem_dofs);
-    elem->template linear_combination<_Value,dim>(loc_coef,0,DofProperties::active).print_info(out);
+  const auto &loc_coef = u.get_local_coeffs(elem_dofs);
+  elem->template linear_combination<_Value,dim>(loc_coef,0,DofProperties::active).print_info(out);
 
-    out << endl;
-    elem->template linear_combination<_Gradient,dim>(loc_coef,0,DofProperties::active).print_info(out);
-    out << endl;
+  out << endl;
+  elem->template linear_combination<_Gradient,dim>(loc_coef,0,DofProperties::active).print_info(out);
+  out << endl;
 
-    OUTEND
+  OUTEND
 }
 
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
-    evaluate_field<2,2>();
-    evaluate_field<3,3>();
+  evaluate_field<2,2>();
+  evaluate_field<3,3>();
 
-    return 0;
+  return 0;
 }

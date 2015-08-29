@@ -34,12 +34,12 @@ IGA_NAMESPACE_OPEN
 
 template<class T>
 class SafeSTLSet :
-    public SafeSTLContainer<std::set<T>>
+  public SafeSTLContainer<std::set<T>>
 {
-    using base_t = SafeSTLContainer<std::set<T>>;
+  using base_t = SafeSTLContainer<std::set<T>>;
 public :
-    /** Inherit the constructors of the base class. */
-    using SafeSTLContainer<std::set<T>>::SafeSTLContainer;
+  /** Inherit the constructors of the base class. */
+  using SafeSTLContainer<std::set<T>>::SafeSTLContainer;
 
 };
 

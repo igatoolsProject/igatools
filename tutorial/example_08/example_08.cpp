@@ -32,32 +32,32 @@ using numbers::PI;
 template<int dim>
 void physical_space(const int deg)
 {
-    using RefSpace = BSplineSpace<dim>;
-    using Space    = PhysicalSpace<dim>;
+  using RefSpace = BSplineSpace<dim>;
+  using Space    = PhysicalSpace<dim>;
 
-    BBox<dim> box;
-    box[0] = {{0.5, 1}};
-    for (int i=1; i<dim; ++i)
-        box[i] = {{PI/4,PI/2}};
+  BBox<dim> box;
+  box[0] = {{0.5, 1}};
+  for (int i=1; i<dim; ++i)
+    box[i] = {{PI/4,PI/2}};
 
-    const int n_knots = 3;
-    auto grid = CartesianGrid<dim>::create(box, n_knots);
-    auto ref_space = RefSpace::create(deg, grid);
+  const int n_knots = 3;
+  auto grid = CartesianGrid<dim>::create(box, n_knots);
+  auto ref_space = RefSpace::create(deg, grid);
 
-    using Function = functions::BallFunction<dim>;
-    const auto space = Space::create(
-                           ref_space,
-                           Function::create(grid, IdentityFunction<dim>::create(grid)));
+  using Function = functions::BallFunction<dim>;
+  const auto space = Space::create(
+                       ref_space,
+                       Function::create(grid, IdentityFunction<dim>::create(grid)));
 
-    const int n_plot_points = 2;
-    Writer<dim> writer(space->get_ptr_const_map_func(), n_plot_points);
-    string filename = "ball_geometry-" + to_string(dim) + "d" ;
-    writer.save(filename);
+  const int n_plot_points = 2;
+  Writer<dim> writer(space->get_ptr_const_map_func(), n_plot_points);
+  string filename = "ball_geometry-" + to_string(dim) + "d" ;
+  writer.save(filename);
 }
 
 
 int main()
 {
-    physical_space<2>(1);
-    return  0;
+  physical_space<2>(1);
+  return  0;
 }

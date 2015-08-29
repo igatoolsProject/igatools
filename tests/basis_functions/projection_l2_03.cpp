@@ -39,28 +39,28 @@
 template<int dim , int range=1 ,int rank = 1, LAPack la_pack>
 void test_proj(const int deg, const int n_knots = 4)
 {
-    OUTSTART
+  OUTSTART
 
-    using Space = BSplineSpace<dim,range,rank> ;
-    using RefSpace = ReferenceSpace<dim,range,rank> ;
-    using Func = typename functions::ConstantFunction<dim, 0, range, rank>;
+  using Space = BSplineSpace<dim,range,rank> ;
+  using RefSpace = ReferenceSpace<dim,range,rank> ;
+  using Func = typename functions::ConstantFunction<dim, 0, range, rank>;
 
-    auto grid = CartesianGrid<dim>::create(n_knots);
-    auto space = Space::create(deg, grid);
+  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto space = Space::create(deg, grid);
 
 
-    typename Func::Value val;
-    for (int i=0; i<range; ++i)
-        val[i] = i+3;
+  typename Func::Value val;
+  for (int i=0; i<range; ++i)
+    val[i] = i+3;
 
-    auto f = Func::create(grid, IdentityFunction<dim>::create(grid), val);
+  auto f = Func::create(grid, IdentityFunction<dim>::create(grid), val);
 
-    const int n_qp = 4;
-    QGauss<dim> quad(n_qp);
-    auto proj_func = space_tools::projection_l2<RefSpace,la_pack>(f, space, quad);
-    proj_func->print_info(out);
+  const int n_qp = 4;
+  QGauss<dim> quad(n_qp);
+  auto proj_func = space_tools::projection_l2<RefSpace,la_pack>(f, space, quad);
+  proj_func->print_info(out);
 
-    OUTEND
+  OUTEND
 
 }
 
@@ -69,18 +69,18 @@ void test_proj(const int deg, const int n_knots = 4)
 int main()
 {
 #if defined(USE_TRILINOS)
-    const auto la_pack = LAPack::trilinos_epetra;
+  const auto la_pack = LAPack::trilinos_epetra;
 #elif defined(USE_PETSC)
-    const auto la_pack = LAPack::petsc;
+  const auto la_pack = LAPack::petsc;
 #endif
 
-    test_proj<0,1,1, la_pack>(3);
-    test_proj<1,1,1, la_pack>(3);
-    test_proj<2,1,1, la_pack>(3);
-    test_proj<3,1,1, la_pack>(1);
+  test_proj<0,1,1, la_pack>(3);
+  test_proj<1,1,1, la_pack>(3);
+  test_proj<2,1,1, la_pack>(3);
+  test_proj<3,1,1, la_pack>(1);
 
-    test_proj<2,3,1, la_pack>(1);
+  test_proj<2,3,1, la_pack>(1);
 
-    return 0;
+  return 0;
 }
 

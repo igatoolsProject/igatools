@@ -167,148 +167,148 @@ IGA_NAMESPACE_OPEN
 // as the constness in in the Element type
 template <class Element>
 class GridIteratorBase
-    : public std::iterator<std::random_access_iterator_tag, Element>
+  : public std::iterator<std::random_access_iterator_tag, Element>
 {
 public:
-    /** Type of the accessor. */
-    using AccessorType = Element;
+  /** Type of the accessor. */
+  using AccessorType = Element;
 
-    /** Type of the grid-like container . */
-    using ContainerType = typename Element::ContainerType;
+  /** Type of the grid-like container . */
+  using ContainerType = typename Element::ContainerType;
 
-    /**
-     * Alias for the tensor index.
-     */
-    using ListIt = typename ContainerType::List::iterator;
+  /**
+   * Alias for the tensor index.
+   */
+  using ListIt = typename ContainerType::List::iterator;
 
-    /** @name Constructors & destructor */
-    ///@{
+  /** @name Constructors & destructor */
+  ///@{
 protected:
-    /**
-     * Default constructor. It does nothing but it is needed for the
-     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     * mechanism.
-     */
-    GridIteratorBase() = default;
+  /**
+   * Default constructor. It does nothing but it is needed for the
+   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * mechanism.
+   */
+  GridIteratorBase() = default;
 
 public:
-    /**
-     * Construct an iterator on the elements (with the specified <tt>property</tt>)
-     * over a grid-type container.
-     * @note The <tt>index</tt> parameter is used to place the iterator on the specified element.
-     * @warning If the <tt>index</tt> refers to an element that has not the given <tt>property</tt>
-     * an assertion will be raised (in DEBUG mode).
-     */
-    GridIteratorBase(std::shared_ptr<ContainerType> grid,
-                     const ListIt &index,
-                     const PropId &property);
+  /**
+   * Construct an iterator on the elements (with the specified <tt>property</tt>)
+   * over a grid-type container.
+   * @note The <tt>index</tt> parameter is used to place the iterator on the specified element.
+   * @warning If the <tt>index</tt> refers to an element that has not the given <tt>property</tt>
+   * an assertion will be raised (in DEBUG mode).
+   */
+  GridIteratorBase(std::shared_ptr<ContainerType> grid,
+                   const ListIt &index,
+                   const PropId &property);
 
-    /**
-     * Construct an iterator using the underlying element pointer.
-     * @warning If the <tt>accessor_ptr</tt> refers to an element that has not
-     * the given <tt>property</tt>
-     * an assertion will be raised (in DEBUG mode).
-     */
-    GridIteratorBase(std::shared_ptr<Element> accessor_ptr);
+  /**
+   * Construct an iterator using the underlying element pointer.
+   * @warning If the <tt>accessor_ptr</tt> refers to an element that has not
+   * the given <tt>property</tt>
+   * an assertion will be raised (in DEBUG mode).
+   */
+  GridIteratorBase(std::shared_ptr<Element> accessor_ptr);
 
-    /**
-     * Copy constructor. It may be used with different CopyPolicy (i.e. shallow or deep).
-     *
-     * @note By default it uses the deep copy.
-     */
-    GridIteratorBase(const GridIteratorBase<Element> &it,
-                     const CopyPolicy &copy_policy = CopyPolicy::deep);
+  /**
+   * Copy constructor. It may be used with different CopyPolicy (i.e. shallow or deep).
+   *
+   * @note By default it uses the deep copy.
+   */
+  GridIteratorBase(const GridIteratorBase<Element> &it,
+                   const CopyPolicy &copy_policy = CopyPolicy::deep);
 
-    /** Move constructor. */
-    GridIteratorBase(GridIteratorBase<Element> &&it) = default;
+  /** Move constructor. */
+  GridIteratorBase(GridIteratorBase<Element> &&it) = default;
 
-    /** Destructor */
-    ~GridIteratorBase() = default ;
-    ///@}
+  /** Destructor */
+  ~GridIteratorBase() = default ;
+  ///@}
 
-    /** @name Assignment operators */
-    ///@{
-    /**
-     * Copy assignment operator.
-     * It performs a <b>shallow</b> copy of the Element hold by the CartesianGridIteratorBase.
-     */
-    GridIteratorBase<Element> &
-    operator=(const GridIteratorBase<Element> &it)
-    {
-        elem_ = it.elem_;
-        return *this;
-    }
+  /** @name Assignment operators */
+  ///@{
+  /**
+   * Copy assignment operator.
+   * It performs a <b>shallow</b> copy of the Element hold by the CartesianGridIteratorBase.
+   */
+  GridIteratorBase<Element> &
+  operator=(const GridIteratorBase<Element> &it)
+  {
+    elem_ = it.elem_;
+    return *this;
+  }
 
-    /** Move assignment operator. */
-    GridIteratorBase<Element> &
-    operator=(GridIteratorBase<Element> &&) = default;
-    ///@}
+  /** Move assignment operator. */
+  GridIteratorBase<Element> &
+  operator=(GridIteratorBase<Element> &&) = default;
+  ///@}
 
-    /** @name Comparison operators */
-    ///@{
-    /**
-     * Compares for equality.
-     * @note Internally uses the equality comparison operator implemented by the Element object.
-     */
-    bool operator== (const GridIteratorBase &) const;
+  /** @name Comparison operators */
+  ///@{
+  /**
+   * Compares for equality.
+   * @note Internally uses the equality comparison operator implemented by the Element object.
+   */
+  bool operator== (const GridIteratorBase &) const;
 
-    /**
-     * Compares for inequality.
-     * @note Internally uses the inequality comparison operator implemented by the Element object.
-     */
-    bool operator!= (const GridIteratorBase &) const;
+  /**
+   * Compares for inequality.
+   * @note Internally uses the inequality comparison operator implemented by the Element object.
+   */
+  bool operator!= (const GridIteratorBase &) const;
 
-    /**
-     * "Greather than" comparison operator.
-     *
-     * @note Internally uses the "greater than" comparison operator implemented by the Element object.
-     */
-    bool operator> (const GridIteratorBase &) const;
+  /**
+   * "Greather than" comparison operator.
+   *
+   * @note Internally uses the "greater than" comparison operator implemented by the Element object.
+   */
+  bool operator> (const GridIteratorBase &) const;
 
-    /**
-     * "Smaller than" comparison operator.
-     *
-     * @note Internally uses the "smaller than" comparison operator implemented by the Element object.
-     */
-    bool operator< (const GridIteratorBase &) const;
+  /**
+   * "Smaller than" comparison operator.
+   *
+   * @note Internally uses the "smaller than" comparison operator implemented by the Element object.
+   */
+  bool operator< (const GridIteratorBase &) const;
 
-    ///@}
+  ///@}
 
-    /**
-     *  Prefix <tt>++</tt> operator: <tt>++i</tt>. This
-     *  operator advances the iterator to
-     *  the next element and returns
-     *  a reference to <tt>*this</tt>.
-     */
-    GridIteratorBase<Element> &operator++();
-    ///@}
+  /**
+   *  Prefix <tt>++</tt> operator: <tt>++i</tt>. This
+   *  operator advances the iterator to
+   *  the next element and returns
+   *  a reference to <tt>*this</tt>.
+   */
+  GridIteratorBase<Element> &operator++();
+  ///@}
 
 protected:
-    /**
-     * Pointer to the object holding the Real data.
-     * @note We use a pointer instead of a reference object because the type Element
-     * can be a pure abstract class (and therefore have some virtual functions)
-     * that must be resolved at run-time.
-     */
-    std::shared_ptr<Element> elem_ ;
+  /**
+   * Pointer to the object holding the Real data.
+   * @note We use a pointer instead of a reference object because the type Element
+   * can be a pure abstract class (and therefore have some virtual functions)
+   * that must be resolved at run-time.
+   */
+  std::shared_ptr<Element> elem_ ;
 
 #ifdef SERIALIZATION
 private:
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        using namespace boost::serialization;
-        ar &make_nvp("accessor_",elem_);
-    }
-    ///@}
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version)
+  {
+    using namespace boost::serialization;
+    ar &make_nvp("accessor_",elem_);
+  }
+  ///@}
 #endif // SERIALIZATION
 };
 
@@ -325,46 +325,46 @@ private:
  */
 template <class Element>
 class GridIterator
-    :
-    public GridIteratorBase<Element>
+  :
+  public GridIteratorBase<Element>
 {
 public:
-    /** Type of the accessor. */
-    using AccessorType = Element;
+  /** Type of the accessor. */
+  using AccessorType = Element;
 
-    /** Type of the grid-like container . */
-    using ContainerType = typename Element::ContainerType;
+  /** Type of the grid-like container . */
+  using ContainerType = typename Element::ContainerType;
 
-    /** The constructors are inherited from the parent class CartesianGridIteratorBase */
-    using GridIteratorBase<Element>::GridIteratorBase;
+  /** The constructors are inherited from the parent class CartesianGridIteratorBase */
+  using GridIteratorBase<Element>::GridIteratorBase;
 
 
-    /** @name Dereferencing operators */
-    ///@{
-    /**
-     *  Dereferencing operator, returns a
-     *  reference to the Element object.
-     */
-    Element &operator*();
+  /** @name Dereferencing operators */
+  ///@{
+  /**
+   *  Dereferencing operator, returns a
+   *  reference to the Element object.
+   */
+  Element &operator*();
 
-    /**
-     *  Dereferencing operator, returns a
-     *  pointer to the Element object.
-     */
-    Element *operator->();
+  /**
+   *  Dereferencing operator, returns a
+   *  pointer to the Element object.
+   */
+  Element *operator->();
 
-    /**
-     *  Dereferencing operator, returns a
-     *  const reference to the Element object.
-     */
-    const Element &operator*() const ;
+  /**
+   *  Dereferencing operator, returns a
+   *  const reference to the Element object.
+   */
+  const Element &operator*() const ;
 
-    /**
-     *  Dereferencing operator, returns a
-     *  pointer to the const Element object.
-     */
-    const Element *operator->() const;
-    ///@}
+  /**
+   *  Dereferencing operator, returns a
+   *  pointer to the const Element object.
+   */
+  const Element *operator->() const;
+  ///@}
 
 };
 

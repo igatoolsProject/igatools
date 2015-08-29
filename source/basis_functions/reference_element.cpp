@@ -33,39 +33,39 @@ ReferenceElement<dim, range, rank>::
 ReferenceElement(const std::shared_ptr<ConstSpace> space,
                  const ListIt &index,
                  const PropId &prop)
-    :
-    parent_t(space,index,prop),
-    space_(space)
+  :
+  parent_t(space,index,prop),
+  space_(space)
 {
 //    Assert(this->get_space() != nullptr,ExcNullPtr());
 
-    //-------------------------------------------------
-    const auto &degree_table = space->get_degree_table();
-    TensorSizeTable n_basis(degree_table.get_comp_map());
-    for (auto comp : degree_table.get_active_components_id())
-        n_basis[comp] = TensorSize<dim>(degree_table[comp]+1);
+  //-------------------------------------------------
+  const auto &degree_table = space->get_degree_table();
+  TensorSizeTable n_basis(degree_table.get_comp_map());
+  for (auto comp : degree_table.get_active_components_id())
+    n_basis[comp] = TensorSize<dim>(degree_table[comp]+1);
 
-    n_basis_direction_ = n_basis;
-    //-------------------------------------------------
-
-
-    //----------------------------------------------------------------
-    comp_offset_[0] = 0;
-    for (int comp = 1; comp < Space::n_components; ++comp)
-        comp_offset_[comp] = comp_offset_[comp-1] +
-                             this->n_basis_direction_.get_component_size(comp-1);
-    //----------------------------------------------------------------
+  n_basis_direction_ = n_basis;
+  //-------------------------------------------------
 
 
-    //----------------------------------------------------------------
-    for (int comp : basis_functions_indexer_.get_active_components_id())
-    {
-        // creating the objects for fast conversion from flat-to-tensor indexing
-        // (in practice it is an hash-table from flat to tensor indices)
-        basis_functions_indexer_[comp] =
-            std::shared_ptr<Indexer>(new Indexer(this->n_basis_direction_[comp]));
-    }
-    //----------------------------------------------------------------
+  //----------------------------------------------------------------
+  comp_offset_[0] = 0;
+  for (int comp = 1; comp < Space::n_components; ++comp)
+    comp_offset_[comp] = comp_offset_[comp-1] +
+                         this->n_basis_direction_.get_component_size(comp-1);
+  //----------------------------------------------------------------
+
+
+  //----------------------------------------------------------------
+  for (int comp : basis_functions_indexer_.get_active_components_id())
+  {
+    // creating the objects for fast conversion from flat-to-tensor indexing
+    // (in practice it is an hash-table from flat to tensor indices)
+    basis_functions_indexer_[comp] =
+      std::shared_ptr<Indexer>(new Indexer(this->n_basis_direction_[comp]));
+  }
+  //----------------------------------------------------------------
 };
 
 
@@ -74,11 +74,11 @@ template <int dim, int range, int rank>
 ReferenceElement<dim, range, rank>::
 ReferenceElement(const ReferenceElement<dim,range,rank> &elem,
                  const iga::CopyPolicy &copy_policy)
-    :
-    parent_t(elem,copy_policy),
-    n_basis_direction_(elem.n_basis_direction_),
-    comp_offset_(elem.comp_offset_),
-    basis_functions_indexer_(elem.basis_functions_indexer_)
+  :
+  parent_t(elem,copy_policy),
+  n_basis_direction_(elem.n_basis_direction_),
+  comp_offset_(elem.comp_offset_),
+  basis_functions_indexer_(elem.basis_functions_indexer_)
 {};
 
 
@@ -90,7 +90,7 @@ int
 ReferenceElement<dim, range, rank>::
 get_num_basis_comp(const int i) const
 {
-    return this->n_basis_direction_[i].flat_size();
+  return this->n_basis_direction_[i].flat_size();
 }
 
 
@@ -100,7 +100,7 @@ auto
 ReferenceElement<dim, range, rank>::
 get_basis_offset() const -> OffsetTable
 {
-    return this->comp_offset_;
+  return this->comp_offset_;
 }
 
 
@@ -111,10 +111,10 @@ void
 ReferenceElement<dim, range, rank>::
 print_info(LogStream &out) const
 {
-    parent_t::print_info(out);
-    out.begin_item("Number of element basis: ");
-    n_basis_direction_.print_info(out);
-    out.end_item();
+  parent_t::print_info(out);
+  out.begin_item("Number of element basis: ");
+  n_basis_direction_.print_info(out);
+  out.end_item();
 }
 
 
@@ -124,7 +124,7 @@ Size
 ReferenceElement<dim, range, rank>::
 get_max_num_basis() const
 {
-    return n_basis_direction_.total_dimension();
+  return n_basis_direction_.total_dimension();
 }
 
 
@@ -133,7 +133,7 @@ auto
 ReferenceElement<dim, range, rank>::
 get_element_w_measures() const -> ValueVector<Real>
 {
-    return this->template get_w_measures<dim>(0);
+  return this->template get_w_measures<dim>(0);
 }
 
 
@@ -142,7 +142,7 @@ auto
 ReferenceElement<dim, range, rank>::
 get_space() const -> std::shared_ptr<const Space>
 {
-    return space_;
+  return space_;
 }
 
 
@@ -153,18 +153,18 @@ void
 ReferenceElement<dim, range, rank>::
 serialize(Archive &ar, const unsigned int version)
 {
-    ar &boost::serialization::make_nvp("ReferenceElement_base_t_",
-                                       boost::serialization::base_object<SpaceElement<dim,0,range,rank,Transformation::h_grad>>(*this));
+  ar &boost::serialization::make_nvp("ReferenceElement_base_t_",
+                                     boost::serialization::base_object<SpaceElement<dim,0,range,rank,Transformation::h_grad>>(*this));
 
 
-    ar &boost::serialization::make_nvp("n_basis_direction_",n_basis_direction_);
-    ar &boost::serialization::make_nvp("comp_offset_",comp_offset_);
-    ar &boost::serialization::make_nvp("basis_functions_indexer_",basis_functions_indexer_);
+  ar &boost::serialization::make_nvp("n_basis_direction_",n_basis_direction_);
+  ar &boost::serialization::make_nvp("comp_offset_",comp_offset_);
+  ar &boost::serialization::make_nvp("basis_functions_indexer_",basis_functions_indexer_);
 
-    auto non_const_space = std::const_pointer_cast<Space>(space_);
-    ar &boost::serialization::make_nvp("space_",non_const_space);
-    space_ = non_const_space;
-    Assert(space_ != nullptr,ExcNullPtr());
+  auto non_const_space = std::const_pointer_cast<Space>(space_);
+  ar &boost::serialization::make_nvp("space_",non_const_space);
+  space_ = non_const_space;
+  Assert(space_ != nullptr,ExcNullPtr());
 }
 #endif // SERIALIZATION
 

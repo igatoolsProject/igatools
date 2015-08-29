@@ -37,15 +37,15 @@ void
 identity_map(const int n_knots, const int deg, const string prop=DofProperties::active,
              const bool use_bdry=true)
 {
-    OUTSTART
+  OUTSTART
 
-    auto grid  = CartesianGrid<dim>::create(n_knots);
-    auto map = IdentityFunction<dim>::create(grid);
-    auto space = create_space<dim>(grid, map, deg);
-    const int n_qp = 1;
-    elem_values<dim, sub_dim>(space, n_qp, prop, use_bdry);
+  auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto map = IdentityFunction<dim>::create(grid);
+  auto space = create_space<dim>(grid, map, deg);
+  const int n_qp = 1;
+  elem_values<dim, sub_dim>(space, n_qp, prop, use_bdry);
 
-    OUTEND
+  OUTEND
 }
 
 
@@ -53,12 +53,12 @@ template <int dim>
 void
 dim_test()
 {
-    for (int n_knots=2; n_knots<4; ++n_knots)
-        for (int deg=1; deg<3; ++deg)
-        {
-            identity_map<dim,dim>(n_knots, deg);
-            identity_map<dim, dim-1>(n_knots, deg);
-        }
+  for (int n_knots=2; n_knots<4; ++n_knots)
+    for (int deg=1; deg<3; ++deg)
+    {
+      identity_map<dim,dim>(n_knots, deg);
+      identity_map<dim, dim-1>(n_knots, deg);
+    }
 }
 
 
@@ -66,28 +66,28 @@ template<int dim, int sub_dim = dim>
 void
 identity_map_prop(const int n_knots, const int deg, const bool use_bdry=true)
 {
-    OUTSTART
+  OUTSTART
 
-    auto grid  = CartesianGrid<dim>::create(n_knots);
-    auto map = IdentityFunction<dim>::create(grid);
-    auto space = create_space_prop<dim>(grid, map, deg);
-    const int n_qp = 1;
-    elem_values<dim, sub_dim>(space, n_qp, DofProp::interior, use_bdry);
-    elem_values<dim, sub_dim>(space, n_qp, DofProp::dirichlet, use_bdry);
-    elem_values<dim, sub_dim>(space, n_qp, DofProp::neumman, use_bdry);
-    OUTEND
+  auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto map = IdentityFunction<dim>::create(grid);
+  auto space = create_space_prop<dim>(grid, map, deg);
+  const int n_qp = 1;
+  elem_values<dim, sub_dim>(space, n_qp, DofProp::interior, use_bdry);
+  elem_values<dim, sub_dim>(space, n_qp, DofProp::dirichlet, use_bdry);
+  elem_values<dim, sub_dim>(space, n_qp, DofProp::neumman, use_bdry);
+  OUTEND
 }
 
 
 int main()
 {
-    dim_test<1>();
-    dim_test<2>();
-    dim_test<3>();
+  dim_test<1>();
+  dim_test<2>();
+  dim_test<3>();
 
-    identity_map_prop<1,1>(2,1,true);
-    identity_map_prop<1,0>(3,1,false);
-    identity_map_prop<2,1>(3,2,false);
+  identity_map_prop<1,1>(2,1,true);
+  identity_map_prop<1,0>(3,1,false);
+  identity_map_prop<2,1>(3,2,false);
 
-    return 0;
+  return 0;
 }

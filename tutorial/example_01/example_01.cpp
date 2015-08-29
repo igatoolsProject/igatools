@@ -33,30 +33,30 @@ using namespace std;
 
 int main()
 {
-    const int dim = 2;
+  const int dim = 2;
 
-    // [grid]
-    const int n_knots = 3;
-    cout << "Creating a " << dim << " dimensional cartesian grid" << endl;
-    auto grid = CartesianGrid<dim>::create(n_knots);
-    cout << "Number of elements: ";
-    cout << grid->get_num_all_elems() << endl;
-    // [grid]
+  // [grid]
+  const int n_knots = 3;
+  cout << "Creating a " << dim << " dimensional cartesian grid" << endl;
+  auto grid = CartesianGrid<dim>::create(n_knots);
+  cout << "Number of elements: ";
+  cout << grid->get_num_all_elems() << endl;
+  // [grid]
 
-    // [plot_grid]
-    Writer<dim> output(grid);
-    output.save("grid");
-    // [plot_grid]
+  // [plot_grid]
+  Writer<dim> output(grid);
+  output.save("grid");
+  // [plot_grid]
 
-    // [space]
-    const int degree = 2;
-    cout << "Creating a spline space of degree " << degree << endl;
-    auto space = BSplineSpace<dim>::create(degree, grid);
-    cout << "Number of basis functions: ";
-    cout << space->get_num_basis() << endl;
-    // [space]
+  // [space]
+  const int degree = 2;
+  cout << "Creating a spline space of degree " << degree << endl;
+  auto space = BSplineSpace<dim>::create(degree, grid);
+  cout << "Number of basis functions: ";
+  cout << space->get_num_basis() << endl;
+  // [space]
 
-    return 0;
+  return 0;
 }
 
 

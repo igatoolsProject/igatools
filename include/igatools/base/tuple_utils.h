@@ -61,9 +61,9 @@ template<template <int> class DataIndexed,int I_min,std::size_t... I>
 auto
 make_fusion_map_indexed_data(std::index_sequence<I...>)
 {
-    return boost::fusion::map<
-           boost::fusion::pair<Topology<I+I_min>,DataIndexed<I+I_min> > ...>(
-               boost::fusion::pair<Topology<I+I_min>,DataIndexed<I+I_min> >() ...);
+  return boost::fusion::map<
+         boost::fusion::pair<Topology<I+I_min>,DataIndexed<I+I_min> > ...>(
+           boost::fusion::pair<Topology<I+I_min>,DataIndexed<I+I_min> >() ...);
 }
 
 /**
@@ -101,48 +101,48 @@ using QuadPtr = std::shared_ptr<const Quadrature<dim>>;
 
 template<int dim>
 class QuadList
-    : public DataVaryingId<QuadPtr, (num_sub_elem <= dim ? dim - num_sub_elem : dim), (num_sub_elem <= dim ? num_sub_elem+1 : 1)>
+  : public DataVaryingId<QuadPtr, (num_sub_elem <= dim ? dim - num_sub_elem : dim), (num_sub_elem <= dim ? num_sub_elem+1 : 1)>
 {
 public:
-    template<int sdim>
-    QuadPtr<sdim> &get_quad()
-    {
-        return boost::fusion::at_key<Topology<sdim>>(*this);
-    }
+  template<int sdim>
+  QuadPtr<sdim> &get_quad()
+  {
+    return boost::fusion::at_key<Topology<sdim>>(*this);
+  }
 
 private:
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version)
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version)
+  {
+    using namespace boost::serialization;
+    using namespace boost::fusion;
+    for_each(*this,
+             [&](auto & quad_same_topology_dim)
     {
-        using namespace boost::serialization;
-        using namespace boost::fusion;
-        for_each(*this,
-                 [&](auto & quad_same_topology_dim)
-        {
 
 
-            using PairType = typename std::remove_reference<decltype(quad_same_topology_dim)>::type;
-            using SubDimType = typename PairType::first_type;
-            std::string tag_name = "quad_" + std::to_string(SubDimType::value);
-            auto non_const = std::const_pointer_cast<Quadrature<SubDimType::value>>(quad_same_topology_dim.second);
+      using PairType = typename std::remove_reference<decltype(quad_same_topology_dim)>::type;
+      using SubDimType = typename PairType::first_type;
+      std::string tag_name = "quad_" + std::to_string(SubDimType::value);
+      auto non_const = std::const_pointer_cast<Quadrature<SubDimType::value>>(quad_same_topology_dim.second);
 
-            ar &make_nvp(tag_name.c_str(), non_const);
-            quad_same_topology_dim.second = non_const;
-            Assert(quad_same_topology_dim.second != nullptr, ExcNullPtr());
+      ar &make_nvp(tag_name.c_str(), non_const);
+      quad_same_topology_dim.second = non_const;
+      Assert(quad_same_topology_dim.second != nullptr, ExcNullPtr());
 
-        }
-                );
+    }
+            );
 
-    };
-    ///@}
+  };
+  ///@}
 };
 
 IGA_NAMESPACE_CLOSE

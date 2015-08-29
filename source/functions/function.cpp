@@ -29,11 +29,11 @@ IGA_NAMESPACE_OPEN
 template<int dim_, int codim_, int range_, int rank_ >
 Function<dim_, codim_, range_, rank_ >::
 Function(std::shared_ptr<const DomainType> phys_dom)
-    :
-    phys_domain_(phys_dom)
-    // object_id_(UniqueIdGenerator::get_unique_id())
+  :
+  phys_domain_(phys_dom)
+  // object_id_(UniqueIdGenerator::get_unique_id())
 {
-    Assert(phys_dom != nullptr,ExcNullPtr());
+  Assert(phys_dom != nullptr,ExcNullPtr());
 }
 
 
@@ -41,8 +41,8 @@ Function(std::shared_ptr<const DomainType> phys_dom)
 template<int dim_, int codim_, int range_, int rank_>
 Function<dim_, codim_, range_, rank_ >::
 Function(const self_t &func)
-    :
-    phys_domain_(func.phys_domain_)
+  :
+  phys_domain_(func.phys_domain_)
 {}
 
 
@@ -53,8 +53,8 @@ Function<dim_, codim_, range_, rank_ >::
 set_flags(const topology_variant &sdim,
           const Flags &flag)
 {
-    auto disp = SetFlagsDispatcher(flag, flags_);
-    boost::apply_visitor(disp, sdim);
+  auto disp = SetFlagsDispatcher(flag, flags_);
+  boost::apply_visitor(disp, sdim);
 }
 
 
@@ -65,8 +65,8 @@ Function<dim_, codim_, range_, rank_ >::
 init_cache(ElementAccessor &elem,
            eval_pts_variant &quad) const
 {
-    auto disp = InitCacheDispatcher(flags_, elem);
-    boost::apply_visitor(disp, quad);
+  auto disp = InitCacheDispatcher(flags_, elem);
+  boost::apply_visitor(disp, quad);
 }
 
 
@@ -79,8 +79,8 @@ fill_cache(const topology_variant &sdim,
            const int s_id) const
 {
 #if 0
-    auto fill_dispatcher = FillCacheDispatcher(s_id, *this, elem);
-    boost::apply_visitor(fill_dispatcher, sdim);
+  auto fill_dispatcher = FillCacheDispatcher(s_id, *this, elem);
+  boost::apply_visitor(fill_dispatcher, sdim);
 #endif
 }
 
@@ -92,7 +92,7 @@ void
 Function<dim_, codim_, range_, rank_ >::
 init_cache(ElementIterator &elem, const topology_variant &sdim) const
 {
-    init_cache(*elem, k);
+  init_cache(*elem, k);
 }
 
 
@@ -101,7 +101,7 @@ void
 Function<dim_, codim_, range_, rank_ >::
 init_element_cache(ElementAccessor &elem) const
 {
-    this->init_cache(elem, Topology<dim_>());
+  this->init_cache(elem, Topology<dim_>());
 }
 
 
@@ -110,7 +110,7 @@ void
 Function<dim_, codim_, range_, rank_ >::
 init_element_cache(ElementIterator &elem) const
 {
-    this->init_cache(*elem, Topology<dim_>());
+  this->init_cache(*elem, Topology<dim_>());
 }
 #endif
 
@@ -122,7 +122,7 @@ void
 Function<dim_, codim_, range_, rank_ >::
 fill_cache(ElementIterator &elem, const topology_variant &sdim, const int j) const
 {
-    this->fill_cache(*elem, k, j);
+  this->fill_cache(*elem, k, j);
 }
 
 
@@ -131,7 +131,7 @@ void
 Function<dim_, codim_, range_, rank_ >::
 fill_element_cache(ElementAccessor &elem) const
 {
-    this->fill_cache(elem, Topology<dim_>(),0);
+  this->fill_cache(elem, Topology<dim_>(),0);
 }
 
 
@@ -140,7 +140,7 @@ void
 Function<dim_, codim_, range_, rank_ >::
 fill_element_cache(ElementIterator &elem) const
 {
-    this->fill_cache(*elem, Topology<dim_>(),0);
+  this->fill_cache(*elem, Topology<dim_>(),0);
 }
 #endif
 
@@ -163,9 +163,9 @@ auto
 Function<dim_, codim_, range_, rank_ >::
 begin(const PropId &prop) -> ElementIterator
 {
-    return ElementIterator(this->shared_from_this(),
-    phys_domain_->get_grid()->get_element_property(prop).begin(),
-    prop);
+  return ElementIterator(this->shared_from_this(),
+  phys_domain_->get_grid()->get_element_property(prop).begin(),
+  prop);
 }
 
 
@@ -175,9 +175,9 @@ auto
 Function<dim_, codim_, range_, rank_ >::
 end(const PropId &prop) -> ElementIterator
 {
-    return ElementIterator(this->shared_from_this(),
-    phys_domain_->get_grid()->get_element_property(prop).end(),
-    prop);
+  return ElementIterator(this->shared_from_this(),
+  phys_domain_->get_grid()->get_element_property(prop).end(),
+  prop);
 }
 
 
@@ -187,11 +187,11 @@ Function<dim_, codim_, range_, rank_ >::
 create_element(const ListIt &index, const PropId &prop) const
 -> std::shared_ptr<ConstElementAccessor>
 {
-    using Elem = ConstElementAccessor;
-    auto elem = std::make_shared<Elem>(this->shared_from_this(), index, prop);
-    Assert(elem != nullptr,ExcNullPtr());
+  using Elem = ConstElementAccessor;
+  auto elem = std::make_shared<Elem>(this->shared_from_this(), index, prop);
+  Assert(elem != nullptr,ExcNullPtr());
 
-    return elem;
+  return elem;
 }
 
 
@@ -202,7 +202,7 @@ Index
 Function<dim_, codim_, range_, rank_ >::
 get_object_id() const
 {
-    return object_id_;
+  return object_id_;
 }
 
 
@@ -211,7 +211,7 @@ const std::string &
 Function<dim_, codim_, range_, rank_ >::
 get_name() const
 {
-    return name_;
+  return name_;
 }
 
 template<int dim_, int codim_, int range_, int rank_>
@@ -219,7 +219,7 @@ void
 Function<dim_, codim_, range_, rank_ >::
 set_name(const std::string &name)
 {
-    name_ = name;
+  name_ = name;
 }
 
 
@@ -228,18 +228,18 @@ void
 Function<dim_, codim_, range_, rank_ >::
 serialize(Archive &ar, const unsigned int version)
 {
-    ar &boost::serialization::make_nvp("grid_elem_handler_",
-                                       boost::serialization::base_object<GridElementHandler<dim_>>(*this));
+  ar &boost::serialization::make_nvp("grid_elem_handler_",
+                                     boost::serialization::base_object<GridElementHandler<dim_>>(*this));
 
-    ar &boost::serialization::make_nvp("object_id_",object_id_);
-    ar &boost::serialization::make_nvp("name_",name_);
+  ar &boost::serialization::make_nvp("object_id_",object_id_);
+  ar &boost::serialization::make_nvp("name_",name_);
 
-    ar &boost::serialization::make_nvp("flags_",flags_);
+  ar &boost::serialization::make_nvp("flags_",flags_);
 
-    ar &boost::serialization::make_nvp("grid_",grid_);
+  ar &boost::serialization::make_nvp("grid_",grid_);
 
 #ifdef MESH_REFINEMENT
-    ar &boost::serialization::make_nvp("function_previous_refinement_",function_previous_refinement_);
+  ar &boost::serialization::make_nvp("function_previous_refinement_",function_previous_refinement_);
 #endif // MESH_REFINEMENT
 }
 #endif // SERIALIZATION

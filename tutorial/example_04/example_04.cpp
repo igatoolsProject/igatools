@@ -39,56 +39,56 @@ LogStream out;
 template <int dim>
 void plot_basis(const int deg)
 {
-    using Space  = BSplineSpace<dim>;
-    using Func = IgFunction<dim,0,1,1>;
+  using Space  = BSplineSpace<dim>;
+  using Func = IgFunction<dim,0,1,1>;
 
-    const int n_knots = deg + 2;
-    auto grid  = CartesianGrid<dim>::create(n_knots);
-    auto space = Space::create(deg, grid);
-    // [plot function]
+  const int n_knots = deg + 2;
+  auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto space = Space::create(deg, grid);
+  // [plot function]
 
-    // [init vec]
-    auto coeffs = EpetraTools::create_vector(*space,DofProperties::active,Epetra_SerialComm());
-    // [init vec]
+  // [init vec]
+  auto coeffs = EpetraTools::create_vector(*space,DofProperties::active,Epetra_SerialComm());
+  // [init vec]
 
-    // [tensor to flat]
-    TensorIndex<dim> basis_t_index(deg);
-    auto basis_index = space->get_global_dof_id(basis_t_index, 0);
-    (*coeffs)[basis_index] = 1.;
-    // [tensor to flat]
+  // [tensor to flat]
+  TensorIndex<dim> basis_t_index(deg);
+  auto basis_index = space->get_global_dof_id(basis_t_index, 0);
+  (*coeffs)[basis_index] = 1.;
+  // [tensor to flat]
 
-    // [print vector]
-    out << "Coefficient vector of: " << basis_index << "-th basis" << endl;
-    coeffs->print_info(out);
-    out << endl;
-    // [print vector]
+  // [print vector]
+  out << "Coefficient vector of: " << basis_index << "-th basis" << endl;
+  coeffs->print_info(out);
+  out << endl;
+  // [print vector]
 
-    // [plot basis]
-    out << "Saving basis plot" << endl;
-    const int n_plot_points = 5;
-    Writer<dim> output(IdentityFunction<dim>::create(grid), n_plot_points);
+  // [plot basis]
+  out << "Saving basis plot" << endl;
+  const int n_plot_points = 5;
+  Writer<dim> output(IdentityFunction<dim>::create(grid), n_plot_points);
 
-    string field_name = "basis " + to_string(basis_index);
+  string field_name = "basis " + to_string(basis_index);
 
-    auto basis = Func::create(space, coeffs);
-    output.template add_field<1,1>(basis, field_name);
+  auto basis = Func::create(space, coeffs);
+  output.template add_field<1,1>(basis, field_name);
 
-    string file_name = "bspline_basis-" + to_string(dim) + "d";
-    output.save(file_name);
-    // [plot basis]
+  string file_name = "bspline_basis-" + to_string(dim) + "d";
+  output.save(file_name);
+  // [plot basis]
 
 }
 
 
 int main()
 {
-    const int deg = 2;
+  const int deg = 2;
 
-    plot_basis<1>(deg);
-    plot_basis<2>(deg);
-    plot_basis<3>(deg);
+  plot_basis<1>(deg);
+  plot_basis<2>(deg);
+  plot_basis<3>(deg);
 
-    return 0;
+  return 0;
 }
 
 

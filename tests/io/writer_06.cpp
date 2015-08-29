@@ -40,29 +40,29 @@
 template <int dim>
 void write_sphere()
 {
-    OUTSTART
+  OUTSTART
 
-    using Function = functions::SphereFunction<dim>;
+  using Function = functions::SphereFunction<dim>;
 
-    auto grid = CartesianGrid<dim>::create();
+  auto grid = CartesianGrid<dim>::create();
 
-    auto F = Function::create(grid, IdentityFunction<dim>::create(grid));
+  auto F = Function::create(grid, IdentityFunction<dim>::create(grid));
 
-    const int codim = 1;
-    Writer<dim, codim> writer(F, 4);
-    writer.save("output");
-    writer.print_info(out);
+  const int codim = 1;
+  Writer<dim, codim> writer(F, 4);
+  writer.save("output");
+  writer.print_info(out);
 
-    OUTEND
+  OUTEND
 }
 
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
-    write_sphere<1>();
-    write_sphere<2>();
+  write_sphere<1>();
+  write_sphere<2>();
 
-    return 0;
+  return 0;
 }

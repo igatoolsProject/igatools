@@ -40,41 +40,41 @@
 template<int dim, int codim=0>
 void using_const_space(shared_ptr<const IgFunction<dim,0,1,1>> fun)
 {
-    OUTSTART
+  OUTSTART
 
-    auto space = fun->get_ig_space();
-    Epetra_SerialComm comm;
-    auto matrix = EpetraTools::create_matrix(*space,DofProperties::active,comm);
+  auto space = fun->get_ig_space();
+  Epetra_SerialComm comm;
+  auto matrix = EpetraTools::create_matrix(*space,DofProperties::active,comm);
 
-    OUTEND
+  OUTEND
 }
 
 template<int dim, int codim=0>
 void using_const_function(shared_ptr<const Function<dim>> fun)
 {
-    OUTSTART
-    using Func =  functions::ConstantFunction<dim, codim, 1>;
-    typename Func::Value val {0.};
-    auto grid = fun->get_grid();
-    auto zero = Func::create(grid, IdentityFunction<dim>::create(grid), val);
-    OUTEND
+  OUTSTART
+  using Func =  functions::ConstantFunction<dim, codim, 1>;
+  typename Func::Value val {0.};
+  auto grid = fun->get_grid();
+  auto zero = Func::create(grid, IdentityFunction<dim>::create(grid), val);
+  OUTEND
 }
 
 int main()
 {
-    const int dim = 2;
-    using Space = BSplineSpace<dim>;
+  const int dim = 2;
+  using Space = BSplineSpace<dim>;
 
-    auto grid = CartesianGrid<dim>::create(5);
-    auto space = Space::create(1, grid);
+  auto grid = CartesianGrid<dim>::create(5);
+  auto space = Space::create(1, grid);
 
-    Epetra_SerialComm comm;
-    auto coeff = EpetraTools::create_vector(*space, DofProperties::active,comm);
+  Epetra_SerialComm comm;
+  auto coeff = EpetraTools::create_vector(*space, DofProperties::active,comm);
 
-    auto fun = IgFunction<dim,0,1,1>::create(space, coeff);
+  auto fun = IgFunction<dim,0,1,1>::create(space, coeff);
 
-    using_const_space<2>(fun);
-    using_const_function<2>(fun);
+  using_const_space<2>(fun);
+  using_const_function<2>(fun);
 
-    return 0;
+  return 0;
 }

@@ -40,55 +40,55 @@ template <int der, int dim, int range=1, int rank=1>
 void elem_derivatives(const int n_knots,
                       typename SplineSpace<dim,range,rank>::DegreeTable &deg)
 {
-    OUTSTART
+  OUTSTART
 
-    using Space = BSplineSpace<dim, range, rank>;
-    auto grid  = CartesianGrid<dim>::create(n_knots);
+  using Space = BSplineSpace<dim, range, rank>;
+  auto grid  = CartesianGrid<dim>::create(n_knots);
 
-    typename Space::PeriodicityTable periodic((typename Space::Periodicity(SafeSTLArray<bool, dim>(false))));
-    typename Space::EndBehaviourTable ebt((typename Space::EndBehaviour(SafeSTLArray<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory))));
-    auto int_mult = SplineSpace<dim,range,rank>::get_multiplicity_from_regularity(InteriorReg::maximum,
-                    deg, grid->get_num_intervals());
-    auto space = Space::create(deg, grid, int_mult, periodic, ebt);
+  typename Space::PeriodicityTable periodic((typename Space::Periodicity(SafeSTLArray<bool, dim>(false))));
+  typename Space::EndBehaviourTable ebt((typename Space::EndBehaviour(SafeSTLArray<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory))));
+  auto int_mult = SplineSpace<dim,range,rank>::get_multiplicity_from_regularity(InteriorReg::maximum,
+                  deg, grid->get_num_intervals());
+  auto space = Space::create(deg, grid, int_mult, periodic, ebt);
 
-    auto flag = der_flag[der];
-    auto quad = QGauss<dim>(2);
-    using ElementHandler = typename Space::ElementHandler;
-    auto value_handler = ElementHandler::create(space);
-    value_handler->reset(flag, quad);
+  auto flag = der_flag[der];
+  auto quad = QGauss<dim>(2);
+  using ElementHandler = typename Space::ElementHandler;
+  auto value_handler = ElementHandler::create(space);
+  value_handler->reset(flag, quad);
 
-    auto elem = space->begin();
-    auto end = space->end();
+  auto elem = space->begin();
+  auto end = space->end();
 
-    value_handler->init_element_cache(elem);
-    for (; elem != end; ++elem)
-    {
-        value_handler->fill_element_cache(elem);
-        elem->template get_basis<ValueType<der>,dim>(0,DofProperties::active).print_info(out);
-    }
-    OUTEND
+  value_handler->init_element_cache(elem);
+  for (; elem != end; ++elem)
+  {
+    value_handler->fill_element_cache(elem);
+    elem->template get_basis<ValueType<der>,dim>(0,DofProperties::active).print_info(out);
+  }
+  OUTEND
 }
 
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
-    const int values = 0;
-    const int grad   = 1;
-    const int hess   = 2;
+  const int values = 0;
+  const int grad   = 1;
+  const int hess   = 2;
 
-    const int n_knots = 3;
-    typename SplineSpace<2,2,1>::DegreeTable deg1 = { {{3,2}}, {{2,3}} };
-    elem_derivatives<values, 2, 2>(n_knots, deg1);
-    elem_derivatives<grad,   2, 2>(n_knots, deg1);
-    elem_derivatives<hess,   2, 2>(n_knots, deg1);
+  const int n_knots = 3;
+  typename SplineSpace<2,2,1>::DegreeTable deg1 = { {{3,2}}, {{2,3}} };
+  elem_derivatives<values, 2, 2>(n_knots, deg1);
+  elem_derivatives<grad,   2, 2>(n_knots, deg1);
+  elem_derivatives<hess,   2, 2>(n_knots, deg1);
 
-    typename SplineSpace<3,3,1>::DegreeTable
-    deg2 = { {{3,2,2}}, {{2,3,2}}, {{2,2,3}} };
-    elem_derivatives<values, 3, 3>(n_knots, deg2);
-    elem_derivatives<grad,   3, 3>(n_knots, deg2);
-    elem_derivatives<hess,   3, 3>(n_knots, deg2);
+  typename SplineSpace<3,3,1>::DegreeTable
+  deg2 = { {{3,2,2}}, {{2,3,2}}, {{2,2,3}} };
+  elem_derivatives<values, 3, 3>(n_knots, deg2);
+  elem_derivatives<grad,   3, 3>(n_knots, deg2);
+  elem_derivatives<hess,   3, 3>(n_knots, deg2);
 
 }
 

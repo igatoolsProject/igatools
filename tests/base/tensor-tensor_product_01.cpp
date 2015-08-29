@@ -32,24 +32,24 @@ template<int dim, int rdim>
 void test_tensor_product()
 {
 
-    Points<dim>  a;
-    Points<rdim> b;
+  Points<dim>  a;
+  Points<rdim> b;
 
-    out << "The tensor product of:" << std::endl;
-    out << a << endl;
-    out << "and:" << endl;
-    out << b << endl;
-    out << "is:" << endl;
-    out << tensor_product(a, b) << endl;
+  out << "The tensor product of:" << std::endl;
+  out << a << endl;
+  out << "and:" << endl;
+  out << b << endl;
+  out << "is:" << endl;
+  out << tensor_product(a, b) << endl;
 }
 
 int main(int argc, char *argv[])
 {
-    out.depth_console(1);
+  out.depth_console(1);
 
-    test_tensor_product<2,2>();
-    test_tensor_product<2,3>();
+  test_tensor_product<2,2>();
+  test_tensor_product<2,3>();
 
-    return 0;
+  return 0;
 }
 

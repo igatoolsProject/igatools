@@ -43,46 +43,46 @@ IGA_NAMESPACE_OPEN
  * @ingroup serializable
  */
 class IgCoefficients
-    : public std::map<Index,Real>
+  : public std::map<Index,Real>
 {
 public:
 
-    /**
-     * Access operator.
-     * Returns a reference to the mapped value of the element identified with key @p global_dof.
-     * If @p global_dof does not match the key of any element in the container,
-     * the function throws an <tt>out_of_range</tt> exception.
-     */
-    const Real &operator[](const Index global_dof) const;
+  /**
+   * Access operator.
+   * Returns a reference to the mapped value of the element identified with key @p global_dof.
+   * If @p global_dof does not match the key of any element in the container,
+   * the function throws an <tt>out_of_range</tt> exception.
+   */
+  const Real &operator[](const Index global_dof) const;
 
-    /**
-     * Access operator.
-     * If @p global_dof matches the key of an element in the container, the function returns a reference to its mapped value.
-     * If @p global_dof does not match the key of any element in the container,
-     * the function inserts a new element with that key and returns a reference to its mapped value.
-     */
-    Real &operator[](const Index global_dof);
+  /**
+   * Access operator.
+   * If @p global_dof matches the key of an element in the container, the function returns a reference to its mapped value.
+   * If @p global_dof does not match the key of any element in the container,
+   * the function inserts a new element with that key and returns a reference to its mapped value.
+   */
+  Real &operator[](const Index global_dof);
 
-    /** Return the number of coefficients stored in the container. */
-    Index size() const;
+  /** Return the number of coefficients stored in the container. */
+  Index size() const;
 
-    void print_info(LogStream &out) const;
+  void print_info(LogStream &out) const;
 
 private:
 
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version);
-    ///@}
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version);
+  ///@}
 #endif // SERIALIZATION
 
 };

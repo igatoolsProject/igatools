@@ -34,12 +34,12 @@ IGA_NAMESPACE_OPEN
  */
 template<class T>
 class SafeSTLVector :
-    public SafeSTLContainer<std::vector<T>>
+  public SafeSTLContainer<std::vector<T>>
 {
-    using base_t = SafeSTLContainer<std::vector<T>>;
+  using base_t = SafeSTLContainer<std::vector<T>>;
 public :
-    /** Inherit the constructors of the base class. */
-    using SafeSTLContainer<std::vector<T>>::SafeSTLContainer;
+  /** Inherit the constructors of the base class. */
+  using SafeSTLContainer<std::vector<T>>::SafeSTLContainer;
 
 };
 

@@ -41,41 +41,41 @@ IGA_NAMESPACE_OPEN
 class BasisValues1d
 {
 public:
-    BasisValues1d();
+  BasisValues1d();
 
-    BasisValues1d(const int max_der_order, const int n_func, const int n_points);
+  BasisValues1d(const int max_der_order, const int n_func, const int n_points);
 
-    Size get_num_points() const;
+  Size get_num_points() const;
 
-    Size get_num_functions() const;
+  Size get_num_functions() const;
 
-    void resize(const int max_der_order, const int n_func, const int n_points);
-
-
-    void print_info(LogStream &out) const;
+  void resize(const int max_der_order, const int n_func, const int n_points);
 
 
-    DenseMatrix &get_derivative(const int order);
+  void print_info(LogStream &out) const;
 
 
-    const DenseMatrix &get_derivative(const int order) const;
+  DenseMatrix &get_derivative(const int order);
+
+
+  const DenseMatrix &get_derivative(const int order) const;
 
 
 private:
-    SafeSTLVector<DenseMatrix> values_;
+  SafeSTLVector<DenseMatrix> values_;
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version);
-    ///@}
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version);
+  ///@}
 #endif // SERIALIZATION
 
 };
@@ -88,40 +88,40 @@ private:
 class BasisValues1dConstView
 {
 public:
-    /** @name Constructors */
-    ///@{
-    /** Default constructor. It does nothing. */
-    BasisValues1dConstView() = default;
+  /** @name Constructors */
+  ///@{
+  /** Default constructor. It does nothing. */
+  BasisValues1dConstView() = default;
 
-    /**
-     * Constructor. Builds the const view on the <tt>func_id</tt>-th row
-     * of the DenseMatrix @p funcs.
-     */
-    BasisValues1dConstView(const BasisValues1d &val)
-        :funcs_(&val)
-    {}
+  /**
+   * Constructor. Builds the const view on the <tt>func_id</tt>-th row
+   * of the DenseMatrix @p funcs.
+   */
+  BasisValues1dConstView(const BasisValues1d &val)
+    :funcs_(&val)
+  {}
 
-    /** Copy constructor. */
-    BasisValues1dConstView(const BasisValues1dConstView &view) = default ;
+  /** Copy constructor. */
+  BasisValues1dConstView(const BasisValues1dConstView &view) = default ;
 
-    /** Move constructor. */
-    BasisValues1dConstView(BasisValues1dConstView &&view) = default ;
+  /** Move constructor. */
+  BasisValues1dConstView(BasisValues1dConstView &&view) = default ;
 
-    /** Destructor. */
-    ~BasisValues1dConstView() = default;
-    ///@}
+  /** Destructor. */
+  ~BasisValues1dConstView() = default;
+  ///@}
 
 
-    const BasisValues1d *operator->() const;
+  const BasisValues1d *operator->() const;
 
-    /** Assignment operators */
-    ///@{
-    /** Copy assignment operator. */
-    BasisValues1dConstView &operator=(const BasisValues1dConstView &view) = default;
+  /** Assignment operators */
+  ///@{
+  /** Copy assignment operator. */
+  BasisValues1dConstView &operator=(const BasisValues1dConstView &view) = default;
 
-    /** Move assignment operator. */
-    BasisValues1dConstView &operator=(BasisValues1dConstView &&view) = default;
-    ///@}
+  /** Move assignment operator. */
+  BasisValues1dConstView &operator=(BasisValues1dConstView &&view) = default;
+  ///@}
 //
 //    /** Returns the value of the fucntion at the <tt>point_id</tt>-th point. */
 //    Real operator()(const Index point_id) const;
@@ -130,7 +130,7 @@ public:
 //    Size get_num_points() const;
 
 private:
-    BasisValues1d const *funcs_;
+  BasisValues1d const *funcs_;
 };
 
 
@@ -141,48 +141,48 @@ template <int dim>
 class TensorProductFunctionEvaluator
 {
 public:
-    TensorProductFunctionEvaluator(const Quadrature<dim> &quad, const ElemFuncValues<dim> &values_1D)
-        :
-        quad_(quad),
-        values_1D_(values_1D)
-    {
-        TensorSize<dim> n_func;
-        for (int i = 0; i < dim; ++i)
-            n_func[i] = values_1D_[i]->get_num_functions();
+  TensorProductFunctionEvaluator(const Quadrature<dim> &quad, const ElemFuncValues<dim> &values_1D)
+    :
+    quad_(quad),
+    values_1D_(values_1D)
+  {
+    TensorSize<dim> n_func;
+    for (int i = 0; i < dim; ++i)
+      n_func[i] = values_1D_[i]->get_num_functions();
 
-        f_size_ = TensorSizedContainer<dim>(n_func);
-    }
+    f_size_ = TensorSizedContainer<dim>(n_func);
+  }
 
-    /**
-     * Evaluate and returns one partial derivative in one point.
-     * The order of the partial derivative is specified by the tensor-index
-     * @p order_tensor_id,
-     * while the the function is specified by the tensor-index @p func_tensor_id
-     * point is specified by the flat index @p point_flat_id.
-     */
-    Real evaluate(const TensorIndex<dim> &order_tensor_id,
-                  const TensorIndex<dim> &func_tensor_id,
-                  const Index &point_flat_id) const
-    {
-        const auto &coords_tensor_id = quad_.get_coords_id_from_point_id(point_flat_id);
-        Real res = (dim>0) ? values_1D_[0]->get_derivative(order_tensor_id[0])(func_tensor_id[0],coords_tensor_id[0]) : 1.0;
-        for (int i = 1; i < dim; ++i)
-            res *= values_1D_[i]->get_derivative(order_tensor_id[i])(func_tensor_id[i], coords_tensor_id[i]);
-        return res;
-    }
+  /**
+   * Evaluate and returns one partial derivative in one point.
+   * The order of the partial derivative is specified by the tensor-index
+   * @p order_tensor_id,
+   * while the the function is specified by the tensor-index @p func_tensor_id
+   * point is specified by the flat index @p point_flat_id.
+   */
+  Real evaluate(const TensorIndex<dim> &order_tensor_id,
+                const TensorIndex<dim> &func_tensor_id,
+                const Index &point_flat_id) const
+  {
+    const auto &coords_tensor_id = quad_.get_coords_id_from_point_id(point_flat_id);
+    Real res = (dim>0) ? values_1D_[0]->get_derivative(order_tensor_id[0])(func_tensor_id[0],coords_tensor_id[0]) : 1.0;
+    for (int i = 1; i < dim; ++i)
+      res *= values_1D_[i]->get_derivative(order_tensor_id[i])(func_tensor_id[i], coords_tensor_id[i]);
+    return res;
+  }
 
 
-    auto func_flat_to_tensor(const Index func_id) const
-    {
-        return f_size_.flat_to_tensor(func_id);
-    }
+  auto func_flat_to_tensor(const Index func_id) const
+  {
+    return f_size_.flat_to_tensor(func_id);
+  }
 
 private:
-    const Quadrature<dim> &quad_;
+  const Quadrature<dim> &quad_;
 
-    ElemFuncValues<dim> values_1D_;
+  ElemFuncValues<dim> values_1D_;
 
-    TensorSizedContainer<dim> f_size_;
+  TensorSizedContainer<dim> f_size_;
 };
 
 
@@ -225,50 +225,50 @@ private:
 class Values1DConstView
 {
 public:
-    /** Type for the container of one dimensional values on a single interval for a single scalar function.*/
-    using Values1D = typename DenseMatrix::MatrixRowType ;
+  /** Type for the container of one dimensional values on a single interval for a single scalar function.*/
+  using Values1D = typename DenseMatrix::MatrixRowType ;
 
-    using const_iterator = typename Values1D::const_iterator;
+  using const_iterator = typename Values1D::const_iterator;
 
-    /** @name Constructors */
-    ///@{
-    /** Default constructor. It does nothing. */
-    Values1DConstView() = default;
+  /** @name Constructors */
+  ///@{
+  /** Default constructor. It does nothing. */
+  Values1DConstView() = default;
 
-    /**
-     * Constructor. Builds the const view on the <tt>func_id</tt>-th row
-     * of the DenseMatrix @p funcs.
-     */
-    Values1DConstView(const DenseMatrix &funcs,const Index func_id);
+  /**
+   * Constructor. Builds the const view on the <tt>func_id</tt>-th row
+   * of the DenseMatrix @p funcs.
+   */
+  Values1DConstView(const DenseMatrix &funcs,const Index func_id);
 
-    /** Copy constructor. */
-    Values1DConstView(const Values1DConstView &view) = default ;
+  /** Copy constructor. */
+  Values1DConstView(const Values1DConstView &view) = default ;
 
-    /** Move constructor. */
-    Values1DConstView(Values1DConstView &&view) = default ;
+  /** Move constructor. */
+  Values1DConstView(Values1DConstView &&view) = default ;
 
-    /** Destructor. */
-    ~Values1DConstView() = default;
-    ///@}
+  /** Destructor. */
+  ~Values1DConstView() = default;
+  ///@}
 
-    /** Assignment operators */
-    ///@{
-    /** Copy assignment operator. */
-    Values1DConstView &operator=(const Values1DConstView &view) = default;
+  /** Assignment operators */
+  ///@{
+  /** Copy assignment operator. */
+  Values1DConstView &operator=(const Values1DConstView &view) = default;
 
-    /** Move assignment operator. */
-    Values1DConstView &operator=(Values1DConstView &&view) = default;
-    ///@}
+  /** Move assignment operator. */
+  Values1DConstView &operator=(Values1DConstView &&view) = default;
+  ///@}
 
-    /** Returns the value of the fucntion at the <tt>point_id</tt>-th point. */
-    Real operator()(const Index point_id) const;
+  /** Returns the value of the fucntion at the <tt>point_id</tt>-th point. */
+  Real operator()(const Index point_id) const;
 
-    /** Return the number of points for which the function is evaluated. */
-    Size get_num_points() const;
+  /** Return the number of points for which the function is evaluated. */
+  Size get_num_points() const;
 
 private:
-    const DenseMatrix *funcs_ = nullptr;
-    Index func_id_ = 0;
+  const DenseMatrix *funcs_ = nullptr;
+  Index func_id_ = 0;
 };
 
 IGA_NAMESPACE_CLOSE

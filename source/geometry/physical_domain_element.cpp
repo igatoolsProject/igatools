@@ -31,10 +31,10 @@ PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
 PhysicalDomainElementBase(std::shared_ptr<ContainerType_> phys_dom,
                           const ListIt &index,
                           const PropId &prop)
-    :
-    phys_dom_(phys_dom),
-    grid_elem_(phys_dom_->get_grid()->create_element(index,prop)),
-    func_elem_(phys_dom_->get_function()->create_element(index,prop))
+  :
+  phys_dom_(phys_dom),
+  grid_elem_(phys_dom_->get_grid()->create_element(index,prop)),
+  func_elem_(phys_dom_->get_function()->create_element(index,prop))
 {}
 
 
@@ -43,22 +43,22 @@ template<int dim_, int codim_, class ContainerType_>
 PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
 PhysicalDomainElementBase(const self_t &elem,
                           const CopyPolicy &copy_policy)
-    :
-    phys_dom_(elem.phys_dom_)
+  :
+  phys_dom_(elem.phys_dom_)
 {
-    if (copy_policy == CopyPolicy::shallow)
-    {
-        grid_elem_ = elem.grid_elem_;
-        /// func_elem_ = elem.func_elem_;
-        local_cache_ = elem.local_cache_;
-    }
-    else
-    {
-        local_cache_ =
-            std::shared_ptr<CacheType>(new CacheType(*elem.local_cache_));
-        grid_elem_ = std::make_shared<GridElem>(*elem.grid_elem_,CopyPolicy::deep);
-        //   func_elem_ = std::make_shared<FuncElem>(*elem.func_elem_,CopyPolicy::deep);
-    }
+  if (copy_policy == CopyPolicy::shallow)
+  {
+    grid_elem_ = elem.grid_elem_;
+    /// func_elem_ = elem.func_elem_;
+    local_cache_ = elem.local_cache_;
+  }
+  else
+  {
+    local_cache_ =
+      std::shared_ptr<CacheType>(new CacheType(*elem.local_cache_));
+    grid_elem_ = std::make_shared<GridElem>(*elem.grid_elem_,CopyPolicy::deep);
+    //   func_elem_ = std::make_shared<FuncElem>(*elem.func_elem_,CopyPolicy::deep);
+  }
 }
 
 
@@ -67,7 +67,7 @@ void
 PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
 deep_copy_from(const self_t &elem)
 {
-    Assert(false, ExcNotImplemented());
+  Assert(false, ExcNotImplemented());
 }
 
 
@@ -76,7 +76,7 @@ void
 PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
 shallow_copy_from(const self_t &elem)
 {
-    Assert(false, ExcNotImplemented());
+  Assert(false, ExcNotImplemented());
 }
 
 
@@ -86,9 +86,9 @@ bool
 PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
 operator ==(const self_t &elem) const
 {
-    Assert(phys_dom_ == elem.phys_dom_,
-           ExcMessage("Cannot compare elements on different grid."));
-    return (grid_elem_ == elem.grid_elem_);
+  Assert(phys_dom_ == elem.phys_dom_,
+         ExcMessage("Cannot compare elements on different grid."));
+  return (grid_elem_ == elem.grid_elem_);
 }
 
 
@@ -97,9 +97,9 @@ bool
 PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
 operator !=(const self_t &elem) const
 {
-    Assert(phys_dom_ == elem.phys_dom_,
-           ExcMessage("Cannot compare elements on different grid."));
-    return (grid_elem_ != elem.grid_elem_);
+  Assert(phys_dom_ == elem.phys_dom_,
+         ExcMessage("Cannot compare elements on different grid."));
+  return (grid_elem_ != elem.grid_elem_);
 }
 
 template<int dim_, int codim_, class ContainerType_>
@@ -107,9 +107,9 @@ bool
 PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
 operator <(const self_t &elem) const
 {
-    Assert(phys_dom_ == elem.phys_dom_,
-           ExcMessage("Cannot compare elements on different grid."));
-    return (grid_elem_ < elem.grid_elem_);
+  Assert(phys_dom_ == elem.phys_dom_,
+         ExcMessage("Cannot compare elements on different grid."));
+  return (grid_elem_ < elem.grid_elem_);
 }
 
 template<int dim_, int codim_, class ContainerType_>
@@ -117,9 +117,9 @@ bool
 PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
 operator >(const self_t &elem) const
 {
-    Assert(phys_dom_ == elem.phys_dom_,
-           ExcMessage("Cannot compare elements on different grid."));
-    return (grid_elem_ > elem.grid_elem_);
+  Assert(phys_dom_ == elem.phys_dom_,
+         ExcMessage("Cannot compare elements on different grid."));
+  return (grid_elem_ > elem.grid_elem_);
 }
 
 
@@ -130,21 +130,21 @@ auto
 PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
 compute_inv_first_fundamental_form() const -> ValueVector<MetricTensor>
 {
-    ValueVector<MetricTensor> res;
-    const auto &DF = this->template get_values<_Gradient, dim>(0);
-    const auto n_points = DF.get_num_points();
+  ValueVector<MetricTensor> res;
+  const auto &DF = this->template get_values<_Gradient, dim>(0);
+  const auto n_points = DF.get_num_points();
 
-    res.resize(n_points);
-    Real det;
-    for (int i = 0; i< n_points; ++i)
-    {
-        const auto &A = DF[i];
-        const auto A_t   = co_tensor(transpose(A));
-        const auto G     = compose(A_t, A);
-        res[i] = inverse(G, det);
-    }
+  res.resize(n_points);
+  Real det;
+  for (int i = 0; i< n_points; ++i)
+  {
+    const auto &A = DF[i];
+    const auto A_t   = co_tensor(transpose(A));
+    const auto G     = compose(A_t, A);
+    res[i] = inverse(G, det);
+  }
 
-    return res;
+  return res;
 }
 
 
@@ -154,34 +154,34 @@ auto
 PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
 compute_second_fundamental_form() const -> ValueVector<MetricTensor>
 {
-    Assert(codim==1, ExcNotImplemented());
+  Assert(codim==1, ExcNotImplemented());
 
-    const auto &D2_F  = this->template get_values<_Hessian, dim>(0);
-    const auto normal = this->get_external_normals();
+  const auto &D2_F  = this->template get_values<_Hessian, dim>(0);
+  const auto normal = this->get_external_normals();
 
-    const auto n_points = D2_F.get_num_points();
+  const auto n_points = D2_F.get_num_points();
 
-    // const auto G_inv = compute_inv_first_fundamental_form();
+  // const auto G_inv = compute_inv_first_fundamental_form();
 
-    ValueVector<MetricTensor> res;
-    res.resize(n_points);
+  ValueVector<MetricTensor> res;
+  res.resize(n_points);
 
-    MetricTensor A;
-    for (int pt = 0; pt < n_points; ++pt)
+  MetricTensor A;
+  for (int pt = 0; pt < n_points; ++pt)
+  {
+    const auto &D2_F_pt = D2_F[pt];
+    for (int u=0; u<dim; ++u)
     {
-        const auto &D2_F_pt = D2_F[pt];
-        for (int u=0; u<dim; ++u)
-        {
-            const auto B = co_tensor(transpose(D2_F_pt[u]));
-            A[u] = action(B, normal[pt]);
-        }
-        res[pt] = -A;
-
-        // res[pt] = -compose(A, G_inv[pt]);
-
+      const auto B = co_tensor(transpose(D2_F_pt[u]));
+      A[u] = action(B, normal[pt]);
     }
+    res[pt] = -A;
 
-    return res;
+    // res[pt] = -compose(A, G_inv[pt]);
+
+  }
+
+  return res;
 }
 
 
@@ -191,25 +191,25 @@ PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
 get_principal_curvatures() const -> const ValueVector<SafeSTLVector<Real>> &
 {
 #if 0
-    Assert(codim==1, ExcNotImplemented());
+  Assert(codim==1, ExcNotImplemented());
 
-    const auto H = compute_second_fundamental_form();
-    const auto G_inv = compute_inv_first_fundamental_form();
+  const auto H = compute_second_fundamental_form();
+  const auto G_inv = compute_inv_first_fundamental_form();
 
-    const auto n_points = H.get_num_points();
+  const auto n_points = H.get_num_points();
 
-    ValueVector<SafeSTLVector<Real>> res(n_points);
+  ValueVector<SafeSTLVector<Real>> res(n_points);
 
-    for (int pt = 0; pt < n_points; ++pt)
-    {
-        const MetricTensor B = compose(H[pt], G_inv[pt]);
-        const auto A = unroll_to_matrix(B);
-        res[pt] = A.eigen_values();
-    }
-    return res;
+  for (int pt = 0; pt < n_points; ++pt)
+  {
+    const MetricTensor B = compose(H[pt], G_inv[pt]);
+    const auto A = unroll_to_matrix(B);
+    res[pt] = A.eigen_values();
+  }
+  return res;
 #endif
-    Assert(codim==1, ExcNotImplemented());
-    return get_values_from_cache<_Curvature,dim_>(0);
+  Assert(codim==1, ExcNotImplemented());
+  return get_values_from_cache<_Curvature,dim_>(0);
 }
 
 
@@ -220,23 +220,23 @@ PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
 get_external_normals() const -> const ValueVector<Points<space_dim> > &
 {
 #if 0
-    Assert(codim==1, ExcNotImplemented());
-    ValueVector<Points<space_dim> > res;
-    const auto &DF = this->template get_values<_Gradient, dim>(0);
-    const auto n_points = DF.get_num_points();
+  Assert(codim==1, ExcNotImplemented());
+  ValueVector<Points<space_dim> > res;
+  const auto &DF = this->template get_values<_Gradient, dim>(0);
+  const auto n_points = DF.get_num_points();
 
-    res.resize(n_points);
-    for (int pt = 0; pt < n_points; ++pt)
-    {
-        res[pt] = cross_product<dim, codim>(DF[pt]);
-        res[pt] /= res[pt].norm();
-    }
+  res.resize(n_points);
+  for (int pt = 0; pt < n_points; ++pt)
+  {
+    res[pt] = cross_product<dim, codim>(DF[pt]);
+    res[pt] /= res[pt].norm();
+  }
 
-    return res;
+  return res;
 #endif
 
-    Assert(codim==1, ExcNotImplemented());
-    return get_values_from_cache<_OuterNormal,dim_>(0);
+  Assert(codim==1, ExcNotImplemented());
+  return get_values_from_cache<_OuterNormal,dim_>(0);
 }
 
 
@@ -246,21 +246,21 @@ auto
 PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
 get_D_external_normals() const -> ValueVector< Derivative<1> >
 {
-    Assert(codim==1, ExcNotImplemented());
+  Assert(codim==1, ExcNotImplemented());
 
-    const auto H = compute_second_fundamental_form();
-    const auto &DF = this->template get_values<_Gradient, dim>(0);
-    const auto G_inv = compute_inv_first_fundamental_form();
+  const auto H = compute_second_fundamental_form();
+  const auto &DF = this->template get_values<_Gradient, dim>(0);
+  const auto G_inv = compute_inv_first_fundamental_form();
 
-    const auto n_points = H.get_num_points();
-    ValueVector< Derivative<1> > Dn(n_points);
+  const auto n_points = H.get_num_points();
+  ValueVector< Derivative<1> > Dn(n_points);
 
-    for (int pt = 0; pt< n_points; ++pt)
-    {
-        auto L = compose(DF[pt], G_inv[pt]);
-        Dn[pt] = compose(L, H[pt]);
-    }
-    return Dn;
+  for (int pt = 0; pt< n_points; ++pt)
+  {
+    auto L = compose(DF[pt], G_inv[pt]);
+    Dn[pt] = compose(L, H[pt]);
+  }
+  return Dn;
 }
 #endif
 

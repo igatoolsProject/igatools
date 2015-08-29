@@ -32,25 +32,25 @@ template<int rank>
 void
 do_test()
 {
-    out << "========== BEGIN do_test<" << rank << "> ==========" << endl;
-    TensorSize<rank> size;
-    for (int i = 0 ; i < rank ; ++i)
-        size[i] = i+2;
+  out << "========== BEGIN do_test<" << rank << "> ==========" << endl;
+  TensorSize<rank> size;
+  for (int i = 0 ; i < rank ; ++i)
+    size[i] = i+2;
 
-    CartesianProductIndexer<rank> indexer(size);
-    out << "Num. indices = " << indexer.get_num_indices() << endl;
-    indexer.print_info(out);
-    out << endl;
-    out << "========== END do_test<" << rank << "> ==========" << endl;
-    out << endl;
+  CartesianProductIndexer<rank> indexer(size);
+  out << "Num. indices = " << indexer.get_num_indices() << endl;
+  indexer.print_info(out);
+  out << endl;
+  out << "========== END do_test<" << rank << "> ==========" << endl;
+  out << endl;
 }
 
 
 int main()
 {
-    do_test<1>();
-    do_test<2>();
-    do_test<3>();
+  do_test<1>();
+  do_test<2>();
+  do_test<3>();
 
-    return 0;
+  return 0;
 }

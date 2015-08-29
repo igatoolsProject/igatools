@@ -46,106 +46,106 @@ template <>
 shared_ptr<const BSplineSpace<2,2,1> >
 create_space<2>(const int num_knots)
 {
-    auto knots = CartesianGrid<2>::create(num_knots);
+  auto knots = CartesianGrid<2>::create(num_knots);
 
-    using Space = BSplineSpace<2,2,1>;
-    typename Space::DegreeTable degree_table = {{{3,2}},{{2,3}}} ;
+  using Space = BSplineSpace<2,2,1>;
+  typename Space::DegreeTable degree_table = {{{3,2}},{{2,3}}} ;
 
-    using SpaceData = typename Space::SpaceData;
-    using PeriodicityTable = typename Space::PeriodicityTable;
-    using EndBehaviourTable = typename Space::EndBehaviourTable;
+  using SpaceData = typename Space::SpaceData;
+  using PeriodicityTable = typename Space::PeriodicityTable;
+  using EndBehaviourTable = typename Space::EndBehaviourTable;
 
-    return Space::create(degree_table, knots,
-                         SpaceData::get_multiplicity_from_regularity(
-                             InteriorReg::maximum,
-                             degree_table,
-                             knots->get_num_intervals()),
-                         PeriodicityTable(true,SafeSTLArray<bool, 2>(false)),
-                         EndBehaviourTable(true,SafeSTLArray<BasisEndBehaviour,2>(BasisEndBehaviour::interpolatory))) ;
+  return Space::create(degree_table, knots,
+                       SpaceData::get_multiplicity_from_regularity(
+                         InteriorReg::maximum,
+                         degree_table,
+                         knots->get_num_intervals()),
+                       PeriodicityTable(true,SafeSTLArray<bool, 2>(false)),
+                       EndBehaviourTable(true,SafeSTLArray<BasisEndBehaviour,2>(BasisEndBehaviour::interpolatory))) ;
 }
 
 template <>
 shared_ptr<const BSplineSpace<3,3,1> >
 create_space<3>(const int num_knots)
 {
-    auto knots = CartesianGrid<3>::create(num_knots);
+  auto knots = CartesianGrid<3>::create(num_knots);
 
-    using Space = BSplineSpace<3,3,1>;
-    typename Space::DegreeTable degree_table = { {{3,2,2}},{{2,3,2}},{{2,2,3}}} ;
+  using Space = BSplineSpace<3,3,1>;
+  typename Space::DegreeTable degree_table = { {{3,2,2}},{{2,3,2}},{{2,2,3}}} ;
 
-    using SpaceData = typename Space::SpaceData;
-    using PeriodicityTable = typename Space::PeriodicityTable;
-    using EndBehaviourTable = typename Space::EndBehaviourTable;
+  using SpaceData = typename Space::SpaceData;
+  using PeriodicityTable = typename Space::PeriodicityTable;
+  using EndBehaviourTable = typename Space::EndBehaviourTable;
 
-    return Space::create(degree_table, knots,
-                         SpaceData::get_multiplicity_from_regularity(
-                             InteriorReg::maximum,
-                             degree_table,
-                             knots->get_num_intervals()),
-                         PeriodicityTable(true,SafeSTLArray<bool,3>(false)),
-                         EndBehaviourTable(true,SafeSTLArray<BasisEndBehaviour,3>(BasisEndBehaviour::interpolatory))) ;
+  return Space::create(degree_table, knots,
+                       SpaceData::get_multiplicity_from_regularity(
+                         InteriorReg::maximum,
+                         degree_table,
+                         knots->get_num_intervals()),
+                       PeriodicityTable(true,SafeSTLArray<bool,3>(false)),
+                       EndBehaviourTable(true,SafeSTLArray<BasisEndBehaviour,3>(BasisEndBehaviour::interpolatory))) ;
 }
 
 
 template< int dim_domain>
 void do_test()
 {
-    OUTSTART
+  OUTSTART
 //    out << "domain, range and rank: " << dim_domain << "," << dim_domain << ",1" << endl ;
 
-    const int num_knots = 3 ;
+  const int num_knots = 3 ;
 
-    auto space = create_space<dim_domain>(num_knots) ;
+  auto space = create_space<dim_domain>(num_knots) ;
 
-    const int n_points = 2;
-    Quadrature<dim_domain> quad(QGauss<dim_domain>(n_points).get_points()) ;
+  const int n_points = 2;
+  Quadrature<dim_domain> quad(QGauss<dim_domain>(n_points).get_points()) ;
 
-    using std::to_string;
+  using std::to_string;
 
+  {
+    auto elem = space->begin();
+    for (; elem != space->end(); ++elem)
     {
-        auto elem = space->begin();
-        for (; elem != space->end(); ++elem)
-        {
-            const auto values = elem->template evaluate_basis_at_points<_Value>(quad,DofProperties::active);
-            out.begin_item("Element " + to_string(elem.get_flat_index()) + " --- Values:");
-            values.print_info(out);
-            out.end_item();
-        }
+      const auto values = elem->template evaluate_basis_at_points<_Value>(quad,DofProperties::active);
+      out.begin_item("Element " + to_string(elem.get_flat_index()) + " --- Values:");
+      values.print_info(out);
+      out.end_item();
     }
+  }
 
+  {
+    auto elem = space->begin();
+    for (; elem != space->end(); ++elem)
     {
-        auto elem = space->begin();
-        for (; elem != space->end(); ++elem)
-        {
-            const auto gradients = elem->template evaluate_basis_at_points<_Gradient>(quad,DofProperties::active);
-            out.begin_item("Element " + to_string(elem.get_flat_index()) + " --- Gradients:");
-            gradients.print_info(out);
-            out.end_item();
-        }
+      const auto gradients = elem->template evaluate_basis_at_points<_Gradient>(quad,DofProperties::active);
+      out.begin_item("Element " + to_string(elem.get_flat_index()) + " --- Gradients:");
+      gradients.print_info(out);
+      out.end_item();
     }
+  }
 
+  {
+    auto elem = space->begin();
+    for (; elem != space->end(); ++elem)
     {
-        auto elem = space->begin();
-        for (; elem != space->end(); ++elem)
-        {
-            const auto hessians = elem->template evaluate_basis_at_points<_Hessian>(quad,DofProperties::active);
-            out.begin_item("Element " + to_string(elem.get_flat_index()) + " --- Hessians:");
-            hessians.print_info(out);
-            out.end_item();
-        }
+      const auto hessians = elem->template evaluate_basis_at_points<_Hessian>(quad,DofProperties::active);
+      out.begin_item("Element " + to_string(elem.get_flat_index()) + " --- Hessians:");
+      hessians.print_info(out);
+      out.end_item();
     }
+  }
 
-    OUTEND
+  OUTEND
 
 }
 
 
 int main()
 {
-    out.depth_console(10); //to be removed after test finished
+  out.depth_console(10); //to be removed after test finished
 
-    do_test<2>() ;
-    do_test<3>() ;
+  do_test<2>() ;
+  do_test<3>() ;
 
-    return 0;
+  return 0;
 }

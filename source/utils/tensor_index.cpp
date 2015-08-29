@@ -34,9 +34,9 @@ template <int rank>
 TensorIndex<rank>::
 TensorIndex(const Size val) noexcept
 {
-    Assert(val >= 0, ExcLowerRange(val,0));
-    for (auto &idx : (*this))
-        idx = val;
+  Assert(val >= 0, ExcLowerRange(val,0));
+  for (auto &idx : (*this))
+    idx = val;
 }
 
 
@@ -44,12 +44,12 @@ TensorIndex(const Size val) noexcept
 template <int rank>
 TensorIndex<rank>::
 TensorIndex(const SafeSTLArray<Index,rank> &arr) noexcept
-    :
-    SafeSTLArray<Index,rank>(arr)
+  :
+  SafeSTLArray<Index,rank>(arr)
 {
 #ifndef NDEBUG
-    for (const auto &idx : (*this))
-        Assert(idx >= 0,ExcLowerRange(idx,0));
+  for (const auto &idx : (*this))
+    Assert(idx >= 0,ExcLowerRange(idx,0));
 #endif
 }
 
@@ -59,15 +59,15 @@ template <int rank>
 TensorIndex<rank>::
 TensorIndex(std::initializer_list<Index> list) noexcept
 {
-    if (rank > 0)
-    {
-        Assert(list.size() == rank, ExcDimensionMismatch(list.size(),rank));
-        std::copy(list.begin(), list.end(), this->begin());
-    }
+  if (rank > 0)
+  {
+    Assert(list.size() == rank, ExcDimensionMismatch(list.size(),rank));
+    std::copy(list.begin(), list.end(), this->begin());
+  }
 
 #ifndef NDEBUG
-    for (const auto &idx : (*this))
-        Assert(idx >= 0,ExcLowerRange(idx,0));
+  for (const auto &idx : (*this))
+    Assert(idx >= 0,ExcLowerRange(idx,0));
 #endif
 }
 
@@ -78,7 +78,7 @@ std::size_t
 TensorIndex<rank>::
 memory_consumption() const
 {
-    return sizeof(static_cast<const SafeSTLArray<Index,rank> &>(*this));
+  return sizeof(static_cast<const SafeSTLArray<Index,rank> &>(*this));
 }
 
 
@@ -87,11 +87,11 @@ template <int rank>
 TensorIndex<rank>
 operator+(const TensorIndex<rank> &index_a,const TensorIndex<rank> &index_b)
 {
-    TensorIndex<rank> tensor_index;
-    for (int i = 0 ; i < rank ; ++i)
-        tensor_index[i] = index_a[i] + index_b[i];
+  TensorIndex<rank> tensor_index;
+  for (int i = 0 ; i < rank ; ++i)
+    tensor_index[i] = index_a[i] + index_b[i];
 
-    return tensor_index;
+  return tensor_index;
 }
 
 
@@ -100,12 +100,12 @@ template <int rank>
 TensorIndex<rank>
 operator+(const TensorIndex<rank> &index,const Index j)
 {
-    Assert(j>=0,ExcLowerRange(j,0));
-    TensorIndex<rank> tensor_index;
-    for (int i = 0 ; i < rank ; ++i)
-        tensor_index[i] = index[i] + j;
+  Assert(j>=0,ExcLowerRange(j,0));
+  TensorIndex<rank> tensor_index;
+  for (int i = 0 ; i < rank ; ++i)
+    tensor_index[i] = index[i] + j;
 
-    return tensor_index;
+  return tensor_index;
 }
 
 
@@ -114,15 +114,15 @@ template <int rank>
 TensorIndex<rank>
 operator-(const TensorIndex<rank> &index,const Index j)
 {
-    Assert(j>=0,ExcLowerRange(j,0));
-    TensorIndex<rank> tensor_index;
-    for (int i = 0 ; i < rank ; ++i)
-    {
-        tensor_index[i] = index[i] - j;
-        Assert(tensor_index[i] >= 0, ExcLowerRange(tensor_index[i],0));
-    }
+  Assert(j>=0,ExcLowerRange(j,0));
+  TensorIndex<rank> tensor_index;
+  for (int i = 0 ; i < rank ; ++i)
+  {
+    tensor_index[i] = index[i] - j;
+    Assert(tensor_index[i] >= 0, ExcLowerRange(tensor_index[i],0));
+  }
 
-    return tensor_index;
+  return tensor_index;
 }
 
 
@@ -131,16 +131,16 @@ template <int rank>
 LogStream &
 operator<<(LogStream &out, const TensorIndex<rank> &tensor_index)
 {
-    out << "[";
-    if (rank > 0)
-    {
-        out << tensor_index[0];
-        for (int i = 1 ; i < rank ; ++i)
-            out << "," << tensor_index[i];
-    }
-    out << "]";
+  out << "[";
+  if (rank > 0)
+  {
+    out << tensor_index[0];
+    for (int i = 1 ; i < rank ; ++i)
+      out << "," << tensor_index[i];
+  }
+  out << "]";
 
-    return out;
+  return out;
 }
 
 
@@ -150,12 +150,12 @@ template<>
 SafeSTLVector<TensorIndex<1> >
 tensor_range(TensorIndex<1> first, TensorIndex<1> last)
 {
-    Assert(first <= last, ExcMessage("first bigger than last"));
-    SafeSTLVector<TensorIndex<1>> result(last[0]-first[0]);
-    for (int i=first[0]; i<last[0]; ++i)
-        result[i-first[0]][0] = i;
+  Assert(first <= last, ExcMessage("first bigger than last"));
+  SafeSTLVector<TensorIndex<1>> result(last[0]-first[0]);
+  for (int i=first[0]; i<last[0]; ++i)
+    result[i-first[0]][0] = i;
 
-    return result;
+  return result;
 }
 
 
@@ -164,10 +164,10 @@ template<>
 SafeSTLVector<TensorIndex<0> >
 tensor_range(TensorIndex<0> first, TensorIndex<0> last)
 {
-    Assert(false, ExcNotImplemented());
-    SafeSTLVector<TensorIndex<0>> result;
+  Assert(false, ExcNotImplemented());
+  SafeSTLVector<TensorIndex<0>> result;
 
-    return result;
+  return result;
 }
 #endif
 

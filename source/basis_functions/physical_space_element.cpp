@@ -32,20 +32,20 @@ PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
                      const ListIt &index,
                      const PropId &prop)
-    :
-    parent_t(phys_space,index,prop),
-    ref_space_element_(
-       std::dynamic_pointer_cast<RefElemAccessor>(phys_space->get_reference_space()->create_element(index,prop))
-    ),
-    map_element_(make_shared<MapElem>(phys_space->get_physical_domain(), index, prop))
+  :
+  parent_t(phys_space,index,prop),
+  ref_space_element_(
+   std::dynamic_pointer_cast<RefElemAccessor>(phys_space->get_reference_space()->create_element(index,prop))
+  ),
+  map_element_(make_shared<MapElem>(phys_space->get_physical_domain(), index, prop))
 //                            ,
 //    push_fwd_element_(make_shared<PfElemAccessor>(
 //                          std::const_pointer_cast<MapFunction<dim_,dim_+codim_>>(
 //                              phys_space->get_ptr_const_map_func()), index))
 {
 //    push_fwd_element_ = std::make_shared<PfElemAccessor>(phys_space->get_map_func(), index);
-    Assert(ref_space_element_ != nullptr, ExcNullPtr());
-    Assert(map_element_ != nullptr, ExcNullPtr());
+  Assert(ref_space_element_ != nullptr, ExcNullPtr());
+  Assert(map_element_ != nullptr, ExcNullPtr());
 }
 
 
@@ -54,21 +54,21 @@ template<int dim_,int range_,int rank_,int codim_,Transformation type_>
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 PhysicalSpaceElement(const PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> &in,
                      const CopyPolicy &copy_policy)
-    :
-    parent_t(in,copy_policy)
+  :
+  parent_t(in,copy_policy)
 {
-    if (copy_policy == CopyPolicy::shallow)
-    {
-        ref_space_element_ = in.ref_space_element_;
-        map_element_ = in.map_element_;
-    }
-    else
-    {
-        ref_space_element_ = std::dynamic_pointer_cast<RefElemAccessor>(in.ref_space_element_->clone());
-        map_element_ = make_shared<MapElem>(*in.map_element_);
-    }
+  if (copy_policy == CopyPolicy::shallow)
+  {
+    ref_space_element_ = in.ref_space_element_;
+    map_element_ = in.map_element_;
+  }
+  else
+  {
+    ref_space_element_ = std::dynamic_pointer_cast<RefElemAccessor>(in.ref_space_element_->clone());
+    map_element_ = make_shared<MapElem>(*in.map_element_);
+  }
 
-    Assert(false,ExcNotTested());
+  Assert(false,ExcNotTested());
 }
 
 
@@ -77,9 +77,9 @@ auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 clone() const -> std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_,type_>>
 {
-    auto elem = std::make_shared<self_t>(*this,CopyPolicy::deep);
-    Assert(elem != nullptr, ExcNullPtr());
-    return elem;
+  auto elem = std::make_shared<self_t>(*this,CopyPolicy::deep);
+  Assert(elem != nullptr, ExcNullPtr());
+  return elem;
 }
 
 
@@ -89,7 +89,7 @@ PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 copy_from(const PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> &element,
           const CopyPolicy &copy_policy)
 {
-    Assert(false,ExcNotImplemented());
+  Assert(false,ExcNotImplemented());
 //    SpaceElementAccessor<PhysSpace>::copy_from(element,copy_policy);
 //
 //    PhysSpace::PushForwardType::ElementAccessor::copy_from(element,copy_policy);
@@ -109,8 +109,8 @@ void
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 deep_copy_from(const PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> &element)
 {
-    Assert(false,ExcNotImplemented());
-    //this->copy_from(element,CopyPolicy::deep);
+  Assert(false,ExcNotImplemented());
+  //this->copy_from(element,CopyPolicy::deep);
 }
 
 
@@ -119,7 +119,7 @@ void
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 shallow_copy_from(const PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> &element)
 {
-    Assert(false,ExcNotImplemented());
+  Assert(false,ExcNotImplemented());
 //    this->copy_from(element,CopyPolicy::shallow);
 }
 
@@ -130,7 +130,7 @@ auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 get_points(const int j) const -> ValueVector<PhysPoint>
 {
-    return map_element_->template get_values<_Point,k>(j);
+  return map_element_->template get_values<_Point,k>(j);
 }
 
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
@@ -138,7 +138,7 @@ auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 get_element_points() const -> ValueVector<PhysPoint>
 {
-    return this->template get_points<dim>(0);
+  return this->template get_points<dim>(0);
 }
 
 
@@ -147,7 +147,7 @@ auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 get_element_w_measures() const -> ValueVector<Real>
 {
-    return this->template get_w_measures<dim>(0);
+  return this->template get_w_measures<dim>(0);
 }
 
 
@@ -156,7 +156,7 @@ auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 get_index() const -> IndexType
 {
-    return parent_t::get_index();
+  return parent_t::get_index();
 }
 
 #if 0
@@ -165,9 +165,9 @@ void
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 move_to(const Index flat_index)
 {
-    this->get_grid_element().move_to(flat_index);
-    ref_space_element_->move_to(flat_index);
-    map_element_->move_to(flat_index);
+  this->get_grid_element().move_to(flat_index);
+  ref_space_element_->move_to(flat_index);
+  map_element_->move_to(flat_index);
 }
 #endif
 
@@ -176,7 +176,7 @@ Size
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 get_max_num_basis() const
 {
-    return ref_space_element_->get_max_num_basis();
+  return ref_space_element_->get_max_num_basis();
 }
 
 
@@ -185,7 +185,7 @@ auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 get_ref_space_element() const -> const RefElemAccessor &
 {
-    return *ref_space_element_;
+  return *ref_space_element_;
 }
 
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
@@ -193,7 +193,7 @@ auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 get_ref_space_element() -> RefElemAccessor &
 {
-    return *ref_space_element_;
+  return *ref_space_element_;
 }
 
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
@@ -201,7 +201,7 @@ auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 get_grid() const -> const std::shared_ptr<const CartesianGrid<dim> >
 {
-    return this->get_ref_space_element().get_grid();
+  return this->get_ref_space_element().get_grid();
 }
 
 
@@ -210,7 +210,7 @@ auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 get_map_element() const -> const MapElem &
 {
-    return *map_element_;
+  return *map_element_;
 }
 
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
@@ -218,7 +218,7 @@ auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 get_map_element() -> MapElem &
 {
-    return *map_element_;
+  return *map_element_;
 }
 //*/
 
@@ -228,13 +228,13 @@ void
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 print_info(LogStream &out) const
 {
-    out.begin_item("Reference space:");
-    ref_space_element_->print_info(out);
-    out.end_item();
+  out.begin_item("Reference space:");
+  ref_space_element_->print_info(out);
+  out.end_item();
 
-    out.begin_item("Pushforward:");
-    map_element_->print_info(out);
-    out.end_item();
+  out.begin_item("Pushforward:");
+  map_element_->print_info(out);
+  out.end_item();
 }
 
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
@@ -242,13 +242,13 @@ void
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 print_cache_info(LogStream &out) const
 {
-    out.begin_item("Reference space:");
-    ref_space_element_->print_cache_info(out);
-    out.end_item();
+  out.begin_item("Reference space:");
+  ref_space_element_->print_cache_info(out);
+  out.end_item();
 
-    out.begin_item("Pushforward:");
-    map_element_->print_cache_info(out);
-    out.end_item();
+  out.begin_item("Pushforward:");
+  map_element_->print_cache_info(out);
+  out.end_item();
 }
 
 IGA_NAMESPACE_CLOSE

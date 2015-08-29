@@ -34,47 +34,47 @@
 template <int dim>
 void eigen_values()
 {
-    OUTSTART
+  OUTSTART
 
-    DenseMatrix A(dim, dim);
-    A.clear();
-    for (int i=0; i<dim; ++i)
-        A(i,i) = i+1;
+  DenseMatrix A(dim, dim);
+  A.clear();
+  for (int i=0; i<dim; ++i)
+    A(i,i) = i+1;
 
-    A.print_info(out);
-    out << endl << "Eigen Values:" << endl;
-    A.eigen_values().print_info(out);
-    out << endl;
+  A.print_info(out);
+  out << endl << "Eigen Values:" << endl;
+  A.eigen_values().print_info(out);
+  out << endl;
 
-    OUTEND
+  OUTEND
 }
 
 
 void eigen_values2()
 {
-    OUTSTART
+  OUTSTART
 
-    const int dim=2;
-    Tensor<dim, 1, tensor::covariant, Tensor<dim, 1, tensor::contravariant, Tdouble> > B;
-    B[0][0] = 1;
-    B[0][1] = 2;
-    B[1][0] = 3;
-    B[1][1] = 4;
-    const auto A = unroll_to_matrix(B);
+  const int dim=2;
+  Tensor<dim, 1, tensor::covariant, Tensor<dim, 1, tensor::contravariant, Tdouble> > B;
+  B[0][0] = 1;
+  B[0][1] = 2;
+  B[1][0] = 3;
+  B[1][1] = 4;
+  const auto A = unroll_to_matrix(B);
 
-    out << endl << "Eigen Values:" << endl;
-    A.eigen_values().print_info(out);
-    out << endl;
+  out << endl << "Eigen Values:" << endl;
+  A.eigen_values().print_info(out);
+  out << endl;
 
-    OUTEND
+  OUTEND
 }
 
 int main()
 {
-    eigen_values<2>();
-    eigen_values<3>();
+  eigen_values<2>();
+  eigen_values<3>();
 
-    eigen_values2();
+  eigen_values2();
 
-    return 0;
+  return 0;
 }

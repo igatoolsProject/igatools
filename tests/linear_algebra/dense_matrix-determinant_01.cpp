@@ -34,24 +34,24 @@
 template <int dim>
 void comp_determinant()
 {
-    OUTSTART
+  OUTSTART
 
-    DenseMatrix A(dim, dim);
-    for (int i=0; i<dim; ++i)
-        for (int j=0; j<dim; ++j)
-            A(i,j) = pow(i,j);
+  DenseMatrix A(dim, dim);
+  for (int i=0; i<dim; ++i)
+    for (int j=0; j<dim; ++j)
+      A(i,j) = pow(i,j);
 
-    A.print_info(out);
-    out << endl << "Determinant: " << A.determinant() << endl;
+  A.print_info(out);
+  out << endl << "Determinant: " << A.determinant() << endl;
 
-    OUTEND
+  OUTEND
 }
 
 
 int main()
 {
-    comp_determinant<2>();
-    comp_determinant<3>();
+  comp_determinant<2>();
+  comp_determinant<3>();
 
-    return 0;
+  return 0;
 }

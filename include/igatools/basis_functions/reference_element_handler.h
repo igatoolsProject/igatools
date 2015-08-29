@@ -38,112 +38,112 @@ IGA_NAMESPACE_OPEN
  */
 template<int dim, int range = 1, int rank = 1>
 class ReferenceElementHandler
-    :
-    public SpaceElementHandler<dim,0,range,rank,Transformation::h_grad>
+  :
+  public SpaceElementHandler<dim,0,range,rank,Transformation::h_grad>
 {
 private:
-    using base_t = SpaceElementHandler<dim,0,range,rank,Transformation::h_grad>;
+  using base_t = SpaceElementHandler<dim,0,range,rank,Transformation::h_grad>;
 public:
-    using Space = ReferenceSpace<dim,range,rank>;
-    using ElementIterator = typename Space::ElementIterator;
-    using ElementAccessor = typename Space::ElementAccessor;
+  using Space = ReferenceSpace<dim,range,rank>;
+  using ElementIterator = typename Space::ElementIterator;
+  using ElementAccessor = typename Space::ElementAccessor;
 
-    using topology_variant = TopologyVariants<dim>;
-    using eval_pts_variant = SubElemVariants<Quadrature,dim>;
+  using topology_variant = TopologyVariants<dim>;
+  using eval_pts_variant = SubElemVariants<Quadrature,dim>;
 
 
-    static std::shared_ptr<ReferenceElementHandler<dim,range,rank> >
-    create(const std::shared_ptr<const Space> &space);
+  static std::shared_ptr<ReferenceElementHandler<dim,range,rank> >
+  create(const std::shared_ptr<const Space> &space);
 
 protected:
-    /** @name Constructors */
-    ///@{
-    /**
-     * Default constructor. It does nothing but it is needed for the
-     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     * mechanism.
-     */
-    ReferenceElementHandler() = default;
+  /** @name Constructors */
+  ///@{
+  /**
+   * Default constructor. It does nothing but it is needed for the
+   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * mechanism.
+   */
+  ReferenceElementHandler() = default;
 
 
-    ReferenceElementHandler(const std::shared_ptr<const Space> &space);
+  ReferenceElementHandler(const std::shared_ptr<const Space> &space);
 
-    /**
-     * Copy constructor. Not allowed to be used.
-     */
-    ReferenceElementHandler(const ReferenceElementHandler<dim,range,rank> &elem_handler) = delete;
+  /**
+   * Copy constructor. Not allowed to be used.
+   */
+  ReferenceElementHandler(const ReferenceElementHandler<dim,range,rank> &elem_handler) = delete;
 
-    /**
-     * Move constructor. Not allowed to be used.
-     */
-    ReferenceElementHandler(ReferenceElementHandler<dim,range,rank> &&elem_handler) = delete;
+  /**
+   * Move constructor. Not allowed to be used.
+   */
+  ReferenceElementHandler(ReferenceElementHandler<dim,range,rank> &&elem_handler) = delete;
 
 public:
 
-    /**
-     * Destructor.
-     */
-    virtual ~ReferenceElementHandler() = default;
+  /**
+   * Destructor.
+   */
+  virtual ~ReferenceElementHandler() = default;
 
-    ///@}
+  ///@}
 
-    /**
-     * @name Reset functions
-     */
-    ///@{
+  /**
+   * @name Reset functions
+   */
+  ///@{
 
 #if 0
-    virtual void init_cache(SpaceElement<dim,0,range,rank,Transformation::h_grad> &space_elem,
-                            const topology_variant &topology) override final;
+  virtual void init_cache(SpaceElement<dim,0,range,rank,Transformation::h_grad> &space_elem,
+                          const topology_variant &topology) override final;
 
-    virtual void fill_cache(SpaceElement<dim,0,range,rank,Transformation::h_grad> &space_elem,
-                            const topology_variant &topology,
-                            const int sub_elem_id) override final;
+  virtual void fill_cache(SpaceElement<dim,0,range,rank,Transformation::h_grad> &space_elem,
+                          const topology_variant &topology,
+                          const int sub_elem_id) override final;
 #endif
 
 //    virtual void print_info(LogStream &out) const = 0;
 
-    template <int sub_elem_dim = dim>
-    Size get_num_points() const
-    {
-        return grid_handler_.template get_num_points<sub_elem_dim>();
-    }
+  template <int sub_elem_dim = dim>
+  Size get_num_points() const
+  {
+    return grid_handler_.template get_num_points<sub_elem_dim>();
+  }
 
 protected:
 
 #if 0
-    virtual void init_ref_elem_cache(ElementAccessor &elem,
-                                     const topology_variant &topology)= 0;
+  virtual void init_ref_elem_cache(ElementAccessor &elem,
+                                   const topology_variant &topology)= 0;
 
-    virtual void fill_ref_elem_cache(ElementAccessor &elem,
-                                     const topology_variant &topology,
-                                     const int sub_elem_id) = 0;
+  virtual void fill_ref_elem_cache(ElementAccessor &elem,
+                                   const topology_variant &topology,
+                                   const int sub_elem_id) = 0;
 #endif
 
-    GridElementHandler<dim> grid_handler_;
+  GridElementHandler<dim> grid_handler_;
 
 public:
-    /**
-     * Returns the const reference of the GridElementHandler used by the current ReferenceElementHandler.
-     * @return
-     */
-    const GridElementHandler<dim> &get_grid_handler() const;
+  /**
+   * Returns the const reference of the GridElementHandler used by the current ReferenceElementHandler.
+   * @return
+   */
+  const GridElementHandler<dim> &get_grid_handler() const;
 
 
 private:
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version);
-    ///@}
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version);
+  ///@}
 #endif // SERIALIZATION
 };
 
@@ -154,33 +154,33 @@ template< class Grad, class Div >
 void
 eval_divergences_from_gradients(const ValueTable<Grad> &gradients, ValueTable<Div> &divergences)
 {
-    Assert(gradients.get_num_functions() == divergences.get_num_functions(),
-           ExcDimensionMismatch(gradients.get_num_functions(),divergences.get_num_functions()));
+  Assert(gradients.get_num_functions() == divergences.get_num_functions(),
+         ExcDimensionMismatch(gradients.get_num_functions(),divergences.get_num_functions()));
 
-    Assert(gradients.get_num_points() == divergences.get_num_points(),
-           ExcDimensionMismatch(gradients.get_num_points(),divergences.get_num_points()));
+  Assert(gradients.get_num_points() == divergences.get_num_points(),
+         ExcDimensionMismatch(gradients.get_num_points(),divergences.get_num_points()));
 
-    auto div_it = divergences.begin();
-    for (const auto &grad : gradients)
-    {
-        *div_it = trace(grad);
-        ++div_it;
-    }
+  auto div_it = divergences.begin();
+  for (const auto &grad : gradients)
+  {
+    *div_it = trace(grad);
+    ++div_it;
+  }
 }
 
 template< class Grad, class Div >
 void
 eval_divergences_from_gradients(const ValueVector<Grad> &gradients, ValueVector<Div> &divergences)
 {
-    Assert(gradients.get_num_points() == divergences.get_num_points(),
-           ExcDimensionMismatch(gradients.get_num_points(),divergences.get_num_points()));
+  Assert(gradients.get_num_points() == divergences.get_num_points(),
+         ExcDimensionMismatch(gradients.get_num_points(),divergences.get_num_points()));
 
-    auto div_it = divergences.begin();
-    for (const auto &grad : gradients)
-    {
-        *div_it = trace(grad);
-        ++div_it;
-    }
+  auto div_it = divergences.begin();
+  for (const auto &grad : gradients)
+  {
+    *div_it = trace(grad);
+    ++div_it;
+  }
 }
 
 IGA_NAMESPACE_CLOSE

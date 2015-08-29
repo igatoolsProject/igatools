@@ -31,27 +31,27 @@
 template<int dim>
 void default_constructor()
 {
-    Points<dim> p;
-    out << p << endl;
+  Points<dim> p;
+  out << p << endl;
 }
 
 void init_list()
 {
-    Points<2> p2 = {1., 2.5};
-    Points<3> p3({1., 2.5, -4.3});
-    Points<3> p3a {1., 2.5, -4.3};
-    out << p2 << p3 << p3a  << endl;
+  Points<2> p2 = {1., 2.5};
+  Points<3> p3({1., 2.5, -4.3});
+  Points<3> p3a {1., 2.5, -4.3};
+  out << p2 << p3 << p3a  << endl;
 }
 
 int main()
 {
 
-    default_constructor<0>();
-    default_constructor<1>();
-    default_constructor<2>();
-    default_constructor<3>();
+  default_constructor<0>();
+  default_constructor<1>();
+  default_constructor<2>();
+  default_constructor<3>();
 
-    init_list();
+  init_list();
 
-    return 0;
+  return 0;
 }

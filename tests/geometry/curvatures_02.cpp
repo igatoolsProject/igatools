@@ -40,65 +40,65 @@
 template <int dim>
 void normal_derivatives()
 {
-    OUTSTART
+  OUTSTART
 
-    using Function = functions::SphereFunction<dim>;
+  using Function = functions::SphereFunction<dim>;
 
-    auto flag = ValueFlags::point |  ValueFlags::value |
-                ValueFlags::curvature;
+  auto flag = ValueFlags::point |  ValueFlags::value |
+              ValueFlags::curvature;
 
-    auto quad = QUniform<dim>(3);
+  auto quad = QUniform<dim>(3);
 
-    BBox<dim> box;
-    for (int i=0; i<dim-1; ++i)
-        box[i] = {0.+M_PI/8, M_PI-M_PI/8};
-    if (dim>=1)
-        box[dim-1] = {0., M_PI};
-    auto grid = CartesianGrid<dim>::create(box, 2);
+  BBox<dim> box;
+  for (int i=0; i<dim-1; ++i)
+    box[i] = {0.+M_PI/8, M_PI-M_PI/8};
+  if (dim>=1)
+    box[dim-1] = {0., M_PI};
+  auto grid = CartesianGrid<dim>::create(box, 2);
 
-    auto F = Function::create(grid, IdentityFunction<dim>::create(grid));
-
-
-    using Mapping   = Mapping<dim, 1>;
-    Mapping map(F);
-    map.reset(flag, quad);
-
-    auto elem = map.begin();
-    auto end = map.end();
-
-    map.template init_cache<dim>(elem);
-    for (; elem != end; ++elem)
-    {
-        map.template fill_cache<dim>(elem, 0);
-
-        auto normals = elem->get_external_normals();
-        auto D_normals = elem->get_D_external_normals();
+  auto F = Function::create(grid, IdentityFunction<dim>::create(grid));
 
 
-        out << "Normals:" << endl;
-        normals.print_info(out);
-        out << endl;
+  using Mapping   = Mapping<dim, 1>;
+  Mapping map(F);
+  map.reset(flag, quad);
 
-        out << "Der normal:" << endl;
-        D_normals.print_info(out);
-        out << endl;
+  auto elem = map.begin();
+  auto end = map.end();
 
-        out << "Dn^t on n:" << endl;
-        for (int pt=0; pt<normals.get_num_points(); ++pt)
-            out << action(co_tensor(transpose(D_normals[pt])), normals[pt]) << endl;
+  map.template init_cache<dim>(elem);
+  for (; elem != end; ++elem)
+  {
+    map.template fill_cache<dim>(elem, 0);
 
-    }
+    auto normals = elem->get_external_normals();
+    auto D_normals = elem->get_D_external_normals();
 
-    OUTEND
+
+    out << "Normals:" << endl;
+    normals.print_info(out);
+    out << endl;
+
+    out << "Der normal:" << endl;
+    D_normals.print_info(out);
+    out << endl;
+
+    out << "Dn^t on n:" << endl;
+    for (int pt=0; pt<normals.get_num_points(); ++pt)
+      out << action(co_tensor(transpose(D_normals[pt])), normals[pt]) << endl;
+
+  }
+
+  OUTEND
 }
 
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
-    normal_derivatives<1>();
-    normal_derivatives<2>();
+  normal_derivatives<1>();
+  normal_derivatives<2>();
 
-    return 0;
+  return 0;
 }

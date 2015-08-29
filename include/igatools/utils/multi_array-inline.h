@@ -32,16 +32,16 @@ template<class STLContainer, int rank>
 inline
 MultiArray<STLContainer,rank>::
 MultiArray()
-    :
-    TensorSizedContainer<rank>(0)
+  :
+  TensorSizedContainer<rank>(0)
 {}
 
 template<class STLContainer, int rank>
 inline
 MultiArray<STLContainer,rank>::
 MultiArray(const int dim)
-    :
-    TensorSizedContainer<rank>(dim)
+  :
+  TensorSizedContainer<rank>(dim)
 {}
 
 
@@ -49,8 +49,8 @@ template<class STLContainer, int rank>
 inline
 MultiArray<STLContainer,rank>::
 MultiArray(const TensorSize<rank> &dim)
-    :
-    TensorSizedContainer<rank>(dim)
+  :
+  TensorSizedContainer<rank>(dim)
 {}
 
 
@@ -60,7 +60,7 @@ auto
 MultiArray<STLContainer,rank>::
 get_data() const -> const STLContainer &
 {
-    return this->data_;
+  return this->data_;
 }
 
 
@@ -72,7 +72,7 @@ operator[](const Index i) -> reference
 {
 //    Assert((0<=i)  &&(i<this->flat_size()),
 //    ExcIndexRange(i,0,this->flat_size()));
-    return this->data_[i];
+  return this->data_[i];
 }
 
 template<class STLContainer, int rank>
@@ -83,7 +83,7 @@ operator[](const Index i) const -> const_reference
 {
 //    Assert((0<=i) &&(i<this->flat_size()),
 //           ExcIndexRange(i,0,this->flat_size()));
-    return this->data_[i];
+  return this->data_[i];
 }
 //*/
 
@@ -94,19 +94,19 @@ MultiArray<STLContainer,rank>::
 operator()(const TensorIndex<rank> &tensor_index) -> reference
 {
 #ifndef NDEBUG
-    const TensorSize<rank> tensor_size = this->tensor_size();
+  const TensorSize<rank> tensor_size = this->tensor_size();
 
-    for (int i = 0 ; i < rank ; ++i)
-        Assert((tensor_index[i] >= 0) &&
-        (tensor_index[i] < tensor_size[i]),
-        ExcIndexRange(tensor_index[i],0,tensor_size[i]));
+  for (int i = 0 ; i < rank ; ++i)
+    Assert((tensor_index[i] >= 0) &&
+    (tensor_index[i] < tensor_size[i]),
+    ExcIndexRange(tensor_index[i],0,tensor_size[i]));
 #endif
 
 //    Assert((this->tensor_to_flat(tensor_index) >= 0) &&
 //    (this->tensor_to_flat(tensor_index) < this->flat_size()),
 //    ExcIndexRange(this->tensor_to_flat(tensor_index),0,this->flat_size()));
 
-    return this->data_[this->tensor_to_flat(tensor_index)];
+  return this->data_[this->tensor_to_flat(tensor_index)];
 }
 
 
@@ -116,7 +116,7 @@ auto
 MultiArray<STLContainer,rank>::
 operator()(const TensorIndex<rank> &tensor_index) const -> const_reference
 {
-    return const_cast<MultiArray<STLContainer,rank> &>(*this)(tensor_index);
+  return const_cast<MultiArray<STLContainer,rank> &>(*this)(tensor_index);
 }
 
 
@@ -128,7 +128,7 @@ auto
 MultiArray<STLContainer,rank>::
 cbegin() const -> const_iterator
 {
-    return const_iterator(*this,0);
+  return const_iterator(*this,0);
 }
 
 template<class STLContainer, int rank>
@@ -137,7 +137,7 @@ auto
 MultiArray<STLContainer,rank>::
 cend() const -> const_iterator
 {
-    return const_iterator(*this,IteratorState::pass_the_end);
+  return const_iterator(*this,IteratorState::pass_the_end);
 }
 
 template<class STLContainer, int rank>
@@ -146,7 +146,7 @@ auto
 MultiArray<STLContainer,rank>::
 begin() const -> const_iterator
 {
-    return cbegin();
+  return cbegin();
 }
 
 template<class STLContainer, int rank>
@@ -155,7 +155,7 @@ auto
 MultiArray<STLContainer,rank>::
 end() const -> const_iterator
 {
-    return cend();
+  return cend();
 }
 
 
@@ -165,7 +165,7 @@ auto
 MultiArray<STLContainer,rank>::
 begin() -> iterator
 {
-    return iterator(*this,0);
+  return iterator(*this,0);
 }
 
 template<class STLContainer, int rank>
@@ -174,7 +174,7 @@ auto
 MultiArray<STLContainer,rank>::
 end() -> iterator
 {
-    return iterator(*this,IteratorState::pass_the_end);
+  return iterator(*this,IteratorState::pass_the_end);
 }
 
 
@@ -186,9 +186,9 @@ void
 MultiArray<STLContainer,rank>::
 fill_progression(const value_type &init)
 {
-    auto val = init;
-    for (auto &d : data_)
-        d = val++;
+  auto val = init;
+  for (auto &d : data_)
+    d = val++;
 }
 
 
@@ -199,7 +199,7 @@ void
 MultiArray<STLContainer,rank>::
 fill(const value_type &value)
 {
-    std::fill(this->data_.begin(),this->data_.end(),value);
+  std::fill(this->data_.begin(),this->data_.end(),value);
 }
 
 
@@ -210,7 +210,7 @@ ContainerView<MultiArray<STLContainer,rank> >
 MultiArray<STLContainer,rank>::
 get_view()
 {
-    return ContainerView<MultiArray<STLContainer,rank>>(this->begin(),this->end());
+  return ContainerView<MultiArray<STLContainer,rank>>(this->begin(),this->end());
 }
 
 template<class STLContainer, int rank>
@@ -219,7 +219,7 @@ ConstContainerView<MultiArray<STLContainer,rank> >
 MultiArray<STLContainer,rank>::
 get_const_view() const
 {
-    return ConstContainerView<MultiArray<STLContainer,rank>>(this->cbegin(),this->cend());
+  return ConstContainerView<MultiArray<STLContainer,rank>>(this->cbegin(),this->cend());
 }
 
 
@@ -229,7 +229,7 @@ ContainerView<STLContainer>
 MultiArray<STLContainer,rank>::
 get_flat_view()
 {
-    return ContainerView<STLContainer>(this->data_.begin(),this->data_.end());
+  return ContainerView<STLContainer>(this->data_.begin(),this->data_.end());
 }
 
 template<class STLContainer, int rank>
@@ -238,7 +238,7 @@ ConstContainerView<STLContainer>
 MultiArray<STLContainer,rank>::
 get_flat_const_view() const
 {
-    return ConstContainerView<STLContainer>(this->data_.cbegin(),this->data_.cend());
+  return ConstContainerView<STLContainer>(this->data_.cbegin(),this->data_.cend());
 }
 
 
@@ -248,9 +248,9 @@ void
 MultiArray<STLContainer,rank>::
 print_info(LogStream &out) const
 {
-    TensorSizedContainer<rank>::print_info(out);
-    out << std::endl;
-    t_print_info<STLContainer>(out);
+  TensorSizedContainer<rank>::print_info(out);
+  out << std::endl;
+  t_print_info<STLContainer>(out);
 }
 
 
@@ -260,7 +260,7 @@ void
 MultiArray<STLContainer,rank>::
 resize(const Size dim)
 {
-    this->resize(TensorSize<rank>(dim));
+  this->resize(TensorSize<rank>(dim));
 }
 
 
@@ -270,8 +270,8 @@ void
 MultiArray<STLContainer,rank>::
 resize(const TensorSize<rank> &dim)
 {
-    this->reset_size(dim);
-    this->data_.resize(this->flat_size());
+  this->reset_size(dim);
+  this->data_.resize(this->flat_size());
 }
 
 
@@ -281,8 +281,8 @@ void
 MultiArray<STLContainer,rank>::
 resize(const TensorSize<rank> &dim, const typename STLContainer::value_type &val)
 {
-    this->reset_size(dim);
-    this->data_.resize(this->flat_size(),val);
+  this->reset_size(dim);
+  this->data_.resize(this->flat_size(),val);
 }
 
 
@@ -293,18 +293,18 @@ std::size_t
 MultiArray<STLContainer,rank>::
 memory_consumption() const
 {
-    /*
-            const auto &data = this->get_data();
+  /*
+          const auto &data = this->get_data();
 
-            const auto n_objects = this->get_data().size();
-            const auto memory_single_object = sizeof(value_type);
+          const auto n_objects = this->get_data().size();
+          const auto memory_single_object = sizeof(value_type);
 
-            return n_objects * memory_single_object +
-                   TensorSizedContainer<rank>::memory_consumption();
-            //*/
+          return n_objects * memory_single_object +
+                 TensorSizedContainer<rank>::memory_consumption();
+          //*/
 
-    return sizeof(this->get_data()) +
-           TensorSizedContainer<rank>::memory_consumption();
+  return sizeof(this->get_data()) +
+         TensorSizedContainer<rank>::memory_consumption();
 //*/
 }
 

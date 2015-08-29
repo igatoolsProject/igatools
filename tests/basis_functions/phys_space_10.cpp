@@ -42,34 +42,34 @@ template <int dim, int range=1, int rank=1, int codim = 0>
 void cache_init(const ValueFlags flag,
                 const int n_knots = 5, const int deg=1)
 {
-    OUTSTART
+  OUTSTART
 
-    using BspSpace = BSplineSpace<dim, range, rank>;
-    using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
-    auto grid      = CartesianGrid<dim>::create(n_knots);
-    auto ref_space = BspSpace::create(deg, grid);
+  using BspSpace = BSplineSpace<dim, range, rank>;
+  using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
+  auto grid      = CartesianGrid<dim>::create(n_knots);
+  auto ref_space = BspSpace::create(deg, grid);
 
-    using Function = functions::LinearFunction<dim, 0, dim+codim>;
-    typename Function::Value    b;
-    typename Function::Gradient A;
-    for (int i=0; i<Space::space_dim; i++)
-    {
-        for (int j=0; j<dim; j++)
-            if (j == i)
-                A[j][j] = 2.;
-        b[i] = i;
-    }
+  using Function = functions::LinearFunction<dim, 0, dim+codim>;
+  typename Function::Value    b;
+  typename Function::Gradient A;
+  for (int i=0; i<Space::space_dim; i++)
+  {
+    for (int j=0; j<dim; j++)
+      if (j == i)
+        A[j][j] = 2.;
+    b[i] = i;
+  }
 
-    auto quad = QGauss<dim>(2);
-    auto map_func = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
-    auto space = Space::create(ref_space, map_func);
+  auto quad = QGauss<dim>(2);
+  auto map_func = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
+  auto space = Space::create(ref_space, map_func);
 
 
-    auto elem_handler = space->get_elem_handler();
-    elem_handler->reset(flag, quad);
-    elem_handler->print_info(out);
+  auto elem_handler = space->get_elem_handler();
+  elem_handler->reset(flag, quad);
+  elem_handler->print_info(out);
 
-    OUTEND
+  OUTEND
 }
 
 
@@ -79,37 +79,37 @@ void cache_init_elem(const ValueFlags flag,
                      const int n_knots = 5, const int deg=1)
 {
 //    const int k = dim;
-    OUTSTART
+  OUTSTART
 
-    using BspSpace = BSplineSpace<dim, range, rank>;
-    using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
+  using BspSpace = BSplineSpace<dim, range, rank>;
+  using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 
-    auto grid  = CartesianGrid<dim>::create(n_knots);
-    auto ref_space = BspSpace::create(deg, grid);
+  auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto ref_space = BspSpace::create(deg, grid);
 
-    using Function = functions::LinearFunction<dim, 0, dim+codim>;
-    typename Function::Value    b;
-    typename Function::Gradient A;
-    for (int i=0; i<Space::space_dim; i++)
-    {
-        for (int j=0; j<dim; j++)
-            if (j == i)
-                A[j][j] = 2.;
-        b[i] = i;
-    }
+  using Function = functions::LinearFunction<dim, 0, dim+codim>;
+  typename Function::Value    b;
+  typename Function::Gradient A;
+  for (int i=0; i<Space::space_dim; i++)
+  {
+    for (int j=0; j<dim; j++)
+      if (j == i)
+        A[j][j] = 2.;
+    b[i] = i;
+  }
 
-    auto quad = QGauss<dim>(2);
-    auto map_func = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
-    auto space = Space::create(ref_space, map_func);
+  auto quad = QGauss<dim>(2);
+  auto map_func = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
+  auto space = Space::create(ref_space, map_func);
 
-    auto elem_handler = space->get_elem_handler();
-    elem_handler->reset(flag, quad);
+  auto elem_handler = space->get_elem_handler();
+  elem_handler->reset(flag, quad);
 
-    auto elem = space->begin();
-    elem_handler->init_element_cache(elem);
-    elem->print_cache_info(out);
+  auto elem = space->begin();
+  elem_handler->init_element_cache(elem);
+  elem->print_cache_info(out);
 
-    OUTEND
+  OUTEND
 }
 
 
@@ -117,43 +117,43 @@ template <int dim, int range=1, int rank=1, int codim = 0>
 void cache_fill_elem(const ValueFlags flag,
                      const int n_knots = 5, const int deg=1)
 {
-    OUTSTART
+  OUTSTART
 
 //   const int k = dim;
-    using BspSpace = BSplineSpace<dim, range, rank>;
-    using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
+  using BspSpace = BSplineSpace<dim, range, rank>;
+  using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 
-    auto grid  = CartesianGrid<dim>::create(n_knots);
-    auto ref_space = BspSpace::create(deg, grid);
+  auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto ref_space = BspSpace::create(deg, grid);
 
-    using Function = functions::LinearFunction<dim, 0, dim+codim>;
-    typename Function::Value    b;
-    typename Function::Gradient A;
-    for (int i=0; i<Space::space_dim; i++)
-    {
-        for (int j=0; j<dim; j++)
-            if (j == i)
-                A[j][j] = 2.;
-        b[i] = i;
-    }
+  using Function = functions::LinearFunction<dim, 0, dim+codim>;
+  typename Function::Value    b;
+  typename Function::Gradient A;
+  for (int i=0; i<Space::space_dim; i++)
+  {
+    for (int j=0; j<dim; j++)
+      if (j == i)
+        A[j][j] = 2.;
+    b[i] = i;
+  }
 
-    auto quad = QGauss<dim>(2);
-    auto map_func = Function::create(grid,IdentityFunction<dim>::create(grid), A, b);
-    auto space = Space::create(ref_space, map_func);
+  auto quad = QGauss<dim>(2);
+  auto map_func = Function::create(grid,IdentityFunction<dim>::create(grid), A, b);
+  auto space = Space::create(ref_space, map_func);
 
-    auto elem_handler = space->get_elem_handler();
-    elem_handler->reset(flag, quad);
+  auto elem_handler = space->get_elem_handler();
+  elem_handler->reset(flag, quad);
 
-    auto elem = space->begin();
-    auto end = space->end();
-    elem_handler->init_element_cache(elem);
-    for (; elem != end; ++elem)
-    {
-        elem_handler->fill_element_cache(elem);
-        elem->print_cache_info(out);
-    }
+  auto elem = space->begin();
+  auto end = space->end();
+  elem_handler->init_element_cache(elem);
+  for (; elem != end; ++elem)
+  {
+    elem_handler->fill_element_cache(elem);
+    elem->print_cache_info(out);
+  }
 
-    OUTEND
+  OUTEND
 }
 
 
@@ -162,54 +162,54 @@ template <int dim, int range=1, int rank=1, int codim = 0>
 void cache_get_elem_values(const ValueFlags flag,
                            const int n_knots = 5, const int deg=1)
 {
-    OUTSTART
-    const int k = dim;
-    using BspSpace = BSplineSpace<dim, range, rank>;
-    using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
+  OUTSTART
+  const int k = dim;
+  using BspSpace = BSplineSpace<dim, range, rank>;
+  using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 
-    auto grid  = CartesianGrid<dim>::create(n_knots);
-    auto ref_space = BspSpace::create(deg, grid);
+  auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto ref_space = BspSpace::create(deg, grid);
 
-    using Function = functions::LinearFunction<dim, 0, dim+codim>;
-    typename Function::Value    b;
-    typename Function::Gradient A;
-    for (int i=0; i<Space::space_dim; i++)
-    {
-        for (int j=0; j<dim; j++)
-            if (j == i)
-                A[j][j] = 2.;
-        b[i] = i;
-    }
+  using Function = functions::LinearFunction<dim, 0, dim+codim>;
+  typename Function::Value    b;
+  typename Function::Gradient A;
+  for (int i=0; i<Space::space_dim; i++)
+  {
+    for (int j=0; j<dim; j++)
+      if (j == i)
+        A[j][j] = 2.;
+    b[i] = i;
+  }
 
-    auto quad = QGauss<dim>(2);
-    auto map_func = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
-    auto space = Space::create(ref_space, map_func);
+  auto quad = QGauss<dim>(2);
+  auto map_func = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
+  auto space = Space::create(ref_space, map_func);
 
-    auto elem_handler = space->get_elem_handler();
-    elem_handler->reset(flag, quad);
+  auto elem_handler = space->get_elem_handler();
+  elem_handler->reset(flag, quad);
 
-    auto elem = space->begin();
-    auto end = space->end();
-    elem_handler->init_element_cache(elem);
-    for (; elem != end; ++elem)
-    {
-        elem_handler->fill_element_cache(elem);
-        elem->template get_basis<_Value, k>(0,DofProperties::active).print_info(out);
-    }
+  auto elem = space->begin();
+  auto end = space->end();
+  elem_handler->init_element_cache(elem);
+  for (; elem != end; ++elem)
+  {
+    elem_handler->fill_element_cache(elem);
+    elem->template get_basis<_Value, k>(0,DofProperties::active).print_info(out);
+  }
 
-    OUTEND
+  OUTEND
 }
 
 
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
-    cache_init<1>(ValueFlags::value);
-    cache_init_elem<1>(ValueFlags::value);
-    cache_fill_elem<1>(ValueFlags::value);
-    cache_get_elem_values<1>(ValueFlags::value);
+  cache_init<1>(ValueFlags::value);
+  cache_init_elem<1>(ValueFlags::value);
+  cache_fill_elem<1>(ValueFlags::value);
+  cache_get_elem_values<1>(ValueFlags::value);
 
-    return  0;
+  return  0;
 }

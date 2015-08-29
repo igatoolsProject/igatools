@@ -35,41 +35,41 @@
 template <int dim, int sdim>
 void boundaryId(const TensorSize<dim> &n_knots)
 {
-    OUTSTART
+  OUTSTART
 
-    using Grid = CartesianGrid<dim>;
-    auto grid = Grid::const_create(n_knots);
+  using Grid = CartesianGrid<dim>;
+  auto grid = Grid::const_create(n_knots);
 
-    for (const auto &elem : *grid)
+  for (const auto &elem : *grid)
+  {
+    elem.print_info(out);
+    out.begin_item("Boundary subelements:");
+    for (auto &s_id : UnitElement<dim>::template elems_ids<sdim>())
     {
-        elem.print_info(out);
-        out.begin_item("Boundary subelements:");
-        for (auto &s_id : UnitElement<dim>::template elems_ids<sdim>())
-        {
-            if (elem.template is_boundary<sdim>(s_id))
-                out << s_id << ",";
-        }
-        out.end_item();
+      if (elem.template is_boundary<sdim>(s_id))
+        out << s_id << ",";
     }
+    out.end_item();
+  }
 
-    OUTEND
+  OUTEND
 }
 
 
 int main()
 {
-    boundaryId<0,0>(TensorSize<0>(3));
-    boundaryId<1,1>(TensorSize<1>(3));
-    boundaryId<2,2>(TensorSize<2>(3));
-    boundaryId<3,3>(TensorSize<3>(3));
+  boundaryId<0,0>(TensorSize<0>(3));
+  boundaryId<1,1>(TensorSize<1>(3));
+  boundaryId<2,2>(TensorSize<2>(3));
+  boundaryId<3,3>(TensorSize<3>(3));
 
-    boundaryId<1,0>(TensorSize<1>(3));
-    boundaryId<2,1>(TensorSize<2>(3));
-    boundaryId<3,2>(TensorSize<3>(3));
+  boundaryId<1,0>(TensorSize<1>(3));
+  boundaryId<2,1>(TensorSize<2>(3));
+  boundaryId<3,2>(TensorSize<3>(3));
 
-    boundaryId<1,0>(TensorSize<1>(sequence<1>(2)));
-    boundaryId<2,1>(TensorSize<2>(sequence<2>(2)));
-    boundaryId<3,2>(TensorSize<3>(sequence<3>(2)));
+  boundaryId<1,0>(TensorSize<1>(sequence<1>(2)));
+  boundaryId<2,1>(TensorSize<2>(sequence<2>(2)));
+  boundaryId<3,2>(TensorSize<3>(sequence<3>(2)));
 
-    return  0;
+  return  0;
 }

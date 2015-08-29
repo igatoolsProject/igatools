@@ -41,110 +41,110 @@ IGA_NAMESPACE_OPEN
 template<int dim, int codim, class T>
 Writer<dim, codim, T>::
 Writer(const shared_ptr<CartesianGrid<dim>> grid)
-    :
-    Writer(IdentityFunction<dim,dim+codim>::create(grid),
-          shared_ptr< QUniform<dim> >(new QUniform<dim>(2)))
+  :
+  Writer(IdentityFunction<dim,dim+codim>::create(grid),
+        shared_ptr< QUniform<dim> >(new QUniform<dim>(2)))
 {}
 
 template<int dim, int codim, class T>
 Writer<dim, codim, T>::
 Writer(const std::shared_ptr<const MapFunction_new<dim,codim>> map,
        const Index num_points_direction)
-    :
-    Writer(map,shared_ptr<QUniform<dim> >(new QUniform<dim>(num_points_direction)))
+  :
+  Writer(map,shared_ptr<QUniform<dim> >(new QUniform<dim>(num_points_direction)))
 {}
 
 template<int dim, int codim, class T>
 Writer<dim, codim, T>::
 Writer(const shared_ptr<const MapFunction_new<dim,codim> > map,
        const shared_ptr<const Quadrature<dim> > quadrature)
-    :
-    map_(map->clone()),
-    quad_plot_(quadrature),
-    num_points_direction_(quad_plot_->get_num_coords_direction()),
-    n_iga_elements_(map->get_grid()->get_num_all_elems()),
-    n_points_per_iga_element_(quad_plot_->get_num_points()),
-    n_vtk_points_(n_iga_elements_*n_points_per_iga_element_),
-    sizeof_Real_(sizeof(T)),
-    sizeof_int_(sizeof(int)),
-    sizeof_uchar_(sizeof(unsigned char)),
-    offset_(0)
+  :
+  map_(map->clone()),
+  quad_plot_(quadrature),
+  num_points_direction_(quad_plot_->get_num_coords_direction()),
+  n_iga_elements_(map->get_grid()->get_num_all_elems()),
+  n_points_per_iga_element_(quad_plot_->get_num_points()),
+  n_vtk_points_(n_iga_elements_*n_points_per_iga_element_),
+  sizeof_Real_(sizeof(T)),
+  sizeof_int_(sizeof(int)),
+  sizeof_uchar_(sizeof(unsigned char)),
+  offset_(0)
 {
-    Assert(map_ != nullptr, ExcNullPtr());
-    Assert(quad_plot_ != nullptr, ExcNullPtr());
+  Assert(map_ != nullptr, ExcNullPtr());
+  Assert(quad_plot_ != nullptr, ExcNullPtr());
 
 #if defined( BOOST_LITTLE_ENDIAN )
-    byte_order_ = "LittleEndian";
+  byte_order_ = "LittleEndian";
 #elif defined( BOOST_BIG_ENDIAN )
-    byte_order_ = "BigEndian";
+  byte_order_ = "BigEndian";
 #else
-    AssertThrow(false, ExcMessage("Unsupported Endian-ness"));
+  AssertThrow(false, ExcMessage("Unsupported Endian-ness"));
 #endif
 
-    //--------------------------------------------------------------------------
-    Assert(sizeof_Real_ == 8 || sizeof_Real_ == 4,
-           ExcMessage("The size of the Real type can be only 8 o 4 bytes."));
+  //--------------------------------------------------------------------------
+  Assert(sizeof_Real_ == 8 || sizeof_Real_ == 4,
+         ExcMessage("The size of the Real type can be only 8 o 4 bytes."));
 
-    if (sizeof_Real_ == 8)
-    {
-        string_Real_ = "Float64";
-        precision_ = 15;
-    }
-    else if (sizeof_Real_ == 4)
-    {
-        string_Real_ = "Float32";
-        precision_ = 8;
-    }
-    //--------------------------------------------------------------------------
-
-
-    //--------------------------------------------------------------------------
-    Assert(sizeof_int_ == 4,
-           ExcMessage("The size of the int type can be only 4 bytes."));
-    string_int_ = "UInt32";
-    //--------------------------------------------------------------------------
+  if (sizeof_Real_ == 8)
+  {
+    string_Real_ = "Float64";
+    precision_ = 15;
+  }
+  else if (sizeof_Real_ == 4)
+  {
+    string_Real_ = "Float32";
+    precision_ = 8;
+  }
+  //--------------------------------------------------------------------------
 
 
-    //--------------------------------------------------------------------------
-    Assert(sizeof_uchar_ == 1,
-           ExcMessage("The size of the unsigned char type can be only 1 byte."));
-    string_uchar_ = "UInt8";
-    //--------------------------------------------------------------------------
+  //--------------------------------------------------------------------------
+  Assert(sizeof_int_ == 4,
+         ExcMessage("The size of the int type can be only 4 bytes."));
+  string_int_ = "UInt32";
+  //--------------------------------------------------------------------------
 
 
-    //--------------------------------------------------------------------------
-    appended_data_ << '_';
-    //--------------------------------------------------------------------------
+  //--------------------------------------------------------------------------
+  Assert(sizeof_uchar_ == 1,
+         ExcMessage("The size of the unsigned char type can be only 1 byte."));
+  string_uchar_ = "UInt8";
+  //--------------------------------------------------------------------------
 
 
-    if (dim == 1)
-    {
-        vtk_element_type_ = 3; // VTK_LINE
-    }
-    else if (dim == 2)
-    {
-        vtk_element_type_ = 9; // VTK_QUAD
-    }
-    else if (dim == 3)
-    {
-        vtk_element_type_ = 12; // VTK_HEXAHEDRON
-    }
+  //--------------------------------------------------------------------------
+  appended_data_ << '_';
+  //--------------------------------------------------------------------------
 
-    //--------------------------------------------------------------------------
-    n_vtk_elements_per_iga_element_ = 1;
-    for (int i = 0; i < dim; i++)
-    {
-        Assert(num_points_direction_[i] >= 2, ExcLowerRange(num_points_direction_[i], 2));
 
-        num_subelements_direction_[i] = num_points_direction_[i] - 1;
+  if (dim == 1)
+  {
+    vtk_element_type_ = 3; // VTK_LINE
+  }
+  else if (dim == 2)
+  {
+    vtk_element_type_ = 9; // VTK_QUAD
+  }
+  else if (dim == 3)
+  {
+    vtk_element_type_ = 12; // VTK_HEXAHEDRON
+  }
 
-        n_vtk_elements_per_iga_element_ *= num_subelements_direction_[i];
-    }
-    //--------------------------------------------------------------------------
+  //--------------------------------------------------------------------------
+  n_vtk_elements_per_iga_element_ = 1;
+  for (int i = 0; i < dim; i++)
+  {
+    Assert(num_points_direction_[i] >= 2, ExcLowerRange(num_points_direction_[i], 2));
 
-    //--------------------------------------------------------------------------
-    n_vtk_elements_ = n_vtk_elements_per_iga_element_ * n_iga_elements_;
-    //--------------------------------------------------------------------------
+    num_subelements_direction_[i] = num_points_direction_[i] - 1;
+
+    n_vtk_elements_per_iga_element_ *= num_subelements_direction_[i];
+  }
+  //--------------------------------------------------------------------------
+
+  //--------------------------------------------------------------------------
+  n_vtk_elements_ = n_vtk_elements_per_iga_element_ * n_iga_elements_;
+  //--------------------------------------------------------------------------
 }
 
 
@@ -155,30 +155,30 @@ Writer(const shared_ptr<const MapFunction_new<dim,codim> > map,
 template<int dim, int codim, class T>
 void Writer<dim, codim, T>::
 fill_points_and_connectivity(
-    SafeSTLVector<SafeSTLVector<SafeSTLArray<T,3> > > &points_in_iga_elements,
-    SafeSTLVector<SafeSTLVector<SafeSTLArray<int,n_vertices_per_vtk_element_> > >
-    &vtk_elements_connectivity) const
+  SafeSTLVector<SafeSTLVector<SafeSTLArray<T,3> > > &points_in_iga_elements,
+  SafeSTLVector<SafeSTLVector<SafeSTLArray<int,n_vertices_per_vtk_element_> > >
+  &vtk_elements_connectivity) const
 {
-    map_->reset(ValueFlags::value | ValueFlags::point, *quad_plot_);
+  map_->reset(ValueFlags::value | ValueFlags::point, *quad_plot_);
 
-    auto m_elem = map_->begin();
-    auto m_end  = map_->end();
+  auto m_elem = map_->begin();
+  auto m_end  = map_->end();
 
-    const auto topology = Topology<dim>();
+  const auto topology = Topology<dim>();
 
-    map_->init_cache(m_elem,topology);
+  map_->init_cache(m_elem,topology);
 
-    for (; m_elem != m_end; ++m_elem)
-    {
-        map_->fill_cache(m_elem,topology,0);
+  for (; m_elem != m_end; ++m_elem)
+  {
+    map_->fill_cache(m_elem,topology,0);
 
-        const auto elem_id = m_elem->get_flat_index();
+    const auto elem_id = m_elem->get_flat_index();
 
-        this->get_subelements(
-            *m_elem,
-            vtk_elements_connectivity[elem_id],
-            points_in_iga_elements[elem_id]);
-    }
+    this->get_subelements(
+      *m_elem,
+      vtk_elements_connectivity[elem_id],
+      points_in_iga_elements[elem_id]);
+  }
 }
 
 
@@ -186,123 +186,123 @@ fill_points_and_connectivity(
 template<int dim, int codim, class T>
 void Writer<dim, codim, T>::
 get_subelements(
-    const typename MapFunction_new<dim,codim>::ElementAccessor &elem,
-    SafeSTLVector< SafeSTLArray<int,n_vertices_per_vtk_element_ > > &vtk_elements_connectivity,
-    SafeSTLVector< SafeSTLArray<T,3> > &points_phys_iga_element) const
+  const typename MapFunction_new<dim,codim>::ElementAccessor &elem,
+  SafeSTLVector< SafeSTLArray<int,n_vertices_per_vtk_element_ > > &vtk_elements_connectivity,
+  SafeSTLVector< SafeSTLArray<T,3> > &points_phys_iga_element) const
 {
-    Assert(Size(points_phys_iga_element.size()) == n_points_per_iga_element_,
-           ExcDimensionMismatch(points_phys_iga_element.size(), n_points_per_iga_element_));
+  Assert(Size(points_phys_iga_element.size()) == n_points_per_iga_element_,
+         ExcDimensionMismatch(points_phys_iga_element.size(), n_points_per_iga_element_));
 
-    Assert(Size(vtk_elements_connectivity.size())== n_vtk_elements_per_iga_element_,
-           ExcDimensionMismatch(vtk_elements_connectivity.size(), n_vtk_elements_per_iga_element_));
+  Assert(Size(vtk_elements_connectivity.size())== n_vtk_elements_per_iga_element_,
+         ExcDimensionMismatch(vtk_elements_connectivity.size(), n_vtk_elements_per_iga_element_));
 
 
-    auto element_vertices_tmp = elem.template get_values<_Value,dim>(0);
+  auto element_vertices_tmp = elem.template get_values<_Value,dim>(0);
 
-    const T zero = T(0.0);
+  const T zero = T(0.0);
 
-    // here we evaluate the position of the evaluation points in the physical domain
-    for (int ipt = 0; ipt < n_points_per_iga_element_; ++ipt)
+  // here we evaluate the position of the evaluation points in the physical domain
+  for (int ipt = 0; ipt < n_points_per_iga_element_; ++ipt)
+  {
+    for (int i = 0; i < Mapping<dim,codim>::space_dim; ++i)
+      points_phys_iga_element[ipt][i] = element_vertices_tmp[ipt][i];
+
+    for (int i = Mapping<dim,codim>::space_dim; i < 3; ++i)
+      points_phys_iga_element[ipt][i] = zero;
+  }
+
+
+  const int iga_element_id = elem.get_flat_index();
+
+  SafeSTLVector< SafeSTLArray<int,dim> > delta_idx(n_vertices_per_vtk_element_);
+
+  if (dim == 1)
+  {
+    delta_idx[0][0] = 0;
+    delta_idx[1][0] = 1;
+  }
+  else if (dim == 2)
+  {
+    delta_idx[0][0] = 0;
+    delta_idx[0][1] = 0;
+
+    delta_idx[1][0] = 1;
+    delta_idx[1][1] = 0;
+
+    delta_idx[2][0] = 1;
+    delta_idx[2][1] = 1;
+
+    delta_idx[3][0] = 0;
+    delta_idx[3][1] = 1;
+  }
+  else if (dim == 3)
+  {
+    delta_idx[0][0] = 0;
+    delta_idx[0][1] = 0;
+    delta_idx[0][2] = 0;
+
+    delta_idx[1][0] = 1;
+    delta_idx[1][1] = 0;
+    delta_idx[1][2] = 0;
+
+    delta_idx[2][0] = 1;
+    delta_idx[2][1] = 1;
+    delta_idx[2][2] = 0;
+
+    delta_idx[3][0] = 0;
+    delta_idx[3][1] = 1;
+    delta_idx[3][2] = 0;
+
+    delta_idx[4][0] = 0;
+    delta_idx[4][1] = 0;
+    delta_idx[4][2] = 1;
+
+    delta_idx[5][0] = 1;
+    delta_idx[5][1] = 0;
+    delta_idx[5][2] = 1;
+
+    delta_idx[6][0] = 1;
+    delta_idx[6][1] = 1;
+    delta_idx[6][2] = 1;
+
+    delta_idx[7][0] = 0;
+    delta_idx[7][1] = 1;
+    delta_idx[7][2] = 1;
+  }
+  //--------------------------------------------------------------------------
+
+
+
+  TensorIndex<dim> weight_points =
+    MultiArrayUtils< dim >::compute_weight(num_points_direction_);
+
+
+
+  //--------------------------------------------------------------------------
+  // grid defining the vtk elements inside the iga element
+
+  const auto vtk_elements_grid = CartesianGrid<dim>::create(num_points_direction_);
+  auto vtk_elem = vtk_elements_grid->begin();
+  const auto vtk_elem_end = vtk_elements_grid->end();
+
+  int vtk_vertex_id_offset = n_points_per_iga_element_ * iga_element_id;
+  for (; vtk_elem != vtk_elem_end; ++vtk_elem)
+  {
+    int vtk_elem_flat_id = vtk_elem->get_flat_index();
+    auto vtk_elem_tensor_idx = vtk_elem.get_tensor_index();
+
+    for (int iVertex = 0; iVertex < n_vertices_per_vtk_element_; ++iVertex)
     {
-        for (int i = 0; i < Mapping<dim,codim>::space_dim; ++i)
-            points_phys_iga_element[ipt][i] = element_vertices_tmp[ipt][i];
+      TensorIndex<dim> vtk_vertex_tensor_idx;
+      for (int i = 0; i < dim; ++i)
+        vtk_vertex_tensor_idx[i] = vtk_elem_tensor_idx[i] + delta_idx[iVertex][i];
 
-        for (int i = Mapping<dim,codim>::space_dim; i < 3; ++i)
-            points_phys_iga_element[ipt][i] = zero;
+      const int vtk_vertex_local_id = MultiArrayUtils<dim>::tensor_to_flat_index(vtk_vertex_tensor_idx, weight_points);
+
+      vtk_elements_connectivity[vtk_elem_flat_id][iVertex] = vtk_vertex_local_id + vtk_vertex_id_offset;
     }
-
-
-    const int iga_element_id = elem.get_flat_index();
-
-    SafeSTLVector< SafeSTLArray<int,dim> > delta_idx(n_vertices_per_vtk_element_);
-
-    if (dim == 1)
-    {
-        delta_idx[0][0] = 0;
-        delta_idx[1][0] = 1;
-    }
-    else if (dim == 2)
-    {
-        delta_idx[0][0] = 0;
-        delta_idx[0][1] = 0;
-
-        delta_idx[1][0] = 1;
-        delta_idx[1][1] = 0;
-
-        delta_idx[2][0] = 1;
-        delta_idx[2][1] = 1;
-
-        delta_idx[3][0] = 0;
-        delta_idx[3][1] = 1;
-    }
-    else if (dim == 3)
-    {
-        delta_idx[0][0] = 0;
-        delta_idx[0][1] = 0;
-        delta_idx[0][2] = 0;
-
-        delta_idx[1][0] = 1;
-        delta_idx[1][1] = 0;
-        delta_idx[1][2] = 0;
-
-        delta_idx[2][0] = 1;
-        delta_idx[2][1] = 1;
-        delta_idx[2][2] = 0;
-
-        delta_idx[3][0] = 0;
-        delta_idx[3][1] = 1;
-        delta_idx[3][2] = 0;
-
-        delta_idx[4][0] = 0;
-        delta_idx[4][1] = 0;
-        delta_idx[4][2] = 1;
-
-        delta_idx[5][0] = 1;
-        delta_idx[5][1] = 0;
-        delta_idx[5][2] = 1;
-
-        delta_idx[6][0] = 1;
-        delta_idx[6][1] = 1;
-        delta_idx[6][2] = 1;
-
-        delta_idx[7][0] = 0;
-        delta_idx[7][1] = 1;
-        delta_idx[7][2] = 1;
-    }
-    //--------------------------------------------------------------------------
-
-
-
-    TensorIndex<dim> weight_points =
-        MultiArrayUtils< dim >::compute_weight(num_points_direction_);
-
-
-
-    //--------------------------------------------------------------------------
-    // grid defining the vtk elements inside the iga element
-
-    const auto vtk_elements_grid = CartesianGrid<dim>::create(num_points_direction_);
-    auto vtk_elem = vtk_elements_grid->begin();
-    const auto vtk_elem_end = vtk_elements_grid->end();
-
-    int vtk_vertex_id_offset = n_points_per_iga_element_ * iga_element_id;
-    for (; vtk_elem != vtk_elem_end; ++vtk_elem)
-    {
-        int vtk_elem_flat_id = vtk_elem->get_flat_index();
-        auto vtk_elem_tensor_idx = vtk_elem.get_tensor_index();
-
-        for (int iVertex = 0; iVertex < n_vertices_per_vtk_element_; ++iVertex)
-        {
-            TensorIndex<dim> vtk_vertex_tensor_idx;
-            for (int i = 0; i < dim; ++i)
-                vtk_vertex_tensor_idx[i] = vtk_elem_tensor_idx[i] + delta_idx[iVertex][i];
-
-            const int vtk_vertex_local_id = MultiArrayUtils<dim>::tensor_to_flat_index(vtk_vertex_tensor_idx, weight_points);
-
-            vtk_elements_connectivity[vtk_elem_flat_id][iVertex] = vtk_vertex_local_id + vtk_vertex_id_offset;
-        }
-    }
-    //--------------------------------------------------------------------------
+  }
+  //--------------------------------------------------------------------------
 }
 
 
@@ -313,21 +313,21 @@ Writer<dim, codim, T>::
 add_element_data(const SafeSTLVector<double> &element_data,
                  const std::string &name)
 {
-    cell_data_double_.emplace_back(CellData<double>(element_data, name));
+  cell_data_double_.emplace_back(CellData<double>(element_data, name));
 
-    const string type = cell_data_double_.back().type_;
-    if (type == "scalar")
-    {
-        names_cell_data_scalar_.emplace_back(name);
-    }
-    else if (type == "vector")
-    {
-        names_cell_data_vector_.emplace_back(name);
-    }
-    else if (type == "tensor")
-    {
-        names_cell_data_tensor_.emplace_back(name);
-    }
+  const string type = cell_data_double_.back().type_;
+  if (type == "scalar")
+  {
+    names_cell_data_scalar_.emplace_back(name);
+  }
+  else if (type == "vector")
+  {
+    names_cell_data_vector_.emplace_back(name);
+  }
+  else if (type == "tensor")
+  {
+    names_cell_data_tensor_.emplace_back(name);
+  }
 }
 
 
@@ -338,21 +338,21 @@ Writer<dim, codim, T>::
 add_element_data(const SafeSTLVector<int> &element_data,
                  const std::string &name)
 {
-    cell_data_int_.emplace_back(CellData<int>(element_data, name));
+  cell_data_int_.emplace_back(CellData<int>(element_data, name));
 
-    const string type = cell_data_int_.back().type_;
-    if (type == "scalar")
-    {
-        names_cell_data_scalar_.emplace_back(name);
-    }
-    else if (type == "vector")
-    {
-        names_cell_data_vector_.emplace_back(name);
-    }
-    else if (type == "tensor")
-    {
-        names_cell_data_tensor_.emplace_back(name);
-    }
+  const string type = cell_data_int_.back().type_;
+  if (type == "scalar")
+  {
+    names_cell_data_scalar_.emplace_back(name);
+  }
+  else if (type == "vector")
+  {
+    names_cell_data_vector_.emplace_back(name);
+  }
+  else if (type == "tensor")
+  {
+    names_cell_data_tensor_.emplace_back(name);
+  }
 }
 
 
@@ -365,48 +365,48 @@ add_point_data(const int n_values_per_point,
                const SafeSTLVector<SafeSTLVector<SafeSTLVector<T>>> &data_iga_elements,
                const std::string &name)
 {
-    Assert(data_iga_elements.size() == n_iga_elements_,
-           ExcDimensionMismatch(data_iga_elements.size(), n_iga_elements_));
-    Assert(type == "scalar" || type == "vector" || type == "tensor",
-           ExcMessage("The point_data type can only be \"scalar\", \"vector\" or \"tensor\" (and not \"" + type + "\")"));
+  Assert(data_iga_elements.size() == n_iga_elements_,
+         ExcDimensionMismatch(data_iga_elements.size(), n_iga_elements_));
+  Assert(type == "scalar" || type == "vector" || type == "tensor",
+         ExcMessage("The point_data type can only be \"scalar\", \"vector\" or \"tensor\" (and not \"" + type + "\")"));
 
-    shared_ptr<SafeSTLVector<T>> data_ptr(new SafeSTLVector<T>(n_iga_elements_ * n_points_per_iga_element_ * n_values_per_point));
-    auto &data = *data_ptr;
+  shared_ptr<SafeSTLVector<T>> data_ptr(new SafeSTLVector<T>(n_iga_elements_ * n_points_per_iga_element_ * n_values_per_point));
+  auto &data = *data_ptr;
 
-    Index pos = 0;
-    for (const auto &data_element : data_iga_elements)
+  Index pos = 0;
+  for (const auto &data_element : data_iga_elements)
+  {
+    Assert(data_element.size() == n_points_per_iga_element_,
+           ExcDimensionMismatch(data_element.size(), n_points_per_iga_element_));
+
+    for (const auto &data_point : data_element)
     {
-        Assert(data_element.size() == n_points_per_iga_element_,
-               ExcDimensionMismatch(data_element.size(), n_points_per_iga_element_));
+      Assert(data_point.size() == n_values_per_point,
+             ExcDimensionMismatch(data_point.size(), n_values_per_point));
 
-        for (const auto &data_point : data_element)
-        {
-            Assert(data_point.size() == n_values_per_point,
-                   ExcDimensionMismatch(data_point.size(), n_values_per_point));
+      for (const double &value : data_point)
+      {
+        data[pos++] = value;
+      }
+    }
+  }
+  fields_.emplace_back(PointData(name,type,n_iga_elements_,
+                                 n_points_per_iga_element_,
+                                 n_values_per_point,
+                                 data_ptr));
 
-            for (const double &value : data_point)
-            {
-                data[pos++] = value;
-            }
-        }
-    }
-    fields_.emplace_back(PointData(name,type,n_iga_elements_,
-                                   n_points_per_iga_element_,
-                                   n_values_per_point,
-                                   data_ptr));
-
-    if (type == "scalar")
-    {
-        names_point_data_scalar_.emplace_back(name);
-    }
-    else if (type == "vector")
-    {
-        names_point_data_vector_.emplace_back(name);
-    }
-    else if (type == "tensor")
-    {
-        names_point_data_tensor_.emplace_back(name);
-    }
+  if (type == "scalar")
+  {
+    names_point_data_scalar_.emplace_back(name);
+  }
+  else if (type == "vector")
+  {
+    names_point_data_vector_.emplace_back(name);
+  }
+  else if (type == "tensor")
+  {
+    names_point_data_tensor_.emplace_back(name);
+  }
 
 }
 
@@ -418,35 +418,35 @@ template<int dim, int codim, class T>
 void Writer<dim, codim, T>::
 save(const string &filename, const string &format) const
 {
-    //--------------------------------------------------------------------------
-    Assert(format == "ascii" || format == "appended",
-           ExcMessage("Unsupported format."));
-    //--------------------------------------------------------------------------
+  //--------------------------------------------------------------------------
+  Assert(format == "ascii" || format == "appended",
+         ExcMessage("Unsupported format."));
+  //--------------------------------------------------------------------------
 
-    SafeSTLVector< SafeSTLVector< SafeSTLArray<T,3> > >
-    points_in_iga_elements(n_iga_elements_, SafeSTLVector< SafeSTLArray<T,3> >(n_points_per_iga_element_));
+  SafeSTLVector< SafeSTLVector< SafeSTLArray<T,3> > >
+  points_in_iga_elements(n_iga_elements_, SafeSTLVector< SafeSTLArray<T,3> >(n_points_per_iga_element_));
 
-    SafeSTLVector< SafeSTLVector< SafeSTLArray< int, n_vertices_per_vtk_element_> > >
-    vtk_elements_connectivity(n_iga_elements_);
-    for (auto &iga_elem_connectivity : vtk_elements_connectivity)
-        iga_elem_connectivity.resize(n_vtk_elements_per_iga_element_);
+  SafeSTLVector< SafeSTLVector< SafeSTLArray< int, n_vertices_per_vtk_element_> > >
+  vtk_elements_connectivity(n_iga_elements_);
+  for (auto &iga_elem_connectivity : vtk_elements_connectivity)
+    iga_elem_connectivity.resize(n_vtk_elements_per_iga_element_);
 
-    this->fill_points_and_connectivity(points_in_iga_elements, vtk_elements_connectivity);
+  this->fill_points_and_connectivity(points_in_iga_elements, vtk_elements_connectivity);
 
-    const string vtu_filename = filename + ".vtu";
+  const string vtu_filename = filename + ".vtu";
 
 
-    if (format == "ascii")
-    {
-        ofstream file(vtu_filename);
-        file.setf(ios::scientific);
-        file.precision(precision_);
-        this->save_ascii(file, points_in_iga_elements, vtk_elements_connectivity);
-    }
-    else if (format == "appended")
-    {
-        this->save_appended(vtu_filename, points_in_iga_elements, vtk_elements_connectivity);
-    }
+  if (format == "ascii")
+  {
+    ofstream file(vtu_filename);
+    file.setf(ios::scientific);
+    file.precision(precision_);
+    this->save_ascii(file, points_in_iga_elements, vtk_elements_connectivity);
+  }
+  else if (format == "appended")
+  {
+    this->save_appended(vtu_filename, points_in_iga_elements, vtk_elements_connectivity);
+  }
 }
 
 
@@ -459,155 +459,155 @@ save_ascii(Out &file,
            const SafeSTLVector< SafeSTLVector< SafeSTLArray<int,n_vertices_per_vtk_element_> > >
            &vtk_elements_connectivity) const
 {
-    const string tab1("\t");
-    const string tab2 = tab1 + tab1;
-    const string tab3 = tab2 + tab1;
-    const string tab4 = tab3 + tab1;
-    const string tab5 = tab4 + tab1;
+  const string tab1("\t");
+  const string tab2 = tab1 + tab1;
+  const string tab3 = tab2 + tab1;
+  const string tab4 = tab3 + tab1;
+  const string tab5 = tab4 + tab1;
 
-    file << "<?xml version=\"1.0\"?>" << endl;
-    file << "<VTKFile type=\"UnstructuredGrid\" byte_order=\"" << byte_order_ << "\">" << endl;
+  file << "<?xml version=\"1.0\"?>" << endl;
+  file << "<VTKFile type=\"UnstructuredGrid\" byte_order=\"" << byte_order_ << "\">" << endl;
 
-    file << tab1 << "<UnstructuredGrid>" << endl;
+  file << tab1 << "<UnstructuredGrid>" << endl;
 
-    file << tab2 << "<Piece NumberOfPoints=\"" << to_string(n_vtk_points_) << "\" NumberOfCells=\""<< to_string(n_vtk_elements_) << "\">" << endl;
+  file << tab2 << "<Piece NumberOfPoints=\"" << to_string(n_vtk_points_) << "\" NumberOfCells=\""<< to_string(n_vtk_elements_) << "\">" << endl;
 
-    file << tab3 << "<Points>" << endl;
-    file << tab4 << "<DataArray type=\"" << string_Real_ << "\" NumberOfComponents=\"3\" format=\"ascii\">" << endl;
+  file << tab3 << "<Points>" << endl;
+  file << tab4 << "<DataArray type=\"" << string_Real_ << "\" NumberOfComponents=\"3\" format=\"ascii\">" << endl;
 
-    for (const auto &point_in_iga_element : points_in_iga_elements)
-        for (const auto &point : point_in_iga_element)
-            file << tab5 << point[0] << " " << point[1] << " " << point[2] << endl;
+  for (const auto &point_in_iga_element : points_in_iga_elements)
+    for (const auto &point : point_in_iga_element)
+      file << tab5 << point[0] << " " << point[1] << " " << point[2] << endl;
+
+  file << tab4 << "</DataArray>" << endl;
+  file << tab3 << "</Points>" << endl;
+
+  file << tab3 << "<Cells>" << endl;
+  file << tab4 << "<DataArray Name=\"connectivity\" type=\"" << string_int_ << "\" format=\"ascii\">" << endl;
+  file << tab5;
+  for (const auto &iga_elem_connectivity : vtk_elements_connectivity)
+    for (const auto &vtk_elem_connectivity : iga_elem_connectivity)
+      for (const auto &point_id : vtk_elem_connectivity)
+        file << point_id << " ";
+  file << endl;
+  file << tab4 << "</DataArray>" << endl;
+
+  file << tab4 << "<DataArray Name=\"offsets\" type=\"" << string_int_ << "\" format=\"ascii\">" << endl;
+  file << tab5;
+  for (int vtk_elem_id = 1; vtk_elem_id <= n_vtk_elements_; ++vtk_elem_id)
+    file << n_vertices_per_vtk_element_ * vtk_elem_id << " ";
+  file << endl;
+  file << tab4 << "</DataArray>" << endl;
+
+  file << tab4 << "<DataArray Name=\"types\" type=\"" << string_uchar_ << "\" format=\"ascii\">" << endl;
+  file << tab5;
+  for (int vtk_elem_id = 1; vtk_elem_id <= n_vtk_elements_; ++vtk_elem_id)
+    file << static_cast<int>(vtk_element_type_) << " ";
+  file << endl;
+  file << tab4 << "</DataArray>" << endl;
+  file << tab3 << "</Cells>" << endl;
+
+
+  //--------------------------------------------------------------------------
+  // writing the <PointData> section
+  string point_data_optional_attr;
+  if (!names_point_data_scalar_.empty())
+  {
+    point_data_optional_attr += " Scalars=\"";
+    for (const string &name : names_point_data_scalar_)
+      point_data_optional_attr += name + " ";
+    point_data_optional_attr+= "\"";
+  }
+  if (!names_point_data_vector_.empty())
+  {
+    point_data_optional_attr += " Vectors=\"";
+    for (const string &name : names_point_data_vector_)
+      point_data_optional_attr += name + " ";
+    point_data_optional_attr+= "\"";
+  }
+  if (!names_point_data_tensor_.empty())
+  {
+    point_data_optional_attr += " Tensors=\"";
+    for (const string &name : names_point_data_tensor_)
+      point_data_optional_attr += name + " ";
+    point_data_optional_attr+= "\"";
+  }
+
+  file << tab3 << "<PointData" << point_data_optional_attr << ">" << endl;
+  for (const auto &point_data : fields_)
+  {
+    file << tab4 << "<DataArray Name=\"" << point_data.name_
+         << "\" type=\"" << string_Real_
+         << "\" NumberOfComponents=\""<< point_data.num_components_
+         << "\" format=\"ascii\">" << endl;
+
+    file << tab5;
+    for (const auto &v : *point_data.values_)
+      file << v << " ";
+    file << endl;
 
     file << tab4 << "</DataArray>" << endl;
-    file << tab3 << "</Points>" << endl;
+  }
+  file << tab3 << "</PointData>" << endl;
+  //--------------------------------------------------------------------------
 
-    file << tab3 << "<Cells>" << endl;
-    file << tab4 << "<DataArray Name=\"connectivity\" type=\"" << string_int_ << "\" format=\"ascii\">" << endl;
+
+  //--------------------------------------------------------------------------
+  // writing the <CellData> section
+  string cell_data_optional_attr;
+  if (!names_cell_data_scalar_.empty())
+  {
+    cell_data_optional_attr += " Scalars=\"";
+    for (const string &name : names_cell_data_scalar_)
+      cell_data_optional_attr += name + " ";
+    cell_data_optional_attr+= "\"";
+  }
+  if (!names_cell_data_vector_.empty())
+  {
+    cell_data_optional_attr += " Vectors=\"";
+    for (const string &name : names_cell_data_vector_)
+      cell_data_optional_attr += name + " ";
+    cell_data_optional_attr+= "\"";
+  }
+  if (!names_cell_data_tensor_.empty())
+  {
+    cell_data_optional_attr += " Tensors=\"";
+    for (const string &name : names_cell_data_tensor_)
+      cell_data_optional_attr += name + " ";
+    cell_data_optional_attr+= "\"";
+  }
+
+  file << tab3 << "<CellData" << cell_data_optional_attr << ">" << endl;
+  for (const auto &cell_data : cell_data_double_)
+  {
+    file << tab4 << "<DataArray Name=\"" << cell_data.name_
+         << "\" type=\"" << string_Real_
+         << "\" NumberOfComponents=\""<< cell_data.num_components_
+         << "\" format=\"ascii\">" << endl;
     file << tab5;
-    for (const auto &iga_elem_connectivity : vtk_elements_connectivity)
-        for (const auto &vtk_elem_connectivity : iga_elem_connectivity)
-            for (const auto &point_id : vtk_elem_connectivity)
-                file << point_id << " ";
+    for (const double &v : *cell_data.values_)
+      file << v << " ";
     file << endl;
     file << tab4 << "</DataArray>" << endl;
-
-    file << tab4 << "<DataArray Name=\"offsets\" type=\"" << string_int_ << "\" format=\"ascii\">" << endl;
+  }
+  for (const auto &cell_data : cell_data_int_)
+  {
+    file << tab4 << "<DataArray Name=\"" << cell_data.name_
+         << "\" type=\"" << string_int_
+         << "\" NumberOfComponents=\""<< cell_data.num_components_
+         << "\" format=\"ascii\">" << endl;
     file << tab5;
-    for (int vtk_elem_id = 1; vtk_elem_id <= n_vtk_elements_; ++vtk_elem_id)
-        file << n_vertices_per_vtk_element_ * vtk_elem_id << " ";
+    for (const int &v : *cell_data.values_)
+      file << v << " ";
     file << endl;
     file << tab4 << "</DataArray>" << endl;
+  }
+  file << tab3 << "</CellData>" << endl;
+  //--------------------------------------------------------------------------
 
-    file << tab4 << "<DataArray Name=\"types\" type=\"" << string_uchar_ << "\" format=\"ascii\">" << endl;
-    file << tab5;
-    for (int vtk_elem_id = 1; vtk_elem_id <= n_vtk_elements_; ++vtk_elem_id)
-        file << static_cast<int>(vtk_element_type_) << " ";
-    file << endl;
-    file << tab4 << "</DataArray>" << endl;
-    file << tab3 << "</Cells>" << endl;
-
-
-    //--------------------------------------------------------------------------
-    // writing the <PointData> section
-    string point_data_optional_attr;
-    if (!names_point_data_scalar_.empty())
-    {
-        point_data_optional_attr += " Scalars=\"";
-        for (const string &name : names_point_data_scalar_)
-            point_data_optional_attr += name + " ";
-        point_data_optional_attr+= "\"";
-    }
-    if (!names_point_data_vector_.empty())
-    {
-        point_data_optional_attr += " Vectors=\"";
-        for (const string &name : names_point_data_vector_)
-            point_data_optional_attr += name + " ";
-        point_data_optional_attr+= "\"";
-    }
-    if (!names_point_data_tensor_.empty())
-    {
-        point_data_optional_attr += " Tensors=\"";
-        for (const string &name : names_point_data_tensor_)
-            point_data_optional_attr += name + " ";
-        point_data_optional_attr+= "\"";
-    }
-
-    file << tab3 << "<PointData" << point_data_optional_attr << ">" << endl;
-    for (const auto &point_data : fields_)
-    {
-        file << tab4 << "<DataArray Name=\"" << point_data.name_
-             << "\" type=\"" << string_Real_
-             << "\" NumberOfComponents=\""<< point_data.num_components_
-             << "\" format=\"ascii\">" << endl;
-
-        file << tab5;
-        for (const auto &v : *point_data.values_)
-            file << v << " ";
-        file << endl;
-
-        file << tab4 << "</DataArray>" << endl;
-    }
-    file << tab3 << "</PointData>" << endl;
-    //--------------------------------------------------------------------------
-
-
-    //--------------------------------------------------------------------------
-    // writing the <CellData> section
-    string cell_data_optional_attr;
-    if (!names_cell_data_scalar_.empty())
-    {
-        cell_data_optional_attr += " Scalars=\"";
-        for (const string &name : names_cell_data_scalar_)
-            cell_data_optional_attr += name + " ";
-        cell_data_optional_attr+= "\"";
-    }
-    if (!names_cell_data_vector_.empty())
-    {
-        cell_data_optional_attr += " Vectors=\"";
-        for (const string &name : names_cell_data_vector_)
-            cell_data_optional_attr += name + " ";
-        cell_data_optional_attr+= "\"";
-    }
-    if (!names_cell_data_tensor_.empty())
-    {
-        cell_data_optional_attr += " Tensors=\"";
-        for (const string &name : names_cell_data_tensor_)
-            cell_data_optional_attr += name + " ";
-        cell_data_optional_attr+= "\"";
-    }
-
-    file << tab3 << "<CellData" << cell_data_optional_attr << ">" << endl;
-    for (const auto &cell_data : cell_data_double_)
-    {
-        file << tab4 << "<DataArray Name=\"" << cell_data.name_
-             << "\" type=\"" << string_Real_
-             << "\" NumberOfComponents=\""<< cell_data.num_components_
-             << "\" format=\"ascii\">" << endl;
-        file << tab5;
-        for (const double &v : *cell_data.values_)
-            file << v << " ";
-        file << endl;
-        file << tab4 << "</DataArray>" << endl;
-    }
-    for (const auto &cell_data : cell_data_int_)
-    {
-        file << tab4 << "<DataArray Name=\"" << cell_data.name_
-             << "\" type=\"" << string_int_
-             << "\" NumberOfComponents=\""<< cell_data.num_components_
-             << "\" format=\"ascii\">" << endl;
-        file << tab5;
-        for (const int &v : *cell_data.values_)
-            file << v << " ";
-        file << endl;
-        file << tab4 << "</DataArray>" << endl;
-    }
-    file << tab3 << "</CellData>" << endl;
-    //--------------------------------------------------------------------------
-
-    file << tab2 << "</Piece>" << endl;
-    file << tab1 << "</UnstructuredGrid>" << endl;
-    file << "</VTKFile>";
+  file << tab2 << "</Piece>" << endl;
+  file << tab1 << "</UnstructuredGrid>" << endl;
+  file << "</VTKFile>";
 }
 
 
@@ -619,236 +619,236 @@ save_appended(const string &filename,
               const SafeSTLVector< SafeSTLVector< SafeSTLArray< int,n_vertices_per_vtk_element_> > >
               &vtk_elements_connectivity) const
 {
-    ofstream file(filename);
-    file.setf(ios::scientific);
-    file.precision(precision_);
+  ofstream file(filename);
+  file.setf(ios::scientific);
+  file.precision(precision_);
 
-    const string tab1("\t");
-    const string tab2 = tab1 + tab1;
-    const string tab3 = tab2 + tab1;
-    const string tab4 = tab3 + tab1;
-    const string tab5 = tab4 + tab1;
+  const string tab1("\t");
+  const string tab2 = tab1 + tab1;
+  const string tab3 = tab2 + tab1;
+  const string tab4 = tab3 + tab1;
+  const string tab5 = tab4 + tab1;
 
-    int offset = 0;
-
-
-    file << "<?xml version=\"1.0\"?>" << endl;
-    file << "<VTKFile type=\"UnstructuredGrid\" byte_order=\"" << byte_order_ << "\">" << endl;
-
-    file << tab1 << "<UnstructuredGrid>" << endl;
-
-    file << tab2 << "<Piece NumberOfPoints=\"" << to_string(n_vtk_points_) << "\" NumberOfCells=\""<< to_string(n_vtk_elements_) << "\">" << endl;
-
-    file << tab3 << "<Points>" << endl;
-    file << tab4 << "<DataArray type=\"" << string_Real_ << "\" NumberOfComponents=\"3\" format=\"appended\" offset=\"" << offset << "\"/>" << endl;
-    const int n_bytes_points = n_vtk_points_ * 3 * sizeof_Real_;
-    offset += sizeof_int_ + n_bytes_points;
-    file << tab3 << "</Points>" << endl;
+  int offset = 0;
 
 
-    file << tab3 << "<Cells>" << endl;
-    file << tab4 << "<DataArray Name=\"connectivity\" type=\"" << string_int_ << "\" format=\"appended\" offset=\"" << offset << "\"/>" << endl;
-    const int n_bytes_connectivity = n_vtk_elements_ * n_vertices_per_vtk_element_ * sizeof_int_;
-    offset += sizeof_int_ + n_bytes_connectivity;
+  file << "<?xml version=\"1.0\"?>" << endl;
+  file << "<VTKFile type=\"UnstructuredGrid\" byte_order=\"" << byte_order_ << "\">" << endl;
+
+  file << tab1 << "<UnstructuredGrid>" << endl;
+
+  file << tab2 << "<Piece NumberOfPoints=\"" << to_string(n_vtk_points_) << "\" NumberOfCells=\""<< to_string(n_vtk_elements_) << "\">" << endl;
+
+  file << tab3 << "<Points>" << endl;
+  file << tab4 << "<DataArray type=\"" << string_Real_ << "\" NumberOfComponents=\"3\" format=\"appended\" offset=\"" << offset << "\"/>" << endl;
+  const int n_bytes_points = n_vtk_points_ * 3 * sizeof_Real_;
+  offset += sizeof_int_ + n_bytes_points;
+  file << tab3 << "</Points>" << endl;
 
 
-    file << tab4 << "<DataArray Name=\"offsets\" type=\"" << string_int_ << "\" format=\"appended\" offset=\"" << offset << "\"/>" << endl;
-    const int n_bytes_offsets = n_vtk_elements_ * sizeof_int_;
-    offset += sizeof_int_ + n_bytes_offsets;
+  file << tab3 << "<Cells>" << endl;
+  file << tab4 << "<DataArray Name=\"connectivity\" type=\"" << string_int_ << "\" format=\"appended\" offset=\"" << offset << "\"/>" << endl;
+  const int n_bytes_connectivity = n_vtk_elements_ * n_vertices_per_vtk_element_ * sizeof_int_;
+  offset += sizeof_int_ + n_bytes_connectivity;
 
 
-    file << tab4 << "<DataArray Name=\"types\" type=\"" << string_uchar_ << "\" format=\"appended\" offset=\"" << offset << "\"/>" << endl;
-    const int n_bytes_types = n_vtk_elements_ * sizeof_uchar_;
-    offset += sizeof_int_ + n_bytes_types;
-    file << tab3 << "</Cells>" << endl;
+  file << tab4 << "<DataArray Name=\"offsets\" type=\"" << string_int_ << "\" format=\"appended\" offset=\"" << offset << "\"/>" << endl;
+  const int n_bytes_offsets = n_vtk_elements_ * sizeof_int_;
+  offset += sizeof_int_ + n_bytes_offsets;
 
 
-    //--------------------------------------------------------------------------
-    // writing the <PointData> section
-    string point_data_optional_attr;
-    if (!names_point_data_scalar_.empty())
-    {
-        point_data_optional_attr += " Scalars=\"";
-        for (const string &name : names_point_data_scalar_)
-            point_data_optional_attr += name + " ";
-        point_data_optional_attr+= "\"";
-    }
-    if (!names_point_data_vector_.empty())
-    {
-        point_data_optional_attr += " Vectors=\"";
-        for (const string &name : names_point_data_vector_)
-            point_data_optional_attr += name + " ";
-        point_data_optional_attr+= "\"";
-    }
-    if (!names_point_data_tensor_.empty())
-    {
-        point_data_optional_attr += " Tensors=\"";
-        for (const string &name : names_point_data_tensor_)
-            point_data_optional_attr += name + " ";
-        point_data_optional_attr+= "\"";
-    }
-
-    SafeSTLVector<int> n_bytes_point_data;
-    file << tab3 << "<PointData" << point_data_optional_attr << ">" << endl;
-    for (const auto &point_data : fields_)
-    {
-
-        file << tab4 << "<DataArray Name=\"" << point_data.name_
-             << "\" type=\"" << string_Real_
-             << "\" NumberOfComponents=\""<< point_data.num_components_
-             << "\" format=\"appended\" offset=\"" << offset << "\"/>" << endl;
-
-        n_bytes_point_data.emplace_back(point_data.values_->size() * sizeof_Real_);
-        offset += sizeof_int_ + n_bytes_point_data.back();
-    }
-    file << tab3 << "</PointData>" << endl;
-    //--------------------------------------------------------------------------
+  file << tab4 << "<DataArray Name=\"types\" type=\"" << string_uchar_ << "\" format=\"appended\" offset=\"" << offset << "\"/>" << endl;
+  const int n_bytes_types = n_vtk_elements_ * sizeof_uchar_;
+  offset += sizeof_int_ + n_bytes_types;
+  file << tab3 << "</Cells>" << endl;
 
 
-    //--------------------------------------------------------------------------
-    // writing the <CellData> section
-    string cell_data_optional_attr;
-    if (!names_cell_data_scalar_.empty())
-    {
-        cell_data_optional_attr += " Scalars=\"";
-        for (const string &name : names_cell_data_scalar_)
-            cell_data_optional_attr += name + " ";
-        cell_data_optional_attr+= "\"";
-    }
-    if (!names_cell_data_vector_.empty())
-    {
-        cell_data_optional_attr += " Vectors=\"";
-        for (const string &name : names_cell_data_vector_)
-            cell_data_optional_attr += name + " ";
-        cell_data_optional_attr+= "\"";
-    }
-    if (!names_cell_data_tensor_.empty())
-    {
-        cell_data_optional_attr += " Tensors=\"";
-        for (const string &name : names_cell_data_tensor_)
-            cell_data_optional_attr += name + " ";
-        cell_data_optional_attr+= "\"";
-    }
+  //--------------------------------------------------------------------------
+  // writing the <PointData> section
+  string point_data_optional_attr;
+  if (!names_point_data_scalar_.empty())
+  {
+    point_data_optional_attr += " Scalars=\"";
+    for (const string &name : names_point_data_scalar_)
+      point_data_optional_attr += name + " ";
+    point_data_optional_attr+= "\"";
+  }
+  if (!names_point_data_vector_.empty())
+  {
+    point_data_optional_attr += " Vectors=\"";
+    for (const string &name : names_point_data_vector_)
+      point_data_optional_attr += name + " ";
+    point_data_optional_attr+= "\"";
+  }
+  if (!names_point_data_tensor_.empty())
+  {
+    point_data_optional_attr += " Tensors=\"";
+    for (const string &name : names_point_data_tensor_)
+      point_data_optional_attr += name + " ";
+    point_data_optional_attr+= "\"";
+  }
 
-    file << tab3 << "<CellData" << cell_data_optional_attr << ">" << endl;
+  SafeSTLVector<int> n_bytes_point_data;
+  file << tab3 << "<PointData" << point_data_optional_attr << ">" << endl;
+  for (const auto &point_data : fields_)
+  {
 
-    SafeSTLVector<int> n_bytes_cell_data_double;
-    for (const auto &cell_data : cell_data_double_)
-    {
-        file << tab4 << "<DataArray Name=\"" << cell_data.name_
-             << "\" type=\"" << string_Real_
-             << "\" NumberOfComponents=\""<< cell_data.num_components_
-             << "\" format=\"appended\" offset=\"" << offset << "\"/>" << endl;
+    file << tab4 << "<DataArray Name=\"" << point_data.name_
+         << "\" type=\"" << string_Real_
+         << "\" NumberOfComponents=\""<< point_data.num_components_
+         << "\" format=\"appended\" offset=\"" << offset << "\"/>" << endl;
 
-        n_bytes_cell_data_double.emplace_back(cell_data.values_->size() * sizeof_Real_);
-        offset += sizeof_int_ + n_bytes_cell_data_double.back();
-    }
-
-    SafeSTLVector<int> n_bytes_cell_data_int;
-    for (const auto &cell_data : cell_data_int_)
-    {
-        file << tab4 << "<DataArray Name=\"" << cell_data.name_
-             << "\" type=\"" << string_int_
-             << "\" NumberOfComponents=\""<< cell_data.num_components_
-             << "\" format=\"appended\" offset=\"" << offset << "\"/>" << endl;
-
-        n_bytes_cell_data_int.emplace_back(cell_data.values_->size() * sizeof_int_);
-        offset += sizeof_int_ + n_bytes_cell_data_int.back();
-    }
-    file << tab3 << "</CellData>" << endl;
-    //--------------------------------------------------------------------------
+    n_bytes_point_data.emplace_back(point_data.values_->size() * sizeof_Real_);
+    offset += sizeof_int_ + n_bytes_point_data.back();
+  }
+  file << tab3 << "</PointData>" << endl;
+  //--------------------------------------------------------------------------
 
 
+  //--------------------------------------------------------------------------
+  // writing the <CellData> section
+  string cell_data_optional_attr;
+  if (!names_cell_data_scalar_.empty())
+  {
+    cell_data_optional_attr += " Scalars=\"";
+    for (const string &name : names_cell_data_scalar_)
+      cell_data_optional_attr += name + " ";
+    cell_data_optional_attr+= "\"";
+  }
+  if (!names_cell_data_vector_.empty())
+  {
+    cell_data_optional_attr += " Vectors=\"";
+    for (const string &name : names_cell_data_vector_)
+      cell_data_optional_attr += name + " ";
+    cell_data_optional_attr+= "\"";
+  }
+  if (!names_cell_data_tensor_.empty())
+  {
+    cell_data_optional_attr += " Tensors=\"";
+    for (const string &name : names_cell_data_tensor_)
+      cell_data_optional_attr += name + " ";
+    cell_data_optional_attr+= "\"";
+  }
 
-    file << tab2 << "</Piece>" << endl;
+  file << tab3 << "<CellData" << cell_data_optional_attr << ">" << endl;
 
-    file << tab1 << "</UnstructuredGrid>" << endl;
+  SafeSTLVector<int> n_bytes_cell_data_double;
+  for (const auto &cell_data : cell_data_double_)
+  {
+    file << tab4 << "<DataArray Name=\"" << cell_data.name_
+         << "\" type=\"" << string_Real_
+         << "\" NumberOfComponents=\""<< cell_data.num_components_
+         << "\" format=\"appended\" offset=\"" << offset << "\"/>" << endl;
 
+    n_bytes_cell_data_double.emplace_back(cell_data.values_->size() * sizeof_Real_);
+    offset += sizeof_int_ + n_bytes_cell_data_double.back();
+  }
 
-    file << tab1 << "<AppendedData encoding=\"raw\">" << endl;
-    file << tab2 << "_";
+  SafeSTLVector<int> n_bytes_cell_data_int;
+  for (const auto &cell_data : cell_data_int_)
+  {
+    file << tab4 << "<DataArray Name=\"" << cell_data.name_
+         << "\" type=\"" << string_int_
+         << "\" NumberOfComponents=\""<< cell_data.num_components_
+         << "\" format=\"appended\" offset=\"" << offset << "\"/>" << endl;
 
-    //--------------------------------------------------------------------------
-    // writing the points coordinate
-    file.write((char *) &n_bytes_points, sizeof_int_);
-    for (const auto &point_in_iga_element : points_in_iga_elements)
-        for (const auto &point : point_in_iga_element)
-            file.write((char *) &point[0], 3 * sizeof_Real_);
-    //--------------------------------------------------------------------------
-
-    //--------------------------------------------------------------------------
-    // writing the element connectivity
-    file.write((char *) &n_bytes_connectivity, sizeof_int_);
-    for (const auto &iga_elem_connectivity : vtk_elements_connectivity)
-        for (const auto &vtk_elem_connectivity : iga_elem_connectivity)
-            file.write((char *) vtk_elem_connectivity.data(), n_vertices_per_vtk_element_ * sizeof_int_);
-    //--------------------------------------------------------------------------
-
-    //--------------------------------------------------------------------------
-    // writing the element offsets
-    file.write((char *) &n_bytes_offsets, sizeof_int_);
-    for (int i = 1; i <= n_vtk_elements_; ++i)
-    {
-        const int tmp = i * n_vertices_per_vtk_element_;
-        file.write((char *) &tmp, sizeof_int_);
-    }
-    //--------------------------------------------------------------------------
-
-
-    //--------------------------------------------------------------------------
-    // writing the element types
-    file.write((char *) &n_bytes_types, sizeof_int_);
-    for (int vtk_elem_id = 1; vtk_elem_id <= n_vtk_elements_; ++vtk_elem_id)
-        file.write((char *) &vtk_element_type_, sizeof_uchar_);
-    //--------------------------------------------------------------------------
+    n_bytes_cell_data_int.emplace_back(cell_data.values_->size() * sizeof_int_);
+    offset += sizeof_int_ + n_bytes_cell_data_int.back();
+  }
+  file << tab3 << "</CellData>" << endl;
+  //--------------------------------------------------------------------------
 
 
 
-    //--------------------------------------------------------------------------
-    // writing the point data
-    const int n_point_data = fields_.size();
-    for (int i = 0; i < n_point_data; ++i)
-    {
-        file.write((char *) &n_bytes_point_data[i], sizeof_int_);
-        file.write((char *) fields_[i].values_->data(), n_bytes_point_data[i]);
-    }
-    //--------------------------------------------------------------------------
+  file << tab2 << "</Piece>" << endl;
+
+  file << tab1 << "</UnstructuredGrid>" << endl;
+
+
+  file << tab1 << "<AppendedData encoding=\"raw\">" << endl;
+  file << tab2 << "_";
+
+  //--------------------------------------------------------------------------
+  // writing the points coordinate
+  file.write((char *) &n_bytes_points, sizeof_int_);
+  for (const auto &point_in_iga_element : points_in_iga_elements)
+    for (const auto &point : point_in_iga_element)
+      file.write((char *) &point[0], 3 * sizeof_Real_);
+  //--------------------------------------------------------------------------
+
+  //--------------------------------------------------------------------------
+  // writing the element connectivity
+  file.write((char *) &n_bytes_connectivity, sizeof_int_);
+  for (const auto &iga_elem_connectivity : vtk_elements_connectivity)
+    for (const auto &vtk_elem_connectivity : iga_elem_connectivity)
+      file.write((char *) vtk_elem_connectivity.data(), n_vertices_per_vtk_element_ * sizeof_int_);
+  //--------------------------------------------------------------------------
+
+  //--------------------------------------------------------------------------
+  // writing the element offsets
+  file.write((char *) &n_bytes_offsets, sizeof_int_);
+  for (int i = 1; i <= n_vtk_elements_; ++i)
+  {
+    const int tmp = i * n_vertices_per_vtk_element_;
+    file.write((char *) &tmp, sizeof_int_);
+  }
+  //--------------------------------------------------------------------------
+
+
+  //--------------------------------------------------------------------------
+  // writing the element types
+  file.write((char *) &n_bytes_types, sizeof_int_);
+  for (int vtk_elem_id = 1; vtk_elem_id <= n_vtk_elements_; ++vtk_elem_id)
+    file.write((char *) &vtk_element_type_, sizeof_uchar_);
+  //--------------------------------------------------------------------------
 
 
 
-    //--------------------------------------------------------------------------
-    // writing the cell data (double)
-    const int n_cell_data_double = cell_data_double_.size();
-    for (int i = 0; i < n_cell_data_double; ++i)
-    {
-        file.write((char *) &n_bytes_cell_data_double[i], sizeof_int_);
-
-        const int n_values = cell_data_double_[i].values_->size();
-        //here we convert the type double in CellData.values_ to type T
-        SafeSTLVector<T> buffer(n_values);
-        for (int j = 0; j < n_values; ++j)
-            buffer[j] = (*cell_data_double_[i].values_)[j];
-
-        file.write((char *) buffer.data(), n_bytes_cell_data_double[i]);
-    }
-    //--------------------------------------------------------------------------
+  //--------------------------------------------------------------------------
+  // writing the point data
+  const int n_point_data = fields_.size();
+  for (int i = 0; i < n_point_data; ++i)
+  {
+    file.write((char *) &n_bytes_point_data[i], sizeof_int_);
+    file.write((char *) fields_[i].values_->data(), n_bytes_point_data[i]);
+  }
+  //--------------------------------------------------------------------------
 
 
-    //--------------------------------------------------------------------------
-    // writing the cell data (int)
-    const int n_cell_data_int = cell_data_int_.size();
-    for (int i = 0; i < n_cell_data_int; ++i)
-    {
-        file.write((char *) &n_bytes_cell_data_int[i], sizeof_int_);
-        file.write((char *) cell_data_int_[i].values_->data(), n_bytes_cell_data_int[i]);
-    }
-    //--------------------------------------------------------------------------
+
+  //--------------------------------------------------------------------------
+  // writing the cell data (double)
+  const int n_cell_data_double = cell_data_double_.size();
+  for (int i = 0; i < n_cell_data_double; ++i)
+  {
+    file.write((char *) &n_bytes_cell_data_double[i], sizeof_int_);
+
+    const int n_values = cell_data_double_[i].values_->size();
+    //here we convert the type double in CellData.values_ to type T
+    SafeSTLVector<T> buffer(n_values);
+    for (int j = 0; j < n_values; ++j)
+      buffer[j] = (*cell_data_double_[i].values_)[j];
+
+    file.write((char *) buffer.data(), n_bytes_cell_data_double[i]);
+  }
+  //--------------------------------------------------------------------------
 
 
-    file << endl;
-    file << tab1 << "</AppendedData>" << endl;
+  //--------------------------------------------------------------------------
+  // writing the cell data (int)
+  const int n_cell_data_int = cell_data_int_.size();
+  for (int i = 0; i < n_cell_data_int; ++i)
+  {
+    file.write((char *) &n_bytes_cell_data_int[i], sizeof_int_);
+    file.write((char *) cell_data_int_[i].values_->data(), n_bytes_cell_data_int[i]);
+  }
+  //--------------------------------------------------------------------------
 
-    file << "</VTKFile>";
+
+  file << endl;
+  file << tab1 << "</AppendedData>" << endl;
+
+  file << "</VTKFile>";
 }
 
 
@@ -856,17 +856,17 @@ save_appended(const string &filename,
 template<int dim, int codim, class T>
 void Writer<dim, codim, T>::print_info(LogStream &out) const
 {
-    SafeSTLVector< SafeSTLVector< SafeSTLArray<T,3> > >
-    points_in_iga_elements(n_iga_elements_, SafeSTLVector< SafeSTLArray<T,3> >(n_points_per_iga_element_));
+  SafeSTLVector< SafeSTLVector< SafeSTLArray<T,3> > >
+  points_in_iga_elements(n_iga_elements_, SafeSTLVector< SafeSTLArray<T,3> >(n_points_per_iga_element_));
 
-    SafeSTLVector< SafeSTLVector< SafeSTLArray< int, n_vertices_per_vtk_element_> > >
-    vtk_elements_connectivity(n_iga_elements_);
-    for (auto &iga_elem_connectivity : vtk_elements_connectivity)
-        iga_elem_connectivity.resize(n_vtk_elements_per_iga_element_);
+  SafeSTLVector< SafeSTLVector< SafeSTLArray< int, n_vertices_per_vtk_element_> > >
+  vtk_elements_connectivity(n_iga_elements_);
+  for (auto &iga_elem_connectivity : vtk_elements_connectivity)
+    iga_elem_connectivity.resize(n_vtk_elements_per_iga_element_);
 
-    this->fill_points_and_connectivity(points_in_iga_elements, vtk_elements_connectivity);
+  this->fill_points_and_connectivity(points_in_iga_elements, vtk_elements_connectivity);
 
-    this->save_ascii(out, points_in_iga_elements, vtk_elements_connectivity);
+  this->save_ascii(out, points_in_iga_elements, vtk_elements_connectivity);
 }
 
 
@@ -875,7 +875,7 @@ int
 Writer<dim, codim, T>::
 get_num_points_per_iga_element() const
 {
-    return n_points_per_iga_element_;
+  return n_points_per_iga_element_;
 }
 
 
@@ -884,7 +884,7 @@ int
 Writer<dim, codim, T>::
 get_num_vtk_elements_per_iga_element() const
 {
-    return n_vtk_elements_per_iga_element_;
+  return n_vtk_elements_per_iga_element_;
 }
 
 
@@ -895,7 +895,7 @@ int
 Writer<dim, codim, T>::
 get_num_iga_elements() const
 {
-    return n_iga_elements_;
+  return n_iga_elements_;
 }
 
 
@@ -905,7 +905,7 @@ int
 Writer<dim, codim, T>::
 get_num_vtk_elements() const
 {
-    return n_vtk_elements_;
+  return n_vtk_elements_;
 }
 
 

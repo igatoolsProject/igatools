@@ -36,92 +36,92 @@ LogStream out;
 template <int dim>
 void loop_on_grid_with_cache()
 {
-    // [loop as before]
-    out << "Traversing the elements of a " << dim << "-dimensional grid." << endl;
-    const int n_knots = 3;
-    auto grid = CartesianGrid<dim>::create(n_knots);
+  // [loop as before]
+  out << "Traversing the elements of a " << dim << "-dimensional grid." << endl;
+  const int n_knots = 3;
+  auto grid = CartesianGrid<dim>::create(n_knots);
 
-    using ElementHandler = typename CartesianGrid<dim>::ElementHandler;
-    auto elem_handler = ElementHandler::create(grid);
+  using ElementHandler = typename CartesianGrid<dim>::ElementHandler;
+  auto elem_handler = ElementHandler::create(grid);
 
-    auto quad = QGauss<dim>(2);
-    auto flag = ValueFlags::w_measure;
+  auto quad = QGauss<dim>(2);
+  auto flag = ValueFlags::w_measure;
 
-    elem_handler->template reset<dim>(flag, quad);
+  elem_handler->template reset<dim>(flag, quad);
 
-    auto elem = grid->begin();
-    const auto elem_end = grid->end();
-    // [loop as before]
-    // [init cache]
-    elem_handler->init_element_cache(elem);
-    // [init cache]
+  auto elem = grid->begin();
+  const auto elem_end = grid->end();
+  // [loop as before]
+  // [init cache]
+  elem_handler->init_element_cache(elem);
+  // [init cache]
 
-    for (; elem != elem_end; ++elem)
-    {
-        // [fill cache]
-        elem_handler->fill_element_cache(elem);
-        // [fill cache]
-        out << "The tensor index of element: " << elem->get_flat_index();
-        out << " is: "<< elem->get_tensor_index() << endl;
+  for (; elem != elem_end; ++elem)
+  {
+    // [fill cache]
+    elem_handler->fill_element_cache(elem);
+    // [fill cache]
+    out << "The tensor index of element: " << elem->get_flat_index();
+    out << " is: "<< elem->get_tensor_index() << endl;
 
-        // [get meas]
-        auto w_meas = elem->template get_w_measures<dim>(0);
-        out << "The weighted measure is: ";
-        w_meas.print_info(out);
-        // [get meas]
-        out << endl;
-    }
+    // [get meas]
+    auto w_meas = elem->template get_w_measures<dim>(0);
+    out << "The weighted measure is: ";
+    w_meas.print_info(out);
+    // [get meas]
     out << endl;
+  }
+  out << endl;
 }
 
 
 template <int dim>
 void loop_on_space_with_cache()
 {
-    out << "Traversing the elements of a " << dim;
-    out << "-dimensional B-spline space." << endl;
-    const int n_knots = 3;
-    auto grid = CartesianGrid<dim>::create(n_knots);
-    const int degree = 2;
-    auto space = BSplineSpace<dim>::create(degree, grid);
+  out << "Traversing the elements of a " << dim;
+  out << "-dimensional B-spline space." << endl;
+  const int n_knots = 3;
+  auto grid = CartesianGrid<dim>::create(n_knots);
+  const int degree = 2;
+  auto space = BSplineSpace<dim>::create(degree, grid);
 
-    using ElementHandler = typename BSplineSpace<dim>::ElementHandler;
-    auto elem_handler = ElementHandler::create(space);
-    auto quad = QGauss<dim>(1);
-    auto flag = ValueFlags::value;
+  using ElementHandler = typename BSplineSpace<dim>::ElementHandler;
+  auto elem_handler = ElementHandler::create(space);
+  auto quad = QGauss<dim>(1);
+  auto flag = ValueFlags::value;
 
-    elem_handler->reset(flag, quad);
+  elem_handler->reset(flag, quad);
 
-    auto elem = space->begin();
-    const auto elem_end = space->end();
-    elem_handler->init_element_cache(elem);
+  auto elem = space->begin();
+  const auto elem_end = space->end();
+  elem_handler->init_element_cache(elem);
 
-    for (; elem != elem_end; ++elem)
-    {
-        elem_handler->fill_element_cache(elem);
-        out << "Element: " << elem->get_flat_index();
-        out << " has global basis: ";
-        elem->get_local_to_global(DofProperties::active).print_info(out);
-        out << endl;
-        elem->template get_basis<_Value, dim>(0,DofProperties::active).print_info(out);
-        out<< endl;
-    }
+  for (; elem != elem_end; ++elem)
+  {
+    elem_handler->fill_element_cache(elem);
+    out << "Element: " << elem->get_flat_index();
+    out << " has global basis: ";
+    elem->get_local_to_global(DofProperties::active).print_info(out);
     out << endl;
+    elem->template get_basis<_Value, dim>(0,DofProperties::active).print_info(out);
+    out<< endl;
+  }
+  out << endl;
 }
 
 
 int main()
 {
 
-    loop_on_grid_with_cache<1>();
-    loop_on_grid_with_cache<2>();
-    loop_on_grid_with_cache<3>();
+  loop_on_grid_with_cache<1>();
+  loop_on_grid_with_cache<2>();
+  loop_on_grid_with_cache<3>();
 
-    loop_on_space_with_cache<1>();
-    loop_on_space_with_cache<2>();
-    loop_on_space_with_cache<3>();
+  loop_on_space_with_cache<1>();
+  loop_on_space_with_cache<2>();
+  loop_on_space_with_cache<3>();
 
-    return 0;
+  return 0;
 }
 
 

@@ -36,46 +36,46 @@
 template <int dim, int range=1, int rank=1>
 void elem_dofs(const int n_knots = 4, const int deg=1)
 {
-    OUTSTART
+  OUTSTART
 
-    using Space = BSplineSpace<dim, range, rank>;
-    auto grid  = CartesianGrid<dim>::create(n_knots);
-    auto space = Space::create(deg, grid);
+  using Space = BSplineSpace<dim, range, rank>;
+  auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto space = Space::create(deg, grid);
 
-    auto elem = space->begin();
-    auto end = space->end();
+  auto elem = space->begin();
+  auto end = space->end();
 
-    for (; elem != end; ++elem)
-    {
-        out << "Element index: " << elem->get_flat_index() << endl;
-        out << "Global dofs: ";
-        elem->get_local_to_global(DofProperties::active).print_info(out);
-        out << endl;
-    }
+  for (; elem != end; ++elem)
+  {
+    out << "Element index: " << elem->get_flat_index() << endl;
+    out << "Global dofs: ";
+    elem->get_local_to_global(DofProperties::active).print_info(out);
+    out << endl;
+  }
 
-    OUTEND
+  OUTEND
 }
 
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
-    elem_dofs< 1, 1, 1 >();
-    elem_dofs< 1, 2, 1 >();
-    elem_dofs< 1, 3, 1 >();
-    elem_dofs< 2, 1, 1 >();
-    elem_dofs< 2, 2, 1 >();
-    elem_dofs< 2, 3, 1 >();
-    elem_dofs< 3, 1, 1 >();
-    elem_dofs< 3, 3, 1 >();
+  elem_dofs< 1, 1, 1 >();
+  elem_dofs< 1, 2, 1 >();
+  elem_dofs< 1, 3, 1 >();
+  elem_dofs< 2, 1, 1 >();
+  elem_dofs< 2, 2, 1 >();
+  elem_dofs< 2, 3, 1 >();
+  elem_dofs< 3, 1, 1 >();
+  elem_dofs< 3, 3, 1 >();
 
-    for (int p=0; p<3; p++)
-    {
-        elem_dofs< 1, 1, 1 >(4,p);
-        elem_dofs< 1, 2, 1 >(4,p);
-        elem_dofs< 1, 3, 1 >(4,p);
-    }
+  for (int p=0; p<3; p++)
+  {
+    elem_dofs< 1, 1, 1 >(4,p);
+    elem_dofs< 1, 2, 1 >(4,p);
+    elem_dofs< 1, 3, 1 >(4,p);
+  }
 
-    return  0;
+  return  0;
 }

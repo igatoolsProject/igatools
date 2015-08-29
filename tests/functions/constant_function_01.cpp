@@ -37,52 +37,52 @@ template<int dim, int codim, int range, int rank>
 void
 test(shared_ptr<Function<dim,codim, range,rank>> F)
 {
-    auto elem = F->begin();
-    auto end  = F->end();
+  auto elem = F->begin();
+  auto end  = F->end();
 
-    const auto topology = Topology<dim>();
+  const auto topology = Topology<dim>();
 
-    F->init_cache(elem, topology);
-    for (; elem != end; ++elem)
-    {
-        F->fill_cache(elem, topology,0);
-        elem->get_points().print_info(out);
-        out << endl;
-        elem->template get_values<_Value, dim>(0).print_info(out);
-        out << endl;
-        elem->template get_values<_Gradient, dim>(0).print_info(out);
-        out << endl;
-        elem->template get_values<_Hessian, dim>(0).print_info(out);
-        out << endl;
-    }
+  F->init_cache(elem, topology);
+  for (; elem != end; ++elem)
+  {
+    F->fill_cache(elem, topology,0);
+    elem->get_points().print_info(out);
+    out << endl;
+    elem->template get_values<_Value, dim>(0).print_info(out);
+    out << endl;
+    elem->template get_values<_Gradient, dim>(0).print_info(out);
+    out << endl;
+    elem->template get_values<_Hessian, dim>(0).print_info(out);
+    out << endl;
+  }
 
 }
 
 template<int dim, int codim, int range, int rank>
 void create_fun()
 {
-    using Function = functions::ConstantFunction<dim, codim, range, rank>;
+  using Function = functions::ConstantFunction<dim, codim, range, rank>;
 
-    typename Function::Value b;
+  typename Function::Value b;
 
-    for (int i=0; i<range; ++i)
-        for (int j=0; j<rank; ++j)
-            b[i] = i;
+  for (int i=0; i<range; ++i)
+    for (int j=0; j<rank; ++j)
+      b[i] = i;
 
-    auto flag = ValueFlags::point | ValueFlags::value |
-                ValueFlags::gradient | ValueFlags::hessian;
-    auto quad = QGauss<dim>(2);
-    auto grid = CartesianGrid<dim>::create(3);
-    auto F = Function::create(grid, IdentityFunction<dim>::create(grid), b);
-    F->reset(flag, quad);
-    test<dim, codim, range>(F);
+  auto flag = ValueFlags::point | ValueFlags::value |
+              ValueFlags::gradient | ValueFlags::hessian;
+  auto quad = QGauss<dim>(2);
+  auto grid = CartesianGrid<dim>::create(3);
+  auto F = Function::create(grid, IdentityFunction<dim>::create(grid), b);
+  F->reset(flag, quad);
+  test<dim, codim, range>(F);
 }
 
 int main()
 {
-    create_fun<1,0,1,1>();
-    create_fun<2,0,2,1>();
+  create_fun<1,0,1,1>();
+  create_fun<2,0,2,1>();
 
-    return 0;
+  return 0;
 }
 

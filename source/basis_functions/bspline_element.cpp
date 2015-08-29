@@ -66,79 +66,79 @@ template<int dim, int order>
 class DerivativeSymmetryManager
 {
 public:
-    static const int num_entries_total = pow(dim,order);
-    static const int num_entries_eval = constexpr_binomial_coefficient(dim-1+order,order);
-    static const int num_entries_copy = num_entries_total - num_entries_eval;
+  static const int num_entries_total = pow(dim,order);
+  static const int num_entries_eval = constexpr_binomial_coefficient(dim-1+order,order);
+  static const int num_entries_copy = num_entries_total - num_entries_eval;
 
-    typedef Derivatives<dim,1,1,order> Derivative_t;
+  typedef Derivatives<dim,1,1,order> Derivative_t;
 
-    /** @name Constructors */
-    ///@{
-    /** Constructor */
-    DerivativeSymmetryManager();
+  /** @name Constructors */
+  ///@{
+  /** Constructor */
+  DerivativeSymmetryManager();
 
-    /** Copy constructor */
-    DerivativeSymmetryManager(
-        const DerivativeSymmetryManager<dim,order> &in) = default;
+  /** Copy constructor */
+  DerivativeSymmetryManager(
+    const DerivativeSymmetryManager<dim,order> &in) = default;
 
-    /** Move constructor */
-    DerivativeSymmetryManager(
-        DerivativeSymmetryManager<dim,order> &&in) = default;
+  /** Move constructor */
+  DerivativeSymmetryManager(
+    DerivativeSymmetryManager<dim,order> &&in) = default;
 
-    ~DerivativeSymmetryManager() = default;
-    ///@}
-
-
-    /** @name Assignment operators */
-    ///@{
-    /** Copy assignment operator */
-    DerivativeSymmetryManager<dim,order> &operator=(
-        const DerivativeSymmetryManager<dim,order> &) = default;
-
-    /** Move assignment operator */
-    DerivativeSymmetryManager<dim,order> &operator=(
-        DerivativeSymmetryManager<dim,order> &&) = default;
-    ///@}
+  ~DerivativeSymmetryManager() = default;
+  ///@}
 
 
-    static const int new_deriv_order = order>0?order:1;
-    const SafeSTLArray<int,num_entries_eval> &get_entries_flat_id_evaluate() const
-    {
-        return entries_flat_id_evaluate_;
-    }
+  /** @name Assignment operators */
+  ///@{
+  /** Copy assignment operator */
+  DerivativeSymmetryManager<dim,order> &operator=(
+    const DerivativeSymmetryManager<dim,order> &) = default;
 
-    const SafeSTLArray<int,num_entries_copy> &get_entries_flat_id_copy_to() const
-    {
-        return entries_flat_id_copy_to_;
-    }
+  /** Move assignment operator */
+  DerivativeSymmetryManager<dim,order> &operator=(
+    DerivativeSymmetryManager<dim,order> &&) = default;
+  ///@}
 
-    const SafeSTLArray<int,num_entries_copy> &get_entries_flat_id_copy_from() const
-    {
-        return entries_flat_id_copy_from_;
-    }
 
-    const SafeSTLArray<TensorIndex<new_deriv_order>,num_entries_total> &get_entries_tensor_id() const
-    {
-        return entries_tensor_id_;
-    }
+  static const int new_deriv_order = order>0?order:1;
+  const SafeSTLArray<int,num_entries_eval> &get_entries_flat_id_evaluate() const
+  {
+    return entries_flat_id_evaluate_;
+  }
+
+  const SafeSTLArray<int,num_entries_copy> &get_entries_flat_id_copy_to() const
+  {
+    return entries_flat_id_copy_to_;
+  }
+
+  const SafeSTLArray<int,num_entries_copy> &get_entries_flat_id_copy_from() const
+  {
+    return entries_flat_id_copy_from_;
+  }
+
+  const SafeSTLArray<TensorIndex<new_deriv_order>,num_entries_total> &get_entries_tensor_id() const
+  {
+    return entries_tensor_id_;
+  }
 private:
 
-    bool test_if_evaluate(const SafeSTLArray<int,order> &tensor_index) const;
+  bool test_if_evaluate(const SafeSTLArray<int,order> &tensor_index) const;
 
-    /** Tensor ids of all the entries */
+  /** Tensor ids of all the entries */
 
-    SafeSTLArray<TensorIndex<new_deriv_order> ,num_entries_total> entries_tensor_id_;
+  SafeSTLArray<TensorIndex<new_deriv_order> ,num_entries_total> entries_tensor_id_;
 
-    /** Flat ids of the entries that need to be computed */
-    SafeSTLArray<int,num_entries_eval> entries_flat_id_evaluate_;
+  /** Flat ids of the entries that need to be computed */
+  SafeSTLArray<int,num_entries_eval> entries_flat_id_evaluate_;
 
-    /** Flat ids of the destination entries that need to be copied */
-    SafeSTLArray<int,num_entries_copy> entries_flat_id_copy_to_;
+  /** Flat ids of the destination entries that need to be copied */
+  SafeSTLArray<int,num_entries_copy> entries_flat_id_copy_to_;
 
-    /** Flat ids of the source entries that need to be copied */
-    SafeSTLArray<int,num_entries_copy> entries_flat_id_copy_from_;
+  /** Flat ids of the source entries that need to be copied */
+  SafeSTLArray<int,num_entries_copy> entries_flat_id_copy_from_;
 
-    TensorSize<order> size_deriv_index_;
+  TensorSize<order> size_deriv_index_;
 };
 
 
@@ -148,50 +148,50 @@ template<int dim, int order>
 DerivativeSymmetryManager<dim,order>::
 DerivativeSymmetryManager()
 {
-    size_deriv_index_.fill(dim);
+  size_deriv_index_.fill(dim);
 
-    typedef MultiArrayUtils<order> MAUtils;
+  typedef MultiArrayUtils<order> MAUtils;
 
 
-    Derivatives<dim,1,1,order> derivative;
+  Derivatives<dim,1,1,order> derivative;
 
-    int eval_id = 0;
-    int copy_id = 0;
-    if (order == 0)
+  int eval_id = 0;
+  int copy_id = 0;
+  if (order == 0)
+  {
+    for (int flat_id = 0; flat_id < num_entries_total; ++flat_id)
     {
-        for (int flat_id = 0; flat_id < num_entries_total; ++flat_id)
-        {
-            entries_flat_id_evaluate_[eval_id] = flat_id;
-            eval_id++;
-        }
+      entries_flat_id_evaluate_[eval_id] = flat_id;
+      eval_id++;
     }
-    else
+  }
+  else
+  {
+    auto weights = MAUtils::compute_weight(size_deriv_index_);
+
+    for (Index flat_id = 0; flat_id < num_entries_total; ++flat_id)
     {
-        auto weights = MAUtils::compute_weight(size_deriv_index_);
+      entries_tensor_id_[flat_id] = derivative.flat_to_tensor_index(flat_id);
 
-        for (Index flat_id = 0; flat_id < num_entries_total; ++flat_id)
-        {
-            entries_tensor_id_[flat_id] = derivative.flat_to_tensor_index(flat_id);
+      auto tensor_id = MAUtils::flat_to_tensor_index(flat_id,weights);
 
-            auto tensor_id = MAUtils::flat_to_tensor_index(flat_id,weights);
-
-            if (test_if_evaluate(tensor_id))
-            {
-                entries_flat_id_evaluate_[eval_id] = flat_id;
-                eval_id++;
-            }
-            else
-            {
-                entries_flat_id_copy_to_[copy_id] = flat_id;
-                sort(tensor_id.begin(),tensor_id.end());
-                reverse(tensor_id.begin(),tensor_id.end());
-                entries_flat_id_copy_from_[copy_id] = MAUtils::tensor_to_flat_index(tensor_id,weights);
-                copy_id++;
-            }
-        }
+      if (test_if_evaluate(tensor_id))
+      {
+        entries_flat_id_evaluate_[eval_id] = flat_id;
+        eval_id++;
+      }
+      else
+      {
+        entries_flat_id_copy_to_[copy_id] = flat_id;
+        sort(tensor_id.begin(),tensor_id.end());
+        reverse(tensor_id.begin(),tensor_id.end());
+        entries_flat_id_copy_from_[copy_id] = MAUtils::tensor_to_flat_index(tensor_id,weights);
+        copy_id++;
+      }
     }
-    Assert(eval_id == num_entries_eval, ExcDimensionMismatch(eval_id,num_entries_eval));
-    Assert(copy_id == num_entries_copy, ExcDimensionMismatch(copy_id,num_entries_copy));
+  }
+  Assert(eval_id == num_entries_eval, ExcDimensionMismatch(eval_id,num_entries_eval));
+  Assert(copy_id == num_entries_copy, ExcDimensionMismatch(copy_id,num_entries_copy));
 
 }
 
@@ -202,16 +202,16 @@ bool
 DerivativeSymmetryManager<dim,order>::
 test_if_evaluate(const SafeSTLArray<int,order> &tensor_index) const
 {
-    bool test_result = true;
-    for (int i = 0; i < order-1; ++i)
+  bool test_result = true;
+  for (int i = 0; i < order-1; ++i)
+  {
+    if (tensor_index[i+1] > tensor_index[i])
     {
-        if (tensor_index[i+1] > tensor_index[i])
-        {
-            test_result = false;
-            break;
-        }
+      test_result = false;
+      break;
     }
-    return test_result;
+  }
+  return test_result;
 }
 
 
@@ -219,50 +219,50 @@ template<int order>
 class DerivativeSymmetryManager<0,order>
 {
 public:
-    static const int num_entries_total = 1;
-    static const int num_entries_eval  = 1;
-    static const int num_entries_copy  = num_entries_total - num_entries_eval;
+  static const int num_entries_total = 1;
+  static const int num_entries_eval  = 1;
+  static const int num_entries_copy  = num_entries_total - num_entries_eval;
 
-    typedef Derivatives<0,1,1,order> Derivative_t;
+  typedef Derivatives<0,1,1,order> Derivative_t;
 
-    DerivativeSymmetryManager()
-    {
-        entries_tensor_id_[0] = {{}};
-        entries_flat_id_evaluate_[0] = 0;
-    }
+  DerivativeSymmetryManager()
+  {
+    entries_tensor_id_[0] = {{}};
+    entries_flat_id_evaluate_[0] = 0;
+  }
 
-    const SafeSTLArray<int,num_entries_eval> &get_entries_flat_id_evaluate() const
-    {
-        return entries_flat_id_evaluate_;
-    }
+  const SafeSTLArray<int,num_entries_eval> &get_entries_flat_id_evaluate() const
+  {
+    return entries_flat_id_evaluate_;
+  }
 
-    const SafeSTLArray<int,num_entries_copy> &get_entries_flat_id_copy_to() const
-    {
-        return entries_flat_id_copy_to_;
-    }
+  const SafeSTLArray<int,num_entries_copy> &get_entries_flat_id_copy_to() const
+  {
+    return entries_flat_id_copy_to_;
+  }
 
-    const SafeSTLArray<int,num_entries_copy> &get_entries_flat_id_copy_from() const
-    {
-        return entries_flat_id_copy_from_;
-    }
+  const SafeSTLArray<int,num_entries_copy> &get_entries_flat_id_copy_from() const
+  {
+    return entries_flat_id_copy_from_;
+  }
 
-    const SafeSTLArray<TensorIndex<order>,num_entries_total> &get_entries_tensor_id() const
-    {
-        return entries_tensor_id_;
-    }
+  const SafeSTLArray<TensorIndex<order>,num_entries_total> &get_entries_tensor_id() const
+  {
+    return entries_tensor_id_;
+  }
 
 private:
-    /** Tensor ids of all the entries */
-    SafeSTLArray<TensorIndex<order>,num_entries_total> entries_tensor_id_;
+  /** Tensor ids of all the entries */
+  SafeSTLArray<TensorIndex<order>,num_entries_total> entries_tensor_id_;
 
-    /** Flat ids of the entries that need to be computed */
-    SafeSTLArray<int,num_entries_eval> entries_flat_id_evaluate_;
+  /** Flat ids of the entries that need to be computed */
+  SafeSTLArray<int,num_entries_eval> entries_flat_id_evaluate_;
 
-    /** Flat ids of the destination entries that need to be copied */
-    SafeSTLArray<int,num_entries_copy> entries_flat_id_copy_to_;
+  /** Flat ids of the destination entries that need to be copied */
+  SafeSTLArray<int,num_entries_copy> entries_flat_id_copy_to_;
 
-    /** Flat ids of the source entries that need to be copied */
-    SafeSTLArray<int,num_entries_copy> entries_flat_id_copy_from_;
+  /** Flat ids of the source entries that need to be copied */
+  SafeSTLArray<int,num_entries_copy> entries_flat_id_copy_from_;
 
 };
 
@@ -277,8 +277,8 @@ BSplineElement<dim, range, rank>::
 BSplineElement(const std::shared_ptr<ContainerType> space,
                const ListIt &index,
                const PropId &prop)
-    :
-    parent_t(space,index,prop)
+  :
+  parent_t(space,index,prop)
 {}
 
 
@@ -289,10 +289,10 @@ template <int dim, int range, int rank>
 BSplineElement<dim, range, rank>::
 BSplineElement(const self_t &elem,
                const CopyPolicy &copy_policy)
-    :
-    parent_t(elem,copy_policy)
+  :
+  parent_t(elem,copy_policy)
 {
-    Assert(false,ExcNotImplemented());
+  Assert(false,ExcNotImplemented());
 }
 
 
@@ -301,9 +301,9 @@ auto
 BSplineElement<dim, range, rank>::
 get_bspline_space() const -> std::shared_ptr<const Space>
 {
-    auto bsp_space = std::dynamic_pointer_cast<const Space>(this->space_);
-    Assert(bsp_space != nullptr,ExcNullPtr());
-    return bsp_space;
+  auto bsp_space = std::dynamic_pointer_cast<const Space>(this->space_);
+  Assert(bsp_space != nullptr,ExcNullPtr());
+  return bsp_space;
 }
 
 
@@ -312,9 +312,9 @@ std::shared_ptr<SpaceElement<dim,0,range,rank,Transformation::h_grad> >
 BSplineElement<dim, range, rank>::
 clone() const
 {
-    auto elem = std::make_shared<BSplineElement<dim,range,rank> >(*this,CopyPolicy::deep);
-    Assert(elem != nullptr, ExcNullPtr());
-    return elem;
+  auto elem = std::make_shared<BSplineElement<dim,range,rank> >(*this,CopyPolicy::deep);
+  Assert(elem != nullptr, ExcNullPtr());
+  return elem;
 }
 
 #ifdef SERIALIZATION
@@ -324,8 +324,8 @@ void
 BSplineElement<dim, range, rank>::
 serialize(Archive &ar, const unsigned int version)
 {
-    ar &boost::serialization::make_nvp("BSplineElement_base_t",
-                                       boost::serialization::base_object<ReferenceElement<dim,range,rank>>(*this));
+  ar &boost::serialization::make_nvp("BSplineElement_base_t",
+                                     boost::serialization::base_object<ReferenceElement<dim,range,rank>>(*this));
 }
 #endif // SERIALIZATION
 
@@ -334,66 +334,66 @@ template <int dim, int range, int rank>
 auto
 BSplineElement<dim, range, rank>::
 evaluate_univariate_derivatives_at_points(
-    const int deriv_order,
-    const SafeSTLArray<SafeSTLVector<Real>,dim> &points) const
+  const int deriv_order,
+  const SafeSTLArray<SafeSTLVector<Real>,dim> &points) const
 -> ComponentContainer<SafeSTLArray<ValueTable<Real>,dim> >
 {
-    TensorSize<dim> n_points_direction;
+  TensorSize<dim> n_points_direction;
+  for (int i = 0 ; i < dim ; ++i)
+  {
+    Assert(points[i].empty() == false,ExcEmptyObject());
+
+    n_points_direction[i] = points[i].size();
+  }
+
+  const auto &element_tensor_id = this->get_tensor_index();
+
+  auto bsp_space = this->get_bspline_space();
+
+  ComponentContainer< SafeSTLArray<ValueTable<Real>,dim> > funcs1D_table(bsp_space->get_components_map());
+
+  const auto degree_table = bsp_space->get_degree_table();
+  const auto &bezier_op_ = bsp_space->operators_;
+
+  const auto element_lengths = GridElement<dim>::template get_coordinate_lengths<dim>(0);
+
+  for (int comp : funcs1D_table.get_active_components_id())
+  {
+    auto &funcs1D_comp = funcs1D_table[comp];
+
+    const auto &degree_comp = degree_table[comp];
+
+    auto n_basis_direction = TensorSize<dim>(degree_comp+1);
+
     for (int i = 0 ; i < dim ; ++i)
     {
-        Assert(points[i].empty() == false,ExcEmptyObject());
+      const auto &M = bezier_op_.get_operator(comp,i)[element_tensor_id[i]];
 
-        n_points_direction[i] = points[i].size();
-    }
+      const auto lengths_dir = element_lengths[i];
+      const Real one_div_size = Real(1.0) / lengths_dir;
+      const Real scaling_coef = std::pow(one_div_size, deriv_order);
 
-    const auto &element_tensor_id = this->get_tensor_index();
+      // compute the one dimensional Bernstein at quad point on the unit interval
+      const auto B = BernsteinBasis::derivative(deriv_order,degree_comp[i],points[i]);
 
-    auto bsp_space = this->get_bspline_space();
+      // compute the one dimensional B-splines at quad point on the reference interval
+      const auto basis = scaling_coef * prec_prod(M,B);
 
-    ComponentContainer< SafeSTLArray<ValueTable<Real>,dim> > funcs1D_table(bsp_space->get_components_map());
+      auto &funcs1D_comp_dir = funcs1D_comp[i];
+      funcs1D_comp_dir.resize(n_basis_direction[i],n_points_direction[i]);
 
-    const auto degree_table = bsp_space->get_degree_table();
-    const auto &bezier_op_ = bsp_space->operators_;
+      for (int fn = 0 ; fn < n_basis_direction[i] ; ++fn)
+      {
+        auto fn_view = funcs1D_comp_dir.get_function_view(fn);
 
-    const auto element_lengths = GridElement<dim>::template get_coordinate_lengths<dim>(0);
-
-    for (int comp : funcs1D_table.get_active_components_id())
-    {
-        auto &funcs1D_comp = funcs1D_table[comp];
-
-        const auto &degree_comp = degree_table[comp];
-
-        auto n_basis_direction = TensorSize<dim>(degree_comp+1);
-
-        for (int i = 0 ; i < dim ; ++i)
-        {
-            const auto &M = bezier_op_.get_operator(comp,i)[element_tensor_id[i]];
-
-            const auto lengths_dir = element_lengths[i];
-            const Real one_div_size = Real(1.0) / lengths_dir;
-            const Real scaling_coef = std::pow(one_div_size, deriv_order);
-
-            // compute the one dimensional Bernstein at quad point on the unit interval
-            const auto B = BernsteinBasis::derivative(deriv_order,degree_comp[i],points[i]);
-
-            // compute the one dimensional B-splines at quad point on the reference interval
-            const auto basis = scaling_coef * prec_prod(M,B);
-
-            auto &funcs1D_comp_dir = funcs1D_comp[i];
-            funcs1D_comp_dir.resize(n_basis_direction[i],n_points_direction[i]);
-
-            for (int fn = 0 ; fn < n_basis_direction[i] ; ++fn)
-            {
-                auto fn_view = funcs1D_comp_dir.get_function_view(fn);
-
-                for (int pt = 0 ; pt < n_points_direction[i] ; ++pt)
-                    fn_view[pt] = basis(fn,pt);
-            } // end fn loop
-        } // end dir loop
-    } // end comp loop
+        for (int pt = 0 ; pt < n_points_direction[i] ; ++pt)
+          fn_view[pt] = basis(fn,pt);
+      } // end fn loop
+    } // end dir loop
+  } // end comp loop
 
 
-    return funcs1D_table;
+  return funcs1D_table;
 }
 
 
@@ -403,26 +403,26 @@ BSplineElement<dim, range, rank>::
 evaluate_univariate_derivatives_at_points(const int deriv_order, const Quadrature<dim> &quad) const
 -> ComponentContainer<SafeSTLArray<ValueTable<Real>,dim> >
 {
-    SafeSTLArray<SafeSTLVector<Real>,dim> points_coords;
-    for (int i = 0 ; i < dim ; ++i)
-        points_coords[i] = quad.get_points().get_data_direction(i);
+  SafeSTLArray<SafeSTLVector<Real>,dim> points_coords;
+  for (int i = 0 ; i < dim ; ++i)
+    points_coords[i] = quad.get_points().get_data_direction(i);
 
-    return this->evaluate_univariate_derivatives_at_points(deriv_order,points_coords);
+  return this->evaluate_univariate_derivatives_at_points(deriv_order,points_coords);
 }
 
 template <int dim, int range, int rank>
 auto
 BSplineElement<dim, range, rank>::
 evaluate_univariate_derivatives_at_points(
-    const int deriv_order,
-    const ValueVector<Point> &points) const -> ComponentContainer<SafeSTLArray<ValueTable<Real>,dim> >
+  const int deriv_order,
+  const ValueVector<Point> &points) const -> ComponentContainer<SafeSTLArray<ValueTable<Real>,dim> >
 {
-    SafeSTLArray<SafeSTLVector<Real>,dim> points_coords;
-    for (const auto &pt : points)
-        for (int i = 0 ; i < dim ; ++i)
-            points_coords[i].push_back(pt[i]);
+  SafeSTLArray<SafeSTLVector<Real>,dim> points_coords;
+  for (const auto &pt : points)
+    for (int i = 0 ; i < dim ; ++i)
+      points_coords[i].push_back(pt[i]);
 
-    return this->evaluate_univariate_derivatives_at_points(deriv_order,points_coords);
+  return this->evaluate_univariate_derivatives_at_points(deriv_order,points_coords);
 }
 
 
@@ -441,252 +441,252 @@ BSplineElement<dim, range, rank>::
 evaluate_basis_derivatives_at_points(const ValueVector<Point> &points) const ->
 ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >
 {
-    using return_t = ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >;
+  using return_t = ValueTable< Conditional< deriv_order==0,Value,Derivative<deriv_order> > >;
 
-    const Size n_basis  = this->get_num_basis();
-    const Size n_points = points.size();
+  const Size n_basis  = this->get_num_basis();
+  const Size n_points = points.size();
 
-    return_t D_phi(n_basis,n_points);
+  return_t D_phi(n_basis,n_points);
 
-    auto bsp_space = this->get_bspline_space();
+  auto bsp_space = this->get_bspline_space();
 
-    const auto bezier_op = bsp_space->operators_.get_element_operators(this->get_tensor_index());
+  const auto bezier_op = bsp_space->operators_.get_element_operators(this->get_tensor_index());
 
-    if (deriv_order == 0)
+  if (deriv_order == 0)
+  {
+    for (Size pt_id = 0 ; pt_id < n_points ; ++pt_id)
     {
-        for (Size pt_id = 0 ; pt_id < n_points ; ++pt_id)
-        {
-            const Point point = points[pt_id];
+      const Point point = points[pt_id];
 
-            auto derivatives_phi_hat_ipt = D_phi.get_point_view(pt_id);
+      auto derivatives_phi_hat_ipt = D_phi.get_point_view(pt_id);
 
 #ifndef NDEBUG
-            for (int dir = 0 ; dir < dim ; ++dir)
-                Assert(point[dir] >= 0.0 && point[dir] <= 1.0,
-                ExcMessage("Evaluation point " + std::to_string(pt_id) + " not in the unit-domain."));
+      for (int dir = 0 ; dir < dim ; ++dir)
+        Assert(point[dir] >= 0.0 && point[dir] <= 1.0,
+        ExcMessage("Evaluation point " + std::to_string(pt_id) + " not in the unit-domain."));
 #endif
 //            auto n_basis = this->n_basis_direction_;
-            auto degree = this->space_->get_degree_table();
-            for (int iComp : bezier_op.get_active_components_id())
-            {
-                //------------------------------------------------------------------------------
-                // evaluation of the values/derivarives of the 1D Bernstein polynomials -- begin
-                SafeSTLArray<boost::numeric::ublas::vector<Real>,dim> bernstein_values;
-                for (int dir = 0 ; dir < dim ; ++dir)
-                    bernstein_values[dir] = BernsteinBasis::derivative(0,degree[iComp][dir],point[dir]);
-                // evaluation of the values/derivarives of the 1D Bernstein polynomials -- end
-                //------------------------------------------------------------------------------
+      auto degree = this->space_->get_degree_table();
+      for (int iComp : bezier_op.get_active_components_id())
+      {
+        //------------------------------------------------------------------------------
+        // evaluation of the values/derivarives of the 1D Bernstein polynomials -- begin
+        SafeSTLArray<boost::numeric::ublas::vector<Real>,dim> bernstein_values;
+        for (int dir = 0 ; dir < dim ; ++dir)
+          bernstein_values[dir] = BernsteinBasis::derivative(0,degree[iComp][dir],point[dir]);
+        // evaluation of the values/derivarives of the 1D Bernstein polynomials -- end
+        //------------------------------------------------------------------------------
 
 
-                //--------------------------------------------------------------------------------
-                // apply the Bezier extraction operator for the functions on this element -- begin
-                const auto &bezier_op_comp = bezier_op[iComp];
+        //--------------------------------------------------------------------------------
+        // apply the Bezier extraction operator for the functions on this element -- begin
+        const auto &bezier_op_comp = bezier_op[iComp];
 
-                SafeSTLArray<boost::numeric::ublas::vector<Real>,dim> bspline_basis;
-                for (int dir = 0 ; dir < dim ; ++dir)
-                {
-                    const auto &M = *(bezier_op_comp[dir]);
-
-                    bspline_basis[dir] = prec_prod(M, bernstein_values[dir]);
-                }
-                // apply the Bezier extraction operator for the functions on this element -- end
-                //--------------------------------------------------------------------------------
-
-
-                //--------------------------------------------------------------------------------
-                // multiply the spline 1D in order to have the multi-d value -- begin
-
-                const Size comp_offset_i = this->comp_offset_[iComp];
-
-                const auto &basis_flat_to_tensor = *(this->basis_functions_indexer_)[iComp];
-
-                const int n_basis_component = this->get_num_basis(iComp);
-
-                for (Size basis_fid = 0 ; basis_fid < n_basis_component ; ++basis_fid)
-                {
-                    const auto &basis_tid = basis_flat_to_tensor[basis_fid];
-
-                    Real value = 1.0;
-                    for (int dir = 0 ; dir < dim ; ++dir)
-                        value *= bspline_basis[dir][basis_tid[dir]];
-
-                    derivatives_phi_hat_ipt[basis_fid+comp_offset_i](iComp) = value;
-                }
-                // multiply the spline 1D in order to have the multi-d value -- end
-                //--------------------------------------------------------------------------------
-
-            } // end iComp loop
-        } // end pt_id loop
-
-        for (int comp : bezier_op.get_inactive_components_id())
+        SafeSTLArray<boost::numeric::ublas::vector<Real>,dim> bspline_basis;
+        for (int dir = 0 ; dir < dim ; ++dir)
         {
-            const int n_basis = this->get_num_basis(comp);
-            const Size offset = this->comp_offset_[comp];
-            const Size act_offset = this->comp_offset_[bezier_op.active(comp)];
-            for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
-            {
-                const auto values_phi_hat_copy_from = D_phi.get_function_view(act_offset+basis_i);
-                auto values_phi_hat_copy_to = D_phi.get_function_view(offset+basis_i);
+          const auto &M = *(bezier_op_comp[dir]);
 
-                for (int qp = 0; qp < n_points; ++qp)
-                    values_phi_hat_copy_to[qp](comp) = values_phi_hat_copy_from[qp](0);
+          bspline_basis[dir] = prec_prod(M, bernstein_values[dir]);
+        }
+        // apply the Bezier extraction operator for the functions on this element -- end
+        //--------------------------------------------------------------------------------
 
-            } //end loop basis_i
-        } // end loop comp
 
-    } // end if (deriv_order == 0)
-    else
+        //--------------------------------------------------------------------------------
+        // multiply the spline 1D in order to have the multi-d value -- begin
+
+        const Size comp_offset_i = this->comp_offset_[iComp];
+
+        const auto &basis_flat_to_tensor = *(this->basis_functions_indexer_)[iComp];
+
+        const int n_basis_component = this->get_num_basis(iComp);
+
+        for (Size basis_fid = 0 ; basis_fid < n_basis_component ; ++basis_fid)
+        {
+          const auto &basis_tid = basis_flat_to_tensor[basis_fid];
+
+          Real value = 1.0;
+          for (int dir = 0 ; dir < dim ; ++dir)
+            value *= bspline_basis[dir][basis_tid[dir]];
+
+          derivatives_phi_hat_ipt[basis_fid+comp_offset_i](iComp) = value;
+        }
+        // multiply the spline 1D in order to have the multi-d value -- end
+        //--------------------------------------------------------------------------------
+
+      } // end iComp loop
+    } // end pt_id loop
+
+    for (int comp : bezier_op.get_inactive_components_id())
     {
-        Assert(deriv_order >= 1, ExcLowerRange(deriv_order,1));
+      const int n_basis = this->get_num_basis(comp);
+      const Size offset = this->comp_offset_[comp];
+      const Size act_offset = this->comp_offset_[bezier_op.active(comp)];
+      for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
+      {
+        const auto values_phi_hat_copy_from = D_phi.get_function_view(act_offset+basis_i);
+        auto values_phi_hat_copy_to = D_phi.get_function_view(offset+basis_i);
 
-        using DerSymmMngr_t = DerivativeSymmetryManager<dim,deriv_order>;
-        DerSymmMngr_t derivative_symmetry_manager;
-        const auto &derivatives_flat_id_evaluate = derivative_symmetry_manager.get_entries_flat_id_evaluate();
-        const auto &derivatives_flat_id_copy_to = derivative_symmetry_manager.get_entries_flat_id_copy_to();
-        const auto &derivatives_flat_id_copy_from = derivative_symmetry_manager.get_entries_flat_id_copy_from();
+        for (int qp = 0; qp < n_points; ++qp)
+          values_phi_hat_copy_to[qp](comp) = values_phi_hat_copy_from[qp](0);
 
-        const auto &derivatives_tensor_id = derivative_symmetry_manager.get_entries_tensor_id();
+      } //end loop basis_i
+    } // end loop comp
 
-        const Size n_derivatives_eval = DerSymmMngr_t::num_entries_eval;
-        const Size n_derivatives_copy = DerSymmMngr_t::num_entries_copy;
+  } // end if (deriv_order == 0)
+  else
+  {
+    Assert(deriv_order >= 1, ExcLowerRange(deriv_order,1));
 
-        const auto elem_lengths = GridElement<dim>::get_coordinate_lengths();
+    using DerSymmMngr_t = DerivativeSymmetryManager<dim,deriv_order>;
+    DerSymmMngr_t derivative_symmetry_manager;
+    const auto &derivatives_flat_id_evaluate = derivative_symmetry_manager.get_entries_flat_id_evaluate();
+    const auto &derivatives_flat_id_copy_to = derivative_symmetry_manager.get_entries_flat_id_copy_to();
+    const auto &derivatives_flat_id_copy_from = derivative_symmetry_manager.get_entries_flat_id_copy_from();
 
-        for (Size pt_id = 0 ; pt_id < n_points ; ++pt_id)
-        {
-            const Point point = points[pt_id];
+    const auto &derivatives_tensor_id = derivative_symmetry_manager.get_entries_tensor_id();
 
-            auto derivatives_phi_hat_ipt = D_phi.get_point_view(pt_id);
+    const Size n_derivatives_eval = DerSymmMngr_t::num_entries_eval;
+    const Size n_derivatives_copy = DerSymmMngr_t::num_entries_copy;
+
+    const auto elem_lengths = GridElement<dim>::get_coordinate_lengths();
+
+    for (Size pt_id = 0 ; pt_id < n_points ; ++pt_id)
+    {
+      const Point point = points[pt_id];
+
+      auto derivatives_phi_hat_ipt = D_phi.get_point_view(pt_id);
 
 #ifndef NDEBUG
-            for (int dir = 0 ; dir < dim ; ++dir)
-                Assert(point[dir] >= 0.0 && point[dir] <= 1.0,
-                ExcMessage("Evaluation point " + std::to_string(pt_id) + " not in the unit-domain."));
+      for (int dir = 0 ; dir < dim ; ++dir)
+        Assert(point[dir] >= 0.0 && point[dir] <= 1.0,
+        ExcMessage("Evaluation point " + std::to_string(pt_id) + " not in the unit-domain."));
 #endif
 //            auto n_basis = this->n_basis_direction_;
-            auto degree = this->space_->get_degree_table();
-            for (int iComp : bezier_op.get_active_components_id())
-            {
-                //------------------------------------------------------------------------------
-                // evaluation of the values/derivarives of the 1D Bernstein polynomials -- begin
-                SafeSTLArray<SafeSTLArray<boost::numeric::ublas::vector<Real>,dim>,deriv_order+1> bernstein_values;
-                for (int order = 0 ; order <= deriv_order ; ++order)
-                {
-                    for (int dir = 0 ; dir < dim ; ++dir)
-                    {
-                        const Real scaling_coef = pow(1.0/elem_lengths[dir],order);
-
-                        bernstein_values[order][dir] =
-                        scaling_coef * BernsteinBasis::derivative(order,degree[iComp][dir],point[dir]);
-                    }
-                }
-                // evaluation of the values/derivarives of the 1D Bernstein polynomials -- end
-                //------------------------------------------------------------------------------
-
-
-
-                //--------------------------------------------------------------------------------
-                // apply the Bezier extraction operator for the functions on this element -- begin
-                const auto &bezier_op_comp = bezier_op[iComp];
-
-                SafeSTLArray<SafeSTLArray<boost::numeric::ublas::vector<Real>,dim>,deriv_order+1> bspline_basis;
-                for (int order = 0 ; order <= deriv_order ; ++order)
-                {
-                    for (int dir = 0 ; dir < dim ; ++dir)
-                    {
-                        const auto &M = *(bezier_op_comp[dir]);
-
-                        bspline_basis[order][dir] = prec_prod(M, bernstein_values[order][dir]);
-                    }
-                }
-                // apply the Bezier extraction operator for the functions on this element -- end
-                //--------------------------------------------------------------------------------
-
-
-
-                //--------------------------------------------------------------------------------
-                // multiply the spline 1D in order to have the multi-d value -- begin
-                const Size comp_offset_i = this->comp_offset_[iComp];
-
-                const auto &basis_flat_to_tensor = *(this->basis_functions_indexer_)[iComp];
-
-                const int n_basis_component = this->get_num_basis(iComp);
-
-                for (Size basis_fid = 0 ; basis_fid < n_basis_component ; ++basis_fid)
-                {
-
-                    const auto &basis_tid = basis_flat_to_tensor[basis_fid];
-
-                    auto &deriv = derivatives_phi_hat_ipt[basis_fid+comp_offset_i];
-
-                    //--------------------------------------------------------------------------------
-                    for (int entry_id = 0; entry_id < n_derivatives_eval; ++entry_id)
-                    {
-                        const auto entry_eval_fid = derivatives_flat_id_evaluate[entry_id];
-                        const auto entry_eval_tid = derivatives_tensor_id[entry_eval_fid];
-
-                        // from the entry_tid we get the right derivative order
-                        TensorIndex<dim> deriv_order_tid; // [0,0,..,0] tensor index
-                        for (int i = 0; i < deriv_order; ++i)
-                            ++(deriv_order_tid[entry_eval_tid[i]]);
-
-                        //TODO: remove this if!!! (Maybe re-think about the BSplineSpace for dim==0)
-                        if (dim > 0)
-                        {
-                            Real value = bspline_basis[deriv_order_tid[0]][0][basis_tid[0]];
-                            for (int dir = 1 ; dir < dim ; ++dir)
-                                value *= bspline_basis[deriv_order_tid[dir]][dir][basis_tid[dir]];
-
-                            deriv(entry_eval_fid)(iComp) = value;
-                        }
-                        else
-                        {
-                            deriv(entry_eval_fid)(iComp) = 1.0;
-                        }
-
-                    } // end entry_id loop
-                    //--------------------------------------------------------------------------------
-
-
-                    //--------------------------------------------------------------------------------
-                    // here we copy the computed quantities to the symmetric part of the tensor
-                    for (int entry_id = 0; entry_id < n_derivatives_copy; ++entry_id)
-                        deriv(derivatives_flat_id_copy_to[entry_id])(iComp) =
-                            deriv(derivatives_flat_id_copy_from[entry_id])(iComp);
-                    //--------------------------------------------------------------------------------
-
-                } // end basis_fid loop
-                // multiply the spline 1D in order to have the multi-d value -- end
-                //--------------------------------------------------------------------------------
-
-            } // end iComp loop
-
-        } // end pt_id loop
-
-        for (int comp : bezier_op.get_inactive_components_id())
+      auto degree = this->space_->get_degree_table();
+      for (int iComp : bezier_op.get_active_components_id())
+      {
+        //------------------------------------------------------------------------------
+        // evaluation of the values/derivarives of the 1D Bernstein polynomials -- begin
+        SafeSTLArray<SafeSTLArray<boost::numeric::ublas::vector<Real>,dim>,deriv_order+1> bernstein_values;
+        for (int order = 0 ; order <= deriv_order ; ++order)
         {
-            const Size n_ders = Derivative<deriv_order>::size;
-            const auto n_basis =  this->get_num_basis(comp);
-            const Size act_offset = this->comp_offset_[bezier_op.active(comp)];
-            const Size offset = this->comp_offset_[comp];
-            for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
+          for (int dir = 0 ; dir < dim ; ++dir)
+          {
+            const Real scaling_coef = pow(1.0/elem_lengths[dir],order);
+
+            bernstein_values[order][dir] =
+            scaling_coef * BernsteinBasis::derivative(order,degree[iComp][dir],point[dir]);
+          }
+        }
+        // evaluation of the values/derivarives of the 1D Bernstein polynomials -- end
+        //------------------------------------------------------------------------------
+
+
+
+        //--------------------------------------------------------------------------------
+        // apply the Bezier extraction operator for the functions on this element -- begin
+        const auto &bezier_op_comp = bezier_op[iComp];
+
+        SafeSTLArray<SafeSTLArray<boost::numeric::ublas::vector<Real>,dim>,deriv_order+1> bspline_basis;
+        for (int order = 0 ; order <= deriv_order ; ++order)
+        {
+          for (int dir = 0 ; dir < dim ; ++dir)
+          {
+            const auto &M = *(bezier_op_comp[dir]);
+
+            bspline_basis[order][dir] = prec_prod(M, bernstein_values[order][dir]);
+          }
+        }
+        // apply the Bezier extraction operator for the functions on this element -- end
+        //--------------------------------------------------------------------------------
+
+
+
+        //--------------------------------------------------------------------------------
+        // multiply the spline 1D in order to have the multi-d value -- begin
+        const Size comp_offset_i = this->comp_offset_[iComp];
+
+        const auto &basis_flat_to_tensor = *(this->basis_functions_indexer_)[iComp];
+
+        const int n_basis_component = this->get_num_basis(iComp);
+
+        for (Size basis_fid = 0 ; basis_fid < n_basis_component ; ++basis_fid)
+        {
+
+          const auto &basis_tid = basis_flat_to_tensor[basis_fid];
+
+          auto &deriv = derivatives_phi_hat_ipt[basis_fid+comp_offset_i];
+
+          //--------------------------------------------------------------------------------
+          for (int entry_id = 0; entry_id < n_derivatives_eval; ++entry_id)
+          {
+            const auto entry_eval_fid = derivatives_flat_id_evaluate[entry_id];
+            const auto entry_eval_tid = derivatives_tensor_id[entry_eval_fid];
+
+            // from the entry_tid we get the right derivative order
+            TensorIndex<dim> deriv_order_tid; // [0,0,..,0] tensor index
+            for (int i = 0; i < deriv_order; ++i)
+              ++(deriv_order_tid[entry_eval_tid[i]]);
+
+            //TODO: remove this if!!! (Maybe re-think about the BSplineSpace for dim==0)
+            if (dim > 0)
             {
-                const auto derivatives_phi_hat_copy_from = D_phi.get_function_view(act_offset+basis_i);
-                auto derivatives_phi_hat_copy_to = D_phi.get_function_view(offset+basis_i);
-                for (int qp = 0; qp < n_points; ++qp)
-                {
-                    const auto &values_0 = derivatives_phi_hat_copy_from[qp];
-                    auto &values = derivatives_phi_hat_copy_to[qp];
+              Real value = bspline_basis[deriv_order_tid[0]][0][basis_tid[0]];
+              for (int dir = 1 ; dir < dim ; ++dir)
+                value *= bspline_basis[deriv_order_tid[dir]][dir][basis_tid[dir]];
 
-                    for (int der = 0; der < n_ders; ++der)
-                        values(der)(comp) = values_0(der)(0);
-                } // end loop qp
-            } //end loop basis_i
-        } // end loop comp
+              deriv(entry_eval_fid)(iComp) = value;
+            }
+            else
+            {
+              deriv(entry_eval_fid)(iComp) = 1.0;
+            }
 
-    } // end if (deriv_order != 0)
+          } // end entry_id loop
+          //--------------------------------------------------------------------------------
 
-    return D_phi;
+
+          //--------------------------------------------------------------------------------
+          // here we copy the computed quantities to the symmetric part of the tensor
+          for (int entry_id = 0; entry_id < n_derivatives_copy; ++entry_id)
+            deriv(derivatives_flat_id_copy_to[entry_id])(iComp) =
+              deriv(derivatives_flat_id_copy_from[entry_id])(iComp);
+          //--------------------------------------------------------------------------------
+
+        } // end basis_fid loop
+        // multiply the spline 1D in order to have the multi-d value -- end
+        //--------------------------------------------------------------------------------
+
+      } // end iComp loop
+
+    } // end pt_id loop
+
+    for (int comp : bezier_op.get_inactive_components_id())
+    {
+      const Size n_ders = Derivative<deriv_order>::size;
+      const auto n_basis =  this->get_num_basis(comp);
+      const Size act_offset = this->comp_offset_[bezier_op.active(comp)];
+      const Size offset = this->comp_offset_[comp];
+      for (Size basis_i = 0; basis_i < n_basis;  ++basis_i)
+      {
+        const auto derivatives_phi_hat_copy_from = D_phi.get_function_view(act_offset+basis_i);
+        auto derivatives_phi_hat_copy_to = D_phi.get_function_view(offset+basis_i);
+        for (int qp = 0; qp < n_points; ++qp)
+        {
+          const auto &values_0 = derivatives_phi_hat_copy_from[qp];
+          auto &values = derivatives_phi_hat_copy_to[qp];
+
+          for (int der = 0; der < n_ders; ++der)
+            values(der)(comp) = values_0(der)(0);
+        } // end loop qp
+      } //end loop basis_i
+    } // end loop comp
+
+  } // end if (deriv_order != 0)
+
+  return D_phi;
 }
 #endif
 

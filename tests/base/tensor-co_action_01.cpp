@@ -35,44 +35,44 @@ template <int dim, int range, int rank>
 void run_test()
 {
 
-    out << "dim: " << dim  << " range: " << range << endl;
-    Derivatives<dim, range, rank, 1> DF;
-    for (int i = 0; i < dim; ++i)
-        DF[i][i] = double(i+1) ;
+  out << "dim: " << dim  << " range: " << range << endl;
+  Derivatives<dim, range, rank, 1> DF;
+  for (int i = 0; i < dim; ++i)
+    DF[i][i] = double(i+1) ;
 
-    Real det;
-    auto DF_inv = inverse(DF, det);
+  Real det;
+  auto DF_inv = inverse(DF, det);
 
-    auto DF_inv_t = co_tensor(transpose(DF_inv));
+  auto DF_inv_t = co_tensor(transpose(DF_inv));
 
-    Points<dim> n_hat;
-    for (int i = 0; i < dim; ++i)
-        n_hat[i] = double(i+1) ;
-    auto n = action(DF,n_hat);
+  Points<dim> n_hat;
+  for (int i = 0; i < dim; ++i)
+    n_hat[i] = double(i+1) ;
+  auto n = action(DF,n_hat);
 
-    out << "Action of: " << DF << "on:" << n_hat;
-    out << "is:" << n << endl;
+  out << "Action of: " << DF << "on:" << n_hat;
+  out << "is:" << n << endl;
 
-    auto n1 = action(DF_inv_t, n_hat);
+  auto n1 = action(DF_inv_t, n_hat);
 
-    out << "Action of: " << DF_inv_t << "on:" << n_hat;
-    out << "is:" << n1 << endl;
+  out << "Action of: " << DF_inv_t << "on:" << n_hat;
+  out << "is:" << n1 << endl;
 
 }
 
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
-    run_test<1,1,1>();
-    run_test<2,2,1>();
-    run_test<3,3,1>();
+  run_test<1,1,1>();
+  run_test<2,2,1>();
+  run_test<3,3,1>();
 
-    run_test<1,2,1>();
-    run_test<1,3,1>();
-    run_test<2,3,1>();
+  run_test<1,2,1>();
+  run_test<1,3,1>();
+  run_test<2,3,1>();
 
-    return  0;
+  return  0;
 }
 

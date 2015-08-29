@@ -56,176 +56,176 @@ template <int,int,int> class DofDistribution;
  */
 template<int dim_, int range_ = 1, int rank_ = 1>
 class ReferenceSpace :
-    public Space<dim_,0,range_,rank_,Transformation::h_grad>
+  public Space<dim_,0,range_,rank_,Transformation::h_grad>
 {
-    using base_t = Space<dim_,0,range_,rank_,Transformation::h_grad>;
-    using self_t = ReferenceSpace<dim_,range_,rank_>;
+  using base_t = Space<dim_,0,range_,rank_,Transformation::h_grad>;
+  using self_t = ReferenceSpace<dim_,range_,rank_>;
 
 public:
-    static const int dim       = dim_;
-    static const int codim     = 0;
-    static const int space_dim = dim_;
-    static const int range     = range_;
-    static const int rank      = rank_;
-    static const bool is_physical_space = false;
+  static const int dim       = dim_;
+  static const int codim     = 0;
+  static const int space_dim = dim_;
+  static const int range     = range_;
+  static const int rank      = rank_;
+  static const bool is_physical_space = false;
 
-    /**
-     * See documentation in \ref Space
-     *
-     * @see Space
-     */
-    using PushForwardType = PushForward<Transformation::h_grad, dim, codim>;
+  /**
+   * See documentation in \ref Space
+   *
+   * @see Space
+   */
+  using PushForwardType = PushForward<Transformation::h_grad, dim, codim>;
 
-    using RefSpace = ReferenceSpace<dim_,range_,rank_>;
+  using RefSpace = ReferenceSpace<dim_,range_,rank_>;
 
-    using Func = Function<dim, 0, range, rank>;
+  using Func = Function<dim, 0, range, rank>;
 
-    template <int order>
-    using Derivative = typename Func::template Derivative<order>;
-    using Point = typename Func::Point;
-    using Value = typename Func::Value;
-    using Div   = typename Func::Div;
-    using RefPoint = Point;
-
-
-    using GridType = CartesianGrid<dim>;
+  template <int order>
+  using Derivative = typename Func::template Derivative<order>;
+  using Point = typename Func::Point;
+  using Value = typename Func::Value;
+  using Div   = typename Func::Div;
+  using RefPoint = Point;
 
 
+  using GridType = CartesianGrid<dim>;
 
-    /** Type for the element accessor. */
-    using ElementAccessor = ReferenceElement<dim,range,rank>;
 
-    /** Type for iterator over the elements.  */
-    using ElementIterator = GridIterator<ElementAccessor>;
 
-    using ElementHandler = ReferenceElementHandler<dim_, range_, rank_>;
+  /** Type for the element accessor. */
+  using ElementAccessor = ReferenceElement<dim,range,rank>;
 
-    using SpaceData = SplineSpace<dim_,range_,rank_>;
+  /** Type for iterator over the elements.  */
+  using ElementIterator = GridIterator<ElementAccessor>;
 
-    using Degrees = typename SpaceData::Degrees;
-    using Multiplicity = typename SpaceData::Multiplicity;
-    using EndBehaviour = typename SpaceData::EndBehaviour;
-    using Periodicity = typename SpaceData::Periodicity;
+  using ElementHandler = ReferenceElementHandler<dim_, range_, rank_>;
 
-    using KnotsTable = typename SpaceData::KnotsTable;
-    using DegreeTable = typename SpaceData::DegreeTable;
-    using MultiplicityTable = typename SpaceData::MultiplicityTable;
-    using TensorSizeTable = typename SpaceData::TensorSizeTable;
-    using PeriodicityTable = typename SpaceData::PeriodicityTable;
-    using EndBehaviourTable = typename SpaceData::EndBehaviourTable;
+  using SpaceData = SplineSpace<dim_,range_,rank_>;
 
-    template <class T>
-    using ComponentContainer = typename SpaceData::template ComponentContainer<T>;
+  using Degrees = typename SpaceData::Degrees;
+  using Multiplicity = typename SpaceData::Multiplicity;
+  using EndBehaviour = typename SpaceData::EndBehaviour;
+  using Periodicity = typename SpaceData::Periodicity;
 
-    using ComponentMap = typename SpaceData::template ComponentContainer<int>::ComponentMap;
+  using KnotsTable = typename SpaceData::KnotsTable;
+  using DegreeTable = typename SpaceData::DegreeTable;
+  using MultiplicityTable = typename SpaceData::MultiplicityTable;
+  using TensorSizeTable = typename SpaceData::TensorSizeTable;
+  using PeriodicityTable = typename SpaceData::PeriodicityTable;
+  using EndBehaviourTable = typename SpaceData::EndBehaviourTable;
 
-    static const auto n_components = SpaceData::n_components;
+  template <class T>
+  using ComponentContainer = typename SpaceData::template ComponentContainer<T>;
+
+  using ComponentMap = typename SpaceData::template ComponentContainer<int>::ComponentMap;
+
+  static const auto n_components = SpaceData::n_components;
 
 protected:
-    /**
-     * Default constructor. It does nothing but it is needed for the
-     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     * mechanism.
-     */
-    ReferenceSpace() = default;
+  /**
+   * Default constructor. It does nothing but it is needed for the
+   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * mechanism.
+   */
+  ReferenceSpace() = default;
 
-    explicit ReferenceSpace(
-        const std::shared_ptr<CartesianGrid<dim_>> &grid);
+  explicit ReferenceSpace(
+    const std::shared_ptr<CartesianGrid<dim_>> &grid);
 
-    explicit ReferenceSpace(
-        const std::shared_ptr<const CartesianGrid<dim_>> &grid);
+  explicit ReferenceSpace(
+    const std::shared_ptr<const CartesianGrid<dim_>> &grid);
 
 public:
-    virtual ~ReferenceSpace() = default;
+  virtual ~ReferenceSpace() = default;
 
 
-    template <int sdim>
-    using SubGridMap = typename GridType::template SubGridMap<sdim>;
+  template <int sdim>
+  using SubGridMap = typename GridType::template SubGridMap<sdim>;
 
-    template <int k>
-    using InterSpaceMap = SafeSTLVector<Index>;
+  template <int k>
+  using InterSpaceMap = SafeSTLVector<Index>;
 
-    template <int k>
-    using SubRefSpace = ReferenceSpace<k, range, rank>;
+  template <int k>
+  using SubRefSpace = ReferenceSpace<k, range, rank>;
 
-    template <int k>
-    using SubSpace = PhysicalSpace<k,range,rank, dim-k, Transformation::h_grad>;
+  template <int k>
+  using SubSpace = PhysicalSpace<k,range,rank, dim-k, Transformation::h_grad>;
 
-    virtual bool is_bspline() const = 0;
+  virtual bool is_bspline() const = 0;
 
-    /**
-     * Returns the degree of the BSpline space for each component and for each coordinate direction.
-     * \return The degree of the BSpline space for each component and for each coordinate direction.
-     * The first index of the returned object is the component id, the second index is the direction id.
-     */
-    virtual const DegreeTable &get_degree_table() const = 0;
-
-
-    /**
-     * Return the maximum value of the polynomial degree, for each component, for each direction;
-     */
-    virtual int get_max_degree() const override final;
+  /**
+   * Returns the degree of the BSpline space for each component and for each coordinate direction.
+   * \return The degree of the BSpline space for each component and for each coordinate direction.
+   * The first index of the returned object is the component id, the second index is the direction id.
+   */
+  virtual const DegreeTable &get_degree_table() const = 0;
 
 
-
-
-
-    /**
-     * Returns a const reference to the end behaviour table of the BSpline space.
-     */
-    virtual const EndBehaviourTable &get_end_behaviour_table() const = 0;
-
-
-    virtual const PeriodicityTable &get_periodicity() const = 0;
+  /**
+   * Return the maximum value of the polynomial degree, for each component, for each direction;
+   */
+  virtual int get_max_degree() const override final;
 
 
 
 
 
+  /**
+   * Returns a const reference to the end behaviour table of the BSpline space.
+   */
+  virtual const EndBehaviourTable &get_end_behaviour_table() const = 0;
 
 
-    template<int k>
-    std::shared_ptr< SubRefSpace<k> >
-    get_ref_sub_space(const int s_id,
-                      InterSpaceMap<k> &dof_map,
-                      std::shared_ptr<CartesianGrid<k>> sub_grid = nullptr) const;
+  virtual const PeriodicityTable &get_periodicity() const = 0;
 
-    template<int k>
-    std::shared_ptr<SubSpace<k> >
-    get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
-                  std::shared_ptr<CartesianGrid<k>> sub_grid,
-                  SubGridMap<k> &elem_map) const;
+
+
+
+
+
+
+  template<int k>
+  std::shared_ptr< SubRefSpace<k> >
+  get_ref_sub_space(const int s_id,
+                    InterSpaceMap<k> &dof_map,
+                    std::shared_ptr<CartesianGrid<k>> sub_grid = nullptr) const;
+
+  template<int k>
+  std::shared_ptr<SubSpace<k> >
+  get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
+                std::shared_ptr<CartesianGrid<k>> sub_grid,
+                SubGridMap<k> &elem_map) const;
 
 
 protected:
 
-    std::shared_ptr<const RefSpace> ref_space_previous_refinement_ = nullptr;
+  std::shared_ptr<const RefSpace> ref_space_previous_refinement_ = nullptr;
 
 
 
 #ifdef MESH_REFINEMENT
 
 public:
-    std::shared_ptr<const base_t> get_space_previous_refinement() const override final
-    {
-        return ref_space_previous_refinement_;
-    }
+  std::shared_ptr<const base_t> get_space_previous_refinement() const override final
+  {
+    return ref_space_previous_refinement_;
+  }
 #endif // MESH_REFINEMENT
 
 private:
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version);
-    ///@}
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version);
+  ///@}
 #endif // SERIALIZATION
 };
 
