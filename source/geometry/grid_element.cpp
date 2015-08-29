@@ -129,9 +129,9 @@ bool
 GridElementBase<dim, ContainerType_>::
 operator ==(const self_t &elem) const
 {
-    Assert(this->get_grid() == elem.get_grid(),
+    Assert(get_grid() == elem.get_grid(),
            ExcMessage("Cannot compare elements on different grid."));
-    return (this->get_index() == elem.get_index());
+    return (get_index() == elem.get_index());
 }
 
 
@@ -141,9 +141,9 @@ bool
 GridElementBase<dim, ContainerType_>::
 operator !=(const self_t &elem) const
 {
-    Assert(this->get_grid() == elem.get_grid(),
+    Assert(get_grid() == elem.get_grid(),
            ExcMessage("Cannot compare elements on different grid."));
-    return (this->get_index() != elem.get_index());
+    return (get_index() != elem.get_index());
 }
 
 template <int dim, class ContainerType_>
@@ -151,9 +151,9 @@ bool
 GridElementBase<dim, ContainerType_>::
 operator <(const self_t &elem) const
 {
-    Assert(this->get_grid() == elem.get_grid(),
+    Assert(get_grid() == elem.get_grid(),
            ExcMessage("Cannot compare elements on different grid."));
-    return (this->get_index() < elem.get_index());
+    return (get_index() < elem.get_index());
 }
 
 template <int dim, class ContainerType_>
@@ -161,9 +161,9 @@ bool
 GridElementBase<dim, ContainerType_>::
 operator >(const self_t &elem) const
 {
-    Assert(this->get_grid() == elem.get_grid(),
+    Assert(get_grid() == elem.get_grid(),
            ExcMessage("Cannot compare elements on different grid."));
-    return (this->get_index() > elem.get_index());
+    return (get_index() > elem.get_index());
 }
 
 
@@ -182,7 +182,7 @@ void
 GridElementBase<dim, ContainerType_>::
 copy_from(const self_t &elem, const CopyPolicy &copy_policy)
 {
-    Assert(this->get_grid() == elem.get_grid(),
+    Assert(get_grid() == elem.get_grid(),
            ExcMessage("Cannot copy from an element on different grid."));
 
     if (this != &elem)
@@ -237,7 +237,7 @@ vertex(const int i) const -> Point
     Assert(i < UnitElement<dim>::sub_elements_size[0],
            ExcIndexRange(i,0, UnitElement<dim>::sub_elements_size[0]));
 
-    TensorIndex<dim> index = this->get_index();
+    TensorIndex<dim> index = get_index();
 
     auto all_elems = UnitElement<dim>::all_elems;
     const auto &vertex = std::get<0>(all_elems)[i];
@@ -253,19 +253,19 @@ vertex(const int i) const -> Point
 
 
 template <int dim, class ContainerType_>
-template <int k>
+template <int sdim>
 bool GridElementBase<dim, ContainerType_>::
 is_boundary(const Index id) const
 {
-    const auto &n_elem = this->get_grid()->get_num_intervals();
-    const auto &index = this->get_index();
+    const auto &n_elem = get_grid()->get_num_intervals();
+    const auto &index = get_index();
 
-    auto &k_elem = UnitElement<dim>::template get_elem<k>(id);
+    auto &sdim_elem = UnitElement<dim>::template get_elem<sdim>(id);
 
-    for (int i = 0; i < dim-k; ++i)
+    for (int i = 0; i < dim-sdim; ++i)
     {
-        auto dir = k_elem.constant_directions[i];
-        auto val = k_elem.constant_values[i];
+        auto dir = sdim_elem.constant_directions[i];
+        auto val = sdim_elem.constant_values[i];
         if (((index[dir] == 0)               && (val == 0)) ||
             ((index[dir] == n_elem[dir] - 1) && (val == 1)))
             return true;
@@ -277,13 +277,13 @@ is_boundary(const Index id) const
 
 
 template <int dim, class ContainerType_>
-template <int k>
+template <int sdim>
 bool
 GridElementBase<dim, ContainerType_>::
 is_boundary() const
 {
-    for (auto &id : UnitElement<dim>::template elems_ids<k>())
-        if (is_boundary<k>(id))
+    for (auto &id : UnitElement<dim>::template elems_ids<sdim>())
+        if (is_boundary<sdim>(id))
             return true;
 
     return false;
@@ -300,7 +300,7 @@ get_measure(const int s_id) const
 {
     const auto lengths = get_side_lengths<sdim>(s_id);
 
-    //  auto &k_elem = UnitElement<dim>::template get_elem<k>(j);
+    //  auto &sdim_elem = UnitElement<dim>::template get_elem<sdim>(j);
 
     Real measure = 1.0;
     for (int i=0; i<sdim; ++i)
@@ -313,12 +313,12 @@ get_measure(const int s_id) const
 
 
 template <int dim, class ContainerType_>
-template <int k>
+template <int sdim>
 ValueVector<Real>
 GridElementBase<dim, ContainerType_>::
 get_weights(const int j) const
 {
-    return this->template get_values_from_cache<_Weight,k>(j);
+    return this->template get_values_from_cache<_Weight,sdim>(j);
 }
 
 
@@ -327,11 +327,11 @@ template <int dim, class ContainerType_>
 template <int sdim>
 auto
 GridElementBase<dim, ContainerType_>::
-get_side_lengths(const int sid) const -> const Points<sdim>
+get_side_lengths(const int s_id) const -> const Points<sdim>
 {
     Points<sdim> lengths;
 
-    auto &s_elem = UnitElement<dim>::template get_elem<sdim>(sid);
+    auto &s_elem = UnitElement<dim>::template get_elem<sdim>(s_id);
 
     int i=0;
     for (const int active_dir : s_elem.active_directions)
@@ -348,12 +348,12 @@ get_side_lengths(const int sid) const -> const Points<sdim>
 
 
 template <int dim, class ContainerType_>
-template <int k>
+template <int sdim>
 auto
 GridElementBase<dim, ContainerType_>::
 get_points(const int j) const ->ValueVector<Point>
 {
-    return this->template get_values_from_cache<_Point,k>(j);
+    return this->template get_values_from_cache<_Point,sdim>(j);
 }
 
 

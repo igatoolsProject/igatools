@@ -83,8 +83,10 @@ public:
     using ElementAccessor = PhysicalDomainElement<dim_, codim_>;
     using ElementIterator = GridIterator<ElementAccessor>;
 
+    using List = typename GridType::List;
     using ListIt = typename GridType::ListIt;
     using Flags = physical_domain_element::Flags;
+
 #if 0
 public:
     /** Type for the given order derivatives of the
@@ -142,7 +144,7 @@ public:
 public:
 
     void set_flags(const topology_variant &sdim,
-                   const typename ElementAccessor::Flags &flag);
+                   const Flags &flag);
 
     void init_cache(ElementAccessor &elem,
                     const eval_pts_variant &quad) const;
@@ -164,9 +166,10 @@ public:
         this->fill_cache(sdim, *elem, s_id);
     }
 
-    ElementIterator begin() const;
+    ElementIterator begin(const PropId &property = ElementProperties::active);
 
-    ElementIterator end();
+    ElementIterator end(const PropId &property = ElementProperties::active);
+
 #if 0
 private:
     struct ResetDispatcher : boost::static_visitor<void>

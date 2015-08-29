@@ -62,6 +62,68 @@ PhysicalDomainElementBase(const self_t &elem,
 }
 
 
+template<int dim_, int codim_, class ContainerType_>
+void
+PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
+deep_copy_from(const self_t &elem)
+{
+	Assert(false, ExcNotImplemented());
+}
+
+
+template<int dim_, int codim_, class ContainerType_>
+void
+PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
+shallow_copy_from(const self_t &elem)
+{
+	Assert(false, ExcNotImplemented());
+}
+
+
+
+template<int dim_, int codim_, class ContainerType_>
+bool
+PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
+operator ==(const self_t &elem) const
+{
+    Assert(phys_dom_ == elem.phys_dom_,
+           ExcMessage("Cannot compare elements on different grid."));
+    return (grid_elem_ == elem.grid_elem_);
+}
+
+
+template<int dim_, int codim_, class ContainerType_>
+bool
+PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
+operator !=(const self_t &elem) const
+{
+    Assert(phys_dom_ == elem.phys_dom_,
+           ExcMessage("Cannot compare elements on different grid."));
+    return (grid_elem_ != elem.grid_elem_);
+}
+
+template<int dim_, int codim_, class ContainerType_>
+bool
+PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
+operator <(const self_t &elem) const
+{
+    Assert(phys_dom_ == elem.phys_dom_,
+           ExcMessage("Cannot compare elements on different grid."));
+    return (grid_elem_ < elem.grid_elem_);
+}
+
+template<int dim_, int codim_, class ContainerType_>
+bool
+PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
+operator >(const self_t &elem) const
+{
+    Assert(phys_dom_ == elem.phys_dom_,
+           ExcMessage("Cannot compare elements on different grid."));
+    return (grid_elem_ > elem.grid_elem_);
+}
+
+
+
 #if 0
 template<int dim_, int codim_, class ContainerType_>
 auto
@@ -243,7 +305,7 @@ get_D_external_normals() const -> ValueVector< Derivative<1> >
 //        Assert(dim==sub_dim+1, ExcNotImplemented());
 //        ValueVector<Points<space_dim>> res;
 //        const auto &DF_inv = get_inverse_values<1, sub_dim>(s_id);
-//        const auto n_hat  = this->get_grid()->template get_boundary_normals<sub_dim>(s_id)[0];
+//        const auto n_hat  = get_grid()->template get_boundary_normals<sub_dim>(s_id)[0];
 //
 //        const auto n_points = DF_inv.get_num_points();
 //        res.resize(n_points);
@@ -258,5 +320,5 @@ get_D_external_normals() const -> ValueVector< Derivative<1> >
 
 IGA_NAMESPACE_CLOSE
 
-//#include <igatools/geometry/physical_domain_element.inst>
+#include <igatools/geometry/physical_domain_element.inst>
 

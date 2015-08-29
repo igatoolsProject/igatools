@@ -33,7 +33,7 @@ IGA_NAMESPACE_OPEN
 template <int,int,int,int> class Function;
 template <int,int,int,int> class FunctionElementBase;
 template <int,int,int,int> class FunctionElement;
-template <int,int> class PhysicalDomain;
+//template <int,int> class PhysicalDomain;
 
 /**
  *
@@ -47,7 +47,7 @@ private:
 
 public:
     using ContainerType = ContainerType_;
-    using GridElem = GridElement<dim_>;
+    using GridElem = typename ContainerType_::GridType::ConstElementAccessor;
 
     using ListIt = typename ContainerType_::ListIt;
 
@@ -104,6 +104,64 @@ public:
     ~PhysicalDomainElementBase() = default;
     ///@}
 
+    /**
+         * @name Functions for performing different kind of copy.
+         */
+        ///@{
+        /**
+         * Performs a deep copy of the input @p element,
+         * i.e. a new local cache is built using the copy constructor on the local cache of @p element.
+         *
+         * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
+         */
+        void deep_copy_from(const self_t &element);
+
+        /**
+         * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
+         * local cache used by the input @p element.
+         */
+        void shallow_copy_from(const self_t &element);
+        ///@}
+
+        /**
+         * @name Comparison operators
+         * @note In order to be meaningful, the comparison must be performed on elements defined on
+         * the <b>same grid</b>
+         * (in the sense that the pointer to the grid held by the element must point to the same
+         * grid object).
+         */
+        ///@{
+        /**
+         * True if the elements have the same index.
+         *  @note In debug mode, it is also check they both refer to
+         *  the same cartesian grid. No check is done on the cache.
+         */
+        bool operator==(const self_t &elem) const;
+
+        /**
+         * True if the elements have different index.
+         *  @note In debug mode, it is also check they both refer to
+         *  the same cartesian grid. No check is done on the cache.
+         */
+        bool operator!=(const self_t &elem) const;
+
+        /**
+         * True if the flat-index of the element on the left is smaller than
+         * the flat-index of the element on the right.
+         *  @note In debug mode, it is also check they both refer to
+         *  the same cartesian grid. No check is done on the cache.
+         */
+        bool operator<(const self_t &elem) const;
+
+        /**
+         * True if the flat-index of the element on the left is bigger than
+         * the flat-index of the element on the right.
+         *  @note In debug mode, it is also check they both refer to
+         *  the same cartesian grid. No check is done on the cache.
+         */
+        bool operator>(const self_t &elem) const;
+        ///@}
+
 #if 0
     template<int order>
     using InvDerivative = typename FuncType::template InvDerivative<order>;
@@ -115,7 +173,7 @@ public:
 public:
     ListIt &operator++()
     {
-        return (++grid_elem_);
+        return (++(*grid_elem_));
     }
 
 
@@ -125,16 +183,16 @@ public:
     }
 
 public:
-    template<int k>
-    ValueVector<Real> const &get_measures(const int j) const
+    template<int sdim>
+    ValueVector<Real> const &get_measures(const int s_id) const
     {
-        return get_values_from_cache<_Measure,k>(j);
+        return get_values_from_cache<_Measure,sdim>(s_id);
     }
 
-    template<int k>
-    ValueVector<Real> const &get_w_measures(const int j) const
+    template<int sdim>
+    ValueVector<Real> const &get_w_measures(const int s_id) const
     {
-        return get_values_from_cache<_W_Measure,k>(j);
+        return get_values_from_cache<_W_Measure,sdim>(s_id);
     }
 #if 0
     const ValueVector<Points<space_dim> > &get_external_normals() const;
@@ -253,7 +311,7 @@ class PhysicalDomainElement
       PhysicalDomain<dim,codim>>
 {
     using PhysicalDomainElementBase<dim, codim,
-          const PhysicalDomain<dim,codim>>::PhysicalDomainElementBase;
+          PhysicalDomain<dim,codim>>::PhysicalDomainElementBase;
 };
 
 IGA_NAMESPACE_CLOSE

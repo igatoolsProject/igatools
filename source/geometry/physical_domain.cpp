@@ -20,7 +20,7 @@
 
 #include <igatools/geometry/physical_domain.h>
 #include <igatools/geometry/physical_domain_element.h>
-#include <igatools/functions/function.h>
+//#include <igatools/functions/function.h>
 
 using std::shared_ptr;
 
@@ -70,7 +70,7 @@ PhysicalDomain(std::shared_ptr<const GridType> grid)
 //               std::shared_ptr<const FuncType> F)
     :
     grid_(grid),
-    grid_handler_(grid->create_handler())
+    grid_handler_(grid->create_cache_handler())
 //	,
 //    F_(F)
 {}
@@ -221,21 +221,25 @@ create_element(const Index flat_index) const -> std::shared_ptr<ElementAccessor>
 template<int dim_, int codim_>
 auto
 PhysicalDomain<dim_, codim_>::
-begin() const -> ElementIterator
+begin(const PropId &prop) -> ElementIterator
 {
-    return ElementIterator(this->create_element(0),ElementProperties::active);
+    return ElementIterator(this->shared_from_this(),
+    grid_->get_element_property(prop).begin(),
+    prop);
 }
 
 template<int dim_, int codim_>
 auto
 PhysicalDomain<dim_, codim_>::
-end() -> ElementIterator
+end(const PropId &prop) -> ElementIterator
 {
-    return ElementIterator(this->create_element(IteratorState::pass_the_end),ElementProperties::active);
+    return ElementIterator(this->shared_from_this(),
+    		grid_->get_element_property(prop).end(),
+    prop);
 }
 
 
 IGA_NAMESPACE_CLOSE
 
-//#include <igatools/geometry/physical_domain.inst>
+#include <igatools/geometry/physical_domain.inst>
 
