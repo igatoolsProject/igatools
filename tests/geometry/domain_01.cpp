@@ -44,7 +44,7 @@ void domain()
     //auto F = Function::create();
     std::shared_ptr<const Function> F;
 
-    Domain dom(grid, F);
+    auto dom = Domain::create(grid, F);
 
     OUTEND
 }
