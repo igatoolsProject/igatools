@@ -22,7 +22,7 @@
 #define __IDENTITY_FUNCTION_H_
 
 #include <igatools/functions/function.h>
-///#include <igatools/base/value_types.h>
+#include <igatools/geometry/cartesian_grid.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -62,9 +62,14 @@ private:
   using self_t = IdentityFunction<dim,space_dim>;
 
 protected:
-//    using typename parent_t::GridType;
+  using GridType = CartesianGrid<dim>;
 
 public:
+  using typename parent_t::ElementAccessor;
+  using typename parent_t::_Value;
+  using typename parent_t::_Gradient;
+ // using typename parent_t::_Hessian;
+
   using typename parent_t::topology_variant;
   //using typename parent_t::Point;
   using typename parent_t::Value;
@@ -78,20 +83,26 @@ public:
 //    using Derivative = typename parent_t::template Derivative<order>;
   // IdentityFunction(std::shared_ptr<GridType> grid);
 
+private:
   IdentityFunction();
-
+  IdentityFunction(std::shared_ptr<const GridType> grid);
+public:
   virtual ~IdentityFunction() = default;
 
-//    static std::shared_ptr<parent_t>
-//    create(std::shared_ptr<GridType> grid);
+  static std::shared_ptr<parent_t>
+  create(std::shared_ptr<const GridType> grid)
+  {
+	  std::make_shared<self_t>(grid);
+  }
 //
 //    std::shared_ptr<parent_t> clone() const override final;
 
 
-  void fill_cache(const topology_variant &sdim, ElementAccessor &elem,
+  void fill_cache(const topology_variant &sdim,
+		          ElementAccessor &elem,
                   const int s_id) const override final;
 
-  virtual void print_info(LogStream &out) const override final;
+ // virtual void print_info(LogStream &out) const override final;
 
 private:
   /**
@@ -139,14 +150,14 @@ private:
 
           cache.template set_status_filled<_Gradient>(true);
         }
-        if (cache.template status_fill<_Hessian>())
-        {
-          // TODO (pauletti, Apr 17, 2015): this can be static const
-          Hessian zero;
-          cache.template get_data<_Hessian>().fill(zero);
-
-          cache.template set_status_filled<_Hessian>(true);
-        }
+//        if (cache.template status_fill<_Hessian>())
+//        {
+//          // TODO (pauletti, Apr 17, 2015): this can be static const
+//          Hessian zero;
+//          cache.template get_data<_Hessian>().fill(zero);
+//
+//          cache.template set_status_filled<_Hessian>(true);
+//        }
       }
       cache.set_filled(true);
     }
@@ -191,5 +202,4 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
-#endif
 #endif

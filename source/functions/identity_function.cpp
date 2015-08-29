@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#if 0
+
 #include <igatools/functions/identity_function.h>
 #include <igatools/functions/function_element.h>
 
@@ -51,8 +51,13 @@ IGA_NAMESPACE_OPEN
 //    return std::make_shared<self_t>(*this);
 //}
 
+template<int dim,int space_dim>
+IdentityFunction<dim,space_dim>::
+IdentityFunction(std::shared_ptr<const GridType> grid)
+:parent_t(parent_t::DomainType::create(grid, std::shared_ptr<const parent_t>()))
+{
 
-
+}
 
 template<int dim,int space_dim>
 auto
@@ -107,5 +112,5 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> &identity_function)
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/functions/identity_function.inst>
-#endif
+//#include <igatools/functions/identity_function.inst>
+
