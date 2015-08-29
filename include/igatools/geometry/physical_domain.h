@@ -77,7 +77,7 @@ public:
     static const int dim = dim_;
 
     using GridType = const CartesianGrid<dim_>;
-    using GridHandle = typename CartesianGrid<dim_>::ElementHandler;
+    using GridHandler = typename CartesianGrid<dim_>::ElementHandler;
     using FuncType =  Function<dim_, 0, dim_ + codim_, 1>;
 
     using ElementAccessor = PhysicalDomainElement<dim_, codim_>;
@@ -127,7 +127,8 @@ public:
      */
     PhysicalDomain() = default;
 
-    PhysicalDomain(std::shared_ptr<const GridType> grid);//,std::shared_ptr<const FuncType> F);
+    PhysicalDomain(std::shared_ptr<const GridType> grid,
+    		std::shared_ptr<const FuncType> F);
 
     ~PhysicalDomain();
 
@@ -382,8 +383,8 @@ private:
 
 private:
     std::shared_ptr<const GridType> grid_;
-    std::shared_ptr<GridHandle> grid_handler_;
-    //std::shared_ptr<const FuncType> F_;
+    std::shared_ptr<GridHandler> grid_handler_;
+    std::shared_ptr<const FuncType> func_;
 
     SafeSTLArray<Flags, dim_ + 1> flags_;
 

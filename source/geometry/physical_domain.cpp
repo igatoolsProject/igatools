@@ -20,7 +20,7 @@
 
 #include <igatools/geometry/physical_domain.h>
 #include <igatools/geometry/physical_domain_element.h>
-//#include <igatools/functions/function.h>
+#include <igatools/functions/function.h>
 
 using std::shared_ptr;
 
@@ -65,14 +65,12 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_, int codim_>
 PhysicalDomain<dim_, codim_>::
-PhysicalDomain(std::shared_ptr<const GridType> grid)
-//      ,
-//               std::shared_ptr<const FuncType> F)
+PhysicalDomain(std::shared_ptr<const GridType> grid,
+		std::shared_ptr<const FuncType> F)
     :
     grid_(grid),
-    grid_handler_(grid->create_cache_handler())
-//  ,
-//    F_(F)
+    grid_handler_(grid->create_cache_handler()),
+	func_(F)
 {}
 
 
