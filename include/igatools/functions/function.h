@@ -73,7 +73,8 @@ public:
 
     using ElementAccessor = FunctionElement<dim_, codim_, range_, rank_>;
     using ElementIterator = GridIterator<ElementAccessor>;
-
+    using ConstElementAccessor = ConstFunctionElement<dim_, codim_, range_, rank_>;
+    using ConstElementIterator = GridIterator<ConstElementAccessor>;
 
     using List = typename DomainType::List;
     using ListIt = typename DomainType::ListIt;
@@ -181,8 +182,8 @@ public:
 //    void fill_element_cache(ElementIterator &elem) const;
 
 
-private:
-    std::shared_ptr<ElementAccessor>
+public:
+    std::shared_ptr<ConstElementAccessor>
     create_element(const ListIt &index, const PropId &prop) const;
 
 

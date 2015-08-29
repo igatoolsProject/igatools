@@ -142,7 +142,7 @@ public:
 
     std::shared_ptr<const GridType> get_grid() const;
 
-    // std::shared_ptr<const FuncType> get_function() const;
+    std::shared_ptr<const FuncType> get_function() const;
 
 public:
 

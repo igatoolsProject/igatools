@@ -44,7 +44,7 @@ private:
 public:
     using ContainerType = ContainerType_;
     using GridElem = typename ContainerType_::GridType::ConstElementAccessor;
-
+    using FuncElem = typename ContainerType_::FuncType::ElementAccessor;
     using ListIt = typename ContainerType_::ListIt;
 
     using Flags = physical_domain_element::Flags;
@@ -276,7 +276,7 @@ private:
 
     std::shared_ptr<GridElem> grid_elem_;
 
-    //  std::shared_ptr<FuncElem> func_elem_;
+    std::shared_ptr<FuncElem> func_elem_;
 
     std::shared_ptr<CacheType> local_cache_;
 
