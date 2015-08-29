@@ -308,25 +308,22 @@ protected:
 
     std::shared_ptr<CartesianGrid<dim_> > grid_;
 
-private:
-    std::shared_ptr<const PhysDomain> phys_domain_;
-
 #ifdef MESH_REFINEMENT
     std::shared_ptr<self_t> function_previous_refinement_;
+
+
 public:
-
-
-
     const std::shared_ptr<self_t> &get_function_previous_refinement() const
     {
 //        std::cout << "Function::get_function_previous_refinement()    Counter = " << function_previous_refinement_.use_count() << std::endl;
 
         return function_previous_refinement_;
     }
-
-
 #endif // MESH_REFINEMENT
 
+
+private:
+    std::shared_ptr<const PhysDomain> phys_domain_;
 
 
 
