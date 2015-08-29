@@ -28,17 +28,35 @@ data = Instantiation(include_files)
 elements = []
 
 
-iters =  ['GridIteratorBase', 'GridIterator']
-
+#iters =  ['GridIteratorBase', 'GridIterator']
+els =['const iga::Function', ' iga::Function']
 for row in inst.all_function_dims:
-    elem = 'FunctionElement<%d,%d,%d,%d>' %(row.dim, row.codim, row.range, row.rank)
+  for el in els:
+    elem = 'FunctionElementBase<%d,%d,%d,%d,' %(row.dim, row.codim, row.range, row.rank) + \
+     el + '<%d,%d,%d,%d>' %(row.dim, row.codim, row.range, row.rank) + '>'
     elements.append(elem)
     f.write('template class %s ;\n' %(elem))
     for it in iters:
         iterator = '%s<%s>' % (it,elem)
         f.write('template class %s; \n' %iterator)
 
+accs1 =  ['FuctionElement',       'ConstFuctionElement']
+for row in inst.all_function_dims: 
+  for acc in accs1: 
+      f.write('template class ' + acc + '<%d,%d,%d,%d>' %(row.dim, row.codim, row.range, row.rank) + ';\n')
 
+accs=  ['FuctionElement',       'ConstFuctionElement', 'FuctionElement', 'ConstFuctionElement']
+iters =  ['GridIteratorBase', 'GridIteratorBase',   'GridIterator', 'GridIterator']
+for row in inst.all_function_dims:
+  for i in range(len(accs)):
+    acc = iters[i] + '<' + accs[i] + '<%d,%d,%d,%d>' %(row.dim, row.codim, row.range, row.rank) + '>' 
+    f.write('template class %s; \n' %(acc))
+    
+for elem in unique(elements):
+    f.write('template class %s ;\n' %(elem))
+    for it in inst.iterators:
+        iterator = it.replace('Accessor','%s' % (elem) )
+        f.write('template class %s; \n' %iterator)
 
 #---------------------------------------------------
 f.write('IGA_NAMESPACE_CLOSE\n')
