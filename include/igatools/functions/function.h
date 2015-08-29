@@ -203,7 +203,10 @@ public:
     ElementIterator end(const PropId &element_property = ElementProperties::active);
     ///@}
 
-    virtual void print_info(LogStream &out) const;
+    virtual void print_info(LogStream &out) const
+    {
+        Assert(false, ExcNotImplemented());
+    }
 
 //    std::shared_ptr<typename ElementAccessor::CacheType>
 //    &get_cache(ElementAccessor &elem);

@@ -323,9 +323,9 @@ class ConstFunctionElement
 
 template <int dim, int codim, int range, int rank>
 class FunctionElement
-    : public FunctionElementBase<dim, codim, range, rank,
-      Function<dim,codim,range,rank> >
+    : public FunctionElementBase<dim, codim, range, rank, Function<dim,codim,range,rank> >
 {
+
     using FunctionElementBase<dim, codim, range, rank,
           Function<dim,codim,range,rank>>::FunctionElementBase;
 };

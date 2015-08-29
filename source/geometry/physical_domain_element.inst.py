@@ -54,19 +54,14 @@ for x in inst.mapping_dims:
             f.write('template ' + s + '\n')
  
 accs1 =  ['PhysicalDomainElement',       'ConstPhysicalDomainElement']
-for dim in inst.sub_mapping_dims+inst.mapping_dim: 
+for x in inst.sub_mapping_dims + inst.mapping_dims: 
   for acc in accs1: 
-      f.write('template class ' + acc + '<%d,%d>' %(x.dom, x.codim) + ';\n')
+      f.write('template class ' + acc + '<%d,%d>' %(x.dim, x.codim) + ';\n')
 
 accs=  ['PhysicalDomainElement',       'ConstPhysicalDomainElement', 'PhysicalDomainElement', 'ConstPhysicalDomainElement']
 iters =  ['GridIteratorBase', 'GridIteratorBase',   'GridIterator', 'GridIterator']
-for dim in inst.sub_domain_dims+inst.domain_dims:
+for x in inst.sub_mapping_dims+inst.mapping_dims:
   for i in range(len(accs)):
-    acc = iters[i] + '<' + accs[i] + '<%d>' %(dim) + '>' 
+    acc = iters[i] + '<' + accs[i]+ '<%d,%d>' %(x.dim, x.codim) + '>' 
     f.write('template class %s; \n' %(acc))
     
-for elem in unique(elements):
-    f.write('template class %s ;\n' %(elem))
-    for it in inst.iterators:
-        iterator = it.replace('Accessor','%s' % (elem) )
-        f.write('template class %s; \n' %iterator)

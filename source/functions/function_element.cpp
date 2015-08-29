@@ -97,17 +97,15 @@ get_domain_element() const -> const DomainElem &
 
 
 
-#if 0
+
 template<int dim, int codim, int range, int rank,  class ContainerType_>
 bool
 FunctionElementBase<dim, codim, range, rank, ContainerType_>::
 operator==(const self_t &a) const
 {
-    Assert(this->get_grid() == a.get_grid(),
-           ExcMessage("The elements cannot be compared because defined on different grids."));
     Assert(func_ == a.func_,
            ExcMessage("The elements cannot be compared because defined with different functions."));
-    return (this->get_index() == a.get_index());
+    return (phys_domain_elem_ == a.phys_domain_elem_);
 }
 
 
@@ -116,11 +114,9 @@ bool
 FunctionElementBase<dim, codim, range, rank, ContainerType_>::
 operator!=(const self_t &a) const
 {
-    Assert(this->get_grid() == a.get_grid(),
-           ExcMessage("The elements cannot be compared because defined on different grids."));
     Assert(func_ == a.func_,
            ExcMessage("The elements cannot be compared because defined with different functions."));
-    return (this->get_index() != a.get_index());
+    return (phys_domain_elem_ != a.phys_domain_elem_);
 }
 
 template<int dim, int codim, int range, int rank,  class ContainerType_>
@@ -128,11 +124,9 @@ bool
 FunctionElementBase<dim, codim, range, rank, ContainerType_>::
 operator<(const self_t &a) const
 {
-    Assert(this->get_grid() == a.get_grid(),
-           ExcMessage("The elements cannot be compared because defined on different grids."));
     Assert(func_ == a.func_,
            ExcMessage("The elements cannot be compared because defined with different functions."));
-    return (this->get_index() < a.get_index());
+    return (phys_domain_elem_ < a.phys_domain_elem_);
 }
 
 
@@ -141,13 +135,11 @@ bool
 FunctionElementBase<dim, codim, range, rank, ContainerType_>::
 operator>(const self_t &a) const
 {
-    Assert(this->get_grid() == a.get_grid(),
-           ExcMessage("The elements cannot be compared because defined on different grids."));
     Assert(func_ == a.func_,
            ExcMessage("The elements cannot be compared because defined with different functions."));
-    return (this->get_index() > a.get_index());
+    return (phys_domain_elem_ > a.phys_domain_elem_);
 }
-#endif
+
 
 #if 0
 template<int dim, int codim, int range, int rank,  class ContainerType_>
@@ -163,9 +155,9 @@ move_to(const Index flat_index)
 template<int dim, int codim, int range, int rank,  class ContainerType_>
 auto
 FunctionElementBase<dim, codim, range, rank, ContainerType_>::
-get_index() const -> IndexType
+phys_domain_elem_ const -> IndexType
 {
-    return grid_elem_->get_index();
+    return grid_elem_->phys_domain_elem_;
 }
 
 #endif
