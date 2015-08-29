@@ -18,6 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+#if 0
 #include <igatools/functions/formula_function.h>
 #include <igatools/functions/function_element.h>
 #include <igatools/geometry/physical_domain_element.h>
@@ -94,3 +95,4 @@ fill_cache(ElementAccessor &elem, const topology_variant &k, const int sub_elem_
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/functions/formula_function.inst>
+#endif

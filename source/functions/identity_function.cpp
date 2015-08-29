@@ -18,6 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+#if 0
 #include <igatools/functions/identity_function.h>
 #include <igatools/functions/function_element.h>
 
@@ -107,3 +108,4 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> &identity_function)
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/functions/identity_function.inst>
+#endif

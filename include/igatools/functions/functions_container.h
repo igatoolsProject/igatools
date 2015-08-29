@@ -21,6 +21,7 @@
 #ifndef __FUNCTIONS_CONTAINER_H
 #define __FUNCTIONS_CONTAINER_H
 
+#if 0
 #include <igatools/base/config.h>
 
 
@@ -761,3 +762,4 @@ IGA_NAMESPACE_CLOSE
 
 
 #endif // __FUNCTIONS_CONTAINER_H
+#endif

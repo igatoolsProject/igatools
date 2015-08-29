@@ -18,6 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+#if 0
 #include <igatools/functions/functions_container.h>
 
 IGA_NAMESPACE_OPEN
@@ -69,3 +70,4 @@ template void iga::FunctionsContainer::serialize(OArchive &, const unsigned int)
 template void iga::FunctionsContainer::serialize(IArchive &, const unsigned int);
 #endif // SERIALIZATION
 
+#endif

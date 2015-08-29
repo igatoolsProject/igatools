@@ -21,6 +21,7 @@
 #ifndef __IG_FUNCTION_H
 #define __IG_FUNCTION_H
 
+#if 0
 #include <igatools/base/value_types.h>
 #include <igatools/functions/function.h>
 #include <igatools/functions/ig_coefficients.h>
@@ -355,4 +356,5 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
+#endif
 #endif

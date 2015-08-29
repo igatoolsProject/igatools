@@ -182,10 +182,12 @@ private:
 #endif
 
 };
+IGA_NAMESPACE_CLOSE
+
 #endif
 
 
-IGA_NAMESPACE_CLOSE
+
 
 #endif
 

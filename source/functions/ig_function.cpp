@@ -18,6 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+#if 0
 #include <igatools/functions/ig_function.h>
 #include <igatools/functions/function_element.h>
 #include <igatools/base/quadrature_lib.h>
@@ -384,4 +385,4 @@ IGA_NAMESPACE_CLOSE
 
 #include <igatools/functions/ig_function.inst>
 
-
+#endif

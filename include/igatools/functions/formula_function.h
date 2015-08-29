@@ -18,14 +18,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __FORMULA_FUNCTIONS_H_
-#define __FORMULA_FUNCTIONS_H_
+#ifndef __FORMULA_FUNCTION_H_
+#define __FORMULA_FUNCTION_H_
 
 #include <igatools/functions/function.h>
 #include <igatools/geometry/physical_domain.h>
 #include <igatools/geometry/physical_domain_element.h>
 #include <igatools/base/value_types.h>
 
+#if 0
 IGA_NAMESPACE_OPEN
 
 
@@ -142,4 +143,5 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
+#endif
 #endif

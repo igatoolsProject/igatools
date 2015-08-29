@@ -21,6 +21,7 @@
 #ifndef IDENTITY_FUNCTIONS_H
 #define IDENTITY_FUNCTIONS_H
 
+#if 0
 #include <igatools/functions/function.h>
 #include <igatools/base/value_types.h>
 
@@ -188,4 +189,5 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
+#endif
 #endif
