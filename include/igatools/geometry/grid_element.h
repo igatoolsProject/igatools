@@ -340,24 +340,23 @@ private:
     /**
      * Alias used to define the container for the values in the cache.
      */
-    class _Point
+    struct _Point
     {
-    public:
         static const std::string name;
         static const auto flag = Flags::point;
     };
 
-    class _Weight
+    struct _Weight
     {
-    public:
         static const std::string name;
         static const auto flag = Flags::w_measure;
     };
 
-    using CType = boost::fusion::map<
-                  boost::fusion::pair< _Point,DataWithFlagStatus<ValueVector<Points<dim>>>>,
-                  boost::fusion::pair<_Weight,DataWithFlagStatus<ValueVector<Real>>>
-                  >;
+    using CType =
+        boost::fusion::map<
+        boost::fusion::pair< _Point,DataWithFlagStatus<ValueVector<Points<dim>>>>,
+        boost::fusion::pair<_Weight,DataWithFlagStatus<ValueVector<Real>>>
+        >;
 
 public:
     using ValuesCache = FuncValuesCache<dim,CType>;

@@ -53,10 +53,8 @@ Function<dim_, codim_, range_, rank_ >::
 set_flags(const topology_variant &sdim,
           const Flags &flag)
 {
-#if 0
-    auto dispatcher = SetFlagsDispatcher(flag,  phys_domain_, flags_);
-    boost::apply_visitor(dispatcher, sdim);
-#endif
+    auto disp = SetFlagsDispatcher(flag, flags_);
+    boost::apply_visitor(disp, sdim);
 }
 
 
@@ -65,12 +63,10 @@ template<int dim_, int codim_, int range_, int rank_>
 void
 Function<dim_, codim_, range_, rank_ >::
 init_cache(ElementAccessor &elem,
-           const eval_pts_variant &quad) const
+           eval_pts_variant &quad) const
 {
-#if 0
-    auto init_dispatcher = InitCacheDispatcher(*this, elem);
-    boost::apply_visitor(init_dispatcher, quad);
-#endif
+    auto disp = InitCacheDispatcher(flags_, elem);
+    boost::apply_visitor(disp, quad);
 }
 
 

@@ -36,7 +36,7 @@ void domain()
 {
     OUTSTART
 
-	using Grid = CartesianGrid<dim>;
+    using Grid = CartesianGrid<dim>;
     using Function = Function<dim,0,dim+codim,1>;
     using Domain   = PhysicalDomain<dim, codim>;
 
@@ -52,7 +52,7 @@ void domain()
 
 int main()
 {
-	domain<0,0>();
+    domain<0,0>();
     domain<1,0>();
     domain<2,0>();
     domain<3,0>();

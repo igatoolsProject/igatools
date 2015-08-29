@@ -31,7 +31,7 @@
 
 IGA_NAMESPACE_OPEN
 
-
+#if 0
 template <int value_type_id>
 class ValueType;
 
@@ -180,7 +180,7 @@ public:
     static const auto flag = ValueFlags::curvature;
 };
 using _Curvature = ValueType<-10>;
-
+#endif
 IGA_NAMESPACE_CLOSE
 
 #endif //#ifndef  VALUE_TYPES_H_

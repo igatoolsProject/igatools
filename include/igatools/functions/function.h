@@ -117,8 +117,14 @@ public:
     ///@}
 
     using topology_variant = TopologyVariants<dim_>;
-    using eval_pts_variant = SubElemPtrVariants<Quadrature,dim_>;
 
+    template<int k>
+    using ConstQuad = const Quadrature<k>;
+
+    using eval_pts_variant = SubElemPtrVariants<ConstQuad,dim_>;
+
+protected:
+    using FlagsArray = SafeSTLArray<Flags, dim+1>;
     /** @name Constructors and destructor. */
     ///@{
 protected:
@@ -154,10 +160,10 @@ public:
                            const Flags &flag);
 
     virtual void init_cache(ElementAccessor &elem,
-                            const eval_pts_variant &quad) const;
+                            eval_pts_variant &quad) const;
 
     void init_cache(ElementIterator &elem,
-                    const eval_pts_variant &quad) const
+                    eval_pts_variant &quad) const
     {
         this->init_cache(*elem, quad);
     }
@@ -217,83 +223,57 @@ private:
     std::shared_ptr<const DomainType> phys_domain_;
 
 protected:
-    SafeSTLArray<Flags, dim + 1> flags_;
+    FlagsArray flags_;
 
-#if 0
+
 private:
+    /**
+     * Alternative to
+     * template <int sdim> set_flags()
+     */
     struct SetFlagsDispatcher : boost::static_visitor<void>
     {
-        SetFlagsDispatcher(const Flags flag_in,
-                           DomainType &phys_dom,
-                           SafeSTLArray<Flags, dim_ + 1> &flags)
+        SetFlagsDispatcher(const Flags flag, FlagsArray &flags)
             :
-            flag_in_(flag_in),
-            phys_dom_(phys_dom),
+            flag_(flag),
             flags_(flags)
         {}
 
         template<int sdim>
-        void operator()(const Topology<sdim> &s_elem)
+        void operator()(const Topology<sdim> &)
         {
-            flags_[sdim] = flag_in_;
-            //TODO Do a function to phys domain flag
-            phys_dom_.set_flags(s_elem, flag_in_);
+            flags_[sdim] = flag_;
         }
 
-        const Flags flag_in_;
-        DomainType &phys_dom_;
-        SafeSTLArray<Flags, dim_ + 1> &flags_;
+        const Flags flag_;
+        FlagsArray &flags_;
     };
 
-    struct FillCacheDispatcher : boost::static_visitor<void>
-    {
-        FillCacheDispatcher(const int s_id,
-                            const DomainType &phys_dom,
-                            ElementAccessor &func_elem)
-            :
-            s_id_(s_id),
-            phys_dom_(phys_dom),
-            func_elem_(func_elem)
-        {}
 
-        template<int sdim>
-        void operator()(const Topology<sdim> &sub_elem)
-        {
-            auto domain_elem_ = func_elem_.get_domain_element();
-            phys_dom_.fill_cache(sub_elem, domain_elem_, s_id_);
-        }
-
-        int s_id_;
-        const DomainType &phys_dom_;
-        ElementAccessor &func_elem_;
-    };
-
+    /**
+     * Alternative to
+     * template <int sdim> init_cache()
+     */
     struct InitCacheDispatcher : boost::static_visitor<void>
     {
-        InitCacheDispatcher(const DomainType &phys_dom,
-                            const SafeSTLArray<Flags, dim_ + 1> &flags,
-                            ElementAccessor &func_elem)
+        InitCacheDispatcher(const FlagsArray &flags,
+                            ElementAccessor &elem)
             :
-            phys_dom_(phys_dom),
             flags_(flags),
-            func_elem_(func_elem)
+            elem_(elem)
         {}
 
-
         template<int sdim>
-        void operator()(const Quadrature<sdim> &quad)
+        void operator()(std::shared_ptr<Quadrature<sdim>> &quad)
         {
-            auto domain_elem_ = func_elem_.get_domain_element();
-            phys_dom_.init_cache(domain_elem_, quad);
-
-            auto &cache = func_elem_.all_sub_elems_cache_;
+            auto &cache = elem_.all_sub_elems_cache_;
             if (cache == nullptr)
             {
                 using Cache = typename ElementAccessor::CacheType;
                 cache = std::make_shared<Cache>();
             }
 
-            const auto n_pts = phys_dom_.template get_num_points<sdim>();
+            const auto n_pts = quad->get_num_points();
             for (const auto s_id: UnitElement<dim_>::template elems_ids<sdim>())
             {
                 auto &s_cache = cache->template get_sub_elem_cache<sdim>(s_id);
@@ -301,11 +281,10 @@ private:
             }
         }
 
-        const DomainType &phys_dom_;
-        const SafeSTLArray<Flags, dim_ + 1> &flags_;
-        ElementAccessor &func_elem_;
+        const FlagsArray &flags_;
+        ElementAccessor &elem_;
     };
-#endif
+
 
 #ifdef MESH_REFINEMENT
 private:

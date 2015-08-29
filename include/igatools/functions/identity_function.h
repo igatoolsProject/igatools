@@ -18,15 +18,17 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef IDENTITY_FUNCTIONS_H
-#define IDENTITY_FUNCTIONS_H
+#ifndef __IDENTITY_FUNCTION_H_
+#define __IDENTITY_FUNCTION_H_
 
-#if 0
 #include <igatools/functions/function.h>
-#include <igatools/base/value_types.h>
+///#include <igatools/base/value_types.h>
 
 IGA_NAMESPACE_OPEN
 
+/**
+ * create a rectangular "identity" tensor
+ */
 template<int dim,int space_dim>
 auto
 create_id_tensor()
@@ -64,13 +66,13 @@ protected:
 
 public:
     using typename parent_t::topology_variant;
-    using typename parent_t::Point;
+    //using typename parent_t::Point;
     using typename parent_t::Value;
     using typename parent_t::Gradient;
     using typename parent_t::Hessian;
 
-    using typename parent_t::ElementIterator;
-    using typename parent_t::ElementAccessor;
+    //  using typename parent_t::ElementIterator;
+    // using typename parent_t::ElementAccessor;
 
 //    template <int order>
 //    using Derivative = typename parent_t::template Derivative<order>;

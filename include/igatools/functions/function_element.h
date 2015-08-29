@@ -217,12 +217,21 @@ public:
     }
 
 private:
+    struct _Value
+    {
+        static const std::string name;
+        static const auto flag = Flags::value;
+    };
+
+    struct _Gradient
+    {
+        static const std::string name;
+        static const auto flag = Flags::gradient;
+    };
 
     using CType = boost::fusion::map<
                   boost::fusion::pair<     _Value,DataWithFlagStatus<ValueVector<Value>>>,
-                  boost::fusion::pair<  _Gradient,DataWithFlagStatus<ValueVector<Derivative<1>>>>,
-                  boost::fusion::pair<   _Hessian,DataWithFlagStatus<ValueVector<Derivative<2>>>>,
-                  boost::fusion::pair<_Divergence,DataWithFlagStatus<ValueVector<Div>>>
+                  boost::fusion::pair<  _Gradient,DataWithFlagStatus<ValueVector<Derivative<1>>>>
                   >;
 
 

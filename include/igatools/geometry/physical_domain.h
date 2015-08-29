@@ -35,7 +35,7 @@ enum class Flags
     none           =    0,
 
     /** Quadrature points on the element */
-    points          =    1L << 1,
+    point           =    1L << 1,
 
     /** Quadrature weigths on the element */
     w_measure       =    1L << 2
@@ -94,25 +94,25 @@ public:
     /**
          * Type for the return of the function.
          */
-        using Value = Values<dim, space_dim, 1>;
+    using Value = Values<dim, space_dim, 1>;
 
-        /**
-         * Type for the derivative of the function.
-         */
-        template <int order>
-        using Derivative = Derivatives<dim, space_dim, 1, order>;
+    /**
+     * Type for the derivative of the function.
+     */
+    template <int order>
+    using Derivative = Derivatives<dim, space_dim, 1, order>;
 
-        /**
-         * Type for the gradient of the function.
-         */
-        using Gradient = Derivative<1>;
+    /**
+     * Type for the gradient of the function.
+     */
+    using Gradient = Derivative<1>;
 
-        /**
-         * Type for the hessian of the function.
-         */
-        using Hessian = Derivative<2>;
+    /**
+     * Type for the hessian of the function.
+     */
+    using Hessian = Derivative<2>;
 
-        ///@}
+    ///@}
 
 #if 0
     /** Type for the given order derivatives of the
@@ -129,7 +129,7 @@ public:
     /** Type of the mapping evaluation point. */
     using Point = typename FuncType::Point;
     /** Type of the mapping return value. */
-   using Value = typename FuncType::Value;
+    using Value = typename FuncType::Value;
     /** Type of the mapping gradient. */
     using Gradient = typename FuncType::Gradient;
 
@@ -157,18 +157,18 @@ public:
 
     static std::shared_ptr<self_t>
     create(std::shared_ptr<const GridType> grid,
-    		std::shared_ptr<const FuncType> F)
-	{
-    	return std::shared_ptr<self_t>(new self_t(grid, F));
-	}
+           std::shared_ptr<const FuncType> F)
+    {
+        return std::shared_ptr<self_t>(new self_t(grid, F));
+    }
 
 
     static std::shared_ptr<const self_t>
     const_create(std::shared_ptr<const GridType> grid,
-    		std::shared_ptr<const FuncType> F)
-        {
-            return create(grid, F);
-        }
+                 std::shared_ptr<const FuncType> F)
+    {
+        return create(grid, F);
+    }
 
     std::shared_ptr<const GridType> get_grid() const;
 

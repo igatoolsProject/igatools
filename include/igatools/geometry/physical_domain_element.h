@@ -179,10 +179,16 @@ public:
     }
 
 public:
+//    template<int sdim>
+//    ValueVector<Real> const &get_measures(const int s_id) const
+//    {
+//        return get_values_from_cache<_Measure,sdim>(s_id);
+//    }
+
     template<int sdim>
-    ValueVector<Real> const &get_measures(const int s_id) const
+    auto const &get_points(const int s_id) const
     {
-        return get_values_from_cache<_Measure,sdim>(s_id);
+        return get_values_from_cache<_Point,sdim>(s_id);
     }
 
     template<int sdim>
@@ -239,9 +245,19 @@ private:
         return cache.template get_data<ValueType>();
     }
 private:
+    struct _Point
+    {
+        static const std::string name;
+        static const auto flag = Flags::point;
+    };
 
+    struct _W_Measure
+    {
+        static const std::string name;
+        static const auto flag = Flags::w_measure;
+    };
     using CType = boost::fusion::map<
-                  boost::fusion::pair<       _Measure,DataWithFlagStatus<ValueVector<Real>>>,
+                  boost::fusion::pair<       _Point,DataWithFlagStatus<ValueVector<Real>>>,
                   boost::fusion::pair<     _W_Measure,DataWithFlagStatus<ValueVector<Real>>>>;
 //                ,
 //                  boost::fusion::pair<   _InvGradient,DataWithFlagStatus<ValueVector<InvDerivative<1>>>>,
