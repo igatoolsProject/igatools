@@ -63,7 +63,7 @@ template<int dim_, int codim_, int range_, int rank_>
 void
 Function<dim_, codim_, range_, rank_ >::
 init_cache(ElementAccessor &elem,
-           eval_pts_variant &quad) const
+           const eval_pts_variant &quad) const
 {
   auto disp = InitCacheDispatcher(flags_, elem);
   boost::apply_visitor(disp, quad);

@@ -48,7 +48,7 @@ template <int dim>
 template<int k>
 void
 GridElementHandler<dim>::
-set_flags(const typename ElementAccessor::Flags flag)
+set_flags(const Flags &flag)
 {
   flags_[k] = flag;
 
@@ -56,6 +56,17 @@ set_flags(const typename ElementAccessor::Flags flag)
   cacheutils::extract_sub_elements_data<k>(quad_all_sub_elems_) = quad;
 #endif
 }
+
+template <int dim>
+void
+GridElementHandler<dim>::
+set_flags(const topology_variant &sdim,
+          const Flags &flag)
+{
+	auto disp = SetFlagsDispatcher(flag, flags_);
+	boost::apply_visitor(disp, sdim);
+}
+
 
 #if 0
 template <int dim>

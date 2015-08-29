@@ -160,10 +160,10 @@ public:
                          const Flags &flag);
 
   virtual void init_cache(ElementAccessor &elem,
-                          eval_pts_variant &quad) const;
+                          const eval_pts_variant &quad) const;
 
   void init_cache(ElementIterator &elem,
-                  eval_pts_variant &quad) const
+                  const eval_pts_variant &quad) const
   {
     this->init_cache(*elem, quad);
   }
@@ -264,7 +264,7 @@ private:
     {}
 
     template<int sdim>
-    void operator()(std::shared_ptr<Quadrature<sdim>> &quad)
+    void operator()(const std::shared_ptr<Quadrature<sdim>> &quad)
     {
       auto &cache = elem_.all_sub_elems_cache_;
       if (cache == nullptr)

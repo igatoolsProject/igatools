@@ -51,6 +51,13 @@ protected:
   // using ElementAccessor = typename GridType::ElementAccessor;
   using ElementIterator = typename GridType::ElementConstIterator;
   using ElementAccessor = typename GridType::ConstElementAccessor;
+
+public:
+  using Flags = typename ElementAccessor::Flags;
+protected:
+  using FlagsArray = SafeSTLArray<Flags, dim+1>;
+  using topology_variant = TopologyVariants<dim>;
+
 public:
   /**
    * @name Creators.
@@ -114,7 +121,10 @@ public:
    */
   ///@{
   template<int sdim>
-  void set_flags(const typename ElementAccessor::Flags flag);
+  void set_flags(const Flags &flag);
+
+  void set_flags(const topology_variant &sdim,
+		  const Flags &flag);
 
   template <int sdim>
   void init_cache(ElementAccessor &elem,
@@ -184,7 +194,28 @@ public:
 private:
   std::shared_ptr<GridType> grid_;
 
-  SafeSTLArray<typename ElementAccessor::Flags, dim + 1> flags_;
+  FlagsArray flags_;
+
+
+private:
+  struct SetFlagsDispatcher : boost::static_visitor<void>
+    {
+  	  SetFlagsDispatcher(const Flags flag, FlagsArray &flags)
+          		:
+          			flag_(flag),
+  					flags_(flags)
+  					{}
+
+  	  template<int sdim>
+  	  void operator()(const Topology<sdim> &)
+  	  {
+  		 // grid_handler_.set_flags<sdim>(flag_)
+  		  flags_[sdim] = flag_;
+  	  }
+
+  	  const Flags flag_;
+  	  FlagsArray &flags_;
+    };
 
 private:
 

@@ -88,7 +88,8 @@ public:
   using List = typename GridType::List;
   using ListIt = typename GridType::ListIt;
   using Flags = physical_domain_element::Flags;
-
+protected:
+  using FlagsArray = SafeSTLArray<Flags, dim+1>;
 public:
   //TODO: explain we can not use FuncType::Value (due to ciclic deps)
   /**
@@ -151,13 +152,13 @@ private:
   PhysicalDomain() = default;
 
   PhysicalDomain(std::shared_ptr<const GridType> grid,
-                 std::shared_ptr<const FuncType> F);
+                 std::shared_ptr<FuncType> F);
 public:
   ~PhysicalDomain();
 
   static std::shared_ptr<self_t>
   create(std::shared_ptr<const GridType> grid,
-         std::shared_ptr<const FuncType> F)
+         std::shared_ptr<FuncType> F)
   {
     return std::shared_ptr<self_t>(new self_t(grid, F));
   }
@@ -165,14 +166,14 @@ public:
 
   static std::shared_ptr<const self_t>
   const_create(std::shared_ptr<const GridType> grid,
-               std::shared_ptr<const FuncType> F)
+               std::shared_ptr<FuncType> F)
   {
     return create(grid, F);
   }
 
   std::shared_ptr<const GridType> get_grid() const;
 
-  std::shared_ptr<const FuncType> get_function() const;
+  std::shared_ptr<FuncType> get_function() const;
 
 public:
 
@@ -206,31 +207,34 @@ public:
   std::shared_ptr<ConstElementAccessor>
   create_element(const ListIt &index, const PropId &property) const;
 
-#if 0
+
 private:
-  struct ResetDispatcher : boost::static_visitor<void>
+  /**
+   * Alternative to
+   * template <int sdim> set_flags()
+   */
+  struct SetFlagsDispatcher : boost::static_visitor<void>
   {
-    ResetDispatcher(const ValueFlags flag_in,
-                    SafeSTLArray<ValueFlags, dim_ + 1> &flags)
-      :
-      flag_in_(flag_in),
-      flags_(flags)
-    {}
+	  SetFlagsDispatcher(const Flags flag, FlagsArray &flags)
+        		:
+        			flag_(flag),
+					flags_(flags)
+					{}
 
-    template<int sub_elem_dim>
-    void operator()(const Quadrature<sub_elem_dim> &quad)
-    {
-      flags_[sub_elem_dim] = flag_in_;
-    }
+	  template<int sdim>
+	  void operator()(const Topology<sdim> &)
+	  {
+		  flags_[sdim] = flag_;
+	  }
 
-    const ValueFlags flag_in_;
-    SafeSTLArray<ValueFlags, dim_ + 1> &flags_;
+	  const Flags flag_;
+	  FlagsArray &flags_;
   };
-
+#if 0
 
   struct FillCacheDispatcher : boost::static_visitor<void>
   {
-    FillCacheDispatcher(const FuncType &F,
+    FillCacheDispatcher(FuncType &F,
                         ElementAccessor &domain_elem,
                         const int sub_elem_id)
       :
@@ -375,7 +379,7 @@ private:
       cache.set_filled(true);
     }
 
-    const FuncType &F_;
+    FuncType &F_;
     ElementAccessor &domain_elem_;
     int s_id_;
   };
@@ -383,7 +387,7 @@ private:
 
   struct InitCacheDispatcher : boost::static_visitor<void>
   {
-    InitCacheDispatcher(const FuncType &F,
+    InitCacheDispatcher(FuncType &F,
                         ElementAccessor &domain_elem,
                         const SafeSTLArray<ValueFlags, dim_ + 1> &flags)
       :
@@ -405,7 +409,7 @@ private:
       }
     }
 
-    const FuncType &F_;
+    FuncType &F_;
     ElementAccessor &domain_elem_;
     const SafeSTLArray<ValueFlags, dim_ + 1> &flags_;
   };
@@ -414,7 +418,7 @@ private:
 private:
   std::shared_ptr<const GridType> grid_;
   std::shared_ptr<GridHandler> grid_handler_;
-  std::shared_ptr<const FuncType> func_;
+  std::shared_ptr<FuncType> func_;
 
   SafeSTLArray<Flags, dim_ + 1> flags_;
 
