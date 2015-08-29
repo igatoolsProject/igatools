@@ -188,8 +188,8 @@ end(const PropId &prop) -> ElementIterator
 template<int dim_, int codim_, int range_, int rank_>
 auto
 Function<dim_, codim_, range_, rank_ >::
-create_element(const ListIt &index, const PropId &property) const
--> std::shared_ptr<ElementAccessor>
+create_element(const ListIt &index, const PropId &prop) const
+-> std::shared_ptr<ConstElementAccessor>
 {
     using Elem = ConstElementAccessor;
     auto elem = std::make_shared<Elem>(this->shared_from_this(), index, prop);
