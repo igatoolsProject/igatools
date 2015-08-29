@@ -66,12 +66,12 @@ IGA_NAMESPACE_OPEN
 template<int dim_, int codim_>
 PhysicalDomain<dim_, codim_>::
 PhysicalDomain(std::shared_ptr<const GridType> grid)
-//		,
+//      ,
 //               std::shared_ptr<const FuncType> F)
     :
     grid_(grid),
     grid_handler_(grid->create_cache_handler())
-//	,
+//  ,
 //    F_(F)
 {}
 
@@ -234,7 +234,7 @@ PhysicalDomain<dim_, codim_>::
 end(const PropId &prop) -> ElementIterator
 {
     return ElementIterator(this->shared_from_this(),
-    		grid_->get_element_property(prop).end(),
+    grid_->get_element_property(prop).end(),
     prop);
 }
 

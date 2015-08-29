@@ -53,7 +53,7 @@ public:
 
     using Flags = physical_domain_element::Flags;
 
-   // using FuncType = typename ContainerType_::FuncType;
+    // using FuncType = typename ContainerType_::FuncType;
 
 //    static const int dim = dim_;
 //    static const int codim = codim_;
@@ -107,60 +107,60 @@ public:
     /**
          * @name Functions for performing different kind of copy.
          */
-        ///@{
-        /**
-         * Performs a deep copy of the input @p element,
-         * i.e. a new local cache is built using the copy constructor on the local cache of @p element.
-         *
-         * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
-         */
-        void deep_copy_from(const self_t &element);
+    ///@{
+    /**
+     * Performs a deep copy of the input @p element,
+     * i.e. a new local cache is built using the copy constructor on the local cache of @p element.
+     *
+     * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
+     */
+    void deep_copy_from(const self_t &element);
 
-        /**
-         * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
-         * local cache used by the input @p element.
-         */
-        void shallow_copy_from(const self_t &element);
-        ///@}
+    /**
+     * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
+     * local cache used by the input @p element.
+     */
+    void shallow_copy_from(const self_t &element);
+    ///@}
 
-        /**
-         * @name Comparison operators
-         * @note In order to be meaningful, the comparison must be performed on elements defined on
-         * the <b>same grid</b>
-         * (in the sense that the pointer to the grid held by the element must point to the same
-         * grid object).
-         */
-        ///@{
-        /**
-         * True if the elements have the same index.
-         *  @note In debug mode, it is also check they both refer to
-         *  the same cartesian grid. No check is done on the cache.
-         */
-        bool operator==(const self_t &elem) const;
+    /**
+     * @name Comparison operators
+     * @note In order to be meaningful, the comparison must be performed on elements defined on
+     * the <b>same grid</b>
+     * (in the sense that the pointer to the grid held by the element must point to the same
+     * grid object).
+     */
+    ///@{
+    /**
+     * True if the elements have the same index.
+     *  @note In debug mode, it is also check they both refer to
+     *  the same cartesian grid. No check is done on the cache.
+     */
+    bool operator==(const self_t &elem) const;
 
-        /**
-         * True if the elements have different index.
-         *  @note In debug mode, it is also check they both refer to
-         *  the same cartesian grid. No check is done on the cache.
-         */
-        bool operator!=(const self_t &elem) const;
+    /**
+     * True if the elements have different index.
+     *  @note In debug mode, it is also check they both refer to
+     *  the same cartesian grid. No check is done on the cache.
+     */
+    bool operator!=(const self_t &elem) const;
 
-        /**
-         * True if the flat-index of the element on the left is smaller than
-         * the flat-index of the element on the right.
-         *  @note In debug mode, it is also check they both refer to
-         *  the same cartesian grid. No check is done on the cache.
-         */
-        bool operator<(const self_t &elem) const;
+    /**
+     * True if the flat-index of the element on the left is smaller than
+     * the flat-index of the element on the right.
+     *  @note In debug mode, it is also check they both refer to
+     *  the same cartesian grid. No check is done on the cache.
+     */
+    bool operator<(const self_t &elem) const;
 
-        /**
-         * True if the flat-index of the element on the left is bigger than
-         * the flat-index of the element on the right.
-         *  @note In debug mode, it is also check they both refer to
-         *  the same cartesian grid. No check is done on the cache.
-         */
-        bool operator>(const self_t &elem) const;
-        ///@}
+    /**
+     * True if the flat-index of the element on the left is bigger than
+     * the flat-index of the element on the right.
+     *  @note In debug mode, it is also check they both refer to
+     *  the same cartesian grid. No check is done on the cache.
+     */
+    bool operator>(const self_t &elem) const;
+    ///@}
 
 #if 0
     template<int order>
@@ -247,7 +247,7 @@ private:
     using CType = boost::fusion::map<
                   boost::fusion::pair<       _Measure,DataWithFlagStatus<ValueVector<Real>>>,
                   boost::fusion::pair<     _W_Measure,DataWithFlagStatus<ValueVector<Real>>>>;
-//				  ,
+//                ,
 //                  boost::fusion::pair<   _InvGradient,DataWithFlagStatus<ValueVector<InvDerivative<1>>>>,
 //                  boost::fusion::pair<    _InvHessian,DataWithFlagStatus<ValueVector<InvDerivative<2>>>>,
 //                  boost::fusion::pair<_BoundaryNormal,DataWithFlagStatus<ValueVector<Points<space_dim>>>>,
@@ -280,7 +280,7 @@ private:
 
     std::shared_ptr<GridElem> grid_elem_;
 
-  //  std::shared_ptr<FuncElem> func_elem_;
+    //  std::shared_ptr<FuncElem> func_elem_;
 
     std::shared_ptr<CacheType> local_cache_;
 
