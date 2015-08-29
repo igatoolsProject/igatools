@@ -52,9 +52,11 @@ void domain()
 
 int main()
 {
+	domain<0,0>();
     domain<1,0>();
     domain<2,0>();
     domain<3,0>();
+    domain<2,1>();
 
     return 0;
 }

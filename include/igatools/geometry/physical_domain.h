@@ -141,7 +141,8 @@ public:
 #endif
     using topology_variant = TopologyVariants<dim_>;
     using eval_pts_variant = SubElemPtrVariants<Quadrature,dim_>;
-public:
+
+private:
     /**
      * Default constructor. It does nothing but it is needed for the
      * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -151,16 +152,23 @@ public:
 
     PhysicalDomain(std::shared_ptr<const GridType> grid,
                    std::shared_ptr<const FuncType> F);
-
+public:
     ~PhysicalDomain();
 
-//    static std::shared_ptr<self_t>  create(std::shared_ptr<const FuncType> F);
-//
-//    std::shared_ptr<self_t> get_handler() const
-//    {
-//        return std::make_shared<self_t>(self_t(this->F_->clone()));
-//    }
+    static std::shared_ptr<self_t>
+    create(std::shared_ptr<const GridType> grid,
+    		std::shared_ptr<const FuncType> F)
+	{
+    	return std::shared_ptr<self_t>(new self_t(grid, F));
+	}
 
+
+    static std::shared_ptr<const self_t>
+    const_create(std::shared_ptr<const GridType> grid,
+    		std::shared_ptr<const FuncType> F)
+        {
+            return create(grid, F);
+        }
 
     std::shared_ptr<const GridType> get_grid() const;
 
