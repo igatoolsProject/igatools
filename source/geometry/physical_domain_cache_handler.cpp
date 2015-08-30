@@ -66,7 +66,7 @@ IGA_NAMESPACE_OPEN
 template<int dim_, int codim_>
 PhysicalDomainElementHandler<dim_, codim_>::
 PhysicalDomainElementHandler(std::shared_ptr<const GridType> grid,
-               std::shared_ptr<FuncType> F)
+                             std::shared_ptr<FuncType> F)
   :
   grid_(grid),
   grid_handler_(grid->create_cache_handler()),
@@ -101,25 +101,25 @@ PhysicalDomainElementHandler<dim_, codim_>::
 set_flags(const topology_variant &sdim,
           const Flags &flag) -> void
 {
-	using GridFlags = typename GridType::ElementHandler::Flags;
-	using FuncFlags = typename FuncType::Flags;
-	FuncFlags func_flag = FuncFlags::none;
-	GridFlags grid_flag = GridFlags::none;
+  using GridFlags = typename GridType::ElementHandler::Flags;
+  using FuncFlags = typename FuncType::Flags;
+  FuncFlags func_flag = FuncFlags::none;
+  GridFlags grid_flag = GridFlags::none;
 
-	//point => function::value OR grid::point
-	if (func_ == NULL)
-	{
-		grid_flag |= GridFlags::point;
-		grid_handler_->set_flags(sdim, grid_flag);
-	}
-	else
-	{
-		func_flag |= FuncFlags::value;
-		func_->set_flags(sdim, func_flag);
-	}
+  //point => function::value OR grid::point
+  if (func_ == NULL)
+  {
+    grid_flag |= GridFlags::point;
+    grid_handler_->set_flags(sdim, grid_flag);
+  }
+  else
+  {
+    func_flag |= FuncFlags::value;
+    func_->set_flags(sdim, func_flag);
+  }
 
-	auto disp = SetFlagsDispatcher(flag, flags_);
-	boost::apply_visitor(disp, sdim);
+  auto disp = SetFlagsDispatcher(flag, flags_);
+  boost::apply_visitor(disp, sdim);
 
 #if 0
   const auto valid_flags = ElementAccessor::get_valid_flags();
@@ -151,11 +151,11 @@ PhysicalDomainElementHandler<dim_, codim_>::
 init_cache(ElementAccessor &elem,
            const eval_pts_variant &quad) const
 {
-	//grid_handler_->init_cache(*(elem.grid_elem_), quad);
-	if (func_ != NULL)
-	{
-		func_->init_cache(*(elem.func_elem_), quad);
-	}
+  //grid_handler_->init_cache(*(elem.grid_elem_), quad);
+  if (func_ != NULL)
+  {
+    func_->init_cache(*(elem.func_elem_), quad);
+  }
 
 #if 0
   F_->init_cache(elem, k);
@@ -229,43 +229,6 @@ PhysicalDomainElementHandler<dim_, codim_>::
 get_function() const -> std::shared_ptr<FuncType>
 {
   return func_;
-}
-
-
-
-template<int dim_, int codim_>
-auto
-PhysicalDomainElementHandler<dim_, codim_>::
-create_element(const ListIt &index, const PropId &prop) const
--> std::shared_ptr<ConstElementAccessor>
-{
-  using Elem = ConstElementAccessor;
-  auto elem = std::make_shared<Elem>(this->shared_from_this(), index, prop);
-  Assert(elem != nullptr,ExcNullPtr());
-
-  return elem;
-}
-
-
-
-template<int dim_, int codim_>
-auto
-PhysicalDomainElementHandler<dim_, codim_>::
-begin(const PropId &prop) -> ElementIterator
-{
-  return ElementIterator(this->shared_from_this(),
-  grid_->get_element_property(prop).begin(),
-  prop);
-}
-
-template<int dim_, int codim_>
-auto
-PhysicalDomainElementHandler<dim_, codim_>::
-end(const PropId &prop) -> ElementIterator
-{
-  return ElementIterator(this->shared_from_this(),
-  grid_->get_element_property(prop).end(),
-  prop);
 }
 
 IGA_NAMESPACE_CLOSE

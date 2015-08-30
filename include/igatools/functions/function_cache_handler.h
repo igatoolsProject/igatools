@@ -147,11 +147,11 @@ protected:
   /**
    * Copy constructor.
    */
-  Function(const self_t &func);
+  FunctionElementHandler(const self_t &func);
 
 public:
   /** Destructor */
-  virtual ~Function() = default;
+  virtual ~FunctionElementHandler() = default;
   ///@}
 
 
@@ -193,7 +193,9 @@ public:
 //    &get_cache(ElementAccessor &elem);
 
   std::shared_ptr<const FuncType> get_function() const
-		{return func_;}
+  {
+    return func_;
+  }
 
 protected:
   std::shared_ptr<FuncType> func_;

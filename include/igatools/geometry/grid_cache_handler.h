@@ -124,7 +124,7 @@ public:
   void set_flags(const Flags &flag);
 
   void set_flags(const topology_variant &sdim,
-		  const Flags &flag);
+                 const Flags &flag);
 
   template <int sdim>
   void init_cache(ElementAccessor &elem,
@@ -199,23 +199,23 @@ private:
 
 private:
   struct SetFlagsDispatcher : boost::static_visitor<void>
+  {
+    SetFlagsDispatcher(const Flags flag, FlagsArray &flags)
+      :
+      flag_(flag),
+      flags_(flags)
+    {}
+
+    template<int sdim>
+    void operator()(const Topology<sdim> &)
     {
-  	  SetFlagsDispatcher(const Flags flag, FlagsArray &flags)
-          		:
-          			flag_(flag),
-  					flags_(flags)
-  					{}
+      // grid_handler_.set_flags<sdim>(flag_)
+      flags_[sdim] = flag_;
+    }
 
-  	  template<int sdim>
-  	  void operator()(const Topology<sdim> &)
-  	  {
-  		 // grid_handler_.set_flags<sdim>(flag_)
-  		  flags_[sdim] = flag_;
-  	  }
-
-  	  const Flags flag_;
-  	  FlagsArray &flags_;
-    };
+    const Flags flag_;
+    FlagsArray &flags_;
+  };
 
 private:
 

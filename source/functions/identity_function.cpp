@@ -54,7 +54,7 @@ IGA_NAMESPACE_OPEN
 template<int dim,int space_dim>
 IdentityFunction<dim,space_dim>::
 IdentityFunction(std::shared_ptr<const GridType> grid)
-:parent_t(parent_t::DomainType::create(grid, std::shared_ptr<const parent_t>()))
+  :parent_t(parent_t::DomainType::create(grid, std::shared_ptr<const parent_t>()))
 {
 
 }

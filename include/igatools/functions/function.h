@@ -76,7 +76,7 @@ public:
   using ElementIterator = GridIterator<ElementAccessor>;
   using ConstElementAccessor = ConstFunctionElement<dim_, codim_, range_, rank_>;
   using ElementConstIterator = GridIterator<ConstElementAccessor>;
-  using ElementHandler = FunctionElementHandler<dim_>;
+  using ElementHandler = FunctionElementHandler<dim_, codim_, range_, rank_>;
 
   using List = typename DomainType::List;
   using ListIt = typename DomainType::ListIt;

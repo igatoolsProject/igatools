@@ -77,8 +77,9 @@ public:
   static const int dim = dim_;
 
   using GridType = const CartesianGrid<dim_>;
-  using GridHandler = typename CartesianGrid<dim_>::ElementHandler;
-  using FuncType =  Function<dim_, 0, dim_ + codim_, 1>;
+  using GridHandler = GridType::ElementHandler;
+  using FuncType =  const Function<dim_, 0, dim_ + codim_, 1>;
+  using FuncHandler = FuncType::ElementHandler;
 
   using ElementAccessor = PhysicalDomainElement<dim_, codim_>;
   using ElementIterator = GridIterator<ElementAccessor>;
@@ -152,7 +153,7 @@ private:
   PhysicalDomainElementHandler() = default;
 
   PhysicalDomainElementHandler(std::shared_ptr<const GridType> grid,
-                 std::shared_ptr<FuncType> F);
+                               std::shared_ptr<FuncType> F);
 public:
   ~PhysicalDomainElementHandler();
 
@@ -200,14 +201,6 @@ public:
     this->fill_cache(sdim, *elem, s_id);
   }
 
-  ElementIterator begin(const PropId &property = ElementProperties::active);
-
-  ElementIterator end(const PropId &property = ElementProperties::active);
-
-  std::shared_ptr<ConstElementAccessor>
-  create_element(const ListIt &index, const PropId &property) const;
-
-
 private:
   /**
    * Alternative to
@@ -215,20 +208,20 @@ private:
    */
   struct SetFlagsDispatcher : boost::static_visitor<void>
   {
-	  SetFlagsDispatcher(const Flags flag, FlagsArray &flags)
-        		:
-        			flag_(flag),
-					flags_(flags)
-					{}
+    SetFlagsDispatcher(const Flags flag, FlagsArray &flags)
+      :
+      flag_(flag),
+      flags_(flags)
+    {}
 
-	  template<int sdim>
-	  void operator()(const Topology<sdim> &)
-	  {
-		  flags_[sdim] = flag_;
-	  }
+    template<int sdim>
+    void operator()(const Topology<sdim> &)
+    {
+      flags_[sdim] = flag_;
+    }
 
-	  const Flags flag_;
-	  FlagsArray &flags_;
+    const Flags flag_;
+    FlagsArray &flags_;
   };
 #if 0
 
@@ -417,8 +410,10 @@ private:
 
 private:
   std::shared_ptr<const GridType> grid_;
-  std::shared_ptr<GridHandler> grid_handler_;
   std::shared_ptr<FuncType> func_;
+
+  std::shared_ptr<GridHandler> grid_handler_;
+  std::shared_ptr<FuncHandler> func_handler_;
 
   SafeSTLArray<Flags, dim_ + 1> flags_;
 

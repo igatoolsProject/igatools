@@ -47,6 +47,8 @@ template <int, int, int, int> class Function;
 template <int, int, class> class PhysicalDomainElementBase;
 template <int, int> class PhysicalDomainElement;
 template <int, int> class ConstPhysicalDomainElement;
+template <int, int> class PhysicalDomainElementHandler;
+
 /**
  * @brief The mapping is a deformation \f$ F : \hat\Omega \to \Omega\f$
  * which maps the reference domain \f$\hat\Omega \in \mathbb{R}^{dim}\f$ to the
@@ -84,7 +86,7 @@ public:
   using ConstElementAccessor = ConstPhysicalDomainElement<dim_, codim_>;
   using ElementConstIterator = GridIterator<ConstElementAccessor>;
 
-  using ElementHandler = FunctionElementHandler<dim_>;
+  using ElementHandler = PhysicalDomainElementHandler<dim_, codim_>;
 
   using List = typename GridType::List;
   using ListIt = typename GridType::ListIt;
@@ -181,44 +183,42 @@ public:
   create_element(const ListIt &index, const PropId &prop) const;
 
   ///@name Iterating of grid elements
-    ///@{
-    /**
-     * This function returns a element iterator to the first element of the patch.
-     */
-    ElementIterator begin(const PropId &prop = ElementProperties::active);
+  ///@{
+  /**
+   * This function returns a element iterator to the first element of the patch.
+   */
+  ElementIterator begin(const PropId &prop = ElementProperties::active);
 
-    /**
-     * This function returns a element iterator to one-pass the end of patch.
-     */
-    ElementIterator end(const PropId &prop = ElementProperties::active);
+  /**
+   * This function returns a element iterator to one-pass the end of patch.
+   */
+  ElementIterator end(const PropId &prop = ElementProperties::active);
 
-    /**
-     * This function returns a element (const) iterator to the first element of the patch.
-     */
-    ElementConstIterator begin(const PropId &prop = ElementProperties::active) const;
+  /**
+   * This function returns a element (const) iterator to the first element of the patch.
+   */
+  ElementConstIterator begin(const PropId &prop = ElementProperties::active) const;
 
-    /**
-     * This function returns a element (const) iterator to one-pass the end of patch.
-     */
-    ElementConstIterator end(const PropId &prop = ElementProperties::active) const;
+  /**
+   * This function returns a element (const) iterator to one-pass the end of patch.
+   */
+  ElementConstIterator end(const PropId &prop = ElementProperties::active) const;
 
-    /**
-     * This function returns a element (const) iterator to the first element of the patch.
-     */
-    ElementConstIterator cbegin(const PropId &prop = ElementProperties::active) const;
+  /**
+   * This function returns a element (const) iterator to the first element of the patch.
+   */
+  ElementConstIterator cbegin(const PropId &prop = ElementProperties::active) const;
 
-    /**
-     * This function returns a element (const) iterator to one-pass the end of patch.
-     */
-    ElementConstIterator cend(const PropId &prop = ElementProperties::active) const;
-    ///@}
+  /**
+   * This function returns a element (const) iterator to one-pass the end of patch.
+   */
+  ElementConstIterator cend(const PropId &prop = ElementProperties::active) const;
+  ///@}
 
 
 private:
   std::shared_ptr<GridType> grid_;
   std::shared_ptr<FuncType> func_;
-
-  FlagsArray flags_;
 
   friend ElementAccessor;
 
