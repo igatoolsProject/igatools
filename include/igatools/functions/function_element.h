@@ -23,6 +23,7 @@
 
 
 #include <igatools/functions/function.h>
+#include <igatools/functions/function_cache_handler.h>
 //#include <igatools/geometry/physical_domain_element.h>
 
 #include <igatools/base/value_types.h>
@@ -34,6 +35,22 @@ template <int,int> class PhysicalDomainElement;
 template <int,int> class ConstPhysicalDomainElement;
 //template <int,int> class PhysicalDomain;
 //template <int,int> class PhysicalDomainElement;
+
+
+//namespace function_element
+//{
+//enum class Flags
+//{
+//  /** Fill nothing */
+//  none           =    0,
+//
+//  /** Quadrature points on the element */
+//  value          =    1L << 1,
+//
+//  /** Quadrature weigths on the element */
+//  gradient       =    1L << 2
+//};
+//}
 
 /**
  *
@@ -186,14 +203,6 @@ public:
   }
   ///@}
 
-
-  /**
-   * Returns the flags that are valid to be used with this class.
-   *
-   * @note The valid flags are defined to be the ones that can be inferred from the ValueType(s)
-   * used as key of the boost::fusion::map in CType.
-   */
-  static ValueFlags get_valid_flags();
 #endif
 
   /**

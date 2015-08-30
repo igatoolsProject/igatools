@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __GRID_ELEMENT_HANDLER_H_
-#define __GRID_ELEMENT_HANDLER_H_
+#ifndef __GRID_CACHE_HANDLER_H_
+#define __GRID_CACHE_HANDLER_H_
 
 #include <igatools/base/config.h>
 #include <igatools/basis_functions/values_cache.h>

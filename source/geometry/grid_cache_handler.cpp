@@ -32,6 +32,8 @@ GridElementHandler(shared_ptr<GridType> grid)
   grid_(grid)
 {}
 
+
+
 template <int dim>
 std::shared_ptr<GridElementHandler<dim> >
 GridElementHandler<dim>::
