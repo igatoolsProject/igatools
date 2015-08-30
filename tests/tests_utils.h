@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/ * test_utils.h
+/* test_utils.h
  *
  *  Created on: Aug 20, 2015
  *      Author: pauletti
