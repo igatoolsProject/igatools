@@ -101,7 +101,7 @@ set_flags(const topology_variant &sdim,
           const Flags &flag) -> void
 {
   using GridFlags = typename GridType::ElementHandler::Flags;
-  using FuncFlags = typename FuncType::Flags;
+  using FuncFlags = typename FuncType::ElementHandler::Flags;
   FuncFlags func_flag = FuncFlags::none;
   GridFlags grid_flag = GridFlags::none;
 

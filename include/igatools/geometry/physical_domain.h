@@ -216,7 +216,11 @@ private:
   std::shared_ptr<GridType> grid_;
   std::shared_ptr<FuncType> func_;
 
-  friend ElementAccessor;
+//  friend ElementAccessor;
+  friend class PhysicalDomainElementBase<dim_, codim_, PhysicalDomain<dim_, codim_>>;
+  friend class PhysicalDomainElementBase<dim_, codim_, const PhysicalDomain<dim_, codim_>>;
+  friend class PhysicalDomainElement<dim_, codim_>;
+  friend class ConstPhysicalDomainElement<dim_, codim_>;
 
 #ifdef SERIALIZATION
   /**

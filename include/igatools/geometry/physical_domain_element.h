@@ -46,8 +46,8 @@ public:
   using ContainerType = ContainerType_;
 //  using GridElem = typename ContainerType_::GridType::ConstElementAccessor;
 //  using FuncElem = typename ContainerType_::FuncType::ConstElementAccessor;
-  using GridElem = typename ContainerType_::GridType::ElementAccessor;
-  using FuncElem = typename ContainerType_::FuncType::ElementAccessor;
+  using GridElem = typename ContainerType_::GridType::ConstElementAccessor;
+  using FuncElem = typename ContainerType_::FuncType::ConstElementAccessor;
   using ListIt = typename ContainerType_::ListIt;
 
   using Flags = physical_domain_element::Flags;
@@ -300,7 +300,7 @@ private:
   std::shared_ptr<CacheType> local_cache_;
 
   template <class Accessor> friend class GridIteratorBase;
-  friend class PhysicalDomain<dim_, codim_>;
+  friend class PhysicalDomainElementHandler<dim_, codim_>;
 
 //    /**
 //     * Creates a new object performing a deep copy of the current object using the PhysicalDomainElement

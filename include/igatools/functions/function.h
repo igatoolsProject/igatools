@@ -196,6 +196,8 @@ private:
   std::shared_ptr<const DomainType> phys_domain_;
 
 
+
+
 #ifdef MESH_REFINEMENT
 private:
   std::shared_ptr<self_t> function_previous_refinement_;

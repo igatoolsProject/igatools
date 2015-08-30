@@ -54,7 +54,7 @@ set_flags(const topology_variant &sdim,
 template<int dim_, int codim_, int range_, int rank_>
 void
 FunctionElementHandler<dim_, codim_, range_, rank_ >::
-init_cache(ElementAccessor &elem,
+init_cache(ConstElementAccessor &elem,
            const eval_pts_variant &quad) const
 {
   auto disp = InitCacheDispatcher(flags_, elem);
@@ -67,7 +67,7 @@ template<int dim_, int codim_, int range_, int rank_>
 void
 FunctionElementHandler<dim_, codim_, range_, rank_ >::
 fill_cache(const topology_variant &sdim,
-           ElementAccessor &elem,
+		ConstElementAccessor &elem,
            const int s_id) const
 {
 #if 0
