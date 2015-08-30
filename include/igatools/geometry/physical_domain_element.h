@@ -23,6 +23,7 @@
 
 #include <igatools/geometry/grid_element.h>
 #include <igatools/geometry/physical_domain.h>
+#include <igatools/geometry/physical_domain_cache_handler.h>
 
 IGA_NAMESPACE_OPEN
 

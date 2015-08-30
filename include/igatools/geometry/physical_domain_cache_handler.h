@@ -25,6 +25,8 @@
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/geometry/grid_cache_handler.h>
 
+#include <igatools/geometry/physical_domain.h>
+
 IGA_NAMESPACE_OPEN
 
 namespace physical_domain_element
@@ -76,10 +78,11 @@ public:
   static const int space_dim = dim_ + codim_;
   static const int dim = dim_;
 
+  using PhysDomainType = const PhysicalDomain<dim_, codim_>;
   using GridType = const CartesianGrid<dim_>;
-  using GridHandler = GridType::ElementHandler;
+  using GridHandler = typename GridType::ElementHandler;
   using FuncType =  const Function<dim_, 0, dim_ + codim_, 1>;
-  using FuncHandler = FuncType::ElementHandler;
+  using FuncHandler = typename FuncType::ElementHandler;
 
   using ElementAccessor = PhysicalDomainElement<dim_, codim_>;
   using ElementIterator = GridIterator<ElementAccessor>;
@@ -152,29 +155,31 @@ private:
    */
   PhysicalDomainElementHandler() = default;
 
-  PhysicalDomainElementHandler(std::shared_ptr<const GridType> grid,
-                               std::shared_ptr<FuncType> F);
+  PhysicalDomainElementHandler(std::shared_ptr<PhysDomainType> domain);
+
 public:
   ~PhysicalDomainElementHandler();
 
   static std::shared_ptr<self_t>
-  create(std::shared_ptr<const GridType> grid,
-         std::shared_ptr<FuncType> F)
+  create(std::shared_ptr<PhysDomainType> domain)
   {
-    return std::shared_ptr<self_t>(new self_t(grid, F));
+    return std::shared_ptr<self_t>(new self_t(domain));
   }
 
 
   static std::shared_ptr<const self_t>
-  const_create(std::shared_ptr<const GridType> grid,
-               std::shared_ptr<FuncType> F)
+  const_create(std::shared_ptr<PhysDomainType> domain)
   {
-    return create(grid, F);
+    return create(domain);
   }
 
-  std::shared_ptr<const GridType> get_grid() const;
-
-  std::shared_ptr<FuncType> get_function() const;
+  std::shared_ptr<PhysDomainType> get_domain() const
+		{
+	  return domain_;
+		}
+//  std::shared_ptr<GridType> get_grid() const;
+//
+//  std::shared_ptr<FuncType> get_function() const;
 
 public:
 
@@ -409,8 +414,7 @@ private:
 #endif
 
 private:
-  std::shared_ptr<const GridType> grid_;
-  std::shared_ptr<FuncType> func_;
+  std::shared_ptr<PhysDomainType> domain_;
 
   std::shared_ptr<GridHandler> grid_handler_;
   std::shared_ptr<FuncHandler> func_handler_;

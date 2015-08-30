@@ -30,7 +30,7 @@ functions = []
 
 for row in inst.all_function_dims:
     dims = '<%d, %d, %d, %d>' %(row.dim, row.codim, row.range, row.rank)
-    func = 'Function%s' %(dims) 
+    func = 'FunctionElementHandler%s' %(dims) 
     functions.append(func)
     f.write('template class %s ;\n' %(func))
 
@@ -42,7 +42,7 @@ f.write('IGA_NAMESPACE_CLOSE\n')
 f.write('#ifdef SERIALIZATION\n')
 id = 0 
 for func in unique(functions):
-    alias = 'FunctionAlias%d' %(id)
+    alias = 'FunctionElementHandlerAlias%d' %(id)
     f.write('using %s = iga::%s; \n' % (alias, func))
     
     f.write('ALLOW_SHARED_THIS(%s)\n' %alias )

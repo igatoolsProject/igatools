@@ -262,8 +262,6 @@ private:
   }
 
 private:
-
-
   std::shared_ptr<ContainerType_> func_;
 
   std::shared_ptr<DomainElem> phys_domain_elem_;
@@ -271,7 +269,7 @@ private:
   std::shared_ptr<AllSubElementsCache<Cache>> all_sub_elems_cache_;
 
   template <class Accessor> friend class GridIteratorBase;
-  friend class Function<dim, codim, range, rank>;
+  friend class FunctionElementHandler<dim, codim, range, rank>;
 
 public:
   void print_info(LogStream &out) const;

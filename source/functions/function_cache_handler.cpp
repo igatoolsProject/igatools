@@ -204,5 +204,5 @@ serialize(Archive &ar, const unsigned int version)
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/functions/function_cache_hanlder.inst>
+#include <igatools/functions/function_cache_handler.inst>
 

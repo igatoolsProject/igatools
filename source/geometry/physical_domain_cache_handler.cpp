@@ -18,9 +18,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+#include <igatools/geometry/physical_domain_cache_handler.h>
 #include <igatools/geometry/physical_domain.h>
 #include <igatools/geometry/physical_domain_element.h>
 #include <igatools/functions/function.h>
+#include <igatools/functions/function_cache_handler.h>
 
 using std::shared_ptr;
 
@@ -65,12 +67,9 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_, int codim_>
 PhysicalDomainElementHandler<dim_, codim_>::
-PhysicalDomainElementHandler(std::shared_ptr<const GridType> grid,
-                             std::shared_ptr<FuncType> F)
+PhysicalDomainElementHandler(std::shared_ptr<PhysDomainType> domain)
   :
-  grid_(grid),
-  grid_handler_(grid->create_cache_handler()),
-  func_(F)
+  domain_(domain)
 {
 //  Assert(func_->get_physical_domain() == nullptr,
 //          ExcMessage("Must be a Null pointer"));
@@ -107,7 +106,7 @@ set_flags(const topology_variant &sdim,
   GridFlags grid_flag = GridFlags::none;
 
   //point => function::value OR grid::point
-  if (func_ == NULL)
+  if (func_handler_ == NULL)
   {
     grid_flag |= GridFlags::point;
     grid_handler_->set_flags(sdim, grid_flag);
@@ -115,7 +114,7 @@ set_flags(const topology_variant &sdim,
   else
   {
     func_flag |= FuncFlags::value;
-    func_->set_flags(sdim, func_flag);
+    func_handler_->set_flags(sdim, func_flag);
   }
 
   auto disp = SetFlagsDispatcher(flag, flags_);
@@ -152,9 +151,9 @@ init_cache(ElementAccessor &elem,
            const eval_pts_variant &quad) const
 {
   //grid_handler_->init_cache(*(elem.grid_elem_), quad);
-  if (func_ != NULL)
+  if (func_handler_ != NULL)
   {
-    func_->init_cache(*(elem.func_elem_), quad);
+    func_handler_->init_cache(*(elem.func_elem_), quad);
   }
 
 #if 0
@@ -211,25 +210,6 @@ fill_cache(const topology_variant &sdim,
 //            }
 //    }
 //}
-
-
-template<int dim_, int codim_>
-auto
-PhysicalDomainElementHandler<dim_, codim_>::
-get_grid() const -> std::shared_ptr<const CartesianGrid<dim_> >
-{
-  return grid_;
-}
-
-
-
-template<int dim_, int codim_>
-auto
-PhysicalDomainElementHandler<dim_, codim_>::
-get_function() const -> std::shared_ptr<FuncType>
-{
-  return func_;
-}
 
 IGA_NAMESPACE_CLOSE
 

@@ -31,20 +31,20 @@
 IGA_NAMESPACE_OPEN
 
 
-namespace function_element
-{
-enum class Flags
-{
-  /** Fill nothing */
-  none           =    0,
-
-  /** Quadrature points on the element */
-  value          =    1L << 1,
-
-  /** Quadrature weigths on the element */
-  gradient       =    1L << 2
-};
-}
+//namespace function_element
+//{
+//enum class Flags
+//{
+//  /** Fill nothing */
+//  none           =    0,
+//
+//  /** Quadrature points on the element */
+//  value          =    1L << 1,
+//
+//  /** Quadrature weigths on the element */
+//  gradient       =    1L << 2
+//};
+//}
 
 template <int,int> class PhysicalDomain;
 template <int, int, int, int, class> class FunctionElementBase;
@@ -80,8 +80,39 @@ public:
 
   using List = typename DomainType::List;
   using ListIt = typename DomainType::ListIt;
-  using Flags = function_element::Flags;
+  /** Types for the input/output evaluation arguments */
+    ///@{
+    /**
+     * Type for the input argument of the function.
+     */
+    using Point = Points<space_dim>;
 
+    /**
+     * Type for the return of the function.
+     */
+    using Value = Values<space_dim, range_, rank_>;
+
+    /**
+     * Type for the derivative of the function.
+     */
+    template <int order>
+    using Derivative = Derivatives<space_dim, range_, rank_, order>;
+
+    /**
+     * Type for the gradient of the function.
+     */
+    using Gradient = Derivative<1>;
+
+    /**
+     * Type for the hessian of the function.
+     */
+    using Hessian = Derivative<2>;
+
+    /**
+     * Type for the divergence of function.
+     */
+    using Div = Values<space_dim, space_dim, rank_-1>;
+    ///@}
 
   /** @name Constructors and destructor. */
   ///@{

@@ -27,20 +27,20 @@
 
 IGA_NAMESPACE_OPEN
 
-namespace physical_domain_element
-{
-enum class Flags
-{
-  /** Fill nothing */
-  none           =    0,
-
-  /** Quadrature points on the element */
-  point           =    1L << 1,
-
-  /** Quadrature weigths on the element */
-  w_measure       =    1L << 2
-};
-}
+//namespace physical_domain_element
+//{
+//enum class Flags
+//{
+//  /** Fill nothing */
+//  none           =    0,
+//
+//  /** Quadrature points on the element */
+//  point           =    1L << 1,
+//
+//  /** Quadrature weigths on the element */
+//  w_measure       =    1L << 2
+//};
+//}
 
 template <int, int, int, int> class Function;
 
@@ -90,10 +90,6 @@ public:
 
   using List = typename GridType::List;
   using ListIt = typename GridType::ListIt;
-  using Flags = physical_domain_element::Flags;
-
-protected:
-  using FlagsArray = SafeSTLArray<Flags, dim+1>;
 
 public:
   //TODO: explain we can not use FuncType::Value (due to ciclic deps)

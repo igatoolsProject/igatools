@@ -142,7 +142,7 @@ protected:
   FunctionElementHandler() = default;
 
   /** Constructor */
-  FunctionElementHandler(std::shared_ptr<const DomainType> phys_dom);
+  FunctionElementHandler(std::shared_ptr<FuncType> func);
 
   /**
    * Copy constructor.
