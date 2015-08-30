@@ -47,114 +47,32 @@ Function(const self_t &func)
 
 
 
+
+
+
 template<int dim_, int codim_, int range_, int rank_>
-void
+auto
 Function<dim_, codim_, range_, rank_ >::
-set_flags(const topology_variant &sdim,
-          const Flags &flag)
+create_cache_handler() const
+-> std::shared_ptr<ElementHandler>
 {
-  auto disp = SetFlagsDispatcher(flag, flags_);
-  boost::apply_visitor(disp, sdim);
+  return std::make_shared<ElementHandler>(this->shared_from_this());
 }
 
 
 
 template<int dim_, int codim_, int range_, int rank_>
-void
+auto
 Function<dim_, codim_, range_, rank_ >::
-init_cache(ElementAccessor &elem,
-           const eval_pts_variant &quad) const
+create_element(const ListIt &index, const PropId &prop) const
+-> std::shared_ptr<ConstElementAccessor>
 {
-  auto disp = InitCacheDispatcher(flags_, elem);
-  boost::apply_visitor(disp, quad);
+  using Elem = ConstElementAccessor;
+  auto elem = std::make_shared<Elem>(this->shared_from_this(), index, prop);
+  Assert(elem != nullptr,ExcNullPtr());
+
+  return elem;
 }
-
-
-
-template<int dim_, int codim_, int range_, int rank_>
-void
-Function<dim_, codim_, range_, rank_ >::
-fill_cache(const topology_variant &sdim,
-           ElementAccessor &elem,
-           const int s_id) const
-{
-#if 0
-  auto fill_dispatcher = FillCacheDispatcher(s_id, *this, elem);
-  boost::apply_visitor(fill_dispatcher, sdim);
-#endif
-}
-
-
-
-#if 0
-template<int dim_, int codim_, int range_, int rank_>
-void
-Function<dim_, codim_, range_, rank_ >::
-init_cache(ElementIterator &elem, const topology_variant &sdim) const
-{
-  init_cache(*elem, k);
-}
-
-
-template<int dim_, int codim_, int range_, int rank_>
-void
-Function<dim_, codim_, range_, rank_ >::
-init_element_cache(ElementAccessor &elem) const
-{
-  this->init_cache(elem, Topology<dim_>());
-}
-
-
-template<int dim_, int codim_, int range_, int rank_>
-void
-Function<dim_, codim_, range_, rank_ >::
-init_element_cache(ElementIterator &elem) const
-{
-  this->init_cache(*elem, Topology<dim_>());
-}
-#endif
-
-
-
-#if 0
-template<int dim_, int codim_, int range_, int rank_>
-void
-Function<dim_, codim_, range_, rank_ >::
-fill_cache(ElementIterator &elem, const topology_variant &sdim, const int j) const
-{
-  this->fill_cache(*elem, k, j);
-}
-
-
-template<int dim_, int codim_, int range_, int rank_>
-void
-Function<dim_, codim_, range_, rank_ >::
-fill_element_cache(ElementAccessor &elem) const
-{
-  this->fill_cache(elem, Topology<dim_>(),0);
-}
-
-
-template<int dim_, int codim_, int range_, int rank_>
-void
-Function<dim_, codim_, range_, rank_ >::
-fill_element_cache(ElementIterator &elem) const
-{
-  this->fill_cache(*elem, Topology<dim_>(),0);
-}
-#endif
-
-
-
-//template<int dim_, int codim_, int range_, int rank_>
-//auto
-//Function<dim_, codim_, range_, rank_ >::
-//get_cache(ElementAccessor &elem)
-//-> std::shared_ptr<typename ElementAccessor::CacheType> &
-//{
-//    Assert(elem.all_sub_elems_cache_ != nullptr,ExcNullPtr());
-//    return elem.all_sub_elems_cache_;
-//}
 
 
 
@@ -181,17 +99,42 @@ end(const PropId &prop) -> ElementIterator
 }
 
 
+
 template<int dim_, int codim_, int range_, int rank_>
 auto
 Function<dim_, codim_, range_, rank_ >::
-create_element(const ListIt &index, const PropId &prop) const
--> std::shared_ptr<ConstElementAccessor>
+begin(const PropId &prop) const -> ElementConstIterator
 {
-  using Elem = ConstElementAccessor;
-  auto elem = std::make_shared<Elem>(this->shared_from_this(), index, prop);
-  Assert(elem != nullptr,ExcNullPtr());
+  return this->cbegin(prop);
+}
 
-  return elem;
+template<int dim_, int codim_, int range_, int rank_>
+auto
+Function<dim_, codim_, range_, rank_ >::
+end(const PropId &prop) const -> ElementConstIterator
+{
+  return this->cend(prop);
+}
+
+template<int dim_, int codim_, int range_, int rank_>
+auto
+Function<dim_, codim_, range_, rank_ >::
+cbegin(const PropId &prop) const -> ElementConstIterator
+{
+  return ElementConstIterator(this->shared_from_this(),
+		  phys_domain_->get_grid()->get_element_property(prop).end(),
+		  prop);
+}
+
+
+template<int dim_, int codim_, int range_, int rank_>
+auto
+Function<dim_, codim_, range_, rank_ >::
+cend(const PropId &prop) const -> ElementConstIterator
+{
+  return ElementConstIterator(this->shared_from_this(),
+		  phys_domain_->get_grid()->get_element_property(prop).end(),
+		  prop);
 }
 
 

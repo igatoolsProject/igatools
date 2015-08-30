@@ -426,6 +426,12 @@ public:
 
   std::shared_ptr<ElementHandler> create_cache_handler() const;
 
+  /**
+   * Create an element (defined on this grid) with a given index and the given property
+   */
+  std::shared_ptr<ConstElementAccessor>
+  create_element(const ListIt &index, const PropId &prop) const;
+
   ///@name Iterating of grid elements
   ///@{
   /**
@@ -646,11 +652,7 @@ private:
   Index object_id_;
 
 public:
-  /**
-   * Create an element (defined on this grid) with a given index and the given property
-   */
-  std::shared_ptr<ConstElementAccessor>
-  create_element(const ListIt &index, const PropId &prop) const;
+
 
   /**
    * Returns the unique identifier associated to each object instance.

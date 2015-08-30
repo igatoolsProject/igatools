@@ -334,6 +334,16 @@ get_element_property(const PropId &prop)
 
 template<int dim_>
 auto
+CartesianGrid<dim_>::create_cache_handler() const
+-> std::shared_ptr<ElementHandler>
+{
+  return std::make_shared<ElementHandler>(this->shared_from_this());
+}
+
+
+
+template<int dim_>
+auto
 CartesianGrid<dim_>::
 create_element(const ListIt &index, const PropId &prop) const
 -> std::shared_ptr<ConstElementAccessor>
@@ -367,16 +377,6 @@ end(const PropId &prop) -> ElementIterator
   return ElementIterator(this->shared_from_this(),
   elem_properties_[prop].end(),
   prop);
-}
-
-
-
-template<int dim_>
-auto
-CartesianGrid<dim_>::create_cache_handler() const
--> std::shared_ptr<ElementHandler>
-{
-  return std::make_shared<ElementHandler>(this->shared_from_this());
 }
 
 

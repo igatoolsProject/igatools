@@ -50,7 +50,7 @@ template <int,int> class PhysicalDomain;
 template <int, int, int, int, class> class FunctionElementBase;
 template <int, int, int, int> class FunctionElement;
 template <int, int, int, int> class ConstFunctionElement;
-
+template <int, int, int, int> class FunctionElementHandler;
 /**
  * Function Class
  *
@@ -75,56 +75,14 @@ public:
   using ElementAccessor = FunctionElement<dim_, codim_, range_, rank_>;
   using ElementIterator = GridIterator<ElementAccessor>;
   using ConstElementAccessor = ConstFunctionElement<dim_, codim_, range_, rank_>;
-  using ConstElementIterator = GridIterator<ConstElementAccessor>;
+  using ElementConstIterator = GridIterator<ConstElementAccessor>;
+  using ElementHandler = FunctionElementHandler<dim_>;
 
   using List = typename DomainType::List;
   using ListIt = typename DomainType::ListIt;
   using Flags = function_element::Flags;
 
 
-  /** Types for the input/output evaluation arguments */
-  ///@{
-  /**
-   * Type for the input argument of the function.
-   */
-  using Point = Points<space_dim>;
-
-  /**
-   * Type for the return of the function.
-   */
-  using Value = Values<space_dim, range_, rank_>;
-
-  /**
-   * Type for the derivative of the function.
-   */
-  template <int order>
-  using Derivative = Derivatives<space_dim, range_, rank_, order>;
-
-  /**
-   * Type for the gradient of the function.
-   */
-  using Gradient = Derivative<1>;
-
-  /**
-   * Type for the hessian of the function.
-   */
-  using Hessian = Derivative<2>;
-
-  /**
-   * Type for the divergence of function.
-   */
-  using Div = Values<space_dim, space_dim, rank_-1>;
-  ///@}
-
-  using topology_variant = TopologyVariants<dim_>;
-
-  template<int k>
-  using ConstQuad = const Quadrature<k>;
-
-  using eval_pts_variant = SubElemPtrVariants<ConstQuad,dim_>;
-
-protected:
-  using FlagsArray = SafeSTLArray<Flags, dim+1>;
   /** @name Constructors and destructor. */
   ///@{
 protected:
@@ -153,40 +111,6 @@ public:
     return phys_domain_;
   }
 
-  //virtual std::shared_ptr<base_t> clone() const = 0;
-
-
-  virtual void set_flags(const topology_variant &sdim,
-                         const Flags &flag);
-
-  virtual void init_cache(ElementAccessor &elem,
-                          const eval_pts_variant &quad) const;
-
-  void init_cache(ElementIterator &elem,
-                  const eval_pts_variant &quad) const
-  {
-    this->init_cache(*elem, quad);
-  }
-
-
-//    void init_element_cache(ElementAccessor &elem) const;
-//
-//    void init_element_cache(ElementIterator &elem) const;
-
-  virtual void fill_cache(const topology_variant &sdim,
-                          ElementAccessor &elem,
-                          const int s_id) const;
-
-  void fill_cache(const topology_variant &sdim,
-                  ElementIterator &elem,
-                  const int s_id) const
-  {
-    this->fill_cache(sdim, *elem, s_id);
-  }
-
-//    void fill_element_cache(ElementAccessor &elem) const;
-//
-//    void fill_element_cache(ElementIterator &elem) const;
 
 
 public:
@@ -194,21 +118,39 @@ public:
   create_element(const ListIt &index, const PropId &prop) const;
 
 
-
+  virtual std::shared_ptr<ElementHandler> create_cache_handler() const;
 public:
-  /** @name Functions involving the element iterator */
+  ///@name Iterating of grid elements
   ///@{
   /**
-   * Returns a element iterator to the first element of the patch
-   * with the property @p element_property.
+   * This function returns a element iterator to the first element of the patch.
    */
-  ElementIterator begin(const PropId &element_property = ElementProperties::active);
+  ElementIterator begin(const PropId &property = ElementProperties::active);
 
   /**
-   * Returns a element iterator to one-pass the end of patch
-   * with the property @p element_property.
+   * This function returns a element iterator to one-pass the end of patch.
    */
-  ElementIterator end(const PropId &element_property = ElementProperties::active);
+  ElementIterator end(const PropId &property = ElementProperties::active);
+
+  /**
+   * This function returns a element (const) iterator to the first element of the patch.
+   */
+  ElementConstIterator begin(const PropId &property = ElementProperties::active) const;
+
+  /**
+   * This function returns a element (const) iterator to one-pass the end of patch.
+   */
+  ElementConstIterator end(const PropId &property = ElementProperties::active) const;
+
+  /**
+   * This function returns a element (const) iterator to the first element of the patch.
+   */
+  ElementConstIterator cbegin(const PropId &property = ElementProperties::active) const;
+
+  /**
+   * This function returns a element (const) iterator to one-pass the end of patch.
+   */
+  ElementConstIterator cend(const PropId &property = ElementProperties::active) const;
   ///@}
 
   virtual void print_info(LogStream &out) const
@@ -221,69 +163,6 @@ public:
 
 private:
   std::shared_ptr<const DomainType> phys_domain_;
-
-protected:
-  FlagsArray flags_;
-
-
-private:
-  /**
-   * Alternative to
-   * template <int sdim> set_flags()
-   */
-  struct SetFlagsDispatcher : boost::static_visitor<void>
-  {
-    SetFlagsDispatcher(const Flags flag, FlagsArray &flags)
-      :
-      flag_(flag),
-      flags_(flags)
-    {}
-
-    template<int sdim>
-    void operator()(const Topology<sdim> &)
-    {
-      flags_[sdim] = flag_;
-    }
-
-    const Flags flag_;
-    FlagsArray &flags_;
-  };
-
-
-  /**
-   * Alternative to
-   * template <int sdim> init_cache()
-   */
-  struct InitCacheDispatcher : boost::static_visitor<void>
-  {
-    InitCacheDispatcher(const FlagsArray &flags,
-                        ElementAccessor &elem)
-      :
-      flags_(flags),
-      elem_(elem)
-    {}
-
-    template<int sdim>
-    void operator()(const std::shared_ptr<Quadrature<sdim>> &quad)
-    {
-      auto &cache = elem_.all_sub_elems_cache_;
-      if (cache == nullptr)
-      {
-        using Cache = typename ElementAccessor::CacheType;
-        cache = std::make_shared<Cache>();
-      }
-
-      const auto n_pts = quad->get_num_points();
-      for (const auto s_id: UnitElement<dim_>::template elems_ids<sdim>())
-      {
-        auto &s_cache = cache->template get_sub_elem_cache<sdim>(s_id);
-        s_cache.resize(flags_[sdim],n_pts);
-      }
-    }
-
-    const FlagsArray &flags_;
-    ElementAccessor &elem_;
-  };
 
 
 #ifdef MESH_REFINEMENT
