@@ -437,32 +437,32 @@ public:
   /**
    * This function returns a element iterator to the first element of the patch.
    */
-  ElementIterator begin(const PropId &property = ElementProperties::active);
+  ElementIterator begin(const PropId &prop = ElementProperties::active);
 
   /**
    * This function returns a element iterator to one-pass the end of patch.
    */
-  ElementIterator end(const PropId &property = ElementProperties::active);
+  ElementIterator end(const PropId &prop = ElementProperties::active);
 
   /**
    * This function returns a element (const) iterator to the first element of the patch.
    */
-  ElementConstIterator begin(const PropId &property = ElementProperties::active) const;
+  ElementConstIterator begin(const PropId &prop = ElementProperties::active) const;
 
   /**
    * This function returns a element (const) iterator to one-pass the end of patch.
    */
-  ElementConstIterator end(const PropId &property = ElementProperties::active) const;
+  ElementConstIterator end(const PropId &prop = ElementProperties::active) const;
 
   /**
    * This function returns a element (const) iterator to the first element of the patch.
    */
-  ElementConstIterator cbegin(const PropId &property = ElementProperties::active) const;
+  ElementConstIterator cbegin(const PropId &prop = ElementProperties::active) const;
 
   /**
    * This function returns a element (const) iterator to one-pass the end of patch.
    */
-  ElementConstIterator cend(const PropId &property = ElementProperties::active) const;
+  ElementConstIterator cend(const PropId &prop = ElementProperties::active) const;
   ///@}
 
   ///@name Dealing with boundary information
@@ -663,13 +663,13 @@ public:
    */
   ///@{
   /**
-  * Adds a new <tt>property</tt> definition for the elements in the
+  * Adds a new <tt>prop</tt> definition for the elements in the
   * CartesianGrid.
   *
   * @note If the <tt>property</tt> is already present, an assertion will
   *  be raised (in Debug mode).
   */
-  void add_property(const PropId &property);
+  void add_property(const PropId &prop);
 
   /**
    * Prefer the use through the element iterator instead of

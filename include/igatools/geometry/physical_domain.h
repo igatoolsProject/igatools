@@ -77,19 +77,22 @@ public:
   static const int dim = dim_;
 
   using GridType = const CartesianGrid<dim_>;
-  using GridHandler = typename CartesianGrid<dim_>::ElementHandler;
-  using FuncType =  Function<dim_, 0, dim_ + codim_, 1>;
+  using FuncType = const Function<dim_, 0, dim_ + codim_, 1>;
 
   using ElementAccessor = PhysicalDomainElement<dim_, codim_>;
   using ElementIterator = GridIterator<ElementAccessor>;
   using ConstElementAccessor = ConstPhysicalDomainElement<dim_, codim_>;
-  using ConstElementIterator = GridIterator<ConstElementAccessor>;
+  using ElementConstIterator = GridIterator<ConstElementAccessor>;
+
+  using ElementHandler = FunctionElementHandler<dim_>;
 
   using List = typename GridType::List;
   using ListIt = typename GridType::ListIt;
   using Flags = physical_domain_element::Flags;
+
 protected:
   using FlagsArray = SafeSTLArray<Flags, dim+1>;
+
 public:
   //TODO: explain we can not use FuncType::Value (due to ciclic deps)
   /**
@@ -136,12 +139,7 @@ public:
 
   /** Typedef for the mapping hessian. */
   using Hessian = typename FuncType::Hessian;
-
-  using topology_variant = typename FuncType::topology_variant;
-  using eval_pts_variant = typename FuncType::eval_pts_variant;
 #endif
-  using topology_variant = TopologyVariants<dim_>;
-  using eval_pts_variant = SubElemPtrVariants<Quadrature,dim_>;
 
 private:
   /**
@@ -151,13 +149,13 @@ private:
    */
   PhysicalDomain() = default;
 
-  PhysicalDomain(std::shared_ptr<const GridType> grid,
+  PhysicalDomain(std::shared_ptr<GridType> grid,
                  std::shared_ptr<FuncType> F);
 public:
   ~PhysicalDomain();
 
   static std::shared_ptr<self_t>
-  create(std::shared_ptr<const GridType> grid,
+  create(std::shared_ptr<GridType> grid,
          std::shared_ptr<FuncType> F)
   {
     return std::shared_ptr<self_t>(new self_t(grid, F));
@@ -173,254 +171,54 @@ public:
 
   std::shared_ptr<const GridType> get_grid() const;
 
-  std::shared_ptr<FuncType> get_function() const;
+  std::shared_ptr<const FuncType> get_function() const;
 
 public:
 
-  void set_flags(const topology_variant &sdim,
-                 const Flags &flag);
-
-  void init_cache(ElementAccessor &elem,
-                  const eval_pts_variant &quad) const;
-
-  void init_cache(ElementIterator &elem,
-                  const eval_pts_variant &quad) const
-  {
-    this->init_cache(*elem, quad);
-  }
-
-  void fill_cache(const topology_variant &sdim,
-                  ElementAccessor &elem,
-                  const int s_id) const;
-
-  void fill_cache(const topology_variant &sdim,
-                  ElementIterator &elem,
-                  const int s_id) const
-  {
-    this->fill_cache(sdim, *elem, s_id);
-  }
-
-  ElementIterator begin(const PropId &property = ElementProperties::active);
-
-  ElementIterator end(const PropId &property = ElementProperties::active);
+  std::shared_ptr<ElementHandler> create_cache_handler() const;
 
   std::shared_ptr<ConstElementAccessor>
-  create_element(const ListIt &index, const PropId &property) const;
+  create_element(const ListIt &index, const PropId &prop) const;
+
+  ///@name Iterating of grid elements
+    ///@{
+    /**
+     * This function returns a element iterator to the first element of the patch.
+     */
+    ElementIterator begin(const PropId &prop = ElementProperties::active);
+
+    /**
+     * This function returns a element iterator to one-pass the end of patch.
+     */
+    ElementIterator end(const PropId &prop = ElementProperties::active);
+
+    /**
+     * This function returns a element (const) iterator to the first element of the patch.
+     */
+    ElementConstIterator begin(const PropId &prop = ElementProperties::active) const;
+
+    /**
+     * This function returns a element (const) iterator to one-pass the end of patch.
+     */
+    ElementConstIterator end(const PropId &prop = ElementProperties::active) const;
+
+    /**
+     * This function returns a element (const) iterator to the first element of the patch.
+     */
+    ElementConstIterator cbegin(const PropId &prop = ElementProperties::active) const;
+
+    /**
+     * This function returns a element (const) iterator to one-pass the end of patch.
+     */
+    ElementConstIterator cend(const PropId &prop = ElementProperties::active) const;
+    ///@}
 
 
 private:
-  /**
-   * Alternative to
-   * template <int sdim> set_flags()
-   */
-  struct SetFlagsDispatcher : boost::static_visitor<void>
-  {
-	  SetFlagsDispatcher(const Flags flag, FlagsArray &flags)
-        		:
-        			flag_(flag),
-					flags_(flags)
-					{}
-
-	  template<int sdim>
-	  void operator()(const Topology<sdim> &)
-	  {
-		  flags_[sdim] = flag_;
-	  }
-
-	  const Flags flag_;
-	  FlagsArray &flags_;
-  };
-#if 0
-
-  struct FillCacheDispatcher : boost::static_visitor<void>
-  {
-    FillCacheDispatcher(FuncType &F,
-                        ElementAccessor &domain_elem,
-                        const int sub_elem_id)
-      :
-      F_(F),
-      domain_elem_(domain_elem),
-      s_id_(sub_elem_id)
-
-    {}
-
-    template<int sdim>
-    void operator()(const Topology<sdim> &sub_elem)
-    {
-      const int s_id=s_id_;
-      auto &elem = domain_elem_;
-
-      // TODO (pauletti, Nov 6, 2014): provide a lighter function for this
-      const auto n_points = elem.get_grid_elem()->template get_quad<sdim>()->
-      get_num_points();
-
-      auto &cache = elem.local_cache_->template get_sub_elem_cache<sdim>(s_id);
-
-      if (cache.template status_fill<_Measure>())
-      {
-        auto &s_elem = UnitElement<dim_>::template get_elem<sdim>(s_id);
-
-        const auto &DF = elem.template get_values<_Gradient, sdim>(s_id);
-        typename MapFunction<sdim, space_dim>::Gradient DF1;
-
-        auto &measures = cache.template get_data<_Measure>();
-        for (int pt = 0 ; pt < n_points; ++pt)
-        {
-          for (int l=0; l<sdim; ++l)
-            DF1[l] = DF[pt][s_elem.active_directions[l]];
-
-          measures[pt] = fabs(determinant<sdim,space_dim>(DF1));
-        }
-        cache.template set_status_filled<_Measure>(true);
-      }
-
-      if (cache.template status_fill<_W_Measure>())
-      {
-        const auto &w = elem.grid_elem_->template get_weights<sdim>(s_id);
-
-        const auto &measures = cache.template get_data<_Measure>();
-
-        auto &w_measures = cache.template get_data<_W_Measure>();
-
-        for (int pt = 0 ; pt < n_points; ++pt)
-          w_measures[pt] = w[pt] * measures[pt];
-
-        cache.template set_status_filled<_W_Measure>(true);
-      }
-
-      if (cache.template status_fill<_InvGradient>())
-      {
-        // TODO (pauletti, Nov 23, 2014): if also fill measure this could be done here
-        const auto &DF = elem.template get_values<_Gradient, sdim>(s_id);
-        auto &D_invF = cache.template get_data<_InvGradient>();
-        Real det;
-        for (int pt = 0 ; pt < n_points; ++pt)
-          D_invF[pt] = inverse(DF[pt], det);
-
-        cache.template set_status_filled<_InvGradient>(true);
-      }
-
-      if (cache.template status_fill<_InvHessian>())
-      {
-        //        const auto &D1_F = elem.template get_values<_Gradient, k>(j);
-        const auto &D2_F = elem.template get_values<_Hessian, sdim>(s_id);
-        const auto &D1_invF = cache.template get_data<_InvGradient>();
-        auto &D2_invF       = cache.template get_data<_InvHessian>();
-
-        for (int pt = 0 ; pt < n_points; ++pt)
-          for (int u=0; u<dim_; ++u)
-          {
-            const auto tmp_u = action(D2_F[pt], D1_invF[pt][u]);
-            for (int v=0; v<dim_; ++v)
-            {
-              const auto tmp_u_v = action(tmp_u, D1_invF[pt][v]);
-              D2_invF[pt][u][v] = - action(D1_invF[pt], tmp_u_v);
-            }
-          }
-
-        cache.template set_status_filled<_InvHessian>(true);
-      }
-
-      if (cache.template status_fill<_BoundaryNormal>())
-      {
-        Assert(dim_ == sdim+1, ExcNotImplemented());
-        const auto &D1_invF = cache.template get_data<_InvGradient>();
-        const auto n_hat  = F_.get_grid()->template get_boundary_normals<sdim>(s_id)[0];
-        auto &bndry_normal = cache.template get_data<_BoundaryNormal>();
-
-        for (int pt = 0; pt < n_points; ++pt)
-        {
-          const auto D1_invF_t = co_tensor(transpose(D1_invF[pt]));
-          bndry_normal[pt] = action(D1_invF_t, n_hat);
-          bndry_normal[pt] /= bndry_normal[pt].norm();
-        }
-
-        cache.template set_status_filled<_BoundaryNormal>(true);
-      }
-
-      if (cache.template status_fill<_OuterNormal>())
-      {
-        Assert(sdim == dim_, ExcNotImplemented());
-        Assert(codim_ == 1, ExcNotImplemented());
-
-        const auto &DF = elem.template get_values<_Gradient, sdim>(s_id);
-        auto &outer_normal = cache.template get_data<_OuterNormal>();
-
-        for (int pt = 0; pt < n_points; ++pt)
-        {
-          outer_normal[pt] = cross_product<dim_, codim_>(DF[pt]);
-          outer_normal[pt] /= outer_normal[pt].norm();
-        }
-
-        cache.template set_status_filled<_OuterNormal>(true);
-      }
-
-
-      if (cache.template status_fill<_Curvature>())
-      {
-        Assert(sdim == dim_, ExcNotImplemented());
-        Assert(codim_ == 1, ExcNotImplemented());
-
-        const auto H = elem.compute_second_fundamental_form();
-        const auto G_inv = elem.compute_inv_first_fundamental_form();
-
-        auto &curvatures = cache.template get_data<_Curvature>();
-
-        for (int pt = 0; pt < n_points; ++pt)
-        {
-          //          const MetricTensor B = compose(H[pt], G_inv[pt]);
-          const auto B = compose(H[pt], G_inv[pt]);
-          const auto A = unroll_to_matrix(B);
-          curvatures[pt] = A.eigen_values();
-        }
-
-        cache.template set_status_filled<_Curvature>(true);
-      }
-      cache.set_filled(true);
-    }
-
-    FuncType &F_;
-    ElementAccessor &domain_elem_;
-    int s_id_;
-  };
-
-
-  struct InitCacheDispatcher : boost::static_visitor<void>
-  {
-    InitCacheDispatcher(FuncType &F,
-                        ElementAccessor &domain_elem,
-                        const SafeSTLArray<ValueFlags, dim_ + 1> &flags)
-      :
-      F_(F),
-      domain_elem_(domain_elem),
-      flags_(flags)
-    {}
-
-
-    template<int k>
-    void operator()(const Topology<k> &sub_elem)
-    {
-      auto &cache = domain_elem_.local_cache_;
-      for (auto &s_id: UnitElement<dim_>::template elems_ids<k>())
-      {
-        auto &s_cache = cache->template get_sub_elem_cache<k>(s_id);
-        const auto n_points = F_.template get_num_points<k>();
-        s_cache.resize(flags_[k], n_points);
-      }
-    }
-
-    FuncType &F_;
-    ElementAccessor &domain_elem_;
-    const SafeSTLArray<ValueFlags, dim_ + 1> &flags_;
-  };
-#endif
-
-private:
-  std::shared_ptr<const GridType> grid_;
-  std::shared_ptr<GridHandler> grid_handler_;
+  std::shared_ptr<GridType> grid_;
   std::shared_ptr<FuncType> func_;
 
-  SafeSTLArray<Flags, dim_ + 1> flags_;
+  FlagsArray flags_;
 
   friend ElementAccessor;
 
