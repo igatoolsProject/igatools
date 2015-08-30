@@ -155,9 +155,10 @@ private:
    */
   PhysicalDomainElementHandler() = default;
 
+public:
   PhysicalDomainElementHandler(std::shared_ptr<PhysDomainType> domain);
 
-public:
+
   ~PhysicalDomainElementHandler();
 
   static std::shared_ptr<self_t>

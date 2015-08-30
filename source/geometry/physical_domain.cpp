@@ -116,6 +116,17 @@ get_function() const -> std::shared_ptr<FuncType>
 template<int dim_, int codim_>
 auto
 PhysicalDomain<dim_, codim_>::
+create_cache_handler() const
+-> std::shared_ptr<ElementHandler>
+{
+  return std::make_shared<ElementHandler>(this->shared_from_this());
+}
+
+
+
+template<int dim_, int codim_>
+auto
+PhysicalDomain<dim_, codim_>::
 create_element(const ListIt &index, const PropId &prop) const
 -> std::shared_ptr<ConstElementAccessor>
 {
