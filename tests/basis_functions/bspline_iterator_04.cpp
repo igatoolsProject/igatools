@@ -55,7 +55,6 @@ void elem_derivatives(const int n_knots,
     auto space = Space::create_nonconst(deg, grid, int_mult, periodic, ebt);
 
     auto flag = der_flag[der];
-//    auto flag = space_element::Flags::value | space_element::Flags::gradient | space_element::Flags::hessian;
     auto quad = QGauss<dim>::create(2);
 
 
@@ -70,13 +69,6 @@ void elem_derivatives(const int n_knots,
     using _Value = typename Elem::_Value;
     using _Gradient = typename Elem::_Gradient;
     using _Hessian = typename Elem::_Hessian;
-//    using _Divergence = typename Elem::_Divergence;
-
-//    elem_handler->fill_element_cache(elem);
-//    elem->template get_basis<_Value,dim>(0,DofProperties::active).print_info(out);
-
-//  out << "Element index : " << elem->get_index();
-//  out << "Element end index : " << end->get_index();
 
     out.begin_item("Derivative order : " +std::to_string(der));
     for (; elem != end; ++elem)

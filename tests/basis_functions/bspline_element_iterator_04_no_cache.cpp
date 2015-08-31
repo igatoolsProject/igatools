@@ -39,11 +39,11 @@
 using std::shared_ptr;
 
 template <int dim>
-shared_ptr<const BSplineSpace<dim,dim,1> >
+shared_ptr<BSplineSpace<dim,dim,1> >
 create_space(const int num_knots) ;
 
 template <>
-shared_ptr<const BSplineSpace<2,2,1> >
+shared_ptr<BSplineSpace<2,2,1> >
 create_space<2>(const int num_knots)
 {
     auto knots = CartesianGrid<2>::create(num_knots);
@@ -55,17 +55,17 @@ create_space<2>(const int num_knots)
     using PeriodicityTable = typename Space::PeriodicityTable;
     using EndBehaviourTable = typename Space::EndBehaviourTable;
 
-    return Space::create(degree_table, knots,
-                         SpaceData::get_multiplicity_from_regularity(
-                             InteriorReg::maximum,
-                             degree_table,
-                             knots->get_num_intervals()),
-                         PeriodicityTable(true,SafeSTLArray<bool, 2>(false)),
-                         EndBehaviourTable(true,SafeSTLArray<BasisEndBehaviour,2>(BasisEndBehaviour::interpolatory))) ;
+    return Space::create_nonconst(degree_table, knots,
+                                  SpaceData::get_multiplicity_from_regularity(
+                                      InteriorReg::maximum,
+                                      degree_table,
+                                      knots->get_num_intervals()),
+                                  PeriodicityTable(true,SafeSTLArray<bool, 2>(false)),
+                                  EndBehaviourTable(true,SafeSTLArray<BasisEndBehaviour,2>(BasisEndBehaviour::interpolatory))) ;
 }
 
 template <>
-shared_ptr<const BSplineSpace<3,3,1> >
+shared_ptr<BSplineSpace<3,3,1> >
 create_space<3>(const int num_knots)
 {
     auto knots = CartesianGrid<3>::create(num_knots);
@@ -77,17 +77,17 @@ create_space<3>(const int num_knots)
     using PeriodicityTable = typename Space::PeriodicityTable;
     using EndBehaviourTable = typename Space::EndBehaviourTable;
 
-    return Space::create(degree_table, knots,
-                         SpaceData::get_multiplicity_from_regularity(
-                             InteriorReg::maximum,
-                             degree_table,
-                             knots->get_num_intervals()),
-                         PeriodicityTable(true,SafeSTLArray<bool,3>(false)),
-                         EndBehaviourTable(true,SafeSTLArray<BasisEndBehaviour,3>(BasisEndBehaviour::interpolatory))) ;
+    return Space::create_nonconst(degree_table, knots,
+                                  SpaceData::get_multiplicity_from_regularity(
+                                      InteriorReg::maximum,
+                                      degree_table,
+                                      knots->get_num_intervals()),
+                                  PeriodicityTable(true,SafeSTLArray<bool,3>(false)),
+                                  EndBehaviourTable(true,SafeSTLArray<BasisEndBehaviour,3>(BasisEndBehaviour::interpolatory))) ;
 }
 
 
-template< int dim_domain>
+template< int dim>
 void do_test()
 {
     OUTSTART
@@ -95,19 +95,27 @@ void do_test()
 
     const int num_knots = 3 ;
 
-    auto space = create_space<dim_domain>(num_knots) ;
+    auto space = create_space<dim>(num_knots) ;
 
     const int n_points = 2;
-    Quadrature<dim_domain> quad(QGauss<dim_domain>(n_points).get_points()) ;
+    auto quad = Quadrature<dim>::create(QGauss<dim>(n_points).get_points()) ;
 
     using std::to_string;
+
+    using Elem = typename BSplineSpace<dim,dim,1>::ElementAccessor;
+    using _Value = typename Elem::_Value;
+    using _Gradient = typename Elem::_Gradient;
+    using _Hessian = typename Elem::_Hessian;
+    using _Divergence = typename Elem::_Divergence;
+
 
     {
         auto elem = space->begin();
         for (; elem != space->end(); ++elem)
         {
+            out << "Element " << elem->get_index() << std::endl;
             const auto values = elem->template evaluate_basis_at_points<_Value>(quad,DofProperties::active);
-            out.begin_item("Element " + to_string(elem.get_flat_index()) + " --- Values:");
+            out.begin_item("Basis function values:");
             values.print_info(out);
             out.end_item();
         }
@@ -117,8 +125,9 @@ void do_test()
         auto elem = space->begin();
         for (; elem != space->end(); ++elem)
         {
+            out << "Element " << elem->get_index() << std::endl;
             const auto gradients = elem->template evaluate_basis_at_points<_Gradient>(quad,DofProperties::active);
-            out.begin_item("Element " + to_string(elem.get_flat_index()) + " --- Gradients:");
+            out.begin_item("Basis function gradients:");
             gradients.print_info(out);
             out.end_item();
         }
@@ -128,8 +137,9 @@ void do_test()
         auto elem = space->begin();
         for (; elem != space->end(); ++elem)
         {
+            out << "Element " << elem->get_index() << std::endl;
             const auto hessians = elem->template evaluate_basis_at_points<_Hessian>(quad,DofProperties::active);
-            out.begin_item("Element " + to_string(elem.get_flat_index()) + " --- Hessians:");
+            out.begin_item("Basis function hessians:");
             hessians.print_info(out);
             out.end_item();
         }

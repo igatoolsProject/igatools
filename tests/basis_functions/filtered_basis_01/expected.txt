@@ -13,17 +13,17 @@ Interior dofs:
 Number: 1
 [ 4 ]
 dirichlet dofs:
-[ 1 2 5 ]
+[ 3 6 ]
 neumman dofs:
-[ ]
+[ 7 ]
 
 Interior dofs:
 Number: 1
 [ 4 ]
 dirichlet dofs:
-[ 3 6 ]
+[ 1 2 5 ]
 neumman dofs:
-[ 7 ]
+[ ]
 
 Interior dofs:
 Number: 1
