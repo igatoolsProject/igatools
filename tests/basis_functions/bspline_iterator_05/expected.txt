@@ -14,6 +14,30 @@ Basis functions values:
       [ 0.0446582 ]  [ 0.166667 ]  [ 0.166667 ]  [ 0.622009 ]  
    
 
+Basis functions gradients:
+   ValueTable (num_functions=4,num_points=4) :
+      Function 0
+      [ [ -0.788675 ]  [ -0.788675 ]  ]  [ [ -0.788675 ]  [ -0.211325 ]  ]  [ [ -0.211325 ]  [ -0.788675 ]  ]  [ [ -0.211325 ]  [ -0.211325 ]  ]  
+      Function 1
+      [ [ 0.788675 ]  [ -0.211325 ]  ]  [ [ 0.788675 ]  [ -0.788675 ]  ]  [ [ 0.211325 ]  [ -0.211325 ]  ]  [ [ 0.211325 ]  [ -0.788675 ]  ]  
+      Function 2
+      [ [ -0.211325 ]  [ 0.788675 ]  ]  [ [ -0.211325 ]  [ 0.211325 ]  ]  [ [ -0.788675 ]  [ 0.788675 ]  ]  [ [ -0.788675 ]  [ 0.211325 ]  ]  
+      Function 3
+      [ [ 0.211325 ]  [ 0.211325 ]  ]  [ [ 0.211325 ]  [ 0.788675 ]  ]  [ [ 0.788675 ]  [ 0.211325 ]  ]  [ [ 0.788675 ]  [ 0.788675 ]  ]  
+   
+
+Basis functions hessians:
+   ValueTable (num_functions=4,num_points=4) :
+      Function 0
+      [ [ [ 0 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 0 ]  ]  ]  
+      Function 1
+      [ [ [ 0 ]  [ -1.00000 ]  ]  [ [ -1.00000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -1.00000 ]  ]  [ [ -1.00000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -1.00000 ]  ]  [ [ -1.00000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -1.00000 ]  ]  [ [ -1.00000 ]  [ 0 ]  ]  ]  
+      Function 2
+      [ [ [ 0 ]  [ -1.00000 ]  ]  [ [ -1.00000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -1.00000 ]  ]  [ [ -1.00000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -1.00000 ]  ]  [ [ -1.00000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -1.00000 ]  ]  [ [ -1.00000 ]  [ 0 ]  ]  ]  
+      Function 3
+      [ [ [ 0 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 0 ]  ]  ]  
+   
+
 Sub Element: 0
    Basis functions values:
       ValueTable (num_functions=4,num_points=2) :
@@ -25,6 +49,30 @@ Sub Element: 0
          [ 0.211325 ]  [ 0.788675 ]  
          Function 3
          [ 0 ]  [ 0 ]  
+      
+   
+   Basis functions gradients:
+      ValueTable (num_functions=4,num_points=2) :
+         Function 0
+         [ [ -0.788675 ]  [ -1.00000 ]  ]  [ [ -0.211325 ]  [ -1.00000 ]  ]  
+         Function 1
+         [ [ 0.788675 ]  [ 0 ]  ]  [ [ 0.211325 ]  [ 0 ]  ]  
+         Function 2
+         [ [ -0.211325 ]  [ 1.00000 ]  ]  [ [ -0.788675 ]  [ 1.00000 ]  ]  
+         Function 3
+         [ [ 0.211325 ]  [ 0 ]  ]  [ [ 0.788675 ]  [ 0 ]  ]  
+      
+   
+   Basis functions hessians:
+      ValueTable (num_functions=4,num_points=2) :
+         Function 0
+         [ [ [ 0 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 0 ]  ]  ]  
+         Function 1
+         [ [ [ 0 ]  [ -1.00000 ]  ]  [ [ -1.00000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -1.00000 ]  ]  [ [ -1.00000 ]  [ 0 ]  ]  ]  
+         Function 2
+         [ [ [ 0 ]  [ -1.00000 ]  ]  [ [ -1.00000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -1.00000 ]  ]  [ [ -1.00000 ]  [ 0 ]  ]  ]  
+         Function 3
+         [ [ [ 0 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 0 ]  ]  ]  
       
    
 
@@ -41,6 +89,30 @@ Sub Element: 1
          [ 0.211325 ]  [ 0.788675 ]  
       
    
+   Basis functions gradients:
+      ValueTable (num_functions=4,num_points=2) :
+         Function 0
+         [ [ -0.788675 ]  [ 0 ]  ]  [ [ -0.211325 ]  [ 0 ]  ]  
+         Function 1
+         [ [ 0.788675 ]  [ -1.00000 ]  ]  [ [ 0.211325 ]  [ -1.00000 ]  ]  
+         Function 2
+         [ [ -0.211325 ]  [ 0 ]  ]  [ [ -0.788675 ]  [ 0 ]  ]  
+         Function 3
+         [ [ 0.211325 ]  [ 1.00000 ]  ]  [ [ 0.788675 ]  [ 1.00000 ]  ]  
+      
+   
+   Basis functions hessians:
+      ValueTable (num_functions=4,num_points=2) :
+         Function 0
+         [ [ [ 0 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 0 ]  ]  ]  
+         Function 1
+         [ [ [ 0 ]  [ -1.00000 ]  ]  [ [ -1.00000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -1.00000 ]  ]  [ [ -1.00000 ]  [ 0 ]  ]  ]  
+         Function 2
+         [ [ [ 0 ]  [ -1.00000 ]  ]  [ [ -1.00000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -1.00000 ]  ]  [ [ -1.00000 ]  [ 0 ]  ]  ]  
+         Function 3
+         [ [ [ 0 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 0 ]  ]  ]  
+      
+   
 
 Sub Element: 2
    Basis functions values:
@@ -55,6 +127,30 @@ Sub Element: 2
          [ 0 ]  [ 0 ]  
       
    
+   Basis functions gradients:
+      ValueTable (num_functions=4,num_points=2) :
+         Function 0
+         [ [ -1.00000 ]  [ -0.788675 ]  ]  [ [ -1.00000 ]  [ -0.211325 ]  ]  
+         Function 1
+         [ [ 1.00000 ]  [ -0.211325 ]  ]  [ [ 1.00000 ]  [ -0.788675 ]  ]  
+         Function 2
+         [ [ 0 ]  [ 0.788675 ]  ]  [ [ 0 ]  [ 0.211325 ]  ]  
+         Function 3
+         [ [ 0 ]  [ 0.211325 ]  ]  [ [ 0 ]  [ 0.788675 ]  ]  
+      
+   
+   Basis functions hessians:
+      ValueTable (num_functions=4,num_points=2) :
+         Function 0
+         [ [ [ 0 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 0 ]  ]  ]  
+         Function 1
+         [ [ [ 0 ]  [ -1.00000 ]  ]  [ [ -1.00000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -1.00000 ]  ]  [ [ -1.00000 ]  [ 0 ]  ]  ]  
+         Function 2
+         [ [ [ 0 ]  [ -1.00000 ]  ]  [ [ -1.00000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -1.00000 ]  ]  [ [ -1.00000 ]  [ 0 ]  ]  ]  
+         Function 3
+         [ [ [ 0 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 0 ]  ]  ]  
+      
+   
 
 Sub Element: 3
    Basis functions values:
@@ -67,6 +163,30 @@ Sub Element: 3
          [ 0.788675 ]  [ 0.211325 ]  
          Function 3
          [ 0.211325 ]  [ 0.788675 ]  
+      
+   
+   Basis functions gradients:
+      ValueTable (num_functions=4,num_points=2) :
+         Function 0
+         [ [ 0 ]  [ -0.788675 ]  ]  [ [ 0 ]  [ -0.211325 ]  ]  
+         Function 1
+         [ [ 0 ]  [ -0.211325 ]  ]  [ [ 0 ]  [ -0.788675 ]  ]  
+         Function 2
+         [ [ -1.00000 ]  [ 0.788675 ]  ]  [ [ -1.00000 ]  [ 0.211325 ]  ]  
+         Function 3
+         [ [ 1.00000 ]  [ 0.211325 ]  ]  [ [ 1.00000 ]  [ 0.788675 ]  ]  
+      
+   
+   Basis functions hessians:
+      ValueTable (num_functions=4,num_points=2) :
+         Function 0
+         [ [ [ 0 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 0 ]  ]  ]  
+         Function 1
+         [ [ [ 0 ]  [ -1.00000 ]  ]  [ [ -1.00000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -1.00000 ]  ]  [ [ -1.00000 ]  [ 0 ]  ]  ]  
+         Function 2
+         [ [ [ 0 ]  [ -1.00000 ]  ]  [ [ -1.00000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -1.00000 ]  ]  [ [ -1.00000 ]  [ 0 ]  ]  ]  
+         Function 3
+         [ [ [ 0 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 1.00000 ]  ]  [ [ 1.00000 ]  [ 0 ]  ]  ]  
       
    
 
@@ -84,6 +204,22 @@ Basis functions values:
       [ 0.211325 ]  [ 0.788675 ]  
    
 
+Basis functions gradients:
+   ValueTable (num_functions=2,num_points=2) :
+      Function 0
+      [ [ -1.00000 ]  ]  [ [ -1.00000 ]  ]  
+      Function 1
+      [ [ 1.00000 ]  ]  [ [ 1.00000 ]  ]  
+   
+
+Basis functions hessians:
+   ValueTable (num_functions=2,num_points=2) :
+      Function 0
+      [ [ [ 0 ]  ]  ]  [ [ [ 0 ]  ]  ]  
+      Function 1
+      [ [ [ 0 ]  ]  ]  [ [ [ 0 ]  ]  ]  
+   
+
 Sub Element: 0
    Basis functions values:
       ValueTable (num_functions=2,num_points=1) :
@@ -91,6 +227,22 @@ Sub Element: 0
          [ 1.00000 ]  
          Function 1
          [ 0 ]  
+      
+   
+   Basis functions gradients:
+      ValueTable (num_functions=2,num_points=1) :
+         Function 0
+         [ [ -1.00000 ]  ]  
+         Function 1
+         [ [ 1.00000 ]  ]  
+      
+   
+   Basis functions hessians:
+      ValueTable (num_functions=2,num_points=1) :
+         Function 0
+         [ [ [ 0 ]  ]  ]  
+         Function 1
+         [ [ [ 0 ]  ]  ]  
       
    
 
@@ -101,6 +253,22 @@ Sub Element: 1
          [ 0 ]  
          Function 1
          [ 1.00000 ]  
+      
+   
+   Basis functions gradients:
+      ValueTable (num_functions=2,num_points=1) :
+         Function 0
+         [ [ -1.00000 ]  ]  
+         Function 1
+         [ [ 1.00000 ]  ]  
+      
+   
+   Basis functions hessians:
+      ValueTable (num_functions=2,num_points=1) :
+         Function 0
+         [ [ [ 0 ]  ]  ]  
+         Function 1
+         [ [ [ 0 ]  ]  ]  
       
    
 
