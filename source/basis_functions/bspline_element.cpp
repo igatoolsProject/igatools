@@ -319,6 +319,36 @@ clone() const
     return elem;
 }
 
+
+template <int dim, int range, int rank>
+void
+BSplineElement<dim, range, rank>::
+print_cache_info(LogStream &out) const
+{
+    using std::to_string;
+    out.begin_item("BSplineElement<" +
+                   to_string(dim) + "," +
+                   to_string(range) + "," +
+                   to_string(range) + "> cache:");
+
+    out.begin_item("Splines 1D table:");
+    for (int sdim = 0 ; sdim <= dim ; ++sdim)
+    {
+        out.begin_item("Sub-element dimension: " + to_string(sdim));
+        all_splines_1D_table_[sdim].print_info(out);
+        out.end_item();
+    }
+    out.end_item();
+
+    out.begin_item("SpaceElement's cache:");
+    SpaceElement<dim,0,range,rank,Transformation::h_grad>::print_cache_info(out);
+    out.end_item();
+
+
+    out.end_item();
+}
+
+
 #ifdef SERIALIZATION
 template <int dim, int range, int rank>
 template<class Archive>

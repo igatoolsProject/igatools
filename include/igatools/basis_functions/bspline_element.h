@@ -166,6 +166,8 @@ public:
     clone() const override final;
 
 
+    virtual void print_cache_info(LogStream &out) const;
+
 private:
 
 #ifdef SERIALIZATION

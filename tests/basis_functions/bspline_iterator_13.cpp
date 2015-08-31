@@ -33,27 +33,27 @@
 #include <igatools/basis_functions/bspline_element_handler.h>
 
 template <int dim, int range=1, int rank=1>
-void space_cache_fill_elem(const ValueFlags flag,
+void space_cache_fill_elem(const space_element::Flags flag,
                            const int n_knots = 5, const int deg=1)
 {
     OUTSTART
 
     using Space = BSplineSpace<dim, range, rank>;
     auto grid  = CartesianGrid<dim>::create(n_knots);
-    auto space = Space::create(deg, grid);
+    auto space = Space::create_nonconst(deg, grid);
 
-    auto quad = QGauss<dim>(2);
+    auto quad = QGauss<dim>::create(2);
 
-    using ElemHandler = typename Space::ElementHandler ;
-    auto value_handler = ElemHandler::create(space);
-    value_handler->reset(flag, quad);
     auto elem = space->begin();
     auto end = space->end();
 
-    value_handler->init_element_cache(elem);
+    auto elem_handler = space->get_elem_handler();
+
+    elem_handler->template set_flags<dim>(flag);
+    elem_handler->init_element_cache(elem,quad);
     for (; elem != end; ++elem)
     {
-        value_handler->fill_element_cache(elem);
+        elem_handler->fill_element_cache(elem);
         elem->print_info(out);
         elem->print_cache_info(out);
     }
@@ -65,9 +65,9 @@ int main()
 {
     out.depth_console(10);
 
-    space_cache_fill_elem<1>(ValueFlags::value, 2);
-    space_cache_fill_elem<1>(ValueFlags::gradient, 2);
-    space_cache_fill_elem<1>(ValueFlags::hessian, 2);
+    space_cache_fill_elem<1>(space_element::Flags::value, 2);
+    space_cache_fill_elem<1>(space_element::Flags::gradient, 2);
+    space_cache_fill_elem<1>(space_element::Flags::hessian, 2);
     //  space_cache_fill_elem<2>();
 
     return  0;

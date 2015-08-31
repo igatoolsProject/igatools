@@ -298,7 +298,7 @@ public:
 
     virtual void print_info(LogStream &out) const;
 
-    void print_cache_info(LogStream &out) const;
+    virtual void print_cache_info(LogStream &out) const;
 
 
     /**

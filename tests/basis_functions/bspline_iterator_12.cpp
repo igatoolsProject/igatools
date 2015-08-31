@@ -34,24 +34,25 @@
 
 template <int dim, int range=1, int rank=1>
 void space_cache_init_fill_elem(
-    const ValueFlags flag,
+    const space_element::Flags flag,
     const int n_knots = 5, const int deg=1)
 {
     OUTSTART
 
     using Space = BSplineSpace<dim, range, rank>;
     auto grid  = CartesianGrid<dim>::create(n_knots);
-    auto space = Space::create(deg, grid);
+    auto space = Space::create_nonconst(deg, grid);
 
-    auto quad = QGauss<dim>(2);
+    auto quad = QGauss<dim>::create(2);
 
-    using ElemHandler = typename Space::ElementHandler;
-    auto value_handler = ElemHandler::create(space);
-    value_handler->reset(flag, quad);
     auto elem = space->begin();
 
-    value_handler->init_element_cache(elem);
-    value_handler->fill_element_cache(elem);
+    auto elem_handler = space->get_elem_handler();
+
+    elem_handler->template set_flags<dim>(flag);
+    elem_handler->init_element_cache(elem,quad);
+    elem_handler->fill_element_cache(elem);
+
     elem->print_cache_info(out);
 
     OUTEND
@@ -62,13 +63,13 @@ void space_cache_init_fill_elem(
 int main()
 {
     out.depth_console(10);
-    space_cache_init_fill_elem<1>(ValueFlags::value, 2);
-    space_cache_init_fill_elem<1>(ValueFlags::gradient, 3);
-    space_cache_init_fill_elem<1>(ValueFlags::hessian, 3);
+    space_cache_init_fill_elem<1>(space_element::Flags::value, 2);
+    space_cache_init_fill_elem<1>(space_element::Flags::gradient, 3);
+    space_cache_init_fill_elem<1>(space_element::Flags::hessian, 3);
 
-    space_cache_init_fill_elem<2>(ValueFlags::value);
-    space_cache_init_fill_elem<2>(ValueFlags::gradient);
-    space_cache_init_fill_elem<2>(ValueFlags::hessian);
+    space_cache_init_fill_elem<2>(space_element::Flags::value);
+    space_cache_init_fill_elem<2>(space_element::Flags::gradient);
+    space_cache_init_fill_elem<2>(space_element::Flags::hessian);
 
     return  0;
 }

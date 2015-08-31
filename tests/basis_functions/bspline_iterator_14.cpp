@@ -31,10 +31,12 @@
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/basis_functions/bspline_element_handler.h>
 
-const SafeSTLArray<ValueFlags, 3> der_flag = {ValueFlags::value,
-                                              ValueFlags::gradient,
-                                              ValueFlags::hessian
-                                             };
+const SafeSTLArray<space_element::Flags, 3> der_flag =
+{
+    space_element::Flags::value,
+    space_element::Flags::gradient,
+    space_element::Flags::hessian
+};
 
 template <int der, int dim, int range=1, int rank=1>
 void elem_derivatives(const int n_knots = 5, const int deg=1)
@@ -43,23 +45,51 @@ void elem_derivatives(const int n_knots = 5, const int deg=1)
 
     using Space = BSplineSpace<dim, range, rank>;
     auto grid  = CartesianGrid<dim>::create(n_knots);
-    auto space = Space::create(deg, grid);
+    auto space = Space::create_nonconst(deg, grid);
 
     auto flag = der_flag[der];
-    auto quad = QGauss<dim>(2);
 
-    using ElemHandler = typename Space::ElementHandler ;
-    auto value_handler = ElemHandler::create(space);
-    value_handler->reset(flag, quad);
+    auto quad = QGauss<dim>::create(2);
 
     auto elem = space->begin();
     auto end = space->end();
 
-    value_handler->init_element_cache(elem);
+    auto elem_handler = space->get_elem_handler();
+
+    elem_handler->template set_flags<dim>(flag);
+    elem_handler->init_element_cache(elem,quad);
+
+    using Elem = BSplineElement<dim,range,rank>;
+    using _Value = typename Elem::_Value;
+    using _Gradient = typename Elem::_Gradient;
+    using _Hessian = typename Elem::_Hessian;
+
     for (; elem != end; ++elem)
     {
-        value_handler->fill_element_cache(elem);
-        elem->template get_basis<ValueType<der>, dim>(0,DofProperties::active).print_info(out);
+        elem_handler->fill_element_cache(elem);
+
+        out << "Element ID : " << elem->get_index() << std::endl;
+
+        if (der == 0)
+        {
+            out.begin_item("Basis function values:");
+            elem->template get_basis<_Value, dim>(0,DofProperties::active).print_info(out);
+            out.end_item();
+        }
+        else if (der == 1)
+        {
+            out.begin_item("Basis function gradients:");
+            elem->template get_basis<_Gradient, dim>(0,DofProperties::active).print_info(out);
+            out.end_item();
+        }
+        else if (der == 2)
+        {
+            out.begin_item("Basis function hessians:");
+            elem->template get_basis<_Hessian, dim>(0,DofProperties::active).print_info(out);
+            out.end_item();
+        }
+        else
+            AssertThrow(false,ExcMessage("Invalid derivative order."));
     }
 
     OUTEND

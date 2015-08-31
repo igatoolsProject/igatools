@@ -1,126 +1,161 @@
 ========================================================================
 space_cache_init_fill_elem
 ========================================================================
-SpaceElementBase<1> cache:
-   CartesianGridElement<1> cache:
-      Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
-         Cache for sub-element(s) with dimension: 1  (memory consumption : 84 bytes.
-            Sub-element id: 0
-               Memory consumption: 84 bytes
+BSplineElement<1,1,1> cache:
+   Splines 1D table:
+      Sub-element dimension: 0
+      
+      Sub-element dimension: 1
+         Entry id: 0
+            Raw components: 
+               Size: [ 1 ]  Weights: [1]
+               Entry id: 0
+                  Entry id: 0
+                     Entry id: 0
+                     [2,2]((0.788675,0.211325),(0.211325,0.788675))
+                     Entry id: 1
+                     [2,2]((-1.00000,-1.00000),(1.00000,1.00000))
+                     Entry id: 2
+                     [2,2]((0,0),(0,0))
+                  
                
-               Point: (memory consumption: 42 bytes)
+            
+            Components map: 
+            [ 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ ]
+         
+      
+   
+   SpaceElement's cache:
+      SpaceElementBase<1> cache:
+         GridElement<1> cache:
+            Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
+               Cache for sub-element(s) with dimension: 1  (memory consumption : 84 bytes.
+                  Sub-element id: 0
+                     Memory consumption: 84 bytes
+                     
+                     Element Quadrature Points: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 1    filled = 1
+                        Data:
+                           ValueVector (num_points=2) :
+                           [ [ 0.211325 ]  [ 0.788675 ]  ]
+                        
+                     
+                     Element Quadrature Weights: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 1    filled = 1
+                        Data:
+                           ValueVector (num_points=2) :
+                           [ 0.500000 0.500000 ]
+                        
+                     
+                  
+               
+               Cache for sub-element(s) with dimension: 0  (memory consumption : 168 bytes.
+                  Sub-element id: 0
+                     Memory consumption: 84 bytes
+                     
+                     Element Quadrature Points: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                     Element Quadrature Weights: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                  
+                  Sub-element id: 1
+                     Memory consumption: 84 bytes
+                     
+                     Element Quadrature Points: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                     Element Quadrature Weights: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                  
+               
+            
+         
+      
+      Cache for all sub-elements in all dimensions: (memory consumption: 504 bytes)
+         Cache for sub-element(s) with dimension: 1  (memory consumption : 168 bytes.
+            Sub-element id: 0
+               Memory consumption: 168 bytes
+               
+               Basis function values: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 1    filled = 1
                   Data:
-                     ValueVector (num_points=2) :
-                     [ [ 0.211325 ]  [ 0.788675 ]  ]
+                     ValueTable (num_functions=2,num_points=2) :
+                        Function 0
+                        [ 0.788675 ]  [ 0.211325 ]  
+                        Function 1
+                        [ 0.211325 ]  [ 0.788675 ]  
+                     
                   
                
-               W_Measure: (memory consumption: 42 bytes)
+               Basis function gradients: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function hessians: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function divergences: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
             
          
-         Cache for sub-element(s) with dimension: 0  (memory consumption : 168 bytes.
+         Cache for sub-element(s) with dimension: 0  (memory consumption : 336 bytes.
             Sub-element id: 0
-               Memory consumption: 84 bytes
+               Memory consumption: 168 bytes
                
-               Point: (memory consumption: 42 bytes)
+               Basis function values: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
-               W_Measure: (memory consumption: 42 bytes)
+               Basis function gradients: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function hessians: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function divergences: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
             
             Sub-element id: 1
-               Memory consumption: 84 bytes
+               Memory consumption: 168 bytes
                
-               Point: (memory consumption: 42 bytes)
+               Basis function values: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
-               W_Measure: (memory consumption: 42 bytes)
+               Basis function gradients: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function hessians: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function divergences: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
             
-         
-      
-   
-
-Cache for all sub-elements in all dimensions: (memory consumption: 504 bytes)
-   Cache for sub-element(s) with dimension: 1  (memory consumption : 168 bytes.
-      Sub-element id: 0
-         Memory consumption: 168 bytes
-         
-         Value: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 1    filled = 1
-            Data:
-               ValueTable (num_functions=2,num_points=2) :
-                  Function 0
-                  [ 0.788675 ]  [ 0.211325 ]  
-                  Function 1
-                  [ 0.211325 ]  [ 0.788675 ]  
-               
-            
-         
-         Gradient: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Hessian: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Divergence: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-      
-   
-   Cache for sub-element(s) with dimension: 0  (memory consumption : 336 bytes.
-      Sub-element id: 0
-         Memory consumption: 168 bytes
-         
-         Value: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Gradient: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Hessian: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Divergence: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-      
-      Sub-element id: 1
-         Memory consumption: 168 bytes
-         
-         Value: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Gradient: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Hessian: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Divergence: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
          
       
    
@@ -130,444 +165,161 @@ Cache for all sub-elements in all dimensions: (memory consumption: 504 bytes)
 ========================================================================
 space_cache_init_fill_elem
 ========================================================================
-SpaceElementBase<1> cache:
-   CartesianGridElement<1> cache:
-      Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
-         Cache for sub-element(s) with dimension: 1  (memory consumption : 84 bytes.
+BSplineElement<1,1,1> cache:
+   Splines 1D table:
+      Sub-element dimension: 0
+      
+      Sub-element dimension: 1
+         Entry id: 0
+            Raw components: 
+               Size: [ 1 ]  Weights: [1]
+               Entry id: 0
+                  Entry id: 0
+                     Entry id: 0
+                     [2,2]((0.788675,0.211325),(0.211325,0.788675))
+                     Entry id: 1
+                     [2,2]((-2.00000,-2.00000),(2.00000,2.00000))
+                     Entry id: 2
+                     [2,2]((0,0),(0,0))
+                  
+               
+            
+            Components map: 
+            [ 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ ]
+         
+      
+   
+   SpaceElement's cache:
+      SpaceElementBase<1> cache:
+         GridElement<1> cache:
+            Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
+               Cache for sub-element(s) with dimension: 1  (memory consumption : 84 bytes.
+                  Sub-element id: 0
+                     Memory consumption: 84 bytes
+                     
+                     Element Quadrature Points: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 1    filled = 1
+                        Data:
+                           ValueVector (num_points=2) :
+                           [ [ 0.105662 ]  [ 0.394338 ]  ]
+                        
+                     
+                     Element Quadrature Weights: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 1    filled = 1
+                        Data:
+                           ValueVector (num_points=2) :
+                           [ 0.250000 0.250000 ]
+                        
+                     
+                  
+               
+               Cache for sub-element(s) with dimension: 0  (memory consumption : 168 bytes.
+                  Sub-element id: 0
+                     Memory consumption: 84 bytes
+                     
+                     Element Quadrature Points: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                     Element Quadrature Weights: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                  
+                  Sub-element id: 1
+                     Memory consumption: 84 bytes
+                     
+                     Element Quadrature Points: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                     Element Quadrature Weights: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                  
+               
+            
+         
+      
+      Cache for all sub-elements in all dimensions: (memory consumption: 504 bytes)
+         Cache for sub-element(s) with dimension: 1  (memory consumption : 168 bytes.
             Sub-element id: 0
-               Memory consumption: 84 bytes
+               Memory consumption: 168 bytes
                
-               Point: (memory consumption: 42 bytes)
+               Basis function values: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
-               W_Measure: (memory consumption: 42 bytes)
-                  Fill flags:
-                     fill = 0    filled = 0
-               
-            
-         
-         Cache for sub-element(s) with dimension: 0  (memory consumption : 168 bytes.
-            Sub-element id: 0
-               Memory consumption: 84 bytes
-               
-               Point: (memory consumption: 42 bytes)
-                  Fill flags:
-                     fill = 0    filled = 0
-               
-               W_Measure: (memory consumption: 42 bytes)
-                  Fill flags:
-                     fill = 0    filled = 0
-               
-            
-            Sub-element id: 1
-               Memory consumption: 84 bytes
-               
-               Point: (memory consumption: 42 bytes)
-                  Fill flags:
-                     fill = 0    filled = 0
-               
-               W_Measure: (memory consumption: 42 bytes)
-                  Fill flags:
-                     fill = 0    filled = 0
-               
-            
-         
-      
-   
-
-Cache for all sub-elements in all dimensions: (memory consumption: 504 bytes)
-   Cache for sub-element(s) with dimension: 1  (memory consumption : 168 bytes.
-      Sub-element id: 0
-         Memory consumption: 168 bytes
-         
-         Value: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Gradient: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 1    filled = 1
-            Data:
-               ValueTable (num_functions=2,num_points=2) :
-                  Function 0
-                  [ [ -2.00000 ]  ]  [ [ -2.00000 ]  ]  
-                  Function 1
-                  [ [ 2.00000 ]  ]  [ [ 2.00000 ]  ]  
-               
-            
-         
-         Hessian: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Divergence: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-      
-   
-   Cache for sub-element(s) with dimension: 0  (memory consumption : 336 bytes.
-      Sub-element id: 0
-         Memory consumption: 168 bytes
-         
-         Value: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Gradient: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Hessian: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Divergence: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-      
-      Sub-element id: 1
-         Memory consumption: 168 bytes
-         
-         Value: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Gradient: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Hessian: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Divergence: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-      
-   
-
-========================================================================
-
-========================================================================
-space_cache_init_fill_elem
-========================================================================
-SpaceElementBase<1> cache:
-   CartesianGridElement<1> cache:
-      Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
-         Cache for sub-element(s) with dimension: 1  (memory consumption : 84 bytes.
-            Sub-element id: 0
-               Memory consumption: 84 bytes
-               
-               Point: (memory consumption: 42 bytes)
-                  Fill flags:
-                     fill = 0    filled = 0
-               
-               W_Measure: (memory consumption: 42 bytes)
-                  Fill flags:
-                     fill = 0    filled = 0
-               
-            
-         
-         Cache for sub-element(s) with dimension: 0  (memory consumption : 168 bytes.
-            Sub-element id: 0
-               Memory consumption: 84 bytes
-               
-               Point: (memory consumption: 42 bytes)
-                  Fill flags:
-                     fill = 0    filled = 0
-               
-               W_Measure: (memory consumption: 42 bytes)
-                  Fill flags:
-                     fill = 0    filled = 0
-               
-            
-            Sub-element id: 1
-               Memory consumption: 84 bytes
-               
-               Point: (memory consumption: 42 bytes)
-                  Fill flags:
-                     fill = 0    filled = 0
-               
-               W_Measure: (memory consumption: 42 bytes)
-                  Fill flags:
-                     fill = 0    filled = 0
-               
-            
-         
-      
-   
-
-Cache for all sub-elements in all dimensions: (memory consumption: 504 bytes)
-   Cache for sub-element(s) with dimension: 1  (memory consumption : 168 bytes.
-      Sub-element id: 0
-         Memory consumption: 168 bytes
-         
-         Value: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Gradient: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Hessian: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 1    filled = 1
-            Data:
-               ValueTable (num_functions=2,num_points=2) :
-                  Function 0
-                  [ [ [ 0 ]  ]  ]  [ [ [ 0 ]  ]  ]  
-                  Function 1
-                  [ [ [ 0 ]  ]  ]  [ [ [ 0 ]  ]  ]  
-               
-            
-         
-         Divergence: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-      
-   
-   Cache for sub-element(s) with dimension: 0  (memory consumption : 336 bytes.
-      Sub-element id: 0
-         Memory consumption: 168 bytes
-         
-         Value: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Gradient: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Hessian: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Divergence: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-      
-      Sub-element id: 1
-         Memory consumption: 168 bytes
-         
-         Value: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Gradient: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Hessian: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Divergence: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-      
-   
-
-========================================================================
-
-========================================================================
-space_cache_init_fill_elem
-========================================================================
-SpaceElementBase<2> cache:
-   CartesianGridElement<2> cache:
-      Cache for all sub-elements in all dimensions: (memory consumption: 420 bytes)
-         Cache for sub-element(s) with dimension: 2  (memory consumption : 84 bytes.
-            Sub-element id: 0
-               Memory consumption: 84 bytes
-               
-               Point: (memory consumption: 42 bytes)
+               Basis function gradients: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 1    filled = 1
                   Data:
-                     ValueVector (num_points=4) :
-                     [ [ 0.0528312 0.0528312 ]  [ 0.197169 0.0528312 ]  [ 0.0528312 0.197169 ]  [ 0.197169 0.197169 ]  ]
+                     ValueTable (num_functions=2,num_points=2) :
+                        Function 0
+                        [ [ -2.00000 ]  ]  [ [ -2.00000 ]  ]  
+                        Function 1
+                        [ [ 2.00000 ]  ]  [ [ 2.00000 ]  ]  
+                     
                   
                
-               W_Measure: (memory consumption: 42 bytes)
+               Basis function hessians: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function divergences: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
             
          
-         Cache for sub-element(s) with dimension: 1  (memory consumption : 336 bytes.
+         Cache for sub-element(s) with dimension: 0  (memory consumption : 336 bytes.
             Sub-element id: 0
-               Memory consumption: 84 bytes
+               Memory consumption: 168 bytes
                
-               Point: (memory consumption: 42 bytes)
+               Basis function values: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
-               W_Measure: (memory consumption: 42 bytes)
+               Basis function gradients: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function hessians: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function divergences: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
             
             Sub-element id: 1
-               Memory consumption: 84 bytes
+               Memory consumption: 168 bytes
                
-               Point: (memory consumption: 42 bytes)
+               Basis function values: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
-               W_Measure: (memory consumption: 42 bytes)
+               Basis function gradients: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
-            
-            Sub-element id: 2
-               Memory consumption: 84 bytes
-               
-               Point: (memory consumption: 42 bytes)
+               Basis function hessians: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
-               W_Measure: (memory consumption: 42 bytes)
+               Basis function divergences: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
             
-            Sub-element id: 3
-               Memory consumption: 84 bytes
-               
-               Point: (memory consumption: 42 bytes)
-                  Fill flags:
-                     fill = 0    filled = 0
-               
-               W_Measure: (memory consumption: 42 bytes)
-                  Fill flags:
-                     fill = 0    filled = 0
-               
-            
-         
-      
-   
-
-Cache for all sub-elements in all dimensions: (memory consumption: 840 bytes)
-   Cache for sub-element(s) with dimension: 2  (memory consumption : 168 bytes.
-      Sub-element id: 0
-         Memory consumption: 168 bytes
-         
-         Value: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 1    filled = 1
-            Data:
-               ValueTable (num_functions=4,num_points=4) :
-                  Function 0
-                  [ 0.622009 ]  [ 0.166667 ]  [ 0.166667 ]  [ 0.0446582 ]  
-                  Function 1
-                  [ 0.166667 ]  [ 0.622009 ]  [ 0.0446582 ]  [ 0.166667 ]  
-                  Function 2
-                  [ 0.166667 ]  [ 0.0446582 ]  [ 0.622009 ]  [ 0.166667 ]  
-                  Function 3
-                  [ 0.0446582 ]  [ 0.166667 ]  [ 0.166667 ]  [ 0.622009 ]  
-               
-            
-         
-         Gradient: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Hessian: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Divergence: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-      
-   
-   Cache for sub-element(s) with dimension: 1  (memory consumption : 672 bytes.
-      Sub-element id: 0
-         Memory consumption: 168 bytes
-         
-         Value: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Gradient: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Hessian: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Divergence: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-      
-      Sub-element id: 1
-         Memory consumption: 168 bytes
-         
-         Value: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Gradient: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Hessian: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Divergence: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-      
-      Sub-element id: 2
-         Memory consumption: 168 bytes
-         
-         Value: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Gradient: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Hessian: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Divergence: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-      
-      Sub-element id: 3
-         Memory consumption: 168 bytes
-         
-         Value: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Gradient: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Hessian: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Divergence: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
          
       
    
@@ -577,190 +329,161 @@ Cache for all sub-elements in all dimensions: (memory consumption: 840 bytes)
 ========================================================================
 space_cache_init_fill_elem
 ========================================================================
-SpaceElementBase<2> cache:
-   CartesianGridElement<2> cache:
-      Cache for all sub-elements in all dimensions: (memory consumption: 420 bytes)
-         Cache for sub-element(s) with dimension: 2  (memory consumption : 84 bytes.
-            Sub-element id: 0
-               Memory consumption: 84 bytes
+BSplineElement<1,1,1> cache:
+   Splines 1D table:
+      Sub-element dimension: 0
+      
+      Sub-element dimension: 1
+         Entry id: 0
+            Raw components: 
+               Size: [ 1 ]  Weights: [1]
+               Entry id: 0
+                  Entry id: 0
+                     Entry id: 0
+                     [2,2]((0.788675,0.211325),(0.211325,0.788675))
+                     Entry id: 1
+                     [2,2]((-2.00000,-2.00000),(2.00000,2.00000))
+                     Entry id: 2
+                     [2,2]((0,0),(0,0))
+                  
                
-               Point: (memory consumption: 42 bytes)
+            
+            Components map: 
+            [ 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ ]
+         
+      
+   
+   SpaceElement's cache:
+      SpaceElementBase<1> cache:
+         GridElement<1> cache:
+            Cache for all sub-elements in all dimensions: (memory consumption: 252 bytes)
+               Cache for sub-element(s) with dimension: 1  (memory consumption : 84 bytes.
+                  Sub-element id: 0
+                     Memory consumption: 84 bytes
+                     
+                     Element Quadrature Points: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 1    filled = 1
+                        Data:
+                           ValueVector (num_points=2) :
+                           [ [ 0.105662 ]  [ 0.394338 ]  ]
+                        
+                     
+                     Element Quadrature Weights: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 1    filled = 1
+                        Data:
+                           ValueVector (num_points=2) :
+                           [ 0.250000 0.250000 ]
+                        
+                     
+                  
+               
+               Cache for sub-element(s) with dimension: 0  (memory consumption : 168 bytes.
+                  Sub-element id: 0
+                     Memory consumption: 84 bytes
+                     
+                     Element Quadrature Points: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                     Element Quadrature Weights: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                  
+                  Sub-element id: 1
+                     Memory consumption: 84 bytes
+                     
+                     Element Quadrature Points: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                     Element Quadrature Weights: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                  
+               
+            
+         
+      
+      Cache for all sub-elements in all dimensions: (memory consumption: 504 bytes)
+         Cache for sub-element(s) with dimension: 1  (memory consumption : 168 bytes.
+            Sub-element id: 0
+               Memory consumption: 168 bytes
+               
+               Basis function values: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
-               W_Measure: (memory consumption: 42 bytes)
+               Basis function gradients: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function hessians: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 1    filled = 1
+                  Data:
+                     ValueTable (num_functions=2,num_points=2) :
+                        Function 0
+                        [ [ [ 0 ]  ]  ]  [ [ [ 0 ]  ]  ]  
+                        Function 1
+                        [ [ [ 0 ]  ]  ]  [ [ [ 0 ]  ]  ]  
+                     
+                  
+               
+               Basis function divergences: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
             
          
-         Cache for sub-element(s) with dimension: 1  (memory consumption : 336 bytes.
+         Cache for sub-element(s) with dimension: 0  (memory consumption : 336 bytes.
             Sub-element id: 0
-               Memory consumption: 84 bytes
+               Memory consumption: 168 bytes
                
-               Point: (memory consumption: 42 bytes)
+               Basis function values: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
-               W_Measure: (memory consumption: 42 bytes)
+               Basis function gradients: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function hessians: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function divergences: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
             
             Sub-element id: 1
-               Memory consumption: 84 bytes
+               Memory consumption: 168 bytes
                
-               Point: (memory consumption: 42 bytes)
+               Basis function values: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
-               W_Measure: (memory consumption: 42 bytes)
+               Basis function gradients: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
-            
-            Sub-element id: 2
-               Memory consumption: 84 bytes
-               
-               Point: (memory consumption: 42 bytes)
+               Basis function hessians: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
-               W_Measure: (memory consumption: 42 bytes)
+               Basis function divergences: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
             
-            Sub-element id: 3
-               Memory consumption: 84 bytes
-               
-               Point: (memory consumption: 42 bytes)
-                  Fill flags:
-                     fill = 0    filled = 0
-               
-               W_Measure: (memory consumption: 42 bytes)
-                  Fill flags:
-                     fill = 0    filled = 0
-               
-            
-         
-      
-   
-
-Cache for all sub-elements in all dimensions: (memory consumption: 840 bytes)
-   Cache for sub-element(s) with dimension: 2  (memory consumption : 168 bytes.
-      Sub-element id: 0
-         Memory consumption: 168 bytes
-         
-         Value: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Gradient: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 1    filled = 1
-            Data:
-               ValueTable (num_functions=4,num_points=4) :
-                  Function 0
-                  [ [ -3.15470 ]  [ -3.15470 ]  ]  [ [ -3.15470 ]  [ -0.845300 ]  ]  [ [ -0.845300 ]  [ -3.15470 ]  ]  [ [ -0.845300 ]  [ -0.845300 ]  ]  
-                  Function 1
-                  [ [ 3.15470 ]  [ -0.845300 ]  ]  [ [ 3.15470 ]  [ -3.15470 ]  ]  [ [ 0.845300 ]  [ -0.845300 ]  ]  [ [ 0.845300 ]  [ -3.15470 ]  ]  
-                  Function 2
-                  [ [ -0.845300 ]  [ 3.15470 ]  ]  [ [ -0.845300 ]  [ 0.845300 ]  ]  [ [ -3.15470 ]  [ 3.15470 ]  ]  [ [ -3.15470 ]  [ 0.845300 ]  ]  
-                  Function 3
-                  [ [ 0.845300 ]  [ 0.845300 ]  ]  [ [ 0.845300 ]  [ 3.15470 ]  ]  [ [ 3.15470 ]  [ 0.845300 ]  ]  [ [ 3.15470 ]  [ 3.15470 ]  ]  
-               
-            
-         
-         Hessian: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Divergence: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-      
-   
-   Cache for sub-element(s) with dimension: 1  (memory consumption : 672 bytes.
-      Sub-element id: 0
-         Memory consumption: 168 bytes
-         
-         Value: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Gradient: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Hessian: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Divergence: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-      
-      Sub-element id: 1
-         Memory consumption: 168 bytes
-         
-         Value: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Gradient: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Hessian: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Divergence: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-      
-      Sub-element id: 2
-         Memory consumption: 168 bytes
-         
-         Value: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Gradient: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Hessian: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Divergence: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-      
-      Sub-element id: 3
-         Memory consumption: 168 bytes
-         
-         Value: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Gradient: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Hessian: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Divergence: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
          
       
    
@@ -770,68 +493,235 @@ Cache for all sub-elements in all dimensions: (memory consumption: 840 bytes)
 ========================================================================
 space_cache_init_fill_elem
 ========================================================================
-SpaceElementBase<2> cache:
-   CartesianGridElement<2> cache:
-      Cache for all sub-elements in all dimensions: (memory consumption: 420 bytes)
-         Cache for sub-element(s) with dimension: 2  (memory consumption : 84 bytes.
-            Sub-element id: 0
-               Memory consumption: 84 bytes
+BSplineElement<2,1,1> cache:
+   Splines 1D table:
+      Sub-element dimension: 0
+      
+      Sub-element dimension: 1
+      
+      Sub-element dimension: 2
+         Entry id: 0
+            Raw components: 
+               Size: [ 1 ]  Weights: [1]
+               Entry id: 0
+                  Entry id: 0
+                     Entry id: 0
+                     [2,2]((0.788675,0.211325),(0.211325,0.788675))
+                     Entry id: 1
+                     [2,2]((-4.00000,-4.00000),(4.00000,4.00000))
+                     Entry id: 2
+                     [2,2]((0,0),(0,0))
+                  
+                  Entry id: 1
+                     Entry id: 0
+                     [2,2]((0.788675,0.211325),(0.211325,0.788675))
+                     Entry id: 1
+                     [2,2]((-4.00000,-4.00000),(4.00000,4.00000))
+                     Entry id: 2
+                     [2,2]((0,0),(0,0))
+                  
                
-               Point: (memory consumption: 42 bytes)
+            
+            Components map: 
+            [ 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ ]
+         
+      
+   
+   SpaceElement's cache:
+      SpaceElementBase<2> cache:
+         GridElement<2> cache:
+            Cache for all sub-elements in all dimensions: (memory consumption: 420 bytes)
+               Cache for sub-element(s) with dimension: 2  (memory consumption : 84 bytes.
+                  Sub-element id: 0
+                     Memory consumption: 84 bytes
+                     
+                     Element Quadrature Points: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 1    filled = 1
+                        Data:
+                           ValueVector (num_points=4) :
+                           [ [ 0.0528312 0.0528312 ]  [ 0.197169 0.0528312 ]  [ 0.0528312 0.197169 ]  [ 0.197169 0.197169 ]  ]
+                        
+                     
+                     Element Quadrature Weights: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 1    filled = 1
+                        Data:
+                           ValueVector (num_points=4) :
+                           [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+                        
+                     
+                  
+               
+               Cache for sub-element(s) with dimension: 1  (memory consumption : 336 bytes.
+                  Sub-element id: 0
+                     Memory consumption: 84 bytes
+                     
+                     Element Quadrature Points: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                     Element Quadrature Weights: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                  
+                  Sub-element id: 1
+                     Memory consumption: 84 bytes
+                     
+                     Element Quadrature Points: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                     Element Quadrature Weights: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                  
+                  Sub-element id: 2
+                     Memory consumption: 84 bytes
+                     
+                     Element Quadrature Points: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                     Element Quadrature Weights: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                  
+                  Sub-element id: 3
+                     Memory consumption: 84 bytes
+                     
+                     Element Quadrature Points: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                     Element Quadrature Weights: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                  
+               
+            
+         
+      
+      Cache for all sub-elements in all dimensions: (memory consumption: 840 bytes)
+         Cache for sub-element(s) with dimension: 2  (memory consumption : 168 bytes.
+            Sub-element id: 0
+               Memory consumption: 168 bytes
+               
+               Basis function values: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 1    filled = 1
+                  Data:
+                     ValueTable (num_functions=4,num_points=4) :
+                        Function 0
+                        [ 0.622009 ]  [ 0.166667 ]  [ 0.166667 ]  [ 0.0446582 ]  
+                        Function 1
+                        [ 0.166667 ]  [ 0.622009 ]  [ 0.0446582 ]  [ 0.166667 ]  
+                        Function 2
+                        [ 0.166667 ]  [ 0.0446582 ]  [ 0.622009 ]  [ 0.166667 ]  
+                        Function 3
+                        [ 0.0446582 ]  [ 0.166667 ]  [ 0.166667 ]  [ 0.622009 ]  
+                     
+                  
+               
+               Basis function gradients: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
-               W_Measure: (memory consumption: 42 bytes)
+               Basis function hessians: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function divergences: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
             
          
-         Cache for sub-element(s) with dimension: 1  (memory consumption : 336 bytes.
+         Cache for sub-element(s) with dimension: 1  (memory consumption : 672 bytes.
             Sub-element id: 0
-               Memory consumption: 84 bytes
+               Memory consumption: 168 bytes
                
-               Point: (memory consumption: 42 bytes)
+               Basis function values: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
-               W_Measure: (memory consumption: 42 bytes)
+               Basis function gradients: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function hessians: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function divergences: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
             
             Sub-element id: 1
-               Memory consumption: 84 bytes
+               Memory consumption: 168 bytes
                
-               Point: (memory consumption: 42 bytes)
+               Basis function values: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
-               W_Measure: (memory consumption: 42 bytes)
+               Basis function gradients: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function hessians: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function divergences: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
             
             Sub-element id: 2
-               Memory consumption: 84 bytes
+               Memory consumption: 168 bytes
                
-               Point: (memory consumption: 42 bytes)
+               Basis function values: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
-               W_Measure: (memory consumption: 42 bytes)
+               Basis function gradients: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function hessians: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function divergences: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
             
             Sub-element id: 3
-               Memory consumption: 84 bytes
+               Memory consumption: 168 bytes
                
-               Point: (memory consumption: 42 bytes)
+               Basis function values: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
-               W_Measure: (memory consumption: 42 bytes)
+               Basis function gradients: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function hessians: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function divergences: (memory consumption: 42 bytes)
                   Fill flags:
                      fill = 0    filled = 0
                
@@ -840,120 +730,486 @@ SpaceElementBase<2> cache:
       
    
 
-Cache for all sub-elements in all dimensions: (memory consumption: 840 bytes)
-   Cache for sub-element(s) with dimension: 2  (memory consumption : 168 bytes.
-      Sub-element id: 0
-         Memory consumption: 168 bytes
-         
-         Value: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Gradient: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Hessian: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 1    filled = 1
-            Data:
-               ValueTable (num_functions=4,num_points=4) :
-                  Function 0
-                  [ [ [ 0 ]  [ 16.0000 ]  ]  [ [ 16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 16.0000 ]  ]  [ [ 16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 16.0000 ]  ]  [ [ 16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 16.0000 ]  ]  [ [ 16.0000 ]  [ 0 ]  ]  ]  
-                  Function 1
-                  [ [ [ 0 ]  [ -16.0000 ]  ]  [ [ -16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -16.0000 ]  ]  [ [ -16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -16.0000 ]  ]  [ [ -16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -16.0000 ]  ]  [ [ -16.0000 ]  [ 0 ]  ]  ]  
-                  Function 2
-                  [ [ [ 0 ]  [ -16.0000 ]  ]  [ [ -16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -16.0000 ]  ]  [ [ -16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -16.0000 ]  ]  [ [ -16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -16.0000 ]  ]  [ [ -16.0000 ]  [ 0 ]  ]  ]  
-                  Function 3
-                  [ [ [ 0 ]  [ 16.0000 ]  ]  [ [ 16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 16.0000 ]  ]  [ [ 16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 16.0000 ]  ]  [ [ 16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 16.0000 ]  ]  [ [ 16.0000 ]  [ 0 ]  ]  ]  
+========================================================================
+
+========================================================================
+space_cache_init_fill_elem
+========================================================================
+BSplineElement<2,1,1> cache:
+   Splines 1D table:
+      Sub-element dimension: 0
+      
+      Sub-element dimension: 1
+      
+      Sub-element dimension: 2
+         Entry id: 0
+            Raw components: 
+               Size: [ 1 ]  Weights: [1]
+               Entry id: 0
+                  Entry id: 0
+                     Entry id: 0
+                     [2,2]((0.788675,0.211325),(0.211325,0.788675))
+                     Entry id: 1
+                     [2,2]((-4.00000,-4.00000),(4.00000,4.00000))
+                     Entry id: 2
+                     [2,2]((0,0),(0,0))
+                  
+                  Entry id: 1
+                     Entry id: 0
+                     [2,2]((0.788675,0.211325),(0.211325,0.788675))
+                     Entry id: 1
+                     [2,2]((-4.00000,-4.00000),(4.00000,4.00000))
+                     Entry id: 2
+                     [2,2]((0,0),(0,0))
+                  
                
             
-         
-         Divergence: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
+            Components map: 
+            [ 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ ]
          
       
    
-   Cache for sub-element(s) with dimension: 1  (memory consumption : 672 bytes.
-      Sub-element id: 0
-         Memory consumption: 168 bytes
-         
-         Value: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Gradient: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Hessian: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Divergence: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
+   SpaceElement's cache:
+      SpaceElementBase<2> cache:
+         GridElement<2> cache:
+            Cache for all sub-elements in all dimensions: (memory consumption: 420 bytes)
+               Cache for sub-element(s) with dimension: 2  (memory consumption : 84 bytes.
+                  Sub-element id: 0
+                     Memory consumption: 84 bytes
+                     
+                     Element Quadrature Points: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 1    filled = 1
+                        Data:
+                           ValueVector (num_points=4) :
+                           [ [ 0.0528312 0.0528312 ]  [ 0.197169 0.0528312 ]  [ 0.0528312 0.197169 ]  [ 0.197169 0.197169 ]  ]
+                        
+                     
+                     Element Quadrature Weights: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 1    filled = 1
+                        Data:
+                           ValueVector (num_points=4) :
+                           [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+                        
+                     
+                  
+               
+               Cache for sub-element(s) with dimension: 1  (memory consumption : 336 bytes.
+                  Sub-element id: 0
+                     Memory consumption: 84 bytes
+                     
+                     Element Quadrature Points: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                     Element Quadrature Weights: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                  
+                  Sub-element id: 1
+                     Memory consumption: 84 bytes
+                     
+                     Element Quadrature Points: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                     Element Quadrature Weights: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                  
+                  Sub-element id: 2
+                     Memory consumption: 84 bytes
+                     
+                     Element Quadrature Points: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                     Element Quadrature Weights: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                  
+                  Sub-element id: 3
+                     Memory consumption: 84 bytes
+                     
+                     Element Quadrature Points: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                     Element Quadrature Weights: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                  
+               
+            
          
       
-      Sub-element id: 1
-         Memory consumption: 168 bytes
+      Cache for all sub-elements in all dimensions: (memory consumption: 840 bytes)
+         Cache for sub-element(s) with dimension: 2  (memory consumption : 168 bytes.
+            Sub-element id: 0
+               Memory consumption: 168 bytes
+               
+               Basis function values: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function gradients: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 1    filled = 1
+                  Data:
+                     ValueTable (num_functions=4,num_points=4) :
+                        Function 0
+                        [ [ -3.15470 ]  [ -3.15470 ]  ]  [ [ -3.15470 ]  [ -0.845300 ]  ]  [ [ -0.845300 ]  [ -3.15470 ]  ]  [ [ -0.845300 ]  [ -0.845300 ]  ]  
+                        Function 1
+                        [ [ 3.15470 ]  [ -0.845300 ]  ]  [ [ 3.15470 ]  [ -3.15470 ]  ]  [ [ 0.845300 ]  [ -0.845300 ]  ]  [ [ 0.845300 ]  [ -3.15470 ]  ]  
+                        Function 2
+                        [ [ -0.845300 ]  [ 3.15470 ]  ]  [ [ -0.845300 ]  [ 0.845300 ]  ]  [ [ -3.15470 ]  [ 3.15470 ]  ]  [ [ -3.15470 ]  [ 0.845300 ]  ]  
+                        Function 3
+                        [ [ 0.845300 ]  [ 0.845300 ]  ]  [ [ 0.845300 ]  [ 3.15470 ]  ]  [ [ 3.15470 ]  [ 0.845300 ]  ]  [ [ 3.15470 ]  [ 3.15470 ]  ]  
+                     
+                  
+               
+               Basis function hessians: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function divergences: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+            
          
-         Value: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Gradient: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Hessian: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Divergence: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
+         Cache for sub-element(s) with dimension: 1  (memory consumption : 672 bytes.
+            Sub-element id: 0
+               Memory consumption: 168 bytes
+               
+               Basis function values: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function gradients: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function hessians: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function divergences: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+            
+            Sub-element id: 1
+               Memory consumption: 168 bytes
+               
+               Basis function values: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function gradients: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function hessians: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function divergences: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+            
+            Sub-element id: 2
+               Memory consumption: 168 bytes
+               
+               Basis function values: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function gradients: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function hessians: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function divergences: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+            
+            Sub-element id: 3
+               Memory consumption: 168 bytes
+               
+               Basis function values: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function gradients: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function hessians: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function divergences: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+            
          
       
-      Sub-element id: 2
-         Memory consumption: 168 bytes
-         
-         Value: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Gradient: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Hessian: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Divergence: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
+   
+
+========================================================================
+
+========================================================================
+space_cache_init_fill_elem
+========================================================================
+BSplineElement<2,1,1> cache:
+   Splines 1D table:
+      Sub-element dimension: 0
+      
+      Sub-element dimension: 1
+      
+      Sub-element dimension: 2
+         Entry id: 0
+            Raw components: 
+               Size: [ 1 ]  Weights: [1]
+               Entry id: 0
+                  Entry id: 0
+                     Entry id: 0
+                     [2,2]((0.788675,0.211325),(0.211325,0.788675))
+                     Entry id: 1
+                     [2,2]((-4.00000,-4.00000),(4.00000,4.00000))
+                     Entry id: 2
+                     [2,2]((0,0),(0,0))
+                  
+                  Entry id: 1
+                     Entry id: 0
+                     [2,2]((0.788675,0.211325),(0.211325,0.788675))
+                     Entry id: 1
+                     [2,2]((-4.00000,-4.00000),(4.00000,4.00000))
+                     Entry id: 2
+                     [2,2]((0,0),(0,0))
+                  
+               
+            
+            Components map: 
+            [ 0 ]
+            Active components ids: 
+            [ 0 ]
+            Inactive components ids: 
+            [ ]
          
       
-      Sub-element id: 3
-         Memory consumption: 168 bytes
+   
+   SpaceElement's cache:
+      SpaceElementBase<2> cache:
+         GridElement<2> cache:
+            Cache for all sub-elements in all dimensions: (memory consumption: 420 bytes)
+               Cache for sub-element(s) with dimension: 2  (memory consumption : 84 bytes.
+                  Sub-element id: 0
+                     Memory consumption: 84 bytes
+                     
+                     Element Quadrature Points: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 1    filled = 1
+                        Data:
+                           ValueVector (num_points=4) :
+                           [ [ 0.0528312 0.0528312 ]  [ 0.197169 0.0528312 ]  [ 0.0528312 0.197169 ]  [ 0.197169 0.197169 ]  ]
+                        
+                     
+                     Element Quadrature Weights: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 1    filled = 1
+                        Data:
+                           ValueVector (num_points=4) :
+                           [ 0.0156250 0.0156250 0.0156250 0.0156250 ]
+                        
+                     
+                  
+               
+               Cache for sub-element(s) with dimension: 1  (memory consumption : 336 bytes.
+                  Sub-element id: 0
+                     Memory consumption: 84 bytes
+                     
+                     Element Quadrature Points: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                     Element Quadrature Weights: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                  
+                  Sub-element id: 1
+                     Memory consumption: 84 bytes
+                     
+                     Element Quadrature Points: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                     Element Quadrature Weights: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                  
+                  Sub-element id: 2
+                     Memory consumption: 84 bytes
+                     
+                     Element Quadrature Points: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                     Element Quadrature Weights: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                  
+                  Sub-element id: 3
+                     Memory consumption: 84 bytes
+                     
+                     Element Quadrature Points: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                     Element Quadrature Weights: (memory consumption: 42 bytes)
+                        Fill flags:
+                           fill = 0    filled = 0
+                     
+                  
+               
+            
          
-         Value: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
+      
+      Cache for all sub-elements in all dimensions: (memory consumption: 840 bytes)
+         Cache for sub-element(s) with dimension: 2  (memory consumption : 168 bytes.
+            Sub-element id: 0
+               Memory consumption: 168 bytes
+               
+               Basis function values: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function gradients: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function hessians: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 1    filled = 1
+                  Data:
+                     ValueTable (num_functions=4,num_points=4) :
+                        Function 0
+                        [ [ [ 0 ]  [ 16.0000 ]  ]  [ [ 16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 16.0000 ]  ]  [ [ 16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 16.0000 ]  ]  [ [ 16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 16.0000 ]  ]  [ [ 16.0000 ]  [ 0 ]  ]  ]  
+                        Function 1
+                        [ [ [ 0 ]  [ -16.0000 ]  ]  [ [ -16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -16.0000 ]  ]  [ [ -16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -16.0000 ]  ]  [ [ -16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -16.0000 ]  ]  [ [ -16.0000 ]  [ 0 ]  ]  ]  
+                        Function 2
+                        [ [ [ 0 ]  [ -16.0000 ]  ]  [ [ -16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -16.0000 ]  ]  [ [ -16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -16.0000 ]  ]  [ [ -16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ -16.0000 ]  ]  [ [ -16.0000 ]  [ 0 ]  ]  ]  
+                        Function 3
+                        [ [ [ 0 ]  [ 16.0000 ]  ]  [ [ 16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 16.0000 ]  ]  [ [ 16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 16.0000 ]  ]  [ [ 16.0000 ]  [ 0 ]  ]  ]  [ [ [ 0 ]  [ 16.0000 ]  ]  [ [ 16.0000 ]  [ 0 ]  ]  ]  
+                     
+                  
+               
+               Basis function divergences: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+            
          
-         Gradient: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Hessian: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
-         
-         Divergence: (memory consumption: 42 bytes)
-            Fill flags:
-               fill = 0    filled = 0
+         Cache for sub-element(s) with dimension: 1  (memory consumption : 672 bytes.
+            Sub-element id: 0
+               Memory consumption: 168 bytes
+               
+               Basis function values: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function gradients: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function hessians: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function divergences: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+            
+            Sub-element id: 1
+               Memory consumption: 168 bytes
+               
+               Basis function values: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function gradients: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function hessians: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function divergences: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+            
+            Sub-element id: 2
+               Memory consumption: 168 bytes
+               
+               Basis function values: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function gradients: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function hessians: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function divergences: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+            
+            Sub-element id: 3
+               Memory consumption: 168 bytes
+               
+               Basis function values: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function gradients: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function hessians: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+               Basis function divergences: (memory consumption: 42 bytes)
+                  Fill flags:
+                     fill = 0    filled = 0
+               
+            
          
       
    
