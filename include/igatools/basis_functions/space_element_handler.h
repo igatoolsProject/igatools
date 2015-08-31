@@ -137,8 +137,8 @@ public:
     template <int sdim>
     void fill_cache(ElementAccessor &elem, const int s_id) const
     {
-        Assert(s_id >= 0 && s_id < UnitElement<sdim>::n_faces,
-               ExcIndexRange(s_id,0,UnitElement<sdim>::n_faces));
+        Assert(s_id >= 0 && s_id < UnitElement<dim>::template num_elem<sdim>(),
+               ExcIndexRange(s_id,0,UnitElement<dim>::template num_elem<sdim>()));
         this->fill_cache_impl(elem,Topology<sdim>(),s_id);
     }
 

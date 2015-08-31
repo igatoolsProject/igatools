@@ -36,45 +36,69 @@ void sub_elem_values(const int n_knots, const int deg)
     OUTSTART
 
     auto grid = CartesianGrid<dim>::create(n_knots);
-    using RefSpace = ReferenceSpace<dim>;
-    using RefElementHandler = typename RefSpace::ElementHandler;
     using Space = BSplineSpace<dim>;
-    using ElementHandler = typename Space::ElementHandler;
-    auto space = Space::create(deg, grid);
+    auto space = Space::create_nonconst(deg, grid);
 
     const int n_qp = 2;
-    QGauss<k>   k_quad(n_qp);
-    QGauss<dim> quad(n_qp);
-    auto flag = ValueFlags::value;//|ValueFlags::gradient|ValueFlags::hessian;
-//    std::shared_ptr<RefElementHandler> cache_filler = ElementHandler::create(space);
-    auto cache_filler = space->get_elem_handler();
-    cache_filler->reset(flag, k_quad);
-    cache_filler->reset(flag, quad);
+    auto k_quad = QGauss<k>::create(n_qp);
+    auto quad = QGauss<dim>::create(n_qp);
+    auto flag = space_element::Flags::value |
+                space_element::Flags::gradient|
+                space_element::Flags::hessian;
+
+    auto elem_handler = space->get_elem_handler();
+    elem_handler->template set_flags<dim>(flag);
+    elem_handler->template set_flags<k>(flag);
+
+    using Elem = typename Space::ElementAccessor;
+    using _Value = typename Elem::_Value;
+    using _Gradient = typename Elem::_Gradient;
+    using _Hessian = typename Elem::_Hessian;
+
     auto elem = space->begin();
     auto end =  space->end();
-    cache_filler->init_element_cache(elem);
 
-    // TODO (pauletti, Feb 23, 2015): this test was tainted, k is not
-    // necesary a face, fix the library so original function works
-    //cache_filler->init_face_cache(elem);
-    cache_filler->template init_cache<k>(*elem);
+    elem_handler->template init_cache<dim>(*elem,quad);
+    elem_handler->template init_cache<k>(*elem,k_quad);
     for (; elem != end; ++elem)
     {
         if (elem->is_boundary())
         {
-            cache_filler->fill_element_cache(elem);
-            out << "Element" << elem->get_flat_index() << endl;
+            elem_handler->template fill_cache<dim>(*elem,0);
+            out << "Element" << elem->get_index() << endl;
+
+            out.begin_item("Basis functions values:");
             elem->template get_basis<_Value,dim>(0,DofProperties::active).print_info(out);
+            out.end_item();
+
+            out.begin_item("Basis functions gradients:");
+            elem->template get_basis<_Gradient,dim>(0,DofProperties::active).print_info(out);
+            out.end_item();
+
+            out.begin_item("Basis functions hessians:");
+            elem->template get_basis<_Hessian,dim>(0,DofProperties::active).print_info(out);
+            out.end_item();
+
             for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
             {
                 if (elem->is_boundary(s_id))
                 {
-                    //cache_filler->fill_face_cache(elem, s_id);
-                    cache_filler->template fill_cache<k>(*elem, s_id);
-                    out << "Sub Element: " << s_id << endl;
-                    out.begin_item("Values basis functions:");
-                    auto values = elem->template get_basis<_Value,k>(s_id,DofProperties::active);
-                    values.print_info(out);
+                    elem_handler->template fill_cache<k>(*elem,s_id);
+                    out.begin_item("Sub Element: " + std::to_string(s_id));
+
+                    out.begin_item("Basis functions values:");
+                    elem->template get_basis<_Value,k>(s_id,DofProperties::active).print_info(out);
+                    out.end_item();
+
+                    out.begin_item("Basis functions gradients:");
+                    elem->template get_basis<_Gradient,k>(s_id,DofProperties::active).print_info(out);
+                    out.end_item();
+
+                    out.begin_item("Basis functions hessians:");
+                    elem->template get_basis<_Hessian,k>(s_id,DofProperties::active).print_info(out);
+                    out.end_item();
+
+
                     out.end_item();
                 }
             }
