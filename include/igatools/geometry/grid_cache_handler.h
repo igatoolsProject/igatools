@@ -49,14 +49,17 @@ public:
 protected:
   // using ElementIterator = typename GridType::ElementIterator;
   // using ElementAccessor = typename GridType::ElementAccessor;
-  using ElementIterator = typename GridType::ElementConstIterator;
-  using ElementAccessor = typename GridType::ConstElementAccessor;
+  using ElementConstIterator = typename GridType::ElementConstIterator;
+  using ConstElementAccessor = typename GridType::ConstElementAccessor;
 
 public:
-  using Flags = typename ElementAccessor::Flags;
+  using Flags = typename ConstElementAccessor::Flags;
 protected:
   using FlagsArray = SafeSTLArray<Flags, dim+1>;
   using topology_variant = TopologyVariants<dim>;
+  template<int k>
+  using ConstQuad = const Quadrature<k>;
+  using eval_pts_variant = SubElemPtrVariants<ConstQuad,dim>;
 
 public:
   /**
@@ -127,24 +130,27 @@ public:
                  const Flags &flag);
 
   template <int sdim>
-  void init_cache(ElementAccessor &elem,
+  void init_cache(ConstElementAccessor &elem,
                   std::shared_ptr<const Quadrature<sdim>> quad) const;
 
+  void init_cache(ConstElementAccessor &elem,
+                  const eval_pts_variant &quad) const;
+
   template <int sdim>
-  void init_cache(ElementIterator &elem,
+  void init_cache(ElementConstIterator &elem,
                   std::shared_ptr<const Quadrature<sdim>> quad) const
   {
     init_cache<sdim>(*elem, quad);
   }
 
 
-  void init_element_cache(ElementIterator &elem,
+  void init_element_cache(ElementConstIterator &elem,
                           std::shared_ptr<const Quadrature<dim>> quad) const
   {
     init_cache<dim>(*elem, quad);
   }
 
-  void init_face_cache(ElementIterator &elem,
+  void init_face_cache(ElementConstIterator &elem,
                        std::shared_ptr<const Quadrature<(dim > 0) ? dim-1 : 0>> quad) const
   {
     Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
@@ -152,24 +158,24 @@ public:
   }
 
   template <int sdim>
-  void fill_cache(ElementAccessor &elem, const int s_id) const;
+  void fill_cache(ConstElementAccessor &elem, const int s_id) const;
 
 
   template <int sdim>
-  void fill_cache(ElementIterator &elem, const int s_id) const
+  void fill_cache(ElementConstIterator &elem, const int s_id) const
   {
     fill_cache<sdim>(*elem, s_id);
   }
 
 
 
-  void fill_element_cache(ElementIterator &elem) const
+  void fill_element_cache(ElementConstIterator &elem) const
   {
     fill_cache<dim>(*elem,0);
   }
 
 
-  void fill_face_cache(ElementIterator &elem, const int s_id) const
+  void fill_face_cache(ElementConstIterator &elem, const int s_id) const
   {
     Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
     fill_cache<(dim > 0) ? dim-1 : 0>(*elem,s_id);
@@ -189,7 +195,7 @@ public:
   /**
    * Returns the grid upon which the object is built.
    */
-  std::shared_ptr<const GridType> get_grid() const;
+  std::shared_ptr<GridType> get_grid() const;
 
 private:
   std::shared_ptr<GridType> grid_;
@@ -216,6 +222,28 @@ private:
     const Flags flag_;
     FlagsArray &flags_;
   };
+
+
+  struct InitCacheDispatcher : boost::static_visitor<void>
+  {
+    InitCacheDispatcher(self_t const *grid_handler,
+                        ConstElementAccessor &elem)
+      :
+      grid_handler_(grid_handler),
+      elem_(elem)
+    {}
+
+    template<int sdim>
+    void operator()(const std::shared_ptr<Quadrature<sdim>> &quad)
+    {
+      grid_handler_->template init_cache<sdim>(elem_, quad);
+    }
+
+    self_t const *grid_handler_;
+    ConstElementAccessor &elem_;
+
+  };
+
 
 private:
 

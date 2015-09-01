@@ -71,8 +71,7 @@ PhysicalDomain(std::shared_ptr<const GridType> grid,
   grid_(grid),
   func_(F)
 {
-//  Assert(func_->get_physical_domain() == nullptr,
-//          ExcMessage("Must be a Null pointer"));
+  Assert(grid_ != nullptr, ExcNullPtr());
 }
 
 
@@ -149,6 +148,8 @@ begin(const PropId &prop) -> ElementIterator
   prop);
 }
 
+
+
 template<int dim_, int codim_>
 auto
 PhysicalDomain<dim_, codim_>::
@@ -158,6 +159,7 @@ end(const PropId &prop) -> ElementIterator
   grid_->get_element_property(prop).end(),
   prop);
 }
+
 
 
 template<int dim_, int codim_>
@@ -179,6 +181,7 @@ end(const PropId &prop) const -> ElementConstIterator
 }
 
 
+
 template<int dim_, int codim_>
 auto
 PhysicalDomain<dim_, codim_>::
@@ -188,6 +191,7 @@ cbegin(const PropId &prop) const -> ElementConstIterator
                               grid_->get_element_property(prop).end(),
                               prop);
 }
+
 
 
 template<int dim_, int codim_>

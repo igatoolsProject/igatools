@@ -172,13 +172,12 @@ public:
     this->init_cache(*elem, quad);
   }
 
-
 //    void init_element_cache(ElementAccessor &elem) const;
 //
 //    void init_element_cache(ElementIterator &elem) const;
 
   virtual void fill_cache(const topology_variant &sdim,
-		  ConstElementAccessor &elem,
+                          ConstElementAccessor &elem,
                           const int s_id) const;
 
   void fill_cache(const topology_variant &sdim,
@@ -236,7 +235,7 @@ private:
   struct InitCacheDispatcher : boost::static_visitor<void>
   {
     InitCacheDispatcher(const FlagsArray &flags,
-    		ConstElementAccessor &elem)
+                        ConstElementAccessor &elem)
       :
       flags_(flags),
       elem_(elem)

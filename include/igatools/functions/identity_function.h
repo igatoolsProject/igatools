@@ -26,19 +26,7 @@
 
 IGA_NAMESPACE_OPEN
 
-/**
- * create a rectangular "identity" tensor
- */
-template<int dim,int space_dim>
-auto
-create_id_tensor()
-{
-  typename Function<dim, 0, space_dim, 1>::Gradient res;
-  for (int i=0; i<dim; ++i)
-    res[i][i] = 1.;
-  return res;
-}
-
+template <int, int> class IdentityFunctionElementHandler;
 
 /**
  * The identity function from R^dim to R^spacedim,
@@ -66,109 +54,28 @@ protected:
 
 public:
   using typename parent_t::ElementAccessor;
-  using typename parent_t::_Value;
-  using typename parent_t::_Gradient;
-// using typename parent_t::_Hessian;
+  using ElementHandler = IdentityFunctionElementHandler<dim, space_dim>;
 
-  using typename parent_t::topology_variant;
-  //using typename parent_t::Point;
-  using typename parent_t::Value;
-  using typename parent_t::Gradient;
-  using typename parent_t::Hessian;
-
-  //  using typename parent_t::ElementIterator;
-  // using typename parent_t::ElementAccessor;
-
-//    template <int order>
-//    using Derivative = typename parent_t::template Derivative<order>;
-  // IdentityFunction(std::shared_ptr<GridType> grid);
 
 private:
   IdentityFunction();
-  IdentityFunction(std::shared_ptr<const GridType> grid);
+
+
 public:
+  IdentityFunction(std::shared_ptr<const GridType> grid);
   virtual ~IdentityFunction() = default;
 
   static std::shared_ptr<parent_t>
   create(std::shared_ptr<const GridType> grid)
   {
-    std::make_shared<self_t>(grid);
+    return std::make_shared<self_t>(grid);
   }
-//
-//    std::shared_ptr<parent_t> clone() const override final;
 
-
-  void fill_cache(const topology_variant &sdim,
-                  ElementAccessor &elem,
-                  const int s_id) const override final;
-
-// virtual void print_info(LogStream &out) const override final;
+  std::shared_ptr<typename parent_t::ElementHandler>
+  create_cache_handler() const override final;
 
 private:
-  /**
-   * Default constructor. It does nothing but it is needed for the
-   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-   * mechanism.
-   */
-//    IdentityFunction() = default;
-
-
-  struct FillCacheDispatcher : boost::static_visitor<void>
-  {
-    FillCacheDispatcher(const int s_id, const self_t &func, ElementAccessor &elem)
-      :
-      s_id_(s_id),
-      funct_(func),
-      elem_(elem)
-    {}
-
-    template<int sdim>
-    void operator()(const Topology<sdim> &sub_elem)
-    {
-      auto &local_cache = funct_.get_cache(elem_);
-      auto &cache = local_cache->template get_sub_elem_cache<sdim>(s_id_);
-
-      if (!cache.fill_none())
-      {
-        if (cache.template status_fill<_Value>())
-        {
-          const auto points =
-            elem_.get_domain_element()->
-            get_grid_element()->template get_points<sdim>(s_id_);
-          if (cache.template status_fill<_Value>())
-          {
-            auto &values = cache.template get_data<_Value>();
-            values = points;
-            cache.template set_status_filled<_Value>(true);
-          }
-        }
-        if (cache.template status_fill<_Gradient>())
-        {
-          // TODO (pauletti, Apr 17, 2015): this can be static const
-          const auto identity = create_id_tensor<dim,space_dim>();
-          cache.template get_data<_Gradient>().fill(identity);
-
-          cache.template set_status_filled<_Gradient>(true);
-        }
-//        if (cache.template status_fill<_Hessian>())
-//        {
-//          // TODO (pauletti, Apr 17, 2015): this can be static const
-//          Hessian zero;
-//          cache.template get_data<_Hessian>().fill(zero);
-//
-//          cache.template set_status_filled<_Hessian>(true);
-//        }
-      }
-      cache.set_filled(true);
-    }
-
-    const int s_id_;
-    const self_t &funct_;
-    ElementAccessor &elem_;
-  };
-
-  friend struct FillCacheDispatcher;
-
+  std::shared_ptr<const GridType> grid_;
 
 #ifdef MESH_REFINEMENT
 
