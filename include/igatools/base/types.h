@@ -607,32 +607,6 @@ using QuadVariants = SubElemPtrVariants<Quadrature,dim>;
 
 
 
-//---------------------------------------------------------------------------------------
-/**
- * @name Admissible flags for the classes that are derived from SpaceElement.
- */
-namespace space_element
-{
-enum class Flags
-{
-  /** Fill nothing */
-  none           =    0,          //!< none
-
-  /** Basis functions value */
-  value          =    1L << 1,    //!< value
-
-  /** Basis functions gradient */
-  gradient          =    1L << 2, //!< gradient
-
-  /** Basis functions hessian */
-  hessian          =    1L << 3,  //!< hessian
-
-  /** Basis functions divergence */
-  divergence          =    1L << 4//!< divergence
-};
-}
-//---------------------------------------------------------------------------------------
-
 
 #ifdef SERIALIZATION
 

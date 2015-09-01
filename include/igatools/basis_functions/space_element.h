@@ -294,45 +294,11 @@ public:
   virtual void print_cache_info(LogStream &out) const;
 
 
-  /**
-   * Alias used to define the container for the basis function values in the cache.
-   */
-  class _Value
-  {
-  public:
-    static const std::string name;
-    static const auto flag = Flags::value;
-  };
+  using _Value =  space_element::_Value;
+  using _Gradient = space_element::_Gradient;
+  using _Hessian = space_element::_Hessian;
+  using _Divergence = space_element::_Divergence;
 
-  /**
-   * Alias used to define the container for the basis function gradients in the cache.
-   */
-  class _Gradient
-  {
-  public:
-    static const std::string name;
-    static const auto flag = Flags::gradient;
-  };
-
-  /**
-   * Alias used to define the container for the basis function hessians in the cache.
-   */
-  class _Hessian
-  {
-  public:
-    static const std::string name;
-    static const auto flag = Flags::hessian;
-  };
-
-  /**
-   * Alias used to define the container for the basis function divergences in the cache.
-   */
-  class _Divergence
-  {
-  public:
-    static const std::string name;
-    static const auto flag = Flags::divergence;
-  };
 
   using CType = boost::fusion::map<
                 boost::fusion::pair<     _Value,DataWithFlagStatus<ValueTable<Value>>>,

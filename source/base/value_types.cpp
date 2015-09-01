@@ -18,13 +18,28 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#if 0
 #include <igatools/base/value_types.h>
 
 using std::string;
 
 IGA_NAMESPACE_OPEN
 
+
+
+const space_element::Flags space_element::_Value::flag;
+const string space_element::_Value::name = "Basis function values";
+
+const space_element::Flags space_element::_Gradient::flag;
+const string space_element::_Gradient::name = "Basis function gradients";
+
+const space_element::Flags space_element::_Hessian::flag;
+const string space_element::_Hessian::name = "Basis function hessians";
+
+const space_element::Flags space_element::_Divergence::flag;
+const string space_element::_Divergence::name = "Basis function divergences";
+
+
+#if 0
 
 constexpr int _Value::id;
 constexpr int _Value::order;
@@ -96,6 +111,6 @@ constexpr int _Curvature::id;
 constexpr int _Curvature::order;
 const string  _Curvature::name = "Curvature";
 constexpr ValueFlags _Curvature::flag;
+#endif
 
 IGA_NAMESPACE_CLOSE
-#endif

@@ -21,7 +21,7 @@
 #ifndef __IGA_NUMBERS_H_
 #define __IGA_NUMBERS_H_
 
-#include <igatools/base/config.h>
+//#include <igatools/base/config.h>
 #include <igatools/base/types.h>
 
 IGA_NAMESPACE_OPEN

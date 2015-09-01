@@ -39,14 +39,14 @@
 
 using namespace EpetraTools;
 
-template< int dim_domain, int dim_range >
+template< int dim, int range >
 void do_test()
 {
-  auto grid = CartesianGrid<dim_domain>::create();
+  auto grid = CartesianGrid<dim>::create();
 
   const int degree = 1;
   const int rank =  1 ;
-  using Space = BSplineSpace< dim_domain, dim_range, rank >;
+  using Space = BSplineSpace< dim, range, rank >;
   auto space = Space::create_nonconst(degree, grid);
 
   const auto  num = space->get_num_basis();
@@ -69,62 +69,38 @@ void do_test()
     u[id++] = 1.0 ;
   }
 
-  QGauss< dim_domain > quad_tensor_prod(2) ;
+  QGauss< dim > quad_tensor_prod(2) ;
   const auto eval_points = quad_tensor_prod.get_points();
 
-  <<<<<<< HEAD
-  auto quad_non_tensor_prod = Quadrature<dim_domain>::create(eval_points);
-  ||||||| merged common ancestors
-  Quadrature<dim_domain> quad_non_tensor_prod(eval_points);
-  =======
-    Quadrature<dim_domain> quad_non_tensor_prod(eval_points);
-  >>>>>>> function2.0
+  auto quad_non_tensor_prod = Quadrature<dim>::create(eval_points);
 
   auto element1 = space->begin();
 
-  <<<<<<< HEAD
   using Elem = typename Space::ElementAccessor;
   using _Value = typename Elem::_Value;
   using _Gradient = typename Elem::_Gradient;
   using _Hessian = typename Elem::_Hessian;
   using _Divergence = typename Elem::_Divergence;
 
-  out.begin_item("Basis values using QGauss<" + std::to_string(dim_domain) + "> with 2 points in each coordinate direction.");
+  out.begin_item("Basis values using QGauss<" + std::to_string(dim) + "> with 2 points in each coordinate direction.");
   auto values1 = element1->template evaluate_basis_at_points<_Value>(quad_non_tensor_prod,DofProperties::active);
   values1.print_info(out);
   out.end_item();
-  ||||||| merged common ancestors
-  out.begin_item("Basis values using QGauss<" + std::to_string(dim_domain) + "> with 2 points in each coordinate direction.");
-  auto values1 = element1->template evaluate_basis_at_points<_Value>(quad_non_tensor_prod,DofProperties::active);
-  values1.print_info(out);
-  out.end_item();
-  =======
-    out.begin_item("Basis values using QGauss<" + std::to_string(dim_domain) + "> with 2 points in each coordinate direction.");
-  auto values1 = element1->template evaluate_basis_at_points<_Value>(quad_non_tensor_prod,DofProperties::active);
-  values1.print_info(out);
-  out.end_item();
-  >>>>>>> function2.0
 
-  out.begin_item("Basis gradients using QGauss<" + std::to_string(dim_domain) + "> with 2 points in each coordinate direction.");
+  out.begin_item("Basis gradients using QGauss<" + std::to_string(dim) + "> with 2 points in each coordinate direction.");
   auto gradients1 = element1->template evaluate_basis_at_points<_Gradient>(quad_non_tensor_prod,DofProperties::active);
   gradients1.print_info(out);
   out.end_item();
 
-//    QUniform< dim_domain > quad_scheme_2(3) ;
-  <<<<<<< HEAD
-  auto quad_scheme_2 = Quadrature< dim_domain >::create(QUniform< dim_domain >(3).get_points()) ;
-  ||||||| merged common ancestors
-  Quadrature< dim_domain > quad_scheme_2(QUniform< dim_domain >(3).get_points()) ;
-  =======
-    Quadrature< dim_domain > quad_scheme_2(QUniform< dim_domain >(3).get_points()) ;
-  >>>>>>> function2.0
+//    QUniform< dim > quad_scheme_2(3) ;
+  auto quad_scheme_2 = Quadrature< dim >::create(QUniform< dim >(3).get_points()) ;
 
-  out.begin_item("Basis values using QUniform<" + std::to_string(dim_domain) + "> with 2 points in each coordinate direction.");
+  out.begin_item("Basis values using QUniform<" + std::to_string(dim) + "> with 2 points in each coordinate direction.");
   auto values2 = element1->template evaluate_basis_at_points<_Value>(quad_scheme_2,DofProperties::active);
   values2.print_info(out);
   out.end_item();
 
-  out.begin_item("Basis gradients using QUniform<" + std::to_string(dim_domain) + "> with 2 points in each coordinate direction.");
+  out.begin_item("Basis gradients using QUniform<" + std::to_string(dim) + "> with 2 points in each coordinate direction.");
   auto gradients2 = element1->template evaluate_basis_at_points<_Gradient>(quad_scheme_2,DofProperties::active);
   gradients2.print_info(out);
   out.end_item();

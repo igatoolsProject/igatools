@@ -31,6 +31,78 @@
 
 IGA_NAMESPACE_OPEN
 
+
+
+
+//---------------------------------------------------------------------------------------
+/**
+ * @name Admissible flags for the classes that are derived from SpaceElement.
+ */
+namespace space_element
+{
+enum class Flags
+{
+  /** Fill nothing */
+  none           =    0,          //!< none
+
+  /** Basis functions value */
+  value          =    1L << 1,    //!< value
+
+  /** Basis functions gradient */
+  gradient          =    1L << 2, //!< gradient
+
+  /** Basis functions hessian */
+  hessian          =    1L << 3,  //!< hessian
+
+  /** Basis functions divergence */
+  divergence          =    1L << 4//!< divergence
+};
+
+/**
+ * Alias used to define/select the container for the basis function values in the cache.
+ */
+class _Value
+{
+public:
+  static const std::string name;
+  static const auto flag = Flags::value;
+};
+
+/**
+ * Alias used to define/select the container for the basis function gradients in the cache.
+ */
+class _Gradient
+{
+public:
+  static const std::string name;
+  static const auto flag = Flags::gradient;
+};
+
+/**
+ * Alias used to define/select the container for the basis function hessians in the cache.
+ */
+class _Hessian
+{
+public:
+  static const std::string name;
+  static const auto flag = Flags::hessian;
+};
+
+/**
+ * Alias used to define the container for the basis function divergences in the cache.
+ */
+class _Divergence
+{
+public:
+  static const std::string name;
+  static const auto flag = Flags::divergence;
+};
+
+}
+//---------------------------------------------------------------------------------------
+
+
+
 #if 0
 template <int value_type_id>
 class ValueType;

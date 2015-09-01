@@ -190,17 +190,6 @@ get_space() const -> std::shared_ptr<const Sp>
 
 
 
-template<int dim_,int codim_,int range_,int rank_,Transformation type_>
-const std::string SpaceElement<dim_,codim_,range_,rank_,type_>::_Value::name = "Basis function values";
-
-template<int dim_,int codim_,int range_,int rank_,Transformation type_>
-const std::string SpaceElement<dim_,codim_,range_,rank_,type_>::_Gradient::name = "Basis function gradients";
-
-template<int dim_,int codim_,int range_,int rank_,Transformation type_>
-const std::string SpaceElement<dim_,codim_,range_,rank_,type_>::_Hessian::name = "Basis function hessians";
-
-template<int dim_,int codim_,int range_,int rank_,Transformation type_>
-const std::string SpaceElement<dim_,codim_,range_,rank_,type_>::_Divergence::name = "Basis function divergences";
 
 
 #ifdef SERIALIZATION
