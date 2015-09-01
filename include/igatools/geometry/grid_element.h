@@ -31,20 +31,8 @@
 #include <iterator>
 
 IGA_NAMESPACE_OPEN
-namespace grid_element
-{
-enum class Flags
-{
-  /** Fill nothing */
-  none           =    0,
 
-  /** Quadrature points on the element */
-  point          =    1L << 1,
 
-  /** Quadrature weigths on the element */
-  w_measure      =    1L << 2
-};
-}
 /**
  * @brief Element accessor for the CartesianGrid.
  *
@@ -347,26 +335,11 @@ private:
    */
   ///@{
 
-  /**
-   * Alias used to define the container for the values in the cache.
-   */
-  class _Point
-  {
-  public:
-    static const std::string name;
-    static const auto flag = Flags::point;
-  };
+public:
+  using _Point = grid_element::_Point;
+  using _Weight = grid_element::_Weight;
 
-  /**
-   * Alias used to define the container for the quadrature weights in the cache.
-   */
-  class _Weight
-  {
-  public:
-    static const std::string name;
-    static const auto flag = Flags::w_measure;
-  };
-
+private:
   using CType = boost::fusion::map<
                 boost::fusion::pair< _Point,DataWithFlagStatus<ValueVector<Points<dim>>>>,
                 boost::fusion::pair<_Weight,DataWithFlagStatus<ValueVector<Real>>>

@@ -26,6 +26,17 @@ IGA_NAMESPACE_OPEN
 
 
 
+//---------------------------------------------------------------------
+const grid_element::Flags grid_element::_Point::flag;
+const string grid_element::_Point::name = "Element Quadrature Points";
+
+const grid_element::Flags grid_element::_Weight::flag;
+const string grid_element::_Weight::name = "Element Quadrature Weights";
+//---------------------------------------------------------------------
+
+
+
+//---------------------------------------------------------------------
 const space_element::Flags space_element::_Value::flag;
 const string space_element::_Value::name = "Basis function values";
 
@@ -37,80 +48,7 @@ const string space_element::_Hessian::name = "Basis function hessians";
 
 const space_element::Flags space_element::_Divergence::flag;
 const string space_element::_Divergence::name = "Basis function divergences";
+//---------------------------------------------------------------------
 
-
-#if 0
-
-constexpr int _Value::id;
-constexpr int _Value::order;
-const string  _Value::name = "Value";
-constexpr ValueFlags _Value::flag;
-
-
-constexpr int _Gradient::id;
-constexpr int _Gradient::order;
-const string  _Gradient::name = "Gradient";
-constexpr ValueFlags _Gradient::flag;
-
-
-constexpr int _Hessian::id;
-constexpr int _Hessian::order;
-const string  _Hessian::name = "Hessian";
-constexpr ValueFlags _Hessian::flag;
-
-
-constexpr int _Divergence::id;
-constexpr int _Divergence::order;
-const string  _Divergence::name = "Divergence";
-constexpr ValueFlags _Divergence::flag;
-
-
-constexpr int _Point::id;
-constexpr int _Point::order;
-const string  _Point::name = "Point";
-constexpr ValueFlags _Point::flag;
-
-
-constexpr int _W_Measure::id;
-constexpr int _W_Measure::order;
-const string  _W_Measure::name = "W_Measure";
-constexpr ValueFlags _W_Measure::flag;
-
-
-constexpr int _Measure::id;
-constexpr int _Measure::order;
-const string  _Measure::name = "Measure";
-constexpr ValueFlags _Measure::flag;
-
-
-constexpr int _InvGradient::id;
-constexpr int _InvGradient::order;
-const string  _InvGradient::name = "InvGradient";
-constexpr ValueFlags _InvGradient::flag;
-
-
-constexpr int _InvHessian::id;
-constexpr int _InvHessian::order;
-const string  _InvHessian::name = "InvHessian";
-constexpr ValueFlags _InvHessian::flag;
-
-
-constexpr int _BoundaryNormal::id;
-constexpr int _BoundaryNormal::order;
-const string  _BoundaryNormal::name = "BoundaryNormal";
-constexpr ValueFlags _BoundaryNormal::flag;
-
-
-constexpr int _OuterNormal::id;
-constexpr int _OuterNormal::order;
-const string  _OuterNormal::name = "OuterNormal";
-constexpr ValueFlags _OuterNormal::flag;
-
-
-constexpr int _Curvature::id;
-constexpr int _Curvature::order;
-const string  _Curvature::name = "Curvature";
-constexpr ValueFlags _Curvature::flag;
-#endif
 
 IGA_NAMESPACE_CLOSE
