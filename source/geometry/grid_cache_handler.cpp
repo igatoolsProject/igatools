@@ -111,24 +111,24 @@ GridElementHandler<dim>::
 init_cache(ElementAccessor &elem,
            std::shared_ptr<const Quadrature<sdim>> quad) const
 {
-    Assert(quad != nullptr,ExcNullPtr());
+  Assert(quad != nullptr,ExcNullPtr());
 
-    auto &q = elem.quad_list_.template get_quad<sdim>();
-    q = quad;
+  auto &q = elem.quad_list_.template get_quad<sdim>();
+  q = quad;
 
-    auto &cache = elem.all_sub_elems_cache_;
-    if (cache == nullptr)
-    {
-        using Cache = typename ElementAccessor::CacheType;
-        cache = std::make_shared<Cache>();
-    }
+  auto &cache = elem.all_sub_elems_cache_;
+  if (cache == nullptr)
+  {
+    using Cache = typename ElementAccessor::CacheType;
+    cache = std::make_shared<Cache>();
+  }
 
-    for (auto &s_id: UnitElement<dim>::template elems_ids<sdim>())
-    {
-        auto &s_cache = cache->template get_sub_elem_cache<sdim>(s_id);
-        s_cache.resize(flags_[sdim], quad->get_num_points());
+  for (auto &s_id: UnitElement<dim>::template elems_ids<sdim>())
+  {
+    auto &s_cache = cache->template get_sub_elem_cache<sdim>(s_id);
+    s_cache.resize(flags_[sdim], quad->get_num_points());
 
-    }
+  }
 }
 
 

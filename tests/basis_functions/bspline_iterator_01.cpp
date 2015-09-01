@@ -39,31 +39,31 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
 {
   OUTSTART
 
-    auto grid = CartesianGrid<dim>::create();
-    using Space = BSplineSpace<dim, range, rank>;
-    auto space = Space::create_nonconst(deg, grid);
+  auto grid = CartesianGrid<dim>::create();
+  using Space = BSplineSpace<dim, range, rank>;
+  auto space = Space::create_nonconst(deg, grid);
 
 
-    auto quad = QGauss<k>::create(n_qp);
-    auto flag = space_element::Flags::value |
-                space_element::Flags::gradient |
-                space_element::Flags::hessian;
+  auto quad = QGauss<k>::create(n_qp);
+  auto flag = space_element::Flags::value |
+              space_element::Flags::gradient |
+              space_element::Flags::hessian;
 
-    auto elem = space->begin();
+  auto elem = space->begin();
 
-    auto elem_handler = space->get_elem_handler();
+  auto elem_handler = space->get_elem_handler();
 
-    elem_handler->template set_flags<k>(flag);
-    elem_handler->template init_cache<k>(*elem,quad);
+  elem_handler->template set_flags<k>(flag);
+  elem_handler->template init_cache<k>(*elem,quad);
 
-    using Elem = typename Space::ElementAccessor;
-    using _Value = typename Elem::_Value;
-    using _Gradient = typename Elem::_Gradient;
-    using _Hessian = typename Elem::_Hessian;
+  using Elem = typename Space::ElementAccessor;
+  using _Value = typename Elem::_Value;
+  using _Gradient = typename Elem::_Gradient;
+  using _Hessian = typename Elem::_Hessian;
 
-    for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
-    {
-        elem_handler->template fill_cache<k>(*elem,0);
+  for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
+  {
+    elem_handler->template fill_cache<k>(*elem,0);
 
     out << "Sub Element: " << s_id << endl;
     auto values    = elem->template get_basis<_Value,k>(s_id,DofProperties::active);
@@ -88,58 +88,58 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
 template<int dim, int k=dim, int range = 1, int rank = 1>
 void bspline_iterator_active_dofs(const int deg = 2,const int n_qp = 3)
 {
-    OUTSTART
+  OUTSTART
 
-    auto grid = CartesianGrid<dim>::create();
-    using Space = BSplineSpace<dim, range, rank>;
-    auto space = Space::create_nonconst(deg, grid);
+  auto grid = CartesianGrid<dim>::create();
+  using Space = BSplineSpace<dim, range, rank>;
+  auto space = Space::create_nonconst(deg, grid);
 
-    auto dof_distribution = space->get_ptr_dof_distribution();
-    //dof_distribution->add_dofs_property(DofProperties::active);
-    for (const auto dof: dof_distribution->get_dofs_view())
-        if (dof % 2 == 0)
-            dof_distribution->set_dof_property_status(DofProperties::active,dof,true);
-        else
-            dof_distribution->set_dof_property_status(DofProperties::active,dof,false);
+  auto dof_distribution = space->get_ptr_dof_distribution();
+  //dof_distribution->add_dofs_property(DofProperties::active);
+  for (const auto dof: dof_distribution->get_dofs_view())
+    if (dof % 2 == 0)
+      dof_distribution->set_dof_property_status(DofProperties::active,dof,true);
+    else
+      dof_distribution->set_dof_property_status(DofProperties::active,dof,false);
 
-    auto quad = QGauss<k>::create(n_qp);
-    auto flag = space_element::Flags::value |
-                space_element::Flags::gradient |
-                space_element::Flags::hessian;
+  auto quad = QGauss<k>::create(n_qp);
+  auto flag = space_element::Flags::value |
+              space_element::Flags::gradient |
+              space_element::Flags::hessian;
 
-    auto elem = space->begin();
+  auto elem = space->begin();
 
-    auto elem_handler = space->get_elem_handler();
+  auto elem_handler = space->get_elem_handler();
 
-    elem_handler->template set_flags<k>(flag);
-    elem_handler->init_element_cache(elem,quad);
+  elem_handler->template set_flags<k>(flag);
+  elem_handler->init_element_cache(elem,quad);
 
-    using Elem = typename Space::ElementAccessor;
-    using _Value = typename Elem::_Value;
-    using _Gradient = typename Elem::_Gradient;
-    using _Hessian = typename Elem::_Hessian;
+  using Elem = typename Space::ElementAccessor;
+  using _Value = typename Elem::_Value;
+  using _Gradient = typename Elem::_Gradient;
+  using _Hessian = typename Elem::_Hessian;
 
-    for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
-    {
-        elem_handler->fill_element_cache(elem);
+  for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
+  {
+    elem_handler->fill_element_cache(elem);
 
-        out << "Sub Element: " << s_id << endl;
-        auto values    = elem->template get_basis<_Value,k>(s_id,DofProperties::active);
-        auto gradients = elem->template get_basis<_Gradient,k>(s_id,DofProperties::active);
-        auto hessians  = elem->template get_basis<_Hessian,k>(s_id,DofProperties::active);
+    out << "Sub Element: " << s_id << endl;
+    auto values    = elem->template get_basis<_Value,k>(s_id,DofProperties::active);
+    auto gradients = elem->template get_basis<_Gradient,k>(s_id,DofProperties::active);
+    auto hessians  = elem->template get_basis<_Hessian,k>(s_id,DofProperties::active);
 
-        out.begin_item("Values basis functions:");
-        values.print_info(out);
-        out.end_item();
+    out.begin_item("Values basis functions:");
+    values.print_info(out);
+    out.end_item();
 
-        out.begin_item("Gradients basis functions:");
-        gradients.print_info(out);
-        out.end_item();
+    out.begin_item("Gradients basis functions:");
+    gradients.print_info(out);
+    out.end_item();
 
-        out.begin_item("Hessians basis functions:");
-        hessians.print_info(out);
-        out.end_item();
-    }
+    out.begin_item("Hessians basis functions:");
+    hessians.print_info(out);
+    out.end_item();
+  }
 }
 
 

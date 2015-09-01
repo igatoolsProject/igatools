@@ -28,16 +28,16 @@
 template <int dim>
 auto non_uniform_grid(const int max_nodes = 5)
 {
-	SafeSTLArray<SafeSTLVector<Real>,dim> knots;
-    for(int i=0; i<dim; ++i)
-    {
-    	knots[i].resize(max_nodes-i);
-    	auto prog=knots[i];
-    	 std::iota (prog.begin(), prog.end(),0);
-    	std::partial_sum (prog.begin(), prog.end(), knots[i].begin());
-    }
+  SafeSTLArray<SafeSTLVector<Real>,dim> knots;
+  for (int i=0; i<dim; ++i)
+  {
+    knots[i].resize(max_nodes-i);
+    auto prog=knots[i];
+    std::iota(prog.begin(), prog.end(),0);
+    std::partial_sum(prog.begin(), prog.end(), knots[i].begin());
+  }
 
-    return CartesianGrid<dim>::create(knots);
+  return CartesianGrid<dim>::create(knots);
 }
 
 #define __TESTS_TEST_UTILS_H_

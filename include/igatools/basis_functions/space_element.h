@@ -75,8 +75,8 @@ public:
   static const int dim = dim_;
   static const int space_dim = Func::space_dim;
 
-    using Sp = Space<dim_,codim_,range_,rank_,type_>;
-    using ContainerType = Sp;
+  using Sp = Space<dim_,codim_,range_,rank_,type_>;
+  using ContainerType = Sp;
 
   /**
    * For each component gives a product array of the dimension
@@ -217,136 +217,136 @@ public:
     int fn = 0;
     for (const auto loc_dof : dofs_local_to_elem)
     {
-            const auto values_all_elem_dofs_fn = values_all_elem_dofs.get_function_view(loc_dof);
+      const auto values_all_elem_dofs_fn = values_all_elem_dofs.get_function_view(loc_dof);
 
-            const auto values_filtered_elem_dofs_fn = values_filtered_elem_dofs.get_function_view(fn);
+      const auto values_filtered_elem_dofs_fn = values_filtered_elem_dofs.get_function_view(fn);
 
-            std::copy(values_all_elem_dofs_fn.begin(),
-                      values_all_elem_dofs_fn.end(),
-                      values_filtered_elem_dofs_fn.begin());
+      std::copy(values_all_elem_dofs_fn.begin(),
+                values_all_elem_dofs_fn.end(),
+                values_filtered_elem_dofs_fn.begin());
 
-            ++fn;
-        }
-        // filtering the values that correspond to the dofs with the given property --- end
-        //--------------------------------------------------------------------------------------
-
-        return values_filtered_elem_dofs;
+      ++fn;
     }
+    // filtering the values that correspond to the dofs with the given property --- end
+    //--------------------------------------------------------------------------------------
 
-    template <class ValueType>
-    auto
-    get_basis_element(const std::string &dofs_property = DofProperties::active) const
-    {
-        return this->template get_basis<ValueType,dim_>(0,dofs_property);
-    }
+    return values_filtered_elem_dofs;
+  }
 
-    template <class ValueType, int sub_elem_dim = dim_>
-    auto
-    linear_combination(const SafeSTLVector<Real> &loc_coefs,
-                       const int sub_elem_id,
-                       const std::string &dofs_property) const
-    {
-        const auto &basis_values =
-            this->template get_basis<ValueType, sub_elem_dim>(sub_elem_id,dofs_property);
-        return basis_values.evaluate_linear_combination(loc_coefs) ;
-    }
+  template <class ValueType>
+  auto
+  get_basis_element(const std::string &dofs_property = DofProperties::active) const
+  {
+    return this->template get_basis<ValueType,dim_>(0,dofs_property);
+  }
 
-
-
-    /**
-     * @name Functions for the basis evaluations without the use of the cache.
-     */
-    ///@{
-    /**
-     * Returns a ValueTable with the quantity specified by the template parameter @p ValueType,
-     * computed for all local basis function,
-     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
-     * @note This function does not use the cache and therefore can be called any time without
-     * needing to pre-call init_cache()/fill_cache().
-     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
-     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
-     */
-    template <class ValueType>
-    auto
-    evaluate_basis_at_points(
-        const std::shared_ptr<const Quadrature<dim_>> &points,
-        const std::string &dofs_property)
-    {
-        auto elem_handler = this->space_->get_elem_handler();
-        elem_handler->template set_flags<dim_>(ValueType::flag);
-        elem_handler->init_element_cache(*this,points);
-        elem_handler->fill_element_cache(*this);
-
-        return this->template get_basis_element<ValueType>(dofs_property);
-    }
-
-    ///@}
+  template <class ValueType, int sub_elem_dim = dim_>
+  auto
+  linear_combination(const SafeSTLVector<Real> &loc_coefs,
+                     const int sub_elem_id,
+                     const std::string &dofs_property) const
+  {
+    const auto &basis_values =
+      this->template get_basis<ValueType, sub_elem_dim>(sub_elem_id,dofs_property);
+    return basis_values.evaluate_linear_combination(loc_coefs) ;
+  }
 
 
 
+  /**
+   * @name Functions for the basis evaluations without the use of the cache.
+   */
+  ///@{
+  /**
+   * Returns a ValueTable with the quantity specified by the template parameter @p ValueType,
+   * computed for all local basis function,
+   * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+   * @note This function does not use the cache and therefore can be called any time without
+   * needing to pre-call init_cache()/fill_cache().
+   * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+   * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+   */
+  template <class ValueType>
+  auto
+  evaluate_basis_at_points(
+    const std::shared_ptr<const Quadrature<dim_>> &points,
+    const std::string &dofs_property)
+  {
+    auto elem_handler = this->space_->get_elem_handler();
+    elem_handler->template set_flags<dim_>(ValueType::flag);
+    elem_handler->init_element_cache(*this,points);
+    elem_handler->fill_element_cache(*this);
 
-    /**
-     * Returns the <tt>k</tt> dimensional j-th sub-element measure
-     * multiplied by the weights of the quadrature.
-     */
-    template <int k>
-    ValueVector<Real> get_w_measures(const int j) const;
+    return this->template get_basis_element<ValueType>(dofs_property);
+  }
+
+  ///@}
 
 
 
-    virtual void print_info(LogStream &out) const;
 
-    virtual void print_cache_info(LogStream &out) const;
+  /**
+   * Returns the <tt>k</tt> dimensional j-th sub-element measure
+   * multiplied by the weights of the quadrature.
+   */
+  template <int k>
+  ValueVector<Real> get_w_measures(const int j) const;
 
 
-    /**
-     * Alias used to define the container for the basis function values in the cache.
-     */
-    class _Value
-    {
-    public:
-        static const std::string name;
-        static const auto flag = Flags::value;
-    };
 
-    /**
-     * Alias used to define the container for the basis function gradients in the cache.
-     */
-    class _Gradient
-    {
-    public:
-        static const std::string name;
-        static const auto flag = Flags::gradient;
-    };
+  virtual void print_info(LogStream &out) const;
 
-    /**
-     * Alias used to define the container for the basis function hessians in the cache.
-     */
-    class _Hessian
-    {
-    public:
-        static const std::string name;
-        static const auto flag = Flags::hessian;
-    };
+  virtual void print_cache_info(LogStream &out) const;
 
-    /**
-     * Alias used to define the container for the basis function divergences in the cache.
-     */
-    class _Divergence
-    {
-    public:
-        static const std::string name;
-        static const auto flag = Flags::divergence;
-    };
 
-    using CType = boost::fusion::map<
-                  boost::fusion::pair<     _Value,DataWithFlagStatus<ValueTable<Value>>>,
-                  boost::fusion::pair<  _Gradient,DataWithFlagStatus<ValueTable<Derivative<1>>>>,
-                  boost::fusion::pair<   _Hessian,DataWithFlagStatus<ValueTable<Derivative<2>>>>,
-                  boost::fusion::pair<_Divergence,DataWithFlagStatus<ValueTable<Div>>>
-                  >;
+  /**
+   * Alias used to define the container for the basis function values in the cache.
+   */
+  class _Value
+  {
+  public:
+    static const std::string name;
+    static const auto flag = Flags::value;
+  };
 
-    using Cache = BasisValuesCache<dim_,CType>;
+  /**
+   * Alias used to define the container for the basis function gradients in the cache.
+   */
+  class _Gradient
+  {
+  public:
+    static const std::string name;
+    static const auto flag = Flags::gradient;
+  };
+
+  /**
+   * Alias used to define the container for the basis function hessians in the cache.
+   */
+  class _Hessian
+  {
+  public:
+    static const std::string name;
+    static const auto flag = Flags::hessian;
+  };
+
+  /**
+   * Alias used to define the container for the basis function divergences in the cache.
+   */
+  class _Divergence
+  {
+  public:
+    static const std::string name;
+    static const auto flag = Flags::divergence;
+  };
+
+  using CType = boost::fusion::map<
+                boost::fusion::pair<     _Value,DataWithFlagStatus<ValueTable<Value>>>,
+                boost::fusion::pair<  _Gradient,DataWithFlagStatus<ValueTable<Derivative<1>>>>,
+                boost::fusion::pair<   _Hessian,DataWithFlagStatus<ValueTable<Derivative<2>>>>,
+                boost::fusion::pair<_Divergence,DataWithFlagStatus<ValueTable<Div>>>
+                >;
+
+  using Cache = BasisValuesCache<dim_,CType>;
 
 protected:
 
@@ -363,7 +363,7 @@ public:
     return this->all_sub_elems_cache_;
   }
 
-    std::shared_ptr<const Sp> get_space() const;
+  std::shared_ptr<const Sp> get_space() const;
 
 private:
   template <class ValueType, int topology_dim>
@@ -387,7 +387,7 @@ protected:
 
 private:
 
-    std::shared_ptr<const Sp> space_;
+  std::shared_ptr<const Sp> space_;
 
 
 

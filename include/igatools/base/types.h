@@ -556,14 +556,14 @@ struct seq<Q, start, start>
 template<template<int> class Q, int start, std::size_t N>
 struct seq
 {
-    using v1 = typename seq<Q, start, N-1>::type;
-    using type = typename boost::mpl::push_back<v1, Q<N> >::type;
+  using v1 = typename seq<Q, start, N-1>::type;
+  using type = typename boost::mpl::push_back<v1, Q<N> >::type;
 };
 
 
 template <template<int> class T,int dim>
 using SubElemVariants =
-    typename boost::make_variant_over<typename seq<T, iga::max(0, dim-num_sub_elem), dim>::type>::type;
+  typename boost::make_variant_over<typename seq<T, iga::max(0, dim-num_sub_elem), dim>::type>::type;
 
 
 template <int dim>
@@ -583,20 +583,20 @@ struct seq_ptr;
 template<template<int> class Q, int start>
 struct seq_ptr<Q, start, start>
 {
-    using type = boost::mpl::vector<std::shared_ptr< const Q<start> > >;
+  using type = boost::mpl::vector<std::shared_ptr< const Q<start> > >;
 };
 
 template<template<int> class Q, int start, std::size_t N>
 struct seq_ptr
 {
-    using v1 = typename seq_ptr<Q, start, N-1>::type;
-    using type = typename boost::mpl::push_back<v1, std::shared_ptr< const Q<N> > >::type;
+  using v1 = typename seq_ptr<Q, start, N-1>::type;
+  using type = typename boost::mpl::push_back<v1, std::shared_ptr< const Q<N> > >::type;
 };
 
 
 template <template<int> class T,int dim>
 using SubElemPtrVariants =
-    typename boost::make_variant_over<typename seq_ptr<T, iga::max(0, dim-num_sub_elem), dim>::type>::type;
+  typename boost::make_variant_over<typename seq_ptr<T, iga::max(0, dim-num_sub_elem), dim>::type>::type;
 
 template <int>
 class Quadrature;
@@ -615,20 +615,20 @@ namespace space_element
 {
 enum class Flags
 {
-    /** Fill nothing */
-    none           =    0,          //!< none
+  /** Fill nothing */
+  none           =    0,          //!< none
 
-    /** Basis functions value */
-    value          =    1L << 1,    //!< value
+  /** Basis functions value */
+  value          =    1L << 1,    //!< value
 
-    /** Basis functions gradient */
-    gradient          =    1L << 2, //!< gradient
+  /** Basis functions gradient */
+  gradient          =    1L << 2, //!< gradient
 
-    /** Basis functions hessian */
-    hessian          =    1L << 3,  //!< hessian
+  /** Basis functions hessian */
+  hessian          =    1L << 3,  //!< hessian
 
-    /** Basis functions divergence */
-    divergence          =    1L << 4//!< divergence
+  /** Basis functions divergence */
+  divergence          =    1L << 4//!< divergence
 };
 }
 //---------------------------------------------------------------------------------------

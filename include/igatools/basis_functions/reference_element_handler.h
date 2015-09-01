@@ -48,14 +48,14 @@ public:
   using ElementIterator = typename Space::ElementIterator;
   using ElementAccessor = typename Space::ElementAccessor;
 
-    using topology_variant = TopologyVariants<dim>;
-    using eval_pts_variant = QuadVariants<dim>;
+  using topology_variant = TopologyVariants<dim>;
+  using eval_pts_variant = QuadVariants<dim>;
 
 
-    using Flags = space_element::Flags;
+  using Flags = space_element::Flags;
 
-    static std::shared_ptr<ReferenceElementHandler<dim,range,rank> >
-    create(const std::shared_ptr<const Space> &space);
+  static std::shared_ptr<ReferenceElementHandler<dim,range,rank> >
+  create(const std::shared_ptr<const Space> &space);
 
 protected:
   /** @name Constructors */
@@ -125,10 +125,10 @@ protected:
   GridElementHandler<dim> grid_handler_;
 
 public:
-    /**
-     * Returns the const reference of the GridElementHandler used by the current ReferenceElementHandler.
-     * @return
-     */
+  /**
+   * Returns the const reference of the GridElementHandler used by the current ReferenceElementHandler.
+   * @return
+   */
 //    const GridElementHandler<dim> &get_grid_handler() const;
 
 

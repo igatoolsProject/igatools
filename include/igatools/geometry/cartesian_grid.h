@@ -647,42 +647,42 @@ private:
   Index object_id_;
 
 public:
-    /**
-     * Create an element (defined on this grid) with a given index and the given property
-     */
-    std::shared_ptr<ConstElementAccessor>
-    create_element(const ListIt &index, const PropId &property) const;
+  /**
+   * Create an element (defined on this grid) with a given index and the given property
+   */
+  std::shared_ptr<ConstElementAccessor>
+  create_element(const ListIt &index, const PropId &property) const;
 
-    /**
-     * Create an element (defined on this grid) with a given index and the given property
-     */
-    std::shared_ptr<ElementAccessor>
-    create_element(const ListIt &index, const PropId &property);
+  /**
+   * Create an element (defined on this grid) with a given index and the given property
+   */
+  std::shared_ptr<ElementAccessor>
+  create_element(const ListIt &index, const PropId &property);
 
-    /**
-     * Returns the unique identifier associated to each object instance.
-     */
-    Index get_object_id() const;
-    /**
-     * @name Functions related to the management/query of the element properties.
-     */
-    ///@{
-    /**
-    * Adds a new <tt>property</tt> definition for the elements in the
-    * CartesianGrid.
-    *
-    * @note If the <tt>property</tt> is already present, an assertion will
-    *  be raised (in Debug mode).
-    */
-    void add_property(const PropId &property);
+  /**
+   * Returns the unique identifier associated to each object instance.
+   */
+  Index get_object_id() const;
+  /**
+   * @name Functions related to the management/query of the element properties.
+   */
+  ///@{
+  /**
+  * Adds a new <tt>property</tt> definition for the elements in the
+  * CartesianGrid.
+  *
+  * @note If the <tt>property</tt> is already present, an assertion will
+  *  be raised (in Debug mode).
+  */
+  void add_property(const PropId &property);
 
-    /**
-     * Prefer the use through the element iterator instead of
-     * this function
-     */
-    const List &get_element_property(const PropId &prop) const;
+  /**
+   * Prefer the use through the element iterator instead of
+   * this function
+   */
+  const List &get_element_property(const PropId &prop) const;
 
-    List &get_element_property(const PropId &prop);
+  List &get_element_property(const PropId &prop);
 
 
 #if 0

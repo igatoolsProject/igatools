@@ -139,232 +139,232 @@ public:
 
 private:
 
-    virtual void set_flags_impl(const typename space_element::Flags &flag, const topology_variant &topology) override final
-    {
-        auto elem_flags = flag;
-        if (contains(flag,space_element::Flags::divergence))
-            elem_flags |= space_element::Flags::gradient;
+  virtual void set_flags_impl(const typename space_element::Flags &flag, const topology_variant &topology) override final
+  {
+    auto elem_flags = flag;
+    if (contains(flag,space_element::Flags::divergence))
+      elem_flags |= space_element::Flags::gradient;
 
 
-        auto set_flag_dispatcher = SetFlagDispatcher(elem_flags,this->grid_handler_,flags_);
-        boost::apply_visitor(set_flag_dispatcher,topology);
-    }
+    auto set_flag_dispatcher = SetFlagDispatcher(elem_flags,this->grid_handler_,flags_);
+    boost::apply_visitor(set_flag_dispatcher,topology);
+  }
 
-    struct SetFlagDispatcher : boost::static_visitor<void>
-    {
-        SetFlagDispatcher(const typename space_element::Flags flag_in,
-                          GridElementHandler<dim_> &grid_handler,
-                          SafeSTLArray<typename space_element::Flags, dim+1> &flags)
-            :
-            flag_in_(flag_in),
-            grid_handler_(grid_handler),
-            flags_(flags)
-        {}
+  struct SetFlagDispatcher : boost::static_visitor<void>
+  {
+    SetFlagDispatcher(const typename space_element::Flags flag_in,
+                      GridElementHandler<dim_> &grid_handler,
+                      SafeSTLArray<typename space_element::Flags, dim+1> &flags)
+      :
+      flag_in_(flag_in),
+      grid_handler_(grid_handler),
+      flags_(flags)
+    {}
 
-        template<int sdim>
-        void operator()(const Topology<sdim> &topology);
-
-
-    private:
-        const typename space_element::Flags flag_in_;
-        GridElementHandler<dim_> &grid_handler_;
-        SafeSTLArray<typename space_element::Flags, dim+1> &flags_;
-    };
+    template<int sdim>
+    void operator()(const Topology<sdim> &topology);
 
 
-    using BaseElem = SpaceElement<dim_,0,range_,rank_,Transformation::h_grad>;
-
-    virtual void init_cache_impl(BaseElem &elem,
-                                 const eval_pts_variant &quad) const override final
-    {
-        auto init_cache_dispatcher = InitCacheDispatcher(this->grid_handler_,flags_,elem);
-        boost::apply_visitor(init_cache_dispatcher,quad);
-    }
-
-    struct InitCacheDispatcher : boost::static_visitor<void>
-    {
-        InitCacheDispatcher(const GridElementHandler<dim_> &grid_handler,
-                            const SafeSTLArray<typename space_element::Flags, dim+1> &flags,
-                            BaseElem &elem)
-            :
-            grid_handler_(grid_handler),
-            flags_(flags),
-            elem_(elem)
-        {}
+  private:
+    const typename space_element::Flags flag_in_;
+    GridElementHandler<dim_> &grid_handler_;
+    SafeSTLArray<typename space_element::Flags, dim+1> &flags_;
+  };
 
 
-        template<int sdim>
-        void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad);
+  using BaseElem = SpaceElement<dim_,0,range_,rank_,Transformation::h_grad>;
 
-    private:
-        const GridElementHandler<dim_> &grid_handler_;
-        const SafeSTLArray<typename space_element::Flags, dim+1> &flags_;
-        BaseElem &elem_;
+  virtual void init_cache_impl(BaseElem &elem,
+                               const eval_pts_variant &quad) const override final
+  {
+    auto init_cache_dispatcher = InitCacheDispatcher(this->grid_handler_,flags_,elem);
+    boost::apply_visitor(init_cache_dispatcher,quad);
+  }
 
-        template<int sdim>
-        void init_cache_1D();
-
-        template<int sdim>
-        void init_cache_multiD();
-    };
-
-    virtual void fill_cache_impl(BaseElem &elem,
-                                 const topology_variant &topology,
-                                 const int s_id) const override final
-    {
-        auto fill_cache_dispatcher = FillCacheDispatcherNoGlobalCache(s_id,this->grid_handler_,elem);
-        boost::apply_visitor(fill_cache_dispatcher,topology);
-    }
+  struct InitCacheDispatcher : boost::static_visitor<void>
+  {
+    InitCacheDispatcher(const GridElementHandler<dim_> &grid_handler,
+                        const SafeSTLArray<typename space_element::Flags, dim+1> &flags,
+                        BaseElem &elem)
+      :
+      grid_handler_(grid_handler),
+      flags_(flags),
+      elem_(elem)
+    {}
 
 
-    struct FillCacheDispatcherNoGlobalCache : boost::static_visitor<void>
-    {
-        FillCacheDispatcherNoGlobalCache(const int s_id,
-                                         const GridElementHandler<dim_> &grid_handler,
-                                         BaseElem &elem)
-            :
-            s_id_(s_id),
-            grid_handler_(grid_handler),
-            elem_(elem)
-        {}
+    template<int sdim>
+    void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad);
 
-        template<int sdim>
-        void operator()(const Topology<sdim> &topology);
+  private:
+    const GridElementHandler<dim_> &grid_handler_;
+    const SafeSTLArray<typename space_element::Flags, dim+1> &flags_;
+    BaseElem &elem_;
 
-    private:
+    template<int sdim>
+    void init_cache_1D();
 
-        template<int sdim>
-        void fill_cache_1D(const Quadrature<dim> &extended_sub_elem_quad);
+    template<int sdim>
+    void init_cache_multiD();
+  };
 
-        template<int sdim>
-        void fill_cache_multiD(const Quadrature<dim> &extended_sub_elem_quad);
-
-        /**
-         * Computes the values (i.e. the 0-th order derivative) of the non-zero
-         *  B-spline basis
-         * functions over the current element,
-         *   at the evaluation points pre-allocated in the cache.
-         *
-         * \warning If the output result @p D_phi is not correctly
-         * pre-allocated,
-         * an exception will be raised.
-         */
-        void evaluate_bspline_values(
-            const ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>>> &elem_values,
-            ValueTable<Value> &D_phi) const;
-
-        /**
-         * Computes the k-th order derivative of the non-zero B-spline basis
-         * functions over the current element,
-         *   at the evaluation points pre-allocated in the cache.
-         *
-         * \warning If the output result @p D_phi is not correctly pre-allocated,
-         * an exception will be raised.
-         */
-        template <int order>
-        void evaluate_bspline_derivatives(
-            const ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>>> &elem_values,
-            ValueTable<Derivative<order>> &D_phi) const;
+  virtual void fill_cache_impl(BaseElem &elem,
+                               const topology_variant &topology,
+                               const int s_id) const override final
+  {
+    auto fill_cache_dispatcher = FillCacheDispatcherNoGlobalCache(s_id,this->grid_handler_,elem);
+    boost::apply_visitor(fill_cache_dispatcher,topology);
+  }
 
 
-        void
-        copy_to_inactive_components_values(const SafeSTLVector<Index> &inactive_comp,
-                                           const SafeSTLArray<Index, n_components> &active_map,
-                                           ValueTable<Value> &D_phi) const;
+  struct FillCacheDispatcherNoGlobalCache : boost::static_visitor<void>
+  {
+    FillCacheDispatcherNoGlobalCache(const int s_id,
+                                     const GridElementHandler<dim_> &grid_handler,
+                                     BaseElem &elem)
+      :
+      s_id_(s_id),
+      grid_handler_(grid_handler),
+      elem_(elem)
+    {}
 
-        template <int order>
-        void
-        copy_to_inactive_components(const SafeSTLVector<Index> &inactive_comp,
-                                    const SafeSTLArray<Index, n_components> &active_map,
-                                    ValueTable<Derivative<order>> &D_phi) const;
+    template<int sdim>
+    void operator()(const Topology<sdim> &topology);
+
+  private:
+
+    template<int sdim>
+    void fill_cache_1D(const Quadrature<dim> &extended_sub_elem_quad);
+
+    template<int sdim>
+    void fill_cache_multiD(const Quadrature<dim> &extended_sub_elem_quad);
+
+    /**
+     * Computes the values (i.e. the 0-th order derivative) of the non-zero
+     *  B-spline basis
+     * functions over the current element,
+     *   at the evaluation points pre-allocated in the cache.
+     *
+     * \warning If the output result @p D_phi is not correctly
+     * pre-allocated,
+     * an exception will be raised.
+     */
+    void evaluate_bspline_values(
+      const ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>>> &elem_values,
+      ValueTable<Value> &D_phi) const;
+
+    /**
+     * Computes the k-th order derivative of the non-zero B-spline basis
+     * functions over the current element,
+     *   at the evaluation points pre-allocated in the cache.
+     *
+     * \warning If the output result @p D_phi is not correctly pre-allocated,
+     * an exception will be raised.
+     */
+    template <int order>
+    void evaluate_bspline_derivatives(
+      const ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>>> &elem_values,
+      ValueTable<Derivative<order>> &D_phi) const;
 
 
-        const int s_id_;
-        const GridElementHandler<dim_> &grid_handler_;
-        BaseElem &elem_;
-    };
+    void
+    copy_to_inactive_components_values(const SafeSTLVector<Index> &inactive_comp,
+                                       const SafeSTLArray<Index, n_components> &active_map,
+                                       ValueTable<Value> &D_phi) const;
+
+    template <int order>
+    void
+    copy_to_inactive_components(const SafeSTLVector<Index> &inactive_comp,
+                                const SafeSTLArray<Index, n_components> &active_map,
+                                ValueTable<Derivative<order>> &D_phi) const;
+
+
+    const int s_id_;
+    const GridElementHandler<dim_> &grid_handler_;
+    BaseElem &elem_;
+  };
 
 
 
 #if 0
+  /**
+   * One-dimensional B-splines values and derivatives at quadrature points.
+   * The values are stored with the following index ordering:
+   *
+   * splines1d_[comp][dir][interval][order][function][point]
+   *
+   * @ingroup serializable
+   */
+  class GlobalCache
+  {
+  private:
+
+
     /**
-     * One-dimensional B-splines values and derivatives at quadrature points.
-     * The values are stored with the following index ordering:
-     *
-     * splines1d_[comp][dir][interval][order][function][point]
-     *
-     * @ingroup serializable
+     * Quadrature points used for the 1D basis evaluation.
      */
-    class GlobalCache
-    {
-    private:
+    std::shared_ptr<const Quadrature<dim>> quad_;
 
 
-        /**
-         * Quadrature points used for the 1D basis evaluation.
-         */
-        std::shared_ptr<const Quadrature<dim>> quad_;
+    using BasisValues1dTable = ComponentContainer<SafeSTLArray<std::map<Index,BasisValues1d>,dim>>;
+
+    /**
+     * Values (and derivatives) of 1D basis precomputed in the initalized
+     * interval of a given direction.
+     *
+     * @note The map's key is the interval id. In Debug mode, it will be
+     * raised an assertion if
+     * the requested values are not initialized for the interval.
+     *
+     */
+    BasisValues1dTable basis_values_1d_table_;
 
 
-        using BasisValues1dTable = ComponentContainer<SafeSTLArray<std::map<Index,BasisValues1d>,dim>>;
+  public:
+    using ComponentMap = typename BasisValues1dTable::ComponentMap;
 
-        /**
-         * Values (and derivatives) of 1D basis precomputed in the initalized
-         * interval of a given direction.
-         *
-         * @note The map's key is the interval id. In Debug mode, it will be
-         * raised an assertion if
-         * the requested values are not initialized for the interval.
-         *
-         */
-        BasisValues1dTable basis_values_1d_table_;
+    GlobalCache() = default;
+
+    GlobalCache(const std::shared_ptr<const Quadrature<dim>> &quad, const ComponentMap &component_map);
 
 
-    public:
-        using ComponentMap = typename BasisValues1dTable::ComponentMap;
+    ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>> >
+        get_element_values(const TensorIndex<dim> &elem_tensor_id) const;
 
-        GlobalCache() = default;
+    BasisValues1d &entry(const int comp, const int dir, const Index interval_id);
 
-        GlobalCache(const std::shared_ptr<const Quadrature<dim>> &quad, const ComponentMap &component_map);
+    void print_info(LogStream &out) const;
 
-
-        ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>> >
-                get_element_values(const TensorIndex<dim> &elem_tensor_id) const;
-
-        BasisValues1d &entry(const int comp, const int dir, const Index interval_id);
-
-        void print_info(LogStream &out) const;
-
-    private:
+  private:
 #ifdef SERIALIZATION
-        /**
-         * @name Functions needed for boost::serialization
-         * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-         */
-        ///@{
-        friend class boost::serialization::access;
+    /**
+     * @name Functions needed for boost::serialization
+     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+     */
+    ///@{
+    friend class boost::serialization::access;
 
-        template<class Archive>
-        void
-        serialize(Archive &ar, const unsigned int version)
-        {
-            ar &boost::serialization::make_nvp("quad_",quad_);
-            ar &boost::serialization::make_nvp("basis_values_1d_table_",basis_values_1d_table_);
-        }
-        ///@}
+    template<class Archive>
+    void
+    serialize(Archive &ar, const unsigned int version)
+    {
+      ar &boost::serialization::make_nvp("quad_",quad_);
+      ar &boost::serialization::make_nvp("basis_values_1d_table_",basis_values_1d_table_);
+    }
+    ///@}
 #endif // SERIALIZATION
-    };
+  };
 #endif
 
 
 
-    /**
-     * Returns the BSplineSpace used to define the BSplineElementHandler object.
-     */
-    std::shared_ptr<const Space> get_bspline_space() const;
+  /**
+   * Returns the BSplineSpace used to define the BSplineElementHandler object.
+   */
+  std::shared_ptr<const Space> get_bspline_space() const;
 
 
-    SafeSTLArray<typename space_element::Flags, dim_ + 1> flags_;
+  SafeSTLArray<typename space_element::Flags, dim_ + 1> flags_;
 
 
 

@@ -179,62 +179,62 @@ public:
 
 public:
 
-    /**
-     * @name Comparison operators.
-     *
-     * @brief The comparison operators compares the <em>position</em> of the element in the grid.
-     *
-     * @warning To be comparable, two SpaceElementBase objects must be defined on the same space
-     * (and therefore on the same grid),
-     * otherwise an assertion will be raised (in Debug mode).
-     */
-    ///@{
-    /** Returns TRUE if the two elements have the same index on the grid. */
-    bool operator==(const self_t &a) const;
+  /**
+   * @name Comparison operators.
+   *
+   * @brief The comparison operators compares the <em>position</em> of the element in the grid.
+   *
+   * @warning To be comparable, two SpaceElementBase objects must be defined on the same space
+   * (and therefore on the same grid),
+   * otherwise an assertion will be raised (in Debug mode).
+   */
+  ///@{
+  /** Returns TRUE if the two elements have the same index on the grid. */
+  bool operator==(const self_t &a) const;
 
 
-    /** Returns TRUE if the two elements have different indices on the grid. */
-    bool operator!=(const self_t &a) const;
+  /** Returns TRUE if the two elements have different indices on the grid. */
+  bool operator!=(const self_t &a) const;
 
-    /**
-     * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
-     * is smaller than the the index of the element on the right.
-     * */
-    bool operator<(const self_t &a) const;
+  /**
+   * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
+   * is smaller than the the index of the element on the right.
+   * */
+  bool operator<(const self_t &a) const;
 
-    /**
-     * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
-     * is bigger than the the index of the element on the right.
-     * */
-    bool operator>(const self_t &a) const;
-    ///@}
+  /**
+   * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
+   * is bigger than the the index of the element on the right.
+   * */
+  bool operator>(const self_t &a) const;
+  ///@}
 
 
 
-    /** Returns the index of the element. */
-    IndexType get_index() const;
+  /** Returns the index of the element. */
+  IndexType get_index() const;
 
-    /** Return the cartesian grid from which the element belongs.*/
-    std::shared_ptr<const CartesianGrid<dim> > get_grid() const;
+  /** Return the cartesian grid from which the element belongs.*/
+  std::shared_ptr<const CartesianGrid<dim> > get_grid() const;
 
-    /**
-     * Test if the element has a boundary face.
-      */
-    template<int k = (dim > 0) ? (dim-1) : 0 >
-    bool is_boundary() const
-    {
-        return grid_elem_->is_boundary();
-    }
+  /**
+   * Test if the element has a boundary face.
+    */
+  template<int k = (dim > 0) ? (dim-1) : 0 >
+  bool is_boundary() const
+  {
+    return grid_elem_->is_boundary();
+  }
 
-    /**
-     * Test if the face identified by @p face_id on the current element is on the
-     * boundary of the cartesian grid.
-     */
-    template<int k = (dim > 0) ? (dim-1) : 0>
-    bool is_boundary(const Index sub_elem_id) const
-    {
-        return grid_elem_->is_boundary(sub_elem_id);
-    }
+  /**
+   * Test if the face identified by @p face_id on the current element is on the
+   * boundary of the cartesian grid.
+   */
+  template<int k = (dim > 0) ? (dim-1) : 0>
+  bool is_boundary(const Index sub_elem_id) const
+  {
+    return grid_elem_->is_boundary(sub_elem_id);
+  }
 
 
 private:
@@ -259,17 +259,17 @@ private:
 
 
 protected:
-    int max_num_basis_;
+  int max_num_basis_;
 
 
 public:
 
-    /**
-     *  Maximum number of non zero basis functions, over the current element.
-     *  @note The "true" number of basis functions may differ from this value because
-     *  some basis functions may be defined to be "inactive".
-     */
-    int get_max_num_basis() const;
+  /**
+   *  Maximum number of non zero basis functions, over the current element.
+   *  @note The "true" number of basis functions may differ from this value because
+   *  some basis functions may be defined to be "inactive".
+   */
+  int get_max_num_basis() const;
 };
 
 

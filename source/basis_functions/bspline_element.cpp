@@ -277,8 +277,8 @@ BSplineElement<dim, range, rank>::
 BSplineElement(const std::shared_ptr<ContainerType> space,
                const ListIt &index,
                const PropId &prop)
-    :
-    parent_t(space,index,prop)
+  :
+  parent_t(space,index,prop)
 {}
 
 
@@ -324,26 +324,26 @@ void
 BSplineElement<dim, range, rank>::
 print_cache_info(LogStream &out) const
 {
-    using std::to_string;
-    out.begin_item("BSplineElement<" +
-                   to_string(dim) + "," +
-                   to_string(range) + "," +
-                   to_string(range) + "> cache:");
+  using std::to_string;
+  out.begin_item("BSplineElement<" +
+                 to_string(dim) + "," +
+                 to_string(range) + "," +
+                 to_string(range) + "> cache:");
 
-    out.begin_item("Splines 1D table:");
-    for (int sdim = 0 ; sdim <= dim ; ++sdim)
-    {
-        out.begin_item("Sub-element dimension: " + to_string(sdim));
-        all_splines_1D_table_[sdim].print_info(out);
-        out.end_item();
-    }
+  out.begin_item("Splines 1D table:");
+  for (int sdim = 0 ; sdim <= dim ; ++sdim)
+  {
+    out.begin_item("Sub-element dimension: " + to_string(sdim));
+    all_splines_1D_table_[sdim].print_info(out);
     out.end_item();
+  }
+  out.end_item();
 
-    out.begin_item("SpaceElement's cache:");
-    SpaceElement<dim,0,range,rank,Transformation::h_grad>::print_cache_info(out);
-    out.end_item();
+  out.begin_item("SpaceElement's cache:");
+  SpaceElement<dim,0,range,rank,Transformation::h_grad>::print_cache_info(out);
+  out.end_item();
 
-    out.end_item();
+  out.end_item();
 }
 
 
@@ -354,8 +354,8 @@ void
 BSplineElement<dim, range, rank>::
 serialize(Archive &ar, const unsigned int version)
 {
-    ar &boost::serialization::make_nvp("BSplineElement_base_t",
-                                       boost::serialization::base_object<ReferenceElement<dim,range,rank>>(*this));
+  ar &boost::serialization::make_nvp("BSplineElement_base_t",
+                                     boost::serialization::base_object<ReferenceElement<dim,range,rank>>(*this));
 }
 #endif // SERIALIZATION
 

@@ -30,8 +30,8 @@ GridIteratorBase<Element>::
 GridIteratorBase(std::shared_ptr<ContainerType> container,
                  const ListIt &index,
                  const PropId &prop)
-    :
-    elem_(container->create_element(index, prop))
+  :
+  elem_(container->create_element(index, prop))
 {}
 
 

@@ -361,13 +361,13 @@ public:
   using ElementAccessor = SpaceElement<dim_,codim_,range_,rank_,type_>;
   using ElementIterator = GridIterator<ElementAccessor>;
 
-    /** @name Functions involving the element iterator */
-    ///@{
-    /**
-     * Returns a element iterator to the first element of the patch
-     * with the property @p element_property.
-     */
-    ElementIterator begin(const PropId &element_property = ElementProperties::active) ;
+  /** @name Functions involving the element iterator */
+  ///@{
+  /**
+   * Returns a element iterator to the first element of the patch
+   * with the property @p element_property.
+   */
+  ElementIterator begin(const PropId &element_property = ElementProperties::active) ;
 
 
   /**

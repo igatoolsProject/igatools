@@ -122,189 +122,189 @@ protected:
 
 public:
 
-    /**
-     * Retuirns a Quadrature object wrapped by a std::shared_ptr,
-     * given a vector of <tt>points</tt>
-     * in the <tt>dim_</tt>-dimensional space,
-     * and the <tt>bounding_box</tt> in which the points are defined,
-     * and assign the weights value to be equal to 1.
-     *
-     * @note The constructed Quadrature object has not the tensor-product structure.
-     */
-    static std::shared_ptr<self_t> create(
-        const PointVector &points,
-        const BBox<dim_> &bounding_box = BBox<dim_>());
+  /**
+   * Retuirns a Quadrature object wrapped by a std::shared_ptr,
+   * given a vector of <tt>points</tt>
+   * in the <tt>dim_</tt>-dimensional space,
+   * and the <tt>bounding_box</tt> in which the points are defined,
+   * and assign the weights value to be equal to 1.
+   *
+   * @note The constructed Quadrature object has not the tensor-product structure.
+   */
+  static std::shared_ptr<self_t> create(
+    const PointVector &points,
+    const BBox<dim_> &bounding_box = BBox<dim_>());
 
 
-    /**
-     * Tensor product constructor
-     */
-    Quadrature(const PointArray &points,
-               const WeightArray &weights_1d,
-               const BBox<dim_> &bounding_box);
-    /**
-     * Non-tensor product constructor.
-     *
-     * Constructs the object given a vector of <tt>points</tt>
-     * in the <tt>dim_</tt>-dimensional space,
-     * and the <tt>bounding_box</tt> in which the points are defined,
-     * and assign the weights value to be equal to 1.
-     *
-     * @note The constructed Quadrature object has not the tensor-product structure.
-     */
-    Quadrature(const PointVector &points,
-               const BBox<dim_> &bounding_box = BBox<dim_>());
+  /**
+   * Tensor product constructor
+   */
+  Quadrature(const PointArray &points,
+             const WeightArray &weights_1d,
+             const BBox<dim_> &bounding_box);
+  /**
+   * Non-tensor product constructor.
+   *
+   * Constructs the object given a vector of <tt>points</tt>
+   * in the <tt>dim_</tt>-dimensional space,
+   * and the <tt>bounding_box</tt> in which the points are defined,
+   * and assign the weights value to be equal to 1.
+   *
+   * @note The constructed Quadrature object has not the tensor-product structure.
+   */
+  Quadrature(const PointVector &points,
+             const BBox<dim_> &bounding_box = BBox<dim_>());
 
-    /**
-     * Copy constructor.
-     */
-    Quadrature(const self_t &) = default;
+  /**
+   * Copy constructor.
+   */
+  Quadrature(const self_t &) = default;
 
-    /**
-     * Move constructor.
-     */
-    Quadrature(self_t &&) = default;
+  /**
+   * Move constructor.
+   */
+  Quadrature(self_t &&) = default;
 
-    /**
-     * Destructor.
-     */
-    ~Quadrature() = default;
-    ///@}
+  /**
+   * Destructor.
+   */
+  ~Quadrature() = default;
+  ///@}
 
-    /**
-     * @name Assignment operators.
-     */
-    ///@{
-    /**
-     * Copy assignment operator.
-     */
-    self_t &operator=(const self_t &) = default;
+  /**
+   * @name Assignment operators.
+   */
+  ///@{
+  /**
+   * Copy assignment operator.
+   */
+  self_t &operator=(const self_t &) = default;
 
-    /**
-     * Move assignment operator.
-     */
-    self_t &operator=(self_t &&) = default;
-    ///@}
+  /**
+   * Move assignment operator.
+   */
+  self_t &operator=(self_t &&) = default;
+  ///@}
 
-    /**
-     * @name Functions returning information about the number of points and coordinates.
-     */
-    ///@{
-    /**
-     * Returns the total number of evaluation points.
-     */
-    int get_num_points() const;
+  /**
+   * @name Functions returning information about the number of points and coordinates.
+   */
+  ///@{
+  /**
+   * Returns the total number of evaluation points.
+   */
+  int get_num_points() const;
 
-    /**
-     * Returns the number of point coordinates along each direction.
-     */
-    TensorSize<dim_> get_num_coords_direction() const noexcept;
-    ///@}
+  /**
+   * Returns the number of point coordinates along each direction.
+   */
+  TensorSize<dim_> get_num_coords_direction() const noexcept;
+  ///@}
 
-    /**
-     * @name Functions returning informations about the arrangement structure of the points.
-     */
-    ///@{
-    /**
-     * Returns TRUE if the evaluation points have a tensor-product structure.
-     */
-    bool is_tensor_product() const;
-    ///@}
+  /**
+   * @name Functions returning informations about the arrangement structure of the points.
+   */
+  ///@{
+  /**
+   * Returns TRUE if the evaluation points have a tensor-product structure.
+   */
+  bool is_tensor_product() const;
+  ///@}
 
-    /**
-     * Prints internal information about the evaluation points.
-     * \note Mostly used for debugging and testing.
-     */
-    void print_info(LogStream &out) const;
+  /**
+   * Prints internal information about the evaluation points.
+   * \note Mostly used for debugging and testing.
+   */
+  void print_info(LogStream &out) const;
 
-    /**
-     * @name Functions returning internal data (points, weights, coordinates,
-     *  bounding box, etc.)
-     */
-    ///@{
-    /**
-     * Returns all the points.
-     */
-    PointVector get_points() const;
+  /**
+   * @name Functions returning internal data (points, weights, coordinates,
+   *  bounding box, etc.)
+   */
+  ///@{
+  /**
+   * Returns all the points.
+   */
+  PointVector get_points() const;
 
-    /**
-     * Returns the coordinates of the the point with (flat) index <tt>pt_id</tt>
-     */
-    Point get_point(const int pt_id) const;
+  /**
+   * Returns the coordinates of the the point with (flat) index <tt>pt_id</tt>
+   */
+  Point get_point(const int pt_id) const;
 
-    /**
-     * Returns all the weights.
-     */
-    ValueVector<Real> get_weights() const;
+  /**
+   * Returns all the weights.
+   */
+  ValueVector<Real> get_weights() const;
 
-    /**
-     * Returns the weight of the the point with (flat) index <tt>pt_id</tt>
-     */
-    Real get_weight(const int pt_id) const;
-
-
-    /**
-     * Returns coordinates of the points along the <tt>i</tt>-th direction.
-     */
-    const SafeSTLVector<Real> &get_coords_direction(const int i) const;
-
-    const PointArray &get_points_1d() const;
-
-    const WeightArray &get_weights_1d() const;
-
-    /**
-     * Returns the bounding box in which the points are located.
-     */
-    const BBox<dim_> &get_bounding_box() const;
-
-    /**
-     * Returns the coordinates indices relative to the point with (flat)
-     * index <tt>point_id</tt>.
-     */
-    TensorIndex<dim_> get_coords_id_from_point_id(const int point_id) const;
+  /**
+   * Returns the weight of the the point with (flat) index <tt>pt_id</tt>
+   */
+  Real get_weight(const int pt_id) const;
 
 
-    /**
-     * Returns a const-reference to SafeSTLVector representing the association
-     * between the point (flat) indices and their coordinates inidices.
-     */
-    const SafeSTLVector<TensorIndex<dim_>> &get_map_point_id_to_coords_id() const;
-    ///@}
+  /**
+   * Returns coordinates of the points along the <tt>i</tt>-th direction.
+   */
+  const SafeSTLVector<Real> &get_coords_direction(const int i) const;
 
-    /**
-     * @name Functions for performing dilation and translation of the points (and weights).
-     */
-    //@{
-    /**
-     * Dilation of the points (and of the corresponding bounding box)
-     */
-    void dilate(const Point &dilation_factor);
+  const PointArray &get_points_1d() const;
 
-    /**
-     * Translation of the points (and of the corresponding bounding box)
-     */
-    void translate(const Point &translation_amount);
+  const WeightArray &get_weights_1d() const;
 
-    /**
-     * Dilation followed by a translation of the points (and of the corresponding bounding box).
-     */
-    void dilate_translate(const Point &dilate, const Point &translate);
+  /**
+   * Returns the bounding box in which the points are located.
+   */
+  const BBox<dim_> &get_bounding_box() const;
+
+  /**
+   * Returns the coordinates indices relative to the point with (flat)
+   * index <tt>point_id</tt>.
+   */
+  TensorIndex<dim_> get_coords_id_from_point_id(const int point_id) const;
 
 
-    /**
-     * Translation followed by a dilation of the points (and of the corresponding bounding box).
-     */
-    void translate_dilate(const Point &translate, const Point &dilate);
-    ///@}
+  /**
+   * Returns a const-reference to SafeSTLVector representing the association
+   * between the point (flat) indices and their coordinates inidices.
+   */
+  const SafeSTLVector<TensorIndex<dim_>> &get_map_point_id_to_coords_id() const;
+  ///@}
 
-    /**
-     * Returns a dim dimensional quadrature obtained by using
-     * a single point on the active sub-element direction.
-     * @todo write example
-     * Usually use for face values
-     */
-    template<int k>
-    Quadrature<dim_> collapse_to_sub_element(const int id) const;
+  /**
+   * @name Functions for performing dilation and translation of the points (and weights).
+   */
+  //@{
+  /**
+   * Dilation of the points (and of the corresponding bounding box)
+   */
+  void dilate(const Point &dilation_factor);
+
+  /**
+   * Translation of the points (and of the corresponding bounding box)
+   */
+  void translate(const Point &translation_amount);
+
+  /**
+   * Dilation followed by a translation of the points (and of the corresponding bounding box).
+   */
+  void dilate_translate(const Point &dilate, const Point &translate);
+
+
+  /**
+   * Translation followed by a dilation of the points (and of the corresponding bounding box).
+   */
+  void translate_dilate(const Point &translate, const Point &dilate);
+  ///@}
+
+  /**
+   * Returns a dim dimensional quadrature obtained by using
+   * a single point on the active sub-element direction.
+   * @todo write example
+   * Usually use for face values
+   */
+  template<int k>
+  Quadrature<dim_> collapse_to_sub_element(const int id) const;
 
 
 

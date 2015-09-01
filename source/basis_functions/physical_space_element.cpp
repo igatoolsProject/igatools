@@ -44,10 +44,10 @@ PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
 //                              phys_space->get_ptr_const_map_func()), index))
 {
 //    push_fwd_element_ = std::make_shared<PfElemAccessor>(phys_space->get_map_func(), index);
-    Assert(ref_space_element_ != nullptr, ExcNullPtr());
-    Assert(map_element_ != nullptr, ExcNullPtr());
+  Assert(ref_space_element_ != nullptr, ExcNullPtr());
+  Assert(map_element_ != nullptr, ExcNullPtr());
 
-    this->max_num_basis_ = ref_space_element_->get_max_num_basis();
+  this->max_num_basis_ = ref_space_element_->get_max_num_basis();
 }
 
 

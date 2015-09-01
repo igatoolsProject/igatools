@@ -39,34 +39,34 @@ ReferenceElement(const std::shared_ptr<ConstSpace> space,
 {
 //    Assert(this->get_space() != nullptr,ExcNullPtr());
 
-    //-------------------------------------------------
-    const auto &degree_table = space->get_degree_table();
-    TensorSizeTable n_basis(degree_table.get_comp_map());
-    for (auto comp : degree_table.get_active_components_id())
-        n_basis[comp] = TensorSize<dim>(degree_table[comp]+1);
+  //-------------------------------------------------
+  const auto &degree_table = space->get_degree_table();
+  TensorSizeTable n_basis(degree_table.get_comp_map());
+  for (auto comp : degree_table.get_active_components_id())
+    n_basis[comp] = TensorSize<dim>(degree_table[comp]+1);
 
-    n_basis_direction_ = n_basis;
-    this->max_num_basis_ = n_basis_direction_.total_dimension();
-    //-------------------------------------------------
-
-
-    //----------------------------------------------------------------
-    comp_offset_[0] = 0;
-    for (int comp = 1; comp <= Space::n_components; ++comp)
-        comp_offset_[comp] = comp_offset_[comp-1] +
-                             this->n_basis_direction_.get_component_size(comp-1);
-    //----------------------------------------------------------------
+  n_basis_direction_ = n_basis;
+  this->max_num_basis_ = n_basis_direction_.total_dimension();
+  //-------------------------------------------------
 
 
-    //----------------------------------------------------------------
-    for (int comp : basis_functions_indexer_.get_active_components_id())
-    {
-        // creating the objects for fast conversion from flat-to-tensor indexing
-        // (in practice it is an hash-table from flat to tensor indices)
-        basis_functions_indexer_[comp] =
-            std::shared_ptr<Indexer>(new Indexer(this->n_basis_direction_[comp]));
-    }
-    //----------------------------------------------------------------
+  //----------------------------------------------------------------
+  comp_offset_[0] = 0;
+  for (int comp = 1; comp <= Space::n_components; ++comp)
+    comp_offset_[comp] = comp_offset_[comp-1] +
+                         this->n_basis_direction_.get_component_size(comp-1);
+  //----------------------------------------------------------------
+
+
+  //----------------------------------------------------------------
+  for (int comp : basis_functions_indexer_.get_active_components_id())
+  {
+    // creating the objects for fast conversion from flat-to-tensor indexing
+    // (in practice it is an hash-table from flat to tensor indices)
+    basis_functions_indexer_[comp] =
+      std::shared_ptr<Indexer>(new Indexer(this->n_basis_direction_[comp]));
+  }
+  //----------------------------------------------------------------
 };
 
 

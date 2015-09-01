@@ -80,158 +80,158 @@ public :
    */
   ///@{
 public:
-    /**
-     * Default constructor. It does nothing but it is needed for the
-     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     * mechanism.
-     */
-    PhysicalSpaceElement() = default;
+  /**
+   * Default constructor. It does nothing but it is needed for the
+   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * mechanism.
+   */
+  PhysicalSpaceElement() = default;
 
-    PhysicalSpaceElement(const std::shared_ptr<ContainerType> space,
-                         const ListIt &index,
-                         const PropId &prop = ElementProperties::active);
-
-
-    /**
-     * Copy constructor.
-     * It can be used with different copy policies (i.e. deep copy or shallow copy).
-     * The default behaviour (i.e. using the proper interface of a classic copy constructor)
-     * uses the deep copy.
-     */
-    PhysicalSpaceElement(const self_t &in,
-                         const CopyPolicy &copy_policy = CopyPolicy::deep);
+  PhysicalSpaceElement(const std::shared_ptr<ContainerType> space,
+                       const ListIt &index,
+                       const PropId &prop = ElementProperties::active);
 
 
-    /**
-     * Move constructor.
-     */
-    PhysicalSpaceElement(self_t &&in) = default;
-
-    /**
-     * Destructor.
-     */
-    virtual ~PhysicalSpaceElement() = default;
-
-    ///@}
-
-    /**
-     * @name Assignment operators
-     */
-    ///@{
-    /**
-     * Copy assignment operator. Performs a <b>shallow copy</b> of the input @p element.
-     *
-     * @note Internally it uses the function shallow_copy_from().
-     */
-    self_t &
-    operator=(const self_t &in) = default;
-
-    /**
-     * Move assignment operator.
-     */
-    self_t &
-    operator=(self_t &&in) = default;
-
-    ///@}
+  /**
+   * Copy constructor.
+   * It can be used with different copy policies (i.e. deep copy or shallow copy).
+   * The default behaviour (i.e. using the proper interface of a classic copy constructor)
+   * uses the deep copy.
+   */
+  PhysicalSpaceElement(const self_t &in,
+                       const CopyPolicy &copy_policy = CopyPolicy::deep);
 
 
-    /**
-     * @name Functions for performing different kind of copy.
-     */
-    ///@{
-    /**
-     * Performs a deep copy of the input @p element,
-     * i.e. a new local cache is built using the copy constructor on the local cache of @p element.
-     *
-     * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
-     */
-    void deep_copy_from(const self_t &element);
+  /**
+   * Move constructor.
+   */
+  PhysicalSpaceElement(self_t &&in) = default;
+
+  /**
+   * Destructor.
+   */
+  virtual ~PhysicalSpaceElement() = default;
+
+  ///@}
+
+  /**
+   * @name Assignment operators
+   */
+  ///@{
+  /**
+   * Copy assignment operator. Performs a <b>shallow copy</b> of the input @p element.
+   *
+   * @note Internally it uses the function shallow_copy_from().
+   */
+  self_t &
+  operator=(const self_t &in) = default;
+
+  /**
+   * Move assignment operator.
+   */
+  self_t &
+  operator=(self_t &&in) = default;
+
+  ///@}
 
 
-    /**
-     * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
-     * local cache used by the input @p element.
-     */
-    void shallow_copy_from(const self_t &element);
-    ///@}
+  /**
+   * @name Functions for performing different kind of copy.
+   */
+  ///@{
+  /**
+   * Performs a deep copy of the input @p element,
+   * i.e. a new local cache is built using the copy constructor on the local cache of @p element.
+   *
+   * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
+   */
+  void deep_copy_from(const self_t &element);
 
 
-    /**
-     * @name Getting quantities that are geometry-related
-     */
-    ///@{
-    /**
-     * Returns the <tt>k</tt> dimensional j-th sub-element measure
-     * multiplied by the weights of the quadrature.
-     */
-    template <int k>
-    ValueVector<Real> get_w_measures(const int j) const
-    {
-        return map_element_->template get_w_measures<k>(j);
-    }
-
-    /**
-     * Returns the gradient determinant of the map at the dilated quadrature points.
-     */
-    template <int k>
-    ValueVector<Real> get_measures(const int j) const
-    {
-        return map_element_->template get_measures<k>(j);
-    }
-
-    ValueVector<Real> get_element_w_measures() const;
-
-    template <int k = dim>
-    ValueVector<PhysPoint> get_points(const int j = 0) const;
-
-    ValueVector<PhysPoint> get_element_points() const;
-
-    template<int sub_dim>
-    const ValueVector<Points<space_dim> > &
-    get_boundary_normals(const int s_id) const
-    {
-        return map_element_->template get_boundary_normals<sub_dim>(s_id);
-    }
+  /**
+   * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
+   * local cache used by the input @p element.
+   */
+  void shallow_copy_from(const self_t &element);
+  ///@}
 
 
-    /**
-     * Prints internal information about the BSplineElementAccessor.
-     * Its main use is for testing and debugging.
-     */
-    void print_info(LogStream &out) const override final;
+  /**
+   * @name Getting quantities that are geometry-related
+   */
+  ///@{
+  /**
+   * Returns the <tt>k</tt> dimensional j-th sub-element measure
+   * multiplied by the weights of the quadrature.
+   */
+  template <int k>
+  ValueVector<Real> get_w_measures(const int j) const
+  {
+    return map_element_->template get_w_measures<k>(j);
+  }
 
-    void print_cache_info(LogStream &out) const;
+  /**
+   * Returns the gradient determinant of the map at the dilated quadrature points.
+   */
+  template <int k>
+  ValueVector<Real> get_measures(const int j) const
+  {
+    return map_element_->template get_measures<k>(j);
+  }
+
+  ValueVector<Real> get_element_w_measures() const;
+
+  template <int k = dim>
+  ValueVector<PhysPoint> get_points(const int j = 0) const;
+
+  ValueVector<PhysPoint> get_element_points() const;
+
+  template<int sub_dim>
+  const ValueVector<Points<space_dim> > &
+  get_boundary_normals(const int s_id) const
+  {
+    return map_element_->template get_boundary_normals<sub_dim>(s_id);
+  }
+
+
+  /**
+   * Prints internal information about the BSplineElementAccessor.
+   * Its main use is for testing and debugging.
+   */
+  void print_info(LogStream &out) const override final;
+
+  void print_cache_info(LogStream &out) const;
 
 #if 0
-    /**
-     * @name Functions for the basis evaluation without the use of the cache.
-     */
-    ///@{
-    /**
-     * Returns a ValueTable with the quantity specified by the template parameter @p ValueType,
-     * computed for all local basis function,
-     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
-     * @note This function does not use the cache and therefore can be called any time without
-     * needing to pre-call init_cache()/fill_cache().
-     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
-     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
-     */
-    template <class ValueType>
-    decltype(auto)
-    evaluate_basis_at_points(
-        const Quadrature<dim_> &points,
-        const std::string &dofs_property)
-    {
-        auto elem_handler = typename Space::ElementHandler::create(this->space_);
+  /**
+   * @name Functions for the basis evaluation without the use of the cache.
+   */
+  ///@{
+  /**
+   * Returns a ValueTable with the quantity specified by the template parameter @p ValueType,
+   * computed for all local basis function,
+   * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+   * @note This function does not use the cache and therefore can be called any time without
+   * needing to pre-call init_cache()/fill_cache().
+   * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+   * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+   */
+  template <class ValueType>
+  decltype(auto)
+  evaluate_basis_at_points(
+    const Quadrature<dim_> &points,
+    const std::string &dofs_property)
+  {
+    auto elem_handler = typename Space::ElementHandler::create(this->space_);
 
-        elem_handler->reset_one_element(ValueType::flag,points,this->get_flat_index());
-        elem_handler->template init_cache<dim>(*this);
-        elem_handler->template fill_cache<dim>(*this,0);
+    elem_handler->reset_one_element(ValueType::flag,points,this->get_flat_index());
+    elem_handler->template init_cache<dim>(*this);
+    elem_handler->template fill_cache<dim>(*this,0);
 
-        return this->template get_basis<ValueType,dim>(0,dofs_property);
-    }
+    return this->template get_basis<ValueType,dim>(0,dofs_property);
+  }
 #endif
-    ///@}
+  ///@}
 
 public:
 
@@ -269,12 +269,12 @@ public:
   const std::shared_ptr<const CartesianGrid<dim>> get_grid() const;
 
 
-    virtual typename List::iterator &operator++() override final
-    {
-        ++(*map_element_);
-        return ++(*ref_space_element_);
-        Assert(false,ExcNotImplemented());
-    }
+  virtual typename List::iterator &operator++() override final
+  {
+    ++(*map_element_);
+    return ++(*ref_space_element_);
+    Assert(false,ExcNotImplemented());
+  }
 
 
 #if 0

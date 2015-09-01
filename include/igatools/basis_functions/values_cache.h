@@ -455,20 +455,20 @@ class BasisValuesCache : public ValuesCache<dim,CacheType>
 {
 
 public:
-    /**
-     * Allocate space for the values and derivatives
-     * of the element basis functions at quadrature points
-     * as specify by the flag
-     */
-    void resize(const typename space_element::Flags &flags,
-                const Size n_points,
-                const Size n_basis)
-    {
-        Assert(n_points >= 0, ExcLowerRange(n_points,1));
-        Assert(n_basis > 0, ExcLowerRange(n_basis,1));
+  /**
+   * Allocate space for the values and derivatives
+   * of the element basis functions at quadrature points
+   * as specify by the flag
+   */
+  void resize(const typename space_element::Flags &flags,
+              const Size n_points,
+              const Size n_basis)
+  {
+    Assert(n_points >= 0, ExcLowerRange(n_points,1));
+    Assert(n_basis > 0, ExcLowerRange(n_basis,1));
 
-        boost::fusion::for_each(this->values_,
-                                [&](auto & type_and_value) -> void
+    boost::fusion::for_each(this->values_,
+                            [&](auto & type_and_value) -> void
     {
       using ValueType_ValueContainer = typename std::remove_reference<decltype(type_and_value)>::type;
       using ValueType = typename ValueType_ValueContainer::first_type;
@@ -479,7 +479,7 @@ public:
         value.set_status_fill(true);
 
         if (value.get_num_points() != n_points ||
-            value.get_num_functions() != n_basis)
+        value.get_num_functions() != n_basis)
         {
           value.resize(n_basis,n_points);
         }

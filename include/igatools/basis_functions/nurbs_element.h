@@ -169,12 +169,12 @@ public:
   clone() const override final;
 
 
-    virtual typename List::iterator &operator++() override final
-    {
-        ++weight_elem_;
-        return ++bspline_elem_;
-        Assert(false,ExcNotImplemented());
-    }
+  virtual typename List::iterator &operator++() override final
+  {
+    ++weight_elem_;
+    return ++bspline_elem_;
+    Assert(false,ExcNotImplemented());
+  }
 
 #ifdef SERIALIZATION
   /**

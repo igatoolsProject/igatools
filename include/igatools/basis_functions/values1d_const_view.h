@@ -43,13 +43,13 @@ class BasisValues1d
 public:
   BasisValues1d();
 
-    BasisValues1d(const int n_func, const int n_points);
+  BasisValues1d(const int n_func, const int n_points);
 
   Size get_num_points() const;
 
   Size get_num_functions() const;
 
-    void resize(const int n_funcs, const int n_points);
+  void resize(const int n_funcs, const int n_points);
 
 
   void print_info(LogStream &out) const;
@@ -62,7 +62,7 @@ public:
 
 
 private:
-    SafeSTLArray<DenseMatrix,MAX_NUM_DERIVATIVES> values_;
+  SafeSTLArray<DenseMatrix,MAX_NUM_DERIVATIVES> values_;
 
 #ifdef SERIALIZATION
   /**
@@ -119,9 +119,9 @@ public:
   /** Copy assignment operator. */
   BasisValues1dConstView &operator=(const BasisValues1dConstView &view) = default;
 
-    /** Move assignment operator. */
-    BasisValues1dConstView &operator=(BasisValues1dConstView &&view) = default;
-    ///@}
+  /** Move assignment operator. */
+  BasisValues1dConstView &operator=(BasisValues1dConstView &&view) = default;
+  ///@}
 
 private:
   BasisValues1d const *funcs_;
@@ -138,61 +138,61 @@ template <int dim>
 class TensorProductFunctionEvaluator
 {
 public:
-    TensorProductFunctionEvaluator(const Quadrature<dim> &quad, const ElemFuncValues<dim> &values_1D)
-        :
-        values_1D_(values_1D),
-        points_flat_to_tensor_id_(quad.get_map_point_id_to_coords_id())
-    {
-        TensorSize<dim> n_funcs;
-        for (int i = 0; i < dim; ++i)
-            n_funcs[i] = values_1D_[i].get_num_functions();
+  TensorProductFunctionEvaluator(const Quadrature<dim> &quad, const ElemFuncValues<dim> &values_1D)
+    :
+    values_1D_(values_1D),
+    points_flat_to_tensor_id_(quad.get_map_point_id_to_coords_id())
+  {
+    TensorSize<dim> n_funcs;
+    for (int i = 0; i < dim; ++i)
+      n_funcs[i] = values_1D_[i].get_num_functions();
 
-        const auto f_size = TensorSizedContainer<dim>(n_funcs);
+    const auto f_size = TensorSizedContainer<dim>(n_funcs);
 
-        const int n_funcs_total = n_funcs.flat_size();
-        funcs_flat_to_tensor_id_.resize(n_funcs_total);
-        for (int fn = 0 ; fn < n_funcs_total ; ++fn)
-            funcs_flat_to_tensor_id_[fn] = f_size.flat_to_tensor(fn);
-    }
+    const int n_funcs_total = n_funcs.flat_size();
+    funcs_flat_to_tensor_id_.resize(n_funcs_total);
+    for (int fn = 0 ; fn < n_funcs_total ; ++fn)
+      funcs_flat_to_tensor_id_[fn] = f_size.flat_to_tensor(fn);
+  }
 
-    /**
-     * Evaluate and returns one partial derivative in one point.
-     * The order of the partial derivative is specified by the tensor-index
-     * @p order_t_id,
-     * while the the function is specified by the tensor-index @p func_t_id
-     * point is specified by the flat index @p point_f_id.
-     */
-    Real evaluate(const TensorIndex<dim> &order_t_id,
-                  const TensorIndex<dim> &func_t_id,
-                  const Index &point_flat_id) const
-    {
-        const auto &coords_t_id = points_flat_to_tensor_id_[point_flat_id];
+  /**
+   * Evaluate and returns one partial derivative in one point.
+   * The order of the partial derivative is specified by the tensor-index
+   * @p order_t_id,
+   * while the the function is specified by the tensor-index @p func_t_id
+   * point is specified by the flat index @p point_f_id.
+   */
+  Real evaluate(const TensorIndex<dim> &order_t_id,
+                const TensorIndex<dim> &func_t_id,
+                const Index &point_flat_id) const
+  {
+    const auto &coords_t_id = points_flat_to_tensor_id_[point_flat_id];
 
-        Real res = (dim > 0) ? values_1D_[0].get_derivative(order_t_id[0])(func_t_id[0],coords_t_id[0]) : 1.0;
+    Real res = (dim > 0) ? values_1D_[0].get_derivative(order_t_id[0])(func_t_id[0],coords_t_id[0]) : 1.0;
 
-        for (int i = 1; i < dim; ++i)
-            res *= values_1D_[i].get_derivative(order_t_id[i])(func_t_id[i], coords_t_id[i]);
-        return res;
-    }
+    for (int i = 1; i < dim; ++i)
+      res *= values_1D_[i].get_derivative(order_t_id[i])(func_t_id[i], coords_t_id[i]);
+    return res;
+  }
 
-    auto func_flat_to_tensor(const Index func_id) const
-    {
-        return funcs_flat_to_tensor_id_[func_id];
-    }
+  auto func_flat_to_tensor(const Index func_id) const
+  {
+    return funcs_flat_to_tensor_id_[func_id];
+  }
 
 #if 0
-    int get_num_multivariate_functions() const
-    {
-        return f_size_.flat_size();
-    }
+  int get_num_multivariate_functions() const
+  {
+    return f_size_.flat_size();
+  }
 #endif
 
 private:
-    const ElemFuncValues<dim> &values_1D_;
+  const ElemFuncValues<dim> &values_1D_;
 
-    const SafeSTLVector<TensorIndex<dim>> &points_flat_to_tensor_id_;
+  const SafeSTLVector<TensorIndex<dim>> &points_flat_to_tensor_id_;
 
-    SafeSTLVector<TensorIndex<dim>>  funcs_flat_to_tensor_id_;
+  SafeSTLVector<TensorIndex<dim>>  funcs_flat_to_tensor_id_;
 };
 
 
@@ -270,8 +270,8 @@ public:
   Values1DConstView &operator=(Values1DConstView &&view) = default;
   ///@}
 
-    /** Returns the value of the function at the <tt>point_id</tt>-th point. */
-    Real operator()(const Index point_id) const;
+  /** Returns the value of the function at the <tt>point_id</tt>-th point. */
+  Real operator()(const Index point_id) const;
 
   /** Return the number of points for which the function is evaluated. */
   Size get_num_points() const;

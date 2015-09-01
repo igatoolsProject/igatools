@@ -185,7 +185,7 @@ auto
 SpaceElement<dim_,codim_,range_,rank_,type_>::
 get_space() const -> std::shared_ptr<const Sp>
 {
-    return space_;
+  return space_;
 }
 
 

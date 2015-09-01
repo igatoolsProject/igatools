@@ -111,21 +111,21 @@ public:
 
 
 //    using OffsetTable = typename Space::template ComponentContainer<int>;
-    using OffsetTable = SafeSTLArray<int,Space::n_components+1>;
+  using OffsetTable = SafeSTLArray<int,Space::n_components+1>;
 
-    using TensorSizeTable = typename Space::TensorSizeTable;
+  using TensorSizeTable = typename Space::TensorSizeTable;
 
 protected:
 
   /** Number of scalar basis functions along each direction, for all space components. */
   TensorSizeTable n_basis_direction_;
 
-    /**
-     * Offset of the scalar basis functions across the different components.
-     *
-     * @note The last entry of the array contains the total number of scalar basis functions.
-     */
-    OffsetTable comp_offset_;
+  /**
+   * Offset of the scalar basis functions across the different components.
+   *
+   * @note The last entry of the array contains the total number of scalar basis functions.
+   */
+  OffsetTable comp_offset_;
 
   using Indexer = CartesianProductIndexer<dim>;
   using IndexerPtr = std::shared_ptr<Indexer>;

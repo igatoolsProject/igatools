@@ -303,15 +303,15 @@ public:
   ValueVector<Point> get_points(const int s_id = 0) const;
 
 
-    /**
-     * Returns the unitary quadrature scheme corresponding to the <tt>sdim</tt>
-     * dimensional s_id-th sub-element.
-     */
-    template <int sdim>
-    std::shared_ptr<const Quadrature<sdim>> get_quadrature() const
-    {
-        return quad_list_.template get_quad<sdim>();
-    }
+  /**
+   * Returns the unitary quadrature scheme corresponding to the <tt>sdim</tt>
+   * dimensional s_id-th sub-element.
+   */
+  template <int sdim>
+  std::shared_ptr<const Quadrature<sdim>> get_quadrature() const
+  {
+    return quad_list_.template get_quad<sdim>();
+  }
 
 private:
   ValueVector<Point> get_element_points() const;
@@ -325,8 +325,8 @@ public:
 
   void print_cache_info(LogStream &out) const;
 
-    template<int sdim>
-    const Points<sdim> get_side_lengths(const int s_id) const;
+  template<int sdim>
+  const Points<sdim> get_side_lengths(const int s_id) const;
 
 private:
   template <class Accessor> friend class GridIteratorBase;
@@ -337,40 +337,40 @@ protected:
   std::shared_ptr<ContainerType> grid_;
 
 private:
-    PropId property_;
+  PropId property_;
 
-    /** Index in the property list of the current element */
-    typename List::iterator index_it_;
+  /** Index in the property list of the current element */
+  typename List::iterator index_it_;
 
-    /**
-     * @name Types, data and methods for the cache.
-     */
-    ///@{
+  /**
+   * @name Types, data and methods for the cache.
+   */
+  ///@{
 
-    /**
-     * Alias used to define the container for the values in the cache.
-     */
-    class _Point
-    {
-    public:
-        static const std::string name;
-        static const auto flag = Flags::point;
-    };
+  /**
+   * Alias used to define the container for the values in the cache.
+   */
+  class _Point
+  {
+  public:
+    static const std::string name;
+    static const auto flag = Flags::point;
+  };
 
-    /**
-     * Alias used to define the container for the quadrature weights in the cache.
-     */
-    class _Weight
-    {
-    public:
-        static const std::string name;
-        static const auto flag = Flags::w_measure;
-    };
+  /**
+   * Alias used to define the container for the quadrature weights in the cache.
+   */
+  class _Weight
+  {
+  public:
+    static const std::string name;
+    static const auto flag = Flags::w_measure;
+  };
 
-    using CType = boost::fusion::map<
-                  boost::fusion::pair< _Point,DataWithFlagStatus<ValueVector<Points<dim>>>>,
-                  boost::fusion::pair<_Weight,DataWithFlagStatus<ValueVector<Real>>>
-                  >;
+  using CType = boost::fusion::map<
+                boost::fusion::pair< _Point,DataWithFlagStatus<ValueVector<Points<dim>>>>,
+                boost::fusion::pair<_Weight,DataWithFlagStatus<ValueVector<Real>>>
+                >;
 
 
 public:

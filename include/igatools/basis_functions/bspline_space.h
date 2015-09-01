@@ -140,8 +140,8 @@ public:
   /** Type for the element accessor. */
   using ElementAccessor = BSplineElement<dim,range,rank>;
 
-    /** Type for iterator over the elements.  */
-    using ElementIterator = GridIterator<SpaceElement<dim,0,range,rank,Transformation::h_grad>>;
+  /** Type for iterator over the elements.  */
+  using ElementIterator = GridIterator<SpaceElement<dim,0,range,rank,Transformation::h_grad>>;
 
 
   using SpaceData = SplineSpace<dim_,range_,rank_>;

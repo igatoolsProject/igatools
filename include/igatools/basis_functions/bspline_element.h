@@ -140,15 +140,15 @@ private:
   friend class BSplineElementHandler<dim, range, rank>;
 
 
-    template<class T>
-    using ComponentContainer =
-        typename Space::template ComponentContainer<T>;
+  template<class T>
+  using ComponentContainer =
+    typename Space::template ComponentContainer<T>;
 
 
-    using Splines1D = BasisValues1d;
-    using Splines1DTable = ComponentContainer<SafeSTLArray<Splines1D,dim>>;
-    using AllSplines1DTable = SafeSTLArray<SafeSTLVector<Splines1DTable>,dim+1>;
-    AllSplines1DTable all_splines_1D_table_;
+  using Splines1D = BasisValues1d;
+  using Splines1DTable = ComponentContainer<SafeSTLArray<Splines1D,dim>>;
+  using AllSplines1DTable = SafeSTLArray<SafeSTLVector<Splines1DTable>,dim+1>;
+  AllSplines1DTable all_splines_1D_table_;
 
 public:
   ComponentContainer<SafeSTLArray<ValueTable<Real>,dim> >
@@ -166,7 +166,7 @@ public:
   clone() const override final;
 
 
-    virtual void print_cache_info(LogStream &out) const;
+  virtual void print_cache_info(LogStream &out) const;
 
 private:
 

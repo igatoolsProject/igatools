@@ -30,8 +30,8 @@ BasisValues1d()
 
 BasisValues1d::
 BasisValues1d(const int n_func, const int n_points)
-    :
-    values_(DenseMatrix(n_func,n_points))
+  :
+  values_(DenseMatrix(n_func,n_points))
 {}
 
 Size
@@ -52,12 +52,12 @@ void
 BasisValues1d::
 resize(const int n_funcs, const int n_points)
 {
-    if (n_funcs  != this->get_num_functions() ||
-        n_points != this->get_num_points())
-    {
-        for (auto &matrix: values_)
-            matrix.resize(n_funcs,n_points);
-    }
+  if (n_funcs  != this->get_num_functions() ||
+      n_points != this->get_num_points())
+  {
+    for (auto &matrix: values_)
+      matrix.resize(n_funcs,n_points);
+  }
 }
 
 void

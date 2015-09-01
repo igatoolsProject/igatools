@@ -33,85 +33,85 @@
 template<int dim, int k=dim-1>
 void sub_elem_values(const int n_knots, const int deg)
 {
-    OUTSTART
+  OUTSTART
 
-    auto grid = CartesianGrid<dim>::create(n_knots);
-    using Space = BSplineSpace<dim>;
-    auto space = Space::create_nonconst(deg, grid);
+  auto grid = CartesianGrid<dim>::create(n_knots);
+  using Space = BSplineSpace<dim>;
+  auto space = Space::create_nonconst(deg, grid);
 
-    const int n_qp = 2;
-    auto k_quad = QGauss<k>::create(n_qp);
-    auto quad = QGauss<dim>::create(n_qp);
-    auto flag = space_element::Flags::value |
-                space_element::Flags::gradient|
-                space_element::Flags::hessian;
+  const int n_qp = 2;
+  auto k_quad = QGauss<k>::create(n_qp);
+  auto quad = QGauss<dim>::create(n_qp);
+  auto flag = space_element::Flags::value |
+              space_element::Flags::gradient|
+              space_element::Flags::hessian;
 
-    auto elem_handler = space->get_elem_handler();
-    elem_handler->template set_flags<dim>(flag);
-    elem_handler->template set_flags<k>(flag);
+  auto elem_handler = space->get_elem_handler();
+  elem_handler->template set_flags<dim>(flag);
+  elem_handler->template set_flags<k>(flag);
 
-    using Elem = typename Space::ElementAccessor;
-    using _Value = typename Elem::_Value;
-    using _Gradient = typename Elem::_Gradient;
-    using _Hessian = typename Elem::_Hessian;
+  using Elem = typename Space::ElementAccessor;
+  using _Value = typename Elem::_Value;
+  using _Gradient = typename Elem::_Gradient;
+  using _Hessian = typename Elem::_Hessian;
 
-    auto elem = space->begin();
-    auto end =  space->end();
+  auto elem = space->begin();
+  auto end =  space->end();
 
-    elem_handler->template init_cache<dim>(*elem,quad);
-    elem_handler->template init_cache<k>(*elem,k_quad);
-    for (; elem != end; ++elem)
+  elem_handler->template init_cache<dim>(*elem,quad);
+  elem_handler->template init_cache<k>(*elem,k_quad);
+  for (; elem != end; ++elem)
+  {
+    cache_filler->fill_element_cache(elem);
+    out << "Element" << elem->get_flat_index() << endl;
+    elem->template get_basis<_Value,dim>(0,DofProperties::active).print_info(out);
+    for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
     {
-      cache_filler->fill_element_cache(elem);
-      out << "Element" << elem->get_flat_index() << endl;
-      elem->template get_basis<_Value,dim>(0,DofProperties::active).print_info(out);
-      for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
+      if (elem->is_boundary(s_id))
       {
-        if (elem->is_boundary(s_id))
+        elem_handler->template fill_cache<dim>(*elem,0);
+        out << "Element" << elem->get_index() << endl;
+
+        out.begin_item("Basis functions values:");
+        elem->template get_basis<_Value,dim>(0,DofProperties::active).print_info(out);
+        out.end_item();
+
+        out.begin_item("Basis functions gradients:");
+        elem->template get_basis<_Gradient,dim>(0,DofProperties::active).print_info(out);
+        out.end_item();
+
+        out.begin_item("Basis functions hessians:");
+        elem->template get_basis<_Hessian,dim>(0,DofProperties::active).print_info(out);
+        out.end_item();
+
+        for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
         {
-            elem_handler->template fill_cache<dim>(*elem,0);
-            out << "Element" << elem->get_index() << endl;
+          if (elem->is_boundary(s_id))
+          {
+            elem_handler->template fill_cache<k>(*elem,s_id);
+            out.begin_item("Sub Element: " + std::to_string(s_id));
 
             out.begin_item("Basis functions values:");
-            elem->template get_basis<_Value,dim>(0,DofProperties::active).print_info(out);
+            elem->template get_basis<_Value,k>(s_id,DofProperties::active).print_info(out);
             out.end_item();
 
             out.begin_item("Basis functions gradients:");
-            elem->template get_basis<_Gradient,dim>(0,DofProperties::active).print_info(out);
+            elem->template get_basis<_Gradient,k>(s_id,DofProperties::active).print_info(out);
             out.end_item();
 
             out.begin_item("Basis functions hessians:");
-            elem->template get_basis<_Hessian,dim>(0,DofProperties::active).print_info(out);
+            elem->template get_basis<_Hessian,k>(s_id,DofProperties::active).print_info(out);
             out.end_item();
 
-            for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
-            {
-                if (elem->is_boundary(s_id))
-                {
-                    elem_handler->template fill_cache<k>(*elem,s_id);
-                    out.begin_item("Sub Element: " + std::to_string(s_id));
 
-                    out.begin_item("Basis functions values:");
-                    elem->template get_basis<_Value,k>(s_id,DofProperties::active).print_info(out);
-                    out.end_item();
-
-                    out.begin_item("Basis functions gradients:");
-                    elem->template get_basis<_Gradient,k>(s_id,DofProperties::active).print_info(out);
-                    out.end_item();
-
-                    out.begin_item("Basis functions hessians:");
-                    elem->template get_basis<_Hessian,k>(s_id,DofProperties::active).print_info(out);
-                    out.end_item();
-
-
-                    out.end_item();
-                }
-            }
+            out.end_item();
+          }
         }
       }
     }
   }
-  OUTEND
+}
+OUTEND
 }
 //  auto values    = elem->template get_values<0,k>(0);
 //  auto gradients = elem->template get_values<1,k>(0);
