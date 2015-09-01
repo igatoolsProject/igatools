@@ -49,117 +49,117 @@ template <int rank>
 class TensorSizedContainer
 {
 public:
-    /** @name Constructors and destructor */
-    ///@{
+  /** @name Constructors and destructor */
+  ///@{
 
-    /** Default constructor. Sets the size of the container to be 0 in each dimension. */
-    TensorSizedContainer();
+  /** Default constructor. Sets the size of the container to be 0 in each dimension. */
+  TensorSizedContainer();
 
-    /**
-     * Constuctor. Sets the size of the container with size (in each dimension) specified by
-     * the input argument @p size.
-     */
-    explicit TensorSizedContainer(const TensorSize<rank> &size);
+  /**
+   * Constuctor. Sets the size of the container with size (in each dimension) specified by
+   * the input argument @p size.
+   */
+  explicit TensorSizedContainer(const TensorSize<rank> &size);
 
-    /**
-     * Constuctor. Sets the size of the container with the same size in each dimension,
-     *  specified by the input argument @p size.
-     */
-    explicit TensorSizedContainer(const Size size);
+  /**
+   * Constuctor. Sets the size of the container with the same size in each dimension,
+   *  specified by the input argument @p size.
+   */
+  explicit TensorSizedContainer(const Size size);
 
-    /** Copy constructor. */
-    TensorSizedContainer(const TensorSizedContainer<rank> &in) = default;
+  /** Copy constructor. */
+  TensorSizedContainer(const TensorSizedContainer<rank> &in) = default;
 
-    /** Move constructor. */
-    TensorSizedContainer(TensorSizedContainer<rank> &&in) = default;
+  /** Move constructor. */
+  TensorSizedContainer(TensorSizedContainer<rank> &&in) = default;
 
-    /** Destructor.*/
-    ~TensorSizedContainer() = default;
-    ///@}
-
-
-
-    /** @name Assignment operators */
-    ///@{
-    /** Copy assignment operator .*/
-    TensorSizedContainer<rank> &operator=(const TensorSizedContainer<rank> &in) = default;
-
-    /** Move assignment operator .*/
-    TensorSizedContainer<rank> &operator=(TensorSizedContainer<rank> &&in) = default;
-    ///@}
-
-    /** @name Functions for getting the informations about the size of the container */
-    ///@{
-    /** Return the tensor-size of the container. */
-    TensorSize<rank> tensor_size() const;
+  /** Destructor.*/
+  ~TensorSizedContainer() = default;
+  ///@}
 
 
-    /**
-     * Return the flat-size (i.e. the total size) of the container.
-     *
-     * If the direction size are for example (2,5,3) this
-     * function would return 2x5x3 = 30.
-     */
-    Size flat_size() const;
-    ///@}
 
-    void print_info(LogStream &out) const;
+  /** @name Assignment operators */
+  ///@{
+  /** Copy assignment operator .*/
+  TensorSizedContainer<rank> &operator=(const TensorSizedContainer<rank> &in) = default;
 
-    /** @name Functions for the index transformations */
-    ///@{
-    bool valid_index(const TensorIndex<rank> &tensor_index) const;
+  /** Move assignment operator .*/
+  TensorSizedContainer<rank> &operator=(TensorSizedContainer<rank> &&in) = default;
+  ///@}
 
-    /**
-     * Transformation from a tensor-index to a flat-index.
-     */
-    Index tensor_to_flat(const TensorIndex<rank> &tensor_index) const;
-
-    /**
-     * Transformation from a flat-index to a tensor-index.
-     */
-    TensorIndex<rank> flat_to_tensor(const Index flat_index) const;
-    ///@}
+  /** @name Functions for getting the informations about the size of the container */
+  ///@{
+  /** Return the tensor-size of the container. */
+  TensorSize<rank> tensor_size() const;
 
 
-    /**
-     * Returns the memory used to define the object's data members.
-     */
-    auto memory_consumption() const
-    {
-        return size_.memory_consumption() + weight_.memory_consumption();
-    }
+  /**
+   * Return the flat-size (i.e. the total size) of the container.
+   *
+   * If the direction size are for example (2,5,3) this
+   * function would return 2x5x3 = 30.
+   */
+  Size flat_size() const;
+  ///@}
+
+  void print_info(LogStream &out) const;
+
+  /** @name Functions for the index transformations */
+  ///@{
+  bool valid_index(const TensorIndex<rank> &tensor_index) const;
+
+  /**
+   * Transformation from a tensor-index to a flat-index.
+   */
+  Index tensor_to_flat(const TensorIndex<rank> &tensor_index) const;
+
+  /**
+   * Transformation from a flat-index to a tensor-index.
+   */
+  TensorIndex<rank> flat_to_tensor(const Index flat_index) const;
+  ///@}
+
+
+  /**
+   * Returns the memory used to define the object's data members.
+   */
+  auto memory_consumption() const
+  {
+    return size_.memory_consumption() + weight_.memory_consumption();
+  }
 
 protected:
-    /**
-     * Reset the size_ member in order to be equal to the input argument @p size.
-     *
-     * @note This function is protected because it should be used in the resize() functions
-     * of a derived class.
-     */
-    void reset_size(const TensorSize<rank> &size);
+  /**
+   * Reset the size_ member in order to be equal to the input argument @p size.
+   *
+   * @note This function is protected because it should be used in the resize() functions
+   * of a derived class.
+   */
+  void reset_size(const TensorSize<rank> &size);
 
 
 private:
-    /** Size of the container along the different directions. */
-    TensorSize<rank> size_;
+  /** Size of the container along the different directions. */
+  TensorSize<rank> size_;
 
-    /**
-     * Weights for the index conversion.
-     */
-    TensorIndex<rank> weight_;
+  /**
+   * Weights for the index conversion.
+   */
+  TensorIndex<rank> weight_;
 
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void serialize(Archive &ar, const unsigned int version);
-    ///@}
+  template<class Archive>
+  void serialize(Archive &ar, const unsigned int version);
+  ///@}
 #endif // SERIALIZATION
 };
 

@@ -30,33 +30,33 @@
 template< int dim_dom, int dim_range >
 void det_eval()
 {
-    Derivatives<dim_dom, dim_range, 1, 1> t;
+  Derivatives<dim_dom, dim_range, 1, 1> t;
 
-    out << "The determinant of:" << std::endl;
+  out << "The determinant of:" << std::endl;
 
-    double accumulator = 0;
+  double accumulator = 0;
 
-    for (int i = 0; i < dim_dom; i++)
+  for (int i = 0; i < dim_dom; i++)
+  {
+    for (int j = 0; j < dim_range; j++)
     {
-        for (int j = 0; j < dim_range; j++)
-        {
-            t[i][j] = ++accumulator;
-        }
+      t[i][j] = ++accumulator;
     }
+  }
 
-    out << t << endl;
+  out << t << endl;
 
-    double det = determinant<dim_dom, dim_range>(t);
+  double det = determinant<dim_dom, dim_range>(t);
 
-    out << "is " << det << std::endl;
+  out << "is " << det << std::endl;
 
 }
 
 int main(int argc, char *argv[])
 {
 
-    det_eval<1,2>();
-    det_eval<1,3>();
-    det_eval<2,3>();
+  det_eval<1,2>();
+  det_eval<1,3>();
+  det_eval<2,3>();
 
 }

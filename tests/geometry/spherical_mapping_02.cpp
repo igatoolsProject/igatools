@@ -39,66 +39,66 @@
 template <int dim>
 Real ball_volume(const int n_knots)
 {
-    using Function = functions::BallFunction<dim>;
+  using Function = functions::BallFunction<dim>;
 
-    auto flag = ValueFlags::w_measure|ValueFlags::point;
+  auto flag = ValueFlags::w_measure|ValueFlags::point;
 
-    auto quad = QGauss<dim>(3);
+  auto quad = QGauss<dim>(3);
 
 
-    BBox<dim> box;
-    box[0] = {0., 1.};
-    for (int i=1; i<dim-1; ++i)
-        box[i] = {0., M_PI};
-    if (dim>1)
-        box[dim-1] = {0., 2. * M_PI};
+  BBox<dim> box;
+  box[0] = {0., 1.};
+  for (int i=1; i<dim-1; ++i)
+    box[i] = {0., M_PI};
+  if (dim>1)
+    box[dim-1] = {0., 2. * M_PI};
 
-    auto grid = CartesianGrid<dim>::create(box, n_knots);
-    auto F = Function::create(grid, IdentityFunction<dim>::create(grid));
+  auto grid = CartesianGrid<dim>::create(box, n_knots);
+  auto F = Function::create(grid, IdentityFunction<dim>::create(grid));
 
-    using Mapping   = Mapping<dim, 0>;
-    using ElementIt = typename Mapping::ElementIterator;
-    auto map = Mapping::create(F);
-    map->template reset<dim>(flag, quad);
+  using Mapping   = Mapping<dim, 0>;
+  using ElementIt = typename Mapping::ElementIterator;
+  auto map = Mapping::create(F);
+  map->template reset<dim>(flag, quad);
 
 //    ElementIt elem(map, 0);
 //    ElementIt end(map, IteratorState::pass_the_end);
-    ElementIt elem = map->begin();
-    ElementIt end = map->end();
+  ElementIt elem = map->begin();
+  ElementIt end = map->end();
 
-    map->template init_cache<dim>(elem);
-    Real vol = 0.;
-    for (; elem != end; ++elem)
-    {
-        map->template fill_cache<dim>(elem, 0);
-        const auto w_meas = elem->template get_w_measures<dim>(0);
+  map->template init_cache<dim>(elem);
+  Real vol = 0.;
+  for (; elem != end; ++elem)
+  {
+    map->template fill_cache<dim>(elem, 0);
+    const auto w_meas = elem->template get_w_measures<dim>(0);
 
-        for (auto &w : w_meas)
-            vol += w;
-    }
-    return vol;
+    for (auto &w : w_meas)
+      vol += w;
+  }
+  return vol;
 }
 
 template<int dim>
 void
 comp_volume()
 {
-    OUTSTART
-    for (int n_knots = 2; n_knots < 6; ++n_knots)
-        out << n_knots << "\t" << ball_volume<dim>(n_knots) << endl;
+  OUTSTART
+  for (int n_knots = 2; n_knots < 6; ++n_knots)
+    out << n_knots << "\t" << ball_volume<dim>(n_knots) << endl;
 
-    auto exact = std::pow(M_PI, dim/2.) / tgamma(dim/ 2. + 1);
-    out << "Exact volume: " <<  exact << endl;
-    OUTEND
+  auto exact = std::pow(M_PI, dim/2.) / tgamma(dim/ 2. + 1);
+  out << "Exact volume: " <<  exact << endl;
+  OUTEND
 }
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
-    comp_volume<1>();
-    comp_volume<2>();
-    comp_volume<3>();
+  comp_volume<1>();
+  comp_volume<2>();
+  comp_volume<3>();
 
-    return 0;
+  return 0;
 }

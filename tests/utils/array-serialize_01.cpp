@@ -30,35 +30,35 @@
 
 void array_serialization()
 {
-    OUTSTART
+  OUTSTART
 
-    SafeSTLArray<Real,3> arr = {-1.,-2.,-3.};
+  SafeSTLArray<Real,3> arr = {-1.,-2.,-3.};
 
-    {
-        ofstream xml_ostream("array.xml");
-        OArchive xml_out(xml_ostream);
-        xml_out << BOOST_SERIALIZATION_NVP(arr);
-        xml_ostream.close();
-    }
+  {
+    ofstream xml_ostream("array.xml");
+    OArchive xml_out(xml_ostream);
+    xml_out << BOOST_SERIALIZATION_NVP(arr);
+    xml_ostream.close();
+  }
 
-    arr.fill(0);
+  arr.fill(0);
 
-    {
-        ifstream xml_istream("array.xml");
-        IArchive xml_in(xml_istream);
-        xml_in >> BOOST_SERIALIZATION_NVP(arr);
-        xml_istream.close();
-    }
+  {
+    ifstream xml_istream("array.xml");
+    IArchive xml_in(xml_istream);
+    xml_in >> BOOST_SERIALIZATION_NVP(arr);
+    xml_istream.close();
+  }
 
-    arr.print_info(out);
-    out << endl;
+  arr.print_info(out);
+  out << endl;
 
-    OUTEND
+  OUTEND
 }
 
 
 int main()
 {
-    array_serialization();
-    return 0;
+  array_serialization();
+  return 0;
 }

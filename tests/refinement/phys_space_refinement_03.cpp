@@ -52,137 +52,137 @@ template <int dim>
 void test_evaluate()
 {
 
-    auto grid = CartesianGrid<dim>::create(2);
-    grid->refine();
+  auto grid = CartesianGrid<dim>::create(2);
+  grid->refine();
 
-    const int deg = 2;
-    auto bsp_space = BSplineSpace<dim,dim>::create_nonconst(deg, grid);
+  const int deg = 2;
+  auto bsp_space = BSplineSpace<dim,dim>::create_nonconst(deg, grid);
 
-    using ScalarSpSpace = BSplineSpace<dim,1,1>;
-    auto scalar_bsp_space = ScalarSpSpace::create_nonconst(deg, grid);
+  using ScalarSpSpace = BSplineSpace<dim,1,1>;
+  auto scalar_bsp_space = ScalarSpSpace::create_nonconst(deg, grid);
 
-    const auto n_scalar_basis = scalar_bsp_space->get_num_basis();
+  const auto n_scalar_basis = scalar_bsp_space->get_num_basis();
 
-    IgCoefficients weights_coef;
-    for (int i = 0 ; i < n_scalar_basis ;)
-    {
-        weights_coef[i++] = 1.0;
-        weights_coef[i++] = 0.853553390593274;
-        weights_coef[i++] = 0.853553390593274;
-        weights_coef[i++] = 1.0;
-    }
+  IgCoefficients weights_coef;
+  for (int i = 0 ; i < n_scalar_basis ;)
+  {
+    weights_coef[i++] = 1.0;
+    weights_coef[i++] = 0.853553390593274;
+    weights_coef[i++] = 0.853553390593274;
+    weights_coef[i++] = 1.0;
+  }
 
-    using WeightFunc = IgFunction<dim,0,1,1>;
-    auto w_func = WeightFunc::create(scalar_bsp_space,weights_coef);
+  using WeightFunc = IgFunction<dim,0,1,1>;
+  auto w_func = WeightFunc::create(scalar_bsp_space,weights_coef);
 
-    using RefSpace = ReferenceSpace<dim,dim>;
-    using RefSpacePtr = std::shared_ptr<RefSpace>;
-    RefSpacePtr ref_space = NURBSSpace<dim,dim>::create_nonconst(bsp_space,w_func);
+  using RefSpace = ReferenceSpace<dim,dim>;
+  using RefSpacePtr = std::shared_ptr<RefSpace>;
+  RefSpacePtr ref_space = NURBSSpace<dim,dim>::create_nonconst(bsp_space,w_func);
 
-    IgCoefficients control_pts;
-    if (dim == 1)
-    {
-        control_pts[0] = 1.0;
-        control_pts[1] = 1.0;
-        control_pts[2] = 0.414213562373095;
-        control_pts[3] = 0.0;
-    }
-    else if (dim == 2)
-    {
-        // 1st comp - 1st row
-        control_pts[0] = 1.0;
-        control_pts[1] = 1.0;
-        control_pts[2] = 0.414213562373095;
-        control_pts[3] = 0.0;
+  IgCoefficients control_pts;
+  if (dim == 1)
+  {
+    control_pts[0] = 1.0;
+    control_pts[1] = 1.0;
+    control_pts[2] = 0.414213562373095;
+    control_pts[3] = 0.0;
+  }
+  else if (dim == 2)
+  {
+    // 1st comp - 1st row
+    control_pts[0] = 1.0;
+    control_pts[1] = 1.0;
+    control_pts[2] = 0.414213562373095;
+    control_pts[3] = 0.0;
 
-        // 1st comp - 2nd row
-        control_pts[4] = 1.375;
-        control_pts[5] = 1.375;
-        control_pts[6] = 0.569543648263006;
-        control_pts[7] = 0.0;
+    // 1st comp - 2nd row
+    control_pts[4] = 1.375;
+    control_pts[5] = 1.375;
+    control_pts[6] = 0.569543648263006;
+    control_pts[7] = 0.0;
 
-        // 1st comp - 3rd row
-        control_pts[8] = 2.125;
-        control_pts[9] = 2.125;
-        control_pts[10] = 0.880203820042827;
-        control_pts[11] = 0.0;
+    // 1st comp - 3rd row
+    control_pts[8] = 2.125;
+    control_pts[9] = 2.125;
+    control_pts[10] = 0.880203820042827;
+    control_pts[11] = 0.0;
 
-        // 1st comp - 4th row
-        control_pts[12] = 2.5;
-        control_pts[13] = 2.5;
-        control_pts[14] = 1.03553390593274;
-        control_pts[15] = 0.0;
+    // 1st comp - 4th row
+    control_pts[12] = 2.5;
+    control_pts[13] = 2.5;
+    control_pts[14] = 1.03553390593274;
+    control_pts[15] = 0.0;
 
-        // 2nd comp - 1st row
-        control_pts[16] = 0.0;
-        control_pts[17] = 0.414213562373095;
-        control_pts[18] = 1.0;
-        control_pts[19] = 1.0;
+    // 2nd comp - 1st row
+    control_pts[16] = 0.0;
+    control_pts[17] = 0.414213562373095;
+    control_pts[18] = 1.0;
+    control_pts[19] = 1.0;
 
-        // 2nd comp - 2nd row
-        control_pts[20] = 0.0;
-        control_pts[21] = 0.569543648263006;
-        control_pts[22] = 1.375;
-        control_pts[23] = 1.375;
+    // 2nd comp - 2nd row
+    control_pts[20] = 0.0;
+    control_pts[21] = 0.569543648263006;
+    control_pts[22] = 1.375;
+    control_pts[23] = 1.375;
 
-        // 2nd comp - 3rd row
-        control_pts[24] = 0.0;
-        control_pts[25] = 0.880203820042827;
-        control_pts[26] = 2.125;
-        control_pts[27] = 2.125;
+    // 2nd comp - 3rd row
+    control_pts[24] = 0.0;
+    control_pts[25] = 0.880203820042827;
+    control_pts[26] = 2.125;
+    control_pts[27] = 2.125;
 
-        // 2nd comp - 4th row
-        control_pts[28] = 0.0;
-        control_pts[29] = 1.035533905932738;
-        control_pts[30] = 2.5;
-        control_pts[31] = 2.5;
-    }
-    else if (dim == 3)
-    {
-        Assert(false,ExcNotImplemented());
-        AssertThrow(false,ExcNotImplemented());
-    }
+    // 2nd comp - 4th row
+    control_pts[28] = 0.0;
+    control_pts[29] = 1.035533905932738;
+    control_pts[30] = 2.5;
+    control_pts[31] = 2.5;
+  }
+  else if (dim == 3)
+  {
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+  }
 
-    std::shared_ptr<Function<dim,0,dim,1>> func_mapping =
-                                            IgFunction<dim,0,dim,1>::create(ref_space,control_pts);
+  std::shared_ptr<Function<dim,0,dim,1>> func_mapping =
+                                        IgFunction<dim,0,dim,1>::create(ref_space,control_pts);
 
-    auto phys_space =
-        PhysicalSpace<dim,dim,1,0,Transformation::h_grad>::create_nonconst(ref_space,func_mapping);
-
-
-
-    out << endl;
-    out << endl;
-
-    out << "===============================================================" << endl;
-    out << "O R I G I N A L     S P A C E" << endl;
-    phys_space->print_info(out);
-    out << "===============================================================" << endl;
-    out << endl;
-
-    out << "===============================================================" << endl;
-    out << "R E F I N E D     S P A C E (2 elements each old element)" << endl;
-    phys_space->refine_h();
-    phys_space->print_info(out);
-    out << "===============================================================" << endl;
-    out << endl;
+  auto phys_space =
+    PhysicalSpace<dim,dim,1,0,Transformation::h_grad>::create_nonconst(ref_space,func_mapping);
 
 
-    out << "===============================================================" << endl;
-    out << "R E F I N E D     S P A C E (6 elements each old element)" << endl;
-    phys_space->refine_h(3);
-    phys_space->print_info(out);
-    out << "===============================================================" << endl;
-    out << endl;
+
+  out << endl;
+  out << endl;
+
+  out << "===============================================================" << endl;
+  out << "O R I G I N A L     S P A C E" << endl;
+  phys_space->print_info(out);
+  out << "===============================================================" << endl;
+  out << endl;
+
+  out << "===============================================================" << endl;
+  out << "R E F I N E D     S P A C E (2 elements each old element)" << endl;
+  phys_space->refine_h();
+  phys_space->print_info(out);
+  out << "===============================================================" << endl;
+  out << endl;
+
+
+  out << "===============================================================" << endl;
+  out << "R E F I N E D     S P A C E (6 elements each old element)" << endl;
+  phys_space->refine_h(3);
+  phys_space->print_info(out);
+  out << "===============================================================" << endl;
+  out << endl;
 }
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
 //    test_evaluate<1>();
-    test_evaluate<2>();
+  test_evaluate<2>();
 //    test_evaluate<3>();
 
-    return 0;
+  return 0;
 }

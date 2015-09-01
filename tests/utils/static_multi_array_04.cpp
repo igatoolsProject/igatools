@@ -31,27 +31,27 @@
 template <int dim>
 void fill_progression()
 {
-    OUTSTART
+  OUTSTART
 
-    StaticMultiArray<Index,dim,2> data1(4);
-    out << "Fill progression from 2 "<< endl;
-    data1.fill_progression(2);
-    out << "Size: " << data1.flat_size() << endl;
-    data1.print_info(out);
-    out << endl;
+  StaticMultiArray<Index,dim,2> data1(4);
+  out << "Fill progression from 2 "<< endl;
+  data1.fill_progression(2);
+  out << "Size: " << data1.flat_size() << endl;
+  data1.print_info(out);
+  out << endl;
 
-    OUTEND
+  OUTEND
 }
 
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
 
-    fill_progression<1>();
-    fill_progression<2>();
-    fill_progression<3>();
+  fill_progression<1>();
+  fill_progression<2>();
+  fill_progression<3>();
 
-    return 0;
+  return 0;
 }

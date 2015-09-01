@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -38,17 +38,17 @@ IGA_NAMESPACE_OPEN
 template<int dim_, int range_, int rank_>
 ReferenceSpace<dim_, range_, rank_>::
 ReferenceSpace(
-    const std::shared_ptr<CartesianGrid<dim_>> &grid)
-    :
-    base_t(grid,std::make_shared<IdentityFunction<dim,dim>>(grid))
+  const std::shared_ptr<CartesianGrid<dim_>> &grid)
+  :
+  base_t(grid,std::make_shared<IdentityFunction<dim,dim>>(grid))
 {}
 
 template<int dim_, int range_, int rank_>
 ReferenceSpace<dim_, range_, rank_>::
 ReferenceSpace(
-    const std::shared_ptr<const CartesianGrid<dim_>> &grid)
-    :
-    base_t(grid,std::make_shared<IdentityFunction<dim,dim>>(grid))
+  const std::shared_ptr<const CartesianGrid<dim_>> &grid)
+  :
+  base_t(grid,std::make_shared<IdentityFunction<dim,dim>>(grid))
 {}
 
 
@@ -61,30 +61,30 @@ get_ref_sub_space(const int sub_elem_id,
                   std::shared_ptr<CartesianGrid<k>> sub_grid) const
 -> std::shared_ptr< SubRefSpace<k> >
 {
-    std::shared_ptr< SubRefSpace<k> > sub_ref_space;
-    if (this->is_bspline())
-    {
-        const auto bsp_space = dynamic_cast<const BSplineSpace<dim,range,rank> *>(this);
-        Assert(bsp_space != nullptr,ExcNullPtr());
-        sub_ref_space = bsp_space->get_ref_sub_space(sub_elem_id,dof_map,sub_grid);
-    }
-    else
-    {
+  std::shared_ptr< SubRefSpace<k> > sub_ref_space;
+  if (this->is_bspline())
+  {
+    const auto bsp_space = dynamic_cast<const BSplineSpace<dim,range,rank> *>(this);
+    Assert(bsp_space != nullptr,ExcNullPtr());
+    sub_ref_space = bsp_space->get_ref_sub_space(sub_elem_id,dof_map,sub_grid);
+  }
+  else
+  {
 #ifdef NURBS
-        //TODO (MM, Dec 22, 2014): implement NURBSSpace::get_ref_sub_space()
+    //TODO (MM, Dec 22, 2014): implement NURBSSpace::get_ref_sub_space()
 #ifndef NDEBUG
-        const auto nrb_space = dynamic_cast<const NURBSSpace<dim,range,rank> *>(this);
+    const auto nrb_space = dynamic_cast<const NURBSSpace<dim,range,rank> *>(this);
 #endif
-        Assert(nrb_space != nullptr,ExcNullPtr());
-        Assert(false,ExcNotImplemented());
+    Assert(nrb_space != nullptr,ExcNullPtr());
+    Assert(false,ExcNotImplemented());
 #else
-        Assert(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
-        AssertThrow(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
+    Assert(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
+    AssertThrow(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
 #endif
-    }
+  }
 
-    Assert(sub_ref_space != nullptr, ExcNullPtr());
-    return sub_ref_space;
+  Assert(sub_ref_space != nullptr, ExcNullPtr());
+  return sub_ref_space;
 }
 
 
@@ -98,29 +98,29 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
               SubGridMap<k> &elem_map) const
 -> std::shared_ptr<SubSpace<k> >
 {
-    std::shared_ptr<SubSpace<k> > sub_space;
-    if (this->is_bspline())
-    {
-        const auto bsp_space =
-        dynamic_cast<const BSplineSpace<dim,range,rank> *>(this);
-        Assert(bsp_space != nullptr, ExcNullPtr());
-        sub_space = bsp_space->get_sub_space(s_id,dof_map,sub_grid, elem_map);
-    }
-    else
-    {
+  std::shared_ptr<SubSpace<k> > sub_space;
+  if (this->is_bspline())
+  {
+    const auto bsp_space =
+    dynamic_cast<const BSplineSpace<dim,range,rank> *>(this);
+    Assert(bsp_space != nullptr, ExcNullPtr());
+    sub_space = bsp_space->get_sub_space(s_id,dof_map,sub_grid, elem_map);
+  }
+  else
+  {
 #ifdef NURBS
-        const auto nrb_space =
-        dynamic_cast<const NURBSSpace<dim,range,rank> *>(this);
-        Assert(nrb_space != nullptr, ExcNullPtr());
-        sub_space = nrb_space->get_sub_space(s_id,dof_map,sub_grid, elem_map);
+    const auto nrb_space =
+    dynamic_cast<const NURBSSpace<dim,range,rank> *>(this);
+    Assert(nrb_space != nullptr, ExcNullPtr());
+    sub_space = nrb_space->get_sub_space(s_id,dof_map,sub_grid, elem_map);
 #else
-        Assert(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
-        AssertThrow(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
+    Assert(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
+    AssertThrow(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
 #endif
-    }
+  }
 
-    Assert(sub_space != nullptr, ExcNullPtr());
-    return sub_space;
+  Assert(sub_space != nullptr, ExcNullPtr());
+  return sub_space;
 }
 
 
@@ -134,14 +134,14 @@ int
 ReferenceSpace<dim, range, rank>::
 get_max_degree() const
 {
-    int max_degree = 0;
+  int max_degree = 0;
 
-    const auto &degree_table = this->get_degree_table();
-    for (const auto &degree_comp : degree_table)
-        for (const auto &degree_comp_dim : degree_comp)
-            max_degree = std::max(max_degree,degree_comp_dim);
+  const auto &degree_table = this->get_degree_table();
+  for (const auto &degree_comp : degree_table)
+    for (const auto &degree_comp_dim : degree_comp)
+      max_degree = std::max(max_degree,degree_comp_dim);
 
-    return max_degree;
+  return max_degree;
 }
 
 
@@ -154,12 +154,12 @@ void
 ReferenceSpace<dim, range, rank>::
 serialize(Archive &ar, const unsigned int version)
 {
-    ar &boost::serialization::make_nvp("ReferenceSpace_base_t",
-                                       boost::serialization::base_object<base_t>(*this));
+  ar &boost::serialization::make_nvp("ReferenceSpace_base_t",
+                                     boost::serialization::base_object<base_t>(*this));
 
-    auto tmp = const_pointer_cast<RefSpace>(ref_space_previous_refinement_);
-    ar &boost::serialization::make_nvp("ref_space_previous_refinement_",tmp);
-    ref_space_previous_refinement_ = const_pointer_cast<const RefSpace>(tmp);
+  auto tmp = const_pointer_cast<RefSpace>(ref_space_previous_refinement_);
+  ar &boost::serialization::make_nvp("ref_space_previous_refinement_",tmp);
+  ref_space_previous_refinement_ = const_pointer_cast<const RefSpace>(tmp);
 }
 #endif // SERIALIZATION
 

@@ -38,42 +38,42 @@ void
 ball_map(const int n_knots, const int deg, const string prop=DofProperties::active,
          const bool use_bdry=true)
 {
-    OUTSTART
+  OUTSTART
 
-    BBox<dim> box;
-    box[0] = {0.5, 1};
-    for (int i=1; i<dim; ++i)
-        box[i] = {0., M_PI/4.};
+  BBox<dim> box;
+  box[0] = {0.5, 1};
+  for (int i=1; i<dim; ++i)
+    box[i] = {0., M_PI/4.};
 
-    auto grid  = CartesianGrid<dim>::create(box, n_knots);
-    auto map = functions::BallFunction<dim>::create(grid,IdentityFunction<dim>::create(grid));
-    auto space = create_space<dim>(grid, map, deg);
-    const int n_qp = 2;
-    elem_values<dim, sub_dim>(space, n_qp, prop, use_bdry);
+  auto grid  = CartesianGrid<dim>::create(box, n_knots);
+  auto map = functions::BallFunction<dim>::create(grid,IdentityFunction<dim>::create(grid));
+  auto space = create_space<dim>(grid, map, deg);
+  const int n_qp = 2;
+  elem_values<dim, sub_dim>(space, n_qp, prop, use_bdry);
 
-    OUTEND
+  OUTEND
 }
 
 template<int dim, int sub_dim = dim>
 void
 ball_map_prop(const int n_knots, const int deg, const bool use_bdry=true)
 {
-    OUTSTART
+  OUTSTART
 
-    BBox<dim> box;
-    box[0] = {0.5, 1};
-    for (int i=1; i<dim; ++i)
-        box[i] = {0., M_PI/4.};
+  BBox<dim> box;
+  box[0] = {0.5, 1};
+  for (int i=1; i<dim; ++i)
+    box[i] = {0., M_PI/4.};
 
-    auto grid  = CartesianGrid<dim>::create(box, n_knots);
+  auto grid  = CartesianGrid<dim>::create(box, n_knots);
 
-    auto map = functions::BallFunction<dim>::create(grid,IdentityFunction<dim>::create(grid));
-    auto space = create_space_prop<dim>(grid, map, deg);
-    const int n_qp = 1;
-    elem_values<dim, sub_dim>(space, n_qp, DofProp::interior, use_bdry);
-    elem_values<dim, sub_dim>(space, n_qp, DofProp::dirichlet, use_bdry);
-    elem_values<dim, sub_dim>(space, n_qp, DofProp::neumman, use_bdry);
-    OUTEND
+  auto map = functions::BallFunction<dim>::create(grid,IdentityFunction<dim>::create(grid));
+  auto space = create_space_prop<dim>(grid, map, deg);
+  const int n_qp = 1;
+  elem_values<dim, sub_dim>(space, n_qp, DofProp::interior, use_bdry);
+  elem_values<dim, sub_dim>(space, n_qp, DofProp::dirichlet, use_bdry);
+  elem_values<dim, sub_dim>(space, n_qp, DofProp::neumman, use_bdry);
+  OUTEND
 }
 
 
@@ -84,14 +84,14 @@ ball_map_prop(const int n_knots, const int deg, const bool use_bdry=true)
 int main()
 {
 
-    //  ball_map_prop<1,1>(2,1,true);
+  //  ball_map_prop<1,1>(2,1,true);
 
 
-    ball_map<1,1>(2,1);
-    ball_map<2,1>(3,2);
-    ball_map<3,3>(2,1);
+  ball_map<1,1>(2,1);
+  ball_map<2,1>(3,2);
+  ball_map<3,3>(2,1);
 
-    //ball_map_prop<2,1>(3,1);
-    //ball_map_prop<2,1>(3,2, false);
-    return 0;
+  //ball_map_prop<2,1>(3,1);
+  //ball_map_prop<2,1>(3,2, false);
+  return 0;
 }

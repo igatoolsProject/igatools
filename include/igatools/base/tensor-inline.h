@@ -29,9 +29,9 @@ inline
 Tdouble::
 Tdouble(const Real val)
 {
-    Assert(!std::isnan(val),ExcNotANumber());
-    Assert(!std::isinf(val),ExcNumberNotFinite());
-    val_ = val;
+  Assert(!std::isnan(val),ExcNotANumber());
+  Assert(!std::isinf(val),ExcNumberNotFinite());
+  val_ = val;
 }
 
 
@@ -47,11 +47,11 @@ inline
 Tdouble &
 Tdouble::operator=(const value_t &val)
 {
-    Assert(!std::isnan(val),ExcNotANumber());
-    Assert(!std::isinf(val),ExcNumberNotFinite());
+  Assert(!std::isnan(val),ExcNotANumber());
+  Assert(!std::isinf(val),ExcNumberNotFinite());
 
-    val_ = val;
-    return (*this);
+  val_ = val;
+  return (*this);
 }
 
 
@@ -60,7 +60,7 @@ inline
 auto
 Tdouble::operator[](const int i) noexcept -> value_t &
 {
-    return *this;
+  return *this;
 }
 
 
@@ -70,7 +70,7 @@ auto
 Tdouble::
 operator[](const int i) const noexcept -> const value_t &
 {
-    return *this;
+  return *this;
 }
 
 
@@ -80,7 +80,7 @@ auto
 Tdouble::
 operator()(const TensorIndex<0>  &i) noexcept -> value_t &
 {
-    return *this;
+  return *this;
 }
 
 
@@ -90,7 +90,7 @@ auto
 Tdouble::
 operator()(const TensorIndex<0>  &i) const noexcept -> const value_t &
 {
-    return *this;
+  return *this;
 }
 
 
@@ -100,7 +100,7 @@ auto
 Tdouble::
 operator()(const int i) noexcept -> value_t &
 {
-    return *this;
+  return *this;
 }
 
 
@@ -110,7 +110,7 @@ auto
 Tdouble::
 operator()(const int i) const noexcept -> const value_t &
 {
-    return *this;
+  return *this;
 }
 
 
@@ -120,11 +120,11 @@ Tdouble &
 Tdouble::
 operator+=(const Real val) noexcept
 {
-    Assert(!std::isnan(val),ExcNotANumber());
-    Assert(!std::isinf(val),ExcNumberNotFinite());
+  Assert(!std::isnan(val),ExcNotANumber());
+  Assert(!std::isinf(val),ExcNumberNotFinite());
 
-    val_ += val;
-    return *this;
+  val_ += val;
+  return *this;
 }
 
 
@@ -134,11 +134,11 @@ Tdouble &
 Tdouble::
 operator-=(const Real val) noexcept
 {
-    Assert(!std::isnan(val),ExcNotANumber());
-    Assert(!std::isinf(val),ExcNumberNotFinite());
+  Assert(!std::isnan(val),ExcNotANumber());
+  Assert(!std::isinf(val),ExcNumberNotFinite());
 
-    val_ -= val;
-    return *this;
+  val_ -= val;
+  return *this;
 }
 
 
@@ -148,11 +148,11 @@ Tdouble &
 Tdouble::
 operator*=(const Real val) noexcept
 {
-    Assert(!std::isnan(val),ExcNotANumber());
-    Assert(!std::isinf(val),ExcNumberNotFinite());
+  Assert(!std::isnan(val),ExcNotANumber());
+  Assert(!std::isinf(val),ExcNumberNotFinite());
 
-    val_ *= val;
-    return *this;
+  val_ *= val;
+  return *this;
 }
 
 
@@ -162,12 +162,12 @@ Tdouble &
 Tdouble::
 operator/=(const Real val) noexcept
 {
-    Assert(!std::isnan(val),ExcNotANumber());
-    Assert(!std::isinf(val),ExcNumberNotFinite());
-    Assert(val != Real(0.0),ExcDivideByZero());
+  Assert(!std::isnan(val),ExcNotANumber());
+  Assert(!std::isinf(val),ExcNumberNotFinite());
+  Assert(val != Real(0.0),ExcDivideByZero());
 
-    val_ /= val;
-    return *this;
+  val_ /= val;
+  return *this;
 }
 
 
@@ -177,7 +177,7 @@ Real
 Tdouble::
 norm() const noexcept
 {
-    return std::abs(val_);
+  return std::abs(val_);
 }
 
 
@@ -187,7 +187,7 @@ Real
 Tdouble::
 norm_square() const noexcept
 {
-    return val_ * val_;
+  return val_ * val_;
 }
 
 
@@ -197,7 +197,7 @@ auto
 Tdouble::
 flat_to_tensor_index(const int flat_index) const noexcept -> TensorIndex<0>
 {
-    return TensorIndex<0>();
+  return TensorIndex<0>();
 }
 
 
@@ -207,7 +207,7 @@ int
 Tdouble::
 tensor_to_flat_index(const TensorIndex<0> &tensor_index) const noexcept
 {
-    return 0;
+  return 0;
 }
 
 
@@ -217,7 +217,7 @@ Size
 Tdouble::
 get_number_of_entries()
 {
-    return size;
+  return size;
 }
 
 
@@ -230,10 +230,10 @@ inline
 Tensor< dim_, rank_, tensor_type, value_type >::
 Tensor(std::initializer_list<value_type> list)
 {
-    Assert(list.size() == self_t::size,
-           ExcDimensionMismatch(list.size(),self_t::size)) ;
-    for (int i = 0; i < self_t::size; ++i)
-        tensor_[i] = list.begin()[i];
+  Assert(list.size() == self_t::size,
+         ExcDimensionMismatch(list.size(),self_t::size)) ;
+  for (int i = 0; i < self_t::size; ++i)
+    tensor_[i] = list.begin()[i];
 }
 
 
@@ -244,11 +244,11 @@ Tensor<dim_, rank_, tensor_type, value_type> &
 Tensor< dim_, rank_, tensor_type, value_type >::
 operator=(std::initializer_list<value_type> list)
 {
-    Assert(list.size() == self_t::size,
-           ExcDimensionMismatch(list.size(),self_t::size));
-    for (int i = 0; i < self_t::size; ++i)
-        tensor_[i] = list.begin()[i];
-    return *this;
+  Assert(list.size() == self_t::size,
+         ExcDimensionMismatch(list.size(),self_t::size));
+  for (int i = 0; i < self_t::size; ++i)
+    tensor_[i] = list.begin()[i];
+  return *this;
 }
 
 
@@ -259,11 +259,11 @@ Tensor<dim_, rank_, tensor_type, value_type> &
 Tensor< dim_, rank_, tensor_type, value_type >::
 operator=(const value_type &entry_val)
 {
-    Assert(dim_ == 1 && rank_ == 1,
-           ExcMessage("Assignment is allowed only if dim_==1 and rank_==1")) ;
-    for (auto &val : tensor_)
-        val = entry_val;
-    return *this;
+  Assert(dim_ == 1 && rank_ == 1,
+         ExcMessage("Assignment is allowed only if dim_==1 and rank_==1")) ;
+  for (auto &val : tensor_)
+    val = entry_val;
+  return *this;
 }
 
 
@@ -274,8 +274,8 @@ auto
 Tensor< dim_, rank_, tensor_type, value_type >::
 operator[](const int  i) -> SubTensor<self_t> &
 {
-    Assert(i >= 0 && i < dim_, ExcIndexRange(i, 0, dim_)) ;
-    return tensor_[i] ;
+  Assert(i >= 0 && i < dim_, ExcIndexRange(i, 0, dim_)) ;
+  return tensor_[i] ;
 }
 
 
@@ -286,8 +286,8 @@ auto
 Tensor< dim_, rank_, tensor_type, value_type >::
 operator[](const int  i) const -> const SubTensor<self_t> &
 {
-    Assert(i >= 0 && i < dim_, ExcIndexRange(i, 0, dim_)) ;
-    return tensor_[i] ;
+  Assert(i >= 0 && i < dim_, ExcIndexRange(i, 0, dim_)) ;
+  return tensor_[i] ;
 }
 
 
@@ -298,9 +298,9 @@ value_type &
 Tensor< dim_, rank_, tensor_type, value_type >::
 operator()(const TensorIndex<rank_> &i)
 {
-    Assert(tensor_to_flat_index(i) < self_t::size,
-           ExcIndexRange(tensor_to_flat_index(i), 0, self_t::size)) ;
-    return (reinterpret_cast<value_type *>(tensor_)[tensor_to_flat_index(i)]);
+  Assert(tensor_to_flat_index(i) < self_t::size,
+         ExcIndexRange(tensor_to_flat_index(i), 0, self_t::size)) ;
+  return (reinterpret_cast<value_type *>(tensor_)[tensor_to_flat_index(i)]);
 }
 
 
@@ -311,9 +311,9 @@ const value_type &
 Tensor< dim_, rank_, tensor_type, value_type >::
 operator()(const TensorIndex<rank_> &i) const
 {
-    Assert(tensor_to_flat_index(i) < self_t::size,
-           ExcIndexRange(tensor_to_flat_index(i), 0, self_t::size)) ;
-    return (reinterpret_cast<value_type const *>(tensor_)[tensor_to_flat_index(i)]);
+  Assert(tensor_to_flat_index(i) < self_t::size,
+         ExcIndexRange(tensor_to_flat_index(i), 0, self_t::size)) ;
+  return (reinterpret_cast<value_type const *>(tensor_)[tensor_to_flat_index(i)]);
 }
 
 
@@ -324,8 +324,8 @@ value_type &
 Tensor< dim_, rank_, tensor_type, value_type >::
 operator()(const int i)
 {
-    Assert(i >= 0 && i < self_t::size, ExcIndexRange(i, 0, self_t::size)) ;
-    return (reinterpret_cast<value_type *>(tensor_)[i]);
+  Assert(i >= 0 && i < self_t::size, ExcIndexRange(i, 0, self_t::size)) ;
+  return (reinterpret_cast<value_type *>(tensor_)[i]);
 }
 
 
@@ -336,8 +336,8 @@ const value_type &
 Tensor< dim_, rank_, tensor_type, value_type >::
 operator()(const int i) const
 {
-    Assert(i >= 0 && i < self_t::size, ExcIndexRange(i, 0, self_t::size)) ;
-    return (reinterpret_cast<value_type const *>(tensor_)[i]);
+  Assert(i >= 0 && i < self_t::size, ExcIndexRange(i, 0, self_t::size)) ;
+  return (reinterpret_cast<value_type const *>(tensor_)[i]);
 }
 
 
@@ -348,16 +348,16 @@ Tensor< dim_, rank_, tensor_type, value_type > &
 Tensor< dim_, rank_, tensor_type, value_type >::
 operator=(const Real value)
 {
-    Assert(value==0.0 || (dim_ == 1 && rank_ == 1),
-           ExcMessage("Assignment with non-zero value is allowed only if dim_==1 and rank_==1")) ;
+  Assert(value==0.0 || (dim_ == 1 && rank_ == 1),
+         ExcMessage("Assignment with non-zero value is allowed only if dim_==1 and rank_==1")) ;
 
-    Assert(!std::isnan(value),ExcNotANumber());
-    Assert(!std::isinf(value),ExcNumberNotFinite());
+  Assert(!std::isnan(value),ExcNotANumber());
+  Assert(!std::isinf(value),ExcNumberNotFinite());
 
-    for (auto &tensor_component : tensor_)
-        tensor_component = value ;
+  for (auto &tensor_component : tensor_)
+    tensor_component = value ;
 
-    return *this;
+  return *this;
 }
 
 
@@ -368,10 +368,10 @@ Tensor< dim_, rank_, tensor_type, value_type > &
 Tensor< dim_, rank_, tensor_type, value_type >::
 operator+=(const Tensor< dim_, rank_, tensor_type, value_type > &tensor)
 {
-    for (int i = 0 ; i < dim_ ; i++)
-        tensor_[i] += tensor[i] ;
+  for (int i = 0 ; i < dim_ ; i++)
+    tensor_[i] += tensor[i] ;
 
-    return *this  ;
+  return *this  ;
 }
 
 
@@ -382,10 +382,10 @@ Tensor< dim_, rank_, tensor_type, value_type > &
 Tensor< dim_, rank_, tensor_type, value_type >::
 operator-=(const Tensor< dim_, rank_, tensor_type, value_type > &tensor)
 {
-    for (int i = 0 ; i < dim_ ; i++)
-        tensor_[i] -= tensor.tensor_[i] ;
+  for (int i = 0 ; i < dim_ ; i++)
+    tensor_[i] -= tensor.tensor_[i] ;
 
-    return *this ;
+  return *this ;
 }
 
 
@@ -396,13 +396,13 @@ Tensor< dim_, rank_, tensor_type, value_type > &
 Tensor< dim_, rank_, tensor_type, value_type >::
 operator*=(const Real value)
 {
-    Assert(!std::isnan(value),ExcNotANumber());
-    Assert(!std::isinf(value),ExcNumberNotFinite());
+  Assert(!std::isnan(value),ExcNotANumber());
+  Assert(!std::isinf(value),ExcNumberNotFinite());
 
-    for (auto &tensor_component : tensor_)
-        tensor_component *= value ;
+  for (auto &tensor_component : tensor_)
+    tensor_component *= value ;
 
-    return *this ;
+  return *this ;
 }
 
 
@@ -413,14 +413,14 @@ Tensor< dim_, rank_, tensor_type, value_type > &
 Tensor< dim_, rank_, tensor_type, value_type >::
 operator/=(const Real value)
 {
-    Assert(!std::isnan(value),ExcNotANumber());
-    Assert(!std::isinf(value),ExcNumberNotFinite());
-    Assert(value != Real(0.0),ExcDivideByZero());
+  Assert(!std::isnan(value),ExcNotANumber());
+  Assert(!std::isinf(value),ExcNumberNotFinite());
+  Assert(value != Real(0.0),ExcDivideByZero());
 
-    for (auto &tensor_component : tensor_)
-        tensor_component /= value ;
+  for (auto &tensor_component : tensor_)
+    tensor_component /= value ;
 
-    return *this ;
+  return *this ;
 }
 
 
@@ -430,10 +430,10 @@ Tensor< dim_, rank_, tensor_type, value_type > &
 Tensor< dim_, rank_, tensor_type, value_type >::
 operator-()
 {
-    for (auto &tensor_component : tensor_)
-        tensor_component = -tensor_component ;
+  for (auto &tensor_component : tensor_)
+    tensor_component = -tensor_component ;
 
-    return *this ;
+  return *this ;
 }
 
 
@@ -444,7 +444,7 @@ Real
 Tensor< dim_, rank_, tensor_type, value_type >::
 norm() const noexcept
 {
-    return std::sqrt(norm_square());
+  return std::sqrt(norm_square());
 }
 
 
@@ -455,11 +455,11 @@ Real
 Tensor< dim_, rank_, tensor_type, value_type >::
 norm_square() const noexcept
 {
-    Real s = 0.;
-    for (int i=0; i<dim_; ++i)
-        s += tensor_[i].norm_square();
+  Real s = 0.;
+  for (int i=0; i<dim_; ++i)
+    s += tensor_[i].norm_square();
 
-    return s;
+  return s;
 }
 
 
@@ -470,20 +470,20 @@ auto
 Tensor< dim_, rank_, tensor_type, value_type >::
 flat_to_tensor_index(const int flat_index) const noexcept -> TensorIndex<rank_>
 {
-    Assert(flat_index < self_t::size,
-    ExcIndexRange(flat_index, 0, self_t::size)) ;
+  Assert(flat_index < self_t::size,
+  ExcIndexRange(flat_index, 0, self_t::size)) ;
 
-    TensorIndex<rank_> tensor_index;
+  TensorIndex<rank_> tensor_index;
 
-    int l = flat_index;
-    for (int i = 0; i < rank_ ; ++i)
-    {
-        const int w = pow(dim_,rank_-i-1);
-        tensor_index[i] = l / w;
-        l %= w;
-    }
+  int l = flat_index;
+  for (int i = 0; i < rank_ ; ++i)
+  {
+    const int w = pow(dim_,rank_-i-1);
+    tensor_index[i] = l / w;
+    l %= w;
+  }
 
-    return tensor_index;
+  return tensor_index;
 }
 
 
@@ -494,9 +494,9 @@ Size
 Tensor< dim_, rank_, tensor_type, value_type >::
 get_number_of_entries()
 {
-    Size n_entries = size;
-    n_entries *= value_type::get_number_of_entries();
-    return n_entries;
+  Size n_entries = size;
+  n_entries *= value_type::get_number_of_entries();
+  return n_entries;
 }
 
 
@@ -507,11 +507,11 @@ int
 Tensor< dim_, rank_, tensor_type, value_type >::
 tensor_to_flat_index(const TensorIndex<rank_> &tensor_index) const noexcept
 {
-    int flat_index = 0;
-    for (int i = 0; i < rank_; ++i)
-        flat_index += pow(dim_,i) * tensor_index[rank_-1-i];
+  int flat_index = 0;
+  for (int i = 0; i < rank_; ++i)
+    flat_index += pow(dim_,i) * tensor_index[rank_-1-i];
 
-    return flat_index;
+  return flat_index;
 }
 
 
@@ -521,9 +521,9 @@ inline
 EnableIf<T::is_tensor, T>
 operator+(const T &A, const T &B) noexcept
 {
-    T R(A);
-    R += B;
-    return R;
+  T R(A);
+  R += B;
+  return R;
 }
 
 
@@ -533,9 +533,9 @@ inline
 EnableIf<T::is_tensor,T>
 operator-(const T &A, const T &B) noexcept
 {
-    T R(A);
-    R -= B;
-    return R;
+  T R(A);
+  R -= B;
+  return R;
 }
 
 
@@ -545,12 +545,12 @@ inline
 EnableIf<T::is_tensor,T>
 operator*(const T &A, const Real scalar) noexcept
 {
-    Assert(!std::isnan(scalar),ExcNotANumber());
-    Assert(!std::isinf(scalar),ExcNumberNotFinite());
+  Assert(!std::isnan(scalar),ExcNotANumber());
+  Assert(!std::isinf(scalar),ExcNumberNotFinite());
 
-    T R(A);
-    R *= scalar;
-    return (R);
+  T R(A);
+  R *= scalar;
+  return (R);
 }
 
 
@@ -560,7 +560,7 @@ inline
 EnableIf<T::is_tensor,T>
 operator*(const Real scalar, const T &A) noexcept
 {
-    return A * scalar;
+  return A * scalar;
 }
 
 
@@ -570,13 +570,13 @@ inline
 EnableIf<T::is_tensor,T>
 operator/(const T &A, const Real scalar) noexcept
 {
-    Assert(!std::isnan(scalar), ExcNotANumber());
-    Assert(!std::isinf(scalar), ExcNumberNotFinite());
-    Assert(scalar !=0 , ExcDivideByZero());
+  Assert(!std::isnan(scalar), ExcNotANumber());
+  Assert(!std::isinf(scalar), ExcNumberNotFinite());
+  Assert(scalar !=0 , ExcDivideByZero());
 
-    T R(A);
-    R /= scalar;
-    return R;
+  T R(A);
+  R /= scalar;
+  return R;
 }
 
 IGA_NAMESPACE_CLOSE

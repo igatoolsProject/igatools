@@ -35,14 +35,14 @@ namespace grid_element
 {
 enum class Flags
 {
-    /** Fill nothing */
-    none           =    0,
+  /** Fill nothing */
+  none           =    0,
 
-    /** Quadrature points on the element */
-    point          =    1L << 1,
+  /** Quadrature points on the element */
+  point          =    1L << 1,
 
-    /** Quadrature weigths on the element */
-    w_measure      =    1L << 2
+  /** Quadrature weigths on the element */
+  w_measure      =    1L << 2
 };
 }
 /**
@@ -71,230 +71,236 @@ template <int dim, class ContainerType_>
 class GridElementBase
 {
 private:
-    using self_t = GridElementBase<dim, ContainerType_>;
+  using self_t = GridElementBase<dim, ContainerType_>;
 
 public:
-    /** Type required by the CartesianGridIterator templated iterator */
-    using ContainerType = ContainerType_;
-    using IndexType = typename ContainerType_::IndexType;
-    using List = typename ContainerType_::List;
-    using ListIt = typename ContainerType_::ListIt;
+  /** Type required by the CartesianGridIterator templated iterator */
+  using ContainerType = ContainerType_;
+  using IndexType = typename ContainerType_::IndexType;
+  using List = typename ContainerType_::List;
+  using ListIt = typename ContainerType_::ListIt;
 
-    using Point = Points<dim>;
+  using Point = Points<dim>;
 
-    using Flags = grid_element::Flags;
-    /** @name Constructors */
-    ///@{
+  using Flags = grid_element::Flags;
+  /** @name Constructors */
+  ///@{
 protected:
-    /**
-     * Default constructor. It does nothing but it is needed for the
-     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     * mechanism.
-     */
-    GridElementBase() = default;
+  /**
+   * Default constructor. It does nothing but it is needed for the
+   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * mechanism.
+   */
+  GridElementBase() = default;
 
 public:
-    /**
-     * Construct an accessor pointing to the element with
-     * flat index @p elem_index of the CartesianGrid @p grid.
+  /**
+   * Construct an accessor pointing to the element with
+   * flat index @p elem_index of the CartesianGrid @p grid.
+   */
+  GridElementBase(const std::shared_ptr<ContainerType_> grid,
+                  const ListIt &index,
+                  const PropId &prop = ElementProperties::active);
+
+  /**
+   * Copy constructor.
+   * It can be used with different copy policies
+   * (i.e. deep copy or shallow copy).
+   * The default behaviour (i.e. using the proper interface of a
+   * classic copy constructor)
+   * uses the <b>deep</b> copy.
+   */
+  GridElementBase(const self_t &elem,
+                  const CopyPolicy &copy_policy = CopyPolicy::deep);
+
+  /**
+   * Move constructor.
+   */
+  GridElementBase(self_t &&elem) = default;
+
+  /**
+   * Destructor.
+   */
+  ~GridElementBase() = default;
+  ///@}
+
+  /**
+   * @name Functions for performing different kind of copy.
+   */
+  ///@{
+  /**
+   * Performs a deep copy of the input @p element,
+   * i.e. a new local cache is built using the copy constructor on the local cache of @p element.
+   *
+   * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
+   */
+  void deep_copy_from(const self_t &element);
+
+  /**
+   * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
+   * local cache used by the input @p element.
+   */
+  void shallow_copy_from(const self_t &element);
+  ///@}
+
+  /** @name Assignment operators */
+  ///@{
+  /**
+   * Copy assignment operator. Performs a <b>shallow copy</b> of the input @p element.
+   *
+   * @note Internally it uses the function shallow_copy_from().
+   */
+  self_t &operator=(const self_t &element);
+
+  /**
+   * Move assignment operator.
+   */
+  self_t &operator=(self_t &&elem) = default;
+  ///@}
+
+
+  const IndexType &get_index() const;
+
+  /** Return the cartesian grid from which the element belongs.*/
+  const std::shared_ptr<const ContainerType> get_grid() const;
+
+  template <int sdim>
+  std::shared_ptr<const Quadrature<sdim>>
+                                       get_quad()
+  {
+    return quad_list_.template get_quad<sdim>();
+  }
+  /**
+   * @name Functions for managing/querying the element properties.
+   */
+  ///@{
+  /**
+   * Tests if a certain element @p property is TRUE.
+   */
+  bool has_property(const PropId &property) const;
+  ///@}
+
+  /**
+   * @name Functions/operators for moving the element in the CartesianGrid.
+   *
+   * @note They should be called only by the CartesianGridIterator.
+   */
+  ///@{
+  /**
+   * Sets the index of the element using the flatten representation.
+   * @note This function also updates the index for the tensor representation.
+   * @warning This may be a dangerous function, be careful when using it
+   * as it is easy to use incorrectly. Only use it if you know what you
+   * are doing.
+   */
+  // void move_to(const IndexType&);
+
+  typename List::iterator &operator++()
+  {
+    return (++index_it_);
+  }
+  ///@}
+
+  /**
+   * @name Comparison operators
+   * @note In order to be meaningful, the comparison must be performed on elements defined on
+   * the <b>same grid</b>
+   * (in the sense that the pointer to the grid held by the element must point to the same
+   * grid object).
+   */
+  ///@{
+  /**
+   * True if the elements have the same index.
+   *  @note In debug mode, it is also check they both refer to
+   *  the same cartesian grid. No check is done on the cache.
+   */
+  bool operator==(const self_t &elem) const;
+
+  /**
+   * True if the elements have different index.
+   *  @note In debug mode, it is also check they both refer to
+   *  the same cartesian grid. No check is done on the cache.
+   */
+  bool operator!=(const self_t &elem) const;
+
+  /**
+   * True if the flat-index of the element on the left is smaller than
+   * the flat-index of the element on the right.
+   *  @note In debug mode, it is also check they both refer to
+   *  the same cartesian grid. No check is done on the cache.
+   */
+  bool operator<(const self_t &elem) const;
+
+  /**
+   * True if the flat-index of the element on the left is bigger than
+   * the flat-index of the element on the right.
+   *  @note In debug mode, it is also check they both refer to
+   *  the same cartesian grid. No check is done on the cache.
+   */
+  bool operator>(const self_t &elem) const;
+  ///@}
+
+  ///@name Query information that requires the use of the cache
+  ///@{
+
+  /**
+   * Returns the lengths of the coordinate sides of the cartesian element.
+   * For example in 2 dimensions
+   * \code{.cpp}
+     auto length = elem.coordinate_lenths();
+     // length[0] is the length of the x-side of the element and
+     // length[1] the length of the y-side of the element.
+     \endcode
+   */
+
+  /**
+     * Test if the element has a boundary face.
      */
-    GridElementBase(const std::shared_ptr<ContainerType_> grid,
-                    const ListIt &index,
-                    const PropId &prop = ElementProperties::active);
+  template<int k = (dim > 0) ? (dim-1) : 0 >
+  bool is_boundary() const;
 
-    /**
-     * Copy constructor.
-     * It can be used with different copy policies
-     * (i.e. deep copy or shallow copy).
-     * The default behaviour (i.e. using the proper interface of a
-     * classic copy constructor)
-     * uses the <b>deep</b> copy.
-     */
-    GridElementBase(const self_t &elem,
-                    const CopyPolicy &copy_policy = CopyPolicy::deep);
+  /**
+   * Test if the face identified by @p face_id on the current element is on the
+   * boundary of the cartesian grid.
+   */
+  template<int k = (dim > 0) ? (dim-1) : 0>
+  bool is_boundary(const Index sub_elem_id) const;
+  ///@}
 
-    /**
-     * Move constructor.
-     */
-    GridElementBase(self_t &&elem) = default;
-
-    /**
-     * Destructor.
-     */
-    ~GridElementBase() = default;
-    ///@}
-
-    /**
-     * @name Functions for performing different kind of copy.
-     */
-    ///@{
-    /**
-     * Performs a deep copy of the input @p element,
-     * i.e. a new local cache is built using the copy constructor on the local cache of @p element.
-     *
-     * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
-     */
-    void deep_copy_from(const self_t &element);
-
-    /**
-     * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
-     * local cache used by the input @p element.
-     */
-    void shallow_copy_from(const self_t &element);
-    ///@}
-
-    /** @name Assignment operators */
-    ///@{
-    /**
-     * Copy assignment operator. Performs a <b>shallow copy</b> of the input @p element.
-     *
-     * @note Internally it uses the function shallow_copy_from().
-     */
-    self_t &operator=(const self_t &element);
-
-    /**
-     * Move assignment operator.
-     */
-    self_t &operator=(self_t &&elem) = default;
-    ///@}
-
-
-    const IndexType &get_index() const;
-
-    /** Return the cartesian grid from which the element belongs.*/
-    const std::shared_ptr<const ContainerType> get_grid() const;
-
-    /**
-     * @name Functions for managing/querying the element properties.
-     */
-    ///@{
-    /**
-     * Tests if a certain element @p property is TRUE.
-     */
-    bool has_property(const PropId &property) const;
-    ///@}
-
-    /**
-     * @name Functions/operators for moving the element in the CartesianGrid.
-     *
-     * @note They should be called only by the CartesianGridIterator.
-     */
-    ///@{
-    /**
-     * Sets the index of the element using the flatten representation.
-     * @note This function also updates the index for the tensor representation.
-     * @warning This may be a dangerous function, be careful when using it
-     * as it is easy to use incorrectly. Only use it if you know what you
-     * are doing.
-     */
-    // void move_to(const IndexType&);
-
-    typename List::iterator &operator++()
-    {
-        return (++index_it_);
-    }
-    ///@}
-
-    /**
-     * @name Comparison operators
-     * @note In order to be meaningful, the comparison must be performed on elements defined on
-     * the <b>same grid</b>
-     * (in the sense that the pointer to the grid held by the element must point to the same
-     * grid object).
-     */
-    ///@{
-    /**
-     * True if the elements have the same index.
-     *  @note In debug mode, it is also check they both refer to
-     *  the same cartesian grid. No check is done on the cache.
-     */
-    bool operator==(const self_t &elem) const;
-
-    /**
-     * True if the elements have different index.
-     *  @note In debug mode, it is also check they both refer to
-     *  the same cartesian grid. No check is done on the cache.
-     */
-    bool operator!=(const self_t &elem) const;
-
-    /**
-     * True if the flat-index of the element on the left is smaller than
-     * the flat-index of the element on the right.
-     *  @note In debug mode, it is also check they both refer to
-     *  the same cartesian grid. No check is done on the cache.
-     */
-    bool operator<(const self_t &elem) const;
-
-    /**
-     * True if the flat-index of the element on the left is bigger than
-     * the flat-index of the element on the right.
-     *  @note In debug mode, it is also check they both refer to
-     *  the same cartesian grid. No check is done on the cache.
-     */
-    bool operator>(const self_t &elem) const;
-    ///@}
-
-    ///@name Query information that requires the use of the cache
-    ///@{
-
-    /**
-     * Returns the lengths of the coordinate sides of the cartesian element.
-     * For example in 2 dimensions
-     * \code{.cpp}
-       auto length = elem.coordinate_lenths();
-       // length[0] is the length of the x-side of the element and
-       // length[1] the length of the y-side of the element.
-       \endcode
-     */
-
-    /**
-       * Test if the element has a boundary face.
-       */
-    template<int k = (dim > 0) ? (dim-1) : 0 >
-    bool is_boundary() const;
-
-    /**
-     * Test if the face identified by @p face_id on the current element is on the
-     * boundary of the cartesian grid.
-     */
-    template<int k = (dim > 0) ? (dim-1) : 0>
-    bool is_boundary(const Index sub_elem_id) const;
-    ///@}
-
-    /**
-     * Return the @p i-th vertex
-     */
-    Point vertex(const int i) const;
+  /**
+   * Return the @p i-th vertex
+   */
+  Point vertex(const int i) const;
 
 
 #if 0
-    /**
-     * Return the properties defined for the element.
-     */
-    SafeSTLVector<std::string> get_defined_properties() const;
+  /**
+   * Return the properties defined for the element.
+   */
+  SafeSTLVector<std::string> get_defined_properties() const;
 #endif
 
 
 public:
-    template <int sdim>
-    Real get_measure(const int s_id) const;
+  template <int sdim>
+  Real get_measure(const int s_id) const;
 
 
-    /**
-     * Returns the quadrature weights corresponding to the <tt>sdim</tt>
-     * dimensional s_id-th sub-element.
-     */
-    template <int sdim>
-    ValueVector<Real> get_weights(const int s_id) const;
+  /**
+   * Returns the quadrature weights corresponding to the <tt>sdim</tt>
+   * dimensional s_id-th sub-element.
+   */
+  template <int sdim>
+  ValueVector<Real> get_weights(const int s_id) const;
 
 
 
-    /**
-     * Returns the quadrature points corresponding to the <tt>sdim</tt>
-     * dimensional s_id-th sub-element.
-     */
-    template <int sdim>
-    ValueVector<Point> get_points(const int s_id = 0) const;
+  /**
+   * Returns the quadrature points corresponding to the <tt>sdim</tt>
+   * dimensional s_id-th sub-element.
+   */
+  template <int sdim>
+  ValueVector<Point> get_points(const int s_id = 0) const;
 
 
     /**
@@ -308,27 +314,27 @@ public:
     }
 
 private:
-    ValueVector<Point> get_element_points() const;
+  ValueVector<Point> get_element_points() const;
 
 public:
-    /**
-     * Prints internal information about the CartesianGridElementAccessor.
-     * Its main use is for testing and debugging.
-     */
-    void print_info(LogStream &out) const;
+  /**
+   * Prints internal information about the CartesianGridElementAccessor.
+   * Its main use is for testing and debugging.
+   */
+  void print_info(LogStream &out) const;
 
-    void print_cache_info(LogStream &out) const;
+  void print_cache_info(LogStream &out) const;
 
     template<int sdim>
     const Points<sdim> get_side_lengths(const int s_id) const;
 
 private:
-    template <class Accessor> friend class GridIteratorBase;
-    friend class GridElementHandler<dim>;
+  template <class Accessor> friend class GridIteratorBase;
+  friend class GridElementHandler<dim>;
 
 protected:
-    /** Cartesian grid from which the element belongs.*/
-    std::shared_ptr<ContainerType> grid_;
+  /** Cartesian grid from which the element belongs.*/
+  std::shared_ptr<ContainerType> grid_;
 
 private:
     PropId property_;
@@ -366,81 +372,82 @@ private:
                   boost::fusion::pair<_Weight,DataWithFlagStatus<ValueVector<Real>>>
                   >;
 
-public:
-    using ValuesCache = FuncValuesCache<dim,CType>;
 
-    using CacheType = AllSubElementsCache<ValuesCache>;
+public:
+  using ValuesCache = FuncValuesCache<dim,CType>;
+
+  using CacheType = AllSubElementsCache<ValuesCache>;
 
 private:
-    /** List of quadrature pointers for all sub elements */
-    QuadList<dim> quad_list_;
+  /** List of quadrature pointers for all sub elements */
+  QuadList<dim> quad_list_;
 
-    /** The local cache. */
-    std::shared_ptr<CacheType> all_sub_elems_cache_;
+  /** The local cache. */
+  std::shared_ptr<CacheType> all_sub_elems_cache_;
 
 
-    template <class ValueType, int sdim>
-    const auto &
-    get_values_from_cache(const int s_id) const
-    {
-        Assert(all_sub_elems_cache_ != nullptr, ExcNullPtr());
-        const auto &cache = all_sub_elems_cache_->template get_sub_elem_cache<sdim>(s_id);
-        return cache.template get_data<ValueType>();
-    }
-    ///@}
+  template <class ValueType, int sdim>
+  const auto &
+  get_values_from_cache(const int s_id) const
+  {
+    Assert(all_sub_elems_cache_ != nullptr, ExcNullPtr());
+    const auto &cache = all_sub_elems_cache_->template get_sub_elem_cache<sdim>(s_id);
+    return cache.template get_data<ValueType>();
+  }
+  ///@}
 
 protected:
-    /**
-     * Performs a copy of the input @p element.
-     * The type of copy (deep or shallow) is specified by the input parameter @p copy_policy.
-     */
-    void copy_from(const self_t &element,
-                   const CopyPolicy &copy_policy);
+  /**
+   * Performs a copy of the input @p element.
+   * The type of copy (deep or shallow) is specified by the input parameter @p copy_policy.
+   */
+  void copy_from(const self_t &element,
+                 const CopyPolicy &copy_policy);
 
-    /**
-     * ExceptionUnsupported Value Flag.
-     */
-    DeclException2(ExcFillFlagNotSupported, ValueFlags, ValueFlags,
-                   << "The passed ValueFlag " << arg2
-                   << " contains a non admissible flag " << (arg1 ^arg2));
+  /**
+   * ExceptionUnsupported Value Flag.
+   */
+  DeclException2(ExcFillFlagNotSupported, ValueFlags, ValueFlags,
+                 << "The passed ValueFlag " << arg2
+                 << " contains a non admissible flag " << (arg1 ^arg2));
 
-    DeclException1(ExcCacheInUse, int,
-                   << "The global cache is being used by " << arg1
-                   << " iterator. Changing its value not allowed.");
+  DeclException1(ExcCacheInUse, int,
+                 << "The global cache is being used by " << arg1
+                 << " iterator. Changing its value not allowed.");
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version);
-    ///@}
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version);
+  ///@}
 #endif // SERIALIZATION
 };
 
 template <int dim>
 class ConstGridElement
-    : public GridElementBase<dim, const CartesianGrid<dim>>
+  : public GridElementBase<dim, const CartesianGrid<dim>>
 {
-    using GridElementBase<dim, const CartesianGrid<dim>>::GridElementBase;
+  using GridElementBase<dim, const CartesianGrid<dim>>::GridElementBase;
 };
 
 
 template <int dim>
 class GridElement
-    : public GridElementBase<dim, CartesianGrid<dim>>
+  : public GridElementBase<dim, CartesianGrid<dim>>
 {
-    using GridElementBase<dim, CartesianGrid<dim>>::GridElementBase;
+  using GridElementBase<dim, CartesianGrid<dim>>::GridElementBase;
 public:
-    void add_property(const PropId &prop)
-    {
-        this->grid_->elem_properties_[prop].insert(this->get_index());
-    }
+  void add_property(const PropId &prop)
+  {
+    this->grid_->elem_properties_[prop].insert(this->get_index());
+  }
 };
 
 

@@ -31,29 +31,29 @@
 template <int dim, int sdim>
 void boundary_normals()
 {
-    OUTSTART
+  OUTSTART
 
-    auto grid = CartesianGrid<dim>::create();
-    const int n_elems = UnitElement<dim>::template num_elem<sdim>();
-    for (int j = 0; j < n_elems; ++j)
-    {
-        out << "Sub element index: " << j << endl;
-        auto normals = grid->template get_boundary_normals<sdim>(j);
-        out << "Outer normals: ";
-        for (int i=0; i<dim-sdim; ++i)
-            out << normals[i] << " " << endl;
-    }
+  auto grid = CartesianGrid<dim>::create();
+  const int n_elems = UnitElement<dim>::template num_elem<sdim>();
+  for (int j = 0; j < n_elems; ++j)
+  {
+    out << "Sub element index: " << j << endl;
+    auto normals = grid->template get_boundary_normals<sdim>(j);
+    out << "Outer normals: ";
+    for (int i=0; i<dim-sdim; ++i)
+      out << normals[i] << " " << endl;
+  }
 
-    OUTEND
+  OUTEND
 }
 
 
 
 int main()
 {
-    boundary_normals<1,0>();
-    boundary_normals<2,1>();
-    boundary_normals<3,2>();
+  boundary_normals<1,0>();
+  boundary_normals<2,1>();
+  boundary_normals<3,2>();
 
-    return 0;
+  return 0;
 }

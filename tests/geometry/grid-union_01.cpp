@@ -34,55 +34,55 @@
 template<int dim>
 void do_test()
 {
-    out << "=============== Dimension " << dim << " -- begin ===============" << endl ;
+  out << "=============== Dimension " << dim << " -- begin ===============" << endl ;
 
-    auto grid_1 = CartesianGrid<dim>::create(3);
-    out << "------------------------------------------" << endl;
-    out << "Grid 1" << endl;
-    grid_1->print_info(out);
-    out << "------------------------------------------" << endl;
+  auto grid_1 = CartesianGrid<dim>::create(3);
+  out << "------------------------------------------" << endl;
+  out << "Grid 1" << endl;
+  grid_1->print_info(out);
+  out << "------------------------------------------" << endl;
 
-    out << endl;
+  out << endl;
 
-    auto grid_2 = CartesianGrid<dim>::create(4);
-    out << "------------------------------------------" << endl;
-    out << "Grid 2" << endl;
-    grid_2->print_info(out);
-    out << "------------------------------------------" << endl;
+  auto grid_2 = CartesianGrid<dim>::create(4);
+  out << "------------------------------------------" << endl;
+  out << "Grid 2" << endl;
+  grid_2->print_info(out);
+  out << "------------------------------------------" << endl;
 
-    out << endl;
+  out << endl;
 
-    grid_tools::InterGridMap<dim> map_elem_grid_union_to_elem_grid_1;
-    grid_tools::InterGridMap<dim> map_elem_grid_union_to_elem_grid_2;
-    auto grid_union = grid_tools::build_cartesian_grid_union
-                      (*grid_1, *grid_2,
-                       map_elem_grid_union_to_elem_grid_1,map_elem_grid_union_to_elem_grid_2);
-    out << "------------------------------------------" << endl;
-    out << "Grid union" << endl;
-    grid_union->print_info(out);
+  grid_tools::InterGridMap<dim> map_elem_grid_union_to_elem_grid_1;
+  grid_tools::InterGridMap<dim> map_elem_grid_union_to_elem_grid_2;
+  auto grid_union = grid_tools::build_cartesian_grid_union
+                    (*grid_1, *grid_2,
+                     map_elem_grid_union_to_elem_grid_1,map_elem_grid_union_to_elem_grid_2);
+  out << "------------------------------------------" << endl;
+  out << "Grid union" << endl;
+  grid_union->print_info(out);
 
-    out << "map_elem_grid_union_to_elem_grid_1 = ";
-    for (auto map : map_elem_grid_union_to_elem_grid_1)
-        out << map.second << " ";
-    out << endl;
-    out << "map_elem_grid_union_to_elem_grid_2 = ";
-    for (auto map : map_elem_grid_union_to_elem_grid_2)
-        out << map.second << " ";
-    out << endl;
+  out << "map_elem_grid_union_to_elem_grid_1 = ";
+  for (auto map : map_elem_grid_union_to_elem_grid_1)
+    out << map.second << " ";
+  out << endl;
+  out << "map_elem_grid_union_to_elem_grid_2 = ";
+  for (auto map : map_elem_grid_union_to_elem_grid_2)
+    out << map.second << " ";
+  out << endl;
 
-    out << "------------------------------------------" << endl;
-    out << "=============== Dimension " << dim << " -- end =================" << endl ;
+  out << "------------------------------------------" << endl;
+  out << "=============== Dimension " << dim << " -- end =================" << endl ;
 
-    out << endl << endl;
+  out << endl << endl;
 }
 
 int main()
 {
 
-    do_test<0>();
-    do_test<1>();
-    do_test<2>();
-    do_test<3>();
+  do_test<0>();
+  do_test<1>();
+  do_test<2>();
+  do_test<3>();
 
-    return 0;
+  return 0;
 }

@@ -43,97 +43,98 @@ IGA_NAMESPACE_OPEN
  */
 template<int dim_, int range_, int rank_>
 class BSplineElementHandler
-    : public ReferenceElementHandler<dim_,range_,rank_>
+  : public ReferenceElementHandler<dim_,range_,rank_>
 {
-    using base_t = ReferenceElementHandler<dim_,range_,rank_>;
-    using self_t = BSplineElementHandler<dim_,range_,rank_>;
-    using Space = BSplineSpace<dim_,range_,rank_>;
-    static const Size n_components =  SplineSpace<dim_,range_,rank_>::n_components;
+  using base_t = ReferenceElementHandler<dim_,range_,rank_>;
+  using self_t = BSplineElementHandler<dim_,range_,rank_>;
+  using Space = BSplineSpace<dim_,range_,rank_>;
+  static const Size n_components =  SplineSpace<dim_,range_,rank_>::n_components;
 
-    using IndexType = typename CartesianGrid<dim_>::IndexType;
+  using IndexType = typename CartesianGrid<dim_>::IndexType;
 
-    template<class T>
-    using ComponentContainer = typename Space::template ComponentContainer<T>;
+  template<class T>
+  using ComponentContainer = typename Space::template ComponentContainer<T>;
 
-    template<class T>
-    using ComponentDirectionTable = ComponentContainer<CartesianProductArray<T,dim_>>;
+  template<class T>
+  using ComponentDirectionTable = ComponentContainer<CartesianProductArray<T,dim_>>;
 
-    template<class T>
-    using ComponentDirectionContainer = ComponentContainer<SafeSTLArray<T,dim_>>;
+  template<class T>
+  using ComponentDirectionContainer = ComponentContainer<SafeSTLArray<T,dim_>>;
 
-    using TensorSizeTable = typename Space::TensorSizeTable;
+  using TensorSizeTable = typename Space::TensorSizeTable;
 
-    template <int order>
-    using Derivative = typename Space::template Derivative<order>;
+  template <int order>
+  using Derivative = typename Space::template Derivative<order>;
 
-    using Value = typename Space::Value;
+  using Value = typename Space::Value;
 
 
 protected:
 
-    using BaseSpace = ReferenceSpace<dim_,range_,rank_>;
-    using RefElementIterator = typename BaseSpace::ElementIterator;
-    using RefElementAccessor = typename BaseSpace::ElementAccessor;
+  using BaseSpace = ReferenceSpace<dim_,range_,rank_>;
+  using RefElementIterator = typename BaseSpace::ElementIterator;
+  using RefElementAccessor = typename BaseSpace::ElementAccessor;
 
 
 private:
-    /**
-     * Assignment operators.
-     */
-    ///@{
-    /**
-     * Copy assignment operator. Not allowed to be used.
-     */
-    self_t &operator=(const self_t &) = delete;
+  /**
+   * Assignment operators.
+   */
+  ///@{
+  /**
+   * Copy assignment operator. Not allowed to be used.
+   */
+  self_t &operator=(const self_t &) = delete;
 
-    /**
-     * Move assignment operator. Not allowed to be used.
-     */
-    self_t &operator=(self_t &&) = delete;
-    ///@}
+  /**
+   * Move assignment operator. Not allowed to be used.
+   */
+  self_t &operator=(self_t &&) = delete;
+  ///@}
 
-    /**
-     * @name Constructors.
-     */
-    ///@{
+  /**
+   * @name Constructors.
+   */
+  ///@{
 
-    /**
-     * Default constructor. It does nothing but it is needed for the
-     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     * mechanism.
-     */
-    BSplineElementHandler() = default;
+  /**
+   * Default constructor. It does nothing but it is needed for the
+   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * mechanism.
+   */
+  BSplineElementHandler() = default;
 
-    BSplineElementHandler(std::shared_ptr<const Space> space);
+  BSplineElementHandler(std::shared_ptr<const Space> space);
 
-    /**
-     * Copy constructor. Not allowed to be used.
-     */
-    BSplineElementHandler(const self_t &) = delete;
+  /**
+   * Copy constructor. Not allowed to be used.
+   */
+  BSplineElementHandler(const self_t &) = delete;
 
-    /**
-     * Move constructor. Not allowed to be used.
-     */
-    BSplineElementHandler(self_t &&) = delete;
-    ///@}
-
-public:
-    static const int dim = dim_;
-
-    /**
-     * Destructor.
-     */
-    virtual ~BSplineElementHandler() = default;
-
-    static std::shared_ptr<self_t> create(std::shared_ptr<const Space> space);
-
-    using topology_variant = typename base_t::topology_variant;
-    using eval_pts_variant = typename base_t::eval_pts_variant;
-
-
+  /**
+   * Move constructor. Not allowed to be used.
+   */
+  BSplineElementHandler(self_t &&) = delete;
+  ///@}
 
 public:
-    virtual void print_info(LogStream &out) const override final ;
+  static const int dim = dim_;
+
+  /**
+   * Destructor.
+   */
+  virtual ~BSplineElementHandler() = default;
+
+  static std::shared_ptr<self_t> create(std::shared_ptr<const Space> space);
+
+  using topology_variant = typename base_t::topology_variant;
+  using eval_pts_variant = typename base_t::eval_pts_variant;
+
+
+
+
+public:
+  virtual void print_info(LogStream &out) const override final ;
 
 
 private:
@@ -191,6 +192,7 @@ private:
             elem_(elem)
         {}
 
+
         template<int sdim>
         void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad);
 
@@ -205,7 +207,6 @@ private:
         template<int sdim>
         void init_cache_multiD();
     };
-
 
     virtual void fill_cache_impl(BaseElem &elem,
                                  const topology_variant &topology,
@@ -356,29 +357,29 @@ private:
 #endif
 
 
+
     /**
      * Returns the BSplineSpace used to define the BSplineElementHandler object.
      */
     std::shared_ptr<const Space> get_bspline_space() const;
 
 
-private:
-
     SafeSTLArray<typename space_element::Flags, dim_ + 1> flags_;
 
 
-#ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version);
-    ///@}
+#ifdef SERIALIZATION
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
+
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version);
+  ///@}
 #endif
 };
 

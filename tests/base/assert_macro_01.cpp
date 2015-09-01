@@ -30,18 +30,18 @@
 
 int main()
 {
-    iga_exceptions::suppress_stacktrace_in_exceptions();
-    Assert(true, ExcInternalError());
+  iga_exceptions::suppress_stacktrace_in_exceptions();
+  Assert(true, ExcInternalError());
 
-    try
-    {
-        AssertThrow(false, ExcInternalError());
-    }
-    catch (ExceptionBase &e)
-    {
-        out << "Exception" << endl;
-        e.print_info(out.get_file_stream());
-    }
+  try
+  {
+    AssertThrow(false, ExcInternalError());
+  }
+  catch (ExceptionBase &e)
+  {
+    out << "Exception" << endl;
+    e.print_info(out.get_file_stream());
+  }
 
-    return 0;
+  return 0;
 }

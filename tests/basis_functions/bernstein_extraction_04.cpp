@@ -33,37 +33,37 @@ template <int dim>
 void
 test(const int deg = 1)
 {
-    using SplineSpace = SplineSpace<dim>;
+  using SplineSpace = SplineSpace<dim>;
 
-    typename SplineSpace::DegreeTable degt {{deg}};
+  typename SplineSpace::DegreeTable degt {{deg}};
 
 
-    CartesianProductArray<Real,dim> knots({{0,1,2,3,4}});
-    auto grid = CartesianGrid<dim>::create(knots);
+  CartesianProductArray<Real,dim> knots({{0,1,2,3,4}});
+  auto grid = CartesianGrid<dim>::create(knots);
 
-    typename SplineSpace::PeriodicityTable per_t(SafeSTLArray<bool,dim>(true));
-    auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
-                    degt, grid->get_num_intervals());
-    auto sp_spec = SplineSpace::create(degt, grid, int_mult, per_t);
-    typename SplineSpace::EndBehaviour endb(BasisEndBehaviour::periodic);
-    typename SplineSpace::EndBehaviourTable endb_t { {endb} };
+  typename SplineSpace::PeriodicityTable per_t(SafeSTLArray<bool,dim>(true));
+  auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
+                  degt, grid->get_num_intervals());
+  auto sp_spec = SplineSpace::create(degt, grid, int_mult, per_t);
+  typename SplineSpace::EndBehaviour endb(BasisEndBehaviour::periodic);
+  typename SplineSpace::EndBehaviourTable endb_t { {endb} };
 
-    auto rep_knots = sp_spec->compute_knots_with_repetition(endb_t);
-    auto acum_mult = sp_spec->accumulated_interior_multiplicities();
+  auto rep_knots = sp_spec->compute_knots_with_repetition(endb_t);
+  auto acum_mult = sp_spec->accumulated_interior_multiplicities();
 
-    rep_knots.print_info(out);
-    out << endl;
-    acum_mult.print_info(out);
-    out << endl;
-    BernsteinExtraction<dim> operators(*grid, rep_knots, acum_mult, degt);
-    operators.print_info(out);
+  rep_knots.print_info(out);
+  out << endl;
+  acum_mult.print_info(out);
+  out << endl;
+  BernsteinExtraction<dim> operators(*grid, rep_knots, acum_mult, degt);
+  operators.print_info(out);
 }
 
 
 int main()
 {
-    out.depth_console(10);
-    test<1>();
+  out.depth_console(10);
+  test<1>();
 
-    return 0;
+  return 0;
 }

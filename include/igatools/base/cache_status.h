@@ -47,105 +47,105 @@ IGA_NAMESPACE_OPEN
 class CacheStatus
 {
 public:
-    /** @name Constructor and destructor. */
-    ///@{
+  /** @name Constructor and destructor. */
+  ///@{
 
-    /** Default constructor. Sets all the status to false. */
-    CacheStatus() = default;
-
-
-    /** Copy constructor. */
-    CacheStatus(const CacheStatus &cache);
-
-    /** Move constructor. */
-    CacheStatus(CacheStatus &&cache) = default;
+  /** Default constructor. Sets all the status to false. */
+  CacheStatus() = default;
 
 
-    /** Destructor. */
-    ~CacheStatus() = default;
-    ///@}
+  /** Copy constructor. */
+  CacheStatus(const CacheStatus &cache);
 
-    /** @name Assignment operator. */
-    ///@{
-
-    /** Copy assignment operator. */
-    CacheStatus &operator=(const CacheStatus &cache);
-
-    /** Move assignment operator. */
-    CacheStatus &operator=(CacheStatus &&cache) = default;
-
-    ///@}
-
-    /** @name Functions for querying the status of the cache. */
-    ///@{
-    /** Return true if the cache is initialized at least one time. */
-    bool is_initialized() const ;
-
-    /** Return true if the cache is initialized exactly one time. */
-    bool is_initialized_once() const ;
-
-    /** Return true if the cache is filled at least one time and ready to be used. */
-    bool is_filled() const ;
-
-    /** Return true if the cache is filled exactly one time and ready to be used. */
-    bool is_filled_once() const ;
-
-    /** Return true if the cache is copied from another object. */
-    bool is_copied() const ;
-    ///@}
+  /** Move constructor. */
+  CacheStatus(CacheStatus &&cache) = default;
 
 
-    /** @name Function for setting the status of the cache. */
-    ///@{
+  /** Destructor. */
+  ~CacheStatus() = default;
+  ///@}
 
-    /**
-     * This function is used to set the status of the cache to be "initialized" or not.
-     * If <tt>status == true</tt> then the cache is considered to be initialized.
-     * If <tt>status == false</tt> then the cache is considered to be not initialized.
-     * @post After calling this function the status of the cache is set to "not filled".
-     */
-    void set_initialized(const bool status);
+  /** @name Assignment operator. */
+  ///@{
 
-    /**
-     * This function is used to set the status of the cache to be "filled" or not.
-     * If <tt>status == true</tt> then the cache is considered to be filled.
-     * If <tt>status == false</tt> then the cache is considered to be not filled.
-     * @pre In order to call this function, the cache must be in the "initialized" status.
-     * In debug mode a check on this precondition is performed.
-     */
-    void set_filled(const bool status);
-    ///@}
+  /** Copy assignment operator. */
+  CacheStatus &operator=(const CacheStatus &cache);
+
+  /** Move assignment operator. */
+  CacheStatus &operator=(CacheStatus &&cache) = default;
+
+  ///@}
+
+  /** @name Functions for querying the status of the cache. */
+  ///@{
+  /** Return true if the cache is initialized at least one time. */
+  bool is_initialized() const ;
+
+  /** Return true if the cache is initialized exactly one time. */
+  bool is_initialized_once() const ;
+
+  /** Return true if the cache is filled at least one time and ready to be used. */
+  bool is_filled() const ;
+
+  /** Return true if the cache is filled exactly one time and ready to be used. */
+  bool is_filled_once() const ;
+
+  /** Return true if the cache is copied from another object. */
+  bool is_copied() const ;
+  ///@}
+
+
+  /** @name Function for setting the status of the cache. */
+  ///@{
+
+  /**
+   * This function is used to set the status of the cache to be "initialized" or not.
+   * If <tt>status == true</tt> then the cache is considered to be initialized.
+   * If <tt>status == false</tt> then the cache is considered to be not initialized.
+   * @post After calling this function the status of the cache is set to "not filled".
+   */
+  void set_initialized(const bool status);
+
+  /**
+   * This function is used to set the status of the cache to be "filled" or not.
+   * If <tt>status == true</tt> then the cache is considered to be filled.
+   * If <tt>status == false</tt> then the cache is considered to be not filled.
+   * @pre In order to call this function, the cache must be in the "initialized" status.
+   * In debug mode a check on this precondition is performed.
+   */
+  void set_filled(const bool status);
+  ///@}
 
 private:
 
-    /**
-     * Counts the number of times that the cache is initialized.
-     * Zero means that the cache is not initialized.
-     */
-    int initialized_counter_ = 0;
+  /**
+   * Counts the number of times that the cache is initialized.
+   * Zero means that the cache is not initialized.
+   */
+  int initialized_counter_ = 0;
 
-    /**
-     * Counts the number of times that the cache is filled.
-     * Zero means that the cache is not filled.
-     */
-    int filled_counter_ = 0;
+  /**
+   * Counts the number of times that the cache is filled.
+   * Zero means that the cache is not filled.
+   */
+  int filled_counter_ = 0;
 
 
-    /** True if the cache is copied from another object. */
-    bool copied_ = false;
+  /** True if the cache is copied from another object. */
+  bool copied_ = false;
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version);
-    ///@}
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version);
+  ///@}
 #endif // SERIALIZATION
 
 };

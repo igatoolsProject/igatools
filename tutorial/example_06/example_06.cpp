@@ -59,31 +59,31 @@ template<int dim>
 class PoissonProblem
 {
 public:
-    PoissonProblem(const int n_knots, const int deg);
-    void run();
+  PoissonProblem(const int n_knots, const int deg);
+  void run();
 
 private:
-    void assemble();
-    void solve();
-    void output();
-    // [class functions]
+  void assemble();
+  void solve();
+  void output();
+  // [class functions]
 
-    // [members]
+  // [members]
 private:
-    using RefSpace = ReferenceSpace<dim>;
-    using Space = BSplineSpace<dim>;
-    shared_ptr<const Space> space;
+  using RefSpace = ReferenceSpace<dim>;
+  using Space = BSplineSpace<dim>;
+  shared_ptr<const Space> space;
 
-    const Quadrature<dim>   elem_quad;
-    const Quadrature<dim-1> face_quad;
-    // [members]
+  const Quadrature<dim>   elem_quad;
+  const Quadrature<dim-1> face_quad;
+  // [members]
 
-    // [la members]
+  // [la members]
 
 
-    shared_ptr<Matrix> matrix;
-    shared_ptr<Vector> rhs;
-    shared_ptr<Vector> solution;
+  shared_ptr<Matrix> matrix;
+  shared_ptr<Vector> rhs;
+  shared_ptr<Vector> solution;
 };
 // [la members]
 
@@ -91,13 +91,13 @@ private:
 template<int dim>
 PoissonProblem<dim>::
 PoissonProblem(const int n_knots, const int deg)
-    :
-    space(Space::create(deg, CartesianGrid<dim>::create(n_knots))),
-    elem_quad(QGauss<dim>(deg+1)),
-    face_quad(QGauss<dim-1>(deg+1)),
-    matrix(create_matrix(*space,DofProperties::active, Epetra_SerialComm())),
-    rhs(create_vector(matrix->RangeMap())),
-    solution(create_vector(matrix->DomainMap()))
+  :
+  space(Space::create(deg, CartesianGrid<dim>::create(n_knots))),
+  elem_quad(QGauss<dim>(deg+1)),
+  face_quad(QGauss<dim-1>(deg+1)),
+  matrix(create_matrix(*space,DofProperties::active, Epetra_SerialComm())),
+  rhs(create_vector(matrix->RangeMap())),
+  solution(create_vector(matrix->DomainMap()))
 {}
 
 
@@ -105,141 +105,141 @@ PoissonProblem(const int n_knots, const int deg)
 template<int dim>
 void PoissonProblem<dim>::assemble()
 {
-    auto grid = space->get_ptr_const_grid();
+  auto grid = space->get_ptr_const_grid();
 
-    using Function = Function<dim,0,1,1>;
-    using ConstFunction = ConstantFunction<dim,0,1,1>;
-    using Value = typename Function::Value;
+  using Function = Function<dim,0,1,1>;
+  using ConstFunction = ConstantFunction<dim,0,1,1>;
+  using Value = typename Function::Value;
 
-    Value b = {5.};
-    auto f = ConstFunction::create(grid, IdentityFunction<dim>::create(grid), b);
+  Value b = {5.};
+  auto f = ConstFunction::create(grid, IdentityFunction<dim>::create(grid), b);
 
-    auto elem_handler = space->get_elem_handler();
+  auto elem_handler = space->get_elem_handler();
 
-    auto flag = ValueFlags::value | ValueFlags::gradient |
-                ValueFlags::w_measure;
+  auto flag = ValueFlags::value | ValueFlags::gradient |
+              ValueFlags::w_measure;
 
-    elem_handler->reset(flag, elem_quad);
-    f->reset(ValueFlags::value, elem_quad);
+  elem_handler->reset(flag, elem_quad);
+  f->reset(ValueFlags::value, elem_quad);
 
-    auto f_elem = f->begin();
-    auto elem   = space->begin();
-    const auto elem_end = space->end();
+  auto f_elem = f->begin();
+  auto elem   = space->begin();
+  const auto elem_end = space->end();
 
-    elem_handler->init_element_cache(elem);
-    f->init_element_cache(f_elem);
+  elem_handler->init_element_cache(elem);
+  f->init_element_cache(f_elem);
 
-    const int n_qp = elem_quad.get_num_points();
+  const int n_qp = elem_quad.get_num_points();
 
-    for (; elem != elem_end; ++elem, ++f_elem)
+  for (; elem != elem_end; ++elem, ++f_elem)
+  {
+    const int n_basis = elem->get_num_basis(DofProperties::active);
+
+    DenseMatrix loc_mat(n_basis, n_basis);
+    loc_mat = 0.0;
+
+    DenseVector loc_rhs(n_basis);
+    loc_rhs = 0.0;
+
+    elem_handler->fill_element_cache(elem);
+    auto      phi = elem->template get_basis<   _Value, dim>(0,DofProperties::active);
+    auto grad_phi = elem->template get_basis<_Gradient, dim>(0,DofProperties::active);
+    auto w_meas = elem->template get_w_measures<dim>(0);
+
+    f->fill_element_cache(f_elem);
+    auto f_values = f_elem->template get_values<_Value,dim>(0);
+
+    for (int i = 0; i < n_basis; ++i)
     {
-        const int n_basis = elem->get_num_basis(DofProperties::active);
+      auto grad_phi_i = grad_phi.get_function_view(i);
+      for (int j = 0; j < n_basis; ++j)
+      {
+        auto grad_phi_j = grad_phi.get_function_view(j);
+        for (int qp = 0; qp < n_qp; ++qp)
+          loc_mat(i,j) +=
+            scalar_product(grad_phi_i[qp], grad_phi_j[qp])
+            * w_meas[qp];
+      }
+      auto phi_i = phi.get_function_view(i);
 
-        DenseMatrix loc_mat(n_basis, n_basis);
-        loc_mat = 0.0;
-
-        DenseVector loc_rhs(n_basis);
-        loc_rhs = 0.0;
-
-        elem_handler->fill_element_cache(elem);
-        auto      phi = elem->template get_basis<   _Value, dim>(0,DofProperties::active);
-        auto grad_phi = elem->template get_basis<_Gradient, dim>(0,DofProperties::active);
-        auto w_meas = elem->template get_w_measures<dim>(0);
-
-        f->fill_element_cache(f_elem);
-        auto f_values = f_elem->template get_values<_Value,dim>(0);
-
-        for (int i = 0; i < n_basis; ++i)
-        {
-            auto grad_phi_i = grad_phi.get_function_view(i);
-            for (int j = 0; j < n_basis; ++j)
-            {
-                auto grad_phi_j = grad_phi.get_function_view(j);
-                for (int qp = 0; qp < n_qp; ++qp)
-                    loc_mat(i,j) +=
-                        scalar_product(grad_phi_i[qp], grad_phi_j[qp])
-                        * w_meas[qp];
-            }
-            auto phi_i = phi.get_function_view(i);
-
-            for (int qp=0; qp<n_qp; ++qp)
-                loc_rhs(i) += scalar_product(phi_i[qp], f_values[qp])
-                              * w_meas[qp];
-        }
-
-        const auto loc_dofs = elem->get_local_to_global(DofProperties::active);
-        matrix->add_block(loc_dofs, loc_dofs,loc_mat);
-        rhs->add_block(loc_dofs, loc_rhs);
+      for (int qp=0; qp<n_qp; ++qp)
+        loc_rhs(i) += scalar_product(phi_i[qp], f_values[qp])
+                      * w_meas[qp];
     }
 
-    matrix->FillComplete();
+    const auto loc_dofs = elem->get_local_to_global(DofProperties::active);
+    matrix->add_block(loc_dofs, loc_dofs,loc_mat);
+    rhs->add_block(loc_dofs, loc_rhs);
+  }
 
-    // [dirichlet constraint]
+  matrix->FillComplete();
 
-    auto g = ConstFunction::
-             create(grid, IdentityFunction<dim>::create(grid), {0.});
+  // [dirichlet constraint]
+
+  auto g = ConstFunction::
+           create(grid, IdentityFunction<dim>::create(grid), {0.});
 
 
-    const set<boundary_id> dir_id {0};
-    std::map<Index, Real> values;
-    // TODO (pauletti, Mar 9, 2015): parametrize with dimension
-    project_boundary_values<RefSpace>(
-        const_pointer_cast<const Function>(g),
-        space,
-        face_quad,
-        dir_id,
-        values);
-    apply_boundary_values(values, *matrix, *rhs, *solution);
-    // [dirichlet constraint]
+  const set<boundary_id> dir_id {0};
+  std::map<Index, Real> values;
+  // TODO (pauletti, Mar 9, 2015): parametrize with dimension
+  project_boundary_values<RefSpace>(
+    const_pointer_cast<const Function>(g),
+    space,
+    face_quad,
+    dir_id,
+    values);
+  apply_boundary_values(values, *matrix, *rhs, *solution);
+  // [dirichlet constraint]
 }
 
 
 template<int dim>
 void PoissonProblem<dim>::solve()
 {
-    auto solver = create_solver(*matrix, *solution, *rhs);
-    solver->solve();
+  auto solver = create_solver(*matrix, *solution, *rhs);
+  solver->solve();
 }
 
 
 template<int dim>
 void PoissonProblem<dim>::output()
 {
-    const int n_plot_points = 2;
-    auto map = IdentityFunction<dim>::create(space->get_ptr_const_grid());
-    Writer<dim> writer(map, n_plot_points);
+  const int n_plot_points = 2;
+  auto map = IdentityFunction<dim>::create(space->get_ptr_const_grid());
+  Writer<dim> writer(map, n_plot_points);
 
 
-    using IgFunc = IgFunction<dim,0,1,1>;
-    auto solution_function = IgFunc::create(space, solution);
-    writer.template add_field<1,1>(solution_function, "solution");
-    string filename = "poisson_problem-" + to_string(dim) + "d" ;
-    writer.save(filename);
+  using IgFunc = IgFunction<dim,0,1,1>;
+  auto solution_function = IgFunc::create(space, solution);
+  writer.template add_field<1,1>(solution_function, "solution");
+  string filename = "poisson_problem-" + to_string(dim) + "d" ;
+  writer.save(filename);
 }
 
 
 template<int dim>
 void PoissonProblem<dim>::run()
 {
-    assemble();
-    solve();
-    output();
+  assemble();
+  solve();
+  output();
 }
 
 
 int main()
 {
-    const int n_knots = 10;
-    const int deg = 1 ;
+  const int n_knots = 10;
+  const int deg = 1 ;
 
-    PoissonProblem<1> laplace_1d(n_knots, deg);
-    laplace_1d.run();
+  PoissonProblem<1> laplace_1d(n_knots, deg);
+  laplace_1d.run();
 
-    PoissonProblem<2> laplace_2d(n_knots, deg);
-    laplace_2d.run();
+  PoissonProblem<2> laplace_2d(n_knots, deg);
+  laplace_2d.run();
 
-    PoissonProblem<3> laplace_3d(n_knots, deg);
-    laplace_3d.run();
+  PoissonProblem<3> laplace_3d(n_knots, deg);
+  laplace_3d.run();
 
-    return  0;
+  return  0;
 }

@@ -32,55 +32,55 @@ namespace EpetraTools
 class  Vector : public Epetra_Vector
 {
 public:
-    using Epetra_Vector::Epetra_Vector;
+  using Epetra_Vector::Epetra_Vector;
 
-    Size size() const
-    {
-        return GlobalLength();
-    }
+  Size size() const
+  {
+    return GlobalLength();
+  }
 
-    Vector &operator +=(const Vector &vec)
-    {
-        Update(1., *(this), 1.);
-        return *this;
-    }
+  Vector &operator +=(const Vector &vec)
+  {
+    Update(1., *(this), 1.);
+    return *this;
+  }
 
-    void add_block(const SafeSTLVector<Index> &vec_id,
-                   const DenseVector &local_vector)
-    {
-        const auto   NumEntries = vec_id.size();
-        const double *Values    = &(local_vector.data()[0]);
-        const int    *Indices   = vec_id.data();
+  void add_block(const SafeSTLVector<Index> &vec_id,
+                 const DenseVector &local_vector)
+  {
+    const auto   NumEntries = vec_id.size();
+    const double *Values    = &(local_vector.data()[0]);
+    const int    *Indices   = vec_id.data();
 
-        Epetra_Vector::SumIntoGlobalValues(NumEntries, Values, Indices);
-    }
+    Epetra_Vector::SumIntoGlobalValues(NumEntries, Values, Indices);
+  }
 
-    //TODO (pauletti, Apr 3, 2015): both SafeSTLVector<Real> and std::vector<Index>
-    // should be replace by a typedef and a proper type for fast comuniction with LA
-    SafeSTLVector<Real>
-    get_local_coeffs(const std::vector<Index> &global_ids) const
-    {
-        SafeSTLVector<Real> local_coefs;
-        for (const auto &global_id : global_ids)
-            local_coefs.emplace_back((*this)[global_id]);
+  //TODO (pauletti, Apr 3, 2015): both SafeSTLVector<Real> and std::vector<Index>
+  // should be replace by a typedef and a proper type for fast comuniction with LA
+  SafeSTLVector<Real>
+  get_local_coeffs(const std::vector<Index> &global_ids) const
+  {
+    SafeSTLVector<Real> local_coefs;
+    for (const auto &global_id : global_ids)
+      local_coefs.emplace_back((*this)[global_id]);
 
-        return local_coefs;
-    }
+    return local_coefs;
+  }
 
-    void print_info(LogStream &out) const
-    {
-        using std::endl;
-        out << "-----------------------------" << endl;
+  void print_info(LogStream &out) const
+  {
+    using std::endl;
+    out << "-----------------------------" << endl;
 
-        const Index n_entries = GlobalLength();
-        const auto &map = Map();
-        out << "Global_ID        Value" << endl;
+    const Index n_entries = GlobalLength();
+    const auto &map = Map();
+    out << "Global_ID        Value" << endl;
 
-        for (Index i = 0 ; i < n_entries ; ++i)
-            out << map.GID(i) << "        " << (*this)[i] << std::endl ;
+    for (Index i = 0 ; i < n_entries ; ++i)
+      out << map.GID(i) << "        " << (*this)[i] << std::endl ;
 
-        out << "-----------------------------" << endl;
-    }
+    out << "-----------------------------" << endl;
+  }
 
 };
 
@@ -88,56 +88,56 @@ public:
 class  Matrix : public Epetra_CrsMatrix
 {
 public:
-    using Epetra_CrsMatrix::Epetra_CrsMatrix;
+  using Epetra_CrsMatrix::Epetra_CrsMatrix;
 
-    void add_block(const SafeSTLVector<Index> &rows_id,
-                   const SafeSTLVector<Index> &cols_id,
-                   const DenseMatrix &loc_matrix)
+  void add_block(const SafeSTLVector<Index> &rows_id,
+                 const SafeSTLVector<Index> &cols_id,
+                 const DenseMatrix &loc_matrix)
+  {
+    const auto n_rows = rows_id.size();
+    const auto n_cols = cols_id.size();
+
+    for (int i = 0 ; i < n_rows ; ++i)
     {
-        const auto n_rows = rows_id.size();
-        const auto n_cols = cols_id.size();
-
-        for (int i = 0 ; i < n_rows ; ++i)
-        {
-            const double *i_row_data =  &(loc_matrix.data()[i*n_cols]);
-            SumIntoGlobalValues(rows_id[i], n_cols, i_row_data, cols_id.data());
-        }
+      const double *i_row_data =  &(loc_matrix.data()[i*n_cols]);
+      SumIntoGlobalValues(rows_id[i], n_cols, i_row_data, cols_id.data());
     }
+  }
 
-    void print_info(LogStream &out) const
+  void print_info(LogStream &out) const
+  {
+    const auto n_rows = NumGlobalRows();
+
+
+    out << "-----------------------------" << std::endl;
+
+    out << "Num. rows    = " << NumGlobalCols() << std::endl;
+    out << "Num. cols    = " << NumGlobalRows() << std::endl;
+    out << "Num. entries = " << NumGlobalNonzeros() << std::endl;
+    out << std::endl;
+    out << "Row Index        Col Index        Value" << std::endl;
+
+    for (Index local_row = 0 ; local_row < n_rows; ++local_row)
     {
-        const auto n_rows = NumGlobalRows();
+      const auto &graph = Graph();
+      const auto &row_map = graph.RowMap();
 
+      const auto global_row = row_map.GID(local_row);
 
-        out << "-----------------------------" << std::endl;
+      Index n_entries_row = NumGlobalEntries(global_row);
+      SafeSTLVector<Real> values(n_entries_row);
+      SafeSTLVector<Index> columns_id(n_entries_row);
 
-        out << "Num. rows    = " << NumGlobalCols() << std::endl;
-        out << "Num. cols    = " << NumGlobalRows() << std::endl;
-        out << "Num. entries = " << NumGlobalNonzeros() << std::endl;
-        out << std::endl;
-        out << "Row Index        Col Index        Value" << std::endl;
+      Index nnz = 0;
+      ExtractGlobalRowCopy(global_row,n_entries_row,nnz,values.data(),columns_id.data());
 
-        for (Index local_row = 0 ; local_row < n_rows; ++local_row)
-        {
-            const auto &graph = Graph();
-            const auto &row_map = graph.RowMap();
-
-            const auto global_row = row_map.GID(local_row);
-
-            Index n_entries_row = NumGlobalEntries(global_row);
-            SafeSTLVector<Real> values(n_entries_row);
-            SafeSTLVector<Index> columns_id(n_entries_row);
-
-            Index nnz = 0;
-            ExtractGlobalRowCopy(global_row,n_entries_row,nnz,values.data(),columns_id.data());
-
-            for (Index i = 0 ; i < n_entries_row ; ++i)
-                out << global_row << "       "
-                    << columns_id[i] << "        "
-                    << values[i] << std::endl;
-        }
-        out << "-----------------------------" << std::endl;
+      for (Index i = 0 ; i < n_entries_row ; ++i)
+        out << global_row << "       "
+            << columns_id[i] << "        "
+            << values[i] << std::endl;
     }
+    out << "-----------------------------" << std::endl;
+  }
 
 };
 
@@ -162,12 +162,12 @@ MapPtr create_map(const SpacePtr space,
                   const std::string &property,
                   Comm &comm)
 {
-    const auto dof_dist = space->get_ptr_const_dof_distribution();
-    const auto dofs = dof_dist->get_dofs_id_same_property(property);
-    //TODO (pauletti, Mar 28, 2015): this is double copy of data
-    const SafeSTLVector<Index> dofs_vec(dofs.begin(), dofs.end());
-    auto map = std::make_shared<Map>(-1, dofs_vec.size(), dofs_vec.data(), 0, comm);
-    return map;
+  const auto dof_dist = space->get_ptr_const_dof_distribution();
+  const auto dofs = dof_dist->get_dofs_id_same_property(property);
+  //TODO (pauletti, Mar 28, 2015): this is double copy of data
+  const SafeSTLVector<Index> dofs_vec(dofs.begin(), dofs.end());
+  auto map = std::make_shared<Map>(-1, dofs_vec.size(), dofs_vec.data(), 0, comm);
+  return map;
 }
 
 template<class RowSpacePtr, class ColSpacePtr>
@@ -176,67 +176,67 @@ create_graph(const RowSpacePtr row_space, const std::string &row_property,
              const ColSpacePtr col_space, const std::string &col_property,
              MapPtr row_map_, MapPtr col_map_)
 {
-    const auto n_rows = row_map_->NumMyElements();
-    SafeSTLVector<SafeSTLVector<Index>> loc_dofs(n_rows);
-    auto r_elem = row_space->begin();
-    auto c_elem = col_space->begin();
-    const auto end = row_space->end();
-    for (; r_elem != end; ++r_elem, ++c_elem)
+  const auto n_rows = row_map_->NumMyElements();
+  SafeSTLVector<SafeSTLVector<Index>> loc_dofs(n_rows);
+  auto r_elem = row_space->begin();
+  auto c_elem = col_space->begin();
+  const auto end = row_space->end();
+  for (; r_elem != end; ++r_elem, ++c_elem)
+  {
+    auto r_dofs = r_elem->get_local_to_global(row_property);
+    auto c_dofs = c_elem->get_local_to_global(col_property);
+    for (auto &r_dof : r_dofs)
     {
-        auto r_dofs = r_elem->get_local_to_global(row_property);
-        auto c_dofs = c_elem->get_local_to_global(col_property);
-        for (auto &r_dof : r_dofs)
-        {
-            auto &dof_vec = loc_dofs[row_map_->LID(r_dof)];
-            dof_vec.insert(dof_vec.begin(), c_dofs.begin(), c_dofs.end());
-        }
+      auto &dof_vec = loc_dofs[row_map_->LID(r_dof)];
+      dof_vec.insert(dof_vec.begin(), c_dofs.begin(), c_dofs.end());
     }
+  }
 
-    SafeSTLVector<Size> n_dofs_per_row(n_rows);
-    {
-        Index j=0;
-        for (auto &dofs : loc_dofs)
-        {
-            std::sort(dofs.begin(), dofs.end());
-            auto it = std::unique(dofs.begin(), dofs.end());
-            dofs.resize(std::distance(dofs.begin(),it));
-            n_dofs_per_row[j] = dofs.size();
-            ++j;
-        }
-    }
-
-    const bool is_static_profile = true;
-    auto graph_ = std::make_shared<Graph>(Epetra_DataAccess::Copy,
-                                          *row_map_, *col_map_,
-                                          n_dofs_per_row.data(),
-                                          is_static_profile);
-
+  SafeSTLVector<Size> n_dofs_per_row(n_rows);
+  {
     Index j=0;
     for (auto &dofs : loc_dofs)
     {
-        const Index row_id = row_map_->GID(j);
-        graph_->InsertGlobalIndices(row_id, dofs.size(), dofs.data());
-        ++j;
+      std::sort(dofs.begin(), dofs.end());
+      auto it = std::unique(dofs.begin(), dofs.end());
+      dofs.resize(std::distance(dofs.begin(),it));
+      n_dofs_per_row[j] = dofs.size();
+      ++j;
     }
+  }
 
-    int res = graph_->FillComplete(*col_map_,*row_map_);
-    Assert(res==0, ExcMessage(" "));
+  const bool is_static_profile = true;
+  auto graph_ = std::make_shared<Graph>(Epetra_DataAccess::Copy,
+                                        *row_map_, *col_map_,
+                                        n_dofs_per_row.data(),
+                                        is_static_profile);
 
-    return graph_;
+  Index j=0;
+  for (auto &dofs : loc_dofs)
+  {
+    const Index row_id = row_map_->GID(j);
+    graph_->InsertGlobalIndices(row_id, dofs.size(), dofs.data());
+    ++j;
+  }
+
+  int res = graph_->FillComplete(*col_map_,*row_map_);
+  Assert(res==0, ExcMessage(" "));
+
+  return graph_;
 }
 
 
 MatrixPtr
 create_matrix(GraphPtr graph)
 {
-    return std::make_shared<Matrix>(Epetra_DataAccess::Copy, *graph);
+  return std::make_shared<Matrix>(Epetra_DataAccess::Copy, *graph);
 }
 
 
 VectorPtr
 create_vector(MapPtr map)
 {
-    return std::make_shared<Vector>(*map);
+  return std::make_shared<Vector>(*map);
 }
 
 using OP = Epetra_Operator;
@@ -246,37 +246,37 @@ SolverPtr
 create_solver(MatrixPtr A, VectorPtr x, VectorPtr b)
 {
 
-    using Teuchos::ParameterList;
-    using Teuchos::parameterList;
-    using Teuchos::RCP;
-    using Teuchos::rcp;
-    Belos::SolverFactory<double, MV, OP> factory;
-    RCP<ParameterList> solverParams = parameterList();
-    solverParams->set("Num Blocks", 40);
-    solverParams->set("Maximum Iterations", 400);
-    solverParams->set("Convergence Tolerance", 1.0e-8);
+  using Teuchos::ParameterList;
+  using Teuchos::parameterList;
+  using Teuchos::RCP;
+  using Teuchos::rcp;
+  Belos::SolverFactory<double, MV, OP> factory;
+  RCP<ParameterList> solverParams = parameterList();
+  solverParams->set("Num Blocks", 40);
+  solverParams->set("Maximum Iterations", 400);
+  solverParams->set("Convergence Tolerance", 1.0e-8);
 
-    SolverPtr solver =
-        factory.create("CG", solverParams);
-    RCP<Belos::LinearProblem<double, MV, OP> > problem =
-        rcp(new Belos::LinearProblem<double, MV, OP> (
-                rcp<OP>(A.get(),false),
-                rcp<MV>(x.get(),false),
-                rcp<MV>(b.get(),false)));
+  SolverPtr solver =
+    factory.create("CG", solverParams);
+  RCP<Belos::LinearProblem<double, MV, OP> > problem =
+    rcp(new Belos::LinearProblem<double, MV, OP> (
+          rcp<OP>(A.get(),false),
+          rcp<MV>(x.get(),false),
+          rcp<MV>(b.get(),false)));
 
-    RCP<ML_Epetra::MultiLevelPreconditioner> Prec =
-        rcp(new ML_Epetra::MultiLevelPreconditioner(*(A.get()), true));
+  RCP<ML_Epetra::MultiLevelPreconditioner> Prec =
+    rcp(new ML_Epetra::MultiLevelPreconditioner(*(A.get()), true));
 
 
-    RCP<Belos::EpetraPrecOp> belosPrec = rcp(new Belos::EpetraPrecOp(Prec));
-    problem->setLeftPrec(belosPrec);
-    problem->setProblem();
+  RCP<Belos::EpetraPrecOp> belosPrec = rcp(new Belos::EpetraPrecOp(Prec));
+  problem->setLeftPrec(belosPrec);
+  problem->setProblem();
 
-    solver->setProblem(problem);
+  solver->setProblem(problem);
 //      auto solver1 = SolverPtr(solver);
 //      solver.release();
 
-    return solver;
+  return solver;
 }
 
 

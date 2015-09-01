@@ -35,52 +35,52 @@ GradientFunctionScalar ;
 int main(int argc, char *argv[])
 {
 
-    GradientFunctionScalar g1 ;
-    out << g1 << endl ;
+  GradientFunctionScalar g1 ;
+  out << g1 << endl ;
 
-    g1[0][0] = 0.0 ;
-    g1[1][0] = 1.0 ;
-    g1[2][0] = 2.0 ;
+  g1[0][0] = 0.0 ;
+  g1[1][0] = 1.0 ;
+  g1[2][0] = 2.0 ;
 
-    out << g1 << endl ;
+  out << g1 << endl ;
 
-    GradientFunctionScalar g1a ;
-    g1a[0][0] -= g1[0][0] ;
-    g1a[1][0] -= g1[1][0] ;
-    g1a[2][0] -= g1[2][0] ;
-    out << g1a << endl ;
+  GradientFunctionScalar g1a ;
+  g1a[0][0] -= g1[0][0] ;
+  g1a[1][0] -= g1[1][0] ;
+  g1a[2][0] -= g1[2][0] ;
+  out << g1a << endl ;
 
-    GradientFunctionScalar g2 ;
-    g2[0][0] = 2.0 ;
-    g2[1][0] = 1.0 ;
-    g2[2][0] = 0.0 ;
+  GradientFunctionScalar g2 ;
+  g2[0][0] = 2.0 ;
+  g2[1][0] = 1.0 ;
+  g2[2][0] = 0.0 ;
 
-    out << g2 << endl ;
-
-
-    GradientFunctionScalar g3 ;
-    g3 = g2 ;
-    out << g3 << endl ;
+  out << g2 << endl ;
 
 
-    GradientFunctionScalar g4 = g2 ;
-    out << g4 << endl ;
-
-    GradientFunctionScalar g5(g2) ;
-    out << g5 << endl ;
+  GradientFunctionScalar g3 ;
+  g3 = g2 ;
+  out << g3 << endl ;
 
 
-    GradientFunctionScalar g6 ;
-    g6 = g1 + g2 ;
-    out << g6 << endl ;
+  GradientFunctionScalar g4 = g2 ;
+  out << g4 << endl ;
 
-    GradientFunctionScalar g7 ;
-    g7 = g1 - g2 ;
-    out << g7 << endl ;
+  GradientFunctionScalar g5(g2) ;
+  out << g5 << endl ;
+
+
+  GradientFunctionScalar g6 ;
+  g6 = g1 + g2 ;
+  out << g6 << endl ;
+
+  GradientFunctionScalar g7 ;
+  g7 = g1 - g2 ;
+  out << g7 << endl ;
 
 //  double dotprod = DotProduct( g1, g2 ) ;
 //  out << dotprod << endl ;
 
 
-    return (0) ;
+  return (0) ;
 }

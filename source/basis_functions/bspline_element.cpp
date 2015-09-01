@@ -66,79 +66,79 @@ template<int dim, int order>
 class DerivativeSymmetryManager
 {
 public:
-    static const int num_entries_total = pow(dim,order);
-    static const int num_entries_eval = constexpr_binomial_coefficient(dim-1+order,order);
-    static const int num_entries_copy = num_entries_total - num_entries_eval;
+  static const int num_entries_total = pow(dim,order);
+  static const int num_entries_eval = constexpr_binomial_coefficient(dim-1+order,order);
+  static const int num_entries_copy = num_entries_total - num_entries_eval;
 
-    typedef Derivatives<dim,1,1,order> Derivative_t;
+  typedef Derivatives<dim,1,1,order> Derivative_t;
 
-    /** @name Constructors */
-    ///@{
-    /** Constructor */
-    DerivativeSymmetryManager();
+  /** @name Constructors */
+  ///@{
+  /** Constructor */
+  DerivativeSymmetryManager();
 
-    /** Copy constructor */
-    DerivativeSymmetryManager(
-        const DerivativeSymmetryManager<dim,order> &in) = default;
+  /** Copy constructor */
+  DerivativeSymmetryManager(
+    const DerivativeSymmetryManager<dim,order> &in) = default;
 
-    /** Move constructor */
-    DerivativeSymmetryManager(
-        DerivativeSymmetryManager<dim,order> &&in) = default;
+  /** Move constructor */
+  DerivativeSymmetryManager(
+    DerivativeSymmetryManager<dim,order> &&in) = default;
 
-    ~DerivativeSymmetryManager() = default;
-    ///@}
-
-
-    /** @name Assignment operators */
-    ///@{
-    /** Copy assignment operator */
-    DerivativeSymmetryManager<dim,order> &operator=(
-        const DerivativeSymmetryManager<dim,order> &) = default;
-
-    /** Move assignment operator */
-    DerivativeSymmetryManager<dim,order> &operator=(
-        DerivativeSymmetryManager<dim,order> &&) = default;
-    ///@}
+  ~DerivativeSymmetryManager() = default;
+  ///@}
 
 
-    static const int new_deriv_order = order>0?order:1;
-    const SafeSTLArray<int,num_entries_eval> &get_entries_flat_id_evaluate() const
-    {
-        return entries_flat_id_evaluate_;
-    }
+  /** @name Assignment operators */
+  ///@{
+  /** Copy assignment operator */
+  DerivativeSymmetryManager<dim,order> &operator=(
+    const DerivativeSymmetryManager<dim,order> &) = default;
 
-    const SafeSTLArray<int,num_entries_copy> &get_entries_flat_id_copy_to() const
-    {
-        return entries_flat_id_copy_to_;
-    }
+  /** Move assignment operator */
+  DerivativeSymmetryManager<dim,order> &operator=(
+    DerivativeSymmetryManager<dim,order> &&) = default;
+  ///@}
 
-    const SafeSTLArray<int,num_entries_copy> &get_entries_flat_id_copy_from() const
-    {
-        return entries_flat_id_copy_from_;
-    }
 
-    const SafeSTLArray<TensorIndex<new_deriv_order>,num_entries_total> &get_entries_tensor_id() const
-    {
-        return entries_tensor_id_;
-    }
+  static const int new_deriv_order = order>0?order:1;
+  const SafeSTLArray<int,num_entries_eval> &get_entries_flat_id_evaluate() const
+  {
+    return entries_flat_id_evaluate_;
+  }
+
+  const SafeSTLArray<int,num_entries_copy> &get_entries_flat_id_copy_to() const
+  {
+    return entries_flat_id_copy_to_;
+  }
+
+  const SafeSTLArray<int,num_entries_copy> &get_entries_flat_id_copy_from() const
+  {
+    return entries_flat_id_copy_from_;
+  }
+
+  const SafeSTLArray<TensorIndex<new_deriv_order>,num_entries_total> &get_entries_tensor_id() const
+  {
+    return entries_tensor_id_;
+  }
 private:
 
-    bool test_if_evaluate(const SafeSTLArray<int,order> &tensor_index) const;
+  bool test_if_evaluate(const SafeSTLArray<int,order> &tensor_index) const;
 
-    /** Tensor ids of all the entries */
+  /** Tensor ids of all the entries */
 
-    SafeSTLArray<TensorIndex<new_deriv_order> ,num_entries_total> entries_tensor_id_;
+  SafeSTLArray<TensorIndex<new_deriv_order> ,num_entries_total> entries_tensor_id_;
 
-    /** Flat ids of the entries that need to be computed */
-    SafeSTLArray<int,num_entries_eval> entries_flat_id_evaluate_;
+  /** Flat ids of the entries that need to be computed */
+  SafeSTLArray<int,num_entries_eval> entries_flat_id_evaluate_;
 
-    /** Flat ids of the destination entries that need to be copied */
-    SafeSTLArray<int,num_entries_copy> entries_flat_id_copy_to_;
+  /** Flat ids of the destination entries that need to be copied */
+  SafeSTLArray<int,num_entries_copy> entries_flat_id_copy_to_;
 
-    /** Flat ids of the source entries that need to be copied */
-    SafeSTLArray<int,num_entries_copy> entries_flat_id_copy_from_;
+  /** Flat ids of the source entries that need to be copied */
+  SafeSTLArray<int,num_entries_copy> entries_flat_id_copy_from_;
 
-    TensorSize<order> size_deriv_index_;
+  TensorSize<order> size_deriv_index_;
 };
 
 
@@ -148,50 +148,50 @@ template<int dim, int order>
 DerivativeSymmetryManager<dim,order>::
 DerivativeSymmetryManager()
 {
-    size_deriv_index_.fill(dim);
+  size_deriv_index_.fill(dim);
 
-    typedef MultiArrayUtils<order> MAUtils;
+  typedef MultiArrayUtils<order> MAUtils;
 
 
-    Derivatives<dim,1,1,order> derivative;
+  Derivatives<dim,1,1,order> derivative;
 
-    int eval_id = 0;
-    int copy_id = 0;
-    if (order == 0)
+  int eval_id = 0;
+  int copy_id = 0;
+  if (order == 0)
+  {
+    for (int flat_id = 0; flat_id < num_entries_total; ++flat_id)
     {
-        for (int flat_id = 0; flat_id < num_entries_total; ++flat_id)
-        {
-            entries_flat_id_evaluate_[eval_id] = flat_id;
-            eval_id++;
-        }
+      entries_flat_id_evaluate_[eval_id] = flat_id;
+      eval_id++;
     }
-    else
+  }
+  else
+  {
+    auto weights = MAUtils::compute_weight(size_deriv_index_);
+
+    for (Index flat_id = 0; flat_id < num_entries_total; ++flat_id)
     {
-        auto weights = MAUtils::compute_weight(size_deriv_index_);
+      entries_tensor_id_[flat_id] = derivative.flat_to_tensor_index(flat_id);
 
-        for (Index flat_id = 0; flat_id < num_entries_total; ++flat_id)
-        {
-            entries_tensor_id_[flat_id] = derivative.flat_to_tensor_index(flat_id);
+      auto tensor_id = MAUtils::flat_to_tensor_index(flat_id,weights);
 
-            auto tensor_id = MAUtils::flat_to_tensor_index(flat_id,weights);
-
-            if (test_if_evaluate(tensor_id))
-            {
-                entries_flat_id_evaluate_[eval_id] = flat_id;
-                eval_id++;
-            }
-            else
-            {
-                entries_flat_id_copy_to_[copy_id] = flat_id;
-                sort(tensor_id.begin(),tensor_id.end());
-                reverse(tensor_id.begin(),tensor_id.end());
-                entries_flat_id_copy_from_[copy_id] = MAUtils::tensor_to_flat_index(tensor_id,weights);
-                copy_id++;
-            }
-        }
+      if (test_if_evaluate(tensor_id))
+      {
+        entries_flat_id_evaluate_[eval_id] = flat_id;
+        eval_id++;
+      }
+      else
+      {
+        entries_flat_id_copy_to_[copy_id] = flat_id;
+        sort(tensor_id.begin(),tensor_id.end());
+        reverse(tensor_id.begin(),tensor_id.end());
+        entries_flat_id_copy_from_[copy_id] = MAUtils::tensor_to_flat_index(tensor_id,weights);
+        copy_id++;
+      }
     }
-    Assert(eval_id == num_entries_eval, ExcDimensionMismatch(eval_id,num_entries_eval));
-    Assert(copy_id == num_entries_copy, ExcDimensionMismatch(copy_id,num_entries_copy));
+  }
+  Assert(eval_id == num_entries_eval, ExcDimensionMismatch(eval_id,num_entries_eval));
+  Assert(copy_id == num_entries_copy, ExcDimensionMismatch(copy_id,num_entries_copy));
 
 }
 
@@ -202,16 +202,16 @@ bool
 DerivativeSymmetryManager<dim,order>::
 test_if_evaluate(const SafeSTLArray<int,order> &tensor_index) const
 {
-    bool test_result = true;
-    for (int i = 0; i < order-1; ++i)
+  bool test_result = true;
+  for (int i = 0; i < order-1; ++i)
+  {
+    if (tensor_index[i+1] > tensor_index[i])
     {
-        if (tensor_index[i+1] > tensor_index[i])
-        {
-            test_result = false;
-            break;
-        }
+      test_result = false;
+      break;
     }
-    return test_result;
+  }
+  return test_result;
 }
 
 
@@ -219,50 +219,50 @@ template<int order>
 class DerivativeSymmetryManager<0,order>
 {
 public:
-    static const int num_entries_total = 1;
-    static const int num_entries_eval  = 1;
-    static const int num_entries_copy  = num_entries_total - num_entries_eval;
+  static const int num_entries_total = 1;
+  static const int num_entries_eval  = 1;
+  static const int num_entries_copy  = num_entries_total - num_entries_eval;
 
-    typedef Derivatives<0,1,1,order> Derivative_t;
+  typedef Derivatives<0,1,1,order> Derivative_t;
 
-    DerivativeSymmetryManager()
-    {
-        entries_tensor_id_[0] = {{}};
-        entries_flat_id_evaluate_[0] = 0;
-    }
+  DerivativeSymmetryManager()
+  {
+    entries_tensor_id_[0] = {{}};
+    entries_flat_id_evaluate_[0] = 0;
+  }
 
-    const SafeSTLArray<int,num_entries_eval> &get_entries_flat_id_evaluate() const
-    {
-        return entries_flat_id_evaluate_;
-    }
+  const SafeSTLArray<int,num_entries_eval> &get_entries_flat_id_evaluate() const
+  {
+    return entries_flat_id_evaluate_;
+  }
 
-    const SafeSTLArray<int,num_entries_copy> &get_entries_flat_id_copy_to() const
-    {
-        return entries_flat_id_copy_to_;
-    }
+  const SafeSTLArray<int,num_entries_copy> &get_entries_flat_id_copy_to() const
+  {
+    return entries_flat_id_copy_to_;
+  }
 
-    const SafeSTLArray<int,num_entries_copy> &get_entries_flat_id_copy_from() const
-    {
-        return entries_flat_id_copy_from_;
-    }
+  const SafeSTLArray<int,num_entries_copy> &get_entries_flat_id_copy_from() const
+  {
+    return entries_flat_id_copy_from_;
+  }
 
-    const SafeSTLArray<TensorIndex<order>,num_entries_total> &get_entries_tensor_id() const
-    {
-        return entries_tensor_id_;
-    }
+  const SafeSTLArray<TensorIndex<order>,num_entries_total> &get_entries_tensor_id() const
+  {
+    return entries_tensor_id_;
+  }
 
 private:
-    /** Tensor ids of all the entries */
-    SafeSTLArray<TensorIndex<order>,num_entries_total> entries_tensor_id_;
+  /** Tensor ids of all the entries */
+  SafeSTLArray<TensorIndex<order>,num_entries_total> entries_tensor_id_;
 
-    /** Flat ids of the entries that need to be computed */
-    SafeSTLArray<int,num_entries_eval> entries_flat_id_evaluate_;
+  /** Flat ids of the entries that need to be computed */
+  SafeSTLArray<int,num_entries_eval> entries_flat_id_evaluate_;
 
-    /** Flat ids of the destination entries that need to be copied */
-    SafeSTLArray<int,num_entries_copy> entries_flat_id_copy_to_;
+  /** Flat ids of the destination entries that need to be copied */
+  SafeSTLArray<int,num_entries_copy> entries_flat_id_copy_to_;
 
-    /** Flat ids of the source entries that need to be copied */
-    SafeSTLArray<int,num_entries_copy> entries_flat_id_copy_from_;
+  /** Flat ids of the source entries that need to be copied */
+  SafeSTLArray<int,num_entries_copy> entries_flat_id_copy_from_;
 
 };
 
@@ -279,9 +279,7 @@ BSplineElement(const std::shared_ptr<ContainerType> space,
                const PropId &prop)
     :
     parent_t(space,index,prop)
-{
-
-}
+{}
 
 
 
@@ -291,10 +289,10 @@ template <int dim, int range, int rank>
 BSplineElement<dim, range, rank>::
 BSplineElement(const self_t &elem,
                const CopyPolicy &copy_policy)
-    :
-    parent_t(elem,copy_policy)
+  :
+  parent_t(elem,copy_policy)
 {
-    Assert(false,ExcNotImplemented());
+  Assert(false,ExcNotImplemented());
 }
 
 
@@ -303,9 +301,9 @@ auto
 BSplineElement<dim, range, rank>::
 get_bspline_space() const -> std::shared_ptr<const Space>
 {
-    auto bsp_space = std::dynamic_pointer_cast<const Space>(this->space_);
-    Assert(bsp_space != nullptr,ExcNullPtr());
-    return bsp_space;
+  auto bsp_space = std::dynamic_pointer_cast<const Space>(this->space_);
+  Assert(bsp_space != nullptr,ExcNullPtr());
+  return bsp_space;
 }
 
 
@@ -314,10 +312,11 @@ std::shared_ptr<SpaceElement<dim,0,range,rank,Transformation::h_grad> >
 BSplineElement<dim, range, rank>::
 clone() const
 {
-    auto elem = std::make_shared<BSplineElement<dim,range,rank> >(*this,CopyPolicy::deep);
-    Assert(elem != nullptr, ExcNullPtr());
-    return elem;
+  auto elem = std::make_shared<BSplineElement<dim,range,rank> >(*this,CopyPolicy::deep);
+  Assert(elem != nullptr, ExcNullPtr());
+  return elem;
 }
+
 
 
 template <int dim, int range, int rank>
@@ -343,7 +342,6 @@ print_cache_info(LogStream &out) const
     out.begin_item("SpaceElement's cache:");
     SpaceElement<dim,0,range,rank,Transformation::h_grad>::print_cache_info(out);
     out.end_item();
-
 
     out.end_item();
 }

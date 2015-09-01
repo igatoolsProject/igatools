@@ -1,4 +1,3 @@
-/*
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
 // Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
@@ -19,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-/ * test_utils.h
+/* test_utils.h
  *
  *  Created on: Aug 20, 2015
  *      Author: pauletti

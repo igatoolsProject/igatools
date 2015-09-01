@@ -37,61 +37,61 @@
 template <int sub_dim, int dim, int space_dim>
 void sub_map(const int n_knots = 2)
 {
-    OUTSTART
-    using Func = functions::LinearFunction<dim, 0, space_dim>;
-    using GridType = CartesianGrid<dim>;
-    using SubFunc = SubMapFunction<sub_dim, dim, space_dim>;
+  OUTSTART
+  using Func = functions::LinearFunction<dim, 0, space_dim>;
+  using GridType = CartesianGrid<dim>;
+  using SubFunc = SubMapFunction<sub_dim, dim, space_dim>;
 
-    auto grid = GridType::create(n_knots);
+  auto grid = GridType::create(n_knots);
 
-    typename Func::Gradient A;
-    typename Func::Value    b;
-    for (int i=0; i<dim; ++i)
-        A[i][i] = i+1;
-    for (int i=0; i<dim; ++i)
-        b[i] = i+1;
+  typename Func::Gradient A;
+  typename Func::Value    b;
+  for (int i=0; i<dim; ++i)
+    A[i][i] = i+1;
+  for (int i=0; i<dim; ++i)
+    b[i] = i+1;
 
-    auto func = Func::create(grid, IdentityFunction<dim>::create(grid), A, b);
+  auto func = Func::create(grid, IdentityFunction<dim>::create(grid), A, b);
 
-    for (auto &s_id : UnitElement<dim>::template elems_ids<sub_dim>())
+  for (auto &s_id : UnitElement<dim>::template elems_ids<sub_dim>())
+  {
+    using  InterGridMap = std::map<Index,Index>;
+    auto elem_map = std::make_shared<InterGridMap>(InterGridMap());
+
+    auto sub_grid = grid->template get_sub_grid<sub_dim>(s_id, *elem_map);
+    auto sub_func = SubFunc::create(sub_grid, *func, s_id, *elem_map);
+
+    QGauss<sub_dim> f_quad(1);
+    auto sub_func_flag = ValueFlags::point | ValueFlags::value
+                         | ValueFlags::gradient;
+    sub_func->reset(sub_func_flag, f_quad);
+
+    auto f_elem =  sub_func->begin();
+    auto end    =  sub_func->end();
+
+    const auto topology = Topology<sub_dim>();
+
+    sub_func->init_cache(f_elem, topology);
+
+
+    for (; f_elem != end; ++f_elem)
     {
-        using  InterGridMap = std::map<Index,Index>;
-        auto elem_map = std::make_shared<InterGridMap>(InterGridMap());
-
-        auto sub_grid = grid->template get_sub_grid<sub_dim>(s_id, *elem_map);
-        auto sub_func = SubFunc::create(sub_grid, *func, s_id, *elem_map);
-
-        QGauss<sub_dim> f_quad(1);
-        auto sub_func_flag = ValueFlags::point | ValueFlags::value
-                             | ValueFlags::gradient;
-        sub_func->reset(sub_func_flag, f_quad);
-
-        auto f_elem =  sub_func->begin();
-        auto end    =  sub_func->end();
-
-        const auto topology = Topology<sub_dim>();
-
-        sub_func->init_cache(f_elem, topology);
-
-
-        for (; f_elem != end; ++f_elem)
-        {
-            sub_func->fill_cache(f_elem, topology,0);
-            f_elem->template get_values<_Value,sub_dim>(0).print_info(out);
-            out << endl;
-            f_elem->template get_values<_Gradient,sub_dim>(0).print_info(out);
-            out << endl;
-        }
+      sub_func->fill_cache(f_elem, topology,0);
+      f_elem->template get_values<_Value,sub_dim>(0).print_info(out);
+      out << endl;
+      f_elem->template get_values<_Gradient,sub_dim>(0).print_info(out);
+      out << endl;
     }
-    OUTEND
+  }
+  OUTEND
 }
 
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
-    sub_map<1, 2, 2>();
+  sub_map<1, 2, 2>();
 
-    return  0;
+  return  0;
 }

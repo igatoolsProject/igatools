@@ -30,35 +30,35 @@
 
 void vector_serialization()
 {
-    OUTSTART
+  OUTSTART
 
-    SafeSTLVector<Real> vec = {1.,2.,3.,4.,5.};
+  SafeSTLVector<Real> vec = {1.,2.,3.,4.,5.};
 
-    {
-        ofstream xml_ostream("vector.xml");
-        OArchive xml_out(xml_ostream);
-        xml_out << BOOST_SERIALIZATION_NVP(vec);
-        xml_ostream.close();
-    }
+  {
+    ofstream xml_ostream("vector.xml");
+    OArchive xml_out(xml_ostream);
+    xml_out << BOOST_SERIALIZATION_NVP(vec);
+    xml_ostream.close();
+  }
 
-    vec.clear();
+  vec.clear();
 
-    {
-        ifstream xml_istream("vector.xml");
-        IArchive xml_in(xml_istream);
-        xml_in >> BOOST_SERIALIZATION_NVP(vec);
-        xml_istream.close();
-    }
+  {
+    ifstream xml_istream("vector.xml");
+    IArchive xml_in(xml_istream);
+    xml_in >> BOOST_SERIALIZATION_NVP(vec);
+    xml_istream.close();
+  }
 
-    vec.print_info(out);
-    out << endl;
-    OUTEND
+  vec.print_info(out);
+  out << endl;
+  OUTEND
 }
 
 
 
 int main()
 {
-    vector_serialization();
-    return 0;
+  vector_serialization();
+  return 0;
 }

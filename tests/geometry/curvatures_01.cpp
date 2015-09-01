@@ -40,55 +40,55 @@
 template <int dim>
 void principal_curvatures()
 {
-    OUTSTART
+  OUTSTART
 
-    using Function = functions::SphereFunction<dim>;
+  using Function = functions::SphereFunction<dim>;
 
-    auto flag = ValueFlags::point |  ValueFlags::value |
-                ValueFlags::curvature;
+  auto flag = ValueFlags::point |  ValueFlags::value |
+              ValueFlags::curvature;
 
-    auto quad = QUniform<dim>(3);
+  auto quad = QUniform<dim>(3);
 
-    BBox<dim> box;
-    for (int i=0; i<dim-1; ++i)
-        box[i] = {0.+M_PI/8, M_PI-M_PI/8};
-    if (dim>=1)
-        box[dim-1] = {0., M_PI};
-    auto grid = CartesianGrid<dim>::create(box, 2);
+  BBox<dim> box;
+  for (int i=0; i<dim-1; ++i)
+    box[i] = {0.+M_PI/8, M_PI-M_PI/8};
+  if (dim>=1)
+    box[dim-1] = {0., M_PI};
+  auto grid = CartesianGrid<dim>::create(box, 2);
 
-    auto F = Function::create(grid, IdentityFunction<dim>::create(grid));
+  auto F = Function::create(grid, IdentityFunction<dim>::create(grid));
 
 
-    using Mapping   = Mapping<dim, 1>;
-    Mapping map(F);
-    map.reset(flag, quad);
+  using Mapping   = Mapping<dim, 1>;
+  Mapping map(F);
+  map.reset(flag, quad);
 
-    auto elem = map.begin();
-    auto end = map.end();
+  auto elem = map.begin();
+  auto end = map.end();
 
-    map.template init_cache<dim>(elem);
-    for (; elem != end; ++elem)
-    {
-        map.template fill_cache<dim>(elem, 0);
-        out << "Normals:" << endl;
-        elem->get_external_normals().print_info(out);
-        out << endl;
+  map.template init_cache<dim>(elem);
+  for (; elem != end; ++elem)
+  {
+    map.template fill_cache<dim>(elem, 0);
+    out << "Normals:" << endl;
+    elem->get_external_normals().print_info(out);
+    out << endl;
 
-        out << "Curvature:" << endl;
-        elem->get_principal_curvatures().print_info(out);
-        out << endl;
-    }
+    out << "Curvature:" << endl;
+    elem->get_principal_curvatures().print_info(out);
+    out << endl;
+  }
 
-    OUTEND
+  OUTEND
 }
 
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
-    principal_curvatures<1>();
-    principal_curvatures<2>();
+  principal_curvatures<1>();
+  principal_curvatures<2>();
 
-    return 0;
+  return 0;
 }

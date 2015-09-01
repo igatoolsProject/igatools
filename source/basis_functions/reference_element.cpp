@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -33,9 +33,9 @@ ReferenceElement<dim, range, rank>::
 ReferenceElement(const std::shared_ptr<ConstSpace> space,
                  const ListIt &index,
                  const PropId &prop)
-    :
-    parent_t(space,index,prop),
-    space_(space)
+  :
+  parent_t(space,index,prop),
+  space_(space)
 {
 //    Assert(this->get_space() != nullptr,ExcNullPtr());
 
@@ -75,11 +75,11 @@ template <int dim, int range, int rank>
 ReferenceElement<dim, range, rank>::
 ReferenceElement(const ReferenceElement<dim,range,rank> &elem,
                  const iga::CopyPolicy &copy_policy)
-    :
-    parent_t(elem,copy_policy),
-    n_basis_direction_(elem.n_basis_direction_),
-    comp_offset_(elem.comp_offset_),
-    basis_functions_indexer_(elem.basis_functions_indexer_)
+  :
+  parent_t(elem,copy_policy),
+  n_basis_direction_(elem.n_basis_direction_),
+  comp_offset_(elem.comp_offset_),
+  basis_functions_indexer_(elem.basis_functions_indexer_)
 {};
 
 
@@ -91,7 +91,7 @@ int
 ReferenceElement<dim, range, rank>::
 get_num_basis_comp(const int i) const
 {
-    return this->n_basis_direction_[i].flat_size();
+  return this->n_basis_direction_[i].flat_size();
 }
 
 
@@ -101,7 +101,7 @@ auto
 ReferenceElement<dim, range, rank>::
 get_basis_offset() const -> OffsetTable
 {
-    return this->comp_offset_;
+  return this->comp_offset_;
 }
 
 
@@ -112,10 +112,10 @@ void
 ReferenceElement<dim, range, rank>::
 print_info(LogStream &out) const
 {
-    parent_t::print_info(out);
-    out.begin_item("Number of element basis: ");
-    n_basis_direction_.print_info(out);
-    out.end_item();
+  parent_t::print_info(out);
+  out.begin_item("Number of element basis: ");
+  n_basis_direction_.print_info(out);
+  out.end_item();
 }
 
 
@@ -127,7 +127,7 @@ auto
 ReferenceElement<dim, range, rank>::
 get_element_w_measures() const -> ValueVector<Real>
 {
-    return this->template get_w_measures<dim>(0);
+  return this->template get_w_measures<dim>(0);
 }
 
 
@@ -140,18 +140,18 @@ void
 ReferenceElement<dim, range, rank>::
 serialize(Archive &ar, const unsigned int version)
 {
-    ar &boost::serialization::make_nvp("ReferenceElement_base_t_",
-                                       boost::serialization::base_object<SpaceElement<dim,0,range,rank,Transformation::h_grad>>(*this));
+  ar &boost::serialization::make_nvp("ReferenceElement_base_t_",
+                                     boost::serialization::base_object<SpaceElement<dim,0,range,rank,Transformation::h_grad>>(*this));
 
 
-    ar &boost::serialization::make_nvp("n_basis_direction_",n_basis_direction_);
-    ar &boost::serialization::make_nvp("comp_offset_",comp_offset_);
-    ar &boost::serialization::make_nvp("basis_functions_indexer_",basis_functions_indexer_);
+  ar &boost::serialization::make_nvp("n_basis_direction_",n_basis_direction_);
+  ar &boost::serialization::make_nvp("comp_offset_",comp_offset_);
+  ar &boost::serialization::make_nvp("basis_functions_indexer_",basis_functions_indexer_);
 
-    auto non_const_space = std::const_pointer_cast<Space>(space_);
-    ar &boost::serialization::make_nvp("space_",non_const_space);
-    space_ = non_const_space;
-    Assert(space_ != nullptr,ExcNullPtr());
+  auto non_const_space = std::const_pointer_cast<Space>(space_);
+  ar &boost::serialization::make_nvp("space_",non_const_space);
+  space_ = non_const_space;
+  Assert(space_ != nullptr,ExcNullPtr());
 }
 #endif // SERIALIZATION
 

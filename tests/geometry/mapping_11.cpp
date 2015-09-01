@@ -37,66 +37,66 @@
 template<int dim, int codim>
 void test()
 {
-    OUTSTART
+  OUTSTART
 
-    const int space_dim = dim+codim;
-    using Function = functions::LinearFunction<dim, 0, space_dim>;
-    using Mapping   = PhysicalDomain<dim, codim>;
+  const int space_dim = dim+codim;
+  using Function = functions::LinearFunction<dim, 0, space_dim>;
+  using Mapping   = PhysicalDomain<dim, codim>;
 
-    typename Function::Value    b;
-    typename Function::Gradient A;
-    for (int i=0; i<space_dim; i++)
-    {
-        for (int j=0; j<dim; j++)
-            if (j == i)
-                A[j][j] = 2.;
-        b[i] = i;
-    }
-    auto grid = CartesianGrid<dim>::create(3);
-    auto F = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
+  typename Function::Value    b;
+  typename Function::Gradient A;
+  for (int i=0; i<space_dim; i++)
+  {
+    for (int j=0; j<dim; j++)
+      if (j == i)
+        A[j][j] = 2.;
+    b[i] = i;
+  }
+  auto grid = CartesianGrid<dim>::create(3);
+  auto F = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
 
-    auto flag = ValueFlags::point | ValueFlags::value | ValueFlags::gradient |
-                ValueFlags::hessian |ValueFlags::measure|ValueFlags::w_measure;
-    auto quad = QGauss<dim>(2);
+  auto flag = ValueFlags::point | ValueFlags::value | ValueFlags::gradient |
+              ValueFlags::hessian |ValueFlags::measure|ValueFlags::w_measure;
+  auto quad = QGauss<dim>(2);
 
-    Mapping map(F);
-    map.reset(flag, quad);
+  Mapping map(F);
+  map.reset(flag, quad);
 
-    auto elem = map.begin();
-    auto end  = map.end();
+  auto elem = map.begin();
+  auto end  = map.end();
 
-    map.init_cache(elem, Topology<dim>());;
-    for (; elem != end; ++elem)
-    {
-        map.fill_cache(elem, Topology<dim>(), 0);
-        out << "Points:" << endl;
-        elem->get_points().print_info(out);
-        out << endl;
-        out << "Values:" << endl;
-        elem->template get_values<_Value,dim>(0).print_info(out);
-        out << endl;
-        out << "Gradients:" << endl;
-        elem->template get_values<_Gradient,dim>(0).print_info(out);
-        out << endl;
-        out << "Hessians:" << endl;
-        elem->template get_values<_Hessian,dim>(0).print_info(out);
-        out << endl;
+  map.init_cache(elem, Topology<dim>());;
+  for (; elem != end; ++elem)
+  {
+    map.fill_cache(elem, Topology<dim>(), 0);
+    out << "Points:" << endl;
+    elem->get_points().print_info(out);
+    out << endl;
+    out << "Values:" << endl;
+    elem->template get_values<_Value,dim>(0).print_info(out);
+    out << endl;
+    out << "Gradients:" << endl;
+    elem->template get_values<_Gradient,dim>(0).print_info(out);
+    out << endl;
+    out << "Hessians:" << endl;
+    elem->template get_values<_Hessian,dim>(0).print_info(out);
+    out << endl;
 //        elem->get_measures().print_info(out);
 //        out << endl;
 //        elem->get_w_measures().print_info(out);
 //        out << endl;
-    }
+  }
 
-    OUTEND
+  OUTEND
 }
 
 
 int main()
 {
-    test<2,0>();
-    test<3,0>();
-    test<2,1>();
+  test<2,0>();
+  test<3,0>();
+  test<2,1>();
 
-    return 0;
+  return 0;
 }
 

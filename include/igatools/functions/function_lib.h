@@ -38,46 +38,46 @@ template<int dim, int codim, int range, int rank = 1>
 class ConstantFunction : public FormulaFunction<dim, codim, range, rank>
 {
 private:
-    using base_t = Function<dim, codim, range, rank>;
-    using parent_t = FormulaFunction<dim, codim, range, rank>;
-    using self_t = ConstantFunction<dim, codim, range, rank>;
-    using typename base_t::GridType;
+  using base_t = Function<dim, codim, range, rank>;
+  using parent_t = FormulaFunction<dim, codim, range, rank>;
+  using self_t = ConstantFunction<dim, codim, range, rank>;
+  using typename base_t::GridType;
 public:
-    using typename parent_t::Point;
-    using typename parent_t::Value;
-    using typename parent_t::Gradient;
-    using typename parent_t::ElementIterator;
-    using typename parent_t::ElementAccessor;
-    template <int order>
-    using Derivative = typename parent_t::template Derivative<order>;
-    using typename parent_t::Map;
+  using typename parent_t::Point;
+  using typename parent_t::Value;
+  using typename parent_t::Gradient;
+  using typename parent_t::ElementIterator;
+  using typename parent_t::ElementAccessor;
+  template <int order>
+  using Derivative = typename parent_t::template Derivative<order>;
+  using typename parent_t::Map;
 
-    static std::shared_ptr<base_t>
-    create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
-           const Value &b);
+  static std::shared_ptr<base_t>
+  create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
+         const Value &b);
 
-    std::shared_ptr<base_t> clone() const override final;
+  std::shared_ptr<base_t> clone() const override final;
 
 
-    ConstantFunction(const self_t &) = default;
-    virtual ~ConstantFunction() = default;
+  ConstantFunction(const self_t &) = default;
+  virtual ~ConstantFunction() = default;
 
 protected:
-    ConstantFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
-                     const Value &b);
+  ConstantFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
+                   const Value &b);
 
 private:
-    void evaluate_0(const ValueVector<Point> &points,
-                    ValueVector<Value> &values) const override;
+  void evaluate_0(const ValueVector<Point> &points,
+                  ValueVector<Value> &values) const override;
 
-    void evaluate_1(const ValueVector<Point> &points,
-                    ValueVector<Derivative<1>> &values) const override;
+  void evaluate_1(const ValueVector<Point> &points,
+                  ValueVector<Derivative<1>> &values) const override;
 
-    void evaluate_2(const ValueVector<Point> &points,
-                    ValueVector<Derivative<2>> &values) const override;
+  void evaluate_2(const ValueVector<Point> &points,
+                  ValueVector<Derivative<2>> &values) const override;
 
 private:
-    const Value b_;
+  const Value b_;
 };
 
 
@@ -89,54 +89,54 @@ private:
  */
 template<int dim, int codim, int range>
 class LinearFunction :
-    public FormulaFunction<dim, codim, range, 1>
+  public FormulaFunction<dim, codim, range, 1>
 {
 
 public:
-    using base_t = Function<dim, codim, range, 1>;
-    using parent_t = FormulaFunction<dim, codim, range, 1>;
-    using self_t = LinearFunction<dim, codim, range>;
-    using typename base_t::GridType;
-    using typename parent_t::Point;
-    using typename parent_t::Value;
-    using typename parent_t::Gradient;
-    using typename parent_t::ElementIterator;
-    using typename parent_t::ElementAccessor;
-    template <int order>
-    using Derivative = typename parent_t::template Derivative<order>;
-    using typename parent_t::Map;
+  using base_t = Function<dim, codim, range, 1>;
+  using parent_t = FormulaFunction<dim, codim, range, 1>;
+  using self_t = LinearFunction<dim, codim, range>;
+  using typename base_t::GridType;
+  using typename parent_t::Point;
+  using typename parent_t::Value;
+  using typename parent_t::Gradient;
+  using typename parent_t::ElementIterator;
+  using typename parent_t::ElementAccessor;
+  template <int order>
+  using Derivative = typename parent_t::template Derivative<order>;
+  using typename parent_t::Map;
 
 private:
 
 public:
-    static std::shared_ptr<base_t>
-    create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
-           const Gradient &A,
-           const Value &b);
+  static std::shared_ptr<base_t>
+  create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
+         const Gradient &A,
+         const Value &b);
 
-    virtual std::shared_ptr<base_t> clone() const override final;
+  virtual std::shared_ptr<base_t> clone() const override final;
 
-    LinearFunction(const self_t &) = default;
-    virtual ~LinearFunction() = default;
+  LinearFunction(const self_t &) = default;
+  virtual ~LinearFunction() = default;
 
 
 protected:
-    LinearFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
-                   const Gradient &A, const Value &b);
+  LinearFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
+                 const Gradient &A, const Value &b);
 
 private:
-    void evaluate_0(const ValueVector<Point> &points,
-                    ValueVector<Value> &values) const override;
+  void evaluate_0(const ValueVector<Point> &points,
+                  ValueVector<Value> &values) const override;
 
-    void evaluate_1(const ValueVector<Point> &points,
-                    ValueVector<Derivative<1>> &values) const override;
+  void evaluate_1(const ValueVector<Point> &points,
+                  ValueVector<Derivative<1>> &values) const override;
 
-    void evaluate_2(const ValueVector<Point> &points,
-                    ValueVector<Derivative<2>> &values) const override;
+  void evaluate_2(const ValueVector<Point> &points,
+                  ValueVector<Derivative<2>> &values) const override;
 
 private:
-    const Gradient A_;
-    const Value    b_;
+  const Gradient A_;
+  const Value    b_;
 };
 
 //------------------------------------------------------------------------------
@@ -159,45 +159,45 @@ template<int dim>
 class BallFunction : public FormulaFunction<dim, 0, dim, 1>
 {
 private:
-    using base_t = Function<dim, 0, dim, 1>;
-    using parent_t = FormulaFunction<dim, 0, dim, 1>;
-    using self_t = BallFunction<dim>;
-    using typename base_t::GridType;
+  using base_t = Function<dim, 0, dim, 1>;
+  using parent_t = FormulaFunction<dim, 0, dim, 1>;
+  using self_t = BallFunction<dim>;
+  using typename base_t::GridType;
 public:
-    using typename parent_t::Point;
-    using typename parent_t::Value;
-    using typename parent_t::Gradient;
-    using typename parent_t::ElementIterator;
-    using typename parent_t::ElementAccessor;
-    template <int order>
-    using Derivative = typename parent_t::template Derivative<order>;
-    using typename parent_t::Map;
+  using typename parent_t::Point;
+  using typename parent_t::Value;
+  using typename parent_t::Gradient;
+  using typename parent_t::ElementIterator;
+  using typename parent_t::ElementAccessor;
+  template <int order>
+  using Derivative = typename parent_t::template Derivative<order>;
+  using typename parent_t::Map;
 
-    static std::shared_ptr<base_t>
-    create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
+  static std::shared_ptr<base_t>
+  create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
 
-    std::shared_ptr<base_t> clone() const override final;
+  std::shared_ptr<base_t> clone() const override final;
 
-    BallFunction(const self_t &) = default;
-    virtual ~BallFunction() = default;
+  BallFunction(const self_t &) = default;
+  virtual ~BallFunction() = default;
 
 protected:
-    BallFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
+  BallFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
 
 private:
-    template<int order>
-    auto
-    get_aux_vals(const ValueVector<Point> &points) const;
+  template<int order>
+  auto
+  get_aux_vals(const ValueVector<Point> &points) const;
 
 private:
-    virtual void evaluate_0(const ValueVector<Point> &points,
-                            ValueVector<Value> &values) const override final;
+  virtual void evaluate_0(const ValueVector<Point> &points,
+                          ValueVector<Value> &values) const override final;
 
-    virtual void evaluate_1(const ValueVector<Point> &points,
-                            ValueVector<Derivative<1>> &values) const override final;
+  virtual void evaluate_1(const ValueVector<Point> &points,
+                          ValueVector<Derivative<1>> &values) const override final;
 
-    virtual void evaluate_2(const ValueVector<Point> &points,
-                            ValueVector<Derivative<2>> &values) const override final;
+  virtual void evaluate_2(const ValueVector<Point> &points,
+                          ValueVector<Derivative<2>> &values) const override final;
 
 private:
 //    const Value b_;
@@ -222,48 +222,48 @@ template<int dim>
 class SphereFunction : public FormulaFunction<dim, 0, dim+1, 1>
 {
 private:
-    static const int space_dim = dim + 1;
-    using base_t = Function<dim, 0, dim+1, 1>;
-    using parent_t = FormulaFunction<dim, 0, dim+1, 1>;
-    using self_t = SphereFunction<dim>;
-    using typename base_t::GridType;
+  static const int space_dim = dim + 1;
+  using base_t = Function<dim, 0, dim+1, 1>;
+  using parent_t = FormulaFunction<dim, 0, dim+1, 1>;
+  using self_t = SphereFunction<dim>;
+  using typename base_t::GridType;
 public:
-    using typename parent_t::Point;
-    using typename parent_t::Value;
-    using typename parent_t::Gradient;
-    using typename parent_t::ElementIterator;
-    using typename parent_t::ElementAccessor;
-    template <int order>
-    using Derivative = typename parent_t::template Derivative<order>;
-    using typename parent_t::Map;
+  using typename parent_t::Point;
+  using typename parent_t::Value;
+  using typename parent_t::Gradient;
+  using typename parent_t::ElementIterator;
+  using typename parent_t::ElementAccessor;
+  template <int order>
+  using Derivative = typename parent_t::template Derivative<order>;
+  using typename parent_t::Map;
 
-    static std::shared_ptr<base_t>
-    create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
+  static std::shared_ptr<base_t>
+  create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
 
-    std::shared_ptr<base_t> clone() const override final;
+  std::shared_ptr<base_t> clone() const override final;
 
-    SphereFunction(const self_t &) = default;
-    virtual ~SphereFunction() = default;
+  SphereFunction(const self_t &) = default;
+  virtual ~SphereFunction() = default;
 
 protected:
-    SphereFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
+  SphereFunction(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map);
 
 private:
-    template<int order>
-    auto
-    get_aux_vals(const ValueVector<Point> &points) const;
+  template<int order>
+  auto
+  get_aux_vals(const ValueVector<Point> &points) const;
 
 private:
-    void evaluate_0(const ValueVector<Point> &points,
-                    ValueVector<Value> &values) const override final;
+  void evaluate_0(const ValueVector<Point> &points,
+                  ValueVector<Value> &values) const override final;
 
-    void evaluate_1(const ValueVector<Point> &points,
-                    ValueVector<Derivative<1>> &values) const override final;
+  void evaluate_1(const ValueVector<Point> &points,
+                  ValueVector<Derivative<1>> &values) const override final;
 
-    void evaluate_2(const ValueVector<Point> &points,
-                    ValueVector<Derivative<2>> &values) const override final;
+  void evaluate_2(const ValueVector<Point> &points,
+                  ValueVector<Derivative<2>> &values) const override final;
 
-    static const int R = 1.;
+  static const int R = 1.;
 
 };
 //------------------------------------------------------------------------------
@@ -301,70 +301,70 @@ template<int dim>
 class CylindricalAnnulus : public FormulaFunction<dim, 0, dim, 1>
 {
 private:
-    using base_t = Function<dim, 0, dim, 1>;
-    using parent_t = FormulaFunction<dim, 0, dim, 1>;
-    using self_t = CylindricalAnnulus;
-    using typename base_t::GridType;
+  using base_t = Function<dim, 0, dim, 1>;
+  using parent_t = FormulaFunction<dim, 0, dim, 1>;
+  using self_t = CylindricalAnnulus;
+  using typename base_t::GridType;
 public:
-    using typename parent_t::Point;
-    using typename parent_t::Value;
-    using typename parent_t::Gradient;
-    using typename parent_t::ElementIterator;
-    using typename parent_t::ElementAccessor;
-    template <int order>
-    using Derivative = typename parent_t::template Derivative<order>;
-    using typename parent_t::Map;
+  using typename parent_t::Point;
+  using typename parent_t::Value;
+  using typename parent_t::Gradient;
+  using typename parent_t::ElementIterator;
+  using typename parent_t::ElementAccessor;
+  template <int order>
+  using Derivative = typename parent_t::template Derivative<order>;
+  using typename parent_t::Map;
 
-    static std::shared_ptr<base_t>
-    create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
-           const Real r0,
-           const Real r1,
-           const Real h0,
-           const Real h1,
-           const Real theta0,
-           const Real theta1);
+  static std::shared_ptr<base_t>
+  create(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
+         const Real r0,
+         const Real r1,
+         const Real h0,
+         const Real h1,
+         const Real theta0,
+         const Real theta1);
 
-    std::shared_ptr<base_t> clone() const override final;
+  std::shared_ptr<base_t> clone() const override final;
 
-    CylindricalAnnulus(const self_t &) = default;
-    virtual ~CylindricalAnnulus() = default;
+  CylindricalAnnulus(const self_t &) = default;
+  virtual ~CylindricalAnnulus() = default;
 
 protected:
-    CylindricalAnnulus(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
-                       const Real r0,
-                       const Real r1,
-                       const Real h0,
-                       const Real h1,
-                       const Real theta0,
-                       const Real theta1);
+  CylindricalAnnulus(std::shared_ptr<GridType> grid, std::shared_ptr<Map> map,
+                     const Real r0,
+                     const Real r1,
+                     const Real h0,
+                     const Real h1,
+                     const Real theta0,
+                     const Real theta1);
 
 private:
-    template<int order>
-    auto
-    get_aux_vals(const ValueVector<Point> &points) const;
+  template<int order>
+  auto
+  get_aux_vals(const ValueVector<Point> &points) const;
 
 private:
-    void evaluate_0(const ValueVector<Point> &points,
-                    ValueVector<Value> &values) const override final;
+  void evaluate_0(const ValueVector<Point> &points,
+                  ValueVector<Value> &values) const override final;
 
-    void evaluate_1(const ValueVector<Point> &points,
-                    ValueVector<Derivative<1>> &values) const override final;
+  void evaluate_1(const ValueVector<Point> &points,
+                  ValueVector<Derivative<1>> &values) const override final;
 
-    void evaluate_2(const ValueVector<Point> &points,
-                    ValueVector<Derivative<2>> &values) const override final;
+  void evaluate_2(const ValueVector<Point> &points,
+                  ValueVector<Derivative<2>> &values) const override final;
 
 private:
 private:
-    const Real r0_;
-    const Real r1_;
-    const Real h0_;
-    const Real h1_;
-    const Real theta0_;
-    const Real theta1_;
+  const Real r0_;
+  const Real r1_;
+  const Real h0_;
+  const Real h1_;
+  const Real theta0_;
+  const Real theta1_;
 
-    const Real dR_;
-    const Real dT_;
-    const Real dH_;
+  const Real dR_;
+  const Real dT_;
+  const Real dH_;
 };
 
 

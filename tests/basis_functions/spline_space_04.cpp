@@ -39,48 +39,48 @@ matrix<Real> compute(const matrix<Real> &M_j_1,
                      const Real b)
 {
 
-    const int j = M_j_1.size1() + 1;
-    matrix<Real> M_j(j,j);
+  const int j = M_j_1.size1() + 1;
+  matrix<Real> M_j(j,j);
 
-    SafeSTLVector<Real> alpha(j);
-    SafeSTLVector<Real> one_alpha(j,1);
-    SafeSTLVector<Real> beta(j, b-a);
+  SafeSTLVector<Real> alpha(j);
+  SafeSTLVector<Real> one_alpha(j,1);
+  SafeSTLVector<Real> beta(j, b-a);
 
-    for (int k = 0; k < j; ++k)
-    {
-        alpha[k] = (y[k+j] - a)/(y[k+j]-y[k]);
-        one_alpha[k] -= alpha[k];
+  for (int k = 0; k < j; ++k)
+  {
+    alpha[k] = (y[k+j] - a)/(y[k+j]-y[k]);
+    one_alpha[k] -= alpha[k];
 
-        beta[k] /= (y[k+j]-y[k]);
-    }
+    beta[k] /= (y[k+j]-y[k]);
+  }
 
-    for (int l = 0; l < j-1; ++l)
-    {
-        //k = 0
-        M_j(0, l) = alpha[0] * M_j_1(0, l);
-        //k = 1,...,j-2
-        for (int k = 1; k < j-1; ++k)
-        {
-            M_j(k, l) = alpha[k] * M_j_1(k, l) + one_alpha[k] * M_j_1(k-1, l);
-        }
-        //k = j-1
-        M_j(j-1, l) = one_alpha[j-1] * M_j_1(j-2, l);
-    }
-
-
-    const int l = j-1;
-
+  for (int l = 0; l < j-1; ++l)
+  {
     //k = 0
-    M_j(0, l) = M_j(0, l-1) - beta[0] * M_j_1(0, l-1);
+    M_j(0, l) = alpha[0] * M_j_1(0, l);
     //k = 1,...,j-2
     for (int k = 1; k < j-1; ++k)
     {
-        M_j(k, l) = M_j(k, l-1) + beta[k] * (M_j_1(k-1, l-1) - M_j_1(k, l-1));
+      M_j(k, l) = alpha[k] * M_j_1(k, l) + one_alpha[k] * M_j_1(k-1, l);
     }
     //k = j-1
-    M_j(j-1, l) = M_j(j-1, l-1) + beta[j-1] * M_j_1(j-2, j-2);
+    M_j(j-1, l) = one_alpha[j-1] * M_j_1(j-2, l);
+  }
 
-    return M_j;
+
+  const int l = j-1;
+
+  //k = 0
+  M_j(0, l) = M_j(0, l-1) - beta[0] * M_j_1(0, l-1);
+  //k = 1,...,j-2
+  for (int k = 1; k < j-1; ++k)
+  {
+    M_j(k, l) = M_j(k, l-1) + beta[k] * (M_j_1(k-1, l-1) - M_j_1(k, l-1));
+  }
+  //k = j-1
+  M_j(j-1, l) = M_j(j-1, l-1) + beta[j-1] * M_j_1(j-2, j-2);
+
+  return M_j;
 }
 
 void fill_extraction(const int degree,
@@ -89,35 +89,35 @@ void fill_extraction(const int degree,
                      const SafeSTLVector<Index>   &acum_mult)
 //,                    SafeSTLVector<matrix<Real>>  &extraction_operators)
 {
-    // interval n
-    const int n=0;
-    const int m = degree+1;
+  // interval n
+  const int n=0;
+  const int m = degree+1;
 
-    const auto &x = knots;
-    const auto &y = rep_knots;
+  const auto &x = knots;
+  const auto &y = rep_knots;
 
-    const auto a = x[n];
-    const auto b = x[n+1];
+  const auto a = x[n];
+  const auto b = x[n+1];
 
-    matrix<Real> M(1,1);
-    M(0,0) = 1/(b-a);
-    for (int j = 2; j<=m; ++j)
-    {
-        const int s = acum_mult[n+1] - j;
+  matrix<Real> M(1,1);
+  M(0,0) = 1/(b-a);
+  for (int j = 2; j<=m; ++j)
+  {
+    const int s = acum_mult[n+1] - j;
 
-        auto M1 = compute(M, y.begin()+s, a, b);
-        M.assign_temporary(M1);
-    }
+    auto M1 = compute(M, y.begin()+s, a, b);
+    M.assign_temporary(M1);
+  }
 
-    //Normalized
-    auto M2(M);
-    const int s = acum_mult[n+1] - m;
-    for (int k = 0; k < m; ++k)
-    {
-        matrix_row<matrix<double> > mr(M2, k);
-        mr *= (y[s+k+m]-y[s+k]);
-    }
-    out << M << endl;
+  //Normalized
+  auto M2(M);
+  const int s = acum_mult[n+1] - m;
+  for (int k = 0; k < m; ++k)
+  {
+    matrix_row<matrix<double> > mr(M2, k);
+    mr *= (y[s+k+m]-y[s+k]);
+  }
+  out << M << endl;
 
 }
 
@@ -126,37 +126,37 @@ void fill_extraction(const int degree,
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
-    {
-        int degree = 1;
-        SafeSTLVector<Real>    knots = {0,1};
-        SafeSTLVector<Real>    rep_knots = {0,0,1,1};
-        SafeSTLVector<Index>   acum_mult = {0,2,4};
+  {
+    int degree = 1;
+    SafeSTLVector<Real>    knots = {0,1};
+    SafeSTLVector<Real>    rep_knots = {0,0,1,1};
+    SafeSTLVector<Index>   acum_mult = {0,2,4};
 
-        fill_extraction(degree,knots,rep_knots, acum_mult);
-    }
-
-
-    {
-        int degree = 2;
-        SafeSTLVector<Real>    knots = {0,1};
-        SafeSTLVector<Real>    rep_knots = {0,0,0,1,1,1};
-        SafeSTLVector<Index>   acum_mult = {0,3,6};
-
-        fill_extraction(degree,knots,rep_knots, acum_mult);
-    }
+    fill_extraction(degree,knots,rep_knots, acum_mult);
+  }
 
 
-    {
-        int degree = 3;
-        SafeSTLVector<Real>    knots = {0,1};
-        SafeSTLVector<Real>    rep_knots = {0,0,0,0,1,1,1,1};
-        SafeSTLVector<Index>   acum_mult = {0,4,8};
+  {
+    int degree = 2;
+    SafeSTLVector<Real>    knots = {0,1};
+    SafeSTLVector<Real>    rep_knots = {0,0,0,1,1,1};
+    SafeSTLVector<Index>   acum_mult = {0,3,6};
 
-        fill_extraction(degree,knots,rep_knots, acum_mult);
-    }
+    fill_extraction(degree,knots,rep_knots, acum_mult);
+  }
 
 
-    return 0;
+  {
+    int degree = 3;
+    SafeSTLVector<Real>    knots = {0,1};
+    SafeSTLVector<Real>    rep_knots = {0,0,0,0,1,1,1,1};
+    SafeSTLVector<Index>   acum_mult = {0,4,8};
+
+    fill_extraction(degree,knots,rep_knots, acum_mult);
+  }
+
+
+  return 0;
 }

@@ -38,21 +38,21 @@ namespace EpetraTools
 class  Vector : public Epetra_Vector
 {
 public:
-    using Epetra_Vector::Epetra_Vector;
+  using Epetra_Vector::Epetra_Vector;
 
-    Size size() const;
+  Size size() const;
 
-    Vector &operator +=(const Vector &vec);
+  Vector &operator +=(const Vector &vec);
 
-    void add_block(const SafeSTLVector<Index> &vec_id,
-                   const DenseVector &local_vector);
+  void add_block(const SafeSTLVector<Index> &vec_id,
+                 const DenseVector &local_vector);
 
-    //TODO (pauletti, Apr 3, 2015): both SafeSTLVector<Real> and std::vector<Index>
-    // should be replace by a typedef and a proper type for fast communication with LA
-    SafeSTLVector<Real>
-    get_local_coeffs(const std::vector<Index> &global_ids) const;
+  //TODO (pauletti, Apr 3, 2015): both SafeSTLVector<Real> and std::vector<Index>
+  // should be replace by a typedef and a proper type for fast communication with LA
+  SafeSTLVector<Real>
+  get_local_coeffs(const std::vector<Index> &global_ids) const;
 
-    void print_info(LogStream &out) const;
+  void print_info(LogStream &out) const;
 
 };
 
@@ -64,7 +64,7 @@ template <class Space>
 VectorPtr
 create_vector(const Space &space, const std::string &prop,const Comm &comm)
 {
-    return create_vector(*create_map(space, prop, comm));
+  return create_vector(*create_map(space, prop, comm));
 }
 
 };

@@ -28,36 +28,36 @@ const Real &
 IgCoefficients::
 operator[](const Index global_dof) const
 {
-    return std::map<Index,Real>::at(global_dof);
+  return std::map<Index,Real>::at(global_dof);
 }
 
 Real &
 IgCoefficients::
 operator[](const Index global_dof)
 {
-    return std::map<Index,Real>::operator[](global_dof);
+  return std::map<Index,Real>::operator[](global_dof);
 }
 
 Index
 IgCoefficients::
 size() const
 {
-    return std::map<Index,Real>::size();
+  return std::map<Index,Real>::size();
 }
 
 void
 IgCoefficients::
 print_info(LogStream &out) const
 {
-    int loc_id = 0;
-    for (const auto &dof_value : (*this))
-    {
-        out << "Coef[loc_id=" << loc_id
-            << " , glob_id=" << dof_value.first << "] = "
-            << dof_value.second << std::endl;
+  int loc_id = 0;
+  for (const auto &dof_value : (*this))
+  {
+    out << "Coef[loc_id=" << loc_id
+        << " , glob_id=" << dof_value.first << "] = "
+        << dof_value.second << std::endl;
 
-        ++loc_id;
-    }
+    ++loc_id;
+  }
 }
 
 #ifdef SERIALIZATION
@@ -67,8 +67,8 @@ void
 IgCoefficients::
 serialize(Archive &ar, const unsigned int version)
 {
-    ar &boost::serialization::make_nvp("IgCoeff_base_t",
-                                       boost::serialization::base_object<std::map<Index,Real>>(*this));
+  ar &boost::serialization::make_nvp("IgCoeff_base_t",
+                                     boost::serialization::base_object<std::map<Index,Real>>(*this));
 }
 
 #endif // SERIALIZATION

@@ -34,12 +34,12 @@
 template <int dim>
 void uniform(const int n_pts)
 {
-    OUTSTART
+  OUTSTART
 
-    QUniform<dim> quad(n_pts);
-    quad.print_info(out) ;
+  QUniform<dim> quad(n_pts);
+  quad.print_info(out) ;
 
-    OUTEND
+  OUTEND
 }
 
 
@@ -47,13 +47,13 @@ void uniform(const int n_pts)
 template <int dim>
 void  non_uniform(const int n_pts)
 {
-    OUTSTART
+  OUTSTART
 
-    const TensorSize<dim> n_points(sequence<dim>(n_pts));
-    QUniform<dim> quad(n_points);
-    quad.print_info(out);
+  const TensorSize<dim> n_points(sequence<dim>(n_pts));
+  QUniform<dim> quad(n_points);
+  quad.print_info(out);
 
-    OUTEND
+  OUTEND
 }
 
 
@@ -61,20 +61,20 @@ void  non_uniform(const int n_pts)
 
 int main()
 {
-    const int max_n_pts = 4;
-    for (int n = 2; n <  max_n_pts; ++n)
-    {
-        uniform<0>(n);
-        uniform<1>(n);
-        uniform<2>(n);
-        uniform<3>(n);
+  const int max_n_pts = 4;
+  for (int n = 2; n <  max_n_pts; ++n)
+  {
+    uniform<0>(n);
+    uniform<1>(n);
+    uniform<2>(n);
+    uniform<3>(n);
 
-        non_uniform<0>(n);
-        non_uniform<1>(n);
-        non_uniform<2>(n);
-        non_uniform<3>(n);
-    }
+    non_uniform<0>(n);
+    non_uniform<1>(n);
+    non_uniform<2>(n);
+    non_uniform<3>(n);
+  }
 
-    return 0;
+  return 0;
 }
 

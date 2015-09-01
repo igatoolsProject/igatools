@@ -42,51 +42,51 @@
 template <int dim>
 void test_evaluate()
 {
-    auto grid = CartesianGrid<dim>::create();
-    grid->refine();
-    out << endl;
+  auto grid = CartesianGrid<dim>::create();
+  grid->refine();
+  out << endl;
 
-    const int deg = 2;
+  const int deg = 2;
 
-    using RefSpace = ReferenceSpace<dim>;
-    using RefSpacePtr = std::shared_ptr<RefSpace>;
-    RefSpacePtr ref_space = BSplineSpace<dim>::create_nonconst(deg,grid);
-    auto phys_space =
-        PhysicalSpace<dim,1,1,0,Transformation::h_grad>::create_nonconst(
-            ref_space,IdentityFunction<dim>::create(grid));
+  using RefSpace = ReferenceSpace<dim>;
+  using RefSpacePtr = std::shared_ptr<RefSpace>;
+  RefSpacePtr ref_space = BSplineSpace<dim>::create_nonconst(deg,grid);
+  auto phys_space =
+    PhysicalSpace<dim,1,1,0,Transformation::h_grad>::create_nonconst(
+      ref_space,IdentityFunction<dim>::create(grid));
 
 
-    out << endl;
-    out << endl;
+  out << endl;
+  out << endl;
 
-    out << "===============================================================" << endl;
-    out.begin_item("O R I G I N A L     S P A C E");
-    phys_space->print_info(out);
-    out.end_item();
-    out << "===============================================================" << endl;
-    out << endl;
+  out << "===============================================================" << endl;
+  out.begin_item("O R I G I N A L     S P A C E");
+  phys_space->print_info(out);
+  out.end_item();
+  out << "===============================================================" << endl;
+  out << endl;
 
-    out << "===============================================================" << endl;
-    out.begin_item("R E F I N E D     S P A C E");
-    phys_space->refine_h();
-    phys_space->print_info(out);
-    out.end_item();
-    out << "===============================================================" << endl;
-    out << endl;
+  out << "===============================================================" << endl;
+  out.begin_item("R E F I N E D     S P A C E");
+  phys_space->refine_h();
+  phys_space->print_info(out);
+  out.end_item();
+  out << "===============================================================" << endl;
+  out << endl;
 }
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
-    test_evaluate<1>();
-    out << endl ;
+  test_evaluate<1>();
+  out << endl ;
 
-    test_evaluate<2>();
-    out << endl ;
+  test_evaluate<2>();
+  out << endl ;
 
-    test_evaluate<3>();
-    out << endl ;
+  test_evaluate<3>();
+  out << endl ;
 
-    return 0;
+  return 0;
 }

@@ -27,10 +27,10 @@ template <int dim>
 SafeSTLArray<Size, dim+1>
 fill_skeleton_size()
 {
-    SafeSTLArray<Size,dim+1> res;
-    for (int k=0; k<dim+1; ++k)
-        res[k] = skel_size(dim, k);
-    return res;
+  SafeSTLArray<Size,dim+1> res;
+  for (int k=0; k<dim+1; ++k)
+    res[k] = skel_size(dim, k);
+  return res;
 }
 
 

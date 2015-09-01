@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -39,15 +39,15 @@ template <int dim,int codim,int range,int rank,Transformation type>
 class SpaceElementHandler
 {
 private:
-    using self_t = SpaceElementHandler<dim,codim,range,rank,type>;
+  using self_t = SpaceElementHandler<dim,codim,range,rank,type>;
 
 public:
-    using Sp = Space<dim,codim,range,rank,type>;
-    using ElementAccessor = typename Sp::ElementAccessor;
-    using ElementIterator = typename Sp::ElementIterator;
+  using Sp = Space<dim,codim,range,rank,type>;
+  using ElementAccessor = typename Sp::ElementAccessor;
+  using ElementIterator = typename Sp::ElementIterator;
 
 
-    using IndexType = typename Sp::IndexType;
+  using IndexType = typename Sp::IndexType;
 
 
 private:
@@ -56,36 +56,36 @@ private:
 
 
 protected:
-    /** @name Constructors */
-    ///@{
-    /**
-     * Default constructor. It does nothing but it is needed for the
-     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     * mechanism.
-     */
-    SpaceElementHandler() = default;
+  /** @name Constructors */
+  ///@{
+  /**
+   * Default constructor. It does nothing but it is needed for the
+   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * mechanism.
+   */
+  SpaceElementHandler() = default;
 
 
-    SpaceElementHandler(std::shared_ptr<const Sp> space);
+  SpaceElementHandler(std::shared_ptr<const Sp> space);
 
-    /**
-     * Copy constructor. Not allowed to be used.
-     */
-    SpaceElementHandler(const self_t &elem_handler) = delete;
+  /**
+   * Copy constructor. Not allowed to be used.
+   */
+  SpaceElementHandler(const self_t &elem_handler) = delete;
 
-    /**
-     * Move constructor. Not allowed to be used.
-     */
-    SpaceElementHandler(self_t &&elem_handler) = delete;
+  /**
+   * Move constructor. Not allowed to be used.
+   */
+  SpaceElementHandler(self_t &&elem_handler) = delete;
 
 public:
 
-    /**
-     * Destructor.
-     */
-    virtual ~SpaceElementHandler() = default;
+  /**
+   * Destructor.
+   */
+  virtual ~SpaceElementHandler() = default;
 
-    ///@}
+  ///@}
 
     template<int sdim>
     void set_flags(const typename space_element::Flags &flag)
@@ -176,72 +176,72 @@ public:
 
 
 #if 0
-    /**
-     * Resets all the internal data in order to use the
-     * same quadrature scheme for each active element of the space.
-     */
-    void reset(const ValueFlags &flag, const eval_pts_variant &quad);
+  /**
+   * Resets all the internal data in order to use the
+   * same quadrature scheme for each active element of the space.
+   */
+  void reset(const ValueFlags &flag, const eval_pts_variant &quad);
 
 
-    /**
-     * Resets all the internal data in order to use the
-     * same quadrature scheme for the elements of the space with ID specified by
-     * the input parameter <tt>elements_flat_id</tt>.
-     *
-     * @note This function is pure virtual and must be implemented in the class that are derived
-     * from SpaceElementHandler.
-     */
-    virtual void reset_selected_elements(
-        const ValueFlags &flag,
-        const eval_pts_variant &eval_points,
-        const SafeSTLVector<IndexType> &elements_id) = 0;
+  /**
+   * Resets all the internal data in order to use the
+   * same quadrature scheme for the elements of the space with ID specified by
+   * the input parameter <tt>elements_flat_id</tt>.
+   *
+   * @note This function is pure virtual and must be implemented in the class that are derived
+   * from SpaceElementHandler.
+   */
+  virtual void reset_selected_elements(
+    const ValueFlags &flag,
+    const eval_pts_variant &eval_points,
+    const SafeSTLVector<IndexType> &elements_id) = 0;
 
 
-    virtual void init_cache(SpaceElement<dim,codim,range,rank,type> &elem,
-                            const topology_variant &topology) = 0;
+  virtual void init_cache(SpaceElement<dim,codim,range,rank,type> &elem,
+                          const topology_variant &topology) = 0;
 
-    template <int sub_elem_dim>
-    void init_cache(SpaceElement<dim,codim,range,rank,type> &elem);
+  template <int sub_elem_dim>
+  void init_cache(SpaceElement<dim,codim,range,rank,type> &elem);
 
-    /**
-     * Allocates the space in the cache of ElementAccessor <tt>element</tt>
-     * necessary for the given quadrature and flag combination.
-     * It also fills the invariant (not changing) members of
-     * the cache.
-     */
-    void init_element_cache(ElementAccessor &elem);
+  /**
+   * Allocates the space in the cache of ElementAccessor <tt>element</tt>
+   * necessary for the given quadrature and flag combination.
+   * It also fills the invariant (not changing) members of
+   * the cache.
+   */
+  void init_element_cache(ElementAccessor &elem);
 
-    void init_element_cache(ElementIterator &elem);
+  void init_element_cache(ElementIterator &elem);
 
-    void init_face_cache(ElementAccessor &elem);
+  void init_face_cache(ElementAccessor &elem);
 
-    void init_face_cache(ElementIterator &elem);
+  void init_face_cache(ElementIterator &elem);
 
 
-    virtual void fill_cache(
-        SpaceElement<dim,codim,range,rank,type> &elem,
-        const topology_variant &topology,
-        const int sub_elem_id) = 0;
+  virtual void fill_cache(
+    SpaceElement<dim,codim,range,rank,type> &elem,
+    const topology_variant &topology,
+    const int sub_elem_id) = 0;
 
-    template<int sub_elem_dim>
-    void fill_cache(ElementAccessor &elem, const int sub_elem_id);
+  template<int sub_elem_dim>
+  void fill_cache(ElementAccessor &elem, const int sub_elem_id);
 
-    void fill_element_cache(ElementAccessor &elem);
+  void fill_element_cache(ElementAccessor &elem);
 
-    void fill_element_cache(ElementIterator &elem);
+  void fill_element_cache(ElementIterator &elem);
 
-    void fill_face_cache(ElementAccessor &elem, const int face_id);
+  void fill_face_cache(ElementAccessor &elem, const int face_id);
 
-    void fill_face_cache(ElementIterator &elem, const int face_id);
+  void fill_face_cache(ElementIterator &elem, const int face_id);
 #endif
 
-    virtual void print_info(LogStream &out) const = 0;
+  virtual void print_info(LogStream &out) const = 0;
 
 
-    std::shared_ptr<const Sp> get_space() const;
+  std::shared_ptr<const Sp> get_space() const;
 
 private:
-    std::shared_ptr<const Sp> space_;
+  std::shared_ptr<const Sp> space_;
 
 
     virtual void set_flags_impl(const typename space_element::Flags &flag, const topology_variant &topology)
@@ -265,17 +265,17 @@ private:
 
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version);
-    ///@}
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version);
+  ///@}
 #endif // SERIALIZATION
 };
 

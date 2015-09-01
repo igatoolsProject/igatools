@@ -33,32 +33,32 @@
 template<int sub_dim, int dim, int range=1, int rank=1>
 void sub_ref_space(TensorSize<dim> n, const int degree = 1)
 {
-    OUTSTART
+  OUTSTART
 
-    using Space = BSplineSpace<dim, range, rank>;
+  using Space = BSplineSpace<dim, range, rank>;
 
-    auto grid = CartesianGrid<dim>::create(n);
-    auto space = Space::create(degree, grid);
+  auto grid = CartesianGrid<dim>::create(n);
+  auto space = Space::create(degree, grid);
 
-    typename Space::template InterSpaceMap<sub_dim> dof_map;
-    std::map<Index,Index> elem_map;
+  typename Space::template InterSpaceMap<sub_dim> dof_map;
+  std::map<Index,Index> elem_map;
 
-    for (auto i : UnitElement<dim>::template elems_ids<sub_dim>())
-    {
-        out.begin_item(to_string(i) + "-th " + "sub space:");
-        auto sub_space =
-            space->template get_ref_sub_space<sub_dim>(i, dof_map);
-        out.begin_item("Reference Space:");
-        sub_space->print_info(out);
-        out.end_item();
+  for (auto i : UnitElement<dim>::template elems_ids<sub_dim>())
+  {
+    out.begin_item(to_string(i) + "-th " + "sub space:");
+    auto sub_space =
+      space->template get_ref_sub_space<sub_dim>(i, dof_map);
+    out.begin_item("Reference Space:");
+    sub_space->print_info(out);
+    out.end_item();
 
-        out.begin_item("Dofs sub element to space mapping:");
-        dof_map.print_info(out);
-        out.end_item();
-        out.end_item();
-    }
+    out.begin_item("Dofs sub element to space mapping:");
+    dof_map.print_info(out);
+    out.end_item();
+    out.end_item();
+  }
 
-    OUTEND
+  OUTEND
 }
 
 
@@ -66,9 +66,9 @@ void sub_ref_space(TensorSize<dim> n, const int degree = 1)
 int main()
 {
 
-    sub_ref_space<0,1>(TensorSize<1>(sequence<1>(2)));
-    sub_ref_space<1,2>(TensorSize<2>(sequence<2>(2)));
-    sub_ref_space<2,3>(TensorSize<3>(sequence<3>(2)));
+  sub_ref_space<0,1>(TensorSize<1>(sequence<1>(2)));
+  sub_ref_space<1,2>(TensorSize<2>(sequence<2>(2)));
+  sub_ref_space<2,3>(TensorSize<3>(sequence<3>(2)));
 
-    return  0;
+  return  0;
 }

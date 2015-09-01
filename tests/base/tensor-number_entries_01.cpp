@@ -28,42 +28,42 @@
 template<int rdim, int cdim>
 void do_number_entries_tensor()
 {
-    typedef Tensor<cdim, 1, tensor::covariant, Tensor< rdim, 1, tensor::contravariant, Tdouble> > T;
+  typedef Tensor<cdim, 1, tensor::covariant, Tensor< rdim, 1, tensor::contravariant, Tdouble> > T;
 
-    out << "The number of entries of " <<
-        "Tensor<" << cdim << ", 1, tensor::covariant, Tensor< " << rdim <<
-        ", 1, tensor::contravariant, Tdouble> > is: " << T::get_number_of_entries() << std::endl;
+  out << "The number of entries of " <<
+      "Tensor<" << cdim << ", 1, tensor::covariant, Tensor< " << rdim <<
+      ", 1, tensor::contravariant, Tdouble> > is: " << T::get_number_of_entries() << std::endl;
 }
 
 template<int cdim>
 void do_number_entries_vector()
 {
-    typedef Tensor<cdim, 1, tensor::contravariant, Tdouble> T;
+  typedef Tensor<cdim, 1, tensor::contravariant, Tdouble> T;
 
-    out << "The number of entries of " <<
-        "Tensor<" << cdim << ", 1, tensor::contravariant, Tdouble> is: " <<
-        T::get_number_of_entries() << std::endl;
+  out << "The number of entries of " <<
+      "Tensor<" << cdim << ", 1, tensor::contravariant, Tdouble> is: " <<
+      T::get_number_of_entries() << std::endl;
 }
 
 void do_number_entries_scalar()
 {
-    out << "The number of entries of " <<
-        "Tdouble is: " << Tdouble::get_number_of_entries() << std::endl;
+  out << "The number of entries of " <<
+      "Tdouble is: " << Tdouble::get_number_of_entries() << std::endl;
 }
 
 int main(int argc, char *argv[])
 {
-    do_number_entries_scalar();
+  do_number_entries_scalar();
 
-    do_number_entries_vector<1>();
-    do_number_entries_vector<2>();
-    do_number_entries_vector<3>();
+  do_number_entries_vector<1>();
+  do_number_entries_vector<2>();
+  do_number_entries_vector<3>();
 
-    do_number_entries_tensor<1,1>();
-    do_number_entries_tensor<2,3>();
-    do_number_entries_tensor<2,2>();
-    do_number_entries_tensor<3,2>();
-    do_number_entries_tensor<2,3>();
-    do_number_entries_tensor<3,3>();
+  do_number_entries_tensor<1,1>();
+  do_number_entries_tensor<2,3>();
+  do_number_entries_tensor<2,2>();
+  do_number_entries_tensor<3,2>();
+  do_number_entries_tensor<2,3>();
+  do_number_entries_tensor<3,3>();
 }
 

@@ -36,7 +36,7 @@ template <int dim, int range=1, int rank=1>
 void space_cache_fill_elem(const space_element::Flags flag,
                            const int n_knots = 5, const int deg=1)
 {
-    OUTSTART
+  OUTSTART
 
     using Space = BSplineSpace<dim, range, rank>;
     auto grid  = CartesianGrid<dim>::create(n_knots);
@@ -63,12 +63,12 @@ void space_cache_fill_elem(const space_element::Flags flag,
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
     space_cache_fill_elem<1>(space_element::Flags::value, 2);
     space_cache_fill_elem<1>(space_element::Flags::gradient, 2);
     space_cache_fill_elem<1>(space_element::Flags::hessian, 2);
     //  space_cache_fill_elem<2>();
 
-    return  0;
+  return  0;
 }

@@ -32,8 +32,8 @@ namespace grid_tools
  * in <tt>knot_fine</tt>.
  */
 bool test_if_knots_fine_contains_knots_coarse(
-    const SafeSTLVector<Real> &knots_fine,
-    const SafeSTLVector<Real> &knots_coarse);
+  const SafeSTLVector<Real> &knots_fine,
+  const SafeSTLVector<Real> &knots_coarse);
 
 /**
  * Given one grid <tt>grid_coarse</tt> and a refinement <tt>grid_fine</tt>,
@@ -159,10 +159,10 @@ build_map_elements_between_cartesian_grids(const CartesianGrid<dim> &grid_fine,
 template <int dim>
 std::shared_ptr<CartesianGrid<dim> >
 build_cartesian_grid_union(
-    const CartesianGrid<dim> &grid_1,
-    const CartesianGrid<dim> &grid_2,
-    InterGridMap<dim> &map_elem_grid_union_to_elem_grid_1,
-    InterGridMap<dim> &map_elem_grid_union_to_elem_grid_2);
+  const CartesianGrid<dim> &grid_1,
+  const CartesianGrid<dim> &grid_2,
+  InterGridMap<dim> &map_elem_grid_union_to_elem_grid_1,
+  InterGridMap<dim> &map_elem_grid_union_to_elem_grid_2);
 
 }
 

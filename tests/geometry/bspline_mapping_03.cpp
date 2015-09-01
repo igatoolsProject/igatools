@@ -41,177 +41,177 @@ using namespace EpetraTools;
 template <int dim, int codim=0>
 void bspline_map(const int deg = 2)
 {
-    const int sub_dim = dim;
-    using Space = BSplineSpace<dim, dim+codim>;
-    using RefSpace = ReferenceSpace<dim, dim+codim>;
-    using Function = IgFunction<dim,0,dim+codim,1>;
-    using Mapping   = Mapping<dim, codim>;
+  const int sub_dim = dim;
+  using Space = BSplineSpace<dim, dim+codim>;
+  using RefSpace = ReferenceSpace<dim, dim+codim>;
+  using Function = IgFunction<dim,0,dim+codim,1>;
+  using Mapping   = Mapping<dim, codim>;
 
-    auto grid = CartesianGrid<dim>::create(2);
-    auto space = Space::create(deg, grid);
+  auto grid = CartesianGrid<dim>::create(2);
+  auto space = Space::create(deg, grid);
 
-    auto c_p = EpetraTools::create_vector(*space, "active",Epetra_SerialComm());
-    auto &control_pts = *c_p;
+  auto c_p = EpetraTools::create_vector(*space, "active",Epetra_SerialComm());
+  auto &control_pts = *c_p;
 
-    if (dim == 1)
-    {
-        int id = 0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.75 ;
-        control_pts[id++] = 1.0 ;
-    }
-    else if (dim == 2)
-    {
-        int id = 0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
+  if (dim == 1)
+  {
+    int id = 0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.75 ;
+    control_pts[id++] = 1.0 ;
+  }
+  else if (dim == 2)
+  {
+    int id = 0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 1.0 ;
 
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 1.0 ;
 
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 1.0 ;
 
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
 
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 0.5 ;
 
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.5 ;
-        control_pts[id++] = 1.0 ;
-    }
-    else if (dim == 3)
-    {
-        int id = 0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.5 ;
+    control_pts[id++] = 1.0 ;
+  }
+  else if (dim == 3)
+  {
+    int id = 0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 1.0 ;
 
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
 
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.0 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 0.5 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.5 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
-        control_pts[id++] = 1.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.0 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 0.5 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.5 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
+    control_pts[id++] = 1.0 ;
 
-    }
+  }
 
-    auto F = Function::create(space, c_p);
-    auto map = Mapping::create(F);
+  auto F = Function::create(space, c_p);
+  auto map = Mapping::create(F);
 
-    auto quad = QGauss<dim>(3);
-    auto flag =  ValueFlags::value| ValueFlags::gradient
-                 | ValueFlags::hessian;
+  auto quad = QGauss<dim>(3);
+  auto flag =  ValueFlags::value| ValueFlags::gradient
+               | ValueFlags::hessian;
 
-    map->template reset<sub_dim>(flag, quad);
+  map->template reset<sub_dim>(flag, quad);
 
-    auto elem = map->begin();
-    auto end  = map->end();
-    const int s_id = 0;
+  auto elem = map->begin();
+  auto end  = map->end();
+  const int s_id = 0;
 
-    map->template init_cache<sub_dim>(elem);
-    for (; elem != end; ++elem)
-    {
-        map->template fill_cache<sub_dim>(elem, s_id);
-        out << "Values (x1,x2,...):" << endl;
-        elem->template get_values<_Value,sub_dim>(s_id).print_info(out);
-        out << endl;
-        out << "Gradients:" << endl;
-        elem->template get_values<_Gradient,sub_dim>(s_id).print_info(out);
-        out << endl;
-        out << "Hessians:" << endl;
-        elem->template get_values<_Hessian,sub_dim>(s_id).print_info(out);
-        out << endl;
-    }
+  map->template init_cache<sub_dim>(elem);
+  for (; elem != end; ++elem)
+  {
+    map->template fill_cache<sub_dim>(elem, s_id);
+    out << "Values (x1,x2,...):" << endl;
+    elem->template get_values<_Value,sub_dim>(s_id).print_info(out);
+    out << endl;
+    out << "Gradients:" << endl;
+    elem->template get_values<_Gradient,sub_dim>(s_id).print_info(out);
+    out << endl;
+    out << "Hessians:" << endl;
+    elem->template get_values<_Hessian,sub_dim>(s_id).print_info(out);
+    out << endl;
+  }
 
 }
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
-    bspline_map<1>();
-    bspline_map<2>();
-    bspline_map<3>();
+  bspline_map<1>();
+  bspline_map<2>();
+  bspline_map<3>();
 
 }

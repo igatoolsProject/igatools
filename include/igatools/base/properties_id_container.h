@@ -44,77 +44,77 @@ template <typename IndexType>
 class PropertiesIdContainer
 {
 public:
-    using List = SafeSTLSet<IndexType>;
+  using List = SafeSTLSet<IndexType>;
 private:
-    using ContainerType = std::map<PropId, List>;
-    using iterator = typename ContainerType::iterator;
-    using const_iterator = typename ContainerType::const_iterator;
+  using ContainerType = std::map<PropId, List>;
+  using iterator = typename ContainerType::iterator;
+  using const_iterator = typename ContainerType::const_iterator;
 
 public:
-    /**
-     * Adds a new <tt>property</tt> definition.
-     *
-     * @note If the <tt>property</tt> is already present,
-     * an assertion will be raised (in Debug mode).
-     */
-    void add_property(const PropId &property);
+  /**
+   * Adds a new <tt>property</tt> definition.
+   *
+   * @note If the <tt>property</tt> is already present,
+   * an assertion will be raised (in Debug mode).
+   */
+  void add_property(const PropId &property);
 
-    /**
-     * Returns TRUE if the @p property is defined.
-     *
-     * @warning Returns true also if the @p property is defined but no
-     * ids are associated to the @p property.
-     */
-    bool is_property_defined(const PropId &property) const;
+  /**
+   * Returns TRUE if the @p property is defined.
+   *
+   * @warning Returns true also if the @p property is defined but no
+   * ids are associated to the @p property.
+   */
+  bool is_property_defined(const PropId &property) const;
 
-    /**
-     * Returns TRUE if the @p id has the given @p property.
-     */
-    bool test_id_for_property(const IndexType id, const PropId &property) const;
+  /**
+   * Returns TRUE if the @p id has the given @p property.
+   */
+  bool test_id_for_property(const IndexType id, const PropId &property) const;
 
-    /**
-     * Returns the the set of IDs having a certain @p property (non-const version).
-     */
-    List &operator[](const PropId &property);
+  /**
+   * Returns the the set of IDs having a certain @p property (non-const version).
+   */
+  List &operator[](const PropId &property);
 
-    /**
-     * Returns the flat id of IDs having a certain @p property (const version).
-     */
-    const List &operator[](const PropId &property) const;
+  /**
+   * Returns the flat id of IDs having a certain @p property (const version).
+   */
+  const List &operator[](const PropId &property) const;
 
 private:
-    /**
-     * Sets the <tt>status</tt> of the given <tt>property</tt> for the given <tt>id</tt>.
-     */
-    void set_id_property_status(const PropId &property,
-                                const IndexType id,
-                                const bool status);
+  /**
+   * Sets the <tt>status</tt> of the given <tt>property</tt> for the given <tt>id</tt>.
+   */
+  void set_id_property_status(const PropId &property,
+                              const IndexType id,
+                              const bool status);
 
-    /**
-     * Sets the <tt>status</tt> of the given <tt>property</tt> for the given <tt>ids</tt>.
-     */
-    void set_ids_property_status(const PropId &property,
-                                 const List ids,
-                                 const bool status);
+  /**
+   * Sets the <tt>status</tt> of the given <tt>property</tt> for the given <tt>ids</tt>.
+   */
+  void set_ids_property_status(const PropId &property,
+                               const List ids,
+                               const bool status);
 public:
 
-    /**
-     * Prints the contents of the class. Its use is intended for testing and debugging purposes.
-     */
-    void print_info(LogStream &out) const;
+  /**
+   * Prints the contents of the class. Its use is intended for testing and debugging purposes.
+   */
+  void print_info(LogStream &out) const;
 
 
-    /**
-     * Returns whether the container is empty (i.e. whether no properties are defined).
-     * @note This function does not modify the container in any way.
-     */
-    bool empty() const noexcept;
+  /**
+   * Returns whether the container is empty (i.e. whether no properties are defined).
+   * @note This function does not modify the container in any way.
+   */
+  bool empty() const noexcept;
 
 
-    /**
-     * Returns the properties defined.
-     */
-    SafeSTLVector<PropId> get_properties() const;
+  /**
+   * Returns the properties defined.
+   */
+  SafeSTLVector<PropId> get_properties() const;
 
 
 //    /**
@@ -125,33 +125,33 @@ public:
 
 
 public:
-    iterator begin();
-    iterator end();
+  iterator begin();
+  iterator end();
 
-    const_iterator begin() const;
-    const_iterator end() const;
+  const_iterator begin() const;
+  const_iterator end() const;
 
 private:
-    /** Property table */
-    ContainerType properties_id_;
+  /** Property table */
+  ContainerType properties_id_;
 
-    DeclException1(ExcPropNotDefined, PropId,
-                   << "Property \"" << arg1 << "\" is not present.");
-    DeclException1(ExcPropAlreadyDefined, PropId,
-                   << "Property \"" << arg1 << "\" is already present.");
+  DeclException1(ExcPropNotDefined, PropId,
+                 << "Property \"" << arg1 << "\" is not present.");
+  DeclException1(ExcPropAlreadyDefined, PropId,
+                 << "Property \"" << arg1 << "\" is already present.");
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version);
-    ///@}
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version);
+  ///@}
 #endif //SERIALIZATION
 
 };

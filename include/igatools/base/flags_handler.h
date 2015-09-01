@@ -34,50 +34,50 @@ IGA_NAMESPACE_OPEN
  */
 struct FlagStatus
 {
-    bool fill_ = false;
-    bool filled_ = false;
+  bool fill_ = false;
+  bool filled_ = false;
 
-    void print_info(LogStream &out) const;
+  void print_info(LogStream &out) const;
 
-    /*
-        bool fill() const
-        {
-            return fill_;
-        };
+  /*
+      bool fill() const
+      {
+          return fill_;
+      };
 
-        void set_fill(const bool fill_status)
-        {
-            fill_ = fill_status;
-        };
+      void set_fill(const bool fill_status)
+      {
+          fill_ = fill_status;
+      };
 
-        bool filled() const
-        {
-            return filled_;
-        };
+      bool filled() const
+      {
+          return filled_;
+      };
 
-        void set_filled(const bool filled_status)
-        {
-            filled_ = filled_status;
-        };
-    //*/
+      void set_filled(const bool filled_status)
+      {
+          filled_ = filled_status;
+      };
+  //*/
 private:
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        ar &boost::serialization::make_nvp("fill_",fill_);
-        ar &boost::serialization::make_nvp("filled_",filled_);
-    }
-    ///@}
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version)
+  {
+    ar &boost::serialization::make_nvp("fill_",fill_);
+    ar &boost::serialization::make_nvp("filled_",filled_);
+  }
+  ///@}
 #endif // SERIALIZATION
 };
 
@@ -86,31 +86,31 @@ inline
 ValueFlags
 mapping_to_function_flags(const ValueFlags &flags)
 {
-    ValueFlags valid_func_flags = ValueFlags::value |
-                                  ValueFlags::gradient |
-                                  ValueFlags::hessian |
-                                  ValueFlags::divergence |
-                                  ValueFlags::point;
+  ValueFlags valid_func_flags = ValueFlags::value |
+                                ValueFlags::gradient |
+                                ValueFlags::hessian |
+                                ValueFlags::divergence |
+                                ValueFlags::point;
 
-    ValueFlags transfer_flags = ValueFlags::measure |
-                                ValueFlags::w_measure |
-                                ValueFlags::boundary_normal |
-                                valid_func_flags;
+  ValueFlags transfer_flags = ValueFlags::measure |
+                              ValueFlags::w_measure |
+                              ValueFlags::boundary_normal |
+                              valid_func_flags;
 
 
-    ValueFlags f_flags = flags & transfer_flags;
+  ValueFlags f_flags = flags & transfer_flags;
 
-    if (contains(flags, ValueFlags::measure) ||
-        contains(flags, ValueFlags::w_measure) ||
-        contains(flags, ValueFlags::inv_gradient) ||
-        contains(flags, ValueFlags::outer_normal))
-        f_flags |=  ValueFlags::gradient;
+  if (contains(flags, ValueFlags::measure) ||
+      contains(flags, ValueFlags::w_measure) ||
+      contains(flags, ValueFlags::inv_gradient) ||
+      contains(flags, ValueFlags::outer_normal))
+    f_flags |=  ValueFlags::gradient;
 
-    if (contains(flags, ValueFlags::inv_hessian) ||
-        contains(flags, ValueFlags::curvature))
-        f_flags |=  ValueFlags::gradient | ValueFlags::hessian;
+  if (contains(flags, ValueFlags::inv_hessian) ||
+      contains(flags, ValueFlags::curvature))
+    f_flags |=  ValueFlags::gradient | ValueFlags::hessian;
 
-    return f_flags;
+  return f_flags;
 }
 #endif
 

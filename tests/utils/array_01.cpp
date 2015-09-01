@@ -31,18 +31,18 @@
 
 void array_print_info()
 {
-    OUTSTART
+  OUTSTART
 
-    SafeSTLArray<Real, 5> arr(2);
-    arr.print_info(out);
-    out<< endl;
+  SafeSTLArray<Real, 5> arr(2);
+  arr.print_info(out);
+  out<< endl;
 
-    OUTEND
+  OUTEND
 }
 
 
 int main()
 {
-    array_print_info();
-    return 0;
+  array_print_info();
+  return 0;
 }

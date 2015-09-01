@@ -42,117 +42,117 @@ IGA_NAMESPACE_OPEN
  */
 template<int rank>
 class TensorProductArray :
-    public CartesianProductArray<Real,rank>
+  public CartesianProductArray<Real,rank>
 {
 public :
 
-    /** @name Constructors. */
-    ///@{
-    TensorProductArray() = default;
+  /** @name Constructors. */
+  ///@{
+  TensorProductArray() = default;
 
-    /**
-     * The i-th vector of the the array is initialized to be
-     * of size <tt>size[i]</tt>, calling the default constructor of T for
-     * each entry of the vectors.
-     */
-    explicit TensorProductArray(const TensorSize<rank> &size);
+  /**
+   * The i-th vector of the the array is initialized to be
+   * of size <tt>size[i]</tt>, calling the default constructor of T for
+   * each entry of the vectors.
+   */
+  explicit TensorProductArray(const TensorSize<rank> &size);
 
-    /**
-     * The i-th vector of the the array is initialized to be
-     * of size <tt>size[i]</tt>,
-     * and to each entry of the vectors is given the value @p val.
-     */
-    explicit TensorProductArray(const TensorSize<rank> size, const Real &val);
+  /**
+   * The i-th vector of the the array is initialized to be
+   * of size <tt>size[i]</tt>,
+   * and to each entry of the vectors is given the value @p val.
+   */
+  explicit TensorProductArray(const TensorSize<rank> size, const Real &val);
 
-    /**
-     * Same as CartesianProductArray(const array< int, rank > size)
-     * but with all direction sizes equal to size.
-     */
-    explicit TensorProductArray(const Size size);
-
-
-    /**
-     * Copy constructor.
-     */
-    TensorProductArray(const TensorProductArray<rank> &data) = default;
-
-    /**
-     * Move constructor.
-     */
-    TensorProductArray(TensorProductArray<rank> &&data) = default;
-
-    /**
-     * Constructor from the CartesianProductArray object @p data.
-     *
-     * @note The use of this constructor is safe because TensorProductArray<rank> and
-     * CartesianProductArray<Real,rank> differs only for the members functions and
-     * not for the member variables.
-     */
-    TensorProductArray(const CartesianProductArray<Real,rank> &data);
-
-    /**
-     * Destructor
-     */
-    ~TensorProductArray() = default;
-    ///@}
+  /**
+   * Same as CartesianProductArray(const array< int, rank > size)
+   * but with all direction sizes equal to size.
+   */
+  explicit TensorProductArray(const Size size);
 
 
-    /** @name Assignment operators */
-    ///@{
-    /**
-     * Copy assignment operator.
-     */
-    TensorProductArray<rank> &operator=(const TensorProductArray<rank> &data) = default;
+  /**
+   * Copy constructor.
+   */
+  TensorProductArray(const TensorProductArray<rank> &data) = default;
 
-    /**
-     * Move assignment operator.
-     */
-    TensorProductArray<rank> &operator=(TensorProductArray<rank> &&data) = default;
-    ///@}
+  /**
+   * Move constructor.
+   */
+  TensorProductArray(TensorProductArray<rank> &&data) = default;
+
+  /**
+   * Constructor from the CartesianProductArray object @p data.
+   *
+   * @note The use of this constructor is safe because TensorProductArray<rank> and
+   * CartesianProductArray<Real,rank> differs only for the members functions and
+   * not for the member variables.
+   */
+  TensorProductArray(const CartesianProductArray<Real,rank> &data);
+
+  /**
+   * Destructor
+   */
+  ~TensorProductArray() = default;
+  ///@}
+
+
+  /** @name Assignment operators */
+  ///@{
+  /**
+   * Copy assignment operator.
+   */
+  TensorProductArray<rank> &operator=(const TensorProductArray<rank> &data) = default;
+
+  /**
+   * Move assignment operator.
+   */
+  TensorProductArray<rank> &operator=(TensorProductArray<rank> &&data) = default;
+  ///@}
 
 
 
-    /** @name Functions for performing dilation and translation of the values in the container */
-    ///@{
-    /** Dilation followed by a translation of the TensorProductArray data. */
-    void dilate_translate(const Points<rank> &dilate,
-                          const Points<rank> &translate) ;
+  /** @name Functions for performing dilation and translation of the values in the container */
+  ///@{
+  /** Dilation followed by a translation of the TensorProductArray data. */
+  void dilate_translate(const Points<rank> &dilate,
+                        const Points<rank> &translate) ;
 
-    /** Dilation of the TensorProductArray data.*/
-    void dilate(const Points<rank> &dilate) ;
+  /** Dilation of the TensorProductArray data.*/
+  void dilate(const Points<rank> &dilate) ;
 
 
-    /** Translation of the TensorProductArray data.*/
-    void translate(const Points<rank> &translate) ;
-    ///@}
+  /** Translation of the TensorProductArray data.*/
+  void translate(const Points<rank> &translate) ;
+  ///@}
 
-    /** @name Functions returning the tensor product entries */
-    ///@{
-    /**
-     * Returns the entry identified by the tensor index given by @p tensor_id.
-     */
-    Real tensor_product(const TensorIndex<rank> &tensor_id) const;
+  /** @name Functions returning the tensor product entries */
+  ///@{
+  /**
+   * Returns the entry identified by the tensor index given by @p tensor_id.
+   */
+  Real tensor_product(const TensorIndex<rank> &tensor_id) const;
 
-    /**
-     * Returns the product of a subtensor.
-     */
-    template<int subrank>
-    Real sub_tensor_product(const TensorIndex<rank> &index,
-                            const TensorIndex<subrank> &dirs) const
-    {
-        Assert(subrank<=rank, ExcIndexRange(subrank,0,rank));
-        Real res = 1.;
-        for (auto i : dirs)
-            res *=  this->data_[i][index[i]];
-        return res;
-    }
+  /**
+   * Returns the product of a subtensor.
+   */
+  template<int subrank>
+  Real sub_tensor_product(const TensorIndex<rank> &index,
+                          const TensorIndex<subrank> &dirs) const
+  {
+    Assert(subrank<=rank, ExcIndexRange(subrank,0,rank));
+    Real res = 1.;
+    for (auto i : dirs)
+      res *=  this->data_[i][index[i]];
+    return res;
+  }
 
-    /**
-     * Returns a flat vector with the component of the tensor generated
-     * through the tensor product operation.
-     */
-    ValueVector<Real> get_flat_tensor_product() const;
-    ///@}
+  /**
+   * Returns a flat vector with the component of the tensor generated
+   * through the tensor product operation.
+   */
+  ValueVector<Real> get_flat_tensor_product() const;
+  ///@}
 
 
 public :

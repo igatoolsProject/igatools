@@ -32,32 +32,32 @@ template <int dim>
 void
 test()
 {
-    using SplineSpace = SplineSpace<dim>;
+  using SplineSpace = SplineSpace<dim>;
 
 
-    typename SplineSpace::DegreeTable deg {{2}};
+  typename SplineSpace::DegreeTable deg {{2}};
 
-    auto grid = CartesianGrid<dim>::create(4);
+  auto grid = CartesianGrid<dim>::create(4);
 
-    auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
-                    deg, grid->get_num_intervals());
-    auto sp_spec = SplineSpace::create(deg, grid, int_mult);
+  auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
+                  deg, grid->get_num_intervals());
+  auto sp_spec = SplineSpace::create(deg, grid, int_mult);
 
-    //CartesianProductArray<Real,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
-    //typename SplineSpace::BoundaryKnotsTable bdry_knots { {bn_x} };
-    auto rep_knots = sp_spec->compute_knots_with_repetition(typename SplineSpace::EndBehaviourTable(SafeSTLArray<BasisEndBehaviour,dim>(BasisEndBehaviour::interpolatory)));
-    auto acum_mult = sp_spec->accumulated_interior_multiplicities();
+  //CartesianProductArray<Real,2> bn_x {{-0.5, 0, 0}, {1.1, 1.2, 1.3}};
+  //typename SplineSpace::BoundaryKnotsTable bdry_knots { {bn_x} };
+  auto rep_knots = sp_spec->compute_knots_with_repetition(typename SplineSpace::EndBehaviourTable(SafeSTLArray<BasisEndBehaviour,dim>(BasisEndBehaviour::interpolatory)));
+  auto acum_mult = sp_spec->accumulated_interior_multiplicities();
 
-    rep_knots.print_info(out);
+  rep_knots.print_info(out);
 
-    BernsteinExtraction<dim> operators(*grid, rep_knots, acum_mult, deg);
-    operators.print_info(out);
+  BernsteinExtraction<dim> operators(*grid, rep_knots, acum_mult, deg);
+  operators.print_info(out);
 }
 
 int main()
 {
-    out.depth_console(10);
-    test<1>();
+  out.depth_console(10);
+  test<1>();
 
 
 //    {
@@ -81,5 +81,5 @@ int main()
 //        operators.print_info(out);
 //    }
 
-    return 0;
+  return 0;
 }

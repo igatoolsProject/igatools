@@ -37,22 +37,22 @@ IGA_NAMESPACE_OPEN
 template<int k>
 SafeSTLSet<TensorIndex<k>> el_tensor_range(TensorIndex<k> first, TensorIndex<k> last)
 {
-    SafeSTLSet<TensorIndex<k>> result;
-    TensorIndex<k-1> ind(sequence<k-1>());
-    auto vec = el_tensor_range<k-1>(first.get_sub_tensor(ind), last.get_sub_tensor(ind));
+  SafeSTLSet<TensorIndex<k>> result;
+  TensorIndex<k-1> ind(sequence<k-1>());
+  auto vec = el_tensor_range<k-1>(first.get_sub_tensor(ind), last.get_sub_tensor(ind));
 
-    for (int i=first[k-1]; i<last[k-1]; ++i)
+  for (int i=first[k-1]; i<last[k-1]; ++i)
+  {
+    for (auto &t_k_1 : vec)
     {
-        for (auto &t_k_1 : vec)
-        {
-            TensorIndex<k> t_k;
-            for (int j=0; j<k-1; ++j)
-                t_k[j] = t_k_1[j];
-            t_k[k-1] = i;
-            result.insert(t_k);
-        }
+      TensorIndex<k> t_k;
+      for (int j=0; j<k-1; ++j)
+        t_k[j] = t_k_1[j];
+      t_k[k-1] = i;
+      result.insert(t_k);
     }
-    return result;
+  }
+  return result;
 }
 
 template<>

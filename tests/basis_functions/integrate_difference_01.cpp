@@ -37,24 +37,24 @@
 template<int dim, int range = 1, int rank = 1>
 void do_test(const int deg, const int n_knots = 10)
 {
-    using Space = BSplineSpace<dim, range, rank>;
+  using Space = BSplineSpace<dim, range, rank>;
 
 
-    auto grid = CartesianGrid<dim>::create(n_knots);
-    auto space = Space::create(deg, grid);
+  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto space = Space::create(deg, grid);
 
-    const int n_qpoints = ceil((2*dim + 1)/2.);
-    QGauss<dim> quad(n_qpoints);
+  const int n_qpoints = ceil((2*dim + 1)/2.);
+  QGauss<dim> quad(n_qpoints);
 
-    auto f = std::shared_ptr<ProductFunction<dim> >(new ProductFunction<dim>(grid, IdentityFunction<dim>::create(grid)));
-    typename functions::ConstantFunction<dim,0,1>::Value val {0.};
-    auto g = functions::ConstantFunction<dim,0,1>::create(grid, IdentityFunction<dim>::create(grid), val);
+  auto f = std::shared_ptr<ProductFunction<dim> >(new ProductFunction<dim>(grid, IdentityFunction<dim>::create(grid)));
+  typename functions::ConstantFunction<dim,0,1>::Value val {0.};
+  auto g = functions::ConstantFunction<dim,0,1>::create(grid, IdentityFunction<dim>::create(grid), val);
 
-    SafeSTLVector<Real> elem_err(grid->get_num_all_elems());
-    Real err = space_tools::l2_norm_difference<dim>(*f, *g, quad, elem_err);
+  SafeSTLVector<Real> elem_err(grid->get_num_all_elems());
+  Real err = space_tools::l2_norm_difference<dim>(*f, *g, quad, elem_err);
 
-    const Real p=2;
-    out << std::pow(p+1, -dim/p) << "\t" << err << endl;
+  const Real p=2;
+  out << std::pow(p+1, -dim/p) << "\t" << err << endl;
 
 }
 
@@ -62,12 +62,12 @@ void do_test(const int deg, const int n_knots = 10)
 
 int main()
 {
-    out.depth_console(20);
+  out.depth_console(20);
 
-    do_test<1,1,1>(3);
-    do_test<2,1,1>(3);
-    do_test<3,1,1>(1);
+  do_test<1,1,1>(3);
+  do_test<2,1,1>(3);
+  do_test<3,1,1>(1);
 
-    return 0;
+  return 0;
 }
 

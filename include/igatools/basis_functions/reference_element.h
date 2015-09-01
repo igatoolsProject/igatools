@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -40,74 +40,74 @@ template <int dim, int range, int rank>
 class ReferenceElement : public SpaceElement<dim,0,range,rank,Transformation::h_grad>
 {
 public:
-    /** Type for the grid accessor. */
-    using GridAccessor = GridElement<dim>;
+  /** Type for the grid accessor. */
+  using GridAccessor = GridElement<dim>;
 
-    /** Type required by the GridForwardIterator templated iterator */
-    using ContainerType = const ReferenceSpace<dim,range,rank> ;
+  /** Type required by the GridForwardIterator templated iterator */
+  using ContainerType = const ReferenceSpace<dim,range,rank> ;
 
-    using Space = ReferenceSpace<dim,range,rank>;
-    using ConstSpace = const ReferenceSpace<dim,range,rank>;
+  using Space = ReferenceSpace<dim,range,rank>;
+  using ConstSpace = const ReferenceSpace<dim,range,rank>;
 
-    using parent_t = SpaceElement<dim,0,range,rank,Transformation::h_grad>;
+  using parent_t = SpaceElement<dim,0,range,rank,Transformation::h_grad>;
 
-    using RefPoint = typename Space::RefPoint;
-    using Point = typename Space::Point;
-    using Value = typename Space::Value;
+  using RefPoint = typename Space::RefPoint;
+  using Point = typename Space::Point;
+  using Value = typename Space::Value;
 
-    template <int order>
-    using Derivative = typename Space::template Derivative<order>;
+  template <int order>
+  using Derivative = typename Space::template Derivative<order>;
 
-    using Div = typename Space::Div;
+  using Div = typename Space::Div;
 
 
-    using Grid = CartesianGrid<dim>;
-    using IndexType = typename Grid::IndexType;
-    using List = typename Grid::List;
-    using ListIt = typename Grid::ListIt;
+  using Grid = CartesianGrid<dim>;
+  using IndexType = typename Grid::IndexType;
+  using List = typename Grid::List;
+  using ListIt = typename Grid::ListIt;
 
 protected:
-    /**
-     * Default constructor. It does nothing but it is needed for the
-     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     * mechanism.
-     */
-    ReferenceElement() = default;
+  /**
+   * Default constructor. It does nothing but it is needed for the
+   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * mechanism.
+   */
+  ReferenceElement() = default;
 
 public:
-    ReferenceElement(const ReferenceElement<dim,range,rank> &elem,
-                     const iga::CopyPolicy &copy_policy = CopyPolicy::deep);
+  ReferenceElement(const ReferenceElement<dim,range,rank> &elem,
+                   const iga::CopyPolicy &copy_policy = CopyPolicy::deep);
 
-    /**
-     * Constructs an accessor to element number index of a
-     * ReferenceSpace space.
-     */
-    ReferenceElement(const std::shared_ptr<ConstSpace> space,
-                     const ListIt &index,
-                     const PropId &prop = ElementProperties::active);
-
-
-    virtual ~ReferenceElement() = default;
+  /**
+   * Constructs an accessor to element number index of a
+   * ReferenceSpace space.
+   */
+  ReferenceElement(const std::shared_ptr<ConstSpace> space,
+                   const ListIt &index,
+                   const PropId &prop = ElementProperties::active);
 
 
+  virtual ~ReferenceElement() = default;
 
 
 
 
-    /**
-     * Returns the <tt>k</tt> dimensional j-th sub-element measure
-     * multiplied by the weights of the quadrature.
-     */
-    template <int k>
-    ValueVector<Real> get_w_measures(const int j) const
-    {
-        return this->get_grid_element().template get_weights<k>(j);
-    }
 
-    /**
-     * Returns the gradient determinant of the identity map at the dilated quadrature points.
-     */
-    ValueVector<Real> get_element_w_measures() const;
+
+  /**
+   * Returns the <tt>k</tt> dimensional j-th sub-element measure
+   * multiplied by the weights of the quadrature.
+   */
+  template <int k>
+  ValueVector<Real> get_w_measures(const int j) const
+  {
+    return this->get_grid_element().template get_weights<k>(j);
+  }
+
+  /**
+   * Returns the gradient determinant of the identity map at the dilated quadrature points.
+   */
+  ValueVector<Real> get_element_w_measures() const;
 
 
 //    using OffsetTable = typename Space::template ComponentContainer<int>;
@@ -117,8 +117,8 @@ public:
 
 protected:
 
-    /** Number of scalar basis functions along each direction, for all space components. */
-    TensorSizeTable n_basis_direction_;
+  /** Number of scalar basis functions along each direction, for all space components. */
+  TensorSizeTable n_basis_direction_;
 
     /**
      * Offset of the scalar basis functions across the different components.
@@ -127,34 +127,34 @@ protected:
      */
     OffsetTable comp_offset_;
 
-    using Indexer = CartesianProductIndexer<dim>;
-    using IndexerPtr = std::shared_ptr<Indexer>;
-    using IndexerPtrTable = typename Space::template ComponentContainer<IndexerPtr>;
+  using Indexer = CartesianProductIndexer<dim>;
+  using IndexerPtr = std::shared_ptr<Indexer>;
+  using IndexerPtrTable = typename Space::template ComponentContainer<IndexerPtr>;
 
-    /** Hash table for fast conversion between flat-to-tensor basis function ids. */
-    IndexerPtrTable basis_functions_indexer_;
+  /** Hash table for fast conversion between flat-to-tensor basis function ids. */
+  IndexerPtrTable basis_functions_indexer_;
 
-    std::shared_ptr<const Space> space_;
+  std::shared_ptr<const Space> space_;
 
 public:
-    using parent_t::get_num_basis;
+  using parent_t::get_num_basis;
 
 
-    /**
-     * Returns the basis function ID offset between the different components.
-     */
-    OffsetTable get_basis_offset() const;
+  /**
+   * Returns the basis function ID offset between the different components.
+   */
+  OffsetTable get_basis_offset() const;
 
-    /**
-     * Number of non-zero scalar basis functions associated
-     * with the i-th space component on the element.
-     * This makes sense as a reference B-spline space
-     * is only allowed to be of the cartesian product type
-     * V = V1 x V2 x ... X Vn.
-     */
-    int get_num_basis_comp(const int i) const;
+  /**
+   * Number of non-zero scalar basis functions associated
+   * with the i-th space component on the element.
+   * This makes sense as a reference B-spline space
+   * is only allowed to be of the cartesian product type
+   * V = V1 x V2 x ... X Vn.
+   */
+  int get_num_basis_comp(const int i) const;
 
-    virtual void print_info(LogStream &out) const override final;
+  virtual void print_info(LogStream &out) const override final;
 
 
 
@@ -163,17 +163,17 @@ public:
 private:
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version);
-    ///@}
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version);
+  ///@}
 #endif // SERIALIZATION
 };
 

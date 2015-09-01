@@ -45,53 +45,53 @@ template <int dim, int range, int rank>
 class TestFunc : public FormulaFunction<dim, 0, range, rank>
 {
 private:
-    using base_t   = Function<dim, 0, range, rank>;
-    using parent_t = FormulaFunction<dim, 0, range, rank>;
-    using self_t = TestFunc<dim, range, rank>;
-    using typename base_t::GridType;
+  using base_t   = Function<dim, 0, range, rank>;
+  using parent_t = FormulaFunction<dim, 0, range, rank>;
+  using self_t = TestFunc<dim, range, rank>;
+  using typename base_t::GridType;
 public:
-    using typename parent_t::Point;
-    using typename parent_t::Value;
-    template <int order>
-    using Derivative = typename parent_t::template Derivative<order>;
+  using typename parent_t::Point;
+  using typename parent_t::Value;
+  template <int order>
+  using Derivative = typename parent_t::template Derivative<order>;
 
-    TestFunc(std::shared_ptr<GridType> grid)
-        : parent_t(grid, IdentityFunction<dim>::create(grid))
-    {}
+  TestFunc(std::shared_ptr<GridType> grid)
+    : parent_t(grid, IdentityFunction<dim>::create(grid))
+  {}
 
-    static std::shared_ptr<base_t>
-    create(std::shared_ptr<GridType> grid)
+  static std::shared_ptr<base_t>
+  create(std::shared_ptr<GridType> grid)
+  {
+    return std::shared_ptr<base_t>(new self_t(grid));
+  }
+
+  std::shared_ptr<base_t> clone() const override
+  {
+    return std::make_shared<self_t>(self_t(*this));
+  }
+
+  void evaluate_0(const ValueVector<Point> &points,
+                  ValueVector<Value> &values) const override
+  {
+    auto pt = points.begin();
+    auto val = values.begin();
+
+    for (; pt != points.end(); ++pt, ++val)
     {
-        return std::shared_ptr<base_t>(new self_t(grid));
+      for (int i=0; i<dim; ++i)
+        (*val)[i] = (*pt)[i];
+      (*val)[dim] = pt->norm_square();
     }
-
-    std::shared_ptr<base_t> clone() const override
-    {
-        return std::make_shared<self_t>(self_t(*this));
-    }
-
-    void evaluate_0(const ValueVector<Point> &points,
-                    ValueVector<Value> &values) const override
-    {
-        auto pt = points.begin();
-        auto val = values.begin();
-
-        for (; pt != points.end(); ++pt, ++val)
-        {
-            for (int i=0; i<dim; ++i)
-                (*val)[i] = (*pt)[i];
-            (*val)[dim] = pt->norm_square();
-        }
-    }
+  }
 
 
-    void evaluate_1(const ValueVector<Point> &points,
-                    ValueVector<Derivative<1>> &values) const override
-    {}
+  void evaluate_1(const ValueVector<Point> &points,
+                  ValueVector<Derivative<1>> &values) const override
+  {}
 
-    void evaluate_2(const ValueVector<Point> &points,
-                    ValueVector<Derivative<2>> &values) const override
-    {}
+  void evaluate_2(const ValueVector<Point> &points,
+                  ValueVector<Derivative<2>> &values) const override
+  {}
 };
 
 
@@ -99,19 +99,19 @@ public:
 template<int dim, int range=1, int rank = 1, LAPack la_pack>
 void test_proj(const int p, const int n_knots = 4)
 {
-    using Space = BSplineSpace<dim,range,rank> ;
-    using RefSpace = ReferenceSpace<dim,range,rank> ;
-    using Func = TestFunc<dim,range, rank>;
+  using Space = BSplineSpace<dim,range,rank> ;
+  using RefSpace = ReferenceSpace<dim,range,rank> ;
+  using Func = TestFunc<dim,range, rank>;
 
-    auto grid = CartesianGrid<dim>::create(n_knots);
-    auto space = Space::create(p, grid);
+  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto space = Space::create(p, grid);
 
-    const int n_qp = 4;
-    QGauss<dim> quad(n_qp);
+  const int n_qp = 4;
+  QGauss<dim> quad(n_qp);
 
-    auto f = Func::create(grid);
-    auto proj_func = space_tools::projection_l2<RefSpace,la_pack>(f, space, quad);
-    proj_func->print_info(out);
+  auto f = Func::create(grid);
+  auto proj_func = space_tools::projection_l2<RefSpace,la_pack>(f, space, quad);
+  proj_func->print_info(out);
 
 }
 
@@ -119,13 +119,13 @@ void test_proj(const int p, const int n_knots = 4)
 int main()
 {
 #if defined(USE_TRILINOS)
-    const auto la_pack = LAPack::trilinos_epetra;
+  const auto la_pack = LAPack::trilinos_epetra;
 #elif defined(USE_PETSC)
-    const auto la_pack = LAPack::petsc;
+  const auto la_pack = LAPack::petsc;
 #endif
 
-    test_proj<2, 3, 1, la_pack>(1);
+  test_proj<2, 3, 1, la_pack>(1);
 
-    return 0;
+  return 0;
 }
 

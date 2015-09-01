@@ -39,42 +39,42 @@
 template <int dim, int range=1>
 void plot_basis(const int n_knots, const int deg)
 {
-    using Space  = BSplineSpace<dim, range>;
+  using Space  = BSplineSpace<dim, range>;
 
-    TensorIndex<dim> deg1(deg);
-    typename Space::DegreeTable degt(deg1);
+  TensorIndex<dim> deg1(deg);
+  typename Space::DegreeTable degt(deg1);
 
-    auto grid  = CartesianGrid<dim>::create(n_knots);
-    auto space = Space::create(deg, grid, InteriorReg::maximum, true,
-                               BasisEndBehaviour::periodic);
+  auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto space = Space::create(deg, grid, InteriorReg::maximum, true,
+                             BasisEndBehaviour::periodic);
 
 
-    const int n_basis = space->get_num_basis();
-    out << "Num basis: " << n_basis << endl;
-    space->print_info(out);
+  const int n_basis = space->get_num_basis();
+  out << "Num basis: " << n_basis << endl;
+  space->print_info(out);
 
 #if 0
-    using RefSpace  = ReferenceSpace<dim, range>;
-    using Coeffs = typename IgFunction<RefSpace>::CoeffType;
-    Coeffs coeffs(n_basis);
+  using RefSpace  = ReferenceSpace<dim, range>;
+  using Coeffs = typename IgFunction<RefSpace>::CoeffType;
+  Coeffs coeffs(n_basis);
 
-    for (int basis_index = 0; basis_index < space->get_num_basis(); ++basis_index)
-    {
-        coeffs[basis_index] = 1.;
+  for (int basis_index = 0; basis_index < space->get_num_basis(); ++basis_index)
+  {
+    coeffs[basis_index] = 1.;
 
-        const int n_plot_points = 10;
-        Writer<dim> output(IdentityFunction<dim>::create(grid), n_plot_points);
+    const int n_plot_points = 10;
+    Writer<dim> output(IdentityFunction<dim>::create(grid), n_plot_points);
 
-        string field_name = "basis " + to_string(basis_index);
+    string field_name = "basis " + to_string(basis_index);
 
-        auto basis = IgFunction<RefSpace>::create(space, coeffs);
-        output.template add_field<1,1>(basis, field_name);
+    auto basis = IgFunction<RefSpace>::create(space, coeffs);
+    output.template add_field<1,1>(basis, field_name);
 
-        string file_name = "bspline_basis-" + to_string(basis_index);
-        output.save(file_name);
+    string file_name = "bspline_basis-" + to_string(basis_index);
+    output.save(file_name);
 
-        coeffs[basis_index] = 0.;
-    }
+    coeffs[basis_index] = 0.;
+  }
 #endif
 
 }
@@ -82,15 +82,15 @@ void plot_basis(const int n_knots, const int deg)
 
 int main()
 {
-    const int deg = 1;
-    //const int deg = 2;
-    const int n_knots = 5 + deg;
-    plot_basis<1>(n_knots, deg);
-    plot_basis<2>(n_knots, deg);
-    plot_basis<3>(n_knots, deg);
+  const int deg = 1;
+  //const int deg = 2;
+  const int n_knots = 5 + deg;
+  plot_basis<1>(n_knots, deg);
+  plot_basis<2>(n_knots, deg);
+  plot_basis<3>(n_knots, deg);
 
-    plot_basis<1,2>(n_knots, deg);
-    plot_basis<2,2>(n_knots, deg);
+  plot_basis<1,2>(n_knots, deg);
+  plot_basis<2,2>(n_knots, deg);
 
-    return 0;
+  return 0;
 }

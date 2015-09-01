@@ -34,137 +34,137 @@ IGA_NAMESPACE_OPEN
 
 template <class ViewType,class DerivedClass>
 class ConcatenatedIteratorData
-    : public std::iterator<std::forward_iterator_tag, typename ViewType::iterator::value_type>
+  : public std::iterator<std::forward_iterator_tag, typename ViewType::iterator::value_type>
 {
 public:
-    using Iterator = typename ViewType::iterator;
+  using Iterator = typename ViewType::iterator;
 
-    /**
-     * Alias for specifying the value_type of the iterator used by the ViewType
-     * (it's the same of the iterator specified by the alias <tt>Iterator</tt>).
-     */
-    using value_type = typename Iterator::value_type;
-
-
-    SafeSTLVector<ViewType> get_ranges() const;
-
-    int get_range_id() const;
-
-    Iterator get_iterator_current() const;
-
-    /** @name Comparison operators */
-    ///@{
-    /** Compare for equality.*/
-    bool operator==(const ConcatenatedIteratorData<ViewType,DerivedClass> &it) const;
-
-    /** Compare for inequality.*/
-    bool operator!=(const ConcatenatedIteratorData<ViewType,DerivedClass> &it) const;
+  /**
+   * Alias for specifying the value_type of the iterator used by the ViewType
+   * (it's the same of the iterator specified by the alias <tt>Iterator</tt>).
+   */
+  using value_type = typename Iterator::value_type;
 
 
-    bool operator<(const ConcatenatedIteratorData<ViewType,DerivedClass> &it) const;
+  SafeSTLVector<ViewType> get_ranges() const;
 
-    bool operator<=(const ConcatenatedIteratorData<ViewType,DerivedClass> &it) const;
+  int get_range_id() const;
 
-    ///@}
+  Iterator get_iterator_current() const;
 
+  /** @name Comparison operators */
+  ///@{
+  /** Compare for equality.*/
+  bool operator==(const ConcatenatedIteratorData<ViewType,DerivedClass> &it) const;
 
-    /** @name Advance operator */
-    ///@{
-    /**
-     *  Prefix <tt>++</tt> operator: <tt>++i</tt>. This
-     *  operator advances the iterator to
-     *  the next element and returns
-     *  a reference to <tt>*this</tt>.
-     */
-    DerivedClass &operator++();
-
-    DerivedClass &operator+(const int n);
-    ///@}
+  /** Compare for inequality.*/
+  bool operator!=(const ConcatenatedIteratorData<ViewType,DerivedClass> &it) const;
 
 
-    /** Prints some information. Mostly used for debug and testing. */
-    void print_info(LogStream &out) const;
+  bool operator<(const ConcatenatedIteratorData<ViewType,DerivedClass> &it) const;
+
+  bool operator<=(const ConcatenatedIteratorData<ViewType,DerivedClass> &it) const;
+
+  ///@}
 
 
-    /** @name Dereferencing operators (const version) */
-    ///@{
-    /**
-     *  Dereferencing operator, returns a
-     *  const reference to the value_type.
-     */
-    const value_type &operator*() const;
+  /** @name Advance operator */
+  ///@{
+  /**
+   *  Prefix <tt>++</tt> operator: <tt>++i</tt>. This
+   *  operator advances the iterator to
+   *  the next element and returns
+   *  a reference to <tt>*this</tt>.
+   */
+  DerivedClass &operator++();
+
+  DerivedClass &operator+(const int n);
+  ///@}
 
 
-    /**
-     *  Dereferencing operator, returns a
-     *  const pointer to the value_type.
-     */
-    const value_type *operator->() const;
-    ///@}
+  /** Prints some information. Mostly used for debug and testing. */
+  void print_info(LogStream &out) const;
 
 
-    /**
-     * Returns @p n such that <tt>a + n == (*this)</tt>, where <tt>(*this) == a + ((*this) - a)</tt>.
-     */
-    Size
-    operator-(const ConcatenatedIteratorData<ViewType,DerivedClass> &a) const;
+  /** @name Dereferencing operators (const version) */
+  ///@{
+  /**
+   *  Dereferencing operator, returns a
+   *  const reference to the value_type.
+   */
+  const value_type &operator*() const;
+
+
+  /**
+   *  Dereferencing operator, returns a
+   *  const pointer to the value_type.
+   */
+  const value_type *operator->() const;
+  ///@}
+
+
+  /**
+   * Returns @p n such that <tt>a + n == (*this)</tt>, where <tt>(*this) == a + ((*this) - a)</tt>.
+   */
+  Size
+  operator-(const ConcatenatedIteratorData<ViewType,DerivedClass> &a) const;
 
 
 
 protected:
-    ConcatenatedIteratorData();
+  ConcatenatedIteratorData();
 
-    ConcatenatedIteratorData(const SafeSTLVector<ViewType> &views,const Index index);
+  ConcatenatedIteratorData(const SafeSTLVector<ViewType> &views,const Index index);
 
-    ConcatenatedIteratorData(const ConcatenatedIteratorData<ViewType,DerivedClass> &rhs) = default;
+  ConcatenatedIteratorData(const ConcatenatedIteratorData<ViewType,DerivedClass> &rhs) = default;
 
-    ConcatenatedIteratorData(ConcatenatedIteratorData<ViewType,DerivedClass> &&rhs) = default;
+  ConcatenatedIteratorData(ConcatenatedIteratorData<ViewType,DerivedClass> &&rhs) = default;
 
-    ConcatenatedIteratorData<ViewType,DerivedClass> &operator=(
-        const ConcatenatedIteratorData<ViewType,DerivedClass> &rhs) = default;
+  ConcatenatedIteratorData<ViewType,DerivedClass> &operator=(
+    const ConcatenatedIteratorData<ViewType,DerivedClass> &rhs) = default;
 
-    ConcatenatedIteratorData<ViewType,DerivedClass> &operator=(
-        ConcatenatedIteratorData<ViewType,DerivedClass> &&rhs) = default;
+  ConcatenatedIteratorData<ViewType,DerivedClass> &operator=(
+    ConcatenatedIteratorData<ViewType,DerivedClass> &&rhs) = default;
 
-    ~ConcatenatedIteratorData() = default;
+  ~ConcatenatedIteratorData() = default;
 
-    DerivedClass &as_derived_class();
+  DerivedClass &as_derived_class();
 
-    const DerivedClass &as_derived_class() const;
-
-
-    /**
-     * Vector of ranges upon which the ConcatenatedIterator is defined.
-     * Each entry in the vector is a pair of objects of type <tt>Iterator</tt>
-     * in the the form [begin,end), telling which is the begin of the range and which
-     * is one-pass-end of the range.
-     */
-    SafeSTLVector<ViewType> ranges_;
-
-    /**
-     * Index used to specify which range is spanned at a given moment by the
-     * iterator_current_ member variable.
-     */
-    int range_id_;
-
-    /**
-     * Iterator pointing to the current position.
-     */
-    Iterator iterator_current_;
+  const DerivedClass &as_derived_class() const;
 
 
-    void get_range_id_and_entry_id_in_range(const Index id, Index &rng_id, Index &entry_id_rng) const;
+  /**
+   * Vector of ranges upon which the ConcatenatedIterator is defined.
+   * Each entry in the vector is a pair of objects of type <tt>Iterator</tt>
+   * in the the form [begin,end), telling which is the begin of the range and which
+   * is one-pass-end of the range.
+   */
+  SafeSTLVector<ViewType> ranges_;
+
+  /**
+   * Index used to specify which range is spanned at a given moment by the
+   * iterator_current_ member variable.
+   */
+  int range_id_;
+
+  /**
+   * Iterator pointing to the current position.
+   */
+  Iterator iterator_current_;
 
 
-    /** Returns a reference to the entry with the identifier specified by @p id. */
-    const typename ViewType::reference get_entry_const_reference(const Index id) const;
+  void get_range_id_and_entry_id_in_range(const Index id, Index &rng_id, Index &entry_id_rng) const;
 
-    /** Returns a const reference to the entry with the identifier specified by @p id. */
-    typename ViewType::reference get_entry_reference(const Index id);
+
+  /** Returns a reference to the entry with the identifier specified by @p id. */
+  const typename ViewType::reference get_entry_const_reference(const Index id) const;
+
+  /** Returns a const reference to the entry with the identifier specified by @p id. */
+  typename ViewType::reference get_entry_reference(const Index id);
 
 private:
 
-    bool is_comparable(const ConcatenatedIteratorData<ViewType,DerivedClass> &it) const;
+  bool is_comparable(const ConcatenatedIteratorData<ViewType,DerivedClass> &it) const;
 };
 
 
@@ -182,73 +182,73 @@ private:
  */
 template <class ViewType>
 class ConcatenatedIterator
-    :
-    public ConcatenatedIteratorData< ViewType, ConcatenatedIterator<ViewType> >
+  :
+  public ConcatenatedIteratorData< ViewType, ConcatenatedIterator<ViewType> >
 {
 public:
-    using value_type = typename ViewType::iterator::value_type;
+  using value_type = typename ViewType::iterator::value_type;
 
 
-    /** @name Constructors & destructor */
-    ///@{
-    /**
-     * Default constructor. It does nothing.
-     */
-    ConcatenatedIterator() = default;
+  /** @name Constructors & destructor */
+  ///@{
+  /**
+   * Default constructor. It does nothing.
+   */
+  ConcatenatedIterator() = default;
 
-    /**
-     * Constructor.
-     */
-    ConcatenatedIterator(
-        const SafeSTLVector<ViewType> &ranges,
-        const Index index);
+  /**
+   * Constructor.
+   */
+  ConcatenatedIterator(
+    const SafeSTLVector<ViewType> &ranges,
+    const Index index);
 
-    /** Copy constructor. */
-    ConcatenatedIterator(const ConcatenatedIterator<ViewType> &it) = default;
+  /** Copy constructor. */
+  ConcatenatedIterator(const ConcatenatedIterator<ViewType> &it) = default;
 
-    /** Move constructor. */
-    ConcatenatedIterator(ConcatenatedIterator<ViewType> &&it) = default;
+  /** Move constructor. */
+  ConcatenatedIterator(ConcatenatedIterator<ViewType> &&it) = default;
 
-    /** Destructor */
-    ~ConcatenatedIterator() = default ;
-    ///@}
-
-
-    /** @name Assignment operators */
-    ///@{
-    /** Copy assignment operator. */
-    ConcatenatedIterator<ViewType> &operator=(
-        const ConcatenatedIterator<ViewType> &it) = default;
-
-    /** Move assignment operator. */
-    ConcatenatedIterator<ViewType> &operator=(
-        ConcatenatedIterator<ViewType> &&it) = default;
-    ///@}
-
-    /** @name Dereferencing operators (non-const version) */
-    ///@{
-    /**
-     *  Dereferencing operator, returns a
-     *  reference to the value_type.
-     */
-    value_type &operator*();
+  /** Destructor */
+  ~ConcatenatedIterator() = default ;
+  ///@}
 
 
-    /**
-     *  Dereferencing operator, returns a
-     *  pointer to the value_type.
-     */
-    value_type *operator->();
-    ///@}
+  /** @name Assignment operators */
+  ///@{
+  /** Copy assignment operator. */
+  ConcatenatedIterator<ViewType> &operator=(
+    const ConcatenatedIterator<ViewType> &it) = default;
+
+  /** Move assignment operator. */
+  ConcatenatedIterator<ViewType> &operator=(
+    ConcatenatedIterator<ViewType> &&it) = default;
+  ///@}
+
+  /** @name Dereferencing operators (non-const version) */
+  ///@{
+  /**
+   *  Dereferencing operator, returns a
+   *  reference to the value_type.
+   */
+  value_type &operator*();
+
+
+  /**
+   *  Dereferencing operator, returns a
+   *  pointer to the value_type.
+   */
+  value_type *operator->();
+  ///@}
 
 
 
 
-    /** Returns a reference to the entry with the identifier specified by @p id. */
-    typename ViewType::reference operator[](const Index id);
+  /** Returns a reference to the entry with the identifier specified by @p id. */
+  typename ViewType::reference operator[](const Index id);
 
-    /** Returns a const reference to the entry with the identifier specified by @p id. */
-    const typename ViewType::reference operator[](const Index id) const;
+  /** Returns a const reference to the entry with the identifier specified by @p id. */
+  const typename ViewType::reference operator[](const Index id) const;
 };
 
 
@@ -359,52 +359,52 @@ public:
  */
 template <class ViewType,class ConstViewType>
 class ConcatenatedConstIterator
-    : public ConcatenatedIteratorData<ConstViewType,ConcatenatedConstIterator<ViewType,ConstViewType>>
+  : public ConcatenatedIteratorData<ConstViewType,ConcatenatedConstIterator<ViewType,ConstViewType>>
 {
 public:
-    /** @name Constructors & destructor */
-    ///@{
-    /**
-     * Default constructor. It does nothing.
-     */
-    ConcatenatedConstIterator() = default;
+  /** @name Constructors & destructor */
+  ///@{
+  /**
+   * Default constructor. It does nothing.
+   */
+  ConcatenatedConstIterator() = default;
 
-    /**
-     * Constructor.
-     */
-    ConcatenatedConstIterator(
-        const SafeSTLVector<ConstViewType> &ranges,
-        const Index index);
+  /**
+   * Constructor.
+   */
+  ConcatenatedConstIterator(
+    const SafeSTLVector<ConstViewType> &ranges,
+    const Index index);
 
-    /** Builds a ConcatenatedConstIterator from a ConcatenatedIterator.*/
-    ConcatenatedConstIterator(const ConcatenatedIterator<ViewType> &it);
-
-
-    /** Copy constructor. */
-    ConcatenatedConstIterator(const ConcatenatedConstIterator<ViewType,ConstViewType> &it) = default;
-
-    /** Move constructor. */
-    ConcatenatedConstIterator(ConcatenatedConstIterator<ViewType,ConstViewType> &&it) = default;
-
-    /** Destructor */
-    ~ConcatenatedConstIterator() = default ;
-    ///@}
+  /** Builds a ConcatenatedConstIterator from a ConcatenatedIterator.*/
+  ConcatenatedConstIterator(const ConcatenatedIterator<ViewType> &it);
 
 
-    /** @name Assignment operators */
-    ///@{
-    /** Copy assignment operator. */
-    ConcatenatedConstIterator<ViewType,ConstViewType> &operator=(
-        const ConcatenatedConstIterator<ViewType,ConstViewType> &it) = default;
+  /** Copy constructor. */
+  ConcatenatedConstIterator(const ConcatenatedConstIterator<ViewType,ConstViewType> &it) = default;
 
-    /** Move assignment operator. */
-    ConcatenatedConstIterator<ViewType,ConstViewType> &operator=(
-        ConcatenatedConstIterator<ViewType,ConstViewType> &&it) = default;
-    ///@}
+  /** Move constructor. */
+  ConcatenatedConstIterator(ConcatenatedConstIterator<ViewType,ConstViewType> &&it) = default;
+
+  /** Destructor */
+  ~ConcatenatedConstIterator() = default ;
+  ///@}
 
 
-    /** Returns a const reference to the entry with the identifier specified by @p id. */
-    const typename ConstViewType::reference operator[](const Index id) const;
+  /** @name Assignment operators */
+  ///@{
+  /** Copy assignment operator. */
+  ConcatenatedConstIterator<ViewType,ConstViewType> &operator=(
+    const ConcatenatedConstIterator<ViewType,ConstViewType> &it) = default;
+
+  /** Move assignment operator. */
+  ConcatenatedConstIterator<ViewType,ConstViewType> &operator=(
+    ConcatenatedConstIterator<ViewType,ConstViewType> &&it) = default;
+  ///@}
+
+
+  /** Returns a const reference to the entry with the identifier specified by @p id. */
+  const typename ConstViewType::reference operator[](const Index id) const;
 };
 
 

@@ -26,15 +26,15 @@ template<>
 SafeSTLSet<TensorIndex<1> >
 el_tensor_range(TensorIndex<1> first, TensorIndex<1> last)
 {
-    Assert(first <= last, ExcMessage("first bigger than last"));
-    SafeSTLSet<TensorIndex<1>> result;
-    for (int i=first[0]; i<last[0]; ++i)
-    {
-        TensorIndex<1> el {i};
-        result.insert(el);
-    }
+  Assert(first <= last, ExcMessage("first bigger than last"));
+  SafeSTLSet<TensorIndex<1>> result;
+  for (int i=first[0]; i<last[0]; ++i)
+  {
+    TensorIndex<1> el {i};
+    result.insert(el);
+  }
 
-    return result;
+  return result;
 }
 
 
@@ -43,8 +43,8 @@ template<>
 SafeSTLSet<TensorIndex<0> >
 el_tensor_range(TensorIndex<0> first, TensorIndex<0> last)
 {
-    SafeSTLSet<TensorIndex<0>> result;
-    return result;
+  SafeSTLSet<TensorIndex<0>> result;
+  return result;
 }
 
 IGA_NAMESPACE_CLOSE

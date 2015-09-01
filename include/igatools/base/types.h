@@ -102,67 +102,67 @@ using Size = int;
  */
 enum class ValueFlags : std::int64_t
 {
-    /** Fill nothing */
-    none           =    0,
+  /** Fill nothing */
+  none           =    0,
 
-    /**@name Applicable to elements of all grid-like containers */
-    ///@{
+  /**@name Applicable to elements of all grid-like containers */
+  ///@{
 
-    /** Quadrature points on the element */
-    point          =    1L << 1,
+  /** Quadrature points on the element */
+  point          =    1L << 1,
 
-    /** Differential of measure (length, area, volume) at the
-     * quadrature points */
-    measure        =    1L << 2,
+  /** Differential of measure (length, area, volume) at the
+   * quadrature points */
+  measure        =    1L << 2,
 
-    /** Differential of measure (length, area, volume) at the
-     * quadrature points times the unit quadrature weights */
-    w_measure      =    1L << 3,
+  /** Differential of measure (length, area, volume) at the
+   * quadrature points times the unit quadrature weights */
+  w_measure      =    1L << 3,
 
-    /** normal space */
-    boundary_normal  =    1L << 4,
+  /** normal space */
+  boundary_normal  =    1L << 4,
 
-    /** normal space */
-    outer_normal  =    1L << 5,
+  /** normal space */
+  outer_normal  =    1L << 5,
 
-    /** curvatures */
-    curvature     =    1L << 6,
-    ///@}
+  /** curvatures */
+  curvature     =    1L << 6,
+  ///@}
 
 
-    /** compute the values of the map */
-    value              =  1L << 9,
+  /** compute the values of the map */
+  value              =  1L << 9,
 
-    /** compute the gradients of the map */
-    gradient           =    1L << 14,
+  /** compute the gradients of the map */
+  gradient           =    1L << 14,
 
-    /** compute the hessians of the map */
-    hessian            =    1L << 15,
+  /** compute the hessians of the map */
+  hessian            =    1L << 15,
 
-    /** compute the (pseudo) inverse gradients of the map */
-    inv_gradient       =    1L << 16,
+  /** compute the (pseudo) inverse gradients of the map */
+  inv_gradient       =    1L << 16,
 
-    /** compute the (pseudo) inverse hessians of the map */
-    inv_hessian        =    1L << 17,
+  /** compute the (pseudo) inverse hessians of the map */
+  inv_hessian        =    1L << 17,
 
 
 
 #if 0
-    ///@name Transformation (pushforward) related
-    ///@{
-    /** transform the values of basis functions */
-    tran_value    =    1L << 22,
+  ///@name Transformation (pushforward) related
+  ///@{
+  /** transform the values of basis functions */
+  tran_value    =    1L << 22,
 
-    /** transform the gradients of basis functions */
-    tran_gradient =    1L << 23,
+  /** transform the gradients of basis functions */
+  tran_gradient =    1L << 23,
 
-    /** transform the second derivatives of basis functions */
-    tran_hessian  =    1L << 24,
-    ///@}
+  /** transform the second derivatives of basis functions */
+  tran_hessian  =    1L << 24,
+  ///@}
 #endif
 
-    /** compute the divergences of basis functions */
-    divergence    =    1L << 28
+  /** compute the divergences of basis functions */
+  divergence    =    1L << 28
 };
 
 
@@ -171,17 +171,17 @@ const std::array<ValueFlags, MAX_NUM_DERIVATIVES> DerivativeFlags =
 
 enum class TransformationFlags : std::int64_t
 {
-    /** transform nothing */
-    tran_none    =    1L << 0,
+  /** transform nothing */
+  tran_none    =    1L << 0,
 
-    /** transform the values of basis functions */
-    tran_value    =    1L << 1,
+  /** transform the values of basis functions */
+  tran_value    =    1L << 1,
 
-    /** transform the gradients of basis functions */
-    tran_gradient =    1L << 2,
+  /** transform the gradients of basis functions */
+  tran_gradient =    1L << 2,
 
-    /** transform the second derivatives of basis functions */
-    tran_hessian  =    1L << 3
+  /** transform the second derivatives of basis functions */
+  tran_hessian  =    1L << 3
 };
 
 /**
@@ -191,17 +191,17 @@ enum class TransformationFlags : std::int64_t
  */
 enum class Transformation : int
 {
-    /** \f[ \phi = \hat\phi \circ \vec{F}^{-1}\f] */
-    h_grad = 1,
+  /** \f[ \phi = \hat\phi \circ \vec{F}^{-1}\f] */
+  h_grad = 1,
 
-    /** \f[\vec u = D\vec{F}^{-T}(\hat{\vec{u}} \circ \vec{F}^{-1})\f] */
-    h_curl = 2,
+  /** \f[\vec u = D\vec{F}^{-T}(\hat{\vec{u}} \circ \vec{F}^{-1})\f] */
+  h_curl = 2,
 
-    /** \f[\vec v=\frac{D\vec{F}}{\det D\vec{F}}(\hat{\vec{v}}\circ\vec{F}^{-1})\f] */
-    h_div = 3 ,
+  /** \f[\vec v=\frac{D\vec{F}}{\det D\vec{F}}(\hat{\vec{v}}\circ\vec{F}^{-1})\f] */
+  h_div = 3 ,
 
-    /** \f[ \varphi = \frac{\hat\varphi \circ \vec{F}^{-1}}{\det D\vec{F}} \f] */
-    l_2 = 4
+  /** \f[ \varphi = \frac{\hat\varphi \circ \vec{F}^{-1}}{\det D\vec{F}} \f] */
+  l_2 = 4
 };
 
 /**
@@ -209,14 +209,14 @@ enum class Transformation : int
  */
 enum class Norm
 {
-    /** use of the L2 norm */
-    L2 = 1 << 0,
+  /** use of the L2 norm */
+  L2 = 1 << 0,
 
-    /** use of the H1 norm */
-    H1 = 1 << 1,
+  /** use of the H1 norm */
+  H1 = 1 << 1,
 
-    /** use of the H1 semi-norm */
-    H1_semi = 1 << 2
+  /** use of the H1 semi-norm */
+  H1_semi = 1 << 2
 
 };
 
@@ -226,17 +226,17 @@ enum class Norm
  */
 enum class LAPack : int
 {
-    /** Use the internal (igatools) linear algebra implementation.*/
-    internal = 0,
+  /** Use the internal (igatools) linear algebra implementation.*/
+  internal = 0,
 
-    /** Use the Trilinos Tpetra linear algebra implementation.*/
-    trilinos_tpetra = 1,
+  /** Use the Trilinos Tpetra linear algebra implementation.*/
+  trilinos_tpetra = 1,
 
-    /** Use the Trilinos Epetra linear algebra implementation.*/
-    trilinos_epetra = 2,
+  /** Use the Trilinos Epetra linear algebra implementation.*/
+  trilinos_epetra = 2,
 
-    /** Use the PETSc linear algebra implementation.*/
-    petsc = 3
+  /** Use the PETSc linear algebra implementation.*/
+  petsc = 3
 };
 
 
@@ -245,11 +245,11 @@ enum class LAPack : int
  */
 enum class VerbosityLevel : int
 {
-    /** Normal level. */
-    normal = 1 << 0,
+  /** Normal level. */
+  normal = 1 << 0,
 
-    /** The output contains information about the memory address of the objects involved. */
-    debug = 1 << 1
+  /** The output contains information about the memory address of the objects involved. */
+  debug = 1 << 1
 };
 
 
@@ -273,7 +273,7 @@ template<typename E>
 constexpr auto
 to_integral(E e) -> typename std::underlying_type<E>::type
 {
-    return static_cast<typename std::underlying_type<E>::type>(e);
+  return static_cast<typename std::underlying_type<E>::type>(e);
 }
 
 /**
@@ -285,7 +285,7 @@ template<typename E>
 constexpr auto
 get_enum_size() -> typename std::underlying_type<E>::type
 {
-    return to_integral(E::ENUM_SIZE) ;
+  return to_integral(E::ENUM_SIZE) ;
 }
 
 
@@ -295,7 +295,7 @@ constexpr
 inline Flag
 operator|(const Flag a, const Flag b)
 {
-    return (static_cast< Flag >(static_cast< int >(a) | static_cast< int >(b))) ;
+  return (static_cast< Flag >(static_cast< int >(a) | static_cast< int >(b))) ;
 }
 
 /** Bitwise AND operator to use with the Flags of igatools */
@@ -303,7 +303,7 @@ template<class Flag>
 inline Flag
 operator&(const Flag a, const Flag b)
 {
-    return (static_cast< Flag >(static_cast< int >(a) & static_cast< int >(b))) ;
+  return (static_cast< Flag >(static_cast< int >(a) & static_cast< int >(b))) ;
 }
 
 /** Bitwise XOR operator to use with the Flags of igatools */
@@ -311,7 +311,7 @@ template<class Flag>
 inline Flag
 operator^(const Flag a, const Flag b)
 {
-    return (static_cast< Flag >(static_cast< int >(a) ^ static_cast< int >(b))) ;
+  return (static_cast< Flag >(static_cast< int >(a) ^ static_cast< int >(b))) ;
 }
 
 /** Operator to add a flag of a given flag */
@@ -319,39 +319,39 @@ template<class Flag>
 inline void
 operator|=(Flag &a, const Flag b)
 {
-    a = a|b ;
+  a = a|b ;
 }
 
 /** Checks if a given flag a contains the given flag b */
 template<class Flag>
 inline bool contains(const Flag &a, const Flag b)
 {
-    return ((a & b) ==  b);
+  return ((a & b) ==  b);
 }
 
 //TODO(pauletti, Feb 19, 2014): the item below should be documented
 template<class Flag>
 int bitcount(Flag a)
 {
-    using underlying_type = typename std::underlying_type<Flag>::type;
+  using underlying_type = typename std::underlying_type<Flag>::type;
 
-    //Loop the value while there are still bits
-    //Remove the end bit
-    int count = 0;
-    while (static_cast<underlying_type>(a) != 0)
-    {
-        a = a & static_cast<Flag>((static_cast<underlying_type>(a) - 1));
-        count++;
-    }
+  //Loop the value while there are still bits
+  //Remove the end bit
+  int count = 0;
+  while (static_cast<underlying_type>(a) != 0)
+  {
+    a = a & static_cast<Flag>((static_cast<underlying_type>(a) - 1));
+    count++;
+  }
 
-    return count;
+  return count;
 }
 
 
 inline
 std::ostream &operator<< (std::ostream &stream, const ValueFlags &flag)
 {
-    return (stream << static_cast< int >(flag));
+  return (stream << static_cast< int >(flag));
 }
 
 /**
@@ -359,7 +359,7 @@ std::ostream &operator<< (std::ostream &stream, const ValueFlags &flag)
  */
 constexpr int constexpr_pow(int a, int b)
 {
-    return (b>=1) ? a * constexpr_pow(a,b-1) : 1 ;
+  return (b>=1) ? a * constexpr_pow(a,b-1) : 1 ;
 }
 
 
@@ -369,7 +369,7 @@ constexpr int constexpr_pow(int a, int b)
  */
 constexpr int constexpr_factorial(int a)
 {
-    return (a>1) ? a * constexpr_factorial(a-1) : 1 ;
+  return (a>1) ? a * constexpr_factorial(a-1) : 1 ;
 }
 
 
@@ -379,8 +379,8 @@ constexpr int constexpr_factorial(int a)
  */
 constexpr Real constexpr_binomial_coefficient(int a, int b)
 {
-    return Real(constexpr_factorial(a)) /
-           Real(constexpr_factorial(b) * constexpr_factorial(a-b));
+  return Real(constexpr_factorial(a)) /
+         Real(constexpr_factorial(b) * constexpr_factorial(a-b));
 }
 
 
@@ -420,27 +420,27 @@ BOOST_TTI_HAS_MEMBER_FUNCTION(print_info)
  */
 enum class BoundaryConditionType : int
 {
-    /** Dirichlet boundary condition. */
-    Dirichlet = 0,
+  /** Dirichlet boundary condition. */
+  Dirichlet = 0,
 
-    /** Dirichlet homogeneous boundary condition. */
-    DirichletHomogeneous = 1,
+  /** Dirichlet homogeneous boundary condition. */
+  DirichletHomogeneous = 1,
 
-    /** Neumann boundary condition. */
-    Neumann = 2,
+  /** Neumann boundary condition. */
+  Neumann = 2,
 
-    /** Neumann homogeneous boundary condition. */
-    NeumannHomogeneous = 3,
+  /** Neumann homogeneous boundary condition. */
+  NeumannHomogeneous = 3,
 
-    /** Robin boundary condition. */
-    Robin = 4,
+  /** Robin boundary condition. */
+  Robin = 4,
 
-    /**
-     * The boundary part of an interface, i.e. has a relation with another space-component face.
-     * @sa InterfaceType
-     * @sa MultiPatchSpace
-     */
-    Interface = 5
+  /**
+   * The boundary part of an interface, i.e. has a relation with another space-component face.
+   * @sa InterfaceType
+   * @sa MultiPatchSpace
+   */
+  Interface = 5
 };
 
 /**
@@ -449,27 +449,27 @@ enum class BoundaryConditionType : int
  */
 enum class InterfaceType : int
 {
-    /** No conditions on the interface.*/
-    none = 0,
+  /** No conditions on the interface.*/
+  none = 0,
 
-    /**
-     * The interface is defined as strong C0 gluing between one side of each patch.
-     * The dofs of the patches <em>will be not renumbered</em> in order to ensure this interface condition.
-     */
-    C0_strong = 1,
+  /**
+   * The interface is defined as strong C0 gluing between one side of each patch.
+   * The dofs of the patches <em>will be not renumbered</em> in order to ensure this interface condition.
+   */
+  C0_strong = 1,
 
-    /**
-     * The interface is defined as strong C0 gluing between one side of each patch.
-     * The dofs of the patches <em>will be renumbered</em> in order to ensure this interface condition.
-     */
-    C0_strong_renumbering = 2,
+  /**
+   * The interface is defined as strong C0 gluing between one side of each patch.
+   * The dofs of the patches <em>will be renumbered</em> in order to ensure this interface condition.
+   */
+  C0_strong_renumbering = 2,
 
-    /**
-     * This interface is defined using Mortar gluing.
-     *
-     * @todo Complete the documentation.
-     */
-    Mortar = 3
+  /**
+   * This interface is defined using Mortar gluing.
+   *
+   * @todo Complete the documentation.
+   */
+  Mortar = 3
 };
 
 
@@ -478,27 +478,27 @@ enum class InterfaceType : int
  */
 enum class LinearConstraintType : int
 {
-    /** Lagrange multiplier. */
-    lagrange = 1 << 0,
+  /** Lagrange multiplier. */
+  lagrange = 1 << 0,
 
-    /** Penalty. */
-    penalty = 1 << 1,
+  /** Penalty. */
+  penalty = 1 << 1,
 
-    /** Augmented Lagrange multiplier. */
-    augmented_lagrange = 1 << 2,
+  /** Augmented Lagrange multiplier. */
+  augmented_lagrange = 1 << 2,
 
-    /** Any of the above.*/
-    any = lagrange | penalty | augmented_lagrange
+  /** Any of the above.*/
+  any = lagrange | penalty | augmented_lagrange
 };
 
 
 enum class CopyPolicy : int
 {
-    /** Use the shallow copy policy: the pointer are copied. */
-    shallow = 1,
+  /** Use the shallow copy policy: the pointer are copied. */
+  shallow = 1,
 
-    /** Use the deep copy policy: the pointer are allocated using the copy constructor. */
-    deep = 2
+  /** Use the deep copy policy: the pointer are allocated using the copy constructor. */
+  deep = 2
 };
 
 
@@ -507,31 +507,31 @@ enum class CopyPolicy : int
  */
 enum class ElementProperty : int
 {
-    /**
-     * No-property indicator (useful for example if you want to iterate over all the elements of
-     * the CartesianGrid, without taking into account the properties of the elements.).
-     */
-    none = 0,   //!< active
+  /**
+   * No-property indicator (useful for example if you want to iterate over all the elements of
+   * the CartesianGrid, without taking into account the properties of the elements.).
+   */
+  none = 0,   //!< active
 
-    /**
-     * Active elements indicator (used for example in hierarchical spaces).
-     */
-    active = 1,   //!< active
+  /**
+   * Active elements indicator (used for example in hierarchical spaces).
+   */
+  active = 1,   //!< active
 
-    /**
-    * Marked elements indicators.
-    */
-    marked = 2,   //!< marked
+  /**
+  * Marked elements indicators.
+  */
+  marked = 2,   //!< marked
 
-    /**
-    * Influence elements indicators  (used for example in hierarchical spaces).
-    */
-    influence = 3,//!< influence
+  /**
+  * Influence elements indicators  (used for example in hierarchical spaces).
+  */
+  influence = 3,//!< influence
 
-    /**
-     * Number of different element properties allowed.
-     */
-    ENUM_SIZE = 3,//!< ENUM_SIZE
+  /**
+   * Number of different element properties allowed.
+   */
+  ENUM_SIZE = 3,//!< ENUM_SIZE
 };
 
 
@@ -539,7 +539,7 @@ enum class ElementProperty : int
 // TODO (pauletti, Nov 14, 2014): delete after gcc implements correct std::max
 constexpr int max(int a, int b)
 {
-    return a>b ? a : b;
+  return a>b ? a : b;
 }
 
 
@@ -550,7 +550,7 @@ struct seq;
 template<template<int> class Q, int start>
 struct seq<Q, start, start>
 {
-    using type = boost::mpl::vector<Q<start>>;
+  using type = boost::mpl::vector<Q<start>>;
 };
 
 template<template<int> class Q, int start, std::size_t N>
@@ -649,12 +649,12 @@ enum class Flags
  * @ingroup serializable
  */
 #define ALLOW_SHARED_THIS(type) \
-    namespace boost { namespace serialization { \
-    template<class Archive> inline void load_construct_data(Archive &ar, type *obj, const unsigned int file_version) { \
-        auto sharedPtr = std::make_shared<type>(); /* create instance */ \
-        obj = sharedPtr.get(); \
-    } \
-    }}
+  namespace boost { namespace serialization { \
+  template<class Archive> inline void load_construct_data(Archive &ar, type *obj, const unsigned int file_version) { \
+    auto sharedPtr = std::make_shared<type>(); /* create instance */ \
+    obj = sharedPtr.get(); \
+  } \
+  }}
 #endif // SERIALIZATION
 
 #ifdef PARAVIEW_PLUGIN
@@ -663,14 +663,14 @@ enum class Flags
 */
 enum class vtkGridType : std::int64_t
 {
-    /** VTK structured grid */
-    Structured          =    1 << 0,
+  /** VTK structured grid */
+  Structured          =    1 << 0,
 
-    /** VTK unstructure grid with linear cells */
-    UnstructuredLinear  =    1 << 1,
+  /** VTK unstructure grid with linear cells */
+  UnstructuredLinear  =    1 << 1,
 
-    /** VTK unstructure grid with quadratic cells */
-    UnstructuredQuadratic  = 1 << 2
+  /** VTK unstructure grid with quadratic cells */
+  UnstructuredQuadratic  = 1 << 2
 };
 #endif // PARAVIEW_PLUGIN
 

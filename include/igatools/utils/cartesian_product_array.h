@@ -78,233 +78,233 @@ template< class T, int rank>
 class CartesianProductArray: public TensorSizedContainer<rank>
 {
 public:
-    using EntryType = T;
-    /**
-     * Type for the <tt>rank-1</tt> CartesianProductArray
-     */
-    template<int k>
-    using SubProduct = CartesianProductArray<T, k>;
+  using EntryType = T;
+  /**
+   * Type for the <tt>rank-1</tt> CartesianProductArray
+   */
+  template<int k>
+  using SubProduct = CartesianProductArray<T, k>;
 
 
 
-    /** @name Constructors */
-    ///@{
-    /**
-     * Construct a rank-dimensional empty array.
-     */
-    CartesianProductArray() ;
+  /** @name Constructors */
+  ///@{
+  /**
+   * Construct a rank-dimensional empty array.
+   */
+  CartesianProductArray() ;
 
-    // TODO (pauletti, Dec 23, 2013): Document this
-    CartesianProductArray(std::initializer_list<std::initializer_list<T>> list);
+  // TODO (pauletti, Dec 23, 2013): Document this
+  CartesianProductArray(std::initializer_list<std::initializer_list<T>> list);
 
-    /**
-     * Construct a rank-dimensional CartesianProductArray where the
-     * the i-th direction is initialized to be
-     * of size <tt>size[i]</tt>, calling the default constructor of T for
-     * each entry of the vectors.
-     */
-    explicit CartesianProductArray(const TensorSize<rank> size);
-
-
-    /**
-     * Constructor. Construct a rank-dimensional CartesianProductArray where the
-     * the i-th direction is initialized to be
-     * of size <tt>size[i]</tt>,
-     * and to each entry is assigned the value @p val
-     */
-    CartesianProductArray(const TensorSize<rank> size, const T &val);
-
-    /**
-     * Constructor. Same as CartesianProductArray(const array< int, rank > size)
-     * but with all direction sizes equal to @p size.
-     */
-    explicit CartesianProductArray(const Size size);
+  /**
+   * Construct a rank-dimensional CartesianProductArray where the
+   * the i-th direction is initialized to be
+   * of size <tt>size[i]</tt>, calling the default constructor of T for
+   * each entry of the vectors.
+   */
+  explicit CartesianProductArray(const TensorSize<rank> size);
 
 
-    /**
-     * Constructor. Construct a rank-dimensional CartesianProductArray where the
-     * the i-th direction is initialized to be equal to @p data_directions[i]
-     */
-    explicit CartesianProductArray(const SafeSTLArray<SafeSTLVector<T>,rank> &data_directions) ;
+  /**
+   * Constructor. Construct a rank-dimensional CartesianProductArray where the
+   * the i-th direction is initialized to be
+   * of size <tt>size[i]</tt>,
+   * and to each entry is assigned the value @p val
+   */
+  CartesianProductArray(const TensorSize<rank> size, const T &val);
+
+  /**
+   * Constructor. Same as CartesianProductArray(const array< int, rank > size)
+   * but with all direction sizes equal to @p size.
+   */
+  explicit CartesianProductArray(const Size size);
 
 
-    /**
-     * Destructor.
-     */
-    ~CartesianProductArray() = default;
-
-    /**
-     * Copy constructor.
-     */
-    CartesianProductArray(const CartesianProductArray<T,rank> &product_array) = default;
-
-    /**
-     * Move constructor.
-     */
-    CartesianProductArray(CartesianProductArray<T,rank> &&product_array) = default;
-
-    ///@}
+  /**
+   * Constructor. Construct a rank-dimensional CartesianProductArray where the
+   * the i-th direction is initialized to be equal to @p data_directions[i]
+   */
+  explicit CartesianProductArray(const SafeSTLArray<SafeSTLVector<T>,rank> &data_directions) ;
 
 
-    /** @name Assignment operators */
-    ///@{
-    /**
-     * Copy assignment operator.
-     * @note Use with care as it may be an expensive operation.
-     */
-    CartesianProductArray<T,rank> &
-    operator=(const CartesianProductArray<T,rank> &product_array) = default;
+  /**
+   * Destructor.
+   */
+  ~CartesianProductArray() = default;
+
+  /**
+   * Copy constructor.
+   */
+  CartesianProductArray(const CartesianProductArray<T,rank> &product_array) = default;
+
+  /**
+   * Move constructor.
+   */
+  CartesianProductArray(CartesianProductArray<T,rank> &&product_array) = default;
+
+  ///@}
 
 
-    /** Move assignment operator. */
-    CartesianProductArray<T,rank> &
-    operator=(CartesianProductArray<T,rank> &&product_array) = default;
-    ///@}
+  /** @name Assignment operators */
+  ///@{
+  /**
+   * Copy assignment operator.
+   * @note Use with care as it may be an expensive operation.
+   */
+  CartesianProductArray<T,rank> &
+  operator=(const CartesianProductArray<T,rank> &product_array) = default;
+
+
+  /** Move assignment operator. */
+  CartesianProductArray<T,rank> &
+  operator=(CartesianProductArray<T,rank> &&product_array) = default;
+  ///@}
 
 private:
-    /**
-     * Type traits magic to return different types where T is an arithmetic type
-     * (floating point or integer)
-     * or not, used in the cartesian_product() functions.
-     */
-    using point_t = Conditional<std::is_arithmetic<T>::value,
-          Conditional<std::is_floating_point<T>::value,
-          Points<rank>,
-          TensorIndex<rank>>,
-          SafeSTLArray<T,rank> >;
+  /**
+   * Type traits magic to return different types where T is an arithmetic type
+   * (floating point or integer)
+   * or not, used in the cartesian_product() functions.
+   */
+  using point_t = Conditional<std::is_arithmetic<T>::value,
+        Conditional<std::is_floating_point<T>::value,
+        Points<rank>,
+        TensorIndex<rank>>,
+        SafeSTLArray<T,rank> >;
 
 
 public:
 
 
-    /** @name Functions for accessing (read/write/copy) the internal data */
-    ///@{
-    /**
-     * Read/write access function to the <tt>j</tt>-th entry along the <tt>i</tt>-th direction.
-     * @note In Debug mode there is a check on the indices <tt>(i,j)</tt> used as input parameters.
-     */
-    T &entry(const int i, const int j) ;
+  /** @name Functions for accessing (read/write/copy) the internal data */
+  ///@{
+  /**
+   * Read/write access function to the <tt>j</tt>-th entry along the <tt>i</tt>-th direction.
+   * @note In Debug mode there is a check on the indices <tt>(i,j)</tt> used as input parameters.
+   */
+  T &entry(const int i, const int j) ;
 
-    T const &entry(const int i, const int j) const;
+  T const &entry(const int i, const int j) const;
 
-    /**
-     * Copy input @p data to the data relative to the @p i-th direction.
-     * @note The CartesianProductArray object will be internally resized (if needed)
-     * in order to contains all the entries in the input @p data.
-     */
-    void copy_data_direction(const int i, const SafeSTLVector<T> &data) ;
+  /**
+   * Copy input @p data to the data relative to the @p i-th direction.
+   * @note The CartesianProductArray object will be internally resized (if needed)
+   * in order to contains all the entries in the input @p data.
+   */
+  void copy_data_direction(const int i, const SafeSTLVector<T> &data) ;
 
-    /**
-     * Get a const-reference to the vector data of the <tt>i</tt>-th direction.
-     */
-    const SafeSTLVector<T> &get_data_direction(const int i) const ;
+  /**
+   * Get a const-reference to the vector data of the <tt>i</tt>-th direction.
+   */
+  const SafeSTLVector<T> &get_data_direction(const int i) const ;
 
-    ///@}
+  ///@}
 
-    /** @name Functions returning sub objects */
-    ///@{
+  /** @name Functions returning sub objects */
+  ///@{
 
-    /**
-     * Returns a rank-1 CartesianProductArray built
-     * copying some part of the the data from the calling object.
-     *
-     * The data to be copied is selected using the @p index argument, where
-     * <tt>index[j]</tt> means that the data along <tt>j</tt>-th direction of the new object
-     * is the copy of the data along the <tt>index[j]</tt>-th direction of the old object.
-     * @code
-       //example
-       CartesianProductArray<T,rank> old_obj;
-       CartesianProductArray<T,rank-1> new_obj;
-       //
-       new_obj.data_[j] = old_obj.data_[index[j]];
-       @endcode
-     *
-     */
-    template<int k>
-    SubProduct<k> get_sub_product(const TensorIndex<k> &index) const;
-
-
-
-    ///@}
-
-    /** @name Functions returning the cartesian product entries */
-    ///@{
-
-    /**
-     * Given the product index, it returns the corresponding
-     * cartesian product.
-     * For example if index=[3,1], cartesian product returns
-     * and array [data[0][3], data[1][1]].
-     * In the case T is a floating point it returns a Point type.
-     */
-    point_t cartesian_product(const TensorIndex<rank> &index) const;
+  /**
+   * Returns a rank-1 CartesianProductArray built
+   * copying some part of the the data from the calling object.
+   *
+   * The data to be copied is selected using the @p index argument, where
+   * <tt>index[j]</tt> means that the data along <tt>j</tt>-th direction of the new object
+   * is the copy of the data along the <tt>index[j]</tt>-th direction of the old object.
+   * @code
+     //example
+     CartesianProductArray<T,rank> old_obj;
+     CartesianProductArray<T,rank-1> new_obj;
+     //
+     new_obj.data_[j] = old_obj.data_[index[j]];
+     @endcode
+   *
+   */
+  template<int k>
+  SubProduct<k> get_sub_product(const TensorIndex<k> &index) const;
 
 
-    /**
-     * Returns a flat vector of the cartesian product of the
-     * product array.
-     * For example if the CartesianProductArray is
-     * \f[
-     * \mathbf{x}=\{1,2\} \quad , \quad
-     * \mathbf{y}=\{4,3\}
-     * \f]
-     * then this function returns
-     * \f[
-     * \{(1,4), (1,3), (2,4), (2, 3)\}
-     * \f]
-     */
-    Conditional<std::is_floating_point<T>::value,ValueVector<point_t>,SafeSTLVector<point_t> >
-    get_flat_cartesian_product() const;
-    ///@}
 
-    /**
-     * Resize the vectors containing the data, where
-     * size[i] is the number of element for the i-th direction.
-     */
-    void resize(const TensorSize<rank> &size);
+  ///@}
 
-    void resize(const TensorSize<rank> size, const T &val);
+  /** @name Functions returning the cartesian product entries */
+  ///@{
 
-    void clear();
-    /**
-     * Prints some internal informations. Mainly used for testing and debugging purposes.
-     */
-    void print_info(LogStream &out) const;
+  /**
+   * Given the product index, it returns the corresponding
+   * cartesian product.
+   * For example if index=[3,1], cartesian product returns
+   * and array [data[0][3], data[1][1]].
+   * In the case T is a floating point it returns a Point type.
+   */
+  point_t cartesian_product(const TensorIndex<rank> &index) const;
+
+
+  /**
+   * Returns a flat vector of the cartesian product of the
+   * product array.
+   * For example if the CartesianProductArray is
+   * \f[
+   * \mathbf{x}=\{1,2\} \quad , \quad
+   * \mathbf{y}=\{4,3\}
+   * \f]
+   * then this function returns
+   * \f[
+   * \{(1,4), (1,3), (2,4), (2, 3)\}
+   * \f]
+   */
+  Conditional<std::is_floating_point<T>::value,ValueVector<point_t>,SafeSTLVector<point_t> >
+  get_flat_cartesian_product() const;
+  ///@}
+
+  /**
+   * Resize the vectors containing the data, where
+   * size[i] is the number of element for the i-th direction.
+   */
+  void resize(const TensorSize<rank> &size);
+
+  void resize(const TensorSize<rank> size, const T &val);
+
+  void clear();
+  /**
+   * Prints some internal informations. Mainly used for testing and debugging purposes.
+   */
+  void print_info(LogStream &out) const;
 
 protected:
-    /**
-     * This member contain the data for each coordinate direction.
-     * data_[i][j] refers to the j-th data element  along the
-     * i-th coordinate direction.
-     */
-    SafeSTLArray<SafeSTLVector<T>,rank> data_ ;
+  /**
+   * This member contain the data for each coordinate direction.
+   * data_[i][j] refers to the j-th data element  along the
+   * i-th coordinate direction.
+   */
+  SafeSTLArray<SafeSTLVector<T>,rank> data_ ;
 
 
 private:
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive, int dummy_dim = rank>
-    void
-    serialize(Archive &ar, const unsigned int version,EnableIf<(dummy_dim > 0)> * = 0)
-    {
-        std::string tag_name = "TensorSizedContainer_" + std::to_string(rank);
-        ar &boost::serialization::make_nvp(
-            tag_name.c_str(),
-            boost::serialization::base_object<TensorSizedContainer<rank>>(*this));
+  template<class Archive, int dummy_dim = rank>
+  void
+  serialize(Archive &ar, const unsigned int version,EnableIf<(dummy_dim > 0)> * = 0)
+  {
+    std::string tag_name = "TensorSizedContainer_" + std::to_string(rank);
+    ar &boost::serialization::make_nvp(
+      tag_name.c_str(),
+      boost::serialization::base_object<TensorSizedContainer<rank>>(*this));
 
-        ar &boost::serialization::make_nvp("Data",data_);
-    }
+    ar &boost::serialization::make_nvp("Data",data_);
+  }
 
-    template<class Archive, int dummy_dim = rank>
-    void
-    serialize(Archive &ar, const unsigned int version,EnableIf<!(dummy_dim > 0)> * = 0)
-    {}
-    ///@}
+  template<class Archive, int dummy_dim = rank>
+  void
+  serialize(Archive &ar, const unsigned int version,EnableIf<!(dummy_dim > 0)> * = 0)
+  {}
+  ///@}
 
 };
 

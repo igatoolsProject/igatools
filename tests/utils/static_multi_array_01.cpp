@@ -31,27 +31,27 @@
 template <int dim, int rank = 2>
 void constructors()
 {
-    OUTSTART
+  OUTSTART
 
-    StaticMultiArray<Index,dim,rank> data1;
+  StaticMultiArray<Index,dim,rank> data1;
 
-    StaticMultiArray<Index,dim,rank> data2(3);
-    data2.print_info(out);
-    out << endl;
+  StaticMultiArray<Index,dim,rank> data2(3);
+  data2.print_info(out);
+  out << endl;
 
-    OUTEND
+  OUTEND
 }
 
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
-    constructors<1>();
-    constructors<2>();
-    constructors<3>();
+  constructors<1>();
+  constructors<2>();
+  constructors<3>();
 
-    constructors<2,3>();
+  constructors<2,3>();
 
-    return 0;
+  return 0;
 }

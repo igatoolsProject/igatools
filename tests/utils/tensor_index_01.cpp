@@ -31,36 +31,36 @@
 
 void get_range()
 {
-    OUTSTART
-    {
-        TensorIndex<1> first{3};
-        TensorIndex<1> last{7};
-        out.begin_item("Tensor range 1D:");
-        el_tensor_range(first, last).print_info(out);
-        out.end_item();
-    }
+  OUTSTART
+  {
+    TensorIndex<1> first{3};
+    TensorIndex<1> last{7};
+    out.begin_item("Tensor range 1D:");
+    el_tensor_range(first, last).print_info(out);
+    out.end_item();
+  }
 
-    {
-        TensorIndex<2> first{3,5};
-        TensorIndex<2> last{7,10};
-        out.begin_item("Tensor range 2D:");
-        el_tensor_range(first, last).print_info(out);
-        out.end_item();
-    }
+  {
+    TensorIndex<2> first{3,5};
+    TensorIndex<2> last{7,10};
+    out.begin_item("Tensor range 2D:");
+    el_tensor_range(first, last).print_info(out);
+    out.end_item();
+  }
 
-    {
-        TensorIndex<3> first{3,5,1};
-        TensorIndex<3> last{7,10, 3};
-        out.begin_item("Tensor range 3D:");
-        el_tensor_range(first, last).print_info(out);
-        out.end_item();
-    }
-    OUTEND
+  {
+    TensorIndex<3> first{3,5,1};
+    TensorIndex<3> last{7,10, 3};
+    out.begin_item("Tensor range 3D:");
+    el_tensor_range(first, last).print_info(out);
+    out.end_item();
+  }
+  OUTEND
 }
 
 
 int main()
 {
-    get_range();
-    return 0;
+  get_range();
+  return 0;
 }

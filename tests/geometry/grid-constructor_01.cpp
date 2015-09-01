@@ -30,75 +30,75 @@
 template<int dim>
 void default_const()
 {
-    OUTSTART
-    auto grid = CartesianGrid<dim>::create();
-    grid->print_info(out);
-    OUTEND
+  OUTSTART
+  auto grid = CartesianGrid<dim>::create();
+  grid->print_info(out);
+  OUTEND
 }
 
 
 template<int dim>
 void uniform_const(const int n_knots)
 {
-    OUTSTART
-    auto grid = CartesianGrid<dim>::create(n_knots);
-    grid->print_info(out);
-    OUTEND
+  OUTSTART
+  auto grid = CartesianGrid<dim>::create(n_knots);
+  grid->print_info(out);
+  OUTEND
 }
 
 
 template<int dim>
 void dim_uniform_const()
 {
-    OUTSTART
-    TensorSize<dim> n_knots;
-    for (int i = 0; i < dim; ++i)
-        n_knots[i] = 2*i+2;
-    auto grid = CartesianGrid<dim>::create(n_knots);
-    grid->print_info(out);
-    OUTEND
+  OUTSTART
+  TensorSize<dim> n_knots;
+  for (int i = 0; i < dim; ++i)
+    n_knots[i] = 2*i+2;
+  auto grid = CartesianGrid<dim>::create(n_knots);
+  grid->print_info(out);
+  OUTEND
 }
 
 
 template<int dim>
 void non_uniform_const()
 {
-    OUTSTART
-    TensorSize<dim> n_knots;
-    for (int i = 0; i < dim; ++i)
-        n_knots[i] = 2*i+2;
-    int k = 0;
-    CartesianProductArray<Real, dim> knots(n_knots);
-    for (int i = 0; i < dim; ++i)
-        for (int j = 0; j <n_knots[i] ; ++j)
-            knots.entry(i,j) = k++;
+  OUTSTART
+  TensorSize<dim> n_knots;
+  for (int i = 0; i < dim; ++i)
+    n_knots[i] = 2*i+2;
+  int k = 0;
+  CartesianProductArray<Real, dim> knots(n_knots);
+  for (int i = 0; i < dim; ++i)
+    for (int j = 0; j <n_knots[i] ; ++j)
+      knots.entry(i,j) = k++;
 
-    auto grid = CartesianGrid<dim>::create(knots);
-    grid->print_info(out);
-    OUTEND
+  auto grid = CartesianGrid<dim>::create(knots);
+  grid->print_info(out);
+  OUTEND
 }
 
 int main()
 {
-    default_const<0>();
-    default_const<1>();
-    default_const<2>();
-    default_const<3>();
+  default_const<0>();
+  default_const<1>();
+  default_const<2>();
+  default_const<3>();
 
-    uniform_const<0>(3);
-    uniform_const<1>(3);
-    uniform_const<2>(3);
-    uniform_const<3>(3);
+  uniform_const<0>(3);
+  uniform_const<1>(3);
+  uniform_const<2>(3);
+  uniform_const<3>(3);
 
-    dim_uniform_const<0>();
-    dim_uniform_const<1>();
-    dim_uniform_const<2>();
-    dim_uniform_const<3>();
+  dim_uniform_const<0>();
+  dim_uniform_const<1>();
+  dim_uniform_const<2>();
+  dim_uniform_const<3>();
 
-    non_uniform_const<0>();
-    non_uniform_const<1>();
-    non_uniform_const<2>();
-    non_uniform_const<3>();
+  non_uniform_const<0>();
+  non_uniform_const<1>();
+  non_uniform_const<2>();
+  non_uniform_const<3>();
 
-    return 0;
+  return 0;
 }

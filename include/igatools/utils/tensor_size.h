@@ -41,49 +41,49 @@ template <int rank>
 class TensorSize : public TensorIndex<rank>
 {
 public:
-    /** @name Constructors */
-    ///@{
+  /** @name Constructors */
+  ///@{
 
-    /** Default constructor. Initializes all the direction indices to zero. */
-    explicit TensorSize(const Size value = 0) noexcept ;
+  /** Default constructor. Initializes all the direction indices to zero. */
+  explicit TensorSize(const Size value = 0) noexcept ;
 
-    /** Constructor using an SafeSTLArray. */
-    explicit TensorSize(const SafeSTLArray<Size,rank> &arr) noexcept;
+  /** Constructor using an SafeSTLArray. */
+  explicit TensorSize(const SafeSTLArray<Size,rank> &arr) noexcept;
 
-    /** Copy constructor converting a TensorIndex<rank> @p arr. */
-    explicit TensorSize(const TensorIndex<rank> &arr) noexcept;
+  /** Copy constructor converting a TensorIndex<rank> @p arr. */
+  explicit TensorSize(const TensorIndex<rank> &arr) noexcept;
 
-    /** Constructor using an initializer-list. */
-    TensorSize(std::initializer_list<Size> list) noexcept;
+  /** Constructor using an initializer-list. */
+  TensorSize(std::initializer_list<Size> list) noexcept;
 
-    /** Copy constructor. */
-    TensorSize(const TensorSize<rank> &arr) = default;
+  /** Copy constructor. */
+  TensorSize(const TensorSize<rank> &arr) = default;
 
-    /** Move constructor. */
-    TensorSize(TensorSize<rank> &&arr) = default;
+  /** Move constructor. */
+  TensorSize(TensorSize<rank> &&arr) = default;
 
-    /** Destructor. */
-    ~TensorSize() = default;
-    ///@}
+  /** Destructor. */
+  ~TensorSize() = default;
+  ///@}
 
-    /** @name Assignment operators */
-    ///@{
-    /**
-     * Copy assignment operator
-     */
-    TensorSize<rank> &operator=(const TensorSize<rank> &arr) = default;
+  /** @name Assignment operators */
+  ///@{
+  /**
+   * Copy assignment operator
+   */
+  TensorSize<rank> &operator=(const TensorSize<rank> &arr) = default;
 
-    /**
-     * Move assignment operator
-     */
-    TensorSize<rank> &operator=(TensorSize<rank> &&arr) = default;
-    ///@}
+  /**
+   * Move assignment operator
+   */
+  TensorSize<rank> &operator=(TensorSize<rank> &&arr) = default;
+  ///@}
 
-    /**
-     * Return the flat size, i.e. the multiplications of the sizes along
-     * each direction.
-     */
-    Size flat_size() const noexcept ;
+  /**
+   * Return the flat size, i.e. the multiplications of the sizes along
+   * each direction.
+   */
+  Size flat_size() const noexcept ;
 };
 
 

@@ -50,31 +50,31 @@ template<int size>
 SafeSTLVector<TensorIndex<size> >
 partition(const int n)
 {
-    SafeSTLVector<TensorIndex<size>> v;
-    TensorIndex<size> arr(0);
+  SafeSTLVector<TensorIndex<size>> v;
+  TensorIndex<size> arr(0);
 
-    arr[0] = n;
-    v.push_back(arr);
+  arr[0] = n;
+  v.push_back(arr);
 
-    for (int j=1; j<n+1; ++j)
+  for (int j=1; j<n+1; ++j)
+  {
+    auto w = partition<size-1>(j);
+    for (auto a : w)
     {
-        auto w = partition<size-1>(j);
-        for (auto a : w)
-        {
-            arr[0] = n-j;
-            std::copy(a.begin(), a.end(), arr.begin()+1);
-            v.push_back(arr);
-        }
+      arr[0] = n-j;
+      std::copy(a.begin(), a.end(), arr.begin()+1);
+      v.push_back(arr);
     }
-    return v;
+  }
+  return v;
 }
 
 template<>
 SafeSTLVector<TensorIndex<1> >
 partition<1>(const int n)
 {
-    TensorIndex<1> arr(n);
-    return SafeSTLVector<TensorIndex<1>>(1,arr);
+  TensorIndex<1> arr(n);
+  return SafeSTLVector<TensorIndex<1>>(1,arr);
 }
 
 
@@ -83,7 +83,7 @@ template<>
 SafeSTLVector<TensorIndex<0> >
 partition<0>(const int n)
 {
-    return SafeSTLVector<TensorIndex<0>>();
+  return SafeSTLVector<TensorIndex<0>>();
 }
 
 
@@ -93,63 +93,63 @@ class TensorFunctionDerivativesSymmetry
 {
 public:
 //    static const int num_entries_total = pow(dim,order);
-    static const int num_entries_eval = constexpr_binomial_coefficient(dim-1+order,order);
+  static const int num_entries_eval = constexpr_binomial_coefficient(dim-1+order,order);
 
-    TensorFunctionDerivativesSymmetry()
+  TensorFunctionDerivativesSymmetry()
+  {
+    auto uni_indices = partition<dim>(order);
+    std::copy(uni_indices.begin(), uni_indices.end(), univariate_order.begin());
+
+
+
+    for (int j=0; j<num_entries_eval; ++j)
     {
-        auto uni_indices = partition<dim>(order);
-        std::copy(uni_indices.begin(), uni_indices.end(), univariate_order.begin());
+      auto &der_ind = eval_indices[j];
+      int s=0;
+      for (int dir=0; dir<dim; ++dir)
+      {
+        for (int l=0; l<uni_indices[j][dir]; ++l)
+          der_ind[s+l] = dir;
+        s += uni_indices[j][dir];
+      }
 
+      auto ind = sequence<order>();
+      SafeSTLVector<TensorIndex<order>> v;
+      do
+      {
+        TensorIndex<order> ti;
+        for (int i=0; i<order; ++i)
+          ti[i] = eval_indices[j][ind[i]];
+        v.push_back(ti);
+      }
+      while (std::next_permutation(ind.begin(),ind.end()));
 
+      auto it = std::unique(v.begin(), v.end());
+      v.resize(std::distance(v.begin(),it));
 
-        for (int j=0; j<num_entries_eval; ++j)
-        {
-            auto &der_ind = eval_indices[j];
-            int s=0;
-            for (int dir=0; dir<dim; ++dir)
-            {
-                for (int l=0; l<uni_indices[j][dir]; ++l)
-                    der_ind[s+l] = dir;
-                s += uni_indices[j][dir];
-            }
-
-            auto ind = sequence<order>();
-            SafeSTLVector<TensorIndex<order>> v;
-            do
-            {
-                TensorIndex<order> ti;
-                for (int i=0; i<order; ++i)
-                    ti[i] = eval_indices[j][ind[i]];
-                v.push_back(ti);
-            }
-            while (std::next_permutation(ind.begin(),ind.end()));
-
-            auto it = std::unique(v.begin(), v.end());
-            v.resize(std::distance(v.begin(),it));
-
-            copy_indices[j] = v;
-        }
+      copy_indices[j] = v;
     }
+  }
 
-    void print_info(LogStream &out) const
-    {
-        out.begin_item("univariate derivative orders:");
-        univariate_order.print_info(out);
-        out.end_item();
+  void print_info(LogStream &out) const
+  {
+    out.begin_item("univariate derivative orders:");
+    univariate_order.print_info(out);
+    out.end_item();
 
-        out.begin_item("Assigment indices:");
-        eval_indices.print_info(out);
-        out.end_item();
+    out.begin_item("Assigment indices:");
+    eval_indices.print_info(out);
+    out.end_item();
 
-        out.begin_item("all equal indices indices:");
-        copy_indices.print_info(out);
-        out.end_item();
-    }
-    SafeSTLArray<TensorIndex<dim>, num_entries_eval> univariate_order;
+    out.begin_item("all equal indices indices:");
+    copy_indices.print_info(out);
+    out.end_item();
+  }
+  SafeSTLArray<TensorIndex<dim>, num_entries_eval> univariate_order;
 
-    SafeSTLArray<TensorIndex<order>, num_entries_eval> eval_indices;
+  SafeSTLArray<TensorIndex<order>, num_entries_eval> eval_indices;
 
-    SafeSTLArray<SafeSTLVector<TensorIndex<order>>, num_entries_eval> copy_indices;
+  SafeSTLArray<SafeSTLVector<TensorIndex<order>>, num_entries_eval> copy_indices;
 
 };
 
@@ -172,8 +172,9 @@ auto
 BSplineElementHandler<dim_, range_, rank_>::
 create(std::shared_ptr<const Space> space) -> std::shared_ptr<self_t>
 {
-    return std::shared_ptr<self_t>(new self_t(space));
+  return std::shared_ptr<self_t>(new self_t(space));
 }
+
 
 
 template<int dim_, int range_ , int rank_>
@@ -209,7 +210,6 @@ init_cache_1D()
     const auto &space_data = *bsp_space.space_data_;
 
     const auto &degree = bsp_space.get_degree_table();
-
     const auto &active_components_id = space_data.get_active_components_id();
 
     const auto n_pts = quad.get_num_coords_direction();
@@ -240,7 +240,6 @@ init_cache_1D()
                 splines_1D_comp[dir].resize(deg_comp[dir]+1,n_coords[dir]);
         } // end loop comp
     } // end loop sub_elem
-
 }
 
 
@@ -256,9 +255,9 @@ init_cache_multiD()
     {
         using VCache = typename BSplineElement<dim_,range_,rank_>::parent_t::Cache;
 
-        using Cache = AllSubElementsCache<VCache>;
-        cache = std::make_shared<Cache>();
-    }
+    using Cache = AllSubElementsCache<VCache>;
+    cache = std::make_shared<Cache>();
+  }
 
 
     using BSpElem = BSplineElement<dim_,range_,rank_>;
@@ -326,6 +325,7 @@ copy_to_inactive_components_values(const SafeSTLVector<Index> &inactive_comp,
                 inact_D_phi[qp](comp) = act_D_phi[qp](act_comp);
         }
     }
+  }
 }
 
 
@@ -382,8 +382,8 @@ void
 BSplineElementHandler<dim, range, rank>::
 FillCacheDispatcherNoGlobalCache::
 evaluate_bspline_values(
-    const ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>>> &elem_values,
-    ValueTable<Value> &D_phi) const
+  const ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>>> &elem_values,
+  ValueTable<Value> &D_phi) const
 {
     const auto &bsp_elem = dynamic_cast<BSplineElement<dim,range,rank> &>(elem_);
     const auto &comp_offset = bsp_elem.get_basis_offset();
@@ -423,15 +423,15 @@ void
 BSplineElementHandler<dim, range, rank>::
 FillCacheDispatcherNoGlobalCache::
 evaluate_bspline_derivatives(
-    const ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>>> &elem_values,
-    ValueTable<Derivative<order>> &D_phi) const
+  const ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>>> &elem_values,
+  ValueTable<Derivative<order>> &D_phi) const
 {
-    /*
-     * This code computes any order of derivatives for a multivariate
-     * B-spline on the current element
-     * We use the formula
-     * \partial_(\alpha_1,...,\alpha_n) B(qp) = \Pi d^{\alpha_i} B_i(qp_i)
-     */
+  /*
+   * This code computes any order of derivatives for a multivariate
+   * B-spline on the current element
+   * We use the formula
+   * \partial_(\alpha_1,...,\alpha_n) B(qp) = \Pi d^{\alpha_i} B_i(qp_i)
+   */
 
     Assert(D_phi.size() > 0, ExcEmptyObject());
     const int n_points = D_phi.get_num_points();
@@ -447,8 +447,8 @@ evaluate_bspline_derivatives(
     TensorFunctionDerivativesSymmetry<dim,order> sym;
     const auto n_der = TensorFunctionDerivativesSymmetry<dim,order>::num_entries_eval;
 
-    const auto &univariate_order = sym.univariate_order ;
-    const auto &copy_indices = sym.copy_indices;
+  const auto &univariate_order = sym.univariate_order ;
+  const auto &copy_indices = sym.copy_indices;
 
     for (int comp : elem_values.get_active_components_id())
     {
@@ -495,8 +495,8 @@ evaluate_bspline_derivatives(
 
     } // end comp loop
 
-    copy_to_inactive_components<order>(elem_values.get_inactive_components_id(),
-                                       elem_values.get_comp_map(), D_phi);
+  copy_to_inactive_components<order>(elem_values.get_inactive_components_id(),
+                                     elem_values.get_comp_map(), D_phi);
 }
 
 
@@ -715,9 +715,9 @@ auto
 BSplineElementHandler<dim_, range_, rank_>::
 get_bspline_space() const -> std::shared_ptr<const Space>
 {
-    auto bsp_space = std::dynamic_pointer_cast<const Space>(this->get_space());
-    Assert(bsp_space != nullptr,ExcNullPtr());
-    return bsp_space;
+  auto bsp_space = std::dynamic_pointer_cast<const Space>(this->get_space());
+  Assert(bsp_space != nullptr,ExcNullPtr());
+  return bsp_space;
 }
 
 
@@ -750,9 +750,9 @@ template<int dim_, int range_ , int rank_>
 BSplineElementHandler<dim_, range_, rank_>::
 GlobalCache::
 GlobalCache(const std::shared_ptr<const Quadrature<dim>> &quad, const ComponentMap &component_map)
-    :
-    quad_(quad),
-    basis_values_1d_table_(BasisValues1dTable(component_map))
+  :
+  quad_(quad),
+  basis_values_1d_table_(BasisValues1dTable(component_map))
 {}
 
 template<int dim_, int range_ , int rank_>
@@ -761,7 +761,7 @@ BSplineElementHandler<dim_, range_, rank_>::
 GlobalCache::
 entry(const int comp, const int dir, const Index interval_id) -> BasisValues1d &
 {
-    return basis_values_1d_table_[comp][dir][interval_id];
+  return basis_values_1d_table_[comp][dir][interval_id];
 }
 
 
@@ -771,28 +771,28 @@ BSplineElementHandler<dim_, range_, rank_>::
 GlobalCache::
 print_info(LogStream &out) const
 {
-    using std::to_string;
-    for (const auto comp : basis_values_1d_table_.get_active_components_id())
+  using std::to_string;
+  for (const auto comp : basis_values_1d_table_.get_active_components_id())
+  {
+    out.begin_item("Active Component ID: " + to_string(comp));
+
+    for (const int dir : UnitElement<dim_>::active_directions)
     {
-        out.begin_item("Active Component ID: " + to_string(comp));
+      out.begin_item("Direction : " + to_string(dir));
 
-        for (const int dir : UnitElement<dim_>::active_directions)
-        {
-            out.begin_item("Direction : " + to_string(dir));
+      for (const auto &interv_id_and_basis : basis_values_1d_table_[comp][dir])
+      {
+        const auto interval_id = interv_id_and_basis.first;
+        const auto &basis = interv_id_and_basis.second;
 
-            for (const auto &interv_id_and_basis : basis_values_1d_table_[comp][dir])
-            {
-                const auto interval_id = interv_id_and_basis.first;
-                const auto &basis = interv_id_and_basis.second;
-
-                out.begin_item("Interval ID: " + to_string(interval_id));
-                basis.print_info(out);
-                out.end_item();
-            }
-            out.end_item();
-        } // end loop dir
+        out.begin_item("Interval ID: " + to_string(interval_id));
+        basis.print_info(out);
         out.end_item();
-    } // end loop comp
+      }
+      out.end_item();
+    } // end loop dir
+    out.end_item();
+  } // end loop comp
 }
 
 
@@ -803,19 +803,19 @@ GlobalCache::
 get_element_values(const TensorIndex<dim> &elem_tensor_id) const
 -> ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>>>
 {
-    ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>> >
-    result(basis_values_1d_table_.get_comp_map());
+  ComponentContainer<std::unique_ptr<const TensorProductFunctionEvaluator<dim>> >
+  result(basis_values_1d_table_.get_comp_map());
 
-    SafeSTLArray<BasisValues1dConstView, dim> values_1D;
-    for (auto c : result.get_active_components_id())
-    {
-        const auto &value = basis_values_1d_table_[c];
-        for (int i = 0 ; i < dim_ ; ++i)
-            values_1D[i] = BasisValues1dConstView(value[i].at(elem_tensor_id[i]));
+  SafeSTLArray<BasisValues1dConstView, dim> values_1D;
+  for (auto c : result.get_active_components_id())
+  {
+    const auto &value = basis_values_1d_table_[c];
+    for (int i = 0 ; i < dim_ ; ++i)
+      values_1D[i] = BasisValues1dConstView(value[i].at(elem_tensor_id[i]));
 
-        result[c] = std::make_unique<const TensorProductFunctionEvaluator<dim>>(*this->quad_,values_1D);
-    }
-    return result;
+    result[c] = std::make_unique<const TensorProductFunctionEvaluator<dim>>(*this->quad_,values_1D);
+  }
+  return result;
 }
 #endif
 
@@ -826,8 +826,8 @@ void
 BSplineElementHandler<dim_, range_, rank_>::
 serialize(Archive &ar, const unsigned int version)
 {
-    ar &boost::serialization::make_nvp("BSplineElementHandler_base_t",
-                                       boost::serialization::base_object<base_t>(*this));
+  ar &boost::serialization::make_nvp("BSplineElementHandler_base_t",
+                                     boost::serialization::base_object<base_t>(*this));
 
     ar &boost::serialization::make_nvp("flags_",flags_);
 #if 0

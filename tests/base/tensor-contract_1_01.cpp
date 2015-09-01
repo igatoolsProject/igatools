@@ -32,33 +32,33 @@
 template<int dim, int rdim>
 void test_contract_1()
 {
-    const int order = 2;
-    Derivatives <dim, rdim, 1, order> D2F;
-    Derivatives <dim, rdim, 1, order-1> DF;
+  const int order = 2;
+  Derivatives <dim, rdim, 1, order> D2F;
+  Derivatives <dim, rdim, 1, order-1> DF;
 
-    double val = 0;
-    for (int i = 0; i < dim; ++i)
-        for (int j = 0; j < rdim; ++j)
-            DF[i][i] = ++val;
+  double val = 0;
+  for (int i = 0; i < dim; ++i)
+    for (int j = 0; j < rdim; ++j)
+      DF[i][i] = ++val;
 
-    Real det;
-    auto DF_inv = inverse(DF, det);
+  Real det;
+  auto DF_inv = inverse(DF, det);
 
 
-    out << "The contract_1 of:" << endl;
-    out << D2F << endl;
-    out << "with:" << endl;
-    out << DF << endl;
-    out << "is:" << endl;
-    out << contract_1(D2F,DF) << endl;
+  out << "The contract_1 of:" << endl;
+  out << D2F << endl;
+  out << "with:" << endl;
+  out << DF << endl;
+  out << "is:" << endl;
+  out << contract_1(D2F,DF) << endl;
 
-    out << "The contract_1 of:" << endl;
-    out << D2F << endl;
-    out << "with:" << endl;
-    out << co_tensor(transpose(DF_inv)) << endl;
-    out << "is:" << endl;
-    out << contract_1(D2F,co_tensor(transpose(DF_inv))) << endl;
-    out << endl;
+  out << "The contract_1 of:" << endl;
+  out << D2F << endl;
+  out << "with:" << endl;
+  out << co_tensor(transpose(DF_inv)) << endl;
+  out << "is:" << endl;
+  out << contract_1(D2F,co_tensor(transpose(DF_inv))) << endl;
+  out << endl;
 }
 
 
@@ -67,19 +67,19 @@ void test_contract_1()
 int main()
 {
 
-    out.depth_console(1);
+  out.depth_console(1);
 
-    test_contract_1<1,1>();
-    test_contract_1<1,3>();
-    test_contract_1<1,3>();
+  test_contract_1<1,1>();
+  test_contract_1<1,3>();
+  test_contract_1<1,3>();
 
-    test_contract_1<2,2>();
-    test_contract_1<2,3>();
+  test_contract_1<2,2>();
+  test_contract_1<2,3>();
 
-    test_contract_1<3,3>();
+  test_contract_1<3,3>();
 
 
-    return 0;
+  return 0;
 
 }
 

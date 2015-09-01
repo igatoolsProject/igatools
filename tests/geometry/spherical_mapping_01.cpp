@@ -40,64 +40,64 @@
 template <int dim>
 void mapping_values()
 {
-    using Function = functions::BallFunction<dim>;
+  using Function = functions::BallFunction<dim>;
 
-    auto flag = ValueFlags::point | ValueFlags::value |
-                ValueFlags::gradient |
-                ValueFlags::hessian |
-                ValueFlags::measure|
-                ValueFlags::w_measure;
+  auto flag = ValueFlags::point | ValueFlags::value |
+              ValueFlags::gradient |
+              ValueFlags::hessian |
+              ValueFlags::measure|
+              ValueFlags::w_measure;
 
-    auto quad = QUniform<dim>(3);
-    auto grid = CartesianGrid<dim>::create();
+  auto quad = QUniform<dim>(3);
+  auto grid = CartesianGrid<dim>::create();
 
-    auto F = Function::create(grid, IdentityFunction<dim>::create(grid));
+  auto F = Function::create(grid, IdentityFunction<dim>::create(grid));
 
 
-    using Mapping   = Mapping<dim, 0>;
-    using ElementIt = typename Mapping::ElementIterator;
-    auto map = Mapping::create(F);
-    map->reset(flag, quad);
+  using Mapping   = Mapping<dim, 0>;
+  using ElementIt = typename Mapping::ElementIterator;
+  auto map = Mapping::create(F);
+  map->reset(flag, quad);
 
 //    ElementIt elem(map, 0);
 //    ElementIt end(map, IteratorState::pass_the_end);
-    ElementIt elem = map->begin();
-    ElementIt end = map->end();
+  ElementIt elem = map->begin();
+  ElementIt end = map->end();
 
-    map->template init_cache<dim>(elem);
-    for (; elem != end; ++elem)
-    {
-        map->template fill_cache<dim>(elem, 0);
+  map->template init_cache<dim>(elem);
+  for (; elem != end; ++elem)
+  {
+    map->template fill_cache<dim>(elem, 0);
 
-        out << "Points:" << endl;
-        elem->get_points().print_info(out);
-        out << endl;
-        out << "Values:" << endl;
-        elem->template get_values<_Value, dim>(0).print_info(out);
-        out << endl;
-        out << "Gradients:" << endl;
-        elem->template get_values<_Gradient, dim>(0).print_info(out);
-        out << endl;
-        out << "Hessians:" << endl;
-        elem->template get_values<_Hessian, dim>(0).print_info(out);
-        out << endl;
-        out << "Measure:" << endl;
-        elem->template get_measures<dim>(0).print_info(out);
-        out << endl;
-        out << "weight * measure:" << endl;
-        elem->template get_w_measures<dim>(0).print_info(out);
-        out << endl;
-    }
+    out << "Points:" << endl;
+    elem->get_points().print_info(out);
+    out << endl;
+    out << "Values:" << endl;
+    elem->template get_values<_Value, dim>(0).print_info(out);
+    out << endl;
+    out << "Gradients:" << endl;
+    elem->template get_values<_Gradient, dim>(0).print_info(out);
+    out << endl;
+    out << "Hessians:" << endl;
+    elem->template get_values<_Hessian, dim>(0).print_info(out);
+    out << endl;
+    out << "Measure:" << endl;
+    elem->template get_measures<dim>(0).print_info(out);
+    out << endl;
+    out << "weight * measure:" << endl;
+    elem->template get_w_measures<dim>(0).print_info(out);
+    out << endl;
+  }
 }
 
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
-    mapping_values<1>();
-    mapping_values<2>();
-    mapping_values<3>();
+  mapping_values<1>();
+  mapping_values<2>();
+  mapping_values<3>();
 
-    return 0;
+  return 0;
 }

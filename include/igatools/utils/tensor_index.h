@@ -43,82 +43,82 @@ template <int rank>
 class TensorIndex : public SafeSTLArray<Index, rank>
 {
 public:
-    /** @name Constructors */
-    ///@{
+  /** @name Constructors */
+  ///@{
 
-    /**
-     * Default constructor. Initializes all the direction indices to
-     * @p value. If no @p value is provided, the initialization is made with zeros.
-     */
-    explicit TensorIndex(const Size value = 0) noexcept ;
+  /**
+   * Default constructor. Initializes all the direction indices to
+   * @p value. If no @p value is provided, the initialization is made with zeros.
+   */
+  explicit TensorIndex(const Size value = 0) noexcept ;
 
-    /** Constructor using an SafeSTLArray. */
-    explicit TensorIndex(const SafeSTLArray<Index,rank> &arr) noexcept;
+  /** Constructor using an SafeSTLArray. */
+  explicit TensorIndex(const SafeSTLArray<Index,rank> &arr) noexcept;
 
-    /** Constructor using an initializer-list. */
-    TensorIndex(std::initializer_list<Index> list) noexcept;
+  /** Constructor using an initializer-list. */
+  TensorIndex(std::initializer_list<Index> list) noexcept;
 
-    /** Copy constructor. */
-    TensorIndex(const TensorIndex<rank> &arr) = default;
+  /** Copy constructor. */
+  TensorIndex(const TensorIndex<rank> &arr) = default;
 
-    /** Move constructor. */
-    TensorIndex(TensorIndex<rank> &&arr) = default;
+  /** Move constructor. */
+  TensorIndex(TensorIndex<rank> &&arr) = default;
 
-    /** Destructor. */
-    ~TensorIndex() = default;
-    ///@}
+  /** Destructor. */
+  ~TensorIndex() = default;
+  ///@}
 
-    /** @name Assignment operators */
-    ///@{
+  /** @name Assignment operators */
+  ///@{
 
-    /**
-     * Copy assignment operator
-     */
-    TensorIndex<rank> &operator=(const TensorIndex<rank> &arr) = default;
+  /**
+   * Copy assignment operator
+   */
+  TensorIndex<rank> &operator=(const TensorIndex<rank> &arr) = default;
 
-    /**
-     * Move assignment operator
-     */
-    TensorIndex<rank> &operator=(TensorIndex<rank> &&arr) = default;
+  /**
+   * Move assignment operator
+   */
+  TensorIndex<rank> &operator=(TensorIndex<rank> &&arr) = default;
 
-    ///@}
+  ///@}
 
-    /**
-     * Returns a rank k tensor index formed by the component
-     * in the k indices of sub_indices
-     */
-    template<int k>
-    TensorIndex<k> get_sub_tensor(const TensorIndex<k> &sub_indices) const
-    {
-        TensorIndex<k> res;
-        int j = 0;
-        for (auto i : sub_indices)
-            res[j++] = (*this)[i];
+  /**
+   * Returns a rank k tensor index formed by the component
+   * in the k indices of sub_indices
+   */
+  template<int k>
+  TensorIndex<k> get_sub_tensor(const TensorIndex<k> &sub_indices) const
+  {
+    TensorIndex<k> res;
+    int j = 0;
+    for (auto i : sub_indices)
+      res[j++] = (*this)[i];
 
-        return res;
-    }
+    return res;
+  }
 
-    /**
-     * @name Increment/decrement operators.
-     */
-    ///@{
-    /** Increment the tensor index by the values @p idx.*/
-    TensorIndex<rank> &operator +=(const TensorIndex<rank> &idx) noexcept ;
+  /**
+   * @name Increment/decrement operators.
+   */
+  ///@{
+  /** Increment the tensor index by the values @p idx.*/
+  TensorIndex<rank> &operator +=(const TensorIndex<rank> &idx) noexcept ;
 
-    /** Decrement the tensor index by the values @p idx.*/
-    TensorIndex<rank> &operator -=(const TensorIndex<rank> &idx) noexcept ;
+  /** Decrement the tensor index by the values @p idx.*/
+  TensorIndex<rank> &operator -=(const TensorIndex<rank> &idx) noexcept ;
 
-    /** Increment the indices in all directions by the value @p j. */
-    TensorIndex<rank> &operator +=(const Index j) noexcept ;
+  /** Increment the indices in all directions by the value @p j. */
+  TensorIndex<rank> &operator +=(const Index j) noexcept ;
 
-    /** Decrement the indices in all directions by the value @p j. */
-    TensorIndex<rank> &operator -=(const Index j) noexcept ;
-    ///@}
+  /** Decrement the indices in all directions by the value @p j. */
+  TensorIndex<rank> &operator -=(const Index j) noexcept ;
+  ///@}
 
-    /**
-     * Returns the memory used to define the object's data members.
-     */
-    std::size_t memory_consumption() const;
+  /**
+   * Returns the memory used to define the object's data members.
+   */
+  std::size_t memory_consumption() const;
 
 };
 
@@ -156,10 +156,10 @@ template <int rank>
 bool
 operator<(const TensorIndex<rank> &index_a,const TensorIndex<rank> &index_b)
 {
-    for (int j=0; j<rank; ++j)
-        if (index_a[j] >= index_b[j])
-            return false;
-    return true;
+  for (int j=0; j<rank; ++j)
+    if (index_a[j] >= index_b[j])
+      return false;
+  return true;
 }
 
 
@@ -167,10 +167,10 @@ template <int rank>
 bool
 operator<=(const TensorIndex<rank> &index_a,const TensorIndex<rank> &index_b)
 {
-    for (int j=0; j<rank; ++j)
-        if (index_a[j] > index_b[j])
-            return false;
-    return true;
+  for (int j=0; j<rank; ++j)
+    if (index_a[j] > index_b[j])
+      return false;
+  return true;
 }
 
 
@@ -178,7 +178,7 @@ template <int rank>
 bool
 operator>(const TensorIndex<rank> &index_a,const TensorIndex<rank> &index_b)
 {
-    return (!(index_a <= index_b));
+  return (!(index_a <= index_b));
 }
 
 
@@ -186,7 +186,7 @@ template <int rank>
 bool
 operator>=(const TensorIndex<rank> &index_a,const TensorIndex<rank> &index_b)
 {
-    return (!(index_a < index_b));
+  return (!(index_a < index_b));
 }
 #endif
 /**
@@ -209,23 +209,23 @@ operator<<(LogStream &out, const TensorIndex<rank> &tensor_index) ;
 template<int k>
 SafeSTLVector<TensorIndex<k>> tensor_range(TensorIndex<k> first, TensorIndex<k> last)
 {
-    Assert(first <= last, ExcMessage("first bigger than last"));
-    SafeSTLVector<TensorIndex<k>> result;
-    TensorIndex<k-1> ind(sequence<k-1>());
-    auto vec = tensor_range<k-1>(first.get_sub_tensor(ind), last.get_sub_tensor(ind));
+  Assert(first <= last, ExcMessage("first bigger than last"));
+  SafeSTLVector<TensorIndex<k>> result;
+  TensorIndex<k-1> ind(sequence<k-1>());
+  auto vec = tensor_range<k-1>(first.get_sub_tensor(ind), last.get_sub_tensor(ind));
 
-    for (int i=first[k-1]; i<last[k-1]; ++i)
+  for (int i=first[k-1]; i<last[k-1]; ++i)
+  {
+    for (auto &t_k_1 : vec)
     {
-        for (auto &t_k_1 : vec)
-        {
-            TensorIndex<k> t_k;
-            for (int j=0; j<k-1; ++j)
-                t_k[j] = t_k_1[j];
-            t_k[k-1] = i;
-            result.insert(t_k);
-        }
+      TensorIndex<k> t_k;
+      for (int j=0; j<k-1; ++j)
+        t_k[j] = t_k_1[j];
+      t_k[k-1] = i;
+      result.insert(t_k);
     }
-    return result;
+  }
+  return result;
 }
 
 template<>

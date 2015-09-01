@@ -37,60 +37,60 @@ IGA_NAMESPACE_OPEN
  */
 template<class T,int N>
 class SafeSTLArray :
-    public SafeSTLContainer<std::array<T,N>>
+  public SafeSTLContainer<std::array<T,N>>
 {
-    using base_t = SafeSTLContainer<std::array<T,N>>;
+  using base_t = SafeSTLContainer<std::array<T,N>>;
 public :
 
-    /** Inherit the constructors of the base class. */
-    using SafeSTLContainer<std::array<T,N>>::SafeSTLContainer;
+  /** Inherit the constructors of the base class. */
+  using SafeSTLContainer<std::array<T,N>>::SafeSTLContainer;
 
-    /**
-     * Default Constructor. It fills the <tt>N</tt> entries of the array with <tt>N</tt> copies
-     * of the default-construced object of type <tt>T</tt>.
-     */
-    SafeSTLArray() {};
-
-
-    /**
-     * Constructor. It fills the <tt>N</tt> entries of the array with <tt>N</tt> copies
-     * of the input argument <tt>val</tt>.
-     */
-    SafeSTLArray(const T &val)
-    {
-        std::array<T,N>::fill(val);
-    };
+  /**
+   * Default Constructor. It fills the <tt>N</tt> entries of the array with <tt>N</tt> copies
+   * of the default-construced object of type <tt>T</tt>.
+   */
+  SafeSTLArray() {};
 
 
-    SafeSTLArray(std::initializer_list<T> list)
-    {
-        Assert(list.size() == N, ExcDimensionMismatch(list.size(),N));
+  /**
+   * Constructor. It fills the <tt>N</tt> entries of the array with <tt>N</tt> copies
+   * of the input argument <tt>val</tt>.
+   */
+  SafeSTLArray(const T &val)
+  {
+    std::array<T,N>::fill(val);
+  };
 
-        for (int i = 0 ; i < N ; ++i)
-            (*this)[i] = list.begin()[i] ;
-    };
+
+  SafeSTLArray(std::initializer_list<T> list)
+  {
+    Assert(list.size() == N, ExcDimensionMismatch(list.size(),N));
+
+    for (int i = 0 ; i < N ; ++i)
+      (*this)[i] = list.begin()[i] ;
+  };
 
 private:
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive, int Size = N>
-    void serialize(Archive &ar, const unsigned int version, EnableIf<(Size > 0)> * = 0)
-    {
-        ar &boost::serialization::make_nvp("SafeSTLArray_base_t",
-                                           boost::serialization::base_object<base_t>(*this));
-    }
+  template<class Archive, int Size = N>
+  void serialize(Archive &ar, const unsigned int version, EnableIf<(Size > 0)> * = 0)
+  {
+    ar &boost::serialization::make_nvp("SafeSTLArray_base_t",
+                                       boost::serialization::base_object<base_t>(*this));
+  }
 
-    template<class Archive, int Size = N>
-    void serialize(Archive &ar, const unsigned int version, EnableIf<!(Size > 0)> * = 0)
-    {}
-    ///@}
+  template<class Archive, int Size = N>
+  void serialize(Archive &ar, const unsigned int version, EnableIf<!(Size > 0)> * = 0)
+  {}
+  ///@}
 #endif // SERIALIZATION
 
 };

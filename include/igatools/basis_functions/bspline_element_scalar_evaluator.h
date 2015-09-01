@@ -51,98 +51,98 @@ template <int dim>
 class BSplineElementScalarEvaluator
 {
 public:
-    /** Type for the one dimensional values on a single interval for
-     * a single scalar function.*/
-    using Values1D = typename DenseMatrix::MatrixRowType ;
+  /** Type for the one dimensional values on a single interval for
+   * a single scalar function.*/
+  using Values1D = typename DenseMatrix::MatrixRowType ;
 
-    /**
-     * Typedef for specifying the derivatives of the scalar basis function in the
-     * reference domain.
-     */
-    template <int order>
-    using Derivative = Derivatives<dim,1,1,order>;
-
-
-    /** @name Constructors */
-    ///@{
-    /** Default constructor. Not allowed to be used. */
-    BSplineElementScalarEvaluator() = delete;
-
-    /**
-     * Constructor.
-     * It builds the scalar BSpline evaluator from the one-dimensional views of values and derivatives.
-     * @p values1D[i][j] are the <tt>i</tt>-th order (one-dimensional) derivatives along the <tt>j</tt>-th direction.
-     */
-    BSplineElementScalarEvaluator(const SafeSTLVector<SafeSTLArray<Values1DConstView,dim>> &values1D);
-
-    /** Copy constructor. */
-    BSplineElementScalarEvaluator(const BSplineElementScalarEvaluator<dim> &bspline) = default;
-
-    /** Move constructor. */
-    BSplineElementScalarEvaluator(BSplineElementScalarEvaluator<dim> &&bspline) = default;
-
-    /** Destructor. */
-    ~BSplineElementScalarEvaluator() = default;
-    ///@}
+  /**
+   * Typedef for specifying the derivatives of the scalar basis function in the
+   * reference domain.
+   */
+  template <int order>
+  using Derivative = Derivatives<dim,1,1,order>;
 
 
+  /** @name Constructors */
+  ///@{
+  /** Default constructor. Not allowed to be used. */
+  BSplineElementScalarEvaluator() = delete;
 
-    /** @name Assignment operators */
-    ///@{
-    /** Copy assignment operator. */
-    BSplineElementScalarEvaluator<dim> &operator=(const BSplineElementScalarEvaluator<dim> &bspline) = default;
+  /**
+   * Constructor.
+   * It builds the scalar BSpline evaluator from the one-dimensional views of values and derivatives.
+   * @p values1D[i][j] are the <tt>i</tt>-th order (one-dimensional) derivatives along the <tt>j</tt>-th direction.
+   */
+  BSplineElementScalarEvaluator(const SafeSTLVector<SafeSTLArray<Values1DConstView,dim>> &values1D);
 
-    /** Move assignment operator. */
-    BSplineElementScalarEvaluator<dim> &operator=(BSplineElementScalarEvaluator<dim> &&bspline) = default;
-    ///@}
+  /** Copy constructor. */
+  BSplineElementScalarEvaluator(const BSplineElementScalarEvaluator<dim> &bspline) = default;
 
+  /** Move constructor. */
+  BSplineElementScalarEvaluator(BSplineElementScalarEvaluator<dim> &&bspline) = default;
 
-    /**
-     * Evaluate and returns one partial derivative in one point.
-     * The order of the partial derivative is specified by the tensor-index @p order_tensor_id,
-     * while the point is specified by its tensor-index @p point_tensor_id.
-     */
-    Real evaluate_derivative(
-        const TensorIndex<dim> &order_tensor_id,
-        const TensorIndex<dim> &point_tensor_id) const;
-
-
-    /**
-     * Evaluate and returns one partial @p derivative in all points.
-     * The order of the partial derivative is specified by the tensor-index @p order_tensor_id.
-     */
-    void evaluate_derivative_at_points(
-        const TensorIndex<dim> &order_tensor_id,
-        DynamicMultiArray<Real,dim> &derivative) const;
+  /** Destructor. */
+  ~BSplineElementScalarEvaluator() = default;
+  ///@}
 
 
-    /** Returns the number of points in each direction for which the 1D values are associated. */
-    TensorSize<dim> get_num_points() const;
 
-    /**
-     * Returns a const view to the one-dimensional derivatives of given @p order,
-     * along all coordinate directions.
-     */
-    const SafeSTLArray<Values1DConstView,dim> &get_derivative_components_view(const int order) const;
+  /** @name Assignment operators */
+  ///@{
+  /** Copy assignment operator. */
+  BSplineElementScalarEvaluator<dim> &operator=(const BSplineElementScalarEvaluator<dim> &bspline) = default;
 
-    /**
-     * Returns a const view to the one-dimensional derivative of given @p order,
-     * along the coordinate direction @p dir.
-     */
-    const Values1DConstView &get_values_view(const int order,const int dir) const;
+  /** Move assignment operator. */
+  BSplineElementScalarEvaluator<dim> &operator=(BSplineElementScalarEvaluator<dim> &&bspline) = default;
+  ///@}
+
+
+  /**
+   * Evaluate and returns one partial derivative in one point.
+   * The order of the partial derivative is specified by the tensor-index @p order_tensor_id,
+   * while the point is specified by its tensor-index @p point_tensor_id.
+   */
+  Real evaluate_derivative(
+    const TensorIndex<dim> &order_tensor_id,
+    const TensorIndex<dim> &point_tensor_id) const;
+
+
+  /**
+   * Evaluate and returns one partial @p derivative in all points.
+   * The order of the partial derivative is specified by the tensor-index @p order_tensor_id.
+   */
+  void evaluate_derivative_at_points(
+    const TensorIndex<dim> &order_tensor_id,
+    DynamicMultiArray<Real,dim> &derivative) const;
+
+
+  /** Returns the number of points in each direction for which the 1D values are associated. */
+  TensorSize<dim> get_num_points() const;
+
+  /**
+   * Returns a const view to the one-dimensional derivatives of given @p order,
+   * along all coordinate directions.
+   */
+  const SafeSTLArray<Values1DConstView,dim> &get_derivative_components_view(const int order) const;
+
+  /**
+   * Returns a const view to the one-dimensional derivative of given @p order,
+   * along the coordinate direction @p dir.
+   */
+  const Values1DConstView &get_values_view(const int order,const int dir) const;
 
 private:
-    /*
-        template <int k>
-        void recursive_multiplication(
-            const TensorIndex<dim> &order_tensor_id,
-            DynamicMultiArray<Real,dim> & derivative) const;
-    //*/
-    /**
-     * values[i][j] are the values at the n_qp evaluation points of the i-th derivative
-     * along the j-th direction.
-     */
-    SafeSTLVector<SafeSTLArray<Values1DConstView,dim>> values1D_;
+  /*
+      template <int k>
+      void recursive_multiplication(
+          const TensorIndex<dim> &order_tensor_id,
+          DynamicMultiArray<Real,dim> & derivative) const;
+  //*/
+  /**
+   * values[i][j] are the values at the n_qp evaluation points of the i-th derivative
+   * along the j-th direction.
+   */
+  SafeSTLVector<SafeSTLArray<Values1DConstView,dim>> values1D_;
 };
 
 

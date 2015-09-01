@@ -41,55 +41,55 @@
 template <int dim>
 void intregrate_on_sphere(const int n_knots)
 {
-    const int range=1;
-    OUTSTART
+  const int range=1;
+  OUTSTART
 
-    using MapFunction       = functions::SphereFunction<dim>;
-    using IntegrandFunction = functions::ConstantFunction<dim,1,1,1>;
+  using MapFunction       = functions::SphereFunction<dim>;
+  using IntegrandFunction = functions::ConstantFunction<dim,1,1,1>;
 
-    BBox<dim> box;
-    for (int i=0; i<dim-1; ++i)
-        box[i] = {0., M_PI/2.};
-    if (dim>=1)
-        box[dim-1] = {0., M_PI/2.};
-    auto grid = CartesianGrid<dim>::create(box, n_knots);
+  BBox<dim> box;
+  for (int i=0; i<dim-1; ++i)
+    box[i] = {0., M_PI/2.};
+  if (dim>=1)
+    box[dim-1] = {0., M_PI/2.};
+  auto grid = CartesianGrid<dim>::create(box, n_knots);
 
-    auto F = MapFunction::create(grid, IdentityFunction<dim>::create(grid));
-    typename IntegrandFunction::Value val {1.};
-    auto C = IntegrandFunction::create(grid, F, val);
-
-
-    auto quad = QGauss<dim>(3);
-
-    SafeSTLVector<typename IntegrandFunction::Value> vec(F->get_grid()->get_num_all_elems());
-    auto area = space_tools::integrate<0,dim, 1, range, 1 >(*C, quad, vec);
-    vec.print_info(out);
-    out << endl;
+  auto F = MapFunction::create(grid, IdentityFunction<dim>::create(grid));
+  typename IntegrandFunction::Value val {1.};
+  auto C = IntegrandFunction::create(grid, F, val);
 
 
-    //n-sphere volume
-    //auto exact = std::pow(M_PI, dim/2.) / tgamma(dim/ 2. + 1);
+  auto quad = QGauss<dim>(3);
 
-    //n-sphere area
-    auto exact = 2. * std::pow(M_PI, (dim+1)/2.) / tgamma((dim+1)/ 2.);
-    auto ans = exact * 0.5 * std::pow(0.25, dim-1.);
+  SafeSTLVector<typename IntegrandFunction::Value> vec(F->get_grid()->get_num_all_elems());
+  auto area = space_tools::integrate<0,dim, 1, range, 1 >(*C, quad, vec);
+  vec.print_info(out);
+  out << endl;
 
-    out << exact<< "    "<< ans << "    " << area << endl;
+
+  //n-sphere volume
+  //auto exact = std::pow(M_PI, dim/2.) / tgamma(dim/ 2. + 1);
+
+  //n-sphere area
+  auto exact = 2. * std::pow(M_PI, (dim+1)/2.) / tgamma((dim+1)/ 2.);
+  auto ans = exact * 0.5 * std::pow(0.25, dim-1.);
+
+  out << exact<< "    "<< ans << "    " << area << endl;
 //    SafeSTLVector<typename IntegrandFunction::template Derivative<1>> vec_der(F->get_grid()->get_num_all_elems());
 //    space_tools::integrate<1, dim, 1, range, 1 >(*C,  quad, vec_der);
 //    vec_der.print_info(out);
 //    out << endl;
 
-    OUTEND
+  OUTEND
 }
 
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
-    //intregrate_on_sphere<1>(4);
-    intregrate_on_sphere<2>(2);
+  //intregrate_on_sphere<1>(4);
+  intregrate_on_sphere<2>(2);
 
-    return 0;
+  return 0;
 }

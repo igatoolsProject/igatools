@@ -53,120 +53,120 @@ template <class Accessor> class GridIterator;
  */
 template <int dim, int range, int rank>
 class NURBSElement :
-    public ReferenceElement<dim,range,rank>
+  public ReferenceElement<dim,range,rank>
 {
 private:
-    using self_t = NURBSElement<dim,range,rank>;
-    using parent_t = ReferenceElement<dim,range,rank>;
+  using self_t = NURBSElement<dim,range,rank>;
+  using parent_t = ReferenceElement<dim,range,rank>;
 
 public:
-    /** Type for the grid accessor. */
-    using GridAccessor = GridElement<dim>;
+  /** Type for the grid accessor. */
+  using GridAccessor = GridElement<dim>;
 
-    /** Type required by the CartesianGridIterator templated iterator */
-    using ContainerType = const NURBSSpace<dim, range, rank> ;
+  /** Type required by the CartesianGridIterator templated iterator */
+  using ContainerType = const NURBSSpace<dim, range, rank> ;
 
-    /** Type required for the generic algorithm on the spaces (plots??) */
-    using Space = NURBSSpace<dim, range, rank> ;
+  /** Type required for the generic algorithm on the spaces (plots??) */
+  using Space = NURBSSpace<dim, range, rank> ;
 
 
-    using Grid = CartesianGrid<dim>;
-    using IndexType = typename Grid::IndexType;
-    using List = typename Grid::List;
-    using ListIt = typename Grid::ListIt;
+  using Grid = CartesianGrid<dim>;
+  using IndexType = typename Grid::IndexType;
+  using List = typename Grid::List;
+  using ListIt = typename Grid::ListIt;
 
-    /** @name Constructors */
-    ///@{
+  /** @name Constructors */
+  ///@{
 protected:
-    /**
-     * Default constructor. It does nothing but it is needed for the
-     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     * mechanism.
-     */
-    NURBSElement() = default;
+  /**
+   * Default constructor. It does nothing but it is needed for the
+   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * mechanism.
+   */
+  NURBSElement() = default;
 
 public:
-    /**
-     * Constructs an accessor to element number index of a
-     * BsplineSpace space.
-     */
-    NURBSElement(const std::shared_ptr<ContainerType> space,
-                 const ListIt &index,
-                 const PropId &prop = ElementProperties::active);
+  /**
+   * Constructs an accessor to element number index of a
+   * BsplineSpace space.
+   */
+  NURBSElement(const std::shared_ptr<ContainerType> space,
+               const ListIt &index,
+               const PropId &prop = ElementProperties::active);
 
 
-    /**
-     * Copy constructor.
-     * It can be used with different copy policies (i.e. deep copy or shallow copy).
-     * The default behaviour (i.e. using the proper interface of a classic copy constructor)
-     * uses the deep copy.
-     */
-    NURBSElement(const self_t &elem,
-                 const CopyPolicy &copy_policy = CopyPolicy::deep);
+  /**
+   * Copy constructor.
+   * It can be used with different copy policies (i.e. deep copy or shallow copy).
+   * The default behaviour (i.e. using the proper interface of a classic copy constructor)
+   * uses the deep copy.
+   */
+  NURBSElement(const self_t &elem,
+               const CopyPolicy &copy_policy = CopyPolicy::deep);
 //*/
 
-    /**
-     * Move constructor.
-     */
-    NURBSElement(self_t &&elem) = default;
+  /**
+   * Move constructor.
+   */
+  NURBSElement(self_t &&elem) = default;
 
-    /**
-     * Destructor.
-     */
-    virtual ~NURBSElement() = default;
-    ///@}
+  /**
+   * Destructor.
+   */
+  virtual ~NURBSElement() = default;
+  ///@}
 
-    /** @name Assignment operators */
-    ///@{
-    /**
-     * Copy assignment operator.
-     * @note Creates a new element cache, but it shares
-     * the one dimensional cache with the copied element.
-     */
-    self_t &operator=(const self_t &elem) = default;
+  /** @name Assignment operators */
+  ///@{
+  /**
+   * Copy assignment operator.
+   * @note Creates a new element cache, but it shares
+   * the one dimensional cache with the copied element.
+   */
+  self_t &operator=(const self_t &elem) = default;
 
-    /**
-     * Move assignment operator.
-     */
-    self_t &operator=(self_t &&elem) = default;
-    ///@}
+  /**
+   * Move assignment operator.
+   */
+  self_t &operator=(self_t &&elem) = default;
+  ///@}
 
 #if 0
-    /** @name Functions/operators for moving the element in the NURBSSpace.*/
-    ///@{
-    /**
-     * Sets the index of the element using the flatten representation.
-     * @note This function also updates the index for the tensor representation.
-     * @warning This may be a dangerous function, be careful when using it
-     * as it is easy to use incorrectly. Only use it if you know what you
-     * are doing.
-     */
-    virtual void move_to(const Index flat_index) override final;
-    ///@}
+  /** @name Functions/operators for moving the element in the NURBSSpace.*/
+  ///@{
+  /**
+   * Sets the index of the element using the flatten representation.
+   * @note This function also updates the index for the tensor representation.
+   * @warning This may be a dangerous function, be careful when using it
+   * as it is easy to use incorrectly. Only use it if you know what you
+   * are doing.
+   */
+  virtual void move_to(const Index flat_index) override final;
+  ///@}
 #endif
 
-    /**
-     * Returns the NURBSSpace in which the NURBSElement is defined.
-     */
-    std::shared_ptr<const Space> get_nurbs_space() const;
+  /**
+   * Returns the NURBSSpace in which the NURBSElement is defined.
+   */
+  std::shared_ptr<const Space> get_nurbs_space() const;
 
 private:
 
-    using SpSpace = typename Space::SpSpace;
+  using SpSpace = typename Space::SpSpace;
 
-    typename SpSpace::ElementAccessor bspline_elem_;
+  typename SpSpace::ElementAccessor bspline_elem_;
 
-    using WeightFunction = typename Space::WeightFunction;
-    using WeightElem = typename WeightFunction::ElementAccessor;
-    WeightElem weight_elem_;
+  using WeightFunction = typename Space::WeightFunction;
+  using WeightElem = typename WeightFunction::ElementAccessor;
+  WeightElem weight_elem_;
 
 public:
 
-    friend class NURBSElementHandler<dim, range, rank>;
+  friend class NURBSElementHandler<dim, range, rank>;
 
 
-    virtual std::shared_ptr<SpaceElement<dim,0,range,rank,Transformation::h_grad> >
-    clone() const override final;
+  virtual std::shared_ptr<SpaceElement<dim,0,range,rank,Transformation::h_grad> >
+  clone() const override final;
 
 
     virtual typename List::iterator &operator++() override final
@@ -177,17 +177,17 @@ public:
     }
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version);
-    ///@}
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version);
+  ///@}
 #endif // SERIALIZATION
 };
 

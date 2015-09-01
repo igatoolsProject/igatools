@@ -43,33 +43,33 @@ class UniqueIdGenerator
 {
 public:
 
-    /** @name Constructors */
-    ///@{
-    ///@}
+  /** @name Constructors */
+  ///@{
+  ///@}
 
-    /** @name Assignment operators */
-    ///@{
+  /** @name Assignment operators */
+  ///@{
 
-    /**
-     * Copy assignment operator
-     */
-    UniqueIdGenerator &operator=(const UniqueIdGenerator &obj) = delete;
+  /**
+   * Copy assignment operator
+   */
+  UniqueIdGenerator &operator=(const UniqueIdGenerator &obj) = delete;
 
-    /**
-     * Move assignment operator
-     */
-    UniqueIdGenerator &operator=(UniqueIdGenerator &&obj) = delete;
-    ///@}
+  /**
+   * Move assignment operator
+   */
+  UniqueIdGenerator &operator=(UniqueIdGenerator &&obj) = delete;
+  ///@}
 
 
-    /**
-     * Returns a unique id each time this function is invoked.
-     */
-    static Index get_unique_id();
+  /**
+   * Returns a unique id each time this function is invoked.
+   */
+  static Index get_unique_id();
 
 private:
 
-    static Index id_;
+  static Index id_;
 };
 
 IGA_NAMESPACE_CLOSE

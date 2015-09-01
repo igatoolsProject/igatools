@@ -48,77 +48,77 @@ auto
 create_function(shared_ptr<CartesianGrid<dim>> grid)
 {
 
-    using Function = functions::LinearFunction<dim, 0, dim+codim>;
-    typename Function::Value    b;
-    typename Function::Gradient A;
-    for (int i=0; i<dim+codim; i++)
-    {
-        for (int j=0; j<dim; j++)
-            if (j == i)
-                A[j][j] = 2.;
-        b[i] = i;
-    }
+  using Function = functions::LinearFunction<dim, 0, dim+codim>;
+  typename Function::Value    b;
+  typename Function::Gradient A;
+  for (int i=0; i<dim+codim; i++)
+  {
+    for (int j=0; j<dim; j++)
+      if (j == i)
+        A[j][j] = 2.;
+    b[i] = i;
+  }
 
-    return Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
+  return Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
 }
 
 
 template <int dim, int order = 0, int range=1, int rank=1, int codim = 0>
 void elem_values(const int n_knots = 5, const int deg=1)
 {
-    OUTSTART
-    const int k = dim;
-    using BspSpace = BSplineSpace<dim, range, rank>;
-    using RefSpace = ReferenceSpace<dim, range,rank>;
-    using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
+  OUTSTART
+  const int k = dim;
+  using BspSpace = BSplineSpace<dim, range, rank>;
+  using RefSpace = ReferenceSpace<dim, range,rank>;
+  using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 //    using ElementHandler = typename Space::ElementHandler;
 
-    auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto grid  = CartesianGrid<dim>::create(n_knots);
 
-    auto ref_space = BspSpace::create(deg, grid);
-    auto map_func = create_function(grid);
+  auto ref_space = BspSpace::create(deg, grid);
+  auto map_func = create_function(grid);
 
-    auto space = Space::create(ref_space, map_func);
+  auto space = Space::create(ref_space, map_func);
 
-    auto flag = ValueFlags::none;
-    switch (order)
-    {
-        case 0:
-            flag |= ValueFlags::value;
-            break;
-        case 1:
-            flag |= ValueFlags::gradient;
-            break;
-        case 2:
-            flag |= ValueFlags::hessian;
-            break;
-    }
+  auto flag = ValueFlags::none;
+  switch (order)
+  {
+    case 0:
+      flag |= ValueFlags::value;
+      break;
+    case 1:
+      flag |= ValueFlags::gradient;
+      break;
+    case 2:
+      flag |= ValueFlags::hessian;
+      break;
+  }
 
-    auto quad = QGauss<k>(2);
+  auto quad = QGauss<k>(2);
 
-    auto elem_filler = space->get_elem_handler();
-    elem_filler->reset(flag, quad);
+  auto elem_filler = space->get_elem_handler();
+  elem_filler->reset(flag, quad);
 
-    auto elem = space->begin();
-    auto end = space->end();
-    elem_filler->init_element_cache(elem);
-    for (; elem != end; ++elem)
-    {
-        elem_filler->fill_element_cache(elem);
-        elem->template get_basis<_Value, k>(0,DofProperties::active).print_info(out);
-    }
+  auto elem = space->begin();
+  auto end = space->end();
+  elem_filler->init_element_cache(elem);
+  for (; elem != end; ++elem)
+  {
+    elem_filler->fill_element_cache(elem);
+    elem->template get_basis<_Value, k>(0,DofProperties::active).print_info(out);
+  }
 
-    OUTEND
+  OUTEND
 }
 
 
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
 
-    elem_values<1>();
+  elem_values<1>();
 
-    return  0;
+  return  0;
 }

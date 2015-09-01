@@ -36,62 +36,62 @@
 template<int dim, int range = 1, int rank = 1>
 void norm_difference(const int deg, const int n_knots = 10)
 {
-    const Real p=2.;
-    using Space = BSplineSpace<dim, range, rank>;
+  const Real p=2.;
+  using Space = BSplineSpace<dim, range, rank>;
 
 
-    auto grid = CartesianGrid<dim>::create(n_knots);
-    auto space = Space::create(deg, grid);
+  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto space = Space::create(deg, grid);
 
-    const int n_qpoints = ceil((2*dim + 1)/2.);
-    QGauss<dim> quad(n_qpoints);
+  const int n_qpoints = ceil((2*dim + 1)/2.);
+  QGauss<dim> quad(n_qpoints);
 
-    auto f = std::shared_ptr<ProductFunction<dim> >(new ProductFunction<dim>(grid, IdentityFunction<dim>::create(grid)));
-    typename functions::ConstantFunction<dim,0,1>::Value val {0.};
-    auto g = functions::ConstantFunction<dim,0,1>::create(grid,
-                                                          IdentityFunction<dim>::create(grid), val);
+  auto f = std::shared_ptr<ProductFunction<dim> >(new ProductFunction<dim>(grid, IdentityFunction<dim>::create(grid)));
+  typename functions::ConstantFunction<dim,0,1>::Value val {0.};
+  auto g = functions::ConstantFunction<dim,0,1>::create(grid,
+                                                        IdentityFunction<dim>::create(grid), val);
 
-    SafeSTLVector<Real> elem_err(grid->get_num_all_elems());
-    auto err = space_tools::l2_norm_difference(*f, *g, quad, elem_err);
-    out << std::pow(p+1, -dim/p) << "\t" << err << endl;
+  SafeSTLVector<Real> elem_err(grid->get_num_all_elems());
+  auto err = space_tools::l2_norm_difference(*f, *g, quad, elem_err);
+  out << std::pow(p+1, -dim/p) << "\t" << err << endl;
 
-    SafeSTLVector<Real> elem_err_h1(grid->get_num_all_elems());
-    auto err_h1 = space_tools::h1_norm_difference(*f, *g, quad, elem_err_h1);
-    out <<  err_h1 << endl;
+  SafeSTLVector<Real> elem_err_h1(grid->get_num_all_elems());
+  auto err_h1 = space_tools::h1_norm_difference(*f, *g, quad, elem_err_h1);
+  out <<  err_h1 << endl;
 
-    SafeSTLVector<Real> elem_err_inf(grid->get_num_all_elems());
-    auto err_inf = space_tools::inf_norm_difference(*f, *g, quad, elem_err_inf);
-    out <<  err_inf << endl;
+  SafeSTLVector<Real> elem_err_inf(grid->get_num_all_elems());
+  auto err_inf = space_tools::inf_norm_difference(*f, *g, quad, elem_err_inf);
+  out <<  err_inf << endl;
 
 }
 
 template<int dim, int range = 1, int rank = 1>
 void norm_difference_p(const int deg, const int n_knots, const Real p)
 {
-    using Space = BSplineSpace<dim, range, rank>;
+  using Space = BSplineSpace<dim, range, rank>;
 
 
-    auto grid = CartesianGrid<dim>::create(n_knots);
-    auto space = Space::create(deg, grid);
+  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto space = Space::create(deg, grid);
 
-    const int n_qpoints = ceil((2*dim + 1)/2.);
-    QGauss<dim> quad(n_qpoints);
+  const int n_qpoints = ceil((2*dim + 1)/2.);
+  QGauss<dim> quad(n_qpoints);
 
-    auto f = std::shared_ptr<ProductFunction<dim> >(new ProductFunction<dim>(grid, IdentityFunction<dim>::create(grid)));
-    typename functions::ConstantFunction<dim,0,1>::Value val {0.};
-    auto g = functions::ConstantFunction<dim,0,1>::create(grid,
-                                                          IdentityFunction<dim>::create(grid), val);
+  auto f = std::shared_ptr<ProductFunction<dim> >(new ProductFunction<dim>(grid, IdentityFunction<dim>::create(grid)));
+  typename functions::ConstantFunction<dim,0,1>::Value val {0.};
+  auto g = functions::ConstantFunction<dim,0,1>::create(grid,
+                                                        IdentityFunction<dim>::create(grid), val);
 
-    SafeSTLVector<Real> elem_err(grid->get_num_all_elems());
-    space_tools::norm_difference<0,dim>(*f, *g, quad, p, elem_err);
+  SafeSTLVector<Real> elem_err(grid->get_num_all_elems());
+  space_tools::norm_difference<0,dim>(*f, *g, quad, p, elem_err);
 
-    Real err = 0;
-    for (const Real &loc_err : elem_err)
-        err += loc_err;
+  Real err = 0;
+  for (const Real &loc_err : elem_err)
+    err += loc_err;
 
-    err = std::pow(err,1./p);
+  err = std::pow(err,1./p);
 
-    out << std::pow(p+1, -dim/p) << "\t" << err << endl;
+  out << std::pow(p+1, -dim/p) << "\t" << err << endl;
 
 }
 
@@ -99,15 +99,15 @@ void norm_difference_p(const int deg, const int n_knots, const Real p)
 
 int main()
 {
-    out.depth_console(20);
+  out.depth_console(20);
 
-    norm_difference<1,1,1>(3);
-    norm_difference<2,1,1>(3);
-    norm_difference<3,1,1>(1);
+  norm_difference<1,1,1>(3);
+  norm_difference<2,1,1>(3);
+  norm_difference<3,1,1>(1);
 
-    norm_difference_p<1,1,1>(3, 10, 1);
-    norm_difference_p<2,1,1>(3, 10, 1);
-    norm_difference_p<3,1,1>(3, 10, 1);
-    return 0;
+  norm_difference_p<1,1,1>(3, 10, 1);
+  norm_difference_p<2,1,1>(3, 10, 1);
+  norm_difference_p<3,1,1>(3, 10, 1);
+  return 0;
 }
 

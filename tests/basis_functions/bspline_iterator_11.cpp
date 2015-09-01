@@ -35,7 +35,7 @@ template <int dim, int range=1, int rank=1>
 void uniform_space_cache(const space_element::Flags flag,
                          const int n_knots = 5, const int deg=1)
 {
-    OUTSTART
+  OUTSTART
 
     using Space = BSplineSpace<dim, range, rank>;
     auto grid  = CartesianGrid<dim>::create(n_knots);
@@ -58,14 +58,14 @@ void uniform_space_cache(const space_element::Flags flag,
     elem->print_cache_info(out);
 
 
-    OUTEND
+  OUTEND
 }
 
 
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
 
     uniform_space_cache<1>(space_element::Flags::value);

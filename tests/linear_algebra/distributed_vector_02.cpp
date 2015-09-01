@@ -37,53 +37,53 @@ using namespace EpetraTools;
 
 void non_contig_indices()
 {
-    OUTSTART
+  OUTSTART
 
 
 
-    std::set<Index> dofs = {1, 3, 5};
-    const SafeSTLVector<Index> dofs_vec(dofs.begin(), dofs.end());
-    Epetra_SerialComm comm;
-    auto map = std::make_shared<Map>(-1, dofs_vec.size(), dofs_vec.data(), 0, comm);
-    auto vec = create_vector(*map);
-    out.begin_item("vec");
-    vec->print_info(out);
-    out.end_item();
+  std::set<Index> dofs = {1, 3, 5};
+  const SafeSTLVector<Index> dofs_vec(dofs.begin(), dofs.end());
+  Epetra_SerialComm comm;
+  auto map = std::make_shared<Map>(-1, dofs_vec.size(), dofs_vec.data(), 0, comm);
+  auto vec = create_vector(*map);
+  out.begin_item("vec");
+  vec->print_info(out);
+  out.end_item();
 
-    const int dim = 1;
-    using Space = BSplineSpace<dim>;
-    using Function = IgFunction<dim,0,1,1>;
-    auto grid = CartesianGrid<dim>::create(5);
-    const int deg = 1;
-    auto space = Space::create_nonconst(deg, grid);
-    auto dof_distribution = space->get_ptr_dof_distribution();
-    dof_distribution->set_all_dofs_property_status(DofProperties::active,false);
-    dof_distribution->set_dof_property_status(DofProperties::active,dofs,true);
+  const int dim = 1;
+  using Space = BSplineSpace<dim>;
+  using Function = IgFunction<dim,0,1,1>;
+  auto grid = CartesianGrid<dim>::create(5);
+  const int deg = 1;
+  auto space = Space::create_nonconst(deg, grid);
+  auto dof_distribution = space->get_ptr_dof_distribution();
+  dof_distribution->set_all_dofs_property_status(DofProperties::active,false);
+  dof_distribution->set_dof_property_status(DofProperties::active,dofs,true);
 
-    auto coeff = create_vector(*space, DofProperties::active,comm);
-    out.begin_item("coeff");
-    coeff->print_info(out);
-    out.end_item();
+  auto coeff = create_vector(*space, DofProperties::active,comm);
+  out.begin_item("coeff");
+  coeff->print_info(out);
+  out.end_item();
 
-    auto F = Function::create(space, coeff);
-    auto vec1 = F->get_coefficients();
-    out.begin_item("vec1");
-    vec1.print_info(out);
-    out.end_item();
+  auto F = Function::create(space, coeff);
+  auto vec1 = F->get_coefficients();
+  out.begin_item("vec1");
+  vec1.print_info(out);
+  out.end_item();
 
-    auto func = F->clone();
-    auto vec2 = std::dynamic_pointer_cast<Function>(func)->get_coefficients();
-    out.begin_item("vec2");
-    vec2.print_info(out);
-    out.end_item();
+  auto func = F->clone();
+  auto vec2 = std::dynamic_pointer_cast<Function>(func)->get_coefficients();
+  out.begin_item("vec2");
+  vec2.print_info(out);
+  out.end_item();
 
-    OUTEND
+  OUTEND
 }
 
 
 
 int main()
 {
-    non_contig_indices();
-    return  0;
+  non_contig_indices();
+  return  0;
 }

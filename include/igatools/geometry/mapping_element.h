@@ -21,6 +21,7 @@
 #ifndef MAPPING_ELEMENT_H_
 #define MAPPING_ELEMENT_H_
 
+#if 0
 #include <igatools/utils/safe_stl_array.h>
 #include <igatools/geometry/mapping.h>
 #include <igatools/functions/function_element.h>
@@ -35,298 +36,298 @@ template<int dim_, int codim_ = 0>
 class MappingElement
 {
 private:
-    using self_t  = MappingElement<dim_,codim_>;
-    using PhysDomain = Mapping<dim_,codim_>;
-    using Func = MapFunction_new<dim_,codim_>;
+  using self_t  = MappingElement<dim_,codim_>;
+  using PhysDomain = Mapping<dim_,codim_>;
+  using Func = MapFunction_new<dim_,codim_>;
 
-    using Point = typename Func::Point;
-    using Value = typename Func::Value;
-    using Gradient = typename Func::Gradient;
-    using Hessian  = typename Func::Hessian;
-    using Div      = typename Func::Div;
+  using Point = typename Func::Point;
+  using Value = typename Func::Value;
+  using Gradient = typename Func::Gradient;
+  using Hessian  = typename Func::Hessian;
+  using Div      = typename Func::Div;
 
 public:
-    using ContainerType = PhysDomain;
-    static const int dim = dim_;
-    static const int codim = codim_;
-    static const int space_dim = dim_+codim_;
+  using ContainerType = PhysDomain;
+  static const int dim = dim_;
+  static const int codim = codim_;
+  static const int space_dim = dim_+codim_;
 
-    using Grid = CartesianGrid<dim_>;
-    using IndexType = typename Grid::IndexType;
-    using List = typename Grid::List;
-    using ListIt = typename Grid::ListIt;
-
-
-    /** @name Constructors */
-    ///@{
-    /**
-     * Default constructor. It does nothing but it is needed for the
-     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     * mechanism.
-     */
-    MappingElement() = default;
-
-    /**
-     * Construct an accessor pointing to the element with
-     * flat index @p elem_index of the Function @p func.
-     */
-    MappingElement(const std::shared_ptr<const PhysDomain> phys_domain,
-                   const ListIt &index,
-                   const PropId &prop = ElementProperties::active);
-
-    /**
-     * Copy constructor.
-     * It can be used with different copy policies
-     * (i.e. deep copy or shallow copy).
-     * The default behaviour (i.e. using the proper interface of a
-     * classic copy constructor)
-     * uses the deep copy.
-     */
-    MappingElement(const self_t &elem,
-                   const CopyPolicy &copy_policy = CopyPolicy::deep);
-
-    /**
-     * Move constructor.
-     */
-    MappingElement(self_t &&elem) = default;
-
-    /**
-     * Destructor.
-     */
-    ~MappingElement() = default;
-    ///@}
-
-    /**
-     * @name Functions for performing different kind of copy.
-     */
-    ///@{
-    /**
-     * Performs a deep copy of the input @p element,
-     * i.e. a new local cache is built using the copy constructor on the local cache of @p element.
-     *
-     * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
-     */
-    void deep_copy_from(const self_t &element)
-    {
-        Assert(false,ExcNotImplemented());
-    }
-
-    /**
-     * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
-     * local cache used by the input @p element.
-     */
-    void shallow_copy_from(const self_t &element)
-    {
-        Assert(false,ExcNotImplemented());
-    }
-    ///@}
-
-    template<int order>
-    using InvDerivative = typename PhysDomain::template InvDerivative<order>;
-
-    template <int order>
-    using Derivative = typename PhysDomain::template Derivative<order>;
-
-    template <class ValueType, int topology_dim = dim>
-    auto &get_values_from_cache(const int topology_id = 0) const
-    {
-        Assert(local_cache_ != nullptr,ExcNullPtr());
-        const auto &cache = local_cache_->template get_sub_elem_cache<topology_dim>(topology_id);
-        return cache.template get_data<ValueType>();
-    }
-
-    template<int k>
-    ValueVector<Real> const &get_measures(const int j) const
-    {
-        return get_values_from_cache<_Measure,k>(j);
-    }
-
-    template<int k>
-    ValueVector<Real> const &get_w_measures(const int j) const
-    {
-        return get_values_from_cache<_W_Measure,k>(j);
-    }
-
-    const ValueVector<Points<space_dim> > &get_external_normals() const;
-
-    using MetricTensor =
-        Tensor<dim, 1, tensor::covariant, Tensor<dim, 1, tensor::contravariant, Tdouble> >;
-
-    ValueVector<MetricTensor> compute_inv_first_fundamental_form() const;
-
-    ValueVector<MetricTensor> compute_second_fundamental_form() const;
-
-    ValueVector< Derivative<1> > get_D_external_normals() const;
-
-    const ValueVector<SafeSTLVector<Real> > &get_principal_curvatures() const;
+  using Grid = CartesianGrid<dim_>;
+  using IndexType = typename Grid::IndexType;
+  using List = typename Grid::List;
+  using ListIt = typename Grid::ListIt;
 
 
-    template<int sub_dim>
-    const ValueVector<Points<space_dim> > &
-    get_boundary_normals(const int s_id) const
-    {
+  /** @name Constructors */
+  ///@{
+  /**
+   * Default constructor. It does nothing but it is needed for the
+   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * mechanism.
+   */
+  MappingElement() = default;
+
+  /**
+   * Construct an accessor pointing to the element with
+   * flat index @p elem_index of the Function @p func.
+   */
+  MappingElement(const std::shared_ptr<const PhysDomain> phys_domain,
+                 const ListIt &index,
+                 const PropId &prop = ElementProperties::active);
+
+  /**
+   * Copy constructor.
+   * It can be used with different copy policies
+   * (i.e. deep copy or shallow copy).
+   * The default behaviour (i.e. using the proper interface of a
+   * classic copy constructor)
+   * uses the deep copy.
+   */
+  MappingElement(const self_t &elem,
+                 const CopyPolicy &copy_policy = CopyPolicy::deep);
+
+  /**
+   * Move constructor.
+   */
+  MappingElement(self_t &&elem) = default;
+
+  /**
+   * Destructor.
+   */
+  ~MappingElement() = default;
+  ///@}
+
+  /**
+   * @name Functions for performing different kind of copy.
+   */
+  ///@{
+  /**
+   * Performs a deep copy of the input @p element,
+   * i.e. a new local cache is built using the copy constructor on the local cache of @p element.
+   *
+   * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
+   */
+  void deep_copy_from(const self_t &element)
+  {
+    Assert(false,ExcNotImplemented());
+  }
+
+  /**
+   * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
+   * local cache used by the input @p element.
+   */
+  void shallow_copy_from(const self_t &element)
+  {
+    Assert(false,ExcNotImplemented());
+  }
+  ///@}
+
+  template<int order>
+  using InvDerivative = typename PhysDomain::template InvDerivative<order>;
+
+  template <int order>
+  using Derivative = typename PhysDomain::template Derivative<order>;
+
+  template <class ValueType, int topology_dim = dim>
+  auto &get_values_from_cache(const int topology_id = 0) const
+  {
+    Assert(local_cache_ != nullptr,ExcNullPtr());
+    const auto &cache = local_cache_->template get_sub_elem_cache<topology_dim>(topology_id);
+    return cache.template get_data<ValueType>();
+  }
+
+  template<int k>
+  ValueVector<Real> const &get_measures(const int j) const
+  {
+    return get_values_from_cache<_Measure,k>(j);
+  }
+
+  template<int k>
+  ValueVector<Real> const &get_w_measures(const int j) const
+  {
+    return get_values_from_cache<_W_Measure,k>(j);
+  }
+
+  const ValueVector<Points<space_dim> > &get_external_normals() const;
+
+  using MetricTensor =
+    Tensor<dim, 1, tensor::covariant, Tensor<dim, 1, tensor::contravariant, Tdouble> >;
+
+  ValueVector<MetricTensor> compute_inv_first_fundamental_form() const;
+
+  ValueVector<MetricTensor> compute_second_fundamental_form() const;
+
+  ValueVector< Derivative<1> > get_D_external_normals() const;
+
+  const ValueVector<SafeSTLVector<Real> > &get_principal_curvatures() const;
+
+
+  template<int sub_dim>
+  const ValueVector<Points<space_dim> > &
+  get_boundary_normals(const int s_id) const
+  {
 #if 0
-        Assert(dim==sub_dim+1, ExcNotImplemented());
-        ValueVector<Points<space_dim>> res;
-        const auto &DF_inv = get_values_from_cache<_InvGradient, sub_dim>(s_id);
-        const auto n_hat  = this->get_grid()->template get_boundary_normals<sub_dim>(s_id)[0];
+    Assert(dim==sub_dim+1, ExcNotImplemented());
+    ValueVector<Points<space_dim>> res;
+    const auto &DF_inv = get_values_from_cache<_InvGradient, sub_dim>(s_id);
+    const auto n_hat  = this->get_grid()->template get_boundary_normals<sub_dim>(s_id)[0];
 
-        const auto n_points = DF_inv.get_num_points();
-        res.resize(n_points);
-        for (int pt = 0; pt < n_points; ++pt)
-        {
-            const auto DF_inv_t = co_tensor(transpose(DF_inv[pt]));
-            res[pt] = action(DF_inv_t, n_hat);
-            res[pt] /= res[pt].norm();
-        }
-        return res;
-#endif
-        return get_values_from_cache<_BoundaryNormal,sub_dim>(s_id);
-    }
-
-    template<class ValueType, int k>
-    auto
-    get_values(const int j) const
+    const auto n_points = DF_inv.get_num_points();
+    res.resize(n_points);
+    for (int pt = 0; pt < n_points; ++pt)
     {
-        Assert(local_cache_ != nullptr,ExcNullPtr());
-        const auto &cache = local_cache_->template get_sub_elem_cache<k>(j);
-        return cache.template get_data<ValueType>();
+      const auto DF_inv_t = co_tensor(transpose(DF_inv[pt]));
+      res[pt] = action(DF_inv_t, n_hat);
+      res[pt] /= res[pt].norm();
     }
+    return res;
+#endif
+    return get_values_from_cache<_BoundaryNormal,sub_dim>(s_id);
+  }
+
+  template<class ValueType, int k>
+  auto
+  get_values(const int j) const
+  {
+    Assert(local_cache_ != nullptr,ExcNullPtr());
+    const auto &cache = local_cache_->template get_sub_elem_cache<k>(j);
+    return cache.template get_data<ValueType>();
+  }
 
 
-    /**
-     * @name Comparison operators.
-     *
-     * @brief The comparison operators compares the <em>position</em> of the element in the grid.
-     *
-     * @warning To be comparable, two Mapping objects must be defined using the same Function
-     * (and therefore on the same grid),
-     * otherwise an assertion will be raised (in Debug mode).
-     */
-    ///@{
-    /** Returns TRUE if the two elements have the same index on the grid. */
-    bool operator==(const self_t &a) const;
+  /**
+   * @name Comparison operators.
+   *
+   * @brief The comparison operators compares the <em>position</em> of the element in the grid.
+   *
+   * @warning To be comparable, two Mapping objects must be defined using the same Function
+   * (and therefore on the same grid),
+   * otherwise an assertion will be raised (in Debug mode).
+   */
+  ///@{
+  /** Returns TRUE if the two elements have the same index on the grid. */
+  bool operator==(const self_t &a) const;
 
 
-    /** Returns TRUE if the two elements have different indices on the grid. */
-    bool operator!=(const self_t &a) const;
+  /** Returns TRUE if the two elements have different indices on the grid. */
+  bool operator!=(const self_t &a) const;
 
-    /**
-     * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
-     * is smaller than the the index of the element on the right.
-     * */
-    bool operator<(const self_t &a) const;
+  /**
+   * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
+   * is smaller than the the index of the element on the right.
+   * */
+  bool operator<(const self_t &a) const;
 
-    /**
-     * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
-     * is bigger than the the index of the element on the right.
-     * */
-    bool operator>(const self_t &a) const;
-    ///@}
+  /**
+   * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
+   * is bigger than the the index of the element on the right.
+   * */
+  bool operator>(const self_t &a) const;
+  ///@}
 
 #if 0
-    /**
-     * Sets the index of the element using the flatten representation.
-     * @note This function also updates the index for the tensor representation.
-     * @warning This may be a dangerous function, be careful when using it
-     * as it is easy to use incorrectly. Only use it if you know what you
-     * are doing.
-     */
-    void move_to(const Index flat_index) ;
+  /**
+   * Sets the index of the element using the flatten representation.
+   * @note This function also updates the index for the tensor representation.
+   * @warning This may be a dangerous function, be careful when using it
+   * as it is easy to use incorrectly. Only use it if you know what you
+   * are doing.
+   */
+  void move_to(const Index flat_index) ;
 #endif
 
 
-    typename List::iterator &operator++()
-    {
-        return (++(*func_elem_));
-    }
+  typename List::iterator &operator++()
+  {
+    return (++(*func_elem_));
+  }
 
-    /** Returns the index of the element. */
-    IndexType get_index() const;
+  /** Returns the index of the element. */
+  IndexType get_index() const;
 
-    /** Return the cartesian grid from which the element belongs.*/
-    std::shared_ptr<const CartesianGrid<dim> > get_grid() const;
+  /** Return the cartesian grid from which the element belongs.*/
+  std::shared_ptr<const CartesianGrid<dim> > get_grid() const;
 
 private:
 
-    using CType = boost::fusion::map<
-                  boost::fusion::pair<         _Point,DataWithFlagStatus<ValueVector<Points<space_dim>>>>,
-                  boost::fusion::pair<      _Gradient,DataWithFlagStatus<ValueVector<Derivative<1>>>>,
-                  boost::fusion::pair<       _Hessian,DataWithFlagStatus<ValueVector<Derivative<2>>>>,
-                  boost::fusion::pair<       _Measure,DataWithFlagStatus<ValueVector<Real>>>,
-                  boost::fusion::pair<     _W_Measure,DataWithFlagStatus<ValueVector<Real>>>,
-                  boost::fusion::pair<   _InvGradient,DataWithFlagStatus<ValueVector<InvDerivative<1>>>>,
-                  boost::fusion::pair<    _InvHessian,DataWithFlagStatus<ValueVector<InvDerivative<2>>>>,
-                  boost::fusion::pair<_BoundaryNormal,DataWithFlagStatus<ValueVector<Points<space_dim>>>>,
-                  boost::fusion::pair<   _OuterNormal,DataWithFlagStatus<ValueVector<Points<space_dim>>>>,
-                  boost::fusion::pair<     _Curvature,DataWithFlagStatus<ValueVector<SafeSTLVector<Real>>>>
-                  >;
+  using CType = boost::fusion::map<
+                boost::fusion::pair<         _Point,DataWithFlagStatus<ValueVector<Points<space_dim>>>>,
+                boost::fusion::pair<      _Gradient,DataWithFlagStatus<ValueVector<Derivative<1>>>>,
+                boost::fusion::pair<       _Hessian,DataWithFlagStatus<ValueVector<Derivative<2>>>>,
+                boost::fusion::pair<       _Measure,DataWithFlagStatus<ValueVector<Real>>>,
+                boost::fusion::pair<     _W_Measure,DataWithFlagStatus<ValueVector<Real>>>,
+                boost::fusion::pair<   _InvGradient,DataWithFlagStatus<ValueVector<InvDerivative<1>>>>,
+                boost::fusion::pair<    _InvHessian,DataWithFlagStatus<ValueVector<InvDerivative<2>>>>,
+                boost::fusion::pair<_BoundaryNormal,DataWithFlagStatus<ValueVector<Points<space_dim>>>>,
+                boost::fusion::pair<   _OuterNormal,DataWithFlagStatus<ValueVector<Points<space_dim>>>>,
+                boost::fusion::pair<     _Curvature,DataWithFlagStatus<ValueVector<SafeSTLVector<Real>>>>
+                >;
 
 
-    /**
-     * Returns the flags that are valid to be used with this class.
-     *
-     * @note The valid flags are defined to be the ones that can be inferred from the ValueType(s)
-     * used as key of the boost::fusion::map in CType.
-     */
-    static ValueFlags get_valid_flags()
-    {
-        return cacheutils::get_valid_flags_from_cache_type(CType());
-    }
+  /**
+   * Returns the flags that are valid to be used with this class.
+   *
+   * @note The valid flags are defined to be the ones that can be inferred from the ValueType(s)
+   * used as key of the boost::fusion::map in CType.
+   */
+  static ValueFlags get_valid_flags()
+  {
+    return cacheutils::get_valid_flags_from_cache_type(CType());
+  }
 
-    using Cache = FuncValuesCache<dim,CType>;
+  using Cache = FuncValuesCache<dim,CType>;
 
 
 public:
-    using CacheType = AllSubElementsCache<Cache>;
+  using CacheType = AllSubElementsCache<Cache>;
 
 
 
 private:
 
-    using FuncElem = FunctionElement<dim_, 0, dim_+codim_>;
+  using FuncElem = FunctionElement<dim_, 0, dim_+codim_>;
 
-    std::shared_ptr<FuncElem> func_elem_;
+  std::shared_ptr<FuncElem> func_elem_;
 
-    std::shared_ptr<CacheType> local_cache_;
+  std::shared_ptr<CacheType> local_cache_;
 
 
-    template <class Accessor> friend class CartesianGridIteratorBase;
-    friend class Mapping<dim, codim>;
+  template <class Accessor> friend class CartesianGridIteratorBase;
+  friend class Mapping<dim, codim>;
 
-    /**
-     * Creates a new object performing a deep copy of the current object using the MappingElement
-     * copy constructor.
-     */
-    std::shared_ptr<MappingElement<dim_,codim_> > clone() const;
+  /**
+   * Creates a new object performing a deep copy of the current object using the MappingElement
+   * copy constructor.
+   */
+  std::shared_ptr<MappingElement<dim_,codim_> > clone() const;
 
 public:
-    FuncElem &get_func_element();
+  FuncElem &get_func_element();
 
-    const FuncElem &get_func_element() const;
+  const FuncElem &get_func_element() const;
 
-    void print_info(LogStream &out) const;
+  void print_info(LogStream &out) const;
 
-    void print_cache_info(LogStream &out) const;
+  void print_cache_info(LogStream &out) const;
 
 private:
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        Assert(false,ExcNotImplemented());
-        AssertThrow(false,ExcNotImplemented());
-    }
-    ///@}
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version)
+  {
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+  }
+  ///@}
 #endif
 
 };
@@ -515,67 +516,67 @@ private:
 class ValuesCache : public CacheStatus
 {
 public:
-    void reset(const MappingFlags &flags_handler,
-               const Quadrature<dim> &quad);
+  void reset(const MappingFlags &flags_handler,
+             const Quadrature<dim> &quad);
 
-    //TODO: the next member variables should be protected
+  //TODO: the next member variables should be protected
 public:
-    /**
-     * Fills the following cache values in accordance with the
-     * flag specifications used in the reset() function.
-     *
-     * @pre Before invoking this function, values_, gradients_ and hessians_
-     * must be properly filled.
-     */
-    void fill_composite_values();
+  /**
+   * Fills the following cache values in accordance with the
+   * flag specifications used in the reset() function.
+   *
+   * @pre Before invoking this function, values_, gradients_ and hessians_
+   * must be properly filled.
+   */
+  void fill_composite_values();
 
-    MappingFlags flags_handler_;
+  MappingFlags flags_handler_;
 
-    ValueVector< ValueMap > values_;
-    ValueVector< GradientMap > gradients_;
-    ValueVector< HessianMap > hessians_;
-    ValueVector< Derivatives< space_dim,dim,1,1 > > inv_gradients_;
-    ValueVector< Derivatives< space_dim,dim,1,2 > > inv_hessians_;
-    ValueVector< Real > measures_;
-    ValueVector< Real > w_measures_;
+  ValueVector< ValueMap > values_;
+  ValueVector< GradientMap > gradients_;
+  ValueVector< HessianMap > hessians_;
+  ValueVector< Derivatives< space_dim,dim,1,1 > > inv_gradients_;
+  ValueVector< Derivatives< space_dim,dim,1,2 > > inv_hessians_;
+  ValueVector< Real > measures_;
+  ValueVector< Real > w_measures_;
 
-    Size num_points_ = 0;
-    Quadrature<dim> quad_;
+  Size num_points_ = 0;
+  Quadrature<dim> quad_;
 
-    void print_info(LogStream &out) const
-    {
-        out.begin_item("Fill flags:");
-        flags_handler_.print_info(out);
-        out.end_item();
+  void print_info(LogStream &out) const
+  {
+    out.begin_item("Fill flags:");
+    flags_handler_.print_info(out);
+    out.end_item();
 
-        out.begin_item("Values:");
-        values_.print_info(out);
-        out.end_item();
+    out.begin_item("Values:");
+    values_.print_info(out);
+    out.end_item();
 
-        out.begin_item("Gradients:");
-        gradients_.print_info(out);
-        out.end_item();
+    out.begin_item("Gradients:");
+    gradients_.print_info(out);
+    out.end_item();
 
-        out.begin_item("Hessians:");
-        hessians_.print_info(out);
-        out.end_item();
+    out.begin_item("Hessians:");
+    hessians_.print_info(out);
+    out.end_item();
 
-        out.begin_item("Inverse Gradients:");
-        inv_gradients_.print_info(out);
-        out.end_item();
+    out.begin_item("Inverse Gradients:");
+    inv_gradients_.print_info(out);
+    out.end_item();
 
-        out.begin_item("Inverse Hessians:");
-        inv_hessians_.print_info(out);
-        out.end_item();
+    out.begin_item("Inverse Hessians:");
+    inv_hessians_.print_info(out);
+    out.end_item();
 
-        out.begin_item("Measures:");
-        measures_.print_info(out);
-        out.end_item();
+    out.begin_item("Measures:");
+    measures_.print_info(out);
+    out.end_item();
 
-        out.begin_item("Weights * Measures:");
-        w_measures_.print_info(out);
-        out.end_item();
-    }
+    out.begin_item("Weights * Measures:");
+    w_measures_.print_info(out);
+    out.end_item();
+  }
 
 };
 
@@ -586,35 +587,35 @@ public:
  */
 struct ElementValuesCache : ValuesCache
 {
-    void reset(const MappingFlags &flags_handler,
-               const Quadrature<dim> &quad);
+  void reset(const MappingFlags &flags_handler,
+             const Quadrature<dim> &quad);
 
 };
 
 // TODO (pauletti, Mar 21, 2014): Document this class
 struct FaceValuesCache : ValuesCache
 {
-    void reset(const Index face_id,
-               const MappingFaceValueFlagsHandler &flags_handler,
-               const Quadrature<dim> &quad);
+  void reset(const Index face_id,
+             const MappingFaceValueFlagsHandler &flags_handler,
+             const Quadrature<dim> &quad);
 
-    void reset(const Index face_id,
-               const MappingFaceValueFlagsHandler &flags_handler,
-               const Quadrature<dim-1> &quad);
+  void reset(const Index face_id,
+             const MappingFaceValueFlagsHandler &flags_handler,
+             const Quadrature<dim-1> &quad);
 
 
-    ValueVector< ValueMap > normals_;
-    bool fill_normals_ = false;
-    bool normals_filled_ = false;
+  ValueVector< ValueMap > normals_;
+  bool fill_normals_ = false;
+  bool normals_filled_ = false;
 
-    void print_info(LogStream &out) const
-    {
-        ValuesCache::print_info(out);
+  void print_info(LogStream &out) const
+  {
+    ValuesCache::print_info(out);
 
-        out.begin_item("Normals:");
-        normals_.print_info(out);
-        out.end_item();
-    }
+    out.begin_item("Normals:");
+    normals_.print_info(out);
+    out.end_item();
+  }
 };
 
 const ValuesCache &get_values_cache(const TopologyId<dim> &topology_id) const;
@@ -623,24 +624,24 @@ const ValuesCache &get_values_cache(const TopologyId<dim> &topology_id) const;
 class AllSubElementsCache
 {
 public:
-    AllSubElementsCache() = default;
+  AllSubElementsCache() = default;
 
-    AllSubElementsCache(const AllSubElementsCache &in) = default;
-    AllSubElementsCache(AllSubElementsCache &&in) = default;
+  AllSubElementsCache(const AllSubElementsCache &in) = default;
+  AllSubElementsCache(AllSubElementsCache &&in) = default;
 
-    ~AllSubElementsCache() = default;
+  ~AllSubElementsCache() = default;
 
 
-    AllSubElementsCache &operator=(const AllSubElementsCache &in) = delete;
-    AllSubElementsCache &operator=(AllSubElementsCache &&in) = delete;
+  AllSubElementsCache &operator=(const AllSubElementsCache &in) = delete;
+  AllSubElementsCache &operator=(AllSubElementsCache &&in) = delete;
 
-    void print_info(LogStream &out) const;
+  void print_info(LogStream &out) const;
 
-    /** Element values cache */
-    ElementValuesCache elem_values_;
+  /** Element values cache */
+  ElementValuesCache elem_values_;
 
-    /** Face values cache */
-    SafeSTLArray<FaceValuesCache, n_faces> face_values_;
+  /** Face values cache */
+  SafeSTLArray<FaceValuesCache, n_faces> face_values_;
 
 };
 
@@ -682,4 +683,5 @@ static void evaluate_inverse_hessian(const HessianMap &D2F,
                                      Derivatives<space_dim,dim,1,2> &D2F_inv);
 };
 
+#endif
 #endif

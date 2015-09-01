@@ -37,7 +37,7 @@
 template<int dim, int k=dim, int range = 1, int rank = 1>
 void bspline_iterator(const int deg = 2,const int n_qp = 3)
 {
-    OUTSTART
+  OUTSTART
 
     auto grid = CartesianGrid<dim>::create();
     using Space = BSplineSpace<dim, range, rank>;
@@ -65,23 +65,23 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
     {
         elem_handler->template fill_cache<k>(*elem,0);
 
-        out << "Sub Element: " << s_id << endl;
-        auto values    = elem->template get_basis<_Value,k>(s_id,DofProperties::active);
-        auto gradients = elem->template get_basis<_Gradient,k>(s_id,DofProperties::active);
-        auto hessians  = elem->template get_basis<_Hessian,k>(s_id,DofProperties::active);
+    out << "Sub Element: " << s_id << endl;
+    auto values    = elem->template get_basis<_Value,k>(s_id,DofProperties::active);
+    auto gradients = elem->template get_basis<_Gradient,k>(s_id,DofProperties::active);
+    auto hessians  = elem->template get_basis<_Hessian,k>(s_id,DofProperties::active);
 
-        out.begin_item("Values basis functions:");
-        values.print_info(out);
-        out.end_item();
+    out.begin_item("Values basis functions:");
+    values.print_info(out);
+    out.end_item();
 
-        out.begin_item("Gradients basis functions:");
-        gradients.print_info(out);
-        out.end_item();
+    out.begin_item("Gradients basis functions:");
+    gradients.print_info(out);
+    out.end_item();
 
-        out.begin_item("Hessians basis functions:");
-        hessians.print_info(out);
-        out.end_item();
-    }
+    out.begin_item("Hessians basis functions:");
+    hessians.print_info(out);
+    out.end_item();
+  }
 }
 
 
@@ -145,31 +145,31 @@ void bspline_iterator_active_dofs(const int deg = 2,const int n_qp = 3)
 
 int main()
 {
-    out.depth_console(0);
+  out.depth_console(0);
 
-    bspline_iterator<1,1,1>();
-    bspline_iterator_active_dofs<1,1,1>();
+  bspline_iterator<1,1,1>();
+  bspline_iterator_active_dofs<1,1,1>();
 
-    bspline_iterator<1,1,2>();
-    bspline_iterator_active_dofs<1,1,2>();
+  bspline_iterator<1,1,2>();
+  bspline_iterator_active_dofs<1,1,2>();
 
-    bspline_iterator<1,1,3>();
-    bspline_iterator_active_dofs<1,1,3>();
+  bspline_iterator<1,1,3>();
+  bspline_iterator_active_dofs<1,1,3>();
 
-    bspline_iterator<2,2,1>();
-    bspline_iterator_active_dofs<2,2,1>();
+  bspline_iterator<2,2,1>();
+  bspline_iterator_active_dofs<2,2,1>();
 
-    bspline_iterator<2,2,2>();
-    bspline_iterator_active_dofs<2,2,2>();
+  bspline_iterator<2,2,2>();
+  bspline_iterator_active_dofs<2,2,2>();
 
-    bspline_iterator<2,2,3>();
-    bspline_iterator_active_dofs<2,2,3>();
+  bspline_iterator<2,2,3>();
+  bspline_iterator_active_dofs<2,2,3>();
 
-    bspline_iterator<3,3,1>();
-    bspline_iterator_active_dofs<3,3,1>();
+  bspline_iterator<3,3,1>();
+  bspline_iterator_active_dofs<3,3,1>();
 
-    bspline_iterator<3,3,3>();
-    bspline_iterator_active_dofs<3,3,3>();
+  bspline_iterator<3,3,3>();
+  bspline_iterator_active_dofs<3,3,3>();
 
-    return 0;
+  return 0;
 }

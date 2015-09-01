@@ -35,74 +35,74 @@ IGA_NAMESPACE_OPEN
 boost::numeric::ublas::vector<Real>
 BernsteinBasis::evaluate(const int p, const Real x)
 {
-    Assert(x >= 0.0 && x <= 1.0,
-           ExcMessage("Point not in the unit interval [0,1]"));
-    Assert(p >= 0, ExcLowerRange(p,0));
+  Assert(x >= 0.0 && x <= 1.0,
+         ExcMessage("Point not in the unit interval [0,1]"));
+  Assert(p >= 0, ExcLowerRange(p,0));
 
-    const int n_basis = p + 1 ;
+  const int n_basis = p + 1 ;
 
-    boost::numeric::ublas::vector<Real> B(n_basis);
+  boost::numeric::ublas::vector<Real> B(n_basis);
 
-    boost::numeric::ublas::scalar_vector<Real> ones(n_basis,1.0);
-    boost::numeric::ublas::vector<Real> t(ones);
-    boost::numeric::ublas::vector<Real> one_t(ones);
+  boost::numeric::ublas::scalar_vector<Real> ones(n_basis,1.0);
+  boost::numeric::ublas::vector<Real> t(ones);
+  boost::numeric::ublas::vector<Real> one_t(ones);
 
-    for (int k = 1 ; k < n_basis ; ++k)
-        for (int i = k ; i < n_basis ; ++i)
-        {
-            t(i)     *= x;
-            one_t(i) *= 1.-x;
-        }
+  for (int k = 1 ; k < n_basis ; ++k)
+    for (int i = k ; i < n_basis ; ++i)
+    {
+      t(i)     *= x;
+      one_t(i) *= 1.-x;
+    }
 
-    for (int i = 0 ; i < n_basis ; ++i)
-        B(i) = binomial_coefficient<Real>(p,i) * t(i) * one_t(p-i) ;
+  for (int i = 0 ; i < n_basis ; ++i)
+    B(i) = binomial_coefficient<Real>(p,i) * t(i) * one_t(p-i) ;
 
-    return B;
+  return B;
 }
 
 boost::numeric::ublas::vector<Real>
 BernsteinBasis::derivative(
-    const int order,
-    const int p,
-    const Real x)
+  const int order,
+  const int p,
+  const Real x)
 {
-    Assert(x >= 0.0 && x <= 1.0,
-           ExcMessage("Point not in the unit interval [0,1]"));
+  Assert(x >= 0.0 && x <= 1.0,
+         ExcMessage("Point not in the unit interval [0,1]"));
 
-    Assert(p >= 0, ExcLowerRange(p,0));
+  Assert(p >= 0, ExcLowerRange(p,0));
 
-    Assert(order >= 0, ExcLowerRange(order,0));
+  Assert(order >= 0, ExcLowerRange(order,0));
 
-    const int n_basis = p + 1 ;
+  const int n_basis = p + 1 ;
 
 
-    if (order > 0)
-    {
-        /*
-         * To compute derivatives we use the recusion formula
-         * dB^k = p* ( dB^{k-1}_{i-1} - dB^{k-1}_{i}).
-         * To stop the recusion we specialize to the function evaluation in
-         * derivative<0>.
-         */
-        if (p==0)
-            return boost::numeric::ublas::zero_vector<Real>(n_basis);
+  if (order > 0)
+  {
+    /*
+     * To compute derivatives we use the recusion formula
+     * dB^k = p* ( dB^{k-1}_{i-1} - dB^{k-1}_{i}).
+     * To stop the recusion we specialize to the function evaluation in
+     * derivative<0>.
+     */
+    if (p==0)
+      return boost::numeric::ublas::zero_vector<Real>(n_basis);
 
-        boost::numeric::ublas::vector<Real> dB(n_basis);
-        boost::numeric::ublas::vector<Real> B = BernsteinBasis::derivative(order-1,p-1,x);
+    boost::numeric::ublas::vector<Real> dB(n_basis);
+    boost::numeric::ublas::vector<Real> B = BernsteinBasis::derivative(order-1,p-1,x);
 
-        dB(0) = - B(0);
-        dB(p) =   B(p-1);
-        for (int i = 1 ; i < p ; ++i)
-            dB(i) = B(i-1) - B(i);
+    dB(0) = - B(0);
+    dB(p) =   B(p-1);
+    for (int i = 1 ; i < p ; ++i)
+      dB(i) = B(i-1) - B(i);
 
-        dB *= p;
+    dB *= p;
 
-        return dB;
-    } // end if (order > 0)
-    else
-    {
-        return BernsteinBasis::evaluate(p,x);
-    } // end if (order == 0)
+    return dB;
+  } // end if (order > 0)
+  else
+  {
+    return BernsteinBasis::evaluate(p,x);
+  } // end if (order == 0)
 }
 
 
@@ -110,88 +110,88 @@ BernsteinBasis::derivative(
 matrix<Real>
 BernsteinBasis::evaluate(const int p,  const SafeSTLVector<Real> &points)
 {
-    /*
-     * First we compute 2 table where each colum we store
-     * 1 1 1, t t t, t^2 t^2 t^2, ...
-     * 1 1 1, 1-t 1-t 1-t, (1-t)^2 (1-t)^2 (1-t)^2, ...
-     *
-     */
-    const int n_points = points.size() ;
-    const int n_basis  = p + 1 ;
+  /*
+   * First we compute 2 table where each colum we store
+   * 1 1 1, t t t, t^2 t^2 t^2, ...
+   * 1 1 1, 1-t 1-t 1-t, (1-t)^2 (1-t)^2 (1-t)^2, ...
+   *
+   */
+  const int n_points = points.size() ;
+  const int n_basis  = p + 1 ;
 
 #ifndef NDEBUG
-    for (int i = 0 ; i < n_points ; ++i)
-        Assert(points[i] >= 0.0 && points[i] <= 1.0,
-               ExcMessage("Point " + std::to_string(i) + "not in the unit interval [0,1]"));
+  for (int i = 0 ; i < n_points ; ++i)
+    Assert(points[i] >= 0.0 && points[i] <= 1.0,
+           ExcMessage("Point " + std::to_string(i) + "not in the unit interval [0,1]"));
 #endif
 
-    matrix<Real> B(n_basis, n_points);
+  matrix<Real> B(n_basis, n_points);
 
-    boost::numeric::ublas::scalar_matrix<Real> ones(n_basis,n_points,1.);
-    matrix<Real> t(ones);
-    matrix<Real> one_t(ones);
-
-
-    for (int k = 1 ; k < n_basis ; ++k)
-        for (int i = k ; i < n_basis ; ++i)
-            for (int j = 0 ; j < n_points ; ++j)
-            {
-                t(i,j)   *= points[j];
-                one_t(i,j) *= 1.-points[j];
-            }
+  boost::numeric::ublas::scalar_matrix<Real> ones(n_basis,n_points,1.);
+  matrix<Real> t(ones);
+  matrix<Real> one_t(ones);
 
 
-    for (int i = 0 ; i < n_basis ; ++i)
-    {
-        const Real C = binomial_coefficient<Real>(p, i);
-        for (int j = 0 ; j < n_points ; ++j)
-            B(i,j) = C * t(i,j) * one_t(p-i,j) ;
-    }
+  for (int k = 1 ; k < n_basis ; ++k)
+    for (int i = k ; i < n_basis ; ++i)
+      for (int j = 0 ; j < n_points ; ++j)
+      {
+        t(i,j)   *= points[j];
+        one_t(i,j) *= 1.-points[j];
+      }
 
-    return (B);
+
+  for (int i = 0 ; i < n_basis ; ++i)
+  {
+    const Real C = binomial_coefficient<Real>(p, i);
+    for (int j = 0 ; j < n_points ; ++j)
+      B(i,j) = C * t(i,j) * one_t(p-i,j) ;
+  }
+
+  return (B);
 }
 
 matrix<Real>
 BernsteinBasis::derivative(
-    const int order,
-    const int p,
-    const SafeSTLVector< Real > &points)
+  const int order,
+  const int p,
+  const SafeSTLVector< Real > &points)
 {
-    if (order > 0)
-    {
-        /*
-         * To compute derivatives we use the recusion formula
-         * dB^k = p* ( dB^{k-1}_{i-1} - dB^{k-1}_{i}).
-         * To stop the recusion we specialize to the function evaluation in
-         * derivative<0>.
-         */
-        const int n_points = points.size() ;
+  if (order > 0)
+  {
+    /*
+     * To compute derivatives we use the recusion formula
+     * dB^k = p* ( dB^{k-1}_{i-1} - dB^{k-1}_{i}).
+     * To stop the recusion we specialize to the function evaluation in
+     * derivative<0>.
+     */
+    const int n_points = points.size() ;
 
 #ifndef NDEBUG
-        for (int i = 0 ; i < n_points ; ++i)
-            Assert(points[i] >= 0.0 && points[i] <= 1.0,
-                   ExcMessage("Point " + std::to_string(i) + "not in the unit interval [0,1]"));
+    for (int i = 0 ; i < n_points ; ++i)
+      Assert(points[i] >= 0.0 && points[i] <= 1.0,
+             ExcMessage("Point " + std::to_string(i) + "not in the unit interval [0,1]"));
 #endif
 
-        if (p==0)
-            return (boost::numeric::ublas::zero_matrix<Real>(p+1,n_points));
+    if (p==0)
+      return (boost::numeric::ublas::zero_matrix<Real>(p+1,n_points));
 
-        matrix<Real> dB(p+1, n_points);
+    matrix<Real> dB(p+1, n_points);
 //        matrix<Real> B(p, n_points);
-        const auto B = derivative(order-1,p-1,points);
+    const auto B = derivative(order-1,p-1,points);
 
-        row(dB,0) = - row(B,0);
-        row(dB,p) =   row(B,p-1);
-        for (int i = 1 ; i < p ; ++i)
-            row(dB,i) = row(B,i-1) - row(B,i);
+    row(dB,0) = - row(B,0);
+    row(dB,p) =   row(B,p-1);
+    for (int i = 1 ; i < p ; ++i)
+      row(dB,i) = row(B,i-1) - row(B,i);
 
-        dB *= p;
-        return (dB);
-    }
-    else
-    {
-        return evaluate(p, points) ;
-    }
+    dB *= p;
+    return (dB);
+  }
+  else
+  {
+    return evaluate(p, points) ;
+  }
 }
 
 

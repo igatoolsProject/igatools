@@ -18,6 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+#if 0
 #include <igatools/functions/functions_container.h>
 
 IGA_NAMESPACE_OPEN
@@ -27,18 +28,18 @@ void
 FunctionsContainer::
 print_info(LogStream &out) const
 {
-    boost::fusion::for_each(data_varying_dim_,
-                            [&](const auto & type_and_data_same_dim)
-    {
-        using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
-        using Type = typename Type_Value::first_type;
+  boost::fusion::for_each(data_varying_dim_,
+                          [&](const auto & type_and_data_same_dim)
+  {
+    using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
+    using Type = typename Type_Value::first_type;
 
-        out.begin_item("Dim : " + std::to_string(Type::value));
-        type_and_data_same_dim.second.print_info(out);
-        out.end_item();
+    out.begin_item("Dim : " + std::to_string(Type::value));
+    type_and_data_same_dim.second.print_info(out);
+    out.end_item();
 
-    } // end lambda function
-                           );
+  } // end lambda function
+                         );
 }
 
 #ifdef SERIALIZATION
@@ -47,16 +48,16 @@ void
 FunctionsContainer::
 serialize(Archive &ar, const unsigned int version)
 {
-    boost::fusion::for_each(data_varying_dim_,
-                            [&](auto & type_and_data_same_dim)
-    {
-        using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
-        using Type = typename Type_Value::first_type;
+  boost::fusion::for_each(data_varying_dim_,
+                          [&](auto & type_and_data_same_dim)
+  {
+    using Type_Value = typename std::remove_reference<decltype(type_and_data_same_dim)>::type;
+    using Type = typename Type_Value::first_type;
 
-        const std::string tag_name = "data_dim_" + std::to_string(Type::value);
-        ar &boost::serialization::make_nvp(tag_name.c_str(),type_and_data_same_dim.second);
-    } // end lambda function
-                           );
+    const std::string tag_name = "data_dim_" + std::to_string(Type::value);
+    ar &boost::serialization::make_nvp(tag_name.c_str(),type_and_data_same_dim.second);
+  } // end lambda function
+                         );
 }
 #endif // SERIALIZATION
 
@@ -69,3 +70,4 @@ template void iga::FunctionsContainer::serialize(OArchive &, const unsigned int)
 template void iga::FunctionsContainer::serialize(IArchive &, const unsigned int);
 #endif // SERIALIZATION
 
+#endif

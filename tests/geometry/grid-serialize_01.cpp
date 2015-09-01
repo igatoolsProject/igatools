@@ -32,53 +32,53 @@ template <int dim>
 void serialize_deserialize(std::shared_ptr<const CartesianGrid<dim>> grid,
                            const std::string &filename)
 {
-    out.begin_item("Original grid.");
-    grid->print_info(out);
-    out.end_item();
+  out.begin_item("Original grid.");
+  grid->print_info(out);
+  out.end_item();
 
-    string tag_name = "CartesianGrid_" + std::to_string(dim) + "d";
-    {
-        std::ofstream xml_ostream(filename);
-        OArchive xml_out(xml_ostream);
+  string tag_name = "CartesianGrid_" + std::to_string(dim) + "d";
+  {
+    std::ofstream xml_ostream(filename);
+    OArchive xml_out(xml_ostream);
 
-        xml_out << boost::serialization::make_nvp(tag_name.c_str(),*grid);
-        xml_ostream.close();
-    }
+    xml_out << boost::serialization::make_nvp(tag_name.c_str(),*grid);
+    xml_ostream.close();
+  }
 
-    auto grid_new = CartesianGrid<dim>::create(4);
-    {
-        ifstream xml_istream(filename);
-        IArchive xml_in(xml_istream);
-        xml_in >> BOOST_SERIALIZATION_NVP(*grid_new);
-        xml_istream.close();
-    }
+  auto grid_new = CartesianGrid<dim>::create(4);
+  {
+    ifstream xml_istream(filename);
+    IArchive xml_in(xml_istream);
+    xml_in >> BOOST_SERIALIZATION_NVP(*grid_new);
+    xml_istream.close();
+  }
 
-    out.begin_item("Grid after serialize-deserialize.");
-    grid_new->print_info(out);
-    out.end_item();
+  out.begin_item("Grid after serialize-deserialize.");
+  grid_new->print_info(out);
+  out.end_item();
 }
 
 
 template<int dim>
 void serialize_grid(const int n_knots = 4)
 {
-    OUTSTART
+  OUTSTART
 
-    auto grid = CartesianGrid<dim>::const_create(n_knots);
-    string filename = "grid_" + std::to_string(dim) + "d.xml";
-    serialize_deserialize(grid,filename);
+  auto grid = CartesianGrid<dim>::const_create(n_knots);
+  string filename = "grid_" + std::to_string(dim) + "d.xml";
+  serialize_deserialize(grid,filename);
 
-    OUTEND
+  OUTEND
 }
 
 
 
 int main()
 {
-    serialize_grid<0>();
-    serialize_grid<1>();
-    serialize_grid<2>();
-    serialize_grid<3>();
+  serialize_grid<0>();
+  serialize_grid<1>();
+  serialize_grid<2>();
+  serialize_grid<3>();
 
-    return 0;
+  return 0;
 }

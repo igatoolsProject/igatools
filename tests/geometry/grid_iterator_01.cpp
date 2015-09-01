@@ -36,50 +36,50 @@
 template <int dim, int sdim = dim-1>
 void iterate(const int n_knots = 5)
 {
-    OUTSTART
+  OUTSTART
 
-    using Grid = CartesianGrid<dim>;
-    using Flags = typename Grid::ElementAccessor::Flags;
-    auto grid = Grid::const_create(n_knots);
+  using Grid = CartesianGrid<dim>;
+  using Flags = typename Grid::ElementAccessor::Flags;
+  auto grid = Grid::const_create(n_knots);
 
-    auto flag = Flags::w_measure;
-    auto s_flag = Flags::point;
-    auto cache_handler = grid->create_cache_handler();
-    cache_handler->template set_flags<dim>(flag);
-    cache_handler->template set_flags<sdim>(s_flag);
+  auto flag = Flags::w_measure;
+  auto s_flag = Flags::point;
+  auto cache_handler = grid->create_cache_handler();
+  cache_handler->template set_flags<dim>(flag);
+  cache_handler->template set_flags<sdim>(s_flag);
 
-    auto quad   = QGauss<dim>::create(2);
-    auto s_quad = QGauss<sdim>::create(1);
+  auto quad   = QGauss<dim>::create(2);
+  auto s_quad = QGauss<sdim>::create(1);
 
-    auto elem = grid->cbegin();
-    cache_handler->template init_cache<dim>(elem, quad);
-    cache_handler->template init_cache<sdim>(elem, s_quad);
+  auto elem = grid->cbegin();
+  cache_handler->template init_cache<dim>(elem, quad);
+  cache_handler->template init_cache<sdim>(elem, s_quad);
 
-    for (; elem != grid->cend(); ++elem)
+  for (; elem != grid->cend(); ++elem)
+  {
+    cache_handler->template fill_cache<dim>(elem, 0);
+    elem->template get_weights<dim>(0).print_info(out);
+    out << endl;
+
+    for (auto &s_id : UnitElement<dim>::template elems_ids<sdim>())
     {
-        cache_handler->template fill_cache<dim>(elem, 0);
-        elem->template get_weights<dim>(0).print_info(out);
-        out << endl;
-
-        for (auto &s_id : UnitElement<dim>::template elems_ids<sdim>())
-        {
-            cache_handler->template fill_cache<sdim>(elem, s_id);
-            elem->template get_points<sdim>(s_id).print_info(out);
-            out << endl;
-        }
-        out << endl;
+      cache_handler->template fill_cache<sdim>(elem, s_id);
+      elem->template get_points<sdim>(s_id).print_info(out);
+      out << endl;
     }
+    out << endl;
+  }
 
-    OUTEND
+  OUTEND
 }
 
 
 
 int main()
 {
-    iterate<1>();
-    iterate<2>();
-    iterate<3>();
+  iterate<1>();
+  iterate<2>();
+  iterate<3>();
 
-    return  0;
+  return  0;
 }

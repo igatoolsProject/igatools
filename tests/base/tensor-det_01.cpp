@@ -29,38 +29,38 @@
 template< int dim >
 void det_eval()
 {
-    Tensor<dim, 1, tensor::covariant, Tensor <dim,1, tensor::contravariant, Tdouble > > t;
+  Tensor<dim, 1, tensor::covariant, Tensor <dim,1, tensor::contravariant, Tdouble > > t;
 
-    double accumulator = 0;
+  double accumulator = 0;
 
-    out << "The determinant of:" << std::endl;
+  out << "The determinant of:" << std::endl;
 
-    for (int i = 0; i < dim; i++)
+  for (int i = 0; i < dim; i++)
+  {
+    for (int j = 0; j < dim ; j++)
     {
-        for (int j = 0; j < dim ; j++)
-        {
-            accumulator = accumulator + 1;
-            t[i][j] = accumulator;
+      accumulator = accumulator + 1;
+      t[i][j] = accumulator;
 
-            out << "t["<< i << "]" << "["<< j << "] = "
-                << t[i][j] << std::endl;
-        }
+      out << "t["<< i << "]" << "["<< j << "] = "
+          << t[i][j] << std::endl;
     }
+  }
 
-    double det;
+  double det;
 
-    det = determinant<dim,dim>(t);
+  det = determinant<dim,dim>(t);
 
-    out << "is " << det << std::endl;
+  out << "is " << det << std::endl;
 
 }
 
 int main(int argc, char *argv[])
 {
 
-    det_eval<1>();
-    det_eval<2>();
-    det_eval<3>();
+  det_eval<1>();
+  det_eval<2>();
+  det_eval<3>();
 
 }
 

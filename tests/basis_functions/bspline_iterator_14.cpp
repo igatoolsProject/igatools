@@ -41,7 +41,7 @@ const SafeSTLArray<space_element::Flags, 3> der_flag =
 template <int der, int dim, int range=1, int rank=1>
 void elem_derivatives(const int n_knots = 5, const int deg=1)
 {
-    OUTSTART
+  OUTSTART
 
     using Space = BSplineSpace<dim, range, rank>;
     auto grid  = CartesianGrid<dim>::create(n_knots);
@@ -51,8 +51,9 @@ void elem_derivatives(const int n_knots = 5, const int deg=1)
 
     auto quad = QGauss<dim>::create(2);
 
-    auto elem = space->begin();
-    auto end = space->end();
+
+  auto elem = space->begin();
+  auto end = space->end();
 
     auto elem_handler = space->get_elem_handler();
 
@@ -92,32 +93,32 @@ void elem_derivatives(const int n_knots = 5, const int deg=1)
             AssertThrow(false,ExcMessage("Invalid derivative order."));
     }
 
-    OUTEND
+  OUTEND
 }
 
 
 int main()
 {
-    const int values = 0;
-    const int grad   = 1;
-    const int hess   = 2;
+  const int values = 0;
+  const int grad   = 1;
+  const int hess   = 2;
 
-    elem_derivatives<values, 1>();
-    elem_derivatives<values, 2>();
-    elem_derivatives<values,1,2>();
-    elem_derivatives<values,1,3>();
-
-
-    elem_derivatives<grad, 1>(3);
-    elem_derivatives<grad, 2>();
-    elem_derivatives<grad,1,2>(2);
-    elem_derivatives<grad,1,3>();
-
-    elem_derivatives<hess, 1>(3);
-    elem_derivatives<hess, 2>();
-    elem_derivatives<hess,1,2>(2);
-    elem_derivatives<hess,1,3>();
+  elem_derivatives<values, 1>();
+  elem_derivatives<values, 2>();
+  elem_derivatives<values,1,2>();
+  elem_derivatives<values,1,3>();
 
 
-    return  0;
+  elem_derivatives<grad, 1>(3);
+  elem_derivatives<grad, 2>();
+  elem_derivatives<grad,1,2>(2);
+  elem_derivatives<grad,1,3>();
+
+  elem_derivatives<hess, 1>(3);
+  elem_derivatives<hess, 2>();
+  elem_derivatives<hess,1,2>(2);
+  elem_derivatives<hess,1,3>();
+
+
+  return  0;
 }

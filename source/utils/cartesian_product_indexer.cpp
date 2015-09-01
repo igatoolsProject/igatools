@@ -32,13 +32,13 @@ IGA_NAMESPACE_OPEN
 template <int rank>
 CartesianProductIndexer<rank>::
 CartesianProductIndexer(const TensorSize<rank> &num_indices_direction)
-    :
-    DynamicMultiArray<TensorIndex<rank>,rank>(num_indices_direction)
+  :
+  DynamicMultiArray<TensorIndex<rank>,rank>(num_indices_direction)
 {
-    const Size flat_size = this->flat_size();
+  const Size flat_size = this->flat_size();
 
-    for (Index flat_id = 0 ; flat_id < flat_size ; ++flat_id)
-        (*this)[flat_id] = this->flat_to_tensor(flat_id);
+  for (Index flat_id = 0 ; flat_id < flat_size ; ++flat_id)
+    (*this)[flat_id] = this->flat_to_tensor(flat_id);
 }
 
 
@@ -48,11 +48,11 @@ TensorIndex<rank>
 CartesianProductIndexer<rank>::
 get_tensor_index(const Index flat_index) const
 {
-    /*
-    Assert((flat_index >=0) && (flat_index < this->flat_size()),
-           ExcIndexRange(flat_index,0,this->flat_size()));
-    //*/
-    return this->get_data()[flat_index] ;
+  /*
+  Assert((flat_index >=0) && (flat_index < this->flat_size()),
+         ExcIndexRange(flat_index,0,this->flat_size()));
+  //*/
+  return this->get_data()[flat_index] ;
 }
 
 
@@ -62,7 +62,7 @@ Size
 CartesianProductIndexer<rank>::
 get_num_indices() const
 {
-    return this->flat_size() ;
+  return this->flat_size() ;
 }
 
 
@@ -73,8 +73,8 @@ void
 CartesianProductIndexer<rank>::
 serialize(Archive &ar, const unsigned int version)
 {
-    ar &boost::serialization::make_nvp("CartesianProductIndexer_base_t",
-                                       boost::serialization::base_object<DynamicMultiArray<TensorIndex<rank>,rank>>(*this));
+  ar &boost::serialization::make_nvp("CartesianProductIndexer_base_t",
+                                     boost::serialization::base_object<DynamicMultiArray<TensorIndex<rank>,rank>>(*this));
 }
 ///@}
 #endif // SERIALIZATION

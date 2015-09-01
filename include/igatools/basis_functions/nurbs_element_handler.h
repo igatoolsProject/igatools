@@ -55,259 +55,259 @@ template<int,int,int> class NURBSElement;
  */
 template<int dim_, int range_, int rank_>
 class NURBSElementHandler
-    : public ReferenceElementHandler<dim_,range_,rank_>
+  : public ReferenceElementHandler<dim_,range_,rank_>
 {
-    using base_t = ReferenceElementHandler<dim_,range_,rank_>;
-    using self_t = NURBSElementHandler<dim_,range_,rank_>;
-    using Space = NURBSSpace<dim_,range_,rank_>;
-    static const Size n_components =  Space::n_components;
+  using base_t = ReferenceElementHandler<dim_,range_,rank_>;
+  using self_t = NURBSElementHandler<dim_,range_,rank_>;
+  using Space = NURBSSpace<dim_,range_,rank_>;
+  static const Size n_components =  Space::n_components;
 
-    using IndexType = typename CartesianGrid<dim_>::IndexType;
+  using IndexType = typename CartesianGrid<dim_>::IndexType;
 
-    template<class T>
-    using ComponentContainer = typename Space::template ComponentContainer<T>;
+  template<class T>
+  using ComponentContainer = typename Space::template ComponentContainer<T>;
 
-    template <int order>
-    using Derivative = typename Space::template Derivative<order>;
+  template <int order>
+  using Derivative = typename Space::template Derivative<order>;
 
-    using Value = typename Space::Value;
+  using Value = typename Space::Value;
 
 protected:
-    using ElementIterator = typename Space::ElementIterator;
-    using ElementAccessor = typename Space::ElementAccessor;
+  using ElementIterator = typename Space::ElementIterator;
+  using ElementAccessor = typename Space::ElementAccessor;
 
-    using BaseSpace = ReferenceSpace<dim_,range_,rank_>;
-    using RefElementIterator = typename BaseSpace::ElementIterator;
-    using RefElementAccessor = typename BaseSpace::ElementAccessor;
+  using BaseSpace = ReferenceSpace<dim_,range_,rank_>;
+  using RefElementIterator = typename BaseSpace::ElementIterator;
+  using RefElementAccessor = typename BaseSpace::ElementAccessor;
 
 
 public:
-    static const int dim = dim_;
+  static const int dim = dim_;
 
 
 
 private:
-    /** @name Constructors.*/
-    ///@{
-    /**
-     * Default constructor. It does nothing but it is needed for the
-     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     * mechanism.
-     */
-    NURBSElementHandler() = default;
+  /** @name Constructors.*/
+  ///@{
+  /**
+   * Default constructor. It does nothing but it is needed for the
+   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * mechanism.
+   */
+  NURBSElementHandler() = default;
 
-    NURBSElementHandler(std::shared_ptr<const Space> space);
+  NURBSElementHandler(std::shared_ptr<const Space> space);
 
-    /**
-     * Copy constructor. Not allowed to be used.
-     */
-    NURBSElementHandler(const self_t &) = delete;
+  /**
+   * Copy constructor. Not allowed to be used.
+   */
+  NURBSElementHandler(const self_t &) = delete;
 
-    /**
-     * Move constructor. Not allowed to be used.
-     */
-    NURBSElementHandler(self_t &&) = delete;
-    ///@}
+  /**
+   * Move constructor. Not allowed to be used.
+   */
+  NURBSElementHandler(self_t &&) = delete;
+  ///@}
 
-    /**
-     * Assignment operators.
-     */
-    ///@{
-    /**
-     * Copy assignment operator. Not allowed to be used.
-     */
-    self_t &operator=(const self_t &) = delete;
+  /**
+   * Assignment operators.
+   */
+  ///@{
+  /**
+   * Copy assignment operator. Not allowed to be used.
+   */
+  self_t &operator=(const self_t &) = delete;
 
-    /**
-     * Move assignment operator. Not allowed to be used.
-     */
-    self_t &operator=(self_t &&) = delete;
-    ///@}
+  /**
+   * Move assignment operator. Not allowed to be used.
+   */
+  self_t &operator=(self_t &&) = delete;
+  ///@}
 
 public:
-    /**
-     * Destructor.
-     */
-    virtual ~NURBSElementHandler() = default;
+  /**
+   * Destructor.
+   */
+  virtual ~NURBSElementHandler() = default;
 
 
-    static std::shared_ptr<base_t> create(std::shared_ptr<const Space> space);
+  static std::shared_ptr<base_t> create(std::shared_ptr<const Space> space);
 
-    using topology_variant = typename base_t::topology_variant;
-    using eval_pts_variant = typename base_t::eval_pts_variant;
+  using topology_variant = typename base_t::topology_variant;
+  using eval_pts_variant = typename base_t::eval_pts_variant;
 
 #if 0
-    virtual void reset_selected_elements(
-        const ValueFlags &flag,
-        const eval_pts_variant &eval_points,
-        const SafeSTLVector<IndexType> &elements_id) override final;
+  virtual void reset_selected_elements(
+    const ValueFlags &flag,
+    const eval_pts_variant &eval_points,
+    const SafeSTLVector<IndexType> &elements_id) override final;
 #endif
 
 
-    virtual void print_info(LogStream &out) const override final;
+  virtual void print_info(LogStream &out) const override final;
 
 private:
 
 #if 0
-    virtual void init_ref_elem_cache(RefElementAccessor &elem,
-                                     const topology_variant &topology) override final;
+  virtual void init_ref_elem_cache(RefElementAccessor &elem,
+                                   const topology_variant &topology) override final;
 
-    virtual void fill_ref_elem_cache(RefElementAccessor &elem,
-                                     const topology_variant &topology, const int j) override final;
+  virtual void fill_ref_elem_cache(RefElementAccessor &elem,
+                                   const topology_variant &topology, const int j) override final;
 #endif
 
-    std::shared_ptr<BSplineElementHandler<dim_,range_,rank_>> bspline_handler_;
+  std::shared_ptr<BSplineElementHandler<dim_,range_,rank_>> bspline_handler_;
 
-    SafeSTLArray<ValueFlags, dim+1> flags_;
+  SafeSTLArray<ValueFlags, dim+1> flags_;
 
 
-    using WeightElem = typename Space::WeightFunction::ElementAccessor;
-    using WeightElemTable = typename Space::template ComponentContainer<std::shared_ptr<WeightElem>>;
+  using WeightElem = typename Space::WeightFunction::ElementAccessor;
+  using WeightElemTable = typename Space::template ComponentContainer<std::shared_ptr<WeightElem>>;
 
 
 
 #if 0
-    /**
-     * Returns the active components id for the NURBS values and derivatives.
-     *
-     * @note The active components id is the union of the active components for the numerator
-     * (basis function belonging to a BSplineSpace) and the active components for the denominator
-     * (a ComponentTable of scalar IgFunction(s)).
-     */
-    SafeSTLVector<int> get_active_components_id() const;
+  /**
+   * Returns the active components id for the NURBS values and derivatives.
+   *
+   * @note The active components id is the union of the active components for the numerator
+   * (basis function belonging to a BSplineSpace) and the active components for the denominator
+   * (a ComponentTable of scalar IgFunction(s)).
+   */
+  SafeSTLVector<int> get_active_components_id() const;
 
 
-    /**
-     * Returns the active components id for the NURBS values and derivatives.
-     *
-     * @note The incative components id are the complement of the active components id with respect
-     * to the sequence 0,1,...,n_components-1
-     *
-     * @see get_active_components_id()
-     */
-    SafeSTLVector<int> get_inactive_components_id() const;
+  /**
+   * Returns the active components id for the NURBS values and derivatives.
+   *
+   * @note The incative components id are the complement of the active components id with respect
+   * to the sequence 0,1,...,n_components-1
+   *
+   * @see get_active_components_id()
+   */
+  SafeSTLVector<int> get_inactive_components_id() const;
 #endif
 
 
 #if 0
-    struct ResetDispatcher : boost::static_visitor<void>
-    {
-        ResetDispatcher(const ValueFlags flag_in,
+  struct ResetDispatcher : boost::static_visitor<void>
+  {
+    ResetDispatcher(const ValueFlags flag_in,
+                    SafeSTLArray<ValueFlags, dim+1> &flags)
+      :
+      flag_(flag_in),
+      flags_(flags)
+    {}
+
+    template<int sub_elem_dim>
+    void operator()(const Quadrature<sub_elem_dim> &quad);
+
+    const ValueFlags flag_;
+    SafeSTLArray<ValueFlags, dim+1> &flags_;
+  };
+
+
+  struct InitCacheDispatcher : boost::static_visitor<void>
+  {
+    InitCacheDispatcher(GridElementHandler<dim_> &grid_handler,
+                        ReferenceElement<dim_,range_,rank_> &elem,
                         SafeSTLArray<ValueFlags, dim+1> &flags)
-            :
-            flag_(flag_in),
-            flags_(flags)
-        {}
+      :
+      grid_handler_(grid_handler),
+      elem_(elem),
+      flags_(flags)
+    {}
 
-        template<int sub_elem_dim>
-        void operator()(const Quadrature<sub_elem_dim> &quad);
+    template<int sub_elem_dim>
+    void operator()(const Topology<sub_elem_dim> &sub_elem);
 
-        const ValueFlags flag_;
-        SafeSTLArray<ValueFlags, dim+1> &flags_;
-    };
+    GridElementHandler<dim_> &grid_handler_;
+    ReferenceElement<dim_,range_,rank_> &elem_;
+    SafeSTLArray<ValueFlags, dim+1> &flags_;
 
+  };
 
-    struct InitCacheDispatcher : boost::static_visitor<void>
-    {
-        InitCacheDispatcher(GridElementHandler<dim_> &grid_handler,
-                            ReferenceElement<dim_,range_,rank_> &elem,
-                            SafeSTLArray<ValueFlags, dim+1> &flags)
-            :
-            grid_handler_(grid_handler),
-            elem_(elem),
-            flags_(flags)
-        {}
+  struct FillCacheDispatcher : boost::static_visitor<void>
+  {
+    FillCacheDispatcher(const GridElementHandler<dim_> &grid_handler,
+                        const int sub_elem_id,
+                        NURBSElement<dim_,range_,rank_> &nrb_elem)
+      :
+      grid_handler_(grid_handler),
+      sub_elem_id_(sub_elem_id),
+      nrb_elem_(nrb_elem)
+    {}
 
-        template<int sub_elem_dim>
-        void operator()(const Topology<sub_elem_dim> &sub_elem);
+    template<int sub_elem_dim>
+    void operator()(const Topology<sub_elem_dim> &sub_elem);
 
-        GridElementHandler<dim_> &grid_handler_;
-        ReferenceElement<dim_,range_,rank_> &elem_;
-        SafeSTLArray<ValueFlags, dim+1> &flags_;
+    /**
+     * Computes the value of the non-zero NURBS basis
+     * functions over the current element,
+     *   at the evaluation points pre-allocated in the cache.
+     *
+     * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
+     * an exception will be raised.
+     */
+    void evaluate_nurbs_values_from_bspline(
+      const typename Space::SpSpace::ElementAccessor &bspline_elem,
+      const WeightElem &weight_elem,
+      ValueTable<Value> &phi) const;
 
-    };
+    /**
+     * Computes the 1st order derivative of the non-zero NURBS basis
+     * functions over the current element,
+     *   at the evaluation points pre-allocated in the cache.
+     *
+     * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
+     * an exception will be raised.
+     */
+    void evaluate_nurbs_gradients_from_bspline(
+      const typename Space::SpSpace::ElementAccessor &bspline_elem,
+      const WeightElem &weight_elem,
+      ValueTable<Derivative<1>> &D1_phi) const;
 
-    struct FillCacheDispatcher : boost::static_visitor<void>
-    {
-        FillCacheDispatcher(const GridElementHandler<dim_> &grid_handler,
-                            const int sub_elem_id,
-                            NURBSElement<dim_,range_,rank_> &nrb_elem)
-            :
-            grid_handler_(grid_handler),
-            sub_elem_id_(sub_elem_id),
-            nrb_elem_(nrb_elem)
-        {}
+    /**
+     * Computes the 2nd order derivative of the non-zero NURBS basis
+     * functions over the current element,
+     *   at the evaluation points pre-allocated in the cache.
+     *
+     * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
+     * an exception will be raised.
+     */
+    void evaluate_nurbs_hessians_from_bspline(
+      const typename Space::SpSpace::ElementAccessor &bspline_elem,
+      const WeightElem &weight_elem,
+      ValueTable<Derivative<2>> &D2_phi) const;
 
-        template<int sub_elem_dim>
-        void operator()(const Topology<sub_elem_dim> &sub_elem);
-
-        /**
-         * Computes the value of the non-zero NURBS basis
-         * functions over the current element,
-         *   at the evaluation points pre-allocated in the cache.
-         *
-         * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
-         * an exception will be raised.
-         */
-        void evaluate_nurbs_values_from_bspline(
-            const typename Space::SpSpace::ElementAccessor &bspline_elem,
-            const WeightElem &weight_elem,
-            ValueTable<Value> &phi) const;
-
-        /**
-         * Computes the 1st order derivative of the non-zero NURBS basis
-         * functions over the current element,
-         *   at the evaluation points pre-allocated in the cache.
-         *
-         * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
-         * an exception will be raised.
-         */
-        void evaluate_nurbs_gradients_from_bspline(
-            const typename Space::SpSpace::ElementAccessor &bspline_elem,
-            const WeightElem &weight_elem,
-            ValueTable<Derivative<1>> &D1_phi) const;
-
-        /**
-         * Computes the 2nd order derivative of the non-zero NURBS basis
-         * functions over the current element,
-         *   at the evaluation points pre-allocated in the cache.
-         *
-         * \warning If the output result @p derivatives_phi_hat is not correctly pre-allocated,
-         * an exception will be raised.
-         */
-        void evaluate_nurbs_hessians_from_bspline(
-            const typename Space::SpSpace::ElementAccessor &bspline_elem,
-            const WeightElem &weight_elem,
-            ValueTable<Derivative<2>> &D2_phi) const;
-
-        const GridElementHandler<dim_> &grid_handler_;
-        const int sub_elem_id_;
-        NURBSElement<dim_,range_,rank_> &nrb_elem_;
-    };
+    const GridElementHandler<dim_> &grid_handler_;
+    const int sub_elem_id_;
+    NURBSElement<dim_,range_,rank_> &nrb_elem_;
+  };
 #endif
 
 
-    /**
-     * Returns the NURBSSpace used to define the NURBSElementHandler object.
-     */
-    std::shared_ptr<const Space> get_nurbs_space() const;
+  /**
+   * Returns the NURBSSpace used to define the NURBSElementHandler object.
+   */
+  std::shared_ptr<const Space> get_nurbs_space() const;
 
 
 
 private:
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version);
-    ///@}
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version);
+  ///@}
 #endif // SERIALIZATION
 };
 

@@ -45,30 +45,30 @@ class DenseVector : public boost::numeric::ublas::vector<Real>
 {
 public:
 
-    /** Inherith the constructors of the base class. */
-    using vector<Real>::vector;
+  /** Inherith the constructors of the base class. */
+  using vector<Real>::vector;
 
-    /**
-     * Assignment operator for assigning zeros to all entries of the vector
-     * by writing
-     * @code
-       DenseVector vec;
-       ... // working with the vector
-       vector = 0.0; // reset the vector entries to zero
-       @endcode
-     * @note If used in Debug mode with a @p value different from zero,
-     * an assertion will be raised.
-     */
-    DenseVector &operator=(const Real value);
+  /**
+   * Assignment operator for assigning zeros to all entries of the vector
+   * by writing
+   * @code
+     DenseVector vec;
+     ... // working with the vector
+     vector = 0.0; // reset the vector entries to zero
+     @endcode
+   * @note If used in Debug mode with a @p value different from zero,
+   * an assertion will be raised.
+   */
+  DenseVector &operator=(const Real value);
 
-    void print_info(LogStream &out) const
-    {
-        Assert(false,ExcNotImplemented());
-        // out << SafeSTLVector<Real>::SafeSTLVector(*this);
-    }
+  void print_info(LogStream &out) const
+  {
+    Assert(false,ExcNotImplemented());
+    // out << SafeSTLVector<Real>::SafeSTLVector(*this);
+  }
 
-    /** Returns the number of entries in the DenseVector. */
-    int size() const;
+  /** Returns the number of entries in the DenseVector. */
+  int size() const;
 };
 
 

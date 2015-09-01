@@ -33,28 +33,28 @@
 template<int dim, int range = 1, int rank = 1>
 void get_interior_dof(const int deg = 1, const int n_knots = 3)
 {
-    OUTSTART
-    using Space = BSplineSpace<dim, range, rank>;
-    auto grid = CartesianGrid<dim>::create(n_knots);
+  OUTSTART
+  using Space = BSplineSpace<dim, range, rank>;
+  auto grid = CartesianGrid<dim>::create(n_knots);
 
-    auto space = Space::create(deg, grid);
-    auto int_dofs = space->get_interior_dofs();
+  auto space = Space::create(deg, grid);
+  auto int_dofs = space->get_interior_dofs();
 
-    // TODO (pauletti, Mar 27, 2015): we should create iga::set with print_info
-    for (auto &x : int_dofs)
-        out << x << " ";
-    out << endl;
+  // TODO (pauletti, Mar 27, 2015): we should create iga::set with print_info
+  for (auto &x : int_dofs)
+    out << x << " ";
+  out << endl;
 
-    OUTEND
+  OUTEND
 }
 
 
 
 int main()
 {
-    get_interior_dof<1>();
-    get_interior_dof<2>();
-    get_interior_dof<3>();
+  get_interior_dof<1>();
+  get_interior_dof<2>();
+  get_interior_dof<3>();
 
-    return 0;
+  return 0;
 }

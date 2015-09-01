@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __GRID_ELEMENT_HANDLER_H_
-#define __GRID_ELEMENT_HANDLER_H_
+#ifndef __GRID_CACHE_HANDLER_H_
+#define __GRID_CACHE_HANDLER_H_
 
 #include <igatools/base/config.h>
 #include <igatools/basis_functions/values_cache.h>
@@ -28,15 +28,11 @@
 #include <igatools/utils/tensor_product_array.h>
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/geometry/grid_element.h>
-//#include <igatools/basis_functions/space_element_handler.h>
 
 IGA_NAMESPACE_OPEN
 
 /**
- * @brief Grid element value manager. Its purpose is to fill the cache of CartesianGridelement.
- *
- * It contains the Quadrature in each sub-element and the ValueFlags that are used to determine
- * which quantity of CartesianGridelement's cache must be filled.
+ * @brief Grid caches manager
  *
  * @ingroup serializable
  */
@@ -44,166 +40,197 @@ template <int dim>
 class GridElementHandler
 {
 private:
-    using self_t = GridElementHandler<dim>;
+  using self_t = GridElementHandler<dim>;
 
 public:
-    using GridType = const CartesianGrid<dim>;
+  using GridType = const CartesianGrid<dim>;
 
 
 protected:
-    // using ElementIterator = typename GridType::ElementIterator;
-    // using ElementAccessor = typename GridType::ElementAccessor;
-    using ElementIterator = typename GridType::ElementConstIterator;
-    using ElementAccessor = typename GridType::ConstElementAccessor;
-public:
-    /**
-     * @name Creators.
-     */
-    ///@{
-    static std::shared_ptr<self_t> create(std::shared_ptr<GridType> grid);
-    ///@}
+  // using ElementIterator = typename GridType::ElementIterator;
+  // using ElementAccessor = typename GridType::ElementAccessor;
+  using ElementIterator = typename GridType::ElementConstIterator;
+  using ElementAccessor = typename GridType::ConstElementAccessor;
 
-    /**
-     * @name Constructors
-     */
-    ///@{
+public:
+  using Flags = typename ElementAccessor::Flags;
 protected:
-    /**
-     * Default constructor. It does nothing but it is needed for the
-     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     * mechanism of the Function class.
-     */
-    GridElementHandler() = default;
+  using FlagsArray = SafeSTLArray<Flags, dim+1>;
+  using topology_variant = TopologyVariants<dim>;
 
 public:
-    /**
-     * Constructor.
-     */
-    GridElementHandler(std::shared_ptr<GridType> grid);
+  /**
+   * @name Creators.
+   */
+  ///@{
+  static std::shared_ptr<self_t> create(std::shared_ptr<GridType> grid);
+  ///@}
 
-    /**
-     * Copy constructor.
-     */
-    GridElementHandler(const self_t &) = default;
-
-    /**
-     * Move constructor.
-     */
-    GridElementHandler(self_t &&) = default;
-
-    /**
-     * Destructor.
-     */
-    ~GridElementHandler() = default;
-    ///@}
-
-    /**
-     * Assignment operators.
-     */
-    ///@{
-    /**
-     * Copy assignment operator. Not allowed to be used.
-     */
-    self_t &operator=(const self_t &) = delete;
-
-    /**
-     * Move assignment operator. Not allowed to be used.
-     */
-    self_t &operator=(self_t &&) = delete;
-    ///@}
+  /**
+   * @name Constructors
+   */
+  ///@{
+protected:
+  /**
+   * Default constructor. It does nothing but it is needed for the
+   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * mechanism of the Function class.
+   */
+  GridElementHandler() = default;
 
 public:
-    /**
-     * @name Functions for the cache's reset/init/fill mechanism.
-     */
-    ///@{
-    template<int sdim>
-    void set_flags(const typename ElementAccessor::Flags flag);
+  /**
+   * Constructor.
+   */
+  GridElementHandler(std::shared_ptr<GridType> grid);
 
-    template <int sdim>
-    void init_cache(ElementAccessor &elem,
-                    std::shared_ptr<const Quadrature<sdim>> quad) const;
+  /**
+   * Copy constructor.
+   */
+  GridElementHandler(const self_t &) = default;
 
-    template <int sdim>
-    void init_cache(ElementIterator &elem,
-                    std::shared_ptr<const Quadrature<sdim>> quad) const
-    {
-        init_cache<sdim>(*elem, quad);
-    }
+  /**
+   * Move constructor.
+   */
+  GridElementHandler(self_t &&) = default;
+
+  /**
+   * Destructor.
+   */
+  ~GridElementHandler() = default;
+  ///@}
+
+  /**
+   * Assignment operators.
+   */
+  ///@{
+  /**
+   * Copy assignment operator. Not allowed to be used.
+   */
+  self_t &operator=(const self_t &) = delete;
+
+  /**
+   * Move assignment operator. Not allowed to be used.
+   */
+  self_t &operator=(self_t &&) = delete;
+  ///@}
+
+public:
+  /**
+   * @name Functions for the cache's reset/init/fill mechanism.
+   */
+  ///@{
+  template<int sdim>
+  void set_flags(const Flags &flag);
+
+  void set_flags(const topology_variant &sdim,
+                 const Flags &flag);
+
+  template <int sdim>
+  void init_cache(ElementAccessor &elem,
+                  std::shared_ptr<const Quadrature<sdim>> quad) const;
+
+  template <int sdim>
+  void init_cache(ElementIterator &elem,
+                  std::shared_ptr<const Quadrature<sdim>> quad) const
+  {
+    init_cache<sdim>(*elem, quad);
+  }
 
 
-    void init_element_cache(ElementIterator &elem,
-                            std::shared_ptr<const Quadrature<dim>> quad) const
-    {
-        init_cache<dim>(*elem, quad);
-    }
+  void init_element_cache(ElementIterator &elem,
+                          std::shared_ptr<const Quadrature<dim>> quad) const
+  {
+    init_cache<dim>(*elem, quad);
+  }
 
-    void init_face_cache(ElementIterator &elem,
-                         std::shared_ptr<const Quadrature<(dim > 0) ? dim-1 : 0>> quad) const
-    {
-        Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
-        init_cache<(dim > 0) ? dim-1 : 0>(*elem, quad);
-    }
+  void init_face_cache(ElementIterator &elem,
+                       std::shared_ptr<const Quadrature<(dim > 0) ? dim-1 : 0>> quad) const
+  {
+    Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
+    init_cache<(dim > 0) ? dim-1 : 0>(*elem, quad);
+  }
 
-    template <int sdim>
-    void fill_cache(ElementAccessor &elem, const int s_id) const;
-
-
-    template <int sdim>
-    void fill_cache(ElementIterator &elem, const int s_id) const
-    {
-        fill_cache<sdim>(*elem, s_id);
-    }
+  template <int sdim>
+  void fill_cache(ElementAccessor &elem, const int s_id) const;
 
 
+  template <int sdim>
+  void fill_cache(ElementIterator &elem, const int s_id) const
+  {
+    fill_cache<sdim>(*elem, s_id);
+  }
 
-    void fill_element_cache(ElementIterator &elem) const
-    {
-        fill_cache<dim>(*elem,0);
-    }
 
 
-    void fill_face_cache(ElementIterator &elem, const int s_id) const
-    {
-        Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
-        fill_cache<(dim > 0) ? dim-1 : 0>(*elem,s_id);
-    }
-    ///@}
+  void fill_element_cache(ElementIterator &elem) const
+  {
+    fill_cache<dim>(*elem,0);
+  }
+
+
+  void fill_face_cache(ElementIterator &elem, const int s_id) const
+  {
+    Assert(dim > 0,ExcMessage("No face defined for element with topological dimension 0."));
+    fill_cache<(dim > 0) ? dim-1 : 0>(*elem,s_id);
+  }
+  ///@}
 
 
 public:
 
-    /**
-     * Function for printing some internal information.
-     * Its use is mostly intended for debugging and testing purposes.
-     */
-    void print_info(LogStream &out) const;
+  /**
+   * Function for printing some internal information.
+   * Its use is mostly intended for debugging and testing purposes.
+   */
+  void print_info(LogStream &out) const;
 
 
-    /**
-     * Returns the grid upon which the object is built.
-     */
-    std::shared_ptr<const GridType> get_grid() const;
+  /**
+   * Returns the grid upon which the object is built.
+   */
+  std::shared_ptr<const GridType> get_grid() const;
 
 private:
-    std::shared_ptr<GridType> grid_;
+  std::shared_ptr<GridType> grid_;
 
-    SafeSTLArray<typename ElementAccessor::Flags, dim + 1> flags_;
+  FlagsArray flags_;
+
+
+private:
+  struct SetFlagsDispatcher : boost::static_visitor<void>
+  {
+    SetFlagsDispatcher(const Flags flag, FlagsArray &flags)
+      :
+      flag_(flag),
+      flags_(flags)
+    {}
+
+    template<int sdim>
+    void operator()(const Topology<sdim> &)
+    {
+      // grid_handler_.set_flags<sdim>(flag_)
+      flags_[sdim] = flag_;
+    }
+
+    const Flags flag_;
+    FlagsArray &flags_;
+  };
 
 private:
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version);
-    ///@}
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version);
+  ///@}
 #endif // SERIALIZATION
 
 };

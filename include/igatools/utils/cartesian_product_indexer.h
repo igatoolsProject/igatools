@@ -46,66 +46,66 @@ IGA_NAMESPACE_OPEN
  */
 template <int rank>
 class CartesianProductIndexer
-    : public DynamicMultiArray<TensorIndex<rank>,rank>
+  : public DynamicMultiArray<TensorIndex<rank>,rank>
 {
-    /** @name Constructors and destructor */
-    ///@{
+  /** @name Constructors and destructor */
+  ///@{
 protected:
-    /**
-     * Default constructor. It does nothing but it is needed for the
-     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     * mechanism.
-     */
-    CartesianProductIndexer() = default;
+  /**
+   * Default constructor. It does nothing but it is needed for the
+   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * mechanism.
+   */
+  CartesianProductIndexer() = default;
 
 public:
-    /**
-     * Constructor. Builds an indexer with <p>n_indices_direction[i]M</p>
-     * indices along the i-th direction.
-     */
-    explicit CartesianProductIndexer(const TensorSize<rank> &n_indices_direction);
+  /**
+   * Constructor. Builds an indexer with <p>n_indices_direction[i]M</p>
+   * indices along the i-th direction.
+   */
+  explicit CartesianProductIndexer(const TensorSize<rank> &n_indices_direction);
 
-    /** Copy constructor. Not allowed to be used. */
-    CartesianProductIndexer(const CartesianProductIndexer<rank> &in) = delete;
+  /** Copy constructor. Not allowed to be used. */
+  CartesianProductIndexer(const CartesianProductIndexer<rank> &in) = delete;
 
-    /** Move constructor. Not allowed to be used. */
-    CartesianProductIndexer(CartesianProductIndexer<rank> &&in) = delete;
+  /** Move constructor. Not allowed to be used. */
+  CartesianProductIndexer(CartesianProductIndexer<rank> &&in) = delete;
 
-    /** Destructor. */
-    ~CartesianProductIndexer() = default;
-    ///@}
+  /** Destructor. */
+  ~CartesianProductIndexer() = default;
+  ///@}
 
-    /** @name Assignment operators */
-    ///@{
-    /** Copy assignment operator. Not allowed to be used. */
-    CartesianProductIndexer<rank> &operator=(const CartesianProductIndexer<rank> &in) = delete;
+  /** @name Assignment operators */
+  ///@{
+  /** Copy assignment operator. Not allowed to be used. */
+  CartesianProductIndexer<rank> &operator=(const CartesianProductIndexer<rank> &in) = delete;
 
-    /** Move assignment operator. Not allowed to be used. */
-    CartesianProductIndexer<rank> &operator=(CartesianProductIndexer<rank> &&in) = delete;
-    ///@}
+  /** Move assignment operator. Not allowed to be used. */
+  CartesianProductIndexer<rank> &operator=(CartesianProductIndexer<rank> &&in) = delete;
+  ///@}
 
 
-    /** Returns the tensor index corresponding to the function argument @p flat_index.*/
-    TensorIndex<rank> get_tensor_index(const Index flat_index) const ;
+  /** Returns the tensor index corresponding to the function argument @p flat_index.*/
+  TensorIndex<rank> get_tensor_index(const Index flat_index) const ;
 
-    /** Returns the total number of indices. */
-    Size get_num_indices() const ;
+  /** Returns the total number of indices. */
+  Size get_num_indices() const ;
 
 
 private:
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version);
-    ///@}
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version);
+  ///@}
 #endif // SERIALIZATION
 };
 

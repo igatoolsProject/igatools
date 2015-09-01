@@ -37,9 +37,9 @@ using namespace EpetraTools;
 template<int dim, int range, int rank =  1>
 void evaluate_field(const int deg = 1)
 {
-    OUTSTART
+  OUTSTART
 
-    auto grid = CartesianGrid<dim>::create();
+  auto grid = CartesianGrid<dim>::create();
 
     using Space = BSplineSpace<dim,range,rank>;
 
@@ -48,21 +48,21 @@ void evaluate_field(const int deg = 1)
     Epetra_SerialComm comm;
     Epetra_Map map(num, num, 0, comm);
 
-    Vector u(map);
-    {
-        int id = 0 ;
-        u[id++] = 0.0 ;
-        u[id++] = 1.0 ;
+  Vector u(map);
+  {
+    int id = 0 ;
+    u[id++] = 0.0 ;
+    u[id++] = 1.0 ;
 
-        u[id++] = 0.0 ;
-        u[id++] = 1.0 ;
+    u[id++] = 0.0 ;
+    u[id++] = 1.0 ;
 
-        u[id++] = 0.0 ;
-        u[id++] = 0.0 ;
+    u[id++] = 0.0 ;
+    u[id++] = 0.0 ;
 
-        u[id++] = 1.0 ;
-        u[id++] = 1.0 ;
-    }
+    u[id++] = 1.0 ;
+    u[id++] = 1.0 ;
+  }
 
     auto quad = QGauss<dim>::create(2);
     auto flag = space_element::Flags::value |
@@ -85,7 +85,7 @@ void evaluate_field(const int deg = 1)
     using _Hessian = typename Elem::_Hessian;
     using _Divergence = typename Elem::_Divergence;
 
-    const auto elem_dofs = elem->get_local_to_global(DofProperties::active);
+  const auto elem_dofs = elem->get_local_to_global(DofProperties::active);
 
     const auto &loc_coef = u.get_local_coeffs(elem_dofs);
     out.begin_item("Linear combination of basis values:");
@@ -104,16 +104,16 @@ void evaluate_field(const int deg = 1)
     elem->template linear_combination<_Divergence,dim>(loc_coef,0,DofProperties::active).print_info(out);
     out.end_item();
 
-    OUTEND
+  OUTEND
 }
 
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
-    evaluate_field<2,2>();
-    evaluate_field<3,3>();
+  evaluate_field<2,2>();
+  evaluate_field<3,3>();
 
-    return 0;
+  return 0;
 }

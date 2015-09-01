@@ -18,338 +18,336 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef FUNCTION_ELEMENT_H
-#define FUNCTION_ELEMENT_H
+#ifndef __FUNCTION_ELEMENT_H_
+#define __FUNCTION_ELEMENT_H_
 
-#include <igatools/geometry/grid_element.h>
+
+#include <igatools/functions/function.h>
+#include <igatools/functions/function_cache_handler.h>
+//#include <igatools/geometry/physical_domain_element.h>
+
 #include <igatools/base/value_types.h>
 #include <igatools/basis_functions/values_cache.h>
 
 IGA_NAMESPACE_OPEN
+template<int , int , class> class PhysicalDomainElementBase;
+template <int,int> class PhysicalDomainElement;
+template <int,int> class ConstPhysicalDomainElement;
+//template <int,int> class PhysicalDomain;
+//template <int,int> class PhysicalDomainElement;
 
-template <int,int,int,int> class Function;
 
-template <int,int> class Mapping;
-template <int,int> class MappingElement;
+//namespace function_element
+//{
+//enum class Flags
+//{
+//  /** Fill nothing */
+//  none           =    0,
+//
+//  /** Quadrature points on the element */
+//  value          =    1L << 1,
+//
+//  /** Quadrature weigths on the element */
+//  gradient       =    1L << 2
+//};
+//}
 
 /**
  *
  * @ingroup serializable
  */
-template<int dim, int codim, int range = 1, int rank = 1>
-class FunctionElement
+template<int dim, int codim, int range, int rank, class ContainerType_>
+class FunctionElementBase
 {
 private:
-    using self_t = FunctionElement<dim,codim,range,rank>;
+  using self_t = FunctionElementBase<dim, codim, range, rank, ContainerType_>;
 
 public:
-    using Func = Function<dim, codim, range, rank>;
-    using MapFunc = typename Func::MapFunc;
-    using Point = typename Func::Point;
-    using Value = typename Func::Value;
-    using Gradient = typename Func::Gradient;
-    using Hessian  = typename Func::Hessian;
-    using Div      = typename Func::Div;
-//    using ContainerType = const CartesianGrid<dim>;
-    using ContainerType = const Func;
 
+  using ContainerType = ContainerType_;
+  using DomainElem = typename ContainerType_::DomainType::ConstElementAccessor;
 
-    using Grid = CartesianGrid<dim>;
-    using IndexType = typename Grid::IndexType;
-    using List = typename Grid::List;
-    using ListIt = typename Grid::ListIt;
+  using ListIt = typename ContainerType_::ListIt;
+  using Flags = function_element::Flags;
 
+  using Value = typename ContainerType_::Value;
+  using Gradient = typename ContainerType_::Gradient;
+  using Hessian  = typename ContainerType_::Hessian;
+  using Div      = typename ContainerType_::Div;
 private:
-    template <int order>
-    using Derivative = typename Func::template Derivative<order>;
+  template <int order>
+  using Derivative = typename ContainerType_::template Derivative<order>;
+
+protected:
+  /** @name Constructors */
+  ///@{
+  /**
+   * Default constructor. It does nothing but it is needed for the
+   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * mechanism.
+   */
+  FunctionElementBase() = default;
 
 public:
+  /**
+   * Construct an accessor pointing to the element with
+   * flat index @p elem_index of the CartesianGrid @p grid.
+   */
+  FunctionElementBase(const std::shared_ptr<ContainerType_> func,
+                      const ListIt &index,
+                      const PropId &prop = ElementProperties::active);
 
-    /** @name Constructors */
-    ///@{
-    /**
-     * Default constructor. It does nothing but it is needed for the
-     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     * mechanism.
-     */
-    FunctionElement() = default;
+  /**
+   * Copy constructor.
+   * It can be used with different copy policies
+   * (i.e. deep copy or shallow copy).
+   * The default behaviour (i.e. using the proper interface of a
+   * classic copy constructor)
+   * uses the deep copy.
+   */
+  FunctionElementBase(const self_t &elem,
+                      const CopyPolicy &copy_policy = CopyPolicy::deep);
 
+  /**
+   * Move constructor.
+   */
+  FunctionElementBase(self_t &&elem) = default;
 
-    /**
-     * Construct an accessor pointing to the element with
-     * flat index @p elem_index of the CartesianGrid @p grid.
-     */
-    FunctionElement(const std::shared_ptr<const Func> func,
-                    const ListIt &index,
-                    const PropId &prop = ElementProperties::active);
+  /**
+   * Destructor.
+   */
+  ~FunctionElementBase() = default;
+  ///@}
 
-    /**
-     * Copy constructor.
-     * It can be used with different copy policies
-     * (i.e. deep copy or shallow copy).
-     * The default behaviour (i.e. using the proper interface of a
-     * classic copy constructor)
-     * uses the deep copy.
-     */
-    FunctionElement(const FunctionElement<dim,codim,range,rank> &elem,
-                    const CopyPolicy &copy_policy = CopyPolicy::deep);
+  /**
+   * @name Functions for performing different kind of copy.
+   */
+  ///@{
+  /**
+   * Performs a deep copy of the input @p element,
+   * i.e. a new local cache is built using the copy constructor on the local cache of @p element.
+   *
+   * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
+   */
+  void deep_copy_from(const self_t &element)
+  {
+    Assert(false,ExcNotImplemented());
+  }
 
-    /**
-     * Move constructor.
-     */
-    FunctionElement(FunctionElement<dim,codim,range,rank> &&elem) = default;
+  /**
+   * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
+   * local cache used by the input @p element.
+   */
+  void shallow_copy_from(const self_t &element)
+  {
+    Assert(false,ExcNotImplemented());
+  }
 
-    /**
-     * Destructor.
-     */
-    ~FunctionElement() = default;
-    ///@}
-
-    /**
-     * @name Functions for performing different kind of copy.
-     */
-    ///@{
-    /**
-     * Performs a deep copy of the input @p element,
-     * i.e. a new local cache is built using the copy constructor on the local cache of @p element.
-     *
-     * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
-     */
-    void deep_copy_from(const FunctionElement<dim,codim,range,rank> &element)
-    {
-        Assert(false,ExcNotImplemented());
-    }
-
-    /**
-     * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
-     * local cache used by the input @p element.
-     */
-    void shallow_copy_from(const FunctionElement<dim,codim,range,rank> &element)
-    {
-        Assert(false,ExcNotImplemented());
-    }
-
-    ///@}
+  ///@}
 
 
-    /** @name Assignment operators */
-    ///@{
-    /**
-     * Copy assignment operator. Performs a <b>shallow copy</b> of the input @p element.
-     *
-     * @note Internally it uses the function shallow_copy_from().
-     */
-    FunctionElement<dim,codim,range,rank> &operator=(const FunctionElement<dim,codim,range,rank> &element);
+  /** @name Assignment operators */
+  ///@{
+  /**
+   * Copy assignment operator. Performs a <b>shallow copy</b> of the input @p element.
+   *
+   * @note Internally it uses the function shallow_copy_from().
+   */
+  self_t &operator=(const self_t &element);
 
-    /**
-     * Move assignment operator.
-     */
-    FunctionElement<dim,codim,range,rank> &operator=(FunctionElement<dim,codim,range,rank> &&elem) = default;
-    ///@}
+  /**
+   * Move assignment operator.
+   */
+  self_t &operator=(self_t &&elem) = default;
+  ///@}
 
 
 
-    template<class ValueType, int k>
-    auto
-    get_values(const int j) const
-    {
-        Assert(all_sub_elems_cache_ != nullptr,ExcNullPtr());
-        const auto &cache = all_sub_elems_cache_->template get_sub_elem_cache<k>(j);
-        return cache.template get_data<ValueType>();
-    }
+  const DomainElem &get_domain_element() const;
 
+  template<class ValueType, int sdim>
+  auto
+  get_values(const int s_id) const
+  {
+    Assert(all_sub_elems_cache_ != nullptr,ExcNullPtr());
+    const auto &cache =
+      all_sub_elems_cache_->template get_sub_elem_cache<sdim>(s_id);
+    return cache.template get_data<ValueType>();
+  }
 
-
-    /**
-     * @name Methods for the for the evaluations of Functions's derivatives
-     *  without the use of the cache.
-     */
-    ///@{
-    /**
-     * Returns a ValueTable with the values specified by the template parameter
-     * <tt>ValueType</tt>
-     * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
-     * @note This function does not use the cache and therefore can be called any time without
-     * needing to pre-call init_cache()/fill_cache().
-     * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
-     * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
-     */
-    template <class ValueType>
-    decltype(auto) evaluate_at_points(const Quadrature<dim> &points)
-    {
-        func_->reset(ValueType::flag,points);
-        const auto topology = Topology<dim>();
-        func_->init_cache(*this,topology);
-        func_->fill_cache(*this,topology,0);
-
-        return this->template get_values<ValueType,dim>(0);
-    }
-    ///@}
-
-
-    /**
-     * Returns the flags that are valid to be used with this class.
-     *
-     * @note The valid flags are defined to be the ones that can be inferred from the ValueType(s)
-     * used as key of the boost::fusion::map in CType.
-     */
-    static ValueFlags get_valid_flags();
-
-
-    /**
-     * Returns the <tt>topology_dim</tt> dimensional topology_id-th sub-element measure
-     * multiplied by the weights of the quadrature.
-     */
-    template <int topology_dim>
-    ValueVector<Real> get_w_measures(const int topology_id) const
-    {
-        ValueVector<Real> w_meas;
-        Assert(false,ExcNotImplemented());
-
-        return w_meas;
-    }
-
-
-
-    typename List::iterator &operator++()
-    {
-        return (++(*phys_domain_elem_));
-    }
-
-private:
-
-    using CType = boost::fusion::map<
-                  boost::fusion::pair<     _Value,DataWithFlagStatus<ValueVector<Value>>>,
-                  boost::fusion::pair<  _Gradient,DataWithFlagStatus<ValueVector<Derivative<1>>>>,
-                  boost::fusion::pair<   _Hessian,DataWithFlagStatus<ValueVector<Derivative<2>>>>,
-                  boost::fusion::pair<_Divergence,DataWithFlagStatus<ValueVector<Div>>>,
-                  boost::fusion::pair<     _Point,DataWithFlagStatus<ValueVector<Point>>>
-                  >;
-
-
-
-    using Cache = FuncValuesCache<dim,CType>;
-
-    std::shared_ptr<AllSubElementsCache<Cache>> all_sub_elems_cache_;
-
-
-public:
-    using CacheType = AllSubElementsCache<Cache>;
-
-    //TODO (martinelli, Aug 13, 2015): this function should not be public.
-    std::shared_ptr<CacheType>
-    &get_cache()
-    {
-        Assert(all_sub_elems_cache_ != nullptr,ExcNullPtr());
-        return all_sub_elems_cache_;
-    }
-
-private:
-
-
-    std::shared_ptr<Func> func_;
-
-    using GridElem = ConstGridElement<dim>;
-    std::shared_ptr<GridElem> grid_elem_;
-
-
-    using PhysDomain = Mapping<dim,codim>;
-    using PhysDomainElem = MappingElement<dim,codim>;
-    std::shared_ptr<PhysDomainElem> phys_domain_elem_;
-
-    template <class Accessor> friend class GridIteratorBase;
-    friend class Function<dim, codim, range, rank>;
-
-    /**
-     * Creates a new object performing a deep copy of the current object using the FunctionElement
-     * copy constructor.
-     */
-    std::shared_ptr<FunctionElement<dim,codim,range,rank> > clone() const;
-
-
-
-public:
-    const GridElem &get_grid_element() const;
-
-    void print_info(LogStream &out) const;
-
-    void print_cache_info(LogStream &out) const;
-
-    std::shared_ptr<const CartesianGrid<dim>> get_grid() const;
-
-    /**
-     * @name Comparison operators.
-     *
-     * @brief The comparison operators compares the <em>position</em> of the element in the grid.
-     *
-     * @warning To be comparable, two Function objects must be defined using the same Function
-     * (and therefore on the same grid),
-     * otherwise an assertion will be raised (in Debug mode).
-     */
-    ///@{
-    /** Returns TRUE if the two elements have the same index on the grid. */
-    bool operator==(const self_t &a) const;
-
-
-    /** Returns TRUE if the two elements have different indices on the grid. */
-    bool operator!=(const self_t &a) const;
-
-    /**
-     * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
-     * is smaller than the the index of the element on the right.
-     * */
-    bool operator<(const self_t &a) const;
-
-    /**
-     * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
-     * is bigger than the the index of the element on the right.
-     * */
-    bool operator>(const self_t &a) const;
-    ///@}
 
 #if 0
-    /**
-     * Sets the index of the element using the flatten representation.
-     * @note This function also updates the index for the tensor representation.
-     * @warning This may be a dangerous function, be careful when using it
-     * as it is easy to use incorrectly. Only use it if you know what you
-     * are doing.
-     */
-    void move_to(const Index flat_index) ;
+  /**
+   * @name Methods for the for the evaluations of Functions's derivatives
+   *  without the use of the cache.
+   */
+  ///@{
+  /**
+   * Returns a ValueTable with the values specified by the template parameter
+   * <tt>ValueType</tt>
+   * at each point (in the unit domain) specified by the input argument <tt>points</tt>.
+   * @note This function does not use the cache and therefore can be called any time without
+   * needing to pre-call init_cache()/fill_cache().
+   * @warning The evaluation <tt>points</tt> must belong to the unit hypercube
+   * \f$ [0,1]^{\text{dim}} \f$ otherwise, in Debug mode, an assertion will be raised.
+   */
+  template <class ValueType>
+  decltype(auto) evaluate_at_points(const Quadrature<dim> &points)
+  {
+    func_->reset(ValueType::flag,points);
+    const auto topology = Topology<dim>();
+    func_->init_cache(*this,topology);
+    func_->fill_cache(*this,topology,0);
+
+    return this->template get_values<ValueType,dim>(0);
+  }
+  ///@}
+
 #endif
 
-    /** Returns the index of the element. */
-    IndexType get_index() const;
+  /**
+   * Returns the <tt>topology_dim</tt> dimensional topology_id-th sub-element measure
+   * multiplied by the weights of the quadrature.
+   */
+  template <int topology_dim>
+  ValueVector<Real> get_w_measures(const int topology_id) const
+  {
+    ValueVector<Real> w_meas;
+    Assert(false,ExcNotImplemented());
+
+    return w_meas;
+  }
 
 
+
+  ListIt &operator++()
+  {
+    return (++(*phys_domain_elem_));
+  }
+
+private:
+  struct _Value
+  {
+    static const std::string name;
+    static const auto flag = Flags::value;
+  };
+
+  struct _Gradient
+  {
+    static const std::string name;
+    static const auto flag = Flags::gradient;
+  };
+
+  using CType = boost::fusion::map<
+                boost::fusion::pair<     _Value,DataWithFlagStatus<ValueVector<Value>>>,
+                boost::fusion::pair<  _Gradient,DataWithFlagStatus<ValueVector<Derivative<1>>>>
+                >;
+
+
+
+  using Cache = FuncValuesCache<dim,CType>;
+
+public:
+  using CacheType = AllSubElementsCache<Cache>;
 
 private:
 
 
-#ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  //TODO (martinelli, Aug 13, 2015): this function should not be public.
+  std::shared_ptr<CacheType>
+  &get_cache()
+  {
+    Assert(all_sub_elems_cache_ != nullptr,ExcNullPtr());
+    return all_sub_elems_cache_;
+  }
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version);
-    ///@}
+private:
+  std::shared_ptr<ContainerType_> func_;
+
+  std::shared_ptr<DomainElem> phys_domain_elem_;
+
+  std::shared_ptr<AllSubElementsCache<Cache>> all_sub_elems_cache_;
+
+  template <class Accessor> friend class GridIteratorBase;
+  friend class FunctionElementHandler<dim, codim, range, rank>;
+
+public:
+  void print_info(LogStream &out) const;
+
+  void print_cache_info(LogStream &out) const;
+
+
+  /**
+   * @name Comparison operators.
+   *
+   * @brief The comparison operators compares the <em>position</em> of the element in the grid.
+   *
+   * @warning To be comparable, two Function objects must be defined using the same Function
+   * (and therefore on the same grid),
+   * otherwise an assertion will be raised (in Debug mode).
+   */
+  ///@{
+  /** Returns TRUE if the two elements have the same index on the grid. */
+  bool operator==(const self_t &a) const;
+
+
+  /** Returns TRUE if the two elements have different indices on the grid. */
+  bool operator!=(const self_t &a) const;
+
+  /**
+   * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
+   * is smaller than the the index of the element on the right.
+   * */
+  bool operator<(const self_t &a) const;
+
+  /**
+   * Returns TRUE if the the index of the element on the left of the operator <tt> < </tt>
+   * is bigger than the the index of the element on the right.
+   * */
+  bool operator>(const self_t &a) const;
+  ///@}
+
+//
+//    /** Returns the index of the element. */
+//    IndexType get_index() const;
+
+
+
+private:
+#ifdef SERIALIZATION
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
+
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version);
+  ///@}
 #endif // SERIALIZATION
 };
 
 
-#if 0
-template<int dim, int codim, int range = 1, int rank = 1>
-class IgFunctionElement
-    : public FunctionElement<dim,codim,range,rank>
+template <int dim, int codim, int range, int rank>
+class ConstFunctionElement
+  : public FunctionElementBase<dim, codim, range, rank,
+    const Function<dim,codim,range,rank> >
+{
+  using FunctionElementBase<dim, codim, range, rank,
+        const Function<dim,codim,range,rank>>::FunctionElementBase;
+};
+
+
+template <int dim, int codim, int range, int rank>
+class FunctionElement
+  : public FunctionElementBase<dim, codim, range, rank, Function<dim,codim,range,rank> >
 {
 
+  using FunctionElementBase<dim, codim, range, rank,
+        Function<dim,codim,range,rank>>::FunctionElementBase;
 };
-#endif
 
 IGA_NAMESPACE_CLOSE
 

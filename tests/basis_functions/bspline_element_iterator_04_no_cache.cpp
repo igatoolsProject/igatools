@@ -90,17 +90,17 @@ create_space<3>(const int num_knots)
 template< int dim>
 void do_test()
 {
-    OUTSTART
+  OUTSTART
 //    out << "domain, range and rank: " << dim_domain << "," << dim_domain << ",1" << endl ;
 
-    const int num_knots = 3 ;
+  const int num_knots = 3 ;
 
     auto space = create_space<dim>(num_knots) ;
 
     const int n_points = 2;
     auto quad = Quadrature<dim>::create(QGauss<dim>(n_points).get_points()) ;
 
-    using std::to_string;
+  using std::to_string;
 
     using Elem = typename BSplineSpace<dim,dim,1>::ElementAccessor;
     using _Value = typename Elem::_Value;
@@ -121,6 +121,9 @@ void do_test()
         }
     }
 
+  {
+    auto elem = space->begin();
+    for (; elem != space->end(); ++elem)
     {
         auto elem = space->begin();
         for (; elem != space->end(); ++elem)
@@ -132,7 +135,11 @@ void do_test()
             out.end_item();
         }
     }
+  }
 
+  {
+    auto elem = space->begin();
+    for (; elem != space->end(); ++elem)
     {
         auto elem = space->begin();
         for (; elem != space->end(); ++elem)
@@ -144,18 +151,19 @@ void do_test()
             out.end_item();
         }
     }
+  }
 
-    OUTEND
+  OUTEND
 
 }
 
 
 int main()
 {
-    out.depth_console(10); //to be removed after test finished
+  out.depth_console(10); //to be removed after test finished
 
-    do_test<2>() ;
-    do_test<3>() ;
+  do_test<2>() ;
+  do_test<3>() ;
 
-    return 0;
+  return 0;
 }

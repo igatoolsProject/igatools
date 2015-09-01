@@ -25,8 +25,7 @@ include_files = []
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-sub_dim_members = \
-[]
+sub_dim_members = []
 
 for x in inst.sub_mapping_dims:
     mapping = 'PhysicalDomain<%d,%d>' %(x.dim, x.codim)

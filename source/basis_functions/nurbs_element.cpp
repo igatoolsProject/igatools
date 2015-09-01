@@ -33,10 +33,10 @@ NURBSElement<dim, range, rank>::
 NURBSElement(const std::shared_ptr<ContainerType> space,
              const ListIt &index,
              const PropId &prop)
-    :
-    parent_t(space,index,prop),
-    bspline_elem_(space->get_spline_space(),index,prop),
-    weight_elem_(space->weight_func_,index,prop)
+  :
+  parent_t(space,index,prop),
+  bspline_elem_(space->get_spline_space(),index,prop),
+  weight_elem_(space->weight_func_,index,prop)
 {
 //    weight_elem_ =
 //        std::shared_ptr<WeightElem>(new WeightElem(space->weight_func_,index));
@@ -48,22 +48,22 @@ template <int dim, int range, int rank>
 NURBSElement<dim, range, rank>::
 NURBSElement(const self_t &elem,
              const CopyPolicy &copy_policy)
-    :
-    parent_t(elem,copy_policy),
-    bspline_elem_(elem.bspline_elem_,copy_policy),
-    weight_elem_(elem.weight_elem_,copy_policy)
+  :
+  parent_t(elem,copy_policy),
+  bspline_elem_(elem.bspline_elem_,copy_policy),
+  weight_elem_(elem.weight_elem_,copy_policy)
 {
-    /*
-    if (copy_policy == CopyPolicy::shallow)
-    {
-        weight_elem_ = elem.weight_elem_;
-    }
-    else
-    {
-        weight_elem_ = std::shared_ptr<WeightElem>(new WeightElem(*elem.weight_elem_));
-    }
-    //*/
-    Assert(false,ExcNotTested());
+  /*
+  if (copy_policy == CopyPolicy::shallow)
+  {
+      weight_elem_ = elem.weight_elem_;
+  }
+  else
+  {
+      weight_elem_ = std::shared_ptr<WeightElem>(new WeightElem(*elem.weight_elem_));
+  }
+  //*/
+  Assert(false,ExcNotTested());
 }
 
 
@@ -73,14 +73,14 @@ bool
 NURBSElement<dim, range, rank>::
 jump(const TensorIndex<dim> &increment)
 {
-    const bool    grid_elem_active =     parent_t::jump(increment);
-    const bool bspline_elem_active = bspline_elem_.jump(increment);
+  const bool    grid_elem_active =     parent_t::jump(increment);
+  const bool bspline_elem_active = bspline_elem_.jump(increment);
 
-    bool  weight_elems_active = true;
-    for (const auto &comp_id : weight_elem_table_.get_active_components_id())
-        weight_elems_active = weight_elems_active && weight_elem_table_[comp_id]->jump(increment);
+  bool  weight_elems_active = true;
+  for (const auto &comp_id : weight_elem_table_.get_active_components_id())
+    weight_elems_active = weight_elems_active && weight_elem_table_[comp_id]->jump(increment);
 
-    return grid_elem_active && bspline_elem_active && weight_elems_active;
+  return grid_elem_active && bspline_elem_active && weight_elems_active;
 }
 #endif
 
@@ -90,10 +90,10 @@ void
 NURBSElement<dim, range, rank>::
 move_to(const Index flat_index)
 {
-    parent_t::move_to(flat_index);
-    bspline_elem_.move_to(flat_index);
+  parent_t::move_to(flat_index);
+  bspline_elem_.move_to(flat_index);
 
-    weight_elem_.move_to(flat_index);
+  weight_elem_.move_to(flat_index);
 }
 #endif
 
@@ -102,9 +102,9 @@ auto
 NURBSElement<dim, range, rank>::
 get_nurbs_space() const -> std::shared_ptr<const Space>
 {
-    const auto nrb_space = std::dynamic_pointer_cast<const Space>(this->space_);
-    Assert(nrb_space != nullptr,ExcNullPtr());
-    return nrb_space;
+  const auto nrb_space = std::dynamic_pointer_cast<const Space>(this->space_);
+  Assert(nrb_space != nullptr,ExcNullPtr());
+  return nrb_space;
 }
 
 
@@ -113,9 +113,9 @@ std::shared_ptr<SpaceElement<dim,0,range,rank,Transformation::h_grad> >
 NURBSElement<dim, range, rank>::
 clone() const
 {
-    auto elem = std::make_shared<NURBSElement<dim,range,rank> >(*this,CopyPolicy::deep);
-    Assert(elem != nullptr, ExcNullPtr());
-    return elem;
+  auto elem = std::make_shared<NURBSElement<dim,range,rank> >(*this,CopyPolicy::deep);
+  Assert(elem != nullptr, ExcNullPtr());
+  return elem;
 }
 
 
@@ -129,12 +129,12 @@ void
 NURBSElement<dim, range, rank>::
 serialize(Archive &ar, const unsigned int version)
 {
-    ar &boost::serialization::make_nvp("NURBSElement_base_t",
-                                       boost::serialization::base_object<ReferenceElement<dim,range,rank>>(*this));
+  ar &boost::serialization::make_nvp("NURBSElement_base_t",
+                                     boost::serialization::base_object<ReferenceElement<dim,range,rank>>(*this));
 
-    ar &boost::serialization::make_nvp("bspline_elem_",bspline_elem_);
+  ar &boost::serialization::make_nvp("bspline_elem_",bspline_elem_);
 
-    ar &boost::serialization::make_nvp("weight_elem_",weight_elem_);
+  ar &boost::serialization::make_nvp("weight_elem_",weight_elem_);
 }
 ///@}
 #endif // SERIALIZATION

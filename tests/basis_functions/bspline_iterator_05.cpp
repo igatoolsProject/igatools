@@ -62,7 +62,12 @@ void sub_elem_values(const int n_knots, const int deg)
     elem_handler->template init_cache<k>(*elem,k_quad);
     for (; elem != end; ++elem)
     {
-        if (elem->is_boundary())
+      cache_filler->fill_element_cache(elem);
+      out << "Element" << elem->get_flat_index() << endl;
+      elem->template get_basis<_Value,dim>(0,DofProperties::active).print_info(out);
+      for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
+      {
+        if (elem->is_boundary(s_id))
         {
             elem_handler->template fill_cache<dim>(*elem,0);
             out << "Element" << elem->get_index() << endl;
@@ -103,8 +108,10 @@ void sub_elem_values(const int n_knots, const int deg)
                 }
             }
         }
+      }
     }
-    OUTEND
+  }
+  OUTEND
 }
 //  auto values    = elem->template get_values<0,k>(0);
 //  auto gradients = elem->template get_values<1,k>(0);
@@ -152,9 +159,9 @@ void sub_elem_values(const int n_knots, const int deg)
 
 int main()
 {
-    out.depth_console(10);
-    sub_elem_values<2,1>(2,1);
-    sub_elem_values<1,0>(2,1);
-    return 0;
+  out.depth_console(10);
+  sub_elem_values<2,1>(2,1);
+  sub_elem_values<1,0>(2,1);
+  return 0;
 }
 

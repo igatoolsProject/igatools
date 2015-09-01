@@ -18,6 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+#if 0
 #include <igatools/geometry/mapping_element.h>
 #include <igatools/linear_algebra/dense_matrix.h>
 #include <boost/numeric/ublas/operation.hpp>
@@ -29,8 +30,8 @@ MappingElement<dim_, codim_>::
 MappingElement(const std::shared_ptr<const PhysDomain> phys_domain,
                const ListIt &index,
                const PropId &prop)
-    :
-    func_elem_(std::make_shared<FuncElem>(phys_domain->get_ptr_const_function(),index,prop))
+  :
+  func_elem_(std::make_shared<FuncElem>(phys_domain->get_ptr_const_function(),index,prop))
 {}
 
 
@@ -39,16 +40,16 @@ MappingElement<dim_, codim_>::
 MappingElement(const self_t &elem,
                const CopyPolicy &copy_policy)
 {
-    if (copy_policy == CopyPolicy::shallow)
-    {
-        local_cache_ = elem.local_cache_;
-        func_elem_ = elem.func_elem_;
-    }
-    else
-    {
-        local_cache_ = std::make_shared<CacheType>(*elem.local_cache_);
-        func_elem_ = std::make_shared<FuncElem>(*elem.func_elem_,copy_policy);
-    }
+  if (copy_policy == CopyPolicy::shallow)
+  {
+    local_cache_ = elem.local_cache_;
+    func_elem_ = elem.func_elem_;
+  }
+  else
+  {
+    local_cache_ = std::make_shared<CacheType>(*elem.local_cache_);
+    func_elem_ = std::make_shared<FuncElem>(*elem.func_elem_,copy_policy);
+  }
 }
 
 
@@ -57,7 +58,7 @@ auto
 MappingElement<dim_, codim_>::
 get_func_element() -> FuncElem &
 {
-    return *func_elem_;
+  return *func_elem_;
 }
 
 template<int dim_, int codim_>
@@ -65,7 +66,7 @@ auto
 MappingElement<dim_, codim_>::
 get_func_element() const -> const FuncElem &
 {
-    return *func_elem_;
+  return *func_elem_;
 }
 
 
@@ -74,7 +75,7 @@ auto
 MappingElement<dim_, codim_>::
 get_index() const -> IndexType
 {
-    return func_elem_->get_index();
+  return func_elem_->get_index();
 }
 
 template<int dim_, int codim_>
@@ -82,7 +83,7 @@ auto
 MappingElement<dim_, codim_>::
 get_grid() const -> std::shared_ptr<const CartesianGrid<dim> >
 {
-    return func_elem_->get_grid_element().get_grid();
+  return func_elem_->get_grid_element().get_grid();
 }
 
 template<int dim_, int codim_>
@@ -90,7 +91,7 @@ bool
 MappingElement<dim_, codim_>::
 operator==(const self_t &a) const
 {
-    return *func_elem_ == *a.func_elem_;
+  return *func_elem_ == *a.func_elem_;
 }
 
 
@@ -99,7 +100,7 @@ bool
 MappingElement<dim_, codim_>::
 operator!=(const self_t &a) const
 {
-    return *func_elem_ != *a.func_elem_;
+  return *func_elem_ != *a.func_elem_;
 }
 
 template<int dim_, int codim_>
@@ -107,7 +108,7 @@ bool
 MappingElement<dim_, codim_>::
 operator<(const self_t &a) const
 {
-    return *func_elem_ < *a.func_elem_;
+  return *func_elem_ < *a.func_elem_;
 }
 
 template<int dim_, int codim_>
@@ -115,7 +116,7 @@ bool
 MappingElement<dim_, codim_>::
 operator>(const self_t &a) const
 {
-    return *func_elem_ > *a.func_elem_;
+  return *func_elem_ > *a.func_elem_;
 }
 
 #if 0
@@ -124,7 +125,7 @@ void
 MappingElement<dim_, codim_>::
 move_to(const Index flat_index)
 {
-    func_elem_->move_to(flat_index);
+  func_elem_->move_to(flat_index);
 }
 #endif
 
@@ -133,7 +134,7 @@ void
 MappingElement<dim_, codim_>::
 print_info(LogStream &out) const
 {
-    func_elem_->print_info(out);
+  func_elem_->print_info(out);
 }
 
 template<int dim_, int codim_>
@@ -141,7 +142,7 @@ void
 MappingElement<dim_, codim_>::
 print_cache_info(LogStream &out) const
 {
-    func_elem_->print_cache_info(out);
+  func_elem_->print_cache_info(out);
 }
 
 
@@ -150,21 +151,21 @@ auto
 MappingElement<dim_, codim_>::
 compute_inv_first_fundamental_form() const -> ValueVector<MetricTensor>
 {
-    ValueVector<MetricTensor> res;
-    const auto &DF = func_elem_->template get_values<_Gradient, dim>(0);
-    const auto n_points = DF.get_num_points();
+  ValueVector<MetricTensor> res;
+  const auto &DF = func_elem_->template get_values<_Gradient, dim>(0);
+  const auto n_points = DF.get_num_points();
 
-    res.resize(n_points);
-    Real det;
-    for (int i = 0; i< n_points; ++i)
-    {
-        const auto &A = DF[i];
-        const auto A_t   = co_tensor(transpose(A));
-        const auto G     = compose(A_t, A);
-        res[i] = inverse(G, det);
-    }
+  res.resize(n_points);
+  Real det;
+  for (int i = 0; i< n_points; ++i)
+  {
+    const auto &A = DF[i];
+    const auto A_t   = co_tensor(transpose(A));
+    const auto G     = compose(A_t, A);
+    res[i] = inverse(G, det);
+  }
 
-    return res;
+  return res;
 }
 
 
@@ -174,34 +175,34 @@ auto
 MappingElement<dim_, codim_>::
 compute_second_fundamental_form() const -> ValueVector<MetricTensor>
 {
-    Assert(codim==1, ExcNotImplemented());
+  Assert(codim==1, ExcNotImplemented());
 
-    const auto &D2_F  = func_elem_->template get_values<_Hessian, dim>(0);
-    const auto normal = this->get_external_normals();
+  const auto &D2_F  = func_elem_->template get_values<_Hessian, dim>(0);
+  const auto normal = this->get_external_normals();
 
-    const auto n_points = D2_F.get_num_points();
+  const auto n_points = D2_F.get_num_points();
 
-    // const auto G_inv = compute_inv_first_fundamental_form();
+  // const auto G_inv = compute_inv_first_fundamental_form();
 
-    ValueVector<MetricTensor> res;
-    res.resize(n_points);
+  ValueVector<MetricTensor> res;
+  res.resize(n_points);
 
-    MetricTensor A;
-    for (int pt = 0; pt < n_points; ++pt)
+  MetricTensor A;
+  for (int pt = 0; pt < n_points; ++pt)
+  {
+    const auto &D2_F_pt = D2_F[pt];
+    for (int u=0; u<dim; ++u)
     {
-        const auto &D2_F_pt = D2_F[pt];
-        for (int u=0; u<dim; ++u)
-        {
-            const auto B = co_tensor(transpose(D2_F_pt[u]));
-            A[u] = action(B, normal[pt]);
-        }
-        res[pt] = -A;
-
-        // res[pt] = -compose(A, G_inv[pt]);
-
+      const auto B = co_tensor(transpose(D2_F_pt[u]));
+      A[u] = action(B, normal[pt]);
     }
+    res[pt] = -A;
 
-    return res;
+    // res[pt] = -compose(A, G_inv[pt]);
+
+  }
+
+  return res;
 }
 
 
@@ -211,25 +212,25 @@ MappingElement<dim_, codim_>::
 get_principal_curvatures() const -> const ValueVector<SafeSTLVector<Real>> &
 {
 #if 0
-    Assert(codim==1, ExcNotImplemented());
+  Assert(codim==1, ExcNotImplemented());
 
-    const auto H = compute_second_fundamental_form();
-    const auto G_inv = compute_inv_first_fundamental_form();
+  const auto H = compute_second_fundamental_form();
+  const auto G_inv = compute_inv_first_fundamental_form();
 
-    const auto n_points = H.get_num_points();
+  const auto n_points = H.get_num_points();
 
-    ValueVector<SafeSTLVector<Real>> res(n_points);
+  ValueVector<SafeSTLVector<Real>> res(n_points);
 
-    for (int pt = 0; pt < n_points; ++pt)
-    {
-        const MetricTensor B = compose(H[pt], G_inv[pt]);
-        const auto A = unroll_to_matrix(B);
-        res[pt] = A.eigen_values();
-    }
-    return res;
+  for (int pt = 0; pt < n_points; ++pt)
+  {
+    const MetricTensor B = compose(H[pt], G_inv[pt]);
+    const auto A = unroll_to_matrix(B);
+    res[pt] = A.eigen_values();
+  }
+  return res;
 #endif
-    Assert(codim==1, ExcNotImplemented());
-    return get_values_from_cache<_Curvature,dim_>(0);
+  Assert(codim==1, ExcNotImplemented());
+  return get_values_from_cache<_Curvature,dim_>(0);
 }
 
 
@@ -242,23 +243,23 @@ MappingElement<dim_, codim_>::
 get_external_normals() const -> const ValueVector<Points<space_dim> > &
 {
 #if 0
-    Assert(codim==1, ExcNotImplemented());
-    ValueVector<Points<space_dim> > res;
-    const auto &DF = this->template get_values<_Gradient, dim>(0);
-    const auto n_points = DF.get_num_points();
+  Assert(codim==1, ExcNotImplemented());
+  ValueVector<Points<space_dim> > res;
+  const auto &DF = this->template get_values<_Gradient, dim>(0);
+  const auto n_points = DF.get_num_points();
 
-    res.resize(n_points);
-    for (int pt = 0; pt < n_points; ++pt)
-    {
-        res[pt] = cross_product<dim, codim>(DF[pt]);
-        res[pt] /= res[pt].norm();
-    }
+  res.resize(n_points);
+  for (int pt = 0; pt < n_points; ++pt)
+  {
+    res[pt] = cross_product<dim, codim>(DF[pt]);
+    res[pt] /= res[pt].norm();
+  }
 
-    return res;
+  return res;
 #endif
 
-    Assert(codim==1, ExcNotImplemented());
-    return get_values_from_cache<_OuterNormal,dim_>(0);
+  Assert(codim==1, ExcNotImplemented());
+  return get_values_from_cache<_OuterNormal,dim_>(0);
 }
 
 template<int dim_, int codim_>
@@ -266,21 +267,21 @@ auto
 MappingElement<dim_, codim_>::
 get_D_external_normals() const -> ValueVector< Derivative<1> >
 {
-    Assert(codim==1, ExcNotImplemented());
+  Assert(codim==1, ExcNotImplemented());
 
-    const auto H = compute_second_fundamental_form();
-    const auto &DF = func_elem_->template get_values<_Gradient, dim>(0);
-    const auto G_inv = compute_inv_first_fundamental_form();
+  const auto H = compute_second_fundamental_form();
+  const auto &DF = func_elem_->template get_values<_Gradient, dim>(0);
+  const auto G_inv = compute_inv_first_fundamental_form();
 
-    const auto n_points = H.get_num_points();
-    ValueVector< Derivative<1> > Dn(n_points);
+  const auto n_points = H.get_num_points();
+  ValueVector< Derivative<1> > Dn(n_points);
 
-    for (int pt = 0; pt< n_points; ++pt)
-    {
-        auto L = compose(DF[pt], G_inv[pt]);
-        Dn[pt] = compose(L, H[pt]);
-    }
-    return Dn;
+  for (int pt = 0; pt< n_points; ++pt)
+  {
+    auto L = compose(DF[pt], G_inv[pt]);
+    Dn[pt] = compose(L, H[pt]);
+  }
+  return Dn;
 }
 
 
@@ -289,9 +290,9 @@ auto
 MappingElement<dim_, codim_>::
 clone() const -> std::shared_ptr<self_t>
 {
-    auto elem = std::make_shared<self_t>(*this,CopyPolicy::deep);
-    Assert(elem != nullptr, ExcNullPtr());
-    return elem;
+  auto elem = std::make_shared<self_t>(*this,CopyPolicy::deep);
+  Assert(elem != nullptr, ExcNullPtr());
+  return elem;
 }
 
 
@@ -340,3 +341,4 @@ clone() const -> std::shared_ptr<self_t>
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/mapping_element.inst>
+#endif

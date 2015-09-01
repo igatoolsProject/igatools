@@ -39,57 +39,57 @@ template <class IteratorType>
 class ViewData
 {
 public:
-    /** Returns the number of entries represented by the ViewData. */
-    Size get_num_entries() const;
+  /** Returns the number of entries represented by the ViewData. */
+  Size get_num_entries() const;
 
 protected:
-    /** @name Assignement operators.*/
-    ///@{
-    /**
-     * Default constructor. It does nothing.
-     */
-    ViewData() = default;
+  /** @name Assignement operators.*/
+  ///@{
+  /**
+   * Default constructor. It does nothing.
+   */
+  ViewData() = default;
 
-    /**
-     * Builds a ViewData object from two IteratorType objects: one pointing to the beginning
-     * of the view, and the other pointing to one-pass-end.
-     * @note In Debug mode is checked if the relation <tt>begin < end</tt> is satisfied.
-     * If it is not, an assertion will be raised.
-     */
-    explicit ViewData(const IteratorType begin, const IteratorType end);
+  /**
+   * Builds a ViewData object from two IteratorType objects: one pointing to the beginning
+   * of the view, and the other pointing to one-pass-end.
+   * @note In Debug mode is checked if the relation <tt>begin < end</tt> is satisfied.
+   * If it is not, an assertion will be raised.
+   */
+  explicit ViewData(const IteratorType begin, const IteratorType end);
 
-    /**
-     * Copy constructor.
-     */
-    ViewData(const ViewData<IteratorType> &view_data) = default;
+  /**
+   * Copy constructor.
+   */
+  ViewData(const ViewData<IteratorType> &view_data) = default;
 
-    /**
-     * Move constructor.
-     */
-    ViewData(ViewData<IteratorType> &&view_data) = default;
-    ///@}
+  /**
+   * Move constructor.
+   */
+  ViewData(ViewData<IteratorType> &&view_data) = default;
+  ///@}
 
 
 
-    /** @name Assignement operators.*/
-    ///@{
-    /**
-     * Copy assignment operator.
-     */
-    ViewData<IteratorType> &operator=(const ViewData<IteratorType> &view_data);
+  /** @name Assignement operators.*/
+  ///@{
+  /**
+   * Copy assignment operator.
+   */
+  ViewData<IteratorType> &operator=(const ViewData<IteratorType> &view_data);
 
-    /**
-     * Move assignment operator.
-     */
-    ViewData<IteratorType> &operator=(ViewData<IteratorType> &&view_data) = default;
-    ///@}
+  /**
+   * Move assignment operator.
+   */
+  ViewData<IteratorType> &operator=(ViewData<IteratorType> &&view_data) = default;
+  ///@}
 protected:
 
-    /** Iterator pointing to the first element in the view. */
-    IteratorType begin_;
+  /** Iterator pointing to the first element in the view. */
+  IteratorType begin_;
 
-    /** Iterator pointing to one-past-end element in the view. */
-    IteratorType end_;
+  /** Iterator pointing to one-past-end element in the view. */
+  IteratorType end_;
 };
 
 
@@ -97,81 +97,81 @@ template <class Iterator, class ConstIterator>
 class NonConstView : public ViewData<Iterator>
 {
 public:
-    /** Type of the iterator. */
-    using iterator = Iterator;
+  /** Type of the iterator. */
+  using iterator = Iterator;
 
-    /** Type of the const iterator. */
-    using const_iterator = ConstIterator;
+  /** Type of the const iterator. */
+  using const_iterator = ConstIterator;
 
-    /** Type of the reference. */
-    using reference = typename iterator::reference;
-
-
-    /** @name Constructor & destructor */
-    ///@{
-
-    /**
-     * Default constructor. It does nothing.
-     */
-    NonConstView() = default;
-
-    /**
-     * Construct a view defined by the iterator @p begin pointing to the first element,
-     * and the iterator @p end pointing to one-past-the-end element
-     * satisfying the chosen criteria.
-     */
-    explicit NonConstView(const iterator begin, const iterator end);
+  /** Type of the reference. */
+  using reference = typename iterator::reference;
 
 
-    /** Copy constructor. */
-    NonConstView(const NonConstView<Iterator,ConstIterator> &view) = default;
+  /** @name Constructor & destructor */
+  ///@{
 
-    /** Move constructor. */
-    NonConstView(NonConstView<Iterator,ConstIterator> &&view) = default;
+  /**
+   * Default constructor. It does nothing.
+   */
+  NonConstView() = default;
 
-    /** Destructor. */
-    ~NonConstView() = default;
-    ///@}
+  /**
+   * Construct a view defined by the iterator @p begin pointing to the first element,
+   * and the iterator @p end pointing to one-past-the-end element
+   * satisfying the chosen criteria.
+   */
+  explicit NonConstView(const iterator begin, const iterator end);
 
-    /** @name Assignment operators */
-    ///@{
 
-    /** Copy assignment operator. */
-    NonConstView<Iterator,ConstIterator> &operator=(const NonConstView<Iterator,ConstIterator> &view) = default;
+  /** Copy constructor. */
+  NonConstView(const NonConstView<Iterator,ConstIterator> &view) = default;
 
-    /** Move assignment operator. */
-    NonConstView<Iterator,ConstIterator> &operator=(NonConstView<Iterator,ConstIterator> &&view) = default;
-    ///@}
+  /** Move constructor. */
+  NonConstView(NonConstView<Iterator,ConstIterator> &&view) = default;
 
-    /** @name Dealing with the iterator */
-    ///@{
-    /** Returns an iterator pointing to the first element in the view. */
-    iterator begin();
+  /** Destructor. */
+  ~NonConstView() = default;
+  ///@}
 
-    /** Returns a const-iterator pointing to the first element in the view. */
-    const_iterator begin() const;
+  /** @name Assignment operators */
+  ///@{
 
-    /** Returns a const-iterator pointing to the first element in the view. */
-    const_iterator cbegin() const;
+  /** Copy assignment operator. */
+  NonConstView<Iterator,ConstIterator> &operator=(const NonConstView<Iterator,ConstIterator> &view) = default;
 
-    /** Returns an iterator pointing to one-pass-the end element in the view. */
-    iterator end();
+  /** Move assignment operator. */
+  NonConstView<Iterator,ConstIterator> &operator=(NonConstView<Iterator,ConstIterator> &&view) = default;
+  ///@}
 
-    /** Returns a const-iterator pointing to one-pass-the end element in the view. */
-    const_iterator end() const;
+  /** @name Dealing with the iterator */
+  ///@{
+  /** Returns an iterator pointing to the first element in the view. */
+  iterator begin();
 
-    /** Returns a const-iterator pointing to one-pass-the end element in the view. */
-    const_iterator cend() const;
-    ///@}
+  /** Returns a const-iterator pointing to the first element in the view. */
+  const_iterator begin() const;
 
-    /** @name Dereference offset operators */
-    ///@{
-    /** Return a reference to the <tt>n</tt>-th element in the view. */
-    reference operator[](const Index n);
+  /** Returns a const-iterator pointing to the first element in the view. */
+  const_iterator cbegin() const;
 
-    /** Return a const reference to the <tt>n</tt>-th element in the view. */
-    const reference operator[](const Index n) const;
-    ///@}
+  /** Returns an iterator pointing to one-pass-the end element in the view. */
+  iterator end();
+
+  /** Returns a const-iterator pointing to one-pass-the end element in the view. */
+  const_iterator end() const;
+
+  /** Returns a const-iterator pointing to one-pass-the end element in the view. */
+  const_iterator cend() const;
+  ///@}
+
+  /** @name Dereference offset operators */
+  ///@{
+  /** Return a reference to the <tt>n</tt>-th element in the view. */
+  reference operator[](const Index n);
+
+  /** Return a const reference to the <tt>n</tt>-th element in the view. */
+  const reference operator[](const Index n) const;
+  ///@}
 };
 
 
@@ -179,76 +179,76 @@ template <class Iterator, class ConstIterator>
 class ConstView : public ViewData<ConstIterator>
 {
 public:
-    /** Type of the const iterator. */
-    using iterator = ConstIterator;
+  /** Type of the const iterator. */
+  using iterator = ConstIterator;
 
-    /** Type of the const iterator. */
-    using const_iterator = ConstIterator;
+  /** Type of the const iterator. */
+  using const_iterator = ConstIterator;
 
-    /** Type of the reference. */
-    using reference = typename iterator::reference;
+  /** Type of the reference. */
+  using reference = typename iterator::reference;
 
-    /** @name Constructor & destructor */
-    ///@{
+  /** @name Constructor & destructor */
+  ///@{
 
-    /**
-     * Default constructor. It does nothing.
-     */
-    ConstView() = default;
+  /**
+   * Default constructor. It does nothing.
+   */
+  ConstView() = default;
 
-    /**
-     * Construct a view defined by the const iterator @p begin pointing to the first element,
-     * and the const iterator @p end pointing to one-past-the-end element
-     * satisfying the chosen criteria.
-     */
-    explicit ConstView(const const_iterator begin, const const_iterator end);
+  /**
+   * Construct a view defined by the const iterator @p begin pointing to the first element,
+   * and the const iterator @p end pointing to one-past-the-end element
+   * satisfying the chosen criteria.
+   */
+  explicit ConstView(const const_iterator begin, const const_iterator end);
 
-    /**
-     * Construct a ConstView from a View.
-     */
-    explicit ConstView(const NonConstView<Iterator,ConstIterator> &view);
+  /**
+   * Construct a ConstView from a View.
+   */
+  explicit ConstView(const NonConstView<Iterator,ConstIterator> &view);
 
-    /** Copy constructor. */
-    ConstView(const ConstView<Iterator,ConstIterator> &view) = default;
+  /** Copy constructor. */
+  ConstView(const ConstView<Iterator,ConstIterator> &view) = default;
 
-    /** Move constructor. */
-    ConstView(ConstView<Iterator,ConstIterator> &&view) = default;
+  /** Move constructor. */
+  ConstView(ConstView<Iterator,ConstIterator> &&view) = default;
 
-    /** Destructor. */
-    ~ConstView() = default;
-    ///@}
+  /** Destructor. */
+  ~ConstView() = default;
+  ///@}
 
-    /** @name Assignment operators */
-    ///@{
-    /** Copy assignment operator. */
-    ConstView<Iterator,ConstIterator> &operator=(const ConstView<Iterator,ConstIterator> &view) = default;
+  /** @name Assignment operators */
+  ///@{
+  /** Copy assignment operator. */
+  ConstView<Iterator,ConstIterator> &operator=(const ConstView<Iterator,ConstIterator> &view) = default;
 
-    /** Move assignment operator. */
-    ConstView<Iterator,ConstIterator> &operator=(ConstView<Iterator,ConstIterator> &&view) = default;
-    ///@}
-
-
-    /** @name Dealing with the iterator */
-    ///@{
-    /** Returns a const-iterator pointing to the first element in the view. */
-    const_iterator begin() const;
-
-    /** Returns a const-iterator pointing to one-pass-the end element in the view. */
-    const_iterator end() const;
+  /** Move assignment operator. */
+  ConstView<Iterator,ConstIterator> &operator=(ConstView<Iterator,ConstIterator> &&view) = default;
+  ///@}
 
 
-    /** Returns a const-iterator pointing to the first element in the view. */
-    const_iterator cbegin() const;
+  /** @name Dealing with the iterator */
+  ///@{
+  /** Returns a const-iterator pointing to the first element in the view. */
+  const_iterator begin() const;
 
-    /** Returns a const-iterator pointing to one-pass-the end element in the view. */
-    const_iterator cend() const;
-    ///@}
+  /** Returns a const-iterator pointing to one-pass-the end element in the view. */
+  const_iterator end() const;
 
-    /** @name Dereference offset operators */
-    ///@{
-    /** Return a const reference to the <tt>n</tt>-th element in the view. */
-    const reference operator[](const Index n) const;
-    ///@}
+
+  /** Returns a const-iterator pointing to the first element in the view. */
+  const_iterator cbegin() const;
+
+  /** Returns a const-iterator pointing to one-pass-the end element in the view. */
+  const_iterator cend() const;
+  ///@}
+
+  /** @name Dereference offset operators */
+  ///@{
+  /** Return a const reference to the <tt>n</tt>-th element in the view. */
+  const reference operator[](const Index n) const;
+  ///@}
 };
 
 
@@ -266,7 +266,7 @@ template <class Container>
 class ConstContainerView : public ConstView<typename Container::iterator,typename Container::const_iterator>
 {
 public:
-    using ConstView<typename Container::iterator,typename Container::const_iterator>::ConstView;
+  using ConstView<typename Container::iterator,typename Container::const_iterator>::ConstView;
 //    ConstContainerView(const ConstContainerView<Container> &view) = default;
 //    ConstContainerView(ConstContainerView<Container> &&view) = default;
 };
@@ -294,7 +294,7 @@ template <class Container>
 class ContainerView : public NonConstView<typename Container::iterator,typename Container::const_iterator>
 {
 public:
-    using NonConstView<typename Container::iterator,typename Container::const_iterator>::NonConstView;
+  using NonConstView<typename Container::iterator,typename Container::const_iterator>::NonConstView;
 //  ContainerView(const ContainerView<Container> &view) = default;
 //  ContainerView(ContainerView<Container> &&view) = default;
 };

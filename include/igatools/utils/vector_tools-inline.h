@@ -35,56 +35,56 @@ template< class T >
 inline
 void
 count_and_remove_duplicates(
-    const SafeSTLVector<T> &vec_with_duplicates,
-    SafeSTLVector<T> &vec_without_duplicates,
-    SafeSTLVector<int> &multiplicities)
+  const SafeSTLVector<T> &vec_with_duplicates,
+  SafeSTLVector<T> &vec_without_duplicates,
+  SafeSTLVector<int> &multiplicities)
 {
-    Assert(vec_with_duplicates.empty()==false,ExcEmptyObject());
+  Assert(vec_with_duplicates.empty()==false,ExcEmptyObject());
 
-    //------------------------------------------------------------------------------------------
-    const auto vec_with_duplicates_begin = vec_with_duplicates.cbegin() ;
-    const auto vec_with_duplicates_end   = vec_with_duplicates.cend() ;
-
-
-    vec_without_duplicates.resize(vec_with_duplicates.size()) ;
-    auto vec_without_duplicates_begin = vec_without_duplicates.begin() ;
-
-    // here we remove the duplicate values
-    auto it = std::unique_copy(vec_with_duplicates_begin,
-                               vec_with_duplicates_end,
-                               vec_without_duplicates_begin) ;
-
-    // resizing the vector of values without repetition
-    vec_without_duplicates.resize(it - vec_without_duplicates_begin) ;
-    //------------------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------------------
+  const auto vec_with_duplicates_begin = vec_with_duplicates.cbegin() ;
+  const auto vec_with_duplicates_end   = vec_with_duplicates.cend() ;
 
 
-    //------------------------------------------------------------------------------------------
-    // now we count how many entries with the same values (==>multiplicity)
-    multiplicities.clear() ;
+  vec_without_duplicates.resize(vec_with_duplicates.size()) ;
+  auto vec_without_duplicates_begin = vec_without_duplicates.begin() ;
 
-    const int size_vec_with_duplicates = vec_with_duplicates.size();
-    int id = 0;
-    multiplicities.push_back(1);
-    int mult_id = 0;
-    for (id = 1 ; id < size_vec_with_duplicates ; ++id)
+  // here we remove the duplicate values
+  auto it = std::unique_copy(vec_with_duplicates_begin,
+                             vec_with_duplicates_end,
+                             vec_without_duplicates_begin) ;
+
+  // resizing the vector of values without repetition
+  vec_without_duplicates.resize(it - vec_without_duplicates_begin) ;
+  //------------------------------------------------------------------------------------------
+
+
+  //------------------------------------------------------------------------------------------
+  // now we count how many entries with the same values (==>multiplicity)
+  multiplicities.clear() ;
+
+  const int size_vec_with_duplicates = vec_with_duplicates.size();
+  int id = 0;
+  multiplicities.push_back(1);
+  int mult_id = 0;
+  for (id = 1 ; id < size_vec_with_duplicates ; ++id)
+  {
+    if (vec_with_duplicates[id] == vec_with_duplicates[id-1])
     {
-        if (vec_with_duplicates[id] == vec_with_duplicates[id-1])
-        {
-            multiplicities[mult_id]++;
-        }
-        else
-        {
-            multiplicities.push_back(1);
-            mult_id++;
-        }
+      multiplicities[mult_id]++;
     }
+    else
+    {
+      multiplicities.push_back(1);
+      mult_id++;
+    }
+  }
 
-    Assert(multiplicities.size() == int(vec_without_duplicates.size()),
-           ExcDimensionMismatch(multiplicities.size(),vec_without_duplicates.size()));
+  Assert(multiplicities.size() == int(vec_without_duplicates.size()),
+         ExcDimensionMismatch(multiplicities.size(),vec_without_duplicates.size()));
 
-    Assert(std::accumulate(multiplicities.begin(),multiplicities.end(),0) == int(vec_with_duplicates.size()),
-           ExcDimensionMismatch(std::accumulate(multiplicities.begin(),multiplicities.end(),0),vec_with_duplicates.size()));
+  Assert(std::accumulate(multiplicities.begin(),multiplicities.end(),0) == int(vec_with_duplicates.size()),
+         ExcDimensionMismatch(std::accumulate(multiplicities.begin(),multiplicities.end(),0),vec_with_duplicates.size()));
 }
 
 } ;

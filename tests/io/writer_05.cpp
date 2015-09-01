@@ -34,66 +34,66 @@ template<int dim>
 void
 test()
 {
-    OUTSTART
+  OUTSTART
 
-    const int n_knots = 4;
-    auto grid = CartesianGrid<dim>::create(n_knots);
-    Writer<dim> writer(grid);
+  const int n_knots = 4;
+  auto grid = CartesianGrid<dim>::create(n_knots);
+  Writer<dim> writer(grid);
 
-    auto identity_function = IdentityFunction<dim>::create(grid);
+  auto identity_function = IdentityFunction<dim>::create(grid);
 
-    using ScalarFunc = functions::ConstantFunction<dim,0,1,1>;
-    using ScalarValue = typename ScalarFunc::Value;
-    ScalarValue scalar_value({1.0});
-    shared_ptr<const Function<dim,0,1,1>> scalar_function = ScalarFunc::create(grid,identity_function,scalar_value);
+  using ScalarFunc = functions::ConstantFunction<dim,0,1,1>;
+  using ScalarValue = typename ScalarFunc::Value;
+  ScalarValue scalar_value({1.0});
+  shared_ptr<const Function<dim,0,1,1>> scalar_function = ScalarFunc::create(grid,identity_function,scalar_value);
 
-    using VectorFunc = functions::ConstantFunction<dim,0,dim,1>;
-    using VectorValue = typename VectorFunc::Value;
-    VectorValue vector_value;
-    for (int i = 0 ; i < dim ; ++i)
-        vector_value[i] = i;
-    shared_ptr<const Function<dim,0,dim,1>> vector_function = VectorFunc::create(grid,identity_function,vector_value);
+  using VectorFunc = functions::ConstantFunction<dim,0,dim,1>;
+  using VectorValue = typename VectorFunc::Value;
+  VectorValue vector_value;
+  for (int i = 0 ; i < dim ; ++i)
+    vector_value[i] = i;
+  shared_ptr<const Function<dim,0,dim,1>> vector_function = VectorFunc::create(grid,identity_function,vector_value);
 
 #if 0
-    using TensorFunc = functions::ConstantFunction<dim,0,dim,2>;
-    using TensorValue = typename TensorFunc::Value;
-    TensorValue tensor_value;
-    for (int i = 0 ; i < dim ; ++i)
-        for (int j = 0 ; j < dim ; ++j)
-            tensor_value[i][j] = i*dim + j;
-    shared_ptr<const Function<dim,0,dim,2>> tensor_function = TensorFunc::create(grid,identity_function,tensor_value);
+  using TensorFunc = functions::ConstantFunction<dim,0,dim,2>;
+  using TensorValue = typename TensorFunc::Value;
+  TensorValue tensor_value;
+  for (int i = 0 ; i < dim ; ++i)
+    for (int j = 0 ; j < dim ; ++j)
+      tensor_value[i][j] = i*dim + j;
+  shared_ptr<const Function<dim,0,dim,2>> tensor_function = TensorFunc::create(grid,identity_function,tensor_value);
 #endif
 
-    SafeSTLVector<Real> cell_data(grid->get_num_all_elems());
-    int n=1;
-    for (auto elem : *grid)
-    {
-        cell_data[elem.get_flat_index()] = n;
-        n *= -1;
-    }
-    writer.add_element_data(cell_data, "chess board");
+  SafeSTLVector<Real> cell_data(grid->get_num_all_elems());
+  int n=1;
+  for (auto elem : *grid)
+  {
+    cell_data[elem.get_flat_index()] = n;
+    n *= -1;
+  }
+  writer.add_element_data(cell_data, "chess board");
 
-    writer.add_field(scalar_function,"scalar_function");
-    writer.add_field(vector_function,"vector_function");
+  writer.add_field(scalar_function,"scalar_function");
+  writer.add_field(vector_function,"vector_function");
 //    writer.add_field(tensor_function,"tensor_function");
 
-    string filename = "grid" + to_string(dim);
-    writer.save(filename);
-    writer.save(filename,"appended");
-    writer.print_info(out);
+  string filename = "grid" + to_string(dim);
+  writer.save(filename);
+  writer.save(filename,"appended");
+  writer.print_info(out);
 
-    out << endl;
+  out << endl;
 
-    OUTEND
+  OUTEND
 }
 
 
 int main()
 {
-    test<1>();
-    test<2>();
-    test<3>();
+  test<1>();
+  test<2>();
+  test<3>();
 
-    return 0;
+  return 0;
 }
 

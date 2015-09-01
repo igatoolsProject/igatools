@@ -36,50 +36,50 @@
 template<int dim, int range>
 void test()
 {
-    using Space = BSplineSpace<dim>;
-    using Function = IgFunction<dim,0,1,1>;
+  using Space = BSplineSpace<dim>;
+  using Function = IgFunction<dim,0,1,1>;
 
-    auto flag = ValueFlags::value | ValueFlags::gradient |
-                ValueFlags::hessian;
-    auto quad = QGauss<dim>(2);
-    auto grid = CartesianGrid<dim>::create(3);
-    const int deg = 1;
-    auto space = Space::create(deg, grid);
+  auto flag = ValueFlags::value | ValueFlags::gradient |
+              ValueFlags::hessian;
+  auto quad = QGauss<dim>(2);
+  auto grid = CartesianGrid<dim>::create(3);
+  const int deg = 1;
+  auto space = Space::create(deg, grid);
 
-    Epetra_SerialComm comm;
-    auto map = EpetraTools::create_map(*space, "active", comm);
-    auto coeff = EpetraTools::create_vector(*map);
-    (*coeff)[0] = 1.;
+  Epetra_SerialComm comm;
+  auto map = EpetraTools::create_map(*space, "active", comm);
+  auto coeff = EpetraTools::create_vector(*map);
+  (*coeff)[0] = 1.;
 
-    auto F = Function::create(space, coeff);
-    F->reset(flag, quad);
+  auto F = Function::create(space, coeff);
+  F->reset(flag, quad);
 
-    auto elem = F->begin();
-    auto end  = F->end();
+  auto elem = F->begin();
+  auto end  = F->end();
 
-    const auto topology = Topology<dim>();
-    F->init_cache(*elem,topology);
-    for (; elem != end; ++elem)
-    {
-        F->fill_cache(*elem,topology, 0);
+  const auto topology = Topology<dim>();
+  F->init_cache(*elem,topology);
+  for (; elem != end; ++elem)
+  {
+    F->fill_cache(*elem,topology, 0);
 //        elem->get_points().print_info(out);
 //        out << endl;
-        elem->template get_values<_Value, dim>(0).print_info(out);
-        out << endl;
-        elem->template get_values<_Gradient, dim>(0).print_info(out);
-        out << endl;
-        elem->template get_values<_Hessian, dim>(0).print_info(out);
-        out << endl;
-    }
+    elem->template get_values<_Value, dim>(0).print_info(out);
+    out << endl;
+    elem->template get_values<_Gradient, dim>(0).print_info(out);
+    out << endl;
+    elem->template get_values<_Hessian, dim>(0).print_info(out);
+    out << endl;
+  }
 
 }
 
 
 int main()
 {
-    test<2,1>();
+  test<2,1>();
 //    test<3,3>();
 
-    return 0;
+  return 0;
 }
 

@@ -31,7 +31,7 @@
 
 IGA_NAMESPACE_OPEN
 
-
+#if 0
 template <int value_type_id>
 class ValueType;
 
@@ -42,10 +42,10 @@ template<>
 class ValueType<0>
 {
 public:
-    static constexpr int id = 0;
-    static constexpr int order = 0;
-    static const std::string name;
-    static const auto flag = ValueFlags::value;
+  static constexpr int id = 0;
+  static constexpr int order = 0;
+  static const std::string name;
+  static const auto flag = ValueFlags::value;
 };
 using _Value = ValueType<0>;
 
@@ -54,10 +54,10 @@ template<>
 class ValueType<1>
 {
 public:
-    static constexpr int id = 1;
-    static constexpr int order = 1;
-    static const std::string name;
-    static const auto flag = ValueFlags::gradient;
+  static constexpr int id = 1;
+  static constexpr int order = 1;
+  static const std::string name;
+  static const auto flag = ValueFlags::gradient;
 };
 using _Gradient = ValueType<1>;
 
@@ -66,10 +66,10 @@ template<>
 class ValueType<2>
 {
 public:
-    static constexpr int id = 2;
-    static constexpr int order = 2;
-    static const std::string name;
-    static const auto flag = ValueFlags::hessian;
+  static constexpr int id = 2;
+  static constexpr int order = 2;
+  static const std::string name;
+  static const auto flag = ValueFlags::hessian;
 };
 using _Hessian = ValueType<2>;
 
@@ -78,10 +78,10 @@ template<>
 class ValueType<-1>
 {
 public:
-    static constexpr int id = -1;
-    static constexpr int order = 1;
-    static const std::string name;
-    static const auto flag = ValueFlags::divergence;
+  static constexpr int id = -1;
+  static constexpr int order = 1;
+  static const std::string name;
+  static const auto flag = ValueFlags::divergence;
 };
 using _Divergence = ValueType<-1>;
 
@@ -90,10 +90,10 @@ template<>
 class ValueType<-3>
 {
 public:
-    static constexpr int id = -3;
-    static constexpr int order = 0;
-    static const std::string name;
-    static const auto flag = ValueFlags::point;
+  static constexpr int id = -3;
+  static constexpr int order = 0;
+  static const std::string name;
+  static const auto flag = ValueFlags::point;
 };
 using _Point = ValueType<-3>;
 
@@ -102,10 +102,10 @@ template<>
 class ValueType<-4>
 {
 public:
-    static constexpr int id = -4;
-    static constexpr int order = 0;
-    static const std::string name;
-    static const auto flag = ValueFlags::w_measure;
+  static constexpr int id = -4;
+  static constexpr int order = 0;
+  static const std::string name;
+  static const auto flag = ValueFlags::w_measure;
 };
 using _W_Measure = ValueType<-4>;
 
@@ -114,10 +114,10 @@ template<>
 class ValueType<-5>
 {
 public:
-    static constexpr int id = -5;
-    static constexpr int order = 0;
-    static const std::string name;
-    static const auto flag = ValueFlags::measure;
+  static constexpr int id = -5;
+  static constexpr int order = 0;
+  static const std::string name;
+  static const auto flag = ValueFlags::measure;
 };
 using _Measure = ValueType<-5>;
 
@@ -126,10 +126,10 @@ template<>
 class ValueType<-6>
 {
 public:
-    static constexpr int id = -6;
-    static constexpr int order = 1;
-    static const std::string name;
-    static const auto flag = ValueFlags::inv_gradient;
+  static constexpr int id = -6;
+  static constexpr int order = 1;
+  static const std::string name;
+  static const auto flag = ValueFlags::inv_gradient;
 };
 using _InvGradient = ValueType<-6>;
 
@@ -138,10 +138,10 @@ template<>
 class ValueType<-7>
 {
 public:
-    static constexpr int id = -7;
-    static constexpr int order = 1;
-    static const std::string name;
-    static const auto flag = ValueFlags::inv_hessian;
+  static constexpr int id = -7;
+  static constexpr int order = 1;
+  static const std::string name;
+  static const auto flag = ValueFlags::inv_hessian;
 };
 using _InvHessian = ValueType<-7>;
 
@@ -150,10 +150,10 @@ template<>
 class ValueType<-8>
 {
 public:
-    static constexpr int id = -8;
-    static constexpr int order = 1;
-    static const std::string name;
-    static const auto flag = ValueFlags::boundary_normal;
+  static constexpr int id = -8;
+  static constexpr int order = 1;
+  static const std::string name;
+  static const auto flag = ValueFlags::boundary_normal;
 };
 using _BoundaryNormal = ValueType<-8>;
 
@@ -162,10 +162,10 @@ template<>
 class ValueType<-9>
 {
 public:
-    static constexpr int id = -9;
-    static constexpr int order = 1;
-    static const std::string name;
-    static const auto flag = ValueFlags::outer_normal;
+  static constexpr int id = -9;
+  static constexpr int order = 1;
+  static const std::string name;
+  static const auto flag = ValueFlags::outer_normal;
 };
 using _OuterNormal = ValueType<-9>;
 
@@ -174,13 +174,13 @@ template<>
 class ValueType<-10>
 {
 public:
-    static constexpr int id = -10;
-    static constexpr int order = 2;
-    static const std::string name;
-    static const auto flag = ValueFlags::curvature;
+  static constexpr int id = -10;
+  static constexpr int order = 2;
+  static const std::string name;
+  static const auto flag = ValueFlags::curvature;
 };
 using _Curvature = ValueType<-10>;
-
+#endif
 IGA_NAMESPACE_CLOSE
 
 #endif //#ifndef  VALUE_TYPES_H_

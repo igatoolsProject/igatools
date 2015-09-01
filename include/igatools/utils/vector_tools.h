@@ -50,9 +50,9 @@ namespace vector_tools
 template< class T >
 void
 count_and_remove_duplicates(
-    const SafeSTLVector<T> &vec_with_duplicates,
-    SafeSTLVector<T> &vec_without_duplicates,
-    SafeSTLVector<int> &multiplicities) ;
+  const SafeSTLVector<T> &vec_with_duplicates,
+  SafeSTLVector<T> &vec_without_duplicates,
+  SafeSTLVector<int> &multiplicities) ;
 
 } ;
 

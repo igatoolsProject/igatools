@@ -45,89 +45,89 @@ const std::string class_name = "SharedPtrConstnessHandler";
 
 void do_test_nonconst()
 {
-    OUTSTART
+  OUTSTART
 
-    shared_ptr<Grid> grid_nonconst = Grid::create();
+  shared_ptr<Grid> grid_nonconst = Grid::create();
 
-    SharedPtrConstnessHandler<Grid> constness_handler(grid_nonconst);
+  SharedPtrConstnessHandler<Grid> constness_handler(grid_nonconst);
 
-    out.begin_item(class_name + "::print_info()");
-    constness_handler.print_info(out);
-    out.end_item();
+  out.begin_item(class_name + "::print_info()");
+  constness_handler.print_info(out);
+  out.end_item();
 
-    out.begin_item(class_name + "::get_ptr_data()");
-    constness_handler.get_ptr_data()->print_info(out);
-    out.end_item();
+  out.begin_item(class_name + "::get_ptr_data()");
+  constness_handler.get_ptr_data()->print_info(out);
+  out.end_item();
 
-    out.begin_item(class_name + "::get_ptr_const_data()");
-    constness_handler.get_ptr_const_data()->print_info(out);
-    out.end_item();
+  out.begin_item(class_name + "::get_ptr_const_data()");
+  constness_handler.get_ptr_const_data()->print_info(out);
+  out.end_item();
 
-    out.begin_item(class_name + "::get_ref_data()");
-    constness_handler.get_ref_data().print_info(out);
-    out.end_item();
+  out.begin_item(class_name + "::get_ref_data()");
+  constness_handler.get_ref_data().print_info(out);
+  out.end_item();
 
-    out.begin_item(class_name + "::get_ref_const_data()");
-    constness_handler.get_ref_const_data().print_info(out);
-    out.end_item();
+  out.begin_item(class_name + "::get_ref_const_data()");
+  constness_handler.get_ref_const_data().print_info(out);
+  out.end_item();
 
 #if 0
-    out.begin_item(class_name + "::operator*()");
-    Grid &grid_ref = *constness_handler;
-    grid_ref.print_info(out);
-    out.end_item();
+  out.begin_item(class_name + "::operator*()");
+  Grid &grid_ref = *constness_handler;
+  grid_ref.print_info(out);
+  out.end_item();
 
-    out.begin_item(class_name + "::operator->()");
-    constness_handler->print_info(out);
-    out.end_item();
+  out.begin_item(class_name + "::operator->()");
+  constness_handler->print_info(out);
+  out.end_item();
 #endif
 
-    OUTEND
+  OUTEND
 }
 
 
 void do_test_const()
 {
-    OUTSTART
+  OUTSTART
 
-    shared_ptr<const Grid> grid_const = Grid::create();
+  shared_ptr<const Grid> grid_const = Grid::create();
 
-    SharedPtrConstnessHandler<Grid> constness_handler(grid_const);
+  SharedPtrConstnessHandler<Grid> constness_handler(grid_const);
 
-    out.begin_item(class_name + "::print_info()");
-    constness_handler.print_info(out);
-    out.end_item();
+  out.begin_item(class_name + "::print_info()");
+  constness_handler.print_info(out);
+  out.end_item();
 
-    out.begin_item(class_name + "::get_ptr_const_data()");
-    constness_handler.get_ptr_const_data()->print_info(out);
-    out.end_item();
+  out.begin_item(class_name + "::get_ptr_const_data()");
+  constness_handler.get_ptr_const_data()->print_info(out);
+  out.end_item();
 
-    out.begin_item(class_name + "::get_ref_const_data()");
-    constness_handler.get_ref_const_data().print_info(out);
-    out.end_item();
+  out.begin_item(class_name + "::get_ref_const_data()");
+  constness_handler.get_ref_const_data().print_info(out);
+  out.end_item();
 
-    out.begin_item(class_name + "::operator*()");
-    (*constness_handler).print_info(out);
-    out.end_item();
+  out.begin_item(class_name + "::operator*()");
+  (*constness_handler).print_info(out);
+  out.end_item();
 
-    out.begin_item(class_name + "::operator->()");
-    constness_handler->print_info(out);
-    out.end_item();
+  out.begin_item(class_name + "::operator->()");
+  constness_handler->print_info(out);
+  out.end_item();
 
-    OUTEND
+  OUTEND
 }
 
 
 int main()
 {
-    OUTSTART
+  OUTSTART
 
-    do_test_nonconst();
+  do_test_nonconst();
 
-    do_test_const();
+  do_test_const();
 
-    OUTEND
+  OUTEND
 
-    return 0;
+  return 0;
 
 }

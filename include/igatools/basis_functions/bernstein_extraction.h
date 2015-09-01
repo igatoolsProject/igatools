@@ -31,10 +31,10 @@ IGA_NAMESPACE_OPEN
 class BernsteinOperator : public DenseMatrix
 {
 public:
-    using Values = DenseMatrix;
-    using DenseMatrix::DenseMatrix;
+  using Values = DenseMatrix;
+  using DenseMatrix::DenseMatrix;
 
-    Values scale_action(const Real scale, const Values &b_values) const;
+  Values scale_action(const Real scale, const Values &b_values) const;
 };
 
 /**
@@ -55,83 +55,83 @@ template<int dim, int range = 1, int rank = 1>
 class BernsteinExtraction
 {
 public:
-    using Operator = BernsteinOperator;
-    using Space = SplineSpace<dim, range, rank>;
-    using DegreeTable = typename Space::DegreeTable;
-    using KnotsTable = typename Space::KnotsTable;
-    using MultiplicityTable = typename Space::MultiplicityTable;
-    using EndBehaviourTable = typename Space::EndBehaviourTable;
+  using Operator = BernsteinOperator;
+  using Space = SplineSpace<dim, range, rank>;
+  using DegreeTable = typename Space::DegreeTable;
+  using KnotsTable = typename Space::KnotsTable;
+  using MultiplicityTable = typename Space::MultiplicityTable;
+  using EndBehaviourTable = typename Space::EndBehaviourTable;
 
-    using ElemOper = SafeSTLArray<Operator const *, dim>;
-    using ElemOperTable = typename Space::template ComponentContainer<ElemOper>;
+  using ElemOper = SafeSTLArray<Operator const *, dim>;
+  using ElemOperTable = typename Space::template ComponentContainer<ElemOper>;
 private:
-    using Operators = CartesianProductArray<Operator, dim>;
-    using OperatorsTable = typename Space::template ComponentContainer<Operators>;
+  using Operators = CartesianProductArray<Operator, dim>;
+  using OperatorsTable = typename Space::template ComponentContainer<Operators>;
 
 public:
-    /**
-     * Default constructor. It does nothing but it is needed for the
-     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     * mechanism.
-     */
-    BernsteinExtraction() = default;
+  /**
+   * Default constructor. It does nothing but it is needed for the
+   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * mechanism.
+   */
+  BernsteinExtraction() = default;
 
-    /**
-     * Construct the extraction operators.
-     */
-    BernsteinExtraction(const CartesianGrid<dim> &grid,
-                        const KnotsTable &rep_knots,
-                        const MultiplicityTable &acum_mult,
-                        const DegreeTable &deg);
-
-
-    /**
-     * Construct the extraction operators.
-     */
-    BernsteinExtraction(const Space &space_data,
-                        const EndBehaviourTable &end_b);
-
-    /**
-     * Print the class content
-     */
-    void print_info(LogStream &out) const;
+  /**
+   * Construct the extraction operators.
+   */
+  BernsteinExtraction(const CartesianGrid<dim> &grid,
+                      const KnotsTable &rep_knots,
+                      const MultiplicityTable &acum_mult,
+                      const DegreeTable &deg);
 
 
-    const Operator &
-    get_operator(const int dir, const int inter, const int comp) const;
+  /**
+   * Construct the extraction operators.
+   */
+  BernsteinExtraction(const Space &space_data,
+                      const EndBehaviourTable &end_b);
+
+  /**
+   * Print the class content
+   */
+  void print_info(LogStream &out) const;
 
 
-    ElemOperTable get_element_operators(TensorIndex<dim> idx) const;
+  const Operator &
+  get_operator(const int dir, const int inter, const int comp) const;
 
 
+  ElemOperTable get_element_operators(TensorIndex<dim> idx) const;
 
-private:
-    SafeSTLVector<Operator>
-    fill_extraction(const int m,
-                    const SafeSTLVector<Real>    &knots,
-                    const SafeSTLVector<Real>    &rep_knots,
-                    const SafeSTLVector<Index>   &acum_mult);
 
-    /** Given the M_{j-1} computes and returns de M_{j} */
-    Operator compute(const Operator &M_j_1,
-                     typename SafeSTLVector<Real>::const_iterator  y,
-                     const Real a,
-                     const Real b);
 
 private:
-    OperatorsTable ext_operators_;
+  SafeSTLVector<Operator>
+  fill_extraction(const int m,
+                  const SafeSTLVector<Real>    &knots,
+                  const SafeSTLVector<Real>    &rep_knots,
+                  const SafeSTLVector<Index>   &acum_mult);
+
+  /** Given the M_{j-1} computes and returns de M_{j} */
+  Operator compute(const Operator &M_j_1,
+                   typename SafeSTLVector<Real>::const_iterator  y,
+                   const Real a,
+                   const Real b);
+
+private:
+  OperatorsTable ext_operators_;
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version);
-    ///@}
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version);
+  ///@}
 #endif // SERIALIZATION
 };
 

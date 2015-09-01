@@ -44,161 +44,161 @@ class LinearConstraint
 {
 public:
 
-    /**
-     * It builds and returns a std::shared_ptr wrapping a
-     * LinearConstraint (associated to the @p global_dof_id) of the specified @type,
-     * from a SafeSTLVector of @p dofs defining the constraint,
-     * their relative @p coefficients and the tight hand side value @p rhs.
-     */
-    static std::shared_ptr<LinearConstraint>
-    create(const Index global_dof_id,
-           const LinearConstraintType &type,
-           const SafeSTLVector<Index> &dofs,const SafeSTLVector<Real> &coeffs,const Real rhs);
+  /**
+   * It builds and returns a std::shared_ptr wrapping a
+   * LinearConstraint (associated to the @p global_dof_id) of the specified @type,
+   * from a SafeSTLVector of @p dofs defining the constraint,
+   * their relative @p coefficients and the tight hand side value @p rhs.
+   */
+  static std::shared_ptr<LinearConstraint>
+  create(const Index global_dof_id,
+         const LinearConstraintType &type,
+         const SafeSTLVector<Index> &dofs,const SafeSTLVector<Real> &coeffs,const Real rhs);
 
-    /** Destructor. */
-    ~LinearConstraint() = default;
-
-
-    /** Returns the value of the right hand side of the LinearConstraint. */
-    Real get_rhs() const;
+  /** Destructor. */
+  ~LinearConstraint() = default;
 
 
-    /** Sets the value of the right hand side of the LinearConstraint. */
-    void set_rhs(const Real rhs);
-
-    /**
-     * Returns the number of terms involved in the left hand side of the linear constraint.
-     * This number is also the number of dofs (and therefore coefficients) involved in the linear constraint.
-     */
-    Index get_num_lhs_terms() const;
-
-    /**
-     * Returns the number of dofs involved in the left hand side of the linear constraint.
-     */
-    Index get_num_dofs() const;
-
-    /**
-     * Returns the number of coefficients involved in the left hand side of the linear constraint.
-     */
-    Index get_num_coeffs() const;
-
-    /**
-     * Return the index of the <tt>p</tt>-th dof involved to define the linear constraint.
-     */
-    Index get_dof_index(const int i) const;
-
-    /**
-     * Return the coefficient associated to the the <tt>p</tt>-th dof involved to define the linear constraint.
-     */
-    Real get_coeff(const int i) const;
+  /** Returns the value of the right hand side of the LinearConstraint. */
+  Real get_rhs() const;
 
 
-    /**
-     * Returns the dofs involved in the definition of the LinearConstraint.
-     */
-    SafeSTLVector<Index> get_dofs_id() const;
+  /** Sets the value of the right hand side of the LinearConstraint. */
+  void set_rhs(const Real rhs);
 
-    /**
-     * Returns the coefficients of the dofs involved in the definition of the LinearConstraint.
-     */
-    SafeSTLVector<Real> get_coefficients() const;
+  /**
+   * Returns the number of terms involved in the left hand side of the linear constraint.
+   * This number is also the number of dofs (and therefore coefficients) involved in the linear constraint.
+   */
+  Index get_num_lhs_terms() const;
 
-    /**
-     * Returns the type of the LinearConstraint.
-     */
-    LinearConstraintType get_type() const;
+  /**
+   * Returns the number of dofs involved in the left hand side of the linear constraint.
+   */
+  Index get_num_dofs() const;
 
-    /**
-     * Returns the global dof id associated to the linear constraint.
-     */
-    Index get_global_dof_id() const;
+  /**
+   * Returns the number of coefficients involved in the left hand side of the linear constraint.
+   */
+  Index get_num_coeffs() const;
 
-    /**
-     * @name Printing info
-     */
-    ///@{
+  /**
+   * Return the index of the <tt>p</tt>-th dof involved to define the linear constraint.
+   */
+  Index get_dof_index(const int i) const;
 
-    /**
-     * Prints the content of the LinearConstraint on the LogStream @p out.
-     */
-    void print_info(LogStream &out) const ;
-    ///@}
+  /**
+   * Return the coefficient associated to the the <tt>p</tt>-th dof involved to define the linear constraint.
+   */
+  Real get_coeff(const int i) const;
 
 
-    /**
-     * Returns TRUE if the @p dof is present in the definition of the LinearConstraint.
-     */
-    bool is_dof_present(const Index dof) const;
+  /**
+   * Returns the dofs involved in the definition of the LinearConstraint.
+   */
+  SafeSTLVector<Index> get_dofs_id() const;
+
+  /**
+   * Returns the coefficients of the dofs involved in the definition of the LinearConstraint.
+   */
+  SafeSTLVector<Real> get_coefficients() const;
+
+  /**
+   * Returns the type of the LinearConstraint.
+   */
+  LinearConstraintType get_type() const;
+
+  /**
+   * Returns the global dof id associated to the linear constraint.
+   */
+  Index get_global_dof_id() const;
+
+  /**
+   * @name Printing info
+   */
+  ///@{
+
+  /**
+   * Prints the content of the LinearConstraint on the LogStream @p out.
+   */
+  void print_info(LogStream &out) const ;
+  ///@}
 
 
-    /**
-     * Returns the absolute error of the constraint if applied to the global dof coefficients @p
-     * dof_coeffs.
-     */
-    Real eval_absolute_error(const SafeSTLVector<Real> &dof_coeffs) const;
+  /**
+   * Returns TRUE if the @p dof is present in the definition of the LinearConstraint.
+   */
+  bool is_dof_present(const Index dof) const;
+
+
+  /**
+   * Returns the absolute error of the constraint if applied to the global dof coefficients @p
+   * dof_coeffs.
+   */
+  Real eval_absolute_error(const SafeSTLVector<Real> &dof_coeffs) const;
 
 
 
 private:
-    /** @name Constructors ad destructor */
-    ///@{
-    /** Default constructor. Not allowed to be used. */
-    LinearConstraint() = delete;
+  /** @name Constructors ad destructor */
+  ///@{
+  /** Default constructor. Not allowed to be used. */
+  LinearConstraint() = delete;
 
-    /**
-     * Constructor. It builds the LinearConstraint (associated to the @p global_dof_id)
-     * of the specified @type, from a SafeSTLVector of @p dofs defining the constraint,
-     * their relative @p coefficients and the tight hand side value @p rhs.
-     *
-     * @note Not allowed to be used. Use the associated create() function.
-     */
-    LinearConstraint(const Index global_dof_id,
-                     const LinearConstraintType &type,
-                     const SafeSTLVector<Index> &dofs,const SafeSTLVector<Real> &coeffs,const Real rhs);
+  /**
+   * Constructor. It builds the LinearConstraint (associated to the @p global_dof_id)
+   * of the specified @type, from a SafeSTLVector of @p dofs defining the constraint,
+   * their relative @p coefficients and the tight hand side value @p rhs.
+   *
+   * @note Not allowed to be used. Use the associated create() function.
+   */
+  LinearConstraint(const Index global_dof_id,
+                   const LinearConstraintType &type,
+                   const SafeSTLVector<Index> &dofs,const SafeSTLVector<Real> &coeffs,const Real rhs);
 
-    /**
-     * Copy constructor. Not allowed to be used.
-     */
-    LinearConstraint(const LinearConstraint &lc) = delete;
-
-
-    /**
-     * Move constructor. Not allowed to be used.
-     */
-    LinearConstraint(LinearConstraint &&lc) = delete;
+  /**
+   * Copy constructor. Not allowed to be used.
+   */
+  LinearConstraint(const LinearConstraint &lc) = delete;
 
 
-    /** Copy assignment operator. Not allowed to be used. */
-    LinearConstraint &operator=(const LinearConstraint &lc) = delete;
+  /**
+   * Move constructor. Not allowed to be used.
+   */
+  LinearConstraint(LinearConstraint &&lc) = delete;
 
 
-    /** Move assignment operator. Not allowed to be used. */
-    LinearConstraint &operator=(LinearConstraint &&lc) = delete;
-    ///@}
+  /** Copy assignment operator. Not allowed to be used. */
+  LinearConstraint &operator=(const LinearConstraint &lc) = delete;
+
+
+  /** Move assignment operator. Not allowed to be used. */
+  LinearConstraint &operator=(LinearConstraint &&lc) = delete;
+  ///@}
 
 
 
-    /** Returns a const reference of the right hand side of the linear constraint. */
-    const std::pair<Index,Real> &get_lhs_term(const int i) const;
+  /** Returns a const reference of the right hand side of the linear constraint. */
+  const std::pair<Index,Real> &get_lhs_term(const int i) const;
 
-    /**
-     * Left hand side of the linear equation.
-     *
-     * Each entry of this SafeSTLVector is a pair (global dof id/coefficient).
-     */
-    SafeSTLVector<std::pair<Index,Real>> lhs_;
+  /**
+   * Left hand side of the linear equation.
+   *
+   * Each entry of this SafeSTLVector is a pair (global dof id/coefficient).
+   */
+  SafeSTLVector<std::pair<Index,Real>> lhs_;
 
-    /**
-     * Right hand side of the linear equation.
-     */
-    Real rhs_;
+  /**
+   * Right hand side of the linear equation.
+   */
+  Real rhs_;
 
-    /** Type of the linear constraint. */
-    LinearConstraintType type_;
+  /** Type of the linear constraint. */
+  LinearConstraintType type_;
 
 
-    /** Global dof id associated to the linear constraint. */
-    Index global_dof_id_;
+  /** Global dof id associated to the linear constraint. */
+  Index global_dof_id_;
 };
 
 

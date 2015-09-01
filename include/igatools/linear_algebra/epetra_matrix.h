@@ -37,13 +37,13 @@ namespace EpetraTools
 class  Matrix : public Epetra_CrsMatrix
 {
 public:
-    using Epetra_CrsMatrix::Epetra_CrsMatrix;
+  using Epetra_CrsMatrix::Epetra_CrsMatrix;
 
-    void add_block(const SafeSTLVector<Index> &rows_id,
-                   const SafeSTLVector<Index> &cols_id,
-                   const DenseMatrix &loc_matrix);
+  void add_block(const SafeSTLVector<Index> &rows_id,
+                 const SafeSTLVector<Index> &cols_id,
+                 const DenseMatrix &loc_matrix);
 
-    void print_info(LogStream &out) const;
+  void print_info(LogStream &out) const;
 };
 
 using MatrixPtr = std::shared_ptr<Matrix>;
@@ -62,7 +62,7 @@ template<class Space>
 MatrixPtr
 create_matrix(const Space &space, const std::string &prop, const Epetra_SerialComm &comm)
 {
-    return create_matrix(*create_graph(space, prop, space, prop, comm));
+  return create_matrix(*create_graph(space, prop, space, prop, comm));
 }
 
 };

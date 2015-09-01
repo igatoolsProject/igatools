@@ -37,51 +37,51 @@
 template <int dim>
 auto create_mapping1(shared_ptr<CartesianGrid<dim>> grid)
 {
-    using Function = functions::CylindricalAnnulus<dim>;
+  using Function = functions::CylindricalAnnulus<dim>;
 
-    return
-        Function::create(grid, IdentityFunction<dim>::create(grid),
-                         1, 2, 0, 2.0, 0.0, numbers::PI/2.0);
+  return
+    Function::create(grid, IdentityFunction<dim>::create(grid),
+                     1, 2, 0, 2.0, 0.0, numbers::PI/2.0);
 }
 
 template <int dim>
 auto create_mapping2(shared_ptr<CartesianGrid<dim>> grid)
 {
-    using Function = IdentityFunction<dim>;
+  using Function = IdentityFunction<dim>;
 
-    return Function::create(grid);
+  return Function::create(grid);
 }
 
 template <int sub_dim, int dim, int codim =0 >
 void boundary_normals()
 {
-    using Mapping = Mapping<dim, codim>;
+  using Mapping = Mapping<dim, codim>;
 
-    auto grid = CartesianGrid<dim>::create();
-    auto map_func =  create_mapping1<dim>(grid);
+  auto grid = CartesianGrid<dim>::create();
+  auto map_func =  create_mapping1<dim>(grid);
 
-    auto flag = ValueFlags::w_measure|ValueFlags::point|
-                ValueFlags::boundary_normal;
-    auto quad = QGauss<sub_dim>(1);
+  auto flag = ValueFlags::w_measure|ValueFlags::point|
+              ValueFlags::boundary_normal;
+  auto quad = QGauss<sub_dim>(1);
 
-    Mapping map(map_func);
-    map.reset(flag, quad);
+  Mapping map(map_func);
+  map.reset(flag, quad);
 
-    auto elem = map.begin();
-    auto end = map.end();
+  auto elem = map.begin();
+  auto end = map.end();
 
-    map.template init_cache<sub_dim>(elem);
-    for (; elem != end; ++elem)
+  map.template init_cache<sub_dim>(elem);
+  for (; elem != end; ++elem)
+  {
+    for (auto &s_id : UnitElement<dim>::template elems_ids<sub_dim>())
     {
-        for (auto &s_id : UnitElement<dim>::template elems_ids<sub_dim>())
-        {
-            out << "Face: " << s_id << endl;
-            out << "  Normal vector:" << endl;
-            map.template fill_cache<sub_dim>(elem, s_id);
-            elem->template get_boundary_normals<sub_dim>(s_id).print_info(out);
-            out << endl;
-        }
+      out << "Face: " << s_id << endl;
+      out << "  Normal vector:" << endl;
+      map.template fill_cache<sub_dim>(elem, s_id);
+      elem->template get_boundary_normals<sub_dim>(s_id).print_info(out);
+      out << endl;
     }
+  }
 
 
 
@@ -89,7 +89,7 @@ void boundary_normals()
 
 int main()
 {
-    boundary_normals<2,3,0>();
-    return 0;
+  boundary_normals<2,3,0>();
+  return 0;
 }
 

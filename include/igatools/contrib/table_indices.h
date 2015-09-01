@@ -36,44 +36,44 @@ template <int N>
 class TableIndicesBase
 {
 public:
-    /**
-     * Access the value of the
-     * <tt>i</tt>th index.
-     */
-    int operator[](const int i) const;
+  /**
+   * Access the value of the
+   * <tt>i</tt>th index.
+   */
+  int operator[](const int i) const;
 
-    /**
-     * Compare two index fields for
-     * equality.
-     */
-    bool operator == (const TableIndicesBase<N> &other) const;
+  /**
+   * Compare two index fields for
+   * equality.
+   */
+  bool operator == (const TableIndicesBase<N> &other) const;
 
-    /**
-     * Compare two index fields for
-     * inequality.
-     */
-    bool operator != (const TableIndicesBase<N> &other) const;
+  /**
+   * Compare two index fields for
+   * inequality.
+   */
+  bool operator != (const TableIndicesBase<N> &other) const;
 
-    /**
-     * Sort the indices in ascending
-     * order. While this operation is not
-     * very useful for Table objects, it is
-     * used for the SymmetricTensor class.
-     */
-    void sort();
+  /**
+   * Sort the indices in ascending
+   * order. While this operation is not
+   * very useful for Table objects, it is
+   * used for the SymmetricTensor class.
+   */
+  void sort();
 
-    /**
-     * Write or read the data of this object to or
-     * from a stream for the purpose of serialization.
-     */
-    template <class Archive>
-    void serialize(Archive &ar, const int version);
+  /**
+   * Write or read the data of this object to or
+   * from a stream for the purpose of serialization.
+   */
+  template <class Archive>
+  void serialize(Archive &ar, const int version);
 
 protected:
-    /**
-     * Store the indices in an array.
-     */
-    unsigned indices[N];
+  /**
+   * Store the indices in an array.
+   */
+  unsigned indices[N];
 };
 
 
@@ -95,18 +95,18 @@ protected:
 template <int N>
 class TableIndices
 {
-    /**
-     * Standard constructor, setting
-     * all indices to zero.
-     */
-    TableIndices();
-    /**
-     * The actual constructor, taking
-     * @p N arguments of type
-     * <tt>int</tt> to
-     * initialize the index object.
-     */
-    TableIndices(...);
+  /**
+   * Standard constructor, setting
+   * all indices to zero.
+   */
+  TableIndices();
+  /**
+   * The actual constructor, taking
+   * @p N arguments of type
+   * <tt>int</tt> to
+   * initialize the index object.
+   */
+  TableIndices(...);
 };
 
 
@@ -128,17 +128,17 @@ template <>
 class TableIndices<1> : public TableIndicesBase<1>
 {
 public:
-    /**
-     * Default constructor. Set all
-     * indices to zero.
-     */
-    TableIndices();
+  /**
+   * Default constructor. Set all
+   * indices to zero.
+   */
+  TableIndices();
 
-    /**
-     * Constructor. Set indices to
-     * the given values.
-     */
-    TableIndices(const int index1);
+  /**
+   * Constructor. Set indices to
+   * the given values.
+   */
+  TableIndices(const int index1);
 };
 
 
@@ -159,29 +159,29 @@ template <>
 class TableIndices<2> : public TableIndicesBase<2>
 {
 public:
-    /**
-     * Default constructor. Set all
-     * indices to zero.
-     */
-    TableIndices();
+  /**
+   * Default constructor. Set all
+   * indices to zero.
+   */
+  TableIndices();
 
-    /**
-     * Constructor. Set indices to
-     * the given values.
-     *
-     * The default values for the
-     * second and subsequent
-     * arguments are necessary for
-     * some neat template tricks in
-     * SymmetricTensor where we only
-     * want to set the first index
-     * and construct the subsequent
-     * ones later on, i.e. for the
-     * moment we don't care about the
-     * later indices.
-     */
-    TableIndices(const int index1,
-                 const int index2 = -1);
+  /**
+   * Constructor. Set indices to
+   * the given values.
+   *
+   * The default values for the
+   * second and subsequent
+   * arguments are necessary for
+   * some neat template tricks in
+   * SymmetricTensor where we only
+   * want to set the first index
+   * and construct the subsequent
+   * ones later on, i.e. for the
+   * moment we don't care about the
+   * later indices.
+   */
+  TableIndices(const int index1,
+               const int index2 = -1);
 };
 
 
@@ -202,30 +202,30 @@ template <>
 class TableIndices<3> : public TableIndicesBase<3>
 {
 public:
-    /**
-     * Default constructor. Set all
-     * indices to zero.
-     */
-    TableIndices();
+  /**
+   * Default constructor. Set all
+   * indices to zero.
+   */
+  TableIndices();
 
-    /**
-     * Constructor. Set indices to
-     * the given values.
-     *
-     * The default values for the
-     * second and subsequent
-     * arguments are necessary for
-     * some neat template tricks in
-     * SymmetricTensor where we only
-     * want to set the first index
-     * and construct the subsequent
-     * ones later on, i.e. for the
-     * moment we don't care about the
-     * later indices.
-     */
-    TableIndices(const int index1,
-                 const int index2 = -1,
-                 const int index3 = -1);
+  /**
+   * Constructor. Set indices to
+   * the given values.
+   *
+   * The default values for the
+   * second and subsequent
+   * arguments are necessary for
+   * some neat template tricks in
+   * SymmetricTensor where we only
+   * want to set the first index
+   * and construct the subsequent
+   * ones later on, i.e. for the
+   * moment we don't care about the
+   * later indices.
+   */
+  TableIndices(const int index1,
+               const int index2 = -1,
+               const int index3 = -1);
 };
 
 
@@ -245,31 +245,31 @@ template <>
 class TableIndices<4> : public TableIndicesBase<4>
 {
 public:
-    /**
-     * Default constructor. Set all
-     * indices to zero.
-     */
-    TableIndices();
+  /**
+   * Default constructor. Set all
+   * indices to zero.
+   */
+  TableIndices();
 
-    /**
-     * Constructor. Set indices to
-     * the given values.
-     *
-     * The default values for the
-     * second and subsequent
-     * arguments are necessary for
-     * some neat template tricks in
-     * SymmetricTensor where we only
-     * want to set the first index
-     * and construct the subsequent
-     * ones later on, i.e. for the
-     * moment we don't care about the
-     * later indices.
-     */
-    TableIndices(const int index1,
-                 const int index2 = -1,
-                 const int index3 = -1,
-                 const int index4 = -1);
+  /**
+   * Constructor. Set indices to
+   * the given values.
+   *
+   * The default values for the
+   * second and subsequent
+   * arguments are necessary for
+   * some neat template tricks in
+   * SymmetricTensor where we only
+   * want to set the first index
+   * and construct the subsequent
+   * ones later on, i.e. for the
+   * moment we don't care about the
+   * later indices.
+   */
+  TableIndices(const int index1,
+               const int index2 = -1,
+               const int index3 = -1,
+               const int index4 = -1);
 };
 
 
@@ -289,32 +289,32 @@ template <>
 class TableIndices<5> : public TableIndicesBase<5>
 {
 public:
-    /**
-     * Default constructor. Set all
-     * indices to zero.
-     */
-    TableIndices();
+  /**
+   * Default constructor. Set all
+   * indices to zero.
+   */
+  TableIndices();
 
-    /**
-     * Constructor. Set indices to
-     * the given values.
-     *
-     * The default values for the
-     * second and subsequent
-     * arguments are necessary for
-     * some neat template tricks in
-     * SymmetricTensor where we only
-     * want to set the first index
-     * and construct the subsequent
-     * ones later on, i.e. for the
-     * moment we don't care about the
-     * later indices.
-     */
-    TableIndices(const int index1,
-                 const int index2 = -1,
-                 const int index3 = -1,
-                 const int index4 = -1,
-                 const int index5 = -1);
+  /**
+   * Constructor. Set indices to
+   * the given values.
+   *
+   * The default values for the
+   * second and subsequent
+   * arguments are necessary for
+   * some neat template tricks in
+   * SymmetricTensor where we only
+   * want to set the first index
+   * and construct the subsequent
+   * ones later on, i.e. for the
+   * moment we don't care about the
+   * later indices.
+   */
+  TableIndices(const int index1,
+               const int index2 = -1,
+               const int index3 = -1,
+               const int index4 = -1,
+               const int index5 = -1);
 };
 
 
@@ -334,33 +334,33 @@ template <>
 class TableIndices<6> : public TableIndicesBase<6>
 {
 public:
-    /**
-     * Default constructor. Set all
-     * indices to zero.
-     */
-    TableIndices();
+  /**
+   * Default constructor. Set all
+   * indices to zero.
+   */
+  TableIndices();
 
-    /**
-     * Constructor. Set indices to
-     * the given values.
-     *
-     * The default values for the
-     * second and subsequent
-     * arguments are necessary for
-     * some neat template tricks in
-     * SymmetricTensor where we only
-     * want to set the first index
-     * and construct the subsequent
-     * ones later on, i.e. for the
-     * moment we don't care about the
-     * later indices.
-     */
-    TableIndices(const int index1,
-                 const int index2 = -1,
-                 const int index3 = -1,
-                 const int index4 = -1,
-                 const int index5 = -1,
-                 const int index6 = -1);
+  /**
+   * Constructor. Set indices to
+   * the given values.
+   *
+   * The default values for the
+   * second and subsequent
+   * arguments are necessary for
+   * some neat template tricks in
+   * SymmetricTensor where we only
+   * want to set the first index
+   * and construct the subsequent
+   * ones later on, i.e. for the
+   * moment we don't care about the
+   * later indices.
+   */
+  TableIndices(const int index1,
+               const int index2 = -1,
+               const int index3 = -1,
+               const int index4 = -1,
+               const int index5 = -1,
+               const int index6 = -1);
 };
 
 
@@ -380,34 +380,34 @@ template <>
 class TableIndices<7> : public TableIndicesBase<7>
 {
 public:
-    /**
-     * Default constructor. Set all
-     * indices to zero.
-     */
-    TableIndices();
+  /**
+   * Default constructor. Set all
+   * indices to zero.
+   */
+  TableIndices();
 
-    /**
-     * Constructor. Set indices to
-     * the given values.
-     *
-     * The default values for the
-     * second and subsequent
-     * arguments are necessary for
-     * some neat template tricks in
-     * SymmetricTensor where we only
-     * want to set the first index
-     * and construct the subsequent
-     * ones later on, i.e. for the
-     * moment we don't care about the
-     * later indices.
-     */
-    TableIndices(const int index1,
-                 const int index2 = -1,
-                 const int index3 = -1,
-                 const int index4 = -1,
-                 const int index5 = -1,
-                 const int index6 = -1,
-                 const int index7 = -1);
+  /**
+   * Constructor. Set indices to
+   * the given values.
+   *
+   * The default values for the
+   * second and subsequent
+   * arguments are necessary for
+   * some neat template tricks in
+   * SymmetricTensor where we only
+   * want to set the first index
+   * and construct the subsequent
+   * ones later on, i.e. for the
+   * moment we don't care about the
+   * later indices.
+   */
+  TableIndices(const int index1,
+               const int index2 = -1,
+               const int index3 = -1,
+               const int index4 = -1,
+               const int index5 = -1,
+               const int index6 = -1,
+               const int index7 = -1);
 };
 
 
@@ -419,8 +419,8 @@ inline
 int
 TableIndicesBase<N>::operator [](const int i) const
 {
-    Assert(i < N, ExcIndexRange(i, 0, N));
-    return indices[i];
+  Assert(i < N, ExcIndexRange(i, 0, N));
+  return indices[i];
 }
 
 
@@ -430,10 +430,10 @@ inline
 bool
 TableIndicesBase<N>::operator == (const TableIndicesBase<N> &other) const
 {
-    for (int i=0; i<N; ++i)
-        if (indices[i] != other.indices[i])
-            return false;
-    return true;
+  for (int i=0; i<N; ++i)
+    if (indices[i] != other.indices[i])
+      return false;
+  return true;
 }
 
 
@@ -443,7 +443,7 @@ inline
 bool
 TableIndicesBase<N>::operator != (const TableIndicesBase<N> &other) const
 {
-    return !(*this == other);
+  return !(*this == other);
 }
 
 
@@ -454,7 +454,7 @@ inline
 void
 TableIndicesBase<N>::serialize(Archive &ar, const int)
 {
-    ar &indices;
+  ar &indices;
 }
 
 
@@ -472,8 +472,8 @@ inline
 void
 TableIndicesBase<2>::sort()
 {
-    if (indices[1] < indices[0])
-        std::swap(indices[0], indices[1]);
+  if (indices[1] < indices[0])
+    std::swap(indices[0], indices[1]);
 }
 
 
@@ -483,13 +483,13 @@ inline
 void
 TableIndicesBase<3>::sort()
 {
-    // bubble sort for 3 elements
-    if (indices[1] < indices[0])
-        std::swap(indices[0], indices[1]);
-    if (indices[2] < indices[1])
-        std::swap(indices[1], indices[2]);
-    if (indices[1] < indices[0])
-        std::swap(indices[0], indices[1]);
+  // bubble sort for 3 elements
+  if (indices[1] < indices[0])
+    std::swap(indices[0], indices[1]);
+  if (indices[2] < indices[1])
+    std::swap(indices[1], indices[2]);
+  if (indices[1] < indices[0])
+    std::swap(indices[0], indices[1]);
 }
 
 
@@ -498,7 +498,7 @@ TableIndicesBase<3>::sort()
 inline
 TableIndices<1>::TableIndices()
 {
-    this->indices[0] = 0;
+  this->indices[0] = 0;
 }
 
 
@@ -506,7 +506,7 @@ TableIndices<1>::TableIndices()
 inline
 TableIndices<1>::TableIndices(const int index1)
 {
-    this->indices[0] = index1;
+  this->indices[0] = index1;
 }
 
 
@@ -514,7 +514,7 @@ TableIndices<1>::TableIndices(const int index1)
 inline
 TableIndices<2>::TableIndices()
 {
-    this->indices[0] = this->indices[1] = 0;
+  this->indices[0] = this->indices[1] = 0;
 }
 
 
@@ -523,8 +523,8 @@ inline
 TableIndices<2>::TableIndices(const int index1,
                               const int index2)
 {
-    this->indices[0] = index1;
-    this->indices[1] = index2;
+  this->indices[0] = index1;
+  this->indices[1] = index2;
 }
 
 
@@ -532,7 +532,7 @@ TableIndices<2>::TableIndices(const int index1,
 inline
 TableIndices<3>::TableIndices()
 {
-    this->indices[0] = this->indices[1] = this->indices[2] = 0;
+  this->indices[0] = this->indices[1] = this->indices[2] = 0;
 }
 
 
@@ -542,9 +542,9 @@ TableIndices<3>::TableIndices(const int index1,
                               const int index2,
                               const int index3)
 {
-    this->indices[0] = index1;
-    this->indices[1] = index2;
-    this->indices[2] = index3;
+  this->indices[0] = index1;
+  this->indices[1] = index2;
+  this->indices[2] = index3;
 }
 
 
@@ -552,7 +552,7 @@ TableIndices<3>::TableIndices(const int index1,
 inline
 TableIndices<4>::TableIndices()
 {
-    this->indices[0] = this->indices[1] = this->indices[2] = this->indices[3] = 0;
+  this->indices[0] = this->indices[1] = this->indices[2] = this->indices[3] = 0;
 }
 
 
@@ -563,10 +563,10 @@ TableIndices<4>::TableIndices(const int index1,
                               const int index3,
                               const int index4)
 {
-    this->indices[0] = index1;
-    this->indices[1] = index2;
-    this->indices[2] = index3;
-    this->indices[3] = index4;
+  this->indices[0] = index1;
+  this->indices[1] = index2;
+  this->indices[2] = index3;
+  this->indices[3] = index4;
 }
 
 
@@ -574,10 +574,10 @@ TableIndices<4>::TableIndices(const int index1,
 inline
 TableIndices<5>::TableIndices()
 {
-    this->indices[0] = this->indices[1]
-                       = this->indices[2]
-                         = this->indices[3]
-                           = this->indices[4] = 0;
+  this->indices[0] = this->indices[1]
+                     = this->indices[2]
+                       = this->indices[3]
+                         = this->indices[4] = 0;
 }
 
 
@@ -589,11 +589,11 @@ TableIndices<5>::TableIndices(const int index1,
                               const int index4,
                               const int index5)
 {
-    this->indices[0] = index1;
-    this->indices[1] = index2;
-    this->indices[2] = index3;
-    this->indices[3] = index4;
-    this->indices[4] = index5;
+  this->indices[0] = index1;
+  this->indices[1] = index2;
+  this->indices[2] = index3;
+  this->indices[3] = index4;
+  this->indices[4] = index5;
 }
 
 
@@ -601,9 +601,9 @@ TableIndices<5>::TableIndices(const int index1,
 inline
 TableIndices<6>::TableIndices()
 {
-    this->indices[0] = this->indices[1] = this->indices[2]
-                                          = this->indices[3] = this->indices[4]
-                                                               = this->indices[5] = 0;
+  this->indices[0] = this->indices[1] = this->indices[2]
+                                        = this->indices[3] = this->indices[4]
+                                                             = this->indices[5] = 0;
 }
 
 
@@ -616,12 +616,12 @@ TableIndices<6>::TableIndices(const int index1,
                               const int index5,
                               const int index6)
 {
-    this->indices[0] = index1;
-    this->indices[1] = index2;
-    this->indices[2] = index3;
-    this->indices[3] = index4;
-    this->indices[4] = index5;
-    this->indices[5] = index6;
+  this->indices[0] = index1;
+  this->indices[1] = index2;
+  this->indices[2] = index3;
+  this->indices[3] = index4;
+  this->indices[4] = index5;
+  this->indices[5] = index6;
 }
 
 
@@ -629,9 +629,9 @@ TableIndices<6>::TableIndices(const int index1,
 inline
 TableIndices<7>::TableIndices()
 {
-    this->indices[0] = this->indices[1] = this->indices[2]
-                                          = this->indices[3] = this->indices[4]
-                                                               = this->indices[5] = this->indices[6] = 0;
+  this->indices[0] = this->indices[1] = this->indices[2]
+                                        = this->indices[3] = this->indices[4]
+                                                             = this->indices[5] = this->indices[6] = 0;
 }
 
 
@@ -645,13 +645,13 @@ TableIndices<7>::TableIndices(const int index1,
                               const int index6,
                               const int index7)
 {
-    this->indices[0] = index1;
-    this->indices[1] = index2;
-    this->indices[2] = index3;
-    this->indices[3] = index4;
-    this->indices[4] = index5;
-    this->indices[5] = index6;
-    this->indices[6] = index7;
+  this->indices[0] = index1;
+  this->indices[1] = index2;
+  this->indices[2] = index3;
+  this->indices[3] = index4;
+  this->indices[4] = index5;
+  this->indices[5] = index6;
+  this->indices[6] = index7;
 }
 
 
@@ -665,16 +665,16 @@ std::ostream &
 operator << (std::ostream &o,
              const TableIndices<N> &indices)
 {
-    o << '[';
-    for (int i=0; i<N; ++i)
-    {
-        o << indices[i];
-        if (i+1 != N)
-            o << ',';
-    }
-    o << ']';
+  o << '[';
+  for (int i=0; i<N; ++i)
+  {
+    o << indices[i];
+    if (i+1 != N)
+      o << ',';
+  }
+  o << ']';
 
-    return o;
+  return o;
 }
 
 

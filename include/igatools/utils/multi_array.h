@@ -100,242 +100,242 @@ template<class STLContainer, int rank>
 class MultiArray : public TensorSizedContainer<rank>
 {
 public:
-    /** Type of the entries stored in the STL container. */
-    using value_type = typename STLContainer::value_type;
+  /** Type of the entries stored in the STL container. */
+  using value_type = typename STLContainer::value_type;
 
-    /** Type for the reference in the STL container. */
-    using reference = typename STLContainer::reference;
+  /** Type for the reference in the STL container. */
+  using reference = typename STLContainer::reference;
 
-    /** Type for the const_reference in the STL container. */
-    using const_reference = typename STLContainer::const_reference;
+  /** Type for the const_reference in the STL container. */
+  using const_reference = typename STLContainer::const_reference;
 
-    /** @name Constructors and destructor */
-    ///@{
-    /**
-     * Construct an empty multiarray.
-     */
-    MultiArray();
+  /** @name Constructors and destructor */
+  ///@{
+  /**
+   * Construct an empty multiarray.
+   */
+  MultiArray();
 
-    /**
-     * Construct a square multiarray of zeros with @p dim entries in each array dimension.
-     */
-    MultiArray(const Size dim);
+  /**
+   * Construct a square multiarray of zeros with @p dim entries in each array dimension.
+   */
+  MultiArray(const Size dim);
 
-    /**
-     * Construct a rectangular multiarray of zeros with @p dim[i] entries in the i-th array dimension.
-     */
-    MultiArray(const TensorSize<rank> &dim);
+  /**
+   * Construct a rectangular multiarray of zeros with @p dim[i] entries in the i-th array dimension.
+   */
+  MultiArray(const TensorSize<rank> &dim);
 
-    /** Copy constructor. */
-    MultiArray(const MultiArray<STLContainer,rank> &data) = default;
+  /** Copy constructor. */
+  MultiArray(const MultiArray<STLContainer,rank> &data) = default;
 
-    /** Move constructor. */
-    MultiArray(MultiArray<STLContainer,rank> &&data) = default;
+  /** Move constructor. */
+  MultiArray(MultiArray<STLContainer,rank> &&data) = default;
 
-    /** Destructor. */
-    ~MultiArray() = default;
-    ///@}
-
-
-    /** @name Assignment operators */
-    ///@{
-    /** Copy assignment operator. */
-    MultiArray<STLContainer,rank> &operator=(const MultiArray<STLContainer,rank> &data) = default;
-
-    /** Move assignment operator. */
-    MultiArray<STLContainer,rank> &operator=(MultiArray<STLContainer,rank> &&data) = default;
-    ///@}
-
-    /** @name Access operators */
-    ///@{
-
-    /**
-     * Flat index access operator (non-const version).
-     * @note In Debug mode the index @p i is checked in order to be
-     * in the bounds of the container.
-     */
-    reference operator[](const Index i);
-
-    /**
-     * Flat index access operator (const version).
-     * @note In Debug mode the index @p i is checked in order to be
-     * in the bounds of the container.
-     */
-    const_reference operator[](const Index i) const;
+  /** Destructor. */
+  ~MultiArray() = default;
+  ///@}
 
 
-    /**
-     *  Tensor index access operator (non-const version).
-     */
-    reference operator()(const TensorIndex<rank> &i);
+  /** @name Assignment operators */
+  ///@{
+  /** Copy assignment operator. */
+  MultiArray<STLContainer,rank> &operator=(const MultiArray<STLContainer,rank> &data) = default;
 
-    /**
-     *  Tensor index access operator (const version).
-     */
-    const_reference operator()(const TensorIndex<rank> &i) const;
+  /** Move assignment operator. */
+  MultiArray<STLContainer,rank> &operator=(MultiArray<STLContainer,rank> &&data) = default;
+  ///@}
 
-    /** Return the entries of the multiarray as unidimensional STLContainer. */
-    const STLContainer &get_data() const;
-    ///@}
+  /** @name Access operators */
+  ///@{
 
+  /**
+   * Flat index access operator (non-const version).
+   * @note In Debug mode the index @p i is checked in order to be
+   * in the bounds of the container.
+   */
+  reference operator[](const Index i);
 
-    /** @name Dealing with the iterators */
-    ///@{
-
-    /** Type of the const iterator. */
-    using const_iterator = MultiArrayConstIterator<MultiArray<STLContainer,rank>>;
-
-    /** Type of the iterator. */
-    using iterator = MultiArrayIterator<MultiArray<STLContainer,rank>>;
-
-
-    /** Returns a const_iterator pointing to the first element in the container. */
-    const_iterator cbegin() const;
-
-    /** Returns a const_iterator pointing to the to one-pass the end in the container. */
-    const_iterator cend() const;
-
-    /** Returns a const_iterator pointing to the first element in the container. */
-    const_iterator begin() const;
-
-    /** Returns a const_iterator pointing to the to one-pass the end in the container. */
-    const_iterator end() const;
-
-    /** Returns an iterator pointing to the first element in the container. */
-    iterator begin();
-
-    /** Returns an iterator pointing to the to one-pass the end in the container. */
-    iterator end();
-
-    ///@}
+  /**
+   * Flat index access operator (const version).
+   * @note In Debug mode the index @p i is checked in order to be
+   * in the bounds of the container.
+   */
+  const_reference operator[](const Index i) const;
 
 
-    /** @name Getting a view of the data*/
-    ///@{
-    /** Returns a ContainerView of the MultiArray. */
-    ContainerView<MultiArray<STLContainer,rank>> get_view();
+  /**
+   *  Tensor index access operator (non-const version).
+   */
+  reference operator()(const TensorIndex<rank> &i);
 
-    /** Returns a ConstContainerView of the MultiArray. */
-    ConstContainerView<MultiArray<STLContainer,rank>> get_const_view() const;
+  /**
+   *  Tensor index access operator (const version).
+   */
+  const_reference operator()(const TensorIndex<rank> &i) const;
 
-    /**
-     * Returns a ContainerView of the underlying STLContainer
-     * used to store the entries of the MultiArray.
-     */
-    ContainerView<STLContainer> get_flat_view();
-
-    /**
-     * Returns a ConstContainerView of the underlying STLContainer
-     * used to store the entries of the MultiArray.
-     */
-    ConstContainerView<STLContainer> get_flat_const_view() const;
-    ///@}
-
-    /** @name Functions to easily fill the multiarray */
-    ///@{
-    /**
-     * Fills the multiarray with an arithmetic progression starting with the value @p init_value.
-     */
-    void fill_progression(const value_type &init_value = {});
+  /** Return the entries of the multiarray as unidimensional STLContainer. */
+  const STLContainer &get_data() const;
+  ///@}
 
 
-    /** Fills the multiarray copying in each entry the content of @p value. */
-    void fill(const value_type &value);
-    ///@}
+  /** @name Dealing with the iterators */
+  ///@{
+
+  /** Type of the const iterator. */
+  using const_iterator = MultiArrayConstIterator<MultiArray<STLContainer,rank>>;
+
+  /** Type of the iterator. */
+  using iterator = MultiArrayIterator<MultiArray<STLContainer,rank>>;
 
 
-    /**
-     * @name Printing info
-     */
-    ///@{
+  /** Returns a const_iterator pointing to the first element in the container. */
+  const_iterator cbegin() const;
+
+  /** Returns a const_iterator pointing to the to one-pass the end in the container. */
+  const_iterator cend() const;
+
+  /** Returns a const_iterator pointing to the first element in the container. */
+  const_iterator begin() const;
+
+  /** Returns a const_iterator pointing to the to one-pass the end in the container. */
+  const_iterator end() const;
+
+  /** Returns an iterator pointing to the first element in the container. */
+  iterator begin();
+
+  /** Returns an iterator pointing to the to one-pass the end in the container. */
+  iterator end();
+
+  ///@}
+
+
+  /** @name Getting a view of the data*/
+  ///@{
+  /** Returns a ContainerView of the MultiArray. */
+  ContainerView<MultiArray<STLContainer,rank>> get_view();
+
+  /** Returns a ConstContainerView of the MultiArray. */
+  ConstContainerView<MultiArray<STLContainer,rank>> get_const_view() const;
+
+  /**
+   * Returns a ContainerView of the underlying STLContainer
+   * used to store the entries of the MultiArray.
+   */
+  ContainerView<STLContainer> get_flat_view();
+
+  /**
+   * Returns a ConstContainerView of the underlying STLContainer
+   * used to store the entries of the MultiArray.
+   */
+  ConstContainerView<STLContainer> get_flat_const_view() const;
+  ///@}
+
+  /** @name Functions to easily fill the multiarray */
+  ///@{
+  /**
+   * Fills the multiarray with an arithmetic progression starting with the value @p init_value.
+   */
+  void fill_progression(const value_type &init_value = {});
+
+
+  /** Fills the multiarray copying in each entry the content of @p value. */
+  void fill(const value_type &value);
+  ///@}
+
+
+  /**
+   * @name Printing info
+   */
+  ///@{
 private:
-    template <class A>
-    EnableIf<has_print_info<A>(0), void>
-    t_print_info(LogStream &out) const
-    {
-        data_.print_info(out);
-    }
+  template <class A>
+  EnableIf<has_print_info<A>(0), void>
+  t_print_info(LogStream &out) const
+  {
+    data_.print_info(out);
+  }
 
-    template <class A>
-    EnableIf<(!has_print_info<A>(0)), void>
-    t_print_info(LogStream &out) const
-    {
-        for (const auto &v : data_)
-            out << v << " ";
-    }
+  template <class A>
+  EnableIf<(!has_print_info<A>(0)), void>
+  t_print_info(LogStream &out) const
+  {
+    for (const auto &v : data_)
+      out << v << " ";
+  }
 public:
-    /**
-     * Prints the content of the MultiArray on the LogStream @p out.
-     * Its use is intended mainly for testing and debugging purpose.
-     */
-    void print_info(LogStream &out) const;
-    ///@}
+  /**
+   * Prints the content of the MultiArray on the LogStream @p out.
+   * Its use is intended mainly for testing and debugging purpose.
+   */
+  void print_info(LogStream &out) const;
+  ///@}
 
 
-    /**
-     * Returns an estimate of the memory used to define the object.
-     */
-    std::size_t memory_consumption() const;
+  /**
+   * Returns an estimate of the memory used to define the object.
+   */
+  std::size_t memory_consumption() const;
 
 protected:
-    /**
-     * @name Functions for changing the size or the shape of the MultiArray
-     * (it makes sense only if STLContainer is resizable).
-     */
-    ///@{
+  /**
+   * @name Functions for changing the size or the shape of the MultiArray
+   * (it makes sense only if STLContainer is resizable).
+   */
+  ///@{
 
-    /**
-     * Resize the MultiArray as square container with @p dim entries in each
-     * array dimension.
-     */
-    void resize(const Size dim);
-
-
-    /**
-     * Resize the MultiArray as rectangular container with <p>dim[i]</p> entries
-     * in the i-th array dimension.
-     */
-    void resize(const TensorSize<rank> &dim);
+  /**
+   * Resize the MultiArray as square container with @p dim entries in each
+   * array dimension.
+   */
+  void resize(const Size dim);
 
 
-    /**
-     * Resize the MultiArray as rectangular container with <p>dim[i]</p> entries
-     * in the i-th array dimension.
-     *
-     * All the entries are initialized to the value @p val.
-     */
-    void resize(const TensorSize<rank> &dim, const typename STLContainer::value_type &val);
-    ///@}
+  /**
+   * Resize the MultiArray as rectangular container with <p>dim[i]</p> entries
+   * in the i-th array dimension.
+   */
+  void resize(const TensorSize<rank> &dim);
+
+
+  /**
+   * Resize the MultiArray as rectangular container with <p>dim[i]</p> entries
+   * in the i-th array dimension.
+   *
+   * All the entries are initialized to the value @p val.
+   */
+  void resize(const TensorSize<rank> &dim, const typename STLContainer::value_type &val);
+  ///@}
 
 
 private:
 
-    /**
-     * Data of type Entry stored in a STL container.
-     */
-    STLContainer data_;
+  /**
+   * Data of type Entry stored in a STL container.
+   */
+  STLContainer data_;
 
 
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        ar &boost::serialization::make_nvp(
-            "MultiArray_base_t",
-            boost::serialization::base_object<TensorSizedContainer<rank>>(*this));
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version)
+  {
+    ar &boost::serialization::make_nvp(
+      "MultiArray_base_t",
+      boost::serialization::base_object<TensorSizedContainer<rank>>(*this));
 
-        ar &boost::serialization::make_nvp("data_",data_);
-    }
-    ///@}
+    ar &boost::serialization::make_nvp("data_",data_);
+  }
+  ///@}
 #endif // SERIALIZATION
 };
 

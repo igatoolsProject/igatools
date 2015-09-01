@@ -39,26 +39,26 @@ using space_tools::get_boundary_dofs;
 template<int dim>
 void matrix_map(const int deg, const int n_knots)
 {
-    OUTSTART
-    auto grid = CartesianGrid<dim>::create(n_knots);
-    auto space = BSplineSpace<dim>::create(deg, grid);
+  OUTSTART
+  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto space = BSplineSpace<dim>::create(deg, grid);
 
-    Epetra_SerialComm comm;
+  Epetra_SerialComm comm;
 
 
-    auto map = EpetraTools::create_map(*space, "active", comm);
-    map->Print(out.get_file_stream());
+  auto map = EpetraTools::create_map(*space, "active", comm);
+  map->Print(out.get_file_stream());
 
-    auto graph = EpetraTools::create_graph(*space, "active", *space, "active",comm);
-    graph->Print(out.get_file_stream());
+  auto graph = EpetraTools::create_graph(*space, "active", *space, "active",comm);
+  graph->Print(out.get_file_stream());
 
-    auto matrix = EpetraTools::create_matrix(*graph);
-    auto vec = EpetraTools::create_vector(*map);
+  auto matrix = EpetraTools::create_matrix(*graph);
+  auto vec = EpetraTools::create_vector(*map);
 
-    matrix->Print(out.get_file_stream());
-    vec->Print(out.get_file_stream());
+  matrix->Print(out.get_file_stream());
+  vec->Print(out.get_file_stream());
 
-    OUTEND
+  OUTEND
 }
 
 #if 0
@@ -66,23 +66,23 @@ void matrix_map(const int deg, const int n_knots)
 template<int dim>
 void matrix_map1(const int deg, const int n_knots)
 {
-    OUTSTART
-    auto grid = CartesianGrid<dim>::create(n_knots);
-    auto r_space = BSplineSpace<dim>::create(deg, grid);
-    auto c_space = BSplineSpace<dim>::create(deg+1, grid);
-    MatrixGraph<LAPack::trilinos_epetra> graph(r_space, "active", c_space, "active");
-    graph.print_info(out);
+  OUTSTART
+  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto r_space = BSplineSpace<dim>::create(deg, grid);
+  auto c_space = BSplineSpace<dim>::create(deg+1, grid);
+  MatrixGraph<LAPack::trilinos_epetra> graph(r_space, "active", c_space, "active");
+  graph.print_info(out);
 
-    OUTEND
+  OUTEND
 }
 
 
 
 struct DofProp
 {
-    static const std::string interior;
-    static const std::string dirichlet;
-    static const std::string neumman;
+  static const std::string interior;
+  static const std::string dirichlet;
+  static const std::string neumman;
 };
 
 const std::string DofProp::interior = "interior";
@@ -93,66 +93,66 @@ const std::string DofProp::neumman  = "neumman";
 
 enum  bc : boundary_id
 {
-    dir=0, neu
+  dir=0, neu
 };
 
 template<int dim, int range = 1>
 void matrix_map2(const int deg, const int n_knots)
 {
-    OUTSTART
-    using Space = BSplineSpace<dim>;
-    auto grid = CartesianGrid<dim>::create(n_knots);
+  OUTSTART
+  using Space = BSplineSpace<dim>;
+  auto grid = CartesianGrid<dim>::create(n_knots);
 
-    grid->set_boundary_id(0, 1);
+  grid->set_boundary_id(0, 1);
 
-    auto space = BSplineSpace<dim>::create(deg, grid);
+  auto space = BSplineSpace<dim>::create(deg, grid);
 
-    std::set<boundary_id>  dir_ids = {0};
-    auto dir_dofs = get_boundary_dofs<Space>(space, dir_ids);
+  std::set<boundary_id>  dir_ids = {0};
+  auto dir_dofs = get_boundary_dofs<Space>(space, dir_ids);
 
-    auto int_dofs = space->get_interior_dofs();
+  auto int_dofs = space->get_interior_dofs();
 
-    std::set<boundary_id>  neu_ids = {1};
-    auto neu_dofs = get_boundary_dofs<Space>(space, neu_ids);
-    SafeSTLVector<Index> common(dim*range);
-    auto end1 =
-        std::set_intersection(neu_dofs.begin(), neu_dofs.end(),
-                              dir_dofs.begin(), dir_dofs.end(), common.begin());
-    common.resize(end1-common.begin());
-    for (auto &id : common)
-        neu_dofs.erase(id);
+  std::set<boundary_id>  neu_ids = {1};
+  auto neu_dofs = get_boundary_dofs<Space>(space, neu_ids);
+  SafeSTLVector<Index> common(dim*range);
+  auto end1 =
+    std::set_intersection(neu_dofs.begin(), neu_dofs.end(),
+                          dir_dofs.begin(), dir_dofs.end(), common.begin());
+  common.resize(end1-common.begin());
+  for (auto &id : common)
+    neu_dofs.erase(id);
 
-    auto dof_dist = space->get_ptr_dof_distribution();
-    dof_dist->add_dofs_property(DofProp::interior);
-    dof_dist->add_dofs_property(DofProp::dirichlet);
-    dof_dist->add_dofs_property(DofProp::neumman);
+  auto dof_dist = space->get_ptr_dof_distribution();
+  dof_dist->add_dofs_property(DofProp::interior);
+  dof_dist->add_dofs_property(DofProp::dirichlet);
+  dof_dist->add_dofs_property(DofProp::neumman);
 
 
-    dof_dist->set_dof_property_status(DofProp::interior, int_dofs, true);
-    dof_dist->set_dof_property_status(DofProp::dirichlet, dir_dofs, true);
-    dof_dist->set_dof_property_status(DofProp::neumman, neu_dofs, true);
+  dof_dist->set_dof_property_status(DofProp::interior, int_dofs, true);
+  dof_dist->set_dof_property_status(DofProp::dirichlet, dir_dofs, true);
+  dof_dist->set_dof_property_status(DofProp::neumman, neu_dofs, true);
 
-    MatrixGraph<LAPack::trilinos_epetra> graph(space, DofProp::interior,
-                                               space, DofProp::neumman);
+  MatrixGraph<LAPack::trilinos_epetra> graph(space, DofProp::interior,
+                                             space, DofProp::neumman);
 
-    graph.print_info(out);
+  graph.print_info(out);
 
-    //auto matrix = graph.create_matrix();
+  //auto matrix = graph.create_matrix();
 
-    OUTEND
+  OUTEND
 }
 
 #endif
 
 int main()
 {
-    //matrix_map<1>(1,3);
-    matrix_map<2>(1,3);
-    //matrix_map1<1>(1,3);
-    //matrix_map1<2>(1,3);
-    //matrix_map2<1>(1,3);
-    //matrix_map2<2>(1,3);
+  //matrix_map<1>(1,3);
+  matrix_map<2>(1,3);
+  //matrix_map1<1>(1,3);
+  //matrix_map1<2>(1,3);
+  //matrix_map2<1>(1,3);
+  //matrix_map2<2>(1,3);
 
-    return 0;
+  return 0;
 
 }

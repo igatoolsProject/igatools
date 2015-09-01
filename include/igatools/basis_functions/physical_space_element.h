@@ -43,42 +43,42 @@ template <class Accessor> class GridIterator;
  */
 template<int dim_,int range_,int rank_,int codim_,Transformation type_ = Transformation::h_grad>
 class PhysicalSpaceElement
-    :
-    public SpaceElement<dim_,codim_,range_,rank_,type_>
+  :
+  public SpaceElement<dim_,codim_,range_,rank_,type_>
 {
 public :
-    using self_t = PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>;
-    using parent_t = SpaceElement<dim_,codim_,range_,rank_,type_>;
+  using self_t = PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>;
+  using parent_t = SpaceElement<dim_,codim_,range_,rank_,type_>;
 
-    using PhysSpace = PhysicalSpace<dim_,range_,rank_,codim_,type_>;
-    /** Type required by the CartesianGridIterator templated iterator */
-    using ContainerType = const PhysSpace;
+  using PhysSpace = PhysicalSpace<dim_,range_,rank_,codim_,type_>;
+  /** Type required by the CartesianGridIterator templated iterator */
+  using ContainerType = const PhysSpace;
 
-    using Space = PhysSpace;
-    using RefSpace = typename PhysSpace::RefSpace;
-    using PushFwd = typename PhysSpace::PushFwd;
+  using Space = PhysSpace;
+  using RefSpace = typename PhysSpace::RefSpace;
+  using PushFwd = typename PhysSpace::PushFwd;
 //    using RefElemAccessor = SpaceElement<RefSpace::dim,0,RefSpace::range,RefSpace::rank,Transformation::h_grad>;
-    using RefElemAccessor = ReferenceElement<RefSpace::dim,RefSpace::range,RefSpace::rank>;
+  using RefElemAccessor = ReferenceElement<RefSpace::dim,RefSpace::range,RefSpace::rank>;
 
-    using MapElem = MappingElement<dim_, codim_>;
+  using MapElem = MappingElement<dim_, codim_>;
 
-    static const auto dim = PushFwd::dim;
-    static const auto space_dim = PushFwd::space_dim;
-    static const auto codim = PushFwd::codim;
-    static const auto type = PushFwd::type;
+  static const auto dim = PushFwd::dim;
+  static const auto space_dim = PushFwd::space_dim;
+  static const auto codim = PushFwd::codim;
+  static const auto type = PushFwd::type;
 
-    using PhysPoint = typename Space::Point;
+  using PhysPoint = typename Space::Point;
 
-    using Grid = CartesianGrid<dim>;
-    using IndexType = typename Grid::IndexType;
-    using List = typename Grid::List;
-    using ListIt = typename Grid::ListIt;
+  using Grid = CartesianGrid<dim>;
+  using IndexType = typename Grid::IndexType;
+  using List = typename Grid::List;
+  using ListIt = typename Grid::ListIt;
 
 
-    /**
-     * @name Constructors
-     */
-    ///@{
+  /**
+   * @name Constructors
+   */
+  ///@{
 public:
     /**
      * Default constructor. It does nothing but it is needed for the
@@ -202,7 +202,7 @@ public:
 
     void print_cache_info(LogStream &out) const;
 
-
+#if 0
     /**
      * @name Functions for the basis evaluation without the use of the cache.
      */
@@ -230,42 +230,43 @@ public:
 
         return this->template get_basis<ValueType,dim>(0,dofs_property);
     }
-
+#endif
     ///@}
-public:
-
-    /**
-     * Return a const reference of the reference space element.
-     */
-    const RefElemAccessor &get_ref_space_element() const;
-
-    /**
-     * Return a non-const reference of the reference space element.
-     */
-    RefElemAccessor &get_ref_space_element();
-
-
-    /**
-     * Return a const reference of the mapping element.
-     */
-    const MapElem &get_map_element() const;
-
-    /**
-     * Return a non-const reference of the mapping element.
-     */
-    MapElem &get_map_element();
 
 public:
-    using parent_t::get_num_basis;
+
+  /**
+   * Return a const reference of the reference space element.
+   */
+  const RefElemAccessor &get_ref_space_element() const;
+
+  /**
+   * Return a non-const reference of the reference space element.
+   */
+  RefElemAccessor &get_ref_space_element();
+
+
+  /**
+   * Return a const reference of the mapping element.
+   */
+  const MapElem &get_map_element() const;
+
+  /**
+   * Return a non-const reference of the mapping element.
+   */
+  MapElem &get_map_element();
+
+public:
+  using parent_t::get_num_basis;
 
 
 
-    /** Returns the index of the element. */
-    IndexType get_index() const;
+  /** Returns the index of the element. */
+  IndexType get_index() const;
 
 
-    /** Return the cartesian grid from which the element belongs.*/
-    const std::shared_ptr<const CartesianGrid<dim>> get_grid() const;
+  /** Return the cartesian grid from which the element belongs.*/
+  const std::shared_ptr<const CartesianGrid<dim>> get_grid() const;
 
 
     virtual typename List::iterator &operator++() override final
@@ -277,101 +278,101 @@ public:
 
 
 #if 0
-    /**
-     * For a given flags input argument identifies the face quantities and
-     * returns a new ValueFlags variable containing only face quantities.
-     * The output flags does not contain the word face.
-     */
-    ValueFlags get_face_flags(const ValueFlags fill_flag) const ;
+  /**
+   * For a given flags input argument identifies the face quantities and
+   * returns a new ValueFlags variable containing only face quantities.
+   * The output flags does not contain the word face.
+   */
+  ValueFlags get_face_flags(const ValueFlags fill_flag) const ;
 
 #endif
 
 #if 0
-    /** @name Functions/operators for moving the element in the CartesianGrid.*/
-    ///@{
-    /**
-     * Sets the index of the element using the flatten representation.
-     * @note This function also updates the index for the tensor representation.
-     * @warning This may be a dangerous function, be careful when using it
-     * as it is easy to use incorrectly. Only use it if you know what you
-     * are doing.
-     */
-    void move_to(const Index flat_index) override final;
-    ///@}
+  /** @name Functions/operators for moving the element in the CartesianGrid.*/
+  ///@{
+  /**
+   * Sets the index of the element using the flatten representation.
+   * @note This function also updates the index for the tensor representation.
+   * @warning This may be a dangerous function, be careful when using it
+   * as it is easy to use incorrectly. Only use it if you know what you
+   * are doing.
+   */
+  void move_to(const Index flat_index) override final;
+  ///@}
 #endif
 
 protected:
 
-    /*
-        bool operator==(const PhysicalSpaceElement<PhysSpace> &a) const;
-        bool operator!=(const PhysicalSpaceElement<PhysSpace> &a) const;
-        bool operator<(const PhysicalSpaceElement<PhysSpace> &a) const;
-        bool operator>(const PhysicalSpaceElement<PhysSpace> &a) const;
-    //*/
+  /*
+      bool operator==(const PhysicalSpaceElement<PhysSpace> &a) const;
+      bool operator!=(const PhysicalSpaceElement<PhysSpace> &a) const;
+      bool operator<(const PhysicalSpaceElement<PhysSpace> &a) const;
+      bool operator>(const PhysicalSpaceElement<PhysSpace> &a) const;
+  //*/
 
 #if 0
-    /**
-     * This function returns the ValueFlags needed to be passed to the ReferenceSpacePhysicalAccessor
-     * in order to compute the quantities specified by the input argument
-     * @p fill_flag (i.e. the ValueFlags that refers to the PhysicalSpaceElement).
-     */
-    ValueFlags get_reference_space_accessor_fill_flags(const ValueFlags fill_flag) const;
+  /**
+   * This function returns the ValueFlags needed to be passed to the ReferenceSpacePhysicalAccessor
+   * in order to compute the quantities specified by the input argument
+   * @p fill_flag (i.e. the ValueFlags that refers to the PhysicalSpaceElement).
+   */
+  ValueFlags get_reference_space_accessor_fill_flags(const ValueFlags fill_flag) const;
 
-    /**
-     * This function returns the ValueFlags needed to be passed to the PushForwardAccessor
-     * in order to compute the quantities specified by the input argument
-     * @p fill_flag (i.e. the ValueFlags that refers to the PhysicalSpaceElement).
-     */
-    ValueFlags get_push_forward_accessor_fill_flags(const ValueFlags fill_flag) const;
+  /**
+   * This function returns the ValueFlags needed to be passed to the PushForwardAccessor
+   * in order to compute the quantities specified by the input argument
+   * @p fill_flag (i.e. the ValueFlags that refers to the PhysicalSpaceElement).
+   */
+  ValueFlags get_push_forward_accessor_fill_flags(const ValueFlags fill_flag) const;
 
 #endif
-    /**
-     * Performs a copy of the input @p element.
-     * The type of copy (deep or shallow) is specified by the input parameter @p copy_policy.
-     */
-    void copy_from(const self_t &element,
-                   const CopyPolicy &copy_policy);
+  /**
+   * Performs a copy of the input @p element.
+   * The type of copy (deep or shallow) is specified by the input parameter @p copy_policy.
+   */
+  void copy_from(const self_t &element,
+                 const CopyPolicy &copy_policy);
 
 
 private:
-    template <class Accessor> friend class GridIteratorBase;
-    template <int,int,int,int,Transformation> friend class PhysSpaceElementHandler;
+  template <class Accessor> friend class GridIteratorBase;
+  template <int,int,int,int,Transformation> friend class PhysSpaceElementHandler;
 
-    std::shared_ptr<RefElemAccessor> ref_space_element_;
+  std::shared_ptr<RefElemAccessor> ref_space_element_;
 
-    std::shared_ptr<MapElem> map_element_;
+  std::shared_ptr<MapElem> map_element_;
 
 
-    /**
-     * Creates a new object performing a deep copy of the current object using the PhysicalSpaceElement
-     * copy constructor.
-     */
-    std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_,type_>> clone() const override final;
+  /**
+   * Creates a new object performing a deep copy of the current object using the PhysicalSpaceElement
+   * copy constructor.
+   */
+  std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_,type_>> clone() const override final;
 
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        ar &boost::serialization::make_nvp("PhysicalSpaceElement_base_t",
-                                           boost::serialization::base_object<parent_t>(*this));
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version)
+  {
+    ar &boost::serialization::make_nvp("PhysicalSpaceElement_base_t",
+                                       boost::serialization::base_object<parent_t>(*this));
 
-        ar.template register_type<BSplineElement<dim_,range_,rank_> >();
-        ar.template register_type<NURBSElement<dim_,range_,rank_> >();
-        ar &boost::serialization::make_nvp("ref_space_element_",ref_space_element_);
+    ar.template register_type<BSplineElement<dim_,range_,rank_> >();
+    ar.template register_type<NURBSElement<dim_,range_,rank_> >();
+    ar &boost::serialization::make_nvp("ref_space_element_",ref_space_element_);
 
 
-        ar &boost::serialization::make_nvp("map_element_",map_element_);
-    }
-    ///@}
+    ar &boost::serialization::make_nvp("map_element_",map_element_);
+  }
+  ///@}
 #endif
 
 };

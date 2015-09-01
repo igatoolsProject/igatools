@@ -33,32 +33,32 @@
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
-    const int n=5;
-    SafeSTLVector< Real > points(n);
-    for (int i=0; i<n; ++i)
-        points[i] = Real(i)/(n-1);
-    out << "points: ";
-    points.print_info(out);
-    out << endl;
+  const int n=5;
+  SafeSTLVector< Real > points(n);
+  for (int i=0; i<n; ++i)
+    points[i] = Real(i)/(n-1);
+  out << "points: ";
+  points.print_info(out);
+  out << endl;
 
-    for (int p = 0; p<3; p++)
-    {
-        out << "degree: " << p << endl;
+  for (int p = 0; p<3; p++)
+  {
+    out << "degree: " << p << endl;
 
-        auto values = BernsteinBasis::derivative(0, p, points);
-        out << "values: " << values << endl;
+    auto values = BernsteinBasis::derivative(0, p, points);
+    out << "values: " << values << endl;
 
-        values = BernsteinBasis::derivative(1, p, points);
-        out << "first derivatives: " << values << endl;
+    values = BernsteinBasis::derivative(1, p, points);
+    out << "first derivatives: " << values << endl;
 
 
-        values = BernsteinBasis::derivative(2, p, points);
-        out << " second derivatives: " << values << endl;
+    values = BernsteinBasis::derivative(2, p, points);
+    out << " second derivatives: " << values << endl;
 
-        out <<  endl;
-    }
+    out <<  endl;
+  }
 
-    return 0;
+  return 0;
 }

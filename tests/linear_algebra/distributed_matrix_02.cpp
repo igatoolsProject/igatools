@@ -38,43 +38,43 @@ using namespace EpetraTools;
 template<int dim = 1, int range  = 1, int rank=1>
 void fill_matrix_and_vector()
 {
-    using Space = BSplineSpace<dim, range, rank>;
-    const int p_r = 3;
-    const int p_c = 2;
+  using Space = BSplineSpace<dim, range, rank>;
+  const int p_r = 3;
+  const int p_c = 2;
 
-    out << " Domain dim: " << dim;
-    out << " Range dim: " << range <<endl;
-    out << " Degree of rows space: " << p_r <<endl;
-    out << " Degree of columns space: " << p_c <<endl;
+  out << " Domain dim: " << dim;
+  out << " Range dim: " << range <<endl;
+  out << " Degree of rows space: " << p_r <<endl;
+  out << " Degree of columns space: " << p_c <<endl;
 
-    auto grid = CartesianGrid<dim>::create();
-    auto r_space = Space::create(p_r, grid);
-    auto c_space = Space::create(p_c, grid);
+  auto grid = CartesianGrid<dim>::create();
+  auto r_space = Space::create(p_r, grid);
+  auto c_space = Space::create(p_c, grid);
 
-    const auto n_basis_sp_rows = r_space->get_num_basis();
-    const auto n_basis_sp_cols = c_space->get_num_basis();
-    out << endl;
-    out << "Number of dofs of rows space: " << n_basis_sp_rows << endl;
-    out << "Number of dofs of columns space: " << n_basis_sp_cols << endl;
-    out << endl;
+  const auto n_basis_sp_rows = r_space->get_num_basis();
+  const auto n_basis_sp_cols = c_space->get_num_basis();
+  out << endl;
+  out << "Number of dofs of rows space: " << n_basis_sp_rows << endl;
+  out << "Number of dofs of columns space: " << n_basis_sp_cols << endl;
+  out << endl;
 
-    Epetra_SerialComm comm;
-    auto graph = create_graph(*r_space, DofProperties::active,
-                              *c_space, DofProperties::active, comm);
+  Epetra_SerialComm comm;
+  auto graph = create_graph(*r_space, DofProperties::active,
+                            *c_space, DofProperties::active, comm);
 
 
-    auto A = create_matrix(*graph);
-    A->FillComplete();
+  auto A = create_matrix(*graph);
+  A->FillComplete();
 
-    out << "A matrix" << endl;
-    A->print_info(out);
-    out << endl;
+  out << "A matrix" << endl;
+  A->print_info(out);
+  out << endl;
 }
 
 
 int main()
 {
-    fill_matrix_and_vector();
-    return 0;
+  fill_matrix_and_vector();
+  return 0;
 }
 

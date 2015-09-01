@@ -18,6 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
+#if 0
 #include <igatools/base/value_types.h>
 
 using std::string;
@@ -97,3 +98,4 @@ const string  _Curvature::name = "Curvature";
 constexpr ValueFlags _Curvature::flag;
 
 IGA_NAMESPACE_CLOSE
+#endif

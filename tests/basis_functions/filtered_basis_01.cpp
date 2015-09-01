@@ -33,9 +33,9 @@
 
 struct DofProp
 {
-    static const std::string interior;
-    static const std::string dirichlet;
-    static const std::string neumman;
+  static const std::string interior;
+  static const std::string dirichlet;
+  static const std::string neumman;
 };
 
 const std::string DofProp::interior = "interior";
@@ -45,45 +45,45 @@ const std::string DofProp::neumman  = "neumman";
 template<int dim, int range = 1, int rank = 1>
 void filtered_dofs(const int deg = 1, const int n_knots = 3)
 {
-    OUTSTART
+  OUTSTART
 
-    using Space = BSplineSpace<dim, range, rank>;
+  using Space = BSplineSpace<dim, range, rank>;
 
-    auto grid = CartesianGrid<dim>::create(n_knots);
-    auto space = Space::create_nonconst(deg, grid);
-    auto dof_dist = space->get_ptr_dof_distribution();
-    dof_dist->add_dofs_property(DofProp::interior);
-    dof_dist->add_dofs_property(DofProp::dirichlet);
-    dof_dist->add_dofs_property(DofProp::neumman);
+  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto space = Space::create_nonconst(deg, grid);
+  auto dof_dist = space->get_ptr_dof_distribution();
+  dof_dist->add_dofs_property(DofProp::interior);
+  dof_dist->add_dofs_property(DofProp::dirichlet);
+  dof_dist->add_dofs_property(DofProp::neumman);
 
-    std::set<Index> int_dofs= {4};
-    dof_dist->set_dof_property_status(DofProp::interior, int_dofs,true);
-    std::set<Index> dir_dofs= {6,3,0, 1, 2, 5, 8};
-    dof_dist->set_dof_property_status(DofProp::dirichlet, dir_dofs,true);
-    std::set<Index> neu_dofs= {7};
-    dof_dist->set_dof_property_status(DofProp::neumman, neu_dofs,true);
+  std::set<Index> int_dofs= {4};
+  dof_dist->set_dof_property_status(DofProp::interior, int_dofs,true);
+  std::set<Index> dir_dofs= {6,3,0, 1, 2, 5, 8};
+  dof_dist->set_dof_property_status(DofProp::dirichlet, dir_dofs,true);
+  std::set<Index> neu_dofs= {7};
+  dof_dist->set_dof_property_status(DofProp::neumman, neu_dofs,true);
 
-    auto elem = space->begin();
-    auto end  = space->end();
+  auto elem = space->begin();
+  auto end  = space->end();
 
-    for (; elem != end; ++elem)
-    {
-        out << "Interior dofs:" << endl;
-        out << "Number: " << elem->get_num_basis(DofProp::interior) << endl;
-        elem->get_local_to_global(DofProp::interior).print_info(out);
-        out << endl;
+  for (; elem != end; ++elem)
+  {
+    out << "Interior dofs:" << endl;
+    out << "Number: " << elem->get_num_basis(DofProp::interior) << endl;
+    elem->get_local_to_global(DofProp::interior).print_info(out);
+    out << endl;
 
-        out << "dirichlet dofs:" << endl;
-        elem->get_local_to_global(DofProp::dirichlet).print_info(out);
-        out << endl;
+    out << "dirichlet dofs:" << endl;
+    elem->get_local_to_global(DofProp::dirichlet).print_info(out);
+    out << endl;
 
-        out << "neumman dofs:" << endl;
-        elem->get_local_to_global(DofProp::neumman).print_info(out);
-        out << endl;
-        out << endl;
-    }
+    out << "neumman dofs:" << endl;
+    elem->get_local_to_global(DofProp::neumman).print_info(out);
+    out << endl;
+    out << endl;
+  }
 
-    OUTEND
+  OUTEND
 }
 
 
@@ -91,8 +91,8 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
 
 int main()
 {
-    const int dim = 2;
-    filtered_dofs<dim>();
+  const int dim = 2;
+  filtered_dofs<dim>();
 
-    return 0;
+  return 0;
 }

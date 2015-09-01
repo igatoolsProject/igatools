@@ -21,6 +21,7 @@
 #ifndef NEW_MAPPING_H_
 #define NEW_MAPPING_H_
 
+#if 0
 #include <igatools/base/config.h>
 #include <igatools/functions/function.h>
 
@@ -56,134 +57,137 @@ template <int,int,int,int> class IgFunction;
  */
 template<int dim_, int codim_ = 0>
 class Mapping :
-    public std::enable_shared_from_this<Mapping<dim_,codim_> >
+  public std::enable_shared_from_this<Mapping<dim_,codim_> >
 {
 private:
-    using self_t = Mapping<dim_, codim_>;
+  using self_t = Mapping<dim_, codim_>;
 public:
-    using FuncType = MapFunction_new<dim_, codim_>;
-    using ElementAccessor = MappingElement<dim_, codim_>;
-    using ElementIterator = GridIterator<ElementAccessor>;
+  using FuncType = MapFunction_new<dim_, codim_>;
+  using ElementAccessor = MappingElement<dim_, codim_>;
+  using ElementIterator = GridIterator<ElementAccessor>;
 
 
-    using IndexType = TensorIndex<dim_>;
-    using PropertyList = PropertiesIdContainer<IndexType>;
-    using List = typename PropertyList::List;
-    using ListIt = typename PropertyList::List::iterator;
+  using IndexType = TensorIndex<dim_>;
+  using PropertyList = PropertiesIdContainer<IndexType>;
+  using List = typename PropertyList::List;
+  using ListIt = typename PropertyList::List::iterator;
 
 
-    static const int dim = dim_;
-    static const int space_dim = dim_ + codim_;
-
-public:
-    /** Type for the given order derivatives of the
-     *  the mapping. */
-    template<int order>
-    using Derivative = typename FuncType::template Derivative<order>;
-
-
-    /** Type for the diferent order derivatives of the inverse of
-     * the mapping
-     */
-    template<int order>
-    using InvDerivative = Derivatives<space_dim, dim_, 1, order>;
-
-
-    /** Type of the mapping evaluation point. */
-    using Point = typename FuncType::Point;
-
-    /** Type of the mapping return value. */
-    using Value = typename FuncType::Value;
-
-    /** Type of the mapping gradient. */
-    using Gradient = typename FuncType::Gradient;
-
-    /** Typedef for the mapping hessian. */
-    using Hessian = typename FuncType::Hessian;
+  static const int dim = dim_;
+  static const int space_dim = dim_ + codim_;
 
 public:
-
-    /**
-     * Default constructor. It does nothing but it is needed for the
-     * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     * mechanism.
-     */
-    Mapping() = default;
-
-    Mapping(std::shared_ptr<const FuncType> F);
+  /** Type for the given order derivatives of the
+   *  the mapping. */
+  template<int order>
+  using Derivative = typename FuncType::template Derivative<order>;
 
 
-    ~Mapping();
+  /** Type for the diferent order derivatives of the inverse of
+   * the mapping
+   */
+  template<int order>
+  using InvDerivative = Derivatives<space_dim, dim_, 1, order>;
 
-    static std::shared_ptr<self_t> create(std::shared_ptr<const FuncType> F);
+
+  /** Type of the mapping evaluation point. */
+  using Point = typename FuncType::Point;
+
+  /** Type of the mapping return value. */
+  using Value = typename FuncType::Value;
+
+  /** Type of the mapping gradient. */
+  using Gradient = typename FuncType::Gradient;
+
+  /** Typedef for the mapping hessian. */
+  using Hessian = typename FuncType::Hessian;
+
+public:
+
+  /**
+   * Default constructor. It does nothing but it is needed for the
+   * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   * mechanism.
+   */
+  Mapping() = default;
+
+  Mapping(std::shared_ptr<const FuncType> F);
+
+
+  ~Mapping();
+
+  static std::shared_ptr<self_t> create(std::shared_ptr<const FuncType> F);
 
 public:
 #if 0
-    template<int k>
-    void reset(const ValueFlags flag, const Quadrature<k> &eval_pts);
+  template<int k>
+  void reset(const ValueFlags flag, const Quadrature<k> &eval_pts);
 
-    template <int k>
-    void init_cache(ElementAccessor &elem) const;
+  template <int k>
+  void init_cache(ElementAccessor &elem) const;
 
-    template <int k>
-    void init_cache(ElementIterator &elem) const
-    {
-        init_cache<k>(*elem);
-    }
+  template <int k>
+  void init_cache(ElementIterator &elem) const
+  {
+    init_cache<k>(*elem);
+  }
 
-    template <int k>
-    void fill_cache(ElementAccessor &elem, const int j) const;
+  template <int k>
+  void fill_cache(ElementAccessor &elem, const int j) const;
 
-    template <int k>
-    void fill_cache(ElementIterator &elem, const int j) const
-    {
-        fill_cache<k>(*elem, j);
-    }
+  template <int k>
+  void fill_cache(ElementIterator &elem, const int j) const
+  {
+    fill_cache<k>(*elem, j);
+  }
 #endif
 
-    std::shared_ptr<const CartesianGrid<dim_> > get_grid() const;
+  std::shared_ptr<const CartesianGrid<dim_> > get_grid() const;
 
-    std::shared_ptr<const FuncType> get_ptr_const_function() const;
+  std::shared_ptr<const FuncType> get_ptr_const_function() const;
 
-    std::shared_ptr<FuncType> get_ptr_function();
+  std::shared_ptr<FuncType> get_ptr_function();
 
-    std::shared_ptr<ElementAccessor> create_element(const ListIt &index, const PropId &property) const;
+  std::shared_ptr<ElementAccessor> create_element(const ListIt &index, const PropId &property) const;
 
-    ElementIterator begin(const PropId &prop = ElementProperties::active);
+  ElementIterator begin(const PropId &prop = ElementProperties::active);
 
-    ElementIterator end(const PropId &prop = ElementProperties::active);
+  ElementIterator end(const PropId &prop = ElementProperties::active);
 
 
 private:
-    std::shared_ptr<const FuncType> F_;
+  std::shared_ptr<const FuncType> F_;
 
-    SafeSTLArray<ValueFlags, dim_ + 1> flags_;
+  SafeSTLArray<ValueFlags, dim_ + 1> flags_;
 
-    friend ElementAccessor;
+  friend ElementAccessor;
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        ar.template register_type<IgFunction<dim_,0,dim_+codim_,1> >();
-        ar &boost::serialization::make_nvp("F_",F_);
-        ar &boost::serialization::make_nvp("flags_",flags_);
-    }
-    ///@}
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version)
+  {
+    ar.template register_type<IgFunction<dim_,0,dim_+codim_,1> >();
+    ar &boost::serialization::make_nvp("F_",F_);
+    ar &boost::serialization::make_nvp("flags_",flags_);
+  }
+  ///@}
 #endif
 
 };
-
-
 IGA_NAMESPACE_CLOSE
+
+#endif
+
+
+
 
 #endif
 

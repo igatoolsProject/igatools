@@ -65,48 +65,48 @@ template <int rank>
 class MultiArrayUtils
 {
 public:
-    /**
-     * Given the tensor data component weights, and a
-     * flat index it return the corresponding tensor index (see details in
-     * the general documentation of CartesianProductArray.
-     */
-    static TensorIndex<rank>
-    flat_to_tensor_index(const Index flat_index,
-                         const TensorIndex<rank> &weight) noexcept ;
+  /**
+   * Given the tensor data component weights, and a
+   * flat index it return the corresponding tensor index (see details in
+   * the general documentation of CartesianProductArray.
+   */
+  static TensorIndex<rank>
+  flat_to_tensor_index(const Index flat_index,
+                       const TensorIndex<rank> &weight) noexcept ;
 
-    /**
-     * Given the tensor data component weights, and a
-     * tensor index it return the corresponding linear index (see details in
-     * the general documentation of CartesianProductArray.
-     */
-    static Index
-    tensor_to_flat_index(const TensorIndex<rank> &tensor_index,
-                         const TensorIndex<rank> &weight) noexcept ;
+  /**
+   * Given the tensor data component weights, and a
+   * tensor index it return the corresponding linear index (see details in
+   * the general documentation of CartesianProductArray.
+   */
+  static Index
+  tensor_to_flat_index(const TensorIndex<rank> &tensor_index,
+                       const TensorIndex<rank> &weight) noexcept ;
 
-    /**
-     * Given the size of the vectors in a tensor data, returns
-     * the weight of each tensor index.
-     * (see details in the general documentation of CartesianProductArray).
-     */
-    static TensorIndex<rank>
-    compute_weight(const TensorSize<rank> &size) noexcept ;
+  /**
+   * Given the size of the vectors in a tensor data, returns
+   * the weight of each tensor index.
+   * (see details in the general documentation of CartesianProductArray).
+   */
+  static TensorIndex<rank>
+  compute_weight(const TensorSize<rank> &size) noexcept ;
 
 
-    /**
-     * Computes the size of a given tensor index
-     * @todo remove this function because a TensorIndex is not a TensorSize
-     */
-    static Size
-    size(const TensorIndex<rank> &extend) noexcept ;
+  /**
+   * Computes the size of a given tensor index
+   * @todo remove this function because a TensorIndex is not a TensorSize
+   */
+  static Size
+  size(const TensorIndex<rank> &extend) noexcept ;
 
-    /**
-     * This an auxiliary function needed in local to global,
-     * what it does is given a raw tensor data of int type, a flat index and weight
-     * it returns an array with the corresponding data in each entry
-     */
-    static TensorIndex<rank>
-    get_tensor_entry(const SafeSTLArray< SafeSTLVector<Index>, rank> &data,
-                     const Index flat_index, const TensorIndex<rank> &weight) noexcept ;
+  /**
+   * This an auxiliary function needed in local to global,
+   * what it does is given a raw tensor data of int type, a flat index and weight
+   * it returns an array with the corresponding data in each entry
+   */
+  static TensorIndex<rank>
+  get_tensor_entry(const SafeSTLArray< SafeSTLVector<Index>, rank> &data,
+                   const Index flat_index, const TensorIndex<rank> &weight) noexcept ;
 };
 
 

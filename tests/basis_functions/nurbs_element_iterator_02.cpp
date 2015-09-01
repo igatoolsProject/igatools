@@ -42,84 +42,84 @@ using namespace EpetraTools;
 template< int dim, int range, int rank = 1>
 void test()
 {
-    OUTSTART
-    const int r = 2;
+  OUTSTART
+  const int r = 2;
 
-    using Space = NURBSSpace< dim, range, rank >;
-    auto  knots = CartesianGrid<dim>::create(3);
+  using Space = NURBSSpace< dim, range, rank >;
+  auto  knots = CartesianGrid<dim>::create(3);
 
-    auto degree = TensorIndex<dim>(r);
-    auto bsp_space = BSplineSpace<dim,range,rank>::create(degree, knots);
+  auto degree = TensorIndex<dim>(r);
+  auto bsp_space = BSplineSpace<dim,range,rank>::create(degree, knots);
 
-    using ScalarSpSpace = BSplineSpace<dim,1,1>;
-    auto scalar_bsp_space = ScalarSpSpace::create(degree, knots);
+  using ScalarSpSpace = BSplineSpace<dim,1,1>;
+  auto scalar_bsp_space = ScalarSpSpace::create(degree, knots);
 
-    const auto n_scalar_basis = scalar_bsp_space->get_num_basis();
+  const auto n_scalar_basis = scalar_bsp_space->get_num_basis();
 
-    using WeightFunc = IgFunction<dim,0,1,1>;
-    SafeSTLVector<Real> weights_coef(n_scalar_basis);
-    const int n_entries = weights_coef.size();
-    for (int i = 0 ; i < n_entries ; ++i)
-        weights_coef[i] = (i+1) * (1.0 / n_entries) ;
+  using WeightFunc = IgFunction<dim,0,1,1>;
+  SafeSTLVector<Real> weights_coef(n_scalar_basis);
+  const int n_entries = weights_coef.size();
+  for (int i = 0 ; i < n_entries ; ++i)
+    weights_coef[i] = (i+1) * (1.0 / n_entries) ;
 
-    Epetra_SerialComm comm;
-    auto map = create_map(*scalar_bsp_space, "active", comm);
+  Epetra_SerialComm comm;
+  auto map = create_map(*scalar_bsp_space, "active", comm);
 
-    auto w_func = WeightFunc::create(scalar_bsp_space,
-                                     std::make_shared<typename EpetraTools::Vector>(Copy, *map, weights_coef.data()));
+  auto w_func = WeightFunc::create(scalar_bsp_space,
+                                   std::make_shared<typename EpetraTools::Vector>(Copy, *map, weights_coef.data()));
 
-    auto nrb_space = Space::create(bsp_space,w_func);
+  auto nrb_space = Space::create(bsp_space,w_func);
 
-    const int n_points = 3;
-    QGauss<dim> quad(n_points);
+  const int n_points = 3;
+  QGauss<dim> quad(n_points);
 
-    auto elem     = nrb_space->begin();
-    auto end_element = nrb_space->end();
+  auto elem     = nrb_space->begin();
+  auto end_element = nrb_space->end();
 
-    const auto flag = ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian;
+  const auto flag = ValueFlags::value|ValueFlags::gradient|ValueFlags::hessian;
 
-    using ElemHandler = typename Space::ElementHandler;
-    auto elem_handler = ElemHandler::create(nrb_space);
-    elem_handler->reset(flag,quad);
+  using ElemHandler = typename Space::ElementHandler;
+  auto elem_handler = ElemHandler::create(nrb_space);
+  elem_handler->reset(flag,quad);
 
 
-    elem_handler->init_element_cache(elem);
+  elem_handler->init_element_cache(elem);
 
-    for (; elem != end_element; ++elem)
-    {
-        elem_handler->fill_element_cache(elem);
-        std::cout << "Element flat id: " << elem->get_flat_index() << endl << endl;
-        out << "Element flat id: " << elem->get_flat_index() << endl << endl;
+  for (; elem != end_element; ++elem)
+  {
+    elem_handler->fill_element_cache(elem);
+    std::cout << "Element flat id: " << elem->get_flat_index() << endl << endl;
+    out << "Element flat id: " << elem->get_flat_index() << endl << endl;
 
-        out.begin_item("Values basis functions:");
-        auto values = elem->template get_basis<_Value,dim>(0,DofProperties::active);
-        values.print_info(out);
-        out.end_item();
+    out.begin_item("Values basis functions:");
+    auto values = elem->template get_basis<_Value,dim>(0,DofProperties::active);
+    values.print_info(out);
+    out.end_item();
 
-        out.begin_item("Gradients basis functions:");
-        auto gradients = elem->template get_basis<_Gradient,dim>(0,DofProperties::active);
-        gradients.print_info(out);
-        out.end_item();
+    out.begin_item("Gradients basis functions:");
+    auto gradients = elem->template get_basis<_Gradient,dim>(0,DofProperties::active);
+    gradients.print_info(out);
+    out.end_item();
 
-        out.begin_item("Hessians basis functions:");
-        auto hessians = elem->template get_basis<_Hessian,dim>(0,DofProperties::active);
-        hessians.print_info(out);
-        out.end_item();
-    }
-    OUTEND
+    out.begin_item("Hessians basis functions:");
+    auto hessians = elem->template get_basis<_Hessian,dim>(0,DofProperties::active);
+    hessians.print_info(out);
+    out.end_item();
+  }
+  OUTEND
 }
 
 
 int main()
 {
-    test<1, 1>();
-    test<1, 2>();
-    test<1, 3>();
-    test<2, 1>();
-    test<2, 2>();
-    test<2, 3>();
-    test<3, 1>();
-    test<3, 3>();
+  test<1, 1>();
+  test<1, 2>();
+  test<1, 3>();
+  test<2, 1>();
+  test<2, 2>();
+  test<2, 3>();
+  test<3, 1>();
+  test<3, 3>();
 
-    return 0;
+  return 0;
 }

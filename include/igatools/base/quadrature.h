@@ -87,38 +87,38 @@ template <int dim_>
 class Quadrature
 {
 private:
-    using self_t = Quadrature<dim_>;
+  using self_t = Quadrature<dim_>;
 public:
-    /**
-     * @brief Alias for the point-type that is returned by the function Quadrature::get_point()
-     */
-    using Point = Points<dim_>;
-    using PointVector = ValueVector<Point>;
-    using WeigthVector = ValueVector<Real>;
-    using PointArray  = TensorProductArray<dim_>;
-    using WeightArray = TensorProductArray<dim_>;
+  /**
+   * @brief Alias for the point-type that is returned by the function Quadrature::get_point()
+   */
+  using Point = Points<dim_>;
+  using PointVector = ValueVector<Point>;
+  using WeigthVector = ValueVector<Real>;
+  using PointArray  = TensorProductArray<dim_>;
+  using WeightArray = TensorProductArray<dim_>;
 
-    /**
-     * Dimensionality of the space in which the points are located
-     * (equivalent to the number of the coordinates of each point).
-     */
-    static const int dim = dim_;
-    /**
-     * @name Constructors.
-     */
-    ///@{
+  /**
+   * Dimensionality of the space in which the points are located
+   * (equivalent to the number of the coordinates of each point).
+   */
+  static const int dim = dim_;
+  /**
+   * @name Constructors.
+   */
+  ///@{
 public:
 
-    /**
-     * Construct the object with a user-defined bounding-box, with no points inside.
-     * If the constructor is called without passing a bounding-box, then it will be used the one
-     * corresponding to the unit <tt>dim</tt>-dimensional cube \f$[0,1]^{dim}\f$
-     */
-    Quadrature(const BBox<dim_> &bounding_box = BBox<dim_>());
+  /**
+   * Construct the object with a user-defined bounding-box, with no points inside.
+   * If the constructor is called without passing a bounding-box, then it will be used the one
+   * corresponding to the unit <tt>dim</tt>-dimensional cube \f$[0,1]^{dim}\f$
+   */
+  Quadrature(const BBox<dim_> &bounding_box = BBox<dim_>());
 
 protected:
-    Quadrature(const TensorSize<dim> &num_points,
-               void (*)(int, iga::SafeSTLVector<double> &, iga::SafeSTLVector<double> &));
+  Quadrature(const TensorSize<dim> &num_points,
+             void (*)(int, iga::SafeSTLVector<double> &, iga::SafeSTLVector<double> &));
 
 public:
 
@@ -306,62 +306,64 @@ public:
     template<int k>
     Quadrature<dim_> collapse_to_sub_element(const int id) const;
 
+
+
 private:
-    /**
-     * Reset the <tt>bounding_box</tt> in which the points must be located.
-     */
-    void reset_bounding_box(const BBox<dim_> &bounding_box);
+  /**
+   * Reset the <tt>bounding_box</tt> in which the points must be located.
+   */
+  void reset_bounding_box(const BBox<dim_> &bounding_box);
 
 
-    /**
-     * Coordinates of the points.
-     *
-     * It does not contain multiple values.
-     */
-    PointArray points_1d_;
+  /**
+   * Coordinates of the points.
+   *
+   * It does not contain multiple values.
+   */
+  PointArray points_1d_;
 
-    /**
-     * Weights associated to the points coordinates. By default are set to be equal to one.
-     */
-    WeightArray weights_1d_;
-
-
-    /**
-     * Map between the point (flat) ids and its coordinates ids.
-     */
-    SafeSTLVector<TensorIndex<dim_>> map_point_id_to_coords_id_;
-
-    /**
-     * TRUE if the points are arranged in tensor product way.
-     * In this case the total number of points is
-     * <tt>n_coords[0] * n_coords[1] * ... * n_coords[dim-1]</tt>
-     *
-     * FALSE if the points are not arranged in tensor product way.
-     * In this case it must hold
-     * <tt>n_coords[0] == n_coords[1] == ... == n_coords[dim-1]</tt>
-     * and each value along a specific direction refers to a single point.
-     */
-    bool is_tensor_product_;
+  /**
+   * Weights associated to the points coordinates. By default are set to be equal to one.
+   */
+  WeightArray weights_1d_;
 
 
-    /**
-     * Bounding box in which the points are located.
-     */
-    BBox<dim_> bounding_box_;
+  /**
+   * Map between the point (flat) ids and its coordinates ids.
+   */
+  SafeSTLVector<TensorIndex<dim_>> map_point_id_to_coords_id_;
+
+  /**
+   * TRUE if the points are arranged in tensor product way.
+   * In this case the total number of points is
+   * <tt>n_coords[0] * n_coords[1] * ... * n_coords[dim-1]</tt>
+   *
+   * FALSE if the points are not arranged in tensor product way.
+   * In this case it must hold
+   * <tt>n_coords[0] == n_coords[1] == ... == n_coords[dim-1]</tt>
+   * and each value along a specific direction refers to a single point.
+   */
+  bool is_tensor_product_;
+
+
+  /**
+   * Bounding box in which the points are located.
+   */
+  BBox<dim_> bounding_box_;
 
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version);
-    ///@}
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version);
+  ///@}
 #endif // SERIALIZATION
 
 };

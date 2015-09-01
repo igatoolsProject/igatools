@@ -31,9 +31,9 @@ TensorIndex<rank> &
 TensorIndex<rank>::
 operator +=(const TensorIndex<rank> &ti) noexcept
 {
-    for (int i = 0; i < rank; ++i)
-        (*this)[i] += ti[i];
-    return *this;
+  for (int i = 0; i < rank; ++i)
+    (*this)[i] += ti[i];
+  return *this;
 }
 
 template <int rank>
@@ -42,12 +42,12 @@ TensorIndex<rank> &
 TensorIndex<rank>::
 operator -=(const TensorIndex<rank> &ti) noexcept
 {
-    for (int i = 0; i < rank; ++i)
-    {
-        (*this)[i] -= ti[i];
-        Assert((*this)[i] >= 0,ExcLowerRange((*this)[i],0));
-    }
-    return *this;
+  for (int i = 0; i < rank; ++i)
+  {
+    (*this)[i] -= ti[i];
+    Assert((*this)[i] >= 0,ExcLowerRange((*this)[i],0));
+  }
+  return *this;
 }
 
 
@@ -58,14 +58,14 @@ TensorIndex<rank> &
 TensorIndex<rank>::
 operator -=(const int j) noexcept
 {
-    Assert(j >= 0, ExcLowerRange(j,0));
-    for (auto &idx : (*this))
-    {
-        Assert(idx >= j,ExcIndexRange(j,0,idx+1));
-        idx -= j;
-    }
+  Assert(j >= 0, ExcLowerRange(j,0));
+  for (auto &idx : (*this))
+  {
+    Assert(idx >= j,ExcIndexRange(j,0,idx+1));
+    idx -= j;
+  }
 
-    return *this;
+  return *this;
 }
 
 
@@ -76,11 +76,11 @@ TensorIndex<rank> &
 TensorIndex<rank>::
 operator +=(const int j) noexcept
 {
-    Assert(j >= 0, ExcLowerRange(j,0));
-    for (auto &idx : (*this))
-        idx += j;
+  Assert(j >= 0, ExcLowerRange(j,0));
+  for (auto &idx : (*this))
+    idx += j;
 
-    return *this;
+  return *this;
 }
 
 IGA_NAMESPACE_CLOSE

@@ -35,23 +35,23 @@ IGA_NAMESPACE_OPEN
 template <int rank>
 TensorSizedContainer<rank>::
 TensorSizedContainer()
-    :
-    TensorSizedContainer(0)
+  :
+  TensorSizedContainer(0)
 {}
 
 template <int rank>
 TensorSizedContainer<rank>::
 TensorSizedContainer(const Size size)
-    :
-    TensorSizedContainer<rank>(TensorSize<rank>(size))
+  :
+  TensorSizedContainer<rank>(TensorSize<rank>(size))
 {}
 
 template <int rank>
 TensorSizedContainer<rank>::
 TensorSizedContainer(const TensorSize<rank> &size)
-    :
-    size_(size),
-    weight_(MultiArrayUtils<rank>::compute_weight(size_))
+  :
+  size_(size),
+  weight_(MultiArrayUtils<rank>::compute_weight(size_))
 {}
 
 
@@ -61,7 +61,7 @@ TensorSize<rank>
 TensorSizedContainer<rank>::
 tensor_size() const
 {
-    return size_;
+  return size_;
 }
 
 
@@ -70,7 +70,7 @@ Size
 TensorSizedContainer<rank>::
 flat_size() const
 {
-    return size_.flat_size();
+  return size_.flat_size();
 }
 
 
@@ -79,8 +79,8 @@ void
 TensorSizedContainer<rank>::
 reset_size(const TensorSize<rank> &size)
 {
-    size_ = size;
-    weight_ = MultiArrayUtils<rank>::compute_weight(size_) ;
+  size_ = size;
+  weight_ = MultiArrayUtils<rank>::compute_weight(size_) ;
 }
 
 template<int rank>
@@ -88,8 +88,8 @@ void
 TensorSizedContainer<rank>::
 print_info(LogStream &out) const
 {
-    out << "Size: " << size_;
-    out << "  Weights: "<< weight_;
+  out << "Size: " << size_;
+  out << "  Weights: "<< weight_;
 }
 
 
@@ -101,9 +101,9 @@ void
 TensorSizedContainer<rank>::
 serialize(Archive &ar, const unsigned int version)
 {
-    ar &boost::serialization::make_nvp("size_",size_);
+  ar &boost::serialization::make_nvp("size_",size_);
 
-    ar &boost::serialization::make_nvp("weight_",weight_);
+  ar &boost::serialization::make_nvp("weight_",weight_);
 }
 #endif // SERIALIZATION
 

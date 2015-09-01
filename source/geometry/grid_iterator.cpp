@@ -27,12 +27,11 @@ IGA_NAMESPACE_OPEN
 
 template <class Element>
 GridIteratorBase<Element>::
-GridIteratorBase(std::shared_ptr<ContainerType> grid,
+GridIteratorBase(std::shared_ptr<ContainerType> container,
                  const ListIt &index,
                  const PropId &prop)
     :
-//    elem_(std::make_shared<Element>(Element(grid, index, prop)))
-    elem_(grid->create_element(index, prop))
+    elem_(container->create_element(index, prop))
 {}
 
 
@@ -42,19 +41,19 @@ GridIteratorBase<Element>::
 GridIteratorBase(const GridIteratorBase<Element> &it,
                  const CopyPolicy &copy_policy)
 {
-    if (copy_policy == CopyPolicy::deep)
-    {
-        elem_->deep_copy_from(*(it.elem_));
-    }
-    else if (copy_policy == CopyPolicy::shallow)
-    {
-        elem_->shallow_copy_from(*(it.elem_));
-    }
-    else
-    {
-        Assert(false,ExcNotImplemented());
-        AssertThrow(false,ExcNotImplemented());
-    }
+  if (copy_policy == CopyPolicy::deep)
+  {
+    elem_->deep_copy_from(*(it.elem_));
+  }
+  else if (copy_policy == CopyPolicy::shallow)
+  {
+    elem_->shallow_copy_from(*(it.elem_));
+  }
+  else
+  {
+    Assert(false,ExcNotImplemented());
+    AssertThrow(false,ExcNotImplemented());
+  }
 }
 
 
@@ -64,8 +63,8 @@ GridIteratorBase<Element> &
 GridIteratorBase<Element>::
 operator++()
 {
-    elem_->operator++();
-    return *this;
+  elem_->operator++();
+  return *this;
 }
 
 
@@ -75,7 +74,7 @@ bool
 GridIteratorBase<Element>::
 operator==(const GridIteratorBase<Element> &i) const
 {
-    return *elem_ == *i.elem_;
+  return *elem_ == *i.elem_;
 }
 
 
@@ -85,7 +84,7 @@ bool
 GridIteratorBase<Element>::
 operator>(const GridIteratorBase<Element> &i) const
 {
-    return (*elem_ > *i.elem_);
+  return (*elem_ > *i.elem_);
 }
 
 template <class Element>
@@ -93,7 +92,7 @@ bool
 GridIteratorBase<Element>::
 operator<(const GridIteratorBase<Element> &i) const
 {
-    return (*elem_ < *i.elem_);
+  return (*elem_ < *i.elem_);
 }
 
 
@@ -103,7 +102,7 @@ bool
 GridIteratorBase<Element>::
 operator!=(const GridIteratorBase<Element> &i) const
 {
-    return elem_->operator != (*(i.elem_));
+  return elem_->operator != (*(i.elem_));
 }
 
 #if 0
@@ -112,7 +111,7 @@ Index
 GridIteratorBase<Element>::
 get_flat_index() const
 {
-    return elem_->get_flat_index();
+  return elem_->get_flat_index();
 }
 
 template <class Element>
@@ -120,7 +119,7 @@ auto
 GridIteratorBase<Element>::
 get_tensor_index() const -> TensIndex
 {
-    return elem_->get_tensor_index();
+  return elem_->get_tensor_index();
 }
 #endif
 
@@ -131,7 +130,7 @@ Element &
 GridIterator<Element>::
 operator * ()
 {
-    return *this->elem_;
+  return *this->elem_;
 }
 
 
@@ -141,7 +140,7 @@ Element *
 GridIterator<Element>::
 operator -> ()
 {
-    return this->elem_.get();
+  return this->elem_.get();
 }
 
 
@@ -151,7 +150,7 @@ const Element &
 GridIterator<Element>::
 operator * () const
 {
-    return *this->elem_;
+  return *this->elem_;
 }
 
 
@@ -161,7 +160,7 @@ const Element *
 GridIterator<Element>::
 operator -> () const
 {
-    return this->elem_.get();
+  return this->elem_.get();
 }
 
 IGA_NAMESPACE_CLOSE

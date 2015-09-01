@@ -55,17 +55,17 @@ struct covariant;
 
 struct contravariant
 {
-    using co_type = covariant;
+  using co_type = covariant;
 };
 
 struct covariant
 {
-    using co_type = contravariant;
+  using co_type = contravariant;
 };
 
 struct raw
 {
-    using co_type = raw;
+  using co_type = raw;
 };
 
 } // end namespace tensor
@@ -85,149 +85,149 @@ struct raw
 class Tdouble
 {
 public:
-    static const bool is_tensor = false;
+  static const bool is_tensor = false;
 
-    /** Dimension of the vector space */
-    static const int dim   = 1; //Could actually be any number
+  /** Dimension of the vector space */
+  static const int dim   = 1; //Could actually be any number
 
-    /** Rank of the tensor */
-    static const int rank  = 0;
+  /** Rank of the tensor */
+  static const int rank  = 0;
 
-    /** Flat size of the tensor, i.e.
-     * total number of components of type value_type */
-    static const int size = 1; //iga::constexpr_pow(dim_, rank_);
+  /** Flat size of the tensor, i.e.
+   * total number of components of type value_type */
+  static const int size = 1; //iga::constexpr_pow(dim_, rank_);
 
-    using self_t = Tdouble;
-    using co_tensor_t = self_t;
-    using value_t = Real;
+  using self_t = Tdouble;
+  using co_tensor_t = self_t;
+  using value_t = Real;
 
-    /** @name Constructors */
-    ///@{
-    /** Default constructor */
-    Tdouble(const Real val = 0.);
+  /** @name Constructors */
+  ///@{
+  /** Default constructor */
+  Tdouble(const Real val = 0.);
 
-    /**
-     * Advance constructor to optimization when zero
-     * init is not necessary
-     */
-    Tdouble(const bool non_init);
+  /**
+   * Advance constructor to optimization when zero
+   * init is not necessary
+   */
+  Tdouble(const bool non_init);
 
-    /** Copy constructor */
-    Tdouble(const Tdouble &td) = default;
+  /** Copy constructor */
+  Tdouble(const Tdouble &td) = default;
 
-    /** Move constructor */
-    Tdouble(Tdouble &&td) = default;
+  /** Move constructor */
+  Tdouble(Tdouble &&td) = default;
 
-    /** Destructor */
-    ~Tdouble() = default;
-    ///@}
+  /** Destructor */
+  ~Tdouble() = default;
+  ///@}
 
-    /**
-     * @name Assignment operators
-     */
-    ///@{
+  /**
+   * @name Assignment operators
+   */
+  ///@{
 
-    /**
-     * Copy assignment operator.
-     */
-    Tdouble &operator=(const Tdouble &td) = default;
+  /**
+   * Copy assignment operator.
+   */
+  Tdouble &operator=(const Tdouble &td) = default;
 
-    /**
-     * Move assignment operator.
-     */
-    Tdouble &operator=(Tdouble &&td) = default;
+  /**
+   * Move assignment operator.
+   */
+  Tdouble &operator=(Tdouble &&td) = default;
 
-    /**
-     * Assignment operator from a Real @p val1.
-     */
-    Tdouble &operator=(const value_t &val1);
-    ///@}
+  /**
+   * Assignment operator from a Real @p val1.
+   */
+  Tdouble &operator=(const value_t &val1);
+  ///@}
 
-    // TODO (pauletti, Feb 25, 2014): document and implementation in other file
-    operator value_t &() noexcept
-    {
-        return val_;
-    }
+  // TODO (pauletti, Feb 25, 2014): document and implementation in other file
+  operator value_t &() noexcept
+  {
+    return val_;
+  }
 
-    // TODO (pauletti, Feb 25, 2014): document and implementation in other file
-    operator value_t const &() const noexcept
-    {
-        return val_;
-    }
+  // TODO (pauletti, Feb 25, 2014): document and implementation in other file
+  operator value_t const &() const noexcept
+  {
+    return val_;
+  }
 
-    /**
-     * Read write access operator
-     */
-    value_t &operator[](const int i) noexcept;
+  /**
+   * Read write access operator
+   */
+  value_t &operator[](const int i) noexcept;
 
-    /**
-     * Read access operator
-     */
-    const value_t &operator[](const int i) const noexcept;
+  /**
+   * Read access operator
+   */
+  const value_t &operator[](const int i) const noexcept;
 
-    /**
-     * Read write access operator using a tensor index
-     */
-    value_t &operator()(const TensorIndex<0> &i) noexcept;
+  /**
+   * Read write access operator using a tensor index
+   */
+  value_t &operator()(const TensorIndex<0> &i) noexcept;
 
-    /**
-     * Read access operator using a tensor index
-     */
-    const value_t &operator()(const TensorIndex<0> &i) const noexcept;
+  /**
+   * Read access operator using a tensor index
+   */
+  const value_t &operator()(const TensorIndex<0> &i) const noexcept;
 
-    /**
-     * Read write access operator using the flat index
-     */
-    value_t &operator()(const int i) noexcept;
+  /**
+   * Read write access operator using the flat index
+   */
+  value_t &operator()(const int i) noexcept;
 
-    /**
-     * Read access operator using the flat index
-     */
-    const value_t &operator()(const int i) const noexcept;
+  /**
+   * Read access operator using the flat index
+   */
+  const value_t &operator()(const int i) const noexcept;
 
-    Tdouble &operator+=(const Real td) noexcept;
+  Tdouble &operator+=(const Real td) noexcept;
 
-    Tdouble &operator-=(const Real td) noexcept;
+  Tdouble &operator-=(const Real td) noexcept;
 
-    Tdouble &operator*=(const Real td) noexcept;
+  Tdouble &operator*=(const Real td) noexcept;
 
-    Tdouble &operator/=(const Real td) noexcept;
+  Tdouble &operator/=(const Real td) noexcept;
 
-    Real norm() const noexcept;
+  Real norm() const noexcept;
 
-    Real norm_square() const noexcept;
+  Real norm_square() const noexcept;
 
-    TensorIndex<0>
-    flat_to_tensor_index(const int flat_index) const noexcept;
+  TensorIndex<0>
+  flat_to_tensor_index(const int flat_index) const noexcept;
 
-    /**
-     * The last index moves faster.
-     */
-    int tensor_to_flat_index(const TensorIndex<0> &tensor_index) const noexcept;
+  /**
+   * The last index moves faster.
+   */
+  int tensor_to_flat_index(const TensorIndex<0> &tensor_index) const noexcept;
 
-    /**
-     * Return the total number of entries of the tensor.
-     */
-    static Size get_number_of_entries();
+  /**
+   * Return the total number of entries of the tensor.
+   */
+  static Size get_number_of_entries();
 
 private:
-    value_t val_;
+  value_t val_;
 
 #ifdef SERIALIZATION
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version)
-    {
-        ar &boost::serialization::make_nvp("val_",val_);
-    };
-    ///@}
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version)
+  {
+    ar &boost::serialization::make_nvp("val_",val_);
+  };
+  ///@}
 #endif // SERIALIZATION
 
 };
@@ -246,10 +246,10 @@ private:
  */
 template<typename T>
 using CoTensor =
-    Conditional<
-    T::is_tensor,
-    Tensor<T::dim, T::rank, typename T::tensor_t::co_type, typename T::value_t::co_tensor_t>,
-    Tdouble>;
+  Conditional<
+  T::is_tensor,
+  Tensor<T::dim, T::rank, typename T::tensor_t::co_type, typename T::value_t::co_tensor_t>,
+  Tdouble>;
 
 
 
@@ -260,15 +260,15 @@ using CoTensor =
  */
 template<typename T>
 using Transpose =
-    Conditional<
-    T::is_tensor,
-    Conditional<
-    T::value_t::rank==0,
-    T,
-    Tensor<T::value_t::dim,T::value_t::rank,typename T::value_t::tensor_t,
-    Tensor<T::dim,T::rank,typename T::tensor_t,typename T::value_t::value_t> >
-    >,
-    Tdouble >;
+  Conditional<
+  T::is_tensor,
+  Conditional<
+  T::value_t::rank==0,
+  T,
+  Tensor<T::value_t::dim,T::value_t::rank,typename T::value_t::tensor_t,
+  Tensor<T::dim,T::rank,typename T::tensor_t,typename T::value_t::value_t> >
+  >,
+  Tdouble >;
 
 
 
@@ -281,10 +281,10 @@ using Transpose =
  */
 template<typename T>
 using SubTensor =
-    Conditional<
-    (T::rank<=1),
-    typename T::value_t,
-    Tensor<T::dim,T::rank-1,typename T::tensor_t,typename T::value_t>>;
+  Conditional<
+  (T::rank<=1),
+  typename T::value_t,
+  Tensor<T::dim,T::rank-1,typename T::tensor_t,typename T::value_t>>;
 
 
 /**
@@ -409,212 +409,212 @@ template<int dim_, int rank_, class tensor_type, class value_type>
 class Tensor
 {
 public:
-    // TODO (pauletti, Feb 25, 2014): Document this
-    static const bool is_tensor = true;
+  // TODO (pauletti, Feb 25, 2014): Document this
+  static const bool is_tensor = true;
 
-    /** Dimension of the vector space */
-    static const int dim   = dim_;
+  /** Dimension of the vector space */
+  static const int dim   = dim_;
 
-    /** Rank of the tensor */
-    static const int rank  = rank_;
+  /** Rank of the tensor */
+  static const int rank  = rank_;
 
-    /** Flat size of the tensor, i.e. total number of components of type value_type */
-    static const int size = iga::constexpr_pow(dim_, rank_);
+  /** Flat size of the tensor, i.e. total number of components of type value_type */
+  static const int size = iga::constexpr_pow(dim_, rank_);
 
-    using tensor_t = tensor_type;
+  using tensor_t = tensor_type;
 
-    using value_t = value_type;
+  using value_t = value_type;
 
-    using self_t = Tensor<dim,rank,tensor_t,value_t>;
+  using self_t = Tensor<dim,rank,tensor_t,value_t>;
 
-    using co_tensor_t = CoTensor<self_t>;
+  using co_tensor_t = CoTensor<self_t>;
 
-    /**
-     * @name Constructors
-     */
-    ///@{
-    /**
-     * Default constructor. Sets all entries to 0.
-     */
-    Tensor()
-    {};
+  /**
+   * @name Constructors
+   */
+  ///@{
+  /**
+   * Default constructor. Sets all entries to 0.
+   */
+  Tensor()
+  {};
 
-    /** Copy constructor */
-    Tensor(const Tensor<dim_, rank_, tensor_type, value_type> &tensor) = default;
+  /** Copy constructor */
+  Tensor(const Tensor<dim_, rank_, tensor_type, value_type> &tensor) = default;
 
-    /** Move constructor */
-    Tensor(Tensor<dim_, rank_, tensor_type, value_type> &&tensor) = default;
+  /** Move constructor */
+  Tensor(Tensor<dim_, rank_, tensor_type, value_type> &&tensor) = default;
 
-    /** Constructor from an initializer-list of value_type */
-    Tensor(std::initializer_list<value_type> list);
+  /** Constructor from an initializer-list of value_type */
+  Tensor(std::initializer_list<value_type> list);
 
-    /** Destructor */
-    ~Tensor() = default;
-    ///@}
+  /** Destructor */
+  ~Tensor() = default;
+  ///@}
 
-    /**
-     * @name Assignment operators
-     */
-    ///@{
-    /** Copy assignment operator */
-    Tensor<dim_, rank_, tensor_type, value_type> &operator=(
-        const Tensor<dim_, rank_, tensor_type, value_type> &tensor) = default;
+  /**
+   * @name Assignment operators
+   */
+  ///@{
+  /** Copy assignment operator */
+  Tensor<dim_, rank_, tensor_type, value_type> &operator=(
+    const Tensor<dim_, rank_, tensor_type, value_type> &tensor) = default;
 
-    /** Move assignment operator */
-    Tensor<dim_, rank_, tensor_type, value_type> &operator=(
-        Tensor<dim_, rank_, tensor_type, value_type> &&tensor) = default;
+  /** Move assignment operator */
+  Tensor<dim_, rank_, tensor_type, value_type> &operator=(
+    Tensor<dim_, rank_, tensor_type, value_type> &&tensor) = default;
 
-    /** Initializer-list assignment */
-    Tensor<dim_, rank_, tensor_type, value_type>
-    &operator=(std::initializer_list<value_type>);
+  /** Initializer-list assignment */
+  Tensor<dim_, rank_, tensor_type, value_type>
+  &operator=(std::initializer_list<value_type>);
 
-    /**
-     * Assignment operator using a tensor entry value.
-     * After the use of this operator the tensor entries will be set to the value specified by
-     * @p entry_val.
-     */
-    Tensor<dim_, rank_, tensor_type, value_type> &operator=(
-        const value_type &entry_val);
+  /**
+   * Assignment operator using a tensor entry value.
+   * After the use of this operator the tensor entries will be set to the value specified by
+   * @p entry_val.
+   */
+  Tensor<dim_, rank_, tensor_type, value_type> &operator=(
+    const value_type &entry_val);
 
-    /**
-     * Assigning using a Real. For safety of meaning only assigning 0 is allowed.
-     */
-    Tensor<dim_, rank_, tensor_type, value_type> &operator=(const Real value);
-    ///@}
+  /**
+   * Assigning using a Real. For safety of meaning only assigning 0 is allowed.
+   */
+  Tensor<dim_, rank_, tensor_type, value_type> &operator=(const Real value);
+  ///@}
 
-    /**
-     * @name Flat- and Tensor-index access operators
-     */
-    ///@{
-    /** Read write access operator using a tensor index */
-    value_type &operator()(const TensorIndex<rank_>  &i);
+  /**
+   * @name Flat- and Tensor-index access operators
+   */
+  ///@{
+  /** Read write access operator using a tensor index */
+  value_type &operator()(const TensorIndex<rank_>  &i);
 
-    /** Read access operator using a tensor index */
-    const value_type &operator()(const TensorIndex<rank_>  &i) const;
+  /** Read access operator using a tensor index */
+  const value_type &operator()(const TensorIndex<rank_>  &i) const;
 
-    /** Read write access operator using the flat index */
-    value_type &operator()(const int i);
+  /** Read write access operator using the flat index */
+  value_type &operator()(const int i);
 
-    /**
-     * Read access operator using the flat index
-     */
-    const value_type &operator()(const int i) const;
-    ///@}
+  /**
+   * Read access operator using the flat index
+   */
+  const value_type &operator()(const int i) const;
+  ///@}
 
-    /**
-     * @name Sub-tensor access operators
-     */
-    ///@{
-    /**
-     * Read write access operator
-     */
-    SubTensor<self_t> &operator[](const int  i);
+  /**
+   * @name Sub-tensor access operators
+   */
+  ///@{
+  /**
+   * Read write access operator
+   */
+  SubTensor<self_t> &operator[](const int  i);
 
-    /**
-     * Read access operator
-     */
-    const SubTensor<self_t> &operator[](const int i) const;
-    ///@}
+  /**
+   * Read access operator
+   */
+  const SubTensor<self_t> &operator[](const int i) const;
+  ///@}
 
-    /**
-     * @name Basic mathematical operations
-     */
-    ///@{
-    /**
-     * Increment the tensor
-     */
-    Tensor<dim_, rank_, tensor_type, value_type> &
-    operator+=(const Tensor<dim_, rank_, tensor_type, value_type> &tensor);
+  /**
+   * @name Basic mathematical operations
+   */
+  ///@{
+  /**
+   * Increment the tensor
+   */
+  Tensor<dim_, rank_, tensor_type, value_type> &
+  operator+=(const Tensor<dim_, rank_, tensor_type, value_type> &tensor);
 
-    /**
-     * Decrement the tensor
-     */
-    Tensor<dim_, rank_, tensor_type, value_type> &
-    operator-=(const Tensor<dim_, rank_, tensor_type, value_type> &tensor);
+  /**
+   * Decrement the tensor
+   */
+  Tensor<dim_, rank_, tensor_type, value_type> &
+  operator-=(const Tensor<dim_, rank_, tensor_type, value_type> &tensor);
 
-    /**
-     * Multiply the tensor by a scalar value
-     */
-    Tensor<dim_, rank_, tensor_type, value_type> &
-    operator*=(const Real value);
+  /**
+   * Multiply the tensor by a scalar value
+   */
+  Tensor<dim_, rank_, tensor_type, value_type> &
+  operator*=(const Real value);
 
-    /**
-     * Divide tensor by a scalar value
-     */
-    Tensor<dim_, rank_, tensor_type, value_type> &
-    operator/=(const Real value);
+  /**
+   * Divide tensor by a scalar value
+   */
+  Tensor<dim_, rank_, tensor_type, value_type> &
+  operator/=(const Real value);
 
-    /**
-     * Change the sign of the tensor entries
-     */
-    Tensor<dim_, rank_, tensor_type, value_type> &
-    operator-();
-    ///@}
+  /**
+   * Change the sign of the tensor entries
+   */
+  Tensor<dim_, rank_, tensor_type, value_type> &
+  operator-();
+  ///@}
 
-    /**
-     * @name Norm evaluation
-     */
-    ///@{
-    /**
-     * Return the Frobenius-norm of a tensor, i.e. the square root of the
-     * sum of squares of all entries.
-     */
-    Real norm() const noexcept;
+  /**
+   * @name Norm evaluation
+   */
+  ///@{
+  /**
+   * Return the Frobenius-norm of a tensor, i.e. the square root of the
+   * sum of squares of all entries.
+   */
+  Real norm() const noexcept;
 
-    /**
-     * Return the square of the Frobenius-norm of a tensor, i.e.
-     * the square root of the sum of squares of all entries.
-     *
-     * This function mainly exists because it makes computing the
-     * norm simpler recursively, but may also be useful in other
-     * contexts.
-     */
-    Real norm_square() const noexcept;
-    ///@}
+  /**
+   * Return the square of the Frobenius-norm of a tensor, i.e.
+   * the square root of the sum of squares of all entries.
+   *
+   * This function mainly exists because it makes computing the
+   * norm simpler recursively, but may also be useful in other
+   * contexts.
+   */
+  Real norm_square() const noexcept;
+  ///@}
 
 public:
-    /** @name Dealing with the indices
-     * @todo maybe these functions could be outside
-     * TODO: maybe these functions could be outside
-     */
-    ///@{
-    TensorIndex<rank_>
-    flat_to_tensor_index(const int flat_index) const noexcept;
+  /** @name Dealing with the indices
+   * @todo maybe these functions could be outside
+   * TODO: maybe these functions could be outside
+   */
+  ///@{
+  TensorIndex<rank_>
+  flat_to_tensor_index(const int flat_index) const noexcept;
 
-    /**
-     * The last index moves faster.
-     */
-    int tensor_to_flat_index(const TensorIndex<rank_> &tensor_index) const noexcept;
-    ///@}
+  /**
+   * The last index moves faster.
+   */
+  int tensor_to_flat_index(const TensorIndex<rank_> &tensor_index) const noexcept;
+  ///@}
 
-    /**
-     * Return the total number of entries of the tensor.
-     */
-    static Size get_number_of_entries();
+  /**
+   * Return the total number of entries of the tensor.
+   */
+  static Size get_number_of_entries();
 
 private :
-    static const int num_sub_tensor = (dim_== 0? 1: dim_) ;
+  static const int num_sub_tensor = (dim_== 0? 1: dim_) ;
 
-    SubTensor<self_t> tensor_[num_sub_tensor];
+  SubTensor<self_t> tensor_[num_sub_tensor];
 
-    /**
-     * @name Functions needed for boost::serialization
-     * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
-     */
-    ///@{
-    friend class boost::serialization::access;
+  /**
+   * @name Functions needed for boost::serialization
+   * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
+   */
+  ///@{
+  friend class boost::serialization::access;
 
-    template<class Archive>
-    void
-    serialize(Archive &ar, const unsigned int version)
+  template<class Archive>
+  void
+  serialize(Archive &ar, const unsigned int version)
+  {
+    for (int i = 0 ; i < num_sub_tensor ; ++i)
     {
-        for (int i = 0 ; i < num_sub_tensor ; ++i)
-        {
-            const std::string tag_name = "sub_tensor_" + std::to_string(i);
-            ar &boost::serialization::make_nvp(tag_name.c_str(),tensor_[i]);
-        }
-    };
-    ///@}
+      const std::string tag_name = "sub_tensor_" + std::to_string(i);
+      ar &boost::serialization::make_nvp(tag_name.c_str(),tensor_[i]);
+    }
+  };
+  ///@}
 
 };
 
@@ -637,12 +637,12 @@ using Values = Conditional<rank==0,
  */
 template<int dim, int range, int rank, int order>
 using Derivatives =
-    Conditional<order==0,
-    Tensor<1,1,tensor::covariant,
-    Tensor<range,rank,tensor::contravariant,Tdouble>>,
-    Tensor<dim,order,tensor::covariant,
-    Tensor<range,rank,tensor::contravariant,Tdouble>>
-    >;
+  Conditional<order==0,
+  Tensor<1,1,tensor::covariant,
+  Tensor<range,rank,tensor::contravariant,Tdouble>>,
+  Tensor<dim,order,tensor::covariant,
+  Tensor<range,rank,tensor::contravariant,Tdouble>>
+  >;
 
 /**
  * Points in R^dim.
@@ -723,12 +723,12 @@ template<class V1, class V2>
 auto
 tensor_product(const V1 &a, const V2 &b)
 {
-    Tensor<V2::dim, 1, typename V2::tensor_t::co_type,
-           Tensor<V1::dim, 1, typename V1::tensor_t, Tdouble> > R;
-    for (int u = 0; u < V2::dim; ++u)
-        R[u] = b[u][0] * a;
+  Tensor<V2::dim, 1, typename V2::tensor_t::co_type,
+         Tensor<V1::dim, 1, typename V1::tensor_t, Tdouble> > R;
+  for (int u = 0; u < V2::dim; ++u)
+    R[u] = b[u][0] * a;
 
-    return R;
+  return R;
 }
 
 
@@ -737,9 +737,9 @@ template<class T>
 EnableIf<T::is_tensor,T>
 action(const T &A, const Tdouble &x)
 {
-    T B(A);
-    B *= x[0];
-    return B;
+  T B(A);
+  B *= x[0];
+  return B;
 }
 
 
@@ -753,13 +753,13 @@ EnableIf<!std::is_same<V_t,Tdouble>::value,
          ActionTensor<A_t> >
          action(const A_t &A, const V_t &x)
 {
-    Assert(bool(std::is_same<typename A_t::tensor_t::co_type, typename V_t::tensor_t>::value),
-           ExcMessage("Wrong tensor types in action"));
-    ActionTensor<A_t> R;
-    for (int i = 0; i < A_t::dim; ++i)
-        R += action(A[i],x[i]);
+  Assert(bool(std::is_same<typename A_t::tensor_t::co_type, typename V_t::tensor_t>::value),
+         ExcMessage("Wrong tensor types in action"));
+  ActionTensor<A_t> R;
+  for (int i = 0; i < A_t::dim; ++i)
+    R += action(A[i],x[i]);
 
-    return R;
+  return R;
 }
 
 
@@ -768,8 +768,8 @@ EnableIf<!std::is_same<V_t,Tdouble>::value,
          ActionTensor<ActionTensor<A_t>> >
          action(const A_t &A, const V_t &x, const Rest &... rest)
 {
-    auto B = action(A,x);
-    return action(B, rest...);
+  auto B = action(A,x);
+  return action(B, rest...);
 }
 
 
@@ -782,11 +782,11 @@ template< class T1, class T2 >
 Tensor<T2::dim, T2::rank, typename T2::tensor_t, SubTensor<T1> >
 compose(const T1 &S, const T2 &T)
 {
-    Tensor<T2::dim, T2::rank, typename T2::tensor_t, SubTensor<T1> > R;
-    for (int i = 0; i < T2::dim; ++i)
-        R[i] = action(S,T[i]);
+  Tensor<T2::dim, T2::rank, typename T2::tensor_t, SubTensor<T1> > R;
+  for (int i = 0; i < T2::dim; ++i)
+    R[i] = action(S,T[i]);
 
-    return R;
+  return R;
 }
 
 
@@ -808,21 +808,21 @@ template < class T >
 EnableIf<T::is_tensor,Transpose<T> >
 transpose(const T &A)
 {
-    Transpose<T> B;
+  Transpose<T> B;
 
-    const int size1 = T::size;
-    const int size2 = T::value_t::size;
+  const int size1 = T::size;
+  const int size2 = T::value_t::size;
 
-    for (int i=0; i<size1; ++i)
+  for (int i=0; i<size1; ++i)
+  {
+    auto index_a = A.flat_to_tensor_index(i);
+    for (int j=0; j<size2; ++j)
     {
-        auto index_a = A.flat_to_tensor_index(i);
-        for (int j=0; j<size2; ++j)
-        {
-            auto index_b = A(i).flat_to_tensor_index(j);
-            B(index_b)(index_a) = A(index_a)(index_b);
-        }
+      auto index_b = A(i).flat_to_tensor_index(j);
+      B(index_b)(index_a) = A(index_a)(index_b);
     }
-    return B;
+  }
+  return B;
 }
 
 /**
@@ -835,16 +835,16 @@ template < class T >
 EnableIf<T::is_tensor,T>
 symmetric_tensor(const T &A)
 {
-    Assert(T::dim == T::value_t::dim, ExcMessage("Only for square tensors."));
+  Assert(T::dim == T::value_t::dim, ExcMessage("Only for square tensors."));
 
-    T B(A);
-    for (int i=0; i<T::size; ++i)
-        for (int j=0; j<T::size; ++j)
-            B[i][j] += A[j][i];
+  T B(A);
+  for (int i=0; i<T::size; ++i)
+    for (int j=0; j<T::size; ++j)
+      B[i][j] += A[j][i];
 
-    B *= 0.5;
+  B *= 0.5;
 
-    return B;
+  return B;
 }
 
 /**
@@ -856,11 +856,11 @@ template < class T >
 EnableIf<T::is_tensor,CoTensor<T> >
 co_tensor(const T &A)
 {
-    // we copy the memory of A in coA in order to avoid the
-    // aliasing due to the use of reinterpret_cast
-    CoTensor<T> coA;
-    memcpy(&coA, &A, sizeof(A));
-    return coA;
+  // we copy the memory of A in coA in order to avoid the
+  // aliasing due to the use of reinterpret_cast
+  CoTensor<T> coA;
+  memcpy(&coA, &A, sizeof(A));
+  return coA;
 }
 
 
@@ -874,7 +874,7 @@ inline
 Real
 scalar_product(const Tdouble a, const Tdouble b) noexcept
 {
-    return a[0]*b[0];
+  return a[0]*b[0];
 }
 
 /**
@@ -887,14 +887,14 @@ inline
 EnableIf<T::is_tensor,Real>
 scalar_product(const T &t1, const T &t2) noexcept
 {
-    Real result = 0.;
-    for (int i = 0; i < T::dim; ++i)
-        result += scalar_product(t1[i],t2[i]);
+  Real result = 0.;
+  for (int i = 0; i < T::dim; ++i)
+    result += scalar_product(t1[i],t2[i]);
 
-    Assert(!std::isnan(result),ExcNotANumber());
-    Assert(!std::isinf(result),ExcNumberNotFinite());
+  Assert(!std::isnan(result),ExcNotANumber());
+  Assert(!std::isinf(result),ExcNumberNotFinite());
 
-    return result;
+  return result;
 }
 
 /**
@@ -908,11 +908,11 @@ inline
 Tensor<T1::dim,1,typename T1::tensor_t,Tdouble>
 contract_1(const T1 &t1, const T2 &t2) noexcept
 {
-    Tensor<T1::dim,1,typename T1::tensor_t,Tdouble> result;
-    for (int i = 0; i < T1::dim; ++i)
-        result[i] = scalar_product(t1[i],t2);
+  Tensor<T1::dim,1,typename T1::tensor_t,Tdouble> result;
+  for (int i = 0; i < T1::dim; ++i)
+    result[i] = scalar_product(t1[i],t2);
 
-    return result;
+  return result;
 }
 
 
@@ -922,24 +922,24 @@ template<class T>
 DenseMatrix
 unroll_to_matrix(const T &t)
 {
-    DenseMatrix A(T::value_t::dim, T::dim);
-    for (int i=0; i<T::value_t::dim; ++i)
-        for (int j=0; j<T::dim; ++j)
-            A(i,j) = t[j][i];
-    return A;
+  DenseMatrix A(T::value_t::dim, T::dim);
+  for (int i=0; i<T::value_t::dim; ++i)
+    for (int j=0; j<T::dim; ++j)
+      A(i,j) = t[j][i];
+  return A;
 }
 
 template<typename T>
 using Inverse =
-    Conditional<
-    T::is_tensor,
-    Conditional<
-    T::value_t::rank==0,
-    T,
-    Tensor<T::value_t::dim,T::value_t::rank,typename T::value_t::tensor_t::co_type,
-    Tensor<T::dim,T::rank,typename T::tensor_t::co_type,typename T::value_t::value_t> >
-    >,
-    Tdouble >;
+  Conditional<
+  T::is_tensor,
+  Conditional<
+  T::value_t::rank==0,
+  T,
+  Tensor<T::value_t::dim,T::value_t::rank,typename T::value_t::tensor_t::co_type,
+  Tensor<T::dim,T::rank,typename T::tensor_t::co_type,typename T::value_t::value_t> >
+  >,
+  Tdouble >;
 
 
 template<class T>
@@ -948,8 +948,8 @@ EnableIf<(T::dim==0) &&(T::value_t::dim == 0) &&
 (T::rank==1) &&(T::value_t::rank == 1), Inverse<T> >
 inverse_(const T &A, Real &det)
 {
-    det = 1.;
-    return Inverse<T>();
+  det = 1.;
+  return Inverse<T>();
 }
 
 template<class T>
@@ -958,13 +958,13 @@ EnableIf<(T::dim==1) &&(T::value_t::dim == 1) &&
 (T::rank==1) &&(T::value_t::rank == 1), Inverse<T> >
 inverse_(const T &A, Real &det)
 {
-    det = A[0][0];
-    Assert(det != Real(0.0), ExcDivideByZero());
+  det = A[0][0];
+  Assert(det != Real(0.0), ExcDivideByZero());
 
-    Inverse<T> A_inv;
-    A_inv[0][0] =  1.0 / det;
+  Inverse<T> A_inv;
+  A_inv[0][0] =  1.0 / det;
 
-    return A_inv;
+  return A_inv;
 }
 
 
@@ -975,18 +975,18 @@ EnableIf<(T::dim==2) &&(T::value_t::dim == 2) &&
 (T::rank==1) &&(T::value_t::rank == 1), Inverse<T> >
 inverse_(const T &A, Real &det)
 {
-    det = A[0][0] * A[1][1] - A[0][1] * A[1][0];
-    Assert(det != Real(0.0), ExcDivideByZero());
+  det = A[0][0] * A[1][1] - A[0][1] * A[1][0];
+  Assert(det != Real(0.0), ExcDivideByZero());
 
-    Inverse<T> A_inv;
-    const Real InvDet = 1.0 / det;
+  Inverse<T> A_inv;
+  const Real InvDet = 1.0 / det;
 
-    A_inv[0][0] = A[1][1] * InvDet;
-    A_inv[0][1] = A[0][1] * (-InvDet);
-    A_inv[1][0] = A[1][0] * (-InvDet);
-    A_inv[1][1] = A[0][0] * InvDet;
+  A_inv[0][0] = A[1][1] * InvDet;
+  A_inv[0][1] = A[0][1] * (-InvDet);
+  A_inv[1][0] = A[1][0] * (-InvDet);
+  A_inv[1][1] = A[0][0] * InvDet;
 
-    return A_inv;
+  return A_inv;
 }
 
 
@@ -997,30 +997,30 @@ EnableIf<(T::dim==3) &&(T::value_t::dim == 3) &&
 (T::rank==1) &&(T::value_t::rank == 1), Inverse<T> >
 inverse_(const T &A, Real &det)
 {
-    Inverse<T> A_inv;
+  Inverse<T> A_inv;
 
-    const Real t4 = A[0][0]*A[1][1];
-    const Real t6 = A[0][0]*A[1][2];
-    const Real t8 = A[0][1]*A[1][0];
-    const Real t00 = A[0][2]*A[1][0];
-    const Real t01 = A[0][1]*A[2][0];
-    const Real t04 = A[0][2]*A[2][0];
-    det = (t4*A[2][2]-t6*A[2][1]-t8*A[2][2]+
-           t00*A[2][1]+t01*A[1][2]-t04*A[1][1]);
-    Assert(det != Real(0.0), ExcDivideByZero());
+  const Real t4 = A[0][0]*A[1][1];
+  const Real t6 = A[0][0]*A[1][2];
+  const Real t8 = A[0][1]*A[1][0];
+  const Real t00 = A[0][2]*A[1][0];
+  const Real t01 = A[0][1]*A[2][0];
+  const Real t04 = A[0][2]*A[2][0];
+  det = (t4*A[2][2]-t6*A[2][1]-t8*A[2][2]+
+         t00*A[2][1]+t01*A[1][2]-t04*A[1][1]);
+  Assert(det != Real(0.0), ExcDivideByZero());
 
-    const Real t07 = 1.0/det;
-    A_inv[0][0] = (A[1][1]*A[2][2]-A[1][2]*A[2][1])*t07;
-    A_inv[0][1] = (A[0][2]*A[2][1]-A[0][1]*A[2][2])*t07;
-    A_inv[0][2] = (A[0][1]*A[1][2]-A[0][2]*A[1][1])*t07;
-    A_inv[1][0] = (A[1][2]*A[2][0]-A[1][0]*A[2][2])*t07;
-    A_inv[1][1] = (A[0][0]*A[2][2]-t04)*t07;
-    A_inv[1][2] = (t00-t6)*t07;
-    A_inv[2][0] = (A[1][0]*A[2][1]-A[1][1]*A[2][0])*t07;
-    A_inv[2][1] = (t01-A[0][0]*A[2][1])*t07;
-    A_inv[2][2] = (t4-t8)*t07;
+  const Real t07 = 1.0/det;
+  A_inv[0][0] = (A[1][1]*A[2][2]-A[1][2]*A[2][1])*t07;
+  A_inv[0][1] = (A[0][2]*A[2][1]-A[0][1]*A[2][2])*t07;
+  A_inv[0][2] = (A[0][1]*A[1][2]-A[0][2]*A[1][1])*t07;
+  A_inv[1][0] = (A[1][2]*A[2][0]-A[1][0]*A[2][2])*t07;
+  A_inv[1][1] = (A[0][0]*A[2][2]-t04)*t07;
+  A_inv[1][2] = (t00-t6)*t07;
+  A_inv[2][0] = (A[1][0]*A[2][1]-A[1][1]*A[2][0])*t07;
+  A_inv[2][1] = (t01-A[0][0]*A[2][1])*t07;
+  A_inv[2][2] = (t4-t8)*t07;
 
-    return  A_inv;
+  return  A_inv;
 }
 
 template<class T>
@@ -1029,23 +1029,23 @@ EnableIf<(T::dim>3)  &&(T::value_t::dim == T::dim) &&
 (T::rank==1)  &&(T::value_t::rank == 1), Inverse<T> >
 inverse_(const T &A, Real &det)
 {
-    const auto B = unroll_to_matrix(A);
+  const auto B = unroll_to_matrix(A);
 
-    const auto M = B.inverse(det);
+  const auto M = B.inverse(det);
 
-    Inverse<T> A_inv;
-    for (int i=0; i<T::value_t::dim; ++i)
-        for (int j=0; j<T::dim; ++j)
-            A_inv[j][i] = M(i,j);
+  Inverse<T> A_inv;
+  for (int i=0; i<T::value_t::dim; ++i)
+    for (int j=0; j<T::dim; ++j)
+      A_inv[j][i] = M(i,j);
 
-    return  A_inv;
+  return  A_inv;
 }
 
 template<class T>
 EnableIf<(T::dim == T::value_t::dim), Inverse<T> >
 inverse(const T &A, Real &det)
 {
-    return inverse_(A, det);
+  return inverse_(A, det);
 }
 
 
@@ -1058,12 +1058,12 @@ template<class T>
 EnableIf<(T::dim < T::value_t::dim), Inverse<T> >
 inverse(const T &A, Real &det)
 {
-    const auto A_t   = co_tensor(transpose(A));
-    const auto G     = compose(A_t, A);
-    const auto G_inv = inverse(G, det);
-    det = sqrt(det);
+  const auto A_t   = co_tensor(transpose(A));
+  const auto G     = compose(A_t, A);
+  const auto G_inv = inverse(G, det);
+  det = sqrt(det);
 
-    return compose(G_inv, A_t);
+  return compose(G_inv, A_t);
 }
 
 
@@ -1072,12 +1072,12 @@ template<class T>
 EnableIf<(T::dim > T::value_t::dim), Inverse<T> >
 inverse(const T &A, Real &det)
 {
-    const auto A_t   = co_tensor(transpose(A));
-    const auto G     = compose(A, A_t);
-    const auto G_inv = inverse(G, det);
-    det = sqrt(det);
+  const auto A_t   = co_tensor(transpose(A));
+  const auto G     = compose(A, A_t);
+  const auto G_inv = inverse(G, det);
+  det = sqrt(det);
 
-    return compose(A_t, G_inv);
+  return compose(A_t, G_inv);
 }
 
 
@@ -1091,7 +1091,7 @@ inline
 Real
 det_(const Tensor<0,1,tensor_type1,Tensor<0,1,tensor_type2,Tdouble>> &t)
 {
-    return 1.;
+  return 1.;
 }
 
 template< class tensor_type1, class tensor_type2>
@@ -1099,7 +1099,7 @@ inline
 Real
 det_(const Tensor< 1, 1, tensor_type1, Tensor< 1, 1, tensor_type2, Tdouble > >  &t)
 {
-    return t[0][0];
+  return t[0][0];
 }
 
 
@@ -1108,8 +1108,8 @@ inline
 Real
 det_(const Tensor< 2, 1, tensor_type1, Tensor< 2, 1, tensor_type2, Tdouble > > &t)
 {
-    const Real det = t[0][0] * t[1][1] - t[0][1] * t[1][0];
-    return det;
+  const Real det = t[0][0] * t[1][1] - t[0][1] * t[1][0];
+  return det;
 }
 
 
@@ -1120,17 +1120,17 @@ inline
 Real
 det_(const Tensor< 3, 1, type1, Tensor< 3, 1, type2, Tdouble > > &t)
 {
-    const Real t4 = t[0][0]*t[1][1];
-    const Real t6 = t[0][0]*t[1][2];
-    const Real t8 = t[0][1]*t[1][0];
-    const Real t00 = t[0][2]*t[1][0];
-    const Real t01 = t[0][1]*t[2][0];
-    const Real t04 = t[0][2]*t[2][0];
-    const Real det = (t4*t[2][2]-t6*t[2][1]-t8*t[2][2]+
-                      t00*t[2][1]+t01*t[1][2]-t04*t[1][1]);
+  const Real t4 = t[0][0]*t[1][1];
+  const Real t6 = t[0][0]*t[1][2];
+  const Real t8 = t[0][1]*t[1][0];
+  const Real t00 = t[0][2]*t[1][0];
+  const Real t01 = t[0][1]*t[2][0];
+  const Real t04 = t[0][2]*t[2][0];
+  const Real det = (t4*t[2][2]-t6*t[2][1]-t8*t[2][2]+
+                    t00*t[2][1]+t01*t[1][2]-t04*t[1][1]);
 
 
-    return det;
+  return det;
 }
 
 
@@ -1147,7 +1147,7 @@ inline
 EnableIf<(dim==range),Real>
 determinant(const Derivatives<dim,range,1,1> &DF)
 {
-    return det_(DF);
+  return det_(DF);
 }
 
 /**
@@ -1162,15 +1162,15 @@ inline
 EnableIf<(dim<range),Real>
 determinant(const Derivatives<dim, range,1,1> &DF)
 {
-    // G = DF_t o DF
-    const auto DF_t = co_tensor(transpose(DF));
-    const auto G = compose(DF_t, DF);
-    const Real det = det_(G);
+  // G = DF_t o DF
+  const auto DF_t = co_tensor(transpose(DF));
+  const auto G = compose(DF_t, DF);
+  const Real det = det_(G);
 
 
 //    const Real det = det_(compose(co_tensor(transpose(DF)), DF));
 
-    return sqrt(det);
+  return sqrt(det);
 }
 
 
@@ -1180,23 +1180,23 @@ inline
 EnableIf<(codim==1),SubTensor<Derivatives<dim, dim+codim, 1, 1> > >
 cross_product(const Derivatives<dim, dim+1, 1, 1> &DF)
 {
-    SubTensor<Derivatives<dim, dim+codim, 1, 1>> res;
-    const SubTensor<Derivatives<dim, dim+1, 1, 1>> zero;
-    Derivatives<dim+1, dim+1, 1, 1> A;
-    for (int i = 0; i < dim; ++i)
-        A[i] = DF[i];
+  SubTensor<Derivatives<dim, dim+codim, 1, 1>> res;
+  const SubTensor<Derivatives<dim, dim+1, 1, 1>> zero;
+  Derivatives<dim+1, dim+1, 1, 1> A;
+  for (int i = 0; i < dim; ++i)
+    A[i] = DF[i];
 
-    for (int i = 0; i < dim+1; ++i)
-    {
-        A[dim] = zero;
-        A[dim][i] = 1.;
+  for (int i = 0; i < dim+1; ++i)
+  {
+    A[dim] = zero;
+    A[dim][i] = 1.;
 
-        res[i] = determinant<dim+1, dim+1>(A);
-    }
+    res[i] = determinant<dim+1, dim+1>(A);
+  }
 
-    if (dim % 2 == 1)
-        res *= -1;
-    return res;
+  if (dim % 2 == 1)
+    res *= -1;
+  return res;
 
 }
 
@@ -1205,10 +1205,10 @@ inline
 EnableIf<(codim!=1),SubTensor<Derivatives<dim, dim+codim, 1, 1> > >
 cross_product(const Derivatives<dim, dim+codim, 1, 1> &DF)
 {
-    SubTensor<Derivatives<dim, dim+codim, 1, 1>> res;
-    Assert(false, ExcNotImplemented());
+  SubTensor<Derivatives<dim, dim+codim, 1, 1>> res;
+  Assert(false, ExcNotImplemented());
 
-    return res;
+  return res;
 
 }
 
@@ -1223,13 +1223,13 @@ template< class T >
 Real
 trace(const T &A)
 {
-    //TODO (martinelli, July 03, 2015): check the implementation!
-    Assert((T::dim == T::value_t::dim) || (T::rank==2),
-           ExcMessage("Only for square tensors."));
-    Real res = 0.;
-    for (int i = 0; i < T::dim; ++i)
-        res += A[i][i][0];
-    return res;
+  //TODO (martinelli, July 03, 2015): check the implementation!
+  Assert((T::dim == T::value_t::dim) || (T::rank==2),
+         ExcMessage("Only for square tensors."));
+  Real res = 0.;
+  for (int i = 0; i < T::dim; ++i)
+    res += A[i][i][0];
+  return res;
 }
 
 
@@ -1242,14 +1242,14 @@ template< int dim_, int rank_, class tensor_type, class T >
 LogStream &
 operator<<(LogStream &out, const Tensor<dim_,rank_,tensor_type,T > &tensor)
 {
-    out << "[ ";
-    for (int i=0; i<dim_; i++)
-    {
-        out << tensor[i] << " ";
-    }
-    out << "] ";
+  out << "[ ";
+  for (int i=0; i<dim_; i++)
+  {
+    out << tensor[i] << " ";
+  }
+  out << "] ";
 
-    return out;
+  return out;
 }
 
 /**
@@ -1261,8 +1261,8 @@ inline
 LogStream &
 operator<<(LogStream &out, const Tdouble &tensor)
 {
-    out << tensor[0];
-    return out;
+  out << tensor[0];
+  return out;
 }
 
 

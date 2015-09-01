@@ -29,11 +29,11 @@ template<int dim>
 BBox<dim>::
 BBox()
 {
-    for (auto &bounds_dir : (*this))
-    {
-        bounds_dir[0] = 0.0;
-        bounds_dir[1] = 1.0;
-    }
+  for (auto &bounds_dir : (*this))
+  {
+    bounds_dir[0] = 0.0;
+    bounds_dir[1] = 1.0;
+  }
 }
 
 template<int dim>
@@ -41,11 +41,11 @@ void
 BBox<dim>::
 translate(const Points<dim> &translation_amount)
 {
-    for (int i = 0 ; i < dim ; ++i)
-    {
-        (*this)[i][0] += translation_amount[i];
-        (*this)[i][1] += translation_amount[i];
-    }
+  for (int i = 0 ; i < dim ; ++i)
+  {
+    (*this)[i][0] += translation_amount[i];
+    (*this)[i][1] += translation_amount[i];
+  }
 }
 
 template<int dim>
@@ -53,23 +53,23 @@ void
 BBox<dim>::
 dilate(const Points<dim> &dilation_factor)
 {
-    for (int i = 0 ; i < dim ; ++i)
-    {
-        Assert(dilation_factor[i] > 0., ExcMessage("Dilation factor must be positive."));
-        (*this)[i][0] *= dilation_factor[i];
-        (*this)[i][1] *= dilation_factor[i];
-    }
+  for (int i = 0 ; i < dim ; ++i)
+  {
+    Assert(dilation_factor[i] > 0., ExcMessage("Dilation factor must be positive."));
+    (*this)[i][0] *= dilation_factor[i];
+    (*this)[i][1] *= dilation_factor[i];
+  }
 }
 
 template<int dim>
 bool BBox<dim>::
 is_unit() const
 {
-    return std::all_of(this->begin(),this->end(),
-                       [](const auto &interv)
-    {
-        return (interv[0] == 0.0 && interv[1] == 1.0);
-    });
+  return std::all_of(this->begin(),this->end(),
+                     [](const auto &interv)
+  {
+    return (interv[0] == 0.0 && interv[1] == 1.0);
+  });
 }
 
 IGA_NAMESPACE_CLOSE

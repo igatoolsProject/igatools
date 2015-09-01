@@ -27,12 +27,16 @@ data = Instantiation(include_files)
 
 
 sub_dim_members = \
-['const ValueVector<Points<dim+cod>> & PhysicalDomainElement<dim,cod>::get_boundary_normals<k>(const int s_id) const;']
+  []
+#['const ValueVector<Points<dim+cod>> & PhysicalDomainElement<dim,cod>::get_boundary_normals<k>(const int s_id) const;']
 
 elements = []
 
+els =['const iga::PhysicalDomain', ' iga::PhysicalDomain']
 for x in inst.sub_mapping_dims:
-    elem = 'PhysicalDomainElement<%d,%d>' %(x.dim, x.codim)
+  for el in els:
+    elem = 'PhysicalDomainElementBase<%d,%d,' %(x.dim, x.codim) + el + '<%d,%d>' %(x.dim, x.codim) + '>'
+    f.write('template class %s; \n' %(elem))
     elements.append(elem)
     for fun in sub_dim_members:
         k = x.dim
@@ -40,16 +44,24 @@ for x in inst.sub_mapping_dims:
         f.write('template ' + s + '\n')
 
 for x in inst.mapping_dims:
-    elem = 'PhysicalDomainElement<%d,%d>' %(x.dim, x.codim)
+  for el in els:
+    elem = 'PhysicalDomainElementBase<%d,%d,' %(x.dim, x.codim) + el + '<%d,%d>' %(x.dim, x.codim) + '>'
+    f.write('template class %s; \n' %(elem))
     elements.append(elem)
     for fun in sub_dim_members:
         for k in inst.sub_dims(x.dim):
             s = fun.replace('dim','%d' %x.dim).replace('k','%d' %(k)).replace('cod','%d' %x.codim);
             f.write('template ' + s + '\n')
  
+accs1 =  ['PhysicalDomainElement',       'ConstPhysicalDomainElement']
+for x in inst.sub_mapping_dims + inst.mapping_dims: 
+  for acc in accs1: 
+      f.write('template class ' + acc + '<%d,%d>' %(x.dim, x.codim) + ';\n')
 
-for elem in unique(elements):
-    f.write('template class %s ;\n' %(elem))
-    for it in inst.iterators:
-        iterator = it.replace('Accessor','%s' % (elem) )
-        f.write('template class %s; \n' %iterator)
+accs=  ['PhysicalDomainElement',       'ConstPhysicalDomainElement', 'PhysicalDomainElement', 'ConstPhysicalDomainElement']
+iters =  ['GridIteratorBase', 'GridIteratorBase',   'GridIterator', 'GridIterator']
+for x in inst.sub_mapping_dims+inst.mapping_dims:
+  for i in range(len(accs)):
+    acc = iters[i] + '<' + accs[i]+ '<%d,%d>' %(x.dim, x.codim) + '>' 
+    f.write('template class %s; \n' %(acc))
+    

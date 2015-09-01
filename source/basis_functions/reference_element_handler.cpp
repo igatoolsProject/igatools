@@ -1,6 +1,6 @@
 //-+--------------------------------------------------------------------
 // Igatools a general purpose Isogeometric analysis library.
-// Copyright (C) 2012-2014  by the igatools authors (see authors.txt).
+// Copyright (C) 2012-2015  by the igatools authors (see authors.txt).
 //
 // This file is part of the igatools library.
 //
@@ -34,9 +34,9 @@ IGA_NAMESPACE_OPEN
 template<int dim, int range , int rank>
 ReferenceElementHandler<dim, range, rank>::
 ReferenceElementHandler(const shared_ptr<const Space> &space)
-    :
-    base_t(space),
-    grid_handler_(space->get_ptr_const_grid())
+  :
+  base_t(space),
+  grid_handler_(space->get_ptr_const_grid())
 {};
 
 
@@ -45,26 +45,26 @@ shared_ptr<ReferenceElementHandler<dim,range,rank> >
 ReferenceElementHandler<dim, range, rank>::
 create(const shared_ptr<const Space> &space)
 {
-    std::shared_ptr<ReferenceElementHandler<dim,range,rank> > elem_handler = nullptr;
-    if (space->is_bspline())
-    {
-        using BSplineSp = const BSplineSpace<dim,range,rank>;
-        auto bsp_space = std::dynamic_pointer_cast< BSplineSp >(space);
-        elem_handler = BSplineElementHandler<dim,range,rank>::create(bsp_space);
-    }
-    else
-    {
+  std::shared_ptr<ReferenceElementHandler<dim,range,rank> > elem_handler = nullptr;
+  if (space->is_bspline())
+  {
+    using BSplineSp = const BSplineSpace<dim,range,rank>;
+    auto bsp_space = std::dynamic_pointer_cast< BSplineSp >(space);
+    elem_handler = BSplineElementHandler<dim,range,rank>::create(bsp_space);
+  }
+  else
+  {
 #ifdef NURBS
-        using NURBSSp = const NURBSSpace<dim,range,rank>;
-        auto nrb_space = std::dynamic_pointer_cast< NURBSSp >(space);
-        elem_handler = NURBSElementHandler<dim,range,rank>::create(nrb_space);
+    using NURBSSp = const NURBSSpace<dim,range,rank>;
+    auto nrb_space = std::dynamic_pointer_cast< NURBSSp >(space);
+    elem_handler = NURBSElementHandler<dim,range,rank>::create(nrb_space);
 #else
-        Assert(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
-        AssertThrow(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
+    Assert(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
+    AssertThrow(false,ExcMessage("NURBS support disabled from configuration cmake parameters."));
 #endif
-    }
+  }
 
-    return elem_handler;
+  return elem_handler;
 }
 
 #if 0
@@ -73,7 +73,7 @@ const GridElementHandler<dim> &
 ReferenceElementHandler<dim, range, rank>::
 get_grid_handler() const
 {
-    return this->grid_handler_;
+  return this->grid_handler_;
 }
 #endif
 
@@ -84,8 +84,8 @@ ReferenceElementHandler<dim, range, rank>::
 init_cache(SpaceElement<dim,0,range,rank,Transformation::h_grad> &space_elem,
            const topology_variant &topology)
 {
-    auto &ref_elem = dynamic_cast<ElementAccessor &>(space_elem);
-    this->init_ref_elem_cache(ref_elem,topology);
+  auto &ref_elem = dynamic_cast<ElementAccessor &>(space_elem);
+  this->init_ref_elem_cache(ref_elem,topology);
 }
 
 template<int dim, int range , int rank>
@@ -95,8 +95,8 @@ fill_cache(SpaceElement<dim,0,range,rank,Transformation::h_grad> &space_elem,
            const topology_variant &topology,
            const int sub_elem_id)
 {
-    auto &ref_elem = dynamic_cast<ElementAccessor &>(space_elem);
-    this->fill_ref_elem_cache(ref_elem,topology,sub_elem_id);
+  auto &ref_elem = dynamic_cast<ElementAccessor &>(space_elem);
+  this->fill_ref_elem_cache(ref_elem,topology,sub_elem_id);
 }
 #endif
 
@@ -105,11 +105,11 @@ template<int dim, int range , int rank>
 void
 ReferenceElementHandler<dim, range, rank>::
 reset_one_element(
-    const ValueFlags &flag,
-    const eval_pts_variant &eval_points,
-    const int elem_flat_id)
+  const ValueFlags &flag,
+  const eval_pts_variant &eval_points,
+  const int elem_flat_id)
 {
-    this->reset_selected_elements(flag,eval_points,SafeSTLVector<int>(1,elem_flat_id));
+  this->reset_selected_elements(flag,eval_points,SafeSTLVector<int>(1,elem_flat_id));
 }
 #endif
 
@@ -120,10 +120,10 @@ void
 ReferenceElementHandler<dim, range, rank>::
 serialize(Archive &ar, const unsigned int version)
 {
-    ar &boost::serialization::make_nvp("ReferenceHandler_base_t",
-                                       boost::serialization::base_object<base_t>(*this));
+  ar &boost::serialization::make_nvp("ReferenceHandler_base_t",
+                                     boost::serialization::base_object<base_t>(*this));
 
-    ar &boost::serialization::make_nvp("grid_handler_",grid_handler_);
+  ar &boost::serialization::make_nvp("grid_handler_",grid_handler_);
 
 //    auto non_const_space = std::const_pointer_cast<Space>(space_);
 //    ar &boost::serialization::make_nvp("space_", non_const_space);

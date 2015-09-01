@@ -31,36 +31,36 @@
 template <int dim>
 void boundary_ids()
 {
-    OUTSTART
+  OUTSTART
 
-    auto grid = CartesianGrid<dim>::create();
+  auto grid = CartesianGrid<dim>::create();
 
-    for (auto &j : UnitElement<dim>::faces)
-    {
-        out << "Face number: " << j << endl;
-        out << "Face boundary id: " << grid->get_boundary_id(j) << endl;
-    }
+  for (auto &j : UnitElement<dim>::faces)
+  {
+    out << "Face number: " << j << endl;
+    out << "Face boundary id: " << grid->get_boundary_id(j) << endl;
+  }
 
-    for (auto &j : UnitElement<dim>::faces)
-        grid->set_boundary_id(j,j);
+  for (auto &j : UnitElement<dim>::faces)
+    grid->set_boundary_id(j,j);
 
-    for (auto &j : UnitElement<dim>::faces)
-    {
-        out << "Face number: " << j << endl;
-        out << "Face boundary id: " << grid->get_boundary_id(j) << endl;
-    }
+  for (auto &j : UnitElement<dim>::faces)
+  {
+    out << "Face number: " << j << endl;
+    out << "Face boundary id: " << grid->get_boundary_id(j) << endl;
+  }
 
-    OUTEND
+  OUTEND
 }
 
 
 
 int main()
 {
-    boundary_ids<0>();
-    boundary_ids<1>();
-    boundary_ids<2>();
-    boundary_ids<3>();
+  boundary_ids<0>();
+  boundary_ids<1>();
+  boundary_ids<2>();
+  boundary_ids<3>();
 
-    return 0;
+  return 0;
 }

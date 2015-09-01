@@ -33,152 +33,152 @@ IGA_NAMESPACE_OPEN
 
 template<class T>
 class ValueContainer :
-    public DynamicMultiArray<T,2>
+  public DynamicMultiArray<T,2>
 {
 public:
-    /** Type for the iterator (non-const version). */
-    using iterator = typename DynamicMultiArray<T,2>::iterator ;
+  /** Type for the iterator (non-const version). */
+  using iterator = typename DynamicMultiArray<T,2>::iterator ;
 
-    /** Type for the iterator (const version). */
-    using const_iterator = typename DynamicMultiArray<T,2>::const_iterator;
+  /** Type for the iterator (const version). */
+  using const_iterator = typename DynamicMultiArray<T,2>::const_iterator;
 
-    /** Type for the view (non-const version). */
-    using view = ContainerView<DynamicMultiArray<T,2>>;
-
-
-    /** Type for the view (const version). */
-    using const_view = ConstContainerView<DynamicMultiArray<T,2>>;
-
-    /** @name Constructors */
-    ///@{
-    /**
-     * Constructor. Constructs a container for storing num_functions*num_points objects of type T.
-     * @param[in] num_functions - Number of functions.
-     * @param[in] num_points - Number of points.
-     */
-    explicit ValueContainer(const Size num_functions, const Size num_points)
-        :
-        DynamicMultiArray<T,2>(TensorSize<2>(
-    {
-        num_points,num_functions
-    }))
-    {
-        Assert(num_functions >= 0, ExcLowerRange(num_functions,0));
-        Assert(num_points >= 0, ExcLowerRange(num_points,0));
-    }
-
-    /**
-     * Default constructor.
-     * Initializes a container with no entries (num_points == num_functions == 0).
-     */
-    ValueContainer()
-        :
-        ValueContainer<T>(0,0)
-    {}
-
-    /** Copy constructor. */
-    ValueContainer(const ValueContainer<T> &in) = default;
-
-    /** Move constructor. */
-    ValueContainer(ValueContainer<T> &&in) = default;
-
-    ~ValueContainer() = default;
-    ///@}
+  /** Type for the view (non-const version). */
+  using view = ContainerView<DynamicMultiArray<T,2>>;
 
 
-    /** @name Assignment operators*/
-    ///@{
-    /** Copy assignment operator.*/
-    ValueContainer<T> &operator=(const ValueContainer<T> &in) = default;
+  /** Type for the view (const version). */
+  using const_view = ConstContainerView<DynamicMultiArray<T,2>>;
 
-    /** Move assignment operator.*/
-    ValueContainer<T> &operator=(ValueContainer<T> &&in) = default;
-    ///@}
+  /** @name Constructors */
+  ///@{
+  /**
+   * Constructor. Constructs a container for storing num_functions*num_points objects of type T.
+   * @param[in] num_functions - Number of functions.
+   * @param[in] num_points - Number of points.
+   */
+  explicit ValueContainer(const Size num_functions, const Size num_points)
+    :
+    DynamicMultiArray<T,2>(TensorSize<2>(
+  {
+    num_points,num_functions
+  }))
+  {
+    Assert(num_functions >= 0, ExcLowerRange(num_functions,0));
+    Assert(num_points >= 0, ExcLowerRange(num_points,0));
+  }
+
+  /**
+   * Default constructor.
+   * Initializes a container with no entries (num_points == num_functions == 0).
+   */
+  ValueContainer()
+    :
+    ValueContainer<T>(0,0)
+  {}
+
+  /** Copy constructor. */
+  ValueContainer(const ValueContainer<T> &in) = default;
+
+  /** Move constructor. */
+  ValueContainer(ValueContainer<T> &&in) = default;
+
+  ~ValueContainer() = default;
+  ///@}
+
+
+  /** @name Assignment operators*/
+  ///@{
+  /** Copy assignment operator.*/
+  ValueContainer<T> &operator=(const ValueContainer<T> &in) = default;
+
+  /** Move assignment operator.*/
+  ValueContainer<T> &operator=(ValueContainer<T> &&in) = default;
+  ///@}
 
 public:
-    /**
-     * @name Functions for getting size information
-     */
-    ///@{
-    /**
-     * Returns the number of elements in the ValueTable (= num_functions * num_points).
-     */
-    Size size() const
-    {
-        Assert(this->get_data().size() == this->flat_size(),
-               ExcDimensionMismatch(this->get_data().size(),this->flat_size()));
-        Assert(this->flat_size() == this->get_num_functions() * this->get_num_points(),
-               ExcDimensionMismatch(this->flat_size(), this->get_num_functions() * this->get_num_points())) ;
+  /**
+   * @name Functions for getting size information
+   */
+  ///@{
+  /**
+   * Returns the number of elements in the ValueTable (= num_functions * num_points).
+   */
+  Size size() const
+  {
+    Assert(this->get_data().size() == this->flat_size(),
+           ExcDimensionMismatch(this->get_data().size(),this->flat_size()));
+    Assert(this->flat_size() == this->get_num_functions() * this->get_num_points(),
+           ExcDimensionMismatch(this->flat_size(), this->get_num_functions() * this->get_num_points())) ;
 
-        return this->flat_size();
-    }
+    return this->flat_size();
+  }
 
-    /**
-     * Returns the number of points.
-     */
-    Size get_num_points() const noexcept
-    {
-        return this->tensor_size()[0];
-    }
+  /**
+   * Returns the number of points.
+   */
+  Size get_num_points() const noexcept
+  {
+    return this->tensor_size()[0];
+  }
 
-    /**
-     * Returns the number of functions.
-     */
-    Size get_num_functions() const noexcept
-    {
-        return this->tensor_size()[1];
-    }
-    ///@}
+  /**
+   * Returns the number of functions.
+   */
+  Size get_num_functions() const noexcept
+  {
+    return this->tensor_size()[1];
+  }
+  ///@}
 
-    /**
-     * @name Values initialization
-     */
-    ///@{
+  /**
+   * @name Values initialization
+   */
+  ///@{
 
-    /**
-     * Set all the values of the Container to zero.
-     * @note The "zero" values means the default constructor T().
-     */
-    void zero()
-    {
-        for (auto &value : (*this))
-            value = T() ;
-    }
+  /**
+   * Set all the values of the Container to zero.
+   * @note The "zero" values means the default constructor T().
+   */
+  void zero()
+  {
+    for (auto &value : (*this))
+      value = T() ;
+  }
 
-    ///@}
+  ///@}
 
 protected:
 
-    /**
-     * @name Functions for resizing
-     */
-    ///@{
-    /**
-     * Resize the ValueTable in order to allocate space for @p num_functions functions and
-     * @p num_points points.
-     */
-    void resize(const Size num_functions, const Size num_points)
-    {
-        Assert(num_functions >= 0, ExcLowerRange(num_functions,0));
-        Assert(num_points >= 0, ExcLowerRange(num_points,0));
+  /**
+   * @name Functions for resizing
+   */
+  ///@{
+  /**
+   * Resize the ValueTable in order to allocate space for @p num_functions functions and
+   * @p num_points points.
+   */
+  void resize(const Size num_functions, const Size num_points)
+  {
+    Assert(num_functions >= 0, ExcLowerRange(num_functions,0));
+    Assert(num_points >= 0, ExcLowerRange(num_points,0));
 
-        if (num_functions != this->get_num_functions() ||
-            num_points != this->get_num_points())
-            DynamicMultiArray<T,2>::resize(TensorSize<2>({num_points,num_functions}));
-    }
+    if (num_functions != this->get_num_functions() ||
+        num_points != this->get_num_points())
+      DynamicMultiArray<T,2>::resize(TensorSize<2>({num_points,num_functions}));
+  }
 
 #if 0
-    /**
-     * Removes all elements from the ValueTable, leaving the container with a size of 0.
-     */
-    void clear() noexcept
-    {
-        num_functions_ = 0;
-        num_points_ = 0;
-        DynamicMultiArray<T,2>::clear();
-    }
+  /**
+   * Removes all elements from the ValueTable, leaving the container with a size of 0.
+   */
+  void clear() noexcept
+  {
+    num_functions_ = 0;
+    num_points_ = 0;
+    DynamicMultiArray<T,2>::clear();
+  }
 #endif
-    ///@}
+  ///@}
 };
 
 

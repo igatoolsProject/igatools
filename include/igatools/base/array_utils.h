@@ -43,9 +43,9 @@ auto
 sequence(const int init = 0)
 -> SafeSTLArray<int, N>
 {
-    SafeSTLArray<int, N> seq;
-    std::iota(seq.begin(),seq.end(),init);
-    return seq;
+  SafeSTLArray<int, N> seq;
+  std::iota(seq.begin(),seq.end(),init);
+  return seq;
 }
 
 

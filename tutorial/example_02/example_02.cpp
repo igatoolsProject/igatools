@@ -41,57 +41,57 @@ template <int dim>
 void loop_on_grid()
 {
 // [templated_function]
-    // [create_grid]
-    out << "Traversing the elements of a " << dim;
-    out << "-dimensional grid." << endl;
-    const int n_knots = 3;
-    auto grid = CartesianGrid<dim>::create(n_knots);
-    // [create_grid]
-    // [iter_grid]
-    for (auto elem : *grid)
-    {
-        out << "The tensor index of element: " << elem.get_flat_index();
-        out << " is: "<< elem.get_tensor_index() << endl;
-    }
-    // [iter_grid]
-    out << endl;
+  // [create_grid]
+  out << "Traversing the elements of a " << dim;
+  out << "-dimensional grid." << endl;
+  const int n_knots = 3;
+  auto grid = CartesianGrid<dim>::create(n_knots);
+  // [create_grid]
+  // [iter_grid]
+  for (auto elem : *grid)
+  {
+    out << "The tensor index of element: " << elem.get_flat_index();
+    out << " is: "<< elem.get_tensor_index() << endl;
+  }
+  // [iter_grid]
+  out << endl;
 }
 
 
 template <int dim>
 void loop_on_space()
 {
-    out << "Traversing the elements of a " << dim;
-    out << "-dimensional B-spline space." << endl;
-    const int n_knots = 3;
-    auto grid = CartesianGrid<dim>::create(n_knots);
-    const int degree = 2;
-    auto space = BSplineSpace<dim>::create(degree, grid);
+  out << "Traversing the elements of a " << dim;
+  out << "-dimensional B-spline space." << endl;
+  const int n_knots = 3;
+  auto grid = CartesianGrid<dim>::create(n_knots);
+  const int degree = 2;
+  auto space = BSplineSpace<dim>::create(degree, grid);
 
-    for (auto elem : *space)
-    {
-        out << "Element: " << elem.get_flat_index();
-        out << " has global basis: ";
-        elem.get_local_to_global(DofProperties::active).print_info(out);
-        out << endl;
-    }
+  for (auto elem : *space)
+  {
+    out << "Element: " << elem.get_flat_index();
+    out << " has global basis: ";
+    elem.get_local_to_global(DofProperties::active).print_info(out);
     out << endl;
+  }
+  out << endl;
 }
 
 
 int main()
 {
-    loop_on_grid<1>();
-    loop_on_grid<2>();
-    loop_on_grid<3>();
+  loop_on_grid<1>();
+  loop_on_grid<2>();
+  loop_on_grid<3>();
 
-    out << endl;
+  out << endl;
 
-    loop_on_space<1>();
-    loop_on_space<2>();
-    loop_on_space<3>();
+  loop_on_space<1>();
+  loop_on_space<2>();
+  loop_on_space<3>();
 
-    return 0;
+  return 0;
 }
 
 

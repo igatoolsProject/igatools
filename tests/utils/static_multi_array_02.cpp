@@ -31,31 +31,31 @@
 template <int dim, int rank = 2>
 void access_operator()
 {
-    OUTSTART
+  OUTSTART
 
-    StaticMultiArray<Index, dim, rank> data;
+  StaticMultiArray<Index, dim, rank> data;
 
-    for (int i = 0; i < data.flat_size(); ++i)
-        data[i] = i;
+  for (int i = 0; i < data.flat_size(); ++i)
+    data[i] = i;
 
-    data.print_info(out);
-    out << endl;
+  data.print_info(out);
+  out << endl;
 
-    for (const auto &entry : data)
-        out << entry << " ";;
-    out << endl;
+  for (const auto &entry : data)
+    out << entry << " ";;
+  out << endl;
 
-    OUTEND
+  OUTEND
 }
 
 
 int main()
 {
-    out.depth_console(10);
+  out.depth_console(10);
 
-    access_operator<1>();
-    access_operator<2>();
-    access_operator<3>();
+  access_operator<1>();
+  access_operator<2>();
+  access_operator<3>();
 
-    return 0;
+  return 0;
 }
