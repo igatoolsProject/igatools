@@ -18,41 +18,91 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
 #include <igatools/geometry/physical_domain.h>
-#include <igatools/functions/identity_function.h>
-#include <igatools/functions/function_element.h>
+#include <igatools/geometry/physical_domain_element.h>
 #include <igatools/functions/identity_function_handler.h>
+#include <igatools/functions/function_element.h>
+#include <igatools/functions/function_cache_handler.h>
 
 using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
+//template<int dim,int space_dim>
+//auto
+//IdentityFunctionElementHandler<dim,space_dim>::
+//create(std::shared_ptr<GridType> grid) -> std::shared_ptr<parent_t>
+//{
+//    auto identity_function = std::make_shared<self_t>(grid);
+//
+//#ifdef MESH_REFINEMENT
+//    identity_function->create_connection_for_insert_knots(identity_function);
+//#endif // MESH_REFINEMENT
+//
+//    return identity_function;
+//}
+
+
+
+//template<int dim,int space_dim>
+//auto
+//IdentityFunctionElementHandler<dim,space_dim>::
+//clone() const -> std::shared_ptr<parent_t>
+//{
+//
+//    return std::make_shared<self_t>(*this);
+//}
+
+template<int dim,int space_dim>
+IdentityFunctionElementHandler<dim,space_dim>::
+IdentityFunctionElementHandler(std::shared_ptr<const GridType> grid)
+  : grid_handler_(GridHandlerType::create(grid))
+{}
+
+
+template<int dim,int space_dim>
+void
+IdentityFunctionElementHandler<dim,space_dim>::
+set_flags(const topology_variant &sdim,
+          const Flags &flag)
+{
+//  grid_handler_->set_flags(sdim, grid_flag);
+}
+
+template<int dim,int space_dim>
+void
+IdentityFunctionElementHandler<dim,space_dim>::
+init_cache(ConstElementAccessor &elem,
+           const eval_pts_variant &quad) const
+{
+  grid_handler_->init_cache(*(elem.get_domain_element().get_grid_element()), quad);
+}
 
 
 
 template<int dim,int space_dim>
 auto
-IdentityFunction<dim,space_dim>::
-create_cache_handler() const -> std::shared_ptr<typename parent_t::ElementHandler>
+IdentityFunctionElementHandler<dim,space_dim>::
+fill_cache(const topology_variant &sdim,
+           ConstElementAccessor &elem,
+           const int s_id) const -> void
 {
-  return ElementHandler::create(grid_);
+  grid_handler_->
+  fill_cache(sdim, *(elem.get_domain_element().get_grid_element()),
+             s_id);
+//
+//
+//        ->template get_points<sdim>(s_id_);
+//  auto fill_dispatcher = FillCacheDispatcher(s_id, *this, elem);
+//  boost::apply_visitor(fill_dispatcher, sdim);
 }
-
-
-template<int dim,int space_dim>
-IdentityFunction<dim,space_dim>::
-IdentityFunction(std::shared_ptr<const GridType> grid)
-  : grid_(grid)
-{}
-
 
 
 
 #ifdef MESH_REFINEMENT
 template<int dim,int space_dim>
 void
-IdentityFunction<dim,space_dim>::
+IdentityFunctionElementHandler<dim,space_dim>::
 rebuild_after_insert_knots(
   const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
   const CartesianGrid<dim> &grid_old)
@@ -63,12 +113,12 @@ rebuild_after_insert_knots(
   Assert(previous_grid != nullptr,ExcNullPtr());
 
   this->function_previous_refinement_ =
-    IdentityFunction<dim,space_dim>::create(previous_grid);
+    IdentityFunctionElementHandler<dim,space_dim>::create(previous_grid);
 }
 
 template<int dim,int space_dim>
 void
-IdentityFunction<dim,space_dim>::
+IdentityFunctionElementHandler<dim,space_dim>::
 create_connection_for_insert_knots(std::shared_ptr<self_t> &identity_function)
 {
   Assert(identity_function != nullptr, ExcNullPtr());
@@ -89,5 +139,5 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> &identity_function)
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/functions/identity_function.inst>
+#include <igatools/functions/identity_function_handler.inst>
 

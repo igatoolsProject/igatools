@@ -172,7 +172,6 @@ public:
     this->init_cache(*elem, quad);
   }
 
-
 //    void init_element_cache(ElementAccessor &elem) const;
 //
 //    void init_element_cache(ElementIterator &elem) const;

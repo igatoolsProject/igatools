@@ -28,7 +28,7 @@
 #include "../tests.h"
 
 #include <igatools/geometry/physical_domain.h>
-#include <igatools/functions/identity_function.h>
+//#include <igatools/functions/identity_function.h>
 
 
 template<int dim, int codim>
@@ -37,12 +37,13 @@ void domain()
   OUTSTART
 
   using Grid = CartesianGrid<dim>;
-  using Function = IdentityFunction<dim, dim>;
+  //using Function = IdentityFunction<dim, dim>;
+  using Function = Function<dim, 0, dim+codim, 1>;
   using Domain   = PhysicalDomain<dim, codim>;
 
   auto grid = Grid::const_create();
-  auto F = Function::create(grid);
-  //std::shared_ptr<const Function> F;
+  //auto F = Function::create(grid);
+  std::shared_ptr<const Function> F;
 
   auto dom = Domain::create(grid, F);
 

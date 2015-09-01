@@ -74,12 +74,12 @@ set_flags(const topology_variant &sdim,
 template <int dim>
 void
 GridElementHandler<dim>::
-init_all_caches(ElementAccessor &elem)
+init_all_caches(ConstElementAccessor &elem)
 {
   auto &cache = elem.all_sub_elems_cache_;
   if (cache == nullptr)
   {
-    using Cache = typename ElementAccessor::CacheType;
+    using Cache = typename ConstElementAccessor::CacheType;
     cache = shared_ptr<Cache>(new Cache);
   }
 
@@ -108,7 +108,7 @@ template <int dim>
 template <int sdim>
 void
 GridElementHandler<dim>::
-init_cache(ElementAccessor &elem,
+init_cache(ConstElementAccessor &elem,
            std::shared_ptr<const Quadrature<sdim>> quad) const
 {
   Assert(quad != nullptr,ExcNullPtr());
@@ -119,7 +119,7 @@ init_cache(ElementAccessor &elem,
   auto &cache = elem.all_sub_elems_cache_;
   if (cache == nullptr)
   {
-    using Cache = typename ElementAccessor::CacheType;
+    using Cache = typename ConstElementAccessor::CacheType;
     cache = std::make_shared<Cache>();
   }
 
@@ -131,17 +131,37 @@ init_cache(ElementAccessor &elem,
   }
 }
 
+template <int dim>
+void
+GridElementHandler<dim>::
+init_cache(ConstElementAccessor &elem,
+           const eval_pts_variant &quad) const
+{
+  auto disp = InitCacheDispatcher(this, elem);
+  boost::apply_visitor(disp, quad);
+}
 
+
+template <int dim>
+void
+GridElementHandler<dim>::
+fill_cache(const topology_variant &sdim,
+           ConstElementAccessor &elem,
+           const int s_id) const
+{
+  auto disp = FillCacheDispatcher(this, elem, s_id);
+  boost::apply_visitor(disp, sdim);
+}
 
 
 template <int dim>
 template <int sdim>
 void
 GridElementHandler<dim>::
-fill_cache(ElementAccessor &elem, const int j) const
+fill_cache(ConstElementAccessor &elem, const int j) const
 {
-  using _Point = typename ElementAccessor::_Point;
-  using _Weight = typename ElementAccessor::_Weight;
+  using _Point = typename ConstElementAccessor::_Point;
+  using _Weight = typename ConstElementAccessor::_Weight;
   Assert(elem.all_sub_elems_cache_ != nullptr, ExcNullPtr());
   auto &cache = elem.all_sub_elems_cache_->template get_sub_elem_cache<sdim>(j);
 
