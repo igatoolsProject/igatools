@@ -139,8 +139,8 @@ Space(const shared_ptr<CartesianGrid<dim_>> &grid,
 
   Assert(phys_domain_ != nullptr,ExcNullPtr());
 
-//  Assert(this->get_ptr_grid() == phys_domain_->get_grid(),
-//         ExcMessage("Reference space and mapping grids are not the same."));
+  Assert(this->get_ptr_const_grid() == phys_domain_->get_grid(),
+         ExcMessage("The space and the physical domain must have the same grid!"));
 
 }
 
@@ -158,6 +158,9 @@ Space(const shared_ptr<const CartesianGrid<dim_>> &grid,
 
 
   Assert(phys_domain_ != nullptr,ExcNullPtr());
+  Assert(this->get_ptr_const_grid() == phys_domain_->get_grid(),
+         ExcMessage("The space and the physical domain must have the same grid!"));
+
 
 //  Assert(this->get_ptr_const_grid() == phys_domain_->get_grid(),
 //         ExcMessage("Reference space and mapping grids are not the same."));

@@ -49,8 +49,6 @@ PhysicalSpace(const shared_ptr<RefSpace> &ref_space,
   ref_space_(ref_space)
 {
 //TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
-  Assert(this->get_ptr_grid() == this->get_ptr_map_func()->get_physical_domain()->get_grid(),
-         ExcMessage("Reference space and mapping grids are not the same."));
 }
 
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
@@ -62,8 +60,6 @@ PhysicalSpace(const shared_ptr<const RefSpace> &ref_space,
   ref_space_(ref_space)
 {
 //TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
-  Assert(this->get_ptr_const_grid() == this->get_ptr_const_map_func()->get_physical_domain()->get_grid(),
-         ExcMessage("Reference space and mapping grids are not the same."));
 }
 
 
@@ -157,7 +153,7 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
   auto grid =  this->get_ptr_const_grid();
 
   auto sub_ref_space = ref_space_->get_ref_sub_space(s_id, dof_map, sub_grid);
-  auto F = this->get_ptr_const_map_func();
+  auto F = this->phys_domain_->get_function();
   auto sub_map_func = SubMap::create(sub_grid, F, s_id, elem_map);
   auto sub_space = SubSpace<k>::create_nonconst(sub_ref_space, sub_map_func);
   return sub_space;
@@ -245,8 +241,8 @@ print_info(LogStream &out) const
   ref_space_->print_info(out);
   out.end_item();
 
-  out.begin_item("Map function:");
-  this->get_ptr_const_map_func()->print_info(out);
+  out.begin_item("Physical domain:");
+  this->phys_domain_->print_info(out);
   out.end_item();
 }
 

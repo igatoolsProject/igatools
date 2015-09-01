@@ -215,6 +215,11 @@ public:
   ///@}
 
 
+  void print_info(LogStream &out) const
+  {
+    AssertThrow(false,ExcNotImplemented());
+  }
+
 private:
   std::shared_ptr<GridType> grid_;
   std::shared_ptr<FuncType> func_;
