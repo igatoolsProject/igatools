@@ -96,7 +96,7 @@ void elem_values(const int n_knots = 5, const int deg=1)
 
   auto quad = QGauss<k>(2);
 
-  auto elem_filler = space->get_elem_handler();
+  auto elem_filler = space->create_cache_handler();
   elem_filler->reset(flag, quad);
 
   auto elem = space->begin();

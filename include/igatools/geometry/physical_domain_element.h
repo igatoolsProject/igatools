@@ -56,7 +56,7 @@ public:
 
 //    static const int dim = dim_;
 //    static const int codim = codim_;
-//    static const int space_dim = dim_+codim_;
+  static const int space_dim = dim_+codim_;
 
   //using ListIt = typename FuncType::ListIt;
   //using FuncElem = typename FuncType::ElementAccessor;
@@ -181,6 +181,18 @@ public:
     return grid_elem_;
   }
 
+
+
+  void print_info(LogStream &out) const
+  {
+    AssertThrow(false,ExcNotImplemented());
+  }
+
+  void print_cache_info(LogStream &out) const
+  {
+    AssertThrow(false,ExcNotImplemented());
+  }
+
 public:
 //    template<int sdim>
 //    ValueVector<Real> const &get_measures(const int s_id) const
@@ -247,7 +259,8 @@ private:
                         get_sub_elem_cache<topology_dim>(topology_id);
     return cache.template get_data<ValueType>();
   }
-private:
+
+public:
   struct _Point
   {
     static const std::string name;
@@ -259,8 +272,9 @@ private:
     static const std::string name;
     static const auto flag = Flags::w_measure;
   };
+private:
   using CType = boost::fusion::map<
-                boost::fusion::pair<       _Point,DataWithFlagStatus<ValueVector<Real>>>,
+                boost::fusion::pair<       _Point,DataWithFlagStatus<ValueVector<Points<space_dim>>>>,
                 boost::fusion::pair<     _W_Measure,DataWithFlagStatus<ValueVector<Real>>>>;
 //                ,
 //                  boost::fusion::pair<   _InvGradient,DataWithFlagStatus<ValueVector<InvDerivative<1>>>>,

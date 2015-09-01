@@ -38,7 +38,7 @@ IgFunction(std::shared_ptr<const Sp> space,
   space_(space),
   property_(property),
   space_elem_(std::const_pointer_cast<Sp>(space)->begin()),
-  space_elem_handler_(space->get_elem_handler())
+  space_elem_handler_(space->create_cache_handler())
 {
   Assert(space_ != nullptr, ExcNullPtr());
   Assert(coeff != nullptr,ExcNullPtr());
@@ -70,7 +70,7 @@ IgFunction(std::shared_ptr<const Sp> space,
   space_(space),
   property_(property),
   space_elem_(std::const_pointer_cast<Sp>(space)->begin()),
-  space_elem_handler_(space->get_elem_handler())
+  space_elem_handler_(space->create_cache_handler())
 {
   Assert(space_ != nullptr, ExcNullPtr());
 
@@ -96,7 +96,7 @@ IgFunction(const self_t &fun)
   coeff_(fun.coeff_),
   property_(fun.property_),
   space_elem_(std::const_pointer_cast<Sp>(fun.space_)->begin()),
-  space_elem_handler_(fun.space_->get_elem_handler())
+  space_elem_handler_(fun.space_->create_cache_handler())
 {}
 
 

@@ -238,7 +238,7 @@ private:
     {}
 
     template<int sdim>
-    void operator()(const std::shared_ptr<Quadrature<sdim>> &quad)
+    void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
     {
       grid_handler_->template init_cache<sdim>(elem_, quad);
     }

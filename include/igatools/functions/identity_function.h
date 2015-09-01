@@ -71,6 +71,12 @@ public:
     return std::make_shared<self_t>(grid);
   }
 
+  static std::shared_ptr<const parent_t>
+  const_create(std::shared_ptr<const GridType> grid)
+  {
+    return std::make_shared<const self_t>(grid);
+  }
+
   std::shared_ptr<typename parent_t::ElementHandler>
   create_cache_handler() const override final;
 

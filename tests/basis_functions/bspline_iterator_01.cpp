@@ -51,7 +51,7 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
 
   auto elem = space->begin();
 
-  auto elem_handler = space->get_elem_handler();
+  auto elem_handler = space->create_cache_handler();
 
   elem_handler->template set_flags<k>(flag);
   elem_handler->template init_cache<k>(*elem,quad);
@@ -109,7 +109,7 @@ void bspline_iterator_active_dofs(const int deg = 2,const int n_qp = 3)
 
   auto elem = space->begin();
 
-  auto elem_handler = space->get_elem_handler();
+  auto elem_handler = space->create_cache_handler();
 
   elem_handler->template set_flags<k>(flag);
   elem_handler->init_element_cache(elem,quad);

@@ -43,22 +43,22 @@ using space_tools::get_boundary_dofs;
 
 template <int dim, int range=1, int rank=1, int codim = 0>
 shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>>
-        create_space(const shared_ptr<CartesianGrid<dim>> &grid,
-                     const shared_ptr<MapFunction<dim,dim+codim>> &map_func,
-                     const int deg=1)
+    create_space(const shared_ptr<CartesianGrid<dim>> &grid,
+                 const shared_ptr<MapFunction<dim,dim+codim>> &map_func,
+                 const int deg=1)
 {
-    using BspSpace = BSplineSpace<dim, range, rank>;
-    using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
-    auto ref_space = BspSpace::create_nonconst(deg, grid);
-    return Space::create_nonconst(ref_space, map_func);
+  using BspSpace = BSplineSpace<dim, range, rank>;
+  using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
+  auto ref_space = BspSpace::create_nonconst(deg, grid);
+  return Space::create_nonconst(ref_space, map_func);
 }
 
 
 struct DofProp
 {
-    static const std::string interior;
-    static const std::string dirichlet;
-    static const std::string neumman;
+  static const std::string interior;
+  static const std::string dirichlet;
+  static const std::string neumman;
 };
 
 const std::string DofProp::interior = "interior";
@@ -67,51 +67,51 @@ const std::string DofProp::neumman  = "neumman";
 
 enum  bc : boundary_id
 {
-    dir=0, neu
+  dir=0, neu
 };
 
 template <int dim, int range=1, int rank=1, int codim = 0>
 shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>>
-        create_space_prop(const shared_ptr<CartesianGrid<dim>> &grid,
-                          const shared_ptr<MapFunction<dim,dim+codim>> &map_func,
-                          const int deg=1)
+    create_space_prop(const shared_ptr<CartesianGrid<dim>> &grid,
+                      const shared_ptr<MapFunction<dim,dim+codim>> &map_func,
+                      const int deg=1)
 {
-    const int neu_face = 0;
-    grid->set_boundary_id(neu_face, bc::neu);
+  const int neu_face = 0;
+  grid->set_boundary_id(neu_face, bc::neu);
 
-    using BspSpace = BSplineSpace<dim, range, rank>;
-    using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
-    auto ref_space = BspSpace::create_nonconst(deg, grid);
-    auto space = Space::create_nonconst(ref_space, map_func);
+  using BspSpace = BSplineSpace<dim, range, rank>;
+  using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
+  auto ref_space = BspSpace::create_nonconst(deg, grid);
+  auto space = Space::create_nonconst(ref_space, map_func);
 
-    std::set<boundary_id>  dir_ids = {bc::dir};
-    auto dir_dofs = get_boundary_dofs<Space>(space, dir_ids);
-
-
-    auto int_dofs = space->get_interior_dofs();
+  std::set<boundary_id>  dir_ids = {bc::dir};
+  auto dir_dofs = get_boundary_dofs<Space>(space, dir_ids);
 
 
-    std::set<boundary_id>  neu_ids = {bc::neu};
-    auto neu_dofs = get_boundary_dofs<Space>(space, neu_ids);
-    SafeSTLVector<Index> common(dim*range);
-    auto end1 =
-        std::set_intersection(neu_dofs.begin(), neu_dofs.end(),
-                              dir_dofs.begin(), dir_dofs.end(), common.begin());
-    common.resize(end1-common.begin());
-    for (auto &id : common)
-        neu_dofs.erase(id);
-
-    auto dof_dist = space->get_ptr_dof_distribution();
-    dof_dist->add_dofs_property(DofProp::interior);
-    dof_dist->add_dofs_property(DofProp::dirichlet);
-    dof_dist->add_dofs_property(DofProp::neumman);
+  auto int_dofs = space->get_interior_dofs();
 
 
-    dof_dist->set_dof_property_status(DofProp::interior, int_dofs, true);
-    dof_dist->set_dof_property_status(DofProp::dirichlet, dir_dofs, true);
-    dof_dist->set_dof_property_status(DofProp::neumman, neu_dofs, true);
+  std::set<boundary_id>  neu_ids = {bc::neu};
+  auto neu_dofs = get_boundary_dofs<Space>(space, neu_ids);
+  SafeSTLVector<Index> common(dim*range);
+  auto end1 =
+    std::set_intersection(neu_dofs.begin(), neu_dofs.end(),
+                          dir_dofs.begin(), dir_dofs.end(), common.begin());
+  common.resize(end1-common.begin());
+  for (auto &id : common)
+    neu_dofs.erase(id);
 
-    return space;
+  auto dof_dist = space->get_ptr_dof_distribution();
+  dof_dist->add_dofs_property(DofProp::interior);
+  dof_dist->add_dofs_property(DofProp::dirichlet);
+  dof_dist->add_dofs_property(DofProp::neumman);
+
+
+  dof_dist->set_dof_property_status(DofProp::interior, int_dofs, true);
+  dof_dist->set_dof_property_status(DofProp::dirichlet, dir_dofs, true);
+  dof_dist->set_dof_property_status(DofProp::neumman, neu_dofs, true);
+
+  return space;
 }
 
 
@@ -125,50 +125,50 @@ void elem_values(shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::
 //    using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 //    using ElementHandler = typename Space::ElementHandler;
 
-    auto quad = QGauss<k>(n_qp);
-    auto flag = ValueFlags::value|ValueFlags::gradient |
-                ValueFlags::hessian | ValueFlags::point |
-                ValueFlags::w_measure;
+  auto quad = QGauss<k>(n_qp);
+  auto flag = ValueFlags::value|ValueFlags::gradient |
+              ValueFlags::hessian | ValueFlags::point |
+              ValueFlags::w_measure;
 
-    auto elem_filler = space->get_elem_handler();
-    elem_filler->reset(flag, quad);
+  auto elem_filler = space->create_cache_handler();
+  elem_filler->reset(flag, quad);
 
-    auto elem = space->begin();
-    auto end  = space->end();
-    elem_filler->template init_cache<k>(*elem);
-    for (; elem != end; ++elem)
+  auto elem = space->begin();
+  auto end  = space->end();
+  elem_filler->template init_cache<k>(*elem);
+  for (; elem != end; ++elem)
+  {
+    if ((no_boundary) || (elem->is_boundary()))
     {
-        if ((no_boundary) || (elem->is_boundary()))
+      out.begin_item("Element " + std::to_string(elem->get_flat_index()));
+      for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
+      {
+        if ((no_boundary) || (elem->is_boundary(s_id)))
         {
-            out.begin_item("Element " + std::to_string(elem->get_flat_index()));
-            for (auto &s_id : UnitElement<dim>::template elems_ids<k>())
-            {
-                if ((no_boundary) || (elem->is_boundary(s_id)))
-                {
-                    out.begin_item("Sub element id:  " + std::to_string(s_id));
-                    elem_filler->template fill_cache<k>(*elem, s_id);
+          out.begin_item("Sub element id:  " + std::to_string(s_id));
+          elem_filler->template fill_cache<k>(*elem, s_id);
 
-                    out.begin_item("Values: ");
-                    elem->template get_basis<_Value, k>(s_id,prop).print_info(out);
-                    out.end_item();
+          out.begin_item("Values: ");
+          elem->template get_basis<_Value, k>(s_id,prop).print_info(out);
+          out.end_item();
 
-                    out.begin_item("Gradients: ");
-                    elem->template get_basis<_Gradient, k>(s_id,prop).print_info(out);
-                    out.end_item();
+          out.begin_item("Gradients: ");
+          elem->template get_basis<_Gradient, k>(s_id,prop).print_info(out);
+          out.end_item();
 
-                    out.begin_item("Hessians: ");
-                    elem->template get_basis<_Hessian, k>(s_id,prop).print_info(out);
-                    out.end_item();
+          out.begin_item("Hessians: ");
+          elem->template get_basis<_Hessian, k>(s_id,prop).print_info(out);
+          out.end_item();
 
-                    out.begin_item("W * Measures: ");
-                    elem->template get_w_measures<k>(s_id).print_info(out);
-                    out.end_item();
-                    out.end_item();
-                }
-            }
-            out.end_item();
+          out.begin_item("W * Measures: ");
+          elem->template get_w_measures<k>(s_id).print_info(out);
+          out.end_item();
+          out.end_item();
         }
+      }
+      out.end_item();
     }
+  }
 
 
 }

@@ -136,6 +136,18 @@ create_element(const ListIt &index, const PropId &prop) const
   return elem;
 }
 
+template<int dim_, int codim_>
+auto
+PhysicalDomain<dim_, codim_>::
+create_element(const ListIt &index, const PropId &prop)
+-> std::shared_ptr<ElementAccessor>
+{
+  using Elem = ElementAccessor;
+  auto elem = std::make_shared<Elem>(this->shared_from_this(), index, prop);
+  Assert(elem != nullptr,ExcNullPtr());
+
+  return elem;
+}
 
 
 template<int dim_, int codim_>

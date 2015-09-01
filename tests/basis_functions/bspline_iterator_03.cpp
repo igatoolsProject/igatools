@@ -73,7 +73,7 @@ void evaluate_field(const int deg = 1)
 
   auto elem = space->begin();
 
-  auto elem_handler = space->get_elem_handler();
+  auto elem_handler = space->create_cache_handler();
 
   elem_handler->template set_flags<dim>(flag);
   elem_handler->init_element_cache(elem,quad);

@@ -47,7 +47,7 @@ void space_cache_fill_elem(const space_element::Flags flag,
   auto elem = space->begin();
   auto end = space->end();
 
-  auto elem_handler = space->get_elem_handler();
+  auto elem_handler = space->create_cache_handler();
 
   elem_handler->template set_flags<dim>(flag);
   elem_handler->init_element_cache(elem,quad);

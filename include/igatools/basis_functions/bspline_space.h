@@ -27,7 +27,7 @@
 #include <igatools/basis_functions/reference_space.h>
 #include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/basis_functions/bernstein_extraction.h>
-#include <igatools/geometry/mapping.h>
+#include <igatools/geometry/physical_domain.h>
 #include <igatools/basis_functions/physical_space.h>
 
 IGA_NAMESPACE_OPEN
@@ -517,7 +517,7 @@ public:
   virtual bool is_bspline() const override final;
 
   virtual std::shared_ptr<SpaceElementHandler<dim_,0,range_,rank_,Transformation::h_grad>>
-      get_elem_handler() const override final;
+      create_cache_handler() const override final;
 
 
 private:

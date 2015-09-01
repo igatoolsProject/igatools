@@ -486,8 +486,8 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
   auto grid = const_pointer_cast<CartesianGrid<dim_> >(this->get_ptr_const_grid());
 
   auto sub_ref_space = get_ref_sub_space(s_id, dof_map, sub_grid);
-  auto F = IdentityFunction<dim>::create(grid);
-  auto sub_map_func = SubMap::create(sub_grid, *F, s_id, elem_map);
+  auto F = IdentityFunction<dim>::const_create(grid);
+  auto sub_map_func = SubMap::create(sub_grid, F, s_id, elem_map);
   auto sub_space = SubSpace<k>::create_nonconst(sub_ref_space, sub_map_func);
   return sub_space;
 }
@@ -676,7 +676,7 @@ is_bspline() const
 template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
-get_elem_handler() const
+create_cache_handler() const
 -> std::shared_ptr<SpaceElementHandler<dim_,0,range_,rank_,Transformation::h_grad>>
 {
   return ElementHandler::create(this->get_this_space());

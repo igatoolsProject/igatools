@@ -198,7 +198,7 @@ void elem_values(const int n_knots = 2, const int deg=1)
               ValueFlags::divergence |
               ValueFlags::w_measure;
 
-  auto elem_handler = space->get_elem_handler();
+  auto elem_handler = space->create_cache_handler();
   elem_handler->reset(flag, quad);
 
   auto elem = space->begin();

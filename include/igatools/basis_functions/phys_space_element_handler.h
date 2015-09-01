@@ -142,11 +142,8 @@ private:
   std::shared_ptr<RefElemHandler> ref_space_handler_;
 
 
-//    using PushFwd = typename PhysSpace::PushForwardType;
-//    PushFwd push_fwd_;
-
-  using Map = typename PhysSpace::Map;
-  Map mapping_;
+  using PhysDomainHandler = typename PhysSpace::PhysDomain::ElementHandler;
+  std::shared_ptr<PhysDomainHandler> phys_domain_handler_;
 
 
   SafeSTLArray<ValueFlags, dim+1> flags_;
@@ -164,7 +161,7 @@ private:
       flag_in_(flag_in),
       elements_flat_id_(elements_flat_id),
       ref_space_handler_(ref_space_handler),
-      mapping_(mapping),
+      phys_domain_handler_(mapping),
       flags_(flags)
     {};
 
@@ -174,7 +171,7 @@ private:
     const ValueFlags flag_in_;
     const SafeSTLVector<Index> &elements_flat_id_;
     RefElemHandler &ref_space_handler_;
-    Map &mapping_;
+    Map &phys_domain_handler_;
     SafeSTLArray<ValueFlags, dim+1> &flags_;
   };
 
@@ -189,7 +186,7 @@ private:
       :
       flags_(flags),
       ref_space_handler_(ref_space_handler),
-      mapping_(mapping),
+      phys_domain_handler_(mapping),
       phys_elem_(phys_elem)
     {};
 
@@ -198,7 +195,7 @@ private:
 
     const SafeSTLArray<ValueFlags, dim+1> &flags_;
     RefElemHandler &ref_space_handler_;
-    Map &mapping_;
+    Map &phys_domain_handler_;
     PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> &phys_elem_;
   };
 
@@ -214,7 +211,7 @@ private:
       :
       sub_elem_id_(sub_elem_id),
       ref_space_handler_(ref_space_handler),
-      mapping_(mapping),
+      phys_domain_handler_(mapping),
       phys_elem_(phys_elem)
     {};
 
@@ -223,7 +220,7 @@ private:
 
     const int sub_elem_id_;
     RefElemHandler &ref_space_handler_;
-    Map &mapping_;
+    Map &phys_domain_handler_;
     PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> &phys_elem_;
   };
 
@@ -248,6 +245,7 @@ private:
     ar.template register_type<BSplineElementHandler<dim_,range_,rank_> >();
     ar.template register_type<NURBSElementHandler<dim_,range_,rank_> >();
     ar &boost::serialization::make_nvp("ref_space_handler_",ref_space_handler_);
+    ar &boost::serialization::make_nvp("phys_domain_handler_",phys_domain_handler_);
 
 
 //        ar &boost::serialization::make_nvp("push_fwd_",push_fwd_);

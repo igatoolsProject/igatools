@@ -65,7 +65,7 @@ void cache_init(const ValueFlags flag,
   auto space = Space::create(ref_space, map_func);
 
 
-  auto elem_handler = space->get_elem_handler();
+  auto elem_handler = space->create_cache_handler();
   elem_handler->reset(flag, quad);
   elem_handler->print_info(out);
 
@@ -102,7 +102,7 @@ void cache_init_elem(const ValueFlags flag,
   auto map_func = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
   auto space = Space::create(ref_space, map_func);
 
-  auto elem_handler = space->get_elem_handler();
+  auto elem_handler = space->create_cache_handler();
   elem_handler->reset(flag, quad);
 
   auto elem = space->begin();
@@ -141,7 +141,7 @@ void cache_fill_elem(const ValueFlags flag,
   auto map_func = Function::create(grid,IdentityFunction<dim>::create(grid), A, b);
   auto space = Space::create(ref_space, map_func);
 
-  auto elem_handler = space->get_elem_handler();
+  auto elem_handler = space->create_cache_handler();
   elem_handler->reset(flag, quad);
 
   auto elem = space->begin();
@@ -185,7 +185,7 @@ void cache_get_elem_values(const ValueFlags flag,
   auto map_func = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
   auto space = Space::create(ref_space, map_func);
 
-  auto elem_handler = space->get_elem_handler();
+  auto elem_handler = space->create_cache_handler();
   elem_handler->reset(flag, quad);
 
   auto elem = space->begin();

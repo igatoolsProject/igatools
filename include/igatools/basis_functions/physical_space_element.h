@@ -60,7 +60,8 @@ public :
 //    using RefElemAccessor = SpaceElement<RefSpace::dim,0,RefSpace::range,RefSpace::rank,Transformation::h_grad>;
   using RefElemAccessor = ReferenceElement<RefSpace::dim,RefSpace::range,RefSpace::rank>;
 
-  using MapElem = MappingElement<dim_, codim_>;
+  using PhysDomain = PhysicalDomain<dim_, codim_>;
+  using PhysDomainElem = PhysicalDomainElement<dim_, codim_>;
 
   static const auto dim = PushFwd::dim;
   static const auto space_dim = PushFwd::space_dim;
@@ -165,32 +166,32 @@ public:
    * multiplied by the weights of the quadrature.
    */
   template <int k>
-  ValueVector<Real> get_w_measures(const int j) const
+  const ValueVector<Real> &get_w_measures(const int j) const
   {
-    return map_element_->template get_w_measures<k>(j);
+    return phys_domain_element_->template get_w_measures<k>(j);
   }
 
   /**
    * Returns the gradient determinant of the map at the dilated quadrature points.
    */
   template <int k>
-  ValueVector<Real> get_measures(const int j) const
+  const ValueVector<Real> &get_measures(const int j) const
   {
-    return map_element_->template get_measures<k>(j);
+    return phys_domain_element_->template get_measures<k>(j);
   }
 
-  ValueVector<Real> get_element_w_measures() const;
+  const ValueVector<Real> &get_element_w_measures() const;
 
   template <int k = dim>
-  ValueVector<PhysPoint> get_points(const int j = 0) const;
+  const ValueVector<PhysPoint> &get_points(const int j = 0) const;
 
-  ValueVector<PhysPoint> get_element_points() const;
+  const ValueVector<PhysPoint> &get_element_points() const;
 
   template<int sub_dim>
   const ValueVector<Points<space_dim> > &
   get_boundary_normals(const int s_id) const
   {
-    return map_element_->template get_boundary_normals<sub_dim>(s_id);
+    return phys_domain_element_->template get_boundary_normals<sub_dim>(s_id);
   }
 
 
@@ -247,14 +248,14 @@ public:
 
 
   /**
-   * Return a const reference of the mapping element.
+   * Return a const reference of the PhysicalDomainElement.
    */
-  const MapElem &get_map_element() const;
+  const PhysDomainElem &get_physical_domain_element() const;
 
   /**
-   * Return a non-const reference of the mapping element.
+   * Return a non-const reference of the PhysicalDomainElement.
    */
-  MapElem &get_map_element();
+  PhysDomainElem &get_physical_domain_element();
 
 public:
   using parent_t::get_num_basis;
@@ -271,7 +272,7 @@ public:
 
   virtual typename List::iterator &operator++() override final
   {
-    ++(*map_element_);
+    ++(*phys_domain_element_);
     return ++(*ref_space_element_);
     Assert(false,ExcNotImplemented());
   }
@@ -340,7 +341,7 @@ private:
 
   std::shared_ptr<RefElemAccessor> ref_space_element_;
 
-  std::shared_ptr<MapElem> map_element_;
+  std::shared_ptr<PhysDomainElem> phys_domain_element_;
 
 
   /**
@@ -370,7 +371,7 @@ private:
     ar &boost::serialization::make_nvp("ref_space_element_",ref_space_element_);
 
 
-    ar &boost::serialization::make_nvp("map_element_",map_element_);
+    ar &boost::serialization::make_nvp("phys_domain_element_",phys_domain_element_);
   }
   ///@}
 #endif

@@ -74,7 +74,7 @@ void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
   auto flag = ValueFlags::value|ValueFlags::gradient|
               ValueFlags::hessian | ValueFlags::point;
 
-  auto elem_filler = space->get_elem_handler();
+  auto elem_filler = space->create_cache_handler();
   elem_filler->reset(flag, quad);
 
   auto elem = space->begin();

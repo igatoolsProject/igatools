@@ -74,7 +74,7 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
   auto func_flag = ValueFlags::point | ValueFlags::value;
   func->reset(func_flag, quad);
 
-  auto sp_filler = space->get_elem_handler();
+  auto sp_filler = space->create_cache_handler();
   auto sp_flag = ValueFlags::point | ValueFlags::value |
                  ValueFlags::w_measure;
   sp_filler->reset(sp_flag, quad);

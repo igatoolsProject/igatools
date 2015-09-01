@@ -26,6 +26,7 @@
 #include <igatools/geometry/unit_element.h>
 #include <igatools/utils/value_vector.h>
 #include <igatools/base/quadrature.h>
+#include <igatools/geometry/cartesian_grid.h>
 #include <igatools/geometry/grid_iterator.h>
 
 IGA_NAMESPACE_OPEN
@@ -70,6 +71,7 @@ public:
   static const int range     = range_;
   static const int rank      = rank_;
 
+  using GridType = CartesianGrid<dim_>;
   using DomainType = PhysicalDomain<dim_, codim_>;
 
   using ElementAccessor = FunctionElement<dim_, codim_, range_, rank_>;
@@ -78,8 +80,8 @@ public:
   using ElementConstIterator = GridIterator<ConstElementAccessor>;
   using ElementHandler = FunctionElementHandler<dim_, codim_, range_, rank_>;
 
-  using List = typename DomainType::List;
-  using ListIt = typename DomainType::ListIt;
+  using List = typename GridType::List;
+  using ListIt = typename GridType::ListIt;
   /** Types for the input/output evaluation arguments */
   ///@{
   /**
@@ -148,6 +150,9 @@ public:
   std::shared_ptr<ConstElementAccessor>
   create_element(const ListIt &index, const PropId &prop) const;
 
+  std::shared_ptr<ElementAccessor>
+  create_element(const ListIt &index, const PropId &prop);
+
 
   virtual std::shared_ptr<ElementHandler> create_cache_handler() const;
 public:
@@ -189,8 +194,7 @@ public:
     Assert(false, ExcNotImplemented());
   }
 
-//    std::shared_ptr<typename ElementAccessor::CacheType>
-//    &get_cache(ElementAccessor &elem);
+
 
 private:
   std::shared_ptr<const DomainType> phys_domain_;

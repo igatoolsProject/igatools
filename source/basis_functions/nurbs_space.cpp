@@ -587,7 +587,7 @@ get_end_behaviour_table() const -> const EndBehaviourTable &
 template <int dim_, int range_, int rank_>
 auto
 NURBSSpace<dim_, range_, rank_>::
-get_elem_handler() const -> std::shared_ptr<SpaceElementHandler<dim_,0,range_,rank_,Transformation::h_grad>>
+create_cache_handler() const -> std::shared_ptr<SpaceElementHandler<dim_,0,range_,rank_,Transformation::h_grad>>
 {
   return ElementHandler::create(this->get_this_space());
 }

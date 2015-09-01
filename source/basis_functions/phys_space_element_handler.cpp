@@ -199,15 +199,17 @@ space_to_pf_flag(const ValueFlags flags, ValueFlags &map_flags, TransformationFl
 };
 
 
+template<int dim, int codim>
+using MapFunc= Function<dim, 0, dim + codim, 1>;
+
 
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
 PhysSpaceElementHandler<dim_,range_,rank_,codim_,type_>::
 PhysSpaceElementHandler(std::shared_ptr<const PhysSpace> space)
   :
   base_t(space),
-  ref_space_handler_(space->get_reference_space()->get_elem_handler()),
-//    push_fwd_(std::const_pointer_cast<MapFunction<dim_,dim_+codim_>>(space->get_ptr_const_map_func()))
-  mapping_(std::const_pointer_cast<MapFunction_new<dim_,codim_>>(space->get_ptr_const_map_func()))
+  ref_space_handler_(space->get_reference_space()->create_cache_handler()),
+  phys_domain_handler_(space->get_physical_domain()->create_cache_handler())
 {}
 
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
@@ -244,7 +246,7 @@ operator()(const Quadrature<sub_elem_dim> &quad)
                          PhysSpace::PushForwardElem::type,
                          flag_in_,
                          transf_flags);
-  mapping_.template reset<sub_elem_dim>(mapping_flags,quad);
+  phys_domain_handler_.template reset<sub_elem_dim>(mapping_flags,quad);
 }
 
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
@@ -256,7 +258,7 @@ reset_selected_elements(
   const SafeSTLVector<int> &elements_flat_id)
 {
   auto reset_selected_elems_dispatcher =
-    ResetDispatcher(flag,elements_flat_id,*ref_space_handler_,mapping_,flags_);
+    ResetDispatcher(flag,elements_flat_id,*ref_space_handler_,phys_domain_handler_,flags_);
   boost::apply_visitor(reset_selected_elems_dispatcher,eval_points);
 }
 
@@ -275,7 +277,7 @@ operator()(const Topology<sub_elem_dim> &topology)
   ref_space_handler_.template init_cache<sub_elem_dim>(ref_elem);
 
   auto &map_elem = phys_elem_.get_map_element();
-  mapping_.template init_cache<sub_elem_dim>(map_elem);
+  phys_domain_handler_.template init_cache<sub_elem_dim>(map_elem);
 
 
   using RefSpHndlr = ReferenceElementHandler<dim_,range_,rank_>;
@@ -310,7 +312,7 @@ init_cache(SpaceElement<dim_,codim_,range_,rank_,type_> &sp_elem,
   Assert(as_phys_elem != nullptr,ExcNullPtr());
 
   auto init_cache_dispatcher =
-    InitCacheDispatcher(flags_,*ref_space_handler_,mapping_,*as_phys_elem);
+    InitCacheDispatcher(flags_,*ref_space_handler_,phys_domain_handler_,*as_phys_elem);
   boost::apply_visitor(init_cache_dispatcher,topology);
 }
 
@@ -328,7 +330,7 @@ operator()(const Topology<sub_elem_dim> &topology)
   ref_space_handler_.template fill_cache<sub_elem_dim>(ref_elem, sub_elem_id_);
 
   auto &map_elem = phys_elem_.get_map_element();
-  mapping_.template fill_cache<sub_elem_dim>(map_elem, sub_elem_id_);
+  phys_domain_handler_.template fill_cache<sub_elem_dim>(map_elem, sub_elem_id_);
 
   auto &all_sub_elems_cache = phys_elem_.get_all_sub_elems_cache();
   Assert(all_sub_elems_cache != nullptr, ExcNullPtr());
@@ -381,7 +383,7 @@ fill_cache(SpaceElement<dim_,codim_,range_,rank_,type_> &sp_elem,
   Assert(as_phys_elem != nullptr,ExcNullPtr());
 
   auto fill_cache_dispatcher =
-    FillCacheDispatcher(sub_elem_id,*ref_space_handler_,mapping_,*as_phys_elem);
+    FillCacheDispatcher(sub_elem_id,*ref_space_handler_,phys_domain_handler_,*as_phys_elem);
   boost::apply_visitor(fill_cache_dispatcher,topology);
 }
 #endif

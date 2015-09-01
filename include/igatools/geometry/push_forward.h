@@ -21,8 +21,7 @@
 #ifndef NEW_PUSH_FORWARD_ELEMENT_ACCESSOR_H_
 #define NEW_PUSH_FORWARD_ELEMENT_ACCESSOR_H_
 
-#if 0
-#include <igatools/geometry/mapping_element.h>
+#include <igatools/geometry/physical_domain_element.h>
 #include <igatools/basis_functions/physical_space_element.h>
 
 IGA_NAMESPACE_OPEN
@@ -48,7 +47,7 @@ class PushForward
 {
 private:
   using self_t  = PushForward<type_, dim_, codim_>;
-  using MapElem = MappingElement<dim_, codim_>;
+  using PhysDomainElem = PhysicalDomainElement<dim_, codim_>;
 
 
 
@@ -92,7 +91,7 @@ public:
   static void
   transform_0(const int sub_elem_id,
               const RefSpaceElem<range,rank> &ref_elem,
-              const MapElem &map_elem,
+              const PhysDomainElem &phys_domain_elem,
               PhysSpaceElem<range,rank> &phys_elem,
               EnableIf<ttype == Transformation::h_grad> * = 0)
   {
@@ -104,6 +103,8 @@ public:
       all_sub_elems_cache->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id);
     //---------------------------------------------------------------------
 
+    using PhysElem = PhysSpaceElem<range,rank>;
+    using _Value = typename PhysElem::_Value;
     auto &v = sub_elem_cache.template get_data<_Value>();
     const auto &v_hat = ref_elem.template get_basis<_Value,sub_elem_dim>(sub_elem_id,DofProperties::active);
 
@@ -115,7 +116,7 @@ public:
   static void
   transform_1(const int sub_elem_id,
               const RefSpaceElem<range,rank> &ref_elem,
-              const MapElem &map_elem,
+              const PhysDomainElem &phys_domain_elem,
               PhysSpaceElem<range,rank> &phys_elem,
               EnableIf<ttype == Transformation::h_grad> * = 0)
   {
@@ -126,6 +127,10 @@ public:
     auto &sub_elem_cache =
       all_sub_elems_cache->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id);
     //---------------------------------------------------------------------
+
+    using PhysElem = PhysSpaceElem<range,rank>;
+    using _Gradient = typename PhysElem::_Gradient;
+    using _InvGradient = typename PhysElem::_InvGradient;
 
 
     const auto &Dv_hat  = ref_elem.template get_basis<_Gradient,sub_elem_dim>(sub_elem_id,DofProperties::active);
@@ -137,7 +142,7 @@ public:
     auto Dv_it     = Dv.begin();
     auto Dv_hat_it = Dv_hat.cbegin();
 
-    const auto &DF_inv = map_elem.template get_values_from_cache<_InvGradient,sub_elem_dim>(sub_elem_id);
+    const auto &DF_inv = phys_domain_elem.template get_values_from_cache<_InvGradient,sub_elem_dim>(sub_elem_id);
     for (int fn = 0; fn < n_func; ++fn)
       for (int pt = 0; pt < n_points; ++pt, ++Dv_hat_it, ++Dv_it)
         (*Dv_it) = compose((*Dv_hat_it), DF_inv[pt]);
@@ -148,7 +153,7 @@ public:
   static void
   transform_2(const int sub_elem_id,
               const RefSpaceElem<range,rank> &ref_elem,
-              const MapElem &map_elem,
+              const PhysDomainElem &phys_domain_elem,
               PhysSpaceElem<range,rank> &phys_elem,
               EnableIf<ttype == Transformation::h_grad> * = 0)
   {
@@ -160,6 +165,10 @@ public:
       all_sub_elems_cache->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id);
     //---------------------------------------------------------------------
 
+    using PhysElem = PhysSpaceElem<range,rank>;
+    using _Gradient = typename PhysElem::_Gradient;
+    using _Hessian = typename PhysElem::_Hessian;
+    using _InvGradient = typename PhysElem::_InvGradient;
 
     const auto &D2v_hat  = ref_elem.template get_basis< _Hessian,sub_elem_dim>(sub_elem_id,DofProperties::active);
 
@@ -172,8 +181,8 @@ public:
     auto D2v_it     = D2v.begin();
     auto D1v_it     = D1v.cbegin();
     auto D2v_hat_it = D2v_hat.cbegin();
-    const auto D2F     =  map_elem.get_func_element().template get_values<_Hessian,sub_elem_dim>(sub_elem_id);
-    const auto &DF_inv =  map_elem.template get_values_from_cache<_InvGradient,sub_elem_dim>(sub_elem_id);
+    const auto D2F     =  phys_domain_elem.get_func_element().template get_values<_Hessian,sub_elem_dim>(sub_elem_id);
+    const auto &DF_inv =  phys_domain_elem.template get_values_from_cache<_InvGradient,sub_elem_dim>(sub_elem_id);
 
     for (int fn = 0; fn < n_func; ++fn)
       for (Index pt = 0; pt < n_points; ++pt)
@@ -232,5 +241,4 @@ private:
 
 IGA_NAMESPACE_CLOSE
 
-#endif
 #endif

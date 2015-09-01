@@ -209,6 +209,11 @@ public:
   bool operator>(const self_t &a) const;
   ///@}
 
+  virtual typename List::iterator &operator++()
+  {
+    return ++(*grid_elem_);
+  }
+
 
 
   /** Returns the index of the element. */

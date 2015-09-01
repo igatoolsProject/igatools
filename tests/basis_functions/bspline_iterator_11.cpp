@@ -50,7 +50,7 @@ void uniform_space_cache(const space_element::Flags flag,
   value_handler->reset(flag, quad);
   value_handler->print_info(out);
   //*/
-  auto elem_handler = space->get_elem_handler();
+  auto elem_handler = space->create_cache_handler();
   elem_handler->template set_flags<dim>(flag);
   elem_handler->init_element_cache(elem,quad);
   elem_handler->fill_element_cache(elem);

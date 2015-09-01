@@ -32,7 +32,7 @@
 
 IGA_NAMESPACE_OPEN
 
-template <int,int> class Mapping;
+template <int,int> class PhysicalDomain;
 
 template <int,int,int,int> class Function;
 template <int> class GridElement;
@@ -205,7 +205,7 @@ class Space
 {
 public:
 
-  using PhysDomain = Mapping<dim_,codim_>;
+  using PhysDomain = PhysicalDomain<dim_,codim_>;
 
 private:
   using base_t = SpaceBase<dim_>;
@@ -283,14 +283,12 @@ public:
 
   std::shared_ptr<MapFunc> get_ptr_map_func()
   {
-//        return map_func_.get_ptr_data();
-    return std::const_pointer_cast<PhysDomain>(phys_domain_)->get_ptr_function();
+    return std::const_pointer_cast<MapFunc>(phys_domain_->get_function());
   }
 
   std::shared_ptr<const MapFunc> get_ptr_const_map_func() const
   {
-//        return map_func_.get_ptr_const_data();
-    return phys_domain_->get_ptr_const_function();
+    return phys_domain_->get_function();
   }
 
   virtual std::shared_ptr<const DofDistribution<dim_,range_,rank_> >
@@ -351,7 +349,7 @@ public:
 
 
   virtual std::shared_ptr< SpaceElementHandler<dim_,codim_,range_,rank_,type_> >
-  get_elem_handler() const = 0;
+  create_cache_handler() const = 0;
 
 
   virtual void print_info(LogStream &out) const = 0;

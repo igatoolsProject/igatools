@@ -242,7 +242,7 @@ private:
     {}
 
     template<int sdim>
-    void operator()(const std::shared_ptr<Quadrature<sdim>> &quad)
+    void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
     {
       auto &cache = elem_.all_sub_elems_cache_;
       if (cache == nullptr)

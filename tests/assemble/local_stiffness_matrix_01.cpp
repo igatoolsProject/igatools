@@ -52,7 +52,7 @@ void loc_stiff_matrix(const int n_knots, const int deg)
   auto identity_mapping = IdentityFunction<dim>::create(grid);
   auto phys_space = PhysSpace::create(ref_space, identity_mapping) ;
 
-  auto elem_handler = phys_space->get_elem_handler();
+  auto elem_handler = phys_space->create_cache_handler();
 
   auto quad = QGauss<dim>(deg+1);
   auto flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::w_measure;

@@ -22,6 +22,7 @@
 #include <igatools/basis_functions/dof_distribution.h>
 #include <igatools/utils/multi_array_utils.h>
 #include <igatools/base/properties.h>
+#include <igatools/utils/tensor_range.h>
 
 using std::map;
 using std::shared_ptr;

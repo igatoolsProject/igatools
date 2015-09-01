@@ -178,6 +178,9 @@ public:
   std::shared_ptr<ConstElementAccessor>
   create_element(const ListIt &index, const PropId &prop) const;
 
+  std::shared_ptr<ElementAccessor>
+  create_element(const ListIt &index, const PropId &property);
+
   ///@name Iterating of grid elements
   ///@{
   /**

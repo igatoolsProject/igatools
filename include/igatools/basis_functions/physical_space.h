@@ -22,7 +22,7 @@
 #define __PHYSICAL_SPACE_H_
 
 #include <igatools/base/config.h>
-#include <igatools/geometry/mapping.h>
+#include <igatools/geometry/physical_domain.h>
 #include <igatools/geometry/push_forward.h>
 #include <igatools/basis_functions/space.h>
 #include <igatools/basis_functions/reference_space.h>
@@ -69,7 +69,7 @@ public:
    */
   using PushFwd = PushForward<type_, dim_, codim_>;
 
-  using Map = Mapping<dim_, codim_>;
+  using PhysDomain = PhysicalDomain<dim_, codim_>;
 
   using RefSpace = ReferenceSpace<dim_,range_,rank_>;
 
@@ -196,7 +196,7 @@ public:
   void print_info(LogStream &out) const override final;
 
   std::shared_ptr<SpaceElementHandler<dim_,codim_,range_,rank_,type_>>
-      get_elem_handler() const override final;
+      create_cache_handler() const override final;
 
 
 

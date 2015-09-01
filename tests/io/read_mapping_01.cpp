@@ -57,7 +57,7 @@ void run_test(std::string &file_name)
 
   //------------------------------------------------------
   out.begin_item("Loop using the BSplineElement");
-  auto sp_elem_handler = ref_space->get_elem_handler();
+  auto sp_elem_handler = ref_space->create_cache_handler();
   sp_elem_handler->reset(ValueFlags::value,quad);
 
   auto sp_elem     = ref_space->begin();

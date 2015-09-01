@@ -37,7 +37,9 @@ PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
   ref_space_element_(
    std::dynamic_pointer_cast<RefElemAccessor>(phys_space->get_reference_space()->create_element(index,prop))
   ),
-  map_element_(make_shared<MapElem>(phys_space->get_physical_domain(), index, prop))
+  phys_domain_element_(make_shared<PhysDomainElem>(
+                        std::const_pointer_cast<PhysDomain>(phys_space->get_physical_domain()),
+                        index, prop))
 //                            ,
 //    push_fwd_element_(make_shared<PfElemAccessor>(
 //                          std::const_pointer_cast<MapFunction<dim_,dim_+codim_>>(
@@ -45,7 +47,7 @@ PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
 {
 //    push_fwd_element_ = std::make_shared<PfElemAccessor>(phys_space->get_map_func(), index);
   Assert(ref_space_element_ != nullptr, ExcNullPtr());
-  Assert(map_element_ != nullptr, ExcNullPtr());
+  Assert(phys_domain_element_ != nullptr, ExcNullPtr());
 
   this->max_num_basis_ = ref_space_element_->get_max_num_basis();
 }
@@ -62,12 +64,12 @@ PhysicalSpaceElement(const PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> 
   if (copy_policy == CopyPolicy::shallow)
   {
     ref_space_element_ = in.ref_space_element_;
-    map_element_ = in.map_element_;
+    phys_domain_element_ = in.phys_domain_element_;
   }
   else
   {
     ref_space_element_ = std::dynamic_pointer_cast<RefElemAccessor>(in.ref_space_element_->clone());
-    map_element_ = make_shared<MapElem>(*in.map_element_);
+    phys_domain_element_ = make_shared<PhysDomainElem>(*in.phys_domain_element_);
   }
 
   Assert(false,ExcNotTested());
@@ -127,18 +129,19 @@ shallow_copy_from(const PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> &el
 
 
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
-template <int k>
+template <int sdim>
 auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
-get_points(const int j) const -> ValueVector<PhysPoint>
+get_points(const int s_id) const -> const ValueVector<PhysPoint> &
 {
-  return map_element_->template get_values<_Point,k>(j);
+//  using _Point = typename PhysDomainElem::_Point;
+  return phys_domain_element_->template get_points<sdim>(s_id);
 }
 
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
 auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
-get_element_points() const -> ValueVector<PhysPoint>
+get_element_points() const -> const ValueVector<PhysPoint> &
 {
   return this->template get_points<dim>(0);
 }
@@ -147,7 +150,7 @@ get_element_points() const -> ValueVector<PhysPoint>
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
 auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
-get_element_w_measures() const -> ValueVector<Real>
+get_element_w_measures() const -> const ValueVector<Real> &
 {
   return this->template get_w_measures<dim>(0);
 }
@@ -169,7 +172,7 @@ move_to(const Index flat_index)
 {
   this->get_grid_element().move_to(flat_index);
   ref_space_element_->move_to(flat_index);
-  map_element_->move_to(flat_index);
+  phys_domain_element_->move_to(flat_index);
 }
 #endif
 
@@ -203,17 +206,17 @@ get_grid() const -> const std::shared_ptr<const CartesianGrid<dim> >
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
 auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
-get_map_element() const -> const MapElem &
+get_physical_domain_element() const -> const PhysDomainElem &
 {
-  return *map_element_;
+  return *phys_domain_element_;
 }
 
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
 auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
-get_map_element() -> MapElem &
+get_physical_domain_element() -> PhysDomainElem &
 {
-  return *map_element_;
+  return *phys_domain_element_;
 }
 //*/
 
@@ -228,7 +231,7 @@ print_info(LogStream &out) const
   out.end_item();
 
   out.begin_item("Pushforward:");
-  map_element_->print_info(out);
+  phys_domain_element_->print_info(out);
   out.end_item();
 }
 
@@ -242,7 +245,7 @@ print_cache_info(LogStream &out) const
   out.end_item();
 
   out.begin_item("Pushforward:");
-  map_element_->print_cache_info(out);
+  phys_domain_element_->print_cache_info(out);
   out.end_item();
 }
 

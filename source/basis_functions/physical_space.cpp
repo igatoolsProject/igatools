@@ -49,7 +49,7 @@ PhysicalSpace(const shared_ptr<RefSpace> &ref_space,
   ref_space_(ref_space)
 {
 //TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
-  Assert(this->get_ptr_grid() == this->get_ptr_map_func()->get_grid(),
+  Assert(this->get_ptr_grid() == this->get_ptr_map_func()->get_physical_domain()->get_grid(),
          ExcMessage("Reference space and mapping grids are not the same."));
 }
 
@@ -62,7 +62,7 @@ PhysicalSpace(const shared_ptr<const RefSpace> &ref_space,
   ref_space_(ref_space)
 {
 //TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
-  Assert(this->get_ptr_const_grid() == this->get_ptr_const_map_func()->get_grid(),
+  Assert(this->get_ptr_const_grid() == this->get_ptr_const_map_func()->get_physical_domain()->get_grid(),
          ExcMessage("Reference space and mapping grids are not the same."));
 }
 
@@ -157,7 +157,8 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
   auto grid =  this->get_ptr_const_grid();
 
   auto sub_ref_space = ref_space_->get_ref_sub_space(s_id, dof_map, sub_grid);
-  auto sub_map_func = SubMap::create(sub_grid, *this->get_ptr_const_map_func(), s_id, elem_map);
+  auto F = this->get_ptr_const_map_func();
+  auto sub_map_func = SubMap::create(sub_grid, F, s_id, elem_map);
   auto sub_space = SubSpace<k>::create_nonconst(sub_ref_space, sub_map_func);
   return sub_space;
 }
@@ -254,7 +255,7 @@ print_info(LogStream &out) const
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-get_elem_handler() const -> std::shared_ptr<SpaceElementHandler<dim_,codim_,range_,rank_,type_>>
+create_cache_handler() const -> std::shared_ptr<SpaceElementHandler<dim_,codim_,range_,rank_,type_>>
 {
   auto sp = const_cast<self_t *>(this)->shared_from_this();
   auto this_space = std::dynamic_pointer_cast<self_t>(sp);

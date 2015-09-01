@@ -65,7 +65,6 @@ public:
 
   using Func = Function<dim_,codim_,range_,rank_>;
 
-  using RefPoint = typename Func::RefPoint;
   using Point = typename Func::Point;
   using Value = typename Func::Value;
   template <int order>
@@ -183,10 +182,6 @@ public:
   virtual std::shared_ptr<self_t> clone() const;
 
 
-  virtual typename List::iterator &operator++() override
-  {
-    return ++this->get_grid_element();
-  }
 
 
   template <class ValueType, int sub_elem_dim = dim_>
@@ -272,7 +267,7 @@ public:
     const std::shared_ptr<const Quadrature<dim_>> &points,
     const std::string &dofs_property)
   {
-    auto elem_handler = this->space_->get_elem_handler();
+    auto elem_handler = this->space_->create_cache_handler();
     elem_handler->template set_flags<dim_>(ValueType::flag);
     elem_handler->init_element_cache(*this,points);
     elem_handler->fill_element_cache(*this);

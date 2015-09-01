@@ -320,12 +320,14 @@ copy_to_inactive_components_values(const SafeSTLVector<Index> &inactive_comp,
     for (Size basis_i = 0; basis_i < n_basis_comp;  ++basis_i)
     {
       const auto act_D_phi = D_phi.get_function_view(act_offset+basis_i);
+
       auto inact_D_phi = D_phi.get_function_view(offset+basis_i);
+
       for (int qp = 0; qp < n_points; ++qp)
         inact_D_phi[qp](comp) = act_D_phi[qp](act_comp);
-    }
-  }
-}
+
+    } // end loop basis_i
+  } // end loop comp
 }
 
 

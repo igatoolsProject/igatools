@@ -48,8 +48,8 @@ public:
 
   using typename base_t::GridType;
 
-  using typename base_t::topology_variant;
-  using typename base_t::eval_pts_variant;
+//  using typename base_t::topology_variant;
+//  using typename base_t::eval_pts_variant;
   using typename base_t::ElementAccessor;
 
   using SuperGrid = typename SupFunc::GridType;
@@ -61,22 +61,25 @@ public:
 
 public:
 
-  SubFunction(std::shared_ptr<GridType> grid,
+  SubFunction(std::shared_ptr<const GridType> grid,
               std::shared_ptr<const SupFunc> func,
               const int s_id,
               const InterGridMap &elem_map)
     :
-    base_t(grid),
+//    base_t(grid),
     sup_func_(func->clone()),
     s_id_(s_id),
     elem_map_(elem_map),
     sup_elem_(sup_func_->begin())
-  {}
+  {
+    Assert(false,ExcNotImplemented());
+    //TODO (martinelli, Sep 01, 2015): the base class is using its default constructor and this is an error. (this is a temporary solution in order to compile the library)
+  }
 
   SubFunction(const self_t &sub_f)
     :
     base_t(sub_f),
-    sup_func_(sub_f.sup_func_->clone()),
+    sup_func_(sub_f.sup_func_),
     s_id_(sub_f.s_id_),
     elem_map_(sub_f.elem_map_),
     sup_elem_(sub_f.sup_func_->begin())
@@ -84,7 +87,7 @@ public:
 
 
   static std::shared_ptr<base_t>
-  create(std::shared_ptr<GridType> grid,
+  create(std::shared_ptr<const GridType> grid,
          std::shared_ptr<const SupFunc> func,
          const int s_id,
          const InterGridMap &elem_map)
@@ -92,12 +95,13 @@ public:
     return std::make_shared<self_t>(grid, func, s_id, elem_map);
   }
 
-
+#if 0
   std::shared_ptr<base_t> clone() const override
   {
 
     return std::make_shared<self_t>(*this);
   }
+#endif
 
 #if 0
   void reset(const ValueFlags &flag, const eval_pts_variant &eval_pts) override
@@ -168,7 +172,7 @@ private:
   const int s_id_;
   const InterGridMap elem_map_;
 
-  typename SupFunc::ElementIterator sup_elem_;
+  typename SupFunc::ElementConstIterator sup_elem_;
 
 };
 
@@ -187,8 +191,8 @@ public:
 
   using typename base_t::GridType;
 
-  using typename base_t::topology_variant;
-  using typename base_t::eval_pts_variant;
+//  using typename base_t::topology_variant;
+//  using typename base_t::eval_pts_variant;
   using typename base_t::ElementAccessor;
 
   using SuperGrid = typename SupFunc::GridType;
@@ -198,17 +202,20 @@ public:
 
 public:
 
-  SubMapFunction(std::shared_ptr<GridType> grid,
-                 const SupFunc &func,
+  SubMapFunction(std::shared_ptr<const GridType> grid,
+                 const std::shared_ptr<const SupFunc> &func,
                  const int s_id,
                  const InterGridMap &elem_map)
     :
-    base_t(grid),
-    sup_func_(func.clone()),
+//    base_t(grid),
+    sup_func_(func),
     s_id_(s_id),
     elem_map_(elem_map),
     sup_elem_(sup_func_->begin())
-  {}
+  {
+    Assert(false,ExcNotImplemented());
+    //TODO (martinelli, Sep 01, 2015): the base class is using its default constructor and this is an error. (this is a temporary solution in order to compile the library)
+  }
 
 
 #if 0
@@ -236,11 +243,13 @@ public:
     sup_elem_(sub_f.sup_func_->begin())
   {}
 
+#if 0
   std::shared_ptr<base_t> clone() const override
   {
 
     return std::make_shared<self_t>(self_t(*this));
   }
+#endif
 
 #if 0
   static std::shared_ptr<base_t>
@@ -252,8 +261,8 @@ public:
 #endif
 
   static std::shared_ptr<base_t>
-  create(std::shared_ptr<GridType> grid,
-         const SupFunc &func,
+  create(std::shared_ptr<const GridType> grid,
+         std::shared_ptr<const SupFunc> &func,
          const int s_id,
          const InterGridMap &elem_map)
   {
@@ -333,11 +342,11 @@ public:
 #endif
 
 private:
-  std::shared_ptr<SupFunc> sup_func_;
+  std::shared_ptr<const SupFunc> sup_func_;
   const int s_id_;
   const InterGridMap elem_map_;
 
-  typename SupFunc::ElementIterator sup_elem_;
+  typename SupFunc::ElementConstIterator sup_elem_;
 
 };
 
