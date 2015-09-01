@@ -66,8 +66,46 @@ public:
   static const auto flag = Flags::w_measure;
 };
 
-}
+} // end namespace grid_element
 //---------------------------------------------------------------------------------------
+
+
+
+
+//---------------------------------------------------------------------------------------
+/**
+ * @name Admissible flags for the classes that are derived from FunctionElement.
+ */
+namespace function_element
+{
+enum class Flags
+{
+  /** Fill nothing */
+  none           =    0,
+
+  /** Function values */
+  value          =    1L << 1,
+
+  /** Function gradients */
+  gradient       =    1L << 2
+};
+
+struct _Value
+{
+  static const std::string name;
+  static const auto flag = Flags::value;
+};
+
+struct _Gradient
+{
+  static const std::string name;
+  static const auto flag = Flags::gradient;
+};
+
+} // end namespace function_element
+//---------------------------------------------------------------------------------------
+
+
 
 
 
@@ -135,7 +173,7 @@ public:
   static const auto flag = Flags::divergence;
 };
 
-}
+} // end namespace space_element
 //---------------------------------------------------------------------------------------
 
 

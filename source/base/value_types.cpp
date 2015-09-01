@@ -37,6 +37,16 @@ const string grid_element::_Weight::name = "Element Quadrature Weights";
 
 
 //---------------------------------------------------------------------
+const function_element::Flags function_element::_Value::flag;
+const string function_element::_Value::name = "Function values";
+
+const function_element::Flags function_element::_Gradient::flag;
+const string function_element::_Gradient::name = "Function gradients";
+//---------------------------------------------------------------------
+
+
+
+//---------------------------------------------------------------------
 const space_element::Flags space_element::_Value::flag;
 const string space_element::_Value::name = "Basis function values";
 

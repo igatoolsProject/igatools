@@ -37,20 +37,6 @@ template <int,int> class ConstPhysicalDomainElement;
 //template <int,int> class PhysicalDomainElement;
 
 
-//namespace function_element
-//{
-//enum class Flags
-//{
-//  /** Fill nothing */
-//  none           =    0,
-//
-//  /** Quadrature points on the element */
-//  value          =    1L << 1,
-//
-//  /** Quadrature weigths on the element */
-//  gradient       =    1L << 2
-//};
-//}
 
 /**
  *
@@ -225,18 +211,12 @@ public:
     return (++(*phys_domain_elem_));
   }
 
-private:
-  struct _Value
-  {
-    static const std::string name;
-    static const auto flag = Flags::value;
-  };
 
-  struct _Gradient
-  {
-    static const std::string name;
-    static const auto flag = Flags::gradient;
-  };
+  using _Value = function_element::_Value;
+  using _Gradient = function_element::_Gradient;
+
+private:
+
 
   using CType = boost::fusion::map<
                 boost::fusion::pair<     _Value,DataWithFlagStatus<ValueVector<Value>>>,

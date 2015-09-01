@@ -27,24 +27,11 @@
 #include <igatools/utils/value_vector.h>
 #include <igatools/base/quadrature.h>
 #include <igatools/geometry/grid_iterator.h>
+#include <igatools/base/value_types.h>
 
 IGA_NAMESPACE_OPEN
 
 
-namespace function_element
-{
-enum class Flags
-{
-  /** Fill nothing */
-  none           =    0,
-
-  /** Quadrature points on the element */
-  value          =    1L << 1,
-
-  /** Quadrature weigths on the element */
-  gradient       =    1L << 2
-};
-}
 
 template <int,int> class PhysicalDomain;
 template <int,int> class PhysicalDomainElementHandler;

@@ -180,17 +180,6 @@ print_cache_info(LogStream &out) const
   all_sub_elems_cache_->print_info(out);
 }
 
-template<int dim, int codim, int range, int rank,  class ContainerType_>
-const std::string
-FunctionElementBase<dim, codim, range, rank, ContainerType_>::
-_Value::name = "Element Quadrature Points";
-
-template<int dim, int codim, int range, int rank,  class ContainerType_>
-const std::string
-FunctionElementBase<dim, codim, range, rank, ContainerType_>::
-_Gradient::name = "Element Quadrature Weights";
-
-
 
 #ifdef SERIALIZATION
 template<int dim, int codim, int range, int rank,  class ContainerType_>
