@@ -24,6 +24,7 @@
 
 IGA_NAMESPACE_OPEN
 
+#if 0
 
 template <int dim>
 BSplineElementScalarEvaluator<dim>::
@@ -205,8 +206,10 @@ evaluate_derivative_at_points(
   AssertThrow(false,ExcNotImplemented());
 }
 
+#endif
 
 IGA_NAMESPACE_CLOSE
 
-
+#if 0
 #include <igatools/basis_functions/bspline_element_scalar_evaluator.inst>
+#endif

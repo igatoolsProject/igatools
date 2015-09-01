@@ -31,6 +31,7 @@
 
 IGA_NAMESPACE_OPEN
 
+#if 0
 
 /**
  * @brief Evaluator of scalar BSpline values and derivatives from
@@ -145,7 +146,7 @@ private:
   SafeSTLVector<SafeSTLArray<Values1DConstView,dim>> values1D_;
 };
 
-
+#endif
 
 IGA_NAMESPACE_CLOSE
 
