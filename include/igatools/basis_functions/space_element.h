@@ -197,7 +197,7 @@ public:
     SafeSTLVector<Index> dofs_local_to_elem;
 
     this->space_->get_element_dofs(
-      this->get_flat_index(),
+      this->get_index(),
       dofs_global,
       dofs_local_to_patch,
       dofs_local_to_elem,

@@ -40,14 +40,14 @@ void elem_dofs(const int n_knots = 4, const int deg=1)
 
   using Space = BSplineSpace<dim, range, rank>;
   auto grid  = CartesianGrid<dim>::create(n_knots);
-  auto space = Space::create(deg, grid);
+  auto space = Space::create_nonconst(deg, grid);
 
   auto elem = space->begin();
   auto end = space->end();
 
   for (; elem != end; ++elem)
   {
-    out << "Element index: " << elem->get_flat_index() << endl;
+    out << "Element index: " << elem->get_index() << endl;
     out << "Global dofs: ";
     elem->get_local_to_global(DofProperties::active).print_info(out);
     out << endl;

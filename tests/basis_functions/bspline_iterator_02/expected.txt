@@ -1,319 +1,319 @@
 ========================================================================
 elem_dofs
 ========================================================================
-Element index: 0
+Element index: [0]
 Global dofs: [ 0 1 ]
-Element index: 1
+Element index: [1]
 Global dofs: [ 1 2 ]
-Element index: 2
+Element index: [2]
 Global dofs: [ 2 3 ]
 ========================================================================
 
 ========================================================================
 elem_dofs
 ========================================================================
-Element index: 0
+Element index: [0]
 Global dofs: [ 0 1 4 5 ]
-Element index: 1
+Element index: [1]
 Global dofs: [ 1 2 5 6 ]
-Element index: 2
+Element index: [2]
 Global dofs: [ 2 3 6 7 ]
 ========================================================================
 
 ========================================================================
 elem_dofs
 ========================================================================
-Element index: 0
+Element index: [0]
 Global dofs: [ 0 1 4 5 8 9 ]
-Element index: 1
+Element index: [1]
 Global dofs: [ 1 2 5 6 9 10 ]
-Element index: 2
+Element index: [2]
 Global dofs: [ 2 3 6 7 10 11 ]
 ========================================================================
 
 ========================================================================
 elem_dofs
 ========================================================================
-Element index: 0
+Element index: [0,0]
 Global dofs: [ 0 1 4 5 ]
-Element index: 1
-Global dofs: [ 1 2 5 6 ]
-Element index: 2
-Global dofs: [ 2 3 6 7 ]
-Element index: 3
+Element index: [0,1]
 Global dofs: [ 4 5 8 9 ]
-Element index: 4
-Global dofs: [ 5 6 9 10 ]
-Element index: 5
-Global dofs: [ 6 7 10 11 ]
-Element index: 6
+Element index: [0,2]
 Global dofs: [ 8 9 12 13 ]
-Element index: 7
+Element index: [1,0]
+Global dofs: [ 1 2 5 6 ]
+Element index: [1,1]
+Global dofs: [ 5 6 9 10 ]
+Element index: [1,2]
 Global dofs: [ 9 10 13 14 ]
-Element index: 8
+Element index: [2,0]
+Global dofs: [ 2 3 6 7 ]
+Element index: [2,1]
+Global dofs: [ 6 7 10 11 ]
+Element index: [2,2]
 Global dofs: [ 10 11 14 15 ]
 ========================================================================
 
 ========================================================================
 elem_dofs
 ========================================================================
-Element index: 0
+Element index: [0,0]
 Global dofs: [ 0 1 4 5 16 17 20 21 ]
-Element index: 1
-Global dofs: [ 1 2 5 6 17 18 21 22 ]
-Element index: 2
-Global dofs: [ 2 3 6 7 18 19 22 23 ]
-Element index: 3
+Element index: [0,1]
 Global dofs: [ 4 5 8 9 20 21 24 25 ]
-Element index: 4
-Global dofs: [ 5 6 9 10 21 22 25 26 ]
-Element index: 5
-Global dofs: [ 6 7 10 11 22 23 26 27 ]
-Element index: 6
+Element index: [0,2]
 Global dofs: [ 8 9 12 13 24 25 28 29 ]
-Element index: 7
+Element index: [1,0]
+Global dofs: [ 1 2 5 6 17 18 21 22 ]
+Element index: [1,1]
+Global dofs: [ 5 6 9 10 21 22 25 26 ]
+Element index: [1,2]
 Global dofs: [ 9 10 13 14 25 26 29 30 ]
-Element index: 8
+Element index: [2,0]
+Global dofs: [ 2 3 6 7 18 19 22 23 ]
+Element index: [2,1]
+Global dofs: [ 6 7 10 11 22 23 26 27 ]
+Element index: [2,2]
 Global dofs: [ 10 11 14 15 26 27 30 31 ]
 ========================================================================
 
 ========================================================================
 elem_dofs
 ========================================================================
-Element index: 0
+Element index: [0,0]
 Global dofs: [ 0 1 4 5 16 17 20 21 32 33 36 37 ]
-Element index: 1
-Global dofs: [ 1 2 5 6 17 18 21 22 33 34 37 38 ]
-Element index: 2
-Global dofs: [ 2 3 6 7 18 19 22 23 34 35 38 39 ]
-Element index: 3
+Element index: [0,1]
 Global dofs: [ 4 5 8 9 20 21 24 25 36 37 40 41 ]
-Element index: 4
-Global dofs: [ 5 6 9 10 21 22 25 26 37 38 41 42 ]
-Element index: 5
-Global dofs: [ 6 7 10 11 22 23 26 27 38 39 42 43 ]
-Element index: 6
+Element index: [0,2]
 Global dofs: [ 8 9 12 13 24 25 28 29 40 41 44 45 ]
-Element index: 7
+Element index: [1,0]
+Global dofs: [ 1 2 5 6 17 18 21 22 33 34 37 38 ]
+Element index: [1,1]
+Global dofs: [ 5 6 9 10 21 22 25 26 37 38 41 42 ]
+Element index: [1,2]
 Global dofs: [ 9 10 13 14 25 26 29 30 41 42 45 46 ]
-Element index: 8
+Element index: [2,0]
+Global dofs: [ 2 3 6 7 18 19 22 23 34 35 38 39 ]
+Element index: [2,1]
+Global dofs: [ 6 7 10 11 22 23 26 27 38 39 42 43 ]
+Element index: [2,2]
 Global dofs: [ 10 11 14 15 26 27 30 31 42 43 46 47 ]
 ========================================================================
 
 ========================================================================
 elem_dofs
 ========================================================================
-Element index: 0
+Element index: [0,0,0]
 Global dofs: [ 0 1 4 5 16 17 20 21 ]
-Element index: 1
-Global dofs: [ 1 2 5 6 17 18 21 22 ]
-Element index: 2
-Global dofs: [ 2 3 6 7 18 19 22 23 ]
-Element index: 3
-Global dofs: [ 4 5 8 9 20 21 24 25 ]
-Element index: 4
-Global dofs: [ 5 6 9 10 21 22 25 26 ]
-Element index: 5
-Global dofs: [ 6 7 10 11 22 23 26 27 ]
-Element index: 6
-Global dofs: [ 8 9 12 13 24 25 28 29 ]
-Element index: 7
-Global dofs: [ 9 10 13 14 25 26 29 30 ]
-Element index: 8
-Global dofs: [ 10 11 14 15 26 27 30 31 ]
-Element index: 9
+Element index: [0,0,1]
 Global dofs: [ 16 17 20 21 32 33 36 37 ]
-Element index: 10
-Global dofs: [ 17 18 21 22 33 34 37 38 ]
-Element index: 11
-Global dofs: [ 18 19 22 23 34 35 38 39 ]
-Element index: 12
-Global dofs: [ 20 21 24 25 36 37 40 41 ]
-Element index: 13
-Global dofs: [ 21 22 25 26 37 38 41 42 ]
-Element index: 14
-Global dofs: [ 22 23 26 27 38 39 42 43 ]
-Element index: 15
-Global dofs: [ 24 25 28 29 40 41 44 45 ]
-Element index: 16
-Global dofs: [ 25 26 29 30 41 42 45 46 ]
-Element index: 17
-Global dofs: [ 26 27 30 31 42 43 46 47 ]
-Element index: 18
+Element index: [0,0,2]
 Global dofs: [ 32 33 36 37 48 49 52 53 ]
-Element index: 19
-Global dofs: [ 33 34 37 38 49 50 53 54 ]
-Element index: 20
-Global dofs: [ 34 35 38 39 50 51 54 55 ]
-Element index: 21
+Element index: [0,1,0]
+Global dofs: [ 4 5 8 9 20 21 24 25 ]
+Element index: [0,1,1]
+Global dofs: [ 20 21 24 25 36 37 40 41 ]
+Element index: [0,1,2]
 Global dofs: [ 36 37 40 41 52 53 56 57 ]
-Element index: 22
-Global dofs: [ 37 38 41 42 53 54 57 58 ]
-Element index: 23
-Global dofs: [ 38 39 42 43 54 55 58 59 ]
-Element index: 24
+Element index: [0,2,0]
+Global dofs: [ 8 9 12 13 24 25 28 29 ]
+Element index: [0,2,1]
+Global dofs: [ 24 25 28 29 40 41 44 45 ]
+Element index: [0,2,2]
 Global dofs: [ 40 41 44 45 56 57 60 61 ]
-Element index: 25
+Element index: [1,0,0]
+Global dofs: [ 1 2 5 6 17 18 21 22 ]
+Element index: [1,0,1]
+Global dofs: [ 17 18 21 22 33 34 37 38 ]
+Element index: [1,0,2]
+Global dofs: [ 33 34 37 38 49 50 53 54 ]
+Element index: [1,1,0]
+Global dofs: [ 5 6 9 10 21 22 25 26 ]
+Element index: [1,1,1]
+Global dofs: [ 21 22 25 26 37 38 41 42 ]
+Element index: [1,1,2]
+Global dofs: [ 37 38 41 42 53 54 57 58 ]
+Element index: [1,2,0]
+Global dofs: [ 9 10 13 14 25 26 29 30 ]
+Element index: [1,2,1]
+Global dofs: [ 25 26 29 30 41 42 45 46 ]
+Element index: [1,2,2]
 Global dofs: [ 41 42 45 46 57 58 61 62 ]
-Element index: 26
+Element index: [2,0,0]
+Global dofs: [ 2 3 6 7 18 19 22 23 ]
+Element index: [2,0,1]
+Global dofs: [ 18 19 22 23 34 35 38 39 ]
+Element index: [2,0,2]
+Global dofs: [ 34 35 38 39 50 51 54 55 ]
+Element index: [2,1,0]
+Global dofs: [ 6 7 10 11 22 23 26 27 ]
+Element index: [2,1,1]
+Global dofs: [ 22 23 26 27 38 39 42 43 ]
+Element index: [2,1,2]
+Global dofs: [ 38 39 42 43 54 55 58 59 ]
+Element index: [2,2,0]
+Global dofs: [ 10 11 14 15 26 27 30 31 ]
+Element index: [2,2,1]
+Global dofs: [ 26 27 30 31 42 43 46 47 ]
+Element index: [2,2,2]
 Global dofs: [ 42 43 46 47 58 59 62 63 ]
 ========================================================================
 
 ========================================================================
 elem_dofs
 ========================================================================
-Element index: 0
+Element index: [0,0,0]
 Global dofs: [ 0 1 4 5 16 17 20 21 64 65 68 69 80 81 84 85 128 129 132 133 144 145 148 149 ]
-Element index: 1
-Global dofs: [ 1 2 5 6 17 18 21 22 65 66 69 70 81 82 85 86 129 130 133 134 145 146 149 150 ]
-Element index: 2
-Global dofs: [ 2 3 6 7 18 19 22 23 66 67 70 71 82 83 86 87 130 131 134 135 146 147 150 151 ]
-Element index: 3
-Global dofs: [ 4 5 8 9 20 21 24 25 68 69 72 73 84 85 88 89 132 133 136 137 148 149 152 153 ]
-Element index: 4
-Global dofs: [ 5 6 9 10 21 22 25 26 69 70 73 74 85 86 89 90 133 134 137 138 149 150 153 154 ]
-Element index: 5
-Global dofs: [ 6 7 10 11 22 23 26 27 70 71 74 75 86 87 90 91 134 135 138 139 150 151 154 155 ]
-Element index: 6
-Global dofs: [ 8 9 12 13 24 25 28 29 72 73 76 77 88 89 92 93 136 137 140 141 152 153 156 157 ]
-Element index: 7
-Global dofs: [ 9 10 13 14 25 26 29 30 73 74 77 78 89 90 93 94 137 138 141 142 153 154 157 158 ]
-Element index: 8
-Global dofs: [ 10 11 14 15 26 27 30 31 74 75 78 79 90 91 94 95 138 139 142 143 154 155 158 159 ]
-Element index: 9
+Element index: [0,0,1]
 Global dofs: [ 16 17 20 21 32 33 36 37 80 81 84 85 96 97 100 101 144 145 148 149 160 161 164 165 ]
-Element index: 10
-Global dofs: [ 17 18 21 22 33 34 37 38 81 82 85 86 97 98 101 102 145 146 149 150 161 162 165 166 ]
-Element index: 11
-Global dofs: [ 18 19 22 23 34 35 38 39 82 83 86 87 98 99 102 103 146 147 150 151 162 163 166 167 ]
-Element index: 12
-Global dofs: [ 20 21 24 25 36 37 40 41 84 85 88 89 100 101 104 105 148 149 152 153 164 165 168 169 ]
-Element index: 13
-Global dofs: [ 21 22 25 26 37 38 41 42 85 86 89 90 101 102 105 106 149 150 153 154 165 166 169 170 ]
-Element index: 14
-Global dofs: [ 22 23 26 27 38 39 42 43 86 87 90 91 102 103 106 107 150 151 154 155 166 167 170 171 ]
-Element index: 15
-Global dofs: [ 24 25 28 29 40 41 44 45 88 89 92 93 104 105 108 109 152 153 156 157 168 169 172 173 ]
-Element index: 16
-Global dofs: [ 25 26 29 30 41 42 45 46 89 90 93 94 105 106 109 110 153 154 157 158 169 170 173 174 ]
-Element index: 17
-Global dofs: [ 26 27 30 31 42 43 46 47 90 91 94 95 106 107 110 111 154 155 158 159 170 171 174 175 ]
-Element index: 18
+Element index: [0,0,2]
 Global dofs: [ 32 33 36 37 48 49 52 53 96 97 100 101 112 113 116 117 160 161 164 165 176 177 180 181 ]
-Element index: 19
-Global dofs: [ 33 34 37 38 49 50 53 54 97 98 101 102 113 114 117 118 161 162 165 166 177 178 181 182 ]
-Element index: 20
-Global dofs: [ 34 35 38 39 50 51 54 55 98 99 102 103 114 115 118 119 162 163 166 167 178 179 182 183 ]
-Element index: 21
+Element index: [0,1,0]
+Global dofs: [ 4 5 8 9 20 21 24 25 68 69 72 73 84 85 88 89 132 133 136 137 148 149 152 153 ]
+Element index: [0,1,1]
+Global dofs: [ 20 21 24 25 36 37 40 41 84 85 88 89 100 101 104 105 148 149 152 153 164 165 168 169 ]
+Element index: [0,1,2]
 Global dofs: [ 36 37 40 41 52 53 56 57 100 101 104 105 116 117 120 121 164 165 168 169 180 181 184 185 ]
-Element index: 22
-Global dofs: [ 37 38 41 42 53 54 57 58 101 102 105 106 117 118 121 122 165 166 169 170 181 182 185 186 ]
-Element index: 23
-Global dofs: [ 38 39 42 43 54 55 58 59 102 103 106 107 118 119 122 123 166 167 170 171 182 183 186 187 ]
-Element index: 24
+Element index: [0,2,0]
+Global dofs: [ 8 9 12 13 24 25 28 29 72 73 76 77 88 89 92 93 136 137 140 141 152 153 156 157 ]
+Element index: [0,2,1]
+Global dofs: [ 24 25 28 29 40 41 44 45 88 89 92 93 104 105 108 109 152 153 156 157 168 169 172 173 ]
+Element index: [0,2,2]
 Global dofs: [ 40 41 44 45 56 57 60 61 104 105 108 109 120 121 124 125 168 169 172 173 184 185 188 189 ]
-Element index: 25
+Element index: [1,0,0]
+Global dofs: [ 1 2 5 6 17 18 21 22 65 66 69 70 81 82 85 86 129 130 133 134 145 146 149 150 ]
+Element index: [1,0,1]
+Global dofs: [ 17 18 21 22 33 34 37 38 81 82 85 86 97 98 101 102 145 146 149 150 161 162 165 166 ]
+Element index: [1,0,2]
+Global dofs: [ 33 34 37 38 49 50 53 54 97 98 101 102 113 114 117 118 161 162 165 166 177 178 181 182 ]
+Element index: [1,1,0]
+Global dofs: [ 5 6 9 10 21 22 25 26 69 70 73 74 85 86 89 90 133 134 137 138 149 150 153 154 ]
+Element index: [1,1,1]
+Global dofs: [ 21 22 25 26 37 38 41 42 85 86 89 90 101 102 105 106 149 150 153 154 165 166 169 170 ]
+Element index: [1,1,2]
+Global dofs: [ 37 38 41 42 53 54 57 58 101 102 105 106 117 118 121 122 165 166 169 170 181 182 185 186 ]
+Element index: [1,2,0]
+Global dofs: [ 9 10 13 14 25 26 29 30 73 74 77 78 89 90 93 94 137 138 141 142 153 154 157 158 ]
+Element index: [1,2,1]
+Global dofs: [ 25 26 29 30 41 42 45 46 89 90 93 94 105 106 109 110 153 154 157 158 169 170 173 174 ]
+Element index: [1,2,2]
 Global dofs: [ 41 42 45 46 57 58 61 62 105 106 109 110 121 122 125 126 169 170 173 174 185 186 189 190 ]
-Element index: 26
+Element index: [2,0,0]
+Global dofs: [ 2 3 6 7 18 19 22 23 66 67 70 71 82 83 86 87 130 131 134 135 146 147 150 151 ]
+Element index: [2,0,1]
+Global dofs: [ 18 19 22 23 34 35 38 39 82 83 86 87 98 99 102 103 146 147 150 151 162 163 166 167 ]
+Element index: [2,0,2]
+Global dofs: [ 34 35 38 39 50 51 54 55 98 99 102 103 114 115 118 119 162 163 166 167 178 179 182 183 ]
+Element index: [2,1,0]
+Global dofs: [ 6 7 10 11 22 23 26 27 70 71 74 75 86 87 90 91 134 135 138 139 150 151 154 155 ]
+Element index: [2,1,1]
+Global dofs: [ 22 23 26 27 38 39 42 43 86 87 90 91 102 103 106 107 150 151 154 155 166 167 170 171 ]
+Element index: [2,1,2]
+Global dofs: [ 38 39 42 43 54 55 58 59 102 103 106 107 118 119 122 123 166 167 170 171 182 183 186 187 ]
+Element index: [2,2,0]
+Global dofs: [ 10 11 14 15 26 27 30 31 74 75 78 79 90 91 94 95 138 139 142 143 154 155 158 159 ]
+Element index: [2,2,1]
+Global dofs: [ 26 27 30 31 42 43 46 47 90 91 94 95 106 107 110 111 154 155 158 159 170 171 174 175 ]
+Element index: [2,2,2]
 Global dofs: [ 42 43 46 47 58 59 62 63 106 107 110 111 122 123 126 127 170 171 174 175 186 187 190 191 ]
 ========================================================================
 
 ========================================================================
 elem_dofs
 ========================================================================
-Element index: 0
+Element index: [0]
 Global dofs: [ 0 ]
-Element index: 1
+Element index: [1]
 Global dofs: [ 1 ]
-Element index: 2
+Element index: [2]
 Global dofs: [ 2 ]
 ========================================================================
 
 ========================================================================
 elem_dofs
 ========================================================================
-Element index: 0
+Element index: [0]
 Global dofs: [ 0 3 ]
-Element index: 1
+Element index: [1]
 Global dofs: [ 1 4 ]
-Element index: 2
+Element index: [2]
 Global dofs: [ 2 5 ]
 ========================================================================
 
 ========================================================================
 elem_dofs
 ========================================================================
-Element index: 0
+Element index: [0]
 Global dofs: [ 0 3 6 ]
-Element index: 1
+Element index: [1]
 Global dofs: [ 1 4 7 ]
-Element index: 2
+Element index: [2]
 Global dofs: [ 2 5 8 ]
 ========================================================================
 
 ========================================================================
 elem_dofs
 ========================================================================
-Element index: 0
+Element index: [0]
 Global dofs: [ 0 1 ]
-Element index: 1
+Element index: [1]
 Global dofs: [ 1 2 ]
-Element index: 2
+Element index: [2]
 Global dofs: [ 2 3 ]
 ========================================================================
 
 ========================================================================
 elem_dofs
 ========================================================================
-Element index: 0
+Element index: [0]
 Global dofs: [ 0 1 4 5 ]
-Element index: 1
+Element index: [1]
 Global dofs: [ 1 2 5 6 ]
-Element index: 2
+Element index: [2]
 Global dofs: [ 2 3 6 7 ]
 ========================================================================
 
 ========================================================================
 elem_dofs
 ========================================================================
-Element index: 0
+Element index: [0]
 Global dofs: [ 0 1 4 5 8 9 ]
-Element index: 1
+Element index: [1]
 Global dofs: [ 1 2 5 6 9 10 ]
-Element index: 2
+Element index: [2]
 Global dofs: [ 2 3 6 7 10 11 ]
 ========================================================================
 
 ========================================================================
 elem_dofs
 ========================================================================
-Element index: 0
+Element index: [0]
 Global dofs: [ 0 1 2 ]
-Element index: 1
+Element index: [1]
 Global dofs: [ 1 2 3 ]
-Element index: 2
+Element index: [2]
 Global dofs: [ 2 3 4 ]
 ========================================================================
 
 ========================================================================
 elem_dofs
 ========================================================================
-Element index: 0
+Element index: [0]
 Global dofs: [ 0 1 2 5 6 7 ]
-Element index: 1
+Element index: [1]
 Global dofs: [ 1 2 3 6 7 8 ]
-Element index: 2
+Element index: [2]
 Global dofs: [ 2 3 4 7 8 9 ]
 ========================================================================
 
 ========================================================================
 elem_dofs
 ========================================================================
-Element index: 0
+Element index: [0]
 Global dofs: [ 0 1 2 5 6 7 10 11 12 ]
-Element index: 1
+Element index: [1]
 Global dofs: [ 1 2 3 6 7 8 11 12 13 ]
-Element index: 2
+Element index: [2]
 Global dofs: [ 2 3 4 7 8 9 12 13 14 ]
 ========================================================================
 
