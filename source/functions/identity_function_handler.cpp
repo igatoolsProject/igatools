@@ -75,8 +75,7 @@ IdentityFunctionElementHandler<dim,space_dim>::
 init_cache(ConstElementAccessor &elem,
            const eval_pts_variant &quad) const
 {
-  grid_handler_->
-  init_cache(elem.get_domain_element().get_grid_element(), quad);
+  grid_handler_->init_cache(*(elem.get_domain_element().get_grid_element()), quad);
 }
 
 
@@ -89,8 +88,7 @@ fill_cache(const topology_variant &sdim,
            const int s_id) const -> void
 {
   grid_handler_->
-  fill_cache(sdim,
-             elem.get_domain_element()->get_grid_element(),
+  fill_cache(sdim, *(elem.get_domain_element().get_grid_element()),
              s_id);
 //
 //
@@ -141,5 +139,5 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> &identity_function)
 
 IGA_NAMESPACE_CLOSE
 
-//#include <igatools/functions/identity_function_handler.inst>
+#include <igatools/functions/identity_function_handler.inst>
 
