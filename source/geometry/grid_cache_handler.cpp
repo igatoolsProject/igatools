@@ -140,6 +140,17 @@ init_cache(ConstElementAccessor &elem,
 }
 
 
+template <int dim>
+void
+GridElementHandler<dim>::
+fill_cache(const topology_variant &sdim,
+           ConstElementAccessor &elem,
+           const int s_id) const
+{
+  auto disp = FillCacheDispatcher(this, elem, s_id);
+  boost::apply_visitor(disp, sdim);
+}
+
 
 template <int dim>
 template <int sdim>

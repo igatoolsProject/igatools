@@ -160,6 +160,10 @@ public:
   template <int sdim>
   void fill_cache(ConstElementAccessor &elem, const int s_id) const;
 
+  void fill_cache(const topology_variant &sdim,
+                  ConstElementAccessor &elem,
+                  const int s_id) const;
+
 
   template <int sdim>
   void fill_cache(ElementConstIterator &elem, const int s_id) const
@@ -244,6 +248,31 @@ private:
 
   };
 
+
+
+
+  struct FillCacheDispatcher : boost::static_visitor<void>
+  {
+    FillCacheDispatcher(self_t const *grid_handler,
+                        ConstElementAccessor &elem,
+                        const int s_id)
+      :
+      grid_handler_(grid_handler),
+      elem_(elem),
+      s_id_(s_id)
+    {}
+
+    template<int sdim>
+    void operator()(const Topology<sdim> &)
+    {
+      grid_handler_->template fill_cache<sdim>(elem_, s_id_);
+    }
+
+    self_t const *grid_handler_;
+    ConstElementAccessor &elem_;
+    int s_id_;
+
+  };
 
 private:
 
