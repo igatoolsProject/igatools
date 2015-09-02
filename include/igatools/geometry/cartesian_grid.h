@@ -650,13 +650,13 @@ public:
   /**
    * Create an element (defined on this grid) with a given index and the given property
    */
-  std::shared_ptr<ConstElementAccessor>
+  std::unique_ptr<ConstElementAccessor>
   create_element(const ListIt &index, const PropId &property) const;
 
   /**
    * Create an element (defined on this grid) with a given index and the given property
    */
-  std::shared_ptr<ElementAccessor>
+  std::unique_ptr<ElementAccessor>
   create_element(const ListIt &index, const PropId &property);
 
   /**

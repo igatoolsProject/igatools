@@ -58,10 +58,10 @@ template<int dim_, int range_ = 1, int rank_ = 1>
 class ReferenceSpace :
   public Space<dim_,0,range_,rank_,Transformation::h_grad>
 {
+public:
   using base_t = Space<dim_,0,range_,rank_,Transformation::h_grad>;
   using self_t = ReferenceSpace<dim_,range_,rank_>;
 
-public:
   static const int dim       = dim_;
   static const int codim     = 0;
   static const int space_dim = dim_;

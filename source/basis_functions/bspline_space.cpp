@@ -383,11 +383,11 @@ template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
 create_element(const ListIt &index, const PropId &property) const
--> std::shared_ptr<SpaceElement<dim_,0,range_,rank_,Transformation::h_grad> >
+-> std::unique_ptr<SpaceElement<dim_,0,range_,rank_,Transformation::h_grad> >
 {
   using Elem = BSplineElement<dim_,range_,rank_>;
 
-  auto elem = make_shared<Elem>(this->get_this_space(),index,property);
+  auto elem = std::make_unique<Elem>(this->get_this_space(),index,property);
   Assert(elem != nullptr, ExcNullPtr());
 
   return elem;

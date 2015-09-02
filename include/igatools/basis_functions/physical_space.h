@@ -143,7 +143,7 @@ public:
   /**
    * Create an element (defined on this grid) with a given index.
    */
-  std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_,type_> >
+  std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_,type_> >
   create_element(const ListIt &index, const PropId &property) const override final;
 
 

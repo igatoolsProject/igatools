@@ -334,7 +334,7 @@ public:
   /**
    * Create and element (defined on this space) with a given flat_index
    */
-  virtual std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_,type_> >
+  virtual std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_,type_> >
   create_element(const ListIt &index, const PropId &property) const = 0;
 
 

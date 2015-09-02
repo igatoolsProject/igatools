@@ -44,7 +44,7 @@ FunctionElementBase(const std::shared_ptr<ContainerType_> func,
 //    Assert(phys_domain_elem_ != nullptr, ExcNullPtr());
 }
 
-
+#if 0
 template<int dim, int codim, int range, int rank,  class ContainerType_>
 FunctionElementBase<dim, codim, range, rank, ContainerType_>::
 FunctionElementBase(const self_t &elem,
@@ -63,7 +63,7 @@ FunctionElementBase(const self_t &elem,
     phys_domain_elem_ = std::make_shared<DomainElem>(*elem.phys_domain_elem_,CopyPolicy::deep);
   }
 }
-
+#endif
 
 template<int dim, int codim, int range, int rank,  class ContainerType_>
 FunctionElementBase<dim,codim,range,rank, ContainerType_> &

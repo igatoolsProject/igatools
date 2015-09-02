@@ -112,9 +112,9 @@ template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 create_element(const ListIt &index, const PropId &property) const
--> std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_,type_>>
+-> std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_,type_>>
 {
-  auto elem = make_shared<ElementAccessor>(this->get_this_space(),index,property);
+  auto elem = std::make_unique<ElementAccessor>(this->get_this_space(),index,property);
   Assert(elem != nullptr, ExcNullPtr());
 
   return elem;

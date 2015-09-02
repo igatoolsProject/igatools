@@ -91,8 +91,9 @@ public:
    * classic copy constructor)
    * uses the deep copy.
    */
-  FunctionElementBase(const self_t &elem,
-                      const CopyPolicy &copy_policy = CopyPolicy::deep);
+//  FunctionElementBase(const self_t &elem,
+//                      const CopyPolicy &copy_policy = CopyPolicy::deep);
+  FunctionElementBase(const self_t &elem) = delete;
 
   /**
    * Move constructor.
@@ -244,7 +245,7 @@ private:
 private:
   std::shared_ptr<ContainerType_> func_;
 
-  std::shared_ptr<DomainElem> phys_domain_elem_;
+  std::unique_ptr<DomainElem> phys_domain_elem_;
 
   std::shared_ptr<AllSubElementsCache<Cache>> all_sub_elems_cache_;
 

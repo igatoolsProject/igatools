@@ -46,10 +46,10 @@ class PhysicalSpaceElement
   :
   public SpaceElement<dim_,codim_,range_,rank_,type_>
 {
-public :
   using self_t = PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>;
   using parent_t = SpaceElement<dim_,codim_,range_,rank_,type_>;
 
+public :
   using PhysSpace = PhysicalSpace<dim_,range_,rank_,codim_,type_>;
   /** Type required by the CartesianGridIterator templated iterator */
   using ContainerType = const PhysSpace;
@@ -99,8 +99,9 @@ public:
    * The default behaviour (i.e. using the proper interface of a classic copy constructor)
    * uses the deep copy.
    */
-  PhysicalSpaceElement(const self_t &in,
-                       const CopyPolicy &copy_policy = CopyPolicy::deep);
+  PhysicalSpaceElement(const self_t &in) = delete;
+//  PhysicalSpaceElement(const self_t &in,
+//                       const CopyPolicy &copy_policy = CopyPolicy::deep);
 
 
   /**
@@ -339,17 +340,17 @@ private:
   template <class Accessor> friend class GridIteratorBase;
   template <int,int,int,int,Transformation> friend class PhysSpaceElementHandler;
 
-  std::shared_ptr<RefElemAccessor> ref_space_element_;
+  std::unique_ptr<typename RefElemAccessor::parent_t> ref_space_element_;
 
-  std::shared_ptr<PhysDomainElem> phys_domain_element_;
+  std::unique_ptr<PhysDomainElem> phys_domain_element_;
 
-
+#if 0
   /**
    * Creates a new object performing a deep copy of the current object using the PhysicalSpaceElement
    * copy constructor.
    */
   std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_,type_>> clone() const override final;
-
+#endif
 
 #ifdef SERIALIZATION
   /**
