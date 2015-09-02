@@ -28,20 +28,6 @@
 
 IGA_NAMESPACE_OPEN
 
-namespace physical_domain_element
-{
-enum class Flags
-{
-  /** Fill nothing */
-  none           =    0,
-
-  /** Quadrature points on the element */
-  point           =    1L << 1,
-
-  /** Quadrature weigths on the element */
-  w_measure       =    1L << 2
-};
-}
 
 template <int, int, class> class PhysicalDomainElementBase;
 template <int, int> class PhysicalDomainElement;
@@ -75,7 +61,7 @@ public:
   static const int space_dim = dim_ + codim_;
   static const int dim = dim_;
 
-  using PhysDomainType = const PhysicalDomain<dim_, codim_>;
+  using DomainType = const PhysicalDomain<dim_, codim_>;
   using GridType = const CartesianGrid<dim_>;
   using GridHandler = typename GridType::ElementHandler;
 
@@ -128,25 +114,25 @@ private:
   PhysicalDomainElementHandler() = default;
 
 public:
-  PhysicalDomainElementHandler(std::shared_ptr<PhysDomainType> domain);
+  PhysicalDomainElementHandler(std::shared_ptr<DomainType> domain);
 
 
   ~PhysicalDomainElementHandler();
 
   static std::shared_ptr<self_t>
-  create(std::shared_ptr<PhysDomainType> domain)
+  create(std::shared_ptr<DomainType> domain)
   {
     return std::shared_ptr<self_t>(new self_t(domain));
   }
 
 
   static std::shared_ptr<const self_t>
-  const_create(std::shared_ptr<PhysDomainType> domain)
+  const_create(std::shared_ptr<DomainType> domain)
   {
     return create(domain);
   }
 
-  std::shared_ptr<PhysDomainType> get_domain() const
+  std::shared_ptr<DomainType> get_domain() const
   {
     return domain_;
   }
@@ -385,7 +371,7 @@ private:
 #endif
 
 private:
-  std::shared_ptr<PhysDomainType> domain_;
+  std::shared_ptr<DomainType> domain_;
 
   std::shared_ptr<GridHandler> grid_handler_;
 

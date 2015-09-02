@@ -46,7 +46,7 @@ public:
   using GridElem = typename ContainerType_::GridType::ConstElementAccessor;
   using ListIt = typename ContainerType_::ListIt;
 
-  using Flags = physical_domain_element::Flags;
+  using Flags = domain_element::Flags;
 
 //    static const int dim = dim_;
 //    static const int codim = codim_;
@@ -251,21 +251,13 @@ private:
   }
 
 public:
-  struct _Point
-  {
-    static const std::string name;
-    static const auto flag = Flags::point;
-  };
+  using _Point     = domain_element::_Point;
+  using _W_Measure = domain_element::_W_Measure;
 
-  struct _W_Measure
-  {
-    static const std::string name;
-    static const auto flag = Flags::w_measure;
-  };
 private:
   using CType = boost::fusion::map<
-                boost::fusion::pair<       _Point,DataWithFlagStatus<ValueVector<Points<space_dim>>>>,
-                boost::fusion::pair<     _W_Measure,DataWithFlagStatus<ValueVector<Real>>>>;
+                boost::fusion::pair< _Point,     DataWithFlagStatus<ValueVector<Point>,
+                boost::fusion::pair< _W_Measure, DataWithFlagStatus<ValueVector<Real>>>>;
 //                ,
 //                  boost::fusion::pair<   _InvGradient,DataWithFlagStatus<ValueVector<InvDerivative<1>>>>,
 //                  boost::fusion::pair<    _InvHessian,DataWithFlagStatus<ValueVector<InvDerivative<2>>>>,
@@ -275,19 +267,8 @@ private:
 //                  >;
 
 
-//    /**
-//     * Returns the flags that are valid to be used with this class.
-//     *
-//     * @note The valid flags are defined to be the ones that can be inferred from the ValueType(s)
-//     * used as key of the boost::fusion::map in CType.
-//     */
-//    static ValueFlags get_valid_flags()
-//    {
-//        return cacheutils::get_valid_flags_from_cache_type(CType());
-//    }
 
-  using Cache = FuncValuesCache<dim_,CType>;
-
+  using Cache = FuncValuesCache<dim_, CType>;
 
 public:
   using CacheType = AllSubElementsCache<Cache>;

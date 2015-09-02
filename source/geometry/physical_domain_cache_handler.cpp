@@ -30,7 +30,7 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_, int codim_>
 PhysicalDomainElementHandler<dim_, codim_>::
-PhysicalDomainElementHandler(std::shared_ptr<PhysDomainType> domain)
+PhysicalDomainElementHandler(std::shared_ptr<DomainType> domain)
   :
   domain_(domain)
 {

@@ -37,6 +37,16 @@ const string grid_element::_Weight::name = "Element Quadrature Weights";
 
 
 //---------------------------------------------------------------------
+const domain_element::Flags domain_element::_Point::flag;
+const string domain_element::_Point::name = "Element Quadrature Points";
+
+const domain_element::Flags domain_element::_W_Measure::flag;
+const string domain_element::_W_Measure::name = "Element measure x Weights";
+//---------------------------------------------------------------------
+
+
+
+//---------------------------------------------------------------------
 const function_element::Flags function_element::_Value::flag;
 const string function_element::_Value::name = "Function values";
 

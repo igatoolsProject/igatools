@@ -321,15 +321,6 @@ get_D_external_normals() const -> ValueVector< Derivative<1> >
 //    }
 
 
-template<int dim_, int codim_, class ContainerType_>
-const std::string
-PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
-_Point::name = "";
-
-template<int dim_, int codim_, class ContainerType_>
-const std::string
-PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
-_W_Measure::name = "";
 
 
 IGA_NAMESPACE_CLOSE

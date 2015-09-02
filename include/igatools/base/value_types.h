@@ -71,6 +71,43 @@ public:
 
 
 
+namespace domain_element
+{
+enum class Flags
+{
+  /** Fill nothing */
+  none           =    0,
+
+  /** Quadrature points on the element */
+  point          =    1L << 1,
+
+  /** Quadrature weigths on the element */
+  w_measure      =    1L << 2
+};
+
+/**
+ * Alias used to define the container for the points in the cache.
+ */
+class _Point
+{
+public:
+  static const std::string name;
+  static const auto flag = Flags::point;
+};
+
+/**
+ * Alias used to define the container for the quadrature weights in the cache.
+ */
+class _W_Measure
+{
+public:
+  static const std::string name;
+  static const auto flag = Flags::w_measure;
+};
+
+} // end namespace grid_element
+//------------------------------------------------------------------------------
+
 
 //---------------------------------------------------------------------------------------
 /**

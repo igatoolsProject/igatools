@@ -158,18 +158,18 @@ template <int dim>
 template <int sdim>
 void
 GridElementHandler<dim>::
-fill_cache(ConstElementAccessor &elem, const int j) const
+fill_cache(ConstElementAccessor &elem, const int s_id) const
 {
   using _Point = typename ConstElementAccessor::_Point;
   using _Weight = typename ConstElementAccessor::_Weight;
   Assert(elem.all_sub_elems_cache_ != nullptr, ExcNullPtr());
-  auto &cache = elem.all_sub_elems_cache_->template get_sub_elem_cache<sdim>(j);
+  auto &cache = elem.all_sub_elems_cache_->template get_sub_elem_cache<sdim>(s_id);
 
   const auto &s_quad = elem.quad_list_.template get_quad<sdim>();
 
   if (cache.template status_fill<_Point>())
   {
-    auto quad = extend_sub_elem_quad<sdim,dim>(*s_quad, j);
+    auto quad = extend_sub_elem_quad<sdim,dim>(*s_quad, s_id);
 
     const auto translate = elem.vertex(0);
     const auto dilate    = elem.template get_side_lengths<dim>(0);
@@ -183,7 +183,7 @@ fill_cache(ConstElementAccessor &elem, const int j) const
   if (cache.template status_fill<_Weight>())
   {
     cache.template get_data<_Weight>() =
-      elem.template get_measure<sdim>(j) * s_quad->get_weights();
+      elem.template get_measure<sdim>(s_id) * s_quad->get_weights();
     cache.template set_status_filled<_Weight>(true);
   }
 

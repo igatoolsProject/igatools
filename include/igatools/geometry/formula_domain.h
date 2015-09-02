@@ -59,13 +59,6 @@ public:
 
   virtual ~FormulaDomain() = default;
 
-#if 0
-  void reset(const ValueFlags &flag, const eval_pts_variant &quad) override final;
-
-  void init_cache(ElementAccessor &elem, const topology_variant &k) const override final;
-
-  void fill_cache(ElementAccessor &elem, const topology_variant &k, const int sub_elem_id) const override final;
-#endif
 
 private:
 
@@ -79,60 +72,8 @@ private:
                           ValueVector<Derivative<2>> &values) const = 0;
 
 
-#if 0
-  struct FillCacheDispatcher : boost::static_visitor<void>
-  {
-    FillCacheDispatcher(const int sub_elem_id,const self_t &function,ElementAccessor &elem)
-      :
-      sub_elem_id_(sub_elem_id),
-      function_(function),
-      elem_(elem)
-    {}
-
-
-    template<int sub_elem_dim>
-    void operator()(const Topology<sub_elem_dim> &sub_elem)
-    {
-      auto &local_cache = elem_.get_cache();
-      auto &cache = local_cache->template get_sub_elem_cache<sub_elem_dim>(sub_elem_id_);
-
-      if (!cache.fill_none())
-      {
-        auto &cache_pts = cache.template get_data<_Point>();
-        cache_pts = function_.map_elem_->template get_values<_Value, sub_elem_dim>(sub_elem_id_);
-        if (cache.template status_fill<_Value>())
-        {
-          function_.evaluate_0(cache_pts, cache.template get_data<_Value>());
-          cache.template set_status_filled<_Value>(true);
-        }
-        if (cache.template status_fill<_Gradient>())
-        {
-          function_.evaluate_1(cache_pts, cache.template get_data<_Gradient>());
-          cache.template set_status_filled<_Gradient>(true);
-        }
-        if (cache.template status_fill<_Hessian>())
-        {
-          function_.evaluate_2(cache_pts, cache.template get_data<_Hessian>());
-          cache.template set_status_filled<_Hessian>(true);
-        }
-        if (cache.template status_fill<_Divergence>())
-          Assert(false,ExcNotImplemented());
-      }
-
-      cache.set_filled(true);
-    }
-
-    const int sub_elem_id_;
-    const self_t &function_;
-    ElementAccessor &elem_;
-  };
-
-  friend struct FillCacheDispatcher;
-#endif
-
 };
 
 IGA_NAMESPACE_CLOSE
 
-#endif
 #endif
