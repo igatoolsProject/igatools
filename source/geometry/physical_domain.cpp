@@ -20,56 +20,16 @@
 
 #include <igatools/geometry/physical_domain.h>
 #include <igatools/geometry/physical_domain_element.h>
-#include <igatools/functions/function.h>
 
 using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
-
-//namespace
-//{
-//
-//ValueFlags
-//mapping_to_function_flags(const ValueFlags &flags)
-//{
-//    ValueFlags valid_func_flags = ValueFlags::value |
-//                                  ValueFlags::gradient |
-//                                  ValueFlags::hessian |
-//                                  ValueFlags::divergence |
-//                                  ValueFlags::point;
-//
-//    ValueFlags transfer_flags = ValueFlags::measure |
-//                                ValueFlags::w_measure |
-//                                ValueFlags::boundary_normal |
-//                                valid_func_flags;
-//
-//
-//    ValueFlags f_flags = flags & transfer_flags;
-//
-//    if (contains(flags, ValueFlags::measure) ||
-//        contains(flags, ValueFlags::w_measure) ||
-//        contains(flags, ValueFlags::inv_gradient) ||
-//        contains(flags, ValueFlags::outer_normal))
-//        f_flags |=  ValueFlags::gradient;
-//
-//    if (contains(flags, ValueFlags::inv_hessian) ||
-//        contains(flags, ValueFlags::curvature))
-//        f_flags |=  ValueFlags::gradient | ValueFlags::hessian;
-//
-//    return f_flags;
-//}
-//};
-
-
-
 template<int dim_, int codim_>
 PhysicalDomain<dim_, codim_>::
-PhysicalDomain(std::shared_ptr<const GridType> grid,
-               std::shared_ptr<FuncType> F)
+PhysicalDomain(std::shared_ptr<GridType> grid)
   :
-  grid_(grid),
-  func_(F)
+  grid_(grid)
 {
   Assert(grid_ != nullptr, ExcNullPtr());
 }
@@ -83,31 +43,12 @@ PhysicalDomain<dim_, codim_>::
 
 
 
-//template<int dim_, int codim_>
-//auto
-//PhysicalDomain<dim_, codim_>::
-//create(std::shared_ptr<FuncType> F)-> std::shared_ptr<self_t>
-//{
-//    return std::shared_ptr<self_t>(new self_t(F));
-//}
-
-
 template<int dim_, int codim_>
 auto
 PhysicalDomain<dim_, codim_>::
-get_grid() const -> std::shared_ptr<const CartesianGrid<dim_> >
+get_grid() const -> std::shared_ptr<GridType>
 {
   return grid_;
-}
-
-
-
-template<int dim_, int codim_>
-auto
-PhysicalDomain<dim_, codim_>::
-get_function() const -> std::shared_ptr<FuncType>
-{
-  return func_;
 }
 
 
@@ -131,10 +72,12 @@ create_element(const ListIt &index, const PropId &prop) const
 {
   using Elem = ConstElementAccessor;
   auto elem = std::make_shared<Elem>(this->shared_from_this(), index, prop);
-  Assert(elem != nullptr,ExcNullPtr());
+  Assert(elem != nullptr, ExcNullPtr());
 
   return elem;
 }
+
+
 
 template<int dim_, int codim_>
 auto
@@ -144,10 +87,11 @@ create_element(const ListIt &index, const PropId &prop)
 {
   using Elem = ElementAccessor;
   auto elem = std::make_shared<Elem>(this->shared_from_this(), index, prop);
-  Assert(elem != nullptr,ExcNullPtr());
+  Assert(elem != nullptr, ExcNullPtr());
 
   return elem;
 }
+
 
 
 template<int dim_, int codim_>
@@ -156,8 +100,7 @@ PhysicalDomain<dim_, codim_>::
 begin(const PropId &prop) -> ElementIterator
 {
   return ElementIterator(this->shared_from_this(),
-  grid_->get_element_property(prop).begin(),
-  prop);
+  grid_->get_element_property(prop).begin(), prop);
 }
 
 

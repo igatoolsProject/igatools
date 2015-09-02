@@ -33,7 +33,7 @@ Function(std::shared_ptr<const DomainType> phys_dom)
   phys_domain_(phys_dom)
   // object_id_(UniqueIdGenerator::get_unique_id())
 {
-  Assert(phys_dom != nullptr,ExcNullPtr());
+  Assert(phys_dom != nullptr, ExcNullPtr());
 }
 
 
@@ -44,9 +44,6 @@ Function(const self_t &func)
   :
   phys_domain_(func.phys_domain_)
 {}
-
-
-
 
 
 
@@ -73,6 +70,8 @@ create_element(const ListIt &index, const PropId &prop) const
 
   return elem;
 }
+
+
 
 template<int dim_, int codim_, int range_, int rank_>
 auto
@@ -121,6 +120,8 @@ begin(const PropId &prop) const -> ElementConstIterator
   return this->cbegin(prop);
 }
 
+
+
 template<int dim_, int codim_, int range_, int rank_>
 auto
 Function<dim_, codim_, range_, rank_ >::
@@ -128,6 +129,8 @@ end(const PropId &prop) const -> ElementConstIterator
 {
   return this->cend(prop);
 }
+
+
 
 template<int dim_, int codim_, int range_, int rank_>
 auto
@@ -138,6 +141,7 @@ cbegin(const PropId &prop) const -> ElementConstIterator
                               phys_domain_->get_grid()->get_element_property(prop).end(),
                               prop);
 }
+
 
 
 template<int dim_, int codim_, int range_, int rank_>

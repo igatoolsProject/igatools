@@ -30,7 +30,6 @@ IGA_NAMESPACE_OPEN
 template <int,int,int,int> class Function;
 template <int,int,int,int, class> class FunctionElementBase;
 template <int,int,int,int> class FunctionElement;
-//template <int,int> class PhysicalDomain;
 
 /**
  *
@@ -44,23 +43,14 @@ private:
 
 public:
   using ContainerType = ContainerType_;
-//  using GridElem = typename ContainerType_::GridType::ConstElementAccessor;
-//  using FuncElem = typename ContainerType_::FuncType::ConstElementAccessor;
   using GridElem = typename ContainerType_::GridType::ConstElementAccessor;
-  using FuncElem = typename ContainerType_::FuncType::ConstElementAccessor;
   using ListIt = typename ContainerType_::ListIt;
 
   using Flags = physical_domain_element::Flags;
 
-  // using FuncType = typename ContainerType_::FuncType;
-
 //    static const int dim = dim_;
 //    static const int codim = codim_;
   static const int space_dim = dim_+codim_;
-
-  //using ListIt = typename FuncType::ListIt;
-  //using FuncElem = typename FuncType::ElementAccessor;
-
 
   /** @name Constructors */
   ///@{
@@ -308,8 +298,6 @@ private:
   std::shared_ptr<ContainerType_> phys_dom_;
 
   std::shared_ptr<GridElem> grid_elem_;
-
-  std::shared_ptr<FuncElem> func_elem_;
 
   std::shared_ptr<CacheType> local_cache_;
 

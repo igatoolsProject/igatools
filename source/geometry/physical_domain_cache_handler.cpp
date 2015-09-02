@@ -28,51 +28,13 @@ using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
-
-//namespace
-//{
-//
-//ValueFlags
-//mapping_to_function_flags(const ValueFlags &flags)
-//{
-//    ValueFlags valid_func_flags = ValueFlags::value |
-//                                  ValueFlags::gradient |
-//                                  ValueFlags::hessian |
-//                                  ValueFlags::divergence |
-//                                  ValueFlags::point;
-//
-//    ValueFlags transfer_flags = ValueFlags::measure |
-//                                ValueFlags::w_measure |
-//                                ValueFlags::boundary_normal |
-//                                valid_func_flags;
-//
-//
-//    ValueFlags f_flags = flags & transfer_flags;
-//
-//    if (contains(flags, ValueFlags::measure) ||
-//        contains(flags, ValueFlags::w_measure) ||
-//        contains(flags, ValueFlags::inv_gradient) ||
-//        contains(flags, ValueFlags::outer_normal))
-//        f_flags |=  ValueFlags::gradient;
-//
-//    if (contains(flags, ValueFlags::inv_hessian) ||
-//        contains(flags, ValueFlags::curvature))
-//        f_flags |=  ValueFlags::gradient | ValueFlags::hessian;
-//
-//    return f_flags;
-//}
-//};
-
-
-
 template<int dim_, int codim_>
 PhysicalDomainElementHandler<dim_, codim_>::
 PhysicalDomainElementHandler(std::shared_ptr<PhysDomainType> domain)
   :
   domain_(domain)
 {
-//  Assert(func_->get_physical_domain() == nullptr,
-//          ExcMessage("Must be a Null pointer"));
+  Assert(domain_ != nullptr, ExcNullPtr());
 }
 
 
@@ -84,16 +46,6 @@ PhysicalDomainElementHandler<dim_, codim_>::
 
 
 
-//template<int dim_, int codim_>
-//auto
-//PhysicalDomainElementHandler<dim_, codim_>::
-//create(std::shared_ptr<FuncType> F)-> std::shared_ptr<self_t>
-//{
-//    return std::shared_ptr<self_t>(new self_t(F));
-//}
-
-
-
 template<int dim_, int codim_>
 auto
 PhysicalDomainElementHandler<dim_, codim_>::
@@ -101,21 +53,11 @@ set_flags(const topology_variant &sdim,
           const Flags &flag) -> void
 {
   using GridFlags = typename GridType::ElementHandler::Flags;
-  using FuncFlags = typename FuncType::ElementHandler::Flags;
-  FuncFlags func_flag = FuncFlags::none;
   GridFlags grid_flag = GridFlags::none;
 
-  //point => function::value OR grid::point
-  if (func_handler_ == NULL)
-  {
-    grid_flag |= GridFlags::point;
-    grid_handler_->set_flags(sdim, grid_flag);
-  }
-  else
-  {
-    func_flag |= FuncFlags::value;
-    func_handler_->set_flags(sdim, func_flag);
-  }
+  //point => grid::point
+  grid_flag |= GridFlags::point;
+  grid_handler_->set_flags(sdim, grid_flag);
 
   auto disp = SetFlagsDispatcher(flag, flags_);
   boost::apply_visitor(disp, sdim);
@@ -150,11 +92,8 @@ PhysicalDomainElementHandler<dim_, codim_>::
 init_cache(ElementAccessor &elem,
            const eval_pts_variant &quad) const
 {
-  //grid_handler_->init_cache(*(elem.grid_elem_), quad);
-  if (func_handler_ != NULL)
-  {
-    func_handler_->init_cache(*(elem.func_elem_), quad);
-  }
+  grid_handler_->init_cache(*(elem.grid_elem_), quad);
+
 
 #if 0
   F_->init_cache(elem, k);

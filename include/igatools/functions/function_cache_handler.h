@@ -31,8 +31,6 @@
 
 IGA_NAMESPACE_OPEN
 
-
-
 template <int,int> class PhysicalDomain;
 template <int,int> class PhysicalDomainElementHandler;
 template <int, int, int, int, class> class FunctionElementBase;

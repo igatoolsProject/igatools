@@ -24,7 +24,6 @@
 #include <igatools/base/config.h>
 #include <igatools/geometry/cartesian_grid.h>
 #include <igatools/geometry/grid_cache_handler.h>
-
 #include <igatools/geometry/physical_domain.h>
 
 IGA_NAMESPACE_OPEN
@@ -43,8 +42,6 @@ enum class Flags
   w_measure       =    1L << 2
 };
 }
-
-template <int, int, int, int> class Function;
 
 template <int, int, class> class PhysicalDomainElementBase;
 template <int, int> class PhysicalDomainElement;
@@ -81,8 +78,6 @@ public:
   using PhysDomainType = const PhysicalDomain<dim_, codim_>;
   using GridType = const CartesianGrid<dim_>;
   using GridHandler = typename GridType::ElementHandler;
-  using FuncType =  const Function<dim_, 0, dim_ + codim_, 1>;
-  using FuncHandler = typename FuncType::ElementHandler;
 
   using ElementAccessor = PhysicalDomainElement<dim_, codim_>;
   using ElementIterator = GridIterator<ElementAccessor>;
@@ -94,30 +89,7 @@ public:
   using Flags = physical_domain_element::Flags;
 protected:
   using FlagsArray = SafeSTLArray<Flags, dim+1>;
-public:
-  //TODO: explain we can not use FuncType::Value (due to ciclic deps)
-  /**
-       * Type for the return of the function.
-       */
-  using Value = Values<dim, space_dim, 1>;
 
-  /**
-   * Type for the derivative of the function.
-   */
-  template <int order>
-  using Derivative = Derivatives<dim, space_dim, 1, order>;
-
-  /**
-   * Type for the gradient of the function.
-   */
-  using Gradient = Derivative<1>;
-
-  /**
-   * Type for the hessian of the function.
-   */
-  using Hessian = Derivative<2>;
-
-  ///@}
 
 #if 0
   /** Type for the given order derivatives of the
@@ -178,17 +150,15 @@ public:
   {
     return domain_;
   }
-//  std::shared_ptr<GridType> get_grid() const;
-//
-//  std::shared_ptr<FuncType> get_function() const;
+
 
 public:
+//Is this really virtual?
+  virtual void set_flags(const topology_variant &sdim,
+                         const Flags &flag);
 
-  void set_flags(const topology_variant &sdim,
-                 const Flags &flag);
-
-  void init_cache(ElementAccessor &elem,
-                  const eval_pts_variant &quad) const;
+  virtual void init_cache(ElementAccessor &elem,
+                          const eval_pts_variant &quad) const;
 
   void init_cache(ElementIterator &elem,
                   const eval_pts_variant &quad) const
@@ -196,9 +166,9 @@ public:
     this->init_cache(*elem, quad);
   }
 
-  void fill_cache(const topology_variant &sdim,
-                  ElementAccessor &elem,
-                  const int s_id) const;
+  virtual void fill_cache(const topology_variant &sdim,
+                          ElementAccessor &elem,
+                          const int s_id) const;
 
   void fill_cache(const topology_variant &sdim,
                   ElementIterator &elem,
@@ -418,9 +388,8 @@ private:
   std::shared_ptr<PhysDomainType> domain_;
 
   std::shared_ptr<GridHandler> grid_handler_;
-  std::shared_ptr<FuncHandler> func_handler_;
 
-  SafeSTLArray<Flags, dim_ + 1> flags_;
+  FlagsArray flags_;
 
   friend ElementAccessor;
 

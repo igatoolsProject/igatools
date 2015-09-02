@@ -27,22 +27,6 @@
 
 IGA_NAMESPACE_OPEN
 
-//namespace physical_domain_element
-//{
-//enum class Flags
-//{
-//  /** Fill nothing */
-//  none           =    0,
-//
-//  /** Quadrature points on the element */
-//  point           =    1L << 1,
-//
-//  /** Quadrature weigths on the element */
-//  w_measure       =    1L << 2
-//};
-//}
-
-template <int, int, int, int> class Function;
 
 template <int, int, class> class PhysicalDomainElementBase;
 template <int, int> class PhysicalDomainElement;
@@ -79,7 +63,6 @@ public:
   static const int dim = dim_;
 
   using GridType = const CartesianGrid<dim_>;
-  using FuncType = const Function<dim_, 0, dim_ + codim_, 1>;
 
   using ElementAccessor = PhysicalDomainElement<dim_, codim_>;
   using ElementIterator = GridIterator<ElementAccessor>;
@@ -92,7 +75,6 @@ public:
   using ListIt = typename GridType::ListIt;
 
 public:
-  //TODO: explain we can not use FuncType::Value (due to ciclic deps)
   /**
        * Type for the return of the function.
        */
@@ -113,31 +95,7 @@ public:
    * Type for the hessian of the function.
    */
   using Hessian = Derivative<2>;
-
   ///@}
-
-#if 0
-  /** Type for the given order derivatives of the
-   *  the mapping. */
-  template<int order>
-  using Derivative = typename FuncType::template Derivative<order>;
-
-  /** Type for the diferent order derivatives of the inverse of
-   * the mapping
-   */
-  template<int order>
-  using InvDerivative = Derivatives<space_dim, dim_, 1, order>;
-
-  /** Type of the mapping evaluation point. */
-  using Point = typename FuncType::Point;
-  /** Type of the mapping return value. */
-  using Value = typename FuncType::Value;
-  /** Type of the mapping gradient. */
-  using Gradient = typename FuncType::Gradient;
-
-  /** Typedef for the mapping hessian. */
-  using Hessian = typename FuncType::Hessian;
-#endif
 
 private:
   /**
@@ -147,39 +105,35 @@ private:
    */
   PhysicalDomain() = default;
 
-  PhysicalDomain(std::shared_ptr<GridType> grid,
-                 std::shared_ptr<FuncType> F);
+  PhysicalDomain(std::shared_ptr<GridType> grid);
+
 public:
   ~PhysicalDomain();
 
   static std::shared_ptr<self_t>
-  create(std::shared_ptr<GridType> grid,
-         std::shared_ptr<FuncType> F)
+  create(std::shared_ptr<GridType> grid)
   {
-    return std::shared_ptr<self_t>(new self_t(grid, F));
+    return std::shared_ptr<self_t>(new self_t(grid));
   }
 
 
   static std::shared_ptr<const self_t>
-  const_create(std::shared_ptr<const GridType> grid,
-               std::shared_ptr<FuncType> F)
+  const_create(std::shared_ptr<GridType> grid)
   {
-    return create(grid, F);
+    return create(grid);
   }
 
-  std::shared_ptr<const GridType> get_grid() const;
-
-  std::shared_ptr<const FuncType> get_function() const;
+  std::shared_ptr<GridType> get_grid() const;
 
 public:
-
-  std::shared_ptr<ElementHandler> create_cache_handler() const;
+  virtual std::shared_ptr<ElementHandler>
+  create_cache_handler() const;
 
   std::shared_ptr<ConstElementAccessor>
   create_element(const ListIt &index, const PropId &prop) const;
 
   std::shared_ptr<ElementAccessor>
-  create_element(const ListIt &index, const PropId &property);
+  create_element(const ListIt &index, const PropId &prop);
 
   ///@name Iterating of grid elements
   ///@{
@@ -222,9 +176,7 @@ public:
 
 private:
   std::shared_ptr<GridType> grid_;
-  std::shared_ptr<FuncType> func_;
 
-//  friend ElementAccessor;
   friend class PhysicalDomainElementBase<dim_, codim_, PhysicalDomain<dim_, codim_>>;
   friend class PhysicalDomainElementBase<dim_, codim_, const PhysicalDomain<dim_, codim_>>;
   friend class PhysicalDomainElement<dim_, codim_>;

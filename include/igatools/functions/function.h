@@ -147,14 +147,15 @@ public:
 
 
 public:
+  virtual std::shared_ptr<ElementHandler>
+  create_cache_handler() const;
+
   std::shared_ptr<ConstElementAccessor>
   create_element(const ListIt &index, const PropId &prop) const;
 
   std::shared_ptr<ElementAccessor>
   create_element(const ListIt &index, const PropId &prop);
 
-
-  virtual std::shared_ptr<ElementHandler> create_cache_handler() const;
 public:
   ///@name Iterating of grid elements
   ///@{
