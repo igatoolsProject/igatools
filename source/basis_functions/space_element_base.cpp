@@ -38,22 +38,6 @@ SpaceElementBase(const std::shared_ptr<const SpaceBase<dim>> &space,
   Assert(space_ != nullptr, ExcNullPtr());
 }
 
-template <int dim>
-SpaceElementBase<dim>::
-SpaceElementBase(const self_t &elem,
-                 const CopyPolicy &copy_policy)
-  :
-  space_(elem.space_)
-{
-  if (copy_policy == CopyPolicy::shallow)
-    grid_elem_ = elem.grid_elem_;
-  else if (copy_policy == CopyPolicy::deep)
-  {
-//        grid_elem_ = std::make_shared<GridElement<dim>>(*elem.grid_elem_,copy_policy);NonConstGridElement(false,ExcNotImplemented());
-  }
-  else
-    AssertThrow(false,ExcInvalidState());
-}
 
 
 template <int dim>
@@ -94,28 +78,6 @@ print_cache_info(LogStream &out) const
   out.begin_item("GridElement<" + std::to_string(dim) + "> cache:");
   grid_elem_->print_cache_info(out);
   out.end_item();
-}
-
-template <int dim>
-void
-SpaceElementBase<dim>::
-copy_from(const SpaceElementBase<dim> &elem,
-          const CopyPolicy &copy_policy)
-{
-  if (this != &elem)
-  {
-    if (copy_policy == CopyPolicy::shallow)
-      grid_elem_ = elem.grid_elem_;
-    else if (copy_policy == CopyPolicy::deep)
-    {
-//            grid_elem_ = std::make_shared<GridElement<dim>>(*elem.grid_elem_,copy_policy);
-      Assert(false,ExcNotImplemented());
-    }
-    else
-      AssertThrow(false,ExcInvalidState());
-
-    space_ = elem.space_;
-  }
 }
 
 

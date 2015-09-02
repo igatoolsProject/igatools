@@ -74,13 +74,9 @@ public:
 
 
   /**
-   * Copy constructor.
-   * It can be used with different copy policies (i.e. deep copy or shallow copy).
-   * The default behaviour (i.e. using the proper interface of a classic copy constructor)
-   * uses the deep copy.
+   * Copy constructor. Not allowed to be used.
    */
-  SpaceElementBase(const self_t &elem,
-                   const CopyPolicy &copy_policy = CopyPolicy::deep);
+  SpaceElementBase(const self_t &elem) = delete;
 
   /**
    * Move constructor.
@@ -108,8 +104,6 @@ public:
 
   void print_cache_info(LogStream &out) const;
 
-  void
-  copy_from(const SpaceElementBase<dim> &elem,const CopyPolicy &copy_policy);
 
 
   /**
