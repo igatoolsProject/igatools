@@ -42,7 +42,7 @@ void elem_weights(const int n_knots = 5)
   using Flags = typename Grid::ElementAccessor::Flags;
   auto grid = Grid::const_create(n_knots);
 
-  auto flag = Flags::w_measure;
+  auto flag = Flags::weight;
   auto cache_handler = grid->create_cache_handler();
   cache_handler->template set_flags<sdim>(flag);
 
