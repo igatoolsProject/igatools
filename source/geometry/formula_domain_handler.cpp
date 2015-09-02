@@ -31,25 +31,21 @@ FormulaDomainHandler(std::shared_ptr<DomainType> domain)
 
 
 
-
-
-
-
 template<int dim, int codim>
 auto
 FormulaDomainHandler<dim, codim>::
 fill_cache(const topology_variant &sdim,
-        ElementAccessor &elem,
-        const int s_id) const  -> void
+           ConstElementAccessor &elem,
+           const int s_id) const  -> void
 {
-  parent_t::fill_cache(sdim, elem,k, s_id);
+  parent_t::fill_cache(sdim, elem, s_id);
 
-  auto disp = FillCacheDispatcher(sub_elem_id,*this,elem);
-  boost::apply_visitor(disp, k);
+// std::dynamic_pointer_cast<DomainType>(this->get_domain());
+  auto disp = FillCacheDispatcher(*std::dynamic_pointer_cast<DomainType>(this->get_domain()), *this, elem, s_id);
+  boost::apply_visitor(disp, sdim);
 }
-#endif
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/functions/formula_domain_handler.inst>
-#endif
+#include <igatools/geometry/formula_domain_handler.inst>
+

@@ -20,8 +20,6 @@
 
 #include <igatools/geometry/formula_domain.h>
 
-using std::shared_ptr;
-
 IGA_NAMESPACE_OPEN
 
 template<int dim, int codim>
@@ -31,10 +29,7 @@ FormulaDomain(std::shared_ptr<GridType> grid)
   parent_t::PhysicalDomain(grid)
 {}
 
-
-
-
 IGA_NAMESPACE_CLOSE
 
 #include <igatools/geometry/formula_domain.inst>
-#endif
+

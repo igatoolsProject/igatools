@@ -39,10 +39,14 @@ private:
 protected:
   using typename parent_t::GridType;
 public:
-  using typename parent_t::DomainType;
+// using typename parent_t::DomainType;
+  using DomainType =  const FormulaDomain<dim,codim>;
+  using typename parent_t::ConstElementAccessor;
 
   using typename parent_t::topology_variant;
   using typename parent_t::eval_pts_variant;
+
+
 //  using typename parent_t::Point;
 //  using typename parent_t::Value;
 //  using typename parent_t::Gradient;
@@ -50,54 +54,52 @@ public:
 //  using typename parent_t::ElementAccessor;
 //  using parent_t::space_dim;
 
-  template <int order>
-  using Derivative = typename parent_t::template Derivative<order>;
+//  template <int order>
+//  using Derivative = typename DomainType::template Derivative<order>;
 
   FormulaDomainHandler(std::shared_ptr<DomainType> domain);
 
-  //FormulaDomainHandler(const self_t &func);
 
   virtual ~FormulaDomainHandler() = default;
 
-//  void set_flags(const topology_variant &sdim,
-//                          const Flags &flag) override;
-
-//  void init_cache(ElementAccessor &elem,
-                           const eval_pts_variant &quad) const override;
 
   void fill_cache(const topology_variant &sdim,
-                           ElementAccessor &elem,
-                           const int s_id) const override;
+                  ConstElementAccessor &elem,
+                  const int s_id) const override;
 
 
   struct FillCacheDispatcher : boost::static_visitor<void>
   {
     FillCacheDispatcher(const DomainType &domain,
-    ConstElementAccessor &elem,
-    const int s_id)
+                        const self_t &domain_handler,
+                        ConstElementAccessor &elem,
+                        const int s_id)
       :
-    	  domain_(domain),
-		  elem_(elem),
-		  s_id_(sub_elem_id)
+      domain_(domain),
+      domain_handler_(domain_handler),
+      elem_(elem),
+      s_id_(s_id)
     {}
 
 
     template<int sdim>
     void operator()(const Topology<sdim> &sub_elem)
     {
-    	using _Point = typename ConstElementAccessor::_Point;
+      using _Point = typename ConstElementAccessor::_Point;
 
-      auto &local_cache = elem_.get_cache();
+
+      auto &local_cache = domain_handler_.get_element_cache(elem_);
       auto &cache = local_cache->template get_sub_elem_cache<sdim>(s_id_);
 
       if (!cache.fill_none())
       {
-    	  auto &grid_pts = elem_.get_grid_element()->get_points(s_id_);
-    	  if (cache.template status_fill<_Value>())
-    	  {
-    		  domain_.evaluate_0(grid_pts, cache.template get_data<_Value>());
-    		  cache.template set_status_filled<_Value>(true);
-    	  }
+        const auto &grid_pts = elem_.get_grid_element()->template get_points<sdim>(s_id_);
+        if (cache.template status_fill<domain_element::_Point>())
+        {
+          domain_.evaluate_0(grid_pts, cache.template get_data<_Point>());
+          cache.template set_status_filled<domain_element::_Point>(true);
+        }
+
 //        if (cache.template status_fill<_Gradient>())
 //        {
 //          function_.evaluate_1(cache_pts, cache.template get_data<_Gradient>());
@@ -116,16 +118,14 @@ public:
     }
 
     const DomainType &domain_;
+    const self_t     &domain_handler_;
     ConstElementAccessor &elem_;
     const int s_id_;
   };
 
   friend struct FillCacheDispatcher;
-#endif
-
 };
 
 IGA_NAMESPACE_CLOSE
 
-#endif
 #endif

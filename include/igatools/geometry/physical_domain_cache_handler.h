@@ -68,11 +68,11 @@ public:
   using ElementAccessor = PhysicalDomainElement<dim_, codim_>;
   using ElementIterator = GridIterator<ElementAccessor>;
   using ConstElementAccessor = ConstPhysicalDomainElement<dim_, codim_>;
-  using ConstElementIterator = GridIterator<ConstElementAccessor>;
+  using ElementConstIterator = GridIterator<ConstElementAccessor>;
 
   using List = typename GridType::List;
   using ListIt = typename GridType::ListIt;
-  using Flags = physical_domain_element::Flags;
+  using Flags = domain_element::Flags;
 protected:
   using FlagsArray = SafeSTLArray<Flags, dim+1>;
 
@@ -143,25 +143,31 @@ public:
   virtual void set_flags(const topology_variant &sdim,
                          const Flags &flag);
 
-  virtual void init_cache(ElementAccessor &elem,
+  virtual void init_cache(ConstElementAccessor &elem,
                           const eval_pts_variant &quad) const;
 
-  void init_cache(ElementIterator &elem,
+  void init_cache(ElementConstIterator &elem,
                   const eval_pts_variant &quad) const
   {
     this->init_cache(*elem, quad);
   }
 
   virtual void fill_cache(const topology_variant &sdim,
-                          ElementAccessor &elem,
+                          ConstElementAccessor &elem,
                           const int s_id) const;
 
   void fill_cache(const topology_variant &sdim,
-                  ElementIterator &elem,
+                  ElementConstIterator &elem,
                   const int s_id) const
   {
     this->fill_cache(sdim, *elem, s_id);
   }
+protected:
+  std::shared_ptr<typename ConstElementAccessor::CacheType> &get_element_cache(ConstElementAccessor &elem) const
+  {
+    return  elem.local_cache_;
+  }
+
 
 private:
   /**

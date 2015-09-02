@@ -40,37 +40,26 @@ private:
 protected:
   using typename parent_t::GridType;
 public:
-  using typename parent_t::topology_variant;
-  using typename parent_t::eval_pts_variant;
+  using typename parent_t::Point;
   using typename parent_t::GridPoint;
-  using typename parent_t::Value;
-//  using typename parent_t::Gradient;
-//  using typename parent_t::ElementIterator;
-//  using typename parent_t::ElementAccessor;
-//  using parent_t::space_dim;
-//
 
   template <int order>
   using Derivative = typename parent_t::template Derivative<order>;
 
   FormulaDomain(std::shared_ptr<GridType> grid);
 
-  FormulaDomain(const self_t &func);
-
   virtual ~FormulaDomain() = default;
 
+public:
 
-private:
+  virtual void evaluate_0(const ValueVector<GridPoint> &points,
+                          ValueVector<Point> &values) const = 0;
 
-  virtual void evaluate_0(const ValueVector<Point> &points,
-                          ValueVector<Value> &values) const = 0;
-
-  virtual void evaluate_1(const ValueVector<Point> &points,
+  virtual void evaluate_1(const ValueVector<GridPoint> &points,
                           ValueVector<Derivative<1>> &values) const = 0;
 
-  virtual void evaluate_2(const ValueVector<Point> &points,
+  virtual void evaluate_2(const ValueVector<GridPoint> &points,
                           ValueVector<Derivative<2>> &values) const = 0;
-
 
 };
 

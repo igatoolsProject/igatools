@@ -76,27 +76,28 @@ public:
 
 public:
   using GridPoint = typename GridType::Point;
-
-  /**
-       * Type for the return of the function.
-       */
-  using Value = Values<dim, space_dim, 1>;
-
-  /**
-   * Type for the derivative of the function.
-   */
+  using Point =  Points<space_dim>;
   template <int order>
   using Derivative = Derivatives<dim, space_dim, 1, order>;
 
-  /**
-   * Type for the gradient of the function.
-   */
-  using Gradient = Derivative<1>;
 
-  /**
-   * Type for the hessian of the function.
-   */
-  using Hessian = Derivative<2>;
+//  /** Type for the return of the function.*/
+//  using Value = Values<dim, space_dim, 1>;
+//
+//  /**
+//   * Type for the derivative of the function.
+//   */
+
+//
+//  /**
+//   * Type for the gradient of the function.
+//   */
+//  using Gradient = Derivative<1>;
+//
+//  /**
+//   * Type for the hessian of the function.
+//   */
+//  using Hessian = Derivative<2>;
   ///@}
 
 private:
@@ -107,6 +108,7 @@ private:
    */
   PhysicalDomain() = default;
 
+protected:
   PhysicalDomain(std::shared_ptr<GridType> grid);
 
 public:

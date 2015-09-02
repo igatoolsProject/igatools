@@ -89,7 +89,7 @@ set_flags(const topology_variant &sdim,
 template<int dim_, int codim_>
 void
 PhysicalDomainElementHandler<dim_, codim_>::
-init_cache(ElementAccessor &elem,
+init_cache(ConstElementAccessor &elem,
            const eval_pts_variant &quad) const
 {
   grid_handler_->init_cache(*(elem.grid_elem_), quad);
@@ -116,7 +116,7 @@ template<int dim_, int codim_>
 auto
 PhysicalDomainElementHandler<dim_, codim_>::
 fill_cache(const topology_variant &sdim,
-           ElementAccessor &elem,
+           ConstElementAccessor &elem,
            const int s_id) const-> void
 {
 #if 0

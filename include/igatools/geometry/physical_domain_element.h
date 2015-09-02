@@ -46,11 +46,14 @@ public:
   using GridElem = typename ContainerType_::GridType::ConstElementAccessor;
   using ListIt = typename ContainerType_::ListIt;
 
+  using Point =  typename ContainerType_::Point;
+
   using Flags = domain_element::Flags;
+
 
 //    static const int dim = dim_;
 //    static const int codim = codim_;
-  static const int space_dim = dim_+codim_;
+// static const int space_dim = dim_+codim_;
 
   /** @name Constructors */
   ///@{
@@ -256,8 +259,9 @@ public:
 
 private:
   using CType = boost::fusion::map<
-                boost::fusion::pair< _Point,     DataWithFlagStatus<ValueVector<Point>,
-                boost::fusion::pair< _W_Measure, DataWithFlagStatus<ValueVector<Real>>>>;
+                boost::fusion::pair< _Point,     DataWithFlagStatus<ValueVector<Point>> >,
+                boost::fusion::pair< _W_Measure, DataWithFlagStatus<ValueVector<Real>> >
+                >;
 //                ,
 //                  boost::fusion::pair<   _InvGradient,DataWithFlagStatus<ValueVector<InvDerivative<1>>>>,
 //                  boost::fusion::pair<    _InvHessian,DataWithFlagStatus<ValueVector<InvDerivative<2>>>>,
@@ -274,8 +278,6 @@ public:
   using CacheType = AllSubElementsCache<Cache>;
 
 private:
-
-
   std::shared_ptr<ContainerType_> phys_dom_;
 
   std::shared_ptr<GridElem> grid_elem_;
