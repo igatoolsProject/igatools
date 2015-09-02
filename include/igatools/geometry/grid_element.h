@@ -58,10 +58,10 @@ IGA_NAMESPACE_OPEN
  * @ingroup serializable
  */
 template <int dim, class ContainerType_>
-class GridElementBase
+class GridElement
 {
 private:
-  using self_t = GridElementBase<dim, ContainerType_>;
+  using self_t = GridElement<dim, ContainerType_>;
 
 public:
   /** Type required by the CartesianGridIterator templated iterator */
@@ -81,31 +81,31 @@ protected:
    * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    * mechanism.
    */
-  GridElementBase() = default;
+  GridElement() = default;
 
 public:
   /**
    * Construct an accessor pointing to the element with
    * flat index @p elem_index of the CartesianGrid @p grid.
    */
-  GridElementBase(const std::shared_ptr<ContainerType> &grid,
-                  const ListIt &index,
-                  const PropId &prop = ElementProperties::active);
+  GridElement(const std::shared_ptr<ContainerType> &grid,
+              const ListIt &index,
+              const PropId &prop = ElementProperties::active);
 
   /**
    * Copy constructor. Not allowed to be used.
    */
-  GridElementBase(const self_t &elem) = delete;
+  GridElement(const self_t &elem) = delete;
 
   /**
    * Move constructor.
    */
-  GridElementBase(self_t &&elem) = default;
+  GridElement(self_t &&elem) = default;
 
   /**
    * Destructor.
    */
-  ~GridElementBase() = default;
+  ~GridElement() = default;
   ///@}
 
 

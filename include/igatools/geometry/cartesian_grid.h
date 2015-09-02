@@ -43,13 +43,13 @@ IGA_NAMESPACE_OPEN
 
 template <int> class CartesianGrid;
 
-template <int, class> class GridElementBase;
+template <int, class> class GridElement;
 
 template<int dim>
-using ConstGridElement = GridElementBase<dim, const CartesianGrid<dim>>;
+using ConstGridElement = GridElement<dim, const CartesianGrid<dim>>;
 
 template<int dim>
-using NonConstGridElement = GridElementBase<dim, CartesianGrid<dim>>;
+using NonConstGridElement = GridElement<dim, CartesianGrid<dim>>;
 
 
 template <int> class GridElementHandler;
@@ -773,8 +773,8 @@ private:
    */
   signal_insert_knots_t insert_knots_signals_;
 #endif
-  friend class GridElementBase<dim_, CartesianGrid<dim_>>;
-  friend class GridElementBase<dim_, const CartesianGrid<dim_>>;
+  friend class GridElement<dim_, CartesianGrid<dim_>>;
+  friend class GridElement<dim_, const CartesianGrid<dim_>>;
 //  friend class NonConstGridElement<dim_>;
 //  friend class ConstGridElement<dim_>;
 

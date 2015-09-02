@@ -37,7 +37,7 @@ elems = []
 els =['const iga::CartesianGrid', ' iga::CartesianGrid']
 for dim in inst.domain_dims:
   for el in els:
-    acc = 'GridElementBase<%d,' %(dim) + el + '<%d>>' %(dim)
+    acc = 'GridElement<%d,' %(dim) + el + '<%d>>' %(dim)
     f.write('template class %s; \n' %(acc))
     elems.append(acc)
     for fun in sub_dim_members:
@@ -47,7 +47,7 @@ for dim in inst.domain_dims:
         
 for dim in inst.sub_domain_dims:
   for el in els:
-    acc = 'GridElementBase<%d,' %(dim) + el + '< %d>>' %(dim)
+    acc = 'GridElement<%d,' %(dim) + el + '< %d>>' %(dim)
     f.write('template class %s; \n' %(acc))
     elems.append(acc)
     for fun in sub_dim_members:
