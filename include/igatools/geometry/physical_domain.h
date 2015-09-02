@@ -75,6 +75,8 @@ public:
   using ListIt = typename GridType::ListIt;
 
 public:
+  using GridPoint = typename GridType::Point;
+
   /**
        * Type for the return of the function.
        */
