@@ -292,7 +292,9 @@ operator()(const Topology<sub_elem_dim> &topology)
     all_sub_elems_cache = std::make_shared<Cache>();
   }
 
-  const auto n_basis = ref_elem.get_max_num_basis();//ref_elem.get_num_basis(DofProperties::active);
+//  const auto n_basis = ref_elem.get_max_num_basis();//ref_elem.get_num_basis(DofProperties::active);
+  const auto n_basis = ref_elem.get_basis_offset()[BaseSpace::n_components];
+
   const auto n_points = grid_handler.template get_num_points<sub_elem_dim>();
   for (auto &s_id: UnitElement<dim>::template elems_ids<sub_elem_dim>())
   {

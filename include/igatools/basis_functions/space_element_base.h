@@ -263,18 +263,10 @@ private:
 #endif // SERIALIZATION
 
 
-protected:
-  int max_num_basis_;
 
 
 public:
 
-  /**
-   *  Maximum number of non zero basis functions, over the current element.
-   *  @note The "true" number of basis functions may differ from this value because
-   *  some basis functions may be defined to be "inactive".
-   */
-  int get_max_num_basis() const;
 };
 
 

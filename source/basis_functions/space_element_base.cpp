@@ -43,8 +43,7 @@ SpaceElementBase<dim>::
 SpaceElementBase(const self_t &elem,
                  const CopyPolicy &copy_policy)
   :
-  space_(elem.space_),
-  max_num_basis_(elem.max_num_basis_)
+  space_(elem.space_)
 {
   if (copy_policy == CopyPolicy::shallow)
     grid_elem_ = elem.grid_elem_;
@@ -246,13 +245,6 @@ operator>(const self_t &a) const
 }
 
 
-template <int dim>
-int
-SpaceElementBase<dim>::
-get_max_num_basis() const
-{
-  return max_num_basis_;
-}
 
 #if 0
 template <int dim>
@@ -274,7 +266,6 @@ serialize(Archive &ar, const unsigned int version)
   ar &boost::serialization::make_nvp("grid_elem_",grid_elem_);
 
 
-  <<<<<<< HEAD
   auto non_const_space = std::const_pointer_cast<SpaceBase<dim>>(space_);
   ar &boost::serialization::make_nvp("space_",non_const_space);
   space_ = non_const_space;
@@ -282,17 +273,6 @@ serialize(Archive &ar, const unsigned int version)
 
   ar &boost::serialization::make_nvp("max_num_basis_",max_num_basis_);
 
-  ||||||| merged common ancestors
-  auto non_const_space = std::const_pointer_cast<SpaceBase<dim>>(space_);
-  ar &boost::serialization::make_nvp("space_",non_const_space);
-  space_ = non_const_space;
-  Assert(space_ != nullptr,ExcNullPtr());
-  =======
-    auto non_const_space = std::const_pointer_cast<SpaceBase<dim>>(space_);
-  ar &boost::serialization::make_nvp("space_",non_const_space);
-  space_ = non_const_space;
-  Assert(space_ != nullptr,ExcNullPtr());
-  >>>>>>> function2.0
 }
 ///@}
 #endif // SERIALIZATION

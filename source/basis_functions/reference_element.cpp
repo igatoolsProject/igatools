@@ -46,7 +46,6 @@ ReferenceElement(const std::shared_ptr<ConstSpace> space,
     n_basis[comp] = TensorSize<dim>(degree_table[comp]+1);
 
   n_basis_direction_ = n_basis;
-  this->max_num_basis_ = n_basis_direction_.total_dimension();
   //-------------------------------------------------
 
 
