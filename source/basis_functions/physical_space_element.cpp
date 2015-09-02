@@ -24,6 +24,7 @@
 
 using std::shared_ptr;
 using std::make_shared;
+using std::make_unique;
 
 IGA_NAMESPACE_OPEN
 
@@ -34,10 +35,8 @@ PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
                      const PropId &prop)
   :
   parent_t(phys_space,index,prop),
-  ref_space_element_(
-   std::dynamic_pointer_cast<RefElemAccessor>(phys_space->get_reference_space()->create_element(index,prop))
-  ),
-  phys_domain_element_(make_shared<PhysDomainElem>(
+  ref_space_element_(phys_space->get_reference_space()->create_element(index,prop)),
+  phys_domain_element_(make_unique<PhysDomainElem>(
                         std::const_pointer_cast<PhysDomain>(phys_space->get_physical_domain()),
                         index, prop))
 //                            ,
@@ -48,12 +47,10 @@ PhysicalSpaceElement(const std::shared_ptr<ContainerType> phys_space,
 //    push_fwd_element_ = std::make_shared<PfElemAccessor>(phys_space->get_map_func(), index);
   Assert(ref_space_element_ != nullptr, ExcNullPtr());
   Assert(phys_domain_element_ != nullptr, ExcNullPtr());
-
-  this->max_num_basis_ = ref_space_element_->get_max_num_basis();
 }
 
 
-
+#if 0
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 PhysicalSpaceElement(const PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> &in,
@@ -74,58 +71,10 @@ PhysicalSpaceElement(const PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> 
 
   Assert(false,ExcNotTested());
 }
+#endif
 
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
-auto
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
-clone() const -> std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_,type_>>
-{
-  auto elem = std::make_shared<self_t>(*this,CopyPolicy::deep);
-  Assert(elem != nullptr, ExcNullPtr());
-  return elem;
-}
 
-
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
-void
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
-copy_from(const PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> &element,
-          const CopyPolicy &copy_policy)
-{
-  Assert(false,ExcNotImplemented());
-//    SpaceElementAccessor<PhysSpace>::copy_from(element,copy_policy);
-//
-//    PhysSpace::PushForwardType::ElementAccessor::copy_from(element,copy_policy);
-//
-//    if (copy_policy == CopyPolicy::deep)
-//        ref_space_element_->deep_copy_from(element.ref_space_element_);
-//    else if (copy_policy == CopyPolicy::shallow)
-//        ref_space_element_->deep_copy_from(element.ref_space_element_);
-//    else
-//    {
-//        Assert(false,ExcNotImplemented());
-//    }
-}
-
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
-void
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
-deep_copy_from(const PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> &element)
-{
-  Assert(false,ExcNotImplemented());
-  //this->copy_from(element,CopyPolicy::deep);
-}
-
-
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
-void
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
-shallow_copy_from(const PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> &element)
-{
-  Assert(false,ExcNotImplemented());
-//    this->copy_from(element,CopyPolicy::shallow);
-}
 
 
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
@@ -183,7 +132,7 @@ auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 get_ref_space_element() const -> const RefElemAccessor &
 {
-  return *ref_space_element_;
+  return dynamic_cast<const RefElemAccessor &>(*ref_space_element_);
 }
 
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
@@ -191,7 +140,7 @@ auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
 get_ref_space_element() -> RefElemAccessor &
 {
-  return *ref_space_element_;
+  return dynamic_cast<RefElemAccessor &>(*ref_space_element_);
 }
 
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>

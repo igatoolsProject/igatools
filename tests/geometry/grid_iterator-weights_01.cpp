@@ -56,7 +56,7 @@ void elem_weights(const int n_knots = 5)
     for (auto &s_id : UnitElement<dim>::template elems_ids<sdim>())
     {
       cache_handler->template fill_cache<sdim>(elem, s_id);
-      elem->template get_weights<sdim>(s_id).print_info(out);
+      elem->template get_w_measure<sdim>(s_id).print_info(out);
       out << endl;
     }
     out << endl;

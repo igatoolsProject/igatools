@@ -164,7 +164,9 @@ operator()(const Topology<sub_elem_dim> &sub_elem)
     cache = shared_ptr<Cache>(new Cache);
   }
 
-  const auto n_basis = elem_.get_max_num_basis();//elem_.get_num_basis(DofProperties::active);
+//  const auto n_basis = elem_.get_max_num_basis();//elem_.get_num_basis(DofProperties::active);
+  const auto n_basis = elem.get_basis_offset()[BaseSpace::n_components];
+
   const auto n_points = grid_handler_.template get_num_points<sub_elem_dim>();
   const auto flag = flags_[sub_elem_dim];
 

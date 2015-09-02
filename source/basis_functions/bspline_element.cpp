@@ -285,16 +285,6 @@ BSplineElement(const std::shared_ptr<ContainerType> space,
 
 
 
-template <int dim, int range, int rank>
-BSplineElement<dim, range, rank>::
-BSplineElement(const self_t &elem,
-               const CopyPolicy &copy_policy)
-  :
-  parent_t(elem,copy_policy)
-{
-  Assert(false,ExcNotImplemented());
-}
-
 
 template <int dim, int range, int rank>
 auto
@@ -307,15 +297,6 @@ get_bspline_space() const -> std::shared_ptr<const Space>
 }
 
 
-template <int dim, int range, int rank>
-std::shared_ptr<SpaceElement<dim,0,range,rank,Transformation::h_grad> >
-BSplineElement<dim, range, rank>::
-clone() const
-{
-  auto elem = std::make_shared<BSplineElement<dim,range,rank> >(*this,CopyPolicy::deep);
-  Assert(elem != nullptr, ExcNullPtr());
-  return elem;
-}
 
 
 

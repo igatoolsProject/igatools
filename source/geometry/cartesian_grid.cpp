@@ -344,10 +344,10 @@ template<int dim_>
 auto
 CartesianGrid<dim_>::
 create_element(const ListIt &index, const PropId &prop)
--> std::shared_ptr<ElementAccessor>
+-> std::unique_ptr<ElementAccessor>
 {
   using Elem = ElementAccessor;
-  auto elem = shared_ptr<Elem>(new Elem(this->shared_from_this(), index, prop));
+  auto elem = std::make_unique<Elem>(this->shared_from_this(), index, prop);
   Assert(elem != nullptr,ExcNullPtr());
 
   return elem;
@@ -358,10 +358,10 @@ template<int dim_>
 auto
 CartesianGrid<dim_>::
 create_element(const ListIt &index, const PropId &prop) const
--> std::shared_ptr<ConstElementAccessor>
+-> std::unique_ptr<ConstElementAccessor>
 {
   using Elem = ConstElementAccessor;
-  auto elem = std::make_shared<Elem>(this->shared_from_this(), index, prop);
+  auto elem = std::make_unique<Elem>(this->shared_from_this(), index, prop);
   Assert(elem != nullptr,ExcNullPtr());
 
   return elem;
@@ -374,9 +374,8 @@ auto
 CartesianGrid<dim_>::
 begin(const PropId &prop) -> ElementIterator
 {
-  return ElementIterator(this->shared_from_this(),
-  elem_properties_[prop].begin(),
-  prop);
+  return ElementIterator(
+    this->create_element(elem_properties_[prop].begin(),prop));
 }
 
 
@@ -386,9 +385,8 @@ auto
 CartesianGrid<dim_>::
 end(const PropId &prop) -> ElementIterator
 {
-  return ElementIterator(this->shared_from_this(),
-  elem_properties_[prop].end(),
-  prop);
+  return ElementIterator(
+    this->create_element(elem_properties_[prop].end(),prop));
 }
 
 
@@ -418,9 +416,8 @@ auto
 CartesianGrid<dim_>::
 cbegin(const PropId &prop) const -> ElementConstIterator
 {
-  return ElementConstIterator(this->shared_from_this(),
-                              elem_properties_[prop].begin(),
-                              prop);
+  return ElementConstIterator(
+           this->create_element(elem_properties_[prop].begin(),prop));
 }
 
 
@@ -430,9 +427,8 @@ auto
 CartesianGrid<dim_>::
 cend(const PropId &prop) const -> ElementConstIterator
 {
-  return ElementConstIterator(this->shared_from_this(),
-                              elem_properties_[prop].end(),
-                              prop);
+  return ElementConstIterator(
+           this->create_element(elem_properties_[prop].end(),prop));
 }
 
 

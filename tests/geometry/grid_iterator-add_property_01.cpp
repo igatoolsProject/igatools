@@ -51,18 +51,18 @@ void iterate(const int n_knots = 5)
       elem.add_property(blue);
   }
 
-  auto elem = grid->cbegin(red);
-  auto end  = grid->cend(red);
-  for (; elem != end; ++elem)
+  auto elem_r = grid->cbegin(red);
+  auto end_r  = grid->cend(red);
+  for (; elem_r != end_r; ++elem_r)
   {
-    elem->print_info(out);
+    elem_r->print_info(out);
   }
 
-  elem = grid->cbegin(blue);
-  end  = grid->cend(blue);
-  for (; elem != end; ++elem)
+  auto elem_b = grid->cbegin(blue);
+  auto end_b  = grid->cend(blue);
+  for (; elem_b != end_b; ++elem_b)
   {
-    elem->print_info(out);
+    elem_b->print_info(out);
   }
 
   OUTEND

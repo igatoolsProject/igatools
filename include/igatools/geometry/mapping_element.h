@@ -275,7 +275,7 @@ private:
     return cacheutils::get_valid_flags_from_cache_type(CType());
   }
 
-  using Cache = FuncValuesCache<dim,CType>;
+  using Cache = PointValuesCache<dim,CType>;
 
 
 public:

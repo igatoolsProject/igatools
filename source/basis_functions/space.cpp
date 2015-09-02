@@ -131,14 +131,9 @@ Space(const shared_ptr<CartesianGrid<dim_>> &grid,
       const shared_ptr<MapFunc> &map_func)
   :
   base_t(grid),
-  phys_domain_(PhysDomain::create(grid,map_func))
+  phys_domain_(PhysDomain::create(grid))
+//  phys_domain_(PhysDomain::create(grid,map_func))
 {
-//  Assert(map_func != nullptr, ExcNullPtr());
-//    map_func_.get_ref_ptr_data().swap(const_cast<shared_ptr<MapFunc> &>(map_func));
-//    Assert(map_func_.unique(), ExcNotUnique());
-
-  Assert(phys_domain_ != nullptr,ExcNullPtr());
-
   Assert(this->get_ptr_const_grid() == phys_domain_->get_grid(),
          ExcMessage("The space and the physical domain must have the same grid!"));
 
@@ -150,20 +145,11 @@ Space(const shared_ptr<const CartesianGrid<dim_>> &grid,
       const shared_ptr<MapFunc> &map_func)
   :
   base_t(grid),
-  phys_domain_(PhysDomain::create(grid,map_func))
+  phys_domain_(PhysDomain::create(grid))
+//  phys_domain_(PhysDomain::create(grid,map_func))
 {
-//  Assert(map_func != nullptr, ExcNullPtr());
-//    map_func_.get_ref_ptr_data().swap(const_cast<shared_ptr<MapFunc> &>(map_func));
-//    Assert(map_func_.unique(), ExcNotUnique());
-
-
-  Assert(phys_domain_ != nullptr,ExcNullPtr());
   Assert(this->get_ptr_const_grid() == phys_domain_->get_grid(),
          ExcMessage("The space and the physical domain must have the same grid!"));
-
-
-//  Assert(this->get_ptr_const_grid() == phys_domain_->get_grid(),
-//         ExcMessage("Reference space and mapping grids are not the same."));
 }
 
 
@@ -172,9 +158,9 @@ auto
 Space<dim_,codim_,range_,rank_,type_>::
 begin(const PropId &prop) -> ElementIterator
 {
-  return ElementIterator(this->shared_from_this(),
-  this->get_ptr_grid()->get_element_property(prop).begin(),
-  prop);
+  return ElementIterator(
+    this->create_element(
+      this->get_ptr_grid()->get_element_property(prop).begin(),prop));
 }
 
 
@@ -184,9 +170,9 @@ auto
 Space<dim_,codim_,range_,rank_,type_>::
 end(const PropId &prop) -> ElementIterator
 {
-  return ElementIterator(this->shared_from_this(),
-  this->get_ptr_grid()->get_element_property(prop).end(),
-  prop);
+  return ElementIterator(
+    this->create_element(
+      this->get_ptr_grid()->get_element_property(prop).end(),prop));
 }
 
 

@@ -84,15 +84,9 @@ public:
                       const PropId &prop = ElementProperties::active);
 
   /**
-   * Copy constructor.
-   * It can be used with different copy policies
-   * (i.e. deep copy or shallow copy).
-   * The default behaviour (i.e. using the proper interface of a
-   * classic copy constructor)
-   * uses the deep copy.
+   * Copy constructor. Not allowed to be used.
    */
-  FunctionElementBase(const self_t &elem,
-                      const CopyPolicy &copy_policy = CopyPolicy::deep);
+  FunctionElementBase(const self_t &elem) = delete;
 
   /**
    * Move constructor.
@@ -105,41 +99,14 @@ public:
   ~FunctionElementBase() = default;
   ///@}
 
-  /**
-   * @name Functions for performing different kind of copy.
-   */
-  ///@{
-  /**
-   * Performs a deep copy of the input @p element,
-   * i.e. a new local cache is built using the copy constructor on the local cache of @p element.
-   *
-   * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
-   */
-  void deep_copy_from(const self_t &element)
-  {
-    Assert(false,ExcNotImplemented());
-  }
-
-  /**
-   * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
-   * local cache used by the input @p element.
-   */
-  void shallow_copy_from(const self_t &element)
-  {
-    Assert(false,ExcNotImplemented());
-  }
-
-  ///@}
 
 
   /** @name Assignment operators */
   ///@{
   /**
-   * Copy assignment operator. Performs a <b>shallow copy</b> of the input @p element.
-   *
-   * @note Internally it uses the function shallow_copy_from().
+   * Copy assignment operator. Not allowed to be used.
    */
-  self_t &operator=(const self_t &element);
+  self_t &operator=(const self_t &element) = delete;
 
   /**
    * Move assignment operator.
@@ -150,6 +117,7 @@ public:
 
 
   const DomainElem &get_domain_element() const;
+  DomainElem &get_domain_element();
 
   template<class ValueType, int sdim>
   auto
@@ -225,7 +193,7 @@ private:
 
 
 
-  using Cache = FuncValuesCache<dim,CType>;
+  using Cache = PointValuesCache<dim,CType>;
 
 public:
   using CacheType = AllSubElementsCache<Cache>;
@@ -244,7 +212,7 @@ private:
 private:
   std::shared_ptr<ContainerType_> func_;
 
-  std::shared_ptr<DomainElem> phys_domain_elem_;
+  std::unique_ptr<DomainElem> phys_domain_elem_;
 
   std::shared_ptr<AllSubElementsCache<Cache>> all_sub_elems_cache_;
 

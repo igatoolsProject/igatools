@@ -34,8 +34,14 @@ GridIteratorBase(std::shared_ptr<ContainerType> container,
   elem_(container->create_element(index, prop))
 {}
 
+template <class Element>
+GridIteratorBase<Element>::
+GridIteratorBase(std::unique_ptr<Element> &&elem)
+  :
+  elem_(std::move(elem))
+{}
 
-
+#if 0
 template <class Element>
 GridIteratorBase<Element>::
 GridIteratorBase(const GridIteratorBase<Element> &it,
@@ -55,7 +61,7 @@ GridIteratorBase(const GridIteratorBase<Element> &it,
     AssertThrow(false,ExcNotImplemented());
   }
 }
-
+#endif
 
 
 template <class Element>

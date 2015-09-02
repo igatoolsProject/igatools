@@ -28,6 +28,8 @@
 #include <igatools/geometry/grid_cache_handler.h>
 #include <igatools/utils/value_vector.h>
 #include <igatools/basis_functions/values_cache.h>
+#include <igatools/utils/shared_ptr_constness_handler.h>
+
 #include <iterator>
 
 IGA_NAMESPACE_OPEN
@@ -56,17 +58,17 @@ IGA_NAMESPACE_OPEN
  * @ingroup serializable
  */
 template <int dim, class ContainerType_>
-class GridElementBase
+class GridElement
 {
 private:
-  using self_t = GridElementBase<dim, ContainerType_>;
+  using self_t = GridElement<dim, ContainerType_>;
 
 public:
   /** Type required by the CartesianGridIterator templated iterator */
   using ContainerType = ContainerType_;
-  using IndexType = typename ContainerType_::IndexType;
-  using List = typename ContainerType_::List;
-  using ListIt = typename ContainerType_::ListIt;
+  using IndexType = typename ContainerType::IndexType;
+  using List = typename ContainerType::List;
+  using ListIt = typename ContainerType::ListIt;
 
   using Point = Points<dim>;
 
@@ -79,66 +81,40 @@ protected:
    * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    * mechanism.
    */
-  GridElementBase() = default;
+  GridElement() = default;
 
 public:
   /**
    * Construct an accessor pointing to the element with
    * flat index @p elem_index of the CartesianGrid @p grid.
    */
-  GridElementBase(const std::shared_ptr<ContainerType_> grid,
-                  const ListIt &index,
-                  const PropId &prop = ElementProperties::active);
+  GridElement(const std::shared_ptr<ContainerType> &grid,
+              const ListIt &index,
+              const PropId &prop = ElementProperties::active);
 
   /**
-   * Copy constructor.
-   * It can be used with different copy policies
-   * (i.e. deep copy or shallow copy).
-   * The default behaviour (i.e. using the proper interface of a
-   * classic copy constructor)
-   * uses the <b>deep</b> copy.
+   * Copy constructor. Not allowed to be used.
    */
-  GridElementBase(const self_t &elem,
-                  const CopyPolicy &copy_policy = CopyPolicy::deep);
+  GridElement(const self_t &elem) = delete;
 
   /**
    * Move constructor.
    */
-  GridElementBase(self_t &&elem) = default;
+  GridElement(self_t &&elem) = default;
 
   /**
    * Destructor.
    */
-  ~GridElementBase() = default;
+  ~GridElement() = default;
   ///@}
 
-  /**
-   * @name Functions for performing different kind of copy.
-   */
-  ///@{
-  /**
-   * Performs a deep copy of the input @p element,
-   * i.e. a new local cache is built using the copy constructor on the local cache of @p element.
-   *
-   * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
-   */
-  void deep_copy_from(const self_t &element);
-
-  /**
-   * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
-   * local cache used by the input @p element.
-   */
-  void shallow_copy_from(const self_t &element);
-  ///@}
 
   /** @name Assignment operators */
   ///@{
   /**
-   * Copy assignment operator. Performs a <b>shallow copy</b> of the input @p element.
-   *
-   * @note Internally it uses the function shallow_copy_from().
+   * Copy assignment operator. Not allowed to be used.
    */
-  self_t &operator=(const self_t &element);
+  self_t &operator=(const self_t &element) = delete;
 
   /**
    * Move assignment operator.
@@ -149,12 +125,15 @@ public:
 
   const IndexType &get_index() const;
 
-  /** Return the cartesian grid from which the element belongs.*/
+  /** Return the CartesianGrid from which the element belongs.*/
   const std::shared_ptr<const ContainerType> get_grid() const;
 
+  /**
+   * Returns the unitary quadrature scheme corresponding to the <tt>sdim</tt>-dimensional
+   * s_id-th sub-element.
+   */
   template <int sdim>
-  std::shared_ptr<const Quadrature<sdim>>
-                                       get_quad()
+  std::shared_ptr<const Quadrature<sdim>> get_quad() const
   {
     return quad_list_.template get_quad<sdim>();
   }
@@ -277,9 +256,12 @@ public:
   /**
    * Returns the quadrature weights corresponding to the <tt>sdim</tt>
    * dimensional s_id-th sub-element.
+   *
+   * @note The returned weights are the quadrature unit weights multiplied by the
+   * <tt>sdim>-dimensional element measure.
    */
   template <int sdim>
-  ValueVector<Real> get_weights(const int s_id) const;
+  ValueVector<Real> get_w_measure(const int s_id) const;
 
 
 
@@ -291,15 +273,13 @@ public:
   ValueVector<Point> get_points(const int s_id = 0) const;
 
 
-  /**
-   * Returns the unitary quadrature scheme corresponding to the <tt>sdim</tt>
-   * dimensional s_id-th sub-element.
-   */
-  template <int sdim>
-  std::shared_ptr<const Quadrature<sdim>> get_quadrature() const
+  template <class C = ContainerType>
+  void add_property(const PropId &prop,
+                    EnableIfNonConst<C> * = nullptr)
   {
-    return quad_list_.template get_quad<sdim>();
+    this->grid_->elem_properties_[prop].insert(this->get_index());
   }
+
 
 private:
   ValueVector<Point> get_element_points() const;
@@ -321,6 +301,7 @@ private:
   friend class GridElementHandler<dim>;
 
 protected:
+
   /** Cartesian grid from which the element belongs.*/
   std::shared_ptr<ContainerType> grid_;
 
@@ -347,7 +328,7 @@ private:
 
 
 public:
-  using ValuesCache = FuncValuesCache<dim,CType>;
+  using ValuesCache = PointValuesCache<dim,CType>;
 
   using CacheType = AllSubElementsCache<ValuesCache>;
 
@@ -370,12 +351,6 @@ private:
   ///@}
 
 protected:
-  /**
-   * Performs a copy of the input @p element.
-   * The type of copy (deep or shallow) is specified by the input parameter @p copy_policy.
-   */
-  void copy_from(const self_t &element,
-                 const CopyPolicy &copy_policy);
 
   /**
    * ExceptionUnsupported Value Flag.
@@ -403,34 +378,7 @@ protected:
 #endif // SERIALIZATION
 };
 
-template <int dim>
-class ConstGridElement
-  : public GridElementBase<dim, const CartesianGrid<dim>>
-{
-  using GridElementBase<dim, const CartesianGrid<dim>>::GridElementBase;
-};
 
-
-template <int dim>
-class GridElement
-  : public GridElementBase<dim, CartesianGrid<dim>>
-{
-  using GridElementBase<dim, CartesianGrid<dim>>::GridElementBase;
-public:
-  void add_property(const PropId &prop)
-  {
-    this->grid_->elem_properties_[prop].insert(this->get_index());
-  }
-};
-
-
-//template <int dim>
-//inline std::ostream &operator<<(std::ostream & Str, MyEnum V) {
-//  switch (V) {
-//  case foo: return Str << "foo";
-//  case bar: return Str << "bar";
-//  default: return Str << (int) V;
-//}
 
 IGA_NAMESPACE_CLOSE
 

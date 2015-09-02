@@ -264,7 +264,7 @@ public:
   /**
    * Create an element (defined on this space) with a given flat_index.
    */
-  virtual std::shared_ptr<SpaceElement<dim_,0,range_,rank_,Transformation::h_grad> >
+  virtual std::unique_ptr<SpaceElement<dim_,0,range_,rank_,Transformation::h_grad> >
   create_element(const ListIt &index, const PropId &property) const override final;
 
 

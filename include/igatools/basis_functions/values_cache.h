@@ -448,6 +448,11 @@ private:
 
 
 /**
+ * @brief This class is used to wrap the cache for values associated basis fucnctions
+ * and to evaluation points.
+ *
+ * @ingroup serializable
+ *
  * @ingroup cache
  */
 template<int dim, class CacheType>
@@ -458,7 +463,7 @@ public:
   /**
    * Allocate space for the values and derivatives
    * of the element basis functions at quadrature points
-   * as specify by the flag
+   * as specify by the @p flags.
    */
   void resize(const typename space_element::Flags &flags,
               const Size n_points,
@@ -519,21 +524,22 @@ private:
 };
 
 /**
+ * @brief This class is used to wrap the cache for values associated to evaluation points.
  *
  * @ingroup serializable
  *
  * @ingroup cache
  */
 template<int dim, class CacheType>
-class FuncValuesCache : public ValuesCache<dim,CacheType>
+class PointValuesCache : public ValuesCache<dim,CacheType>
 {
 
 public:
 
   /**
-   * Allocate space for the fucntion values and derivatives
-   * of the element at quadrature points
-   * as specify by the flag
+   * Allocate space for the cache values
+   * of the element at evaluation points
+   * as specify by the @p flags.
    */
   template<class Flags>
   void resize(const Flags &flags, const Size n_points)

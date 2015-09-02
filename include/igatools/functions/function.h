@@ -150,10 +150,10 @@ public:
   virtual std::shared_ptr<ElementHandler>
   create_cache_handler() const;
 
-  std::shared_ptr<ConstElementAccessor>
+  std::unique_ptr<ConstElementAccessor>
   create_element(const ListIt &index, const PropId &prop) const;
 
-  std::shared_ptr<ElementAccessor>
+  std::unique_ptr<ElementAccessor>
   create_element(const ListIt &index, const PropId &prop);
 
 public:

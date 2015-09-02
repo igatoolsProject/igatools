@@ -46,10 +46,10 @@ class PhysicalSpaceElement
   :
   public SpaceElement<dim_,codim_,range_,rank_,type_>
 {
-public :
   using self_t = PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>;
   using parent_t = SpaceElement<dim_,codim_,range_,rank_,type_>;
 
+public :
   using PhysSpace = PhysicalSpace<dim_,range_,rank_,codim_,type_>;
   /** Type required by the CartesianGridIterator templated iterator */
   using ContainerType = const PhysSpace;
@@ -94,13 +94,9 @@ public:
 
 
   /**
-   * Copy constructor.
-   * It can be used with different copy policies (i.e. deep copy or shallow copy).
-   * The default behaviour (i.e. using the proper interface of a classic copy constructor)
-   * uses the deep copy.
+   * Copy constructor. Not allowed to be used.
    */
-  PhysicalSpaceElement(const self_t &in,
-                       const CopyPolicy &copy_policy = CopyPolicy::deep);
+  PhysicalSpaceElement(const self_t &in) = delete;
 
 
   /**
@@ -120,12 +116,10 @@ public:
    */
   ///@{
   /**
-   * Copy assignment operator. Performs a <b>shallow copy</b> of the input @p element.
-   *
-   * @note Internally it uses the function shallow_copy_from().
+   * Copy assignment operator. Not allowed to be used.
    */
   self_t &
-  operator=(const self_t &in) = default;
+  operator=(const self_t &in) = delete;
 
   /**
    * Move assignment operator.
@@ -135,26 +129,6 @@ public:
 
   ///@}
 
-
-  /**
-   * @name Functions for performing different kind of copy.
-   */
-  ///@{
-  /**
-   * Performs a deep copy of the input @p element,
-   * i.e. a new local cache is built using the copy constructor on the local cache of @p element.
-   *
-   * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
-   */
-  void deep_copy_from(const self_t &element);
-
-
-  /**
-   * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
-   * local cache used by the input @p element.
-   */
-  void shallow_copy_from(const self_t &element);
-  ///@}
 
 
   /**
@@ -339,16 +313,9 @@ private:
   template <class Accessor> friend class GridIteratorBase;
   template <int,int,int,int,Transformation> friend class PhysSpaceElementHandler;
 
-  std::shared_ptr<RefElemAccessor> ref_space_element_;
+  std::unique_ptr<typename RefElemAccessor::parent_t> ref_space_element_;
 
-  std::shared_ptr<PhysDomainElem> phys_domain_element_;
-
-
-  /**
-   * Creates a new object performing a deep copy of the current object using the PhysicalSpaceElement
-   * copy constructor.
-   */
-  std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_,type_>> clone() const override final;
+  std::unique_ptr<PhysDomainElem> phys_domain_element_;
 
 
 #ifdef SERIALIZATION

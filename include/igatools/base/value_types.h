@@ -43,7 +43,7 @@ enum class Flags
   point          =    1L << 1,
 
   /** Quadrature weigths on the element */
-  w_measure      =    1L << 2
+  weight    =    1L << 2
 };
 
 /**
@@ -63,7 +63,7 @@ class _Weight
 {
 public:
   static const std::string name;
-  static const auto flag = Flags::w_measure;
+  static const auto flag = Flags::weight;
 };
 
 } // end namespace grid_element

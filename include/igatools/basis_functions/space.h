@@ -35,7 +35,7 @@ IGA_NAMESPACE_OPEN
 template <int,int> class PhysicalDomain;
 
 template <int,int,int,int> class Function;
-template <int> class GridElement;
+//template <int> class NonConstGridElement;
 template <int,int,int,int,Transformation> class SpaceElement;
 template <int,int,int,int,Transformation> class SpaceElementHandler;
 
@@ -280,17 +280,6 @@ public:
   static const int range = range_;
   static const int rank = rank_;
 
-#if 0
-  std::shared_ptr<MapFunc> get_ptr_map_func()
-  {
-    return std::const_pointer_cast<MapFunc>(phys_domain_->get_function());
-  }
-
-  std::shared_ptr<const MapFunc> get_ptr_const_map_func() const
-  {
-    return phys_domain_->get_function();
-  }
-#endif
 
   virtual std::shared_ptr<const DofDistribution<dim_,range_,rank_> >
   get_ptr_const_dof_distribution() const = 0;
@@ -345,7 +334,7 @@ public:
   /**
    * Create and element (defined on this space) with a given flat_index
    */
-  virtual std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_,type_> >
+  virtual std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_,type_> >
   create_element(const ListIt &index, const PropId &property) const = 0;
 
 

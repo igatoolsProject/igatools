@@ -209,15 +209,16 @@ public:
    * the given <tt>property</tt>
    * an assertion will be raised (in DEBUG mode).
    */
-  GridIteratorBase(std::shared_ptr<Element> accessor_ptr);
+  GridIteratorBase(std::unique_ptr<Element> &&accessor_ptr);
 
   /**
    * Copy constructor. It may be used with different CopyPolicy (i.e. shallow or deep).
    *
    * @note By default it uses the deep copy.
    */
-  GridIteratorBase(const GridIteratorBase<Element> &it,
-                   const CopyPolicy &copy_policy = CopyPolicy::deep);
+//  GridIteratorBase(const GridIteratorBase<Element> &it,
+//                   const CopyPolicy &copy_policy = CopyPolicy::deep);
+  GridIteratorBase(const GridIteratorBase<Element> &it) = delete;
 
   /** Move constructor. */
   GridIteratorBase(GridIteratorBase<Element> &&it) = default;
@@ -233,15 +234,17 @@ public:
    * It performs a <b>shallow</b> copy of the Element hold by the CartesianGridIteratorBase.
    */
   GridIteratorBase<Element> &
-  operator=(const GridIteratorBase<Element> &it)
+  operator=(const GridIteratorBase<Element> &it) = delete;
+#if 0
   {
     elem_ = it.elem_;
     return *this;
   }
+#endif
 
   /** Move assignment operator. */
   GridIteratorBase<Element> &
-  operator=(GridIteratorBase<Element> &&) = default;
+  operator=(GridIteratorBase<Element> &&) = delete;
   ///@}
 
   /** @name Comparison operators */
@@ -290,7 +293,7 @@ protected:
    * can be a pure abstract class (and therefore have some virtual functions)
    * that must be resolved at run-time.
    */
-  std::shared_ptr<Element> elem_ ;
+  std::unique_ptr<Element> elem_ ;
 
 #ifdef SERIALIZATION
 private:

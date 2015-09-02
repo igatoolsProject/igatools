@@ -26,7 +26,7 @@ data = Instantiation(include_files)
 
 sub_dim_members = [
              'Real Element::get_measure<k>(const int j) const;',
-             'ValueVector<Real> Element::get_weights<k>(const int j) const;',
+             'ValueVector<Real> Element::get_w_measure<k>(const int j) const;',
              'const Points<k> Element::get_side_lengths<k>(const int j) const;',
              'ValueVector<typename Element::Point> Element::get_points<k>(const int j) const;',
              'bool Element::is_boundary<k>(const Index sub_elem_id) const;',
@@ -37,7 +37,7 @@ elems = []
 els =['const iga::CartesianGrid', ' iga::CartesianGrid']
 for dim in inst.domain_dims:
   for el in els:
-    acc = 'GridElementBase<%d,' %(dim) + el + '<%d>>' %(dim)
+    acc = 'GridElement<%d,' %(dim) + el + '<%d>>' %(dim)
     f.write('template class %s; \n' %(acc))
     elems.append(acc)
     for fun in sub_dim_members:
@@ -47,7 +47,7 @@ for dim in inst.domain_dims:
         
 for dim in inst.sub_domain_dims:
   for el in els:
-    acc = 'GridElementBase<%d,' %(dim) + el + '< %d>>' %(dim)
+    acc = 'GridElement<%d,' %(dim) + el + '< %d>>' %(dim)
     f.write('template class %s; \n' %(acc))
     elems.append(acc)
     for fun in sub_dim_members:
@@ -55,13 +55,13 @@ for dim in inst.sub_domain_dims:
         s = fun.replace('k', '%d' % (k)).replace('Element', '%s' % (acc));
         f.write('template ' + s + '\n')
 
-accs1 =  ['GridElement',       'ConstGridElement']
-for dim in inst.sub_domain_dims+inst.domain_dims: 
-  for acc in accs1: 
-      f.write('template class ' + acc + '<%d>' %(dim) + ';\n')
+#accs1 =  ['GridElement',       'ConstGridElement']
+#for dim in inst.sub_domain_dims+inst.domain_dims: 
+#  for acc in accs1: 
+#      f.write('template class ' + acc + '<%d>' %(dim) + ';\n')
 
-accs=  ['GridElement',       'ConstGridElement', 'GridElement', 'ConstGridElement']
-iters =  ['GridIteratorBase', 'GridIteratorBase',   'GridIterator', 'GridIterator']
+accs=   ['NonConstGridElement', 'ConstGridElement','NonConstGridElement', 'ConstGridElement']
+iters = [   'GridIteratorBase', 'GridIteratorBase',       'GridIterator',     'GridIterator']
 for dim in inst.sub_domain_dims+inst.domain_dims:
   for i in range(len(accs)):
     acc = iters[i] + '<' + accs[i] + '<%d>' %(dim) + '>' 

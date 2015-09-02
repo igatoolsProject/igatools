@@ -187,7 +187,7 @@ operator()(const Topology<sdim> &topology)
   using GridFlags = grid_element::Flags;
   //TODO (martinelli, Aug 27, 2015): select the proper grid flags depending on the BSpline element flags
   const auto grid_flags = GridFlags::point |
-                          GridFlags::w_measure;
+                          GridFlags::weight;
   grid_handler_.template set_flags<sdim>(grid_flags);
 
   flags_[sdim] = flag_in_;
@@ -201,7 +201,7 @@ BSplineElementHandler<dim_, range_, rank_>::
 InitCacheDispatcher::
 init_cache_1D()
 {
-  const auto &quad = *elem_.get_grid_element().template get_quadrature<sdim>();
+  const auto &quad = *elem_.get_grid_element().template get_quad<sdim>();
 
   using BSpElem = BSplineElement<dim_,range_,rank_>;
   auto &bsp_elem  = dynamic_cast<BSpElem &>(elem_);
@@ -265,7 +265,7 @@ init_cache_multiD()
 
   const auto n_basis = bsp_elem.get_basis_offset()[BaseSpace::n_components];
 
-  const auto n_pts = elem_.get_grid_element().template get_quadrature<sdim>()->get_num_points();
+  const auto n_pts = elem_.get_grid_element().template get_quad<sdim>()->get_num_points();
 
   const auto flag = flags_[sdim];
 
@@ -703,7 +703,7 @@ operator()(const Topology<sdim> &topology)
 
   const auto extended_sub_elem_quad =
     extend_sub_elem_quad<sdim,dim>(
-      *elem_.get_grid_element().template get_quadrature<sdim>(),
+      *elem_.get_grid_element().template get_quad<sdim>(),
       s_id_);
 
   fill_cache_1D<sdim>(extended_sub_elem_quad);

@@ -44,7 +44,7 @@ FunctionElementBase(const std::shared_ptr<ContainerType_> func,
 //    Assert(phys_domain_elem_ != nullptr, ExcNullPtr());
 }
 
-
+#if 0
 template<int dim, int codim, int range, int rank,  class ContainerType_>
 FunctionElementBase<dim, codim, range, rank, ContainerType_>::
 FunctionElementBase(const self_t &elem,
@@ -63,28 +63,7 @@ FunctionElementBase(const self_t &elem,
     phys_domain_elem_ = std::make_shared<DomainElem>(*elem.phys_domain_elem_,CopyPolicy::deep);
   }
 }
-
-
-template<int dim, int codim, int range, int rank,  class ContainerType_>
-FunctionElementBase<dim,codim,range,rank, ContainerType_> &
-FunctionElementBase<dim, codim, range, rank, ContainerType_>::
-operator=(const self_t &element)
-{
-  shallow_copy_from(element);
-  return *this;
-}
-
-
-//template<int dim, int codim, int range, int rank,  class ContainerType_>
-//std::shared_ptr<FunctionElement<dim,codim,range,rank> >
-//FunctionElementBase<dim, codim, range, rank, ContainerType_>::
-//clone() const
-//{
-//    auto elem = std::make_shared<FunctionElement<dim,codim,range,rank> >(*this,CopyPolicy::deep);
-//    Assert(elem != nullptr, ExcNullPtr());
-//    return elem;
-//}
-
+#endif
 
 
 template<int dim, int codim, int range, int rank,  class ContainerType_>
@@ -95,6 +74,13 @@ get_domain_element() const -> const DomainElem &
   return *phys_domain_elem_;
 }
 
+template<int dim, int codim, int range, int rank,  class ContainerType_>
+auto
+FunctionElementBase<dim, codim, range, rank, ContainerType_>::
+get_domain_element() -> DomainElem &
+{
+  return *phys_domain_elem_;
+}
 
 
 

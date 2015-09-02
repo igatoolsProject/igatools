@@ -93,7 +93,7 @@ public:
 
       if (!cache.fill_none())
       {
-        const auto &grid_pts = elem_.get_grid_element()->template get_points<sdim>(s_id_);
+        const auto &grid_pts = elem_.get_grid_element().template get_points<sdim>(s_id_);
         if (cache.template status_fill<domain_element::_Point>())
         {
           domain_.evaluate_0(grid_pts, cache.template get_data<_Point>());

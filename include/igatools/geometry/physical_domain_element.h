@@ -75,15 +75,9 @@ public:
                             const PropId &prop = ElementProperties::active);
 
   /**
-   * Copy constructor.
-   * It can be used with different copy policies
-   * (i.e. deep copy or shallow copy).
-   * The default behaviour (i.e. using the proper interface of a
-   * classic copy constructor)
-   * uses the deep copy.
+   * Copy constructor. Not allowed to be used.
    */
-  PhysicalDomainElementBase(const self_t &elem,
-                            const CopyPolicy &copy_policy = CopyPolicy::deep);
+  PhysicalDomainElementBase(const self_t &elem) = delete;
 
   /**
    * Move constructor.
@@ -96,24 +90,6 @@ public:
   ~PhysicalDomainElementBase() = default;
   ///@}
 
-  /**
-       * @name Functions for performing different kind of copy.
-       */
-  ///@{
-  /**
-   * Performs a deep copy of the input @p element,
-   * i.e. a new local cache is built using the copy constructor on the local cache of @p element.
-   *
-   * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
-   */
-  void deep_copy_from(const self_t &element);
-
-  /**
-   * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
-   * local cache used by the input @p element.
-   */
-  void shallow_copy_from(const self_t &element);
-  ///@}
 
   /**
    * @name Comparison operators
@@ -169,11 +145,15 @@ public:
   }
 
 
-  std::shared_ptr<GridElem> get_grid_element() const
+  const GridElem &get_grid_element() const
   {
-    return grid_elem_;
+    return *grid_elem_;
   }
 
+  GridElem &get_grid_element()
+  {
+    return *grid_elem_;
+  }
 
 
   void print_info(LogStream &out) const
@@ -270,9 +250,9 @@ private:
 //                  boost::fusion::pair<     _Curvature,DataWithFlagStatus<ValueVector<SafeSTLVector<Real>>>>
 //                  >;
 
+  using Cache = PointValuesCache<dim_,CType>;
 
-
-  using Cache = FuncValuesCache<dim_, CType>;
+//  using Cache = FuncValuesCache<dim_, CType>;
 
 public:
   using CacheType = AllSubElementsCache<Cache>;
@@ -280,7 +260,7 @@ public:
 private:
   std::shared_ptr<ContainerType_> phys_dom_;
 
-  std::shared_ptr<GridElem> grid_elem_;
+  std::unique_ptr<GridElem> grid_elem_;
 
   std::shared_ptr<CacheType> local_cache_;
 

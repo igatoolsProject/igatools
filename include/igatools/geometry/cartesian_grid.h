@@ -41,9 +41,17 @@
 
 IGA_NAMESPACE_OPEN
 
-template <int, class> class GridElementBase;
-template <int> class GridElement;
-template <int> class ConstGridElement;
+template <int> class CartesianGrid;
+
+template <int, class> class GridElement;
+
+template<int dim>
+using ConstGridElement = GridElement<dim, const CartesianGrid<dim>>;
+
+template<int dim>
+using NonConstGridElement = GridElement<dim, CartesianGrid<dim>>;
+
+
 template <int> class GridElementHandler;
 
 /**
@@ -172,7 +180,7 @@ public:
   static const int dim = dim_;
 
   /** Type for the element accessor. */
-  using ElementAccessor = GridElement<dim_>;
+  using ElementAccessor = NonConstGridElement<dim_>;
   using ConstElementAccessor = ConstGridElement<dim_>;
 
   /** Type for the iterator over the elements of the grid (non-const version).  */
@@ -650,13 +658,13 @@ public:
   /**
    * Create an element (defined on this grid) with a given index and the given property
    */
-  std::shared_ptr<ConstElementAccessor>
+  std::unique_ptr<ConstElementAccessor>
   create_element(const ListIt &index, const PropId &property) const;
 
   /**
    * Create an element (defined on this grid) with a given index and the given property
    */
-  std::shared_ptr<ElementAccessor>
+  std::unique_ptr<ElementAccessor>
   create_element(const ListIt &index, const PropId &property);
 
   /**
@@ -765,10 +773,10 @@ private:
    */
   signal_insert_knots_t insert_knots_signals_;
 #endif
-  friend class GridElementBase<dim_, CartesianGrid<dim_>>;
-  friend class GridElementBase<dim_, const CartesianGrid<dim_>>;
-  friend class GridElement<dim_>;
-  friend class ConstGridElement<dim_>;
+  friend class GridElement<dim_, CartesianGrid<dim_>>;
+  friend class GridElement<dim_, const CartesianGrid<dim_>>;
+//  friend class NonConstGridElement<dim_>;
+//  friend class ConstGridElement<dim_>;
 
 #ifdef SERIALIZATION
 private:

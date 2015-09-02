@@ -41,7 +41,7 @@ class ReferenceElement : public SpaceElement<dim,0,range,rank,Transformation::h_
 {
 public:
   /** Type for the grid accessor. */
-  using GridAccessor = GridElement<dim>;
+  using GridAccessor = NonConstGridElement<dim>;
 
   /** Type required by the GridForwardIterator templated iterator */
   using ContainerType = const ReferenceSpace<dim,range,rank> ;
@@ -75,8 +75,10 @@ protected:
   ReferenceElement() = default;
 
 public:
-  ReferenceElement(const ReferenceElement<dim,range,rank> &elem,
-                   const iga::CopyPolicy &copy_policy = CopyPolicy::deep);
+  /**
+   * Copy constructor. Not allowed to be used.
+   */
+  ReferenceElement(const ReferenceElement<dim,range,rank> &elem) = delete;
 
   /**
    * Constructs an accessor to element number index of a
@@ -96,12 +98,12 @@ public:
 
   /**
    * Returns the <tt>k</tt> dimensional j-th sub-element measure
-   * multiplied by the weights of the quadrature.
+   * multiplied by the weights of the quadrature on the unit element.
    */
   template <int k>
   ValueVector<Real> get_w_measures(const int j) const
   {
-    return this->get_grid_element().template get_weights<k>(j);
+    return this->get_grid_element().template get_w_measure<k>(j);
   }
 
   /**
