@@ -27,9 +27,12 @@ IGA_NAMESPACE_OPEN
 
 template <int dim, class ContainerType_>
 GridElementBase<dim, ContainerType_>::
-GridElementBase(const std::shared_ptr<ContainerType> &grid,
+GridElementBase(const SharedPtrConstnessHandler<CartesianGrid<dim>> &grid,
                 const ListIt &index,
                 const PropId &prop)
+//    GridElementBase(const std::shared_ptr<ContainerType> &grid,
+//                    const ListIt &index,
+//                    const PropId &prop)
   :
   grid_(grid),
   property_(prop),

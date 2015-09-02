@@ -88,7 +88,11 @@ public:
    * Construct an accessor pointing to the element with
    * flat index @p elem_index of the CartesianGrid @p grid.
    */
-  GridElementBase(const std::shared_ptr<ContainerType_> &grid,
+//  GridElementBase(const std::shared_ptr<ContainerType_> &grid,
+//                  const ListIt &index,
+//                  const PropId &prop = ElementProperties::active);
+
+  GridElementBase(const SharedPtrConstnessHandler<CartesianGrid<dim>> &grid,
                   const ListIt &index,
                   const PropId &prop = ElementProperties::active);
 
