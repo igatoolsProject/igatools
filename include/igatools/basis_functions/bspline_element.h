@@ -91,13 +91,8 @@ public:
 
   /**
    * Copy constructor.
-   * It can be used with different copy policies (i.e. deep copy or shallow
-   *  copy).
-   * The default behaviour (i.e. using the proper interface of a classic copy
-   * constructor) uses the deep copy.
    */
-  BSplineElement(const self_t &elem,
-                 const CopyPolicy &copy_policy = CopyPolicy::deep);
+  BSplineElement(const self_t &elem) = delete;
 
   /**
    * Move constructor.
@@ -114,10 +109,8 @@ public:
   ///@{
   /**
    * Copy assignment operator.
-   * @note Creates a new element cache, but it shares
-   * the one dimensional cache with the copied element.
    */
-  self_t &operator=(const self_t &elem) = default;
+  self_t &operator=(const self_t &elem) = delete;
 
   /**
    * Move assignment operator.
@@ -161,9 +154,6 @@ public:
 
     return values;
   }
-
-  virtual std::shared_ptr<SpaceElement<dim,0,range,rank,Transformation::h_grad> >
-  clone() const override final;
 
 
   virtual void print_cache_info(LogStream &out) const;

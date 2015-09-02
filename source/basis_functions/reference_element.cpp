@@ -70,20 +70,6 @@ ReferenceElement(const std::shared_ptr<ConstSpace> space,
 
 
 
-template <int dim, int range, int rank>
-ReferenceElement<dim, range, rank>::
-ReferenceElement(const ReferenceElement<dim,range,rank> &elem,
-                 const iga::CopyPolicy &copy_policy)
-  :
-  parent_t(elem,copy_policy),
-  n_basis_direction_(elem.n_basis_direction_),
-  comp_offset_(elem.comp_offset_),
-  basis_functions_indexer_(elem.basis_functions_indexer_)
-{};
-
-
-
-
 
 template <int dim, int range, int rank>
 int

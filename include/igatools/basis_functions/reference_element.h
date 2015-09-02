@@ -75,8 +75,7 @@ protected:
   ReferenceElement() = default;
 
 public:
-  ReferenceElement(const ReferenceElement<dim,range,rank> &elem,
-                   const iga::CopyPolicy &copy_policy = CopyPolicy::deep);
+  ReferenceElement(const ReferenceElement<dim,range,rank> &elem) = delete;
 
   /**
    * Constructs an accessor to element number index of a

@@ -105,14 +105,7 @@ public:
                const ListIt &index,
                const PropId &prop = ElementProperties::active);
 
-  /**
-   * Copy constructor.
-   * It can be used with different copy policies (i.e. deep copy or shallow copy).
-   * The default behaviour (i.e. using the proper interface of a classic copy constructor)
-   * uses the deep copy.
-   */
-  SpaceElement(const self_t &elem,
-               const CopyPolicy &copy_policy = CopyPolicy::deep);
+  SpaceElement(const self_t &elem) = delete;
 
   /**
    * Move constructor.
@@ -132,7 +125,7 @@ public:
    *
    * @note Internally it uses the function shallow_copy_from().
    */
-  self_t &operator=(const self_t &element);
+  self_t &operator=(const self_t &element) = delete;
 
   /**
    * Move assignment operator.
@@ -141,45 +134,7 @@ public:
   ///@}
 
 
-  /**
-   * @name Functions for performing different kind of copy.
-   */
-  ///@{
-  /**
-   * Performs a deep copy of the input @p element,
-   * i.e. a new local cache is built using the copy constructor on the local cache of @p element.
-   *
-   * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
-   */
-  void deep_copy_from(const self_t &element)
-  {
-    Assert(false,ExcNotImplemented());
-  }
 
-  /**
-   * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
-   * local cache used by the input @p element.
-   */
-  void shallow_copy_from(const self_t &element)
-  {
-    Assert(false,ExcNotImplemented());
-  }
-  ///@}
-
-
-  /**
-   * Creates a new object performing a deep copy of the current object using
-   * the
-   * copy constructor of the derived class.
-   *
-   * @warning This function should be not called directly
-   * (if called it raises an assertion in Debug mode),
-   * instead it should be called its specialization on a derived class.
-   * It would be better to define this function
-   * <em>pure virtual</em> but this will not allow to dereference an iterator
-   * containing a pointer to an object of kind SpaceElement.
-   */
-  virtual std::shared_ptr<self_t> clone() const;
 
 
 
@@ -337,16 +292,6 @@ private:
   }
 
 
-protected:
-  /**
-   * Performs a copy of the input @p element.
-   * The type of copy (deep or shallow) is specified by the input parameter @p copy_policy.
-   */
-  void copy_from(const self_t &element,
-                 const CopyPolicy &copy_policy);
-
-
-private:
 
   std::shared_ptr<const Sp> space_;
 

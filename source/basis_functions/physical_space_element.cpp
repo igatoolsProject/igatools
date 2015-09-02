@@ -106,24 +106,7 @@ copy_from(const PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> &element,
 //    }
 }
 
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
-void
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
-deep_copy_from(const PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> &element)
-{
-  Assert(false,ExcNotImplemented());
-  //this->copy_from(element,CopyPolicy::deep);
-}
 
-
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
-void
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
-shallow_copy_from(const PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> &element)
-{
-  Assert(false,ExcNotImplemented());
-//    this->copy_from(element,CopyPolicy::shallow);
-}
 
 
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
