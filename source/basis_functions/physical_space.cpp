@@ -153,7 +153,9 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
   auto grid =  this->get_ptr_const_grid();
 
   auto sub_ref_space = ref_space_->get_ref_sub_space(s_id, dof_map, sub_grid);
-  auto F = this->phys_domain_->get_function();
+  shared_ptr<const typename SubMap::SupFunc> F;
+//  auto F = this->phys_domain_->get_function();
+  AssertThrow(false,ExcNotImplemented());
   auto sub_map_func = SubMap::create(sub_grid, F, s_id, elem_map);
   auto sub_space = SubSpace<k>::create_nonconst(sub_ref_space, sub_map_func);
   return sub_space;

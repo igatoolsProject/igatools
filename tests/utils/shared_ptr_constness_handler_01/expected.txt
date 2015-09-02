@@ -12,6 +12,12 @@ SharedPtrConstnessHandler::print_info()
          Direction: 0
          [ 0 1.00000 ]
       
+      Element properties:
+         IDs with property "active":
+            Entry id: 0
+            [ 0 ]
+         
+      
    
 
 SharedPtrConstnessHandler::get_ptr_data()
@@ -21,6 +27,12 @@ SharedPtrConstnessHandler::get_ptr_data()
       Direction: 0
       [ 0 1.00000 ]
    
+   Element properties:
+      IDs with property "active":
+         Entry id: 0
+         [ 0 ]
+      
+   
 
 SharedPtrConstnessHandler::get_ptr_const_data()
    Number of intervals per direction: [ 1 ]
@@ -28,6 +40,12 @@ SharedPtrConstnessHandler::get_ptr_const_data()
       Size: [ 2 ]  Weights: [2]
       Direction: 0
       [ 0 1.00000 ]
+   
+   Element properties:
+      IDs with property "active":
+         Entry id: 0
+         [ 0 ]
+      
    
 
 SharedPtrConstnessHandler::get_ref_data()
@@ -37,6 +55,12 @@ SharedPtrConstnessHandler::get_ref_data()
       Direction: 0
       [ 0 1.00000 ]
    
+   Element properties:
+      IDs with property "active":
+         Entry id: 0
+         [ 0 ]
+      
+   
 
 SharedPtrConstnessHandler::get_ref_const_data()
    Number of intervals per direction: [ 1 ]
@@ -44,6 +68,12 @@ SharedPtrConstnessHandler::get_ref_const_data()
       Size: [ 2 ]  Weights: [2]
       Direction: 0
       [ 0 1.00000 ]
+   
+   Element properties:
+      IDs with property "active":
+         Entry id: 0
+         [ 0 ]
+      
    
 
 ========================================================================
@@ -59,6 +89,12 @@ SharedPtrConstnessHandler::print_info()
          Direction: 0
          [ 0 1.00000 ]
       
+      Element properties:
+         IDs with property "active":
+            Entry id: 0
+            [ 0 ]
+         
+      
    
 
 SharedPtrConstnessHandler::get_ptr_const_data()
@@ -68,6 +104,12 @@ SharedPtrConstnessHandler::get_ptr_const_data()
       Direction: 0
       [ 0 1.00000 ]
    
+   Element properties:
+      IDs with property "active":
+         Entry id: 0
+         [ 0 ]
+      
+   
 
 SharedPtrConstnessHandler::get_ref_const_data()
    Number of intervals per direction: [ 1 ]
@@ -75,6 +117,12 @@ SharedPtrConstnessHandler::get_ref_const_data()
       Size: [ 2 ]  Weights: [2]
       Direction: 0
       [ 0 1.00000 ]
+   
+   Element properties:
+      IDs with property "active":
+         Entry id: 0
+         [ 0 ]
+      
    
 
 SharedPtrConstnessHandler::operator*()
@@ -84,6 +132,12 @@ SharedPtrConstnessHandler::operator*()
       Direction: 0
       [ 0 1.00000 ]
    
+   Element properties:
+      IDs with property "active":
+         Entry id: 0
+         [ 0 ]
+      
+   
 
 SharedPtrConstnessHandler::operator->()
    Number of intervals per direction: [ 1 ]
@@ -91,6 +145,12 @@ SharedPtrConstnessHandler::operator->()
       Size: [ 2 ]  Weights: [2]
       Direction: 0
       [ 0 1.00000 ]
+   
+   Element properties:
+      IDs with property "active":
+         Entry id: 0
+         [ 0 ]
+      
    
 
 ========================================================================
