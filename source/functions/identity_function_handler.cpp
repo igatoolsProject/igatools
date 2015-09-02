@@ -75,7 +75,7 @@ IdentityFunctionElementHandler<dim,space_dim>::
 init_cache(ConstElementAccessor &elem,
            const eval_pts_variant &quad) const
 {
-  grid_handler_->init_cache(*(elem.get_domain_element().get_grid_element()), quad);
+  grid_handler_->init_cache(elem.get_domain_element().get_grid_element(), quad);
 }
 
 
@@ -88,7 +88,7 @@ fill_cache(const topology_variant &sdim,
            const int s_id) const -> void
 {
   grid_handler_->
-  fill_cache(sdim, *(elem.get_domain_element().get_grid_element()),
+  fill_cache(sdim, elem.get_domain_element().get_grid_element(),
              s_id);
 //
 //

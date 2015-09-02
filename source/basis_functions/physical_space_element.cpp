@@ -73,38 +73,6 @@ PhysicalSpaceElement(const PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> 
 }
 #endif
 
-#if 0
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
-auto
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
-clone() const -> std::shared_ptr<SpaceElement<dim_,codim_,range_,rank_,type_>>
-{
-  auto elem = std::make_shared<self_t>(*this,CopyPolicy::deep);
-  Assert(elem != nullptr, ExcNullPtr());
-  return elem;
-}
-#endif
-
-template<int dim_,int range_,int rank_,int codim_,Transformation type_>
-void
-PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
-copy_from(const PhysicalSpaceElement<dim_,range_,rank_,codim_,type_> &element,
-          const CopyPolicy &copy_policy)
-{
-  Assert(false,ExcNotImplemented());
-//    SpaceElementAccessor<PhysSpace>::copy_from(element,copy_policy);
-//
-//    PhysSpace::PushForwardType::ElementAccessor::copy_from(element,copy_policy);
-//
-//    if (copy_policy == CopyPolicy::deep)
-//        ref_space_element_->deep_copy_from(element.ref_space_element_);
-//    else if (copy_policy == CopyPolicy::shallow)
-//        ref_space_element_->deep_copy_from(element.ref_space_element_);
-//    else
-//    {
-//        Assert(false,ExcNotImplemented());
-//    }
-}
 
 
 

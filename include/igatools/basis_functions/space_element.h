@@ -105,6 +105,9 @@ public:
                const ListIt &index,
                const PropId &prop = ElementProperties::active);
 
+  /**
+   * Copy constructor. Not allowed to be used.
+   */
   SpaceElement(const self_t &elem) = delete;
 
   /**
@@ -121,9 +124,7 @@ public:
   /** @name Assignment operators */
   ///@{
   /**
-   * Copy assignment operator. Performs a <b>shallow copy</b> of the input @p element.
-   *
-   * @note Internally it uses the function shallow_copy_from().
+   * Copy assignment operator. Not allowed to be used.
    */
   self_t &operator=(const self_t &element) = delete;
 

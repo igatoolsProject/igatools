@@ -90,7 +90,7 @@ public:
                  const PropId &prop = ElementProperties::active);
 
   /**
-   * Copy constructor.
+   * Copy constructor. Not allowed to be used.
    */
   BSplineElement(const self_t &elem) = delete;
 
@@ -108,7 +108,7 @@ public:
   /** @name Assignment operators */
   ///@{
   /**
-   * Copy assignment operator.
+   * Copy assignment operator. Not allowed to be used.
    */
   self_t &operator=(const self_t &elem) = delete;
 

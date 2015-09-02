@@ -75,6 +75,9 @@ protected:
   ReferenceElement() = default;
 
 public:
+  /**
+   * Copy constructor. Not allowed to be used.
+   */
   ReferenceElement(const ReferenceElement<dim,range,rank> &elem) = delete;
 
   /**

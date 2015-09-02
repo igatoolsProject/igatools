@@ -38,45 +38,7 @@ PhysicalDomainElementBase(std::shared_ptr<ContainerType_> phys_dom,
 
 
 
-template<int dim_, int codim_, class ContainerType_>
-PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
-PhysicalDomainElementBase(const self_t &elem,
-                          const CopyPolicy &copy_policy)
-  :
-  phys_dom_(elem.phys_dom_)
-{
-  if (copy_policy == CopyPolicy::shallow)
-  {
-    grid_elem_ = elem.grid_elem_;
-    local_cache_ = elem.local_cache_;
-  }
-  else
-  {
-    local_cache_ =
-      std::shared_ptr<CacheType>(new CacheType(*elem.local_cache_));
-    grid_elem_ = std::make_shared<GridElem>(*elem.grid_elem_,CopyPolicy::deep);
-  }
-}
 
-
-
-template<int dim_, int codim_, class ContainerType_>
-void
-PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
-deep_copy_from(const self_t &elem)
-{
-  Assert(false, ExcNotImplemented());
-}
-
-
-
-template<int dim_, int codim_, class ContainerType_>
-void
-PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
-shallow_copy_from(const self_t &elem)
-{
-  Assert(false, ExcNotImplemented());
-}
 
 
 
