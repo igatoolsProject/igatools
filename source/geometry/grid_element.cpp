@@ -30,9 +30,6 @@ GridElementBase<dim, ContainerType_>::
 GridElementBase(const SharedPtrConstnessHandler<CartesianGrid<dim>> &grid,
                 const ListIt &index,
                 const PropId &prop)
-//    GridElementBase(const std::shared_ptr<ContainerType> &grid,
-//                    const ListIt &index,
-//                    const PropId &prop)
   :
   grid_(grid),
   property_(prop),
@@ -40,40 +37,6 @@ GridElementBase(const SharedPtrConstnessHandler<CartesianGrid<dim>> &grid,
 {}
 
 
-
-template <int dim, class ContainerType_>
-GridElementBase<dim, ContainerType_>::
-GridElementBase(const self_t &elem,
-                const CopyPolicy &copy_policy)
-  :
-  grid_(elem.grid_),
-  property_(elem.property_),
-  index_it_(elem.index_it_)
-{
-  if (elem.all_sub_elems_cache_ != nullptr)
-  {
-    if (copy_policy == CopyPolicy::shallow)
-    {
-      all_sub_elems_cache_ = elem.all_sub_elems_cache_;
-    }
-    else
-    {
-      all_sub_elems_cache_ = std::make_shared<CacheType>(*elem.all_sub_elems_cache_);
-    }
-  }
-}
-
-
-
-//template <int dim, class ContainerType_>
-//std::shared_ptr<self_t >
-//GridElementBase<dim, ContainerType_>::
-//clone() const
-//{
-//    auto elem = std::make_shared<self_t>(*this,CopyPolicy::deep);
-//    Assert(elem != nullptr, ExcNullPtr());
-//    return elem;
-//}
 
 
 
@@ -169,66 +132,6 @@ operator >(const self_t &elem) const
   return (get_index() > elem.get_index());
 }
 
-
-template <int dim, class ContainerType_>
-auto
-GridElementBase<dim, ContainerType_>::
-operator=(const self_t &element) -> self_t &
-{
-  shallow_copy_from(element);
-  return *this;
-}
-
-
-template <int dim, class ContainerType_>
-void
-GridElementBase<dim, ContainerType_>::
-copy_from(const self_t &elem, const CopyPolicy &copy_policy)
-{
-  Assert(get_grid() == elem.get_grid(),
-         ExcMessage("Cannot copy from an element on different grid."));
-
-  if (this != &elem)
-  {
-    index_it_   = elem.index_it_;
-    property_ = elem.property_;
-
-    if (copy_policy == CopyPolicy::deep)
-    {
-      Assert(elem.all_sub_elems_cache_ != nullptr, ExcNullPtr());
-      all_sub_elems_cache_ = std::make_shared<CacheType>(*elem.all_sub_elems_cache_);
-    }
-    else if (copy_policy == CopyPolicy::shallow)
-    {
-      all_sub_elems_cache_ = elem.all_sub_elems_cache_;
-    }
-    else
-    {
-      Assert(false,ExcNotImplemented());
-      AssertThrow(false,ExcNotImplemented());
-    }
-  }
-}
-
-
-
-template <int dim, class ContainerType_>
-void
-GridElementBase<dim, ContainerType_>::
-deep_copy_from(const self_t &elem)
-{
-  copy_from(elem,CopyPolicy::deep);
-}
-
-
-
-template <int dim, class ContainerType_>
-void
-GridElementBase<dim, ContainerType_>::
-shallow_copy_from(const self_t &elem)
-{
-  copy_from(elem,CopyPolicy::shallow);
-}
 
 
 

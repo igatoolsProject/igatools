@@ -97,15 +97,9 @@ public:
                   const PropId &prop = ElementProperties::active);
 
   /**
-   * Copy constructor.
-   * It can be used with different copy policies
-   * (i.e. deep copy or shallow copy).
-   * The default behaviour (i.e. using the proper interface of a
-   * classic copy constructor)
-   * uses the <b>deep</b> copy.
+   * Copy constructor. Not allowed to be used.
    */
-  GridElementBase(const self_t &elem,
-                  const CopyPolicy &copy_policy = CopyPolicy::deep);
+  GridElementBase(const self_t &elem) = delete;
 
   /**
    * Move constructor.
@@ -118,33 +112,13 @@ public:
   ~GridElementBase() = default;
   ///@}
 
-  /**
-   * @name Functions for performing different kind of copy.
-   */
-  ///@{
-  /**
-   * Performs a deep copy of the input @p element,
-   * i.e. a new local cache is built using the copy constructor on the local cache of @p element.
-   *
-   * @note In DEBUG mode, an assertion will be raised if the input local cache is not allocated.
-   */
-  void deep_copy_from(const self_t &element);
-
-  /**
-   * Performs a shallow copy of the input @p element. The current object will contain a pointer to the
-   * local cache used by the input @p element.
-   */
-  void shallow_copy_from(const self_t &element);
-  ///@}
 
   /** @name Assignment operators */
   ///@{
   /**
-   * Copy assignment operator. Performs a <b>shallow copy</b> of the input @p element.
-   *
-   * @note Internally it uses the function shallow_copy_from().
+   * Copy assignment operator. Not allowed to be used.
    */
-  self_t &operator=(const self_t &element);
+  self_t &operator=(const self_t &element) = delete;
 
   /**
    * Move assignment operator.
@@ -376,12 +350,6 @@ private:
   ///@}
 
 protected:
-  /**
-   * Performs a copy of the input @p element.
-   * The type of copy (deep or shallow) is specified by the input parameter @p copy_policy.
-   */
-  void copy_from(const self_t &element,
-                 const CopyPolicy &copy_policy);
 
   /**
    * ExceptionUnsupported Value Flag.
