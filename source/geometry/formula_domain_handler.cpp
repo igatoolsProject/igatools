@@ -26,7 +26,7 @@ template<int dim, int codim>
 FormulaDomainHandler<dim, codim>::
 FormulaDomainHandler(std::shared_ptr<DomainType> domain)
   :
-  parent_t::PhysicalDomainElementHandler(domain)
+  parent_t::DomainHandler(domain)
 {}
 
 

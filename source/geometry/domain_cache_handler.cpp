@@ -29,8 +29,8 @@ using std::shared_ptr;
 IGA_NAMESPACE_OPEN
 
 template<int dim_, int codim_>
-PhysicalDomainElementHandler<dim_, codim_>::
-PhysicalDomainElementHandler(std::shared_ptr<DomainType> domain)
+DomainHandler<dim_, codim_>::
+DomainHandler(std::shared_ptr<DomainType> domain)
   :
   domain_(domain)
 {
@@ -40,15 +40,15 @@ PhysicalDomainElementHandler(std::shared_ptr<DomainType> domain)
 
 
 template<int dim_, int codim_>
-PhysicalDomainElementHandler<dim_, codim_>::
-~PhysicalDomainElementHandler()
+DomainHandler<dim_, codim_>::
+~DomainHandler()
 {}
 
 
 
 template<int dim_, int codim_>
 auto
-PhysicalDomainElementHandler<dim_, codim_>::
+DomainHandler<dim_, codim_>::
 set_flags(const topology_variant &sdim,
           const Flags &flag) -> void
 {
@@ -88,7 +88,7 @@ set_flags(const topology_variant &sdim,
 
 template<int dim_, int codim_>
 void
-PhysicalDomainElementHandler<dim_, codim_>::
+DomainHandler<dim_, codim_>::
 init_cache(ConstElementAccessor &elem,
            const eval_pts_variant &quad) const
 {
@@ -114,7 +114,7 @@ init_cache(ConstElementAccessor &elem,
 
 template<int dim_, int codim_>
 auto
-PhysicalDomainElementHandler<dim_, codim_>::
+DomainHandler<dim_, codim_>::
 fill_cache(const topology_variant &sdim,
            ConstElementAccessor &elem,
            const int s_id) const-> void

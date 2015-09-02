@@ -32,7 +32,7 @@
 
 IGA_NAMESPACE_OPEN
 
-template <int,int> class PhysicalDomain;
+template <int,int> class Domain;
 
 template <int,int,int,int> class Function;
 //template <int> class NonConstGridElement;
@@ -205,7 +205,7 @@ class Space
 {
 public:
 
-  using PhysDomain = PhysicalDomain<dim_,codim_>;
+  using PhysDomain = Domain<dim_,codim_>;
 
 private:
   using base_t = SpaceBase<dim_>;

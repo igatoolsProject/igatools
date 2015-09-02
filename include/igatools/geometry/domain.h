@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __PHYSICAL_DOMAIN_H_
-#define __PHYSICAL_DOMAIN_H_
+#ifndef __DOMAIN_H_
+#define __DOMAIN_H_
 
 #include <igatools/base/config.h>
 #include <igatools/geometry/cartesian_grid.h>
@@ -27,23 +27,21 @@
 
 IGA_NAMESPACE_OPEN
 
-
 template <int, int, class> class PhysicalDomainElementBase;
 template <int, int> class PhysicalDomainElement;
 template <int, int> class ConstPhysicalDomainElement;
-template <int, int> class PhysicalDomainElementHandler;
+template <int, int> class DomainHandler;
 
 /**
  * @brief The mapping is a deformation \f$ F : \hat\Omega \to \Omega\f$
  * which maps the reference domain \f$\hat\Omega \in \mathbb{R}^{dim}\f$ to the
  * physical domain \f$\Omega \in \mathbb{R}^{dim+codim}\f$.
  *
- * PhysicalDomain is the physical domain, wether of a function or a space.
+ * PhysicalDomain is the physical domain, whether of a function or a space.
  *
  * It is a function with special properties: it codim is 0 and the map is always the
  * identity.
  *
- * @todo we should thing about renaming mapping to physical domain
  *
  * @ingroup containers
  * @ingroup serializable
@@ -52,11 +50,11 @@ template <int, int> class PhysicalDomainElementHandler;
  * @author M. Martinelli, 2015
  */
 template<int dim_, int codim_ = 0>
-class PhysicalDomain :
-  public std::enable_shared_from_this<PhysicalDomain<dim_,codim_> >
+class Domain :
+  public std::enable_shared_from_this<Domain<dim_,codim_> >
 {
 private:
-  using self_t = PhysicalDomain<dim_, codim_>;
+  using self_t = Domain<dim_, codim_>;
 
 public:
   static const int space_dim = dim_ + codim_;
@@ -69,7 +67,7 @@ public:
   using ConstElementAccessor = ConstPhysicalDomainElement<dim_, codim_>;
   using ElementConstIterator = GridIterator<ConstElementAccessor>;
 
-  using ElementHandler = PhysicalDomainElementHandler<dim_, codim_>;
+  using ElementHandler = DomainHandler<dim_, codim_>;
 
   using List = typename GridType::List;
   using ListIt = typename GridType::ListIt;
@@ -106,13 +104,13 @@ private:
    * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    * mechanism.
    */
-  PhysicalDomain() = default;
+  Domain() = default;
 
 protected:
-  PhysicalDomain(std::shared_ptr<GridType> grid);
+  Domain(std::shared_ptr<GridType> grid);
 
 public:
-  ~PhysicalDomain();
+  ~Domain();
 
   static std::shared_ptr<self_t>
   create(std::shared_ptr<GridType> grid)
@@ -181,8 +179,8 @@ public:
 private:
   std::shared_ptr<GridType> grid_;
 
-  friend class PhysicalDomainElementBase<dim_, codim_, PhysicalDomain<dim_, codim_>>;
-  friend class PhysicalDomainElementBase<dim_, codim_, const PhysicalDomain<dim_, codim_>>;
+  friend class PhysicalDomainElementBase<dim_, codim_, Domain<dim_, codim_>>;
+  friend class PhysicalDomainElementBase<dim_, codim_, const Domain<dim_, codim_>>;
   friend class PhysicalDomainElement<dim_, codim_>;
   friend class ConstPhysicalDomainElement<dim_, codim_>;
 

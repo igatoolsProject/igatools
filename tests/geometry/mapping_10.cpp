@@ -29,13 +29,13 @@
 
 //#include <igatools/geometry/mapping.h>
 //#include <igatools/geometry/mapping_element.h>
-#include <igatools/geometry/physical_domain.h>
-#include <igatools/geometry/physical_domain_element.h>
 #include <igatools/functions/ig_function.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/basis_functions/bspline_space.h>
 #include <igatools/basis_functions/bspline_element.h>
 #include <igatools/functions/function_element.h>
+#include <igatools/geometry/domain.h>
+#include <igatools/geometry/domain_element.h>
 
 
 template<int dim, int codim, int sub_dim=dim>
@@ -46,7 +46,7 @@ void ig_mapping(const int deg = 1)
   using Space = BSplineSpace<dim, dim+codim>;
   //  using RefSpace = ReferenceSpace<dim, dim+codim>;
   using Function = IgFunction<dim,0,dim+codim,1>;
-  using Mapping   = PhysicalDomain<dim, codim>;
+  using Mapping   = Domain<dim, codim>;
 
 
   auto flag =  ValueFlags::value| ValueFlags::gradient

@@ -21,9 +21,9 @@
 #ifndef __FORMULA_DOMAIN_H_
 #define __FORMULA_DOMAIN_H_
 
-#include <igatools/geometry/physical_domain.h>
-#include <igatools/geometry/physical_domain_element.h>
 #include <igatools/base/value_types.h>
+#include <igatools/geometry/domain.h>
+#include <igatools/geometry/domain_element.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -32,10 +32,10 @@ IGA_NAMESPACE_OPEN
  */
 template<int dim, int codim>
 class FormulaDomain :
-  public PhysicalDomain<dim, codim>
+  public Domain<dim, codim>
 {
 private:
-  using parent_t =  PhysicalDomain<dim, codim>;
+  using parent_t =  Domain<dim, codim>;
   using self_t = FormulaDomain<dim, codim>;
 protected:
   using typename parent_t::GridType;

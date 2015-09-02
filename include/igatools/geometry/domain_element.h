@@ -18,18 +18,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __PHYSICAL_DOMAIN_ELEMENT_H_
-#define __PHYSICAL_DOMAIN_ELEMENT_H_
+#ifndef __DOMAIN_ELEMENT_H_
+#define __DOMAIN_ELEMENT_H_
 
+#include <igatools/geometry/domain.h>
+#include <igatools/geometry/domain_handler.h>
 #include <igatools/geometry/grid_element.h>
-#include <igatools/geometry/physical_domain.h>
-#include <igatools/geometry/physical_domain_cache_handler.h>
 
 IGA_NAMESPACE_OPEN
-
-template <int,int,int,int> class Function;
-template <int,int,int,int, class> class FunctionElementBase;
-template <int,int,int,int> class FunctionElement;
 
 /**
  *
@@ -265,7 +261,7 @@ private:
   std::shared_ptr<CacheType> local_cache_;
 
   template <class Accessor> friend class GridIteratorBase;
-  friend class PhysicalDomainElementHandler<dim_, codim_>;
+  friend class DomainHandler<dim_, codim_>;
 
 //    /**
 //     * Creates a new object performing a deep copy of the current object using the PhysicalDomainElement
@@ -279,19 +275,19 @@ private:
 template <int dim, int codim>
 class ConstPhysicalDomainElement
   : public PhysicalDomainElementBase<dim, codim,
-    const PhysicalDomain<dim,codim>>
+    const Domain<dim,codim>>
 {
   using PhysicalDomainElementBase<dim, codim,
-        const PhysicalDomain<dim,codim>>::PhysicalDomainElementBase;
+        const Domain<dim,codim>>::PhysicalDomainElementBase;
 };
 
 template <int dim, int codim>
 class PhysicalDomainElement
   : public PhysicalDomainElementBase<dim, codim,
-    PhysicalDomain<dim,codim>>
+    Domain<dim,codim>>
 {
   using PhysicalDomainElementBase<dim, codim,
-        PhysicalDomain<dim,codim>>::PhysicalDomainElementBase;
+        Domain<dim,codim>>::PhysicalDomainElementBase;
 };
 
 IGA_NAMESPACE_CLOSE

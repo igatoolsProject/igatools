@@ -69,7 +69,7 @@ create(const shared_ptr<const Space> &space)
 
 #if 0
 template<int dim, int range , int rank>
-const GridElementHandler<dim> &
+const GridHandler<dim> &
 ReferenceElementHandler<dim, range, rank>::
 get_grid_handler() const
 {

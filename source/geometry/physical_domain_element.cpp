@@ -18,13 +18,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/geometry/physical_domain_element.h>
+#include <igatools/geometry/domain_element.h>
 #include <igatools/functions/function_element.h>
-//#include <igatools/linear_algebra/dense_matrix.h>
-//#include <boost/numeric/ublas/operation.hpp>
 
 IGA_NAMESPACE_OPEN
-
 
 template<int dim_, int codim_, class ContainerType_>
 PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
@@ -35,10 +32,6 @@ PhysicalDomainElementBase(std::shared_ptr<ContainerType_> phys_dom,
   phys_dom_(phys_dom),
   grid_elem_(phys_dom_->get_grid()->create_element(index,prop))
 {}
-
-
-
-
 
 
 

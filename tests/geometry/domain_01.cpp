@@ -25,9 +25,10 @@
  *  @date 2015
  */
 
+#include <igatools/geometry/domain.h>
+
 #include "../tests.h"
 
-#include <igatools/geometry/physical_domain.h>
 //#include <igatools/functions/identity_function.h>
 
 
@@ -39,7 +40,7 @@ void domain()
   using Grid = CartesianGrid<dim>;
   //using Function = IdentityFunction<dim, dim>;
   using Function = Function<dim, 0, dim+codim, 1>;
-  using Domain   = PhysicalDomain<dim, codim>;
+  using Domain   = Domain<dim, codim>;
 
   auto grid = Grid::const_create();
   //auto F = Function::create(grid);

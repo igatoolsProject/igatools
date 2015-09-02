@@ -47,7 +47,7 @@ IGA_NAMESPACE_OPEN
 //};
 //}
 
-template <int,int> class PhysicalDomain;
+template <int,int> class Domain;
 template <int, int, int, int, class> class FunctionElementBase;
 template <int, int, int, int> class FunctionElement;
 template <int, int, int, int> class ConstFunctionElement;
@@ -72,7 +72,7 @@ public:
   static const int rank      = rank_;
 
   using GridType = CartesianGrid<dim_>;
-  using DomainType = PhysicalDomain<dim_, codim_>;
+  using DomainType = Domain<dim_, codim_>;
 
   using ElementAccessor = FunctionElement<dim_, codim_, range_, rank_>;
   using ElementIterator = GridIterator<ElementAccessor>;

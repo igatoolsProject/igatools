@@ -60,7 +60,7 @@ public :
 //    using RefElemAccessor = SpaceElement<RefSpace::dim,0,RefSpace::range,RefSpace::rank,Transformation::h_grad>;
   using RefElemAccessor = ReferenceElement<RefSpace::dim,RefSpace::range,RefSpace::rank>;
 
-  using PhysDomain = PhysicalDomain<dim_, codim_>;
+  using PhysDomain = Domain<dim_, codim_>;
   using PhysDomainElem = PhysicalDomainElement<dim_, codim_>;
 
   static const auto dim = PushFwd::dim;

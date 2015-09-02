@@ -21,7 +21,7 @@
 #ifndef __FORMULA_DOMAIN_HANDLER_H_
 #define __FORMULA_DOMAIN_HANDLER_H_
 
-#include <igatools/geometry/physical_domain_cache_handler.h>
+#include <igatools/geometry/domain_cache_handler.h>
 #include <igatools/geometry/formula_domain.h>
 
 IGA_NAMESPACE_OPEN
@@ -31,10 +31,10 @@ IGA_NAMESPACE_OPEN
  */
 template<int dim, int codim>
 class FormulaDomainHandler :
-  public  PhysicalDomainElementHandler<dim, codim>
+  public  DomainHandler<dim, codim>
 {
 private:
-  using parent_t = PhysicalDomainElementHandler<dim, codim>;
+  using parent_t = DomainHandler<dim, codim>;
   using self_t = FormulaDomainHandler<dim, codim>;
 protected:
   using typename parent_t::GridType;

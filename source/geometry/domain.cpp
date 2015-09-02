@@ -18,16 +18,16 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/geometry/physical_domain.h>
-#include <igatools/geometry/physical_domain_element.h>
+#include <igatools/geometry/domain.h>
+#include <igatools/geometry/domain_element.h>
 
 using std::shared_ptr;
 
 IGA_NAMESPACE_OPEN
 
 template<int dim_, int codim_>
-PhysicalDomain<dim_, codim_>::
-PhysicalDomain(std::shared_ptr<GridType> grid)
+Domain<dim_, codim_>::
+Domain(std::shared_ptr<GridType> grid)
   :
   grid_(grid)
 {
@@ -37,15 +37,15 @@ PhysicalDomain(std::shared_ptr<GridType> grid)
 
 
 template<int dim_, int codim_>
-PhysicalDomain<dim_, codim_>::
-~PhysicalDomain()
+Domain<dim_, codim_>::
+~Domain()
 {}
 
 
 
 template<int dim_, int codim_>
 auto
-PhysicalDomain<dim_, codim_>::
+Domain<dim_, codim_>::
 get_grid() const -> std::shared_ptr<GridType>
 {
   return grid_;
@@ -55,7 +55,7 @@ get_grid() const -> std::shared_ptr<GridType>
 
 template<int dim_, int codim_>
 auto
-PhysicalDomain<dim_, codim_>::
+Domain<dim_, codim_>::
 create_cache_handler() const
 -> std::shared_ptr<ElementHandler>
 {
@@ -66,7 +66,7 @@ create_cache_handler() const
 
 template<int dim_, int codim_>
 auto
-PhysicalDomain<dim_, codim_>::
+Domain<dim_, codim_>::
 create_element(const ListIt &index, const PropId &prop) const
 -> std::unique_ptr<ConstElementAccessor>
 {
@@ -81,7 +81,7 @@ create_element(const ListIt &index, const PropId &prop) const
 
 template<int dim_, int codim_>
 auto
-PhysicalDomain<dim_, codim_>::
+Domain<dim_, codim_>::
 create_element(const ListIt &index, const PropId &prop)
 -> std::unique_ptr<ElementAccessor>
 {
@@ -96,7 +96,7 @@ create_element(const ListIt &index, const PropId &prop)
 
 template<int dim_, int codim_>
 auto
-PhysicalDomain<dim_, codim_>::
+Domain<dim_, codim_>::
 begin(const PropId &prop) -> ElementIterator
 {
   return ElementIterator(this->shared_from_this(),
@@ -107,7 +107,7 @@ begin(const PropId &prop) -> ElementIterator
 
 template<int dim_, int codim_>
 auto
-PhysicalDomain<dim_, codim_>::
+Domain<dim_, codim_>::
 end(const PropId &prop) -> ElementIterator
 {
   return ElementIterator(this->shared_from_this(),
@@ -119,7 +119,7 @@ end(const PropId &prop) -> ElementIterator
 
 template<int dim_, int codim_>
 auto
-PhysicalDomain<dim_, codim_>::
+Domain<dim_, codim_>::
 begin(const PropId &prop) const -> ElementConstIterator
 {
   return this->cbegin(prop);
@@ -129,7 +129,7 @@ begin(const PropId &prop) const -> ElementConstIterator
 
 template<int dim_, int codim_>
 auto
-PhysicalDomain<dim_, codim_>::
+Domain<dim_, codim_>::
 end(const PropId &prop) const -> ElementConstIterator
 {
   return this->cend(prop);
@@ -139,7 +139,7 @@ end(const PropId &prop) const -> ElementConstIterator
 
 template<int dim_, int codim_>
 auto
-PhysicalDomain<dim_, codim_>::
+Domain<dim_, codim_>::
 cbegin(const PropId &prop) const -> ElementConstIterator
 {
   return ElementConstIterator(this->shared_from_this(),
@@ -151,7 +151,7 @@ cbegin(const PropId &prop) const -> ElementConstIterator
 
 template<int dim_, int codim_>
 auto
-PhysicalDomain<dim_, codim_>::
+Domain<dim_, codim_>::
 cend(const PropId &prop) const -> ElementConstIterator
 {
   return ElementConstIterator(this->shared_from_this(),

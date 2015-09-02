@@ -27,12 +27,12 @@
 
 #include "../tests.h"
 
-#include <igatools/geometry/physical_domain.h>
-#include <igatools/geometry/physical_domain_element.h>
 #include <igatools/functions/function_lib.h>
 #include <igatools/functions/identity_function.h>
 #include <igatools/base/quadrature_lib.h>
 #include <igatools/functions/function_element.h>
+#include <igatools/geometry/domain.h>
+#include <igatools/geometry/domain_element.h>
 
 template<int dim, int codim>
 void test()
@@ -41,7 +41,7 @@ void test()
 
   const int space_dim = dim+codim;
   using Function = functions::LinearFunction<dim, 0, space_dim>;
-  using Mapping   = PhysicalDomain<dim, codim>;
+  using Mapping   = Domain<dim, codim>;
 
   typename Function::Value    b;
   typename Function::Gradient A;

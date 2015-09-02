@@ -298,7 +298,7 @@ public:
 
 private:
   template <class Accessor> friend class GridIteratorBase;
-  friend class GridElementHandler<dim>;
+  friend class GridHandler<dim>;
 
 protected:
 

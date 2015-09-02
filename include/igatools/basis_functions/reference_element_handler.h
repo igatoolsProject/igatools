@@ -122,7 +122,7 @@ protected:
                                    const int sub_elem_id) = 0;
 #endif
 
-  GridElementHandler<dim> grid_handler_;
+  GridHandler<dim> grid_handler_;
 
 public:
   /**

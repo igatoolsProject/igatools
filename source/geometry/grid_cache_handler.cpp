@@ -26,8 +26,8 @@ IGA_NAMESPACE_OPEN
 
 
 template <int dim>
-GridElementHandler<dim>::
-GridElementHandler(shared_ptr<GridType> grid)
+GridHandler<dim>::
+GridHandler(shared_ptr<GridType> grid)
   :
   grid_(grid)
 {}
@@ -35,11 +35,11 @@ GridElementHandler(shared_ptr<GridType> grid)
 
 
 template <int dim>
-std::shared_ptr<GridElementHandler<dim> >
-GridElementHandler<dim>::
+std::shared_ptr<GridHandler<dim> >
+GridHandler<dim>::
 create(std::shared_ptr<GridType> grid)
 {
-  using ElemHandler = GridElementHandler<dim>;
+  using ElemHandler = GridHandler<dim>;
   auto elem_handler = std::make_shared<ElemHandler>(grid);
   Assert(elem_handler != nullptr,ExcNullPtr());
   return elem_handler;
@@ -49,7 +49,7 @@ create(std::shared_ptr<GridType> grid)
 template <int dim>
 template<int k>
 void
-GridElementHandler<dim>::
+GridHandler<dim>::
 set_flags(const Flags &flag)
 {
   flags_[k] = flag;
@@ -61,7 +61,7 @@ set_flags(const Flags &flag)
 
 template <int dim>
 void
-GridElementHandler<dim>::
+GridHandler<dim>::
 set_flags(const topology_variant &sdim,
           const Flags &flag)
 {
@@ -73,7 +73,7 @@ set_flags(const topology_variant &sdim,
 #if 0
 template <int dim>
 void
-GridElementHandler<dim>::
+GridHandler<dim>::
 init_all_caches(ConstElementAccessor &elem)
 {
   auto &cache = elem.all_sub_elems_cache_;
@@ -107,7 +107,7 @@ init_all_caches(ConstElementAccessor &elem)
 template <int dim>
 template <int sdim>
 void
-GridElementHandler<dim>::
+GridHandler<dim>::
 init_cache(ConstElementAccessor &elem,
            std::shared_ptr<const Quadrature<sdim>> quad) const
 {
@@ -133,7 +133,7 @@ init_cache(ConstElementAccessor &elem,
 
 template <int dim>
 void
-GridElementHandler<dim>::
+GridHandler<dim>::
 init_cache(ConstElementAccessor &elem,
            const eval_pts_variant &quad) const
 {
@@ -144,7 +144,7 @@ init_cache(ConstElementAccessor &elem,
 
 template <int dim>
 void
-GridElementHandler<dim>::
+GridHandler<dim>::
 fill_cache(const topology_variant &sdim,
            ConstElementAccessor &elem,
            const int s_id) const
@@ -157,7 +157,7 @@ fill_cache(const topology_variant &sdim,
 template <int dim>
 template <int sdim>
 void
-GridElementHandler<dim>::
+GridHandler<dim>::
 fill_cache(ConstElementAccessor &elem, const int s_id) const
 {
   using _Point = typename ConstElementAccessor::_Point;
@@ -194,7 +194,7 @@ fill_cache(ConstElementAccessor &elem, const int s_id) const
 
 template <int dim>
 auto
-GridElementHandler<dim>::
+GridHandler<dim>::
 get_grid() const -> std::shared_ptr<const GridType>
 {
   return grid_;
@@ -204,7 +204,7 @@ get_grid() const -> std::shared_ptr<const GridType>
 
 template <int dim>
 void
-GridElementHandler<dim>::
+GridHandler<dim>::
 print_info(LogStream &out) const
 {
   out.begin_item("Flags for each subdimension");
@@ -218,7 +218,7 @@ print_info(LogStream &out) const
 template <int dim>
 template<class Archive>
 void
-GridElementHandler<dim>::
+GridHandler<dim>::
 serialize(Archive &ar, const unsigned int version)
 {
   using namespace boost::serialization;

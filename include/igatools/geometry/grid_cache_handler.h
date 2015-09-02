@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#ifndef __GRID_CACHE_HANDLER_H_
-#define __GRID_CACHE_HANDLER_H_
+#ifndef __GRID_HANDLER_H_
+#define __GRID_HANDLER_H_
 
 #include <igatools/base/config.h>
 #include <igatools/basis_functions/values_cache.h>
@@ -37,10 +37,10 @@ IGA_NAMESPACE_OPEN
  * @ingroup serializable
  */
 template <int dim>
-class GridElementHandler
+class GridHandler
 {
 private:
-  using self_t = GridElementHandler<dim>;
+  using self_t = GridHandler<dim>;
 
 public:
   using GridType = const CartesianGrid<dim>;
@@ -79,28 +79,28 @@ protected:
    * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    * mechanism of the Function class.
    */
-  GridElementHandler() = default;
+  GridHandler() = default;
 
 public:
   /**
    * Constructor.
    */
-  GridElementHandler(std::shared_ptr<GridType> grid);
+  GridHandler(std::shared_ptr<GridType> grid);
 
   /**
    * Copy constructor.
    */
-  GridElementHandler(const self_t &) = default;
+  GridHandler(const self_t &) = default;
 
   /**
    * Move constructor.
    */
-  GridElementHandler(self_t &&) = default;
+  GridHandler(self_t &&) = default;
 
   /**
    * Destructor.
    */
-  ~GridElementHandler() = default;
+  ~GridHandler() = default;
   ///@}
 
   /**

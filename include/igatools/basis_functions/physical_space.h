@@ -22,11 +22,11 @@
 #define __PHYSICAL_SPACE_H_
 
 #include <igatools/base/config.h>
-#include <igatools/geometry/physical_domain.h>
 #include <igatools/geometry/push_forward.h>
 #include <igatools/basis_functions/space.h>
 #include <igatools/basis_functions/reference_space.h>
 #include <igatools/basis_functions/dof_distribution.h>
+#include <igatools/geometry/domain.h>
 #include <igatools/geometry/grid_iterator.h>
 #include <igatools/utils/static_multi_array.h>
 
@@ -69,7 +69,7 @@ public:
    */
   using PushFwd = PushForward<type_, dim_, codim_>;
 
-  using PhysDomain = PhysicalDomain<dim_, codim_>;
+  using PhysDomain = Domain<dim_, codim_>;
 
   using RefSpace = ReferenceSpace<dim_,range_,rank_>;
 

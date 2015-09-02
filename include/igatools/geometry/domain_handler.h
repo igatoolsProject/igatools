@@ -23,8 +23,8 @@
 
 #include <igatools/base/config.h>
 #include <igatools/geometry/cartesian_grid.h>
+#include <igatools/geometry/domain.h>
 #include <igatools/geometry/grid_cache_handler.h>
-#include <igatools/geometry/physical_domain.h>
 
 IGA_NAMESPACE_OPEN
 
@@ -51,17 +51,17 @@ template <int, int> class ConstPhysicalDomainElement;
  * @author M. Martinelli, 2015
  */
 template<int dim_, int codim_ = 0>
-class PhysicalDomainElementHandler :
-  public std::enable_shared_from_this<PhysicalDomainElementHandler<dim_,codim_> >
+class DomainHandler :
+  public std::enable_shared_from_this<DomainHandler<dim_,codim_> >
 {
 private:
-  using self_t = PhysicalDomainElementHandler<dim_, codim_>;
+  using self_t = DomainHandler<dim_, codim_>;
 
 public:
   static const int space_dim = dim_ + codim_;
   static const int dim = dim_;
 
-  using DomainType = const PhysicalDomain<dim_, codim_>;
+  using DomainType = const Domain<dim_, codim_>;
   using GridType = const CartesianGrid<dim_>;
   using GridHandler = typename GridType::ElementHandler;
 
@@ -111,13 +111,13 @@ private:
    * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    * mechanism.
    */
-  PhysicalDomainElementHandler() = default;
+  DomainHandler() = default;
 
 public:
-  PhysicalDomainElementHandler(std::shared_ptr<DomainType> domain);
+  DomainHandler(std::shared_ptr<DomainType> domain);
 
 
-  ~PhysicalDomainElementHandler();
+  ~DomainHandler();
 
   static std::shared_ptr<self_t>
   create(std::shared_ptr<DomainType> domain)

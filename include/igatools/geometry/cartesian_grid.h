@@ -52,7 +52,7 @@ template<int dim>
 using NonConstGridElement = GridElement<dim, CartesianGrid<dim>>;
 
 
-template <int> class GridElementHandler;
+template <int> class GridHandler;
 
 /**
  * @brief Grid in <tt>dim</tt>-dimensional space with cartesian-product structure.
@@ -189,7 +189,7 @@ public:
   /** Type for the iterator over the elements of the grid (const version).  */
   using ElementConstIterator = GridIterator<ConstElementAccessor>;
 
-  using ElementHandler = GridElementHandler<dim_>;
+  using ElementHandler = GridHandler<dim_>;
 
 
   using Point = Points<dim_>;
