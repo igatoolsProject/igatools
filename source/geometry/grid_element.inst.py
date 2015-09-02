@@ -26,7 +26,7 @@ data = Instantiation(include_files)
 
 sub_dim_members = [
              'Real Element::get_measure<k>(const int j) const;',
-             'ValueVector<Real> Element::get_weights<k>(const int j) const;',
+             'ValueVector<Real> Element::get_w_measure<k>(const int j) const;',
              'const Points<k> Element::get_side_lengths<k>(const int j) const;',
              'ValueVector<typename Element::Point> Element::get_points<k>(const int j) const;',
              'bool Element::is_boundary<k>(const Index sub_elem_id) const;',

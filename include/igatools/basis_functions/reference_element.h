@@ -96,12 +96,12 @@ public:
 
   /**
    * Returns the <tt>k</tt> dimensional j-th sub-element measure
-   * multiplied by the weights of the quadrature.
+   * multiplied by the weights of the quadrature on the unit element.
    */
   template <int k>
   ValueVector<Real> get_w_measures(const int j) const
   {
-    return this->get_grid_element().template get_weights<k>(j);
+    return this->get_grid_element().template get_w_measure<k>(j);
   }
 
   /**

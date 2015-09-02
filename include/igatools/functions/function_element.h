@@ -225,7 +225,7 @@ private:
 
 
 
-  using Cache = FuncValuesCache<dim,CType>;
+  using Cache = PointValuesCache<dim,CType>;
 
 public:
   using CacheType = AllSubElementsCache<Cache>;

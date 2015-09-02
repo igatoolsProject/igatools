@@ -46,6 +46,24 @@ Ref getVal(std::string& name) {
 }
 //*/
 
+/**
+ * @brief Class to automatically manage the constness property of an object wrapped by a shared_ptr,
+ * depending on the constness property of the object passed in the constructor argument.
+ *
+ * This class has to constructors:
+ * - one is accepting a pointer-to-const object;
+ * - the other one is accepting a pointer-to-non-const object.
+ *
+ * Depending on which constructor is used, this class keep track of the constess property of the pointee
+ * object.
+ *
+ * If the object used in the constructor argument is a <b>pointer-to-const</b>, then all the getters
+ * returning pointer-to-non-const or non-const reference will give an error in Debug mode.
+ *
+ * If the object used in the constructor argument is a <b>pointer-to-non-const</b>, then all the getters
+ * can be used (both the one returning the const and non-const object).
+ *
+ */
 template<class T>
 class SharedPtrConstnessHandler
 {
@@ -76,7 +94,6 @@ public:
     data_is_const_(false)
   {
     Assert(data != nullptr, ExcNullPtr());
-
     data_.ptr_ = data;
   };
 
@@ -110,7 +127,7 @@ public:
   /**
    * Copy constructor;
    */
-  SharedPtrConstnessHandler(const SharedPtrConstnessHandler<T> &obj) = delete;
+  SharedPtrConstnessHandler(const SharedPtrConstnessHandler<T> &obj) = default;
 
   /**
    * Move constructor;
@@ -241,28 +258,22 @@ public:
       return data_.ptr_.unique();
   }
 
-#if 0
   /**
-   * Dereference operator. Return a non-const reference of the data.
+   * Returns TRUE is the pointee data is a const object.
    */
-  T &operator*()
+  bool data_is_const() const
   {
-    return this->get_ref_data();
+    return data_is_const_;
   }
 
-  /**
-   * Pointer operator. Return a const pointer to the non-const data.
-   */
-  T *const operator->()
-  {
-    return this->get_ptr_data().get();
-  }
-#endif
 
 private:
 //    boost::variant<Ptr,PtrToConst> ptr_to_data_;
 
 
+  /**
+   * @brief Class containing a pointer-to-non-const variable and a pointer-to-const variable.
+   */
   struct DataConstnessVariants
   {
     Ptr ptr_;

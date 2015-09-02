@@ -30,8 +30,8 @@ IGA_NAMESPACE_OPEN
 const grid_element::Flags grid_element::_Point::flag;
 const string grid_element::_Point::name = "Element Quadrature Points";
 
-const grid_element::Flags grid_element::_Weight::flag;
-const string grid_element::_Weight::name = "Element Quadrature Weights";
+const grid_element::Flags grid_element::_W_Measure::flag;
+const string grid_element::_W_Measure::name = "Element Quadrature Weights";
 //---------------------------------------------------------------------
 
 

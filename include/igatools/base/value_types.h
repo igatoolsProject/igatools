@@ -59,7 +59,7 @@ public:
 /**
  * Alias used to define the container for the quadrature weights in the cache.
  */
-class _Weight
+class _W_Measure
 {
 public:
   static const std::string name;

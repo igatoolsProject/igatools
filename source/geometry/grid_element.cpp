@@ -27,7 +27,7 @@ IGA_NAMESPACE_OPEN
 
 template <int dim, class ContainerType_>
 GridElementBase<dim, ContainerType_>::
-GridElementBase(const std::shared_ptr<ContainerType> grid,
+GridElementBase(const std::shared_ptr<ContainerType> &grid,
                 const ListIt &index,
                 const PropId &prop)
   :
@@ -79,7 +79,7 @@ auto
 GridElementBase<dim, ContainerType_>::
 get_grid() const -> const std::shared_ptr<const ContainerType>
 {
-  return grid_;
+  return grid_.get_ptr_const_data();
 }
 
 
@@ -316,9 +316,9 @@ template <int dim, class ContainerType_>
 template <int sdim>
 ValueVector<Real>
 GridElementBase<dim, ContainerType_>::
-get_weights(const int j) const
+get_w_measure(const int j) const
 {
-  return this->template get_values_from_cache<_Weight,sdim>(j);
+  return this->template get_values_from_cache<_W_Measure,sdim>(j);
 }
 
 

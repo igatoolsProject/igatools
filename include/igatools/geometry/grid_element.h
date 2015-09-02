@@ -28,6 +28,8 @@
 #include <igatools/geometry/grid_cache_handler.h>
 #include <igatools/utils/value_vector.h>
 #include <igatools/basis_functions/values_cache.h>
+#include <igatools/utils/shared_ptr_constness_handler.h>
+
 #include <iterator>
 
 IGA_NAMESPACE_OPEN
@@ -86,7 +88,7 @@ public:
    * Construct an accessor pointing to the element with
    * flat index @p elem_index of the CartesianGrid @p grid.
    */
-  GridElementBase(const std::shared_ptr<ContainerType_> grid,
+  GridElementBase(const std::shared_ptr<ContainerType_> &grid,
                   const ListIt &index,
                   const PropId &prop = ElementProperties::active);
 
@@ -149,12 +151,15 @@ public:
 
   const IndexType &get_index() const;
 
-  /** Return the cartesian grid from which the element belongs.*/
+  /** Return the CartesianGrid from which the element belongs.*/
   const std::shared_ptr<const ContainerType> get_grid() const;
 
+  /**
+   * Returns the unitary quadrature scheme corresponding to the <tt>sdim</tt>-dimensional
+   * s_id-th sub-element.
+   */
   template <int sdim>
-  std::shared_ptr<const Quadrature<sdim>>
-                                       get_quad()
+  std::shared_ptr<const Quadrature<sdim>> get_quad() const
   {
     return quad_list_.template get_quad<sdim>();
   }
@@ -277,9 +282,12 @@ public:
   /**
    * Returns the quadrature weights corresponding to the <tt>sdim</tt>
    * dimensional s_id-th sub-element.
+   *
+   * @note The returned weights are the quadrature unit weights multiplied by the
+   * <tt>sdim>-dimensional element measure.
    */
   template <int sdim>
-  ValueVector<Real> get_weights(const int s_id) const;
+  ValueVector<Real> get_w_measure(const int s_id) const;
 
 
 
@@ -291,15 +299,6 @@ public:
   ValueVector<Point> get_points(const int s_id = 0) const;
 
 
-  /**
-   * Returns the unitary quadrature scheme corresponding to the <tt>sdim</tt>
-   * dimensional s_id-th sub-element.
-   */
-  template <int sdim>
-  std::shared_ptr<const Quadrature<sdim>> get_quadrature() const
-  {
-    return quad_list_.template get_quad<sdim>();
-  }
 
 private:
   ValueVector<Point> get_element_points() const;
@@ -321,8 +320,11 @@ private:
   friend class GridElementHandler<dim>;
 
 protected:
+//  /** Cartesian grid from which the element belongs.*/
+//  std::shared_ptr<ContainerType> grid_;
+
   /** Cartesian grid from which the element belongs.*/
-  std::shared_ptr<ContainerType> grid_;
+  SharedPtrConstnessHandler<CartesianGrid<dim>> grid_;
 
 private:
   PropId property_;
@@ -337,17 +339,17 @@ private:
 
 public:
   using _Point = grid_element::_Point;
-  using _Weight = grid_element::_Weight;
+  using _W_Measure = grid_element::_W_Measure;
 
 private:
   using CType = boost::fusion::map<
                 boost::fusion::pair< _Point,DataWithFlagStatus<ValueVector<Points<dim>>>>,
-                boost::fusion::pair<_Weight,DataWithFlagStatus<ValueVector<Real>>>
+                boost::fusion::pair<_W_Measure,DataWithFlagStatus<ValueVector<Real>>>
                 >;
 
 
 public:
-  using ValuesCache = FuncValuesCache<dim,CType>;
+  using ValuesCache = PointValuesCache<dim,CType>;
 
   using CacheType = AllSubElementsCache<ValuesCache>;
 
@@ -419,7 +421,7 @@ class GridElement
 public:
   void add_property(const PropId &prop)
   {
-    this->grid_->elem_properties_[prop].insert(this->get_index());
+    this->grid_.get_ptr_data()->elem_properties_[prop].insert(this->get_index());
   }
 };
 
