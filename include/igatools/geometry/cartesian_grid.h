@@ -49,7 +49,7 @@ template<int dim>
 using ConstGridElement = GridElementBase<dim, const CartesianGrid<dim>>;
 
 template<int dim>
-using GridElement = GridElementBase<dim, CartesianGrid<dim>>;
+using NonConstGridElement = GridElementBase<dim, CartesianGrid<dim>>;
 
 
 template <int> class GridElementHandler;
@@ -180,7 +180,7 @@ public:
   static const int dim = dim_;
 
   /** Type for the element accessor. */
-  using ElementAccessor = GridElement<dim_>;
+  using ElementAccessor = NonConstGridElement<dim_>;
   using ConstElementAccessor = ConstGridElement<dim_>;
 
   /** Type for the iterator over the elements of the grid (non-const version).  */
@@ -775,7 +775,7 @@ private:
 #endif
   friend class GridElementBase<dim_, CartesianGrid<dim_>>;
   friend class GridElementBase<dim_, const CartesianGrid<dim_>>;
-//  friend class GridElement<dim_>;
+//  friend class NonConstGridElement<dim_>;
 //  friend class ConstGridElement<dim_>;
 
 #ifdef SERIALIZATION

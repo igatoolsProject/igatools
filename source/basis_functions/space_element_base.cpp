@@ -49,8 +49,7 @@ SpaceElementBase(const self_t &elem,
     grid_elem_ = elem.grid_elem_;
   else if (copy_policy == CopyPolicy::deep)
   {
-//        grid_elem_ = std::make_shared<GridElement<dim>>(*elem.grid_elem_,copy_policy);
-    Assert(false,ExcNotImplemented());
+//        grid_elem_ = std::make_shared<GridElement<dim>>(*elem.grid_elem_,copy_policy);NonConstGridElement(false,ExcNotImplemented());
   }
   else
     AssertThrow(false,ExcInvalidState());

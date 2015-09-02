@@ -41,7 +41,7 @@ class ReferenceElement : public SpaceElement<dim,0,range,rank,Transformation::h_
 {
 public:
   /** Type for the grid accessor. */
-  using GridAccessor = GridElement<dim>;
+  using GridAccessor = NonConstGridElement<dim>;
 
   /** Type required by the GridForwardIterator templated iterator */
   using ContainerType = const ReferenceSpace<dim,range,rank> ;
