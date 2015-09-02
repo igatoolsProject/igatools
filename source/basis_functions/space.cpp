@@ -134,8 +134,6 @@ Space(const shared_ptr<CartesianGrid<dim_>> &grid,
   phys_domain_(PhysDomain::create(grid))
 //  phys_domain_(PhysDomain::create(grid,map_func))
 {
-  Assert(phys_domain_ != nullptr,ExcNullPtr());
-
   Assert(this->get_ptr_const_grid() == phys_domain_->get_grid(),
          ExcMessage("The space and the physical domain must have the same grid!"));
 
@@ -150,7 +148,6 @@ Space(const shared_ptr<const CartesianGrid<dim_>> &grid,
   phys_domain_(PhysDomain::create(grid))
 //  phys_domain_(PhysDomain::create(grid,map_func))
 {
-  Assert(phys_domain_ != nullptr,ExcNullPtr());
   Assert(this->get_ptr_const_grid() == phys_domain_->get_grid(),
          ExcMessage("The space and the physical domain must have the same grid!"));
 }

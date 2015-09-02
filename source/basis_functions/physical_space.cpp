@@ -86,9 +86,11 @@ PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 create(const shared_ptr<const RefSpace> &ref_space,
        const shared_ptr<MapFunc> &map_func) -> shared_ptr<const self_t>
 {
+  Assert(ref_space != nullptr, ExcNullPtr());
   Assert(map_func != nullptr, ExcNullPtr());
   Assert(map_func.unique(), ExcNotUnique());
   auto sp = shared_ptr<self_t>(new self_t(ref_space, map_func));
+  Assert(sp != nullptr,ExcNullPtr());
 
   return sp;
 }
