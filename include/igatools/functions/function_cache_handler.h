@@ -300,7 +300,7 @@ public:
   /*
   {
       ar &boost::serialization::make_nvp("grid_elem_handler_",
-                                         boost::serialization::base_object<PhysicalDomain>(*this));
+                                         boost::serialization::base_object<Domain>(*this));
 
       ar &boost::serialization::make_nvp("flags_",flags_);
   }

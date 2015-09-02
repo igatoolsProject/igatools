@@ -26,13 +26,13 @@ data = Instantiation(include_files)
 
 
 
-sub_dim_members = ['void GridElementHandler<dim>::fill_cache<k>(ConstElementAccessor &elem, const int j) const;',
-             'void GridElementHandler<dim>::init_cache<k>(ConstElementAccessor &elem,std::shared_ptr<const Quadrature<k>> quad) const;',
-             'void GridElementHandler<dim>::set_flags<k>(const Flags &flag);']
+sub_dim_members = ['void GridHandler<dim>::fill_cache<k>(ConstElementAccessor &elem, const int j) const;',
+             'void GridHandler<dim>::init_cache<k>(ConstElementAccessor &elem,std::shared_ptr<const Quadrature<k>> quad) const;',
+             'void GridHandler<dim>::set_flags<k>(const Flags &flag);']
 
 handlers = []
 for dim in inst.sub_domain_dims:
-    gh = 'GridElementHandler<%d>' %(dim)
+    gh = 'GridHandler<%d>' %(dim)
     handlers.append(gh)
     f.write('template class %s; \n' %(gh))
     for fun in sub_dim_members:
@@ -41,7 +41,7 @@ for dim in inst.sub_domain_dims:
         f.write('template ' + s + '\n')
 
 for dim in inst.domain_dims:
-    gh = 'GridElementHandler<%d>' %(dim) 
+    gh = 'GridHandler<%d>' %(dim) 
     handlers.append(gh)
     f.write('template class %s; \n' %(gh))
     for fun in sub_dim_members:
@@ -57,7 +57,7 @@ f.write('IGA_NAMESPACE_CLOSE\n')
 f.write('#ifdef SERIALIZATION\n')
 id = 0 
 for gh in unique(handlers):
-    alias = 'GridElementHandlerAlias%d' %(id)
+    alias = 'GridHandlerAlias%d' %(id)
     f.write('using %s = iga::%s; \n' % (alias, gh))
     f.write('BOOST_CLASS_EXPORT_IMPLEMENT(%s) \n' %alias)
     f.write('template void %s::serialize(OArchive &, const unsigned int);\n' % alias)

@@ -47,7 +47,7 @@ class PushForward
 {
 private:
   using self_t  = PushForward<type_, dim_, codim_>;
-  using PhysDomainElem = PhysicalDomainElement<dim_, codim_>;
+  using PhysDomainElem = DomainElement<dim_, codim_>;
 
 
 

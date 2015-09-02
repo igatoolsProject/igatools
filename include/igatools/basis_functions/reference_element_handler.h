@@ -126,10 +126,10 @@ protected:
 
 public:
   /**
-   * Returns the const reference of the GridElementHandler used by the current ReferenceElementHandler.
+   * Returns the const reference of the GridHandler used by the current ReferenceElementHandler.
    * @return
    */
-//    const GridElementHandler<dim> &get_grid_handler() const;
+//    const GridHandler<dim> &get_grid_handler() const;
 
 
 private:

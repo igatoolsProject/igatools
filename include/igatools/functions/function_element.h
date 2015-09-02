@@ -30,11 +30,11 @@
 #include <igatools/basis_functions/values_cache.h>
 
 IGA_NAMESPACE_OPEN
-template<int , int , class> class PhysicalDomainElementBase;
-template <int,int> class PhysicalDomainElement;
-template <int,int> class ConstPhysicalDomainElement;
-//template <int,int> class PhysicalDomain;
-//template <int,int> class PhysicalDomainElement;
+template<int , int , class> class DomainElementBase;
+template <int,int> class DomainElement;
+template <int,int> class ConstDomainElement;
+//template <int,int> class Domain;
+//template <int,int> class DomainElement;
 
 
 

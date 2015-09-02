@@ -24,8 +24,8 @@
 IGA_NAMESPACE_OPEN
 
 template<int dim_, int codim_, class ContainerType_>
-PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
-PhysicalDomainElementBase(std::shared_ptr<ContainerType_> phys_dom,
+DomainElementBase<dim_, codim_, ContainerType_>::
+DomainElementBase(std::shared_ptr<ContainerType_> phys_dom,
                           const ListIt &index,
                           const PropId &prop)
   :
@@ -37,7 +37,7 @@ PhysicalDomainElementBase(std::shared_ptr<ContainerType_> phys_dom,
 
 template<int dim_, int codim_, class ContainerType_>
 bool
-PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
+DomainElementBase<dim_, codim_, ContainerType_>::
 operator ==(const self_t &elem) const
 {
   Assert(phys_dom_ == elem.phys_dom_,
@@ -49,7 +49,7 @@ operator ==(const self_t &elem) const
 
 template<int dim_, int codim_, class ContainerType_>
 bool
-PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
+DomainElementBase<dim_, codim_, ContainerType_>::
 operator !=(const self_t &elem) const
 {
   Assert(phys_dom_ == elem.phys_dom_,
@@ -61,7 +61,7 @@ operator !=(const self_t &elem) const
 
 template<int dim_, int codim_, class ContainerType_>
 bool
-PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
+DomainElementBase<dim_, codim_, ContainerType_>::
 operator <(const self_t &elem) const
 {
   Assert(phys_dom_ == elem.phys_dom_,
@@ -71,7 +71,7 @@ operator <(const self_t &elem) const
 
 template<int dim_, int codim_, class ContainerType_>
 bool
-PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
+DomainElementBase<dim_, codim_, ContainerType_>::
 operator >(const self_t &elem) const
 {
   Assert(phys_dom_ == elem.phys_dom_,
@@ -84,7 +84,7 @@ operator >(const self_t &elem) const
 #if 0
 template<int dim_, int codim_, class ContainerType_>
 auto
-PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
+DomainElementBase<dim_, codim_, ContainerType_>::
 compute_inv_first_fundamental_form() const -> ValueVector<MetricTensor>
 {
   ValueVector<MetricTensor> res;
@@ -108,7 +108,7 @@ compute_inv_first_fundamental_form() const -> ValueVector<MetricTensor>
 
 template<int dim_, int codim_, class ContainerType_>
 auto
-PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
+DomainElementBase<dim_, codim_, ContainerType_>::
 compute_second_fundamental_form() const -> ValueVector<MetricTensor>
 {
   Assert(codim==1, ExcNotImplemented());
@@ -144,7 +144,7 @@ compute_second_fundamental_form() const -> ValueVector<MetricTensor>
 
 template<int dim_, int codim_, class ContainerType_>
 auto
-PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
+DomainElementBase<dim_, codim_, ContainerType_>::
 get_principal_curvatures() const -> const ValueVector<SafeSTLVector<Real>> &
 {
 #if 0
@@ -173,7 +173,7 @@ get_principal_curvatures() const -> const ValueVector<SafeSTLVector<Real>> &
 
 template<int dim_, int codim_, class ContainerType_>
 auto
-PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
+DomainElementBase<dim_, codim_, ContainerType_>::
 get_external_normals() const -> const ValueVector<Points<space_dim> > &
 {
 #if 0
@@ -200,7 +200,7 @@ get_external_normals() const -> const ValueVector<Points<space_dim> > &
 
 template<int dim_, int codim_, class ContainerType_>
 auto
-PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
+DomainElementBase<dim_, codim_, ContainerType_>::
 get_D_external_normals() const -> ValueVector< Derivative<1> >
 {
   Assert(codim==1, ExcNotImplemented());
@@ -224,7 +224,7 @@ get_D_external_normals() const -> ValueVector< Derivative<1> >
 
 //template<int dim_, int codim_, class ContainerType_>
 //auto
-//PhysicalDomainElementBase<dim_, codim_, ContainerType_>::
+//DomainElementBase<dim_, codim_, ContainerType_>::
 //clone() const -> std::shared_ptr<self_t>
 //{
 //    auto elem = std::make_shared<self_t>(*this,CopyPolicy::deep);

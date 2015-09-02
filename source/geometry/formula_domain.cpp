@@ -26,7 +26,7 @@ template<int dim, int codim>
 FormulaDomain<dim, codim>::
 FormulaDomain(std::shared_ptr<GridType> grid)
   :
-  parent_t::PhysicalDomain(grid)
+  parent_t::Domain(grid)
 {}
 
 IGA_NAMESPACE_CLOSE

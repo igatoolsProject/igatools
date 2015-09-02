@@ -209,7 +209,7 @@ private:
 
   struct InitCacheDispatcher : boost::static_visitor<void>
   {
-    InitCacheDispatcher(GridElementHandler<dim_> &grid_handler,
+    InitCacheDispatcher(GridHandler<dim_> &grid_handler,
                         ReferenceElement<dim_,range_,rank_> &elem,
                         SafeSTLArray<ValueFlags, dim+1> &flags)
       :
@@ -221,7 +221,7 @@ private:
     template<int sub_elem_dim>
     void operator()(const Topology<sub_elem_dim> &sub_elem);
 
-    GridElementHandler<dim_> &grid_handler_;
+    GridHandler<dim_> &grid_handler_;
     ReferenceElement<dim_,range_,rank_> &elem_;
     SafeSTLArray<ValueFlags, dim+1> &flags_;
 
@@ -229,7 +229,7 @@ private:
 
   struct FillCacheDispatcher : boost::static_visitor<void>
   {
-    FillCacheDispatcher(const GridElementHandler<dim_> &grid_handler,
+    FillCacheDispatcher(const GridHandler<dim_> &grid_handler,
                         const int sub_elem_id,
                         NURBSElement<dim_,range_,rank_> &nrb_elem)
       :
@@ -280,7 +280,7 @@ private:
       const WeightElem &weight_elem,
       ValueTable<Derivative<2>> &D2_phi) const;
 
-    const GridElementHandler<dim_> &grid_handler_;
+    const GridHandler<dim_> &grid_handler_;
     const int sub_elem_id_;
     NURBSElement<dim_,range_,rank_> &nrb_elem_;
   };

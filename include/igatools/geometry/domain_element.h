@@ -32,10 +32,10 @@ IGA_NAMESPACE_OPEN
  * @ingroup elements
  */
 template<int dim_, int codim_, class ContainerType_>
-class PhysicalDomainElementBase
+class DomainElementBase
 {
 private:
-  using self_t  = PhysicalDomainElementBase<dim_, codim_, ContainerType_>;
+  using self_t  = DomainElementBase<dim_, codim_, ContainerType_>;
 
 public:
   using ContainerType = ContainerType_;
@@ -59,31 +59,31 @@ protected:
    * <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
    * mechanism.
    */
-  PhysicalDomainElementBase() = default;
+  DomainElementBase() = default;
 
 public:
   /**
    * Construct an accessor pointing to the element with
    * flat index @p elem_index of the Function @p func.
    */
-  PhysicalDomainElementBase(const std::shared_ptr<ContainerType_> phys_dom,
+  DomainElementBase(const std::shared_ptr<ContainerType_> phys_dom,
                             const ListIt &index,
                             const PropId &prop = ElementProperties::active);
 
   /**
    * Copy constructor. Not allowed to be used.
    */
-  PhysicalDomainElementBase(const self_t &elem) = delete;
+  DomainElementBase(const self_t &elem) = delete;
 
   /**
    * Move constructor.
    */
-  PhysicalDomainElementBase(self_t &&elem) = default;
+  DomainElementBase(self_t &&elem) = default;
 
   /**
    * Destructor.
    */
-  ~PhysicalDomainElementBase() = default;
+  ~DomainElementBase() = default;
   ///@}
 
 
@@ -262,32 +262,28 @@ private:
 
   template <class Accessor> friend class GridIteratorBase;
   friend class DomainHandler<dim_, codim_>;
-
-//    /**
-//     * Creates a new object performing a deep copy of the current object using the PhysicalDomainElement
-//     * copy constructor.
-//     */
-//    std::shared_ptr<PhysicalDomainElement<dim_,codim_> > clone() const;
-
 };
 
 
+
 template <int dim, int codim>
-class ConstPhysicalDomainElement
-  : public PhysicalDomainElementBase<dim, codim,
+class ConstDomainElement
+  : public DomainElementBase<dim, codim,
     const Domain<dim,codim>>
 {
-  using PhysicalDomainElementBase<dim, codim,
-        const Domain<dim,codim>>::PhysicalDomainElementBase;
+  using DomainElementBase<dim, codim,
+        const Domain<dim,codim>>::DomainElementBase;
 };
 
+
+
 template <int dim, int codim>
-class PhysicalDomainElement
-  : public PhysicalDomainElementBase<dim, codim,
+class DomainElement
+  : public DomainElementBase<dim, codim,
     Domain<dim,codim>>
 {
-  using PhysicalDomainElementBase<dim, codim,
-        Domain<dim,codim>>::PhysicalDomainElementBase;
+  using DomainElementBase<dim, codim,
+        Domain<dim,codim>>::DomainElementBase;
 };
 
 IGA_NAMESPACE_CLOSE

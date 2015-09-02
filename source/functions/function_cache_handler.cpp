@@ -184,7 +184,7 @@ FunctionElementHandler<dim_, codim_, range_, rank_ >::
 serialize(Archive &ar, const unsigned int version)
 {
   ar &boost::serialization::make_nvp("grid_elem_handler_",
-                                     boost::serialization::base_object<GridElementHandler<dim_>>(*this));
+                                     boost::serialization::base_object<GridHandler<dim_>>(*this));
 
   ar &boost::serialization::make_nvp("object_id_",object_id_);
   ar &boost::serialization::make_nvp("name_",name_);

@@ -194,7 +194,7 @@ init_ref_elem_cache(RefElementAccessor &elem, const topology_variant &topology)
 
   //-------------------------------------
   auto init_cache_dispatcher = InitCacheDispatcher(
-                                 const_cast<GridElementHandler<dim_> &>(bspline_handler_->get_grid_handler()),
+                                 const_cast<GridHandler<dim_> &>(bspline_handler_->get_grid_handler()),
                                  nrb_elem,flags_);
   boost::apply_visitor(init_cache_dispatcher,topology);
   //-------------------------------------

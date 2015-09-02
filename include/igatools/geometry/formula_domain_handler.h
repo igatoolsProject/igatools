@@ -21,7 +21,7 @@
 #ifndef __FORMULA_DOMAIN_HANDLER_H_
 #define __FORMULA_DOMAIN_HANDLER_H_
 
-#include <igatools/geometry/domain_cache_handler.h>
+#include <igatools/geometry/domain_handler.h>
 #include <igatools/geometry/formula_domain.h>
 
 IGA_NAMESPACE_OPEN

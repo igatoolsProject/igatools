@@ -61,7 +61,7 @@ public :
   using RefElemAccessor = ReferenceElement<RefSpace::dim,RefSpace::range,RefSpace::rank>;
 
   using PhysDomain = Domain<dim_, codim_>;
-  using PhysDomainElem = PhysicalDomainElement<dim_, codim_>;
+  using PhysDomainElem = DomainElement<dim_, codim_>;
 
   static const auto dim = PushFwd::dim;
   static const auto space_dim = PushFwd::space_dim;
@@ -222,12 +222,12 @@ public:
 
 
   /**
-   * Return a const reference of the PhysicalDomainElement.
+   * Return a const reference of the DomainElement.
    */
   const PhysDomainElem &get_physical_domain_element() const;
 
   /**
-   * Return a non-const reference of the PhysicalDomainElement.
+   * Return a non-const reference of the DomainElement.
    */
   PhysDomainElem &get_physical_domain_element();
 

@@ -153,7 +153,7 @@ private:
   struct SetFlagDispatcher : boost::static_visitor<void>
   {
     SetFlagDispatcher(const typename space_element::Flags flag_in,
-                      GridElementHandler<dim_> &grid_handler,
+                      GridHandler<dim_> &grid_handler,
                       SafeSTLArray<typename space_element::Flags, dim+1> &flags)
       :
       flag_in_(flag_in),
@@ -167,7 +167,7 @@ private:
 
   private:
     const typename space_element::Flags flag_in_;
-    GridElementHandler<dim_> &grid_handler_;
+    GridHandler<dim_> &grid_handler_;
     SafeSTLArray<typename space_element::Flags, dim+1> &flags_;
   };
 
@@ -183,7 +183,7 @@ private:
 
   struct InitCacheDispatcher : boost::static_visitor<void>
   {
-    InitCacheDispatcher(const GridElementHandler<dim_> &grid_handler,
+    InitCacheDispatcher(const GridHandler<dim_> &grid_handler,
                         const SafeSTLArray<typename space_element::Flags, dim+1> &flags,
                         BaseElem &elem)
       :
@@ -197,7 +197,7 @@ private:
     void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad);
 
   private:
-    const GridElementHandler<dim_> &grid_handler_;
+    const GridHandler<dim_> &grid_handler_;
     const SafeSTLArray<typename space_element::Flags, dim+1> &flags_;
     BaseElem &elem_;
 
@@ -220,7 +220,7 @@ private:
   struct FillCacheDispatcherNoGlobalCache : boost::static_visitor<void>
   {
     FillCacheDispatcherNoGlobalCache(const int s_id,
-                                     const GridElementHandler<dim_> &grid_handler,
+                                     const GridHandler<dim_> &grid_handler,
                                      BaseElem &elem)
       :
       s_id_(s_id),
@@ -280,7 +280,7 @@ private:
 
 
     const int s_id_;
-    const GridElementHandler<dim_> &grid_handler_;
+    const GridHandler<dim_> &grid_handler_;
     BaseElem &elem_;
   };
 

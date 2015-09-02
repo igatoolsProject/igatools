@@ -29,15 +29,15 @@
 IGA_NAMESPACE_OPEN
 
 
-template <int, int, class> class PhysicalDomainElementBase;
-template <int, int> class PhysicalDomainElement;
-template <int, int> class ConstPhysicalDomainElement;
+template <int, int, class> class DomainElementBase;
+template <int, int> class DomainElement;
+template <int, int> class ConstDomainElement;
 /**
  * @brief The mapping is a deformation \f$ F : \hat\Omega \to \Omega\f$
  * which maps the reference domain \f$\hat\Omega \in \mathbb{R}^{dim}\f$ to the
  * physical domain \f$\Omega \in \mathbb{R}^{dim+codim}\f$.
  *
- * PhysicalDomain is the physical domain, wether of a function or a space.
+ * Domain is the physical domain, wether of a function or a space.
  *
  * It is a function with special properties: it codim is 0 and the map is always the
  * identity.
@@ -65,9 +65,9 @@ public:
   using GridType = const CartesianGrid<dim_>;
   using GridHandler = typename GridType::ElementHandler;
 
-  using ElementAccessor = PhysicalDomainElement<dim_, codim_>;
+  using ElementAccessor = DomainElement<dim_, codim_>;
   using ElementIterator = GridIterator<ElementAccessor>;
-  using ConstElementAccessor = ConstPhysicalDomainElement<dim_, codim_>;
+  using ConstElementAccessor = ConstDomainElement<dim_, codim_>;
   using ElementConstIterator = GridIterator<ConstElementAccessor>;
 
   using List = typename GridType::List;

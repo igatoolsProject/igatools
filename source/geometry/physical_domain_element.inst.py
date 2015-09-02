@@ -28,14 +28,14 @@ data = Instantiation(include_files)
 
 sub_dim_members = \
   []
-#['const ValueVector<Points<dim+cod>> & PhysicalDomainElement<dim,cod>::get_boundary_normals<k>(const int s_id) const;']
+#['const ValueVector<Points<dim+cod>> & DomainElement<dim,cod>::get_boundary_normals<k>(const int s_id) const;']
 
 elements = []
 
-els =['const iga::PhysicalDomain', ' iga::PhysicalDomain']
+els =['const iga::Domain', ' iga::Domain']
 for x in inst.sub_mapping_dims:
   for el in els:
-    elem = 'PhysicalDomainElementBase<%d,%d,' %(x.dim, x.codim) + el + '<%d,%d>' %(x.dim, x.codim) + '>'
+    elem = 'DomainElementBase<%d,%d,' %(x.dim, x.codim) + el + '<%d,%d>' %(x.dim, x.codim) + '>'
     f.write('template class %s; \n' %(elem))
     elements.append(elem)
     for fun in sub_dim_members:
@@ -45,7 +45,7 @@ for x in inst.sub_mapping_dims:
 
 for x in inst.mapping_dims:
   for el in els:
-    elem = 'PhysicalDomainElementBase<%d,%d,' %(x.dim, x.codim) + el + '<%d,%d>' %(x.dim, x.codim) + '>'
+    elem = 'DomainElementBase<%d,%d,' %(x.dim, x.codim) + el + '<%d,%d>' %(x.dim, x.codim) + '>'
     f.write('template class %s; \n' %(elem))
     elements.append(elem)
     for fun in sub_dim_members:
@@ -53,12 +53,12 @@ for x in inst.mapping_dims:
             s = fun.replace('dim','%d' %x.dim).replace('k','%d' %(k)).replace('cod','%d' %x.codim);
             f.write('template ' + s + '\n')
  
-accs1 =  ['PhysicalDomainElement',       'ConstPhysicalDomainElement']
+accs1 =  ['DomainElement',       'ConstDomainElement']
 for x in inst.sub_mapping_dims + inst.mapping_dims: 
   for acc in accs1: 
       f.write('template class ' + acc + '<%d,%d>' %(x.dim, x.codim) + ';\n')
 
-accs=  ['PhysicalDomainElement',       'ConstPhysicalDomainElement', 'PhysicalDomainElement', 'ConstPhysicalDomainElement']
+accs=  ['DomainElement',       'ConstDomainElement', 'DomainElement', 'ConstDomainElement']
 iters =  ['GridIteratorBase', 'GridIteratorBase',   'GridIterator', 'GridIterator']
 for x in inst.sub_mapping_dims+inst.mapping_dims:
   for i in range(len(accs)):
