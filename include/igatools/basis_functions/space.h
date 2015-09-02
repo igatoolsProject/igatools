@@ -35,7 +35,7 @@ IGA_NAMESPACE_OPEN
 template <int,int> class PhysicalDomain;
 
 template <int,int,int,int> class Function;
-template <int> class GridElement;
+//template <int> class GridElement;
 template <int,int,int,int,Transformation> class SpaceElement;
 template <int,int,int,int,Transformation> class SpaceElementHandler;
 

@@ -41,9 +41,17 @@
 
 IGA_NAMESPACE_OPEN
 
+template <int> class CartesianGrid;
+
 template <int, class> class GridElementBase;
-template <int> class GridElement;
-template <int> class ConstGridElement;
+
+template<int dim>
+using ConstGridElement = GridElementBase<dim, const CartesianGrid<dim>>;
+
+template<int dim>
+using GridElement = GridElementBase<dim, CartesianGrid<dim>>;
+
+
 template <int> class GridElementHandler;
 
 /**
@@ -767,8 +775,8 @@ private:
 #endif
   friend class GridElementBase<dim_, CartesianGrid<dim_>>;
   friend class GridElementBase<dim_, const CartesianGrid<dim_>>;
-  friend class GridElement<dim_>;
-  friend class ConstGridElement<dim_>;
+//  friend class GridElement<dim_>;
+//  friend class ConstGridElement<dim_>;
 
 #ifdef SERIALIZATION
 private:

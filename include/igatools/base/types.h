@@ -403,9 +403,18 @@ static const int invalid = -2;
 template<bool C, typename T, typename F>
 using Conditional = typename std::conditional<C,T,F>::type;
 
-
+/**
+ * Alias for returning the type <b>T</t> if <b>B</t> is true.
+ */
 template<bool B, typename T = void>
 using EnableIf = typename std::enable_if<B,T>::type;
+
+
+template <class C>
+using EnableIfConst = EnableIf<std::is_const<C>::value>;
+
+template <class C>
+using EnableIfNonConst = EnableIf<!(std::is_const<C>::value)>;
 
 /**
  * Macro used to generate the metafunction

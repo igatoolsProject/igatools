@@ -66,9 +66,9 @@ private:
 public:
   /** Type required by the CartesianGridIterator templated iterator */
   using ContainerType = ContainerType_;
-  using IndexType = typename ContainerType_::IndexType;
-  using List = typename ContainerType_::List;
-  using ListIt = typename ContainerType_::ListIt;
+  using IndexType = typename ContainerType::IndexType;
+  using List = typename ContainerType::List;
+  using ListIt = typename ContainerType::ListIt;
 
   using Point = Points<dim>;
 
@@ -88,11 +88,7 @@ public:
    * Construct an accessor pointing to the element with
    * flat index @p elem_index of the CartesianGrid @p grid.
    */
-//  GridElementBase(const std::shared_ptr<ContainerType_> &grid,
-//                  const ListIt &index,
-//                  const PropId &prop = ElementProperties::active);
-
-  GridElementBase(const SharedPtrConstnessHandler<CartesianGrid<dim>> &grid,
+  GridElementBase(const std::shared_ptr<ContainerType> &grid,
                   const ListIt &index,
                   const PropId &prop = ElementProperties::active);
 
@@ -277,6 +273,13 @@ public:
   ValueVector<Point> get_points(const int s_id = 0) const;
 
 
+  template <class C = ContainerType>
+  void add_property(const PropId &prop,
+                    EnableIfNonConst<C> * = nullptr)
+  {
+    this->grid_->elem_properties_[prop].insert(this->get_index());
+  }
+
 
 private:
   ValueVector<Point> get_element_points() const;
@@ -298,11 +301,9 @@ private:
   friend class GridElementHandler<dim>;
 
 protected:
-//  /** Cartesian grid from which the element belongs.*/
-//  std::shared_ptr<ContainerType> grid_;
 
   /** Cartesian grid from which the element belongs.*/
-  SharedPtrConstnessHandler<CartesianGrid<dim>> grid_;
+  std::shared_ptr<ContainerType> grid_;
 
 private:
   PropId property_;
@@ -377,34 +378,7 @@ protected:
 #endif // SERIALIZATION
 };
 
-template <int dim>
-class ConstGridElement
-  : public GridElementBase<dim, const CartesianGrid<dim>>
-{
-  using GridElementBase<dim, const CartesianGrid<dim>>::GridElementBase;
-};
 
-
-template <int dim>
-class GridElement
-  : public GridElementBase<dim, CartesianGrid<dim>>
-{
-  using GridElementBase<dim, CartesianGrid<dim>>::GridElementBase;
-public:
-  void add_property(const PropId &prop)
-  {
-    this->grid_.get_ptr_data()->elem_properties_[prop].insert(this->get_index());
-  }
-};
-
-
-//template <int dim>
-//inline std::ostream &operator<<(std::ostream & Str, MyEnum V) {
-//  switch (V) {
-//  case foo: return Str << "foo";
-//  case bar: return Str << "bar";
-//  default: return Str << (int) V;
-//}
 
 IGA_NAMESPACE_CLOSE
 

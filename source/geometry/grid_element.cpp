@@ -27,7 +27,7 @@ IGA_NAMESPACE_OPEN
 
 template <int dim, class ContainerType_>
 GridElementBase<dim, ContainerType_>::
-GridElementBase(const SharedPtrConstnessHandler<CartesianGrid<dim>> &grid,
+GridElementBase(const std::shared_ptr<ContainerType> &grid,
                 const ListIt &index,
                 const PropId &prop)
   :
@@ -45,7 +45,7 @@ auto
 GridElementBase<dim, ContainerType_>::
 get_grid() const -> const std::shared_ptr<const ContainerType>
 {
-  return grid_.get_ptr_const_data();
+  return grid_;
 }
 
 
@@ -59,23 +59,6 @@ get_index() const ->  const IndexType &
 }
 
 
-
-//template <int dim, class ContainerType_>
-//void
-//GridElementBase<dim, ContainerType_>::
-//move_to(const Index  &flat_index)
-//{
-//    Assert((flat_index == IteratorState::pass_the_end) ||
-//           ((flat_index >= 0) && (flat_index < grid_->get_num_all_elems())),
-//           ExcIndexRange(flat_index, 0, grid_->get_num_all_elems()));
-//
-//    flat_index_ = flat_index ;
-//
-//    if (flat_index_ != IteratorState::pass_the_end)
-//        tensor_index_ = grid_->flat_to_tensor(flat_index_);
-//    else
-//        tensor_index_.fill(IteratorState::pass_the_end);
-//}
 
 
 
