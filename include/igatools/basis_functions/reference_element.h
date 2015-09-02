@@ -18,7 +18,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-
 #ifndef REFERENCE_ELEMENT_H_
 #define REFERENCE_ELEMENT_H_
 
@@ -27,7 +26,6 @@
 #include <igatools/basis_functions/reference_element_handler.h>
 
 IGA_NAMESPACE_OPEN
-
 
 template <int, int, int> class ReferenceSpace;
 
@@ -91,19 +89,14 @@ public:
 
   virtual ~ReferenceElement() = default;
 
-
-
-
-
-
   /**
    * Returns the <tt>k</tt> dimensional j-th sub-element measure
    * multiplied by the weights of the quadrature on the unit element.
    */
-  template <int k>
-  ValueVector<Real> get_w_measures(const int j) const
+  template <int sdim>
+  ValueVector<Real> get_w_measures(const int s_id) const
   {
-    return this->get_grid_element().template get_w_measure<k>(j);
+    return this->get_grid_element().template get_weights<sdim>(s_id);
   }
 
   /**
@@ -159,12 +152,8 @@ public:
   virtual void print_info(LogStream &out) const override final;
 
 
-
-
-
-private:
-
 #ifdef SERIALIZATION
+private:
   /**
    * @name Functions needed for boost::serialization
    * @see <a href="http://www.boost.org/doc/libs/release/libs/serialization/">boost::serialization</a>
@@ -179,10 +168,6 @@ private:
 #endif // SERIALIZATION
 };
 
-
-
 IGA_NAMESPACE_CLOSE
 
-
 #endif // #ifndef REFERENCE_ELEMENT_H_
-

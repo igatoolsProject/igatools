@@ -58,7 +58,7 @@ void iterate(const int n_knots = 5)
   for (; elem != grid->cend(); ++elem)
   {
     cache_handler->template fill_cache<dim>(elem, 0);
-    elem->template get_w_measure<dim>(0).print_info(out);
+    elem->template get_weights<dim>(0).print_info(out);
     out << endl;
 
     for (auto &s_id : UnitElement<dim>::template elems_ids<sdim>())

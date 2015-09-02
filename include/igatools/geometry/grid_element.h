@@ -261,7 +261,7 @@ public:
    * <tt>sdim>-dimensional element measure.
    */
   template <int sdim>
-  ValueVector<Real> get_w_measure(const int s_id) const;
+  ValueVector<Real> get_weights(const int s_id) const;
 
 
 

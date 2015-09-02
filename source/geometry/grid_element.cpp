@@ -205,7 +205,7 @@ template <int dim, class ContainerType_>
 template <int sdim>
 ValueVector<Real>
 GridElement<dim, ContainerType_>::
-get_w_measure(const int s_id) const
+get_weights(const int s_id) const
 {
   return this->template get_values_from_cache<_Weight, sdim>(s_id);
 }
