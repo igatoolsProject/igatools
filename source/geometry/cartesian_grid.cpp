@@ -374,9 +374,8 @@ auto
 CartesianGrid<dim_>::
 begin(const PropId &prop) -> ElementIterator
 {
-  return ElementIterator(this->shared_from_this(),
-  elem_properties_[prop].begin(),
-  prop);
+  return ElementIterator(
+    this->create_element(elem_properties_[prop].begin(),prop));
 }
 
 
@@ -386,9 +385,8 @@ auto
 CartesianGrid<dim_>::
 end(const PropId &prop) -> ElementIterator
 {
-  return ElementIterator(this->shared_from_this(),
-  elem_properties_[prop].end(),
-  prop);
+  return ElementIterator(
+    this->create_element(elem_properties_[prop].end(),prop));
 }
 
 
@@ -418,9 +416,8 @@ auto
 CartesianGrid<dim_>::
 cbegin(const PropId &prop) const -> ElementConstIterator
 {
-  return ElementConstIterator(this->shared_from_this(),
-                              elem_properties_[prop].begin(),
-                              prop);
+  return ElementConstIterator(
+           this->create_element(elem_properties_[prop].begin(),prop));
 }
 
 
@@ -430,9 +427,8 @@ auto
 CartesianGrid<dim_>::
 cend(const PropId &prop) const -> ElementConstIterator
 {
-  return ElementConstIterator(this->shared_from_this(),
-                              elem_properties_[prop].end(),
-                              prop);
+  return ElementConstIterator(
+           this->create_element(elem_properties_[prop].end(),prop));
 }
 
 

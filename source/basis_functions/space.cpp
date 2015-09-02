@@ -161,9 +161,9 @@ auto
 Space<dim_,codim_,range_,rank_,type_>::
 begin(const PropId &prop) -> ElementIterator
 {
-  return ElementIterator(this->shared_from_this(),
-  this->get_ptr_grid()->get_element_property(prop).begin(),
-  prop);
+  return ElementIterator(
+    this->create_element(
+      this->get_ptr_grid()->get_element_property(prop).begin(),prop));
 }
 
 
@@ -173,9 +173,9 @@ auto
 Space<dim_,codim_,range_,rank_,type_>::
 end(const PropId &prop) -> ElementIterator
 {
-  return ElementIterator(this->shared_from_this(),
-  this->get_ptr_grid()->get_element_property(prop).end(),
-  prop);
+  return ElementIterator(
+    this->create_element(
+      this->get_ptr_grid()->get_element_property(prop).end(),prop));
 }
 
 

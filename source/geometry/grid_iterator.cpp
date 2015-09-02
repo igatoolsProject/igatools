@@ -34,6 +34,12 @@ GridIteratorBase(std::shared_ptr<ContainerType> container,
   elem_(container->create_element(index, prop))
 {}
 
+template <class Element>
+GridIteratorBase<Element>::
+GridIteratorBase(std::shared_ptr<Element> elem)
+  :
+  elem_(elem)
+{}
 
 
 template <class Element>
