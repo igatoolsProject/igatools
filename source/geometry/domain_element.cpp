@@ -26,8 +26,8 @@ IGA_NAMESPACE_OPEN
 template<int dim_, int codim_, class ContainerType_>
 DomainElementBase<dim_, codim_, ContainerType_>::
 DomainElementBase(std::shared_ptr<ContainerType_> phys_dom,
-                          const ListIt &index,
-                          const PropId &prop)
+                  const ListIt &index,
+                  const PropId &prop)
   :
   phys_dom_(phys_dom),
   grid_elem_(phys_dom_->get_grid()->create_element(index,prop))

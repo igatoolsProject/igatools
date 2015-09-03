@@ -55,7 +55,7 @@ bool test_if_knots_fine_contains_knots_coarse(
 template <int dim>
 SafeSTLArray<SafeSTLVector<Index>,dim>
 build_map_intervals_id_between_grids(const Grid<dim> &grid_fine,
-                                               const Grid<dim> &grid_coarse);
+                                     const Grid<dim> &grid_coarse);
 
 #if 0
 /**
@@ -104,7 +104,7 @@ using InterGridMap = std::map<typename Grid<dim>::IndexType,typename Grid<dim>::
 template <int dim>
 InterGridMap<dim>
 build_map_elements_id_between_grids(const Grid<dim> &grid_fine,
-                                              const Grid<dim> &grid_coarse);
+                                    const Grid<dim> &grid_coarse);
 
 #if 0
 
@@ -131,7 +131,7 @@ using InterGridMap = std::map<typename Grid<dim>::ElementConstIterator,
 template <int dim>
 InterGridMap<dim>
 build_map_elements_between_grids(const Grid<dim> &grid_fine,
-                                           const Grid<dim> &grid_coarse);
+                                 const Grid<dim> &grid_coarse);
 #endif
 
 

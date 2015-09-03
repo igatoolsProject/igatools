@@ -129,7 +129,7 @@ create(const BBox<dim_> &end_points, const Size n_knots) -> shared_ptr<self_t>
 template<int dim_>
 Grid<dim_>::
 Grid(const BBox<dim_> &end_points,
-              const TensorSize<dim_> &n)
+     const TensorSize<dim_> &n)
   :
   Grid(filled_progression<dim_>(end_points, n))
 {}

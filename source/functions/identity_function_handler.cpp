@@ -132,7 +132,7 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> &identity_function)
               std::placeholders::_1,
               std::placeholders::_2);
   std::const_pointer_cast<Grid<dim>>(this->get_grid())->connect_insert_knots(
-                                             SlotType(func_to_connect).track_foreign(identity_function));
+                                    SlotType(func_to_connect).track_foreign(identity_function));
 }
 #endif // MESH_REFINEMENT
 

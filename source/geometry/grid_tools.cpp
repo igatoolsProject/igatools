@@ -49,7 +49,7 @@ bool test_if_knots_fine_contains_knots_coarse(
 template <int dim>
 SafeSTLArray<SafeSTLVector<Index>,dim>
 build_map_intervals_id_between_grids(const Grid<dim> &grid_fine,
-                                               const Grid<dim> &grid_coarse)
+                                     const Grid<dim> &grid_coarse)
 {
   //---------------------------------------------------------
   // checks that the grid are on the same domain
@@ -119,7 +119,7 @@ get_max_num_fine_intervals_in_coarse_interval(const Grid<dim> &grid_fine,
 template <int dim>
 InterGridMap<dim>
 build_map_elements_id_between_grids(const Grid<dim> &grid_fine,
-                                              const Grid<dim> &grid_coarse)
+                                    const Grid<dim> &grid_coarse)
 {
   const auto map_interv_id_fine_coarse =
     build_map_intervals_id_between_grids(grid_fine,grid_coarse);
@@ -143,7 +143,7 @@ build_map_elements_id_between_grids(const Grid<dim> &grid_fine,
 template <int dim>
 InterGridMap<dim>
 build_map_elements_between_grids(const Grid<dim> &grid_fine,
-                                           const Grid<dim> &grid_coarse)
+                                 const Grid<dim> &grid_coarse)
 {
   const auto map_interv_id_fine_coarse =
     build_map_intervals_id_between_grids(grid_fine,grid_coarse);

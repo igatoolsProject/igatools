@@ -28,12 +28,8 @@
 #include <igatools/geometry/grid_cache_handler.h>
 #include <igatools/utils/value_vector.h>
 #include <igatools/basis_functions/values_cache.h>
-#include <igatools/utils/shared_ptr_constness_handler.h>
-
-#include <iterator>
 
 IGA_NAMESPACE_OPEN
-
 
 /**
  * @brief Element accessor for the Grid.
@@ -137,15 +133,7 @@ public:
   {
     return quad_list_.template get_quad<sdim>();
   }
-  /**
-   * @name Functions for managing/querying the element properties.
-   */
-  ///@{
-  /**
-   * Tests if a certain element @p property is TRUE.
-   */
-  bool has_property(const PropId &property) const;
-  ///@}
+
 
   /**
    * @name Functions/operators for moving the element in the Grid.
@@ -240,12 +228,7 @@ public:
   Point vertex(const int i) const;
 
 
-#if 0
-  /**
-   * Return the properties defined for the element.
-   */
-  SafeSTLVector<std::string> get_defined_properties() const;
-#endif
+
 
 
 public:
@@ -263,8 +246,6 @@ public:
   template <int sdim>
   ValueVector<Real> get_weights(const int s_id) const;
 
-
-
   /**
    * Returns the quadrature points corresponding to the <tt>sdim</tt>
    * dimensional s_id-th sub-element.
@@ -273,6 +254,16 @@ public:
   ValueVector<Point> get_points(const int s_id = 0) const;
 
 
+  /**
+   * @name Functions for managing/querying the element properties.
+   */
+  ///@{
+  /**
+   * Tests if a certain element @p property is TRUE.
+   */
+  bool has_property(const PropId &property) const;
+  ///@}
+
   template <class C = ContainerType>
   void add_property(const PropId &prop,
                     EnableIfNonConst<C> * = nullptr)
@@ -280,6 +271,12 @@ public:
     this->grid_->elem_properties_[prop].insert(this->get_index());
   }
 
+#if 0
+  /**
+   * Return the properties defined for the element.
+   */
+  SafeSTLVector<std::string> get_defined_properties() const;
+#endif
 
 private:
   ValueVector<Point> get_element_points() const;

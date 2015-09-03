@@ -225,13 +225,13 @@ protected:
    * @todo Document me
    */
   explicit Grid(const BBox<dim_> &bbox,
-                         const Size n_knots);
+                const Size n_knots);
 
   /**
    * @todo Document me
    */
   explicit Grid(const BBox<dim_> &bbox,
-                         const TensorSize<dim_> &n_knots);
+                const TensorSize<dim_> &n_knots);
   /**
    * Construct a cartesian grid where the knot coordinate in each
    * direction is provided as CartesianProductArray object.

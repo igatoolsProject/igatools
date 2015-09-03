@@ -74,7 +74,7 @@ namespace grid
 {
 template<int dim>
 shared_ptr<Grid<dim>>
-                            uniform(const int n_knots)
+                   uniform(const int n_knots)
 {
   return Grid<dim>::create(n_knots);
 }

@@ -295,7 +295,7 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> space)
 
   using SlotType = typename Grid<dim>::SignalInsertKnotsSlot;
   std::const_pointer_cast<Grid<dim_>>(this->get_ptr_grid())->connect_insert_knots(
-                                              SlotType(func_to_connect).track_foreign(space));
+                                     SlotType(func_to_connect).track_foreign(space));
 }
 
 

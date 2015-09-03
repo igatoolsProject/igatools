@@ -67,8 +67,8 @@ public:
    * flat index @p elem_index of the Function @p func.
    */
   DomainElementBase(const std::shared_ptr<ContainerType_> phys_dom,
-                            const ListIt &index,
-                            const PropId &prop = ElementProperties::active);
+                    const ListIt &index,
+                    const PropId &prop = ElementProperties::active);
 
   /**
    * Copy constructor. Not allowed to be used.
