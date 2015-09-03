@@ -24,9 +24,11 @@
  *  @author pauletti
  *  @date 2015
  */
-
+#include <igatools/base/quadrature_lib.h>
 #include <igatools/geometry/domain.h>
 #include <igatools/geometry/formula_domain.h>
+#include <igatools/geometry/domain_lib.h>
+
 #include "../tests.h"
 
 //#include <igatools/functions/identity_function.h>
@@ -38,13 +40,43 @@ void domain()
   OUTSTART
 
   using Grid = Grid<dim>;
-  using Domain = Domain<dim, codim>;
+  //using Domain = Domain<dim, codim>;
 
+  using Domain = domains::BallDomain<dim>;
   auto grid = Grid::const_create();
-  auto dom = Domain::create(grid);
+  auto domain = Domain::create(grid);
 
+  using Flags = typename Domain::ElementAccessor::Flags;
 
-  auto form_dom = FormulaDomain<dim, codim>::create(grid);
+  auto flag = Flags::w_measure ;
+  //auto s_flag = Flags::point;
+  auto handler = domain->create_cache_handler();
+
+  handler->template set_flags<dim>(flag);
+//    handler->template set_flags<sdim>(s_flag);
+
+  auto quad   = QGauss<dim>::create(2);
+//    auto s_quad = QGauss<sdim>::create(1);
+
+  auto elem = domain->cbegin();
+  handler->init_cache(elem, quad);
+//    cache_handler->template init_cache<sdim>(elem, s_quad);
+
+  for (; elem != domain->cend(); ++elem)
+  {
+    out << "dfg" << endl;
+    // handler->template fill_cache<dim>(elem, 0);
+    //elem->template get_points<dim>(0).print_info(out);
+    //  out << endl;
+
+//      for (auto &s_id : UnitElement<dim>::template elems_ids<sdim>())
+//      {
+//        cache_handler->template fill_cache<sdim>(elem, s_id);
+//        elem->template get_points<sdim>(s_id).print_info(out);
+//        out << endl;
+//      }
+//      out << endl;
+  }
 
   OUTEND
 }
@@ -52,11 +84,11 @@ void domain()
 
 int main()
 {
-  domain<0,0>();
+  //domain<0,0>();
   domain<1,0>();
   domain<2,0>();
   domain<3,0>();
-  domain<2,1>();
+  //domain<2,1>();
 
   return 0;
 }

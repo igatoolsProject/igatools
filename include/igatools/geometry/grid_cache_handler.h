@@ -208,21 +208,20 @@ private:
 private:
   struct SetFlagsDispatcher : boost::static_visitor<void>
   {
-    SetFlagsDispatcher(const Flags flag, FlagsArray &flags)
+    SetFlagsDispatcher(const Flags flag, self_t *grid_handler)
       :
       flag_(flag),
-      flags_(flags)
+      grid_handler_(grid_handler)
     {}
 
     template<int sdim>
-    void operator()(const Topology<sdim> &)
+    void operator()(const Topology<sdim> &s_el)
     {
-      // grid_handler_.set_flags<sdim>(flag_)
-      flags_[sdim] = flag_;
+      grid_handler_->template set_flags<sdim>(flag_);
     }
 
     const Flags flag_;
-    FlagsArray &flags_;
+    self_t *grid_handler_;
   };
 
 

@@ -142,6 +142,11 @@ public:
 //Is this really virtual?
   virtual void set_flags(const topology_variant &sdim,
                          const Flags &flag);
+  template <int sdim>
+  void set_flags(const Flags &flag)
+  {
+    this->set_flags(Topology<sdim>(), flag);
+  }
 
   virtual void init_cache(ConstElementAccessor &elem,
                           const eval_pts_variant &quad) const;
@@ -162,6 +167,14 @@ public:
   {
     this->fill_cache(sdim, *elem, s_id);
   }
+
+  template <int sdim>
+  void fill_cache(ElementConstIterator &elem,
+                  const int s_id)
+  {
+    this->fill_cache(Topology<sdim>(), elem, s_id);
+  }
+
 protected:
   std::shared_ptr<typename ConstElementAccessor::CacheType> &get_element_cache(ConstElementAccessor &elem) const
   {
@@ -191,6 +204,40 @@ private:
     const Flags flag_;
     FlagsArray &flags_;
   };
+
+
+
+  struct InitCacheDispatcher : boost::static_visitor<void>
+  {
+    InitCacheDispatcher(self_t const *domain_handler,
+                        ConstElementAccessor &elem,
+                        const FlagsArray &flags)
+      :
+      domain_handler_(domain_handler),
+      elem_(elem),
+      flags_(flags)
+    {}
+
+
+    template<int sdim>
+    void operator()(const std::shared_ptr<const Quadrature<sdim>> &quad)
+    {
+      auto &cache = domain_handler_->get_element_cache(elem_);
+      for (auto &s_id: UnitElement<dim_>::template elems_ids<sdim>())
+      {
+        auto &s_cache = cache->template get_sub_elem_cache<sdim>(s_id);
+        const auto n_points = elem_.get_grid_element().template get_quad<sdim>()
+                              ->get_num_points();
+        s_cache.resize(flags_[sdim], n_points);
+      }
+    }
+
+    self_t const *domain_handler_;
+    ConstElementAccessor &elem_;
+    const FlagsArray &flags_;
+  };
+
+
 #if 0
 
   struct FillCacheDispatcher : boost::static_visitor<void>
@@ -263,7 +310,7 @@ private:
 
       if (cache.template status_fill<_InvHessian>())
       {
-        //        const auto &D1_F = elem.template get_values<_Gradient, k>(j);
+        //        const auto &D1_F = elem.template get_values<_Gradient, sdim>(j);
         const auto &D2_F = elem.template get_values<_Hessian, sdim>(s_id);
         const auto &D1_invF = cache.template get_data<_InvGradient>();
         auto &D2_invF       = cache.template get_data<_InvHessian>();
@@ -346,34 +393,7 @@ private:
   };
 
 
-  struct InitCacheDispatcher : boost::static_visitor<void>
-  {
-    InitCacheDispatcher(FuncType &F,
-                        ElementAccessor &domain_elem,
-                        const SafeSTLArray<ValueFlags, dim_ + 1> &flags)
-      :
-      F_(F),
-      domain_elem_(domain_elem),
-      flags_(flags)
-    {}
 
-
-    template<int k>
-    void operator()(const Topology<k> &sub_elem)
-    {
-      auto &cache = domain_elem_.local_cache_;
-      for (auto &s_id: UnitElement<dim_>::template elems_ids<k>())
-      {
-        auto &s_cache = cache->template get_sub_elem_cache<k>(s_id);
-        const auto n_points = F_.template get_num_points<k>();
-        s_cache.resize(flags_[k], n_points);
-      }
-    }
-
-    FuncType &F_;
-    ElementAccessor &domain_elem_;
-    const SafeSTLArray<ValueFlags, dim_ + 1> &flags_;
-  };
 #endif
 
 private:

@@ -65,7 +65,7 @@ GridHandler<dim>::
 set_flags(const topology_variant &sdim,
           const Flags &flag)
 {
-  auto disp = SetFlagsDispatcher(flag, flags_);
+  auto disp = SetFlagsDispatcher(flag, this);
   boost::apply_visitor(disp, sdim);
 }
 

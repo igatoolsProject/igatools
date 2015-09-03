@@ -143,7 +143,7 @@ Domain<dim_, codim_>::
 cbegin(const PropId &prop) const -> ElementConstIterator
 {
   return ElementConstIterator(this->shared_from_this(),
-                              grid_->get_elements_with_property(prop).end(),
+                              grid_->get_elements_with_property(prop).begin(),
                               prop);
 }
 

@@ -30,7 +30,8 @@ template<int dim_, int codim_>
 DomainHandler<dim_, codim_>::
 DomainHandler(std::shared_ptr<DomainType> domain)
   :
-  domain_(domain)
+  domain_(domain),
+  grid_handler_(domain->get_grid()->create_cache_handler())
 {
   Assert(domain_ != nullptr, ExcNullPtr());
 }
@@ -92,20 +93,16 @@ init_cache(ConstElementAccessor &elem,
 {
   grid_handler_->init_cache(*(elem.grid_elem_), quad);
 
-
-#if 0
-  F_->init_cache(elem, k);
-
   auto &cache = elem.local_cache_;
   if (cache == nullptr)
   {
     using Cache = typename ElementAccessor::CacheType;
-    cache = shared_ptr<Cache>(new Cache);
+    cache = std::make_shared<Cache>();
   }
 
-  auto init_cache_dispatcher = InitCacheDispatcher(*F_, elem, flags_);
-  boost::apply_visitor(init_cache_dispatcher, k);
-#endif
+  auto disp = InitCacheDispatcher(this, elem, flags_);
+  boost::apply_visitor(disp, quad);
+
 }
 
 
