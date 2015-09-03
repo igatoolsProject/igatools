@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/geometry/cartesian_grid.h>
+#include <igatools/geometry/grid.h>
 #include <igatools/geometry/grid_tools.h>
 #include <igatools/base/exceptions.h>
 #include <igatools/base/array_utils.h>
@@ -654,7 +654,7 @@ insert_knots(SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert)
   elem_properties_[ElementProperties::active] =
     el_tensor_range<dim>(TensorIndex<dim>(), get_num_intervals());
 
-  const auto fine_to_coarse_elems_id = grid_tools::build_map_elements_id_between_cartesian_grids(
+  const auto fine_to_coarse_elems_id = grid_tools::build_map_elements_id_between_grids(
                                          *this,*grid_pre_refinement_);
 
   std::map<IndexType,std::set<IndexType>> coarse_to_fine_elems_id;
@@ -1140,4 +1140,4 @@ serialize(Archive &ar, const unsigned int version)
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/geometry/cartesian_grid.inst>
+#include <igatools/geometry/grid.inst>

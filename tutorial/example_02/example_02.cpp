@@ -23,7 +23,7 @@
  * and accessing information that do not require the use of cache
  */
 // [old_includes]
-#include <igatools/geometry/cartesian_grid.h>
+#include <igatools/geometry/grid.h>
 #include <igatools/basis_functions/bspline_space.h>
 // [old_includes]
 // [acc_includes]

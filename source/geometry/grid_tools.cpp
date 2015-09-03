@@ -48,7 +48,7 @@ bool test_if_knots_fine_contains_knots_coarse(
 
 template <int dim>
 SafeSTLArray<SafeSTLVector<Index>,dim>
-build_map_intervals_id_between_cartesian_grids(const Grid<dim> &grid_fine,
+build_map_intervals_id_between_grids(const Grid<dim> &grid_fine,
                                                const Grid<dim> &grid_coarse)
 {
   //---------------------------------------------------------
@@ -92,7 +92,7 @@ get_max_num_fine_intervals_in_coarse_interval(const Grid<dim> &grid_fine,
                                               const Grid<dim> &grid_coarse)
 {
   const auto map_interv_id_fine_coarse =
-    build_map_intervals_id_between_cartesian_grids(grid_fine,grid_coarse);
+    build_map_intervals_id_between_grids(grid_fine,grid_coarse);
 
   //---------------------------------------------------------
   SafeSTLArray<Index,dim> max_num_fine_intervals_in_coarse_interval(0);
@@ -118,11 +118,11 @@ get_max_num_fine_intervals_in_coarse_interval(const Grid<dim> &grid_fine,
 
 template <int dim>
 InterGridMap<dim>
-build_map_elements_id_between_cartesian_grids(const Grid<dim> &grid_fine,
+build_map_elements_id_between_grids(const Grid<dim> &grid_fine,
                                               const Grid<dim> &grid_coarse)
 {
   const auto map_interv_id_fine_coarse =
-    build_map_intervals_id_between_cartesian_grids(grid_fine,grid_coarse);
+    build_map_intervals_id_between_grids(grid_fine,grid_coarse);
 
   InterGridMap<dim> res;
   for (const auto &elem_fine : grid_fine)
@@ -142,11 +142,11 @@ build_map_elements_id_between_cartesian_grids(const Grid<dim> &grid_fine,
 #if 0
 template <int dim>
 InterGridMap<dim>
-build_map_elements_between_cartesian_grids(const Grid<dim> &grid_fine,
+build_map_elements_between_grids(const Grid<dim> &grid_fine,
                                            const Grid<dim> &grid_coarse)
 {
   const auto map_interv_id_fine_coarse =
-    build_map_intervals_id_between_cartesian_grids(grid_fine,grid_coarse);
+    build_map_intervals_id_between_grids(grid_fine,grid_coarse);
 
   InterGridMap<dim> res;
   const int n_elems_fine = grid_fine.get_num_all_elems();
@@ -173,7 +173,7 @@ build_map_elements_between_cartesian_grids(const Grid<dim> &grid_fine,
 
 template <int dim>
 std::shared_ptr<Grid<dim> >
-build_cartesian_grid_union(
+build_grid_union(
   const Grid<dim> &grid_1,
   const Grid<dim> &grid_2,
   InterGridMap<dim> &map_elem_id_grid_union_to_elem_id_grid_1,
@@ -209,9 +209,9 @@ build_cartesian_grid_union(
 
   //---------------------------------------------------------
   map_elem_id_grid_union_to_elem_id_grid_1 =
-    build_map_elements_id_between_cartesian_grids(*grid_union,grid_1);
+    build_map_elements_id_between_grids(*grid_union,grid_1);
   map_elem_id_grid_union_to_elem_id_grid_2 =
-    build_map_elements_id_between_cartesian_grids(*grid_union,grid_2);
+    build_map_elements_id_between_grids(*grid_union,grid_2);
   //---------------------------------------------------------
 
   return grid_union;

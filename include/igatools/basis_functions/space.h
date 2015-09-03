@@ -23,7 +23,7 @@
 
 #include <igatools/base/config.h>
 #include <igatools/utils/shared_ptr_constness_handler.h>
-#include <igatools/geometry/cartesian_grid.h>
+#include <igatools/geometry/grid.h>
 //#include <igatools/base/function.h>
 
 //#include <igatools/basis_functions/space_element.h>

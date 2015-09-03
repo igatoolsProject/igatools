@@ -137,7 +137,7 @@ template <int> class GridHandler;
  * ### Getting a Grid by an XML structure.
  * A Grid object can be obtained by a Boost XML structure using the
  * function
- * get_cartesian_grid_from_xml().
+ * get_grid_from_xml().
  * An example of valid XML structure for a 2-dimensional Grid is given
  * by the following
  * XML block
@@ -160,7 +160,7 @@ template <int> class GridHandler;
  * @author M. Martinelli 2012, 2013, 2014
  * @author pauletti 2012, 2013, 2014, 2015
  *
- * @see get_cartesian_grid_from_xml()
+ * @see get_grid_from_xml()
  * @ingroup h_refinement
  * @ingroup containers
  * @ingroup serializable

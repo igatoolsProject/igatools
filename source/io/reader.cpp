@@ -358,7 +358,7 @@ get_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
 
 template <int dim>
 shared_ptr< Grid<dim> >
-get_cartesian_grid_from_xml(const boost::property_tree::ptree &tree)
+get_grid_from_xml(const boost::property_tree::ptree &tree)
 {
   AssertThrow(xml_element_is_unique(tree,"Grid"),
               ExcMessage("The Grid tag is not unique."));
@@ -432,7 +432,7 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
 
   //-------------------------------------------------------------------------
   // reading the Grid
-  auto grid = get_cartesian_grid_from_xml<dim>(ref_space_tree);
+  auto grid = get_grid_from_xml<dim>(ref_space_tree);
   //-------------------------------------------------------------------------
 
 
@@ -572,7 +572,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
 
   //-------------------------------------------------------------------------
   // reading the Grid
-  auto grid = get_cartesian_grid_from_xml<dim>(ref_space_tree);
+  auto grid = get_grid_from_xml<dim>(ref_space_tree);
   //-------------------------------------------------------------------------
 
 
@@ -751,7 +751,7 @@ IGA_NAMESPACE_CLOSE
 #endif
 #include <igatools/basis_functions/bspline_element_accessor.h>
 
-#include <igatools/geometry/cartesian_grid.h>
+#include <igatools/geometry/grid.h>
 #include <igatools/geometry/ig_mapping.h>
 #include <igatools/utils/vector_tools.h>
 

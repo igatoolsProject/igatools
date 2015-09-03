@@ -135,7 +135,7 @@ projection_l2(const std::shared_ptr<const Function<Space::dim,Space::codim,Space
   else
   {
     auto map_elems_id_fine_coarse =
-      grid_tools::build_map_elements_id_between_cartesian_grids(*space_grid,*func_grid);
+      grid_tools::build_map_elements_id_between_grids(*space_grid,*func_grid);
 
     for (const auto &elems_id_pair : map_elems_id_fine_coarse)
     {

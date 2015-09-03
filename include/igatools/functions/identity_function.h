@@ -22,7 +22,7 @@
 #define __IDENTITY_FUNCTION_H_
 
 #include <igatools/functions/function.h>
-#include <igatools/geometry/cartesian_grid.h>
+#include <igatools/geometry/grid.h>
 
 IGA_NAMESPACE_OPEN
 

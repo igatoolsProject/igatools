@@ -174,7 +174,7 @@ get_mapping_from_xml(const boost::property_tree::ptree &tree);
  */
 template <int dim>
 std::shared_ptr< Grid<dim> >
-get_cartesian_grid_from_xml(const boost::property_tree::ptree &tree);
+get_grid_from_xml(const boost::property_tree::ptree &tree);
 
 
 

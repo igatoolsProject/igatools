@@ -26,7 +26,7 @@
  */
 
 #include "../tests.h"
-#include <igatools/geometry/cartesian_grid.h>
+#include <igatools/geometry/grid.h>
 
 template <int dim>
 void boundary_ids()

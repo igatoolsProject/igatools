@@ -26,7 +26,7 @@
 #include <igatools/geometry/unit_element.h>
 #include <igatools/utils/value_vector.h>
 #include <igatools/base/quadrature.h>
-#include <igatools/geometry/cartesian_grid.h>
+#include <igatools/geometry/grid.h>
 #include <igatools/geometry/grid_iterator.h>
 
 IGA_NAMESPACE_OPEN

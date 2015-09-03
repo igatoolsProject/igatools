@@ -632,8 +632,8 @@ create_knot_mesh_grid(const MapFunPtr_<dim, codim> mapping,
 
     static const int space_dim = dim + codim;
 
-    const auto cartesian_grid = mapping->get_grid();
-    const auto &n_intervals = cartesian_grid->get_num_intervals();
+    const auto grid = mapping->get_grid();
+    const auto &n_intervals = grid->get_num_intervals();
 
     const QUniform<dim> quad(2);
     const Size n_vtk_points = n_intervals[0] + 1;
@@ -714,8 +714,8 @@ create_knot_mesh_grid(const MapFunPtr_<dim, codim> mapping,
                                   quadratic_cells_parametric_knot_ :
                                   quadratic_cells_physical_knot_;
 
-    const auto cartesian_grid = mapping->get_grid();
-    const auto &n_intervals = cartesian_grid->get_num_intervals();
+    const auto grid = mapping->get_grid();
+    const auto &n_intervals = grid->get_num_intervals();
 
     // TODO: improve performance.
 
@@ -787,7 +787,7 @@ create_knot_mesh_grid(const MapFunPtr_<dim, codim> mapping,
         // Looping along all the knot coordinates of the face.
         using InterGridMap = typename Grid<dim>::template InterGridMap<dim-1>;
         InterGridMap elem_map;
-        const auto &sub_grid = cartesian_grid->template get_sub_grid<dim-1>(face_id, elem_map);
+        const auto &sub_grid = grid->template get_sub_grid<dim-1>(face_id, elem_map);
         const auto &face_coords_tensor = sub_grid->get_knot_coordinates();
         const Size n_pts_face = face_coords_tensor.flat_size();
 
@@ -828,7 +828,7 @@ create_knot_mesh_grid(const MapFunPtr_<dim, codim> mapping,
             // Iterating along a single knot line in the direction dir.
             for (int itv = 0; itv < n_intervals[dir]; ++itv)
             {
-                elem.move_to(cartesian_grid->tensor_to_flat(elem_t_id));
+                elem.move_to(grid->tensor_to_flat(elem_t_id));
 
                 mapping->fill_cache(elem, topology, 0);
                 auto physical_points = elem->template get_values<_Value, dim>(0);
@@ -1036,13 +1036,13 @@ create_points_solid_vtk_grid2(const MapFunPtr_<dim, codim> mapping,
 
     const auto quad = IGAVTK::create_visualization_quadrature<dim>
                       (n_vis_elements, quadratic_cells);
-    const auto cartesian_grid = mapping->get_grid();
+    const auto grid = mapping->get_grid();
 
     SafeSTLVector<SafeSTLVector<Index>> points_map;
     SafeSTLVector<Index> points_mask;
 
     Size n_total_points {0};
-    IGAVTK::create_points_numbering_map<dim>(cartesian_grid, quad,
+    IGAVTK::create_points_numbering_map<dim>(grid, quad,
                                              structured_grid, quadratic_cells, points_map, points_mask, n_total_points);
 
     vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
@@ -1749,7 +1749,7 @@ create_visualization_quadrature(const TensorSize<dim> &n_elements_per_direction,
 template <int dim>
 void
 IGAVTK::
-create_points_numbering_map(const shared_ptr<const Grid<dim>> cartesian_grid,
+create_points_numbering_map(const shared_ptr<const Grid<dim>> grid,
                             const shared_ptr<Quadrature<dim>> quad,
                             const bool is_structured,
                             const bool is_quadratic,
@@ -1760,7 +1760,7 @@ create_points_numbering_map(const shared_ptr<const Grid<dim>> cartesian_grid,
     points_map.clear();
     points_mask.clear();
 
-    const Size n_bezier_elements = cartesian_grid->get_num_all_elems();
+    const Size n_bezier_elements = grid->get_num_all_elems();
 
     points_map.resize(n_bezier_elements);
 
@@ -1780,7 +1780,7 @@ create_points_numbering_map(const shared_ptr<const Grid<dim>> cartesian_grid,
 
         TensorSize<dim>  n_pts_per_mesh;   // Number of points per direction of
         // VTK structured grid.
-        const auto n_intervals = cartesian_grid->get_num_intervals();
+        const auto n_intervals = grid->get_num_intervals();
         for (int dir = 0 ; dir < dim ; ++dir)
             n_pts_per_mesh[dir] = n_intervals[dir] * n_pts_dir_per_bezier_elem[dir];
 
@@ -1801,7 +1801,7 @@ create_points_numbering_map(const shared_ptr<const Grid<dim>> cartesian_grid,
             pmi.resize(n_pts_per_bezier_elem);
 
             // Computing the tensor index of the first point of the element.
-            elem_t_id = cartesian_grid->flat_to_tensor(i_el);
+            elem_t_id = grid->flat_to_tensor(i_el);
             for (int dir = 0 ; dir < dim ; ++dir)
                 pt_mesh_t_offset[dir] = elem_t_id[dir] * n_pts_dir_per_bezier_elem[dir];
 

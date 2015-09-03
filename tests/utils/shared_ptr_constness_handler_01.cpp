@@ -28,7 +28,7 @@
 
 #include "../tests.h"
 
-#include <igatools/geometry/cartesian_grid.h>
+#include <igatools/geometry/grid.h>
 #include <igatools/utils/shared_ptr_constness_handler.h>
 
 

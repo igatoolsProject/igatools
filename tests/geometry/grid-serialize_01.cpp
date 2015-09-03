@@ -26,7 +26,7 @@
  */
 
 #include "../tests.h"
-#include <igatools/geometry/cartesian_grid.h>
+#include <igatools/geometry/grid.h>
 
 template <int dim>
 void serialize_deserialize(std::shared_ptr<const Grid<dim>> grid,

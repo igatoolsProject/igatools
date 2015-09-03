@@ -22,7 +22,7 @@
 #define __PHYSICAL_DOMAIN_CACHE_HANDLER_H_
 
 #include <igatools/base/config.h>
-#include <igatools/geometry/cartesian_grid.h>
+#include <igatools/geometry/grid.h>
 #include <igatools/geometry/domain.h>
 #include <igatools/geometry/grid_cache_handler.h>
 

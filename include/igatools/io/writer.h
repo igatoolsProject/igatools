@@ -22,7 +22,7 @@
 #define WRITER_H_
 
 #include <igatools/base/config.h>
-#include <igatools/geometry/cartesian_grid.h>
+#include <igatools/geometry/grid.h>
 #include <igatools/geometry/domain.h>
 #include <igatools/geometry/unit_element.h>
 #include <igatools/base/quadrature.h>

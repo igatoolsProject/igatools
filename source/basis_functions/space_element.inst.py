@@ -20,7 +20,7 @@
 
 from init_instantiation_data import *
 
-include_files = ['geometry/cartesian_grid.h',
+include_files = ['geometry/grid.h',
                  'geometry/grid_element.h',
                  'basis_functions/space_element.h',
                  '../../source/geometry/grid_iterator.cpp']

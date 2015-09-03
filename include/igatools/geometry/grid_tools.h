@@ -21,7 +21,7 @@
 #ifndef __GRID_TOOLS_H_
 #define __GRID_TOOLS_H_
 
-#include <igatools/geometry/cartesian_grid.h>
+#include <igatools/geometry/grid.h>
 IGA_NAMESPACE_OPEN
 
 namespace grid_tools
@@ -40,7 +40,7 @@ bool test_if_knots_fine_contains_knots_coarse(
  * this function builds and returns the one-to-one mapping between the 1D intervals on the
  * fine grid and the 1D intervals on the coarse grid, for each coordinate direction.
  * @code{.cpp}
-   fine_to_coarse_intervals = build_map_intervals_between_cartesian_grids(grid_fine,grid_coarse);
+   fine_to_coarse_intervals = build_map_intervals_between_grids(grid_fine,grid_coarse);
    // fine_to_coarse_intervals[dir][i] is the id of the interval along the dir direction
    // of the coarse grid that fully contains the
    // interval along the dir direction of the fine grid with flat_id equal to i.
@@ -54,7 +54,7 @@ bool test_if_knots_fine_contains_knots_coarse(
  */
 template <int dim>
 SafeSTLArray<SafeSTLVector<Index>,dim>
-build_map_intervals_id_between_cartesian_grids(const Grid<dim> &grid_fine,
+build_map_intervals_id_between_grids(const Grid<dim> &grid_fine,
                                                const Grid<dim> &grid_coarse);
 
 #if 0
@@ -90,7 +90,7 @@ using InterGridMap = std::map<typename Grid<dim>::IndexType,typename Grid<dim>::
  * this function builds and returns the one-to-one mapping between the elements on the
  * fine and the elements on the coarse.
  * @code{.cpp}
-   fine_to_coarse_elements_id = build_map_elements_id_between_cartesian_grids(grid_fine,grid_coarse);
+   fine_to_coarse_elements_id = build_map_elements_id_between_grids(grid_fine,grid_coarse);
    // fine_to_coarse_elements_id[i] is the flat id of the element on the coarse grid that fully contains the
    // element on the fine grid with flat_id equal to i.
    @endcode
@@ -103,7 +103,7 @@ using InterGridMap = std::map<typename Grid<dim>::IndexType,typename Grid<dim>::
  */
 template <int dim>
 InterGridMap<dim>
-build_map_elements_id_between_cartesian_grids(const Grid<dim> &grid_fine,
+build_map_elements_id_between_grids(const Grid<dim> &grid_fine,
                                               const Grid<dim> &grid_coarse);
 
 #if 0
@@ -117,7 +117,7 @@ using InterGridMap = std::map<typename Grid<dim>::ElementConstIterator,
  * this function builds and returns the one-to-one mapping between the elements on the
  * fine and the elements on the coarse.
  * @code{.cpp}
-   fine_to_coarse_elements = build_map_elements_between_cartesian_grids(grid_fine,grid_coarse);
+   fine_to_coarse_elements = build_map_elements_between_grids(grid_fine,grid_coarse);
    // fine_to_coarse_elements[i] is the flat id of the element on the coarse grid that fully contains the
    // element on the fine grid with flat_id equal to i.
    @endcode
@@ -130,7 +130,7 @@ using InterGridMap = std::map<typename Grid<dim>::ElementConstIterator,
  */
 template <int dim>
 InterGridMap<dim>
-build_map_elements_between_cartesian_grids(const Grid<dim> &grid_fine,
+build_map_elements_between_grids(const Grid<dim> &grid_fine,
                                            const Grid<dim> &grid_coarse);
 #endif
 
@@ -158,7 +158,7 @@ build_map_elements_between_cartesian_grids(const Grid<dim> &grid_fine,
  */
 template <int dim>
 std::shared_ptr<Grid<dim> >
-build_cartesian_grid_union(
+build_grid_union(
   const Grid<dim> &grid_1,
   const Grid<dim> &grid_2,
   InterGridMap<dim> &map_elem_grid_union_to_elem_grid_1,
