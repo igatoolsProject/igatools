@@ -251,14 +251,6 @@ InitCacheDispatcher::
 init_cache_multiD()
 {
   auto &cache = elem_.get_all_sub_elems_cache();
-  if (cache == nullptr)
-  {
-    using VCache = typename BSplineElement<dim_,range_,rank_>::parent_t::Cache;
-
-    using Cache = AllSubElementsCache<VCache>;
-    cache = std::make_shared<Cache>();
-  }
-
 
   using BSpElem = BSplineElement<dim_,range_,rank_>;
   auto &bsp_elem  = dynamic_cast<BSpElem &>(elem_);
@@ -271,7 +263,7 @@ init_cache_multiD()
 
   for (auto &s_id: UnitElement<dim_>::template elems_ids<sdim>())
   {
-    auto &s_cache = cache->template get_sub_elem_cache<sdim>(s_id);
+    auto &s_cache = cache.template get_sub_elem_cache<sdim>(s_id);
     s_cache.resize(flag, n_pts, n_basis);
   }
 }
@@ -650,9 +642,8 @@ fill_cache_multiD(const Quadrature<dim> &extended_sub_elem_quad)
 
 
   //-------------------------------------------------------------------------------
-  auto &all_sub_elems_cache = elem_.get_all_sub_elems_cache();
-  Assert(all_sub_elems_cache != nullptr, ExcNullPtr());
-  auto &sub_elem_cache = all_sub_elems_cache->template get_sub_elem_cache<sdim>(s_id_);
+  auto &sub_elem_cache =
+    elem_.get_all_sub_elems_cache().template get_sub_elem_cache<sdim>(s_id_);
 
 
   using Elem = SpaceElement<dim_,0,range_,rank_,Transformation::h_grad>;

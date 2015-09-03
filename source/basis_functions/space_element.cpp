@@ -61,10 +61,7 @@ print_cache_info(LogStream &out) const
   out.end_item();
 
 //    Assert(all_sub_elems_cache_ != nullptr,ExcNullPtr());
-  if (all_sub_elems_cache_)
-    all_sub_elems_cache_->print_info(out);
-  else
-    out << "Cache not allocated." << std::endl;
+  all_sub_elems_cache_.print_info(out);
 }
 
 
