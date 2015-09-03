@@ -60,7 +60,7 @@ get_object_id() const
 template <int dim_>
 std::shared_ptr<Grid<dim_> >
 SpaceBase<dim_>::
-get_ptr_grid()
+get_grid()
 {
   return grid_.get_ptr_data();
 }
@@ -68,7 +68,7 @@ get_ptr_grid()
 template <int dim_>
 std::shared_ptr<const Grid<dim_> >
 SpaceBase<dim_>::
-get_ptr_const_grid() const
+get_grid() const
 {
   return grid_.get_ptr_const_data();
 }
@@ -134,7 +134,7 @@ Space(const shared_ptr<Grid<dim_>> &grid,
   phys_domain_(PhysDomain::create(grid))
 //  phys_domain_(PhysDomain::create(grid,map_func))
 {
-  Assert(this->get_ptr_const_grid() == phys_domain_->get_grid(),
+  Assert(this->get_grid() == phys_domain_->get_grid(),
          ExcMessage("The space and the physical domain must have the same grid!"));
 
 }
@@ -148,7 +148,7 @@ Space(const shared_ptr<const Grid<dim_>> &grid,
   phys_domain_(PhysDomain::create(grid))
 //  phys_domain_(PhysDomain::create(grid,map_func))
 {
-  Assert(this->get_ptr_const_grid() == phys_domain_->get_grid(),
+  Assert(const_cast<const self_t &>(*this).get_grid() == phys_domain_->get_grid(),
          ExcMessage("The space and the physical domain must have the same grid!"));
 }
 
@@ -160,7 +160,7 @@ begin(const PropId &prop) -> ElementIterator
 {
   return ElementIterator(
     this->create_element(
-      this->get_ptr_grid()->get_element_property(prop).begin(),prop));
+      this->get_grid()->get_element_property(prop).begin(),prop));
 }
 
 
@@ -172,7 +172,7 @@ end(const PropId &prop) -> ElementIterator
 {
   return ElementIterator(
     this->create_element(
-      this->get_ptr_grid()->get_element_property(prop).end(),prop));
+      this->get_grid()->get_element_property(prop).end(),prop));
 }
 
 

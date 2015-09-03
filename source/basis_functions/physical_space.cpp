@@ -45,7 +45,7 @@ PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 PhysicalSpace(const shared_ptr<RefSpace> &ref_space,
               const shared_ptr<MapFunc> &map_func)
   :
-  base_t(ref_space->get_ptr_grid(),map_func),
+  base_t(ref_space->get_grid(),map_func),
   ref_space_(ref_space)
 {
 //TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
@@ -56,7 +56,7 @@ PhysicalSpace<dim_, range_, rank_, codim_, type_>::
 PhysicalSpace(const shared_ptr<const RefSpace> &ref_space,
               const shared_ptr<MapFunc> &map_func)
   :
-  base_t(ref_space->get_ptr_const_grid(),map_func),
+  base_t(ref_space->get_grid(),map_func),
   ref_space_(ref_space)
 {
 //TODO(pauletti, Jan 18, 2014): put static assert on h_div, h_curl range and rank
@@ -152,7 +152,7 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
 -> std::shared_ptr<SubSpace<k> >
 {
   using SubMap = SubMapFunction<k, dim, space_dim>;
-  auto grid =  this->get_ptr_const_grid();
+  auto grid =  this->get_grid();
 
   auto sub_ref_space = ref_space_->get_ref_sub_space(s_id, dof_map, sub_grid);
   shared_ptr<const typename SubMap::SupFunc> F;

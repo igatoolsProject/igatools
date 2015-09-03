@@ -48,6 +48,8 @@ private:
 
 public:
   using Space = Conditional<SpaceIsConst,const SpaceBase<dim>,SpaceBase<dim>>;
+  using GridElem = Conditional<SpaceIsConst,ConstGridElement<dim>,NonConstGridElement<dim>>;
+
 
   using GridType = Grid<dim>;
   using IndexType = typename GridType::IndexType;
@@ -105,12 +107,12 @@ public:
   /**
    * Return a reference to the GridElement.
    */
-  ConstGridElement<dim> &get_grid_element();
+  GridElem &get_grid_element();
 
   /**
    * Return a const-reference to the GridElement.
    */
-  const ConstGridElement<dim> &get_grid_element() const;
+  const GridElem &get_grid_element() const;
 
   void print_info(LogStream &out) const;
 
@@ -168,19 +170,6 @@ public:
   Size get_num_basis(const std::string &dofs_property) const;
   ///@}
 
-#if 0
-  /** @name Functions/operators for moving the element in the Grid used to build the Space.*/
-  ///@{
-  /**
-   * Sets the index of the element using the flatten representation.
-   * @note This function also updates the index for the tensor representation.
-   * @warning This may be a dangerous function, be careful when using it
-   * as it is easy to use incorrectly. Only use it if you know what you
-   * are doing.
-   */
-  virtual void move_to(const Index flat_index) ;
-  ///@}
-#endif
 
 
 public:
@@ -251,7 +240,7 @@ public:
 private:
   std::shared_ptr<Space> space_;
 
-  std::shared_ptr<ConstGridElement<dim>> grid_elem_;
+  std::unique_ptr<GridElem> grid_elem_;
 
 
 

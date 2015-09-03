@@ -406,7 +406,7 @@ get_ref_sub_space(const int s_id,
   if (!(sub_grid))
   {
     SubGridMap<k> elem_map;
-    sub_grid   = this->get_ptr_const_grid()->template get_sub_grid<k>(s_id, elem_map);
+    sub_grid   = this->get_grid()->template get_sub_grid<k>(s_id, elem_map);
   }
   auto sub_mult   = this->space_data_->template get_sub_space_mult<k>(s_id);
   auto sub_degree = this->space_data_->template get_sub_space_degree<k>(s_id);
@@ -483,7 +483,7 @@ get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
 -> std::shared_ptr<SubSpace<k> >
 {
   using SubMap = SubMapFunction<k, dim, space_dim>;
-  auto grid = const_pointer_cast<Grid<dim_> >(this->get_ptr_const_grid());
+  auto grid = const_pointer_cast<Grid<dim_> >(this->get_grid());
 
   auto sub_ref_space = get_ref_sub_space(s_id, dof_map, sub_grid);
   auto F = IdentityFunction<dim>::const_create(grid);

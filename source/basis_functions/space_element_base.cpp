@@ -35,23 +35,23 @@ SpaceElementBase(const std::shared_ptr<Space> &space,
 {
   Assert(space_ != nullptr, ExcNullPtr());
 
-  grid_elem_ = space_->get_ptr_const_grid()->create_element(index,prop);
+  grid_elem_ = space_->get_grid()->create_element(index,prop);
 }
 
 
 
 template <int dim,bool SpaceIsConst>
-ConstGridElement<dim> &
+auto
 SpaceElementBase<dim,SpaceIsConst>::
-get_grid_element()
+get_grid_element() -> GridElem &
 {
   return *grid_elem_;
 }
 
 template <int dim,bool SpaceIsConst>
-const ConstGridElement<dim> &
+auto
 SpaceElementBase<dim,SpaceIsConst>::
-get_grid_element() const
+get_grid_element() const -> const  GridElem &
 {
   return *grid_elem_;
 }
@@ -207,15 +207,6 @@ operator>(const self_t &a) const
 
 
 
-#if 0
-template <int dim,bool SpaceIsConst>
-void
-SpaceElementBase<dim,SpaceIsConst>::
-move_to(const Index flat_index)
-{
-  grid_elem_->move_to(flat_index);
-}
-#endif
 
 #ifdef SERIALIZATION
 template <int dim,bool SpaceIsConst>

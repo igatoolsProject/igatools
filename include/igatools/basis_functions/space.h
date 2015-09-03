@@ -120,9 +120,9 @@ public:
   Index get_object_id() const;
 
 
-  std::shared_ptr<Grid<dim_>> get_ptr_grid();
+  std::shared_ptr<Grid<dim_>> get_grid();
 
-  std::shared_ptr<const Grid<dim_>> get_ptr_const_grid() const;
+  std::shared_ptr<const Grid<dim_>> get_grid() const;
 
   /**
    * Get the name associated to the object instance.
