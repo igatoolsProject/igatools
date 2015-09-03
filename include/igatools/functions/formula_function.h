@@ -22,7 +22,7 @@
 #define __FORMULA_FUNCTION_H_
 
 #include <igatools/functions/function.h>
-#include <igatools/geometry/physical_domain.h>
+#include <igatools/geometry/domain.h>
 #include <igatools/geometry/domain_element.h>
 #include <igatools/base/value_types.h>
 

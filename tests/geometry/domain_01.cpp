@@ -38,15 +38,10 @@ void domain()
   OUTSTART
 
   using Grid = CartesianGrid<dim>;
-  //using Function = IdentityFunction<dim, dim>;
-  using Function = Function<dim, 0, dim+codim, 1>;
-  using Domain   = Domain<dim, codim>;
+  using Domain = Domain<dim, codim>;
 
   auto grid = Grid::const_create();
-  //auto F = Function::create(grid);
-  std::shared_ptr<const Function> F;
-
-  auto dom = Domain::create(grid, F);
+  auto dom = Domain::create(grid);
 
   OUTEND
 }

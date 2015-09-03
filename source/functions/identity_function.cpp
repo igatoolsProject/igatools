@@ -19,7 +19,7 @@
 //-+--------------------------------------------------------------------
 
 
-#include <igatools/geometry/physical_domain.h>
+#include <igatools/geometry/domain.h>
 #include <igatools/functions/identity_function.h>
 #include <igatools/functions/function_element.h>
 #include <igatools/functions/identity_function_handler.h>

@@ -21,7 +21,7 @@
 #include <igatools/functions/function.h>
 #include <igatools/functions/function_element.h>
 //#include <igatools/utils/unique_id_generator.h>
-#include <igatools/geometry/physical_domain.h>
+#include <igatools/geometry/domain.h>
 #include <igatools/geometry/domain_element.h>
 
 IGA_NAMESPACE_OPEN
@@ -202,5 +202,5 @@ serialize(Archive &ar, const unsigned int version)
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/functions/function_cache_handler.inst>
+#include <igatools/functions/function_handler.inst>
 

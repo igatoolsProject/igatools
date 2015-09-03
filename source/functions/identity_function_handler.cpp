@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 
-#include <igatools/geometry/physical_domain.h>
+#include <igatools/geometry/domain.h>
 #include <igatools/geometry/domain_element.h>
 #include <igatools/functions/identity_function_handler.h>
 #include <igatools/functions/function_element.h>

@@ -24,8 +24,6 @@
 #include <igatools/functions/function.h>
 #include <igatools/functions/function_handler.h>
 
-using std::shared_ptr;
-
 IGA_NAMESPACE_OPEN
 
 template<int dim_, int codim_>

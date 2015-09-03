@@ -161,5 +161,5 @@ cend(const PropId &prop) const -> ElementConstIterator
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/geometry/physical_domain.inst>
+#include <igatools/geometry/domain.inst>
 
