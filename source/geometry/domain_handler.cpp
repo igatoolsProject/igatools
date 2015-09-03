@@ -152,5 +152,5 @@ fill_cache(const topology_variant &sdim,
 
 IGA_NAMESPACE_CLOSE
 
-#include <igatools/geometry/physical_domain_cache_handler.inst>
+#include <igatools/geometry/domain_handler.inst>
 
