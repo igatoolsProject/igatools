@@ -38,7 +38,7 @@ void handler_two_elems(const int n_knots = 3)
 {
   OUTSTART
 
-  using Grid = CartesianGrid<dim>;
+  using Grid = Grid<dim>;
   using Flags = typename Grid::ElementAccessor::Flags;
   auto grid = Grid::const_create(n_knots);
 

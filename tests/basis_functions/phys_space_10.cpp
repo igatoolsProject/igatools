@@ -46,7 +46,7 @@ void cache_init(const ValueFlags flag,
 
   using BspSpace = BSplineSpace<dim, range, rank>;
   using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
-  auto grid      = CartesianGrid<dim>::create(n_knots);
+  auto grid      = Grid<dim>::create(n_knots);
   auto ref_space = BspSpace::create(deg, grid);
 
   using Function = functions::LinearFunction<dim, 0, dim+codim>;
@@ -84,7 +84,7 @@ void cache_init_elem(const ValueFlags flag,
   using BspSpace = BSplineSpace<dim, range, rank>;
   using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 
-  auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto grid  = Grid<dim>::create(n_knots);
   auto ref_space = BspSpace::create(deg, grid);
 
   using Function = functions::LinearFunction<dim, 0, dim+codim>;
@@ -123,7 +123,7 @@ void cache_fill_elem(const ValueFlags flag,
   using BspSpace = BSplineSpace<dim, range, rank>;
   using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 
-  auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto grid  = Grid<dim>::create(n_knots);
   auto ref_space = BspSpace::create(deg, grid);
 
   using Function = functions::LinearFunction<dim, 0, dim+codim>;
@@ -167,7 +167,7 @@ void cache_get_elem_values(const ValueFlags flag,
   using BspSpace = BSplineSpace<dim, range, rank>;
   using Space    = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 
-  auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto grid  = Grid<dim>::create(n_knots);
   auto ref_space = BspSpace::create(deg, grid);
 
   using Function = functions::LinearFunction<dim, 0, dim+codim>;

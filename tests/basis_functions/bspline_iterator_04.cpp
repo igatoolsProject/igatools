@@ -46,7 +46,7 @@ void elem_derivatives(const int n_knots,
   OUTSTART
 
   using Space = BSplineSpace<dim, range, rank>;
-  auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto grid  = Grid<dim>::create(n_knots);
 
   typename Space::PeriodicityTable periodic((typename Space::Periodicity(SafeSTLArray<bool, dim>(false))));
   typename Space::EndBehaviourTable ebt((typename Space::EndBehaviour(SafeSTLArray<BasisEndBehaviour, dim>(BasisEndBehaviour::interpolatory))));

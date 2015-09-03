@@ -41,7 +41,7 @@ void
 do_test_1()
 {
   out << "========== do_test_1() dim=" << dim << " --- begin ==========" << endl;
-  using Grid = CartesianGrid<dim>;
+  using Grid = Grid<dim>;
   using RefSpace = BSplineSpace<dim>;
   using DMA = DynamicMultiArray<Index,dim>;
   using VecIt = typename DMA::iterator;
@@ -104,7 +104,7 @@ void
 do_test_2()
 {
   out << "========== do_test_2() dim=" << dim << " --- begin ==========" << endl;
-  using Grid = CartesianGrid<dim>;
+  using Grid = Grid<dim>;
   using RefSpace = BSplineSpace<dim>;
   using DMA = DynamicMultiArray<Index,dim>;
   using VecIt = typename SafeSTLVector<Index>::iterator;

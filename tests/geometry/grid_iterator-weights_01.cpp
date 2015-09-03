@@ -38,7 +38,7 @@ void elem_weights(const int n_knots = 5)
 {
   OUTSTART
 
-  using Grid = CartesianGrid<dim>;
+  using Grid = Grid<dim>;
   using Flags = typename Grid::ElementAccessor::Flags;
   auto grid = Grid::const_create(n_knots);
 

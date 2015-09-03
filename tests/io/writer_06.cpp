@@ -44,7 +44,7 @@ void write_sphere()
 
   using Function = functions::SphereFunction<dim>;
 
-  auto grid = CartesianGrid<dim>::create();
+  auto grid = Grid<dim>::create();
 
   auto F = Function::create(grid, IdentityFunction<dim>::create(grid));
 

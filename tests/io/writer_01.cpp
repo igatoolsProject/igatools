@@ -33,7 +33,7 @@ void
 test()
 {
   const int n_knots = 4;
-  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto grid = Grid<dim>::create(n_knots);
   Writer<dim> writer(grid);
 
   string filename = "grid" + to_string(dim);

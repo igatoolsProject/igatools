@@ -31,7 +31,7 @@ template<int dim>
 void default_const()
 {
   OUTSTART
-  auto grid = CartesianGrid<dim>::create();
+  auto grid = Grid<dim>::create();
   grid->print_info(out);
   OUTEND
 }
@@ -41,7 +41,7 @@ template<int dim>
 void uniform_const(const int n_knots)
 {
   OUTSTART
-  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto grid = Grid<dim>::create(n_knots);
   grid->print_info(out);
   OUTEND
 }
@@ -54,7 +54,7 @@ void dim_uniform_const()
   TensorSize<dim> n_knots;
   for (int i = 0; i < dim; ++i)
     n_knots[i] = 2*i+2;
-  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto grid = Grid<dim>::create(n_knots);
   grid->print_info(out);
   OUTEND
 }
@@ -73,7 +73,7 @@ void non_uniform_const()
     for (int j = 0; j <n_knots[i] ; ++j)
       knots.entry(i,j) = k++;
 
-  auto grid = CartesianGrid<dim>::create(knots);
+  auto grid = Grid<dim>::create(knots);
   grid->print_info(out);
   OUTEND
 }

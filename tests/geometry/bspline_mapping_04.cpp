@@ -65,7 +65,7 @@ void bspline_map(const int deg = 2)
   }
 
 
-  auto grid = CartesianGrid<dim>::create(coord);
+  auto grid = Grid<dim>::create(coord);
   auto space = Space::create(deg, grid);
 
   auto c_p = EpetraTools::create_vector(*space, "active",Epetra_SerialComm());

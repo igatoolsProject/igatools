@@ -41,7 +41,7 @@ template <int, int, int> class BSplineElementHandler;
  * This object can be thought of as providing the
  * B-spline basis functions of a spline space.
  * The space is determined by:
- * - the knot vectors (implemented in the class CartesianGrid)
+ * - the knot vectors (implemented in the class Grid)
  * - the multiplicity vectors
  * - and the degree
  *
@@ -49,7 +49,7 @@ template <int, int, int> class BSplineElementHandler;
  * and degrees for each direction and for each component.
  *
  * \section const Constructing a BSplineSpace
- * Similar to the mechanism use in CartesianGrid we use
+ * Similar to the mechanism use in Grid we use
  * the create technique to create a smartpointer for each constructor
  * the class provides.
  * @todo enter a glossary for create idiom technique and refer from here
@@ -104,7 +104,7 @@ private:
 public:
   /** see documentation in \ref Space */
 
-  using GridType = CartesianGrid<dim_>;
+  using GridType = Grid<dim_>;
   using ElementHandler = BSplineElementHandler<dim_, range_, rank_>;
 
 
@@ -172,7 +172,7 @@ public:
   ///@{
   /**
    * Builds and returns a maximum regularity (non-const) BSpline space
-   * over a (non-const) CartesianGrid
+   * over a (non-const) Grid
    * @p grid for the given @p degree in all directions and homogeneous
    * in all components.
    */
@@ -185,7 +185,7 @@ public:
 
   /**
    * Builds and returns a maximum regularity (const) BSpline space
-   * over a (const) CartesianGrid
+   * over a (const) Grid
    * @p grid for the given @p degree in all directions and homogeneous
    * in all components.
    */
@@ -198,7 +198,7 @@ public:
 
   /**
    * Builds and returns a maximum regularity (non-const) BSpline space
-   * over a (non-const) CartesianGrid
+   * over a (non-const) Grid
    * @p grid for the given @p degree[i] in the i-th direction and homogeneous
    * in all components.
    */
@@ -211,7 +211,7 @@ public:
 
   /**
    * Builds and returns a maximum regularity (const) BSpline space
-   * over a (const) CartesianGrid
+   * over a (const) Grid
    * @p grid for the given @p degree[i] in the i-th direction and homogeneous
    * in all components.
    */
@@ -224,7 +224,7 @@ public:
 
   /**
    * Builds and returns a (non-const) BSpline space
-   * over a (non-const) CartesianGrid
+   * over a (non-const) Grid
    * @p grid with the given multiplicity vector @p mult_vectors
    * for each component
    * and the given @p degree for each direction and for each
@@ -239,7 +239,7 @@ public:
 
   /**
    * Builds and returns a (const) BSpline space
-   * over a (const) CartesianGrid
+   * over a (const) Grid
    * @p grid with the given multiplicity vector @p mult_vectors
    * for each component
    * and the given @p degree for each direction and for each
@@ -285,7 +285,7 @@ protected:
 
   /**
    * Constructs a maximum regularity BSpline space
-   * over a (non-const) CartesianGrid
+   * over a (non-const) Grid
    * @p grid for the given @p degree in all directions and homogeneous
    * in all components.
    */
@@ -297,7 +297,7 @@ protected:
 
   /**
    * Constructs a maximum regularity BSpline space
-   * over a (const) CartesianGrid
+   * over a (const) Grid
    * @p grid for the given @p degree in all directions and homogeneous
    * in all components.
    */
@@ -309,7 +309,7 @@ protected:
 
   /**
    * Constructs a maximum regularity BSpline space over
-   * over a (non-const) CartesianGrid
+   * over a (non-const) Grid
    * @p grid for the given @p degree[i] in the i-th direction and homogeneous
    * in all components.
    */
@@ -321,7 +321,7 @@ protected:
 
   /**
    * Constructs a maximum regularity BSpline space over
-   * over a (const) CartesianGrid
+   * over a (const) Grid
    * @p grid for the given @p degree[i] in the i-th direction and homogeneous
    * in all components.
    */
@@ -333,7 +333,7 @@ protected:
 
   /**
    * Constructs a BSpline space over
-   * over a (non-const) CartesianGrid
+   * over a (non-const) Grid
    * @p grid with the given multiplicity vector @p mult_vectors
    * for each component
    * and the given @p degree for each direction and for each
@@ -347,7 +347,7 @@ protected:
 
   /**
    * Constructs a BSpline space over
-   * over a (const) CartesianGrid
+   * over a (const) Grid
    * @p grid with the given multiplicity vector @p mult_vectors
    * for each component
    * and the given @p degree for each direction and for each
@@ -418,12 +418,12 @@ public:
   std::shared_ptr<SubRefSpace<k> >
   get_ref_sub_space(const int sub_elem_id,
                     InterSpaceMap<k> &dof_map,
-                    std::shared_ptr<CartesianGrid<k>> sub_grid = nullptr) const;
+                    std::shared_ptr<Grid<k>> sub_grid = nullptr) const;
 
   template<int k>
   std::shared_ptr<SubSpace<k> >
   get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
-                std::shared_ptr<CartesianGrid<k>> sub_grid,
+                std::shared_ptr<Grid<k>> sub_grid,
                 SubGridMap<k> &elem_map) const;
 
 
@@ -488,14 +488,14 @@ private:
    * Rebuild the internal state of the object after an insert_knots() function is invoked.
    *
    * @pre Before invoking this function, must be invoked the function grid_->insert_knots().
-   * @note This function is connected to the CartesianGrid's signal for the refinement, and
+   * @note This function is connected to the Grid's signal for the refinement, and
    * it is necessary in order to avoid infinite loops in the insert_knots() function calls.
    *
    * @ingroup h_refinement
    */
   void rebuild_after_insert_knots(
     const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
-    const CartesianGrid<dim> &old_grid);
+    const Grid<dim> &old_grid);
 
   void create_connection_for_insert_knots(std::shared_ptr<self_t> space);
 #endif // MESH_REFINEMENT

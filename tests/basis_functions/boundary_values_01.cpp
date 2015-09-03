@@ -51,7 +51,7 @@ void do_test(const int p, const int num_knots = 10)
   using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 
 
-  auto grid = CartesianGrid<dim>::create(num_knots);
+  auto grid = Grid<dim>::create(num_knots);
   auto ref_space = BspSpace::create(p, grid) ;
   auto map = IdentityFunction<dim>::create(grid);
   auto space = Space::create(ref_space, map);

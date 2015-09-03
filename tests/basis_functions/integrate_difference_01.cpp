@@ -40,7 +40,7 @@ void do_test(const int deg, const int n_knots = 10)
   using Space = BSplineSpace<dim, range, rank>;
 
 
-  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto grid = Grid<dim>::create(n_knots);
   auto space = Space::create(deg, grid);
 
   const int n_qpoints = ceil((2*dim + 1)/2.);

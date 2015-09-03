@@ -36,7 +36,7 @@ void do_test()
 {
   out << "=============== Dimension " << dim << " -- begin ===============" << endl ;
 
-  auto grid_1 = CartesianGrid<dim>::create(3);
+  auto grid_1 = Grid<dim>::create(3);
   out << "------------------------------------------" << endl;
   out << "Grid 1" << endl;
   grid_1->print_info(out);
@@ -44,7 +44,7 @@ void do_test()
 
   out << endl;
 
-  auto grid_2 = CartesianGrid<dim>::create(4);
+  auto grid_2 = Grid<dim>::create(4);
   out << "------------------------------------------" << endl;
   out << "Grid 2" << endl;
   grid_2->print_info(out);

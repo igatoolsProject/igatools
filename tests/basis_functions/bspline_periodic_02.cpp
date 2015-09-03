@@ -57,7 +57,7 @@ void assemble_matrix(const int n_knots, const int deg)
   TensorIndex<dim> deg1(deg);
   typename Space::DegreeTable degt(deg1);
 
-  auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto grid  = Grid<dim>::create(n_knots);
   auto space = Space::create(deg, grid, InteriorReg::maximum, true,
                              BasisEndBehaviour::periodic);
   Gradient A;

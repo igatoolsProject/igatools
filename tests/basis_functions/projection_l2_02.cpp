@@ -109,7 +109,7 @@ void do_test(const int p, const int num_knots = 10)
   using BspSpace = BSplineSpace<dim,range,rank>;
   using Space = PhysicalSpace<dim,range,rank,codim>;
 
-  auto knots = CartesianGrid<dim>::create(num_knots);
+  auto knots = Grid<dim>::create(num_knots);
   auto ref_space = BspSpace::create_nonconst(p, knots);
 
   using Function = functions::LinearFunction<dim, 0, dim + codim>;

@@ -39,9 +39,9 @@ void loop_on_grid_with_cache()
   // [loop as before]
   out << "Traversing the elements of a " << dim << "-dimensional grid." << endl;
   const int n_knots = 3;
-  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto grid = Grid<dim>::create(n_knots);
 
-  using ElementHandler = typename CartesianGrid<dim>::ElementHandler;
+  using ElementHandler = typename Grid<dim>::ElementHandler;
   auto elem_handler = ElementHandler::create(grid);
 
   auto quad = QGauss<dim>(2);
@@ -81,7 +81,7 @@ void loop_on_space_with_cache()
   out << "Traversing the elements of a " << dim;
   out << "-dimensional B-spline space." << endl;
   const int n_knots = 3;
-  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto grid = Grid<dim>::create(n_knots);
   const int degree = 2;
   auto space = BSplineSpace<dim>::create(degree, grid);
 

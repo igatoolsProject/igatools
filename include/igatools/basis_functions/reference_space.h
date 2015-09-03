@@ -88,7 +88,7 @@ public:
   using RefPoint = Point;
 
 
-  using GridType = CartesianGrid<dim>;
+  using GridType = Grid<dim>;
 
 
 
@@ -130,10 +130,10 @@ protected:
   ReferenceSpace() = default;
 
   explicit ReferenceSpace(
-    const std::shared_ptr<CartesianGrid<dim_>> &grid);
+    const std::shared_ptr<Grid<dim_>> &grid);
 
   explicit ReferenceSpace(
-    const std::shared_ptr<const CartesianGrid<dim_>> &grid);
+    const std::shared_ptr<const Grid<dim_>> &grid);
 
 public:
   virtual ~ReferenceSpace() = default;
@@ -188,12 +188,12 @@ public:
   std::shared_ptr< SubRefSpace<k> >
   get_ref_sub_space(const int s_id,
                     InterSpaceMap<k> &dof_map,
-                    std::shared_ptr<CartesianGrid<k>> sub_grid = nullptr) const;
+                    std::shared_ptr<Grid<k>> sub_grid = nullptr) const;
 
   template<int k>
   std::shared_ptr<SubSpace<k> >
   get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
-                std::shared_ptr<CartesianGrid<k>> sub_grid,
+                std::shared_ptr<Grid<k>> sub_grid,
                 SubGridMap<k> &elem_map) const;
 
 

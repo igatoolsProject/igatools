@@ -251,7 +251,7 @@ void
 IgFunction<dim,codim,range,rank>::
 rebuild_after_insert_knots(
   const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
-  const CartesianGrid<dim> &grid_old)
+  const Grid<dim> &grid_old)
 {
   using std::const_pointer_cast;
   this->function_previous_refinement_ =
@@ -292,7 +292,7 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> ig_function)
   Assert(ig_function != nullptr, ExcNullPtr());
   Assert(&(*ig_function) == &(*this), ExcMessage("Different objects."));
 
-  using SlotType = typename CartesianGrid<dim>::SignalInsertKnotsSlot;
+  using SlotType = typename Grid<dim>::SignalInsertKnotsSlot;
 
   auto func_to_connect =
     std::bind(&self_t::rebuild_after_insert_knots,

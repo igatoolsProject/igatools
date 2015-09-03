@@ -40,7 +40,7 @@
 
 template<int dim, int codim=0>
 auto
-create_function(shared_ptr<CartesianGrid<dim>> grid)
+create_function(shared_ptr<Grid<dim>> grid)
 {
   using Function = functions::CylindricalAnnulus<dim>;
   auto map = Function::create(grid, IdentityFunction<dim>::create(grid),
@@ -56,7 +56,7 @@ void elem_values(const int n_knots = 2, const int deg=1)
   using BspSpace = BSplineSpace<dim, range, rank>;
   using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 
-  auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto grid  = Grid<dim>::create(n_knots);
 
   auto ref_space = BspSpace::create(deg, grid);
   auto map_func = create_function(grid);

@@ -39,7 +39,7 @@ identity_map(const int n_knots, const int deg, const string prop=DofProperties::
 {
   OUTSTART
 
-  auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto grid  = Grid<dim>::create(n_knots);
   auto map = IdentityFunction<dim>::create(grid);
   auto space = create_space<dim>(grid, map, deg);
   const int n_qp = 1;
@@ -68,7 +68,7 @@ identity_map_prop(const int n_knots, const int deg, const bool use_bdry=true)
 {
   OUTSTART
 
-  auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto grid  = Grid<dim>::create(n_knots);
   auto map = IdentityFunction<dim>::create(grid);
   auto space = create_space_prop<dim>(grid, map, deg);
   const int n_qp = 1;

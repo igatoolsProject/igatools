@@ -45,7 +45,7 @@ void loop_on_grid()
   out << "Traversing the elements of a " << dim;
   out << "-dimensional grid." << endl;
   const int n_knots = 3;
-  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto grid = Grid<dim>::create(n_knots);
   // [create_grid]
   // [iter_grid]
   for (auto elem : *grid)
@@ -64,7 +64,7 @@ void loop_on_space()
   out << "Traversing the elements of a " << dim;
   out << "-dimensional B-spline space." << endl;
   const int n_knots = 3;
-  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto grid = Grid<dim>::create(n_knots);
   const int degree = 2;
   auto space = BSplineSpace<dim>::create(degree, grid);
 

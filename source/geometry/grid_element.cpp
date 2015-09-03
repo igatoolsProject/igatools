@@ -315,7 +315,7 @@ GridElement<dim, ContainerType_>::
 serialize(Archive &ar, const unsigned int version)
 {
   using namespace boost::serialization;
-  auto non_const_grid = std::const_pointer_cast<CartesianGrid<dim>>(grid_);
+  auto non_const_grid = std::const_pointer_cast<Grid<dim>>(grid_);
   ar &make_nvp("grid_",non_const_grid);
   grid_ = non_const_grid;
   Assert(grid_ != nullptr, ExcNullPtr());

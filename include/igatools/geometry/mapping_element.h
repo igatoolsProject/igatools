@@ -52,7 +52,7 @@ public:
   static const int codim = codim_;
   static const int space_dim = dim_+codim_;
 
-  using Grid = CartesianGrid<dim_>;
+  using Grid = Grid<dim_>;
   using IndexType = typename Grid::IndexType;
   using List = typename Grid::List;
   using ListIt = typename Grid::ListIt;
@@ -246,7 +246,7 @@ public:
   IndexType get_index() const;
 
   /** Return the cartesian grid from which the element belongs.*/
-  std::shared_ptr<const CartesianGrid<dim> > get_grid() const;
+  std::shared_ptr<const Grid<dim> > get_grid() const;
 
 private:
 
@@ -292,7 +292,7 @@ private:
   std::shared_ptr<CacheType> local_cache_;
 
 
-  template <class Accessor> friend class CartesianGridIteratorBase;
+  template <class Accessor> friend class GridIteratorBase;
   friend class Mapping<dim, codim>;
 
   /**
@@ -339,13 +339,13 @@ IGA_NAMESPACE_CLOSE
 
 
 #if 0
-/** Type required by the CartesianGridIterator templated iterator */
+/** Type required by the GridIterator templated iterator */
 using ContainerType = const Mapping<dim_,codim_>;
 
 using GridIterator = typename ContainerType::GridIterator;
 
 /** Dimension of the reference domain */
-using CartesianGridElement<dim_>::dim;
+using GridElement<dim_>::dim;
 
 /** Codimension of the deformed domain */
 static const auto codim = ContainerType::codim;

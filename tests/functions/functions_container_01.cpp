@@ -156,9 +156,9 @@ void deserialize_only()
 void do_test()
 {
   int n_elem_per_side = 2;
-  auto grid_1 = CartesianGrid<1>::create(n_elem_per_side+1);
-  auto grid_2 = CartesianGrid<2>::create(n_elem_per_side+1);
-  auto grid_3 = CartesianGrid<3>::create(n_elem_per_side+1);
+  auto grid_1 = Grid<1>::create(n_elem_per_side+1);
+  auto grid_2 = Grid<2>::create(n_elem_per_side+1);
+  auto grid_3 = Grid<3>::create(n_elem_per_side+1);
 //    create_fun<2, 0, 2>();
 
   auto func_identity_1_1 = IdentityFunction<1,1>::create(grid_1);

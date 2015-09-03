@@ -415,7 +415,7 @@ auto
 NURBSSpace<dim_, range_, rank_>::
 get_ref_sub_space(const int s_id,
                   InterSpaceMap<k> &dof_map,
-                  std::shared_ptr<CartesianGrid<k>> sub_grid) const
+                  std::shared_ptr<Grid<k>> sub_grid) const
 -> std::shared_ptr<SubRefSpace<k> >
 {
   //TODO (martinelli Nov 27,2014): implement this function
@@ -478,7 +478,7 @@ template<int k>
 auto
 NURBSSpace<dim_, range_, rank_>::
 get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
-              std::shared_ptr<CartesianGrid<k>> sub_grid,
+              std::shared_ptr<Grid<k>> sub_grid,
               SubGridMap<k> &elem_map) const
 -> std::shared_ptr<SubSpace<k> >
 {
@@ -627,8 +627,8 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> space)
               std::placeholders::_1,
               std::placeholders::_2);
 
-  using SlotType = typename CartesianGrid<dim>::SignalInsertKnotsSlot;
-  std::const_pointer_cast<CartesianGrid<dim_>>(this->get_ptr_grid())->connect_insert_knots(
+  using SlotType = typename Grid<dim>::SignalInsertKnotsSlot;
+  std::const_pointer_cast<Grid<dim_>>(this->get_ptr_grid())->connect_insert_knots(
                                               SlotType(func_to_connect).track_foreign(space));
 }
 
@@ -637,7 +637,7 @@ void
 NURBSSpace<dim_, range_, rank_>::
 rebuild_after_insert_knots(
   const SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert,
-  const CartesianGrid<dim_> &old_grid)
+  const Grid<dim_> &old_grid)
 {
   auto bsp_space_previous_refinement =
     std::const_pointer_cast<SpSpace>(

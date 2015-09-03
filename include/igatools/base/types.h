@@ -518,7 +518,7 @@ enum class ElementProperty : int
 {
   /**
    * No-property indicator (useful for example if you want to iterate over all the elements of
-   * the CartesianGrid, without taking into account the properties of the elements.).
+   * the Grid, without taking into account the properties of the elements.).
    */
   none = 0,   //!< active
 

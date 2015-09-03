@@ -43,7 +43,7 @@ using space_tools::get_boundary_dofs;
 
 template <int dim, int range=1, int rank=1, int codim = 0>
 shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>>
-    create_space(const shared_ptr<CartesianGrid<dim>> &grid,
+    create_space(const shared_ptr<Grid<dim>> &grid,
                  const shared_ptr<MapFunction<dim,dim+codim>> &map_func,
                  const int deg=1)
 {
@@ -72,7 +72,7 @@ enum  bc : boundary_id
 
 template <int dim, int range=1, int rank=1, int codim = 0>
 shared_ptr<PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>>
-    create_space_prop(const shared_ptr<CartesianGrid<dim>> &grid,
+    create_space_prop(const shared_ptr<Grid<dim>> &grid,
                       const shared_ptr<MapFunction<dim,dim+codim>> &map_func,
                       const int deg=1)
 {

@@ -59,7 +59,7 @@ public:
   using Div = typename Space::Div;
 
 
-  using Grid = CartesianGrid<dim>;
+  using Grid = Grid<dim>;
   using IndexType = typename Grid::IndexType;
   using List = typename Grid::List;
   using ListIt = typename Grid::ListIt;

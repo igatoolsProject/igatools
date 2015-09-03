@@ -35,7 +35,7 @@ void iterate(const int n_knots = 5)
 {
   OUTSTART
 
-  auto grid = CartesianGrid<dim>::const_create(n_knots);
+  auto grid = Grid<dim>::const_create(n_knots);
 
   for (auto &elem : *grid)
   {

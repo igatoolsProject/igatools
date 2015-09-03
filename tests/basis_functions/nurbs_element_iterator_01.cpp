@@ -42,7 +42,7 @@ void test()
   const int r = 2;
 
   using Space = NURBSSpace< dim, range, rank >;
-  auto  knots = CartesianGrid<dim>::create();
+  auto  knots = Grid<dim>::create();
 
   auto degree = TensorIndex<dim>(r);
 

@@ -30,10 +30,10 @@
 IGA_NAMESPACE_OPEN
 
 /**
- * @brief Base class for iterator on collection of objects build over a CartesianGrid and
- * having in common a certain property (see CartesianGrid documentation).
+ * @brief Base class for iterator on collection of objects build over a Grid and
+ * having in common a certain property (see Grid documentation).
  *
- * Its purpose is to iterate over the elements of a CartesianGrid.
+ * Its purpose is to iterate over the elements of a Grid.
  *
  * Its main features are:
  * - it takes an accessor's type as template parameter;
@@ -50,9 +50,9 @@ IGA_NAMESPACE_OPEN
  * - it is not default constructible;
  * - the postfix operator <tt>++</tt> is not defined.
  *
- * The object pointed to the CartesianGridIteratorBase is called <em>accessor</em>
+ * The object pointed to the GridIteratorBase is called <em>accessor</em>
  * and its type is passed as template argument <tt>Element</tt>
- * of the CartesianGridIteratorBase.
+ * of the GridIteratorBase.
  *
  * The <em>accessor</em> is an object that can fetch and use data stored in objects that have
  * a "grid-like" structure. The type of the object with this "grid-like" structure,
@@ -154,7 +154,7 @@ IGA_NAMESPACE_OPEN
  *
  * @see IteratorState
  *
- * @sa CartesianGridIterator, CartesianGridConstIterator
+ * @sa GridIterator, GridConstIterator
  *
  * @tparam Element Type of the accessor.
  *
@@ -231,7 +231,7 @@ public:
   ///@{
   /**
    * Copy assignment operator.
-   * It performs a <b>shallow</b> copy of the Element hold by the CartesianGridIteratorBase.
+   * It performs a <b>shallow</b> copy of the Element hold by the GridIteratorBase.
    */
   GridIteratorBase<Element> &
   operator=(const GridIteratorBase<Element> &it) = delete;
@@ -320,7 +320,7 @@ private:
 /**
  * @brief Iterator on non-const objects that have a "grid-like" structure.
  *
- * @sa CartesianGridConstIterator, CartesianGridIteratorBase
+ * @sa GridConstIterator, GridIteratorBase
  *
  * @ingroup iterators
  *
@@ -338,7 +338,7 @@ public:
   /** Type of the grid-like container . */
   using ContainerType = typename Element::ContainerType;
 
-  /** The constructors are inherited from the parent class CartesianGridIteratorBase */
+  /** The constructors are inherited from the parent class GridIteratorBase */
   using GridIteratorBase<Element>::GridIteratorBase;
 
 

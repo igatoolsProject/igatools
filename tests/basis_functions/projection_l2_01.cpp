@@ -46,7 +46,7 @@ void project_l2(const int p, const int num_knots = 10)
   using Space =  BSplineSpace<dim,range,rank>;
   using RefSpace =  ReferenceSpace<dim,range,rank>;
 
-  auto knots = CartesianGrid<dim>::create(num_knots);
+  auto knots = Grid<dim>::create(num_knots);
   auto space = Space::create(p, knots) ;
 
   const int n_qpoints = 4;

@@ -46,7 +46,7 @@ template <>
 shared_ptr<BSplineSpace<2,2,1> >
 create_space<2>(const int num_knots)
 {
-  auto knots = CartesianGrid<2>::create(num_knots);
+  auto knots = Grid<2>::create(num_knots);
 
   using Space = BSplineSpace<2,2,1>;
   typename Space::DegreeTable degree_table = {{{3,2}},{{2,3}}} ;
@@ -68,7 +68,7 @@ template <>
 shared_ptr<BSplineSpace<3,3,1> >
 create_space<3>(const int num_knots)
 {
-  auto knots = CartesianGrid<3>::create(num_knots);
+  auto knots = Grid<3>::create(num_knots);
 
   using Space = BSplineSpace<3,3,1>;
   typename Space::DegreeTable degree_table = { {{3,2,2}},{{2,3,2}},{{2,2,3}}} ;

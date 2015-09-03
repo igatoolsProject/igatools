@@ -35,7 +35,7 @@ IGA_NAMESPACE_OPEN
 
 template <int dim_>
 SpaceBase<dim_>::
-SpaceBase(const shared_ptr<const CartesianGrid<dim_>> &grid)
+SpaceBase(const shared_ptr<const Grid<dim_>> &grid)
   :
   object_id_(UniqueIdGenerator::get_unique_id()),
   grid_(grid)
@@ -43,7 +43,7 @@ SpaceBase(const shared_ptr<const CartesianGrid<dim_>> &grid)
 
 template <int dim_>
 SpaceBase<dim_>::
-SpaceBase(const shared_ptr<CartesianGrid<dim_>> &grid)
+SpaceBase(const shared_ptr<Grid<dim_>> &grid)
   :
   object_id_(UniqueIdGenerator::get_unique_id()),
   grid_(grid)
@@ -58,7 +58,7 @@ get_object_id() const
 }
 
 template <int dim_>
-std::shared_ptr<CartesianGrid<dim_> >
+std::shared_ptr<Grid<dim_> >
 SpaceBase<dim_>::
 get_ptr_grid()
 {
@@ -66,7 +66,7 @@ get_ptr_grid()
 }
 
 template <int dim_>
-std::shared_ptr<const CartesianGrid<dim_> >
+std::shared_ptr<const Grid<dim_> >
 SpaceBase<dim_>::
 get_ptr_const_grid() const
 {
@@ -127,7 +127,7 @@ serialize(Archive &ar, const unsigned int version)
 
 template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 Space<dim_,codim_,range_,rank_,type_>::
-Space(const shared_ptr<CartesianGrid<dim_>> &grid,
+Space(const shared_ptr<Grid<dim_>> &grid,
       const shared_ptr<MapFunc> &map_func)
   :
   base_t(grid),
@@ -141,7 +141,7 @@ Space(const shared_ptr<CartesianGrid<dim_>> &grid,
 
 template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 Space<dim_,codim_,range_,rank_,type_>::
-Space(const shared_ptr<const CartesianGrid<dim_>> &grid,
+Space(const shared_ptr<const Grid<dim_>> &grid,
       const shared_ptr<MapFunc> &map_func)
   :
   base_t(grid),

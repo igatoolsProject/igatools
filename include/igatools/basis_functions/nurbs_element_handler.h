@@ -62,7 +62,7 @@ class NURBSElementHandler
   using Space = NURBSSpace<dim_,range_,rank_>;
   static const Size n_components =  Space::n_components;
 
-  using IndexType = typename CartesianGrid<dim_>::IndexType;
+  using IndexType = typename Grid<dim_>::IndexType;
 
   template<class T>
   using ComponentContainer = typename Space::template ComponentContainer<T>;

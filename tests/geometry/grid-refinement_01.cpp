@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test for refinement of the CartesianGrid
+ *  Test for refinement of the Grid
  *
  *  author: martinelli
  *  date: 2013
@@ -34,7 +34,7 @@
 template <int dim>
 void test_evaluate()
 {
-  using Grid = CartesianGrid<dim>;
+  using Grid = Grid<dim>;
   auto grid = Grid::create();
 //    const std::string active_property = "active";
   const std::string influence_property = "influence";

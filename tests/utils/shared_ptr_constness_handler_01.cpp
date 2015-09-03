@@ -39,7 +39,7 @@ using namespace iga;
 
 using std::shared_ptr;
 
-using Grid = CartesianGrid<1>;
+using Grid = Grid<1>;
 
 const std::string class_name = "SharedPtrConstnessHandler";
 

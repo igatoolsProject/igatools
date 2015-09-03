@@ -179,7 +179,7 @@ void elem_values(const int n_knots = 2, const int deg=1)
 
 //    using ElementHandler = typename Space::ElementHandler;
 
-  auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto grid  = Grid<dim>::create(n_knots);
 
   auto ref_space = BspSpace::create_nonconst(deg, grid);
 

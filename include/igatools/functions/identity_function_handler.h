@@ -63,7 +63,7 @@ private:
   using self_t = IdentityFunctionElementHandler<dim,space_dim>;
 
 protected:
-  using GridType = CartesianGrid<dim>;
+  using GridType = Grid<dim>;
   using GridHandlerType = typename GridType::ElementHandler;
 
   using FuncType = Function<dim, 0, space_dim, 1>;
@@ -187,7 +187,7 @@ private:
 
   void rebuild_after_insert_knots(
     const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
-    const CartesianGrid<dim> &old_grid);
+    const Grid<dim> &old_grid);
 
 #endif // MESH_REFINEMENT
 

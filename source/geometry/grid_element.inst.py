@@ -34,7 +34,7 @@ sub_dim_members = [
 
 elems = []
 
-els =['const iga::CartesianGrid', ' iga::CartesianGrid']
+els =['const iga::Grid', ' iga::Grid']
 for dim in inst.domain_dims:
   for el in els:
     acc = 'GridElement<%d,' %(dim) + el + '<%d>>' %(dim)

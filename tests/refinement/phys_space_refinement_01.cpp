@@ -42,7 +42,7 @@
 template <int dim>
 void test_evaluate()
 {
-  auto grid = CartesianGrid<dim>::create();
+  auto grid = Grid<dim>::create();
   grid->refine();
   out << endl;
 

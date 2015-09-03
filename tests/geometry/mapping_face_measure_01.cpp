@@ -41,7 +41,7 @@ void test_evaluate()
   using Function = functions::CylindricalAnnulus<dim>;
   using Mapping   = Mapping<dim, 0>;
 
-  auto grid = CartesianGrid<dim>::create();
+  auto grid = Grid<dim>::create();
 
   auto F = Function::create(grid, IdentityFunction<dim>::create(grid),
                             1., 2., 0., 1.0, 0.0, numbers::PI/2.0);

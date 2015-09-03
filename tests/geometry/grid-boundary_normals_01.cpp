@@ -33,7 +33,7 @@ void boundary_normals()
 {
   OUTSTART
 
-  auto grid = CartesianGrid<dim>::create();
+  auto grid = Grid<dim>::create();
   const int n_elems = UnitElement<dim>::template num_elem<sdim>();
   for (int j = 0; j < n_elems; ++j)
   {

@@ -39,7 +39,7 @@ void sub_map(const int n_knots = 2)
 {
   OUTSTART
   using Func = functions::LinearFunction<dim, 0, space_dim>;
-  using GridType = CartesianGrid<dim>;
+  using GridType = Grid<dim>;
   using SubFunc = SubMapFunction<sub_dim, dim, space_dim>;
 
   auto grid = GridType::create(n_knots);

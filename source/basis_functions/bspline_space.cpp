@@ -400,7 +400,7 @@ auto
 BSplineSpace<dim_, range_, rank_>::
 get_ref_sub_space(const int s_id,
                   InterSpaceMap<k> &dof_map,
-                  std::shared_ptr<CartesianGrid<k>> sub_grid) const
+                  std::shared_ptr<Grid<k>> sub_grid) const
 -> std::shared_ptr<SubRefSpace<k> >
 {
   if (!(sub_grid))
@@ -478,12 +478,12 @@ template<int k>
 auto
 BSplineSpace<dim_, range_, rank_>::
 get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
-              std::shared_ptr<CartesianGrid<k>> sub_grid,
+              std::shared_ptr<Grid<k>> sub_grid,
               SubGridMap<k> &elem_map) const
 -> std::shared_ptr<SubSpace<k> >
 {
   using SubMap = SubMapFunction<k, dim, space_dim>;
-  auto grid = const_pointer_cast<CartesianGrid<dim_> >(this->get_ptr_const_grid());
+  auto grid = const_pointer_cast<Grid<dim_> >(this->get_ptr_const_grid());
 
   auto sub_ref_space = get_ref_sub_space(s_id, dof_map, sub_grid);
   auto F = IdentityFunction<dim>::const_create(grid);
@@ -585,7 +585,7 @@ create_connection_for_insert_knots(std::shared_ptr<self_t> space)
               std::placeholders::_1,
               std::placeholders::_2);
 
-  using SlotType = typename CartesianGrid<dim>::SignalInsertKnotsSlot;
+  using SlotType = typename Grid<dim>::SignalInsertKnotsSlot;
   this->get_ptr_grid()->connect_insert_knots(SlotType(func_to_connect).track_foreign(space));
 }
 
@@ -595,7 +595,7 @@ void
 BSplineSpace<dim_, range_, rank_>::
 rebuild_after_insert_knots(
   const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
-  const CartesianGrid<dim> &old_grid)
+  const Grid<dim> &old_grid)
 {
   this->ref_space_previous_refinement_ =
     BSplineSpace<dim_,range_,rank_>::create(

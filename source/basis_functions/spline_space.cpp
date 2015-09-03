@@ -197,7 +197,7 @@ init()
 
 
 template<int dim, int range, int rank>
-std::shared_ptr<CartesianGrid<dim> >
+std::shared_ptr<Grid<dim> >
 SplineSpace<dim, range, rank>::
 get_ptr_grid()
 {
@@ -205,7 +205,7 @@ get_ptr_grid()
 }
 
 template<int dim, int range, int rank>
-std::shared_ptr<const CartesianGrid<dim> >
+std::shared_ptr<const Grid<dim> >
 SplineSpace<dim, range, rank>::
 get_ptr_const_grid() const
 {
@@ -219,7 +219,7 @@ void
 SplineSpace<dim, range, rank>::
 rebuild_after_insert_knots(
   const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
-  const CartesianGrid<dim> &old_grid)
+  const Grid<dim> &old_grid)
 {
 //    const auto refined_grid = grid_;
   auto grid_pre_refinement = grid_.get_ptr_data()->get_grid_pre_refinement();
@@ -339,7 +339,7 @@ create_connection_for_insert_knots(std::shared_ptr<SplineSpace<dim,range,rank>> 
               std::placeholders::_1,
               std::placeholders::_2);
 
-  using SlotType = typename CartesianGrid<dim>::SignalInsertKnotsSlot;
+  using SlotType = typename Grid<dim>::SignalInsertKnotsSlot;
   grid_.get_ptr_data()->connect_insert_knots(
     SlotType(func_to_connect).track_foreign(space));
 }

@@ -45,7 +45,7 @@ public:
 
 private:
   using Space = BSplineSpace<dim>;
-  shared_ptr<const CartesianGrid<dim>>  grid;
+  shared_ptr<const Grid<dim>>  grid;
   shared_ptr<const Space>   space;
 };
 // [class declaration]
@@ -55,7 +55,7 @@ private:
 template <int dim>
 PoissonPreparation<dim>::PoissonPreparation(const int n_knots,  const int deg)
   :
-  grid {CartesianGrid<dim>::create(n_knots)},
+  grid {Grid<dim>::create(n_knots)},
   space {BSplineSpace<dim>::create(deg, grid)}
 {}
 // [constructor]

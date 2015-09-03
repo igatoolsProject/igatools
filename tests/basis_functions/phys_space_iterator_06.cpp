@@ -40,7 +40,7 @@
 
 template<int dim, int codim=0>
 auto
-create_function(shared_ptr<CartesianGrid<dim>> grid)
+create_function(shared_ptr<Grid<dim>> grid)
 {
 
   using Function = functions::LinearFunction<dim, 0, dim+codim>;
@@ -62,7 +62,7 @@ void elem_values(const int n_knots = 2, const int deg=1, const int n_qp = 1)
 //    using RefSpace = ReferenceSpace<dim, range,rank>;
   using Space = PhysicalSpace<dim,range,rank,codim, Transformation::h_grad>;
 
-  auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto grid  = Grid<dim>::create(n_knots);
 
   auto ref_space = BspSpace::create(deg, grid);
   auto map_func = create_function(grid);

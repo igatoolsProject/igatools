@@ -41,7 +41,7 @@ void test()
   const int r = 2;
 
   using Space = NURBSSpace< dim, range, rank >;
-  auto  knots = CartesianGrid<dim>::create(3);
+  auto  knots = Grid<dim>::create(3);
 
   auto degree = TensorIndex<dim>(r);
   auto bsp_space = BSplineSpace<dim,range,rank>::create(degree, knots);

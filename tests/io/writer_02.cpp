@@ -36,7 +36,7 @@ void
 test()
 {
   const int n_knots = 4;
-  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto grid = Grid<dim>::create(n_knots);
   auto identity_function = IdentityFunction<dim>::create(grid);
   auto ball_function = functions::BallFunction<dim>::create(grid,identity_function);
   Writer<dim> writer(ball_function, 4);

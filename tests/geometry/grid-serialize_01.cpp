@@ -29,14 +29,14 @@
 #include <igatools/geometry/cartesian_grid.h>
 
 template <int dim>
-void serialize_deserialize(std::shared_ptr<const CartesianGrid<dim>> grid,
+void serialize_deserialize(std::shared_ptr<const Grid<dim>> grid,
                            const std::string &filename)
 {
   out.begin_item("Original grid.");
   grid->print_info(out);
   out.end_item();
 
-  string tag_name = "CartesianGrid_" + std::to_string(dim) + "d";
+  string tag_name = "Grid_" + std::to_string(dim) + "d";
   {
     std::ofstream xml_ostream(filename);
     OArchive xml_out(xml_ostream);
@@ -45,7 +45,7 @@ void serialize_deserialize(std::shared_ptr<const CartesianGrid<dim>> grid,
     xml_ostream.close();
   }
 
-  auto grid_new = CartesianGrid<dim>::create(4);
+  auto grid_new = Grid<dim>::create(4);
   {
     ifstream xml_istream(filename);
     IArchive xml_in(xml_istream);
@@ -64,7 +64,7 @@ void serialize_grid(const int n_knots = 4)
 {
   OUTSTART
 
-  auto grid = CartesianGrid<dim>::const_create(n_knots);
+  auto grid = Grid<dim>::const_create(n_knots);
   string filename = "grid_" + std::to_string(dim) + "d.xml";
   serialize_deserialize(grid,filename);
 

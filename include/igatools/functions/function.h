@@ -71,7 +71,7 @@ public:
   static const int range     = range_;
   static const int rank      = rank_;
 
-  using GridType = CartesianGrid<dim_>;
+  using GridType = Grid<dim_>;
   using DomainType = Domain<dim_, codim_>;
 
   using ElementAccessor = FunctionElement<dim_, codim_, range_, rank_>;

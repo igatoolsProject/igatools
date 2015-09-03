@@ -59,7 +59,7 @@ void filtered_dofs(const int deg = 1, const int n_knots = 3)
   using RefSpace = ReferenceSpace<dim, range, rank>;
   using Space = BSplineSpace<dim, range, rank>;
 
-  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto grid = Grid<dim>::create(n_knots);
   auto space = Space::create_nonconst(deg, grid);
   auto dof_dist = space->get_ptr_dof_distribution();
   dof_dist->add_dofs_property(DofProp::interior);

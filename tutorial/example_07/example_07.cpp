@@ -57,7 +57,7 @@ void analytical_geometry()
     box[i] = {{PI/4,PI/2}};
 
   const int n_knots = 3;
-  auto grid = CartesianGrid<dim>::create(box, n_knots);
+  auto grid = Grid<dim>::create(box, n_knots);
   auto map  = Function::create(grid, IdentityFunction<dim>::create(grid));
 
   const int n_plot_points = 2;
@@ -76,7 +76,7 @@ void nurb_geometry()
 
   const int deg = 2;
   const int n_knots = 3;
-  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto grid = Grid<dim>::create(n_knots);
   using Space = BSplineSpace<dim,dim>;
   auto space = Space::create(deg, grid);
 

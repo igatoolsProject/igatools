@@ -55,7 +55,7 @@ public:
   Writer(const Writer<dim,codim,T> &writer) = delete;
 
 
-  Writer(const std::shared_ptr<CartesianGrid<dim> > grid);
+  Writer(const std::shared_ptr<Grid<dim> > grid);
 
 
   Writer(const std::shared_ptr<const MapFunction_new<dim,codim>> map,
@@ -65,7 +65,7 @@ public:
    * This constructor builds a Writer object using a distribution for
    * the evaluation points given by the @p quadrature scheme.
    * \note Any field that will be added to the writer must refer to the same
-   * CartesianGrid used here, otherwise an exception will be raised.
+   * Grid used here, otherwise an exception will be raised.
    * \note The number of points in each coordinate direction must be greater or equal than 2,
    * otherwise an exception will be raised.
    * \see add_field

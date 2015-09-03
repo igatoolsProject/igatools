@@ -73,10 +73,10 @@ void serialize_deserialize(const std::shared_ptr<BSplineSpace<dim>> space_in)
 namespace grid
 {
 template<int dim>
-shared_ptr<CartesianGrid<dim>>
+shared_ptr<Grid<dim>>
                             uniform(const int n_knots)
 {
-  return CartesianGrid<dim>::create(n_knots);
+  return Grid<dim>::create(n_knots);
 }
 
 
@@ -84,7 +84,7 @@ shared_ptr<CartesianGrid<dim>>
 
 
 template<int dim>
-void uniform_degree(const int deg, shared_ptr<CartesianGrid<dim>> grid)
+void uniform_degree(const int deg, shared_ptr<Grid<dim>> grid)
 {
   OUTSTART
   std::shared_ptr<BSplineSpace<dim>> space = BSplineSpace<dim>::create_nonconst(deg, grid);
@@ -97,7 +97,7 @@ void uniform_degree(const int deg, shared_ptr<CartesianGrid<dim>> grid)
 
 template<int dim>
 void direction_degree(const TensorIndex<dim> &deg,
-                      shared_ptr<CartesianGrid<dim>> grid)
+                      shared_ptr<Grid<dim>> grid)
 {
   OUTSTART
   std::shared_ptr<BSplineSpace<dim>> space = BSplineSpace<dim>::create_nonconst(deg, grid);

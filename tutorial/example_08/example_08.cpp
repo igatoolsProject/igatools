@@ -41,7 +41,7 @@ void physical_space(const int deg)
     box[i] = {{PI/4,PI/2}};
 
   const int n_knots = 3;
-  auto grid = CartesianGrid<dim>::create(box, n_knots);
+  auto grid = Grid<dim>::create(box, n_knots);
   auto ref_space = RefSpace::create(deg, grid);
 
   using Function = functions::BallFunction<dim>;

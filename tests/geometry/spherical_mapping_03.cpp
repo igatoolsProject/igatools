@@ -51,7 +51,7 @@ void mapping_values()
               ValueFlags::w_measure;
 
   auto quad = QUniform<dim>(3);
-  auto grid = CartesianGrid<dim>::create();
+  auto grid = Grid<dim>::create();
 
   auto F = Function::create(grid, IdentityFunction<dim>::create(grid));
 

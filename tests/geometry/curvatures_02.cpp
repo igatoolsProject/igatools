@@ -54,7 +54,7 @@ void normal_derivatives()
     box[i] = {0.+M_PI/8, M_PI-M_PI/8};
   if (dim>=1)
     box[dim-1] = {0., M_PI};
-  auto grid = CartesianGrid<dim>::create(box, 2);
+  auto grid = Grid<dim>::create(box, 2);
 
   auto F = Function::create(grid, IdentityFunction<dim>::create(grid));
 

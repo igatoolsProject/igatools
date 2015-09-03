@@ -40,7 +40,7 @@ IGA_NAMESPACE_OPEN
 
 template<int dim, int codim, class T>
 Writer<dim, codim, T>::
-Writer(const shared_ptr<CartesianGrid<dim>> grid)
+Writer(const shared_ptr<Grid<dim>> grid)
   :
   Writer(IdentityFunction<dim,dim+codim>::create(grid),
         shared_ptr< QUniform<dim> >(new QUniform<dim>(2)))
@@ -281,7 +281,7 @@ get_subelements(
   //--------------------------------------------------------------------------
   // grid defining the vtk elements inside the iga element
 
-  const auto vtk_elements_grid = CartesianGrid<dim>::create(num_points_direction_);
+  const auto vtk_elements_grid = Grid<dim>::create(num_points_direction_);
   auto vtk_elem = vtk_elements_grid->begin();
   const auto vtk_elem_end = vtk_elements_grid->end();
 

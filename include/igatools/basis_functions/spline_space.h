@@ -85,7 +85,7 @@ class SplineSpace
 {
 
 private:
-  using GridType = CartesianGrid<dim>;
+  using GridType = Grid<dim>;
 
 public:
 
@@ -272,8 +272,8 @@ public:
 
   void print_info(LogStream &out) const;
 
-  std::shared_ptr<CartesianGrid<dim> > get_ptr_grid();
-  std::shared_ptr<const CartesianGrid<dim> > get_ptr_const_grid() const;
+  std::shared_ptr<Grid<dim> > get_ptr_grid();
+  std::shared_ptr<const Grid<dim> > get_ptr_const_grid() const;
 
 
   const ComponentContainer<SafeSTLVector<TensorIndex<dim> > > &
@@ -281,7 +281,7 @@ public:
 
 private:
 
-  SharedPtrConstnessHandler<CartesianGrid<dim> > grid_;
+  SharedPtrConstnessHandler<Grid<dim> > grid_;
 
   MultiplicityTable interior_mult_;
 
@@ -495,14 +495,14 @@ public:
    * Rebuild the internal state of the object after an insert_knots() function is invoked.
    *
    * @pre Before invoking this function, must be invoked the function grid_->insert_knots().
-   * @note This function is connected to the CartesianGrid's signal for the refinement, and
+   * @note This function is connected to the Grid's signal for the refinement, and
    * it is necessary in order to avoid infinite loops in the insert_knots() function calls.
    *
    * @ingroup h_refinement
    */
   void rebuild_after_insert_knots(
     const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
-    const CartesianGrid<dim> &old_grid);
+    const Grid<dim> &old_grid);
 
   void create_connection_for_insert_knots(std::shared_ptr<SplineSpace<dim,range,rank>> space);
 

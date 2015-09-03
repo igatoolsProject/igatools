@@ -43,7 +43,7 @@ void plot_basis(const int deg)
   using Func = IgFunction<dim,0,1,1>;
 
   const int n_knots = deg + 2;
-  auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto grid  = Grid<dim>::create(n_knots);
   auto space = Space::create(deg, grid);
   // [plot function]
 

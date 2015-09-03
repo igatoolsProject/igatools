@@ -45,7 +45,7 @@ void test_proj(const int deg, const int n_knots = 4)
   using RefSpace = ReferenceSpace<dim,range,rank> ;
   using Func = typename functions::ConstantFunction<dim, 0, range, rank>;
 
-  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto grid = Grid<dim>::create(n_knots);
   auto space = Space::create(deg, grid);
 
 

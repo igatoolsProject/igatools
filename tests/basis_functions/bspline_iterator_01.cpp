@@ -39,7 +39,7 @@ void bspline_iterator(const int deg = 2,const int n_qp = 3)
 {
   OUTSTART
 
-  auto grid = CartesianGrid<dim>::create();
+  auto grid = Grid<dim>::create();
   using Space = BSplineSpace<dim, range, rank>;
   auto space = Space::create_nonconst(deg, grid);
 
@@ -90,7 +90,7 @@ void bspline_iterator_active_dofs(const int deg = 2,const int n_qp = 3)
 {
   OUTSTART
 
-  auto grid = CartesianGrid<dim>::create();
+  auto grid = Grid<dim>::create();
   using Space = BSplineSpace<dim, range, rank>;
   auto space = Space::create_nonconst(deg, grid);
 

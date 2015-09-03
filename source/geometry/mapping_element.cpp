@@ -81,7 +81,7 @@ get_index() const -> IndexType
 template<int dim_, int codim_>
 auto
 MappingElement<dim_, codim_>::
-get_grid() const -> std::shared_ptr<const CartesianGrid<dim> >
+get_grid() const -> std::shared_ptr<const Grid<dim> >
 {
   return func_elem_->get_grid_element().get_grid();
 }

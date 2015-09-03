@@ -62,7 +62,7 @@ void test()
   }
 
   auto quad = QGauss<dim>(2);
-  auto grid = CartesianGrid<dim>::create(3);
+  auto grid = Grid<dim>::create(3);
 
   auto space  = Space::create(1, grid);
   auto sp_flag = ValueFlags::value | ValueFlags::gradient | ValueFlags::hessian;

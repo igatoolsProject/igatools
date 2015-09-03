@@ -93,7 +93,7 @@ PoissonProblem(const int deg, const TensorSize<dim> &n_knots)
   for (int i=1; i<dim; ++i)
     box[i] = {{PI/4,PI/2}};
 
-  auto grid = CartesianGrid<dim>::create(box, n_knots);
+  auto grid = Grid<dim>::create(box, n_knots);
   auto ref_space = RefSpace::create(deg, grid);
   using Function = functions::BallFunction<dim>;
   map = Function::create(grid, IdentityFunction<dim>::create(grid));

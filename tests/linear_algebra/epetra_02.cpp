@@ -39,7 +39,7 @@ template<int dim>
 void matrix_map(const int deg, const int n_knots)
 {
   OUTSTART
-  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto grid = Grid<dim>::create(n_knots);
   auto space = BSplineSpace<dim>::create(deg, grid);
 
   Epetra_SerialComm comm;

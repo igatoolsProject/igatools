@@ -43,7 +43,7 @@ private:
   using self_t = GridHandler<dim>;
 
 public:
-  using GridType = const CartesianGrid<dim>;
+  using GridType = const Grid<dim>;
 
 
 protected:

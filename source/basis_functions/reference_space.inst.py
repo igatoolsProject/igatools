@@ -28,11 +28,11 @@ sub_dim_members = \
  ['std::shared_ptr<typename class::template SubRefSpace<k>> ' + 
   'class::get_ref_sub_space<k>(const int sub_elem_id, ' + 
   'InterSpaceMap<k> &dof_map, ' + 
-  'std::shared_ptr<CartesianGrid<k>> sub_grid) const;',
+  'std::shared_ptr<Grid<k>> sub_grid) const;',
   'std::shared_ptr<typename class::template SubSpace<k>> ' + 
   'class::get_sub_space<k>(const int sub_elem_id, ' + 
   'InterSpaceMap<k> &dof_map, ' + 
-  'std::shared_ptr<CartesianGrid<k>> sub_grid, ' +
+  'std::shared_ptr<Grid<k>> sub_grid, ' +
   'SubGridMap<k> &elem_map) const;']
 
 spaces = ['ReferenceSpace<0,0,1>']

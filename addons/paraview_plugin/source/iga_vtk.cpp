@@ -785,7 +785,7 @@ create_knot_mesh_grid(const MapFunPtr_<dim, codim> mapping,
         const auto topology = Topology<dim>();
 
         // Looping along all the knot coordinates of the face.
-        using InterGridMap = typename CartesianGrid<dim>::template InterGridMap<dim-1>;
+        using InterGridMap = typename Grid<dim>::template InterGridMap<dim-1>;
         InterGridMap elem_map;
         const auto &sub_grid = cartesian_grid->template get_sub_grid<dim-1>(face_id, elem_map);
         const auto &face_coords_tensor = sub_grid->get_knot_coordinates();
@@ -1269,7 +1269,7 @@ create_VTK_quadratic_element_connectivity<2> (
 
     // This grid is going to help in building the connectivity.
     // Every element of the grid refers to a cell.
-    const auto cells_grid = CartesianGrid<dim>::create(n_elem_bound_per_dir);
+    const auto cells_grid = Grid<dim>::create(n_elem_bound_per_dir);
 
 
     // This array constaints the offsets of the points along the
@@ -1356,7 +1356,7 @@ create_VTK_quadratic_element_connectivity<3> (
 
     // This grid is going to help in building the connectivity.
     // Every element of the grid refers to a cell.
-    const auto cells_grid = CartesianGrid<dim>::create(n_elem_bound_per_dir);
+    const auto cells_grid = Grid<dim>::create(n_elem_bound_per_dir);
 
     // This array constaints the offsets of the points along the
     // first (u) direction.
@@ -1502,7 +1502,7 @@ create_cells_solid_vtu_grid(const TensorSize<dim> &n_vis_elements,
 
         // This grid is going to help in building the connectivity.
         // Every element of the grid refers to a cell.
-        const auto cells_grid = CartesianGrid<dim>::create(n_elem_bound_per_dir);
+        const auto cells_grid = Grid<dim>::create(n_elem_bound_per_dir);
 
         connectivity_base.resize(n_cells_per_bezier);
 
@@ -1749,7 +1749,7 @@ create_visualization_quadrature(const TensorSize<dim> &n_elements_per_direction,
 template <int dim>
 void
 IGAVTK::
-create_points_numbering_map(const shared_ptr<const CartesianGrid<dim>> cartesian_grid,
+create_points_numbering_map(const shared_ptr<const Grid<dim>> cartesian_grid,
                             const shared_ptr<Quadrature<dim>> quad,
                             const bool is_structured,
                             const bool is_quadratic,
@@ -1915,7 +1915,7 @@ create_geometries()
     using IdFun_ = IdentityFunction<dim, dim>;
     using MapFunction_ = Function<dim, 0, space_dim, 1>;
     using Space_ = Space<dim, 0, space_dim, 1>;
-    using Grid_ = CartesianGrid<dim>;
+    using Grid_ = Grid<dim>;
 
     // File names;
     const string fname_0 = "patch_0_" + std::to_string(dim) + "D.xml";

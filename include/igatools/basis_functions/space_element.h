@@ -58,7 +58,7 @@ private:
 
 public:
 
-  using Grid = CartesianGrid<dim_>;
+  using Grid = Grid<dim_>;
   using IndexType = typename Grid::IndexType;
   using List = typename Grid::List;
   using ListIt = typename Grid::ListIt;

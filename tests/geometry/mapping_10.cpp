@@ -52,7 +52,7 @@ void ig_mapping(const int deg = 1)
   auto flag =  ValueFlags::value| ValueFlags::gradient
                | ValueFlags::hessian;
   auto quad = QGauss<dim>(2);
-  auto grid = CartesianGrid<dim>::create(3);
+  auto grid = Grid<dim>::create(3);
 
   auto space = Space::create(deg, grid);
 

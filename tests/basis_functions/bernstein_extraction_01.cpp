@@ -37,7 +37,7 @@ test()
 
   typename SplineSpace::DegreeTable deg {{2}};
 
-  auto grid = CartesianGrid<dim>::create(4);
+  auto grid = Grid<dim>::create(4);
 
   auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
                   deg, grid->get_num_intervals());
@@ -68,7 +68,7 @@ int main()
 //        typename SplineSpace::DegreeTable deg {{3}};
 //
 //        CartesianProductArray<Real,dim> knots({{0,1,2,3,4}});
-//        auto grid = CartesianGrid<dim>::create(knots);
+//        auto grid = Grid<dim>::create(knots);
 //
 //        SplineSpace sp_spec(deg, grid, InteriorReg::maximum);
 //

@@ -33,7 +33,7 @@ void boundary_ids()
 {
   OUTSTART
 
-  auto grid = CartesianGrid<dim>::create();
+  auto grid = Grid<dim>::create();
 
   for (auto &j : UnitElement<dim>::faces)
   {

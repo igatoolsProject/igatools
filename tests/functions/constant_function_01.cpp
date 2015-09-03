@@ -72,7 +72,7 @@ void create_fun()
   auto flag = ValueFlags::point | ValueFlags::value |
               ValueFlags::gradient | ValueFlags::hessian;
   auto quad = QGauss<dim>(2);
-  auto grid = CartesianGrid<dim>::create(3);
+  auto grid = Grid<dim>::create(3);
   auto F = Function::create(grid, IdentityFunction<dim>::create(grid), b);
   F->reset(flag, quad);
   test<dim, codim, range>(F);

@@ -62,7 +62,7 @@ public:
   static const int dim = dim_;
 
   using DomainType = const Domain<dim_, codim_>;
-  using GridType = const CartesianGrid<dim_>;
+  using GridType = const Grid<dim_>;
   using GridHandler = typename GridType::ElementHandler;
 
   using ElementAccessor = DomainElement<dim_, codim_>;

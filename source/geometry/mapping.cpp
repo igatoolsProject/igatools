@@ -330,7 +330,7 @@ init_cache(ElementAccessor &elem) const -> void
 template<int dim_, int codim_>
 auto
 Mapping<dim_, codim_>::
-get_grid() const -> std::shared_ptr<const CartesianGrid<dim_> >
+get_grid() const -> std::shared_ptr<const Grid<dim_> >
 {
   return F_->get_grid();
 }

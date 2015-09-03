@@ -40,7 +40,7 @@ template<int dim>
 void matrix_map(const int deg, const int n_knots)
 {
   OUTSTART
-  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto grid = Grid<dim>::create(n_knots);
   auto space = BSplineSpace<dim>::create(deg, grid);
 
   Epetra_SerialComm comm;
@@ -67,7 +67,7 @@ template<int dim>
 void matrix_map1(const int deg, const int n_knots)
 {
   OUTSTART
-  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto grid = Grid<dim>::create(n_knots);
   auto r_space = BSplineSpace<dim>::create(deg, grid);
   auto c_space = BSplineSpace<dim>::create(deg+1, grid);
   MatrixGraph<LAPack::trilinos_epetra> graph(r_space, "active", c_space, "active");
@@ -101,7 +101,7 @@ void matrix_map2(const int deg, const int n_knots)
 {
   OUTSTART
   using Space = BSplineSpace<dim>;
-  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto grid = Grid<dim>::create(n_knots);
 
   grid->set_boundary_id(0, 1);
 

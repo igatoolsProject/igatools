@@ -91,7 +91,7 @@ get_index() const -> IndexType
 }
 
 template <int dim>
-std::shared_ptr<const CartesianGrid<dim> >
+std::shared_ptr<const Grid<dim> >
 SpaceElementBase<dim>::
 get_grid() const
 {

@@ -78,7 +78,7 @@ void do_test()
 
 
   using Space = NURBSSpace< dim, range, rank >;
-  auto grid = CartesianGrid<dim>::create(coord);
+  auto grid = Grid<dim>::create(coord);
 
   auto  bsp = BSplineSpace<dim, range, rank >::create_nonconst(degree, grid);
 

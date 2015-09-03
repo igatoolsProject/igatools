@@ -24,14 +24,14 @@ include_files = ['geometry/grid_element.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-sub_dim_members = ['CartesianGrid<dim>::template BoundaryNormal<k> ' +
-                   'CartesianGrid<dim>::get_boundary_normals<k>(const int s_id) const;',
-                   'std::shared_ptr<CartesianGrid<k>> CartesianGrid<dim>::'+
-                   'get_sub_grid<k>(const int sub_elem_id, typename CartesianGrid<dim>::template SubGridMap<k> &elem_map) const;']
+sub_dim_members = ['Grid<dim>::template BoundaryNormal<k> ' +
+                   'Grid<dim>::get_boundary_normals<k>(const int s_id) const;',
+                   'std::shared_ptr<Grid<k>> Grid<dim>::'+
+                   'get_sub_grid<k>(const int sub_elem_id, typename Grid<dim>::template SubGridMap<k> &elem_map) const;']
 
 grids = [] 
 for dim in inst.sub_domain_dims:
-    grid = 'CartesianGrid<%d>' %(dim)
+    grid = 'Grid<%d>' %(dim)
     grids.append(grid)
     f.write('template class %s; \n' % (grid))
     for fun in sub_dim_members:
@@ -40,7 +40,7 @@ for dim in inst.sub_domain_dims:
         f.write('template ' + s + '\n')  
     
 for dim in inst.domain_dims:
-    grid = 'CartesianGrid<%d>' %(dim)   
+    grid = 'Grid<%d>' %(dim)   
     grids.append(grid)
     f.write('template class %s; \n' % (grid))
     for fun in sub_dim_members:
@@ -55,7 +55,7 @@ f.write('IGA_NAMESPACE_CLOSE\n')
 f.write('#ifdef SERIALIZATION\n')
 id = 0 
 for grid in unique(grids):
-    alias = 'CartesianGridAlias%d' %(id)
+    alias = 'GridAlias%d' %(id)
     f.write('using %s = iga::%s; \n' % (alias, grid))
     
     f.write('ALLOW_SHARED_THIS(%s)\n' %alias )

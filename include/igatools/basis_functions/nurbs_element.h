@@ -63,14 +63,14 @@ public:
   /** Type for the grid accessor. */
   using GridAccessor = NonConstGridElement<dim>;
 
-  /** Type required by the CartesianGridIterator templated iterator */
+  /** Type required by the GridIterator templated iterator */
   using ContainerType = const NURBSSpace<dim, range, rank> ;
 
   /** Type required for the generic algorithm on the spaces (plots??) */
   using Space = NURBSSpace<dim, range, rank> ;
 
 
-  using Grid = CartesianGrid<dim>;
+  using Grid = Grid<dim>;
   using IndexType = typename Grid::IndexType;
   using List = typename Grid::List;
   using ListIt = typename Grid::ListIt;

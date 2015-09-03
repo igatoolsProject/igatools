@@ -32,7 +32,7 @@ void test(const int deg1)
 {
   using SplineSpace = SplineSpace<dim, range, rank>;
 
-  auto grid = CartesianGrid<dim>::create(4);
+  auto grid = Grid<dim>::create(4);
   typename SplineSpace::Degrees deg2(deg1);
   typename SplineSpace::DegreeTable deg(deg2);
 

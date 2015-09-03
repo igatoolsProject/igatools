@@ -79,7 +79,7 @@ public:
   /**
    * Construct the extraction operators.
    */
-  BernsteinExtraction(const CartesianGrid<dim> &grid,
+  BernsteinExtraction(const Grid<dim> &grid,
                       const KnotsTable &rep_knots,
                       const MultiplicityTable &acum_mult,
                       const DegreeTable &deg);

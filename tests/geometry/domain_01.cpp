@@ -37,7 +37,7 @@ void domain()
 {
   OUTSTART
 
-  using Grid = CartesianGrid<dim>;
+  using Grid = Grid<dim>;
   using Domain = Domain<dim, codim>;
 
   auto grid = Grid::const_create();

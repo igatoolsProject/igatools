@@ -44,7 +44,7 @@ void elem_derivatives(const int n_knots = 5, const int deg=1)
   OUTSTART
 
   using Space = BSplineSpace<dim, range, rank>;
-  auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto grid  = Grid<dim>::create(n_knots);
   auto space = Space::create_nonconst(deg, grid);
 
   auto flag = der_flag[der];

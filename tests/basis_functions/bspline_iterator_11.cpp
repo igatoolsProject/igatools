@@ -38,7 +38,7 @@ void uniform_space_cache(const space_element::Flags flag,
   OUTSTART
 
   using Space = BSplineSpace<dim, range, rank>;
-  auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto grid  = Grid<dim>::create(n_knots);
   auto space = Space::create_nonconst(deg, grid);
 
   auto elem = space->begin();

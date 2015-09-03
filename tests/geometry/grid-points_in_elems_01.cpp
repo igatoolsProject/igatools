@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //-+--------------------------------------------------------------------
 /*
- *  Test for CartesianGrid::find_elements_of_points
+ *  Test for Grid::find_elements_of_points
  *
  *  author: pauletti
  *  date: 2014-08-07
@@ -35,7 +35,7 @@ void do_test()
   TensorSize<dim> n_knots;
   for (int i = 0; i < dim; ++i)
     n_knots[i] = 2*i+2;
-  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto grid = Grid<dim>::create(n_knots);
 
 
   Points<dim> p_origin; // origin

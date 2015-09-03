@@ -51,7 +51,7 @@ class PhysicalSpaceElement
 
 public :
   using PhysSpace = PhysicalSpace<dim_,range_,rank_,codim_,type_>;
-  /** Type required by the CartesianGridIterator templated iterator */
+  /** Type required by the GridIterator templated iterator */
   using ContainerType = const PhysSpace;
 
   using Space = PhysSpace;
@@ -70,7 +70,7 @@ public :
 
   using PhysPoint = typename Space::Point;
 
-  using Grid = CartesianGrid<dim>;
+  using Grid = Grid<dim>;
   using IndexType = typename Grid::IndexType;
   using List = typename Grid::List;
   using ListIt = typename Grid::ListIt;
@@ -241,7 +241,7 @@ public:
 
 
   /** Return the cartesian grid from which the element belongs.*/
-  const std::shared_ptr<const CartesianGrid<dim>> get_grid() const;
+  const std::shared_ptr<const Grid<dim>> get_grid() const;
 
 
   virtual typename List::iterator &operator++() override final
@@ -263,7 +263,7 @@ public:
 #endif
 
 #if 0
-  /** @name Functions/operators for moving the element in the CartesianGrid.*/
+  /** @name Functions/operators for moving the element in the Grid.*/
   ///@{
   /**
    * Sets the index of the element using the flatten representation.

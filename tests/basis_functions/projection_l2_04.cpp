@@ -103,7 +103,7 @@ void test_proj(const int p, const int n_knots = 4)
   using RefSpace = ReferenceSpace<dim,range,rank> ;
   using Func = TestFunc<dim,range, rank>;
 
-  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto grid = Grid<dim>::create(n_knots);
   auto space = Space::create(p, grid);
 
   const int n_qp = 4;

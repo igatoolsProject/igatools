@@ -164,16 +164,16 @@ get_mapping_from_xml(const boost::property_tree::ptree &tree);
 
 
 /**
- * Returns a CartesianGrid object (wrapped by a std::shared_ptr) from a Boost XML tree
- * containing exactly one node with the tag "CartesianGrid".
+ * Returns a Grid object (wrapped by a std::shared_ptr) from a Boost XML tree
+ * containing exactly one node with the tag "Grid".
  * @note An assertion will be raised (in Debug and Release mode)
- * if no node or more than one node with the tag "CartesianGrid" are present in XML tree.
+ * if no node or more than one node with the tag "Grid" are present in XML tree.
  * @ingroup input_v2
  * @author M. Martinelli
  * @date 04 Mar 2014
  */
 template <int dim>
-std::shared_ptr< CartesianGrid<dim> >
+std::shared_ptr< Grid<dim> >
 get_cartesian_grid_from_xml(const boost::property_tree::ptree &tree);
 
 

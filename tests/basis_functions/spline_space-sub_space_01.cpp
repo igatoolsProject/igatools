@@ -35,7 +35,7 @@ void sub_space(const TensorSize<dim> &n_knots, const TensorIndex<dim> &degree)
 {
   OUTSTART
   using SplineSpace = SplineSpace<dim, range, rank>;
-  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto grid = Grid<dim>::create(n_knots);
   typename SplineSpace::DegreeTable deg {degree};
   auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
                   deg, grid->get_num_intervals());

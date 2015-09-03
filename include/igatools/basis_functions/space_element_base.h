@@ -34,7 +34,7 @@ IGA_NAMESPACE_OPEN
 
 template <int> class SpaceBase;
 
-//template <class Accessor> class CartesianGridIterator;
+//template <class Accessor> class GridIterator;
 
 /**
  *
@@ -47,7 +47,7 @@ private:
   using self_t = SpaceElementBase<dim>;
 
 public:
-  using Grid = CartesianGrid<dim>;
+  using Grid = Grid<dim>;
   using IndexType = typename Grid::IndexType;
   using List = typename Grid::List;
   using ListIt = typename Grid::ListIt;
@@ -157,7 +157,7 @@ public:
   ///@}
 
 #if 0
-  /** @name Functions/operators for moving the element in the CartesianGrid used to build the Space.*/
+  /** @name Functions/operators for moving the element in the Grid used to build the Space.*/
   ///@{
   /**
    * Sets the index of the element using the flatten representation.
@@ -214,7 +214,7 @@ public:
   IndexType get_index() const;
 
   /** Return the cartesian grid from which the element belongs.*/
-  std::shared_ptr<const CartesianGrid<dim> > get_grid() const;
+  std::shared_ptr<const Grid<dim> > get_grid() const;
 
   /**
    * Test if the element has a boundary face.

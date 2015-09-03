@@ -60,7 +60,7 @@ public:
   static const int space_dim = dim_ + codim_;
   static const int dim = dim_;
 
-  using GridType = const CartesianGrid<dim_>;
+  using GridType = const Grid<dim_>;
 
   using ElementAccessor = DomainElement<dim_, codim_>;
   using ElementIterator = GridIterator<ElementAccessor>;

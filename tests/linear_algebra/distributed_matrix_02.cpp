@@ -47,7 +47,7 @@ void fill_matrix_and_vector()
   out << " Degree of rows space: " << p_r <<endl;
   out << " Degree of columns space: " << p_c <<endl;
 
-  auto grid = CartesianGrid<dim>::create();
+  auto grid = Grid<dim>::create();
   auto r_space = Space::create(p_r, grid);
   auto c_space = Space::create(p_c, grid);
 

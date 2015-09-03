@@ -35,7 +35,7 @@ void sub_elem_values(const int n_knots, const int deg)
 {
   OUTSTART
 
-  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto grid = Grid<dim>::create(n_knots);
   using Space = BSplineSpace<dim>;
   auto space = Space::create_nonconst(deg, grid);
 

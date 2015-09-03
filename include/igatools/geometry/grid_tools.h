@@ -50,12 +50,12 @@ bool test_if_knots_fine_contains_knots_coarse(
  * FULLY contained in one element of the coarse grid, otherwise an exception will be raised
  * (in Debug mode).
  *
- * @relates CartesianGrid
+ * @relates Grid
  */
 template <int dim>
 SafeSTLArray<SafeSTLVector<Index>,dim>
-build_map_intervals_id_between_cartesian_grids(const CartesianGrid<dim> &grid_fine,
-                                               const CartesianGrid<dim> &grid_coarse);
+build_map_intervals_id_between_cartesian_grids(const Grid<dim> &grid_fine,
+                                               const Grid<dim> &grid_coarse);
 
 #if 0
 /**
@@ -66,27 +66,27 @@ build_map_intervals_id_between_cartesian_grids(const CartesianGrid<dim> &grid_fi
  * FULLY contained in one element of the coarse grid, otherwise an exception will be raised
  * (in Debug mode).
  *
- * @relates CartesianGrid
+ * @relates Grid
  */
 template <int dim>
 SafeSTLArray<Index,dim>
-get_max_num_fine_intervals_in_coarse_interval(const CartesianGrid<dim> &grid_fine,
-                                              const CartesianGrid<dim> &grid_coarse);
+get_max_num_fine_intervals_in_coarse_interval(const Grid<dim> &grid_fine,
+                                              const Grid<dim> &grid_coarse);
 
 
 #endif
 
 /**
- * Type alias for the container that associates element indices between two CartesianGrid.
+ * Type alias for the container that associates element indices between two Grid.
  *
- * @relates CartesianGrid
+ * @relates Grid
  */
 template<int dim>
-using InterGridMap = std::map<typename CartesianGrid<dim>::IndexType,typename CartesianGrid<dim>::IndexType>;
+using InterGridMap = std::map<typename Grid<dim>::IndexType,typename Grid<dim>::IndexType>;
 
 
 /**
- * Given one CartesianGrid <tt>grid_coarse</tt> and a refinement <tt>grid_fine</tt>,
+ * Given one Grid <tt>grid_coarse</tt> and a refinement <tt>grid_fine</tt>,
  * this function builds and returns the one-to-one mapping between the elements on the
  * fine and the elements on the coarse.
  * @code{.cpp}
@@ -99,18 +99,18 @@ using InterGridMap = std::map<typename CartesianGrid<dim>::IndexType,typename Ca
  * FULLY contained in one element of the coarse grid, otherwise an exception will be raised
  * (in Debug mode).
  *
- * @relates CartesianGrid
+ * @relates Grid
  */
 template <int dim>
 InterGridMap<dim>
-build_map_elements_id_between_cartesian_grids(const CartesianGrid<dim> &grid_fine,
-                                              const CartesianGrid<dim> &grid_coarse);
+build_map_elements_id_between_cartesian_grids(const Grid<dim> &grid_fine,
+                                              const Grid<dim> &grid_coarse);
 
 #if 0
 
 template<int dim>
-using InterGridMap = std::map<typename CartesianGrid<dim>::ElementConstIterator,
-      typename CartesianGrid<dim>::ElementConstIterator>;
+using InterGridMap = std::map<typename Grid<dim>::ElementConstIterator,
+      typename Grid<dim>::ElementConstIterator>;
 
 /**
  * Given one grid <tt>grid_coarse</tt> and a refinement <tt>grid_fine</tt>,
@@ -126,41 +126,41 @@ using InterGridMap = std::map<typename CartesianGrid<dim>::ElementConstIterator,
  * FULLY contained in one element of the coarse grid, otherwise an exception will be raised
  * (in Debug mode).
  *
- * @relates CartesianGrid
+ * @relates Grid
  */
 template <int dim>
 InterGridMap<dim>
-build_map_elements_between_cartesian_grids(const CartesianGrid<dim> &grid_fine,
-                                           const CartesianGrid<dim> &grid_coarse);
+build_map_elements_between_cartesian_grids(const Grid<dim> &grid_fine,
+                                           const Grid<dim> &grid_coarse);
 #endif
 
 
 
 
 /**
- * Given two CartesianGrid <tt>grid_1</tt> and <tt>grid_2</tt> defined over the same domain,
+ * Given two Grid <tt>grid_1</tt> and <tt>grid_2</tt> defined over the same domain,
  * this function returns the grid that contains both. Moreover, this function gives back
- * the one-to-one mapping between the elements in the CartesianGrid union with the
+ * the one-to-one mapping between the elements in the Grid union with the
  * elements in the two starting grids.
  *
  * @param[in] grid_1 First grid.
  * @param[in] grid_2 Second grid.
  * @param[out] map_elem_id_grid_union_to_elem_id_grid_1 One-to-one mapping between the elements id in the
- * CartesianGrid union and the elements id in the first grid.
+ * Grid union and the elements id in the first grid.
  * @param[out] map_elem_id_grid_union_to_elem_id_grid_2 One-to-one mapping between the elements id in the
- * CartesianGrid union and the elements id in the second grid.
- * @return The CartesianGrid that contains the all the knots from <tt>grid_1</tt> and <tt>grid_2</tt>.
+ * Grid union and the elements id in the second grid.
+ * @return The Grid that contains the all the knots from <tt>grid_1</tt> and <tt>grid_2</tt>.
  *
  * @warning In Debug mode an assertion will be raised if
  * the two grids <tt>grid_1</tt> and <tt>grid_2</tt> are not defined on the same domain.
  *
- * @relates CartesianGrid
+ * @relates Grid
  */
 template <int dim>
-std::shared_ptr<CartesianGrid<dim> >
+std::shared_ptr<Grid<dim> >
 build_cartesian_grid_union(
-  const CartesianGrid<dim> &grid_1,
-  const CartesianGrid<dim> &grid_2,
+  const Grid<dim> &grid_1,
+  const Grid<dim> &grid_2,
   InterGridMap<dim> &map_elem_grid_union_to_elem_grid_1,
   InterGridMap<dim> &map_elem_grid_union_to_elem_grid_2);
 

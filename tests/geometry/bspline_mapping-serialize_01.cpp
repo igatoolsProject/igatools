@@ -88,7 +88,7 @@ void bspline_map(const int deg = 1)
   using Function = IgFunction<dim,0,dim+codim,1>;
   using Mapping   = Mapping<dim, codim>;
 
-  auto grid = CartesianGrid<dim>::create(2);
+  auto grid = Grid<dim>::create(2);
   auto space = Space::create(deg, grid);
 
   auto c_p = EpetraTools::create_vector(*space, "active",Epetra_SerialComm());

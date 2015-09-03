@@ -65,7 +65,7 @@ int main()
   const int dim = 2;
   using Space = BSplineSpace<dim>;
 
-  auto grid = CartesianGrid<dim>::create(5);
+  auto grid = Grid<dim>::create(5);
   auto space = Space::create(1, grid);
 
   Epetra_SerialComm comm;

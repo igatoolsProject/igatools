@@ -24,14 +24,14 @@ include_files = ['geometry/grid_element.h']
 data = Instantiation(include_files)
 (f, inst) = (data.file_output, data.inst)
 
-cartesian_grids = ['CartesianGrid<%d>' % (dim) for dim in inst.all_domain_dims]
+cartesian_grids = ['Grid<%d>' % (dim) for dim in inst.all_domain_dims]
 for grid in cartesian_grids:
     map = 'std::map<typename %s::IndexType,typename %s::IndexType>' %(grid,grid)
     f.write('template std::shared_ptr<%s> grid_tools::build_cartesian_grid_union('
             'const %s &,const %s &,%s &,%s &); \n' % (grid,grid,grid, map,map))
     
 #for dim in inst.all_domain_dims:
-#    grid = 'CartesianGrid<%d>' % (dim)
+#    grid = 'Grid<%d>' % (dim)
 #    f.write('template std::map<Index,Index>'+
 #            ' grid_tools::build_map_elements_id_between_cartesian_grids('
 #           'const %s &,const %s &); \n' % (grid,grid))

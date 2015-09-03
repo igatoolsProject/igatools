@@ -47,7 +47,7 @@ void mapping_values()
               ValueFlags::w_measure;
 
   auto quad = QGauss<dim>(1);
-  auto grid = CartesianGrid<dim>::create();
+  auto grid = Grid<dim>::create();
 
   auto F = Function::create(grid, IdentityFunction<dim>::create(grid),
                             1, 2, 0, 2.0, 0.0, numbers::PI/2.0);

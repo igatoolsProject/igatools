@@ -38,7 +38,7 @@ IGA_NAMESPACE_OPEN
 template<int dim_, int range_, int rank_>
 ReferenceSpace<dim_, range_, rank_>::
 ReferenceSpace(
-  const std::shared_ptr<CartesianGrid<dim_>> &grid)
+  const std::shared_ptr<Grid<dim_>> &grid)
   :
   base_t(grid,std::make_shared<IdentityFunction<dim,dim>>(grid))
 {}
@@ -46,7 +46,7 @@ ReferenceSpace(
 template<int dim_, int range_, int rank_>
 ReferenceSpace<dim_, range_, rank_>::
 ReferenceSpace(
-  const std::shared_ptr<const CartesianGrid<dim_>> &grid)
+  const std::shared_ptr<const Grid<dim_>> &grid)
   :
   base_t(grid,std::make_shared<IdentityFunction<dim,dim>>(grid))
 {}
@@ -58,7 +58,7 @@ auto
 ReferenceSpace<dim, range, rank>::
 get_ref_sub_space(const int sub_elem_id,
                   InterSpaceMap<k> &dof_map,
-                  std::shared_ptr<CartesianGrid<k>> sub_grid) const
+                  std::shared_ptr<Grid<k>> sub_grid) const
 -> std::shared_ptr< SubRefSpace<k> >
 {
   std::shared_ptr< SubRefSpace<k> > sub_ref_space;
@@ -94,7 +94,7 @@ template<int k>
 auto
 ReferenceSpace<dim, range, rank>::
 get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
-              std::shared_ptr<CartesianGrid<k>> sub_grid,
+              std::shared_ptr<Grid<k>> sub_grid,
               SubGridMap<k> &elem_map) const
 -> std::shared_ptr<SubSpace<k> >
 {

@@ -37,7 +37,7 @@ void component_space(const int deg=3,  const int n_knots = 10)
 {
   OUTSTART
 
-  auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto grid  = Grid<dim>::create(n_knots);
   using VecSpace = BSplineSpace<dim, dim+codim>;
   using CompSpace  = BSplineSpace<dim, 1>;
   typename VecSpace::Degrees degt(deg);

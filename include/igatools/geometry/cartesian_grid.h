@@ -41,15 +41,15 @@
 
 IGA_NAMESPACE_OPEN
 
-template <int> class CartesianGrid;
+template <int> class Grid;
 
 template <int, class> class GridElement;
 
 template<int dim>
-using ConstGridElement = GridElement<dim, const CartesianGrid<dim>>;
+using ConstGridElement = GridElement<dim, const Grid<dim>>;
 
 template<int dim>
-using NonConstGridElement = GridElement<dim, CartesianGrid<dim>>;
+using NonConstGridElement = GridElement<dim, Grid<dim>>;
 
 
 template <int> class GridHandler;
@@ -63,11 +63,11 @@ template <int> class GridHandler;
  * Two consecutive coordinates (along the same direction) defines an <em>interval</em>.
  *
  * Then, the tensor-product of the intervals along the coordinate directions define
- * the elements that are tiling the domain covered by the CartesianGrid;
+ * the elements that are tiling the domain covered by the Grid;
  *
- * The element type for the CartesianGrid is CartesianGridElement.
+ * The element type for the Grid is GridElement.
  *
- * The elements can be iterated with the CartesianGridIterator object.
+ * The elements can be iterated with the GridIterator object.
  * The iterators for traversing the the entire set of elements of the grid
  * are build with the begin(), end(), cbegin(), cend() functions called with no
  * arguments.
@@ -77,7 +77,7 @@ template <int> class GridHandler;
  * (identified by one PropId).
  * There is no pre-defined list of element properties: any property can be
  * defined and added to the list
- * of properties stored within the CartesianGrid. This choice is made because
+ * of properties stored within the Grid. This choice is made because
  * the properties are usually specific for a given problem (e.g. <em>active</em>
  * elements in hierarchical grids or <em>marked</em> elements for a-posteriori
  * error estimators).
@@ -88,7 +88,7 @@ template <int> class GridHandler;
  *  the elements with even flat-index and the <tt>"marked"</tt> to the elements
  *  with odd flat-index
  * @code{.cpp}
-   auto grid = CartesianGrid<2>::create(5); // here we create a 4x4 grid
+   auto grid = Grid<2>::create(5); // here we create a 4x4 grid
 
    const PropId property_active = "active"; // here we choose the string identifying the first property
    const PropId property_marked = "marked"; // here we choose the string identifying the second property
@@ -107,7 +107,7 @@ template <int> class GridHandler;
    }
    @endcode
  *
- * The list of elements with a given property can be obtained from the CartesianGrid
+ * The list of elements with a given property can be obtained from the Grid
  * using the function get_elements_id_same_property(const PropId &property).
  * For example if we want the IDs of the elements having the property <tt>"marked"</tt> we can write
  * @code{.cpp}
@@ -115,7 +115,7 @@ template <int> class GridHandler;
    // now elems_id_marked is a const reference to a std::set<Index> containing the values [1 3 5 7 9 11 13 15]
    @endcode
  *
- * The elements with the same property can be iterated with the CartesianGridIterator object.
+ * The elements with the same property can be iterated with the GridIterator object.
  * The iterators for elements with a given property can be obtained with the
  * begin(), end(), cbegin(), cend() functions invoked
  * with the property name as input argument. For example, to iterate over the elements that share the property
@@ -132,27 +132,27 @@ template <int> class GridHandler;
    @endcode
  *
  * In Debug mode, an assertion will be raised if the the property string used as input argument
- * in the begin() / end() functions is not defined in the CartesianGrid.
+ * in the begin() / end() functions is not defined in the Grid.
  *
- * ### Getting a CartesianGrid by an XML structure.
- * A CartesianGrid object can be obtained by a Boost XML structure using the
+ * ### Getting a Grid by an XML structure.
+ * A Grid object can be obtained by a Boost XML structure using the
  * function
  * get_cartesian_grid_from_xml().
- * An example of valid XML structure for a 2-dimensional CartesianGrid is given
+ * An example of valid XML structure for a 2-dimensional Grid is given
  * by the following
  * XML block
  * @code{.xml}
-   <CartesianGrid Dim="2">
+   <Grid Dim="2">
      <Knots Direction="0" Size="2">
        0.0 1.0
      </Knots>
      <Knots Direction="1" Size="2">
         0.0 1.0
      </Knots>
-   </CartesianGrid>
+   </Grid>
  * @endcode
- * where the <tt>Dim</tt> attribute in the <tt>"CartesianGrid"</tt> tag is the
- * dimensionality of the CartesianGrid
+ * where the <tt>Dim</tt> attribute in the <tt>"Grid"</tt> tag is the
+ * dimensionality of the Grid
  * and the <tt>Size</tt> attribute in each <tt>"Knots"</tt> tag is the number
  *  of unique knots values (also called
  * "breakpoints") along each coordinate direction.
@@ -167,13 +167,13 @@ template <int> class GridHandler;
  * @todo document more
  */
 template<int dim_>
-class CartesianGrid :
+class Grid :
   protected TensorSizedContainer<dim_>,
-  public std::enable_shared_from_this<CartesianGrid<dim_>>
+  public std::enable_shared_from_this<Grid<dim_>>
 {
 private:
   /** Type for current class. */
-  using self_t = CartesianGrid<dim_>;
+  using self_t = Grid<dim_>;
   using base_t = TensorSizedContainer<dim_>;
 
 public:
@@ -210,7 +210,7 @@ public:
    * Construct a uniform cartesian grid of the unit <tt>dim</tt>-dimensional
    * hypercube \f$[0,1]^{dim}\f$, with @p n knots (equally spaced) in each dimension.
    */
-  explicit CartesianGrid(const Size n = 2);
+  explicit Grid(const Size n = 2);
 
 protected:
   /**
@@ -219,18 +219,18 @@ protected:
    * with <tt>n[0],..,n[dim-1</tt>] knots in each dimension
    * respectively.
    */
-  explicit CartesianGrid(const TensorSize<dim_> &n_knots);
+  explicit Grid(const TensorSize<dim_> &n_knots);
 
   /**
    * @todo Document me
    */
-  explicit CartesianGrid(const BBox<dim_> &bbox,
+  explicit Grid(const BBox<dim_> &bbox,
                          const Size n_knots);
 
   /**
    * @todo Document me
    */
-  explicit CartesianGrid(const BBox<dim_> &bbox,
+  explicit Grid(const BBox<dim_> &bbox,
                          const TensorSize<dim_> &n_knots);
   /**
    * Construct a cartesian grid where the knot coordinate in each
@@ -242,7 +242,7 @@ protected:
    * is perform and if not satistified an exception is raised.
    */
   explicit
-  CartesianGrid(const KnotCoordinates &knots);
+  Grid(const KnotCoordinates &knots);
 
   /**
    * Construct a cartesian grid where the knot coordinate in each
@@ -254,7 +254,7 @@ protected:
    * is perform and if not satisfied an exception is raised.
    */
   explicit
-  CartesianGrid(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knot_coords);
+  Grid(const SafeSTLArray<SafeSTLVector<Real>,dim_> &knot_coords);
 
 public:
   /**
@@ -262,18 +262,18 @@ public:
    * Perform a deep copy of the member variables except the
    * signal_refine_ variable, that is not copied at all.
    */
-  CartesianGrid(const self_t &grid);
+  Grid(const self_t &grid);
 
   /**  Move constructor */
-  CartesianGrid(self_t &&grid) = default;
+  Grid(self_t &&grid) = default;
 
   /** Destructor */
-  ~CartesianGrid() = default;
+  ~Grid() = default;
   ///@}
 
   /**
    * @name Creators
-   * @note The functions here return a CartesianGrid<dim_> object wrapped by
+   * @note The functions here return a Grid<dim_> object wrapped by
    * a std::shared_ptr
    */
   ///@{
@@ -406,7 +406,7 @@ public:
 
   /**
    * Query the number of knot values along each coordinate direction
-   * represented by the CartesianGrid.
+   * represented by the Grid.
    */
   TensorSize<dim_> get_num_knots_dim() const;
 
@@ -427,7 +427,7 @@ public:
 
   /**
    * Returns the smallest <tt>dim_</tt>-dimensional bounding box enclosing the
-   * domain represented by the CartesianGrid object.
+   * domain represented by the Grid object.
    */
   BBox<dim_> get_bounding_box() const;
   ///@}
@@ -492,7 +492,7 @@ public:
 
   template<int sdim>
   using SubGridMap =
-    SafeSTLMap<typename CartesianGrid<sdim>::IndexType, IndexType>;
+    SafeSTLMap<typename Grid<sdim>::IndexType, IndexType>;
   /**
    * Construct a sub grid of dimension k conforming to
    * the grid sub element sub_elem_id and a map from the elements of
@@ -500,7 +500,7 @@ public:
    * grid.
    */
   template<int sdim>
-  std::shared_ptr<CartesianGrid<sdim> >
+  std::shared_ptr<Grid<sdim> >
   get_sub_grid(const int sub_elem_id, SubGridMap<sdim> &elem_map) const;
   ///@}
 
@@ -535,7 +535,7 @@ public:
 
 public:
   /**
-   * Prints debug information of the CartesianGrid to a LogStream.
+   * Prints debug information of the Grid to a LogStream.
    */
   void print_info(LogStream &out) const;
 
@@ -543,7 +543,7 @@ public:
    * Comparison operator. Returns true if the knot coordinates of two grid
    * are equal.
    */
-  bool operator==(const CartesianGrid<dim_> &grid) const;
+  bool operator==(const Grid<dim_> &grid) const;
 
 #ifdef MESH_REFINEMENT
   /**
@@ -553,14 +553,14 @@ public:
        * @note The functions returns TRUE also if the knots in the current grid object
        * are equal to the knots in @p grid_to_compare_with.
        */
-  bool same_knots_or_refinement_of(const CartesianGrid<dim_> &grid_to_compare_with) const;
+  bool same_knots_or_refinement_of(const Grid<dim_> &grid_to_compare_with) const;
 
 private:
 
   /** Type for the insert_knots signal. */
   using signal_insert_knots_t =
     boost::signals2::signal<
-    void (const SafeSTLArray<SafeSTLVector<Real>,dim_> &new_knots,const CartesianGrid<dim_> &old_grid)>;
+    void (const SafeSTLArray<SafeSTLVector<Real>,dim_> &new_knots,const Grid<dim_> &old_grid)>;
 
 public:
 
@@ -612,7 +612,7 @@ public:
    *  Connect a slot (i.e. a function pointer) to the refinement signals
    *  which will be
    *  emitted whenever a insert_knots() function is called by an object holding
-   *  a CartesianGrid member.
+   *  a Grid member.
    */
   boost::signals2::connection
   connect_insert_knots(const SignalInsertKnotsSlot &subscriber);
@@ -677,7 +677,7 @@ public:
   ///@{
   /**
   * Adds a new <tt>property</tt> definition for the elements in the
-  * CartesianGrid.
+  * Grid.
   *
   * @note If the <tt>property</tt> is already present, an assertion will
   *  be raised (in Debug mode).
@@ -745,7 +745,7 @@ public:
    */
   ///@{
   /**
-   * Returns the flat-id of the elements in the CartesianGrid.
+   * Returns the flat-id of the elements in the Grid.
    */
   List get_elements_id() const;
   ///@}
@@ -754,7 +754,7 @@ public:
 private:
   /**
    * Returns the flat ids of the sub-elements corresponding to the element
-   * with index @p elem_id, referred to a CartesianGrid built as a refinement
+   * with index @p elem_id, referred to a Grid built as a refinement
    * of the current one using@p n_sub_elems for each element.
    */
   SafeSTLVector<Index>
@@ -773,8 +773,8 @@ private:
    */
   signal_insert_knots_t insert_knots_signals_;
 #endif
-  friend class GridElement<dim_, CartesianGrid<dim_>>;
-  friend class GridElement<dim_, const CartesianGrid<dim_>>;
+  friend class GridElement<dim_, Grid<dim_>>;
+  friend class GridElement<dim_, const Grid<dim_>>;
 //  friend class NonConstGridElement<dim_>;
 //  friend class ConstGridElement<dim_>;
 

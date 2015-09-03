@@ -55,7 +55,7 @@ public:
 
   /** see documentation in \ref Space */
 
-  using GridType = CartesianGrid<dim_>;
+  using GridType = Grid<dim_>;
   static const int dim       = dim_;
   static const int codim     = 0;
   static const int space_dim = dim_;
@@ -128,12 +128,12 @@ public:
   std::shared_ptr<SubRefSpace<k> >
   get_ref_sub_space(const int sub_elem_id,
                     InterSpaceMap<k> &dof_map,
-                    std::shared_ptr<CartesianGrid<k>> sub_grid = nullptr) const;
+                    std::shared_ptr<Grid<k>> sub_grid = nullptr) const;
 
   template<int k>
   std::shared_ptr<SubSpace<k> >
   get_sub_space(const int s_id, InterSpaceMap<k> &dof_map,
-                std::shared_ptr<CartesianGrid<k>> sub_grid,
+                std::shared_ptr<Grid<k>> sub_grid,
                 SubGridMap<k> &elem_map) const;
 
 public:
@@ -303,14 +303,14 @@ private:
    * Rebuild the internal state of the object after an insert_knots() function is invoked.
    *
    * @pre Before invoking this function, must be invoked the function grid_->insert_knots().
-   * @note This function is connected to the CartesianGrid's signal for the refinement, and
+   * @note This function is connected to the Grid's signal for the refinement, and
    * it is necessary in order to avoid infinite loops in the insert_knots() function calls.
    *
    * @ingroup h_refinement
    */
   void rebuild_after_insert_knots(
     const SafeSTLArray<SafeSTLVector<Real>,dim_> &knots_to_insert,
-    const CartesianGrid<dim_> &old_grid);
+    const Grid<dim_> &old_grid);
 
   void create_connection_for_insert_knots(std::shared_ptr<self_t> space);
 #endif // MESH_REFINEMENT

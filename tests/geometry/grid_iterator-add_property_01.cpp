@@ -38,7 +38,7 @@ void iterate(const int n_knots = 5)
   const string red = "red";
   const string blue = "blue";
 
-  auto grid = CartesianGrid<dim>::create(n_knots);
+  auto grid = Grid<dim>::create(n_knots);
   grid->add_property(red);
   grid->add_property(blue);
 

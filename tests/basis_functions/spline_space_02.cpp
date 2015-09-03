@@ -32,7 +32,7 @@ void test_1d()
   const int dim=1;
   using SplineSpace = SplineSpace<dim>;
 
-  auto grid = CartesianGrid<dim>::create(4);
+  auto grid = Grid<dim>::create(4);
   typename SplineSpace::DegreeTable deg {{2}};
   auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
                   deg, grid->get_num_intervals());
@@ -68,7 +68,7 @@ void test_2d()
   const int dim=2;
   using SplineSpace = SplineSpace<dim>;
 
-  auto grid = CartesianGrid<dim>::create({3,5});
+  auto grid = Grid<dim>::create({3,5});
   typename SplineSpace::DegreeTable deg {{1,3}};
 
 
@@ -98,7 +98,7 @@ void test_3d()
   const int dim=3;
   using SplineSpace = SplineSpace<dim>;
 
-  auto grid = CartesianGrid<dim>::create({3,4,5});
+  auto grid = Grid<dim>::create({3,4,5});
   typename SplineSpace::DegreeTable deg {{1,3,0}};
   auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
                   deg, grid->get_num_intervals());
@@ -130,7 +130,7 @@ void test_2d_2()
   const int range=2;
   using SplineSpace = SplineSpace<dim, range, 1>;
 
-  auto grid = CartesianGrid<dim>::create({3,4});
+  auto grid = Grid<dim>::create({3,4});
   typename SplineSpace::DegreeTable deg {{1,3},{3,1}};
   auto int_mult = SplineSpace::get_multiplicity_from_regularity(InteriorReg::maximum,
                   deg, grid->get_num_intervals());

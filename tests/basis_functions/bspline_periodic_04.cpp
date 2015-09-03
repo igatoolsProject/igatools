@@ -67,7 +67,7 @@ void assemble_matrix(const int n_knots, const int deg)
 
   end_b[0] = BasisEndBehaviour::periodic;
 
-  auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto grid  = Grid<dim>::create(n_knots);
   grid->set_boundary_id(0, 1);
   grid->set_boundary_id(1, 1);
 

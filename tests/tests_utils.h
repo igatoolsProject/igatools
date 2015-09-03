@@ -37,7 +37,7 @@ auto non_uniform_grid(const int max_nodes = 5)
     std::partial_sum(prog.begin(), prog.end(), knots[i].begin());
   }
 
-  return CartesianGrid<dim>::create(knots);
+  return Grid<dim>::create(knots);
 }
 
 #define __TESTS_TEST_UTILS_H_

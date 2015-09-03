@@ -50,7 +50,7 @@ void test()
     b[i] = i;
   }
 
-  auto grid = CartesianGrid<dim>::create(3);
+  auto grid = Grid<dim>::create(3);
   auto F = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
 
   auto flag = ValueFlags::inv_hessian|ValueFlags::inv_gradient|ValueFlags::point;

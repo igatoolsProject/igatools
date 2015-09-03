@@ -42,7 +42,7 @@ using namespace EpetraTools;
 template< int dim, int range >
 void do_test()
 {
-  auto grid = CartesianGrid<dim>::create();
+  auto grid = Grid<dim>::create();
 
   const int degree = 1;
   const int rank =  1 ;

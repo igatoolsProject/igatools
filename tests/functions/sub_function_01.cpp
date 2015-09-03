@@ -39,7 +39,7 @@ void sub_function(const int n_knots = 3)
   OUTSTART
 
   using Func = IdentityFunction<dim>;
-  using GridType = CartesianGrid<dim>;
+  using GridType = Grid<dim>;
   using SubFunc = SubFunction<sub_dim, dim, codim, dim, 1>;
   auto grid = GridType::create(n_knots);
   auto func = Func::create(grid);

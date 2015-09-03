@@ -52,7 +52,7 @@ void test()
         A[j][j] = 2.;
     b[i] = i;
   }
-  auto grid = CartesianGrid<dim>::create(3);
+  auto grid = Grid<dim>::create(3);
   auto F = Function::create(grid, IdentityFunction<dim>::create(grid), A, b);
 
   auto flag = ValueFlags::point | ValueFlags::value | ValueFlags::gradient |

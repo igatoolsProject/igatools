@@ -50,7 +50,7 @@ private:
   using self_t = IdentityFunction<dim,space_dim>;
 
 protected:
-  using GridType = CartesianGrid<dim>;
+  using GridType = Grid<dim>;
 
 public:
   using typename parent_t::ElementAccessor;
@@ -89,7 +89,7 @@ private:
 
   void rebuild_after_insert_knots(
     const SafeSTLArray<SafeSTLVector<Real>,dim> &knots_to_insert,
-    const CartesianGrid<dim> &old_grid);
+    const Grid<dim> &old_grid);
 
 #endif // MESH_REFINEMENT
 

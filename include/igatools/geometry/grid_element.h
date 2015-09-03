@@ -36,7 +36,7 @@ IGA_NAMESPACE_OPEN
 
 
 /**
- * @brief Element accessor for the CartesianGrid.
+ * @brief Element accessor for the Grid.
  *
  * The element can be queried for informations
  * that can be generated on-the-fly
@@ -64,7 +64,7 @@ private:
   using self_t = GridElement<dim, ContainerType_>;
 
 public:
-  /** Type required by the CartesianGridIterator templated iterator */
+  /** Type required by the GridIterator templated iterator */
   using ContainerType = ContainerType_;
   using IndexType = typename ContainerType::IndexType;
   using List = typename ContainerType::List;
@@ -86,7 +86,7 @@ protected:
 public:
   /**
    * Construct an accessor pointing to the element with
-   * flat index @p elem_index of the CartesianGrid @p grid.
+   * flat index @p elem_index of the Grid @p grid.
    */
   GridElement(const std::shared_ptr<ContainerType> &grid,
               const ListIt &index,
@@ -125,7 +125,7 @@ public:
 
   const IndexType &get_index() const;
 
-  /** Return the CartesianGrid from which the element belongs.*/
+  /** Return the Grid from which the element belongs.*/
   const std::shared_ptr<const ContainerType> get_grid() const;
 
   /**
@@ -148,9 +148,9 @@ public:
   ///@}
 
   /**
-   * @name Functions/operators for moving the element in the CartesianGrid.
+   * @name Functions/operators for moving the element in the Grid.
    *
-   * @note They should be called only by the CartesianGridIterator.
+   * @note They should be called only by the GridIterator.
    */
   ///@{
   /**
@@ -286,7 +286,7 @@ private:
 
 public:
   /**
-   * Prints internal information about the CartesianGridElementAccessor.
+   * Prints internal information about the GridElementAccessor.
    * Its main use is for testing and debugging.
    */
   void print_info(LogStream &out) const;

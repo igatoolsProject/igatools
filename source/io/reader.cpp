@@ -357,16 +357,16 @@ get_mapping_from_xml(const boost::property_tree::ptree &igatools_tree)
 
 
 template <int dim>
-shared_ptr< CartesianGrid<dim> >
+shared_ptr< Grid<dim> >
 get_cartesian_grid_from_xml(const boost::property_tree::ptree &tree)
 {
-  AssertThrow(xml_element_is_unique(tree,"CartesianGrid"),
-              ExcMessage("The CartesianGrid tag is not unique."));
+  AssertThrow(xml_element_is_unique(tree,"Grid"),
+              ExcMessage("The Grid tag is not unique."));
 
-  const auto &grid_tree = get_xml_element(tree,"CartesianGrid");
+  const auto &grid_tree = get_xml_element(tree,"Grid");
 
   //-------------------------------------------------------------------------
-  // reading the CartesianGrid attributes
+  // reading the Grid attributes
   const auto &grid_attributes = get_xml_element_attributes(grid_tree);
 
   const int dim_from_file = grid_attributes.get<int>("Dim");
@@ -394,7 +394,7 @@ get_cartesian_grid_from_xml(const boost::property_tree::ptree &tree)
   }
   //-------------------------------------------------------------------------
 
-  return CartesianGrid<dim>::create(CartesianProductArray<Real,dim>(knots));
+  return Grid<dim>::create(CartesianProductArray<Real,dim>(knots));
 }
 
 
@@ -431,7 +431,7 @@ get_bspline_space_from_xml(const boost::property_tree::ptree &tree)
 
 
   //-------------------------------------------------------------------------
-  // reading the CartesianGrid
+  // reading the Grid
   auto grid = get_cartesian_grid_from_xml<dim>(ref_space_tree);
   //-------------------------------------------------------------------------
 
@@ -571,7 +571,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
 
 
   //-------------------------------------------------------------------------
-  // reading the CartesianGrid
+  // reading the Grid
   auto grid = get_cartesian_grid_from_xml<dim>(ref_space_tree);
   //-------------------------------------------------------------------------
 
@@ -703,7 +703,7 @@ get_nurbs_space_from_xml(const boost::property_tree::ptree &tree)
   using ScalarDegreeTable = typename ScalarBSplineSpace::DegreeTable;
   const ScalarDegreeTable scalar_degree_table(degrees[0]);
 
-  auto new_grid = CartesianGrid<dim>::create(*grid);
+  auto new_grid = Grid<dim>::create(*grid);
 
   using ScalarMultiplicityTable = typename ScalarBSplineSpace::MultiplicityTable;
   const auto scalar_mult_table = ScalarMultiplicityTable(multiplicities[0]);
@@ -995,7 +995,7 @@ ig_mapping_reader_version_1_0(const std::string &filename)
   using MultiplicityTable = typename SpSpace::MultiplicityTable;
   using EndBehaviourTable = typename SpSpace::EndBehaviourTable;
 
-  auto grid = CartesianGrid<dim>::create(knots_unique_values);
+  auto grid = Grid<dim>::create(knots_unique_values);
   shared_ptr< Mapping<dim,codim> > map;
 
   if (is_nurbs_mapping)

@@ -52,7 +52,7 @@ void intregrate_on_sphere(const int n_knots)
     box[i] = {0., M_PI/2.};
   if (dim>=1)
     box[dim-1] = {0., M_PI/2.};
-  auto grid = CartesianGrid<dim>::create(box, n_knots);
+  auto grid = Grid<dim>::create(box, n_knots);
 
   auto F = MapFunction::create(grid, IdentityFunction<dim>::create(grid));
   typename IntegrandFunction::Value val {1.};

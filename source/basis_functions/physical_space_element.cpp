@@ -146,7 +146,7 @@ get_ref_space_element() -> RefElemAccessor &
 template<int dim_,int range_,int rank_,int codim_,Transformation type_>
 auto
 PhysicalSpaceElement<dim_,range_,rank_,codim_,type_>::
-get_grid() const -> const std::shared_ptr<const CartesianGrid<dim> >
+get_grid() const -> const std::shared_ptr<const Grid<dim> >
 {
   return this->get_ref_space_element().get_grid();
 }

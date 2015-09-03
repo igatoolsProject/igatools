@@ -183,7 +183,7 @@ fill_extraction(const int m,
 
 template<int dim, int range, int rank>
 BernsteinExtraction<dim, range, rank>::
-BernsteinExtraction(const CartesianGrid<dim> &grid,
+BernsteinExtraction(const Grid<dim> &grid,
                     const KnotsTable &rep_knots,
                     const MultiplicityTable &acum_mult,
                     const DegreeTable &deg)

@@ -222,7 +222,7 @@ public:
 
 #if 0
 private:
-  template <class Accessor> friend class CartesianGridIteratorBase;
+  template <class Accessor> friend class GridIteratorBase;
   friend class PushForward<type_, dim_, codim_>;
 
   /**

@@ -40,7 +40,7 @@ void space_cache_init_fill_elem(
   OUTSTART
 
   using Space = BSplineSpace<dim, range, rank>;
-  auto grid  = CartesianGrid<dim>::create(n_knots);
+  auto grid  = Grid<dim>::create(n_knots);
   auto space = Space::create_nonconst(deg, grid);
 
   auto quad = QGauss<dim>::create(2);

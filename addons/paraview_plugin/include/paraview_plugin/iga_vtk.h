@@ -41,7 +41,7 @@ class vtkPointSet;
 IGA_NAMESPACE_OPEN
 
 template <int dim> class Quadrature;
-template <int dim> class CartesianGrid;
+template <int dim> class Grid;
 template <int dim> class TensorSize;
 template <int dim, int codim, int range, int rank> class Function;
 class FunctionsContainer;
@@ -404,7 +404,7 @@ private:
      */
     template <int dim>
     static void
-    create_points_numbering_map(const std::shared_ptr<const CartesianGrid<dim>> grid,
+    create_points_numbering_map(const std::shared_ptr<const Grid<dim>> grid,
                                 const std::shared_ptr<Quadrature<dim>> quad,
                                 const bool is_structured,
                                 const bool is_quadratic,

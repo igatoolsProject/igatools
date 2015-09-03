@@ -88,10 +88,10 @@ protected:
   SpaceBase() = default;
 
   /** Construct the object from the (const) @p grid on which the function space will be built upon. */
-  SpaceBase(const std::shared_ptr<const CartesianGrid<dim_>> &grid);
+  SpaceBase(const std::shared_ptr<const Grid<dim_>> &grid);
 
   /** Construct the object from the (non-const) @p grid on which the function space will be built upon. */
-  SpaceBase(const std::shared_ptr<CartesianGrid<dim_>> &grid);
+  SpaceBase(const std::shared_ptr<Grid<dim_>> &grid);
 
   /** Copy constructor. */
   SpaceBase(const self_t &) = delete;
@@ -120,9 +120,9 @@ public:
   Index get_object_id() const;
 
 
-  std::shared_ptr<CartesianGrid<dim_>> get_ptr_grid();
+  std::shared_ptr<Grid<dim_>> get_ptr_grid();
 
-  std::shared_ptr<const CartesianGrid<dim_>> get_ptr_const_grid() const;
+  std::shared_ptr<const Grid<dim_>> get_ptr_const_grid() const;
 
   /**
    * Get the name associated to the object instance.
@@ -164,9 +164,9 @@ protected:
 
 private:
 
-//    std::shared_ptr<CartesianGrid<dim_> > grid_;
+//    std::shared_ptr<Grid<dim_> > grid_;
 
-  SharedPtrConstnessHandler<CartesianGrid<dim_> > grid_;
+  SharedPtrConstnessHandler<Grid<dim_> > grid_;
 
 #ifdef SERIALIZATION
   /**
@@ -234,7 +234,7 @@ protected:
    *
    * @warning After the object construction the state of <tt>map_func</tt> will be no longer valid.
    */
-  Space(const std::shared_ptr<CartesianGrid<dim_>> &grid,const std::shared_ptr<MapFunc> &map_func);
+  Space(const std::shared_ptr<Grid<dim_>> &grid,const std::shared_ptr<MapFunc> &map_func);
 
   /**
    * Construct the object from the (const) @p grid on which the function space will be built upon
@@ -244,7 +244,7 @@ protected:
    *
    * @warning After the object construction the state of <tt>map_func</tt> will be no longer valid.
    */
-  Space(const std::shared_ptr<const CartesianGrid<dim_>> &grid,const std::shared_ptr<MapFunc> &map_func);
+  Space(const std::shared_ptr<const Grid<dim_>> &grid,const std::shared_ptr<MapFunc> &map_func);
 
   /** Copy constructor. */
   Space(const self_t &) = delete;

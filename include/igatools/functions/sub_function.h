@@ -122,7 +122,7 @@ public:
   void fill_cache(ElementAccessor &elem, const topology_variant &k1, const int j) const override
   {
     Assert(j==0, ExcNotImplemented());
-    using ElementIt = typename CartesianGrid<sub_dim>::ElementIterator;
+    using ElementIt = typename Grid<sub_dim>::ElementIterator;
     ElementIt el_it(elem.get_grid(),elem.get_flat_index(),ElementProperties::active);
 
     sup_elem_->move_to(elem_map_.at(el_it->get_flat_index()));
@@ -291,8 +291,8 @@ public:
   {
 
     Assert(j==0, ExcNotImplemented());
-//        typename CartesianGrid<sub_dim>::ElementIterator el_it(elem);
-    using ElementIt = typename CartesianGrid<sub_dim>::ElementIterator;
+//        typename Grid<sub_dim>::ElementIterator el_it(elem);
+    using ElementIt = typename Grid<sub_dim>::ElementIterator;
     ElementIt el_it(elem.get_grid()->create_element(elem.get_flat_index()),ElementProperties::active);
 
     using SupElem = typename SupFunc::ElementAccessor;

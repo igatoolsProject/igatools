@@ -77,7 +77,7 @@ protected:
 public:
   /**
    * Construct an accessor pointing to the element with
-   * flat index @p elem_index of the CartesianGrid @p grid.
+   * flat index @p elem_index of the Grid @p grid.
    */
   FunctionElementBase(const std::shared_ptr<ContainerType_> func,
                       const ListIt &index,

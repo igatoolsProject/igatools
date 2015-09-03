@@ -52,7 +52,7 @@ template <int dim>
 void test_evaluate()
 {
 
-  auto grid = CartesianGrid<dim>::create(2);
+  auto grid = Grid<dim>::create(2);
   grid->refine();
 
   const int deg = 2;
