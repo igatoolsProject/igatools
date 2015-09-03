@@ -58,10 +58,10 @@ private:
 
 public:
 
-  using Grid = Grid<dim_>;
-  using IndexType = typename Grid::IndexType;
-  using List = typename Grid::List;
-  using ListIt = typename Grid::ListIt;
+  using GridType = Grid<dim_>;
+  using IndexType = typename GridType::IndexType;
+  using List = typename GridType::List;
+  using ListIt = typename GridType::ListIt;
 
   using Func = Function<dim_,codim_,range_,rank_>;
 

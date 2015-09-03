@@ -58,10 +58,10 @@ public:
   using Space = BSplineSpace<dim, range, rank> ;
 
 
-  using Grid = Grid<dim>;
-  using IndexType = typename Grid::IndexType;
-  using List = typename Grid::List;
-  using ListIt = typename Grid::ListIt;
+  using GridType = Grid<dim>;
+  using IndexType = typename GridType::IndexType;
+  using List = typename GridType::List;
+  using ListIt = typename GridType::ListIt;
 
 public:
   template <int order>

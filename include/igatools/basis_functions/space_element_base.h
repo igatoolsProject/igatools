@@ -47,10 +47,10 @@ private:
   using self_t = SpaceElementBase<dim>;
 
 public:
-  using Grid = Grid<dim>;
-  using IndexType = typename Grid::IndexType;
-  using List = typename Grid::List;
-  using ListIt = typename Grid::ListIt;
+  using GridType = Grid<dim>;
+  using IndexType = typename GridType::IndexType;
+  using List = typename GridType::List;
+  using ListIt = typename GridType::ListIt;
 
   /** @name Constructors */
   ///@{
