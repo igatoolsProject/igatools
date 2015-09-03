@@ -37,10 +37,8 @@ template <int, int> class DomainHandler;
  * which maps the reference domain \f$\hat\Omega \in \mathbb{R}^{dim}\f$ to the
  * physical domain \f$\Omega \in \mathbb{R}^{dim+codim}\f$.
  *
- * Domain is the physical domain, whether of a function or a space.
+ * Domain is the physical domain.
  *
- * It is a function with special properties: it codim is 0 and the map is always the
- * identity.
  *
  *
  * @ingroup containers

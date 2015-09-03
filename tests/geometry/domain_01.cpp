@@ -26,7 +26,7 @@
  */
 
 #include <igatools/geometry/domain.h>
-
+#include <igatools/geometry/formula_domain.h>
 #include "../tests.h"
 
 //#include <igatools/functions/identity_function.h>
@@ -42,6 +42,9 @@ void domain()
 
   auto grid = Grid::const_create();
   auto dom = Domain::create(grid);
+
+
+  auto form_dom = FormulaDomain<dim, codim>::create(grid);
 
   OUTEND
 }
