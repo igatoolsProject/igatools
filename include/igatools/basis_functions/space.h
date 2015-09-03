@@ -40,7 +40,6 @@ template <int,int,int,int,Transformation> class SpaceElement;
 template <int,int,int,int,Transformation> class SpaceElementHandler;
 
 
-
 /**
  * @brief This is an auxiliary class used represent the "concept" of isogeometric function space, defined
  * over <tt>dim</tt>-dimensional parametric domain.
@@ -334,11 +333,12 @@ public:
   /**
    * Create and element (defined on this space) with a given flat_index
    */
-  virtual std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_,type_> >
-  create_element(const ListIt &index, const PropId &property) const = 0;
+  virtual std::unique_ptr<SpaceElement<dim_,codim_,range_,rank_,type_>>
+      create_element(const ListIt &index, const PropId &property) const = 0;
 
 
-  virtual std::shared_ptr< SpaceElementHandler<dim_,codim_,range_,rank_,type_> >
+
+  virtual std::shared_ptr<SpaceElementHandler<dim_,codim_,range_,rank_,type_> >
   create_cache_handler() const = 0;
 
 
@@ -352,18 +352,31 @@ public:
   /** @name Functions involving the element iterator */
   ///@{
   /**
-   * Returns a element iterator to the first element of the patch
+   * Returns an element iterator pointing to the first element of the patch
    * with the property @p element_property.
    */
-  ElementIterator begin(const PropId &element_property = ElementProperties::active) ;
+  ElementIterator begin(const PropId &element_property = ElementProperties::active) const ;
 
 
   /**
-   * Returns a element iterator to one-pass the end of patch
+   * Returns a element iterator pointing to one-pass the end of patch
    * with the property @p element_property.
    */
-  ElementIterator end(const PropId &element_property = ElementProperties::active);
-  ///@}
+  ElementIterator end(const PropId &element_property = ElementProperties::active) const;
+
+  /**
+   * Returns an element iterator pointing to the first element of the patch
+   * with the property @p element_property.
+   */
+  ElementIterator cbegin(const PropId &element_property = ElementProperties::active) const ;
+
+
+  /**
+   * Returns a element iterator pointing to one-pass the end of patch
+   * with the property @p element_property.
+   */
+  ElementIterator cend(const PropId &element_property = ElementProperties::active) const;
+///@}
 
 
 #ifdef MESH_REFINEMENT

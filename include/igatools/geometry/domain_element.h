@@ -39,7 +39,7 @@ private:
 
 public:
   using ContainerType = ContainerType_;
-  using GridElem = typename ContainerType_::GridType::ConstElementAccessor;
+  using GridElem = typename ContainerType_::GridType::ElementAccessor;
   using ListIt = typename ContainerType_::ListIt;
 
   using Point =  typename ContainerType_::Point;

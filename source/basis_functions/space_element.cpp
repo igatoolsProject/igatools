@@ -30,7 +30,7 @@ IGA_NAMESPACE_OPEN
 
 template<int dim_,int codim_,int range_,int rank_,Transformation type_>
 SpaceElement<dim_,codim_,range_,rank_,type_>::
-SpaceElement(const std::shared_ptr<const Space<dim_,codim_,range_,rank_,type_>> space,
+SpaceElement(const std::shared_ptr<Sp> space,
              const ListIt &index,
              const PropId &prop)
   :
@@ -92,7 +92,7 @@ get_w_measures(const int j) const
 template<int dim_,int codim_,int range_,int rank_,Transformation type_>
 auto
 SpaceElement<dim_,codim_,range_,rank_,type_>::
-get_space() const -> std::shared_ptr<const Sp>
+get_space() const -> std::shared_ptr<Sp>
 {
   return space_;
 }

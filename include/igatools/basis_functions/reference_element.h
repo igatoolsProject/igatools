@@ -38,8 +38,6 @@ template <int dim, int range, int rank>
 class ReferenceElement : public SpaceElement<dim,0,range,rank,Transformation::h_grad>
 {
 public:
-  /** Type for the grid accessor. */
-  using GridAccessor = NonConstGridElement<dim>;
 
   /** Type required by the GridForwardIterator templated iterator */
   using ContainerType = const ReferenceSpace<dim,range,rank> ;

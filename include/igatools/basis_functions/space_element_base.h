@@ -40,15 +40,14 @@ template <int> class SpaceBase;
  *
  * @ingroup serializable
  */
-template <int dim,bool SpaceIsConst>
+template <int dim>
 class SpaceElementBase
 {
 private:
-  using self_t = SpaceElementBase<dim,SpaceIsConst>;
+  using self_t = SpaceElementBase<dim>;
 
 public:
-  using Space = Conditional<SpaceIsConst,const SpaceBase<dim>,SpaceBase<dim>>;
-  using GridElem = Conditional<SpaceIsConst,ConstGridElement<dim>,NonConstGridElement<dim>>;
+  using GridElem = GridElement<dim>;
 
 
   using GridType = Grid<dim>;
@@ -71,7 +70,7 @@ public:
    * Constructs an accessor to element with index pointed by the iterator <tt>index</tt> of a
    * function space.
    */
-  SpaceElementBase(const std::shared_ptr<Space> &space,
+  SpaceElementBase(const std::shared_ptr<const SpaceBase<dim>> &space,
                    const ListIt &index,
                    const PropId &prop = ElementProperties::active);
 
@@ -113,6 +112,8 @@ public:
    * Return a const-reference to the GridElement.
    */
   const GridElem &get_grid_element() const;
+
+
 
   void print_info(LogStream &out) const;
 
@@ -238,7 +239,7 @@ public:
 
 
 private:
-  std::shared_ptr<Space> space_;
+  std::shared_ptr<const SpaceBase<dim>> space_;
 
   std::unique_ptr<GridElem> grid_elem_;
 

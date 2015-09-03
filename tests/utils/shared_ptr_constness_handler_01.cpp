@@ -39,7 +39,6 @@ using namespace iga;
 
 using std::shared_ptr;
 
-using Grid = Grid<1>;
 
 const std::string class_name = "SharedPtrConstnessHandler";
 
@@ -47,9 +46,9 @@ void do_test_nonconst()
 {
   OUTSTART
 
-  shared_ptr<Grid> grid_nonconst = Grid::create();
+  shared_ptr<Grid<1>> grid_nonconst = Grid<1>::create();
 
-  SharedPtrConstnessHandler<Grid> constness_handler(grid_nonconst);
+  SharedPtrConstnessHandler<Grid<1>> constness_handler(grid_nonconst);
 
   out.begin_item(class_name + "::print_info()");
   constness_handler.print_info(out);
@@ -90,9 +89,9 @@ void do_test_const()
 {
   OUTSTART
 
-  shared_ptr<const Grid> grid_const = Grid::create();
+  shared_ptr<const Grid<1>> grid_const = Grid<1>::create();
 
-  SharedPtrConstnessHandler<Grid> constness_handler(grid_const);
+  SharedPtrConstnessHandler<Grid<1>> constness_handler(grid_const);
 
   out.begin_item(class_name + "::print_info()");
   constness_handler.print_info(out);

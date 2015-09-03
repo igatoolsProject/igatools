@@ -38,6 +38,8 @@ void iterate(const int n_knots = 5)
   const string red = "red";
   const string blue = "blue";
 
+
+
   auto grid = Grid<dim>::create(n_knots);
   grid->add_property(red);
   grid->add_property(blue);
@@ -46,9 +48,15 @@ void iterate(const int n_knots = 5)
   for (auto &elem : *grid)
   {
     if (elem.get_index() <= center)
-      elem.add_property(red);
+    {
+      grid->get_element_property(red).insert(elem.get_index());
+//      elem.add_property(red);
+    }
     else
-      elem.add_property(blue);
+    {
+      grid->get_element_property(blue).insert(elem.get_index());
+//      elem.add_property(blue);
+    }
   }
 
   auto elem_r = grid->cbegin(red);

@@ -34,10 +34,8 @@ sub_dim_members = [
 
 elems = []
 
-constness =['true', ' false']
 for dim in inst.domain_dims:
-  for c_val in constness:
-    acc = 'GridElement<%d,%s>' %(dim,c_val)
+    acc = 'GridElement<%d>' %(dim)
     f.write('template class %s; \n' %(acc))
     elems.append(acc)
     for fun in sub_dim_members:
@@ -46,8 +44,7 @@ for dim in inst.domain_dims:
           f.write('template ' + s + '\n')
         
 for dim in inst.sub_domain_dims:
-  for c_val in constness:
-    acc = 'GridElement<%d,%s>' %(dim,c_val)
+    acc = 'GridElement<%d>' %(dim)
     f.write('template class %s; \n' %(acc))
     elems.append(acc)
     for fun in sub_dim_members:
@@ -60,8 +57,8 @@ for dim in inst.sub_domain_dims:
 #  for acc in accs1: 
 #      f.write('template class ' + acc + '<%d>' %(dim) + ';\n')
 
-accs=   ['NonConstGridElement', 'ConstGridElement','NonConstGridElement', 'ConstGridElement']
-iters = [   'GridIteratorBase', 'GridIteratorBase',       'GridIterator',     'GridIterator']
+accs=   [     'GridElement', 'GridElement']
+iters = ['GridIteratorBase', 'GridIterator']
 for dim in inst.sub_domain_dims+inst.domain_dims:
   for i in range(len(accs)):
     acc = iters[i] + '<' + accs[i] + '<%d>' %(dim) + '>' 

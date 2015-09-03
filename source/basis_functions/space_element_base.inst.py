@@ -30,13 +30,11 @@ sub_dim_members = []
 
 elements = []
 
-constness =['true', ' false']
 
 
 for dim in inst.sub_domain_dims + inst.domain_dims:
-    for const_val in constness:
-        element = 'SpaceElementBase<%d,%s>' %(dim,const_val)
-        elements.append(element)
+    element = 'SpaceElementBase<%d>' %(dim)
+    elements.append(element)
 
 
 

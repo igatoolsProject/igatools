@@ -25,9 +25,9 @@
 
 IGA_NAMESPACE_OPEN
 
-template <int dim,bool SpaceIsConst>
-SpaceElementBase<dim,SpaceIsConst>::
-SpaceElementBase(const std::shared_ptr<Space> &space,
+template <int dim>
+SpaceElementBase<dim>::
+SpaceElementBase(const std::shared_ptr<const SpaceBase<dim>> &space,
                  const ListIt &index,
                  const PropId &prop)
   :
@@ -40,25 +40,25 @@ SpaceElementBase(const std::shared_ptr<Space> &space,
 
 
 
-template <int dim,bool SpaceIsConst>
+template <int dim>
 auto
-SpaceElementBase<dim,SpaceIsConst>::
+SpaceElementBase<dim>::
 get_grid_element() -> GridElem &
 {
   return *grid_elem_;
 }
 
-template <int dim,bool SpaceIsConst>
+template <int dim>
 auto
-SpaceElementBase<dim,SpaceIsConst>::
+SpaceElementBase<dim>::
 get_grid_element() const -> const  GridElem &
 {
   return *grid_elem_;
 }
 
-template <int dim,bool SpaceIsConst>
+template <int dim>
 void
-SpaceElementBase<dim,SpaceIsConst>::
+SpaceElementBase<dim>::
 print_info(LogStream &out) const
 {
   grid_elem_->print_info(out);
@@ -70,9 +70,9 @@ print_info(LogStream &out) const
 }
 
 
-template <int dim,bool SpaceIsConst>
+template <int dim>
 void
-SpaceElementBase<dim,SpaceIsConst>::
+SpaceElementBase<dim>::
 print_cache_info(LogStream &out) const
 {
   out.begin_item("GridElement<" + std::to_string(dim) + "> cache:");
@@ -82,17 +82,17 @@ print_cache_info(LogStream &out) const
 
 
 
-template <int dim,bool SpaceIsConst>
+template <int dim>
 auto
-SpaceElementBase<dim,SpaceIsConst>::
+SpaceElementBase<dim>::
 get_index() const -> IndexType
 {
   return grid_elem_->get_index();
 }
 
-template <int dim,bool SpaceIsConst>
+template <int dim>
 std::shared_ptr<const Grid<dim> >
-SpaceElementBase<dim,SpaceIsConst>::
+SpaceElementBase<dim>::
 get_grid() const
 {
   return grid_elem_->get_grid();
@@ -101,9 +101,9 @@ get_grid() const
 
 
 
-template <int dim,bool SpaceIsConst>
+template <int dim>
 SafeSTLVector<Index>
-SpaceElementBase<dim,SpaceIsConst>::
+SpaceElementBase<dim>::
 get_local_to_global(const std::string &dofs_property) const
 {
   SafeSTLVector<Index> dofs_global;
@@ -119,9 +119,9 @@ get_local_to_global(const std::string &dofs_property) const
   return dofs_global;
 }
 
-template <int dim,bool SpaceIsConst>
+template <int dim>
 SafeSTLVector<Index>
-SpaceElementBase<dim,SpaceIsConst>::
+SpaceElementBase<dim>::
 get_local_to_patch(const std::string &dofs_property) const
 {
   SafeSTLVector<Index> dofs_global;
@@ -137,9 +137,9 @@ get_local_to_patch(const std::string &dofs_property) const
   return dofs_loc_to_patch;
 }
 
-template <int dim,bool SpaceIsConst>
+template <int dim>
 SafeSTLVector<Index>
-SpaceElementBase<dim,SpaceIsConst>::
+SpaceElementBase<dim>::
 get_local_dofs(const std::string &dofs_property) const
 {
   SafeSTLVector<Index> dofs_global;
@@ -155,9 +155,9 @@ get_local_dofs(const std::string &dofs_property) const
   return dofs_loc_to_elem;
 }
 
-template <int dim,bool SpaceIsConst>
+template <int dim>
 Size
-SpaceElementBase<dim,SpaceIsConst>::
+SpaceElementBase<dim>::
 get_num_basis(const std::string &dofs_property) const
 {
   const auto dofs_global = this->get_local_to_global(dofs_property);
@@ -165,9 +165,9 @@ get_num_basis(const std::string &dofs_property) const
 }
 
 
-template <int dim,bool SpaceIsConst>
+template <int dim>
 bool
-SpaceElementBase<dim,SpaceIsConst>::
+SpaceElementBase<dim>::
 operator==(const self_t &a) const
 {
   Assert(space_ == a.space_,
@@ -175,9 +175,9 @@ operator==(const self_t &a) const
   return *grid_elem_ == *a.grid_elem_;
 }
 
-template <int dim,bool SpaceIsConst>
+template <int dim>
 bool
-SpaceElementBase<dim,SpaceIsConst>::
+SpaceElementBase<dim>::
 operator!=(const self_t &a) const
 {
   Assert(space_ == a.space_,
@@ -185,9 +185,9 @@ operator!=(const self_t &a) const
   return *grid_elem_ != *a.grid_elem_;
 }
 
-template <int dim,bool SpaceIsConst>
+template <int dim>
 bool
-SpaceElementBase<dim,SpaceIsConst>::
+SpaceElementBase<dim>::
 operator<(const self_t &a) const
 {
   Assert(space_ == a.space_,
@@ -195,9 +195,9 @@ operator<(const self_t &a) const
   return *grid_elem_ < *a.grid_elem_;
 }
 
-template <int dim,bool SpaceIsConst>
+template <int dim>
 bool
-SpaceElementBase<dim,SpaceIsConst>::
+SpaceElementBase<dim>::
 operator>(const self_t &a) const
 {
   Assert(space_ == a.space_,
@@ -209,10 +209,10 @@ operator>(const self_t &a) const
 
 
 #ifdef SERIALIZATION
-template <int dim,bool SpaceIsConst>
+template <int dim>
 template<class Archive>
 void
-SpaceElementBase<dim,SpaceIsConst>::
+SpaceElementBase<dim>::
 serialize(Archive &ar, const unsigned int version)
 {
   ar &boost::serialization::make_nvp("grid_elem_",grid_elem_);

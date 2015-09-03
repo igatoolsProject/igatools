@@ -43,13 +43,8 @@ IGA_NAMESPACE_OPEN
 
 template <int> class Grid;
 
-template <int,bool> class GridElement;
+template <int> class GridElement;
 
-template<int dim>
-using ConstGridElement = GridElement<dim,true>;
-
-template<int dim>
-using NonConstGridElement = GridElement<dim,false>;
 
 
 template <int> class GridHandler;
@@ -180,14 +175,11 @@ public:
   static const int dim = dim_;
 
   /** Type for the element accessor. */
-  using ElementAccessor = NonConstGridElement<dim_>;
-  using ConstElementAccessor = ConstGridElement<dim_>;
-
-  /** Type for the iterator over the elements of the grid (non-const version).  */
-  using ElementIterator = GridIterator<ElementAccessor>;
+  using ElementAccessor = GridElement<dim_>;
 
   /** Type for the iterator over the elements of the grid (const version).  */
-  using ElementConstIterator = GridIterator<ConstElementAccessor>;
+  using ElementIterator = GridIterator<ElementAccessor>;
+
 
   using ElementHandler = GridHandler<dim_>;
 
@@ -438,34 +430,24 @@ public:
   ///@name Iterating of grid elements
   ///@{
   /**
-   * This function returns a element iterator to the first element of the patch.
-   */
-  ElementIterator begin(const PropId &prop = ElementProperties::active);
-
-  /**
-   * This function returns a element iterator to one-pass the end of patch.
-   */
-  ElementIterator end(const PropId &prop = ElementProperties::active);
-
-  /**
    * This function returns a element (const) iterator to the first element of the patch.
    */
-  ElementConstIterator begin(const PropId &prop = ElementProperties::active) const;
+  ElementIterator begin(const PropId &prop = ElementProperties::active) const;
 
   /**
    * This function returns a element (const) iterator to one-pass the end of patch.
    */
-  ElementConstIterator end(const PropId &prop = ElementProperties::active) const;
+  ElementIterator end(const PropId &prop = ElementProperties::active) const;
 
   /**
    * This function returns a element (const) iterator to the first element of the patch.
    */
-  ElementConstIterator cbegin(const PropId &prop = ElementProperties::active) const;
+  ElementIterator cbegin(const PropId &prop = ElementProperties::active) const;
 
   /**
    * This function returns a element (const) iterator to one-pass the end of patch.
    */
-  ElementConstIterator cend(const PropId &prop = ElementProperties::active) const;
+  ElementIterator cend(const PropId &prop = ElementProperties::active) const;
   ///@}
 
   ///@name Dealing with boundary information
@@ -658,14 +640,9 @@ public:
   /**
    * Create an element (defined on this grid) with a given index and the given property
    */
-  std::unique_ptr<ConstElementAccessor>
+  std::unique_ptr<ElementAccessor>
   create_element(const ListIt &index, const PropId &property) const;
 
-  /**
-   * Create an element (defined on this grid) with a given index and the given property
-   */
-  std::unique_ptr<ElementAccessor>
-  create_element(const ListIt &index, const PropId &property);
 
   /**
    * Returns the unique identifier associated to each object instance.
@@ -684,13 +661,16 @@ public:
   */
   void add_property(const PropId &property);
 
-  /**
-   * Prefer the use through the element iterator instead of
-   * this function
-   */
-  const List &get_element_property(const PropId &prop) const;
 
-  List &get_element_property(const PropId &prop);
+  /**
+   * Returns a const-reference to the list of element ids with the property specified by @p prop.
+   */
+  const List &get_elements_with_property(const PropId &prop) const;
+
+  /**
+   * Returns a reference to the list of element ids with the property specified by @p prop.
+   */
+  List &get_elements_with_property(const PropId &prop);
 
 
 #if 0
@@ -773,8 +753,7 @@ private:
    */
   signal_insert_knots_t insert_knots_signals_;
 #endif
-  friend class GridElement<dim_,true>;
-  friend class GridElement<dim_,false>;
+  friend class GridElement<dim_>;
 //  friend class NonConstGridElement<dim_>;
 //  friend class ConstGridElement<dim_>;
 

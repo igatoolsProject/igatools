@@ -156,11 +156,9 @@ Space(const shared_ptr<const Grid<dim_>> &grid,
 template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 auto
 Space<dim_,codim_,range_,rank_,type_>::
-begin(const PropId &prop) -> ElementIterator
+begin(const PropId &prop) const -> ElementIterator
 {
-  return ElementIterator(
-    this->create_element(
-      this->get_grid()->get_element_property(prop).begin(),prop));
+  return this->cbegin(prop);
 }
 
 
@@ -168,13 +166,32 @@ begin(const PropId &prop) -> ElementIterator
 template <int dim_,int codim_,int range_,int rank_,Transformation type_>
 auto
 Space<dim_,codim_,range_,rank_,type_>::
-end(const PropId &prop) -> ElementIterator
+end(const PropId &prop) const -> ElementIterator
 {
-  return ElementIterator(
-    this->create_element(
-      this->get_grid()->get_element_property(prop).end(),prop));
+  return this->cend(prop);
 }
 
+template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+auto
+Space<dim_,codim_,range_,rank_,type_>::
+cbegin(const PropId &prop) const -> ElementIterator
+{
+  return ElementIterator(
+           this->create_element(
+             this->get_grid()->get_elements_with_property(prop).begin(),prop));
+}
+
+
+
+template <int dim_,int codim_,int range_,int rank_,Transformation type_>
+auto
+Space<dim_,codim_,range_,rank_,type_>::
+cend(const PropId &prop) const -> ElementIterator
+{
+  return ElementIterator(
+           this->create_element(
+             this->get_grid()->get_elements_with_property(prop).end(),prop));
+}
 
 
 template <int dim_,int codim_,int range_,int rank_,Transformation type_>

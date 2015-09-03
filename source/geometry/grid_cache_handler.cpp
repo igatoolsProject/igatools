@@ -74,12 +74,12 @@ set_flags(const topology_variant &sdim,
 template <int dim>
 void
 GridHandler<dim>::
-init_all_caches(ConstElementAccessor &elem)
+init_all_caches(ElementAccessor &elem)
 {
   auto &cache = elem.all_sub_elems_cache_;
   if (cache == nullptr)
   {
-    using Cache = typename ConstElementAccessor::CacheType;
+    using Cache = typename ElementAccessor::CacheType;
     cache = shared_ptr<Cache>(new Cache);
   }
 
@@ -108,7 +108,7 @@ template <int dim>
 template <int sdim>
 void
 GridHandler<dim>::
-init_cache(ConstElementAccessor &elem,
+init_cache(ElementAccessor &elem,
            std::shared_ptr<const Quadrature<sdim>> quad) const
 {
   Assert(quad != nullptr,ExcNullPtr());
@@ -119,7 +119,7 @@ init_cache(ConstElementAccessor &elem,
   auto &cache = elem.all_sub_elems_cache_;
   if (cache == nullptr)
   {
-    using Cache = typename ConstElementAccessor::CacheType;
+    using Cache = typename ElementAccessor::CacheType;
     cache = std::make_shared<Cache>();
   }
 
@@ -134,7 +134,7 @@ init_cache(ConstElementAccessor &elem,
 template <int dim>
 void
 GridHandler<dim>::
-init_cache(ConstElementAccessor &elem,
+init_cache(ElementAccessor &elem,
            const eval_pts_variant &quad) const
 {
   auto disp = InitCacheDispatcher(this, elem);
@@ -146,7 +146,7 @@ template <int dim>
 void
 GridHandler<dim>::
 fill_cache(const topology_variant &sdim,
-           ConstElementAccessor &elem,
+           ElementAccessor &elem,
            const int s_id) const
 {
   auto disp = FillCacheDispatcher(this, elem, s_id);
@@ -158,10 +158,10 @@ template <int dim>
 template <int sdim>
 void
 GridHandler<dim>::
-fill_cache(ConstElementAccessor &elem, const int s_id) const
+fill_cache(ElementAccessor &elem, const int s_id) const
 {
-  using _Point = typename ConstElementAccessor::_Point;
-  using _Weight = typename ConstElementAccessor::_Weight;
+  using _Point = typename ElementAccessor::_Point;
+  using _Weight = typename ElementAccessor::_Weight;
   Assert(elem.all_sub_elems_cache_ != nullptr, ExcNullPtr());
   auto &cache = elem.all_sub_elems_cache_->template get_sub_elem_cache<sdim>(s_id);
 

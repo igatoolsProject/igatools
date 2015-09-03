@@ -47,11 +47,13 @@ IGA_NAMESPACE_OPEN
  * @ingroup serializable
  */
 template<int dim_,int codim_,int range_,int rank_,Transformation type_>
-class SpaceElement : public SpaceElementBase<dim_,true>
+class SpaceElement : public SpaceElementBase<dim_>
 {
 protected:
-  using base_t =  SpaceElementBase<dim_,true>;
+  using base_t =  SpaceElementBase<dim_>;
 
+  using Sp = const Space<dim_,codim_,range_,rank_,type_>;
+//  using GridElem = Conditional<SpaceIsConst,ConstGridElement<dim>,NonConstGridElement<dim>>;
 
 private:
   using self_t = SpaceElement<dim_,codim_,range_,rank_,type_>;
@@ -74,7 +76,6 @@ public:
   static const int dim = dim_;
   static const int space_dim = Func::space_dim;
 
-  using Sp = Space<dim_,codim_,range_,rank_,type_>;
   using ContainerType = Sp;
 
   /**
@@ -101,7 +102,7 @@ protected:
 
 public:
 
-  SpaceElement(const std::shared_ptr<const Space<dim_,codim_,range_,rank_,type_>> space,
+  SpaceElement(const std::shared_ptr<Sp> space,
                const ListIt &index,
                const PropId &prop = ElementProperties::active);
 
@@ -280,7 +281,7 @@ public:
     return this->all_sub_elems_cache_;
   }
 
-  std::shared_ptr<const Sp> get_space() const;
+  std::shared_ptr<Sp> get_space() const;
 
 private:
   template <class ValueType, int topology_dim>
@@ -294,7 +295,7 @@ private:
 
 
 
-  std::shared_ptr<const Sp> space_;
+  std::shared_ptr<Sp> space_;
 
 
 

@@ -313,7 +313,7 @@ add_property(const PropId &property)
 template<int dim_>
 auto
 Grid<dim_>::
-get_element_property(const PropId &prop) const
+get_elements_with_property(const PropId &prop) const
 -> const List &
 {
   return elem_properties_[prop];
@@ -324,7 +324,7 @@ get_element_property(const PropId &prop) const
 template<int dim_>
 auto
 Grid<dim_>::
-get_element_property(const PropId &prop)
+get_elements_with_property(const PropId &prop)
 -> List &
 {
   return elem_properties_[prop];
@@ -343,7 +343,7 @@ Grid<dim_>::create_cache_handler() const
 template<int dim_>
 auto
 Grid<dim_>::
-create_element(const ListIt &index, const PropId &prop)
+create_element(const ListIt &index, const PropId &prop) const
 -> std::unique_ptr<ElementAccessor>
 {
   using Elem = ElementAccessor;
@@ -354,47 +354,15 @@ create_element(const ListIt &index, const PropId &prop)
 }
 
 
-template<int dim_>
-auto
-Grid<dim_>::
-create_element(const ListIt &index, const PropId &prop) const
--> std::unique_ptr<ConstElementAccessor>
-{
-  using Elem = ConstElementAccessor;
-  auto elem = std::make_unique<Elem>(this->shared_from_this(), index, prop);
-  Assert(elem != nullptr,ExcNullPtr());
 
-  return elem;
-}
+
 
 
 
 template<int dim_>
 auto
 Grid<dim_>::
-begin(const PropId &prop) -> ElementIterator
-{
-  return ElementIterator(
-    this->create_element(elem_properties_[prop].begin(),prop));
-}
-
-
-
-template<int dim_>
-auto
-Grid<dim_>::
-end(const PropId &prop) -> ElementIterator
-{
-  return ElementIterator(
-    this->create_element(elem_properties_[prop].end(),prop));
-}
-
-
-
-template<int dim_>
-auto
-Grid<dim_>::
-begin(const PropId &prop) const -> ElementConstIterator
+begin(const PropId &prop) const -> ElementIterator
 {
   return this->cbegin(prop);
 }
@@ -404,7 +372,7 @@ begin(const PropId &prop) const -> ElementConstIterator
 template<int dim_>
 auto
 Grid<dim_>::
-end(const PropId &prop) const -> ElementConstIterator
+end(const PropId &prop) const -> ElementIterator
 {
   return this->cend(prop);
 }
@@ -414,9 +382,9 @@ end(const PropId &prop) const -> ElementConstIterator
 template<int dim_>
 auto
 Grid<dim_>::
-cbegin(const PropId &prop) const -> ElementConstIterator
+cbegin(const PropId &prop) const -> ElementIterator
 {
-  return ElementConstIterator(
+  return ElementIterator(
            this->create_element(elem_properties_[prop].begin(),prop));
 }
 
@@ -425,9 +393,9 @@ cbegin(const PropId &prop) const -> ElementConstIterator
 template<int dim_>
 auto
 Grid<dim_>::
-cend(const PropId &prop) const -> ElementConstIterator
+cend(const PropId &prop) const -> ElementIterator
 {
-  return ElementConstIterator(
+  return ElementIterator(
            this->create_element(elem_properties_[prop].end(),prop));
 }
 

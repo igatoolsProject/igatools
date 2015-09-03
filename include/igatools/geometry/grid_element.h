@@ -49,15 +49,15 @@ IGA_NAMESPACE_OPEN
  *
  * @ingroup serializable
  */
-template <int dim, bool GridIsConst>
+template <int dim>
 class GridElement
 {
 private:
-  using self_t = GridElement<dim, GridIsConst>;
+  using self_t = GridElement<dim>;
 
 public:
   /** Type required by the GridIterator templated iterator */
-  using ContainerType = Conditional<GridIsConst,const Grid<dim>,Grid<dim>>;
+  using ContainerType = const Grid<dim>;
   using IndexType = typename ContainerType::IndexType;
   using List = typename ContainerType::List;
   using ListIt = typename ContainerType::ListIt;
@@ -80,7 +80,7 @@ public:
    * Construct an accessor pointing to the element with
    * flat index @p elem_index of the Grid @p grid.
    */
-  GridElement(const std::shared_ptr<ContainerType> &grid,
+  GridElement(const std::shared_ptr<const Grid<dim>> &grid,
               const ListIt &index,
               const PropId &prop = ElementProperties::active);
 
@@ -118,7 +118,7 @@ public:
   const IndexType &get_index() const;
 
   /** Return the Grid from which the element belongs.*/
-  const std::shared_ptr<const ContainerType> get_grid() const;
+  std::shared_ptr<const Grid<dim>> get_grid() const;
 
   /**
    * Returns the unitary quadrature scheme corresponding to the <tt>sdim</tt>-dimensional
@@ -260,12 +260,6 @@ public:
   bool has_property(const PropId &property) const;
   ///@}
 
-  template <class C = ContainerType>
-  void add_property(const PropId &prop,
-                    EnableIfNonConst<C> * = nullptr)
-  {
-    this->grid_->elem_properties_[prop].insert(this->get_index());
-  }
 
 #if 0
   /**
@@ -296,7 +290,7 @@ private:
 protected:
 
   /** Cartesian grid from which the element belongs.*/
-  std::shared_ptr<ContainerType> grid_;
+  std::shared_ptr<const Grid<dim>> grid_;
 
 private:
   PropId property_;

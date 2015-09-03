@@ -48,8 +48,6 @@ private:
   using parent_t = ReferenceElement<dim,range,rank>;
 
 public:
-  /** Type for the grid accessor. */
-  using GridAccessor = NonConstGridElement<dim>;
 
   /** Type required by the GridIterator templated iterator */
   using ContainerType = const BSplineSpace<dim, range, rank> ;
