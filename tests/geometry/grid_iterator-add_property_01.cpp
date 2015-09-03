@@ -49,12 +49,12 @@ void iterate(const int n_knots = 5)
   {
     if (elem.get_index() <= center)
     {
-      grid->get_element_property(red).insert(elem.get_index());
+      grid->get_elements_with_property(red).insert(elem.get_index());
 //      elem.add_property(red);
     }
     else
     {
-      grid->get_element_property(blue).insert(elem.get_index());
+      grid->get_elements_with_property(blue).insert(elem.get_index());
 //      elem.add_property(blue);
     }
   }

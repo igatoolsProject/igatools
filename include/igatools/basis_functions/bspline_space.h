@@ -516,7 +516,7 @@ public:
 
   virtual bool is_bspline() const override final;
 
-  virtual std::shared_ptr<SpaceElementHandler<dim_,0,range_,rank_,Transformation::h_grad>>
+  virtual std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_,Transformation::h_grad>>
       create_cache_handler() const override final;
 
 

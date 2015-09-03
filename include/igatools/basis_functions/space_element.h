@@ -274,22 +274,17 @@ protected:
   AllSubElementsCache<Cache> all_sub_elems_cache_;
 
 public:
-  // TODO (pauletti, Mar 17, 2015): this cannot be public, if needed it means wrong desing
-  AllSubElementsCache<Cache> &
-  get_all_sub_elems_cache()
-  {
-    return this->all_sub_elems_cache_;
-  }
 
   std::shared_ptr<Sp> get_space() const;
 
 private:
-  template <class ValueType, int topology_dim>
+  template <class ValueType, int sdim>
   const auto &
-  get_data_from_sub_elem_cache(const int topology_id) const
+  get_data_from_sub_elem_cache(const int s_id) const
   {
-    const auto &cache = all_sub_elems_cache_.template get_sub_elem_cache<topology_dim>(topology_id);
-    return cache.template get_data<ValueType>();
+    return all_sub_elems_cache_.
+           template get_sub_elem_cache<sdim>(s_id).
+    template get_data<ValueType>();
   }
 
 

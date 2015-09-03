@@ -255,13 +255,9 @@ print_info(LogStream &out) const
 template <int dim_, int range_, int rank_, int codim_, Transformation type_>
 auto
 PhysicalSpace<dim_, range_, rank_, codim_, type_>::
-create_cache_handler() const -> std::shared_ptr<SpaceElementHandler<dim_,codim_,range_,rank_,type_>>
+create_cache_handler() const -> std::unique_ptr<SpaceElementHandler<dim_,codim_,range_,rank_,type_>>
 {
-  auto sp = const_cast<self_t *>(this)->shared_from_this();
-  auto this_space = std::dynamic_pointer_cast<self_t>(sp);
-  Assert(this_space != nullptr,ExcNullPtr());
-
-  return ElementHandler::create(this_space);
+  return ElementHandler::create(this->get_this_space());
 }
 
 

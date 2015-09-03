@@ -158,6 +158,8 @@ public:
 
 private:
 
+
+
 #ifdef SERIALIZATION
   /**
    * @name Functions needed for boost::serialization

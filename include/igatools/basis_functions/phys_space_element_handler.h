@@ -111,7 +111,7 @@ public:
    * @name Creators.
    */
   ///@{
-  static std::shared_ptr<self_t> create(std::shared_ptr<const PhysSpace> space);
+  static std::unique_ptr<self_t> create(std::shared_ptr<const PhysSpace> space);
   ///@}
 
 #if 0

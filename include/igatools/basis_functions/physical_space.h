@@ -195,7 +195,7 @@ public:
 
   void print_info(LogStream &out) const override final;
 
-  std::shared_ptr<SpaceElementHandler<dim_,codim_,range_,rank_,type_>>
+  std::unique_ptr<SpaceElementHandler<dim_,codim_,range_,rank_,type_>>
       create_cache_handler() const override final;
 
 

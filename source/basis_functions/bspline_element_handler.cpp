@@ -170,9 +170,11 @@ BSplineElementHandler(shared_ptr<const Space> space)
 template<int dim_, int range_ , int rank_>
 auto
 BSplineElementHandler<dim_, range_, rank_>::
-create(std::shared_ptr<const Space> space) -> std::shared_ptr<self_t>
+create(std::shared_ptr<const Space> space) -> std::unique_ptr<self_t>
 {
-  return std::shared_ptr<self_t>(new self_t(space));
+  auto handler = std::unique_ptr<self_t>(new self_t(space));
+  Assert(handler != nullptr, ExcNullPtr());
+  return handler;
 }
 
 
@@ -250,10 +252,12 @@ BSplineElementHandler<dim_, range_, rank_>::
 InitCacheDispatcher::
 init_cache_multiD()
 {
-  auto &cache = elem_.get_all_sub_elems_cache();
 
   using BSpElem = BSplineElement<dim_,range_,rank_>;
   auto &bsp_elem  = dynamic_cast<BSpElem &>(elem_);
+
+  auto &cache = bsp_elem.all_sub_elems_cache_;
+//      elem_.get_all_sub_elems_cache();
 
   const auto n_basis = bsp_elem.get_basis_offset()[BaseSpace::n_components];
 
@@ -643,7 +647,8 @@ fill_cache_multiD(const Quadrature<dim> &extended_sub_elem_quad)
 
   //-------------------------------------------------------------------------------
   auto &sub_elem_cache =
-    elem_.get_all_sub_elems_cache().template get_sub_elem_cache<sdim>(s_id_);
+    bsp_elem.all_sub_elems_cache_.template get_sub_elem_cache<sdim>(s_id_);
+//      elem_.get_all_sub_elems_cache().template get_sub_elem_cache<sdim>(s_id_);
 
 
   using Elem = SpaceElement<dim_,0,range_,rank_,Transformation::h_grad>;

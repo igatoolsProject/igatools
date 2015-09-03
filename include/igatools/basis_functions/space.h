@@ -338,7 +338,7 @@ public:
 
 
 
-  virtual std::shared_ptr<SpaceElementHandler<dim_,codim_,range_,rank_,type_> >
+  virtual std::unique_ptr<SpaceElementHandler<dim_,codim_,range_,rank_,type_> >
   create_cache_handler() const = 0;
 
 

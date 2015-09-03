@@ -424,7 +424,7 @@ public:
   BBox<dim_> get_bounding_box() const;
   ///@}
 
-  std::shared_ptr<ElementHandler> create_cache_handler() const;
+  std::unique_ptr<ElementHandler> create_cache_handler() const;
 
 
   ///@name Iterating of grid elements

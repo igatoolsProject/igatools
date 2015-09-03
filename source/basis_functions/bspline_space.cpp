@@ -677,7 +677,7 @@ template<int dim_, int range_, int rank_>
 auto
 BSplineSpace<dim_, range_, rank_>::
 create_cache_handler() const
--> std::shared_ptr<SpaceElementHandler<dim_,0,range_,rank_,Transformation::h_grad>>
+-> std::unique_ptr<SpaceElementHandler<dim_,0,range_,rank_,Transformation::h_grad>>
 {
   return ElementHandler::create(this->get_this_space());
 }

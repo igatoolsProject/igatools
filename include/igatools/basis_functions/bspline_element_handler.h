@@ -125,7 +125,7 @@ public:
    */
   virtual ~BSplineElementHandler() = default;
 
-  static std::shared_ptr<self_t> create(std::shared_ptr<const Space> space);
+  static std::unique_ptr<self_t> create(std::shared_ptr<const Space> space);
 
   using topology_variant = typename base_t::topology_variant;
   using eval_pts_variant = typename base_t::eval_pts_variant;
